@@ -2,195 +2,404 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 011F33935F5
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 21:06:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F1A52393600
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 21:11:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234071AbhE0TIF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 May 2021 15:08:05 -0400
-Received: from mail-mw2nam10on2056.outbound.protection.outlook.com ([40.107.94.56]:32480
-        "EHLO NAM10-MW2-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229609AbhE0TH5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 May 2021 15:07:57 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=CI9ncjhSA7NS7ohF9IXKMTjgUAyBz77JqfU+KQkW0HRJHa3pF6097QwRhsuM4hKRH7p1V/666fL4BDHxHeLDvAGelh0+/K2y/aScwTdSGniUU8BCyrxP4ynXNDNG81H7Ui+92DXkGxi3utdhVApRT7c+BcYBFGStO6rtfyn3zyWw35+dL3nlBc2mt/SN/FRIcrzJkauXkpuFF52oLO8cwP/LW4g+Y3hamicGZNwfunWiCUyRzxBOuD3fWo48Sgn9DQqEICB5fv2+IKGrjDIZMWur8lf3AJ0qrL6/c0M7SIt3uDcGVI5IZ94EvxEXxClCWcR16sPdW8loa4jhbrmMlQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=sJQhFM0W1vXArj+sph79LQ7r+iuVf+Uxh/Ul1UCgAgM=;
- b=BTN+jf7DDUBOoyrp76muUvMqs6HnRhcr1lAL6L0WGDorFP9vut4dXGgQ54i+Vtzj/vN7HKf4sEQoI7pLk0D/DKeFXQ+A+OWoJ+rMW8L9fZ4vgHilRIw4EnN1Uc3QfqPZFIistcqu13BDpuqw3lhQwq7P1+hSEs/1n129YuVEUhaxC/M2fI/4G6ImW7jM7rF8hK2qNS5GtluqcSvaa06Dyp0faRyQXWmClNQa4RgdWe4J050KIBt7zle9Bc0OirZ9WvzBxHxzkFaD29qPDXCYQFbuaJ83It6FYSJ2yx7jN4UfO9qssey0kg6WsflGphnCKakWPtLs3lXvRk/rw8WfqQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=sJQhFM0W1vXArj+sph79LQ7r+iuVf+Uxh/Ul1UCgAgM=;
- b=m7cT7Ltrc1bmBb+0dwbdDDJOE9nd1gqCKngpLyl2Cl7IWj8T8jKchd2RMhEJ9dy11IO71aQ2qeTLY6475T+ps5uWdyIIQqHw+drNp0Ot/gdiR/Bh2uuAK02MUlmQr0NhlORglaNdcFklPZa3W9ESJTY2U2X/Vtx/wVlXgFPwXkESaPwY5Xm7ef6Hb/UHVO1rHrRpoeODa1fRTm9xVAxIoly7d27H//G5SvqbbUMt+/no0SO38/Da6+tQjgPbnFa88twcDJxucuXtv2/ezsjrpjbnvXLDZ0NNPUYkczO+qnXGX8tsC8B8mvf+GvNxD7uFXhQTtIZKxDqnoy2QGUYiCA==
-Authentication-Results: gibson.dropbear.id.au; dkim=none (message not signed)
- header.d=none;gibson.dropbear.id.au; dmarc=none action=none
- header.from=nvidia.com;
-Received: from BL0PR12MB5506.namprd12.prod.outlook.com (2603:10b6:208:1cb::22)
- by BL1PR12MB5112.namprd12.prod.outlook.com (2603:10b6:208:316::16) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4173.21; Thu, 27 May
- 2021 19:06:21 +0000
-Received: from BL0PR12MB5506.namprd12.prod.outlook.com
- ([fe80::3d51:a3b9:8611:684e]) by BL0PR12MB5506.namprd12.prod.outlook.com
- ([fe80::3d51:a3b9:8611:684e%7]) with mapi id 15.20.4173.023; Thu, 27 May 2021
- 19:06:21 +0000
-Date:   Thu, 27 May 2021 16:06:20 -0300
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     David Gibson <david@gibson.dropbear.id.au>
-Cc:     Alex Williamson <alex.williamson@redhat.com>,
-        "Liu, Yi L" <yi.l.liu@intel.com>,
-        Jacob Pan <jacob.jun.pan@linux.intel.com>,
-        Auger Eric <eric.auger@redhat.com>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        "Tian, Kevin" <kevin.tian@intel.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Joerg Roedel <joro@8bytes.org>,
-        Lu Baolu <baolu.lu@linux.intel.com>,
-        David Woodhouse <dwmw2@infradead.org>,
-        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
-        "cgroups@vger.kernel.org" <cgroups@vger.kernel.org>,
-        Tejun Heo <tj@kernel.org>, Li Zefan <lizefan@huawei.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Jean-Philippe Brucker <jean-philippe@linaro.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        "Raj, Ashok" <ashok.raj@intel.com>, "Wu, Hao" <hao.wu@intel.com>,
-        "Jiang, Dave" <dave.jiang@intel.com>,
-        Alexey Kardashevskiy <aik@ozlabs.ru>
-Subject: Re: [PATCH V4 05/18] iommu/ioasid: Redefine IOASID set and
- allocation APIs
-Message-ID: <20210527190620.GJ1002214@nvidia.com>
-References: <20210427171212.GD1370958@nvidia.com>
- <YIizNdbA0+LYwQbI@yekko.fritz.box>
- <20210428145622.GU1370958@nvidia.com>
- <YIoiJRY3FM7xH2bH@yekko>
- <20210503161518.GM1370958@nvidia.com>
- <YJy9o8uEZs42/qDM@yekko>
- <20210513135938.GG1002214@nvidia.com>
- <YKtbWo7PwIlXjFIV@yekko>
- <20210524233744.GT1002214@nvidia.com>
- <YK8l1mZ0NVggAVUO@yekko>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YK8l1mZ0NVggAVUO@yekko>
-X-Originating-IP: [47.55.113.94]
-X-ClientProxiedBy: BL1PR13CA0200.namprd13.prod.outlook.com
- (2603:10b6:208:2be::25) To BL0PR12MB5506.namprd12.prod.outlook.com
- (2603:10b6:208:1cb::22)
+        id S234186AbhE0TM7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 May 2021 15:12:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56266 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229878AbhE0TM5 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 27 May 2021 15:12:57 -0400
+Received: from mail-io1-xd2a.google.com (mail-io1-xd2a.google.com [IPv6:2607:f8b0:4864:20::d2a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00B53C061574
+        for <linux-kernel@vger.kernel.org>; Thu, 27 May 2021 12:11:23 -0700 (PDT)
+Received: by mail-io1-xd2a.google.com with SMTP id k132so1646170iof.4
+        for <linux-kernel@vger.kernel.org>; Thu, 27 May 2021 12:11:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=nGuT6H8sZdCJZlym7feAyNnv96npCG9gR8zGPJ1rTf0=;
+        b=dmwkE1g7FrVf2ak50L1Ms6oc7YL/1713d593HJoWc2fdHAgBtC2SmoJJ/Gr6iMf+Fb
+         kK3FTMzQbnwFxKEly4fwaUcyhTE209bKCv7Ifyzye91zMVLL3slStYdWiV53JG7SdSz4
+         ERPEYgD86UcFOcdwErUM6acb4HtgLqMFEP7MplIBNwa3Kpq/ABneRA6xjjeDUjLJ5CiF
+         U90viq66apsCspdMtF/ocjKPMvFlzjLpoSqY9YHGuDNRa6zkyFmz0RDQ4Ej7yjlc0wEP
+         4cWHu4/97qJ6e3va5JRXi1hiMC658gQPDBb8cisDCbRS/WPJPfCn8DLYPS8dM6sKh2Mc
+         CL7A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=nGuT6H8sZdCJZlym7feAyNnv96npCG9gR8zGPJ1rTf0=;
+        b=YhZj2aBwuiAvG5Es7q96na7JV0UmFun5yS7CgGaQPv+5AefDrwtghmqO4IjOEICB/M
+         GJqRY5i+xSj6eS7MhW18/Q4xsVtoUMlMD1pRDCTI9xuKnIyj9Pl5nfezDDMjHZfsl9VJ
+         p3YWTiK6g/Xc/uyNrUSj5jhEarn5d3SOKExxvq/Qe34SjAG8UAda7I9eMMdbGH3UirqA
+         CRyF5fADu8TRwwz5uf3WRdrZY6/LiRswtJoC9iEgNpGS7taKrafgJZH3Ca8s4hNWmrdc
+         KhQWiTGDwOZbhtsagSHrZVNxUw+wMQeQpJ2ElLItMFlpyyQFDZ9CNyuGGoUa9WeBOHqG
+         4GWw==
+X-Gm-Message-State: AOAM532F/uSzm4TSRzcED9PukOSrMQ7ddK/7ebH8fXBmqvCoB8pUwYwx
+        QuqbJd1V1SK+nCOCGVnAP9E3v6k9hTdiLHzbYawriQ==
+X-Google-Smtp-Source: ABdhPJxLSrsZuX33E7/zt9xvRel15p5iC3rB7p5w1O6YvpdW9FZGNSicIPW09fzxDWtKzvIxvP7ittTd9uwEtwOF5nE=
+X-Received: by 2002:a6b:cd08:: with SMTP id d8mr4065601iog.86.1622142682070;
+ Thu, 27 May 2021 12:11:22 -0700 (PDT)
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from mlx.ziepe.ca (47.55.113.94) by BL1PR13CA0200.namprd13.prod.outlook.com (2603:10b6:208:2be::25) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4195.9 via Frontend Transport; Thu, 27 May 2021 19:06:21 +0000
-Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1lmLKm-00Ffym-CW; Thu, 27 May 2021 16:06:20 -0300
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 13e0062b-c8c4-4bcc-17a1-08d9214283dc
-X-MS-TrafficTypeDiagnostic: BL1PR12MB5112:
-X-Microsoft-Antispam-PRVS: <BL1PR12MB5112FEA80B90375ED4CB1E53C2239@BL1PR12MB5112.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: FS94veDt3D4kcgx7uezrWri0nHb8UlE7lNYMsOy+zisHb/Ix7SjizdMExIzA9f/OJH+F0EtiOqFVtmqEZpqSOVma8qeZmWBuEg9GF9eQZw/cobhVBGmUyeM9MU9kBhoFdGCdyzlJ0UWLRESkKwDBixfmGxCDcGiFWDZHjxsvsLtScqtPvylWestaVZzYj/Edp5uH6tEkTDI+iN95YM51z82qLWHdzpob6HNN+3gbrTFfkkRkAIZByFdsi2OmkAVurM1i226+crjHX/3MiN6EQbXrPOitBqVJySYDoBJDIWJWCB3snCQu7k9C+HpGh7v9pkf1c+F/DmzyGvfOHRoHQmTMzV1lnhJLEd2Cvui0X6VZxCHGOvZ9orb45sNvEIuHdzAy3pakw9zMRI1tSIhH6J9srq2SCiMVB+UdpmeLUTnj9wFPl9t91thMPxHMhDaI+dMWApw7+7okYBTElFmz40mJpC7FTtB9JUMvV9sZZKcx6xQfg0YFjRW7fbB2IP8KoeL193DxZlewKPrSxVFtPY4z3C6EXFRLN8j7W7JZG5LoWvqqCTa7HyGh4ZoNyFLgkNVCmVtOI6ku6r6KKBGOFGYG7Gj7iAFEewcHcOKuyBc=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL0PR12MB5506.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(346002)(376002)(366004)(396003)(39860400002)(9786002)(5660300002)(66556008)(66476007)(66946007)(1076003)(4326008)(8676002)(2906002)(8936002)(9746002)(478600001)(83380400001)(316002)(54906003)(33656002)(426003)(38100700002)(186003)(26005)(2616005)(86362001)(6916009)(36756003)(7416002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?V02h7soTmimdZzXu80ml7oCWr2eleGFq8ZsVPTib+ad6sWijOks08oKD/YOl?=
- =?us-ascii?Q?a5wBw6NMjHL2jOnGz7i979aRi/lvq5Q086j3cBvU5F1q/nkdo2/wRpygRj71?=
- =?us-ascii?Q?pw08k/uWlRRgDzhWvYwFCy3STWPXORKSE9DpSTciGUe7ei4s0dsd/8de90h6?=
- =?us-ascii?Q?FUmNABSXGL3hXxtzl3EKUi4tJ8t0M48JFDrJtoC/KuiDifR3+2hMh8ApwJ4t?=
- =?us-ascii?Q?K+MHmFyhxL9ZmronV9OE7w4bJ9pRHs5kcdSGreAC38dqODTfDv+ReYuuZ2Hv?=
- =?us-ascii?Q?vA4LRshAzs1jIPaY92QB8kDUN0uU57r6arHkoM8vZd8NOXAjbZI9+p1ZYVcN?=
- =?us-ascii?Q?6mXKoYnZDjNFyu01L7oTI7lM1QtVNz5kHjXL4nWq7swHTjqAhiHshzVd2xbE?=
- =?us-ascii?Q?W+sPrP86iUnrW8OG7Kka/PwfW9UOs5avCUzjM6hAzqtGqj/7MeMotqUNe7Aw?=
- =?us-ascii?Q?hg68vYwg7Zy3Xuel2zhRdMrHtZvJPUJqKNlER3NwC3Mwb5dR4rjRwv7jFjKA?=
- =?us-ascii?Q?uf+ZG7RoEbvSj4VxuhXwRguUV+Eo/NpMYKd4I+eIoJiGrWxpnyXfeuv0cYPt?=
- =?us-ascii?Q?Z8qjhgdy3mI1JzS6x27l2EFWOl3+cmpr0Xjj/TrwNZRVdJSMP/4g7Lro4mwS?=
- =?us-ascii?Q?mzUZti3HfwdQXXewU10Z89ggjn9UgzvabwjlFC4lh+6JhKzuMDscGtEVjsk3?=
- =?us-ascii?Q?swNska9h8UcAkdnXle+eoM4u7OCJTBGpaZ2jsrCK4j4uRwvcKVlHC0kRi3sj?=
- =?us-ascii?Q?UnNlaV2NgV2h1BMGH0IfdQwsWMy5uXf6qsbsT45W0BYd4V7QBa1UdY/L36fW?=
- =?us-ascii?Q?rUMGE5Rr96EpN3JALCFrhjfb2BJKFPiSAkBTyTi3znKL2o/dNDSv0q+j3kHM?=
- =?us-ascii?Q?p24kahdmRKGIUOmbhcusFX73oo+pHhW5sN6H0/9PMmZzxqJcshXNiRGzcR45?=
- =?us-ascii?Q?P3YftE6kLA5i25B3ikKVIYVv1mlLtQhciijVD3ikeXrMaRlOVtPOzoHKWVDn?=
- =?us-ascii?Q?UWjnit7vVFutd48DmNyMEEewS9BHV79GjlbdTHR01hNNl8yCCuub5B4mr0t9?=
- =?us-ascii?Q?0BEt8ojHK5Z8cxjS4OIQpy3PK1ttbEwXU1WnhGlt+p3jky2tU7ImuUYkdRmk?=
- =?us-ascii?Q?FA7cBYknTQHcYH0wv6iFdsYbPg0ZjIEQd0ZhZSoc9bW1ACY+Fld4fBctFUVz?=
- =?us-ascii?Q?y67ryh4E2gq+ignAMAkVIFxUM92R5hH1MCmnxNmaS5nmeMqrTtnQJHyRRDp8?=
- =?us-ascii?Q?cEJfom+MlgLUWnd0LiiVkXcV7b2cSbm12yUDP3yHuZgZabn5QVAgx9VFr/ia?=
- =?us-ascii?Q?oJ03ovKrV7+ToeO3UDBtkZ3U?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 13e0062b-c8c4-4bcc-17a1-08d9214283dc
-X-MS-Exchange-CrossTenant-AuthSource: BL0PR12MB5506.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 27 May 2021 19:06:21.5374
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: AsZi7NDeXBrK3PCpuOqAwKbEvXH4BsZGS9S4rLGH1IiTP73d1voKAQeBI3MYxljn
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL1PR12MB5112
+References: <20210526081112.3652290-1-davidgow@google.com> <20210526081112.3652290-2-davidgow@google.com>
+ <CAGS_qxrENPsW2Wq=Yk7zsq7nXzsNn50RuFEh683ZSuHs6zPUAw@mail.gmail.com> <CABVgOS=TuG0RHr0QqhnOJrcAf7VcZzYg5HDy+FgAA5yWvBgH8g@mail.gmail.com>
+In-Reply-To: <CABVgOS=TuG0RHr0QqhnOJrcAf7VcZzYg5HDy+FgAA5yWvBgH8g@mail.gmail.com>
+From:   Daniel Latypov <dlatypov@google.com>
+Date:   Thu, 27 May 2021 12:11:10 -0700
+Message-ID: <CAGS_qxprmVvzctLCkgYoiDjij6-dEohzN_0cvGbbAdtcb5chDA@mail.gmail.com>
+Subject: Re: [PATCH 2/3] kunit: tool: Support skipped tests in kunit_tool
+To:     David Gow <davidgow@google.com>
+Cc:     Brendan Higgins <brendanhiggins@google.com>,
+        Alan Maguire <alan.maguire@oracle.com>,
+        Shuah Khan <skhan@linuxfoundation.org>,
+        Marco Elver <elver@google.com>,
+        KUnit Development <kunit-dev@googlegroups.com>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 27, 2021 at 02:53:42PM +1000, David Gibson wrote:
+On Thu, May 27, 2021 at 1:22 AM David Gow <davidgow@google.com> wrote:
+>
+> On Thu, May 27, 2021 at 3:10 AM Daniel Latypov <dlatypov@google.com> wrote:
+> >
+> > On Wed, May 26, 2021 at 1:11 AM 'David Gow' via KUnit Development
+> > <kunit-dev@googlegroups.com> wrote:
+> > >
+> > > Add support for the SKIP directive to kunit_tool's TAP parser.
+> > >
+> > > Skipped tests now show up as such in the printed summary. The number of
+> > > skipped tests is counted, and if all tests in a suite are skipped, the
+> > > suite is also marked as skipped. Otherwise, skipped tests do affect the
+> > > suite result.
+> > >
+> > > Example output:
+> > > [00:22:34] ======== [SKIPPED] example_skip ========
+> > > [00:22:34] [SKIPPED] example_skip_test # SKIP this test should be skipped
+> > > [00:22:34] [SKIPPED] example_mark_skipped_test # SKIP this test should be skipped
+> > > [00:22:34] ============================================================
+> > > [00:22:34] Testing complete. 2 tests run. 0 failed. 0 crashed. 2 skipped.
+> > >
+> > > Signed-off-by: David Gow <davidgow@google.com>
+> > > ---
+> > >  tools/testing/kunit/kunit_parser.py    | 47 +++++++++++++++++++-------
+> > >  tools/testing/kunit/kunit_tool_test.py | 22 ++++++++++++
+> >
+> > This seems to be missing the added test files.
+> >
+>
+> Whoops, yes: I'll add these back in v2.
+>
+> > >  2 files changed, 57 insertions(+), 12 deletions(-)
+> > >
+> > > diff --git a/tools/testing/kunit/kunit_parser.py b/tools/testing/kunit/kunit_parser.py
+> > > index e8bcc139702e..6b5dd26b479d 100644
+> > > --- a/tools/testing/kunit/kunit_parser.py
+> > > +++ b/tools/testing/kunit/kunit_parser.py
+> > > @@ -43,6 +43,7 @@ class TestCase(object):
+> > >  class TestStatus(Enum):
+> > >         SUCCESS = auto()
+> > >         FAILURE = auto()
+> > > +       SKIPPED = auto()
+> > >         TEST_CRASHED = auto()
+> > >         NO_TESTS = auto()
+> > >         FAILURE_TO_PARSE_TESTS = auto()
+> > > @@ -108,6 +109,8 @@ def save_non_diagnostic(lines: List[str], test_case: TestCase) -> None:
+> > >
+> > >  OkNotOkResult = namedtuple('OkNotOkResult', ['is_ok','description', 'text'])
+> > >
+> > > +OK_NOT_OK_SKIP = re.compile(r'^[\s]*(ok|not ok) [0-9]+ - (.*) # SKIP(.*)$')
+> > > +
+> > >  OK_NOT_OK_SUBTEST = re.compile(r'^[\s]+(ok|not ok) [0-9]+ - (.*)$')
+> > >
+> > >  OK_NOT_OK_MODULE = re.compile(r'^(ok|not ok) ([0-9]+) - (.*)$')
+> > > @@ -125,6 +128,10 @@ def parse_ok_not_ok_test_case(lines: List[str], test_case: TestCase) -> bool:
+> > >         if match:
+> > >                 test_case.log.append(lines.pop(0))
+> > >                 test_case.name = match.group(2)
+> > > +               skip_match = OK_NOT_OK_SKIP.match(line)
+> > > +               if skip_match:
+> > > +                       test_case.status = TestStatus.SKIPPED
+> > > +                       return True
+> > >                 if test_case.status == TestStatus.TEST_CRASHED:
+> > >                         return True
+> > >                 if match.group(1) == 'ok':
+> > > @@ -188,16 +195,16 @@ def parse_subtest_plan(lines: List[str]) -> Optional[int]:
+> > >                 return None
+> > >
+> > >  def max_status(left: TestStatus, right: TestStatus) -> TestStatus:
+> > > -       if left == TestStatus.TEST_CRASHED or right == TestStatus.TEST_CRASHED:
+> > > +       if left == right:
+> > > +               return left
+> > > +       elif left == TestStatus.TEST_CRASHED or right == TestStatus.TEST_CRASHED:
+> > >                 return TestStatus.TEST_CRASHED
+> > >         elif left == TestStatus.FAILURE or right == TestStatus.FAILURE:
+> > >                 return TestStatus.FAILURE
+> > > -       elif left != TestStatus.SUCCESS:
+> > > -               return left
+> > > -       elif right != TestStatus.SUCCESS:
+> > > +       elif left == TestStatus.SKIPPED:
+> > >                 return right
+> > >         else:
+> > > -               return TestStatus.SUCCESS
+> > > +               return left
+> > >
+> > >  def parse_ok_not_ok_test_suite(lines: List[str],
+> > >                                test_suite: TestSuite,
+> > > @@ -214,6 +221,9 @@ def parse_ok_not_ok_test_suite(lines: List[str],
+> > >                         test_suite.status = TestStatus.SUCCESS
+> > >                 else:
+> > >                         test_suite.status = TestStatus.FAILURE
+> > > +               skip_match = OK_NOT_OK_SKIP.match(line)
+> > > +               if skip_match:
+> > > +                       test_suite.status = TestStatus.SKIPPED
+> > >                 suite_index = int(match.group(2))
+> > >                 if suite_index != expected_suite_index:
+> > >                         print_with_timestamp(
+> > > @@ -224,8 +234,8 @@ def parse_ok_not_ok_test_suite(lines: List[str],
+> > >         else:
+> > >                 return False
+> > >
+> > > -def bubble_up_errors(statuses: Iterable[TestStatus]) -> TestStatus:
+> > > -       return reduce(max_status, statuses, TestStatus.SUCCESS)
+> > > +def bubble_up_errors(status_list: Iterable[TestStatus]) -> TestStatus:
+> > > +       return reduce(max_status, status_list, TestStatus.SKIPPED)
+> > >
+> > >  def bubble_up_test_case_errors(test_suite: TestSuite) -> TestStatus:
+> > >         max_test_case_status = bubble_up_errors(x.status for x in test_suite.cases)
+> > > @@ -315,9 +325,12 @@ def print_and_count_results(test_result: TestResult) -> Tuple[int, int, int]:
+> >
+> > Btw, this type annotation is out of date.
+>
+> Oops: will fix and/or replace with the below.
+>
+> > But I think an ever growing Tuple is too cumbersome, how about this?
+> >
+>
+> Yeah, this does seem cleaner: I'll put this or something like it in v2.
+>
+> > diff --git a/tools/testing/kunit/kunit_parser.py
+> > b/tools/testing/kunit/kunit_parser.py
+> > index 6b5dd26b479d..055ee1e4d19d 100644
+> > --- a/tools/testing/kunit/kunit_parser.py
+> > +++ b/tools/testing/kunit/kunit_parser.py
+> > @@ -6,6 +6,7 @@
+> >  # Author: Felix Guo <felixguoxiuping@gmail.com>
+> >  # Author: Brendan Higgins <brendanhiggins@google.com>
+> >
+> > +from dataclasses import dataclass
+> >  import re
+> >
+> >  from collections import namedtuple
+> > @@ -321,11 +322,19 @@ def parse_test_result(lines: List[str]) -> TestResult:
+> >         else:
+> >                 return TestResult(TestStatus.NO_TESTS, [], lines)
+> >
+> > -def print_and_count_results(test_result: TestResult) -> Tuple[int, int, int]:
+> > -       total_tests = 0
+> > -       failed_tests = 0
+> > -       crashed_tests = 0
+> > -       skipped_tests = 0
+> > +#  Note: This would require Python 3.7. We currently only required
+> > 3.6 (enum.auto). We can do it by hand to avoid that, if we want.
+>
+> Hmm... I'm generally loath to increase the version requirement for
+> something this simple, so might look into doing a version of this
+> without the dataclass.
 
-> > > If the physical device had a bug which meant the mdevs *weren't*
-> > > properly isolated from each other, then those mdevs would share a
-> > > group, and you *would* care about it.  Depending on how the isolation
-> > > failed the mdevs might or might not also share a group with the parent
-> > > physical device.
-> > 
-> > That isn't a real scenario.. mdevs that can't be isolated just
-> > wouldn't be useful to exist
-> 
-> Really?  So what do you do when you discover some mdevs you thought
-> were isolated actually aren't due to a hardware bug?  Drop support
-> from the driver entirely?  In which case what do you say to the people
-> who understandably complain "but... we had all the mdevs in one guest
-> anyway, we don't care if they're not isolated"?
+I think the same argument applies to enum.auto when we can just
+manually assign values :P
 
-I've never said to eliminate groups entirely. 
+But yes, I'd suggest not using it.
+You'd just need to manually write the __init__() in that case (you
+can't use namedtuple since we need to modify the fields, but also I
+prefer having type annotations on my fields).
 
-What I'm saying is that all the cases we have for mdev today do not
-require groups, but are forced to create a fake group anyhow just to
-satisfy the odd VFIO requirement to have a group FD.
+I only used @dataclass to make my example easier to write since I'm lazy.
 
-If some future mdev needs groups then sure, add the appropriate group
-stuff.
-
-But that doesn't effect the decision to have a VFIO group FD, or not.
-
-> > > It ensures that they're parked at the moment the group moves from
-> > > kernel to userspace ownership, but it can't prevent dpdk from
-> > > accessing and unparking those devices via peer to peer DMA.
-> > 
-> > Right, and adding all this group stuff did nothing to alert the poor
-> > admin that is running DPDK to this risk.
-> 
-> Didn't it?  Seems to me the admin that in order to give the group to
-> DPDK, the admin had to find and unbind all the things in it... so is
-> therefore aware that they're giving everything in it to DPDK.
-
-Again, I've never said the *group* should be removed. I'm only
-concerned about the *group FD*
-
-When the admin found and unbound they didn't use the *group FD* in any
-way.
-
-> > You put the same security labels you'd put on the group to the devices
-> > that consitute the group. It is only more tricky in the sense that the
-> > script that would have to do this will need to do more than ID the
-> > group to label but also ID the device members of the group and label
-> > their char nodes.
-> 
-> Well, I guess, if you take the view that root is allowed to break the
-> kernel.  I tend to prefer that although root can obviously break the
-> kernel if they intend do, we should make it hard to do by accident -
-> which in this case would mean the kernel *enforcing* that the devices
-> in the group have the same security labels, which I can't really see
-> how to do without an exposed group.
-
-How is this "break the kernel"? It has nothing to do with the
-kernel. Security labels are a user space concern.
-
-Jason
+>
+>
+> > +@dataclass
+> > +class TestCounts:
+> > +       passed: int = 0
+> > +       failed: int = 0
+> > +       skipped: int = 0
+> > +       crashed: int = 0
+> > +
+> > +       def total(self) -> int:
+> > +               return self.passed + self.failed + self.skipped + self.crashed
+> > +
+> > +def print_and_count_results(test_result: TestResult) -> TestCounts:
+> > +       counts = TestCounts()
+> >         for test_suite in test_result.suites:
+> >                 if test_suite.status == TestStatus.SUCCESS:
+> >                         print_suite_divider(green('[PASSED] ') +
+> > test_suite.name)
+> > @@ -336,39 +345,33 @@ def print_and_count_results(test_result:
+> > TestResult) -> Tuple[int, int, int]:
+> >                 else:
+> >                         print_suite_divider(red('[FAILED] ') + test_suite.name)
+> >                 for test_case in test_suite.cases:
+> > -                       total_tests += 1
+> >                         if test_case.status == TestStatus.SUCCESS:
+> > +                               counts.passed += 1
+> >                                 print_with_timestamp(green('[PASSED]
+> > ') + test_case.name)
+> >                         elif test_case.status == TestStatus.SKIPPED:
+> > -                               skipped_tests += 1
+> > +                               counts.skipped += 1
+> >                                 print_with_timestamp(yellow('[SKIPPED]
+> > ') + test_case.name)
+> >                         elif test_case.status == TestStatus.TEST_CRASHED:
+> > -                               crashed_tests += 1
+> > +                               counts.crashed += 1
+> >                                 print_with_timestamp(red('[CRASHED] '
+> > + test_case.name))
+> >                                 print_log(map(yellow, test_case.log))
+> >                                 print_with_timestamp('')
+> >                         else:
+> > -                               failed_tests += 1
+> > +                               counts.failed += 1
+> >                                 print_with_timestamp(red('[FAILED] ')
+> > + test_case.name)
+> >                                 print_log(map(yellow, test_case.log))
+> >                                 print_with_timestamp('')
+> > -       return total_tests, failed_tests, crashed_tests, skipped_tests
+> > +       return counts
+> >
+> >  def parse_run_tests(kernel_output) -> TestResult:
+> > -       total_tests = 0
+> > -       failed_tests = 0
+> > -       crashed_tests = 0
+> > -       skipped_tests = 0
+> > +       counts = TestCounts()
+> >         test_result =
+> > parse_test_result(list(isolate_kunit_output(kernel_output)))
+> >         if test_result.status == TestStatus.NO_TESTS:
+> >                 print(red('[ERROR] ') + yellow('no tests run!'))
+> >         elif test_result.status == TestStatus.FAILURE_TO_PARSE_TESTS:
+> >                 print(red('[ERROR] ') + yellow('could not parse test results!'))
+> >         else:
+> > -               (total_tests,
+> > -                failed_tests,
+> > -                crashed_tests,
+> > -                skipped_tests) = print_and_count_results(test_result)
+> > +               counts = print_and_count_results(test_result)
+> >         print_with_timestamp(DIVIDER)
+> >         if test_result.status == TestStatus.SUCCESS:
+> >                 fmt = green
+> > @@ -378,5 +381,5 @@ def parse_run_tests(kernel_output) -> TestResult:
+> >                 fmt =red
+> >         print_with_timestamp(
+> >                 fmt('Testing complete. %d tests run. %d failed. %d
+> > crashed. %d skipped.' %
+> > -                   (total_tests, failed_tests, crashed_tests, skipped_tests)))
+> > +                   (counts.total(), counts.failed, counts.crashed,
+> > counts.skipped)))
+> >         return test_result
+> >
+> > >         total_tests = 0
+> > >         failed_tests = 0
+> > >         crashed_tests = 0
+> > > +       skipped_tests = 0
+> > >         for test_suite in test_result.suites:
+> > >                 if test_suite.status == TestStatus.SUCCESS:
+> > >                         print_suite_divider(green('[PASSED] ') + test_suite.name)
+> > > +               elif test_suite.status == TestStatus.SKIPPED:
+> > > +                       print_suite_divider(yellow('[SKIPPED] ') + test_suite.name)
+> > >                 elif test_suite.status == TestStatus.TEST_CRASHED:
+> > >                         print_suite_divider(red('[CRASHED] ' + test_suite.name))
+> > >                 else:
+> > > @@ -326,6 +339,9 @@ def print_and_count_results(test_result: TestResult) -> Tuple[int, int, int]:
+> > >                         total_tests += 1
+> > >                         if test_case.status == TestStatus.SUCCESS:
+> > >                                 print_with_timestamp(green('[PASSED] ') + test_case.name)
+> > > +                       elif test_case.status == TestStatus.SKIPPED:
+> > > +                               skipped_tests += 1
+> > > +                               print_with_timestamp(yellow('[SKIPPED] ') + test_case.name)
+> > >                         elif test_case.status == TestStatus.TEST_CRASHED:
+> > >                                 crashed_tests += 1
+> > >                                 print_with_timestamp(red('[CRASHED] ' + test_case.name))
+> > > @@ -336,12 +352,13 @@ def print_and_count_results(test_result: TestResult) -> Tuple[int, int, int]:
+> > >                                 print_with_timestamp(red('[FAILED] ') + test_case.name)
+> > >                                 print_log(map(yellow, test_case.log))
+> > >                                 print_with_timestamp('')
+> > > -       return total_tests, failed_tests, crashed_tests
+> > > +       return total_tests, failed_tests, crashed_tests, skipped_tests
+> > >
+> > >  def parse_run_tests(kernel_output) -> TestResult:
+> > >         total_tests = 0
+> > >         failed_tests = 0
+> > >         crashed_tests = 0
+> > > +       skipped_tests = 0
+> > >         test_result = parse_test_result(list(isolate_kunit_output(kernel_output)))
+> > >         if test_result.status == TestStatus.NO_TESTS:
+> > >                 print(red('[ERROR] ') + yellow('no tests run!'))
+> > > @@ -350,10 +367,16 @@ def parse_run_tests(kernel_output) -> TestResult:
+> > >         else:
+> > >                 (total_tests,
+> > >                  failed_tests,
+> > > -                crashed_tests) = print_and_count_results(test_result)
+> > > +                crashed_tests,
+> > > +                skipped_tests) = print_and_count_results(test_result)
+> > >         print_with_timestamp(DIVIDER)
+> > > -       fmt = green if test_result.status == TestStatus.SUCCESS else red
+> > > +       if test_result.status == TestStatus.SUCCESS:
+> > > +               fmt = green
+> > > +       elif test_result.status == TestStatus.SKIPPED:
+> > > +               fmt = yellow
+> > > +       else:
+> > > +               fmt =red
+> > >         print_with_timestamp(
+> > > -               fmt('Testing complete. %d tests run. %d failed. %d crashed.' %
+> > > -                   (total_tests, failed_tests, crashed_tests)))
+> > > +               fmt('Testing complete. %d tests run. %d failed. %d crashed. %d skipped.' %
+> > > +                   (total_tests, failed_tests, crashed_tests, skipped_tests)))
+> > >         return test_result
+> > > diff --git a/tools/testing/kunit/kunit_tool_test.py b/tools/testing/kunit/kunit_tool_test.py
+> > > index 2e809dd956a7..a51e70cafcc1 100755
+> > > --- a/tools/testing/kunit/kunit_tool_test.py
+> > > +++ b/tools/testing/kunit/kunit_tool_test.py
+> > > @@ -183,6 +183,28 @@ class KUnitParserTest(unittest.TestCase):
+> > >                         kunit_parser.TestStatus.TEST_CRASHED,
+> > >                         result.status)
+> > >
+> > > +       def test_skipped_test(self):
+> > > +               skipped_log = test_data_path('test_skip_tests.log')
+> > > +               file = open(skipped_log)
+> > > +               result = kunit_parser.parse_run_tests(file.readlines())
+> > > +
+> > > +               # A skipped test does not fail the whole suite.
+> > > +               self.assertEqual(
+> > > +                       kunit_parser.TestStatus.SUCCESS,
+> > > +                       result.status)
+> > > +               file.close()
+> > > +
+> > > +       def test_skipped_all_tests(self):
+> > > +               skipped_log = test_data_path('test_skip_all_tests.log')
+> > > +               file = open(skipped_log)
+> > > +               result = kunit_parser.parse_run_tests(file.readlines())
+> > > +
+> > > +               self.assertEqual(
+> > > +                       kunit_parser.TestStatus.SKIPPED,
+> > > +                       result.status)
+> > > +               file.close()
+> > > +
+> > > +
+> > >         def test_ignores_prefix_printk_time(self):
+> > >                 prefix_log = test_data_path('test_config_printk_time.log')
+> > >                 with open(prefix_log) as file:
+> > > --
+> > > 2.31.1.818.g46aad6cb9e-goog
+> > >
+> > > --
+> > > You received this message because you are subscribed to the Google Groups "KUnit Development" group.
+> > > To unsubscribe from this group and stop receiving emails from it, send an email to kunit-dev+unsubscribe@googlegroups.com.
+> > > To view this discussion on the web visit https://groups.google.com/d/msgid/kunit-dev/20210526081112.3652290-2-davidgow%40google.com.
