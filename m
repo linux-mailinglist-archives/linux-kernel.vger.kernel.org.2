@@ -2,51 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9706E392989
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 10:25:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D77839298C
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 10:26:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235523AbhE0I1N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 May 2021 04:27:13 -0400
-Received: from mga12.intel.com ([192.55.52.136]:10059 "EHLO mga12.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235427AbhE0I1A (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 May 2021 04:27:00 -0400
-IronPort-SDR: /VOl13etUHCCn51y96KZJKRzpBdAJ6druSc0qjCWJD2olu95IGvk/Clho4b28VHvux3M742dl+
- z/E242pdQXgQ==
-X-IronPort-AV: E=McAfee;i="6200,9189,9996"; a="182334132"
-X-IronPort-AV: E=Sophos;i="5.82,334,1613462400"; 
-   d="scan'208";a="182334132"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 May 2021 01:25:22 -0700
-IronPort-SDR: If+HsSjQiPr4XtSbBmhczdzK5GQqss1U4tkdL/V7HpfbpE5k/COBFoQ9P5WRTCDox7YabAQI0F
- JR1os9FGZ0aw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.82,334,1613462400"; 
-   d="scan'208";a="480478021"
-Received: from ahunter-desktop.fi.intel.com (HELO [10.237.72.174]) ([10.237.72.174])
-  by fmsmga002.fm.intel.com with ESMTP; 27 May 2021 01:25:17 -0700
-Subject: Re: [PATCH v1 1/2] perf auxtrace: Change to use SMP memory barriers
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Leo Yan <leo.yan@linaro.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Andi Kleen <ak@linux.intel.com>,
-        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210519140319.1673043-1-leo.yan@linaro.org>
- <d1fc3dd3-e79a-4e93-1083-6b08e0cabe59@intel.com>
- <YK9UFl7Grv/mwmVc@hirez.programming.kicks-ass.net>
-From:   Adrian Hunter <adrian.hunter@intel.com>
-Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
- Business Identity Code: 0357606 - 4, Domiciled in Helsinki
-Message-ID: <3c7dcd5d-fddd-5d3b-81ac-cb7b615b0338@intel.com>
-Date:   Thu, 27 May 2021 11:25:40 +0300
+        id S235492AbhE0I1h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 May 2021 04:27:37 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:29583 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235481AbhE0I1f (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 27 May 2021 04:27:35 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1622103963;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=S1BsraUe7N57fnB+ujM6T0UDaX7BExCn8Z1KNT+TQMs=;
+        b=JfwB1ayr16PH/ez/VDCvbn664b7aApKIC1FE/OnPlHakAJQY7/FDpnTM9w5mhFJJKEtdEa
+        7p5OyHbZre4nY5t+CZH3tB4IszdCUSewkPMsuG0asDQo7z4vT0ONCr4utlEgD3J9WIV7Yq
+        F/0uobTNizDV5pYM+9ohh1Grl9T8V+o=
+Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com
+ [209.85.208.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-399-GXy9jQ76Mze-TFZtwOUzlQ-1; Thu, 27 May 2021 04:26:00 -0400
+X-MC-Unique: GXy9jQ76Mze-TFZtwOUzlQ-1
+Received: by mail-ed1-f72.google.com with SMTP id da10-20020a056402176ab029038f0fea1f51so2061895edb.13
+        for <linux-kernel@vger.kernel.org>; Thu, 27 May 2021 01:26:00 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=S1BsraUe7N57fnB+ujM6T0UDaX7BExCn8Z1KNT+TQMs=;
+        b=gAPX9e1/kFkkogebQLVj9cCx562Hcro+D6Sv4cszbFuy9OMjTKi2vHmE59dPjxz2Rf
+         9Ud18yeTsCAapcySAZbX9+gya9nSay+Tnartu9b6QbDucd6OnNbTFHHK5UzzVQCK2oUB
+         H//u/5PoczeIAL41b/8ETzGTpuF9it12zKNg8thcj9CNCseWgOEZMSF7y8+sqSIOJa8o
+         /lOv5s1bLDSEcvOf7VCRqAdH0MI5eE6iRLW71Ucs+5AQezXKh9u31R3wdwIF8DVKnBvr
+         V6KsTsnfAPilk8j1+yHkLl0jjtNpDBSw5wAOBddLUUC/mR7SGSm7cBnS54RyiCaA8rGa
+         z4cQ==
+X-Gm-Message-State: AOAM532S/8x/9T26BF6iLhIguA6zCj4wM7n/7AbGyitfos5Jsk/TTpoT
+        tuStmgvl9oGQPMQSQSb8eMunsLkQCC/1Ca59uNaO2aJxmjoDVLsC6AFxihlwdFb3Z1IImwfUDJN
+        JNRYxnPY6fWVK3IfQaE0Uerev
+X-Received: by 2002:a17:907:20b0:: with SMTP id pw16mr2638528ejb.48.1622103958811;
+        Thu, 27 May 2021 01:25:58 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyWG+hZT0e0LFKddR9ePsHZRRuXayqX4XMSKotQzvDWjtAN99eVYS0eWjYQsi/+6L6jbovDOA==
+X-Received: by 2002:a17:907:20b0:: with SMTP id pw16mr2638515ejb.48.1622103958612;
+        Thu, 27 May 2021 01:25:58 -0700 (PDT)
+Received: from x1.localdomain (2001-1c00-0c1e-bf00-1054-9d19-e0f0-8214.cable.dynamic.v6.ziggo.nl. [2001:1c00:c1e:bf00:1054:9d19:e0f0:8214])
+        by smtp.gmail.com with ESMTPSA id nd36sm614722ejc.21.2021.05.27.01.25.58
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 27 May 2021 01:25:58 -0700 (PDT)
+Subject: Re: linux-next: build failure after merge of the hid tree
+To:     Jiri Kosina <jikos@kernel.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     Benjamin Tissoires <benjamin.tissoires@redhat.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+References: <20210527152631.1e70fba2@canb.auug.org.au>
+ <nycvar.YFH.7.76.2105271012430.28378@cbobk.fhfr.pm>
+From:   Hans de Goede <hdegoede@redhat.com>
+Message-ID: <e5ee42f7-b0eb-40c7-e54f-8e16e8b97b68@redhat.com>
+Date:   Thu, 27 May 2021 10:25:57 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.10.1
 MIME-Version: 1.0
-In-Reply-To: <YK9UFl7Grv/mwmVc@hirez.programming.kicks-ass.net>
+In-Reply-To: <nycvar.YFH.7.76.2105271012430.28378@cbobk.fhfr.pm>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -54,86 +74,26 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 27/05/21 11:11 am, Peter Zijlstra wrote:
-> On Thu, May 27, 2021 at 10:54:56AM +0300, Adrian Hunter wrote:
->> On 19/05/21 5:03 pm, Leo Yan wrote:
->>> The AUX ring buffer's head and tail can be accessed from multiple CPUs
->>> on SMP system, so changes to use SMP memory barriers to replace the
->>> uniprocessor barriers.
+Hi,
+
+On 5/27/21 10:14 AM, Jiri Kosina wrote:
+> On Thu, 27 May 2021, Stephen Rothwell wrote:
+> 
+>> After merging the hid tree, today's linux-next build (x86_64
+>> modules_install (on an allmodconfig build)) failed like this:
 >>
->> I don't think user space should attempt to be SMP-aware.
-> 
-> Uhh, what? It pretty much has to. Since userspace cannot assume UP, it
-> must assume SMP.
-
-Yeah that is what I meant, but consequently we generally shouldn't be
-using functions called smp_<anything>
-
-> 
->> For perf tools, on __x86_64__ it looks like smp_rmb() is only a compiler barrier, whereas
->> rmb() is a "lfence" memory barrier instruction, so this patch does not
->> seem to do what the commit message says at least for x86.
-> 
-> The commit message is somewhat confused; *mb() are not UP barriers
-> (although they are available and useful on UP). They're device/dma
-> barriers.
-> 
->> With regard to the AUX area, we don't know in general how data gets there,
->> so using memory barriers seems sensible.
-> 
-> IIRC (but I ddn't check) the rule was that the kernel needs to ensure
-> the AUX area is complete before it updates the head pointer. So if
-> userspace can observe the head pointer, it must then also be able to
-> observe the data. This is not something userspace can fix up anyway.
-> 
-> The ordering here is between the head pointer and the data, and from a
-> userspace perspective that's a regular smp ordering. Similar for the
-> tail update, that's between our reading the data and writing the tail,
-> regular cache coherent smp ordering.
-> 
-> So ACK on the patch, it's sane and an optimization for both x86 and ARM.
-> Just the Changelog needs work.
-
-If all we want is a compiler barrier, then shouldn't that be what we use?
-i.e. barrier()
-
-> 
->>> Signed-off-by: Leo Yan <leo.yan@linaro.org>
->>> ---
->>>  tools/perf/util/auxtrace.h | 6 +++---
->>>  1 file changed, 3 insertions(+), 3 deletions(-)
->>>
->>> diff --git a/tools/perf/util/auxtrace.h b/tools/perf/util/auxtrace.h
->>> index 472c0973b1f1..8bed284ccc82 100644
->>> --- a/tools/perf/util/auxtrace.h
->>> +++ b/tools/perf/util/auxtrace.h
->>> @@ -452,7 +452,7 @@ static inline u64 auxtrace_mmap__read_snapshot_head(struct auxtrace_mmap *mm)
->>>  	u64 head = READ_ONCE(pc->aux_head);
->>>  
->>>  	/* Ensure all reads are done after we read the head */
->>> -	rmb();
->>> +	smp_rmb();
->>>  	return head;
->>>  }
->>>  
->>> @@ -466,7 +466,7 @@ static inline u64 auxtrace_mmap__read_head(struct auxtrace_mmap *mm)
->>>  #endif
->>>  
->>>  	/* Ensure all reads are done after we read the head */
->>> -	rmb();
->>> +	smp_rmb();
->>>  	return head;
->>>  }
->>>  
->>> @@ -478,7 +478,7 @@ static inline void auxtrace_mmap__write_tail(struct auxtrace_mmap *mm, u64 tail)
->>>  #endif
->>>  
->>>  	/* Ensure all reads are done before we write the tail out */
->>> -	mb();
->>> +	smp_mb();
->>>  #if BITS_PER_LONG == 64 || !defined(HAVE_SYNC_COMPARE_AND_SWAP_SUPPORT)
->>>  	pc->aux_tail = tail;
->>>  #else
->>>
+>> depmod: ERROR: Cycle detected: hid -> usbhid -> hid
+>> depmod: ERROR: Found 2 modules in dependency cycles!
 >>
+>> I could not easily figure out what caused this (it may not be the hid
+>> tree, but probably is), so all I could do was leave it broken.
+> 
+> This is caused by Hans' patches (CCed). I will be dropping those today, as 
+> the proper fix needs a bit more of rework.
+
+Ack, sorry about the trouble these patches are causing.
+
+Regards,
+
+Hans
 
