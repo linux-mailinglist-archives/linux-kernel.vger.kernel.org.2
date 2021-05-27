@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 38B42392F4B
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 15:17:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 42DA9392F4E
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 15:17:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236437AbhE0NSe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 May 2021 09:18:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60244 "EHLO
+        id S236480AbhE0NSm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 May 2021 09:18:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60260 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236405AbhE0NS3 (ORCPT
+        with ESMTP id S236416AbhE0NSb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 May 2021 09:18:29 -0400
+        Thu, 27 May 2021 09:18:31 -0400
 Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com [IPv6:2a00:1450:4864:20::630])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5DF62C061763;
-        Thu, 27 May 2021 06:16:55 -0700 (PDT)
-Received: by mail-ej1-x630.google.com with SMTP id s22so7961390ejv.12;
-        Thu, 27 May 2021 06:16:55 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1C4FC06138C;
+        Thu, 27 May 2021 06:16:56 -0700 (PDT)
+Received: by mail-ej1-x630.google.com with SMTP id l1so22736ejb.6;
+        Thu, 27 May 2021 06:16:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=S3aHrQGf4p/xVmD0XaAfsGhbFbf6GNiuGUtg3eCRd38=;
-        b=k5xrEDxj0gWeyBttAbhARWTKhiJLjrhEsqtg0tqVCqyE1iu/C4cIFNGZQTUdfGSNP1
-         OyetBFAHOZg51L+UvkPFPZEyPVNj6WQGdIijLNJg96YWwlFTkZ/HlDBTWuX9mLtC0WAc
-         RPsVmZmkK63gx2kAhJJjw42tw8/EZXmz0QHFx1RoDPaLFKaBFENXn40wiQ1ch0gtXa/H
-         I63FpIfAAvcwb8hN4/GvCoXFAIj5yxUefaxEUzUgKHPC+BkCMw8FrbrBHIWxQcJN+971
-         S8hYc7/VuvadNwohY74U0sZXb4ktBmLJq4n+OQuLsB+rH4Q5q5n/7TX7T7clURmTXuJU
-         z1hw==
+        bh=qDp+pjL8u9TTvxzEepWTwup8whUcX1eXB/WptTlt9e0=;
+        b=s0fnsdwLr45qkf4CZn1JxS4nBDV5pSTUnd82Xj/SCH/G3U+MGcDcZYtSIabAsJUh+c
+         b96jp2GcWbWp/UaN34T319qvzF1H6nPqSwu9S774nyR8pcuJ3DDcuu09pQWq0ofAoz8J
+         vyvuZQXnh99+EuAtDR4PzAc6KkK8N5ORKS3uyL3xq8eF2GD/FIl0+Rdqdo+nrrGPtU46
+         w6OKJNpfTte/NEWkC/Srmk5tZw0BF0LMqUX1TYzX7JgVJ4n7FocjgPLByOqZ3gmkQvS0
+         d/LgsDV7UiUEWS25jEsGwAsKcqi0QG3bKRrY43p6K728tCZNDiSDtuMwHkHFgTmmn6Lk
+         bn6g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=S3aHrQGf4p/xVmD0XaAfsGhbFbf6GNiuGUtg3eCRd38=;
-        b=tjmwPlcAkbTM1m72dq+Rae/dWnj28PTBOzL1y6+2EEtaKsNp5FfndZqWE6El0KYRCy
-         qmvxe7t7K4DpIYw/SE24xCaIf1g3KCnY00a5VIll4/dnEn/I6X6USijroqS8Qni7Dk25
-         /O1ytZA2gKJsSCPH5wb0CFSkkr1LIgLuNh5ZVnjPbv7nz3VGPxpnFvvwVTRTuLkqOMpm
-         WpC0/UI0ol2JKj/UTlx/7lbU7jqu3UERMbZztaW1YWoK78LTWH6a353FQlKKbDtj8a0g
-         kwGgl6P13RN/TKdw4TELnoGwyBNqbnh1/jxyuUlvZ9JvSfaaq72AKIrayoApwOFfqn/i
-         +CcQ==
-X-Gm-Message-State: AOAM53361E+LYvmsfGi7/ua0893DA1iMMBPtmnQTw8mYwlZnfIQNdKAB
-        SjdjAFlvcDrsg16ORq0Jmqg=
-X-Google-Smtp-Source: ABdhPJwoP+XikdfWtRTxbQfXgf0nNJBGWOQ24EoA5v5gK2F7Zz6+w2udwJoS57XOVcmVg4YLguYnBQ==
-X-Received: by 2002:a17:906:dfc1:: with SMTP id jt1mr3753762ejc.473.1622121413958;
-        Thu, 27 May 2021 06:16:53 -0700 (PDT)
+        bh=qDp+pjL8u9TTvxzEepWTwup8whUcX1eXB/WptTlt9e0=;
+        b=B6nNspzZFjmT3eBcIouVHKzDvOIREX/vx6eUeOiWtVBbQoa1KCNVtkfZ3xY/5kmaio
+         rLIlFi+AacjrMs4i22JYkjVOeW3KD1bYbx0U5paxxF43I2oQeKaBGg8bv8oH8u5fyaXQ
+         PnyU0wOQRQesvF7bhArHDZe792zo476q/TV2R8RxutjfH9WEdjJf+neHYE/rHzeEgNAY
+         tmErHhgSTWssq93kBphrWjWTBwRM448Fijl6umQWs88taWH3T2mpAHJaB86O0Fnhe+Uw
+         /CEVrn7Zt5awlg8Yy8skX+hUZcSCV04jDo3orS7LBBvKf+uSr2dE/1I2BWYHPo+Z+t3Y
+         DQ/g==
+X-Gm-Message-State: AOAM5325Nq6QOqDfQWA2dsJ8VdDO8LduqXr2Grqeq3t70YqH+fCVtqyo
+        jOaTt1FFLj9VPJvh5lksvnE=
+X-Google-Smtp-Source: ABdhPJyUbuiCDS8W6AcHzx60wAAVddrQEg39dMErk3zlG0aQPtEDEGUEaJpjSD5TRhw+TNVswGhWgQ==
+X-Received: by 2002:a17:906:4c54:: with SMTP id d20mr3812329ejw.513.1622121415293;
+        Thu, 27 May 2021 06:16:55 -0700 (PDT)
 Received: from localhost.localdomain ([188.24.140.160])
-        by smtp.gmail.com with ESMTPSA id r23sm1104206edq.59.2021.05.27.06.16.52
+        by smtp.gmail.com with ESMTPSA id r23sm1104206edq.59.2021.05.27.06.16.54
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 27 May 2021 06:16:53 -0700 (PDT)
+        Thu, 27 May 2021 06:16:54 -0700 (PDT)
 From:   Cristian Ciocaltea <cristian.ciocaltea@gmail.com>
 To:     Stephen Boyd <sboyd@kernel.org>, Rob Herring <robh+dt@kernel.org>,
         Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
@@ -56,10 +56,10 @@ To:     Stephen Boyd <sboyd@kernel.org>, Rob Herring <robh+dt@kernel.org>,
         Edgar Bernardi Righi <edgar.righi@lsitec.org.br>
 Cc:     linux-clk@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
         linux-actions@lists.infradead.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, Rob Herring <robh@kernel.org>
-Subject: [PATCH v2 5/6] dt-bindings: clock: Add NIC and ETHERNET bindings for Actions S500 SoC
-Date:   Thu, 27 May 2021 16:16:43 +0300
-Message-Id: <b76ceb8849370943e675e5ea1a34a25cb513faec.1622119892.git.cristian.ciocaltea@gmail.com>
+        devicetree@vger.kernel.org
+Subject: [PATCH v2 6/6] clk: actions: Add NIC and ETHERNET clock support for Actions S500 SoC
+Date:   Thu, 27 May 2021 16:16:44 +0300
+Message-Id: <fb8085722305af11311ca2661cba2bf73a71abea.1622119892.git.cristian.ciocaltea@gmail.com>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <cover.1622119892.git.cristian.ciocaltea@gmail.com>
 References: <cover.1622119892.git.cristian.ciocaltea@gmail.com>
@@ -69,37 +69,83 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add the missing NIC and ETHERNET clock bindings constants for Actions
-Semi Owl S500 SoC.
+Add support for the missing NIC and ETHERNET clocks in the Actions Semi
+Owl S500 SoC clock driver.
+
+Additionally, change APB clock parent from AHB to the newly added NIC.
 
 Signed-off-by: Cristian Ciocaltea <cristian.ciocaltea@gmail.com>
-Acked-by: Rob Herring <robh@kernel.org>
 ---
 Changes in v2:
- - Added Acked-by from Rob
+ - Reordered "nic_clk_mux_p" after "ahbprediv_clk_mux_p" to follow the reg
+   field ordering
 
- include/dt-bindings/clock/actions,s500-cmu.h | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+ drivers/clk/actions/owl-s500.c | 17 ++++++++++++++++-
+ 1 file changed, 16 insertions(+), 1 deletion(-)
 
-diff --git a/include/dt-bindings/clock/actions,s500-cmu.h b/include/dt-bindings/clock/actions,s500-cmu.h
-index a250a52a6192..a237eb26accb 100644
---- a/include/dt-bindings/clock/actions,s500-cmu.h
-+++ b/include/dt-bindings/clock/actions,s500-cmu.h
-@@ -74,10 +74,12 @@
- #define CLK_RMII_REF		54
- #define CLK_GPIO		55
+diff --git a/drivers/clk/actions/owl-s500.c b/drivers/clk/actions/owl-s500.c
+index 257923bd5386..a9c7e06ebcd6 100644
+--- a/drivers/clk/actions/owl-s500.c
++++ b/drivers/clk/actions/owl-s500.c
+@@ -113,6 +113,7 @@ static const char * const sensor_clk_mux_p[] = { "hosc", "bisp_clk" };
+ static const char * const sd_clk_mux_p[] = { "dev_clk", "nand_pll_clk" };
+ static const char * const pwm_clk_mux_p[] = { "losc", "hosc" };
+ static const char * const ahbprediv_clk_mux_p[] = { "dev_clk", "display_pll_clk", "nand_pll_clk", "ddr_pll_clk" };
++static const char * const nic_clk_mux_p[] = { "dev_clk", "display_pll_clk", "nand_pll_clk", "ddr_pll_clk" };
+ static const char * const uart_clk_mux_p[] = { "hosc", "dev_pll_clk" };
+ static const char * const de_clk_mux_p[] = { "display_pll_clk", "dev_clk" };
+ static const char * const i2s_clk_mux_p[] = { "audio_pll_clk" };
+@@ -194,7 +195,7 @@ static OWL_GATE(hdmi_clk, "hdmi_clk", "hosc", CMU_DEVCLKEN1, 3, 0, 0);
  
--/* system clock (part 2) */
-+/* additional clocks */
- #define CLK_APB			56
- #define CLK_DMAC		57
-+#define CLK_NIC			58
-+#define CLK_ETHERNET		59
+ /* divider clocks */
+ static OWL_DIVIDER(h_clk, "h_clk", "ahbprediv_clk", CMU_BUSCLK1, 2, 2, NULL, 0, 0);
+-static OWL_DIVIDER(apb_clk, "apb_clk", "ahb_clk", CMU_BUSCLK1, 14, 2, NULL, 0, 0);
++static OWL_DIVIDER(apb_clk, "apb_clk", "nic_clk", CMU_BUSCLK1, 14, 2, NULL, 0, 0);
+ static OWL_DIVIDER(rmii_ref_clk, "rmii_ref_clk", "ethernet_pll_clk", CMU_ETHERNETPLL, 1, 1, rmii_ref_div_table, 0, 0);
  
--#define CLK_NR_CLKS		(CLK_DMAC + 1)
-+#define CLK_NR_CLKS		(CLK_ETHERNET + 1)
+ /* factor clocks */
+@@ -202,6 +203,12 @@ static OWL_FACTOR(de1_clk, "de_clk1", "de_clk", CMU_DECLK, 0, 4, de_factor_table
+ static OWL_FACTOR(de2_clk, "de_clk2", "de_clk", CMU_DECLK, 4, 4, de_factor_table, 0, 0);
  
- #endif /* __DT_BINDINGS_CLOCK_S500_CMU_H */
+ /* composite clocks */
++static OWL_COMP_DIV(nic_clk, "nic_clk", nic_clk_mux_p,
++			OWL_MUX_HW(CMU_BUSCLK1, 4, 3),
++			{ 0 },
++			OWL_DIVIDER_HW(CMU_BUSCLK1, 16, 2, 0, NULL),
++			0);
++
+ static OWL_COMP_DIV(ahbprediv_clk, "ahbprediv_clk", ahbprediv_clk_mux_p,
+ 			OWL_MUX_HW(CMU_BUSCLK1, 8, 3),
+ 			{ 0 },
+@@ -317,6 +324,10 @@ static OWL_COMP_FIXED_FACTOR(i2c3_clk, "i2c3_clk", "ethernet_pll_clk",
+ 			OWL_GATE_HW(CMU_DEVCLKEN1, 31, 0),
+ 			1, 5, 0);
+ 
++static OWL_COMP_FIXED_FACTOR(ethernet_clk, "ethernet_clk", "ethernet_pll_clk",
++			OWL_GATE_HW(CMU_DEVCLKEN1, 22, 0),
++			1, 20, 0);
++
+ static OWL_COMP_DIV(uart0_clk, "uart0_clk", uart_clk_mux_p,
+ 			OWL_MUX_HW(CMU_UART0CLK, 16, 1),
+ 			OWL_GATE_HW(CMU_DEVCLKEN1, 6, 0),
+@@ -451,6 +462,8 @@ static struct owl_clk_common *s500_clks[] = {
+ 	&apb_clk.common,
+ 	&dmac_clk.common,
+ 	&gpio_clk.common,
++	&nic_clk.common,
++	&ethernet_clk.common,
+ };
+ 
+ static struct clk_hw_onecell_data s500_hw_clks = {
+@@ -510,6 +523,8 @@ static struct clk_hw_onecell_data s500_hw_clks = {
+ 		[CLK_APB]		= &apb_clk.common.hw,
+ 		[CLK_DMAC]		= &dmac_clk.common.hw,
+ 		[CLK_GPIO]		= &gpio_clk.common.hw,
++		[CLK_NIC]		= &nic_clk.common.hw,
++		[CLK_ETHERNET]		= &ethernet_clk.common.hw,
+ 	},
+ 	.num = CLK_NR_CLKS,
+ };
 -- 
 2.31.1
 
