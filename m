@@ -2,77 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 84A1F392D80
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 14:04:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F011392D87
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 14:04:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234702AbhE0MF4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 May 2021 08:05:56 -0400
-Received: from mailgw01.mediatek.com ([210.61.82.183]:51625 "EHLO
-        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S234473AbhE0MFt (ORCPT
+        id S234797AbhE0MG2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 May 2021 08:06:28 -0400
+Received: from mail-vs1-f48.google.com ([209.85.217.48]:35737 "EHLO
+        mail-vs1-f48.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234540AbhE0MG0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 May 2021 08:05:49 -0400
-X-UUID: 74dbc9213a9a4fc5b3d241da7d927960-20210527
-X-UUID: 74dbc9213a9a4fc5b3d241da7d927960-20210527
-Received: from mtkcas07.mediatek.inc [(172.21.101.84)] by mailgw01.mediatek.com
-        (envelope-from <qii.wang@mediatek.com>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 2069908993; Thu, 27 May 2021 20:04:11 +0800
-Received: from mtkcas11.mediatek.inc (172.21.101.40) by
- mtkmbs07n2.mediatek.inc (172.21.101.141) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Thu, 27 May 2021 20:04:10 +0800
-Received: from localhost.localdomain (10.17.3.153) by mtkcas11.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Thu, 27 May 2021 20:04:07 +0800
-From:   <qii.wang@mediatek.com>
-To:     <wsa@the-dreams.de>
-CC:     <matthias.bgg@gmail.com>, <linux-i2c@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-mediatek@lists.infradead.org>,
-        <srv_heupstream@mediatek.com>, <leilk.liu@mediatek.com>,
-        <qii.wang@mediatek.com>
-Subject: [PATCH] i2c: mediatek: Disable i2c start_en and clear intr_stat brfore reset
-Date:   Thu, 27 May 2021 20:04:04 +0800
-Message-ID: <1622117044-7583-1-git-send-email-qii.wang@mediatek.com>
-X-Mailer: git-send-email 1.9.1
+        Thu, 27 May 2021 08:06:26 -0400
+Received: by mail-vs1-f48.google.com with SMTP id x22so236297vsn.2;
+        Thu, 27 May 2021 05:04:51 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Uh4zzMKY6luxk0/SSNclejeRcmWG2GmwP9Z21NWThdc=;
+        b=asW3k569xrt+g9/xBoM3MSOxqw+0cWd14K6oi1Wl3YNxZqS2q569Pga0JdbTa25w21
+         YcodyfhNLPuUtzEsspO1dbMv9TQ/kSEiQsa6qxVvV6goaponRUkXg02xR52X/kVxsiyU
+         K5Li9uInR0M/PFGYPWdS97hK7SiVmx+juwkLizPeV/wjMBXbE1NqKngzY+spnqldSMCm
+         gs7qmUv72ybHsCFZrLFGcls1TBgCerkPb0bBf0kd0efe8ZwwoYuan5AbBmFacKIgHXoj
+         jYwWiS7230iEH2sJBTRFjbgbBtz5KXtrli8LOsxIl0+GJDxcXFZ6/Ugbbw8PuLSnaTBn
+         Vqbg==
+X-Gm-Message-State: AOAM530c6j/Y4vJLigg2kcF7oxi9XuwzzLtQRQdYcZQtr0SoSdfDf8c6
+        OyHzPaaa1lXWbOQKtQp4TPC6uRa/3Bvz0XDOtBU=
+X-Google-Smtp-Source: ABdhPJzBFvcXREuBIQYuRn70o9fXD4fkLjhIMPBlK3HLIgpWiKiyIy29QjGBrmD2cFoYRf6BqEL19Uz/PEFSKm9Yabc=
+X-Received: by 2002:a05:6102:392:: with SMTP id m18mr1556875vsq.40.1622117091488;
+ Thu, 27 May 2021 05:04:51 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-MTK:  N
+References: <20210514192218.13022-1-prabhakar.mahadev-lad.rj@bp.renesas.com> <20210514192218.13022-14-prabhakar.mahadev-lad.rj@bp.renesas.com>
+In-Reply-To: <20210514192218.13022-14-prabhakar.mahadev-lad.rj@bp.renesas.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Thu, 27 May 2021 14:04:39 +0200
+Message-ID: <CAMuHMdXd==dM2QJN5gg0ka_7-HDQbeKZK66nmyASFJAnsVsSQA@mail.gmail.com>
+Subject: Re: [PATCH 13/16] clk: renesas: Add CPG core wrapper for RZ/G2L SoC
+To:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Magnus Damm <magnus.damm@gmail.com>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        linux-clk <linux-clk@vger.kernel.org>,
+        "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Biju Das <biju.das.jz@bp.renesas.com>,
+        Prabhakar <prabhakar.csengg@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Qii Wang <qii.wang@mediatek.com>
+Hi Prabhakar,
 
-The i2c controller driver do dma reset after transfer timeout,
-but sometimes dma reset will trigger an unexpected DMA_ERR irq.
-It will cause the i2c controller to continuously send interrupts
-to the system and cause soft lock-up. So we need to disable i2c
-start_en and clear intr_stat to stop i2c controller before dma
-reset when transfer timeout.
+On Fri, May 14, 2021 at 9:24 PM Lad Prabhakar
+<prabhakar.mahadev-lad.rj@bp.renesas.com> wrote:
+> Add CPG core wrapper for RZ/G2L family.
+>
+> Based on a patch in the BSP by Binh Nguyen
+> <binh.nguyen.jz@renesas.com>.
+>
+> Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+> Reviewed-by: Biju Das <biju.das.jz@bp.renesas.com>
 
-Signed-off-by: Qii Wang <qii.wang@mediatek.com>
----
- drivers/i2c/busses/i2c-mt65xx.c | 5 +++++
- 1 file changed, 5 insertions(+)
+> --- /dev/null
+> +++ b/drivers/clk/renesas/renesas-rzg2l-cpg.c
 
-diff --git a/drivers/i2c/busses/i2c-mt65xx.c b/drivers/i2c/busses/i2c-mt65xx.c
-index ea337ba..bfd80b2 100644
---- a/drivers/i2c/busses/i2c-mt65xx.c
-+++ b/drivers/i2c/busses/i2c-mt65xx.c
-@@ -479,6 +479,11 @@ static void mtk_i2c_clock_disable(struct mtk_i2c *i2c)
- static void mtk_i2c_init_hw(struct mtk_i2c *i2c)
- {
- 	u16 control_reg;
-+	u16 intr_stat_reg;
-+
-+	mtk_i2c_writew(i2c, I2C_CHN_CLR_FLAG, OFFSET_START);
-+	intr_stat_reg = mtk_i2c_readw(i2c, OFFSET_INTR_STAT);
-+	mtk_i2c_writew(i2c, intr_stat_reg, OFFSET_INTR_STAT);
- 
- 	if (i2c->dev_comp->apdma_sync) {
- 		writel(I2C_DMA_WARM_RST, i2c->pdmabase + OFFSET_RST);
--- 
-1.9.1
+> +static int rzg2l_mod_clock_endisable(struct clk_hw *hw, bool enable)
+> +{
+> +       struct mstp_clock *clock = to_mod_clock(hw);
+> +       struct cpg_mssr_priv *priv = clock->priv;
+> +       unsigned int reg = MSSR_OFF(clock->bit) * 4;
 
+The "* 4" here makes it difficult to review the module clock tables.
+
+E.g.
+
+       DEF_MOD("gic",          R9A07G044_CLK_GIC600,
+                               R9A07G044_CLK_P1,
+                               MSSR(5, BIT(0), (BIT(0) | BIT(1)))),
+
+The "5" means the CLK_ON_GIC600 register is at offset CLK_ON_R(5 * 4)
+ = 0x514.  Removing the "* 4" means you could use
+"MSSR(0x14, BIT(0), (BIT(0) | BIT(1))" instead.
+
+Unless it has unpleasant side effects, I'd even consider putting
+the full CLK_ON offset there, i.e.
+"MSSR(0x514, BIT(0), (BIT(0) | BIT(1))" and change the macros like:
+
+    #define CLK_ON_R(reg)          (reg)
+    #define CLK_MON_R(reg)         (0x680 - 0x500 + (reg))
+
+> --- /dev/null
+> +++ b/drivers/clk/renesas/renesas-rzg2l-cpg.h
+
+> +#define CLK_ON_R(reg)          (0x500 + reg)
+> +#define CLK_MON_R(reg)         (0x680 + reg)
+> +#define CLK_RST_R(reg)         (0x800 + reg)
+> +#define CLK_MRST_R(reg)                (0x980 + reg)
+
+The last three don't seem to be documented?
+
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
