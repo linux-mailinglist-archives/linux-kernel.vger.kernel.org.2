@@ -2,128 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DC737392E02
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 14:31:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5EE78392E06
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 14:32:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235415AbhE0MdU convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 27 May 2021 08:33:20 -0400
-Received: from us-smtp-delivery-44.mimecast.com ([205.139.111.44]:52831 "EHLO
-        us-smtp-delivery-44.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234904AbhE0MdP (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 May 2021 08:33:15 -0400
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-230-nkm0D6TAM16qtowWrDKxhA-1; Thu, 27 May 2021 08:31:38 -0400
-X-MC-Unique: nkm0D6TAM16qtowWrDKxhA-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id A4F22DF8B3;
-        Thu, 27 May 2021 12:31:37 +0000 (UTC)
-Received: from bahia.lan (ovpn-112-46.ams2.redhat.com [10.36.112.46])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 344446061F;
-        Thu, 27 May 2021 12:31:35 +0000 (UTC)
-Date:   Thu, 27 May 2021 14:31:34 +0200
-From:   Greg Kurz <groug@kaod.org>
-To:     Max Reitz <mreitz@redhat.com>
-Cc:     Miklos Szeredi <miklos@szeredi.hu>, linux-kernel@vger.kernel.org,
-        stable@vger.kernel.org, virtio-fs@redhat.com,
-        linux-fsdevel@vger.kernel.org, Vivek Goyal <vgoyal@redhat.com>
-Subject: Re: [Virtio-fs] [PATCH 2/4] fuse: Fix infinite loop in sget_fc()
-Message-ID: <20210527143134.2792d2fd@bahia.lan>
-In-Reply-To: <58c70352-2df5-0cb9-9ca6-bb4bf2edd1c2@redhat.com>
-References: <20210525150230.157586-1-groug@kaod.org>
-        <20210525150230.157586-3-groug@kaod.org>
-        <58c70352-2df5-0cb9-9ca6-bb4bf2edd1c2@redhat.com>
+        id S234699AbhE0MeF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 May 2021 08:34:05 -0400
+Received: from foss.arm.com ([217.140.110.172]:56900 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234904AbhE0Md6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 27 May 2021 08:33:58 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 43F8213A1;
+        Thu, 27 May 2021 05:32:25 -0700 (PDT)
+Received: from e120325.cambridge.arm.com (usa-sjc-imap-foss1.foss.arm.com [10.121.207.14])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 18FFB3F73D;
+        Thu, 27 May 2021 05:32:22 -0700 (PDT)
+Date:   Thu, 27 May 2021 13:32:14 +0100
+From:   Beata Michalska <beata.michalska@arm.com>
+To:     Dietmar Eggemann <dietmar.eggemann@arm.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        linux-kernel@vger.kernel.org, mingo@redhat.com,
+        juri.lelli@redhat.com, vincent.guittot@linaro.org, corbet@lwn.net,
+        rdunlap@infradead.org, linux-doc@vger.kernel.org
+Subject: Re: [PATCH v5 2/3] sched/topology: Rework CPU capacity asymmetry
+ detection
+Message-ID: <20210527123214.GA26465@e120325.cambridge.arm.com>
+References: <20210524101617.8965-1-beata.michalska@arm.com>
+ <20210524101617.8965-3-beata.michalska@arm.com>
+ <87fsyc6mfz.mognet@arm.com>
+ <20210524225508.GA14880@e120325.cambridge.arm.com>
+ <87a6oj6sxo.mognet@arm.com>
+ <20210525102945.GA24210@e120325.cambridge.arm.com>
+ <98ad8837-b9b8-ff50-5a91-8d5951ee757c@arm.com>
+ <YK9ESqNEo+uacyMD@hirez.programming.kicks-ass.net>
+ <315b4b5d-05f5-e311-8ed9-b55072cf84f9@arm.com>
 MIME-Version: 1.0
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
-Authentication-Results: relay.mimecast.com;
-        auth=pass smtp.auth=CUSA124A263 smtp.mailfrom=groug@kaod.org
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: kaod.org
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <315b4b5d-05f5-e311-8ed9-b55072cf84f9@arm.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 27 May 2021 12:08:36 +0200
-Max Reitz <mreitz@redhat.com> wrote:
-
-> On 25.05.21 17:02, Greg Kurz wrote:
-> > We don't set the SB_BORN flag on submounts. This is wrong as these
-> > superblocks are then considered as partially constructed or dying
-> > in the rest of the code and can break some assumptions.
+On Thu, May 27, 2021 at 02:22:52PM +0200, Dietmar Eggemann wrote:
+> On 27/05/2021 09:03, Peter Zijlstra wrote:
+> > On Wed, May 26, 2021 at 11:52:25AM +0200, Dietmar Eggemann wrote:
 > > 
-> > One such case is when you have a virtiofs filesystem with submounts
-> > and you try to mount it again : virtio_fs_get_tree() tries to obtain
-> > a superblock with sget_fc(). The logic in sget_fc() is to loop until
-> > it has either found an existing matching superblock with SB_BORN set
-> > or to create a brand new one. It is assumed that a superblock without
-> > SB_BORN is transient and should go away. Forgetting to set SB_BORN on
-> > submounts hence causes sget_fc() to retry forever.
+> >> For me asym_cpu_capacity_classify() is pretty hard to digest ;-) But I
+> >> wasn't able to break it. It also performs correctly on (non-existing SMT)
+> >> layer (with sd span eq. single CPU).
 > > 
-> > Setting SB_BORN requires special care, i.e. a write barrier for
-> > super_cache_count() which can check SB_BORN without taking any lock.
-> > We should call vfs_get_tree() to deal with that but this requires
-> > to have a proper ->get_tree() implementation for submounts, which
-> > is a bigger piece of work. Go for a simple bug fix in the meatime.
+> > This is the simplest form I could come up with this morning:
 > > 
-> > Fixes: bf109c64040f ("fuse: implement crossmounts")
-> > Cc: mreitz@redhat.com
-> > Cc: stable@vger.kernel.org # v5.10+
-> > Signed-off-by: Greg Kurz <groug@kaod.org>
-> > ---
-> >   fs/fuse/dir.c | 10 ++++++++++
-> >   1 file changed, 10 insertions(+)
+> > static inline int
+> > asym_cpu_capacity_classify(struct sched_domain *sd,
+> >                           const struct cpumask *cpu_map)
+> > {
+> > 	struct asym_cap_data *entry;
+> > 	int i = 0, n = 0;
 > > 
-> > diff --git a/fs/fuse/dir.c b/fs/fuse/dir.c
-> > index 01559061cbfb..3b0482738741 100644
-> > --- a/fs/fuse/dir.c
-> > +++ b/fs/fuse/dir.c
-> > @@ -346,6 +346,16 @@ static struct vfsmount *fuse_dentry_automount(struct path *path)
-> >   		goto out_put_sb;
-> >   	}
-> >   
-> > +	/*
-> > +	 * FIXME: setting SB_BORN requires a write barrier for
-> > +	 *        super_cache_count(). We should actually come
-> > +	 *        up with a proper ->get_tree() implementation
-> > +	 *        for submounts and call vfs_get_tree() to take
-> > +	 *        care of the write barrier.
-> > +	 */
-> > +	smp_wmb();
-> > +	sb->s_flags |= SB_BORN;
-> > +
-> 
-> I’m not sure whether we should have the order be exactly the same as in 
-> vfs_get_tree(), i.e. whether this should be put after fsc->root has been 
-> set.  Or maybe even after fm has been added to fc->mounts, because that 
-> too was part of the fuse_get_tree_submount() function of your “fuse: 
-> Call vfs_get_tree() for submounts” patch.
-> 
-
-Good catch !
-
->  From a quick look at SB_BORN users, it doesn’t seem to make a 
-> difference to me, though, so:
-> 
-
-Same here but I'm fine with posting a new version that
-preserves the order.
-
-> Reviewed-by: Max Reitz <mreitz@redhat.com>
-> 
-
-Thanks !
-
---
-Greg
-
-> >   	sb->s_flags |= SB_ACTIVE;
-> >   	fsc->root = dget(sb->s_root);
-> >   	/* We are done configuring the superblock, so unlock it */
+> > 	list_for_each_entry(entry, &asym_cap_list, link) {
+> > 		if (cpumask_intersects(sched_domain_span(sd), entry->cpu_mask))
+> > 			i++;
+> > 		else
+> > 			n++;
+> > 	}
 > > 
+> > 	if (WARN_ON_ONCE(!i) || i == 1) /* no asymmetry */
+> > 		return 0;
+> > 
+> > 	if (n) /* partial asymmetry */
+> > 		return SD_ASYM_CPUCAPACITY;
+> > 
+> > 	/* full asymmetry */
+> > 	return SD_ASYM_CPUCAPACITY | SD_ASYM_CPUCAPACITY_FULL;
+> > }
+> > 
+> > 
+> > The early termination and everything was cute; but this isn't
+> > performance critical code and clarity is paramount.
 > 
+> This is definitely easier to grasp.
+> 
+> What about the missing `if (cpumask_intersects(entry->cpu_mask,
+> cpu_map))` condition in the else path to increment n?
+> 
+> Example:
+> 
+> cpus = {[446 446] [871 871] [1024 1024]}
+> 
+> So 3 asym_cap_list entries.
+> 
+> After hp'ing out CPU4 and CPU5:
+> 
+> DIE: 'partial asymmetry'
+> 
+> In case we would increment n only when the condition is met, we would
+> have `full asymmetry`.
+> 
+> I guess we want to allow EAS task placement, hence have
+> sd_asym_cpucapacity set in case there are only 446 and 871 left?
+>
+I will rewrite the function as per all the suggestions and make things ....
+more readable.
 
+---
+BR
+B.
