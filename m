@@ -2,234 +2,261 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 339CC3936D1
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 22:09:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 56BE23936DB
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 22:11:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235620AbhE0UKq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 May 2021 16:10:46 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:40353 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235508AbhE0UKi (ORCPT
+        id S235756AbhE0UN2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 May 2021 16:13:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41742 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235034AbhE0UN0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 May 2021 16:10:38 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1622146145;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=DhMCEoC71DeYcLFzap4I0+HN6X7eTgKuNl1UamyyAJQ=;
-        b=HTjGfuV3kF9csqOe0km2/YDte2askZRrbs8yQ2jH96jHt3gw3F2liZDHFWrs3BpmRZzexZ
-        ZAtu7oLxdqroEmm+4Ixl0S//slpHcjDDbtZvuFGSq5QdsCdhSPF2BtekQ/klUQxS3kjiOj
-        QDqWKAlP7i3Q1sxA/x97QJy6jPc5oS4=
-Received: from mail-ot1-f70.google.com (mail-ot1-f70.google.com
- [209.85.210.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-234-1MCkriwiMOCDqdyrL_gPAw-1; Thu, 27 May 2021 16:09:04 -0400
-X-MC-Unique: 1MCkriwiMOCDqdyrL_gPAw-1
-Received: by mail-ot1-f70.google.com with SMTP id m6-20020a0568301e66b0290319b27baf50so657522otr.11
-        for <linux-kernel@vger.kernel.org>; Thu, 27 May 2021 13:09:03 -0700 (PDT)
+        Thu, 27 May 2021 16:13:26 -0400
+Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com [IPv6:2a00:1450:4864:20::630])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1FE50C061574;
+        Thu, 27 May 2021 13:11:52 -0700 (PDT)
+Received: by mail-ej1-x630.google.com with SMTP id lz27so1940033ejb.11;
+        Thu, 27 May 2021 13:11:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-transfer-encoding:content-language;
+        bh=Z4O262zvwdzEulJ1jOXjydwpNCfVHkhFBEvdIzwEWgY=;
+        b=Quo3b25aI5myNRSroj4sBbxZE43SnF6FdFJiHd3iyVpUvlabe1/MFfY+EN/T4dNNw6
+         EErfCcDdl/ZnNpQEannARjFO+HI6xDdr4mnJL2Rl8L0w0KLHqS7I+r56TepRBMg920ds
+         OOD2lfA7FyJh0KGuQkiIATP2qpLE9if5U54Y2RbWMFdSAFCIUPWlwBI0VFZ3IWqzwEE6
+         IMuoXYb77w3x7eHTOFzf9mjcyKvumvIGOXPQo52IkQdxv/bVmOix7SomELWjq4UawnTH
+         V8qm5KTtm6eX7suzm3Yq0BjkoTMh274p9W/FwQuTKK4EnAmfr4nZ98rQVdMEwuCGKxFf
+         sqLQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=DhMCEoC71DeYcLFzap4I0+HN6X7eTgKuNl1UamyyAJQ=;
-        b=LtN/tXBgIDgZ4YSuxWjhoAVS4dzKIiPod2tQy4MwlOYtGBslpmvMZrsGumKZxzLlO1
-         tlLH3wwS+WNzPMDqvEAgoBLrLC7MIXRvZlhbj22Y7JsEl5VYC7sEyUstb5fCp7Gh1D0c
-         vKHxyW6KXo4GBKN+ngzKytCgYRjo31cPZX65B6QjU8PG33431J0gT5vtdwkV99NXkjGb
-         iJdEuQp7h+shyosPaJZre+xuhNuBlcQlhU2ATYz4XQWnVx7fJdCXtlpcJk1qWRON4Rek
-         KUUtfAsWHwJCBpaUvmVJYiiEQHNpXAObsQJYrJYBQfnxVN1EdvNruZ6xQps98RSOSrob
-         gs8w==
-X-Gm-Message-State: AOAM533MKR27IjU5kz/zQAlqJJIPTDczW1B6Nzy7syGUlnVbm+k/Qs6h
-        wONPduuTlLj6Nhj1bBzZs9YfHj2jRWqMt0uLBy0dkWXvKALIrllmh0Uq2NMYrAn/NqZAFP3MGV6
-        FWwhdqNdg4CWJCOWdx8GAIr6n
-X-Received: by 2002:a05:6830:1155:: with SMTP id x21mr4090548otq.303.1622146143238;
-        Thu, 27 May 2021 13:09:03 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyCkp4fHhNtfLrCKbdxUvriNHcn1UCGVTm1I6709kKfxlzFS68SW5CuZArK4ihyde9rOSg4vg==
-X-Received: by 2002:a05:6830:1155:: with SMTP id x21mr4090517otq.303.1622146142935;
-        Thu, 27 May 2021 13:09:02 -0700 (PDT)
-Received: from localhost (cpe-70-95-20-182.san.res.rr.com. [70.95.20.182])
-        by smtp.gmail.com with ESMTPSA id s85sm635380oos.4.2021.05.27.13.09.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 27 May 2021 13:09:02 -0700 (PDT)
-Date:   Thu, 27 May 2021 13:09:00 -0700
-From:   Fernando Pacheco <fpacheco@redhat.com>
-To:     trix@redhat.com
-Cc:     hao.wu@intel.com, mdf@kernel.org, corbet@lwn.net,
-        michal.simek@xilinx.com, linux-fpga@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH] fpga: fix spelling mistakes
-Message-ID: <20210527200900.GA875457@mail.gmail.com>
-References: <20210519163056.1966690-1-trix@redhat.com>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=Z4O262zvwdzEulJ1jOXjydwpNCfVHkhFBEvdIzwEWgY=;
+        b=MH0IZa5BmPsWvcFrrbDKfU8lmP2gAixMCn5IEbpMuB+r/uQVg0jOkCYNSr/N1pi48j
+         aqGTCSZyHxKJtKujvOPwmbb3by2+PsMH6lbu4G+eDLLpaJsLt8hr/OIZqqzVNWoMQbTR
+         5k3Yqs0d265kZPwx1SxWfPeQfKCrOKlWtActcDTNMzlsibnwD3gcRhtL9NxSWEaCuTH0
+         64INQJwe79it6N7chLSa+hF5oQN+IzIaj4ysVdt9tZmhAk2/kueBmPu2NjTpkEDaKSk5
+         LL3xe2xZ898taz395GLw762VjZaFOxi53PWsOxjaU8f+GOwEDLJNUhNkGmbNWqQ6UO8F
+         rM4g==
+X-Gm-Message-State: AOAM532Khbc9gmFPlMDUTuImYbAy7Dgd18UVV8mbPq7cccQhyvs84eWv
+        QtrsKjbVHmJTY65SSeTtSw==
+X-Google-Smtp-Source: ABdhPJwrJbGNSMtyEy6jE13u3m0gWh7BUIHAkR5HvVPWV2Q1IOR/pipJ+wT5bvil1rm2VKGwaJH6+A==
+X-Received: by 2002:a17:906:2854:: with SMTP id s20mr5694966ejc.335.1622146310491;
+        Thu, 27 May 2021 13:11:50 -0700 (PDT)
+Received: from ?IPv6:2a02:810b:f40:e00:34ce:e50a:89a4:5545? ([2a02:810b:f40:e00:34ce:e50a:89a4:5545])
+        by smtp.gmail.com with ESMTPSA id j7sm1603121edr.79.2021.05.27.13.11.49
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 27 May 2021 13:11:49 -0700 (PDT)
+Subject: Re: [PATCH 05/10] media: hantro: add support for Rockchip RK3036
+To:     Ezequiel Garcia <ezequiel@collabora.com>,
+        =?UTF-8?Q?Heiko_St=c3=bcbner?= <heiko@sntech.de>
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        linux-staging@lists.linux.dev, Rob Herring <robh+dt@kernel.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-media@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Lee Jones <lee.jones@linaro.org>, devicetree@vger.kernel.org,
+        linux-rockchip@lists.infradead.org
+References: <20210525152225.154302-1-knaerzche@gmail.com>
+ <b65236f3b8bbf35411b536df8b260d9f8a9dbd80.camel@collabora.com>
+ <2640d65e-772b-6af4-f4be-8ed090693c22@gmail.com> <3559518.1BCLMh4Saa@diego>
+ <4fadcb3d33beadb113e0e41596e5255d0d8d08dd.camel@collabora.com>
+From:   Alex Bee <knaerzche@gmail.com>
+Message-ID: <9113891e-ba88-7402-2226-5b3709215544@gmail.com>
+Date:   Thu, 27 May 2021 22:11:48 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210519163056.1966690-1-trix@redhat.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <4fadcb3d33beadb113e0e41596e5255d0d8d08dd.camel@collabora.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 19, 2021 at 09:30:56AM -0700, trix@redhat.com wrote:
-> From: Tom Rix <trix@redhat.com>
-> 
-> Run the fpga subsystem through aspell.
+Hi Ezequiel,
 
-Reviewed-by: Fernando Pacheco <fpacheco@redhat.com>
+Am 27.05.21 um 03:27 schrieb Ezequiel Garcia:
+> On Thu, 2021-05-27 at 01:58 +0200, Heiko Stübner wrote:
+>> Am Donnerstag, 27. Mai 2021, 01:27:59 CEST schrieb Alex Bee:
+>>> Hi Ezequiel,
+>>>
+>>> Am 26.05.21 um 12:28 schrieb Ezequiel Garcia:
+>>>> Hi Alex,
+>>>>
+>>>> Thanks a lot for the patch.
+>>>>
+>>>> On Tue, 2021-05-25 at 17:22 +0200, Alex Bee wrote:
+>>>>> RK3036's VPU IP block is the same as RK3288 has, except that it doesn't
+>>>>> have an encoder, decoding is supported up to 1920x1088 only and the axi
+>>>>> clock can be set to 300 MHz max.
+>>>>>
+>>>>> Add a new RK3036 variant which reflect this differences.
+>>>>>
+>>>>> Signed-off-by: Alex Bee <knaerzche@gmail.com>
+>>>>> ---
+>>>>>    drivers/staging/media/hantro/hantro_drv.c    |  1 +
+>>>>>    drivers/staging/media/hantro/hantro_hw.h     |  1 +
+>>>>>    drivers/staging/media/hantro/rk3288_vpu_hw.c | 49 ++++++++++++++++++++
+>>>>>    3 files changed, 51 insertions(+)
+>>>>>
+>>>>> diff --git a/drivers/staging/media/hantro/hantro_drv.c b/drivers/staging/media/hantro/hantro_drv.c
+>>>>> index 38ea7b24036e..4f3c08e85bb8 100644
+>>>>> --- a/drivers/staging/media/hantro/hantro_drv.c
+>>>>> +++ b/drivers/staging/media/hantro/hantro_drv.c
+>>>>> @@ -490,6 +490,7 @@ static const struct of_device_id of_hantro_match[] = {
+>>>>>           { .compatible = "rockchip,rk3328-vpu", .data = &rk3328_vpu_variant, },
+>>>>>           { .compatible = "rockchip,rk3288-vpu", .data = &rk3288_vpu_variant, },
+>>>>>           { .compatible = "rockchip,rk3066-vpu", .data = &rk3066_vpu_variant, },
+>>>>> +       { .compatible = "rockchip,rk3036-vpu", .data = &rk3036_vpu_variant, },
+>>>>>    #endif
+>>>>>    #ifdef CONFIG_VIDEO_HANTRO_IMX8M
+>>>>>           { .compatible = "nxp,imx8mq-vpu", .data = &imx8mq_vpu_variant, },
+>>>>> diff --git a/drivers/staging/media/hantro/hantro_hw.h b/drivers/staging/media/hantro/hantro_hw.h
+>>>>> index de2bc367a15a..d8d6b0d3c3b3 100644
+>>>>> --- a/drivers/staging/media/hantro/hantro_hw.h
+>>>>> +++ b/drivers/staging/media/hantro/hantro_hw.h
+>>>>> @@ -164,6 +164,7 @@ extern const struct hantro_variant rk3399_vpu_variant;
+>>>>>    extern const struct hantro_variant rk3328_vpu_variant;
+>>>>>    extern const struct hantro_variant rk3288_vpu_variant;
+>>>>>    extern const struct hantro_variant rk3066_vpu_variant;
+>>>>> +extern const struct hantro_variant rk3036_vpu_variant;
+>>>>>    extern const struct hantro_variant imx8mq_vpu_variant;
+>>>>>    extern const struct hantro_variant sama5d4_vdec_variant;
+>>>>>    
+>>>>> diff --git a/drivers/staging/media/hantro/rk3288_vpu_hw.c b/drivers/staging/media/hantro/rk3288_vpu_hw.c
+>>>>> index 29805c4bd92f..c4684df4e012 100644
+>>>>> --- a/drivers/staging/media/hantro/rk3288_vpu_hw.c
+>>>>> +++ b/drivers/staging/media/hantro/rk3288_vpu_hw.c
+>>>>> @@ -174,6 +174,13 @@ static irqreturn_t rk3288_vepu_irq(int irq, void *dev_id)
+>>>>>           return IRQ_HANDLED;
+>>>>>    }
+>>>>>    
+>>>>> +static int rk3036_vpu_hw_init(struct hantro_dev *vpu)
+>>>>> +{
+>>>>> +       /* Bump ACLKs to max. possible freq. to improve performance. */
+>>>>> +       clk_set_rate(vpu->clocks[0].clk, RK3066_ACLK_MAX_FREQ);
+>>>>> +       return 0;
+>>>>> +}
+>>>>> +
+>>>>>    static int rk3066_vpu_hw_init(struct hantro_dev *vpu)
+>>>>>    {
+>>>>>           /* Bump ACLKs to max. possible freq. to improve performance. */
+>>>>> @@ -209,6 +216,27 @@ static void rk3288_vpu_enc_reset(struct hantro_ctx *ctx)
+>>>>>    /*
+>>>>>     * Supported codec ops.
+>>>>>     */
+>>>>> +static const struct hantro_codec_ops rk3036_vpu_codec_ops[] = {
+>>>>> +       [HANTRO_MODE_H264_DEC] = {
+>>>>> +               .run = hantro_g1_h264_dec_run,
+>>>>> +               .reset = hantro_g1_reset,
+>>>>> +               .init = hantro_h264_dec_init,
+>>>>> +               .exit = hantro_h264_dec_exit,
+>>>>> +       },
+>>>>> +       [HANTRO_MODE_MPEG2_DEC] = {
+>>>>> +               .run = hantro_g1_mpeg2_dec_run,
+>>>>> +               .reset = hantro_g1_reset,
+>>>>> +               .init = hantro_mpeg2_dec_init,
+>>>>> +               .exit = hantro_mpeg2_dec_exit,
+>>>>> +       },
+>>>>> +       [HANTRO_MODE_VP8_DEC] = {
+>>>>> +               .run = hantro_g1_vp8_dec_run,
+>>>>> +               .reset = hantro_g1_reset,
+>>>>> +               .init = hantro_vp8_dec_init,
+>>>>> +               .exit = hantro_vp8_dec_exit,
+>>>>> +       },
+>>>>> +};
+>>>>> +
+>>>>>    static const struct hantro_codec_ops rk3066_vpu_codec_ops[] = {
+>>>>>           [HANTRO_MODE_JPEG_ENC] = {
+>>>>>                   .run = hantro_h1_jpeg_enc_run,
+>>>>> @@ -269,6 +297,10 @@ static const struct hantro_codec_ops rk3288_vpu_codec_ops[] = {
+>>>>>     * VPU variant.
+>>>>>     */
+>>>>>    
+>>>>> +static const struct hantro_irq rk3036_irqs[] = {
+>>>>> +       { "vdpu", hantro_g1_irq },
+>>>>> +};
+>>>>> +
+>>>>>    static const struct hantro_irq rk3288_irqs[] = {
+>>>>>           { "vepu", rk3288_vepu_irq },
+>>>>>           { "vdpu", hantro_g1_irq },
+>>>>> @@ -283,6 +315,23 @@ static const char * const rk3288_clk_names[] = {
+>>>>>           "aclk", "hclk"
+>>>>>    };
+>>>>>    
+>>>>> +const struct hantro_variant rk3036_vpu_variant = {
+>>>>> +       .dec_offset = 0x400,
+>>>> If it doesn't have an encoder, then you should just
+>>>> use dec_offset = 0x0.
+>>>>
+>>>> Thanks,
+>>>> Ezequiel
+>>>>
+>>> That would mean, I'd have to adapt the register offset in the device
+>>> tree - I'd prefer to keep it in line with the TRM. Unless you insist,
+>>> I'd like to keep it this way (It's , btw, the very same for RK3328).
+>> I'd agree with Alex ... ideally the devicetree should match the block
+>> register area from the TRM not some internal offset.
+>> [DT describes hardware etc etc ;-) ]
+>>
+> Well, I've always considered this internal offset as something unfortunate
+> we didn't do well when we upstreamed RK3288.
+>
+> The RK3288 TRM documents a so-called "VPU combo", and then documents
+> the encoder and the decoder cores as separate engines, with
+> separate register blocks (called VEPU and VDPU). In fact, for each
+> register block you'll see swreg0 documented at offset 0x0.
 
-> 
-> Signed-off-by: Tom Rix <trix@redhat.com>
-> ---
->  Documentation/fpga/dfl.rst    | 4 ++--
->  drivers/fpga/altera-cvp.c     | 2 +-
->  drivers/fpga/dfl-fme-pr.c     | 2 +-
->  drivers/fpga/dfl-n3000-nios.c | 2 +-
->  drivers/fpga/dfl.h            | 2 +-
->  drivers/fpga/fpga-bridge.c    | 4 ++--
->  drivers/fpga/zynq-fpga.c      | 6 +++---
->  include/linux/fpga/fpga-mgr.h | 2 +-
->  8 files changed, 12 insertions(+), 12 deletions(-)
-> 
-> diff --git a/Documentation/fpga/dfl.rst b/Documentation/fpga/dfl.rst
-> index f3a1223f2517e..ccc33f199df2a 100644
-> --- a/Documentation/fpga/dfl.rst
-> +++ b/Documentation/fpga/dfl.rst
-> @@ -10,7 +10,7 @@ Authors:
->  - Xu Yilun <yilun.xu@intel.com>
->  
->  The Device Feature List (DFL) FPGA framework (and drivers according to
-> -this framework) hides the very details of low layer hardwares and provides
-> +this framework) hides the very details of low layer hardware and provides
->  unified interfaces to userspace. Applications could use these interfaces to
->  configure, enumerate, open and access FPGA accelerators on platforms which
->  implement the DFL in the device memory. Besides this, the DFL framework
-> @@ -205,7 +205,7 @@ given Device Feature Lists and create platform devices for feature devices
->  also abstracts operations for the private features and exposes common ops to
->  feature device drivers.
->  
-> -The FPGA DFL Device could be different hardwares, e.g. PCIe device, platform
-> +The FPGA DFL Device could be different hardware, e.g. PCIe device, platform
->  device and etc. Its driver module is always loaded first once the device is
->  created by the system. This driver plays an infrastructural role in the
->  driver architecture. It locates the DFLs in the device memory, handles them
-> diff --git a/drivers/fpga/altera-cvp.c b/drivers/fpga/altera-cvp.c
-> index 4e0edb60bfba6..ccf4546eff297 100644
-> --- a/drivers/fpga/altera-cvp.c
-> +++ b/drivers/fpga/altera-cvp.c
-> @@ -346,7 +346,7 @@ static int altera_cvp_write_init(struct fpga_manager *mgr,
->  	}
->  
->  	if (val & VSE_CVP_STATUS_CFG_RDY) {
-> -		dev_warn(&mgr->dev, "CvP already started, teardown first\n");
-> +		dev_warn(&mgr->dev, "CvP already started, tear down first\n");
->  		ret = altera_cvp_teardown(mgr, info);
->  		if (ret)
->  			return ret;
-> diff --git a/drivers/fpga/dfl-fme-pr.c b/drivers/fpga/dfl-fme-pr.c
-> index 1194c0e850e07..d61ce9a188792 100644
-> --- a/drivers/fpga/dfl-fme-pr.c
-> +++ b/drivers/fpga/dfl-fme-pr.c
-> @@ -148,7 +148,7 @@ static int fme_pr(struct platform_device *pdev, unsigned long arg)
->  
->  	/*
->  	 * it allows userspace to reset the PR region's logic by disabling and
-> -	 * reenabling the bridge to clear things out between accleration runs.
-> +	 * reenabling the bridge to clear things out between acceleration runs.
->  	 * so no need to hold the bridges after partial reconfiguration.
->  	 */
->  	if (region->get_bridges)
-> diff --git a/drivers/fpga/dfl-n3000-nios.c b/drivers/fpga/dfl-n3000-nios.c
-> index 7a95366f6516f..9ddf1d1d392f3 100644
-> --- a/drivers/fpga/dfl-n3000-nios.c
-> +++ b/drivers/fpga/dfl-n3000-nios.c
-> @@ -461,7 +461,7 @@ static int n3000_nios_poll_stat_timeout(void __iomem *base, u64 *v)
->  	 * We don't use the time based timeout here for performance.
->  	 *
->  	 * The regbus read/write is on the critical path of Intel PAC N3000
-> -	 * image programing. The time based timeout checking will add too much
-> +	 * image programming. The time based timeout checking will add too much
->  	 * overhead on it. Usually the state changes in 1 or 2 loops on the
->  	 * test server, and we set 10000 times loop here for safety.
->  	 */
-> diff --git a/drivers/fpga/dfl.h b/drivers/fpga/dfl.h
-> index 2b82c96ba56c7..dac9c3d45e6c3 100644
-> --- a/drivers/fpga/dfl.h
-> +++ b/drivers/fpga/dfl.h
-> @@ -232,7 +232,7 @@ struct dfl_feature_irq_ctx {
->   * @id: sub feature id.
->   * @resource_index: each sub feature has one mmio resource for its registers.
->   *		    this index is used to find its mmio resource from the
-> - *		    feature dev (platform device)'s reources.
-> + *		    feature dev (platform device)'s resources.
->   * @ioaddr: mapped mmio resource address.
->   * @irq_ctx: interrupt context list.
->   * @nr_irqs: number of interrupt contexts.
-> diff --git a/drivers/fpga/fpga-bridge.c b/drivers/fpga/fpga-bridge.c
-> index 6510c7803a784..d31eec32eb426 100644
-> --- a/drivers/fpga/fpga-bridge.c
-> +++ b/drivers/fpga/fpga-bridge.c
-> @@ -230,7 +230,7 @@ EXPORT_SYMBOL_GPL(fpga_bridges_put);
->   *
->   * Get an exclusive reference to the bridge and and it to the list.
->   *
-> - * Return 0 for success, error code from of_fpga_bridge_get() othewise.
-> + * Return 0 for success, error code from of_fpga_bridge_get() otherwise.
->   */
->  int of_fpga_bridge_get_to_list(struct device_node *np,
->  			       struct fpga_image_info *info,
-> @@ -260,7 +260,7 @@ EXPORT_SYMBOL_GPL(of_fpga_bridge_get_to_list);
->   *
->   * Get an exclusive reference to the bridge and and it to the list.
->   *
-> - * Return 0 for success, error code from fpga_bridge_get() othewise.
-> + * Return 0 for success, error code from fpga_bridge_get() otherwise.
->   */
->  int fpga_bridge_get_to_list(struct device *dev,
->  			    struct fpga_image_info *info,
-> diff --git a/drivers/fpga/zynq-fpga.c b/drivers/fpga/zynq-fpga.c
-> index 07fa8d9ec6750..9b75bd4f93d8e 100644
-> --- a/drivers/fpga/zynq-fpga.c
-> +++ b/drivers/fpga/zynq-fpga.c
-> @@ -192,7 +192,7 @@ static void zynq_step_dma(struct zynq_fpga_priv *priv)
->  
->  	/* Once the first transfer is queued we can turn on the ISR, future
->  	 * calls to zynq_step_dma will happen from the ISR context. The
-> -	 * dma_lock spinlock guarentees this handover is done coherently, the
-> +	 * dma_lock spinlock guarantees this handover is done coherently, the
->  	 * ISR enable is put at the end to avoid another CPU spinning in the
->  	 * ISR on this lock.
->  	 */
-> @@ -267,7 +267,7 @@ static int zynq_fpga_ops_write_init(struct fpga_manager *mgr,
->  		ctrl = zynq_fpga_read(priv, CTRL_OFFSET);
->  		if (!(ctrl & CTRL_SEC_EN_MASK)) {
->  			dev_err(&mgr->dev,
-> -				"System not secure, can't use crypted bitstreams\n");
-> +				"System not secure, can't use encrypted bitstreams\n");
->  			err = -EINVAL;
->  			goto out_err;
->  		}
-> @@ -344,7 +344,7 @@ static int zynq_fpga_ops_write_init(struct fpga_manager *mgr,
->  
->  	/* set configuration register with following options:
->  	 * - enable PCAP interface
-> -	 * - set throughput for maximum speed (if bistream not crypted)
-> +	 * - set throughput for maximum speed (if bistream not encrypted)
->  	 * - set CPU in user mode
->  	 */
->  	ctrl = zynq_fpga_read(priv, CTRL_OFFSET);
-> diff --git a/include/linux/fpga/fpga-mgr.h b/include/linux/fpga/fpga-mgr.h
-> index 2bc3030a69e54..3a32b8e201857 100644
-> --- a/include/linux/fpga/fpga-mgr.h
-> +++ b/include/linux/fpga/fpga-mgr.h
-> @@ -110,7 +110,7 @@ struct fpga_image_info {
->   * @initial_header_size: Maximum number of bytes that should be passed into write_init
->   * @state: returns an enum value of the FPGA's state
->   * @status: returns status of the FPGA, including reconfiguration error code
-> - * @write_init: prepare the FPGA to receive confuration data
-> + * @write_init: prepare the FPGA to receive configuration data
->   * @write: write count bytes of configuration data to the FPGA
->   * @write_sg: write the scatter list of configuration data to the FPGA
->   * @write_complete: set FPGA to operating state after writing is done
-> -- 
-> 2.26.3
-> 
+I've always looked at the "Address Mapping" section in the TRMs when I 
+checked the register offsets. I can't find a seperation the vpu block 
+there (for any SoC).
+
+I've found it more unfortunate, that they started with register offset 
+0x0 for vdpu and vepu, since none of the SoCs (so far) can use the 
+blocks separately.
+
+> (In some integrations they can operate independently, but iirc not in RK3288.)
+>
+> So to be clear, instead of:
+>
+>          vpu: video-codec@ff9a0000 {
+>                  compatible = "rockchip,rk3288-vpu";
+>                  reg = <0x0 0xff9a0000 0x0 0x800>;
+>                  interrupts = <GIC_SPI 9 IRQ_TYPE_LEVEL_HIGH>,
+>                               <GIC_SPI 10 IRQ_TYPE_LEVEL_HIGH>;
+>                  interrupt-names = "vepu", "vdpu";
+>                  clocks = <&cru ACLK_VCODEC>, <&cru HCLK_VCODEC>;
+>                  clock-names = "aclk", "hclk";
+>                  ...
+>
+> It could have looked like:
+>
+>          vpu: video-codec@ff9a0000 {
+>                  compatible = "rockchip,rk3288-vpu";
+>                  reg = <0x0 0xff9a0000 0x0 0x400>
+>                        <0x0 0xff9a0400 0x0 0x400>;
+>                  ...
+>
+> I guess I missed this when RK3328 was pushed, but OTOH I don't
+> see any real impact in doing things this way. So at the end
+> of the day, I'm fine either way.
+>
+> BTW, the series is not adding the vpu node for arch/arm/boot/dts/rk3036.dtsi right?
+
+Ups, yes - I missed to submit this patch with v1 - I added it in its 
+original version to v2 (so we know, what we are talking about)-
+
+If you think it should be changed, please reply to v2.
+
+> Thanks a lot!
+> Ezequiel
+>
+Thanks,
+
+Alex
 
