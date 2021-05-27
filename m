@@ -2,126 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 96A8F392AA8
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 11:23:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 47C96392AAA
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 11:23:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235676AbhE0JZH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 May 2021 05:25:07 -0400
-Received: from mail-ej1-f50.google.com ([209.85.218.50]:34552 "EHLO
-        mail-ej1-f50.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235559AbhE0JZG (ORCPT
+        id S235793AbhE0JZL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 May 2021 05:25:11 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:24928 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235740AbhE0JZK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 May 2021 05:25:06 -0400
-Received: by mail-ej1-f50.google.com with SMTP id h20so5549068ejg.1
-        for <linux-kernel@vger.kernel.org>; Thu, 27 May 2021 02:23:32 -0700 (PDT)
+        Thu, 27 May 2021 05:25:10 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1622107417;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=u/jxxyRApH7aRU/uOFFHnJ9R4si2NeFb5W7OXIxVnqE=;
+        b=QLKZX6sfSGyT3G5FdE+i8QB3Ft8nd+p/QZ3WnJd2j3n6AfnDOEZPXrt09zQnkT5lvo6i1L
+        rs8N16z6tad3Ey16S8fQqkNIg99EnfWly2Ia+Jif/zH+MGWD6uw0rnvqXUidQEd3Mwky3I
+        AFHN0kPkm3gIOsf65xvw4JqDoePNPOs=
+Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com
+ [209.85.218.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-590-TPA4Aa4QNJybAVx0bDoxmQ-1; Thu, 27 May 2021 05:23:34 -0400
+X-MC-Unique: TPA4Aa4QNJybAVx0bDoxmQ-1
+Received: by mail-ej1-f71.google.com with SMTP id z1-20020a1709068141b02903cd421d7803so1427338ejw.22
+        for <linux-kernel@vger.kernel.org>; Thu, 27 May 2021 02:23:34 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:subject:to:cc:references:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=ScT8H5/fnkoDD8fQ44tgRld9neYRVil9PceZe5AoCuw=;
-        b=oGeQJPsfj52VbN6w08ZKchB0K2jHeBhIDKBsCsDofshDLLqukVQJgYu1tZi7Pee+hz
-         W+C0GQdjMCYQQMQDwsRje70AZAsY5dTMlCvRIrfcqsnmQ5CJ+mwDJP9M0IkPiBeKqLV0
-         6SMHqhv6WpxIjN6aOprAeCJhjB5Bj0NABoCg3v1QkE3v2hgA19mUIrcFSKCgSkvbCvuR
-         q6Xe6SKyAECNT7Fkt+OiTiWqV8w5pO1yBuAw3xWIJNQVREpeeiMmrzqW0RTnN8EXIC6a
-         3l5WywxyDYuBp1QNIcDp/2gpDDXZvHCwYO3WngRYrSIHc+Ld1lXHO6Spv7TS+Ub4Lh3Q
-         NWtA==
-X-Gm-Message-State: AOAM531J0FJjUj/llZ3fJvAY5o1GbRUOe/q93s+LWz7dW2YRvxuTXEUp
-        QGNxKm8Hz1R8SW9TBCZK26CV9bO1PPI=
-X-Google-Smtp-Source: ABdhPJwkaAjVsLcvL8C9Q6X1pYcweyvXHz0M+Z8Hiy5IW5J+odDJxGqToH3JiFmtOegFxaLGv8nW/g==
-X-Received: by 2002:a17:906:e15:: with SMTP id l21mr2770950eji.538.1622107411804;
-        Thu, 27 May 2021 02:23:31 -0700 (PDT)
-Received: from ?IPv6:2a0b:e7c0:0:107::70f? ([2a0b:e7c0:0:107::70f])
-        by smtp.gmail.com with ESMTPSA id l6sm804059edr.47.2021.05.27.02.23.31
+        bh=u/jxxyRApH7aRU/uOFFHnJ9R4si2NeFb5W7OXIxVnqE=;
+        b=Wq0oyVbRciK6e3Js9VB0SZjnIZTkOX5FToifWHV4y1zeALk8YJRR6Bdenb53Tod+Pv
+         pVo99mAs23jMVIQHzAFY1F12OC0Q6WtDXhkCcEHnD4b+NQMadG17U8jt80XIKrkfx0vJ
+         8fETJcZVrs5W+GrP4DsUf4HoQpq4kx4u636sex+qYd3Lm4W584R4m5Vf77BwPPNOMPOJ
+         HjLQBX/KuN0dgys7wzKDH3+wyFSy9IaW7MUT+cJNwKwQG0lSRJdSZP7M6s+DGBxX8XvU
+         d2vpXvT4/4Idd3PCSwAKVuHR6lJhoMFrKWneodE1OUSp8zjkKRpChvUAAC2RDNUmp+Ye
+         U1fQ==
+X-Gm-Message-State: AOAM531MWoII+Aywrg8h59+3ktnh+jPl/VLRTvEGShrs4+N17qWBjH3d
+        6BqnBfpJQ582bEreNFpbA1lnEdttHsWuOMqwV94pExCA3qO7Mdp2vUn/mHKEqX39fyVbAC4wh7c
+        MQrjF9Wmn6++ntyCubs10vndYoOExCXyJHDQkXbCl4+OoqVlK3fsc2bFjvmG9G4LeHDgG9EeXzh
+        P/
+X-Received: by 2002:a17:906:5210:: with SMTP id g16mr2848900ejm.116.1622107413468;
+        Thu, 27 May 2021 02:23:33 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwcjpCut/sI96DejpRN+VAuRaAHUFFepAK5jt0WONw18JAs+EBp7IO2oczxNea4slk7KA0wjg==
+X-Received: by 2002:a17:906:5210:: with SMTP id g16mr2848872ejm.116.1622107413249;
+        Thu, 27 May 2021 02:23:33 -0700 (PDT)
+Received: from x1.localdomain (2001-1c00-0c1e-bf00-1054-9d19-e0f0-8214.cable.dynamic.v6.ziggo.nl. [2001:1c00:c1e:bf00:1054:9d19:e0f0:8214])
+        by smtp.gmail.com with ESMTPSA id f18sm705138ejz.119.2021.05.27.02.23.32
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 27 May 2021 02:23:31 -0700 (PDT)
-Subject: Re: [PATCH v2 1/1] tty: n_tty: Fix some misdocumented functions
-To:     Lee Jones <lee.jones@linaro.org>
-Cc:     linux-kernel@vger.kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Andrew J. Kroll" <ag784@freenet.buffalo.edu>,
-        processes-Sapan Bhatia <sapan@corewars.org>
-References: <20210526083125.549626-1-lee.jones@linaro.org>
- <3c8f2e14-f0a7-409f-e17e-ff7d94b48566@kernel.org>
- <20210527082008.GG543307@dell>
-From:   Jiri Slaby <jirislaby@kernel.org>
-Message-ID: <08962db9-b9a6-4f1a-7c6d-49bbeff81249@kernel.org>
-Date:   Thu, 27 May 2021 11:23:30 +0200
+        Thu, 27 May 2021 02:23:32 -0700 (PDT)
+Subject: Re: [PATCH] platform/x86: thinkpad_acpi: add X1 Carbon Gen 9 second
+ fan support
+To:     Til Jasper Ullrich <tju@tju.me>,
+        Henrique de Moraes Holschuh <hmh@hmh.eng.br>
+Cc:     Mark Gross <mgross@linux.intel.com>,
+        ibm-acpi-devel@lists.sourceforge.net,
+        platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210525150950.14805-1-tju@tju.me>
+From:   Hans de Goede <hdegoede@redhat.com>
+Message-ID: <7a568685-9849-7642-c193-14e3bfc8cf77@redhat.com>
+Date:   Thu, 27 May 2021 11:23:32 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.10.1
 MIME-Version: 1.0
-In-Reply-To: <20210527082008.GG543307@dell>
-Content-Type: text/plain; charset=utf-8; format=flowed
+In-Reply-To: <20210525150950.14805-1-tju@tju.me>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 27. 05. 21, 10:20, Lee Jones wrote:
-> On Thu, 27 May 2021, Jiri Slaby wrote:
+Hi,
+
+On 5/25/21 5:09 PM, Til Jasper Ullrich wrote:
+> The X1 Carbon Gen 9 uses two fans instead of one like the previous
+> generation. This adds support for the second fan. It has been tested
+> on my X1 Carbon Gen 9 (20XXS00100) and works fine.
 > 
->> On 26. 05. 21, 10:31, Lee Jones wrote:
->>> Fixes the following W=1 kernel build warning(s):
->>>
->>>    drivers/tty/n_tty.c:623: warning: expecting prototype for process_echoes(). Prototype was for __process_echoes() instead
->>>    drivers/tty/n_tty.c:1109: warning: expecting prototype for isig(). Prototype was for __isig() instead
->>>    drivers/tty/n_tty.c:1268: warning: expecting prototype for n_tty_receive_char(). Prototype was for n_tty_receive_char_special() instead
->>>    drivers/tty/n_tty.c:2132: warning: Excess function parameter 'buf' description in 'n_tty_read'
->>>
->>> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
->>> Cc: Jiri Slaby <jirislaby@kernel.org>
->>> Cc: "Andrew J. Kroll" <ag784@freenet.buffalo.edu>
->>> Cc: processes-Sapan Bhatia <sapan@corewars.org>
->>> Signed-off-by: Lee Jones <lee.jones@linaro.org>
->>> ---
->>>
->>> v2: Rebased
->>>
->>>    drivers/tty/n_tty.c | 10 +++++-----
->>>    1 file changed, 5 insertions(+), 5 deletions(-)
->>>
->>> diff --git a/drivers/tty/n_tty.c b/drivers/tty/n_tty.c
->>> index 0ec93f1a61f5d..56d3b43d8a3a4 100644
->>> --- a/drivers/tty/n_tty.c
->>> +++ b/drivers/tty/n_tty.c
->> ...
->>> @@ -1248,7 +1248,7 @@ n_tty_receive_signal_char(struct tty_struct *tty, int signal, unsigned char c)
->>>    }
->>>    /**
->>> - *	n_tty_receive_char	-	perform processing
->>> + *	n_tty_receive_char_special	-	perform processing
->>
->> No, please move the doc to the function in this case instead.
+> Signed-off-by: Til Jasper Ullrich <tju@tju.me>
+
+Thank you for your patch, I've applied this patch to my review-hans 
+branch:
+https://git.kernel.org/pub/scm/linux/kernel/git/pdx86/platform-drivers-x86.git/log/?h=review-hans
+
+I'll also cherry-pick this into the fixes branch so that it will
+be included in my next pdx86/fixes pull-req for 5.13.
+
+Note it will show up in my review-hans branch once I've pushed my
+local branch there, which might take a while.
+
+Once I've run some tests on this branch the patches there will be
+added to the platform-drivers-x86/for-next branch and eventually
+will be included in the pdx86 pull-request to Linus for the next
+merge-window.
+
+Regards,
+
+Hans
+
+
+
+> ---
+>  drivers/platform/x86/thinkpad_acpi.c | 1 +
+>  1 file changed, 1 insertion(+)
 > 
-> Oh, so this *really* is the doc for n_tty_receive_char()?
-
-Yes, it is supposed to. See 4b1f79c2d7352605b567cab49de20d3b67762ee3, 
-which omitted to move the comment.
-
+> diff --git a/drivers/platform/x86/thinkpad_acpi.c b/drivers/platform/x86/thinkpad_acpi.c
+> index dd60c9397d35..edd71e744d27 100644
+> --- a/drivers/platform/x86/thinkpad_acpi.c
+> +++ b/drivers/platform/x86/thinkpad_acpi.c
+> @@ -8853,6 +8853,7 @@ static const struct tpacpi_quirk fan_quirk_table[] __initconst = {
+>  	TPACPI_Q_LNV3('N', '2', 'O', TPACPI_FAN_2CTL),	/* P1 / X1 Extreme (2nd gen) */
+>  	TPACPI_Q_LNV3('N', '2', 'V', TPACPI_FAN_2CTL),	/* P1 / X1 Extreme (3nd gen) */
+>  	TPACPI_Q_LNV3('N', '3', '0', TPACPI_FAN_2CTL),	/* P15 (1st gen) / P15v (1st gen) */
+> +	TPACPI_Q_LNV3('N', '3', '2', TPACPI_FAN_2CTL),	/* X1 Carbon (9th gen) */
+>  };
 > 
->>>     *	@tty: terminal device
->>>     *	@c: character
->>>     *
->>> @@ -2042,11 +2042,11 @@ static int job_control(struct tty_struct *tty, struct file *file)
->>>    }
->>> -/**
->>> +/*
->>
->> Why this?
+>  static int __init fan_init(struct ibm_init_struct *iibm)
+> --
+> 2.31.1
 > 
-> Because the author has missed:
-> 
->    void **cookie, unsigned long offset
 
-Oh, that. The doc by far predates the recent cookie introduction.
-
-> Once these descriptions are provided, it can be re-promoted.
-
-OK, I will fix this later. I am just putting the pieces together to link 
-all these TTY kernel-docs from Documentation/.
-
-thanks,
--- 
-js
-suse labs
