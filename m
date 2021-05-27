@@ -2,103 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F00163933B6
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 18:26:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 751EC3933C6
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 18:27:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235823AbhE0Q22 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 May 2021 12:28:28 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47298 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235589AbhE0Q21 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 May 2021 12:28:27 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A4E346100C;
-        Thu, 27 May 2021 16:26:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1622132813;
-        bh=6yMbrF+OTPauQf1W+8cY34/65ezovBZNW8a6Zi9Ji4k=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=jwI74TETjlVVnaZOrDweNtb+9uRx0I/avnHxkzJoT1rHHMNerlej2e4eTfzG1CZzi
-         xD7b0HYMOO+moYEGvL660CrPm3LA7DyQPbQZct1xrC+zPSTvBHpJ/zs9SIgibVVcft
-         wIk5QiSa1LX+QJCaiYCsRxYTnCazP0vYlp4PFb/pgnhDLAmErSz2k+Uf8OFKW3xPzm
-         p4PGeY6aRm+1bCbVHI+U0KB+KqX/bWmufsOgIg8RSax8nTv49K3IqioHE5oZqUiUjV
-         M2onma0lPY+q4FUo0mWeaO1+WAknrz+/S261P1qleEJuE2nB0fEI4YWXCT7/Z7q2jn
-         7g+lUdRmGfoHw==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 4A8154011C; Thu, 27 May 2021 13:26:51 -0300 (-03)
-Date:   Thu, 27 May 2021 13:26:51 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Ian Rogers <irogers@google.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Thomas Richter <tmricht@linux.ibm.com>,
-        linux-perf-users <linux-perf-users@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Riccardo Mancini <rickyman7@gmail.com>,
-        Stephane Eranian <eranian@google.com>
-Subject: Re: [PATCH] perf test: Test 2 libpfm4 error cases
-Message-ID: <YK/IS9cQeSuZT4cK@kernel.org>
-References: <20210519151213.2643570-1-irogers@google.com>
- <CAP-5=fXpibzr2Vdzy4RHPVzQbSAOLimpHeuVY_L_YsXDy-2_1Q@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAP-5=fXpibzr2Vdzy4RHPVzQbSAOLimpHeuVY_L_YsXDy-2_1Q@mail.gmail.com>
-X-Url:  http://acmel.wordpress.com
+        id S236041AbhE0Q2p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 May 2021 12:28:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47830 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235589AbhE0Q2o (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 27 May 2021 12:28:44 -0400
+Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E6B7C061574
+        for <linux-kernel@vger.kernel.org>; Thu, 27 May 2021 09:27:10 -0700 (PDT)
+Received: by mail-yb1-xb4a.google.com with SMTP id u7-20020a259b470000b02904dca50820c2so1053320ybo.11
+        for <linux-kernel@vger.kernel.org>; Thu, 27 May 2021 09:27:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=AGqIzmkDxtMVtRwwjXgh0j/7u4mFhsWkmDrrQlHpXTY=;
+        b=f2w+5IQF5tdv8urRphu7TLjd4TFIB4uXJIzSKXdUxYhl8rPxLenbpLU6Qbs5+srec+
+         JqfGQ4sMBHFhGa5m9ueuS0Tl8HOs5IF556TibIN8Ui/dkP3kqXAG3RNArVTZ3/rXoTte
+         Lz18AJdvI+bPK5+fw2urau/N9xQYsNJLFaz3OxbzKT5d78NoPllOF7hKsKoixQQjnrXa
+         3adqeOrM0NVRQqrVW+yIMlm+DQiXuyIDmngI1xScni7m7+vCzdpmyFqWtb0P/2bafLHY
+         g6oC7yulS0q2LBPhcQ7KyxuQgvXp8XNGH7E5sCqmAwi7MwwM5JRExqz/3y1mgYE3i1nN
+         7A1A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=AGqIzmkDxtMVtRwwjXgh0j/7u4mFhsWkmDrrQlHpXTY=;
+        b=CEu0bLlt22Sp+Cb+d777R78hWDnm8wH+39VD5+E4QXu1lKt411MEszQ6lKInQ39xgP
+         zyanrlwLH/Nic3kH0KHKiRtBdUv20k6zUxY496zxMcBF6Xpdgr44MJ2JY1D4esmIC9EE
+         hIRsEut34OtJJjsYX7QE1UrccZdM613A0h5QUpyPws0Ewp4w6HgC09MgnXreOVlpFes/
+         ebVAcsE2eyiA4pQCMR94i9PsBvwJ/alNqHyzZmo8dpFeD0hmJXK1tg0rtu6fNbSr7KO4
+         ts9tXFUPMv8TvlWYwhezbYdSCoPUMvotDvpAFstOuSPXRD4rRSeI4AjI3fgXLcGuX5PA
+         DBCA==
+X-Gm-Message-State: AOAM533vMVfzuuz2AuMexDPJP1kJq35HVZOwwJZleF1wPGgeQKl/Saj4
+        Oj9YC1L61zhAfNmhCCExfmdGKbFXmQ==
+X-Google-Smtp-Source: ABdhPJztD5xENNGd62rZTUUB+ZuNUG3OYAuQ1F3VuSEDEVzT+ymsoGVQ69pheTKGyuzxJxYEhW9YKpeFSw==
+X-Received: from elver.muc.corp.google.com ([2a00:79e0:15:13:d65:1a6a:e560:4abf])
+ (user=elver job=sendgmr) by 2002:a25:be41:: with SMTP id d1mr5987917ybm.352.1622132829802;
+ Thu, 27 May 2021 09:27:09 -0700 (PDT)
+Date:   Thu, 27 May 2021 18:26:55 +0200
+Message-Id: <20210527162655.3246381-1-elver@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.31.1.818.g46aad6cb9e-goog
+Subject: [PATCH v2] kcov: add __no_sanitize_coverage to fix noinstr for all architectures
+From:   Marco Elver <elver@google.com>
+To:     elver@google.com, Andrew Morton <akpm@linux-foundation.org>
+Cc:     linux-kernel@vger.kernel.org, nathan@kernel.org,
+        ndesaulniers@google.com, ojeda@kernel.org, peterz@infradead.org,
+        keescook@chromium.org, nivedita@alum.mit.edu, will@kernel.org,
+        luc.vanoostenryck@gmail.com, masahiroy@kernel.org, bp@suse.de,
+        samitolvanen@google.com, arnd@arndb.de,
+        clang-built-linux@googlegroups.com,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Mark Rutland <mark.rutland@arm.com>, kasan-dev@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Thu, May 27, 2021 at 08:52:14AM -0700, Ian Rogers escreveu:
-> On Wed, May 19, 2021 at 8:12 AM Ian Rogers <irogers@google.com> wrote:
-> >
-> > Proposed in:
-> > https://lore.kernel.org/lkml/20210517140931.2559364-1-tmricht@linux.ibm.com/
-> >
-> > Signed-off-by: Ian Rogers <irogers@google.com>
-> 
-> Ping.
+Until now no compiler supported an attribute to disable coverage
+instrumentation as used by KCOV.
 
-Thanks, applied.
+To work around this limitation on x86, noinstr functions have their
+coverage instrumentation turned into nops by objtool. However, this
+solution doesn't scale automatically to other architectures, such as
+arm64, which are migrating to use the generic entry code.
 
-- Arnaldo
+Clang [1] and GCC [2] have added support for the attribute recently.
+[1] https://github.com/llvm/llvm-project/commit/280333021e9550d80f5c1152a34e33e81df1e178
+[2] https://gcc.gnu.org/git/?p=gcc.git;a=commit;h=cec4d4a6782c9bd8d071839c50a239c49caca689
+The changes will appear in Clang 13 and GCC 12.
 
+Add __no_sanitize_coverage for both compilers, and add it to noinstr.
+
+Note: In the Clang case, __has_feature(coverage_sanitizer) is only true
+if the feature is enabled, and therefore we do not require an additional
+defined(CONFIG_KCOV) (like in the GCC case where __has_attribute(..) is
+always true) to avoid adding redundant attributes to functions if KCOV
+is off. That being said, compilers that support the attribute will not
+generate errors/warnings if the attribute is redundantly used; however,
+where possible let's avoid it as it reduces preprocessed code size and
+associated compile-time overheads.
+
+Signed-off-by: Marco Elver <elver@google.com>
+Acked-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+---
+v2:
+* Implement __has_feature(coverage_sanitizer) in Clang
+  (https://reviews.llvm.org/D103159) and use instead of version check.
+* Add Peter's Ack.
+---
+ include/linux/compiler-clang.h | 11 +++++++++++
+ include/linux/compiler-gcc.h   |  6 ++++++
+ include/linux/compiler_types.h |  2 +-
+ 3 files changed, 18 insertions(+), 1 deletion(-)
+
+diff --git a/include/linux/compiler-clang.h b/include/linux/compiler-clang.h
+index adbe76b203e2..e15eebfa8e5d 100644
+--- a/include/linux/compiler-clang.h
++++ b/include/linux/compiler-clang.h
+@@ -45,6 +45,17 @@
+ #define __no_sanitize_undefined
+ #endif
  
-> Thanks!
-> Ian
-> 
-> > ---
-> >  tools/perf/tests/pfm.c | 10 ++++++++++
-> >  1 file changed, 10 insertions(+)
-> >
-> > diff --git a/tools/perf/tests/pfm.c b/tools/perf/tests/pfm.c
-> > index d4b0ef74defc..acd50944f6af 100644
-> > --- a/tools/perf/tests/pfm.c
-> > +++ b/tools/perf/tests/pfm.c
-> > @@ -155,6 +155,16 @@ static int test__pfm_group(void)
-> >                         .nr_events = 3,
-> >                         .nr_groups = 1,
-> >                 },
-> > +               {
-> > +                       .events = "instructions}",
-> > +                       .nr_events = 1,
-> > +                       .nr_groups = 0,
-> > +               },
-> > +               {
-> > +                       .events = "{{instructions}}",
-> > +                       .nr_events = 0,
-> > +                       .nr_groups = 0,
-> > +               },
-> >         };
-> >
-> >         for (i = 0; i < ARRAY_SIZE(table); i++) {
-> > --
-> > 2.31.1.751.gd2f1c929bd-goog
-> >
-
++/*
++ * Support for __has_feature(coverage_sanitizer) was added in Clang 13 together
++ * with no_sanitize("coverage"). Prior versions of Clang support coverage
++ * instrumentation, but cannot be queried for support by the preprocessor.
++ */
++#if __has_feature(coverage_sanitizer)
++#define __no_sanitize_coverage __attribute__((no_sanitize("coverage")))
++#else
++#define __no_sanitize_coverage
++#endif
++
+ /*
+  * Not all versions of clang implement the type-generic versions
+  * of the builtin overflow checkers. Fortunately, clang implements
+diff --git a/include/linux/compiler-gcc.h b/include/linux/compiler-gcc.h
+index 5d97ef738a57..cb9217fc60af 100644
+--- a/include/linux/compiler-gcc.h
++++ b/include/linux/compiler-gcc.h
+@@ -122,6 +122,12 @@
+ #define __no_sanitize_undefined
+ #endif
+ 
++#if defined(CONFIG_KCOV) && __has_attribute(__no_sanitize_coverage__)
++#define __no_sanitize_coverage __attribute__((no_sanitize_coverage))
++#else
++#define __no_sanitize_coverage
++#endif
++
+ #if GCC_VERSION >= 50100
+ #define COMPILER_HAS_GENERIC_BUILTIN_OVERFLOW 1
+ #endif
+diff --git a/include/linux/compiler_types.h b/include/linux/compiler_types.h
+index d29bda7f6ebd..cc2bee7f0977 100644
+--- a/include/linux/compiler_types.h
++++ b/include/linux/compiler_types.h
+@@ -210,7 +210,7 @@ struct ftrace_likely_data {
+ /* Section for code which can't be instrumented at all */
+ #define noinstr								\
+ 	noinline notrace __attribute((__section__(".noinstr.text")))	\
+-	__no_kcsan __no_sanitize_address
++	__no_kcsan __no_sanitize_address __no_sanitize_coverage
+ 
+ #endif /* __KERNEL__ */
+ 
 -- 
+2.31.1.818.g46aad6cb9e-goog
 
-- Arnaldo
