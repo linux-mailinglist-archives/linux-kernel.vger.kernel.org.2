@@ -2,149 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B00E392D7D
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 14:03:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D9EB8392D81
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 14:04:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234724AbhE0MEc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 May 2021 08:04:32 -0400
-Received: from outbound-smtp17.blacknight.com ([46.22.139.234]:55885 "EHLO
-        outbound-smtp17.blacknight.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234701AbhE0ME2 (ORCPT
+        id S234770AbhE0MF7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 May 2021 08:05:59 -0400
+Received: from szxga02-in.huawei.com ([45.249.212.188]:2436 "EHLO
+        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234540AbhE0MFt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 May 2021 08:04:28 -0400
-Received: from mail.blacknight.com (pemlinmail04.blacknight.ie [81.17.254.17])
-        by outbound-smtp17.blacknight.com (Postfix) with ESMTPS id 01BFB1C4004
-        for <linux-kernel@vger.kernel.org>; Thu, 27 May 2021 13:02:53 +0100 (IST)
-Received: (qmail 32327 invoked from network); 27 May 2021 12:02:52 -0000
-Received: from unknown (HELO techsingularity.net) (mgorman@techsingularity.net@[84.203.23.168])
-  by 81.17.254.9 with ESMTPSA (AES256-SHA encrypted, authenticated); 27 May 2021 12:02:52 -0000
-Date:   Thu, 27 May 2021 13:02:51 +0100
-From:   Mel Gorman <mgorman@techsingularity.net>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     Christoph Hellwig <hch@infradead.org>,
-        Arnaldo Carvalho de Melo <acme@redhat.com>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        Michal Suchanek <msuchanek@suse.de>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Hritik Vijay <hritikxx8@gmail.com>,
-        Linux-BPF <bpf@vger.kernel.org>,
-        Linux-Net <netdev@vger.kernel.org>, Linux-MM <linux-mm@kvack.org>
-Subject: [PATCH v2] mm/page_alloc: Work around a pahole limitation with
- zero-sized struct pagesets
-Message-ID: <20210527120251.GC30378@techsingularity.net>
+        Thu, 27 May 2021 08:05:49 -0400
+Received: from dggeme703-chm.china.huawei.com (unknown [172.30.72.54])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4FrRHP0l03z66V5;
+        Thu, 27 May 2021 20:01:21 +0800 (CST)
+Received: from huawei.com (10.175.104.170) by dggeme703-chm.china.huawei.com
+ (10.1.199.99) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Thu, 27
+ May 2021 20:04:12 +0800
+From:   Miaohe Lin <linmiaohe@huawei.com>
+To:     <akpm@linux-foundation.org>
+CC:     <hch@infradead.org>, <linux-kernel@vger.kernel.org>,
+        <linux-mm@kvack.org>, <linmiaohe@huawei.com>
+Subject: [PATCH] mm/swapfile: fold scan_swap_map() into the only caller get_swap_page_of_type()
+Date:   Thu, 27 May 2021 20:03:28 +0800
+Message-ID: <20210527120328.3935132-1-linmiaohe@huawei.com>
+X-Mailer: git-send-email 2.23.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-15
-Content-Disposition: inline
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.104.170]
+X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
+ dggeme703-chm.china.huawei.com (10.1.199.99)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch replaces
-mm-page_alloc-convert-per-cpu-list-protection-to-local_lock-fix.patch in
-Andrew's tree.
+We should fold scan_swap_map() into the only caller get_swap_page_of_type()
+and update the comments referring to it to make the code more succinct.
 
-Michal Suchanek reported the following problem with linux-next
-
-  [    0.000000] Linux version 5.13.0-rc2-next-20210519-1.g3455ff8-vanilla (geeko@buildhost) (gcc (SUSE Linux) 10.3.0, GNU ld (GNU Binutils; openSUSE Tumbleweed) 2.36.1.20210326-3) #1 SMP Wed May 19 10:05:10 UTC 2021 (3455ff8)
-  [    0.000000] Command line: BOOT_IMAGE=/boot/vmlinuz-5.13.0-rc2-next-20210519-1.g3455ff8-vanilla root=UUID=ec42c33e-a2c2-4c61-afcc-93e9527 8f687 plymouth.enable=0 resume=/dev/disk/by-uuid/f1fe4560-a801-4faf-a638-834c407027c7 mitigations=auto earlyprintk initcall_debug nomodeset earlycon ignore_loglevel console=ttyS0,115200
-...
-  [   26.093364] calling  tracing_set_default_clock+0x0/0x62 @ 1
-  [   26.098937] initcall tracing_set_default_clock+0x0/0x62 returned 0 after 0 usecs
-  [   26.106330] calling  acpi_gpio_handle_deferred_request_irqs+0x0/0x7c @ 1
-  [   26.113033] initcall acpi_gpio_handle_deferred_request_irqs+0x0/0x7c returned 0 after 3 usecs
-  [   26.121559] calling  clk_disable_unused+0x0/0x102 @ 1
-  [   26.126620] initcall clk_disable_unused+0x0/0x102 returned 0 after 0 usecs
-  [   26.133491] calling  regulator_init_complete+0x0/0x25 @ 1
-  [   26.138890] initcall regulator_init_complete+0x0/0x25 returned 0 after 0 usecs
-  [   26.147816] Freeing unused decrypted memory: 2036K
-  [   26.153682] Freeing unused kernel image (initmem) memory: 2308K
-  [   26.165776] Write protecting the kernel read-only data: 26624k
-  [   26.173067] Freeing unused kernel image (text/rodata gap) memory: 2036K
-  [   26.180416] Freeing unused kernel image (rodata/data gap) memory: 1184K
-  [   26.187031] Run /init as init process
-  [   26.190693]   with arguments:
-  [   26.193661]     /init
-  [   26.195933]   with environment:
-  [   26.199079]     HOME=/
-  [   26.201444]     TERM=linux
-  [   26.204152]     BOOT_IMAGE=/boot/vmlinuz-5.13.0-rc2-next-20210519-1.g3455ff8-vanilla
-  [   26.254154] BPF:      type_id=35503 offset=178440 size=4
-  [   26.259125] BPF:
-  [   26.261054] BPF:Invalid offset
-  [   26.264119] BPF:
-  [   26.264119]
-  [   26.267437] failed to validate module [efivarfs] BTF: -22
-
-Andrii Nakryiko bisected the problem to the commit "mm/page_alloc: convert
-per-cpu list protection to local_lock" currently staged in mmotm. In his
-own words
-
-  The immediate problem is two different definitions of numa_node per-cpu
-  variable. They both are at the same offset within .data..percpu ELF
-  section, they both have the same name, but one of them is marked as
-  static and another as global. And one is int variable, while another
-  is struct pagesets. I'll look some more tomorrow, but adding Jiri and
-  Arnaldo for visibility.
-
-  [110907] DATASEC '.data..percpu' size=178904 vlen=303
-  ...
-        type_id=27753 offset=163976 size=4 (VAR 'numa_node')
-        type_id=27754 offset=163976 size=4 (VAR 'numa_node')
-
-  [27753] VAR 'numa_node' type_id=27556, linkage=static
-  [27754] VAR 'numa_node' type_id=20, linkage=global
-
-  [20] INT 'int' size=4 bits_offset=0 nr_bits=32 encoding=SIGNED
-
-  [27556] STRUCT 'pagesets' size=0 vlen=1
-        'lock' type_id=507 bits_offset=0
-
-  [506] STRUCT '(anon)' size=0 vlen=0
-  [507] TYPEDEF 'local_lock_t' type_id=506
-
-The patch in question introduces a zero-sized per-cpu struct and while
-this is not wrong, versions of pahole prior to 1.22 (unreleased) get
-confused during BTF generation with two separate variables occupying the
-same address.
-
-This patch checks for older versions of pahole and only allows
-DEBUG_INFO_BTF_MODULES if pahole supports zero-sized per-cpu structures.
-DEBUG_INFO_BTF is still allowed as a KVM boot test passed with pahole
-v1.19.  While pahole 1.22 does not exist yet, it is assumed that Hritik's
-fix that allows DEBUG_INFO_BTF_MODULES to work will be included in that
-release.
-
-Reported-by: Michal Suchanek <msuchanek@suse.de>
-Reported-by: Hritik Vijay <hritikxx8@gmail.com>
-Debugged-by: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Signed-off-by: Mel Gorman <mgorman@techsingularity.net>
+Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
 ---
- lib/Kconfig.debug | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+Hi Andrew,
+  Please feel free to merge this with
+mm-swapfile-move-get_swap_page_of_type-under-config_hibernation.patch and
+mm-swapfile-move-get_swap_page_of_type-under-config_hibernation-fix.patch
+Many thanks!
+---
+ mm/swapfile.c | 57 ++++++++++++++++-----------------------------------
+ 1 file changed, 18 insertions(+), 39 deletions(-)
 
-diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
-index 678c13967580..51b355cbe6d7 100644
---- a/lib/Kconfig.debug
-+++ b/lib/Kconfig.debug
-@@ -313,9 +313,12 @@ config DEBUG_INFO_BTF
- config PAHOLE_HAS_SPLIT_BTF
- 	def_bool $(success, test `$(PAHOLE) --version | sed -E 's/v([0-9]+)\.([0-9]+)/\1\2/'` -ge "119")
+diff --git a/mm/swapfile.c b/mm/swapfile.c
+index 53d2161edfc0..166be489664d 100644
+--- a/mm/swapfile.c
++++ b/mm/swapfile.c
+@@ -453,10 +453,10 @@ static void swap_cluster_schedule_discard(struct swap_info_struct *si,
+ 		unsigned int idx)
+ {
+ 	/*
+-	 * If scan_swap_map() can't find a free cluster, it will check
++	 * If scan_swap_map_slots() can't find a free cluster, it will check
+ 	 * si->swap_map directly. To make sure the discarding cluster isn't
+-	 * taken by scan_swap_map(), mark the swap entries bad (occupied). It
+-	 * will be cleared after discard
++	 * taken by scan_swap_map_slots(), mark the swap entries bad (occupied).
++	 * It will be cleared after discard
+ 	 */
+ 	memset(si->swap_map + idx * SWAPFILE_CLUSTER,
+ 			SWAP_MAP_BAD, SWAPFILE_CLUSTER);
+@@ -589,7 +589,7 @@ static void dec_cluster_info_page(struct swap_info_struct *p,
+ }
  
-+config PAHOLE_HAS_ZEROSIZE_PERCPU_SUPPORT
-+	def_bool $(success, test `$(PAHOLE) --version | sed -E 's/v([0-9]+)\.([0-9]+)/\1\2/'` -ge "122")
-+
- config DEBUG_INFO_BTF_MODULES
- 	def_bool y
--	depends on DEBUG_INFO_BTF && MODULES && PAHOLE_HAS_SPLIT_BTF
-+	depends on DEBUG_INFO_BTF && MODULES && PAHOLE_HAS_SPLIT_BTF && PAHOLE_HAS_ZEROSIZE_PERCPU_SUPPORT
- 	help
- 	  Generate compact split BTF type information for kernel modules.
+ /*
+- * It's possible scan_swap_map() uses a free cluster in the middle of free
++ * It's possible scan_swap_map_slots() uses a free cluster in the middle of free
+  * cluster list. Avoiding such abuse to avoid list corruption.
+  */
+ static bool
+@@ -1099,14 +1099,14 @@ int get_swap_pages(int n_goal, swp_entry_t swp_entries[], int entry_size)
+ nextsi:
+ 		/*
+ 		 * if we got here, it's likely that si was almost full before,
+-		 * and since scan_swap_map() can drop the si->lock, multiple
+-		 * callers probably all tried to get a page from the same si
+-		 * and it filled up before we could get one; or, the si filled
+-		 * up between us dropping swap_avail_lock and taking si->lock.
+-		 * Since we dropped the swap_avail_lock, the swap_avail_head
+-		 * list may have been modified; so if next is still in the
+-		 * swap_avail_head list then try it, otherwise start over
+-		 * if we have not gotten any slots.
++		 * and since scan_swap_map_slots() can drop the si->lock,
++		 * multiple callers probably all tried to get a page from the
++		 * same si and it filled up before we could get one; or, the si
++		 * filled up between us dropping swap_avail_lock and taking
++		 * si->lock. Since we dropped the swap_avail_lock, the
++		 * swap_avail_head list may have been modified; so if next is
++		 * still in the swap_avail_head list then try it, otherwise
++		 * start over if we have not gotten any slots.
+ 		 */
+ 		if (plist_node_empty(&next->avail_lists[node]))
+ 			goto start_over;
+@@ -1774,42 +1774,21 @@ int free_swap_and_cache(swp_entry_t entry)
  
+ #ifdef CONFIG_HIBERNATION
+ 
+-static unsigned long scan_swap_map(struct swap_info_struct *si,
+-				   unsigned char usage)
+-{
+-	swp_entry_t entry;
+-	int n_ret;
+-
+-	n_ret = scan_swap_map_slots(si, usage, 1, &entry);
+-
+-	if (n_ret)
+-		return swp_offset(entry);
+-	else
+-		return 0;
+-
+-}
+-
+ swp_entry_t get_swap_page_of_type(int type)
+ {
+ 	struct swap_info_struct *si = swap_type_to_swap_info(type);
+-	pgoff_t offset;
++	swp_entry_t entry = {0};
+ 
+ 	if (!si)
+ 		goto fail;
+ 
++	/* This is called for allocating swap entry, not cache */
+ 	spin_lock(&si->lock);
+-	if (si->flags & SWP_WRITEOK) {
+-		/* This is called for allocating swap entry, not cache */
+-		offset = scan_swap_map(si, 1);
+-		if (offset) {
+-			atomic_long_dec(&nr_swap_pages);
+-			spin_unlock(&si->lock);
+-			return swp_entry(type, offset);
+-		}
+-	}
++	if ((si->flags & SWP_WRITEOK) && scan_swap_map_slots(si, 1, 1, &entry))
++		atomic_long_dec(&nr_swap_pages);
+ 	spin_unlock(&si->lock);
+ fail:
+-	return (swp_entry_t) {0};
++	return entry;
+ }
+ 
+ /*
+@@ -2649,7 +2628,7 @@ SYSCALL_DEFINE1(swapoff, const char __user *, specialfile)
+ 	spin_lock(&p->lock);
+ 	drain_mmlist();
+ 
+-	/* wait for anyone still in scan_swap_map */
++	/* wait for anyone still in scan_swap_map_slots */
+ 	p->highest_bit = 0;		/* cuts scans short */
+ 	while (p->flags >= SWP_SCANNING) {
+ 		spin_unlock(&p->lock);
+-- 
+2.23.0
+
