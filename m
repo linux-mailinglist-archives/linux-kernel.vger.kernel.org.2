@@ -2,89 +2,212 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B8403928B7
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 09:40:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 56C693928B9
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 09:41:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235038AbhE0HmT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 May 2021 03:42:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40464 "EHLO mail.kernel.org"
+        id S234985AbhE0HnX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 May 2021 03:43:23 -0400
+Received: from gloria.sntech.de ([185.11.138.130]:34610 "EHLO gloria.sntech.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234318AbhE0HmR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 May 2021 03:42:17 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 36A27610A6;
-        Thu, 27 May 2021 07:40:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1622101243;
-        bh=Irlo7mGbJ+1ThfdROf+4QLN6ktaoyaBx/mf73kvLs4I=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=jV1mzuY7JTsHFcNoKiKjyj1zAbzNaoUurjWnPVFZ9QxzBTKgbsAkxYfAPq/F3ggwr
-         cpPprcqhwkwTxtlGARNEMfh0T1U9hzr6Wy6RKQOdGYqnNWJjqA9t128hbhvoBUpPX3
-         SGnCohFgM117oI9CmIe/4hWNs9Nlg1oaTOhnp+98=
-Date:   Thu, 27 May 2021 09:40:40 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Rajat Jain <rajatja@google.com>
-Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Alan Stern <stern@rowland.harvard.edu>,
-        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
-        linux-usb@vger.kernel.org, helgaas@kernel.org,
-        Oliver Neukum <oneukum@suse.com>,
-        David Laight <David.Laight@aculab.com>,
-        Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
-        rajatxjain@gmail.com, jsbarnes@google.com, dtor@google.com
-Subject: Re: [PATCH v5 1/2] driver core: Move the "removable" attribute from
- USB to core
-Message-ID: <YK9M+OQ33+A5PFVB@kroah.com>
-References: <20210524171812.18095-1-rajatja@google.com>
+        id S229614AbhE0HnX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 27 May 2021 03:43:23 -0400
+Received: from ip5f5aa64a.dynamic.kabel-deutschland.de ([95.90.166.74] helo=diego.localnet)
+        by gloria.sntech.de with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <heiko@sntech.de>)
+        id 1lmAeI-0006Xu-60; Thu, 27 May 2021 09:41:46 +0200
+From:   Heiko =?ISO-8859-1?Q?St=FCbner?= <heiko@sntech.de>
+To:     lee.jones@linaro.org, ulf.hansson@linaro.org,
+        Jianqun Xu <jay.xu@rock-chips.com>
+Cc:     linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Jianqun Xu <jay.xu@rock-chips.com>
+Subject: Re: [PATCH] soc: rockchip: io-domain: add rk3568 support
+Date:   Thu, 27 May 2021 09:41:45 +0200
+Message-ID: <3994395.Isy0gbHreE@diego>
+In-Reply-To: <20210527072917.1425321-1-jay.xu@rock-chips.com>
+References: <20210527072917.1425321-1-jay.xu@rock-chips.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210524171812.18095-1-rajatja@google.com>
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 24, 2021 at 10:18:11AM -0700, Rajat Jain wrote:
-> Move the "removable" attribute from USB to core in order to allow it to be
-> supported by other subsystem / buses. Individual buses that want to support
-> this attribute can populate the removable property of the device while
-> enumerating it with the 3 possible values -
->  - "unknown"
->  - "fixed"
->  - "removable"
-> Leaving the field unchanged (i.e. "not supported") would mean that the
-> attribute would not show up in sysfs for that device. The UAPI (location,
-> symantics etc) for the attribute remains unchanged.
+Hi Jay,
+
+Am Donnerstag, 27. Mai 2021, 09:29:17 CEST schrieb Jianqun Xu:
+> The io-domain registers on RK3568 SoCs have three separated bits to
+> enable/disable the 1.8v/2.5v/3.3v power.
 > 
-> Move the "removable" attribute from USB to the device core so it can be
-> used by other subsystems / buses.
+> This patch make the write to be a operation, allow rk3568 uses a private
+> register set function.
 > 
-> By default, devices do not have a "removable" attribute in sysfs.
+> Since the 2.5v is not used on RK3568, so the driver only set
+> 1.8v [enable] + 3.3v [disable] for 1.8v mode
+> 1.8v [disable] + 3.3v [enable] for 3.3v mode
 > 
-> If a subsystem or bus driver wants to support a "removable" attribute, it
-> should call device_set_removable() before calling device_register() or
-> device_add(), e.g.:
+> There is not register order requirement which has been cleared by our IC
+> team.
 > 
->     device_set_removable(dev, DEVICE_REMOVABLE);
->     device_register(dev);
-> 
-> The possible values and the resulting sysfs attribute contents are:
-> 
->     DEVICE_REMOVABLE_UNKNOWN  ->  "unknown"
->     DEVICE_REMOVABLE          ->  "removable"
->     DEVICE_FIXED              ->  "fixed"
-> 
-> Convert the USB "removable" attribute to use this new device core
-> functionality.  There should be no user-visible change in the location or
-> semantics of attribute for USB devices.
-> 
-> Signed-off-by: Rajat Jain <rajatja@google.com>
-> Reviewed-by: Bjorn Helgaas <bhelgaas@google.com>
+> Signed-off-by: Jianqun Xu <jay.xu@rock-chips.com>
+
+can you add a separate patch that adds the necessary compatible to the
+dt-binding please?
+
+One more thing below.
+
 > ---
-> v5: - Update commit log per Bjorn's suggestion, and add "Reviewed by".
->     - don't check for dev!=NULL    
+>  drivers/soc/rockchip/io-domain.c | 75 +++++++++++++++++++++++++++++++-
+>  1 file changed, 73 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/soc/rockchip/io-domain.c b/drivers/soc/rockchip/io-domain.c
+> index cf8182fc3642..32b3bd645d56 100644
+> --- a/drivers/soc/rockchip/io-domain.c
+> +++ b/drivers/soc/rockchip/io-domain.c
+> @@ -51,6 +51,10 @@
+>  #define RK3399_PMUGRF_CON0_VSEL		BIT(8)
+>  #define RK3399_PMUGRF_VSEL_SUPPLY_NUM	9
+>  
+> +#define RK3568_PMU_GRF_IO_VSEL0		(0x0140)
+> +#define RK3568_PMU_GRF_IO_VSEL1		(0x0144)
+> +#define RK3568_PMU_GRF_IO_VSEL2		(0x0148)
+> +
+>  struct rockchip_iodomain;
+>  
+>  struct rockchip_iodomain_soc_data {
+> @@ -71,8 +75,51 @@ struct rockchip_iodomain {
+>  	struct regmap *grf;
+>  	const struct rockchip_iodomain_soc_data *soc_data;
+>  	struct rockchip_iodomain_supply supplies[MAX_SUPPLIES];
+> +	int (*write)(struct rockchip_iodomain_supply *supply, int uV);
+>  };
+>  
+> +static int rk3568_pmu_iodomain_write(struct rockchip_iodomain_supply *supply,
+> +				     int uV)
+> +{
+> +	struct rockchip_iodomain *iod = supply->iod;
+> +	u32 is_3v3 = uV > MAX_VOLTAGE_1_8;
+> +	u32 val0, val1;
+> +	int b;
+> +
+> +	switch (supply->idx) {
+> +	case 0: /* pmuio1 */
+> +		break;
+> +	case 1: /* pmuio2 */
+> +		b = supply->idx;
+> +		val0 = BIT(16 + b) | (is_3v3 ? 0 : BIT(b));
+> +		b = supply->idx + 4;
+> +		val1 = BIT(16 + b) | (is_3v3 ? BIT(b) : 0);
+> +
+> +		regmap_write(iod->grf, RK3568_PMU_GRF_IO_VSEL2, val0);
+> +		regmap_write(iod->grf, RK3568_PMU_GRF_IO_VSEL2, val1);
+> +		break;
+> +	case 3: /* vccio2 */
+> +		break;
+> +	case 2: /* vccio1 */
+> +	case 4: /* vccio3 */
+> +	case 5: /* vccio4 */
+> +	case 6: /* vccio5 */
+> +	case 7: /* vccio6 */
+> +	case 8: /* vccio7 */
+> +		b = supply->idx - 1;
+> +		val0 = BIT(16 + b) | (is_3v3 ? 0 : BIT(b));
+> +		val1 = BIT(16 + b) | (is_3v3 ? BIT(b) : 0);
+> +
+> +		regmap_write(iod->grf, RK3568_PMU_GRF_IO_VSEL0, val0);
+> +		regmap_write(iod->grf, RK3568_PMU_GRF_IO_VSEL1, val1);
+> +		break;
+> +	default:
+> +		return -EINVAL;
+> +	};
+> +
+> +	return 0;
+> +}
+> +
+>  static int rockchip_iodomain_write(struct rockchip_iodomain_supply *supply,
+>  				   int uV)
+>  {
+> @@ -136,7 +183,7 @@ static int rockchip_iodomain_notify(struct notifier_block *nb,
+>  			return NOTIFY_BAD;
+>  	}
+>  
+> -	ret = rockchip_iodomain_write(supply, uV);
+> +	ret = supply->iod->write(supply, uV);
+>  	if (ret && event == REGULATOR_EVENT_PRE_VOLTAGE_CHANGE)
+>  		return NOTIFY_BAD;
+>  
+> @@ -398,6 +445,21 @@ static const struct rockchip_iodomain_soc_data soc_data_rk3399_pmu = {
+>  	.init = rk3399_pmu_iodomain_init,
+>  };
+>  
+> +static const struct rockchip_iodomain_soc_data soc_data_rk3568_pmu = {
+> +	.grf_offset = 0x140,
+> +	.supply_names = {
+> +		"pmuio1",
+> +		"pmuio2",
+> +		"vccio1",
+> +		"vccio2",
+> +		"vccio3",
+> +		"vccio4",
+> +		"vccio5",
+> +		"vccio6",
+> +		"vccio7",
+> +	},
 
-I've applied this series to my USB tree now, thanks for reworking it so
-many times.
++	.write = rk3568_iodomain_write,
 
-greg k-h
+> +};
+> +
+>  static const struct rockchip_iodomain_soc_data soc_data_rv1108 = {
+>  	.grf_offset = 0x404,
+>  	.supply_names = {
+> @@ -469,6 +531,10 @@ static const struct of_device_id rockchip_iodomain_match[] = {
+>  		.compatible = "rockchip,rk3399-pmu-io-voltage-domain",
+>  		.data = &soc_data_rk3399_pmu
+>  	},
+> +	{
+> +		.compatible = "rockchip,rk3568-pmu-io-voltage-domain",
+> +		.data = &soc_data_rk3568_pmu
+> +	},
+>  	{
+>  		.compatible = "rockchip,rv1108-io-voltage-domain",
+>  		.data = &soc_data_rv1108
+> @@ -502,6 +568,11 @@ static int rockchip_iodomain_probe(struct platform_device *pdev)
+>  	match = of_match_node(rockchip_iodomain_match, np);
+>  	iod->soc_data = match->data;
+>  
+> +	if (match->data == &soc_data_rk3568_pmu)
+> +		iod->write = rk3568_pmu_iodomain_write;
+> +	else
+> +		iod->write = rockchip_iodomain_write;
+> +
+
+So, please make the write callback part of the rockchip_iodomain_soc_data
+struct. That way we don't need to compare for individual soc-types,
+especially if later socs need a different approach again.
+
+	if (match->data->write)
+		iod->ops = match->data->write;
+	else
+		iod->ops = rockchip_iodomain_write;
+
+Thanks
+Heiko
+
+>  	parent = pdev->dev.parent;
+>  	if (parent && parent->of_node) {
+>  		iod->grf = syscon_node_to_regmap(parent->of_node);
+> @@ -562,7 +633,7 @@ static int rockchip_iodomain_probe(struct platform_device *pdev)
+>  		supply->reg = reg;
+>  		supply->nb.notifier_call = rockchip_iodomain_notify;
+>  
+> -		ret = rockchip_iodomain_write(supply, uV);
+> +		ret = iod->write(supply, uV);
+>  		if (ret) {
+>  			supply->reg = NULL;
+>  			goto unreg_notify;
+> 
+
+
+
+
