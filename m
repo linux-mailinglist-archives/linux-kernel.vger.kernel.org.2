@@ -2,68 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 29EF3392DC6
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 14:14:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BA777392DCE
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 14:16:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235143AbhE0MP7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 May 2021 08:15:59 -0400
-Received: from mail-pg1-f180.google.com ([209.85.215.180]:35557 "EHLO
-        mail-pg1-f180.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233836AbhE0MP6 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 May 2021 08:15:58 -0400
-Received: by mail-pg1-f180.google.com with SMTP id m190so3560499pga.2;
-        Thu, 27 May 2021 05:14:24 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=3naLRjF0QNsEbH6gRn0iS8dipT5T+LNn3ZSjp0/dzak=;
-        b=tbTyB9apfsTKltVPf1GtHP6mla5DB/vp+Pfnr7FBnxPLD1sQDCEbvVOLv+sI95laFo
-         TE5GyCq1yrcbi9N56WMn2jplmLXftxFAKnZK7ShAha5jgyS0PWFQ5MGsmYIhKiqJO+11
-         GImXSrKCKlSPdxJ1w007zkv3r+QjUUaiVT98pXiPlhzLgvEebMbXXM+sC6FNIXRHi/vi
-         2VfxynEpiCmutU8TiYudexXKyjosHAkvWpNighfuI6RTGctC8sod+PuZGTcKRFQmNZ8q
-         fND0ON3jIe+hRrthUhofdzVPrjm00b0gFYwcDJJ4d1gF1B07KF5slD+zMyHqHsy6XyHX
-         0DTA==
-X-Gm-Message-State: AOAM532iDEQeNpAhOs0ojU1ueOjrkxeCeTpjTmyL2bfuH+goTVOTI6Hm
-        xmTn7/xCMZO1ePoGzIC0JQw=
-X-Google-Smtp-Source: ABdhPJzGkkcJ385zHinpmjD/GnkLNAgY0qGIaMxo5B7cqM2xy8kKV2m0c5GSDuOTQMwJJIevRGatXw==
-X-Received: by 2002:a62:e908:0:b029:2db:8791:c217 with SMTP id j8-20020a62e9080000b02902db8791c217mr3533012pfh.28.1622117663948;
-        Thu, 27 May 2021 05:14:23 -0700 (PDT)
-Received: from rocinante.localdomain ([95.155.85.46])
-        by smtp.gmail.com with ESMTPSA id q12sm1876345pfg.48.2021.05.27.05.14.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 27 May 2021 05:14:23 -0700 (PDT)
-Date:   Thu, 27 May 2021 14:14:12 +0200
-From:   Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>
-To:     Om Prakash Singh <omp@nvidia.com>
-Cc:     vidyas@nvidia.com, lorenzo.pieralisi@arm.com, bhelgaas@google.com,
-        thierry.reding@gmail.com, jonathanh@nvidia.com,
-        linux-tegra@vger.kernel.org, linux-pci@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kthota@nvidia.com,
-        mmaddireddy@nvidia.com
-Subject: Re: [RESEND PATCH V1 2/5] PCI: tegra: Fix MSI-X programming
-Message-ID: <20210527121412.GD213718@rocinante.localdomain>
-References: <20210527115246.20509-1-omp@nvidia.com>
- <20210527115246.20509-3-omp@nvidia.com>
+        id S234770AbhE0MSR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 May 2021 08:18:17 -0400
+Received: from mx2.suse.de ([195.135.220.15]:42928 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234091AbhE0MSL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 27 May 2021 08:18:11 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1622117797; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=6wkJVTjtj0SOxpAXDD4PWLluAmn8GdGlIAAMNZ9zTuQ=;
+        b=VXxZiLlfCVJ9WNr0xIo9wky1/9y3qkUqxtFqYQ57wt9xjXgAiAi0Kd0ilmafJxZv+euobL
+        RnmUveOkYR8cwnHFP9wu80w9lfP+xm9T4625u3EChIfR896eJXrWuHjhFcUsj+pmsHKkn3
+        PMazkvyJbtQ+e8Sh5LTcwddBnHedVKY=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id A6A32AD19;
+        Thu, 27 May 2021 12:16:37 +0000 (UTC)
+Date:   Thu, 27 May 2021 14:16:36 +0200
+From:   Michal Hocko <mhocko@suse.com>
+To:     Feng Tang <feng.tang@intel.com>
+Cc:     linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
+        David Rientjes <rientjes@google.com>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Ben Widawsky <ben.widawsky@intel.com>,
+        linux-kernel@vger.kernel.org,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Andi Kleen <ak@linux.intel.com>,
+        Dan Williams <dan.j.williams@intel.com>, ying.huang@intel.com
+Subject: Re: [PATCH v1 3/4] mm/mempolicy: don't handle MPOL_LOCAL like a fake
+ MPOL_PREFERRED policy
+Message-ID: <YK+NpPdAAlL9AIaA@dhcp22.suse.cz>
+References: <1622005302-23027-1-git-send-email-feng.tang@intel.com>
+ <1622005302-23027-4-git-send-email-feng.tang@intel.com>
+ <YK9UX9WY6GSnTPoB@dhcp22.suse.cz>
+ <20210527120642.GA85753@shbuild999.sh.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210527115246.20509-3-omp@nvidia.com>
+In-Reply-To: <20210527120642.GA85753@shbuild999.sh.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Prakash,
+On Thu 27-05-21 20:06:42, Feng Tang wrote:
+> Hi Michal,
+> 
+> Many thanks for the reivews!
+> 
+> On Thu, May 27, 2021 at 10:12:15AM +0200, Michal Hocko wrote:
+> > On Wed 26-05-21 13:01:41, Feng Tang wrote:
+> > > MPOL_LOCAL policy has been setup as a real policy, but it is still
+> > > handled like a faked POL_PREFERRED policy with one internal
+> > > MPOL_F_LOCAL flag bit set, and there are many places having to
+> > > judge the real 'prefer' or the 'local' policy, which are quite
+> > > confusing.
+> > > 
+> > > In current code, there are four cases that MPOL_LOCAL are used:
+> > > * user specifies 'local' policy
+> > > * user specifies 'prefer' policy, but with empty nodemask
+> > > * system 'default' policy is used
+> > > * 'prefer' policy + valid 'preferred' node with MPOL_F_STATIC_NODES
+> > >   flag set, and when it is 'rebind' to a nodemask which doesn't
+> > >   contains the 'preferred' node, it will add the MPOL_F_LOCAL bit
+> > >   and performs as 'local' policy. In future if it is 'rebind' again
+> > >   with valid nodemask, the policy will be restored back to 'prefer'
+> > > 
+> > > So for the first three cases, we make 'local' a real policy
+> > > instead of a fake 'prefer' one, this will reduce confusion for
+> > > reading code.
+> > > 
+> > > And next optional patch will kill the 'MPOL_F_LOCAL' bit.
+> > 
+> > I do like this approach. An additional policy should be much easier to
+> > grasp than a special casing. This code is quite tricky so another pair
+> > of eyes would be definitely good for the review.
+> > 
+> > > Signed-off-by: Feng Tang <feng.tang@intel.com>
+> > 
+> > Acked-by: Michal Hocko <mhocko@suse.com>
+> 
+> Thanks!
+> 
+> > Just few nits.
+> > 
+> > >  static int migrate_page_add(struct page *page, struct list_head *pagelist,
+> > > @@ -1965,6 +1965,8 @@ unsigned int mempolicy_slab_node(void)
+> > >  							&policy->v.nodes);
+> > >  		return z->zone ? zone_to_nid(z->zone) : node;
+> > >  	}
+> > > +	case MPOL_LOCAL:
+> > > +		return node;
+> > 
+> > Any reason you haven't removed MPOL_F_LOCAL in this and following
+> > functions? It would make it much more easier to review this patch if
+> > there was no actual use of the flag in the code after this patch.
+> 
+> As in the commit log, there are 4 cases using 'prefer' + MPOL_F_LOCAL 
+> to represent 'local' policy. 
+> 
+> I'm confident in this patch which handle the case 1/2/3, while not 
+> sure if the solution (patch 4/4) for case 4 is the right method. So
+> I separte them into 3/4 and 4/4
 
-[...]
-> @@ -1863,7 +1863,7 @@ static void pex_ep_event_pex_rst_deassert(struct tegra_pcie_dw *pcie)
->  	val = (ep->msi_mem_phys & MSIX_ADDR_MATCH_LOW_OFF_MASK);
->  	val |= MSIX_ADDR_MATCH_LOW_OFF_EN;
->  	dw_pcie_writel_dbi(pci, MSIX_ADDR_MATCH_LOW_OFF, val);
-> -	val = (lower_32_bits(ep->msi_mem_phys) & MSIX_ADDR_MATCH_HIGH_OFF_MASK);
-> +	val = (upper_32_bits(ep->msi_mem_phys) & MSIX_ADDR_MATCH_HIGH_OFF_MASK);
+Please don't and handle the above and those below in a single patch.
+ 
+> Thanks,
+> Feng
+> 
+> 
+> > >  
+> > >  	default:
+> > >  		BUG();
+> > > @@ -2089,6 +2091,11 @@ bool init_nodemask_of_mempolicy(nodemask_t *mask)
+> > >  		*mask =  mempolicy->v.nodes;
+> > >  		break;
+> > >  
+> > > +	case MPOL_LOCAL:
+> > > +		nid = numa_node_id();
+> > > +		init_nodemask_of_node(mask, nid);
+> > > +		break;
+> > > +
+> > >  	default:
+> > >  		BUG();
+> > >  	}
+> > > @@ -2333,6 +2340,8 @@ bool __mpol_equal(struct mempolicy *a, struct mempolicy *b)
+> > >  		if (a->flags & MPOL_F_LOCAL)
+> > >  			return true;
+> > >  		return a->v.preferred_node == b->v.preferred_node;
+> > > +	case MPOL_LOCAL:
+> > > +		return true;
+> > >  	default:
+> > >  		BUG();
+> > >  		return false;
+> > > @@ -2476,6 +2485,10 @@ int mpol_misplaced(struct page *page, struct vm_area_struct *vma, unsigned long
+> > >  			polnid = pol->v.preferred_node;
+> > >  		break;
+> > >  
+> > > +	case MPOL_LOCAL:
+> > > +		polnid = numa_node_id();
+> > > +		break;
+> > > +
+> > >  	case MPOL_BIND:
+> > >  		/* Optimize placement among multiple nodes via NUMA balancing */
+> > >  		if (pol->flags & MPOL_F_MORON) {
+> > -- 
+> > Michal Hocko
+> > SUSE Labs
 
-Oh!  Nice catch!
-
-	Krzysztof
+-- 
+Michal Hocko
+SUSE Labs
