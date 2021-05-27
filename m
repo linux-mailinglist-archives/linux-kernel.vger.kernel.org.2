@@ -2,93 +2,194 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2CC483923DE
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 02:40:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C3FB3923E8
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 02:53:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234837AbhE0Al3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 May 2021 20:41:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46230 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234134AbhE0Al1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 May 2021 20:41:27 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 342E5613AC;
-        Thu, 27 May 2021 00:39:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
-        s=korg; t=1622075994;
-        bh=4KHaoj275K4DXjF4ZE9cKWuSigdgD7f0eMe9Z/iWUm8=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=ym5GjGnHe4QXS89UGx7DJP/leAh/SYefgb8qGLcutUX8s8tACCzifxQ3lY6KJ/SuS
-         30fYcCRJYwPTUtwFyhiPNEg6+vkTosIe2cjcI2Cj24WxfoXOhnjHFDjnRMKNIENmMG
-         DkCIawj9+jydf2055yLvw++MBI8O1S1ga0/I5G5A=
-Date:   Wed, 26 May 2021 17:39:53 -0700
-From:   Andrew Morton <akpm@linux-foundation.org>
-To:     Feng zhou <zhoufeng.zf@bytedance.com>
-Cc:     adobriyan@gmail.com, rppt@kernel.org, linux-kernel@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, songmuchun@bytedance.com,
-        zhouchengming@bytedance.com, chenying.kernel@bytedance.com,
-        zhengqi.arch@bytedance.com
-Subject: Re: [PATCH] fs/proc/kcore.c: add mmap interface
-Message-Id: <20210526173953.49fb3dc48c0f2a8b3c31fe2b@linux-foundation.org>
-In-Reply-To: <20210526075142.9740-1-zhoufeng.zf@bytedance.com>
-References: <20210526075142.9740-1-zhoufeng.zf@bytedance.com>
-X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.31; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S233221AbhE0AzW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 May 2021 20:55:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33260 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232692AbhE0AzU (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 26 May 2021 20:55:20 -0400
+Received: from mail-il1-x12c.google.com (mail-il1-x12c.google.com [IPv6:2607:f8b0:4864:20::12c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E08CC061574
+        for <linux-kernel@vger.kernel.org>; Wed, 26 May 2021 17:53:47 -0700 (PDT)
+Received: by mail-il1-x12c.google.com with SMTP id w2so2615361ilo.7
+        for <linux-kernel@vger.kernel.org>; Wed, 26 May 2021 17:53:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ob5N3fCbbDLB0UERbmW+vRDN/1QFz9ChAAVkpFKx6WE=;
+        b=PVRxPnxOEA+/JYbCOrw8gof/L0tDYA6KH+myRNCeNYJgvRZnXm7YSDr1t89NTga/hc
+         ijECgrQkelx4cpC544ttqJR0QAVvxmRs+dcOJPy4A3W4WMcyX4l+ncMQx6L7QR5uqMzf
+         RbQJkAG97zN9XoffEzawuX9uYdxNjc4G2ZQ/pKTdnbhlBMath7DaX7LzRHGFGlfqPEfP
+         S3gS1OXtU2IkFHM+Y5AOHGuMkS+L5b6VmksQO5Lw/52GzjtcQOOEXSTUobgsEBn1xZAo
+         61bif5xinqeibBnCUHQTjTW1VcBiM6zpvtUTIe+BS1od64d0+I+TSJeeNJ9TeW1+pwDi
+         hKiQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ob5N3fCbbDLB0UERbmW+vRDN/1QFz9ChAAVkpFKx6WE=;
+        b=UGUR3HROQyowBT0HWm52xGkdQ4ExZwyjw9UTk8deWPsAmz7Jmuwk1vnk1dLwG3pEBK
+         K6pjJqSWkHwhlJg1cXIl7Jo01LmYn3ByobW8YFIyg5c4KzXeir4KXCRBVv+fDidjjR7b
+         FYztOQpjwmmenBMh6iRbZ7yPEqN2wM+YQlry95g53GFoJvgbHNYDJer7maff6I3pIDyn
+         8TjWqMpwPXmoahUZFeN2NWUpwTYDczZNbpt+DYIY+gWQhfuS09VnVDVzLO8tlv9qHovE
+         khTQsEOo/xM5UDdOn1QAPQnI2zoYehpXtQgz7GZ57n19mVtNCn6YAGftqc/1NOEA0928
+         slPA==
+X-Gm-Message-State: AOAM533EJbMnPCmDHRUaDUl1WRNxjS9Ooz9LM7dezcMyVlMUDt9c5lq0
+        pFMQ9VbRPwqhpH7BvQ0LhgIUvtrFFNlThISbp0szeQ==
+X-Google-Smtp-Source: ABdhPJxS7nyUKrCQsDFuq4gpM9vG/4EXxxA61T+RkbgzfkVzdV5dCEzm0jA8Ai9X5nEB9uLsd5RLiJZXX8rsLCkVBp4=
+X-Received: by 2002:a05:6e02:2188:: with SMTP id j8mr871603ila.194.1622076826115;
+ Wed, 26 May 2021 17:53:46 -0700 (PDT)
+MIME-Version: 1.0
+References: <20210526212407.2753879-1-brendanhiggins@google.com> <20210526212407.2753879-2-brendanhiggins@google.com>
+In-Reply-To: <20210526212407.2753879-2-brendanhiggins@google.com>
+From:   Daniel Latypov <dlatypov@google.com>
+Date:   Wed, 26 May 2021 17:53:34 -0700
+Message-ID: <CAGS_qxqZsG8oqQx0hY5VjMNkX643Hb_uPKp_oxUcC34F230dgA@mail.gmail.com>
+Subject: Re: [PATCH v2 1/4] kunit: Add 'kunit_shutdown' option
+To:     Brendan Higgins <brendanhiggins@google.com>
+Cc:     shuah <shuah@kernel.org>, David Gow <davidgow@google.com>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        KUnit Development <kunit-dev@googlegroups.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Frank Rowand <frowand.list@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 26 May 2021 15:51:42 +0800 Feng zhou <zhoufeng.zf@bytedance.com> wrote:
+On Wed, May 26, 2021 at 2:24 PM Brendan Higgins
+<brendanhiggins@google.com> wrote:
+>
+> From: David Gow <davidgow@google.com>
+>
+> Add a new kernel command-line option, 'kunit_shutdown', which allows the
+> user to specify that the kernel poweroff, halt, or reboot after
+> completing all KUnit tests; this is very handy for running KUnit tests
+> on UML or a VM so that the UML/VM process exits cleanly immediately
+> after running all tests without needing a special initramfs.
+>
+> Signed-off-by: David Gow <davidgow@google.com>
+> Signed-off-by: Brendan Higgins <brendanhiggins@google.com>
+> Reviewed-by: Stephen Boyd <sboyd@kernel.org>
+> Tested-By: Daniel Latypov <dlatypov@google.com>
 
-> From: ZHOUFENG <zhoufeng.zf@bytedance.com>
-> 
-> When we do the kernel monitor, use the DRGN
-> (https://github.com/osandov/drgn) access to kernel data structures,
-> found that the system calls a lot. DRGN is implemented by reading
-> /proc/kcore. After looking at the kcore code, it is found that kcore
-> does not implement mmap, resulting in frequent context switching
-> triggered by read. Therefore, we want to add mmap interface to optimize
-> performance. Since vmalloc and module areas will change with allocation
-> and release, consistency cannot be guaranteed, so mmap interface only
-> maps KCORE_TEXT and KCORE_RAM.
-> 
-> The test results:
-> 1. the default version of kcore
-> real 11.00
-> user 8.53
-> sys 3.59
-> 
-> % time     seconds  usecs/call     calls    errors syscall
-> ------ ----------- ----------- --------- --------- ----------------
-> 99.64  128.578319          12  11168701           pread64
-> ...
-> ------ ----------- ----------- --------- --------- ----------------
-> 100.00  129.042853              11193748       966 total
-> 
-> 2. added kcore for the mmap interface
-> real 6.44
-> user 7.32
-> sys 0.24
-> 
-> % time     seconds  usecs/call     calls    errors syscall
-> ------ ----------- ----------- --------- --------- ----------------
-> 32.94    0.130120          24      5317       315 futex
-> 11.66    0.046077          21      2231         1 lstat
->  9.23    0.036449         177       206           mmap
-> ...
-> ------ ----------- ----------- --------- --------- ----------------
-> 100.00    0.395077                 25435       971 total
-> 
-> The test results show that the number of system calls and time
-> consumption are significantly reduced.
-> 
+Reviewed-by: Daniel Latypov <dlatypov@google.com>
 
-hm, OK, I guess why not.  The performance improvements for DRGN (which
-appears to be useful) are nice and the code is simple.
+Looks good, one optional nit below.
 
-I'm surprised that it makes this much difference.  Has DRGN been fully
-optimised to minimise the amount of pread()ing which it does?  Why does
-it do so much reading?
+Also, I tested this again on top of 5.13-r4 (7ac3a1c1ae51 ("Merge tag
+'mtd/fixes-for-5.13-rc4' of
+git://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux"))
 
-Thanks, I shall await input from others before moving ahead with this.
+$ echo -e "\nCONFIG_DEBUG_KERNEL=y\nCONFIG_DEBUG_INFO=y\nCONFIG_GCOV=y"
+>> .kunit/.kunitconfig
+$ run_kunit --make_options=CC=/usr/bin/gcc-6
+$ <run coverage generation steps>
+Overall coverage rate:
+  lines......: 13.8% (17286 of 125320 lines)
+  functions..: 15.8% (1790 of 11336 functions)
+
+So coverage still seems to be fixed, no need to comment out the
+uml_abort() anymore and this sidesteps whatever weird issue I started
+running into these past few weeks.
+So that's very exciting.
+
+> ---
+>  lib/kunit/executor.c                | 20 ++++++++++++++++++++
+>  tools/testing/kunit/kunit_kernel.py |  2 +-
+>  tools/testing/kunit/kunit_parser.py |  2 +-
+>  3 files changed, 22 insertions(+), 2 deletions(-)
+>
+> diff --git a/lib/kunit/executor.c b/lib/kunit/executor.c
+> index 15832ed446685..7db619624437c 100644
+> --- a/lib/kunit/executor.c
+> +++ b/lib/kunit/executor.c
+> @@ -1,5 +1,6 @@
+>  // SPDX-License-Identifier: GPL-2.0
+>
+> +#include <linux/reboot.h>
+>  #include <kunit/test.h>
+>  #include <linux/glob.h>
+>  #include <linux/moduleparam.h>
+> @@ -18,6 +19,9 @@ module_param(filter_glob, charp, 0);
+>  MODULE_PARM_DESC(filter_glob,
+>                 "Filter which KUnit test suites run at boot-time, e.g. list*");
+>
+> +static char *kunit_shutdown;
+> +core_param(kunit_shutdown, kunit_shutdown, charp, 0644);
+> +
+>  static struct kunit_suite * const *
+>  kunit_filter_subsuite(struct kunit_suite * const * const subsuite)
+>  {
+> @@ -82,6 +86,20 @@ static struct suite_set kunit_filter_suites(void)
+>         return filtered;
+>  }
+>
+> +static void kunit_handle_shutdown(void)
+> +{
+> +       if (!kunit_shutdown)
+> +               return;
+> +
+> +       if (!strcmp(kunit_shutdown, "poweroff"))
+> +               kernel_power_off();
+> +       else if (!strcmp(kunit_shutdown, "halt"))
+> +               kernel_halt();
+> +       else if (!strcmp(kunit_shutdown, "reboot"))
+> +               kernel_restart(NULL);
+
+nit: should we complain about an unknown option here?
+
+> +
+> +}
+> +
+>  static void kunit_print_tap_header(struct suite_set *suite_set)
+>  {
+>         struct kunit_suite * const * const *suites, * const *subsuite;
+> @@ -112,6 +130,8 @@ int kunit_run_all_tests(void)
+>                 kfree(suite_set.start);
+>         }
+>
+> +       kunit_handle_shutdown();
+> +
+>         return 0;
+>  }
+>
+> diff --git a/tools/testing/kunit/kunit_kernel.py b/tools/testing/kunit/kunit_kernel.py
+> index 89a7d4024e878..dbbceaee12305 100644
+> --- a/tools/testing/kunit/kunit_kernel.py
+> +++ b/tools/testing/kunit/kunit_kernel.py
+> @@ -208,7 +208,7 @@ class LinuxSourceTree(object):
+>         def run_kernel(self, args=None, build_dir='', filter_glob='', timeout=None) -> Iterator[str]:
+>                 if not args:
+>                         args = []
+> -               args.extend(['mem=1G', 'console=tty'])
+> +               args.extend(['mem=1G', 'console=tty', 'kunit_shutdown=halt'])
+>                 if filter_glob:
+>                         args.append('kunit.filter_glob='+filter_glob)
+>                 self._ops.linux_bin(args, timeout, build_dir)
+> diff --git a/tools/testing/kunit/kunit_parser.py b/tools/testing/kunit/kunit_parser.py
+> index e8bcc139702e2..8d8d4d70b39dd 100644
+> --- a/tools/testing/kunit/kunit_parser.py
+> +++ b/tools/testing/kunit/kunit_parser.py
+> @@ -49,7 +49,7 @@ class TestStatus(Enum):
+>
+>  kunit_start_re = re.compile(r'TAP version [0-9]+$')
+>  kunit_end_re = re.compile('(List of all partitions:|'
+> -                         'Kernel panic - not syncing: VFS:)')
+> +                         'Kernel panic - not syncing: VFS:|reboot: System halted)')
+>
+>  def isolate_kunit_output(kernel_output) -> Iterator[str]:
+>         started = False
+> --
+> 2.31.1.818.g46aad6cb9e-goog
+>
