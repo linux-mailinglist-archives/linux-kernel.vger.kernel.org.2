@@ -2,140 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EBE0D39339F
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 18:23:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E15EF3933A2
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 18:23:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234233AbhE0QY5 convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 27 May 2021 12:24:57 -0400
-Received: from relay9-d.mail.gandi.net ([217.70.183.199]:35653 "EHLO
-        relay9-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233702AbhE0QY4 (ORCPT
+        id S234809AbhE0QZY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 May 2021 12:25:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47030 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233702AbhE0QZX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 May 2021 12:24:56 -0400
-Received: (Authenticated sender: miquel.raynal@bootlin.com)
-        by relay9-d.mail.gandi.net (Postfix) with ESMTPSA id D745CFF806;
-        Thu, 27 May 2021 16:23:18 +0000 (UTC)
-Date:   Thu, 27 May 2021 18:23:17 +0200
-From:   Miquel Raynal <miquel.raynal@bootlin.com>
-To:     <patrice.chotard@foss.st.com>
-Cc:     Mark Brown <broonie@kernel.org>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Boris Brezillon <boris.brezillon@collabora.com>,
-        <linux-mtd@lists.infradead.org>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        <linux-spi@vger.kernel.org>,
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <christophe.kerello@foss.st.com>,
-        Pratyush Yadav <p.yadav@ti.com>
-Subject: Re: [PATCH v3 3/3] mtd: spinand: add SPI-NAND MTD resume handler
-Message-ID: <20210527182317.38d5edc6@xps13>
-In-Reply-To: <20210527161252.16620-4-patrice.chotard@foss.st.com>
-References: <20210527161252.16620-1-patrice.chotard@foss.st.com>
-        <20210527161252.16620-4-patrice.chotard@foss.st.com>
-Organization: Bootlin
-X-Mailer: Claws Mail 3.17.7 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        Thu, 27 May 2021 12:25:23 -0400
+Received: from mail-qt1-x834.google.com (mail-qt1-x834.google.com [IPv6:2607:f8b0:4864:20::834])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DCF63C061574;
+        Thu, 27 May 2021 09:23:49 -0700 (PDT)
+Received: by mail-qt1-x834.google.com with SMTP id t17so602571qta.11;
+        Thu, 27 May 2021 09:23:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=Sdg6PhtYpFMULY1pq6vpaLfF6qM0VMonxMRGrT127HE=;
+        b=nrQQ9DDLoy4Fk2SqxWK72Zu+DNXm7owDz+tVDgB3oueHR1u2eLO2+HUrkZQvjzPyYJ
+         UF5u7uUaqUxYzS94ZCIAoeCfW/tvSJ1UZOP5pLA6qcUv4haXZThjQnTKhLOvLfjlQB7p
+         DYfL+UlVudfSKlGUSVEBvDy6zf03yKFp4ynryVpfJHhZwUr0irQ1HP8qbGiCDlpRdN85
+         n+LtLirqlQWUfKJhgv5AyTgoIIkcJhG9cZfeCtN7eoXr6YA4kVKd5DswpKp1YCCyOnD2
+         L8+nWAbObkQvvPTB1fhGjJT+tcZ05Mm0D+WBiQTBKoOT068oAHuD25+vrDXoH8LXCGS0
+         5eHw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=Sdg6PhtYpFMULY1pq6vpaLfF6qM0VMonxMRGrT127HE=;
+        b=cFeOJvFuDITY1D04WflQ6YZDaECTCf0SDMB3Kbm6IJPp5WdtSb75ZqDyWoDOUnG4i2
+         lSoAfVTa2tSeLuy76AA0/D2q5oqpDZ92TFHB+f0QINAZF83XDhTon9jmOjzomLw1G3yh
+         w3/+ayjr5ahLeH0YGaL9TovhJbFd5ZeQzLK8KxSSmEiyfpDynHjiyYmhCQq9DskadQl9
+         xX1ueUyjxG5Re6IN2Lw69BD5OG611RTLJzQaH2Ucv0m0nvqGTp9lJ/LLz+u8ymIp6CpB
+         rWCl0cpkv93n/15GZzLglLZrF4BrWmty3ouv9DqCfprJMtDdUpZrqZxuoiLtsKCl6HQM
+         hTGQ==
+X-Gm-Message-State: AOAM533BfBe7+r3+PtsQNzkXw6LaGxB3yED+s8Mk+E9oWQs3kexnel6c
+        ME5vsjUEXtusSR72Xf3Xx9I=
+X-Google-Smtp-Source: ABdhPJzTy11SMjF4rbFOlZJCI5frrke6OrhVmh60TaEyqybSR5SgldVsU6iKanc1NOyL2nUvyVpQYg==
+X-Received: by 2002:ac8:4b45:: with SMTP id e5mr3954795qts.248.1622132629115;
+        Thu, 27 May 2021 09:23:49 -0700 (PDT)
+Received: from [192.168.1.49] (c-67-187-90-124.hsd1.ky.comcast.net. [67.187.90.124])
+        by smtp.gmail.com with ESMTPSA id e20sm1600690qto.93.2021.05.27.09.23.48
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 27 May 2021 09:23:48 -0700 (PDT)
+Subject: Re: [PATCH 1/1] of: unittest: rename overlay source files from .dts
+ to .dtso
+To:     David Gibson <david@gibson.dropbear.id.au>
+Cc:     Viresh Kumar <viresh.kumar@linaro.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Rob Herring <robh@kernel.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Michal Marek <michal.lkml@markovi.net>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Michal Simek <michal.simek@xilinx.com>,
+        Anmar Oueja <anmar.oueja@linaro.org>,
+        Bill Mills <bill.mills@linaro.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        linux-kbuild <linux-kbuild@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <20210324223713.1334666-1-frowand.list@gmail.com>
+ <20210327174035.GA291160@robh.at.kernel.org>
+ <3e6710e7-08ac-7d1b-aa69-bcd36f0d932a@gmail.com>
+ <CAMuHMdXpGKMi-xv6hZQmmEw0JO=Q0WuvUzwJ2v0O28Tx5uW+sg@mail.gmail.com>
+ <d1aefaae-7b12-b5fb-4b97-7230bd52c1be@gmail.com>
+ <20210526061144.yvoaurpz75a3bsjr@vireshk-i7>
+ <f651e95b-feef-5c86-edba-d6008bc80b34@gmail.com> <YK70Xsl1oXeEQpWZ@yekko>
+From:   Frank Rowand <frowand.list@gmail.com>
+Message-ID: <e175ace6-36a0-bfcc-c8e4-b06553064860@gmail.com>
+Date:   Thu, 27 May 2021 11:23:47 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+In-Reply-To: <YK70Xsl1oXeEQpWZ@yekko>
+Content-Type: text/plain; charset=windows-1252
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Patrice,
+On 5/26/21 8:22 PM, David Gibson wrote:
+> On Wed, May 26, 2021 at 04:21:48PM -0500, Frank Rowand wrote:
+>> On 5/26/21 1:11 AM, Viresh Kumar wrote:
+>>> On 22-04-21, 13:54, Frank Rowand wrote:
+>>>> On 4/22/21 3:44 AM, Geert Uytterhoeven wrote:
+>>>>> Hi Frank, Rob,
+>>>>>
+>>>>> On Mon, Mar 29, 2021 at 9:23 PM Frank Rowand <frowand.list@gmail.com> wrote:
+>>>>>> On 3/27/21 12:40 PM, Rob Herring wrote:
+>>>>>>> On Wed, Mar 24, 2021 at 05:37:13PM -0500, frowand.list@gmail.com wrote:
+>>>>>>>> From: Frank Rowand <frank.rowand@sony.com>
+>>>>>>>>
+>>>>>>>> Add Makefile rule to build .dtbo.o assembly file from overlay .dtso
+>>>>>>>> source file.
+>>>>>>>>
+>>>>>>>> Rename unittest .dts overlay source files to use .dtso suffix.
+>>>>>>>
+>>>>>>> I'm pretty lukewarm on .dtso...
+>>>>>>
+>>>>>> I was originally also, but I'm warming up to it.
+>>>>>
+>>>>> What's the status of this?
+>>>>
+>>>> I was planning to resend on top of the upcoming -rc1.
+>>>
+>>> Ping.
+>>>
+>>
+>> Thanks for the prod...
+>>
+>> The .dtso convention was added to the dtc compiler, then a patch was
+>> accepted to revert one mention of .dtso ,though there still remains
+>> two location where .dtbo is still recognized (guess_type_by_name() in
+>> dtc and the help text of the fdtoverlay program).
+>>
+>> It seems that the general .dtso and .dtbo were not popular, so I'm
+>> going to drop this patch instead of continuing to try to get it
+>> accepted.
+> 
+> AFAICT .dtbo is moderately well established, and I think it's a good
+> convention, since it matters whether a blob is an overlay or base
+> tree, and it's not trivial to tell which is which.
+> 
+> .dtso is much more recent, and I think there's much less value to it.
+> 
 
-+ Pratyush
+Thanks for the correction, I misunderstood your thoughts.
 
-<patrice.chotard@foss.st.com> wrote on Thu, 27 May 2021 18:12:52 +0200:
-
-> From: Patrice Chotard <patrice.chotard@foss.st.com>
-> 
-> After power up, all SPI NAND's blocks are locked. Only read operations
-> are allowed, write and erase operations are forbidden.
-> The SPI NAND framework unlocks all the blocks during its initialization.
-> 
-> During a standby low power, the memory is powered down, losing its
-> configuration.
-> During the resume, the QSPI driver state is restored but the SPI NAND
-> framework does not reconfigured the memory.
-> 
-> This patch adds SPI-NAND MTD PM handlers for resume ops.
-> SPI NAND resume op re-initializes SPI NAND flash to its probed state.
-> 
-> Signed-off-by: Christophe Kerello <christophe.kerello@foss.st.com>
-> Signed-off-by: Patrice Chotard <patrice.chotard@foss.st.com>
-> ---
-> Changes in v3:
->   - Add spinand_read_cfg() call to repopulate cache
-> 
-> Changes in v2:
->   - Add helper spinand_block_unlock().
->   - Add spinand_ecc_enable() call.
->   - Remove some dev_err().
->   - Fix commit's title and message.
-> 
->  drivers/mtd/nand/spi/core.c | 33 +++++++++++++++++++++++++++++++++
->  1 file changed, 33 insertions(+)
-> 
-> diff --git a/drivers/mtd/nand/spi/core.c b/drivers/mtd/nand/spi/core.c
-> index 1f699ad84f1b..e3fcbcf381c3 100644
-> --- a/drivers/mtd/nand/spi/core.c
-> +++ b/drivers/mtd/nand/spi/core.c
-> @@ -1099,6 +1099,38 @@ static int spinand_block_unlock(struct spinand_device *spinand)
->  	return ret;
->  }
->  
-> +static void spinand_mtd_resume(struct mtd_info *mtd)
-> +{
-> +	struct spinand_device *spinand = mtd_to_spinand(mtd);
-> +	int ret;
-> +
-> +	ret = spinand_reset_op(spinand);
-> +	if (ret)
-> +		return;
-> +
-> +	ret = spinand_read_cfg(spinand);
-> +	if (ret)
-> +		return;
-> +
-> +	ret = spinand_init_quad_enable(spinand);
-> +	if (ret)
-> +		return;
-> +
-> +	ret = spinand_upd_cfg(spinand, CFG_OTP_ENABLE, 0);
-> +	if (ret)
-> +		return;
-> +
-> +	ret = spinand_manufacturer_init(spinand);
-> +	if (ret)
-> +		return;
-> +
-> +	ret = spinand_block_unlock(spinand);
-> +	if (ret)
-> +		return;
-> +
-> +	spinand_ecc_enable(spinand, false);
-> +}
-
-Sorry for not being clear, but I think what Pratyush meant was that
-you could create a helper doing all the common initializations between
-spinand_init() and spinand_resume() and call it from these places to
-avoid code duplication. His comment somehow outclassed mine as I only
-focused on the unlock part (which I think is clearer anyway, please keep
-it like that).
-
-> +
->  static int spinand_init(struct spinand_device *spinand)
->  {
->  	struct device *dev = &spinand->spimem->spi->dev;
-> @@ -1186,6 +1218,7 @@ static int spinand_init(struct spinand_device *spinand)
->  	mtd->_block_isreserved = spinand_mtd_block_isreserved;
->  	mtd->_erase = spinand_mtd_erase;
->  	mtd->_max_bad_blocks = nanddev_mtd_max_bad_blocks;
-> +	mtd->_resume = spinand_mtd_resume;
->  
->  	if (nand->ecc.engine) {
->  		ret = mtd_ooblayout_count_freebytes(mtd);
-
-Thanks,
-Miquèl
+-Frank
