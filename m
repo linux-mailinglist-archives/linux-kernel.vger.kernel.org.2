@@ -2,110 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C0BBE392F1B
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 15:06:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E58E7392F0F
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 15:06:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236366AbhE0NIO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 May 2021 09:08:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57884 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236336AbhE0NIC (ORCPT
+        id S236306AbhE0NHl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 May 2021 09:07:41 -0400
+Received: from heliosphere.sirena.org.uk ([172.104.155.198]:48358 "EHLO
+        heliosphere.sirena.org.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236007AbhE0NHi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 May 2021 09:08:02 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C04BC061760;
-        Thu, 27 May 2021 06:06:28 -0700 (PDT)
+        Thu, 27 May 2021 09:07:38 -0400
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=ta5zzhet5s6C63/o89LSX98k9lWRcXUPZemLvb4KNvQ=; b=HfZz8BRqIZXWTWn2p5hFQrTao1
-        iZJDgiZEi8Vmr//6oJzinMu3kuu4Ml+cC6TbN1ZUZbFoneVoVqYU6ToKxiVj+zmnsHgM0n9x/C6gi
-        YskpjrBH3Iy4bfMKsgzjbw6nrOQZUsOq/w8OhTbVYCG1L22P8iKayEM1QBSpxKe7xfMmeKTwXKJaQ
-        Y70SXnvSfe2Onl36lQFJPV7gs1cMho/hn+fSKLpy9EKVyHKktR0iNePLo7wbjftr+8ONOWeuQI/sJ
-        JaL11rfLez3fAapFrYnmnCpl8yvk5haitSvJF4/24ddTToylmg0qN15ojjibz7eUrHp+UnwCNLCV1
-        9om/d5IQ==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1lmFhc-005YSv-1T; Thu, 27 May 2021 13:05:41 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 12A2B300268;
-        Thu, 27 May 2021 15:05:30 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id D2920202492E9; Thu, 27 May 2021 15:05:30 +0200 (CEST)
-Date:   Thu, 27 May 2021 15:05:30 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Vincent Guittot <vincent.guittot@linaro.org>
-Cc:     mingo@redhat.com, juri.lelli@redhat.com, dietmar.eggemann@arm.com,
-        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
-        bristot@redhat.com, linux-kernel@vger.kernel.org, odin@uged.al,
-        cgroups@vger.kernel.org
-Subject: Re: [PATCH 1/2] sched/fair: keep load_avg and load_sum synced
-Message-ID: <YK+ZGlfPxK3JCySS@hirez.programming.kicks-ass.net>
-References: <20210527122916.27683-1-vincent.guittot@linaro.org>
- <20210527122916.27683-2-vincent.guittot@linaro.org>
+        d=sirena.org.uk; s=20170815-heliosphere; h=In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=UXGNIaSzoW/C0FndVcq3C1mNY97nbWGbAJ+OPbR6xYY=; b=GTWa8l9C5zkrPNxJlOYo7Hcxy+
+        sxlKtTMD2sjrnxzrzqm69B0IMVgd/fflUJPk9clctfyXy4ceG/M16kogIT6FfB8kwFoXsg7B9uYj2
+        CY+DdYz7iwBSilGJFFAT61J6JNVR9qZGkijAPgAoVxWFgTQcKroVaDxPR+0YSkloPXzQ=;
+Received: from 94.196.90.140.threembb.co.uk ([94.196.90.140] helo=fitzroy.sirena.org.uk)
+        by heliosphere.sirena.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <broonie@sirena.org.uk>)
+        id 1lmFhy-006O7I-Kt; Thu, 27 May 2021 13:05:54 +0000
+Received: by fitzroy.sirena.org.uk (Postfix, from userid 1000)
+        id 1D2C1D0EA33; Thu, 27 May 2021 14:05:53 +0100 (BST)
+Date:   Thu, 27 May 2021 14:05:53 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Ezequiel Garcia <ezequiel@collabora.com>
+Cc:     Rudi Heitbaum <rudi@heitbaum.com>,
+        Peter Geis <pgwipeout@gmail.com>, devicetree@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "open list:ARM/Rockchip SoC..." <linux-rockchip@lists.infradead.org>,
+        chenjh@rock-chips.com
+Subject: Re: [PATCH] regulator: fan53555: add back tcs4526
+Message-ID: <YK+ZMdD+7uqQwCow@sirena.org.uk>
+References: <20210526162342.GA20@8bbba9ba63a4>
+ <CAMdYzYpZoKs3P62j02RW-+5BEpqC9JL3apjucTWLWmvNFrOrCg@mail.gmail.com>
+ <20210527105943.GA441@7698f5da3a10>
+ <462b8d80447efb6c00e93704914169bceb5adc4d.camel@collabora.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="NyUceJCoDarUvku8"
 Content-Disposition: inline
-In-Reply-To: <20210527122916.27683-2-vincent.guittot@linaro.org>
+In-Reply-To: <462b8d80447efb6c00e93704914169bceb5adc4d.camel@collabora.com>
+X-Cookie: A penny saved has not been spent.
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 27, 2021 at 02:29:15PM +0200, Vincent Guittot wrote:
 
-> --- a/kernel/sched/fair.c
-> +++ b/kernel/sched/fair.c
-> @@ -3509,7 +3509,8 @@ update_tg_cfs_load(struct cfs_rq *cfs_rq, struct sched_entity *se, struct cfs_rq
->  	se->avg.load_sum = runnable_sum;
->  	se->avg.load_avg = load_avg;
->  	add_positive(&cfs_rq->avg.load_avg, delta_avg);
-> -	add_positive(&cfs_rq->avg.load_sum, delta_sum);
-> +	cfs_rq->avg.load_sum = cfs_rq->avg.load_avg * divider;
+--NyUceJCoDarUvku8
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-If I'm not mistaken, this makes delta_sum unused, so we can remove it
-entirely, see below.
+On Thu, May 27, 2021 at 08:51:27AM -0300, Ezequiel Garcia wrote:
+> On Thu, 2021-05-27 at 10:59 +0000, Rudi Heitbaum wrote:
 
-> +
+> > +=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0reg =3D <0x1c>;
+> > +=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0vin-supply =3D <&vcc5v0_s=
+ys>;
+> > +=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0regulator-compatible =3D =
+"fan53555-reg";
 
-This extra blank space, we really need that? :-)
+> I can be wrong, but I think regulator-compatible is deprecated.
 
->  }
+Yes.
 
----
-diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-index 161b92aa1c79..2b99e687fe7a 100644
---- a/kernel/sched/fair.c
-+++ b/kernel/sched/fair.c
-@@ -3453,10 +3453,9 @@ update_tg_cfs_runnable(struct cfs_rq *cfs_rq, struct sched_entity *se, struct cf
- static inline void
- update_tg_cfs_load(struct cfs_rq *cfs_rq, struct sched_entity *se, struct cfs_rq *gcfs_rq)
- {
--	long delta_avg, running_sum, runnable_sum = gcfs_rq->prop_runnable_sum;
-+	long running_sum, runnable_sum = gcfs_rq->prop_runnable_sum;
- 	unsigned long load_avg;
- 	u64 load_sum = 0;
--	s64 delta_sum;
- 	u32 divider;
- 
- 	if (!runnable_sum)
-@@ -3503,13 +3502,11 @@ update_tg_cfs_load(struct cfs_rq *cfs_rq, struct sched_entity *se, struct cfs_rq
- 	load_sum = (s64)se_weight(se) * runnable_sum;
- 	load_avg = div_s64(load_sum, divider);
- 
--	delta_sum = load_sum - (s64)se_weight(se) * se->avg.load_sum;
--	delta_avg = load_avg - se->avg.load_avg;
--
- 	se->avg.load_sum = runnable_sum;
- 	se->avg.load_avg = load_avg;
--	add_positive(&cfs_rq->avg.load_avg, delta_avg);
--	add_positive(&cfs_rq->avg.load_sum, delta_sum);
-+
-+	add_positive(&cfs_rq->avg.load_avg, (long)(load_avg - se->avg.load_avg));
-+	cfs_rq->avg.load_sum = cfs_rq->avg.load_avg * divider;
- }
- 
- static inline void add_tg_cfs_propagate(struct cfs_rq *cfs_rq, long runnable_sum)
+> > +=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0regulator-ramp-delay =3D =
+<1000>;
+> > +=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0fcs,suspend-voltage-selec=
+tor =3D <1>;
+> > +=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0regulator-always-on;
+> > +=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0regulator-boot-on;
+
+> Just out of curiosity, is regulator-boot-on really needed for the GPU?
+
+It should only be used if it's not possible to read the state of
+the regulator enable from the hardware.
+
+Please delete unneeded context from mails when replying.  Doing this
+makes it much easier to find your reply in the message, helping ensure
+it won't be missed by people scrolling through the irrelevant quoted
+material.
+
+--NyUceJCoDarUvku8
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmCvmTAACgkQJNaLcl1U
+h9CX9ggAgzyzUvDEBdNIyiQB7N7iaoLnBcDf4WWsOC8pOpOinrfXGplncFDVXzcz
+jirCOSxb0jLmCwKEMbFrSaOYw2SZuDbVtDDnYwsFBXBmL4wedkU8n0c5eJ5DK88L
+bJ5gToio6MmqIL1Yb9QPI7XsQeEvF/LxN/QzwXr3KqTZeB6hATgg4EqrRNyLjbvS
+Ra7dmlehkgQ6Ym6aL5cTaxFPkffpASi1MnvaUhyEEsbiXTbC+dWmLGovVMRrf6GY
+g4/vglOQe0uuMBGRpoy1s2SRLOSeKcCwZOKoLITxpTsT6YhZw1BDw48o2Vaxzcdb
+up/35XqdtRuBzEDTd/sC9Fv2raCEzQ==
+=vK9F
+-----END PGP SIGNATURE-----
+
+--NyUceJCoDarUvku8--
