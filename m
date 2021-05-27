@@ -2,197 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E8D4E393434
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 18:41:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 16A95393438
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 18:42:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236559AbhE0QnE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 May 2021 12:43:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51112 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233038AbhE0QnC (ORCPT
+        id S234972AbhE0QoG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 May 2021 12:44:06 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:27668 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233038AbhE0QoE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 May 2021 12:43:02 -0400
-Received: from mail-yb1-xb2d.google.com (mail-yb1-xb2d.google.com [IPv6:2607:f8b0:4864:20::b2d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F18A6C061574;
-        Thu, 27 May 2021 09:41:27 -0700 (PDT)
-Received: by mail-yb1-xb2d.google.com with SMTP id y2so1499764ybq.13;
-        Thu, 27 May 2021 09:41:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=+l4a65SFfahsGPe4r1E9ADTfkqEZTK+KAtWlOZb/3NU=;
-        b=q7xCi4kx6BzY3h/W5ZHyfao57L0zxJqJzX2A/T/IELSwM8dqEY95sW//0R+hzz9Jit
-         SLZuHBQEqvwH6HMtNmb3uNV22TBJJq+e7KkDkgas42uuNU84n8FDocJZhmSjDeBY+O0U
-         bAs71ccpZ7S0nReVn6zNR95pQ2Pdx3qLNb0hHFrAkJHtsiaiYloMBU4YmV9pWSyUHym/
-         UvjDehY78Fe8JaJkDnz7FplaMZ6JuOlhHD+3OmvJ9TG3FCQQHqdjOKQkY4aTu4qW0LXe
-         958z4ikn7zJSe2cYWqOe6klqxHJYlwmMVIR4VSJMQlKQPzmCduhQ5QXk6nDIQtUeQfse
-         wU8g==
+        Thu, 27 May 2021 12:44:04 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1622133751;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=2vTNhbBtiHXqAd12PS1yesU25XwiD0QzTA7/TTPBmFM=;
+        b=Cin0ejD/89HPjFZ5dMvuDEsXKxO63ZDCqSRog2NBFVZUB/Rd7N15fhA6tT2gshvfOVk28j
+        BfrEBITg9PAd9vP/SifjtWwJb2/bi9zrBqKs1oNHkiNzab1fT/fOSlQq0ju7vA+O5TWtnl
+        s8D9gzpiWRAGKmX/Ge7qgozKdqsO93k=
+Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
+ [209.85.128.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-91-wO8zjWocOLavHcQuHWDamQ-1; Thu, 27 May 2021 12:42:28 -0400
+X-MC-Unique: wO8zjWocOLavHcQuHWDamQ-1
+Received: by mail-wm1-f70.google.com with SMTP id r15-20020a05600c35cfb029017cc4b1e9faso1689751wmq.8
+        for <linux-kernel@vger.kernel.org>; Thu, 27 May 2021 09:42:28 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=+l4a65SFfahsGPe4r1E9ADTfkqEZTK+KAtWlOZb/3NU=;
-        b=uHo2vx1Mz03/iVjZr0Pf6BSyPgrVeVRMocHEbko6FBoXE1YoTEldkDVbWytcDKfdCH
-         nXtqmhwnUdn/OIImLBrbtwOPVf9ZnSl+tXKQAKaRszD9hFC6oOQ5piej3fr+ZfFZuAs8
-         bQ/e+YRzBezmEk2uTUM+4I+lnG/PefSULA/ZrPIWjTSmYH1Ip+qC8cz+y1k8f3xHo7TU
-         hPag5OpKjPeyDt9pJG4xx2nMvlLlogSJmH+7WpYHZijoF+uVT22LsWqvTbE4lOpo1XOO
-         HEwqQhE9lU5zlukNkHjudKa8kXyc8Kq9fBNK+W0biYEHPCQotSoJMH0VaC99/DDZhozi
-         sITg==
-X-Gm-Message-State: AOAM532njzyG4ssYtdh9dJsEqnyL0WmfxkT+UKacu+Q5eMYK5we5IGc3
-        jKz0Lx7KFt7PAJATUt+pf9uCodQ5svAdjgkw4nc=
-X-Google-Smtp-Source: ABdhPJw4r3p90tt/mwxh1t6xLrMX5Hq4iefF/RfM7bl+2bAHNjliN/2WZVATvcik5GjUtq1ZgFfSXSBoL/CVyRqZm30=
-X-Received: by 2002:a25:7246:: with SMTP id n67mr6172067ybc.510.1622133687136;
- Thu, 27 May 2021 09:41:27 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=2vTNhbBtiHXqAd12PS1yesU25XwiD0QzTA7/TTPBmFM=;
+        b=Gh+8dg9RQSEhdCfZqpsuFhBcKw3ING1SPeCQTnAKQ1M3D23/vqQjomsaof/Pj+KLAk
+         Ex+BdUZ//b4bR8YeI5pCIE6i9q85Gm7AAHbuiok8Bp3t6U1FPTKXAW0H4xjKe0oENDCf
+         s1CNkTH7vUdlIXa9gCxFDQnwVA29bnuwonH/mTim8Eja8HGX5/EzadkR2hBV6CSBsWi0
+         ty5hJkN46CNF1iJ7598i/6dqixACzvlUfwAWbGBqKbuy0LnRBjtqONVKGVaSlE8EMEbN
+         CgK5/0qBdWeAvnLpnAFcfjkLNJ9c6smBg9+kT4rpcnn1yBUUDS+dD6eoXY7j2O31rOh5
+         7oBA==
+X-Gm-Message-State: AOAM531x0R8LDm72ZspNUdVZTd+pQmetpwiSh8W4N6pMlD8P5ZYBmlhg
+        39V4t4ku8qc8Kl/6B9CyHE/h/Ty2K3BlGRKm6ETfHX1SbT8cqmwju9R0DOmVxLoNCzyfKw6NtR7
+        0jCP35YGE0Oi5hSWKRKGkY+8q
+X-Received: by 2002:a1c:b0c2:: with SMTP id z185mr3256688wme.38.1622133747662;
+        Thu, 27 May 2021 09:42:27 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwd/dStGoMEo6c95w85TOJyRiGeyA9gUUPIcnxY9CuuEd6+4PjtLVWZVfzTgdoS1B5uDDe0hg==
+X-Received: by 2002:a1c:b0c2:: with SMTP id z185mr3256668wme.38.1622133747375;
+        Thu, 27 May 2021 09:42:27 -0700 (PDT)
+Received: from [192.168.1.101] ([92.176.231.106])
+        by smtp.gmail.com with ESMTPSA id l16sm12551203wmj.47.2021.05.27.09.42.26
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 27 May 2021 09:42:26 -0700 (PDT)
+Subject: Re: [PATCH] tpm_tis_spi: add missing SPI device ID entries
+To:     Jason Gunthorpe <jgg@ziepe.ca>
+Cc:     linux-kernel@vger.kernel.org,
+        Alexander Wellbrock <a.wellbrock@mailbox.org>,
+        Jarkko Sakkinen <jarkko@kernel.org>,
+        Peter Huewe <peterhuewe@gmx.de>,
+        Peter Robinson <pbrobinson@gmail.com>,
+        linux-integrity@vger.kernel.org
+References: <20210527152352.3835076-1-javierm@redhat.com>
+ <20210527161156.GH1096940@ziepe.ca>
+From:   Javier Martinez Canillas <javierm@redhat.com>
+Message-ID: <f0afae88-419f-6792-c795-b15e724ba739@redhat.com>
+Date:   Thu, 27 May 2021 18:42:25 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
 MIME-Version: 1.0
-References: <162209754288.436794.3904335049560916855.stgit@devnote2>
-In-Reply-To: <162209754288.436794.3904335049560916855.stgit@devnote2>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Thu, 27 May 2021 09:41:16 -0700
-Message-ID: <CAEf4BzYEUTquwjL2Ea+cjU4ipYVtoA2kdg74+u_hzHUKr39iKQ@mail.gmail.com>
-Subject: Re: [PATCH -tip v7 00/13] kprobes: Fix stacktrace with kretprobes on x86
-To:     Masami Hiramatsu <mhiramat@kernel.org>
-Cc:     Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@kernel.org>, X86 ML <x86@kernel.org>,
-        Daniel Xu <dxu@dxuuu.xyz>,
-        open list <linux-kernel@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>, Jakub Kicinski <kuba@kernel.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Kernel Team <kernel-team@fb.com>, Yonghong Song <yhs@fb.com>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        linux-ia64@vger.kernel.org,
-        Abhishek Sagar <sagar.abhishek@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210527161156.GH1096940@ziepe.ca>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 26, 2021 at 11:39 PM Masami Hiramatsu <mhiramat@kernel.org> wrote:
->
-> Hello,
->
-> Here is the 7th version of the series to fix the stacktrace with kretprobe on x86.
->
-> The previous version is;
->
->  https://lore.kernel.org/bpf/162201612941.278331.5293566981784464165.stgit@devnote2/
->
-> This version is adding Tested-by from Andrii and do minor cleanups to solve some
-> warnings from kernel test bots.
->
-> Changes from v6:
-> For x86 and generic patch:
->   - Add Andrii's Tested-by. (Andrii, I think you have tested only x86, is it OK?)
+Hello Jason,
 
-right, only tested x86-64
+On 5/27/21 6:11 PM, Jason Gunthorpe wrote:
+> On Thu, May 27, 2021 at 05:23:52PM +0200, Javier Martinez Canillas wrote:
+>> The SPI core always reports a "MODALIAS=spi:<foo>", even if the device was
+>> registered via OF. This means that this module won't auto-load if a DT has
+>> for example has a node with a compatible "infineon,slb9670" string.
+> 
+> Really? Then why do we have of_tis_spi_match and why does spi have an
+> of_match_table?
+>
 
-> [11/13]:
->   - Remove superfluous #include <linux/kprobes.h>.
-> [13/13]:
->   - Add a prototype for arch_kretprobe_fixup_return().
->
->
-> With this series, unwinder can unwind stack correctly from ftrace as below;
->
->   # cd /sys/kernel/debug/tracing
->   # echo > trace
->   # echo 1 > options/sym-offset
->   # echo r vfs_read >> kprobe_events
->   # echo r full_proxy_read >> kprobe_events
->   # echo traceoff:1 > events/kprobes/r_vfs_read_0/trigger
->   # echo stacktrace:1 > events/kprobes/r_full_proxy_read_0/trigger
->   # echo 1 > events/kprobes/enable
->   # cat /sys/kernel/debug/kprobes/list
-> ffffffff8133b740  r  full_proxy_read+0x0    [FTRACE]
-> ffffffff812560b0  r  vfs_read+0x0    [FTRACE]
->   # echo 0 > events/kprobes/enable
->   # cat trace
-> # tracer: nop
-> #
-> # entries-in-buffer/entries-written: 3/3   #P:8
-> #
-> #                                _-----=> irqs-off
-> #                               / _----=> need-resched
-> #                              | / _---=> hardirq/softirq
-> #                              || / _--=> preempt-depth
-> #                              ||| /     delay
-> #           TASK-PID     CPU#  ||||   TIMESTAMP  FUNCTION
-> #              | |         |   ||||      |         |
->            <...>-134     [007] ...1    16.185877: r_full_proxy_read_0: (vfs_read+0x98/0x180 <- full_proxy_read)
->            <...>-134     [007] ...1    16.185901: <stack trace>
->  => kretprobe_trace_func+0x209/0x300
->  => kretprobe_dispatcher+0x4a/0x70
->  => __kretprobe_trampoline_handler+0xd4/0x170
->  => trampoline_handler+0x43/0x60
->  => kretprobe_trampoline+0x2a/0x50
->  => vfs_read+0x98/0x180
->  => ksys_read+0x5f/0xe0
->  => do_syscall_64+0x37/0x90
->  => entry_SYSCALL_64_after_hwframe+0x44/0xae
->            <...>-134     [007] ...1    16.185902: r_vfs_read_0: (ksys_read+0x5f/0xe0 <- vfs_read)
->
-> This shows the double return probes (vfs_read and full_proxy_read) on the stack
-> correctly unwinded. (vfs_read will return to ksys_read+0x5f and full_proxy_read
-> will return to vfs_read+0x98)
->
-> This actually changes the kretprobe behavisor a bit, now the instraction pointer in
-> the pt_regs passed to kretprobe user handler is correctly set the real return
-> address. So user handlers can get it via instruction_pointer() API.
->
-> You can also get this series from
->  git://git.kernel.org/pub/scm/linux/kernel/git/mhiramat/linux.git kprobes/kretprobe-stackfix-v7
->
->
-> Thank you,
->
-> ---
->
-> Josh Poimboeuf (1):
->       x86/kprobes: Add UNWIND_HINT_FUNC on kretprobe_trampoline code
->
-> Masami Hiramatsu (12):
->       ia64: kprobes: Fix to pass correct trampoline address to the handler
->       kprobes: treewide: Replace arch_deref_entry_point() with dereference_symbol_descriptor()
->       kprobes: treewide: Remove trampoline_address from kretprobe_trampoline_handler()
->       kprobes: Add kretprobe_find_ret_addr() for searching return address
->       ARC: Add instruction_pointer_set() API
->       ia64: Add instruction_pointer_set() API
->       arm: kprobes: Make a space for regs->ARM_pc at kretprobe_trampoline
->       kprobes: Setup instruction pointer in __kretprobe_trampoline_handler
->       x86/kprobes: Push a fake return address at kretprobe_trampoline
->       x86/unwind: Recover kretprobe trampoline entry
->       tracing: Show kretprobe unknown indicator only for kretprobe_trampoline
->       x86/kprobes: Fixup return address in generic trampoline handler
->
->
->  arch/arc/include/asm/ptrace.h       |    5 ++
->  arch/arc/kernel/kprobes.c           |    2 -
->  arch/arm/probes/kprobes/core.c      |    5 +-
->  arch/arm64/kernel/probes/kprobes.c  |    3 -
->  arch/csky/kernel/probes/kprobes.c   |    2 -
->  arch/ia64/include/asm/ptrace.h      |    5 ++
->  arch/ia64/kernel/kprobes.c          |   15 ++---
->  arch/mips/kernel/kprobes.c          |    3 -
->  arch/parisc/kernel/kprobes.c        |    4 +
->  arch/powerpc/kernel/kprobes.c       |   13 ----
->  arch/riscv/kernel/probes/kprobes.c  |    2 -
->  arch/s390/kernel/kprobes.c          |    2 -
->  arch/sh/kernel/kprobes.c            |    2 -
->  arch/sparc/kernel/kprobes.c         |    2 -
->  arch/x86/include/asm/kprobes.h      |    1
->  arch/x86/include/asm/unwind.h       |   23 +++++++
->  arch/x86/include/asm/unwind_hints.h |    5 ++
->  arch/x86/kernel/kprobes/core.c      |   53 +++++++++++++++--
->  arch/x86/kernel/unwind_frame.c      |    3 -
->  arch/x86/kernel/unwind_guess.c      |    3 -
->  arch/x86/kernel/unwind_orc.c        |   18 +++++-
->  include/linux/kprobes.h             |   44 ++++++++++++--
->  kernel/kprobes.c                    |  108 +++++++++++++++++++++++++----------
->  kernel/trace/trace_output.c         |   17 +-----
->  lib/error-inject.c                  |    3 +
->  25 files changed, 238 insertions(+), 105 deletions(-)
->
-> --
-> Masami Hiramatsu (Linaro) <mhiramat@kernel.org>
+It's correctly used to match drivers with devices registered by OF, so it
+makes sense to have them. It's only the MODALIAS uevent reporting in the
+SPI core that doesn't do the correct thing:
+
+  static int spi_uevent(struct device *dev, struct kobj_uevent_env *env)
+  {
+	  const struct spi_device		*spi = to_spi_device(dev);
+	  int rc;
+
+	  rc = acpi_device_uevent_modalias(dev, env);
+	  if (rc != -ENODEV)
+		return rc;
+
+	  return add_uevent_var(env, "MODALIAS=%s%s", SPI_MODULE_PREFIX, spi->modalias);
+  }
+
+where spi->modalias contain the device portion of the compatible string in
+the DT node.
+
+Now compare with what the I2C subsystem does for example:
+
+  static int i2c_device_uevent(struct device *dev, struct kobj_uevent_env *env)
+  {
+	  struct i2c_client *client = to_i2c_client(dev);
+	  int rc;
+
+	  rc = of_device_uevent_modalias(dev, env);
+	  if (rc != -ENODEV)
+		  return rc;
+
+	  rc = acpi_device_uevent_modalias(dev, env);
+	  if (rc != -ENODEV)
+		  return rc;
+
+	  return add_uevent_var(env, "MODALIAS=%s%s", I2C_MODULE_PREFIX, client->name);
+  }
+
+Fixing the spi_uevent() function would be pretty trivial but that would break
+all the drivers and platforms that are relying on the current behaviour.
+
+So until we have fixed all the SPI drivers and make sure that have a proper OF
+device ID table to match against the reported OF modalises, we will need to add
+these workarounds to the SPI drivers.
+
+It's true that we could get rid of the OF device ID tables in the SPI drivers,
+but that would mean that:
+
+a) The manufacturer portion of the compatible string would never be used to
+   match a device to a driver, so "foo,bar" and "baz,bar" could match to the
+   wrong driver.
+
+b) We will be even more far from eventually fix the SPI core modalias reporting
+   since SPI drivers won't have OF aliases in their modules.
+
+> Jason
+> 
+
+Best regards,
+-- 
+Javier Martinez Canillas
+Software Engineer
+New Platform Technologies Enablement team
+RHEL Engineering
+
