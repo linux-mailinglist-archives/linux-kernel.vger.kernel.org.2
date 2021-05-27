@@ -2,89 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D786A393415
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 18:36:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 788CD393412
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 18:35:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236335AbhE0Qhb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 May 2021 12:37:31 -0400
-Received: from mout.kundenserver.de ([217.72.192.75]:33193 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234779AbhE0Qh2 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 May 2021 12:37:28 -0400
-Received: from evilbit.green-communications.fr ([92.154.77.116]) by
- mrelayeu.kundenserver.de (mreue109 [213.165.67.119]) with ESMTPSA (Nemesis)
- id 1MxDgs-1lWi1Y41ay-00xb4U; Thu, 27 May 2021 18:35:05 +0200
-From:   Nicolas Cavallari <nicolas.cavallari@green-communications.fr>
-To:     Timur Tabi <timur@kernel.org>,
-        Nicolin Chen <nicoleotsuka@gmail.com>,
-        Xiubo Li <Xiubo.Lee@gmail.com>,
-        Fabio Estevam <festevam@gmail.com>,
-        Shengjiu Wang <shengjiu.wang@gmail.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
-Cc:     alsa-devel@alsa-project.org, linuxppc-dev@lists.ozlabs.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] ASoC: fsl-asoc-card: Set .owner attribute when registering card.
-Date:   Thu, 27 May 2021 18:34:09 +0200
-Message-Id: <20210527163409.22049-1-nicolas.cavallari@green-communications.fr>
-X-Mailer: git-send-email 2.32.0.rc0
+        id S236284AbhE0Qgd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 May 2021 12:36:33 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56346 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235001AbhE0Qg1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 27 May 2021 12:36:27 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 82F8A61077;
+        Thu, 27 May 2021 16:34:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1622133293;
+        bh=IsdX7aBRh7T+5Cs2YQCUr1eculVqE7cgTlmKcUzghtw=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=pW8dEcGvcslftdvA+7SeEV3shWhIBt1vMtAdU2jrFJ0oB5h3Fvh5hmWpF8MoKf70L
+         7xEivnA7j+jZ0t57MfE3t7gn5fRR/95frbZ61OqucjNanqwlFuEU9xh/Ru3gq2PXpp
+         jb6jcIRF325vcvmXuRiawNXjQ8UUqHrNY5cmMC4k8HWEBvN1PsQFCmf8cLkjqRvzJ0
+         bDY5FQQqOJn/te1373BWCf4GrJd29C9XwbGWZ+4JC9K8E+8zcvWkag2ipyw717PfrW
+         6s9nyyZi9JTX09x4j+ngJX1f3aJY/RdG/gre9KEfPDBPHW1LJroW4FzPNLwNYvjpPE
+         IEmcX21+d414A==
+Date:   Thu, 27 May 2021 11:34:52 -0500
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+Cc:     Will Deacon <will@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
+        Maximilian Luz <luzmaximilian@gmail.com>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Len Brown <lenb@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        linux-pci@vger.kernel.org, linux-acpi@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [RFC PATCH] Revert "arm64: PCI: Exclude ACPI "consumer"
+ resources from host bridge windows"
+Message-ID: <20210527163452.GA1402454@bjorn-Precision-5520>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Provags-ID: V03:K1:2Xcz2Picz7QfmT/3RZBi3M8YNs4IfW4bK0TwJV+1zVrQF9+vlSl
- SpyEYVbT+4phkVcPD0ZG9bn4CAhEsIknv5lWwzPzDyXjwUVbUyGnIcI/zSyao3qv97Uyo4i
- 8I+4g8168s60kXemjwIW7S501zxCz+aUwNwwO7y+Pb2ZprPbNdy7M8pHZeG2EZATaEWW/9y
- 6O8qBSxcDQtKbzu8xhHQw==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:bzReOWb16ek=:V0+42pMgaYxIojg4mvWBbg
- pEcUglREpACdHscuIlYtm7rEF3ODNcM1E0WQzBzhTFSs7DhVRluMSngL55mjhF42QxYVfR6yN
- Y65WkxbZGGMseBbZaK3721OpVPaZT3j2d3whJBH8Ep+YS3iBF2L2spCuH5Auajt641GTL42GW
- kZof8yQyY9aoOgnyJac80gSxutgWZfgb4Ak7fxwPfzQESJbWM+oeXTICXrW5GCrCKvCz3bhat
- 2o9CPY6I3ZwHe5auyuKNq9RcQ7TdfEFm5KMHsn8mAXeUdPiGv68RVfSTL1M6WJG/6oHGiYyQR
- HaZkmeFqcTTe7HE2p0nVlYu5a/pBdX/bhesH0c8R/h8aIokRObk+EJDP8PICJNXBQOjZtpZXJ
- YjmDi/YZ3cxgRpEEEJOP/vNHx5P6984xxPB7G6loLa7hFlOWvrT7mggU/pHi2T2HMSGaaZ9LX
- I5+TKzR4hj5c+LinK2iGQJA6VuoWGUcp2B9Xhhb5O2b1stq40h5gqLrsyKkryYU2ZogkQFvtD
- kkykOYd/i9PhIrXzooyIfBz6g9K+osu7eGuFTYF6CFTnYg9QWm7CUZ6cn3PK6CoMw==
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210527093200.GA16444@lpieralisi>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Otherwise, when compiled as module, a WARN_ON is triggered:
+On Thu, May 27, 2021 at 10:32:00AM +0100, Lorenzo Pieralisi wrote:
+> On Wed, May 26, 2021 at 09:58:36PM +0100, Will Deacon wrote:
+> > On Tue, May 11, 2021 at 01:40:20AM +0200, Maximilian Luz wrote:
+> > > The Microsoft Surface Pro X has host bridges defined as
+> > > 
+> > >     Name (_HID, EisaId ("PNP0A08") /* PCI Express Bus */)  // _HID: Hardware ID
+> > >     Name (_CID, EisaId ("PNP0A03") /* PCI Bus */)  // _CID: Compatible ID
+> > > 
+> > >     Method (_CRS, 0, NotSerialized)  // _CRS: Current Resource Settings
+> > >     {
+> > >         Name (RBUF, ResourceTemplate ()
+> > >         {
+> > >             Memory32Fixed (ReadWrite,
+> > >                 0x60200000,         // Address Base
+> > >                 0x01DF0000,         // Address Length
+> > >                 )
+> > >             WordBusNumber (ResourceProducer, MinFixed, MaxFixed, PosDecode,
+> > >                 0x0000,             // Granularity
+> > >                 0x0000,             // Range Minimum
+> > >                 0x0001,             // Range Maximum
+> > >                 0x0000,             // Translation Offset
+> > >                 0x0002,             // Length
+> > >                 ,, )
+> > >         })
+> > >         Return (RBUF) /* \_SB_.PCI0._CRS.RBUF */
+> > >     }
+> > > 
+> > > meaning that the memory resources aren't (explicitly) defined as
+> > > "producers", i.e. host bridge windows.
+> > > 
+> > > Commit 8fd4391ee717 ("arm64: PCI: Exclude ACPI "consumer" resources from
+> > > host bridge windows") introduced a check that removes such resources,
+> > > causing BAR allocation failures later on:
+> > > 
+> > >     [ 0.150731] pci 0002:00:00.0: BAR 14: no space for [mem size 0x00100000]
+> > >     [ 0.150744] pci 0002:00:00.0: BAR 14: failed to assign [mem size 0x00100000]
+> > >     [ 0.150758] pci 0002:01:00.0: BAR 0: no space for [mem size 0x00004000 64bit]
+> > >     [ 0.150769] pci 0002:01:00.0: BAR 0: failed to assign [mem size 0x00004000 64bit]
+> > > 
+> > > This eventually prevents the PCIe NVME drive from being accessible.
+> > > 
+> > > On x86 we already skip the check for producer/window due to some history
+> > > with negligent firmware. It seems that Microsoft is intent on continuing
+> > > that history on their ARM devices, so let's drop that check here too.
+> > > 
+> > > Signed-off-by: Maximilian Luz <luzmaximilian@gmail.com>
+> > > ---
+> > > 
+> > > Please note: I am not sure if this is the right way to fix that, e.g. I
+> > > don't know if any additional checks like on IA64 or x86 might be
+> > > required instead, or if this might break things on other devices. So
+> > > please consider this more as a bug report rather than a fix.
+> > > 
+> > > Apologies for the re-send, I seem to have unintentionally added a blank
+> > > line before the subject.
+> > > 
+> > > ---
+> > >  arch/arm64/kernel/pci.c | 14 --------------
+> > >  1 file changed, 14 deletions(-)
+> > 
+> > Adding Lorenzo to cc, as he'll have a much better idea about this than me.
+> > 
+> > This is:
+> > 
+> > https://lore.kernel.org/r/20210510234020.1330087-1-luzmaximilian@gmail.com
+> 
+> Sigh. We can't apply this patch since it would trigger regressions on
+> other platforms (IIUC the root complex registers would end up in the
+> host bridge memory windows).
+> 
+> I am not keen on reverting commit 8fd4391ee717 because it does the
+> right thing.
+> 
+> I think this requires a quirk and immediate reporting to Microsoft.
+> 
+> Bjorn, what are your thoughts on this ?
 
-WARNING: CPU: 0 PID: 5 at sound/core/init.c:208 snd_card_new+0x310/0x39c [snd]
-[...]
-CPU: 0 PID: 5 Comm: kworker/0:0 Not tainted 5.10.39 #1
-Hardware name: Freescale i.MX6 Quad/DualLite (Device Tree)
-Workqueue: events deferred_probe_work_func
-[<c0111988>] (unwind_backtrace) from [<c010c8ac>] (show_stack+0x10/0x14)
-[<c010c8ac>] (show_stack) from [<c092784c>] (dump_stack+0xdc/0x104)
-[<c092784c>] (dump_stack) from [<c0129710>] (__warn+0xd8/0x114)
-[<c0129710>] (__warn) from [<c0922a48>] (warn_slowpath_fmt+0x5c/0xc4)
-[<c0922a48>] (warn_slowpath_fmt) from [<bf0496f8>] (snd_card_new+0x310/0x39c [snd])
-[<bf0496f8>] (snd_card_new [snd]) from [<bf1d7df8>] (snd_soc_bind_card+0x334/0x9c4 [snd_soc_core])
-[<bf1d7df8>] (snd_soc_bind_card [snd_soc_core]) from [<bf1e9cd8>] (devm_snd_soc_register_card+0x30/0x6c [snd_soc_core])
-[<bf1e9cd8>] (devm_snd_soc_register_card [snd_soc_core]) from [<bf22d964>] (fsl_asoc_card_probe+0x550/0xcc8 [snd_soc_fsl_asoc_card])
-[<bf22d964>] (fsl_asoc_card_probe [snd_soc_fsl_asoc_card]) from [<c060c930>] (platform_drv_probe+0x48/0x98)
-[...]
+In retrospect, I think 8fd4391ee717 (which I wrote), was probably a
+mistake.
 
-Signed-off-by: Nicolas Cavallari <nicolas.cavallari@green-communications.fr>
----
- sound/soc/fsl/fsl-asoc-card.c | 1 +
- 1 file changed, 1 insertion(+)
+Sure, it's a nice idea to have PNP0A03 _CRS methods that work nicely
+as designed, by describing host bridge registers as "consumer"
+resources and host bridge windows as "producer" registers, instead of
+having the bridge registers in _CRS of an unrelated PNP0C02 device.
 
-diff --git a/sound/soc/fsl/fsl-asoc-card.c b/sound/soc/fsl/fsl-asoc-card.c
-index c62bfd1c3ac7..4f55b316cf0f 100644
---- a/sound/soc/fsl/fsl-asoc-card.c
-+++ b/sound/soc/fsl/fsl-asoc-card.c
-@@ -744,6 +744,7 @@ static int fsl_asoc_card_probe(struct platform_device *pdev)
- 	/* Initialize sound card */
- 	priv->pdev = pdev;
- 	priv->card.dev = &pdev->dev;
-+	priv->card.owner = THIS_MODULE;
- 	ret = snd_soc_of_parse_card_name(&priv->card, "model");
- 	if (ret) {
- 		snprintf(priv->name, sizeof(priv->name), "%s-audio",
--- 
-2.32.0.rc0
+But realistically, the PNP0A03/PNP0C02 issue is a solved problem, even
+though it's ugly, and I'm not sure why I thought Microsoft would see
+value in doing this differently on arm64 than on x86 and ia64.
 
+What would break if we reverted 8fd4391ee717?  I guess any arm64
+platforms that described host bridge register space in PNP0A03 _CRS
+"consumer" resources?  And Windows probably doesn't work or isn't
+supported on those platforms?
+
+Bjorn
