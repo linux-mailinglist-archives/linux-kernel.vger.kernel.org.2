@@ -2,83 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AB38A3926DD
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 07:26:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DF8313926F5
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 07:40:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234136AbhE0F2L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 May 2021 01:28:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37390 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233847AbhE0F2J (ORCPT
+        id S234212AbhE0FmS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 May 2021 01:42:18 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:35795 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233642AbhE0FmQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 May 2021 01:28:09 -0400
-Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 701ADC061574;
-        Wed, 26 May 2021 22:26:36 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4FrGWr5m4cz9sRK;
-        Thu, 27 May 2021 15:26:32 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1622093193;
-        bh=nozp9T1s7TmrAi1d67+s+Oddv15pVAiTnvfERQTnIsw=;
-        h=Date:From:To:Cc:Subject:From;
-        b=jfOjTLTmus+ninDnUt7ugrWL6+97i5eKlVOUoEjeGnEx7kMgN23ZH61bPE7vpgcbJ
-         7PgLAA75r5qaVTwJWuVT4RuVzAn2cD/VrpIkQ1Rs4gKCFydf9qm7DnNzMxI5Vqymc0
-         +VOdceA+qozKDjaKgWWFH0mpfhYqh2728LV1MM93jgerW8LjL+DGZNHt3S3rVJ9mou
-         pV/vXSbULCXJAWD5aAGXgNGy+xl+62Pfz60SavwFHWwz9fZp62WRej3siveD/xYlcL
-         8JEqRLeSQQE7VOUuBNIiCE08lCWvUaX/26WHyH9PLb6RS4bVJwLmmYQFGz5avgEn98
-         7daS86XJUamCA==
-Date:   Thu, 27 May 2021 15:26:31 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Jiri Kosina <jikos@kernel.org>,
-        Benjamin Tissoires <benjamin.tissoires@redhat.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: build failure after merge of the hid tree
-Message-ID: <20210527152631.1e70fba2@canb.auug.org.au>
+        Thu, 27 May 2021 01:42:16 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1622094043;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=AU/RuY2ymovNRYn9DIYtROZdNQLFTgpR1rexfb2OF3c=;
+        b=N1/ocHRmo7AWpG6/7nLrdOYRAd5Uru10vZ6ei9T4zNgzfrbNjdD/3CTsBheXanRxPW2CSU
+        Fsa2dqfqhI8XeCvsCa6NVLat7P/lAfXr+ce986tyzHq+dJ3cPuqjIGQUfzda39lsGfD5bz
+        h788r12lhHM1nZAtw0hHM4mu8yjmvng=
+Received: from mail-pg1-f198.google.com (mail-pg1-f198.google.com
+ [209.85.215.198]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-440-B2CqcDf9N8e2CyZKuhqJOg-1; Thu, 27 May 2021 01:40:42 -0400
+X-MC-Unique: B2CqcDf9N8e2CyZKuhqJOg-1
+Received: by mail-pg1-f198.google.com with SMTP id a10-20020a65418a0000b029021b78388f57so2266773pgq.15
+        for <linux-kernel@vger.kernel.org>; Wed, 26 May 2021 22:40:42 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=AU/RuY2ymovNRYn9DIYtROZdNQLFTgpR1rexfb2OF3c=;
+        b=s5h6dJZOBX1LLjp2CYrrwCW6gRM39zmDp77N4uptpo03vjuiMLyyiI+UmveYO8Mb5H
+         1x8kTa51tTl4MQmisqcDARIsyI+a4fzGeSdpeCWgomEpQ9xGQ6N1voefip0MgKFFCURA
+         6nNX0yxvdxw5Jbl7rNU8U7wVJuKMuIPJ+m/C8+mo9BsYbcHaE545fC9d01sma6IqywRB
+         nfLyrco0bO/huELsD8ywqRHtcRoHOJ9Ru7+3czuNfSiNH+jdwSUemVu1q9yJvSaUm6uE
+         EUCSNjRFwjBD5+KKMr4atAedLz28Q6xJXxWFs7776DlhRUgluVU33lwbU69oqypWgsQ1
+         vE3w==
+X-Gm-Message-State: AOAM532ztKroAqkaOuvKlwjRCZB8CgFwDTDHlzEDJ5FDPQFlvxfQIadh
+        Lv5aqAMOWJxXEIUVimuiF6pF60KJHxMQOT/Amv3Bw8LFyfmhRMYPBwFGovgkWAPZwMghTuzgnJG
+        xCSKT6ey4pWzlvkpuBMFeBUDi3JUNctkbB2jZDH2m2aOZIy9bqtRo0o9sfGJgmYp51sOEVLTxCN
+        d+
+X-Received: by 2002:a17:90a:71c7:: with SMTP id m7mr7691872pjs.9.1622094041067;
+        Wed, 26 May 2021 22:40:41 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwdvc47LfRqVL36pEPdXD9AUGFkROiA0ecx8aq5qhRtKjUnV9VTluCW50o4cKagpZC5qThkZA==
+X-Received: by 2002:a17:90a:71c7:: with SMTP id m7mr7691807pjs.9.1622094040375;
+        Wed, 26 May 2021 22:40:40 -0700 (PDT)
+Received: from wangxiaodeMacBook-Air.local ([209.132.188.80])
+        by smtp.gmail.com with ESMTPSA id z19sm851114pjq.11.2021.05.26.22.40.33
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 26 May 2021 22:40:39 -0700 (PDT)
+Subject: Re: [PATCH v7 11/12] vduse: Introduce VDUSE - vDPA Device in
+ Userspace
+To:     Yongji Xie <xieyongji@bytedance.com>
+Cc:     "Michael S. Tsirkin" <mst@redhat.com>,
+        Stefan Hajnoczi <stefanha@redhat.com>,
+        Stefano Garzarella <sgarzare@redhat.com>,
+        Parav Pandit <parav@nvidia.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        Christian Brauner <christian.brauner@canonical.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Jens Axboe <axboe@kernel.dk>, bcrl@kvack.org,
+        Jonathan Corbet <corbet@lwn.net>,
+        =?UTF-8?Q?Mika_Penttil=c3=a4?= <mika.penttila@nextfour.com>,
+        Dan Carpenter <dan.carpenter@oracle.com>, joro@8bytes.org,
+        virtualization <virtualization@lists.linux-foundation.org>,
+        netdev@vger.kernel.org, kvm <kvm@vger.kernel.org>,
+        linux-fsdevel@vger.kernel.org, iommu@lists.linux-foundation.org,
+        linux-kernel <linux-kernel@vger.kernel.org>
+References: <20210517095513.850-1-xieyongji@bytedance.com>
+ <20210517095513.850-12-xieyongji@bytedance.com>
+ <3740c7eb-e457-07f3-5048-917c8606275d@redhat.com>
+ <CACycT3uAqa6azso_8MGreh+quj-JXO1piuGnrV8k2kTfc34N2g@mail.gmail.com>
+ <5a68bb7c-fd05-ce02-cd61-8a601055c604@redhat.com>
+ <CACycT3ve7YvKF+F+AnTQoJZMPua+jDvGMs_ox8GQe_=SGdeCMA@mail.gmail.com>
+From:   Jason Wang <jasowang@redhat.com>
+Message-ID: <ee00efca-b26d-c1be-68d2-f9e34a735515@redhat.com>
+Date:   Thu, 27 May 2021 13:40:31 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.10.2
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/oj7d.dECWB/4=kZX2pqD_=A";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+In-Reply-To: <CACycT3ve7YvKF+F+AnTQoJZMPua+jDvGMs_ox8GQe_=SGdeCMA@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/oj7d.dECWB/4=kZX2pqD_=A
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
 
-Hi all,
+在 2021/5/27 下午1:08, Yongji Xie 写道:
+> On Thu, May 27, 2021 at 1:00 PM Jason Wang <jasowang@redhat.com> wrote:
+>>
+>> 在 2021/5/27 下午12:57, Yongji Xie 写道:
+>>> On Thu, May 27, 2021 at 12:13 PM Jason Wang <jasowang@redhat.com> wrote:
+>>>> 在 2021/5/17 下午5:55, Xie Yongji 写道:
+>>>>> +
+>>>>> +static int vduse_dev_msg_sync(struct vduse_dev *dev,
+>>>>> +                           struct vduse_dev_msg *msg)
+>>>>> +{
+>>>>> +     init_waitqueue_head(&msg->waitq);
+>>>>> +     spin_lock(&dev->msg_lock);
+>>>>> +     vduse_enqueue_msg(&dev->send_list, msg);
+>>>>> +     wake_up(&dev->waitq);
+>>>>> +     spin_unlock(&dev->msg_lock);
+>>>>> +     wait_event_killable(msg->waitq, msg->completed);
+>>>> What happens if the userspace(malicous) doesn't give a response forever?
+>>>>
+>>>> It looks like a DOS. If yes, we need to consider a way to fix that.
+>>>>
+>>> How about using wait_event_killable_timeout() instead?
+>>
+>> Probably, and then we need choose a suitable timeout and more important,
+>> need to report the failure to virtio.
+>>
+> Makes sense to me. But it looks like some
+> vdpa_config_ops/virtio_config_ops such as set_status() didn't have a
+> return value.  Now I add a WARN_ON() for the failure. Do you mean we
+> need to add some change for virtio core to handle the failure?
 
-After merging the hid tree, today's linux-next build (x86_64
-modules_install (on an allmodconfig build)) failed like this:
 
-depmod: ERROR: Cycle detected: hid -> usbhid -> hid
-depmod: ERROR: Found 2 modules in dependency cycles!
+Maybe, but I'm not sure how hard we can do that.
 
-I could not easily figure out what caused this (it may not be the hid
-tree, but probably is), so all I could do was leave it broken.
+We had NEEDS_RESET but it looks we don't implement it.
 
---=20
-Cheers,
-Stephen Rothwell
+Or a rough idea is that maybe need some relaxing to be coupled loosely 
+with userspace. E.g the device (control path) is implemented in the 
+kernel but the datapath is implemented in the userspace like TUN/TAP.
 
---Sig_/oj7d.dECWB/4=kZX2pqD_=A
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
+Thanks
 
------BEGIN PGP SIGNATURE-----
+>
+> Thanks,
+> Yongji
+>
 
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmCvLYcACgkQAVBC80lX
-0GwmaQf/VK7ye0A9AbT/3cWohVg0JA4br7EA0cq1GoFbD9+jRiHz/Cmy3VWKaY58
-RoEJJUQiUHwQWXAVzQVofx6+wVL8MVWKX3Aq7+/n9yjPnF5zRh7gZNH3/49uzLZu
-yVrZS6mEO/c1IN7cGSMvEVGT1w3bKvJlKjWbxx3NelM28INb3p535YPWPSMbt4jj
-uzMb+zzsLqLKRRtag9vYGdMtNbFGIUmvx1lAUkswB+XOl4KJE6ys0i2epWJo+Ge1
-Wr56aP3IHMCRP4RiUEnhhs8NyyFHN4B8+Eer0IkITHuToFTrsMZC90ZFEjSWNzKq
-/z2VRisQkAgTvI84p/BuyEFOkMWu/A==
-=SkJK
------END PGP SIGNATURE-----
-
---Sig_/oj7d.dECWB/4=kZX2pqD_=A--
