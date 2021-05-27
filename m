@@ -2,123 +2,227 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 253323926D1
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 07:23:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 180F33926D9
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 07:25:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233666AbhE0FYk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 May 2021 01:24:40 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:57263 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232240AbhE0FYi (ORCPT
+        id S234041AbhE0F1B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 May 2021 01:27:01 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:26409 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233918AbhE0F04 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 May 2021 01:24:38 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1622092985;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=kMolLnDEuKlCbbgIOvjZGGBzK5WYRhCAHto1CLY+p8s=;
-        b=TGpZIpUJddH24prhTz0/nxwz7qwQWR2QXX1cSDQdiIS31A0qAWM4Pl4q1UopVellJCP6if
-        ZkOnL5d3EYGXaGk1uazPTwDygoqvNteSJFCR63uhv+I6CZbsBjJPtA0eP+vFceLm+rAucb
-        Q0+8F7xWVXbFQ08UgluHaFvOSo0MBfc=
-Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
- [209.85.221.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-561-pZV3FiTBPS-HgJ_wJklk_A-1; Thu, 27 May 2021 01:23:03 -0400
-X-MC-Unique: pZV3FiTBPS-HgJ_wJklk_A-1
-Received: by mail-wr1-f70.google.com with SMTP id a9-20020adfc4490000b0290112095ca785so1279901wrg.14
-        for <linux-kernel@vger.kernel.org>; Wed, 26 May 2021 22:23:03 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=kMolLnDEuKlCbbgIOvjZGGBzK5WYRhCAHto1CLY+p8s=;
-        b=i3PF0KtX90zvK+M2GIsUEwp6G8t3gFtanLpwlHxjxfpVVEAIUGXczVa9cXNrqjghWP
-         nEKmQcVTUtppAjzZedcCY3Anhsq13mrs3xiYh9iaTf3WIBn8qnv8Cqr1Sw6RW0OS0PJG
-         jPKphkfCIkF7f9yBvtFCbnsQq52fXYCcf+fZaWGxeMX2eA8PUvn95VvztCb+BXBk7qbE
-         ZJ5L842AZrxF3K9ebos/9mpdy9vdZTP26xLq/tP+fwuqiVRiht8pqobp3QFGfB3MEJJY
-         AdO0VQC67dhCZSYAUvtpXwqrwfYLwz9cr92BhDVSoITjrRGB65fxKIzIksDDocLrb2s+
-         idIw==
-X-Gm-Message-State: AOAM531foftPtZTQSIe4zVJCIu3xlJaXZlywy+NoArD5umoMYUNTkG0q
-        DQmA8sPHeqQZCPtrTpVgpoJ30A/04wQwTAjiUGjIaCewGBD0/Eh3wi/j2o8Je0TnjSxHz3RmajE
-        0mH7uBUVTdCE8ILFGa5b5RUL/nRB02OsEggu1cmkJ
-X-Received: by 2002:a7b:c3d4:: with SMTP id t20mr1475250wmj.13.1622092982522;
-        Wed, 26 May 2021 22:23:02 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwa0wPCCjw27Z2yCH+wdxntKMt6SKdiBQRynFGJITdQ1ITjKHgkP1NlgNUqPttT4t/L9oT/b35YZi6UHzeV/LA=
-X-Received: by 2002:a7b:c3d4:: with SMTP id t20mr1475236wmj.13.1622092982195;
- Wed, 26 May 2021 22:23:02 -0700 (PDT)
+        Thu, 27 May 2021 01:26:56 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1622093124; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=8lksUp1qCJXiBU12bEnLm7XV+ucQTovs88KOZ7ewuHk=;
+ b=tbv6jJe6cm+SlIUgecihg8gSQtSFg9QtIKI3IxmjgaHHDg6a1La3DxajmScbc2WSu6LUqrhn
+ 0aHLk1DQgPoecYdU8hMdx3bfiExYgJHQygFsH3rYR/HUP0C+pIUh5TYl0UrSnjHLvpBKOVY9
+ GZVx3tw2aXDhHAc0uRJU7XF4cYQ=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n07.prod.us-west-2.postgun.com with SMTP id
+ 60af2d3c5f788b52a57d009b (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 27 May 2021 05:25:16
+ GMT
+Sender: schowdhu=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id E9C15C43460; Thu, 27 May 2021 05:25:15 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: schowdhu)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id BE2ABC433F1;
+        Thu, 27 May 2021 05:25:14 +0000 (UTC)
 MIME-Version: 1.0
-References: <20210429102828.31248-1-prasanna.kalever@redhat.com>
- <YKMKdHPFCNhR1SXx@T590> <CANwsLLH0HyZ-VGPMc+VmuLivG1fiZHnSqUyLx3UWb76ZMCgYSg@mail.gmail.com>
- <CAFnufp3ZzrKHiV1Vy9_bAymy0oEr288dL4yWo4EjqUzhJV6J-A@mail.gmail.com> <CAFnufp0V7X_nvN3RGK-C0AXappQ+qjMS_rb7iQhcjT8E0OVpzA@mail.gmail.com>
-In-Reply-To: <CAFnufp0V7X_nvN3RGK-C0AXappQ+qjMS_rb7iQhcjT8E0OVpzA@mail.gmail.com>
-From:   Prasanna Kalever <pkalever@redhat.com>
-Date:   Thu, 27 May 2021 10:52:50 +0530
-Message-ID: <CANwsLLEtOws-+X=3CCGzO88poP9NF8uNN8aW9wHOJ+QA=SFH3A@mail.gmail.com>
-Subject: Re: [PATCH] nbd: provide a way for userspace processes to identify
- device backends
-To:     Matteo Croce <mcroce@linux.microsoft.com>
-Cc:     Ming Lei <ming.lei@redhat.com>,
-        Prasanna Kumar Kalever <prasanna.kalever@redhat.com>,
-        linux-kernel@vger.kernel.org, linux-block@vger.kernel.org,
-        nbd@other.debian.org, Josef Bacik <josef@toxicpanda.com>,
-        Jens Axboe <axboe@kernel.dk>,
-        Ilya Dryomov <idryomov@redhat.com>,
-        Xiubo Li <xiubli@redhat.com>,
-        Lennart Poettering <lennart@poettering.net>,
-        Luca Boccassi <bluca@debian.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Thu, 27 May 2021 10:55:14 +0530
+From:   schowdhu@codeaurora.org
+To:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
+        Sibi Sankar <sibis@codeaurora.org>,
+        Rajendra Nayak <rnayak@codeaurora.org>, vkoul@kernel.org
+Subject: Re: [PATCH V4 0/4] Add driver support for Data Capture and Compare
+ Engine(DCC) for SM8150
+In-Reply-To: <cover.1620056206.git.schowdhu@codeaurora.org>
+References: <cover.1620056206.git.schowdhu@codeaurora.org>
+Message-ID: <b6d5e5be63f572ef1db2a055d98fd8c0@codeaurora.org>
+X-Sender: schowdhu@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 26, 2021 at 7:44 PM Matteo Croce <mcroce@linux.microsoft.com> wrote:
->
-> On Wed, May 19, 2021 at 4:33 PM Matteo Croce <mcroce@linux.microsoft.com> wrote:
-> >
-> > On Tue, May 18, 2021 at 9:52 AM Prasanna Kalever <pkalever@redhat.com> wrote:
-> > > > BTW, loop has similar issue, and patch of 'block: add a sequence number to disks'
-> > > > is added for addressing this issue, what do you think of that generic
-> > > > approach wrt. this nbd's issue? such as used the exposed sysfs sequence number
-> > > > for addressing this issue?
-> > > >
-> > > > https://lore.kernel.org/linux-block/YH81n34d2G3C4Re+@gardel-login/#r
-> > >
-> > > If I understand the changes and the background of the fix correctly, I
-> > > think with that fix author is trying to monotonically increase the seq
-> > > number and add it to the disk on every single device map/attach and
-> > > expose it through the sysfs, which will help the userspace processes
-> > > further to correlate events for particular and specific devices that
-> > > reuse the same loop device.
-> > >
-> >
-> > Yes, but nothing prevents to use diskseq in nbd, and increase it on reconfigure.
-> > That would allow to detect if the device has been reconfigured.
-> >
-> > Regards,
-> > --
-> > per aspera ad upstream
->
-> FYI: I just sent a v2 of the diskseq change
->
-> https://lore.kernel.org/linux-block/20210520135622.44625-1-mcroce@linux.microsoft.com/
+On 2021-05-03 21:47, Souradeep Chowdhury wrote:
+> DCC(Data Capture and Compare) is a DMA engine designed for debugging
+> purposes.In case of a system
+> crash or manual software triggers by the user the DCC hardware stores
+> the value at the register
+> addresses which can be used for debugging purposes.The DCC driver
+> provides the user with sysfs
+> interface to configure the register addresses.The options that the DCC
+> hardware provides include
+> reading from registers,writing to registers,first reading and then
+> writing to registers and looping
+> through the values of the same register.
+> 
+> In certain cases a register write needs to be executed for accessing
+> the rest of the registers,
+> also the user might want to record the changing values of a register
+> with time for which he has the
+> option to use the loop feature.
+> 
+> The options mentioned above are exposed to the user by sysfs files
+> once the driver is probed.The
+> details and usage of this sysfs files are documented in
+> Documentation/ABI/testing/sysfs-driver-dcc.
+> 
+> As an example let us consider a couple of debug scenarios where DCC
+> has been proved to be effective
+> for debugging purposes:-
+> 
+> i)TimeStamp Related Issue
+> 
+> On SC7180, there was a coresight timestamp issue where it would
+> occasionally be all 0 instead of proper
+> timestamp values.
+> 
+> Proper timestamp:
+> Idx:3373; ID:10; I_TIMESTAMP : Timestamp.; Updated val =
+> 0x13004d8f5b7aa; CC=0x9e
+> 
+> Zero timestamp:
+> Idx:3387; ID:10; I_TIMESTAMP : Timestamp.; Updated val = 0x0; CC=0xa2
+> 
+> Now this is a non-fatal issue and doesn't need a system reset, but 
+> still needs
+> to be rootcaused and fixed for those who do care about coresight etm 
+> traces.
+> Since this is a timestamp issue, we would be looking for any timestamp 
+> related
+> clocks and such.
+> 
+> o we get all the clk register details from IP documentation and 
+> configure it
+> via DCC config syfs node. Before that we set the current linked list.
+> 
+> /* Set the current linked list */
+> echo 3 > /sys/bus/platform/devices/10a2000.dcc/curr_list
+> 
+> /* Program the linked list with the addresses */
+> echo 0x10c004 > /sys/bus/platform/devices/10a2000.dcc/config
+> echo 0x10c008 > /sys/bus/platform/devices/10a2000.dcc/config
+> echo 0x10c00c > /sys/bus/platform/devices/10a2000.dcc/config
+> echo 0x10c010 > /sys/bus/platform/devices/10a2000.dcc/config
+> ..... and so on for other timestamp related clk registers
+> 
+> /* Other way of specifying is in "addr len" pair, in below case it
+> specifies to capture 4 words starting 0x10C004 */
+> 
+> echo 0x10C004 4 > /sys/bus/platform/devices/10a2000.dcc/config
+> 
+> /* Enable DCC */
+> echo 1 > /sys/bus/platform/devices/10a2000.dcc/enable
+> 
+> /* Run the timestamp test for working case */
+> 
+> /* Send SW trigger */
+> echo 1 > /sys/bus/platform/devices/10a2000.dcc/trigger
+> 
+> /* Read SRAM */
+> cat /dev/dcc_sram > dcc_sram1.bin
+> 
+> /* Run the timestamp test for non-working case */
+> 
+> /* Send SW trigger */
+> echo 1 > /sys/bus/platform/devices/10a2000.dcc/trigger
+> 
+> /* Read SRAM */
+> cat /dev/dcc_sram > dcc_sram2.bin
+> 
+> Get the parser from [1] and checkout the latest branch.
+> 
+> /* Parse the SRAM bin */
+> python dcc_parser.py -s dcc_sram1.bin --v2 -o output/
+> python dcc_parser.py -s dcc_sram2.bin --v2 -o output/
+> 
+> Sample parsed output of dcc_sram1.bin:
+> 
+> <hwioDump version="1">
+>         <timestamp>03/14/21</timestamp>
+>             <generator>Linux DCC Parser</generator>
+>                 <chip name="None" version="None">
+>                 <register address="0x0010c004" value="0x80000000" />
+>                 <register address="0x0010c008" value="0x00000008" />
+>                 <register address="0x0010c00c" value="0x80004220" />
+>                 <register address="0x0010c010" value="0x80000000" />
+>             </chip>
+>     <next_ll_offset>next_ll_offset : 0x1c </next_ll_offset>
+> </hwioDump>
+> 
+> ii)NOC register errors
+> 
+> A particular class of registers called NOC which are functional
+> registers was reporting
+> errors while logging the values.To trace these errors the DCC has been
+> used effectively.
+> The steps followed were similar to the ones mentioned above.
+> In addition to NOC registers a few other dependent registers were
+> configured in DCC to
+> monitor it's values during a crash. A look at the dependent register
+> values revealed that
+> the crash was happening due to a secured access to one of these
+> dependent registers.
+> All these debugging activity and finding the root cause was achieved 
+> using DCC.
+> 
+> DCC parser is available at the following open source location
+> 
+> https://source.codeaurora.org/quic/la/platform/vendor/qcom-opensource/tools/tree/dcc_parser
+> 
+> Changes in v4:
+> 
+> *Implement all the comments on v3 of the patch.
+> *Incorporate code change for handling multiple SoCs.
+> *Incorporate code change for DCC_SRAM content to persist across warm 
+> reboots.
+> *Fixed the issue with the Makefile in v3 of the patch.
+> 
+> Souradeep Chowdhury (4):
+>   dt-bindings: Added the yaml bindings for DCC
+>   soc: qcom: dcc:Add driver support for Data Capture and Compare
+>     unit(DCC)
+>   MAINTAINERS: Add the entry for DCC(Data Capture and Compare) driver
+>     support
+>   arm64: dts: qcom: sm8150: Add Data Capture and Compare(DCC) support
+>     node
+> 
+>  Documentation/ABI/testing/sysfs-driver-dcc         |  114 ++
+>  .../devicetree/bindings/arm/msm/qcom,dcc.yaml      |   40 +
+>  MAINTAINERS                                        |    8 +
+>  arch/arm64/boot/dts/qcom/sm8150.dtsi               |    6 +
+>  drivers/soc/qcom/Kconfig                           |    8 +
+>  drivers/soc/qcom/Makefile                          |    1 +
+>  drivers/soc/qcom/dcc.c                             | 1534 
+> ++++++++++++++++++++
+>  7 files changed, 1711 insertions(+)
+>  create mode 100644 Documentation/ABI/testing/sysfs-driver-dcc
+>  create mode 100644 
+> Documentation/devicetree/bindings/arm/msm/qcom,dcc.yaml
+>  create mode 100644 drivers/soc/qcom/dcc.c
 
-Thanks, Matteo, I will take a look.
-
-Just to set the expectation here, I don't have any thoughts on
-leverage the diskseq number for nbd as part of this patch. This patch
-is trying to solve a different problem which is more severe for us
-than helping to identify the reconfigured events.
-
-That all said, once diskseq patches are merged, I will surely open a
-new patch with the required changes in nbd, to leverage diskseq
-number.
-
-Best Regards,
---
-Prasanna
-
->
-> --
-> per aspera ad upstream
->
+Gentle Ping
 
