@@ -2,136 +2,326 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C4AC393620
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 21:16:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 814B639361D
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 21:15:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235034AbhE0TRh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 May 2021 15:17:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57360 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234521AbhE0TRf (ORCPT
+        id S229881AbhE0TRR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 May 2021 15:17:17 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:59741 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234786AbhE0TRN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 May 2021 15:17:35 -0400
-Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EAA2BC061761
-        for <linux-kernel@vger.kernel.org>; Thu, 27 May 2021 12:16:01 -0700 (PDT)
-Received: by mail-pl1-x631.google.com with SMTP id 69so450109plc.5
-        for <linux-kernel@vger.kernel.org>; Thu, 27 May 2021 12:16:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=IuQ1mln99XVQ8KIRtcNK5ux06may7zUsz31usRyDstI=;
-        b=UoNBo0lQTQse69/jwXlT+DbMDtMQCcT+3OsBws4KmUILMvbunExHrM9Do93IDjeGM8
-         MVbyTxu1iJWLa4iJfSk5+9vgUjmPuhmEDQ0XBYhl20CGPyYP342nspr2iohGgKc0xKOi
-         BvLgo8z/XWlA3PhpTNP+oZBYI8eD2oqSsMVGy+MhT5ZiivgRJ+LiHpY2W5d4pWtXVCZs
-         fFtFtry8HlZ+925fk5RpgifDl/lbbIEpnpg+YTdtCoh2Lc6Laq8UaCi/MSN4l4dZ5wtg
-         WmeXMWO5DpWvrABR2X/B0le55LFvP3Jli+4GSwhTtE6px+AXpHOJirTUYEt1mq847VJz
-         JBpw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=IuQ1mln99XVQ8KIRtcNK5ux06may7zUsz31usRyDstI=;
-        b=O5VCKMusI1CzwkO6xTuWDemMMraeIjuw6HNS7uCNpnMghFiEcMnlEaDPFTw4c3tGIz
-         mK57xdAC+jgxs9UvyrE9u/UnbWsb1CGIHaktfkXqJ+fRm+GXliSO9fTYgbJ8d0j61w8h
-         FYtKc1sWuZWUOf4RonmU682C2e2tGd6wb3VleZfORJE9bhVCGpAB5NJ5mEJGlQoYrcP7
-         qC5304n0MLnm4nKzqn+kHYgRs8vtN99hhqO7eX5+2MbbGA1zRU4KNtFbWZAXoGVWkFw3
-         dg2fvMEs+eTtkxeVrnsa2+BMCXx8nhWYupD/VyHoJUC6s++anYySIzgve3DVCJbyQ8iW
-         TANQ==
-X-Gm-Message-State: AOAM531nVKiQarSn5A4aLHzvfNXoI3UHXakE/ZyTBUcGIXEYxU8Qoa4+
-        oD676nISXE399n7I1ivQcZTDClYWufa13aOv3dcWkwP3PCeiVQ==
-X-Google-Smtp-Source: ABdhPJzDdcfqpqWi9YV5hdZCXknQc8mE8YRCO78A45hJlA4AvBz/MH4WTk9A4QFjxroikr8TWDSIT9+toInzUpvAFzc=
-X-Received: by 2002:a17:90b:1b04:: with SMTP id nu4mr5555248pjb.18.1622142961333;
- Thu, 27 May 2021 12:16:01 -0700 (PDT)
+        Thu, 27 May 2021 15:17:13 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1622142939;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=B1Gy59qa9tUFLm34CUzcY84uchAP2cFwXthJZeg5I2w=;
+        b=YszhBx2EMqCLNop9OJX+HqNUDsZXtI2uAdnoo56EsO+wKc2mRY8pZviYYXda/wKQgqnpwi
+        tCKo2QmzWK+sk5Dpui6mdGLBUcvzDIZhU0yrMOQT2oEndUCql+W2rDw9TTSa6FI+aUBYXS
+        /s2xjVhoacS1PBjh/Kv32RI0yRuNty8=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-88-Yk_-THe8OSeLMKC_H7rNEw-1; Thu, 27 May 2021 15:15:36 -0400
+X-MC-Unique: Yk_-THe8OSeLMKC_H7rNEw-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 8A1AC10CE781;
+        Thu, 27 May 2021 19:15:34 +0000 (UTC)
+Received: from RHTPC1VM0NT.redhat.com (ovpn-116-248.rdu2.redhat.com [10.10.116.248])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 6AA2F5C22B;
+        Thu, 27 May 2021 19:15:33 +0000 (UTC)
+From:   Aaron Conole <aconole@redhat.com>
+To:     netdev@vger.kernel.org
+Cc:     dev@openvswitch.org, Pravin B Shelar <pshelar@ovn.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, linux-kernel@vger.kernel.org,
+        Eelco Chaudron <echaudro@redhat.com>,
+        Ilya Maximets <i.maximets@ovn.org>
+Subject: [RFC net-next] openvswitch: add trace points
+Date:   Thu, 27 May 2021 15:15:32 -0400
+Message-Id: <20210527191532.376414-1-aconole@redhat.com>
 MIME-Version: 1.0
-References: <20210527175703.0f0b63c7@canb.auug.org.au> <a7a618ae-936e-67a7-975f-8692db0ada87@infradead.org>
-In-Reply-To: <a7a618ae-936e-67a7-975f-8692db0ada87@infradead.org>
-From:   Loic Poulain <loic.poulain@linaro.org>
-Date:   Thu, 27 May 2021 21:14:28 +0200
-Message-ID: <CAMZdPi-xZefr50yAiQbARXm4Dedb=Y+tJQCxxYERow9hbUR4Sg@mail.gmail.com>
-Subject: Re: linux-next: Tree for May 27 (drivers/usb/class/cdc-wdm.o)
-To:     Randy Dunlap <rdunlap@infradead.org>
-Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        USB list <linux-usb@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Randy;
+This makes openvswitch module use the event tracing framework
+to log the upcall interface and action execution pipeline.  When
+using openvswitch as the packet forwarding engine, some types of
+debugging are made possible simply by using the ovs-vswitchd's
+ofproto/trace command.  However, such a command has some
+limitations:
 
+  1. When trying to trace packets that go through the CT action,
+     the state of the packet can't be determined, and probably
+     would be potentially wrong.
 
-On Thu, 27 May 2021 at 17:10, Randy Dunlap <rdunlap@infradead.org> wrote:
->
-> On 5/27/21 12:57 AM, Stephen Rothwell wrote:
-> > Hi all,
-> >
-> > Changes since 20210526:
-> >
-> > The kvm-fixes tree gained another build failure so I used the version from
-> > next-20210524.
-> >
-> > The hid tree (I think) gained a build failure that I left broken.
-> >
-> > The amdgpu tree gained a build failure for which I reverted a commit.
-> >
-> > The scsi-mkp tree gained a build failuer so I used the version from
-> > next-20210526.
-> >
-> > Non-merge commits (relative to Linus' tree): 5002
-> >  4946 files changed, 230454 insertions(+), 77632 deletions(-)
-> >
-> > ----------------------------------------------------------------------------
-> >
-> > I have created today's linux-next tree at
-> > git://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git
-> > (patches at http://www.kernel.org/pub/linux/kernel/next/ ).  If you
-> > are tracking the linux-next tree using git, you should not use "git pull"
-> > to do so as that will try to merge the new linux-next release with the
-> > old one.  You should use "git fetch" and checkout or reset to the new
-> > master.
-> >
-> > You can see which trees have been included by looking in the Next/Trees
-> > file in the source.  There are also quilt-import.log and merge.log
-> > files in the Next directory.  Between each merge, the tree was built
-> > with a ppc64_defconfig for powerpc, an allmodconfig for x86_64, a
-> > multi_v7_defconfig for arm and a native build of tools/perf. After
-> > the final fixups (if any), I do an x86_64 modules_install followed by
-> > builds for x86_64 allnoconfig, powerpc allnoconfig (32 and 64 bit),
-> > ppc44x_defconfig, allyesconfig and pseries_le_defconfig and i386, sparc
-> > and sparc64 defconfig and htmldocs. And finally, a simple boot test
-> > of the powerpc pseries_le_defconfig kernel in qemu (with and without
-> > kvm enabled).
-> >
-> > Below is a summary of the state of the merge.
-> >
-> > I am currently merging 331 trees (counting Linus' and 89 trees of bug
-> > fix patches pending for the current merge release).
-> >
-> > Stats about the size of the tree over time can be seen at
-> > http://neuling.org/linux-next-size.html .
-> >
-> > Status of my local build tests will be at
-> > http://kisskb.ellerman.id.au/linux-next .  If maintainers want to give
-> > advice about cross compilers/configs that work, we are always open to add
-> > more builds.
-> >
-> > Thanks to Randy Dunlap for doing many randconfig builds.  And to Paul
-> > Gortmaker for triage and bug fixes.
-> >
->
-> on i386:
->
-> ld: drivers/usb/class/cdc-wdm.o: in function `wdm_disconnect':
-> cdc-wdm.c:(.text+0x7c5): undefined reference to `wwan_remove_port'
-> ld: drivers/usb/class/cdc-wdm.o: in function `wdm_in_callback':
-> cdc-wdm.c:(.text+0xb8d): undefined reference to `wwan_port_rx'
+  2. Deducing problem packets can sometimes be difficult as well
+     even if many of the flows are known
 
-This is normally fixed by:
-https://patchwork.kernel.org/project/linux-usb/patch/20210521021010.2490930-1-weiyongjun1@huawei.com/
+  3. It's possible to use the openvswitch module even without
+     the ovs-vswitchd (although, not common use).
 
-Regards,
-loic
+Introduce the event tracing points here to make it possible for
+working through these problems in kernel space.  The style is
+copied from the mac80211 driver-trace / trace code for
+consistency.
+
+Signed-off-by: Aaron Conole <aconole@redhat.com>
+---
+ net/openvswitch/Makefile            |   3 +
+ net/openvswitch/actions.c           |   4 +
+ net/openvswitch/datapath.c          |   7 ++
+ net/openvswitch/openvswitch_trace.c |  10 ++
+ net/openvswitch/openvswitch_trace.h | 152 ++++++++++++++++++++++++++++
+ 5 files changed, 176 insertions(+)
+ create mode 100644 net/openvswitch/openvswitch_trace.c
+ create mode 100644 net/openvswitch/openvswitch_trace.h
+
+diff --git a/net/openvswitch/Makefile b/net/openvswitch/Makefile
+index 41109c326f3a..28982630bef3 100644
+--- a/net/openvswitch/Makefile
++++ b/net/openvswitch/Makefile
+@@ -13,6 +13,7 @@ openvswitch-y := \
+ 	flow_netlink.o \
+ 	flow_table.o \
+ 	meter.o \
++	openvswitch_trace.o \
+ 	vport.o \
+ 	vport-internal_dev.o \
+ 	vport-netdev.o
+@@ -24,3 +25,5 @@ endif
+ obj-$(CONFIG_OPENVSWITCH_VXLAN)+= vport-vxlan.o
+ obj-$(CONFIG_OPENVSWITCH_GENEVE)+= vport-geneve.o
+ obj-$(CONFIG_OPENVSWITCH_GRE)	+= vport-gre.o
++
++CFLAGS_openvswitch_trace.o = -I$(src)
+diff --git a/net/openvswitch/actions.c b/net/openvswitch/actions.c
+index d858ea580e43..62285453ca79 100644
+--- a/net/openvswitch/actions.c
++++ b/net/openvswitch/actions.c
+@@ -30,6 +30,7 @@
+ #include "conntrack.h"
+ #include "vport.h"
+ #include "flow_netlink.h"
++#include "openvswitch_trace.h"
+ 
+ struct deferred_action {
+ 	struct sk_buff *skb;
+@@ -1242,6 +1243,9 @@ static int do_execute_actions(struct datapath *dp, struct sk_buff *skb,
+ 	     a = nla_next(a, &rem)) {
+ 		int err = 0;
+ 
++		if (trace_openvswitch_probe_action_enabled())
++			trace_openvswitch_probe_action(dp, skb, key, a, rem);
++
+ 		switch (nla_type(a)) {
+ 		case OVS_ACTION_ATTR_OUTPUT: {
+ 			int port = nla_get_u32(a);
+diff --git a/net/openvswitch/datapath.c b/net/openvswitch/datapath.c
+index 9d6ef6cb9b26..63f19a6ed472 100644
+--- a/net/openvswitch/datapath.c
++++ b/net/openvswitch/datapath.c
+@@ -43,6 +43,7 @@
+ #include "flow_table.h"
+ #include "flow_netlink.h"
+ #include "meter.h"
++#include "openvswitch_trace.h"
+ #include "vport-internal_dev.h"
+ #include "vport-netdev.h"
+ 
+@@ -275,6 +276,12 @@ int ovs_dp_upcall(struct datapath *dp, struct sk_buff *skb,
+ 	struct dp_stats_percpu *stats;
+ 	int err;
+ 
++	if (trace_openvswitch_probe_userspace_enabled()) {
++		struct sw_flow_key ukey = *key;
++
++		trace_openvswitch_probe_userspace(dp, skb, &ukey, upcall_info);
++	}
++
+ 	if (upcall_info->portid == 0) {
+ 		err = -ENOTCONN;
+ 		goto err;
+diff --git a/net/openvswitch/openvswitch_trace.c b/net/openvswitch/openvswitch_trace.c
+new file mode 100644
+index 000000000000..62c5f7d6f023
+--- /dev/null
++++ b/net/openvswitch/openvswitch_trace.c
+@@ -0,0 +1,10 @@
++// SPDX-License-Identifier: GPL-2.0
++/* bug in tracepoint.h, it should include this */
++#include <linux/module.h>
++
++/* sparse isn't too happy with all macros... */
++#ifndef __CHECKER__
++#define CREATE_TRACE_POINTS
++#include "openvswitch_trace.h"
++
++#endif
+diff --git a/net/openvswitch/openvswitch_trace.h b/net/openvswitch/openvswitch_trace.h
+new file mode 100644
+index 000000000000..1b350306f622
+--- /dev/null
++++ b/net/openvswitch/openvswitch_trace.h
+@@ -0,0 +1,152 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++#undef TRACE_SYSTEM
++#define TRACE_SYSTEM openvswitch
++
++#if !defined(_TRACE_OPENVSWITCH_H) || defined(TRACE_HEADER_MULTI_READ)
++#define _TRACE_OPENVSWITCH_H
++
++#include <linux/tracepoint.h>
++
++#include "datapath.h"
++
++TRACE_EVENT(openvswitch_probe_action,
++
++	TP_PROTO(struct datapath *dp, struct sk_buff *skb,
++		 struct sw_flow_key *key, const struct nlattr *a, int rem),
++
++	TP_ARGS(dp, skb, key, a, rem),
++
++	TP_STRUCT__entry(
++		__field(	void *,		dpaddr			)
++		__string(	dp_name,	ovs_dp_name(dp)		)
++		__string(	dev_name,	skb->dev->name		)
++		__field(	void *,		skbaddr			)
++		__field(	unsigned int,	len			)
++		__field(	unsigned int,	data_len		)
++		__field(	unsigned int,	truesize		)
++		__field(	u8,		nr_frags		)
++		__field(	u16,		gso_size		)
++		__field(	u16,		gso_type		)
++		__field(	u32,		ovs_flow_hash		)
++		__field(	u32,		recirc_id		)
++		__field(	void *,		keyaddr			)
++		__field(	u16,		key_eth_type		)
++		__field(	u8,		key_ct_state		)
++		__field(	u8,		key_ct_orig_proto	)
++		__field(	unsigned int,	flow_key_valid		)
++		__field(	u8,		action_type		)
++		__field(	unsigned int,	action_len		)
++		__field(	void *,		action_data		)
++		__field(	u8,		is_last			)
++	),
++
++	TP_fast_assign(
++		__entry->dpaddr = dp;
++		__assign_str(dp_name, ovs_dp_name(dp));
++		__assign_str(dev_name, skb->dev->name);
++		__entry->skbaddr = skb;
++		__entry->len = skb->len;
++		__entry->data_len = skb->data_len;
++		__entry->truesize = skb->truesize;
++		__entry->nr_frags = skb_shinfo(skb)->nr_frags;
++		__entry->gso_size = skb_shinfo(skb)->gso_size;
++		__entry->gso_type = skb_shinfo(skb)->gso_type;
++		__entry->ovs_flow_hash = key->ovs_flow_hash;
++		__entry->recirc_id = key->recirc_id;
++		__entry->keyaddr = key;
++		__entry->key_eth_type = key->eth.type;
++		__entry->key_ct_state = key->ct_state;
++		__entry->key_ct_orig_proto = key->ct_orig_proto;
++		__entry->flow_key_valid = !(key->mac_proto & SW_FLOW_KEY_INVALID);
++		__entry->action_type = nla_type(a);
++		__entry->action_len = nla_len(a);
++		__entry->action_data = nla_data(a);
++		__entry->is_last = nla_is_last(a, rem);
++	),
++
++	TP_printk("dpaddr=%p dp_name=%s dev=%s skbaddr=%p len=%u data_len=%u truesize=%u nr_frags=%d gso_size=%d gso_type=%#x ovs_flow_hash=0x%08x recirc_id=0x%08x keyaddr=%p eth_type=0x%04x ct_state=%02x ct_orig_proto=%02x flow_key_valid=%d action_type=%u action_len=%u action_data=%p is_last=%d",
++		  __entry->dpaddr, __get_str(dp_name), __get_str(dev_name),
++		  __entry->skbaddr, __entry->len, __entry->data_len,
++		  __entry->truesize, __entry->nr_frags, __entry->gso_size,
++		  __entry->gso_type, __entry->ovs_flow_hash,
++		  __entry->recirc_id, __entry->keyaddr, __entry->key_eth_type,
++		  __entry->key_ct_state, __entry->key_ct_orig_proto,
++		  __entry->flow_key_valid,
++		  __entry->action_type, __entry->action_len,
++		  __entry->action_data, __entry->is_last)
++);
++
++TRACE_EVENT(openvswitch_probe_userspace,
++
++	TP_PROTO(struct datapath *dp, struct sk_buff *skb,
++		 struct sw_flow_key *key,
++		 const struct dp_upcall_info *upcall_info),
++
++	TP_ARGS(dp, skb, key, upcall_info),
++
++	TP_STRUCT__entry(
++		__field(	void *,		dpaddr			)
++		__string(	dp_name,	ovs_dp_name(dp)		)
++		__string(	dev_name,	skb->dev->name		)
++		__field(	void *,		skbaddr			)
++		__field(	unsigned int,	len			)
++		__field(	unsigned int,	data_len		)
++		__field(	unsigned int,	truesize		)
++		__field(	u8,		nr_frags		)
++		__field(	u16,		gso_size		)
++		__field(	u16,		gso_type		)
++		__field(	u32,		ovs_flow_hash		)
++		__field(	u32,		recirc_id		)
++		__field(	void *,		keyaddr			)
++		__field(	u16,		key_eth_type		)
++		__field(	u8,		key_ct_state		)
++		__field(	u8,		key_ct_orig_proto	)
++		__field(	unsigned int,	flow_key_valid		)
++		__field(	u8,		upcall_cmd		)
++		__field(	u32,		upcall_port		)
++		__field(	u16,		upcall_mru		)
++	),
++
++	TP_fast_assign(
++		__entry->dpaddr = dp;
++		__assign_str(dp_name, ovs_dp_name(dp));
++		__assign_str(dev_name, skb->dev->name);
++		__entry->skbaddr = skb;
++		__entry->len = skb->len;
++		__entry->data_len = skb->data_len;
++		__entry->truesize = skb->truesize;
++		__entry->nr_frags = skb_shinfo(skb)->nr_frags;
++		__entry->gso_size = skb_shinfo(skb)->gso_size;
++		__entry->gso_type = skb_shinfo(skb)->gso_type;
++		__entry->ovs_flow_hash = key->ovs_flow_hash;
++		__entry->recirc_id = key->recirc_id;
++		__entry->keyaddr = key;
++		__entry->key_eth_type = key->eth.type;
++		__entry->key_ct_state = key->ct_state;
++		__entry->key_ct_orig_proto = key->ct_orig_proto;
++		__entry->flow_key_valid =  !(key->mac_proto & SW_FLOW_KEY_INVALID);
++		__entry->upcall_cmd = upcall_info->cmd;
++		__entry->upcall_port = upcall_info->portid;
++		__entry->upcall_mru = upcall_info->mru;
++	),
++
++	TP_printk("dpaddr=%p dp_name=%s dev=%s skbaddr=%p len=%u data_len=%u truesize=%u nr_frags=%d gso_size=%d gso_type=%#x ovs_flow_hash=0x%08x recirc_id=0x%08x keyaddr=%p eth_type=0x%04x ct_state=%02x ct_orig_proto=%02x flow_key_valid=%d upcall_cmd=%u upcall_port=%u upcall_mru=%u",
++		  __entry->dpaddr, __get_str(dp_name), __get_str(dev_name),
++		  __entry->skbaddr, __entry->len, __entry->data_len,
++		  __entry->truesize, __entry->nr_frags, __entry->gso_size,
++		  __entry->gso_type, __entry->ovs_flow_hash,
++		  __entry->recirc_id, __entry->keyaddr, __entry->key_eth_type,
++		  __entry->key_ct_state, __entry->key_ct_orig_proto,
++		  __entry->flow_key_valid,
++		  __entry->upcall_cmd, __entry->upcall_port,
++		  __entry->upcall_mru)
++);
++
++#endif /* _TRACE_OPENVSWITCH_H */
++
++/* This part must be outside protection */
++#undef TRACE_INCLUDE_PATH
++#define TRACE_INCLUDE_PATH .
++#undef TRACE_INCLUDE_FILE
++#define TRACE_INCLUDE_FILE openvswitch_trace
++#include <trace/define_trace.h>
+-- 
+2.31.1
+
