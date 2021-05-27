@@ -2,107 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 590A5392A62
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 11:15:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 94096392A67
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 11:15:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235734AbhE0JQk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 May 2021 05:16:40 -0400
-Received: from gloria.sntech.de ([185.11.138.130]:35286 "EHLO gloria.sntech.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235589AbhE0JQh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 May 2021 05:16:37 -0400
-Received: from ip5f5aa64a.dynamic.kabel-deutschland.de ([95.90.166.74] helo=diego.localnet)
-        by gloria.sntech.de with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <heiko@sntech.de>)
-        id 1lmC6Y-0006zN-RK; Thu, 27 May 2021 11:15:02 +0200
-From:   Heiko =?ISO-8859-1?Q?St=FCbner?= <heiko@sntech.de>
-To:     linux-kernel@vger.kernel.org,
-        Javier Martinez Canillas <javierm@redhat.com>
-Cc:     Peter Robinson <pbrobinson@gmail.com>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Javier Martinez Canillas <javierm@redhat.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        David Airlie <airlied@linux.ie>,
-        Sandy Huang <hjc@rock-chips.com>,
-        dri-devel@lists.freedesktop.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-rockchip@lists.infradead.org
-Subject: Re: [PATCH v2] drm/rockchip: remove existing generic drivers to take over the device
-Date:   Thu, 27 May 2021 11:15:02 +0200
-Message-ID: <4006303.q0ZmV6gNhb@diego>
-In-Reply-To: <20210516074833.451643-1-javierm@redhat.com>
-References: <20210516074833.451643-1-javierm@redhat.com>
+        id S235662AbhE0JRK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 May 2021 05:17:10 -0400
+Received: from wnew2-smtp.messagingengine.com ([64.147.123.27]:33873 "EHLO
+        wnew2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235589AbhE0JRG (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 27 May 2021 05:17:06 -0400
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+        by mailnew.west.internal (Postfix) with ESMTP id 34010F5F;
+        Thu, 27 May 2021 05:15:30 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute5.internal (MEProxy); Thu, 27 May 2021 05:15:31 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kroah.com; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm3; bh=jcYzwiykpy8reYauDRa+4H5WzJK
+        C8nKM1Ty7GsBBKSw=; b=EY0Px+eKZeV6/mrD43SyzdTTQaRFbdsJOru9N/GtOdg
+        lCETAQHLexUg7chWScZVp0f1xWehXBhjmIA0ogbSy9PBGBuhWwh2MiT2SNTASBPk
+        u8H67zF9JBwTUNIYjMHa+PwFPVbSb1umVXdp/KoJQwk+kbrQ5akAd1t6SY36gsfw
+        NH5UkPWZiENTMCcSifucLw1ov0i6F0a2Nj6bzlkOSf6YwX1fYXHFqMSVQYLPMmHf
+        tumFU3vgF/JJ1rmrj3QTgorPLh9EqVdhbqfyaptt4qS6nsP3yR9zNNHgyWX8cl6H
+        ZjkMcY3gTaVm3U1nzTOEWeXBAwX3n0xoD0y+5eBQFxg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=jcYzwi
+        ykpy8reYauDRa+4H5WzJKC8nKM1Ty7GsBBKSw=; b=rHbftXmils8cgyVch3bxNp
+        qjdPOrkjbEftBLlMMDPaY9pZgJkCM6rNkgoTqKu5okEjLC0/3YmSyB8fF41e+AOw
+        Thj/ZcvuvS6+tF6SPWkb0Ko8WbpTheKlicoRlj/Q7ZEaDa7/DtnBfPuH55mrjBE4
+        KBoIAhybn3m+MBGbq+hdb4IR5HnDFqfJBfZ7qGagr5NU366++5vTdxrcdnkQbwU8
+        b2QYZNMJQUvIMSs86mJ3MHXiOF5TRZUxcsdPSCTnlMM1o7aaqo7pvpJp5KwiGDIO
+        754Zolhp3S2oKboYvlcAw8P98i7IPAU8pKpbXor4pJuE8DH4RkJaoM2RCxjOA8tg
+        ==
+X-ME-Sender: <xms:L2OvYOmIn5meolWYHJOyMb-LqsQzhVTOyHtfhbQWKufo1mZd6wSE9g>
+    <xme:L2OvYF29sEofJgNLDI47lg0BGwgqjy2DtJ4IZkUPNkmxos4kyx9_fm8pd1xAseM5F
+    WR2OzAkPVXglw>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrvdekhedgudefucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhvffukfhfgggtuggjsehttdertddttddvnecuhfhrohhmpefirhgvghcu
+    mffjuceoghhrvghgsehkrhhorghhrdgtohhmqeenucggtffrrghtthgvrhhnpeevueehje
+    fgfffgiedvudekvdektdelleelgefhleejieeugeegveeuuddukedvteenucfkphepkeef
+    rdekiedrjeegrdeigeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrih
+    hlfhhrohhmpehgrhgvgheskhhrohgrhhdrtghomh
+X-ME-Proxy: <xmx:L2OvYMqGfsZdwDSIDa-FFQepV0oS3P2aDbLrH6dJ8w5oxGtGObv8pQ>
+    <xmx:L2OvYClMFOTVtnf5wl9xPFzfsyzYrESPDH_QH2HCkS81DLJbYbrEIw>
+    <xmx:L2OvYM0HIVlXOhAXgaFwQZZTSF8ZuadxNrYOduHzLMHejKsOxRsawg>
+    <xmx:MWOvYE6e4tYe5n4exO_wSyA76obaLnl9sPcGGgkxqg1JSSOSnbADJAqe-3k>
+Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
+        by mail.messagingengine.com (Postfix) with ESMTPA;
+        Thu, 27 May 2021 05:15:27 -0400 (EDT)
+Date:   Thu, 27 May 2021 11:15:25 +0200
+From:   Greg KH <greg@kroah.com>
+To:     Stephen Brennan <stephen.s.brennan@oracle.com>
+Cc:     stable@vger.kernel.org, Andrew Morton <akpm@linux-foundation.org>,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        Christoph Lameter <clameter@sgi.com>,
+        Mel Gorman <mel@csn.ul.ie>, Andy Whitcroft <apw@shadowen.org>,
+        Aruna Ramakrishna <aruna.ramakrishna@oracle.com>,
+        Khalid Aziz <khalid.aziz@oracle.com>
+Subject: Re: [PATCH STABLE 4.4-5.3] mm, vmstat: drop zone->lock in
+ /proc/pagetypeinfo
+Message-ID: <YK9jLRGmaMKPI25z@kroah.com>
+References: <20210526174613.339990-1-stephen.s.brennan@oracle.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210526174613.339990-1-stephen.s.brennan@oracle.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am Sonntag, 16. Mai 2021, 09:48:33 CEST schrieb Javier Martinez Canillas:
-> There are drivers that register framebuffer devices very early in the boot
-> process and make use of the existing framebuffer as setup by the firmware.
+On Wed, May 26, 2021 at 10:46:13AM -0700, Stephen Brennan wrote:
+> Commit 93b3a674485f6a4b8ffff85d1682d5e8b7c51560 upstream
 > 
-> If one of those drivers has registered a fbdev, then the fallback fbdev of
-> the DRM driver won't be bound to the framebuffer console. To avoid that,
-> remove any existing generic driver and take over the graphics device.
+> Commit 93b3a674485f ("mm,vmstat: reduce zone->lock holding time by
+> /proc/pagetypeinfo") upstream caps the number of iterations over each
+> free_list at 100,000, and also drops the zone->lock in between each
+> migrate type. Capping the iteration count alters the file contents in
+> some cases, which means this approach may not be suitable for stable
+> backports.
 > 
-> By doing that, the fb mapped to the console is switched correctly from the
-> early fbdev to the one registered by the rockchip DRM driver:
+> However, dropping zone->lock in between migrate types (and, as a result,
+> page orders) will not change the /proc/pagetypeinfo file contents. It
+> can significantly reduce the length of time spent with IRQs disabled,
+> which can prevent missed interrupts or soft lockups which we have
+> observed on systems with particularly large memory.
 > 
->     [   40.752420] fb0: switching to rockchip-drm-fb from EFI VGA
-> 
-> Signed-off-by: Javier Martinez Canillas <javierm@redhat.com>
+> Thus, this commit is a modified version of the upstream one which only
+> drops the lock in between migrate types.
 
-fwiw, this looks like the right thing to do. I haven't found time to test
-though yet. So anyway
+Now queued up, thanks.
 
-Acked-by: Heiko Stuebner <heiko@sntech.de>
-
-
-Heiko
-
-
-> ---
-> 
-> Changes in v2:
-> - Move drm_aperture_remove_framebuffers() call to .bind callback (tzimmermann).
-> - Adapt subject line, commit message, etc accordingly.
-> 
->  drivers/gpu/drm/rockchip/rockchip_drm_drv.c | 10 ++++++++++
->  1 file changed, 10 insertions(+)
-> 
-> diff --git a/drivers/gpu/drm/rockchip/rockchip_drm_drv.c b/drivers/gpu/drm/rockchip/rockchip_drm_drv.c
-> index 212bd87c0c4..b730b8d5d94 100644
-> --- a/drivers/gpu/drm/rockchip/rockchip_drm_drv.c
-> +++ b/drivers/gpu/drm/rockchip/rockchip_drm_drv.c
-> @@ -16,6 +16,7 @@
->  #include <linux/console.h>
->  #include <linux/iommu.h>
->  
-> +#include <drm/drm_aperture.h>
->  #include <drm/drm_drv.h>
->  #include <drm/drm_fb_helper.h>
->  #include <drm/drm_gem_cma_helper.h>
-> @@ -114,6 +115,15 @@ static int rockchip_drm_bind(struct device *dev)
->  	struct rockchip_drm_private *private;
->  	int ret;
->  
-> +	/* Remove existing drivers that may own the framebuffer memory. */
-> +	ret = drm_aperture_remove_framebuffers(false, "rockchip-drm-fb");
-> +	if (ret) {
-> +		DRM_DEV_ERROR(dev,
-> +			      "Failed to remove existing framebuffers - %d.\n",
-> +			      ret);
-> +		return ret;
-> +	}
-> +
->  	drm_dev = drm_dev_alloc(&rockchip_drm_driver, dev);
->  	if (IS_ERR(drm_dev))
->  		return PTR_ERR(drm_dev);
-> 
-
-
-
-
+greg k-h
