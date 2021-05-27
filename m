@@ -2,233 +2,218 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 887AD39243A
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 03:19:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 68B7B39243D
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 03:20:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234316AbhE0BU5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 May 2021 21:20:57 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:6720 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232187AbhE0BUz (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 May 2021 21:20:55 -0400
-Received: from dggems706-chm.china.huawei.com (unknown [172.30.72.60])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4Fr8yS0yC0zncJc;
-        Thu, 27 May 2021 09:15:44 +0800 (CST)
-Received: from dggemx753-chm.china.huawei.com (10.0.44.37) by
- dggems706-chm.china.huawei.com (10.3.19.183) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
- 15.1.2176.2; Thu, 27 May 2021 09:19:21 +0800
-Received: from [10.136.110.154] (10.136.110.154) by
- dggemx753-chm.china.huawei.com (10.0.44.37) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2176.2; Thu, 27 May 2021 09:19:21 +0800
-Subject: Re: [f2fs-dev] [PATCH 2/2 v3] f2fs: support RO feature
-To:     Jaegeuk Kim <jaegeuk@kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-f2fs-devel@lists.sourceforge.net>
-References: <20210521190217.2484099-1-jaegeuk@kernel.org>
- <20210521190217.2484099-2-jaegeuk@kernel.org> <YK5UOfzwdZni7c5W@google.com>
- <YK5edM0igwfd47LV@google.com>
-From:   Chao Yu <yuchao0@huawei.com>
-Message-ID: <9070633e-39ef-6e13-6467-534541d917b7@huawei.com>
-Date:   Thu, 27 May 2021 09:19:20 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
- Thunderbird/52.9.1
+        id S234417AbhE0BWS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 May 2021 21:22:18 -0400
+Received: from mail-mw2nam12on2078.outbound.protection.outlook.com ([40.107.244.78]:2496
+        "EHLO NAM12-MW2-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S232187AbhE0BWQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 26 May 2021 21:22:16 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=YkpgaT+qDl4FMbbJ9Z3gj4isxTlskndXbEU9SzeUe4eEbMGIANNi3EHdXnNio5oZ4gPSLwjH4LqxWz/vbTAJyL1dsdO4evDwgzoaqa5HxUIK/GgucNSam2LHs56nWLzg2mevfCO3TNVlbO6MAeA76kBs8Ksq8OqOfkVh/JUU1IMdgxQaGRq8FLfpbc51SUWEkDFQxhxsX+LnH2P4cUlhq12pWsUUwgkXwHcGrhBiaUNnO3Oc/8WFaBFAZPGd8CatdWMtWO5G3tPJ3Ji6//Nu/9OkOiBl5LIh/4IXnhrfU0EeH8ErwB47hh6ekwQ46njLeU44Lo49vZVDP+cHQJE5VQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=BBYmHosF1/PQ3SLR0/61RIGhUaU7vfnmIJaAYXGD1oI=;
+ b=jbZDWfU3a9Rn8W93SH3JMF67/ny/1tSP93LBfpF/FDlbrP6woZvt3Olfvuu9NpFQr//rhp3gZ6Lspwfgz38KKL2lE+q5atW7QBD/NUiSJhnyYTisKdyRQZEeDZmswd7m8kXHYq9B3YagMoZjP6SMFsKni9b5aW0NtdNlcG4eoIM0/UEeWUWDfPGO9SjApU9iz4WkTbLNk56F7nVrvgvY7iDkecsOJql6gynX/J7rUYgqzvOJ2ZrNyPuyoWWJ4B+30c7IJbt8lMkSmPwNEuMqNnhEG9FO/McTwmQcOw7DmPzdLBHmG0EqcS5CRsBvoXd5ufcxtk4m28A7SGxIwgWgYw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 216.228.112.34) smtp.rcpttodomain=infradead.org smtp.mailfrom=nvidia.com;
+ dmarc=pass (p=none sp=none pct=100) action=none header.from=nvidia.com;
+ dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=BBYmHosF1/PQ3SLR0/61RIGhUaU7vfnmIJaAYXGD1oI=;
+ b=Ddktud8CI2v/aXZD/Nj17EnB7Ea79dxal+s7aSPhm4H7S+q+tOWbnlCPXZ1pVllVdc0MgFIYsCqOc0znJKzhOWexrxcVcm+CFmdYhe7/04ppd2eBFWk2uWwgVPrw9HeD6F5cY502e+232q4HEo2Xs8gQOniItK0ylv+p+425X8TNXLR6G7bWdzEVWMJp1IpQ0ra7j1Soo6kbi+WYYykV68GIEZukSazSIKj9OzeHWZ+gvR+98kAuDD1GsgYrdyEBnzRtiUaTrZ50btgmYKT/ZbkYc1prqgybrWNwS1Xoxs0JnwdSV+y5gRN6waWC0rozA8fg3HxTpuMVjS1AC2SGJg==
+Received: from CO2PR07CA0064.namprd07.prod.outlook.com (2603:10b6:100::32) by
+ BN6PR12MB1266.namprd12.prod.outlook.com (2603:10b6:404:14::8) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.4150.23; Thu, 27 May 2021 01:20:42 +0000
+Received: from CO1NAM11FT060.eop-nam11.prod.protection.outlook.com
+ (2603:10b6:100:0:cafe::fd) by CO2PR07CA0064.outlook.office365.com
+ (2603:10b6:100::32) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4173.20 via Frontend
+ Transport; Thu, 27 May 2021 01:20:42 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.112.34)
+ smtp.mailfrom=nvidia.com; infradead.org; dkim=none (message not signed)
+ header.d=none;infradead.org; dmarc=pass action=none header.from=nvidia.com;
+Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
+ 216.228.112.34 as permitted sender) receiver=protection.outlook.com;
+ client-ip=216.228.112.34; helo=mail.nvidia.com;
+Received: from mail.nvidia.com (216.228.112.34) by
+ CO1NAM11FT060.mail.protection.outlook.com (10.13.175.132) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ 15.20.4129.25 via Frontend Transport; Thu, 27 May 2021 01:20:42 +0000
+Received: from nvdebian.localnet (172.20.145.6) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Thu, 27 May
+ 2021 01:20:38 +0000
+From:   Alistair Popple <apopple@nvidia.com>
+To:     Peter Xu <peterx@redhat.com>
+CC:     <linux-mm@kvack.org>, <akpm@linux-foundation.org>,
+        <nouveau@lists.freedesktop.org>, <bskeggs@redhat.com>,
+        <rcampbell@nvidia.com>, <linux-doc@vger.kernel.org>,
+        <jhubbard@nvidia.com>, <bsingharora@gmail.com>,
+        <linux-kernel@vger.kernel.org>, <dri-devel@lists.freedesktop.org>,
+        <hch@infradead.org>, <jglisse@redhat.com>, <willy@infradead.org>,
+        <jgg@nvidia.com>, <hughd@google.com>
+Subject: Re: [PATCH v9 06/10] mm/memory.c: Allow different return codes for copy_nonpresent_pte()
+Date:   Thu, 27 May 2021 11:20:36 +1000
+Message-ID: <2005328.bFqPmhE5MS@nvdebian>
+In-Reply-To: <YK6mbf967dV0ljHn@t490s>
+References: <20210524132725.12697-1-apopple@nvidia.com> <20210524132725.12697-7-apopple@nvidia.com> <YK6mbf967dV0ljHn@t490s>
 MIME-Version: 1.0
-In-Reply-To: <YK5edM0igwfd47LV@google.com>
-Content-Type: text/plain; charset="windows-1252"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.136.110.154]
-X-ClientProxiedBy: dggemx703-chm.china.huawei.com (10.1.199.50) To
- dggemx753-chm.china.huawei.com (10.0.44.37)
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
+X-Originating-IP: [172.20.145.6]
+X-ClientProxiedBy: HQMAIL111.nvidia.com (172.20.187.18) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: d78414e7-cfaf-4f12-cb71-08d920ada570
+X-MS-TrafficTypeDiagnostic: BN6PR12MB1266:
+X-Microsoft-Antispam-PRVS: <BN6PR12MB1266E85D8FACB077FEEA288EDF239@BN6PR12MB1266.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:1332;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 0d7+K+vE6+9VKNGuW0TFntKbb5dmvBDIlTZp0JsTp0bmESASk4qXF9e/rJ12Qr/zO+4ky8hWe8tezexAvPdj9bhNVJJni7f09YlpmUciwFbn1h+V+BGo5jNFatjXdwBiWOvEMaTRTcZoRMg51zE50fEgQN0pbdnhuR+NuWIF3N9aSJ+l+YC19/xOQ4nAQmkYfsZMLhGQGwk5QkkzHYGj8TLIy/0ULNQpSWY9mCbHnnojySbZfhIlrGtQEHH9gTX7dYbOqNlj2Vq8tgHC9/AeUbWLwz4RdLHuLZ+oWSDO6YQtS7sd7i+x8mbYPwQ3uTiu4DcYObCNXCzrkKa/d9sSOhvcquGhvD6ohgfCNKbFHHn5DcuFoNRElcfkstxdHmvVnOj6RSruBxq3R+O/+pY3HPBDzJP58z3fHjq3fBjQuy8qL+xJZ/UmQx+EkKbfJIHM1m++4lUSr9TJBkP4bPr1ZFGyUAxMd/MhksZ8Q2ZEjmolGEKhEMwBfHb8PvbPKBepPe4soBg3NgKcTGFKkkwZueEnBpmSHqQtS+LLzLGj6XQrUbE5MMpJ2c8V5fAkfZIVTv+Ujnq6hIUpnxVKKW0a8f830TeVlj1gLEDQ83FJnQNre50uFqXvoPjdfkglzBlnmLDpkTfnIlK7UZC86tSXBfrW030ZltfV2Hba+3pYCIrYcYY/iDjPQa6qVlJ96Gr6
+X-Forefront-Antispam-Report: CIP:216.228.112.34;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:schybrid03.nvidia.com;CAT:NONE;SFS:(4636009)(39860400002)(346002)(376002)(396003)(136003)(36840700001)(46966006)(5660300002)(83380400001)(186003)(316002)(82310400003)(2906002)(36906005)(426003)(86362001)(478600001)(7416002)(26005)(4326008)(6916009)(16526019)(70586007)(54906003)(70206006)(336012)(7636003)(9576002)(33716001)(8676002)(8936002)(356005)(36860700001)(9686003)(82740400003)(47076005)(39026012);DIR:OUT;SFP:1101;
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 27 May 2021 01:20:42.5560
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: d78414e7-cfaf-4f12-cb71-08d920ada570
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.112.34];Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-AuthSource: CO1NAM11FT060.eop-nam11.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN6PR12MB1266
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/5/26 22:43, Jaegeuk Kim wrote:
-> Given RO feature in superblock, we don't need to check provisioning/reserve
-> spaces and SSA area.
+On Thursday, 27 May 2021 5:50:05 AM AEST Peter Xu wrote:
+> On Mon, May 24, 2021 at 11:27:21PM +1000, Alistair Popple wrote:
+> > Currently if copy_nonpresent_pte() returns a non-zero value it is
+> > assumed to be a swap entry which requires further processing outside the
+> > loop in copy_pte_range() after dropping locks. This prevents other
+> > values being returned to signal conditions such as failure which a
+> > subsequent change requires.
+> > 
+> > Instead make copy_nonpresent_pte() return an error code if further
+> > processing is required and read the value for the swap entry in the main
+> > loop under the ptl.
+> > 
+> > Signed-off-by: Alistair Popple <apopple@nvidia.com>
+> > 
+> > ---
+> > 
+> > v9:
+> > 
+> > New for v9 to allow device exclusive handling to occur in
+> > copy_nonpresent_pte().
+> > ---
+> > 
+> >  mm/memory.c | 12 +++++++-----
+> >  1 file changed, 7 insertions(+), 5 deletions(-)
+> > 
+> > diff --git a/mm/memory.c b/mm/memory.c
+> > index 2fb455c365c2..e061cfa18c11 100644
+> > --- a/mm/memory.c
+> > +++ b/mm/memory.c
+> > @@ -718,7 +718,7 @@ copy_nonpresent_pte(struct mm_struct *dst_mm, struct
+> > mm_struct *src_mm,> 
+> >       if (likely(!non_swap_entry(entry))) {
+> >       
+> >               if (swap_duplicate(entry) < 0)
+> > 
+> > -                     return entry.val;
+> > +                     return -EAGAIN;
+> > 
+> >               /* make sure dst_mm is on swapoff's mmlist. */
+> >               if (unlikely(list_empty(&dst_mm->mmlist))) {
+> > 
+> > @@ -974,11 +974,13 @@ copy_pte_range(struct vm_area_struct *dst_vma,
+> > struct vm_area_struct *src_vma,> 
+> >                       continue;
+> >               
+> >               }
+> >               if (unlikely(!pte_present(*src_pte))) {
+> > 
+> > -                     entry.val = copy_nonpresent_pte(dst_mm, src_mm,
+> > -                                                     dst_pte, src_pte,
+> > -                                                     src_vma, addr, rss);
+> > -                     if (entry.val)
+> > +                     ret = copy_nonpresent_pte(dst_mm, src_mm,
+> > +                                             dst_pte, src_pte,
+> > +                                             src_vma, addr, rss);
+> > +                     if (ret == -EAGAIN) {
+> > +                             entry = pte_to_swp_entry(*src_pte);
+> > 
+> >                               break;
+> > 
+> > +                     }
+> > 
+> >                       progress += 8;
+> >                       continue;
+> >               
+> >               }
 > 
-> Signed-off-by: Jaegeuk Kim <jaegeuk@kernel.org>
-> ---
-> Change log from v2:
->   - allow curseg updates
->   - fix some bugs
+> Note that -EAGAIN was previously used by copy_present_page() for early cow
+> use.  Here later although we check entry.val first:
 > 
->   fs/f2fs/f2fs.h    |  2 ++
->   fs/f2fs/segment.c |  4 ++++
->   fs/f2fs/super.c   | 37 +++++++++++++++++++++++++++++++------
->   3 files changed, 37 insertions(+), 6 deletions(-)
+>         if (entry.val) {
+>                 if (add_swap_count_continuation(entry, GFP_KERNEL) < 0) {
+>                         ret = -ENOMEM;
+>                         goto out;
+>                 }
+>                 entry.val = 0;
+>         } else if (ret) {
+>                 WARN_ON_ONCE(ret != -EAGAIN);
+>                 prealloc = page_copy_prealloc(src_mm, src_vma, addr);
+>                 if (!prealloc)
+>                         return -ENOMEM;
+>                 /* We've captured and resolved the error. Reset, try again.
+> */ ret = 0;
+>         }
 > 
-> diff --git a/fs/f2fs/f2fs.h b/fs/f2fs/f2fs.h
-> index eaf57b5f3c4b..9ad502f92529 100644
-> --- a/fs/f2fs/f2fs.h
-> +++ b/fs/f2fs/f2fs.h
-> @@ -168,6 +168,7 @@ struct f2fs_mount_info {
->   #define F2FS_FEATURE_SB_CHKSUM		0x0800
->   #define F2FS_FEATURE_CASEFOLD		0x1000
->   #define F2FS_FEATURE_COMPRESSION	0x2000
-> +#define F2FS_FEATURE_RO			0x4000
->   
->   #define __F2FS_HAS_FEATURE(raw_super, mask)				\
->   	((raw_super->feature & cpu_to_le32(mask)) != 0)
-> @@ -940,6 +941,7 @@ static inline void set_new_dnode(struct dnode_of_data *dn, struct inode *inode,
->   #define	NR_CURSEG_DATA_TYPE	(3)
->   #define NR_CURSEG_NODE_TYPE	(3)
->   #define NR_CURSEG_INMEM_TYPE	(2)
-> +#define NR_CURSEG_RO_TYPE	(2)
->   #define NR_CURSEG_PERSIST_TYPE	(NR_CURSEG_DATA_TYPE + NR_CURSEG_NODE_TYPE)
->   #define NR_CURSEG_TYPE		(NR_CURSEG_INMEM_TYPE + NR_CURSEG_PERSIST_TYPE)
->   
-> diff --git a/fs/f2fs/segment.c b/fs/f2fs/segment.c
-> index 8668df7870d0..02e0c38be7eb 100644
-> --- a/fs/f2fs/segment.c
-> +++ b/fs/f2fs/segment.c
-> @@ -4683,6 +4683,10 @@ static int sanity_check_curseg(struct f2fs_sb_info *sbi)
->   		struct seg_entry *se = get_seg_entry(sbi, curseg->segno);
->   		unsigned int blkofs = curseg->next_blkoff;
->   
-> +		if (F2FS_HAS_FEATURE(sbi, F2FS_FEATURE_RO) &&
-> +			i != CURSEG_HOT_DATA && i != CURSEG_HOT_NODE)
-> +			continue;
-> +
->   		sanity_check_seg_type(sbi, curseg->seg_type);
->   
->   		if (f2fs_test_bit(blkofs, se->cur_valid_map))
-> diff --git a/fs/f2fs/super.c b/fs/f2fs/super.c
-> index e70aca8f97bd..6788e7b71e27 100644
-> --- a/fs/f2fs/super.c
-> +++ b/fs/f2fs/super.c
-> @@ -555,7 +555,7 @@ static int parse_options(struct super_block *sb, char *options, bool is_remount)
->   	int ret;
->   
->   	if (!options)
-> -		return 0;
-> +		goto default_check;
->   
->   	while ((p = strsep(&options, ",")) != NULL) {
->   		int token;
-> @@ -1090,6 +1090,7 @@ static int parse_options(struct super_block *sb, char *options, bool is_remount)
->   			return -EINVAL;
->   		}
->   	}
-> +default_check:
->   #ifdef CONFIG_QUOTA
->   	if (f2fs_check_quota_options(sbi))
->   		return -EINVAL;
-> @@ -1162,6 +1163,11 @@ static int parse_options(struct super_block *sb, char *options, bool is_remount)
->   	 */
->   	if (F2FS_OPTION(sbi).active_logs != NR_CURSEG_TYPE)
->   		F2FS_OPTION(sbi).whint_mode = WHINT_MODE_OFF;
-> +
-> +	if (F2FS_HAS_FEATURE(sbi, F2FS_FEATURE_RO) && !f2fs_readonly(sbi->sb)) {
-> +		f2fs_err(sbi, "Allow to mount readonly mode only");
-> +		return -EROFS;
-> +	}
->   	return 0;
->   }
->   
-> @@ -1819,7 +1825,11 @@ static int f2fs_show_options(struct seq_file *seq, struct dentry *root)
->   static void default_options(struct f2fs_sb_info *sbi)
->   {
->   	/* init some FS parameters */
-> -	F2FS_OPTION(sbi).active_logs = NR_CURSEG_PERSIST_TYPE;
-> +	if (F2FS_HAS_FEATURE(sbi, F2FS_FEATURE_RO))
-> +		F2FS_OPTION(sbi).active_logs = NR_CURSEG_RO_TYPE;
-> +	else
-> +		F2FS_OPTION(sbi).active_logs = NR_CURSEG_PERSIST_TYPE;
-> +
->   	F2FS_OPTION(sbi).inline_xattr_size = DEFAULT_INLINE_XATTR_ADDRS;
->   	F2FS_OPTION(sbi).whint_mode = WHINT_MODE_OFF;
->   	F2FS_OPTION(sbi).alloc_mode = ALLOC_MODE_DEFAULT;
-> @@ -2001,6 +2011,11 @@ static int f2fs_remount(struct super_block *sb, int *flags, char *data)
->   	if (f2fs_readonly(sb) && (*flags & SB_RDONLY))
->   		goto skip;
->   
-> +	if (F2FS_HAS_FEATURE(sbi, F2FS_FEATURE_RO) && !(*flags & SB_RDONLY)) {
-> +		err = -EROFS;
-> +		goto restore_opts;
-> +	}
+> We didn't reset "ret" in entry.val case (maybe we should?). Then in the next
+> round of "goto again" if "ret" is unluckily untouched, it could reach the
+> 2nd if check, and I think it could cause an unexpected
+> page_copy_prealloc().
 
-remount() -> parse_options() will fail due to below check, so it doesn't need
-to check again? Am I missing something?
+Thanks, I had considered that but saw "ret" was always set either by 
+copy_nonpresent_pte() or copy_present_pte(). However missed the "unlucky" case 
+at the start of the loop:
 
-@@ -1162,6 +1163,11 @@
+	if (progress >= 32) {
+		progress = 0;
+		if (need_resched() ||
+				spin_needbreak(src_ptl) || pin_needbreak(dst_ptl))
+			break;
 
-  static int parse_options(struct super_block *sb, char *options, bool is_remount)
+Looking at this again though checking different variables to figure out what 
+to do outside the locks and reusing error codes seems error prone. I reused -
+EAGAIN for copy_nonpresent_pte() simply because that seemed the most sensible 
+error code, but I don't think that aids readability and it might be better to 
+use a unique error code for each case needing extra handling.
 
-  	 */
-  	if (F2FS_OPTION(sbi).active_logs != NR_CURSEG_TYPE)
-  		F2FS_OPTION(sbi).whint_mode = WHINT_MODE_OFF;
-+
-+	if (F2FS_HAS_FEATURE(sbi, F2FS_FEATURE_RO) && !f2fs_readonly(sbi->sb)) {
-+		f2fs_err(sbi, "Allow to mount readonly mode only");
-+		return -EROFS;
-+	}
-  	return 0;
-  }
+So it might be better if I update this patch to:
+1) Use unique error codes for each case requiring special handling outside the 
+lock.
+2) Only check "ret" to determine what to do outside locks (ie. not entry.val)
+3) Document these.
+4) Always reset ret after handling.
 
-Thanks,
+Thoughts?
 
-> +
->   #ifdef CONFIG_QUOTA
->   	if (!f2fs_readonly(sb) && (*flags & SB_RDONLY)) {
->   		err = dquot_suspend(sb, -1);
-> @@ -3134,14 +3149,15 @@ int f2fs_sanity_check_ckpt(struct f2fs_sb_info *sbi)
->   	ovp_segments = le32_to_cpu(ckpt->overprov_segment_count);
->   	reserved_segments = le32_to_cpu(ckpt->rsvd_segment_count);
->   
-> -	if (unlikely(fsmeta < F2FS_MIN_META_SEGMENTS ||
-> +	if (!F2FS_HAS_FEATURE(sbi, F2FS_FEATURE_RO) &&
-> +			unlikely(fsmeta < F2FS_MIN_META_SEGMENTS ||
->   			ovp_segments == 0 || reserved_segments == 0)) {
->   		f2fs_err(sbi, "Wrong layout: check mkfs.f2fs version");
->   		return 1;
->   	}
-> -
->   	user_block_count = le64_to_cpu(ckpt->user_block_count);
-> -	segment_count_main = le32_to_cpu(raw_super->segment_count_main);
-> +	segment_count_main = le32_to_cpu(raw_super->segment_count_main) +
-> +			(F2FS_HAS_FEATURE(sbi, F2FS_FEATURE_RO) ? 1 : 0);
->   	log_blocks_per_seg = le32_to_cpu(raw_super->log_blocks_per_seg);
->   	if (!user_block_count || user_block_count >=
->   			segment_count_main << log_blocks_per_seg) {
-> @@ -3172,6 +3188,10 @@ int f2fs_sanity_check_ckpt(struct f2fs_sb_info *sbi)
->   		if (le32_to_cpu(ckpt->cur_node_segno[i]) >= main_segs ||
->   			le16_to_cpu(ckpt->cur_node_blkoff[i]) >= blocks_per_seg)
->   			return 1;
-> +
-> +		if (F2FS_HAS_FEATURE(sbi, F2FS_FEATURE_RO))
-> +			goto check_data;
-> +
->   		for (j = i + 1; j < NR_CURSEG_NODE_TYPE; j++) {
->   			if (le32_to_cpu(ckpt->cur_node_segno[i]) ==
->   				le32_to_cpu(ckpt->cur_node_segno[j])) {
-> @@ -3182,10 +3202,15 @@ int f2fs_sanity_check_ckpt(struct f2fs_sb_info *sbi)
->   			}
->   		}
->   	}
-> +check_data:
->   	for (i = 0; i < NR_CURSEG_DATA_TYPE; i++) {
->   		if (le32_to_cpu(ckpt->cur_data_segno[i]) >= main_segs ||
->   			le16_to_cpu(ckpt->cur_data_blkoff[i]) >= blocks_per_seg)
->   			return 1;
-> +
-> +		if (F2FS_HAS_FEATURE(sbi, F2FS_FEATURE_RO))
-> +			goto skip_cross;
-> +
->   		for (j = i + 1; j < NR_CURSEG_DATA_TYPE; j++) {
->   			if (le32_to_cpu(ckpt->cur_data_segno[i]) ==
->   				le32_to_cpu(ckpt->cur_data_segno[j])) {
-> @@ -3207,7 +3232,7 @@ int f2fs_sanity_check_ckpt(struct f2fs_sb_info *sbi)
->   			}
->   		}
->   	}
-> -
-> +skip_cross:
->   	sit_bitmap_size = le32_to_cpu(ckpt->sit_ver_bitmap_bytesize);
->   	nat_bitmap_size = le32_to_cpu(ckpt->nat_ver_bitmap_bytesize);
->   
-> 
+ - Alistair
+
+> --
+> Peter Xu
+
+
+
+
