@@ -2,189 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9CBDC393223
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 17:14:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1642E393240
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 17:17:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237121AbhE0PP2 convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 27 May 2021 11:15:28 -0400
-Received: from coyote.holtmann.net ([212.227.132.17]:34616 "EHLO
-        mail.holtmann.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237001AbhE0PPD (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 May 2021 11:15:03 -0400
-Received: from smtpclient.apple (p4fefc9d6.dip0.t-ipconnect.de [79.239.201.214])
-        by mail.holtmann.org (Postfix) with ESMTPSA id 341EFCED34;
-        Thu, 27 May 2021 17:21:24 +0200 (CEST)
-Content-Type: text/plain;
-        charset=utf-8
-Mime-Version: 1.0 (Mac OS X Mail 14.0 \(3654.100.0.2.22\))
-Subject: Re: [PATCH] Bluetooth: hci_h5: Add RTL8822CS capabilities
-From:   Marcel Holtmann <marcel@holtmann.org>
-In-Reply-To: <CAJQfnxF6zYr=-t46yjYSev+RtPhhnZep4Vh2AFaARfzoEM8mDA@mail.gmail.com>
-Date:   Thu, 27 May 2021 17:13:27 +0200
-Cc:     linux-bluetooth <linux-bluetooth@vger.kernel.org>,
-        CrosBT Upstreaming <chromeos-bluetooth-upstreaming@chromium.org>,
-        Archie Pusaka <apusaka@chromium.org>,
-        Abhishek Pandit-Subedi <abhishekpandit@chromium.org>,
-        Johan Hedberg <johan.hedberg@gmail.com>,
-        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Transfer-Encoding: 8BIT
-Message-Id: <872ECDCE-D007-47EA-B9EA-F971CA34540D@holtmann.org>
-References: <20210513165327.1.I4d214bb82746fb2ed94eb1c2100dda0f63cf9a25@changeid>
- <7867EC1F-324A-4739-B5F7-DDEB3994EA7A@holtmann.org>
- <CAJQfnxE4PY09GpxGYLKy2kXnaCQaUmCakhCKnhqGnoK+9aSyyg@mail.gmail.com>
- <DAE03499-573B-4A72-A2A9-2E139B78AB2E@holtmann.org>
- <CAJQfnxHg50mKGVpQoH-dobphAzpFwyc2gQMzVkLZeNUW0Yyh3Q@mail.gmail.com>
- <CAJQfnxG1ba=imd_BiOXpuT8WF8HeWPcs5y4kdKx+fV6LEL9SyA@mail.gmail.com>
- <3DB375AF-3BC3-43F3-A1F5-1E3CBF17318D@holtmann.org>
- <CAJQfnxE+qiPor8xUd8zuJH45LmbrHb8YwcvjrnhkG0LovP1vyw@mail.gmail.com>
- <CAJQfnxErqfZ-+NgT2xeeOADChJxs2hkwkn-qePtJTRcU53BmGw@mail.gmail.com>
- <14DD0026-DE65-4EAA-B5EF-F98C3407BA1A@holtmann.org>
- <CAJQfnxF6zYr=-t46yjYSev+RtPhhnZep4Vh2AFaARfzoEM8mDA@mail.gmail.com>
-To:     Archie Pusaka <apusaka@google.com>
-X-Mailer: Apple Mail (2.3654.100.0.2.22)
+        id S235248AbhE0PSg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 May 2021 11:18:36 -0400
+Received: from vps0.lunn.ch ([185.16.172.187]:60308 "EHLO vps0.lunn.ch"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234529AbhE0PSd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 27 May 2021 11:18:33 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+        bh=sZh68NYV4i6lfMX9rlhUQviE4A3XNjX+lXwtGbnB1bk=; b=ePkEbAEF5tTyzKvVVLSiRUHUfP
+        seI0mnFHZ04IjBbJD/eqtdm7mziyjO4Vp4G0rgoiERCjwI4XGnt5HMQDsG8ZIhec2SMI+A3tyL3Wa
+        7uaXRpFDVo0N7GOMiSYqbEZDzYPEccywrFmwjm402P0qSsoBt62ewp9aM98gcLPelwSg=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+        (envelope-from <andrew@lunn.ch>)
+        id 1lmHkf-006ZL4-6P; Thu, 27 May 2021 17:16:49 +0200
+Date:   Thu, 27 May 2021 17:16:49 +0200
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Vladimir Oltean <olteanv@gmail.com>
+Cc:     Oleksij Rempel <o.rempel@pengutronix.de>,
+        Woojung Huh <woojung.huh@microchip.com>,
+        UNGLinuxDriver@microchip.com,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Michael Grzeschik <m.grzeschik@pengutronix.de>,
+        kernel@pengutronix.de, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Russell King <linux@armlinux.org.uk>
+Subject: Re: [PATCH net-next v3 1/9] net: phy: micrel: move phy reg offsets
+ to common header
+Message-ID: <YK+34eadXNOR4f1D@lunn.ch>
+References: <20210526043037.9830-1-o.rempel@pengutronix.de>
+ <20210526043037.9830-2-o.rempel@pengutronix.de>
+ <20210526220132.stfahc4mrwfiu6yn@skbuf>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210526220132.stfahc4mrwfiu6yn@skbuf>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Archie,
-
->>>>>>>>>>> RTL8822 chipset supports WBS, and this information is conveyed in
->>>>>>>>>>> btusb.c. However, the UART driver doesn't have this information just
->>>>>>>>>>> yet.
->>>>>>>>>>> 
->>>>>>>>>>> Signed-off-by: Archie Pusaka <apusaka@chromium.org>
->>>>>>>>>>> Reviewed-by: Abhishek Pandit-Subedi <abhishekpandit@chromium.org>
->>>>>>>>>>> ---
->>>>>>>>>>> 
->>>>>>>>>>> drivers/bluetooth/btrtl.c  | 26 ++++++++++++++++----------
->>>>>>>>>>> drivers/bluetooth/btrtl.h  |  2 ++
->>>>>>>>>>> drivers/bluetooth/hci_h5.c |  5 +----
->>>>>>>>>>> 3 files changed, 19 insertions(+), 14 deletions(-)
->>>>>>>>>>> 
->>>>>>>>>>> diff --git a/drivers/bluetooth/btrtl.c b/drivers/bluetooth/btrtl.c
->>>>>>>>>>> index e7fe5fb22753..988a09860c6b 100644
->>>>>>>>>>> --- a/drivers/bluetooth/btrtl.c
->>>>>>>>>>> +++ b/drivers/bluetooth/btrtl.c
->>>>>>>>>>> @@ -719,17 +719,8 @@ int btrtl_download_firmware(struct hci_dev *hdev,
->>>>>>>>>>> }
->>>>>>>>>>> EXPORT_SYMBOL_GPL(btrtl_download_firmware);
->>>>>>>>>>> 
->>>>>>>>>>> -int btrtl_setup_realtek(struct hci_dev *hdev)
->>>>>>>>>>> +void btrtl_set_quirks(struct hci_dev *hdev, struct btrtl_device_info *btrtl_dev)
->>>>>>>>>>> {
->>>>>>>>>>> -     struct btrtl_device_info *btrtl_dev;
->>>>>>>>>>> -     int ret;
->>>>>>>>>>> -
->>>>>>>>>>> -     btrtl_dev = btrtl_initialize(hdev, NULL);
->>>>>>>>>>> -     if (IS_ERR(btrtl_dev))
->>>>>>>>>>> -             return PTR_ERR(btrtl_dev);
->>>>>>>>>>> -
->>>>>>>>>>> -     ret = btrtl_download_firmware(hdev, btrtl_dev);
->>>>>>>>>>> -
->>>>>>>>>>>   /* Enable controller to do both LE scan and BR/EDR inquiry
->>>>>>>>>>>    * simultaneously.
->>>>>>>>>>>    */
->>>>>>>>>>> @@ -750,6 +741,21 @@ int btrtl_setup_realtek(struct hci_dev *hdev)
->>>>>>>>>>>           rtl_dev_dbg(hdev, "WBS supported not enabled.");
->>>>>>>>>>>           break;
->>>>>>>>>>>   }
->>>>>>>>>>> +}
->>>>>>>>>>> +EXPORT_SYMBOL_GPL(btrtl_set_quirks);
->>>>>>>>>>> +
->>>>>>>>>>> +int btrtl_setup_realtek(struct hci_dev *hdev)
->>>>>>>>>>> +{
->>>>>>>>>>> +     struct btrtl_device_info *btrtl_dev;
->>>>>>>>>>> +     int ret;
->>>>>>>>>>> +
->>>>>>>>>>> +     btrtl_dev = btrtl_initialize(hdev, NULL);
->>>>>>>>>>> +     if (IS_ERR(btrtl_dev))
->>>>>>>>>>> +             return PTR_ERR(btrtl_dev);
->>>>>>>>>>> +
->>>>>>>>>>> +     ret = btrtl_download_firmware(hdev, btrtl_dev);
->>>>>>>>>>> +
->>>>>>>>>>> +     btrtl_set_quirks(hdev, btrtl_dev);
->>>>>>>>>>> 
->>>>>>>>>>>   btrtl_free(btrtl_dev);
->>>>>>>>>>>   return ret;
->>>>>>>>>>> diff --git a/drivers/bluetooth/btrtl.h b/drivers/bluetooth/btrtl.h
->>>>>>>>>>> index 2a582682136d..260167f01b08 100644
->>>>>>>>>>> --- a/drivers/bluetooth/btrtl.h
->>>>>>>>>>> +++ b/drivers/bluetooth/btrtl.h
->>>>>>>>>>> @@ -54,6 +54,8 @@ struct btrtl_device_info *btrtl_initialize(struct hci_dev *hdev,
->>>>>>>>>>> void btrtl_free(struct btrtl_device_info *btrtl_dev);
->>>>>>>>>>> int btrtl_download_firmware(struct hci_dev *hdev,
->>>>>>>>>>>                       struct btrtl_device_info *btrtl_dev);
->>>>>>>>>>> +void btrtl_set_quirks(struct hci_dev *hdev,
->>>>>>>>>>> +                   struct btrtl_device_info *btrtl_dev);
->>>>>>>>>>> int btrtl_setup_realtek(struct hci_dev *hdev);
->>>>>>>>>>> int btrtl_shutdown_realtek(struct hci_dev *hdev);
->>>>>>>>>>> int btrtl_get_uart_settings(struct hci_dev *hdev,
->>>>>>>>>>> diff --git a/drivers/bluetooth/hci_h5.c b/drivers/bluetooth/hci_h5.c
->>>>>>>>>>> index 27e96681d583..e0520639f4ba 100644
->>>>>>>>>>> --- a/drivers/bluetooth/hci_h5.c
->>>>>>>>>>> +++ b/drivers/bluetooth/hci_h5.c
->>>>>>>>>>> @@ -906,10 +906,7 @@ static int h5_btrtl_setup(struct h5 *h5)
->>>>>>>>>>>   /* Give the device some time before the hci-core sends it a reset */
->>>>>>>>>>>   usleep_range(10000, 20000);
->>>>>>>>>>> 
->>>>>>>>>>> -     /* Enable controller to do both LE scan and BR/EDR inquiry
->>>>>>>>>>> -      * simultaneously.
->>>>>>>>>>> -      */
->>>>>>>>>>> -     set_bit(HCI_QUIRK_SIMULTANEOUS_DISCOVERY, &h5->hu->hdev->quirks);
->>>>>>>>>>> +     btrtl_set_quirks(h5->hu->hdev, btrtl_dev);
->>>>>>>>>> 
->>>>>>>>>> any reason why not just setting WBS quirk here?
->>>>>>>>> 
->>>>>>>>> Hmm, I think WBS is the feature of the chipset and not the transport.
->>>>>>>>> Therefore isn't it better to just have it set in one place?
->>>>>>>>> Setting the quirks here means we need to copy paste the settings from btrtl.c.
->>>>>>>> 
->>>>>>>> but since you are already setting HCI_QUIRK_SIMULTANEOUS_DISCOVERY right now, I don’t see the difference.
->>>>>>> 
->>>>>>> Sorry, I don't get what you mean.
->>>>>>> With this patch I also moved HCI_QUIRK_SIMULTANEOUS_DISCOVERY into
->>>>>>> btrtl.c, so it's together with the WBS quirk.
->>>>>>> 
->>>>>>>> Can we actually verify that we still need the WBS quirk. I think we fixed the broken errerrnous packet flag handling.
->>>>>>> 
->>>>>>> To be honest, I am not aware about the story of the broken erroneous
->>>>>>> packet flag.
->>>>>>> Last time I checked I still needed the quirk to have RTL8822 on UART
->>>>>>> properly run WBS, but that was months ago...
->>>>>>> Let me verify whether this quirk is still needed.
->>>>>> 
->>>>>> It looks like we still need the WBS quirk because otherwise the host
->>>>>> wouldn't know whether the controller supports WBS or not. It's used in
->>>>>> get_supported_settings() in mgmt.c.
->>>>> 
->>>>> and why not set it unconditionally for all Realtek chips?
->>>> 
->>>> Not all Realtek chips supports WBS, therefore
->>>> HCI_QUIRK_WIDEBAND_SPEECH_SUPPORTED is only set on some of them.
->>> 
->>> Are there any other concerns you might have?
->> 
->> can we do the quirk setting in btrtl_setup_realtek() instead of creating another exported function.
+> >  	switch (reg) {
+> > -	case PHY_REG_CTRL:
+> > +	case MII_BMCR:
+> >  		ksz_pread8(dev, p, regs[P_NEG_RESTART_CTRL], &restart);
+> >  		ksz_pread8(dev, p, regs[P_SPEED_STATUS], &speed);
+> >  		ksz_pread8(dev, p, regs[P_FORCE_CTRL], &ctrl);
+> >  		if (restart & PORT_PHY_LOOPBACK)
+> > -			data |= PHY_LOOPBACK;
+> > +			data |= BMCR_LOOPBACK;
+> >  		if (ctrl & PORT_FORCE_100_MBIT)
+> > -			data |= PHY_SPEED_100MBIT;
+> > +			data |= BMCR_SPEED100;
+> >  		if (ksz_is_ksz88x3(dev)) {
+> >  			if ((ctrl & PORT_AUTO_NEG_ENABLE))
+> > -				data |= PHY_AUTO_NEG_ENABLE;
+> > +				data |= BMCR_ANENABLE;
+> >  		} else {
+> >  			if (!(ctrl & PORT_AUTO_NEG_DISABLE))
+> > -				data |= PHY_AUTO_NEG_ENABLE;
+> > +				data |= BMCR_ANENABLE;
+> >  		}
+> >  		if (restart & PORT_POWER_DOWN)
+> > -			data |= PHY_POWER_DOWN;
+> > +			data |= BMCR_PDOWN;
+> >  		if (restart & PORT_AUTO_NEG_RESTART)
+> > -			data |= PHY_AUTO_NEG_RESTART;
+> > +			data |= BMCR_ANRESTART;
+> >  		if (ctrl & PORT_FORCE_FULL_DUPLEX)
+> > -			data |= PHY_FULL_DUPLEX;
+> > +			data |= BMCR_FULLDPLX;
+> >  		if (speed & PORT_HP_MDIX)
+> > -			data |= PHY_HP_MDIX;
+> > +			data |= KSZ886X_BMCR_HP_MDIX;
+> >  		if (restart & PORT_FORCE_MDIX)
+> > -			data |= PHY_FORCE_MDIX;
+> > +			data |= KSZ886X_BMCR_FORCE_MDI;
+> >  		if (restart & PORT_AUTO_MDIX_DISABLE)
+> > -			data |= PHY_AUTO_MDIX_DISABLE;
+> > +			data |= KSZ886X_BMCR_DISABLE_AUTO_MDIX;
+> >  		if (restart & PORT_TX_DISABLE)
+> > -			data |= PHY_TRANSMIT_DISABLE;
+> > +			data |= KSZ886X_BMCR_DISABLE_TRANSMIT;
+> >  		if (restart & PORT_LED_OFF)
+> > -			data |= PHY_LED_DISABLE;
+> > +			data |= KSZ886X_BMCR_DISABLE_LED;
+> >  		break;
 > 
-> It cannot be done easily since the first part of btrtl_setup_realtek()
-> is used exclusively for btusb, which is done differently in hci_h5.
-> 
-> We can have it another way: define btrtl_setup_realtek_h5() to do the
-> setup for h5 part in btrtl.c. This would effectively move all of
-> h5_btrtl_setup() inside hci_h5.c, most notably the serdev setup. In
-> turn, we don't have to expose btrtl_set_quirks(), and we can even hide
-> btrtl_initialize(), btrtl_free(), and btrtl_download_firmware() inside
-> btrtl.c.
-> I'm not sure though why would one want that? We still need to export
-> the new btrtl_setup_realtek_h5().
+> I am deeply confused as to what this function is doing. It is reading
+> the 8-bit port registers P_NEG_RESTART_CTRL, P_SPEED_STATUS and
+> P_FORCE_CTRL and stitching them into a 16-bit "MII_BMCR"?
 
-I am a bit disappointed that nobody took up the work on bt3wire.c so that we can have a clean serdev based driver for 3-Wire / H:5 support. That would make supporting USB and UART vendor setups from the same manufacturer a lot easier.
+Sort of. Take a look at the datasheet for the ksz8841. It has clause
+22 like registers which it exports to a PHY driver. It puts MDIX
+control into the bottom of the BMCR. So this DSA driver is emulating
+the ksz8841 so it can share the PHY driver.
 
-The consistent hci_h5.c hacking is not doing anybody any favor in the long run. It will get more and more complicated especially since the underlying core design is a line discipline. This is a hint with a massively large hammer.
-
-Regards
-
-Marcel
-
+    Andrew
