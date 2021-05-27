@@ -2,746 +2,1304 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AADAF39291F
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 09:58:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A7198392923
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 09:58:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234964AbhE0H7a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 May 2021 03:59:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42936 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235272AbhE0H6p (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 May 2021 03:58:45 -0400
-Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2585C0613CE;
-        Thu, 27 May 2021 00:57:06 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4FrKsX2WFXz9sVt;
-        Thu, 27 May 2021 17:57:04 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1622102224;
-        bh=2IaPfY+fUBN0ktObQhD2N3MAtXE7s2YmMY9xYihAHm8=;
-        h=Date:From:To:Cc:Subject:From;
-        b=ma2HohRPZfQ6yQ7ppHpzyzfqsyQ8qFAC+Lc9NMa1mYSdSuYJVPGQVzi1KqupFa/Ju
-         uHI90vo91o205J5ON9Ji2CvLsHowvzI58HY4dzfww/vzBCnDv2vHpcQNn9ejMzCbuP
-         CXpej9UQ/sb1q1C7Htj+UtOFkt5EeGJqaCaQhMc+iI+/mI4Bgi5T9JbKvVCRK+Rtoc
-         gw0B5vC0zu7gyN5VEaljOXtfClCw5i25Y3+98vjH2f8otxdf9RtQfjC4vgxkjGrFZh
-         p03qESBUmHRWBxEAHygn+ZSv5RXTkr5OjSFjgXoNaa3AONC4IuSgja8EXdycUoyqoe
-         yZ6NNwxjdTTfA==
-Date:   Thu, 27 May 2021 17:57:03 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Linux Next Mailing List <linux-next@vger.kernel.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: linux-next: Tree for May 27
-Message-ID: <20210527175703.0f0b63c7@canb.auug.org.au>
+        id S235085AbhE0IAF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 May 2021 04:00:05 -0400
+Received: from mga18.intel.com ([134.134.136.126]:58391 "EHLO mga18.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234508AbhE0H77 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 27 May 2021 03:59:59 -0400
+IronPort-SDR: Q0xRioLjbJGpgGnXklYnktHuBmKfNFeO8cxjOyBXE8Woq9YB5ueNI4SSNfCJba+zsy4dmKAU5P
+ dIpaV+/snkig==
+X-IronPort-AV: E=McAfee;i="6200,9189,9996"; a="190049363"
+X-IronPort-AV: E=Sophos;i="5.82,334,1613462400"; 
+   d="scan'208";a="190049363"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 May 2021 00:58:17 -0700
+IronPort-SDR: nrPWmbi18lS2Mzd2WAQNgrttTMB/98qArcHb+4O5Z56kVO8/6SE3uXiZnXn1pHWhAOM6gtbLnn
+ A+zPhQZoM9WA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.82,334,1613462400"; 
+   d="scan'208";a="472413848"
+Received: from fmsmsx606.amr.corp.intel.com ([10.18.126.86])
+  by FMSMGA003.fm.intel.com with ESMTP; 27 May 2021 00:58:17 -0700
+Received: from fmsmsx606.amr.corp.intel.com (10.18.126.86) by
+ fmsmsx606.amr.corp.intel.com (10.18.126.86) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2242.4; Thu, 27 May 2021 00:58:16 -0700
+Received: from fmsedg602.ED.cps.intel.com (10.1.192.136) by
+ fmsmsx606.amr.corp.intel.com (10.18.126.86) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2242.4
+ via Frontend Transport; Thu, 27 May 2021 00:58:16 -0700
+Received: from NAM02-SN1-obe.outbound.protection.outlook.com (104.47.57.41) by
+ edgegateway.intel.com (192.55.55.71) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2242.4; Thu, 27 May 2021 00:58:15 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=fReqxI/RA3d9NRJedtiOhqI9G8JWZxdftzOmncQZR3Hl79uVNC8DHmPq3IAkVb3baAv8Xji9K/bPGogL+dhQzFSMRpt27ZhpP2WKWsgB7njwfNfQ4rnDlmJKymSdeSH1qlprpqBkn4mjOlE+z6C7EOmgv6982x/QZNV029HBRRE4h4EvsEv8AYIxizvnnH4WmZo8EaaAGveTctVAhGU4eVuBm2UKkymJZDEWbDgD5RZ9/rSswYOy/CmZmTJdP8p3Wb+wxf/zTSL81u6OUEX/cK+NroXdotNUvKwULhpphLWxBTyw941QfoGHf9HLBIOkoyHJZr03OpwUyQnJlXNwQg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=qIUSdwyD3+Bz9rDvqY3yVOkhajKhDxtORZgB+z3v+cc=;
+ b=j0pgx1Bh3m+F3LrpUjf5ryuGbDGd9W3FgDeAVAu79NJ1RUP/z+f1tsVThEnOIcKYvWt2xAOHlRwcvodjEr6qjUtt3SVvqGP491fyDjchwzqycxJaNP56hfj+ZmZRCllhznSXruJ73ZUjcfvR0FDjjmabeN5/1iYwBrclAX35Q2XQUlIOhJtDgG5Ec3fQpYeXa/lPGiO7wC2Y1i9yp9I61gXBBOyOFHdhMnObfUzLlExpXV/XjjdMD0FzoslPaQUsx47/WzraTK/7faEbUxEtPTPCezyNLN4mUr43rHBGK35HuctKXtDCqIGH91MTYTnKVQLGkhnI3YA6PfWJhNMbAA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=intel.onmicrosoft.com;
+ s=selector2-intel-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=qIUSdwyD3+Bz9rDvqY3yVOkhajKhDxtORZgB+z3v+cc=;
+ b=QfhOXFYOGQ1JYx/zJU5vneFZ9PDPF+2MXzt7Xvtwu+Q9biufOmlcfnmPE/WwsdFqoIrVwtMWMETxcI79fmVGaR6Fc2iU8GM3y8Z5l77gN0eubOW+YaimjtZ5ZpWxLnTT4j/uwASrufVoWhgMm4Ev1G9+fNKxwnd4ogKXQ8ELFbE=
+Received: from MWHPR11MB1886.namprd11.prod.outlook.com (2603:10b6:300:110::9)
+ by MWHPR11MB1517.namprd11.prod.outlook.com (2603:10b6:301:e::11) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4173.20; Thu, 27 May
+ 2021 07:58:13 +0000
+Received: from MWHPR11MB1886.namprd11.prod.outlook.com
+ ([fe80::6597:eb05:c507:c6c1]) by MWHPR11MB1886.namprd11.prod.outlook.com
+ ([fe80::6597:eb05:c507:c6c1%12]) with mapi id 15.20.4150.027; Thu, 27 May
+ 2021 07:58:13 +0000
+From:   "Tian, Kevin" <kevin.tian@intel.com>
+To:     LKML <linux-kernel@vger.kernel.org>,
+        Joerg Roedel <joro@8bytes.org>,
+        Jason Gunthorpe <jgg@nvidia.com>,
+        Lu Baolu <baolu.lu@linux.intel.com>,
+        David Woodhouse <dwmw2@infradead.org>,
+        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "Alex Williamson (alex.williamson@redhat.com)" 
+        <alex.williamson@redhat.com>, Jason Wang <jasowang@redhat.com>
+CC:     Eric Auger <eric.auger@redhat.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        "Raj, Ashok" <ashok.raj@intel.com>,
+        "Tian, Kevin" <kevin.tian@intel.com>,
+        "Liu, Yi L" <yi.l.liu@intel.com>, "Wu, Hao" <hao.wu@intel.com>,
+        "Jiang, Dave" <dave.jiang@intel.com>,
+        Jacob Pan <jacob.jun.pan@linux.intel.com>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        David Gibson <david@gibson.dropbear.id.au>,
+        Kirti Wankhede <kwankhede@nvidia.com>,
+        "Robin Murphy" <robin.murphy@arm.com>
+Subject: [RFC] /dev/ioasid uAPI proposal
+Thread-Topic: [RFC] /dev/ioasid uAPI proposal
+Thread-Index: AddSzQ970oLnVHLeQca/ysPD8zMJZw==
+Date:   Thu, 27 May 2021 07:58:12 +0000
+Message-ID: <MWHPR11MB1886422D4839B372C6AB245F8C239@MWHPR11MB1886.namprd11.prod.outlook.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+dlp-version: 11.5.1.3
+dlp-product: dlpe-windows
+dlp-reaction: no-action
+authentication-results: vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=none action=none header.from=intel.com;
+x-originating-ip: [192.198.147.196]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: dbe20817-4ef9-432d-9c22-08d920e52d77
+x-ms-traffictypediagnostic: MWHPR11MB1517:
+x-ld-processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <MWHPR11MB1517B3EE7B7FB2690538B9AD8C239@MWHPR11MB1517.namprd11.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:8273;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: gVu4coR3QqWhznQP9sgmrEKTcsncgHNcU9pBoQxNIgO1DlWgyVF6SG0dGKXG9ykKamEaUH+kRyqMuwCHOjkV+wp/pmB4qvaD+N9qS8bodrxUxExj1l8XxSUYNHuVZx6jNvbiyskJ63PfhVOB9XMHC5VBkql5zsmea12vEQOUUYLHSEbdm/ke8MQieoBJvg0JlwALkBENI7JuIdGEzibA0hpB3AoAjgc0H7P5pyIaZ9TaZuH7qQ9EqU9SIcy9S4f1b6mwS334Kv7z+oFADkY9lCY+QrNQJ6jQXIaQXEaIE04FSLCAmZwj1qOAmq1N9EkJLeoAXNDCziGQrWkx74WaI2Ii2gXWXJcuLKmCxaSd/pgqGDNZGAZDI6aczbPaIa6E99U+kwctPCqbfCw1ebHUPsIkdCQZJrDpun5CVDhikZ2jsKbY2xUaVp5c1sQIOvBJoj27+q1rLVXanOsK2ygbMhoGsqM47XqDcpdtrtbC/w+N0S7NhKlsBGAV0ZMUXWC+/3dov4soCu+yV8afH5KPDaGYqk49ufoMOhCEFGxKIW4a1BYMvwlfOnIFuFb2lc5zbFZh/0H7i3lZ7tsgpJm5VeDGfT3bIZzL+GQh+EEeko7ZYjURELjnntIWlDqyeVR4wV6WabQUTNkXvU3f2E/PIOqc/+YftN3xd7SWe0PgGMOEdZs0ppuTPLYddFOA1+AfjFue5zxmnFJjUwuudVTVTUbZJeU0/XzYHQWIQiQ4seA=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MWHPR11MB1886.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(396003)(346002)(39860400002)(136003)(366004)(376002)(2906002)(5660300002)(52536014)(55016002)(122000001)(186003)(9686003)(7416002)(76116006)(66446008)(66476007)(66556008)(66946007)(30864003)(83380400001)(33656002)(8936002)(8676002)(54906003)(26005)(316002)(4326008)(64756008)(110136005)(478600001)(7696005)(6506007)(86362001)(966005)(38100700002)(71200400001)(559001)(579004);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: =?us-ascii?Q?L8wiYgXd5fSgGh34WuhbFwSMFPF3vuAKPI34mUY04rfRt950TceCAXn9N5ex?=
+ =?us-ascii?Q?7kYuXLgEsGq2Of0hxGHf/tv77oMLJsBGyNTQ9sRZc2vlq8k1DAG/pqghUfDB?=
+ =?us-ascii?Q?AfsOWTkMv5QR1YmATRdOSSdhOk2MGVE7jQs6QYcc/21/V5zqqYGkX1hlySCR?=
+ =?us-ascii?Q?RKaIJCSMb+Vta6nzytH1uXVm4nZtQueCc4ZDi9D0Kr4IEeCMSVH9hnkbCm7X?=
+ =?us-ascii?Q?opopaNTWMbLwfJmnb//O6mFTvFhog75UfjdZvxTdGzMu0Im9bXnkwXdFdvWq?=
+ =?us-ascii?Q?ZGR6JgkLw6bnZtHRKfjec3J6AJyiWUgQo71jNnCrq5gSU/Qp8WIeQGjE1DxB?=
+ =?us-ascii?Q?vIpRWC+7mR3oFOSxLZt4YANSToikGQj4tsIJ4SxG+zkASbEDa5gULro8mg/E?=
+ =?us-ascii?Q?NQE65f6+skiA1BvyJTnBMZ18DAWwhkvHJgVuX/GhVLqz4kceWIWGjD1+cDyJ?=
+ =?us-ascii?Q?W7IZs+d4iu70woGwEW7pF1JpeoDGrbZwPzcs+fwmwS87Mnccx0fU3y1p7QO+?=
+ =?us-ascii?Q?OFAY944udN+rg3cM70SnpIqZjX1P1WN9D5pBRvb6ifrWd4TJPjWgG4u201Jj?=
+ =?us-ascii?Q?ph0WL3CL/VsNhXWrmUcJYvvqXnRFqPdMwJh6+tpN7jmgw8bmc+hRWEIgQOjE?=
+ =?us-ascii?Q?uSnUNABDL7tLqctCfRC0u8oLoE2H0PCxNlCrMQiuJwRi/HGTC6EwPtqZ2EsB?=
+ =?us-ascii?Q?wmcd9PfnUV3mGOuOh8Xw2CoSAQfR1h8We8JSHn5BORLzexZm9D3okmswTp0v?=
+ =?us-ascii?Q?N/HVN+sRqz1zPzjEKmNiW0bDg60qP+OzU1XGkzmVfL1ncnHof3f9uUzP+qrG?=
+ =?us-ascii?Q?R3e0h3mOm59YnWo2WwJ2L4DHJXr6TfIYK2lF5oCConyPlougxDGSwf8dHtJF?=
+ =?us-ascii?Q?hYci9qwRgt58JhGE6J/0quCnbkThXMmtTrm5xya8pV/Rs2gv9jmQ9G6zkwgq?=
+ =?us-ascii?Q?qIdJPuu124ki/9ki8T5s2RaQkpU+BZ4ARHuCmZkjKl0h5t1YgwrDxMF4fJWe?=
+ =?us-ascii?Q?JkT2MJNKTlmbKRxBk3DZqrQ2JUaZkDfW85bxGyGKidh52J5jHJgVEd5GWujO?=
+ =?us-ascii?Q?dhUiZcOVCErd/sA5OoL6F/K2amnoMt0G6YSF4O5Hrlqg2i4sDBlb7LshdGD3?=
+ =?us-ascii?Q?RzKHzaCws7s9Ij0FAesflFTRqGrNa9KamlHN/LaEqnu8iouj1ZgGnsepwpPQ?=
+ =?us-ascii?Q?xsaBPCfi/V++nXk0Sx8Gro0gicVKS6cXAtjNu9H0bhDfLsxno+m4lxrYptBM?=
+ =?us-ascii?Q?FqXcG8azJ2K0goXZ7XIs/EOLWG9q5n5IYqMihNJjyoVureC8bHZ2frqFxQWE?=
+ =?us-ascii?Q?DSu+DNoqTXBNkzJEjoyXJqUF?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/GCZ2sNI.IZakh2oEYyF5ag_";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: MWHPR11MB1886.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: dbe20817-4ef9-432d-9c22-08d920e52d77
+X-MS-Exchange-CrossTenant-originalarrivaltime: 27 May 2021 07:58:12.9879
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: 2p9oMd9OCRb2m9mfvz13V2GmpyImgIfWWHgnN2tSRNa0Sh4PdJG8dVaX2ol/wVgvVivZPr5SPtO6Rv4NuRWIUQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR11MB1517
+X-OriginatorOrg: intel.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/GCZ2sNI.IZakh2oEYyF5ag_
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+/dev/ioasid provides an unified interface for managing I/O page tables for=
+=20
+devices assigned to userspace. Device passthrough frameworks (VFIO, vDPA,=20
+etc.) are expected to use this interface instead of creating their own logi=
+c to=20
+isolate untrusted device DMAs initiated by userspace.=20
 
-Hi all,
+This proposal describes the uAPI of /dev/ioasid and also sample sequences=20
+with VFIO as example in typical usages. The driver-facing kernel API provid=
+ed=20
+by the iommu layer is still TBD, which can be discussed after consensus is=
+=20
+made on this uAPI.
 
-Changes since 20210526:
+It's based on a lengthy discussion starting from here:
+	https://lore.kernel.org/linux-iommu/20210330132830.GO2356281@nvidia.com/=20
 
-The kvm-fixes tree gained another build failure so I used the version from
-next-20210524.
+It ends up to be a long writing due to many things to be summarized and
+non-trivial effort required to connect them into a complete proposal.
+Hope it provides a clean base to converge.
 
-The hid tree (I think) gained a build failure that I left broken.
+TOC
+=3D=3D=3D=3D
+1. Terminologies and Concepts
+2. uAPI Proposal
+    2.1. /dev/ioasid uAPI
+    2.2. /dev/vfio uAPI
+    2.3. /dev/kvm uAPI
+3. Sample structures and helper functions
+4. PASID virtualization
+5. Use Cases and Flows
+    5.1. A simple example
+    5.2. Multiple IOASIDs (no nesting)
+    5.3. IOASID nesting (software)
+    5.4. IOASID nesting (hardware)
+    5.5. Guest SVA (vSVA)
+    5.6. I/O page fault
+    5.7. BIND_PASID_TABLE
+=3D=3D=3D=3D
 
-The amdgpu tree gained a build failure for which I reverted a commit.
+1. Terminologies and Concepts
+-----------------------------------------
 
-The scsi-mkp tree gained a build failuer so I used the version from
-next-20210526.
+IOASID FD is the container holding multiple I/O address spaces. User=20
+manages those address spaces through FD operations. Multiple FD's are=20
+allowed per process, but with this proposal one FD should be sufficient for=
+=20
+all intended usages.
 
-Non-merge commits (relative to Linus' tree): 5002
- 4946 files changed, 230454 insertions(+), 77632 deletions(-)
+IOASID is the FD-local software handle representing an I/O address space.=20
+Each IOASID is associated with a single I/O page table. IOASIDs can be=20
+nested together, implying the output address from one I/O page table=20
+(represented by child IOASID) must be further translated by another I/O=20
+page table (represented by parent IOASID).
 
-----------------------------------------------------------------------------
+I/O address space can be managed through two protocols, according to=20
+whether the corresponding I/O page table is constructed by the kernel or=20
+the user. When kernel-managed, a dma mapping protocol (similar to=20
+existing VFIO iommu type1) is provided for the user to explicitly specify=20
+how the I/O address space is mapped. Otherwise, a different protocol is=20
+provided for the user to bind an user-managed I/O page table to the=20
+IOMMU, plus necessary commands for iotlb invalidation and I/O fault=20
+handling.=20
 
-I have created today's linux-next tree at
-git://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git
-(patches at http://www.kernel.org/pub/linux/kernel/next/ ).  If you
-are tracking the linux-next tree using git, you should not use "git pull"
-to do so as that will try to merge the new linux-next release with the
-old one.  You should use "git fetch" and checkout or reset to the new
-master.
+Pgtable binding protocol can be used only on the child IOASID's, implying=20
+IOASID nesting must be enabled. This is because the kernel doesn't trust=20
+userspace. Nesting allows the kernel to enforce its DMA isolation policy=20
+through the parent IOASID.
 
-You can see which trees have been included by looking in the Next/Trees
-file in the source.  There are also quilt-import.log and merge.log
-files in the Next directory.  Between each merge, the tree was built
-with a ppc64_defconfig for powerpc, an allmodconfig for x86_64, a
-multi_v7_defconfig for arm and a native build of tools/perf. After
-the final fixups (if any), I do an x86_64 modules_install followed by
-builds for x86_64 allnoconfig, powerpc allnoconfig (32 and 64 bit),
-ppc44x_defconfig, allyesconfig and pseries_le_defconfig and i386, sparc
-and sparc64 defconfig and htmldocs. And finally, a simple boot test
-of the powerpc pseries_le_defconfig kernel in qemu (with and without
-kvm enabled).
+IOASID nesting can be implemented in two ways: hardware nesting and=20
+software nesting. With hardware support the child and parent I/O page=20
+tables are walked consecutively by the IOMMU to form a nested translation.=
+=20
+When it's implemented in software, the ioasid driver is responsible for=20
+merging the two-level mappings into a single-level shadow I/O page table.=20
+Software nesting requires both child/parent page tables operated through=20
+the dma mapping protocol, so any change in either level can be captured=20
+by the kernel to update the corresponding shadow mapping.
 
-Below is a summary of the state of the merge.
+An I/O address space takes effect in the IOMMU only after it is attached=20
+to a device. The device in the /dev/ioasid context always refers to a=20
+physical one or 'pdev' (PF or VF).=20
 
-I am currently merging 331 trees (counting Linus' and 89 trees of bug
-fix patches pending for the current merge release).
+One I/O address space could be attached to multiple devices. In this case,=
+=20
+/dev/ioasid uAPI applies to all attached devices under the specified IOASID=
+.
 
-Stats about the size of the tree over time can be seen at
-http://neuling.org/linux-next-size.html .
+Based on the underlying IOMMU capability one device might be allowed=20
+to attach to multiple I/O address spaces, with DMAs accessing them by=20
+carrying different routing information. One of them is the default I/O=20
+address space routed by PCI Requestor ID (RID) or ARM Stream ID. The=20
+remaining are routed by RID + Process Address Space ID (PASID) or=20
+Stream+Substream ID. For simplicity the following context uses RID and
+PASID when talking about the routing information for I/O address spaces.
 
-Status of my local build tests will be at
-http://kisskb.ellerman.id.au/linux-next .  If maintainers want to give
-advice about cross compilers/configs that work, we are always open to add
-more builds.
+Device attachment is initiated through passthrough framework uAPI (use
+VFIO for simplicity in following context). VFIO is responsible for identify=
+ing=20
+the routing information and registering it to the ioasid driver when callin=
+g=20
+ioasid attach helper function. It could be RID if the assigned device is=20
+pdev (PF/VF) or RID+PASID if the device is mediated (mdev). In addition,=20
+user might also provide its view of virtual routing information (vPASID) in=
+=20
+the attach call, e.g. when multiple user-managed I/O address spaces are=20
+attached to the vfio_device. In this case VFIO must figure out whether=20
+vPASID should be directly used (for pdev) or converted to a kernel-
+allocated one (pPASID, for mdev) for physical routing (see section 4).
 
-Thanks to Randy Dunlap for doing many randconfig builds.  And to Paul
-Gortmaker for triage and bug fixes.
+Device must be bound to an IOASID FD before attach operation can be
+conducted. This is also through VFIO uAPI. In this proposal one device=20
+should not be bound to multiple FD's. Not sure about the gain of=20
+allowing it except adding unnecessary complexity. But if others have=20
+different view we can further discuss.
 
---=20
-Cheers,
-Stephen Rothwell
+VFIO must ensure its device composes DMAs with the routing information
+attached to the IOASID. For pdev it naturally happens since vPASID is=20
+directly programmed to the device by guest software. For mdev this=20
+implies any guest operation carrying a vPASID on this device must be=20
+trapped into VFIO and then converted to pPASID before sent to the=20
+device. A detail explanation about PASID virtualization policies can be=20
+found in section 4.=20
 
-$ git checkout master
-$ git reset --hard stable
-Merging origin/master (7ac3a1c1ae51 Merge tag 'mtd/fixes-for-5.13-rc4' of g=
-it://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux)
-Merging fixes/fixes (c06a2ba62fc4 Merge tag 'docs-5.13-3' of git://git.lwn.=
-net/linux)
-Merging kbuild-current/fixes (c4681547bcce Linux 5.13-rc3)
-Merging arc-current/for-curr (d07f6ca923ea Linux 5.13-rc2)
-Merging arm-current/fixes (d2f7eca60b29 ARM: 9071/1: uprobes: Don't hook on=
- thumb instructions)
-Merging arm64-fixes/for-next/fixes (e69012400b0c arm64: mm: don't use CON a=
-nd BLK mapping if KFENCE is enabled)
-Merging arm-soc-fixes/arm/fixes (d37316b72e8b ARM: npcm: wpcm450: select in=
-terrupt controller driver)
-Merging drivers-memory-fixes/fixes (6efb943b8616 Linux 5.13-rc1)
-Merging m68k-current/for-linus (34e5269bf987 m68k: sun3x: Remove unneeded s=
-emicolon)
-Merging powerpc-fixes/fixes (d72500f99284 powerpc/64s/syscall: Fix ptrace s=
-yscall info with scv syscalls)
-Merging s390-fixes/fixes (ffa99c436aa7 Merge tag 'vfio-ccw-20210520' of htt=
-ps://git.kernel.org/pub/scm/linux/kernel/git/kvms390/vfio-ccw into fixes)
-Merging sparc/master (05a59d79793d Merge git://git.kernel.org:/pub/scm/linu=
-x/kernel/git/netdev/net)
-Merging fscrypt-current/for-stable (d19d8d345eec fscrypt: fix inline encryp=
-tion not used on new files)
-Merging net/master (62f3415db237 net: phy: Document phydev::dev_flags bits =
-allocation)
-Merging bpf/master (f5d287126f63 Merge git://git.kernel.org/pub/scm/linux/k=
-ernel/git/bpf/bpf)
-Merging ipsec/master (b515d2637276 xfrm: xfrm_state_mtu should return at le=
-ast 1280 for ipv6)
-Merging netfilter/master (983c4fcb81d6 netfilter: nf_tables: extended netli=
-nk error reporting for chain type)
-Merging ipvs/master (414ed7fe863a Merge git://git.kernel.org/pub/scm/linux/=
-kernel/git/pablo/nf)
-Merging wireless-drivers/master (2c2bdd2372af mt76: validate rx A-MSDU subf=
-rames)
-Merging mac80211/master (b81ac7841d51 net: cdc_eem: fix URL to CDC EEM 1.0 =
-spec)
-Merging rdma-fixes/for-rc (c4681547bcce Linux 5.13-rc3)
-Merging sound-current/for-linus (29c8f40b54a4 ALSA: hda/realtek: Chain in p=
-op reduction fixup for ThinkStation P340)
-Merging sound-asoc-fixes/for-linus (d131d9eeb1eb Merge remote-tracking bran=
-ch 'asoc/for-5.13' into asoc-linus)
-Merging regmap-fixes/for-linus (c4681547bcce Linux 5.13-rc3)
-Merging regulator-fixes/for-linus (2776584b8d8b Merge remote-tracking branc=
-h 'regulator/for-5.13' into regulator-linus)
-Merging spi-fixes/for-linus (3efe28470745 Merge remote-tracking branch 'spi=
-/for-5.13' into spi-linus)
-Merging pci-current/for-linus (85aabbd7b315 PCI/MSI: Fix MSIs for generic h=
-osts that use device-tree's "msi-map")
-Merging driver-core.current/driver-core-linus (0c8713153fbf drivers: base: =
-Reduce device link removal code duplication)
-Merging tty.current/tty-linus (016002848c82 serial: rp2: use 'request_firmw=
-are' instead of 'request_firmware_nowait')
-Merging usb.current/usb-linus (a7f2e9272aff xhci: Fix 5.12 regression of mi=
-ssing xHC cache clearing command after a Stall)
-Merging usb-gadget-fixes/fixes (e49d033bddf5 Linux 5.12-rc6)
-Merging usb-serial-fixes/usb-linus (56df0c758aff USB: serial: omninet: upda=
-te driver description)
-Merging usb-chipidea-fixes/for-usb-fixes (d6eef886903c usb: cdns3: Enable T=
-DL_CHK only for OUT ep)
-Merging phy/fixes (7c2fc79250ca phy: usb: Fix misuse of IS_ENABLED)
-Merging staging.current/staging-linus (54732a5322ff Merge tag 'iio-fixes-5.=
-13b-take2' of https://git.kernel.org/pub/scm/linux/kernel/git/jic23/iio int=
-o staging-linus)
-Merging iio-fixes/fixes-togreg (ad873b492222 iio: accel: bmc150: Don't make=
- the remove function of the second accelerometer unregister itself)
-Merging char-misc.current/char-misc-linus (bda7d3ab06f1 kgdb: fix gcc-11 wa=
-rnings harder)
-Merging soundwire-fixes/fixes (da096fbccd52 soundwire: qcom: fix handling o=
-f qcom,ports-block-pack-mode)
-Merging thunderbolt-fixes/fixes (22c7a18ed5f0 thunderbolt: usb4: Fix NVM re=
-ad buffer bounds and offset issue)
-Merging input-current/for-linus (0b1d6c8c0015 Input: xpad - map "Select" bu=
-tton on Microsoft Xbox One controller)
-Merging crypto-current/master (e3a606f2c544 fsverity: relax build time depe=
-ndency on CRYPTO_SHA256)
-Merging ide/master (6800cd8cbc6e ide-acpi: use %*ph to print small buffer)
-Merging vfio-fixes/for-linus (dc51ff91cf2d vfio/platform: fix module_put ca=
-ll in error flow)
-Merging kselftest-fixes/fixes (d07f6ca923ea Linux 5.13-rc2)
-Merging modules-fixes/modules-linus (055f23b74b20 module: check for exit se=
-ctions in layout_sections() instead of module_init_section())
-Merging dmaengine-fixes/fixes (538ea65a9fd1 dmaengine: xilinx: dpdma: initi=
-alize registers before request_irq)
-Merging backlight-fixes/for-backlight-fixes (a38fd8748464 Linux 5.12-rc2)
-Merging mtd-fixes/mtd/fixes (562b4e91d3b2 mtd: parsers: ofpart: fix parsing=
- subpartitions)
-Merging mfd-fixes/for-mfd-fixes (a61f4661fba4 mfd: intel_quark_i2c_gpio: Re=
-vert "Constify static struct resources")
-Merging v4l-dvb-fixes/fixes (6efb943b8616 Linux 5.13-rc1)
-Merging reset-fixes/reset/fixes (b460e0a9e240 reset: intel: add unspecified=
- HAS_IOMEM dependency)
-Merging mips-fixes/mips-fixes (78cf0eb926cb MIPS: Fix kernel hang under FUN=
-CTION_GRAPH_TRACER and PREEMPT_TRACER)
-Merging at91-fixes/at91-fixes (2c69c8a1736e ARM: dts: at91: sam9x60: fix mu=
-x-mask to match product's datasheet)
-Merging omap-fixes/fixes (1e195f9cef08 ARM: OMAP1: ams-delta: remove unused=
- function ams_delta_camera_power)
-Merging kvm-fixes/master (f7d7a93c553f KVM: x86: do not fixup hypercalls in=
- L2)
-$ git reset --hard HEAD^
-Merging next-20210524 version of kvm-fixes
-Merging kvms390-fixes/master (735931f9a51a MAINTAINERS: add uv.c also to KV=
-M/s390)
-Merging hwmon-fixes/hwmon (f0fb26c456a3 hwmon/pmbus: (q54sj108a2) The PMBUS=
-_MFR_ID is actually 6 chars instead of 5)
-Merging nvdimm-fixes/libnvdimm-fixes (de80d5781136 Merge branch 'for-5.13/d=
-ax' into libnvdimm-fixes)
-Merging cxl-fixes/fixes (fae8817ae804 cxl/mem: Fix memory device capacity p=
-robing)
-Merging btrfs-fixes/next-fixes (037239c36e72 Merge branch 'misc-5.13' into =
-next-fixes)
-Merging vfs-fixes/fixes (173e84953eaa fs: fix reporting supported extra fil=
-e attributes for statx())
-Merging dma-mapping-fixes/for-linus (18a3c5f7abfd Merge tag 'for_linus' of =
-git://git.kernel.org/pub/scm/linux/kernel/git/mst/vhost)
-Merging i3c-fixes/i3c/fixes (fe07bfda2fb9 Linux 5.12-rc1)
-Merging drivers-x86-fixes/fixes (2f26dc05af87 platform/surface: aggregator_=
-registry: Add support for 13" Intel Surface Laptop 4)
-Merging samsung-krzk-fixes/fixes (6efb943b8616 Linux 5.13-rc1)
-Merging pinctrl-samsung-fixes/fixes (6efb943b8616 Linux 5.13-rc1)
-Merging devicetree-fixes/dt/linus (c17611592d96 dt-bindings: More removals =
-of type references on common properties)
-Merging scsi-fixes/fixes (2ef7665dfd88 scsi: target: qla2xxx: Wait for stop=
-_phase1 at WWN removal)
-Merging drm-fixes/drm-fixes (dd6ad0516ee3 Merge tag 'amd-drm-fixes-5.13-202=
-1-05-19' of https://gitlab.freedesktop.org/agd5f/linux into drm-fixes)
-Merging amdgpu-fixes/drm-fixes (2c409ba81be2 drm/radeon: fix si_enable_smc_=
-cac() failed issue)
-Merging drm-intel-fixes/for-linux-next-fixes (e11851429fdc drm/i915: Reenab=
-le LTTPR non-transparent LT mode for DPCD_REV<1.4)
-Merging mmc-fixes/fixes (c4681547bcce Linux 5.13-rc3)
-Merging rtc-fixes/rtc-fixes (bd33335aa93d rtc: cmos: Disable irq around dir=
-ect invocation of cmos_interrupt())
-Merging gnss-fixes/gnss-linus (a38fd8748464 Linux 5.12-rc2)
-Merging hyperv-fixes/hyperv-fixes (292d788c64eb drivers: hv: Fix missing er=
-ror code in vmbus_connect())
-Merging soc-fsl-fixes/fix (2663b3388551 soc: fsl: dpio: Get the cpumask thr=
-ough cpumask_of(cpu))
-Merging risc-v-fixes/fixes (bab0d47c0ebb riscv: kexec: Fix W=3D1 build warn=
-ings)
-Merging pidfd-fixes/fixes (03ba0fe4d09f file: simplify logic in __close_ran=
-ge())
-Merging fpga-fixes/fixes (2e8496f31d0b firmware: stratix10-svc: reset COMMA=
-ND_RECONFIG_FLAG_PARTIAL to 0)
-Merging spdx/spdx-linus (6efb943b8616 Linux 5.13-rc1)
-Merging gpio-brgl-fixes/gpio/for-current (bdbe871ef0ca gpio: tegra186: Don'=
-t set parent IRQ affinity)
-Merging gpio-intel-fixes/fixes (6efb943b8616 Linux 5.13-rc1)
-Merging pinctrl-intel-fixes/fixes (6efb943b8616 Linux 5.13-rc1)
-Merging erofs-fixes/fixes (0852b6ca941e erofs: fix 1 lcluster-sized pcluste=
-r for big pcluster)
-Merging integrity-fixes/fixes (843385694721 evm: Fix a small race in init_d=
-esc())
-Merging kunit-fixes/kunit-fixes (d7eab3df8f39 Documentation: kunit: Update =
-kunit_tool page)
-Merging ubifs-fixes/fixes (78c7d49f55d8 ubifs: journal: Make sure to not di=
-rty twice for auth nodes)
-Merging memblock-fixes/fixes (17cbe03872be mm/memblock: Fix typo in comment=
- of memblock_phys_alloc_try_nid())
-Merging cel-fixes/for-rc (9f4ad9e425a1 Linux 5.12)
-Merging drm-misc-fixes/for-linux-next-fixes (35f819d21803 drm/ttm: Skip swa=
-pout if ttm object is not populated)
-Merging kspp-gustavo/for-next/kspp (53004ee78d62 xfs: Fix fall-through warn=
-ings for Clang)
-Merging kbuild/for-next (c39013ee64b5 kbuild: clean up ${quiet} checks in s=
-hell scripts)
-Merging compiler-attributes/compiler-attributes (ca0760e7d79e Compiler Attr=
-ibutes: Add continue in comment)
-Merging dma-mapping/for-next (a7f3d3d3600c dma-mapping: add unlikely hint t=
-o error path in dma_mapping_error)
-Merging asm-generic/master (14462376858e Merge branch 'asm-generic-unaligne=
-d' into asm-generic)
-Merging arc/for-next (def9d2780727 Linux 5.5-rc7)
-Merging arm/for-next (d3506d256d94 Merge branch 'misc' into for-next)
-Merging arm64/for-next/core (f96ff4e07147 Merge branch 'for-next/sve' into =
-for-next/core)
-Merging arm-perf/for-next/perf (2c2e21e78a94 arm64: perf: Remove redundant =
-initialization in perf_event.c)
-Merging arm-soc/for-next (b433d090ac63 MAINTAINERS: ARM/Amlogic SoCs: add N=
-eil as primary maintainer)
-Merging actions/for-next (444d018d8d38 ARM: dts: owl-s500-roseapplepi: Add =
-ATC2603C PMIC)
-Merging amlogic/for-next (09dc799bceb5 Merge branch 'v5.13/fixes' into tmp/=
-aml-rebuild)
-Merging aspeed/for-next (61fbc42084f4 Merge branches 'wpcm450-for-v5.13', '=
-dt-for-v5.13' and 'lpc-for-v5.13' into for-next)
-Merging at91/at91-next (969bbb49f36c Merge branch 'at91-dt' into at91-next)
-Merging drivers-memory/for-next (76e5624f3f93 memory: pl353: Fix error retu=
-rn code in pl353_smc_probe())
-Merging imx-mxs/for-next (c8b0795265b6 Merge branch 'imx/defconfig' into fo=
-r-next)
-Merging keystone/next (9d2e21ed98a2 Merge branch 'for_5.12/drivers-soc' int=
-o next)
-Merging mediatek/for-next (fd450fd2a4fb Merge branch 'v5.13-next/soc' into =
-for-next)
-Merging mvebu/for-next (79e93f9dc81a Merge branch 'mvebu/dt64' into mvebu/f=
-or-next)
-Merging omap/for-next (7cbf29ddfd67 Merge branch 'omap-for-v5.14/dt' into f=
-or-next)
-Merging qcom/for-next (a10eba1a5c03 Merge branches 'arm64-for-5.14' and 'dr=
-ivers-for-5.14' into for-next)
-Merging raspberrypi/for-next (fbdcf1d20126 ARM: dts: bcm2711: Add the CEC i=
-nterrupt controller)
-CONFLICT (content): Merge conflict in arch/arm/boot/dts/bcm2711.dtsi
-Merging renesas/next (1931e709c701 Merge branches 'renesas-arm-defconfig-fo=
-r-v5.14' and 'renesas-arm-dt-for-v5.14' into renesas-next)
-Merging reset/reset/next (e207457f9045 reset: brcmstb: Add missing MODULE_D=
-EVICE_TABLE)
-Merging rockchip/for-next (dd1599446681 Merge branch 'v5.14-clk/next' into =
-for-next)
-Merging samsung-krzk/for-next (6fed39b8b597 Merge branch 'next/dt64' into f=
-or-next)
-Merging scmi/for-linux-next (c8c75e04118e Merge branch 'for-next/ffa' of gi=
-t://git.kernel.org/pub/scm/linux/kernel/git/sudeep.holla/linux into for-lin=
-ux-next)
-Merging stm32/stm32-next (6ed9269265e1 ARM: dts: stm32: Add PTP clock to Et=
-hernet controller)
-Merging sunxi/sunxi/for-next (2b4f0bf55549 Merge branches 'sunxi/clk-fixes-=
-for-5.13', 'sunxi/dt-for-5.14' and 'sunxi/fixes-for-5.13' into sunxi/for-ne=
-xt)
-Merging tegra/for-next (93b9ea9ca307 Merge branch for-5.13/arm64/dt into fo=
-r-next)
-Merging ti-k3/ti-k3-next (1e3d655fe7b4 Merge branch 'ti-k3-config-next' int=
-o ti-k3-next)
-Merging ti-k3-new/ti-k3-next (547be9a05dc8 arm64: dts: ti: k3-am65-iot2050-=
-common: Disable mailbox nodes)
-Merging xilinx/for-next (6efb943b8616 Linux 5.13-rc1)
-Merging clk/clk-next (6efb943b8616 Linux 5.13-rc1)
-Merging clk-imx/for-next (faa1847d03a2 clk: imx: scu: add enet rgmii gpr cl=
-ocks)
-Merging clk-renesas/renesas-clk (eecee036223d clk: renesas: cpg-mssr: Make =
-srstclr[] comment block consistent)
-Merging clk-samsung/for-next (a38fd8748464 Linux 5.12-rc2)
-Merging csky/linux-next (280af034a71d csky: Kconfig: Remove unused selects)
-Merging h8300/h8300-next (6e5e55227c95 Merge tag 'v5.11' into h8300-next)
-Merging m68k/for-next (eeff86b6d18c m68k: dma: Remove unnecessary include o=
-f asm/cacheflush.h)
-Merging m68knommu/for-next (c4681547bcce Linux 5.13-rc3)
-Merging microblaze/next (6efb943b8616 Linux 5.13-rc1)
-Merging mips/mips-next (33ae8f801ad8 hugetlb: clear huge pte during flush f=
-unction on mips platform)
-Merging nds32/next (40e0dd851e7b nds32: Fix bogus reference to <asm/procinf=
-o.h>)
-Merging nios2/for-next (7f7bc20bc41a nios2: Don't use _end for calculating =
-min_low_pfn)
-Merging openrisc/for-next (8b549c18ae81 openrisc: Define memory barrier mb)
-Merging parisc-hd/for-next (9f4ad9e425a1 Linux 5.12)
-Merging powerpc/next (b73c8cccd72a powerpc/kprobes: Replace ppc_optinsn by =
-common optinsn)
-Merging soc-fsl/next (242b0b398ccd soc: fsl: enable acpi support in RCPM dr=
-iver)
-Merging risc-v/for-next (37a7a2a10ec5 riscv: Turn has_fpu into a static key=
- if FPU=3Dy)
-Merging s390/for-next (0a915a2f7150 Merge branch 'features' into for-next)
-Merging sh/for-next (2882b7626f49 sh: kernel: traps: remove unused variable)
-Merging sparc-next/master (dd0d718152e4 Merge tag 'spi-fix-v5.8-rc2' of git=
-://git.kernel.org/pub/scm/linux/kernel/git/broonie/spi)
-Merging uml/linux-next (ed102bf2afed um: Fix W=3D1 missing-include-dirs war=
-nings)
-Merging xtensa/xtensa-for-next (21e0c3d5f633 xtensa: fix kconfig unmet depe=
-ndency warning for HAVE_FUTEX_CMPXCHG)
-Merging pidfd/for-next (2ca4dcc4909d fs/mount_setattr: tighten permission c=
-hecks)
-Merging fscrypt/master (a14d0b676491 fscrypt: allow deleting files with uns=
-upported encryption policy)
-Merging fscache/fscache-next (3003bbd0697b afs: Use the netfs_write_begin()=
- helper)
-Merging afs/afs-next (7af08140979a Revert "gcov: clang: fix clang-11+ build=
-")
-Merging btrfs/for-next (2166641a8734 Merge branch 'for-next-next-v5.13-2021=
-0527' into for-next-20210527)
-Merging ceph/master (f8234d7b1fb3 libceph: kill ceph_none_authorizer::reply=
-_buf)
-Merging cifs/for-next (7d1da3f1649d cifs: change format of CIFS_FULL_KEY_DU=
-MP ioctl)
-Merging cifsd/cifsd-for-next (4ead0568f798 Merge pull request #49 from namj=
-aejeon/cifsd-for-next)
-Merging configfs/for-next (7fe1e79b59ba configfs: implement the .read_iter =
-and .write_iter methods)
-Merging ecryptfs/next (682a8e2b41ef Merge tag 'ecryptfs-5.13-rc1-updates' o=
-f git://git.kernel.org/pub/scm/linux/kernel/git/tyhicks/ecryptfs)
-Merging erofs/dev (c439c3306fea erofs: remove the occupied parameter from z=
-_erofs_pagevec_enqueue())
-Merging exfat/dev (b741596468b0 Merge tag 'riscv-for-linus-5.13-mw1' of git=
-://git.kernel.org/pub/scm/linux/kernel/git/riscv/linux)
-Merging ext3/for_next (a5882ee966b1 Pull disabling of quotactl_path syscall=
-. Merge branch 'for_next_testing' into for_next)
-Merging ext4/dev (6c0912739699 ext4: wipe ext4_dir_entry2 upon file deletio=
-n)
-Merging f2fs/dev (fe40db607855 f2fs: support RO feature)
-Merging fsverity/fsverity (07c99001312c fs-verity: support reading signatur=
-e with ioctl)
-Merging fuse/for-next (3c9c14338c12 cuse: simplify refcount)
-Merging jfs/jfs-next (cf1031ed4752 jfs: Remove trailing semicolon in macros)
-Merging nfs/linux-next (d275880abce9 SUNRPC: Fix Oops in xs_tcp_send_reques=
-t() when transport is disconnected)
-Merging nfs-anna/linux-next (4f8be1f53bf6 nfs: we don't support removing sy=
-stem.nfs4_acl)
-Merging nfsd/nfsd-next (1808d90e8458 NFSD add vfs_fsync after async copy is=
- done)
-Merging cel/for-next (b9f83ffaa0c0 SUNRPC: Fix null pointer dereference in =
-svc_rqst_free())
-Merging orangefs/for-next (211f9f2e0503 orangefs: leave files in the page c=
-ache for a few micro seconds at least)
-Merging overlayfs/overlayfs-next (5e717c6fa41f ovl: add debug print to ovl_=
-do_getxattr())
-Merging ubifs/next (9a29f7f020e0 ubi: Remove unnecessary struct declaration)
-Merging v9fs/9p-next (cba7dcd8878e 9p/trans_virtio: Remove sysfs file on pr=
-obe failure)
-Merging xfs/for-next (e3c2b047475b xfs: restore old ioctl definitions)
-Merging zonefs/for-next (6980d29ce4da zonefs: fix to update .i_wr_refcnt co=
-rrectly in zonefs_open_zone())
-Merging iomap/iomap-for-next (6e552494fb90 iomap: remove unused private fie=
-ld from ioend)
-Merging djw-vfs/vfs-for-next (9b8523423b23 vfs: move __sb_{start,end}_write=
-* to fs.h)
-Merging file-locks/locks-next (cbe6fc4e0142 fs/locks: remove useless assign=
-ment in fcntl_getlk)
-Merging vfs/for-next (e8727aec724e Merge branch 'work.misc' into for-next)
-Merging printk/for-next (2d66d9a31ab7 Merge branch 'for-5.14-vsprintf-scanf=
-' into for-next)
-Merging pci/next (6efb943b8616 Linux 5.13-rc1)
-Merging pstore/for-next/pstore (9d843e8fafc7 pstore: Add mem_type property =
-DT parsing support)
-Merging hid/for-next (189b687d8579 Merge branch 'for-5.14/core' into for-ne=
-xt)
-Merging i2c/i2c/for-next (1ffa3864e86b Merge branch 'i2c/for-current' into =
-i2c/for-next)
-Merging i3c/i3c/next (0d95f41ebde4 Revert "i3c master: fix missing destroy_=
-workqueue() on error in i3c_master_register")
-Merging dmi/dmi-for-next (3cb4d29a2633 MAINTAINERS: The DMI/SMBIOS tree has=
- moved)
-Merging hwmon-staging/hwmon-next (fc49fecb6518 hwmon: (max31790) Add suppor=
-t for fanX_min attributes)
-Merging jc_docs/docs-next (0e7c52da1ab8 Documentation: checkpatch: Tweak BI=
-T() macro include)
-Merging v4l-dvb/master (71c689dc2e73 media: v4l2-ctrls: split up into four =
-source files)
-Merging v4l-dvb-next/master (71c689dc2e73 media: v4l2-ctrls: split up into =
-four source files)
-Merging pm/linux-next (b2864f8ca01d Merge branch 'pm-cpufreq' into linux-ne=
-xt)
-Merging cpufreq-arm/cpufreq/arm/linux-next (4814d9c5d3b9 cpufreq: dt: Renam=
-e black/white-lists)
-Merging cpupower/cpupower (d07f6ca923ea Linux 5.13-rc2)
-Merging devfreq/devfreq-next (a15fc9aa5b38 PM / devfreq: imx8m-ddrc: Remove=
- DEVFREQ_GOV_SIMPLE_ONDEMAND dependency)
-Merging opp/opp/linux-next (ac9fd3c80340 opp: use list_del_init instead of =
-list_del/INIT_LIST_HEAD)
-Merging thermal/thermal/linux-next (c310e546164d thermal/drivers/mtk_therma=
-l: Remove redundant initializations of several variables)
-Merging dlm/next (7d3848c03e09 fs: dlm: Fix spelling mistake "stucked" -> "=
-stuck")
-Merging swiotlb/linux-next (dfc06b389a4f swiotlb: don't override user speci=
-fied size in swiotlb_adjust_size)
-Merging rdma/for-next (331859d320f5 RDMA/hns: Remove unused CMDQ member)
-Merging net-next/master (c7a551b2e44a nfc: st-nci: remove unnecessary label=
-s)
-Applying: usb: class: cdc-wdm: fix for kill_urbs() removal
-Merging bpf-next/for-next (d6a6a55518c1 libbpf: Move BPF_SEQ_PRINTF and BPF=
-_SNPRINTF to bpf_helpers.h)
-Merging ipsec-next/master (fe9f1d8779cb xfrm: add state hashtable keyed by =
-seq)
-Merging mlx5-next/mlx5-next (63f9c44bca5e net/mlx5: Add MEMIC operations re=
-lated bits)
-Merging netfilter-next/master (845064d752ce netfilter: Remove leading space=
-s in Kconfig)
-CONFLICT (content): Merge conflict in net/netfilter/nft_set_pipapo.c
-Applying: fix up for merge involving nft_pipapo_lookup()
-Merging ipvs-next/master (ea89c862f01e net: mana: Use struct_size() in kzal=
-loc())
-Merging wireless-drivers-next/master (6efb943b8616 Linux 5.13-rc1)
-Merging bluetooth/master (a29cbfbf673f Bluetooth: disable filter dup when s=
-can for adv monitor)
-Merging mac80211-next/master (77091933e453 net: mdio: ipq8064: enlarge slee=
-p after read/write operation)
-Merging gfs2/for-next (75069590915f gfs2: Fix do_gfs2_set_flags description)
-Merging mtd/mtd/next (10f3b4d79958 mtd: parsers: qcom: Fix leaking of parti=
-tion name)
-Merging nand/nand/next (c374839f9b44 mtd: spinand: macronix: Add support fo=
-r serial NAND flash)
-Merging spi-nor/spi-nor/next (a6e2cd4dd28e mtd: spi-nor: otp: fix kerneldoc=
- typos)
-Merging crypto/master (a6f8e68e238a crypto: ccp - Fix a resource leak in an=
- error handling path)
-Merging drm/drm-next (9a91e5e0af5e Merge tag 'amd-drm-next-5.14-2021-05-21'=
- of https://gitlab.freedesktop.org/agd5f/linux into drm-next)
-CONFLICT (content): Merge conflict in drivers/gpu/drm/i915/i915_mm.c
-CONFLICT (content): Merge conflict in drivers/gpu/drm/amd/amdgpu/amdgpu_ttm=
-.c
-Merging drm-misc/for-linux-next (39aa91e2af57 fbdev: matrox: use modern mod=
-ule_init())
-Merging amdgpu/drm-next (753c7d6d85f5 drm/amdgpu/acpi: make ATPX/ATCS struc=
-tures global)
-Merging drm-intel/for-linux-next (994a4c3e226a drm/i915: Drop redundant has=
-_hdmi_sink check)
-Merging drm-tegra/drm/tegra/for-next (c79184a9c029 drm/tegra: Fix shift ove=
-rflow in tegra_shared_plane_atomic_update)
-Merging drm-msm/msm-next (8dbde399044b drm/msm/dp: handle irq_hpd with sink=
-_count =3D 0 correctly)
-Merging imx-drm/imx-drm/next (fc1e985b67f9 drm/imx: ipuv3-plane: add color =
-encoding and range properties)
-Merging etnaviv/etnaviv/next (4bfdd2aa67fb drm/etnaviv: rework linear windo=
-w offset calculation)
-Merging regmap/for-next (4c82343a5c83 Merge remote-tracking branch 'regmap/=
-for-5.14' into regmap-next)
-Merging sound/for-next (08e767cd9e8b ALSA: control_led - use DEVICE_ATTR_*(=
-) macro)
-Merging sound-asoc/for-next (c48946560df6 Merge remote-tracking branch 'aso=
-c/for-5.14' into asoc-next)
-Merging modules/modules-next (2c0f0f363956 module: correctly exit module_ka=
-llsyms_on_each_symbol when fn() !=3D 0)
-Merging input/next (6cf3b3abbf0b Input: cyttsp - obtain regulators)
-Merging block/for-next (6bcec6cee54e Merge branch 'for-5.14/io_uring' into =
-for-next)
-Merging device-mapper/for-next (88e9be7ef2cc dm writecache: don't split bio=
-s when overwriting contiguous cache content)
-Merging pcmcia/pcmcia-next (e9d503fef7da pcmcia: rsrc_nonstatic: Fix call-b=
-ack function as reference formatting)
-Merging mmc/next (47f4bdf989c0 mmc: sdhci-of-aspeed: Configure the SDHCIs a=
-s specified by the devicetree.)
-Merging mfd/for-mfd-next (d7bf6f0025db mfd: si476x-i2c: Fix incorrectly doc=
-umented function names)
-Merging backlight/for-backlight-next (190ccab3185e backlight: rt4831: Adds =
-support for Richtek RT4831 backlight)
-Merging battery/for-next (2aac79d14d76 power: supply: sc2731_charger: Add m=
-issing MODULE_DEVICE_TABLE)
-Merging regulator/for-next (0c4fad8c4522 Merge remote-tracking branch 'regu=
-lator/for-5.14' into regulator-next)
-Merging security/next-testing (047843bdb316 Merge branch 'landlock_lsm_v34'=
- into next-testing)
-Merging apparmor/apparmor-next (d108370c644b apparmor: fix error check)
-Merging integrity/next-integrity (49219d9b8785 evm: fix writing <securityfs=
->/evm overflow)
-Merging keys/keys-next (e377c31f788f integrity: Load mokx variables into th=
-e blacklist keyring)
-CONFLICT (content): Merge conflict in certs/system_keyring.c
-Merging safesetid/safesetid-next (1ca86ac1ec8d LSM: SafeSetID: Fix code spe=
-cification by scripts/checkpatch.pl)
-Merging selinux/next (869cbeef18e5 lsm_audit,selinux: pass IB device name b=
-y reference)
-Merging smack/next (0169d8f33ab7 Revert "Smack: Handle io_uring kernel thre=
-ad privileges")
-Merging tomoyo/master (6efb943b8616 Linux 5.13-rc1)
-Merging tpmdd/next (8ac91e6c6033 Merge tag 'for-5.13-rc2-tag' of git://git.=
-kernel.org/pub/scm/linux/kernel/git/kdave/linux)
-Merging watchdog/master (c4681547bcce Linux 5.13-rc3)
-Merging iommu/next (54c80d907400 iommu/vt-d: Use user privilege for RID2PAS=
-ID translation)
-Merging audit/next (254c8b96c4af audit: add blank line after variable decla=
-rations)
-Merging devicetree/for-next (70c1fc34f3c6 dt-bindings: rng: mediatek: add m=
-t8365 to mtk rng binding)
-Merging mailbox/mailbox-for-next (2335f556b3af dt-bindings: mailbox: qcom-i=
-pcc: Add compatible for SC7280)
-Merging spi/for-next (aa946f04d384 Merge remote-tracking branch 'spi/for-5.=
-14' into spi-next)
-Merging tip/auto-latest (19c0a3af4ad1 Merge branch 'efi/core')
-Merging clockevents/timers/drivers/next (8120891105ba dt-bindings: timer: n=
-uvoton,npcm7xx: Add wpcm450-timer)
-Merging edac/edac-for-next (e8049c4aa5d8 MAINTAINERS: Make Yazen Ghannam ma=
-intainer for EDAC-AMD64)
-Merging irqchip/irq/irqchip-next (fbb80d5ad400 irqchip: Remove redundant er=
-ror printing)
-Merging ftrace/for-next (eb01f5353bda tracing: Handle %.*s in trace_check_v=
-printf())
-Merging rcu/rcu/next (51e76b6b526f rcu-tasks: Mark ->trc_reader_special.b.n=
-eed_qs data races)
-Merging kvm/next (a4345a7cecfb Merge tag 'kvmarm-fixes-5.13-1' of git://git=
-.kernel.org/pub/scm/linux/kernel/git/kvmarm/kvmarm into HEAD)
-Merging kvm-arm/next (9a8aae605b80 Merge branch 'kvm-arm64/kill_oprofile_de=
-pendency' into kvmarm-master/next)
-Merging kvm-ppc/kvm-ppc-next (72476aaa4691 KVM: PPC: Book3S HV: Fix host ra=
-dix SLB optimisation with hash guests)
-Merging kvms390/next (44bada282190 KVM: s390: fix guarded storage control r=
-egister handling)
-Merging xen-tip/linux-next (c81d3d246025 xen-pciback: reconfigure also from=
- backend watch handler)
-Merging percpu/for-next (7b92d0f97d9b Merge branch 'for-5.14' into for-next)
-Merging workqueues/for-next (940d71c6462e wq: handle VM suspension in stall=
- detection)
-Merging drivers-x86/for-next (0ab8359fd8cd platform/x86: thinkpad_acpi: Fix=
- inconsistent indenting)
-CONFLICT (content): Merge conflict in drivers/platform/surface/surface_aggr=
-egator_registry.c
-Merging chrome-platform/for-next (6efb943b8616 Linux 5.13-rc1)
-Merging hsi/for-next (6efb943b8616 Linux 5.13-rc1)
-Merging leds/for-next (ee522bcf026e leds: tlc591xx: fix return value check =
-in tlc591xx_probe())
-Merging ipmi/for-next (2253042d86f5 ipmi/watchdog: Stop watchdog timer when=
- the current action is 'none')
-Merging driver-core/driver-core-next (fd03c075e362 drivers/base/node.c: mak=
-e CACHE_ATTR define static DEVICE_ATTR_RO)
-Merging usb/usb-next (a0765597c986 usb: typec: tcpci: Make symbol 'tcpci_ap=
-ply_rc' static)
-Merging usb-gadget/next (e49d033bddf5 Linux 5.12-rc6)
-Merging usb-serial/usb-next (17cd3a106e97 USB: serial: drop irq-flags initi=
-alisations)
-Merging usb-chipidea-next/for-usb-next (4ae08bc23e1b usb: cdnsp: Useless co=
-ndition has been removed)
-Merging tty/tty-next (2ac62268a2c0 tty: hvc_console: Remove the repeated wo=
-rds 'no' and 'from')
-Merging char-misc/char-misc-next (281e46844699 misc: alcor_pci: fix inverte=
-d branch condition)
-Merging extcon/extcon-next (08a268ddb5e2 extcon: max8997: Add missing modal=
-ias string)
-Merging phy-next/next (490dbd2380c7 phy: phy-core-mipi-dphy.c: Correct refe=
-rence version)
-Merging soundwire/next (037219925e7a soundwire: dmi-quirks: remove duplicat=
-e initialization)
-Merging thunderbolt/next (c4681547bcce Linux 5.13-rc3)
-Merging vfio/next (adaeb718d46f vfio/gvt: fix DRM_I915_GVT dependency on VF=
-IO_MDEV)
-Merging staging/staging-next (21e4614b2f69 staging: emxx_udc: fix alignment=
- issues)
-Merging iio/togreg (301f7eba67df iio: adc: ti-adc161s626: Use devm managed =
-functions for all of probe.)
-Merging mux/for-next (3516bd729358 Merge tag 's390-5.11-3' of git://git.ker=
-nel.org/pub/scm/linux/kernel/git/s390/linux)
-Merging icc/icc-next (1fd86e280d8b interconnect: qcom: Add missing MODULE_D=
-EVICE_TABLE)
-Merging dmaengine/next (6f64aa5746d2 dt-bindings: dma: convert arm-pl08x to=
- yaml)
-Merging cgroup/for-next (6962681ee8c6 Merge branch 'for-5.13-fixes' into fo=
-r-next)
-Merging scsi/for-next (31ff791600e3 Merge branch 'misc' into for-next)
-Merging scsi-mkp/for-next (46ded13dd382 scsi: ufs: Suppress false positive =
-unhandled interrupt messages)
-$ git reset --hard HEAD^
-Merging next-20210526 version of scsi-mkp
-Merging vhost/linux-next (7ff6e99e021c virtio_net: disable cb aggressively)
-Merging rpmsg/for-next (dc0e14fa833b Merge branches 'hwspinlock-next', 'rpm=
-sg-next' and 'rproc-next' into for-next)
-Merging gpio/for-next (7ac554888233 MAINTAINERS: Remove reference to non-ex=
-isting file)
-Merging gpio-brgl/gpio/for-next (bc3aca5393c4 dt-bindings: gpio: omap: Conv=
-ert to json-schema)
-Merging gpio-intel/for-next (2b71b66ac041 gpio: wcove: Split error handling=
- for CTRL and IRQ registers)
-Merging pinctrl/for-next (9f96bd5ae866 Merge branch 'devel' into for-next)
-CONFLICT (content): Merge conflict in include/linux/pinctrl/pinconf-generic=
-.h
-Merging pinctrl-intel/for-next (258435a1c818 pinctrl: tigerlake: Add Alder =
-Lake-M ACPI ID)
-Merging pinctrl-renesas/renesas-pinctrl (904ec4bebc1d pinctrl: renesas: r8a=
-779{51,6,65}: Reduce non-functional differences)
-Merging pinctrl-samsung/for-next (6efb943b8616 Linux 5.13-rc1)
-Merging pwm/for-next (98761ce4b91b pwm: spear: Implement .apply() callback)
-Merging userns/for-next (f928ef685db5 ucounts: Silence warning in dec_rlimi=
-t_ucounts)
-CONFLICT (content): Merge conflict in kernel/ucount.c
-CONFLICT (content): Merge conflict in kernel/signal.c
-CONFLICT (content): Merge conflict in include/linux/user_namespace.h
-CONFLICT (content): Merge conflict in include/linux/sched/user.h
-Merging ktest/for-next (170f4869e662 ktest.pl: Fix the logic for truncating=
- the size of the log file for email)
-Merging kselftest/next (d07f6ca923ea Linux 5.13-rc2)
-Merging livepatching/for-next (c150bbbb1731 Merge branch 'for-5.13/signal' =
-into for-next)
-Merging coresight/next (1efbcec2ef8c coresight: cti: Reduce scope for the v=
-ariable =E2=80=9Ccs_fwnode=E2=80=9D in cti_plat_create_connection())
-Merging rtc/rtc-next (bcae59d0d45b rtc: imxdi: add wakeup support)
-Merging nvdimm/libnvdimm-for-next (30c10d32152d Merge branch 'for-5.12/cxl'=
- into libnvdimm-for-next)
-Merging at24/at24/for-next (6efb943b8616 Linux 5.13-rc1)
-Merging ntb/ntb-next (5c8fe583cce5 Linux 5.11-rc1)
-Merging seccomp/for-next/seccomp (e4a9a0de95be selftests/seccomp: More clos=
-ely track fds being assigned)
-Merging kspp/for-next/kspp (f4a35e00d248 Merge branch 'for-next/clang/featu=
-res' into for-next/kspp)
-Merging cisco/for-next (9e98c678c2d6 Linux 5.1-rc1)
-Merging gnss/gnss-next (994adcbd3714 gnss: drop stray semicolons)
-Merging fsi/next (4a851d714ead fsi: aspeed: Support CFAM reset GPIO)
-Merging slimbus/for-next (0320ed0a8236 drivers: slimbus: Fix word resposibl=
-e -> responsible in slimbus.h)
-CONFLICT (content): Merge conflict in drivers/nvmem/Makefile
-CONFLICT (content): Merge conflict in drivers/nvmem/Kconfig
-Merging nvmem/for-next (d1a5f4ca656b nvmem: qfprom: minor nit fixes)
-Merging xarray/main (2c7e57a02708 idr test suite: Improve reporting from id=
-r_find_test_1)
-Merging hyperv/hyperv-next (c6a8625fa4c6 hv_utils: Fix passing zero to 'PTR=
-_ERR' warning)
-Merging auxdisplay/auxdisplay (aecd79c09c2f auxdisplay: Add I2C gpio expand=
-er example)
-Merging kgdb/kgdb/for-next (83fa2d13d628 kdb: Refactor env variables get/se=
-t code)
-Merging hmm/hmm (fe07bfda2fb9 Linux 5.12-rc1)
-Merging fpga/for-next (ded39fc4a5b4 docs: driver-api: fpga: avoid using UTF=
--8 chars)
-Merging kunit/test (d07f6ca923ea Linux 5.13-rc2)
-Merging cfi/cfi/next (6efb943b8616 Linux 5.13-rc1)
-Merging kunit-next/kunit (d07f6ca923ea Linux 5.13-rc2)
-Merging trivial/for-next (9ff9b0d392ea Merge tag 'net-next-5.10' of git://g=
-it.kernel.org/pub/scm/linux/kernel/git/netdev/net-next)
-Merging mhi/mhi-next (a610f3c65d3b bus: mhi: Wait for M2 state during syste=
-m resume)
-Merging memblock/for-next (990e6d0e1de8 arm: extend pfn_valid to take into =
-accound freed memory map alignment)
-Merging init/init-user-pointers (38b082236e77 initramfs: use vfs_utimes in =
-do_copy)
-Merging counters/counters (e71ba9452f0b Linux 5.11-rc2)
-Merging rust/rust-next (fef0214731cc rust: allow printing in the kernel cra=
-te)
-CONFLICT (content): Merge conflict in kernel/printk/printk.c
-CONFLICT (content): Merge conflict in include/uapi/linux/android/binder.h
-CONFLICT (content): Merge conflict in Makefile
-Merging cxl/next (35c32e3095d3 cxl/docs: Fix "Title underline too short" wa=
-rning)
-Merging tpmdd-jejb/tpmdd-for-next (69977d1aeeca Merge branch 'tpmdd-fixes' =
-into tpmdd-for-next)
-Applying: Revert "drm/amdgpu/acpi: make ATPX/ATCS structures global"
-Merging akpm-current/current (312889e44cff linux-next-pre)
-$ git checkout -b akpm remotes/origin/akpm/master
-$ git rebase --onto master remotes/origin/akpm/master-base
-Merging akpm/master (c7624506278a kdump: use vmlinux_build_id to simplify)
-Applying: Revert "arm64-drop-pfn_valid_within-and-simplify-pfn_valid-fix"
-Applying: Revert "arm64: drop pfn_valid_within() and simplify pfn_valid()"
+Modern devices may support a scalable workload submission interface=20
+based on PCI DMWr capability, allowing a single work queue to access
+multiple I/O address spaces. One example is Intel ENQCMD, having=20
+PASID saved in the CPU MSR and carried in the instruction payload=20
+when sent out to the device. Then a single work queue shared by=20
+multiple processes can compose DMAs carrying different PASIDs.=20
 
---Sig_/GCZ2sNI.IZakh2oEYyF5ag_
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
+When executing ENQCMD in the guest, the CPU MSR includes a vPASID=20
+which, if targeting a mdev, must be converted to pPASID before sent
+to the wire. Intel CPU provides a hardware PASID translation capability=20
+for auto-conversion in the fast path. The user is expected to setup the=20
+PASID mapping through KVM uAPI, with information about {vpasid,=20
+ioasid_fd, ioasid}. The ioasid driver provides helper function for KVM=20
+to figure out the actual pPASID given an IOASID.
 
------BEGIN PGP SIGNATURE-----
+With above design /dev/ioasid uAPI is all about I/O address spaces.=20
+It doesn't include any device routing information, which is only=20
+indirectly registered to the ioasid driver through VFIO uAPI. For=20
+example, I/O page fault is always reported to userspace per IOASID,=20
+although it's physically reported per device (RID+PASID). If there is a=20
+need of further relaying this fault into the guest, the user is responsible=
+=20
+of identifying the device attached to this IOASID (randomly pick one if=20
+multiple attached devices) and then generates a per-device virtual I/O=20
+page fault into guest. Similarly the iotlb invalidation uAPI describes the=
+=20
+granularity in the I/O address space (all, or a range), different from the=
+=20
+underlying IOMMU semantics (domain-wide, PASID-wide, range-based).
 
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmCvUM8ACgkQAVBC80lX
-0GwOsAf/b771r4aCPRC1a+ROLOy/AurxrRTeWk1AuAp4Nt4O2k0sudAIe4jQMI1R
-mwH6EWyWFGDm2bX4drhnL65za/Ks6JBgboblFTULgxlUvURvCYfqv2HknETXNVWP
-tNT1xw4gz8tM07HRRtT8YkX0mCLIpFNEdar1V2duSiU/tP1og2O+61g8w/Hvp9vU
-Y/PbcybqSqJbPWSRAVIzvr8s4w3EnlM1d/ZtCLp7HTWMC3RyU1V7JKcfgmG1rd5i
-pyXMZaW5CbUfhSy6OeXDf61CYIWOK1qbm71bc0gKmvtCjBzfXCX3Gm0rCon9K3Oz
-dEo1mjNlEUnLIs5CbYL92+289jUrVg==
-=ZzN7
------END PGP SIGNATURE-----
+I/O page tables routed through PASID are installed in a per-RID PASID=20
+table structure. Some platforms implement the PASID table in the guest=20
+physical space (GPA), expecting it managed by the guest. The guest
+PASID table is bound to the IOMMU also by attaching to an IOASID,=20
+representing the per-RID vPASID space.=20
 
---Sig_/GCZ2sNI.IZakh2oEYyF5ag_--
+We propose the host kernel needs to explicitly track  guest I/O page=20
+tables even on these platforms, i.e. the same pgtable binding protocol=20
+should be used universally on all platforms (with only difference on who=20
+actually writes the PASID table). One opinion from previous discussion=20
+was treating this special IOASID as a container for all guest I/O page=20
+tables i.e. hiding them from the host. However this way significantly=20
+violates the philosophy in this /dev/ioasid proposal. It is not one IOASID=
+=20
+one address space any more. Device routing information (indirectly=20
+marking hidden I/O spaces) has to be carried in iotlb invalidation and=20
+page faulting uAPI to help connect vIOMMU with the underlying=20
+pIOMMU. This is one design choice to be confirmed with ARM guys.
+
+Devices may sit behind IOMMU's with incompatible capabilities. The
+difference may lie in the I/O page table format, or availability of an user
+visible uAPI (e.g. hardware nesting). /dev/ioasid is responsible for=20
+checking the incompatibility between newly-attached device and existing
+devices under the specific IOASID and, if found, returning error to user.
+Upon such error the user should create a new IOASID for the incompatible
+device.=20
+
+There is no explicit group enforcement in /dev/ioasid uAPI, due to no=20
+device notation in this interface as aforementioned. But the ioasid driver=
+=20
+does implicit check to make sure that devices within an iommu group=20
+must be all attached to the same IOASID before this IOASID starts to
+accept any uAPI command. Otherwise error information is returned to=20
+the user.
+
+There was a long debate in previous discussion whether VFIO should keep=20
+explicit container/group semantics in its uAPI. Jason Gunthorpe proposes=20
+a simplified model where every device bound to VFIO is explicitly listed=20
+under /dev/vfio thus a device fd can be acquired w/o going through legacy
+container/group interface. In this case the user is responsible for=20
+understanding the group topology and meeting the implicit group check=20
+criteria enforced in /dev/ioasid. The use case examples in this proposal=20
+are based on the new model.
+
+Of course for backward compatibility VFIO still needs to keep the existing=
+=20
+uAPI and vfio iommu type1 will become a shim layer connecting VFIO=20
+iommu ops to internal ioasid helper functions.
+
+Notes:
+-   It might be confusing as IOASID is also used in the kernel (drivers/
+    iommu/ioasid.c) to represent PCI PASID or ARM substream ID. We need
+    find a better name later to differentiate.
+
+-   PPC has not be considered yet as we haven't got time to fully understan=
+d
+    its semantics. According to previous discussion there is some generalit=
+y=20
+    between PPC window-based scheme and VFIO type1 semantics. Let's=20
+    first make consensus on this proposal and then further discuss how to=20
+    extend it to cover PPC's requirement.
+
+-   There is a protocol between vfio group and kvm. Needs to think about
+    how it will be affected following this proposal.
+
+-   mdev in this context refers to mediated subfunctions (e.g. Intel SIOV)=
+=20
+    which can be physically isolated in-between through PASID-granular
+    IOMMU protection. Historically people also discussed one usage by=20
+    mediating a pdev into a mdev. This usage is not covered here, and is=20
+    supposed to be replaced by Max's work which allows overriding various=20
+    VFIO operations in vfio-pci driver.
+
+2. uAPI Proposal
+----------------------
+
+/dev/ioasid uAPI covers everything about managing I/O address spaces.
+
+/dev/vfio uAPI builds connection between devices and I/O address spaces.
+
+/dev/kvm uAPI is optional required as far as ENQCMD is concerned.
+
+
+2.1. /dev/ioasid uAPI
++++++++++++++++++
+
+/*
+  * Check whether an uAPI extension is supported.=20
+  *
+  * This is for FD-level capabilities, such as locked page pre-registration=
+.=20
+  * IOASID-level capabilities are reported through IOASID_GET_INFO.
+  *
+  * Return: 0 if not supported, 1 if supported.
+  */
+#define IOASID_CHECK_EXTENSION	_IO(IOASID_TYPE, IOASID_BASE + 0)
+
+
+/*
+  * Register user space memory where DMA is allowed.
+  *
+  * It pins user pages and does the locked memory accounting so sub-
+  * sequent IOASID_MAP/UNMAP_DMA calls get faster.
+  *
+  * When this ioctl is not used, one user page might be accounted
+  * multiple times when it is mapped by multiple IOASIDs which are
+  * not nested together.
+  *
+  * Input parameters:
+  *	- vaddr;
+  *	- size;
+  *
+  * Return: 0 on success, -errno on failure.
+  */
+#define IOASID_REGISTER_MEMORY	_IO(IOASID_TYPE, IOASID_BASE + 1)
+#define IOASID_UNREGISTER_MEMORY	_IO(IOASID_TYPE, IOASID_BASE + 2)
+
+
+/*
+  * Allocate an IOASID.=20
+  *
+  * IOASID is the FD-local software handle representing an I/O address=20
+  * space. Each IOASID is associated with a single I/O page table. User=20
+  * must call this ioctl to get an IOASID for every I/O address space that =
+is
+  * intended to be enabled in the IOMMU.
+  *
+  * A newly-created IOASID doesn't accept any command before it is=20
+  * attached to a device. Once attached, an empty I/O page table is=20
+  * bound with the IOMMU then the user could use either DMA mapping=20
+  * or pgtable binding commands to manage this I/O page table.
+  *
+  * Device attachment is initiated through device driver uAPI (e.g. VFIO)
+  *
+  * Return: allocated ioasid on success, -errno on failure.
+  */
+#define IOASID_ALLOC	_IO(IOASID_TYPE, IOASID_BASE + 3)
+#define IOASID_FREE	_IO(IOASID_TYPE, IOASID_BASE + 4)
+
+
+/*
+  * Get information about an I/O address space
+  *
+  * Supported capabilities:
+  *	- VFIO type1 map/unmap;
+  *	- pgtable/pasid_table binding
+  *	- hardware nesting vs. software nesting;
+  *	- ...
+  *
+  * Related attributes:
+  * 	- supported page sizes, reserved IOVA ranges (DMA mapping);
+  *	- vendor pgtable formats (pgtable binding);
+  *	- number of child IOASIDs (nesting);
+  *	- ...
+  *
+  * Above information is available only after one or more devices are
+  * attached to the specified IOASID. Otherwise the IOASID is just a
+  * number w/o any capability or attribute.
+  *
+  * Input parameters:
+  *	- u32 ioasid;
+  *
+  * Output parameters:
+  *	- many. TBD.
+  */
+#define IOASID_GET_INFO	_IO(IOASID_TYPE, IOASID_BASE + 5)
+
+
+/*
+  * Map/unmap process virtual addresses to I/O virtual addresses.
+  *
+  * Provide VFIO type1 equivalent semantics. Start with the same=20
+  * restriction e.g. the unmap size should match those used in the=20
+  * original mapping call.=20
+  *
+  * If IOASID_REGISTER_MEMORY has been called, the mapped vaddr
+  * must be already in the preregistered list.
+  *
+  * Input parameters:
+  *	- u32 ioasid;
+  *	- refer to vfio_iommu_type1_dma_{un}map
+  *
+  * Return: 0 on success, -errno on failure.
+  */
+#define IOASID_MAP_DMA	_IO(IOASID_TYPE, IOASID_BASE + 6)
+#define IOASID_UNMAP_DMA	_IO(IOASID_TYPE, IOASID_BASE + 7)
+
+
+/*
+  * Create a nesting IOASID (child) on an existing IOASID (parent)
+  *
+  * IOASIDs can be nested together, implying that the output address=20
+  * from one I/O page table (child) must be further translated by=20
+  * another I/O page table (parent).
+  *
+  * As the child adds essentially another reference to the I/O page table=20
+  * represented by the parent, any device attached to the child ioasid=20
+  * must be already attached to the parent.
+  *
+  * In concept there is no limit on the number of the nesting levels.=20
+  * However for the majority case one nesting level is sufficient. The
+  * user should check whether an IOASID supports nesting through=20
+  * IOASID_GET_INFO. For example, if only one nesting level is allowed,
+  * the nesting capability is reported only on the parent instead of the
+  * child.
+  *
+  * User also needs check (via IOASID_GET_INFO) whether the nesting=20
+  * is implemented in hardware or software. If software-based, DMA=20
+  * mapping protocol should be used on the child IOASID. Otherwise,=20
+  * the child should be operated with pgtable binding protocol.
+  *
+  * Input parameters:
+  *	- u32 parent_ioasid;
+  *
+  * Return: child_ioasid on success, -errno on failure;
+  */
+#define IOASID_CREATE_NESTING	_IO(IOASID_TYPE, IOASID_BASE + 8)
+
+
+/*
+  * Bind an user-managed I/O page table with the IOMMU
+  *
+  * Because user page table is untrusted, IOASID nesting must be enabled=20
+  * for this ioasid so the kernel can enforce its DMA isolation policy=20
+  * through the parent ioasid.
+  *
+  * Pgtable binding protocol is different from DMA mapping. The latter=20
+  * has the I/O page table constructed by the kernel and updated=20
+  * according to user MAP/UNMAP commands. With pgtable binding the=20
+  * whole page table is created and updated by userspace, thus different=20
+  * set of commands are required (bind, iotlb invalidation, page fault, etc=
+.).
+  *
+  * Because the page table is directly walked by the IOMMU, the user=20
+  * must  use a format compatible to the underlying hardware. It can=20
+  * check the format information through IOASID_GET_INFO.
+  *
+  * The page table is bound to the IOMMU according to the routing=20
+  * information of each attached device under the specified IOASID. The
+  * routing information (RID and optional PASID) is registered when a=20
+  * device is attached to this IOASID through VFIO uAPI.=20
+  *
+  * Input parameters:
+  *	- child_ioasid;
+  *	- address of the user page table;
+  *	- formats (vendor, address_width, etc.);
+  *=20
+  * Return: 0 on success, -errno on failure.
+  */
+#define IOASID_BIND_PGTABLE		_IO(IOASID_TYPE, IOASID_BASE + 9)
+#define IOASID_UNBIND_PGTABLE	_IO(IOASID_TYPE, IOASID_BASE + 10)
+
+
+/*
+  * Bind an user-managed PASID table to the IOMMU
+  *
+  * This is required for platforms which place PASID table in the GPA space=
+.
+  * In this case the specified IOASID represents the per-RID PASID space.
+  *
+  * Alternatively this may be replaced by IOASID_BIND_PGTABLE plus a
+  * special flag to indicate the difference from normal I/O address spaces.
+  *
+  * The format info of the PASID table is reported in IOASID_GET_INFO.
+  *
+  * As explained in the design section, user-managed I/O page tables must
+  * be explicitly bound to the kernel even on these platforms. It allows
+  * the kernel to uniformly manage I/O address spaces cross all platforms.
+  * Otherwise, the iotlb invalidation and page faulting uAPI must be hacked
+  * to carry device routing information to indirectly mark the hidden I/O
+  * address spaces.
+  *
+  * Input parameters:
+  *	- child_ioasid;
+  *	- address of PASID table;
+  *	- formats (vendor, size, etc.);
+  *
+  * Return: 0 on success, -errno on failure.
+  */
+#define IOASID_BIND_PASID_TABLE	_IO(IOASID_TYPE, IOASID_BASE + 11)
+#define IOASID_UNBIND_PASID_TABLE	_IO(IOASID_TYPE, IOASID_BASE + 12)
+
+
+/*
+  * Invalidate IOTLB for an user-managed I/O page table
+  *
+  * Unlike what's defined in include/uapi/linux/iommu.h, this command=20
+  * doesn't allow the user to specify cache type and likely support only
+  * two granularities (all, or a specified range) in the I/O address space.
+  *
+  * Physical IOMMU have three cache types (iotlb, dev_iotlb and pasid
+  * cache). If the IOASID represents an I/O address space, the invalidation
+  * always applies to the iotlb (and dev_iotlb if enabled). If the IOASID
+  * represents a vPASID space, then this command applies to the PASID
+  * cache.
+  *
+  * Similarly this command doesn't provide IOMMU-like granularity
+  * info (domain-wide, pasid-wide, range-based), since it's all about the
+  * I/O address space itself. The ioasid driver walks the attached
+  * routing information to match the IOMMU semantics under the
+  * hood.=20
+  *
+  * Input parameters:
+  *	- child_ioasid;
+  *	- granularity
+  *=20
+  * Return: 0 on success, -errno on failure
+  */
+#define IOASID_INVALIDATE_CACHE	_IO(IOASID_TYPE, IOASID_BASE + 13)
+
+
+/*
+  * Page fault report and response
+  *
+  * This is TBD. Can be added after other parts are cleared up. Likely it=20
+  * will be a ring buffer shared between user/kernel, an eventfd to notify=
+=20
+  * the user and an ioctl to complete the fault.
+  *
+  * The fault data is per I/O address space, i.e.: IOASID + faulting_addr
+  */
+
+
+/*
+  * Dirty page tracking=20
+  *
+  * Track and report memory pages dirtied in I/O address spaces. There=20
+  * is an ongoing work by Kunkun Jiang by extending existing VFIO type1.=20
+  * It needs be adapted to /dev/ioasid later.
+  */
+
+
+2.2. /dev/vfio uAPI
+++++++++++++++++
+
+/*
+  * Bind a vfio_device to the specified IOASID fd
+  *
+  * Multiple vfio devices can be bound to a single ioasid_fd, but a single=
+=20
+  * vfio device should not be bound to multiple ioasid_fd's.=20
+  *
+  * Input parameters:
+  *	- ioasid_fd;
+  *
+  * Return: 0 on success, -errno on failure.
+  */
+#define VFIO_BIND_IOASID_FD		_IO(VFIO_TYPE, VFIO_BASE + 22)
+#define VFIO_UNBIND_IOASID_FD	_IO(VFIO_TYPE, VFIO_BASE + 23)
+
+
+/*
+  * Attach a vfio device to the specified IOASID
+  *
+  * Multiple vfio devices can be attached to the same IOASID, and vice=20
+  * versa.=20
+  *
+  * User may optionally provide a "virtual PASID" to mark an I/O page=20
+  * table on this vfio device. Whether the virtual PASID is physically used=
+=20
+  * or converted to another kernel-allocated PASID is a policy in vfio devi=
+ce=20
+  * driver.
+  *
+  * There is no need to specify ioasid_fd in this call due to the assumptio=
+n=20
+  * of 1:1 connection between vfio device and the bound fd.
+  *
+  * Input parameter:
+  *	- ioasid;
+  *	- flag;
+  *	- user_pasid (if specified);
+  *=20
+  * Return: 0 on success, -errno on failure.
+  */
+#define VFIO_ATTACH_IOASID		_IO(VFIO_TYPE, VFIO_BASE + 24)
+#define VFIO_DETACH_IOASID		_IO(VFIO_TYPE, VFIO_BASE + 25)
+
+
+2.3. KVM uAPI
+++++++++++++
+
+/*
+  * Update CPU PASID mapping
+  *
+  * This is necessary when ENQCMD will be used in the guest while the
+  * targeted device doesn't accept the vPASID saved in the CPU MSR.
+  *
+  * This command allows user to set/clear the vPASID->pPASID mapping
+  * in the CPU, by providing the IOASID (and FD) information representing
+  * the I/O address space marked by this vPASID.
+  *
+  * Input parameters:
+  *	- user_pasid;
+  *	- ioasid_fd;
+  *	- ioasid;
+  */
+#define KVM_MAP_PASID	_IO(KVMIO, 0xf0)
+#define KVM_UNMAP_PASID	_IO(KVMIO, 0xf1)
+
+
+3. Sample structures and helper functions
+--------------------------------------------------------
+
+Three helper functions are provided to support VFIO_BIND_IOASID_FD:
+
+	struct ioasid_ctx *ioasid_ctx_fdget(int fd);
+	int ioasid_register_device(struct ioasid_ctx *ctx, struct ioasid_dev *dev)=
+;
+	int ioasid_unregister_device(struct ioasid_dev *dev);
+
+An ioasid_ctx is created for each fd:
+
+	struct ioasid_ctx {
+		// a list of allocated IOASID data's
+		struct list_head		ioasid_list;
+		// a list of registered devices
+		struct list_head		dev_list;
+		// a list of pre-registered virtual address ranges
+		struct list_head		prereg_list;
+	};
+
+Each registered device is represented by ioasid_dev:
+
+	struct ioasid_dev {
+		struct list_head		next;
+		struct ioasid_ctx	*ctx;
+		// always be the physical device
+		struct device 		*device;
+		struct kref		kref;
+	};
+
+Because we assume one vfio_device connected to at most one ioasid_fd,=20
+here ioasid_dev could be embedded in vfio_device and then linked to=20
+ioasid_ctx->dev_list when registration succeeds. For mdev the struct
+device should be the pointer to the parent device. PASID marking this
+mdev is specified later when VFIO_ATTACH_IOASID.
+
+An ioasid_data is created when IOASID_ALLOC, as the main object=20
+describing characteristics about an I/O page table:
+
+	struct ioasid_data {
+		// link to ioasid_ctx->ioasid_list
+		struct list_head		next;
+
+		// the IOASID number
+		u32			ioasid;
+
+		// the handle to convey iommu operations
+		// hold the pgd (TBD until discussing iommu api)
+		struct iommu_domain *domain;
+
+		// map metadata (vfio type1 semantics)
+		struct rb_node		dma_list;
+
+		// pointer to user-managed pgtable (for nesting case)
+		u64			user_pgd;
+
+		// link to the parent ioasid (for nesting)
+		struct ioasid_data	*parent;
+
+		// cache the global PASID shared by ENQCMD-capable
+		// devices (see below explanation in section 4)
+		u32			pasid;
+
+		// a list of device attach data (routing information)
+		struct list_head		attach_data;
+
+		// a list of partially-attached devices (group)
+		struct list_head		partial_devices;
+
+		// a list of fault_data reported from the iommu layer
+		struct list_head		fault_data;
+
+		...
+	}
+
+ioasid_data and iommu_domain have overlapping roles as both are=20
+introduced to represent an I/O address space. It is still a big TBD how=20
+the two should be corelated or even merged, and whether new iommu=20
+ops are required to handle RID+PASID explicitly. We leave this as open=20
+for now as this proposal is mainly about uAPI. For simplification=20
+purpose the two objects are kept separate in this context, assuming an=20
+1:1 connection in-between and the domain as the place-holder=20
+representing the 1st class object in the iommu ops.=20
+
+Two helper functions are provided to support VFIO_ATTACH_IOASID:
+
+	struct attach_info {
+		u32	ioasid;
+		// If valid, the PASID to be used physically
+		u32	pasid;
+	};
+	int ioasid_device_attach(struct ioasid_dev *dev,=20
+		struct attach_info info);
+	int ioasid_device_detach(struct ioasid_dev *dev, u32 ioasid);
+
+The pasid parameter is optionally provided based on the policy in vfio
+device driver. It could be the PASID marking the default I/O address=20
+space for a mdev, or the user-provided PASID marking an user I/O page
+table, or another kernel-allocated PASID backing the user-provided one.
+Please check next section for detail explanation.
+
+A new object is introduced and linked to ioasid_data->attach_data for=20
+each successful attach operation:
+
+	struct ioasid_attach_data {
+		struct list_head		next;
+		struct ioasid_dev	*dev;
+		u32 			pasid;
+	}
+
+As explained in the design section, there is no explicit group enforcement
+in /dev/ioasid uAPI or helper functions. But the ioasid driver does
+implicit group check - before every device within an iommu group is=20
+attached to this IOASID, the previously-attached devices in this group are
+put in ioasid_data->partial_devices. The IOASID rejects any command if
+the partial_devices list is not empty.
+
+Then is the last helper function:
+	u32 ioasid_get_global_pasid(struct ioasid_ctx *ctx,=20
+		u32 ioasid, bool alloc);
+
+ioasid_get_global_pasid is necessary in scenarios where multiple devices=20
+want to share a same PASID value on the attached I/O page table (e.g.=20
+when ENQCMD is enabled, as explained in next section). We need a=20
+centralized place (ioasid_data->pasid) to hold this value (allocated when
+first called with alloc=3Dtrue). vfio device driver calls this function (al=
+loc=3D
+true) to get the global PASID for an ioasid before calling ioasid_device_
+attach. KVM also calls this function (alloc=3Dfalse) to setup PASID transla=
+tion=20
+structure when user calls KVM_MAP_PASID.
+
+4. PASID Virtualization
+------------------------------
+
+When guest SVA (vSVA) is enabled, multiple GVA address spaces are=20
+created on the assigned vfio device. This leads to the concepts of=20
+"virtual PASID" (vPASID) vs. "physical PASID" (pPASID). vPASID is assigned=
+=20
+by the guest to mark an GVA address space while pPASID is the one=20
+selected by the host and actually routed in the wire.
+
+vPASID is conveyed to the kernel when user calls VFIO_ATTACH_IOASID.
+
+vfio device driver translates vPASID to pPASID before calling ioasid_attach=
+_
+device, with two factors to be considered:
+
+-    Whether vPASID is directly used (vPASID=3D=3DpPASID) in the wire, or=20
+     should be instead converted to a newly-allocated one (vPASID!=3D
+     pPASID);
+
+-    If vPASID!=3DpPASID, whether pPASID is allocated from per-RID PASID
+     space or a global PASID space (implying sharing pPASID cross devices,
+     e.g. when supporting Intel ENQCMD which puts PASID in a CPU MSR
+     as part of the process context);
+
+The actual policy depends on pdev vs. mdev, and whether ENQCMD is
+supported. There are three possible scenarios:
+
+(Note: /dev/ioasid uAPI is not affected by underlying PASID virtualization=
+=20
+policies.)
+
+1)  pdev (w/ or w/o ENQCMD): vPASID=3D=3DpPASID
+
+     vPASIDs are directly programmed by the guest to the assigned MMIO=20
+     bar, implying all DMAs out of this device having vPASID in the packet=
+=20
+     header. This mandates vPASID=3D=3DpPASID, sort of delegating the entir=
+e=20
+     per-RID PASID space to the guest.
+
+     When ENQCMD is enabled, the CPU MSR when running a guest task
+     contains a vPASID. In this case the CPU PASID translation capability=20
+     should be disabled so this vPASID in CPU MSR is directly sent to the
+     wire.
+
+     This ensures consistent vPASID usage on pdev regardless of the=20
+     workload submitted through a MMIO register or ENQCMD instruction.
+
+2)  mdev: vPASID!=3DpPASID (per-RID if w/o ENQCMD, otherwise global)
+
+     PASIDs are also used by kernel to mark the default I/O address space=20
+     for mdev, thus cannot be delegated to the guest. Instead, the mdev=20
+     driver must allocate a new pPASID for each vPASID (thus vPASID!=3D
+     pPASID) and then use pPASID when attaching this mdev to an ioasid.
+
+     The mdev driver needs cache the PASID mapping so in mediation=20
+     path vPASID programmed by the guest can be converted to pPASID=20
+     before updating the physical MMIO register. The mapping should
+     also be saved in the CPU PASID translation structure (via KVM uAPI),=20
+     so the vPASID saved in the CPU MSR is auto-translated to pPASID=20
+     before sent to the wire, when ENQCMD is enabled.=20
+
+     Generally pPASID could be allocated from the per-RID PASID space
+     if all mdev's created on the parent device don't support ENQCMD.
+
+     However if the parent supports ENQCMD-capable mdev, pPASIDs
+     must be allocated from a global pool because the CPU PASID=20
+     translation structure is per-VM. It implies that when an guest I/O=20
+     page table is attached to two mdevs with a single vPASID (i.e. bind=20
+     to the same guest process), a same pPASID should be used for=20
+     both mdevs even when they belong to different parents. Sharing
+     pPASID cross mdevs is achieved by calling aforementioned ioasid_
+     get_global_pasid().
+
+3)  Mix pdev/mdev together
+
+     Above policies are per device type thus are not affected when mixing=20
+     those device types together (when assigned to a single guest). However=
+,=20
+     there is one exception - when both pdev/mdev support ENQCMD.
+
+     Remember the two types have conflicting requirements on whether=20
+     CPU PASID translation should be enabled. This capability is per-VM,=20
+     and must be enabled for mdev isolation. When enabled, pdev will=20
+     receive a mdev pPASID violating its vPASID expectation.
+
+     In previous thread a PASID range split scheme was discussed to support
+     this combination, but we haven't worked out a clean uAPI design yet.
+     Therefore in this proposal we decide to not support it, implying the=20
+     user should have some intelligence to avoid such scenario. It could be
+     a TODO task for future.
+
+In spite of those subtle considerations, the kernel implementation could
+start simple, e.g.:
+
+-    v=3D=3Dp for pdev;
+-    v!=3Dp and always use a global PASID pool for all mdev's;
+
+Regardless of the kernel policy, the user policy is unchanged:
+
+-    provide vPASID when calling VFIO_ATTACH_IOASID;
+-    call KVM uAPI to setup CPU PASID translation if ENQCMD-capable mdev;
+-    Don't expose ENQCMD capability on both pdev and mdev;
+
+Sample user flow is described in section 5.5.
+
+5. Use Cases and Flows
+-------------------------------
+
+Here assume VFIO will support a new model where every bound device
+is explicitly listed under /dev/vfio thus a device fd can be acquired w/o=20
+going through legacy container/group interface. For illustration purpose
+those devices are just called dev[1...N]:
+
+	device_fd[1...N] =3D open("/dev/vfio/devices/dev[1...N]", mode);
+
+As explained earlier, one IOASID fd is sufficient for all intended use case=
+s:
+
+	ioasid_fd =3D open("/dev/ioasid", mode);
+
+For simplicity below examples are all made for the virtualization story.
+They are representative and could be easily adapted to a non-virtualization
+scenario.
+
+Three types of IOASIDs are considered:
+
+	gpa_ioasid[1...N]: 	for GPA address space
+	giova_ioasid[1...N]:	for guest IOVA address space
+	gva_ioasid[1...N]:	for guest CPU VA address space
+
+At least one gpa_ioasid must always be created per guest, while the other=20
+two are relevant as far as vIOMMU is concerned.
+
+Examples here apply to both pdev and mdev, if not explicitly marked out
+(e.g. in section 5.5). VFIO device driver in the kernel will figure out the=
+=20
+associated routing information in the attaching operation.
+
+For illustration simplicity, IOASID_CHECK_EXTENSION and IOASID_GET_
+INFO are skipped in these examples.
+
+5.1. A simple example
+++++++++++++++++++
+
+Dev1 is assigned to the guest. One gpa_ioasid is created. The GPA address
+space is managed through DMA mapping protocol:
+
+	/* Bind device to IOASID fd */
+	device_fd =3D open("/dev/vfio/devices/dev1", mode);
+	ioasid_fd =3D open("/dev/ioasid", mode);
+	ioctl(device_fd, VFIO_BIND_IOASID_FD, ioasid_fd);
+
+	/* Attach device to IOASID */
+	gpa_ioasid =3D ioctl(ioasid_fd, IOASID_ALLOC);
+	at_data =3D { .ioasid =3D gpa_ioasid};
+	ioctl(device_fd, VFIO_ATTACH_IOASID, &at_data);
+
+	/* Setup GPA mapping */
+	dma_map =3D {
+		.ioasid	=3D gpa_ioasid;
+		.iova	=3D 0;		// GPA
+		.vaddr	=3D 0x40000000;	// HVA
+		.size	=3D 1GB;
+	};
+	ioctl(ioasid_fd, IOASID_DMA_MAP, &dma_map);
+
+If the guest is assigned with more than dev1, user follows above sequence
+to attach other devices to the same gpa_ioasid i.e. sharing the GPA=20
+address space cross all assigned devices.
+
+5.2. Multiple IOASIDs (no nesting)
+++++++++++++++++++++++++++++
+
+Dev1 and dev2 are assigned to the guest. vIOMMU is enabled. Initially
+both devices are attached to gpa_ioasid. After boot the guest creates=20
+an GIOVA address space (giova_ioasid) for dev2, leaving dev1 in pass
+through mode (gpa_ioasid).
+
+Suppose IOASID nesting is not supported in this case. Qemu need to
+generate shadow mappings in userspace for giova_ioasid (like how
+VFIO works today).
+
+To avoid duplicated locked page accounting, it's recommended to pre-
+register the virtual address range that will be used for DMA:
+
+	device_fd1 =3D open("/dev/vfio/devices/dev1", mode);
+	device_fd2 =3D open("/dev/vfio/devices/dev2", mode);
+	ioasid_fd =3D open("/dev/ioasid", mode);
+	ioctl(device_fd1, VFIO_BIND_IOASID_FD, ioasid_fd);
+	ioctl(device_fd2, VFIO_BIND_IOASID_FD, ioasid_fd);
+
+	/* pre-register the virtual address range for accounting */
+	mem_info =3D { .vaddr =3D 0x40000000; .size =3D 1GB };
+	ioctl(ioasid_fd, IOASID_REGISTER_MEMORY, &mem_info);
+
+	/* Attach dev1 and dev2 to gpa_ioasid */
+	gpa_ioasid =3D ioctl(ioasid_fd, IOASID_ALLOC);
+	at_data =3D { .ioasid =3D gpa_ioasid};
+	ioctl(device_fd1, VFIO_ATTACH_IOASID, &at_data);
+	ioctl(device_fd2, VFIO_ATTACH_IOASID, &at_data);
+
+	/* Setup GPA mapping */
+	dma_map =3D {
+		.ioasid	=3D gpa_ioasid;
+		.iova	=3D 0; 		// GPA
+		.vaddr	=3D 0x40000000;	// HVA
+		.size	=3D 1GB;
+	};
+	ioctl(ioasid_fd, IOASID_DMA_MAP, &dma_map);
+
+	/* After boot, guest enables an GIOVA space for dev2 */
+	giova_ioasid =3D ioctl(ioasid_fd, IOASID_ALLOC);
+
+	/* First detach dev2 from previous address space */
+	at_data =3D { .ioasid =3D gpa_ioasid};
+	ioctl(device_fd2, VFIO_DETACH_IOASID, &at_data);
+
+	/* Then attach dev2 to the new address space */
+	at_data =3D { .ioasid =3D giova_ioasid};
+	ioctl(device_fd2, VFIO_ATTACH_IOASID, &at_data);
+
+	/* Setup a shadow DMA mapping according to vIOMMU
+	  * GIOVA (0x2000) -> GPA (0x1000) -> HVA (0x40001000)
+	  */
+	dma_map =3D {
+		.ioasid	=3D giova_ioasid;
+		.iova	=3D 0x2000; 	// GIOVA
+		.vaddr	=3D 0x40001000;	// HVA
+		.size	=3D 4KB;
+	};
+	ioctl(ioasid_fd, IOASID_DMA_MAP, &dma_map);
+
+5.3. IOASID nesting (software)
++++++++++++++++++++++++++
+
+Same usage scenario as 5.2, with software-based IOASID nesting=20
+available. In this mode it is the kernel instead of user to create the
+shadow mapping.
+
+The flow before guest boots is same as 5.2, except one point. Because=20
+giova_ioasid is nested on gpa_ioasid, locked accounting is only=20
+conducted for gpa_ioasid. So it's not necessary to pre-register virtual=20
+memory.
+
+To save space we only list the steps after boots (i.e. both dev1/dev2
+have been attached to gpa_ioasid before guest boots):
+
+	/* After boots */
+	/* Make GIOVA space nested on GPA space */
+	giova_ioasid =3D ioctl(ioasid_fd, IOASID_CREATE_NESTING,
+				gpa_ioasid);
+
+	/* Attach dev2 to the new address space (child)
+	  * Note dev2 is still attached to gpa_ioasid (parent)
+	  */
+	at_data =3D { .ioasid =3D giova_ioasid};
+	ioctl(device_fd2, VFIO_ATTACH_IOASID, &at_data);
+
+	/* Setup a GIOVA->GPA mapping for giova_ioasid, which will be=20
+	  * merged by the kernel with GPA->HVA mapping of gpa_ioasid
+	  * to form a shadow mapping.
+	  */
+	dma_map =3D {
+		.ioasid	=3D giova_ioasid;
+		.iova	=3D 0x2000;	// GIOVA
+		.vaddr	=3D 0x1000;	// GPA
+		.size	=3D 4KB;
+	};
+	ioctl(ioasid_fd, IOASID_DMA_MAP, &dma_map);
+
+5.4. IOASID nesting (hardware)
++++++++++++++++++++++++++
+
+Same usage scenario as 5.2, with hardware-based IOASID nesting
+available. In this mode the pgtable binding protocol is used to=20
+bind the guest IOVA page table with the IOMMU:
+
+	/* After boots */
+	/* Make GIOVA space nested on GPA space */
+	giova_ioasid =3D ioctl(ioasid_fd, IOASID_CREATE_NESTING,
+				gpa_ioasid);
+
+	/* Attach dev2 to the new address space (child)
+	  * Note dev2 is still attached to gpa_ioasid (parent)
+	  */
+	at_data =3D { .ioasid =3D giova_ioasid};
+	ioctl(device_fd2, VFIO_ATTACH_IOASID, &at_data);
+
+	/* Bind guest I/O page table  */
+	bind_data =3D {
+		.ioasid	=3D giova_ioasid;
+		.addr	=3D giova_pgtable;
+		// and format information
+	};
+	ioctl(ioasid_fd, IOASID_BIND_PGTABLE, &bind_data);
+
+	/* Invalidate IOTLB when required */
+	inv_data =3D {
+		.ioasid	=3D giova_ioasid;
+		// granular information
+	};
+	ioctl(ioasid_fd, IOASID_INVALIDATE_CACHE, &inv_data);
+
+	/* See 5.6 for I/O page fault handling */
+=09
+5.5. Guest SVA (vSVA)
+++++++++++++++++++
+
+After boots the guest further create a GVA address spaces (gpasid1) on=20
+dev1. Dev2 is not affected (still attached to giova_ioasid).
+
+As explained in section 4, user should avoid expose ENQCMD on both
+pdev and mdev.
+
+The sequence applies to all device types (being pdev or mdev), except
+one additional step to call KVM for ENQCMD-capable mdev:
+
+	/* After boots */
+	/* Make GVA space nested on GPA space */
+	gva_ioasid =3D ioctl(ioasid_fd, IOASID_CREATE_NESTING,
+				gpa_ioasid);
+
+	/* Attach dev1 to the new address space and specify vPASID */
+	at_data =3D {
+		.ioasid		=3D gva_ioasid;
+		.flag 		=3D IOASID_ATTACH_USER_PASID;
+		.user_pasid	=3D gpasid1;
+	};
+	ioctl(device_fd1, VFIO_ATTACH_IOASID, &at_data);
+
+	/* if dev1 is ENQCMD-capable mdev, update CPU PASID=20
+	  * translation structure through KVM
+	  */
+	pa_data =3D {
+		.ioasid_fd	=3D ioasid_fd;
+		.ioasid		=3D gva_ioasid;
+		.guest_pasid	=3D gpasid1;
+	};
+	ioctl(kvm_fd, KVM_MAP_PASID, &pa_data);
+
+	/* Bind guest I/O page table  */
+	bind_data =3D {
+		.ioasid	=3D gva_ioasid;
+		.addr	=3D gva_pgtable1;
+		// and format information
+	};
+	ioctl(ioasid_fd, IOASID_BIND_PGTABLE, &bind_data);
+
+	...
+
+
+5.6. I/O page fault
++++++++++++++++
+
+(uAPI is TBD. Here is just about the high-level flow from host IOMMU driver
+to guest IOMMU driver and backwards).
+
+-   Host IOMMU driver receives a page request with raw fault_data {rid,=20
+    pasid, addr};
+
+-   Host IOMMU driver identifies the faulting I/O page table according to
+    information registered by IOASID fault handler;
+
+-   IOASID fault handler is called with raw fault_data (rid, pasid, addr), =
+which=20
+    is saved in ioasid_data->fault_data (used for response);
+
+-   IOASID fault handler generates an user fault_data (ioasid, addr), links=
+ it=20
+    to the shared ring buffer and triggers eventfd to userspace;
+
+-   Upon received event, Qemu needs to find the virtual routing information=
+=20
+    (v_rid + v_pasid) of the device attached to the faulting ioasid. If the=
+re are=20
+    multiple, pick a random one. This should be fine since the purpose is t=
+o
+    fix the I/O page table on the guest;
+
+-   Qemu generates a virtual I/O page fault through vIOMMU into guest,
+    carrying the virtual fault data (v_rid, v_pasid, addr);
+
+-   Guest IOMMU driver fixes up the fault, updates the I/O page table, and
+    then sends a page response with virtual completion data (v_rid, v_pasid=
+,=20
+    response_code) to vIOMMU;
+
+-   Qemu finds the pending fault event, converts virtual completion data=20
+    into (ioasid, response_code), and then calls a /dev/ioasid ioctl to=20
+    complete the pending fault;
+
+-   /dev/ioasid finds out the pending fault data {rid, pasid, addr} saved i=
+n=20
+    ioasid_data->fault_data, and then calls iommu api to complete it with
+    {rid, pasid, response_code};
+
+5.7. BIND_PASID_TABLE
+++++++++++++++++++++
+
+PASID table is put in the GPA space on some platform, thus must be updated
+by the guest. It is treated as another user page table to be bound with the=
+=20
+IOMMU.
+
+As explained earlier, the user still needs to explicitly bind every user I/=
+O=20
+page table to the kernel so the same pgtable binding protocol (bind, cache=
+=20
+invalidate and fault handling) is unified cross platforms.
+
+vIOMMUs may include a caching mode (or paravirtualized way) which, once=20
+enabled, requires the guest to invalidate PASID cache for any change on the=
+=20
+PASID table. This allows Qemu to track the lifespan of guest I/O page table=
+s.
+
+In case of missing such capability, Qemu could enable write-protection on
+the guest PASID table to achieve the same effect.
+
+	/* After boots */
+	/* Make vPASID space nested on GPA space */
+	pasidtbl_ioasid =3D ioctl(ioasid_fd, IOASID_CREATE_NESTING,
+				gpa_ioasid);
+
+	/* Attach dev1 to pasidtbl_ioasid */
+	at_data =3D { .ioasid =3D pasidtbl_ioasid};
+	ioctl(device_fd1, VFIO_ATTACH_IOASID, &at_data);
+
+	/* Bind PASID table */
+	bind_data =3D {
+		.ioasid	=3D pasidtbl_ioasid;
+		.addr	=3D gpa_pasid_table;
+		// and format information
+	};
+	ioctl(ioasid_fd, IOASID_BIND_PASID_TABLE, &bind_data);
+
+	/* vIOMMU detects a new GVA I/O space created */
+	gva_ioasid =3D ioctl(ioasid_fd, IOASID_CREATE_NESTING,
+				gpa_ioasid);
+
+	/* Attach dev1 to the new address space, with gpasid1 */
+	at_data =3D {
+		.ioasid		=3D gva_ioasid;
+		.flag 		=3D IOASID_ATTACH_USER_PASID;
+		.user_pasid	=3D gpasid1;
+	};
+	ioctl(device_fd1, VFIO_ATTACH_IOASID, &at_data);
+
+	/* Bind guest I/O page table. Because SET_PASID_TABLE has been
+	  * used, the kernel will not update the PASID table. Instead, just
+	  * track the bound I/O page table for handling invalidation and
+	  * I/O page faults.
+	  */
+	bind_data =3D {
+		.ioasid	=3D gva_ioasid;
+		.addr	=3D gva_pgtable1;
+		// and format information
+	};
+	ioctl(ioasid_fd, IOASID_BIND_PGTABLE, &bind_data);
+
+	...
+
+Thanks
+Kevin
