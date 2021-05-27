@@ -2,70 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E0DF392D66
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 14:00:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BCD13392D6D
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 14:01:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234229AbhE0MCS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 May 2021 08:02:18 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51756 "EHLO mail.kernel.org"
+        id S234638AbhE0MDD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 May 2021 08:03:03 -0400
+Received: from muru.com ([72.249.23.125]:32784 "EHLO muru.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234621AbhE0MCN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 May 2021 08:02:13 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id EE966613D4;
-        Thu, 27 May 2021 12:00:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1622116840;
-        bh=Q+HOpI0+tPeOEn4T8vJ8uVaUFnAxGz9pMedcBLfbM7g=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=hmOeNzXzPGGA+a390MwulVbMqXesJtsyc0hbicgaFtjvejqKFNE12ox9gw84euRbD
-         SGUicyFOlKwCpoUVMjSS5WlGFm/1TN3zQ9OQYKv+UUPJED+ji83wvTNQTl41YZ/gHC
-         JA53QrC3Pn2nmUkAgrgCKevzWMTP95x3sqO3M8CQ=
-Date:   Thu, 27 May 2021 14:00:38 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     eli.billauer@gmail.com
-Cc:     arnd@arndb.de, linux-kernel@vger.kernel.org,
-        linux-usb@vger.kernel.org
-Subject: Re: [PATCH v5 2/2] char: xillybus: Add driver for XillyUSB (Xillybus
- variant for USB)
-Message-ID: <YK+J5oy1qH6dWAmG@kroah.com>
-References: <20210526100311.56327-1-eli.billauer@gmail.com>
- <20210526100311.56327-3-eli.billauer@gmail.com>
+        id S234143AbhE0MC7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 27 May 2021 08:02:59 -0400
+Received: from atomide.com (localhost [127.0.0.1])
+        by muru.com (Postfix) with ESMTPS id CE60480A8;
+        Thu, 27 May 2021 12:01:30 +0000 (UTC)
+Date:   Thu, 27 May 2021 15:01:21 +0300
+From:   Tony Lindgren <tony@atomide.com>
+To:     Grygorii Strashko <grygorii.strashko@ti.com>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Santosh Shilimkar <ssantosh@kernel.org>,
+        devicetree@vger.kernel.org, linux-gpio@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-omap@vger.kernel.org,
+        Aswath Govindraju <a-govindraju@ti.com>
+Subject: Re: [PATCH v2 0/5] dt-bindings: gpio: omap: Convert to json-schema
+Message-ID: <YK+KEYncDc6pCb1X@atomide.com>
+References: <20210525175858.11611-1-grygorii.strashko@ti.com>
+ <2dbbf0f1-be2c-de11-8ffd-77a06688a83d@ti.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210526100311.56327-3-eli.billauer@gmail.com>
+In-Reply-To: <2dbbf0f1-be2c-de11-8ffd-77a06688a83d@ti.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 26, 2021 at 01:03:11PM +0300, eli.billauer@gmail.com wrote:
-> From: Eli Billauer <eli.billauer@gmail.com>
+* Grygorii Strashko <grygorii.strashko@ti.com> [210526 10:06]:
+> Hi Tony, Linus, Bartosz,
 > 
-> The XillyUSB driver is the USB variant for the Xillybus FPGA IP core.
-> Even though it presents a nearly identical API on the FPGA and host,
-> it's almost a complete rewrite of the driver: The framework for exchanging
-> data on a USB bus is fundamentally different from doing the same with a
-> PCIe interface, which leaves very little in common between the existing
-> driver and the new one for XillyUSB.
+> On 25/05/2021 20:58, Grygorii Strashko wrote:
+> > Hi
+> > 
+> > Convert the OMAP GPIO Device Tree binding documentation to json-schema.
+> > The GPIO hogs node names defined to end with a 'hog' suffix.
+> > 
+> > All existing GPIO Hogs fixed to follow above naming convention
+> > before changing the binding to avoid dtbs_check warnings.
 > 
-> Signed-off-by: Eli Billauer <eli.billauer@gmail.com>
-> ---
-> 
-> Notes:
->     Changelog:
->     
->     v5:
->       - Move xillyusb.c back from staging to char/xillybus/
->       - Turn previously lockless FIFO into one relying on a lock
->       - Set driver's soft_unbind flag, so that the device is notified when the
->         driver is unloaded + due changes for killing URBs as required
->       - Some refactoring of locks for better granularity
->       - Avoid using pr_err and pr_warn, replace with dev_* counterparts
->       - Bump MODULE_VERSION to 1.1
+> There is one note. The DT bindings change, without DTS changes, will
+> cause dtbs_check warnings, so all these patches better to be merged through one tree.
 
-Nit, you should just remove the MODULE_VERSION() stuff, it makes no
-sense once it is in the kernel tree to have them as they then mean
-nothing.
+So with the binding changes applied, I'm applying the dts changes
+to omap-for-v5.14/dt thanks.
 
-But that can be an add-on patch, let me review these...
+Regards,
 
+Tony
