@@ -2,84 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 32381393485
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 19:05:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 46F3839348D
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 19:07:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236862AbhE0RHS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 May 2021 13:07:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56582 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236796AbhE0RHR (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 May 2021 13:07:17 -0400
-Received: from mail-pg1-x534.google.com (mail-pg1-x534.google.com [IPv6:2607:f8b0:4864:20::534])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC669C061574;
-        Thu, 27 May 2021 10:05:42 -0700 (PDT)
-Received: by mail-pg1-x534.google.com with SMTP id r1so396047pgk.8;
-        Thu, 27 May 2021 10:05:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=QtS0RsJEV0FthRRAjWu5kxz2gjTDJnrn++qGkSLgvW4=;
-        b=Ad/DAGLCJtRz8b72njjqO+k2XFNpxkvKbMsu6Hzbd7Dt25Z59epePgq7rSy9+cl/0r
-         /YATkBbbXZL5cGFfLMir9vzUZZ4sVzJcq1YMvKWGfbO4KkIy/yxwBWhPZ7esqCoDT5mv
-         60x8HPNvX+Yf6l1xt5TC30PXQPauhXMY+h4n1p6CooByw+gDwotLfvdA/tB7zWmQSZMy
-         mDUyZQYR2++CgDWCdMEXqpkx6QzG2mhUUdMDSXmdHbAIJ60/xn2VQxqCarevdF4Tg9Cg
-         6YdhFTImGidyFvgmHPeBlA8ZaiOev8OGDwZpYnRkk1MDAXLBBYrg30PHLPlJgrvJ4gId
-         /M2Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=QtS0RsJEV0FthRRAjWu5kxz2gjTDJnrn++qGkSLgvW4=;
-        b=mahGFc2OT5DkoLQoao3KsnoC8i/oBWuXQ8OETtgIJ/nCdN0RIAKaMr1WPxLSK5rmqD
-         uSwQ6hhatmE6w/8BiYWKmC5yv3JCcwZg0grG+uobrBv62/zrxrGrmLXkltwlR27S4aj9
-         D2WFaaFoSt4Soj2QB1r6Bw5F6+bHu+DIpCCrHU3lUIZ0J9jkg8loenHYhQZD4ASHFRex
-         w3Qao6f3PsHNUUhcaVaOmVRpVAE9Qhgx/sUpNKOj+Gsqopoxwn9wY2vZtQQQc2JcLGcW
-         bUJ0z8T/2IjjbkHWxJaK2G/U+RJaWETAsLuLUczRPetduIGC7xPqD+S50HjrmGi9TpvJ
-         bJLA==
-X-Gm-Message-State: AOAM5320nGLqzHRlAkk4bEERhNR2iVXlFjPHyZrSyVBn2PDtv7jB8dsj
-        TRgrR7i5wW/ZrFyKU2iwrrQ9g3w6Hos/yg==
-X-Google-Smtp-Source: ABdhPJyh4UFEx6bbWd73bsAqy73iHeI0QpX/DzTOBx1CQpqfEAaNTkJRNkJutUCKijb4I/2q/T+D1A==
-X-Received: by 2002:a63:d014:: with SMTP id z20mr4523221pgf.428.1622135142619;
-        Thu, 27 May 2021 10:05:42 -0700 (PDT)
-Received: from hyeyoo ([183.99.11.150])
-        by smtp.gmail.com with ESMTPSA id z7sm2376494pgr.28.2021.05.27.10.05.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 27 May 2021 10:05:42 -0700 (PDT)
-Date:   Fri, 28 May 2021 02:05:36 +0900
-From:   Hyeonggon Yoo <42.hyeyoo@gmail.com>
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     Jiri Kosina <jikos@kernel.org>,
-        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
-        linux-usb@vger.kernel.org, linux-input@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] HID: usbmouse: Avoid GFP_ATOMIC when GFP_KERNEL is
- possible
-Message-ID: <20210527170536.GA143409@hyeyoo>
-References: <20210524145743.GA92203@hyeyoo>
- <20210527164517.GA143281@hyeyoo>
- <YK/Or91JIpbpwWjL@kroah.com>
+        id S236910AbhE0RJQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 May 2021 13:09:16 -0400
+Received: from foss.arm.com ([217.140.110.172]:60702 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235279AbhE0RJN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 27 May 2021 13:09:13 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 0C01B11D4;
+        Thu, 27 May 2021 10:07:40 -0700 (PDT)
+Received: from e120325.cambridge.arm.com (usa-sjc-imap-foss1.foss.arm.com [10.121.207.14])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 852233F719;
+        Thu, 27 May 2021 10:07:38 -0700 (PDT)
+Date:   Thu, 27 May 2021 18:07:30 +0100
+From:   Beata Michalska <beata.michalska@arm.com>
+To:     Dietmar Eggemann <dietmar.eggemann@arm.com>
+Cc:     Valentin Schneider <valentin.schneider@arm.com>,
+        linux-kernel@vger.kernel.org, peterz@infradead.org,
+        mingo@redhat.com, juri.lelli@redhat.com,
+        vincent.guittot@linaro.org, corbet@lwn.net, rdunlap@infradead.org,
+        linux-doc@vger.kernel.org
+Subject: Re: [PATCH v5 2/3] sched/topology: Rework CPU capacity asymmetry
+ detection
+Message-ID: <20210527170729.GA20994@e120325.cambridge.arm.com>
+References: <87fsyc6mfz.mognet@arm.com>
+ <20210524225508.GA14880@e120325.cambridge.arm.com>
+ <87a6oj6sxo.mognet@arm.com>
+ <20210525102945.GA24210@e120325.cambridge.arm.com>
+ <98ad8837-b9b8-ff50-5a91-8d5951ee757c@arm.com>
+ <20210526121546.GA13262@e120325.cambridge.arm.com>
+ <20210526125133.GB13262@e120325.cambridge.arm.com>
+ <d4dc6630-041f-bf61-898a-6f402b993fbc@arm.com>
+ <20210526214004.GA1712@e120325.cambridge.arm.com>
+ <14593ba7-eed9-f035-724c-5cadbb859adc@arm.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YK/Or91JIpbpwWjL@kroah.com>
+In-Reply-To: <14593ba7-eed9-f035-724c-5cadbb859adc@arm.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 27, 2021 at 06:54:07PM +0200, Greg KH wrote:
-> It has been only 4 days.  For a non-bugfix and for something that is
-> only a "cleanup" change, give it at least 2 weeks please.
+On Thu, May 27, 2021 at 05:08:42PM +0200, Dietmar Eggemann wrote:
+> On 26/05/2021 23:40, Beata Michalska wrote:
+> > On Wed, May 26, 2021 at 08:17:41PM +0200, Dietmar Eggemann wrote:
+> >> On 26/05/2021 14:51, Beata Michalska wrote:
+> >>> On Wed, May 26, 2021 at 01:15:46PM +0100, Beata Michalska wrote:
+> >>>> On Wed, May 26, 2021 at 11:52:25AM +0200, Dietmar Eggemann wrote:
+> >>>>> On 25/05/2021 12:29, Beata Michalska wrote:
+> >>>>>> On Tue, May 25, 2021 at 10:53:07AM +0100, Valentin Schneider wrote:
+> >>>>>>> On 24/05/21 23:55, Beata Michalska wrote:
+> >>>>>>>> On Mon, May 24, 2021 at 07:01:04PM +0100, Valentin Schneider wrote:
+> >>>>>>>>> On 24/05/21 11:16, Beata Michalska wrote:
 > 
-> Relax, there is no rush for stuff like this.
+> [...]
+> 
+> >>                 cpu-map {
+> >>                         cluster0 {
+> >>                                 core0 {
+> >> 					thread0 {
+> >>                                         	cpu = <&A53_0>;
+> >> 					};
+> >> 					thread1 {
+> >>                                         	cpu = <&A53_1>;
+> >> 					};
+> >>                                 };
+> >>                                 core1 {
+> >> 					thread0 {
+> >>                                         	cpu = <&A53_2>;
+> >> 					};
+> >> 					thread1 {
+> >>                                         	cpu = <&A53_3>;
+> >> 					};
+> >>                                 };
+> >>                                 core2 {
+> >> 					thread0 {
+> >>                                         	cpu = <&A53_4>;
+> >> 					};
+> >> 					thread1 {
+> >>                                         	cpu = <&A53_5>;
+> >> 					};
+> >>                                 };
+> >>                         };
+> >>
+> >>                         cluster1 {
+> >>                                 core0 {
+> >> 					thread0 {
+> >>                                         	cpu = <&A53_6>;
+> >> 					};
+> >> 					thread1 {
+> >>                                         	cpu = <&A53_7>;
+> >> 					};
+> >>                                 };
+> >>                         };
+> >>                 };
+> >>
+> >> 		A53_0: cpu@0 {
+> >> 			capacity-dmips-mhz = <446>;
+> >> 	 	A53_1: cpu@1 {
+> >> 			capacity-dmips-mhz = <1024>;
+> >> 		A53_2: cpu@2 {
+> >> 			capacity-dmips-mhz = <871>;
+> >> 		A53_3: cpu@3 {
+> >> 			capacity-dmips-mhz = <1024>;
+> >> 		A53_4: cpu@4 {
+> >> 			capacity-dmips-mhz = <446>;
+> >> 		A53_5: cpu@5 {
+> >> 			capacity-dmips-mhz = <871>;
+> >> 		A53_6: cpu@6 {
+> >> 			capacity-dmips-mhz = <1024>;
+> >> 		A53_7: cpu@7 {
+> >> 			capacity-dmips-mhz = <1024>;
+> >>
+> >> Here I guess SD_ASYM_CPUCAPACITY will be attached to SMT[0-5]. So this
+> >> 'capacity-dmips-mhz' config error won't be detected.
+> >>
+> >> In case all CPUs (i.e. hw threads would have the correct
+> >> capacity-dmips-mhz = <1024> or not being set (default 1024))
+> >> asym_cap_list would corrcetly only have 1 entry.
+> > We could possibly add a warning (like in EAS) if the asymmetry is detected
+> > for SMT which would give some indication that there is smth ... wrong ?
+> 
+> Maybe, in case you find an easy way to detect this.
+> 
+> But the issue already exists today. Not with the topology mentioned
+> above but in case we slightly change it to:
+> 
+>   cpus = { ([446 1024] [871 1024] [446 1024] ) ([1024 1024]) }
+>                                        ^^^^
+> so that we have a 1024 CPU in the lowest sd for each CPU, we would get
+> SD_ASYM_CPUCAPACITY on SMT.
+The asymmetry capacity flags are being set on a sched domain level, so
+we could use the SD_SHARE_CPUCAPACITY|SD_SHARE_PKG_RESOURCES (cpu_smt_flags)
+flags to determine if having asymmetry is valid or not ? If this is enough 
+this could be handled by the classify function?
 
-Hello Greg!
-
-Okay You are right. I'll relax...
-
-I think I need to be familiar with the process :)
-
-Thank you!
-Hyeonggon
+---
+BR
+B.
