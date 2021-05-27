@@ -2,76 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E6E03923CF
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 02:31:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D45A3923D0
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 02:32:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234226AbhE0AdR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 May 2021 20:33:17 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44958 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232903AbhE0AdP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 May 2021 20:33:15 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 993CC613B4;
-        Thu, 27 May 2021 00:31:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
-        s=korg; t=1622075502;
-        bh=VElGUCrEdn4IEvlrz/77la9T537zZI/H+mQPAk6Ho7w=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=tCZQFp45TvATQFhyf65Vg+kZ83gR68JXy9JrNNG4+13t348+QLndujSLgkJA/+wpn
-         dGbvBHxKi3OBmVJLg7uzmBd66H5vOwF0IG8gdo9FrWTXT0gayR5ka1LuOxiICYKZzq
-         d+ioj6kiemxaF0+q+3g8PWYz+LYGH14Roj6MKhKE=
-Date:   Wed, 26 May 2021 17:31:41 -0700
-From:   Andrew Morton <akpm@linux-foundation.org>
-To:     Qian Cai <quic_qiancai@quicinc.com>
-Cc:     Mike Rapoport <rppt@linux.ibm.com>,
+        id S233753AbhE0Ae0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 May 2021 20:34:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56888 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232632AbhE0AeZ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 26 May 2021 20:34:25 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2BF55C061574
+        for <linux-kernel@vger.kernel.org>; Wed, 26 May 2021 17:32:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=rGnGbvjwxo5pZ/xivVTzhZZksaRg9qYZ3497Lsqz1j0=; b=qik79SlIXNJdlHZ3tdNFMlPZjf
+        /GX4ppKG7Htrhi1w9MFCnu4/yRx7GW14Jb4z7fpCUJNBOmFcwtW7WEbEcmDBjvWQdrckWQNd8dM2J
+        qFo5EJ8Jug9DpqktI1WAWyoStvwxmufiur4YOKzQWm1lQbSZjq8CZJWXz+UFgk3MsqYjJU8fxXAHx
+        q0W/bBR9AIxQjUBq3AAogSyYWw22TMr/Pqnv9+SpYRzt4C+FVpF2D7e0aVLcpctgx9s4qX0R/9eNl
+        LoRg0MNdURKh6yG+Te38Vwl69F5DKcSAR7ZfbY1d6SxY/ov1XIm5KazcLF8qYNk9tVyWf+Tb0NSUK
+        Iyrl+Y0w==;
+Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
+        id 1lm3wB-0051pP-Bz; Thu, 27 May 2021 00:31:54 +0000
+Date:   Thu, 27 May 2021 01:31:47 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Naoya Horiguchi <nao.horiguchi@gmail.com>
+Cc:     linux-mm@kvack.org, Mike Kravetz <mike.kravetz@oracle.com>,
+        Michal Hocko <mhocko@suse.com>,
+        Oscar Salvador <osalvador@suse.de>,
+        Muchun Song <songmuchun@bytedance.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
         David Hildenbrand <david@redhat.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        Will Deacon <will@kernel.org>, Marc Zyngier <maz@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Stephen Rothwell <sfr@canb.auug.org.au>
-Subject: Re: Arm64 crash while reading memory sysfs
-Message-Id: <20210526173141.f1b511816fb33eab881e0c8f@linux-foundation.org>
-In-Reply-To: <d55f915c-ad01-e729-1e29-b57d78257cbb@quicinc.com>
-References: <DM5PR0201MB355723819DDAC439273F68848E259@DM5PR0201MB3557.namprd02.prod.outlook.com>
-        <YK3tQ0a0S/CLxyyb@linux.ibm.com>
-        <CY4PR0201MB35539FF5EE729283C4241F5A8E249@CY4PR0201MB3553.namprd02.prod.outlook.com>
-        <YK6EXNZHY1xt7Kjs@linux.ibm.com>
-        <d55f915c-ad01-e729-1e29-b57d78257cbb@quicinc.com>
-X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.31; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        Naoya Horiguchi <naoya.horiguchi@nec.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v1] hugetlb: pass head page to remove_hugetlb_page()
+Message-ID: <YK7oc0/y9UHWFfYt@casper.infradead.org>
+References: <20210526235257.2769473-1-nao.horiguchi@gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210526235257.2769473-1-nao.horiguchi@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 26 May 2021 20:16:14 -0400 Qian Cai <quic_qiancai@quicinc.com> wrote:
-
+On Thu, May 27, 2021 at 08:52:57AM +0900, Naoya Horiguchi wrote:
+> From: Naoya Horiguchi <naoya.horiguchi@nec.com>
 > 
+> When memory_failure() or soft_offline_page() is called on a tail page of
+> some hugetlb page, "BUG: unable to handle page fault" error can be
+> triggered.
 > 
-> On 5/26/2021 1:24 PM, Mike Rapoport wrote:
-> > On Wed, May 26, 2021 at 12:09:14PM +0000, Qian Cai (QUIC) wrote:
-> >>>
-> >>> On Tue, May 25, 2021 at 03:25:59PM +0000, Qian Cai (QUIC) wrote:
-> >>>> Reverting the patchset "arm64: drop pfn_valid_within() and simplify pfn_valid()" [1] from today's linux-next fixed a crash while
-> >>> reading files under /sys/devices/system/memory.
-> > 
-> > Does the issue persist of you only revert the latest patch in the series?
-> > In next-20210525 it would be commit 
-> > 89fb47db72f2 ("arm64-drop-pfn_valid_within-and-simplify-pfn_valid-fix")
-> > and commit
-> > dfe215e9bac2 ("arm64: drop pfn_valid_within() and simplify pfn_valid()").
-> 
-> Reverting those two commits alone is enough to fix the issue.
+> remove_hugetlb_page() dereferences page->lru, so it's assumed that the
+> page points to a head page, but one of the caller,
+> dissolve_free_huge_page(), provides remove_hugetlb_page() with 'page'
+> which could be a tail page.  So pass 'head' to it, instead.
 
-(cc Stephen)
-
-Thanks, I'll drop
-
-arm64-drop-pfn_valid_within-and-simplify-pfn_valid.patch
-arm64-drop-pfn_valid_within-and-simplify-pfn_valid-fix.patch
-
+I'd like to point out that with folios, this is a compile-time error,
+not a run-time error.
