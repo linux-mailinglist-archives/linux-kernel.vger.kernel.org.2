@@ -2,261 +2,290 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 56BE23936DB
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 22:11:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1EA143936DE
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 22:12:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235756AbhE0UN2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 May 2021 16:13:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41742 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235034AbhE0UN0 (ORCPT
+        id S235818AbhE0UOU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 May 2021 16:14:20 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:20497 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235034AbhE0UOM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 May 2021 16:13:26 -0400
-Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com [IPv6:2a00:1450:4864:20::630])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1FE50C061574;
-        Thu, 27 May 2021 13:11:52 -0700 (PDT)
-Received: by mail-ej1-x630.google.com with SMTP id lz27so1940033ejb.11;
-        Thu, 27 May 2021 13:11:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-transfer-encoding:content-language;
-        bh=Z4O262zvwdzEulJ1jOXjydwpNCfVHkhFBEvdIzwEWgY=;
-        b=Quo3b25aI5myNRSroj4sBbxZE43SnF6FdFJiHd3iyVpUvlabe1/MFfY+EN/T4dNNw6
-         EErfCcDdl/ZnNpQEannARjFO+HI6xDdr4mnJL2Rl8L0w0KLHqS7I+r56TepRBMg920ds
-         OOD2lfA7FyJh0KGuQkiIATP2qpLE9if5U54Y2RbWMFdSAFCIUPWlwBI0VFZ3IWqzwEE6
-         IMuoXYb77w3x7eHTOFzf9mjcyKvumvIGOXPQo52IkQdxv/bVmOix7SomELWjq4UawnTH
-         V8qm5KTtm6eX7suzm3Yq0BjkoTMh274p9W/FwQuTKK4EnAmfr4nZ98rQVdMEwuCGKxFf
-         sqLQ==
+        Thu, 27 May 2021 16:14:12 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1622146359;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=p88nsQ9k8vXGqsIMjaKmSjOXZyJJ+7FFkp711P5nvBo=;
+        b=IxbIcAdPm9WtQHIJ/qtxsCeDVrJMJ/xsofWV2GF9hdI5nGBYG36XyzYW6GqDffSlYP9C2F
+        0Xw3KsW1Ax9GHGogVPi7013HQjjr0+2HWvi/ZjC96DOUN90B6yo260ANYgneZ7OLsqFih6
+        3wSF6ZqzEnNoFg+PmM5ifxFyiKOx45Y=
+Received: from mail-qv1-f71.google.com (mail-qv1-f71.google.com
+ [209.85.219.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-316-_e-OyUGQONax8umhsP6Uig-1; Thu, 27 May 2021 16:12:37 -0400
+X-MC-Unique: _e-OyUGQONax8umhsP6Uig-1
+Received: by mail-qv1-f71.google.com with SMTP id n3-20020a0cee630000b029020e62abfcbdso978651qvs.16
+        for <linux-kernel@vger.kernel.org>; Thu, 27 May 2021 13:12:37 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=Z4O262zvwdzEulJ1jOXjydwpNCfVHkhFBEvdIzwEWgY=;
-        b=MH0IZa5BmPsWvcFrrbDKfU8lmP2gAixMCn5IEbpMuB+r/uQVg0jOkCYNSr/N1pi48j
-         aqGTCSZyHxKJtKujvOPwmbb3by2+PsMH6lbu4G+eDLLpaJsLt8hr/OIZqqzVNWoMQbTR
-         5k3Yqs0d265kZPwx1SxWfPeQfKCrOKlWtActcDTNMzlsibnwD3gcRhtL9NxSWEaCuTH0
-         64INQJwe79it6N7chLSa+hF5oQN+IzIaj4ysVdt9tZmhAk2/kueBmPu2NjTpkEDaKSk5
-         LL3xe2xZ898taz395GLw762VjZaFOxi53PWsOxjaU8f+GOwEDLJNUhNkGmbNWqQ6UO8F
-         rM4g==
-X-Gm-Message-State: AOAM532Khbc9gmFPlMDUTuImYbAy7Dgd18UVV8mbPq7cccQhyvs84eWv
-        QtrsKjbVHmJTY65SSeTtSw==
-X-Google-Smtp-Source: ABdhPJwrJbGNSMtyEy6jE13u3m0gWh7BUIHAkR5HvVPWV2Q1IOR/pipJ+wT5bvil1rm2VKGwaJH6+A==
-X-Received: by 2002:a17:906:2854:: with SMTP id s20mr5694966ejc.335.1622146310491;
-        Thu, 27 May 2021 13:11:50 -0700 (PDT)
-Received: from ?IPv6:2a02:810b:f40:e00:34ce:e50a:89a4:5545? ([2a02:810b:f40:e00:34ce:e50a:89a4:5545])
-        by smtp.gmail.com with ESMTPSA id j7sm1603121edr.79.2021.05.27.13.11.49
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 27 May 2021 13:11:49 -0700 (PDT)
-Subject: Re: [PATCH 05/10] media: hantro: add support for Rockchip RK3036
-To:     Ezequiel Garcia <ezequiel@collabora.com>,
-        =?UTF-8?Q?Heiko_St=c3=bcbner?= <heiko@sntech.de>
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        linux-staging@lists.linux.dev, Rob Herring <robh+dt@kernel.org>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-media@vger.kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Lee Jones <lee.jones@linaro.org>, devicetree@vger.kernel.org,
-        linux-rockchip@lists.infradead.org
-References: <20210525152225.154302-1-knaerzche@gmail.com>
- <b65236f3b8bbf35411b536df8b260d9f8a9dbd80.camel@collabora.com>
- <2640d65e-772b-6af4-f4be-8ed090693c22@gmail.com> <3559518.1BCLMh4Saa@diego>
- <4fadcb3d33beadb113e0e41596e5255d0d8d08dd.camel@collabora.com>
-From:   Alex Bee <knaerzche@gmail.com>
-Message-ID: <9113891e-ba88-7402-2226-5b3709215544@gmail.com>
-Date:   Thu, 27 May 2021 22:11:48 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
+         :references:organization:user-agent:mime-version
+         :content-transfer-encoding;
+        bh=p88nsQ9k8vXGqsIMjaKmSjOXZyJJ+7FFkp711P5nvBo=;
+        b=a9eksyI1Xg6EavR5z1n5MIuGCUR+E49+QohJq36Fw+HIqfkkZAvSK2CBDTxQCpUCvR
+         qkb9GL69CVE2B2qIukvmXvKCIMo7B2zhsh1peHliJ9pyh0N4GMy6nEr9yfXz6VXHUP1g
+         OrZQD8wX1pEOvozWOIusxwQ2wQrtpGlkd1loO2n9sTkC1bJMLsVC9ANAIOMIofLY/I+e
+         Nt8WqsqwlBv7AEPo3s5/2bx64ZsBjtVwvrmcQNAG7YitcZwdSkJityex89/yocPqwj1O
+         Zw1o43V1bnb8vW4vbGxSaWOAgg5gqvVshDD+rSWl1QhJpcnvxxmTpKzp5gluhgRVQppu
+         mC+w==
+X-Gm-Message-State: AOAM532eO87mCm6aevA7++m48IEaAHzAyPh9iHXNRSQpO57HKoooYXsK
+        QaER2fCAWu1Yr/8Ajm20UNWnzb6REWzKAZ3//xX8WJQcXtY2tIgHfTVbLNqPGSxwZ2bfgpUBIeq
+        MxzuJfWOFrrJYOW3Ns002tum0
+X-Received: by 2002:ac8:4b65:: with SMTP id g5mr299284qts.99.1622146356893;
+        Thu, 27 May 2021 13:12:36 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyk0cpgY8zKiNOWNvoaVGuOHBdqEPndQlEyRAu1sDc9JFiZ18WmHo8kAcAuC2ClcKVAIVUohg==
+X-Received: by 2002:ac8:4b65:: with SMTP id g5mr299266qts.99.1622146356665;
+        Thu, 27 May 2021 13:12:36 -0700 (PDT)
+Received: from Ruby.lyude.net (pool-108-49-102-102.bstnma.fios.verizon.net. [108.49.102.102])
+        by smtp.gmail.com with ESMTPSA id r3sm2074116qtu.50.2021.05.27.13.12.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 27 May 2021 13:12:36 -0700 (PDT)
+Message-ID: <e50f9596e2ba55f27007b05315f523839abc6019.camel@redhat.com>
+Subject: Re: [PATCH v5 3/3] drm_dp_cec: add MST support
+From:   Lyude Paul <lyude@redhat.com>
+To:     Sam McNally <sammc@chromium.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Cc:     Hans Verkuil <hverkuil@xs4all.nl>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        David Airlie <airlied@linux.ie>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        dri-devel@lists.freedesktop.org
+Date:   Thu, 27 May 2021 16:12:35 -0400
+In-Reply-To: <20210525105913.v5.3.If7fc06fd679af0665ada9ff0524291c61dd35d24@changeid>
+References: <20210525105913.v5.1.I6f50a7996687318ba298c24a3663c8be7dd432c7@changeid>
+         <20210525105913.v5.3.If7fc06fd679af0665ada9ff0524291c61dd35d24@changeid>
+Organization: Red Hat
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.38.4 (3.38.4-1.fc33) 
 MIME-Version: 1.0
-In-Reply-To: <4fadcb3d33beadb113e0e41596e5255d0d8d08dd.camel@collabora.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 8bit
-Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Ezequiel,
+On Tue, 2021-05-25 at 10:59 +1000, Sam McNally wrote:
+> With DP v2.0 errata E5, CEC tunneling can be supported through an MST
+> topology.
+> 
+> When tunneling CEC through an MST port, CEC IRQs are delivered via a
+> sink event notify message; when a sink event notify message is received,
+> trigger CEC IRQ handling - ESI1 is not used for remote CEC IRQs so its
+> value is not checked.
+> 
+> Register and unregister for all MST connectors, ensuring their
+> drm_dp_aux_cec struct won't be accessed uninitialized.
+> 
+> Reviewed-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
+> Signed-off-by: Sam McNally <sammc@chromium.org>
+> ---
+> 
+> (no changes since v4)
+> 
+> Changes in v4:
+> - Removed use of work queues
+> - Updated checks of aux.transfer to accept aux.is_remote
+> 
+> Changes in v3:
+> - Fixed whitespace in drm_dp_cec_mst_irq_work()
+> - Moved drm_dp_cec_mst_set_edid_work() with the other set_edid functions
+> 
+> Changes in v2:
+> - Used aux->is_remote instead of aux->cec.is_mst, removing the need for
+>   the previous patch in the series
+> - Added a defensive check for null edid in the deferred set_edid work,
+>   in case the edid is no longer valid at that point
+> 
+>  drivers/gpu/drm/drm_dp_cec.c          | 20 ++++++++++++++++----
+>  drivers/gpu/drm/drm_dp_mst_topology.c | 24 ++++++++++++++++++++++++
+>  2 files changed, 40 insertions(+), 4 deletions(-)
+> 
+> diff --git a/drivers/gpu/drm/drm_dp_cec.c b/drivers/gpu/drm/drm_dp_cec.c
+> index 3ab2609f9ec7..1abd3f4654dc 100644
+> --- a/drivers/gpu/drm/drm_dp_cec.c
+> +++ b/drivers/gpu/drm/drm_dp_cec.c
+> @@ -14,6 +14,7 @@
+>  #include <drm/drm_connector.h>
+>  #include <drm/drm_device.h>
+>  #include <drm/drm_dp_helper.h>
+> +#include <drm/drm_dp_mst_helper.h>
+>  
+>  /*
+>   * Unfortunately it turns out that we have a chicken-and-egg situation
+> @@ -245,13 +246,22 @@ void drm_dp_cec_irq(struct drm_dp_aux *aux)
+>         int ret;
+>  
+>         /* No transfer function was set, so not a DP connector */
+> -       if (!aux->transfer)
+> +       if (!aux->transfer && !aux->is_remote)
+>                 return;
+>  
+>         mutex_lock(&aux->cec.lock);
+>         if (!aux->cec.adap)
+>                 goto unlock;
+>  
+> +       if (aux->is_remote) {
+> +               /*
+> +                * For remote connectors, CEC IRQ is triggered by an
+> explicit
+> +                * message so ESI1 is not involved.
+> +                */
+> +               drm_dp_cec_handle_irq(aux);
+> +               goto unlock;
+> +       }
+> +
+>         ret = drm_dp_dpcd_readb(aux, DP_DEVICE_SERVICE_IRQ_VECTOR_ESI1,
+>                                 &cec_irq);
+>         if (ret < 0 || !(cec_irq & DP_CEC_IRQ))
+> @@ -307,7 +317,7 @@ void drm_dp_cec_set_edid(struct drm_dp_aux *aux, const
+> struct edid *edid)
+>         u8 cap;
+>  
+>         /* No transfer function was set, so not a DP connector */
+> -       if (!aux->transfer)
+> +       if (!aux->transfer && !aux->is_remote)
+>                 return;
+>  
+>  #ifndef CONFIG_MEDIA_CEC_RC
+> @@ -375,6 +385,7 @@ void drm_dp_cec_set_edid(struct drm_dp_aux *aux, const
+> struct edid *edid)
+>  unlock:
+>         mutex_unlock(&aux->cec.lock);
+>  }
+> +
+>  EXPORT_SYMBOL(drm_dp_cec_set_edid);
 
-Am 27.05.21 um 03:27 schrieb Ezequiel Garcia:
-> On Thu, 2021-05-27 at 01:58 +0200, Heiko Stübner wrote:
->> Am Donnerstag, 27. Mai 2021, 01:27:59 CEST schrieb Alex Bee:
->>> Hi Ezequiel,
->>>
->>> Am 26.05.21 um 12:28 schrieb Ezequiel Garcia:
->>>> Hi Alex,
->>>>
->>>> Thanks a lot for the patch.
->>>>
->>>> On Tue, 2021-05-25 at 17:22 +0200, Alex Bee wrote:
->>>>> RK3036's VPU IP block is the same as RK3288 has, except that it doesn't
->>>>> have an encoder, decoding is supported up to 1920x1088 only and the axi
->>>>> clock can be set to 300 MHz max.
->>>>>
->>>>> Add a new RK3036 variant which reflect this differences.
->>>>>
->>>>> Signed-off-by: Alex Bee <knaerzche@gmail.com>
->>>>> ---
->>>>>    drivers/staging/media/hantro/hantro_drv.c    |  1 +
->>>>>    drivers/staging/media/hantro/hantro_hw.h     |  1 +
->>>>>    drivers/staging/media/hantro/rk3288_vpu_hw.c | 49 ++++++++++++++++++++
->>>>>    3 files changed, 51 insertions(+)
->>>>>
->>>>> diff --git a/drivers/staging/media/hantro/hantro_drv.c b/drivers/staging/media/hantro/hantro_drv.c
->>>>> index 38ea7b24036e..4f3c08e85bb8 100644
->>>>> --- a/drivers/staging/media/hantro/hantro_drv.c
->>>>> +++ b/drivers/staging/media/hantro/hantro_drv.c
->>>>> @@ -490,6 +490,7 @@ static const struct of_device_id of_hantro_match[] = {
->>>>>           { .compatible = "rockchip,rk3328-vpu", .data = &rk3328_vpu_variant, },
->>>>>           { .compatible = "rockchip,rk3288-vpu", .data = &rk3288_vpu_variant, },
->>>>>           { .compatible = "rockchip,rk3066-vpu", .data = &rk3066_vpu_variant, },
->>>>> +       { .compatible = "rockchip,rk3036-vpu", .data = &rk3036_vpu_variant, },
->>>>>    #endif
->>>>>    #ifdef CONFIG_VIDEO_HANTRO_IMX8M
->>>>>           { .compatible = "nxp,imx8mq-vpu", .data = &imx8mq_vpu_variant, },
->>>>> diff --git a/drivers/staging/media/hantro/hantro_hw.h b/drivers/staging/media/hantro/hantro_hw.h
->>>>> index de2bc367a15a..d8d6b0d3c3b3 100644
->>>>> --- a/drivers/staging/media/hantro/hantro_hw.h
->>>>> +++ b/drivers/staging/media/hantro/hantro_hw.h
->>>>> @@ -164,6 +164,7 @@ extern const struct hantro_variant rk3399_vpu_variant;
->>>>>    extern const struct hantro_variant rk3328_vpu_variant;
->>>>>    extern const struct hantro_variant rk3288_vpu_variant;
->>>>>    extern const struct hantro_variant rk3066_vpu_variant;
->>>>> +extern const struct hantro_variant rk3036_vpu_variant;
->>>>>    extern const struct hantro_variant imx8mq_vpu_variant;
->>>>>    extern const struct hantro_variant sama5d4_vdec_variant;
->>>>>    
->>>>> diff --git a/drivers/staging/media/hantro/rk3288_vpu_hw.c b/drivers/staging/media/hantro/rk3288_vpu_hw.c
->>>>> index 29805c4bd92f..c4684df4e012 100644
->>>>> --- a/drivers/staging/media/hantro/rk3288_vpu_hw.c
->>>>> +++ b/drivers/staging/media/hantro/rk3288_vpu_hw.c
->>>>> @@ -174,6 +174,13 @@ static irqreturn_t rk3288_vepu_irq(int irq, void *dev_id)
->>>>>           return IRQ_HANDLED;
->>>>>    }
->>>>>    
->>>>> +static int rk3036_vpu_hw_init(struct hantro_dev *vpu)
->>>>> +{
->>>>> +       /* Bump ACLKs to max. possible freq. to improve performance. */
->>>>> +       clk_set_rate(vpu->clocks[0].clk, RK3066_ACLK_MAX_FREQ);
->>>>> +       return 0;
->>>>> +}
->>>>> +
->>>>>    static int rk3066_vpu_hw_init(struct hantro_dev *vpu)
->>>>>    {
->>>>>           /* Bump ACLKs to max. possible freq. to improve performance. */
->>>>> @@ -209,6 +216,27 @@ static void rk3288_vpu_enc_reset(struct hantro_ctx *ctx)
->>>>>    /*
->>>>>     * Supported codec ops.
->>>>>     */
->>>>> +static const struct hantro_codec_ops rk3036_vpu_codec_ops[] = {
->>>>> +       [HANTRO_MODE_H264_DEC] = {
->>>>> +               .run = hantro_g1_h264_dec_run,
->>>>> +               .reset = hantro_g1_reset,
->>>>> +               .init = hantro_h264_dec_init,
->>>>> +               .exit = hantro_h264_dec_exit,
->>>>> +       },
->>>>> +       [HANTRO_MODE_MPEG2_DEC] = {
->>>>> +               .run = hantro_g1_mpeg2_dec_run,
->>>>> +               .reset = hantro_g1_reset,
->>>>> +               .init = hantro_mpeg2_dec_init,
->>>>> +               .exit = hantro_mpeg2_dec_exit,
->>>>> +       },
->>>>> +       [HANTRO_MODE_VP8_DEC] = {
->>>>> +               .run = hantro_g1_vp8_dec_run,
->>>>> +               .reset = hantro_g1_reset,
->>>>> +               .init = hantro_vp8_dec_init,
->>>>> +               .exit = hantro_vp8_dec_exit,
->>>>> +       },
->>>>> +};
->>>>> +
->>>>>    static const struct hantro_codec_ops rk3066_vpu_codec_ops[] = {
->>>>>           [HANTRO_MODE_JPEG_ENC] = {
->>>>>                   .run = hantro_h1_jpeg_enc_run,
->>>>> @@ -269,6 +297,10 @@ static const struct hantro_codec_ops rk3288_vpu_codec_ops[] = {
->>>>>     * VPU variant.
->>>>>     */
->>>>>    
->>>>> +static const struct hantro_irq rk3036_irqs[] = {
->>>>> +       { "vdpu", hantro_g1_irq },
->>>>> +};
->>>>> +
->>>>>    static const struct hantro_irq rk3288_irqs[] = {
->>>>>           { "vepu", rk3288_vepu_irq },
->>>>>           { "vdpu", hantro_g1_irq },
->>>>> @@ -283,6 +315,23 @@ static const char * const rk3288_clk_names[] = {
->>>>>           "aclk", "hclk"
->>>>>    };
->>>>>    
->>>>> +const struct hantro_variant rk3036_vpu_variant = {
->>>>> +       .dec_offset = 0x400,
->>>> If it doesn't have an encoder, then you should just
->>>> use dec_offset = 0x0.
->>>>
->>>> Thanks,
->>>> Ezequiel
->>>>
->>> That would mean, I'd have to adapt the register offset in the device
->>> tree - I'd prefer to keep it in line with the TRM. Unless you insist,
->>> I'd like to keep it this way (It's , btw, the very same for RK3328).
->> I'd agree with Alex ... ideally the devicetree should match the block
->> register area from the TRM not some internal offset.
->> [DT describes hardware etc etc ;-) ]
->>
-> Well, I've always considered this internal offset as something unfortunate
-> we didn't do well when we upstreamed RK3288.
->
-> The RK3288 TRM documents a so-called "VPU combo", and then documents
-> the encoder and the decoder cores as separate engines, with
-> separate register blocks (called VEPU and VDPU). In fact, for each
-> register block you'll see swreg0 documented at offset 0x0.
+probably want to get rid of this whitespace
 
-I've always looked at the "Address Mapping" section in the TRMs when I 
-checked the register offsets. I can't find a seperation the vpu block 
-there (for any SoC).
+With that fixed, this is:
 
-I've found it more unfortunate, that they started with register offset 
-0x0 for vdpu and vepu, since none of the SoCs (so far) can use the 
-blocks separately.
+Reviewed-by: Lyude Paul <lyude@redhat.com>
 
-> (In some integrations they can operate independently, but iirc not in RK3288.)
->
-> So to be clear, instead of:
->
->          vpu: video-codec@ff9a0000 {
->                  compatible = "rockchip,rk3288-vpu";
->                  reg = <0x0 0xff9a0000 0x0 0x800>;
->                  interrupts = <GIC_SPI 9 IRQ_TYPE_LEVEL_HIGH>,
->                               <GIC_SPI 10 IRQ_TYPE_LEVEL_HIGH>;
->                  interrupt-names = "vepu", "vdpu";
->                  clocks = <&cru ACLK_VCODEC>, <&cru HCLK_VCODEC>;
->                  clock-names = "aclk", "hclk";
->                  ...
->
-> It could have looked like:
->
->          vpu: video-codec@ff9a0000 {
->                  compatible = "rockchip,rk3288-vpu";
->                  reg = <0x0 0xff9a0000 0x0 0x400>
->                        <0x0 0xff9a0400 0x0 0x400>;
->                  ...
->
-> I guess I missed this when RK3328 was pushed, but OTOH I don't
-> see any real impact in doing things this way. So at the end
-> of the day, I'm fine either way.
->
-> BTW, the series is not adding the vpu node for arch/arm/boot/dts/rk3036.dtsi right?
+>  
+>  /*
+> @@ -383,7 +394,7 @@ EXPORT_SYMBOL(drm_dp_cec_set_edid);
+>  void drm_dp_cec_unset_edid(struct drm_dp_aux *aux)
+>  {
+>         /* No transfer function was set, so not a DP connector */
+> -       if (!aux->transfer)
+> +       if (!aux->transfer && !aux->is_remote)
+>                 return;
+>  
+>         cancel_delayed_work_sync(&aux->cec.unregister_work);
+> @@ -393,6 +404,7 @@ void drm_dp_cec_unset_edid(struct drm_dp_aux *aux)
+>                 goto unlock;
+>  
+>         cec_phys_addr_invalidate(aux->cec.adap);
+> +
+>         /*
+>          * We're done if we want to keep the CEC device
+>          * (drm_dp_cec_unregister_delay is >= NEVER_UNREG_DELAY) or if the
+> @@ -428,7 +440,7 @@ void drm_dp_cec_register_connector(struct drm_dp_aux
+> *aux,
+>                                    struct drm_connector *connector)
+>  {
+>         WARN_ON(aux->cec.adap);
+> -       if (WARN_ON(!aux->transfer))
+> +       if (WARN_ON(!aux->transfer && !aux->is_remote))
+>                 return;
+>         aux->cec.connector = connector;
+>         INIT_DELAYED_WORK(&aux->cec.unregister_work,
+> diff --git a/drivers/gpu/drm/drm_dp_mst_topology.c
+> b/drivers/gpu/drm/drm_dp_mst_topology.c
+> index 29aad3b6b31a..5612caf9fb49 100644
+> --- a/drivers/gpu/drm/drm_dp_mst_topology.c
+> +++ b/drivers/gpu/drm/drm_dp_mst_topology.c
+> @@ -2359,6 +2359,8 @@ static void build_mst_prop_path(const struct
+> drm_dp_mst_branch *mstb,
+>  int drm_dp_mst_connector_late_register(struct drm_connector *connector,
+>                                        struct drm_dp_mst_port *port)
+>  {
+> +       drm_dp_cec_register_connector(&port->aux, connector);
+> +
+>         drm_dbg_kms(port->mgr->dev, "registering %s remote bus for %s\n",
+>                     port->aux.name, connector->kdev->kobj.name);
+>  
+> @@ -2382,6 +2384,8 @@ void drm_dp_mst_connector_early_unregister(struct
+> drm_connector *connector,
+>         drm_dbg_kms(port->mgr->dev, "unregistering %s remote bus for %s\n",
+>                     port->aux.name, connector->kdev->kobj.name);
+>         drm_dp_aux_unregister_devnode(&port->aux);
+> +
+> +       drm_dp_cec_unregister_connector(&port->aux);
+>  }
+>  EXPORT_SYMBOL(drm_dp_mst_connector_early_unregister);
+>  
+> @@ -2682,6 +2686,21 @@ drm_dp_mst_handle_conn_stat(struct drm_dp_mst_branch
+> *mstb,
+>                 queue_work(system_long_wq, &mstb->mgr->work);
+>  }
+>  
+> +static void
+> +drm_dp_mst_handle_sink_event(struct drm_dp_mst_branch *mstb,
+> +                           struct drm_dp_sink_event_notify *sink_event)
+> +{
+> +       struct drm_dp_mst_port *port;
+> +
+> +       if (sink_event->event_id & DP_SINK_EVENT_CEC_IRQ_EVENT) {
+> +               port = drm_dp_get_port(mstb, sink_event->port_number);
+> +               if (port) {
+> +                       drm_dp_cec_irq(&port->aux);
+> +                       drm_dp_mst_topology_put_port(port);
+> +               }
+> +       }
+> +}
+> +
+>  static struct drm_dp_mst_branch *drm_dp_get_mst_branch_device(struct
+> drm_dp_mst_topology_mgr *mgr,
+>                                                                u8 lct, u8
+> *rad)
+>  {
+> @@ -4170,6 +4189,8 @@ drm_dp_mst_process_up_req(struct
+> drm_dp_mst_topology_mgr *mgr,
+>         if (msg->req_type == DP_CONNECTION_STATUS_NOTIFY) {
+>                 drm_dp_mst_handle_conn_stat(mstb, &msg->u.conn_stat);
+>                 hotplug = true;
+> +       } else if (msg->req_type == DP_SINK_EVENT_NOTIFY) {
+> +               drm_dp_mst_handle_sink_event(mstb, &msg->u.sink_event);
+>         }
+>  
+>         drm_dp_mst_topology_put_mstb(mstb);
+> @@ -4362,6 +4383,8 @@ drm_dp_mst_detect_port(struct drm_connector
+> *connector,
+>                 break;
+>         }
+>  out:
+> +       if (ret != connector_status_connected)
+> +               drm_dp_cec_unset_edid(&port->aux);
+>         drm_dp_mst_topology_put_port(port);
+>         return ret;
+>  }
+> @@ -4392,6 +4415,7 @@ struct edid *drm_dp_mst_get_edid(struct drm_connector
+> *connector, struct drm_dp_
+>                 edid = drm_get_edid(connector, &port->aux.ddc);
+>         }
+>         port->has_audio = drm_detect_monitor_audio(edid);
+> +       drm_dp_cec_set_edid(&port->aux, edid);
+>         drm_dp_mst_topology_put_port(port);
+>         return edid;
+>  }
 
-Ups, yes - I missed to submit this patch with v1 - I added it in its 
-original version to v2 (so we know, what we are talking about)-
-
-If you think it should be changed, please reply to v2.
-
-> Thanks a lot!
-> Ezequiel
->
-Thanks,
-
-Alex
+-- 
+Cheers,
+ Lyude Paul (she/her)
+ Software Engineer at Red Hat
 
