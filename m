@@ -2,131 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2150739338A
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 18:19:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C8B3C39338E
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 18:20:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233040AbhE0QVV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 May 2021 12:21:21 -0400
-Received: from linux.microsoft.com ([13.77.154.182]:52750 "EHLO
-        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232891AbhE0QVU (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 May 2021 12:21:20 -0400
-Received: from [192.168.86.31] (c-71-197-163-6.hsd1.wa.comcast.net [71.197.163.6])
-        by linux.microsoft.com (Postfix) with ESMTPSA id 87CE320B8006;
-        Thu, 27 May 2021 09:19:46 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 87CE320B8006
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1622132386;
-        bh=iaY2kkULryKMnFojuv9SqYYAR272Ejf87xXgilf1xvw=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=Fohw0RTIEfzZGNNgDiBhvAMN0CmRNfAB41R+f7e336Koqjt+wXMMPNjhGDGQzcmjH
-         n6x7HsRsbJjE0mMwXQagYkPGPhWpw+WAar9ZJlWcbqoJ5Qhlp+Mtjox5W8ekSybF7b
-         riHgvwT+iZCMDO0EUvUe73FzRFeEToeSdc9J8lbw=
-Subject: Re: [PATCH v4] IMA: support for duplicate measurement records
-To:     Mimi Zohar <zohar@linux.ibm.com>
-Cc:     tyhicks@linux.microsoft.com, sashal@kernel.org, jmorris@namei.org,
-        nramas@linux.microsoft.com, linux-integrity@vger.kernel.org,
-        linux-kernel@vger.kernel.org, pvorel@suse.cz
-References: <20210510190939.28279-1-tusharsu@linux.microsoft.com>
- <4b21151fc53855049c8a452339be88be2e26f53c.camel@linux.ibm.com>
-From:   Tushar Sugandhi <tusharsu@linux.microsoft.com>
-Message-ID: <5daedb73-6c42-d556-2090-25d08f536ff1@linux.microsoft.com>
-Date:   Thu, 27 May 2021 09:19:46 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S236203AbhE0QV2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 May 2021 12:21:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40374 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232891AbhE0QVZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 27 May 2021 12:21:25 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1972860FF3;
+        Thu, 27 May 2021 16:19:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1622132392;
+        bh=gXo5Trz51gu1lgHD9BHyalYs7vTOUlBdoPHVtRudE3Y=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=Bo/qf0yAa3QdHjn1DqywHQ6oWcjitvvOW8YzNP/5Q+jRHD5gCDCs2Nbl7QT3B+/sQ
+         /hzbd0TQMcrQbnMJ2knxOi0ozwnjpqY1O0K1k+B1Aykm7bAtDMofcPyw/RS3G4JDYW
+         I/mJvTykBHO/JNMN3RgnFxOFJCth6p5D9RFXoxPZMbmnNkk0pV7rgkUJ6NfWvXHCUj
+         4hO6WrrE8blw7xWNGg6K7owvdMJo/vjS3JGmem3ooezJM7PR8EqQfMSQHBfz4H6QiJ
+         /uiFyF2cCQK0sBbWOg31XjfenhlOoL7jCIzroiXialfd1Pun3S7XJ0JEvYNkMAqYdU
+         82+1Pl+IDZGbg==
+Date:   Thu, 27 May 2021 09:19:51 -0700
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Gatis Peisenieks <gatis@mikrotik.com>
+Cc:     chris.snook@gmail.com, davem@davemloft.net, hkallweit1@gmail.com,
+        jesse.brandeburg@intel.com, dchickles@marvell.com,
+        tully@mikrotik.com, eric.dumazet@gmail.com, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net-next v3] atl1c: add 4 RX/TX queue support for
+ Mikrotik 10/25G NIC
+Message-ID: <20210527091951.7db60cc8@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <d2651c5f20d072f99e66f9e1df3956f0@mikrotik.com>
+References: <20210526075830.2959145-1-gatis@mikrotik.com>
+        <20210526181609.1416c4eb@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+        <d2651c5f20d072f99e66f9e1df3956f0@mikrotik.com>
 MIME-Version: 1.0
-In-Reply-To: <4b21151fc53855049c8a452339be88be2e26f53c.camel@linux.ibm.com>
-Content-Type: text/plain; charset=iso-8859-15; format=flowed
-Content-Language: en-US
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Mimi,
-Sorry for the late response.
-I wanted to spend some time thinking what other scenarios I could test.
-Responses below.
-
-On 2021-05-20 1:35 p.m., Mimi Zohar wrote:
-> Hi Tushar,
+On Thu, 27 May 2021 16:49:22 +0300 Gatis Peisenieks wrote:
+> On 2021-05-27 04:16, Jakub Kicinski wrote:
+> >> +/**
+> >> + * atl1c_clean_rx - NAPI Rx polling callback
+> >> + * @napi: napi info
+> >> + * @budget: limit of packets to clean
+> >> + */
+> >> +static int atl1c_clean_rx(struct napi_struct *napi, int budget)
+> >>  {
+> >> +	struct atl1c_rrd_ring *rrd_ring =
+> >> +		container_of(napi, struct atl1c_rrd_ring, napi);
+> >> +	struct atl1c_adapter *adapter = rrd_ring->adapter;
+> >> +	int work_done = 0;
+> >> +	unsigned long flags;
+> >>  	u16 rfd_num, rfd_index;
+> >> -	u16 count = 0;
+> >>  	u16 length;
+> >>  	struct pci_dev *pdev = adapter->pdev;
+> >>  	struct net_device *netdev  = adapter->netdev;
+> >> -	struct atl1c_rfd_ring *rfd_ring = &adapter->rfd_ring;
+> >> -	struct atl1c_rrd_ring *rrd_ring = &adapter->rrd_ring;
+> >> +	struct atl1c_rfd_ring *rfd_ring = &adapter->rfd_ring[rrd_ring->num];
+> >>  	struct sk_buff *skb;
+> >>  	struct atl1c_recv_ret_status *rrs;
+> >>  	struct atl1c_buffer *buffer_info;
+> >> 
+> >> +	/* Keep link state information with original netdev */
+> >> +	if (!netif_carrier_ok(adapter->netdev))
+> >> +		goto quit_polling;  
+> > 
+> > Interesting, I see you only move this code, but why does this driver
+> > stop reading packets when link goes down? Surely there may be packets
+> > already on the ring which Linux should process?  
 > 
-> On Mon, 2021-05-10 at 12:09 -0700, Tushar Sugandhi wrote:
->> IMA measures contents of a given file/buffer/critical-data record,
->> and properly re-measures it on change.  However, IMA does not measure
->> the duplicate value for a given record, since TPM extend is a very
->> expensive operation.  For example, if the record changes from value
->> 'v#1' to 'v#2', and then back to 'v#1', IMA will not measure and log
->> the last change to 'v#1', since the hash of 'v#1' for that record is
->> already present in the IMA htable.  This limits the ability of an
->> external attestation service to accurately determine the current state
->> of the system.  The service would incorrectly conclude that the latest
->> value of the given record on the system is 'v#2', and act accordingly.
->>
->> Define and use a new Kconfig option IMA_DISABLE_HTABLE to permit
->> duplicate records in the IMA measurement list.
->>
->> In addition to the duplicate measurement records described above,
->> other duplicate file measurement records may be included in the log,
->> when CONFIG_IMA_DISABLE_HTABLE=y.
->> For example,
->>      - i_version is not enabled,
->>      - i_generation changed,
->>      - an inode is evicted from dcache etc.
-> 
-> Missing from this list are the same file, perhaps on different
-> filesystmes, such as initramfs and real root.  These can be identified
-> by the different i_ino.  Is there anything else?
-> 
-> thanks,
-> 
-> Mimi
-> 
-Sure, I can add the 4th line to the list:
+> Jakub, I do not know what possible HW quirks this check might be
+> covering up, so I left it there. If you feel it is safe to remove
+> I can do a separate patch for that. I think it is fine for the
+> HW I work with, but that is far from everything this driver supports.
 
-For example,
-     - i_version is not enabled,
-     - i_generation changed,
-     - an inode is evicted from dcache,
-     - same file present on different filesystems, with different i_ino
-       etc.
-
-Should I spin up v5 of this patch with the updated patch description?
-
-I was also thinking if I should cover any other scenarios, and
-soft-links/hard-links seemed like a good scenario to test - so I went
-ahead and tested it. And it looks like the patch is working as expected
-in this scenario.
-
-Here are the detailed findings:
-
-If I have a file original.txt, and create a soft-link file -
-softlink.txt,
-
-(1) only original.txt is reported in IMA log, regardless if I touch
-     original.txt or softlink.txt.
-     This is true in both cases - when allow_dup is turned on or off.
-     (i.e. with or without this patch)
-(2) duplicate entries are measured only when allow_dup is turned on.
-
-If I have a file original.txt, and create a hard-link file -
-hardlink.txt,
-(1) whichever file I touch first, either original.txt or hardlink.txt,
-     gets measured in IMA log, both when allow_dup is turned on or off.
-     (i.e. with or without this patch)
-(2) duplicate entries are measured only when allow_dup is turned on.
-
-Since the the observed behavior is identical in both cases,
-soft-links and hard-links (1), and duplicates are measured only when
-allow_dup is turned on as expected (2), I don't believe we should call
-out soft-links/hard-links in the list above. It is not a special case
-like ones mentioned in the list.
-
-Please let me know if you think otherwise.
-
-Thanks,
-Tushar
->>
->> Signed-off-by: Tushar Sugandhi <tusharsu@linux.microsoft.com>
->> Reviewed-by: Petr Vorel <pvorel@suse.cz>
+No strong feelings either way. I was mostly surprised to see such code,
+so I thought I'd ask in case you knew why it was there.
