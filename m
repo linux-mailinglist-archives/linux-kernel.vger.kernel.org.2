@@ -2,144 +2,181 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D7780392540
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 05:11:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E2E7F39254B
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 05:14:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234467AbhE0DNY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 May 2021 23:13:24 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:65102 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234456AbhE0DNT (ORCPT
+        id S234580AbhE0DQG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 May 2021 23:16:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36194 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234421AbhE0DQD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 May 2021 23:13:19 -0400
-Received: from pps.filterd (m0098409.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 14R3407s072108;
-        Wed, 26 May 2021 23:11:40 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : references : mime-version : content-type :
- in-reply-to; s=pp1; bh=Z7ib4nP+2xqCgM/Aq6MYwkMP4TlkDjzIOIT6pTUL6fM=;
- b=M4GBwm+G9SSa+dZ/MXSt4L35LhDRe2TYZOHa7jkpKtpyDNmzss8bhz2Lnidktz7ov/sk
- fyPykLRP7t6iSv5Tqsur/FVSuEXuJBcyzD+Q1fXCdLJ+1HOh/mkIf7O/DOc9JehqLPSG
- tnyPO9KVu/rIhrcFocR4y40KLSkrHCFfmzGoXoDdn0B4XsR8WFAUIDr5yE7FxM0dB2AB
- AfUq4GMSfUZU9qM7iT5XtKMNraBHNKvaS5oqFzBVAOvUGV/6VeEVW8+snAGOSQc23FgW
- fXOKECGdAONxgOAtEf5btZ2xdfX3CWh8Vn/gKoRUmSLw60zOgXBgTyyvVl3AjsTxnJ4Y Yg== 
-Received: from ppma03fra.de.ibm.com (6b.4a.5195.ip4.static.sl-reverse.com [149.81.74.107])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 38t2whgr15-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 26 May 2021 23:11:40 -0400
-Received: from pps.filterd (ppma03fra.de.ibm.com [127.0.0.1])
-        by ppma03fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 14R392Li003171;
-        Thu, 27 May 2021 03:11:38 GMT
-Received: from b06cxnps4076.portsmouth.uk.ibm.com (d06relay13.portsmouth.uk.ibm.com [9.149.109.198])
-        by ppma03fra.de.ibm.com with ESMTP id 38s1ssrgy5-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 27 May 2021 03:11:38 +0000
-Received: from d06av23.portsmouth.uk.ibm.com (d06av23.portsmouth.uk.ibm.com [9.149.105.59])
-        by b06cxnps4076.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 14R3BZrT27984258
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 27 May 2021 03:11:35 GMT
-Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 89AD0A4040;
-        Thu, 27 May 2021 03:11:35 +0000 (GMT)
-Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 3225FA4053;
-        Thu, 27 May 2021 03:11:35 +0000 (GMT)
-Received: from localhost (unknown [9.85.91.152])
-        by d06av23.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Thu, 27 May 2021 03:11:35 +0000 (GMT)
-Date:   Thu, 27 May 2021 08:41:34 +0530
-From:   riteshh <riteshh@linux.ibm.com>
-To:     Lee Jones <lee.jones@linaro.org>
-Cc:     linux-kernel@vger.kernel.org, "Theodore Ts'o" <tytso@mit.edu>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        Remy Card <card@masi.ibp.fr>,
-        "David S. Miller" <davem@caip.rutgers.edu>,
-        linux-ext4@vger.kernel.org
-Subject: Re: [PATCH 1/1] fs: ext4: namei: trivial: Fix a couple of small
- whitespace issues
-Message-ID: <20210527031134.zqewpd2tqo7umoho@riteshh-domain>
-References: <20210520125558.3476318-1-lee.jones@linaro.org>
+        Wed, 26 May 2021 23:16:03 -0400
+Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 151B6C061574;
+        Wed, 26 May 2021 20:14:31 -0700 (PDT)
+Received: by mail-lf1-x131.google.com with SMTP id q7so5769683lfr.6;
+        Wed, 26 May 2021 20:14:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=j7J02/0KYhO5KiEG8+co4Zy+SjxnsnUObkhu4sHTn5w=;
+        b=hCvwNoMIrr2svojaUFfm66AXBO4j4RwKdgR/MzKMa7M7/KbxtJssJ/N8YLo/dW7XhX
+         QKiK0TiN0PTKbZv9b8hul659+MU6gXGuhL2VSOxu7U6XhbpLfLKFzA/EvGRGkHNz8qL6
+         Z15rTN5ld5ljbVEiToFeieZUtK3G04zGR82BWhRkf3s8fDJcV+Qy3rDuC7mD46x58n6N
+         cc5+kkN/2ORVHhfEUkiw8hZAJuwypkcO2/D3FBZXaukVKizdpaqXnnFTlEi9cYdfBTCj
+         wns6uAkB14Fge/AK0NYdtlgm9l7t6pi47pPeIaLKaBYgPkvO0jPU0S9KpttfqlGsxPTq
+         Ugtw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=j7J02/0KYhO5KiEG8+co4Zy+SjxnsnUObkhu4sHTn5w=;
+        b=Ou19tLLFJZBSNh+W6acyZMiWjvRHbgZC8Plpk0NO8GT+ZCs30zAjytxjHRxRhV0YrJ
+         8yCdFQ6mGOm5lPy9IhX9ZIzyxEDSFsfV8R45l9iv7yOaYcCFqRgjHXV9OkcdiEbTGaiC
+         LmaJEO41dg4vcK9y4Ta1bIu4KH6Dxn9p6ZrzXPFyVEBLGMBdag1G5aOuoYY86/KJ58Yo
+         dTUAqhZ+cT33EKT4v5tqwLsrcfEqHU+D3VZJJKX9lU3NIKJQVImn8LxsJlcUQvRdUvtg
+         pU0rPDc9WO7ju4ZYtjP4IB/0+tCKKEX0SdwPLj7Wk0OgLSEs2wbjW/WyvAWddDe/Iwud
+         3Smw==
+X-Gm-Message-State: AOAM531jJuSpTYWOn9Pf/rPpdV/zzj6o2licPCfhqkc5J4h1kJ7iG5u5
+        BRw6WeZBP4Ij+DeG+hY3XAEzMGp/00Hk5ipO+FmntiTo
+X-Google-Smtp-Source: ABdhPJwRVW50aFG+Wwsqu1QDG1mWICkFu5IqwfGlLcuseT1A7xEYennm1H3dAWlDnR80sF6Y+7g4YFnvylfrr5D2lg0=
+X-Received: by 2002:ac2:5d29:: with SMTP id i9mr852536lfb.638.1622085269309;
+ Wed, 26 May 2021 20:14:29 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210520125558.3476318-1-lee.jones@linaro.org>
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: s-jjUVvTx-dlLQyaHuKN3uEBIpyem9Rb
-X-Proofpoint-ORIG-GUID: s-jjUVvTx-dlLQyaHuKN3uEBIpyem9Rb
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
- definitions=2021-05-27_01:2021-05-26,2021-05-27 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1011 adultscore=0
- impostorscore=0 priorityscore=1501 malwarescore=0 bulkscore=0 spamscore=0
- mlxlogscore=999 lowpriorityscore=0 phishscore=0 suspectscore=0 mlxscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104190000
- definitions=main-2105270019
+References: <1622008068-13474-1-git-send-email-u0084500@gmail.com>
+ <1622008068-13474-2-git-send-email-u0084500@gmail.com> <YK4oGB5cZ/DhG5vm@sirena.org.uk>
+ <CADiBU393NchfrTmgPApNRqSVrTBGT+bs+H+m2UF_H3tSGLyFVQ@mail.gmail.com>
+In-Reply-To: <CADiBU393NchfrTmgPApNRqSVrTBGT+bs+H+m2UF_H3tSGLyFVQ@mail.gmail.com>
+From:   ChiYuan Huang <u0084500@gmail.com>
+Date:   Thu, 27 May 2021 11:14:17 +0800
+Message-ID: <CADiBU3-LjetAkzks4MZKiK=KXK5ziFhF9D13cAjJ4W5gytw74A@mail.gmail.com>
+Subject: Re: [PATCH v4 2/2] regulator: rt6160: Add support for Richtek RT6160
+To:     Mark Brown <broonie@kernel.org>
+Cc:     lgirdwood@gmail.com, Rob Herring <robh+dt@kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        cy_huang <cy_huang@richtek.com>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 21/05/20 01:55PM, Lee Jones wrote:
+HI, Mark:
 
-Hi Lee,
-
-Thanks for your patch. I see we could a little better here.
-There are several other checkpatch ERROR msgs in this file.
-Care to fix all of those ERRORS within the same patch itself?
-
-./scripts/checkpatch.pl -f fs/ext4/namei.c | sed -n '/ERROR/,/^$/p'
-
-e.g. to list a few of them -
-ERROR: do not use assignment in if condition
-#1605: FILE: fs/ext4/namei.c:1605:
-+               if ((bh = bh_use[ra_ptr++]) == NULL)
-
-ERROR: space required after that ',' (ctx:VxV)
-#1902: FILE: fs/ext4/namei.c:1902:
-+                       struct buffer_head **bh,struct dx_frame *frame,
-                                               ^
-
-ERROR: space required after that ',' (ctx:VxV)
-#2249: FILE: fs/ext4/namei.c:2249:
-+       de = do_split(handle,dir, &bh2, frame, &fname->hinfo);
-                            ^
-
-ERROR: spaces required around that '=' (ctx:VxV)
-#2288: FILE: fs/ext4/namei.c:2288:
-+       int     dx_fallback=0;
-
--ritesh
-
-> Cc: "Theodore Ts'o" <tytso@mit.edu>
-> Cc: Andreas Dilger <adilger.kernel@dilger.ca>
-> Cc: Remy Card <card@masi.ibp.fr>
-> Cc: "David S. Miller" <davem@caip.rutgers.edu>
-> Cc: linux-ext4@vger.kernel.org
-> Signed-off-by: Lee Jones <lee.jones@linaro.org>
-> ---
->  fs/ext4/namei.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
+ChiYuan Huang <u0084500@gmail.com> =E6=96=BC 2021=E5=B9=B45=E6=9C=8826=E6=
+=97=A5 =E9=80=B1=E4=B8=89 =E4=B8=8B=E5=8D=8811:04=E5=AF=AB=E9=81=93=EF=BC=
+=9A
 >
-> diff --git a/fs/ext4/namei.c b/fs/ext4/namei.c
-> index afb9d05a99bae..7e780cf311c5a 100644
-> --- a/fs/ext4/namei.c
-> +++ b/fs/ext4/namei.c
-> @@ -1899,7 +1899,7 @@ static struct ext4_dir_entry_2 *dx_pack_dirents(struct inode *dir, char *base,
->   * Returns pointer to de in block into which the new entry will be inserted.
->   */
->  static struct ext4_dir_entry_2 *do_split(handle_t *handle, struct inode *dir,
-> -			struct buffer_head **bh,struct dx_frame *frame,
-> +			struct buffer_head **bh, struct dx_frame *frame,
->  			struct dx_hash_info *hinfo)
->  {
->  	unsigned blocksize = dir->i_sb->s_blocksize;
-> @@ -2246,7 +2246,7 @@ static int make_indexed_dir(handle_t *handle, struct ext4_filename *fname,
->  	if (retval)
->  		goto out_frames;
+> HI:
 >
-> -	de = do_split(handle,dir, &bh2, frame, &fname->hinfo);
-> +	de = do_split(handle, dir, &bh2, frame, &fname->hinfo);
->  	if (IS_ERR(de)) {
->  		retval = PTR_ERR(de);
->  		goto out_frames;
-> --
-> 2.31.1
+> Mark Brown <broonie@kernel.org> =E6=96=BC 2021=E5=B9=B45=E6=9C=8826=E6=97=
+=A5 =E9=80=B1=E4=B8=89 =E4=B8=8B=E5=8D=886:50=E5=AF=AB=E9=81=93=EF=BC=9A
+> >
+> > On Wed, May 26, 2021 at 01:47:48PM +0800, cy_huang wrote:
+> >
+> > This looks mostly good, a few small issues below:
+> >
+> > > +static int rt6160_set_suspend_voltage(struct regulator_dev *rdev, in=
+t uV)
+> > > +{
+> > > +     struct rt6160_priv *priv =3D rdev_get_drvdata(rdev);
+> > > +     struct regmap *regmap =3D rdev_get_regmap(rdev);
+> > > +     unsigned int reg =3D RT6160_REG_VSELH;
+> > > +     int vsel;
+> > > +
+> > > +     vsel =3D regulator_map_voltage_linear(rdev, uV, uV);
+> > > +     if (vsel < 0)
+> > > +             return vsel;
+> > > +
+> > > +     if (priv->vsel_active_low)
+> > > +             reg =3D RT6160_REG_VSELL;
+> > > +
+> > > +     return regmap_update_bits(regmap, reg, RT6160_VSEL_MASK, vsel);
+> > > +}
+> >
+> > This seems to just be updating the normal voltage configuration
+> > regulator, the suspend mode operations are there for devices that
+> > have a hardware suspend mode that's entered as part of the very
+> > low level system suspend process.
+> >
+> There's a independent 'vsel' pin. It depend on user's HW design.
+> And that's why there's a 'richtek,vsel_active_low' property.
+> Its normal application is to use vsel high active level, and it means
+> the opposite level can be used for the suspend voltage
 >
+> And there're also two voltage registers for vsel level high and low.
+> > > +static int rt6160_set_ramp_delay(struct regulator_dev *rdev, int ram=
+p_delay)
+> > > +{
+> > > +     struct regmap *regmap =3D rdev_get_regmap(rdev);
+> > > +     unsigned int ramp_value =3D RT6160_RAMPRATE_1VMS;
+> > > +
+> > > +     switch (ramp_delay) {
+> > > +     case 1 ... 1000:
+> > > +             ramp_value =3D RT6160_RAMPRATE_1VMS;
+> > > +             break;
+> >
+> > This looks like it could be converted to regulator_set_ramp_delay_regma=
+p()
+> >
+> I didn't notice there's the regulator_set_ramp_delay_regmap API that
+> can be used in kernel 5.13.u
+> Ack in next.
+
+I review the regulator_set_ramp_delay_regmap API.
+If seems I need to fill in the ramp_delay_table by the descend order.
+But this chip ramp delay table is designed the ascending value reg bit
+field [0 1 2 3] by
+the ascending order [1000 2500 5000 10000] uV/uS
+Even if I tried to filler in descending order, I also need a inverted opera=
+tion.
+
+And I found the regulator_set_ramp_delay_regmap API has some logic error.
+From the include/linux/regulator/driver.h, the set_ramp_delay function says=
+ to
+set the less or equal one ramp delay value.
+But your logic will get the larger or equal one from the descending
+ramp delay table.
+
+Could you help to check about this?
+> > > +static unsigned int rt6160_of_map_mode(unsigned int mode)
+> > > +{
+> > > +     if (mode =3D=3D RT6160_MODE_FPWM)
+> > > +             return REGULATOR_MODE_FAST;
+> > > +     else if (mode =3D=3D RT6160_MODE_AUTO)
+> > > +             return REGULATOR_MODE_NORMAL;
+> > > +
+> >
+> > This would be more idiomatically written as a switch statement.
+> >
+> Ack in next. Change the if-else to switch case. Thx.
+> > > +     enable_gpio =3D devm_gpiod_get_optional(&i2c->dev, "enable", GP=
+IOD_OUT_HIGH);
+> > > +     if (IS_ERR(enable_gpio)) {
+> > > +             dev_err(&i2c->dev, "Failed to get 'enable' gpio\n");
+> > > +             return PTR_ERR(enable_gpio);
+> > > +     }
+> >
+> > There's no other references to enable_gpio?
+> >
+> The IC is designed for low IQ.
+> So from the driver probe, I only need to keep 'enable' pin high.
+> Or if user specify the 'enable' gpio, it will block i2c communication,
+> register also be reset,
+> and add more delay time on enable/disable.
+> That's why there's no other references to 'enable' gpio.
+> > > +     regmap =3D devm_regmap_init_i2c(i2c, &rt6160_regmap_config);
+> > > +     if (IS_ERR(regmap)) {
+> > > +             dev_err(&i2c->dev, "Failed to init regmap\n");
+> > > +             return PTR_ERR(regmap);
+> > > +     }
+> >
+> > It's better to print the error code to help anyone who runs into
+> > issues figure out what's wrong.
+> Sure, change it to dev_err(&i2c->dev, "Failed to init regmap (%d)\n",
+> PTR_ERR(regmap));
+> Ack in next, thx.
