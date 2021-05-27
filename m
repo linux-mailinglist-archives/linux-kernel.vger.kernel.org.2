@@ -2,73 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E4C19392970
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 10:22:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EC30139297A
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 10:23:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235412AbhE0IYC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 May 2021 04:24:02 -0400
-Received: from mx2.suse.de ([195.135.220.15]:50824 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235400AbhE0IX5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 May 2021 04:23:57 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1622103744; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=+EfkVrIQZXBeZTPSxjNuEm8wUQKfD3cTZZ/zTTMSBzw=;
-        b=iIdOJB9ZclOzK1R83f55YqiC+wO2fih/GoA1P6TTFS7h/zJZv+/vjHUezFzt6uULVaRUNQ
-        eLiBhU2Vt0rRbhtKjqCzvjWLKXmuXfKoUvniad9b6jcJksXd04jGHck9f8MPt9I054mw0y
-        VQ+IuJWWlJzLeN4HCvmS7MSB1NRuQbw=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 1F646AB71;
-        Thu, 27 May 2021 08:22:24 +0000 (UTC)
-Date:   Thu, 27 May 2021 10:22:23 +0200
-From:   Michal Hocko <mhocko@suse.com>
-To:     Oscar Salvador <osalvador@suse.de>
-Cc:     Naoya Horiguchi <nao.horiguchi@gmail.com>, linux-mm@kvack.org,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Muchun Song <songmuchun@bytedance.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        David Hildenbrand <david@redhat.com>,
-        Naoya Horiguchi <naoya.horiguchi@nec.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v1] hugetlb: pass head page to remove_hugetlb_page()
-Message-ID: <YK9Wv+EexkCi2+U5@dhcp22.suse.cz>
-References: <20210526235257.2769473-1-nao.horiguchi@gmail.com>
- <YK9OoPzkBB1jTpC1@localhost.localdomain>
+        id S235445AbhE0IY4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 May 2021 04:24:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49058 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235359AbhE0IYz (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 27 May 2021 04:24:55 -0400
+Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com [IPv6:2a00:1450:4864:20::335])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 502A3C061574
+        for <linux-kernel@vger.kernel.org>; Thu, 27 May 2021 01:23:21 -0700 (PDT)
+Received: by mail-wm1-x335.google.com with SMTP id f75-20020a1c1f4e0000b0290171001e7329so1971677wmf.1
+        for <linux-kernel@vger.kernel.org>; Thu, 27 May 2021 01:23:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=43EyW5t8QfuvIRH8wC3AegWTcYZjbOc3TBDwp+clb3A=;
+        b=dnvTIhAq8y74Gvyi5lJrY+u21ePXWeZMnvlCeRqCfcUBVFag6aopPIZK8vyVl+bJw8
+         cmSV0vlEGj5E5HPLqkDjS4zHBkqjEfx8neBmiOiXtQStTEWpTctAqqqVr8mDUECZqXRD
+         I29WhIzfssITgSquYB0x1+wOuMwOXMLFH0w2W684faGNaQFxea5dblJzj6iEkCVGdRcu
+         kWy5WHS6uHySy1wNy4gZZDqWymWaF1jqOmITHs3A2YTxVEKKOF0wxyebwoRkVSXxaNx7
+         zdt+lwCRVCmA1p15wsKjWWUJtwURf2SL12jadmHKVMFU7vTYrmTfzPctdpJXPGnk1YGd
+         R/BA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=43EyW5t8QfuvIRH8wC3AegWTcYZjbOc3TBDwp+clb3A=;
+        b=ZuvT8fpX29PSIWLrcSp5uxbxUZV90LC893lQKpg3YsJgJOyDlh9/hNpJowvGtFZCxJ
+         qXPTyZyYW5NSMJhsx8W43U784CRiKS1t8pu1FA03i+L5FvMUZovdJQs9A6MI8L81MAKF
+         l5lhlrCpLJ0UimCZZCR2ARKH5cYAQVarf81nRqtVKesmewbNxcHw88Djamp8PsIFyBEw
+         eLtynnxJ5KmWrU6ZjFoi7mA+sP3ZujyzyGMo2SXb3qswVgzrlk9Cwqlxp024Lyujp7bB
+         D9IkbhI4GUTAfVaNgGnRiUeEqcA+KcQUCFUJ9SDcquK1cm8V029GPdf5tATkTS6nQZks
+         N7Rg==
+X-Gm-Message-State: AOAM532LrdB2bMtlOFyNt2uHvB3IM+gjXwwCL9mfDGa7xeaiOaayDY2y
+        xmoeacjv5rj+ZUCM+x8Sgpxs4XEMDYkNQA==
+X-Google-Smtp-Source: ABdhPJxkFXWDgl3F5EEVw0suVP3rVhu42453i5OaMcsvSQ30QC/xJpgr+ClUpXnlQxvb3lbZP32amw==
+X-Received: by 2002:a1c:a5c3:: with SMTP id o186mr2254998wme.6.1622103799913;
+        Thu, 27 May 2021 01:23:19 -0700 (PDT)
+Received: from dell ([91.110.221.223])
+        by smtp.gmail.com with ESMTPSA id a11sm2031588wrr.48.2021.05.27.01.23.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 27 May 2021 01:23:19 -0700 (PDT)
+Date:   Thu, 27 May 2021 09:23:17 +0100
+From:   Lee Jones <lee.jones@linaro.org>
+To:     riteshh <riteshh@linux.ibm.com>
+Cc:     linux-kernel@vger.kernel.org, Theodore Ts'o <tytso@mit.edu>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        Remy Card <card@masi.ibp.fr>,
+        "David S. Miller" <davem@caip.rutgers.edu>,
+        linux-ext4@vger.kernel.org
+Subject: Re: [PATCH 1/1] fs: ext4: namei: trivial: Fix a couple of small
+ whitespace issues
+Message-ID: <20210527082317.GI543307@dell>
+References: <20210520125558.3476318-1-lee.jones@linaro.org>
+ <20210527031134.zqewpd2tqo7umoho@riteshh-domain>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <YK9OoPzkBB1jTpC1@localhost.localdomain>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210527031134.zqewpd2tqo7umoho@riteshh-domain>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu 27-05-21 09:47:44, Oscar Salvador wrote:
-> On Thu, May 27, 2021 at 08:52:57AM +0900, Naoya Horiguchi wrote:
-> > From: Naoya Horiguchi <naoya.horiguchi@nec.com>
-> > 
-> > When memory_failure() or soft_offline_page() is called on a tail page of
-> > some hugetlb page, "BUG: unable to handle page fault" error can be
-> > triggered.
-> > 
-> > remove_hugetlb_page() dereferences page->lru, so it's assumed that the
-> > page points to a head page, but one of the caller,
-> > dissolve_free_huge_page(), provides remove_hugetlb_page() with 'page'
-> > which could be a tail page.  So pass 'head' to it, instead.
-> > 
-> > Fixes: 6eb4e88a6d27 ("hugetlb: create remove_hugetlb_page() to separate functionality")
-> > Signed-off-by: Naoya Horiguchi <naoya.horiguchi@nec.com>
-> 
-> Reviewed-by: Oscar Salvador <osalvador@suse.de>
-> 
-> It is probably worth adding a comment in remove_hugetlb_page() noting
-> that we need a head page, so future users do not repeat the same
-> mistake.
+On Thu, 27 May 2021, riteshh wrote:
 
-Ideally this will turn into page folio concept and no comments are
-really needed.
+> On 21/05/20 01:55PM, Lee Jones wrote:
+> 
+> Hi Lee,
+> 
+> Thanks for your patch. I see we could a little better here.
+> There are several other checkpatch ERROR msgs in this file.
+> Care to fix all of those ERRORS within the same patch itself?
+
+I don't think it's a good idea to mix functionality within a single
+patch.  However, I would be happy to provide a follow-up solving these
+issues for you.
+
+> ./scripts/checkpatch.pl -f fs/ext4/namei.c | sed -n '/ERROR/,/^$/p'
+> 
+> e.g. to list a few of them -
+> ERROR: do not use assignment in if condition
+> #1605: FILE: fs/ext4/namei.c:1605:
+> +               if ((bh = bh_use[ra_ptr++]) == NULL)
+> 
+> ERROR: space required after that ',' (ctx:VxV)
+> #1902: FILE: fs/ext4/namei.c:1902:
+> +                       struct buffer_head **bh,struct dx_frame *frame,
+>                                                ^
+> 
+> ERROR: space required after that ',' (ctx:VxV)
+> #2249: FILE: fs/ext4/namei.c:2249:
+> +       de = do_split(handle,dir, &bh2, frame, &fname->hinfo);
+>                             ^
+> 
+> ERROR: spaces required around that '=' (ctx:VxV)
+> #2288: FILE: fs/ext4/namei.c:2288:
+> +       int     dx_fallback=0;
+> 
+> -ritesh
+> 
+> > Cc: "Theodore Ts'o" <tytso@mit.edu>
+> > Cc: Andreas Dilger <adilger.kernel@dilger.ca>
+> > Cc: Remy Card <card@masi.ibp.fr>
+> > Cc: "David S. Miller" <davem@caip.rutgers.edu>
+> > Cc: linux-ext4@vger.kernel.org
+> > Signed-off-by: Lee Jones <lee.jones@linaro.org>
+> > ---
+> >  fs/ext4/namei.c | 4 ++--
+> >  1 file changed, 2 insertions(+), 2 deletions(-)
+> >
+> > diff --git a/fs/ext4/namei.c b/fs/ext4/namei.c
+> > index afb9d05a99bae..7e780cf311c5a 100644
+> > --- a/fs/ext4/namei.c
+> > +++ b/fs/ext4/namei.c
+> > @@ -1899,7 +1899,7 @@ static struct ext4_dir_entry_2 *dx_pack_dirents(struct inode *dir, char *base,
+> >   * Returns pointer to de in block into which the new entry will be inserted.
+> >   */
+> >  static struct ext4_dir_entry_2 *do_split(handle_t *handle, struct inode *dir,
+> > -			struct buffer_head **bh,struct dx_frame *frame,
+> > +			struct buffer_head **bh, struct dx_frame *frame,
+> >  			struct dx_hash_info *hinfo)
+> >  {
+> >  	unsigned blocksize = dir->i_sb->s_blocksize;
+> > @@ -2246,7 +2246,7 @@ static int make_indexed_dir(handle_t *handle, struct ext4_filename *fname,
+> >  	if (retval)
+> >  		goto out_frames;
+> >
+> > -	de = do_split(handle,dir, &bh2, frame, &fname->hinfo);
+> > +	de = do_split(handle, dir, &bh2, frame, &fname->hinfo);
+> >  	if (IS_ERR(de)) {
+> >  		retval = PTR_ERR(de);
+> >  		goto out_frames;
+> >
+
 -- 
-Michal Hocko
-SUSE Labs
+Lee Jones [李琼斯]
+Senior Technical Lead - Developer Services
+Linaro.org │ Open source software for Arm SoCs
+Follow Linaro: Facebook | Twitter | Blog
