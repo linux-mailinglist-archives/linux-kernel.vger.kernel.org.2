@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A6D9F39294F
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 10:14:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D873939294E
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 10:14:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235321AbhE0IP5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 May 2021 04:15:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46952 "EHLO
+        id S235293AbhE0IPy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 May 2021 04:15:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46954 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235226AbhE0IPx (ORCPT
+        with ESMTP id S235165AbhE0IPx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 27 May 2021 04:15:53 -0400
-Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com [IPv6:2a00:1450:4864:20::134])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED38CC061574
-        for <linux-kernel@vger.kernel.org>; Thu, 27 May 2021 01:14:19 -0700 (PDT)
-Received: by mail-lf1-x134.google.com with SMTP id b26so6697338lfq.4
-        for <linux-kernel@vger.kernel.org>; Thu, 27 May 2021 01:14:19 -0700 (PDT)
+Received: from mail-lj1-x22b.google.com (mail-lj1-x22b.google.com [IPv6:2a00:1450:4864:20::22b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A838FC061760
+        for <linux-kernel@vger.kernel.org>; Thu, 27 May 2021 01:14:20 -0700 (PDT)
+Received: by mail-lj1-x22b.google.com with SMTP id w7so5161661lji.6
+        for <linux-kernel@vger.kernel.org>; Thu, 27 May 2021 01:14:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=JDGsr0U4UtFbfy6pCEyWwnWchkdCO7T0vgGbUXWCyRg=;
-        b=x3cAUnU79NNxvjxeEWLk4ICt9sTWNhW+w604z+y/8JXOJ9GzZM2Vnl5Mhp0uk+tKAr
-         qBeK3zhuEkF5sr0RJvZObHZTgNIaZP1sT0uoVxOFuDepK5F5nGUAob2jFzSDYClTg2RB
-         PBplDABMCEeZQzjRZKM/eqnVMYsOMATbC7Xlp570wDEyKb5Qi74FgqjTqQlGqsGDpHRW
-         QuSububR795TYW5Y+SwPzV8v/v7FHO+QlkShLK04qWp4VFeQqmMHkaFziB9ZTBBnyRaS
-         2I6LM+dUtb0EoJn9jlvBCD8BfARQvdY0HbeVdc9p5jWhrdQXW11xtvdMyynC/G2uIYKR
-         eBpg==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=ge755jFjD/pTxRhjKSdzjdOhplbUtYgCCIgYEHy+118=;
+        b=hdKo5l4/GeaQDDS4E7RaP9HhNtUptVMkDBkQHZKUlhEo22w5u9aO6rcT11lLKbYKia
+         mdAl9U/SjJHtj5iKIapgbDE9iywBcjs4xxnwhyA6qvZuL86X8bkUThOjwiES4BI+H1NN
+         5vaP2UtDTp/LVnrc9RnmsEhoUzFxftOlkj06xbRhyEML5eD4PfLFq26CvZ5eTcf2WHLN
+         vymMmI/jYTi1HmOa9PF8w5gG66xO1pckPMZFAst0dN9cZTa63jODQPFtnFv27m53HqyK
+         BKEfJdq014K9QoqTpvrVPehpT+3LrHY2M2RK1b4ChNQQGElmzN/7nQb5pYTkYM+BzVF4
+         r7NA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=JDGsr0U4UtFbfy6pCEyWwnWchkdCO7T0vgGbUXWCyRg=;
-        b=R3YCp1xP3ISHaFQKJ5Cnr234oHNASDLgMgsZlz5IDhNq8c631aCsrabHbk76u/Sn9D
-         jSnvxaqdZr/1Mh9whHlyDZjB1eLucpKU1dlHz844RX6AtKF61nLP21iK7ZnfWOF7hJjo
-         hMDZ7TG5AdcB0bjVOaWLuoIY9YEXvzHD3JTWjtEz1l7TvD1C8CZZfwT8PEeUFCfZ2Rd7
-         EHI3iQSrA3rRqXjwf7QRS6HYcEJG+mOylSCNHz87wErU7KC59ZZdiVmxmGeUIYMSA3so
-         SaJywtAT4t9BcOYyBjpQIMjmVU1lL8jJsf5yTHnncffn050GCzRMhsdUZNHlgUcANrMg
-         3Gag==
-X-Gm-Message-State: AOAM5301EKUeiK56D/woH4WWG3uOcbLWDqtSySErDF++kwiN71WMKu0b
-        LPFUQ7IMjS8xQlcVevXwvkZfInlt+oCNQw==
-X-Google-Smtp-Source: ABdhPJx8w8Q7nbjMppCGZsyDerHBswss6+er8da62g4Np1Gsg8vZOyripxpDkfD1jzmNXpXtnqUDAw==
-X-Received: by 2002:a19:4307:: with SMTP id q7mr1570617lfa.262.1622103258102;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=ge755jFjD/pTxRhjKSdzjdOhplbUtYgCCIgYEHy+118=;
+        b=uRcfxx7h7NO3aFEBmEOIu7FB17IXW0wjdgZpuuh0M5YjF6sYbnZTCkH/x9WQ1zMqJi
+         HuXaRWq4xqDhiONpQptVDc8Lvduj3QCA34qfPnXBSgEAuNOPjAZh4Ha0yNz1l7AtHf2v
+         TSn+WLdatazm6BNtGRH5qfRau9Z+m/18HcrnbaCZvCwPNqRP0Xl79+vhpwXeNZpJhxCX
+         jZS+Vqk72m71EsvgO1etLXgO7TzkZLcAfNN6nXW/tk1hnl2KYjMNAvUqZXcsuMk072Zd
+         6JO5A/M5TZVhsVxJXf/fvCzi8vUP8I8D/2CfKyinL6GwGwZ1Kz8HUaO5oEHEeg7u28IP
+         mppA==
+X-Gm-Message-State: AOAM532k2g+MnFTSZ3uJvtz+KTYXbux2aGlHe80drQEgGK7HY06q2YHC
+        4AekfuAlH0yI9P2J7vKy2Jt9CzupXJyB/Q==
+X-Google-Smtp-Source: ABdhPJwpbbwdg8nu8BQuGEczDISF4tLxzm6RyDqv3rO/ZQGnXSEHrER7oiOOKBtqbzDOqiedAJGw+A==
+X-Received: by 2002:a2e:9bc1:: with SMTP id w1mr1616152ljj.290.1622103258850;
         Thu, 27 May 2021 01:14:18 -0700 (PDT)
 Received: from jade.urgonet (h-79-136-85-3.A175.priv.bahnhof.se. [79.136.85.3])
-        by smtp.gmail.com with ESMTPSA id z10sm133186lfe.228.2021.05.27.01.14.17
+        by smtp.gmail.com with ESMTPSA id z10sm133186lfe.228.2021.05.27.01.14.18
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 27 May 2021 01:14:17 -0700 (PDT)
+        Thu, 27 May 2021 01:14:18 -0700 (PDT)
 From:   Jens Wiklander <jens.wiklander@linaro.org>
 To:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
         op-tee@lists.trustedfirmware.org
@@ -55,73 +55,52 @@ Cc:     Sudeep Holla <sudeep.holla@arm.com>,
         Marc Bonnici <marc.bonnici@arm.com>,
         Jerome Forissier <jerome@forissier.org>,
         Jens Wiklander <jens.wiklander@linaro.org>
-Subject: [PATCH v2 0/5] Add FF-A support in OP-TEE driver
-Date:   Thu, 27 May 2021 10:13:59 +0200
-Message-Id: <20210527081404.1433177-1-jens.wiklander@linaro.org>
+Subject: [PATCH v2 1/5] tee: add sec_world_id to struct tee_shm
+Date:   Thu, 27 May 2021 10:14:00 +0200
+Message-Id: <20210527081404.1433177-2-jens.wiklander@linaro.org>
 X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20210527081404.1433177-1-jens.wiklander@linaro.org>
+References: <20210527081404.1433177-1-jens.wiklander@linaro.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi all,
+Adds sec_world_id to struct tee_shm which describes a shared memory
+object. sec_world_id can be used by a driver to store an id assigned by
+secure world.
 
-This adds supports for the OP-TEE driver to communicate with secure world
-using FF-A [1] as transport.
+Signed-off-by: Jens Wiklander <jens.wiklander@linaro.org>
+---
+ include/linux/tee_drv.h | 7 ++++++-
+ 1 file changed, 6 insertions(+), 1 deletion(-)
 
-These patches are based on the FF-A v7 patch set by Sudeep Holla [2] [3].
-
-There is one change to the TEE subsystem with "tee: add sec_world_id to
-struct tee_shm" to add support for holding globally unique handle assigned
-by the FF-A. This is a field that I believe could useful for the AMDTEE
-driver too.
-
-For communication the OP-TEE message protocol is still used, but with a new
-type of memory reference, struct optee_msg_param_fmem, to carry the
-information needed by FF-A. The OP-TEE driver is refactored internally with
-to sets of callbacks, one for the old SMC based communication and another
-set with FF-A as transport.
-
-There is also a difference in how the drivers are instantiated. With the
-SMC based transport we have a platform driver, module_platform_driver(),
-today which we're keeping as is for this configuration. In a FF-A system we
-have a FF-A driver, module_ffa_driver(), instead.
-
-The OP-TEE driver can be compiled for both targets at the same time and
-it's up to runtime configuration (device tree or ACPI) to decide how it's
-initialized.
-
-Thanks,
-Jens
-
-[1] https://developer.arm.com/documentation/den0077/latest
-[2] https://lore.kernel.org/linux-arm-kernel/20210521151033.181846-1-sudeep.holla@arm.com/
-[3] git://git.kernel.org/pub/scm/linux/kernel/git/sudeep.holla/linux.git v5.13/ffa
-
-v1->v2:
-- Rebased to the FF-A v7 patch
-- Fixed a couple of reports from kernel test robot <lkp@intel.com>
-
-Jens Wiklander (5):
-  tee: add sec_world_id to struct tee_shm
-  optee: simplify optee_release()
-  optee: refactor driver with internal callbacks
-  optee: add a FF-A memory pool
-  optee: add FF-A support
-
- drivers/tee/optee/call.c          | 325 +++++++++++---
- drivers/tee/optee/core.c          | 689 ++++++++++++++++++++++++++----
- drivers/tee/optee/optee_ffa.h     | 153 +++++++
- drivers/tee/optee/optee_msg.h     |  27 +-
- drivers/tee/optee/optee_private.h |  88 +++-
- drivers/tee/optee/rpc.c           | 137 +++++-
- drivers/tee/optee/shm_pool.c      |  65 ++-
- drivers/tee/optee/shm_pool.h      |   1 +
- include/linux/tee_drv.h           |   7 +-
- 9 files changed, 1326 insertions(+), 166 deletions(-)
- create mode 100644 drivers/tee/optee/optee_ffa.h
-
+diff --git a/include/linux/tee_drv.h b/include/linux/tee_drv.h
+index 54269e47ac9a..1a29f0e66e13 100644
+--- a/include/linux/tee_drv.h
++++ b/include/linux/tee_drv.h
+@@ -196,7 +196,11 @@ int tee_session_calc_client_uuid(uuid_t *uuid, u32 connection_method,
+  * @num_pages:	number of locked pages
+  * @dmabuf:	dmabuf used to for exporting to user space
+  * @flags:	defined by TEE_SHM_* in tee_drv.h
+- * @id:		unique id of a shared memory object on this device
++ * @id:		unique id of a shared memory object on this device, shared
++ *		with user space
++ * @sec_world_id:
++ *		secure world assigned id of this shared memory object, not
++ *		used by all drivers
+  *
+  * This pool is only supposed to be accessed directly from the TEE
+  * subsystem and from drivers that implements their own shm pool manager.
+@@ -212,6 +216,7 @@ struct tee_shm {
+ 	struct dma_buf *dmabuf;
+ 	u32 flags;
+ 	int id;
++	u64 sec_world_id;
+ };
+ 
+ /**
 -- 
 2.25.1
 
