@@ -2,190 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E6B8B3939C8
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 01:55:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F4253939CA
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 01:55:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236787AbhE0X5V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 May 2021 19:57:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34822 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236850AbhE0X4T (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 May 2021 19:56:19 -0400
-Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17D1BC06134B;
-        Thu, 27 May 2021 16:54:33 -0700 (PDT)
-Received: by mail-lf1-x132.google.com with SMTP id j10so2586856lfb.12;
-        Thu, 27 May 2021 16:54:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=ifCod93ETyGPmmfLtl3IBeFp9blcjqCRjZs9HqcoCbk=;
-        b=pgFyoNE1WYSeqE7ADCYsMnp+NnKcH9AKaGBAAom5WwFyyhiCjlFACT6wYJtVXD5Jvj
-         FnZrn9g5T/ZGcf0Egy0ZyqupoojZnsPNQ6ozwDqTjz2hEs+tbXjA+c21Fl2httGQ+QbC
-         40bYXfWZYH+88aWNhkwNI0MRRzqTXoufjRo2EvN+6M0D3rfuu4kZj9PXpaKZ+FtYIHbA
-         bwOtN18uRwHoOI4tEiHcjpfP439227LPqtmEL78pOr6Eie7jf7RvNP4YaJs6PeUMTa3u
-         gTLdHdyzQmiSqtH9LyTQKTLODClUGRu6dKwD3HJEoX+i+0d7WXtc0KzfxjLqmY5S5ijb
-         4qXQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=ifCod93ETyGPmmfLtl3IBeFp9blcjqCRjZs9HqcoCbk=;
-        b=LuvtO9rU38q4ZBzPHvnzkEjpMNZuKk59QfPNCdsx0syj5D7yTl0CUCAfstHjCGyY34
-         X/E6x0ebjAozR9D+DJtlZCXM87A+NEj5KfjEcn/fmZHelnXHbq861w3AOJ+5a3elNspr
-         XgYLf2UjjANZnHamTJqFI4pZe3uDkIu93JBm0L4bLAlWGWXo/eEhQgwheKua9v4pIMLz
-         HmTPpTPVgiiJa5LWjFrVQ/EhI0v98OtT9PBinb/c/SFdYzM9JEptwzsVE4VqrVm1UP9b
-         p43+HYIZVahBIymXK3gPPjOt/+QgyjH/ztt58OU9Jh7EAGh0HnaZ1x6ESoVHIK4qirv8
-         YQWg==
-X-Gm-Message-State: AOAM530shZJxad9n2TbFS4Eb4d+QYbGEilmX7Quzr38CMPdfakTJoXtF
-        zaQI9L1N48GLdPo5l4hAvM1bBYKXeqA=
-X-Google-Smtp-Source: ABdhPJxs8C+O+vfEMywmf/8ZLpCFz9xYLjJCuToxfF5Z0tOwDAYApBBsGcRj2u+VW4GRfm2CcPeAQQ==
-X-Received: by 2002:a19:f717:: with SMTP id z23mr3819731lfe.267.1622159671485;
-        Thu, 27 May 2021 16:54:31 -0700 (PDT)
-Received: from localhost.localdomain (46-138-12-55.dynamic.spd-mgts.ru. [46.138.12.55])
-        by smtp.gmail.com with ESMTPSA id t129sm319000lff.109.2021.05.27.16.54.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 27 May 2021 16:54:31 -0700 (PDT)
-From:   Dmitry Osipenko <digetx@gmail.com>
-To:     Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        =?UTF-8?q?Micha=C5=82=20Miros=C5=82aw?= <mirq-linux@rere.qmqm.pl>,
-        =?UTF-8?q?Nikola=20Milosavljevi=C4=87?= <mnidza@outlook.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Peter Geis <pgwipeout@gmail.com>,
-        Nicolas Chauvet <kwizart@gmail.com>,
-        Viresh Kumar <vireshk@kernel.org>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Matt Merhar <mattmerhar@protonmail.com>,
-        Paul Fertser <fercerpav@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Mikko Perttunen <mperttunen@nvidia.com>
-Cc:     linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-pm@vger.kernel.org,
-        Nathan Chancellor <nathan@kernel.org>,
-        linux-clk@vger.kernel.org
-Subject: [PATCH v5 14/14] soc/tegra: regulators: Support core domain state syncing
-Date:   Fri, 28 May 2021 02:54:13 +0300
-Message-Id: <20210527235413.23120-15-digetx@gmail.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210527235413.23120-1-digetx@gmail.com>
-References: <20210527235413.23120-1-digetx@gmail.com>
+        id S236851AbhE0X53 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 May 2021 19:57:29 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44796 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236899AbhE0X4W (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 27 May 2021 19:56:22 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 71680613E6;
+        Thu, 27 May 2021 23:54:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1622159688;
+        bh=hD8/N+fF2FkE4LluW3yq8kxRpk38PAPjA3KU3mn9Xt4=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=Ajk3u6/5kUvCA8Lb3RSDPrjQIeInnrxmedV2RMUhzStjfVv4/lAP8EJFFhqHY+D5F
+         E3Mnkc6O/tpkGWNWEgwFB7asfLmnegDYfU1qdf9niXGUKCYkXZG0fx3cm+Kz2U+Wyd
+         86afZhUHv8reDkgmispBqj7sjpqOpe/gejFGSwaQQz5uQY7XJs4/fVhcTh9iSQNA7f
+         BSDKiaL1RiKKQ9/42IZKB4a28WBaUJoHU0IR6RbYHMTkXUUo2heTOFvDN2KxHMAZrO
+         o55/NHO+PfU7v9o0jmVZ9jM6o/XeoRllA+77LtMcF4FBt7ni1Q4Q0g3qo3ehexNsZb
+         x/ViV4QBti10w==
+Date:   Thu, 27 May 2021 18:54:47 -0500
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Yang Li <yang.lee@linux.alibaba.com>
+Cc:     bhelgaas@google.com, tglx@linutronix.de, mingo@redhat.com,
+        bp@alien8.de, x86@kernel.org, hpa@zytor.com,
+        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>
+Subject: Re: [PATCH] x86/pci: use true and false for bool variable
+Message-ID: <20210527235447.GA1446759@bjorn-Precision-5520>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1615794000-102771-1-git-send-email-yang.lee@linux.alibaba.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The core voltage shall not drop until state of core domain is synced,
-i.e. all device drivers that use core domain are loaded and ready.
+[+cc Krzysztof]
 
-Support core domain state syncing. The core domain driver invokes the
-core-regulator voltage syncing once the state of domain is synced, at
-this point the core voltage is allowed to go lower than the level left
-after bootloader.
+On Mon, Mar 15, 2021 at 03:40:00PM +0800, Yang Li wrote:
+> fixed the following coccicheck:
+> ./arch/x86/pci/mmconfig-shared.c:464:9-10: WARNING: return of 0/1 in
+> function 'is_mmconf_reserved' with return type bool
+> ./arch/x86/pci/mmconfig-shared.c:493:5-6: WARNING: return of 0/1 in
+> function 'is_mmconf_reserved' with return type bool
+> ./arch/x86/pci/mmconfig-shared.c:501:9-10: WARNING: return of 0/1 in
+> function 'is_mmconf_reserved' with return type bool
+> ./arch/x86/pci/mmconfig-shared.c:522:5-6: WARNING: return of 0/1 in
+> function 'is_mmconf_reserved' with return type bool
+> 
+> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+> Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
 
-Tested-by: Peter Geis <pgwipeout@gmail.com> # Ouya T30
-Tested-by: Paul Fertser <fercerpav@gmail.com> # PAZ00 T20
-Tested-by: Nicolas Chauvet <kwizart@gmail.com> # PAZ00 T20 and TK1 T124
-Tested-by: Matt Merhar <mattmerhar@protonmail.com> # Ouya T30
-Reviewed-by: Ulf Hansson <ulf.hansson@linaro.org>
-Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
----
- drivers/soc/tegra/regulators-tegra20.c | 19 ++++++++++++++++++-
- drivers/soc/tegra/regulators-tegra30.c | 18 +++++++++++++++++-
- 2 files changed, 35 insertions(+), 2 deletions(-)
+Applied to pci/misc for v5.14, thanks!
 
-diff --git a/drivers/soc/tegra/regulators-tegra20.c b/drivers/soc/tegra/regulators-tegra20.c
-index 3479be5ee494..b8ce9fd0650d 100644
---- a/drivers/soc/tegra/regulators-tegra20.c
-+++ b/drivers/soc/tegra/regulators-tegra20.c
-@@ -17,6 +17,8 @@
- #include <linux/regulator/driver.h>
- #include <linux/regulator/machine.h>
- 
-+#include <soc/tegra/pmc.h>
-+
- struct tegra_regulator_coupler {
- 	struct regulator_coupler coupler;
- 	struct regulator_dev *core_rdev;
-@@ -42,6 +44,21 @@ static int tegra20_core_limit(struct tegra_regulator_coupler *tegra,
- 	int core_cur_uV;
- 	int err;
- 
-+	/*
-+	 * Tegra20 SoC has critical DVFS-capable devices that are
-+	 * permanently-active or active at a boot time, like EMC
-+	 * (DRAM controller) or Display controller for example.
-+	 *
-+	 * The voltage of a CORE SoC power domain shall not be dropped below
-+	 * a minimum level, which is determined by device's clock rate.
-+	 * This means that we can't fully allow CORE voltage scaling until
-+	 * the state of all DVFS-critical CORE devices is synced.
-+	 */
-+	if (tegra_pmc_core_domain_state_synced() && !tegra->sys_reboot_mode) {
-+		pr_info_once("voltage state synced\n");
-+		return 0;
-+	}
-+
- 	if (tegra->core_min_uV > 0)
- 		return tegra->core_min_uV;
- 
-@@ -62,7 +79,7 @@ static int tegra20_core_limit(struct tegra_regulator_coupler *tegra,
- 	 */
- 	tegra->core_min_uV = core_max_uV;
- 
--	pr_info("core minimum voltage limited to %duV\n", tegra->core_min_uV);
-+	pr_info("core voltage initialized to %duV\n", tegra->core_min_uV);
- 
- 	return tegra->core_min_uV;
- }
-diff --git a/drivers/soc/tegra/regulators-tegra30.c b/drivers/soc/tegra/regulators-tegra30.c
-index 18fe53d0a870..e74bbc9c7859 100644
---- a/drivers/soc/tegra/regulators-tegra30.c
-+++ b/drivers/soc/tegra/regulators-tegra30.c
-@@ -18,6 +18,7 @@
- #include <linux/regulator/machine.h>
- 
- #include <soc/tegra/fuse.h>
-+#include <soc/tegra/pmc.h>
- 
- struct tegra_regulator_coupler {
- 	struct regulator_coupler coupler;
-@@ -43,6 +44,21 @@ static int tegra30_core_limit(struct tegra_regulator_coupler *tegra,
- 	int core_cur_uV;
- 	int err;
- 
-+	/*
-+	 * Tegra30 SoC has critical DVFS-capable devices that are
-+	 * permanently-active or active at a boot time, like EMC
-+	 * (DRAM controller) or Display controller for example.
-+	 *
-+	 * The voltage of a CORE SoC power domain shall not be dropped below
-+	 * a minimum level, which is determined by device's clock rate.
-+	 * This means that we can't fully allow CORE voltage scaling until
-+	 * the state of all DVFS-critical CORE devices is synced.
-+	 */
-+	if (tegra_pmc_core_domain_state_synced() && !tegra->sys_reboot_mode) {
-+		pr_info_once("voltage state synced\n");
-+		return 0;
-+	}
-+
- 	if (tegra->core_min_uV > 0)
- 		return tegra->core_min_uV;
- 
-@@ -63,7 +79,7 @@ static int tegra30_core_limit(struct tegra_regulator_coupler *tegra,
- 	 */
- 	tegra->core_min_uV = core_max_uV;
- 
--	pr_info("core minimum voltage limited to %duV\n", tegra->core_min_uV);
-+	pr_info("core voltage initialized to %duV\n", tegra->core_min_uV);
- 
- 	return tegra->core_min_uV;
- }
--- 
-2.30.2
+Did you check all of drivers/pci/ for similar warnings, too?
 
+> ---
+>  arch/x86/pci/mmconfig-shared.c | 10 +++++-----
+>  1 file changed, 5 insertions(+), 5 deletions(-)
+> 
+> diff --git a/arch/x86/pci/mmconfig-shared.c b/arch/x86/pci/mmconfig-shared.c
+> index de6bf0e..758cbfe 100644
+> --- a/arch/x86/pci/mmconfig-shared.c
+> +++ b/arch/x86/pci/mmconfig-shared.c
+> @@ -461,7 +461,7 @@ static bool __ref is_mmconf_reserved(check_reserved_t is_reserved,
+>  	}
+>  
+>  	if (size < (16UL<<20) && size != old_size)
+> -		return 0;
+> +		return false;
+>  
+>  	if (dev)
+>  		dev_info(dev, "MMCONFIG at %pR reserved in %s\n",
+> @@ -493,7 +493,7 @@ static bool __ref is_mmconf_reserved(check_reserved_t is_reserved,
+>  				&cfg->res, (unsigned long) cfg->address);
+>  	}
+>  
+> -	return 1;
+> +	return true;
+>  }
+>  
+>  static bool __ref
+> @@ -501,7 +501,7 @@ static bool __ref is_mmconf_reserved(check_reserved_t is_reserved,
+>  {
+>  	if (!early && !acpi_disabled) {
+>  		if (is_mmconf_reserved(is_acpi_reserved, cfg, dev, 0))
+> -			return 1;
+> +			return true;
+>  
+>  		if (dev)
+>  			dev_info(dev, FW_INFO
+> @@ -522,14 +522,14 @@ static bool __ref is_mmconf_reserved(check_reserved_t is_reserved,
+>  	 * _CBA method, just assume it's reserved.
+>  	 */
+>  	if (pci_mmcfg_running_state)
+> -		return 1;
+> +		return true;
+>  
+>  	/* Don't try to do this check unless configuration
+>  	   type 1 is available. how about type 2 ?*/
+>  	if (raw_pci_ops)
+>  		return is_mmconf_reserved(e820__mapped_all, cfg, dev, 1);
+>  
+> -	return 0;
+> +	return false;
+>  }
+>  
+>  static void __init pci_mmcfg_reject_broken(int early)
+> -- 
+> 1.8.3.1
+> 
