@@ -2,117 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AD1473927A4
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 08:30:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E51FB3927A8
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 08:32:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229836AbhE0Gbt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 May 2021 02:31:49 -0400
-Received: from mail-ej1-f45.google.com ([209.85.218.45]:37637 "EHLO
-        mail-ej1-f45.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229614AbhE0Gbj (ORCPT
+        id S229834AbhE0Gdc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 May 2021 02:33:32 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:32409 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229709AbhE0Gd3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 May 2021 02:31:39 -0400
-Received: by mail-ej1-f45.google.com with SMTP id l3so306931ejc.4
-        for <linux-kernel@vger.kernel.org>; Wed, 26 May 2021 23:30:05 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=kB88lCXQWv/f/g9x37rq4D9T1fErrmQxI1ppZCgR6ao=;
-        b=k3+TY45RnJJfaOoVHI8l8mFvcLOz/DZZBfehIsGE9gAWmbdlAZRzDXiCFsIoEWo5Bi
-         neeIMlEnoQExT+iZ/xr7n0uLqhbmsQS9S3ApWYwdoJq/L9xD23447CatfMiW96UpfFzD
-         Yv2qj9PbnnYZjdS7X+Z5b6xIutGqKoSBdT1+P8n24f0vJni19P/IG2Sdgyf5yyFykLFX
-         4gw+A9YofTUg5RleFD0UOgzd2Skih1jW4ao+H0r62Tecb61mfPVgIPkA3Jp1S+R4XE+H
-         a+MHu29Wp9Ere4H3Tr1fhAfXhNKxo/F6I0K9hsNESBVxNQNkFXYjs+skZPTbj03InfWT
-         PQmg==
-X-Gm-Message-State: AOAM532oLb0ymUI58WtybMYKfJpgm+E/6ymhY2b7G9QF7FTyq+mtsLIs
-        njQRYNDysJYrYzoTYrSh/KA=
-X-Google-Smtp-Source: ABdhPJwNXJ4Z2rG3fUQ3tu5wHKJ1hqO8aRgl+QicHRBAccdRkY5/F62flN/Wle1ZuX48WQw33GQlVg==
-X-Received: by 2002:a17:906:6c8a:: with SMTP id s10mr2136525ejr.276.1622097005358;
-        Wed, 26 May 2021 23:30:05 -0700 (PDT)
-Received: from ?IPv6:2a0b:e7c0:0:107::70f? ([2a0b:e7c0:0:107::70f])
-        by smtp.gmail.com with ESMTPSA id y23sm516832eds.60.2021.05.26.23.30.04
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 26 May 2021 23:30:04 -0700 (PDT)
-Subject: Re: [PATCH v2 1/1] tty: n_tty: Fix some misdocumented functions
-To:     Lee Jones <lee.jones@linaro.org>
-Cc:     linux-kernel@vger.kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Andrew J. Kroll" <ag784@freenet.buffalo.edu>,
-        processes-Sapan Bhatia <sapan@corewars.org>
-References: <20210526083125.549626-1-lee.jones@linaro.org>
-From:   Jiri Slaby <jirislaby@kernel.org>
-Message-ID: <3c8f2e14-f0a7-409f-e17e-ff7d94b48566@kernel.org>
-Date:   Thu, 27 May 2021 08:30:04 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+        Thu, 27 May 2021 02:33:29 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1622097117; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=akK0YcDnlMmUdrl3whgiB7gbhZG1JABylH+StbnX3vw=;
+ b=R2oaDBdFt+huB2qZNB4Rn2z+q6ezVzPRrohCTduOuPRFriFbzAd5UHSkMtRcZ7LLgq2kMhhM
+ u5hgzAxaeLebxYC6goPhQVJwsWbePwu1VB6grzHmuQMpWYRJ2Z/H3bnaLeA2IjkqV9yD0CFC
+ 1PaF9KWLiQcUfTzMDeUaN//C18M=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n04.prod.us-west-2.postgun.com with SMTP id
+ 60af3ccb67d156359a32560b (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 27 May 2021 06:31:39
+ GMT
+Sender: cang=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 536FEC43460; Thu, 27 May 2021 06:31:39 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: cang)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 55BD8C433D3;
+        Thu, 27 May 2021 06:31:37 +0000 (UTC)
 MIME-Version: 1.0
-In-Reply-To: <20210526083125.549626-1-lee.jones@linaro.org>
-Content-Type: text/plain; charset=iso-8859-2; format=flowed
-Content-Language: en-US
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
 Content-Transfer-Encoding: 7bit
+Date:   Thu, 27 May 2021 14:31:37 +0800
+From:   Can Guo <cang@codeaurora.org>
+To:     jongmin jeong <jjmin.jeong@samsung.com>
+Cc:     jejb@linux.ibm.com, martin.petersen@oracle.com,
+        alim.akhtar@samsung.com, avri.altman@wdc.com, beanhuo@micron.com,
+        adrian.hunter@intel.com, linux-scsi@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 3/3] scsi: ufs: add quirk to support host reset only
+In-Reply-To: <20210527030901.88403-4-jjmin.jeong@samsung.com>
+References: <20210527030901.88403-1-jjmin.jeong@samsung.com>
+ <CGME20210527031220epcas2p41a5ba641919769ca95ccea81e5f3bfb0@epcas2p4.samsung.com>
+ <20210527030901.88403-4-jjmin.jeong@samsung.com>
+Message-ID: <c02fafb3b4e1b0cb363384de8177a969@codeaurora.org>
+X-Sender: cang@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 26. 05. 21, 10:31, Lee Jones wrote:
-> Fixes the following W=1 kernel build warning(s):
+On 2021-05-27 11:09, jongmin jeong wrote:
+> samsung ExynosAuto SoC has two types of host controller interface to
+> support the virtualization of UFS Device.
+> One is the physical host(PH) that the same as conventaional UFSHCI,
+> and the other is the virtual host(VH) that support data transfer 
+> function only.
 > 
->   drivers/tty/n_tty.c:623: warning: expecting prototype for process_echoes(). Prototype was for __process_echoes() instead
->   drivers/tty/n_tty.c:1109: warning: expecting prototype for isig(). Prototype was for __isig() instead
->   drivers/tty/n_tty.c:1268: warning: expecting prototype for n_tty_receive_char(). Prototype was for n_tty_receive_char_special() instead
->   drivers/tty/n_tty.c:2132: warning: Excess function parameter 'buf' description in 'n_tty_read'
+> In this structure, the virtual host does support host reset handler 
+> only.
+> This patch calls the host reset handler when abort or device reset 
+> handler
+> has occured in the virtual host.
 > 
-> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> Cc: Jiri Slaby <jirislaby@kernel.org>
-> Cc: "Andrew J. Kroll" <ag784@freenet.buffalo.edu>
-> Cc: processes-Sapan Bhatia <sapan@corewars.org>
-> Signed-off-by: Lee Jones <lee.jones@linaro.org>
+> Change-Id: I3f07e772415a35fe1e7374e02b3c37ef0bf5660d
+> Signed-off-by: jongmin jeong <jjmin.jeong@samsung.com>
 > ---
+>  drivers/scsi/ufs/ufshcd.c | 7 +++++++
+>  drivers/scsi/ufs/ufshcd.h | 6 ++++++
+>  2 files changed, 13 insertions(+)
 > 
-> v2: Rebased
+> diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
+> index 4787e40c6a2d..9d1912290f87 100644
+> --- a/drivers/scsi/ufs/ufshcd.c
+> +++ b/drivers/scsi/ufs/ufshcd.c
+> @@ -6826,6 +6826,9 @@ static int ufshcd_eh_device_reset_handler(struct
+> scsi_cmnd *cmd)
+>  	u8 resp = 0xF, lun;
+>  	unsigned long flags;
 > 
->   drivers/tty/n_tty.c | 10 +++++-----
->   1 file changed, 5 insertions(+), 5 deletions(-)
+> +	if (hba->quirks & UFSHCD_QUIRK_BROKEN_RESET_HANDLER)
+> +		return ufshcd_eh_host_reset_handler(cmd);
+> +
+>  	host = cmd->device->host;
+>  	hba = shost_priv(host);
 > 
-> diff --git a/drivers/tty/n_tty.c b/drivers/tty/n_tty.c
-> index 0ec93f1a61f5d..56d3b43d8a3a4 100644
-> --- a/drivers/tty/n_tty.c
-> +++ b/drivers/tty/n_tty.c
-...
-> @@ -1248,7 +1248,7 @@ n_tty_receive_signal_char(struct tty_struct *tty, int signal, unsigned char c)
->   }
->   
->   /**
-> - *	n_tty_receive_char	-	perform processing
-> + *	n_tty_receive_char_special	-	perform processing
+> @@ -6972,6 +6975,10 @@ static int ufshcd_abort(struct scsi_cmnd *cmd)
+>  	host = cmd->device->host;
+>  	hba = shost_priv(host);
+>  	tag = cmd->request->tag;
+> +
+> +	if (hba->quirks & UFSHCD_QUIRK_BROKEN_RESET_HANDLER)
+> +		return ufshcd_eh_host_reset_handler(cmd);
+> +
 
-No, please move the doc to the function in this case instead.
+Unless you are not using runtime PM. Otherwise, when abort happens
+to SSU cmd (sent from pm ops), your change will lead to a live lock,
+because ufshcd_eh_host_reset_handler() invokes error handling and
+flushes it, error handling calls runtime_pm_get_sync(), which flushes
+pm ops, while pm ops is blocked by SSU cmd.
 
->    *	@tty: terminal device
->    *	@c: character
->    *
-> @@ -2042,11 +2042,11 @@ static int job_control(struct tty_struct *tty, struct file *file)
->   }
->   
->   
-> -/**
-> +/*
+To be on the safe side, you should move these codes after below
+check in ufshcd_abort(), right before sending task abort TMRs.
 
-Why this?
+  /*
+   * Task abort to the device W-LUN is illegal. When this command
+   * will fail, due to spec violation, scsi err handling next step
+   * will be to send LU reset which, again, is a spec violation.
+   * To avoid these unnecessary/illegal steps, first we clean up
+   * the lrb taken by this cmd and mark the lrb as in_use, then
+   * queue the eh_work and bail.
+   */
+   if (lrbp->lun == UFS_UPIU_UFS_DEVICE_WLUN) {
+     ...
 
->    *	n_tty_read		-	read function for tty
->    *	@tty: tty device
->    *	@file: file object
-> - *	@buf: userspace buffer pointer
-> + *	@kbuf: userspace buffer pointer
->    *	@nr: size of I/O
->    *
->    *	Perform reads for the line discipline. We are guaranteed that the
+     goto out;
+   }
+
+Thanks,
+
+Can Guo.
+
+>  	lrbp = &hba->lrb[tag];
+>  	if (!ufshcd_valid_tag(hba, tag)) {
+>  		dev_err(hba->dev,
+> diff --git a/drivers/scsi/ufs/ufshcd.h b/drivers/scsi/ufs/ufshcd.h
+> index 0ab4c296be32..82a9c6889978 100644
+> --- a/drivers/scsi/ufs/ufshcd.h
+> +++ b/drivers/scsi/ufs/ufshcd.h
+> @@ -581,6 +581,12 @@ enum ufshcd_quirks {
+>  	 * support interface configuration.
+>  	 */
+>  	UFSHCD_QUIRK_SKIP_INTERFACE_CONFIGURATION	= 1 << 16,
+> +
+> +	/*
+> +	 * This quirk needs to be enabled if the host controller support
+> +	 * host reset handler only.
+> +	 */
+> +	UFSHCD_QUIRK_BROKEN_RESET_HANDLER		= 1 << 17,
+>  };
 > 
-
-thanks,
--- 
-js
-suse labs
+>  enum ufshcd_caps {
