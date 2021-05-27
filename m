@@ -2,237 +2,233 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A465392437
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 03:16:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 887AD39243A
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 03:19:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234361AbhE0BRr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 May 2021 21:17:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56522 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232187AbhE0BRn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 May 2021 21:17:43 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B113361073;
-        Thu, 27 May 2021 01:16:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1622078171;
-        bh=xHHivo9IMy77QFa/Xlp3gV8VKNX8gtjiQWwlOJQO4Bg=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=WU3+GhvfneTYV+BzAWVUA25EYaTmGzyIeapzuMJKYqBYSF39mEWKEQleuYUiuQrPn
-         aQS+fuVK4dk7r/B++eyfUYHJo5ZXKtAOL+Xrt4pwejtCDKwE/LHNfGoiDkqOxuIBHQ
-         qlEXAP6jn0S/oMxy7CKvmRFDzxSAuG83P5Vac3Vhnm/ZHPomzK8gqoLwUN2beCBTRs
-         JW5PzLadWMzHn7x+6YwK8h+aqHvI7vB32NtbY2MPk+XXkzkqEUaQVL9N8gkwdssLIg
-         qJ4whS/X2IzGZU0ULDZswL4Is71wvUHGXLkpExorMwcLLR0Ot+UIs9MT2/NstsND/D
-         x8xotr0sVQRHg==
-Date:   Wed, 26 May 2021 18:16:09 -0700
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Gatis Peisenieks <gatis@mikrotik.com>
-Cc:     chris.snook@gmail.com, davem@davemloft.net, hkallweit1@gmail.com,
-        jesse.brandeburg@intel.com, dchickles@marvell.com,
-        tully@mikrotik.com, eric.dumazet@gmail.com, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net-next v3] atl1c: add 4 RX/TX queue support for
- Mikrotik 10/25G NIC
-Message-ID: <20210526181609.1416c4eb@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <20210526075830.2959145-1-gatis@mikrotik.com>
-References: <20210526075830.2959145-1-gatis@mikrotik.com>
+        id S234316AbhE0BU5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 May 2021 21:20:57 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:6720 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232187AbhE0BUz (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 26 May 2021 21:20:55 -0400
+Received: from dggems706-chm.china.huawei.com (unknown [172.30.72.60])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4Fr8yS0yC0zncJc;
+        Thu, 27 May 2021 09:15:44 +0800 (CST)
+Received: from dggemx753-chm.china.huawei.com (10.0.44.37) by
+ dggems706-chm.china.huawei.com (10.3.19.183) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
+ 15.1.2176.2; Thu, 27 May 2021 09:19:21 +0800
+Received: from [10.136.110.154] (10.136.110.154) by
+ dggemx753-chm.china.huawei.com (10.0.44.37) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2176.2; Thu, 27 May 2021 09:19:21 +0800
+Subject: Re: [f2fs-dev] [PATCH 2/2 v3] f2fs: support RO feature
+To:     Jaegeuk Kim <jaegeuk@kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-f2fs-devel@lists.sourceforge.net>
+References: <20210521190217.2484099-1-jaegeuk@kernel.org>
+ <20210521190217.2484099-2-jaegeuk@kernel.org> <YK5UOfzwdZni7c5W@google.com>
+ <YK5edM0igwfd47LV@google.com>
+From:   Chao Yu <yuchao0@huawei.com>
+Message-ID: <9070633e-39ef-6e13-6467-534541d917b7@huawei.com>
+Date:   Thu, 27 May 2021 09:19:20 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
+ Thunderbird/52.9.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <YK5edM0igwfd47LV@google.com>
+Content-Type: text/plain; charset="windows-1252"; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.136.110.154]
+X-ClientProxiedBy: dggemx703-chm.china.huawei.com (10.1.199.50) To
+ dggemx753-chm.china.huawei.com (10.0.44.37)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 26 May 2021 10:58:30 +0300 Gatis Peisenieks wrote:
-> More RX/TX queues on a network card help spread the CPU load among
-> cores and achieve higher overall networking performance. The new
-> Mikrotik 10/25G NIC supports 4 RX and 4 TX queues. TX queues are
-> treated with equal priority. RX queue balancing is fixed based on
-> L2/L3/L4 hash.
+On 2021/5/26 22:43, Jaegeuk Kim wrote:
+> Given RO feature in superblock, we don't need to check provisioning/reserve
+> spaces and SSA area.
 > 
-> This adds support for 4 RX/TX queues while maintaining backwards
-> compatibility with older hardware.
+> Signed-off-by: Jaegeuk Kim <jaegeuk@kernel.org>
+> ---
+> Change log from v2:
+>   - allow curseg updates
+>   - fix some bugs
 > 
-> Simultaneous TX + RX performance on AMD Threadripper 3960X
-> with Mikrotik 10/25G NIC improved from 1.6Mpps to 3.2Mpps per port.
+>   fs/f2fs/f2fs.h    |  2 ++
+>   fs/f2fs/segment.c |  4 ++++
+>   fs/f2fs/super.c   | 37 +++++++++++++++++++++++++++++++------
+>   3 files changed, 37 insertions(+), 6 deletions(-)
 > 
-> Backwards compatiblitiy was verified with AR8151 and AR8131 based
-> NICs.
-> 
-> Signed-off-by: Gatis Peisenieks <gatis@mikrotik.com>
+> diff --git a/fs/f2fs/f2fs.h b/fs/f2fs/f2fs.h
+> index eaf57b5f3c4b..9ad502f92529 100644
+> --- a/fs/f2fs/f2fs.h
+> +++ b/fs/f2fs/f2fs.h
+> @@ -168,6 +168,7 @@ struct f2fs_mount_info {
+>   #define F2FS_FEATURE_SB_CHKSUM		0x0800
+>   #define F2FS_FEATURE_CASEFOLD		0x1000
+>   #define F2FS_FEATURE_COMPRESSION	0x2000
+> +#define F2FS_FEATURE_RO			0x4000
+>   
+>   #define __F2FS_HAS_FEATURE(raw_super, mask)				\
+>   	((raw_super->feature & cpu_to_le32(mask)) != 0)
+> @@ -940,6 +941,7 @@ static inline void set_new_dnode(struct dnode_of_data *dn, struct inode *inode,
+>   #define	NR_CURSEG_DATA_TYPE	(3)
+>   #define NR_CURSEG_NODE_TYPE	(3)
+>   #define NR_CURSEG_INMEM_TYPE	(2)
+> +#define NR_CURSEG_RO_TYPE	(2)
+>   #define NR_CURSEG_PERSIST_TYPE	(NR_CURSEG_DATA_TYPE + NR_CURSEG_NODE_TYPE)
+>   #define NR_CURSEG_TYPE		(NR_CURSEG_INMEM_TYPE + NR_CURSEG_PERSIST_TYPE)
+>   
+> diff --git a/fs/f2fs/segment.c b/fs/f2fs/segment.c
+> index 8668df7870d0..02e0c38be7eb 100644
+> --- a/fs/f2fs/segment.c
+> +++ b/fs/f2fs/segment.c
+> @@ -4683,6 +4683,10 @@ static int sanity_check_curseg(struct f2fs_sb_info *sbi)
+>   		struct seg_entry *se = get_seg_entry(sbi, curseg->segno);
+>   		unsigned int blkofs = curseg->next_blkoff;
+>   
+> +		if (F2FS_HAS_FEATURE(sbi, F2FS_FEATURE_RO) &&
+> +			i != CURSEG_HOT_DATA && i != CURSEG_HOT_NODE)
+> +			continue;
+> +
+>   		sanity_check_seg_type(sbi, curseg->seg_type);
+>   
+>   		if (f2fs_test_bit(blkofs, se->cur_valid_map))
+> diff --git a/fs/f2fs/super.c b/fs/f2fs/super.c
+> index e70aca8f97bd..6788e7b71e27 100644
+> --- a/fs/f2fs/super.c
+> +++ b/fs/f2fs/super.c
+> @@ -555,7 +555,7 @@ static int parse_options(struct super_block *sb, char *options, bool is_remount)
+>   	int ret;
+>   
+>   	if (!options)
+> -		return 0;
+> +		goto default_check;
+>   
+>   	while ((p = strsep(&options, ",")) != NULL) {
+>   		int token;
+> @@ -1090,6 +1090,7 @@ static int parse_options(struct super_block *sb, char *options, bool is_remount)
+>   			return -EINVAL;
+>   		}
+>   	}
+> +default_check:
+>   #ifdef CONFIG_QUOTA
+>   	if (f2fs_check_quota_options(sbi))
+>   		return -EINVAL;
+> @@ -1162,6 +1163,11 @@ static int parse_options(struct super_block *sb, char *options, bool is_remount)
+>   	 */
+>   	if (F2FS_OPTION(sbi).active_logs != NR_CURSEG_TYPE)
+>   		F2FS_OPTION(sbi).whint_mode = WHINT_MODE_OFF;
+> +
+> +	if (F2FS_HAS_FEATURE(sbi, F2FS_FEATURE_RO) && !f2fs_readonly(sbi->sb)) {
+> +		f2fs_err(sbi, "Allow to mount readonly mode only");
+> +		return -EROFS;
+> +	}
+>   	return 0;
+>   }
+>   
+> @@ -1819,7 +1825,11 @@ static int f2fs_show_options(struct seq_file *seq, struct dentry *root)
+>   static void default_options(struct f2fs_sb_info *sbi)
+>   {
+>   	/* init some FS parameters */
+> -	F2FS_OPTION(sbi).active_logs = NR_CURSEG_PERSIST_TYPE;
+> +	if (F2FS_HAS_FEATURE(sbi, F2FS_FEATURE_RO))
+> +		F2FS_OPTION(sbi).active_logs = NR_CURSEG_RO_TYPE;
+> +	else
+> +		F2FS_OPTION(sbi).active_logs = NR_CURSEG_PERSIST_TYPE;
+> +
+>   	F2FS_OPTION(sbi).inline_xattr_size = DEFAULT_INLINE_XATTR_ADDRS;
+>   	F2FS_OPTION(sbi).whint_mode = WHINT_MODE_OFF;
+>   	F2FS_OPTION(sbi).alloc_mode = ALLOC_MODE_DEFAULT;
+> @@ -2001,6 +2011,11 @@ static int f2fs_remount(struct super_block *sb, int *flags, char *data)
+>   	if (f2fs_readonly(sb) && (*flags & SB_RDONLY))
+>   		goto skip;
+>   
+> +	if (F2FS_HAS_FEATURE(sbi, F2FS_FEATURE_RO) && !(*flags & SB_RDONLY)) {
+> +		err = -EROFS;
+> +		goto restore_opts;
+> +	}
 
-> diff --git a/drivers/net/ethernet/atheros/atl1c/atl1c.h b/drivers/net/ethernet/atheros/atl1c/atl1c.h
-> index 9d70cb7544f1..0f206d08a460 100644
-> --- a/drivers/net/ethernet/atheros/atl1c/atl1c.h
-> +++ b/drivers/net/ethernet/atheros/atl1c/atl1c.h
-> @@ -63,7 +63,7 @@
->  
->  #define AT_MAX_RECEIVE_QUEUE    4
->  #define AT_DEF_RECEIVE_QUEUE	1
-> -#define AT_MAX_TRANSMIT_QUEUE	2
-> +#define AT_MAX_TRANSMIT_QUEUE  4
->  
->  #define AT_DMA_HI_ADDR_MASK     0xffffffff00000000ULL
->  #define AT_DMA_LO_ADDR_MASK     0x00000000ffffffffULL
-> @@ -294,11 +294,6 @@ enum atl1c_nic_type {
->  	athr_mt,
->  };
->  
-> -enum atl1c_trans_queue {
-> -	atl1c_trans_normal = 0,
-> -	atl1c_trans_high = 1
-> -};
+remount() -> parse_options() will fail due to below check, so it doesn't need
+to check again? Am I missing something?
+
+@@ -1162,6 +1163,11 @@
+
+  static int parse_options(struct super_block *sb, char *options, bool is_remount)
+
+  	 */
+  	if (F2FS_OPTION(sbi).active_logs != NR_CURSEG_TYPE)
+  		F2FS_OPTION(sbi).whint_mode = WHINT_MODE_OFF;
++
++	if (F2FS_HAS_FEATURE(sbi, F2FS_FEATURE_RO) && !f2fs_readonly(sbi->sb)) {
++		f2fs_err(sbi, "Allow to mount readonly mode only");
++		return -EROFS;
++	}
+  	return 0;
+  }
+
+Thanks,
+
+> +
+>   #ifdef CONFIG_QUOTA
+>   	if (!f2fs_readonly(sb) && (*flags & SB_RDONLY)) {
+>   		err = dquot_suspend(sb, -1);
+> @@ -3134,14 +3149,15 @@ int f2fs_sanity_check_ckpt(struct f2fs_sb_info *sbi)
+>   	ovp_segments = le32_to_cpu(ckpt->overprov_segment_count);
+>   	reserved_segments = le32_to_cpu(ckpt->rsvd_segment_count);
+>   
+> -	if (unlikely(fsmeta < F2FS_MIN_META_SEGMENTS ||
+> +	if (!F2FS_HAS_FEATURE(sbi, F2FS_FEATURE_RO) &&
+> +			unlikely(fsmeta < F2FS_MIN_META_SEGMENTS ||
+>   			ovp_segments == 0 || reserved_segments == 0)) {
+>   		f2fs_err(sbi, "Wrong layout: check mkfs.f2fs version");
+>   		return 1;
+>   	}
 > -
->  struct atl1c_hw_stats {
->  	/* rx */
->  	unsigned long rx_ok;		/* The number of good packet received. */
-> @@ -475,6 +470,8 @@ struct atl1c_buffer {
->  
->  /* transimit packet descriptor (tpd) ring */
->  struct atl1c_tpd_ring {
-> +	struct atl1c_adapter *adapter;
-> +	u16 num;
-
-Consider moving the @num after @dma, that should avoid creating a 6B
-hole (pahole is your friend).
-
->  	void *desc;		/* descriptor ring virtual address */
->  	dma_addr_t dma;		/* descriptor ring physical address */
->  	u16 size;		/* descriptor ring length in bytes */
-> @@ -482,6 +479,7 @@ struct atl1c_tpd_ring {
->  	u16 next_to_use;
->  	atomic_t next_to_clean;
->  	struct atl1c_buffer *buffer_info;
-> +	struct napi_struct napi;
-
-Could you split the move of napi into ring structures to separate
-patches (also separate rx and tx) for ease of review?
-
->  };
->  
->  /* receive free descriptor (rfd) ring */
-
-> -static void atl1c_set_mac_type(struct atl1c_hw *hw)
-> +static enum atl1c_nic_type atl1c_get_mac_type(struct pci_dev *pdev,
-> +					      u8 __iomem *hw_addr)
->  {
-> -	u32 magic;
-> -	switch (hw->device_id) {
-> +	switch (pdev->device) {
->  	case PCI_DEVICE_ID_ATTANSIC_L2C:
-> -		hw->nic_type = athr_l2c;
-> -		break;
-> +		return athr_l2c;
->  	case PCI_DEVICE_ID_ATTANSIC_L1C:
-> -		hw->nic_type = athr_l1c;
-> -		break;
-> +		return athr_l1c;
->  	case PCI_DEVICE_ID_ATHEROS_L2C_B:
-> -		hw->nic_type = athr_l2c_b;
-> -		break;
-> +		return athr_l2c_b;
->  	case PCI_DEVICE_ID_ATHEROS_L2C_B2:
-> -		hw->nic_type = athr_l2c_b2;
-> -		break;
-> +		return athr_l2c_b2;
->  	case PCI_DEVICE_ID_ATHEROS_L1D:
-> -		hw->nic_type = athr_l1d;
-> -		break;
-> +		return athr_l1d;
->  	case PCI_DEVICE_ID_ATHEROS_L1D_2_0:
-> -		hw->nic_type = athr_l1d_2;
-> -		AT_READ_REG(hw, REG_MT_MAGIC, &magic);
-> -		if (magic == MT_MAGIC)
-> -			hw->nic_type = athr_mt;
-> -		break;
-> +		if (readl(hw_addr + REG_MT_MAGIC) == MT_MAGIC)
-> +			return athr_mt;
-> +		return athr_l1d_2;
->  	default:
-> -		break;
-> +		return athr_l1c;
-
-Also separate patch? Hard to find callers and justification 
-in a long diff.
-
->  	/* Note: just free tdp_ring.buffer_info,
-> -	*  it contain rfd_ring.buffer_info, do not double free */
-> +	 *  it contain rfd_ring.buffer_info, do not double free
-> +	 */
-
-The "it" doesn't start aligned with "Note" now.
-
-> +	if (netif_tx_queue_stopped(txq) && netif_carrier_ok(adapter->netdev)) {
-> +		netif_tx_wake_queue(txq);
->  	}
-
-nit: no need for brackets
-
->  	if (total_packets < budget) {
->  		napi_complete_done(napi, total_packets);
->  		spin_lock_irqsave(&adapter->hw.intr_mask_lock, flags);
-> -		adapter->hw.intr_mask |= ISR_TX_PKT;
-> +		adapter->hw.intr_mask |= atl1c_qregs[tpd_ring->num].tx_isr;
->  		AT_WRITE_REG(&adapter->hw, REG_IMR, adapter->hw.intr_mask);
->  		spin_unlock_irqrestore(&adapter->hw.intr_mask_lock, flags);
->  		return total_packets;
-> @@ -1583,6 +1651,38 @@ static int atl1c_clean_tx(struct napi_struct *napi, int budget)
->  	return budget;
->  }
->  
-> +static void atl1c_intr_rx_tx(struct atl1c_adapter *adapter, u32 status)
-> +{
-> +	struct atl1c_hw *hw = &adapter->hw;
-> +	int i;
-> +	u32 intr_mask;
-
-reorder @i and @intr_mask to conform to the preferred reverse xmas tree
-ordering of variable declarations.
-
-> +/**
-> + * atl1c_clean_rx - NAPI Rx polling callback
-> + * @napi: napi info
-> + * @budget: limit of packets to clean
-> + */
-> +static int atl1c_clean_rx(struct napi_struct *napi, int budget)
->  {
-> +	struct atl1c_rrd_ring *rrd_ring =
-> +		container_of(napi, struct atl1c_rrd_ring, napi);
-> +	struct atl1c_adapter *adapter = rrd_ring->adapter;
-> +	int work_done = 0;
-> +	unsigned long flags;
->  	u16 rfd_num, rfd_index;
-> -	u16 count = 0;
->  	u16 length;
->  	struct pci_dev *pdev = adapter->pdev;
->  	struct net_device *netdev  = adapter->netdev;
-> -	struct atl1c_rfd_ring *rfd_ring = &adapter->rfd_ring;
-> -	struct atl1c_rrd_ring *rrd_ring = &adapter->rrd_ring;
-> +	struct atl1c_rfd_ring *rfd_ring = &adapter->rfd_ring[rrd_ring->num];
->  	struct sk_buff *skb;
->  	struct atl1c_recv_ret_status *rrs;
->  	struct atl1c_buffer *buffer_info;
->  
-> +	/* Keep link state information with original netdev */
-> +	if (!netif_carrier_ok(adapter->netdev))
-> +		goto quit_polling;
-
-Interesting, I see you only move this code, but why does this driver
-stop reading packets when link goes down? Surely there may be packets
-already on the ring which Linux should process?
-
-> @@ -2633,8 +2725,14 @@ static int atl1c_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
->  	adapter->mii.phy_id_mask = 0x1f;
->  	adapter->mii.reg_num_mask = MDIO_CTRL_REG_MASK;
->  	dev_set_threaded(netdev, true);
-> -	netif_napi_add(netdev, &adapter->napi, atl1c_clean, 64);
-> -	netif_napi_add(netdev, &adapter->tx_napi, atl1c_clean_tx, 64);
-> +	for (i = 0; i < adapter->rx_queue_count; ++i) {
-> +		netif_napi_add(netdev, &adapter->rrd_ring[i].napi,
-> +			       atl1c_clean_rx, 64);
-> +	}
-> +	for (i = 0; i < adapter->tx_queue_count; ++i) {
-> +		netif_napi_add(netdev, &adapter->tpd_ring[i].napi,
-> +			       atl1c_clean_tx, 64);
-> +	}
-
-nit: no need for brackets
+>   	user_block_count = le64_to_cpu(ckpt->user_block_count);
+> -	segment_count_main = le32_to_cpu(raw_super->segment_count_main);
+> +	segment_count_main = le32_to_cpu(raw_super->segment_count_main) +
+> +			(F2FS_HAS_FEATURE(sbi, F2FS_FEATURE_RO) ? 1 : 0);
+>   	log_blocks_per_seg = le32_to_cpu(raw_super->log_blocks_per_seg);
+>   	if (!user_block_count || user_block_count >=
+>   			segment_count_main << log_blocks_per_seg) {
+> @@ -3172,6 +3188,10 @@ int f2fs_sanity_check_ckpt(struct f2fs_sb_info *sbi)
+>   		if (le32_to_cpu(ckpt->cur_node_segno[i]) >= main_segs ||
+>   			le16_to_cpu(ckpt->cur_node_blkoff[i]) >= blocks_per_seg)
+>   			return 1;
+> +
+> +		if (F2FS_HAS_FEATURE(sbi, F2FS_FEATURE_RO))
+> +			goto check_data;
+> +
+>   		for (j = i + 1; j < NR_CURSEG_NODE_TYPE; j++) {
+>   			if (le32_to_cpu(ckpt->cur_node_segno[i]) ==
+>   				le32_to_cpu(ckpt->cur_node_segno[j])) {
+> @@ -3182,10 +3202,15 @@ int f2fs_sanity_check_ckpt(struct f2fs_sb_info *sbi)
+>   			}
+>   		}
+>   	}
+> +check_data:
+>   	for (i = 0; i < NR_CURSEG_DATA_TYPE; i++) {
+>   		if (le32_to_cpu(ckpt->cur_data_segno[i]) >= main_segs ||
+>   			le16_to_cpu(ckpt->cur_data_blkoff[i]) >= blocks_per_seg)
+>   			return 1;
+> +
+> +		if (F2FS_HAS_FEATURE(sbi, F2FS_FEATURE_RO))
+> +			goto skip_cross;
+> +
+>   		for (j = i + 1; j < NR_CURSEG_DATA_TYPE; j++) {
+>   			if (le32_to_cpu(ckpt->cur_data_segno[i]) ==
+>   				le32_to_cpu(ckpt->cur_data_segno[j])) {
+> @@ -3207,7 +3232,7 @@ int f2fs_sanity_check_ckpt(struct f2fs_sb_info *sbi)
+>   			}
+>   		}
+>   	}
+> -
+> +skip_cross:
+>   	sit_bitmap_size = le32_to_cpu(ckpt->sit_ver_bitmap_bytesize);
+>   	nat_bitmap_size = le32_to_cpu(ckpt->nat_ver_bitmap_bytesize);
+>   
+> 
