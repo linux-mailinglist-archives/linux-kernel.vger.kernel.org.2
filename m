@@ -2,211 +2,329 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 70DDE3923BE
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 02:23:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C892A3923C5
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 02:29:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234314AbhE0AYu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 May 2021 20:24:50 -0400
-Received: from mo-csw1114.securemx.jp ([210.130.202.156]:48174 "EHLO
-        mo-csw.securemx.jp" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232903AbhE0AYu (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 May 2021 20:24:50 -0400
-Received: by mo-csw.securemx.jp (mx-mo-csw1114) id 14R0MtW5007322; Thu, 27 May 2021 09:22:55 +0900
-X-Iguazu-Qid: 2wGr6xj2A4N7nHCAbL
-X-Iguazu-QSIG: v=2; s=0; t=1622074974; q=2wGr6xj2A4N7nHCAbL; m=oAyYE0zOoy+KHvpZv9ULWYJ46KmGQ8jR3H8ooPGk2nw=
-Received: from imx2-a.toshiba.co.jp (imx2-a.toshiba.co.jp [106.186.93.35])
-        by relay.securemx.jp (mx-mr1111) id 14R0MrdZ029273
-        (version=TLSv1.2 cipher=AES128-GCM-SHA256 bits=128 verify=NOT);
-        Thu, 27 May 2021 09:22:54 +0900
-Received: from enc01.toshiba.co.jp (enc01.toshiba.co.jp [106.186.93.100])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by imx2-a.toshiba.co.jp (Postfix) with ESMTPS id 5B9181000D9;
-        Thu, 27 May 2021 09:22:53 +0900 (JST)
-Received: from hop001.toshiba.co.jp ([133.199.164.63])
-        by enc01.toshiba.co.jp  with ESMTP id 14R0Mq2Q005890;
-        Thu, 27 May 2021 09:22:53 +0900
-Date:   Thu, 27 May 2021 09:22:51 +0900
-From:   Nobuhiro Iwamatsu <nobuhiro1.iwamatsu@toshiba.co.jp>
-To:     Rob Herring <robh+dt@kernel.org>
-Cc:     Bjorn Helgaas <bhelgaas@google.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        PCI <linux-pci@vger.kernel.org>,
-        Punit Agrawal <punit1.agrawal@toshiba.co.jp>,
-        yuji2.ishikawa@toshiba.co.jp,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v3 1/3] dt-bindings: pci: Add DT binding for Toshiba
- Visconti PCIe controller
-X-TSB-HOP: ON
-Message-ID: <20210527002251.zyrpmy4u2asdn7bo@toshiba.co.jp>
-References: <20210524063004.132043-1-nobuhiro1.iwamatsu@toshiba.co.jp>
- <20210524063004.132043-2-nobuhiro1.iwamatsu@toshiba.co.jp>
- <CAL_JsqKE0o9dUmJxgSg3_e_s7Dh3Vrjb60=u+xRd7erCVnFHWQ@mail.gmail.com>
+        id S234435AbhE0AbT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 May 2021 20:31:19 -0400
+Received: from mga12.intel.com ([192.55.52.136]:58472 "EHLO mga12.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232903AbhE0AbS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 26 May 2021 20:31:18 -0400
+IronPort-SDR: GSuDlhoBJQsgcYbPuCGjOLOOUiAOBbCgU538MHSEu5y5tQhxnPEunrURHrAzXMXx+YdLBvwNn+
+ EKX6v+HIe9Sg==
+X-IronPort-AV: E=McAfee;i="6200,9189,9996"; a="182268461"
+X-IronPort-AV: E=Sophos;i="5.82,333,1613462400"; 
+   d="scan'208";a="182268461"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 May 2021 17:29:44 -0700
+IronPort-SDR: Thi5SwBK4GdZlu5ZZDXBBc2rUKJWyQNH+Yc9d5c2PJMub14o1vNSYPiIrcsT8H57W0rukluIGN
+ MstgWn6nc8RQ==
+X-IronPort-AV: E=Sophos;i="5.82,333,1613462400"; 
+   d="scan'208";a="480331177"
+Received: from skgangad-mobl.amr.corp.intel.com (HELO skuppusw-desk1.amr.corp.intel.com) ([10.254.33.45])
+  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 May 2021 17:29:43 -0700
+From:   Kuppuswamy Sathyanarayanan 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>
+To:     Peter Zijlstra <peterz@infradead.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Tony Luck <tony.luck@intel.com>
+Cc:     Andi Kleen <ak@linux.intel.com>,
+        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
+        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Raj Ashok <ashok.raj@intel.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Kuppuswamy Sathyanarayanan 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        linux-kernel@vger.kernel.org
+Subject: [RFC v2-fix-v2 1/1] x86/traps: Add #VE support for TDX guest
+Date:   Wed, 26 May 2021 17:29:31 -0700
+Message-Id: <20210527002931.3632581-1-sathyanarayanan.kuppuswamy@linux.intel.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <4031ffc2-a442-5da7-e793-ac1053533bb3@linux.intel.com>
+References: <4031ffc2-a442-5da7-e793-ac1053533bb3@linux.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAL_JsqKE0o9dUmJxgSg3_e_s7Dh3Vrjb60=u+xRd7erCVnFHWQ@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 26, 2021 at 11:33:35AM -0500, Rob Herring wrote:
-> On Mon, May 24, 2021 at 1:30 AM Nobuhiro Iwamatsu
-> <nobuhiro1.iwamatsu@toshiba.co.jp> wrote:
-> >
-> > This commit adds the Device Tree binding documentation that allows
-> > to describe the PCIe controller found in Toshiba Visconti SoCs.
-> >
-> > v1 -> v2:
-> >  - Remove white space.
-> >  - Drop num-viewport and bus-range from required.
-> >  - Drop status line from example.
-> >  - Drop bus-range from required.
-> >  - Removed lines defined in pci-bus.yaml from required.
-> >
-> > Signed-off-by: Nobuhiro Iwamatsu <nobuhiro1.iwamatsu@toshiba.co.jp>
-> > ---
-> >  .../bindings/pci/toshiba,visconti-pcie.yaml   | 110 ++++++++++++++++++
-> >  1 file changed, 110 insertions(+)
-> >  create mode 100644 Documentation/devicetree/bindings/pci/toshiba,visconti-pcie.yaml
-> 
-> Please resend to DT list. Otherwise, automated checks don't run
-OK, I will resent to DT list.
-> (though I'm sure you ran 'make dt_binding_check' already, right?).
+From: "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
 
-Yes, I ran it enerytime.
+Virtualization Exceptions (#VE) are delivered to TDX guests due to
+specific guest actions which may happen in either user space or the kernel:
 
+ * Specific instructions (WBINVD, for example)
+ * Specific MSR accesses
+ * Specific CPUID leaf accesses
+ * Access to TD-shared memory, which includes MMIO
 
-> >
-> > diff --git a/Documentation/devicetree/bindings/pci/toshiba,visconti-pcie.yaml b/Documentation/devicetree/bindings/pci/toshiba,visconti-pcie.yaml
-> > new file mode 100644
-> > index 000000000000..d47a4a3c49e3
-> > --- /dev/null
-> > +++ b/Documentation/devicetree/bindings/pci/toshiba,visconti-pcie.yaml
-> > @@ -0,0 +1,110 @@
-> > +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> > +%YAML 1.2
-> > +---
-> > +$id: http://devicetree.org/schemas/pci/toshiba,visconti-pcie.yaml#
-> > +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> > +
-> > +title: Toshiba Visconti5 SoC PCIe Host Controller Device Tree Bindings
-> > +
-> > +maintainers:
-> > +  - Nobuhiro Iwamatsu <nobuhiro1.iwamatsu@toshiba.co.jp>
-> > +
-> > +description: |+
-> > +  Toshiba Visconti5 SoC PCIe host controller is based on the Synopsys DesignWare PCIe IP.
-> > +
-> > +allOf:
-> > +  - $ref: /schemas/pci/pci-bus.yaml#
-> > +
-> > +properties:
-> > +  compatible:
-> > +    const: toshiba,visconti-pcie
-> > +
-> > +  reg:
-> > +    items:
-> > +      - description: Data Bus Interface (DBI) registers.
-> > +      - description: PCIe configuration space region.
-> > +      - description: Visconti specific additional registers.
-> > +      - description: Visconti specific SMU registers
-> > +      - description: Visconti specific memory protection unit registers (MPU)
-> > +
-> > +  reg-names:
-> > +    items:
-> > +      - const: dbi
-> > +      - const: config
-> > +      - const: ulreg
-> > +      - const: smu
-> > +      - const: mpu
-> > +
-> > +  interrupts:
-> > +    maxItems: 1
-> > +
-> > +  clocks:
-> > +    items:
-> > +      - description: PCIe reference clock
-> > +      - description: PCIe system clock
-> > +      - description: Auxiliary clock
-> > +
-> > +  clock-names:
-> > +    items:
-> > +      - const: pcie_refclk
-> 
-> Just 'refclk'. Though 'clk' is redundant too. I'd go with 'ref',
-> 'aux', and 'core'.
-> 
+In the settings that Linux will run in, virtual exceptions are never
+generated on accesses to normal, TD-private memory that has been
+accepted.
 
-Ok, I will update.
+The entry paths do not access TD-shared memory, MMIO regions or use
+those specific MSRs, instructions, CPUID leaves that might generate #VE.
+In addition, all interrupts including NMIs are blocked by the hardware
+starting with #VE delivery until TDGETVEINFO is called.  This eliminates
+the chance of a #VE during the syscall gap or paranoid entry paths and
+simplifies #VE handling.
 
-> > +      - const: sysclk
-> > +      - const: auxclk
-> > +
-> > +  num-lanes:
-> > +    const: 2
-> > +
-> > +required:
-> > +  - reg
-> > +  - reg-names
-> > +  - interrupts
-> > +  - "#interrupt-cells"
-> > +  - interrupt-map
-> > +  - interrupt-map-mask
-> > +  - num-lanes
-> > +  - clocks
-> > +  - clock-names
-> > +  - max-link-speed
-> > +
-> > +unevaluatedProperties: false
-> > +
-> > +examples:
-> > +  - |
-> > +    #include <dt-bindings/interrupt-controller/irq.h>
-> > +    #include <dt-bindings/interrupt-controller/arm-gic.h>
-> > +
-> > +    soc {
-> > +        #address-cells = <2>;
-> > +        #size-cells = <2>;
-> > +
-> > +        pcie: pcie@28400000 {
-> > +            compatible = "toshiba,visconti-pcie";
-> > +            reg = <0x0 0x28400000 0x0 0x00400000>,
-> > +                  <0x0 0x70000000 0x0 0x10000000>,
-> > +                  <0x0 0x28050000 0x0 0x00010000>,
-> > +                  <0x0 0x24200000 0x0 0x00002000>,
-> > +                  <0x0 0x24162000 0x0 0x00001000>;
-> > +            reg-names  = "dbi", "config", "ulreg", "smu", "mpu";
-> > +            device_type = "pci";
-> > +            bus-range = <0x00 0xff>;
-> > +            num-lanes = <2>;
-> > +            num-viewport = <8>;
-> > +
-> > +            #address-cells = <3>;
-> > +            #size-cells = <2>;
-> > +            #interrupt-cells = <1>;
-> > +            ranges = <0x81000000 0 0x40000000 0 0x40000000 0 0x00010000>,
-> > +                     <0x82000000 0 0x50000000 0 0x50000000 0 0x20000000>;
-> > +            interrupts = <GIC_SPI 215 IRQ_TYPE_LEVEL_HIGH>;
-> > +            interrupt-names = "intr";
-> > +            interrupt-map-mask = <0 0 0 7>;
-> > +            interrupt-map =
-> > +                <0 0 0 1 &gic GIC_SPI 215 IRQ_TYPE_LEVEL_HIGH
-> > +                 0 0 0 2 &gic GIC_SPI 215 IRQ_TYPE_LEVEL_HIGH
-> > +                 0 0 0 3 &gic GIC_SPI 215 IRQ_TYPE_LEVEL_HIGH
-> > +                 0 0 0 4 &gic GIC_SPI 215 IRQ_TYPE_LEVEL_HIGH>;
-> > +            clocks = <&extclk100mhz>, <&clk600mhz>, <&clk25mhz>;
-> > +            clock-names = "pcie_refclk", "sysclk", "auxclk";
-> > +            max-link-speed = <2>;
-> > +        };
-> > +    };
-> > +...
-> > --
-> > 2.31.1
-> >
-> 
+After TDGETVEINFO #VE could happen in theory (e.g. through an NMI),
+but it is expected not to happen because TDX expects NMIs not to
+trigger #VEs. Another case where they could happen is if the #VE
+exception panics, but in this case there are no guarantees on anything
+anyways.
 
-Best regards,
-  Nobuhiro
+If a guest kernel action which would normally cause a #VE occurs in the
+interrupt-disabled region before TDGETVEINFO, a #DF is delivered to the
+guest which will result in an oops (and should eventually be a panic, as
+we would like to set panic_on_oops to 1 for TDX guests).
+
+Add basic infrastructure to handle any #VE which occurs in the kernel or
+userspace.  Later patches will add handling for specific #VE scenarios.
+
+Convert unhandled #VE's (everything, until later in this series) so that
+they appear just like a #GP by calling ve_raise_fault() directly.
+ve_raise_fault() is similar to #GP handler and is responsible for
+sending SIGSEGV to userspace and cpu die and notifying debuggers and
+other die chain users.  
+
+Co-developed-by: Sean Christopherson <sean.j.christopherson@intel.com>
+Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
+Signed-off-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
+Reviewed-by: Andi Kleen <ak@linux.intel.com>
+Signed-off-by: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
+---
+
+Changes since RFC v2-fix:
+ * No code changes (Added Tony to "To" list)
+
+Changes since v1:
+ * Removed [RFC v2 07/32] x86/traps: Add do_general_protection() helper function.
+ * Instead of resuing #GP handler, defined a custom handler.
+ * Fixed commit log as per review comments.
+
+ arch/x86/include/asm/idtentry.h |  4 ++
+ arch/x86/include/asm/tdx.h      | 19 +++++++++
+ arch/x86/kernel/idt.c           |  6 +++
+ arch/x86/kernel/tdx.c           | 36 +++++++++++++++++
+ arch/x86/kernel/traps.c         | 69 +++++++++++++++++++++++++++++++++
+ 5 files changed, 134 insertions(+)
+
+diff --git a/arch/x86/include/asm/idtentry.h b/arch/x86/include/asm/idtentry.h
+index 5eb3bdf36a41..41a0732d5f68 100644
+--- a/arch/x86/include/asm/idtentry.h
++++ b/arch/x86/include/asm/idtentry.h
+@@ -619,6 +619,10 @@ DECLARE_IDTENTRY_XENCB(X86_TRAP_OTHER,	exc_xen_hypervisor_callback);
+ DECLARE_IDTENTRY_RAW(X86_TRAP_OTHER,	exc_xen_unknown_trap);
+ #endif
+ 
++#ifdef CONFIG_INTEL_TDX_GUEST
++DECLARE_IDTENTRY(X86_TRAP_VE,		exc_virtualization_exception);
++#endif
++
+ /* Device interrupts common/spurious */
+ DECLARE_IDTENTRY_IRQ(X86_TRAP_OTHER,	common_interrupt);
+ #ifdef CONFIG_X86_LOCAL_APIC
+diff --git a/arch/x86/include/asm/tdx.h b/arch/x86/include/asm/tdx.h
+index fcd42119a287..a451786496a0 100644
+--- a/arch/x86/include/asm/tdx.h
++++ b/arch/x86/include/asm/tdx.h
+@@ -39,6 +39,25 @@ struct tdx_hypercall_output {
+ 	u64 r15;
+ };
+ 
++/*
++ * Used by #VE exception handler to gather the #VE exception
++ * info from the TDX module. This is software only structure
++ * and not related to TDX module/VMM.
++ */
++struct ve_info {
++	u64 exit_reason;
++	u64 exit_qual;
++	u64 gla;
++	u64 gpa;
++	u32 instr_len;
++	u32 instr_info;
++};
++
++unsigned long tdg_get_ve_info(struct ve_info *ve);
++
++int tdg_handle_virtualization_exception(struct pt_regs *regs,
++		struct ve_info *ve);
++
+ /* Common API to check TDX support in decompression and common kernel code. */
+ bool is_tdx_guest(void);
+ 
+diff --git a/arch/x86/kernel/idt.c b/arch/x86/kernel/idt.c
+index ee1a283f8e96..546b6b636c7d 100644
+--- a/arch/x86/kernel/idt.c
++++ b/arch/x86/kernel/idt.c
+@@ -64,6 +64,9 @@ static const __initconst struct idt_data early_idts[] = {
+ 	 */
+ 	INTG(X86_TRAP_PF,		asm_exc_page_fault),
+ #endif
++#ifdef CONFIG_INTEL_TDX_GUEST
++	INTG(X86_TRAP_VE,		asm_exc_virtualization_exception),
++#endif
+ };
+ 
+ /*
+@@ -87,6 +90,9 @@ static const __initconst struct idt_data def_idts[] = {
+ 	INTG(X86_TRAP_MF,		asm_exc_coprocessor_error),
+ 	INTG(X86_TRAP_AC,		asm_exc_alignment_check),
+ 	INTG(X86_TRAP_XF,		asm_exc_simd_coprocessor_error),
++#ifdef CONFIG_INTEL_TDX_GUEST
++	INTG(X86_TRAP_VE,		asm_exc_virtualization_exception),
++#endif
+ 
+ #ifdef CONFIG_X86_32
+ 	TSKG(X86_TRAP_DF,		GDT_ENTRY_DOUBLEFAULT_TSS),
+diff --git a/arch/x86/kernel/tdx.c b/arch/x86/kernel/tdx.c
+index e4383b416ef3..527d2638ddae 100644
+--- a/arch/x86/kernel/tdx.c
++++ b/arch/x86/kernel/tdx.c
+@@ -10,6 +10,7 @@
+ 
+ /* TDX Module call Leaf IDs */
+ #define TDINFO				1
++#define TDGETVEINFO			3
+ 
+ static struct {
+ 	unsigned int gpa_width;
+@@ -87,6 +88,41 @@ static void tdg_get_info(void)
+ 	td_info.attributes = out.rdx;
+ }
+ 
++unsigned long tdg_get_ve_info(struct ve_info *ve)
++{
++	u64 ret;
++	struct tdx_module_output out = {0};
++
++	/*
++	 * NMIs and machine checks are suppressed. Before this point any
++	 * #VE is fatal. After this point (TDGETVEINFO call), NMIs and
++	 * additional #VEs are permitted (but we don't expect them to
++	 * happen unless you panic).
++	 */
++	ret = __tdx_module_call(TDGETVEINFO, 0, 0, 0, 0, &out);
++
++	ve->exit_reason = out.rcx;
++	ve->exit_qual   = out.rdx;
++	ve->gla         = out.r8;
++	ve->gpa         = out.r9;
++	ve->instr_len   = out.r10 & UINT_MAX;
++	ve->instr_info  = out.r10 >> 32;
++
++	return ret;
++}
++
++int tdg_handle_virtualization_exception(struct pt_regs *regs,
++		struct ve_info *ve)
++{
++	/*
++	 * TODO: Add handler support for various #VE exit
++	 * reasons. It will be added by other patches in
++	 * the series.
++	 */
++	pr_warn("Unexpected #VE: %lld\n", ve->exit_reason);
++	return -EFAULT;
++}
++
+ void __init tdx_early_init(void)
+ {
+ 	if (!cpuid_has_tdx_guest())
+diff --git a/arch/x86/kernel/traps.c b/arch/x86/kernel/traps.c
+index 651e3e508959..043608943c3b 100644
+--- a/arch/x86/kernel/traps.c
++++ b/arch/x86/kernel/traps.c
+@@ -61,6 +61,7 @@
+ #include <asm/insn.h>
+ #include <asm/insn-eval.h>
+ #include <asm/vdso.h>
++#include <asm/tdx.h>
+ 
+ #ifdef CONFIG_X86_64
+ #include <asm/x86_init.h>
+@@ -1137,6 +1138,74 @@ DEFINE_IDTENTRY(exc_device_not_available)
+ 	}
+ }
+ 
++#define VEFSTR "VE fault"
++static void ve_raise_fault(struct pt_regs *regs, long error_code)
++{
++	struct task_struct *tsk = current;
++
++	if (user_mode(regs)) {
++		tsk->thread.error_code = error_code;
++		tsk->thread.trap_nr = X86_TRAP_VE;
++
++		/*
++		 * Not fixing up VDSO exceptions similar to #GP handler
++		 * because we don't expect the VDSO to trigger #VE.
++		 */
++		show_signal(tsk, SIGSEGV, "", VEFSTR, regs, error_code);
++		force_sig(SIGSEGV);
++		return;
++	}
++
++	if (fixup_exception(regs, X86_TRAP_VE, error_code, 0))
++		return;
++
++	tsk->thread.error_code = error_code;
++	tsk->thread.trap_nr = X86_TRAP_VE;
++
++	/*
++	 * To be potentially processing a kprobe fault and to trust the result
++	 * from kprobe_running(), we have to be non-preemptible.
++	 */
++	if (!preemptible() &&
++	    kprobe_running() &&
++	    kprobe_fault_handler(regs, X86_TRAP_VE))
++		return;
++
++	notify_die(DIE_GPF, VEFSTR, regs, error_code, X86_TRAP_VE, SIGSEGV);
++
++	die_addr(VEFSTR, regs, error_code, 0);
++}
++
++#ifdef CONFIG_INTEL_TDX_GUEST
++DEFINE_IDTENTRY(exc_virtualization_exception)
++{
++	struct ve_info ve;
++	int ret;
++
++	RCU_LOCKDEP_WARN(!rcu_is_watching(), "entry code didn't wake RCU");
++
++	/*
++	 * NMIs/Machine-checks/Interrupts will be in a disabled state
++	 * till TDGETVEINFO TDCALL is executed. This prevents #VE
++	 * nesting issue.
++	 */
++	ret = tdg_get_ve_info(&ve);
++
++	cond_local_irq_enable(regs);
++
++	if (!ret)
++		ret = tdg_handle_virtualization_exception(regs, &ve);
++	/*
++	 * If tdg_handle_virtualization_exception() could not process
++	 * it successfully, treat it as #GP(0) and handle it.
++	 */
++	if (ret)
++		ve_raise_fault(regs, 0);
++
++	cond_local_irq_disable(regs);
++}
++#endif
++
+ #ifdef CONFIG_X86_32
+ DEFINE_IDTENTRY_SW(iret_error)
+ {
+-- 
+2.25.1
+
