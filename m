@@ -2,224 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C6405392CDB
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 13:36:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A0A5392CC8
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 13:34:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233935AbhE0LiI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 May 2021 07:38:08 -0400
-Received: from verein.lst.de ([213.95.11.211]:38425 "EHLO verein.lst.de"
+        id S233521AbhE0LgE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 May 2021 07:36:04 -0400
+Received: from mga17.intel.com ([192.55.52.151]:38172 "EHLO mga17.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232766AbhE0LiG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 May 2021 07:38:06 -0400
-Received: by verein.lst.de (Postfix, from userid 2407)
-        id 5899B68AFE; Thu, 27 May 2021 13:36:30 +0200 (CEST)
-Date:   Thu, 27 May 2021 13:36:29 +0200
-From:   Christoph Hellwig <hch@lst.de>
-To:     Coly Li <colyli@suse.de>
-Cc:     linux-bcache@vger.kernel.org, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Diego Ercolani <diego.ercolani@gmail.com>,
-        Jan Szubiak <jan.szubiak@linuxpolska.pl>,
-        Marco Rebhan <me@dblsaiko.net>,
-        Matthias Ferdinand <bcache@mfedv.net>,
-        Thorsten Knabe <linux@thorsten-knabe.de>,
-        Victor Westerhuis <victor@westerhu.is>,
-        Vojtech Pavlik <vojtech@suse.cz>, stable@vger.kernel.org,
-        Christoph Hellwig <hch@lst.de>,
-        Kent Overstreet <kent.overstreet@gmail.com>,
-        Takashi Iwai <tiwai@suse.com>
-Subject: Re: [PATCH v4] bcache: avoid oversized read request in cache
- missing code path
-Message-ID: <20210527113629.GA17266@lst.de>
-References: <20210526151450.45211-1-colyli@suse.de>
+        id S229657AbhE0LgA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 27 May 2021 07:36:00 -0400
+IronPort-SDR: GHpEVKI4qrm3F2IJZhYFAqoVokjuHAyzeLTaWn9LbvVaUwroPLe1xqAlqmhRG/tuLlO1lvaxmr
+ 5LSjRq1nTnJw==
+X-IronPort-AV: E=McAfee;i="6200,9189,9996"; a="183046787"
+X-IronPort-AV: E=Sophos;i="5.82,334,1613462400"; 
+   d="scan'208";a="183046787"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 May 2021 04:34:26 -0700
+IronPort-SDR: Z8d4c4OA1I9bZBvmBtBnyIfwcZYYCgoULFtKxAPKxYU2kGCJL42VPweB5L2c/xuMN88+cvOaR3
+ AQhLu02AG3hw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.82,334,1613462400"; 
+   d="scan'208";a="443526298"
+Received: from mattu-haswell.fi.intel.com (HELO [10.237.72.170]) ([10.237.72.170])
+  by orsmga008.jf.intel.com with ESMTP; 27 May 2021 04:34:24 -0700
+Subject: Re: [PATCH 21/24] usb: host: xhci: Move array of structs from the
+ stack onto the heap
+To:     Lee Jones <lee.jones@linaro.org>,
+        Sergei Shtylyov <sergei.shtylyov@gmail.com>
+Cc:     linux-kernel@vger.kernel.org,
+        Mathias Nyman <mathias.nyman@intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-usb@vger.kernel.org
+References: <20210526130037.856068-1-lee.jones@linaro.org>
+ <20210526130037.856068-22-lee.jones@linaro.org>
+ <8551978f-27b0-767e-f92b-e96ab3064b33@gmail.com>
+ <20210526144451.GB543307@dell>
+ <ad5d3a04-c065-675e-c53f-5d48b6367c89@gmail.com>
+ <20210526152835.GE543307@dell>
+From:   Mathias Nyman <mathias.nyman@linux.intel.com>
+Autocrypt: addr=mathias.nyman@linux.intel.com; prefer-encrypt=mutual; keydata=
+ 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 fiD/
+Message-ID: <23bb1fc5-acff-74a6-c67a-11b0e0d85011@linux.intel.com>
+Date:   Thu, 27 May 2021 14:36:34 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210526151450.45211-1-colyli@suse.de>
-User-Agent: Mutt/1.5.17 (2007-11-01)
+In-Reply-To: <20210526152835.GE543307@dell>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 26, 2021 at 11:14:50PM +0800, Coly Li wrote:
-> In the cache missing code path of cached device, if a proper location
-> from the internal B+ tree is matched for a cache miss range, function
-> cached_dev_cache_miss() will be called in cache_lookup_fn() in the
-> following code block,
-> [code block 1]
->   526         unsigned int sectors = KEY_INODE(k) == s->iop.inode
->   527                 ? min_t(uint64_t, INT_MAX,
->   528                         KEY_START(k) - bio->bi_iter.bi_sector)
->   529                 : INT_MAX;
->   530         int ret = s->d->cache_miss(b, s, bio, sectors);
+On 26.5.2021 18.28, Lee Jones wrote:
+> On Wed, 26 May 2021, Sergei Shtylyov wrote:
 > 
-> Here s->d->cache_miss() is the call backfunction pointer initialized as
-> cached_dev_cache_miss(), the last parameter 'sectors' is an important
-> hint to calculate the size of read request to backing device of the
-> missing cache data.
-> 
-> Current calculation in above code block may generate oversized value of
-> 'sectors', which consequently may trigger 2 different potential kernel
-> panics by BUG() or BUG_ON() as listed below,
-> 
-> 1) BUG_ON() inside bch_btree_insert_key(),
-> [code block 2]
->    886         BUG_ON(b->ops->is_extents && !KEY_SIZE(k));
-> 2) BUG() inside biovec_slab(),
-> [code block 3]
->    51         default:
->    52                 BUG();
->    53                 return NULL;
-> 
-> All the above panics are original from cached_dev_cache_miss() by the
-> oversized parameter 'sectors'.
-> 
-> Inside cached_dev_cache_miss(), parameter 'sectors' is used to calculate
-> the size of data read from backing device for the cache missing. This
-> size is stored in s->insert_bio_sectors by the following lines of code,
-> [code block 4]
->   909    s->insert_bio_sectors = min(sectors, bio_sectors(bio) + reada);
-> 
-> Then the actual key inserting to the internal B+ tree is generated and
-> stored in s->iop.replace_key by the following lines of code,
-> [code block 5]
->   911   s->iop.replace_key = KEY(s->iop.inode,
->   912                    bio->bi_iter.bi_sector + s->insert_bio_sectors,
->   913                    s->insert_bio_sectors);
-> The oversized parameter 'sectors' may trigger panic 1) by BUG_ON() from
-> the above code block.
-> 
-> And the bio sending to backing device for the missing data is allocated
-> with hint from s->insert_bio_sectors by the following lines of code,
-> [code block 6]
->   926    cache_bio = bio_alloc_bioset(GFP_NOWAIT,
->   927                 DIV_ROUND_UP(s->insert_bio_sectors, PAGE_SECTORS),
->   928                 &dc->disk.bio_split);
-> The oversized parameter 'sectors' may trigger panic 2) by BUG() from the
-> agove code block.
-> 
-> Now let me explain how the panics happen with the oversized 'sectors'.
-> In code block 5, replace_key is generated by macro KEY(). From the
-> definition of macro KEY(),
-> [code block 7]
->   71 #define KEY(inode, offset, size)                                  \
->   72 ((struct bkey) {                                                  \
->   73      .high = (1ULL << 63) | ((__u64) (size) << 20) | (inode),     \
->   74      .low = (offset)                                              \
->   75 })
-> 
-> Here 'size' is 16bits width embedded in 64bits member 'high' of struct
-> bkey. But in code block 1, if "KEY_START(k) - bio->bi_iter.bi_sector" is
-> very probably to be larger than (1<<16) - 1, which makes the bkey size
-> calculation in code block 5 is overflowed. In one bug report the value
-> of parameter 'sectors' is 131072 (= 1 << 17), the overflowed 'sectors'
-> results the overflowed s->insert_bio_sectors in code block 4, then makes
-> size field of s->iop.replace_key to be 0 in code block 5. Then the 0-
-> sized s->iop.replace_key is inserted into the internal B+ tree as cache
-> missing check key (a special key to detect and avoid a racing between
-> normal write request and cache missing read request) as,
-> [code block 8]
->   915   ret = bch_btree_insert_check_key(b, &s->op, &s->iop.replace_key);
-> 
-> Then the 0-sized s->iop.replace_key as 3rd parameter triggers the bkey
-> size check BUG_ON() in code block 2, and causes the kernel panic 1).
-> 
-> Another kernel panic is from code block 6, is by the bvecs number
-> oversized value s->insert_bio_sectors from code block 4,
-> 	min(sectors, bio_sectors(bio) + reada)
-> There are two possibility for oversized reresult,
-> - bio_sectors(bio) is valid, but bio_sectors(bio) + reada is oversized.
-> - sectors < bio_sectors(bio) + reada, but sectors is oversized.
-> 
-> >From a bug report the result of "DIV_ROUND_UP(s->insert_bio_sectors,
-> PAGE_SECTORS)" from code block 6 can be 344, 282, 946, 342 and many
-> other values which larther than BIO_MAX_VECS (a.k.a 256). When calling
-> bio_alloc_bioset() with such larger-than-256 value as the 2nd parameter,
-> this value will eventually be sent to biovec_slab() as parameter
-> 'nr_vecs' in following code path,
->    bio_alloc_bioset() ==> bvec_alloc() ==> biovec_slab()
-> Because parameter 'nr_vecs' is larger-than-256 value, the panic by BUG()
-> in code block 3 is triggered inside biovec_slab().
-> 
-> >From the above analysis, we know that the 4th parameter 'sector' sent
-> into cached_dev_cache_miss() may cause overflow in code block 5 and 6,
-> and finally cause kernel panic in code block 2 and 3. And if result of
-> bio_sectors(bio) + reada exceeds valid bvecs number, it may also trigger
-> kernel panic in code block 3 from code block 6.
-> 
-> In this patch, the above two panics are avoided by the following
-> changes,
-> - If DIV_ROUND_UP(bio_sectors(bio) + reada, PAGE_SECTORS) exceeds the
->   maximum bvecs counter, reduce reada to make sure the DIV_ROUND_UP()
->   result won't generate a oversized s->insert_bio_sectors to cause
->   invalid bvecs number to cache_bio.
-> - If sectors exceeds the maximum bkey size, then set the maximum valid
->   bkey size to sectors.
-> 
-> By the above changes, in code block 5 the size value in KEY() macro will
-> always be in valid range. As well in code block 6, the nr_iovecs
-> parameter of bio_alloc_bioset() calculated by
-> DIV_ROUND_UP(s->insert_bio_sectors, PAGE_SECTORS) will always be a valid
-> bvecs number. Now both panics won't happen anymore.
-> 
-> Current problmatic code can be partially found since Linux v5.13-rc1,
-> therefore all maintained stable kernels should try to apply this fix.
-> 
-> Reported-by: Diego Ercolani <diego.ercolani@gmail.com>
-> Reported-by: Jan Szubiak <jan.szubiak@linuxpolska.pl>
-> Reported-by: Marco Rebhan <me@dblsaiko.net>
-> Reported-by: Matthias Ferdinand <bcache@mfedv.net>
-> Reported-by: Thorsten Knabe <linux@thorsten-knabe.de>
-> Reported-by: Victor Westerhuis <victor@westerhu.is>
-> Reported-by: Vojtech Pavlik <vojtech@suse.cz>
-> Signed-off-by: Coly Li <colyli@suse.de>
-> Cc: stable@vger.kernel.org
-> Cc: Christoph Hellwig <hch@lst.de>
-> Cc: Kent Overstreet <kent.overstreet@gmail.com>
-> Cc: Takashi Iwai <tiwai@suse.com>
-> ---
-> Changelog:
-> v4, not directly access BIO_MAX_VECS and reduce reada value to avoid
->     oversized bvecs number, by hint from Christoph Hellwig. 
-> v3, fix typo in v2.
-> v2, fix the bypass bio size calculation in v1.
-> v1, the initial version
-> 
->  drivers/md/bcache/request.c | 19 +++++++++++++++++++
->  1 file changed, 19 insertions(+)
-> 
-> diff --git a/drivers/md/bcache/request.c b/drivers/md/bcache/request.c
-> index 29c231758293..054948f037ed 100644
-> --- a/drivers/md/bcache/request.c
-> +++ b/drivers/md/bcache/request.c
-> @@ -883,6 +883,7 @@ static int cached_dev_cache_miss(struct btree *b, struct search *s,
->  	unsigned int reada = 0;
->  	struct cached_dev *dc = container_of(s->d, struct cached_dev, disk);
->  	struct bio *miss, *cache_bio;
-> +	unsigned int nr_bvecs, max_segs;
->  
->  	s->cache_missed = 1;
->  
-> @@ -899,6 +900,24 @@ static int cached_dev_cache_miss(struct btree *b, struct search *s,
->  			      get_capacity(bio->bi_bdev->bd_disk) -
->  			      bio_end_sector(bio));
->  
-> +	/*
-> +	 * If "bio_sectors(bio) + reada" may causes an oversized bio bvecs
-> +	 * number, reada size must be deducted to make sure the following
-> +	 * calculated s->insert_bio_sectors won't cause oversized bvecs number
-> +	 * to cache_bio.
-> +	 */
-> +	nr_bvecs = DIV_ROUND_UP(bio_sectors(bio) + reada, PAGE_SECTORS);
+>> On 5/26/21 5:44 PM, Lee Jones wrote:
+>>
+>> [...]
+>>>>> Fixes the following W=1 kernel build warning(s):
+>>>>>
+>>>>>  drivers/usb/host/xhci.c: In function ‘xhci_reserve_bandwidth’:
+>>>>>  drivers/usb/host/xhci.c:2859:1: warning: the frame size of 1032 bytes is larger than 1024 bytes [-Wframe-larger-than=]
+>>>>>
+>>>>> Cc: Mathias Nyman <mathias.nyman@intel.com>
+>>>>> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+>>>>> Cc: linux-usb@vger.kernel.org
+>>>>> Signed-off-by: Lee Jones <lee.jones@linaro.org>
+>>>>> ---
+>>>>>  drivers/usb/host/xhci.c | 8 +++++++-
+>>>>>  1 file changed, 7 insertions(+), 1 deletion(-)
+>>>>>
+>>>>> diff --git a/drivers/usb/host/xhci.c b/drivers/usb/host/xhci.c
+>>>>> index ac2a7d4288883..40ce4b4eb12ad 100644
+>>>>> --- a/drivers/usb/host/xhci.c
+>>>>> +++ b/drivers/usb/host/xhci.c
+>>>> [...]
+>>>>> @@ -2788,6 +2788,10 @@ static int xhci_reserve_bandwidth(struct xhci_hcd *xhci,
+>>>>>  		return -ENOMEM;
+>>>>>  	}
+>>>>>  
+>>>>> +	ep_bw_info = kzalloc(sizeof(*ep_bw_info) * 31, GFP_KERNEL);
 
-Can't this overflow if bio_sectors(bio) is close to UINT_MAX already?
+GFP_KERNEL might not be suitable for all cases.
 
-> +	/*
-> +	 * Make sure sectors won't exceed (1 << KEY_SIZE_BITS) - 1, which is
-> +	 * the maximum bkey size in unit of sector. Then s->insert_bio_sectors
-> +	 * will always be a valid bio in valid bkey size range.
-> +	 */
-> +	if (sectors > ((1 << KEY_SIZE_BITS) - 1))
-> +		sectors = (1 << KEY_SIZE_BITS) - 1;
+xhci_reserve_bandwidth() is called from xhci_configure_endpoint(), which again
+is called from a lot of places.
+For example from xhci_update_hub_device() which can be called with GFP_NOIO mem_flags.
 
-This should use min() or min_t().
+-Mathias
+
