@@ -2,152 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 74CF4392586
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 05:41:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C0BF5392589
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 05:43:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234715AbhE0DnS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 May 2021 23:43:18 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:24906 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232573AbhE0DnQ (ORCPT
+        id S234724AbhE0Doj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 May 2021 23:44:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42542 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233656AbhE0Doh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 May 2021 23:43:16 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1622086902;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=owGdohWgeueCs/0bpmzG2a18Ycc1oYO2UMZ3CQnhszs=;
-        b=HUoGhgKPGyH3o5odC2NJnBDIwxz6hIXaa7Zn5aThw9JEtQxaVniSii+c9q6hvgEdYw7ftF
-        Lcno+LfJKQ/6mFV1juuGNVRQyZr2IBxhwNVOZ5ktnipFEHTYyZMFXA3vKerf18/6mj+TfL
-        QAO1VTdFa5OTYgig9V7+j9lJ2uyn2yM=
-Received: from mail-pj1-f72.google.com (mail-pj1-f72.google.com
- [209.85.216.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-545-58ePFGD6PYq2k_cXT_S8VA-1; Wed, 26 May 2021 23:41:41 -0400
-X-MC-Unique: 58ePFGD6PYq2k_cXT_S8VA-1
-Received: by mail-pj1-f72.google.com with SMTP id k1-20020a17090a7f01b029015d0d4c2107so2026957pjl.0
-        for <linux-kernel@vger.kernel.org>; Wed, 26 May 2021 20:41:40 -0700 (PDT)
+        Wed, 26 May 2021 23:44:37 -0400
+Received: from mail-ot1-x331.google.com (mail-ot1-x331.google.com [IPv6:2607:f8b0:4864:20::331])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62D72C061574
+        for <linux-kernel@vger.kernel.org>; Wed, 26 May 2021 20:43:05 -0700 (PDT)
+Received: by mail-ot1-x331.google.com with SMTP id n3-20020a9d74030000b029035e65d0a0b8so3129368otk.9
+        for <linux-kernel@vger.kernel.org>; Wed, 26 May 2021 20:43:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=jfHExiAwx1yhDJ7z9SPOraFBPqMXoh5n46J3TLD6IxI=;
+        b=qCrx8FvXM97lUfDQtGc7hqeqQ944hYWWSoZujRCyYfzaH2s5JMDv2t2lz5CDYr8a4Y
+         RdafEpU06bBsenrmamIC2itw/iiggx/c8Rzq+H6/Z6je69wxAOlgrSenGLJhTxZ1f8vU
+         3VegTt+cwG8QpP0YCRg2HEaApzeqy9m2YmRI1GFSSsxZnaxrLm+nLUHCvamNrv1LmqwX
+         JnvuRQEKuANxoS7lJlLC7H2mQnaoiPzkcrDVygrPJ2JXOQmmI7UzucPCas1t778Umb5k
+         0d6kKCIh6v0DwJcdZgXB9P9jQlmnX9K/Z7G6DP6U2uQi+Nb/gqn2TWQxSJjaWKxJU2Ji
+         FUaA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=owGdohWgeueCs/0bpmzG2a18Ycc1oYO2UMZ3CQnhszs=;
-        b=lK4gm0+LjsRPRXqebYQH+vyPqKoKEdDd6WOfIIqihZ1mjvnbff9SqoHDgbhk4l71PR
-         +J0Y/jWOv32n3TVQ45k2TjzXYPcVhtSZggBfSL/zxDWPgvjgycK/Of+/dopAGvUx0rV5
-         h9DA5xpQWLrYXOj0WS1BT0cGU6WncT5DU/4adb+707zVHRk+4TcH+Zz81kEO41iwaXZv
-         PsdIsjwAmgqeuj0SoejECWmwGG2ck+pVHRgM4TpR+y4Dme36ITmZw0xKHVTc7caI51gm
-         YvBStqbK6jy2opmAoWrj58sHGI6c4KPA7NXEVR7fwsWb4FskNg1Kdi65u3hZasAHIQdq
-         acqA==
-X-Gm-Message-State: AOAM5301fpCkl+TbqlmCLoepq3XSgrCjWP3ChPxYRgK3yb8LyQe0nyqb
-        ndHYdVvLcGwueUlozFqXrs2eCbRFZ2Oje/IAHe/yEi9QzQc1r9883vJfS9i3UdRbLfjwyMUyKG+
-        fUZS2hc7zlpnVT3jkKjJV4DTK
-X-Received: by 2002:a17:902:9004:b029:f0:b40d:38d with SMTP id a4-20020a1709029004b02900f0b40d038dmr1348722plp.85.1622086900077;
-        Wed, 26 May 2021 20:41:40 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxlloFsLSTo3NBjczWn6jhZffi5xMtvZghbENGdeQMOi1/9v8B7I5OYeenQXdt7FxlJZADScQ==
-X-Received: by 2002:a17:902:9004:b029:f0:b40d:38d with SMTP id a4-20020a1709029004b02900f0b40d038dmr1348697plp.85.1622086899770;
-        Wed, 26 May 2021 20:41:39 -0700 (PDT)
-Received: from wangxiaodeMacBook-Air.local ([209.132.188.80])
-        by smtp.gmail.com with ESMTPSA id 15sm545681pjt.17.2021.05.26.20.41.36
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 26 May 2021 20:41:39 -0700 (PDT)
-Subject: Re: [PATCH v3 1/4] virtio_net: move tx vq operation under tx queue
- lock
-To:     "Michael S. Tsirkin" <mst@redhat.com>, linux-kernel@vger.kernel.org
-Cc:     Jakub Kicinski <kuba@kernel.org>, Wei Wang <weiwan@google.com>,
-        David Miller <davem@davemloft.net>, netdev@vger.kernel.org,
-        Willem de Bruijn <willemb@google.com>,
-        virtualization@lists.linux-foundation.org
-References: <20210526082423.47837-1-mst@redhat.com>
- <20210526082423.47837-2-mst@redhat.com>
-From:   Jason Wang <jasowang@redhat.com>
-Message-ID: <476e9418-156d-dbc9-5105-11d2816b95f7@redhat.com>
-Date:   Thu, 27 May 2021 11:41:31 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.10.2
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=jfHExiAwx1yhDJ7z9SPOraFBPqMXoh5n46J3TLD6IxI=;
+        b=TSDEYyJtPQcI3wWG91ObNXBtZuvmIp3Af3hrnsrtcm5zggwEtEi7Cc4JHxeEHR8z1Z
+         1t7FDQA7zy8Zjt7jMiRQ4UeNmgxYIVQ8QOzSNIHnwPf1hDwwV/YCTV7snV9k8DFR9pvV
+         88+4QFqpe6U/yigJqZ/2oGRB31ZMVFx94AilGZNtGqb+QJP8Qxp0N0Kn3v5NiSH/Ti4Y
+         JVamCzbHqiAWwtQ140kqJ2tqEj09a5UQ46uQw22uZVytmO6O7FqSV9BqMefCKab292xF
+         uiAxfH/3pl2XEA2irH7zZ0Aa4K6hgzAX/tYdezHOveTU3kt/23BlufkXGNsOhHNSZEKU
+         fQag==
+X-Gm-Message-State: AOAM530y/gSyqlSeFI5KIkydur6lmQfz5KciU2ZKHlqi9owMqazNcC7C
+        aapYQRHDg/An7gD32EhBUX7ZPyD1DdzhbGgsB94=
+X-Google-Smtp-Source: ABdhPJyZnqxxgDnJ6PHbltuqV9e7YpgMP1k4fxHJNb1XSn7Xny5N88vOTGA/oxzG3Dqra1oAamTpwHWFw2t+Zsk06wA=
+X-Received: by 2002:a9d:6548:: with SMTP id q8mr1174607otl.311.1622086984587;
+ Wed, 26 May 2021 20:43:04 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210526082423.47837-2-mst@redhat.com>
-Content-Type: text/plain; charset=gbk; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+References: <20210526084726.552052-1-lee.jones@linaro.org> <20210526084726.552052-2-lee.jones@linaro.org>
+In-Reply-To: <20210526084726.552052-2-lee.jones@linaro.org>
+From:   Alex Deucher <alexdeucher@gmail.com>
+Date:   Wed, 26 May 2021 23:42:53 -0400
+Message-ID: <CADnq5_PhozjNvOjvoMQRr-oqNz_vOjHtuW45wCK80jHKYscV7A@mail.gmail.com>
+Subject: Re: [PATCH 01/34] drm/amd/pm/inc/smu_v13_0: Move table into the only
+ source file that uses it
+To:     Lee Jones <lee.jones@linaro.org>
+Cc:     David Airlie <airlied@linux.ie>, Kevin Wang <kevin1.wang@amd.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        amd-gfx list <amd-gfx@lists.freedesktop.org>,
+        Maling list - DRI developers 
+        <dri-devel@lists.freedesktop.org>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Applied.  Thanks!
 
-ÔÚ 2021/5/26 ÏÂÎç4:24, Michael S. Tsirkin Ð´µÀ:
-> It's unsafe to operate a vq from multiple threads.
-> Unfortunately this is exactly what we do when invoking
-> clean tx poll from rx napi.
-> Same happens with napi-tx even without the
-> opportunistic cleaning from the receive interrupt: that races
-> with processing the vq in start_xmit.
+On Wed, May 26, 2021 at 4:47 AM Lee Jones <lee.jones@linaro.org> wrote:
 >
-> As a fix move everything that deals with the vq to under tx lock.
+> Fixes the following W=3D1 kernel build warning(s):
 >
-> Fixes: b92f1e6751a6 ("virtio-net: transmit napi")
-> Signed-off-by: Michael S. Tsirkin <mst@redhat.com>
+>  drivers/gpu/drm/amd/amdgpu/../pm/inc/smu_v13_0.h:54:43: warning: =E2=80=
+=98smu13_thermal_policy=E2=80=99 defined but not used [-Wunused-const-varia=
+ble=3D]
+>
+> Cc: Alex Deucher <alexander.deucher@amd.com>
+> Cc: "Christian K=C3=B6nig" <christian.koenig@amd.com>
+> Cc: David Airlie <airlied@linux.ie>
+> Cc: Daniel Vetter <daniel@ffwll.ch>
+> Cc: Kevin Wang <kevin1.wang@amd.com>
+> Cc: amd-gfx@lists.freedesktop.org
+> Cc: dri-devel@lists.freedesktop.org
+> Signed-off-by: Lee Jones <lee.jones@linaro.org>
 > ---
->   drivers/net/virtio_net.c | 22 +++++++++++++++++++++-
->   1 file changed, 21 insertions(+), 1 deletion(-)
+>  drivers/gpu/drm/amd/pm/inc/smu_v13_0.h             | 6 ------
+>  drivers/gpu/drm/amd/pm/swsmu/smu13/aldebaran_ppt.c | 6 ++++++
+>  2 files changed, 6 insertions(+), 6 deletions(-)
 >
-> diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
-> index ac0c143f97b4..12512d1002ec 100644
-> --- a/drivers/net/virtio_net.c
-> +++ b/drivers/net/virtio_net.c
-> @@ -1508,6 +1508,8 @@ static int virtnet_poll_tx(struct napi_struct *napi, int budget)
->   	struct virtnet_info *vi = sq->vq->vdev->priv;
->   	unsigned int index = vq2txq(sq->vq);
->   	struct netdev_queue *txq;
-> +	int opaque;
-> +	bool done;
->   
->   	if (unlikely(is_xdp_raw_buffer_queue(vi, index))) {
->   		/* We don't need to enable cb for XDP */
-> @@ -1517,10 +1519,28 @@ static int virtnet_poll_tx(struct napi_struct *napi, int budget)
->   
->   	txq = netdev_get_tx_queue(vi->dev, index);
->   	__netif_tx_lock(txq, raw_smp_processor_id());
-> +	virtqueue_disable_cb(sq->vq);
->   	free_old_xmit_skbs(sq, true);
+> diff --git a/drivers/gpu/drm/amd/pm/inc/smu_v13_0.h b/drivers/gpu/drm/amd=
+/pm/inc/smu_v13_0.h
+> index 1687709507b3d..6119a36b2cba0 100644
+> --- a/drivers/gpu/drm/amd/pm/inc/smu_v13_0.h
+> +++ b/drivers/gpu/drm/amd/pm/inc/smu_v13_0.h
+> @@ -51,12 +51,6 @@
+>  #define CTF_OFFSET_HOTSPOT             5
+>  #define CTF_OFFSET_MEM                 5
+>
+> -static const struct smu_temperature_range smu13_thermal_policy[] =3D
+> -{
+> -       {-273150,  99000, 99000, -273150, 99000, 99000, -273150, 99000, 9=
+9000},
+> -       { 120000, 120000, 120000, 120000, 120000, 120000, 120000, 120000,=
+ 120000},
+> -};
+> -
+>  struct smu_13_0_max_sustainable_clocks {
+>         uint32_t display_clock;
+>         uint32_t phy_clock;
+> diff --git a/drivers/gpu/drm/amd/pm/swsmu/smu13/aldebaran_ppt.c b/drivers=
+/gpu/drm/amd/pm/swsmu/smu13/aldebaran_ppt.c
+> index d62cc6bb1a305..d6ce665baaf3b 100644
+> --- a/drivers/gpu/drm/amd/pm/swsmu/smu13/aldebaran_ppt.c
+> +++ b/drivers/gpu/drm/amd/pm/swsmu/smu13/aldebaran_ppt.c
+> @@ -78,6 +78,12 @@
+>
+>  #define smnPCIE_ESM_CTRL                       0x111003D0
+>
+> +static const struct smu_temperature_range smu13_thermal_policy[] =3D
+> +{
+> +       {-273150,  99000, 99000, -273150, 99000, 99000, -273150, 99000, 9=
+9000},
+> +       { 120000, 120000, 120000, 120000, 120000, 120000, 120000, 120000,=
+ 120000},
+> +};
 > +
-> +	opaque = virtqueue_enable_cb_prepare(sq->vq);
-> +
-> +	done = napi_complete_done(napi, 0);
-> +
-> +	if (!done)
-> +		virtqueue_disable_cb(sq->vq);
-> +
->   	__netif_tx_unlock(txq);
->   
-> -	virtqueue_napi_complete(napi, sq->vq, 0);
-> +	if (done) {
-> +		if (unlikely(virtqueue_poll(sq->vq, opaque))) {
-> +			if (napi_schedule_prep(napi)) {
-> +				__netif_tx_lock(txq, raw_smp_processor_id());
-> +				virtqueue_disable_cb(sq->vq);
-> +				__netif_tx_unlock(txq);
-> +				__napi_schedule(napi);
-> +			}
-> +		}
-> +	}
-
-
-Interesting, this looks like somehwo a open-coded version of 
-virtqueue_napi_complete(). I wonder if we can simply keep using 
-virtqueue_napi_complete() by simply moving the __netif_tx_unlock() after 
-that:
-
-netif_tx_lock(txq);
-free_old_xmit_skbs(sq, true);
-virtqueue_napi_complete(napi, sq->vq, 0);
-__netif_tx_unlock(txq);
-
-Thanks
-
-
->   
->   	if (sq->vq->num_free >= 2 + MAX_SKB_FRAGS)
->   		netif_tx_wake_queue(txq);
-
+>  static const struct cmn2asic_msg_mapping aldebaran_message_map[SMU_MSG_M=
+AX_COUNT] =3D {
+>         MSG_MAP(TestMessage,                         PPSMC_MSG_TestMessag=
+e,                     0),
+>         MSG_MAP(GetSmuVersion,                       PPSMC_MSG_GetSmuVers=
+ion,                   1),
+> --
+> 2.31.1
+>
