@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D845D3931BE
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 17:06:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E25D3931C1
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 17:06:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236834AbhE0PHm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 May 2021 11:07:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57122 "EHLO
+        id S236854AbhE0PHx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 May 2021 11:07:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57144 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236762AbhE0PHL (ORCPT
+        with ESMTP id S236766AbhE0PHM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 May 2021 11:07:11 -0400
-Received: from mail-qv1-xf2b.google.com (mail-qv1-xf2b.google.com [IPv6:2607:f8b0:4864:20::f2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B5DCC061760
-        for <linux-kernel@vger.kernel.org>; Thu, 27 May 2021 08:05:37 -0700 (PDT)
-Received: by mail-qv1-xf2b.google.com with SMTP id e8so240536qvp.7
-        for <linux-kernel@vger.kernel.org>; Thu, 27 May 2021 08:05:37 -0700 (PDT)
+        Thu, 27 May 2021 11:07:12 -0400
+Received: from mail-qk1-x72f.google.com (mail-qk1-x72f.google.com [IPv6:2607:f8b0:4864:20::72f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F5ECC061574
+        for <linux-kernel@vger.kernel.org>; Thu, 27 May 2021 08:05:39 -0700 (PDT)
+Received: by mail-qk1-x72f.google.com with SMTP id 82so920050qki.8
+        for <linux-kernel@vger.kernel.org>; Thu, 27 May 2021 08:05:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=soleen.com; s=google;
         h=from:to:subject:date:message-id:in-reply-to:references:mime-version
          :content-transfer-encoding;
-        bh=+EiR776LGRIVUqs8E6nTUaQXNk2yNVD65j0QM2uVzow=;
-        b=OoTpQqa+5r8BlTD7ijih47CrLq8A6B9RbRxoHM1uCuW1Z7lER6etpTCJW6b36pKuoO
-         /Ib+oumN81PGrjvwhUucnW8PIIX/xfixSd/82C9Ngo0OghsxdhoPMN9YB8akCg4px1aZ
-         XzXeqso3LANa1DVqRQz9crazOLSsLdTmD5xQcuItCBxnRmMyC6R44//8WloWI52+WiPZ
-         UYEUxuuFElnKBjvp82oC1mMOpZWb2Z7QJCVc/Q8PHNr52Va/jYqVOiEiP6SEjdDDqhBD
-         2jLNo0uWAKW+fjYBYBBF+rnqF8xkm+S4zZh0UrJJEjyMpmAzJzUiWOzMjiANp5dxzvof
-         YSNQ==
+        bh=uRcNIBXOyaSrsQwthVpy1hwauBBMN7Vivxx0utjD54U=;
+        b=baw560aO1zilTRnsPH5ODSQM+umpDLJom0wWm7jrdVnxroTvnRw1ujP0UhZKxl4h16
+         N38nZKepAcYoE0UAEpaMfhWdP2zvyq4n22H9pFgq0X6dglCZZhNLhxbZjmXHThU2ZZJd
+         FBIZs0K2hc/GsDRn7wCKSuSUDkhiWtOHZ6MQT3KjWhvmW/VAXRRm2CmpHf13D+JUuP5U
+         jngl4FpHRuskS3sFTcK/T1B7mB3OYSga5Z7occBeWpVtPNsXbCtuGJExnBIOgMY8UZJJ
+         adKCXSP8eR+kApqLmL1Xc5egVdLNQ8x4y3pH9ptqd38tuCXkVllnx9kYOl5J496pyK3b
+         lgvQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=+EiR776LGRIVUqs8E6nTUaQXNk2yNVD65j0QM2uVzow=;
-        b=JuAc+o+50UMQOJOOUmMR6sq5DlBl/xTzPGcrlgVNOGhrDL56TScRUozkx9aL9y6oPl
-         8T+SrGAAAwZfFv/Raq3OzjmWnCM+8eMoVJl+we4uy5MpngDk8saRXjXVQ8ZR6UmS4fqw
-         3VaQRtDTOgduW9n9qbyUKxLKcsLfSWZendBevI6I2D7vdlwnwFHaxrr15xXMsYoL7fnd
-         oOz793NHHmrFPHQRxrWwLKDSJzGx/jh8Fycb3S81EdbbOBGbwDwgBtM1Xf7VIOnoiC7h
-         a5rvhr9N7YG7PB1so1wsD/epv68HFe/iUg08oQ/i6/xOOkHq8ghRVbP/kxCvglCcMVfy
-         2sOw==
-X-Gm-Message-State: AOAM530Obz8TnZeTkdwacaP+1U5Lw8XKNLz87E7TbshAQeduaTGSJrkf
-        Np0t2wlYXXszX3tMlF36avGeMA==
-X-Google-Smtp-Source: ABdhPJzTP3oV1R+n8kGbXURQLbsLJZ4X6S2bcFpIfYYBkRufEHUPnqQYpI7uOymwC/kI/WMb3ZRyIw==
-X-Received: by 2002:ad4:4773:: with SMTP id d19mr4316997qvx.0.1622127936544;
-        Thu, 27 May 2021 08:05:36 -0700 (PDT)
+        bh=uRcNIBXOyaSrsQwthVpy1hwauBBMN7Vivxx0utjD54U=;
+        b=BS8BXeK0jQLyiwkQpxAM3gFf/7jfQ3SwXUgn/HdLaQ6TNdCoMy6bCD/LvnUvdrjhZ7
+         5KwAau8JESh1zqExRKX8SqxIeRqaJHig697XJyl6rfnHtU+TvPxSN9vxfCUI5Jkyq4hq
+         4Uh19QcSqbBEWtGo9jDzVY0dj1k+Va2uSUXYDXIbop5EF+g2tldB3LMKkB86NAyjQLj+
+         uJ1v7z2lt7Khl6sFigqXhYV9Jk9NoMRhxMgvd/YgqLiFjoPtKtUWF6y9fBVUocnH1V30
+         WYpZCb+9QG6ht1BKeFxg+ArGDVDbtfBN7giBX6OTmLXkLT/4Vw1pWqDo63YxAKbQGZzm
+         7rgA==
+X-Gm-Message-State: AOAM533uo0j5Sk3nc1RzQpwij/qP7pDB848ymjnMINdevh2DlW+MyCzO
+        Oo69OLjlrzddXuQ7XvcuQ5hGfQ==
+X-Google-Smtp-Source: ABdhPJxMXmwEgisa5gA4j+w8k9Kb9fYN4u/mCq3bmdSU3qA/vvzD6gnPAIKYpynHFW3vyiVzDRiyAQ==
+X-Received: by 2002:a05:620a:1126:: with SMTP id p6mr4086588qkk.120.1622127938229;
+        Thu, 27 May 2021 08:05:38 -0700 (PDT)
 Received: from localhost.localdomain (c-73-69-118-222.hsd1.nh.comcast.net. [73.69.118.222])
-        by smtp.gmail.com with ESMTPSA id x10sm1447468qkh.124.2021.05.27.08.05.35
+        by smtp.gmail.com with ESMTPSA id x10sm1447468qkh.124.2021.05.27.08.05.36
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 27 May 2021 08:05:36 -0700 (PDT)
+        Thu, 27 May 2021 08:05:37 -0700 (PDT)
 From:   Pavel Tatashin <pasha.tatashin@soleen.com>
 To:     pasha.tatashin@soleen.com, jmorris@namei.org, sashal@kernel.org,
         ebiederm@xmission.com, kexec@lists.infradead.org,
@@ -60,9 +60,9 @@ To:     pasha.tatashin@soleen.com, jmorris@namei.org, sashal@kernel.org,
         selindag@gmail.com, tyhicks@linux.microsoft.com,
         kernelfans@gmail.com, akpm@linux-foundation.org,
         madvenka@linux.microsoft.com
-Subject: [PATCH 05/18] arm64: trans_pgd: hibernate: Add trans_pgd_copy_el2_vectors
-Date:   Thu, 27 May 2021 11:05:13 -0400
-Message-Id: <20210527150526.271941-6-pasha.tatashin@soleen.com>
+Subject: [PATCH 06/18] arm64: hibernate: abstract ttrb0 setup function
+Date:   Thu, 27 May 2021 11:05:14 -0400
+Message-Id: <20210527150526.271941-7-pasha.tatashin@soleen.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210527150526.271941-1-pasha.tatashin@soleen.com>
 References: <20210527150526.271941-1-pasha.tatashin@soleen.com>
@@ -72,142 +72,87 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Users of trans_pgd may also need a copy of vector table because it is
-also may be overwritten if a linear map can be overwritten.
+Currently, only hibernate sets custom ttbr0 with safe idmaped function.
+Kexec, is also going to be using this functinality when relocation code
+is going to be idmapped.
 
-Move setup of EL2 vectors from hibernate to trans_pgd, so it can be
-later shared with kexec as well.
+Move the setup seqeuence to a dedicated cpu_install_ttbr0() for custom
+ttbr0.
 
 Suggested-by: James Morse <james.morse@arm.com>
 Signed-off-by: Pavel Tatashin <pasha.tatashin@soleen.com>
 ---
- arch/arm64/include/asm/trans_pgd.h |  3 +++
- arch/arm64/include/asm/virt.h      |  3 +++
- arch/arm64/kernel/hibernate.c      | 28 ++++++++++------------------
- arch/arm64/mm/trans_pgd.c          | 20 ++++++++++++++++++++
- 4 files changed, 36 insertions(+), 18 deletions(-)
+ arch/arm64/include/asm/mmu_context.h | 24 ++++++++++++++++++++++++
+ arch/arm64/kernel/hibernate.c        | 21 +--------------------
+ 2 files changed, 25 insertions(+), 20 deletions(-)
 
-diff --git a/arch/arm64/include/asm/trans_pgd.h b/arch/arm64/include/asm/trans_pgd.h
-index 5d08e5adf3d5..e0760e52d36d 100644
---- a/arch/arm64/include/asm/trans_pgd.h
-+++ b/arch/arm64/include/asm/trans_pgd.h
-@@ -36,4 +36,7 @@ int trans_pgd_map_page(struct trans_pgd_info *info, pgd_t *trans_pgd,
- int trans_pgd_idmap_page(struct trans_pgd_info *info, phys_addr_t *trans_ttbr0,
- 			 unsigned long *t0sz, void *page);
+diff --git a/arch/arm64/include/asm/mmu_context.h b/arch/arm64/include/asm/mmu_context.h
+index d3cef9133539..85eb92a2ffcb 100644
+--- a/arch/arm64/include/asm/mmu_context.h
++++ b/arch/arm64/include/asm/mmu_context.h
+@@ -115,6 +115,30 @@ static inline void cpu_install_idmap(void)
+ 	cpu_switch_mm(lm_alias(idmap_pg_dir), &init_mm);
+ }
  
-+int trans_pgd_copy_el2_vectors(struct trans_pgd_info *info,
-+			       phys_addr_t *el2_vectors);
++/*
++ * Load our new page tables. A strict BBM approach requires that we ensure that
++ * TLBs are free of any entries that may overlap with the global mappings we are
++ * about to install.
++ *
++ * For a real hibernate/resume/kexec cycle TTBR0 currently points to a zero
++ * page, but TLBs may contain stale ASID-tagged entries (e.g. for EFI runtime
++ * services), while for a userspace-driven test_resume cycle it points to
++ * userspace page tables (and we must point it at a zero page ourselves).
++ *
++ * We change T0SZ as part of installing the idmap. This is undone by
++ * cpu_uninstall_idmap() in __cpu_suspend_exit().
++ */
++static inline void cpu_install_ttbr0(phys_addr_t ttbr0, unsigned long t0sz)
++{
++	cpu_set_reserved_ttbr0();
++	local_flush_tlb_all();
++	__cpu_set_tcr_t0sz(t0sz);
 +
- #endif /* _ASM_TRANS_TABLE_H */
-diff --git a/arch/arm64/include/asm/virt.h b/arch/arm64/include/asm/virt.h
-index 4216c8623538..bfbb66018114 100644
---- a/arch/arm64/include/asm/virt.h
-+++ b/arch/arm64/include/asm/virt.h
-@@ -67,6 +67,9 @@
-  */
- extern u32 __boot_cpu_mode[2];
- 
-+extern char __hyp_stub_vectors[];
-+#define ARM64_VECTOR_TABLE_LEN	SZ_2K
++	/* avoid cpu_switch_mm() and its SW-PAN and CNP interactions */
++	write_sysreg(ttbr0, ttbr0_el1);
++	isb();
++}
 +
- void __hyp_set_vectors(phys_addr_t phys_vector_base);
- void __hyp_reset_vectors(void);
- 
+ /*
+  * Atomically replaces the active TTBR1_EL1 PGD with a new VA-compatible PGD,
+  * avoiding the possibility of conflicting TLB entries being allocated.
 diff --git a/arch/arm64/kernel/hibernate.c b/arch/arm64/kernel/hibernate.c
-index c764574a1acb..0b8bad8bb6eb 100644
+index 0b8bad8bb6eb..ded5115bcb63 100644
 --- a/arch/arm64/kernel/hibernate.c
 +++ b/arch/arm64/kernel/hibernate.c
-@@ -48,12 +48,6 @@
-  */
- extern int in_suspend;
- 
--/* temporary el2 vectors in the __hibernate_exit_text section. */
--extern char hibernate_el2_vectors[];
--
--/* hyp-stub vectors, used to restore el2 during resume from hibernate. */
--extern char __hyp_stub_vectors[];
--
- /*
-  * The logical cpu number we should resume on, initialised to a non-cpu
-  * number.
-@@ -428,6 +422,7 @@ int swsusp_arch_resume(void)
- 	void *zero_page;
- 	size_t exit_size;
- 	pgd_t *tmp_pg_dir;
-+	phys_addr_t el2_vectors;
- 	void __noreturn (*hibernate_exit)(phys_addr_t, phys_addr_t, void *,
- 					  void *, phys_addr_t, phys_addr_t);
- 	struct trans_pgd_info trans_info = {
-@@ -455,6 +450,14 @@ int swsusp_arch_resume(void)
- 		return -ENOMEM;
- 	}
- 
-+	if (is_hyp_callable()) {
-+		rc = trans_pgd_copy_el2_vectors(&trans_info, &el2_vectors);
-+		if (rc) {
-+			pr_err("Failed to setup el2 vectors\n");
-+			return rc;
-+		}
-+	}
-+
- 	exit_size = __hibernate_exit_text_end - __hibernate_exit_text_start;
- 	/*
- 	 * Copy swsusp_arch_suspend_exit() to a safe page. This will generate
-@@ -467,25 +470,14 @@ int swsusp_arch_resume(void)
+@@ -206,26 +206,7 @@ static int create_safe_exec_page(void *src_start, size_t length,
+ 	if (rc)
  		return rc;
- 	}
  
 -	/*
--	 * The hibernate exit text contains a set of el2 vectors, that will
--	 * be executed at el2 with the mmu off in order to reload hyp-stub.
+-	 * Load our new page tables. A strict BBM approach requires that we
+-	 * ensure that TLBs are free of any entries that may overlap with the
+-	 * global mappings we are about to install.
+-	 *
+-	 * For a real hibernate/resume cycle TTBR0 currently points to a zero
+-	 * page, but TLBs may contain stale ASID-tagged entries (e.g. for EFI
+-	 * runtime services), while for a userspace-driven test_resume cycle it
+-	 * points to userspace page tables (and we must point it at a zero page
+-	 * ourselves).
+-	 *
+-	 * We change T0SZ as part of installing the idmap. This is undone by
+-	 * cpu_uninstall_idmap() in __cpu_suspend_exit().
 -	 */
--	__flush_dcache_area(hibernate_exit, exit_size);
+-	cpu_set_reserved_ttbr0();
+-	local_flush_tlb_all();
+-	__cpu_set_tcr_t0sz(t0sz);
+-	write_sysreg(trans_ttbr0, ttbr0_el1);
+-	isb();
 -
- 	/*
- 	 * KASLR will cause the el2 vectors to be in a different location in
- 	 * the resumed kernel. Load hibernate's temporary copy into el2.
- 	 *
- 	 * We can skip this step if we booted at EL1, or are running with VHE.
- 	 */
--	if (is_hyp_callable()) {
--		phys_addr_t el2_vectors = (phys_addr_t)hibernate_exit;
--		el2_vectors += hibernate_el2_vectors -
--			       __hibernate_exit_text_start;     /* offset */
--
-+	if (is_hyp_callable())
- 		__hyp_set_vectors(el2_vectors);
--	}
- 
- 	hibernate_exit(virt_to_phys(tmp_pg_dir), resume_hdr.ttbr1_el1,
- 		       resume_hdr.reenter_kernel, restore_pblist,
-diff --git a/arch/arm64/mm/trans_pgd.c b/arch/arm64/mm/trans_pgd.c
-index 527f0a39c3da..61549451ed3a 100644
---- a/arch/arm64/mm/trans_pgd.c
-+++ b/arch/arm64/mm/trans_pgd.c
-@@ -322,3 +322,23 @@ int trans_pgd_idmap_page(struct trans_pgd_info *info, phys_addr_t *trans_ttbr0,
++	cpu_install_ttbr0(trans_ttbr0, t0sz);
+ 	*phys_dst_addr = virt_to_phys(page);
  
  	return 0;
- }
-+
-+/*
-+ * Create a copy of the vector table so we can call HVC_SET_VECTORS or
-+ * HVC_SOFT_RESTART from contexts where the table may be overwritten.
-+ */
-+int trans_pgd_copy_el2_vectors(struct trans_pgd_info *info,
-+			       phys_addr_t *el2_vectors)
-+{
-+	void *hyp_stub = trans_alloc(info);
-+
-+	if (!hyp_stub)
-+		return -ENOMEM;
-+	*el2_vectors = virt_to_phys(hyp_stub);
-+	memcpy(hyp_stub, &__hyp_stub_vectors, ARM64_VECTOR_TABLE_LEN);
-+	__flush_icache_range((unsigned long)hyp_stub,
-+			     (unsigned long)hyp_stub + ARM64_VECTOR_TABLE_LEN);
-+	__flush_dcache_area(hyp_stub, ARM64_VECTOR_TABLE_LEN);
-+
-+	return 0;
-+}
 -- 
 2.25.1
 
