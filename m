@@ -2,81 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CD1123923B9
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 02:21:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 42CCA3923BC
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 02:22:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233950AbhE0AXG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 May 2021 20:23:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54342 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232916AbhE0AXE (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 May 2021 20:23:04 -0400
-Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B2DAC06175F
-        for <linux-kernel@vger.kernel.org>; Wed, 26 May 2021 17:21:31 -0700 (PDT)
-Received: by mail-lf1-x130.google.com with SMTP id b26so5250360lfq.4
-        for <linux-kernel@vger.kernel.org>; Wed, 26 May 2021 17:21:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=lRcwXTkXFqjHbLkGyM+Iivo9S+3vdfLIMeWV2k96/WM=;
-        b=IcdHg9mtSIbKyQXE7To2tKBA5bjosTWl12QMBa/kT2sO6/0yLESdYBXhe/muIyLQvv
-         SDfxb7HhzfyCzr9groZNH5cT/VyTZl+SFMrPNtiEYC80BuIcBHt/CM1kcnTlXc+I52cG
-         jJ1rp51adY7ITDDDwKFKiWxeZT39YuNeKEVY4REpR8JJYwXY4P1GOdyACypnwShNTwEd
-         UuhGQL0rwxBHlC7RyWiqRpIcoHfVpGk94e9HrlqlLBoXJCms4y/o4Q5FkRume2lEACxC
-         Da4Wq0MKqA3qZYSDTd1OpR2yt47XE9w50Lzs/MgUpwmmqbDytgeEaYc9J96rcf114kvY
-         /82A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=lRcwXTkXFqjHbLkGyM+Iivo9S+3vdfLIMeWV2k96/WM=;
-        b=KInx8xR7rhgau46f6n0qlSGqJDmpnOHCXEwcq7s96x3Ryt0pKqQ8+HcD9XhBWqpGRW
-         bUoMgRhELqhhTJr/pKV4HpvNQPMM4lCGgXiaQRaa8ng1ZLHCSssfMjNMc1CaGam2HVNp
-         Q9ivufqgl83u7/rStTNoeSrcvsZMCKNYyeRDqfMFFzbX2IM5bKV5WY6vboY1wstq8OnQ
-         /1nxHr2fQSkjzRNBp1VcZ6QoSfoV2YwGn7GqoNtB4MfDuMOvLRsHf8TZLrPaorbVF3Pn
-         7DzC7xMFuOOi9lOu6NTOkkuZI7edGbQCTk6BxwtoNrAUj8DOrrQ1FDY4o6xVW6A3ECfd
-         6hQA==
-X-Gm-Message-State: AOAM533lNC7XwA5/ATf2MWHdBFn3pscGTh0ShqJhz3VHXALeBpml11G8
-        j7V3AdFCF25Bmo+nMxRV5+GDFyU5n4hGOM5Y1IOWev3I/zQ=
-X-Google-Smtp-Source: ABdhPJwrZ46JCTawi7sfWZOjm1/sDDo4oQx316hZrft4mHIMt1cbwJe4Y1fVtf3CXaYRK3O8LpBxZyR4eEcnsnV+p28=
-X-Received: by 2002:ac2:5145:: with SMTP id q5mr457753lfd.529.1622074889945;
- Wed, 26 May 2021 17:21:29 -0700 (PDT)
+        id S234255AbhE0AYA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 May 2021 20:24:00 -0400
+Received: from mga12.intel.com ([192.55.52.136]:57917 "EHLO mga12.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232916AbhE0AX6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 26 May 2021 20:23:58 -0400
+IronPort-SDR: cjNgE5E0lSk/oyQrDIK/EK2mhvKSPpQIRcmSIPQnkLUGYEwBObWJ72qEsPKBHn3klEuOidVXbO
+ 60DfuDY0zslg==
+X-IronPort-AV: E=McAfee;i="6200,9189,9996"; a="182267163"
+X-IronPort-AV: E=Sophos;i="5.82,333,1613462400"; 
+   d="scan'208";a="182267163"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 May 2021 17:22:25 -0700
+IronPort-SDR: lReY4mf/OSOR576x/j9wiVXic53pGNKIMBXd9Q5X67WVlkom8Pmyt0pOkhSksaugZcWYbBl+Ua
+ aRjSY6JaussA==
+X-IronPort-AV: E=Sophos;i="5.82,333,1613462400"; 
+   d="scan'208";a="397527172"
+Received: from djiang5-mobl1.amr.corp.intel.com (HELO [10.212.10.31]) ([10.212.10.31])
+  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 May 2021 17:22:23 -0700
+Subject: Re: [PATCH v6 15/20] vfio/mdev: idxd: ims domain setup for the vdcm
+To:     Jason Gunthorpe <jgg@nvidia.com>
+Cc:     alex.williamson@redhat.com, kwankhede@nvidia.com,
+        tglx@linutronix.de, vkoul@kernel.org, megha.dey@intel.com,
+        jacob.jun.pan@intel.com, ashok.raj@intel.com, yi.l.liu@intel.com,
+        baolu.lu@intel.com, kevin.tian@intel.com, sanjay.k.kumar@intel.com,
+        tony.luck@intel.com, dan.j.williams@intel.com,
+        eric.auger@redhat.com, pbonzini@redhat.com,
+        dmaengine@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org
+References: <162164243591.261970.3439987543338120797.stgit@djiang5-desk3.ch.intel.com>
+ <162164283796.261970.11020270418798826121.stgit@djiang5-desk3.ch.intel.com>
+ <20210523235023.GL1002214@nvidia.com>
+From:   Dave Jiang <dave.jiang@intel.com>
+Message-ID: <29cec5cd-3f23-f947-4545-f507b3f70988@intel.com>
+Date:   Wed, 26 May 2021 17:22:22 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
 MIME-Version: 1.0
-References: <20210520190105.3772683-1-lee.jones@linaro.org> <20210520190105.3772683-2-lee.jones@linaro.org>
-In-Reply-To: <20210520190105.3772683-2-lee.jones@linaro.org>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Thu, 27 May 2021 02:21:18 +0200
-Message-ID: <CACRpkdYj=kU6ix5GoTYc4bKcskoJM1mmmSbKMW4yEjRy4f3Zwg@mail.gmail.com>
-Subject: Re: [PATCH 01/16] i2c: busses: i2c-nomadik: Fix formatting issue
- pertaining to 'timeout'
-To:     Lee Jones <lee.jones@linaro.org>
-Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
-        Srinidhi Kasagar <srinidhi.kasagar@stericsson.com>,
-        Sachin Verma <sachin.verma@st.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        linux-i2c <linux-i2c@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210523235023.GL1002214@nvidia.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 20, 2021 at 9:01 PM Lee Jones <lee.jones@linaro.org> wrote:
 
-> Fixes the following W=1 kernel build warning(s):
+On 5/23/2021 4:50 PM, Jason Gunthorpe wrote:
+> On Fri, May 21, 2021 at 05:20:37PM -0700, Dave Jiang wrote:
+>> @@ -77,8 +80,18 @@ int idxd_mdev_host_init(struct idxd_device *idxd, struct mdev_driver *drv)
+>>   		return rc;
+>>   	}
+>>   
+>> +	ims_info.max_slots = idxd->ims_size;
+>> +	ims_info.slots = idxd->reg_base + idxd->ims_offset;
+>> +	idxd->ims_domain = pci_ims_array_create_msi_irq_domain(idxd->pdev, &ims_info);
+>> +	if (!idxd->ims_domain) {
+>> +		dev_warn(dev, "Fail to acquire IMS domain\n");
+>> +		iommu_dev_disable_feature(dev, IOMMU_DEV_FEAT_AUX);
+>> +		return -ENODEV;
+>> +	}
+> I'm quite surprised that every mdev doesn't create its own ims_domain
+> in its probe function.
 >
->  drivers/i2c/busses/i2c-nomadik.c:184: warning: Function parameter or member 'timeout' not described in 'nmk_i2c_dev'
+> This places a global total limit on the # of vectors which makes me
+> ask what was the point of using IMS in the first place ?
 >
-> Cc: Linus Walleij <linus.walleij@linaro.org>
-> Cc: Srinidhi Kasagar <srinidhi.kasagar@stericsson.com>
-> Cc: Sachin Verma <sachin.verma@st.com>
-> Cc: linux-arm-kernel@lists.infradead.org
-> Cc: linux-i2c@vger.kernel.org
-> Signed-off-by: Lee Jones <lee.jones@linaro.org>
+> The entire idea for IMS was to make the whole allocation system fully
+> dynamic based on demand.
 
-Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+Hi Jason, thank you for the review of the series.
 
-Yours,
-Linus Walleij
+My understanding is that the driver creates a single IMS domain for the 
+device and provides the address base and IMS numbers for the domain 
+based on device IMS resources. So the IMS region needs to be contiguous. 
+Each mdev can call msi_domain_alloc_irqs() and acquire the number of IMS 
+vectors it desires and the DEV MSI core code will keep track of which 
+vectors are being used. This allows the mdev devices to dynamically 
+allocate based on demand. If the driver allocates a domain per mdev, 
+it'll needs to do internal accounting of the base and vector numbers for 
+each of those domains that the MSI core already provides. Isn't that 
+what we are trying to avoid? As mdevs come and go, that partitioning 
+will become fragmented.
+
+For example, mdev 0 allocates 1 vector, mdev 1 allocates 2 vectors, and 
+mdev 3 allocates 3 vector. You have 1 vectors unallocated. When mdev 1 
+goes away and a new mdev shows up wanting 3 vectors, you won't be able 
+to allocate the domain because of fragmentation even though you have 
+enough vectors.
+
+If all mdevs allocate the same IMS numbers, the fragmentation issue does 
+not exist. But the driver still has to keep track of which vectors are 
+free and which ones are used in order to provide the appropriate base. 
+And dev msi core already does this for us if we have a single domain. 
+Feels like we would just be duplicating code doing the same thing?
+
+
+>
+>>   	rc = mdev_register_device(dev, drv);
+>>   	if (rc < 0) {
+>> +		irq_domain_remove(idxd->ims_domain);
+>>   		iommu_dev_disable_feature(dev, IOMMU_DEV_FEAT_AUX);
+>>   		return rc;
+>>   	}
+> This really wants a goto error unwind
+>
+> Jason
