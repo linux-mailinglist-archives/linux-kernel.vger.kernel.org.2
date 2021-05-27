@@ -2,92 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B634392817
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 08:56:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C1BD392819
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 08:59:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233887AbhE0G6Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 May 2021 02:58:16 -0400
-Received: from mail-ua1-f42.google.com ([209.85.222.42]:36511 "EHLO
-        mail-ua1-f42.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232310AbhE0G6P (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 May 2021 02:58:15 -0400
-Received: by mail-ua1-f42.google.com with SMTP id b1so2242802uap.3;
-        Wed, 26 May 2021 23:56:42 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=h2t6IMzVIqTCod2+uOSHEsZTJdw+bDIz54J1tQ79MxI=;
-        b=XlOuxH1buXg5CZFPe8aLOkWpPUIQR/YRSU7Lzjb/aX7RvSv7FwQLszU+jWHyvTMNlc
-         BBr3TMxh/qWHdYJRT4c6700RG1Ode2CUYM6qd+uBGkQOl1aZpzjQQ2J9SG/G2x6BIYnU
-         OXqI9kJN0ldIt23/nMdfG7fNIhvnDsFlZk5RIJYkzCoWymzao1p8au5SdylYCZxSJAaY
-         0CjRwElqR+StZWjVF72PFA0jk+n3RjTe4hmK6G456vmNobfYER8neISIuNWUXWj9S18S
-         QAFQ/JLXDzJQkisCwv+YBSWD932ekMqH64qs+YPT7KrxwBU84FYMY+OXbCc5rI5ddVE8
-         qjnQ==
-X-Gm-Message-State: AOAM53192Kt2b7tXeGnv47+5odLEGTv9AyVEOQkxGK5JM6U0EVRPjmFy
-        kKb4S9DxJqzGZwTpjbJMMtSD6RMGtssjJvxai9A=
-X-Google-Smtp-Source: ABdhPJy2YAKKfxFxxvKdmhExBLtPw5lTCiBuF+JtcYk8I7TJ0hfYqoU1o0Y8QVH5FiEH0N4Sj81vPMLvvnlXq+SMexU=
-X-Received: by 2002:a1f:d8c3:: with SMTP id p186mr1066978vkg.1.1622098602086;
- Wed, 26 May 2021 23:56:42 -0700 (PDT)
+        id S234059AbhE0HAe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 May 2021 03:00:34 -0400
+Received: from mx2.suse.de ([195.135.220.15]:47218 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232416AbhE0HAd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 27 May 2021 03:00:33 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1622098740; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=uxrs8M1VcmOkWe5QS1sYN9XeLXXiQYAcgHDyySYmn3o=;
+        b=VrpVpLUUEkIXq9cy0/Zr2kQ/8uNCwvou43vAx+4y5SCB//YS6drYFIn5EMqlzdf5dKLSZz
+        hMsx2x8GEVQCUYSX5dYxr1x68FLyoTVnKfk7OY2ong3vMG21lT+67g80OeggobJzzXrSXb
+        0IPD7j/Qu/bea5JtL3YYZXq+mUL3fgw=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 41A90ADFB;
+        Thu, 27 May 2021 06:59:00 +0000 (UTC)
+Date:   Thu, 27 May 2021 08:58:59 +0200
+From:   Michal Hocko <mhocko@suse.com>
+To:     Naoya Horiguchi <nao.horiguchi@gmail.com>
+Cc:     linux-mm@kvack.org, Mike Kravetz <mike.kravetz@oracle.com>,
+        Oscar Salvador <osalvador@suse.de>,
+        Muchun Song <songmuchun@bytedance.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        David Hildenbrand <david@redhat.com>,
+        Naoya Horiguchi <naoya.horiguchi@nec.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v1] hugetlb: pass head page to remove_hugetlb_page()
+Message-ID: <YK9DM03ymX9PG0Zk@dhcp22.suse.cz>
+References: <20210526235257.2769473-1-nao.horiguchi@gmail.com>
 MIME-Version: 1.0
-References: <20210527001251.8529-1-rdunlap@infradead.org>
-In-Reply-To: <20210527001251.8529-1-rdunlap@infradead.org>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Thu, 27 May 2021 08:56:30 +0200
-Message-ID: <CAMuHMdWxBDM6za4_zPrkPGja8K6vy47gfdzYMNjJ-i1n1ySsHA@mail.gmail.com>
-Subject: Re: [PATCH v2] MOUSE_ATARI: fix kconfig unmet dependency warning
-To:     Randy Dunlap <rdunlap@infradead.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Michael Schmitz <schmitz@debian.org>,
-        Roman Zippel <zippel@linux-m68k.org>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        linux-input <linux-input@vger.kernel.org>,
-        linux-m68k <linux-m68k@lists.linux-m68k.org>,
-        Michael Schmitz <schmitzmic@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210526235257.2769473-1-nao.horiguchi@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 27, 2021 at 2:12 AM Randy Dunlap <rdunlap@infradead.org> wrote:
-> Since the code for ATARI_KBD_CORE does not use drivers/input/keyboard/
-> code, just move ATARI_KBD_CORE to arch/m68k/Kconfig.machine to remove
-> this dependency.
->
-> Removes this kconfig warning:
->
-> WARNING: unmet direct dependencies detected for ATARI_KBD_CORE
->   Depends on [n]: !UML && INPUT [=y] && INPUT_KEYBOARD [=n]
->   Selected by [y]:
->   - MOUSE_ATARI [=y] && !UML && INPUT [=y] && INPUT_MOUSE [=y] && ATARI [=y]
->
-> Fixes: c04cb856e20a ("m68k: Atari keyboard and mouse support.")
-> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-> Cc: Michael Schmitz <schmitz@debian.org>
-> Cc: Roman Zippel <zippel@linux-m68k.org>
-> Cc: Geert Uytterhoeven <geert@linux-m68k.org>
-> Cc: Dmitry Torokhov <dmitry.torokhov@gmail.com>
-> Cc: linux-input@vger.kernel.org
-> Cc: linux-m68k@lists.linux-m68k.org
-> Suggested-by: Geert Uytterhoeven <geert@linux-m68k.org>
-> Suggested-by: Michael Schmitz <schmitzmic@gmail.com>
+On Thu 27-05-21 08:52:57, Naoya Horiguchi wrote:
+> From: Naoya Horiguchi <naoya.horiguchi@nec.com>
+> 
+> When memory_failure() or soft_offline_page() is called on a tail page of
+> some hugetlb page, "BUG: unable to handle page fault" error can be
+> triggered.
+> 
+> remove_hugetlb_page() dereferences page->lru, so it's assumed that the
+> page points to a head page, but one of the caller,
+> dissolve_free_huge_page(), provides remove_hugetlb_page() with 'page'
+> which could be a tail page.  So pass 'head' to it, instead.
+> 
+> Fixes: 6eb4e88a6d27 ("hugetlb: create remove_hugetlb_page() to separate functionality")
+> Signed-off-by: Naoya Horiguchi <naoya.horiguchi@nec.com>
+
+This is really nasty and easy to overlook. I have completely missed that
+when reviewing and I do remember checking for head vs page as there is
+quite some non trivial handling of both here.
+
+Acked-by: Michal Hocko <mhocko@suse.com>
+
+Thanks!
 
 > ---
-> v2: move the symbol outside of INPUT_KEYBOARD (Geert) -- all the way
->     to Kconfig.machine (Michael). Thanks.
-
-Acked-by: Geert Uytterhoeven <geert@linux-m68k.org>
-
-I'm willing to queue this in the m68k for-v5.14 branch, if Dmitry agrees.
-
-Gr{oetje,eeting}s,
-
-                        Geert
+>  mm/hugetlb.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git v5.13-rc3/mm/hugetlb.c v5.13-rc3_patched/mm/hugetlb.c
+> index 95918f410c0f..470f7b5b437e 100644
+> --- v5.13-rc3/mm/hugetlb.c
+> +++ v5.13-rc3_patched/mm/hugetlb.c
+> @@ -1793,7 +1793,7 @@ int dissolve_free_huge_page(struct page *page)
+>  			SetPageHWPoison(page);
+>  			ClearPageHWPoison(head);
+>  		}
+> -		remove_hugetlb_page(h, page, false);
+> +		remove_hugetlb_page(h, head, false);
+>  		h->max_huge_pages--;
+>  		spin_unlock_irq(&hugetlb_lock);
+>  		update_and_free_page(h, head);
+> -- 
+> 2.25.1
 
 -- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+Michal Hocko
+SUSE Labs
