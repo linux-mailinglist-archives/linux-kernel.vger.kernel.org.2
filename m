@@ -2,220 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A59CD392948
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 10:13:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A6D9F39294F
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 10:14:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235290AbhE0IOl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 May 2021 04:14:41 -0400
-Received: from mga04.intel.com ([192.55.52.120]:36334 "EHLO mga04.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235054AbhE0IOg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 May 2021 04:14:36 -0400
-IronPort-SDR: Jl6PeIoqPPdoIRcNZkdI4pD9vWQ7gr73gUduMSM8zqm6FMC9UoLT0P0a9cBTbBeeSXWYjP4tK8
- N/IPyopyG3zw==
-X-IronPort-AV: E=McAfee;i="6200,9189,9996"; a="200784336"
-X-IronPort-AV: E=Sophos;i="5.82,334,1613462400"; 
-   d="scan'208";a="200784336"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 May 2021 01:12:52 -0700
-IronPort-SDR: DJYSSlM7G2douwGapnSP0wb3JsbDxJVOzynLqFZceN7ghgCMQqNHsP9tlSqrXKvQUzdyzTe0+U
- Wi1BqNTxVmhg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.82,334,1613462400"; 
-   d="scan'208";a="409646490"
-Received: from lkp-server02.sh.intel.com (HELO 1ec8406c5392) ([10.239.97.151])
-  by fmsmga007.fm.intel.com with ESMTP; 27 May 2021 01:12:51 -0700
-Received: from kbuild by 1ec8406c5392 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1lmB8M-0002es-ST; Thu, 27 May 2021 08:12:50 +0000
-Date:   Thu, 27 May 2021 16:12:27 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>
-Subject: [gustavoars-linux:for-next/kspp] BUILD SUCCESS
- 53004ee78d6273c994534ccf79d993098ac89769
-Message-ID: <60af546b.lOwuLc+cBSzvxgdl%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S235321AbhE0IP5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 May 2021 04:15:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46952 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235226AbhE0IPx (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 27 May 2021 04:15:53 -0400
+Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com [IPv6:2a00:1450:4864:20::134])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED38CC061574
+        for <linux-kernel@vger.kernel.org>; Thu, 27 May 2021 01:14:19 -0700 (PDT)
+Received: by mail-lf1-x134.google.com with SMTP id b26so6697338lfq.4
+        for <linux-kernel@vger.kernel.org>; Thu, 27 May 2021 01:14:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=JDGsr0U4UtFbfy6pCEyWwnWchkdCO7T0vgGbUXWCyRg=;
+        b=x3cAUnU79NNxvjxeEWLk4ICt9sTWNhW+w604z+y/8JXOJ9GzZM2Vnl5Mhp0uk+tKAr
+         qBeK3zhuEkF5sr0RJvZObHZTgNIaZP1sT0uoVxOFuDepK5F5nGUAob2jFzSDYClTg2RB
+         PBplDABMCEeZQzjRZKM/eqnVMYsOMATbC7Xlp570wDEyKb5Qi74FgqjTqQlGqsGDpHRW
+         QuSububR795TYW5Y+SwPzV8v/v7FHO+QlkShLK04qWp4VFeQqmMHkaFziB9ZTBBnyRaS
+         2I6LM+dUtb0EoJn9jlvBCD8BfARQvdY0HbeVdc9p5jWhrdQXW11xtvdMyynC/G2uIYKR
+         eBpg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=JDGsr0U4UtFbfy6pCEyWwnWchkdCO7T0vgGbUXWCyRg=;
+        b=R3YCp1xP3ISHaFQKJ5Cnr234oHNASDLgMgsZlz5IDhNq8c631aCsrabHbk76u/Sn9D
+         jSnvxaqdZr/1Mh9whHlyDZjB1eLucpKU1dlHz844RX6AtKF61nLP21iK7ZnfWOF7hJjo
+         hMDZ7TG5AdcB0bjVOaWLuoIY9YEXvzHD3JTWjtEz1l7TvD1C8CZZfwT8PEeUFCfZ2Rd7
+         EHI3iQSrA3rRqXjwf7QRS6HYcEJG+mOylSCNHz87wErU7KC59ZZdiVmxmGeUIYMSA3so
+         SaJywtAT4t9BcOYyBjpQIMjmVU1lL8jJsf5yTHnncffn050GCzRMhsdUZNHlgUcANrMg
+         3Gag==
+X-Gm-Message-State: AOAM5301EKUeiK56D/woH4WWG3uOcbLWDqtSySErDF++kwiN71WMKu0b
+        LPFUQ7IMjS8xQlcVevXwvkZfInlt+oCNQw==
+X-Google-Smtp-Source: ABdhPJx8w8Q7nbjMppCGZsyDerHBswss6+er8da62g4Np1Gsg8vZOyripxpDkfD1jzmNXpXtnqUDAw==
+X-Received: by 2002:a19:4307:: with SMTP id q7mr1570617lfa.262.1622103258102;
+        Thu, 27 May 2021 01:14:18 -0700 (PDT)
+Received: from jade.urgonet (h-79-136-85-3.A175.priv.bahnhof.se. [79.136.85.3])
+        by smtp.gmail.com with ESMTPSA id z10sm133186lfe.228.2021.05.27.01.14.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 27 May 2021 01:14:17 -0700 (PDT)
+From:   Jens Wiklander <jens.wiklander@linaro.org>
+To:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        op-tee@lists.trustedfirmware.org
+Cc:     Sudeep Holla <sudeep.holla@arm.com>,
+        Marc Bonnici <marc.bonnici@arm.com>,
+        Jerome Forissier <jerome@forissier.org>,
+        Jens Wiklander <jens.wiklander@linaro.org>
+Subject: [PATCH v2 0/5] Add FF-A support in OP-TEE driver
+Date:   Thu, 27 May 2021 10:13:59 +0200
+Message-Id: <20210527081404.1433177-1-jens.wiklander@linaro.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/gustavoars/linux.git for-next/kspp
-branch HEAD: 53004ee78d6273c994534ccf79d993098ac89769  xfs: Fix fall-through warnings for Clang
+Hi all,
 
-elapsed time: 724m
+This adds supports for the OP-TEE driver to communicate with secure world
+using FF-A [1] as transport.
 
-configs tested: 158
-configs skipped: 3
+These patches are based on the FF-A v7 patch set by Sudeep Holla [2] [3].
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+There is one change to the TEE subsystem with "tee: add sec_world_id to
+struct tee_shm" to add support for holding globally unique handle assigned
+by the FF-A. This is a field that I believe could useful for the AMDTEE
+driver too.
 
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-m68k                         amcore_defconfig
-mips                        jmr3927_defconfig
-powerpc                      ppc44x_defconfig
-mips                        nlm_xlp_defconfig
-powerpc                  iss476-smp_defconfig
-powerpc                    sam440ep_defconfig
-sh                        edosk7760_defconfig
-arm                          iop32x_defconfig
-arm                         lpc32xx_defconfig
-arm                          ixp4xx_defconfig
-sh                          lboxre2_defconfig
-powerpc                       maple_defconfig
-sh                          sdk7780_defconfig
-mips                      malta_kvm_defconfig
-arm                         palmz72_defconfig
-mips                       bmips_be_defconfig
-arm                           sunxi_defconfig
-mips                         rt305x_defconfig
-arc                        vdk_hs38_defconfig
-arc                      axs103_smp_defconfig
-parisc                generic-32bit_defconfig
-um                            kunit_defconfig
-arm                          imote2_defconfig
-m68k                        m5307c3_defconfig
-sh                           se7712_defconfig
-arm                        keystone_defconfig
-mips                  maltasmvp_eva_defconfig
-arm                      footbridge_defconfig
-mips                  decstation_64_defconfig
-openrisc                 simple_smp_defconfig
-arm                     davinci_all_defconfig
-sparc64                          alldefconfig
-arm                          pxa910_defconfig
-powerpc                 mpc8313_rdb_defconfig
-arc                     nsimosci_hs_defconfig
-powerpc                    amigaone_defconfig
-mips                    maltaup_xpa_defconfig
-powerpc                 xes_mpc85xx_defconfig
-powerpc                       ebony_defconfig
-mips                        vocore2_defconfig
-sh                          r7780mp_defconfig
-powerpc                    mvme5100_defconfig
-mips                          ath79_defconfig
-arm                          lpd270_defconfig
-mips                           gcw0_defconfig
-arm                           corgi_defconfig
-arm                      tct_hammer_defconfig
-microblaze                      mmu_defconfig
-powerpc                   lite5200b_defconfig
-powerpc                mpc7448_hpc2_defconfig
-powerpc                     tqm8548_defconfig
-arm                        multi_v5_defconfig
-mips                            e55_defconfig
-mips                        omega2p_defconfig
-arm                        mini2440_defconfig
-arm                          badge4_defconfig
-ia64                             alldefconfig
-powerpc                 mpc836x_mds_defconfig
-arm                      jornada720_defconfig
-powerpc                      mgcoge_defconfig
-openrisc                            defconfig
-mips                     loongson1c_defconfig
-arm                       omap2plus_defconfig
-arc                    vdk_hs38_smp_defconfig
-powerpc                     mpc83xx_defconfig
-microblaze                          defconfig
-arm                            qcom_defconfig
-arm                       cns3420vb_defconfig
-arc                        nsim_700_defconfig
-mips                        nlm_xlr_defconfig
-mips                     cu1830-neo_defconfig
-mips                     cu1000-neo_defconfig
-parisc                generic-64bit_defconfig
-sh                            shmin_defconfig
-mips                           ci20_defconfig
-arm                        mvebu_v5_defconfig
-powerpc                      bamboo_defconfig
-mips                      maltaaprp_defconfig
-x86_64                            allnoconfig
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                             allyesconfig
-m68k                                defconfig
-nios2                               defconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-nds32                               defconfig
-nios2                            allyesconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-parisc                              defconfig
-s390                             allyesconfig
-s390                             allmodconfig
-parisc                           allyesconfig
-s390                                defconfig
-i386                             allyesconfig
-sparc                            allyesconfig
-sparc                               defconfig
-i386                                defconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-x86_64               randconfig-a005-20210526
-x86_64               randconfig-a001-20210526
-x86_64               randconfig-a006-20210526
-x86_64               randconfig-a003-20210526
-x86_64               randconfig-a004-20210526
-x86_64               randconfig-a002-20210526
-i386                 randconfig-a001-20210526
-i386                 randconfig-a002-20210526
-i386                 randconfig-a005-20210526
-i386                 randconfig-a004-20210526
-i386                 randconfig-a003-20210526
-i386                 randconfig-a006-20210526
-i386                 randconfig-a011-20210526
-i386                 randconfig-a016-20210526
-i386                 randconfig-a015-20210526
-i386                 randconfig-a012-20210526
-i386                 randconfig-a014-20210526
-i386                 randconfig-a013-20210526
-riscv                    nommu_k210_defconfig
-riscv                    nommu_virt_defconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                            allyesconfig
-riscv                          rv32_defconfig
-riscv                            allmodconfig
-um                               allmodconfig
-um                                allnoconfig
-um                               allyesconfig
-um                                  defconfig
-x86_64                           allyesconfig
-x86_64                    rhel-8.3-kselftests
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                      rhel-8.3-kbuiltin
-x86_64                                  kexec
+For communication the OP-TEE message protocol is still used, but with a new
+type of memory reference, struct optee_msg_param_fmem, to carry the
+information needed by FF-A. The OP-TEE driver is refactored internally with
+to sets of callbacks, one for the old SMC based communication and another
+set with FF-A as transport.
 
-clang tested configs:
-x86_64               randconfig-b001-20210526
-x86_64               randconfig-a013-20210526
-x86_64               randconfig-a012-20210526
-x86_64               randconfig-a014-20210526
-x86_64               randconfig-a016-20210526
-x86_64               randconfig-a015-20210526
-x86_64               randconfig-a011-20210526
+There is also a difference in how the drivers are instantiated. With the
+SMC based transport we have a platform driver, module_platform_driver(),
+today which we're keeping as is for this configuration. In a FF-A system we
+have a FF-A driver, module_ffa_driver(), instead.
 
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+The OP-TEE driver can be compiled for both targets at the same time and
+it's up to runtime configuration (device tree or ACPI) to decide how it's
+initialized.
+
+Thanks,
+Jens
+
+[1] https://developer.arm.com/documentation/den0077/latest
+[2] https://lore.kernel.org/linux-arm-kernel/20210521151033.181846-1-sudeep.holla@arm.com/
+[3] git://git.kernel.org/pub/scm/linux/kernel/git/sudeep.holla/linux.git v5.13/ffa
+
+v1->v2:
+- Rebased to the FF-A v7 patch
+- Fixed a couple of reports from kernel test robot <lkp@intel.com>
+
+Jens Wiklander (5):
+  tee: add sec_world_id to struct tee_shm
+  optee: simplify optee_release()
+  optee: refactor driver with internal callbacks
+  optee: add a FF-A memory pool
+  optee: add FF-A support
+
+ drivers/tee/optee/call.c          | 325 +++++++++++---
+ drivers/tee/optee/core.c          | 689 ++++++++++++++++++++++++++----
+ drivers/tee/optee/optee_ffa.h     | 153 +++++++
+ drivers/tee/optee/optee_msg.h     |  27 +-
+ drivers/tee/optee/optee_private.h |  88 +++-
+ drivers/tee/optee/rpc.c           | 137 +++++-
+ drivers/tee/optee/shm_pool.c      |  65 ++-
+ drivers/tee/optee/shm_pool.h      |   1 +
+ include/linux/tee_drv.h           |   7 +-
+ 9 files changed, 1326 insertions(+), 166 deletions(-)
+ create mode 100644 drivers/tee/optee/optee_ffa.h
+
+-- 
+2.25.1
+
