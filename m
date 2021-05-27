@@ -2,142 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC2643934AD
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 19:22:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D090F3934BC
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 19:27:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236922AbhE0RYJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 May 2021 13:24:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60346 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234431AbhE0RYE (ORCPT
+        id S236963AbhE0R2i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 May 2021 13:28:38 -0400
+Received: from outbound-smtp02.blacknight.com ([81.17.249.8]:49772 "EHLO
+        outbound-smtp02.blacknight.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234994AbhE0R2g (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 May 2021 13:24:04 -0400
-Received: from mail-pg1-x52e.google.com (mail-pg1-x52e.google.com [IPv6:2607:f8b0:4864:20::52e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 447A5C061760
-        for <linux-kernel@vger.kernel.org>; Thu, 27 May 2021 10:22:30 -0700 (PDT)
-Received: by mail-pg1-x52e.google.com with SMTP id q15so412526pgg.12
-        for <linux-kernel@vger.kernel.org>; Thu, 27 May 2021 10:22:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=+RzIY58jABtEHA+lH8aprc5omocLM+qqwqn4cJd2lgw=;
-        b=MVCNdBs+rCz8MZ8O3bdDcK73UDCycWcsVCMv/8tEmzPhorqXH80SuH/sb/Zrj88SMw
-         UypGHQ3vFE6seguYuUmKD40/d7mM8y2T9ZGnuw3AwgQh1lFNJehbjNXjHGbK/aSZwQPL
-         CwQFE7w3hAYjyExtYdtAez998WAND/NuAoyd00IpEQEFfXnDcbWbPrQ2aGca2i+x1j0n
-         2OVqbcWGoA8jERU2xh7ylLWmyOzDoMETb3iwN3Q2ZGN8zekYPddYZ52AOlcgGNx2uuZM
-         +W9ibA0pUZ0YkBuQijqGTrrysgS/nqDikVUmeY9WYIacRHtr48qN+UXvslycYwgMEkZZ
-         umvw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=+RzIY58jABtEHA+lH8aprc5omocLM+qqwqn4cJd2lgw=;
-        b=g8YkvI90fhQXtJPo6Q7JgB0iMZcaaUdhpWM2YNPsEL4siqOgGGGPNN2KItZWDnXHeD
-         o9Ugf3Z38fdK9fQL91pU1b5pN0iv7s4x0FlR1Lvw2+m1r+BIHRMW0ZDNO+rQa4wSRXJD
-         b9n2qwBSf2kipKhVvia1U1WZItjgdYyHTYkvYF5SY3deE2UfJ0F4kuG4l1CJO6ADcbX9
-         4Pn62AOqAIqrbt/XgjrJNo399hYdu9rLQPx3IPj/fB8NfGtfoSemlqtf9/syT39Fp4pw
-         NKJIvC84JMGEUGCcmSRLJRSUBmz6OgkEOnwBCKtU3eDrdVOeaEl0xq0CQaxmD1bj5EYO
-         CJbQ==
-X-Gm-Message-State: AOAM532xXLd7iFj3O7bxBHvjeQNs+Ax3u8NuQArjwFFTJeMCzghnatFc
-        XI0HUYp80gMN5U2jf1kArr3rrA==
-X-Google-Smtp-Source: ABdhPJxWt+t/DpJOnQug1cYP7cIT1Vdb3VAdQ2y22nKG0B57J/KpfYmB6Kwa4G3SRAUppFnmVVOJXA==
-X-Received: by 2002:a62:6491:0:b029:28e:8c90:6b16 with SMTP id y139-20020a6264910000b029028e8c906b16mr4583655pfb.24.1622136149533;
-        Thu, 27 May 2021 10:22:29 -0700 (PDT)
-Received: from google.com (240.111.247.35.bc.googleusercontent.com. [35.247.111.240])
-        by smtp.gmail.com with ESMTPSA id i2sm2390109pjj.25.2021.05.27.10.22.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 27 May 2021 10:22:28 -0700 (PDT)
-Date:   Thu, 27 May 2021 17:22:24 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Tom Lendacky <thomas.lendacky@amd.com>
-Cc:     Peter Gonda <pgonda@google.com>, kvm list <kvm@vger.kernel.org>,
-        linux-kernel@vger.kernel.org, x86@kernel.org,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Borislav Petkov <bp@alien8.de>, Ingo Molnar <mingo@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Brijesh Singh <brijesh.singh@amd.com>
-Subject: Re: [PATCH] KVM: SVM: Do not terminate SEV-ES guests on GHCB
- validation failure
-Message-ID: <YK/VUPi+zFO6wFXB@google.com>
-References: <f8811b3768c4306af7fb2732b6b3755489832c55.1621020158.git.thomas.lendacky@amd.com>
- <CAMkAt6qJqTvM0PX+ja3rLP3toY-Rr4pSUbiFKL1GwzYZPG6f8g@mail.gmail.com>
- <324d9228-03e9-0fe2-59c0-5e41e449211b@amd.com>
- <YKa1jduPK9JyjWbx@google.com>
- <468cee77-aa0a-cf4a-39cf-71b5bfb3575e@amd.com>
+        Thu, 27 May 2021 13:28:36 -0400
+Received: from mail.blacknight.com (pemlinmail05.blacknight.ie [81.17.254.26])
+        by outbound-smtp02.blacknight.com (Postfix) with ESMTPS id 383EF2600B
+        for <linux-kernel@vger.kernel.org>; Thu, 27 May 2021 18:27:02 +0100 (IST)
+Received: (qmail 27096 invoked from network); 27 May 2021 17:27:01 -0000
+Received: from unknown (HELO techsingularity.net) (mgorman@techsingularity.net@[84.203.23.168])
+  by 81.17.254.9 with ESMTPSA (AES256-SHA encrypted, authenticated); 27 May 2021 17:27:01 -0000
+Date:   Thu, 27 May 2021 18:27:00 +0100
+From:   Mel Gorman <mgorman@techsingularity.net>
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Christoph Hellwig <hch@infradead.org>,
+        Arnaldo Carvalho de Melo <acme@redhat.com>,
+        Michal Suchanek <msuchanek@suse.de>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Hritik Vijay <hritikxx8@gmail.com>,
+        Linux-BPF <bpf@vger.kernel.org>,
+        Linux-Net <netdev@vger.kernel.org>, Linux-MM <linux-mm@kvack.org>
+Subject: Re: [PATCH v2] mm/page_alloc: Work around a pahole limitation with
+ zero-sized struct pagesets
+Message-ID: <20210527172700.GH30378@techsingularity.net>
+References: <20210527120251.GC30378@techsingularity.net>
+ <CAEf4BzartMG36AGs-7LkQdpgrB6TYyTJ8PQhjkQWiTN=7sO1Bw@mail.gmail.com>
+ <20210527145441.GE30378@techsingularity.net>
+ <CAEf4BzbW2i4Y-i3TXW7x42PqEpw5_nNeReSXS77m4GC3uqD3wg@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-15
 Content-Disposition: inline
-In-Reply-To: <468cee77-aa0a-cf4a-39cf-71b5bfb3575e@amd.com>
+In-Reply-To: <CAEf4BzbW2i4Y-i3TXW7x42PqEpw5_nNeReSXS77m4GC3uqD3wg@mail.gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 20, 2021, Tom Lendacky wrote:
-> On 5/20/21 2:16 PM, Sean Christopherson wrote:
-> > On Mon, May 17, 2021, Tom Lendacky wrote:
-> >> On 5/14/21 6:06 PM, Peter Gonda wrote:
-> >>> On Fri, May 14, 2021 at 1:22 PM Tom Lendacky <thomas.lendacky@amd.com> wrote:
-> >>>>
-> >>>> Currently, an SEV-ES guest is terminated if the validation of the VMGEXIT
-> >>>> exit code and parameters fail. Since the VMGEXIT instruction can be issued
-> >>>> from userspace, even though userspace (likely) can't update the GHCB,
-> >>>> don't allow userspace to be able to kill the guest.
-> >>>>
-> >>>> Return a #GP request through the GHCB when validation fails, rather than
-> >>>> terminating the guest.
-> >>>
-> >>> Is this a gap in the spec? I don't see anything that details what
-> >>> should happen if the correct fields for NAE are not set in the first
-> >>> couple paragraphs of section 4 'GHCB Protocol'.
-> >>
-> >> No, I don't think the spec needs to spell out everything like this. The
-> >> hypervisor is free to determine its course of action in this case.
-> > 
-> > The hypervisor can decide whether to inject/return an error or kill the guest,
-> > but what errors can be returned and how they're returned absolutely needs to be
-> > ABI between guest and host, and to make the ABI vendor agnostic the GHCB spec
-> > is the logical place to define said ABI.
+On Thu, May 27, 2021 at 09:36:35AM -0700, Andrii Nakryiko wrote:
+> On Thu, May 27, 2021 at 7:54 AM Mel Gorman <mgorman@techsingularity.net> wrote:
+> >
+> > On Thu, May 27, 2021 at 07:37:05AM -0700, Andrii Nakryiko wrote:
+> > > > This patch checks for older versions of pahole and only allows
+> > > > DEBUG_INFO_BTF_MODULES if pahole supports zero-sized per-cpu structures.
+> > > > DEBUG_INFO_BTF is still allowed as a KVM boot test passed with pahole
+> > >
+> > > Unfortunately this won't work. The problem is that vmlinux BTF is
+> > > corrupted, which results in module BTFs to be rejected as well, as
+> > > they depend on it.
+> > >
+> > > But vmlinux BTF corruption makes BPF subsystem completely unusable. So
+> > > even though kernel boots, nothing BPF-related works. So we'd need to
+> > > add dependency for DEBUG_INFO_BTF on pahole 1.22+.
+> > >
+> >
+> > While bpf usage would be broken, the kernel will boot and the effect
+> > should be transparent to any kernel build based on "make oldconfig".
 > 
-> For now, that is all we have for versions 1 and 2 of the spec. We can
-> certainly extend it in future versions if that is desired.
+> I think if DEBUG_INFO_BTF=y has no chance of generating valid vmlinux
+> BTF it has to be forced out. So if we are doing this at all, we should
+> do it for CONFIG_DEBUG_INFO_BTF, not CONFIG_DEBUG_INFO_BTF_MODULES.
+> CONFIG_DEBUG_INFO_BTF_MODULES will follow automatically.
 > 
-> I would suggest starting a thread on what we would like to see in the next
-> version of the GHCB spec on the amd-sev-snp mailing list:
+
+Ok, I sent a version that prevents DEBUG_INFO_BTF being set unless
+pahole is at least 1.22.
+
+> > CONFIG_DEBUG_INFO_BTF defaults N so if that is forced out, it will be
+> > easily missed by a distribution kernel maintainer.
 > 
-> 	amd-sev-snp@lists.suse.com
+> We actually had previous discussions on forcing build failure in cases
+> when CONFIG_DEBUG_INFO_BTF=y can't be satisfied, but no one followed
+> up.
 
-Will do, but in the meantime, I don't think we should merge a fix of any kind
-until there is consensus on what the VMM behavior will be.  IMO, fixing this in
-upstream is not urgent; I highly doubt anyone is deploying SEV-ES in production
-using a bleeding edge KVM.
+It is weird how it is handled. DEBUG_INFO_BTF can be set and then fail to
+build vmlinux because pahole is too old. With DEBUG_INFO_BTF now requiring
+at least 1.22, the other version checks for 1.16 and 1.19 are redundant
+and could be cleaned up.
 
-> > For example, "injecting" #GP if the guest botched the GHCB on #VMGEXIT(CPUID) is
-> > completely nonsensical.  As is, a Linux guest appears to blindly forward the #GP,
-> > which means if something does go awry KVM has just made debugging the guest that
-> > much harder, e.g. imagine the confusion that will ensue if the end result is a
-> > SIGBUS to userspace on CPUID.
+> I'll look into this and will try to change the behavior. It's
+> caused too much confusion previously and now with changes like this we
+> are going to waste even more people's time.
 > 
-> I see the point you're making, but I would also say that we probably
-> wouldn't even boot successfully if the kernel can't handle, e.g., a CPUID
-> #VC properly. 
 
-I agree that GHCB bugs in the guest will be fatal, but that doesn't give the VMM
-carte blanche to do whatever it wants given bad input.
+Thanks.
 
-> A lot of what could go wrong with required inputs, not the values, but the
-> required state being communicated, should have already been ironed out during
-> development of whichever OS is providing the SEV-ES support.
-
-Yes, but better  on the kernel never having a regression is a losing proposition.
-And it doesn't even necessarily require a regression, e.g. an existing memory
-corruption bug elsewhere in the guest kernel (that escaped qualification) could
-corrupt the GHCB.  If the GHCB is corrupted at runtime, the guest needs
-well-defined semantics from the VMM so that the guest at least has a chance of
-sanely handling the error.  Handling in this case would mean an oops/panic, but
-that's far, far better than a random pseudo-#GP that might not even be immediately
-logged as a failure.
+-- 
+Mel Gorman
+SUSE Labs
