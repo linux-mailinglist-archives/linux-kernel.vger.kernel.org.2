@@ -2,103 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CE64A39388A
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 00:05:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 97734393894
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 00:12:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235732AbhE0WHW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 May 2021 18:07:22 -0400
-Received: from smtprelay0008.hostedemail.com ([216.40.44.8]:42806 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S234514AbhE0WHV (ORCPT
+        id S235872AbhE0WNd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 May 2021 18:13:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40318 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233563AbhE0WNc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 May 2021 18:07:21 -0400
-Received: from omf05.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay05.hostedemail.com (Postfix) with ESMTP id D9EC618007A3B;
-        Thu, 27 May 2021 22:05:47 +0000 (UTC)
-Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by omf05.hostedemail.com (Postfix) with ESMTPA id B9C62B2798;
-        Thu, 27 May 2021 22:05:46 +0000 (UTC)
-Message-ID: <93eb25ab04c2f7436a49f301c2c79a49cb209c44.camel@perches.com>
-Subject: Re: [PATCH] checkpatch: fix incorrect camelcase detection on
- numeric constant
-From:   Joe Perches <joe@perches.com>
-To:     Antonio Borneo <borneo.antonio@gmail.com>,
-        Andy Whitcroft <apw@canonical.com>,
-        Dwaipayan Ray <dwaipayanray1@gmail.com>,
-        Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Cc:     linux-kernel@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>
-Date:   Thu, 27 May 2021 15:05:44 -0700
-In-Reply-To: <20210527214741.180449-1-borneo.antonio@gmail.com>
-References: <20210527214741.180449-1-borneo.antonio@gmail.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.38.1-1 
+        Thu, 27 May 2021 18:13:32 -0400
+Received: from mail-ot1-x32e.google.com (mail-ot1-x32e.google.com [IPv6:2607:f8b0:4864:20::32e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB841C061574;
+        Thu, 27 May 2021 15:11:57 -0700 (PDT)
+Received: by mail-ot1-x32e.google.com with SMTP id i12-20020a05683033ecb02903346fa0f74dso1667453otu.10;
+        Thu, 27 May 2021 15:11:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=Z9JmRUMI4ldGXsbkG6Shn3CZrfrj0MrU8srTAZhggEY=;
+        b=GeC2XLOaxfwcDMbnI0WwX55FjX31WbjIppCZ+K0vVzagM26/W3bv4tA0Ndtm1ktGxg
+         U313AHhwimwQxCKkQM6ugdT0T+jXHmD5MPvI5lAXa0BCQ5KPqSc/77FQ0+EgNOFEJ/fH
+         Un2O1d9+HlyeoUW9pueff7VCVSGovR8hgvst1zS9XVIF4SIJKCP+arnxMPjVFyCnqCCM
+         b+augjk2DR5WLLr7PkciQTT9W2g8npxd39JK4Ic7noNRqyGAK9vLEYs35UVOZ1wPlInq
+         mmtO5RBK9vzMHxavl8g33KTBBBdsbLOl9ObQupPvOjRLZHPHYXkXIHivmqsK80lkhJQg
+         SPyw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=Z9JmRUMI4ldGXsbkG6Shn3CZrfrj0MrU8srTAZhggEY=;
+        b=M6BIPEJrsmkOFCn6eNRcYDzc2erXadC9VVOvut2FoafcO9lQnXRi90eL+Gj++2L0mc
+         SJJPoaWdqfKUjS3FvYFoq9GM20xB/ZN5lecZGoBAY0DqDsZN8wdDZ5UgxU7ixiDZuANx
+         yW9XMGrHDMYJ95D+3AD1DRqnAfT/7uBzLh9F36EPaF8SojqWD6z+hMxDYWb9eB8lwcSr
+         8xqKXmULny73N9s0qAvB1voF0pnyN0S9EkRlHaG27+wy9dsmQJdwVT3GnszuSQKv6D8C
+         9YCtmlqe8qhwL8GQZZz3wBr3yAegIqk41aK7R6WuvqogTwW0ptG0v1b1mPJ71oVHrW25
+         uULQ==
+X-Gm-Message-State: AOAM533FpLSOdPnBHBxVO01xj8xFz6FZtAPkbxv+C8dp0C8LldtQ/Jg9
+        R/d022cXekq2w3BNnqLsa5Y=
+X-Google-Smtp-Source: ABdhPJywe3CKFp04eL+q1Dbq4cCeqr8y6B8ZQpzseGnbnaFQs1yQI3W/yfS48T5d9TjaW4hO1ifR6A==
+X-Received: by 2002:a05:6830:1196:: with SMTP id u22mr4432514otq.247.1622153517234;
+        Thu, 27 May 2021 15:11:57 -0700 (PDT)
+Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id k21sm741108otr.3.2021.05.27.15.11.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 27 May 2021 15:11:56 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date:   Thu, 27 May 2021 15:11:55 -0700
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     Robert Marko <robert.marko@sartura.hr>
+Cc:     jdelvare@suse.com, corbet@lwn.net, linux-hwmon@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Luka Perkov <luka.perkov@sartura.hr>, jmp@epiphyte.org,
+        Paul Menzel <pmenzel@molgen.mpg.de>,
+        Donald Buczek <buczek@molgen.mpg.de>
+Subject: Re: [PATCH 1/3] hwmon: (pmbus) Add driver for Delta DPS-920AB PSU
+Message-ID: <20210527221155.GA3461420@roeck-us.net>
+References: <CA+HBbNGBirE=Po7q5eUeHho0rBATa_ApWLiU_oPXsGN+6U9U+g@mail.gmail.com>
+ <CA+HBbNGZ1axZpRy5UwQP_4eZCA32eyPJVcj6xN4i8AhOQMYeTA@mail.gmail.com>
+ <493e4da4-8f2b-9856-b538-6e95e3766d5e@roeck-us.net>
+ <CA+HBbNHspA5cZJSHJkLpnP+UODGy7w5i8mKP2NH9JALQ1RqQ_w@mail.gmail.com>
+ <7af2d708-7e22-3970-7bf8-1cb23317cb55@roeck-us.net>
+ <CA+HBbNFVKYPAPKkGJiRhW4VmEGX=da8QALNwbVA1gGegF6KPkQ@mail.gmail.com>
+ <2ba03d58-a4de-b683-6169-3f12482aa29e@roeck-us.net>
+ <CA+HBbNHp2-a-zgUKRLUQVLcs4qcUim=_75YgVZApH1hRrAaP6w@mail.gmail.com>
+ <20210527192657.GA3454023@roeck-us.net>
+ <CA+HBbNHsgS_ZTf5_n0LDSv=6ztUHJ4sweWJL7=AGeR5nhu6Zrw@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Rspamd-Queue-Id: B9C62B2798
-X-Spam-Status: No, score=-0.03
-X-Stat-Signature: 5es8hhmm9e4w48x77ea7crwmzh3ywsds
-X-Rspamd-Server: rspamout03
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Session-ID: U2FsdGVkX18GTx/EgcI2qEfKMz8iuhkQVdAKIGZMNF0=
-X-HE-Tag: 1622153146-319043
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CA+HBbNHsgS_ZTf5_n0LDSv=6ztUHJ4sweWJL7=AGeR5nhu6Zrw@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 2021-05-27 at 23:47 +0200, Antonio Borneo wrote:
-> The code fragment below
-> 	int foo(int *array, int index)
-> 	{
-> 		return array[index & 0xFF];
-> 	}
-> triggers an incorrect camelcase detection by checking a subset of
-> the hex constant:
-> 	CHECK: Avoid CamelCase: <xFF>
-> 	#3: FILE: test.c:3:
-> 	+	return array[index & 0xFF];
+On Thu, May 27, 2021 at 09:43:33PM +0200, Robert Marko wrote:
+[ ... ]
 > 
-> This is caused by passing the whole string "array[index & 0xFF]"
-> to the inner loop that iterates over a "$Ident" match.
-> With no check to exclude a constant, the match iterates over
-> "array", "index" and "xFF", thus the camelcase detection.
-
-The thing there is that 0xFF is not an $Ident as it doesn't
-start with _[A-Za-z] so it's not excluding constants per-se.
-
-So, you've added the right code, but just not quite the best
-commit message.
- 
-> Force the match to start at word boundary so the constants will be
-> filtered-out.
-
-Anyway, thanks and cheers, Joe
-
+> I can confirm that this does indeed enable block reads and
+> i2c_smbus_read_block_data()
+> works now.
 > 
-> Signed-off-by: Antonio Borneo <borneo.antonio@gmail.com>
-> ---
->  scripts/checkpatch.pl | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> To: Andy Whitcroft <apw@canonical.com>
-> To: Joe Perches <joe@perches.com>
-> To: Dwaipayan Ray <dwaipayanray1@gmail.com>
-> To: Lukas Bulwahn <lukas.bulwahn@gmail.com>
-> Cc: linux-kernel@vger.kernel.org
-> 
-> diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
-> index 23697a6b1eaa..f0032166dfc1 100755
-> --- a/scripts/checkpatch.pl
-> +++ b/scripts/checkpatch.pl
-> @@ -5656,7 +5656,7 @@ sub process {
->  			    $var !~ /^(?:[a-z0-9_]*|[A-Z0-9_]*)?_?[a-z][A-Z](?:_[a-z0-9_]+|_[A-Z0-9_]+)?$/ &&
->  #Ignore some three character SI units explicitly, like MiB and KHz
->  			    $var !~ /^(?:[a-z_]*?)_?(?:[KMGT]iB|[KMGT]?Hz)(?:_[a-z_]+)?$/) {
-> -				while ($var =~ m{($Ident)}g) {
-> +				while ($var =~ m{\b($Ident)}g) {
->  					my $word = $1;
->  					next if ($word !~ /[A-Z][a-z]|[a-z][A-Z]/);
->  					if ($check) {
-> 
-> base-commit: c4681547bcce777daf576925a966ffa824edd09d
 
+Follow-up:
 
+> > +static void
+> > +mv64xxx_i2c_do_read_data(struct mv64xxx_i2c_data *drv_data)
+> > +{
+> > +       u8 data;
+> > +
+> > +       data = readl(drv_data->reg_base + drv_data->reg_offsets.data);
+> > +       drv_data->msg->buf[drv_data->byte_posn++] = data;
+> > +
+> > +       if (drv_data->msg->flags & I2C_M_RECV_LEN) {
+> > +               if (!data || data > I2C_SMBUS_BLOCK_MAX) {
+> > +                       /*
+> > +                        * FIXME
+> > +                        * Abort and report error. Needs to be
+> > +                        * verified/tested on real hardware.
+> > +                        */
+> > +                       drv_data->rc = -EPROTO;
+> > +                       mv64xxx_i2c_do_send_stop(drv_data);
+> > +                       return;
+
+Can you possibly test if this works ? Trying a block read on
+any register which returns 0 or > 32 as first byte should do.
+
+Thanks,
+Guenter
