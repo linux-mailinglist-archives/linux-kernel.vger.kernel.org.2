@@ -2,542 +2,287 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CE1B3392C39
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 12:59:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ED872392C3E
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 13:00:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236292AbhE0LAt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 May 2021 07:00:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56662 "EHLO
+        id S236304AbhE0LBc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 May 2021 07:01:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56822 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236217AbhE0LAr (ORCPT
+        with ESMTP id S236217AbhE0LB3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 May 2021 07:00:47 -0400
-Received: from mail-il1-x134.google.com (mail-il1-x134.google.com [IPv6:2607:f8b0:4864:20::134])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2DF2DC061574
-        for <linux-kernel@vger.kernel.org>; Thu, 27 May 2021 03:59:14 -0700 (PDT)
-Received: by mail-il1-x134.google.com with SMTP id c2so3083462ilo.11
-        for <linux-kernel@vger.kernel.org>; Thu, 27 May 2021 03:59:14 -0700 (PDT)
+        Thu, 27 May 2021 07:01:29 -0400
+Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 337A3C061760
+        for <linux-kernel@vger.kernel.org>; Thu, 27 May 2021 03:59:54 -0700 (PDT)
+Received: by mail-pl1-x630.google.com with SMTP id a7so2155493plh.3
+        for <linux-kernel@vger.kernel.org>; Thu, 27 May 2021 03:59:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=sartura-hr.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=SplpIbjnC6M6PaVbbEIHvAeK/UdYU123d5AY4LvU08Y=;
-        b=CbXSKhMbaSGdHqY0MPwXDrUjfXKcOKoMFd+v+G5JBbt7USxeyznLxwI5/ScqBJG+Z4
-         C7A/lTMub/DYNgmTjsW3sTYPBS7PQWuvPzPrjXfAbsr996RN9RhmxNwjLKr7i2vfMSjq
-         bFU/YBmciYOLfV0KFJKnQgAqmO/Lwsz76KcNRTILORkpS+9VMHnvNnLUCjqXPF2CwRl9
-         wH4Y24LGwuikF48MtexDJzJmqBT4E6oVde1r4qem7Lyv7n4p8MHzBJldDXXflw7r35Cw
-         LWxsckqsg+AAd9J5DNQ/v2lrECwC+YYTaFsEcL6Lsa6HYm9mOYKLVvWmn8lA6FpJ+omF
-         HCoQ==
+        d=heitbaum.com; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=R5N5oZ+1APogmyoyRV7B7KuQxfti3iHISxAjw6QGonM=;
+        b=CvDQzkMeN2S0owB/PTz9PlRw2l4ooxZvPjlEY7xClUuZ6/JPfMGrjoV1FI+iVpOGQl
+         bVvA44bDOgoeCsjVT/QGdMdHzg/9cliLi6sm91pd2oHHu7GrjdBxLw++800jHZBMeAKk
+         Zbs3NZa/1sBPlD/mCwQNBF7U7XBK5EbRG1Nzs=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=SplpIbjnC6M6PaVbbEIHvAeK/UdYU123d5AY4LvU08Y=;
-        b=Ihr5UDXokqWkEw9DYx7sXTrqfjP+mvyVfM/tOeMmvPflCyHUJ34a9WZxeoFH0B6p38
-         hsSy7+JBAImdJO8UdIG670JMyFXUNBRXU3YGo5E0FfWt3jHxn4cCWKJBIq4ahhvwApsN
-         c1jrrFr3Zn0aVsXSoljDIUPqwNNyMd9WkQ9a5LwSheHzbHTrWxwWCmG+jaxds5fqY/X1
-         2eVUpXj7ZcgQ3zb+WgDRhE9IIm5hxdyDjmkxdXCd4699TDkgbYfy2ni/XSNBMzRdwXjz
-         hKTafTfhMJ6kvN4QEJSlwM1yJzJEvREnGtcRNVqj+NZyaJgpXSP57jZ0nx5gJxqv31WJ
-         eQEw==
-X-Gm-Message-State: AOAM533vt/OfxkP9Bwqu3vlRTFih6hR31eWv5M23hRQz3+oHQwlpScaf
-        j7IJX3Rm1wZ3MAysXiOtk7CsN4XV3LwZD5z6N+/KYg==
-X-Google-Smtp-Source: ABdhPJxLYxfPqm7UPsfrpIi7TtVsKF9V+fnVEVeyOGqJ+PjpYlYHo1mgGuTMj5yDPWfS/53HxQHg/nefwD7GyQYNy/s=
-X-Received: by 2002:a05:6e02:216b:: with SMTP id s11mr2491725ilv.267.1622113153437;
- Thu, 27 May 2021 03:59:13 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=R5N5oZ+1APogmyoyRV7B7KuQxfti3iHISxAjw6QGonM=;
+        b=F8zbUPzDQ2kmS429NLJjAiXhfskUCqxcbHxeTYmqpIuKrFB12TFzLxJNfOJNPZLN0O
+         op/wK/RY3RIn7l/HnZFF0ixHj2YIZWoaSaZudBgtnjeAcyByl4VRQoVbQ8pwrRdcB5s/
+         7Xn6n3+BOj+27qv57x4wQvSwh1AHDaQC0o0DUvSOfAhJ6gc4zgKr8ceFD0aiVaj8uTs4
+         pTZufT/PEGNsIZcJP5GZLtkEwKpymRP3iDW6LqsTkCwzSp6WSPXBODfilqJXZ1hQ7MFM
+         c7hRwctUGqhFc66w1tUUGkgF1dRtA0g6umVdj1awK12u1eIIAUqVgO1IpusZB08wxAy8
+         A39Q==
+X-Gm-Message-State: AOAM532WqQwLtzYoYgZizg7dRRe3TrfL6/8/nZCBzYckZPquYeQzMOQo
+        FmWv4+yi2iTOVaCF4F/8BAMaSP3pp3p71jcKSok=
+X-Google-Smtp-Source: ABdhPJxA5qxO0aqkxFVJOXW+GvbA5Thb7DzFCwERhtJ5wS1n3604FSkv7GIv16K+dcS/CGZ8nIZoNw==
+X-Received: by 2002:a17:90b:341:: with SMTP id fh1mr3162306pjb.136.1622113193528;
+        Thu, 27 May 2021 03:59:53 -0700 (PDT)
+Received: from 7698f5da3a10 ([124.170.34.40])
+        by smtp.gmail.com with ESMTPSA id m1sm1747391pgd.78.2021.05.27.03.59.50
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Thu, 27 May 2021 03:59:53 -0700 (PDT)
+Date:   Thu, 27 May 2021 10:59:47 +0000
+From:   Rudi Heitbaum <rudi@heitbaum.com>
+To:     Peter Geis <pgwipeout@gmail.com>
+Cc:     devicetree@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "open list:ARM/Rockchip SoC..." <linux-rockchip@lists.infradead.org>,
+        Mark Brown <broonie@kernel.org>,
+        Ezequiel Garcia <ezequiel@collabora.com>, chenjh@rock-chips.com
+Subject: Re: [PATCH] regulator: fan53555: add back tcs4526
+Message-ID: <20210527105943.GA441@7698f5da3a10>
+References: <20210526162342.GA20@8bbba9ba63a4>
+ <CAMdYzYpZoKs3P62j02RW-+5BEpqC9JL3apjucTWLWmvNFrOrCg@mail.gmail.com>
 MIME-Version: 1.0
-References: <20210430132735.127342-1-robert.marko@sartura.hr>
- <20210430134810.GA2714262@roeck-us.net> <CA+HBbNH+gQOmu_Ho0ivFuGHdu0zBtOrr1474z+7FA1zmNb4bug@mail.gmail.com>
- <2b990feb-dc26-debb-4f81-430bbc89b51c@roeck-us.net> <CA+HBbNHQHqD-wgryaBLZ5M2Lxafb0OwNcbiQJmRQPcZfprmUEg@mail.gmail.com>
- <2a1a63c7-c9b0-e38d-df1d-7643ad493aba@roeck-us.net> <CA+HBbNF62xzBt2r60qfzn9iveiusLKp6R-T4KU-NgoHaE6c3kQ@mail.gmail.com>
- <dec7d641-2954-29f0-124b-d0020866bf7b@roeck-us.net> <CA+HBbNGU4d4g0JrUKBhj07OsC7=s9qoubxNDi3MxPjmV457C+Q@mail.gmail.com>
- <8152a109-d76d-4f85-9da2-fe0a56c2019f@roeck-us.net> <CA+HBbNGBirE=Po7q5eUeHho0rBATa_ApWLiU_oPXsGN+6U9U+g@mail.gmail.com>
-In-Reply-To: <CA+HBbNGBirE=Po7q5eUeHho0rBATa_ApWLiU_oPXsGN+6U9U+g@mail.gmail.com>
-From:   Robert Marko <robert.marko@sartura.hr>
-Date:   Thu, 27 May 2021 12:59:02 +0200
-Message-ID: <CA+HBbNGZ1axZpRy5UwQP_4eZCA32eyPJVcj6xN4i8AhOQMYeTA@mail.gmail.com>
-Subject: Re: [PATCH 1/3] hwmon: (pmbus) Add driver for Delta DPS-920AB PSU
-To:     Guenter Roeck <linux@roeck-us.net>
-Cc:     jdelvare@suse.com, corbet@lwn.net, linux-hwmon@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Luka Perkov <luka.perkov@sartura.hr>, jmp@epiphyte.org,
-        Paul Menzel <pmenzel@molgen.mpg.de>,
-        Donald Buczek <buczek@molgen.mpg.de>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAMdYzYpZoKs3P62j02RW-+5BEpqC9JL3apjucTWLWmvNFrOrCg@mail.gmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 27, 2021 at 12:22 PM Robert Marko <robert.marko@sartura.hr> wrote:
->
-> On Mon, May 24, 2021 at 3:47 PM Guenter Roeck <linux@roeck-us.net> wrote:
+On Wed, May 26, 2021 at 02:41:00PM -0400, Peter Geis wrote:
+> On Wed, May 26, 2021 at 12:23 PM Rudi Heitbaum <rudi@heitbaum.com> wrote:
 > >
-> > On 5/24/21 5:21 AM, Robert Marko wrote:
-> > > On Fri, May 21, 2021 at 4:46 PM Guenter Roeck <linux@roeck-us.net> wrote:
-> > >>
-> > >> On 5/21/21 4:56 AM, Robert Marko wrote:
-> > >>> On Fri, May 21, 2021 at 12:56 PM Guenter Roeck <linux@roeck-us.net> wrote:
-> > >>>>
-> > >>>> On 5/21/21 1:36 AM, Robert Marko wrote:
-> > >>>>> On Wed, May 19, 2021 at 3:19 PM Guenter Roeck <linux@roeck-us.net> wrote:
-> > >>>>>>
-> > >>>>>> On 5/19/21 5:38 AM, Robert Marko wrote:
-> > >>>>>>> On Fri, Apr 30, 2021 at 3:48 PM Guenter Roeck <linux@roeck-us.net> wrote:
-> > >>>>>>>>
-> > >>>>>>>> On Fri, Apr 30, 2021 at 03:27:33PM +0200, Robert Marko wrote:
-> > >>>>>>>>> This adds support for the Delta DPS-920AB PSU.
-> > >>>>>>>>>
-> > >>>>>>>>> Only missing feature is fan control which the PSU supports.
-> > >>>>>>>>>
-> > >>>>>>>>> Signed-off-by: Robert Marko <robert.marko@sartura.hr>
-> > >>>>>>>>> ---
-> > >>>>>>>>>      Documentation/hwmon/dps920ab.rst | 80 ++++++++++++++++++++++++++++++++
-> > >>>>>>>>>      Documentation/hwmon/index.rst    |  1 +
-> > >>>>>>>>>      drivers/hwmon/pmbus/Kconfig      |  9 ++++
-> > >>>>>>>>>      drivers/hwmon/pmbus/Makefile     |  1 +
-> > >>>>>>>>>      drivers/hwmon/pmbus/dps920ab.c   | 63 +++++++++++++++++++++++++
-> > >>>>>>>>>      5 files changed, 154 insertions(+)
-> > >>>>>>>>>      create mode 100644 Documentation/hwmon/dps920ab.rst
-> > >>>>>>>>>      create mode 100644 drivers/hwmon/pmbus/dps920ab.c
-> > >>>>>>>>>
-> > >>>>>>>>> diff --git a/Documentation/hwmon/dps920ab.rst b/Documentation/hwmon/dps920ab.rst
-> > >>>>>>>>> new file mode 100644
-> > >>>>>>>>> index 000000000000..df0aef530c7e
-> > >>>>>>>>> --- /dev/null
-> > >>>>>>>>> +++ b/Documentation/hwmon/dps920ab.rst
-> > >>>>>>>>> @@ -0,0 +1,80 @@
-> > >>>>>>>>> +.. SPDX-License-Identifier: GPL-2.0-or-later
-> > >>>>>>>>> +
-> > >>>>>>>>> +Kernel driver dps920ab
-> > >>>>>>>>> +========================
-> > >>>>>>>>> +
-> > >>>>>>>>> +Supported chips:
-> > >>>>>>>>> +
-> > >>>>>>>>> +  * Delta DPS920AB
-> > >>>>>>>>> +
-> > >>>>>>>>> +    Prefix: 'dps920ab'
-> > >>>>>>>>> +
-> > >>>>>>>>> +    Addresses scanned: -
-> > >>>>>>>>> +
-> > >>>>>>>>> +Authors:
-> > >>>>>>>>> +    Robert Marko <robert.marko@sartura.hr>
-> > >>>>>>>>> +
-> > >>>>>>>>> +
-> > >>>>>>>>> +Description
-> > >>>>>>>>> +-----------
-> > >>>>>>>>> +
-> > >>>>>>>>> +This driver implements support for Delta DPS920AB 920W 54V DC single output
-> > >>>>>>>>> +power supply with PMBus support.
-> > >>>>>>>>> +
-> > >>>>>>>>> +The driver is a client driver to the core PMBus driver.
-> > >>>>>>>>> +Please see Documentation/hwmon/pmbus.rst for details on PMBus client drivers.
-> > >>>>>>>>> +
-> > >>>>>>>>> +
-> > >>>>>>>>> +Usage Notes
-> > >>>>>>>>> +-----------
-> > >>>>>>>>> +
-> > >>>>>>>>> +This driver does not auto-detect devices. You will have to instantiate the
-> > >>>>>>>>> +devices explicitly. Please see Documentation/i2c/instantiating-devices.rst for
-> > >>>>>>>>> +details.
-> > >>>>>>>>> +
-> > >>>>>>>>> +
-> > >>>>>>>>> +Sysfs entries
-> > >>>>>>>>> +-------------
-> > >>>>>>>>> +
-> > >>>>>>>>> +======================= ======================================================
-> > >>>>>>>>> +curr1_label          "iin"
-> > >>>>>>>>> +curr1_input          Measured input current
-> > >>>>>>>>> +curr1_crit           Critical maximum current
-> > >>>>>>>>> +curr1_crit_alarm     Current critical high alarm
-> > >>>>>>>>> +
-> > >>>>>>>>> +curr2_label          "iout1"
-> > >>>>>>>>> +curr2_input          Measured output current
-> > >>>>>>>>> +curr2_crit           Critical maximum current
-> > >>>>>>>>> +curr2_crit_alarm     Current critical high alarm
-> > >>>>>>>>> +
-> > >>>>>>>>> +in1_label            "vin"
-> > >>>>>>>>> +in1_input            Measured input voltage
-> > >>>>>>>>> +in1_lcrit            Critical minimum input voltage
-> > >>>>>>>>> +in1_lcrit_alarm              Input voltage critical low alarm
-> > >>>>>>>>> +in1_crit             Critical maximum input voltage
-> > >>>>>>>>> +in1_crit_alarm               Input voltage critical high alarm
-> > >>>>>>>>> +
-> > >>>>>>>>> +in2_label            "vout1"
-> > >>>>>>>>> +in2_input            Measured output voltage
-> > >>>>>>>>> +in2_lcrit            Critical minimum output voltage
-> > >>>>>>>>> +in2_lcrit_alarm              Output voltage critical low alarm
-> > >>>>>>>>> +in2_crit             Critical maximum output voltage
-> > >>>>>>>>> +in2_crit_alarm               Output voltage critical high alarm
-> > >>>>>>>>> +
-> > >>>>>>>>> +power1_label         "pin"
-> > >>>>>>>>> +power1_input         Measured input power
-> > >>>>>>>>> +power1_alarm         Input power high alarm
-> > >>>>>>>>> +
-> > >>>>>>>>> +power2_label         "pout1"
-> > >>>>>>>>> +power2_input         Measured output power
-> > >>>>>>>>> +
-> > >>>>>>>>> +temp[1-2]_input              Measured temperature
-> > >>>>>>>>> +temp[1-2]_crit               Critical high temperature
-> > >>>>>>>>> +temp[1-2]_crit_alarm Chip temperature critical high alarm
-> > >>>>>>>>> +temp[1-2]_max                Maximum temperature
-> > >>>>>>>>> +temp[1-2]_max_alarm  Chip temperature high alarm
-> > >>>>>>>>> +
-> > >>>>>>>>> +fan1_alarm           Fan 1 warning.
-> > >>>>>>>>> +fan1_fault           Fan 1 fault.
-> > >>>>>>>>> +fan1_input           Fan 1 speed in RPM.
-> > >>>>>>>>> +======================= ======================================================
-> > >>>>>>>>> diff --git a/Documentation/hwmon/index.rst b/Documentation/hwmon/index.rst
-> > >>>>>>>>> index 8d5a2df1ecb6..b24436f22052 100644
-> > >>>>>>>>> --- a/Documentation/hwmon/index.rst
-> > >>>>>>>>> +++ b/Documentation/hwmon/index.rst
-> > >>>>>>>>> @@ -54,6 +54,7 @@ Hardware Monitoring Kernel Drivers
-> > >>>>>>>>>         dell-smm-hwmon
-> > >>>>>>>>>         dme1737
-> > >>>>>>>>>         drivetemp
-> > >>>>>>>>> +   dps920ab
-> > >>>>>>>>>         ds1621
-> > >>>>>>>>>         ds620
-> > >>>>>>>>>         emc1403
-> > >>>>>>>>> diff --git a/drivers/hwmon/pmbus/Kconfig b/drivers/hwmon/pmbus/Kconfig
-> > >>>>>>>>> index 32d2fc850621..865ade0aa205 100644
-> > >>>>>>>>> --- a/drivers/hwmon/pmbus/Kconfig
-> > >>>>>>>>> +++ b/drivers/hwmon/pmbus/Kconfig
-> > >>>>>>>>> @@ -66,6 +66,15 @@ config SENSORS_IBM_CFFPS
-> > >>>>>>>>>             This driver can also be built as a module. If so, the module will
-> > >>>>>>>>>             be called ibm-cffps.
-> > >>>>>>>>>
-> > >>>>>>>>> +config SENSORS_DPS920AB
-> > >>>>>>>>> +     tristate "Delta DPS920AB Power Supply"
-> > >>>>>>>>> +     help
-> > >>>>>>>>> +       If you say yes here you get hardware monitoring support for Delta
-> > >>>>>>>>> +       DPS920AB Power Supplies.
-> > >>>>>>>>> +
-> > >>>>>>>>> +       This driver can also be built as a module. If so, the module will
-> > >>>>>>>>> +       be called dps920ab.
-> > >>>>>>>>> +
-> > >>>>>>>>>      config SENSORS_INSPUR_IPSPS
-> > >>>>>>>>>           tristate "INSPUR Power System Power Supply"
-> > >>>>>>>>>           help
-> > >>>>>>>>> diff --git a/drivers/hwmon/pmbus/Makefile b/drivers/hwmon/pmbus/Makefile
-> > >>>>>>>>> index 6a4ba0fdc1db..f59ba0123d68 100644
-> > >>>>>>>>> --- a/drivers/hwmon/pmbus/Makefile
-> > >>>>>>>>> +++ b/drivers/hwmon/pmbus/Makefile
-> > >>>>>>>>> @@ -9,6 +9,7 @@ obj-$(CONFIG_SENSORS_ADM1266) += adm1266.o
-> > >>>>>>>>>      obj-$(CONFIG_SENSORS_ADM1275)        += adm1275.o
-> > >>>>>>>>>      obj-$(CONFIG_SENSORS_BEL_PFE)        += bel-pfe.o
-> > >>>>>>>>>      obj-$(CONFIG_SENSORS_IBM_CFFPS)      += ibm-cffps.o
-> > >>>>>>>>> +obj-$(CONFIG_SENSORS_DPS920AB)       += dps920ab.o
-> > >>>>>>>>>      obj-$(CONFIG_SENSORS_INSPUR_IPSPS) += inspur-ipsps.o
-> > >>>>>>>>>      obj-$(CONFIG_SENSORS_IR35221)        += ir35221.o
-> > >>>>>>>>>      obj-$(CONFIG_SENSORS_IR38064)        += ir38064.o
-> > >>>>>>>>> diff --git a/drivers/hwmon/pmbus/dps920ab.c b/drivers/hwmon/pmbus/dps920ab.c
-> > >>>>>>>>> new file mode 100644
-> > >>>>>>>>> index 000000000000..d579ed9f879c
-> > >>>>>>>>> --- /dev/null
-> > >>>>>>>>> +++ b/drivers/hwmon/pmbus/dps920ab.c
-> > >>>>>>>>> @@ -0,0 +1,63 @@
-> > >>>>>>>>> +// SPDX-License-Identifier: GPL-2.0-or-later
-> > >>>>>>>>> +/*
-> > >>>>>>>>> + * Driver for Delta DPS920AB PSU
-> > >>>>>>>>> + *
-> > >>>>>>>>> + * Copyright (C) 2021 Delta Networks, Inc.
-> > >>>>>>>>> + * Copyright (C) 2021 Sartura Ltd.
-> > >>>>>>>>> + */
-> > >>>>>>>>> +
-> > >>>>>>>>> +#include <linux/i2c.h>
-> > >>>>>>>>> +#include <linux/module.h>
-> > >>>>>>>>> +#include <linux/of_device.h>
-> > >>>>>>>>> +#include "pmbus.h"
-> > >>>>>>>>> +
-> > >>>>>>>>> +static struct pmbus_driver_info dps920ab_info = {
-> > >>>>>>>>> +     .pages = 1,
-> > >>>>>>>>> +
-> > >>>>>>>>> +     .format[PSC_VOLTAGE_IN] = linear,
-> > >>>>>>>>> +     .format[PSC_VOLTAGE_OUT] = linear,
-> > >>>>>>>>> +     .format[PSC_CURRENT_IN] = linear,
-> > >>>>>>>>> +     .format[PSC_CURRENT_OUT] = linear,
-> > >>>>>>>>> +     .format[PSC_POWER] = linear,
-> > >>>>>>>>> +     .format[PSC_FAN] = linear,
-> > >>>>>>>>> +     .format[PSC_TEMPERATURE] = linear,
-> > >>>>>>>>> +
-> > >>>>>>>>> +     .func[0] = PMBUS_HAVE_VIN | PMBUS_HAVE_IIN  |
-> > >>>>>>>>> +     PMBUS_HAVE_VOUT  | PMBUS_HAVE_STATUS_VOUT   |
-> > >>>>>>>>> +     PMBUS_HAVE_IOUT  | PMBUS_HAVE_STATUS_IOUT   |
-> > >>>>>>>>> +     PMBUS_HAVE_TEMP  | PMBUS_HAVE_TEMP2         |
-> > >>>>>>>>> +     PMBUS_HAVE_PIN   | PMBUS_HAVE_POUT          |
-> > >>>>>>>>> +     PMBUS_HAVE_FAN12 | PMBUS_HAVE_STATUS_FAN12  |
-> > >>>>>>>>> +     PMBUS_HAVE_STATUS_INPUT | PMBUS_HAVE_STATUS_TEMP,
-> > >>>>>>>>> +};
-> > >>>>>>>>> +
-> > >>>>>>>>> +static int dps920ab_probe(struct i2c_client *client)
-> > >>>>>>>>> +{
-> > >>>>>>>>> +     if (!i2c_check_functionality(client->adapter,
-> > >>>>>>>>> +                                  I2C_FUNC_SMBUS_BYTE_DATA |
-> > >>>>>>>>> +                                  I2C_FUNC_SMBUS_WORD_DATA))
-> > >>>>>>>>> +             return -ENODEV;
-> > >>>>>>>>
-> > >>>>>>>> This check is done in pmbus_do_probe(), and repeating it here does not add
-> > >>>>>>>> any value.
-> > >>>>>>>
-> > >>>>>>> Ok, makes sense.
-> > >>>>>>>>
-> > >>>>>>>> That makes me wonder: Is this driver needed in the first place, or could
-> > >>>>>>>> it be added to drivers/hwmon/pmbus/pmbus.c ?
-> > >>>>>>>
-> > >>>>>>> It could be added as a generic driver, but that creates properties in
-> > >>>>>>> the sysfs that this thing
-> > >>>>>>> does not support like 3 voltage readings, 3 fans, and so on.
-> > >>>>>>>
-> > >>>>>>
-> > >>>>>> Can you be more specific ? What additional unsupported attributes
-> > >>>>>> are added, and why ? Are you saying the PSU reports registers as
-> > >>>>>> existing which do not really exist ? If so, which registers are those ?
-> > >>>>>
-> > >>>>> Sure, when core does probing and autodiscovery, then the following
-> > >>>>> sysfs attributes are created:
-> > >>>>>>
-> > >>>>>> curr1_crit         fan3_fault       in3_min_alarm      temp1_max
-> > >>>>>> curr1_crit_alarm   fan3_input       in3_rated_max      temp1_max_alarm
-> > >>>>>> curr1_input        fan3_target      in3_rated_min      temp1_min
-> > >>>>>> curr1_label        in1_crit         name               temp1_min_alarm
-> > >>>>>> curr1_max          in1_crit_alarm   of_node            temp1_rated_max
-> > >>>>>> curr1_max_alarm    in1_input        power              temp2_crit
-> > >>>>>> curr1_rated_max    in1_label        power1_alarm       temp2_crit_alarm
-> > >>>>>> curr2_crit         in1_lcrit        power1_input       temp2_input
-> > >>>>>> curr2_crit_alarm   in1_lcrit_alarm  power1_label       temp2_lcrit
-> > >>>>>> curr2_input        in1_max          power1_max         temp2_lcrit_alarm
-> > >>>>>> curr2_label        in1_max_alarm    power1_rated_max   temp2_max
-> > >>>>>> curr2_lcrit        in1_min          power2_cap         temp2_max_alarm
-> > >>>>>> curr2_lcrit_alarm  in1_min_alarm    power2_cap_alarm   temp2_min
-> > >>>>>> curr2_max          in1_rated_max    power2_crit        temp2_min_alarm
-> > >>>>>> curr2_max_alarm    in1_rated_min    power2_crit_alarm  temp2_rated_max
-> > >>>>>> curr2_rated_max    in2_input        power2_input       temp3_crit
-> > >>>>>> device             in2_label        power2_label       temp3_crit_alarm
-> > >>>>>> fan1_alarm         in3_crit         power2_max         temp3_input
-> > >>>>>> fan1_fault         in3_crit_alarm   power2_max_alarm   temp3_lcrit
-> > >>>>>> fan1_input         in3_input        power2_rated_max   temp3_lcrit_alarm
-> > >>>>>> fan1_target        in3_label        subsystem          temp3_max
-> > >>>>>> fan2_alarm         in3_lcrit        temp1_crit         temp3_max_alarm
-> > >>>>>> fan2_fault         in3_lcrit_alarm  temp1_crit_alarm   temp3_min
-> > >>>>>> fan2_input         in3_max          temp1_input        temp3_min_alarm
-> > >>>>>> fan2_target        in3_max_alarm    temp1_lcrit        temp3_rated_max
-> > >>>>>> fan3_alarm         in3_min          temp1_lcrit_alarm  uevent
-> > >>>>>
-> > >>>>> The following return -1, or -500 so they are not supported.
-> > >>>>> * fan2
-> > >>>>> * in2
-> > >>>>>
-> > >>>>> Weirdly, with the external driver both fan2 and in2 are enabled and work fine,
-> > >>>>> but when auto probing they are fan3 and in3.
-> > >>>>>
-> > >>>>> temp3 actually seems to return a valid temperature despite it not being used in
-> > >>>>> the vendor driver that features were picked from.
-> > >>>>>
-> > >>>>
-> > >>>> Can you run "grep . *" in the hwmon directory so I can see actual values ?
-> > >>>>
-> > >>> Sure:
-> > >>>>
-> > >>>> curr1_crit:-500
-> > >>>> curr1_crit_alarm:0
-> > >>>> curr1_input:195
-> > >>>> curr1_label:iin
-> > >>>> curr1_max:-500
-> > >>>> curr1_max_alarm:0
-> > >>>> curr1_rated_max:-500
-> > >>>> curr2_crit:-500
-> > >>>> curr2_crit_alarm:0
-> > >>>> curr2_input:320
-> > >>>> curr2_label:iout1
-> > >>>> curr2_lcrit:-500
-> > >>>> curr2_lcrit_alarm:0
-> > >>>> curr2_max:18625
-> > >>>> curr2_max_alarm:0
-> > >>>> curr2_rated_max:16875
-> > >>>> grep: device: Is a directory
-> > >>>> fan1_alarm:0
-> > >>>> fan1_fault:0
-> > >>>> fan1_input:10000
-> > >>>> fan1_target:0
-> > >>>> fan2_alarm:1
-> > >>>> fan2_fault:1
-> > >>>> fan2_input:-1
-> > >>>> fan2_target:-1
-> > >>>> fan3_alarm:1
-> > >>>> fan3_fault:1
-> > >>>> fan3_input:-1
-> > >>>> fan3_target:-1
-> > >>>> in1_crit:-500
-> > >>>> in1_crit_alarm:0
-> > >>>> in1_input:245250
-> > >>>> in1_label:vin
-> > >>>> in1_lcrit:-500
-> > >>>> in1_lcrit_alarm:0
-> > >>>> in1_max:-500
-> > >>>> in1_max_alarm:0
-> > >>>> in1_min:-500
-> > >>>> in1_min_alarm:0
-> > >>>> in1_rated_max:-500
-> > >>>> in1_rated_min:-500
-> > >>>> in2_input:-500
-> > >>>> in2_label:vcap
-> > >>>> in3_crit:255996
-> > >>>> in3_crit_alarm:0
-> > >>>> in3_input:54511
-> > >>>> in3_label:vout1
-> > >>>> in3_lcrit:255996
-> > >>>> in3_lcrit_alarm:0
-> > >>>> in3_max:255996
-> > >>>> in3_max_alarm:0
-> > >>>> in3_min:255996
-> > >>>> in3_min_alarm:0
-> > >>>> in3_rated_max:56136
-> > >>>> in3_rated_min:52863
-> > >>>> name:dps920ab
-> > >>>> grep: of_node: Is a directory
-> > >>>> grep: power: Is a directory
-> > >>>> power1_alarm:0
-> > >>>> power1_input:33250000
-> > >>>> power1_label:pin
-> > >>>> power1_max:-500000
-> > >>>> power1_rated_max:-500000
-> > >>>> power2_cap:-500000
-> > >>>> power2_cap_alarm:0
-> > >>>> power2_crit:-500000
-> > >>>> power2_crit_alarm:0
-> > >>>> power2_input:17750000
-> > >>>> power2_label:pout1
-> > >>>> power2_max:-500000
-> > >>>> power2_max_alarm:0
-> > >>>> power2_rated_max:920000000
-> > >>>> grep: subsystem: Is a directory
-> > >>>> temp1_crit:-500
-> > >>>> temp1_crit_alarm:0
-> > >>>> temp1_input:23000
-> > >>>> temp1_lcrit:-500
-> > >>>> temp1_lcrit_alarm:0
-> > >>>> temp1_max:-500
-> > >>>> temp1_max_alarm:0
-> > >>>> temp1_min:-500
-> > >>>> temp1_min_alarm:0
-> > >>>> temp1_rated_max:-500
-> > >>>> temp2_crit:-500
-> > >>>> temp2_crit_alarm:0
-> > >>>> temp2_input:26000
-> > >>>> temp2_lcrit:-500
-> > >>>> temp2_lcrit_alarm:0
-> > >>>> temp2_max:-500
-> > >>>> temp2_max_alarm:0
-> > >>>> temp2_min:-500
-> > >>>> temp2_min_alarm:0
-> > >>>> temp2_rated_max:-500
-> > >>>> temp3_crit:-500
-> > >>>> temp3_crit_alarm:0
-> > >>>> temp3_input:30000
-> > >>>> temp3_lcrit:-500
-> > >>>> temp3_lcrit_alarm:0
-> > >>>> temp3_max:-500
-> > >>>> temp3_max_alarm:0
-> > >>>> temp3_min:-500
-> > >>>> temp3_min_alarm:0
-> > >>>> temp3_rated_max:-500
-> > >>>> uevent:OF_NAME=psu
-> > >>>> uevent:OF_FULLNAME=/ap806/config-space@f0000000/i2c@511000/psu@5a
-> > >>>> uevent:OF_COMPATIBLE_0=delta,dps920ab
-> > >>>> uevent:OF_COMPATIBLE_N=1
-> > >>>
-> > >> Ok, good enough. It looks like the PSU reports values for pretty much everything,
-> > >> including registers which don't exist. With that in mind, please check
-> > >> the attributes generated by your driver - I suspect that some of the limit
-> > >> attributes are not really supported (maybe none of them is supported).
-> > >
-> > > Yeah, I also think that none of those limits are actually supported.
-> > > Does the core expose a way to not register those?
-> > >
 > >
-> > Have the read_word function return -ENXIO for unsupported registers
-> > (and add a comment to the code explaining why you do that).
-> > See drivers/hwmon/pmbus/fsp-3y.c for an example.
->
-> Thanks, will implement that.
-> In the meantime I finally got the PMBus command list that
-> the PSU supports.
-> It implements PMBus 1.2, but it also claims that MFR_ID,
-> MFR_MODEL and MFR_REVISION are supported.
->
-> Block read returns what looks like a correct length, but the buffer
-> is empty.
+> > For rk3399pro boards the tcs4526 regulator supports the vdd_gpu
+> > regulator. The tcs4526 regulator has a chip id of <0>.
+> > Add the compatibile tcs,tcs4526
 > >
-> > [  195.246464] dps920ab 0-005a: PMBUS_MFR_ID length: 5
-> > [  195.251495] dps920ab 0-005a: PMBUS_MFR_ID:
-> > [  195.300789] dps920ab 0-005b: PMBUS_MFR_ID length: 5
-> > [  195.305762] dps920ab 0-005b: PMBUS_MFR_ID:
-> > [  272.795222] dps920ab 0-005a: PMBUS_MFR_ID length: 5
-> > [  272.800190] dps920ab 0-005a: PMBUS_MFR_ID:
-> > [  272.804862] dps920ab 0-005a: PMBUS_MFR_MODEL length: 11
-> > [  272.810172] dps920ab 0-005a: PMBUS_MFR_MODEL:
-> > [  272.815098] dps920ab 0-005a: PMBUS_MFR_REVISION length: 2
-> > [  272.820600] dps920ab 0-005a: PMBUS_MFR_REVISION:
-> > [  272.874060] dps920ab 0-005b: PMBUS_MFR_ID length: 5
-> > [  272.879102] dps920ab 0-005b: PMBUS_MFR_ID:
-> > [  272.883833] dps920ab 0-005b: PMBUS_MFR_MODEL length: 11
-> > [  272.889151] dps920ab 0-005b: PMBUS_MFR_MODEL:
-> > [  272.894097] dps920ab 0-005b: PMBUS_MFR_REVISION length: 2
-> > [  272.899548] dps920ab 0-005b: PMBUS_MFR_REVISION:
->
->
-> However, manually reading using i2cget in word mode returns
-> something that looks ok.
-> i2cget -y 0 0x5a 0x9a w
-> 0x440b
->
-> This would be D is ASCII, it looks like any kind of block read fails actually.
-
-Ok, so after using i2c_smbus_read_i2c_block_data() I can actually read
-the model kind of OK.
-There actually are 10 bytes of valid data, no idea why
-i2c_smbus_read_block_data() does not work.
->
-> [  721.194706] dps920ab 0-005a: MFR MODEL:
->                                            DPS-920AB
-> [  721.245502] dps920ab 0-005b: MFR MODEL:
->                                            DPS-920AB
-
-It behaves weirdly when printing by creating a newline before and
-stuff like that.
-
-Regards,
-Robert
-
->
-> I am now a bit confused.
-> I tried applying the block support for mv64xx as well:
-> https://patchwork.ozlabs.org/project/linux-i2c/patch/20200118115820.9080-1-fuga@studiofuga.com/
->
-> But no luck.
->
-> Regards,
-> Robert
+> > without this patch, the dmesg output is:
+> >   fan53555-regulator 0-0010: Chip ID 0 not supported!
+> >   fan53555-regulator 0-0010: Failed to setup device!
+> >   fan53555-regulator: probe of 0-0010 failed with error -22
+> > with this patch, the dmesg output is:
+> >   vdd_gpu: supplied by vcc5v0_sys
 > >
-> > Guenter
->
->
->
-> --
-> Robert Marko
-> Staff Embedded Linux Engineer
-> Sartura Ltd.
-> Lendavska ulica 16a
-> 10000 Zagreb, Croatia
-> Email: robert.marko@sartura.hr
-> Web: www.sartura.hr
+> > The regulators are described as:
+> > - Dedicated power management IC TCS4525
+> > - Lithium battery protection chip TCS4526
+> >
+> > This has been tested with a Radxa Rock Pi N10.
+> >
+> > Fixes: f9028dcdf589 ("regulator: fan53555: only bind tcs4525 to correct chip id")
+> > Signed-off-by: Rudi Heitbaum <rudi@heitbaum.com>
+> 
+> Considering the TCS4525 wasn't supported prior to its recent addition,
+> and the TCS4526 wasn't supported by the driver at all, this isn't a
+> fix but a feature addition.
+> Binding only to the correct device ID exists for this reason, to
+> prevent unsafe voltage setting.
 
+Hi Peter, thanks for the detailed feedback. You are quite right (I had
+started using the tcs4525 patch as a tcs452x patch. I'll update that in
+the resubmission.
 
+> I also don't see the TCS4525/TCS4526 regulators in the current
+> linux-next device tree for the N10.
 
--- 
-Robert Marko
-Staff Embedded Linux Engineer
-Sartura Ltd.
-Lendavska ulica 16a
-10000 Zagreb, Croatia
-Email: robert.marko@sartura.hr
-Web: www.sartura.hr
+I have a working rk3399pro-vmarc-som.dtsi that I intend to submit, but
+wanted to get clarity on the tcs452x first. I have included it at the
+bottom of this email.
+
+> > ---
+> >  drivers/regulator/fan53555.c | 8 ++++++++
+> >  1 file changed, 8 insertions(+)
+> >
+> > diff --git a/drivers/regulator/fan53555.c b/drivers/regulator/fan53555.c
+> > index 2695be617373..ddab9359ea20 100644
+> > --- a/drivers/regulator/fan53555.c
+> > +++ b/drivers/regulator/fan53555.c
+> > @@ -90,6 +90,7 @@ enum {
+> >  };
+> >
+> >  enum {
+> > +       TCS4525_CHIP_ID_00 = 0,
+> >         TCS4525_CHIP_ID_12 = 12,
+> 
+> This isn't a TCS4525, but a TCS4526.
+
+I'll update this to TCS4526_CHIP_ID_00
+
+> >  };
+> >
+> > @@ -373,6 +374,7 @@ static int fan53555_voltages_setup_silergy(struct fan53555_device_info *di)
+> >  static int fan53526_voltages_setup_tcs(struct fan53555_device_info *di)
+> >  {
+> >         switch (di->chip_id) {
+> > +       case TCS4525_CHIP_ID_00:
+> >         case TCS4525_CHIP_ID_12:
+> >                 di->slew_reg = TCS4525_TIME;
+> >                 di->slew_mask = TCS_SLEW_MASK;
+> > @@ -564,6 +566,9 @@ static const struct of_device_id __maybe_unused fan53555_dt_ids[] = {
+> >         }, {
+> >                 .compatible = "tcs,tcs4525",
+> >                 .data = (void *)FAN53526_VENDOR_TCS
+> > +       }, {
+> > +               .compatible = "tcs,tcs4526",
+> > +               .data = (void *)FAN53526_VENDOR_TCS
+> 
+> Since you aren't adding any functional code, is there a particular
+> reason you can't just add the chip id and simply use the tcs4525
+> compatible?
+> This will prevent you from needing to modify the dt-bindings as well.
+
+In and earlier commit to the BSP kernel the proposal was to rename to
+tcs452x. ref:
+https://github.com/CK-LINUX/kernel/commit/b3bbe8018c56362feed1e49c8d243a8dbcdcc07b
+
+I chose to follow the example of silergy,syr827 and silergy,syr828 for
+tcs4526 (given I made the mistake in assuming that support for tcs4525
+meant support for tcs4525.) This would maintain consistency of naming of
+tcs4526 throughout the source. Is that ok?
+
+> >         },
+> >         { }
+> >  };
+> > @@ -672,6 +677,9 @@ static const struct i2c_device_id fan53555_id[] = {
+> >         }, {
+> >                 .name = "tcs4525",
+> >                 .driver_data = FAN53526_VENDOR_TCS
+> > +       }, {
+> > +               .name = "tcs4526",
+> > +               .driver_data = FAN53526_VENDOR_TCS
+> >         },
+> >         { },
+> >  };
+> > --
+> > 2.29.2
+> >
+
+Below is the draft patch for the dtsi includeing the 2 missing regulators and
+to enable the GPU on the Radxa Rock Pi N10 which utilises the VMARC RK3399Pro SoM.
+
+This will be submitted seperately to the "tcs4526 regulator" patch.
+
+--- a/arch/arm64/boot/dts/rockchip/rk3399pro-vmarc-som.dtsi	2021-05-08 09:11:59.000000000 +0000
++++ b/arch/arm64/boot/dts/rockchip/rk3399pro-vmarc-som.dtsi	2021-05-08 09:11:59.000000000 +0000
+@@ -57,6 +57,22 @@
+ 	pinctrl-0 = <&hdmi_cec>;
+ };
+ 
++&hdmi_sound {
++	status = "okay";
++};
++
++&gpu {
++	mali-supply = <&vdd_gpu>;
++	assigned-clocks = <&cru ACLK_GPU>;
++	assigned-clock-rates = <200000000>;
++	status = "okay";
++	/delete-property/ operating-points-v2;
++};
++
++&vopl {
++	status = "disabled";
++};
++
+ &i2c0 {
+ 	clock-frequency = <400000>;
+ 	i2c-scl-falling-time-ns = <30>;
+@@ -289,6 +288,50 @@
+ 			};
+ 		};
+ 	};
++
++	vdd_cpu_b: tcs4525@1c {
++		compatible = "tcs,tcs4525";
++		reg = <0x1c>;
++		vin-supply = <&vcc5v0_sys>;
++		regulator-compatible = "fan53555-reg";
++		pinctrl-0 = <&vsel1_gpio>;
++		vsel-gpios = <&gpio1 RK_PC1 GPIO_ACTIVE_HIGH>;
++		regulator-name = "vdd_cpu_b";
++		regulator-min-microvolt = <712500>;
++		regulator-max-microvolt = <1500000>;
++		regulator-ramp-delay = <2300>;
++		fcs,suspend-voltage-selector = <1>;
++		regulator-always-on;
++		regulator-boot-on;
++		regulator-initial-state = <3>;
++		regulator-state-mem {
++			regulator-off-in-suspend;
++		};
++	};
++
++	vdd_gpu: tcs4526@10 {
++		compatible = "tcs,tcs4526";
++		reg = <0x10>;
++		vin-supply = <&vcc5v0_sys>;
++		regulator-compatible = "fan53555-reg";
++		pinctrl-0 = <&vsel2_gpio>;
++		vsel-gpios = <&gpio1 RK_PB6 GPIO_ACTIVE_HIGH>;
++		regulator-name = "vdd_gpu";
++		regulator-min-microvolt = <735000>;
++		regulator-max-microvolt = <1400000>;
++		regulator-ramp-delay = <1000>;
++		fcs,suspend-voltage-selector = <1>;
++		regulator-always-on;
++		regulator-boot-on;
++		regulator-initial-state = <3>;
++		regulator-state-mem {
++			regulator-off-in-suspend;
++		};
++	};
+ };
++
++&i2s2 {
++	status = "okay";
++};
+ 
+ &i2c1 {
+@@ -381,6 +380,29 @@
+ 		pmic_int_l: pmic-int-l {
+ 			rockchip,pins = <1 RK_PC2 0 &pcfg_pull_up>;
+ 		};
++		vsel1_gpio: vsel1-gpio {
++			rockchip,pins =
++				<1 RK_PC1 0 &pcfg_pull_down>;
++		};
++		vsel2_gpio: vsel2-gpio {
++			rockchip,pins =
++				<1 RK_PB6 0 &pcfg_pull_down>;
++		};
++
++		soc_slppin_gpio: soc-slppin-gpio {
++			rockchip,pins =
++				<1 RK_PA5 0 &pcfg_output_low>;
++		};
++
++		soc_slppin_slp: soc-slppin-slp {
++			rockchip,pins =
++				<1 RK_PA5 1 &pcfg_pull_down>;
++		};
++
++		soc_slppin_rst: soc-slppin-rst {
++			rockchip,pins =
++				<1 RK_PA5 2 &pcfg_pull_none>;
++		};
+ 	};
+ 
+ 	sdio-pwrseq {
