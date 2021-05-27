@@ -2,122 +2,237 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EC9D5392434
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 03:15:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A465392437
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 03:16:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234199AbhE0BRC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 May 2021 21:17:02 -0400
-Received: from mga05.intel.com ([192.55.52.43]:56578 "EHLO mga05.intel.com"
+        id S234361AbhE0BRr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 May 2021 21:17:47 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56522 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232187AbhE0BRA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 May 2021 21:17:00 -0400
-IronPort-SDR: oZ7qCx9N4vOYgPsMkZd7unBaxzTZRLkRi72h41xGaQJnzA8NZtU7Rad26aYG979ir3W+KM48w+
- HfdvsQeuNqRw==
-X-IronPort-AV: E=McAfee;i="6200,9189,9996"; a="288209041"
-X-IronPort-AV: E=Sophos;i="5.82,333,1613462400"; 
-   d="scan'208";a="288209041"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 May 2021 18:15:19 -0700
-IronPort-SDR: r5lvlq6vEkvkfvPCQqjnHcGY2peVNNIc9/QzbOYJcegwikPdzidKYdORioooW6juonuByrZhi2
- IaOBaJPQp2hw==
-X-IronPort-AV: E=Sophos;i="5.82,333,1613462400"; 
-   d="scan'208";a="397544739"
-Received: from djiang5-mobl1.amr.corp.intel.com (HELO [10.212.10.31]) ([10.212.10.31])
-  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 May 2021 18:15:18 -0700
-Subject: Re: [PATCH v6 15/20] vfio/mdev: idxd: ims domain setup for the vdcm
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     alex.williamson@redhat.com, kwankhede@nvidia.com,
-        tglx@linutronix.de, vkoul@kernel.org, megha.dey@intel.com,
-        jacob.jun.pan@intel.com, ashok.raj@intel.com, yi.l.liu@intel.com,
-        baolu.lu@intel.com, kevin.tian@intel.com, sanjay.k.kumar@intel.com,
-        tony.luck@intel.com, dan.j.williams@intel.com,
-        eric.auger@redhat.com, pbonzini@redhat.com,
-        dmaengine@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org
-References: <162164243591.261970.3439987543338120797.stgit@djiang5-desk3.ch.intel.com>
- <162164283796.261970.11020270418798826121.stgit@djiang5-desk3.ch.intel.com>
- <20210523235023.GL1002214@nvidia.com>
- <29cec5cd-3f23-f947-4545-f507b3f70988@intel.com>
- <20210527005444.GV1002214@nvidia.com>
-From:   Dave Jiang <dave.jiang@intel.com>
-Message-ID: <f5606802-2ff3-2f54-0ff1-c1f1dd59f52c@intel.com>
-Date:   Wed, 26 May 2021 18:15:17 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+        id S232187AbhE0BRn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 26 May 2021 21:17:43 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B113361073;
+        Thu, 27 May 2021 01:16:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1622078171;
+        bh=xHHivo9IMy77QFa/Xlp3gV8VKNX8gtjiQWwlOJQO4Bg=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=WU3+GhvfneTYV+BzAWVUA25EYaTmGzyIeapzuMJKYqBYSF39mEWKEQleuYUiuQrPn
+         aQS+fuVK4dk7r/B++eyfUYHJo5ZXKtAOL+Xrt4pwejtCDKwE/LHNfGoiDkqOxuIBHQ
+         qlEXAP6jn0S/oMxy7CKvmRFDzxSAuG83P5Vac3Vhnm/ZHPomzK8gqoLwUN2beCBTRs
+         JW5PzLadWMzHn7x+6YwK8h+aqHvI7vB32NtbY2MPk+XXkzkqEUaQVL9N8gkwdssLIg
+         qJ4whS/X2IzGZU0ULDZswL4Is71wvUHGXLkpExorMwcLLR0Ot+UIs9MT2/NstsND/D
+         x8xotr0sVQRHg==
+Date:   Wed, 26 May 2021 18:16:09 -0700
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Gatis Peisenieks <gatis@mikrotik.com>
+Cc:     chris.snook@gmail.com, davem@davemloft.net, hkallweit1@gmail.com,
+        jesse.brandeburg@intel.com, dchickles@marvell.com,
+        tully@mikrotik.com, eric.dumazet@gmail.com, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net-next v3] atl1c: add 4 RX/TX queue support for
+ Mikrotik 10/25G NIC
+Message-ID: <20210526181609.1416c4eb@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <20210526075830.2959145-1-gatis@mikrotik.com>
+References: <20210526075830.2959145-1-gatis@mikrotik.com>
 MIME-Version: 1.0
-In-Reply-To: <20210527005444.GV1002214@nvidia.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, 26 May 2021 10:58:30 +0300 Gatis Peisenieks wrote:
+> More RX/TX queues on a network card help spread the CPU load among
+> cores and achieve higher overall networking performance. The new
+> Mikrotik 10/25G NIC supports 4 RX and 4 TX queues. TX queues are
+> treated with equal priority. RX queue balancing is fixed based on
+> L2/L3/L4 hash.
+> 
+> This adds support for 4 RX/TX queues while maintaining backwards
+> compatibility with older hardware.
+> 
+> Simultaneous TX + RX performance on AMD Threadripper 3960X
+> with Mikrotik 10/25G NIC improved from 1.6Mpps to 3.2Mpps per port.
+> 
+> Backwards compatiblitiy was verified with AR8151 and AR8131 based
+> NICs.
+> 
+> Signed-off-by: Gatis Peisenieks <gatis@mikrotik.com>
 
-On 5/26/2021 5:54 PM, Jason Gunthorpe wrote:
-> On Wed, May 26, 2021 at 05:22:22PM -0700, Dave Jiang wrote:
->> On 5/23/2021 4:50 PM, Jason Gunthorpe wrote:
->>> On Fri, May 21, 2021 at 05:20:37PM -0700, Dave Jiang wrote:
->>>> @@ -77,8 +80,18 @@ int idxd_mdev_host_init(struct idxd_device *idxd, struct mdev_driver *drv)
->>>>    		return rc;
->>>>    	}
->>>> +	ims_info.max_slots = idxd->ims_size;
->>>> +	ims_info.slots = idxd->reg_base + idxd->ims_offset;
->>>> +	idxd->ims_domain = pci_ims_array_create_msi_irq_domain(idxd->pdev, &ims_info);
->>>> +	if (!idxd->ims_domain) {
->>>> +		dev_warn(dev, "Fail to acquire IMS domain\n");
->>>> +		iommu_dev_disable_feature(dev, IOMMU_DEV_FEAT_AUX);
->>>> +		return -ENODEV;
->>>> +	}
->>> I'm quite surprised that every mdev doesn't create its own ims_domain
->>> in its probe function.
->>>
->>> This places a global total limit on the # of vectors which makes me
->>> ask what was the point of using IMS in the first place ?
->>>
->>> The entire idea for IMS was to make the whole allocation system fully
->>> dynamic based on demand.
->> Hi Jason, thank you for the review of the series.
->>
->> My understanding is that the driver creates a single IMS domain for the
->> device and provides the address base and IMS numbers for the domain based on
->> device IMS resources. So the IMS region needs to be contiguous. Each mdev
->> can call msi_domain_alloc_irqs() and acquire the number of IMS vectors it
->> desires and the DEV MSI core code will keep track of which vectors are being
->> used. This allows the mdev devices to dynamically allocate based on demand.
->> If the driver allocates a domain per mdev, it'll needs to do internal
->> accounting of the base and vector numbers for each of those domains that the
->> MSI core already provides. Isn't that what we are trying to avoid? As mdevs
->> come and go, that partitioning will become fragmented.
-> I suppose it depends entirely on how the HW works.
->
-> If the HW has a fixed number of interrupt vectors organized in a
-> single table then by all means allocate a single domain that spans the
-> entire fixed HW vector space. But then why do we have a ims_size
-> variable here??
->
-> However, that really begs the question of why the HW is using IMS at
-> all? I'd expect needing 2x-10x the max MSI-X vector size before
-> reaching for IMS.
->
-> So does IDXD really have like a 4k - 40k entry linear IMS vector table
-> to wrap a shared domain around?
->
-> Basically, that isn't really "scalable" it is just "bigger".
->
-> Fully scalable would be for every mdev to point to its own 2k entry
-> IMS table that is allocated on the fly. Every mdev gets a domain and
-> every domain is fully utilized by the mdev in emulating
-> MSI-X. Basically for a device like idxd every PASID would have to map
-> to a IMS vector table array.
->
-> I suppose that was not what was done?
+> diff --git a/drivers/net/ethernet/atheros/atl1c/atl1c.h b/drivers/net/ethernet/atheros/atl1c/atl1c.h
+> index 9d70cb7544f1..0f206d08a460 100644
+> --- a/drivers/net/ethernet/atheros/atl1c/atl1c.h
+> +++ b/drivers/net/ethernet/atheros/atl1c/atl1c.h
+> @@ -63,7 +63,7 @@
+>  
+>  #define AT_MAX_RECEIVE_QUEUE    4
+>  #define AT_DEF_RECEIVE_QUEUE	1
+> -#define AT_MAX_TRANSMIT_QUEUE	2
+> +#define AT_MAX_TRANSMIT_QUEUE  4
+>  
+>  #define AT_DMA_HI_ADDR_MASK     0xffffffff00000000ULL
+>  #define AT_DMA_LO_ADDR_MASK     0x00000000ffffffffULL
+> @@ -294,11 +294,6 @@ enum atl1c_nic_type {
+>  	athr_mt,
+>  };
+>  
+> -enum atl1c_trans_queue {
+> -	atl1c_trans_normal = 0,
+> -	atl1c_trans_high = 1
+> -};
+> -
+>  struct atl1c_hw_stats {
+>  	/* rx */
+>  	unsigned long rx_ok;		/* The number of good packet received. */
+> @@ -475,6 +470,8 @@ struct atl1c_buffer {
+>  
+>  /* transimit packet descriptor (tpd) ring */
+>  struct atl1c_tpd_ring {
+> +	struct atl1c_adapter *adapter;
+> +	u16 num;
 
-At least not for first gen of hardware. DSA 1.0 has 2k of IMS entries 
-total. ims_size is what is read from the device cap register. For MSIX, 
-the device only has 1 misc vector and 8 I/O vectors. That's why IMS is 
-being used for mdevs. We will discuss with our hardware people your 
-suggestion.
+Consider moving the @num after @dma, that should avoid creating a 6B
+hole (pahole is your friend).
 
->
-> Jason
+>  	void *desc;		/* descriptor ring virtual address */
+>  	dma_addr_t dma;		/* descriptor ring physical address */
+>  	u16 size;		/* descriptor ring length in bytes */
+> @@ -482,6 +479,7 @@ struct atl1c_tpd_ring {
+>  	u16 next_to_use;
+>  	atomic_t next_to_clean;
+>  	struct atl1c_buffer *buffer_info;
+> +	struct napi_struct napi;
+
+Could you split the move of napi into ring structures to separate
+patches (also separate rx and tx) for ease of review?
+
+>  };
+>  
+>  /* receive free descriptor (rfd) ring */
+
+> -static void atl1c_set_mac_type(struct atl1c_hw *hw)
+> +static enum atl1c_nic_type atl1c_get_mac_type(struct pci_dev *pdev,
+> +					      u8 __iomem *hw_addr)
+>  {
+> -	u32 magic;
+> -	switch (hw->device_id) {
+> +	switch (pdev->device) {
+>  	case PCI_DEVICE_ID_ATTANSIC_L2C:
+> -		hw->nic_type = athr_l2c;
+> -		break;
+> +		return athr_l2c;
+>  	case PCI_DEVICE_ID_ATTANSIC_L1C:
+> -		hw->nic_type = athr_l1c;
+> -		break;
+> +		return athr_l1c;
+>  	case PCI_DEVICE_ID_ATHEROS_L2C_B:
+> -		hw->nic_type = athr_l2c_b;
+> -		break;
+> +		return athr_l2c_b;
+>  	case PCI_DEVICE_ID_ATHEROS_L2C_B2:
+> -		hw->nic_type = athr_l2c_b2;
+> -		break;
+> +		return athr_l2c_b2;
+>  	case PCI_DEVICE_ID_ATHEROS_L1D:
+> -		hw->nic_type = athr_l1d;
+> -		break;
+> +		return athr_l1d;
+>  	case PCI_DEVICE_ID_ATHEROS_L1D_2_0:
+> -		hw->nic_type = athr_l1d_2;
+> -		AT_READ_REG(hw, REG_MT_MAGIC, &magic);
+> -		if (magic == MT_MAGIC)
+> -			hw->nic_type = athr_mt;
+> -		break;
+> +		if (readl(hw_addr + REG_MT_MAGIC) == MT_MAGIC)
+> +			return athr_mt;
+> +		return athr_l1d_2;
+>  	default:
+> -		break;
+> +		return athr_l1c;
+
+Also separate patch? Hard to find callers and justification 
+in a long diff.
+
+>  	/* Note: just free tdp_ring.buffer_info,
+> -	*  it contain rfd_ring.buffer_info, do not double free */
+> +	 *  it contain rfd_ring.buffer_info, do not double free
+> +	 */
+
+The "it" doesn't start aligned with "Note" now.
+
+> +	if (netif_tx_queue_stopped(txq) && netif_carrier_ok(adapter->netdev)) {
+> +		netif_tx_wake_queue(txq);
+>  	}
+
+nit: no need for brackets
+
+>  	if (total_packets < budget) {
+>  		napi_complete_done(napi, total_packets);
+>  		spin_lock_irqsave(&adapter->hw.intr_mask_lock, flags);
+> -		adapter->hw.intr_mask |= ISR_TX_PKT;
+> +		adapter->hw.intr_mask |= atl1c_qregs[tpd_ring->num].tx_isr;
+>  		AT_WRITE_REG(&adapter->hw, REG_IMR, adapter->hw.intr_mask);
+>  		spin_unlock_irqrestore(&adapter->hw.intr_mask_lock, flags);
+>  		return total_packets;
+> @@ -1583,6 +1651,38 @@ static int atl1c_clean_tx(struct napi_struct *napi, int budget)
+>  	return budget;
+>  }
+>  
+> +static void atl1c_intr_rx_tx(struct atl1c_adapter *adapter, u32 status)
+> +{
+> +	struct atl1c_hw *hw = &adapter->hw;
+> +	int i;
+> +	u32 intr_mask;
+
+reorder @i and @intr_mask to conform to the preferred reverse xmas tree
+ordering of variable declarations.
+
+> +/**
+> + * atl1c_clean_rx - NAPI Rx polling callback
+> + * @napi: napi info
+> + * @budget: limit of packets to clean
+> + */
+> +static int atl1c_clean_rx(struct napi_struct *napi, int budget)
+>  {
+> +	struct atl1c_rrd_ring *rrd_ring =
+> +		container_of(napi, struct atl1c_rrd_ring, napi);
+> +	struct atl1c_adapter *adapter = rrd_ring->adapter;
+> +	int work_done = 0;
+> +	unsigned long flags;
+>  	u16 rfd_num, rfd_index;
+> -	u16 count = 0;
+>  	u16 length;
+>  	struct pci_dev *pdev = adapter->pdev;
+>  	struct net_device *netdev  = adapter->netdev;
+> -	struct atl1c_rfd_ring *rfd_ring = &adapter->rfd_ring;
+> -	struct atl1c_rrd_ring *rrd_ring = &adapter->rrd_ring;
+> +	struct atl1c_rfd_ring *rfd_ring = &adapter->rfd_ring[rrd_ring->num];
+>  	struct sk_buff *skb;
+>  	struct atl1c_recv_ret_status *rrs;
+>  	struct atl1c_buffer *buffer_info;
+>  
+> +	/* Keep link state information with original netdev */
+> +	if (!netif_carrier_ok(adapter->netdev))
+> +		goto quit_polling;
+
+Interesting, I see you only move this code, but why does this driver
+stop reading packets when link goes down? Surely there may be packets
+already on the ring which Linux should process?
+
+> @@ -2633,8 +2725,14 @@ static int atl1c_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
+>  	adapter->mii.phy_id_mask = 0x1f;
+>  	adapter->mii.reg_num_mask = MDIO_CTRL_REG_MASK;
+>  	dev_set_threaded(netdev, true);
+> -	netif_napi_add(netdev, &adapter->napi, atl1c_clean, 64);
+> -	netif_napi_add(netdev, &adapter->tx_napi, atl1c_clean_tx, 64);
+> +	for (i = 0; i < adapter->rx_queue_count; ++i) {
+> +		netif_napi_add(netdev, &adapter->rrd_ring[i].napi,
+> +			       atl1c_clean_rx, 64);
+> +	}
+> +	for (i = 0; i < adapter->tx_queue_count; ++i) {
+> +		netif_napi_add(netdev, &adapter->tpd_ring[i].napi,
+> +			       atl1c_clean_tx, 64);
+> +	}
+
+nit: no need for brackets
