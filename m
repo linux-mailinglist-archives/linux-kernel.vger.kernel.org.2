@@ -2,73 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 26CD33938B5
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 00:29:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DFA653938B8
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 00:31:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235612AbhE0Wab (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 May 2021 18:30:31 -0400
-Received: from mga12.intel.com ([192.55.52.136]:17756 "EHLO mga12.intel.com"
+        id S235595AbhE0Wcc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 May 2021 18:32:32 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60162 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233848AbhE0Wa1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 May 2021 18:30:27 -0400
-IronPort-SDR: 8G6v6l4BINu11ie5nsW6zisVEs2zIsT26NEZOfnj9qiT/LnGEeMY14Csop0GZ68Fwe/NQWUA0X
- VFrpE2xTHoww==
-X-IronPort-AV: E=McAfee;i="6200,9189,9997"; a="182507305"
-X-IronPort-AV: E=Sophos;i="5.83,228,1616482800"; 
-   d="scan'208";a="182507305"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 May 2021 15:28:53 -0700
-IronPort-SDR: s7iJE4QMr5QvnGny3w/1hOq4cI1K9Qim36Iq4xN34LXP0C1iQAtGKhxAb0MbpCaYOsUMCcP228
- ZiaS6/CFHGwA==
-X-IronPort-AV: E=Sophos;i="5.83,228,1616482800"; 
-   d="scan'208";a="477684654"
-Received: from agluck-desk2.sc.intel.com ([10.3.52.146])
-  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 May 2021 15:28:52 -0700
-From:   Tony Luck <tony.luck@intel.com>
-To:     Borislav Petkov <bp@alien8.de>
-Cc:     Tony Luck <tony.luck@intel.com>, x86@kernel.org,
-        linux-kernel@vger.kernel.org, linux-edac@vger.kernel.org
-Subject: [PATCH] x86/mce: Include a MCi_MISC value in faked mce logs
-Date:   Thu, 27 May 2021 15:28:46 -0700
-Message-Id: <20210527222846.931851-1-tony.luck@intel.com>
-X-Mailer: git-send-email 2.29.2
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        id S233203AbhE0Wca (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 27 May 2021 18:32:30 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 84445613BF;
+        Thu, 27 May 2021 22:30:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
+        s=korg; t=1622154655;
+        bh=WJmieutuwb6wkOGdzy8Hj2ZjOYjV2ibJ9Y9kPqy6aw4=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=tVGGg5rxq0/R2ltpNyFklO7UPieKW96IS8mI2FQx8Gx2qy0lRrWpGIOE6DQRfZrcW
+         Hi7LdCSO+n8i4Qc9c5HcqQXsprAuabloQ0N7uVsqO/kJcQv99d3S2r/c3CyqXNSwmg
+         fwUvxE8zqXG+/anrty4+uT9S+kfuilI+ybP9Nkro=
+Date:   Thu, 27 May 2021 15:30:55 -0700
+From:   Andrew Morton <akpm@linux-foundation.org>
+To:     zhoufeng <zhoufeng.zf@bytedance.com>
+Cc:     adobriyan@gmail.com, rppt@kernel.org, linux-kernel@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, songmuchun@bytedance.com,
+        zhouchengming@bytedance.com, chenying.kernel@bytedance.com,
+        zhengqi.arch@bytedance.com
+Subject: Re: [External] Re: [PATCH] fs/proc/kcore.c: add mmap interface
+Message-Id: <20210527153055.aefeee8d8385da8152bdbacc@linux-foundation.org>
+In-Reply-To: <d71a4ffa-f21e-62f5-7fa6-83ca14b3f05b@bytedance.com>
+References: <20210526075142.9740-1-zhoufeng.zf@bytedance.com>
+        <20210526173953.49fb3dc48c0f2a8b3c31fe2b@linux-foundation.org>
+        <d71a4ffa-f21e-62f5-7fa6-83ca14b3f05b@bytedance.com>
+X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.31; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When BIOS reports memory errors to Linux using the ACPI/APEI
-error reporting method Linux creates a "struct mce" to pass
-to the normal reporting code path.
+On Thu, 27 May 2021 14:13:09 +0800 zhoufeng <zhoufeng.zf@bytedance.com> wrote:
 
-The constructed record doesn't include a value for the "misc"
-field of the structure, and so mce_usable_address() says this
-record doesn't include a valid address.
+> > I'm surprised that it makes this much difference.  Has DRGN been fully
+> > optimised to minimise the amount of pread()ing which it does?  Why does
+> > it do so much reading?
+> DRGN is a tool similar to Crash, but much lighter. It allows users to 
+> obtain kernel data structures from Python scripts. Based on this, we 
+> intend to use DRGN for kernel monitoring. So we used some pressure test 
+> scripts to test the loss of monitoring.
+> Monitoring is all about getting current real-time data, so every time 
+> DRGN tries to get kernel data, it needs to read /proc/kcore. In my 
+> script, I tried to loop 1000 times to obtain the information of all the 
+> processes in the machine, in order to construct a scene where kernel 
+> data is frequently read. So, the frequency in the default version of 
+> kcore, pread is very high. In view of this situation, our optimization 
+> idea is to reduce the number of context switches as much as possible 
+> under the scenario of frequent kernel data acquisition, to reduce the 
+> performance loss to a minimum, and then move the monitoring system to 
+> the production environment.
 
-Net result is that functions like uc_decode_notifier() will
-just ignore this record instead of taking action to offline
-a page.
+Why would a pread() cause a context switch?
 
-Signed-off-by: Tony Luck <tony.luck@intel.com>
----
- arch/x86/kernel/cpu/mce/apei.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
-
-diff --git a/arch/x86/kernel/cpu/mce/apei.c b/arch/x86/kernel/cpu/mce/apei.c
-index b58b85380ddb..0e3ae64d3b76 100644
---- a/arch/x86/kernel/cpu/mce/apei.c
-+++ b/arch/x86/kernel/cpu/mce/apei.c
-@@ -36,7 +36,8 @@ void apei_mce_report_mem_error(int severity, struct cper_sec_mem_err *mem_err)
- 	mce_setup(&m);
- 	m.bank = -1;
- 	/* Fake a memory read error with unknown channel */
--	m.status = MCI_STATUS_VAL | MCI_STATUS_EN | MCI_STATUS_ADDRV | 0x9f;
-+	m.status = MCI_STATUS_VAL | MCI_STATUS_EN | MCI_STATUS_ADDRV | MCI_STATUS_MISCV | 0x9f;
-+	m.misc = (MCI_MISC_ADDR_PHYS << 6) | PAGE_SHIFT;
- 
- 	if (severity >= GHES_SEV_RECOVERABLE)
- 		m.status |= MCI_STATUS_UC;
--- 
-2.29.2
-
+> After running for a long time in a 
+> production environment, the number of kernel data reads was added as 
+> time went on, and the pread number also increased. If users use mmap, 
+> it's once for all.
