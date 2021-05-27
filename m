@@ -2,172 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 343C6392A1F
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 10:53:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DDACC392A23
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 10:55:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235586AbhE0IzZ convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 27 May 2021 04:55:25 -0400
-Received: from relay6-d.mail.gandi.net ([217.70.183.198]:38391 "EHLO
-        relay6-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235324AbhE0IzX (ORCPT
+        id S235590AbhE0I4h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 May 2021 04:56:37 -0400
+Received: from fllv0015.ext.ti.com ([198.47.19.141]:59348 "EHLO
+        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235324AbhE0I4g (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 May 2021 04:55:23 -0400
-X-Greylist: delayed 87667 seconds by postgrey-1.27 at vger.kernel.org; Thu, 27 May 2021 04:55:23 EDT
-Received: (Authenticated sender: miquel.raynal@bootlin.com)
-        by relay6-d.mail.gandi.net (Postfix) with ESMTPSA id 7F6EAC000D;
-        Thu, 27 May 2021 08:53:47 +0000 (UTC)
-Date:   Thu, 27 May 2021 10:53:46 +0200
-From:   Miquel Raynal <miquel.raynal@bootlin.com>
-To:     <patrice.chotard@foss.st.com>
-Cc:     Mark Brown <broonie@kernel.org>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Boris Brezillon <boris.brezillon@collabora.com>,
-        <linux-mtd@lists.infradead.org>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        <linux-spi@vger.kernel.org>,
-        <linux-stm32@st-md-mailman.stormreply.com>,
+        Thu, 27 May 2021 04:56:36 -0400
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 14R8swkm096557;
+        Thu, 27 May 2021 03:54:58 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1622105698;
+        bh=QOXF4exdccuvX7tJ9K7Byk4SL1OgspG3Xo90oifk1so=;
+        h=Subject:To:CC:References:From:Date:In-Reply-To;
+        b=K6KTAHbFDfIuvGdPUKl1y3HdlUte/K87HDMES5jxKUPsP+CLFCapZOaoIYKYvCsbs
+         8NERLPsnGD2s4m2042uNJIfW3kzzkYEN7RSaSxmpQAoabZ+BTe2bDpz18AjB2byHgs
+         ANMzreZomXLfV8be2i7hgGnuRNCaEsBgTldOlbEg=
+Received: from DLEE107.ent.ti.com (dlee107.ent.ti.com [157.170.170.37])
+        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 14R8swaL001570
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Thu, 27 May 2021 03:54:58 -0500
+Received: from DLEE102.ent.ti.com (157.170.170.32) by DLEE107.ent.ti.com
+ (157.170.170.37) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Thu, 27
+ May 2021 03:54:58 -0500
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DLEE102.ent.ti.com
+ (157.170.170.32) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
+ Frontend Transport; Thu, 27 May 2021 03:54:58 -0500
+Received: from [10.250.234.148] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 14R8ss7j115827;
+        Thu, 27 May 2021 03:54:55 -0500
+Subject: Re: [PATCH next] arm64: dts: ti:
+ k3-am654x/j721e/j7200-common-proc-board: fix MCU_RGMII1_TXC direction
+To:     Grygorii Strashko <grygorii.strashko@ti.com>,
+        Nishanth Menon <nm@ti.com>, <devicetree@vger.kernel.org>,
         <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <christophe.kerello@foss.st.com>
-Subject: Re: [PATCH v2] mtd: spinand: add SPI-NAND MTD resume handler
-Message-ID: <20210527105346.315cf125@xps13>
-In-Reply-To: <20210527084959.1548-1-patrice.chotard@foss.st.com>
-References: <20210527084959.1548-1-patrice.chotard@foss.st.com>
-Organization: Bootlin
-X-Mailer: Claws Mail 3.17.7 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        Tero Kristo <kristo@kernel.org>
+CC:     <linux-kernel@vger.kernel.org>, Rob Herring <robh+dt@kernel.org>
+References: <20210526132041.6104-1-grygorii.strashko@ti.com>
+From:   Vignesh Raghavendra <vigneshr@ti.com>
+Message-ID: <b7e2c553-cdce-38e8-4c1f-77b363e0b54c@ti.com>
+Date:   Thu, 27 May 2021 14:24:53 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+In-Reply-To: <20210526132041.6104-1-grygorii.strashko@ti.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Patrice,
 
-<patrice.chotard@foss.st.com> wrote on Thu, 27 May 2021 10:49:59 +0200:
 
-> From: Patrice Chotard <patrice.chotard@foss.st.com>
+On 5/26/21 6:50 PM, Grygorii Strashko wrote:
+> The MCU RGMII MCU_RGMII1_TXC pin is defined as input by mistake, although
+> this does not make any difference functionality wise it's better to update
+> to avoid confusion.
 > 
-> After power up, all SPI NAND's blocks are locked. Only read operations
-> are allowed, write and erase operations are forbidden.
-> The SPI NAND framework unlocks all the blocks during its initialization.
+> Hence fix MCU RGMII MCU_RGMII1_TXC pin pinmux definitions to be an output
+> in K3 am654x/j721e/j7200 board files.
 > 
-> During a standby low power, the memory is powered down, losing its
-> configuration.
-> During the resume, the QSPI driver state is restored but the SPI NAND
-> framework does not reconfigured the memory.
-> 
-> This patch adds SPI-NAND MTD PM handlers for resume ops.
-> SPI NAND resume op re-initializes SPI NAND flash to its probed state.
-> 
-> It also adds a new helper spinand_block_unlock() which is
-> called in spinand_init() and in spinand_mtd_resume().
-> 
-> Signed-off-by: Christophe Kerello <christophe.kerello@foss.st.com>
-> Signed-off-by: Patrice Chotard <patrice.chotard@foss.st.com>
+> Signed-off-by: Grygorii Strashko <grygorii.strashko@ti.com>
 > ---
-> Changes in v2:
->   - Add helper spinand_block_unlock().
->   - Add spinand_ecc_enable() call.
->   - Remove some dev_err().
->   - Fix commit's title and message.
+
+Reviewed-by: Vignesh Raghavendra <vigneshr@ti.com>
+
+>  arch/arm64/boot/dts/ti/k3-am654-base-board.dts        | 2 +-
+>  arch/arm64/boot/dts/ti/k3-j7200-common-proc-board.dts | 2 +-
+>  arch/arm64/boot/dts/ti/k3-j721e-common-proc-board.dts | 2 +-
+>  3 files changed, 3 insertions(+), 3 deletions(-)
 > 
->  drivers/mtd/nand/spi/core.c | 62 +++++++++++++++++++++++++++++++------
->  1 file changed, 53 insertions(+), 9 deletions(-)
+> diff --git a/arch/arm64/boot/dts/ti/k3-am654-base-board.dts b/arch/arm64/boot/dts/ti/k3-am654-base-board.dts
+> index eddb2ffb93ca..97c344088483 100644
+> --- a/arch/arm64/boot/dts/ti/k3-am654-base-board.dts
+> +++ b/arch/arm64/boot/dts/ti/k3-am654-base-board.dts
+> @@ -136,7 +136,7 @@
+>  			AM65X_WKUP_IOPAD(0x007c, PIN_INPUT, 0) /* (L5) MCU_RGMII1_RD2 */
+>  			AM65X_WKUP_IOPAD(0x0080, PIN_INPUT, 0) /* (M6) MCU_RGMII1_RD1 */
+>  			AM65X_WKUP_IOPAD(0x0084, PIN_INPUT, 0) /* (L6) MCU_RGMII1_RD0 */
+> -			AM65X_WKUP_IOPAD(0x0070, PIN_INPUT, 0) /* (N1) MCU_RGMII1_TXC */
+> +			AM65X_WKUP_IOPAD(0x0070, PIN_OUTPUT, 0) /* (N1) MCU_RGMII1_TXC */
+>  			AM65X_WKUP_IOPAD(0x0074, PIN_INPUT, 0) /* (M1) MCU_RGMII1_RXC */
+>  		>;
+>  	};
+> diff --git a/arch/arm64/boot/dts/ti/k3-j7200-common-proc-board.dts b/arch/arm64/boot/dts/ti/k3-j7200-common-proc-board.dts
+> index bedd01b7a32c..d14f3c18b65f 100644
+> --- a/arch/arm64/boot/dts/ti/k3-j7200-common-proc-board.dts
+> +++ b/arch/arm64/boot/dts/ti/k3-j7200-common-proc-board.dts
+> @@ -90,7 +90,7 @@
+>  			J721E_WKUP_IOPAD(0x008c, PIN_INPUT, 0) /* MCU_RGMII1_RD2 */
+>  			J721E_WKUP_IOPAD(0x0090, PIN_INPUT, 0) /* MCU_RGMII1_RD1 */
+>  			J721E_WKUP_IOPAD(0x0094, PIN_INPUT, 0) /* MCU_RGMII1_RD0 */
+> -			J721E_WKUP_IOPAD(0x0080, PIN_INPUT, 0) /* MCU_RGMII1_TXC */
+> +			J721E_WKUP_IOPAD(0x0080, PIN_OUTPUT, 0) /* MCU_RGMII1_TXC */
+>  			J721E_WKUP_IOPAD(0x0084, PIN_INPUT, 0) /* MCU_RGMII1_RXC */
+>  		>;
+>  	};
+> diff --git a/arch/arm64/boot/dts/ti/k3-j721e-common-proc-board.dts b/arch/arm64/boot/dts/ti/k3-j721e-common-proc-board.dts
+> index 60764366e22b..351bb84db65b 100644
+> --- a/arch/arm64/boot/dts/ti/k3-j721e-common-proc-board.dts
+> +++ b/arch/arm64/boot/dts/ti/k3-j721e-common-proc-board.dts
+> @@ -237,7 +237,7 @@
+>  			J721E_WKUP_IOPAD(0x007c, PIN_INPUT, 0) /* MCU_RGMII1_RD2 */
+>  			J721E_WKUP_IOPAD(0x0080, PIN_INPUT, 0) /* MCU_RGMII1_RD1 */
+>  			J721E_WKUP_IOPAD(0x0084, PIN_INPUT, 0) /* MCU_RGMII1_RD0 */
+> -			J721E_WKUP_IOPAD(0x0070, PIN_INPUT, 0) /* MCU_RGMII1_TXC */
+> +			J721E_WKUP_IOPAD(0x0070, PIN_OUTPUT, 0) /* MCU_RGMII1_TXC */
+>  			J721E_WKUP_IOPAD(0x0074, PIN_INPUT, 0) /* MCU_RGMII1_RXC */
+>  		>;
+>  	};
 > 
-> diff --git a/drivers/mtd/nand/spi/core.c b/drivers/mtd/nand/spi/core.c
-> index 17f63f95f4a2..f77aeff11f43 100644
-> --- a/drivers/mtd/nand/spi/core.c
-> +++ b/drivers/mtd/nand/spi/core.c
-> @@ -1074,6 +1074,55 @@ static int spinand_detect(struct spinand_device *spinand)
->  	return 0;
->  }
->  
-> +static int spinand_block_unlock(struct spinand_device *spinand)
-> +{
-> +	struct device *dev = &spinand->spimem->spi->dev;
-> +	struct nand_device *nand = spinand_to_nand(spinand);
-> +	int ret = 0, i;
-> +
-> +	for (i = 0; i < nand->memorg.ntargets; i++) {
-> +		ret = spinand_select_target(spinand, i);
-> +		if (ret)
-> +			return ret;
-> +
-> +		ret = spinand_lock_block(spinand, BL_ALL_UNLOCKED);
-> +		if (ret)
-> +			return ret;
-> +	}
-> +
-> +	return ret;
-> +}
-
-Please insert this helper (and use it in the probe) in a separate
-patch, so that patch 2/2 only implements the _resume hook.
-
-> +
-> +static void spinand_mtd_resume(struct mtd_info *mtd)
-> +{
-> +	struct spinand_device *spinand = mtd_to_spinand(mtd);
-> +	struct nand_device *nand = mtd_to_nanddev(mtd);
-> +	struct device *dev = &spinand->spimem->spi->dev;
-> +	int ret;
-> +
-> +	ret = spinand_reset_op(spinand);
-> +	if (ret)
-> +		return;
-> +
-> +	ret = spinand_init_quad_enable(spinand);
-> +	if (ret)
-> +		return;
-> +
-> +	ret = spinand_upd_cfg(spinand, CFG_OTP_ENABLE, 0);
-> +	if (ret)
-> +		return;
-> +
-> +	ret = spinand_manufacturer_init(spinand);
-> +	if (ret)
-> +		return;
-> +
-> +	ret = spinand_block_unlock(spinand);
-> +	if (ret)
-> +		return;
-> +
-> +	spinand_ecc_enable(spinand, false);
-> +}
-> +
->  static int spinand_init(struct spinand_device *spinand)
->  {
->  	struct device *dev = &spinand->spimem->spi->dev;
-> @@ -1137,15 +1186,9 @@ static int spinand_init(struct spinand_device *spinand)
->  	}
->  
->  	/* After power up, all blocks are locked, so unlock them here. */
-> -	for (i = 0; i < nand->memorg.ntargets; i++) {
-> -		ret = spinand_select_target(spinand, i);
-> -		if (ret)
-> -			goto err_manuf_cleanup;
-> -
-> -		ret = spinand_lock_block(spinand, BL_ALL_UNLOCKED);
-> -		if (ret)
-> -			goto err_manuf_cleanup;
-> -	}
-> +	ret = spinand_block_unlock(spinand);
-> +	if ret)
-
-I doubt this as even be build-tested :)
-
-> +		goto err_manuf_cleanup;
->  
->  	ret = nanddev_init(nand, &spinand_ops, THIS_MODULE);
->  	if (ret)
-> @@ -1167,6 +1210,7 @@ static int spinand_init(struct spinand_device *spinand)
->  	mtd->_block_isreserved = spinand_mtd_block_isreserved;
->  	mtd->_erase = spinand_mtd_erase;
->  	mtd->_max_bad_blocks = nanddev_mtd_max_bad_blocks;
-> +	mtd->_resume = spinand_mtd_resume;
->  
->  	if (nand->ecc.engine) {
->  		ret = mtd_ooblayout_count_freebytes(mtd);
-
-Thanks,
-Miquèl
