@@ -2,131 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5DF27392DB6
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 14:12:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 30CAE392DB4
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 14:12:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234999AbhE0MNt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 May 2021 08:13:49 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55098 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235200AbhE0MNo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S235219AbhE0MNo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Thu, 27 May 2021 08:13:44 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B8894611F0;
-        Thu, 27 May 2021 12:12:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1622117530;
-        bh=kumG9+t+p+D528C6vzISFLbgUjrhcTt72egFrQcs0os=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=RcT7cuLN4QrsyH+8S/+erdGOOI+DpBgmcKC9AlrwIW/ARG9EY1Gq4BY4rl1k7xzSK
-         wkywzXWr2pOmNw9sR85K3CA7NLh8KazvGcZieSysMNKbUOzbBig10d3UD51l5GM5qB
-         4LzFknh5Be6XSukKscjPJzVKujOvACfOBROiDisc=
-Date:   Thu, 27 May 2021 14:12:07 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     eli.billauer@gmail.com
-Cc:     arnd@arndb.de, linux-kernel@vger.kernel.org,
-        linux-usb@vger.kernel.org
-Subject: Re: [PATCH v5 2/2] char: xillybus: Add driver for XillyUSB (Xillybus
- variant for USB)
-Message-ID: <YK+Mlw0Tn7eGFPI2@kroah.com>
-References: <20210526100311.56327-1-eli.billauer@gmail.com>
- <20210526100311.56327-3-eli.billauer@gmail.com>
+Received: from mail-io1-f70.google.com ([209.85.166.70]:42960 "EHLO
+        mail-io1-f70.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234406AbhE0MNn (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 27 May 2021 08:13:43 -0400
+Received: by mail-io1-f70.google.com with SMTP id v21-20020a5d90550000b0290439ea50822eso119209ioq.9
+        for <linux-kernel@vger.kernel.org>; Thu, 27 May 2021 05:12:10 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
+         :from:to;
+        bh=46mVEuJH/YuNKj25ujtfNRaINuWhkbWMehm7Zy9vBuE=;
+        b=Uia1yDUzV9ITVb+Csq8mm1Ly3Npv1lIJYSC6VXn8IkX99eGwRiBoYX3TfPds+wN9Pu
+         mWPsSUFUNoekWlN6ymnha0RFm0U4VlWwLiOCMie1MuNEmCU9dMr6mYXI8oQK2v8pTcWO
+         vQnBtq7S5gXUgj6WasLu3pbEc6dXtuv+JcHDMIePYDKiQ4uS3tcaaAirYaeHpYzRlHD/
+         lmSYSux3fNz8veqnoEnOGRUQ3Iyw6C1l1jvN+S02PGlT/aRt8UGOSrcfJAdeOdhqTVnM
+         npdGx2iHG0O05pTJq15R6HQNJwjC8QFJXEnfflnBdEt9tOSqFm8Ce83RcOL8nsDxR8u8
+         nHqA==
+X-Gm-Message-State: AOAM5304L+n+U4C2pjUWAEeCvsIgAyVu/7TaAnZmiRVQy82d4SzZZfpt
+        IXExJpLK+NzJaa7RD+7Z01+AqzdKck62zopKz1MKdNP13YVZ
+X-Google-Smtp-Source: ABdhPJzicngFIhcR3y7yyEzuzR3OswrH6+bi3jHdWU5Ff7csPGpfT7+kunHdl2ah7f6px7VT9I9RpYInhqM4U//vUHOLIhH23JnZ
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210526100311.56327-3-eli.billauer@gmail.com>
+X-Received: by 2002:a5e:8c11:: with SMTP id n17mr2544565ioj.53.1622117529759;
+ Thu, 27 May 2021 05:12:09 -0700 (PDT)
+Date:   Thu, 27 May 2021 05:12:09 -0700
+In-Reply-To: <000000000000b808c705c345b35d@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000025334e05c34eab2c@google.com>
+Subject: Re: [syzbot] unexpected kernel reboot (5)
+From:   syzbot <syzbot+6fb8ff5211d3e821398f@syzkaller.appspotmail.com>
+To:     dvyukov@google.com, gregkh@linuxfoundation.org, hch@lst.de,
+        joey.jiaojg@gmail.com, linux-kernel@vger.kernel.org,
+        penguin-kernel@i-love.sakura.ne.jp, sidgup@codeaurora.org,
+        syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 26, 2021 at 01:03:11PM +0300, eli.billauer@gmail.com wrote:
-> From: Eli Billauer <eli.billauer@gmail.com>
-> 
-> The XillyUSB driver is the USB variant for the Xillybus FPGA IP core.
-> Even though it presents a nearly identical API on the FPGA and host,
-> it's almost a complete rewrite of the driver: The framework for exchanging
-> data on a USB bus is fundamentally different from doing the same with a
-> PCIe interface, which leaves very little in common between the existing
-> driver and the new one for XillyUSB.
-> 
-> Signed-off-by: Eli Billauer <eli.billauer@gmail.com>
-> ---
-> 
-> Notes:
->     Changelog:
->     
->     v5:
->       - Move xillyusb.c back from staging to char/xillybus/
->       - Turn previously lockless FIFO into one relying on a lock
->       - Set driver's soft_unbind flag, so that the device is notified when the
->         driver is unloaded + due changes for killing URBs as required
->       - Some refactoring of locks for better granularity
->       - Avoid using pr_err and pr_warn, replace with dev_* counterparts
->       - Bump MODULE_VERSION to 1.1
->       - Remove module_params
->       - Fix a few minor bugs regarding error handling flow
->       - Various coding style fixes and comment clarifications
->     
->     v4:
->       (No changes)
->     
->     v3:
->       - Move to staging
->       - Rely on xillybus_class for device file operations
->       - Fix no return value bug in xillyusb_discovery()
->       - Add module parameters for URB buffer size and count
->     
->     v2:
->       - Add comment in Kconfig file, saying XILLYUSB really doesn't depend
->         on XILLYBUS (following comment by Randy Dunlap)
->       - Use SEEK_* predefined constants instead of numbers
-> 
->  drivers/char/xillybus/Kconfig    |   14 +
->  drivers/char/xillybus/Makefile   |    1 +
->  drivers/char/xillybus/xillyusb.c | 2260 ++++++++++++++++++++++++++++++
->  3 files changed, 2275 insertions(+)
->  create mode 100644 drivers/char/xillybus/xillyusb.c
-> 
-> diff --git a/drivers/char/xillybus/Kconfig b/drivers/char/xillybus/Kconfig
-> index 7cc4d719ec4f..a8036dad437e 100644
-> --- a/drivers/char/xillybus/Kconfig
-> +++ b/drivers/char/xillybus/Kconfig
-> @@ -36,3 +36,17 @@ config XILLYBUS_OF
->  	  system, say M. The module will be called xillybus_of.
->  
->  endif # if XILLYBUS
-> +
-> +# XILLYUSB doesn't depend on XILLYBUS
-> +
-> +config XILLYUSB
-> +	tristate "XillyUSB: Xillybus generic FPGA interface for USB"
-> +	depends on USB
-> +	select CRC32
-> +	select XILLYBUS_CLASS
-> +	help
-> +	  XillyUSB is the Xillybus variant which uses USB for communicating
-> +	  with the FPGA.
-> +
-> +	  Set to M if you want Xillybus to use USB for communicating with
-> +	  the FPGA. The module will be called xillyusb.
-> diff --git a/drivers/char/xillybus/Makefile b/drivers/char/xillybus/Makefile
-> index 591615264591..16f31d03209d 100644
-> --- a/drivers/char/xillybus/Makefile
-> +++ b/drivers/char/xillybus/Makefile
-> @@ -7,3 +7,4 @@ obj-$(CONFIG_XILLYBUS_CLASS)	+= xillybus_class.o
->  obj-$(CONFIG_XILLYBUS)		+= xillybus_core.o
->  obj-$(CONFIG_XILLYBUS_PCIE)	+= xillybus_pcie.o
->  obj-$(CONFIG_XILLYBUS_OF)	+= xillybus_of.o
-> +obj-$(CONFIG_XILLYUSB)		+= xillyusb.o
+syzbot has bisected this issue to:
 
-This doesn't quite work.
+commit f2d6c2708bd84ca953fa6b6ca5717e79eb0140c7
+Author: Christoph Hellwig <hch@lst.de>
+Date:   Wed Jan 20 20:46:31 2021 +0000
 
-Even if I have not selected CONFIG_XILLYBUS I get asked aboug
-CONFIG_XILLYUSB.  And if I say 'm' to CONFIG_XILLYUSB, nothing gets
-built.
+    kernfs: wire up ->splice_read and ->splice_write
 
-So I'll take this now, but you need to send a follow-up patch to fix
-these dependencies up to work correctly.
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=144ee113d00000
+start commit:   7ac3a1c1 Merge tag 'mtd/fixes-for-5.13-rc4' of git://git.k..
+git tree:       upstream
+final oops:     https://syzkaller.appspot.com/x/report.txt?x=164ee113d00000
+console output: https://syzkaller.appspot.com/x/log.txt?x=124ee113d00000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=266cda122a0b56c
+dashboard link: https://syzkaller.appspot.com/bug?extid=6fb8ff5211d3e821398f
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=154e8703d00000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=171382d3d00000
 
-thanks,
+Reported-by: syzbot+6fb8ff5211d3e821398f@syzkaller.appspotmail.com
+Fixes: f2d6c2708bd8 ("kernfs: wire up ->splice_read and ->splice_write")
 
-greg k-h
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
