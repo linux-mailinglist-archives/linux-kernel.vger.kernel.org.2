@@ -2,99 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 37969392509
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 04:46:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 701EB3924FF
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 04:45:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233938AbhE0Crj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 May 2021 22:47:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58132 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233841AbhE0Crh (ORCPT
+        id S233459AbhE0Cqy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 May 2021 22:46:54 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:39812 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229500AbhE0Cqx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 May 2021 22:47:37 -0400
-Received: from mail-pg1-x534.google.com (mail-pg1-x534.google.com [IPv6:2607:f8b0:4864:20::534])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4077C061574
-        for <linux-kernel@vger.kernel.org>; Wed, 26 May 2021 19:46:04 -0700 (PDT)
-Received: by mail-pg1-x534.google.com with SMTP id f22so2581129pgb.9
-        for <linux-kernel@vger.kernel.org>; Wed, 26 May 2021 19:46:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=iNP/SjcyNaIT9Sh+6s8gT1hO3S0wd0g5pCSpuyaozkw=;
-        b=PVk7nItGG9eUgo1RgIty5RHK8WNgpUKygbC/XyLZ+bCNVUctQeKddIwv7nwuobMJmp
-         4QWL/b0oxWQqzgu+n3GXsD3vybSuW/8pNpqIO3Reg/9YYX53Q9at+2q9yWKllwV9rOWS
-         w8SGJ+mCBoQYkmnaPb3fmb3D3KWBgiFlM4S1g=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=iNP/SjcyNaIT9Sh+6s8gT1hO3S0wd0g5pCSpuyaozkw=;
-        b=qKKhmdrLkTjwpQ3SPCG/v3whaCuAVqFto0OQp681D4F8VT3Cf6Ahii/faLDZwqCpS8
-         /YFL9SHQgXRsHc+Sq3n4x2/n5nQcToOp0uXQdE52PvUxlJVf2gP1kNmdFO/1j16mwWCS
-         G7LaQcQTe10Zxv+ZKfIDNeEmTrN8y6rtCl+SbtI114LDZxwzagWVLb3E8txiga/v1LnR
-         Ud56uhZZUUfW1rDxzbnv7NUacn+SwHEtRoAHQ7x7lpaOGzulYnzA+rXQslEC1xxBIS2K
-         HUZ4i52VDJJpwVizmkrenrz6jn6sTfn0xu5H4ZOFzwLUOUE1Ke+2dT39nfyZBIaMXp+e
-         cYfg==
-X-Gm-Message-State: AOAM533oYBqlARXcpl6+Qr+PUaMqg/CZknr+VBAh8OzyzA8z5XpslSCI
-        XLAiyGhwSXhjCZ/1FRQdFDtCSQ==
-X-Google-Smtp-Source: ABdhPJyLebV7fbvP0NGZ6HxNLgvFI/tiSws2o2+nNKzLsAsea2wvqbAA6v5k04MBPNIORgJ1SVcW2g==
-X-Received: by 2002:a63:5a01:: with SMTP id o1mr1563433pgb.313.1622083564242;
-        Wed, 26 May 2021 19:46:04 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id k38sm350372pgi.73.2021.05.26.19.46.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 26 May 2021 19:46:03 -0700 (PDT)
-From:   Kees Cook <keescook@chromium.org>
-To:     Tycho Andersen <tycho@tycho.pizza>, containers@lists.linux.dev,
-        Sargun Dhillon <sargun@sargun.me>,
-        Andy Lutomirski <luto@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Cc:     Kees Cook <keescook@chromium.org>,
-        Rodrigo Campos <rodrigo@kinvolk.io>,
-        =?UTF-8?q?Mauricio=20V=C3=A1squez=20Bernal?= <mauricio@kinvolk.io>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Giuseppe Scrivano <gscrivan@redhat.com>,
-        =?UTF-8?q?Micka=C3=ABl=20Sala=C3=BCn?= <mic@linux.microsoft.com>
-Subject: Re: [PATCH v2 0/4] Atomic addfd send and reply
-Date:   Wed, 26 May 2021 19:43:59 -0700
-Message-Id: <162208342966.3725800.17683913220837738980.b4-ty@chromium.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210517193908.3113-1-sargun@sargun.me>
-References: <20210517193908.3113-1-sargun@sargun.me>
+        Wed, 26 May 2021 22:46:53 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1622083521;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=EWkYWiPlwYnDMl1EMPoJ122fbcn5PIsDKJeTg6UCCSE=;
+        b=gvs5vaBHtupu+iYmRzUTJSg3EP7UsV7zsncbwyamLLIMKQRnuiJ7CoyR7FrLJH38b6ugbb
+        J63HguRIahe0YOfgg6SYWnRmPhzqg9VfDNO4ftLe1IU0GSptuxU1I+frWJBsVxbooq1z3W
+        BR3PXD0zcRBOspvo4YK0xY0y9qadcE8=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-112-4SezU8kSNVmSpV2_om6GiQ-1; Wed, 26 May 2021 22:45:19 -0400
+X-MC-Unique: 4SezU8kSNVmSpV2_om6GiQ-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 4455C1883528;
+        Thu, 27 May 2021 02:45:18 +0000 (UTC)
+Received: from T590 (ovpn-12-72.pek2.redhat.com [10.72.12.72])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 712615C27C;
+        Thu, 27 May 2021 02:44:55 +0000 (UTC)
+Date:   Thu, 27 May 2021 10:44:51 +0800
+From:   Ming Lei <ming.lei@redhat.com>
+To:     Stefan Hajnoczi <stefanha@redhat.com>
+Cc:     virtualization@lists.linux-foundation.org,
+        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Christoph Hellwig <hch@lst.de>,
+        Jason Wang <jasowang@redhat.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Jens Axboe <axboe@kernel.dk>, slp@redhat.com,
+        sgarzare@redhat.com, "Michael S. Tsirkin" <mst@redhat.com>
+Subject: Re: [PATCH 3/3] virtio_blk: implement blk_mq_ops->poll()
+Message-ID: <YK8Ho3mC117M8GXS@T590>
+References: <20210520141305.355961-1-stefanha@redhat.com>
+ <20210520141305.355961-4-stefanha@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210520141305.355961-4-stefanha@redhat.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 17 May 2021 12:39:04 -0700, Sargun Dhillon wrote:
-> This is somewhat of a respin of "Handle seccomp notification preemption"
-> but without the controversial parts.
+On Thu, May 20, 2021 at 03:13:05PM +0100, Stefan Hajnoczi wrote:
+> Request completion latency can be reduced by using polling instead of
+> irqs. Even Posted Interrupts or similar hardware support doesn't beat
+> polling. The reason is that disabling virtqueue notifications saves
+> critical-path CPU cycles on the host by skipping irq injection and in
+> the guest by skipping the irq handler. So let's add blk_mq_ops->poll()
+> support to virtio_blk.
 > 
+> The approach taken by this patch differs from the NVMe driver's
+> approach. NVMe dedicates hardware queues to polling and submits
+> REQ_HIPRI requests only on those queues. This patch does not require
+> exclusive polling queues for virtio_blk. Instead, it switches between
+> irqs and polling when one or more REQ_HIPRI requests are in flight on a
+> virtqueue.
 > 
-> This patchset addresses a race condition we've dealt with recently with
-> seccomp. Specifically programs interrupting syscalls while they're in
-> progress. This was exacerbated by Golang's recent adoption of "async
-> preemption", in which they try to interrupt any syscall that's been running
-> for more than 10ms during GC. During certain syscalls, it's non-trivial to
-> write them in a reetrant manner in userspace (socket).
+> This is possible because toggling virtqueue notifications is cheap even
+> while the virtqueue is running. NVMe cqs can't do this because irqs are
+> only enabled/disabled at queue creation time.
 > 
-> [...]
+> This toggling approach requires no configuration. There is no need to
+> dedicate queues ahead of time or to teach users and orchestration tools
+> how to set up polling queues.
 
-Thanks for your patience on this series! I think this is a clear solution
-for the race. Applied to for-next/seccomp, thanks!
+This approach looks good, and very neat thanks per-vq lock.
 
-[1/4] Documentation: seccomp: Fix user notification documentation
-      https://git.kernel.org/kees/c/1e2ca403fa89
-[2/4] seccomp: Refactor notification handler to prepare for new semantics
-      https://git.kernel.org/kees/c/6a1e0616acde
-[3/4] seccomp: Support atomic "addfd + send reply"
-      https://git.kernel.org/kees/c/ba9ef89cf83e
-[4/4] selftests/seccomp: Add test for atomic addfd+send
-      https://git.kernel.org/kees/c/75c98a0d5d3a
+BTW, is there any virt-exit saved by disabling vq interrupt? I understand
+there isn't since virt-exit may only be involved in remote completion
+via sending IPI.
 
--- 
-Kees Cook
+> 
+> Possible drawbacks of this approach:
+> 
+> - Hardware virtio_blk implementations may find virtqueue_disable_cb()
+>   expensive since it requires DMA. If such devices become popular then
+
+You mean the hardware need to consider order between DMA completion and
+interrupt notify? But it is disabling notify, guest just calls
+virtqueue_get_buf() to see if there is buffer available, if not, it will be
+polled again.
+
+>   the virtio_blk driver could use a similar approach to NVMe when
+>   VIRTIO_F_ACCESS_PLATFORM is detected in the future.
+> 
+> - If a blk_poll() thread is descheduled it not only hurts polling
+>   performance but also delays completion of non-REQ_HIPRI requests on
+>   that virtqueue since vq notifications are disabled.
+> 
+> Performance:
+> 
+> - Benchmark: fio ioengine=pvsync2 numjobs=4 direct=1
+> - Guest: 4 vCPUs with one virtio-blk device (4 virtqueues)
+
+4 jobs can consume up all 4 vCPUs. Just run a quick fio test with
+'ioengine=io_uring --numjobs=1' on single vq, and IOPS can be improved
+by ~20%(hipri=1 vs hipri=0) with the 3 patches, and the virtio-blk is
+still backed on NVMe SSD.
+
+
+Thanks, 
+Ming
 
