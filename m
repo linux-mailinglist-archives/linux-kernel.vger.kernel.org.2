@@ -2,110 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C788339258B
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 05:43:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 099E139258E
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 05:47:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234764AbhE0DpL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 May 2021 23:45:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42670 "EHLO
+        id S234099AbhE0DtR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 May 2021 23:49:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43560 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233656AbhE0DpK (ORCPT
+        with ESMTP id S231470AbhE0DtQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 May 2021 23:45:10 -0400
-Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C97DC061574;
-        Wed, 26 May 2021 20:43:37 -0700 (PDT)
-Received: by mail-ed1-x52f.google.com with SMTP id a25so4007297edr.12;
-        Wed, 26 May 2021 20:43:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=HnZq+n+gp23G19nG+lOoSxanxr/9NKSMMQJp+1JiGZg=;
-        b=Zkw0EaT+4+Aq1hEEXu7KywR45D4+dOXE6EIiVjlfCpy2F5BS81MKUCKOmfUWs7YusB
-         RhuRzR/qtFGMZ2ao8NXhLY3XETukK8DbKA1lJkvlLZ7NfYN8Zl6GzYF9BObEE1P/OHcR
-         hDt6oqISKG336THMkogyOWb5ISZpAJHt16mHkWGJki9jqQPIJqbPy+Pho5yTTiE6/Ujl
-         IqWwd/w4YltWmAuKLpmbe9wC1nzGto4FaWr0LBn6LljDuEX6zEuuvuMzWNE8NLiw3Nim
-         ZN8HkPLbLPETxBO9NRpq1pgt6YhGr12zCpybCcR+3M7/UumOf/7x36WAw0Bbghe0M3iB
-         uZvQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=HnZq+n+gp23G19nG+lOoSxanxr/9NKSMMQJp+1JiGZg=;
-        b=J2FIts5HLOBBe+359+ptL7yPnkVDJqqDXWwpiCqc7WO94mLC3+b8VJOCN2vNkYo4a1
-         FzUslKlSsW4otZJHSYHM/VFptBlFxKYRip1IvQVwmW+2ZDspAg1btq3i8Rj4AerDy7cO
-         pCEWWqJ26bgHaz3F+lyqH8ULahhSoYhP3GOmB7PcTiXenIes8cYg5rMyotLSwpH4VngP
-         wPKhAen0+cMRhiHJv9E7gwOKOHT31gd13cvr2zKBAneH4zPqVbMTRjFOC9owFk00MqIv
-         yq9EUSBg0tQmS/NazJJ385NfM7WMkP8C5MGHA3sRfuTCrOuQx3MyXoK/Dq7UR/hyY4D4
-         oDVA==
-X-Gm-Message-State: AOAM533IB6nc8MDmlahTtFlWJPvaDKuSzCIEcXZdj1oGMvRu69FB0v5D
-        C9sFBK0LwuDlgkEbCw+tC+nexrGszuIqnaI8dmo=
-X-Google-Smtp-Source: ABdhPJz3m1xWvxLhojfoUpwC4+hwhiYwDbNnEhI/KtnbEkJVDgWtcCDD3bPJrI53FI/xKkI0NraEkIyurMncPtHujY4=
-X-Received: by 2002:aa7:c441:: with SMTP id n1mr1748739edr.6.1622087016202;
- Wed, 26 May 2021 20:43:36 -0700 (PDT)
+        Wed, 26 May 2021 23:49:16 -0400
+Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CBD05C061574;
+        Wed, 26 May 2021 20:47:43 -0700 (PDT)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4FrDKl2zqxz9s5R;
+        Thu, 27 May 2021 13:47:39 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1622087259;
+        bh=ixOj/LyZCZMg93j45320uMBGWVbjkfJAHTyx6wEnEoY=;
+        h=Date:From:To:Cc:Subject:From;
+        b=PtSBzP8LAyLgURC7LChKKniaGDL15DAGhdEoJwOQ9D1zBlSBskrBk86z57rLb2wpK
+         yRcBV5K6d4Vv4qjNhJxyTDTvXDrgFlQLhtsJc14Lk6c5w93tGzPKupYNQI5IUkn7lf
+         HzchIZrqjzvysf3vx7SZYUMRwIYOk8TE29NrRwME0HcK6zQDEoCge14iP7OsCwaVp3
+         NVolOqsn4wd9iem4dxVoivdpu4bGJR6CLC5DEkBnkV4IAw0Ko7Fc+bm+UqGu3hn3DA
+         nITnUbtF2BXwNz6m+DkjlCayFRzWVaOvVLU42a0uqZ6/pjhnH7L6qho0HWCWiqTKgP
+         vvHntmll/0HWQ==
+Date:   Thu, 27 May 2021 13:47:36 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     "Martin K. Petersen" <martin.petersen@oracle.com>
+Cc:     Hannes Reinecke <hare@suse.de>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: build failure after merge of the scsi-mkp tree
+Message-ID: <20210527134736.4522317c@canb.auug.org.au>
 MIME-Version: 1.0
-References: <CAATamay8WTiJnB=5OLYdFTqVUcRF9LarN6_1Eej3QUgFzWRnkA@mail.gmail.com>
- <20210526162306.GA1299430@bjorn-Precision-5520>
-In-Reply-To: <20210526162306.GA1299430@bjorn-Precision-5520>
-From:   Lambert Wang <lambert.q.wang@gmail.com>
-Date:   Thu, 27 May 2021 11:43:24 +0800
-Message-ID: <CAATamawK53+XvZ+FV_1-Td9iFZwHeLX1O+PzCh01twzNAyRZHw@mail.gmail.com>
-Subject: Re: [PATCH] pci: add pci_dev_is_alive API
-To:     Bjorn Helgaas <helgaas@kernel.org>
-Cc:     =?UTF-8?Q?Krzysztof_Wilczy=C5=84ski?= <kw@linux.com>,
-        Bjorn Helgaas <bhelgaas@google.com>, linux-pci@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; boundary="Sig_/eRVKyPqF.AUjTejTlthFLUd";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 27, 2021 at 12:23 AM Bjorn Helgaas <helgaas@kernel.org> wrote:
->
-> On Wed, May 26, 2021 at 02:12:38PM +0800, Lambert Wang wrote:
-> > ...
-> > The user is our new PCI driver under development for WWAN devices .
-> > Surprise removal could happen under multiple circumstances.
-> > e.g. Exception, Link Failure, etc.
-> >
-> > We wanted this API to detect surprise removal or check device recovery
-> > when AER and Hotplug are disabled.
-> >
-> > I thought the API could be commonly used for many similar devices.
->
-> Be careful with this.  pci_device_is_present() is not a good way to
-> detect surprise removal.  Surprise removal can happen at any time, for
-> example, it can occur after you call pci_device_is_present() but
-> before you use the result:
->
->   present = pci_device_is_present(pdev);
->   /* present == true */
->   /* device may be removed here */
->   if (present)
->     xxx; /* this operation may fail */
->
-> You have to assume that *any* operation on the device can fail because
-> the device has been removed.  In general, there's no response for a
-> PCIe write to the device, so you can't really check whether a write
-> has failed.
->
-> There *are* responses for reads, of course, if the device has been
-> removed, a read will cause a failure response.  Most PCIe controllers
-> turn that response into ~0 data to satisfy the read.  So the only
-> reliable way to detect surprise removal is to check for ~0 data when
-> doing an MMIO read from the device.  Of course, ~0 may be either valid
-> data or a symptom of a failure response, so you may have to do
-> additional work to distinguish those two cases.
+--Sig_/eRVKyPqF.AUjTejTlthFLUd
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Thanks for reminding.  :)
+Hi all,
 
-Yes the check has race conditions. When the driver is doing recovery detection,
-the check result is not reliable.
+After merging the scsi-mkp tree, today's linux-next build (x86_64
+allmodconfig) failed like this:
 
-It is pretty useful when the driver wants to confirm if the device is
-absent *after*
-the driver finds it's not working as expected.
+drivers/scsi/pcmcia/nsp_cs.c: In function 'nsp_queuecommand_lck':
+drivers/scsi/pcmcia/nsp_cs.c:224:22: error: 'CHECK_CONDITION' undeclared (f=
+irst use in this function)
+  224 |  SCpnt->SCp.Status =3D CHECK_CONDITION;
+      |                      ^~~~~~~~~~~~~~~
 
->
-> Bjorn
+Caused by commit
+
+  57de15221f92 ("scsi: core: Drop obsolete Linux-specific SCSI status codes=
+")
+
+I have used the scsi-mkp tree from next-20210526 for today.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/eRVKyPqF.AUjTejTlthFLUd
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmCvFlgACgkQAVBC80lX
+0GzzWwgAiiT/okXGGqbkZaNHBXnhLywNC/MlabC0KiDYs8R0C4RmRZeC8Xxz3uBG
+DZB1DRUQaXVXpkdsPDw1U3MWVBFFKhh0vo8q0cT1dOMGVlRoxTiuI5YwhxUIBzr0
+uAGI80NqYAKIL5GUq7ru/3DRhqfRQ0UCzaU3F459aimzzZc6kVwfGLIfWkev2S8m
+R/HdJ+gjFXfhDU1s5kSGy6MulSHgTrrOk0zZw4yKpsJ/Gff533lqAUw1WkUGUxv3
+tV8ySMs1SF4x46uLT5E0EPyt3m+MeNFivvM3OlLrIA/KuzBZanUtUBH9lMYEdWQo
+YLdK3GoI+ioJovdPgdyuXtiqWuz1Hg==
+=z/0R
+-----END PGP SIGNATURE-----
+
+--Sig_/eRVKyPqF.AUjTejTlthFLUd--
