@@ -2,104 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B348939298B
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 10:25:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9706E392989
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 10:25:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235540AbhE0I1U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 May 2021 04:27:20 -0400
-Received: from mga12.intel.com ([192.55.52.136]:10062 "EHLO mga12.intel.com"
+        id S235523AbhE0I1N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 May 2021 04:27:13 -0400
+Received: from mga12.intel.com ([192.55.52.136]:10059 "EHLO mga12.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235492AbhE0I1E (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 May 2021 04:27:04 -0400
-IronPort-SDR: 9didIKyxiIC8vKPI42l31QdHMLQoz+oY+ZeTyBnoEXwTnLCZ4bu2zTlckd1BSgKMKEW/9e0Eps
- oRygDG0CZoxA==
-X-IronPort-AV: E=McAfee;i="6200,9189,9996"; a="182334130"
+        id S235427AbhE0I1A (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 27 May 2021 04:27:00 -0400
+IronPort-SDR: /VOl13etUHCCn51y96KZJKRzpBdAJ6druSc0qjCWJD2olu95IGvk/Clho4b28VHvux3M742dl+
+ z/E242pdQXgQ==
+X-IronPort-AV: E=McAfee;i="6200,9189,9996"; a="182334132"
 X-IronPort-AV: E=Sophos;i="5.82,334,1613462400"; 
-   d="scan'208";a="182334130"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 May 2021 01:25:21 -0700
-IronPort-SDR: zUuONXKllXerxgPUigzBX88IHvVlzT1yknWIKwbMimhnP/hw9nUDciABVzg0gTDb6yBz6kRjW2
- EcZslD2h0dzA==
+   d="scan'208";a="182334132"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 May 2021 01:25:22 -0700
+IronPort-SDR: If+HsSjQiPr4XtSbBmhczdzK5GQqss1U4tkdL/V7HpfbpE5k/COBFoQ9P5WRTCDox7YabAQI0F
+ JR1os9FGZ0aw==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.82,334,1613462400"; 
-   d="scan'208";a="414800514"
-Received: from linux.intel.com ([10.54.29.200])
-  by orsmga002.jf.intel.com with ESMTP; 27 May 2021 01:25:21 -0700
-Received: from abityuts-desk1.fi.intel.com (unknown [10.237.68.32])
-        by linux.intel.com (Postfix) with ESMTP id 7BE4B5808F1;
-        Thu, 27 May 2021 01:25:19 -0700 (PDT)
-Message-ID: <f5975692426cb27efd5779e7987a7def2a08728d.camel@linux.intel.com>
-Subject: Re: [PATCH] intel_idle: Adjust the SKX C6 latency and residency if
- PC6 is disabled
-From:   Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
-To:     Chen Yu <yu.c.chen@intel.com>, linux-pm@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-        Len Brown <len.brown@intel.com>,
-        Zhang Rui <rui.zhang@intel.com>
-Date:   Thu, 27 May 2021 11:25:18 +0300
-In-Reply-To: <20210527045647.3599-1-yu.c.chen@intel.com>
-References: <20210527045647.3599-1-yu.c.chen@intel.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.38.4 (3.38.4-1.fc33) 
+   d="scan'208";a="480478021"
+Received: from ahunter-desktop.fi.intel.com (HELO [10.237.72.174]) ([10.237.72.174])
+  by fmsmga002.fm.intel.com with ESMTP; 27 May 2021 01:25:17 -0700
+Subject: Re: [PATCH v1 1/2] perf auxtrace: Change to use SMP memory barriers
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Leo Yan <leo.yan@linaro.org>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Andi Kleen <ak@linux.intel.com>,
+        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210519140319.1673043-1-leo.yan@linaro.org>
+ <d1fc3dd3-e79a-4e93-1083-6b08e0cabe59@intel.com>
+ <YK9UFl7Grv/mwmVc@hirez.programming.kicks-ass.net>
+From:   Adrian Hunter <adrian.hunter@intel.com>
+Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
+ Business Identity Code: 0357606 - 4, Domiciled in Helsinki
+Message-ID: <3c7dcd5d-fddd-5d3b-81ac-cb7b615b0338@intel.com>
+Date:   Thu, 27 May 2021 11:25:40 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
 MIME-Version: 1.0
+In-Reply-To: <YK9UFl7Grv/mwmVc@hirez.programming.kicks-ass.net>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 2021-05-27 at 12:56 +0800, Chen Yu wrote:
-
-... snip ...
-
-> Exit latency:
-> The C6 exit latency is measured when woken up from CC6/PC6. In the past,
-> if PC6 is disabled, CPU would be demoted to CC6/PC3, which is close to
-> the latency from CC6/PC6 and there is no need to update the C6 exit latency.
-> However on newer platform there is no CC3/PC3 anymore, then the C6 exit
-> latency with PC6 disabled should be CC6/PC0.
+On 27/05/21 11:11 am, Peter Zijlstra wrote:
+> On Thu, May 27, 2021 at 10:54:56AM +0300, Adrian Hunter wrote:
+>> On 19/05/21 5:03 pm, Leo Yan wrote:
+>>> The AUX ring buffer's head and tail can be accessed from multiple CPUs
+>>> on SMP system, so changes to use SMP memory barriers to replace the
+>>> uniprocessor barriers.
+>>
+>> I don't think user space should attempt to be SMP-aware.
 > 
-> Target residency:
-> With PC6 disabled and C3/PC3 supported, the OS requests C3 if idle
-> duration is within [CC6, PC6) target_residency. On new CPU generations
-> with C3/PC3 deprecated, the OS would request C1E. This would cause
-> low energy-efficiency. In summary, the question is, should we lower
-> the bar to request C6 when PC6 is disabled? The answer is yes.
-... snip ...
+> Uhh, what? It pretty much has to. Since userspace cannot assume UP, it
+> must assume SMP.
 
-Hi Yu,
+Yeah that is what I meant, but consequently we generally shouldn't be
+using functions called smp_<anything>
 
-Thanks for this patch, it is very actual and helpful.
+> 
+>> For perf tools, on __x86_64__ it looks like smp_rmb() is only a compiler barrier, whereas
+>> rmb() is a "lfence" memory barrier instruction, so this patch does not
+>> seem to do what the commit message says at least for x86.
+> 
+> The commit message is somewhat confused; *mb() are not UP barriers
+> (although they are available and useful on UP). They're device/dma
+> barriers.
+> 
+>> With regard to the AUX area, we don't know in general how data gets there,
+>> so using memory barriers seems sensible.
+> 
+> IIRC (but I ddn't check) the rule was that the kernel needs to ensure
+> the AUX area is complete before it updates the head pointer. So if
+> userspace can observe the head pointer, it must then also be able to
+> observe the data. This is not something userspace can fix up anyway.
+> 
+> The ordering here is between the head pointer and the data, and from a
+> userspace perspective that's a regular smp ordering. Similar for the
+> tail update, that's between our reading the data and writing the tail,
+> regular cache coherent smp ordering.
+> 
+> So ACK on the patch, it's sane and an optimization for both x86 and ARM.
+> Just the Changelog needs work.
 
-Comments about the commit message below.
+If all we want is a compiler barrier, then shouldn't that be what we use?
+i.e. barrier()
 
-This patch is specifically about SKX. It also covers CLX and CPX,
-because they have the same ID.
-
-Now, this platforms do not have C3 and PC3. So I would avoid talking
-about these states
-in the commit message. Why making a simple thing more complex?
-
-Here are all the SKX C-states.
-
-1. Linux-level C-states (linux can ask for): C1, C1E, C6.
-2. HW-level C-states (HW supports under the hood): C1, C1E, CC6, PC2,
-PC6.
-
-Here is the story of this patch in my understanding.
-
-1. C6 maps to CC6 and PC6.
-2. CC6 is "shallower" than PC6.
-3. Linux assumes worst case - PC6.
-4. Many datacenters and users disable PC6.
-5. We can optimize intel_idle in this case: adjust C6 latency and
-target residency to match (faster) CC6.
-
-That's it.
-
-Then may be it is worth mentioning that CC6 vs PC2 difference is not
-really measurable, so
-the adjustment is only for PC6.
-
-Artem.
+> 
+>>> Signed-off-by: Leo Yan <leo.yan@linaro.org>
+>>> ---
+>>>  tools/perf/util/auxtrace.h | 6 +++---
+>>>  1 file changed, 3 insertions(+), 3 deletions(-)
+>>>
+>>> diff --git a/tools/perf/util/auxtrace.h b/tools/perf/util/auxtrace.h
+>>> index 472c0973b1f1..8bed284ccc82 100644
+>>> --- a/tools/perf/util/auxtrace.h
+>>> +++ b/tools/perf/util/auxtrace.h
+>>> @@ -452,7 +452,7 @@ static inline u64 auxtrace_mmap__read_snapshot_head(struct auxtrace_mmap *mm)
+>>>  	u64 head = READ_ONCE(pc->aux_head);
+>>>  
+>>>  	/* Ensure all reads are done after we read the head */
+>>> -	rmb();
+>>> +	smp_rmb();
+>>>  	return head;
+>>>  }
+>>>  
+>>> @@ -466,7 +466,7 @@ static inline u64 auxtrace_mmap__read_head(struct auxtrace_mmap *mm)
+>>>  #endif
+>>>  
+>>>  	/* Ensure all reads are done after we read the head */
+>>> -	rmb();
+>>> +	smp_rmb();
+>>>  	return head;
+>>>  }
+>>>  
+>>> @@ -478,7 +478,7 @@ static inline void auxtrace_mmap__write_tail(struct auxtrace_mmap *mm, u64 tail)
+>>>  #endif
+>>>  
+>>>  	/* Ensure all reads are done before we write the tail out */
+>>> -	mb();
+>>> +	smp_mb();
+>>>  #if BITS_PER_LONG == 64 || !defined(HAVE_SYNC_COMPARE_AND_SWAP_SUPPORT)
+>>>  	pc->aux_tail = tail;
+>>>  #else
+>>>
+>>
 
