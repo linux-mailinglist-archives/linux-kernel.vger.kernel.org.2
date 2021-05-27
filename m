@@ -2,82 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B139393190
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 16:55:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CAA7B3931E7
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 17:10:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236691AbhE0O5V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 May 2021 10:57:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54910 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229793AbhE0O5S (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 May 2021 10:57:18 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58404C061574;
-        Thu, 27 May 2021 07:55:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=h+ribFfVIk329pe0p3tIyYOdBOtZCkKF+HnqMs1ehyM=; b=WYGVpiEixpBSdl2wAok68xEwTI
-        M8GhhPdN5o6HfOKT4cuaGbQBJh/k/AI8irIdK9XmR9tZ1WvddhlNhvAbyMxem4onjg9pO8T2PiCeI
-        4D+Q7afmXuDAp1GQv5327Z5uWK7XlwLuRcKKjog0Ft0QulMDaMiqRRGY1APG9H1VuaHUv+0Rs8bZQ
-        8TcblaHKv6zYdu78gOTaqFdQ9chtD1O2c6lLhPQvUVA+XFJCbFrMMC8UhCFZgeScnoiosnkunvHSq
-        tQPWlLWAb/VJy+fq6tEmuGuxYxIx7KOyPYqj/wEdjIO8BC98Tsgq+2fFysrvSsGl45saCF3MSS4jq
-        6OewL+bw==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1lmHPz-00123b-6c; Thu, 27 May 2021 14:55:34 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 2CDBC300221;
-        Thu, 27 May 2021 16:55:33 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 127C12011BE77; Thu, 27 May 2021 16:55:33 +0200 (CEST)
-Date:   Thu, 27 May 2021 16:55:32 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Will Deacon <will@kernel.org>
-Cc:     linux-arm-kernel@lists.infradead.org, linux-arch@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Marc Zyngier <maz@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Morten Rasmussen <morten.rasmussen@arm.com>,
-        Qais Yousef <qais.yousef@arm.com>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Quentin Perret <qperret@google.com>, Tejun Heo <tj@kernel.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        kernel-team@android.com
-Subject: Re: [PATCH v7 16/22] sched: Defer wakeup in ttwu() for unschedulable
- frozen tasks
-Message-ID: <YK+y5OE5N1FTkT/J@hirez.programming.kicks-ass.net>
-References: <20210525151432.16875-1-will@kernel.org>
- <20210525151432.16875-17-will@kernel.org>
- <YK+oSPlNQJKiMYYc@hirez.programming.kicks-ass.net>
- <YK+tV/DTNlpGJ7J8@hirez.programming.kicks-ass.net>
- <20210527144412.GB23086@willie-the-truck>
+        id S235470AbhE0PLo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 May 2021 11:11:44 -0400
+Received: from mga06.intel.com ([134.134.136.31]:49130 "EHLO mga06.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235409AbhE0PLh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 27 May 2021 11:11:37 -0400
+IronPort-SDR: ck1LiCcellxJF00fXeT+iCiZlmKMaDwM8+FDn8IaOcRR6TpFdA3rToSGn2O7gDyaWNOZwbiboz
+ Z2nlOfLpjriQ==
+X-IronPort-AV: E=McAfee;i="6200,9189,9996"; a="263956575"
+X-IronPort-AV: E=Sophos;i="5.82,334,1613462400"; 
+   d="scan'208";a="263956575"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 May 2021 08:08:47 -0700
+IronPort-SDR: Wj929PUHpl8sBYnB2olrul2/4w69SoSFv3GcjDKcMhOdbr0Tj1iG3tjPCIVfFzuZO7zBDTeuUx
+ U2ZLGBMOiqtg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.82,334,1613462400"; 
+   d="scan'208";a="480620895"
+Received: from ranger.igk.intel.com ([10.102.21.164])
+  by fmsmga002.fm.intel.com with ESMTP; 27 May 2021 08:08:43 -0700
+Date:   Thu, 27 May 2021 16:55:49 +0200
+From:   Maciej Fijalkowski <maciej.fijalkowski@intel.com>
+To:     Colin King <colin.king@canonical.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        KP Singh <kpsingh@kernel.org>, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, kernel-janitors@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH][next] bpf: devmap: remove redundant assignment of
+ variable drops
+Message-ID: <20210527145549.GA7570@ranger.igk.intel.com>
+References: <20210527143637.795393-1-colin.king@canonical.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210527144412.GB23086@willie-the-truck>
+In-Reply-To: <20210527143637.795393-1-colin.king@canonical.com>
+User-Agent: Mutt/1.12.1 (2019-06-15)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 27, 2021 at 03:44:12PM +0100, Will Deacon wrote:
-> I'm not seeing how this handles tasks which weren't put in the freezer
-> because they have PF_FREEZER_SKIP set. For these tasks, we need to make
-> sure that they don't become runnable before we have onlined a core which
-> is capable of running them, and this could occur because of any old
-> wakeup (i.e. whatever it was that they blocked on).
+On Thu, May 27, 2021 at 03:36:37PM +0100, Colin King wrote:
+> From: Colin Ian King <colin.king@canonical.com>
+> 
+> The variable drops is being assigned a value that is never
+> read, it is being updated later on. The assignment is redundant and
+> can be removed.
 
-I was under the impression that userspace tasks could not have
-PF_FREEZER_SKIP set.. let me look harder.
+Acked-by: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
+
+Would help if you would have CCed me given the fact that hour ago I
+confirmed that it could be removed :p but no big deal.
+
+Thanks!
+
+> 
+> Addresses-Coverity: ("Unused value")
+> Signed-off-by: Colin Ian King <colin.king@canonical.com>
+> ---
+>  kernel/bpf/devmap.c | 2 --
+>  1 file changed, 2 deletions(-)
+> 
+> diff --git a/kernel/bpf/devmap.c b/kernel/bpf/devmap.c
+> index f9148daab0e3..fe3873b5d13d 100644
+> --- a/kernel/bpf/devmap.c
+> +++ b/kernel/bpf/devmap.c
+> @@ -388,8 +388,6 @@ static void bq_xmit_all(struct xdp_dev_bulk_queue *bq, u32 flags)
+>  		to_send = dev_map_bpf_prog_run(bq->xdp_prog, bq->q, cnt, dev);
+>  		if (!to_send)
+>  			goto out;
+> -
+> -		drops = cnt - to_send;
+>  	}
+>  
+>  	sent = dev->netdev_ops->ndo_xdp_xmit(dev, to_send, bq->q, flags);
+> -- 
+> 2.31.1
+> 
