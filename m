@@ -2,150 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D622E39336E
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 18:14:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8568539336A
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 18:14:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237198AbhE0QQB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 May 2021 12:16:01 -0400
-Received: from mx08-00178001.pphosted.com ([91.207.212.93]:18720 "EHLO
-        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S237172AbhE0QPA (ORCPT
+        id S237279AbhE0QP4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 May 2021 12:15:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44636 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237221AbhE0QO7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 May 2021 12:15:00 -0400
-Received: from pps.filterd (m0046660.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 14RGD6SP000884;
-        Thu, 27 May 2021 18:13:07 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references : mime-version :
- content-type; s=selector1;
- bh=XodMrfCljA3jV/VNq/KtupAAUjvI0NBdv4/HUVQcJTY=;
- b=RCL1bwDNHnkkjAVsoVA2e7zuqA4nZaC21d96kcxY+zK9+Yt/QNMTrzN4atOXuXdRJMug
- azw0Eq8+QS9Ew3nqHsO5YHuMkbWa6brYmuLc5NZESxGn74Dz+OcH/dylPzGvKrIHsUyY
- HJstXAzysl5xolm1UecmlilBPheBfrQy+x3EkNtvOez6P6738LVHz1O+qHY3F8Kqirf7
- F3I+2RFuhrrd1t6hMML3mKDfsIxYpQrZdp42KURW4pC3L+oox0wIyIt+6eS/nLgb22Fg
- 2gB/z63zRZAPWhmHFRQL90SiqtSczXIlp+uPYSGzKp8+yx2iDJqkAihkwkv/qY3IYmRQ kA== 
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com with ESMTP id 38t7k3av0b-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 27 May 2021 18:13:07 +0200
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 51025100039;
-        Thu, 27 May 2021 18:13:05 +0200 (CEST)
-Received: from Webmail-eu.st.com (sfhdag2node3.st.com [10.75.127.6])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 424E9236565;
-        Thu, 27 May 2021 18:13:05 +0200 (CEST)
-Received: from localhost (10.75.127.46) by SFHDAG2NODE3.st.com (10.75.127.6)
- with Microsoft SMTP Server (TLS) id 15.0.1497.2; Thu, 27 May 2021 18:13:04
- +0200
-From:   <patrice.chotard@foss.st.com>
-To:     Mark Brown <broonie@kernel.org>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Boris Brezillon <boris.brezillon@collabora.com>,
-        <linux-mtd@lists.infradead.org>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        <linux-spi@vger.kernel.org>,
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>
-CC:     <patrice.chotard@foss.st.com>, <christophe.kerello@foss.st.com>
-Subject: [PATCH v3 3/3] mtd: spinand: add SPI-NAND MTD resume handler
-Date:   Thu, 27 May 2021 18:12:52 +0200
-Message-ID: <20210527161252.16620-4-patrice.chotard@foss.st.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210527161252.16620-1-patrice.chotard@foss.st.com>
-References: <20210527161252.16620-1-patrice.chotard@foss.st.com>
+        Thu, 27 May 2021 12:14:59 -0400
+Received: from mail-pf1-x429.google.com (mail-pf1-x429.google.com [IPv6:2607:f8b0:4864:20::429])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DCE90C0613CE
+        for <linux-kernel@vger.kernel.org>; Thu, 27 May 2021 09:13:18 -0700 (PDT)
+Received: by mail-pf1-x429.google.com with SMTP id p39so939802pfw.8
+        for <linux-kernel@vger.kernel.org>; Thu, 27 May 2021 09:13:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=J7NodHI/4ogkySI3kWvt8rbHLbkuIslVZywQJ/42H7Y=;
+        b=l6KsMCfVq5g8ogHhM+YmDOFeh8qACcoDKm82bZMH1b66stkbsAn5ifYKF6rvz1WMir
+         5/rxPFFtIc2Npsniz4LRvE119BJy2MYJ3L23fNMYQIUqcoi+rI9RxDxNpewMjL0Y2VFo
+         KtLC1EaWPAUbFoNvOZZOwDHaSElZsopziOyzF8RjeIxhAPy4qe/4BYdr+lLEjCNerPmS
+         SFaeRfvJwEDRImLYO4fy1BQ/ot4957Hs+7qArGYckqxOb+iqnvSle8fJqbcGyXMBkBRJ
+         23E6/zFEOYRQiS764hMmqiLGfWff03m37MKSnAvJGZxVYHM23HmM627SwBSeYnTZuMw0
+         mpJg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=J7NodHI/4ogkySI3kWvt8rbHLbkuIslVZywQJ/42H7Y=;
+        b=JYeKbDo5hfqkZvwtHc0OrmhpN7WS9Wd73dWqb2YC+/rHJI22V4ImZKc2Ep2+9aogFC
+         1qp12e1ciVX3eouc9+mvdYJQuBygxWoFUjjYme4NW6aAMolx1M38olIMxI7Vs5Jj1e3/
+         ngIVjv+AQjeztx+FzNicehBijZNLIAGd7Bt4g3j9ATvKqbUIV+k38H5+jGCXSrpvvQHI
+         TAVfLJzp1TU9ZNQhIuQyXy/jfs3+uMKdS6co7xpVOGtowVuTLxRT90oUdn63CVm509E1
+         Bmt9oDOhvbnkr5s5kKb7s9IQ9DiBvRXRfCcQAXxpOy95Z8RJsRtfb+tvi5JF2YBM7eq/
+         lRyA==
+X-Gm-Message-State: AOAM532un1e/A0ewRbxAi3Wn+lB25VPDDceByCkYX7MVt4IczuJmZWyP
+        61G4cmnXJzN+ZpMHV/yHUhPiZA==
+X-Google-Smtp-Source: ABdhPJwM80E7LO/berGR063hc+myV9kW/nwuUU6EBlsdq7ogSFFU0S57o5WLHGW/VR4nMGkXccFmKw==
+X-Received: by 2002:a63:f50:: with SMTP id 16mr4297573pgp.373.1622131998175;
+        Thu, 27 May 2021 09:13:18 -0700 (PDT)
+Received: from google.com (240.111.247.35.bc.googleusercontent.com. [35.247.111.240])
+        by smtp.gmail.com with ESMTPSA id 4sm2028793pji.14.2021.05.27.09.13.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 27 May 2021 09:13:17 -0700 (PDT)
+Date:   Thu, 27 May 2021 16:13:13 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     Lai Jiangshan <jiangshanlai@gmail.com>,
+        linux-kernel@vger.kernel.org,
+        Lai Jiangshan <laijs@linux.alibaba.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        Radim =?utf-8?B?S3LEjW3DocWZ?= <rkrcmar@redhat.com>,
+        kvm@vger.kernel.org
+Subject: Re: [PATCH] KVM: X86: fix tlb_flush_guest()
+Message-ID: <YK/FGYejaIu6EzSn@google.com>
+References: <20210527023922.2017-1-jiangshanlai@gmail.com>
+ <78ad9dff-9a20-c17f-cd8f-931090834133@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.75.127.46]
-X-ClientProxiedBy: SFHDAG3NODE3.st.com (10.75.127.9) To SFHDAG2NODE3.st.com
- (10.75.127.6)
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
- definitions=2021-05-27_09:2021-05-27,2021-05-27 signatures=0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <78ad9dff-9a20-c17f-cd8f-931090834133@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Patrice Chotard <patrice.chotard@foss.st.com>
++Maxim - A proper fix for this bug might fix your shadow paging + win10 boot
+         issue, this also affects the KVM_REQ_HV_TLB_FLUSH used for HyperV PV
+	 flushing.
 
-After power up, all SPI NAND's blocks are locked. Only read operations
-are allowed, write and erase operations are forbidden.
-The SPI NAND framework unlocks all the blocks during its initialization.
+On Thu, May 27, 2021, Paolo Bonzini wrote:
+> On 27/05/21 04:39, Lai Jiangshan wrote:
+> > From: Lai Jiangshan <laijs@linux.alibaba.com>
+> > 
+> > For KVM_VCPU_FLUSH_TLB used in kvm_flush_tlb_multi(), the guest expects
+> > the hypervisor do the operation that equals to native_flush_tlb_global()
+> > or invpcid_flush_all() in the specified guest CPU.
+> > 
+> > When TDP is enabled, there is no problem to just flush the hardware
+> > TLB of the specified guest CPU.
+> > 
+> > But when using shadowpaging, the hypervisor should have to sync the
+> > shadow pagetable at first before flushing the hardware TLB so that
+> > it can truely emulate the operation of invpcid_flush_all() in guest.
+> 
+> Can you explain why?
 
-During a standby low power, the memory is powered down, losing its
-configuration.
-During the resume, the QSPI driver state is restored but the SPI NAND
-framework does not reconfigured the memory.
+KVM's unsync logic hinges on guest TLB flushes.  For page permission modifications
+that require a TLB flush to take effect, e.g. making a writable page read-only,
+KVM waits until the guest explicitly does said flush to propagate the changes to
+the shadow page tables.  E.g. failure to sync PTEs could result in a read-only 4k
+page being writable when the guest expects it to be read-only.
 
-This patch adds SPI-NAND MTD PM handlers for resume ops.
-SPI NAND resume op re-initializes SPI NAND flash to its probed state.
+> Also it is simpler to handle this in kvm_vcpu_flush_tlb_guest, using "if
+> (tdp_enabled).  This provides also a single, good place to add a comment
+> with the explanation of what invalid entries KVM_REQ_RELOAD is presenting.
 
-Signed-off-by: Christophe Kerello <christophe.kerello@foss.st.com>
-Signed-off-by: Patrice Chotard <patrice.chotard@foss.st.com>
----
-Changes in v3:
-  - Add spinand_read_cfg() call to repopulate cache
+Ya.  
 
-Changes in v2:
-  - Add helper spinand_block_unlock().
-  - Add spinand_ecc_enable() call.
-  - Remove some dev_err().
-  - Fix commit's title and message.
+KVM_REQ_MMU_RELOAD is overkill, nuking the shadow page tables will completely
+offset the performance gains of the paravirtualized flush.
 
- drivers/mtd/nand/spi/core.c | 33 +++++++++++++++++++++++++++++++++
- 1 file changed, 33 insertions(+)
+And making a request won't work without revamping the order of request handling
+in vcpu_enter_guest(), e.g. KVM_REQ_MMU_RELOAD and KVM_REQ_MMU_SYNC are both
+serviced before KVM_REQ_STEAL_UPDATE.
 
-diff --git a/drivers/mtd/nand/spi/core.c b/drivers/mtd/nand/spi/core.c
-index 1f699ad84f1b..e3fcbcf381c3 100644
---- a/drivers/mtd/nand/spi/core.c
-+++ b/drivers/mtd/nand/spi/core.c
-@@ -1099,6 +1099,38 @@ static int spinand_block_unlock(struct spinand_device *spinand)
- 	return ret;
+Cleaning up and documenting the MMU related requests is on my todo list, but the
+immediate fix should be tiny and I can do my cleanups on top.
+
+I believe the minimal fix is:
+
+diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+index 81ab3b8f22e5..b0072063f9bf 100644
+--- a/arch/x86/kvm/x86.c
++++ b/arch/x86/kvm/x86.c
+@@ -3072,6 +3072,9 @@ static void kvm_vcpu_flush_tlb_all(struct kvm_vcpu *vcpu)
+ static void kvm_vcpu_flush_tlb_guest(struct kvm_vcpu *vcpu)
+ {
+        ++vcpu->stat.tlb_flush;
++
++       if (!tdp_enabled)
++               kvm_mmu_sync_roots(vcpu);
+        static_call(kvm_x86_tlb_flush_guest)(vcpu);
  }
  
-+static void spinand_mtd_resume(struct mtd_info *mtd)
-+{
-+	struct spinand_device *spinand = mtd_to_spinand(mtd);
-+	int ret;
-+
-+	ret = spinand_reset_op(spinand);
-+	if (ret)
-+		return;
-+
-+	ret = spinand_read_cfg(spinand);
-+	if (ret)
-+		return;
-+
-+	ret = spinand_init_quad_enable(spinand);
-+	if (ret)
-+		return;
-+
-+	ret = spinand_upd_cfg(spinand, CFG_OTP_ENABLE, 0);
-+	if (ret)
-+		return;
-+
-+	ret = spinand_manufacturer_init(spinand);
-+	if (ret)
-+		return;
-+
-+	ret = spinand_block_unlock(spinand);
-+	if (ret)
-+		return;
-+
-+	spinand_ecc_enable(spinand, false);
-+}
-+
- static int spinand_init(struct spinand_device *spinand)
- {
- 	struct device *dev = &spinand->spimem->spi->dev;
-@@ -1186,6 +1218,7 @@ static int spinand_init(struct spinand_device *spinand)
- 	mtd->_block_isreserved = spinand_mtd_block_isreserved;
- 	mtd->_erase = spinand_mtd_erase;
- 	mtd->_max_bad_blocks = nanddev_mtd_max_bad_blocks;
-+	mtd->_resume = spinand_mtd_resume;
- 
- 	if (nand->ecc.engine) {
- 		ret = mtd_ooblayout_count_freebytes(mtd);
--- 
-2.17.1
 
