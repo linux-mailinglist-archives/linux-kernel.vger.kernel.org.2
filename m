@@ -2,209 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E153392AC9
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 11:30:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A313392AAB
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 11:23:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235896AbhE0Jbn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 May 2021 05:31:43 -0400
-Received: from mga12.intel.com ([192.55.52.136]:15291 "EHLO mga12.intel.com"
+        id S235817AbhE0JZ2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 May 2021 05:25:28 -0400
+Received: from mga05.intel.com ([192.55.52.43]:47318 "EHLO mga05.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235879AbhE0Jbg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 May 2021 05:31:36 -0400
-IronPort-SDR: FzB5onePgcKVTk0NjIblP5aYwxfyXEH4MnZ5pK9Or59c5GDG41mbw/cscrwfW2Guo0M5CmvcmG
- GRgrM28RC5Mg==
-X-IronPort-AV: E=McAfee;i="6200,9189,9996"; a="182345413"
+        id S235699AbhE0JZ1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 27 May 2021 05:25:27 -0400
+IronPort-SDR: c5Exn7zCIbDzv9gxTLSAv726rzRPmMWjJ4QsTLDe66OjaoR5mHv6pEjaLDycsEaUsbODweFNsX
+ 7Xmogk+kW/jw==
+X-IronPort-AV: E=McAfee;i="6200,9189,9996"; a="288277859"
 X-IronPort-AV: E=Sophos;i="5.82,334,1613462400"; 
-   d="scan'208";a="182345413"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 May 2021 02:30:03 -0700
-IronPort-SDR: sh24HNZMbW16SOMgXIHjWqiifGNRBw57VVyswOQODS27j2U9272bApDfSbVBphMbQpezjVbV4Y
- 96GHLLrQx33g==
+   d="scan'208";a="288277859"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 May 2021 02:23:55 -0700
+IronPort-SDR: +zPwMvPqWjJaGITy6u17k9Dl02fHfHPahnIW4RE2PM1CJnKV0l4AorqSvgVeLC8NGTh+6NHOSp
+ iGnIXKuq3Wkg==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.82,334,1613462400"; 
-   d="scan'208";a="436485889"
-Received: from mike-ilbpg1.png.intel.com ([10.88.227.76])
-  by orsmga007.jf.intel.com with ESMTP; 27 May 2021 02:29:58 -0700
-From:   Michael Sit Wei Hong <michael.wei.hong.sit@intel.com>
-To:     Jose.Abreu@synopsys.com, andrew@lunn.ch, hkallweit1@gmail.com,
-        linux@armlinux.org.uk, kuba@kernel.org, netdev@vger.kernel.org,
-        peppe.cavallaro@st.com, alexandre.torgue@foss.st.com,
-        davem@davemloft.net, mcoquelin.stm32@gmail.com,
-        weifeng.voon@intel.com, boon.leong.ong@intel.com,
-        tee.min.tan@intel.com, vee.khee.wong@linux.intel.com,
-        vee.khee.wong@intel.com, michael.wei.hong.sit@intel.com,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH net-next v3 2/3] net: pcs: add 2500BASEX support for Intel mGbE controller
-Date:   Thu, 27 May 2021 17:24:14 +0800
-Message-Id: <20210527092415.25205-3-michael.wei.hong.sit@intel.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210527092415.25205-1-michael.wei.hong.sit@intel.com>
-References: <20210527092415.25205-1-michael.wei.hong.sit@intel.com>
+   d="scan'208";a="480498295"
+Received: from ahunter-desktop.fi.intel.com (HELO [10.237.72.174]) ([10.237.72.174])
+  by fmsmga002.fm.intel.com with ESMTP; 27 May 2021 02:23:52 -0700
+Subject: Re: [PATCH v1 1/2] perf auxtrace: Change to use SMP memory barriers
+From:   Adrian Hunter <adrian.hunter@intel.com>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Leo Yan <leo.yan@linaro.org>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Andi Kleen <ak@linux.intel.com>,
+        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210519140319.1673043-1-leo.yan@linaro.org>
+ <d1fc3dd3-e79a-4e93-1083-6b08e0cabe59@intel.com>
+ <YK9UFl7Grv/mwmVc@hirez.programming.kicks-ass.net>
+ <3c7dcd5d-fddd-5d3b-81ac-cb7b615b0338@intel.com>
+Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
+ Business Identity Code: 0357606 - 4, Domiciled in Helsinki
+Message-ID: <7cdc3578-a50e-89ef-477a-3dc1f84f96bb@intel.com>
+Date:   Thu, 27 May 2021 12:24:15 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
+MIME-Version: 1.0
+In-Reply-To: <3c7dcd5d-fddd-5d3b-81ac-cb7b615b0338@intel.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Voon Weifeng <weifeng.voon@intel.com>
+On 27/05/21 11:25 am, Adrian Hunter wrote:
+> On 27/05/21 11:11 am, Peter Zijlstra wrote:
+>> On Thu, May 27, 2021 at 10:54:56AM +0300, Adrian Hunter wrote:
+>>> On 19/05/21 5:03 pm, Leo Yan wrote:
+>>>> The AUX ring buffer's head and tail can be accessed from multiple CPUs
+>>>> on SMP system, so changes to use SMP memory barriers to replace the
+>>>> uniprocessor barriers.
+>>>
+>>> I don't think user space should attempt to be SMP-aware.
+>>
+>> Uhh, what? It pretty much has to. Since userspace cannot assume UP, it
+>> must assume SMP.
+> 
+> Yeah that is what I meant, but consequently we generally shouldn't be
+> using functions called smp_<anything>
+> 
+>>
+>>> For perf tools, on __x86_64__ it looks like smp_rmb() is only a compiler barrier, whereas
+>>> rmb() is a "lfence" memory barrier instruction, so this patch does not
+>>> seem to do what the commit message says at least for x86.
+>>
+>> The commit message is somewhat confused; *mb() are not UP barriers
+>> (although they are available and useful on UP). They're device/dma
+>> barriers.
+>>
+>>> With regard to the AUX area, we don't know in general how data gets there,
+>>> so using memory barriers seems sensible.
+>>
+>> IIRC (but I ddn't check) the rule was that the kernel needs to ensure
+>> the AUX area is complete before it updates the head pointer. So if
+>> userspace can observe the head pointer, it must then also be able to
+>> observe the data. This is not something userspace can fix up anyway.
+>>
+>> The ordering here is between the head pointer and the data, and from a
+>> userspace perspective that's a regular smp ordering. Similar for the
+>> tail update, that's between our reading the data and writing the tail,
+>> regular cache coherent smp ordering.
+>>
+>> So ACK on the patch, it's sane and an optimization for both x86 and ARM.
+>> Just the Changelog needs work.
+> 
+> If all we want is a compiler barrier, then shouldn't that be what we use?
+> i.e. barrier()
 
-XPCS IP supports 2500BASEX as PHY interface. It is configured as
-autonegotiation disable to cater for PHYs that does not supports 2500BASEX
-autonegotiation.
+I guess you are saying we still need to stop potential re-ordering across
+CPUs, so please ignore my comments.
 
-v2: Add supported link speed masking.
-v3: Restructure to introduce xpcs_config_2500basex() used to configure the
-    xpcs for 2.5G speeds. Added 2500BASEX specific information for
-    configuration.
-
-Signed-off-by: Voon Weifeng <weifeng.voon@intel.com>
-Signed-off-by: Michael Sit Wei Hong <michael.wei.hong.sit@intel.com>
----
- drivers/net/pcs/pcs-xpcs.c   | 60 ++++++++++++++++++++++++++++++++++++
- include/linux/pcs/pcs-xpcs.h |  1 +
- 2 files changed, 61 insertions(+)
-
-diff --git a/drivers/net/pcs/pcs-xpcs.c b/drivers/net/pcs/pcs-xpcs.c
-index aa985a5aae8d..98f822e1e5d5 100644
---- a/drivers/net/pcs/pcs-xpcs.c
-+++ b/drivers/net/pcs/pcs-xpcs.c
-@@ -16,6 +16,7 @@
- #define SYNOPSYS_XPCS_10GKR_ID		0x7996ced0
- #define SYNOPSYS_XPCS_XLGMII_ID		0x7996ced0
- #define SYNOPSYS_XPCS_SGMII_ID		0x7996ced0
-+#define SYNOPSYS_XPCS_2500BASEX_ID	0x7996ced0
- #define SYNOPSYS_XPCS_MASK		0xffffffff
- 
- /* Vendor regs access */
-@@ -60,9 +61,14 @@
- 
- /* Clause 37 Defines */
- /* VR MII MMD registers offsets */
-+#define DW_VR_MII_MMD_CTRL		0x0000
- #define DW_VR_MII_DIG_CTRL1		0x8000
- #define DW_VR_MII_AN_CTRL		0x8001
- #define DW_VR_MII_AN_INTR_STS		0x8002
-+
-+/* Enable 2.5G Mode */
-+#define DW_VR_MII_DIG_CTRL1_2G5_EN	BIT(2)
-+
- /* EEE Mode Control Register */
- #define DW_VR_MII_EEE_MCTRL0		0x8006
- #define DW_VR_MII_EEE_MCTRL1		0x800b
-@@ -89,6 +95,11 @@
- #define DW_VR_MII_C37_ANSGM_SP_1000		0x2
- #define DW_VR_MII_C37_ANSGM_SP_LNKSTS		BIT(4)
- 
-+/* SR MII MMD Control defines */
-+#define AN_CL37_EN		BIT(12)	/* Enable Clause 37 auto-nego */
-+#define SGMII_SPEED_SS13	BIT(13)	/* SGMII speed along with SS6 */
-+#define SGMII_SPEED_SS6		BIT(6)	/* SGMII speed along with SS13 */
-+
- /* VR MII EEE Control 0 defines */
- #define DW_VR_MII_EEE_LTX_EN		BIT(0)  /* LPI Tx Enable */
- #define DW_VR_MII_EEE_LRX_EN		BIT(1)  /* LPI Rx Enable */
-@@ -161,6 +172,14 @@ static const int xpcs_sgmii_features[] = {
- 	__ETHTOOL_LINK_MODE_MASK_NBITS,
- };
- 
-+static const int xpcs_2500basex_features[] = {
-+	ETHTOOL_LINK_MODE_Asym_Pause_BIT,
-+	ETHTOOL_LINK_MODE_Autoneg_BIT,
-+	ETHTOOL_LINK_MODE_2500baseX_Full_BIT,
-+	ETHTOOL_LINK_MODE_2500baseT_Full_BIT,
-+	__ETHTOOL_LINK_MODE_MASK_NBITS,
-+};
-+
- static const phy_interface_t xpcs_usxgmii_interfaces[] = {
- 	PHY_INTERFACE_MODE_USXGMII,
- 	PHY_INTERFACE_MODE_MAX,
-@@ -181,6 +200,11 @@ static const phy_interface_t xpcs_sgmii_interfaces[] = {
- 	PHY_INTERFACE_MODE_MAX,
- };
- 
-+static const phy_interface_t xpcs_2500basex_interfaces[] = {
-+	PHY_INTERFACE_MODE_2500BASEX,
-+	PHY_INTERFACE_MODE_MAX,
-+};
-+
- static struct xpcs_id {
- 	u32 id;
- 	u32 mask;
-@@ -212,6 +236,12 @@ static struct xpcs_id {
- 		.supported = xpcs_sgmii_features,
- 		.interface = xpcs_sgmii_interfaces,
- 		.an_mode = DW_AN_C37_SGMII,
-+	}, {
-+		.id = SYNOPSYS_XPCS_2500BASEX_ID,
-+		.mask = SYNOPSYS_XPCS_MASK,
-+		.supported = xpcs_2500basex_features,
-+		.interface = xpcs_2500basex_interfaces,
-+		.an_mode = DW_2500BASEX,
- 	},
- };
- 
-@@ -275,6 +305,7 @@ static int xpcs_soft_reset(struct mdio_xpcs_args *xpcs)
- 		dev = MDIO_MMD_PCS;
- 		break;
- 	case DW_AN_C37_SGMII:
-+	case DW_2500BASEX:
- 		dev = MDIO_MMD_VEND2;
- 		break;
- 	default:
-@@ -741,6 +772,30 @@ static int xpcs_config_aneg_c37_sgmii(struct mdio_xpcs_args *xpcs)
- 	return xpcs_write(xpcs, MDIO_MMD_VEND2, DW_VR_MII_DIG_CTRL1, ret);
- }
- 
-+static int xpcs_config_2500basex(struct mdio_xpcs_args *xpcs)
-+{
-+	int ret;
-+
-+		ret = xpcs_read(xpcs, MDIO_MMD_VEND2, DW_VR_MII_DIG_CTRL1);
-+		if (ret < 0)
-+			return ret;
-+		ret |= DW_VR_MII_DIG_CTRL1_2G5_EN;
-+		ret &= ~DW_VR_MII_DIG_CTRL1_MAC_AUTO_SW;
-+		ret = xpcs_write(xpcs, MDIO_MMD_VEND2, DW_VR_MII_DIG_CTRL1, ret);
-+		if (ret < 0)
-+			return ret;
-+
-+		ret = xpcs_read(xpcs, MDIO_MMD_VEND2, DW_VR_MII_MMD_CTRL);
-+		if (ret < 0)
-+			return ret;
-+		ret &= ~AN_CL37_EN;
-+		ret |= SGMII_SPEED_SS6;
-+		ret &= ~SGMII_SPEED_SS13;
-+		return xpcs_write(xpcs, MDIO_MMD_VEND2, DW_VR_MII_MMD_CTRL, ret);
-+
-+	return 0;
-+}
-+
- static int xpcs_config(struct mdio_xpcs_args *xpcs,
- 		       const struct phylink_link_state *state)
- {
-@@ -759,6 +814,11 @@ static int xpcs_config(struct mdio_xpcs_args *xpcs,
- 		if (ret)
- 			return ret;
- 		break;
-+	case DW_2500BASEX:
-+		ret = xpcs_config_2500basex(xpcs);
-+		if (ret)
-+			return ret;
-+		break;
- 	default:
- 		return -1;
- 	}
-diff --git a/include/linux/pcs/pcs-xpcs.h b/include/linux/pcs/pcs-xpcs.h
-index 5938ced805f4..b358bbb34bd3 100644
---- a/include/linux/pcs/pcs-xpcs.h
-+++ b/include/linux/pcs/pcs-xpcs.h
-@@ -13,6 +13,7 @@
- /* AN mode */
- #define DW_AN_C73			1
- #define DW_AN_C37_SGMII			2
-+#define DW_2500BASEX			3
- 
- struct mdio_xpcs_args {
- 	__ETHTOOL_DECLARE_LINK_MODE_MASK(supported);
--- 
-2.17.1
+> 
+>>
+>>>> Signed-off-by: Leo Yan <leo.yan@linaro.org>
+>>>> ---
+>>>>  tools/perf/util/auxtrace.h | 6 +++---
+>>>>  1 file changed, 3 insertions(+), 3 deletions(-)
+>>>>
+>>>> diff --git a/tools/perf/util/auxtrace.h b/tools/perf/util/auxtrace.h
+>>>> index 472c0973b1f1..8bed284ccc82 100644
+>>>> --- a/tools/perf/util/auxtrace.h
+>>>> +++ b/tools/perf/util/auxtrace.h
+>>>> @@ -452,7 +452,7 @@ static inline u64 auxtrace_mmap__read_snapshot_head(struct auxtrace_mmap *mm)
+>>>>  	u64 head = READ_ONCE(pc->aux_head);
+>>>>  
+>>>>  	/* Ensure all reads are done after we read the head */
+>>>> -	rmb();
+>>>> +	smp_rmb();
+>>>>  	return head;
+>>>>  }
+>>>>  
+>>>> @@ -466,7 +466,7 @@ static inline u64 auxtrace_mmap__read_head(struct auxtrace_mmap *mm)
+>>>>  #endif
+>>>>  
+>>>>  	/* Ensure all reads are done after we read the head */
+>>>> -	rmb();
+>>>> +	smp_rmb();
+>>>>  	return head;
+>>>>  }
+>>>>  
+>>>> @@ -478,7 +478,7 @@ static inline void auxtrace_mmap__write_tail(struct auxtrace_mmap *mm, u64 tail)
+>>>>  #endif
+>>>>  
+>>>>  	/* Ensure all reads are done before we write the tail out */
+>>>> -	mb();
+>>>> +	smp_mb();
+>>>>  #if BITS_PER_LONG == 64 || !defined(HAVE_SYNC_COMPARE_AND_SWAP_SUPPORT)
+>>>>  	pc->aux_tail = tail;
+>>>>  #else
+>>>>
+>>>
+> 
 
