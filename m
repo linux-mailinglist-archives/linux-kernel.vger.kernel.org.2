@@ -2,111 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2CB3F393126
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 16:42:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 617CF39312B
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 16:42:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234953AbhE0On1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 May 2021 10:43:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51684 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229769AbhE0OnY (ORCPT
+        id S234850AbhE0Oo1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 May 2021 10:44:27 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:39653 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229769AbhE0Oo0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 May 2021 10:43:24 -0400
-Received: from mail-yb1-xb32.google.com (mail-yb1-xb32.google.com [IPv6:2607:f8b0:4864:20::b32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6DE5AC061574;
-        Thu, 27 May 2021 07:41:49 -0700 (PDT)
-Received: by mail-yb1-xb32.google.com with SMTP id b13so1009902ybk.4;
-        Thu, 27 May 2021 07:41:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=b/Mn6m+0szuABGuNz4gdUEHH56ZKs2OQ3Dg8rDpxUzE=;
-        b=XSW/W9WafmbrRZlc24lBgVOfwJ3pmFDiHzO44/xGvx7QKma/0OZXuepoaClYwEoYQL
-         SUAr+kcAGGWYZ0fwQPpeTk358Rq/QVRXArqaLfrfbsG7rDfwAjtOCsQiwht90BVTbgGw
-         CmhIq5/fs0DkSoIGxAmaLQy/EGSjgSXbQkpC0sAkBanhFAtwwDG6qkCmzIc26Udl5raY
-         otShNCca77NEr/SI1VVhSU/+TKHLMlqrwbwd5zlesBlM34uqh5JpWhzZkNtCSRiYDsZE
-         k2LBbSttOkkJuPJESN2+guVZTdIGm9cezRKbXnbvdn+CCZWZatV9dRDqeWa9mx2F0Ut+
-         cDRg==
+        Thu, 27 May 2021 10:44:26 -0400
+Received: from mail-ua1-f70.google.com ([209.85.222.70])
+        by youngberry.canonical.com with esmtps  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.93)
+        (envelope-from <krzysztof.kozlowski@canonical.com>)
+        id 1lmHDo-0003pu-Gy
+        for linux-kernel@vger.kernel.org; Thu, 27 May 2021 14:42:52 +0000
+Received: by mail-ua1-f70.google.com with SMTP id o7-20020ab01e870000b029020d37e3e144so294503uak.1
+        for <linux-kernel@vger.kernel.org>; Thu, 27 May 2021 07:42:52 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=b/Mn6m+0szuABGuNz4gdUEHH56ZKs2OQ3Dg8rDpxUzE=;
-        b=ettNYMPOrKPJ7LCKGbnEyD9bePESWSbFx6fQ2E7+w6GQsxjQP3YUsdINTMzTMpj0i5
-         ay7DmE9bDYOxiko2uxjOQ75unhq4pkRfz9IJRqsAstfYH5rUwXx/umobDxBngqtNPx16
-         73TEDCxSGZeXYNv64aoI/KBBXvJnzZWWpjvSqHM0o8kBpD8CouK2OHDXOSUDgbY0Gh7K
-         G9Ox4aguqzh1g0Z3tINDeJMOOF70z0XVChG4rxVGlGoRsdbLUZhHNSKzQb4ThILEFbM7
-         FeUibajWzFRbj2bRPtP3x+coAL6TOgBdFaSnU3ZNBvZqgXkDlx1LyUR60CFcNL+jsCMV
-         V7ng==
-X-Gm-Message-State: AOAM533NusCSsrC9ZWoGLBNC1tFESVOfKuqmE3gftJtZASv5gHs9ueZj
-        ngBpu5Nsg1ujE6koqa6kzFJx6MJYQkvKkxNyxGo=
-X-Google-Smtp-Source: ABdhPJxzJi1mIJCB7dkcmXbe4qDmLn1jrkqvUTD5Pi1mP9hJzrJ8ltrWO/v6eOsEXIj4lRFJpqjsZt/HSHtfTfFtyqE=
-X-Received: by 2002:a25:1455:: with SMTP id 82mr5241773ybu.403.1622126508714;
- Thu, 27 May 2021 07:41:48 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=iC04+3jvNubfg7Wrkd8hW+CgM3ijDgG7hLUEPwBFh2o=;
+        b=Kt3uU4mOQWYKhltV0HwOKa6s3QH+fvfYHSEtv1pMrXWzSGlgWjL/iiJZ7020WHGEtb
+         XrrByPDi+hwt0phL/knoAzTzyIroytVCsiwsu5MWtAkgvT/nqt8wv7oZN+RxIvAa4/ob
+         Zyrum0bwr13X0mKbkypFbaLBlnnmiOnKZ2cN1DiHEPaUcqwwqt8+qiVoYE79twSb7fdq
+         mQT0NmyyswkpxGhXzbEk2DSTNBXkRVaBVxxOOVg3QvDhVpJ1T6HCu+wi4pHDJgTnysFb
+         Hz3Bz0l12aq/bSo0pV+H5/MP4+4EMJffV/brg7e2euEwmbIkZRNs5PX9kYxGduZ9AJ4I
+         Q7LQ==
+X-Gm-Message-State: AOAM530TPBo5NI+26i29hrEsS4+fWZDbUWAJpmAeiXGD45g+L/G15TY6
+        Ag/NYV41PubzOsRFt9AdcTIGR9jPKvYJemIPUoIFVLJUG1rKFtOuHNQbM6tg1+1C/r513IVJ3RN
+        SiZn4MwmTLTqTciL+GOiFrpN5TBOWyHldWzQWyBuEVg==
+X-Received: by 2002:a1f:c1d5:: with SMTP id r204mr2429671vkf.13.1622126571641;
+        Thu, 27 May 2021 07:42:51 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJx5SrgHyiwETLfeWQwugX5MzFhyZbywio/gjMMALzmHQvM5RRX6gcPFaWG4JPkfMbQuLAgmTA==
+X-Received: by 2002:a1f:c1d5:: with SMTP id r204mr2429649vkf.13.1622126571431;
+        Thu, 27 May 2021 07:42:51 -0700 (PDT)
+Received: from localhost.localdomain ([45.237.48.3])
+        by smtp.gmail.com with ESMTPSA id i7sm459198uab.14.2021.05.27.07.42.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 27 May 2021 07:42:50 -0700 (PDT)
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Liu Shuo <b35362@freescale.com>,
+        Prabhakar Kushwaha <prabhakar@freescale.com>,
+        Li Yang <leoyang.li@nxp.com>,
+        Dipen Dudhat <Dipen.Dudhat@freescale.com>,
+        linux-kernel@vger.kernel.org, Raghav Dogra <raghav.dogra@nxp.com>
+Cc:     Dan Carpenter <dan.carpenter@oracle.com>,
+        kernel test robot <lkp@intel.com>
+Subject: [RFT PATCH 1/2] memory: fsl_ifc: fix leaking IO mapping on probe failure
+Date:   Thu, 27 May 2021 10:42:39 -0400
+Message-Id: <20210527144240.56365-1-krzysztof.kozlowski@canonical.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-References: <20210526080741.GW30378@techsingularity.net> <YK9SiLX1E1KAZORb@infradead.org>
- <20210527090422.GA30378@techsingularity.net> <YK9j3YeMTZ+0I8NA@infradead.org> <CAEf4BzZLy0s+t+Nj9QgUNM66Ma6HN=VkS+ocgT5h9UwanxHaZQ@mail.gmail.com>
-In-Reply-To: <CAEf4BzZLy0s+t+Nj9QgUNM66Ma6HN=VkS+ocgT5h9UwanxHaZQ@mail.gmail.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Thu, 27 May 2021 07:41:37 -0700
-Message-ID: <CAEf4BzbzPK-3cyLFM8QKE5-o_dL7=UCcvRF+rEqyUcHhyY+FJg@mail.gmail.com>
-Subject: Re: [PATCH] mm/page_alloc: Work around a pahole limitation with
- zero-sized struct pagesets
-To:     Christoph Hellwig <hch@infradead.org>
-Cc:     Mel Gorman <mgorman@techsingularity.net>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Arnaldo Carvalho de Melo <acme@redhat.com>,
-        Michal Suchanek <msuchanek@suse.de>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Hritik Vijay <hritikxx8@gmail.com>, bpf <bpf@vger.kernel.org>,
-        Linux-Net <netdev@vger.kernel.org>, Linux-MM <linux-mm@kvack.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 27, 2021 at 7:37 AM Andrii Nakryiko
-<andrii.nakryiko@gmail.com> wrote:
->
-> On Thu, May 27, 2021 at 2:19 AM Christoph Hellwig <hch@infradead.org> wrote:
-> >
-> > On Thu, May 27, 2021 at 10:04:22AM +0100, Mel Gorman wrote:
-> > > What do you suggest as an alternative?
-> > >
-> > > I added Arnaldo to the cc as he tagged the last released version of
-> > > pahole (1.21) and may be able to tag a 1.22 with Andrii's fix for pahole
-> > > included.
-> > >
-> > > The most obvious alternative fix for this issue is to require pahole
-> > > 1.22 to set CONFIG_DEBUG_INFO_BTF but obviously a version 1.22 that works
-> > > needs to exist first and right now it does not. I'd be ok with this but
-> > > users of DEBUG_INFO_BTF may object given that it'll be impossible to set
-> > > the option until there is a release.
-> >
-> > Yes, disable BTF.  Empty structs are a very useful feature that we use
-> > in various places in the kernel.  We can't just keep piling hacks over
-> > hacks to make that work with a recent fringe feature.
+On probe error the driver should unmap the IO memory.  Smatch reports:
 
-Sorry, I accidentally send out empty response.
+  drivers/memory/fsl_ifc.c:298 fsl_ifc_ctrl_probe() warn: 'fsl_ifc_ctrl_dev->gregs' not released on lines: 298.
 
-CONFIG_DEBUG_INFO_BTF is a crucial piece of modern BPF ecosystem. It
-is enabled by default by most popular Linux distros. So it's hardly a
-fringe feature and is something that many people and applications
-depend on.
+Fixes: a20cbdeffce2 ("powerpc/fsl: Add support for Integrated Flash Controller")
+Reported-by: kernel test robot <lkp@intel.com>
+Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
+Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
 
-I agree that empty structs are useful, but here we are talking about
-per-CPU variables only, which is the first use case so far, as far as
-I can see. If we had pahole 1.22 released and widely packaged it could
-have been a viable option to force it on everyone. But right now
-that's not the case. So while ugly, making sure pagesets is
-non-zero-sized is going to avoid a lot of pain for a lot of people. By
-the time we need another zero-sized per-CPU var, we might be able to
-force pahole to 1.22.
+---
+
+Only build tested.
+---
+ drivers/memory/fsl_ifc.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/memory/fsl_ifc.c b/drivers/memory/fsl_ifc.c
+index 89f99b5b6450..a6324044a085 100644
+--- a/drivers/memory/fsl_ifc.c
++++ b/drivers/memory/fsl_ifc.c
+@@ -219,8 +219,7 @@ static int fsl_ifc_ctrl_probe(struct platform_device *dev)
+ 	fsl_ifc_ctrl_dev->gregs = of_iomap(dev->dev.of_node, 0);
+ 	if (!fsl_ifc_ctrl_dev->gregs) {
+ 		dev_err(&dev->dev, "failed to get memory region\n");
+-		ret = -ENODEV;
+-		goto err;
++		return -ENODEV;
+ 	}
+ 
+ 	if (of_property_read_bool(dev->dev.of_node, "little-endian")) {
+@@ -295,6 +294,7 @@ static int fsl_ifc_ctrl_probe(struct platform_device *dev)
+ 	free_irq(fsl_ifc_ctrl_dev->irq, fsl_ifc_ctrl_dev);
+ 	irq_dispose_mapping(fsl_ifc_ctrl_dev->irq);
+ err:
++	iounmap(fsl_ifc_ctrl_dev->gregs);
+ 	return ret;
+ }
+ 
+-- 
+2.27.0
+
