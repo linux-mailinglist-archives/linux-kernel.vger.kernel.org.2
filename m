@@ -2,78 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A600F392C5B
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 13:09:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 23381392C5C
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 13:10:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233941AbhE0LLG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 May 2021 07:11:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58970 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232891AbhE0LLC (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 May 2021 07:11:02 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B180C061574;
-        Thu, 27 May 2021 04:09:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=mUj/KLzHyimS0VF7iBofriF7+m1srvzXS1fU/QNihxQ=; b=B8YD5YCHcq0Bx75TxQGYDpMAzS
-        3C+eGJoz5WIbX01ckvA77VNx7X4otkyp4JclK9/bdNpSdlmuVB/nYZqXKawBaMrstjlWU2zjtPs7w
-        tk54Ppk62tg45W5fmyGIVtWEvAhvGXHyutCprnj3z0PU0qpM7VeG4PO87YNyDJqbExG62EQkKyg9+
-        vDxj83YC+sT1ETlFF40meNBP4UM0gR2Ypn439WbRz3h/Uie3HjeYTLJW5ze4d0XIOu1+hpZ5/cr0H
-        5Pa1BbU3VbD6JbEBp38kD6fa5N4HhLsqajI0JInFF8+zvSt8rcJDOAYAFakTnObimzmvlRS34Stit
-        toJqirGg==;
-Received: from hch by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
-        id 1lmDt3-005SKS-Ud; Thu, 27 May 2021 11:09:17 +0000
-Date:   Thu, 27 May 2021 12:09:13 +0100
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     Leon Romanovsky <leon@kernel.org>,
-        Doug Ledford <dledford@redhat.com>,
-        Avihai Horon <avihaih@nvidia.com>,
-        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org
-Subject: Re: [PATCH rdma-next v1 2/2] RDMA/mlx5: Allow modifying Relaxed
- Ordering via fast registration
-Message-ID: <YK992cLoTRWG30H9@infradead.org>
-References: <cover.1621505111.git.leonro@nvidia.com>
- <9442b0de75f4ee029e7c306fce34b1f6f94a9e34.1621505111.git.leonro@nvidia.com>
- <20210526194906.GA3646419@nvidia.com>
+        id S233969AbhE0LLc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 May 2021 07:11:32 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41930 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232891AbhE0LLa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 27 May 2021 07:11:30 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5C26C613C3;
+        Thu, 27 May 2021 11:09:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1622113795;
+        bh=S50i7V9zKqp9ykst0hBUpLzOjqYDdl+ARgnpmCYzUKo=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=AzeNixbI+DBhHFQgy4SwLLSanKMFEHVM1BMqaO84c3N7bNXbOGyjVwBxHoH+BuTPq
+         3jqPbuY+EAo13Wg/hwUw8EXMTZ+lDPh6h9zcbnNaXiBhCVndbC698nG6Kd7Uwq/t8d
+         jkPvwBJ6P2ykWeo1hTy9cl/QmN0MHIi+ea4wwwgg=
+Date:   Thu, 27 May 2021 13:09:53 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Swapnil <swocp19@gmail.com>
+Cc:     linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] Fixed kernel code formatting
+Message-ID: <YK9+AXt/XsUh3G1a@kroah.com>
+References: <20210524143741.GA529321@cryptik>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210526194906.GA3646419@nvidia.com>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+In-Reply-To: <20210524143741.GA529321@cryptik>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 26, 2021 at 04:49:06PM -0300, Jason Gunthorpe wrote:
-> Nothing does a FRWR with IB_ACCESS_DISABLE_RELAXED_ORDERING set
+On Mon, May 24, 2021 at 08:07:41PM +0530, Swapnil wrote:
+> Fixed lines ending with '(' by moving an actual function parameter from
+> the next line to the end of the current line.
 > 
-> So why not leave the relaxed ordering bits masked in the UMR for FWRW
-> so that the UMR doesn't change them at all and fail/panic if the
-> caller requests IB_ACCESS_DISABLE_RELAXED_ORDERING ?
+> Signed-off-by: Swapnil <swocp19@gmail.com>
+> ---
+>  drivers/staging/emxx_udc/emxx_udc.c | 11 ++++-------
+>  1 file changed, 4 insertions(+), 7 deletions(-)
+> 
+> diff --git a/drivers/staging/emxx_udc/emxx_udc.c b/drivers/staging/emxx_udc/emxx_udc.c
+> index ecc5c9da9027..b6abd3770e81 100644
+> --- a/drivers/staging/emxx_udc/emxx_udc.c
+> +++ b/drivers/staging/emxx_udc/emxx_udc.c
+> @@ -1073,9 +1073,8 @@ static int _nbu2ss_epn_in_pio(struct nbu2ss_udc *udc, struct nbu2ss_ep *ep,
+>  		i_word_length = length / sizeof(u32);
+>  		if (i_word_length > 0) {
+>  			for (i = 0; i < i_word_length; i++) {
+> -				_nbu2ss_writel(
+> -					&preg->EP_REGS[ep->epnum - 1].EP_WRITE,
+> -					p_buf_32->dw);
+> +				_nbu2ss_writel(&preg->EP_REGS[ep->epnum - 1].EP_WRITE,
+> +					       p_buf_32->dw);
+>  
+>  				p_buf_32++;
+>  			}
+> @@ -1225,8 +1224,7 @@ static void _nbu2ss_restert_transfer(struct nbu2ss_ep *ep)
+>  		return;
+>  
+>  	if (ep->epnum > 0) {
+> -		length = _nbu2ss_readl(
+> -			&ep->udc->p_regs->EP_REGS[ep->epnum - 1].EP_LEN_DCNT);
+> +		length = _nbu2ss_readl(&ep->udc->p_regs->EP_REGS[ep->epnum - 1].EP_LEN_DCNT);
+>  
+>  		length &= EPN_LDATA;
+>  		if (length < ep->ep.maxpacket)
+> @@ -1462,8 +1460,7 @@ static void _nbu2ss_epn_set_stall(struct nbu2ss_udc *udc,
+>  		for (limit_cnt = 0
+>  			; limit_cnt < IN_DATA_EMPTY_COUNT
+>  			; limit_cnt++) {
+> -			regdata = _nbu2ss_readl(
+> -				&preg->EP_REGS[ep->epnum - 1].EP_STATUS);
+> +			regdata = _nbu2ss_readl(&preg->EP_REGS[ep->epnum - 1].EP_STATUS);
+>  
+>  			if ((regdata & EPN_IN_DATA) == 0)
+>  				break;
+> -- 
+> 2.25.1
+> 
+> 
 
-Yeah.  In fact we should check for that in the core, or by going even
-further than my previous proposal and split IB_ACCESS_* even more fine
-grained.
+Hi,
 
-AFAICS we have the following uses cases:
+This is the friendly patch-bot of Greg Kroah-Hartman.  You have sent him
+a patch that has triggered this response.  He used to manually respond
+to these common problems, but in order to save his sanity (he kept
+writing the same thing over and over, yet to different people), I was
+created.  Hopefully you will not take offence and will fix the problem
+in your patch and resubmit it so that it can be accepted into the Linux
+kernel tree.
 
- 1) qp_access_flags as a bitmask of possible operations on the queue pair
-    The way I understood the queue pairs this should really be just bits
-    for remote read, remote write and atomics, but a few places also
-    mess with memory windows and local write, which seems to be some
-    sort of iWarp cludge
- 2) IB_UVERBS_ACCESS_*.  These just get checked using ib_check_mr_access
-    and then passed into ->reg_user_mr, ->rereg_user_mr and
-    ->reg_user_mr_dmabuf
- 3) in-kernel FRWR uses IB_ACCESS_*, but all users seem to hardcode it
-    to IB_ACCESS_LOCAL_WRITE | IB_ACCESS_REMOTE_READ |
-    IB_ACCESS_REMOTE_WRITE anyway
+You are receiving this message because of the following common error(s)
+as indicated below:
 
-In other words:  I wonder if we should just kill off the current from of
-IB_ACCESS_* entirely, as it is a weird mess used in totally different
-ways in different code paths.
+- You did not write a descriptive Subject: for the patch, allowing Greg,
+  and everyone else, to know what this patch is all about.  Please read
+  the section entitled "The canonical patch format" in the kernel file,
+  Documentation/SubmittingPatches for what a proper Subject: line should
+  look like.
+
+- It looks like you did not use your "real" name for the patch on either
+  the Signed-off-by: line, or the From: line (both of which have to
+  match).  Please read the kernel file, Documentation/SubmittingPatches
+  for how to do this correctly.
+
+If you wish to discuss this problem further, or you have questions about
+how to resolve this issue, please feel free to respond to this email and
+Greg will reply once he has dug out from the pending patches received
+from other developers.
+
+thanks,
+
+greg k-h's patch email bot
