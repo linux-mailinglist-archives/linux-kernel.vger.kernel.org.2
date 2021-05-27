@@ -2,140 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 788CD393412
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 18:35:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D0F7B39341B
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 18:37:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236284AbhE0Qgd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 May 2021 12:36:33 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56346 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235001AbhE0Qg1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 May 2021 12:36:27 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 82F8A61077;
-        Thu, 27 May 2021 16:34:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1622133293;
-        bh=IsdX7aBRh7T+5Cs2YQCUr1eculVqE7cgTlmKcUzghtw=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=pW8dEcGvcslftdvA+7SeEV3shWhIBt1vMtAdU2jrFJ0oB5h3Fvh5hmWpF8MoKf70L
-         7xEivnA7j+jZ0t57MfE3t7gn5fRR/95frbZ61OqucjNanqwlFuEU9xh/Ru3gq2PXpp
-         jb6jcIRF325vcvmXuRiawNXjQ8UUqHrNY5cmMC4k8HWEBvN1PsQFCmf8cLkjqRvzJ0
-         bDY5FQQqOJn/te1373BWCf4GrJd29C9XwbGWZ+4JC9K8E+8zcvWkag2ipyw717PfrW
-         6s9nyyZi9JTX09x4j+ngJX1f3aJY/RdG/gre9KEfPDBPHW1LJroW4FzPNLwNYvjpPE
-         IEmcX21+d414A==
-Date:   Thu, 27 May 2021 11:34:52 -0500
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-Cc:     Will Deacon <will@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
-        Maximilian Luz <luzmaximilian@gmail.com>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Len Brown <lenb@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        linux-pci@vger.kernel.org, linux-acpi@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [RFC PATCH] Revert "arm64: PCI: Exclude ACPI "consumer"
- resources from host bridge windows"
-Message-ID: <20210527163452.GA1402454@bjorn-Precision-5520>
+        id S236433AbhE0Qi0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 May 2021 12:38:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49990 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236343AbhE0QiV (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 27 May 2021 12:38:21 -0400
+Received: from mail-yb1-xb31.google.com (mail-yb1-xb31.google.com [IPv6:2607:f8b0:4864:20::b31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 511F6C061574;
+        Thu, 27 May 2021 09:36:48 -0700 (PDT)
+Received: by mail-yb1-xb31.google.com with SMTP id f9so1523222ybo.6;
+        Thu, 27 May 2021 09:36:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=nsrt/UTjaoln5+HvtE7btQi+ehNE1T01zBd6uuErEFI=;
+        b=R1v3QTZdxU9b+dUtRykAGN+UKmo8ptU44HBPkwQzqZhZLrhjC5iduiusBgZuKL/XBh
+         rUx2atp9N4Bd49AB2I/ifRGbjiIvggYa2SvoZ3lYOoV5lHVB55KJjBKf4GhExu1UyvBh
+         tJJ0XQehWHY5s9AFzmbWcWwSAUt+OXbjKS3qjoLBaLZxoysm8GSTN1NQFesL9Rq2dpiX
+         Q7X4EleoiI0cvsYP/lTVYsraKOpx8jKTdmbXlJhSceBrvNlaQoQ7mBThId/eYSwwyEjt
+         CbCWLAn2Fz5fIbd5W7KNkc7rN21d4jEnts5/bx8lKAy9sj5Rr2MxDY885hKEAoUIPSFB
+         NgaQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=nsrt/UTjaoln5+HvtE7btQi+ehNE1T01zBd6uuErEFI=;
+        b=Y66h19BGmQAoSeJZ/8XFTcDXvKBRPVpZOK7QZJNSchNu5Y7KQQdi/0nhMEKqyeie3V
+         4AbiIdd8VP+ahgp/zv1F0dBnOrPGnHyVa3qQDgXoY6iyjhSjqeqLQfSDeFLP8e4msMRC
+         tRnIHZSxOsIBJ/2EdSW0EM+fMwUdRy1L14EW/BUPN7NejmhpGa3Ulal5A111OIUtVnts
+         w/aUKJY1OOxLqCRCs8sTSCsIq9NdAdvkS3FC5NrAvllThCV0rXNmFcQAi9OOcR7CQY7F
+         jChur69PaVVJqTXiBToTSBds02QfvEuT2SbiQQJ3VcImbi4CazVK5/ZMQqSmJT7ezu+r
+         XLMw==
+X-Gm-Message-State: AOAM532mvIT8D8VxI1vb0Z7IVh8HOrcQd2AFmJ/COpGltv4vOKN664VK
+        mWsf00QwvDfxyrbrMWAPAE1k6KCnoUcm5WHxryYXq2ozaklkBg==
+X-Google-Smtp-Source: ABdhPJxfr4CZtOLabl+iIX/7fflp4ualxRtJaQPqcCxq25fqVm9SIPOK41eFRCxO4AaKrm5M9e/K2Xri5oiDFaZczvQ=
+X-Received: by 2002:a5b:f05:: with SMTP id x5mr5917611ybr.425.1622133407477;
+ Thu, 27 May 2021 09:36:47 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210527093200.GA16444@lpieralisi>
+References: <20210527120251.GC30378@techsingularity.net> <CAEf4BzartMG36AGs-7LkQdpgrB6TYyTJ8PQhjkQWiTN=7sO1Bw@mail.gmail.com>
+ <20210527145441.GE30378@techsingularity.net>
+In-Reply-To: <20210527145441.GE30378@techsingularity.net>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Thu, 27 May 2021 09:36:35 -0700
+Message-ID: <CAEf4BzbW2i4Y-i3TXW7x42PqEpw5_nNeReSXS77m4GC3uqD3wg@mail.gmail.com>
+Subject: Re: [PATCH v2] mm/page_alloc: Work around a pahole limitation with
+ zero-sized struct pagesets
+To:     Mel Gorman <mgorman@techsingularity.net>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Christoph Hellwig <hch@infradead.org>,
+        Arnaldo Carvalho de Melo <acme@redhat.com>,
+        Michal Suchanek <msuchanek@suse.de>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Hritik Vijay <hritikxx8@gmail.com>,
+        Linux-BPF <bpf@vger.kernel.org>,
+        Linux-Net <netdev@vger.kernel.org>, Linux-MM <linux-mm@kvack.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 27, 2021 at 10:32:00AM +0100, Lorenzo Pieralisi wrote:
-> On Wed, May 26, 2021 at 09:58:36PM +0100, Will Deacon wrote:
-> > On Tue, May 11, 2021 at 01:40:20AM +0200, Maximilian Luz wrote:
-> > > The Microsoft Surface Pro X has host bridges defined as
-> > > 
-> > >     Name (_HID, EisaId ("PNP0A08") /* PCI Express Bus */)  // _HID: Hardware ID
-> > >     Name (_CID, EisaId ("PNP0A03") /* PCI Bus */)  // _CID: Compatible ID
-> > > 
-> > >     Method (_CRS, 0, NotSerialized)  // _CRS: Current Resource Settings
-> > >     {
-> > >         Name (RBUF, ResourceTemplate ()
-> > >         {
-> > >             Memory32Fixed (ReadWrite,
-> > >                 0x60200000,         // Address Base
-> > >                 0x01DF0000,         // Address Length
-> > >                 )
-> > >             WordBusNumber (ResourceProducer, MinFixed, MaxFixed, PosDecode,
-> > >                 0x0000,             // Granularity
-> > >                 0x0000,             // Range Minimum
-> > >                 0x0001,             // Range Maximum
-> > >                 0x0000,             // Translation Offset
-> > >                 0x0002,             // Length
-> > >                 ,, )
-> > >         })
-> > >         Return (RBUF) /* \_SB_.PCI0._CRS.RBUF */
-> > >     }
-> > > 
-> > > meaning that the memory resources aren't (explicitly) defined as
-> > > "producers", i.e. host bridge windows.
-> > > 
-> > > Commit 8fd4391ee717 ("arm64: PCI: Exclude ACPI "consumer" resources from
-> > > host bridge windows") introduced a check that removes such resources,
-> > > causing BAR allocation failures later on:
-> > > 
-> > >     [ 0.150731] pci 0002:00:00.0: BAR 14: no space for [mem size 0x00100000]
-> > >     [ 0.150744] pci 0002:00:00.0: BAR 14: failed to assign [mem size 0x00100000]
-> > >     [ 0.150758] pci 0002:01:00.0: BAR 0: no space for [mem size 0x00004000 64bit]
-> > >     [ 0.150769] pci 0002:01:00.0: BAR 0: failed to assign [mem size 0x00004000 64bit]
-> > > 
-> > > This eventually prevents the PCIe NVME drive from being accessible.
-> > > 
-> > > On x86 we already skip the check for producer/window due to some history
-> > > with negligent firmware. It seems that Microsoft is intent on continuing
-> > > that history on their ARM devices, so let's drop that check here too.
-> > > 
-> > > Signed-off-by: Maximilian Luz <luzmaximilian@gmail.com>
-> > > ---
-> > > 
-> > > Please note: I am not sure if this is the right way to fix that, e.g. I
-> > > don't know if any additional checks like on IA64 or x86 might be
-> > > required instead, or if this might break things on other devices. So
-> > > please consider this more as a bug report rather than a fix.
-> > > 
-> > > Apologies for the re-send, I seem to have unintentionally added a blank
-> > > line before the subject.
-> > > 
-> > > ---
-> > >  arch/arm64/kernel/pci.c | 14 --------------
-> > >  1 file changed, 14 deletions(-)
-> > 
-> > Adding Lorenzo to cc, as he'll have a much better idea about this than me.
-> > 
-> > This is:
-> > 
-> > https://lore.kernel.org/r/20210510234020.1330087-1-luzmaximilian@gmail.com
-> 
-> Sigh. We can't apply this patch since it would trigger regressions on
-> other platforms (IIUC the root complex registers would end up in the
-> host bridge memory windows).
-> 
-> I am not keen on reverting commit 8fd4391ee717 because it does the
-> right thing.
-> 
-> I think this requires a quirk and immediate reporting to Microsoft.
-> 
-> Bjorn, what are your thoughts on this ?
+On Thu, May 27, 2021 at 7:54 AM Mel Gorman <mgorman@techsingularity.net> wrote:
+>
+> On Thu, May 27, 2021 at 07:37:05AM -0700, Andrii Nakryiko wrote:
+> > > This patch checks for older versions of pahole and only allows
+> > > DEBUG_INFO_BTF_MODULES if pahole supports zero-sized per-cpu structures.
+> > > DEBUG_INFO_BTF is still allowed as a KVM boot test passed with pahole
+> >
+> > Unfortunately this won't work. The problem is that vmlinux BTF is
+> > corrupted, which results in module BTFs to be rejected as well, as
+> > they depend on it.
+> >
+> > But vmlinux BTF corruption makes BPF subsystem completely unusable. So
+> > even though kernel boots, nothing BPF-related works. So we'd need to
+> > add dependency for DEBUG_INFO_BTF on pahole 1.22+.
+> >
+>
+> While bpf usage would be broken, the kernel will boot and the effect
+> should be transparent to any kernel build based on "make oldconfig".
 
-In retrospect, I think 8fd4391ee717 (which I wrote), was probably a
-mistake.
+I think if DEBUG_INFO_BTF=y has no chance of generating valid vmlinux
+BTF it has to be forced out. So if we are doing this at all, we should
+do it for CONFIG_DEBUG_INFO_BTF, not CONFIG_DEBUG_INFO_BTF_MODULES.
+CONFIG_DEBUG_INFO_BTF_MODULES will follow automatically.
 
-Sure, it's a nice idea to have PNP0A03 _CRS methods that work nicely
-as designed, by describing host bridge registers as "consumer"
-resources and host bridge windows as "producer" registers, instead of
-having the bridge registers in _CRS of an unrelated PNP0C02 device.
+> CONFIG_DEBUG_INFO_BTF defaults N so if that is forced out, it will be
+> easily missed by a distribution kernel maintainer.
 
-But realistically, the PNP0A03/PNP0C02 issue is a solved problem, even
-though it's ugly, and I'm not sure why I thought Microsoft would see
-value in doing this differently on arm64 than on x86 and ia64.
+We actually had previous discussions on forcing build failure in cases
+when CONFIG_DEBUG_INFO_BTF=y can't be satisfied, but no one followed
+up. I'll look into this and will try to change the behavior. It's
+caused too much confusion previously and now with changes like this we
+are going to waste even more people's time.
 
-What would break if we reverted 8fd4391ee717?  I guess any arm64
-platforms that described host bridge register space in PNP0A03 _CRS
-"consumer" resources?  And Windows probably doesn't work or isn't
-supported on those platforms?
-
-Bjorn
+>
+> Yes, users of BPF will be affected and it may generate bug reports but
+> the fix will be to build with a working pahole. Breaking boot on the other
+> hand is a lot more visible and hacking around this with a non-zero struct
+> size has been shot down.
+>
+> --
+> Mel Gorman
+> SUSE Labs
