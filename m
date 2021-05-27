@@ -2,136 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9167C392AB3
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 11:26:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 69ADD392AB6
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 11:26:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235832AbhE0J1r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 May 2021 05:27:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35344 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235649AbhE0J1p (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 May 2021 05:27:45 -0400
-Received: from mail-ed1-x549.google.com (mail-ed1-x549.google.com [IPv6:2a00:1450:4864:20::549])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EFA0DC061760
-        for <linux-kernel@vger.kernel.org>; Thu, 27 May 2021 02:26:12 -0700 (PDT)
-Received: by mail-ed1-x549.google.com with SMTP id da10-20020a056402176ab029038f0fea1f51so1084edb.13
-        for <linux-kernel@vger.kernel.org>; Thu, 27 May 2021 02:26:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:message-id:mime-version:subject:from:to:cc;
-        bh=tpMhr1a1ucqmSn8aEv/I+3Jaj5nsK3OJYJ5e/mt9yGY=;
-        b=Q/vJeL9sXW+UWiU6U9hHz5sKys3i1VhTtuYfdmDOH6LWAJv59c7xS+WCzSmCqg2YYY
-         oWgTSehjunfrSUIU9EvVXy+QBtMvEcc54tDlaraHYWHHR+Ub0ShwT0O+odW2IfZFZH+X
-         LsaLOuJk+QZtLb07YaaF+ZpjF1d9LWfPowMGmtkeUXB+BwxP9oxHvBU7DyANkveEESI9
-         xEYfQFccuWJOV3H/lLV33lDC/8VOP9eON2h8UK+IWLIPgIh/1O3QSpmNGGwF9LfW2rNo
-         FLvtC/+C6Ks0XV5ljtiUfzZaPd5jgzusKowd/LtQU5mxdEdSBbshbyxdmiQSJcZxJGfQ
-         GOAQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
-        bh=tpMhr1a1ucqmSn8aEv/I+3Jaj5nsK3OJYJ5e/mt9yGY=;
-        b=K9aRfIwkACwZ4THds74e9zZBVj1xZZsAlllUsA7mKUFPNPxAESdFuroYX1MONcVOH2
-         hDTPbfozxddFLx7/PQcFVN01XBk7wwjnFEEZsP9FI8FzbgroqTzbJBEbi/P/+0FrKLhP
-         NJjJQEudeGaPGOPkjPo6clagDSNMVsaCBjrPJ+2OJ972tYiPryDYLkU98AZ9OmXAtlf3
-         +4zF6iujMhhna6IwxFAbCNZ2KtSvoc7++2UG7i0hWHCKDev+vwMpxOhyhUBYC+WiKVud
-         O0xwtIU9rsxX5fPfDDkJj37ngVF+a9nkUSHA3l6fevZRRxOABKj3mlG0S0xkit7LSSTq
-         xMLA==
-X-Gm-Message-State: AOAM531WKWSJd1MKKZKVkwH4lKp47wnbw4MqItyKVMuF1uaTrtXpfa5q
-        hXn6HiLvc8TX9/bKWBMheLwtUIFJ5A==
-X-Google-Smtp-Source: ABdhPJwS22Uj3FevXMnn8SahWbj0DRGcRuuq40bhjwiCfiDB3avakTHDTJL97/K5kl0wbB02hTCVF50nhg==
-X-Received: from elver.muc.corp.google.com ([2a00:79e0:15:13:74ba:ff42:8494:7f35])
- (user=elver job=sendgmr) by 2002:a05:6402:1c97:: with SMTP id
- cy23mr3063078edb.213.1622107570950; Thu, 27 May 2021 02:26:10 -0700 (PDT)
-Date:   Thu, 27 May 2021 11:25:48 +0200
-Message-Id: <20210527092547.2656514-1-elver@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.31.1.818.g46aad6cb9e-goog
-Subject: [PATCH] io_uring: fix data race to avoid potential NULL-deref
-From:   Marco Elver <elver@google.com>
-To:     elver@google.com, axboe@kernel.dk, asml.silence@gmail.com,
-        io-uring@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     kasan-dev@googlegroups.com, dvyukov@google.com,
-        syzbot+bf2b3d0435b9b728946c@syzkaller.appspotmail.com
-Content-Type: text/plain; charset="UTF-8"
+        id S235843AbhE0J2T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 May 2021 05:28:19 -0400
+Received: from mail.ispras.ru ([83.149.199.84]:57810 "EHLO mail.ispras.ru"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235777AbhE0J2P (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 27 May 2021 05:28:15 -0400
+Received: from hellwig.intra.ispras.ru (unknown [10.10.2.182])
+        by mail.ispras.ru (Postfix) with ESMTPS id BC19040D3BFF;
+        Thu, 27 May 2021 09:26:39 +0000 (UTC)
+From:   Evgeny Novikov <novikov@ispras.ru>
+To:     "Daniel W. S. Almeida" <dwlsalmeida@gmail.com>
+Cc:     Evgeny Novikov <novikov@ispras.ru>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        ldv-project@linuxtesting.org
+Subject: [PATCH] media: vidtv: Fix memory leak in remove
+Date:   Thu, 27 May 2021 12:26:24 +0300
+Message-Id: <20210527092624.29352-1-novikov@ispras.ru>
+X-Mailer: git-send-email 2.26.2
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Commit ba5ef6dc8a82 ("io_uring: fortify tctx/io_wq cleanup") introduced
-setting tctx->io_wq to NULL a bit earlier. This has caused KCSAN to
-detect a data race between accesses to tctx->io_wq:
+vidtv_bridge_remove() releases and cleans up everything except for dvb
+itself. The patch adds this missed release.
 
-  write to 0xffff88811d8df330 of 8 bytes by task 3709 on cpu 1:
-   io_uring_clean_tctx                  fs/io_uring.c:9042 [inline]
-   __io_uring_cancel                    fs/io_uring.c:9136
-   io_uring_files_cancel                include/linux/io_uring.h:16 [inline]
-   do_exit                              kernel/exit.c:781
-   do_group_exit                        kernel/exit.c:923
-   get_signal                           kernel/signal.c:2835
-   arch_do_signal_or_restart            arch/x86/kernel/signal.c:789
-   handle_signal_work                   kernel/entry/common.c:147 [inline]
-   exit_to_user_mode_loop               kernel/entry/common.c:171 [inline]
-   ...
-  read to 0xffff88811d8df330 of 8 bytes by task 6412 on cpu 0:
-   io_uring_try_cancel_iowq             fs/io_uring.c:8911 [inline]
-   io_uring_try_cancel_requests         fs/io_uring.c:8933
-   io_ring_exit_work                    fs/io_uring.c:8736
-   process_one_work                     kernel/workqueue.c:2276
-   ...
+Found by Linux Driver Verification project (linuxtesting.org).
 
-With the config used, KCSAN only reports data races with value changes:
-this implies that in the case here we also know that tctx->io_wq was
-non-NULL. Therefore, depending on interleaving, we may end up with:
-
-              [CPU 0]                 |        [CPU 1]
-  io_uring_try_cancel_iowq()          | io_uring_clean_tctx()
-    if (!tctx->io_wq) // false        |   ...
-    ...                               |   tctx->io_wq = NULL
-    io_wq_cancel_cb(tctx->io_wq, ...) |   ...
-      -> NULL-deref                   |
-
-Note: It is likely that thus far we've gotten lucky and the compiler
-optimizes the double-read into a single read into a register -- but this
-is never guaranteed, and can easily change with a different config!
-
-Fix the data race by restoring the previous behaviour, where both
-setting io_wq to NULL and put of the wq are _serialized_ after
-concurrent io_uring_try_cancel_iowq() via acquisition of the uring_lock
-and removal of the node in io_uring_del_task_file().
-
-Fixes: ba5ef6dc8a82 ("io_uring: fortify tctx/io_wq cleanup")
-Suggested-by: Pavel Begunkov <asml.silence@gmail.com>
-Reported-by: syzbot+bf2b3d0435b9b728946c@syzkaller.appspotmail.com
-Signed-off-by: Marco Elver <elver@google.com>
-Cc: Jens Axboe <axboe@kernel.dk>
+Signed-off-by: Evgeny Novikov <novikov@ispras.ru>
 ---
- fs/io_uring.c | 9 +++++++--
- 1 file changed, 7 insertions(+), 2 deletions(-)
+ drivers/media/test-drivers/vidtv/vidtv_bridge.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/fs/io_uring.c b/fs/io_uring.c
-index 5f82954004f6..08830b954fbf 100644
---- a/fs/io_uring.c
-+++ b/fs/io_uring.c
-@@ -9039,11 +9039,16 @@ static void io_uring_clean_tctx(struct io_uring_task *tctx)
- 	struct io_tctx_node *node;
- 	unsigned long index;
+diff --git a/drivers/media/test-drivers/vidtv/vidtv_bridge.c b/drivers/media/test-drivers/vidtv/vidtv_bridge.c
+index 75617709c8ce..0f6d998d18dc 100644
+--- a/drivers/media/test-drivers/vidtv/vidtv_bridge.c
++++ b/drivers/media/test-drivers/vidtv/vidtv_bridge.c
+@@ -557,6 +557,7 @@ static int vidtv_bridge_remove(struct platform_device *pdev)
+ 	dvb_dmxdev_release(&dvb->dmx_dev);
+ 	dvb_dmx_release(&dvb->demux);
+ 	dvb_unregister_adapter(&dvb->adapter);
++	kfree(dvb);
+ 	dev_info(&pdev->dev, "Successfully removed vidtv\n");
  
--	tctx->io_wq = NULL;
- 	xa_for_each(&tctx->xa, index, node)
- 		io_uring_del_task_file(index);
--	if (wq)
-+	if (wq) {
-+		/*
-+		 * Must be after io_uring_del_task_file() (removes nodes under
-+		 * uring_lock) to avoid race with io_uring_try_cancel_iowq().
-+		 */
-+		tctx->io_wq = NULL;
- 		io_wq_put_and_exit(wq);
-+	}
- }
- 
- static s64 tctx_inflight(struct io_uring_task *tctx, bool tracked)
+ 	return 0;
 -- 
-2.31.1.818.g46aad6cb9e-goog
+2.26.2
 
