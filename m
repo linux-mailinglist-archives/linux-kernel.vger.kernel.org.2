@@ -2,77 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0BA00392BAF
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 12:22:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4362D392BB5
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 12:24:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236170AbhE0KYS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 May 2021 06:24:18 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51222 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236149AbhE0KYN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 May 2021 06:24:13 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 656E6613B4;
-        Thu, 27 May 2021 10:22:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1622110960;
-        bh=fu41OOBwvVAsIvlj0TmcDCa0Ztt6umjGSj3AvUXq19E=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=dtZyddnBMfnZCBlVVCOlltjIv5psuHEuCiNxrNGPtooBYB8VyQjDtydDxwa5KhXql
-         CodqGRLbyM8W4QYHEjK49DwTVj5tI9I+baRDPUuaE/tYYAtduoP9zRHE20MLgS68FI
-         GEQrgK7fKKA0yMSVT0GKZ/kfXa9AHzFonk/wgsWo=
-Date:   Thu, 27 May 2021 12:22:37 +0200
-From:   "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>
-To:     "Rantala, Tommi T. (Nokia - FI/Espoo)" <tommi.t.rantala@nokia.com>
-Cc:     "stable@vger.kernel.org" <stable@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "jan.kratochvil@redhat.com" <jan.kratochvil@redhat.com>
-Subject: Re: LTS perf unwind fix
-Message-ID: <YK9y7dd+wsp2OLD/@kroah.com>
-References: <682895f7a145df0a20814001c508688113322854.camel@nokia.com>
- <YKz2RIcTyD/FCF+a@kroah.com>
- <45b140543ccb85ab184ed17befca4a9e64661051.camel@nokia.com>
- <YK9jhtj/hwTKU5+N@kroah.com>
- <ef44cde0f3493eb9ab2efe951bc03e4e6ccc416b.camel@nokia.com>
+        id S236106AbhE0K0N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 May 2021 06:26:13 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:51475 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235950AbhE0K0M (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 27 May 2021 06:26:12 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1622111079;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=zD053S+JtGOJd2KF0odlaJPL/U3ZxA8pIk2xD19hKgI=;
+        b=VKNWV6paScZrOr3o0BeE1cEc8WKw/LgdspRofgBtT6kEyuxERsDo1aXfiljDkQCIvMop3r
+        g8zXC240/1eUXj9Tglt2ot1qTz9NJ+zzsV5/Cgn2zQFbZ+2nLFcOicF9nRVxdUE+PTEczq
+        5lssmR9IpU7sOqGDElCFSxFFahmy/h8=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-224-7Fsq34D_OZG0-EbwWi7VfQ-1; Thu, 27 May 2021 06:24:36 -0400
+X-MC-Unique: 7Fsq34D_OZG0-EbwWi7VfQ-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id EEB136D4F0;
+        Thu, 27 May 2021 10:24:34 +0000 (UTC)
+Received: from warthog.procyon.org.uk (ovpn-112-24.rdu2.redhat.com [10.10.112.24])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id E2D425D6D3;
+        Thu, 27 May 2021 10:24:33 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+        Kingdom.
+        Registered in England and Wales under Company Registration No. 3798903
+Subject: [PATCH] afs: Fix the nlink handling of dir-over-dir rename
+From:   David Howells <dhowells@redhat.com>
+To:     torvalds@linux-foundation.org
+Cc:     Marc Dionne <marc.dionne@auristor.com>,
+        linux-afs@lists.infradead.org, dhowells@redhat.com,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+Date:   Thu, 27 May 2021 11:24:33 +0100
+Message-ID: <162211107302.582915.15087790435117657722.stgit@warthog.procyon.org.uk>
+User-Agent: StGit/0.23
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ef44cde0f3493eb9ab2efe951bc03e4e6ccc416b.camel@nokia.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 27, 2021 at 10:04:51AM +0000, Rantala, Tommi T. (Nokia - FI/Espoo) wrote:
-> Hi Greg,
-> 
-> Please apply these two commits to 5.4.y
-> (other LTSes are probably fine too, but I didn't test):
-> 
-> 
-> commit bf53fc6b5f415cddc7118091cb8fd6a211b2320d
-> Author: Jan Kratochvil <jan.kratochvil@redhat.com>
-> Date:   Fri Dec 4 09:17:02 2020 -0300
-> 
->     perf unwind: Fix separate debug info files when using elfutils'
-> libdw's unwinder
-> 
-> 
-> commit 4e1481445407b86a483616c4542ffdc810efb680
-> Author: Dave Rigby <d.rigby@me.com>
-> Date:   Thu Feb 18 16:56:54 2021 +0000
-> 
->     perf unwind: Set userdata for all __report_module() paths
-> 
->     [...]
-> 
->     Fixes: bf53fc6b5f41 ("perf unwind: Fix separate debug info files
-> when using elfutils' libdw's unwinder")
-> 
-> 
-> These commits fix some broken backtraces when using the perf tool.
+Fix rename of one directory over another such that the nlink on the deleted
+directory is cleared to 0 rather than being decremented to 1.
 
-Also queued up for the 5.10.y tree as you do not want to move to a newer
-kernel and have a regression.
+This was causing the generic/035 xfstest to fail.
 
-thanks,
+Fixes: e49c7b2f6de7 ("afs: Build an abstraction around an "operation" concept")
+Signed-off-by: David Howells <dhowells@redhat.com>
+Reviewed-by: Marc Dionne <marc.dionne@auristor.com>
+cc: linux-afs@lists.infradead.org
+Link: https://lore.kernel.org/r/162194384460.3999479.7605572278074191079.stgit@warthog.procyon.org.uk/ # v1
+---
 
-greg k-h
+ fs/afs/dir.c |    4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
+
+diff --git a/fs/afs/dir.c b/fs/afs/dir.c
+index 9fbe5a5ec9bd..78719f2f567e 100644
+--- a/fs/afs/dir.c
++++ b/fs/afs/dir.c
+@@ -1919,7 +1919,9 @@ static void afs_rename_edit_dir(struct afs_operation *op)
+ 	new_inode = d_inode(new_dentry);
+ 	if (new_inode) {
+ 		spin_lock(&new_inode->i_lock);
+-		if (new_inode->i_nlink > 0)
++		if (S_ISDIR(new_inode->i_mode))
++			clear_nlink(new_inode);
++		else if (new_inode->i_nlink > 0)
+ 			drop_nlink(new_inode);
+ 		spin_unlock(&new_inode->i_lock);
+ 	}
+
+
