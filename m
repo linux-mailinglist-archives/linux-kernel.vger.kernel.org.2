@@ -2,43 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E26DA3936C9
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 22:01:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0960B3936C5
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 22:01:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235818AbhE0UDB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 May 2021 16:03:01 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:25447 "EHLO
+        id S235525AbhE0UCx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 May 2021 16:02:53 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:51596 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235783AbhE0UDA (ORCPT
+        by vger.kernel.org with ESMTP id S235034AbhE0UCr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 May 2021 16:03:00 -0400
+        Thu, 27 May 2021 16:02:47 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1622145686;
+        s=mimecast20190719; t=1622145673;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=VPf97PB5Jd4U3KAa9l79Ys8IXNWTpjSo3ttws8hPSUs=;
-        b=TGlEgk3vvNcpogQw7HAMtx/WWohaHd00iofeSXTy+8eZSiZit1WKRd3BjU+8hLU/PuGhNw
-        4bazOYUKX/9l3OwqdLntk9IUCuV9Xv8rGCQrVZF3EBFJQxesTY73DPoa8Fq0zoNmdsNNni
-        TniiXCotwO21Z9ZZfo/s/K9JGIxk7c8=
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=V7kmrEOi3vKiBTLRRc2qjUiUKBH4FrNwPa4IMjt29q4=;
+        b=E0swhZm8/bZX98U8ccGcHQaFRZ5ZIWYNZBKW+lRr10RxdovKYQMWkE9tj+iEB5A5Ecwowc
+        /l0Z+ZIDoUR1dgnVT/A0Z+OsqeOiqu+h/3f86XsH60xlnmVtuKqOW0GFO/8WiTNX4LDzgE
+        2XGgMVZRM/tiYMyQI4vRy/9CaIKTUcg=
 Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
  [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-3-0iSS90zyP26SGmlAQ1NCnw-1; Thu, 27 May 2021 16:01:09 -0400
-X-MC-Unique: 0iSS90zyP26SGmlAQ1NCnw-1
+ us-mta-536-brqSNILNMhOz_ShKSs6k9g-1; Thu, 27 May 2021 16:01:11 -0400
+X-MC-Unique: brqSNILNMhOz_ShKSs6k9g-1
 Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 1814419251A4
-        for <linux-kernel@vger.kernel.org>; Thu, 27 May 2021 20:01:08 +0000 (UTC)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id C9D42803621;
+        Thu, 27 May 2021 20:01:09 +0000 (UTC)
 Received: from f33vm.wilsonet.com (dhcp-17-185.bos.redhat.com [10.18.17.185])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 806A45C290;
-        Thu, 27 May 2021 20:01:04 +0000 (UTC)
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 49C475C290;
+        Thu, 27 May 2021 20:01:08 +0000 (UTC)
 From:   Jarod Wilson <jarod@redhat.com>
 To:     linux-kernel@vger.kernel.org
-Cc:     Jarod Wilson <jarod@redhat.com>
-Subject: [PATCH net-next v3 0/2] bonding/balance-alb: support VMs behind bridges better
-Date:   Thu, 27 May 2021 16:00:49 -0400
-Message-Id: <20210527200051.1871092-1-jarod@redhat.com>
+Cc:     Jarod Wilson <jarod@redhat.com>,
+        Jay Vosburgh <j.vosburgh@gmail.com>,
+        Veaceslav Falico <vfalico@gmail.com>,
+        Andy Gospodarek <andy@greyhouse.net>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Thomas Davis <tadavis@lbl.gov>,
+        Nikolay Aleksandrov <nikolay@nvidia.com>,
+        netdev@vger.kernel.org
+Subject: [PATCH net-next v3 1/2] bonding: add pure source-mac-based tx hashing option
+Date:   Thu, 27 May 2021 16:00:50 -0400
+Message-Id: <20210527200051.1871092-2-jarod@redhat.com>
+In-Reply-To: <20210527200051.1871092-1-jarod@redhat.com>
+References: <20210527200051.1871092-1-jarod@redhat.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
@@ -46,31 +57,111 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-I've been further educated on a use case, where a bridge sits on top of
-a bond, with multiple vnetX interfaces attached to virtual machines,
-also acting as ports of the bridge. Each leg of the bond goes to a
-different switch, but there is NO mlag/vpc in play, the bonding driver
-has to handle traffic that loops back appropriately to avoid breaking
-transmission. Rather than adding some sort of mac filtering to
-balance-xor mode, we switched to using balance-alb, which already does
-some of this, and with the tweaks provided in this series, empirically
-seems to behave as desired in actual operation.
+As it turns out, a pure source-mac only tx hash has a place for some VM
+setups. The previously added vlan+srcmac hash doesn't work as well for a
+VM with a single MAC and multiple vlans -- these types of setups path
+traffic more efficiently if the load is split by source mac alone. Enable
+this by way of an extra module parameter, rather than adding yet another
+hashing method in the tx fast path.
 
-v2 attempts to support srcmac-only hashing via a modparam instead of by
-adding yet another hashing mode, as well as cleaning up and clarifying
-commit messages.
-
-v3 omits two patches from the series that prove unnecessary when all
-slaves get promiscuity propagated to them.
-
-Jarod Wilson (2):
-  bonding: add pure source-mac-based tx hashing option
-  bonding/balance-alb: put all slaves into promisc
-
+Cc: Jay Vosburgh <j.vosburgh@gmail.com>
+Cc: Veaceslav Falico <vfalico@gmail.com>
+Cc: Andy Gospodarek <andy@greyhouse.net>
+Cc: "David S. Miller" <davem@davemloft.net>
+Cc: Jakub Kicinski <kuba@kernel.org>
+Cc: Thomas Davis <tadavis@lbl.gov>
+Cc: Nikolay Aleksandrov <nikolay@nvidia.com>
+Cc: netdev@vger.kernel.org
+Signed-off-by: Jarod Wilson <jarod@redhat.com>
+---
  Documentation/networking/bonding.rst | 13 +++++++++++++
- drivers/net/bonding/bond_main.c      | 23 +++++++++++++++--------
- 2 files changed, 28 insertions(+), 8 deletions(-)
+ drivers/net/bonding/bond_main.c      | 18 ++++++++++++------
+ 2 files changed, 25 insertions(+), 6 deletions(-)
 
+diff --git a/Documentation/networking/bonding.rst b/Documentation/networking/bonding.rst
+index 62f2aab8eaec..767dbb49018b 100644
+--- a/Documentation/networking/bonding.rst
++++ b/Documentation/networking/bonding.rst
+@@ -707,6 +707,13 @@ mode
+ 		swapped with the new curr_active_slave that was
+ 		chosen.
+ 
++novlan_srcmac
++
++	When using the vlan+srcmac xmit_hash_policy, there may be cases where
++	omitting the vlan from the hash is beneficial. This can be done with
++	an extra module parameter here. The default value is 0 to include
++	vlan ID in the transmit hash.
++
+ num_grat_arp,
+ num_unsol_na
+ 
+@@ -964,6 +971,12 @@ xmit_hash_policy
+ 
+ 		hash = (vlan ID) XOR (source MAC vendor) XOR (source MAC dev)
+ 
++		Optionally, if the module parameter novlan_srcmac=1 is set,
++		the vlan ID is omitted from the hash and only the source MAC
++		address is used, reducing the hash to
++
++		hash = (source MAC vendor) XOR (source MAC dev)
++
+ 	The default value is layer2.  This option was added in bonding
+ 	version 2.6.3.  In earlier versions of bonding, this parameter
+ 	does not exist, and the layer2 policy is the only policy.  The
+diff --git a/drivers/net/bonding/bond_main.c b/drivers/net/bonding/bond_main.c
+index 7e469c203ca5..666051f91d70 100644
+--- a/drivers/net/bonding/bond_main.c
++++ b/drivers/net/bonding/bond_main.c
+@@ -107,6 +107,7 @@ static char *lacp_rate;
+ static int min_links;
+ static char *ad_select;
+ static char *xmit_hash_policy;
++static int novlan_srcmac;
+ static int arp_interval;
+ static char *arp_ip_target[BOND_MAX_ARP_TARGETS];
+ static char *arp_validate;
+@@ -168,6 +169,9 @@ MODULE_PARM_DESC(xmit_hash_policy, "balance-alb, balance-tlb, balance-xor, 802.3
+ 				   "0 for layer 2 (default), 1 for layer 3+4, "
+ 				   "2 for layer 2+3, 3 for encap layer 2+3, "
+ 				   "4 for encap layer 3+4, 5 for vlan+srcmac");
++module_param(novlan_srcmac, int, 0);
++MODULE_PARM_DESC(novlan_srcmac, "include vlan ID in vlan+srcmac xmit_hash_policy or not; "
++			      "0 to include it (default), 1 to exclude it");
+ module_param(arp_interval, int, 0);
+ MODULE_PARM_DESC(arp_interval, "arp interval in milliseconds");
+ module_param_array(arp_ip_target, charp, NULL, 0);
+@@ -3523,9 +3527,9 @@ static bool bond_flow_ip(struct sk_buff *skb, struct flow_keys *fk,
+ 
+ static u32 bond_vlan_srcmac_hash(struct sk_buff *skb)
+ {
+-	struct ethhdr *mac_hdr = (struct ethhdr *)skb_mac_header(skb);
++	struct ethhdr *mac_hdr = eth_hdr(skb);
+ 	u32 srcmac_vendor = 0, srcmac_dev = 0;
+-	u16 vlan;
++	u32 hash;
+ 	int i;
+ 
+ 	for (i = 0; i < 3; i++)
+@@ -3534,12 +3538,14 @@ static u32 bond_vlan_srcmac_hash(struct sk_buff *skb)
+ 	for (i = 3; i < ETH_ALEN; i++)
+ 		srcmac_dev = (srcmac_dev << 8) | mac_hdr->h_source[i];
+ 
+-	if (!skb_vlan_tag_present(skb))
+-		return srcmac_vendor ^ srcmac_dev;
++	hash = srcmac_vendor ^ srcmac_dev;
++
++	if (novlan_srcmac || !skb_vlan_tag_present(skb))
++		return hash;
+ 
+-	vlan = skb_vlan_tag_get(skb);
++	hash ^= skb_vlan_tag_get(skb);
+ 
+-	return vlan ^ srcmac_vendor ^ srcmac_dev;
++	return hash;
+ }
+ 
+ /* Extract the appropriate headers based on bond's xmit policy */
 -- 
 2.30.2
 
