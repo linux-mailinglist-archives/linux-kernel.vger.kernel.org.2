@@ -2,81 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2BE82393575
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 20:32:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 64B82393581
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 20:38:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235774AbhE0SeF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 May 2021 14:34:05 -0400
-Received: from mail-oi1-f180.google.com ([209.85.167.180]:39643 "EHLO
-        mail-oi1-f180.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234155AbhE0SeC (ORCPT
+        id S235820AbhE0SjX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 May 2021 14:39:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48712 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232565AbhE0SjW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 May 2021 14:34:02 -0400
-Received: by mail-oi1-f180.google.com with SMTP id y76so1699924oia.6;
-        Thu, 27 May 2021 11:32:28 -0700 (PDT)
+        Thu, 27 May 2021 14:39:22 -0400
+Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97728C061574
+        for <linux-kernel@vger.kernel.org>; Thu, 27 May 2021 11:37:49 -0700 (PDT)
+Received: by mail-pj1-x1029.google.com with SMTP id g6-20020a17090adac6b029015d1a9a6f1aso5869847pjx.1
+        for <linux-kernel@vger.kernel.org>; Thu, 27 May 2021 11:37:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=wo61vuP8itAsZbt2t1dPCmKidBoeF2uLqMWDtAxwKzg=;
+        b=Pyn+69PDHkODviT5Ornz6p2X8/CXaFeyRyt/FTNk7L408ugYRNR/1y341aGCjilncc
+         WdZLfizUfUDIAIe77e8hMEQEhCy//CgKsmcWhn7ThIX8qR+azD+RqTUMTHynK2NS0qhe
+         w2mr/gmsaVNv3zMjGs/EGpImpmVp/SfyZvPLQ=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
-        bh=XILEL23RkvJSsCguY3HUKgkJIH3PmBjKaO6LkzDCX+g=;
-        b=rZ2+Zl3/4Jud7bVzunV4Bn5k09kDhls+rC0Ohfg3xgpZ25PA1WNqDL/5m2+ZMXsq62
-         vD62/zLwEIhia5j8xy4A4qBcsEsymVxhFmB3t6RI3umf/zLmqPJ4Nqid5eXg3BzZfbd8
-         HC4xCIKL9TIoULSBH3tz3oZekgeaWtd0Krf4nVzqIKiiRRcafhgoaMDFFjEklwnGnccz
-         XEbiYSRG7wtXjCNmp45324J0G19ZBmsrDpfIRKUKGcSYdTQYfA/DFDx4yGHpWupYAZS2
-         df9iOu+AID8i9GzWqZ+jHJF2vTHENIgFscFaUXxMsuHzSUDhHtz2erjPXqRqQFmtj0wd
-         K4kA==
-X-Gm-Message-State: AOAM5317xykz7XbflVLmMovl5QZcZjjWEJ+vLvjIqB5a0nevCERhRA6d
-        AhPx43PInDtL05qiqHbU1Utx1fXWBOCHC15pCupSEiLMqdk=
-X-Google-Smtp-Source: ABdhPJy4jW7Dha2Uw4yWvXIYUysnXekRh6Asy8UcXLwOTFnAPXZuCPmBwh2qYicHDWiBgIode1zciR7FQtW3ugC6jqA=
-X-Received: by 2002:aca:1910:: with SMTP id l16mr3175684oii.69.1622140347829;
- Thu, 27 May 2021 11:32:27 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=wo61vuP8itAsZbt2t1dPCmKidBoeF2uLqMWDtAxwKzg=;
+        b=HWLXTSVptJV3tPCU2AA4gAX6NIBclV45mlWA9hvwUvGEpQ/tqdFho6QhI8nbRgWgPM
+         ybOJdq19tFy1DNWc9V+4FL2KNpOF63buHMuayYSaCTBI0tWSJW/UHADDbFaRebZaNKeL
+         bXG4PGWlcsJ4wFpDL+r2uHmNmOYRtWsbXg6IcRU4nAgAoZMBXgkmomwkqe+yAMEvG6eR
+         CvD7WMsBP46WHHuoOAEqptflePy25JxpD9iBygegTIz/HJLZTV1MbWwftYegwkwC00hM
+         QsMx0Xngi46QUK2TE54tES1/ZwuexVqK8YkzFraKS6BcXzOiJwjSeeuun/LKR00mxmXa
+         2deg==
+X-Gm-Message-State: AOAM531VUVDgqbDv97UdM4jb6+kkG2wDfU9yv17wK1M9G4PM3qB3ueP/
+        zD8OUqlk1mS7hriiM0xS2NlfQQ==
+X-Google-Smtp-Source: ABdhPJx7gUhC+H++qqo1KLIfawtDGiTJkGG2lpEYBgdm1042nL2trg7RmeYBjaIl/Zl20wf2FOmbTA==
+X-Received: by 2002:a17:902:bf46:b029:ee:b949:bd0 with SMTP id u6-20020a170902bf46b02900eeb9490bd0mr4383042pls.14.1622140669177;
+        Thu, 27 May 2021 11:37:49 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id h3sm2296385pgp.10.2021.05.27.11.37.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 27 May 2021 11:37:48 -0700 (PDT)
+Date:   Thu, 27 May 2021 11:37:47 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Rodrigo Campos <rodrigo@kinvolk.io>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Sargun Dhillon <sargun@sargun.me>, containers@lists.linux.dev,
+        Tycho Andersen <tycho@tycho.pizza>,
+        Mauricio =?iso-8859-1?Q?V=E1squez?= Bernal 
+        <mauricio@kinvolk.io>, Giuseppe Scrivano <gscrivan@redhat.com>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        =?iso-8859-1?Q?Micka=EBl_Sala=FCn?= <mic@linux.microsoft.com>,
+        Andy Lutomirski <luto@amacapital.net>,
+        Will Drewry <wad@chromium.org>
+Subject: Re: [PATCH] selftests/seccomp: More closely track fds being assigned
+Message-ID: <202105271137.251E14ACB2@keescook>
+References: <20210527032948.3730953-1-keescook@chromium.org>
+ <CACaBj2atO=2aAyK+BO5MPS0B3CQNwc98CSHiuy8X2wvkdvJNDQ@mail.gmail.com>
 MIME-Version: 1.0
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Thu, 27 May 2021 20:32:16 +0200
-Message-ID: <CAJZ5v0i1WebaCZL3q-6rQOexMnYXacD6KTnO1ONcxN1Li01LSg@mail.gmail.com>
-Subject: [GIT PULL] ACPI fix for v5.13-rc4
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CACaBj2atO=2aAyK+BO5MPS0B3CQNwc98CSHiuy8X2wvkdvJNDQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
-
-Please pull from the tag
-
- git://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-pm.git \
- acpi-5.13-rc4
-
-with top-most commit 9b7ff25d129df7c4f61e08382993e1988d56f6a7
-
- ACPI: power: Refine turning off unused power resources
-
-on top of commit c4681547bcce777daf576925a966ffa824edd09d
-
- Linux 5.13-rc3
-
-to receive an ACPI fix for 5.13-rc4.
-
-This fixes a recent ACPI power management regression causing
-boot issues to occur on some systems due to attempts to turn
-off ACPI power resources that are already off (which should
-work according to the ACPI specification).
+On Thu, May 27, 2021 at 02:45:26PM +0200, Rodrigo Campos wrote:
+> On Thu, May 27, 2021 at 5:29 AM Kees Cook <keescook@chromium.org> wrote:
+> >
+> > Since the open fds might not always start at "4" (especially when
+> > running under kselftest, etc), start counting from the first assigned
+> > fd, rather than using the more permissive EXPECT_GE(fd, 0).
+> >
+> > Signed-off-by: Kees Cook <keescook@chromium.org>
+> 
+> Nice cleanup, thanks! Just in case, tested it here, works fine. Feel
+> free to add:
+> 
+> Reviewed-by: Rodrigo Campos <rodrigo@kinvolk.io>
 
 Thanks!
 
+> I can improve the selftest to test the new addfd flag we just added
+> also in combination existing flags (like setting the fd number to
+> use), and maybe also split the big chunk test, if you think that is
+> valuable.
 
----------------
+Yeah, I was pondering splitting the test up, but I think it's okay how
+it is for now.
 
-Rafael J. Wysocki (1):
-      ACPI: power: Refine turning off unused power resources
-
----------------
-
- drivers/acpi/internal.h |  4 ++--
- drivers/acpi/power.c    | 59 ++++++++++++++++++++++++++++++++++++++-----------
- drivers/acpi/scan.c     |  2 +-
- drivers/acpi/sleep.c    |  2 +-
- 4 files changed, 50 insertions(+), 17 deletions(-)
+-- 
+Kees Cook
