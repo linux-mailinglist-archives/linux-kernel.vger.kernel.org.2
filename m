@@ -2,84 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B48C3932F7
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 17:56:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A600F392C5B
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 13:09:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234509AbhE0P5c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 May 2021 11:57:32 -0400
-Received: from 17.mo7.mail-out.ovh.net ([188.165.35.227]:39628 "EHLO
-        17.mo7.mail-out.ovh.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234147AbhE0P52 (ORCPT
+        id S233941AbhE0LLG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 May 2021 07:11:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58970 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232891AbhE0LLC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 May 2021 11:57:28 -0400
-X-Greylist: delayed 17214 seconds by postgrey-1.27 at vger.kernel.org; Thu, 27 May 2021 11:57:28 EDT
-Received: from player770.ha.ovh.net (unknown [10.110.208.183])
-        by mo7.mail-out.ovh.net (Postfix) with ESMTP id 6F81E1A72B4
-        for <linux-kernel@vger.kernel.org>; Thu, 27 May 2021 13:09:00 +0200 (CEST)
-Received: from mrtz.fr (lfbn-lyo-1-490-81.w2-7.abo.wanadoo.fr [2.7.79.81])
-        (Authenticated sender: harold@mrtz.fr)
-        by player770.ha.ovh.net (Postfix) with ESMTPSA id 5236B1EA20AE2;
-        Thu, 27 May 2021 11:08:51 +0000 (UTC)
-Authentication-Results: garm.ovh; auth=pass (GARM-102R0046cca3f94-d97d-49b6-a149-483190b67c1f,
-                    A96342309192601C9AD39103BD083FA7ED13D9CC) smtp.auth=harold@mrtz.fr
-X-OVh-ClientIp: 2.7.79.81
-Subject: Re: [PATCH] staging: emxx_udc: fix alignment issues
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Alex Dewar <alex.dewar90@gmail.com>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        Kumar Kartikeya Dwivedi <memxor@gmail.com>,
-        Sean Behan <codebam@riseup.net>,
-        Colin Ian King <colin.king@canonical.com>,
-        linux-staging@lists.linux.dev,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-References: <20210524152128.20519-1-harold@mrtz.fr>
- <CAMuHMdWQqoqeaym5apdN8ppvkSm3DkKVeDn=S4e5Z2ytCVVUww@mail.gmail.com>
-From:   Harold Mertzweiller <harold@mrtz.fr>
-Message-ID: <9367b56d-71d7-a98b-15d0-d8347403def5@mrtz.fr>
-Date:   Thu, 27 May 2021 13:08:50 +0200
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.10.2
+        Thu, 27 May 2021 07:11:02 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B180C061574;
+        Thu, 27 May 2021 04:09:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=mUj/KLzHyimS0VF7iBofriF7+m1srvzXS1fU/QNihxQ=; b=B8YD5YCHcq0Bx75TxQGYDpMAzS
+        3C+eGJoz5WIbX01ckvA77VNx7X4otkyp4JclK9/bdNpSdlmuVB/nYZqXKawBaMrstjlWU2zjtPs7w
+        tk54Ppk62tg45W5fmyGIVtWEvAhvGXHyutCprnj3z0PU0qpM7VeG4PO87YNyDJqbExG62EQkKyg9+
+        vDxj83YC+sT1ETlFF40meNBP4UM0gR2Ypn439WbRz3h/Uie3HjeYTLJW5ze4d0XIOu1+hpZ5/cr0H
+        5Pa1BbU3VbD6JbEBp38kD6fa5N4HhLsqajI0JInFF8+zvSt8rcJDOAYAFakTnObimzmvlRS34Stit
+        toJqirGg==;
+Received: from hch by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
+        id 1lmDt3-005SKS-Ud; Thu, 27 May 2021 11:09:17 +0000
+Date:   Thu, 27 May 2021 12:09:13 +0100
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Jason Gunthorpe <jgg@nvidia.com>
+Cc:     Leon Romanovsky <leon@kernel.org>,
+        Doug Ledford <dledford@redhat.com>,
+        Avihai Horon <avihaih@nvidia.com>,
+        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org
+Subject: Re: [PATCH rdma-next v1 2/2] RDMA/mlx5: Allow modifying Relaxed
+ Ordering via fast registration
+Message-ID: <YK992cLoTRWG30H9@infradead.org>
+References: <cover.1621505111.git.leonro@nvidia.com>
+ <9442b0de75f4ee029e7c306fce34b1f6f94a9e34.1621505111.git.leonro@nvidia.com>
+ <20210526194906.GA3646419@nvidia.com>
 MIME-Version: 1.0
-In-Reply-To: <CAMuHMdWQqoqeaym5apdN8ppvkSm3DkKVeDn=S4e5Z2ytCVVUww@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: fr
-Content-Transfer-Encoding: 7bit
-X-Ovh-Tracer-Id: 9064620153952079127
-X-VR-SPAMSTATE: OK
-X-VR-SPAMSCORE: -100
-X-VR-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgeduledrvdekhedgfeekucetufdoteggodetrfdotffvucfrrhhofhhilhgvmecuqfggjfdpvefjgfevmfevgfenuceurghilhhouhhtmecuhedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujfgurhepuffvfhfhkffffgggjggtgfesthejredttdefjeenucfhrhhomhepjfgrrhholhguucfovghrthiifigvihhllhgvrhcuoehhrghrohhlugesmhhrthiirdhfrheqnecuggftrfgrthhtvghrnhephfejieffgfelffdvhfehgfefjeeiueeuveeiffekteelleefjefffeejgefgveetnecukfhppedtrddtrddtrddtpddvrdejrdejledrkedunecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmohguvgepshhmthhpqdhouhhtpdhhvghlohepphhlrgihvghrjeejtddrhhgrrdhovhhhrdhnvghtpdhinhgvtheptddrtddrtddrtddpmhgrihhlfhhrohhmpehhrghrohhlugesmhhrthiirdhfrhdprhgtphhtthhopehlihhnuhigqdhkvghrnhgvlhesvhhgvghrrdhkvghrnhgvlhdrohhrgh
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210526194906.GA3646419@nvidia.com>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 27/05/2021 10:43, Geert Uytterhoeven wrote:
-> Hi Harold,
+On Wed, May 26, 2021 at 04:49:06PM -0300, Jason Gunthorpe wrote:
+> Nothing does a FRWR with IB_ACCESS_DISABLE_RELAXED_ORDERING set
 > 
-> On Mon, May 24, 2021 at 6:46 PM Harold Mertzweiller <harold@mrtz.fr> wrote:
->> Three function calls can now be properly formatted inside the 100
->> characters limit.
->>
->> Signed-off-by: Harold Mertzweiller <harold@mrtz.fr>
-> 
-> Thanks for your patch!
-> 
->>  drivers/staging/emxx_udc/emxx_udc.c | 11 ++++-------
-> 
-> I'm so happy people are improving this driver!
-> Is it working well on your hardware?
-> Do you think it's ready to migrate out of staging?
-> 
-> Thanks again!
-> 
-> Gr{oetje,eeting}s,
-> 
->                         Geert
-> 
+> So why not leave the relaxed ordering bits masked in the UMR for FWRW
+> so that the UMR doesn't change them at all and fail/panic if the
+> caller requests IB_ACCESS_DISABLE_RELAXED_ORDERING ?
 
-Hi Geert,
+Yeah.  In fact we should check for that in the core, or by going even
+further than my previous proposal and split IB_ACCESS_* even more fine
+grained.
 
-I sent this patch as part of the Eudyptula challenge. I just wanted to improve the coding style of any driver and unfortunately I don't use it.
+AFAICS we have the following uses cases:
 
-Have a great day,
-Harold
+ 1) qp_access_flags as a bitmask of possible operations on the queue pair
+    The way I understood the queue pairs this should really be just bits
+    for remote read, remote write and atomics, but a few places also
+    mess with memory windows and local write, which seems to be some
+    sort of iWarp cludge
+ 2) IB_UVERBS_ACCESS_*.  These just get checked using ib_check_mr_access
+    and then passed into ->reg_user_mr, ->rereg_user_mr and
+    ->reg_user_mr_dmabuf
+ 3) in-kernel FRWR uses IB_ACCESS_*, but all users seem to hardcode it
+    to IB_ACCESS_LOCAL_WRITE | IB_ACCESS_REMOTE_READ |
+    IB_ACCESS_REMOTE_WRITE anyway
+
+In other words:  I wonder if we should just kill off the current from of
+IB_ACCESS_* entirely, as it is a weird mess used in totally different
+ways in different code paths.
