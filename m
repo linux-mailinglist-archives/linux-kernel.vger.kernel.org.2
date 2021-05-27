@@ -2,94 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 37AFD39312C
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 16:43:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0105839312D
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 16:43:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236452AbhE0Oof (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 May 2021 10:44:35 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:39663 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234969AbhE0Oob (ORCPT
+        id S236494AbhE0Ooh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 May 2021 10:44:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51950 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234521AbhE0Ooc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 May 2021 10:44:31 -0400
-Received: from mail-ua1-f72.google.com ([209.85.222.72])
-        by youngberry.canonical.com with esmtps  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.93)
-        (envelope-from <krzysztof.kozlowski@canonical.com>)
-        id 1lmHDt-0003qk-UY
-        for linux-kernel@vger.kernel.org; Thu, 27 May 2021 14:42:57 +0000
-Received: by mail-ua1-f72.google.com with SMTP id d30-20020ab007de0000b029020e2f98646dso285475uaf.5
-        for <linux-kernel@vger.kernel.org>; Thu, 27 May 2021 07:42:57 -0700 (PDT)
+        Thu, 27 May 2021 10:44:32 -0400
+Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D753BC061574
+        for <linux-kernel@vger.kernel.org>; Thu, 27 May 2021 07:42:58 -0700 (PDT)
+Received: by mail-pf1-x434.google.com with SMTP id g18so755088pfr.2
+        for <linux-kernel@vger.kernel.org>; Thu, 27 May 2021 07:42:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ingics-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=F7WH66xwuCDzW8vfgxrtubuRlmQWSD9ABG/o2vLo7Xs=;
+        b=QLGxBF1p+hD9DirkU8Z6pnkackIY/QXBh5Ssz3LYYzELCCksvemxdAuikCR7SLuK+V
+         zbp1JqVw+cCv0xJBjQAiEF5477lXhWUkDn6VH0Pl6eY4JacftWKfJYWjojoErW/hO0eZ
+         6JL7d3GRlfomGCHqxz9Gyhqaedc+3oNAXU0vYgnnBt++Lb9J9/LQ/RM6JluBXvUBaexd
+         gxWusJZz7pxejjeRwtTT2C3ok4ZlfCxUKQlKjFyfjlHMbvNX7HtUwAcWxWhUfjR/2n/0
+         Z2kfFbeji6xdql6KELsZAN/gzGeuRw9bvhb2bP5fMqOv89NQoQez+gBVnq6edhWs9Nin
+         2zQA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=VTOMF3BFhA7Q2GthQd58+C6CYzGKBNh1lIt8RiOHr+I=;
-        b=qA5PKoAKWlp2RAbC9FG8iDQv7nOJ7hkUx/Ei8G5mkgpEsN7UyyZjyhXW9aRY/+F4g9
-         mrJ8VVpdur+zs5KPjtBZVDSc1o3de+ONDvMiOfxDd2sd/E8hh+64HmdjE1qhIAGu8NE+
-         B2Ct4wTe/sWYe1IFPm3k1U/ionQisEvEfUuiGj/ymtfw29b+ILG5+By1ocjAPPxONESc
-         uhuCqa3FjabBoA2KnyKuAVkJ3u7q/wegWJdux0pjKoJd9soKgG10SL3ADllTshlY1ab+
-         SvvCqmL9+mYgqNMRZzwRCZJ3jDRvgHk1DncKR6MjNM14hYY4Se+gtCxiGip57d5fNJJV
-         s13g==
-X-Gm-Message-State: AOAM531pT8UYfHZWrhQm6YT2tzwaZgZ2g2vmm2TRGVfgfclPiG8TA0SP
-        xbRNbbRlGfhUeRVSL+YQ+F/FIeF7RRXcgOS4iny+i5EGIfn/3xcHRg7py9QlyiQdy5jZQVQXIh+
-        pmjvc1CPfc9yX7T6r1DxXlMXylixuF0ZT2///a70sfg==
-X-Received: by 2002:a05:6102:b0e:: with SMTP id b14mr2876212vst.30.1622126575373;
-        Thu, 27 May 2021 07:42:55 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzevwVwZgemlOh2sLltMNffk6abW/suavhra9DVql+awEQQDoSpx8ZJb5kpSYBbnBON1vIsDg==
-X-Received: by 2002:a05:6102:b0e:: with SMTP id b14mr2876115vst.30.1622126574480;
-        Thu, 27 May 2021 07:42:54 -0700 (PDT)
-Received: from localhost.localdomain ([45.237.48.3])
-        by smtp.gmail.com with ESMTPSA id i7sm459198uab.14.2021.05.27.07.42.51
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=F7WH66xwuCDzW8vfgxrtubuRlmQWSD9ABG/o2vLo7Xs=;
+        b=CRd/rkN/2EpcZtCz2/B70VKDetUtNKmoGkm4s06pioVDX6G2v1gWr9boM11miwxm61
+         zYSUSNALGq87Gueu0uJUb+fwSADJgtMiAD5dLIUh3LhHttRHWdX5qLUJ2gfDEPyMsX1n
+         Yi9Xdi6oaH7n6NqxG1kZVZY0EUqkHcjRQ7nsunPcxnXxRKDT1uf7oiTIoAiJrHvuWvox
+         +H9WSee9QO2wVcV4tkrun0eVD0n4xrkFFNICryv+shwDKTuP6CyVzNQSzvP6iXgQfaah
+         hLU0dMx1oi8TRpHIEjZdD2gOnfZhOVpU5S0xR2ZTRF6xMF6DJulFJ7BQYCgsXsl7XYAT
+         rT3Q==
+X-Gm-Message-State: AOAM532FrvK+ABKJ48vl/XPcBTzpRHRJwuGu0U2wj1NA7WtVZpMW3ImS
+        kQrQ2psXYsTUZNFe0e/azqdQaQ==
+X-Google-Smtp-Source: ABdhPJzREi8bDtUemg1uyGK+v8Qgr6Fq2U6W9eIc4+RW+kzN30ScZoFAwiE6breY4TzB9KciRn+7cg==
+X-Received: by 2002:a63:e53:: with SMTP id 19mr4020905pgo.328.1622126578246;
+        Thu, 27 May 2021 07:42:58 -0700 (PDT)
+Received: from localhost.localdomain (122-117-179-2.HINET-IP.hinet.net. [122.117.179.2])
+        by smtp.gmail.com with ESMTPSA id b23sm2153579pft.162.2021.05.27.07.42.56
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 27 May 2021 07:42:53 -0700 (PDT)
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Liu Shuo <b35362@freescale.com>,
-        Prabhakar Kushwaha <prabhakar@freescale.com>,
-        Li Yang <leoyang.li@nxp.com>,
-        Dipen Dudhat <Dipen.Dudhat@freescale.com>,
-        linux-kernel@vger.kernel.org, Raghav Dogra <raghav.dogra@nxp.com>
-Cc:     Dan Carpenter <dan.carpenter@oracle.com>
-Subject: [RFT PATCH 2/2] memory: fsl_ifc: fix leak of private memory on probe failure
-Date:   Thu, 27 May 2021 10:42:40 -0400
-Message-Id: <20210527144240.56365-2-krzysztof.kozlowski@canonical.com>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20210527144240.56365-1-krzysztof.kozlowski@canonical.com>
-References: <20210527144240.56365-1-krzysztof.kozlowski@canonical.com>
+        Thu, 27 May 2021 07:42:57 -0700 (PDT)
+From:   Axel Lin <axel.lin@ingics.com>
+To:     Mark Brown <broonie@kernel.org>
+Cc:     Daniel Jeong <gshark.jeong@gmail.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        linux-kernel@vger.kernel.org, Axel Lin <axel.lin@ingics.com>
+Subject: [PATCH] regulator: lp8755: Convert to use regulator_set_ramp_delay_regmap
+Date:   Thu, 27 May 2021 22:42:48 +0800
+Message-Id: <20210527144248.247992-1-axel.lin@ingics.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On probe error the driver should free the memory allocated for private
-structure.  Fix this by using resource-managed allocation.
+Use regulator_set_ramp_delay_regmap instead of open-coded.
 
-Fixes: a20cbdeffce2 ("powerpc/fsl: Add support for Integrated Flash Controller")
-Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-
+Signed-off-by: Axel Lin <axel.lin@ingics.com>
 ---
+ drivers/regulator/lp8755.c | 55 ++++++--------------------------------
+ 1 file changed, 8 insertions(+), 47 deletions(-)
 
-Only build tested.
----
- drivers/memory/fsl_ifc.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/memory/fsl_ifc.c b/drivers/memory/fsl_ifc.c
-index a6324044a085..3ee7183b20fb 100644
---- a/drivers/memory/fsl_ifc.c
-+++ b/drivers/memory/fsl_ifc.c
-@@ -209,7 +209,8 @@ static int fsl_ifc_ctrl_probe(struct platform_device *dev)
+diff --git a/drivers/regulator/lp8755.c b/drivers/regulator/lp8755.c
+index 13c535711265..321bec6e3f8d 100644
+--- a/drivers/regulator/lp8755.c
++++ b/drivers/regulator/lp8755.c
+@@ -136,52 +136,9 @@ static unsigned int lp8755_buck_get_mode(struct regulator_dev *rdev)
+ 	return 0;
+ }
  
- 	dev_info(&dev->dev, "Freescale Integrated Flash Controller\n");
+-static int lp8755_buck_set_ramp(struct regulator_dev *rdev, int ramp)
+-{
+-	int ret;
+-	unsigned int regval = 0x00;
+-	enum lp8755_bucks id = rdev_get_id(rdev);
+-
+-	/* uV/us */
+-	switch (ramp) {
+-	case 0 ... 230:
+-		regval = 0x07;
+-		break;
+-	case 231 ... 470:
+-		regval = 0x06;
+-		break;
+-	case 471 ... 940:
+-		regval = 0x05;
+-		break;
+-	case 941 ... 1900:
+-		regval = 0x04;
+-		break;
+-	case 1901 ... 3800:
+-		regval = 0x03;
+-		break;
+-	case 3801 ... 7500:
+-		regval = 0x02;
+-		break;
+-	case 7501 ... 15000:
+-		regval = 0x01;
+-		break;
+-	case 15001 ... 30000:
+-		regval = 0x00;
+-		break;
+-	default:
+-		dev_err(&rdev->dev,
+-			"Not supported ramp value %d %s\n", ramp, __func__);
+-		return -EINVAL;
+-	}
+-
+-	ret = regmap_update_bits(rdev->regmap, 0x07 + id, 0x07, regval);
+-	if (ret < 0)
+-		goto err_i2c;
+-	return ret;
+-err_i2c:
+-	dev_err(&rdev->dev, "i2c access error %s\n", __func__);
+-	return ret;
+-}
++static const unsigned int lp8755_buck_ramp_table[] = {
++	30000, 15000, 7500, 3800, 1900, 940, 470, 230
++};
  
--	fsl_ifc_ctrl_dev = kzalloc(sizeof(*fsl_ifc_ctrl_dev), GFP_KERNEL);
-+	fsl_ifc_ctrl_dev = devm_kzalloc(&dev->dev, sizeof(*fsl_ifc_ctrl_dev),
-+					GFP_KERNEL);
- 	if (!fsl_ifc_ctrl_dev)
- 		return -ENOMEM;
+ static const struct regulator_ops lp8755_buck_ops = {
+ 	.map_voltage = regulator_map_voltage_linear,
+@@ -194,7 +151,7 @@ static const struct regulator_ops lp8755_buck_ops = {
+ 	.enable_time = lp8755_buck_enable_time,
+ 	.set_mode = lp8755_buck_set_mode,
+ 	.get_mode = lp8755_buck_get_mode,
+-	.set_ramp_delay = lp8755_buck_set_ramp,
++	.set_ramp_delay = regulator_set_ramp_delay_regmap,
+ };
  
+ #define lp8755_rail(_id) "lp8755_buck"#_id
+@@ -269,6 +226,10 @@ static int lp8755_init_data(struct lp8755_chip *pchip)
+ 	.enable_mask = LP8755_BUCK_EN_M,\
+ 	.vsel_reg = LP8755_REG_BUCK##_id,\
+ 	.vsel_mask = LP8755_BUCK_VOUT_M,\
++	.ramp_reg = (LP8755_BUCK##_id) + 0x7,\
++	.ramp_mask = 0x7,\
++	.ramp_delay_table = lp8755_buck_ramp_table,\
++	.n_ramp_values = ARRAY_SIZE(lp8755_buck_ramp_table),\
+ }
+ 
+ static const struct regulator_desc lp8755_regulators[] = {
 -- 
-2.27.0
+2.25.1
 
