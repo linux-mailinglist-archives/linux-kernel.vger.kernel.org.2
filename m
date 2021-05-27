@@ -2,161 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C06C392CC3
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 13:31:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 158A0392C93
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 13:22:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233627AbhE0LdB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 May 2021 07:33:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35674 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229657AbhE0Lcy (ORCPT
+        id S229746AbhE0LYD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 May 2021 07:24:03 -0400
+Received: from szxga03-in.huawei.com ([45.249.212.189]:2371 "EHLO
+        szxga03-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229591AbhE0LXw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 May 2021 07:32:54 -0400
-Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com [IPv6:2a00:1450:4864:20::336])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8733C061574;
-        Thu, 27 May 2021 04:31:20 -0700 (PDT)
-Received: by mail-wm1-x336.google.com with SMTP id l18-20020a1ced120000b029014c1adff1edso2381547wmh.4;
-        Thu, 27 May 2021 04:31:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=KATMEEULbArdKg71v5u/QUDQiIEPhSKpklwnDwdn0qU=;
-        b=plVpYTQiKgnHx+Nxz1Ixlr285XcJe75rG/mDA0AFTqI+sZrTrC848CnhTyTb9fEiSn
-         7yJ5zgfwf6ALO37QjuqM/Y7cJ6sIBfM2k8kGb+/lPt6gK/VIVfDMwXJ0b6oNnk1e1HuD
-         vAExsNAXyfaLlaa8LteEjtM7EDvM0hI5Dk2iFPdlweiU6QS/xWLfjM8gCQqNH0Ds9ef1
-         5v1HvxpjIeaHcfLbe9tEktgZNEOz3S09UrRdrjY54pahpdR+BE47wq/pRav5f/rtv2lB
-         G+KSha+BrIFKisz6hmyBJrAP3Wu99iD/JXWS1h2mVY7NUcXHbtv0HFFqiE3Xf1a/FGDe
-         Vl5Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=KATMEEULbArdKg71v5u/QUDQiIEPhSKpklwnDwdn0qU=;
-        b=Hl9f9fYQVy65kTJo2OjthoE7sg6zU/JmEuOswxjwzJqDb1FG74qlaDWmY0gFTMne7u
-         gja0RLIMsY66vjnXuKv4TuoSnQVwaD2fWZ49Aou3D/5Gop0+83pLVBecByM2Nz0E6Ie8
-         EW741784K7aNk/h41T38SIHl/6Ye0875I5Km2VIJihU5nN7aWFD4j1IkFfza77ht4puk
-         6YaRdA7o3Y1d9z9Fl5B+cBjsdIn4ueau9ge2WJ6md3nGHQ1kfUf/ybgCTztN19y/swWa
-         rV8DljMAAIoir5NMCiahgvq8x5sOf5rFX62l/rb1v7YNBQSTQzvXW32VctNZYupcOAoj
-         3u9Q==
-X-Gm-Message-State: AOAM5334CQkKVLXgTrZ7Rw/hbsts9yAydBUt1R4diu9dZS92598OgWxF
-        hw9nuT7XXas+WJX2XO/ba+Viy8PpqQw=
-X-Google-Smtp-Source: ABdhPJxckNo2cCoxb0942vCm1JKgR8GRKEysnugWK/PPZeg8n9i4HjJDoX4d9u+MZqOsEFADEzBP8A==
-X-Received: by 2002:a1c:8016:: with SMTP id b22mr2921485wmd.43.1622115078937;
-        Thu, 27 May 2021 04:31:18 -0700 (PDT)
-Received: from [192.168.2.202] (pd9e5a576.dip0.t-ipconnect.de. [217.229.165.118])
-        by smtp.gmail.com with ESMTPSA id m11sm2288979wmq.33.2021.05.27.04.31.17
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 27 May 2021 04:31:18 -0700 (PDT)
-Subject: Re: [RFC PATCH] Revert "arm64: PCI: Exclude ACPI "consumer" resources
- from host bridge windows"
-To:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>
-Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Len Brown <lenb@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        linux-pci@vger.kernel.org, linux-acpi@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-References: <20210510234020.1330087-1-luzmaximilian@gmail.com>
- <20210526205836.GA20320@willie-the-truck> <20210527093200.GA16444@lpieralisi>
-From:   Maximilian Luz <luzmaximilian@gmail.com>
-Message-ID: <e90401dc-e146-743d-93c7-8525ac0f639e@gmail.com>
-Date:   Thu, 27 May 2021 13:31:17 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+        Thu, 27 May 2021 07:23:52 -0400
+Received: from dggeml765-chm.china.huawei.com (unknown [172.30.72.53])
+        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4FrQL62R6Kz663t;
+        Thu, 27 May 2021 19:18:38 +0800 (CST)
+Received: from dggema761-chm.china.huawei.com (10.1.198.203) by
+ dggeml765-chm.china.huawei.com (10.1.199.175) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2176.2; Thu, 27 May 2021 19:22:16 +0800
+Received: from huawei.com (10.175.127.227) by dggema761-chm.china.huawei.com
+ (10.1.198.203) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Thu, 27
+ May 2021 19:22:15 +0800
+From:   Zhihao Cheng <chengzhihao1@huawei.com>
+To:     <stefanr@s5r6.in-berlin.de>, <yoshfuji@linux-ipv6.org>,
+        <davem@davemloft.net>
+CC:     <linux1394-devel@lists.sourceforge.net>,
+        <linux-kernel@vger.kernel.org>, <chengzhihao1@huawei.com>,
+        <yukuai3@huawei.com>
+Subject: [PATCH] firewire: net: Remove unused variable 'dev' and 'guid'
+Date:   Thu, 27 May 2021 19:31:40 +0800
+Message-ID: <20210527113140.304008-1-chengzhihao1@huawei.com>
+X-Mailer: git-send-email 2.25.4
 MIME-Version: 1.0
-In-Reply-To: <20210527093200.GA16444@lpieralisi>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.175.127.227]
+X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
+ dggema761-chm.china.huawei.com (10.1.198.203)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5/27/21 11:32 AM, Lorenzo Pieralisi wrote:
-> On Wed, May 26, 2021 at 09:58:36PM +0100, Will Deacon wrote:
->> On Tue, May 11, 2021 at 01:40:20AM +0200, Maximilian Luz wrote:
->>> The Microsoft Surface Pro X has host bridges defined as
->>>
->>>      Name (_HID, EisaId ("PNP0A08") /* PCI Express Bus */)  // _HID: Hardware ID
->>>      Name (_CID, EisaId ("PNP0A03") /* PCI Bus */)  // _CID: Compatible ID
->>>
->>>      Method (_CRS, 0, NotSerialized)  // _CRS: Current Resource Settings
->>>      {
->>>          Name (RBUF, ResourceTemplate ()
->>>          {
->>>              Memory32Fixed (ReadWrite,
->>>                  0x60200000,         // Address Base
->>>                  0x01DF0000,         // Address Length
->>>                  )
->>>              WordBusNumber (ResourceProducer, MinFixed, MaxFixed, PosDecode,
->>>                  0x0000,             // Granularity
->>>                  0x0000,             // Range Minimum
->>>                  0x0001,             // Range Maximum
->>>                  0x0000,             // Translation Offset
->>>                  0x0002,             // Length
->>>                  ,, )
->>>          })
->>>          Return (RBUF) /* \_SB_.PCI0._CRS.RBUF */
->>>      }
->>>
->>> meaning that the memory resources aren't (explicitly) defined as
->>> "producers", i.e. host bridge windows.
->>>
->>> Commit 8fd4391ee717 ("arm64: PCI: Exclude ACPI "consumer" resources from
->>> host bridge windows") introduced a check that removes such resources,
->>> causing BAR allocation failures later on:
->>>
->>>      [ 0.150731] pci 0002:00:00.0: BAR 14: no space for [mem size 0x00100000]
->>>      [ 0.150744] pci 0002:00:00.0: BAR 14: failed to assign [mem size 0x00100000]
->>>      [ 0.150758] pci 0002:01:00.0: BAR 0: no space for [mem size 0x00004000 64bit]
->>>      [ 0.150769] pci 0002:01:00.0: BAR 0: failed to assign [mem size 0x00004000 64bit]
->>>
->>> This eventually prevents the PCIe NVME drive from being accessible.
->>>
->>> On x86 we already skip the check for producer/window due to some history
->>> with negligent firmware. It seems that Microsoft is intent on continuing
->>> that history on their ARM devices, so let's drop that check here too.
->>>
->>> Signed-off-by: Maximilian Luz <luzmaximilian@gmail.com>
->>> ---
->>>
->>> Please note: I am not sure if this is the right way to fix that, e.g. I
->>> don't know if any additional checks like on IA64 or x86 might be
->>> required instead, or if this might break things on other devices. So
->>> please consider this more as a bug report rather than a fix.
->>>
->>> Apologies for the re-send, I seem to have unintentionally added a blank
->>> line before the subject.
->>>
->>> ---
->>>   arch/arm64/kernel/pci.c | 14 --------------
->>>   1 file changed, 14 deletions(-)
->>
->> Adding Lorenzo to cc, as he'll have a much better idea about this than me.
->>
->> This is:
->>
->> https://lore.kernel.org/r/20210510234020.1330087-1-luzmaximilian@gmail.com
-> 
-> Sigh. We can't apply this patch since it would trigger regressions on
-> other platforms (IIUC the root complex registers would end up in the
-> host bridge memory windows).
-> 
-> I am not keen on reverting commit 8fd4391ee717 because it does the
-> right thing.
-> 
-> I think this requires a quirk and immediate reporting to Microsoft.
+Fix the following gcc warning:
 
-Since I wrote this I have found other arm64 devices with the same
-problem. I don't think that this is Microsoft exclusive anymore, but
-rather that this is a Qualcomm problem (Qualcomm SoC seems to be the
-common thread). See e.g. DSDTs in [1]. So it should probably be reported
-to them.
+drivers/firewire/net.c:491:23: warning: variable ‘dev’ set but not used
+[-Wunused-but-set-variable]
 
-Regards,
-Max
+Fixes: 6752c8db8e0cf ("firewire net, ipv4 arp: Extend hardware ...")
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Zhihao Cheng <chengzhihao1@huawei.com>
+---
+ drivers/firewire/net.c | 4 ----
+ 1 file changed, 4 deletions(-)
 
-[1]: https://github.com/aarch64-laptops/build/tree/dfce25bc12655713c7e1e0422b191e9c944e4fb2/misc
+diff --git a/drivers/firewire/net.c b/drivers/firewire/net.c
+index 715e491dfbc3..4c3fd2eed1da 100644
+--- a/drivers/firewire/net.c
++++ b/drivers/firewire/net.c
+@@ -488,9 +488,7 @@ static int fwnet_finish_incoming_packet(struct net_device *net,
+ 					struct sk_buff *skb, u16 source_node_id,
+ 					bool is_broadcast, u16 ether_type)
+ {
+-	struct fwnet_device *dev;
+ 	int status;
+-	__be64 guid;
+ 
+ 	switch (ether_type) {
+ 	case ETH_P_ARP:
+@@ -503,7 +501,6 @@ static int fwnet_finish_incoming_packet(struct net_device *net,
+ 		goto err;
+ 	}
+ 
+-	dev = netdev_priv(net);
+ 	/* Write metadata, and then pass to the receive level */
+ 	skb->dev = net;
+ 	skb->ip_summed = CHECKSUM_NONE;
+@@ -512,7 +509,6 @@ static int fwnet_finish_incoming_packet(struct net_device *net,
+ 	 * Parse the encapsulation header. This actually does the job of
+ 	 * converting to an ethernet-like pseudo frame header.
+ 	 */
+-	guid = cpu_to_be64(dev->card->guid);
+ 	if (dev_hard_header(skb, net, ether_type,
+ 			   is_broadcast ? net->broadcast : net->dev_addr,
+ 			   NULL, skb->len) >= 0) {
+-- 
+2.25.4
+
