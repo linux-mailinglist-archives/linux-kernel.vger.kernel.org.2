@@ -2,39 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 09A6339283A
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 09:13:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EB8EF392847
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 09:14:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234808AbhE0HOu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 May 2021 03:14:50 -0400
-Received: from foss.arm.com ([217.140.110.172]:53154 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234709AbhE0HOp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 May 2021 03:14:45 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 1445A11D4;
-        Thu, 27 May 2021 00:13:13 -0700 (PDT)
-Received: from [10.57.31.236] (unknown [10.57.31.236])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 011343F73B;
-        Thu, 27 May 2021 00:13:10 -0700 (PDT)
-Subject: Re: [PATCH v2 0/3] EM / PM: Inefficient OPPs
-To:     Viresh Kumar <viresh.kumar@linaro.org>
-Cc:     Vincent Donnefort <vincent.donnefort@arm.com>,
-        peterz@infradead.org, rjw@rjwysocki.net,
-        vincent.guittot@linaro.org, qperret@google.com,
-        linux-kernel@vger.kernel.org, ionela.voinescu@arm.com,
-        dietmar.eggemann@arm.com
-References: <1621616064-340235-1-git-send-email-vincent.donnefort@arm.com>
- <20210526034751.5fl4kekq73gqy2wq@vireshk-i7>
- <068fa9c4-2b55-3d75-adc7-cf5ef2174b12@arm.com>
- <20210526093318.cbtjkybzwdchxi5y@vireshk-i7>
-From:   Lukasz Luba <lukasz.luba@arm.com>
-Message-ID: <a5882c26-ad1c-8e95-e529-f45fcc46099f@arm.com>
-Date:   Thu, 27 May 2021 08:13:09 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.9.0
+        id S235060AbhE0HPb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 May 2021 03:15:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33030 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234956AbhE0HPI (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 27 May 2021 03:15:08 -0400
+Received: from mail-wm1-x331.google.com (mail-wm1-x331.google.com [IPv6:2a00:1450:4864:20::331])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A872FC061763;
+        Thu, 27 May 2021 00:13:35 -0700 (PDT)
+Received: by mail-wm1-x331.google.com with SMTP id f75-20020a1c1f4e0000b0290171001e7329so1853599wmf.1;
+        Thu, 27 May 2021 00:13:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=K62CfcBuMRBnrDkS+CG8hEhaiH/WcvIci8e5GDvgm7s=;
+        b=HvijR3W1L0ZzTAxCwllEY1xANIBnrWpNre6IpMeXwqqIIFLxDNrQCjMHyGs1w1xiiv
+         Sf/2DbwO/S07xVKduTs94pH2x+gKcVcYVkLcv/W6bVef4a7FvS6LDwLHaZwseuV0mYFV
+         retOkZPVAFEPf++avnafjgiAxcq1hOU8srJXVABXQAJFk7vU9dBoOycXrqVFIez147qq
+         vGcipQTytdf0UfLb/NRR9eGYlO8/HsYP8YVa5a3aAeDdfH+6+7bbJFURfp7wzpP2iz94
+         4SVghPBsLdzIAi5m5V4L3Tw7jjX3Oc+CMWGZEuDSqi4TT83NCOTAEOkNVA5UXVhAvkD7
+         k+SA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:subject:to:cc:references:from:message-id
+         :date:user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=K62CfcBuMRBnrDkS+CG8hEhaiH/WcvIci8e5GDvgm7s=;
+        b=Q1mMKJ1yVPxYETwTFEloyeCyDYNwBWcNnoTwjlYs+Jmhv36KHIFK7yplnjUmZGynTd
+         vXQsK0vfBX2TYlP/G3oBx0e42MDPO7GTEyHY1SLlbBK2NMvqsgLFzM9NW9s/+QI4SQ7F
+         vVPKg8/33c4dSI8tcEX1tWrqVyW8XMtnObZD4IZI5VHYyQb3gda7JlLvhxKt62JZupRB
+         sOntvgbPYJSW16MWryt41eKDL+rN+3VBQoElJrVMv4HrNVRLDSPm9eJMh7Zrkoan5aRK
+         SVAUrnDqr6EQJJZpz2RJUhfz16Z310KuWQNHSuixTdOTtO7aWL+eWjWu6xkxAF1p/yfa
+         JviA==
+X-Gm-Message-State: AOAM5309XSmyyrb20+QzZNicia3Yjc713yAr+eNlf8BP0KAeRfJxy/o5
+        BNtA3TqC8w8fc2TKYVVtkBwoXT7nosI=
+X-Google-Smtp-Source: ABdhPJzlIB4c8wjL+Ah7p9anyymZ97UNHnF0+N1tqrdVsvJdjNpaOOJXn+2ojTJb2oTL7nCRw0rXDg==
+X-Received: by 2002:a7b:cd9a:: with SMTP id y26mr6940605wmj.133.1622099614272;
+        Thu, 27 May 2021 00:13:34 -0700 (PDT)
+Received: from [10.8.0.106] ([195.53.121.100])
+        by smtp.gmail.com with ESMTPSA id l16sm10296211wmj.47.2021.05.27.00.13.32
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 27 May 2021 00:13:33 -0700 (PDT)
+Sender: Alejandro Colomar <alx.mailinglists@gmail.com>
+Subject: Re: [PATCH] kernel_lockdown.7: Remove description of lifting via
+ SysRq (not upstream)
+To:     dann frazier <dann.frazier@canonical.com>
+Cc:     linux-kernel@vger.kernel.org,
+        Pedro Principeza <pedro.principeza@canonical.com>,
+        David Howells <dhowells@redhat.com>,
+        Heinrich Schuchardt <xypron.glpk@gmx.de>,
+        Michael Kerrisk <mtk.manpages@gmail.com>,
+        linux-man@vger.kernel.org
+References: <20210526173455.971103-1-dann.frazier@canonical.com>
+From:   "Alejandro Colomar (man-pages)" <alx.manpages@gmail.com>
+Message-ID: <7c25c60b-f1d0-be71-8a7d-f2cb1871daeb@gmail.com>
+Date:   Thu, 27 May 2021 09:13:31 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.0
 MIME-Version: 1.0
-In-Reply-To: <20210526093318.cbtjkybzwdchxi5y@vireshk-i7>
+In-Reply-To: <20210526173455.971103-1-dann.frazier@canonical.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -42,34 +74,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Viresh,
+Hello Dann,
 
-On 5/26/21 10:33 AM, Viresh Kumar wrote:
-> On 26-05-21, 09:56, Lukasz Luba wrote:
->> No, these OPPs have to stay because they are used in thermal for cooling
->> states.
+On 5/26/21 7:34 PM, dann frazier wrote:
+> The patch that implemented lockdown lifting via SysRq ended up getting
+> dropped[*] before the feature was merged upstream. Having the feature
+> documented but unsupported has caused some confusion for our users.
 > 
-> This won't break the thermal tables. Thermal just sets the max-freq for a CPU,
-> and it doesn't depend on the OPP table for that.
+> [*] http://archive.lwn.net:8080/linux-kernel/CACdnJuuxAM06TcnczOA6NwxhnmQUeqqm3Ma8btukZpuCS+dOqg@mail.gmail.com/
 > 
->> DT cooling devices might have them set as a scope of possible
->> states. We don't want to break existing platforms, don't we?
+> Signed-off-by: dann frazier <dann.frazier@canonical.com>
+
+Patch applied.
+
+Thanks,
+
+Alex
+
+> ---
+>   man7/kernel_lockdown.7 | 6 ------
+>   1 file changed, 6 deletions(-)
 > 
-> I don't think we will end up breaking anything here.
-> 
->> We want to 'avoid' those OPPs when possible (no thermal pressure), but
->> we might have to use them sometimes.
-> 
-> Why would we want to use them if they are inefficient ? Thermal or something
-> else as well ?
-> 
-> More in the other reply I am sending to Vincent.
+> diff --git a/man7/kernel_lockdown.7 b/man7/kernel_lockdown.7
+> index 30863de62..29ffd55c3 100644
+> --- a/man7/kernel_lockdown.7
+> +++ b/man7/kernel_lockdown.7
+> @@ -33,12 +33,6 @@ where X indicates the process name and Y indicates what is restricted.
+>   .PP
+>   On an EFI-enabled x86 or arm64 machine, lockdown will be automatically enabled
+>   if the system boots in EFI Secure Boot mode.
+> -.PP
+> -If the kernel is appropriately configured, lockdown may be lifted by typing
+> -the appropriate sequence on a directly attached physical keyboard.
+> -For x86 machines, this is
+> -.IR SysRq+x .
+> -.\"
+>   .SS Coverage
+>   When lockdown is in effect, a number of features are disabled or have their
+>   use restricted.
 > 
 
-I have responded to your email there. I don't know if you have seen it.
-As I said there, these OPPs, which from energy perspective we call
-'inefficient', might be used to provide enough performance under thermal
-constraints.
 
-Regards,
-Lukasz
+-- 
+Alejandro Colomar
+Linux man-pages comaintainer; https://www.kernel.org/doc/man-pages/
+http://www.alejandro-colomar.es/
