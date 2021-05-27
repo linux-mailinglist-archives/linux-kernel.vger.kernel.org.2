@@ -2,55 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D26A392BAB
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 12:22:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0BA00392BAF
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 12:22:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236158AbhE0KYQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 May 2021 06:24:16 -0400
-Received: from mailout2.secunet.com ([62.96.220.49]:47496 "EHLO
-        mailout2.secunet.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236164AbhE0KYK (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 May 2021 06:24:10 -0400
-Received: from cas-essen-01.secunet.de (unknown [10.53.40.201])
-        by mailout2.secunet.com (Postfix) with ESMTP id 4141A800051;
-        Thu, 27 May 2021 12:22:36 +0200 (CEST)
-Received: from mbx-essen-01.secunet.de (10.53.40.197) by
- cas-essen-01.secunet.de (10.53.40.201) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Thu, 27 May 2021 12:22:36 +0200
-Received: from gauss2.secunet.de (10.182.7.193) by mbx-essen-01.secunet.de
- (10.53.40.197) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Thu, 27 May
- 2021 12:22:35 +0200
-Received: by gauss2.secunet.de (Postfix, from userid 1000)
-        id 622DB3180390; Thu, 27 May 2021 12:22:35 +0200 (CEST)
-Date:   Thu, 27 May 2021 12:22:35 +0200
-From:   Steffen Klassert <steffen.klassert@secunet.com>
-To:     <zuoqilin1@163.com>
-CC:     <herbert@gondor.apana.org.au>, <davem@davemloft.net>,
-        <kuba@kernel.org>, <netdev@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, zuoqilin <zuoqilin@yulong.com>
-Subject: Re: [PATCH] net: Remove unnecessary variables
-Message-ID: <20210527102235.GN40979@gauss3.secunet.de>
-References: <20210514075513.1801-1-zuoqilin1@163.com>
+        id S236170AbhE0KYS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 May 2021 06:24:18 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51222 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236149AbhE0KYN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 27 May 2021 06:24:13 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 656E6613B4;
+        Thu, 27 May 2021 10:22:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1622110960;
+        bh=fu41OOBwvVAsIvlj0TmcDCa0Ztt6umjGSj3AvUXq19E=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=dtZyddnBMfnZCBlVVCOlltjIv5psuHEuCiNxrNGPtooBYB8VyQjDtydDxwa5KhXql
+         CodqGRLbyM8W4QYHEjK49DwTVj5tI9I+baRDPUuaE/tYYAtduoP9zRHE20MLgS68FI
+         GEQrgK7fKKA0yMSVT0GKZ/kfXa9AHzFonk/wgsWo=
+Date:   Thu, 27 May 2021 12:22:37 +0200
+From:   "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>
+To:     "Rantala, Tommi T. (Nokia - FI/Espoo)" <tommi.t.rantala@nokia.com>
+Cc:     "stable@vger.kernel.org" <stable@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "jan.kratochvil@redhat.com" <jan.kratochvil@redhat.com>
+Subject: Re: LTS perf unwind fix
+Message-ID: <YK9y7dd+wsp2OLD/@kroah.com>
+References: <682895f7a145df0a20814001c508688113322854.camel@nokia.com>
+ <YKz2RIcTyD/FCF+a@kroah.com>
+ <45b140543ccb85ab184ed17befca4a9e64661051.camel@nokia.com>
+ <YK9jhtj/hwTKU5+N@kroah.com>
+ <ef44cde0f3493eb9ab2efe951bc03e4e6ccc416b.camel@nokia.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210514075513.1801-1-zuoqilin1@163.com>
-X-ClientProxiedBy: cas-essen-02.secunet.de (10.53.40.202) To
- mbx-essen-01.secunet.de (10.53.40.197)
-X-EXCLAIMER-MD-CONFIG: 2c86f778-e09b-4440-8b15-867914633a10
+In-Reply-To: <ef44cde0f3493eb9ab2efe951bc03e4e6ccc416b.camel@nokia.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 14, 2021 at 03:55:13PM +0800, zuoqilin1@163.com wrote:
-> From: zuoqilin <zuoqilin@yulong.com>
+On Thu, May 27, 2021 at 10:04:51AM +0000, Rantala, Tommi T. (Nokia - FI/Espoo) wrote:
+> Hi Greg,
 > 
-> It is not necessary to define variables to receive -ENOMEM,
-> directly return -ENOMEM.
+> Please apply these two commits to 5.4.y
+> (other LTSes are probably fine too, but I didn't test):
 > 
-> Signed-off-by: zuoqilin <zuoqilin@yulong.com>
+> 
+> commit bf53fc6b5f415cddc7118091cb8fd6a211b2320d
+> Author: Jan Kratochvil <jan.kratochvil@redhat.com>
+> Date:   Fri Dec 4 09:17:02 2020 -0300
+> 
+>     perf unwind: Fix separate debug info files when using elfutils'
+> libdw's unwinder
+> 
+> 
+> commit 4e1481445407b86a483616c4542ffdc810efb680
+> Author: Dave Rigby <d.rigby@me.com>
+> Date:   Thu Feb 18 16:56:54 2021 +0000
+> 
+>     perf unwind: Set userdata for all __report_module() paths
+> 
+>     [...]
+> 
+>     Fixes: bf53fc6b5f41 ("perf unwind: Fix separate debug info files
+> when using elfutils' libdw's unwinder")
+> 
+> 
+> These commits fix some broken backtraces when using the perf tool.
 
-Applied to ipsec-next, thanks!
+Also queued up for the 5.10.y tree as you do not want to move to a newer
+kernel and have a regression.
+
+thanks,
+
+greg k-h
