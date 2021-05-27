@@ -2,102 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 52BF83927A2
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 08:28:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AD1473927A4
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 08:30:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233825AbhE0GaB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 May 2021 02:30:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50810 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229670AbhE0G3u (ORCPT
+        id S229836AbhE0Gbt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 May 2021 02:31:49 -0400
+Received: from mail-ej1-f45.google.com ([209.85.218.45]:37637 "EHLO
+        mail-ej1-f45.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229614AbhE0Gbj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 May 2021 02:29:50 -0400
-Received: from mail-pg1-x535.google.com (mail-pg1-x535.google.com [IPv6:2607:f8b0:4864:20::535])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81817C061574;
-        Wed, 26 May 2021 23:28:15 -0700 (PDT)
-Received: by mail-pg1-x535.google.com with SMTP id m190so2942302pga.2;
-        Wed, 26 May 2021 23:28:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:mime-version:content-disposition
-         :content-transfer-encoding:user-agent;
-        bh=vzY8Oad/4R9FZQwiT5mR4g0+2i9N6VivPydMdc1n6Lw=;
-        b=jV1LydVtgiAkGzkhsRGre3UOT0KKR7Q6JRQR+9bK/8iY/hT6uZn9cc7AcYtFm8ZoGp
-         RNgWfZUxeQjUQtejKhtLzBEC1RkLesoMSMd+/lUATBa47N/T5Lm+xCcQFIi+Ac+P7TDW
-         lWpxbifbvjvkyq0SACzQyuuZqUbzbNsbON3+Eo4VGdctbHN/3IagWrDi75F6lJTNsIF0
-         AAH6Pq388+sKOxxMmlUuA0we62AIzOw7c87lH+DZRbrmeMLXq8XsMyV2qEs4ZZo3PAN/
-         OpkaluVCDZ7v+IYc8t9KxrBb2RByoHDbTMNvwyjbe5OLw/+9EQR2/AGYt7p0ROht9rk3
-         fh/w==
+        Thu, 27 May 2021 02:31:39 -0400
+Received: by mail-ej1-f45.google.com with SMTP id l3so306931ejc.4
+        for <linux-kernel@vger.kernel.org>; Wed, 26 May 2021 23:30:05 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition:content-transfer-encoding:user-agent;
-        bh=vzY8Oad/4R9FZQwiT5mR4g0+2i9N6VivPydMdc1n6Lw=;
-        b=c/vxr+RlbyKFtvZr1Dl9NQKp6OAy8+R6uuZ0rDZLpz8FWlWds9jMcMEhsQPjomp6jm
-         du64IO4vqPMH5CjSazAcQJ2W/fzILdSrZjNpVIWUWhfQ6zBEtMCn3UlCpFZwirLcboRV
-         0X5slS8aUhBRFglgwMxC4BH2jp3G0z4L5tPOZH8rPLMmnNd4JOzXH2cuYiQt2xXIpAUU
-         1TYHep/299+vDEw1UZasst3WNZPkNVE64GVOwtMtlx5DILp5/O/sjsj7LBg5eW9Yf0hj
-         d3xrQZ+35B8t9UAMyZuams+liQG/aXczFZ2TxC851WrDJ9CFVbXPgeYHwzVQbZLJfm9G
-         8Ijw==
-X-Gm-Message-State: AOAM530pS8EYxuVlLHXx/0Fr57aCMacxvv9lvPR2lPZJMOpgeU0z2Pbs
-        Rs9Zj4LiGRS8w0Mfg4b6pmY=
-X-Google-Smtp-Source: ABdhPJz6+4e2i6pbAyIN2RXp6pfitGlDeZtSkpa4S/KLBw1iB5ae/NT6z4jfA8knHCP36a+s61zV0w==
-X-Received: by 2002:a63:e015:: with SMTP id e21mr2277845pgh.442.1622096895122;
-        Wed, 26 May 2021 23:28:15 -0700 (PDT)
-Received: from raspberrypi ([125.141.84.155])
-        by smtp.gmail.com with ESMTPSA id s123sm935741pfb.78.2021.05.26.23.28.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 26 May 2021 23:28:14 -0700 (PDT)
-Date:   Thu, 27 May 2021 07:28:09 +0100
-From:   Austin Kim <austindh.kim@gmail.com>
-To:     herbert@gondor.apana.org.au, davem@davemloft.net,
-        catalin.marinas@arm.com, will@kernel.org,
-        john.johansen@canonical.com, jmorris@namei.org, serge@hallyn.com
-Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-security-module@vger.kernel.org,
-        linux-crypto@vger.kernel.org, austindh.kim@gmail.com,
-        austin.kim@lge.com
-Subject: [PATCH] crypto: arm64/gcm - remove Wunused-const-variable
- ghash_cpu_feature
-Message-ID: <20210527062809.GA1251@raspberrypi>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=kB88lCXQWv/f/g9x37rq4D9T1fErrmQxI1ppZCgR6ao=;
+        b=k3+TY45RnJJfaOoVHI8l8mFvcLOz/DZZBfehIsGE9gAWmbdlAZRzDXiCFsIoEWo5Bi
+         neeIMlEnoQExT+iZ/xr7n0uLqhbmsQS9S3ApWYwdoJq/L9xD23447CatfMiW96UpfFzD
+         Yv2qj9PbnnYZjdS7X+Z5b6xIutGqKoSBdT1+P8n24f0vJni19P/IG2Sdgyf5yyFykLFX
+         4gw+A9YofTUg5RleFD0UOgzd2Skih1jW4ao+H0r62Tecb61mfPVgIPkA3Jp1S+R4XE+H
+         a+MHu29Wp9Ere4H3Tr1fhAfXhNKxo/F6I0K9hsNESBVxNQNkFXYjs+skZPTbj03InfWT
+         PQmg==
+X-Gm-Message-State: AOAM532oLb0ymUI58WtybMYKfJpgm+E/6ymhY2b7G9QF7FTyq+mtsLIs
+        njQRYNDysJYrYzoTYrSh/KA=
+X-Google-Smtp-Source: ABdhPJwNXJ4Z2rG3fUQ3tu5wHKJ1hqO8aRgl+QicHRBAccdRkY5/F62flN/Wle1ZuX48WQw33GQlVg==
+X-Received: by 2002:a17:906:6c8a:: with SMTP id s10mr2136525ejr.276.1622097005358;
+        Wed, 26 May 2021 23:30:05 -0700 (PDT)
+Received: from ?IPv6:2a0b:e7c0:0:107::70f? ([2a0b:e7c0:0:107::70f])
+        by smtp.gmail.com with ESMTPSA id y23sm516832eds.60.2021.05.26.23.30.04
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 26 May 2021 23:30:04 -0700 (PDT)
+Subject: Re: [PATCH v2 1/1] tty: n_tty: Fix some misdocumented functions
+To:     Lee Jones <lee.jones@linaro.org>
+Cc:     linux-kernel@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Andrew J. Kroll" <ag784@freenet.buffalo.edu>,
+        processes-Sapan Bhatia <sapan@corewars.org>
+References: <20210526083125.549626-1-lee.jones@linaro.org>
+From:   Jiri Slaby <jirislaby@kernel.org>
+Message-ID: <3c8f2e14-f0a7-409f-e17e-ff7d94b48566@kernel.org>
+Date:   Thu, 27 May 2021 08:30:04 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20210526083125.549626-1-lee.jones@linaro.org>
+Content-Type: text/plain; charset=iso-8859-2; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-GCC compiler complains with below messages.
+On 26. 05. 21, 10:31, Lee Jones wrote:
+> Fixes the following W=1 kernel build warning(s):
+> 
+>   drivers/tty/n_tty.c:623: warning: expecting prototype for process_echoes(). Prototype was for __process_echoes() instead
+>   drivers/tty/n_tty.c:1109: warning: expecting prototype for isig(). Prototype was for __isig() instead
+>   drivers/tty/n_tty.c:1268: warning: expecting prototype for n_tty_receive_char(). Prototype was for n_tty_receive_char_special() instead
+>   drivers/tty/n_tty.c:2132: warning: Excess function parameter 'buf' description in 'n_tty_read'
+> 
+> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> Cc: Jiri Slaby <jirislaby@kernel.org>
+> Cc: "Andrew J. Kroll" <ag784@freenet.buffalo.edu>
+> Cc: processes-Sapan Bhatia <sapan@corewars.org>
+> Signed-off-by: Lee Jones <lee.jones@linaro.org>
+> ---
+> 
+> v2: Rebased
+> 
+>   drivers/tty/n_tty.c | 10 +++++-----
+>   1 file changed, 5 insertions(+), 5 deletions(-)
+> 
+> diff --git a/drivers/tty/n_tty.c b/drivers/tty/n_tty.c
+> index 0ec93f1a61f5d..56d3b43d8a3a4 100644
+> --- a/drivers/tty/n_tty.c
+> +++ b/drivers/tty/n_tty.c
+...
+> @@ -1248,7 +1248,7 @@ n_tty_receive_signal_char(struct tty_struct *tty, int signal, unsigned char c)
+>   }
+>   
+>   /**
+> - *	n_tty_receive_char	-	perform processing
+> + *	n_tty_receive_char_special	-	perform processing
 
-   warning: ‘ghash_cpu_feature’ defined but not used [-Wunused-const-variable=]
-   static const struct cpu_feature ghash_cpu_feature[] = {
-			    ^~~~~~~~~~~~~~~~~
+No, please move the doc to the function in this case instead.
 
-The variable with MODULE_DEVICE_TABLE() is registered as platform_driver.
-But ghash_cpu_feature is not used, so remove ghash_cpu_feature.
+>    *	@tty: terminal device
+>    *	@c: character
+>    *
+> @@ -2042,11 +2042,11 @@ static int job_control(struct tty_struct *tty, struct file *file)
+>   }
+>   
+>   
+> -/**
+> +/*
 
-Signed-off-by: Austin Kim <austindh.kim@gmail.com>
----
- arch/arm64/crypto/ghash-ce-glue.c | 5 -----
- 1 file changed, 5 deletions(-)
+Why this?
 
-diff --git a/arch/arm64/crypto/ghash-ce-glue.c b/arch/arm64/crypto/ghash-ce-glue.c
-index 720cd3a58da3..c3f27d0d5329 100644
---- a/arch/arm64/crypto/ghash-ce-glue.c
-+++ b/arch/arm64/crypto/ghash-ce-glue.c
-@@ -615,10 +615,5 @@ static void __exit ghash_ce_mod_exit(void)
- 		crypto_unregister_shash(&ghash_alg);
- }
- 
--static const struct cpu_feature ghash_cpu_feature[] = {
--	{ cpu_feature(PMULL) }, { }
--};
--MODULE_DEVICE_TABLE(cpu, ghash_cpu_feature);
--
- module_init(ghash_ce_mod_init);
- module_exit(ghash_ce_mod_exit);
+>    *	n_tty_read		-	read function for tty
+>    *	@tty: tty device
+>    *	@file: file object
+> - *	@buf: userspace buffer pointer
+> + *	@kbuf: userspace buffer pointer
+>    *	@nr: size of I/O
+>    *
+>    *	Perform reads for the line discipline. We are guaranteed that the
+> 
+
+thanks,
 -- 
-2.20.1
-
+js
+suse labs
