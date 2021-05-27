@@ -2,81 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B83F93935E2
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 21:02:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 30CDA3935E3
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 21:02:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236737AbhE0TDm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 May 2021 15:03:42 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36664 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236346AbhE0TDF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 May 2021 15:03:05 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8D6AE6143C;
-        Thu, 27 May 2021 19:01:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1622142086;
-        bh=ZW4smGedXdZxEkvJTKEYpO9UsuXTul3v6LeUO9IeuRQ=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ZoxNjB1POiEUrg6ib8hSOzaVNH/LLp6t6zA1dGOkoTbmM/KHzcHBQmsLq3TyIaSz2
-         U6c6q1p9CH8IO4qRNM78cCrtH0f9sVPX0w0OaWfkOEYdEZkjjTkvq21bmyLoRFP19d
-         8ZssUl0P+DkVMAHPAcTnQkp2Et/R2zn6EtGGPcnNOyLrxU9APXTVVKygpJiTfDI4r0
-         7RIUBecfmUIUAGWcL7YbRHscm8/FBg7kq6T6Jvxv2uZMNmoVpZiD4wd3QXTr4cO+ki
-         Nc6rvCo/HzNVVTKSZfHYeTdnZDwKaW6Yj3bgGtjxU8w1FyFUhXOvosvNWOasbpKaxX
-         3LX/ieFDJbwxw==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 19EA55C033F; Thu, 27 May 2021 12:01:26 -0700 (PDT)
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     tglx@linutronix.de
-Cc:     linux-kernel@vger.kernel.org, john.stultz@linaro.org,
-        sboyd@kernel.org, corbet@lwn.net, Mark.Rutland@arm.com,
-        maz@kernel.org, kernel-team@fb.com, neeraju@codeaurora.org,
-        ak@linux.intel.com, feng.tang@intel.com, zhengjun.xing@intel.com,
-        "Paul E . McKenney" <paulmck@kernel.org>
-Subject: [PATCH v15 clocksource 6/6] clocksource: Print deviation in nanoseconds for unstable case
-Date:   Thu, 27 May 2021 12:01:24 -0700
-Message-Id: <20210527190124.440372-6-paulmck@kernel.org>
-X-Mailer: git-send-email 2.31.1.189.g2e36527f23
-In-Reply-To: <20210527190042.GA438700@paulmck-ThinkPad-P17-Gen-1>
-References: <20210527190042.GA438700@paulmck-ThinkPad-P17-Gen-1>
+        id S236606AbhE0TDt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 May 2021 15:03:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54070 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236140AbhE0TDN (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 27 May 2021 15:03:13 -0400
+Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2DA5CC061761;
+        Thu, 27 May 2021 12:01:39 -0700 (PDT)
+Received: from zn.tnic (p200300ec2f0f02007e50b358e2406320.dip0.t-ipconnect.de [IPv6:2003:ec:2f0f:200:7e50:b358:e240:6320])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 05AE51EC01DF;
+        Thu, 27 May 2021 21:01:37 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1622142097;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=3McnNCepB5hW/fju+vVEoOY+HqLuey0+yRIpnzxlez8=;
+        b=BQ3DtOWZmcw2ASN1yYM0XjgySvZ2JuWGx5TB1e7aQFx3lFDZzauJQ4xr5m/3soSaMkrG+b
+        K23V3prSqm1wCykboY6Z/V1DuQinqBcdQLVtaKwS2Y9YC5hiHJcZc8LNXiKz/obMfIyyN9
+        iEZpMgNjNzwUhFOuvcmv0r1jG2MYTnI=
+Date:   Thu, 27 May 2021 21:01:35 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
+Cc:     Borislav Petkov <bp@suse.de>, James Feeney <james@nurealm.net>,
+        linux-smp@vger.kernel.org, Jens Axboe <axboe@kernel.dk>,
+        lkml <linux-kernel@vger.kernel.org>,
+        Zhang Rui <rui.zhang@intel.com>, x86-ml <x86@kernel.org>
+Subject: Re: [PATCH] x86/thermal: Fix LVT thermal setup for SMI delivery mode
+Message-ID: <YK/sjypdlYbk/NHC@zn.tnic>
+References: <YKYqABhSTTUG8cgV@zn.tnic>
+ <a264eaef-1c94-77e1-dfbf-e436a41588be@nurealm.net>
+ <YKjJfu4kRDflQS5e@zn.tnic>
+ <373464e3-b8a0-0fe0-b890-41df0eecf090@nurealm.net>
+ <YKqLSqIM7Gi5x+IA@zn.tnic>
+ <b550a241-2097-cf4b-cc41-e4d0a45cda72@nurealm.net>
+ <YKtbBXZGpVZS1M4R@zn.tnic>
+ <1f6c70f4-6680-d6ea-465a-548dc7698317@nurealm.net>
+ <YK905sC/2cVOYo6I@zn.tnic>
+ <d2d7d50f274d5143305282c99491ebe590f33ccd.camel@linux.intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <d2d7d50f274d5143305282c99491ebe590f33ccd.camel@linux.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Feng Tang <feng.tang@intel.com>
+On Thu, May 27, 2021 at 11:09:59AM -0700, Srinivas Pandruvada wrote:
+> My guess is that system is booting hot sometimes. SMM started fan or
+> some cooling and set a temperature threshold. It is waiting for thermal
+> interrupt for temperature threshold, which it never got.
 
-Currently when an unstable clocksource is detected, the raw counters
-of that clocksource and watchdog will be printed, which can only be
-understood after some math calculation.  So print the existing delta in
-nanoseconds to make it easier for humans to check the results.
+Are you saying that that replication of lvtthmr_init to the APs in
+intel_init_thermal() is absolutely needed on those SMI machines running
+hot?
 
-[ paulmck: Fix typo. ]
-Signed-off-by: Feng Tang <feng.tang@intel.com>
-Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
----
- kernel/time/clocksource.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+That thing:
 
-diff --git a/kernel/time/clocksource.c b/kernel/time/clocksource.c
-index bbe1bcf44ffa..4485635b69f5 100644
---- a/kernel/time/clocksource.c
-+++ b/kernel/time/clocksource.c
-@@ -406,10 +406,10 @@ static void clocksource_watchdog(struct timer_list *unused)
- 		if (abs(cs_nsec - wd_nsec) > md) {
- 			pr_warn("timekeeping watchdog on CPU%d: Marking clocksource '%s' as unstable because the skew is too large:\n",
- 				smp_processor_id(), cs->name);
--			pr_warn("                      '%s' wd_now: %llx wd_last: %llx mask: %llx\n",
--				watchdog->name, wdnow, wdlast, watchdog->mask);
--			pr_warn("                      '%s' cs_now: %llx cs_last: %llx mask: %llx\n",
--				cs->name, csnow, cslast, cs->mask);
-+			pr_warn("                      '%s' wd_nsec: %lld wd_now: %llx wd_last: %llx mask: %llx\n",
-+				watchdog->name, wd_nsec, wdnow, wdlast, watchdog->mask);
-+			pr_warn("                      '%s' cs_nsec: %lld cs_now: %llx cs_last: %llx mask: %llx\n",
-+				cs->name, cs_nsec, csnow, cslast, cs->mask);
- 			if (curr_clocksource == cs)
- 				pr_warn("                      '%s' is current clocksource.\n", cs->name);
- 			else if (curr_clocksource)
+         * If BIOS takes over the thermal interrupt and sets its interrupt
+         * delivery mode to SMI (not fixed), it restores the value that the
+         * BIOS has programmed on AP based on BSP's info we saved since BIOS
+         * is always setting the same value for all threads/cores.
+
+?
+
+Me moving that lvtthmr_init read later would replicate the wrong value
+because we'd soft-disable the APIC and thus the core would lockup
+waiting...
+
+The other interesting thing is that the core would always lockup when
+trying to IPI another core to remote-flush the TLBs.
+
 -- 
-2.31.1.189.g2e36527f23
+Regards/Gruss,
+    Boris.
 
+https://people.kernel.org/tglx/notes-about-netiquette
