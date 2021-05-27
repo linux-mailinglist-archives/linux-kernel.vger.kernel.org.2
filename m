@@ -2,91 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F1F3C393296
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 17:42:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 64B2E39329E
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 17:43:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235148AbhE0Pnh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 May 2021 11:43:37 -0400
-Received: from ms.lwn.net ([45.79.88.28]:47622 "EHLO ms.lwn.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233848AbhE0Png (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 May 2021 11:43:36 -0400
-Received: from localhost (unknown [IPv6:2601:281:8300:104d::5f6])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ms.lwn.net (Postfix) with ESMTPSA id B95322B7;
-        Thu, 27 May 2021 15:41:32 +0000 (UTC)
-DKIM-Filter: OpenDKIM Filter v2.11.0 ms.lwn.net B95322B7
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lwn.net; s=20201203;
-        t=1622130092; bh=FMSKn4e0PiNZmGAn49x7L99C4DLbqARxZqL3Z9qcmcg=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=jx+OhiAVhkww8yizLhUkbhoge+62/ESNfylfnXqTvZLoxAFcssCQAoFLAf3s2Ydes
-         GX/S4ceeQstUhJlcuUFWirrW2n6fIEnJ+K40es4m18j0jzufcSHSiz6bouLCMyw6Oy
-         970nmPiSP3y/vnOVRXkxVtm2kh5RfieCiqfK03/MS6dqitQSYdfQU5YAJfpWW3IqRK
-         +srS/lU+2BkRTcJCXaS/XjQrVj9NlMVQCTyRfIC3KLI3/IOJw1nMxuwmf/eQ4uqUDQ
-         U1tOdABTVtEl9IgiymokjGTqLDn1lOSj2jRuDnaPetBqUtTOhP0vWlXb/jM6VFdf56
-         ceqOSGeJ/8tXw==
-From:   Jonathan Corbet <corbet@lwn.net>
-To:     Peter Oskolkov <posk@google.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-api <linux-api@vger.kernel.org>,
-        Paul Turner <pjt@google.com>, Ben Segall <bsegall@google.com>,
-        Peter Oskolkov <posk@posk.io>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Andrei Vagin <avagin@google.com>,
-        Jim Newsome <jnewsome@torproject.org>
-Subject: Re: [RFC PATCH v0.1 0/9] UMCG early preview/RFC patchset
-In-Reply-To: <CAPNVh5feas6o_8pk5-kiujTDJf6XT4uxapxC4eZokaj+iv=rqQ@mail.gmail.com>
-References: <20210520183614.1227046-1-posk@google.com>
- <87mtspm7fe.fsf@meer.lwn.net>
- <CAPNVh5eV+CtY74_JMv6_Bm5aCVBh_F9hkWLT6v3BT=H0UwodUg@mail.gmail.com>
- <87eee0m8ez.fsf@meer.lwn.net>
- <CAPNVh5fhkgscs44Lpj3DPBrA9NrhFohUpRwpT2iMM1BDBcLW4A@mail.gmail.com>
- <87wnrrlwv0.fsf@meer.lwn.net>
- <CAPNVh5feas6o_8pk5-kiujTDJf6XT4uxapxC4eZokaj+iv=rqQ@mail.gmail.com>
-Date:   Thu, 27 May 2021 09:41:32 -0600
-Message-ID: <87h7io421f.fsf@meer.lwn.net>
+        id S235338AbhE0PpO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 May 2021 11:45:14 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:41359 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235163AbhE0PpH (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 27 May 2021 11:45:07 -0400
+Received: from mail-vs1-f70.google.com ([209.85.217.70])
+        by youngberry.canonical.com with esmtps  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.93)
+        (envelope-from <krzysztof.kozlowski@canonical.com>)
+        id 1lmIAX-0000cA-2n
+        for linux-kernel@vger.kernel.org; Thu, 27 May 2021 15:43:33 +0000
+Received: by mail-vs1-f70.google.com with SMTP id v15-20020a67c00f0000b029023607a23f3dso335421vsi.10
+        for <linux-kernel@vger.kernel.org>; Thu, 27 May 2021 08:43:33 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=ZQVWtV7m0NLkPzzJ083vgY3XbeH21bsEYpj4swSqtgE=;
+        b=MP+FZb6jr1C6kKKuyZGt4jo9QtR58nVlmXQ5ht3Iky+Re0K9eKAaRNHIsTZa7keYz5
+         /xy6DXwmgQ7uPKUYRdy0H9i/yXRL35YmwGC5g0oUlQOGG9p/HqySVbL1rrBTE8VneSu4
+         C/uGVxhNUWyxxno2yl3zFFtM/57kR6olFSF5BrEr5tItGUSCuvjD1R/rAeJmhM+B3hEx
+         9Pf0sLyvSEWbS1TN0jRsrPBZM0iwvccCk0gJXOcv4GmKifs2m/q/VX3EqcZJUruYXFcw
+         C5zeOJsGKNJYzse+6YH1N1i1xGoD+v+jyu8GdTKlfKmXn/KuyAQJGdLmJu045EUqr6ak
+         IBtA==
+X-Gm-Message-State: AOAM530HwG7aHRHTMxeuwKCDIgDjSgb59M7Qk7KMrRYRbz+Osqyn0oTT
+        3YUyIjqnKEF8+8oyda8cXJyQRiOmDf2XKOpJQGmS2nI9+sdE5/Cn6goDVc62PjzIO9U0R3/hiNW
+        dEvBzC9IqO78eBWD5ayjVh+NeR1gz1nQQn4mPW4Pjzg==
+X-Received: by 2002:a1f:6dc6:: with SMTP id i189mr3061835vkc.19.1622130212144;
+        Thu, 27 May 2021 08:43:32 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxqhubj6sAjCI4/OmdOi9osEhG9hLl4OeTQ6vESKVLwJUmPVXgMoiqWaugmhKr68ST2iflsBg==
+X-Received: by 2002:a1f:6dc6:: with SMTP id i189mr3061813vkc.19.1622130211957;
+        Thu, 27 May 2021 08:43:31 -0700 (PDT)
+Received: from localhost.localdomain ([45.237.48.6])
+        by smtp.gmail.com with ESMTPSA id m27sm339087vsj.4.2021.05.27.08.43.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 27 May 2021 08:43:31 -0700 (PDT)
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Liu Shuo <b35362@freescale.com>,
+        Prabhakar Kushwaha <prabhakar@freescale.com>,
+        Li Yang <leoyang.li@nxp.com>,
+        Dipen Dudhat <Dipen.Dudhat@freescale.com>,
+        linux-kernel@vger.kernel.org
+Cc:     Dan Carpenter <dan.carpenter@oracle.com>,
+        kernel test robot <lkp@intel.com>
+Subject: [RFT PATCH v2 1/2] memory: fsl_ifc: fix leaking IO mapping on probe failure
+Date:   Thu, 27 May 2021 11:43:21 -0400
+Message-Id: <20210527154322.81253-1-krzysztof.kozlowski@canonical.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Peter Oskolkov <posk@google.com> writes:
+On probe error the driver should unmap the IO memory.  Smatch reports:
 
-> I've pasted below the content of umcg.rst file that I'll add as a doc
-> patch to the next version of the patchset. I've also attached a PDF
-> version of the file rendered, in case it is useful. I also think that
-> it is a bit early for manpages - I expect the API and/or behavior to
-> change quite a bit before this is all merged. I'm also not completely
-> sure whether the manpages should describe the "porcelain API" or the
-> "plumbing API" (see the .rst below).
->
-> Please let me know if you have any questions, comments, or suggestions.
+  drivers/memory/fsl_ifc.c:298 fsl_ifc_ctrl_probe() warn: 'fsl_ifc_ctrl_dev->gregs' not released on lines: 298.
 
-So this is very helpful, thanks.  I've been through it once, and have
-some overall comments.
+Fixes: a20cbdeffce2 ("powerpc/fsl: Add support for Integrated Flash Controller")
+Reported-by: kernel test robot <lkp@intel.com>
+Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
+Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
 
- - Parts of it read more like a requirements document.  A document going
-   into the kernel should describe what the code actually does, not what
-   we think it should be.
+---
 
- - I would make a serious effort to get a handle on the terminology.
-   The term "kernel thread" has a meaning other than the one you give
-   it; saying "kernel thread" here will lead to a lot of confusion.  I
-   hesitate to suggest terms because I'm terrible at naming (just ask my
-   kids), but I would pick clear and concise names for your "server
-   threads" and "worker threads", then stick to them.
+Only build tested.
 
- - The library documentation is good to have, but it will really be
-   necessary to document the system calls as well.  *That* is the part
-   that the kernel community will have to support forever if this is
-   merged.
+Changes since v1:
+1. None
+---
+ drivers/memory/fsl_ifc.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-Thanks,
+diff --git a/drivers/memory/fsl_ifc.c b/drivers/memory/fsl_ifc.c
+index 89f99b5b6450..a6324044a085 100644
+--- a/drivers/memory/fsl_ifc.c
++++ b/drivers/memory/fsl_ifc.c
+@@ -219,8 +219,7 @@ static int fsl_ifc_ctrl_probe(struct platform_device *dev)
+ 	fsl_ifc_ctrl_dev->gregs = of_iomap(dev->dev.of_node, 0);
+ 	if (!fsl_ifc_ctrl_dev->gregs) {
+ 		dev_err(&dev->dev, "failed to get memory region\n");
+-		ret = -ENODEV;
+-		goto err;
++		return -ENODEV;
+ 	}
+ 
+ 	if (of_property_read_bool(dev->dev.of_node, "little-endian")) {
+@@ -295,6 +294,7 @@ static int fsl_ifc_ctrl_probe(struct platform_device *dev)
+ 	free_irq(fsl_ifc_ctrl_dev->irq, fsl_ifc_ctrl_dev);
+ 	irq_dispose_mapping(fsl_ifc_ctrl_dev->irq);
+ err:
++	iounmap(fsl_ifc_ctrl_dev->gregs);
+ 	return ret;
+ }
+ 
+-- 
+2.27.0
 
-jon
