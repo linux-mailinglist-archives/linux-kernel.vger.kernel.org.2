@@ -2,81 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 78FAA392A2A
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 11:01:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2FF25392A47
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 11:11:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235567AbhE0JCk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 May 2021 05:02:40 -0400
-Received: from szxga02-in.huawei.com ([45.249.212.188]:2433 "EHLO
-        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235392AbhE0JCj (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 May 2021 05:02:39 -0400
-Received: from dggeml768-chm.china.huawei.com (unknown [172.30.72.55])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4FrMD32bKTz670b;
-        Thu, 27 May 2021 16:58:11 +0800 (CST)
-Received: from dggpeml500020.china.huawei.com (7.185.36.88) by
- dggeml768-chm.china.huawei.com (10.1.199.178) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2176.2; Thu, 27 May 2021 17:01:04 +0800
-Received: from huawei.com (10.175.127.227) by dggpeml500020.china.huawei.com
- (7.185.36.88) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Thu, 27 May
- 2021 17:01:03 +0800
-From:   Baokun Li <libaokun1@huawei.com>
-To:     <rostedt@goodmis.org>, <mingo@redhat.com>,
-        <linux-kernel@vger.kernel.org>
-CC:     <weiyongjun1@huawei.com>, <yuehaibing@huawei.com>,
-        <yangjihong1@huawei.com>, <yukuai3@huawei.com>,
-        <libaokun1@huawei.com>
-Subject: [PATCH -next] tracing: Remove set but not used variable 'ret'
-Date:   Thu, 27 May 2021 17:10:32 +0800
-Message-ID: <20210527091032.3878436-1-libaokun1@huawei.com>
-X-Mailer: git-send-email 2.25.4
+        id S235624AbhE0JNC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 May 2021 05:13:02 -0400
+Received: from foss.arm.com ([217.140.110.172]:54480 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230111AbhE0JNB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 27 May 2021 05:13:01 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id DE2DD13A1;
+        Thu, 27 May 2021 02:11:27 -0700 (PDT)
+Received: from e125579.fritz.box (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 045E63F73D;
+        Thu, 27 May 2021 02:11:25 -0700 (PDT)
+From:   Dietmar Eggemann <dietmar.eggemann@arm.com>
+To:     Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>
+Cc:     Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] debugfs: Fix debugfs_read_file_str()
+Date:   Thu, 27 May 2021 11:11:05 +0200
+Message-Id: <20210527091105.258457-1-dietmar.eggemann@arm.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.175.127.227]
-X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
- dggpeml500020.china.huawei.com (7.185.36.88)
-X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fixes gcc '-Wunused-but-set-variable' warning:
+Read the entire size of the buffer, including the trailing new line
+character.
+Discovered while reading the sched domain names of CPU0:
 
-kernel/trace/trace_events_hist.c: In function 'unregister_field_var_hists':
-kernel/trace/trace_events_hist.c:5228:6: warning:
- variable ‘ret’ set but not used [-Wunused-but-set-variable]
+before:
 
-It never used since introduction.
+cat /sys/kernel/debug/sched/domains/cpu0/domain*/name
+SMTMCDIE
 
-Signed-off-by: Baokun Li <libaokun1@huawei.com>
+after:
+
+cat /sys/kernel/debug/sched/domains/cpu0/domain*/name
+SMT
+MC
+DIE
+
+Fixes: 9af0440ec86eb ("debugfs: Implement debugfs_create_str()")
+Signed-off-by: Dietmar Eggemann <dietmar.eggemann@arm.com>
 ---
- kernel/trace/trace_events_hist.c | 5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
+ fs/debugfs/file.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/kernel/trace/trace_events_hist.c b/kernel/trace/trace_events_hist.c
-index c1abd63f1d6c..af4da32f7eab 100644
---- a/kernel/trace/trace_events_hist.c
-+++ b/kernel/trace/trace_events_hist.c
-@@ -5225,13 +5225,12 @@ static void unregister_field_var_hists(struct hist_trigger_data *hist_data)
- 	struct trace_event_file *file;
- 	unsigned int i;
- 	char *cmd;
--	int ret;
+diff --git a/fs/debugfs/file.c b/fs/debugfs/file.c
+index e813acfaa6e8..ba7c01cd9a5d 100644
+--- a/fs/debugfs/file.c
++++ b/fs/debugfs/file.c
+@@ -893,7 +893,7 @@ ssize_t debugfs_read_file_str(struct file *file, char __user *user_buf,
  
- 	for (i = 0; i < hist_data->n_field_var_hists; i++) {
- 		file = hist_data->field_var_hists[i]->hist_data->event_file;
- 		cmd = hist_data->field_var_hists[i]->cmd;
--		ret = event_hist_trigger_func(&trigger_hist_cmd, file,
--					      "!hist", "hist", cmd);
-+		event_hist_trigger_func(&trigger_hist_cmd, file,
-+					"!hist", "hist", cmd);
- 	}
- }
+ 	copy[copy_len] = '\n';
  
+-	ret = simple_read_from_buffer(user_buf, count, ppos, copy, copy_len);
++	ret = simple_read_from_buffer(user_buf, count, ppos, copy, len);
+ 	kfree(copy);
+ 
+ 	return ret;
 -- 
-2.25.4
+2.25.1
 
