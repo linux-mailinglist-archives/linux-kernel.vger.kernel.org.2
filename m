@@ -2,106 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 92BE9392511
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 04:49:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EEEC0392518
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 04:51:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234085AbhE0CvN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 May 2021 22:51:13 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:62702 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233942AbhE0CvK (ORCPT
+        id S234155AbhE0Cx3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 May 2021 22:53:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59430 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233942AbhE0Cx2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 May 2021 22:51:10 -0400
-Received: from pps.filterd (m0098399.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 14R2hERx097263;
-        Wed, 26 May 2021 22:49:32 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : references : mime-version : content-type :
- in-reply-to; s=pp1; bh=0iSdH53yde7QZlYgxnw+cgGzLsxWCbFs5wz8WfelHW8=;
- b=Yra3u6Wdb5qA8dzE+EFqLxhvVfIe5MzpE305IlFDeRqwEXDg3GPlQTw85l+hAHJg2jkM
- w64RIftlgMPqy2Leq5aFQdUKVwMrA9xN2zggvPLEAfb6nRf85zUURzyXrkRg/R6n36bc
- hXAZ2pJrSQp5tXL/PfIV4iQ5xgkvzu15nBJfI9+uJT1o2njgEEN9EE4CDK8DTEbbA2sw
- 4gE1siEN7G1WRvdoGA+Sil+yHteIAjjyB9ti43kMlkUvilDxvJaK1SbnuC47SzZjGVUR
- KZZI/eqlEdp3qvb0Dpov+HCxCOTrtjf1j1VhzsvZVoRGWQLyUyjOAtLQV9GDyCmCIgs0 jg== 
-Received: from ppma04ams.nl.ibm.com (63.31.33a9.ip4.static.sl-reverse.com [169.51.49.99])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 38t2vx05bp-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 26 May 2021 22:49:32 -0400
-Received: from pps.filterd (ppma04ams.nl.ibm.com [127.0.0.1])
-        by ppma04ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 14R2mLBH007711;
-        Thu, 27 May 2021 02:49:29 GMT
-Received: from b06cxnps4076.portsmouth.uk.ibm.com (d06relay13.portsmouth.uk.ibm.com [9.149.109.198])
-        by ppma04ams.nl.ibm.com with ESMTP id 38s1r48x4a-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 27 May 2021 02:49:29 +0000
-Received: from d06av22.portsmouth.uk.ibm.com (d06av22.portsmouth.uk.ibm.com [9.149.105.58])
-        by b06cxnps4076.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 14R2nRKs25428430
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 27 May 2021 02:49:27 GMT
-Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 8AF784C040;
-        Thu, 27 May 2021 02:49:27 +0000 (GMT)
-Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 30BCF4C044;
-        Thu, 27 May 2021 02:49:27 +0000 (GMT)
-Received: from localhost (unknown [9.85.91.152])
-        by d06av22.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Thu, 27 May 2021 02:49:27 +0000 (GMT)
-Date:   Thu, 27 May 2021 08:19:26 +0530
-From:   riteshh <riteshh@linux.ibm.com>
-To:     chenyichong <chenyichong@uniontech.com>
-Cc:     tytso@mit.edu, adilger.kernel@dilger.ca,
-        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] use local variables ei instead of invoking function
- EXT4_I
-Message-ID: <20210527024926.oqfxngkm4phgrim4@riteshh-domain>
-References: <20210526052930.11278-1-chenyichong@uniontech.com>
+        Wed, 26 May 2021 22:53:28 -0400
+Received: from mail-pf1-x42f.google.com (mail-pf1-x42f.google.com [IPv6:2607:f8b0:4864:20::42f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04B0AC061574
+        for <linux-kernel@vger.kernel.org>; Wed, 26 May 2021 19:51:54 -0700 (PDT)
+Received: by mail-pf1-x42f.google.com with SMTP id p39so2517213pfw.8
+        for <linux-kernel@vger.kernel.org>; Wed, 26 May 2021 19:51:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=D9m5HFb8leU14rBoJH9HeAj1juzBFPxGY68vNNZoXG4=;
+        b=wZSqNswK/P2AvhAXVxEiPlPd82P/u3CpBa+URRl8gUOd/uTQBUmqez9UTX+WVrmljj
+         NNcEEhmYVqoJhf+zGwYR1/p8U5/ihpeoPlry0a9pVvtgjJsSaotA5vFNn0EngVsxkyOA
+         8KqAxwpm3tL9+JcDtZEhEloBxAirq1hXuYna8wPjANCNozx+obu5sja3mouDIkPtptmk
+         zP81cJejXTpVQsLWuW3YUEw2I1bH9aJDIQhCOVoLGl6rWjqXHDb97aEwiTwpir4VZ3U0
+         XW8tPjUjvvZGqOHHJz3ZZqNVOK+bcpBY3UHB+/7sCc+RN2cje+QtINuQJJslx3vKmK+s
+         1GpA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=D9m5HFb8leU14rBoJH9HeAj1juzBFPxGY68vNNZoXG4=;
+        b=dQ9XsHu3IfU/Qhm9wNinJjQ/yPPevWl/0ge7HKw8SowMtZ1xIEeAxKAbVr/I/scX8I
+         KEdna1bKzWZ8IEvwrH2R8Tw33oJa7FGMtqeWBE8XaBJVMx3UNH1DjGzt0WGTcwWHdGuz
+         4VC82CDwEbJF+k8WmMbJYIpU3TGtpNzuDQQdnd3mWjitF+JCBnlMwgo/WMXwS+JNrm8a
+         vTzingODu1sFlDnQMLxdal1n7Crd/EB5r0KHi5KWojl0o4nDK9dFMEueerBYU3/l7kgW
+         ZB+7CEUT9xyhAfla1GpCSw7/pjeUoNSb5IrWoX3G2KOQMVdjcAxmdCS3FhBNMBdrysPj
+         C+WA==
+X-Gm-Message-State: AOAM532JXQnZM2H8YlKKItPzFqCQS61GTf1d1AZOphblLjjH9htqZXe9
+        3s8dDOzQ/5DRZmwh/gBCgoLw6FUSFY62w1t+WzHV1w==
+X-Google-Smtp-Source: ABdhPJyxcexXsugE1m+I8Rfx9Y6j9VCWne3erTHCHADhrzsKsFule1A+ScJsVC/GsrhNUUrN2wN4AEHdhEYR6RvpiGE=
+X-Received: by 2002:a63:6547:: with SMTP id z68mr1591428pgb.341.1622083914474;
+ Wed, 26 May 2021 19:51:54 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210526052930.11278-1-chenyichong@uniontech.com>
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: twk9c-cgpcFX2PAQQslN-EUYJSzJ0JJj
-X-Proofpoint-GUID: twk9c-cgpcFX2PAQQslN-EUYJSzJ0JJj
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
- definitions=2021-05-27_01:2021-05-26,2021-05-27 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0 suspectscore=0
- clxscore=1011 mlxscore=0 lowpriorityscore=0 bulkscore=0 phishscore=0
- priorityscore=1501 impostorscore=0 adultscore=0 malwarescore=0
- mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104190000 definitions=main-2105270015
+References: <20210526025625.601023-1-swboyd@chromium.org> <20210526025625.601023-2-swboyd@chromium.org>
+ <CAMZfGtVdzwjJLuUvcmgivKZNU1TK+ePFH9wgcm6jH86FWFHbJA@mail.gmail.com>
+ <d6a4c360-0bbc-e36f-0824-04562c92f411@suse.cz> <CAE-0n512-XLKetgOo61reSBu=27zTttC1YK2iRjNuGrLBu+q5w@mail.gmail.com>
+In-Reply-To: <CAE-0n512-XLKetgOo61reSBu=27zTttC1YK2iRjNuGrLBu+q5w@mail.gmail.com>
+From:   Muchun Song <songmuchun@bytedance.com>
+Date:   Thu, 27 May 2021 10:51:18 +0800
+Message-ID: <CAMZfGtW9yp60p=wTob3oX2Gasy7a9RQPoCuV85zHA=kjCA8mUA@mail.gmail.com>
+Subject: Re: [External] [PATCH v2 1/4] slub: Restore slub_debug=- behavior
+To:     Stephen Boyd <swboyd@chromium.org>
+Cc:     Vlastimil Babka <vbabka@suse.cz>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Christoph Lameter <cl@linux.com>,
+        Pekka Enberg <penberg@kernel.org>,
+        David Rientjes <rientjes@google.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        Petr Mladek <pmladek@suse.com>, Joe Perches <joe@perches.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 21/05/26 01:29PM, chenyichong wrote:
+On Thu, May 27, 2021 at 4:20 AM Stephen Boyd <swboyd@chromium.org> wrote:
+>
+> Quoting Vlastimil Babka (2021-05-26 03:39:54)
+> > On 5/26/21 6:04 AM, Muchun Song wrote:
+> > > On Wed, May 26, 2021 at 10:56 AM Stephen Boyd <swboyd@chromium.org> wrote:
+> > >>
+> > >> Passing slub_debug=- on the kernel commandline is supposed to disable
+> > >> slub debugging. This is especially useful with CONFIG_SLUB_DEBUG_ON
+> > >> where the default is to have slub debugging enabled in the build. Due to
+> > >> some code reorganization this behavior was dropped, but the code to make
+> > >> it work mostly stuck around. Restore the previous behavior by disabling
+> > >> the static key when we parse the commandline and see that we're trying
+> > >> to disable slub debugging.
+> > >>
+> > >> Cc: Vlastimil Babka <vbabka@suse.cz>
+> > >> Fixes: e17f1dfba37b ("mm, slub: extend slub_debug syntax for multiple blocks")
+> >
+> > Acked-by: Vlastimil Babka <vbabka@suse.cz>
+> >
+> > >
+> > > Is it caused by the commit ca0cab65ea2b ("mm, slub: introduce static
+> > > key for slub_debug()")?
+> >
+> > Yep, looks like a better Fixes: candidate.
+> >
+>
+> Fixed it. Thanks.
 
-Thanks for the patch. Looks good to me.
-Feel free to add
+With that fix. Please feel free to add:
 
-Reviewed-by: Ritesh Harjani <riteshh@linux.ibm.com>
+Reviewed-by: Muchun Song <songmuchun@bytedance.com>
 
-
-> Signed-off-by: chenyichong <chenyichong@uniontech.com>
-> ---
->  fs/ext4/inode.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
-> index fe6045a46599..a5c4cd1c757b 100644
-> --- a/fs/ext4/inode.c
-> +++ b/fs/ext4/inode.c
-> @@ -374,7 +374,7 @@ void ext4_da_update_reserve_space(struct inode *inode,
->  	ei->i_reserved_data_blocks -= used;
->  	percpu_counter_sub(&sbi->s_dirtyclusters_counter, used);
->
-> -	spin_unlock(&EXT4_I(inode)->i_block_reservation_lock);
-> +	spin_unlock(&ei->i_block_reservation_lock);
->
->  	/* Update quota subsystem for data blocks */
->  	if (quota_claim)
-> --
-> 2.20.1
->
->
->
+Thanks.
