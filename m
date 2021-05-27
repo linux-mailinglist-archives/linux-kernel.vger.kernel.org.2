@@ -2,116 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F4253939CA
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 01:55:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 273493939CE
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 01:56:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236851AbhE0X53 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 May 2021 19:57:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44796 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236899AbhE0X4W (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 May 2021 19:56:22 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 71680613E6;
-        Thu, 27 May 2021 23:54:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1622159688;
-        bh=hD8/N+fF2FkE4LluW3yq8kxRpk38PAPjA3KU3mn9Xt4=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=Ajk3u6/5kUvCA8Lb3RSDPrjQIeInnrxmedV2RMUhzStjfVv4/lAP8EJFFhqHY+D5F
-         E3Mnkc6O/tpkGWNWEgwFB7asfLmnegDYfU1qdf9niXGUKCYkXZG0fx3cm+Kz2U+Wyd
-         86afZhUHv8reDkgmispBqj7sjpqOpe/gejFGSwaQQz5uQY7XJs4/fVhcTh9iSQNA7f
-         BSDKiaL1RiKKQ9/42IZKB4a28WBaUJoHU0IR6RbYHMTkXUUo2heTOFvDN2KxHMAZrO
-         o55/NHO+PfU7v9o0jmVZ9jM6o/XeoRllA+77LtMcF4FBt7ni1Q4Q0g3qo3ehexNsZb
-         x/ViV4QBti10w==
-Date:   Thu, 27 May 2021 18:54:47 -0500
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     Yang Li <yang.lee@linux.alibaba.com>
-Cc:     bhelgaas@google.com, tglx@linutronix.de, mingo@redhat.com,
-        bp@alien8.de, x86@kernel.org, hpa@zytor.com,
-        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>
-Subject: Re: [PATCH] x86/pci: use true and false for bool variable
-Message-ID: <20210527235447.GA1446759@bjorn-Precision-5520>
+        id S235184AbhE0X60 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 May 2021 19:58:26 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:37652 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235458AbhE0X5n (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 27 May 2021 19:57:43 -0400
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1622159767;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=Z5UWkx6Wnl65X6YJnmTsZ2D7MvQO0yZczFWAIiQ/a0M=;
+        b=Ext7pp+5dGsbUIMORCWNxug9W3FXaKax+xsFmcKM0MOYNb978Xc05RUO6+h37IfKYjR1Up
+        EAvSANiL7zx7VJJtgplCT77kP7n6ejx1ANuFay3d6IUZYPYzxcSMIlBylVe4jR9ldUzvI0
+        QmNSE/bEa/07InGUr9qd/vapmnulFb1tmgM1eMNnb5ScrxyuEuRQDUuqF3BSxNMUYQHP3M
+        h3uRF9nwP1GzMq489aBeGB1LaC2AQ5ur1qzKiPwwFO+edUHwHBSuPM9jnh+AMj+pBfmixW
+        Flcg6uftwkrQOB7WftQ8bLHL/eDduu78t180ISfH0EMhxel9fiNnUhm8hbTYhA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1622159767;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=Z5UWkx6Wnl65X6YJnmTsZ2D7MvQO0yZczFWAIiQ/a0M=;
+        b=Uhs8WBgU+I0HvuuiQ9cSoYSASwQVhvHkVAQJ3IGeOhUSotGcySZ9VBUf3MjBVRtlwFmtT8
+        aaud0SBul2Lh8MBA==
+To:     Paolo Bonzini <pbonzini@redhat.com>,
+        syzbot <syzbot+71271244f206d17f6441@syzkaller.appspotmail.com>,
+        bp@alien8.de, dave.hansen@linux.intel.com, hpa@zytor.com,
+        jarkko@kernel.org, jmattson@google.com, joro@8bytes.org,
+        kan.liang@linux.intel.com, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-sgx@vger.kernel.org,
+        mingo@redhat.com, peterz@infradead.org, seanjc@google.com,
+        steve.wahl@hpe.com, syzkaller-bugs@googlegroups.com,
+        vkuznets@redhat.com, wanpengli@tencent.com, x86@kernel.org
+Subject: Re: [syzbot] WARNING in x86_emulate_instruction
+In-Reply-To: <0f6e6423-f93a-5d96-f452-4e08dbad9b23@redhat.com>
+References: <000000000000f3fc9305c2e24311@google.com> <87v9737pt8.ffs@nanos.tec.linutronix.de> <0f6e6423-f93a-5d96-f452-4e08dbad9b23@redhat.com>
+Date:   Fri, 28 May 2021 01:56:06 +0200
+Message-ID: <87sg277muh.ffs@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1615794000-102771-1-git-send-email-yang.lee@linux.alibaba.com>
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-[+cc Krzysztof]
+On Fri, May 28 2021 at 01:21, Paolo Bonzini wrote:
+> On 28/05/21 00:52, Thomas Gleixner wrote:
+>> 
+>> So this is stale for a week now. It's fully reproducible and nobody
+>> can't be bothered to look at that?
+>> 
+>> What's wrong with you people?
+>
+> Actually there's a patch on list ("KVM: X86: Fix warning caused by stale 
+> emulation context").  Take care.
 
-On Mon, Mar 15, 2021 at 03:40:00PM +0800, Yang Li wrote:
-> fixed the following coccicheck:
-> ./arch/x86/pci/mmconfig-shared.c:464:9-10: WARNING: return of 0/1 in
-> function 'is_mmconf_reserved' with return type bool
-> ./arch/x86/pci/mmconfig-shared.c:493:5-6: WARNING: return of 0/1 in
-> function 'is_mmconf_reserved' with return type bool
-> ./arch/x86/pci/mmconfig-shared.c:501:9-10: WARNING: return of 0/1 in
-> function 'is_mmconf_reserved' with return type bool
-> ./arch/x86/pci/mmconfig-shared.c:522:5-6: WARNING: return of 0/1 in
-> function 'is_mmconf_reserved' with return type bool
-> 
-> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-> Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
+That's useful, but does not change the fact that nobody bothered to
+reply to this report ...
 
-Applied to pci/misc for v5.14, thanks!
-
-Did you check all of drivers/pci/ for similar warnings, too?
-
-> ---
->  arch/x86/pci/mmconfig-shared.c | 10 +++++-----
->  1 file changed, 5 insertions(+), 5 deletions(-)
-> 
-> diff --git a/arch/x86/pci/mmconfig-shared.c b/arch/x86/pci/mmconfig-shared.c
-> index de6bf0e..758cbfe 100644
-> --- a/arch/x86/pci/mmconfig-shared.c
-> +++ b/arch/x86/pci/mmconfig-shared.c
-> @@ -461,7 +461,7 @@ static bool __ref is_mmconf_reserved(check_reserved_t is_reserved,
->  	}
->  
->  	if (size < (16UL<<20) && size != old_size)
-> -		return 0;
-> +		return false;
->  
->  	if (dev)
->  		dev_info(dev, "MMCONFIG at %pR reserved in %s\n",
-> @@ -493,7 +493,7 @@ static bool __ref is_mmconf_reserved(check_reserved_t is_reserved,
->  				&cfg->res, (unsigned long) cfg->address);
->  	}
->  
-> -	return 1;
-> +	return true;
->  }
->  
->  static bool __ref
-> @@ -501,7 +501,7 @@ static bool __ref is_mmconf_reserved(check_reserved_t is_reserved,
->  {
->  	if (!early && !acpi_disabled) {
->  		if (is_mmconf_reserved(is_acpi_reserved, cfg, dev, 0))
-> -			return 1;
-> +			return true;
->  
->  		if (dev)
->  			dev_info(dev, FW_INFO
-> @@ -522,14 +522,14 @@ static bool __ref is_mmconf_reserved(check_reserved_t is_reserved,
->  	 * _CBA method, just assume it's reserved.
->  	 */
->  	if (pci_mmcfg_running_state)
-> -		return 1;
-> +		return true;
->  
->  	/* Don't try to do this check unless configuration
->  	   type 1 is available. how about type 2 ?*/
->  	if (raw_pci_ops)
->  		return is_mmconf_reserved(e820__mapped_all, cfg, dev, 1);
->  
-> -	return 0;
-> +	return false;
->  }
->  
->  static void __init pci_mmcfg_reject_broken(int early)
-> -- 
-> 1.8.3.1
-> 
