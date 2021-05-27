@@ -2,182 +2,245 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 96082392BDC
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 12:30:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BAEFE392BDD
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 12:31:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236172AbhE0Kc0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 May 2021 06:32:26 -0400
-Received: from mail-co1nam11on2076.outbound.protection.outlook.com ([40.107.220.76]:23138
-        "EHLO NAM11-CO1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S236129AbhE0KcV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 May 2021 06:32:21 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Ynth6EgSd5yHhOdTGDDqbrV2WnioR2vqocX9NSHgzt99KPngZ8nnSHtoiwLIf/tdtg5Aktf3hFeR2FV9lYWmuq1UYeFS3nuHRgjwKE+3Kqq8NB081WsthKmeYUJvBsaYikDZ9rTxY1LbCRPAphx7Fqq9mjDOxHTKuaAGdHwXJVMLfW4FMJLl0mGV+EcZs7uVLD78KEGURdJ/CGXNb6ditW46TIHJzYWXfqeya5gSnkW11vNabDok0B20bsLTtpkzNT6oCLnWxbFfRk/23qa7xSjRZe+xir5RYfRlZlXQ8sP1rKEOJLGKaUjdljbqpewyKgV9j4F0IyVgwCXa3Yv12A==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=QZh6FYjfIzxwXv/spYeekCKMRJs72vFRUKIpIpN5jr8=;
- b=IcN6pEIrh1wqs70VZK0kD89vYpqqynycKiWyAyPqb3FAAGlcizVZMIAMi8Ak0+HyF8EimRtya6bJjRzO5tVdNKpvWtATOvL8TL6hMBmKGDavMCiKqRZT09pIGX0JSXFLrKgMDlVxc9o8667ayZpFmBAcnZyW4O4pjKAvdI3p6/pB+uR5VvtWnu6DVuyRMB3ZFJK3ZbJ90Ciyslyf3nbls/1KiwOO/Gd7zxrODXO+IUyMZ7zopJf1G+UwdKPCv86msztiPSYx+ORnWgkOB1rHHNXhlKOt5eqTYE2TGquHi1FBdTuXPvsmQSSSWG1nR+fOUOXl11redGcrK2aNCAlmdA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.112.34) smtp.rcpttodomain=huawei.com smtp.mailfrom=nvidia.com;
- dmarc=pass (p=none sp=none pct=100) action=none header.from=nvidia.com;
- dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=QZh6FYjfIzxwXv/spYeekCKMRJs72vFRUKIpIpN5jr8=;
- b=I2uzaEltyfLiWwt7CuVgzvjq9BOfcQcotFWv0tcUv/3uni+TSpCwxmKA9fmRsmu8QwHwsBa5l0/RmctE1OwQFiK2NTvyZVOIC+GknEVmgJWVH5QEjwf+iHvUg5Bk1K+5eakp2bxiLmbu+WALrgoLw9yJXs63QAuYHQBNz13wyHWzi1PBbhTjnGxMYo8t/TTBrHPQqAeLyfENpROBJ7E6pHRlfriQOz64vg3Qq5a8/LKMWxbm6uMG4qhuR0xpYM6YLbs+YbrNvA5qe4/8EWRv0cmTGqYokKfl2q7YbCw/LkRdzfZqQb/x6OfLhdDpPh+Iec7ugWjol8Mzc7LfCi4ylA==
-Received: from DS7PR03CA0192.namprd03.prod.outlook.com (2603:10b6:5:3b6::17)
- by BN8PR12MB3105.namprd12.prod.outlook.com (2603:10b6:408:67::24) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4150.26; Thu, 27 May
- 2021 10:30:47 +0000
-Received: from DM6NAM11FT062.eop-nam11.prod.protection.outlook.com
- (2603:10b6:5:3b6:cafe::80) by DS7PR03CA0192.outlook.office365.com
- (2603:10b6:5:3b6::17) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4173.20 via Frontend
- Transport; Thu, 27 May 2021 10:30:47 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.112.34)
- smtp.mailfrom=nvidia.com; huawei.com; dkim=none (message not signed)
- header.d=none;huawei.com; dmarc=pass action=none header.from=nvidia.com;
-Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 216.228.112.34 as permitted sender) receiver=protection.outlook.com;
- client-ip=216.228.112.34; helo=mail.nvidia.com;
-Received: from mail.nvidia.com (216.228.112.34) by
- DM6NAM11FT062.mail.protection.outlook.com (10.13.173.40) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- 15.20.4129.25 via Frontend Transport; Thu, 27 May 2021 10:30:46 +0000
-Received: from [172.27.15.200] (172.20.145.6) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Thu, 27 May
- 2021 10:30:43 +0000
-Subject: Re: [Linuxarm] Re: [RFC PATCH 2/3] vfio/hisilicon: register the
- driver to vfio
-To:     Shameerali Kolothum Thodi <shameerali.kolothum.thodi@huawei.com>,
-        "Jason Gunthorpe" <jgg@nvidia.com>,
-        Alex Williamson <alex.williamson@redhat.com>
-CC:     liulongfang <liulongfang@huawei.com>,
-        "cohuck@redhat.com" <cohuck@redhat.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linuxarm@openeuler.org" <linuxarm@openeuler.org>,
-        "Zengtao (B)" <prime.zeng@hisilicon.com>,
-        Oren Duer <oren@nvidia.com>
-References: <20210420160457.6b91850a@x1.home.shazbot.org>
- <25d033e6-1cba-0da0-2ee7-03a14e75b8a5@huawei.com>
- <20210421121224.62382e5d@redhat.com>
- <6ea89655-31c5-233b-ca2a-fcc166b5597c@huawei.com>
- <20210512121053.GT1002214@nvidia.com>
- <3eaa3114-81b6-1bd9-c7e6-cb1541389b58@huawei.com>
- <20210513134422.GD1002214@nvidia.com>
- <e3db0c328da6411ea2ae07595ed5f6c3@huawei.com>
- <20210513110349.68e3d59d@redhat.com>
- <1035a9a9b03b43dd9f859136ed84a7f8@huawei.com>
- <20210513182413.GO1002214@nvidia.com>
- <0301a502747748968393aa3e3b0a849d@huawei.com>
-From:   Max Gurtovoy <mgurtovoy@nvidia.com>
-Message-ID: <0ed0263f-6aa7-0bfd-dc49-90308bcb512f@nvidia.com>
-Date:   Thu, 27 May 2021 13:30:40 +0300
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+        id S236177AbhE0KdB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 May 2021 06:33:01 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:34652 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235950AbhE0Kcz (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 27 May 2021 06:32:55 -0400
+Received: from imap.suse.de (imap-alt.suse-dmz.suse.de [192.168.254.47])
+        (using TLSv1.2 with cipher ECDHE-ECDSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 8A6281FD2E;
+        Thu, 27 May 2021 10:31:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1622111473; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=C82jpS4xeIsTohgovEHKIBb+iUuB9iet2QIyD905s9M=;
+        b=lbTIH8PFcitdLfrIyQmpvwuA1MEik1ELoMwHYtZuvuzBVrsa1a6LEUO7lSoV1QHKUo4aUN
+        xG3y1uCraCGHQguUnCiXX+0G8UBwl978NG8QOvE6IgI/aeshFHMB53l65aL1i/xavsLQd+
+        AHTjvmZ308HTvqr3HlWAF8iQuuVWzZI=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1622111473;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=C82jpS4xeIsTohgovEHKIBb+iUuB9iet2QIyD905s9M=;
+        b=2v4yU8LOLH2+56XgJZzjd1eCvgmPmccI5gTgwLF1kbm4UkN853ECec8v5eXu4sRao/mplA
+        HpPfcPVcsw5Q06CQ==
+Received: from director2.suse.de (director2.suse-dmz.suse.de [192.168.254.72])
+        by imap.suse.de (Postfix) with ESMTPSA id 6DBCE11A98;
+        Thu, 27 May 2021 10:31:13 +0000 (UTC)
+Date:   Thu, 27 May 2021 12:31:02 +0200
+From:   Borislav Petkov <bp@suse.de>
+To:     James Feeney <james@nurealm.net>
+Cc:     linux-smp@vger.kernel.org, Jens Axboe <axboe@kernel.dk>,
+        lkml <linux-kernel@vger.kernel.org>,
+        Zhang Rui <rui.zhang@intel.com>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        x86-ml <x86@kernel.org>
+Subject: [PATCH] x86/thermal: Fix LVT thermal setup for SMI delivery mode
+Message-ID: <YK905sC/2cVOYo6I@zn.tnic>
+References: <YKWAt1zLM2vfv4Sp@zn.tnic>
+ <e7701de5-35f3-da9d-7339-df2de6d8b3cf@nurealm.net>
+ <YKYqABhSTTUG8cgV@zn.tnic>
+ <a264eaef-1c94-77e1-dfbf-e436a41588be@nurealm.net>
+ <YKjJfu4kRDflQS5e@zn.tnic>
+ <373464e3-b8a0-0fe0-b890-41df0eecf090@nurealm.net>
+ <YKqLSqIM7Gi5x+IA@zn.tnic>
+ <b550a241-2097-cf4b-cc41-e4d0a45cda72@nurealm.net>
+ <YKtbBXZGpVZS1M4R@zn.tnic>
+ <1f6c70f4-6680-d6ea-465a-548dc7698317@nurealm.net>
 MIME-Version: 1.0
-In-Reply-To: <0301a502747748968393aa3e3b0a849d@huawei.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-Originating-IP: [172.20.145.6]
-X-ClientProxiedBy: HQMAIL107.nvidia.com (172.20.187.13) To
- HQMAIL107.nvidia.com (172.20.187.13)
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 7019c823-479b-4118-bafa-08d920fa7d18
-X-MS-TrafficTypeDiagnostic: BN8PR12MB3105:
-X-Microsoft-Antispam-PRVS: <BN8PR12MB3105CC00307205846FC304E6DE239@BN8PR12MB3105.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 1lxR3Jn07zl9d3d2aY/wazidDH/yR+2F6CF3wuyT7/PyPrXV6sbIRTpzN3Sc+yCg8BneWvJVxwZtrPM4K4/OEG0JNW5KPiCV8Iu8F7e7j4w+3fcJ3lyp73ESZpXkHsaAL+FkADjZqIAB1qwMnYGvaV8CJoBLdlgVESL+WrJ0wQmCwv3Oanea2Ha1EzEBnMnQiP2wwtED3ZN/Au6W4NFrdPLSZ9ecXGaEu2Chhz9dEF+TkViX0eGt4IpsF7vLWH7+1ipAN/mwveKVc+wsCOwMpWYDGUIISxx6uOfzbrG2M3q7cBx8fitO8Husi+Rz/8HCEBi2XDu+xkAqPL6FJ75jPsOE//rT55Xnp6QDjY5CRN2e2RHVqqLAZ4P5D9btuUxFpZTRQyzfb7qoekhZd0MAe2Ukww9kel6kyMmG33ZagfwOMi9wBooxLnDuhuvbVxzXnzhn5CsViIFhXKt9mo976BsGQ+gf33jmABcEIKpzpVkul1/qXN5qU0PoKaf9wI244lIagIubOx515yzbWlfYi+Y6nZZuYRdwtl3xUYC757TLSacyKr2qq13NW5aPbf/xdoAOrAwjnC3wQ1bjX8tcEObWFOHR1gM8ZHnB37L5MfMxI8uHoEKhdGR+aLCD8MJ7l5N2+ly9oNfy+/G3+BIMiHx5eAbBkz2+7QlgkOEXRvg0WkvV1LKcRUFHsR7a2pwObX2rpg9vxUtjaMd5GG/+JlqN0Dkj5YNcT2Wke2FxGOVGqZE9yGYodZgoHiaOl/Q88oPxrU7TyWwot26h2+XuD89/Fn/t3Fso74VrPSxhlPOiB50TtYuVg7HtiPqCMwxr
-X-Forefront-Antispam-Report: CIP:216.228.112.34;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:schybrid03.nvidia.com;CAT:NONE;SFS:(4636009)(136003)(346002)(376002)(39860400002)(396003)(46966006)(36840700001)(2616005)(70206006)(107886003)(426003)(70586007)(82310400003)(186003)(83380400001)(36906005)(8676002)(47076005)(86362001)(36756003)(16526019)(36860700001)(4326008)(82740400003)(316002)(53546011)(336012)(478600001)(7636003)(31686004)(8936002)(54906003)(16576012)(5660300002)(26005)(2906002)(356005)(31696002)(966005)(110136005)(43740500002);DIR:OUT;SFP:1101;
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 27 May 2021 10:30:46.1162
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 7019c823-479b-4118-bafa-08d920fa7d18
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.112.34];Helo=[mail.nvidia.com]
-X-MS-Exchange-CrossTenant-AuthSource: DM6NAM11FT062.eop-nam11.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN8PR12MB3105
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <1f6c70f4-6680-d6ea-465a-548dc7698317@nurealm.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Ok,
 
-On 5/27/2021 1:11 PM, Shameerali Kolothum Thodi wrote:
-> [+]
->
-> Hi,
->
->> -----Original Message-----
->> From: Jason Gunthorpe [mailto:jgg@nvidia.com]
->> Sent: 13 May 2021 19:24
->> To: Shameerali Kolothum Thodi <shameerali.kolothum.thodi@huawei.com>
->> Cc: Alex Williamson <alex.williamson@redhat.com>; liulongfang
->> <liulongfang@huawei.com>; cohuck@redhat.com;
->> linux-kernel@vger.kernel.org; linuxarm@openeuler.org
->> Subject: Re: [Linuxarm] Re: [RFC PATCH 2/3] vfio/hisilicon: register the driver to
->> vfio
->>
->> On Thu, May 13, 2021 at 05:52:56PM +0000, Shameerali Kolothum Thodi
->> wrote:
->>
->>> Since the devices we are concerned here are all integrated endpoints and if
->> the
->>> above quirk is an acceptable one, then we can use the uAPI as done in this
->>> series without overly complicating things here.
->> IMHO such a quirk in the core code should not be done. You need to
->> override this in your own driver like Max was showing.
->>
->> I think we are very close to having worked out a great solution to the
->> lingering questions on Max's last RFC, hopefully we can post an
->> updated version soon
-> We have now integrated this HiSilicon ACC live migration driver into the
-> proposed[0] vfio-pci-core subsystem framework. Basically now have
-> a new vendor extension driver based on this framework. It indeed makes it
-> easy to do the registration to vfio core and overriding of functions if required.
-> Performed some basic sanity tests with the prototype and it seems to be
-> working.
+it took me a while to find a box like yours to reproduce on. Anyway,
+here's what looks like the final fix, you could give it a run.
 
-Great news.
+Thx.
+
+---
+From: Borislav Petkov <bp@suse.de>
+Date: Thu, 27 May 2021 11:02:26 +0200
+
+There are machines out there with added value crap^WBIOS which provide an
+SMI handler for the local APIC thermal sensor interrupt. Out of reset,
+the BSP on those machines has something like 0x200 in that APIC register
+(timestamps left in because this whole issue is timing sensitive):
+
+  [    0.033858] read lvtthmr: 0x330, val: 0x200
+
+which means:
+
+ - bit 16 - the interrupt mask bit is clear and thus that interrupt is enabled
+ - bits [10:8] have 010b which means SMI delivery mode.
+
+Now, later during boot, when the kernel programs the local APIC, it
+soft-disables it temporarily through the spurious vector register:
+
+  setup_local_APIC:
+
+  	...
+
+	/*
+	 * If this comes from kexec/kcrash the APIC might be enabled in
+	 * SPIV. Soft disable it before doing further initialization.
+	 */
+	value = apic_read(APIC_SPIV);
+	value &= ~APIC_SPIV_APIC_ENABLED;
+	apic_write(APIC_SPIV, value);
+
+which means (from the SDM):
+
+"10.4.7.2 Local APIC State After It Has Been Software Disabled
+
+...
+
+* The mask bits for all the LVT entries are set. Attempts to reset these
+bits will be ignored."
+
+And this happens too:
+
+  [    0.124111] APIC: Switch to symmetric I/O mode setup
+  [    0.124117] lvtthmr 0x200 before write 0xf to APIC 0xf0
+  [    0.124118] lvtthmr 0x10200 after write 0xf to APIC 0xf0
+
+This results in CPU 0 soft lockups depending on the placement in time
+when the APIC soft-disable happens. Those soft lockups are not 100%
+reproducible and the reason for that can only be speculated as no one
+tells you what SMM does. Likely, it confuses the SMM code that the APIC
+is disabled and the thermal interrupt doesn't doesn't fire at all,
+leading to CPU 0 stuck in SMM forever...
+
+Now, before
+
+  4f432e8bb15b ("x86/mce: Get rid of mcheck_intel_therm_init()")
+
+due to how the APIC_LVTTHMR was read before APIC initialization in
+mcheck_intel_therm_init(), it would read the value with the mask bit 16
+clear and then intel_init_thermal() would replicate it onto the APs and
+all would be peachy - the thermal interrupt would remain enabled.
+
+But that commit moved that reading to a later moment in
+intel_init_thermal(), resulting in reading APIC_LVTTHMR on the BSP too
+late and with its interrupt mask bit set.
+
+Thus, revert back to the old behavior of reading the thermal LVT
+register before the APIC gets initialized.
+
+Fixes: 4f432e8bb15b ("x86/mce: Get rid of mcheck_intel_therm_init()")
+Reported-by: James Feeney <james@nurealm.net>
+Signed-off-by: Borislav Petkov <bp@suse.de>
+Cc: <stable@vger.kernel.org>
+Cc: Zhang Rui <rui.zhang@intel.com>
+Cc: Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
+Link: https://lkml.kernel.org/r/YKIqDdFNaXYd39wz@zn.tnic
+---
+ arch/x86/include/asm/thermal.h      |  4 +++-
+ arch/x86/kernel/setup.c             |  9 +++++++++
+ drivers/thermal/intel/therm_throt.c | 15 +++++++++++----
+ 3 files changed, 23 insertions(+), 5 deletions(-)
+
+diff --git a/arch/x86/include/asm/thermal.h b/arch/x86/include/asm/thermal.h
+index ddbdefd5b94f..91a7b6687c3b 100644
+--- a/arch/x86/include/asm/thermal.h
++++ b/arch/x86/include/asm/thermal.h
+@@ -3,11 +3,13 @@
+ #define _ASM_X86_THERMAL_H
+ 
+ #ifdef CONFIG_X86_THERMAL_VECTOR
++void therm_lvt_init(void);
+ void intel_init_thermal(struct cpuinfo_x86 *c);
+ bool x86_thermal_enabled(void);
+ void intel_thermal_interrupt(void);
+ #else
+-static inline void intel_init_thermal(struct cpuinfo_x86 *c) { }
++static inline void therm_lvt_init(void)				{ }
++static inline void intel_init_thermal(struct cpuinfo_x86 *c)	{ }
+ #endif
+ 
+ #endif /* _ASM_X86_THERMAL_H */
+diff --git a/arch/x86/kernel/setup.c b/arch/x86/kernel/setup.c
+index 72920af0b3c0..ff653d608d5f 100644
+--- a/arch/x86/kernel/setup.c
++++ b/arch/x86/kernel/setup.c
+@@ -44,6 +44,7 @@
+ #include <asm/pci-direct.h>
+ #include <asm/prom.h>
+ #include <asm/proto.h>
++#include <asm/thermal.h>
+ #include <asm/unwind.h>
+ #include <asm/vsyscall.h>
+ #include <linux/vmalloc.h>
+@@ -1226,6 +1227,14 @@ void __init setup_arch(char **cmdline_p)
+ 
+ 	x86_init.timers.wallclock_init();
+ 
++	/*
++	 * This needs to run before setup_local_APIC() which soft-disables the
++	 * local APIC temporarily and that masks the thermal LVT interrupt,
++	 * leading to softlockups on machines which have configured SMI
++	 * interrupt delivery.
++	 */
++	therm_lvt_init();
++
+ 	mcheck_init();
+ 
+ 	register_refined_jiffies(CLOCK_TICK_RATE);
+diff --git a/drivers/thermal/intel/therm_throt.c b/drivers/thermal/intel/therm_throt.c
+index f8e882592ba5..99abdc03c44c 100644
+--- a/drivers/thermal/intel/therm_throt.c
++++ b/drivers/thermal/intel/therm_throt.c
+@@ -621,6 +621,17 @@ bool x86_thermal_enabled(void)
+ 	return atomic_read(&therm_throt_en);
+ }
+ 
++void __init therm_lvt_init(void)
++{
++	/*
++	 * This function is only called on boot CPU. Save the init thermal
++	 * LVT value on BSP and use that value to restore APs' thermal LVT
++	 * entry BIOS programmed later
++	 */
++	if (intel_thermal_supported(&boot_cpu_data))
++		lvtthmr_init = apic_read(APIC_LVTTHMR);
++}
++
+ void intel_init_thermal(struct cpuinfo_x86 *c)
+ {
+ 	unsigned int cpu = smp_processor_id();
+@@ -630,10 +641,6 @@ void intel_init_thermal(struct cpuinfo_x86 *c)
+ 	if (!intel_thermal_supported(c))
+ 		return;
+ 
+-	/* On the BSP? */
+-	if (c == &boot_cpu_data)
+-		lvtthmr_init = apic_read(APIC_LVTTHMR);
+-
+ 	/*
+ 	 * First check if its enabled already, in which case there might
+ 	 * be some SMM goo which handles it, so we can't even put a handler
+-- 
+2.29.2
 
 
->
-> Also, we now managed to get rid of any access to Guest VF dev MMIO space
-> during the (VFIO_DEVICE_STATE_SAVING | VFIO_DEVICE_STATE_RUNNING)
-> state. However we still need to access the Guest VF MMIO space during
-> few other device states eg; VFIO_DEVICE_STATE_SAVING, VFIO_DEVICE_STATE_STOP
-> etc. These accesses are to save and restore device register states. As per our
-> analysis the Guest vCPUs are in stopped state at these device states. So I
-> hope we don't have any security related holes with these accesses.
+-- 
+Regards/Gruss,
+    Boris.
 
-We can start talking about more API's that are missing.
-
->
-> Please let us know if we miss something or anything else to be taken care of with
-> this approach.
->
-> We are planning to send out a revised RFC soon, and if there is a plan to
-> post an updated one to Max's series as mentioned above, will base
-> it on that one. Please let us know.
-
-I'll send a new version of the series soon with many improvements that 
-we'll taken from previous discussion.
-
-I'll add you as CC.
-
-
->
-> Thanks,
-> Shameer
-> [0] https://lore.kernel.org/lkml/20210310123127.GT2356281@nvidia.com/T/
->
->
+SUSE Software Solutions Germany GmbH, GF: Felix Imendörffer, HRB 36809, AG Nürnberg
