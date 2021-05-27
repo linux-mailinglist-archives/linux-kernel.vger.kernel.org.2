@@ -2,539 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D5FA439396C
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 01:50:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A24B33939D6
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 01:58:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235001AbhE0Xvi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 May 2021 19:51:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33702 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233771AbhE0Xvd (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 May 2021 19:51:33 -0400
-Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB881C061574
-        for <linux-kernel@vger.kernel.org>; Thu, 27 May 2021 16:49:58 -0700 (PDT)
-Received: by mail-lf1-x129.google.com with SMTP id f30so2669554lfj.1
-        for <linux-kernel@vger.kernel.org>; Thu, 27 May 2021 16:49:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=ux2RydXbcXokIY5aWyC6IrETHMo7qCP4nuwBOrvGpXA=;
-        b=PHEnyetL0n6T/X5d1d6M5Jmj/EvYvNRd2+3dBjiZGQsznZJJK42cNxHaAdSiHDbTvc
-         zo6MLDiKBeTK5m55XLoRm3pjJ2p0itTs53rhbu86n5A6olnoYgGop0eQXaxKyw8Rcf2k
-         q8Vgvh/VFr+nFUrjT14j7o6ASHuUlocG7t1PTATVbiLeZBEE0kTS3h9MyOcgG+1L30/j
-         WMpBqKdmm0+WT1ePeL/pdhBC1b59SCIK/tYckCNTlmPrsDwDK52dOgvPaaKtSsJpMeO/
-         Cm/ZCt5vvP/lFrtrTnE9yBf27pDnkOIP7vJS4JScDTd9aig3QGBHJm8yPcxemv6DxOQ4
-         NXWw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=ux2RydXbcXokIY5aWyC6IrETHMo7qCP4nuwBOrvGpXA=;
-        b=aMdBXsu9096nGeuOESeSXACC/jV5HLvdmAHUh46PYjJ2g64K9NDkUFjCD/iSr6v0VQ
-         YbKkCxJHnfa81uev+ZE+oOg02LErPP+Ds8gPoEEEUZ9F1hGTcSz3IChoKVCGn+Qs+ajR
-         JDXpzxoQqeOAsG91KCFivacbeuWBK8sN16BziEBSm6NF/vQw7X2tlZfVeMu4HmddDKyl
-         GnwptE1++toJu3/C8Wc15v60uPfgjSI+OJfC8IepjprOrWjbbZ4vHYFLaYN9hHYazHu/
-         S6BiNSj419ESVCUMikU9WvSc2YXWLQ8ANLzSJeACo1SSdKah3JNTLQ0yCTSkv1/flhAe
-         Tr6g==
-X-Gm-Message-State: AOAM533aJZ4Btbix1THj2wsCldht+Hdna+G95zzHxkB+2r7s9MjQCkoU
-        RdLwRnhIKtRiAeZYn7gmt47KTw==
-X-Google-Smtp-Source: ABdhPJziK0c7YZ3yJPfBYYS+R1dZ0LzVhNRV5tB+09qiLvm9dz8UVdVSFIImj/2rYwR+FayZnFLUlw==
-X-Received: by 2002:ac2:4e81:: with SMTP id o1mr3841919lfr.398.1622159396997;
-        Thu, 27 May 2021 16:49:56 -0700 (PDT)
-Received: from [192.168.1.211] ([37.153.55.125])
-        by smtp.gmail.com with ESMTPSA id x12sm143918lfd.266.2021.05.27.16.49.56
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 27 May 2021 16:49:56 -0700 (PDT)
-Subject: Re: [RFC PATCH 03/13] drm/msm/disp/dpu1: Add support for DSC
-To:     Vinod Koul <vkoul@kernel.org>, Rob Clark <robdclark@gmail.com>
-Cc:     linux-arm-msm@vger.kernel.org,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Jonathan Marek <jonathan@marek.ca>,
-        Abhinav Kumar <abhinavk@codeaurora.org>,
-        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        freedreno@lists.freedesktop.org
-References: <20210521124946.3617862-1-vkoul@kernel.org>
- <20210521124946.3617862-4-vkoul@kernel.org>
-From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Message-ID: <e92bbf19-21b0-9c6b-97fc-885ebc5cc913@linaro.org>
-Date:   Fri, 28 May 2021 02:49:55 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.0
-MIME-Version: 1.0
-In-Reply-To: <20210521124946.3617862-4-vkoul@kernel.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+        id S234061AbhE0X7f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 May 2021 19:59:35 -0400
+Received: from mga11.intel.com ([192.55.52.93]:49062 "EHLO mga11.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235491AbhE0X7I (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 27 May 2021 19:59:08 -0400
+IronPort-SDR: T2W9qIr/dtqz+GUuBWsVkMxC04o0jkwa5ItcseE6VGH2YNPw51Tzeiay9QGF7eN4inVNl5Tktx
+ Hg2wZAmEFqoA==
+X-IronPort-AV: E=McAfee;i="6200,9189,9997"; a="199820394"
+X-IronPort-AV: E=Sophos;i="5.83,228,1616482800"; 
+   d="scan'208";a="199820394"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 May 2021 16:57:32 -0700
+IronPort-SDR: EdBbJMdOe+AIAvP+bJlbPTifDhKTmzM3qg8+7htfJwckCp78t3RIrkyvxgwspQIHQK2Xq1uFGA
+ nhkMOHUu2zEQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.83,228,1616482800"; 
+   d="scan'208";a="548362372"
+Received: from viggo.jf.intel.com (HELO localhost.localdomain) ([10.54.77.144])
+  by fmsmga001.fm.intel.com with ESMTP; 27 May 2021 16:57:31 -0700
+Subject: [PATCH 0/5] x86/pkeys: PKRU manipulation bug fixes and cleanups
+To:     linux-mm@kvack.org
+Cc:     linux-kernel@vger.kernel.org,
+        Dave Hansen <dave.hansen@linux.intel.com>, tglx@linutronix.de,
+        mingo@redhat.com, bp@alien8.de, x86@kernel.org, luto@kernel.org,
+        shuah@kernel.org, babu.moger@amd.com, dave.kleikamp@oracle.com,
+        linuxram@us.ibm.com, bauerman@linux.ibm.com
+From:   Dave Hansen <dave.hansen@linux.intel.com>
+Date:   Thu, 27 May 2021 16:51:09 -0700
+Message-Id: <20210527235109.B2A9F45F@viggo.jf.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 21/05/2021 15:49, Vinod Koul wrote:
-> Display Stream Compression (DSC) is one of the hw blocks in dpu, so add
-> support by adding hw blocks for DSC
-> 
-> Signed-off-by: Vinod Koul <vkoul@kernel.org>
-> ---
->   drivers/gpu/drm/msm/Makefile                  |   1 +
->   .../gpu/drm/msm/disp/dpu1/dpu_hw_catalog.h    |  26 +++
->   drivers/gpu/drm/msm/disp/dpu1/dpu_hw_dsc.c    | 221 ++++++++++++++++++
->   drivers/gpu/drm/msm/disp/dpu1/dpu_hw_dsc.h    |  79 +++++++
->   drivers/gpu/drm/msm/disp/dpu1/dpu_hw_mdss.h   |  13 ++
->   5 files changed, 340 insertions(+)
->   create mode 100644 drivers/gpu/drm/msm/disp/dpu1/dpu_hw_dsc.c
->   create mode 100644 drivers/gpu/drm/msm/disp/dpu1/dpu_hw_dsc.h
-> 
-> diff --git a/drivers/gpu/drm/msm/Makefile b/drivers/gpu/drm/msm/Makefile
-> index 610d630326bb..fd8fc57f1f58 100644
-> --- a/drivers/gpu/drm/msm/Makefile
-> +++ b/drivers/gpu/drm/msm/Makefile
-> @@ -61,6 +61,7 @@ msm-y := \
->   	disp/dpu1/dpu_hw_blk.o \
->   	disp/dpu1/dpu_hw_catalog.o \
->   	disp/dpu1/dpu_hw_ctl.o \
-> +	disp/dpu1/dpu_hw_dsc.o \
->   	disp/dpu1/dpu_hw_interrupts.o \
->   	disp/dpu1/dpu_hw_intf.o \
->   	disp/dpu1/dpu_hw_lm.o \
-> diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_catalog.h b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_catalog.h
-> index 4dfd8a20ad5c..a699633f7013 100644
-> --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_catalog.h
-> +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_catalog.h
-> @@ -165,6 +165,7 @@ enum {
->    * @DPU_PINGPONG_TE2        Additional tear check block for split pipes
->    * @DPU_PINGPONG_SPLIT      PP block supports split fifo
->    * @DPU_PINGPONG_SLAVE      PP block is a suitable slave for split fifo
-> + * @DPU_PINGPONG_DSC        Display stream compression blocks
+Andy Lutomirski recently noted a probable bug in write_pkru(), but
+it was unclear if it was user-visible.  A recent bug report in
+related code[1] forced me to take a look.
 
-PP block supports DSC compression?
+Basically, manipulation of XSAVE state is too unstructured.
+get_xsave_addr() gives callers the impression they can read and
+write XSAVE state when there are a lot of pitfalls, like updates
+to xstate.features bits.
 
-Also you don't seem to set it anywhere. Do we have hardware w/o DSC support?
+As a result, more than one call site screws up the modification
+of PKRU in the XSAVE buffer.  This series fixes that problem up
+and also hopefully carves out a less error-prone path that can
+be reused for other XSAVE features.
 
->    * @DPU_PINGPONG_DITHER,    Dither blocks
->    * @DPU_PINGPONG_MAX
->    */
-> @@ -173,10 +174,21 @@ enum {
->   	DPU_PINGPONG_TE2,
->   	DPU_PINGPONG_SPLIT,
->   	DPU_PINGPONG_SLAVE,
-> +	DPU_PINGPONG_DSC,
->   	DPU_PINGPONG_DITHER,
->   	DPU_PINGPONG_MAX
->   };
->   
-> +/**
-> + * DSC sub-blocks
-> + * @DPU_DSC		DSC sub block
-> + * @DPU_DSC_MAX
-> + */
-> +enum {
-> +	DPU_DSC = 0x1,
-> +	DPU_DSC_MAX
-> +};
-> +
+This series:
+ * Moves the PKRU manipulation to a more appropriate location,
+   away from the page table code
+ * Wraps get_xsave_addr() with more structured, less error-prone
+   interfaces.
+ * Conditionally hides a pkey debugfs file, eliminating the need
+   for new runtime checks to work with the new interface.
+ * Add a selftest to make it more likely to catch bugs like this
+   in the future.  This improved selftest catches this issue on
+   Intel CPUs.  Without the improvement, it only triggers on AMD.
 
-Unused
+This has been lightly tested so far.  It probably needs a
+tested-by from at least the AMD folks before anyone applies it.
 
->   /**
->    * CTL sub-blocks
->    * @DPU_CTL_SPLIT_DISPLAY       CTL supports video mode split display
-> @@ -413,6 +425,7 @@ struct dpu_dspp_sub_blks {
->   struct dpu_pingpong_sub_blks {
->   	struct dpu_pp_blk te;
->   	struct dpu_pp_blk te2;
-> +	struct dpu_pp_blk dsc;
->   	struct dpu_pp_blk dither;
->   };
+1. https://lore.kernel.org/linux-kselftest/b2e0324a-9125-bb34-9e76-81817df27c48@amd.com/
 
-Unused
+--
 
+ arch/x86/include/asm/fpu/internal.h          |    8 -
+ arch/x86/include/asm/fpu/xstate.h            |  130 +++++++++++++++++++++++++++
+ arch/x86/include/asm/pgtable.h               |   29 ------
+ arch/x86/include/asm/processor.h             |    7 +
+ arch/x86/kernel/cpu/common.c                 |    6 -
+ arch/x86/kernel/fpu/xstate.c                 |    2 
+ arch/x86/kernel/process_64.c                 |    1 
+ arch/x86/kvm/svm/sev.c                       |    1 
+ arch/x86/kvm/x86.c                           |    1 
+ arch/x86/mm/pkeys.c                          |   13 +-
+ tools/testing/selftests/vm/Makefile          |    4 
+ tools/testing/selftests/vm/pkey-x86.h        |    1 
+ tools/testing/selftests/vm/protection_keys.c |   73 +++++++++++++++
+ 13 files changed, 227 insertions(+), 49 deletions(-)
 
->   
-> @@ -547,6 +560,16 @@ struct dpu_merge_3d_cfg  {
->   	const struct dpu_merge_3d_sub_blks *sblk;
->   };
->   
-> +/**
-> + * struct dpu_dsc_cfg - information of DSC blocks
-> + * @id                 enum identifying this block
-> + * @base               register offset of this block
-> + * @features           bit mask identifying sub-blocks/features
-> + */
-> +struct dpu_dsc_cfg {
-> +	DPU_HW_BLK_INFO;
-> +};
-> +
->   /**
->    * struct dpu_intf_cfg - information of timing engine blocks
->    * @id                 enum identifying this block
-> @@ -748,6 +771,9 @@ struct dpu_mdss_cfg {
->   	u32 merge_3d_count;
->   	const struct dpu_merge_3d_cfg *merge_3d;
->   
-> +	u32 dsc_count;
-> +	struct dpu_dsc_cfg *dsc;
-> +
->   	u32 intf_count;
->   	const struct dpu_intf_cfg *intf;
->   
-> diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_dsc.c b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_dsc.c
-> new file mode 100644
-> index 000000000000..8b8d0553709d
-> --- /dev/null
-> +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_dsc.c
-> @@ -0,0 +1,221 @@
-> +// SPDX-License-Identifier: GPL-2.0-only
-> +/*
-> + * Copyright (c) 2020, Linaro Limited
-> + */
-> +
-> +#include "dpu_kms.h"
-> +#include "dpu_hw_catalog.h"
-> +#include "dpu_hwio.h"
-> +#include "dpu_hw_mdss.h"
-> +#include "dpu_hw_dsc.h"
-> +
-> +#define DSC_COMMON_MODE	                0x000
-> +#define DSC_ENC                         0X004
-> +#define DSC_PICTURE                     0x008
-> +#define DSC_SLICE                       0x00C
-> +#define DSC_CHUNK_SIZE                  0x010
-> +#define DSC_DELAY                       0x014
-> +#define DSC_SCALE_INITIAL               0x018
-> +#define DSC_SCALE_DEC_INTERVAL          0x01C
-> +#define DSC_SCALE_INC_INTERVAL          0x020
-> +#define DSC_FIRST_LINE_BPG_OFFSET       0x024
-> +#define DSC_BPG_OFFSET                  0x028
-> +#define DSC_DSC_OFFSET                  0x02C
-> +#define DSC_FLATNESS                    0x030
-> +#define DSC_RC_MODEL_SIZE               0x034
-> +#define DSC_RC                          0x038
-> +#define DSC_RC_BUF_THRESH               0x03C
-> +#define DSC_RANGE_MIN_QP                0x074
-> +#define DSC_RANGE_MAX_QP                0x0B0
-> +#define DSC_RANGE_BPG_OFFSET            0x0EC
-> +
-> +static void dpu_hw_dsc_disable(struct dpu_hw_dsc *dsc)
-> +{
-> +	struct dpu_hw_blk_reg_map *c = &dsc->hw;
-> +
-> +	DPU_REG_WRITE(c, DSC_COMMON_MODE, 0);
-> +}
-> +
-> +static void dpu_hw_dsc_config(struct dpu_hw_dsc *hw_dsc,
-> +			      struct msm_display_dsc_config *dsc,
-> +			      u32 mode, bool ich_reset_override)
-> +{
-> +	struct dpu_hw_blk_reg_map *c = &hw_dsc->hw;
-> +	u32 data;
-> +	u32 initial_lines = dsc->initial_lines;
-> +	bool is_cmd_mode = !(mode & BIT(2));
-> +
-> +	DPU_REG_WRITE(c, DSC_COMMON_MODE, mode);
-> +
-> +	data = 0;
-> +	if (ich_reset_override)
-> +		data = 3 << 28;
-> +
-> +	if (is_cmd_mode)
-> +		initial_lines += 1;
-> +
-> +	data |= (initial_lines << 20);
-> +	data |= ((dsc->slice_last_group_size) << 18);
-> +	/* bpp is 6.4 format, 4 LSBs bits are for fractional part */
-> +	data |= dsc->drm.bits_per_pixel << 12;
-> +	data |= (dsc->drm.block_pred_enable << 7);
-> +	data |= (dsc->drm.line_buf_depth << 3);
-> +	data |= (dsc->drm.simple_422 << 2);
-> +	data |= (dsc->drm.convert_rgb << 1);
-> +	if (dsc->drm.bits_per_component  == 10)
-> +		data |= BIT(0);
-> +
-> +	DPU_REG_WRITE(c, DSC_ENC, data);
-> +
-> +	data = dsc->drm.pic_width << 16;
-> +	data |= dsc->drm.pic_height;
-> +	DPU_REG_WRITE(c, DSC_PICTURE, data);
-> +
-> +	data = dsc->drm.slice_width << 16;
-> +	data |= dsc->drm.slice_height;
-> +	DPU_REG_WRITE(c, DSC_SLICE, data);
-> +
-> +	data = DIV_ROUND_UP(dsc->drm.slice_width * dsc->drm.bits_per_pixel, 8) << 16;
-> +
-> +	DPU_REG_WRITE(c, DSC_CHUNK_SIZE, data);
-> +
-> +	data = dsc->drm.initial_dec_delay << 16;
-> +	data |= dsc->drm.initial_xmit_delay;
-> +	DPU_REG_WRITE(c, DSC_DELAY, data);
-> +
-> +	data = dsc->drm.initial_scale_value;
-> +	DPU_REG_WRITE(c, DSC_SCALE_INITIAL, data);
-> +
-> +	data = dsc->drm.scale_decrement_interval;
-> +	DPU_REG_WRITE(c, DSC_SCALE_DEC_INTERVAL, data);
-> +
-> +	data = 0x00000184; /* only this value works */
-> +	DPU_REG_WRITE(c, DSC_SCALE_INC_INTERVAL, data);
-> +
-> +	data = dsc->drm.first_line_bpg_offset;
-> +	DPU_REG_WRITE(c, DSC_FIRST_LINE_BPG_OFFSET, data);
-> +
-> +	data = dsc->drm.nfl_bpg_offset << 16;
-> +	data |= dsc->drm.slice_bpg_offset;
-> +	DPU_REG_WRITE(c, DSC_BPG_OFFSET, data);
-> +
-> +	data = dsc->drm.initial_offset << 16;
-> +	data |= dsc->drm.final_offset;
-> +	DPU_REG_WRITE(c, DSC_DSC_OFFSET, data);
-> +
-> +	data = dsc->det_thresh_flatness << 10;
-> +	data |= dsc->drm.flatness_max_qp << 5;
-> +	data |= dsc->drm.flatness_min_qp;
-> +	DPU_REG_WRITE(c, DSC_FLATNESS, data);
-> +
-> +	data = dsc->drm.rc_model_size;
-> +	DPU_REG_WRITE(c, DSC_RC_MODEL_SIZE, data);
-> +
-> +	data = dsc->drm.rc_tgt_offset_low << 18;
-> +	data |= dsc->drm.rc_tgt_offset_high << 14;
-> +	data |= dsc->drm.rc_quant_incr_limit1 << 9;
-> +	data |= dsc->drm.rc_quant_incr_limit0 << 4;
-> +	data |= dsc->drm.rc_edge_factor;
-> +	DPU_REG_WRITE(c, DSC_RC, data);
-> +}
-> +
-> +static void dpu_hw_dsc_config_thresh(struct dpu_hw_dsc *hw_dsc,
-> +				     struct msm_display_dsc_config *dsc)
-> +{
-> +	struct drm_dsc_rc_range_parameters *rc = dsc->drm.rc_range_params;
-> +	struct dpu_hw_blk_reg_map *c = &hw_dsc->hw;
-> +	u32 off = 0x0;
-> +	u16 *lp;
-> +	int i;
-> +
-> +	lp = dsc->drm.rc_buf_thresh;
-> +	off = DSC_RC_BUF_THRESH;
-> +	for (i = 0; i < DSC_NUM_BUF_RANGES - 1 ; i++) {
-> +		DPU_REG_WRITE(c, off, *lp++);
-> +		off += 4;
-> +	}
-> +
-> +	off = DSC_RANGE_MIN_QP;
-> +	for (i = 0; i < DSC_NUM_BUF_RANGES; i++) {
-> +		DPU_REG_WRITE(c, off, rc[i].range_min_qp);
-> +		off += 4;
-> +	}
-> +
-> +	off = DSC_RANGE_MAX_QP;
-> +	for (i = 0; i < 15; i++) {
-> +		DPU_REG_WRITE(c, off, rc[i].range_max_qp);
-> +		off += 4;
-> +	}
-> +
-> +	off = DSC_RANGE_BPG_OFFSET;
-> +	for (i = 0; i < 15; i++) {
-> +		DPU_REG_WRITE(c, off, rc[i].range_bpg_offset);
-> +		off += 4;
-> +	}
-> +}
-> +
-> +static struct dpu_dsc_cfg *_dsc_offset(enum dpu_dsc dsc,
-> +				       struct dpu_mdss_cfg *m,
-> +				       void __iomem *addr,
-> +				       struct dpu_hw_blk_reg_map *b)
-> +{
-> +	int i;
-> +
-> +	for (i = 0; i < m->dsc_count; i++) {
-> +		if (dsc == m->dsc[i].id) {
-> +			b->base_off = addr;
-> +			b->blk_off = m->dsc[i].base;
-> +			b->length = m->dsc[i].len;
-> +			b->hwversion = m->hwversion;
-> +			b->log_mask = DPU_DBG_MASK_DSC;
-> +			return &m->dsc[i];
-> +		}
-> +	}
-> +
-> +	return NULL;
-> +}
-> +
-> +static void _setup_dsc_ops(struct dpu_hw_dsc_ops *ops,
-> +			   unsigned long cap)
-> +{
-> +	ops->dsc_disable = dpu_hw_dsc_disable;
-> +	ops->dsc_config = dpu_hw_dsc_config;
-> +	ops->dsc_config_thresh = dpu_hw_dsc_config_thresh;
-> +};
-> +
-> +static struct dpu_hw_blk_ops dpu_hw_ops = {
-> +	.start = NULL,
-> +	.stop = NULL,
-> +};
-> +
-> +struct dpu_hw_dsc *dpu_hw_dsc_init(enum dpu_dsc idx, void __iomem *addr,
-> +				   struct dpu_mdss_cfg *m)
-> +{
-> +	struct dpu_hw_dsc *c;
-> +	struct dpu_dsc_cfg *cfg;
-> +
-> +	c = kzalloc(sizeof(*c), GFP_KERNEL);
-> +	if (!c)
-> +		return ERR_PTR(-ENOMEM);
-> +
-> +	cfg = _dsc_offset(idx, m, addr, &c->hw);
-> +	if (IS_ERR_OR_NULL(cfg)) {
-> +		kfree(c);
-> +		return ERR_PTR(-EINVAL);
-> +	}
-> +
-> +	c->idx = idx;
-> +	c->caps = cfg;
-> +	_setup_dsc_ops(&c->ops, c->caps->features);
-> +
-> +	dpu_hw_blk_init(&c->base, DPU_HW_BLK_DSC, idx, &dpu_hw_ops);
-> +
-> +	return c;
-> +}
-> +
-> +void dpu_hw_dsc_destroy(struct dpu_hw_dsc *dsc)
-> +{
-> +	if (dsc)
-> +		dpu_hw_blk_destroy(&dsc->base);
-> +	kfree(dsc);
-> +}
-> diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_dsc.h b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_dsc.h
-> new file mode 100644
-> index 000000000000..c680fd948865
-> --- /dev/null
-> +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_dsc.h
-> @@ -0,0 +1,79 @@
-> +/* SPDX-License-Identifier: GPL-2.0-only */
-> +/* Copyright (c) 2020, Linaro Limited */
-> +
-> +#ifndef _DPU_HW_DSC_H
-> +#define _DPU_HW_DSC_H
-> +
-> +#include <drm/drm_dsc.h>
-> +
-> +#define DSC_MODE_SPLIT_PANEL            BIT(0)
-> +#define DSC_MODE_MULTIPLEX              BIT(1)
-> +#define DSC_MODE_VIDEO                  BIT(2)
-> +
-> +struct dpu_hw_dsc;
-> +
-> +/**
-> + * struct dpu_hw_dsc_ops - interface to the dsc hardware driver functions
-> + * Assumption is these functions will be called after clocks are enabled
-> + */
-> +struct dpu_hw_dsc_ops {
-> +	/**
-> +	 * dsc_disable - disable dsc
-> +	 * @hw_dsc: Pointer to dsc context
-> +	 */
-> +	void (*dsc_disable)(struct dpu_hw_dsc *hw_dsc);
-> +
-> +	/**
-> +	 * dsc_config - configures dsc encoder
-> +	 * @hw_dsc: Pointer to dsc context
-> +	 * @dsc: panel dsc parameters
-> +	 * @mode: dsc topology mode to be set
-> +	 * @ich_reset_override: option to reset ich
-> +	 */
-> +	void (*dsc_config)(struct dpu_hw_dsc *hw_dsc,
-> +			   struct msm_display_dsc_config *dsc,
-> +			   u32 mode, bool ich_reset_override);
-> +
-> +	/**
-> +	 * dsc_config_thresh - programs panel thresholds
-> +	 * @hw_dsc: Pointer to dsc context
-> +	 * @dsc: panel dsc parameters
-> +	 */
-> +	void (*dsc_config_thresh)(struct dpu_hw_dsc *hw_dsc,
-> +				  struct msm_display_dsc_config *dsc);
-> +};
-> +
-> +struct dpu_hw_dsc {
-> +	struct dpu_hw_blk base;
-> +	struct dpu_hw_blk_reg_map hw;
-> +
-> +	/* dsc */
-> +	enum dpu_dsc idx;
-> +	const struct dpu_dsc_cfg *caps;
-> +
-> +	/* ops */
-> +	struct dpu_hw_dsc_ops ops;
-> +};
-> +
-> +/**
-> + * dpu_hw_dsc_init - initializes the dsc block for the passed dsc idx.
-> + * @idx:  DSC index for which driver object is required
-> + * @addr: Mapped register io address of MDP
-> + * @m:    Pointer to mdss catalog data
-> + * Returns: Error code or allocated dpu_hw_dsc context
-> + */
-> +struct dpu_hw_dsc *dpu_hw_dsc_init(enum dpu_dsc idx, void __iomem *addr,
-> +				   struct dpu_mdss_cfg *m);
-> +
-> +/**
-> + * dpu_hw_dsc_destroy - destroys dsc driver context
-> + * @dsc:   Pointer to dsc driver context returned by dpu_hw_dsc_init
-> + */
-> +void dpu_hw_dsc_destroy(struct dpu_hw_dsc *dsc);
-> +
-> +static inline struct dpu_hw_dsc *to_dpu_hw_dsc(struct dpu_hw_blk *hw)
-> +{
-> +	return container_of(hw, struct dpu_hw_dsc, base);
-> +}
-> +
-> +#endif /* _DPU_HW_DSC_H */
-> diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_mdss.h b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_mdss.h
-> index 09a3fb3e89f5..1b72c11090ee 100644
-> --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_mdss.h
-> +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_mdss.h
-> @@ -97,6 +97,7 @@ enum dpu_hw_blk_type {
->   	DPU_HW_BLK_WB,
->   	DPU_HW_BLK_DSPP,
->   	DPU_HW_BLK_MERGE_3D,
-> +	DPU_HW_BLK_DSC,
->   	DPU_HW_BLK_MAX,
->   };
->   
-> @@ -176,6 +177,17 @@ enum dpu_ctl {
->   	CTL_MAX
->   };
->   
-> +enum dpu_dsc {
-> +	DSC_NONE = 0,
-> +	DSC_0,
-> +	DSC_1,
-> +	DSC_2,
-> +	DSC_3,
-> +	DSC_4,
-> +	DSC_5,
-> +	DSC_MAX
-> +};
-> +
->   enum dpu_pingpong {
->   	PINGPONG_0 = 1,
->   	PINGPONG_1,
-> @@ -437,5 +449,6 @@ struct dpu_mdss_color {
->   #define DPU_DBG_MASK_VBIF     (1 << 8)
->   #define DPU_DBG_MASK_ROT      (1 << 9)
->   #define DPU_DBG_MASK_DSPP     (1 << 10)
-> +#define DPU_DBG_MASK_DSC      (1 << 11)
->   
->   #endif  /* _DPU_HW_MDSS_H */
-> 
-
-
--- 
-With best wishes
-Dmitry
+Cc: Thomas Gleixner <tglx@linutronix.de>
+Cc: Ingo Molnar <mingo@redhat.com>
+Cc: Borislav Petkov <bp@alien8.de>
+Cc: x86@kernel.org
+Cc: Andy Lutomirski <luto@kernel.org>
+Cc: Shuah Khan <shuah@kernel.org>
+Cc: Babu Moger <babu.moger@amd.com>
+Cc: Dave Kleikamp <dave.kleikamp@oracle.com>
+Cc: Ram Pai <linuxram@us.ibm.com>
+Cc: Thiago Jung Bauermann <bauerman@linux.ibm.com>
