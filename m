@@ -2,152 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D76B3938B1
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 00:25:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 077E53938B3
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 00:28:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236404AbhE0W06 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 May 2021 18:26:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43268 "EHLO
+        id S235595AbhE0WaN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 May 2021 18:30:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43978 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234318AbhE0W05 (ORCPT
+        with ESMTP id S233848AbhE0WaM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 May 2021 18:26:57 -0400
-Received: from mail-yb1-xb2a.google.com (mail-yb1-xb2a.google.com [IPv6:2607:f8b0:4864:20::b2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF9B7C061574;
-        Thu, 27 May 2021 15:25:22 -0700 (PDT)
-Received: by mail-yb1-xb2a.google.com with SMTP id w1so2887224ybt.1;
-        Thu, 27 May 2021 15:25:22 -0700 (PDT)
+        Thu, 27 May 2021 18:30:12 -0400
+Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42538C061574;
+        Thu, 27 May 2021 15:28:38 -0700 (PDT)
+Received: by mail-pj1-x102a.google.com with SMTP id ep16-20020a17090ae650b029015d00f578a8so1348415pjb.2;
+        Thu, 27 May 2021 15:28:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=7uOtvAQxo11BZ9qV4iscB9IwPVfNGrEjy6zxUfl9fAQ=;
-        b=M7JkcsTVF7/siykqcbEhtevruKBCIx0gc9z1xs99OMOplvieDhCOZuwzx0RpQZTYIq
-         UdXGrfOLSslfU37BlHTfJeyq8vgNte94vccbZMEenubMID/jVp3kpFORE+K0rG7pqLXM
-         j15VIecE4NbOv5xDy39wDbM9a5uoqMa0KMwx2ZOA1n5C5KWBp62jWBGnuj5u3HxnHVvm
-         ROrskkYmFIU+kZ4W1a5fSzSitr4+5XDhq/mJAS8WZUsUIAil9OBjAiAbBnKAZX9+8Hlc
-         PrvJAjfCJQ8gG5LHi5V84ME3YToHskuuGR+6JI2aDxQuiFT3qjO40XsCfQUDBhZFUJru
-         wqjA==
+        h=message-id:date:from:in-reply-to:subject:to:cc
+         :content-transfer-encoding;
+        bh=WZv67PcQASMRPC3zYPpa0x61J6yRtgH6SH+gS6OFGJg=;
+        b=ksHshNVcH908wYnIOm5PkZkUQyH6u42i70piZvaefxdKwleGWI8JLx6OHO2tXRnLVj
+         Plr+0wcMUAaWa70gC0G2IyEWSgUO78bD620TJYuKQb49gEGnXHvNnvdOtdpSGManrbH/
+         jx+ConpSAQ+Rflpa0alZQ85BX6QRQyQBd0mR+zmTj8MANZVei2v+//bs5Ci2UzjAxx6t
+         BmGvBQsldG6cb5vJE0sOZ0FhNfKK9M8z4UWkyFBieBIWuknf3U+7XLG97AXksrO3lNox
+         YX8usXDlx7FDRI+fnq5o9QSDLT0wi0mkhqk0gw93ppqeujAgiTUyZ57Yah1FTF7tceYm
+         6ZUw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=7uOtvAQxo11BZ9qV4iscB9IwPVfNGrEjy6zxUfl9fAQ=;
-        b=sjahlqWxEiQuoMNE+1N84vYQHSIsVy4ofpUbjXSrag13Yw6Gazb6nZhytPPovl20iF
-         YPZ1tahNdNmxpYwc9iUQOO/nFgup5ZdmavHhcZ8QRcUPNlXRQz8rKu1zFC133MoY4WnY
-         IO86fSLegA9fuHxVFgGxkW2fIueRI7Q9r7PKtM4jfg8CG5kof8lUW21rb1575RyWfhEZ
-         X6AEYKS/vSYDrf86s/o357h3vNaCmj1NdQ4XyMmV2c6er4KTJ5IiLyRq0+4DWcl1wo1z
-         XkW6oLbVB54/fxpT2xxmLGkIYcjX8h3GHqQbfhmOfzGM3WOTjZyVvbvLZC94/qnIPQZn
-         QisA==
-X-Gm-Message-State: AOAM5320ZhuK7hljPEUJM7AgNGcB1qH6PTUxGjX+T6iA+DpQCa91U/ss
-        M+eogZTNaLRA3xVj44jJBL+lXvIq8u+WPgEBSyw=
-X-Google-Smtp-Source: ABdhPJwep05E6OXImfZO1Z6zxyIrNIa/XIFP2ZNM+bMfL7sTFz8oYlsBRkxELywH69UbX1Cwi9Y0EKKE4bunYVTo2lA=
-X-Received: by 2002:a25:3357:: with SMTP id z84mr7803181ybz.260.1622154322177;
- Thu, 27 May 2021 15:25:22 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210527120251.GC30378@techsingularity.net> <CAEf4BzartMG36AGs-7LkQdpgrB6TYyTJ8PQhjkQWiTN=7sO1Bw@mail.gmail.com>
- <20210527145441.GE30378@techsingularity.net> <CAEf4BzbW2i4Y-i3TXW7x42PqEpw5_nNeReSXS77m4GC3uqD3wg@mail.gmail.com>
- <20210527172700.GH30378@techsingularity.net>
-In-Reply-To: <20210527172700.GH30378@techsingularity.net>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Thu, 27 May 2021 15:25:10 -0700
-Message-ID: <CAEf4BzaP3ieYPX9vWETvp5bL8XRZ1XHr5C0dhLWed7DFanpa0g@mail.gmail.com>
-Subject: Re: [PATCH v2] mm/page_alloc: Work around a pahole limitation with
- zero-sized struct pagesets
-To:     Mel Gorman <mgorman@techsingularity.net>,
-        Masahiro Yamada <masahiroy@kernel.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Christoph Hellwig <hch@infradead.org>,
-        Arnaldo Carvalho de Melo <acme@redhat.com>,
-        Michal Suchanek <msuchanek@suse.de>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Hritik Vijay <hritikxx8@gmail.com>,
-        Linux-BPF <bpf@vger.kernel.org>,
-        Linux-Net <netdev@vger.kernel.org>, Linux-MM <linux-mm@kvack.org>
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:message-id:date:from:in-reply-to:subject:to:cc
+         :content-transfer-encoding;
+        bh=WZv67PcQASMRPC3zYPpa0x61J6yRtgH6SH+gS6OFGJg=;
+        b=By640MziOdje2q+n3f+fzwBlkYrGEUM6ueOLLdgI3iykP3qYH5+gAe2XStZHtp4MZg
+         48Y4y+pW07fIKTe/sLVLodFSWJy3dnqMP8N5rG3sWvH1dU7buQA6LMnSxxFeU/RQuoW4
+         Nt2ttSga4hMhheGLO1L0O72IhENpJKnKqC8Y6eNp7iXQPkmNOxxNRrw6C6XpfXdhwbh8
+         9oS581QEN1ebThkRrB5Yx5XY2/WIKT2fF9bZlT8k0P1AS4oghVEakBqoDreY+eXJIIu9
+         XyvTv/tC+VCYR3x1iup+u/6FATVjgMKEOAFPOl06ozJ60AefsNP0WOZel17XJf73N9WA
+         P8DQ==
+X-Gm-Message-State: AOAM5321Fifs2wbF5WsJB4fmgUYpDHyNvgGubLMCNw/ILouEwvWzNear
+        GipDLq5SGS63fe6y4I80Tvv9Cb/FQtJWnf1c6dxVFQ==
+X-Google-Smtp-Source: ABdhPJyI3X6zEYmNHlWkicXSEGNEDyUICcM8BIXkyZqV6+KHaok071hsBNBwtp+bugASQmJncZftEw==
+X-Received: by 2002:a17:90b:350a:: with SMTP id ls10mr714574pjb.181.1622154517315;
+        Thu, 27 May 2021 15:28:37 -0700 (PDT)
+Received: from cl-arch-kdev (cl-arch-kdev.xen.prgmr.com. [2605:2700:0:2:a800:ff:fed6:fc0d])
+        by smtp.gmail.com with ESMTPSA id f17sm2669636pgm.37.2021.05.27.15.28.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 27 May 2021 15:28:36 -0700 (PDT)
+Message-ID: <60b01d14.1c69fb81.b1e96.974f@mx.google.com>
+Date:   Thu, 27 May 2021 15:28:36 -0700 (PDT)
+X-Google-Original-Date: Thu, 27 May 2021 22:28:34 GMT
+From:   Fox Chen <foxhlchen@gmail.com>
+In-Reply-To: <20210527151139.241267495@linuxfoundation.org>
+Subject: RE: [PATCH 5.12 0/7] 5.12.8-rc1 review
+To:     linux-kernel@vger.kernel.org
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        f.fainelli@gmail.com, stable@vger.kernel.org,
+        Fox Chen <foxhlchen@gmail.com>
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 27, 2021 at 10:27 AM Mel Gorman <mgorman@techsingularity.net> wrote:
->
-> On Thu, May 27, 2021 at 09:36:35AM -0700, Andrii Nakryiko wrote:
-> > On Thu, May 27, 2021 at 7:54 AM Mel Gorman <mgorman@techsingularity.net> wrote:
-> > >
-> > > On Thu, May 27, 2021 at 07:37:05AM -0700, Andrii Nakryiko wrote:
-> > > > > This patch checks for older versions of pahole and only allows
-> > > > > DEBUG_INFO_BTF_MODULES if pahole supports zero-sized per-cpu structures.
-> > > > > DEBUG_INFO_BTF is still allowed as a KVM boot test passed with pahole
-> > > >
-> > > > Unfortunately this won't work. The problem is that vmlinux BTF is
-> > > > corrupted, which results in module BTFs to be rejected as well, as
-> > > > they depend on it.
-> > > >
-> > > > But vmlinux BTF corruption makes BPF subsystem completely unusable. So
-> > > > even though kernel boots, nothing BPF-related works. So we'd need to
-> > > > add dependency for DEBUG_INFO_BTF on pahole 1.22+.
-> > > >
-> > >
-> > > While bpf usage would be broken, the kernel will boot and the effect
-> > > should be transparent to any kernel build based on "make oldconfig".
-> >
-> > I think if DEBUG_INFO_BTF=y has no chance of generating valid vmlinux
-> > BTF it has to be forced out. So if we are doing this at all, we should
-> > do it for CONFIG_DEBUG_INFO_BTF, not CONFIG_DEBUG_INFO_BTF_MODULES.
-> > CONFIG_DEBUG_INFO_BTF_MODULES will follow automatically.
-> >
->
-> Ok, I sent a version that prevents DEBUG_INFO_BTF being set unless
-> pahole is at least 1.22.
->
-> > > CONFIG_DEBUG_INFO_BTF defaults N so if that is forced out, it will be
-> > > easily missed by a distribution kernel maintainer.
-> >
-> > We actually had previous discussions on forcing build failure in cases
-> > when CONFIG_DEBUG_INFO_BTF=y can't be satisfied, but no one followed
-> > up.
->
-> It is weird how it is handled. DEBUG_INFO_BTF can be set and then fail to
-> build vmlinux because pahole is too old. With DEBUG_INFO_BTF now requiring
-> at least 1.22, the other version checks for 1.16 and 1.19 are redundant
-> and could be cleaned up.
->
-> > I'll look into this and will try to change the behavior. It's
-> > caused too much confusion previously and now with changes like this we
-> > are going to waste even more people's time.
-> >
->
-> Thanks.
+On Thu, 27 May 2021 17:13:01 +0200, Greg Kroah-Hartman <gregkh@linuxfoundation.org> wrote:
+> This is the start of the stable review cycle for the 5.12.8 release.
+> There are 7 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+> 
+> Responses should be made by Sat, 29 May 2021 15:11:29 +0000.
+> Anything received after that time might be too late.
+> 
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.12.8-rc1.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.12.y
+> and the diffstat can be found below.
+> 
+> thanks,
+> 
+> greg k-h
+> 
 
-So I've tried to change that, but I'm not sure that's possible with
-the current Kconfig system. I tried to use $(error-if), but it happens
-too early, at the text pre-processing stage, before the value of
-CONFIG_DEBUG_INFO_BTF is known, so it's impossible to express
-something like this:
+5.12.8-rc1 Successfully Compiled and booted on my Raspberry PI 4b (8g) (bcm2711)
+                
+Tested-by: Fox Chen <foxhlchen@gmail.com>
 
-$(error_if,CONFIG_DEBUG_INFO_BTF=y && PAHOLE_VERSION < 116,Pahole is tool old)
-
-Masahiro, is it possible to somehow express the condition that if
-CONFIG_DEBUG_INFO_BTF=y is selected, but some external dependency
-(pahole version in this case) is too old, then fail the build
-immediately? Currently we fail at the very end of vmlinux linking
-step, which is very late.
-
-Alternatively, it was proposed to just add an extra dependency (like,
-"depends PAHOLE_IS_116_OR_NEWER"), but that will silently unselect
-CONFIG_DEBUG_INFO_BTF if the condition is not satisfied, so it's even
-more confusing to users.
-
-Any suggestions on how to proceed with something like that? Thanks!
-
->
-> --
-> Mel Gorman
-> SUSE Labs
