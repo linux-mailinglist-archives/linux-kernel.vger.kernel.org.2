@@ -2,217 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A885B39307D
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 16:11:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 41263393084
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 16:12:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236329AbhE0OMv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 May 2021 10:12:51 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:39274 "EHLO
+        id S236525AbhE0ONv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 May 2021 10:13:51 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:56174 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234978AbhE0OMt (ORCPT
+        by vger.kernel.org with ESMTP id S235436AbhE0ONt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 May 2021 10:12:49 -0400
+        Thu, 27 May 2021 10:13:49 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1622124676;
+        s=mimecast20190719; t=1622124735;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=UHy0LI7U8IKp62R8ShBRcerq/nVjfJ85NAZGyeEqU8w=;
-        b=SUEIUTHoDajvzAg2x57lt5cuDNC30GUBBnALrGiED+wADL9+WfqPpjUNETCeM4oJPxLz59
-        z0cFTfZ/CoeYPHHDWO2EhBdkQg04e/5TSFsh9PfytJ31MGDaXV5MJxqhFzY7+aa2TMVEXl
-        n8iGFH3BKTJmVYx36ELnigLjBkR1qUo=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-424-pMidVeclOD2JA0N2JS7f4Q-1; Thu, 27 May 2021 10:11:14 -0400
-X-MC-Unique: pMidVeclOD2JA0N2JS7f4Q-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 8853781CAF1;
-        Thu, 27 May 2021 14:11:12 +0000 (UTC)
-Received: from starship (unknown [10.40.192.15])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 1F0F75C3E4;
-        Thu, 27 May 2021 14:11:07 +0000 (UTC)
-Message-ID: <3b76c3da7af87c576862fa6a538505fe89a47702.camel@redhat.com>
-Subject: Re: [PATCH v2 0/7] KVM: nVMX: Fixes for nested state migration when
- eVMCS is in use
-From:   Maxim Levitsky <mlevitsk@redhat.com>
-To:     Vitaly Kuznetsov <vkuznets@redhat.com>
-Cc:     Sean Christopherson <seanjc@google.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        Paolo Bonzini <pbonzini@redhat.com>
-Date:   Thu, 27 May 2021 17:11:06 +0300
-In-Reply-To: <87a6og7ghb.fsf@vitty.brq.redhat.com>
-References: <20210517135054.1914802-1-vkuznets@redhat.com>
-         <ea9a392d018ced61478482763f7a59472110104c.camel@redhat.com>
-         <8735uc713d.fsf@vitty.brq.redhat.com>
-         <5a6314ff3c7b9cc8e6bdf452008ad1b264c95608.camel@redhat.com>
-         <87a6og7ghb.fsf@vitty.brq.redhat.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.5 (3.36.5-2.fc32) 
+        bh=eOZmoE9TvEm2tUufikHg+bUlvlyIrf4tFxbg3hpYnEw=;
+        b=GLVJJM7kjocnSkLZ7JUQNJ2xdxDg51ksLMsqq5Uv/gexggBwwEFGndK2qOChQ88lFuYbOt
+        laZpG8lTHEDPVK8IKG4s/TjxTKbRduFq4EM3vSB6w3/cPbMMuUFx+DTthSlPITtpB/GED2
+        FmFdLt3eV98oinOCJF75dM6krBFWS5Y=
+Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
+ [209.85.128.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-42-Fzjp-A1DPYODIxnl0-Q3hw-1; Thu, 27 May 2021 10:12:14 -0400
+X-MC-Unique: Fzjp-A1DPYODIxnl0-Q3hw-1
+Received: by mail-wm1-f70.google.com with SMTP id h129-20020a1c21870000b02901743c9f70b9so262529wmh.6
+        for <linux-kernel@vger.kernel.org>; Thu, 27 May 2021 07:12:14 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=eOZmoE9TvEm2tUufikHg+bUlvlyIrf4tFxbg3hpYnEw=;
+        b=loildOMYrrVSzb8cGriBN2bZvFxBDxx2Y2YirBhdcx+OYssnEzFSuFqjS5OZciGxpJ
+         ELIiZREOl5ZZz5TKTz0eQLuY+wWI76YrAW9R1EjxgiepQkeb6fmHW1bT3hXYog8YxOGF
+         dRmuvnx5cGdwVq4fjlobVYKmq+4Rzh+/mzppZA/UY4xvzOkjfk/fnTLwCwzfeXQ8CuK6
+         IvGfHeq78lUxSj/u1gndQrtKgpUo6xp4k8oc3WeQ46kIIZ74sio5kxvODOasCjBNhO+s
+         1VCwS/BU9Ctu9NIbYLBE2xvAkwLWOXt4E/CgjrgXWijfTO/A7Kd2LOlLeyCKOQUojXt9
+         /lVg==
+X-Gm-Message-State: AOAM531sheit9DyHNq2JwVeaCVEYavcE/j5sOx7ZsxQqJygm+IP2gO+S
+        NU8lL21HbffxajpHQoaXPIOcfDRy2NU40CqqJf7NQ0rr7O7tafYkticTkZVtyx9fvqSde25Culc
+        tlchU67/gOn/NvX5mswIP39DNNXfNrtwb3zej3shW
+X-Received: by 2002:a7b:c24a:: with SMTP id b10mr8610735wmj.157.1622124732938;
+        Thu, 27 May 2021 07:12:12 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzhybCeFtlvYWzQ5ueSjUYz+VaCXc45NWGiAf6EI/h9Wxk9XPu60l50ljSNUItdJ1i8Yo35RBpsyCCv7NnxoHo=
+X-Received: by 2002:a7b:c24a:: with SMTP id b10mr8610709wmj.157.1622124732672;
+ Thu, 27 May 2021 07:12:12 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+References: <20210526223445.317749-1-jforbes@fedoraproject.org> <aa130828-03c9-b49b-ab31-1fb83a0349fb@kernel.dk>
+In-Reply-To: <aa130828-03c9-b49b-ab31-1fb83a0349fb@kernel.dk>
+From:   Justin Forbes <jforbes@redhat.com>
+Date:   Thu, 27 May 2021 09:12:01 -0500
+Message-ID: <CAFbkSA1G2ajKQg4eA947dv0Pcmyf-JQbkn8-jYnmUeMAEpfHtw@mail.gmail.com>
+Subject: Re: [PATCH] io_uring: Remove CONFIG_EXPERT
+To:     Jens Axboe <axboe@kernel.dk>
+Cc:     asml.silence@gmail.com, io-uring@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 2021-05-27 at 10:01 +0200, Vitaly Kuznetsov wrote:
-> Maxim Levitsky <mlevitsk@redhat.com> writes:
-> 
-> > On Mon, 2021-05-24 at 14:44 +0200, Vitaly Kuznetsov wrote:
-> > > Maxim Levitsky <mlevitsk@redhat.com> writes:
-> > > 
-> > > > On Mon, 2021-05-17 at 15:50 +0200, Vitaly Kuznetsov wrote:
-> > > > > Changes since v1 (Sean):
-> > > > > - Drop now-unneeded curly braces in nested_sync_vmcs12_to_shadow().
-> > > > > - Pass 'evmcs->hv_clean_fields' instead of 'bool from_vmentry' to
-> > > > >   copy_enlightened_to_vmcs12().
-> > > > > 
-> > > > > Commit f5c7e8425f18 ("KVM: nVMX: Always make an attempt to map eVMCS after
-> > > > > migration") fixed the most obvious reason why Hyper-V on KVM (e.g. Win10
-> > > > >  + WSL2) was crashing immediately after migration. It was also reported
-> > > > > that we have more issues to fix as, while the failure rate was lowered 
-> > > > > signifincatly, it was still possible to observe crashes after several
-> > > > > dozens of migration. Turns out, the issue arises when we manage to issue
-> > > > > KVM_GET_NESTED_STATE right after L2->L2 VMEXIT but before L1 gets a chance
-> > > > > to run. This state is tracked with 'need_vmcs12_to_shadow_sync' flag but
-> > > > > the flag itself is not part of saved nested state. A few other less 
-> > > > > significant issues are fixed along the way.
-> > > > > 
-> > > > > While there's no proof this series fixes all eVMCS related problems,
-> > > > > Win10+WSL2 was able to survive 3333 (thanks, Max!) migrations without
-> > > > > crashing in testing.
-> > > > > 
-> > > > > Patches are based on the current kvm/next tree.
-> > > > > 
-> > > > > Vitaly Kuznetsov (7):
-> > > > >   KVM: nVMX: Introduce nested_evmcs_is_used()
-> > > > >   KVM: nVMX: Release enlightened VMCS on VMCLEAR
-> > > > >   KVM: nVMX: Ignore 'hv_clean_fields' data when eVMCS data is copied in
-> > > > >     vmx_get_nested_state()
-> > > > >   KVM: nVMX: Force enlightened VMCS sync from nested_vmx_failValid()
-> > > > >   KVM: nVMX: Reset eVMCS clean fields data from prepare_vmcs02()
-> > > > >   KVM: nVMX: Request to sync eVMCS from VMCS12 after migration
-> > > > >   KVM: selftests: evmcs_test: Test that KVM_STATE_NESTED_EVMCS is never
-> > > > >     lost
-> > > > > 
-> > > > >  arch/x86/kvm/vmx/nested.c                     | 110 ++++++++++++------
-> > > > >  .../testing/selftests/kvm/x86_64/evmcs_test.c |  64 +++++-----
-> > > > >  2 files changed, 115 insertions(+), 59 deletions(-)
-> > > > > 
-> > > > 
-> > > > Hi Vitaly!
-> > > > 
-> > > > In addition to the review of this patch series,
-> > > 
-> > > Thanks by the way!
-> > No problem!
-> > 
-> > > >  I would like
-> > > > to share an idea on how to avoid the hack of mapping the evmcs
-> > > > in nested_vmx_vmexit, because I think I found a possible generic
-> > > > solution to this and similar issues:
-> > > > 
-> > > > The solution is to always set nested_run_pending after 
-> > > > nested migration (which means that we won't really
-> > > > need to migrate this flag anymore).
-> > > > 
-> > > > I was thinking a lot about it and I think that there is no downside to this,
-> > > > other than sometimes a one extra vmexit after migration.
-> > > > 
-> > > > Otherwise there is always a risk of the following scenario:
-> > > > 
-> > > >   1. We migrate with nested_run_pending=0 (but don't restore all the state
-> > > >   yet, like that HV_X64_MSR_VP_ASSIST_PAGE msr,
-> > > >   or just the guest memory map is not up to date, guest is in smm or something
-> > > >   like that)
-> > > > 
-> > > >   2. Userspace calls some ioctl that causes a nested vmexit
-> > > > 
-> > > >   This can happen today if the userspace calls 
-> > > >   kvm_arch_vcpu_ioctl_get_mpstate -> kvm_apic_accept_events -> kvm_check_nested_events
-> > > > 
-> > > >   3. Userspace finally sets correct guest's msrs, correct guest memory map and only
-> > > >   then calls KVM_RUN
-> > > > 
-> > > > This means that at (2) we can't map and write the evmcs/vmcs12/vmcb12 even
-> > > > if KVM_REQ_GET_NESTED_STATE_PAGES is pending,
-> > > > but we have to do so to complete the nested vmexit.
-> > > 
-> > > Why do we need to write to eVMCS to complete vmexit? AFAICT, there's
-> > > only one place which calls copy_vmcs12_to_enlightened():
-> > > nested_sync_vmcs12_to_shadow() which, in its turn, has only 1 caller:
-> > > vmx_prepare_switch_to_guest() so unless userspace decided to execute
-> > > not-fully-restored guest this should not happen. I'm probably missing
-> > > something in your scenario)
-> > You are right! 
-> > The evmcs write is delayed to the next vmentry.
-> > 
-> > However since we are now mapping the evmcs during nested vmexit,
-> > and this can fail for example that HV assist msr is not up to date.
-> > 
-> > For example consider this: 
-> > 
-> > 1. Userspace first sets nested state
-> > 2. Userspace calls KVM_GET_MP_STATE.
-> > 3. Nested vmexit that happened in 2 will end up not be able to map the evmcs,
-> > since HV_ASSIST msr is not yet loaded.
-> > 
-> > 
-> > Also the vmcb write (that is for SVM) _is_ done right away on nested vmexit 
-> > and conceptually has the same issue.
-> > (if memory map is not up to date, we might not be able to read/write the 
-> > vmcb12 on nested vmexit)
-> > 
-> 
-> It seems we have one correct way to restore a guest and a number of
-> incorrect ones :-) It may happen that this is not even a nested-only
-> thing (think about trying to resore caps, regs, msrs, cpuids, in a
-> random sequence). I'd vote for documenting the right one somewhere, even
-> if we'll just be extracting it from QEMU.
-> 
-> > > > To some extent, the entry to the nested mode after a migration is only complete
-> > > > when we process the KVM_REQ_GET_NESTED_STATE_PAGES, so we shoudn't interrupt it.
-> > > > 
-> > > > This will allow us to avoid dealing with KVM_REQ_GET_NESTED_STATE_PAGES on
-> > > > nested vmexit path at all. 
-> > > 
-> > > Remember, we have three possible states when nested state is
-> > > transferred:
-> > > 1) L2 was running
-> > > 2) L1 was running
-> > > 3) We're in beetween L2 and L1 (need_vmcs12_to_shadow_sync = true).
-> > 
-> > I understand. This suggestion wasn't meant to fix the case 3, but more to fix
-> > case 1, where we are in L2, migrate, and then immediately decide to 
-> > do a nested vmexit before we processed the KVM_REQ_GET_NESTED_STATE_PAGES
-> > request, and also before potentially before the guest state was fully uploaded
-> > (see that KVM_GET_MP_STATE thing).
-> >  
-> > In a nutshell, I vote for not allowing nested vmexits from the moment
-> > when we set the nested state and until the moment we enter the nested
-> > guest once (maybe with request for immediate vmexit),
-> > because during this time period, the guest state is not fully consistent.
-> > 
-> 
-> Using 'nested_run_pending=1' perhaps? Or, we can get back to 'vm_bugged'
-> idea and kill the guest immediately if something forces such an exit.
+On Thu, May 27, 2021 at 8:43 AM Jens Axboe <axboe@kernel.dk> wrote:
+>
+> On 5/26/21 4:34 PM, Justin M. Forbes wrote:
+> > While IO_URING has been in fairly heavy development, it is hidden behind
+> > CONFIG_EXPERT with a default of on.  It has been long enough now that I
+> > think we should remove EXPERT and allow users and distros to decide how
+> > they want this config option set without jumping through hoops.
+>
+> The whole point of EXPERT is to ensure that it doesn't get turned off
+> "by accident". It's a core feature, and something that more and more
+> apps or libraries are relying on. It's not something I intended to ever
+> go away, just like it would never go away for eg futex or epoll support.
+>
 
-Exactly, this is my idea. Set the nested_run_pending=1 always after the migration
-It shoudn't cause any issues and it would avoid cases like that.
+I am not arguing with that, I don't expect it will go away. I
+certainly do not have an issue with it defaulting to on, and I didn't
+even submit this with intention to turn it off for default Fedora. I
+do think that there are cases where people might not wish it turned on
+at this point in time. Hiding it behind EXPERT makes it much more
+difficult than it needs to be.  There are plenty of config options
+that are largely expected default and not hidden behind EXPERT.
 
-That variable can then be renamed too to something like 'nested_vmexit_not_allowed'
-or something like that.
-
-Paolo, what do you think?
-
-Best regards,
-	Maxim Levitsky
-
-> 
-
+Justin
 
