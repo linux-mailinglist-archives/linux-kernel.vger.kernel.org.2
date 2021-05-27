@@ -2,63 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 27DA0392659
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 06:26:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E86939265C
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 06:27:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229695AbhE0E2U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 May 2021 00:28:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52322 "EHLO
+        id S229827AbhE0E3S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 May 2021 00:29:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52544 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229692AbhE0E2S (ORCPT
+        with ESMTP id S229692AbhE0E3Q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 May 2021 00:28:18 -0400
-Received: from mail-oi1-x22d.google.com (mail-oi1-x22d.google.com [IPv6:2607:f8b0:4864:20::22d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F400C061574
-        for <linux-kernel@vger.kernel.org>; Wed, 26 May 2021 21:26:45 -0700 (PDT)
-Received: by mail-oi1-x22d.google.com with SMTP id x15so3853370oic.13
-        for <linux-kernel@vger.kernel.org>; Wed, 26 May 2021 21:26:45 -0700 (PDT)
+        Thu, 27 May 2021 00:29:16 -0400
+Received: from mail-oi1-x233.google.com (mail-oi1-x233.google.com [IPv6:2607:f8b0:4864:20::233])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CCFB1C061574
+        for <linux-kernel@vger.kernel.org>; Wed, 26 May 2021 21:27:43 -0700 (PDT)
+Received: by mail-oi1-x233.google.com with SMTP id d21so3858445oic.11
+        for <linux-kernel@vger.kernel.org>; Wed, 26 May 2021 21:27:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc:content-transfer-encoding;
-        bh=MAqtfQh3kqLNCeKLPTeKdUEM29PsijCc//DfraUHLwQ=;
-        b=eqBhr8eAXHo+lVRn+9mISIFH3Gy2q+Zk8dohqjdKoojg0OgqzwQqg/0IEaIiA0jsVW
-         6GaZ41eYjO/4AmuMb5xxcLJhsiXwAjOM8Qr6mDvVlQQzm1AAd5V/63pX8Sm0Pzi0NcJm
-         gAh4bKbpmXUdqNzhxHUeks+X2gJEy5A0+DKQ6KsygLSrh2ui01rFbvoCLBDgXCFk3uyw
-         QvUeEWGHZ0CvivmK8gqV+qPaIBcRvB0qZiCAeifLCaR3PyBEOdTi7y4uVyAZZA6SMPIY
-         IBrx46ptfW+pDG3f1o/m9elVSGqs0PNpHr8abQWVO9k5py7B8jilH9Kv+4XTHyGLdK8O
-         WEnA==
+        bh=ZT5FSoIiyDWBnTxiiZjSflnBrLIqWN4cLVY+j1uJuFw=;
+        b=NOsebllSQH9aGPkH2RcdDiA7CI9wsl8Hpi5SHlA5oOE4W2iuhAZkqa++V9Z05Auxds
+         Evs7CXqCEtsKa8kFQEMlNAlypHu3MKIpvzzB8zzHtONxAbTp7+TZxZoEkhUzh5EujZwL
+         Xb/5SuddSczb7ofmJlilPuHYw7Er6PtLPs5TIlfhQh2d6SV8eFem/zKXUFMnrA6GNEOp
+         sSQlUdqSNzrenxnQKigNs0GMnzAqtYufSvIx1SNi+LwJlEqpdhgxbb39hDTnYReSHCkv
+         T/TQs+TOWg8PqWnswYT8UFT28gEEyELwT6sYyrmtpl0Wraqt47p8zxpHv4WpStPXxhJq
+         hVYA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc:content-transfer-encoding;
-        bh=MAqtfQh3kqLNCeKLPTeKdUEM29PsijCc//DfraUHLwQ=;
-        b=A+86SRLwAlF1FAACl6qTxQxwJi5pVqMWtvMeS/ju+KLhA8AX8z2hghGSaegrli+jXA
-         7lDu2bjp5aKy1S4Ojm340FwqTg2cmBnmEnSdakaDUzPzk4eOlPyIwZnQZCOJ69IeOsHj
-         XxYnao5PxW29W9paDRIeKYJjPlIP7PlHLLfwJoLJIrkx9zaX217N2FzVAAHNyejTRfSH
-         p0JtdKgaSDgMpgZPk5KRdiX560YhpjQz9ZTORNecjsgfIUNsOSM2peYoy1m4j9Leqi6a
-         KDPV4SAMKxUDx/r02/zxciBCACu3ZD+wcl4DlOaUt+gMtjPXTmIvvLf/iS2gOz51N/A0
-         LgNA==
-X-Gm-Message-State: AOAM530Pzaw4jq3yvoffhTJCreYCvWLgIL8u/hwDcerogAI7ZKbSMwJN
-        5sYfO6iKTSxJ7YO4OgaRV0sjmPTK1JeL8nILCP/vXG4i
-X-Google-Smtp-Source: ABdhPJzSqLPyykDzrtM8uq9qKFXoEWkTve47q5DnAyeOgEMSN6yyg5sq5O2i3SRoUEnG6rHpKT45/NvEAbzcnTful+Q=
-X-Received: by 2002:a05:6808:1592:: with SMTP id t18mr1079682oiw.123.1622089604710;
- Wed, 26 May 2021 21:26:44 -0700 (PDT)
+        bh=ZT5FSoIiyDWBnTxiiZjSflnBrLIqWN4cLVY+j1uJuFw=;
+        b=Ms7EUkr5iyiYinPJMuu7jdLCkcKgdjCBhvrKZiHZ6rHH/gny0eh+jAvh/FcXo+W4Cg
+         2NW61tiaF46d1ffcusOgrEhX89C5EJynszmELuyRS1P8BGcbbiq3L2pDURLCBT5ZaXlz
+         fsXGIUrBZmBw3BsXixZNnbnqrtDe5cYiZJ6W3mZTpxwxWjZKl/CyDuNDL3/Is/Zl3bFa
+         fvp9c+lqKUqvzfwcfzo3Vi14YM1RhYk1wVVpQRSbqQBJUGME32e39GEWT8AoZCJrrha+
+         Qa6v+CLDzmupPRb/sgGwaKUwu8LtT9I5yG8ZcGCKYeCzpqMPtFXELm11NDxOEJsCEI37
+         PyQg==
+X-Gm-Message-State: AOAM533zZhITWM6zamaSJTouDJ/YK6hzmPjlZKOOy2e20THnXpRzR/ry
+        nsQ9THhBOWrTxS2IgJYrSqX9QW9su3jC0lBmVJk=
+X-Google-Smtp-Source: ABdhPJyp2LVtbVpT+fbmhtkDrJadl7HkNYyBL7sr6DFQn3FF+hx4ahAXpE26gzypq/t10zhPHs4p3/fFzj6NAYcKNtY=
+X-Received: by 2002:a05:6808:249:: with SMTP id m9mr1097793oie.120.1622089663253;
+ Wed, 26 May 2021 21:27:43 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210526084726.552052-1-lee.jones@linaro.org> <20210526084726.552052-23-lee.jones@linaro.org>
-In-Reply-To: <20210526084726.552052-23-lee.jones@linaro.org>
+References: <20210526084726.552052-1-lee.jones@linaro.org> <20210526084726.552052-24-lee.jones@linaro.org>
+In-Reply-To: <20210526084726.552052-24-lee.jones@linaro.org>
 From:   Alex Deucher <alexdeucher@gmail.com>
-Date:   Thu, 27 May 2021 00:26:33 -0400
-Message-ID: <CADnq5_PsDZPaJxmxYJBv3sY17Wu=9W4Eqgtb2EDo6PgxdzgwWQ@mail.gmail.com>
-Subject: Re: [PATCH 22/34] drm/amd/display/dc/core/dc: Convert function
- headers to kernel-doc
+Date:   Thu, 27 May 2021 00:27:32 -0400
+Message-ID: <CADnq5_OW=Zp9gA1V+avgSV-k7Kr38ZqSqVNMnT+URnvW3ptiBw@mail.gmail.com>
+Subject: Re: [PATCH 23/34] drm/amd/display/dmub/src/dmub_srv_stat: Convert
+ function header to kernel-doc
 To:     Lee Jones <lee.jones@linaro.org>
-Cc:     Leo Li <sunpeng.li@amd.com>, LKML <linux-kernel@vger.kernel.org>,
+Cc:     Leo Li <sunpeng.li@amd.com>,
+        Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>,
+        LKML <linux-kernel@vger.kernel.org>,
         amd-gfx list <amd-gfx@lists.freedesktop.org>,
+        Meenakshikumar Somasundaram <meenakshikumar.somasundaram@amd.com>,
         David Airlie <airlied@linux.ie>,
         Maling list - DRI developers 
         <dri-devel@lists.freedesktop.org>,
         Alex Deucher <alexander.deucher@amd.com>,
+        Jun Lei <Jun.Lei@amd.com>,
         =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
@@ -72,15 +76,9 @@ On Wed, May 26, 2021 at 4:48 AM Lee Jones <lee.jones@linaro.org> wrote:
 >
 > Fixes the following W=3D1 kernel build warning(s):
 >
->  drivers/gpu/drm/amd/amdgpu/../display/dc/core/dc.c:3324: warning: Cannot=
- understand  **************************************************************=
-***************
->  drivers/gpu/drm/amd/amdgpu/../display/dc/core/dc.c:3344: warning: Cannot=
- understand  **************************************************************=
-***************
->  drivers/gpu/drm/amd/amdgpu/../display/dc/core/dc.c:3417: warning: Cannot=
- understand  **************************************************************=
-***************
+>  drivers/gpu/drm/amd/amdgpu/../display/dmub/src/dmub_srv_stat.c:38: warni=
+ng: Cannot understand  ****************************************************=
+*************************
 >
 > Cc: Harry Wentland <harry.wentland@amd.com>
 > Cc: Leo Li <sunpeng.li@amd.com>
@@ -88,97 +86,55 @@ On Wed, May 26, 2021 at 4:48 AM Lee Jones <lee.jones@linaro.org> wrote:
 > Cc: "Christian K=C3=B6nig" <christian.koenig@amd.com>
 > Cc: David Airlie <airlied@linux.ie>
 > Cc: Daniel Vetter <daniel@ffwll.ch>
+> Cc: Jun Lei <Jun.Lei@amd.com>
+> Cc: Meenakshikumar Somasundaram <meenakshikumar.somasundaram@amd.com>
+> Cc: Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>
 > Cc: amd-gfx@lists.freedesktop.org
 > Cc: dri-devel@lists.freedesktop.org
 > Signed-off-by: Lee Jones <lee.jones@linaro.org>
 > ---
->  drivers/gpu/drm/amd/display/dc/core/dc.c | 46 ++++++------------------
->  1 file changed, 11 insertions(+), 35 deletions(-)
+>  .../drm/amd/display/dmub/src/dmub_srv_stat.c  | 19 ++++++-------------
+>  1 file changed, 6 insertions(+), 13 deletions(-)
 >
-> diff --git a/drivers/gpu/drm/amd/display/dc/core/dc.c b/drivers/gpu/drm/a=
-md/display/dc/core/dc.c
-> index ef157b83bacd2..34c207f92df98 100644
-> --- a/drivers/gpu/drm/amd/display/dc/core/dc.c
-> +++ b/drivers/gpu/drm/amd/display/dc/core/dc.c
-> @@ -3335,18 +3335,10 @@ void dc_hardware_release(struct dc *dc)
->  #endif
+> diff --git a/drivers/gpu/drm/amd/display/dmub/src/dmub_srv_stat.c b/drive=
+rs/gpu/drm/amd/display/dmub/src/dmub_srv_stat.c
+> index e6f3bfab33d3e..70766d534c9c8 100644
+> --- a/drivers/gpu/drm/amd/display/dmub/src/dmub_srv_stat.c
+> +++ b/drivers/gpu/drm/amd/display/dmub/src/dmub_srv_stat.c
+> @@ -35,20 +35,13 @@
+>   */
 >
 >  /**
 > - ***********************************************************************=
 ******
-> - *  Function: dc_enable_dmub_notifications
-> + * dc_enable_dmub_notifications - Returns whether dmub notification can =
-be enabled
-> + * @dc: dc structure
+> - *  Function: dmub_srv_stat_get_notification
+> + * dmub_srv_stat_get_notification - Retrieves a dmub outbox notification=
+, set up dmub notification
+> + *                                  structure with message information. =
+Also a pending bit if queue
+> + *                                  is having more notifications
+> + *  @dmub: dmub srv structure
+> + *  @notify: dmub notification structure to be filled up
 >   *
 > - *  @brief
-> - *             Returns whether dmub notification can be enabled
+> - *             Retrieves a dmub outbox notification, set up dmub notific=
+ation
+> - *             structure with message information. Also a pending bit if=
+ queue
+> - *             is having more notifications
 > - *
-> - *  @param
-> - *             [in] dc: dc structure
+> - *  @param [in] dmub: dmub srv structure
+> - *  @param [out] pnotify: dmub notification structure to be filled up
 > - *
-> - *     @return
-> - *             True to enable dmub notifications, False otherwise
+> - *  @return
+> - *     dmub_status
 > - ***********************************************************************=
 ******
-> + * Returns: True to enable dmub notifications, False otherwise
+> + *  Returns: dmub_status
 >   */
->  bool dc_enable_dmub_notifications(struct dc *dc)
->  {
-> @@ -3355,21 +3347,13 @@ bool dc_enable_dmub_notifications(struct dc *dc)
->  }
->
->  /**
-> - ***********************************************************************=
-******
-> - *  Function: dc_process_dmub_aux_transfer_async
-> - *
-> - *  @brief
-> - *             Submits aux command to dmub via inbox message
-> - *             Sets port index appropriately for legacy DDC
-> - *
-> - *  @param
-> - *             [in] dc: dc structure
-> - *             [in] link_index: link index
-> - *             [in] payload: aux payload
-> + * dc_process_dmub_aux_transfer_async - Submits aux command to dmub via =
-inbox message
-> + *                                      Sets port index appropriately fo=
-r legacy DDC
-> + * @dc: dc structure
-> + * @link_index: link index
-> + * @payload: aux payload
->   *
-> - *     @return
-> - *             True if successful, False if failure
-> - ***********************************************************************=
-******
-> + * Returns: True if successful, False if failure
->   */
->  bool dc_process_dmub_aux_transfer_async(struct dc *dc,
->                                 uint32_t link_index,
-> @@ -3428,16 +3412,8 @@ bool dc_process_dmub_aux_transfer_async(struct dc =
-*dc,
->  }
->
->  /**
-> - ***********************************************************************=
-******
-> - *  Function: dc_disable_accelerated_mode
-> - *
-> - *  @brief
-> - *             disable accelerated mode
-> - *
-> - *  @param
-> - *             [in] dc: dc structure
-> - *
-> - ***********************************************************************=
-******
-> + * dc_disable_accelerated_mode - disable accelerated mode
-> + * @dc: dc structure
->   */
->  void dc_disable_accelerated_mode(struct dc *dc)
->  {
+>  enum dmub_status dmub_srv_stat_get_notification(struct dmub_srv *dmub,
+>                                                 struct dmub_notification =
+*notify)
 > --
 > 2.31.1
 >
