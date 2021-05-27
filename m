@@ -2,161 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DEE643926A1
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 06:56:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 407E3392697
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 06:52:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234421AbhE0E6X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 May 2021 00:58:23 -0400
-Received: from mga14.intel.com ([192.55.52.115]:29423 "EHLO mga14.intel.com"
+        id S234334AbhE0Exa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 May 2021 00:53:30 -0400
+Received: from mga14.intel.com ([192.55.52.115]:57901 "EHLO mga14.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233424AbhE0E6U (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 May 2021 00:58:20 -0400
-IronPort-SDR: /Un19rduIl/0g1gNalq8OTkfx7q50H35HM0OkSGs/lW+oL5MbTNm5YEIpBLgPx6B6G18ToWBqA
- NrXrhun+j5iw==
-X-IronPort-AV: E=McAfee;i="6200,9189,9996"; a="202411868"
+        id S229579AbhE0Ex3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 27 May 2021 00:53:29 -0400
+IronPort-SDR: L87SDuFUovS5MHTtqVESlsIKTHif70Hx0Ljw2ouMIv6W95yNANJPlKLNKXmzs0D/AqsyFEEh6w
+ TdP94saI5aPg==
+X-IronPort-AV: E=McAfee;i="6200,9189,9996"; a="202411548"
 X-IronPort-AV: E=Sophos;i="5.82,333,1613462400"; 
-   d="scan'208";a="202411868"
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 May 2021 21:56:45 -0700
-IronPort-SDR: eTyRWFmly24HJWPrqsRiLIgtNJHdppHF4cp1Y4Pv9xZVOIr8tshTpBccaalr8WEHcrO+AjGKgk
- mqVkzzGUsvpg==
+   d="scan'208";a="202411548"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 May 2021 21:51:52 -0700
+IronPort-SDR: Bl8poXRU2Tsbv09kdrjwMS83I7WZaiBIchUlDudPk4f+Q/QkJb8ny3jZEYC7VmooKpsxfIpBKY
+ Wpwgb6ZFrzVA==
+X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.82,333,1613462400"; 
-   d="scan'208";a="633830957"
-Received: from skgangad-mobl.amr.corp.intel.com (HELO skuppusw-desk1.amr.corp.intel.com) ([10.254.33.45])
-  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 May 2021 21:56:45 -0700
-From:   Kuppuswamy Sathyanarayanan 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>
-To:     Peter Zijlstra <peterz@infradead.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Dan Williams <dan.j.williams@intel.com>
-Cc:     Andi Kleen <ak@linux.intel.com>,
-        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
-        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
-        Raj Ashok <ashok.raj@intel.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Kuppuswamy Sathyanarayanan 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        linux-kernel@vger.kernel.org
-Subject: [RFC v2-fix-v1 1/1] x86/tdx: Add helper to do MapGPA hypercall
-Date:   Wed, 26 May 2021 21:56:38 -0700
-Message-Id: <20210527045638.3985072-1-sathyanarayanan.kuppuswamy@linux.intel.com>
+   d="scan'208";a="477321703"
+Received: from unknown (HELO chenyu-desktop.sh.intel.com) ([10.239.158.131])
+  by orsmga001.jf.intel.com with ESMTP; 26 May 2021 21:51:49 -0700
+From:   Chen Yu <yu.c.chen@intel.com>
+To:     linux-pm@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+        Len Brown <len.brown@intel.com>,
+        Artem Bityutskiy <artem.bityutskiy@linux.intel.com>,
+        Zhang Rui <rui.zhang@intel.com>, Chen Yu <yu.c.chen@intel.com>
+Subject: [PATCH] intel_idle: Adjust the SKX C6 latency and residency if PC6 is disabled
+Date:   Thu, 27 May 2021 12:56:47 +0800
+Message-Id: <20210527045647.3599-1-yu.c.chen@intel.com>
 X-Mailer: git-send-email 2.25.1
-In-Reply-To: <57690b33-e7da-e345-dfae-b2e18f9a1467@linux.intel.com>
-References: <57690b33-e7da-e345-dfae-b2e18f9a1467@linux.intel.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
+Currently cpuidle assumes worst-case C-state parameters, and so C6
+is described with PC6 parameters, which is worst case for requesting
+CC6. When PC6 is enabled, this is appropriate. But if PC6 is disabled
+in BIOS, the exit latency and target_residency should be adjusted
+accordingly.
 
-MapGPA hypercall is used by TDX guests to request VMM convert
-the existing mapping of given GPA address range between
-private/shared.
+Exit latency:
+The C6 exit latency is measured when woken up from CC6/PC6. In the past,
+if PC6 is disabled, CPU would be demoted to CC6/PC3, which is close to
+the latency from CC6/PC6 and there is no need to update the C6 exit latency.
+However on newer platform there is no CC3/PC3 anymore, then the C6 exit
+latency with PC6 disabled should be CC6/PC0.
 
-tdx_hcall_gpa_intent() is the wrapper used for making MapGPA
-hypercall.
+Target residency:
+With PC6 disabled and C3/PC3 supported, the OS requests C3 if idle
+duration is within [CC6, PC6) target_residency. On new CPU generations
+with C3/PC3 deprecated, the OS would request C1E. This would cause
+low energy-efficiency. In summary, the question is, should we lower
+the bar to request C6 when PC6 is disabled? The answer is yes.
 
-Signed-off-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
-Reviewed-by: Andi Kleen <ak@linux.intel.com>
-Signed-off-by: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
+To fill this gap, check if PC6 is disabled in the BIOS in the
+MSR_PKG_CST_CONFIG_CONTROL(0xe2). If so, use CC6/PC0 parameters as the
+new exit latency. Meanwhile, update target_residency to 3 times of the new
+exit latency. This is consistent with how intel_idle driver uses _CST to
+calculate the target_residency. The consequence is that, the OS would
+be more offen to choose C6 over C1E when PC6 is disabled. The new exit
+latency of CC6/PC0 was from wult[1] result, which was measured via NIC
+wakeup from 99.99th latency.
+
+Before the change:
+PC6 enabled        Y          N           N
+has C3/PC3         N          N           Y
+idle duration      [CC6,PC6)  [CC6,PC6)   [CC6,PC6)
+CPU request        C1E        C1E         C3
+
+After the change:
+PC6 enabled        Y          N           N
+has C3/PC3         N          N           Y
+idle duration      [CC6,PC6)  [CC6,PC6)   [CC6,PC6)
+CPU request        C1E        *C6*        C3
+
+*C6* rather than C1E is chosen.
+
+There is concern that if we should introduce a more generic solution
+rather than optimizing on each platforms. However consider the
+code complexity and different PC6 bit interpretation on different
+platforms, tune the code per platform seems to be an acceptable trade-off.
+
+[1] https://intel.github.io/wult/
+
+Suggested-by: Len Brown <len.brown@intel.com>
+Signed-off-by: Chen Yu <yu.c.chen@intel.com>
 ---
+ drivers/idle/intel_idle.c | 33 +++++++++++++++++++++++++++++++++
+ 1 file changed, 33 insertions(+)
 
-Changes since RFC v2:
-  * Renamed tdg_map_gpa() to tdx_hcall_gpa_intent().
-  * Fixed commit log and comments as per review comments.
-
- arch/x86/include/asm/tdx.h | 17 +++++++++++++++++
- arch/x86/kernel/tdx.c      | 24 ++++++++++++++++++++++++
- 2 files changed, 41 insertions(+)
-
-diff --git a/arch/x86/include/asm/tdx.h b/arch/x86/include/asm/tdx.h
-index a93528246595..eb9fa5f4d0e3 100644
---- a/arch/x86/include/asm/tdx.h
-+++ b/arch/x86/include/asm/tdx.h
-@@ -7,6 +7,15 @@
- 
- #ifndef __ASSEMBLY__
- 
-+/*
-+ * Page mapping type enum. This is software construct not
-+ * part of any hardware or VMM ABI.
-+ */
-+enum tdx_map_type {
-+	TDX_MAP_PRIVATE,
-+	TDX_MAP_SHARED,
-+};
-+
- #ifdef CONFIG_INTEL_TDX_GUEST
- 
- #include <asm/cpufeature.h>
-@@ -119,6 +128,8 @@ do {									\
- #endif
- 
- extern phys_addr_t tdg_shared_mask(void);
-+extern int tdx_hcall_gpa_intent(phys_addr_t gpa, int numpages,
-+				enum tdx_map_type map_type);
- 
- #else // !CONFIG_INTEL_TDX_GUEST
- 
-@@ -143,6 +154,12 @@ static inline phys_addr_t tdg_shared_mask(void)
- {
- 	return 0;
- }
-+
-+static inline int tdx_hcall_gpa_intent(phys_addr_t gpa, int numpages,
-+				       enum tdx_map_type map_type)
-+{
-+	return -ENODEV;
-+}
- #endif /* CONFIG_INTEL_TDX_GUEST */
- 
- #ifdef CONFIG_INTEL_TDX_GUEST_KVM
-diff --git a/arch/x86/kernel/tdx.c b/arch/x86/kernel/tdx.c
-index 0c8b10b78f32..a8ebd2d10093 100644
---- a/arch/x86/kernel/tdx.c
-+++ b/arch/x86/kernel/tdx.c
-@@ -16,6 +16,9 @@
- #define TDINFO				1
- #define TDGETVEINFO			3
- 
-+/* TDX hypercall Leaf IDs */
-+#define TDVMCALL_MAP_GPA		0x10001
-+
- #define VE_GET_IO_TYPE(exit_qual)      (((exit_qual) & 8) ? 0 : 1)
- #define VE_GET_IO_SIZE(exit_qual)      (((exit_qual) & 7) + 1)
- #define VE_GET_PORT_NUM(exit_qual)     ((exit_qual) >> 16)
-@@ -122,6 +125,27 @@ static void tdg_get_info(void)
- 	physical_mask &= ~tdg_shared_mask();
+diff --git a/drivers/idle/intel_idle.c b/drivers/idle/intel_idle.c
+index ec1b9d306ba6..e6c543b5ee1d 100644
+--- a/drivers/idle/intel_idle.c
++++ b/drivers/idle/intel_idle.c
+@@ -1484,6 +1484,36 @@ static void __init sklh_idle_state_table_update(void)
+ 	skl_cstates[6].flags |= CPUIDLE_FLAG_UNUSABLE;	/* C9-SKL */
  }
  
-+/*
-+ * Inform the VMM of the guest's intent for this physical page:
-+ * shared with the VMM or private to the guest.  The VMM is
-+ * expected to change its mapping of the page in response.
-+ *
-+ * Note: shared->private conversions require further guest
-+ * action to accept the page.
++/**
++ * skx_idle_state_table_update - Adjust the Sky Lake/Cascade Lake
++ * idle states table.
 + */
-+int tdx_hcall_gpa_intent(phys_addr_t gpa, int numpages,
-+			 enum tdx_map_type map_type)
++static void __init skx_idle_state_table_update(void)
 +{
-+	u64 ret;
++	unsigned long long msr;
 +
-+	if (map_type == TDX_MAP_SHARED)
-+		gpa |= tdg_shared_mask();
++	rdmsrl(MSR_PKG_CST_CONFIG_CONTROL, msr);
 +
-+	ret = tdx_hypercall(TDVMCALL_MAP_GPA, gpa, PAGE_SIZE * numpages, 0, 0);
-+
-+	return ret ? -EIO : 0;
++	/*
++	 * 000b: C0/C1 (no package C-state support)
++	 * 001b: C2
++	 * 010b: C6 (non-retention)
++	 * 011b: C6 (retention)
++	 * 111b: No Package C state limits.
++	 */
++	if ((msr & 0x7) < 2) {
++		/*
++		 * Uses the CC6 + PC0 latency and 3 times of
++		 * latency for target_residency if the PC6
++		 * is disabled in BIOS. This is consistent
++		 * with how intel_idle driver uses _CST
++		 * to set the target_residency.
++		 */
++		skx_cstates[2].exit_latency = 92;
++		skx_cstates[2].target_residency = 276;
++	}
 +}
 +
- static __cpuidle void tdg_halt(void)
+ static bool __init intel_idle_verify_cstate(unsigned int mwait_hint)
  {
- 	u64 ret;
+ 	unsigned int mwait_cstate = MWAIT_HINT2CSTATE(mwait_hint) + 1;
+@@ -1515,6 +1545,9 @@ static void __init intel_idle_init_cstates_icpu(struct cpuidle_driver *drv)
+ 	case INTEL_FAM6_SKYLAKE:
+ 		sklh_idle_state_table_update();
+ 		break;
++	case INTEL_FAM6_SKYLAKE_X:
++		skx_idle_state_table_update();
++		break;
+ 	}
+ 
+ 	for (cstate = 0; cstate < CPUIDLE_STATE_MAX; ++cstate) {
 -- 
 2.25.1
 
