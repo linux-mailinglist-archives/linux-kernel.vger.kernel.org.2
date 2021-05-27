@@ -2,89 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 50FCA392DBC
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 14:13:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 357CD392DBF
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 14:13:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235369AbhE0MOq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 May 2021 08:14:46 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55340 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235330AbhE0MOg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 May 2021 08:14:36 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7B476613AA;
-        Thu, 27 May 2021 12:12:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1622117580;
-        bh=WZlLrGiAfimJpbKiCXTF3f4pAK3pDk1vE3WUqLZZ720=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=TYV+yWlL//W+NZUTY1CPRBHDR2thsamhs1IogKgRvgauvtS9osicQZO4QS5DyNWUC
-         NWS42AAbvPUHQkyJN7JXCwTxr2j1vdxfi+HGW78qv0gcPTaQPWYZ5Sb4fae7UqiFcA
-         ZWFddqngKHOobjE2DTHmR3GZWBcxA8VxcavUAUA0=
-Date:   Thu, 27 May 2021 14:12:57 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Baokun Li <libaokun1@huawei.com>
-Cc:     ross.schm.dev@gmail.com, fabioaiuto83@gmail.com,
-        marcocesati@gmail.com, fmdefrancesco@gmail.com,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
-        weiyongjun1@huawei.com, yuehaibing@huawei.com,
-        yangjihong1@huawei.com, yukuai3@huawei.com
-Subject: Re: [PATCH -next] staging: rtl8723bs: Remove set but not used
- variable 'reason_code'
-Message-ID: <YK+Mye9eXudCf6/r@kroah.com>
-References: <20210527120210.321810-1-libaokun1@huawei.com>
+        id S235345AbhE0MO4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 May 2021 08:14:56 -0400
+Received: from mail-pf1-f182.google.com ([209.85.210.182]:34532 "EHLO
+        mail-pf1-f182.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234996AbhE0MOy (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 27 May 2021 08:14:54 -0400
+Received: by mail-pf1-f182.google.com with SMTP id q25so446120pfn.1;
+        Thu, 27 May 2021 05:13:22 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Hp+Uy7UVKG2i4DKsG6eZskROxgnGGiFzGKlG97gaaTY=;
+        b=AiIKST4JmhQzcRY2fhfNDd/ps8dT9SdwmagRYHKHoV8KZQHCgDRARqZ9rF7Mh+cHoj
+         F/VhyrgLeYubzpwEEqQCkDEda8X2ddhsomOcrL6jtk5rYWr1ibO9gE2AXQnOqnHzAwqn
+         sYBl9h7Vpd/hKutz7vB6rHdC28N6IaX73IdDb5sgRf/g+l+7YqGmHgfhZ6350HK4ov4T
+         hgG5loa8WA1tlvaRpbQNjpVTPHfm4Voyo+ZgIVDjsZ31G7WyDgLrtCohMBGw7xrp5M3b
+         lFSVDVFQhu25mfeY7UHTSMNMKVSbLCOfFAiFCwVY/ctprLYDMuNnpPlfI/A15HNECbwk
+         DJ0Q==
+X-Gm-Message-State: AOAM531uXCCfYMcfIPybLLUFmSctjmyLy7hjfNqo/WlQh4rhmw95YtQv
+        wwWRLGexsq7ocmuCrdsCUNg=
+X-Google-Smtp-Source: ABdhPJzB28t814SgXj5tmGrrEwAQwUL5MPndC9/+sOTzEgPSfjZDYWZh79wNAEMuzStikwuubILejw==
+X-Received: by 2002:a65:6a4f:: with SMTP id o15mr3415028pgu.399.1622117601772;
+        Thu, 27 May 2021 05:13:21 -0700 (PDT)
+Received: from rocinante.localdomain ([95.155.85.46])
+        by smtp.gmail.com with ESMTPSA id g72sm1840414pfb.33.2021.05.27.05.13.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 27 May 2021 05:13:21 -0700 (PDT)
+Date:   Thu, 27 May 2021 14:13:10 +0200
+From:   Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>
+To:     Om Prakash Singh <omp@nvidia.com>
+Cc:     vidyas@nvidia.com, lorenzo.pieralisi@arm.com, bhelgaas@google.com,
+        thierry.reding@gmail.com, jonathanh@nvidia.com,
+        linux-tegra@vger.kernel.org, linux-pci@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kthota@nvidia.com,
+        mmaddireddy@nvidia.com
+Subject: Re: [RESEND PATCH V1 3/5] PCI: tegra: Disable interrupts before
+ entering L2
+Message-ID: <20210527121310.GC213718@rocinante.localdomain>
+References: <20210527115246.20509-1-omp@nvidia.com>
+ <20210527115246.20509-4-omp@nvidia.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210527120210.321810-1-libaokun1@huawei.com>
+In-Reply-To: <20210527115246.20509-4-omp@nvidia.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 27, 2021 at 08:02:10PM +0800, Baokun Li wrote:
-> Fixes gcc '-Wunused-but-set-variable' warning:
-> 
-> drivers/staging/rtl8723bs/core/rtw_mlme_ext.c: In function 'OnAction_back':
-> drivers/staging/rtl8723bs/core/rtw_mlme_ext.c:1729:30: warning:
->  variable ‘reason_code’ set but not used [-Wunused-but-set-variable]
-> 
-> It never used since introduction.
-> 
-> Signed-off-by: Baokun Li <libaokun1@huawei.com>
-> ---
->  drivers/staging/rtl8723bs/core/rtw_mlme_ext.c | 5 +----
->  1 file changed, 1 insertion(+), 4 deletions(-)
-> 
-> diff --git a/drivers/staging/rtl8723bs/core/rtw_mlme_ext.c b/drivers/staging/rtl8723bs/core/rtw_mlme_ext.c
-> index 9fc612fb736f..97b3c2965770 100644
-> --- a/drivers/staging/rtl8723bs/core/rtw_mlme_ext.c
-> +++ b/drivers/staging/rtl8723bs/core/rtw_mlme_ext.c
-> @@ -1721,7 +1721,7 @@ unsigned int OnAction_back(struct adapter *padapter, union recv_frame *precv_fra
->  	struct recv_reorder_ctrl *preorder_ctrl;
->  	unsigned char 	*frame_body;
->  	unsigned char 	category, action;
-> -	unsigned short	tid, status, reason_code = 0;
-> +	unsigned short	tid, status;
->  	struct mlme_ext_priv *pmlmeext = &padapter->mlmeextpriv;
->  	struct mlme_ext_info *pmlmeinfo = &(pmlmeext->mlmext_info);
->  	u8 *pframe = precv_frame->u.hdr.rx_data;
-> @@ -1790,9 +1790,6 @@ unsigned int OnAction_back(struct adapter *padapter, union recv_frame *precv_fra
->  					~BIT((frame_body[3] >> 4) & 0xf);
->  				psta->htpriv.candidate_tid_bitmap &=
->  					~BIT((frame_body[3] >> 4) & 0xf);
-> -
-> -				/* reason_code = frame_body[4] | (frame_body[5] << 8); */
-> -				reason_code = get_unaligned_le16(&frame_body[4]);
->  			} else if ((frame_body[3] & BIT(3)) == BIT(3)) {
->  				tid = (frame_body[3] >> 4) & 0x0F;
->  
-> -- 
-> 2.25.4
-> 
+Hi Prakash,
 
-Does not apply to my tree.  Are you _sure_ you are using the latest
-version of linux-next?
+> Tegra194 implements suspend_noirq() hook and during the system suspend, the link
+> is taken to L2 state after PME_Turn_off handshake and if it doesn't go into L2,
+> PERST# is asserted. It is observed that with some of the endpoints (Ex:- Marvell
+> SATA controller), the link doesn't go into L2 state and asserting PERST# results
+> in Surprise Link Down error and the corresponding AER interrupt is also raised.
+> Since the system is in noirq phase, this interrupt is not served. Both PME and
+> AER interrupts are served by the same wire interrupt in Tegra194, and since the
+> PCIe sub-system enables wake capability for PME interrupt, having a pending AER
+> interrupt is treated as PME wake interrupt by the system and prevents the system
+> going into the suspend state. To address this issue, the interrupts are disabled
+> before taking the link into L2 state as the interrupts are not expected anyway
+> from the controller afterward.
 
-thanks,
+This commit could use some formatting, perhaps splitting it into few
+paragraphs and also I believe your line length could use some
+adjustment.  Having said that, I am not sure if the whole detailed
+account of the problem is required to be included here in the commit
+message.
 
-greg k-h
+> +	/*
+> +	 * PCIe controller exits from L2 only if reset is applied, so
+> +	 * controller doesn't handle interrupts. But in cases where
+> +	 * L2 entry fails, PERST# is asserted which can trigger surprise
+> +	 * link down AER. However this function call happens in
+> +	 * suspend_noirq(), so AER interrupt will not be processed.
+> +	 * Disable all interrupts to avoid such a scenario.
+> +	 */
+[...]
+
+This code comment added below makes for a better commit message that the
+commit message above - clear, concise and straight to the point of why
+this was added.
+
+	Krzysztof
