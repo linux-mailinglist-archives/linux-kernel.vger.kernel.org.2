@@ -2,98 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D77839298C
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 10:26:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 091CB39298F
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 10:28:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235492AbhE0I1h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 May 2021 04:27:37 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:29583 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235481AbhE0I1f (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 May 2021 04:27:35 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1622103963;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=S1BsraUe7N57fnB+ujM6T0UDaX7BExCn8Z1KNT+TQMs=;
-        b=JfwB1ayr16PH/ez/VDCvbn664b7aApKIC1FE/OnPlHakAJQY7/FDpnTM9w5mhFJJKEtdEa
-        7p5OyHbZre4nY5t+CZH3tB4IszdCUSewkPMsuG0asDQo7z4vT0ONCr4utlEgD3J9WIV7Yq
-        F/0uobTNizDV5pYM+9ohh1Grl9T8V+o=
-Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com
- [209.85.208.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-399-GXy9jQ76Mze-TFZtwOUzlQ-1; Thu, 27 May 2021 04:26:00 -0400
-X-MC-Unique: GXy9jQ76Mze-TFZtwOUzlQ-1
-Received: by mail-ed1-f72.google.com with SMTP id da10-20020a056402176ab029038f0fea1f51so2061895edb.13
-        for <linux-kernel@vger.kernel.org>; Thu, 27 May 2021 01:26:00 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=S1BsraUe7N57fnB+ujM6T0UDaX7BExCn8Z1KNT+TQMs=;
-        b=gAPX9e1/kFkkogebQLVj9cCx562Hcro+D6Sv4cszbFuy9OMjTKi2vHmE59dPjxz2Rf
-         9Ud18yeTsCAapcySAZbX9+gya9nSay+Tnartu9b6QbDucd6OnNbTFHHK5UzzVQCK2oUB
-         H//u/5PoczeIAL41b/8ETzGTpuF9it12zKNg8thcj9CNCseWgOEZMSF7y8+sqSIOJa8o
-         /lOv5s1bLDSEcvOf7VCRqAdH0MI5eE6iRLW71Ucs+5AQezXKh9u31R3wdwIF8DVKnBvr
-         V6KsTsnfAPilk8j1+yHkLl0jjtNpDBSw5wAOBddLUUC/mR7SGSm7cBnS54RyiCaA8rGa
-         z4cQ==
-X-Gm-Message-State: AOAM532S/8x/9T26BF6iLhIguA6zCj4wM7n/7AbGyitfos5Jsk/TTpoT
-        tuStmgvl9oGQPMQSQSb8eMunsLkQCC/1Ca59uNaO2aJxmjoDVLsC6AFxihlwdFb3Z1IImwfUDJN
-        JNRYxnPY6fWVK3IfQaE0Uerev
-X-Received: by 2002:a17:907:20b0:: with SMTP id pw16mr2638528ejb.48.1622103958811;
-        Thu, 27 May 2021 01:25:58 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyWG+hZT0e0LFKddR9ePsHZRRuXayqX4XMSKotQzvDWjtAN99eVYS0eWjYQsi/+6L6jbovDOA==
-X-Received: by 2002:a17:907:20b0:: with SMTP id pw16mr2638515ejb.48.1622103958612;
-        Thu, 27 May 2021 01:25:58 -0700 (PDT)
-Received: from x1.localdomain (2001-1c00-0c1e-bf00-1054-9d19-e0f0-8214.cable.dynamic.v6.ziggo.nl. [2001:1c00:c1e:bf00:1054:9d19:e0f0:8214])
-        by smtp.gmail.com with ESMTPSA id nd36sm614722ejc.21.2021.05.27.01.25.58
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 27 May 2021 01:25:58 -0700 (PDT)
-Subject: Re: linux-next: build failure after merge of the hid tree
-To:     Jiri Kosina <jikos@kernel.org>,
-        Stephen Rothwell <sfr@canb.auug.org.au>
-Cc:     Benjamin Tissoires <benjamin.tissoires@redhat.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-References: <20210527152631.1e70fba2@canb.auug.org.au>
- <nycvar.YFH.7.76.2105271012430.28378@cbobk.fhfr.pm>
-From:   Hans de Goede <hdegoede@redhat.com>
-Message-ID: <e5ee42f7-b0eb-40c7-e54f-8e16e8b97b68@redhat.com>
-Date:   Thu, 27 May 2021 10:25:57 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+        id S235440AbhE0IaB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 May 2021 04:30:01 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51432 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235207AbhE0I36 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 27 May 2021 04:29:58 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A1C68611CD;
+        Thu, 27 May 2021 08:28:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1622104105;
+        bh=Ta3ax0ef8yphtHWSJYKBLN4MXmtoXrolhD9l4/owgG0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=n8nwp8zqH9ebhXGKhK39yNWAY0SrrWLYisoeUBBSDjVwSzi7yBfjXyqg4cdtxvTT2
+         n80L/Pd0alpBT0MRGNjEDdOSVZn85PjqEnq12CVyxlxqXUJdYcbrQCCdNEc8SiSMHp
+         ZvHiOy+A1kZgJ7CiXfuiBN34D4P9JCgZtqLffLKK/gGFLW9cmP0e5Lj+T/VXsNkuwD
+         zoP6NlEjmz0uFDmyIGK+7zuFiB7TGbbVc1TXL0N+2x0HpNTH09iwcxqj0k1KoaZkBt
+         L2jf+o81AKrsaKNF8s6EmoQuiuWod86sbwx7MvlASYjukRWOZaode3ogXdvX59JnFi
+         7wD9i0DRPbqNQ==
+Received: from johan by xi.lan with local (Exim 4.94.2)
+        (envelope-from <johan@kernel.org>)
+        id 1lmBNP-0000GU-2w; Thu, 27 May 2021 10:28:23 +0200
+Date:   Thu, 27 May 2021 10:28:23 +0200
+From:   Johan Hovold <johan@kernel.org>
+To:     syzbot <syzbot+b0b89cff78d7b7bd0278@syzkaller.appspotmail.com>
+Cc:     gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org,
+        linux-usb@vger.kernel.org, mathias.nyman@linux.intel.com,
+        syzkaller-bugs@googlegroups.com
+Subject: Re: [syzbot] WARNING in dtv5100_probe/usb_submit_urb
+Message-ID: <YK9YJ0TPTn7tf31l@hovoldconsulting.com>
+References: <0000000000008845ab05c34019a7@google.com>
 MIME-Version: 1.0
-In-Reply-To: <nycvar.YFH.7.76.2105271012430.28378@cbobk.fhfr.pm>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <0000000000008845ab05c34019a7@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-
-On 5/27/21 10:14 AM, Jiri Kosina wrote:
-> On Thu, 27 May 2021, Stephen Rothwell wrote:
+On Wed, May 26, 2021 at 11:49:17AM -0700, syzbot wrote:
+> Hello,
 > 
->> After merging the hid tree, today's linux-next build (x86_64
->> modules_install (on an allmodconfig build)) failed like this:
->>
->> depmod: ERROR: Cycle detected: hid -> usbhid -> hid
->> depmod: ERROR: Found 2 modules in dependency cycles!
->>
->> I could not easily figure out what caused this (it may not be the hid
->> tree, but probably is), so all I could do was leave it broken.
+> syzbot found the following issue on:
 > 
-> This is caused by Hans' patches (CCed). I will be dropping those today, as 
-> the proper fix needs a bit more of rework.
+> HEAD commit:    5cc59c41 USB: core: WARN if pipe direction != setup packet..
+> git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/gregkh/usb.git usb-testing
+> console output: https://syzkaller.appspot.com/x/log.txt?x=16742b9bd00000
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=1206ee92dd3d988d
+> dashboard link: https://syzkaller.appspot.com/bug?extid=b0b89cff78d7b7bd0278
+> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=11911887d00000
+> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=16afabd7d00000
+> 
+> IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> Reported-by: syzbot+b0b89cff78d7b7bd0278@syzkaller.appspotmail.com
+> 
+> usb 1-1: New USB device strings: Mfr=1, Product=2, SerialNumber=3
+> usb 1-1: Product: syz
+> usb 1-1: Manufacturer: syz
+> usb 1-1: SerialNumber: syz
+> usb 1-1: config 0 descriptor??
+> ------------[ cut here ]------------
+> usb 1-1: BOGUS control dir, pipe 80000280 doesn't match bRequestType 40
+> WARNING: CPU: 0 PID: 7 at drivers/usb/core/urb.c:410 usb_submit_urb+0x14aa/0x1830 drivers/usb/core/urb.c:410
+> Modules linked in:
+> CPU: 0 PID: 7 Comm: kworker/0:1 Not tainted 5.13.0-rc2-syzkaller #0
+> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+> Workqueue: usb_hub_wq hub_event
+> RIP: 0010:usb_submit_urb+0x14aa/0x1830 drivers/usb/core/urb.c:410
+> Code: 84 4c 01 00 00 e8 a6 14 b3 fd 4c 89 f7 e8 4e a7 1b ff 45 89 e8 44 89 e1 48 89 ea 48 89 c6 48 c7 c7 c0 09 63 86 e8 18 f1 fb 01 <0f> 0b 49 8d 4f 5c 48 b8 00 00 00 00 00 fc ff df 48 89 ca 48 89 4c
+> RSP: 0018:ffffc9000007ef48 EFLAGS: 00010286
+> RAX: 0000000000000000 RBX: ffff888118a67058 RCX: 0000000000000000
+> RDX: ffff888100283680 RSI: ffffffff812a6013 RDI: fffff5200000fddb
+> RBP: ffff88810f661118 R08: 0000000000000001 R09: 0000000000000000
+> R10: ffffffff814b996b R11: 0000000000000000 R12: 0000000080000280
+> R13: 0000000000000040 R14: ffff888118a670a8 R15: ffff888108f99d00
+> FS:  0000000000000000(0000) GS:ffff8881f6800000(0000) knlGS:0000000000000000
+> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> CR2: 00007f1967249008 CR3: 00000001104a3000 CR4: 00000000001506f0
+> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+> Call Trace:
+>  usb_start_wait_urb+0x101/0x4c0 drivers/usb/core/message.c:58
+>  usb_internal_control_msg drivers/usb/core/message.c:102 [inline]
+>  usb_control_msg+0x31c/0x4a0 drivers/usb/core/message.c:153
+>  dtv5100_probe+0x184/0x2b0 drivers/media/usb/dvb-usb/dtv5100.c:144
 
-Ack, sorry about the trouble these patches are causing.
+Should be fixed by
 
-Regards,
+	https://lore.kernel.org/r/20210521132839.17163-2-johan@kernel.org
 
-Hans
+Johan
 
+#syz fix: media: dtv5100: fix control-request directions
