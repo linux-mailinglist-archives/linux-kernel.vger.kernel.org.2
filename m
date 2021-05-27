@@ -2,80 +2,207 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 83CAE3929B5
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 10:43:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E1F83929B7
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 10:43:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235525AbhE0IpF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 May 2021 04:45:05 -0400
-Received: from mail-vs1-f51.google.com ([209.85.217.51]:46830 "EHLO
-        mail-vs1-f51.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235284AbhE0IpE (ORCPT
+        id S235532AbhE0IpZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 May 2021 04:45:25 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:39685 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235496AbhE0IpY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 May 2021 04:45:04 -0400
-Received: by mail-vs1-f51.google.com with SMTP id q6so2142159vsp.13
-        for <linux-kernel@vger.kernel.org>; Thu, 27 May 2021 01:43:30 -0700 (PDT)
+        Thu, 27 May 2021 04:45:24 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1622105031;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Q4kOVJ8GB+3GLW+q/BipT5oGozNfefpPrW2ucSt2yL8=;
+        b=d0ofvWbwb+F/Zhcxkyd5PrL6Z8KIhhsGVIx1i7G+4IQyJ2lzwF7piwtyUVKnr1yYhpexoQ
+        Sw6jydP4FvGWpk6Q26qvdAjvVSfw8DXTLDsiEdDBhVl27jrL9YYsCZia/aUcR5RUxjGev/
+        EErwR1WML7J+YzBrRuTbT9f+Z+RDGD4=
+Received: from mail-pl1-f198.google.com (mail-pl1-f198.google.com
+ [209.85.214.198]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-45-NZ2MUufSNce9jzqAeicwTg-1; Thu, 27 May 2021 04:43:50 -0400
+X-MC-Unique: NZ2MUufSNce9jzqAeicwTg-1
+Received: by mail-pl1-f198.google.com with SMTP id 37-20020a1709020328b02900f916f1d504so1987786pld.1
+        for <linux-kernel@vger.kernel.org>; Thu, 27 May 2021 01:43:50 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=YcHAcZ99LPh3KvdHc6+dwPmzciohpUzegXnqArlUae4=;
-        b=ahMi40+BE7aAawqPtI559ia3SBdUnS7DaiJEnGWLBUpwysCrflyBNjrY2CmxE9GUcw
-         0iTYDK0uO7gevnyiG2bnFI9Eb5OsHU+T51yhxfqkjvQ0Te+5kBEpXxHfnf5UgBeq0+rm
-         k4GvEfVZzExgJCRv1byVbMqrlVJCLn0sSCoHJDnE+VGL/i3VE05kRa0c1HcMBETAUDvu
-         qdeS67PfXErFLCoVRC64g8pWJLeNFqTaU3tg+9DyHGUoud7E76Ol/HX+F8i2uPgalAfj
-         oIEUEJRPcYnCbaM0JnHlPivkr95ydyNHqJZ2UX4z3zRC8BpMiMnpOjbF364IO4NaIPfX
-         Z6+Q==
-X-Gm-Message-State: AOAM531z2SC8aqksuQdQyV9uA2XoLXogAVkGN+JrPR5La8YDiVB4bSIE
-        8UpadXUz4/y3kw6rgJSp882IQMwcrSiAoY1maes=
-X-Google-Smtp-Source: ABdhPJwtMi0jMzxDHtCUV2SgEGd7LCRzwNK2Sumq2bMqbtu9N1gVIPP1bmFwaX5W7NkNQu33jCjEp7W89CRMWla1Gbc=
-X-Received: by 2002:a67:8713:: with SMTP id j19mr1387811vsd.3.1622105010380;
- Thu, 27 May 2021 01:43:30 -0700 (PDT)
+        h=x-gm-message-state:subject:from:to:cc:references:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=Q4kOVJ8GB+3GLW+q/BipT5oGozNfefpPrW2ucSt2yL8=;
+        b=RRw17sd+VLv5q1YSiTmlfmqzBbFQIpe3ksqD1Vk5a8z+N92NRk08+1X8hCjnKBrEZh
+         3RuAjuNybroMOzsAvsekNidx65vyfxsoACwv3e8RJNkpNNHRFnoWTJyDHkf6QLu7NZpX
+         Bmla0nSuIqdsykODm0DmwcSo1FgSJYZ3TxmrSL3FFsSoaZ/9bJbOH3MteHsr7+PJcNan
+         ETm3hzWwOlM3a55lKWQYPMGryRFqJ4e/K6vLXzY0OG8cwzm9XnTjvjj5FlhuUSP6zOLY
+         olmwki7esS4EiiVKEtiKcRNF1wVN+GqNphUeK9TPfXPybY5//WqXSFtugvAFbsX1oUgl
+         1/PA==
+X-Gm-Message-State: AOAM530PeMxGxN0lPURrWzCIt6E5bBpH2q7qtJ4T+6JvDwJFQs2CWvWP
+        dZRv0DBWUOO8a1eftwlrm+uJM1b8sfVRGpSl+ofRKZr/pRweGelgu5tyDiktS2+QapXED94KF3d
+        ZJGf6BN+OKWyn2NVAM7srOnMDV8YCU9SPLgZsCI5y31lHnOs3IXwzA6MZtdiIjQr0nywuGVRemY
+        T8
+X-Received: by 2002:a17:902:aa42:b029:ee:f55a:b2c1 with SMTP id c2-20020a170902aa42b02900eef55ab2c1mr2283394plr.15.1622105029084;
+        Thu, 27 May 2021 01:43:49 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxSObctLvNp4FosLHglZe975VrI39ki5xw8bXJ8rCFLiK5AHUwDmp+dxI3a8RKS9e1DfhzunA==
+X-Received: by 2002:a17:902:aa42:b029:ee:f55a:b2c1 with SMTP id c2-20020a170902aa42b02900eef55ab2c1mr2283358plr.15.1622105028736;
+        Thu, 27 May 2021 01:43:48 -0700 (PDT)
+Received: from wangxiaodeMacBook-Air.local ([209.132.188.80])
+        by smtp.gmail.com with ESMTPSA id e29sm1364517pfm.110.2021.05.27.01.43.41
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 27 May 2021 01:43:48 -0700 (PDT)
+Subject: Re: [PATCH v7 11/12] vduse: Introduce VDUSE - vDPA Device in
+ Userspace
+From:   Jason Wang <jasowang@redhat.com>
+To:     Yongji Xie <xieyongji@bytedance.com>
+Cc:     "Michael S. Tsirkin" <mst@redhat.com>,
+        Stefan Hajnoczi <stefanha@redhat.com>,
+        Stefano Garzarella <sgarzare@redhat.com>,
+        Parav Pandit <parav@nvidia.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        Christian Brauner <christian.brauner@canonical.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Jens Axboe <axboe@kernel.dk>, bcrl@kvack.org,
+        Jonathan Corbet <corbet@lwn.net>,
+        =?UTF-8?Q?Mika_Penttil=c3=a4?= <mika.penttila@nextfour.com>,
+        Dan Carpenter <dan.carpenter@oracle.com>, joro@8bytes.org,
+        virtualization <virtualization@lists.linux-foundation.org>,
+        netdev@vger.kernel.org, kvm <kvm@vger.kernel.org>,
+        linux-fsdevel@vger.kernel.org, iommu@lists.linux-foundation.org,
+        linux-kernel <linux-kernel@vger.kernel.org>
+References: <20210517095513.850-1-xieyongji@bytedance.com>
+ <20210517095513.850-12-xieyongji@bytedance.com>
+ <3740c7eb-e457-07f3-5048-917c8606275d@redhat.com>
+ <CACycT3uAqa6azso_8MGreh+quj-JXO1piuGnrV8k2kTfc34N2g@mail.gmail.com>
+ <5a68bb7c-fd05-ce02-cd61-8a601055c604@redhat.com>
+ <CACycT3ve7YvKF+F+AnTQoJZMPua+jDvGMs_ox8GQe_=SGdeCMA@mail.gmail.com>
+ <ee00efca-b26d-c1be-68d2-f9e34a735515@redhat.com>
+ <CACycT3ufok97cKpk47NjUBTc0QAyfauFUyuFvhWKmuqCGJ7zZw@mail.gmail.com>
+ <00ded99f-91b6-ba92-5d92-2366b163f129@redhat.com>
+Message-ID: <3cc7407d-9637-227e-9afa-402b6894d8ac@redhat.com>
+Date:   Thu, 27 May 2021 16:43:40 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.10.2
 MIME-Version: 1.0
-References: <20210524152128.20519-1-harold@mrtz.fr>
-In-Reply-To: <20210524152128.20519-1-harold@mrtz.fr>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Thu, 27 May 2021 10:43:18 +0200
-Message-ID: <CAMuHMdWQqoqeaym5apdN8ppvkSm3DkKVeDn=S4e5Z2ytCVVUww@mail.gmail.com>
-Subject: Re: [PATCH] staging: emxx_udc: fix alignment issues
-To:     Harold Mertzweiller <harold@mrtz.fr>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Alex Dewar <alex.dewar90@gmail.com>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        Kumar Kartikeya Dwivedi <memxor@gmail.com>,
-        Sean Behan <codebam@riseup.net>,
-        Colin Ian King <colin.king@canonical.com>,
-        linux-staging@lists.linux.dev,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <00ded99f-91b6-ba92-5d92-2366b163f129@redhat.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Harold,
 
-On Mon, May 24, 2021 at 6:46 PM Harold Mertzweiller <harold@mrtz.fr> wrote:
-> Three function calls can now be properly formatted inside the 100
-> characters limit.
+在 2021/5/27 下午4:41, Jason Wang 写道:
 >
-> Signed-off-by: Harold Mertzweiller <harold@mrtz.fr>
+> 在 2021/5/27 下午3:34, Yongji Xie 写道:
+>> On Thu, May 27, 2021 at 1:40 PM Jason Wang <jasowang@redhat.com> wrote:
+>>>
+>>> 在 2021/5/27 下午1:08, Yongji Xie 写道:
+>>>> On Thu, May 27, 2021 at 1:00 PM Jason Wang <jasowang@redhat.com> 
+>>>> wrote:
+>>>>> 在 2021/5/27 下午12:57, Yongji Xie 写道:
+>>>>>> On Thu, May 27, 2021 at 12:13 PM Jason Wang <jasowang@redhat.com> 
+>>>>>> wrote:
+>>>>>>> 在 2021/5/17 下午5:55, Xie Yongji 写道:
+>>>>>>>> +
+>>>>>>>> +static int vduse_dev_msg_sync(struct vduse_dev *dev,
+>>>>>>>> +                           struct vduse_dev_msg *msg)
+>>>>>>>> +{
+>>>>>>>> +     init_waitqueue_head(&msg->waitq);
+>>>>>>>> +     spin_lock(&dev->msg_lock);
+>>>>>>>> +     vduse_enqueue_msg(&dev->send_list, msg);
+>>>>>>>> +     wake_up(&dev->waitq);
+>>>>>>>> +     spin_unlock(&dev->msg_lock);
+>>>>>>>> +     wait_event_killable(msg->waitq, msg->completed);
+>>>>>>> What happens if the userspace(malicous) doesn't give a response 
+>>>>>>> forever?
+>>>>>>>
+>>>>>>> It looks like a DOS. If yes, we need to consider a way to fix that.
+>>>>>>>
+>>>>>> How about using wait_event_killable_timeout() instead?
+>>>>> Probably, and then we need choose a suitable timeout and more 
+>>>>> important,
+>>>>> need to report the failure to virtio.
+>>>>>
+>>>> Makes sense to me. But it looks like some
+>>>> vdpa_config_ops/virtio_config_ops such as set_status() didn't have a
+>>>> return value.  Now I add a WARN_ON() for the failure. Do you mean we
+>>>> need to add some change for virtio core to handle the failure?
+>>>
+>>> Maybe, but I'm not sure how hard we can do that.
+>>>
+>> We need to change all virtio device drivers in this way.
+>
+>
+> Probably.
+>
+>
+>>
+>>> We had NEEDS_RESET but it looks we don't implement it.
+>>>
+>> Could it handle the failure of get_feature() and get/set_config()?
+>
+>
+> Looks not:
+>
+> "
+>
+> The device SHOULD set DEVICE_NEEDS_RESET when it enters an error state 
+> that a reset is needed. If DRIVER_OK is set, after it sets 
+> DEVICE_NEEDS_RESET, the device MUST send a device configuration change 
+> notification to the driver.
+>
+> "
+>
+> This looks implies that NEEDS_RESET may only work after device is 
+> probed. But in the current design, even the reset() is not reliable.
+>
+>
+>>
+>>> Or a rough idea is that maybe need some relaxing to be coupled loosely
+>>> with userspace. E.g the device (control path) is implemented in the
+>>> kernel but the datapath is implemented in the userspace like TUN/TAP.
+>>>
+>> I think it can work for most cases. One problem is that the set_config
+>> might change the behavior of the data path at runtime, e.g.
+>> virtnet_set_mac_address() in the virtio-net driver and
+>> cache_type_store() in the virtio-blk driver. Not sure if this path is
+>> able to return before the datapath is aware of this change.
+>
+>
+> Good point.
+>
+> But set_config() should be rare:
+>
+> E.g in the case of virtio-net with VERSION_1, config space is read 
+> only, and it was set via control vq.
+>
+> For block, we can
+>
+> 1) start from without WCE or
+> 2) we add a config change notification to userspace or
+> 3) extend the spec to use vq instead of config space
+>
+> Thanks
 
-Thanks for your patch!
 
->  drivers/staging/emxx_udc/emxx_udc.c | 11 ++++-------
+Another thing if we want to go this way:
 
-I'm so happy people are improving this driver!
-Is it working well on your hardware?
-Do you think it's ready to migrate out of staging?
+We need find a way to terminate the data path from the kernel side, to 
+implement to reset semantic.
 
-Thanks again!
+Thanks
 
-Gr{oetje,eeting}s,
 
-                        Geert
+>
+>
+>>
+>> Thanks,
+>> Yongji
+>>
 
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
