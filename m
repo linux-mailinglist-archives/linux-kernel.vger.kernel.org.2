@@ -2,91 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C1DFA39349A
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 19:14:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4FCDC3934A3
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 19:19:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236757AbhE0RQa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 May 2021 13:16:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58668 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234431AbhE0RQ1 (ORCPT
+        id S236839AbhE0RVQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 May 2021 13:21:16 -0400
+Received: from outbound-smtp19.blacknight.com ([46.22.139.246]:46905 "EHLO
+        outbound-smtp19.blacknight.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235216AbhE0RVN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 May 2021 13:16:27 -0400
-Received: from mail-pg1-x52b.google.com (mail-pg1-x52b.google.com [IPv6:2607:f8b0:4864:20::52b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5305EC061574
-        for <linux-kernel@vger.kernel.org>; Thu, 27 May 2021 10:14:54 -0700 (PDT)
-Received: by mail-pg1-x52b.google.com with SMTP id l70so441152pga.1
-        for <linux-kernel@vger.kernel.org>; Thu, 27 May 2021 10:14:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
-        bh=OqveEGoL3ykfBq8zJtkXfVIXCQn6P1IwlpFVQTIOx+E=;
-        b=G1b/bR4tJrhqaI4phTRsGC26D8zUwR63Ao0FWwJNaxwjal32hZaQITiukhEt4hMN3a
-         OjXoYpVpJAMSXNf3PocHlP0t6ap9Vj0eX3TQJnKsJjvl0A8ievZWw10am6up++/NyDDT
-         41fgH+HT5uXfRNjdyorUorZk4RF//D/NOWpdU9tpeV6EzUyIS3eLSCuL9oHHpO2Nsu9N
-         G1dfImj+8p7Iq9RFbg7nXrZER3rvubm6sw1bnffJk68lO0l64oTNXxihCxtFbqsLoBr+
-         3x6YuNgIMDBx657rjGLHaOQ3waakOFZKd/MijZE+FbP2m8HLqs1KtY7+CYwLkPADLPZS
-         gG9g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition;
-        bh=OqveEGoL3ykfBq8zJtkXfVIXCQn6P1IwlpFVQTIOx+E=;
-        b=kcp4CKwxR3J/99qIeRdnM1KDkbfao1UAC7hjqW9NyQ42hHWC/72US+grD170VJGHqE
-         MchsgbBWk2kVS/FkBQ7CHU435zyRnYk7OsTZY8pnHnfaEYKuzMnNMh8UC6WTTCGvNdeg
-         XB/H8QP3dHbjQQG/tyLNm2BALJgHuEa1PgqYzeVesHVcmJyyw1800aSUzm/Z2W1GNhch
-         JpfXlg8kAKScczFYYoRJm/y2q/HWxkJKpRnaac40Fe4BXyB6a3oQFrLaqylUxBurh0Nu
-         Eh/dGUw/ZLK4dhEn710cj7CROS29EMm69Jme3LL0lqmyJjzeSr4Z2EZW2ysk3FlSpe5D
-         sitg==
-X-Gm-Message-State: AOAM533Nn0bNoSCnlSHpZz4FRimflX36VmHUamcfknHY0cWAUk8xAe0D
-        2XEnf1HaucCHplP0y1T/Mvg=
-X-Google-Smtp-Source: ABdhPJzCPtzNSjt2WgzO0eFSPRCjTUwRUj6WvIizrkThQYuGvemIlzlHg/CAYIRvdDbn7G00zzEVwg==
-X-Received: by 2002:aa7:9d86:0:b029:2dc:9acd:620d with SMTP id f6-20020aa79d860000b02902dc9acd620dmr4731720pfq.30.1622135693833;
-        Thu, 27 May 2021 10:14:53 -0700 (PDT)
-Received: from hyeyoo ([183.99.11.150])
-        by smtp.gmail.com with ESMTPSA id k13sm2378392pfg.31.2021.05.27.10.14.52
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 27 May 2021 10:14:53 -0700 (PDT)
-Date:   Fri, 28 May 2021 02:14:49 +0900
-From:   Hyeonggon Yoo <42.hyeyoo@gmail.com>
-To:     Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@redhat.com>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [PATCH] tracing: Remove redundant variable ret
-Message-ID: <20210527171449.GA145584@hyeyoo>
+        Thu, 27 May 2021 13:21:13 -0400
+Received: from mail.blacknight.com (pemlinmail01.blacknight.ie [81.17.254.10])
+        by outbound-smtp19.blacknight.com (Postfix) with ESMTPS id 1C3411C4718
+        for <linux-kernel@vger.kernel.org>; Thu, 27 May 2021 18:19:25 +0100 (IST)
+Received: (qmail 417 invoked from network); 27 May 2021 17:19:24 -0000
+Received: from unknown (HELO techsingularity.net) (mgorman@techsingularity.net@[84.203.23.168])
+  by 81.17.254.9 with ESMTPSA (AES256-SHA encrypted, authenticated); 27 May 2021 17:19:24 -0000
+Date:   Thu, 27 May 2021 18:19:23 +0100
+From:   Mel Gorman <mgorman@techsingularity.net>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        Arnaldo Carvalho de Melo <acme@redhat.com>,
+        Michal Suchanek <msuchanek@suse.de>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Hritik Vijay <hritikxx8@gmail.com>,
+        Linux-BPF <bpf@vger.kernel.org>,
+        Linux-Net <netdev@vger.kernel.org>, Linux-MM <linux-mm@kvack.org>
+Subject: [PATCH v3] mm/page_alloc: Require pahole v1.22 to cope with
+ zero-sized struct pagesets
+Message-ID: <20210527171923.GG30378@techsingularity.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-15
 Content-Disposition: inline
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This variable saves return value of event_hist_trigger_func,
-but it's never read. So it's redundant.
+This patch replaces
+mm-page_alloc-convert-per-cpu-list-protection-to-local_lock-fix.patch in
+Andrew's tree.
 
-Signed-off-by: Hyeonggon Yoo <42.hyeyoo@gmail.com>
+Michal Suchanek reported the following problem with linux-next
+
+  [    0.000000] Linux version 5.13.0-rc2-next-20210519-1.g3455ff8-vanilla (geeko@buildhost) (gcc (SUSE Linux) 10.3.0, GNU ld (GNU Binutils; openSUSE Tumbleweed) 2.36.1.20210326-3) #1 SMP Wed May 19 10:05:10 UTC 2021 (3455ff8)
+  [    0.000000] Command line: BOOT_IMAGE=/boot/vmlinuz-5.13.0-rc2-next-20210519-1.g3455ff8-vanilla root=UUID=ec42c33e-a2c2-4c61-afcc-93e9527 8f687 plymouth.enable=0 resume=/dev/disk/by-uuid/f1fe4560-a801-4faf-a638-834c407027c7 mitigations=auto earlyprintk initcall_debug nomodeset earlycon ignore_loglevel console=ttyS0,115200
+...
+  [   26.093364] calling  tracing_set_default_clock+0x0/0x62 @ 1
+  [   26.098937] initcall tracing_set_default_clock+0x0/0x62 returned 0 after 0 usecs
+  [   26.106330] calling  acpi_gpio_handle_deferred_request_irqs+0x0/0x7c @ 1
+  [   26.113033] initcall acpi_gpio_handle_deferred_request_irqs+0x0/0x7c returned 0 after 3 usecs
+  [   26.121559] calling  clk_disable_unused+0x0/0x102 @ 1
+  [   26.126620] initcall clk_disable_unused+0x0/0x102 returned 0 after 0 usecs
+  [   26.133491] calling  regulator_init_complete+0x0/0x25 @ 1
+  [   26.138890] initcall regulator_init_complete+0x0/0x25 returned 0 after 0 usecs
+  [   26.147816] Freeing unused decrypted memory: 2036K
+  [   26.153682] Freeing unused kernel image (initmem) memory: 2308K
+  [   26.165776] Write protecting the kernel read-only data: 26624k
+  [   26.173067] Freeing unused kernel image (text/rodata gap) memory: 2036K
+  [   26.180416] Freeing unused kernel image (rodata/data gap) memory: 1184K
+  [   26.187031] Run /init as init process
+  [   26.190693]   with arguments:
+  [   26.193661]     /init
+  [   26.195933]   with environment:
+  [   26.199079]     HOME=/
+  [   26.201444]     TERM=linux
+  [   26.204152]     BOOT_IMAGE=/boot/vmlinuz-5.13.0-rc2-next-20210519-1.g3455ff8-vanilla
+  [   26.254154] BPF:      type_id=35503 offset=178440 size=4
+  [   26.259125] BPF:
+  [   26.261054] BPF:Invalid offset
+  [   26.264119] BPF:
+  [   26.264119]
+  [   26.267437] failed to validate module [efivarfs] BTF: -22
+
+Andrii Nakryiko bisected the problem to the commit "mm/page_alloc: convert
+per-cpu list protection to local_lock" currently staged in mmotm. In his
+own words
+
+  The immediate problem is two different definitions of numa_node per-cpu
+  variable. They both are at the same offset within .data..percpu ELF
+  section, they both have the same name, but one of them is marked as
+  static and another as global. And one is int variable, while another
+  is struct pagesets. I'll look some more tomorrow, but adding Jiri and
+  Arnaldo for visibility.
+
+  [110907] DATASEC '.data..percpu' size=178904 vlen=303
+  ...
+        type_id=27753 offset=163976 size=4 (VAR 'numa_node')
+        type_id=27754 offset=163976 size=4 (VAR 'numa_node')
+
+  [27753] VAR 'numa_node' type_id=27556, linkage=static
+  [27754] VAR 'numa_node' type_id=20, linkage=global
+
+  [20] INT 'int' size=4 bits_offset=0 nr_bits=32 encoding=SIGNED
+
+  [27556] STRUCT 'pagesets' size=0 vlen=1
+        'lock' type_id=507 bits_offset=0
+
+  [506] STRUCT '(anon)' size=0 vlen=0
+  [507] TYPEDEF 'local_lock_t' type_id=506
+
+The patch in question introduces a zero-sized per-cpu struct and while
+this is not wrong, versions of pahole prior to 1.22 get confused during
+BTF generation with two separate variables occupying the same address.
+
+This patch adds a requirement for pahole 1.22 before setting
+DEBUG_INFO_BTF.  While pahole 1.22 does not exist yet, a fix is in the
+pahole git tree as ("btf_encoder: fix and complete filtering out zero-sized
+per-CPU variables").
+
+Reported-by: Michal Suchanek <msuchanek@suse.de>
+Reported-by: Hritik Vijay <hritikxx8@gmail.com>
+Debugged-by: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Signed-off-by: Mel Gorman <mgorman@techsingularity.net>
 ---
- kernel/trace/trace_events_hist.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ lib/Kconfig.debug | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-diff --git a/kernel/trace/trace_events_hist.c b/kernel/trace/trace_events_hist.c
-index c1abd63f1d6c..414f2727d7a7 100644
---- a/kernel/trace/trace_events_hist.c
-+++ b/kernel/trace/trace_events_hist.c
-@@ -5225,12 +5225,11 @@ static void unregister_field_var_hists(struct hist_trigger_data *hist_data)
- 	struct trace_event_file *file;
- 	unsigned int i;
- 	char *cmd;
--	int ret;
+diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
+index 678c13967580..825be101767e 100644
+--- a/lib/Kconfig.debug
++++ b/lib/Kconfig.debug
+@@ -301,10 +301,14 @@ config DEBUG_INFO_DWARF5
  
- 	for (i = 0; i < hist_data->n_field_var_hists; i++) {
- 		file = hist_data->field_var_hists[i]->hist_data->event_file;
- 		cmd = hist_data->field_var_hists[i]->cmd;
--		ret = event_hist_trigger_func(&trigger_hist_cmd, file,
-+		event_hist_trigger_func(&trigger_hist_cmd, file,
- 					      "!hist", "hist", cmd);
- 	}
- }
--- 
-2.25.1
-
+ endchoice # "DWARF version"
+ 
++config PAHOLE_HAS_ZEROSIZE_PERCPU_SUPPORT
++	def_bool $(success, test `$(PAHOLE) --version | sed -E 's/v([0-9]+)\.([0-9]+)/\1\2/'` -ge "122")
++
+ config DEBUG_INFO_BTF
+ 	bool "Generate BTF typeinfo"
+ 	depends on !DEBUG_INFO_SPLIT && !DEBUG_INFO_REDUCED
+ 	depends on !GCC_PLUGIN_RANDSTRUCT || COMPILE_TEST
++	depends on PAHOLE_HAS_ZEROSIZE_PERCPU_SUPPORT
+ 	help
+ 	  Generate deduplicated BTF type information from DWARF debug info.
+ 	  Turning this on expects presence of pahole tool, which will convert
