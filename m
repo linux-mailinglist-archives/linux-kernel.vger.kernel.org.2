@@ -2,89 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B1A5E392A3F
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 11:05:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 590A5392A62
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 11:15:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235714AbhE0JHA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 May 2021 05:07:00 -0400
-Received: from szxga08-in.huawei.com ([45.249.212.255]:2311 "EHLO
-        szxga08-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235690AbhE0JG7 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 May 2021 05:06:59 -0400
-Received: from dggeml706-chm.china.huawei.com (unknown [172.30.72.54])
-        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4FrMH64bSmz19VRg;
-        Thu, 27 May 2021 17:00:50 +0800 (CST)
-Received: from dggpeml500020.china.huawei.com (7.185.36.88) by
- dggeml706-chm.china.huawei.com (10.3.17.144) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2176.2; Thu, 27 May 2021 17:05:25 +0800
-Received: from huawei.com (10.175.127.227) by dggpeml500020.china.huawei.com
- (7.185.36.88) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Thu, 27 May
- 2021 17:05:24 +0800
-From:   Baokun Li <libaokun1@huawei.com>
-To:     <gregkh@linuxfoundation.org>, <rafael@kernel.org>,
-        <linux-kernel@vger.kernel.org>
-CC:     <weiyongjun1@huawei.com>, <yuehaibing@huawei.com>,
-        <yangjihong1@huawei.com>, <yukuai3@huawei.com>,
-        <libaokun1@huawei.com>
-Subject: [PATCH -next] driver core: Remove set but not used variable 'no_warn'
-Date:   Thu, 27 May 2021 17:14:53 +0800
-Message-ID: <20210527091453.3880695-1-libaokun1@huawei.com>
-X-Mailer: git-send-email 2.25.4
+        id S235734AbhE0JQk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 May 2021 05:16:40 -0400
+Received: from gloria.sntech.de ([185.11.138.130]:35286 "EHLO gloria.sntech.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235589AbhE0JQh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 27 May 2021 05:16:37 -0400
+Received: from ip5f5aa64a.dynamic.kabel-deutschland.de ([95.90.166.74] helo=diego.localnet)
+        by gloria.sntech.de with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <heiko@sntech.de>)
+        id 1lmC6Y-0006zN-RK; Thu, 27 May 2021 11:15:02 +0200
+From:   Heiko =?ISO-8859-1?Q?St=FCbner?= <heiko@sntech.de>
+To:     linux-kernel@vger.kernel.org,
+        Javier Martinez Canillas <javierm@redhat.com>
+Cc:     Peter Robinson <pbrobinson@gmail.com>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Javier Martinez Canillas <javierm@redhat.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        David Airlie <airlied@linux.ie>,
+        Sandy Huang <hjc@rock-chips.com>,
+        dri-devel@lists.freedesktop.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-rockchip@lists.infradead.org
+Subject: Re: [PATCH v2] drm/rockchip: remove existing generic drivers to take over the device
+Date:   Thu, 27 May 2021 11:15:02 +0200
+Message-ID: <4006303.q0ZmV6gNhb@diego>
+In-Reply-To: <20210516074833.451643-1-javierm@redhat.com>
+References: <20210516074833.451643-1-javierm@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.175.127.227]
-X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
- dggpeml500020.china.huawei.com (7.185.36.88)
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fixes gcc '-Wunused-but-set-variable' warning:
+Am Sonntag, 16. Mai 2021, 09:48:33 CEST schrieb Javier Martinez Canillas:
+> There are drivers that register framebuffer devices very early in the boot
+> process and make use of the existing framebuffer as setup by the firmware.
+> 
+> If one of those drivers has registered a fbdev, then the fallback fbdev of
+> the DRM driver won't be bound to the framebuffer console. To avoid that,
+> remove any existing generic driver and take over the graphics device.
+> 
+> By doing that, the fb mapped to the console is switched correctly from the
+> early fbdev to the one registered by the rockchip DRM driver:
+> 
+>     [   40.752420] fb0: switching to rockchip-drm-fb from EFI VGA
+> 
+> Signed-off-by: Javier Martinez Canillas <javierm@redhat.com>
 
-drivers/base/module.c: In function 'module_create_drivers_dir':
-drivers/base/module.c:36:6: warning:
- variable ‘no_warn’ set but not used [-Wunused-but-set-variable]
+fwiw, this looks like the right thing to do. I haven't found time to test
+though yet. So anyway
 
-It never used since introduction.
+Acked-by: Heiko Stuebner <heiko@sntech.de>
 
-Signed-off-by: Baokun Li <libaokun1@huawei.com>
----
- drivers/base/module.c | 7 +++----
- 1 file changed, 3 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/base/module.c b/drivers/base/module.c
-index 46ad4d636731..07ecd66b12b0 100644
---- a/drivers/base/module.c
-+++ b/drivers/base/module.c
-@@ -33,7 +33,6 @@ static void module_create_drivers_dir(struct module_kobject *mk)
- void module_add_driver(struct module *mod, struct device_driver *drv)
- {
- 	char *driver_name;
--	int no_warn;
- 	struct module_kobject *mk = NULL;
- 
- 	if (!drv)
-@@ -59,12 +58,12 @@ void module_add_driver(struct module *mod, struct device_driver *drv)
- 		return;
- 
- 	/* Don't check return codes; these calls are idempotent */
--	no_warn = sysfs_create_link(&drv->p->kobj, &mk->kobj, "module");
-+	sysfs_create_link(&drv->p->kobj, &mk->kobj, "module");
- 	driver_name = make_driver_name(drv);
- 	if (driver_name) {
- 		module_create_drivers_dir(mk);
--		no_warn = sysfs_create_link(mk->drivers_dir, &drv->p->kobj,
--					    driver_name);
-+		sysfs_create_link(mk->drivers_dir, &drv->p->kobj,
-+				  driver_name);
- 		kfree(driver_name);
- 	}
- }
--- 
-2.25.4
+Heiko
+
+
+> ---
+> 
+> Changes in v2:
+> - Move drm_aperture_remove_framebuffers() call to .bind callback (tzimmermann).
+> - Adapt subject line, commit message, etc accordingly.
+> 
+>  drivers/gpu/drm/rockchip/rockchip_drm_drv.c | 10 ++++++++++
+>  1 file changed, 10 insertions(+)
+> 
+> diff --git a/drivers/gpu/drm/rockchip/rockchip_drm_drv.c b/drivers/gpu/drm/rockchip/rockchip_drm_drv.c
+> index 212bd87c0c4..b730b8d5d94 100644
+> --- a/drivers/gpu/drm/rockchip/rockchip_drm_drv.c
+> +++ b/drivers/gpu/drm/rockchip/rockchip_drm_drv.c
+> @@ -16,6 +16,7 @@
+>  #include <linux/console.h>
+>  #include <linux/iommu.h>
+>  
+> +#include <drm/drm_aperture.h>
+>  #include <drm/drm_drv.h>
+>  #include <drm/drm_fb_helper.h>
+>  #include <drm/drm_gem_cma_helper.h>
+> @@ -114,6 +115,15 @@ static int rockchip_drm_bind(struct device *dev)
+>  	struct rockchip_drm_private *private;
+>  	int ret;
+>  
+> +	/* Remove existing drivers that may own the framebuffer memory. */
+> +	ret = drm_aperture_remove_framebuffers(false, "rockchip-drm-fb");
+> +	if (ret) {
+> +		DRM_DEV_ERROR(dev,
+> +			      "Failed to remove existing framebuffers - %d.\n",
+> +			      ret);
+> +		return ret;
+> +	}
+> +
+>  	drm_dev = drm_dev_alloc(&rockchip_drm_driver, dev);
+>  	if (IS_ERR(drm_dev))
+>  		return PTR_ERR(drm_dev);
+> 
+
+
+
 
