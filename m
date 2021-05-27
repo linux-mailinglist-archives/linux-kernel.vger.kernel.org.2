@@ -2,70 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 30CAE392DB4
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 14:12:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A3469392DBB
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 14:13:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235219AbhE0MNo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 May 2021 08:13:44 -0400
-Received: from mail-io1-f70.google.com ([209.85.166.70]:42960 "EHLO
-        mail-io1-f70.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234406AbhE0MNn (ORCPT
+        id S234989AbhE0MOe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 May 2021 08:14:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45368 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235556AbhE0MOW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 May 2021 08:13:43 -0400
-Received: by mail-io1-f70.google.com with SMTP id v21-20020a5d90550000b0290439ea50822eso119209ioq.9
-        for <linux-kernel@vger.kernel.org>; Thu, 27 May 2021 05:12:10 -0700 (PDT)
+        Thu, 27 May 2021 08:14:22 -0400
+Received: from mail-qt1-x836.google.com (mail-qt1-x836.google.com [IPv6:2607:f8b0:4864:20::836])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 863D9C061574
+        for <linux-kernel@vger.kernel.org>; Thu, 27 May 2021 05:12:47 -0700 (PDT)
+Received: by mail-qt1-x836.google.com with SMTP id s12so5610qta.3
+        for <linux-kernel@vger.kernel.org>; Thu, 27 May 2021 05:12:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=rXaKjhOnu53lWYcqywr2OhFdBXImoPn3VxfJPwHUIo4=;
+        b=WnjChO3R9RWvI4Niq6fm4QmoJcnJmEe6obiSOwDq/jKXiWYMlDLJO5iReFrVjrhkns
+         39KorwThkwlzEQps0nxKh0X7EgVdXKTo4taIPfb9OktfgxtUro8i6Meimlr9GWUCIIj6
+         ZEOspusZLBhtGxyZudPGcPL+bLJDZwYCdg0T1zGdXiKxIJTNIDgEilG7ddSZN8Uh1bWx
+         n/DTBhinNMD/wx3bGPvOvTQUHLDQ07ubEweAm03WpfEZwlZs8jdFelj5+9rI77Yb02lO
+         r1qHghN+ZI0FVMZm/oEYB6iAcEyYg0wxqHvAManlPZCrobdsE4CBcjpfX90wn+dDBYmp
+         /SOA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
-         :from:to;
-        bh=46mVEuJH/YuNKj25ujtfNRaINuWhkbWMehm7Zy9vBuE=;
-        b=Uia1yDUzV9ITVb+Csq8mm1Ly3Npv1lIJYSC6VXn8IkX99eGwRiBoYX3TfPds+wN9Pu
-         mWPsSUFUNoekWlN6ymnha0RFm0U4VlWwLiOCMie1MuNEmCU9dMr6mYXI8oQK2v8pTcWO
-         vQnBtq7S5gXUgj6WasLu3pbEc6dXtuv+JcHDMIePYDKiQ4uS3tcaaAirYaeHpYzRlHD/
-         lmSYSux3fNz8veqnoEnOGRUQ3Iyw6C1l1jvN+S02PGlT/aRt8UGOSrcfJAdeOdhqTVnM
-         npdGx2iHG0O05pTJq15R6HQNJwjC8QFJXEnfflnBdEt9tOSqFm8Ce83RcOL8nsDxR8u8
-         nHqA==
-X-Gm-Message-State: AOAM5304L+n+U4C2pjUWAEeCvsIgAyVu/7TaAnZmiRVQy82d4SzZZfpt
-        IXExJpLK+NzJaa7RD+7Z01+AqzdKck62zopKz1MKdNP13YVZ
-X-Google-Smtp-Source: ABdhPJzicngFIhcR3y7yyEzuzR3OswrH6+bi3jHdWU5Ff7csPGpfT7+kunHdl2ah7f6px7VT9I9RpYInhqM4U//vUHOLIhH23JnZ
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=rXaKjhOnu53lWYcqywr2OhFdBXImoPn3VxfJPwHUIo4=;
+        b=FARCYyR6KLxVOQtfMef3uUaTD/78IPL4mNZM6Pa2HNI752/11fGzLqlCF64UUh75jo
+         O0Z15TCfYjZiCWqX5bYlt4Gd1fLZOTshdZVPZIM1d2hYmdn44HEQF4STRYIODA5JwpVj
+         xnk1mXj/yOMsiuxmix3OO6PyPpLf/B6X9JbbFE37bI96gFxivJFQbAUfw9VuAOCMKywJ
+         tI8Z9FfHMNy7MacHSrqm+r2niPwSiPXVZxUh0xG7YUgDhTLB9/s0yJ5fqAOvD8IizpzM
+         dOTddMJi/aazfKGphE9X0pXO8VgusJvxEfR9rRU/6Dzwr2VjlhSyZCK3BhNUvCYedUpD
+         COmg==
+X-Gm-Message-State: AOAM530TmkY6OTrzr2nhiJT8OEWx2awAlM3GO0A5ghmAwfOrM36X7ihs
+        6vx/gbPiRNXTDcPx5lBvmEfhLg590kgDmpkxxA0dlrBLxzM=
+X-Google-Smtp-Source: ABdhPJwtY1i0dxSYBhGhXYfNaO0ZPm4QeiM7Mnx0w+XqMo7RzTf3ZJCtdN4PWJSxNs/cWfdSR+jJKQkoY7svblRCen4=
+X-Received: by 2002:ac8:7cb3:: with SMTP id z19mr2803642qtv.22.1622117566370;
+ Thu, 27 May 2021 05:12:46 -0700 (PDT)
 MIME-Version: 1.0
-X-Received: by 2002:a5e:8c11:: with SMTP id n17mr2544565ioj.53.1622117529759;
- Thu, 27 May 2021 05:12:09 -0700 (PDT)
-Date:   Thu, 27 May 2021 05:12:09 -0700
-In-Reply-To: <000000000000b808c705c345b35d@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000025334e05c34eab2c@google.com>
-Subject: Re: [syzbot] unexpected kernel reboot (5)
-From:   syzbot <syzbot+6fb8ff5211d3e821398f@syzkaller.appspotmail.com>
-To:     dvyukov@google.com, gregkh@linuxfoundation.org, hch@lst.de,
-        joey.jiaojg@gmail.com, linux-kernel@vger.kernel.org,
-        penguin-kernel@i-love.sakura.ne.jp, sidgup@codeaurora.org,
-        syzkaller-bugs@googlegroups.com
+References: <20210527101345.569725-1-kyletso@google.com> <YK9ylVgwXJB4oNfk@kroah.com>
+In-Reply-To: <YK9ylVgwXJB4oNfk@kroah.com>
+From:   Kyle Tso <kyletso@google.com>
+Date:   Thu, 27 May 2021 20:12:30 +0800
+Message-ID: <CAGZ6i=1zVegu_eUJrGwWYsfyVG6v3N4pDY4vwHNShykxf7K3aQ@mail.gmail.com>
+Subject: Re: [PATCH] dt-bindings: connector: Replace BIT macro with generic
+ bit ops
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Badhri Jagan Sridharan <badhri@google.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-syzbot has bisected this issue to:
+On Thu, May 27, 2021 at 6:21 PM Greg KH <gregkh@linuxfoundation.org> wrote:
+>
+> On Thu, May 27, 2021 at 06:13:45PM +0800, Kyle Tso wrote:
+> > BIT macro is not supported in dt-bindings. Replace it with generic bit
+> > operations.
+>
+> Why isn't the BIT macro supported there?  How are we going to "remember"
+> that I should not take patches that use this #define in that location?
 
-commit f2d6c2708bd84ca953fa6b6ca5717e79eb0140c7
-Author: Christoph Hellwig <hch@lst.de>
-Date:   Wed Jan 20 20:46:31 2021 +0000
+I rephrased the commit message in v2
 
-    kernfs: wire up ->splice_read and ->splice_write
+thanks,
+Kyle
 
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=144ee113d00000
-start commit:   7ac3a1c1 Merge tag 'mtd/fixes-for-5.13-rc4' of git://git.k..
-git tree:       upstream
-final oops:     https://syzkaller.appspot.com/x/report.txt?x=164ee113d00000
-console output: https://syzkaller.appspot.com/x/log.txt?x=124ee113d00000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=266cda122a0b56c
-dashboard link: https://syzkaller.appspot.com/bug?extid=6fb8ff5211d3e821398f
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=154e8703d00000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=171382d3d00000
-
-Reported-by: syzbot+6fb8ff5211d3e821398f@syzkaller.appspotmail.com
-Fixes: f2d6c2708bd8 ("kernfs: wire up ->splice_read and ->splice_write")
-
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+>
+> thanks,
+>
+> greg k-h
