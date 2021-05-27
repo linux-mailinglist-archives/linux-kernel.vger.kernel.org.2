@@ -2,215 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5024F392737
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 08:13:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B700039273B
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 08:14:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229829AbhE0GO7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 May 2021 02:14:59 -0400
-Received: from so254-9.mailgun.net ([198.61.254.9]:12873 "EHLO
-        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229901AbhE0GOx (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 May 2021 02:14:53 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1622096001; h=References: In-Reply-To: Message-Id: Date:
- Subject: Cc: To: From: Sender;
- bh=JvgOHm6a2wLmPx0HPIhq/3P0bq9FPp9/PY1rUljh0ag=; b=RzsbphyVm//UPqlhkyGEJinVUcF5M2Teb07wZnpG54iAKG5pfMydsCGJYxNaG5D6CBJjkz2O
- ys8vRO37C8Fv6rASL3uuN3piSgVxROTID9WKub9mKuu8w/gom0ncwro4z8foWKJD+LmzNpTO
- F7mWfsaFGuhvzGWskrsHRtfhca4=
-X-Mailgun-Sending-Ip: 198.61.254.9
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n02.prod.us-east-1.postgun.com with SMTP id
- 60af3875b15734c8f9104180 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 27 May 2021 06:13:09
- GMT
-Sender: rnayak=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 33AFDC4323A; Thu, 27 May 2021 06:13:09 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
-Received: from blr-ubuntu-173.qualcomm.com (blr-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.18.19])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: rnayak)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 1EDE5C433F1;
-        Thu, 27 May 2021 06:13:04 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 1EDE5C433F1
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=rnayak@codeaurora.org
-From:   Rajendra Nayak <rnayak@codeaurora.org>
-To:     ulf.hansson@linaro.org, robh+dt@kernel.org,
-        bjorn.andersson@linaro.org, viresh.kumar@linaro.org
-Cc:     linux-pm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        swboyd@chromium.org, rojay@codeaurora.org,
-        Rajendra Nayak <rnayak@codeaurora.org>
-Subject: [PATCH v2 3/3] arm64: dts: sc7180: Add assigned-performance-states for i2c
-Date:   Thu, 27 May 2021 11:42:29 +0530
-Message-Id: <1622095949-2014-4-git-send-email-rnayak@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1622095949-2014-1-git-send-email-rnayak@codeaurora.org>
-References: <1622095949-2014-1-git-send-email-rnayak@codeaurora.org>
+        id S229977AbhE0GPf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 May 2021 02:15:35 -0400
+Received: from mx2.suse.de ([195.135.220.15]:46320 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229590AbhE0GPe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 27 May 2021 02:15:34 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1622096040; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=0PohsSrFjqpl0gYvbtoAe9n4JF3cM3zBDn9ikvgJv98=;
+        b=msbNX5EpKsQUDaxRwZMU+71+H9l8Yojm+vfRyvdkYJ6FGQDgrs1FmZlaZVq16zb4y2N5e3
+        +SMNKR8V0VDHr++yD4UwHr2Gonbb5G1uy1Xk2CkSO9wTpFDUI/xNk89WIY9zPJh2Eb4QGB
+        7K/6zfZhJhmgvvxAfbOVnHUx2JSxIHc=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1622096040;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=0PohsSrFjqpl0gYvbtoAe9n4JF3cM3zBDn9ikvgJv98=;
+        b=Vq3wzU658mu9+GB7ynLVH5yJY7itKb9t+HSkFn7VW6YoSu4M+kwL/XSPTGNFRhwF69MWYm
+        OnQXYh5FdiGU89DQ==
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id AE3F3AC46;
+        Thu, 27 May 2021 06:14:00 +0000 (UTC)
+Date:   Thu, 27 May 2021 08:14:00 +0200
+Message-ID: <s5hpmxc900n.wl-tiwai@suse.de>
+From:   Takashi Iwai <tiwai@suse.de>
+To:     Jeremy Szu <jeremy.szu@canonical.com>
+Cc:     tiwai@suse.com, Jaroslav Kysela <perex@perex.cz>,
+        Kailang Yang <kailang@realtek.com>,
+        Jian-Hong Pan <jhp@endlessos.org>,
+        Hui Wang <hui.wang@canonical.com>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        PeiSen Hou <pshou@realtek.com>,
+        "moderated list:SOUND" <alsa-devel@alsa-project.org>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 1/4] ALSA: hda/realtek: fix mute/micmute LEDs for HP 855 G8
+In-Reply-To: <CAKzWQkyzbUU8FekwX+_pkxSVFv0_1xjOQa7ztJRMR02cunP+tQ@mail.gmail.com>
+References: <20210519170357.58410-1-jeremy.szu@canonical.com>
+        <CAKzWQkyzbUU8FekwX+_pkxSVFv0_1xjOQa7ztJRMR02cunP+tQ@mail.gmail.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-qup-i2c devices on sc7180 are clocked with a fixed clock (19.2 MHz)
-Though qup-i2c does not support DVFS, it still needs to vote for a
-performance state on 'CX' to satisfy the 19.2 Mhz clock frequency
-requirement.
+On Thu, 27 May 2021 04:00:34 +0200,
+Jeremy Szu wrote:
+> 
+> Hi Takashi,
+> 
+> Would you please help to review these quirks? Many thanks.
 
-Use 'assigned-performance-states' to pass this information from
-device tree, and also add the power-domains property to specify
-the cx power-domain.
+Sorry, it was overlooked.
 
-Signed-off-by: Rajendra Nayak <rnayak@codeaurora.org>
----
- arch/arm64/boot/dts/qcom/sc7180.dtsi | 24 ++++++++++++++++++++++++
- 1 file changed, 24 insertions(+)
+Now applied all four patches.  Thanks.
 
-diff --git a/arch/arm64/boot/dts/qcom/sc7180.dtsi b/arch/arm64/boot/dts/qcom/sc7180.dtsi
-index 6228ba2..7914084 100644
---- a/arch/arm64/boot/dts/qcom/sc7180.dtsi
-+++ b/arch/arm64/boot/dts/qcom/sc7180.dtsi
-@@ -786,8 +786,10 @@
- 						<&gem_noc MASTER_APPSS_PROC 0 &config_noc SLAVE_QUP_0 0>,
- 						<&aggre1_noc MASTER_QUP_0 0 &mc_virt SLAVE_EBI1 0>;
- 				interconnect-names = "qup-core", "qup-config",
- 							"qup-memory";
-+				power-domains = <&rpmhpd SC7180_CX>;
-+				assigned-performance-states = <RPMH_REGULATOR_LEVEL_LOW_SVS>;
- 				status = "disabled";
- 			};
- 
- 			spi0: spi@880000 {
-@@ -838,8 +840,10 @@
- 						<&gem_noc MASTER_APPSS_PROC 0 &config_noc SLAVE_QUP_0 0>,
- 						<&aggre1_noc MASTER_QUP_0 0 &mc_virt SLAVE_EBI1 0>;
- 				interconnect-names = "qup-core", "qup-config",
- 							"qup-memory";
-+				power-domains = <&rpmhpd SC7180_CX>;
-+				assigned-performance-states = <RPMH_REGULATOR_LEVEL_LOW_SVS>;
- 				status = "disabled";
- 			};
- 
- 			spi1: spi@884000 {
-@@ -890,8 +894,10 @@
- 						<&gem_noc MASTER_APPSS_PROC 0 &config_noc SLAVE_QUP_0 0>,
- 						<&aggre1_noc MASTER_QUP_0 0 &mc_virt SLAVE_EBI1 0>;
- 				interconnect-names = "qup-core", "qup-config",
- 							"qup-memory";
-+				power-domains = <&rpmhpd SC7180_CX>;
-+				assigned-performance-states = <RPMH_REGULATOR_LEVEL_LOW_SVS>;
- 				status = "disabled";
- 			};
- 
- 			uart2: serial@888000 {
-@@ -924,8 +930,10 @@
- 						<&gem_noc MASTER_APPSS_PROC 0 &config_noc SLAVE_QUP_0 0>,
- 						<&aggre1_noc MASTER_QUP_0 0 &mc_virt SLAVE_EBI1 0>;
- 				interconnect-names = "qup-core", "qup-config",
- 							"qup-memory";
-+				power-domains = <&rpmhpd SC7180_CX>;
-+				assigned-performance-states = <RPMH_REGULATOR_LEVEL_LOW_SVS>;
- 				status = "disabled";
- 			};
- 
- 			spi3: spi@88c000 {
-@@ -976,8 +984,10 @@
- 						<&gem_noc MASTER_APPSS_PROC 0 &config_noc SLAVE_QUP_0 0>,
- 						<&aggre1_noc MASTER_QUP_0 0 &mc_virt SLAVE_EBI1 0>;
- 				interconnect-names = "qup-core", "qup-config",
- 							"qup-memory";
-+				power-domains = <&rpmhpd SC7180_CX>;
-+				assigned-performance-states = <RPMH_REGULATOR_LEVEL_LOW_SVS>;
- 				status = "disabled";
- 			};
- 
- 			uart4: serial@890000 {
-@@ -1010,8 +1020,10 @@
- 						<&gem_noc MASTER_APPSS_PROC 0 &config_noc SLAVE_QUP_0 0>,
- 						<&aggre1_noc MASTER_QUP_0 0 &mc_virt SLAVE_EBI1 0>;
- 				interconnect-names = "qup-core", "qup-config",
- 							"qup-memory";
-+				power-domains = <&rpmhpd SC7180_CX>;
-+				assigned-performance-states = <RPMH_REGULATOR_LEVEL_LOW_SVS>;
- 				status = "disabled";
- 			};
- 
- 			spi5: spi@894000 {
-@@ -1077,8 +1089,10 @@
- 						<&gem_noc MASTER_APPSS_PROC 0 &config_noc SLAVE_QUP_1 0>,
- 						<&aggre2_noc MASTER_QUP_1 0 &mc_virt SLAVE_EBI1 0>;
- 				interconnect-names = "qup-core", "qup-config",
- 							"qup-memory";
-+				power-domains = <&rpmhpd SC7180_CX>;
-+				assigned-performance-states = <RPMH_REGULATOR_LEVEL_LOW_SVS>;
- 				status = "disabled";
- 			};
- 
- 			spi6: spi@a80000 {
-@@ -1129,8 +1143,10 @@
- 						<&gem_noc MASTER_APPSS_PROC 0 &config_noc SLAVE_QUP_1 0>,
- 						<&aggre2_noc MASTER_QUP_1 0 &mc_virt SLAVE_EBI1 0>;
- 				interconnect-names = "qup-core", "qup-config",
- 							"qup-memory";
-+				power-domains = <&rpmhpd SC7180_CX>;
-+				assigned-performance-states = <RPMH_REGULATOR_LEVEL_LOW_SVS>;
- 				status = "disabled";
- 			};
- 
- 			uart7: serial@a84000 {
-@@ -1163,8 +1179,10 @@
- 						<&gem_noc MASTER_APPSS_PROC 0 &config_noc SLAVE_QUP_1 0>,
- 						<&aggre2_noc MASTER_QUP_1 0 &mc_virt SLAVE_EBI1 0>;
- 				interconnect-names = "qup-core", "qup-config",
- 							"qup-memory";
-+				power-domains = <&rpmhpd SC7180_CX>;
-+				assigned-performance-states = <RPMH_REGULATOR_LEVEL_LOW_SVS>;
- 				status = "disabled";
- 			};
- 
- 			spi8: spi@a88000 {
-@@ -1215,8 +1233,10 @@
- 						<&gem_noc MASTER_APPSS_PROC 0 &config_noc SLAVE_QUP_1 0>,
- 						<&aggre2_noc MASTER_QUP_1 0 &mc_virt SLAVE_EBI1 0>;
- 				interconnect-names = "qup-core", "qup-config",
- 							"qup-memory";
-+				power-domains = <&rpmhpd SC7180_CX>;
-+				assigned-performance-states = <RPMH_REGULATOR_LEVEL_LOW_SVS>;
- 				status = "disabled";
- 			};
- 
- 			uart9: serial@a8c000 {
-@@ -1249,8 +1269,10 @@
- 						<&gem_noc MASTER_APPSS_PROC 0 &config_noc SLAVE_QUP_1 0>,
- 						<&aggre2_noc MASTER_QUP_1 0 &mc_virt SLAVE_EBI1 0>;
- 				interconnect-names = "qup-core", "qup-config",
- 							"qup-memory";
-+				power-domains = <&rpmhpd SC7180_CX>;
-+				assigned-performance-states = <RPMH_REGULATOR_LEVEL_LOW_SVS>;
- 				status = "disabled";
- 			};
- 
- 			spi10: spi@a90000 {
-@@ -1301,8 +1323,10 @@
- 						<&gem_noc MASTER_APPSS_PROC 0 &config_noc SLAVE_QUP_1 0>,
- 						<&aggre2_noc MASTER_QUP_1 0 &mc_virt SLAVE_EBI1 0>;
- 				interconnect-names = "qup-core", "qup-config",
- 							"qup-memory";
-+				power-domains = <&rpmhpd SC7180_CX>;
-+				assigned-performance-states = <RPMH_REGULATOR_LEVEL_LOW_SVS>;
- 				status = "disabled";
- 			};
- 
- 			spi11: spi@a94000 {
--- 
-QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
-of Code Aurora Forum, hosted by The Linux Foundation
 
+Takashi
+
+> 
+> 
+> On Thu, May 20, 2021 at 1:04 AM Jeremy Szu <jeremy.szu@canonical.com> wrote:
+> >
+> > The HP EliteBook 855 G8 Notebook PC is using ALC285 codec which needs
+> > ALC285_FIXUP_HP_MUTE_LED fixup to make it works. After applying the
+> > fixup, the mute/micmute LEDs work good.
+> >
+> > Signed-off-by: Jeremy Szu <jeremy.szu@canonical.com>
+> > ---
+> >  sound/pci/hda/patch_realtek.c | 1 +
+> >  1 file changed, 1 insertion(+)
+> >
+> > diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+> > index 552e2cb73291..9d68f591c6bf 100644
+> > --- a/sound/pci/hda/patch_realtek.c
+> > +++ b/sound/pci/hda/patch_realtek.c
+> > @@ -8291,6 +8291,7 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
+> >         SND_PCI_QUIRK(0x103c, 0x87f7, "HP Spectre x360 14", ALC245_FIXUP_HP_X360_AMP),
+> >         SND_PCI_QUIRK(0x103c, 0x8846, "HP EliteBook 850 G8 Notebook PC", ALC285_FIXUP_HP_GPIO_LED),
+> >         SND_PCI_QUIRK(0x103c, 0x884c, "HP EliteBook 840 G8 Notebook PC", ALC285_FIXUP_HP_GPIO_LED),
+> > +       SND_PCI_QUIRK(0x103c, 0x8896, "HP EliteBook 855 G8 Notebook PC", ALC285_FIXUP_HP_MUTE_LED),
+> >         SND_PCI_QUIRK(0x103c, 0x8898, "HP EliteBook 845 G8 Notebook PC", ALC285_FIXUP_HP_LIMIT_INT_MIC_BOOST),
+> >         SND_PCI_QUIRK(0x1043, 0x103e, "ASUS X540SA", ALC256_FIXUP_ASUS_MIC),
+> >         SND_PCI_QUIRK(0x1043, 0x103f, "ASUS TX300", ALC282_FIXUP_ASUS_TX300),
+> > --
+> > 2.31.1
+> >
+> 
+> 
+> -- 
+> Sincerely,
+> Jeremy Su
+> 
