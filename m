@@ -2,149 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9EFD6392B76
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 12:10:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E1CDE392B7B
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 12:10:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236052AbhE0KLx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 May 2021 06:11:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45470 "EHLO
+        id S236108AbhE0KMN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 May 2021 06:12:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45538 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235950AbhE0KLw (ORCPT
+        with ESMTP id S236105AbhE0KMH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 May 2021 06:11:52 -0400
-Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6AD06C061760
-        for <linux-kernel@vger.kernel.org>; Thu, 27 May 2021 03:10:19 -0700 (PDT)
-Received: by mail-lf1-x130.google.com with SMTP id w33so7178011lfu.7
-        for <linux-kernel@vger.kernel.org>; Thu, 27 May 2021 03:10:19 -0700 (PDT)
+        Thu, 27 May 2021 06:12:07 -0400
+Received: from mail-lj1-x232.google.com (mail-lj1-x232.google.com [IPv6:2a00:1450:4864:20::232])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52112C061761
+        for <linux-kernel@vger.kernel.org>; Thu, 27 May 2021 03:10:32 -0700 (PDT)
+Received: by mail-lj1-x232.google.com with SMTP id 131so70536ljj.3
+        for <linux-kernel@vger.kernel.org>; Thu, 27 May 2021 03:10:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chromium.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=It703JKz/+Tb0hP6nAjPyrUgpmKATOgV+pJiiFvJ1fY=;
-        b=YTFjcU/H6G9VcHV0gx9/RP72YTs7DGoos6iEnjKMPoRymcEzunk9qCm4JR8h7WM2f0
-         lYzTGIvTcHVIDO8CEJiGmnWGvJwlRzqOvSBuMk24SZ756vtw6UpbfAKrhPXN9+20nA9m
-         v3O5PgQY6OfnaNm5LX5j1FqfyeqUlQYlVYWqA=
+        bh=x4yEjCZpjXjlLtm8fIGk3hS7YCL51ZB0U7PousVU3z0=;
+        b=ehfhag2ColEd2R3+qduQ1URjFhb+8Dy6hnhyDGq+Z/YorltmfPecHA0Qzss59HJrj5
+         6PzCTDrPNFTQmDDJI9s/Ic5C6WRxC1A2y+095uulcjneTfYYKOUIZeTUv+fv8EvvR86q
+         0VemvTJREFYEOfXJ8XtOcP4X+X38X49UwA5ck=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=It703JKz/+Tb0hP6nAjPyrUgpmKATOgV+pJiiFvJ1fY=;
-        b=aZdffmNCak4XlhqLaPJMcrR5H6XdTMLXcHCJYmgyeqj709KxVnkA6uPyxSB+e4OVJV
-         zYqtHht6Bjc0bdbRwjkDqQrQLOacxmQAOzaA29yE7jcXU4AAHTz8fEV2GQsdddSQoToD
-         r36xGoNpvyLJ4pYQ1hvAWneXIXprP9eaY8thFrl3wY0Qx+zbLeuCvU/MYPxRYqEgNk7k
-         w8bY1h80euipH0+uLOm5JSTtX4C2jtntm+Y22OFWqwjbw/43Yu2/6DPLUVItct4HkDLE
-         3mvXsvnsFpFKWoP5MtDFxndoKZ+tVENwHsAQa7z+BDqFrXGArv4RagdxNvzXPQSz+tty
-         Tw3A==
-X-Gm-Message-State: AOAM532AJvVN79IvmapnVIoeKVRL0Kvdp9CoZYUviHQtHtg+GYBIHtPo
-        k+agnoYtjX4CF+Su5ZKdm6+uxohKnyglWQ==
-X-Google-Smtp-Source: ABdhPJyqZJ7TcLuh7RVkna6JKCJfxSROOUZAnEhVlnNFtxWMeMHLUtx12xCI62Ukdvi4nT9y5G5elQ==
-X-Received: by 2002:a05:6512:22c9:: with SMTP id g9mr1795895lfu.351.1622110217640;
-        Thu, 27 May 2021 03:10:17 -0700 (PDT)
-Received: from mail-lf1-f49.google.com (mail-lf1-f49.google.com. [209.85.167.49])
-        by smtp.gmail.com with ESMTPSA id r17sm161906lfr.18.2021.05.27.03.10.16
+        bh=x4yEjCZpjXjlLtm8fIGk3hS7YCL51ZB0U7PousVU3z0=;
+        b=gOTxdEf80OZ7pwS/bJE2bLuwCzQKjtyFSzkhnILJCkv1tApIsJyetO7N1ZUN/pwHm2
+         PTuss5UmwLz1FePJWBrk2z6xaK0KhmuUpZuTi+iDuo2zMahHtEyFAfpsE9+OBzDAc6BJ
+         RIpwR2YC/cEbl6TBMDbJ9EZ+nLW3BXcx/r4l+WthurGsdOZIVQT8jY/gi7ZlCltHkjFN
+         VNf0ypnnFj7J6LUEZKedb6UL7YS8hYmK2nDqdS2XbqMFKh048PXNLWH+LizRI7hyocDt
+         GvGiAEkfT/BI3HJIKfiVOe9zyYQE9+BtcX65ISpf2gKbdLDUjfpu4/m4/oHiUDXIkzik
+         q+Bg==
+X-Gm-Message-State: AOAM530QIKTuC+47G3u07MbXFwJpJlmZyyVKkILJRSgZKuDddX1n0tyA
+        aCh0wWfnsYPBlLG2q1wFNBlsuPme2NQOZg==
+X-Google-Smtp-Source: ABdhPJzGQ9VHd/NPUebge6qx3CYi8KFQwy6t2hxuXeJKcFuQPq413lpmYQ+YBdvbhH5Ux3HeNSdZnQ==
+X-Received: by 2002:a2e:9896:: with SMTP id b22mr1935741ljj.329.1622110229766;
+        Thu, 27 May 2021 03:10:29 -0700 (PDT)
+Received: from mail-lf1-f42.google.com (mail-lf1-f42.google.com. [209.85.167.42])
+        by smtp.gmail.com with ESMTPSA id k18sm174411lfg.200.2021.05.27.03.10.29
         for <linux-kernel@vger.kernel.org>
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 27 May 2021 03:10:17 -0700 (PDT)
-Received: by mail-lf1-f49.google.com with SMTP id a5so6436941lfm.0
-        for <linux-kernel@vger.kernel.org>; Thu, 27 May 2021 03:10:16 -0700 (PDT)
-X-Received: by 2002:a19:6a0f:: with SMTP id u15mr1949848lfu.614.1622110215899;
- Thu, 27 May 2021 03:10:15 -0700 (PDT)
+        Thu, 27 May 2021 03:10:29 -0700 (PDT)
+Received: by mail-lf1-f42.google.com with SMTP id a5so6437765lfm.0
+        for <linux-kernel@vger.kernel.org>; Thu, 27 May 2021 03:10:29 -0700 (PDT)
+X-Received: by 2002:a19:6102:: with SMTP id v2mr1818325lfb.403.1622110228818;
+ Thu, 27 May 2021 03:10:28 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210519143011.1175546-1-acourbot@chromium.org> <ed6610cb-5164-4185-f7c9-6d872ea16ec7@xs4all.nl>
-In-Reply-To: <ed6610cb-5164-4185-f7c9-6d872ea16ec7@xs4all.nl>
+References: <20210519143011.1175546-1-acourbot@chromium.org>
+ <20210519143011.1175546-6-acourbot@chromium.org> <CA+Px+wUaA9o+Aom4weuTH4TDpCfFpxv0YHDArCJswEs6QmCw0A@mail.gmail.com>
+In-Reply-To: <CA+Px+wUaA9o+Aom4weuTH4TDpCfFpxv0YHDArCJswEs6QmCw0A@mail.gmail.com>
 From:   Alexandre Courbot <acourbot@chromium.org>
-Date:   Thu, 27 May 2021 19:10:03 +0900
-X-Gmail-Original-Message-ID: <CAPBb6MUFmwxaP_11kx2FNAeieOiMCV9W2WGgweuuL8z6ZWeSng@mail.gmail.com>
-Message-ID: <CAPBb6MUFmwxaP_11kx2FNAeieOiMCV9W2WGgweuuL8z6ZWeSng@mail.gmail.com>
-Subject: Re: [PATCH v5 00/14] media: mtk-vcodec: support for MT8183 decoder
-To:     Hans Verkuil <hverkuil-cisco@xs4all.nl>
+Date:   Thu, 27 May 2021 19:10:16 +0900
+X-Gmail-Original-Message-ID: <CAPBb6MXnv0g5knZ_KNhTKkwyRh29zQWqKV-vyA+dQyDn4qkMGA@mail.gmail.com>
+Message-ID: <CAPBb6MXnv0g5knZ_KNhTKkwyRh29zQWqKV-vyA+dQyDn4qkMGA@mail.gmail.com>
+Subject: Re: [PATCH v5 05/14] media: mtk-vcodec: venc: support START and STOP commands
+To:     Tzung-Bi Shih <tzungbi@google.com>
 Cc:     Tiffany Lin <tiffany.lin@mediatek.com>,
         Andrew-CT Chen <andrew-ct.chen@mediatek.com>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
         Dafna Hirschfeld <dafna.hirschfeld@collabora.com>,
         Yunfei Dong <yunfei.dong@mediatek.com>,
         Mauro Carvalho Chehab <mchehab@kernel.org>,
         Linux Media Mailing List <linux-media@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
         "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>
+        <linux-mediatek@lists.infradead.org>,
+        Hsin-Yi Wang <hsinyi@chromium.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 27, 2021 at 5:08 PM Hans Verkuil <hverkuil-cisco@xs4all.nl> wrote:
+On Fri, May 21, 2021 at 10:37 PM Tzung-Bi Shih <tzungbi@google.com> wrote:
 >
-> Hi Alexandre,
+> On Wed, May 19, 2021 at 10:31 PM Alexandre Courbot
+> <acourbot@chromium.org> wrote:
+> > Signed-off-by: Alexandre Courbot <acourbot@chromium.org>
+> > [hsinyi: fix double-free issue if flush buffer was not dequeued by the
+> > time streamoff is called]
+> > Signed-off-by: Hsin-Yi Wang <hsinyi@chromium.org>
 >
-> On 19/05/2021 16:29, Alexandre Courbot wrote:
-> > This series adds support for the stateless API into mtk-vcodec, by first
-> > separating the stateful ops into their own source file, and introducing
-> > a new set of ops suitable for stateless decoding. As such, support for
-> > stateful decoders should remain completely unaffected.
-> >
-> > This series has been tested with both MT8183 and MT8173. Decoding was
-> > working for both chips, and in the case of MT8173 no regression has been
-> > spotted.
-> >
-> > Patches 1-5 fix a few compliance issues with the decoder and encoder, most
-> > notably by adding support for the START and STOP command for the latter. These
-> > patches were last in the previous series but have been moved to the beginning so
-> > they can be applied sooner.
-> >
-> > Patches 6-9 separates the "stateful" part of the driver into its own file and
-> > add support for the new firmware and pixel format used by MT8183.
-> >
-> > Patches 10-14 add support for H.264 stateless decoding and MT8183.
-> >
-> > Changes since v4:
-> > * Moved compliance fix patches to the head of the series.
-> > * Select MEDIA_CONTROLLER_REQUEST_API.
-> > * Properly capitalize MM21's format description string.
-> > * Reorganize stateless code as suggested by Hans.
-> > * Fix compilation errors when DEBUG is defined.
-> > * Merge double-free fixup patch into the patch that introduced the issue (was
-> >   a separate patch coming right after the one introducing the issue).
-> >
-> > Changes since v3:
-> > * Stop checking that controls are set for every request.
-> > * Add V4L2_CID_STATELESS_H264_START_CODE control.
-> > * Stop mapping OUTPUT buffers and getting the NAL type from them, use the
-> >   nal_ref_idc field instead.
-> > * Make V4L2_CID_MIN_BUFFERS_FOR_CAPTURE control stateful-only.
-> > * Set vb2_buffer's field to V4L2_FIELD_NONE in buffer validation hook.
-> >
-> > Changes since v2:
-> > * Add follow-up patches fixing support for START/STOP commands for the
-> >   encoder, and stateful decoder.
-> >
-> > Alexandre Courbot (8):
-> >   media: mtk-vcodec: vdec: use helpers in VIDIOC_(TRY_)DECODER_CMD
-> >   media: mtk-vcodec: vdec: clamp OUTPUT resolution to hardware limits
-> >   media: mtk-vcodec: make flush buffer reusable by encoder
-> >   media: mtk-vcodec: venc: support START and STOP commands
-> >   media: mtk-vcodec: vdec: handle firmware version field
-> >   media: mtk-vcodec: support version 2 of decoder firmware ABI
-> >   media: add Mediatek's MM21 format
-> >   dt-bindings: media: document mediatek,mt8183-vcodec-dec
-> >
-> > Hirokazu Honda (1):
-> >   media: mtk-vcodec: vdec: Support H264 profile control
-> >
-> > Yunfei Dong (5):
-> >   media: mtk-vcodec: vdec: move stateful ops into their own file
-> >   media: mtk-vcodec: vdec: support stateless API
-> >   media: mtk-vcodec: vdec: support stateless H.264 decoding
-> >   media: mtk-vcodec: vdec: add media device if using stateless api
-> >   media: mtk-vcodec: enable MT8183 decoder
+> Per guideline[1]:
+> > Notably, the last Signed-off-by: must always be that of the developer submitting the patch.
 >
-> Running scripts/checkpatch.pl --strict over this patch series gives
-> a lot of warnings and checks. A lot of these look like they are easy
-> to fix and reasonable.
+> In the case, should you provide another signed-off at the last line?
+>
+> [1]: https://www.kernel.org/doc/html/latest/process/submitting-patches.html#when-to-use-acked-by-cc-and-co-developed-by
 
-Apologies, I forgot to use --strict. It's not pretty indeed. I've
-fixed most of the problems reported ; a few are more tricky or would
-require extra cleanup patches like converting e.g. uint32_t to u32
-when adding a member to a struct, which would make sense if we convert
-all members of the struct (or better, the whole driver) separately.
-Hopefully these can be overlooked for the time being.
+IIUC the main author's signoff should come first, and you should not
+sign patches twice. checkpatch.pl did not raise any objection, so I
+suppose the current form is correct?
