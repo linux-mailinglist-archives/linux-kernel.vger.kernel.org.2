@@ -2,108 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C707393496
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 19:12:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C1DFA39349A
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 19:14:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236542AbhE0RNv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 May 2021 13:13:51 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:27793 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235973AbhE0RNs (ORCPT
+        id S236757AbhE0RQa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 May 2021 13:16:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58668 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234431AbhE0RQ1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 May 2021 13:13:48 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1622135534;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=8Tj882GRDYNKA/Odur5I8qEQKwf2uVi6wQUPaTSmUGk=;
-        b=Fdb1Ofr+zjD6hKwp0RAIB0SY0s2zTC3fQenLSmDuZr1qhM+aRpi+LamHHn3taT214BYep0
-        DehQSuffonE8xRTW7SIUOuffDOr7+g9MdPthAycXj2c3TNr5W5zDs1tUEdGwwqh9uLcsN0
-        rYS5KvRcFqE1GYNK+TjwcR8fr7W33rg=
-Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
- [209.85.128.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-554-JNuOuIqPNZOhlb26bN4ugA-1; Thu, 27 May 2021 13:12:13 -0400
-X-MC-Unique: JNuOuIqPNZOhlb26bN4ugA-1
-Received: by mail-wm1-f69.google.com with SMTP id g206-20020a1c39d70000b029016ac627fbe9so438849wma.9
-        for <linux-kernel@vger.kernel.org>; Thu, 27 May 2021 10:12:13 -0700 (PDT)
+        Thu, 27 May 2021 13:16:27 -0400
+Received: from mail-pg1-x52b.google.com (mail-pg1-x52b.google.com [IPv6:2607:f8b0:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5305EC061574
+        for <linux-kernel@vger.kernel.org>; Thu, 27 May 2021 10:14:54 -0700 (PDT)
+Received: by mail-pg1-x52b.google.com with SMTP id l70so441152pga.1
+        for <linux-kernel@vger.kernel.org>; Thu, 27 May 2021 10:14:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
+        bh=OqveEGoL3ykfBq8zJtkXfVIXCQn6P1IwlpFVQTIOx+E=;
+        b=G1b/bR4tJrhqaI4phTRsGC26D8zUwR63Ao0FWwJNaxwjal32hZaQITiukhEt4hMN3a
+         OjXoYpVpJAMSXNf3PocHlP0t6ap9Vj0eX3TQJnKsJjvl0A8ievZWw10am6up++/NyDDT
+         41fgH+HT5uXfRNjdyorUorZk4RF//D/NOWpdU9tpeV6EzUyIS3eLSCuL9oHHpO2Nsu9N
+         G1dfImj+8p7Iq9RFbg7nXrZER3rvubm6sw1bnffJk68lO0l64oTNXxihCxtFbqsLoBr+
+         3x6YuNgIMDBx657rjGLHaOQ3waakOFZKd/MijZE+FbP2m8HLqs1KtY7+CYwLkPADLPZS
+         gG9g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:organization
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=8Tj882GRDYNKA/Odur5I8qEQKwf2uVi6wQUPaTSmUGk=;
-        b=gQnB3BUgOyQqkFTlxCUEVvGLdMftinYKi0dIzj6JMxjCr73Ltlr3gkgobdD5pPJreX
-         Wqj0OKLOkNKNiUMsX1VMuCmcTMwM1W1r6XAyDJvXl4yIWzpFd303QR3OFFYkUCScYfUp
-         pV/OE5n2qKscSoBLBv3W1gpcZkuA53tSIGx2xFSRiSPyNUrOCXDI000JL8DiJKYsDmMy
-         uVsspAbyQVyOWek1t5vsaOho02o5wWv9qLNdMScq56tOhkoqU2yGKLYyVCYFPLOkdV0R
-         cdcv723mBP/W8z/+/lcsnicpu4iJiaws2sOOGRwLevHSYT2Gb34unbYyH4UgAantCKnD
-         Z/7g==
-X-Gm-Message-State: AOAM532lrRuyE5u+ZSY/P9bA79tIgV66L0EnNIuWGQWOPkPnHGOET65u
-        dqW4djT0G7rTZ1jWVXXrTJ1955Gt0Zs3v1YUC169t05TEq/9YKfY946LuOSsd2NZ2fgeKgxtDbh
-        ai6ziosJAU8ofESRa9fD7TGD7
-X-Received: by 2002:a1c:3d05:: with SMTP id k5mr4669356wma.9.1622135532221;
-        Thu, 27 May 2021 10:12:12 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzfH6a8f34/9c06VAR9VtQNYysw/6uRvDZUrv050Ei6nDvYjtR9kqnXZGaQdB/PD53PwEWPHA==
-X-Received: by 2002:a1c:3d05:: with SMTP id k5mr4669322wma.9.1622135531909;
-        Thu, 27 May 2021 10:12:11 -0700 (PDT)
-Received: from [192.168.3.132] (p4ff230a8.dip0.t-ipconnect.de. [79.242.48.168])
-        by smtp.gmail.com with ESMTPSA id l8sm4338822wry.55.2021.05.27.10.12.11
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 27 May 2021 10:12:11 -0700 (PDT)
-Subject: Re: Arm64 crash while reading memory sysfs
-To:     Mike Rapoport <rppt@linux.ibm.com>,
-        Qian Cai <quic_qiancai@quicinc.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        Will Deacon <will@kernel.org>, Marc Zyngier <maz@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>
-References: <DM5PR0201MB355723819DDAC439273F68848E259@DM5PR0201MB3557.namprd02.prod.outlook.com>
- <YK3tQ0a0S/CLxyyb@linux.ibm.com>
- <CY4PR0201MB35539FF5EE729283C4241F5A8E249@CY4PR0201MB3553.namprd02.prod.outlook.com>
- <YK6EXNZHY1xt7Kjs@linux.ibm.com>
- <d55f915c-ad01-e729-1e29-b57d78257cbb@quicinc.com>
- <YK9e0LgDOfCFo6TM@linux.ibm.com>
- <ce5a5920-3046-21b5-42c0-2237ec1eef13@quicinc.com>
- <YK/HKMgajBCwpLt8@linux.ibm.com>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat
-Message-ID: <3a5fa459-cd00-8a65-3ee1-debc51424a7c@redhat.com>
-Date:   Thu, 27 May 2021 19:12:10 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition;
+        bh=OqveEGoL3ykfBq8zJtkXfVIXCQn6P1IwlpFVQTIOx+E=;
+        b=kcp4CKwxR3J/99qIeRdnM1KDkbfao1UAC7hjqW9NyQ42hHWC/72US+grD170VJGHqE
+         MchsgbBWk2kVS/FkBQ7CHU435zyRnYk7OsTZY8pnHnfaEYKuzMnNMh8UC6WTTCGvNdeg
+         XB/H8QP3dHbjQQG/tyLNm2BALJgHuEa1PgqYzeVesHVcmJyyw1800aSUzm/Z2W1GNhch
+         JpfXlg8kAKScczFYYoRJm/y2q/HWxkJKpRnaac40Fe4BXyB6a3oQFrLaqylUxBurh0Nu
+         Eh/dGUw/ZLK4dhEn710cj7CROS29EMm69Jme3LL0lqmyJjzeSr4Z2EZW2ysk3FlSpe5D
+         sitg==
+X-Gm-Message-State: AOAM533Nn0bNoSCnlSHpZz4FRimflX36VmHUamcfknHY0cWAUk8xAe0D
+        2XEnf1HaucCHplP0y1T/Mvg=
+X-Google-Smtp-Source: ABdhPJzCPtzNSjt2WgzO0eFSPRCjTUwRUj6WvIizrkThQYuGvemIlzlHg/CAYIRvdDbn7G00zzEVwg==
+X-Received: by 2002:aa7:9d86:0:b029:2dc:9acd:620d with SMTP id f6-20020aa79d860000b02902dc9acd620dmr4731720pfq.30.1622135693833;
+        Thu, 27 May 2021 10:14:53 -0700 (PDT)
+Received: from hyeyoo ([183.99.11.150])
+        by smtp.gmail.com with ESMTPSA id k13sm2378392pfg.31.2021.05.27.10.14.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 27 May 2021 10:14:53 -0700 (PDT)
+Date:   Fri, 28 May 2021 02:14:49 +0900
+From:   Hyeonggon Yoo <42.hyeyoo@gmail.com>
+To:     Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@redhat.com>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [PATCH] tracing: Remove redundant variable ret
+Message-ID: <20210527171449.GA145584@hyeyoo>
 MIME-Version: 1.0
-In-Reply-To: <YK/HKMgajBCwpLt8@linux.ibm.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
->> [  259.216661][ T1417] test_pages_in_a_zone: pfn 8000 is not valid
->> [  259.226547][ T1417] page:00000000f4aa8c5c is uninitialized and poisoned
->> [  259.226560][ T1417] page dumped because: VM_BUG_ON_PAGE(PagePoisoned(p))
-> 
-> Can you please try Anshuman's patch "arm64/mm: Drop HAVE_ARCH_PFN_VALID":
-> 
-> https://lore.kernel.org/lkml/1621947349-25421-1-git-send-email-anshuman.khandual@arm.com
-> 
-> It seems to me that the check for memblock_is_memory() in
-> arm64::pfn_valid() is what makes init_unavailable_range() to bail out for
-> section parts that are not actually populated and then we have
-> VM_BUG_ON_PAGE(PagePoisoned(p)) for these pages.
-> 
+This variable saves return value of event_hist_trigger_func,
+but it's never read. So it's redundant.
 
-Oh, that makes sense to me.
+Signed-off-by: Hyeonggon Yoo <42.hyeyoo@gmail.com>
+---
+ kernel/trace/trace_events_hist.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
+diff --git a/kernel/trace/trace_events_hist.c b/kernel/trace/trace_events_hist.c
+index c1abd63f1d6c..414f2727d7a7 100644
+--- a/kernel/trace/trace_events_hist.c
++++ b/kernel/trace/trace_events_hist.c
+@@ -5225,12 +5225,11 @@ static void unregister_field_var_hists(struct hist_trigger_data *hist_data)
+ 	struct trace_event_file *file;
+ 	unsigned int i;
+ 	char *cmd;
+-	int ret;
+ 
+ 	for (i = 0; i < hist_data->n_field_var_hists; i++) {
+ 		file = hist_data->field_var_hists[i]->hist_data->event_file;
+ 		cmd = hist_data->field_var_hists[i]->cmd;
+-		ret = event_hist_trigger_func(&trigger_hist_cmd, file,
++		event_hist_trigger_func(&trigger_hist_cmd, file,
+ 					      "!hist", "hist", cmd);
+ 	}
+ }
 -- 
-Thanks,
-
-David / dhildenb
+2.25.1
 
