@@ -2,125 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C1EBC3931D6
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 17:08:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 516453931DE
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 17:09:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236859AbhE0PKE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 May 2021 11:10:04 -0400
-Received: from mail.ispras.ru ([83.149.199.84]:60204 "EHLO mail.ispras.ru"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236936AbhE0PIt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 May 2021 11:08:49 -0400
-Received: from localhost.localdomain (unknown [85.89.127.119])
-        by mail.ispras.ru (Postfix) with ESMTPSA id 4622D40755E6;
-        Thu, 27 May 2021 15:07:15 +0000 (UTC)
-From:   Dmitriy Ulitin <ulitin@ispras.ru>
-To:     Hugues Fruchet <hugues.fruchet@foss.st.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>
-Cc:     Dmitriy Ulitin <ulitin@ispras.ru>, linux-media@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        ldv-project@linuxtesting.org,
-        Alexey Khoroshilov <khoroshilov@ispras.ru>
-Subject: stm32: Potential NULL pointer dereference in dcmi_irq_thread()
-Date:   Thu, 27 May 2021 18:06:26 +0300
-Message-Id: <20210527150627.12995-2-ulitin@ispras.ru>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210527150627.12995-1-ulitin@ispras.ru>
-References: <20210527150627.12995-1-ulitin@ispras.ru>
+        id S236975AbhE0PKZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 May 2021 11:10:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57266 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236971AbhE0PJh (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 27 May 2021 11:09:37 -0400
+Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09834C06134D;
+        Thu, 27 May 2021 08:07:09 -0700 (PDT)
+Received: by mail-pj1-x1033.google.com with SMTP id f8so646380pjh.0;
+        Thu, 27 May 2021 08:07:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
+        bh=DsmQRSLFrUSZxqcKbkEnQMBrnQRQAv8R26xRKRJJilY=;
+        b=qoSa+AbN9WLtARHUmlTOrqw2x99fMMhB1nkyNGG2KfGw0H84CMonF0EVywuwFNALYM
+         ubHSNKBQITTlVJRxyOfCnMYYxKwIrsh1xkYJkDhN+fqkYVsYAC9zr+cR8+1LzZDAUmBG
+         l248eqwYEz1u/vijVmtayuFal9a7GLw+/jgvcWQzhXKZ9G61FAP1Qe+rd7oi6YdJzJXQ
+         rvmRqn/kL3Mo8xknFGREcTG0wy+EvwbuJSH/fQdDlqNOqXg7lix2Oa3uwyhhQIU7UF41
+         shkzU3/DYwkNlSYKA3eKl3FmCssfsz2xZna8ykg22NZhbOtschASTZzJS8aec1ArY/bG
+         pA+A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition;
+        bh=DsmQRSLFrUSZxqcKbkEnQMBrnQRQAv8R26xRKRJJilY=;
+        b=ZO+yL/IuOSLlU9QvptdUfxWoVs4N9gQ6CkR64zILGC2fe+qbJxuZQ9dnl5zg7zIYVv
+         J/R3qOHeWyluGqyiDGGgV2kaJH66Gi3ckSQ+Y/YNMcg50VQvv5YCY9+LF41Xm+qDvbBo
+         yLAcElGglfW5kbDvcmnk4+qO/SvHfBcS0/ZlZu2JusjpmkFHBy80uoaqKF1a8ZoOblNa
+         x/LcWVMnjzgyhdoll38WaXSy+wfGC7QrA3XBAv6pkJeq70/2436ec65wM9w/Xw3hUgSl
+         3dZ6//ByFCJCeE74vQG5vZPyzAqxgMa07xCb0Mt/cbtF4tvIhynBlZ/xMgHeMgiqqYbu
+         ac3w==
+X-Gm-Message-State: AOAM5316RbJHJFik4NUwa8IPK/QIVznvIS3HdwsCU1VusDNSnNz9juVB
+        omrjMXlAEvowLEHS/ue5y1bfSNeNQpxJlQ==
+X-Google-Smtp-Source: ABdhPJyqZySAX9jJtRBKb7ZU3mKaT0PexN6hIru3i/iGeXPTZbCohLiM4SYM4aXGsfCiBHWkgGnIBA==
+X-Received: by 2002:a17:90b:687:: with SMTP id m7mr4095712pjz.133.1622128028555;
+        Thu, 27 May 2021 08:07:08 -0700 (PDT)
+Received: from hyeyoo ([183.99.11.150])
+        by smtp.gmail.com with ESMTPSA id a12sm2468568pfg.102.2021.05.27.08.07.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 27 May 2021 08:07:08 -0700 (PDT)
+Date:   Fri, 28 May 2021 00:07:03 +0900
+From:   Hyeonggon Yoo <42.hyeyoo@gmail.com>
+To:     "David S. Miller" <davem@davemloft.net>
+Cc:     linux-ide@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] ide: Remove unused variable ide_media_proc_fops
+Message-ID: <20210527150703.GA125782@hyeyoo>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-At the moment of enabling irq handling:=0D
-=0D
-1922 ret =3D devm_request_threaded_irq(&pdev->dev, irq, dcmi_irq_callback,=
-=0D
-1923			dcmi_irq_thread, IRQF_ONESHOT,=0D
-1924			dev_name(&pdev->dev), dcmi);=0D
-=0D
-there is still uninitialized field sd_format of struct stm32_dcmi *dcmi.=0D
-If an interrupt occurs in the interval between the installation of the=0D
-interrupt handler and the initialization of this field, NULL pointer=0D
-dereference happens.=0D
-=0D
-This field is dereferenced in the handler function without any check:=0D
-=0D
-457 if (dcmi->sd_format->fourcc =3D=3D V4L2_PIX_FMT_JPEG &&=0D
-458	    dcmi->misr & IT_FRAME) {=0D
-=0D
-The patch moves interrupt handler installation=0D
-after initialization of the sd_format field that happens in=0D
-dcmi_graph_notify_complete() via dcmi_set_default_fmt().=0D
-=0D
-Found by Linux Driver Verification project (linuxtesting.org).=0D
-=0D
-Signed-off-by: Dmitriy Ulitin <ulitin@ispras.ru>=0D
-Signed-off-by: Alexey Khoroshilov <khoroshilov@ispras.ru>=0D
----=0D
- drivers/media/platform/stm32/stm32-dcmi.c | 19 +++++++++++--------=0D
- 1 file changed, 11 insertions(+), 8 deletions(-)=0D
-=0D
-diff --git a/drivers/media/platform/stm32/stm32-dcmi.c b/drivers/media/plat=
-form/stm32/stm32-dcmi.c=0D
-index d9b4ad0abf0c..ada0c01dc1b1 100644=0D
---- a/drivers/media/platform/stm32/stm32-dcmi.c=0D
-+++ b/drivers/media/platform/stm32/stm32-dcmi.c=0D
-@@ -128,6 +128,7 @@ struct stm32_dcmi {=0D
- 	int				sequence;=0D
- 	struct list_head		buffers;=0D
- 	struct dcmi_buf			*active;=0D
-+	int			irq;=0D
- =0D
- 	struct v4l2_device		v4l2_dev;=0D
- 	struct video_device		*vdev;=0D
-@@ -1752,6 +1753,14 @@ static int dcmi_graph_notify_complete(struct v4l2_as=
-ync_notifier *notifier)=0D
- 		return ret;=0D
- 	}=0D
- =0D
-+	ret =3D devm_request_threaded_irq(dcmi->dev, dcmi->irq, dcmi_irq_callback=
-,=0D
-+					dcmi_irq_thread, IRQF_ONESHOT,=0D
-+					dev_name(dcmi->dev), dcmi);=0D
-+	if (ret) {=0D
-+		dev_err(dcmi->dev, "Unable to request irq %d\n", dcmi->irq);=0D
-+		return ret;=0D
-+	}=0D
-+=0D
- 	return 0;=0D
- }=0D
- =0D
-@@ -1906,6 +1915,8 @@ static int dcmi_probe(struct platform_device *pdev)=0D
- 	irq =3D platform_get_irq(pdev, 0);=0D
- 	if (irq <=3D 0)=0D
- 		return irq ? irq : -ENXIO;=0D
-+=0D
-+	dcmi->irq =3D irq;=0D
- =0D
- 	dcmi->res =3D platform_get_resource(pdev, IORESOURCE_MEM, 0);=0D
- 	if (!dcmi->res) {=0D
-@@ -1919,14 +1930,6 @@ static int dcmi_probe(struct platform_device *pdev)=
-=0D
- 		return PTR_ERR(dcmi->regs);=0D
- 	}=0D
- =0D
--	ret =3D devm_request_threaded_irq(&pdev->dev, irq, dcmi_irq_callback,=0D
--					dcmi_irq_thread, IRQF_ONESHOT,=0D
--					dev_name(&pdev->dev), dcmi);=0D
--	if (ret) {=0D
--		dev_err(&pdev->dev, "Unable to request irq %d\n", irq);=0D
--		return ret;=0D
--	}=0D
--=0D
- 	mclk =3D devm_clk_get(&pdev->dev, "mclk");=0D
- 	if (IS_ERR(mclk)) {=0D
- 		if (PTR_ERR(mclk) !=3D -EPROBE_DEFER)=0D
--- =0D
-2.25.1=0D
-=0D
-=0D
+When compiled with option W=1, compiler complained that
+ide_media_proc_fops is unused.
+
+in commit ec7d9c9ce897 ("ide: replace ->proc_fops with ->proc_show"),
+changed proc_fops to proc_show. So this is not needed anymore.
+
+Also remove function ide_media_proc_open that is only referenced
+by ide_media_proc_fops.
+
+Fixes: ec7d9c9ce897("ide: replace ->proc_fops with ->proc_show")
+Signed-off-by: Hyeonggon Yoo <42.hyeyoo@gmail.com>
+---
+ drivers/ide/ide-proc.c | 13 -------------
+ 1 file changed, 13 deletions(-)
+
+diff --git a/drivers/ide/ide-proc.c b/drivers/ide/ide-proc.c
+index 15c17f3781ee..34bed14f88c7 100644
+--- a/drivers/ide/ide-proc.c
++++ b/drivers/ide/ide-proc.c
+@@ -449,19 +449,6 @@ static int ide_media_proc_show(struct seq_file *m, void *v)
+ 	return 0;
+ }
+ 
+-static int ide_media_proc_open(struct inode *inode, struct file *file)
+-{
+-	return single_open(file, ide_media_proc_show, PDE_DATA(inode));
+-}
+-
+-static const struct file_operations ide_media_proc_fops = {
+-	.owner		= THIS_MODULE,
+-	.open		= ide_media_proc_open,
+-	.read		= seq_read,
+-	.llseek		= seq_lseek,
+-	.release	= single_release,
+-};
+-
+ static ide_proc_entry_t generic_drive_entries[] = {
+ 	{ "driver",	S_IFREG|S_IRUGO,	 ide_driver_proc_show	},
+ 	{ "identify",	S_IFREG|S_IRUSR,	 ide_identify_proc_show	},
+-- 
+2.25.1
+
