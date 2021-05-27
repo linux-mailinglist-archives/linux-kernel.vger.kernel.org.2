@@ -2,81 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 65D2B392C54
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 13:07:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A3659392C20
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 12:48:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233702AbhE0LIu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 May 2021 07:08:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58462 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232381AbhE0LIs (ORCPT
+        id S236253AbhE0KuZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 May 2021 06:50:25 -0400
+Received: from szxga02-in.huawei.com ([45.249.212.188]:2500 "EHLO
+        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236217AbhE0KuY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 May 2021 07:08:48 -0400
-Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E78D8C061574
-        for <linux-kernel@vger.kernel.org>; Thu, 27 May 2021 04:07:13 -0700 (PDT)
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: eballetbo)
-        with ESMTPSA id 7B8E61F439AF
-Subject: Re: [PATCH] drm/bridge: DRM_CROS_EC_ANX7688 should depend on
- I2C_CROS_EC_TUNNEL
-To:     Geert Uytterhoeven <geert+renesas@glider.be>,
-        Andrzej Hajda <a.hajda@samsung.com>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Robert Foss <robert.foss@linaro.org>,
-        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
-        Jonas Karlman <jonas@kwiboo.se>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Hsin-Yi Wang <hsinyi@chromium.org>,
-        Nicolas Boichat <drinkcat@chromium.org>
-Cc:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-References: <d107d1840b83607baee8571cc5d88973fc32b519.1622015323.git.geert+renesas@glider.be>
-From:   Enric Balletbo i Serra <enric.balletbo@collabora.com>
-Message-ID: <d728f168-8e36-44e4-0d9a-a52572ed1c1b@collabora.com>
-Date:   Thu, 27 May 2021 13:07:08 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.0
+        Thu, 27 May 2021 06:50:24 -0400
+Received: from dggeml709-chm.china.huawei.com (unknown [172.30.72.55])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4FrPcd5Z44zYqrN;
+        Thu, 27 May 2021 18:46:09 +0800 (CST)
+Received: from dggemi762-chm.china.huawei.com (10.1.198.148) by
+ dggeml709-chm.china.huawei.com (10.3.17.139) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2176.2; Thu, 27 May 2021 18:48:49 +0800
+Received: from linux-lmwb.huawei.com (10.175.103.112) by
+ dggemi762-chm.china.huawei.com (10.1.198.148) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2176.2; Thu, 27 May 2021 18:48:48 +0800
+From:   Zou Wei <zou_wei@huawei.com>
+To:     <timur@kernel.org>, <nicoleotsuka@gmail.com>,
+        <Xiubo.Lee@gmail.com>, <festevam@gmail.com>,
+        <shengjiu.wang@gmail.com>, <lgirdwood@gmail.com>,
+        <broonie@kernel.org>, <perex@perex.cz>, <tiwai@suse.com>,
+        <shawnguo@kernel.org>, <s.hauer@pengutronix.de>,
+        <kernel@pengutronix.de>, <linux-imx@nxp.com>
+CC:     <linuxppc-dev@lists.ozlabs.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, Zou Wei <zou_wei@huawei.com>
+Subject: [PATCH -next] ASoC: imx-rpmsg: fix platform_no_drv_owner.cocci warnings
+Date:   Thu, 27 May 2021 19:07:32 +0800
+Message-ID: <1622113652-56646-1-git-send-email-zou_wei@huawei.com>
+X-Mailer: git-send-email 2.6.2
 MIME-Version: 1.0
-In-Reply-To: <d107d1840b83607baee8571cc5d88973fc32b519.1622015323.git.geert+renesas@glider.be>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
+X-Originating-IP: [10.175.103.112]
+X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
+ dggemi762-chm.china.huawei.com (10.1.198.148)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Geert,
+./sound/soc/fsl/imx-rpmsg.c:140:3-8: No need to set .owner here. The core will do it.
 
-Thank you for your patch.
+ Remove .owner field if calls are used which set it automatically
 
-On 26/5/21 9:50, Geert Uytterhoeven wrote:
-> The ChromeOS EC ANX7688 bridge is connected to a ChromeOS Embedded
-> Controller, and is accessed using I2C tunneling through the Embedded
-> Controller.  Hence add a dependency on I2C_CROS_EC_TUNNEL, to prevent
-> asking the user about this driver when configuring a kernel without
-> support for the ChromeOS EC tunnel I2C bus.
-> 
-> Fixes: 44602b10d7f2a5f7 ("drm/bridge: Add ChromeOS EC ANX7688 bridge driver support")
-> Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+Generated by: scripts/coccinelle/api/platform_no_drv_owner.cocci
 
-Reviewed-by: Enric Balletbo i Serra <enric.balletbo@collabora.com>
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Zou Wei <zou_wei@huawei.com>
+---
+ sound/soc/fsl/imx-rpmsg.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-> ---
->  drivers/gpu/drm/bridge/Kconfig | 1 +
->  1 file changed, 1 insertion(+)
-> 
-> diff --git a/drivers/gpu/drm/bridge/Kconfig b/drivers/gpu/drm/bridge/Kconfig
-> index 7e7f28eb954661e2..c96e4b38d1d34ee6 100644
-> --- a/drivers/gpu/drm/bridge/Kconfig
-> +++ b/drivers/gpu/drm/bridge/Kconfig
-> @@ -53,6 +53,7 @@ config DRM_CHRONTEL_CH7033
->  config DRM_CROS_EC_ANX7688
->  	tristate "ChromeOS EC ANX7688 bridge"
->  	depends on OF
-> +	depends on I2C_CROS_EC_TUNNEL || COMPILE_TEST
->  	select DRM_KMS_HELPER
->  	select REGMAP_I2C
->  	help
-> 
+diff --git a/sound/soc/fsl/imx-rpmsg.c b/sound/soc/fsl/imx-rpmsg.c
+index 5a9a470..f0cae8c 100644
+--- a/sound/soc/fsl/imx-rpmsg.c
++++ b/sound/soc/fsl/imx-rpmsg.c
+@@ -137,7 +137,6 @@ static int imx_rpmsg_probe(struct platform_device *pdev)
+ static struct platform_driver imx_rpmsg_driver = {
+ 	.driver = {
+ 		.name = "imx-audio-rpmsg",
+-		.owner = THIS_MODULE,
+ 		.pm = &snd_soc_pm_ops,
+ 	},
+ 	.probe = imx_rpmsg_probe,
+-- 
+2.6.2
+
