@@ -2,140 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5344E393287
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 17:38:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 68C0739328A
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 17:39:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234924AbhE0Pjo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 May 2021 11:39:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36350 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234146AbhE0Pjk (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 May 2021 11:39:40 -0400
-Received: from mail-il1-x133.google.com (mail-il1-x133.google.com [IPv6:2607:f8b0:4864:20::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5695C061574
-        for <linux-kernel@vger.kernel.org>; Thu, 27 May 2021 08:38:06 -0700 (PDT)
-Received: by mail-il1-x133.google.com with SMTP id j30so639670ila.5
-        for <linux-kernel@vger.kernel.org>; Thu, 27 May 2021 08:38:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=2crjK0WkoLk1yIKgn4T+sf7fuQ4+lslYOkCkxigqz6k=;
-        b=HZqATLPbPzHq6IDZSeyW6yH3VLhnhrOp5bu1V+jQffAojleUQIGYzRCLBTyyAF7nTw
-         QZdn6q3lNQvvH94cVuMX6+YSeETwJjiUqVI3hHgZEWGje65RasGlKI9IU2/Qb6W5IpLp
-         6aUq14d4eX44abInTxfQRMnCoTlWzntjphX6fjdlh9f5UrKWtoqdgrFS6068t/uofmQE
-         C+Had2Qt+I5/EBQaI2YQq1uvB7x5OhaH1Ts6Q1Yg9zqyx1Dj6uD8LBdBx7+tmCU2Kqik
-         QBO9GxjTTyNCd7BpIvdFDrbKyasY2MWTur57x6ZjClfx+FC85KZkhYHcxjjx58ISBnfL
-         m8aw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=2crjK0WkoLk1yIKgn4T+sf7fuQ4+lslYOkCkxigqz6k=;
-        b=DnKPBNurpSmEcuHrrWu9nFIodQ7oCx3/LN5ybjA7iRFuG4QDEJcuvYC8mX/WdAUnlV
-         VJgrlRMvi+Ra4V24MnRSAeiok+KTiOBqTSsqiggih/yypwVoqTFc9wO8XzSEKx/rs/J4
-         AgTLkG4xyuU4M8N/Oj8KSFJp1mSMrupSiAL/cwXJYPUalrCC3r9tw70wNBYbdDIMWzw6
-         MmLwbN80Q7l9AIjBm5w9JGBnEhQ0uKxEL+nfC0HWLgz75HCwp4m9rB/p+FmkFSjzumim
-         z3PFFgKCENHJat0n7RhlTVw2VTNXvomOoQ3Z4Sa2sGfhhr+2szlvwUX1e60YmQ8IcyUC
-         8uyw==
-X-Gm-Message-State: AOAM5338X+m+Ef6PH+tK8GjzGbtI5m+3Jh0imbLjyd2q0sl5MJfsGr71
-        /U8BhKjm7jiCeJcNB85NfDeOqNLDMPZkuo6CbFpRMw==
-X-Google-Smtp-Source: ABdhPJwEeY2zSrutI4aF0G0bm/TwO5xOgq5IIyL9IMRKy/P97LQ/FPMd1WBfxtwT4wPgD2diYeMeoKv6gQKs6NAZbeM=
-X-Received: by 2002:a92:c54a:: with SMTP id a10mr3421574ilj.140.1622129885983;
- Thu, 27 May 2021 08:38:05 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210527104234.24313-1-james.clark@arm.com> <11822824-7486-2333-f039-bfd801b86922@arm.com>
-In-Reply-To: <11822824-7486-2333-f039-bfd801b86922@arm.com>
-From:   Mathieu Poirier <mathieu.poirier@linaro.org>
-Date:   Thu, 27 May 2021 09:37:54 -0600
-Message-ID: <CANLsYkynQbGRhOmyramX+nSHvVnH_nSJb=t03Dp-2WeXP3ZYAw@mail.gmail.com>
-Subject: Re: [RFC PATCH v3] perf cs-etm: Split Coresight decode by aux records
-To:     James Clark <james.clark@arm.com>
-Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Coresight ML <coresight@lists.linaro.org>,
-        Leo Yan <leo.yan@linaro.org>, Al Grant <al.grant@arm.com>,
-        branislav.rankov@arm.com, Denis Nikitin <denik@chromium.org>,
-        "Suzuki K. Poulose" <suzuki.poulose@arm.com>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Mike Leach <mike.leach@linaro.org>,
-        John Garry <john.garry@huawei.com>,
-        Will Deacon <will@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        linux-perf-users@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        id S233839AbhE0Pkd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 May 2021 11:40:33 -0400
+Received: from foss.arm.com ([217.140.110.172]:59486 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229698AbhE0Pkb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 27 May 2021 11:40:31 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 34C5F11D4;
+        Thu, 27 May 2021 08:38:58 -0700 (PDT)
+Received: from e120325.arm.com (unknown [10.57.84.138])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id F1C513F73B;
+        Thu, 27 May 2021 08:38:55 -0700 (PDT)
+From:   Beata Michalska <beata.michalska@arm.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     peterz@infradead.org, mingo@redhat.com, juri.lelli@redhat.com,
+        vincent.guittot@linaro.org, valentin.schneider@arm.com,
+        dietmar.eggemann@arm.com, corbet@lwn.net, rdunlap@infradead.org,
+        linux-doc@vger.kernel.org
+Subject: [PATCH v6 0/3] Rework CPU capacity asymmetry detection
+Date:   Thu, 27 May 2021 16:38:39 +0100
+Message-Id: <20210527153842.17567-1-beata.michalska@arm.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 27 May 2021 at 07:46, James Clark <james.clark@arm.com> wrote:
->
->
->
-> On 27/05/2021 13:42, James Clark wrote:
-> > Populate the auxtrace queues using AUX records rather than whole
-> > auxtrace buffers.
-> >
-> ...
-> > Snapshot mode still needs to be tested.
-> >
->
-> Snapshot mode is also working, but needs the following patch applied to reverse aux_offset
-> from the end of the buffer to the beginning:
+As of now, the asym_cpu_capacity_level will try to locate the lowest
+topology level where the highest available CPU capacity is being
+visible to all CPUs. This works perfectly fine for most of existing
+asymmetric designs out there, though for some possible and completely
+valid setups, combining different cpu microarchitectures within
+clusters, this might not be the best approach, resulting in pointing
+at a level, at which some of the domains might not see any asymmetry
+at all. This could be problematic for misfit migration and/or energy
+aware placement. And as such, for affected platforms it might result
+in custom changes to wake-up and CPU selection paths.
 
-It might be better to send another revision with this patch included
-in to make sure everyone is looking at (and testing) the same thing.
+As mentioned in the previous version, based on the available sources out there,
+one of the potentially affected (by original approach) platforms might be
+Exynos 9820/990 with it's 'sliced' LLC(SLC) divided between the two custom (big)
+cores and the remaining A75/A55 cores, which seems to be reflected in the
+made available dt entries for those platforms.
 
->
-> diff --git a/tools/perf/util/cs-etm.c b/tools/perf/util/cs-etm.c
-> index 5d6c03488187..9db556e14dfa 100644
-> --- a/tools/perf/util/cs-etm.c
-> +++ b/tools/perf/util/cs-etm.c
-> @@ -2700,6 +2700,7 @@ static int cs_etm__queue_aux_fragment(struct perf_session *session,
->         struct perf_record_auxtrace *auxtrace_event;
->         union perf_event auxtrace_fragment;
->         bool matchesCpuPid;
-> +       __u64 aux_offset;
->         struct cs_etm_auxtrace *etm = container_of(session->auxtrace,
->                                                    struct cs_etm_auxtrace,
->                                                    auxtrace);
-> @@ -2730,19 +2731,26 @@ static int cs_etm__queue_aux_fragment(struct perf_session *session,
->         else
->                 matchesCpuPid = auxtrace_event->cpu == sample->cpu;
->
-> +       /*
-> +        * In snapshot/overwrite mode, the head points to the end of the buffer so aux_offset needs
-> +        * to have the size subtracted so it points to the beginning as in normal mode.
-> +        */
-> +       if (aux_event->flags && PERF_AUX_FLAG_OVERWRITE)
-> +               aux_offset = aux_event->aux_offset - aux_event->aux_size;
-> +       else
-> +               aux_offset = aux_event->aux_offset;
-> +
->         if (matchesCpuPid &&
-> -           aux_event->aux_offset >= auxtrace_event->offset &&
-> -           aux_event->aux_offset + aux_event->aux_size <=
-> -                       auxtrace_event->offset + auxtrace_event->size) {
-> +           aux_offset >= auxtrace_event->offset &&
-> +           aux_offset + aux_event->aux_size <= auxtrace_event->offset + auxtrace_event->size) {
->                 /*
->                  * If this AUX event was inside this buffer somewhere, create a new auxtrace event
->                  * based on the sizes of the aux event, and queue that fragment.
->                  */
->                 auxtrace_fragment.auxtrace = *auxtrace_event;
->                 auxtrace_fragment.auxtrace.size = aux_event->aux_size;
-> -               auxtrace_fragment.auxtrace.offset = aux_event->aux_offset;
-> -               file_offset += aux_event->aux_offset - auxtrace_event->offset +
-> -                               auxtrace_event->header.size;
-> +               auxtrace_fragment.auxtrace.offset = aux_offset;
-> +               file_offset += aux_offset - auxtrace_event->offset + auxtrace_event->header.size;
->                 return auxtrace_queues__add_event(&etm->queues,
->                                                session,
->                                                &auxtrace_fragment,
->
->
+The following patches rework how the asymmetric detection is being
+carried out, allowing pinning the asymmetric topology level to the lowest one,
+where full range of CPU capacities is visible to all CPUs within given
+sched domain. The asym_cpu_capacity_level will also keep track of those
+levels where any scope of asymmetry is being observed, to denote
+corresponding sched domains with the SD_ASYM_CPUCAPACITY flag
+and to enable misfit migration for those.
+
+In order to distinguish the sched domains with partial vs full range
+of CPU capacity asymmetry, new sched domain flag has been introduced:
+SD_ASYM_CPUCAPACITY_FULL.
+
+The overall idea of changing the asymmetry detection has been suggested
+by Valentin Schneider <valentin.schneider@arm.com>
+
+Verified on (mostly):
+    - QEMU (version 4.2.1) with variants of possible asymmetric topologies
+	- machine: virt
+	- modifying the device-tree 'cpus' node for virt machine:
+
+	qemu-system-aarch64 -kernel $KERNEL_IMG
+	    -drive format=qcow2,file=$IMAGE
+	    -append 'root=/dev/vda earlycon console=ttyAMA0 sched_debug
+	     sched_verbose loglevel=15 kmemleak=on' -m 2G  --nographic
+	    -cpu cortex-a57 -machine virt -smp cores=8
+	    -machine dumpdtb=$CUSTOM_DTB.dtb
+
+	$KERNEL_PATH/scripts/dtc/dtc -I dtb -O dts $CUSTOM_DTB.dts >
+	$CUSTOM_DTB.dtb
+
+	(modify the dts)
+
+	$KERNEL_PATH/scripts/dtc/dtc -I dts -O dtb $CUSTOM_DTB.dts >
+	$CUSTOM_DTB.dtb
+
+	qemu-system-aarch64 -kernel $KERNEL_IMG
+	    -drive format=qcow2,file=$IMAGE
+	    -append 'root=/dev/vda earlycon console=ttyAMA0 sched_debug
+	     sched_verbose loglevel=15 kmemleak=on' -m 2G  --nographic
+	    -cpu cortex-a57 -machine virt -smp cores=8
+	    -machine dtb=$CUSTOM_DTB.dtb
+
+v6:
+ - improving code readability
+v5:
+ - building CPUs list based on their capacity now triggered upon init
+   and explicit request from arch specific code to rebuild sched domains
+ - detecting asymmetry scope now done directly in sd_init
+v4:
+ - Based on Peter's idea, reworking asym detection to use per-cpu
+   capacity list to serve as base for determining the asym scope
+v3:
+ - Additional style/doc fixes
+v2:
+ - Fixed style issues
+ - Reworked accessing the cached topology data as suggested by Valentin
+
+
+
+Beata Michalska (3):
+  sched/core: Introduce SD_ASYM_CPUCAPACITY_FULL sched_domain flag
+  sched/topology: Rework CPU capacity asymmetry detection
+  sched/doc: Update the CPU capacity asymmetry bits
+
+ Documentation/scheduler/sched-capacity.rst |   6 +-
+ Documentation/scheduler/sched-energy.rst   |   2 +-
+ include/linux/sched/sd_flags.h             |  10 ++
+ kernel/sched/topology.c                    | 194 +++++++++++++--------
+ 4 files changed, 133 insertions(+), 79 deletions(-)
+
+-- 
+2.17.1
+
