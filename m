@@ -2,353 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E94F392A70
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 11:16:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 09095392A73
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 11:16:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235782AbhE0JRr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 May 2021 05:17:47 -0400
-Received: from mx08-00178001.pphosted.com ([91.207.212.93]:21434 "EHLO
-        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S235650AbhE0JRi (ORCPT
+        id S235650AbhE0JS1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 May 2021 05:18:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33160 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235572AbhE0JSZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 May 2021 05:17:38 -0400
-Received: from pps.filterd (m0046660.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 14R975JJ017729;
-        Thu, 27 May 2021 11:15:51 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references : mime-version :
- content-type; s=selector1;
- bh=RLsBjaKEeMaGJ14BOi7Wc4C6ZBqyISDjWi/Vi9Zit8Y=;
- b=3JYA5Nli9mL0mjLJMz0qs6+VnApIKu60yMX1tw4nF9y48VIpD4Z+jRiUtnr9K4f0i8qg
- +O0Ter91zxG5S6Q12DpJPSXwFkihTyUItuCwEMlwf1C3yKig1drsAOXIJ/ZIZEoYQpO/
- CviYJhNPaF8FgQTSDiUURtuR+I8wwyUansoC6bIOF4aekbWJRL3pEOUob8eupo2jst3h
- 11Yw7c3aKToqRvQ4spuSRRwYelY+SKSLdLRCO4iNsF7B5DGRcaDh/uXoHqNQa05JUP2f
- Cm+Z9Ej+FA7z4W67UIif5q0Rr+lRcxmXSK9y1PRiBjQJoOcXxSaPryjlVfBobIuzhLuv fw== 
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com with ESMTP id 38t7k38enk-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 27 May 2021 11:15:51 +0200
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 951CB10002A;
-        Thu, 27 May 2021 11:15:50 +0200 (CEST)
-Received: from Webmail-eu.st.com (sfhdag2node3.st.com [10.75.127.6])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 85A4A2171D7;
-        Thu, 27 May 2021 11:15:50 +0200 (CEST)
-Received: from localhost (10.75.127.45) by SFHDAG2NODE3.st.com (10.75.127.6)
- with Microsoft SMTP Server (TLS) id 15.0.1497.2; Thu, 27 May 2021 11:15:49
- +0200
-From:   Erwan Le Ray <erwan.leray@foss.st.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jiri Slaby <jslaby@suse.com>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>
-CC:     <linux-serial@vger.kernel.org>,
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>,
-        Erwan Le Ray <erwan.leray@foss.st.com>,
-        Fabrice Gasnier <fabrice.gasnier@foss.st.com>,
-        Valentin Caron <valentin.caron@foss.st.com>,
-        Amelie Delaunay <amelie.delaunay@foss.st.com>,
-        Etienne Carriere <etienne.carriere@foss.st.com>
-Subject: [PATCH 2/2] serial: stm32: defer probe for dma devices
-Date:   Thu, 27 May 2021 11:15:37 +0200
-Message-ID: <20210527091537.8997-3-erwan.leray@foss.st.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210527091537.8997-1-erwan.leray@foss.st.com>
-References: <20210527091537.8997-1-erwan.leray@foss.st.com>
+        Thu, 27 May 2021 05:18:25 -0400
+Received: from mail-pg1-x534.google.com (mail-pg1-x534.google.com [IPv6:2607:f8b0:4864:20::534])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40010C061574;
+        Thu, 27 May 2021 02:16:53 -0700 (PDT)
+Received: by mail-pg1-x534.google.com with SMTP id j12so3225834pgh.7;
+        Thu, 27 May 2021 02:16:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=oM/r3Cw3PKT/t8DjqyZUTn06Sr3O3TlBwU0pjuFWsyU=;
+        b=Pw7en0clhMeNqvu8FTF0V1DFaA+gUv/Oz+dEz9zaAmOdfjHhC96LZajDqywYRupste
+         7f4eH99FGVMyCxJcBeW1OHhGaeCoiRu4k7jt01m67emVrK2lgBKZeCQG5hobXZlD8iP9
+         wiVzkGuQO7k/Qb/nR6yvNRDUl6HoVxJUKIPzGvejq+Y3RMYd9SUWderJES75G2qLcrIQ
+         RWNMIcgGEldsWM1TKhRentYU/tfhZS3YO04IHAwXP31cH3dEinCdAbEHb6mJVevyZGRV
+         L95GjRVHu2Z61rTh8O4wbV3gFDjqhvCn4QQTXWUAWhGLmwqnUJv1SdmPi7hBu3gkPfSA
+         HKmA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=oM/r3Cw3PKT/t8DjqyZUTn06Sr3O3TlBwU0pjuFWsyU=;
+        b=L7U+AFUIpNyOgyD4xydqPK3Y/3B4HYap9DepihrHuAyJyTnkuYQNyuw5JAsqwqvjOr
+         PxBGODFsuDUFYF8WP4v9qAp3qrDvmHdxJEoihnHuF1oSjwyr3ndFPomrH+2VIpBLvYDG
+         vkIGQAQc9GlMFhzV4piY6wyJzOo3jDpL07UKKg69we9kdnoyTX5uhpn8g4U4PXh1wOFs
+         /nwIRC9uEZQoajLGr6r8anDSKCNgrDDzocCk1cIhsr0QKuDlDBzHscyz4Oa6iU+zEQw5
+         OFYTTAOEv1XGaWUk8D9jUT+KEVE41IFkv5mc1A2Cl/fD+zKbBx6F5X/sW5kVIeWr0CgF
+         PFBg==
+X-Gm-Message-State: AOAM530+xNGOQayD1Oax1H/DGtrz/AWrF5KXtNSVEV9mElAjFHnRFL4I
+        EuWbgvjeSo2SaI0Bxpg3QR0=
+X-Google-Smtp-Source: ABdhPJwU+FVb0K8J8eVlQT5cPRtQrrjf18YtddcKB6WJ4pfWpkKKbYwNErcQkvN+Jep5saZovYcuSA==
+X-Received: by 2002:a62:b419:0:b029:2e8:e879:5d1e with SMTP id h25-20020a62b4190000b02902e8e8795d1emr2781534pfn.3.1622107012613;
+        Thu, 27 May 2021 02:16:52 -0700 (PDT)
+Received: from cl-arch-kdev.. (cl-arch-kdev.xen.prgmr.com. [2605:2700:0:2:a800:ff:fed6:fc0d])
+        by smtp.gmail.com with ESMTPSA id 126sm1473079pfv.82.2021.05.27.02.16.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 27 May 2021 02:16:51 -0700 (PDT)
+From:   Fox Chen <foxhlchen@gmail.com>
+To:     neilb@suse.de
+Cc:     Fox Chen <foxhlchen@gmail.com>, corbet@lwn.net,
+        vegard.nossum@oracle.com, viro@zeniv.linux.org.uk,
+        rdunlap@infradead.org, grandmaster@al2klimov.de,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        gregkh@linuxfoundation.org
+Subject: [PATCH v3 00/13] docs: path-lookup: Update pathlookup docs
+Date:   Thu, 27 May 2021 17:16:05 +0800
+Message-Id: <20210527091618.287093-1-foxhlchen@gmail.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.75.127.45]
-X-ClientProxiedBy: SFHDAG2NODE2.st.com (10.75.127.5) To SFHDAG2NODE3.st.com
- (10.75.127.6)
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
- definitions=2021-05-27_04:2021-05-26,2021-05-27 signatures=0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Defer device probe operation when a DMA channel request probe deferral.
+The Path lookup is a very complex subject in VFS. The path-lookup
+document provides a very detailed guidance to help people understand
+how path lookup works in the kernel. This document was originally
+written based on three lwn articles five years ago. As times goes by,
+some of the content is outdated. This patchset is intended to update
+the document to make it more relevant to current codebase.
 
-With this change both DMA channels are acquired before DMA channels are
-configured. Once no probe deferral is expected, DMAs are
-configured and any failure in their configuration will make the driver
-to fallback to interrupt mode as prior this change.
 
-Signed-off-by: Erwan Le Ray <erwan.leray@foss.st.com>
-Signed-off-by: Etienne Carriere <etienne.carriere@foss.st.com>
+---
+v1: https://lore.kernel.org/lkml/20210126072443.33066-1-foxhlchen@gmail.com/
+v2: https://lore.kernel.org/lkml/20210316054727.25655-1-foxhlchen@gmail.com/
+ - Fix problems in v1 reviewed by Neil:
+   1. In Patch 01 and 02 rewrite a new paragrah to describe step_into()
+   2. In Patch 01 instead of changing it to traverse_mounts, remove follow_managed()
+   3. In Patch 03 re-telling the story rather than adding notes
+   4. In Patch 04 do_open() should be outside of loop, fix it and fix other problems
+      in following paragrah
+   5. In Patch 07 use "drop out of RCU-walk"
+   6. In Patch 08 "latter" should be "later", fix it and restructure the next paragrah
+      removing "Finally"
+v3:
+ - Fix problems in v2 according to Neil's review:
+   1. Fix minor problems in Patch 1,2,3,8,9,11,12
+   2. In Patch 4 remove redundant paragraph, condense information, and
+make the paragraph connection more smooth.
+   3. In Patch 10 Fix WALK_NOFOLLOW, WALK_MORE descriptions and
+document WALK_TRAILING
 
-diff --git a/drivers/tty/serial/stm32-usart.c b/drivers/tty/serial/stm32-usart.c
-index 2ac3b30477a7..7fa54ec11a84 100644
---- a/drivers/tty/serial/stm32-usart.c
-+++ b/drivers/tty/serial/stm32-usart.c
-@@ -1184,6 +1184,14 @@ static const struct of_device_id stm32_match[] = {
- MODULE_DEVICE_TABLE(of, stm32_match);
- #endif
- 
-+static void stm32_usart_of_dma_rx_remove(struct stm32_port *stm32port,
-+					 struct platform_device *pdev)
-+{
-+	if (stm32port->rx_buf)
-+		dma_free_coherent(&pdev->dev, RX_BUF_L, stm32port->rx_buf,
-+				  stm32port->rx_dma_buf);
-+}
-+
- static int stm32_usart_of_dma_rx_probe(struct stm32_port *stm32port,
- 				       struct platform_device *pdev)
- {
-@@ -1201,19 +1209,11 @@ static int stm32_usart_of_dma_rx_probe(struct stm32_port *stm32port,
- 	if (uart_console(port))
- 		return -ENODEV;
- 
--	/* Request DMA RX channel */
--	stm32port->rx_ch = dma_request_slave_channel(dev, "rx");
--	if (!stm32port->rx_ch) {
--		dev_info(dev, "rx dma alloc failed\n");
--		return -ENODEV;
--	}
- 	stm32port->rx_buf = dma_alloc_coherent(&pdev->dev, RX_BUF_L,
- 					       &stm32port->rx_dma_buf,
- 					       GFP_KERNEL);
--	if (!stm32port->rx_buf) {
--		ret = -ENOMEM;
--		goto alloc_err;
--	}
-+	if (!stm32port->rx_buf)
-+		return -ENOMEM;
- 
- 	/* Configure DMA channel */
- 	memset(&config, 0, sizeof(config));
-@@ -1223,8 +1223,8 @@ static int stm32_usart_of_dma_rx_probe(struct stm32_port *stm32port,
- 	ret = dmaengine_slave_config(stm32port->rx_ch, &config);
- 	if (ret < 0) {
- 		dev_err(dev, "rx dma channel config failed\n");
--		ret = -ENODEV;
--		goto config_err;
-+		stm32_usart_of_dma_rx_remove(stm32port, pdev);
-+		return ret;
- 	}
- 
- 	/* Prepare a DMA cyclic transaction */
-@@ -1234,8 +1234,8 @@ static int stm32_usart_of_dma_rx_probe(struct stm32_port *stm32port,
- 					 DMA_PREP_INTERRUPT);
- 	if (!desc) {
- 		dev_err(dev, "rx dma prep cyclic failed\n");
--		ret = -ENODEV;
--		goto config_err;
-+		stm32_usart_of_dma_rx_remove(stm32port, pdev);
-+		return -ENODEV;
- 	}
- 
- 	/* No callback as dma buffer is drained on usart interrupt */
-@@ -1246,24 +1246,22 @@ static int stm32_usart_of_dma_rx_probe(struct stm32_port *stm32port,
- 	ret = dma_submit_error(dmaengine_submit(desc));
- 	if (ret) {
- 		dmaengine_terminate_sync(stm32port->rx_ch);
--		goto config_err;
-+		stm32_usart_of_dma_rx_remove(stm32port, pdev);
-+		return ret;
- 	}
- 
- 	/* Issue pending DMA requests */
- 	dma_async_issue_pending(stm32port->rx_ch);
- 
- 	return 0;
-+}
- 
--config_err:
--	dma_free_coherent(&pdev->dev,
--			  RX_BUF_L, stm32port->rx_buf,
--			  stm32port->rx_dma_buf);
--
--alloc_err:
--	dma_release_channel(stm32port->rx_ch);
--	stm32port->rx_ch = NULL;
--
--	return ret;
-+static void stm32_usart_of_dma_tx_remove(struct stm32_port *stm32port,
-+					 struct platform_device *pdev)
-+{
-+	if (stm32port->tx_buf)
-+		dma_free_coherent(&pdev->dev, TX_BUF_L, stm32port->tx_buf,
-+				  stm32port->tx_dma_buf);
- }
- 
- static int stm32_usart_of_dma_tx_probe(struct stm32_port *stm32port,
-@@ -1277,19 +1275,11 @@ static int stm32_usart_of_dma_tx_probe(struct stm32_port *stm32port,
- 
- 	stm32port->tx_dma_busy = false;
- 
--	/* Request DMA TX channel */
--	stm32port->tx_ch = dma_request_slave_channel(dev, "tx");
--	if (!stm32port->tx_ch) {
--		dev_info(dev, "tx dma alloc failed\n");
--		return -ENODEV;
--	}
- 	stm32port->tx_buf = dma_alloc_coherent(&pdev->dev, TX_BUF_L,
- 					       &stm32port->tx_dma_buf,
- 					       GFP_KERNEL);
--	if (!stm32port->tx_buf) {
--		ret = -ENOMEM;
--		goto alloc_err;
--	}
-+	if (!stm32port->tx_buf)
-+		return -ENOMEM;
- 
- 	/* Configure DMA channel */
- 	memset(&config, 0, sizeof(config));
-@@ -1299,22 +1289,11 @@ static int stm32_usart_of_dma_tx_probe(struct stm32_port *stm32port,
- 	ret = dmaengine_slave_config(stm32port->tx_ch, &config);
- 	if (ret < 0) {
- 		dev_err(dev, "tx dma channel config failed\n");
--		ret = -ENODEV;
--		goto config_err;
-+		stm32_usart_of_dma_tx_remove(stm32port, pdev);
-+		return ret;
- 	}
- 
- 	return 0;
--
--config_err:
--	dma_free_coherent(&pdev->dev,
--			  TX_BUF_L, stm32port->tx_buf,
--			  stm32port->tx_dma_buf);
--
--alloc_err:
--	dma_release_channel(stm32port->tx_ch);
--	stm32port->tx_ch = NULL;
--
--	return ret;
- }
- 
- static int stm32_usart_serial_probe(struct platform_device *pdev)
-@@ -1338,16 +1317,43 @@ static int stm32_usart_serial_probe(struct platform_device *pdev)
- 		device_set_wakeup_capable(&pdev->dev, true);
- 		ret = dev_pm_set_wake_irq(&pdev->dev, stm32port->port.irq);
- 		if (ret)
--			goto err_nowup;
-+			goto err_deinit_port;
- 	}
- 
--	ret = stm32_usart_of_dma_rx_probe(stm32port, pdev);
--	if (ret)
--		dev_info(&pdev->dev, "interrupt mode used for rx (no dma)\n");
-+	stm32port->rx_ch = dma_request_chan(&pdev->dev, "rx");
-+	if (PTR_ERR(stm32port->rx_ch) == -EPROBE_DEFER) {
-+		ret = -EPROBE_DEFER;
-+		goto err_wakeirq;
-+	}
-+	/* Fall back in interrupt mode for any non-deferral error */
-+	if (IS_ERR(stm32port->rx_ch))
-+		stm32port->rx_ch = NULL;
-+
-+	stm32port->tx_ch = dma_request_chan(&pdev->dev, "tx");
-+	if (PTR_ERR(stm32port->tx_ch) == -EPROBE_DEFER) {
-+		ret = -EPROBE_DEFER;
-+		goto err_dma_rx;
-+	}
-+	/* Fall back in interrupt mode for any non-deferral error */
-+	if (IS_ERR(stm32port->tx_ch))
-+		stm32port->tx_ch = NULL;
- 
--	ret = stm32_usart_of_dma_tx_probe(stm32port, pdev);
--	if (ret)
--		dev_info(&pdev->dev, "interrupt mode used for tx (no dma)\n");
-+	if (stm32port->rx_ch && stm32_usart_of_dma_rx_probe(stm32port, pdev)) {
-+		/* Fall back in interrupt mode */
-+		dma_release_channel(stm32port->rx_ch);
-+		stm32port->rx_ch = NULL;
-+	}
-+
-+	if (stm32port->tx_ch && stm32_usart_of_dma_tx_probe(stm32port, pdev)) {
-+		/* Fall back in interrupt mode */
-+		dma_release_channel(stm32port->tx_ch);
-+		stm32port->tx_ch = NULL;
-+	}
-+
-+	if (!stm32port->rx_ch)
-+		dev_info(&pdev->dev, "interrupt mode for rx (no dma)\n");
-+	if (!stm32port->tx_ch)
-+		dev_info(&pdev->dev, "interrupt mode for tx (no dma)\n");
- 
- 	platform_set_drvdata(pdev, &stm32port->port);
- 
-@@ -1368,30 +1374,23 @@ static int stm32_usart_serial_probe(struct platform_device *pdev)
- 	pm_runtime_set_suspended(&pdev->dev);
- 	pm_runtime_put_noidle(&pdev->dev);
- 
--	if (stm32port->rx_ch) {
--		dmaengine_terminate_async(stm32port->rx_ch);
--		dma_release_channel(stm32port->rx_ch);
--	}
--
--	if (stm32port->rx_dma_buf)
--		dma_free_coherent(&pdev->dev,
--				  RX_BUF_L, stm32port->rx_buf,
--				  stm32port->rx_dma_buf);
--
- 	if (stm32port->tx_ch) {
--		dmaengine_terminate_async(stm32port->tx_ch);
-+		stm32_usart_of_dma_tx_remove(stm32port, pdev);
- 		dma_release_channel(stm32port->tx_ch);
- 	}
- 
--	if (stm32port->tx_dma_buf)
--		dma_free_coherent(&pdev->dev,
--				  TX_BUF_L, stm32port->tx_buf,
--				  stm32port->tx_dma_buf);
-+	if (stm32port->rx_ch)
-+		stm32_usart_of_dma_rx_remove(stm32port, pdev);
- 
-+err_dma_rx:
-+	if (stm32port->rx_ch)
-+		dma_release_channel(stm32port->rx_ch);
-+
-+err_wakeirq:
- 	if (stm32port->wakeup_src)
- 		dev_pm_clear_wake_irq(&pdev->dev);
- 
--err_nowup:
-+err_deinit_port:
- 	if (stm32port->wakeup_src)
- 		device_set_wakeup_capable(&pdev->dev, false);
- 
-@@ -1418,28 +1417,20 @@ static int stm32_usart_serial_remove(struct platform_device *pdev)
- 
- 	stm32_usart_clr_bits(port, ofs->cr3, USART_CR3_DMAR);
- 
-+	if (stm32_port->tx_ch) {
-+		dmaengine_terminate_async(stm32_port->tx_ch);
-+		stm32_usart_of_dma_tx_remove(stm32_port, pdev);
-+		dma_release_channel(stm32_port->tx_ch);
-+	}
-+
- 	if (stm32_port->rx_ch) {
- 		dmaengine_terminate_async(stm32_port->rx_ch);
-+		stm32_usart_of_dma_rx_remove(stm32_port, pdev);
- 		dma_release_channel(stm32_port->rx_ch);
- 	}
- 
--	if (stm32_port->rx_dma_buf)
--		dma_free_coherent(&pdev->dev,
--				  RX_BUF_L, stm32_port->rx_buf,
--				  stm32_port->rx_dma_buf);
--
- 	stm32_usart_clr_bits(port, ofs->cr3, USART_CR3_DMAT);
- 
--	if (stm32_port->tx_ch) {
--		dmaengine_terminate_async(stm32_port->tx_ch);
--		dma_release_channel(stm32_port->tx_ch);
--	}
--
--	if (stm32_port->tx_dma_buf)
--		dma_free_coherent(&pdev->dev,
--				  TX_BUF_L, stm32_port->tx_buf,
--				  stm32_port->tx_dma_buf);
--
- 	if (stm32_port->wakeup_src) {
- 		dev_pm_clear_wake_irq(&pdev->dev);
- 		device_init_wakeup(&pdev->dev, false);
+ - As suggested by Matthew Wilcox and Jonathan Corbet, remove ``...`` literals of function names in this patchset. I put this in a standalone Patch(Patch 13), because automarkup extension doesn't work on my side. You can choose to take it or not take it.
+
+
+To help review, I've put a compiled html version here:
+http://linux-docs.54fox.com/linux_docs/filesystems/path-lookup-v3.html
+and highlight changes using hypothesis:
+https://hyp.is/go?url=http%3A%2F%2Flinux-docs.54fox.com%2Flinux_docs%2Ffilesystems%2Fpath-lookup-v3.html&group=__world__
+
+
+Fox Chen (13):
+  docs: path-lookup: update follow_managed() part
+  docs: path-lookup: update path_to_nameidata() part
+  docs: path-lookup: update path_mountpoint() part
+  docs: path-lookup: update do_last() part
+  docs: path-lookup: remove filename_mountpoint
+  docs: path-lookup: Add macro name to symlink limit description
+  docs: path-lookup: i_op->follow_link replaced with i_op->get_link
+  docs: path-lookup: update i_op->put_link and cookie description
+  docs: path-lookup: no get_link()
+  docs: path-lookup: update WALK_GET, WALK_PUT desc
+  docs: path-lookup: update get_link() ->follow_link description
+  docs: path-lookup: update symlink description
+  docs: path-lookup: use bare function() rather than literals
+
+ Documentation/filesystems/path-lookup.rst | 194 ++++++++++------------
+ 1 file changed, 85 insertions(+), 109 deletions(-)
+
 -- 
-2.17.1
+2.31.1
 
