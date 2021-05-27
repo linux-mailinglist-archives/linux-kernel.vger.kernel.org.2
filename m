@@ -2,136 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B8E7392591
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 05:48:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DE4F2392594
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 05:49:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234806AbhE0DuS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 May 2021 23:50:18 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:35324 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234111AbhE0DuR (ORCPT
+        id S234823AbhE0DvL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 May 2021 23:51:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43984 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232631AbhE0DvK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 May 2021 23:50:17 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1622087324;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=MndI0BhBeUi0uQEoIZPrttCcXIDrDdb+yFsBIF9E5vo=;
-        b=AccJWYss/Te/UD1RWUo7yzuQ3r3zz/DpErmkZcUGAtrUccYrJ75cJWPAVWI8UNieC/GsYh
-        TtqiWxYxcMTK+vZtf5sNBatRPgEZ4FTRpes9MJHq0cKxsnsbRJyQ54CdROXrk0oqJM5qrA
-        C3LMXBj8vdxLrtoOp802O9k5Z/8zCZQ=
-Received: from mail-pj1-f70.google.com (mail-pj1-f70.google.com
- [209.85.216.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-442-jrkwS_5dPOWHh1tK3DbIqA-1; Wed, 26 May 2021 23:48:42 -0400
-X-MC-Unique: jrkwS_5dPOWHh1tK3DbIqA-1
-Received: by mail-pj1-f70.google.com with SMTP id ie24-20020a17090b4018b029015fe20666c9so1324742pjb.1
-        for <linux-kernel@vger.kernel.org>; Wed, 26 May 2021 20:48:42 -0700 (PDT)
+        Wed, 26 May 2021 23:51:10 -0400
+Received: from mail-oi1-x22a.google.com (mail-oi1-x22a.google.com [IPv6:2607:f8b0:4864:20::22a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7776CC061574
+        for <linux-kernel@vger.kernel.org>; Wed, 26 May 2021 20:49:36 -0700 (PDT)
+Received: by mail-oi1-x22a.google.com with SMTP id j75so3786183oih.10
+        for <linux-kernel@vger.kernel.org>; Wed, 26 May 2021 20:49:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=DX5LZ59j/U95L+mNk2w46JLq9y9MxosdgzOg6i0ZZ6E=;
+        b=u8DB9ze/Jw3EU/Y4+kWrZQ6Cw2+PcWjxFCoDTqyt4TeM+BZFS+KrGfLZhaEBSCoXpl
+         dbTbZeMaDXuKOHyGSU0lPjSHx2ndTerJYw44ctn2yUTQaIfyXZB5TJwBjJth9OqkAEV6
+         x83RO7YGxNxPM/MaGdoq2HGnCY7nfNSzu9g1OahvUbuq5DRf4t1PJ6pebrxZ8TzsIms5
+         qKG9MaTmsOH59Nsk07lS+oksXQZ+1tdCjsbJoz63DHEUGIvQ2XXrTu2wor6Z3rjKLhL2
+         Twidj3FMOFJDlN43g/in2ikXjQo8WuW0AqC3nRnZ9OfrD9xn8oUMtfr19h62A7pbta5S
+         hHTA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=MndI0BhBeUi0uQEoIZPrttCcXIDrDdb+yFsBIF9E5vo=;
-        b=rhdl2WNJij2mLIMZ5H4UevqK9KBeOWVDjs4sE75w58jCCBVrmrfsj3zO+qj5lbLpzg
-         WP8UOdz8pog6+G3bEM/r+sVKwWhwMiRUWPTroenxMxyElKF/C0jojhFtU3XoP2CanOkZ
-         UHis9XX+rZ0Nl10h6YVqjCKBMlguXpRQsYelP+4LeSN+YEZav+7KXKBDtAwC6mCEgsgO
-         K4Ff31Hp8ZjP9adL9x+7RAnlYe01N7VZ+kV79ELZdXQsTIuB6ikwC5T6ATagJpREIJNO
-         fGCsmY9zJ8WlzUxj2ASqcaP5sfQzK+sD1G07EyeLp///GvxZZLElPZfNDliGIXnmxV2W
-         Q0iA==
-X-Gm-Message-State: AOAM533sd8lcxtzaNZZiZR+Ke6YNAKYEtZ/bL4ZwhwlNjfwmoD8nOsJ1
-        kTA2pnCsfZcY2b4BucFYFD+wAZcYkvbr0n0SCFp5x5U6twhNhOPKUjFPsdlsSG0L1QXI0jtsxQd
-        /OvQ/Kpr37TNCE+h16fzUNVV0
-X-Received: by 2002:a17:90a:a014:: with SMTP id q20mr216636pjp.124.1622087321499;
-        Wed, 26 May 2021 20:48:41 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwNORR0VqV287Fr5cVhBXhwufI/OJV8Yc3ib3KYYstK5HpQVoRCvYfjDvdmrv8qmwzcLetATA==
-X-Received: by 2002:a17:90a:a014:: with SMTP id q20mr216615pjp.124.1622087321271;
-        Wed, 26 May 2021 20:48:41 -0700 (PDT)
-Received: from wangxiaodeMacBook-Air.local ([209.132.188.80])
-        by smtp.gmail.com with ESMTPSA id s1sm553256pfc.6.2021.05.26.20.48.38
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 26 May 2021 20:48:40 -0700 (PDT)
-Subject: Re: [PATCH v3 2/4] virtio_net: move txq wakeups under tx q lock
-To:     "Michael S. Tsirkin" <mst@redhat.com>, linux-kernel@vger.kernel.org
-Cc:     Jakub Kicinski <kuba@kernel.org>, Wei Wang <weiwan@google.com>,
-        David Miller <davem@davemloft.net>, netdev@vger.kernel.org,
-        Willem de Bruijn <willemb@google.com>,
-        virtualization@lists.linux-foundation.org
-References: <20210526082423.47837-1-mst@redhat.com>
- <20210526082423.47837-3-mst@redhat.com>
-From:   Jason Wang <jasowang@redhat.com>
-Message-ID: <30c69182-cc6c-3e45-1db9-5b061e43e1d6@redhat.com>
-Date:   Thu, 27 May 2021 11:48:33 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.10.2
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=DX5LZ59j/U95L+mNk2w46JLq9y9MxosdgzOg6i0ZZ6E=;
+        b=E/BX8ccg3pmzIt0lIw1XmAs/+Y/Q5oZW5xr1PzwbpKMqalNHSUruaJai3DOmR9M3xn
+         4SmLU9LfwljuO2XKzAltJHFkNf5ArH8KjPdoTVoQ5lIFh4AjxEFW8+Ube/dWWA/7g3KA
+         1Ny0BhArqkJbXwNLP3LjAGiGAMCSdnrGIiyMaB9IJEWph4yzIBNce4pCDTIiVT9xqc0m
+         Y1qh9bbFMEzkIFq3RnLDezoGDXaQH3EExENZ+SaIlRJUNrJy7rEMLV5ItJ09zZ8VA4xb
+         Qd8Hh2Rr85L2H3WC0YOK4ai62ggHYkuvezdfv39UoBh/haFWpf5lSMJksTzADxtLmI2/
+         BDug==
+X-Gm-Message-State: AOAM533EARNjT4OjZfCXTf8lCQMFN/sSBiFbtiH/8bb8U7/MeooLBPsS
+        GbuzkGQkwESPoxbeYQuADaIRFMmknbhY5ICJ78w=
+X-Google-Smtp-Source: ABdhPJw0QDyylvjNLg3lab3rvIBcqi4+H2nhMuvkGY8U8GQq5XqOtT75RF0uJDw4uQ0NCdsuXqZO/VBBrP1e7C1e4Yk=
+X-Received: by 2002:a05:6808:249:: with SMTP id m9mr1011124oie.120.1622087375887;
+ Wed, 26 May 2021 20:49:35 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210526082423.47837-3-mst@redhat.com>
-Content-Type: text/plain; charset=gbk; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+References: <20210526084726.552052-1-lee.jones@linaro.org> <20210526084726.552052-3-lee.jones@linaro.org>
+In-Reply-To: <20210526084726.552052-3-lee.jones@linaro.org>
+From:   Alex Deucher <alexdeucher@gmail.com>
+Date:   Wed, 26 May 2021 23:49:25 -0400
+Message-ID: <CADnq5_OFMz2tCCCwXbQ-sj+zOyp2GGNLDCkVADXaRo=GJ1wOTg@mail.gmail.com>
+Subject: Re: [PATCH 02/34] drm/amd/pm/swsmu/smu13/aldebaran_ppt: Remove unused
+ variable 'ret'
+To:     Lee Jones <lee.jones@linaro.org>
+Cc:     David Airlie <airlied@linux.ie>,
+        LKML <linux-kernel@vger.kernel.org>,
+        amd-gfx list <amd-gfx@lists.freedesktop.org>,
+        Maling list - DRI developers 
+        <dri-devel@lists.freedesktop.org>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+This should be checked.  Will send out a patch momentarily.
 
-ÔÚ 2021/5/26 ÏÂÎç4:24, Michael S. Tsirkin Ð´µÀ:
-> We currently check num_free outside tx q lock
-> which is unsafe: new packets can arrive meanwhile
-> and there won't be space in the queue.
-> Thus a spurious queue wakeup causing overhead
-> and even packet drops.
+Thanks,
+
+Alex
+
+On Wed, May 26, 2021 at 4:47 AM Lee Jones <lee.jones@linaro.org> wrote:
 >
-> Move the check under the lock to fix that.
+> Fixes the following W=3D1 kernel build warning(s):
 >
-> Signed-off-by: Michael S. Tsirkin <mst@redhat.com>
-
-
-Acked-by: Jason Wang <jasowang@redhat.com>
-
-
+>  drivers/gpu/drm/amd/amdgpu/../pm/swsmu/smu13/aldebaran_ppt.c: In functio=
+n =E2=80=98aldebaran_is_dpm_running=E2=80=99:
+>  drivers/gpu/drm/amd/amdgpu/../pm/swsmu/smu13/aldebaran_ppt.c:1260:6: war=
+ning: variable =E2=80=98ret=E2=80=99 set but not used [-Wunused-but-set-var=
+iable]
+>
+> Cc: Alex Deucher <alexander.deucher@amd.com>
+> Cc: "Christian K=C3=B6nig" <christian.koenig@amd.com>
+> Cc: David Airlie <airlied@linux.ie>
+> Cc: Daniel Vetter <daniel@ffwll.ch>
+> Cc: amd-gfx@lists.freedesktop.org
+> Cc: dri-devel@lists.freedesktop.org
+> Signed-off-by: Lee Jones <lee.jones@linaro.org>
 > ---
->   drivers/net/virtio_net.c | 13 +++++++------
->   1 file changed, 7 insertions(+), 6 deletions(-)
+>  drivers/gpu/drm/amd/pm/swsmu/smu13/aldebaran_ppt.c | 3 +--
+>  1 file changed, 1 insertion(+), 2 deletions(-)
 >
-> diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
-> index 12512d1002ec..c29f42d1e04f 100644
-> --- a/drivers/net/virtio_net.c
-> +++ b/drivers/net/virtio_net.c
-> @@ -1434,11 +1434,12 @@ static void virtnet_poll_cleantx(struct receive_queue *rq)
->   
->   	if (__netif_tx_trylock(txq)) {
->   		free_old_xmit_skbs(sq, true);
-> +
-> +		if (sq->vq->num_free >= 2 + MAX_SKB_FRAGS)
-> +			netif_tx_wake_queue(txq);
-> +
->   		__netif_tx_unlock(txq);
->   	}
-> -
-> -	if (sq->vq->num_free >= 2 + MAX_SKB_FRAGS)
-> -		netif_tx_wake_queue(txq);
->   }
->   
->   static int virtnet_poll(struct napi_struct *napi, int budget)
-> @@ -1522,6 +1523,9 @@ static int virtnet_poll_tx(struct napi_struct *napi, int budget)
->   	virtqueue_disable_cb(sq->vq);
->   	free_old_xmit_skbs(sq, true);
->   
-> +	if (sq->vq->num_free >= 2 + MAX_SKB_FRAGS)
-> +		netif_tx_wake_queue(txq);
-> +
->   	opaque = virtqueue_enable_cb_prepare(sq->vq);
->   
->   	done = napi_complete_done(napi, 0);
-> @@ -1542,9 +1546,6 @@ static int virtnet_poll_tx(struct napi_struct *napi, int budget)
->   		}
->   	}
->   
-> -	if (sq->vq->num_free >= 2 + MAX_SKB_FRAGS)
-> -		netif_tx_wake_queue(txq);
-> -
->   	return 0;
->   }
->   
-
+> diff --git a/drivers/gpu/drm/amd/pm/swsmu/smu13/aldebaran_ppt.c b/drivers=
+/gpu/drm/amd/pm/swsmu/smu13/aldebaran_ppt.c
+> index d6ce665baaf3b..d077e211017a9 100644
+> --- a/drivers/gpu/drm/amd/pm/swsmu/smu13/aldebaran_ppt.c
+> +++ b/drivers/gpu/drm/amd/pm/swsmu/smu13/aldebaran_ppt.c
+> @@ -1368,10 +1368,9 @@ static int aldebaran_usr_edit_dpm_table(struct smu=
+_context *smu, enum PP_OD_DPM_
+>
+>  static bool aldebaran_is_dpm_running(struct smu_context *smu)
+>  {
+> -       int ret =3D 0;
+>         uint32_t feature_mask[2];
+>         unsigned long feature_enabled;
+> -       ret =3D smu_cmn_get_enabled_mask(smu, feature_mask, 2);
+> +       smu_cmn_get_enabled_mask(smu, feature_mask, 2);
+>         feature_enabled =3D (unsigned long)((uint64_t)feature_mask[0] |
+>                                           ((uint64_t)feature_mask[1] << 3=
+2));
+>         return !!(feature_enabled & SMC_DPM_FEATURE);
+> --
+> 2.31.1
+>
