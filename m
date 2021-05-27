@@ -2,87 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4362D392BB5
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 12:24:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C60C0392BC1
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 12:26:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236106AbhE0K0N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 May 2021 06:26:13 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:51475 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235950AbhE0K0M (ORCPT
+        id S236178AbhE0K1j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 May 2021 06:27:39 -0400
+Received: from twspam01.aspeedtech.com ([211.20.114.71]:60333 "EHLO
+        twspam01.aspeedtech.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236147AbhE0K1c (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 May 2021 06:26:12 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1622111079;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=zD053S+JtGOJd2KF0odlaJPL/U3ZxA8pIk2xD19hKgI=;
-        b=VKNWV6paScZrOr3o0BeE1cEc8WKw/LgdspRofgBtT6kEyuxERsDo1aXfiljDkQCIvMop3r
-        g8zXC240/1eUXj9Tglt2ot1qTz9NJ+zzsV5/Cgn2zQFbZ+2nLFcOicF9nRVxdUE+PTEczq
-        5lssmR9IpU7sOqGDElCFSxFFahmy/h8=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-224-7Fsq34D_OZG0-EbwWi7VfQ-1; Thu, 27 May 2021 06:24:36 -0400
-X-MC-Unique: 7Fsq34D_OZG0-EbwWi7VfQ-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id EEB136D4F0;
-        Thu, 27 May 2021 10:24:34 +0000 (UTC)
-Received: from warthog.procyon.org.uk (ovpn-112-24.rdu2.redhat.com [10.10.112.24])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id E2D425D6D3;
-        Thu, 27 May 2021 10:24:33 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-        Kingdom.
-        Registered in England and Wales under Company Registration No. 3798903
-Subject: [PATCH] afs: Fix the nlink handling of dir-over-dir rename
-From:   David Howells <dhowells@redhat.com>
-To:     torvalds@linux-foundation.org
-Cc:     Marc Dionne <marc.dionne@auristor.com>,
-        linux-afs@lists.infradead.org, dhowells@redhat.com,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-Date:   Thu, 27 May 2021 11:24:33 +0100
-Message-ID: <162211107302.582915.15087790435117657722.stgit@warthog.procyon.org.uk>
-User-Agent: StGit/0.23
+        Thu, 27 May 2021 06:27:32 -0400
+Received: from mail.aspeedtech.com ([192.168.0.24])
+        by twspam01.aspeedtech.com with ESMTP id 14RAC8bC019293;
+        Thu, 27 May 2021 18:12:09 +0800 (GMT-8)
+        (envelope-from jamin_lin@aspeedtech.com)
+Received: from localhost.localdomain (192.168.100.253) by TWMBX02.aspeed.com
+ (192.168.0.24) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Thu, 27 May
+ 2021 18:25:13 +0800
+From:   Jamin Lin <jamin_lin@aspeedtech.com>
+To:     Rob Herring <robh+dt@kernel.org>, Joel Stanley <joel@jms.id.au>,
+        "Andrew Jeffery" <andrew@aj.id.au>,
+        Brendan Higgins <brendanhiggins@google.com>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Rayn Chen <rayn_chen@aspeedtech.com>,
+        "open list:I2C SUBSYSTEM HOST DRIVERS" <linux-i2c@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        "moderated list:ARM/ASPEED MACHINE SUPPORT" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "moderated list:ARM/ASPEED MACHINE SUPPORT" 
+        <linux-aspeed@lists.ozlabs.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        "moderated list:ARM/ASPEED I2C DRIVER" <openbmc@lists.ozlabs.org>
+CC:     <ryan_chen@aspeedtech.com>, <chin-ting_kuo@aspeedtech.com>,
+        <troy_lee@aspeedtech.com>, <steven_lee@aspeedtech.com>
+Subject: [PATCH v2 0/1] dt-bindings-aspeed-i2 Convert to yaml format
+Date:   Thu, 27 May 2021 18:25:04 +0800
+Message-ID: <20210527102512.20684-1-jamin_lin@aspeedtech.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+Content-Type: text/plain
+X-Originating-IP: [192.168.100.253]
+X-ClientProxiedBy: TWMBX02.aspeed.com (192.168.0.24) To TWMBX02.aspeed.com
+ (192.168.0.24)
+X-DNSRBL: 
+X-MAIL: twspam01.aspeedtech.com 14RAC8bC019293
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix rename of one directory over another such that the nlink on the deleted
-directory is cleared to 0 rather than being decremented to 1.
+Change review issue since v1
+1. add multi-master to boolean type property
+2. add maxItems to reset and clock property
 
-This was causing the generic/035 xfstest to fail.
+Jamin Lin (1):
+  dt-bindings: aspeed-i2c: Convert txt to yaml format
 
-Fixes: e49c7b2f6de7 ("afs: Build an abstraction around an "operation" concept")
-Signed-off-by: David Howells <dhowells@redhat.com>
-Reviewed-by: Marc Dionne <marc.dionne@auristor.com>
-cc: linux-afs@lists.infradead.org
-Link: https://lore.kernel.org/r/162194384460.3999479.7605572278074191079.stgit@warthog.procyon.org.uk/ # v1
----
+ .../devicetree/bindings/i2c/aspeed,i2c.yaml   | 86 +++++++++++++++++++
+ .../devicetree/bindings/i2c/i2c-aspeed.txt    | 49 -----------
+ 2 files changed, 86 insertions(+), 49 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/i2c/aspeed,i2c.yaml
+ delete mode 100644 Documentation/devicetree/bindings/i2c/i2c-aspeed.txt
 
- fs/afs/dir.c |    4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
-
-diff --git a/fs/afs/dir.c b/fs/afs/dir.c
-index 9fbe5a5ec9bd..78719f2f567e 100644
---- a/fs/afs/dir.c
-+++ b/fs/afs/dir.c
-@@ -1919,7 +1919,9 @@ static void afs_rename_edit_dir(struct afs_operation *op)
- 	new_inode = d_inode(new_dentry);
- 	if (new_inode) {
- 		spin_lock(&new_inode->i_lock);
--		if (new_inode->i_nlink > 0)
-+		if (S_ISDIR(new_inode->i_mode))
-+			clear_nlink(new_inode);
-+		else if (new_inode->i_nlink > 0)
- 			drop_nlink(new_inode);
- 		spin_unlock(&new_inode->i_lock);
- 	}
-
+-- 
+2.17.1
 
