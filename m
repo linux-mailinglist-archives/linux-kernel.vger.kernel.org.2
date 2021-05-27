@@ -2,272 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8CBB7393420
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 18:38:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B29D9393424
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 18:39:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236445AbhE0Qjo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 May 2021 12:39:44 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59652 "EHLO mail.kernel.org"
+        id S236460AbhE0Qkj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 May 2021 12:40:39 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60516 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234301AbhE0Qjn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 May 2021 12:39:43 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 77A906103E;
-        Thu, 27 May 2021 16:38:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1622133490;
-        bh=vvNzxAIEG+4uJICqCeofDXiAarimtxF9FJNVXhh6BQU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=hFsIiGejymRYK5zkNbdppwXfrFe0eFC7mKV80e8qR1hRFKedpqAQzwgB6T0fRqLVP
-         gDUmsrQHqWQlU8XukMjR2N6pUKoVhlb9fVxHIYhLoit9bCjUjRW0BMZVsRFqYEZI9t
-         lx9KKtI9uvX+MYdgqYW/RUEpP9n4TFHkoqoWY2K0=
-Date:   Thu, 27 May 2021 18:38:07 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Piyush Thange <pthange19@gmail.com>
-Cc:     andreas.noever@gmail.com, michael.jamet@intel.com,
-        mika.westerberg@linux.intel.com, YehezkelShB@gmail.com,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] drivers: thunderbolt: Fixed Coding Style issues
-Message-ID: <YK/K78NOkRK6x+zT@kroah.com>
-References: <20210527160456.28592-1-pthange19@gmail.com>
+        id S234278AbhE0Qke (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 27 May 2021 12:40:34 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 61DF1613AF;
+        Thu, 27 May 2021 16:39:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1622133540;
+        bh=5DJuW/bnBtUHJd7Q3Q7OZvGhMJUl8t5p1TVaOTuL/hg=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=HueSznr3Fu2IQEOByfQwL7tX83bW8Ryg5HdBSrz++Tm7FjPH2ctScG/Nq/RkVZ8D5
+         izO8mIqcIQ3S2LskbH0lCj+XnyXDzyK93cCQ9qYXTP8shcACOUu/pu7Hhe4QeeUBB3
+         80wews3XswhJMcUoKzBslppBq/q5nShlMtWl6FjODW26b0T2k6Ed1lHcIJm4r516Ex
+         VfHUrt1LLnz6vmoZ5Khy2Q8jIoSMELpGLm1XnfkvDBp+kxyp2KWTYttvfRnUfdVThD
+         LQRipXdRu+kqtOOAU1KrKb6QnvuHlpx1MwNn0C882gXjQVdHsfekWSoesWJzolbrrk
+         rc+t2T80Ksovw==
+Received: by mail-ej1-f42.google.com with SMTP id z12so1194444ejw.0;
+        Thu, 27 May 2021 09:39:00 -0700 (PDT)
+X-Gm-Message-State: AOAM532B52BVM57GUQrKsPIKunkLQ+SRw57DGVY0u1k0pPmWQ9TM9HWO
+        TRkCRCPP+ZQMewhQc0cnlv29qzsLY3boeg1x2A==
+X-Google-Smtp-Source: ABdhPJzgsTYwg11aYC8HyZsYl9T+SDJSXVaYrpuLFWrhDtEG2Ds1o4OjLE8O10QD1Y9g+T4o7fNzuzbsW094AbY1T8M=
+X-Received: by 2002:a17:906:7b88:: with SMTP id s8mr365002ejo.525.1622133538969;
+ Thu, 27 May 2021 09:38:58 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210527160456.28592-1-pthange19@gmail.com>
+References: <20210527150541.3130505-1-punitagrawal@gmail.com> <20210527150541.3130505-2-punitagrawal@gmail.com>
+In-Reply-To: <20210527150541.3130505-2-punitagrawal@gmail.com>
+From:   Rob Herring <robh+dt@kernel.org>
+Date:   Thu, 27 May 2021 11:38:46 -0500
+X-Gmail-Original-Message-ID: <CAL_Jsq+Sp_Owe4V4WNh4jnuNJZ5jXxA+j4fW7564oPCy5Lu3ew@mail.gmail.com>
+Message-ID: <CAL_Jsq+Sp_Owe4V4WNh4jnuNJZ5jXxA+j4fW7564oPCy5Lu3ew@mail.gmail.com>
+Subject: Re: [PATCH 1/2] PCI: of: Override 64-bit flag for non-prefetchable
+ memory below 4GB
+To:     Punit Agrawal <punitagrawal@gmail.com>
+Cc:     "open list:ARM/Rockchip SoC..." <linux-rockchip@lists.infradead.org>,
+        PCI <linux-pci@vger.kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Alexandru Elisei <alexandru.elisei@arm.com>, wqu@suse.com,
+        Robin Murphy <robin.murphy@arm.com>,
+        Peter Geis <pgwipeout@gmail.com>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Brian Norris <briannorris@chromium.org>,
+        Shawn Lin <shawn.lin@rock-chips.com>,
+        Bjorn Helgaas <helgaas@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 27, 2021 at 09:34:56PM +0530, Piyush Thange wrote:
-> Fixed coding style issues generated by checkpatch.pl with --strict option.
-> 
-> Signed-off-by: Piyush Thange <pthange19@gmail.com>
+On Thu, May 27, 2021 at 10:06 AM Punit Agrawal <punitagrawal@gmail.com> wrote:
+>
+> Some host bridges advertise non-prefetable memory windows that are
+> entirely located below 4GB but are marked as 64-bit address memory.
+>
+> Since commit 9d57e61bf723 ("of/pci: Add IORESOURCE_MEM_64 to resource
+> flags for 64-bit memory addresses"), the OF PCI range parser takes a
+> stricter view and treats 64-bit address ranges as advertised while
+> before such ranges were treated as 32-bit.
+>
+> A PCI-to-PCI bridges cannot forward 64-bit non-prefetchable memory
+> ranges. As a result, the change in behaviour due to the commit causes
+> allocation failure for devices that are connected behind PCI host
+> bridges modelled as PCI-to-PCI bridge and require non-prefetchable bus
+> addresses.
+>
+> In order to not break platforms, override the 64-bit flag for
+> non-prefetchable memory ranges that lie entirely below 4GB.
+>
+> Suggested-by: Ard Biesheuvel <ardb@kernel.org>
+> Link: https://lore.kernel.org/r/7a1e2ebc-f7d8-8431-d844-41a9c36a8911@arm.com
+> Signed-off-by: Punit Agrawal <punitagrawal@gmail.com>
+> Cc: Bjorn Helgaas <bhelgaas@google.com>
+> Cc: Rob Herring <robh+dt@kernel.org>
 > ---
->  drivers/thunderbolt/switch.c | 43 ++++++++++++++++++++++--------------
->  1 file changed, 27 insertions(+), 16 deletions(-)
-> 
-> diff --git a/drivers/thunderbolt/switch.c b/drivers/thunderbolt/switch.c
-> index e73cd296db7e..921d25590560 100644
-> --- a/drivers/thunderbolt/switch.c
-> +++ b/drivers/thunderbolt/switch.c
-> @@ -148,8 +148,9 @@ static int nvm_validate_and_write(struct tb_switch *sw)
->  		if (sw->generation < 3) {
->  			/* Write CSS headers first */
->  			ret = dma_port_flash_write(sw->dma_port,
-> -				DMA_PORT_CSS_ADDRESS, buf + NVM_CSS,
-> -				DMA_PORT_CSS_MAX_SIZE);
-> +						   DMA_PORT_CSS_ADDRESS,
-> +						   buf + NVM_CSS,
-> +						   DMA_PORT_CSS_MAX_SIZE);
->  			if (ret)
->  				return ret;
->  		}
-> @@ -463,7 +464,7 @@ static const char *tb_port_type(struct tb_regs_port_header *port)
->  {
->  	switch (port->type >> 16) {
->  	case 0:
-> -		switch ((u8) port->type) {
-> +		switch ((u8)port->type) {
->  		case 0:
->  			return "Inactive";
->  		case 1:
-> @@ -513,6 +514,7 @@ int tb_port_state(struct tb_port *port)
->  {
->  	struct tb_cap_phy phy;
->  	int res;
-> +
->  	if (port->cap_phy == 0) {
->  		tb_port_WARN(port, "does not have a PHY\n");
->  		return -EINVAL;
-> @@ -542,6 +544,7 @@ int tb_wait_for_port(struct tb_port *port, bool wait_if_unplugged)
->  {
->  	int retries = 10;
->  	int state;
-> +
->  	if (!port->cap_phy) {
->  		tb_port_WARN(port, "does not have PHY\n");
->  		return -EINVAL;
-> @@ -636,6 +639,7 @@ int tb_port_add_nfc_credits(struct tb_port *port, int credits)
->  int tb_port_clear_counter(struct tb_port *port, int counter)
->  {
->  	u32 zero[3] = { 0, 0, 0 };
-> +
->  	tb_port_dbg(port, "clearing counter %d\n", counter);
->  	return tb_port_write(port, zero, TB_CFG_COUNTERS, 3 * counter, 3);
->  }
-> @@ -748,7 +752,6 @@ static int tb_init_port(struct tb_port *port)
->  
->  	INIT_LIST_HEAD(&port->list);
->  	return 0;
+>  drivers/pci/of.c | 8 ++++++--
+>  1 file changed, 6 insertions(+), 2 deletions(-)
+>
+> diff --git a/drivers/pci/of.c b/drivers/pci/of.c
+> index da5b414d585a..b9d0bee5a088 100644
+> --- a/drivers/pci/of.c
+> +++ b/drivers/pci/of.c
+> @@ -565,10 +565,14 @@ static int pci_parse_request_of_pci_ranges(struct device *dev,
+>                 case IORESOURCE_MEM:
+>                         res_valid |= !(res->flags & IORESOURCE_PREFETCH);
+>
+> -                       if (!(res->flags & IORESOURCE_PREFETCH))
+> +                       if (!(res->flags & IORESOURCE_PREFETCH)) {
+>                                 if (upper_32_bits(resource_size(res)))
+>                                         dev_warn(dev, "Memory resource size exceeds max for 32 bits\n");
+
+Based on Ard's explanation, doesn't this need to also check for
+!IORESOURCE_MEM_64?
+
 > -
->  }
->  
->  static int tb_port_alloc_hopid(struct tb_port *port, bool in, int min_hopid,
-> @@ -830,6 +833,7 @@ static inline bool tb_switch_is_reachable(const struct tb_switch *parent,
->  					  const struct tb_switch *sw)
->  {
->  	u64 mask = (1ULL << parent->config.depth * 8) - 1;
-> +
->  	return (tb_route(parent) & mask) == (tb_route(sw) & mask);
->  }
->  
-> @@ -1132,6 +1136,7 @@ bool tb_pci_port_is_enabled(struct tb_port *port)
->  int tb_pci_port_enable(struct tb_port *port, bool enable)
->  {
->  	u32 word = enable ? ADP_PCIE_CS_0_PE : 0x0;
-> +
->  	if (!port->cap_adap)
->  		return -ENXIO;
->  	return tb_port_write(port, &word, TB_CFG_PORT,
-> @@ -1241,7 +1246,7 @@ int tb_dp_port_enable(struct tb_port *port, bool enable)
->  	int ret;
->  
->  	ret = tb_port_read(port, data, TB_CFG_PORT,
-> -			  port->cap_adap + ADP_DP_CS_0, ARRAY_SIZE(data));
-> +			   port->cap_adap + ADP_DP_CS_0, ARRAY_SIZE(data));
->  	if (ret)
->  		return ret;
->  
-> @@ -1282,9 +1287,9 @@ static void tb_dump_switch(const struct tb *tb, const struct tb_switch *sw)
->  	tb_dbg(tb, "  Max Port Number: %d\n", regs->max_port_number);
->  	tb_dbg(tb, "  Config:\n");
->  	tb_dbg(tb,
-> -		"   Upstream Port Number: %d Depth: %d Route String: %#llx Enabled: %d, PlugEventsDelay: %dms\n",
-> +	       "   Upstream Port Number: %d Depth: %d Route String: %#llx Enabled: %d, PlugEventsDelay: %dms\n",
->  	       regs->upstream_port_number, regs->depth,
-> -	       (((u64) regs->route_hi) << 32) | regs->route_lo,
-> +	       (((u64)regs->route_hi) << 32) | regs->route_lo,
->  	       regs->enabled, regs->plug_events_delay);
->  	tb_dbg(tb, "   unknown1: %#x unknown4: %#x\n",
->  	       regs->__unknown1, regs->__unknown4);
-> @@ -1305,7 +1310,7 @@ int tb_switch_reset(struct tb_switch *sw)
->  
->  	tb_sw_dbg(sw, "resetting switch\n");
->  
-> -	res.err = tb_sw_write(sw, ((u32 *) &sw->config) + 2,
-> +	res.err = tb_sw_write(sw, ((u32 *)&sw->config) + 2,
->  			      TB_CFG_SWITCH, 2, 2);
->  	if (res.err)
->  		return res.err;
-> @@ -1331,7 +1336,7 @@ static int tb_plug_events_active(struct tb_switch *sw, bool active)
->  		return 0;
->  
->  	sw->config.plug_events_delay = 0xff;
-> -	res = tb_sw_write(sw, ((u32 *) &sw->config) + 4, TB_CFG_SWITCH, 4, 1);
-> +	res = tb_sw_write(sw, ((u32 *)&sw->config) + 4, TB_CFG_SWITCH, 4, 1);
->  	if (res)
->  		return res;
->  
-> @@ -1579,7 +1584,7 @@ static DEVICE_ATTR(rx_lanes, 0444, lanes_show, NULL);
->  static DEVICE_ATTR(tx_lanes, 0444, lanes_show, NULL);
->  
->  static ssize_t nvm_authenticate_show(struct device *dev,
-> -	struct device_attribute *attr, char *buf)
-> +				     struct device_attribute *attr, char *buf)
->  {
->  	struct tb_switch *sw = tb_to_switch(dev);
->  	u32 status;
-> @@ -1646,9 +1651,12 @@ static ssize_t nvm_authenticate_sysfs(struct device *dev, const char *buf,
->  }
->  
->  static ssize_t nvm_authenticate_store(struct device *dev,
-> -	struct device_attribute *attr, const char *buf, size_t count)
-> +				      struct device_attribute *attr,
-> +				      const char *buf,
-> +				      size_t count)
->  {
->  	int ret = nvm_authenticate_sysfs(dev, buf, false);
-> +
->  	if (ret)
->  		return ret;
->  	return count;
-> @@ -1656,13 +1664,16 @@ static ssize_t nvm_authenticate_store(struct device *dev,
->  static DEVICE_ATTR_RW(nvm_authenticate);
->  
->  static ssize_t nvm_authenticate_on_disconnect_show(struct device *dev,
-> -	struct device_attribute *attr, char *buf)
-> +						   struct device_attribute *attr,
-> +						   char *buf)
->  {
->  	return nvm_authenticate_show(dev, attr, buf);
->  }
->  
->  static ssize_t nvm_authenticate_on_disconnect_store(struct device *dev,
-> -	struct device_attribute *attr, const char *buf, size_t count)
-> +						    struct device_attribute *attr,
-> +						    const char *buf,
-> +						    size_t count)
->  {
->  	int ret;
->  
-> @@ -1859,7 +1870,7 @@ static int tb_switch_uevent(struct device *dev, struct kobj_uevent_env *env)
->  		/* Device is hub if it has any downstream ports */
->  		tb_switch_for_each_port(sw, port) {
->  			if (!port->disabled && !tb_is_upstream_port(port) &&
-> -			     tb_port_is_null(port)) {
-> +			    tb_port_is_null(port)) {
->  				hub = true;
->  				break;
->  			}
-> @@ -2032,7 +2043,7 @@ struct tb_switch *tb_switch_alloc(struct tb *tb, struct device *parent,
->  
->  	/* initialize ports */
->  	sw->ports = kcalloc(sw->config.max_port_number + 1, sizeof(*sw->ports),
-> -				GFP_KERNEL);
-> +			    GFP_KERNEL);
->  	if (!sw->ports) {
->  		ret = -ENOMEM;
->  		goto err_free_sw_ports;
-> @@ -2754,7 +2765,7 @@ int tb_switch_resume(struct tb_switch *sw)
->  		}
->  		if (sw->uid != uid) {
->  			tb_sw_info(sw,
-> -				"changed while suspended (uid %#llx -> %#llx)\n",
-> +				   "changed while suspended (uid %#llx -> %#llx)\n",
->  				sw->uid, uid);
->  			return -ENODEV;
->  		}
-> -- 
-> 2.25.1
-> 
+> +                               if ((res->flags & IORESOURCE_MEM_64) && !upper_32_bits(res->end)) {
 
-Hi,
+res->end is the CPU address space. Isn't it the PCI address space we care about?
 
-This is the friendly patch-bot of Greg Kroah-Hartman.  You have sent him
-a patch that has triggered this response.  He used to manually respond
-to these common problems, but in order to save his sanity (he kept
-writing the same thing over and over, yet to different people), I was
-created.  Hopefully you will not take offence and will fix the problem
-in your patch and resubmit it so that it can be accepted into the Linux
-kernel tree.
-
-You are receiving this message because of the following common error(s)
-as indicated below:
-
-- Your patch did many different things all at once, making it difficult
-  to review.  All Linux kernel patches need to only do one thing at a
-  time.  If you need to do multiple things (such as clean up all coding
-  style issues in a file/driver), do it in a sequence of patches, each
-  one doing only one thing.  This will make it easier to review the
-  patches to ensure that they are correct, and to help alleviate any
-  merge issues that larger patches can cause.
-
-- You did not specify a description of why the patch is needed, or
-  possibly, any description at all, in the email body.  Please read the
-  section entitled "The canonical patch format" in the kernel file,
-  Documentation/SubmittingPatches for what is needed in order to
-  properly describe the change.
-
-- You did not write a descriptive Subject: for the patch, allowing Greg,
-  and everyone else, to know what this patch is all about.  Please read
-  the section entitled "The canonical patch format" in the kernel file,
-  Documentation/SubmittingPatches for what a proper Subject: line should
-  look like.
-
-If you wish to discuss this problem further, or you have questions about
-how to resolve this issue, please feel free to respond to this email and
-Greg will reply once he has dug out from the pending patches received
-from other developers.
-
-thanks,
-
-greg k-h's patch email bot
+> +                                       dev_warn(dev, "Overriding 64-bit flag for non-prefetchable memory below 4GB\n");
+> +                                       res->flags &= ~IORESOURCE_MEM_64;
+> +                               }
+> +                       }
+>                         break;
+>                 }
+>         }
+> --
+> 2.30.2
+>
