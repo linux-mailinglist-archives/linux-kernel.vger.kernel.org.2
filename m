@@ -2,58 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 550ED392F20
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 15:07:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C113392F24
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 15:08:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236377AbhE0NIq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 May 2021 09:08:46 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38028 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236238AbhE0NIl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 May 2021 09:08:41 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4614C610CE;
-        Thu, 27 May 2021 13:07:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1622120827;
-        bh=01dJwNd6qp1AexQopdVxCxmr7y+a68LvCvjlNexTFFM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=R4E9PzeIZ05ne7FDPOIRY3FCNvgzv/dy7MBtRa97zkVmcH2hfXEWg6JYOZQXFv0Cf
-         4Eu8HztGVVIBjT+5AYDn+IyRzymPF2/l7a/7A+ZkH9pihOnkFtE+y3YqrUy+Cb4LrU
-         2epBAWeVnsx592PyW8GBwx0Ys96nH1Q/yJ96k/Dk=
-Date:   Thu, 27 May 2021 15:07:05 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Georgi Djakov <djakov@kernel.org>
-Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        georgi.djakov@linaro.org
-Subject: Re: [GIT PULL] interconnect fixes for 5.13-rc
-Message-ID: <YK+ZeXvAnL2FK+Bu@kroah.com>
-References: <20210527122255.31418-1-djakov@kernel.org>
+        id S236368AbhE0NJz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 May 2021 09:09:55 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:56516 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S236099AbhE0NJy (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 27 May 2021 09:09:54 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1622120901;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=4/m/R0Y4SSIGq3cr+IGc7ZzV74IkxCMTJe5tIS2RfzU=;
+        b=XXUmJg3jLndO20IXS1mRnVgF6AYkONe8yQVabD+tZG33FRwJdZor/jjDthuAjWhfHKaUrT
+        0U19SwbvmrwO3QsjD66C/yUGt4VLWOTR3ha81r74jED4GMbxf70lvOrv5xzJVbDk+UMqOt
+        h+J1D+TIhoE1TKTH7Lok9KlWvuKhca8=
+Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
+ [209.85.208.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-7-IcwN-RyKO06MSQWTq_u6OQ-1; Thu, 27 May 2021 09:08:17 -0400
+X-MC-Unique: IcwN-RyKO06MSQWTq_u6OQ-1
+Received: by mail-ed1-f71.google.com with SMTP id v18-20020a0564023492b029038d5ad7c8a8so282753edc.11
+        for <linux-kernel@vger.kernel.org>; Thu, 27 May 2021 06:08:17 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:to:cc:references:from:subject:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=4/m/R0Y4SSIGq3cr+IGc7ZzV74IkxCMTJe5tIS2RfzU=;
+        b=iCylU604sXlpoVyzlQL2hpwJeQ4RDC+J1/iy7mxg5JFTKu6W8qY2y1wDcBv/mJ1FFA
+         wtqgqctpOxjz7Z1IutzDOf9sxaYAQYyVb6FJXsrLfsaysZknosvZBDJhWxDViG/PNoQa
+         ZlVglJes6R2D/kPwO5H7yxDGPRqoQzFpWXlfRfgBoK1J7kCT4GNP5HMjDRCVgiSpsLl7
+         4+KH4GDeXLaNYiRU4WjgaiSljvZl5fmT+62ykx4a3IyflEhpYFgr+JQkNbo+Bs+MOLND
+         rH3KnQ7ZBlHy6EpruOn3fxU/WuMEh6rKmGMgxIS9GVdIY1tRlCoSYdBE5FFgo6zYCXXK
+         /m0Q==
+X-Gm-Message-State: AOAM532iAhfBC3+tXfbzUJKSKv2McXmwNHma6ITLgQhNWfa6VTUl2/+x
+        O6JOrWrD0wWuMrehw9vdO7FnJspNnAqadeBuDN7Z7H7t24imb26pO9dT44nMAS6saXWsp/92yGQ
+        qSb8LVeXRDJLcRgGVdbX3iZdN
+X-Received: by 2002:a05:6402:268f:: with SMTP id w15mr3915294edd.321.1622120896106;
+        Thu, 27 May 2021 06:08:16 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwbFOvAXWs89cDDtIzzw6gRGYvp7A0dnMp3IKHJUpfq+3OyEwsfxK65t5dXbkPwYYGx4PKWQg==
+X-Received: by 2002:a05:6402:268f:: with SMTP id w15mr3915270edd.321.1622120895958;
+        Thu, 27 May 2021 06:08:15 -0700 (PDT)
+Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
+        by smtp.gmail.com with ESMTPSA id y23sm1063513eds.60.2021.05.27.06.08.14
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 27 May 2021 06:08:15 -0700 (PDT)
+To:     "Stamatis, Ilias" <ilstam@amazon.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>
+Cc:     "jmattson@google.com" <jmattson@google.com>,
+        "Woodhouse, David" <dwmw@amazon.co.uk>,
+        "vkuznets@redhat.com" <vkuznets@redhat.com>,
+        "joro@8bytes.org" <joro@8bytes.org>,
+        "mtosatti@redhat.com" <mtosatti@redhat.com>,
+        "zamsden@gmail.com" <zamsden@gmail.com>,
+        "seanjc@google.com" <seanjc@google.com>,
+        "mlevitsk@redhat.com" <mlevitsk@redhat.com>,
+        "wanpengli@tencent.com" <wanpengli@tencent.com>
+References: <20210526184418.28881-1-ilstam@amazon.com>
+ <20210526184418.28881-10-ilstam@amazon.com>
+ <faa225b3b7518feea7df0ee69d6bf386a04824dc.camel@amazon.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Subject: Re: [PATCH v4 09/11] KVM: X86: Add vendor callbacks for writing the
+ TSC multiplier
+Message-ID: <9e971115-5634-e64e-72b6-5e41c024c796@redhat.com>
+Date:   Thu, 27 May 2021 15:08:13 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210527122255.31418-1-djakov@kernel.org>
+In-Reply-To: <faa225b3b7518feea7df0ee69d6bf386a04824dc.camel@amazon.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 27, 2021 at 03:22:55PM +0300, Georgi Djakov wrote:
-> Hello Greg,
-> 
-> This pull request contains a few tiny interconnect driver fixes for 5.13-rc.
-> The details are in the signed tag. Please pull them into char-misc-linus
-> when possible. The patches have been in linux-next for more than two weeks.
-> 
-> Thanks,
-> Georgi
-> 
-> The following changes since commit 6efb943b8616ec53a5e444193dccf1af9ad627b5:
-> 
->   Linux 5.13-rc1 (2021-05-09 14:17:44 -0700)
-> 
-> are available in the Git repository at:
-> 
->   git://git.kernel.org/pub/scm/linux/kernel/git/djakov/icc.git tags/icc-5.13-rc4
+On 27/05/21 10:33, Stamatis, Ilias wrote:
+>>   #ifdef CONFIG_X86_64
+>> @@ -10444,6 +10461,7 @@ void kvm_arch_vcpu_postcreate(struct kvm_vcpu *vcpu)
+>>   		return;
+>>   	vcpu_load(vcpu);
+>>   	kvm_synchronize_tsc(vcpu, 0);
+>> +	kvm_vcpu_write_tsc_multiplier(vcpu, kvm_default_tsc_scaling_ratio);
+> Hmm, I'm actually thinking now that this might not be correct. For example in
+> case we hotplug a new vCPU but the other vCPUs don't use the default ratio.
 
-Pulled and pushed out, thanks.
+It is correct, the TSC frequency can be set per CPU (which is useless 
+except possibly for debugging OS timekeeping, but still).  So, the 
+default kHz after hotplug is the host frequency.
 
-greg k-h
+It doesn't really matter because it only affects the fixed delta between 
+the hotplugged CPU and the others as soon as userspace sets the 
+frequency to the correct value.
+
+Paolo
+
