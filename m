@@ -2,116 +2,206 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F4151393400
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 18:32:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C32BB393404
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 18:32:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236144AbhE0Qdj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 May 2021 12:33:39 -0400
-Received: from heliosphere.sirena.org.uk ([172.104.155.198]:46222 "EHLO
-        heliosphere.sirena.org.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234897AbhE0Qdg (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 May 2021 12:33:36 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=sirena.org.uk; s=20170815-heliosphere; h=In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=dvDMkkVrI/aL8/9zlFpGlf5BX/Y4vnasiRl8zBV01Rg=; b=ibgQzFbvurX4a3pmdFnasmxTUB
-        zxznUDmF8AKBM0kNwoN0CvmocxlLrW3Zx6vZPTBznHOOVYISSHT4P4B6tAaCxNBvaDda0qAWDHsEO
-        YxUI8NNACLRW5ksdQh304QKpX8liLZUKiXK+35wcQg4AZPPr7Yt/G/fuOR2pIgiI0Dks=;
-Received: from 94.196.90.140.threembb.co.uk ([94.196.90.140] helo=fitzroy.sirena.org.uk)
-        by heliosphere.sirena.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.94.2)
-        (envelope-from <broonie@sirena.org.uk>)
-        id 1lmIvQ-006S0w-BQ; Thu, 27 May 2021 16:32:01 +0000
-Received: by fitzroy.sirena.org.uk (Postfix, from userid 1000)
-        id AC688D0EA1A; Thu, 27 May 2021 17:31:57 +0100 (BST)
-Date:   Thu, 27 May 2021 17:31:57 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Phillip Potter <phil@philpotter.co.uk>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 55/69] ASoC: rt5645: add error checking to rt5645_probe
- function
-Message-ID: <YK/JfeMt9j9z+40Q@sirena.org.uk>
-References: <20210503115736.2104747-1-gregkh@linuxfoundation.org>
- <20210503115736.2104747-56-gregkh@linuxfoundation.org>
- <YK1uZdtgffiCnUVQ@sirena.org.uk>
- <YK1z6AlOAMxYCh75@equinox>
+        id S236232AbhE0Qdq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 May 2021 12:33:46 -0400
+Received: from mail-mw2nam10on2067.outbound.protection.outlook.com ([40.107.94.67]:58016
+        "EHLO NAM10-MW2-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S236172AbhE0Qdo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 27 May 2021 12:33:44 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=L0EXOuzHfeW8Iat9tH7IYa4viwaQRqAxRiTx6Pf5tPuTZBl6QWNpdRazjP/9ydPI0Pkw9hrvK6cBbTZPDjFFIU6g63P9eOsI3BPOcE90GkpneynOBtwqw+F2Jk7Q62LYhTq144ENp0lk7Nfd81gQXjEsdadtR6Qv+9/NTVS25yRC2vqPAXpIFP9aTIjJdfyPYz3f3PvBqQ4BWkAm93eSGIcLepZlkKpLA6BlTj7TYzuRd3cOrNcrG6cIWyZpv69hLR2TnEnD085EORKuHcd7EZSJwsFAXipoqnqxM/kdaN2An+I9U+LLyJO7a9nsXqLJqdziAHgbZ12kRdC+a+byLA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Q45R70SZ4GNbGD0yl6IMD+eivKNAhgiOmhZWzOMDiKM=;
+ b=b71QOtg/qgOOp3s4MYD1PZ4Q0gYjwloXnONbLFzLs5XFy+vmICGhm9dXZNEDKsRfSL8jjYPveExNaOfi92dXuYHAsmMAeWb83ShugjLHX//H7MZvdOr4MJFQ633VQbgEudYI8PElYsJpOjg9UI92SSx1W+08eEQN1ZDfuZihLzVgIfz/Vg/uX/Hyk8HIhZnXQ+v3u79eEw3k06YJ9mhXy/PuzX58pHMC8iUy6ppAPE9PCitxQiW3HHIPhIBgl6PlWEd3xmmiq1rdDs+3qfeFJpGdb2mC0g25lSdv1uWH0fIoJoiYzkuCaST0YWRJoOGk0fKhDurej+TrTjcUy66lhA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Q45R70SZ4GNbGD0yl6IMD+eivKNAhgiOmhZWzOMDiKM=;
+ b=g/d9DN9EYyUlZgOsqqs0xcYYISoNY4012McHrOuqNSyIGphFMQCt3rbkv8VwaK5XWjqOd72J5TnTn2HRYIGCZfYh4XjjY4WheSNsveTzV+TfOSIMjL/E7UD9YRAqprBxnIBkGso/CDuxyF0/kXvuN5Ivac6y6J2FCUDG0kbHgZI=
+Authentication-Results: linux.intel.com; dkim=none (message not signed)
+ header.d=none;linux.intel.com; dmarc=none action=none header.from=amd.com;
+Received: from DM5PR12MB1355.namprd12.prod.outlook.com (2603:10b6:3:6e::7) by
+ DM5PR12MB2504.namprd12.prod.outlook.com (2603:10b6:4:b5::19) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.4150.23; Thu, 27 May 2021 16:32:07 +0000
+Received: from DM5PR12MB1355.namprd12.prod.outlook.com
+ ([fe80::b914:4704:ad6f:aba9]) by DM5PR12MB1355.namprd12.prod.outlook.com
+ ([fe80::b914:4704:ad6f:aba9%12]) with mapi id 15.20.4173.022; Thu, 27 May
+ 2021 16:32:07 +0000
+Subject: Re: [PATCH v7 01/15] swiotlb: Refactor swiotlb init functions
+From:   Tom Lendacky <thomas.lendacky@amd.com>
+To:     Christoph Hellwig <hch@lst.de>,
+        Florian Fainelli <f.fainelli@gmail.com>
+Cc:     Claire Chang <tientzu@chromium.org>,
+        Rob Herring <robh+dt@kernel.org>, mpe@ellerman.id.au,
+        Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
+        boris.ostrovsky@oracle.com, jgross@suse.com,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        benh@kernel.crashing.org, paulus@samba.org,
+        "list@263.net:IOMMU DRIVERS" <iommu@lists.linux-foundation.org>,
+        sstabellini@kernel.org, Robin Murphy <robin.murphy@arm.com>,
+        grant.likely@arm.com, xypron.glpk@gmx.de,
+        Thierry Reding <treding@nvidia.com>, mingo@kernel.org,
+        bauerman@linux.ibm.com, peterz@infradead.org,
+        Greg KH <gregkh@linuxfoundation.org>,
+        Saravana Kannan <saravanak@google.com>,
+        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
+        heikki.krogerus@linux.intel.com,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        linux-devicetree <devicetree@vger.kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        linuxppc-dev@lists.ozlabs.org, xen-devel@lists.xenproject.org,
+        Nicolas Boichat <drinkcat@chromium.org>,
+        Jim Quinlan <james.quinlan@broadcom.com>, tfiga@chromium.org,
+        bskeggs@redhat.com, bhelgaas@google.com, chris@chris-wilson.co.uk,
+        daniel@ffwll.ch, airlied@linux.ie, dri-devel@lists.freedesktop.org,
+        intel-gfx@lists.freedesktop.org, jani.nikula@linux.intel.com,
+        jxgao@google.com, joonas.lahtinen@linux.intel.com,
+        linux-pci@vger.kernel.org, maarten.lankhorst@linux.intel.com,
+        matthew.auld@intel.com, rodrigo.vivi@intel.com,
+        thomas.hellstrom@linux.intel.com
+References: <20210518064215.2856977-1-tientzu@chromium.org>
+ <20210518064215.2856977-2-tientzu@chromium.org>
+ <170a54f2-be20-ec29-1d7f-3388e5f928c6@gmail.com>
+ <20210527130211.GA24344@lst.de>
+ <bab261b4-f801-05af-8fd9-c440ed219591@amd.com>
+Message-ID: <e59d4799-a6ff-6d13-0fed-087fc3482587@amd.com>
+Date:   Thu, 27 May 2021 11:32:01 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
+In-Reply-To: <bab261b4-f801-05af-8fd9-c440ed219591@amd.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [67.79.209.213]
+X-ClientProxiedBy: SN7P220CA0025.NAMP220.PROD.OUTLOOK.COM
+ (2603:10b6:806:123::30) To DM5PR12MB1355.namprd12.prod.outlook.com
+ (2603:10b6:3:6e::7)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="oYNRd8n5UUXjY5O4"
-Content-Disposition: inline
-In-Reply-To: <YK1z6AlOAMxYCh75@equinox>
-X-Cookie: A penny saved has not been spent.
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from office-linux.texastahm.com (67.79.209.213) by SN7P220CA0025.NAMP220.PROD.OUTLOOK.COM (2603:10b6:806:123::30) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4173.20 via Frontend Transport; Thu, 27 May 2021 16:32:03 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: ff9c356c-975c-4f82-7c16-08d9212cf790
+X-MS-TrafficTypeDiagnostic: DM5PR12MB2504:
+X-Microsoft-Antispam-PRVS: <DM5PR12MB250437DEE02CE4B6ED65D870EC239@DM5PR12MB2504.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:8882;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: FcGVaNUqWOacS4qyh3m/JN7k7/837FC8duYo0XVAJJd5k+WqoYLcoTR+CTvv8QEbyCZD/Z99yKW0kAO/XRRI76AF8ViBY7bKdBH3JWMeXgSYWuMNv8muI7pDCgCBAxpmWG89Hq/oD84DLTSFpgo7HqLuM/2mDEQUfE6/aGa1Q/mXdIALomEgUe0Xgf0ngsouf2bB533WVY1G2z89gYG2RtOfOu1QxzLU49yHRZJDEtwlCcLbmgYoLQdbPBISX+FoYH6zpn/l20UKvHeIxwim2wqN8iWydRQNAyFZc4jSwJGbg0cwBZY1maWQN0Po81sVGfMdNxrGtRXK+T/DGKXUvvZ0Gv3fRxThTXv3I5LeRx5wIIQ2/w/WfQwsIViUT3x/+A3k9ookLYdS8i+qbGEMpvTmHRo9Xa3cjHUXCjY4lS8YypbGSN2F5vKIo8MiexdPG1Q7ppDLRW1WZeGiRYY1EN1iE6lmwlICHca8PKDTmzcSc5LOpVaJx4MZ+EJdDGNLqsp6Kl/qrCErsXsy3WgG8QiaDkspb8J1sguRu/u/MAqKN1VLkgztc/Ar3wDwSPKMuImq3UJILi3oL2YUKwaoi4e+DvhFDTXmBtInykztacIVUheNAJl44l/pXBLmcpbwcCiQU9wj6iOMaWKkenoslOi4QhEkeWzwPrSiIB3ABRovYX+gkMWut/H8L4c2FRYl
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM5PR12MB1355.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(366004)(136003)(346002)(376002)(39860400002)(86362001)(54906003)(31696002)(110136005)(66946007)(4326008)(5660300002)(7416002)(6512007)(45080400002)(478600001)(31686004)(66556008)(2906002)(7366002)(316002)(956004)(2616005)(66476007)(8936002)(7406005)(36756003)(8676002)(6486002)(83380400001)(186003)(6506007)(38100700002)(26005)(53546011)(16526019)(43740500002)(45980500001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?TUpkeGdMc1lLRmhsNm55LzRZYkp1WlhZQjluUXU0SENsK21aRHg1Y3NaQm1q?=
+ =?utf-8?B?ZXRkb0NrUXNRM2FWL3l3UFFwNno2TXJRcFZ2M2ZGazNnS0RjaEpvS29ycnZQ?=
+ =?utf-8?B?cUFtMUQvQ3RZbnJQdEtmdXg5SkZpL2hJdmloV3V0UXNrdFJUQ3F4dTh4KzQ0?=
+ =?utf-8?B?QnU0LzVzL1NiSzcxZjNWbHllM2hNdHlMblRkMUUwdkxOT01JS2ZiZWMwMXZ6?=
+ =?utf-8?B?OEwwWmNtd01EYjQ4SnZNKzNtcWZnTDFiRTYzam5yYS9Jei9FcGl0WkdCZzQ4?=
+ =?utf-8?B?Ulg3QjNnb2V3V2JBNzVya2tVWDg1NFEvZ0JEdC8vajVvQ0wxZ2hrb2V5MHRF?=
+ =?utf-8?B?K3RWVi9PUXE4UkxlSGhLOFAwRFdoa3lCbEhzbXBKR2wrT1kvQ1I5TUNQdUJi?=
+ =?utf-8?B?TWRhUEkwNHJSVXh5bU1DQk1aRGdrSllDUnJDOVpjZkdRUGY2NDNOQVNBa0E3?=
+ =?utf-8?B?RVdNM1QvWmVMWDdtak43bytsQ1BDL2J6UWQrRTdtVmdFS2oyMUdPWVFLa2VH?=
+ =?utf-8?B?THMxV3ZzR1BNbTNSOVdwTkhKeWxja0lFMnQwMWZoK1pGVmZNV0tNdm82YUZX?=
+ =?utf-8?B?MFJZalRUNXc2aDNKSzNQK0wxR1UrS2ZlaTYrMFFDSmhNTlFPaDF5VmdGZU9y?=
+ =?utf-8?B?TzAyS1IzT1RYRklRQmVHbnArdGRScEt3UCs5OVAxanlDMHhDTTVQUUlTZXZD?=
+ =?utf-8?B?T2FkM0NHcmIrVUdkY0tJR25ONjl0QmhlUjR4ME5XY1hPaUo0b1hZd20rb2RB?=
+ =?utf-8?B?OHFGRkpBanlNZ2RWaHI2a1lIcm11Wks2S0V4a2pHaHlYMjR2bWdVakR2ajdK?=
+ =?utf-8?B?ajFjL05jQTdzdHkzTkNEOVpYbXltcFM3ZlN3WDRrYVdNTHhtVWtqY2I4dzd6?=
+ =?utf-8?B?dGowa1k3b3RLZjFwNkkrd3JZWjh0c2ZpUEpiQzZKQXdWL1REUURQL3l6ckxj?=
+ =?utf-8?B?TGVtNURpb0JNS0NmM2NPRW5DS1FNMG1PY0NSUVdaWHV0ek5aenRrSHNNSVhC?=
+ =?utf-8?B?YnlxUituYmtEbjBUcHhtSGJhTXduS2x6RFgvcTlZNmZKdDZqcnROQmFLZWk5?=
+ =?utf-8?B?ZG5GRGhWdG94dSsvaE9uOFBUa0ZWWUU3YXJGWW8yaFo1RHNlOW5uU0N4MUxR?=
+ =?utf-8?B?VkFGMFkwdzRKTFZPZmkydVI5b1hIZnR1Q2ZvUlB6V2xCQWNxLy84alFwQk93?=
+ =?utf-8?B?Zm93Rk5FcWlvekJyeWpxYWFZVU1GRnJQUnViOTNaN2FtZzhBaXVXcU9wRzk4?=
+ =?utf-8?B?Mmd4TXZhUTREYUdZN1NDVjl2QUIzeEM4dlVVSlhicVZ5SDJuTFkwZkVYTEVq?=
+ =?utf-8?B?L25KZ1dSbllXUEk5WXltY0lPcGw2eW4vYkJocm1VaWh1RENkUEhrVU5YUUhM?=
+ =?utf-8?B?Smx5NmY1NHZTWC9BTkdTNmlHWDM5QzVZL1lYOEZidU1Zak8zMVZUSC90amJl?=
+ =?utf-8?B?Tk94T2QzOHM4L1BCalMyVStGSy9XaVdiWkc4NXlCLzlpT0ZXOHRzT0F6V2VT?=
+ =?utf-8?B?bWNyNE00c0V1RStvK053clZFSmYyZ1JzMjhwSE8yR3BYMm5tNWRzYWVtSTd2?=
+ =?utf-8?B?aDZVcUlGbHdoYld1VTk3ZEFtTWJzVE9FNkc3Rjd6MWIzMVFPekFQUXdiSm5K?=
+ =?utf-8?B?eTZrU3hzbXFDWGJzckZrNGhqV2RFRTZQVWJQeVcxaWZGNGI5TUZWRUlBREtt?=
+ =?utf-8?B?ZzU0RGN0Skprd3ExU1NTMjZDaGtzMUdEeHphR054NWpFVlozK0FsOGxiRCtR?=
+ =?utf-8?Q?qfedf2phVVGR5NGp69NYP3DhJAKJa9XLDzqnT+9?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: ff9c356c-975c-4f82-7c16-08d9212cf790
+X-MS-Exchange-CrossTenant-AuthSource: DM5PR12MB1355.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 27 May 2021 16:32:06.8243
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: QJS6bIZ0vjGRb0nzhcqirX3WEUS9JFIjV74y0C7suMUncSWyTzMsKQx1kkXffQS7NpGhfRw3Qzl5gmec0Rv+Pg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM5PR12MB2504
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 5/27/21 9:41 AM, Tom Lendacky wrote:
+> On 5/27/21 8:02 AM, Christoph Hellwig wrote:
+>> On Wed, May 19, 2021 at 11:50:07AM -0700, Florian Fainelli wrote:
+>>> You convert this call site with swiotlb_init_io_tlb_mem() which did not
+>>> do the set_memory_decrypted()+memset(). Is this okay or should
+>>> swiotlb_init_io_tlb_mem() add an additional argument to do this
+>>> conditionally?
+>>
+>> The zeroing is useful and was missing before.  I think having a clean
+>> state here is the right thing.
+>>
+>> Not sure about the set_memory_decrypted, swiotlb_update_mem_attributes
+>> kinda suggests it is too early to set the memory decrupted.
+>>
+>> Adding Tom who should now about all this.
+> 
+> The reason for adding swiotlb_update_mem_attributes() was because having
+> the call to set_memory_decrypted() in swiotlb_init_with_tbl() triggered a
+> BUG_ON() related to interrupts not being enabled yet during boot. So that
+> call had to be delayed until interrupts were enabled.
 
---oYNRd8n5UUXjY5O4
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+I pulled down and tested the patch set and booted with SME enabled. The
+following was seen during the boot:
 
-On Tue, May 25, 2021 at 11:02:16PM +0100, Phillip Potter wrote:
-> On Tue, May 25, 2021 at 10:38:45PM +0100, Mark Brown wrote:
+[    0.134184] BUG: Bad page state in process swapper  pfn:108002
+[    0.134196] page:(____ptrval____) refcount:0 mapcount:-128 mapping:0000000000000000 index:0x0 pfn:0x108002
+[    0.134201] flags: 0x17ffffc0000000(node=0|zone=2|lastcpupid=0x1fffff)
+[    0.134208] raw: 0017ffffc0000000 ffff88847f355e28 ffff88847f355e28 0000000000000000
+[    0.134210] raw: 0000000000000000 0000000000000001 00000000ffffff7f 0000000000000000
+[    0.134212] page dumped because: nonzero mapcount
+[    0.134213] Modules linked in:
+[    0.134218] CPU: 0 PID: 0 Comm: swapper Not tainted 5.13.0-rc2-sos-custom #3
+[    0.134221] Hardware name: ...
+[    0.134224] Call Trace:
+[    0.134233]  dump_stack+0x76/0x94
+[    0.134244]  bad_page+0xa6/0xf0
+[    0.134252]  __free_pages_ok+0x331/0x360
+[    0.134256]  memblock_free_all+0x158/0x1c1
+[    0.134267]  mem_init+0x1f/0x14c
+[    0.134273]  start_kernel+0x290/0x574
+[    0.134279]  secondary_startup_64_no_verify+0xb0/0xbb
 
-> > Phillip, please follow the standard patch submission process,
-> > this is documented in submitting-paches.rst in the kernel tree.
-> > In particular please make sure that you copy the relevant
+I see this about 40 times during the boot, each with a different PFN. The
+system boots (which seemed odd), but I don't know if there will be side
+effects to this (I didn't stress the system).
 
-> This patch was submitted to a closed mentoring group as part of the
-> University of Minnesota reversion/checking process. I was not
-> responsible for the final send out to the public mailing lists etc. as
-> the patches were collated first and sent out together en masse.
+I modified the code to add a flag to not do the set_memory_decrypted(), as
+suggested by Florian, when invoked from swiotlb_init_with_tbl(), and that
+eliminated the bad page state BUG.
 
-OK, this is really unfortunate.
+Thanks,
+Tom
 
-> > This comment is not accurate, rt5645_remove() just resets the
-> > hardware - it's not going to clean up anything to do with any of
-> > the branches to error you've got above.  The core *will* clean up
-
-> My comment was adjusted after submission for brevity's sake. This was
-> what I originally wrote:
->  /*
->   * All of the above is cleaned up when we return an error here, as
->   * the caller will notice the error and invoke rt5645_remove and
->   * other cleanup routines, as it does for the snd_soc_dapm_* calls
->   * above as well.
->   */
-> Happy to resubmit/rewrite as needed? Based on what you've written
-> though it may be better to drop the patch?
-
-That is a lot better yes, it accurately reflects what was going
-on - the review definitely wasn't helping here.
-
-> > Also I'm guessing this was done purely through inspection rather
-> > than the code having been tested?  If there was a problem seen at
-> > runtime this isn't fixing it, TBH I'm more than a little dubious
-
-> Yes, that's correct - I did not test this directly other than making
-> sure it builds, as I don't have this hardware to test with.=20
-
-OK, in that case it's going to be safer to just drop the change,
-it's probably not going to cause any actual problems but it's
-certainly not something that should go in as a hurried fix.
-
---oYNRd8n5UUXjY5O4
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmCvyXwACgkQJNaLcl1U
-h9CaPQf/dZpP6aPFUNxUHEFxOiW9U3mdS8RvjA8WvGKT1fNPNRa34nMlO0gA6+gQ
-4NTI7zOJS97EnAE7c2Ctsta9AFWuU3o8dV0/6P5mcQKd273BAxWnVMv1Wmzz7MFr
-e2gjLTcCcAdhqCqE/EFV6LduRGgsxjf2YnhZnNKFkcYkDcbagKRMgNb3N6Tp5OeS
-Lsk1rV5JGX4N+AaO7X9m3+YaC8wBpliKuZXl7sLzVCXqM5Oy83aNLGv3+27Uz6rP
-lSc2xHLXrCTR+LW53W/Fu6sikUsxfvPdY/nE25ESDSKVq79rA4xYx1Z1seqqF1r1
-jPnDHGaSDgp4uFbvP9ol92hkqhCSTQ==
-=6JuK
------END PGP SIGNATURE-----
-
---oYNRd8n5UUXjY5O4--
+> 
+> Thanks,
+> Tom
+> 
+>>
