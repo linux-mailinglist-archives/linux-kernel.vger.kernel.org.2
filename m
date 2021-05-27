@@ -2,89 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B19A392B11
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 11:46:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A04A392B13
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 11:46:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235818AbhE0Jr4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 May 2021 05:47:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40076 "EHLO
+        id S235909AbhE0JsN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 May 2021 05:48:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40162 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235675AbhE0Jrx (ORCPT
+        with ESMTP id S235798AbhE0JsM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 May 2021 05:47:53 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1C43C061574;
-        Thu, 27 May 2021 02:46:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=n7pbimY5RhMCrIFl8a7lT/d6/Mh0XzzXYzygTqnwBzg=; b=t6OC6OuDTPgxV6GBKtZHindnvr
-        By7STzKnKW9CXowUsfozY4Lu+VizxQo20GobPOoc8WO1t825WDf8Lpx2dKNdsfFvbYta0pSyQoEmq
-        VvWyeHkBznOmqGNxI2jPSdJiAqeV2z9e/sLwmpHRZhRoX+qf89egUvt79XWvhzf39tvBSGhrzAOIh
-        GT6tgUyh1jWaCArH98jfw3yYZ7mu8uG3s5ztkrRpuKCQWkR0cAxnuLlgsVYYADS7DgfggDZIfYGZy
-        /GIamZEPxr5y85A17zLJb2OVyrigmo6bTCKOoC5u2BDTf3i5bGckvWa/nhf+AEV7UVXSpcCDUArS3
-        9HbbWS/g==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1lmCZv-005OsO-Mx; Thu, 27 May 2021 09:45:32 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id DC610300202;
-        Thu, 27 May 2021 11:45:21 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id C2D79200AA2D1; Thu, 27 May 2021 11:45:21 +0200 (CEST)
-Date:   Thu, 27 May 2021 11:45:21 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Adrian Hunter <adrian.hunter@intel.com>
-Cc:     Leo Yan <leo.yan@linaro.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Andi Kleen <ak@linux.intel.com>,
-        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v1 1/2] perf auxtrace: Change to use SMP memory barriers
-Message-ID: <YK9qMWMRWIMfzcPh@hirez.programming.kicks-ass.net>
-References: <20210519140319.1673043-1-leo.yan@linaro.org>
- <d1fc3dd3-e79a-4e93-1083-6b08e0cabe59@intel.com>
- <YK9UFl7Grv/mwmVc@hirez.programming.kicks-ass.net>
- <3c7dcd5d-fddd-5d3b-81ac-cb7b615b0338@intel.com>
+        Thu, 27 May 2021 05:48:12 -0400
+Received: from mail-qk1-x72a.google.com (mail-qk1-x72a.google.com [IPv6:2607:f8b0:4864:20::72a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1BBD7C061760
+        for <linux-kernel@vger.kernel.org>; Thu, 27 May 2021 02:46:39 -0700 (PDT)
+Received: by mail-qk1-x72a.google.com with SMTP id v8so13977qkv.1
+        for <linux-kernel@vger.kernel.org>; Thu, 27 May 2021 02:46:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=uged.al; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=CGSqh763sJ9tRWKESBK9C6KkYC01mkebqHWMvcOi984=;
+        b=PZqwC6CnqXIdNEBEYc5be4bb5TccuGjFHDTVOl6jEnmBTLckP6WY85jbCuEoM7Hn89
+         uyKnQniI/yGgivD73pop7f7tmhTCzq2sEclTRfSApZZihg+b4jBZvtgGXXjFkwFVx7TA
+         0eNicuik9UNu5kptl4bnyD2lz1SXH4eV01tQxhn0cKNXT0IAxDGbChUbVPipuhb3SnkK
+         JQG6FCCHir0bSm0RBZCX1wYCBd2gH02QUaYNrSC1Iu3YPJzcPwD9B/qIknRrdSoiVL61
+         ag3Pa47muV/fq2zJ2RLaG1Vg2FYVkWdvcTnEXfvdKIc62AwNLBG39/9uoRDG0RgiUGyl
+         JZaA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=CGSqh763sJ9tRWKESBK9C6KkYC01mkebqHWMvcOi984=;
+        b=s7h0WKuUi38BvkKpazwyKTOOqMeXN/DhV1RytfZbSAf6LeevkhmRImbcQodAYxsjQh
+         m9qBz6X9uMxbo9OuG3SOIYi5JFDJPdiouJHylUthj0ej0SzcCo1Q9EROMVqXc4sEarLv
+         xHAZ9tz435t+8d14JtWvdxAgjOQVlYieKIWsTmRvoaViWXtUHtHT2n43DtcV/183LSbr
+         ingAKM1NmlEbm8cK8c6+sOZz35YSPh+M989yRAfZwDYUOYQIzuqx7oh/owUO14/YCF0p
+         ZZwYlSxsCy4xBCb6AwWyVEuIifhptKBrozb9cbCktKWdM2mY+uQ/DrNFDxARBITEqDRg
+         WeIQ==
+X-Gm-Message-State: AOAM530hcGLr+iHPmw242f60Y7g9JlWdLFlymdwqbK8zL0wzlvcxcPjW
+        eTpnsXK4WdRpiR5oBLKVZrHZa4oZ1w4i5VzriNgokg==
+X-Google-Smtp-Source: ABdhPJwIF05wpXAw9pqMwDQ5xcuoUYcj0EY3dS+QUG3fROu4t9IkVfLbYNK7UmvxjdWvmIKk1R19pbREb7TVFt0XHtE=
+X-Received: by 2002:a37:9b84:: with SMTP id d126mr2417755qke.209.1622108797671;
+ Thu, 27 May 2021 02:46:37 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <3c7dcd5d-fddd-5d3b-81ac-cb7b615b0338@intel.com>
+References: <20210518125202.78658-1-odin@uged.al> <20210518125202.78658-2-odin@uged.al>
+ <CAKfTPtCCZhjOCZR6DMSxb9qffG2KceWONP_MzoY6TpYBmWp+hg@mail.gmail.com>
+ <CAFpoUr0f50hKUtWvpTy221xT+pUocY7LXCMCo3cPJupjgMtotg@mail.gmail.com>
+ <CAKfTPtCaZOSEzRXVN9fTR2vTxGiANEARo6iDNMFiQV5=qAA4Tw@mail.gmail.com>
+ <CAKfTPtAFn3=anfTCxKTDXF0wpttpEiAhksLvcEPdSiYZTj38_A@mail.gmail.com>
+ <CAFpoUr1zGNf9vTbWjwsfY9E8YBjyE5xJ0SwzLebPiS7b=xz_Zw@mail.gmail.com> <CAKfTPtDRdFQqphysOL+0g=befwtJky0zixyme_V5eDz71hC5pQ@mail.gmail.com>
+In-Reply-To: <CAKfTPtDRdFQqphysOL+0g=befwtJky0zixyme_V5eDz71hC5pQ@mail.gmail.com>
+From:   Odin Ugedal <odin@uged.al>
+Date:   Thu, 27 May 2021 11:45:58 +0200
+Message-ID: <CAFpoUr0SOqyGifT5Lpf=t+A+REWdWezR-AY2fM_u1-CCs8KFYQ@mail.gmail.com>
+Subject: Re: [PATCH 1/3] sched/fair: Add tg_load_contrib cfs_rq decay checking
+To:     Vincent Guittot <vincent.guittot@linaro.org>
+Cc:     Odin Ugedal <odin@uged.al>, Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        "open list:CONTROL GROUP (CGROUP)" <cgroups@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 27, 2021 at 11:25:40AM +0300, Adrian Hunter wrote:
-> On 27/05/21 11:11 am, Peter Zijlstra wrote:
-> > On Thu, May 27, 2021 at 10:54:56AM +0300, Adrian Hunter wrote:
-> >> On 19/05/21 5:03 pm, Leo Yan wrote:
-> >>> The AUX ring buffer's head and tail can be accessed from multiple CPUs
-> >>> on SMP system, so changes to use SMP memory barriers to replace the
-> >>> uniprocessor barriers.
-> >>
-> >> I don't think user space should attempt to be SMP-aware.
-> > 
-> > Uhh, what? It pretty much has to. Since userspace cannot assume UP, it
-> > must assume SMP.
-> 
-> Yeah that is what I meant, but consequently we generally shouldn't be
-> using functions called smp_<anything>
+Hi,
 
-Of course we should; they're the SMP class of barriers.
+> I finally got it this morning with your script and I confirm that the
+> problem of load_sum == 0 but load_avg != 0 comes from
+> update_tg_cfs_load(). Then, it seems that we don't call
+> update_tg_load_avg for this cfs_rq in __update_blocked_fair() because
+> of a recent update while propagating child's load changes. At the end
+> we remove the cfs_rq from the list without updating its contribution.
+>
+> I'm going to prepare a patch to fix this
 
-> > So ACK on the patch, it's sane and an optimization for both x86 and ARM.
-> > Just the Changelog needs work.
-> 
-> If all we want is a compiler barrier, then shouldn't that be what we use?
-> i.e. barrier()
+Yeah, that is another way to look at it. Have not verified, but
+wouldn't update_tg_load_avg() in this case
+just remove the diff (load_avg - tg_load_avg_contrib)? Wouldn't we
+still see some tg_load_avg_contrib
+after the cfs_rq is removed from the list then? Eg. in my example
+above, the cfs_rq will be removed from
+the list while tg_load_avg_contrib=2, or am I missing something? That
+was my thought when I looked
+at it last week at least..
 
-No, we want the SMP barriers, smp_rmb() happens to be a compiler barrier
-on x86, but it will be dmb(ishld) on Aarrgh64 for example.
-
+Thanks
+Odin
