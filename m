@@ -2,56 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CA56A393716
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 22:23:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 35BBE393719
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 22:23:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236746AbhE0UZQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 May 2021 16:25:16 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:28588 "EHLO
+        id S236853AbhE0UZX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 May 2021 16:25:23 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:37297 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235790AbhE0UZF (ORCPT
+        by vger.kernel.org with ESMTP id S236328AbhE0UZI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 May 2021 16:25:05 -0400
+        Thu, 27 May 2021 16:25:08 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1622147011;
+        s=mimecast20190719; t=1622147014;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=Mr9CxfY0aflFHSlW/5vIhFmyytmHYg/MM4gViCf8fs4=;
-        b=eYNajRD/P0VT40boUrBtwZnLgwjCaeKD26k4itNZTju6I7hOqMIL9NWkot/g043ZSd3+Xt
-        x/VkkDDsjSt1sFmrX9IMeqhdLtESdkvdEg7phpAFQWuL4rwQMlk7T9FnaKuZNDteSEIoU0
-        ItPnuJXpmURw4Gao7yRAwplphdbOAFw=
-Received: from mail-qk1-f200.google.com (mail-qk1-f200.google.com
- [209.85.222.200]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-314-9Z5KkiKsNBWJRHJCpuZmGg-1; Thu, 27 May 2021 16:23:30 -0400
-X-MC-Unique: 9Z5KkiKsNBWJRHJCpuZmGg-1
-Received: by mail-qk1-f200.google.com with SMTP id a76-20020ae9e84f0000b02903a69ae4796aso1327266qkg.12
-        for <linux-kernel@vger.kernel.org>; Thu, 27 May 2021 13:23:29 -0700 (PDT)
+        bh=oBNk7u3ivtT+37hOCTF6A87HkSdxXSKsCgL3KlLLZ5E=;
+        b=XYRzO5Qr1Jcz6yLUabsCqDWHbomSFCW+bIhLtmKOwAf8upB//GurYSuVDduy6F551cMpLq
+        YgqPEi3iEEXo1bEArGc5tV+vQWZXWK6ou198BIVlXIzyOfhcYBNSZU2n3FuOiM+7mwnlCd
+        YVnr0h25CeKZbW62Y2zT7vTFqzWOwtA=
+Received: from mail-qv1-f70.google.com (mail-qv1-f70.google.com
+ [209.85.219.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-216-S84uhHkyO-SQkHZCdywMnw-1; Thu, 27 May 2021 16:23:33 -0400
+X-MC-Unique: S84uhHkyO-SQkHZCdywMnw-1
+Received: by mail-qv1-f70.google.com with SMTP id 6-20020a05621420a6b0290214b9d4b6c3so1015710qvd.11
+        for <linux-kernel@vger.kernel.org>; Thu, 27 May 2021 13:23:33 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=Mr9CxfY0aflFHSlW/5vIhFmyytmHYg/MM4gViCf8fs4=;
-        b=M9TilthZLX470QfHBxjL4ykoordryDvv3zlcAuX8aA68ZcJEr0drzf7kXEi5J8URlQ
-         23xk+RXAeSUAMC/0qy5bsRPUv4xbcB0hEAbtPlLJCGcUR8dAcgxvvt/clTKKg4czDADa
-         Ydlxc++JwQfe3/SDh+v7mh3DS8VfNQ1Rct6p7Cdp+fMAggzQ5vYUUHIj9JSFlqt210/+
-         NndVeqe9QG7o6mczMndzPysultYXGkvd1OrhBMEITqvZxo4Acf2B8zPG1lH28lbFwS5q
-         YrJ58kTnBsupvxuSpJ7Esq4SocrQx3k7v2gLFDaKxUxdWmapjBo8ZnwfqVj4Bnjk9iz6
-         Bnzw==
-X-Gm-Message-State: AOAM532H7eNMhLHsKg6PMkZHiNmu26aKPw3Gdfa7fJ4TodCfe8RwwH5K
-        79R5KBpIUsH4vfMLUhOqp06f0wBfyBD6eCJbqERjllQdtc8CCVo9b0qKl9UWwFrf7fIpCapt3H1
-        QyT5jFEBvPNoici700rxZSnR8RZ81j9KjmEYf8bHMKogDd0Fb/IF55uhPbmnJ8aJ68sOQ4ON5aQ
+        bh=oBNk7u3ivtT+37hOCTF6A87HkSdxXSKsCgL3KlLLZ5E=;
+        b=WaCUI3gXQJuisAks5HDSkxX/9Upoc7PpaaF6htPUEd6jbnhLmb9FhARtpQHjhBd6bD
+         dSQHBMN0KGEBNaoWSr4btJXcol4lERFbL5C7kKP3fzfS+8vSwUWuDf0nwKQ4P3vlmVYR
+         SxoxMdeUS4YngrXM1yHTpnV+EVAvMLe6RIRmCLg4aDv7pBEq3jb97AEWqp+jLdaFXj/m
+         Bu7t2D4mNzbTiW2v9EACZ4o4t/m6zJh9zIEAJNnehODdziq/guupUtWDY3+8Oa+jgSgo
+         9lSgMCrF83tjruF7Bvjfse9lKKFqOlJIviBLwI10D59jydCbBPrh8U6Tj4S0SvpmO85u
+         FP5A==
+X-Gm-Message-State: AOAM532KH35bkrkp/tPqqC5UJrJubPAYOCz+fOAy3kIcAneJvDf6L/9E
+        s4VrKIDiHV0nQYRy0tMkpxoeMa97iPg2WdJCXyqSD6cH6KC9iHNgY9eCZwLbve3TVPVPiQxY4Ap
+        Zu7JOeEfxHplwug5hN5tdzY4OdmQ/TVxqys7uwJNSPg2iLgqRMZTmuHM/cFiQZGwvIcyf28/Uwg
         ==
-X-Received: by 2002:ac8:4a98:: with SMTP id l24mr352243qtq.378.1622147008415;
-        Thu, 27 May 2021 13:23:28 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxRAIFI/HJUQmPZpJYQ5Br+Zpl1lpkfA2/NL21zRaxxTI5PdiJKqF+10vpJO8ROFiXz1aAxrA==
-X-Received: by 2002:ac8:4a98:: with SMTP id l24mr352203qtq.378.1622147008104;
-        Thu, 27 May 2021 13:23:28 -0700 (PDT)
+X-Received: by 2002:ac8:4d19:: with SMTP id w25mr323921qtv.175.1622147012537;
+        Thu, 27 May 2021 13:23:32 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwzFops8/UrKEf5HfwY3iEbhr5r+2t8bpk0m5+pQMv9Qf3pzrX5D7bqd/iDokt9cv0Uh9qJDA==
+X-Received: by 2002:ac8:4d19:: with SMTP id w25mr323885qtv.175.1622147012142;
+        Thu, 27 May 2021 13:23:32 -0700 (PDT)
 Received: from localhost.localdomain (bras-base-toroon474qw-grc-72-184-145-4-219.dsl.bell.ca. [184.145.4.219])
-        by smtp.gmail.com with ESMTPSA id l197sm2069286qke.121.2021.05.27.13.23.26
+        by smtp.gmail.com with ESMTPSA id t17sm1981378qto.92.2021.05.27.13.23.30
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 27 May 2021 13:23:27 -0700 (PDT)
+        Thu, 27 May 2021 13:23:31 -0700 (PDT)
 From:   Peter Xu <peterx@redhat.com>
 To:     linux-kernel@vger.kernel.org, linux-mm@kvack.org
 Cc:     Mike Rapoport <rppt@linux.vnet.ibm.com>, peterx@redhat.com,
@@ -66,9 +66,9 @@ Cc:     Mike Rapoport <rppt@linux.vnet.ibm.com>, peterx@redhat.com,
         "Kirill A . Shutemov" <kirill@shutemov.name>,
         Andrea Arcangeli <aarcange@redhat.com>,
         Axel Rasmussen <axelrasmussen@google.com>
-Subject: [PATCH v3 21/27] mm/hugetlb: Introduce huge version of special swap pte helpers
-Date:   Thu, 27 May 2021 16:23:24 -0400
-Message-Id: <20210527202324.32104-1-peterx@redhat.com>
+Subject: [PATCH v3 22/27] hugetlb/userfaultfd: Handle uffd-wp special pte in hugetlb pf handler
+Date:   Thu, 27 May 2021 16:23:28 -0400
+Message-Id: <20210527202328.32154-1-peterx@redhat.com>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210527201927.29586-1-peterx@redhat.com>
 References: <20210527201927.29586-1-peterx@redhat.com>
@@ -78,64 +78,137 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is to let hugetlbfs be prepared to also recognize swap special ptes just
-like uffd-wp special swap ptes.
+Teach the hugetlb page fault code to understand uffd-wp special pte.  For
+example, when seeing such a pte we need to convert any write fault into a read
+one (which is fake - we'll retry the write later if so).  Meanwhile, for
+handle_userfault() we'll need to make sure we must wait for the special swap
+pte too just like a none pte.
 
-Reviewed-by: Mike Kravetz <mike.kravetz@oracle.com>
+Note that we also need to teach UFFDIO_COPY about this special pte across the
+code path so that we can safely install a new page at this special pte as long
+as we know it's a stall entry.
+
 Signed-off-by: Peter Xu <peterx@redhat.com>
 ---
- mm/hugetlb.c | 24 ++++++++++++++++++++++--
- 1 file changed, 22 insertions(+), 2 deletions(-)
+ fs/userfaultfd.c |  5 ++++-
+ mm/hugetlb.c     | 26 ++++++++++++++++++++------
+ mm/userfaultfd.c |  5 ++++-
+ 3 files changed, 28 insertions(+), 8 deletions(-)
 
+diff --git a/fs/userfaultfd.c b/fs/userfaultfd.c
+index 15031d6f1f17..6ef7b56760bf 100644
+--- a/fs/userfaultfd.c
++++ b/fs/userfaultfd.c
+@@ -245,8 +245,11 @@ static inline bool userfaultfd_huge_must_wait(struct userfaultfd_ctx *ctx,
+ 	/*
+ 	 * Lockless access: we're in a wait_event so it's ok if it
+ 	 * changes under us.
++	 *
++	 * Regarding uffd-wp special case, please refer to comments in
++	 * userfaultfd_must_wait().
+ 	 */
+-	if (huge_pte_none(pte))
++	if (huge_pte_none(pte) || pte_swp_uffd_wp_special(pte))
+ 		ret = true;
+ 	if (!huge_pte_write(pte) && (reason & VM_UFFD_WP))
+ 		ret = true;
 diff --git a/mm/hugetlb.c b/mm/hugetlb.c
-index b101c3af3ab5..c64dfd0a9883 100644
+index c64dfd0a9883..a17d894312c0 100644
 --- a/mm/hugetlb.c
 +++ b/mm/hugetlb.c
-@@ -133,6 +133,26 @@ static inline bool subpool_is_free(struct hugepage_subpool *spool)
- 	return true;
- }
+@@ -4707,7 +4707,8 @@ static inline vm_fault_t hugetlb_handle_userfault(struct vm_area_struct *vma,
+ static vm_fault_t hugetlb_no_page(struct mm_struct *mm,
+ 			struct vm_area_struct *vma,
+ 			struct address_space *mapping, pgoff_t idx,
+-			unsigned long address, pte_t *ptep, unsigned int flags)
++			unsigned long address, pte_t *ptep,
++			pte_t old_pte, unsigned int flags)
+ {
+ 	struct hstate *h = hstate_vma(vma);
+ 	vm_fault_t ret = VM_FAULT_SIGBUS;
+@@ -4831,7 +4832,7 @@ static vm_fault_t hugetlb_no_page(struct mm_struct *mm,
  
-+/*
-+ * These are sister versions of is_swap_pte() and pte_has_swap_entry().  We
-+ * need standalone ones because huge_pte_none() is handled differently from
-+ * pte_none().  For more information, please refer to comments above
-+ * is_swap_pte() and pte_has_swap_entry().
-+ *
-+ * Here we directly reuse the pte level of swap special ptes, for example, the
-+ * pte_swp_uffd_wp_special().  It just stands for a huge page rather than a
-+ * small page for hugetlbfs pages.
-+ */
-+static inline bool is_huge_swap_pte(pte_t pte)
-+{
-+	return !huge_pte_none(pte) && !pte_present(pte);
-+}
+ 	ptl = huge_pte_lock(h, mm, ptep);
+ 	ret = 0;
+-	if (!huge_pte_none(huge_ptep_get(ptep)))
++	if (!pte_same(huge_ptep_get(ptep), old_pte))
+ 		goto backout;
+ 
+ 	if (anon_rmap) {
+@@ -4841,6 +4842,12 @@ static vm_fault_t hugetlb_no_page(struct mm_struct *mm,
+ 		page_dup_rmap(page, true);
+ 	new_pte = make_huge_pte(vma, page, ((vma->vm_flags & VM_WRITE)
+ 				&& (vma->vm_flags & VM_SHARED)));
++	/*
++	 * If this pte was previously wr-protected, keep it wr-protected even
++	 * if populated.
++	 */
++	if (unlikely(pte_swp_uffd_wp_special(old_pte)))
++		new_pte = huge_pte_wrprotect(huge_pte_mkuffd_wp(new_pte));
+ 	set_huge_pte_at(mm, haddr, ptep, new_pte);
+ 
+ 	hugetlb_count_add(pages_per_huge_page(h), mm);
+@@ -4956,8 +4963,13 @@ vm_fault_t hugetlb_fault(struct mm_struct *mm, struct vm_area_struct *vma,
+ 	mutex_lock(&hugetlb_fault_mutex_table[hash]);
+ 
+ 	entry = huge_ptep_get(ptep);
+-	if (huge_pte_none(entry)) {
+-		ret = hugetlb_no_page(mm, vma, mapping, idx, address, ptep, flags);
++	/*
++	 * uffd-wp-special should be handled merely the same as pte none
++	 * because it's basically a none pte with a special marker
++	 */
++	if (huge_pte_none(entry) || pte_swp_uffd_wp_special(entry)) {
++		ret = hugetlb_no_page(mm, vma, mapping, idx, address, ptep,
++				      entry, flags);
+ 		goto out_mutex;
+ 	}
+ 
+@@ -5091,7 +5103,7 @@ int hugetlb_mcopy_atomic_pte(struct mm_struct *dst_mm,
+ 	pgoff_t idx = vma_hugecache_offset(h, dst_vma, dst_addr);
+ 	unsigned long size;
+ 	int vm_shared = dst_vma->vm_flags & VM_SHARED;
+-	pte_t _dst_pte;
++	pte_t _dst_pte, cur_pte;
+ 	spinlock_t *ptl;
+ 	int ret = -ENOMEM;
+ 	struct page *page;
+@@ -5213,8 +5225,10 @@ int hugetlb_mcopy_atomic_pte(struct mm_struct *dst_mm,
+ 	if (idx >= size)
+ 		goto out_release_unlock;
+ 
++	cur_pte = huge_ptep_get(dst_pte);
+ 	ret = -EEXIST;
+-	if (!huge_pte_none(huge_ptep_get(dst_pte)))
++	/* Please refer to shmem_mfill_atomic_pte() for uffd-wp special case */
++	if (!huge_pte_none(cur_pte) && !pte_swp_uffd_wp_special(cur_pte))
+ 		goto out_release_unlock;
+ 
+ 	if (vm_shared) {
+diff --git a/mm/userfaultfd.c b/mm/userfaultfd.c
+index 82c235f555b8..af79f3d3a001 100644
+--- a/mm/userfaultfd.c
++++ b/mm/userfaultfd.c
+@@ -364,6 +364,8 @@ static __always_inline ssize_t __mcopy_atomic_hugetlb(struct mm_struct *dst_mm,
+ 	}
+ 
+ 	while (src_addr < src_start + len) {
++		pte_t pteval;
 +
-+static inline bool huge_pte_has_swap_entry(pte_t pte)
-+{
-+	return is_huge_swap_pte(pte) && !is_swap_special_pte(pte);
-+}
-+
- static inline void unlock_or_release_subpool(struct hugepage_subpool *spool,
- 						unsigned long irq_flags)
- {
-@@ -4061,7 +4081,7 @@ bool is_hugetlb_entry_migration(pte_t pte)
- {
- 	swp_entry_t swp;
+ 		BUG_ON(dst_addr >= dst_start + len);
  
--	if (huge_pte_none(pte) || pte_present(pte))
-+	if (!huge_pte_has_swap_entry(pte))
- 		return false;
- 	swp = pte_to_swp_entry(pte);
- 	if (is_migration_entry(swp))
-@@ -4074,7 +4094,7 @@ static bool is_hugetlb_entry_hwpoisoned(pte_t pte)
- {
- 	swp_entry_t swp;
+ 		/*
+@@ -386,8 +388,9 @@ static __always_inline ssize_t __mcopy_atomic_hugetlb(struct mm_struct *dst_mm,
+ 			goto out_unlock;
+ 		}
  
--	if (huge_pte_none(pte) || pte_present(pte))
-+	if (!huge_pte_has_swap_entry(pte))
- 		return false;
- 	swp = pte_to_swp_entry(pte);
- 	if (is_hwpoison_entry(swp))
++		pteval = huge_ptep_get(dst_pte);
+ 		if (mode != MCOPY_ATOMIC_CONTINUE &&
+-		    !huge_pte_none(huge_ptep_get(dst_pte))) {
++		    !huge_pte_none(pteval) && !pte_swp_uffd_wp_special(pteval)) {
+ 			err = -EEXIST;
+ 			mutex_unlock(&hugetlb_fault_mutex_table[hash]);
+ 			i_mmap_unlock_read(mapping);
 -- 
 2.31.1
 
