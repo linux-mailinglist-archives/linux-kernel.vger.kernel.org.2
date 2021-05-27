@@ -2,236 +2,266 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AF8FA392895
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 09:32:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F39A39289A
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 09:33:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230082AbhE0Hd5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 May 2021 03:33:57 -0400
-Received: from mx08-00178001.pphosted.com ([91.207.212.93]:50886 "EHLO
-        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S229648AbhE0Hd4 (ORCPT
+        id S233044AbhE0HfQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 May 2021 03:35:16 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:61628 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229648AbhE0HfP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 May 2021 03:33:56 -0400
-Received: from pps.filterd (m0046661.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 14R7S9x5008726;
-        Thu, 27 May 2021 09:32:13 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=subject : from : to
- : cc : references : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=selector1;
- bh=24c4Vwg7qSyidiemQylRls5fhbt+xsjE5P99vDEQ0jc=;
- b=x4RlBKbA+cT9ETJelwG4EFwLaBj4cVjvJrJxU4Ybyb/+aVDWIQHYnkzapQhrshMHv/JF
- zIzjGQpvxAbi9XdpIa2uNvzYxEKE+VjGYcsFMXKIxycmQrFoRHOxiegHFr5mLBEjNycQ
- 3wgW1A9L8GL+2iZ9JGrm5W00DmnbibbLSenRFo1c+jkKMcntbZDNbvDp3ORVY1x/ze5i
- ZZKEmiPV73nkp2iY4FJgb2v1CwqeIN5bSlewY9YLFJ4qto0XbJPfShLKDKvJtvzaOXoH
- /o5iZr3xHfvddZkuzqRBVNwhWdal0AFz/fn/ZyqaV17LmalsmWmkIWo7yLy036nm/H09 gQ== 
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com with ESMTP id 38t0fr1w9q-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 27 May 2021 09:32:13 +0200
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 7132510002A;
-        Thu, 27 May 2021 09:32:12 +0200 (CEST)
-Received: from Webmail-eu.st.com (sfhdag2node3.st.com [10.75.127.6])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 5E9872138FD;
-        Thu, 27 May 2021 09:32:12 +0200 (CEST)
-Received: from lmecxl0573.lme.st.com (10.75.127.47) by SFHDAG2NODE3.st.com
- (10.75.127.6) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Thu, 27 May
- 2021 09:32:11 +0200
-Subject: Re: [Linux-stm32] mtd: spinand: add spi nand mtd resume handler
-From:   Patrice CHOTARD <patrice.chotard@foss.st.com>
-To:     Miquel Raynal <miquel.raynal@bootlin.com>
-CC:     Vignesh Raghavendra <vigneshr@ti.com>,
-        <linux-kernel@vger.kernel.org>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        <linux-spi@vger.kernel.org>, Mark Brown <broonie@kernel.org>,
-        <linux-mtd@lists.infradead.org>,
-        Boris Brezillon <boris.brezillon@collabora.com>,
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        <linux-arm-kernel@lists.infradead.org>
-References: <20210526153016.32653-1-patrice.chotard@foss.st.com>
- <20210526174224.2b8714fc@xps13>
- <bbfc7b31-c49c-e52d-0ea6-20ec81317cac@foss.st.com>
-Message-ID: <0072d5e7-3cf8-a8bb-569a-1ea1ba68bbae@foss.st.com>
-Date:   Thu, 27 May 2021 09:32:10 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Thu, 27 May 2021 03:35:15 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1622100822; h=Content-Transfer-Encoding: MIME-Version:
+ Message-Id: Date: Subject: Cc: To: From: Sender;
+ bh=g3BeoQnr9xVCAC0G+xHoW41EjKH+mcixfOHMkVYyTXM=; b=vIvzpxBybfOslSoItCFkg4cQQ+70vECku1JLyVBqtGst62ii6muyytoEC+PmJHitHwch8Bbh
+ gw4/7jryY4ezDD9Ih4ZIYe8WI/DUv1/NbHNXF6W0qpNlg8QUho1R/hDz5UgtVSQONMf8DqGp
+ 45a8yuPGBZu1NcCBUUQTW8IqsWI=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n03.prod.us-west-2.postgun.com with SMTP id
+ 60af4b54f752fca668533337 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 27 May 2021 07:33:40
+ GMT
+Sender: srivasam=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 743D3C433D3; Thu, 27 May 2021 07:33:40 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+Received: from hyd-lnxbld210.qualcomm.com (unknown [202.46.22.19])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: srivasam)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id E1459C433D3;
+        Thu, 27 May 2021 07:33:33 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org E1459C433D3
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=srivasam@codeaurora.org
+From:   Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
+To:     agross@kernel.org, bjorn.andersson@linaro.org, lgirdwood@gmail.com,
+        broonie@kernel.org, robh+dt@kernel.org, plai@codeaurora.org,
+        bgoswami@codeaurora.org, perex@perex.cz, tiwai@suse.com,
+        srinivas.kandagatla@linaro.org, rohitkr@codeaurora.org,
+        linux-arm-msm@vger.kernel.org, alsa-devel@alsa-project.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        swboyd@chromium.org, judyhsiao@chromium.org
+Cc:     Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
+Subject: [PATCH] Asoc: qcom: Add four speaker support on MI2S secondary
+Date:   Thu, 27 May 2021 13:03:09 +0530
+Message-Id: <20210527073309.28661-1-srivasam@codeaurora.org>
+X-Mailer: git-send-email 2.29.0
 MIME-Version: 1.0
-In-Reply-To: <bbfc7b31-c49c-e52d-0ea6-20ec81317cac@foss.st.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.75.127.47]
-X-ClientProxiedBy: SFHDAG3NODE1.st.com (10.75.127.7) To SFHDAG2NODE3.st.com
- (10.75.127.6)
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
- definitions=2021-05-27_02:2021-05-26,2021-05-27 signatures=0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5/27/21 9:01 AM, Patrice CHOTARD wrote:
-> Hi Miquel
-> 
-> On 5/26/21 5:42 PM, Miquel Raynal wrote:
->> Hello,
->>
->> <patrice.chotard@foss.st.com> wrote on Wed, 26 May 2021 17:30:16 +0200:
->>
->>> From: Christophe Kerello <christophe.kerello@foss.st.com>
->>
->> Would you mind to use "add SPI-NAND MTD resume handler" as title? (with
->> upper case letters)
-> 
-> Ok
-> 
->>
->>> After power up, all SPI NAND's blocks are locked. Only read operations
->>> are allowed, write and erase operations are forbidden.
->>> The SPI NAND framework unlocks all the blocks during its initialization.
->>>
->>> During a standby low power, the memory is powered down, losing its
->>> configuration.
->>> During the resume, the QSPI driver state is restored but the SPI NAND
->>> framework does not reconfigured the memory.
->>>
->>> This patch adds spi nand mtd PM handlers for resume ops.
->>
->> ditto             ^^^^^^^^^^^^
-> 
-> Ok
-> 
->>
->>> SPI NAND resume op re-initializes SPI NAND flash to its probed state.
->>>
->>> Signed-off-by: Christophe Kerello <christophe.kerello@foss.st.com>
->>> Signed-off-by: Patrice Chotard <patrice.chotard@foss.st.com>
->>> ---
->>>  drivers/mtd/nand/spi/core.c | 56 +++++++++++++++++++++++++++++++++++++
->>>  1 file changed, 56 insertions(+)
->>>
->>> diff --git a/drivers/mtd/nand/spi/core.c b/drivers/mtd/nand/spi/core.c
->>> index 17f63f95f4a2..6abaf874eb3f 100644
->>> --- a/drivers/mtd/nand/spi/core.c
->>> +++ b/drivers/mtd/nand/spi/core.c
->>> @@ -1074,6 +1074,61 @@ static int spinand_detect(struct spinand_device *spinand)
->>>  	return 0;
->>>  }
->>>  
->>> +static void spinand_mtd_resume(struct mtd_info *mtd)
->>> +{
->>> +	struct spinand_device *spinand = mtd_to_spinand(mtd);
->>> +	struct nand_device *nand = mtd_to_nanddev(mtd);
->>> +	struct device *dev = &spinand->spimem->spi->dev;
->>> +	int ret, i;
->>> +
->>> +	ret = spinand_reset_op(spinand);
->>> +	if (ret)
->>> +		return;
->>> +
->>> +	ret = spinand_init_quad_enable(spinand);
->>> +	if (ret) {
->>> +		dev_err(dev,
->>> +			"Failed to initialize the quad part (err = %d)\n",
->>
->> quad part? what about "Failed to resume the quad state" or something
->> alike?
-> 
-> Agree, i will update this
+Add four speaker support on MI2S secondary block
+by using I2S SD1 line on gpio52 pin, and add channel map
+control support in the lpass-cpu audio driver.
 
-I will even remove the dev_err(), as in spinand_init() 
-no dev_err() was added on spinand_init_quad_enable() error.
+Signed-off-by: Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
+---
+ sound/soc/qcom/lpass-cpu.c    | 106 +++++++++++++++++++++++++++++++++-
+ sound/soc/qcom/lpass-sc7180.c |   1 +
+ sound/soc/qcom/lpass.h        |   5 ++
+ 3 files changed, 111 insertions(+), 1 deletion(-)
 
-> 
->>
->>> +			ret);
->>> +		return;
->>> +	}
->>> +
->>> +	ret = spinand_upd_cfg(spinand, CFG_OTP_ENABLE, 0);
->>> +	if (ret) {
->>> +		dev_err(dev,
->>> +			"Failed to updtae the OTP (err = %d)\n",
->>
->> update
-> 
-> ok
+diff --git a/sound/soc/qcom/lpass-cpu.c b/sound/soc/qcom/lpass-cpu.c
+index c62d2612e8f5..88a038a107a7 100644
+--- a/sound/soc/qcom/lpass-cpu.c
++++ b/sound/soc/qcom/lpass-cpu.c
+@@ -28,6 +28,19 @@
+ #define LPASS_CPU_I2S_SD2_3_MASK	GENMASK(3, 2)
+ #define LPASS_CPU_I2S_SD0_1_2_MASK	GENMASK(2, 0)
+ #define LPASS_CPU_I2S_SD0_1_2_3_MASK	GENMASK(3, 0)
++#define LPASS_CHMAP_IDX_UNKNOWN		-1
++
++/*
++ * Channel maps for multi-channel playbacks on MI2S Secondary, up to 4 n_ch
++ */
++static struct snd_pcm_chmap_elem lpass_chmaps[] = {
++	{ .channels = 2,
++	  .map = { SNDRV_CHMAP_FL, SNDRV_CHMAP_FR } },
++	{ .channels = 4,
++	  .map = { SNDRV_CHMAP_FL, SNDRV_CHMAP_FR,
++				SNDRV_CHMAP_RL, SNDRV_CHMAP_RR } },
++	{ }
++};
+ 
+ static int lpass_cpu_init_i2sctl_bitfields(struct device *dev,
+ 			struct lpaif_i2sctl *i2sctl, struct regmap *map)
+@@ -86,6 +99,9 @@ static int lpass_cpu_daiops_startup(struct snd_pcm_substream *substream,
+ 		clk_disable_unprepare(drvdata->mi2s_osr_clk[dai->driver->id]);
+ 		return ret;
+ 	}
++	if (drvdata->chmap_info && drvdata->chmap_info->max_channels == 4)
++		drvdata->chmap_info->chmap = lpass_chmaps;
++
+ 	return 0;
+ }
+ 
+@@ -96,6 +112,7 @@ static void lpass_cpu_daiops_shutdown(struct snd_pcm_substream *substream,
+ 
+ 	clk_disable_unprepare(drvdata->mi2s_osr_clk[dai->driver->id]);
+ 	clk_unprepare(drvdata->mi2s_bit_clk[dai->driver->id]);
++	drvdata->chmap_idx = LPASS_CHMAP_IDX_UNKNOWN;
+ }
+ 
+ static int lpass_cpu_daiops_hw_params(struct snd_pcm_substream *substream,
+@@ -224,9 +241,14 @@ static int lpass_cpu_daiops_hw_params(struct snd_pcm_substream *substream,
+ 				ret);
+ 			return ret;
+ 		}
+-		if (channels >= 2)
++		if (channels >= 2) {
+ 			ret = regmap_fields_write(i2sctl->spkmono, id,
+ 						 LPAIF_I2SCTL_SPKMONO_STEREO);
++			if (channels == 4)
++				drvdata->chmap_idx = 1;
++			else
++				drvdata->chmap_idx = 0;
++		}
+ 		else
+ 			ret = regmap_fields_write(i2sctl->spkmono, id,
+ 						 LPAIF_I2SCTL_SPKMONO_MONO);
+@@ -324,6 +346,84 @@ const struct snd_soc_dai_ops asoc_qcom_lpass_cpu_dai_ops = {
+ };
+ EXPORT_SYMBOL_GPL(asoc_qcom_lpass_cpu_dai_ops);
+ 
++static int lpass_cpu_chmap_ctl_get(struct snd_kcontrol *kcontrol,
++				struct snd_ctl_elem_value *ucontrol)
++{
++	unsigned const char *map;
++	unsigned int i;
++	struct snd_pcm_chmap *info = snd_kcontrol_chip(kcontrol);
++	struct lpass_data *drvdata = info->private_data;
++
++	if (info->max_channels == 2)
++		map = &lpass_chmaps[0].map[0];
++	else if (info->max_channels == 4)
++		map = &lpass_chmaps[1].map[0];
++
++	for (i = 0; i < info->max_channels; i++) {
++		if (drvdata->chmap_idx == LPASS_CHMAP_IDX_UNKNOWN)
++			ucontrol->value.integer.value[i] = 0;
++		else
++			ucontrol->value.integer.value[i] = map[i];
++	}
++
++	return 0;
++}
++
++static int lpass_cpu_chmap_ctl_set(struct snd_kcontrol *kcontrol,
++				struct snd_ctl_elem_value *ucontrol)
++{
++	unsigned int i;
++	struct snd_pcm_chmap *info = snd_kcontrol_chip(kcontrol);
++	struct lpass_data *drvdata = info->private_data;
++	unsigned char *map;
++
++	if (info->max_channels == 2)
++		map = &lpass_chmaps[0].map[0];
++	else if (info->max_channels == 4)
++		map = &lpass_chmaps[1].map[0];
++
++	for (i = 0; i < info->max_channels; i++) {
++		if (drvdata->chmap_idx == LPASS_CHMAP_IDX_UNKNOWN)
++			map[i] = 0;
++		else
++			map[i] = ucontrol->value.integer.value[i];
++	}
++
++	return 0;
++}
++
++int lpass_cpu_pcm_new(struct snd_soc_pcm_runtime *rtd,
++			      struct snd_soc_dai *dai)
++{
++	int ret;
++
++	struct snd_soc_dai_driver *drv = dai->driver;
++	struct lpass_data *drvdata = snd_soc_dai_get_drvdata(dai);
++
++	ret =  snd_pcm_add_chmap_ctls(rtd->pcm, SNDRV_PCM_STREAM_PLAYBACK,
++			snd_pcm_alt_chmaps, drv->playback.channels_max, 0,
++			&drvdata->chmap_info);
++	if (ret < 0)
++		return ret;
++
++
++	/*
++	 * override handlers
++	 */
++	drvdata->chmap_info->private_data = drvdata;
++	drvdata->chmap_info->kctl->get = lpass_cpu_chmap_ctl_get;
++	drvdata->chmap_info->kctl->put = lpass_cpu_chmap_ctl_set;
++
++	/*
++	 * default chmap supported is stereo
++	 */
++	drvdata->chmap_info->chmap = lpass_chmaps;
++	drvdata->chmap_idx = LPASS_CHMAP_IDX_UNKNOWN;
++
++	return 0;
++}
++EXPORT_SYMBOL_GPL(lpass_cpu_pcm_new);
++
+ int asoc_qcom_lpass_cpu_dai_probe(struct snd_soc_dai *dai)
+ {
+ 	struct lpass_data *drvdata = snd_soc_dai_get_drvdata(dai);
+@@ -856,6 +956,10 @@ int asoc_qcom_lpass_cpu_platform_probe(struct platform_device *pdev)
+ 				PTR_ERR(drvdata->mi2s_bit_clk[dai_id]));
+ 			return PTR_ERR(drvdata->mi2s_bit_clk[dai_id]);
+ 		}
++		if (drvdata->mi2s_playback_sd_mode[dai_id] == LPAIF_I2SCTL_MODE_QUAD01) {
++			variant->dai_driver[dai_id].playback.channels_min = 4;
++			variant->dai_driver[dai_id].playback.channels_max = 4;
++		}
+ 	}
+ 
+ 	/* Allocation for i2sctl regmap fields */
+diff --git a/sound/soc/qcom/lpass-sc7180.c b/sound/soc/qcom/lpass-sc7180.c
+index 8c168d3c589e..77a556b27cf0 100644
+--- a/sound/soc/qcom/lpass-sc7180.c
++++ b/sound/soc/qcom/lpass-sc7180.c
+@@ -58,6 +58,7 @@ static struct snd_soc_dai_driver sc7180_lpass_cpu_dai_driver[] = {
+ 		},
+ 		.probe	= &asoc_qcom_lpass_cpu_dai_probe,
+ 		.ops    = &asoc_qcom_lpass_cpu_dai_ops,
++		.pcm_new = lpass_cpu_pcm_new,
+ 	}, {
+ 		.id = LPASS_DP_RX,
+ 		.name = "Hdmi",
+diff --git a/sound/soc/qcom/lpass.h b/sound/soc/qcom/lpass.h
+index 83b2e08ade06..fb82591d550c 100644
+--- a/sound/soc/qcom/lpass.h
++++ b/sound/soc/qcom/lpass.h
+@@ -76,6 +76,9 @@ struct lpass_data {
+ 	/* regmap backed by the low-power audio interface (LPAIF) registers */
+ 	struct regmap *lpaif_map;
+ 	struct regmap *hdmiif_map;
++	struct snd_pcm_chmap *chmap_info;
++
++	int chmap_idx;
+ 
+ 	/* interrupts from the low-power audio interface (LPAIF) */
+ 	int lpaif_irq;
+@@ -259,5 +262,7 @@ void asoc_qcom_lpass_cpu_platform_shutdown(struct platform_device *pdev);
+ int asoc_qcom_lpass_cpu_platform_probe(struct platform_device *pdev);
+ int asoc_qcom_lpass_cpu_dai_probe(struct snd_soc_dai *dai);
+ extern const struct snd_soc_dai_ops asoc_qcom_lpass_cpu_dai_ops;
++int lpass_cpu_pcm_new(struct snd_soc_pcm_runtime *rtd,
++				struct snd_soc_dai *dai);
+ 
+ #endif /* __LPASS_H__ */
+-- 
+Qualcomm India Private Limited, on behalf of Qualcomm Innovation Center, Inc.,
+is a member of Code Aurora Forum, a Linux Foundation Collaborative Project.
 
-ditto
-
-> 
->>
->>> +			ret);
->>> +		return;
->>> +	}
->>> +
->>> +	ret = spinand_manufacturer_init(spinand);
->>> +	if (ret) {
->>> +		dev_err(dev,
->>> +			"Failed to initialize the SPI NAND chip (err = %d)\n",
->>> +			ret);
->>> +		return;
->>> +	}
->>> +
->>> +	/* After power up, all blocks are locked, so unlock them here. */
->>> +	for (i = 0; i < nand->memorg.ntargets; i++) {
->>> +		ret = spinand_select_target(spinand, i);
->>> +		if (ret) {
->>> +			dev_err(dev,
->>> +				"Failed to select the target (err = %d)\n",
->>> +				ret);
-
-ditto
-
->>> +			return;
->>> +		}
->>> +
->>> +		ret = spinand_lock_block(spinand, BL_ALL_UNLOCKED);
->>> +		if (ret) {
->>> +			dev_err(dev,
->>> +				"Failed to unlock block (err = %d)\n",
->>> +				ret);
-
-ditto
-
->>> +			return;
->>> +		}
->>> +	}
->>
->> I bet this would deserve a helper as this is the exact same peace of
->> code that is being run in spinnand_init()?
-> 
-> I will add a new function spinand_block_unlock(struct spinand_device *spinand)
-> 
->>
->> At the very least I think that spinand_ecc_enable(spinand, false);
->> should be called.
-> I will add it. 
-> 
->>
->> Ideally, a resume operation should be provided by ECC engines, but that
->> can be added later.
->>
->>> +}
->>> +
->>>  static int spinand_init(struct spinand_device *spinand)
->>>  {
->>>  	struct device *dev = &spinand->spimem->spi->dev;
->>> @@ -1167,6 +1222,7 @@ static int spinand_init(struct spinand_device *spinand)
->>>  	mtd->_block_isreserved = spinand_mtd_block_isreserved;
->>>  	mtd->_erase = spinand_mtd_erase;
->>>  	mtd->_max_bad_blocks = nanddev_mtd_max_bad_blocks;
->>> +	mtd->_resume = spinand_mtd_resume;
->>>  
->>>  	if (nand->ecc.engine) {
->>>  		ret = mtd_ooblayout_count_freebytes(mtd);
->>
->> Thanks,
->> Miquèl
->>
-> Thanks
-> Patrice
-> _______________________________________________
-> Linux-stm32 mailing list
-> Linux-stm32@st-md-mailman.stormreply.com
-> https://st-md-mailman.stormreply.com/mailman/listinfo/linux-stm32
-> 
