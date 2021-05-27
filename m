@@ -2,165 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C79ED393476
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 19:03:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D5E239347A
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 19:04:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236773AbhE0RF0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 May 2021 13:05:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56104 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235214AbhE0RFU (ORCPT
+        id S236818AbhE0RFz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 May 2021 13:05:55 -0400
+Received: from relay02.th.seeweb.it ([5.144.164.163]:40305 "EHLO
+        relay02.th.seeweb.it" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235214AbhE0RFv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 May 2021 13:05:20 -0400
-Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A09DC061760
-        for <linux-kernel@vger.kernel.org>; Thu, 27 May 2021 10:03:45 -0700 (PDT)
-Received: by mail-pj1-x1035.google.com with SMTP id h20-20020a17090aa894b029015db8f3969eso810074pjq.3
-        for <linux-kernel@vger.kernel.org>; Thu, 27 May 2021 10:03:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=5leouNBqSbncovF7/pi4FMUbolKvi+txVAGYn4HmqBE=;
-        b=BblAxfZBMeo5LIBtMtaaTYt+eJ5Vyt9mWFBzkFknqPigDuOlbGxi1hJPv/Rjw7bY1+
-         L2RtMWfNYv8xSCUGmvNgzVAMKde/kZL0YBrUYT8jWIgTBrF6vaaFOxY3KvdWgkt0OnD2
-         rMfcXaqMgp9ddcDhemSY4nBnMM2kjFfmLCotjRSEMmcw7TvtRoIBJ7YclgoTr/Mh0uzp
-         U0oDXSsojhcTjWwl5fUfumBBK4msEC3vbgAhZt5hDJ+ZU4wnZM1y+h1vxObWdyuKJVkg
-         XIWpRpREPV5+IhGaWvUPueVl6cW1ArHCy3Hd0LEUgnWKhKJQjWmblLmLEVW5uFtZ7q8j
-         SFIw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=5leouNBqSbncovF7/pi4FMUbolKvi+txVAGYn4HmqBE=;
-        b=eyvUObscxY0fenIrywQBzZbNArljFbbD5Teu1azDwsLGGbKXmGBrlJNgRudjsAxGbN
-         GDb0poKo+sRcJYQKgZCTnBNF+gwb1jJOx0klEQY0ENtzqi+li7Y7BqMbB8rUEH1kII7W
-         /PZbJwWpagLTcXQL+JKkMSz1rTOQ8WQbB2hQAIcwEWSdYzrLp47DCJyZPju5tLuAKBG8
-         NW19TFA7FhcZU2Rjn39j1MPEDvxdKr6PrWmaQq/4NG2zWLf7l3phzW6OoWG7iSVVDrWD
-         kc+4sxoKyAuOZsIzYWjCskvfEOj+Rd0Q9tr9y0NQXXuCxSKVXrlGrHNiHqjiCEy51Zc/
-         vLUg==
-X-Gm-Message-State: AOAM532tWe6zm0ozlsmpeacmA8KwcjpucXtmLvXvQ0b78MHSO226Bz89
-        Dsk3jCoiqjOexYhxczqHYX5zeA==
-X-Google-Smtp-Source: ABdhPJwsntW6+MqBRSSV2P33Vx7GZgUNsyoEXFn5STwQRtlwac4QG1usUBodKlGM3hfCkjZQNORMvQ==
-X-Received: by 2002:a17:90a:ab8c:: with SMTP id n12mr10157011pjq.201.1622135024547;
-        Thu, 27 May 2021 10:03:44 -0700 (PDT)
-Received: from google.com (240.111.247.35.bc.googleusercontent.com. [35.247.111.240])
-        by smtp.gmail.com with ESMTPSA id y190sm2318551pgd.24.2021.05.27.10.03.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 27 May 2021 10:03:43 -0700 (PDT)
-Date:   Thu, 27 May 2021 17:03:40 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Wanpeng Li <kernellwp@gmail.com>
-Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>
-Subject: Re: [PATCH v3 1/2] KVM: X86: Fix warning caused by stale emulation
- context
-Message-ID: <YK/Q7ESa44lcqlMM@google.com>
-References: <1622091679-31683-1-git-send-email-wanpengli@tencent.com>
+        Thu, 27 May 2021 13:05:51 -0400
+Received: from localhost.localdomain (83.6.168.54.neoplus.adsl.tpnet.pl [83.6.168.54])
+        by m-r1.th.seeweb.it (Postfix) with ESMTPA id ED9721F50B;
+        Thu, 27 May 2021 19:04:15 +0200 (CEST)
+From:   Konrad Dybcio <konrad.dybcio@somainline.org>
+To:     ~postmarketos/upstreaming@lists.sr.ht
+Cc:     martin.botka@somainline.org,
+        angelogioacchino.delregno@somainline.org,
+        marijn.suijten@somainline.org, jamipkettunen@somainline.org,
+        Konrad Dybcio <konrad.dybcio@somainline.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v2 1/3] arm64: dts: qcom: Add PMI8996 DTSI file
+Date:   Thu, 27 May 2021 19:04:06 +0200
+Message-Id: <20210527170409.667255-1-konrad.dybcio@somainline.org>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <1622091679-31683-1-git-send-email-wanpengli@tencent.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 26, 2021, Wanpeng Li wrote:
-> From: Wanpeng Li <wanpengli@tencent.com>
-> 
-> Reported by syzkaller:
-> 
->   WARNING: CPU: 7 PID: 10526 at /home/kernel/ssd/linux/arch/x86/kvm//x86.c:7621 x86_emulate_instruction+0x41b/0x510 [kvm]
+PMI8996 is *almost* the same hardware as PMI8994, say for some annoyances:
 
-"/home/kernel/ssd/linux/" can be omitted to make the line length a bit shorter.
-checkpatch also complains about using absolute path instead of relative path.
+- Boards equipped with PMI8996 now have to include pmic-id (which wasn't the case before)
+- Different qpnp-ibb-discharge-resistor value (will be addressed after LABIBB is introduced)
+- Different inhibit-derating-ua value (will be addressed after BCL is introduced)
+- Different ramp_up_step value (will be addressed after [if?] QPNP Flash LED is introduced)
 
->   RIP: 0010:x86_emulate_instruction+0x41b/0x510 [kvm]
->   Call Trace:
->    kvm_mmu_page_fault+0x126/0x8f0 [kvm]
->    vmx_handle_exit+0x11e/0x680 [kvm_intel]
->    vcpu_enter_guest+0xd95/0x1b40 [kvm]
->    kvm_arch_vcpu_ioctl_run+0x377/0x6a0 [kvm]
->    kvm_vcpu_ioctl+0x389/0x630 [kvm]
->    __x64_sys_ioctl+0x8e/0xd0
->    do_syscall_64+0x3c/0xb0
->    entry_SYSCALL_64_after_hwframe+0x44/0xae
-> 
-> Commit 4a1e10d5b5d8c (KVM: x86: handle hardware breakpoints during emulation())
-> adds hardware breakpoints check before emulation the instruction and parts of 
-> emulation context initialization, actually we don't have the EMULTYPE_NO_DECODE flag 
-> here and the emulation context will not be reused. Commit c8848cee74ff (KVM: x86: 
-> set ctxt->have_exception in x86_decode_insn()) triggers the warning because it 
-> catches the stale emulation context has #UD, however, it is not during instruction 
-> decoding which should result in EMULATION_FAILED. This patch fixes it by moving 
-> the second part emulation context initialization into init_emulate_ctxt() and 
-> before hardware breakpoints check.  
-> 
-> syzkaller source: https://syzkaller.appspot.com/x/repro.c?x=134683fdd00000
-> 
-> Reported-by: syzbot+71271244f206d17f6441@syzkaller.appspotmail.com
-> Fixes: 4a1e10d5b5d8 (KVM: x86: handle hardware breakpoints during emulation)
-> Signed-off-by: Wanpeng Li <wanpengli@tencent.com>
-> ---
-> v2 -> v3:
->  * squash ctxt->ud
-> v1 -> v2:
->  * move the second part emulation context initialization into init_emulate_ctxt()
-> 
->  arch/x86/kvm/x86.c | 14 +++++++-------
->  1 file changed, 7 insertions(+), 7 deletions(-)
-> 
-> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-> index bbc4e04..ae47b19 100644
-> --- a/arch/x86/kvm/x86.c
-> +++ b/arch/x86/kvm/x86.c
-> @@ -7226,6 +7226,13 @@ static void init_emulate_ctxt(struct kvm_vcpu *vcpu)
->  	BUILD_BUG_ON(HF_SMM_MASK != X86EMUL_SMM_MASK);
->  	BUILD_BUG_ON(HF_SMM_INSIDE_NMI_MASK != X86EMUL_SMM_INSIDE_NMI_MASK);
->  
-> +	ctxt->interruptibility = 0;
-> +	ctxt->have_exception = false;
-> +	ctxt->exception.vector = -1;
-> +	ctxt->perm_ok = false;
-> +
-> +	ctxt->ud = emulation_type & EMULTYPE_TRAP_UD;
+Signed-off-by: Konrad Dybcio <konrad.dybcio@somainline.org>
+---
+ arch/arm64/boot/dts/qcom/pmi8996.dtsi | 15 +++++++++++++++
+ 1 file changed, 15 insertions(+)
+ create mode 100644 arch/arm64/boot/dts/qcom/pmi8996.dtsi
 
-"ctxt->ud" should be left where it is in patch 01.  "emulation_type" isn't passed
-to init_emulate_ctxt(), and I don't see any reason to add it to the params since
-ctxt->ud is only consumed by x86_decode_insn(), i.e. moving ctxt->ud isn't
-necessary to fix the bug.
+diff --git a/arch/arm64/boot/dts/qcom/pmi8996.dtsi b/arch/arm64/boot/dts/qcom/pmi8996.dtsi
+new file mode 100644
+index 000000000000..31b47209e261
+--- /dev/null
++++ b/arch/arm64/boot/dts/qcom/pmi8996.dtsi
+@@ -0,0 +1,15 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ * Copyright (c) 2021, Konrad Dybcio <konrad.dybcio@somainline.org>
++ */
++
++ /*
++  * PMI8996 is a slight modification of PMI8994 with
++  * some notable changes, like being the first PMIC
++  * whose the bootloader has to check to continue booting
++  * and a change to a LABIBB parameter.
++  */
++
++/ {
++	qcom,pmic-id = <0x20009 0x10013 0 0>;
++};
+-- 
+2.31.1
 
-arch/x86/kvm/x86.c: In function ‘init_emulate_ctxt’:
-arch/x86/kvm/x86.c:7236:13: error: ‘emulation_type’ undeclared (first use in this function); did you mean ‘exception_type’?
- 7236 |  ctxt->ud = emulation_type & EMULTYPE_TRAP_UD;
-      |             ^~~~~~~~~~~~~~
-      |             exception_type
-arch/x86/kvm/x86.c:7236:13: note: each undeclared identifier is reported only once for each function it appears in
-
-> +
->  	init_decode_cache(ctxt);
->  	vcpu->arch.emulate_regs_need_sync_from_vcpu = false;
->  }
-> @@ -7561,13 +7568,6 @@ int x86_decode_emulated_instruction(struct kvm_vcpu *vcpu, int emulation_type,
->  	    kvm_vcpu_check_breakpoint(vcpu, &r))
->  		return r;
->  
-> -	ctxt->interruptibility = 0;
-> -	ctxt->have_exception = false;
-> -	ctxt->exception.vector = -1;
-> -	ctxt->perm_ok = false;
-> -
-> -	ctxt->ud = emulation_type & EMULTYPE_TRAP_UD;
-> -
->  	r = x86_decode_insn(ctxt, insn, insn_len);
->  
->  	trace_kvm_emulate_insn_start(vcpu);
-> -- 
-> 2.7.4
-> 
