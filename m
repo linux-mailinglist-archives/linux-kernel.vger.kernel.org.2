@@ -2,126 +2,247 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 47C96392AAA
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 11:23:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 86FCD392AC1
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 11:30:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235793AbhE0JZL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 May 2021 05:25:11 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:24928 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235740AbhE0JZK (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 May 2021 05:25:10 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1622107417;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=u/jxxyRApH7aRU/uOFFHnJ9R4si2NeFb5W7OXIxVnqE=;
-        b=QLKZX6sfSGyT3G5FdE+i8QB3Ft8nd+p/QZ3WnJd2j3n6AfnDOEZPXrt09zQnkT5lvo6i1L
-        rs8N16z6tad3Ey16S8fQqkNIg99EnfWly2Ia+Jif/zH+MGWD6uw0rnvqXUidQEd3Mwky3I
-        AFHN0kPkm3gIOsf65xvw4JqDoePNPOs=
-Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com
- [209.85.218.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-590-TPA4Aa4QNJybAVx0bDoxmQ-1; Thu, 27 May 2021 05:23:34 -0400
-X-MC-Unique: TPA4Aa4QNJybAVx0bDoxmQ-1
-Received: by mail-ej1-f71.google.com with SMTP id z1-20020a1709068141b02903cd421d7803so1427338ejw.22
-        for <linux-kernel@vger.kernel.org>; Thu, 27 May 2021 02:23:34 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=u/jxxyRApH7aRU/uOFFHnJ9R4si2NeFb5W7OXIxVnqE=;
-        b=Wq0oyVbRciK6e3Js9VB0SZjnIZTkOX5FToifWHV4y1zeALk8YJRR6Bdenb53Tod+Pv
-         pVo99mAs23jMVIQHzAFY1F12OC0Q6WtDXhkCcEHnD4b+NQMadG17U8jt80XIKrkfx0vJ
-         8fETJcZVrs5W+GrP4DsUf4HoQpq4kx4u636sex+qYd3Lm4W584R4m5Vf77BwPPNOMPOJ
-         HjLQBX/KuN0dgys7wzKDH3+wyFSy9IaW7MUT+cJNwKwQG0lSRJdSZP7M6s+DGBxX8XvU
-         d2vpXvT4/4Idd3PCSwAKVuHR6lJhoMFrKWneodE1OUSp8zjkKRpChvUAAC2RDNUmp+Ye
-         U1fQ==
-X-Gm-Message-State: AOAM531MWoII+Aywrg8h59+3ktnh+jPl/VLRTvEGShrs4+N17qWBjH3d
-        6BqnBfpJQ582bEreNFpbA1lnEdttHsWuOMqwV94pExCA3qO7Mdp2vUn/mHKEqX39fyVbAC4wh7c
-        MQrjF9Wmn6++ntyCubs10vndYoOExCXyJHDQkXbCl4+OoqVlK3fsc2bFjvmG9G4LeHDgG9EeXzh
-        P/
-X-Received: by 2002:a17:906:5210:: with SMTP id g16mr2848900ejm.116.1622107413468;
-        Thu, 27 May 2021 02:23:33 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwcjpCut/sI96DejpRN+VAuRaAHUFFepAK5jt0WONw18JAs+EBp7IO2oczxNea4slk7KA0wjg==
-X-Received: by 2002:a17:906:5210:: with SMTP id g16mr2848872ejm.116.1622107413249;
-        Thu, 27 May 2021 02:23:33 -0700 (PDT)
-Received: from x1.localdomain (2001-1c00-0c1e-bf00-1054-9d19-e0f0-8214.cable.dynamic.v6.ziggo.nl. [2001:1c00:c1e:bf00:1054:9d19:e0f0:8214])
-        by smtp.gmail.com with ESMTPSA id f18sm705138ejz.119.2021.05.27.02.23.32
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 27 May 2021 02:23:32 -0700 (PDT)
-Subject: Re: [PATCH] platform/x86: thinkpad_acpi: add X1 Carbon Gen 9 second
- fan support
-To:     Til Jasper Ullrich <tju@tju.me>,
-        Henrique de Moraes Holschuh <hmh@hmh.eng.br>
-Cc:     Mark Gross <mgross@linux.intel.com>,
-        ibm-acpi-devel@lists.sourceforge.net,
-        platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210525150950.14805-1-tju@tju.me>
-From:   Hans de Goede <hdegoede@redhat.com>
-Message-ID: <7a568685-9849-7642-c193-14e3bfc8cf77@redhat.com>
-Date:   Thu, 27 May 2021 11:23:32 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
-MIME-Version: 1.0
-In-Reply-To: <20210525150950.14805-1-tju@tju.me>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        id S235830AbhE0Jb3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 May 2021 05:31:29 -0400
+Received: from mga12.intel.com ([192.55.52.136]:15291 "EHLO mga12.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235608AbhE0Jb1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 27 May 2021 05:31:27 -0400
+IronPort-SDR: RrztWPNE1PdgGNvcJ726mlNJDdNPx4Mt2Ns45wbrEyiwjKU7+WQ9U5MRYFF/367URQxnq1bUqL
+ ogRs62wcQGow==
+X-IronPort-AV: E=McAfee;i="6200,9189,9996"; a="182345378"
+X-IronPort-AV: E=Sophos;i="5.82,334,1613462400"; 
+   d="scan'208";a="182345378"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 May 2021 02:29:54 -0700
+IronPort-SDR: eASGCXiob6fow26EUTHWWDM6LDeuzuQK9cRDSFxJt5+3Pg/lX9yb3jsz2pZmnKc0IeiInmL7Kp
+ JSkq2OHM7efQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.82,334,1613462400"; 
+   d="scan'208";a="436485838"
+Received: from mike-ilbpg1.png.intel.com ([10.88.227.76])
+  by orsmga007.jf.intel.com with ESMTP; 27 May 2021 02:29:49 -0700
+From:   Michael Sit Wei Hong <michael.wei.hong.sit@intel.com>
+To:     Jose.Abreu@synopsys.com, andrew@lunn.ch, hkallweit1@gmail.com,
+        linux@armlinux.org.uk, kuba@kernel.org, netdev@vger.kernel.org,
+        peppe.cavallaro@st.com, alexandre.torgue@foss.st.com,
+        davem@davemloft.net, mcoquelin.stm32@gmail.com,
+        weifeng.voon@intel.com, boon.leong.ong@intel.com,
+        tee.min.tan@intel.com, vee.khee.wong@linux.intel.com,
+        vee.khee.wong@intel.com, michael.wei.hong.sit@intel.com,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [PATCH net-next v3 0/3] Enable 2.5Gbps speed for stmmac
+Date:   Thu, 27 May 2021 17:24:12 +0800
+Message-Id: <20210527092415.25205-1-michael.wei.hong.sit@intel.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Intel mGbE supports 2.5Gbps link speed by overclocking the clock rate
+by 2.5 times to support 2.5Gbps link speed. In this mode, the serdes/PHY
+operates at a serial baud rate of 3.125 Gbps and the PCS data path and
+GMII interface of the MAC operate at 312.5 MHz instead of 125 MHz.
+This is configured in the BIOS during boot up. The kernel driver is not able
+access to modify the clock rate for 1Gbps/2.5G mode on the fly. The way to
+determine the current 1G/2.5G mode is by reading a dedicated adhoc
+register through mdio bus.
 
-On 5/25/21 5:09 PM, Til Jasper Ullrich wrote:
-> The X1 Carbon Gen 9 uses two fans instead of one like the previous
-> generation. This adds support for the second fan. It has been tested
-> on my X1 Carbon Gen 9 (20XXS00100) and works fine.
-> 
-> Signed-off-by: Til Jasper Ullrich <tju@tju.me>
+Changes:
+v2 -> v3
+ patch 1/3
+ -New patch added to restructure the code. enabling reading the dedicated
+  adhoc register to determine link speed mode.
 
-Thank you for your patch, I've applied this patch to my review-hans 
-branch:
-https://git.kernel.org/pub/scm/linux/kernel/git/pdx86/platform-drivers-x86.git/log/?h=review-hans
+ patch 2/3
+ -Restructure for 2.5G speed to use 2500BaseX configuration as the
+  PHY interface.
 
-I'll also cherry-pick this into the fixes branch so that it will
-be included in my next pdx86/fixes pull-req for 5.13.
+ patch 3/3
+ -Restructure to read serdes registers to set max_speed and configure to
+  use 2500BaseX in 2.5G speeds.
 
-Note it will show up in my review-hans branch once I've pushed my
-local branch there, which might take a while.
+v1 -> v2
+ patch 1/2
+ -Remove MAC supported link speed masking
 
-Once I've run some tests on this branch the patches there will be
-added to the platform-drivers-x86/for-next branch and eventually
-will be included in the pdx86 pull-request to Linus for the next
-merge-window.
+ patch 2/2
+ -Add supported link speed masking in the PCS
 
-Regards,
+iperf3 and ping for 2.5Gbps and regression test on 10M/100M/1000Mbps
+is done to prevent regresson issues.
 
-Hans
+2500Mbps
+PING 192.168.1.1 (192.168.1.1) 56(84) bytes of data.
+64 bytes from 192.168.1.1: icmp_seq=1 ttl=64 time=0.526 ms
+64 bytes from 192.168.1.1: icmp_seq=2 ttl=64 time=0.509 ms
+64 bytes from 192.168.1.1: icmp_seq=3 ttl=64 time=0.507 ms
+64 bytes from 192.168.1.1: icmp_seq=4 ttl=64 time=0.508 ms
+64 bytes from 192.168.1.1: icmp_seq=5 ttl=64 time=0.539 ms
+64 bytes from 192.168.1.1: icmp_seq=6 ttl=64 time=0.516 ms
+64 bytes from 192.168.1.1: icmp_seq=7 ttl=64 time=0.548 ms
+64 bytes from 192.168.1.1: icmp_seq=8 ttl=64 time=0.513 ms
+64 bytes from 192.168.1.1: icmp_seq=9 ttl=64 time=0.509 ms
+64 bytes from 192.168.1.1: icmp_seq=10 ttl=64 time=0.508 ms
 
+--- 192.168.1.1 ping statistics ---
+10 packets transmitted, 10 received, 0% packet loss, time 9222ms
+rtt min/avg/max/mdev = 0.507/0.518/0.548/0.013 ms
 
+Connecting to host 192.168.1.1, port 5201
+[  5] local 192.168.1.2 port 40092 connected to 192.168.1.1 port 5201
+[ ID] Interval           Transfer     Bitrate         Retr  Cwnd
+[  5]   0.00-1.00   sec   205 MBytes  1.72 Gbits/sec    0    604 KBytes       
+[  5]   1.00-2.00   sec   205 MBytes  1.72 Gbits/sec    0    632 KBytes       
+[  5]   2.00-3.00   sec   205 MBytes  1.72 Gbits/sec    0    632 KBytes       
+[  5]   3.00-4.00   sec   206 MBytes  1.73 Gbits/sec    0    632 KBytes       
+[  5]   4.00-5.00   sec   205 MBytes  1.72 Gbits/sec    0    632 KBytes       
+[  5]   5.00-6.00   sec   206 MBytes  1.73 Gbits/sec    0    632 KBytes       
+[  5]   6.00-7.00   sec   204 MBytes  1.71 Gbits/sec    0    632 KBytes       
+[  5]   7.00-8.00   sec   206 MBytes  1.73 Gbits/sec    0    632 KBytes       
+[  5]   8.00-9.00   sec   205 MBytes  1.72 Gbits/sec    0    632 KBytes       
+[  5]   9.00-10.00  sec   206 MBytes  1.73 Gbits/sec    0    632 KBytes       
+- - - - - - - - - - - - - - - - - - - - - - - - -
+[ ID] Interval           Transfer     Bitrate         Retr
+[  5]   0.00-10.00  sec  2.00 GBytes  1.72 Gbits/sec    0             sender
+[  5]   0.00-10.00  sec  2.00 GBytes  1.72 Gbits/sec                  receiver
 
-> ---
->  drivers/platform/x86/thinkpad_acpi.c | 1 +
->  1 file changed, 1 insertion(+)
-> 
-> diff --git a/drivers/platform/x86/thinkpad_acpi.c b/drivers/platform/x86/thinkpad_acpi.c
-> index dd60c9397d35..edd71e744d27 100644
-> --- a/drivers/platform/x86/thinkpad_acpi.c
-> +++ b/drivers/platform/x86/thinkpad_acpi.c
-> @@ -8853,6 +8853,7 @@ static const struct tpacpi_quirk fan_quirk_table[] __initconst = {
->  	TPACPI_Q_LNV3('N', '2', 'O', TPACPI_FAN_2CTL),	/* P1 / X1 Extreme (2nd gen) */
->  	TPACPI_Q_LNV3('N', '2', 'V', TPACPI_FAN_2CTL),	/* P1 / X1 Extreme (3nd gen) */
->  	TPACPI_Q_LNV3('N', '3', '0', TPACPI_FAN_2CTL),	/* P15 (1st gen) / P15v (1st gen) */
-> +	TPACPI_Q_LNV3('N', '3', '2', TPACPI_FAN_2CTL),	/* X1 Carbon (9th gen) */
->  };
-> 
->  static int __init fan_init(struct ibm_init_struct *iibm)
-> --
-> 2.31.1
-> 
+iperf Done.
+
+10Mbps
+host@EHL$ ethtool -s enp0s30f4 duplex full speed 10
+PING 192.168.1.1 (192.168.1.1) 56(84) bytes of data.
+64 bytes from 192.168.1.1: icmp_seq=1 ttl=64 time=1.46 ms
+64 bytes from 192.168.1.1: icmp_seq=2 ttl=64 time=0.761 ms
+64 bytes from 192.168.1.1: icmp_seq=3 ttl=64 time=0.744 ms
+64 bytes from 192.168.1.1: icmp_seq=4 ttl=64 time=0.753 ms
+64 bytes from 192.168.1.1: icmp_seq=5 ttl=64 time=0.746 ms
+64 bytes from 192.168.1.1: icmp_seq=6 ttl=64 time=0.786 ms
+64 bytes from 192.168.1.1: icmp_seq=7 ttl=64 time=0.740 ms
+64 bytes from 192.168.1.1: icmp_seq=8 ttl=64 time=0.757 ms
+64 bytes from 192.168.1.1: icmp_seq=9 ttl=64 time=0.742 ms
+64 bytes from 192.168.1.1: icmp_seq=10 ttl=64 time=0.772 ms
+
+--- 192.168.1.1 ping statistics ---
+10 packets transmitted, 10 received, 0% packet loss, time 9208ms
+rtt min/avg/max/mdev = 0.740/0.826/1.461/0.212 ms
+
+Connecting to host 192.168.1.1, port 5201
+[  5] local 192.168.1.2 port 35304 connected to 192.168.1.1 port 5201
+[ ID] Interval           Transfer     Bitrate         Retr  Cwnd
+[  5]   0.00-1.00   sec  1.26 MBytes  10.6 Mbits/sec    0   29.7 KBytes       
+[  5]   1.00-2.00   sec  1.09 MBytes  9.17 Mbits/sec    0   29.7 KBytes       
+[  5]   2.00-3.00   sec  1.09 MBytes  9.17 Mbits/sec    0   29.7 KBytes       
+[  5]   3.00-4.00   sec  1.15 MBytes  9.68 Mbits/sec    0   29.7 KBytes       
+[  5]   4.00-5.00   sec  1.09 MBytes  9.17 Mbits/sec    0   29.7 KBytes       
+[  5]   5.00-6.00   sec  1.09 MBytes  9.17 Mbits/sec    0   29.7 KBytes       
+[  5]   6.00-7.00   sec  1.15 MBytes  9.68 Mbits/sec    0   29.7 KBytes       
+[  5]   7.00-8.00   sec  1.09 MBytes  9.17 Mbits/sec    0   29.7 KBytes       
+[  5]   8.00-9.00   sec  1.09 MBytes  9.17 Mbits/sec    0   29.7 KBytes       
+[  5]   9.00-10.00  sec  1.15 MBytes  9.68 Mbits/sec    0   29.7 KBytes       
+- - - - - - - - - - - - - - - - - - - - - - - - -
+[ ID] Interval           Transfer     Bitrate         Retr
+[  5]   0.00-10.00  sec  11.3 MBytes  9.47 Mbits/sec    0             sender
+[  5]   0.00-10.01  sec  11.1 MBytes  9.33 Mbits/sec                  receiver
+
+iperf Done.
+
+100Mbps
+host@EHL$ ethtool -s enp0s30f4 duplex full speed 100
+PING 192.168.1.1 (192.168.1.1) 56(84) bytes of data.
+64 bytes from 192.168.1.1: icmp_seq=1 ttl=64 time=1.05 ms
+64 bytes from 192.168.1.1: icmp_seq=2 ttl=64 time=0.535 ms
+64 bytes from 192.168.1.1: icmp_seq=3 ttl=64 time=0.522 ms
+64 bytes from 192.168.1.1: icmp_seq=4 ttl=64 time=0.529 ms
+64 bytes from 192.168.1.1: icmp_seq=5 ttl=64 time=0.523 ms
+64 bytes from 192.168.1.1: icmp_seq=6 ttl=64 time=0.543 ms
+64 bytes from 192.168.1.1: icmp_seq=7 ttl=64 time=0.553 ms
+64 bytes from 192.168.1.1: icmp_seq=8 ttl=64 time=0.542 ms
+64 bytes from 192.168.1.1: icmp_seq=9 ttl=64 time=0.517 ms
+64 bytes from 192.168.1.1: icmp_seq=10 ttl=64 time=0.515 ms
+
+--- 192.168.1.1 ping statistics ---
+10 packets transmitted, 10 received, 0% packet loss, time 9233ms
+rtt min/avg/max/mdev = 0.515/0.582/1.048/0.155 ms
+
+Connecting to host 192.168.1.1, port 5201
+[  5] local 192.168.1.2 port 35308 connected to 192.168.1.1 port 5201
+[ ID] Interval           Transfer     Bitrate         Retr  Cwnd
+[  5]   0.00-1.00   sec  11.8 MBytes  99.1 Mbits/sec    0    147 KBytes       
+[  5]   1.00-2.00   sec  10.9 MBytes  91.2 Mbits/sec    0    187 KBytes       
+[  5]   2.00-3.00   sec  11.4 MBytes  95.4 Mbits/sec    0    230 KBytes       
+[  5]   3.00-4.00   sec  10.9 MBytes  91.7 Mbits/sec    0    230 KBytes       
+[  5]   4.00-5.00   sec  10.4 MBytes  87.6 Mbits/sec    0    230 KBytes       
+[  5]   5.00-6.00   sec  10.9 MBytes  91.7 Mbits/sec    0    230 KBytes       
+[  5]   6.00-7.00   sec  10.9 MBytes  91.7 Mbits/sec    0    230 KBytes       
+[  5]   7.00-8.00   sec  10.9 MBytes  91.7 Mbits/sec    0    230 KBytes       
+[  5]   8.00-9.00   sec  10.9 MBytes  91.7 Mbits/sec    0    230 KBytes       
+[  5]   9.00-10.00  sec  10.9 MBytes  91.7 Mbits/sec    0    230 KBytes       
+- - - - - - - - - - - - - - - - - - - - - - - - -
+[ ID] Interval           Transfer     Bitrate         Retr
+[  5]   0.00-10.00  sec   110 MBytes  92.4 Mbits/sec    0             sender
+[  5]   0.00-10.01  sec   109 MBytes  91.5 Mbits/sec                  receiver
+
+iperf Done.
+
+1000Mbps
+host@EHL$ ethtool -s enp0s30f4 duplex full speed 1000
+PING 192.168.1.1 (192.168.1.1) 56(84) bytes of data.
+64 bytes from 192.168.1.1: icmp_seq=1 ttl=64 time=1.02 ms
+64 bytes from 192.168.1.1: icmp_seq=2 ttl=64 time=0.507 ms
+64 bytes from 192.168.1.1: icmp_seq=3 ttl=64 time=0.539 ms
+64 bytes from 192.168.1.1: icmp_seq=4 ttl=64 time=0.506 ms
+64 bytes from 192.168.1.1: icmp_seq=5 ttl=64 time=0.504 ms
+64 bytes from 192.168.1.1: icmp_seq=6 ttl=64 time=0.489 ms
+64 bytes from 192.168.1.1: icmp_seq=7 ttl=64 time=0.499 ms
+64 bytes from 192.168.1.1: icmp_seq=8 ttl=64 time=0.483 ms
+64 bytes from 192.168.1.1: icmp_seq=9 ttl=64 time=0.480 ms
+64 bytes from 192.168.1.1: icmp_seq=10 ttl=64 time=0.493 ms
+
+--- 192.168.1.1 ping statistics ---
+10 packets transmitted, 10 received, 0% packet loss, time 9213ms
+rtt min/avg/max/mdev = 0.480/0.551/1.015/0.155 ms
+
+Connecting to host 192.168.1.1, port 5201
+[  5] local 192.168.1.2 port 35312 connected to 192.168.1.1 port 5201
+[ ID] Interval           Transfer     Bitrate         Retr  Cwnd
+[  5]   0.00-1.00   sec   114 MBytes   960 Mbits/sec    0    437 KBytes       
+[  5]   1.00-2.00   sec   112 MBytes   940 Mbits/sec    0    437 KBytes       
+[  5]   2.00-3.00   sec   112 MBytes   937 Mbits/sec    0    437 KBytes       
+[  5]   3.00-4.00   sec   112 MBytes   941 Mbits/sec    0    437 KBytes       
+[  5]   4.00-5.00   sec   112 MBytes   939 Mbits/sec    0    457 KBytes       
+[  5]   5.00-6.00   sec   112 MBytes   941 Mbits/sec    0    457 KBytes       
+[  5]   6.00-7.00   sec   112 MBytes   944 Mbits/sec    0    457 KBytes       
+[  5]   7.00-8.00   sec   112 MBytes   937 Mbits/sec    0    457 KBytes       
+[  5]   8.00-9.00   sec   113 MBytes   946 Mbits/sec    0    457 KBytes       
+[  5]   9.00-10.00  sec   112 MBytes   937 Mbits/sec    0    457 KBytes       
+- - - - - - - - - - - - - - - - - - - - - - - - -
+[ ID] Interval           Transfer     Bitrate         Retr
+[  5]   0.00-10.00  sec  1.10 GBytes   942 Mbits/sec    0             sender
+[  5]   0.00-10.00  sec  1.10 GBytes   941 Mbits/sec                  receiver
+
+iperf Done.
+
+Voon Weifeng (3):
+  net: stmmac: split xPCS setup from mdio register
+  net: pcs: add 2500BASEX support for Intel mGbE controller
+  net: stmmac: enable Intel mGbE 2.5Gbps link speed
+
+ .../net/ethernet/stmicro/stmmac/dwmac-intel.c | 48 +++++++++++++-
+ .../net/ethernet/stmicro/stmmac/dwmac-intel.h | 13 ++++
+ .../net/ethernet/stmicro/stmmac/dwmac4_core.c |  1 +
+ drivers/net/ethernet/stmicro/stmmac/stmmac.h  |  1 +
+ .../net/ethernet/stmicro/stmmac/stmmac_main.c | 14 ++++
+ .../net/ethernet/stmicro/stmmac/stmmac_mdio.c | 64 +++++++++++--------
+ drivers/net/pcs/pcs-xpcs.c                    | 60 +++++++++++++++++
+ include/linux/pcs/pcs-xpcs.h                  |  1 +
+ include/linux/stmmac.h                        |  1 +
+ 9 files changed, 175 insertions(+), 28 deletions(-)
+
+-- 
+2.17.1
 
