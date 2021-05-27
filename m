@@ -2,112 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CA39E392F0C
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 15:05:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C0BBE392F1B
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 15:06:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236330AbhE0NG7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 May 2021 09:06:59 -0400
-Received: from mga18.intel.com ([134.134.136.126]:18022 "EHLO mga18.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236306AbhE0NG4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 May 2021 09:06:56 -0400
-IronPort-SDR: mw/BX1tdDjYHYjSXj864qN9MhQEWzPaNeQhlRnBKgmxMjjzRJEwjHZ2JbWXn7IC7sC+LJtqco6
- WRULaHxnRaxQ==
-X-IronPort-AV: E=McAfee;i="6200,9189,9996"; a="190097996"
-X-IronPort-AV: E=Sophos;i="5.82,334,1613462400"; 
-   d="scan'208";a="190097996"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 May 2021 06:05:22 -0700
-IronPort-SDR: +faRF/ZGJz2QiCoyGPXm3UW/Fv/IXpLvFWvQ7y0UbDH6bjXqVpHJq1fOT2wCDxsm6iHXDVfHpO
- k/TfBLzNU4NQ==
-X-IronPort-AV: E=Sophos;i="5.82,334,1613462400"; 
-   d="scan'208";a="477476407"
-Received: from tirizk-mobl.amr.corp.intel.com (HELO chenyu5-mobl1) ([10.249.170.232])
-  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 May 2021 06:05:19 -0700
-Date:   Thu, 27 May 2021 21:05:14 +0800
-From:   Chen Yu <yu.c.chen@intel.com>
-To:     Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
-Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-        Len Brown <len.brown@intel.com>,
-        Zhang Rui <rui.zhang@intel.com>
-Subject: Re: [PATCH] intel_idle: Adjust the SKX C6 latency and residency if
- PC6 is disabled
-Message-ID: <20210527130514.GA13361@chenyu5-mobl1>
-References: <20210527045647.3599-1-yu.c.chen@intel.com>
- <f5975692426cb27efd5779e7987a7def2a08728d.camel@linux.intel.com>
+        id S236366AbhE0NIO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 May 2021 09:08:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57884 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236336AbhE0NIC (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 27 May 2021 09:08:02 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C04BC061760;
+        Thu, 27 May 2021 06:06:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=ta5zzhet5s6C63/o89LSX98k9lWRcXUPZemLvb4KNvQ=; b=HfZz8BRqIZXWTWn2p5hFQrTao1
+        iZJDgiZEi8Vmr//6oJzinMu3kuu4Ml+cC6TbN1ZUZbFoneVoVqYU6ToKxiVj+zmnsHgM0n9x/C6gi
+        YskpjrBH3Iy4bfMKsgzjbw6nrOQZUsOq/w8OhTbVYCG1L22P8iKayEM1QBSpxKe7xfMmeKTwXKJaQ
+        Y70SXnvSfe2Onl36lQFJPV7gs1cMho/hn+fSKLpy9EKVyHKktR0iNePLo7wbjftr+8ONOWeuQI/sJ
+        JaL11rfLez3fAapFrYnmnCpl8yvk5haitSvJF4/24ddTToylmg0qN15ojjibz7eUrHp+UnwCNLCV1
+        9om/d5IQ==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1lmFhc-005YSv-1T; Thu, 27 May 2021 13:05:41 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 12A2B300268;
+        Thu, 27 May 2021 15:05:30 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id D2920202492E9; Thu, 27 May 2021 15:05:30 +0200 (CEST)
+Date:   Thu, 27 May 2021 15:05:30 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Vincent Guittot <vincent.guittot@linaro.org>
+Cc:     mingo@redhat.com, juri.lelli@redhat.com, dietmar.eggemann@arm.com,
+        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
+        bristot@redhat.com, linux-kernel@vger.kernel.org, odin@uged.al,
+        cgroups@vger.kernel.org
+Subject: Re: [PATCH 1/2] sched/fair: keep load_avg and load_sum synced
+Message-ID: <YK+ZGlfPxK3JCySS@hirez.programming.kicks-ass.net>
+References: <20210527122916.27683-1-vincent.guittot@linaro.org>
+ <20210527122916.27683-2-vincent.guittot@linaro.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <f5975692426cb27efd5779e7987a7def2a08728d.camel@linux.intel.com>
+In-Reply-To: <20210527122916.27683-2-vincent.guittot@linaro.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 27, 2021 at 11:25:18AM +0300, Artem Bityutskiy wrote:
-> On Thu, 2021-05-27 at 12:56 +0800, Chen Yu wrote:
-> 
-> ... snip ...
-> 
-> > Exit latency:
-> > The C6 exit latency is measured when woken up from CC6/PC6. In the past,
-> > if PC6 is disabled, CPU would be demoted to CC6/PC3, which is close to
-> > the latency from CC6/PC6 and there is no need to update the C6 exit latency.
-> > However on newer platform there is no CC3/PC3 anymore, then the C6 exit
-> > latency with PC6 disabled should be CC6/PC0.
-> > 
-> > Target residency:
-> > With PC6 disabled and C3/PC3 supported, the OS requests C3 if idle
-> > duration is within [CC6, PC6) target_residency. On new CPU generations
-> > with C3/PC3 deprecated, the OS would request C1E. This would cause
-> > low energy-efficiency. In summary, the question is, should we lower
-> > the bar to request C6 when PC6 is disabled? The answer is yes.
-> ... snip ...
-> 
-> Hi Yu,
->
-Hi Artem, 
-> Thanks for this patch, it is very actual and helpful.
-> 
-> Comments about the commit message below.
-> 
-> This patch is specifically about SKX. It also covers CLX and CPX,
-> because they have the same ID.
-> 
-> Now, this platforms do not have C3 and PC3. So I would avoid talking
-> about these states
-> in the commit message. Why making a simple thing more complex?
-> 
-I agree, in theory this issue is irrelevant of the C3/PC3, however I was
-thinking the issue would become more significant to user on platform without
-C3/PC3, and this increase the necessity of this patch. But let me
-refine the commit log to only mention C3 a little just for future reference.
-> Here are all the SKX C-states.
-> 
-> 1. Linux-level C-states (linux can ask for): C1, C1E, C6.
-> 2. HW-level C-states (HW supports under the hood): C1, C1E, CC6, PC2,
-> PC6.
-> 
-And PC0?
-> Here is the story of this patch in my understanding.
-> 
-> 1. C6 maps to CC6 and PC6.
-> 2. CC6 is "shallower" than PC6.
-> 3. Linux assumes worst case - PC6.
-> 4. Many datacenters and users disable PC6.
-> 5. We can optimize intel_idle in this case: adjust C6 latency and
-> target residency to match (faster) CC6.
-> 
-> That's it.
-> 
-Okay.
-> Then may be it is worth mentioning that CC6 vs PC2 difference is not
-> really measurable, so
-> the adjustment is only for PC6.
-> 
-Okay.
+On Thu, May 27, 2021 at 02:29:15PM +0200, Vincent Guittot wrote:
 
-thanks,
-Chenyu
-> Artem.
-> 
+> --- a/kernel/sched/fair.c
+> +++ b/kernel/sched/fair.c
+> @@ -3509,7 +3509,8 @@ update_tg_cfs_load(struct cfs_rq *cfs_rq, struct sched_entity *se, struct cfs_rq
+>  	se->avg.load_sum = runnable_sum;
+>  	se->avg.load_avg = load_avg;
+>  	add_positive(&cfs_rq->avg.load_avg, delta_avg);
+> -	add_positive(&cfs_rq->avg.load_sum, delta_sum);
+> +	cfs_rq->avg.load_sum = cfs_rq->avg.load_avg * divider;
+
+If I'm not mistaken, this makes delta_sum unused, so we can remove it
+entirely, see below.
+
+> +
+
+This extra blank space, we really need that? :-)
+
+>  }
+
+---
+diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+index 161b92aa1c79..2b99e687fe7a 100644
+--- a/kernel/sched/fair.c
++++ b/kernel/sched/fair.c
+@@ -3453,10 +3453,9 @@ update_tg_cfs_runnable(struct cfs_rq *cfs_rq, struct sched_entity *se, struct cf
+ static inline void
+ update_tg_cfs_load(struct cfs_rq *cfs_rq, struct sched_entity *se, struct cfs_rq *gcfs_rq)
+ {
+-	long delta_avg, running_sum, runnable_sum = gcfs_rq->prop_runnable_sum;
++	long running_sum, runnable_sum = gcfs_rq->prop_runnable_sum;
+ 	unsigned long load_avg;
+ 	u64 load_sum = 0;
+-	s64 delta_sum;
+ 	u32 divider;
+ 
+ 	if (!runnable_sum)
+@@ -3503,13 +3502,11 @@ update_tg_cfs_load(struct cfs_rq *cfs_rq, struct sched_entity *se, struct cfs_rq
+ 	load_sum = (s64)se_weight(se) * runnable_sum;
+ 	load_avg = div_s64(load_sum, divider);
+ 
+-	delta_sum = load_sum - (s64)se_weight(se) * se->avg.load_sum;
+-	delta_avg = load_avg - se->avg.load_avg;
+-
+ 	se->avg.load_sum = runnable_sum;
+ 	se->avg.load_avg = load_avg;
+-	add_positive(&cfs_rq->avg.load_avg, delta_avg);
+-	add_positive(&cfs_rq->avg.load_sum, delta_sum);
++
++	add_positive(&cfs_rq->avg.load_avg, (long)(load_avg - se->avg.load_avg));
++	cfs_rq->avg.load_sum = cfs_rq->avg.load_avg * divider;
+ }
+ 
+ static inline void add_tg_cfs_propagate(struct cfs_rq *cfs_rq, long runnable_sum)
