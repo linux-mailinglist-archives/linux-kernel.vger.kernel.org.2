@@ -2,139 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 40DFC3923CD
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 02:30:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E6E03923CF
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 02:31:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234699AbhE0AcU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 May 2021 20:32:20 -0400
-Received: from mail-dm6nam12on2084.outbound.protection.outlook.com ([40.107.243.84]:28544
-        "EHLO NAM12-DM6-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S233862AbhE0AcT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 May 2021 20:32:19 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=MqicJPO1i3ngsQXN0U7TAgSijIVN/ksAbYM1kBq3Wnabq71owMvdmADPILhDMxn//+jhatE9fM/TVt1ym02ugTfJkSt9K5a+//Y21uE4WAL8GooDtQIeQmmBf3AN3aroxzPrBFpBBg84lMmCNLm3uqRN7F5s/vJL/EGOShKbXQZhEhXZxujoYCM1QjJB/4yLR81RWPhkW9/sBFeApc3+ikv9x9gX8sN/Oev9vyogPwZ/g+kS/oOkcLMu0D3oSw2FHTd991vCmRfYL6Ny7Y4j4frWpfepKcLlv/mjgZ8cKKPeqLvNEl682jDjjhwMNhG2Qbn9sBd2/30mbcrP6jCvuw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=hPCfc/GBa63ueEIYB9FyU9I0z4d56lTwx1LDSC4SV3A=;
- b=Vz8/0L5VB1vyYRIUTNTbZl+bSZ2IMiy8GbzMFpb3DY4sXPNeGWVFF8rSx7uxK34Pvpwlt8yF6VIuef2iiUsgFE9QzoEifyJ7mhu+XSZ6nmBE93xbm7Qo1EvduEL/UnfPYVDYHIgxLHfObHCcoJdc3lJKFuK+ulWLFO76ORZrDsL0W7GO20aYwYcY4NcW2WzWA4Ki/HEZQlfVbdABCf4Y4YJd3zYvF62FOvBAaBA4OL+wx6pD4rOQFGVN7FuUofPqCj6B4bw7sHaUvdVJkbYisiIZ8ON2978OyuOp5O34rINKTqYh79eIoz1AY8L8XghMkRKn9M+9ERIzmEQGEWX+mA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.112.34) smtp.rcpttodomain=lists.freedesktop.org
- smtp.mailfrom=nvidia.com; dmarc=pass (p=none sp=none pct=100) action=none
- header.from=nvidia.com; dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=hPCfc/GBa63ueEIYB9FyU9I0z4d56lTwx1LDSC4SV3A=;
- b=ODH/Oq7yQA3YaRQlCJsJWg0Et9RwuQK/co2rS2AqgDrcla7Tjmp9nxSqvFGkAp7tzSiU3U9iwKnb7qRcPu9PhS3RhWXpOjpWYnnuYWHfAUYVMUXzSyTX2zK8ljqxKXyXFQ84b4Eqa0bRSnHKTdhQY8VdCKbZDRW6brXeAIiTxtg1nxlsM+QxpGouWpddkwCVA/jtsYoqMIXXzu8okNXhwZ7Kx5po9OhMTdxW5ihnJbL3z5xnwDee8agE0BwA/XFSeDeJ5lTFVwcjQdQfm/YvlEPma6/ssxsfqhnXCSx0srYb0IGiPBdodblUgGBsPscv1PEd/Y91WX1SNehF1TDimQ==
-Received: from MWHPR10CA0001.namprd10.prod.outlook.com (2603:10b6:301::11) by
- BN6PR1201MB0114.namprd12.prod.outlook.com (2603:10b6:405:4d::20) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4150.25; Thu, 27 May
- 2021 00:30:39 +0000
-Received: from CO1NAM11FT011.eop-nam11.prod.protection.outlook.com
- (2603:10b6:301:0:cafe::9a) by MWHPR10CA0001.outlook.office365.com
- (2603:10b6:301::11) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4173.20 via Frontend
- Transport; Thu, 27 May 2021 00:30:39 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.112.34)
- smtp.mailfrom=nvidia.com; lists.freedesktop.org; dkim=none (message not
- signed) header.d=none;lists.freedesktop.org; dmarc=pass action=none
- header.from=nvidia.com;
-Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 216.228.112.34 as permitted sender) receiver=protection.outlook.com;
- client-ip=216.228.112.34; helo=mail.nvidia.com;
-Received: from mail.nvidia.com (216.228.112.34) by
- CO1NAM11FT011.mail.protection.outlook.com (10.13.175.186) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- 15.20.4129.25 via Frontend Transport; Thu, 27 May 2021 00:30:39 +0000
-Received: from nvdebian.localnet (172.20.145.6) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Thu, 27 May
- 2021 00:30:36 +0000
-From:   Alistair Popple <apopple@nvidia.com>
-To:     Colin King <colin.king@canonical.com>
-CC:     Ben Skeggs <bskeggs@redhat.com>, David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        <dri-devel@lists.freedesktop.org>, <nouveau@lists.freedesktop.org>,
-        <kernel-janitors@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH][next] nouveau/svm: Fix missing failure check on call to make_device_exclusive_range
-Date:   Thu, 27 May 2021 10:30:34 +1000
-Message-ID: <2050838.rP6W8OkBfs@nvdebian>
-In-Reply-To: <20210526140459.3749959-1-colin.king@canonical.com>
-References: <20210526140459.3749959-1-colin.king@canonical.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
-X-Originating-IP: [172.20.145.6]
-X-ClientProxiedBy: HQMAIL111.nvidia.com (172.20.187.18) To
- HQMAIL107.nvidia.com (172.20.187.13)
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 2447ba04-2c43-41cb-6566-08d920a6a743
-X-MS-TrafficTypeDiagnostic: BN6PR1201MB0114:
-X-Microsoft-Antispam-PRVS: <BN6PR1201MB011441F2F0625D7260F4A297DF239@BN6PR1201MB0114.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:3173;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: MkyJOCrYMbBcFI+3vVv1DRIiSCLoBO+dO+CUNAq2iUYejfUNItJ2UtQiOPocqJTue2u422xfwkxtokYieKYw9nlydIBVE+iLzy2m92eivB/xlq92tt9eTMOkUc8sYtUXWgn70S4XQivtZExYYNDsCNZYTwMJj965QgwJn6AyNFGh0kJEkv/qBFf8LVflW96mJt1xBf8zICRBOygRpQL4G2RAfVJOaqezSzweveJ7SnjizNWjRp9AWn4yM8RpQ0Ynk2vqx+MEyOL44ULJ4Ki4VgjVfmC/mZHCGNdeSgZ4WJvCsFuP3/M1n02XAldyVv0BA3FyH4qPdpchRJ/I0xmit1t5TX+42bHNytToWgNVh4sqsaj99Tb6byRTfP4wIi3x+aru3u2fQyENoZpc12KF8Uo3x6kqmd7lsAcUMIIh4RhV0MdR7lfB6ONMiU6/nG/F6D74O3o0nCuHrrRl0EvG6d4WSIDW7BPRjtymw/kXpIu/2b/5rfjY+pKDIE3g1YHjM2WWlJmFzRQS52Idb1gLg20RNjv2/aGrmfWUqojLOO9lUQRdkLa9mdJ6FCufo+JqoW8T7k3GJ/uDI1KrEmMDEGokGNy2lcVrKHAria9ur6jJkGHCqivI09J0Tj629vjPggjcMFWuiXy+fKgF3c7k9gRlsupuOCQqnE/ANbKCsDBOXEUG50DUu6zDxC3UjSv+
-X-Forefront-Antispam-Report: CIP:216.228.112.34;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:schybrid03.nvidia.com;CAT:NONE;SFS:(4636009)(376002)(136003)(346002)(39860400002)(396003)(46966006)(36840700001)(7416002)(6916009)(33716001)(336012)(86362001)(2906002)(9576002)(5660300002)(426003)(186003)(16526019)(9686003)(82310400003)(8936002)(83380400001)(4326008)(8676002)(478600001)(356005)(54906003)(36860700001)(7636003)(36906005)(70206006)(70586007)(26005)(82740400003)(316002)(47076005)(39026012);DIR:OUT;SFP:1101;
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 27 May 2021 00:30:39.1308
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 2447ba04-2c43-41cb-6566-08d920a6a743
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.112.34];Helo=[mail.nvidia.com]
-X-MS-Exchange-CrossTenant-AuthSource: CO1NAM11FT011.eop-nam11.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN6PR1201MB0114
+        id S234226AbhE0AdR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 May 2021 20:33:17 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44958 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232903AbhE0AdP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 26 May 2021 20:33:15 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 993CC613B4;
+        Thu, 27 May 2021 00:31:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
+        s=korg; t=1622075502;
+        bh=VElGUCrEdn4IEvlrz/77la9T537zZI/H+mQPAk6Ho7w=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=tCZQFp45TvATQFhyf65Vg+kZ83gR68JXy9JrNNG4+13t348+QLndujSLgkJA/+wpn
+         dGbvBHxKi3OBmVJLg7uzmBd66H5vOwF0IG8gdo9FrWTXT0gayR5ka1LuOxiICYKZzq
+         d+ioj6kiemxaF0+q+3g8PWYz+LYGH14Roj6MKhKE=
+Date:   Wed, 26 May 2021 17:31:41 -0700
+From:   Andrew Morton <akpm@linux-foundation.org>
+To:     Qian Cai <quic_qiancai@quicinc.com>
+Cc:     Mike Rapoport <rppt@linux.ibm.com>,
+        David Hildenbrand <david@redhat.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        Will Deacon <will@kernel.org>, Marc Zyngier <maz@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>
+Subject: Re: Arm64 crash while reading memory sysfs
+Message-Id: <20210526173141.f1b511816fb33eab881e0c8f@linux-foundation.org>
+In-Reply-To: <d55f915c-ad01-e729-1e29-b57d78257cbb@quicinc.com>
+References: <DM5PR0201MB355723819DDAC439273F68848E259@DM5PR0201MB3557.namprd02.prod.outlook.com>
+        <YK3tQ0a0S/CLxyyb@linux.ibm.com>
+        <CY4PR0201MB35539FF5EE729283C4241F5A8E249@CY4PR0201MB3553.namprd02.prod.outlook.com>
+        <YK6EXNZHY1xt7Kjs@linux.ibm.com>
+        <d55f915c-ad01-e729-1e29-b57d78257cbb@quicinc.com>
+X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.31; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thursday, 27 May 2021 12:04:59 AM AEST Colin King wrote:
-> The call to make_device_exclusive_range can potentially fail leaving
-> pointer page not initialized that leads to an uninitialized pointer
-> read issue. Fix this by adding a check to see if the call failed and
-> returning the error code.
+On Wed, 26 May 2021 20:16:14 -0400 Qian Cai <quic_qiancai@quicinc.com> wrote:
+
 > 
-> Addresses-Coverity: ("Uninitialized pointer read")
-> Fixes: c620bba9828c ("nouveau/svm: implement atomic SVM access")
-> Signed-off-by: Colin Ian King <colin.king@canonical.com>
-> ---
->  drivers/gpu/drm/nouveau/nouveau_svm.c | 6 ++++--
->  1 file changed, 4 insertions(+), 2 deletions(-)
 > 
-> diff --git a/drivers/gpu/drm/nouveau/nouveau_svm.c
-> b/drivers/gpu/drm/nouveau/nouveau_svm.c index 84726a89e665..b913b4907088
-> 100644
-> --- a/drivers/gpu/drm/nouveau/nouveau_svm.c
-> +++ b/drivers/gpu/drm/nouveau/nouveau_svm.c
-> @@ -609,8 +609,10 @@ static int nouveau_atomic_range_fault(struct
-> nouveau_svmm *svmm,
+> On 5/26/2021 1:24 PM, Mike Rapoport wrote:
+> > On Wed, May 26, 2021 at 12:09:14PM +0000, Qian Cai (QUIC) wrote:
+> >>>
+> >>> On Tue, May 25, 2021 at 03:25:59PM +0000, Qian Cai (QUIC) wrote:
+> >>>> Reverting the patchset "arm64: drop pfn_valid_within() and simplify pfn_valid()" [1] from today's linux-next fixed a crash while
+> >>> reading files under /sys/devices/system/memory.
+> > 
+> > Does the issue persist of you only revert the latest patch in the series?
+> > In next-20210525 it would be commit 
+> > 89fb47db72f2 ("arm64-drop-pfn_valid_within-and-simplify-pfn_valid-fix")
+> > and commit
+> > dfe215e9bac2 ("arm64: drop pfn_valid_within() and simplify pfn_valid()").
 > 
->                 notifier_seq = mmu_interval_read_begin(&notifier->notifier);
-> mmap_read_lock(mm);
-> -               make_device_exclusive_range(mm, start, start + PAGE_SIZE,
-> -                                           &page, drm->dev);
-> +               ret = make_device_exclusive_range(mm, start, start +
-> PAGE_SIZE, +                                                 &page,
-> drm->dev); +               if (ret < 0)
-> +                       goto out;
+> Reverting those two commits alone is enough to fix the issue.
 
-Thanks for spotting, this is fixing get_user_pages() inside 
-make_device_exclusive_range() returning an error. However the check needs to 
-happen after dropping mmap_lock below:
+(cc Stephen)
 
->                 mmap_read_unlock(mm);
->                 if (!page) {
->                         ret = -EINVAL;
-> --
-> 2.31.1
+Thanks, I'll drop
 
-
-
+arm64-drop-pfn_valid_within-and-simplify-pfn_valid.patch
+arm64-drop-pfn_valid_within-and-simplify-pfn_valid-fix.patch
 
