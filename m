@@ -2,106 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 95EEE392A5A
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 11:13:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 41E14392A61
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 11:14:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235732AbhE0JPK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 May 2021 05:15:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60536 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235688AbhE0JOz (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 May 2021 05:14:55 -0400
-Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF642C0613CE
-        for <linux-kernel@vger.kernel.org>; Thu, 27 May 2021 02:13:19 -0700 (PDT)
-Received: by mail-wr1-x435.google.com with SMTP id c3so731495wrp.8
-        for <linux-kernel@vger.kernel.org>; Thu, 27 May 2021 02:13:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=nJen1rOgUNmKsdWJ7xYkbi68Xlz/jeFvSOqGTKYh6rQ=;
-        b=CumNgQo58PjUW/759JubC4OQ6iuZGJSClbjHIay0l+hrIx/b/Ggz6jI8Qnf3CIJypA
-         5ByUI2un6UKbTdeADWOaaFYZZ+IRw1cxjhYITm2FhQqS3I5VKLAYAevnox8+PLUwOffP
-         MPh6foSBzklBH42y/BjciwIrwrpWJrHI77mzVuvvv4zlM3jQHs69FxjhPpFhZ9W1bf1C
-         +03v+n5Pf3HzZDjitgRG9eliffBVlem1oezBIREJ4VTtXgGhxRkQ9U3NjVvD20GOgEgS
-         WDW/ibZ6h05SvWZ8YNOhSu8gL9JlgmN63rR1uvyQ20mKFbPsfogmYCzRF+2JinK+dgYh
-         opLw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=nJen1rOgUNmKsdWJ7xYkbi68Xlz/jeFvSOqGTKYh6rQ=;
-        b=aXKpavHBSezEVO9atuXpTE2HHluhAE9vFkeE9NLdeRmQMwKS+N2GjctYtOa6zdYXRS
-         jOvnc8nCoxHKyTm0hFMT1ROxpYOZEqvYdfN7lskdO7q9j8BfVhJdba/LUvZkgEkbnaUC
-         IecJ32n0bTbOs130YeJ/ri4SWXQaiOCPBWUFeEdWd3zWjizYR0ONQqtqo+gMx1akaaHO
-         RZx1rEM/rGzbbgXYnspJCz/0F/w3DLluRhgf8sRXZakoVxhNzvJXDOcTbIgJrdKw0LZv
-         ntZy2PjhGwhnJpVy++RgCeQyDERlJy825+bN3vYrrDud/0Kx6UQs3nyZrt99XUrgPgIW
-         FRgw==
-X-Gm-Message-State: AOAM531I6Oe0Auh48q45R6zYeL2GuAtUXOXTgXJ2u1Qx5wX35oo1iQ77
-        qAsG6XPaDla0Ej0xhKCnvS0cxA==
-X-Google-Smtp-Source: ABdhPJx1E0L4zFTNht2Rks864ubsVJRToSSwnbs61G4IRcaGBg46ZAI5LPUWBP5LJmJS6D/aWO935A==
-X-Received: by 2002:a05:6000:118c:: with SMTP id g12mr2207240wrx.320.1622106797337;
-        Thu, 27 May 2021 02:13:17 -0700 (PDT)
-Received: from ?IPv6:2a01:e34:ed2f:f020:696e:3a28:f7d2:5200? ([2a01:e34:ed2f:f020:696e:3a28:f7d2:5200])
-        by smtp.googlemail.com with ESMTPSA id j101sm2290966wrj.66.2021.05.27.02.13.16
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 27 May 2021 02:13:16 -0700 (PDT)
-Subject: Re: [PATCH -next] thermal: qcom: return error code on error path in
- adc_tm5_get_dt_channel_data()
-To:     Yang Yingliang <yangyingliang@huawei.com>,
-        linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org
-Cc:     colin.king@canonical.com
-References: <20210522051512.158228-1-yangyingliang@huawei.com>
-From:   Daniel Lezcano <daniel.lezcano@linaro.org>
-Message-ID: <562fc5ce-ce0d-b7c0-93dd-8207e06c2bd8@linaro.org>
-Date:   Thu, 27 May 2021 11:13:15 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        id S235751AbhE0JQK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 May 2021 05:16:10 -0400
+Received: from mx2.suse.de ([195.135.220.15]:42364 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235554AbhE0JQF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 27 May 2021 05:16:05 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1622106870; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=wF0gVNjinmo0Hc0sps+4CX8PBKyxO99eUnpQyoVA9wM=;
+        b=W/qOh1xTlNtrjaLmf+AL1hXvMsato1qiJBN2mBzHO0jBeKH7Ln3zzg/a9uaH3c8SswJ0j0
+        HjRPf8OkDOVJjkaouS8NvT/SakvUPcG2WewQzWCLGc7Mw5XihX3wt/cCURrDdL3gGTMZA7
+        F3d0KxnCtJlJ45Or6mhxloo6XWHvzJE=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 69D54AB71;
+        Thu, 27 May 2021 09:14:30 +0000 (UTC)
+Date:   Thu, 27 May 2021 11:14:29 +0200
+From:   Petr Mladek <pmladek@suse.com>
+To:     Justin He <Justin.He@arm.com>
+Cc:     Steven Rostedt <rostedt@goodmis.org>,
+        Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Al Viro <viro@ftp.linux.org.uk>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        "Eric W . Biederman" <ebiederm@xmission.com>,
+        "Darrick J. Wong" <darrick.wong@oracle.com>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Ira Weiny <ira.weiny@intel.com>,
+        Eric Biggers <ebiggers@google.com>, nd <nd@arm.com>,
+        "Ahmed S. Darwish" <a.darwish@linutronix.de>,
+        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-s390@vger.kernel.org" <linux-s390@vger.kernel.org>,
+        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>
+Subject: Re: [PATCH RFC 2/3] lib/vsprintf.c: make %pD print full path for file
+Message-ID: <YK9i9Y7LVTYgpad7@alley>
+References: <20210508122530.1971-1-justin.he@arm.com>
+ <20210508122530.1971-3-justin.he@arm.com>
+ <YJkveb46BoFbXi0q@alley>
+ <AM6PR08MB43764A5026A92DEF45EF8DBFF7239@AM6PR08MB4376.eurprd08.prod.outlook.com>
 MIME-Version: 1.0
-In-Reply-To: <20210522051512.158228-1-yangyingliang@huawei.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <AM6PR08MB43764A5026A92DEF45EF8DBFF7239@AM6PR08MB4376.eurprd08.prod.outlook.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 22/05/2021 07:15, Yang Yingliang wrote:
-> Return -EINVAL when args is invalid.
+On Thu 2021-05-27 07:20:55, Justin He wrote:
+> > > @@ -923,10 +924,17 @@ static noinline_for_stack
+> > >  char *file_dentry_name(char *buf, char *end, const struct file *f,
+> > >  			struct printf_spec spec, const char *fmt)
+> > >  {
+> > > +	const struct path *path = &f->f_path;
+> > 
+> > This dereferences @f before it is checked by check_pointer().
+> > 
+> > > +	char *p;
+> > > +	char tmp[128];
+> > > +
+> > >  	if (check_pointer(&buf, end, f, spec))
+> > >  		return buf;
+> > >
+> > > -	return dentry_name(buf, end, f->f_path.dentry, spec, fmt);
+> > > +	p = d_path_fast(path, (char *)tmp, 128);
+> > > +	buf = string(buf, end, p, spec);
+> > 
+> > Is 128 a limit of the path or just a compromise, please?
+> > 
+> > d_path_fast() limits the size of the buffer so we could use @buf
+> > directly. We basically need to imitate what string_nocheck() does:
+> > 
+> >      + the length is limited by min(spec.precision, end-buf);
+> >      + the string need to get shifted by widen_string()
+> > 
+> > We already do similar thing in dentry_name(). It might look like:
+> > 
+> > char *file_dentry_name(char *buf, char *end, const struct file *f,
+> > 			struct printf_spec spec, const char *fmt)
+> > {
+> > 	const struct path *path;
+> > 	int lim, len;
+> > 	char *p;
+> > 
+> > 	if (check_pointer(&buf, end, f, spec))
+> > 		return buf;
+> > 
+> > 	path = &f->f_path;
+> > 	if (check_pointer(&buf, end, path, spec))
+> > 		return buf;
+> > 
+> > 	lim = min(spec.precision, end - buf);
+> > 	p = d_path_fast(path, buf, lim);
 > 
-> Fixes: ca66dca5eda6 ("thermal: qcom: add support for adc-tm5 PMIC thermal monitor")
-> Reported-by: Hulk Robot <hulkci@huawei.com>
-> Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
-> ---
->  drivers/thermal/qcom/qcom-spmi-adc-tm5.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+> After further think about it, I prefer to choose pass stack space instead of _buf_.
 > 
-> diff --git a/drivers/thermal/qcom/qcom-spmi-adc-tm5.c b/drivers/thermal/qcom/qcom-spmi-adc-tm5.c
-> index b460b56e981c..8ccd5d22c13b 100644
-> --- a/drivers/thermal/qcom/qcom-spmi-adc-tm5.c
-> +++ b/drivers/thermal/qcom/qcom-spmi-adc-tm5.c
-> @@ -441,7 +441,7 @@ static int adc_tm5_get_dt_channel_data(struct adc_tm5_chip *adc_tm,
->  
->  	if (args.args_count != 1 || args.args[0] >= ADC5_MAX_CHANNEL) {
->  		dev_err(dev, "%s: invalid ADC channel number %d\n", name, chan);
-> -		return ret;
-> +		return -EINVAL;;
-
-			semicolon x 2
-
->  	}
->  	channel->adc_channel = args.args[0];
->  
+> vsnprintf() should return the size it requires after formatting the string.
+> vprintk_store() will invoke 1st vsnprintf() will 8 bytes to get the reserve_size.
+> Then invoke 2nd printk_sprint()->vscnprintf()->vsnprintf() to fill the space.
 > 
+> Hence end-buf is <0 in the 1st vsnprintf case.
 
+Grr, you are right, I have completely missed this. I felt that there
+must had been a catch but I did not see it.
 
--- 
-<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
+> If I call d_path_fast(path, buf, lim) with _buf_ instead of stack space, the
+> logic in prepend_name should be changed a lot. 
+> 
+> What do you think of it?
 
-Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
-<http://twitter.com/#!/linaroorg> Twitter |
-<http://www.linaro.org/linaro-blog/> Blog
+I wonder if vsprintf() could pass a bigger static buffer
+when (str >= end). I would be safe if the dentry API only writes
+to the buffer and does not depend on reading what has already
+been written there. Then it will not matter that it is shared
+between more vsprintf() callers.
+
+It is a dirty hack. I do not have a good feeling about it. Of course,
+a better solution would be when some dentry API just returns
+the required size in this case.
+
+Anyway, the buffer on stack would be more safe. It looks like a good
+compromise. We could always improve it when it is not good enough in
+the real life.
+
+Best Regards,
+Petr
