@@ -2,130 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1071F392664
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 06:29:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4BC9F392687
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 06:39:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229846AbhE0EbF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 May 2021 00:31:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52942 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229579AbhE0EbE (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 May 2021 00:31:04 -0400
-Received: from mail-ot1-x32e.google.com (mail-ot1-x32e.google.com [IPv6:2607:f8b0:4864:20::32e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A16FC061574
-        for <linux-kernel@vger.kernel.org>; Wed, 26 May 2021 21:29:32 -0700 (PDT)
-Received: by mail-ot1-x32e.google.com with SMTP id 80-20020a9d08560000b0290333e9d2b247so3219630oty.7
-        for <linux-kernel@vger.kernel.org>; Wed, 26 May 2021 21:29:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:in-reply-to:references:from:user-agent:date:message-id
-         :subject:to:cc;
-        bh=b6/faYhfGu8qBtbR9bUitKj7oId3L35j1rSLlZcppAc=;
-        b=hqtLG7QpB0PQlZwg8WYtUpXzm2d/c3skqj2CuiBHVhNRi5kJrIGjiCGThIW9cWk625
-         F+gG060MyizR0reJ0HKBczMaxAQiJCu56bAJbJ4Z3gyBrrh+XtlXRJwR4KnqTw/XKBfs
-         XzwIZPTaXXUDQFHD08XZiVdQAoLGZXeLhvLZk=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:in-reply-to:references:from
-         :user-agent:date:message-id:subject:to:cc;
-        bh=b6/faYhfGu8qBtbR9bUitKj7oId3L35j1rSLlZcppAc=;
-        b=nnlWMFgwogHsHhLbJIMqr07Ru8VPsJnQ3ERQcHCM6zOkOrc42T3Vmiz6gPscOdMyT0
-         A04bEseesSXpeCHzLr2tsXSvnsunhav157PbLx7OLE02M7Mg8vCfliTgXmo4FLpYOECI
-         39vD3tuc/VuviLITMt2NAkSYeD/Ml+uvdTDOSkTuNYZE5QztRjbT/v0bBaB8Aw3GQsaB
-         57c/6RU7Xzm8B7VyuzyXh9f3FLosSI/D1wMPvFnZzsEHRaE4atP8TP/6QLTCORezo5pv
-         HEdUkHveWSVM5TujOmQ6ad97bSBp0X+DrFl/1+vzu9ZE86xj5yO59PWp8ckunKP3MjGd
-         uGvg==
-X-Gm-Message-State: AOAM5339bdVjDpv5kmQS+6hTf0T5fYg3guFoZhbv6h5bMJKIC6HF7uxQ
-        lve6SfIj9ZIHcdRIg+PWBUtbHTIBYtYEVv8/Dk328A==
-X-Google-Smtp-Source: ABdhPJws6Lj2vooodJL5wMKOsFkykOzSDFlWUi5rcClITq/ysQEsXTKKyLiW6XmKahA5l1NgfJeVvV5+sShDboAl3j0=
-X-Received: by 2002:a05:6830:1f51:: with SMTP id u17mr1338955oth.25.1622089771409;
- Wed, 26 May 2021 21:29:31 -0700 (PDT)
-Received: from 753933720722 named unknown by gmailapi.google.com with
- HTTPREST; Thu, 27 May 2021 00:29:30 -0400
-MIME-Version: 1.0
-In-Reply-To: <1622072989-793-1-git-send-email-khsieh@codeaurora.org>
-References: <1622072989-793-1-git-send-email-khsieh@codeaurora.org>
-From:   Stephen Boyd <swboyd@chromium.org>
-User-Agent: alot/0.9.1
-Date:   Thu, 27 May 2021 00:29:30 -0400
-Message-ID: <CAE-0n51tgnPnwTvtNe-w5MjEAOmgtko0aw6Hu744EwOE00tzPg@mail.gmail.com>
-Subject: Re: [PATCH] drm/msm/dp: keep aux channel up when power of dp phy
-To:     Kuogee Hsieh <khsieh@codeaurora.org>, agross@kernel.org,
-        bjorn.andersson@linaro.org, robdclark@gmail.com, sean@poorly.run,
-        vkoul@kernel.org
-Cc:     abhinavk@codeaurora.org, aravindh@codeaurora.org,
-        freedreno@lists.freedesktop.org, linux-arm-msm@vger.kernel.org,
+        id S229768AbhE0EkN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 May 2021 00:40:13 -0400
+Received: from mga09.intel.com ([134.134.136.24]:31721 "EHLO mga09.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229579AbhE0EkK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 27 May 2021 00:40:10 -0400
+IronPort-SDR: GckvqPwhQfR3/nkCbmjh1rzSSM9HYahsXYq65aHUOeL2HkOqWa8MT69CUuqReErJXDLl/XMNbH
+ h/5q2rNc4SNw==
+X-IronPort-AV: E=McAfee;i="6200,9189,9996"; a="202656978"
+X-IronPort-AV: E=Sophos;i="5.82,333,1613462400"; 
+   d="scan'208";a="202656978"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 May 2021 21:38:37 -0700
+IronPort-SDR: g83o+XloVPGxzzZaoUTwmeTd71P9I3/YL/cvfT93jxxxl0WwI0b4XYfQupjq6NJEPGNYcAwZY2
+ KtSJxorKS6Kw==
+X-IronPort-AV: E=Sophos;i="5.82,333,1613462400"; 
+   d="scan'208";a="414739626"
+Received: from skgangad-mobl.amr.corp.intel.com (HELO skuppusw-desk1.amr.corp.intel.com) ([10.254.33.45])
+  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 May 2021 21:38:36 -0700
+From:   Kuppuswamy Sathyanarayanan 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>
+To:     Peter Zijlstra <peterz@infradead.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Dan Williams <dan.j.williams@intel.com>
+Cc:     Andi Kleen <ak@linux.intel.com>,
+        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
+        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
+        Raj Ashok <ashok.raj@intel.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Kuppuswamy Sathyanarayanan 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
         linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Subject: [RFC v2-fix-v3 1/1] x86/tdx: Ignore WBINVD instruction for TDX guest
+Date:   Wed, 26 May 2021 21:38:32 -0700
+Message-Id: <20210527043832.3984374-1-sathyanarayanan.kuppuswamy@linux.intel.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <fe11bf3c-c0f8-7c25-8fc0-99bee9c1d164@linux.intel.com>
+References: <fe11bf3c-c0f8-7c25-8fc0-99bee9c1d164@linux.intel.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-General note, please Cc dri-devel on freedreno driver patches.
+Functionally only devices outside the CPU (such as DMA devices,
+or persistent memory for flushing) can notice the external side
+effects from WBINVD's cache flushing for write back mappings. One
+exception here is MKTME, but that is not visible outside the TDX
+module and not possible inside a TDX guest.
 
-Quoting Kuogee Hsieh (2021-05-26 16:49:49)
-> Aux channel is used to perform management function and should be
-> running in parallel with main link. Therefore should only power
-> down main link and keep aux channel running when power down phy.
->
-> Signed-off-by: Kuogee Hsieh <khsieh@codeaurora.org>
-> ---
+Currently TDX does not support DMA, because DMA typically needs
+uncached access for MMIO, and the current TDX module always sets
+the IgnorePAT bit, which prevents that.
 
-Does this supersede the previous patch[1] or is it in addition to?
+Persistent memory is also currently not supported. There are some
+other cases that use WBINVD, such as the legacy ACPI sleeps, but
+these are all not supported in virtualization and there are better
+mechanisms inside a guest anyways. The guests usually are not
+aware of power management. Another code path that uses WBINVD is
+the MTRR driver, but EPT/virtualization always disables MTRRs so
+those are not needed. This all implies WBINVD is not needed with
+current TDX. 
 
-[1] https://lore.kernel.org/r/1622052503-21158-1-git-send-email-khsieh@codeaurora.org
+So handle the WBINVD instruction as nop. Currently, #VE exception
+handler does not include any warning for WBINVD handling because
+ACPI reboot code uses it. This is the same behavior as KVM. It
+only allows WBINVD in a guest when the guest supports VT-d (=DMA),
+but just handles it as a nop if it doesn't .
 
->  drivers/gpu/drm/msm/dp/dp_ctrl.c    |  4 ----
->  drivers/phy/qualcomm/phy-qcom-qmp.c | 11 +++++++++--
->  2 files changed, 9 insertions(+), 6 deletions(-)
+If TDX ever gets DMA support, or persistent memory support, or
+some other devices that can observe flushing side effects, a
+hypercall can be added to implement it similar to AMD-SEV. But
+current TDX does not need it.
 
-Given that it touches two subsystems the merge path is questionable.
+Signed-off-by: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
+---
 
->
-> diff --git a/drivers/gpu/drm/msm/dp/dp_ctrl.c b/drivers/gpu/drm/msm/dp/dp_ctrl.c
-> index 5115c05..5f93c64 100644
-> --- a/drivers/gpu/drm/msm/dp/dp_ctrl.c
-> +++ b/drivers/gpu/drm/msm/dp/dp_ctrl.c
-> @@ -1844,10 +1844,6 @@ int dp_ctrl_off_link_stream(struct dp_ctrl *dp_ctrl)
->
->         phy_power_off(phy);
->
-> -       /* aux channel down, reinit phy */
-> -       phy_exit(phy);
-> -       phy_init(phy);
-> -
->         DRM_DEBUG_DP("DP off link/stream done\n");
->         return ret;
->  }
-> diff --git a/drivers/phy/qualcomm/phy-qcom-qmp.c b/drivers/phy/qualcomm/phy-qcom-qmp.c
-> index b122e63..567e32e 100644
-> --- a/drivers/phy/qualcomm/phy-qcom-qmp.c
-> +++ b/drivers/phy/qualcomm/phy-qcom-qmp.c
-> @@ -3214,12 +3214,19 @@ static int qcom_qmp_phy_power_off(struct phy *phy)
->  {
->         struct qmp_phy *qphy = phy_get_drvdata(phy);
->         const struct qmp_phy_cfg *cfg = qphy->cfg;
-> +       u32 val;
->
->         clk_disable_unprepare(qphy->pipe_clk);
->
->         if (cfg->type == PHY_TYPE_DP) {
-> -               /* Assert DP PHY power down */
-> -               writel(DP_PHY_PD_CTL_PSR_PWRDN, qphy->pcs + QSERDES_V3_DP_PHY_PD_CTL);
-> +               /*
-> +                * Assert DP PHY LANE_0_1, LANE_2_3, PSR power down
-> +                * keep aux channel up
+Changes since RFC v2-2:
+ * Added more details to commit log and comments to address
+   review comments.
 
-Maybe say "keep aux channel up until phy_exit() is called" so we know
-how long it is supposed to stay on. And just to confirm, it is on in
-phy_init(), right?
+Changes since RFC v2:
+ * Fixed commit log as per review comments.
+ * Removed WARN_ONCE for WBINVD #VE support.
 
-> +                */
-> +               val = DP_PHY_PD_CTL_PWRDN | DP_PHY_PD_CTL_AUX_PWRDN |
-> +                       DP_PHY_PD_CTL_PLL_PWRDN | DP_PHY_PD_CTL_DP_CLAMP_EN |
-> +                       DP_PHY_PD_CTL_PSR_PWRDN;
-> +               writel(val, qphy->pcs + QSERDES_V3_DP_PHY_PD_CTL);
->         } else {
->                 /* PHY reset */
->                 if (!cfg->no_pcs_sw_reset)
+ arch/x86/kernel/tdx.c | 7 +++++++
+ 1 file changed, 7 insertions(+)
+
+diff --git a/arch/x86/kernel/tdx.c b/arch/x86/kernel/tdx.c
+index da5c9cd08299..775ae090b625 100644
+--- a/arch/x86/kernel/tdx.c
++++ b/arch/x86/kernel/tdx.c
+@@ -455,6 +455,13 @@ int tdg_handle_virtualization_exception(struct pt_regs *regs,
+ 	case EXIT_REASON_EPT_VIOLATION:
+ 		ve->instr_len = tdg_handle_mmio(regs, ve);
+ 		break;
++	case EXIT_REASON_WBINVD:
++		/*
++		 * Non coherent DMA, persistent memory, MTRRs or
++		 * outdated ACPI sleeps are not supported in TDX guest.
++		 * So ignore WBINVD and treat it nop.
++		 */
++		break;
+ 	case EXIT_REASON_MONITOR_INSTRUCTION:
+ 	case EXIT_REASON_MWAIT_INSTRUCTION:
+ 		/*
+-- 
+2.25.1
+
