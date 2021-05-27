@@ -2,110 +2,229 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D6893935DF
+	by mail.lfdr.de (Postfix) with ESMTP id EA2AC3935E0
 	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 21:02:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236088AbhE0TDW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 May 2021 15:03:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54000 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236131AbhE0TC7 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 May 2021 15:02:59 -0400
-Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD419C061574;
-        Thu, 27 May 2021 12:01:24 -0700 (PDT)
-Received: by mail-lf1-x132.google.com with SMTP id w33so1610188lfu.7;
-        Thu, 27 May 2021 12:01:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=qroXKVOtlEtTL1eRbXzTTCtc5l+ESuO3YaVgDW84Xms=;
-        b=j6au+t1K24fPuBAsmGG+P8gq6TbiMMBFk8PKRJAS5R2vw02U7BafJ5rK0k+3zF/PbG
-         g1dWmyE00/o/0m8FCpcZPrhezGDL+m2qr7cIqrXiZi4Xbs8aZv9y1Bmn+qcOL1D9myP3
-         KGqLp/XlYFRY5irzCrcV13WC3Y9U3WMHjE4Z2X8ll1Ovfl0Cj4v7gwnSYXTtJx1HrxS8
-         0zC9r7xuGeLAApje3YuSYpJpwyyJmgul/H4yY2B0djB1luEsv66QWjmPtpTS3jCY+GPC
-         vng15KCqzzUn0iEvljkfrgIRvsheewu9SRSwbh8e3wm4gF/G4nDImgAwTsODQBP0F7w4
-         w/Ug==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=qroXKVOtlEtTL1eRbXzTTCtc5l+ESuO3YaVgDW84Xms=;
-        b=CX8cqvhBoi3LPKtXqkiA4li2+S2B1WtstXUKAKiH4Ui4SAWswrWXxFCtLFIhKr3lwi
-         pO50HK1nAqqT5duuqtEkcKmfBLHifOzpPFjjJp5II5FG3uQWPNgMT7dkDVdbnYuJ2ZqI
-         hnpjElCV5v/WG/y/DVZDbIe+BqtSe2NelsSw0COjnQX+T50sQ/DpPmwrnqnIVe/y4UC3
-         2tJaO64KYPQWbj6GFcNh0WAJDP8pT/YjZK0+lakMadLirQLMfvt5J7ZwdJocWf23lm0L
-         GJP1mrrPi9WhabXGYUf/W9F6sD070YPjvAt4qjKEtU5469ixGa8ZG2Lsyy2dPhd0oel3
-         PTMg==
-X-Gm-Message-State: AOAM531uMO8mZSU7tDxrqZtV8JBGqzwwXord5o15OUTQe25W/Yc7Y9QB
-        cdhDmwJVyCntmizvlYTxhnX1NSxFmfY=
-X-Google-Smtp-Source: ABdhPJy1wvmHaLITf81EXOctomKmjEvz9T4XX0vbtq3CLOxa061TNc1A15dwPHoG78b1SYWDEYkfZA==
-X-Received: by 2002:a19:6e0d:: with SMTP id j13mr3243425lfc.81.1622142083040;
-        Thu, 27 May 2021 12:01:23 -0700 (PDT)
-Received: from [192.168.2.145] (46-138-12-55.dynamic.spd-mgts.ru. [46.138.12.55])
-        by smtp.googlemail.com with ESMTPSA id w16sm265281lfn.183.2021.05.27.12.01.22
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 27 May 2021 12:01:22 -0700 (PDT)
-Subject: Re: [PATCH] Input: elants_i2c - Fix NULL dereference at probing
-To:     Takashi Iwai <tiwai@suse.de>
-Cc:     Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
-        stable@vger.kernel.org
-References: <20210526194301.28780-1-tiwai@suse.de>
- <YK6tZy3E/XZpOAbh@google.com>
- <b7fc167b-23c6-fd64-cfbf-dd16a90fbf63@gmail.com>
- <s5hmtsg8zmn.wl-tiwai@suse.de>
-From:   Dmitry Osipenko <digetx@gmail.com>
-Message-ID: <85932641-4b41-1505-4bb6-077220f2835b@gmail.com>
-Date:   Thu, 27 May 2021 22:01:21 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        id S236543AbhE0TD2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 May 2021 15:03:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36456 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236166AbhE0TDA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 27 May 2021 15:03:00 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4D7EF613E5;
+        Thu, 27 May 2021 19:01:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1622142086;
+        bh=5WWd3sH20TnUzz+VvexKUrUeolqYnZYo46++UYDwskg=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=o+LcWdgZRX5r4676wgpRA9D9D3RlXs6M/pQZOhgxAogpVXYgUXYeQPUukVp33PkyJ
+         tabgCABIwxkjFNSwjCSxFtBGxcYalSYvX5JmfJJGME9uFhvrgZ7ZKo+hIYoeZv4IBv
+         m3OWiWPTNEDpIvWKC3/5FFUO2jzXXzC7frhW8V4BBSWyfxZCjGDvtx0E4nVwPy/rxk
+         cZtzmO2H1JS3T7euHf77KsRnd5R1QvIlbInwIntpPEgwrWPmaqtM7ksbVlny5R7WOC
+         uhtoyKFskZ8IF7B7eDDiWivesa+Pk46yWpOZTMSbWrlDKm8vkXLlPPy4xSd0GmrOlk
+         mYccRQJEeIl6w==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id 140365C032C; Thu, 27 May 2021 12:01:26 -0700 (PDT)
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     tglx@linutronix.de
+Cc:     linux-kernel@vger.kernel.org, john.stultz@linaro.org,
+        sboyd@kernel.org, corbet@lwn.net, Mark.Rutland@arm.com,
+        maz@kernel.org, kernel-team@fb.com, neeraju@codeaurora.org,
+        ak@linux.intel.com, feng.tang@intel.com, zhengjun.xing@intel.com,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Xing Zhengjun <zhengjun.xing@linux.intel.com>
+Subject: [PATCH v15 clocksource 3/6] clocksource: Limit number of CPUs checked for clock synchronization
+Date:   Thu, 27 May 2021 12:01:21 -0700
+Message-Id: <20210527190124.440372-3-paulmck@kernel.org>
+X-Mailer: git-send-email 2.31.1.189.g2e36527f23
+In-Reply-To: <20210527190042.GA438700@paulmck-ThinkPad-P17-Gen-1>
+References: <20210527190042.GA438700@paulmck-ThinkPad-P17-Gen-1>
 MIME-Version: 1.0
-In-Reply-To: <s5hmtsg8zmn.wl-tiwai@suse.de>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-27.05.2021 09:22, Takashi Iwai пишет:
-> On Wed, 26 May 2021 22:44:59 +0200,
-> Dmitry Osipenko wrote:
->>
->> Hello all,
->>
->> 26.05.2021 23:19, Dmitry Torokhov пишет:
->>> Hi Takashi,
->>>
->>> On Wed, May 26, 2021 at 09:43:01PM +0200, Takashi Iwai wrote:
->>>> The recent change in elants_i2c driver to support more chips
->>>> introduced a regression leading to Oops at probing.  The driver reads
->>>> id->driver_data, but the id may be NULL depending on the device type
->>>> the driver gets bound.
->>>>
->>>> Add a NULL check and falls back to the default EKTH3500.
->>>
->>> Thank you for the patch. I think my preference would be to switch to
->>> device_get_match_data() and annotate the rest of the match tables with
->>> proper controller types.
->>
->> Doesn't a NULL mean that elants_i2c_id[] table fails to match the ACPI
->> device name? What is the name then?
-> 
-> I don't own the device, so we need to ask on (open)SUSE Bugzilla.
+Currently, if skew is detected on a clock marked CLOCK_SOURCE_VERIFY_PERCPU,
+that clock is checked on all CPUs.  This is thorough, but might not be
+what you want on a system with a few tens of CPUs, let alone a few hundred
+of them.
 
-If we will know the name, then alternative fix could be to add the name
-to the elants_i2c_id[]. To be honest, I thought that the ID should be
-borrowed from elants_acpi_id[] for the ACPI devices, but this was a mistake.
+Therefore, by default check only up to eight randomly chosen CPUs.
+Also provide a new clocksource.verify_n_cpus kernel boot parameter.
+A value of -1 says to check all of the CPUs, and a non-negative value says
+to randomly select that number of CPUs, without concern about selecting
+the same CPU multiple times.  However, make use of a cpumask so that a
+given CPU will be checked at most once.
 
->> This could be two patches:
->>   1 - trivial fix that can be backported easily
->>   2 - switch to device_get_match_data()
-> 
-> I guess 2 is easy enough to backport to 5.12.x.  Let's see.
+Link: https://lore.kernel.org/lkml/202104291438.PuHsxRkl-lkp@intel.com/
+Link: https://lore.kernel.org/lkml/20210429140440.GT975577@paulmck-ThinkPad-P17-Gen-1
+Link: https://lore.kernel.org/lkml/20210425224540.GA1312438@paulmck-ThinkPad-P17-Gen-1/
+Link: https://lore.kernel.org/lkml/20210420064934.GE31773@xsang-OptiPlex-9020/
+Link: https://lore.kernel.org/lkml/20210106004013.GA11179@paulmck-ThinkPad-P72/
+Link: https://lore.kernel.org/lkml/20210414043435.GA2812539@paulmck-ThinkPad-P17-Gen-1/
+Link: https://lore.kernel.org/lkml/20210419045155.GA596058@paulmck-ThinkPad-P17-Gen-1/
+Suggested-by: Thomas Gleixner <tglx@linutronix.de> # For verify_n_cpus=1.
+Cc: John Stultz <john.stultz@linaro.org>
+Cc: Thomas Gleixner <tglx@linutronix.de>
+Cc: Stephen Boyd <sboyd@kernel.org>
+Cc: Jonathan Corbet <corbet@lwn.net>
+Cc: Mark Rutland <Mark.Rutland@arm.com>
+Cc: Marc Zyngier <maz@kernel.org>
+Cc: Andi Kleen <ak@linux.intel.com>
+Cc: Xing Zhengjun <zhengjun.xing@linux.intel.com>
+Acked-by: Feng Tang <feng.tang@intel.com>
+Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+---
+ .../admin-guide/kernel-parameters.txt         | 10 +++
+ kernel/time/clocksource.c                     | 74 ++++++++++++++++++-
+ 2 files changed, 82 insertions(+), 2 deletions(-)
 
-Okay
+diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
+index 995deccc28bc..9ec9ea1a51f2 100644
+--- a/Documentation/admin-guide/kernel-parameters.txt
++++ b/Documentation/admin-guide/kernel-parameters.txt
+@@ -587,6 +587,16 @@
+ 			unstable.  Defaults to three retries, that is,
+ 			four attempts to read the clock under test.
+ 
++	clocksource.verify_n_cpus= [KNL]
++			Limit the number of CPUs checked for clocksources
++			marked with CLOCK_SOURCE_VERIFY_PERCPU that
++			are marked unstable due to excessive skew.
++			A negative value says to check all CPUs, while
++			zero says not to check any.  Values larger than
++			nr_cpu_ids are silently truncated to nr_cpu_ids.
++			The actual CPUs are chosen randomly, with
++			no replacement if the same CPU is chosen twice.
++
+ 	clearcpuid=BITNUM[,BITNUM...] [X86]
+ 			Disable CPUID feature X for the kernel. See
+ 			arch/x86/include/asm/cpufeatures.h for the valid bit
+diff --git a/kernel/time/clocksource.c b/kernel/time/clocksource.c
+index d0a178d579c4..bf6fad618dac 100644
+--- a/kernel/time/clocksource.c
++++ b/kernel/time/clocksource.c
+@@ -14,6 +14,8 @@
+ #include <linux/sched.h> /* for spin_unlock_irq() using preempt_count() m68k */
+ #include <linux/tick.h>
+ #include <linux/kthread.h>
++#include <linux/prandom.h>
++#include <linux/cpu.h>
+ 
+ #include "tick-internal.h"
+ #include "timekeeping_internal.h"
+@@ -193,6 +195,8 @@ void clocksource_mark_unstable(struct clocksource *cs)
+ 
+ static ulong max_cswd_read_retries = 3;
+ module_param(max_cswd_read_retries, ulong, 0644);
++static int verify_n_cpus = 8;
++module_param(verify_n_cpus, int, 0644);
+ 
+ static bool cs_watchdog_read(struct clocksource *cs, u64 *csnow, u64 *wdnow)
+ {
+@@ -226,6 +230,55 @@ static bool cs_watchdog_read(struct clocksource *cs, u64 *csnow, u64 *wdnow)
+ static u64 csnow_mid;
+ static cpumask_t cpus_ahead;
+ static cpumask_t cpus_behind;
++static cpumask_t cpus_chosen;
++
++static void clocksource_verify_choose_cpus(void)
++{
++	int cpu, i, n = verify_n_cpus;
++
++	if (n < 0) {
++		/* Check all of the CPUs. */
++		cpumask_copy(&cpus_chosen, cpu_online_mask);
++		cpumask_clear_cpu(smp_processor_id(), &cpus_chosen);
++		return;
++	}
++
++	/* If no checking desired, or no other CPU to check, leave. */
++	cpumask_clear(&cpus_chosen);
++	if (n == 0 || num_online_cpus() <= 1)
++		return;
++
++	/* Make sure to select at least one CPU other than the current CPU. */
++	cpu = cpumask_next(-1, cpu_online_mask);
++	if (cpu == smp_processor_id())
++		cpu = cpumask_next(cpu, cpu_online_mask);
++	if (WARN_ON_ONCE(cpu >= nr_cpu_ids))
++		return;
++	cpumask_set_cpu(cpu, &cpus_chosen);
++
++	/* Force a sane value for the boot parameter. */
++	if (n > nr_cpu_ids)
++		n = nr_cpu_ids;
++
++	/*
++	 * Randomly select the specified number of CPUs.  If the same
++	 * CPU is selected multiple times, that CPU is checked only once,
++	 * and no replacement CPU is selected.  This gracefully handles
++	 * situations where verify_n_cpus is greater than the number of
++	 * CPUs that are currently online.
++	 */
++	for (i = 1; i < n; i++) {
++		cpu = prandom_u32() % nr_cpu_ids;
++		cpu = cpumask_next(cpu - 1, cpu_online_mask);
++		if (cpu >= nr_cpu_ids)
++			cpu = cpumask_next(-1, cpu_online_mask);
++		if (!WARN_ON_ONCE(cpu >= nr_cpu_ids))
++			cpumask_set_cpu(cpu, &cpus_chosen);
++	}
++
++	/* Don't verify ourselves. */
++	cpumask_clear_cpu(smp_processor_id(), &cpus_chosen);
++}
+ 
+ static void clocksource_verify_one_cpu(void *csin)
+ {
+@@ -241,12 +294,22 @@ static void clocksource_verify_percpu(struct clocksource *cs)
+ 	int cpu, testcpu;
+ 	s64 delta;
+ 
++	if (verify_n_cpus == 0)
++		return;
+ 	cpumask_clear(&cpus_ahead);
+ 	cpumask_clear(&cpus_behind);
++	get_online_cpus();
+ 	preempt_disable();
++	clocksource_verify_choose_cpus();
++	if (cpumask_weight(&cpus_chosen) == 0) {
++		preempt_enable();
++		put_online_cpus();
++		pr_warn("Not enough CPUs to check clocksource '%s'.\n", cs->name);
++		return;
++	}
+ 	testcpu = smp_processor_id();
+-	pr_warn("Checking clocksource %s synchronization from CPU %d.\n", cs->name, testcpu);
+-	for_each_online_cpu(cpu) {
++	pr_warn("Checking clocksource %s synchronization from CPU %d to CPUs %*pbl.\n", cs->name, testcpu, cpumask_pr_args(&cpus_chosen));
++	for_each_cpu(cpu, &cpus_chosen) {
+ 		if (cpu == testcpu)
+ 			continue;
+ 		csnow_begin = cs->read(cs);
+@@ -266,6 +329,7 @@ static void clocksource_verify_percpu(struct clocksource *cs)
+ 			cs_nsec_min = cs_nsec;
+ 	}
+ 	preempt_enable();
++	put_online_cpus();
+ 	if (!cpumask_empty(&cpus_ahead))
+ 		pr_warn("        CPUs %*pbl ahead of CPU %d for clocksource %s.\n",
+ 			cpumask_pr_args(&cpus_ahead), testcpu, cs->name);
+@@ -336,6 +400,12 @@ static void clocksource_watchdog(struct timer_list *unused)
+ 				watchdog->name, wdnow, wdlast, watchdog->mask);
+ 			pr_warn("                      '%s' cs_now: %llx cs_last: %llx mask: %llx\n",
+ 				cs->name, csnow, cslast, cs->mask);
++			if (curr_clocksource == cs)
++				pr_warn("                      '%s' is current clocksource.\n", cs->name);
++			else if (curr_clocksource)
++				pr_warn("                      '%s' (not '%s') is current clocksource.\n", curr_clocksource->name, cs->name);
++			else
++				pr_warn("                      No current clocksource.\n");
+ 			__clocksource_unstable(cs);
+ 			continue;
+ 		}
+-- 
+2.31.1.189.g2e36527f23
+
