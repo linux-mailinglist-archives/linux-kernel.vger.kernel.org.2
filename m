@@ -2,87 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3236B39395D
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 01:46:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9BFDD393961
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 01:47:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236307AbhE0XsL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 May 2021 19:48:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32892 "EHLO
+        id S236463AbhE0Xsj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 May 2021 19:48:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33016 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235933AbhE0XsI (ORCPT
+        with ESMTP id S236103AbhE0Xsh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 May 2021 19:48:08 -0400
-Received: from mail-lj1-x234.google.com (mail-lj1-x234.google.com [IPv6:2a00:1450:4864:20::234])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 330A8C061760
-        for <linux-kernel@vger.kernel.org>; Thu, 27 May 2021 16:46:34 -0700 (PDT)
-Received: by mail-lj1-x234.google.com with SMTP id 131so3041230ljj.3
-        for <linux-kernel@vger.kernel.org>; Thu, 27 May 2021 16:46:34 -0700 (PDT)
+        Thu, 27 May 2021 19:48:37 -0400
+Received: from mail-pg1-x52b.google.com (mail-pg1-x52b.google.com [IPv6:2607:f8b0:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E252AC061760
+        for <linux-kernel@vger.kernel.org>; Thu, 27 May 2021 16:47:01 -0700 (PDT)
+Received: by mail-pg1-x52b.google.com with SMTP id l70so1203351pga.1
+        for <linux-kernel@vger.kernel.org>; Thu, 27 May 2021 16:47:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=oUMq5gMakuTv+VxVCawBoEv0d6hHmUUnitcWr50QPbU=;
-        b=n0nnJj3xNV7aoppJdcUWyqnujztsYmLvtUZZGXI8rspgnNsSoUcFFO2nRMYl4LngJR
-         i35dmrfNWtbjLVeuNXKEtG96fCcdPE/CRCUGnRQ8dLyl1qfC9cqcErJeZ00Cs537VlJb
-         nRBtj6x8BRASrwlvxGCXczuZvPyQ7+RIW3UbY+TVH6yCOPURf8Hfnx8J8gylc+BA/PIw
-         mB4asa86kLk8SgBxCTIEINX/nlnGEKXEFSbkXwjSNC+R3mGDNNNIH1fL19ZzRiWYP7oo
-         KswDkl4XlEJ7yMY90phpeO1w5UK9OzJ0rG9qotvVc0Dqhiw99s6e9RuZGdVzibJiMCvf
-         tgcA==
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=I76gEd2y8NZgT46DhAs2hG3Qnuv9ogmPiat5OsvRnA0=;
+        b=MsIb+Crojg6OI9wOzI4AxSfnbJsmfCv0M2OgzJNnUXoV9AEuj19Vpz3CqxysZNzZnZ
+         Plya6C1xvbZB/3tX++03I09ERTyJl3Lt5KrSziW+uuhB2aXcQyv4fdVL9/AkYu4lxNXu
+         lLnGczJAk5Dx7L4sJEq+yd0hxGoghFn4ZHAbi1KudY5mzPazZXUFQlctZYO75Yn2ndQR
+         sBIrQ2F42WIt2wJ2qmdP4NCpobowA84s0UVQ0XRsVO6dFSE7GtREX3fRJPxKze5e/5cD
+         q39OP5OwlgGYh3rxPc5X2eHChsnbhcRnCtXjRVNoBfm5O1sh2lT0C4BfPshagW1OgtnR
+         C/cA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=oUMq5gMakuTv+VxVCawBoEv0d6hHmUUnitcWr50QPbU=;
-        b=SYzoKaDuWxqBvnePcgiFGsOklmBMBLC/NaHu30waqfBCstXbvtooFcEGigsY0Hg3sC
-         dbw+qXy8tqoY2Qndn3xneSrNADOMt0lEjzPCRTy/7CH/DENWQqSzRtwDvVrB9gPOQ+Tn
-         pID1S2GanRRQ6X2s+WlA+eGeSCyWYhgBtEZWM5MHsn7p2UgOz0aEnXbJg5nF4r5D5g/p
-         6m5BC94jATps5cOG4RbLVs74eaXeCmD3T8Ae54lH37rw/Yvw7bnxTl6T7sSrkOJFYqgq
-         EhMp99mmMGxxdNFaQe07wnc570xjAo8veFjdH7Nr+i6hXv2Xl6LyVY/ZcUhcLe5C7zHu
-         kIKg==
-X-Gm-Message-State: AOAM530G48i3fNu57g5a4Xnf0OAVcBMvyPgukfW0j/zSsHnKLtptLr4f
-        vpEeOgqzNlqK59hoQvbD7vUr/8+/Z8CC6s5Qp38N2A==
-X-Google-Smtp-Source: ABdhPJxmDdGYglPiAFXs4Eu7ptrL+GCuuFiVIJrOFzslyzTdz+YvWNKCStjMplLuqgpzYu5Swlu4HGv5Pt7x5GCAszY=
-X-Received: by 2002:a2e:b805:: with SMTP id u5mr4620596ljo.74.1622159192598;
- Thu, 27 May 2021 16:46:32 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=I76gEd2y8NZgT46DhAs2hG3Qnuv9ogmPiat5OsvRnA0=;
+        b=h9EuKpxuwqfXD0nCqM7WXndrsCw0NNhDLVkSZANBwBDBiAaxQyDsh7T0hHeW4qhbgD
+         fS6kGpgM1We0qSInqWkJIe3OpHMpcOqY6XziHpYPlXRBs2rJvjSNMIb+E0eYVp39Yb7G
+         j72r7xgREGzw3NsSYy6JgLn8tGr/Ya4r+VRPcLxKJCuLZ5i20UevenMpramgcsbwqWBg
+         +6r6p2WdPm2swRXvz+BHz2Gcl7nCif32XmLjgupHGhnCwtOpUjOiXYbduEhm12hVY0cw
+         PjR1ayM/Y6lFe/l6DMOfAwQidYSsSRpK8/cB/rUzNSDMKd4hQc9jAW+v49UB7Mu7J3FL
+         gHfw==
+X-Gm-Message-State: AOAM532v3Hprr4jBO7lXgmd1GHISCauBHOyib3pv1MhCMxCMLB+I5GH1
+        U+7azAkB6IeGsjT34MZuclOt+Ba1jr4ScA==
+X-Google-Smtp-Source: ABdhPJxYb/vNEIhtApsqMbOJzuCCVz5BiIDHTihYPnbhn29m7ryqpjeHUCtq2JHQZt9vBgUREMYxVw==
+X-Received: by 2002:a62:52c6:0:b029:2e8:c684:b741 with SMTP id g189-20020a6252c60000b02902e8c684b741mr1002753pfb.38.1622159221260;
+        Thu, 27 May 2021 16:47:01 -0700 (PDT)
+Received: from google.com (240.111.247.35.bc.googleusercontent.com. [35.247.111.240])
+        by smtp.gmail.com with ESMTPSA id 84sm2816819pgh.87.2021.05.27.16.47.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 27 May 2021 16:47:00 -0700 (PDT)
+Date:   Thu, 27 May 2021 23:46:56 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     Wanpeng Li <kernellwp@gmail.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>, kvm <kvm@vger.kernel.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>
+Subject: Re: [PATCH v3 1/2] KVM: X86: Fix warning caused by stale emulation
+ context
+Message-ID: <YLAvcG59BgJ1i0+I@google.com>
+References: <1622091679-31683-1-git-send-email-wanpengli@tencent.com>
+ <YK/Q7ESa44lcqlMM@google.com>
+ <CANRm+CwL-uS3FPZxpW_cB=vdD4WKLRDPTpd4hsn57eWpKZ_CtQ@mail.gmail.com>
 MIME-Version: 1.0
-References: <20210525055308.31069-1-steven_lee@aspeedtech.com> <20210525055308.31069-4-steven_lee@aspeedtech.com>
-In-Reply-To: <20210525055308.31069-4-steven_lee@aspeedtech.com>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Fri, 28 May 2021 01:46:21 +0200
-Message-ID: <CACRpkdb90ruzyyz9xmKQRSB+cxZAn6t+bfjGahQio_kyk-5_Ug@mail.gmail.com>
-Subject: Re: [PATCH v3 3/3] pinctrl: pinctrl-aspeed-g6: Add sgpio pinctrl settings
-To:     Steven Lee <steven_lee@aspeedtech.com>
-Cc:     Andrew Jeffery <andrew@aj.id.au>, Rob Herring <robh+dt@kernel.org>,
-        Joel Stanley <joel@jms.id.au>,
-        "moderated list:ASPEED PINCTRL DRIVERS" 
-        <linux-aspeed@lists.ozlabs.org>,
-        "moderated list:ASPEED PINCTRL DRIVERS" <openbmc@lists.ozlabs.org>,
-        "open list:ASPEED PINCTRL DRIVERS" <linux-gpio@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        "moderated list:ARM/ASPEED MACHINE SUPPORT" 
-        <linux-arm-kernel@lists.infradead.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Hongwei Zhang <Hongweiz@ami.com>,
-        Ryan Chen <ryan_chen@aspeedtech.com>,
-        Billy Tsai <billy_tsai@aspeedtech.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CANRm+CwL-uS3FPZxpW_cB=vdD4WKLRDPTpd4hsn57eWpKZ_CtQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 25, 2021 at 7:53 AM Steven Lee <steven_lee@aspeedtech.com> wrote:
+On Fri, May 28, 2021, Wanpeng Li wrote:
+> How about this?
 
-> AST2600 supports 2 SGPIO master interfaces and 2 SGPIO slave interfaces.
-> Current pinctrl driver only define the first sgpio master and slave
-> interfaces.
-> The second SGPIO master and slave interfaces should be added in
-> pinctrl driver as well.
->
-> Signed-off-by: Steven Lee <steven_lee@aspeedtech.com>
-> Reviewed-by: Andrew Jeffery <andrew@aj.id.au>
+Yep, perfect!  Sorry about the squash confusion.
 
-Patch applied to the pinctrl tree.
-
-Yours,
-Linus Walleij
+> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+> index bbc4e04..dba8077 100644
+> --- a/arch/x86/kvm/x86.c
+> +++ b/arch/x86/kvm/x86.c
+> @@ -7226,6 +7226,11 @@ static void init_emulate_ctxt(struct kvm_vcpu *vcpu)
+>         BUILD_BUG_ON(HF_SMM_MASK != X86EMUL_SMM_MASK);
+>         BUILD_BUG_ON(HF_SMM_INSIDE_NMI_MASK != X86EMUL_SMM_INSIDE_NMI_MASK);
+> 
+> +       ctxt->interruptibility = 0;
+> +       ctxt->have_exception = false;
+> +       ctxt->exception.vector = -1;
+> +       ctxt->perm_ok = false;
+> +
+>         init_decode_cache(ctxt);
+>         vcpu->arch.emulate_regs_need_sync_from_vcpu = false;
+>  }
+> @@ -7561,11 +7566,6 @@ int x86_decode_emulated_instruction(struct
+> kvm_vcpu *vcpu, int emulation_type,
+>             kvm_vcpu_check_breakpoint(vcpu, &r))
+>                 return r;
+> 
+> -       ctxt->interruptibility = 0;
+> -       ctxt->have_exception = false;
+> -       ctxt->exception.vector = -1;
+> -       ctxt->perm_ok = false;
+> -
+>         ctxt->ud = emulation_type & EMULTYPE_TRAP_UD;
+> 
+>         r = x86_decode_insn(ctxt, insn, insn_len);
