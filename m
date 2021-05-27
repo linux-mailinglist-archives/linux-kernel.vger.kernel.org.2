@@ -2,159 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E42593937F8
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 23:30:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ADBC83937FA
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 23:31:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234527AbhE0VcR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 May 2021 17:32:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59364 "EHLO
+        id S234633AbhE0Vck (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 May 2021 17:32:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59452 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232975AbhE0VcQ (ORCPT
+        with ESMTP id S232975AbhE0Vci (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 May 2021 17:32:16 -0400
-Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC2C6C061574
-        for <linux-kernel@vger.kernel.org>; Thu, 27 May 2021 14:30:42 -0700 (PDT)
-Received: by mail-pj1-x1036.google.com with SMTP id pi6-20020a17090b1e46b029015cec51d7cdso1244316pjb.5
-        for <linux-kernel@vger.kernel.org>; Thu, 27 May 2021 14:30:42 -0700 (PDT)
+        Thu, 27 May 2021 17:32:38 -0400
+Received: from mail-pf1-x432.google.com (mail-pf1-x432.google.com [IPv6:2607:f8b0:4864:20::432])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44F3CC061574;
+        Thu, 27 May 2021 14:31:05 -0700 (PDT)
+Received: by mail-pf1-x432.google.com with SMTP id y202so1594534pfc.6;
+        Thu, 27 May 2021 14:31:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=intel-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=S8iOtQ0X/my+H1BXO/43lHQWXZDSXQklyVNvDzzmcng=;
-        b=Rrqt81EL8jZO92aEa7H8trfJbdwjHhKDawyLao+RR6AeRPjzKVrO9C3KdkRXm25WQO
-         GRLib1dQUkipP+mPE/Gk2Uhhdbca/odaXJS37UttXFsBxaKm2oNlVa7G6j9OYgyvscWO
-         pkNAGMa8bN0tOs5asbat2etgpagQ30FOxVFJBE7LV+Xn5C6kNCmg3UTX+MKpLbLYxwmH
-         RTRPldUkGo1Tzljl4F+B3iTcy3XcpfEy4v/k8YH6fwa9fPNdMv9bFxubh1zbXcrsp6Ol
-         mK792pHk2tNa5wAFgKr8XgkSCNjzjbGgZpN/05GuTEQvkAnE+i+7Q7WbStCidr6xsQvo
-         iuKA==
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=92w7fK+Mm8d7VOHGtQ52zeEYrDzHrnqQNTrY91S9zlE=;
+        b=HazhiHbi8HLMATY1w/PBfotFYsroAHmVnINGVF5XK0WL44JaciHfcLhln/FOPc03Fn
+         ZpOSHgifIwQdd/v0p544gpYRXNh0onIVBceRZowMDcKxO0FiAuN3vDP98y5uhPVNhMma
+         j/U+dkWHExyFSwIX7YO8oXPUJ2PC6UJQFwccbWoePozzn6XaRQKoF/yNdO+fIPE7FG8q
+         j4AdhSE8CjWZNSNBIsDxggi7v7o0KIAoUSE/QSgswciDE74c7bLHBXC4SMKeW5CmXA08
+         OXHY2y45pHWAL1GvWjNCUzeNs4eCybxLnCFeL5Wcl5zFjyUhhQBYGr9l91KvS0KPLv1v
+         AKwg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=S8iOtQ0X/my+H1BXO/43lHQWXZDSXQklyVNvDzzmcng=;
-        b=XwfkrGpbaCDWvzPduQnORRgXE7FG+rBSkL6eIVFCWsVQOFyd3youwW4s+4S4nMFYLj
-         b/Avv1P79w6r3fb5EDCnh3H/Ufk5oI6L/bUYuuWKlpAi49fA7B5XUfSRtWRQwd7/hB4Q
-         VyWdHD9H2hM3ooLEACswgOOm58Q2VWSzfsWEq7OrSiRRdWekWGcpRByfJaSZ65qbB8l4
-         kWywR7xqKPKzh63LsVghWQ/ALGfyLZH6hVjRP8fOcy9FSp4Hfmn5FUm4hVRVDnyw98FA
-         TNCoVdrChnyyaCxvW6WeQXsU+I6QqoSGDNAOgj5bm2HFX0JQhrSinKlxFd/HQSSjK+zO
-         MTzw==
-X-Gm-Message-State: AOAM530Jy7eNpVcdVtGL7PyH2UA0nvfLaEu3C9s6PL2DkkswAsHnHNZk
-        eaPwSmMPMUze5vWezlWeXF7PsVaDhhyKMzI8aRcW/A==
-X-Google-Smtp-Source: ABdhPJyAJFdoqNILHiLrNqqm39umrsbUXjufPPoG05dlLsB2ZffzTsq7bHfWPu5BbnwLXCnmaNLzaveNasZvSD8Sz4w=
-X-Received: by 2002:a17:90b:3709:: with SMTP id mg9mr557497pjb.149.1622151042284;
- Thu, 27 May 2021 14:30:42 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=92w7fK+Mm8d7VOHGtQ52zeEYrDzHrnqQNTrY91S9zlE=;
+        b=BYgGnDDlUAOrNfzCcAVNeu/rJNyPa4K0zcS+hbIitpWocCZd5RfUd04q/3TDkqtigu
+         lSCdD8IK5OM021EsDHWfYuPmxuS91zjjcgv0qFv7WH+5foowRQEBFA5NWO78tg00Rb+P
+         mW/vQ68MdIHE4ZRhgHXMtPrbv8A8QbMjgE20PxetOj9Y7Hs98OLu5buKnBmc8d913eYi
+         /co0fF1nURDwKLAmBLyZSRV/shvv5yz6sJDF+ekVCG2Vhx16xVyt3ZyGH1acePCHtdta
+         EKNcAE0xsYkqs2DK4PJEyOpIbdExrH2O5VpNFUkTcqETD9cGsUrjfT2IK983Thh4YAYr
+         A3kg==
+X-Gm-Message-State: AOAM530aelLZWdPP1JxSMIz+YYs/XAZ48o1SEpZuKS2k5DpmNGBNOTSa
+        ClBtq7BY+6YbsFfJqc8wy8Y=
+X-Google-Smtp-Source: ABdhPJymdw+FUE9i9tijpf70fKJR8T/iANZPDhQPP/DlbzKpjh5/smoRHCmmMGeXq54kKCQNxUYhKw==
+X-Received: by 2002:a05:6a00:23cf:b029:2d5:302e:dc77 with SMTP id g15-20020a056a0023cfb02902d5302edc77mr409995pfc.63.1622151064531;
+        Thu, 27 May 2021 14:31:04 -0700 (PDT)
+Received: from google.com ([2620:15c:202:201:2eca:168c:3933:43bc])
+        by smtp.gmail.com with ESMTPSA id z6sm2667635pgp.89.2021.05.27.14.31.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 27 May 2021 14:31:02 -0700 (PDT)
+Date:   Thu, 27 May 2021 14:30:59 -0700
+From:   Dmitry Torokhov <dmitry.torokhov@gmail.com>
+To:     Takashi Iwai <tiwai@suse.de>
+Cc:     linux-input@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] Input: elants_i2c - Fix NULL dereference at probing
+Message-ID: <YLAPk+Vvjnbp7FY/@google.com>
+References: <20210527173153.16470-1-tiwai@suse.de>
 MIME-Version: 1.0
-References: <159009507306.847224.8502634072429766747.stgit@dwillia2-desk3.amr.corp.intel.com>
- <20210527205845.GA1421476@bjorn-Precision-5520>
-In-Reply-To: <20210527205845.GA1421476@bjorn-Precision-5520>
-From:   Dan Williams <dan.j.williams@intel.com>
-Date:   Thu, 27 May 2021 14:30:31 -0700
-Message-ID: <CAPcyv4j-ygPddjuZqq8PMvsN-E8rJQszc+WuUu1MBXVXiQZddg@mail.gmail.com>
-Subject: Re: [PATCH v4] /dev/mem: Revoke mappings when a driver claims the region
-To:     Bjorn Helgaas <helgaas@kernel.org>
-Cc:     Greg KH <gregkh@linuxfoundation.org>,
-        Arnd Bergmann <arnd@arndb.de>, Ingo Molnar <mingo@redhat.com>,
-        Kees Cook <keescook@chromium.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Russell King <linux@arm.linux.org.uk>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux MM <linux-mm@kvack.org>,
-        Linux PCI <linux-pci@vger.kernel.org>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
-        =?UTF-8?Q?Krzysztof_Wilczy=C5=84ski?= <kw@linux.com>,
-        Jason Gunthorpe <jgg@nvidia.com>,
-        Christoph Hellwig <hch@lst.de>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210527173153.16470-1-tiwai@suse.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 27, 2021 at 1:58 PM Bjorn Helgaas <helgaas@kernel.org> wrote:
->
-> [+cc Daniel, Krzysztof, Jason, Christoph, linux-pci]
->
-> On Thu, May 21, 2020 at 02:06:17PM -0700, Dan Williams wrote:
-> > Close the hole of holding a mapping over kernel driver takeover event of
-> > a given address range.
-> >
-> > Commit 90a545e98126 ("restrict /dev/mem to idle io memory ranges")
-> > introduced CONFIG_IO_STRICT_DEVMEM with the goal of protecting the
-> > kernel against scenarios where a /dev/mem user tramples memory that a
-> > kernel driver owns. However, this protection only prevents *new* read(),
-> > write() and mmap() requests. Established mappings prior to the driver
-> > calling request_mem_region() are left alone.
-> >
-> > Especially with persistent memory, and the core kernel metadata that is
-> > stored there, there are plentiful scenarios for a /dev/mem user to
-> > violate the expectations of the driver and cause amplified damage.
-> >
-> > Teach request_mem_region() to find and shoot down active /dev/mem
-> > mappings that it believes it has successfully claimed for the exclusive
-> > use of the driver. Effectively a driver call to request_mem_region()
-> > becomes a hole-punch on the /dev/mem device.
->
-> This idea of hole-punching /dev/mem has since been extended to PCI
-> BARs via [1].
->
-> Correct me if I'm wrong: I think this means that if a user process has
-> mmapped a PCI BAR via sysfs, and a kernel driver subsequently requests
-> that region via pci_request_region() or similar, we punch holes in the
-> the user process mmap.  The driver might be happy, but my guess is the
-> user starts seeing segmentation violations for no obvious reason and
-> is not happy.
->
-> Apart from the user process issue, the implementation of [1] is
-> problematic for PCI because the mmappable sysfs attributes now depend
-> on iomem_init_inode(), an fs_initcall, which means they can't be
-> static attributes, which ultimately leads to races in creating them.
+Hi Takashi,
 
-See the comments in iomem_get_mapping(), and revoke_iomem():
+On Thu, May 27, 2021 at 07:31:53PM +0200, Takashi Iwai wrote:
+> The recent change in elants_i2c driver to support more chips
+> introduced a regression leading to Oops at probing.  The driver reads
+> id->driver_data, but the id may be NULL depending on the device type
+> the driver gets bound.
+> 
+> Replace the driver data extraction with the device_get_match_data()
+> helper, and define the driver data in OF table, too.
+> 
+> Fixes: 9517b95bdc46 ("Input: elants_i2c - add support for eKTF3624")
+> BugLink: https://bugzilla.suse.com/show_bug.cgi?id=1186454
+> Cc: <stable@vger.kernel.org>
+> Signed-off-by: Takashi Iwai <tiwai@suse.de>
+> ---
+> v1->v2: Use device_get_match_data()
+> 
+>  drivers/input/touchscreen/elants_i2c.c | 6 +++---
+>  1 file changed, 3 insertions(+), 3 deletions(-)
+> 
+> diff --git a/drivers/input/touchscreen/elants_i2c.c b/drivers/input/touchscreen/elants_i2c.c
+> index 17540bdb1eaf..29b5bb03cff9 100644
+> --- a/drivers/input/touchscreen/elants_i2c.c
+> +++ b/drivers/input/touchscreen/elants_i2c.c
+> @@ -1396,7 +1396,7 @@ static int elants_i2c_probe(struct i2c_client *client,
 
-        /*
-         * Check that the initialization has completed. Losing the race
-         * is ok because it means drivers are claiming resources before
-         * the fs_initcall level of init and prevent iomem_get_mapping users
-         * from establishing mappings.
-         */
+Might want to switch to probe_new() to avoid same/similar issue down
+the road, either in the same patch or in a separate one.
 
-...the observation being that it is ok for the revocation inode to
-come on later in the boot process because userspace won't be able to
-use the fs yet. So any missed calls to revoke_iomem() would fall back
-to userspace just seeing the resource busy in the first instance. I.e.
-through the normal devmem_is_allowed() exclusion.
 
->
-> So I'm raising the question of whether this hole-punch is the right
-> strategy.
->
->   - Prior to revoke_iomem(), __request_region() was very
->     self-contained and really only depended on the resource tree.  Now
->     it depends on a lot of higher-level MM machinery to shoot down
->     mappings of other tasks.  This adds quite a bit of complexity and
->     some new ordering constraints.
->
->   - Punching holes in the address space of an existing process seems
->     unfriendly.  Maybe the driver's __request_region() should fail
->     instead, since the driver should be prepared to handle failure
->     there anyway.
+>  	init_completion(&ts->cmd_done);
+>  
+>  	ts->client = client;
+> -	ts->chip_id = (enum elants_chip_id)id->driver_data;
+> +	ts->chip_id = (enum elants_chip_id)device_get_match_data(&client->dev);
 
-It's prepared to handle failure, but in this case it is dealing with a
-root user of 2 minds.
+I think this might need to go through an intermediate cast to shut up
+compiler warnings:
 
->
->   - [2] suggests that the hole punch protects drivers from /dev/mem
->     writers, especially with persistent memory.  I'm not really
->     convinced.  The hole punch does nothing to prevent a user process
->     from mmapping and corrupting something before the driver loads.
+	ts->chip_id = (enum elants_chip_id)(uintptr_t)
+			device_get_match_data(&client->dev);
 
-The motivation for this was a case that was swapping between /dev/mem
-access and /dev/pmem0 access and they forgot to stop using /dev/mem
-when they switched to /dev/pmem0. If root wants to use /dev/mem it can
-use it, if root wants to stop the driver from loading it can set
-mopdrobe policy or manually unbind, and if root asks the kernel to
-load the driver while it is actively using /dev/mem something has to
-give. Given root has other options to stop a driver the decision to
-revoke userspace access when root messes up and causes a collision
-seems prudent to me.
+>  	i2c_set_clientdata(client, ts);
+>  
+>  	ts->vcc33 = devm_regulator_get(&client->dev, "vcc33");
+> @@ -1636,8 +1636,8 @@ MODULE_DEVICE_TABLE(acpi, elants_acpi_id);
+>  
+>  #ifdef CONFIG_OF
+>  static const struct of_device_id elants_of_match[] = {
+> -	{ .compatible = "elan,ekth3500" },
+> -	{ .compatible = "elan,ektf3624" },
+> +	{ .compatible = "elan,ekth3500", .data = EKTH3500 },
+> +	{ .compatible = "elan,ektf3624", .data = EKTF3624 },
+
+As the bot mentioned this needs a cast.
+
+>  	{ /* sentinel */ }
+>  };
+>  MODULE_DEVICE_TABLE(of, elants_of_match);
+> -- 
+> 2.26.2
+> 
+
+Thanks.
+
+-- 
+Dmitry
