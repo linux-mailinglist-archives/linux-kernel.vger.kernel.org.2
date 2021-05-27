@@ -2,58 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C603393589
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 20:41:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E157639358B
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 20:42:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235871AbhE0SnY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 May 2021 14:43:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45216 "EHLO mail.kernel.org"
+        id S235894AbhE0Sn0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 May 2021 14:43:26 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45226 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229902AbhE0SnX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S232416AbhE0SnX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 27 May 2021 14:43:23 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id 428EF613AC;
+Received: by mail.kernel.org (Postfix) with ESMTPS id 5C080613D1;
         Thu, 27 May 2021 18:41:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1622140910;
-        bh=LORWVZlLu83pAyB/QRvy+Br0rns+Q9Ogm4QW+K6dg2w=;
+        bh=VXatjFi7e5S32DXaMFXcfx1fqakx8PI0p8STJiuxb+M=;
         h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=qzq0BleLoS362e+2rNNFwbRPURs/WQyam2FA6TCHyJmx/C5l+O+gc7o4gFBGpBsXr
-         366fzuKhxFXpgElDPQFUWoZL/LpnrMsoBEtVq7HDYYLV3NjpU9UOKbrusOXJhWZqHv
-         BweHZCijU8qIF57E7OoE9uf48qVKfZUcoSngLOuTyGFIZMOYFqpfpTj1DyVeukmKCn
-         8JmkWDJ/HV31GVaCXoUb0jq/TCeWMBxFQ9jBrW5YI0TZNQTNpNNyO9m/Qr+bRItdd1
-         40+fTd1I+A52ZZWL+154h/pVou6vT3QgvFbZIj+C2atZbq6vdtZliTvKNnb0ARzeT+
-         gzxRcDzHGEkTA==
+        b=F4IPD0RYj2DDP6oKicO14nx5hhWa8yiTM6kqwoLPHgp1z3Bid46s/zFzTfKzMQPUS
+         xB2qdxFFoj2nxNIbneC4bdrYjh6micyQ0lN2RvnUygiH6M3XUVRDlnPEl/QuQWcz0k
+         N/F9qKKnVkFcktl8olZMWfiHz2Y+xNrFyXVQVDgF849uGVqGo5IXsXKhyEUr2bYxTN
+         crD0KAFZdSSmmrVfooSzbz5BKY5N9J9Lb37rEbpWoVl3Z5t91n3ppGr1La/AQrz8rz
+         3rqUxgxa4rECIlBB1Dh336whKTMmUga2MTJ/VVgxMZ9txdRKLmbWH7CsNBin6o7Wjz
+         Y1dxF9E4cUlCQ==
 Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 310AC60A4F;
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 5279260CE1;
         Thu, 27 May 2021 18:41:50 +0000 (UTC)
-Subject: Re: [GIT PULL] ACPI fix for v5.13-rc4
+Subject: Re: [git pull] IOMMU Fixes for Linux v5.13-rc3
 From:   pr-tracker-bot@kernel.org
-In-Reply-To: <CAJZ5v0i1WebaCZL3q-6rQOexMnYXacD6KTnO1ONcxN1Li01LSg@mail.gmail.com>
-References: <CAJZ5v0i1WebaCZL3q-6rQOexMnYXacD6KTnO1ONcxN1Li01LSg@mail.gmail.com>
-X-PR-Tracked-List-Id: <linux-pm.vger.kernel.org>
-X-PR-Tracked-Message-Id: <CAJZ5v0i1WebaCZL3q-6rQOexMnYXacD6KTnO1ONcxN1Li01LSg@mail.gmail.com>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-pm.git acpi-5.13-rc4
-X-PR-Tracked-Commit-Id: 9b7ff25d129df7c4f61e08382993e1988d56f6a7
+In-Reply-To: <YK/dheM2NZz6KOkb@8bytes.org>
+References: <YK/dheM2NZz6KOkb@8bytes.org>
+X-PR-Tracked-List-Id: Development issues for Linux IOMMU support
+ <iommu.lists.linux-foundation.org>
+X-PR-Tracked-Message-Id: <YK/dheM2NZz6KOkb@8bytes.org>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/joro/iommu.git tags/iommu-fixes-v5.13-rc3
+X-PR-Tracked-Commit-Id: 0ee74d5a48635c848c20f152d0d488bf84641304
 X-PR-Merge-Tree: torvalds/linux.git
 X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 3224374f7eb08fbb36d3963895da20ff274b8e6a
-Message-Id: <162214091014.4321.9952958885965277813.pr-tracker-bot@kernel.org>
+X-PR-Merge-Commit-Id: 96c132f837ff0639702d04d229da190f636a48b5
+Message-Id: <162214091033.4321.14027615366383525738.pr-tracker-bot@kernel.org>
 Date:   Thu, 27 May 2021 18:41:50 +0000
-To:     "Rafael J. Wysocki" <rafael@kernel.org>
+To:     Joerg Roedel <joro@8bytes.org>
 Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+        iommu@lists.linux-foundation.org, Will Deacon <will@kernel.org>,
+        linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Thu, 27 May 2021 20:32:16 +0200:
+The pull request you sent on Thu, 27 May 2021 19:57:25 +0200:
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-pm.git acpi-5.13-rc4
+> git://git.kernel.org/pub/scm/linux/kernel/git/joro/iommu.git tags/iommu-fixes-v5.13-rc3
 
 has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/3224374f7eb08fbb36d3963895da20ff274b8e6a
+https://git.kernel.org/torvalds/c/96c132f837ff0639702d04d229da190f636a48b5
 
 Thank you!
 
