@@ -2,199 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 57ED83927B6
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 08:36:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F37D3927BB
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 08:37:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233081AbhE0GiH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 May 2021 02:38:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52864 "EHLO
+        id S233288AbhE0GjO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 May 2021 02:39:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53122 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229579AbhE0GiB (ORCPT
+        with ESMTP id S229619AbhE0GjN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 May 2021 02:38:01 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60576C061574
-        for <linux-kernel@vger.kernel.org>; Wed, 26 May 2021 23:36:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=Bra5u3q0nsTT2vClh1YptF/HJcbKPIZLi7Sa4klMJfI=; b=IBy/VCryTi7VtzKxkz81CM2fSz
-        6Gv2/3624/KD2qw0+jN5QG2zDbACp2FdQF7vdOFJnK72ZSwHl+Up2O0G2JgB527NaM6ZvXDY3aHo1
-        SFqYJKBJVByeJ8pLCj9I8BT0MtthLCirHCS8ccOA3QqsrKm3vIRP1WWRYE6Wow4JTIlu/q+G2uzYf
-        8OcY0kMWXl7Ngr4nFPwWXqd4CZHQ9d5xbZnDnL9Tn2yRLBeA9/CHFBP27TeTVQvWej3O4nHuuouLX
-        EWu2c+P5n95Zok0U17cqDg5VysFsfI5F6hdTdt+dRkfH+sdHQ624eN34qdhHp+x8HZdZ3vGrbXdeo
-        nBuFTR1g==;
-Received: from hch by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
-        id 1lm9cX-005FUj-Q3; Thu, 27 May 2021 06:35:56 +0000
-Date:   Thu, 27 May 2021 07:35:53 +0100
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Alexandre Ghiti <alex@ghiti.fr>
-Cc:     Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Jisheng Zhang <jszhang@kernel.org>,
-        Zong Li <zong.li@sifive.com>, Anup Patel <anup@brainfault.org>,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] riscv: Map the kernel with correct permissions the
- first time
-Message-ID: <YK89yVQirCLdodxG@infradead.org>
-References: <20210526134110.217073-1-alex@ghiti.fr>
+        Thu, 27 May 2021 02:39:13 -0400
+Received: from mail-pg1-x530.google.com (mail-pg1-x530.google.com [IPv6:2607:f8b0:4864:20::530])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6775AC061574
+        for <linux-kernel@vger.kernel.org>; Wed, 26 May 2021 23:37:39 -0700 (PDT)
+Received: by mail-pg1-x530.google.com with SMTP id v14so2945925pgi.6
+        for <linux-kernel@vger.kernel.org>; Wed, 26 May 2021 23:37:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-transfer-encoding;
+        bh=tf0o2vs0T6C29p93j+xX0Wb3cwZvOLfvMJ6EQ3nK0vA=;
+        b=xOKj/CYrKJUifx2Y1O2r/iim5TBbQkrFqHQG+JEt6BSAHhtB3ABMnhb4AYCRA+wd6m
+         9DgFq5DuRtejpr2r6eraIjnd7abCzgRs6v151vWtWmZu/VD45J69mJTWsOCmQwe0GLnb
+         AmJCsx4qjZwnaLE6hpmofoqWdfMsL9FUR8/HTCMctf/sWAFX3AEyYm+mmRRPByJW3szX
+         tvrg2RMf4jL5D/+5rpkFkr9vtdOzl5yQZTgAH70iaabGqEF3SMMMWquZq9ciHSNuiCCm
+         5zaAK7Zdm/0unV0FLMJFa9bMQVSDRBnC96wEFkeuyPN4W3pkJ1He61HoHo8hE8NPHJWr
+         731w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding;
+        bh=tf0o2vs0T6C29p93j+xX0Wb3cwZvOLfvMJ6EQ3nK0vA=;
+        b=Pphw2lv+ZNGScH+y6oDbm65vBXhjsoZaLOXwguc3f1ql1lc7Ik6QwKUebOcTlNMaBd
+         JXasymwbMhmhIwHcPSyeOdYiXRGi1JtwlZZhPhtDnP/hDw3YMgojEpBabfxTfn9KlMKT
+         JMPg4qT8j0Okdg1eDQ0pdMA2HEk1XzLM+S4un0mJ/co5vYtyPogl9u8Ryv7nkk5Fuz8o
+         KDDO2yQk12E6j9kW4vGwyQtfajfBfkPVcJvggS4wgGmpTLlPv1vq7cnpfQ3x60wc7qa+
+         Iei72UrHQPQpv+laLyf4xHIDWZpGbxs1hlqOyRIlLiKqHW/mq6F+IEi3rzm+9JtKi7iJ
+         VSPA==
+X-Gm-Message-State: AOAM530hhJxKsm/D1IOgKEoexuyOwKoUxOQOSTQeBC2ogkQ9Gq1IxXBq
+        CIgVH9drOwcQ43QPdoewmy5PZA==
+X-Google-Smtp-Source: ABdhPJzZaq8D6xBG+Thlxap9mTdChxd1tyEKxVIfetix/NPBx1jmzHIargKuNUFgELkX/csEHlvqmg==
+X-Received: by 2002:a63:f245:: with SMTP id d5mr2289866pgk.416.1622097459337;
+        Wed, 26 May 2021 23:37:39 -0700 (PDT)
+Received: from [10.86.119.121] ([139.177.225.224])
+        by smtp.gmail.com with ESMTPSA id p18sm979473pff.112.2021.05.26.23.37.35
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 26 May 2021 23:37:38 -0700 (PDT)
+Subject: Re: [External] Re: [PATCH] fs/proc/kcore.c: add mmap interface
+To:     Andrew Morton <akpm@linux-foundation.org>, adobriyan@gmail.com,
+        rppt@kernel.org
+Cc:     linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        songmuchun@bytedance.com, zhouchengming@bytedance.com,
+        chenying.kernel@bytedance.com, zhengqi.arch@bytedance.com
+References: <20210526075142.9740-1-zhoufeng.zf@bytedance.com>
+ <20210526173953.49fb3dc48c0f2a8b3c31fe2b@linux-foundation.org>
+From:   zhoufeng <zhoufeng.zf@bytedance.com>
+Message-ID: <5faab938-8eb9-268b-e45d-b33e6a9089d6@bytedance.com>
+Date:   Thu, 27 May 2021 14:37:32 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.10.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210526134110.217073-1-alex@ghiti.fr>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+In-Reply-To: <20210526173953.49fb3dc48c0f2a8b3c31fe2b@linux-foundation.org>
+Content-Type: text/plain; charset=gbk; format=flowed
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 26, 2021 at 03:41:10PM +0200, Alexandre Ghiti wrote:
->  #ifdef CONFIG_64BIT
-> +#define is_kernel_mapping(x)	((x) >= kernel_virt_addr && (x) < (kernel_virt_addr + load_sz))
-> +#define is_linear_mapping(x)	((x) >= PAGE_OFFSET && (x) < kernel_virt_addr)
-> +
-
-Overly long lines.  Independ of that complex macros are generally much
-more readable if they are written more function-like, that is the name
-and paramtes are kept on a line of their own:
-
-#define is_kernel_mapping(x) \
-	((x) >= kernel_virt_addr && (x) < (kernel_virt_addr + load_sz))
-
-But what is the reason to not make them type-safe inline functions
-anyway?
-
->  #define __va_to_pa_nodebug(x)	({						\
->  	unsigned long _x = x;							\
-> -	(_x < kernel_virt_addr) ?						\
-> +	is_linear_mapping(_x) ?							\
->  		linear_mapping_va_to_pa(_x) : kernel_mapping_va_to_pa(_x);	\
->  	})
-
-... especially for something complex like this.
-
-> +static inline bool is_va_kernel_lm_alias_text(uintptr_t va)
-> +{
-> +	return (va >= (uintptr_t)lm_alias(_start) && va < (uintptr_t)lm_alias(__init_text_begin));
-
-Overly long line as well.  And useless braces.
-
-> +static inline bool is_va_kernel_init_text(uintptr_t va)
-> +{
-> +	return (va >= (uintptr_t)__init_text_begin && va < (uintptr_t)__init_data_begin);
-> +}
-
-Same here.
-
-> +#ifdef CONFIG_STRICT_KERNEL_RWX
-> +static __init pgprot_t pgprot_from_va(uintptr_t va)
-> +{
-> +#ifdef CONFIG_64BIT
-> +	if (is_va_kernel_text(va) || is_va_kernel_init_text(va))
-> +		return PAGE_KERNEL_READ_EXEC;
-> +
-> +	/*
-> +	 * We must mark only text as read-only as init text will get freed later
-> +	 * and rodata section is marked readonly in mark_rodata_ro.
-> +	 */
-> +	if (is_va_kernel_lm_alias_text(va))
-> +		return PAGE_KERNEL_READ;
-> +
-> +	return PAGE_KERNEL;
-> +#else
-> +	if (is_va_kernel_text(va))
-> +		return PAGE_KERNEL_READ_EXEC;
-> +
-> +	if (is_va_kernel_init_text(va))
-> +		return PAGE_KERNEL_EXEC;
-> +
-> +	return PAGE_KERNEL;
-> +#endif /* CONFIG_64BIT */
-> +}
-
-If the entire function is different for config symbols please just
-split it into two separate functions.  But to make the difference more
-clear IS_ENABLED might fit better here:
-
-static __init pgprot_t pgprot_from_va(uintptr_t va)
-{
-	if (is_va_kernel_text(va))
-		return PAGE_KERNEL_READ_EXEC;
-	if (is_va_kernel_init_text(va))
-		return IS_ENABLED(CONFIG_64BIT) ?
-			PAGE_KERNEL_READ_EXEC : PAGE_KERNEL_EXEC;
-	if (IS_ENABLED(CONFIG_64BIT) && is_va_kernel_lm_alias_text(va))
-		return PAGE_KERNEL_READ;
-	return PAGE_KERNEL;
-}
-
-Preferable with comments explaining the 32-bit vs 64-bit difference.
-
-> +void mark_rodata_ro(void)
-> +{
-> +	unsigned long rodata_start = (unsigned long)__start_rodata;
-> +	unsigned long data_start = (unsigned long)_data;
-> +	unsigned long __maybe_unused lm_rodata_start = (unsigned long)lm_alias(__start_rodata);
-> +	unsigned long __maybe_unused lm_data_start = (unsigned long)lm_alias(_data);
-> +
-> +	set_memory_ro(rodata_start, (data_start - rodata_start) >> PAGE_SHIFT);
-> +#ifdef CONFIG_64BIT
-> +	set_memory_ro(lm_rodata_start, (lm_data_start - lm_rodata_start) >> PAGE_SHIFT);
-> +#endif
-
-Lots of unreadable overly lone lines.  Why not add a helper and do
-something like:
-
-static void set_kernel_memory_ro(char *startp, char *endp)
-{
-        unsigned long start = (unsigned long)startp;
-	unsigned long end = (unsigned long)endp;
-
-	set_memory_ro(start, (start - end) >> PAGE_SHIFT);
-}
-
-        set_kernel_memory_ro(_start_rodata, _data);
-	if (IS_ENABLED(CONFIG_64BIT))
-		set_kernel_memory_ro(lm_alias(__start_rodata), lm_alias(_data));
 
 
-> +static __init pgprot_t pgprot_from_va(uintptr_t va)
-> +{
-> +#ifdef CONFIG_64BIT
-> +	if (is_kernel_mapping(va))
-> +		return PAGE_KERNEL_EXEC;
-> +
-> +	if (is_linear_mapping(va))
-> +		return PAGE_KERNEL;
-> +
-> +	return PAGE_KERNEL;
-> +#else
-> +	return PAGE_KERNEL_EXEC;
-> +#endif /* CONFIG_64BIT */
-> +}
-> +#endif /* CONFIG_STRICT_KERNEL_RWX */
-> +
+ÔÚ 2021/5/27 ÉÏÎç8:39, Andrew Morton Ð´µÀ:
+> On Wed, 26 May 2021 15:51:42 +0800 Feng zhou <zhoufeng.zf@bytedance.com> wrote:
+> 
+>> From: ZHOUFENG <zhoufeng.zf@bytedance.com>
+>>
+>> When we do the kernel monitor, use the DRGN
+>> (https://github.com/osandov/drgn) access to kernel data structures,
+>> found that the system calls a lot. DRGN is implemented by reading
+>> /proc/kcore. After looking at the kcore code, it is found that kcore
+>> does not implement mmap, resulting in frequent context switching
+>> triggered by read. Therefore, we want to add mmap interface to optimize
+>> performance. Since vmalloc and module areas will change with allocation
+>> and release, consistency cannot be guaranteed, so mmap interface only
+>> maps KCORE_TEXT and KCORE_RAM.
+>>
+>> The test results:
+>> 1. the default version of kcore
+>> real 11.00
+>> user 8.53
+>> sys 3.59
+>>
+>> % time     seconds  usecs/call     calls    errors syscall
+>> ------ ----------- ----------- --------- --------- ----------------
+>> 99.64  128.578319          12  11168701           pread64
+>> ...
+>> ------ ----------- ----------- --------- --------- ----------------
+>> 100.00  129.042853              11193748       966 total
+>>
+>> 2. added kcore for the mmap interface
+>> real 6.44
+>> user 7.32
+>> sys 0.24
+>>
+>> % time     seconds  usecs/call     calls    errors syscall
+>> ------ ----------- ----------- --------- --------- ----------------
+>> 32.94    0.130120          24      5317       315 futex
+>> 11.66    0.046077          21      2231         1 lstat
+>>   9.23    0.036449         177       206           mmap
+>> ...
+>> ------ ----------- ----------- --------- --------- ----------------
+>> 100.00    0.395077                 25435       971 total
+>>
+>> The test results show that the number of system calls and time
+>> consumption are significantly reduced.
+>>
+> 
+> hm, OK, I guess why not.  The performance improvements for DRGN (which
+> appears to be useful) are nice and the code is simple.
+> 
+> I'm surprised that it makes this much difference.  Has DRGN been fully
+> optimised to minimise the amount of pread()ing which it does?  Why does
+> it do so much reading?
 
-Same comment as for the other version.  This could become:
+DRGN is a tool similar to Crash, but much lighter. It allows users to 
+obtain kernel data structures from Python scripts. Based on this, we 
+intend to use DRGN for kernel monitoring. So we used some pressure test 
+scripts to test the loss of monitoring.
+Monitoring is all about getting current real-time data, so every time 
+DRGN tries to get kernel data, it needs to read /proc/kcore. In my 
+script, I tried to loop 1000 times to obtain the information of all the 
+processes in the machine, in order to construct a scene where kernel 
+data is frequently read. So, the frequency in the default version of 
+kcore, pread is very high. In view of this situation, our optimization 
+idea is to reduce the number of context switches as much as possible 
+under the scenario of frequent kernel data acquisition, to reduce the 
+performance loss to a minimum, and then move the monitoring system to 
+the production environment.  After running for a long time in a 
+production environment, the number of kernel data reads was added as 
+time went on, and the pread number also increased. If users use mmap, 
+it's once for all.
 
-static __init pgprot_t pgprot_from_va(uintptr_t va)
-{       
-	if (IS_ENABLED(CONFIG_64BIT) && !is_kernel_mapping(va))
-		return PAGE_KERNEL;
-	return PAGE_KERNEL_EXEC;
-}
+Attached is the test script:
+#!/usr/bin/env drgn
+# Copyright (c) Facebook, Inc. and its affiliates.
+# SPDX-License-Identifier: GPL-3.0-or-later
 
-> -static void __init create_kernel_page_table(pgd_t *pgdir, uintptr_t map_size)
-> +static void __init create_kernel_page_table(pgd_t *pgdir, uintptr_t map_size, bool early)
+"""A simplified implementation of ps(1) using drgn"""
 
-Overly long line.
+from drgn.helpers.linux.pid import for_each_task
 
->  	for (va = kernel_virt_addr; va < end_va; va += map_size)
->  		create_pgd_mapping(pgdir, va,
->  				   load_pa + (va - kernel_virt_addr),
-> -				   map_size, PAGE_KERNEL_EXEC);
-> +				   map_size, early ? PAGE_KERNEL_EXEC : pgprot_from_va(va));
+count = 0
+while (count < 1000):
+     count = count + 1
+     #print("PID        COMM")
+     for task in for_each_task(prog):
+         pid = task.pid.value_()
+         comm = task.comm.string_().decode()
+         #print(f"{pid:<10} {comm}")
 
-Same here.  But why not pass in a "pgprot_t ram_pgprot" instead of the
-bool, which would be self-documenting.
+> 
+> Thanks, I shall await input from others before moving ahead with this.
+> 
