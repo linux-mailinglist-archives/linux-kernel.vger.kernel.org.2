@@ -2,113 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2506539363D
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 21:28:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2CFB8393641
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 21:30:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235109AbhE0TaK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 May 2021 15:30:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60164 "EHLO
+        id S235135AbhE0Tbh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 May 2021 15:31:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60508 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229764AbhE0TaI (ORCPT
+        with ESMTP id S229764AbhE0Tbf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 May 2021 15:30:08 -0400
-Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com [IPv6:2607:f8b0:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 383CCC061760
-        for <linux-kernel@vger.kernel.org>; Thu, 27 May 2021 12:28:34 -0700 (PDT)
-Received: by mail-pf1-x435.google.com with SMTP id d16so1337338pfn.12
-        for <linux-kernel@vger.kernel.org>; Thu, 27 May 2021 12:28:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=/O5ZhuBU+E+S9yjOSjBJ2tbmDg0k5UnIlNPV88NbNt8=;
-        b=LoaeLRZlDL3Zq3Zd/tewzbdTcRqd2FoIe2Ud3xVPjrou4mOgWkVGVhVv+yi2Etdq0C
-         JmvQQYY24N5EwBAXiJxrehqSo7HmuxfEDwPgstNdh3QYHUmI53WoTnYGS36k877OfA+1
-         saZWbIYrWK66PHlsX4RrzOiuMpPD5Oga7jHWPBI9zhOsxTAEVKF9Q3xkH700R4xEAMf4
-         LBzjyqSkXjZfiriZXMgYeVAqg9AIJO754AwePcmLCuIb570ChLM5GaUbJ1iiE9TER7aF
-         pCUezaNaivUZjPQJZlHlxFq6U/X0ENbEWroeJllH3T9JRGR5A7rBheWeMGaSD8HENDr8
-         4Msw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=/O5ZhuBU+E+S9yjOSjBJ2tbmDg0k5UnIlNPV88NbNt8=;
-        b=quI0XTK8wXbhn3cSkv4EZ7/Ew5aWqRgeUq9/GN7f8QCS1BY67+RuUiwU34UqKPes2h
-         /YiVpFUFfW4a08YSR3vBw+7OrcQ75i0b9Aoh0q0WjadoD98ooEe4FSdBBFqN1euqRZP1
-         8SZKFVCtlv8whvDeNPK31yr3l/DvGMMkt4db9IjWUdaIOwWyV7RiT74BKXRjZuYaWuro
-         y2pIIJW7+kFzgh0pUiMxU9569EnvWdnImjezng16g77vslaIISP8jCvWH7A2SE2YEaXK
-         bPkj+7VDIMvimsKMwauTNZGB1EFLfsGVV9x5bpQ5LZIpgDE1KXS2WR0bX96jEJKJaj1H
-         Ob3g==
-X-Gm-Message-State: AOAM531/qk1OCE9n+KMyX+mT4VdB+axWvqDLtvfT/AgRmP/+FGrQMGmg
-        mEScVbgP8kcycr2ViaIEfyqKNdtELvO23g==
-X-Google-Smtp-Source: ABdhPJyxUO8wraNuT3RiXmkpiKZMNkAonQRla5oCtqEG/+FP940vF05hrfXq1ETZufBsWncVy5pwEw==
-X-Received: by 2002:a05:6a00:88b:b029:2de:33b3:76c9 with SMTP id q11-20020a056a00088bb02902de33b376c9mr24401pfj.30.1622143713551;
-        Thu, 27 May 2021 12:28:33 -0700 (PDT)
-Received: from google.com (240.111.247.35.bc.googleusercontent.com. [35.247.111.240])
-        by smtp.gmail.com with ESMTPSA id r4sm2404750pff.197.2021.05.27.12.28.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 27 May 2021 12:28:32 -0700 (PDT)
-Date:   Thu, 27 May 2021 19:28:29 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     Lai Jiangshan <jiangshanlai@gmail.com>,
-        linux-kernel@vger.kernel.org,
-        Lai Jiangshan <laijs@linux.alibaba.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
+        Thu, 27 May 2021 15:31:35 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B1C8C061574
+        for <linux-kernel@vger.kernel.org>; Thu, 27 May 2021 12:30:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=OmpHNr4TAP41rJ2r2wggyNBZl+LhZ+GtvDxjkk/dx1o=; b=vzGfouo5ojxroNYcpHA0i7jS7G
+        ewKzzmf2ehPIB8v3KD52FK+eFXvJVkit+agK8EcnuYjjOO9cZptqgt7/O4dlaXv0umNbFS9peuINi
+        wu7mqCXzhwqCzvfBtMNc8Anwb9BesjlGb8Q7VS47lvFKrgH+ZM4GKJW5ZdfpozNTeMN1Hym6m9LL8
+        XXsm60i4YupzGbEi9I2SV3UZ3J0eai2uvrpQO+qG9u0XIIBdudx2S7k4KKpZo8go+ZdN1ip9b3gM2
+        FCFKCzX7iIJs6cyj9kFMa6rRl1kP0p+5Y0MqS5yhclRgczB+FOn1OtfpDQdyf0e9Lc4G8DcaQtBhe
+        RYdZKmyA==;
+Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
+        id 1lmLhE-005r04-Bi; Thu, 27 May 2021 19:29:34 +0000
+Date:   Thu, 27 May 2021 20:29:32 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     Andi Kleen <ak@linux.intel.com>, Feng Tang <feng.tang@intel.com>,
+        kernel test robot <oliver.sang@intel.com>,
+        John Stultz <john.stultz@linaro.org>,
         Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        Maxim Levitsky <mlevitsk@redhat.com>, kvm@vger.kernel.org
-Subject: Re: [PATCH] KVM: X86: fix tlb_flush_guest()
-Message-ID: <YK/y3QgSg+aYk9Z+@google.com>
-References: <20210527023922.2017-1-jiangshanlai@gmail.com>
- <78ad9dff-9a20-c17f-cd8f-931090834133@redhat.com>
- <YK/FGYejaIu6EzSn@google.com>
- <YK/FbFzKhZEmI40C@google.com>
+        Stephen Boyd <sboyd@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Mark Rutland <Mark.Rutland@arm.com>,
+        Marc Zyngier <maz@kernel.org>,
+        Xing Zhengjun <zhengjun.xing@linux.intel.com>,
+        Chris Mason <clm@fb.com>, LKML <linux-kernel@vger.kernel.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        lkp@lists.01.org, lkp@intel.com, ying.huang@intel.com,
+        zhengjun.xing@intel.com
+Subject: Re: [clocksource] 8901ecc231: stress-ng.lockbus.ops_per_sec -9.5%
+ regression
+Message-ID: <YK/zHMPSZSKrmXC6@casper.infradead.org>
+References: <20210521083322.GG25531@xsang-OptiPlex-9020>
+ <20210521135617.GT4441@paulmck-ThinkPad-P17-Gen-1>
+ <20210522160827.GA2625834@paulmck-ThinkPad-P17-Gen-1>
+ <20210526064922.GD5262@shbuild999.sh.intel.com>
+ <20210526134911.GB4441@paulmck-ThinkPad-P17-Gen-1>
+ <20210527182959.GA437082@paulmck-ThinkPad-P17-Gen-1>
+ <138f81df-08e1-f96e-1915-c58b44f96a41@linux.intel.com>
+ <20210527191923.GD4397@paulmck-ThinkPad-P17-Gen-1>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YK/FbFzKhZEmI40C@google.com>
+In-Reply-To: <20210527191923.GD4397@paulmck-ThinkPad-P17-Gen-1>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 27, 2021, Sean Christopherson wrote:
-> > KVM_REQ_MMU_RELOAD is overkill, nuking the shadow page tables will completely
-> > offset the performance gains of the paravirtualized flush.
-
-Argh, I take that back.  The PV KVM_VCPU_FLUSH_TLB flag doesn't distinguish
-between flushing a specific mm and flushing the entire TLB.  The HyperV usage
-(via KVM_REQ) also throws everything into a single bucket.  A full RELOAD still
-isn't necessary as KVM just needs to sync all roots, not blast them away.  For
-previous roots, KVM doesn't have a mechanism to defer the sync, so the immediate
-fix will need to unload those roots.
-
-And looking at KVM's other flows, __kvm_mmu_new_pgd() and kvm_set_cr3() are also
-broken with respect to previous roots.  E.g. if the guest does a MOV CR3 that
-flushes the entire TLB, followed by a MOV CR3 with PCID_NOFLUSH=1, KVM will fail
-to sync the MMU on the second flush even though the guest can technically rely
-on the first MOV CR3 to have synchronized any previous changes relative to the
-fisrt MOV CR3.
-
-Lai, if it's ok with you, I'll massage this patch as discussed and fold it into
-a larger series to fix the other bugs and do additional cleanup/improvements.
-
-> > I believe the minimal fix is:
+On Thu, May 27, 2021 at 12:19:23PM -0700, Paul E. McKenney wrote:
+> On Thu, May 27, 2021 at 12:01:23PM -0700, Andi Kleen wrote:
 > > 
-> > diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-> > index 81ab3b8f22e5..b0072063f9bf 100644
-> > --- a/arch/x86/kvm/x86.c
-> > +++ b/arch/x86/kvm/x86.c
-> > @@ -3072,6 +3072,9 @@ static void kvm_vcpu_flush_tlb_all(struct kvm_vcpu *vcpu)
-> >  static void kvm_vcpu_flush_tlb_guest(struct kvm_vcpu *vcpu)
-> >  {
-> >         ++vcpu->stat.tlb_flush;
-> > +
-> > +       if (!tdp_enabled)
-> > +               kvm_mmu_sync_roots(vcpu);
-> >         static_call(kvm_x86_tlb_flush_guest)(vcpu);
-> >  }
+> > >      Nevertheless, it is quite possible that real-world use will result in
+> > >      some situation requiring that high-stress workloads run on hardware
+> > >      not designed to accommodate them, and also requiring that the kernel
+> > >      refrain from marking clocksources unstable.
+> > >      Therefore, provide an out-of-tree patch that reacts to this situation
+> > 
+> > out-of-tree means it will not be submitted?
+> > 
+> > I think it would make sense upstream, but perhaps guarded with some option.
+> 
+> The reason I do not intend to immediately upstream this patch is that
+> it increases the probability that a real clocksource read-latency issue
+> will be ignored, for example, during hardware bringup.  Furthermore,
+> the only known need from it comes from hardware that is, in the words
+> of the stress-ng man page, "poorly designed".  And the timing of this
+> email thread leads me to believe that such hardware is not easy to obtain.
+
+I think you're placing a little too much weight on the documentation
+here.  It seems that a continuous stream of locked operations executed
+in userspace on a single CPU can cause this problem to occur.  If that's
+true all the way out to one guest in a hypervisor can cause problems
+for the hypervisor itself, I think cloud providers everywhere are
+going to want this patch?
+
+> My thought is therefore to keep this patch out of tree for now.
+> If it becomes clear that long-latency clocksource reads really are
+> a significant issue in their own right (as opposed to merely being a
+> symptom of a hardware or firmware bug), then this patch is available to
+> immediately respond to that issue.
+> 
+> And there would then be strong evidence in favor of me biting the bullet,
+> adding the complexity and the additional option (with your Suggested-by),
+> and getting that upstream and into -stable.
+> 
+> Seem reasonable?
+> 
+> 							Thanx, Paul
+> 
