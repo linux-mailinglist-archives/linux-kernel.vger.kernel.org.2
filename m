@@ -2,84 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F1B8239284F
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 09:14:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C7B2A392857
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 09:16:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234989AbhE0HP6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 May 2021 03:15:58 -0400
-Received: from lucky1.263xmail.com ([211.157.147.130]:36000 "EHLO
-        lucky1.263xmail.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234521AbhE0HPz (ORCPT
+        id S229823AbhE0HSP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 May 2021 03:18:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33744 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229579AbhE0HSP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 May 2021 03:15:55 -0400
-Received: from localhost (unknown [192.168.167.235])
-        by lucky1.263xmail.com (Postfix) with ESMTP id 1D9A2D1892;
-        Thu, 27 May 2021 15:14:21 +0800 (CST)
-X-MAIL-GRAY: 0
-X-MAIL-DELIVERY: 1
-X-ADDR-CHECKED4: 1
-X-ANTISPAM-LEVEL: 2
-X-ABS-CHECKED: 0
-Received: from localhost.localdomain (unknown [58.22.7.114])
-        by smtp.263.net (postfix) whith ESMTP id P31748T140095126476544S1622099649869875_;
-        Thu, 27 May 2021 15:14:11 +0800 (CST)
-X-IP-DOMAINF: 1
-X-UNIQUE-TAG: <94ac37adb4dfa438bda265326c85f1ca>
-X-RL-SENDER: jay.xu@rock-chips.com
-X-SENDER: xjq@rock-chips.com
-X-LOGIN-NAME: jay.xu@rock-chips.com
-X-FST-TO: heiko@sntech.de
-X-RCPT-COUNT: 7
-X-SENDER-IP: 58.22.7.114
-X-ATTACHMENT-NUM: 0
-X-System-Flag: 0
-From:   Jianqun Xu <jay.xu@rock-chips.com>
-To:     heiko@sntech.de, linus.walleij@linaro.org, robh+dt@kernel.org
-Cc:     linux-gpio@vger.kernel.org, linux-rockchip@lists.infradead.org,
-        linux-kernel@vger.kernel.org, Jianqun Xu <jay.xu@rock-chips.com>
-Subject: [PATCH v5 7/7] gpio/rockchip: drop irq_gc_lock/irq_gc_unlock for irq set type
-Date:   Thu, 27 May 2021 15:14:08 +0800
-Message-Id: <20210527071408.1424603-1-jay.xu@rock-chips.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210527071239.1424430-1-jay.xu@rock-chips.com>
-References: <20210527071239.1424430-1-jay.xu@rock-chips.com>
+        Thu, 27 May 2021 03:18:15 -0400
+Received: from mail-pf1-x42f.google.com (mail-pf1-x42f.google.com [IPv6:2607:f8b0:4864:20::42f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 443C0C061574;
+        Thu, 27 May 2021 00:16:42 -0700 (PDT)
+Received: by mail-pf1-x42f.google.com with SMTP id p39so2952329pfw.8;
+        Thu, 27 May 2021 00:16:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:mime-version:content-disposition
+         :user-agent;
+        bh=aXcHzWfb/Dirh4NWw/6J1XlJd4u/1NQEUALt9W0iBEk=;
+        b=qSbRV9zrYn+PgvegnTWsfEDZ28k8xMm67yCRua9V+1MOZ5QvMqhb47O9sCOr9p0o5A
+         KrZ2ecEM8ZymUTshZdBjQUsSOBtr+Wm3faND6LjLBkGV2uondEP3Y5hjQWnOmeWCcvGz
+         pHDQWnghbtUxMG79uYMPHUbXyRSz0gB4Yg9TuzmF66kFi91L1kEEpMlJAmLwcEVhi0QE
+         XbaST/wmZ6CbXVieKiqyOyaqvddtniRSQc+AD2GIJk7TfXJa6InAQr7WrUosn6Y/iZXX
+         aQk1PVvTN0NWOPEmUeM8MN/r1UiEOaBBo9Gy7eO5ml9sbC5ruXH0pWF1XNxXJ3bfesYn
+         pCgg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition:user-agent;
+        bh=aXcHzWfb/Dirh4NWw/6J1XlJd4u/1NQEUALt9W0iBEk=;
+        b=p2HQKP0Fj5zuSR1onzEhlB3EdysP0py77IpEFyC+Aq8Ee2Xenog8K3HW/Ew518uRSn
+         XMMhlae8n6RP9HtsMucA4tdIus/dOl/P4O+LQoCrJ2hQN1Go7MIUS7D3f8AM6uis4YE0
+         XZ/is90V2E/3QcEeOp3kf64d8d8s75EFkuCy9RxaGy/kJBdBJl4pGXgUkY8HjrfFsxUJ
+         3wxh4NYAU6yzao9+e6SaNbN7akxcp9Upc4lDpjevOUFmw8/xkBwXCAu0DIQC/PBR6jJf
+         V8pRuhKV2D+bkOwpGzS1bItguZyS/An5mnoZl2Ktw88/KLyD+3jGJjc2jU7VPBIh8Q/g
+         6Bsg==
+X-Gm-Message-State: AOAM532x2epdlF+CqBQM8DkQIZlg/nKr45Ka89+/WTPVqOjkHX+j/W0m
+        DrRfcWCTN+oaF14O8WqWkdc=
+X-Google-Smtp-Source: ABdhPJyW1LaQ79gYyjDvDCHvXfFan6inC3PPhCVmLhMlF2QYWSGy0bCZHbkQnBOLRVaXVN1eRuAQYg==
+X-Received: by 2002:a63:ad0f:: with SMTP id g15mr2390464pgf.415.1622099801747;
+        Thu, 27 May 2021 00:16:41 -0700 (PDT)
+Received: from raspberrypi ([125.141.84.155])
+        by smtp.gmail.com with ESMTPSA id bo10sm1210111pjb.36.2021.05.27.00.16.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 27 May 2021 00:16:41 -0700 (PDT)
+Date:   Thu, 27 May 2021 08:16:37 +0100
+From:   Austin Kim <austindh.kim@gmail.com>
+To:     srinivas.pandruvada@linux.intel.com, jikos@kernel.org,
+        benjamin.tissoires@redhat.com
+Cc:     linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
+        austin.kim@lge.com, austindh.kim@gmail.com
+Subject: [PATCH] HID: intel-ish-hid: Fix minor typos in comments
+Message-ID: <20210527071637.GA1516@raspberrypi>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There has spin lock for irq set type already, so drop irq_gc_lock and
-irq_gc_unlock.
+Change "poiner" to "pointer" in comments.
 
-Reviewed-by: Heiko Stuebner <heiko@sntech.de>
-Signed-off-by: Jianqun Xu <jay.xu@rock-chips.com>
+Signed-off-by: Austin Kim <austindh.kim@gmail.com>
 ---
- drivers/gpio/gpio-rockchip.c | 2 --
- 1 file changed, 2 deletions(-)
+ drivers/hid/intel-ish-hid/ishtp-fw-loader.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/gpio/gpio-rockchip.c b/drivers/gpio/gpio-rockchip.c
-index 048e7eecddba..c9c55614bbef 100644
---- a/drivers/gpio/gpio-rockchip.c
-+++ b/drivers/gpio/gpio-rockchip.c
-@@ -406,7 +406,6 @@ static int rockchip_irq_set_type(struct irq_data *d, unsigned int type)
- 		irq_set_handler_locked(d, handle_level_irq);
- 
- 	raw_spin_lock_irqsave(&bank->slock, flags);
--	irq_gc_lock(gc);
- 
- 	level = rockchip_gpio_readl(bank, bank->gpio_regs->int_type);
- 	polarity = rockchip_gpio_readl(bank, bank->gpio_regs->int_polarity);
-@@ -461,7 +460,6 @@ static int rockchip_irq_set_type(struct irq_data *d, unsigned int type)
- 	rockchip_gpio_writel(bank, level, bank->gpio_regs->int_type);
- 	rockchip_gpio_writel(bank, polarity, bank->gpio_regs->int_polarity);
- out:
--	irq_gc_unlock(gc);
- 	raw_spin_unlock_irqrestore(&bank->slock, flags);
- 
- 	return ret;
+diff --git a/drivers/hid/intel-ish-hid/ishtp-fw-loader.c b/drivers/hid/intel-ish-hid/ishtp-fw-loader.c
+index d20d74a890e9..1b486f262747 100644
+--- a/drivers/hid/intel-ish-hid/ishtp-fw-loader.c
++++ b/drivers/hid/intel-ish-hid/ishtp-fw-loader.c
+@@ -456,7 +456,7 @@ static void loader_cl_event_cb(struct ishtp_cl_device *cl_device)
+ /**
+  * ish_query_loader_prop() -  Query ISH Shim firmware loader
+  * @client_data:	Client data instance
+- * @fw:			Poiner to firmware data struct in host memory
++ * @fw:			Pointer to firmware data struct in host memory
+  * @fw_info:		Loader firmware properties
+  *
+  * This function queries the ISH Shim firmware loader for capabilities.
 -- 
-2.25.1
-
-
+2.20.1
 
