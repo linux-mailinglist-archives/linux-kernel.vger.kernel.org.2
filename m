@@ -2,136 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 21D86393009
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 15:46:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AC81D39301A
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 15:49:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236594AbhE0NsT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 May 2021 09:48:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39074 "EHLO
+        id S236632AbhE0NvI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 May 2021 09:51:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39718 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236449AbhE0NsR (ORCPT
+        with ESMTP id S236531AbhE0NvG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 May 2021 09:48:17 -0400
-Received: from mail-ot1-x330.google.com (mail-ot1-x330.google.com [IPv6:2607:f8b0:4864:20::330])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED2A1C061760
-        for <linux-kernel@vger.kernel.org>; Thu, 27 May 2021 06:46:43 -0700 (PDT)
-Received: by mail-ot1-x330.google.com with SMTP id i12-20020a05683033ecb02903346fa0f74dso228756otu.10
-        for <linux-kernel@vger.kernel.org>; Thu, 27 May 2021 06:46:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:references:from:message-id:date:user-agent:mime-version
-         :in-reply-to:content-language:content-transfer-encoding;
-        bh=/XKLXUdZgb1RxrjyfkAzYf1QNJ7nzXzU4iF7iH+4PNw=;
-        b=iTj6Wwz4CGf+MDRw1wd8DSDTpYPytbaRtbdap32xpWB50FP+X0wmHA3GTpwaqruL0K
-         I2+aDZxQ3fKfFl3r8861J5RSolK7InK0h3ZnoFfwZ2ejX4I66gNkW1Dv/l8PoPjIs9Ys
-         nsjzLQdqovv28/IyTDYlZBpFJHHYNnMBojiaTYb503zXCHGPN+2n2TFyOO223ixJSx3o
-         Q+m6c4rKlaYcH3I1vyhDOmTkMpSnw1C8jINniQZPFnQuVOUYNZl5EKdWGGBTQp02XNYe
-         jzj4B72Gbka8vvcaBu/sJXdaelJh/cjm6dSEbcnsL6UQYjGvJNYfOoZfIZ8xuMKuEFO1
-         eSFg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=/XKLXUdZgb1RxrjyfkAzYf1QNJ7nzXzU4iF7iH+4PNw=;
-        b=WEzuYF+8Y5Bj+wO4aSm/gvLoWPslMYt8iDfMgfWE4q66OuQfOLL4Cx+SNyFWFmwpMl
-         R8eLuHGwqtj5pi+xcjNdOaLQP8IszPkIDYk/eyt1CLZNC18utDmG5Dw3BbnOqapM3014
-         XE6hoqONSA1gN81oeFUgpMH7/TXufmz78F/ube88bUuM39GMSlIN+f9loQ4OZoznyThv
-         RIyEnQsowunlt/Y2cvx7Eq37/2HJJYmv1NVAYzvcF6Vw/B2fRbnd4SJkw3MU76U1oLyp
-         HR85muhMR0tKABmB6SUtIGUI+8k58/X6O75zcT3IcypdWUFboS4p8QXBBrgf7uFRVXQF
-         Aouw==
-X-Gm-Message-State: AOAM5314xUqlv9p77PUyYlAzVPtly8eXDjXMLTt91OS82o2lmJ03b0Zd
-        as2iozbJl2jccKmQUx4hJSucGFioxJRhXA==
-X-Google-Smtp-Source: ABdhPJyuWwjuzcrzHQxBxvpsmU4sMzLkkCHgtooxoD0sv7tq7ERllNF06ycsrJ+To0Kys29HW1rcWQ==
-X-Received: by 2002:a9d:624a:: with SMTP id i10mr2807749otk.7.1622123203011;
-        Thu, 27 May 2021 06:46:43 -0700 (PDT)
-Received: from [192.168.1.30] ([207.135.233.147])
-        by smtp.gmail.com with ESMTPSA id o13sm487170ote.32.2021.05.27.06.46.42
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 27 May 2021 06:46:42 -0700 (PDT)
-Subject: Re: [PATCH] io_uring: handle signals before letting io-worker exit
-To:     Olivier Langlois <olivier@trillion01.com>,
-        Pavel Begunkov <asml.silence@gmail.com>,
-        io-uring@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <60ae94d1.1c69fb81.94f7a.2a35SMTPIN_ADDED_MISSING@mx.google.com>
-From:   Jens Axboe <axboe@kernel.dk>
-Message-ID: <3d1bd9e2-b711-0aac-628e-89b95ff8dbc3@kernel.dk>
-Date:   Thu, 27 May 2021 07:46:44 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Thu, 27 May 2021 09:51:06 -0400
+Received: from plekste.mt.lv (bute.mt.lv [IPv6:2a02:610:7501:2000::195])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A031C061574;
+        Thu, 27 May 2021 06:49:33 -0700 (PDT)
+Received: from localhost ([127.0.0.1] helo=bute.mt.lv)
+        by plekste.mt.lv with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.89)
+        (envelope-from <gatis@mikrotik.com>)
+        id 1lmGO2-0000FE-Vn; Thu, 27 May 2021 16:49:23 +0300
 MIME-Version: 1.0
-In-Reply-To: <60ae94d1.1c69fb81.94f7a.2a35SMTPIN_ADDED_MISSING@mx.google.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+Date:   Thu, 27 May 2021 16:49:22 +0300
+From:   Gatis Peisenieks <gatis@mikrotik.com>
+To:     Jakub Kicinski <kuba@kernel.org>
+Cc:     chris.snook@gmail.com, davem@davemloft.net, hkallweit1@gmail.com,
+        jesse.brandeburg@intel.com, dchickles@marvell.com,
+        tully@mikrotik.com, eric.dumazet@gmail.com, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net-next v3] atl1c: add 4 RX/TX queue support for Mikrotik
+ 10/25G NIC
+In-Reply-To: <20210526181609.1416c4eb@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+References: <20210526075830.2959145-1-gatis@mikrotik.com>
+ <20210526181609.1416c4eb@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+User-Agent: Roundcube Webmail/1.4.11
+Message-ID: <d2651c5f20d072f99e66f9e1df3956f0@mikrotik.com>
+X-Sender: gatis@mikrotik.com
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5/26/21 12:21 PM, Olivier Langlois wrote:
-> This is required for proper core dump generation.
-> 
-> Because signals are normally serviced before resuming userspace and an
-> io_worker thread will never resume userspace, it needs to explicitly
-> call the signal servicing functions.
-> 
-> Also, notice that it is possible to exit from the io_wqe_worker()
-> function main loop while having a pending signal such as when
-> the IO_WQ_BIT_EXIT bit is set.
-> 
-> It is crucial to service any pending signal before calling do_exit()
-> Proper coredump generation is relying on PF_SIGNALED to be set.
-> 
-> More specifically, exit_mm() is using this flag to wait for the
-> core dump completion before releasing its memory descriptor.
-> 
-> Signed-off-by: Olivier Langlois <olivier@trillion01.com>
-> ---
->  fs/io-wq.c | 22 ++++++++++++++++++++--
->  1 file changed, 20 insertions(+), 2 deletions(-)
-> 
-> diff --git a/fs/io-wq.c b/fs/io-wq.c
-> index 5361a9b4b47b..b76c61e9aff2 100644
-> --- a/fs/io-wq.c
-> +++ b/fs/io-wq.c
-> @@ -9,8 +9,6 @@
->  #include <linux/init.h>
->  #include <linux/errno.h>
->  #include <linux/sched/signal.h>
-> -#include <linux/mm.h>
-> -#include <linux/sched/mm.h>
->  #include <linux/percpu.h>
->  #include <linux/slab.h>
->  #include <linux/rculist_nulls.h>
-> @@ -193,6 +191,26 @@ static void io_worker_exit(struct io_worker *worker)
->  
->  	kfree_rcu(worker, rcu);
->  	io_worker_ref_put(wqe->wq);
-> +	/*
-> +	 * Because signals are normally serviced before resuming userspace and an
-> +	 * io_worker thread will never resume userspace, it needs to explicitly
-> +	 * call the signal servicing functions.
-> +	 *
-> +	 * Also notice that it is possible to exit from the io_wqe_worker()
-> +	 * function main loop while having a pending signal such as when
-> +	 * the IO_WQ_BIT_EXIT bit is set.
-> +	 *
-> +	 * It is crucial to service any pending signal before calling do_exit()
-> +	 * Proper coredump generation is relying on PF_SIGNALED to be set.
-> +	 *
-> +	 * More specifically, exit_mm() is using this flag to wait for the
-> +	 * core dump completion before releasing its memory descriptor.
-> +	 */
-> +	if (signal_pending(current)) {
-> +		struct ksignal ksig;
-> +
-> +		get_signal(&ksig);
-> +	}
->  	do_exit(0);
->  }
 
-Do we need the same thing in fs/io_uring.c:io_sq_thread()?
+On 2021-05-27 04:16, Jakub Kicinski wrote:
+>> +/**
+>> + * atl1c_clean_rx - NAPI Rx polling callback
+>> + * @napi: napi info
+>> + * @budget: limit of packets to clean
+>> + */
+>> +static int atl1c_clean_rx(struct napi_struct *napi, int budget)
+>>  {
+>> +	struct atl1c_rrd_ring *rrd_ring =
+>> +		container_of(napi, struct atl1c_rrd_ring, napi);
+>> +	struct atl1c_adapter *adapter = rrd_ring->adapter;
+>> +	int work_done = 0;
+>> +	unsigned long flags;
+>>  	u16 rfd_num, rfd_index;
+>> -	u16 count = 0;
+>>  	u16 length;
+>>  	struct pci_dev *pdev = adapter->pdev;
+>>  	struct net_device *netdev  = adapter->netdev;
+>> -	struct atl1c_rfd_ring *rfd_ring = &adapter->rfd_ring;
+>> -	struct atl1c_rrd_ring *rrd_ring = &adapter->rrd_ring;
+>> +	struct atl1c_rfd_ring *rfd_ring = &adapter->rfd_ring[rrd_ring->num];
+>>  	struct sk_buff *skb;
+>>  	struct atl1c_recv_ret_status *rrs;
+>>  	struct atl1c_buffer *buffer_info;
+>> 
+>> +	/* Keep link state information with original netdev */
+>> +	if (!netif_carrier_ok(adapter->netdev))
+>> +		goto quit_polling;
+> 
+> Interesting, I see you only move this code, but why does this driver
+> stop reading packets when link goes down? Surely there may be packets
+> already on the ring which Linux should process?
 
--- 
-Jens Axboe
+Jakub, I do not know what possible HW quirks this check might be
+covering up, so I left it there. If you feel it is safe to remove
+I can do a separate patch for that. I think it is fine for the
+HW I work with, but that is far from everything this driver supports.
 
+Thank you for reviewing this!
