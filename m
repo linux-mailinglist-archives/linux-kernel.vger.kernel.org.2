@@ -2,142 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2EF36393721
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 22:24:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 60502393723
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 22:25:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236884AbhE0U0K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 May 2021 16:26:10 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:55487 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S236555AbhE0UZ3 (ORCPT
+        id S236092AbhE0U0i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 May 2021 16:26:38 -0400
+Received: from mail-io1-f42.google.com ([209.85.166.42]:41630 "EHLO
+        mail-io1-f42.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235539AbhE0U0c (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 May 2021 16:25:29 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1622147035;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Uq4QT2ZrcVHt/byJv1ujYeldpYEbg+Q7RaFfi3UPyeE=;
-        b=FZTxNBvpTr/Ga04GkNtXwe/Dbds5oYUHayrqFGVfOEzJcOXdJqcGUuCi7wbggMxktO22x+
-        nj8UIYUWd/40fpmkdGjn3+q4ACL14T9oVM41Iusc0NkjY1B6ShzzyrvOCeXEV21nscGWXC
-        Tu5uH++7cHPfeBZPg+zH/l3luD4qMM0=
-Received: from mail-qt1-f199.google.com (mail-qt1-f199.google.com
- [209.85.160.199]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-474-7NtOck53P_GvZI-VBHXh1g-1; Thu, 27 May 2021 16:23:54 -0400
-X-MC-Unique: 7NtOck53P_GvZI-VBHXh1g-1
-Received: by mail-qt1-f199.google.com with SMTP id b20-20020ac87fd40000b02901e1370c5e12so853244qtk.17
-        for <linux-kernel@vger.kernel.org>; Thu, 27 May 2021 13:23:54 -0700 (PDT)
+        Thu, 27 May 2021 16:26:32 -0400
+Received: by mail-io1-f42.google.com with SMTP id n10so1846923ion.8
+        for <linux-kernel@vger.kernel.org>; Thu, 27 May 2021 13:24:58 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=Uq4QT2ZrcVHt/byJv1ujYeldpYEbg+Q7RaFfi3UPyeE=;
-        b=VkQ0z5KD0C5BKIls/zhkKnYDEwScw1bZmU3pAaHXHM0yxUcvsruUSHh0UnY3sZhB81
-         hDiMpLOvsB0i3ogkHb7a9x588aVRbghHOKwHBfjywjaqw9o6fbvgw2koBZ8upZT9FgSX
-         6GyHmD8CuCbNFfUrMZfoe/pJvH4TpvvQ5yDD9AuEf2fD2NFtzK556Bh5OaUPwTvf7syv
-         NuunT9cBwkKBSOgNjHLhgOg1p9rPDVnQWAxWm2lV+11vPoogG4o3pPGBHtkkyEF/tJMa
-         M5eU1MhyVQVoLLL91JKIgVOiAOx2p48xHO5imLsYDDJW2RL4Pnx6JUoiJX/f0kByyLbF
-         FHgA==
-X-Gm-Message-State: AOAM531mB55y2QeeqOhNjiLNk/zb4CJ3J+Dj6pQ8xg5xls/ikpfTonf2
-        z/PaHGraVK8U4vfiZYOGXNWtfZXA93XbygQrYkPrEbYEmHbIVRuBK2VuM4bnlBarBYmGwp0T7Kw
-        ohGrQyNxy4sZaLTfJ/kT7gnjNQqlokznJT/ACKSydovinC1tZSQLvpMck22chVSTbT5/26UxXdw
-        ==
-X-Received: by 2002:ac8:5484:: with SMTP id h4mr360844qtq.338.1622147033063;
-        Thu, 27 May 2021 13:23:53 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJz3zi5PoIwHGhlPFnbYVnDOeLkXM0Dn9r4qegg3oaBy1B1xbjvo3TJ2sVyd9Gu8IcG8naBLlA==
-X-Received: by 2002:ac8:5484:: with SMTP id h4mr360813qtq.338.1622147032703;
-        Thu, 27 May 2021 13:23:52 -0700 (PDT)
-Received: from localhost.localdomain (bras-base-toroon474qw-grc-72-184-145-4-219.dsl.bell.ca. [184.145.4.219])
-        by smtp.gmail.com with ESMTPSA id w4sm1981299qki.57.2021.05.27.13.23.51
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=c5avyG+JG+HCBZSkDHForBT/c7WMYaoLNLCgHmVeHfQ=;
+        b=OToOPIeA8FBu36dTLjBiJ9hAN1E3NoNlSRMRK24TRcdEf8yvye/xedQ/1kmvNcj9bq
+         qVt/MunXuJEOwaHzz56D/ZtewgHHazVhz0Bt9RHs+GudbmRVvsJUa8JvP4SQ5hoIYv88
+         54/3KpvIKwG96wac9Y4I2BLDCE3zhOMDVfgOLgj0bmy0AycWOZhPRiJvslKu31t6GmO+
+         XxvhwxDOR8y9xxI+2jkuUa0n8SvAg78QYTOadFnXFv/tfNufDts30AvVgpeMgRG4ZvS4
+         bpH24bPD/5nme0klhQ6EBWwwfpxnyld8BoKGOSKGoFihb3gJtDyFaVS45+sLU1hF5cFw
+         6E4Q==
+X-Gm-Message-State: AOAM531mbV9/QRQOpEdx8LXKaOrmiakJgYZYHLsQk8ZUXeD9eeN6Wj2W
+        yvYMLU4qkDU7Un4u/eI8x2yoF+5Rxls=
+X-Google-Smtp-Source: ABdhPJxuqBvZJLjl7cqOx+pzzc28YudKBtnl2uT3U+QHzhvlP9kfRDVM+jRRpZQEE83MxpnWGvyWcQ==
+X-Received: by 2002:a02:908a:: with SMTP id x10mr5067710jaf.30.1622147097974;
+        Thu, 27 May 2021 13:24:57 -0700 (PDT)
+Received: from google.com (243.199.238.35.bc.googleusercontent.com. [35.238.199.243])
+        by smtp.gmail.com with ESMTPSA id o18sm1690240ilq.9.2021.05.27.13.24.57
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 27 May 2021 13:23:52 -0700 (PDT)
-From:   Peter Xu <peterx@redhat.com>
-To:     linux-kernel@vger.kernel.org, linux-mm@kvack.org
-Cc:     Mike Rapoport <rppt@linux.vnet.ibm.com>, peterx@redhat.com,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Jerome Glisse <jglisse@redhat.com>,
-        Miaohe Lin <linmiaohe@huawei.com>,
-        Nadav Amit <nadav.amit@gmail.com>,
-        Hugh Dickins <hughd@google.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        "Kirill A . Shutemov" <kirill@shutemov.name>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Axel Rasmussen <axelrasmussen@google.com>
-Subject: [PATCH v3 27/27] userfaultfd/selftests: Enable uffd-wp for shmem/hugetlbfs
-Date:   Thu, 27 May 2021 16:23:48 -0400
-Message-Id: <20210527202348.32406-1-peterx@redhat.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210527201927.29586-1-peterx@redhat.com>
-References: <20210527201927.29586-1-peterx@redhat.com>
+        Thu, 27 May 2021 13:24:57 -0700 (PDT)
+Date:   Thu, 27 May 2021 20:24:56 +0000
+From:   Dennis Zhou <dennis@kernel.org>
+To:     Tom Rix <trix@redhat.com>
+Cc:     tj@kernel.org, cl@linux.com, akpm@linux-foundation.org,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] percpu: initialize best_upa variable
+Message-ID: <YLAAGCeCyVKGxO+V@google.com>
+References: <20210515180817.1751084-1-trix@redhat.com>
+ <YKHPV4QAXmaWb6jJ@google.com>
+ <dd1dabe0-73a5-8a39-ba58-bb58a1453d90@redhat.com>
+ <YKKAGbOyRSX5jmxY@google.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YKKAGbOyRSX5jmxY@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-After we added support for shmem and hugetlbfs, we can turn uffd-wp test on
-always now.
+Hello,
 
-Define HUGETLB_EXPECTED_IOCTLS to avoid using UFFD_API_RANGE_IOCTLS_BASIC,
-because UFFD_API_RANGE_IOCTLS_BASIC is normally a superset of capabilities,
-while the test may not satisfy them all.  E.g., when hugetlb registered without
-minor mode, then we need to explicitly remove _UFFDIO_CONTINUE.  Same thing to
-uffd-wp, as we'll need to explicitly remove _UFFDIO_WRITEPROTECT if not
-registered with uffd-wp.
+On Mon, May 17, 2021 at 02:39:21PM +0000, Dennis Zhou wrote:
+> On Mon, May 17, 2021 at 06:17:47AM -0700, Tom Rix wrote:
+> > 
+> > On 5/16/21 7:05 PM, Dennis Zhou wrote:
+> > > Hello,
+> > > 
+> > > On Sat, May 15, 2021 at 11:08:17AM -0700, trix@redhat.com wrote:
+> > > > From: Tom Rix <trix@redhat.com>
+> > > > 
+> > > > Static analysis reports this problem
+> > > > percpu.c:2945:6: warning: Assigned value is garbage or undefined
+> > > >          upa = best_upa;
+> > > >              ^ ~~~~~~~~
+> > > > best_upa may not be set, so initialize it.
+> > > > 
+> > > > Signed-off-by: Tom Rix <trix@redhat.com>
+> > > > ---
+> > > >   mm/percpu.c | 1 +
+> > > >   1 file changed, 1 insertion(+)
+> > > > 
+> > > > diff --git a/mm/percpu.c b/mm/percpu.c
+> > > > index a257c3efdf18b..6578b706fae81 100644
+> > > > --- a/mm/percpu.c
+> > > > +++ b/mm/percpu.c
+> > > > @@ -2916,6 +2916,7 @@ static struct pcpu_alloc_info * __init __flatten pcpu_build_alloc_info(
+> > > >   	 * Related to atom_size, which could be much larger than the unit_size.
+> > > >   	 */
+> > > >   	last_allocs = INT_MAX;
+> > > > +	best_upa = max_upa;
+> > > >   	for (upa = max_upa; upa; upa--) {
+> > > >   		int allocs = 0, wasted = 0;
+> > > > -- 
+> > > > 2.26.3
+> > > > 
+> > > I think the proper fix would be:
+> > > 
+> > > best_upa = 0;
+> > 
+> > I was looking for initializing with something that would work.
+> > 
+> 
+> I think I prefer setting it to 0 because it forces the loop to have
+> succeeded vs being able to bypass it if the for loop logic was changed.
+> 
+> > > for (...) { }
+> > > BUG_ON(!best_upa);
+> > WARN_ON instead?
+> 
+> This is initialization code. So if upa == 0, it really is a problem.
+> Having 0 units per allocation is bogus.
+> 
+> > > upa = best_upa;
+> > > 
+> > > If you're fine with this I'll make the changes and apply it to
+> > > for-5.13-fixes.
+> > > 
+> > > Can you also tell me what static analysis tool produced this? I'm just a
+> > > little curious because this code hasn't changed in several years so I'd
+> > > have expected some static analyzer to have caught this by now.
+> > 
+> > Clang 10
+> > 
+> > Tom
+> > 
+> 
+> Thanks,
+> Dennis
 
-For the long term, we may consider dropping UFFD_API_* macros completely from
-uapi/linux/userfaultfd.h header files, because it may cause kernel header
-update to easily break userspace.
+Following up here. Are you find with me making the changes and
+attributing it to you? Otherwise I can just spin another patch real
+quick.
 
-Signed-off-by: Peter Xu <peterx@redhat.com>
----
- tools/testing/selftests/vm/userfaultfd.c | 9 +++++----
- 1 file changed, 5 insertions(+), 4 deletions(-)
-
-diff --git a/tools/testing/selftests/vm/userfaultfd.c b/tools/testing/selftests/vm/userfaultfd.c
-index e363bdaff59d..015f2df8ece4 100644
---- a/tools/testing/selftests/vm/userfaultfd.c
-+++ b/tools/testing/selftests/vm/userfaultfd.c
-@@ -80,7 +80,7 @@ static int test_type;
- static volatile bool test_uffdio_copy_eexist = true;
- static volatile bool test_uffdio_zeropage_eexist = true;
- /* Whether to test uffd write-protection */
--static bool test_uffdio_wp = false;
-+static bool test_uffdio_wp = true;
- /* Whether to test uffd minor faults */
- static bool test_uffdio_minor = false;
+At this point I've already sent my PR for-5.13-fixes. So I'll queue some
+fix for-5.14.
  
-@@ -320,6 +320,9 @@ struct uffd_test_ops {
- 					 (1 << _UFFDIO_ZEROPAGE) | \
- 					 (1 << _UFFDIO_WRITEPROTECT))
- 
-+#define HUGETLB_EXPECTED_IOCTLS		((1 << _UFFDIO_WAKE) |	\
-+					 (1 << _UFFDIO_COPY))
-+
- static struct uffd_test_ops anon_uffd_test_ops = {
- 	.expected_ioctls = ANON_EXPECTED_IOCTLS,
- 	.allocate_area	= anon_allocate_area,
-@@ -335,7 +338,7 @@ static struct uffd_test_ops shmem_uffd_test_ops = {
- };
- 
- static struct uffd_test_ops hugetlb_uffd_test_ops = {
--	.expected_ioctls = UFFD_API_RANGE_IOCTLS_BASIC & ~(1 << _UFFDIO_CONTINUE),
-+	.expected_ioctls = HUGETLB_EXPECTED_IOCTLS,
- 	.allocate_area	= hugetlb_allocate_area,
- 	.release_pages	= hugetlb_release_pages,
- 	.alias_mapping = hugetlb_alias_mapping,
-@@ -1580,8 +1583,6 @@ static void set_test_type(const char *type)
- 	if (!strcmp(type, "anon")) {
- 		test_type = TEST_ANON;
- 		uffd_test_ops = &anon_uffd_test_ops;
--		/* Only enable write-protect test for anonymous test */
--		test_uffdio_wp = true;
- 	} else if (!strcmp(type, "hugetlb")) {
- 		test_type = TEST_HUGETLB;
- 		uffd_test_ops = &hugetlb_uffd_test_ops;
--- 
-2.31.1
-
+Thanks,
+Dennis
