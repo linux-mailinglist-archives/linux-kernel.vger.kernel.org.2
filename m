@@ -2,239 +2,183 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C0640392A19
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 10:52:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 62968392A14
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 10:50:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235541AbhE0IyK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 May 2021 04:54:10 -0400
-Received: from mga02.intel.com ([134.134.136.20]:40482 "EHLO mga02.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235324AbhE0IyI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 May 2021 04:54:08 -0400
-IronPort-SDR: A0m3bos1XQz3Trby/BiAJFJ4wj+uvu8l+ppVCQk+yIQC5V84+k5VUxaMUK9DwP7BpYprmGMNr8
- WSEbO4nMM1kQ==
-X-IronPort-AV: E=McAfee;i="6200,9189,9996"; a="189804382"
-X-IronPort-AV: E=Sophos;i="5.82,334,1613462400"; 
-   d="scan'208";a="189804382"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 May 2021 01:52:34 -0700
-IronPort-SDR: viuXd7nw6RVd/O04Pry4t3XGhAzdVILcfCz7UW10oTCpkQqd3vORrQ+UFRcwwQhMKqCRc6bx7s
- 6nmojhLVh8+w==
-X-IronPort-AV: E=Sophos;i="5.82,334,1613462400"; 
-   d="scan'208";a="444567270"
-Received: from yhuang6-desk2.sh.intel.com ([10.239.159.119])
-  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 May 2021 01:52:31 -0700
-From:   Huang Ying <ying.huang@intel.com>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        Huang Ying <ying.huang@intel.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Peter Xu <peterx@redhat.com>, Hugh Dickins <hughd@google.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Mel Gorman <mgorman@suse.de>, Rik van Riel <riel@surriel.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Michal Hocko <mhocko@kernel.org>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Tim Chen <tim.c.chen@intel.com>
-Subject: [PATCH -V2] mm: move idle swap cache pages to the tail of LRU after COW
-Date:   Thu, 27 May 2021 16:49:53 +0800
-Message-Id: <20210527084953.573788-1-ying.huang@intel.com>
-X-Mailer: git-send-email 2.30.2
+        id S235617AbhE0IwL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 May 2021 04:52:11 -0400
+Received: from mx08-00178001.pphosted.com ([91.207.212.93]:50034 "EHLO
+        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S235741AbhE0Ivt (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 27 May 2021 04:51:49 -0400
+Received: from pps.filterd (m0046661.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 14R8mESg000871;
+        Thu, 27 May 2021 10:50:03 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-type; s=selector1;
+ bh=eDyQ3JK/tNpdJeDvgtw0zoHW5bVANv2eEW/8n7UMnwA=;
+ b=GFw8vx3qiIEqpCzYmE9V1lyV+Qr/2DnF9eEfCKiXY8/NcpzzYnCqM8xvKejlyul1BpeM
+ tDuqhQhUCaR9ODjaAwlVMb7Q14ZOFH9dn3AhSxJfYzbazi1wUdR3tK+IfkbYqad7G3Wq
+ O5FECvE82angwwdFZi+dLaNu/IAmoQ/RB3Gaf6jWC1mi9SIod6vcLXNOGm7+OLq/GO2F
+ wj7yw36Z5RBRqLykStPG8xLQXHnD6bksF4gvUoFuPxg+Jx6Rnc6bgUJKtYmtGVK6LnO4
+ 4BCTL8hjPURBVTayKF1fklVvh1ET9N/NfBI0S4osQG1Hj6AoKrugZPyfGxgxIgwD9oX0 vA== 
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com with ESMTP id 38t0fr2d43-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 27 May 2021 10:50:03 +0200
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id D61EE100034;
+        Thu, 27 May 2021 10:50:02 +0200 (CEST)
+Received: from Webmail-eu.st.com (sfhdag2node3.st.com [10.75.127.6])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id C03A821BF67;
+        Thu, 27 May 2021 10:50:02 +0200 (CEST)
+Received: from localhost (10.75.127.48) by SFHDAG2NODE3.st.com (10.75.127.6)
+ with Microsoft SMTP Server (TLS) id 15.0.1497.2; Thu, 27 May 2021 10:50:02
+ +0200
+From:   <patrice.chotard@foss.st.com>
+To:     Mark Brown <broonie@kernel.org>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Boris Brezillon <boris.brezillon@collabora.com>,
+        <linux-mtd@lists.infradead.org>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        <linux-spi@vger.kernel.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     <patrice.chotard@foss.st.com>, <christophe.kerello@foss.st.com>
+Subject: [PATCH v2] mtd: spinand: add SPI-NAND MTD resume handler
+Date:   Thu, 27 May 2021 10:49:59 +0200
+Message-ID: <20210527084959.1548-1-patrice.chotard@foss.st.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.75.127.48]
+X-ClientProxiedBy: SFHDAG2NODE1.st.com (10.75.127.4) To SFHDAG2NODE3.st.com
+ (10.75.127.6)
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
+ definitions=2021-05-27_04:2021-05-26,2021-05-27 signatures=0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-With commit 09854ba94c6a ("mm: do_wp_page() simplification"), after
-COW, the idle swap cache (neither the page nor the corresponding swap
-entry is mapped by any process) will be left at the original position
-in the LRU list.  While it may be in the active list or the head of
-the inactive list, so that vmscan may take more overhead or time to
-reclaim these actually unused pages.
+From: Patrice Chotard <patrice.chotard@foss.st.com>
 
-To help the page reclaiming, in this patch, after COW, the idle swap
-cache will be tried to be moved to the tail of the inactive LRU list.
-To avoid to introduce much overhead to the hot COW code path, all
-locks are acquired with try locking.
+After power up, all SPI NAND's blocks are locked. Only read operations
+are allowed, write and erase operations are forbidden.
+The SPI NAND framework unlocks all the blocks during its initialization.
 
-To test the patch, we used pmbench memory accessing benchmark with
-working-set larger than available memory on a 2-socket Intel server
-with a NVMe SSD as swap device.  Test results shows that the pmbench
-score increases up to 21.8% with the decreased size of swap cache and
-swapin throughput.
+During a standby low power, the memory is powered down, losing its
+configuration.
+During the resume, the QSPI driver state is restored but the SPI NAND
+framework does not reconfigured the memory.
 
-Signed-off-by: "Huang, Ying" <ying.huang@intel.com>
-Suggested-by: Matthew Wilcox <willy@infradead.org>
-Cc: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: Peter Xu <peterx@redhat.com>
-Cc: Hugh Dickins <hughd@google.com>
-Cc: Johannes Weiner <hannes@cmpxchg.org>
-Cc: Mel Gorman <mgorman@suse.de>
-Cc: Rik van Riel <riel@surriel.com>
-Cc: Andrea Arcangeli <aarcange@redhat.com>
-Cc: Michal Hocko <mhocko@kernel.org>
-Cc: Dave Hansen <dave.hansen@intel.com>
-Cc: Tim Chen <tim.c.chen@intel.com>
+This patch adds SPI-NAND MTD PM handlers for resume ops.
+SPI NAND resume op re-initializes SPI NAND flash to its probed state.
 
-V2:
+It also adds a new helper spinand_block_unlock() which is
+called in spinand_init() and in spinand_mtd_resume().
 
-- Move trylock_page() to try_to_free_idle_swapcache() per Rik and
-  Linus' comments.
-- Fix PageLRU() checking.
-- Fix THP processing.
-- Rename the function.
+Signed-off-by: Christophe Kerello <christophe.kerello@foss.st.com>
+Signed-off-by: Patrice Chotard <patrice.chotard@foss.st.com>
 ---
- include/linux/memcontrol.h | 10 ++++++++++
- include/linux/swap.h       |  3 +++
- mm/memcontrol.c            | 12 ++++++++++++
- mm/memory.c                |  2 ++
- mm/swapfile.c              | 39 ++++++++++++++++++++++++++++++++++++++
- 5 files changed, 66 insertions(+)
+Changes in v2:
+  - Add helper spinand_block_unlock().
+  - Add spinand_ecc_enable() call.
+  - Remove some dev_err().
+  - Fix commit's title and message.
 
-diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
-index 3cc18c2176e7..d6c6ff69b586 100644
---- a/include/linux/memcontrol.h
-+++ b/include/linux/memcontrol.h
-@@ -760,6 +760,7 @@ struct mem_cgroup *get_mem_cgroup_from_mm(struct mm_struct *mm);
- 
- struct lruvec *lock_page_lruvec(struct page *page);
- struct lruvec *lock_page_lruvec_irq(struct page *page);
-+struct lruvec *trylock_page_lruvec_irq(struct page *page);
- struct lruvec *lock_page_lruvec_irqsave(struct page *page,
- 						unsigned long *flags);
- 
-@@ -1250,6 +1251,15 @@ static inline struct lruvec *lock_page_lruvec_irq(struct page *page)
- 	return &pgdat->__lruvec;
- }
- 
-+static inline struct lruvec *trylock_page_lruvec_irq(struct page *page)
-+{
-+	struct pglist_data *pgdat = page_pgdat(page);
-+
-+	if (spin_trylock_irq(&pgdat->__lruvec.lru_lock))
-+		return &pgdat->__lruvec;
-+	return NULL;
-+}
-+
- static inline struct lruvec *lock_page_lruvec_irqsave(struct page *page,
- 		unsigned long *flagsp)
- {
-diff --git a/include/linux/swap.h b/include/linux/swap.h
-index 032485ee7597..dbef99233736 100644
---- a/include/linux/swap.h
-+++ b/include/linux/swap.h
-@@ -509,6 +509,7 @@ extern struct swap_info_struct *page_swap_info(struct page *);
- extern struct swap_info_struct *swp_swap_info(swp_entry_t entry);
- extern bool reuse_swap_page(struct page *, int *);
- extern int try_to_free_swap(struct page *);
-+extern void deactivate_idle_swapcache(struct page *page);
- struct backing_dev_info;
- extern int init_swap_address_space(unsigned int type, unsigned long nr_pages);
- extern void exit_swap_address_space(unsigned int type);
-@@ -677,6 +678,8 @@ static inline int try_to_free_swap(struct page *page)
+ drivers/mtd/nand/spi/core.c | 62 +++++++++++++++++++++++++++++++------
+ 1 file changed, 53 insertions(+), 9 deletions(-)
+
+diff --git a/drivers/mtd/nand/spi/core.c b/drivers/mtd/nand/spi/core.c
+index 17f63f95f4a2..f77aeff11f43 100644
+--- a/drivers/mtd/nand/spi/core.c
++++ b/drivers/mtd/nand/spi/core.c
+@@ -1074,6 +1074,55 @@ static int spinand_detect(struct spinand_device *spinand)
  	return 0;
  }
  
-+static inline void deactivate_idle_swapcache(struct page *page) {}
-+
- static inline swp_entry_t get_swap_page(struct page *page)
- {
- 	swp_entry_t entry;
-diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-index cb864f87b01d..a192476fc55c 100644
---- a/mm/memcontrol.c
-+++ b/mm/memcontrol.c
-@@ -1213,6 +1213,18 @@ struct lruvec *lock_page_lruvec_irq(struct page *page)
- 	return lruvec;
- }
- 
-+struct lruvec *trylock_page_lruvec_irq(struct page *page)
++static int spinand_block_unlock(struct spinand_device *spinand)
 +{
-+	struct lruvec *lruvec;
++	struct device *dev = &spinand->spimem->spi->dev;
++	struct nand_device *nand = spinand_to_nand(spinand);
++	int ret = 0, i;
 +
-+	lruvec = mem_cgroup_page_lruvec(page);
-+	if (spin_trylock_irq(&lruvec->lru_lock)) {
-+		lruvec_memcg_debug(lruvec, page);
-+		return lruvec;
++	for (i = 0; i < nand->memorg.ntargets; i++) {
++		ret = spinand_select_target(spinand, i);
++		if (ret)
++			return ret;
++
++		ret = spinand_lock_block(spinand, BL_ALL_UNLOCKED);
++		if (ret)
++			return ret;
 +	}
-+	return NULL;
++
++	return ret;
 +}
 +
- struct lruvec *lock_page_lruvec_irqsave(struct page *page, unsigned long *flags)
++static void spinand_mtd_resume(struct mtd_info *mtd)
++{
++	struct spinand_device *spinand = mtd_to_spinand(mtd);
++	struct nand_device *nand = mtd_to_nanddev(mtd);
++	struct device *dev = &spinand->spimem->spi->dev;
++	int ret;
++
++	ret = spinand_reset_op(spinand);
++	if (ret)
++		return;
++
++	ret = spinand_init_quad_enable(spinand);
++	if (ret)
++		return;
++
++	ret = spinand_upd_cfg(spinand, CFG_OTP_ENABLE, 0);
++	if (ret)
++		return;
++
++	ret = spinand_manufacturer_init(spinand);
++	if (ret)
++		return;
++
++	ret = spinand_block_unlock(spinand);
++	if (ret)
++		return;
++
++	spinand_ecc_enable(spinand, false);
++}
++
+ static int spinand_init(struct spinand_device *spinand)
  {
- 	struct lruvec *lruvec;
-diff --git a/mm/memory.c b/mm/memory.c
-index 2b7ffcbca175..8a4b1ccd6879 100644
---- a/mm/memory.c
-+++ b/mm/memory.c
-@@ -3104,6 +3104,8 @@ static vm_fault_t wp_page_copy(struct vm_fault *vmf)
- 				munlock_vma_page(old_page);
- 			unlock_page(old_page);
- 		}
-+		if (page_copied && PageSwapCache(old_page) && !page_mapped(old_page))
-+			deactivate_idle_swapcache(old_page);
- 		put_page(old_page);
+ 	struct device *dev = &spinand->spimem->spi->dev;
+@@ -1137,15 +1186,9 @@ static int spinand_init(struct spinand_device *spinand)
  	}
- 	return page_copied ? VM_FAULT_WRITE : 0;
-diff --git a/mm/swapfile.c b/mm/swapfile.c
-index cbb4c0795284..0b390b14c5ae 100644
---- a/mm/swapfile.c
-+++ b/mm/swapfile.c
-@@ -40,6 +40,7 @@
- #include <linux/swap_slots.h>
- #include <linux/sort.h>
- #include <linux/completion.h>
-+#include <linux/mm_inline.h>
  
- #include <asm/tlbflush.h>
- #include <linux/swapops.h>
-@@ -1748,6 +1749,44 @@ int try_to_free_swap(struct page *page)
- 	return 1;
- }
+ 	/* After power up, all blocks are locked, so unlock them here. */
+-	for (i = 0; i < nand->memorg.ntargets; i++) {
+-		ret = spinand_select_target(spinand, i);
+-		if (ret)
+-			goto err_manuf_cleanup;
+-
+-		ret = spinand_lock_block(spinand, BL_ALL_UNLOCKED);
+-		if (ret)
+-			goto err_manuf_cleanup;
+-	}
++	ret = spinand_block_unlock(spinand);
++	if ret)
++		goto err_manuf_cleanup;
  
-+static inline void locked_deactivate_idle_swapcache(struct page *page)
-+{
-+	struct lruvec *lruvec;
-+
-+	page = compound_head(page);
-+	if (!PageSwapCache(page))
-+		return;
-+	if (PageWriteback(page))
-+		return;
-+	if (page_mapped(page))
-+		return;
-+	if (!PageLRU(page))
-+		return;
-+	if (page_swapped(page))
-+		return;
-+	lruvec = trylock_page_lruvec_irq(page);
-+	if (!lruvec)
-+		return;
-+
-+	if (TestClearPageLRU(page)) {
-+		del_page_from_lru_list(page, lruvec);
-+		ClearPageActive(page);
-+		ClearPageReferenced(page);
-+		add_page_to_lru_list_tail(page, lruvec);
-+		SetPageLRU(page);
-+	}
-+
-+	unlock_page_lruvec_irq(lruvec);
-+}
-+
-+void deactivate_idle_swapcache(struct page *page)
-+{
-+	if (trylock_page(page)) {
-+		locked_deactivate_idle_swapcache(page);
-+		unlock_page(page);
-+	}
-+}
-+
- /*
-  * Free the swap entry like above, but also try to
-  * free the page cache entry if it is the last user.
+ 	ret = nanddev_init(nand, &spinand_ops, THIS_MODULE);
+ 	if (ret)
+@@ -1167,6 +1210,7 @@ static int spinand_init(struct spinand_device *spinand)
+ 	mtd->_block_isreserved = spinand_mtd_block_isreserved;
+ 	mtd->_erase = spinand_mtd_erase;
+ 	mtd->_max_bad_blocks = nanddev_mtd_max_bad_blocks;
++	mtd->_resume = spinand_mtd_resume;
+ 
+ 	if (nand->ecc.engine) {
+ 		ret = mtd_ooblayout_count_freebytes(mtd);
 -- 
-2.30.2
+2.17.1
 
