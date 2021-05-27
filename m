@@ -2,180 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F361B39291B
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 09:57:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C7B239291D
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 09:57:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235286AbhE0H63 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 May 2021 03:58:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42744 "EHLO
+        id S235297AbhE0H6v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 May 2021 03:58:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42710 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235229AbhE0H5x (ORCPT
+        with ESMTP id S232240AbhE0H6R (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 May 2021 03:57:53 -0400
-Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5FAD5C06134C
-        for <linux-kernel@vger.kernel.org>; Thu, 27 May 2021 00:56:13 -0700 (PDT)
-Received: by mail-pj1-x1031.google.com with SMTP id o17-20020a17090a9f91b029015cef5b3c50so1854445pjp.4
-        for <linux-kernel@vger.kernel.org>; Thu, 27 May 2021 00:56:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=bs9RElxHAA2/T87AXUzFrLVnBm2Et2bauPM/4axG/FU=;
-        b=Kp6DjbrtwxHVMbu9vC89wum0z6Wd6wBAY+P3h9yODiqxzV1CSqEqZkn8AcVfdQAsiP
-         +AAJyhqt6gPzl1LJUhiZvmX2Wqymn2hmGghdAdVnjPGXWpZeXRmz8HpHm6wcB/jkOpab
-         +AmkG3itwe4pjzT6FoiTYBhKq/U8VWjdgTYjQ=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=bs9RElxHAA2/T87AXUzFrLVnBm2Et2bauPM/4axG/FU=;
-        b=tMt0SbI7hLbGcS5xN4TGT8bJ5mEmFLTwQ/CcwF9NXTGbY4dbVg3rpj8TSbsxebQy7Q
-         oDCv/KvZubMrmOcxeeiDL5tN2ijDdqHksXivp0OsHbNWdwlEIA3y+UomuP1U0Br3+pO4
-         pNCk8SoTpeDADDSggKRxdoSdaqelzghGeXOgJvla1lJQwGdwsHwFSu2GBE2xNXDMJYPs
-         RAtNyjZrPdKWSXoxHdw12i9i3dDqxlnhpGh8x4pG5ND+esJQ1MBeDCi3cgXYcsZStjsD
-         abMulhITlGylUGCZwhQ8cvWFGMgRXirXij1n668SIb3B1tNCxiUaaVeib8iIDW58iKqO
-         JIWw==
-X-Gm-Message-State: AOAM532zDy4z2OqvGIxNEuZAVX0SNq2Ap3CaOWnHGBYGgftHYJ4UehDf
-        G9nKJNzFxww4OESucxccAWSs1w==
-X-Google-Smtp-Source: ABdhPJzDc7fsuKMi25L9v4XVlntAVouxCshVJH65zuHU4vn8GVctO7aUJevs+2Tk6+o8akhdHfAIlA==
-X-Received: by 2002:a17:90a:fa91:: with SMTP id cu17mr2501646pjb.214.1622102172870;
-        Thu, 27 May 2021 00:56:12 -0700 (PDT)
-Received: from hsinyi-z840.tpe.corp.google.com ([2401:fa00:1:10:ece5:55a4:6ad3:d20f])
-        by smtp.gmail.com with ESMTPSA id 69sm1217790pfx.115.2021.05.27.00.56.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 27 May 2021 00:56:12 -0700 (PDT)
-From:   Hsin-Yi Wang <hsinyi@chromium.org>
-To:     Wolfram Sang <wsa@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Jean Delvare <khali@linux-fr.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Cc:     linux-i2c@vger.kernel.org, Qii Wang <qii.wang@mediatek.com>,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Thu, 27 May 2021 03:58:17 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7681C06138B;
+        Thu, 27 May 2021 00:56:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=r7vS+Qu0ROyOXMOHwL+bMWAA8km2aB6VnaLoAAsQzvU=; b=rXSRfMMSiXLXqF/ssBC0ntassy
+        pBpDW4nGdTQ2Xz1vZMDozyyWzGu3DbFP9ZgeW5EdpMU82Y3+MolU/cPL2oeGpjHMSMraxNL+VsxGc
+        DAhxXseMR1/30G5dAtNqb43s0YqemFdlRbEJr9Wvj3y4wNxSV6JadEmcdblLpYiYhBtMc0HaecQxb
+        yXCfk3zXT9RqvVLBguKM/xUQxVTr+FSSlTp1pLPPZzMP7b5hxljnIMoE365EIKsDLjmduQ9WsKOuN
+        ctomzDxTCQh4EDj9T98eqyYVYiVSOIjgTojxhz/2bC38u2UIEJd9M34oGHecq56mVDedMCABuMF0P
+        X8w9r0lA==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1lmAsS-000wyY-RR; Thu, 27 May 2021 07:56:31 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id ACD7F300202;
+        Thu, 27 May 2021 09:56:30 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 923102C6C99AE; Thu, 27 May 2021 09:56:30 +0200 (CEST)
+Date:   Thu, 27 May 2021 09:56:30 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Will Deacon <will@kernel.org>
+Cc:     linux-arm-kernel@lists.infradead.org, linux-arch@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Marc Zyngier <maz@kernel.org>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Mark Brown <broonie@kernel.org>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Bibby Hsieh <bibby.hsieh@mediatek.com>,
-        Arnd Bergmann <arnd@arndb.de>
-Subject: [PATCH v21 RESEND 4/4] arm64: dts: mt8183: add supply name for eeprom
-Date:   Thu, 27 May 2021 15:55:56 +0800
-Message-Id: <20210527075556.1709140-5-hsinyi@chromium.org>
-X-Mailer: git-send-email 2.31.1.818.g46aad6cb9e-goog
-In-Reply-To: <20210527075556.1709140-1-hsinyi@chromium.org>
-References: <20210527075556.1709140-1-hsinyi@chromium.org>
+        Morten Rasmussen <morten.rasmussen@arm.com>,
+        Qais Yousef <qais.yousef@arm.com>,
+        Suren Baghdasaryan <surenb@google.com>,
+        Quentin Perret <qperret@google.com>, Tejun Heo <tj@kernel.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        kernel-team@android.com
+Subject: Re: [PATCH v7 13/22] sched: Allow task CPU affinity to be restricted
+ on asymmetric systems
+Message-ID: <YK9Qrlr3dJt0Kjkp@hirez.programming.kicks-ass.net>
+References: <20210525151432.16875-1-will@kernel.org>
+ <20210525151432.16875-14-will@kernel.org>
+ <YK53kDtczHIYumDC@hirez.programming.kicks-ass.net>
+ <20210526170206.GB19758@willie-the-truck>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210526170206.GB19758@willie-the-truck>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add supplies for eeprom for mt8183 boards.
+On Wed, May 26, 2021 at 06:02:06PM +0100, Will Deacon wrote:
+> On Wed, May 26, 2021 at 06:30:08PM +0200, Peter Zijlstra wrote:
+> > On Tue, May 25, 2021 at 04:14:23PM +0100, Will Deacon wrote:
+> > > @@ -2426,20 +2421,166 @@ static int __set_cpus_allowed_ptr(struct task_struct *p,
+> > >  
+> > >  	__do_set_cpus_allowed(p, new_mask, flags);
+> > >  
+> > > -	return affine_move_task(rq, p, &rf, dest_cpu, flags);
+> > > +	if (flags & SCA_USER)
+> > > +		release_user_cpus_ptr(p);
+> > > +
+> > > +	return affine_move_task(rq, p, rf, dest_cpu, flags);
+> > >  
+> > >  out:
+> > > -	task_rq_unlock(rq, p, &rf);
+> > > +	task_rq_unlock(rq, p, rf);
+> > >  
+> > >  	return ret;
+> > >  }
+> > 
+> > So sys_sched_setaffinity() releases the user_cpus_ptr thingy ?! How does
+> > that work?
+> 
+> Right, I think if the task explicitly changes its affinity then it makes
+> sense to forget about what it had before. It then behaves very similar to
+> CPU hotplug, which is the analogy I've been trying to follow: if you call
+> sched_setaffinity() with a mask containing offline CPUs then those CPUs
+> are not added back to the affinity mask when they are onlined.
 
-Signed-off-by: Hsin-Yi Wang <hsinyi@chromium.org>
----
- arch/arm64/boot/dts/mediatek/mt8183-kukui-kakadu.dtsi | 4 ++++
- arch/arm64/boot/dts/mediatek/mt8183-kukui-kodama.dtsi | 4 ++++
- arch/arm64/boot/dts/mediatek/mt8183-kukui-krane.dtsi  | 4 ++++
- 3 files changed, 12 insertions(+)
+Oh right, crap semantics all the way down :/ I always forget how
+horrible they are.
 
-diff --git a/arch/arm64/boot/dts/mediatek/mt8183-kukui-kakadu.dtsi b/arch/arm64/boot/dts/mediatek/mt8183-kukui-kakadu.dtsi
-index b442e38a3156..28966a65391b 100644
---- a/arch/arm64/boot/dts/mediatek/mt8183-kukui-kakadu.dtsi
-+++ b/arch/arm64/boot/dts/mediatek/mt8183-kukui-kakadu.dtsi
-@@ -88,11 +88,13 @@ &i2c2 {
- 	pinctrl-0 = <&i2c2_pins>;
- 	status = "okay";
- 	clock-frequency = <400000>;
-+	vbus-supply = <&mt6358_vcamio_reg>;
- 
- 	eeprom@58 {
- 		compatible = "atmel,24c32";
- 		reg = <0x58>;
- 		pagesize = <32>;
-+		vcc-supply = <&mt6358_vcama2_reg>;
- 	};
- };
- 
-@@ -101,11 +103,13 @@ &i2c4 {
- 	pinctrl-0 = <&i2c4_pins>;
- 	status = "okay";
- 	clock-frequency = <400000>;
-+	vbus-supply = <&mt6358_vcn18_reg>;
- 
- 	eeprom@54 {
- 		compatible = "atmel,24c32";
- 		reg = <0x54>;
- 		pagesize = <32>;
-+		vcc-supply = <&mt6358_vcn18_reg>;
- 	};
- };
- 
-diff --git a/arch/arm64/boot/dts/mediatek/mt8183-kukui-kodama.dtsi b/arch/arm64/boot/dts/mediatek/mt8183-kukui-kodama.dtsi
-index 2f5234a16ead..3aa79403c0c2 100644
---- a/arch/arm64/boot/dts/mediatek/mt8183-kukui-kodama.dtsi
-+++ b/arch/arm64/boot/dts/mediatek/mt8183-kukui-kodama.dtsi
-@@ -62,11 +62,13 @@ &i2c2 {
- 	pinctrl-0 = <&i2c2_pins>;
- 	status = "okay";
- 	clock-frequency = <400000>;
-+	vbus-supply = <&mt6358_vcamio_reg>;
- 
- 	eeprom@58 {
- 		compatible = "atmel,24c64";
- 		reg = <0x58>;
- 		pagesize = <32>;
-+		vcc-supply = <&mt6358_vcamio_reg>;
- 	};
- };
- 
-@@ -75,11 +77,13 @@ &i2c4 {
- 	pinctrl-0 = <&i2c4_pins>;
- 	status = "okay";
- 	clock-frequency = <400000>;
-+	vbus-supply = <&mt6358_vcn18_reg>;
- 
- 	eeprom@54 {
- 		compatible = "atmel,24c64";
- 		reg = <0x54>;
- 		pagesize = <32>;
-+		vcc-supply = <&mt6358_vcn18_reg>;
- 	};
- };
- 
-diff --git a/arch/arm64/boot/dts/mediatek/mt8183-kukui-krane.dtsi b/arch/arm64/boot/dts/mediatek/mt8183-kukui-krane.dtsi
-index fbc471ccf805..30c183c96a54 100644
---- a/arch/arm64/boot/dts/mediatek/mt8183-kukui-krane.dtsi
-+++ b/arch/arm64/boot/dts/mediatek/mt8183-kukui-krane.dtsi
-@@ -71,11 +71,13 @@ &i2c2 {
- 	pinctrl-0 = <&i2c2_pins>;
- 	status = "okay";
- 	clock-frequency = <400000>;
-+	vbus-supply = <&mt6358_vcamio_reg>;
- 
- 	eeprom@58 {
- 		compatible = "atmel,24c32";
- 		reg = <0x58>;
- 		pagesize = <32>;
-+		vcc-supply = <&mt6358_vcama2_reg>;
- 	};
- };
- 
-@@ -84,11 +86,13 @@ &i2c4 {
- 	pinctrl-0 = <&i2c4_pins>;
- 	status = "okay";
- 	clock-frequency = <400000>;
-+	vbus-supply = <&mt6358_vcn18_reg>;
- 
- 	eeprom@54 {
- 		compatible = "atmel,24c32";
- 		reg = <0x54>;
- 		pagesize = <32>;
-+		vcc-supply = <&mt6358_vcn18_reg>;
- 	};
- };
- 
--- 
-2.31.1.818.g46aad6cb9e-goog
-
+You're right though; this is consistent with the current mess.
