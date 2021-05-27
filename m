@@ -2,56 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 43AB73925AD
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 05:55:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 229BE3925B1
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 05:56:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234430AbhE0D52 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 May 2021 23:57:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45402 "EHLO
+        id S234573AbhE0D6D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 May 2021 23:58:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45530 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232725AbhE0D51 (ORCPT
+        with ESMTP id S234411AbhE0D6B (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 May 2021 23:57:27 -0400
-Received: from mail-oi1-x235.google.com (mail-oi1-x235.google.com [IPv6:2607:f8b0:4864:20::235])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1157C061574
-        for <linux-kernel@vger.kernel.org>; Wed, 26 May 2021 20:55:55 -0700 (PDT)
-Received: by mail-oi1-x235.google.com with SMTP id x15so3792588oic.13
-        for <linux-kernel@vger.kernel.org>; Wed, 26 May 2021 20:55:55 -0700 (PDT)
+        Wed, 26 May 2021 23:58:01 -0400
+Received: from mail-oi1-x236.google.com (mail-oi1-x236.google.com [IPv6:2607:f8b0:4864:20::236])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3164AC061574
+        for <linux-kernel@vger.kernel.org>; Wed, 26 May 2021 20:56:29 -0700 (PDT)
+Received: by mail-oi1-x236.google.com with SMTP id y76so3815236oia.6
+        for <linux-kernel@vger.kernel.org>; Wed, 26 May 2021 20:56:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc:content-transfer-encoding;
-        bh=6I1MN4NFWb6xeVQSlutSgWAcmQk4ybiIdBPc7EssI9A=;
-        b=AcnIsP/9H7cKkmwG+Xb4aLO5wf9oNSioM80yUY5janIGjdZ/jrOxGOjL+Q459ygwmE
-         hYaaatUpYrIYD19ql0dLEwobOc1LyazLx6QHcWc2mTN9lBtAuw9fG+tY9cY9ja3/3hGm
-         TZGmuYn9qiQyW6EhOzwJMyYLd0mmDmQdFxfXDDAGoOZHYIIjP0NSQfeBWRC3mx4ymoQq
-         wcmUoXszHs7h5JSo5vEjJnUrKWbrn8pWKCcAq2+E5aDbFh++LiHNrpl0OY1NkWsgf8tW
-         aCE8CrDpqfvxDOT1yBDCViP1aWs3UqpcyAE7A8jHdNVVkwn9D7alnNieXb963Gs6I2bg
-         cw5g==
+        bh=m0jJCLmOTTk7R3I0dOOysXS/9UkIHt3JyqhG11vxOu8=;
+        b=bhVAq5i/UwQ3hdFM6/4lFFKrEsLKys4PeBECdlxkFDsGZSH9uR5zIou5Hn48fGzrIE
+         cdZRNIdiIJC79QcCtMHLoRsPfKzl3BGxraNIpTDD0JDqiUifLKCkrFoouE+Mqoa0RqKd
+         TXxZigAH0zfBwsHG72QOJQzWqM04RIEWixdApmY87iWanX837uR96/2chzsRLRa4mEKq
+         FjsetMfTlcqHk30WCuWfqvM2W07ZeDWBw6apDAUlz3M33WfCS8s57PJVtnWQiCagAJ0v
+         8DdJOxFaNVdDuwoI72sffvFNR6dv7xECjeBuqyq7+C2HvS+KQ8UNStrnkVean1pJPCL0
+         kW8g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc:content-transfer-encoding;
-        bh=6I1MN4NFWb6xeVQSlutSgWAcmQk4ybiIdBPc7EssI9A=;
-        b=QY15fqaP8k2KKikh7Mgqk97dKnGgCF0H5vwo7bXCjF1SImtpyKIvF2S7NxibmOQ9fi
-         jDvFhNsvpbMwLM84ZP2WAgwkT08yloiQOxUsyKt/la2+BnMwC6sU8ByUlv9GeA8ABdDs
-         7kJwuWBdO1QK8k5+ZeD7Ev7uRtZz/cDlv0+TuT7E+ayoXqpgd5cKejMqwD26SDZ9NOMn
-         O1GDT4pIo7WgtJUr/hmsSqlSBfoyxO85PJDBbxbEfhhhq2sHD6C++4kB5sH4IrbmoxoK
-         jeKFRXVXjVG7I/U9kPkkdNEjl6AG4aGKY1gm3EifR1PzueFY8IocJnOCAWCJDfm5G9Nd
-         yErg==
-X-Gm-Message-State: AOAM533xNrnSdgk/v3+9eDEcRQN+z56iSmSi4AJfwbNHTJmxKk82FfTy
-        BrpBTGLgxdsddv7WjLFgfdlBeXcNUv1iTpH6O3M=
-X-Google-Smtp-Source: ABdhPJyLCSQv/QKSuTRNjM9REWrV6LvELlWwO0q1KT5sPyqK1rH9VVCmNc0k3krS51ZcjSXmkdhBuwGUnFZY01qAZ2Q=
-X-Received: by 2002:a05:6808:249:: with SMTP id m9mr1023562oie.120.1622087755096;
- Wed, 26 May 2021 20:55:55 -0700 (PDT)
+        bh=m0jJCLmOTTk7R3I0dOOysXS/9UkIHt3JyqhG11vxOu8=;
+        b=PFCHMRiWlRCpu2LlwS35WDlz09+XzNwG7Hslat1o1O6iIiDIZQdMrKha43c1KQ5ZcP
+         zk0XrsYeyZsBQbDKvZrEf/vKmRKaOStrnZwc67sfSA12VKmtrZU0mdxJWHWqXK1WdUx/
+         QURbOc6dRie1s52wRL6G+orPcyI6ncm8SArKLogkxolKCiQHk9xJ4NCVlaGZ787bekJ1
+         YxaLLxPCQb3CGRuLupaxOAP6J/T/DvuIEzESRNkrol+e+RyXViYk+7VUQj1b15V6qx93
+         RVhWpYYfSKulmYTUUHk0PuA8X3pMaVu6Gblz2BrFZ2mSvjQz/nxHhiPo4/tTm1RH6WK4
+         +K7g==
+X-Gm-Message-State: AOAM533+DkJmMqtgymQUiWw9FfmYgIds7fPvm0rZHLejVZICqAYpeGZz
+        5NN1MAZhMSMXqG6bU6B1zyNRvd+sEPF3Sp2vLtU=
+X-Google-Smtp-Source: ABdhPJxdi3Mn6amONheYLR4VwqBYJHZISa2gtEudSqMqeC7zJHQsy0+SZo4vA8m8fcUpIEww3nOPrh/0Ukq0UoxZKYM=
+X-Received: by 2002:a05:6808:206:: with SMTP id l6mr3994650oie.5.1622087788663;
+ Wed, 26 May 2021 20:56:28 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210526084726.552052-1-lee.jones@linaro.org> <20210526084726.552052-9-lee.jones@linaro.org>
-In-Reply-To: <20210526084726.552052-9-lee.jones@linaro.org>
+References: <20210526084726.552052-1-lee.jones@linaro.org> <20210526084726.552052-10-lee.jones@linaro.org>
+In-Reply-To: <20210526084726.552052-10-lee.jones@linaro.org>
 From:   Alex Deucher <alexdeucher@gmail.com>
-Date:   Wed, 26 May 2021 23:55:44 -0400
-Message-ID: <CADnq5_PFBMaeD-sFQ-=5RzcZX42=4dwYZvnZhW+X3mQ62=182w@mail.gmail.com>
-Subject: Re: [PATCH 08/34] drm/amd/display/dc/bios/command_table_helper: Fix
- function name for 'dal_cmd_table_helper_transmitter_bp_to_atom()'
+Date:   Wed, 26 May 2021 23:56:17 -0400
+Message-ID: <CADnq5_Oq0f+0e31pBBqej0Cvi2c_w2RFxbaChz+O2r4ezXkSAg@mail.gmail.com>
+Subject: Re: [PATCH 09/34] drm/amd/display/dc/bios/command_table_helper2: Fix
+ function name 'dal_cmd_table_helper_transmitter_bp_to_atom2()'
 To:     Lee Jones <lee.jones@linaro.org>
 Cc:     Leo Li <sunpeng.li@amd.com>, LKML <linux-kernel@vger.kernel.org>,
         amd-gfx list <amd-gfx@lists.freedesktop.org>,
@@ -72,9 +72,9 @@ On Wed, May 26, 2021 at 4:48 AM Lee Jones <lee.jones@linaro.org> wrote:
 >
 > Fixes the following W=3D1 kernel build warning(s):
 >
->  drivers/gpu/drm/amd/amdgpu/../display/dc/bios/command_table_helper.c:127=
-: warning: expecting prototype for translate_transmitter_bp_to_atom(). Prot=
-otype was for dal_cmd_table_helper_transmitter_bp_to_atom() instead
+>  drivers/gpu/drm/amd/amdgpu/../display/dc/bios/command_table_helper2.c:14=
+1: warning: expecting prototype for translate_transmitter_bp_to_atom2(). Pr=
+ototype was for dal_cmd_table_helper_transmitter_bp_to_atom2() instead
 >
 > Cc: Harry Wentland <harry.wentland@amd.com>
 > Cc: Leo Li <sunpeng.li@amd.com>
@@ -82,29 +82,28 @@ otype was for dal_cmd_table_helper_transmitter_bp_to_atom() instead
 > Cc: "Christian K=C3=B6nig" <christian.koenig@amd.com>
 > Cc: David Airlie <airlied@linux.ie>
 > Cc: Daniel Vetter <daniel@ffwll.ch>
-> Cc: Lee Jones <lee.jones@linaro.org>
 > Cc: amd-gfx@lists.freedesktop.org
 > Cc: dri-devel@lists.freedesktop.org
 > Signed-off-by: Lee Jones <lee.jones@linaro.org>
 > ---
->  drivers/gpu/drm/amd/display/dc/bios/command_table_helper.c | 2 +-
+>  drivers/gpu/drm/amd/display/dc/bios/command_table_helper2.c | 2 +-
 >  1 file changed, 1 insertion(+), 1 deletion(-)
 >
-> diff --git a/drivers/gpu/drm/amd/display/dc/bios/command_table_helper.c b=
-/drivers/gpu/drm/amd/display/dc/bios/command_table_helper.c
-> index 5b77251e05909..e317a36151477 100644
-> --- a/drivers/gpu/drm/amd/display/dc/bios/command_table_helper.c
-> +++ b/drivers/gpu/drm/amd/display/dc/bios/command_table_helper.c
-> @@ -114,7 +114,7 @@ bool dal_cmd_table_helper_controller_id_to_atom(
+> diff --git a/drivers/gpu/drm/amd/display/dc/bios/command_table_helper2.c =
+b/drivers/gpu/drm/amd/display/dc/bios/command_table_helper2.c
+> index 00706b072b5f8..6d2fb112ad9f9 100644
+> --- a/drivers/gpu/drm/amd/display/dc/bios/command_table_helper2.c
+> +++ b/drivers/gpu/drm/amd/display/dc/bios/command_table_helper2.c
+> @@ -129,7 +129,7 @@ bool dal_cmd_table_helper_controller_id_to_atom2(
 >  }
 >
 >  /**
-> - * translate_transmitter_bp_to_atom - Translate the Transmitter to the
-> + * dal_cmd_table_helper_transmitter_bp_to_atom - Translate the Transmitt=
-er to the
->   *                                    corresponding ATOM BIOS value
->   * @t: transmitter
->   * returns: output digitalTransmitter
+> - * translate_transmitter_bp_to_atom2 - Translate the Transmitter to the
+> + * dal_cmd_table_helper_transmitter_bp_to_atom2 - Translate the Transmit=
+ter to the
+>   *                                     corresponding ATOM BIOS value
+>   *  @t: transmitter
+>   *  returns: digitalTransmitter
 > --
 > 2.31.1
 >
