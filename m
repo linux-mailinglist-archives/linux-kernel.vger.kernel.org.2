@@ -2,152 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DCD923926AB
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 06:57:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B4E4A392835
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 09:12:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234799AbhE0E7Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 May 2021 00:59:16 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:39691 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234928AbhE0E7M (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 May 2021 00:59:12 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1622091455;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=9TjJw9KGtCuCxj8KF9tuDLAcF4memHbZbcsXiLsQ60Y=;
-        b=eCW0dATm8HIUVD/qoWI+qa1FSUI6EyusQhs/Ug5uEYpVLbE3OPOKf/umCHBN2iKSI6XmGi
-        YFU0aJqUCu5NLXfnReB/oxDmXIYIWduqHy43jtwNJoD7shn+UKp68pMol/uOf8t8vrmpJg
-        byni9peiiy/pHnQYPRsYdTcGDZMrHMs=
-Received: from mail-pg1-f200.google.com (mail-pg1-f200.google.com
- [209.85.215.200]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-43-sEaPolxdOE2iLkTw-QElsw-1; Thu, 27 May 2021 00:57:33 -0400
-X-MC-Unique: sEaPolxdOE2iLkTw-QElsw-1
-Received: by mail-pg1-f200.google.com with SMTP id m68-20020a6326470000b029020f37ad2901so2234353pgm.7
-        for <linux-kernel@vger.kernel.org>; Wed, 26 May 2021 21:57:33 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=9TjJw9KGtCuCxj8KF9tuDLAcF4memHbZbcsXiLsQ60Y=;
-        b=VqFeXqxtokrQFNRM2wLJHIexAhMC5S4q44TlDLYgyczk9F2SiOrAhs4N8jg6n+RsOn
-         nCSwOLsiDufbyA4zz3OZDCDe7AUeX76B9mztD+o1+gioarkuxLIdh25Z3mEhyvk4d/5h
-         zx6+rsIYSNZoDtxcv0Xc0ChH1KvdPe4t6mk4SHbqeaAj5MJcGf5oF7u6tf29dBpBQn7a
-         t0FNt3NZaG9JvjIbszkk1jM+nv3rEroTSR2g+G30qUN+PTMessoQ1zqETtk2AUHBugF8
-         GEJvfKvUjcDxNFZQdP5DFTOmeuEQ2SyAlZl57wX43uqk2eUDhOKPqsPXmvjVxUd22QvZ
-         I4Aw==
-X-Gm-Message-State: AOAM532ghklHdBPZYK0KCUC1chjqVZmBXs7EN+FtuplezpmKcypPmc8I
-        teGBC1lC9OPEYrPQHnjxjK8cYuauYutAp37Q21VYhyHTNWDRfRTabyPG+xJWnMzIRRDLZkUX4wZ
-        6UW3UlL0pSAbegFZgdq1dWhEd
-X-Received: by 2002:a05:6a00:1591:b029:2d9:369a:b846 with SMTP id u17-20020a056a001591b02902d9369ab846mr2011858pfk.40.1622091452642;
-        Wed, 26 May 2021 21:57:32 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwZ06zfd32JsDIIzvqDhTQvD40ohKU+eSYyOmUxGbj1h9eqyTFh3zTO8G9qAEfawOTlSc96DQ==
-X-Received: by 2002:a05:6a00:1591:b029:2d9:369a:b846 with SMTP id u17-20020a056a001591b02902d9369ab846mr2011842pfk.40.1622091452384;
-        Wed, 26 May 2021 21:57:32 -0700 (PDT)
-Received: from wangxiaodeMacBook-Air.local ([209.132.188.80])
-        by smtp.gmail.com with ESMTPSA id l192sm746205pfd.173.2021.05.26.21.57.27
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 26 May 2021 21:57:31 -0700 (PDT)
-Subject: Re: [PATCH net-next] ptr_ring: make __ptr_ring_empty() checking more
- reliable
-To:     Yunsheng Lin <linyunsheng@huawei.com>, davem@davemloft.net,
-        kuba@kernel.org
-Cc:     will@kernel.org, peterz@infradead.org, paulmck@kernel.org,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        mst@redhat.com, brouer@redhat.com
-References: <1622032173-11883-1-git-send-email-linyunsheng@huawei.com>
-From:   Jason Wang <jasowang@redhat.com>
-Message-ID: <d2287691-1ef9-d2c4-13f6-2baf7b80d905@redhat.com>
-Date:   Thu, 27 May 2021 12:57:26 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.10.2
+        id S234753AbhE0HOD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 May 2021 03:14:03 -0400
+Received: from ozlabs.org ([203.11.71.1]:57533 "EHLO ozlabs.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234684AbhE0HNz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 27 May 2021 03:13:55 -0400
+Received: by ozlabs.org (Postfix, from userid 1007)
+        id 4FrJsx2tB6z9sWp; Thu, 27 May 2021 17:12:21 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+        d=gibson.dropbear.id.au; s=201602; t=1622099541;
+        bh=/Vk6QIsfClarCnHuWF3h00g/TTHnE4TtoS0mH61nSvk=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=PBJfr7UYZPAGjibTLx3tnWLHnRpaUShxpkGQgtqAMqSU1cRDoZa5GzhsXCRFM76n6
+         /2dBtWmxbyYYr4V+CxP4PSVzAwF4AD4T2TGF1pIXK0c44UNAZyDsnE8zGdVBo4KZpb
+         3ivmm4aCrXG/e3Jm6+/nRQqIJ3rfH7ZWRNAOeov4=
+Date:   Thu, 27 May 2021 14:58:30 +1000
+From:   David Gibson <david@gibson.dropbear.id.au>
+To:     Jason Gunthorpe <jgg@nvidia.com>
+Cc:     Kirti Wankhede <kwankhede@nvidia.com>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        "Liu, Yi L" <yi.l.liu@intel.com>,
+        Jacob Pan <jacob.jun.pan@linux.intel.com>,
+        Auger Eric <eric.auger@redhat.com>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        "Tian, Kevin" <kevin.tian@intel.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Joerg Roedel <joro@8bytes.org>,
+        Lu Baolu <baolu.lu@linux.intel.com>,
+        David Woodhouse <dwmw2@infradead.org>,
+        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
+        "cgroups@vger.kernel.org" <cgroups@vger.kernel.org>,
+        Tejun Heo <tj@kernel.org>, Li Zefan <lizefan@huawei.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Jean-Philippe Brucker <jean-philippe@linaro.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        "Raj, Ashok" <ashok.raj@intel.com>, "Wu, Hao" <hao.wu@intel.com>,
+        "Jiang, Dave" <dave.jiang@intel.com>,
+        Alexey Kardashevskiy <aik@ozlabs.ru>
+Subject: Re: [PATCH V4 05/18] iommu/ioasid: Redefine IOASID set and
+ allocation APIs
+Message-ID: <YK8m9jNuvEzlXWlu@yekko>
+References: <YIizNdbA0+LYwQbI@yekko.fritz.box>
+ <20210428145622.GU1370958@nvidia.com>
+ <YIoiJRY3FM7xH2bH@yekko>
+ <20210503161518.GM1370958@nvidia.com>
+ <YJy9o8uEZs42/qDM@yekko>
+ <20210513135938.GG1002214@nvidia.com>
+ <YKtbWo7PwIlXjFIV@yekko>
+ <20210524233744.GT1002214@nvidia.com>
+ <ce2fcf21-1803-047b-03f0-7a4108dea7af@nvidia.com>
+ <20210525195257.GG1002214@nvidia.com>
 MIME-Version: 1.0
-In-Reply-To: <1622032173-11883-1-git-send-email-linyunsheng@huawei.com>
-Content-Type: text/plain; charset=gbk; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="rKeY89V0ifZRRhP6"
+Content-Disposition: inline
+In-Reply-To: <20210525195257.GG1002214@nvidia.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-ÔÚ 2021/5/26 ÏÂÎç8:29, Yunsheng Lin Ð´µÀ:
-> Currently r->queue[] is cleared after r->consumer_head is moved
-> forward, which makes the __ptr_ring_empty() checking called in
-> page_pool_refill_alloc_cache() unreliable if the checking is done
-> after the r->queue clearing and before the consumer_head moving
-> forward.
->
-> Move the r->queue[] clearing after consumer_head moving forward
-> to make __ptr_ring_empty() checking more reliable.
+--rKeY89V0ifZRRhP6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
+On Tue, May 25, 2021 at 04:52:57PM -0300, Jason Gunthorpe wrote:
+> On Wed, May 26, 2021 at 12:56:30AM +0530, Kirti Wankhede wrote:
+>=20
+> > 2. iommu backed mdev devices for SRIOV where mdev device is created per
+> > VF (mdev device =3D=3D VF device) then that mdev device has same iommu
+> > protection scope as VF associated to it.=20
+>=20
+> This doesn't require, and certainly shouldn't create, a fake group.
 
-If I understand this correctly, this can only happens if you run 
-__ptr_ring_empty() in parallel with ptr_ring_discard_one().
+It's only fake if you start with a narrow view of what a group is.  A
+group is a set of devices (in the kernel sense of "device", not
+necessarily the hardware sense) which can't be isolated from each
+other.  The mdev device is a kernel device, and if working as intended
+it can be isolated from everything else, and is therefore in an
+absolute bona fide group of its own.
 
-I think those two needs to be serialized. Or did I miss anything?
+> Only the VF's real IOMMU group should be used to model an iommu domain
+> linked to a VF. Injecting fake groups that are proxies for real groups
+> only opens the possibility of security problems like David is
+> concerned with.
 
-Thanks
+It's not a proxy for a real group, it's a group of its own.  If you
+discover that (due to a hardware bug, for example) the mdev is *not*
+properly isolated from its parent PCI device, then both the mdev
+virtual device *and* the physical PCI device are in the same group.
+Groups including devices of different types and on different buses
+were considered from the start, and are precedented, if rare.
 
+> Max's series approaches this properly by fully linking the struct
+> pci_device of the VF throughout the entire VFIO scheme, including the
+> group and container, while still allowing override of various VFIO
+> operations.
+>=20
+> Jason
+>=20
 
->
-> Signed-off-by: Yunsheng Lin <linyunsheng@huawei.com>
-> ---
->   include/linux/ptr_ring.h | 26 +++++++++++++++++---------
->   1 file changed, 17 insertions(+), 9 deletions(-)
->
-> diff --git a/include/linux/ptr_ring.h b/include/linux/ptr_ring.h
-> index 808f9d3..f32f052 100644
-> --- a/include/linux/ptr_ring.h
-> +++ b/include/linux/ptr_ring.h
-> @@ -261,8 +261,7 @@ static inline void __ptr_ring_discard_one(struct ptr_ring *r)
->   	/* Note: we must keep consumer_head valid at all times for __ptr_ring_empty
->   	 * to work correctly.
->   	 */
-> -	int consumer_head = r->consumer_head;
-> -	int head = consumer_head++;
-> +	int consumer_head = r->consumer_head + 1;
->   
->   	/* Once we have processed enough entries invalidate them in
->   	 * the ring all at once so producer can reuse their space in the ring.
-> @@ -271,19 +270,28 @@ static inline void __ptr_ring_discard_one(struct ptr_ring *r)
->   	 */
->   	if (unlikely(consumer_head - r->consumer_tail >= r->batch ||
->   		     consumer_head >= r->size)) {
-> +		int tail = r->consumer_tail;
-> +		int head = consumer_head;
-> +
-> +		if (unlikely(consumer_head >= r->size)) {
-> +			r->consumer_tail = 0;
-> +			WRITE_ONCE(r->consumer_head, 0);
-> +		} else {
-> +			r->consumer_tail = consumer_head;
-> +			WRITE_ONCE(r->consumer_head, consumer_head);
-> +		}
-> +
->   		/* Zero out entries in the reverse order: this way we touch the
->   		 * cache line that producer might currently be reading the last;
->   		 * producer won't make progress and touch other cache lines
->   		 * besides the first one until we write out all entries.
->   		 */
-> -		while (likely(head >= r->consumer_tail))
-> -			r->queue[head--] = NULL;
-> -		r->consumer_tail = consumer_head;
-> -	}
-> -	if (unlikely(consumer_head >= r->size)) {
-> -		consumer_head = 0;
-> -		r->consumer_tail = 0;
-> +		while (likely(--head >= tail))
-> +			r->queue[head] = NULL;
-> +
-> +		return;
->   	}
-> +
->   	/* matching READ_ONCE in __ptr_ring_empty for lockless tests */
->   	WRITE_ONCE(r->consumer_head, consumer_head);
->   }
+--=20
+David Gibson			| I'll have my music baroque, and my code
+david AT gibson.dropbear.id.au	| minimalist, thank you.  NOT _the_ _other_
+				| _way_ _around_!
+http://www.ozlabs.org/~dgibson
 
+--rKeY89V0ifZRRhP6
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCAAdFiEEdfRlhq5hpmzETofcbDjKyiDZs5IFAmCvJvYACgkQbDjKyiDZ
+s5IEqBAAp3p5NH8nnJVVcGSVZxbNrLeTTJqPwhNtEEsveVKJd5BmHf3EvT4BqqnK
+rXisyd2ygrY8fO1DiLJOa/WM6FDA05WD0XkqyDJ2XUFAOEHpyY0EesSw7CqSl1zz
+V2dbprWQAD9nJoPG/fidBsmuYEwpxjvptttrf1yEgFe+isfJLdalJbA+k/kfZOdd
+F4BL6+mtySC2DoKnQqoDQYCsXrSNzsYgv6SDbj4W7izUuOqYFADN7qawINcxAEBa
+I43JXW3Dhx3aLzL0JeEjFf2j/f1YMQo/RfkfLg9OWuHdsF+SF8+5lcikGWtjBZKT
+pC443P1CHOmJkW0TMr9Pz2lHJfjlcTaIq35qpaEP23tKmS60FDoLIvWPlFJYidaz
+tWDNMtMmS8UbcyzF868ZJiRc94+A8RTFFW7hSmHQoqLnxMqNnUoyOKrZ2ehaqg+j
+JjbsxFq37+jun2Fb2BxwPg+F2jFQmaw7l6FCdhePKc/h/HeCRPpZ+jTqF6AEqdU1
+KrET9bw9TE3euBNQK62gJNfdIdrkBelfcUjKluxCWamoHFeJBEnBKbqGR4wn0Jqg
+QucFQtoKZyEIXVKFtK0Pedz46dzxc5iH1hj+eIAGLw92/SIjWzVYEp6vCZYHxNSk
+VQFvdHTLJJ8vRVhLGJlo5Ji4EX+jgb9i7eIufxgqD+SxhzOoRvo=
+=ygK9
+-----END PGP SIGNATURE-----
+
+--rKeY89V0ifZRRhP6--
