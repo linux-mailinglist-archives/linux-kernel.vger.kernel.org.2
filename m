@@ -2,157 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 47D8139285C
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 09:18:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B56E392863
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 09:20:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230078AbhE0HUA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 May 2021 03:20:00 -0400
-Received: from frasgout.his.huawei.com ([185.176.79.56]:3094 "EHLO
-        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229579AbhE0HT7 (ORCPT
+        id S233625AbhE0HVe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 May 2021 03:21:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34484 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229579AbhE0HVd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 May 2021 03:19:59 -0400
-Received: from fraeml714-chm.china.huawei.com (unknown [172.18.147.201])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4FrJsb3FD6z6Q3WZ;
-        Thu, 27 May 2021 15:12:03 +0800 (CST)
-Received: from fraeml714-chm.china.huawei.com (10.206.15.33) by
- fraeml714-chm.china.huawei.com (10.206.15.33) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Thu, 27 May 2021 09:18:24 +0200
-Received: from fraeml714-chm.china.huawei.com ([10.206.15.33]) by
- fraeml714-chm.china.huawei.com ([10.206.15.33]) with mapi id 15.01.2176.012;
- Thu, 27 May 2021 09:18:24 +0200
-From:   Roberto Sassu <roberto.sassu@huawei.com>
-To:     Bighead Wang <ex200208049@gmail.com>
-CC:     "zohar@linux.ibm.com" <zohar@linux.ibm.com>,
-        "linux-integrity@vger.kernel.org" <linux-integrity@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: EVM gives no_label error due to security_kernfs_init_security
-Thread-Topic: EVM gives no_label error due to security_kernfs_init_security
-Thread-Index: AQHXUUc0KpPQcZofIk6SqEiHrt07sarz7awggAKnr4CAAFchAA==
-Date:   Thu, 27 May 2021 07:18:24 +0000
-Message-ID: <70eb9e60133c4210bd5e67ec2658b971@huawei.com>
-References: <CADG95vuR1=dvgsf6bvNCRNsvDEJ=YwFgfvqJWRkNvD=rrYUaYA@mail.gmail.com>
- <b348c8687d5b40919d8625f4c096d4e2@huawei.com>
- <CADG95vuTMGQY1HbPuHhD9kTEegUBFf75Nen2jPRZq4Xp_51wZw@mail.gmail.com>
-In-Reply-To: <CADG95vuTMGQY1HbPuHhD9kTEegUBFf75Nen2jPRZq4Xp_51wZw@mail.gmail.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.221.98.153]
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-MIME-Version: 1.0
-X-CFilter-Loop: Reflected
+        Thu, 27 May 2021 03:21:33 -0400
+Received: from mail-qk1-x749.google.com (mail-qk1-x749.google.com [IPv6:2607:f8b0:4864:20::749])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D2D1C061574
+        for <linux-kernel@vger.kernel.org>; Thu, 27 May 2021 00:20:00 -0700 (PDT)
+Received: by mail-qk1-x749.google.com with SMTP id o14-20020a05620a130eb02902ea53a6ef80so2797380qkj.6
+        for <linux-kernel@vger.kernel.org>; Thu, 27 May 2021 00:20:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=ji/2+wPlkaFbP8QsAXHaOpSxoldaomxvmpnrFt3cDwU=;
+        b=c9TaXglfnDg0YRq/AddtTw+c7V7Q3sd/fG6iZ3gSZg7iYsVbOAVM07xK+TmfTVUSH3
+         mzRO2avhfpJ+//yFS1oi+58VH5FtMk+mJyotllgPE419XczUCFwvsymFsblPDFelw6zj
+         uS5QR/XqNsNCIDDvUPWRiDM37C4vVSUaJ/xigXx+0XeSqtPQS8eSeANys3AFQ5aWR7a8
+         PeLddKwI/zUP4O4GNUxSWfIJtCxZvDrFwV/hlb/aWTR4YCvpqSfk079WxqoYR7tZi7K7
+         CkjRcj1YsQnMcE83O5aez92RcqO4iOYMzxJMV2dw7N2W3mmAYPYKjfh68+n+zNzCuzKU
+         jZ+w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=ji/2+wPlkaFbP8QsAXHaOpSxoldaomxvmpnrFt3cDwU=;
+        b=ENVVE4LF77VAaHYID63+zhe9YQTH7+7BVAQwxIrNvkGcOxOxfR2xDo9pVeuEKIpvaQ
+         PMTyMHa8c4vfDbVQdV5O8XfeKFM3GvSRWg2Lq0ppv2iCCJ7myRg9o0AWrCZr34ZmI5Wm
+         jJT7ZDcAC5/PId8L0NtXHzVDYde7runNgX6Yaa7B5N8xNhq3cpC8k3LgRzCgEaAlIYN2
+         tjQkCvm51MH8Aiy5pc1NOFEV0aKlhqXqR77jqPEZh/C7wiortOv0k5QdVBjPkJcqKuO3
+         dI31Qhv4eKkTLe4WGGHrPKe2JMoRS5E/GvDty+/w9PbC8GjD4bKr4XWEgs/mCJ7bLKhN
+         sRZw==
+X-Gm-Message-State: AOAM5311gnUsBWZp1fVMLQmMDi1dhaACk3CreiYu2IDIVDTlKIMR9BDT
+        XV/VBaZKBV+WaT9GGuL6gTO1uNxiW2Xg
+X-Google-Smtp-Source: ABdhPJwvbgpdjAn+uX+Nd4Q8dm80teldFYAG15JZ+xOwZ4Us5eitDjXIEuipY4Vd5tsmfvtBuSYW5G29cc88
+X-Received: from apusaka-p920.tpe.corp.google.com ([2401:fa00:1:b:3631:4fed:a968:3783])
+ (user=apusaka job=sendgmr) by 2002:a0c:bf4b:: with SMTP id
+ b11mr1978417qvj.11.1622099999558; Thu, 27 May 2021 00:19:59 -0700 (PDT)
+Date:   Thu, 27 May 2021 15:19:54 +0800
+Message-Id: <20210527151951.v2.1.I4d214bb82746fb2ed94eb1c2100dda0f63cf9a25@changeid>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.31.1.818.g46aad6cb9e-goog
+Subject: [PATCH v2] Bluetooth: hci_h5: Add RTL8822CS capabilities
+From:   Archie Pusaka <apusaka@google.com>
+To:     linux-bluetooth <linux-bluetooth@vger.kernel.org>,
+        Marcel Holtmann <marcel@holtmann.org>
+Cc:     CrosBT Upstreaming <chromeos-bluetooth-upstreaming@chromium.org>,
+        Archie Pusaka <apusaka@chromium.org>,
+        Abhishek Pandit-Subedi <abhishekpandit@chromium.org>,
+        Johan Hedberg <johan.hedberg@gmail.com>,
+        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-PiBGcm9tOiBCaWdoZWFkIFdhbmcgW21haWx0bzpleDIwMDIwODA0OUBnbWFpbC5jb21dDQo+IFNl
-bnQ6IFRodXJzZGF5LCBNYXkgMjcsIDIwMjEgNjowMCBBTQ0KPiBIaSBSb2JlcnRvDQo+IFRoYW5r
-IHlvdSBmb3IgdGhlIHJlcGx5DQo+IA0KPiBCZWZvcmUgSSB0cnkgdGhpcyBwYXRjaCwgSSBhbSBz
-b3JyeSB0aGF0IEkgZm9yZ2V0IHRvIG1lbnRpb24gdGhhdCBJDQo+IGhhdmUgbG9hZGVkIHRoZSBF
-Vk0gSE1BQyBrZXkgaW4gaW5pdHJhbWZzIGR1cmluZyBzeXN0ZW0gYm9vdHVwLg0KPiBUaGVyZWZv
-cmUsIEkgZG9uJ3QgdGhpbmsgdGhpcyBwYXRjaCB3aWxsIGZpeCB0aGlzIGlzc3VlIGFsdGhvdWdo
-IEkNCj4gd2lsbCBnaXZlIGl0IGEgdHJ5LiBCZWNhdXNlIHdoZW4gaXNzdWUgaGFwcGVucywgdGhl
-IGtleSBoYXMgYWxyZWFkeQ0KPiBsb2FkZWQuDQoNCkhpIEhhbmsNCg0KY29ycmVjdCwgbXkgcGF0
-Y2ggd291bGRuJ3Qgc29sdmUgdGhlIGlzc3VlLiBJdCBpZ25vcmVzIHRoZQ0KSU5URUdSSVRZX05P
-TEFCRUwgZXJyb3Igb25seSBpZiB0aGUgSE1BQyBrZXkgaXMgbm90IGxvYWRlZC4NCg0KVG8gc29s
-dmUgdGhpcywgaXQgaXMgbmVjZXNzYXJ5IHRvIGltcGxlbWVudCBhIG1vcmUgY29tcGxpY2F0ZWQN
-CnNvbHV0aW9uIHdoZXJlIHRoZSByZXN1bHQgb2YgdGhlIHZlcmlmaWNhdGlvbiBpcyBwYXNzZWQg
-ZnJvbSB0aGUNCnByZSBob29rIHRvIHRoZSBwb3N0IGhvb2ssIHNvIHRoYXQgYWxsb3dpbmcgYW4g
-b3BlcmF0aW9uIGZyb20NCnRoZSBwcmUgaG9vayB3b3VsZG4ndCBjYXVzZSB0aGUgSE1BQyB0byBi
-ZSBjYWxjdWxhdGVkIG9uDQp1bnN1Y2Nlc3NmdWxseSB2ZXJpZmllZCBtZXRhZGF0YSAodGhlIHBv
-c3QgaG9vayB3b3VsZCBzdG9wDQppZiB0aGUgcmVzdWx0IG9mIHRoZSB2ZXJpZmljYXRpb24gZnJv
-bSB0aGUgcHJlIGhvb2sgaXMgbm90DQpJTlRFR1JJVFlfUEFTUykuDQoNClJvYmVydG8NCg0KSFVB
-V0VJIFRFQ0hOT0xPR0lFUyBEdWVzc2VsZG9yZiBHbWJILCBIUkIgNTYwNjMNCk1hbmFnaW5nIERp
-cmVjdG9yOiBMaSBQZW5nLCBMaSBKaWFuLCBTaGkgWWFubGkNCg0KPiBUaGFua3MgIQ0KPiANCj4g
-Um9iZXJ0byBTYXNzdSA8cm9iZXJ0by5zYXNzdUBodWF3ZWkuY29tPiDmlrwgMjAyMeW5tDXmnIgy
-NeaXpSDpgLHkuowg5LiL5Y2IDQo+IDU6Mjnlr6vpgZPvvJoNCj4gPg0KPiA+ID4gRnJvbTogQmln
-aGVhZCBXYW5nIFttYWlsdG86ZXgyMDAyMDgwNDlAZ21haWwuY29tXQ0KPiA+ID4gU2VudDogVHVl
-c2RheSwgTWF5IDI1LCAyMDIxIDExOjE5IEFNDQo+ID4gPiBJbiBjZ3JvdXAgZmlsZXN5c3RlbSwg
-c2VjdXJpdHlfa2VybmZzX2luaXRfc2VjdXJpdHkoKSB3aWxsIGluaXRpYWxpemUNCj4gPiA+IHRo
-ZSBzZWN1cml0eSBkYXRhIGZvciBuZXdseSBjcmVhdGVkIGtlcm5mcyBub2RlIGFmdGVyIGtlcm5l
-bCA1LjIuLA0KPiA+ID4gaG93ZXZlciwgbmV3IEVWTSB4YXR0ciB2YWx1ZSBpcyBub3QgaW5pdGlh
-bGl6ZWQsIGFuZCB0aGUgbm9fbGFiZWwNCj4gPiA+IGVycm9yIGFwcGVhcnMgd2hlbiBldm1fdmVy
-aWZ5X2htYWMoKSBpcyB0cmlnZ2VyZWQuDQo+ID4gPg0KPiA+ID4NCj4gPiA+IFRoZSBkZXRhaWxl
-ZCBkZXNjcmlwdGlvbjoNCj4gPiA+IFdoZW4gc3lzdGVtIGJvb3RzIHVwIHdpdGggSU1BL0VWTSBh
-bmQgU0VMaW51eCBlbmFibGVkLCB3ZSBnZXQ6DQo+ID4gPiAiIE1heSAyNSAxNDoxMzowMSByYXNw
-YmVycnlwaSBhdWRpdFsxMjEyXTogSU5URUdSSVRZX01FVEFEQVRBDQo+IHBpZD0xMjEyDQo+ID4g
-PiB1aWQ9MCBhdWlkPTQyOTQ5NjcyOTUgc2VzPTQyOTQ5NjcyOTUgc3Viaj1zeXN0ZW1fdTpzeXN0
-ZW1fcjppbml0X3QNCj4gPiA+IG9wPWFwcHJhaXNlX21ldGFkYXRhIGNhdXNlPW5vX2xhYmVsIGNv
-bW09IihzeXN0ZW1kKSINCj4gPiA+IG5hbWU9ImNncm91cC5wcm9jcyIgZGV2PSJjZ3JvdXAyIiBp
-bm89MTM2MCByZXM9MCBlcnJubz0wICINCj4gPiA+DQo+ID4gPiBUaGUgcm9vdCBjYXVzZSBpcyB0
-aGF0IG91ciBjdXN0b21pemVkIFNFTGludXggZmlsZV9jb250ZXh0cyBmaWxlIGRvZXMNCj4gPiA+
-IG5vdCBjb250YWluIHRoZSBsaW5lICIvc3lzL2ZzL2Nncm91cC8uKiAgICAgPDxub25lPj4iLg0K
-PiA+ID4gV2hlbiBzeXN0ZW1kIHJlbGFiZWxzIGRpcmVjdG9yaWVzIHVuZGVyIC9zeXMvZnMvY2dy
-b3VwLyBkdXJpbmcNCj4gPiA+IGJvb3RpbmcsIGl0IHdpbGwgc2V0IFNFTGludXggbGFiZWwgaW5z
-aWRlIHRoZSBpYXR0ciBtZW1iZXIgb2Yga2VybmZzDQo+ID4gPiBub2RlLCBhbmQgdGhlbiBzZWN1
-cml0eV9rZXJuZnNfaW5pdF9zZWN1cml0eSgpIHdpbGwgaW5pdGlhbGl6ZSB0aGUNCj4gPiA+IHNl
-Y3VyaXR5IGRhdGEgYXQgdGhlIHRpbWUgbmV3IGtlcm5mcyBub2RlIGNyZWF0ZWQuDQo+ID4gPiBB
-ZnRlciBzeXN0ZW1kIGV4ZWN1dGVzIHNvbWV0aGluZyB0byB0cmlnZ2VyIGV2bV92ZXJpZnlfaG1h
-YygpLCB3ZSBnZXQNCj4gPiA+IHRoaXMgbm9fbGFiZWwgZXJyb3IuDQo+ID4gPg0KPiA+ID4gSW4g
-ZXZtX3ZlcmlmeV9obWFjKCksIGlmIHRoZXJlIGlzIG5vIEVWTSB4YXR0ciB2YWx1ZSwgaXQgd2ls
-bCBjaGVjaw0KPiA+ID4gYW55IG90aGVyIHhhdHRyIHZhbHVlcyBwcm90ZWN0ZWQgYnkgRVZNIGV4
-aXN0IG9yIG5vdC4NCj4gPiA+IEluIHRoaXMgc2l0dWF0aW9uLCB0aGVyZSBpcyBubyBFVk0geGF0
-dHIgdmFsdWUgKGdvdCBmcm9tIHRoZSBpYXR0cg0KPiA+ID4gbWVtYmVyIG9mIGtlcm5mcyBub2Rl
-IGluIGNncm91cCBmaWxlc3lzdGVtKSwgYnV0IFNFTGludXggbGFiZWwgKGFsc28NCj4gPiA+IGdv
-dCBmcm9tIHRoZSBpYXR0ciBtZW1iZXIgb2Yga2VybmZzIG5vZGUgaW5zdGVhZCBvZiBmcm9tIGlu
-b2RlKQ0KPiA+ID4gZXhpc3RzLg0KPiA+ID4gVG8gc3VtIHVwLCB0aGUgZXJyb3Igc2VlbXMgdG8g
-bWUgaXMgRVZNIG1lY2hhbmlzbSBkb2Vzbid0IGluaXRpYWxpemUNCj4gPiA+IEVWTSB4YXR0ciB2
-YWx1ZSBpbiBrZXJuZnMgbm9kZS4NCj4gPg0KPiA+IEhpIEhhbmsNCj4gPg0KPiA+IHRoaXMgcGF0
-Y2ggc2hvdWxkIGhlbHA6DQo+ID4NCj4gPiBodHRwczovL2dpdC5rZXJuZWwub3JnL3B1Yi9zY20v
-bGludXgva2VybmVsL2dpdC96b2hhci9saW51eC0NCj4gaW50ZWdyaXR5LmdpdC9jb21taXQvP2g9
-bmV4dC1pbnRlZ3JpdHktDQo+IHRlc3RpbmcmaWQ9NGE4MDRiOGE0NTcyZGZjODFjM2E1OTcwOWQ0
-OWFlMjA2ZTQzNzBiYQ0KPiA+DQo+ID4gQ291bGQgeW91IHBsZWFzZSB0cnkgaXQ/DQo+ID4NCj4g
-PiBUaGFua3MNCj4gPg0KPiA+IFJvYmVydG8NCj4gPg0KPiA+IEhVQVdFSSBURUNITk9MT0dJRVMg
-RHVlc3NlbGRvcmYgR21iSCwgSFJCIDU2MDYzDQo+ID4gTWFuYWdpbmcgRGlyZWN0b3I6IExpIFBl
-bmcsIExpIEppYW4sIFNoaSBZYW5saQ0KPiA+DQo+ID4gPiBUaGUgZW52aXJvbm1lbnQ6DQo+ID4g
-PiAvcHJvYy92ZXJzaW9uOiBMaW51eCB2ZXJzaW9uIDUuMTMuMC1yYzMtdjdsKyAoYmlnaGVhZEA1
-Mi0wNDUzNDYzLTAyKQ0KPiA+ID4gKGFybS1saW51eC1nbnVlYWJpLWdjYyAoR0NDKSA5LjEuMCwg
-R05VIGxkIChHTlUgQmludXRpbHMpIDIuMzIpICMxIFNNUA0KPiA+ID4gVHVlIE1heSAyNSAxMjoz
-MzowMSBDU1QgMjAyMQ0KPiA+ID4gL3Byb2Mvc3lzL2tlcm5lbC90YWludGVkOiAwDQo+ID4gPiBP
-cGVyYXRpbmcgU3lzdGVtOiBSYXNwYmlhbiBHTlUvTGludXggMTAgKGJ1c3RlcikNCj4gPiA+IEFy
-Y2hpdGVjdHVyZTogYXJtdjdsDQo+ID4gPiBzeXN0ZW1kIHZlcnNpb246IHN5c3RlbWQgMjQxICgy
-NDEpICtQQU0gK0FVRElUICtTRUxJTlVYICtJTUENCj4gPiA+ICtBUFBBUk1PUg0KPiA+ID4gK1NN
-QUNLICtTWVNWSU5JVCArVVRNUCArTElCQ1JZUFRTRVRVUCArR0NSWVBUICtHTlVUTFMgK0FDTCAr
-WFoNCj4gPiA+ICtMWjQNCj4gPiA+ICtTRUNDT01QICtCTEtJRCArRUxGVVRJTFMgK0tNT0QgLUlE
-TjIgK0lETiAtUENSRTINCj4gPiA+IGRlZmF1bHQtaGllcmFyY2h5PWh5YnJpZA0KPiA+ID4gSU1B
-L0VWTSBrZXJuZWwgcGFyYW1ldGVyOiBpbWFfcG9saWN5PWFwcHJhaXNlX3RjYiBpbWFfYXBwcmFp
-c2U9Zml4DQo+ID4gPiBTRUxpbnV4IGtlcm5lbCBwYXJhbWV0ZXI6IHNlY3VyaXR5PXNlbGludXgg
-c2VsaW51eD0xIChwZXJtaXNzaXZlIG1vZGUpDQo+ID4gPg0KPiA+ID4gSG93IHRvIHJlcHJvZHVj
-ZSB0aGUgZXJyb3IgaW4gUmFzcGJpYW46DQo+ID4gPiAxLiBQcmVwYXJlIGFuIGVudmlyb25tZW50
-IHdoaWNoIFNFTGludXggYW5kIElNQS9FVk0gYXJlIGVuYWJsZWQgYW5kDQo+ID4gPiBib290IHVw
-IHdpdGgga2VybmVsIHBhcmFtZXRlcnM6IHNlY3VyaXR5PXNlbGludXggc2VsaW51eD0xDQo+ID4g
-PiBpbWFfcG9saWN5PWFwcHJhaXNlX3RjYiBpbWFfYXBwcmFpc2U9Zml4IGV2bT1maXgNCj4gPiA+
-IDIuIFJlbW92ZSB0aGUgbGluZSAiL3N5cy9mcy9jZ3JvdXAvLiogICAgIDw8bm9uZT4+IiBpbiBm
-aWxlX2NvbnRleHRzDQo+ID4gPiBmaWxlLCBhbmQgZnVsbHkgcmVsYWJlbCBhbGwgc3lzdGVtIHdp
-dGggU0VMaW51eCBvZmZpY2lhbCByZWZlcmVuY2UNCj4gPiA+IHBvbGljeQ0KPiA+ID4gMy4gV2Fs
-ayB0aHJvdWdoIGFsbCByZWd1bGFyIGZpbGVzIGFuZCBnZW5lcmF0ZSBpbWEvZXZtIGhhc2g6DQo+
-ID4gPiAvdXNyL2Jpbi9maW5kIC8gLXR5cGUgZiAtdWlkIDAgLWV4ZWMgc2ggLWMgIjwgJ3t9JyIg
-XDsNCj4gPiA+IDQuIFJlYm9vdCB3aXRoIGtlcm5lbCBwYXJhbWV0ZXJzOiBzZWN1cml0eT1zZWxp
-bnV4IHNlbGludXg9MQ0KPiA+ID4gaW1hX3BvbGljeT1hcHByYWlzZV90Y2IgaW1hX2FwcHJhaXNl
-PWZpeA0KPiA+ID4gNS4gQWZ0ZXIgYm9vdCB1cCwgeW91IHdpbGwgZ2V0IHRoaXMgRVZNIG5vX2xh
-YmVsIGVycm9yIG1lc3NhZ2UNCj4gPiA+DQo+ID4gPiBSZXByb2R1Y2UgdGhlIGVycm9yIGRpcmVj
-dGx5Og0KPiA+ID4gMS4gUHJlcGFyZSBhbiBlbnZpcm9ubWVudCB3aGljaCBTRUxpbnV4IGFuZCBJ
-TUEvRVZNIGFyZSBlbmFibGVkIGFuZA0KPiA+ID4gYm9vdCB1cCB3aXRoIGtlcm5lbCBwYXJhbWV0
-ZXJzOiBzZWN1cml0eT1zZWxpbnV4IHNlbGludXg9MQ0KPiA+ID4gaW1hX3BvbGljeT1hcHByYWlz
-ZV90Y2IgaW1hX2FwcHJhaXNlPWZpeCBldm09Zml4DQo+ID4gPiAyLiBGdWxseSByZWxhYmVsIGFs
-bCBzeXN0ZW0gd2l0aCBTRUxpbnV4IG9mZmljaWFsIHJlZmVyZW5jZSBwb2xpY3kNCj4gPiA+IDMu
-IFdhbGsgdGhyb3VnaCBhbGwgcmVndWxhciBmaWxlcyBhbmQgZ2VuZXJhdGUgaW1hL2V2bSBoYXNo
-Og0KPiA+ID4gL3Vzci9iaW4vZmluZCAvIC10eXBlIGYgLXVpZCAwIC1leGVjIHNoIC1jICI8ICd7
-fSciIFw7DQo+ID4gPiA0LiBSZWJvb3Qgd2l0aCBrZXJuZWwgcGFyYW1ldGVyczogc2VjdXJpdHk9
-c2VsaW51eCBzZWxpbnV4PTENCj4gPiA+IGltYV9wb2xpY3k9YXBwcmFpc2VfdGNiIGltYV9hcHBy
-YWlzZT1maXgNCj4gPiA+IDUuIHN1ZG8gc2V0ZmF0dHIgLW4gc2VjdXJpdHkuc2VsaW51eCAtdiBz
-eXN0ZW1fdTpvYmplY3RfcjpjZ3JvdXBfdA0KPiA+ID4gL3N5cy9mcy9jZ3JvdXAvdW5pZmllZA0K
-PiA+ID4gNi4gc3VkbyBta2RpciAvc3lzL2ZzL2Nncm91cC91bmlmaWVkL3Rlc3Rldm0NCj4gPiA+
-IDcuIHN1ZG8gY2htb2QgK3ggL3N5cy9mcy9jZ3JvdXAvdW5pZmllZC90ZXN0ZXZtL2Nncm91cC5w
-cm9jczogeW91IHdpbGwNCj4gPiA+IGdldCB0aGlzIEVWTSBlcnJvciBtZXNzYWdlDQo+ID4gPg0K
-PiA+ID4gUmVmZXJlbmNlOg0KPiA+ID4gS2VybmVsIGNvbmZpZzogaHR0cHM6Ly8xNDAuOTYuMTU0
-Ljc6NTAwMS9zaGFyaW5nLzljUE5vd21oSw0KPiA+ID4gSm91cm5hbCBsb2c6IGh0dHBzOi8vMTQw
-Ljk2LjE1NC43OjUwMDEvc2hhcmluZy9zUklTejZJUHQNCj4gPiA+IFBhdGNoIGZvciBzZWN1cml0
-eV9rZXJuZnNfaW5pdF9zZWN1cml0eSgpIDoNCj4gPiA+IGh0dHBzOi8vbG9yZS5rZXJuZWwub3Jn
-L3NlbGludXgvMjAxOTAxMzAxMTQxNTAuMjc4MDctMS0NCj4gPiA+IG9tb3NuYWNlQHJlZGhhdC5j
-b20vDQo+ID4gPg0KPiA+ID4gLS0NCj4gPiA+IEJlc3QgUmVnYXJkcywNCj4gPiA+IEhhbmsgV2Fu
-Zw0KPiANCj4gDQo+IA0KPiAtLQ0KPiBCZXN0IFJlZ2FyZHMsDQo+IOeOi+emuei7kiBIYW5rDQo=
+From: Archie Pusaka <apusaka@chromium.org>
+
+RTL8822 chipset supports WBS, and this information is conveyed in
+btusb.c. However, the UART driver doesn't have this information just
+yet.
+
+Signed-off-by: Archie Pusaka <apusaka@chromium.org>
+Reviewed-by: Abhishek Pandit-Subedi <abhishekpandit@chromium.org>
+
+---
+
+Changes in v2:
+* Add declaration for the case when CONFIG_BT_RTL is not enabled
+
+ drivers/bluetooth/btrtl.c  | 26 ++++++++++++++++----------
+ drivers/bluetooth/btrtl.h  |  7 +++++++
+ drivers/bluetooth/hci_h5.c |  5 +----
+ 3 files changed, 24 insertions(+), 14 deletions(-)
+
+diff --git a/drivers/bluetooth/btrtl.c b/drivers/bluetooth/btrtl.c
+index e7fe5fb22753..988a09860c6b 100644
+--- a/drivers/bluetooth/btrtl.c
++++ b/drivers/bluetooth/btrtl.c
+@@ -719,17 +719,8 @@ int btrtl_download_firmware(struct hci_dev *hdev,
+ }
+ EXPORT_SYMBOL_GPL(btrtl_download_firmware);
+ 
+-int btrtl_setup_realtek(struct hci_dev *hdev)
++void btrtl_set_quirks(struct hci_dev *hdev, struct btrtl_device_info *btrtl_dev)
+ {
+-	struct btrtl_device_info *btrtl_dev;
+-	int ret;
+-
+-	btrtl_dev = btrtl_initialize(hdev, NULL);
+-	if (IS_ERR(btrtl_dev))
+-		return PTR_ERR(btrtl_dev);
+-
+-	ret = btrtl_download_firmware(hdev, btrtl_dev);
+-
+ 	/* Enable controller to do both LE scan and BR/EDR inquiry
+ 	 * simultaneously.
+ 	 */
+@@ -750,6 +741,21 @@ int btrtl_setup_realtek(struct hci_dev *hdev)
+ 		rtl_dev_dbg(hdev, "WBS supported not enabled.");
+ 		break;
+ 	}
++}
++EXPORT_SYMBOL_GPL(btrtl_set_quirks);
++
++int btrtl_setup_realtek(struct hci_dev *hdev)
++{
++	struct btrtl_device_info *btrtl_dev;
++	int ret;
++
++	btrtl_dev = btrtl_initialize(hdev, NULL);
++	if (IS_ERR(btrtl_dev))
++		return PTR_ERR(btrtl_dev);
++
++	ret = btrtl_download_firmware(hdev, btrtl_dev);
++
++	btrtl_set_quirks(hdev, btrtl_dev);
+ 
+ 	btrtl_free(btrtl_dev);
+ 	return ret;
+diff --git a/drivers/bluetooth/btrtl.h b/drivers/bluetooth/btrtl.h
+index 2a582682136d..2c441bda390a 100644
+--- a/drivers/bluetooth/btrtl.h
++++ b/drivers/bluetooth/btrtl.h
+@@ -54,6 +54,8 @@ struct btrtl_device_info *btrtl_initialize(struct hci_dev *hdev,
+ void btrtl_free(struct btrtl_device_info *btrtl_dev);
+ int btrtl_download_firmware(struct hci_dev *hdev,
+ 			    struct btrtl_device_info *btrtl_dev);
++void btrtl_set_quirks(struct hci_dev *hdev,
++		      struct btrtl_device_info *btrtl_dev);
+ int btrtl_setup_realtek(struct hci_dev *hdev);
+ int btrtl_shutdown_realtek(struct hci_dev *hdev);
+ int btrtl_get_uart_settings(struct hci_dev *hdev,
+@@ -79,6 +81,11 @@ static inline int btrtl_download_firmware(struct hci_dev *hdev,
+ 	return -EOPNOTSUPP;
+ }
+ 
++static inline void btrtl_set_quirks(struct hci_dev *hdev,
++				    struct btrtl_device_info *btrtl_dev)
++{
++}
++
+ static inline int btrtl_setup_realtek(struct hci_dev *hdev)
+ {
+ 	return -EOPNOTSUPP;
+diff --git a/drivers/bluetooth/hci_h5.c b/drivers/bluetooth/hci_h5.c
+index 27e96681d583..e0520639f4ba 100644
+--- a/drivers/bluetooth/hci_h5.c
++++ b/drivers/bluetooth/hci_h5.c
+@@ -906,10 +906,7 @@ static int h5_btrtl_setup(struct h5 *h5)
+ 	/* Give the device some time before the hci-core sends it a reset */
+ 	usleep_range(10000, 20000);
+ 
+-	/* Enable controller to do both LE scan and BR/EDR inquiry
+-	 * simultaneously.
+-	 */
+-	set_bit(HCI_QUIRK_SIMULTANEOUS_DISCOVERY, &h5->hu->hdev->quirks);
++	btrtl_set_quirks(h5->hu->hdev, btrtl_dev);
+ 
+ out_free:
+ 	btrtl_free(btrtl_dev);
+-- 
+2.31.1.818.g46aad6cb9e-goog
+
