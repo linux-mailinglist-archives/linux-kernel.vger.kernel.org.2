@@ -2,105 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DEB35392DE1
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 14:22:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BA09F392DDF
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 14:22:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235126AbhE0MYa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 May 2021 08:24:30 -0400
-Received: from foss.arm.com ([217.140.110.172]:56806 "EHLO foss.arm.com"
+        id S234985AbhE0MY1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 May 2021 08:24:27 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56662 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234702AbhE0MY3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 May 2021 08:24:29 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 0437513A1;
-        Thu, 27 May 2021 05:22:56 -0700 (PDT)
-Received: from [192.168.178.6] (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 00C963F73D;
-        Thu, 27 May 2021 05:22:53 -0700 (PDT)
-Subject: Re: [PATCH v5 2/3] sched/topology: Rework CPU capacity asymmetry
- detection
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Beata Michalska <beata.michalska@arm.com>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        linux-kernel@vger.kernel.org, mingo@redhat.com,
-        juri.lelli@redhat.com, vincent.guittot@linaro.org, corbet@lwn.net,
-        rdunlap@infradead.org, linux-doc@vger.kernel.org
-References: <20210524101617.8965-1-beata.michalska@arm.com>
- <20210524101617.8965-3-beata.michalska@arm.com> <87fsyc6mfz.mognet@arm.com>
- <20210524225508.GA14880@e120325.cambridge.arm.com>
- <87a6oj6sxo.mognet@arm.com>
- <20210525102945.GA24210@e120325.cambridge.arm.com>
- <98ad8837-b9b8-ff50-5a91-8d5951ee757c@arm.com>
- <YK9ESqNEo+uacyMD@hirez.programming.kicks-ass.net>
-From:   Dietmar Eggemann <dietmar.eggemann@arm.com>
-Message-ID: <315b4b5d-05f5-e311-8ed9-b55072cf84f9@arm.com>
-Date:   Thu, 27 May 2021 14:22:52 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        id S234702AbhE0MY0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 27 May 2021 08:24:26 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 385E4610CC;
+        Thu, 27 May 2021 12:22:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1622118173;
+        bh=PeOYBj4dYdEHtrpaWtOXdXVv99HMaaHLcMB50u37K2o=;
+        h=From:To:Cc:Subject:Date:From;
+        b=e4OCGEKHT2SWsVARZo3tAt3lp80XgxmGP6jesG8e1XzpSDtHo6lm9AsnbMTyp4i9G
+         +L1mLVU9K+/PbpJSILSmDfMXg6eGujRVh8yJOPHJsv4o6A8ga/BVoKzS6TVTVlliuj
+         ZE73sOe+/5ERTbXLjdF31bJeuF+HvgCoBwToaL0K8JO3o9BbIfV+dVo+QPapAWThWd
+         2okWM+GQQ2jgBc1mYw2WB1WlXK8gVsvHPvGNMnXfsrZilLSLx86UHcsO128QhU/U48
+         Cw2wZnBjG203xN5ZeNw3ov7SKbrwoIDGVKW5ijqP0nr6D6JL/iTyvru4bwL6uy8KzJ
+         vFHo5nde2+rdg==
+From:   Georgi Djakov <djakov@kernel.org>
+To:     gregkh@linuxfoundation.org
+Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        georgi.djakov@linaro.org, djakov@kernel.org
+Subject: [GIT PULL] interconnect fixes for 5.13-rc
+Date:   Thu, 27 May 2021 15:22:55 +0300
+Message-Id: <20210527122255.31418-1-djakov@kernel.org>
+X-Mailer: git-send-email 2.29.0
 MIME-Version: 1.0
-In-Reply-To: <YK9ESqNEo+uacyMD@hirez.programming.kicks-ass.net>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 27/05/2021 09:03, Peter Zijlstra wrote:
-> On Wed, May 26, 2021 at 11:52:25AM +0200, Dietmar Eggemann wrote:
-> 
->> For me asym_cpu_capacity_classify() is pretty hard to digest ;-) But I
->> wasn't able to break it. It also performs correctly on (non-existing SMT)
->> layer (with sd span eq. single CPU).
-> 
-> This is the simplest form I could come up with this morning:
-> 
-> static inline int
-> asym_cpu_capacity_classify(struct sched_domain *sd,
->                           const struct cpumask *cpu_map)
-> {
-> 	struct asym_cap_data *entry;
-> 	int i = 0, n = 0;
-> 
-> 	list_for_each_entry(entry, &asym_cap_list, link) {
-> 		if (cpumask_intersects(sched_domain_span(sd), entry->cpu_mask))
-> 			i++;
-> 		else
-> 			n++;
-> 	}
-> 
-> 	if (WARN_ON_ONCE(!i) || i == 1) /* no asymmetry */
-> 		return 0;
-> 
-> 	if (n) /* partial asymmetry */
-> 		return SD_ASYM_CPUCAPACITY;
-> 
-> 	/* full asymmetry */
-> 	return SD_ASYM_CPUCAPACITY | SD_ASYM_CPUCAPACITY_FULL;
-> }
-> 
-> 
-> The early termination and everything was cute; but this isn't
-> performance critical code and clarity is paramount.
+Hello Greg,
 
-This is definitely easier to grasp.
+This pull request contains a few tiny interconnect driver fixes for 5.13-rc.
+The details are in the signed tag. Please pull them into char-misc-linus
+when possible. The patches have been in linux-next for more than two weeks.
 
-What about the missing `if (cpumask_intersects(entry->cpu_mask,
-cpu_map))` condition in the else path to increment n?
+Thanks,
+Georgi
 
-Example:
+The following changes since commit 6efb943b8616ec53a5e444193dccf1af9ad627b5:
 
-cpus = {[446 446] [871 871] [1024 1024]}
+  Linux 5.13-rc1 (2021-05-09 14:17:44 -0700)
 
-So 3 asym_cap_list entries.
+are available in the Git repository at:
 
-After hp'ing out CPU4 and CPU5:
+  git://git.kernel.org/pub/scm/linux/kernel/git/djakov/icc.git tags/icc-5.13-rc4
 
-DIE: 'partial asymmetry'
+for you to fetch changes up to 1fd86e280d8b21762901e43d42d66dbfe8b8e0d3:
 
-In case we would increment n only when the condition is met, we would
-have `full asymmetry`.
+  interconnect: qcom: Add missing MODULE_DEVICE_TABLE (2021-05-11 07:26:31 +0300)
 
-I guess we want to allow EAS task placement, hence have
-sd_asym_cpucapacity set in case there are only 446 and 871 left?
+----------------------------------------------------------------
+interconnect fixes for v5.13
 
+This contains two tiny driver fixes:
+
+- bcm-voter: Add missing MODULE_DEVICE_TABLE
+- bcm-voter: Add a missing of_node_put()
+
+Signed-off-by: Georgi Djakov <djakov@kernel.org>
+
+----------------------------------------------------------------
+Subbaraman Narayanamurthy (1):
+      interconnect: qcom: bcm-voter: add a missing of_node_put()
+
+Zou Wei (1):
+      interconnect: qcom: Add missing MODULE_DEVICE_TABLE
+
+ drivers/interconnect/qcom/bcm-voter.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
