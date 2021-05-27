@@ -2,136 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E15EF3933A2
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 18:23:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 066873933A9
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 18:25:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234809AbhE0QZY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 May 2021 12:25:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47030 "EHLO
+        id S234982AbhE0Q0b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 May 2021 12:26:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47288 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233702AbhE0QZX (ORCPT
+        with ESMTP id S229696AbhE0Q0a (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 May 2021 12:25:23 -0400
-Received: from mail-qt1-x834.google.com (mail-qt1-x834.google.com [IPv6:2607:f8b0:4864:20::834])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DCF63C061574;
-        Thu, 27 May 2021 09:23:49 -0700 (PDT)
-Received: by mail-qt1-x834.google.com with SMTP id t17so602571qta.11;
-        Thu, 27 May 2021 09:23:49 -0700 (PDT)
+        Thu, 27 May 2021 12:26:30 -0400
+Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF07AC061574
+        for <linux-kernel@vger.kernel.org>; Thu, 27 May 2021 09:24:57 -0700 (PDT)
+Received: by mail-pj1-x102b.google.com with SMTP id kr9so769933pjb.5
+        for <linux-kernel@vger.kernel.org>; Thu, 27 May 2021 09:24:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=Sdg6PhtYpFMULY1pq6vpaLfF6qM0VMonxMRGrT127HE=;
-        b=nrQQ9DDLoy4Fk2SqxWK72Zu+DNXm7owDz+tVDgB3oueHR1u2eLO2+HUrkZQvjzPyYJ
-         UF5u7uUaqUxYzS94ZCIAoeCfW/tvSJ1UZOP5pLA6qcUv4haXZThjQnTKhLOvLfjlQB7p
-         DYfL+UlVudfSKlGUSVEBvDy6zf03yKFp4ynryVpfJHhZwUr0irQ1HP8qbGiCDlpRdN85
-         n+LtLirqlQWUfKJhgv5AyTgoIIkcJhG9cZfeCtN7eoXr6YA4kVKd5DswpKp1YCCyOnD2
-         L8+nWAbObkQvvPTB1fhGjJT+tcZ05Mm0D+WBiQTBKoOT068oAHuD25+vrDXoH8LXCGS0
-         5eHw==
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=YE3BN5QSk4VUCTzPZRb3FD/xbSSlU+NU+OFFH90cO1o=;
+        b=gsAaQ/ib2LS/Xbj2c8oXaHYsJ24DVq/8YzSpSHyt74sgHEdpECgogjDfEZkMiLWGwb
+         YoaPKZNHNgHUGLDImzqN1kzliKir1GkwDxHIGUOKl5WvlPDqmAKhxUwlDuF8xIACDVIV
+         bj+JP0ytBIWHhX8s6y5C5JeVrY0mr98h91ozaUOfk75K/1E3DGoY0xJDgjAhflkt2bZN
+         P+gdx4wtY97tJIfWjtIcNXahb41aJofDo9GGy15ZMuxHtafDW/+SthO44WC82xp1WY2d
+         xivwi6DxgvoG04yCnF8stknJ2jNnTi4PVk06aQjtVXI0WOE0R1byVNu1TRwUfYJTd8hC
+         aGIw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=Sdg6PhtYpFMULY1pq6vpaLfF6qM0VMonxMRGrT127HE=;
-        b=cFeOJvFuDITY1D04WflQ6YZDaECTCf0SDMB3Kbm6IJPp5WdtSb75ZqDyWoDOUnG4i2
-         lSoAfVTa2tSeLuy76AA0/D2q5oqpDZ92TFHB+f0QINAZF83XDhTon9jmOjzomLw1G3yh
-         w3/+ayjr5ahLeH0YGaL9TovhJbFd5ZeQzLK8KxSSmEiyfpDynHjiyYmhCQq9DskadQl9
-         xX1ueUyjxG5Re6IN2Lw69BD5OG611RTLJzQaH2Ucv0m0nvqGTp9lJ/LLz+u8ymIp6CpB
-         rWCl0cpkv93n/15GZzLglLZrF4BrWmty3ouv9DqCfprJMtDdUpZrqZxuoiLtsKCl6HQM
-         hTGQ==
-X-Gm-Message-State: AOAM533BfBe7+r3+PtsQNzkXw6LaGxB3yED+s8Mk+E9oWQs3kexnel6c
-        ME5vsjUEXtusSR72Xf3Xx9I=
-X-Google-Smtp-Source: ABdhPJzTy11SMjF4rbFOlZJCI5frrke6OrhVmh60TaEyqybSR5SgldVsU6iKanc1NOyL2nUvyVpQYg==
-X-Received: by 2002:ac8:4b45:: with SMTP id e5mr3954795qts.248.1622132629115;
-        Thu, 27 May 2021 09:23:49 -0700 (PDT)
-Received: from [192.168.1.49] (c-67-187-90-124.hsd1.ky.comcast.net. [67.187.90.124])
-        by smtp.gmail.com with ESMTPSA id e20sm1600690qto.93.2021.05.27.09.23.48
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 27 May 2021 09:23:48 -0700 (PDT)
-Subject: Re: [PATCH 1/1] of: unittest: rename overlay source files from .dts
- to .dtso
-To:     David Gibson <david@gibson.dropbear.id.au>
-Cc:     Viresh Kumar <viresh.kumar@linaro.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Rob Herring <robh@kernel.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Michal Marek <michal.lkml@markovi.net>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Michal Simek <michal.simek@xilinx.com>,
-        Anmar Oueja <anmar.oueja@linaro.org>,
-        Bill Mills <bill.mills@linaro.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        linux-kbuild <linux-kbuild@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-References: <20210324223713.1334666-1-frowand.list@gmail.com>
- <20210327174035.GA291160@robh.at.kernel.org>
- <3e6710e7-08ac-7d1b-aa69-bcd36f0d932a@gmail.com>
- <CAMuHMdXpGKMi-xv6hZQmmEw0JO=Q0WuvUzwJ2v0O28Tx5uW+sg@mail.gmail.com>
- <d1aefaae-7b12-b5fb-4b97-7230bd52c1be@gmail.com>
- <20210526061144.yvoaurpz75a3bsjr@vireshk-i7>
- <f651e95b-feef-5c86-edba-d6008bc80b34@gmail.com> <YK70Xsl1oXeEQpWZ@yekko>
-From:   Frank Rowand <frowand.list@gmail.com>
-Message-ID: <e175ace6-36a0-bfcc-c8e4-b06553064860@gmail.com>
-Date:   Thu, 27 May 2021 11:23:47 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=YE3BN5QSk4VUCTzPZRb3FD/xbSSlU+NU+OFFH90cO1o=;
+        b=F6UhJ2ZZRXhy1/JX4qbimCDhkZlg5NM3Jd2vSZKA2cIuCT16srtayBFMrVF3DuHNYQ
+         KKm4aRNpRb+m2AAoshdap0U2xmjDhUS3zS4TghCAfTMZPZVW5ZyIbHuOQVzQMki4lDMR
+         tXcp9nMVe2cg4rHbyapoDmPMQo0Ym2Btt3QiirE24NTdq54Xm+HMsBjqYFUWOVcaMls/
+         VBYl2SlZpin6ofYo/sSFwNm8jy/2CNYp1qiKvTz3fU+bzt1DFJVt0GB6aUhQQ52LEKZE
+         8yqfuoBKf9fW/tsNwTqySQ3N3EZfD//4bC7jZKXe3wC5W2BV+6E85sL/WFJ7RJlKxied
+         s3qQ==
+X-Gm-Message-State: AOAM531f+qcUR/29pPZnuISwzqlHuQE+wu8JpwQnvSEAMrJcz43eDXQZ
+        2/TYlLUKrgEP40p2D604E0E2OQ==
+X-Google-Smtp-Source: ABdhPJwAp6Z6I/6hRXze1MLbyS5oQklxmXw19Pz8Fe69O01m0LwT2jjpUI2nIxkcwShXpgOYJmqlUg==
+X-Received: by 2002:a17:90b:1d8f:: with SMTP id pf15mr10216159pjb.164.1622132697146;
+        Thu, 27 May 2021 09:24:57 -0700 (PDT)
+Received: from google.com (240.111.247.35.bc.googleusercontent.com. [35.247.111.240])
+        by smtp.gmail.com with ESMTPSA id a15sm2289405pff.128.2021.05.27.09.24.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 27 May 2021 09:24:56 -0700 (PDT)
+Date:   Thu, 27 May 2021 16:24:52 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     "Luck, Tony" <tony.luck@intel.com>
+Cc:     Kuppuswamy Sathyanarayanan 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        "Hansen, Dave" <dave.hansen@intel.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
+        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
+        "Williams, Dan J" <dan.j.williams@intel.com>,
+        "Raj, Ashok" <ashok.raj@intel.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [RFC v2-fix-v2 1/1] x86/traps: Add #VE support for TDX guest
+Message-ID: <YK/H1CAc24UzPLDs@google.com>
+References: <4031ffc2-a442-5da7-e793-ac1053533bb3@linux.intel.com>
+ <20210527002931.3632581-1-sathyanarayanan.kuppuswamy@linux.intel.com>
+ <636067f3ed65429ab1094b851aae5256@intel.com>
 MIME-Version: 1.0
-In-Reply-To: <YK70Xsl1oXeEQpWZ@yekko>
-Content-Type: text/plain; charset=windows-1252
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <636067f3ed65429ab1094b851aae5256@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5/26/21 8:22 PM, David Gibson wrote:
-> On Wed, May 26, 2021 at 04:21:48PM -0500, Frank Rowand wrote:
->> On 5/26/21 1:11 AM, Viresh Kumar wrote:
->>> On 22-04-21, 13:54, Frank Rowand wrote:
->>>> On 4/22/21 3:44 AM, Geert Uytterhoeven wrote:
->>>>> Hi Frank, Rob,
->>>>>
->>>>> On Mon, Mar 29, 2021 at 9:23 PM Frank Rowand <frowand.list@gmail.com> wrote:
->>>>>> On 3/27/21 12:40 PM, Rob Herring wrote:
->>>>>>> On Wed, Mar 24, 2021 at 05:37:13PM -0500, frowand.list@gmail.com wrote:
->>>>>>>> From: Frank Rowand <frank.rowand@sony.com>
->>>>>>>>
->>>>>>>> Add Makefile rule to build .dtbo.o assembly file from overlay .dtso
->>>>>>>> source file.
->>>>>>>>
->>>>>>>> Rename unittest .dts overlay source files to use .dtso suffix.
->>>>>>>
->>>>>>> I'm pretty lukewarm on .dtso...
->>>>>>
->>>>>> I was originally also, but I'm warming up to it.
->>>>>
->>>>> What's the status of this?
->>>>
->>>> I was planning to resend on top of the upcoming -rc1.
->>>
->>> Ping.
->>>
->>
->> Thanks for the prod...
->>
->> The .dtso convention was added to the dtc compiler, then a patch was
->> accepted to revert one mention of .dtso ,though there still remains
->> two location where .dtbo is still recognized (guess_type_by_name() in
->> dtc and the help text of the fdtoverlay program).
->>
->> It seems that the general .dtso and .dtbo were not popular, so I'm
->> going to drop this patch instead of continuing to try to get it
->> accepted.
+On Thu, May 27, 2021, Luck, Tony wrote:
+> +struct ve_info {
+> +	u64 exit_reason;
+> +	u64 exit_qual;
+> +	u64 gla;
+> +	u64 gpa;
+> +	u32 instr_len;
+> +	u32 instr_info;
+> +};
 > 
-> AFAICT .dtbo is moderately well established, and I think it's a good
-> convention, since it matters whether a blob is an overlay or base
-> tree, and it's not trivial to tell which is which.
+> I guess that "gla" = Guest Linear Address ... which is a very "Intel" way of
+> describing what everyone else would call a Guest Virtual Address.
 > 
-> .dtso is much more recent, and I think there's much less value to it.
-> 
+> I don't feel strongly about this though. If this has already been hashed
+> out already then stick with this name.
 
-Thanks for the correction, I misunderstood your thoughts.
+The "real" #VE information area that TDX is usurping is an architectural struct
+that defines exit_reason, exit_qual, gla, and gpa, and those fields in turn come
+directly from their corresponding VMCS fields with longer versions of the same
+names, e.g. ve_info->gla is a reflection of vmcs.GUEST_LINEAR_ADDRESS.
 
--Frank
+So normally I would agree that the "linear" terminology is obnoxious, but in
+this specific case I think it's warranted.
