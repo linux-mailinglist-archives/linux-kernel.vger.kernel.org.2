@@ -2,94 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 63523393651
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 21:33:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 27B0D39364F
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 21:33:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234993AbhE0TfA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 May 2021 15:35:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33026 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235184AbhE0Tew (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 May 2021 15:34:52 -0400
-Received: from mail-yb1-xb36.google.com (mail-yb1-xb36.google.com [IPv6:2607:f8b0:4864:20::b36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 241A5C061761
-        for <linux-kernel@vger.kernel.org>; Thu, 27 May 2021 12:33:17 -0700 (PDT)
-Received: by mail-yb1-xb36.google.com with SMTP id f84so2317246ybg.0
-        for <linux-kernel@vger.kernel.org>; Thu, 27 May 2021 12:33:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=kdIhgUoE9F3zBlRjdECMCVLSlqqYp+VNMOtcyHqGSuA=;
-        b=WRYZgK2UEzOSn6SRrDIbUasTjTX6mvgxpC1gEbRSBhwjIVVJNMjLHjo5nMlKj+I90o
-         XsdYo1pdHd9lRTA8xvTVr65F2VHBF04yNmfsFvYrYUgRmf947iw7snsy3ZuKD634vvTu
-         ZcKFE2IWx7d8Nw+uKDqrSN6r278x6hAD/3w3OR/ekrwItDcARZ7gfG1vJgw+ZgfFS4bp
-         SLAUXd1wSEu8bwrCUhoNkkvI9Pc35eQFLFJX8jJFGG1DfhSHOHrGypFHjPh+/RcAh+Hz
-         xj88I49Ndz/3zbgkB3AeYuMhWdQU6MgcLiZwRBPnf+t56fxLS+ncOqcHVzx6Jw+s2/uG
-         q1ww==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=kdIhgUoE9F3zBlRjdECMCVLSlqqYp+VNMOtcyHqGSuA=;
-        b=tz+QF6iVnyRVMnlXyt9Z8ufyQs4MKI1PTRWhV9oKCYVdh/X0s+5XpTIMQ4cSKB1FO9
-         KQn5JCEWuewjbYdWGeUyfCyRKkPq97QWia+QoNws2BAiC9tGCywcqpLeE+HxbFE738/B
-         Rc5BLxYG7CvdF+QJBe8S+Gn4mfXiyUIsVjpC27G4aGZXts67famtnUuHy6js37a2bpwE
-         tJeEiVS99pIaHN56ni4x+J/dm4bI2NAQCMAeMyYJkg+vTg2a/FFL0I5mLLGi6YKOr/JL
-         YeGukFzUWUByXoFW/b5EZzY+sxsbSrSYDyfVFgY/BtQ/4t5bXQEQnJb+w+kKA3ZCCxDY
-         Jofw==
-X-Gm-Message-State: AOAM530fzIxLjYM/3tXfeQBWYCkfVUmDH+9CmINR/gO7EPtOkbymnGHH
-        m+RwEnAd4h17PifdYD4PJtJwZNei0AoqSPXU+Hw=
-X-Google-Smtp-Source: ABdhPJxWgzyUXbNj+y8XVHSiYubVfLRET5odOuf0he8XPMEXJEML7WP2IwEVwrP8CuBq+e6P58QdggQhDb3pau7NTa8=
-X-Received: by 2002:a25:7909:: with SMTP id u9mr6984300ybc.22.1622143996446;
- Thu, 27 May 2021 12:33:16 -0700 (PDT)
+        id S234786AbhE0Tev (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 May 2021 15:34:51 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54964 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234187AbhE0Ten (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 27 May 2021 15:34:43 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3F9096124B;
+        Thu, 27 May 2021 19:33:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1622143989;
+        bh=zJ0Poo9fQrYedBcdGQkfLIoW3zdHCoyHuqth3Q8U460=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=fBqzNktYq5lkaJ6Ovt+LiAroRv+Nfi1tv+dZplmLj4r8jzcpMs9JxCYFNAcP29rQl
+         ornBf/DDVN4UIxPIgPmS1JFcAm8kl59PxRoNZwvLuLHOQN4/Xnfic3ywgQU9e3m0Md
+         dSBb4PLnVyLu5TuVvIEozb/a3YDPIqbLVDKDeSRmfYXcRdyz3K7tuVsDCqvGC5ycLn
+         zvHWaUttX5Oz93Th6ZsjhWnnW67PM6CJH0Hu8HZAk1wO+XztWmy4B5vKJpjOn4z7xO
+         7T8iw8ruCSK4m0F95WE/FWArgXLbhPqwuEHjn8SRZF4KKa10w/jiTIU0sZ8E3hiaqI
+         Q3QOH+2XUeVPA==
+Date:   Thu, 27 May 2021 21:33:06 +0200
+From:   Wolfram Sang <wsa@kernel.org>
+To:     Lee Jones <lee.jones@linaro.org>
+Cc:     linux-kernel@vger.kernel.org,
+        Vaibhav Gupta <vaibhavgupta40@gmail.com>,
+        Tomoya MORINAGA <tomoya.rohm@gmail.com>,
+        linux-i2c@vger.kernel.org
+Subject: Re: [PATCH 08/16] i2c: busses: i2c-eg20t: Fix 'bad line' issue and
+ provide description for 'msgs' param
+Message-ID: <YK/z8o86kCE2ghUD@kunai>
+Mail-Followup-To: Wolfram Sang <wsa@kernel.org>,
+        Lee Jones <lee.jones@linaro.org>, linux-kernel@vger.kernel.org,
+        Vaibhav Gupta <vaibhavgupta40@gmail.com>,
+        Tomoya MORINAGA <tomoya.rohm@gmail.com>, linux-i2c@vger.kernel.org
+References: <20210520190105.3772683-1-lee.jones@linaro.org>
+ <20210520190105.3772683-9-lee.jones@linaro.org>
 MIME-Version: 1.0
-References: <20210527162655.3246381-1-elver@google.com>
-In-Reply-To: <20210527162655.3246381-1-elver@google.com>
-From:   Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
-Date:   Thu, 27 May 2021 21:33:05 +0200
-Message-ID: <CANiq72mvSkHULFVSDr6A=pv+2PUzXxzNFpjmKJGt4tJum_LEBQ@mail.gmail.com>
-Subject: Re: [PATCH v2] kcov: add __no_sanitize_coverage to fix noinstr for
- all architectures
-To:     Marco Elver <elver@google.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Miguel Ojeda <ojeda@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Kees Cook <keescook@chromium.org>,
-        Arvind Sankar <nivedita@alum.mit.edu>,
-        Will Deacon <will@kernel.org>,
-        Luc Van Oostenryck <luc.vanoostenryck@gmail.com>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Borislav Petkov <bp@suse.de>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        kasan-dev <kasan-dev@googlegroups.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="SkWKZY6NMJB/6A9i"
+Content-Disposition: inline
+In-Reply-To: <20210520190105.3772683-9-lee.jones@linaro.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 27, 2021 at 6:27 PM 'Marco Elver' via Clang Built Linux
-<clang-built-linux@googlegroups.com> wrote:
->
-> Note: In the Clang case, __has_feature(coverage_sanitizer) is only true
-> if the feature is enabled, and therefore we do not require an additional
-> defined(CONFIG_KCOV) (like in the GCC case where __has_attribute(..) is
 
-I would put this explanation as a comment.
+--SkWKZY6NMJB/6A9i
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Other than that:
+On Thu, May 20, 2021 at 08:00:57PM +0100, Lee Jones wrote:
+> Fixes the following W=3D1 kernel build warning(s):
+>=20
+>  drivers/i2c/busses/i2c-eg20t.c:151: warning: bad line:                  =
+        PCH i2c controller
+>  drivers/i2c/busses/i2c-eg20t.c:369: warning: Function parameter or membe=
+r 'msgs' not described in 'pch_i2c_writebytes'
+>=20
+> Cc: Wolfram Sang <wsa@kernel.org>
+> Cc: Vaibhav Gupta <vaibhavgupta40@gmail.com>
+> Cc: Tomoya MORINAGA <tomoya.rohm@gmail.com>
+> Cc: linux-i2c@vger.kernel.org
+> Signed-off-by: Lee Jones <lee.jones@linaro.org>
 
-    Reviewed-by: Miguel Ojeda <ojeda@kernel.org>
+Applied to for-current, thanks!
 
-Thanks!
 
-Cheers,
-Miguel
+--SkWKZY6NMJB/6A9i
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmCv8/IACgkQFA3kzBSg
+KbY9Fg/+LB64xvDNkWPopQnwtPnu91na9S6Z+CmtnCs9AUsIgOZApaOj+r8buupF
+NAEPWtbFKoWGIItskoQQA9MgPXv1ahGaCcH4vqOky0mfC+B0PJ6wuXnLEMXKySyA
+Lz1akDTvgwLsYnbhr2xlzMvcBzV8OAfIDPza8o7W/uj9FTgBuJsr8fyhnDgx7YmB
+yvQnZqwTdE/wM88tb+/DvDji1DO7+vDCKbc7/plmOv9VdTSdKQLeo3tzOGUlmsqW
+aqKsGZg/5JPTEOEpttOR6pCtEUix26Ub/+bWCznxsZPmnN5MfD/ofUH/97Bavwld
+oAmnosEa9EPO8X+MCcoFNidNbwx0aEc6VTnlxSlQYWLlTSkjINep1hO8VNPrTwvX
+/4GEO1msnFKoTuFDqwjLhBnp4LhNxfhFP2IDLyfWKdoFkEh8VVLS/TxHdszPbnpE
+W5ieFulOqcQaENdxb/tggSq/k1k6OrRDwVzeW4FpqRuWBNA13BqPKmk6Wc26y507
+0R4dR0l376VilwS0udrAkrVX6m6FhysZlXr1lMLnZPfCLYsvv5oxijrC8OEWau9r
+8xxNcb/KU6rnEpQ4HOXDejo9vCE6aG7ZF3gIbVudKXpeMKgh6FCt/S/DdK60K6l0
+ca6VmgA5f5n0Qeo8LhS5BHgBXYV3m7NllptAKVjqJcn+aVKNIzY=
+=SNeE
+-----END PGP SIGNATURE-----
+
+--SkWKZY6NMJB/6A9i--
