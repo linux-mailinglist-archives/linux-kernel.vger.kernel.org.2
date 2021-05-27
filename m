@@ -2,125 +2,210 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A76D1392450
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 03:28:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1861739244D
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 03:28:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234511AbhE0B37 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 May 2021 21:29:59 -0400
-Received: from new4-smtp.messagingengine.com ([66.111.4.230]:55313 "EHLO
-        new4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232861AbhE0B36 (ORCPT
+        id S234432AbhE0B3r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 May 2021 21:29:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40998 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232861AbhE0B3o (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 May 2021 21:29:58 -0400
-Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
-        by mailnew.nyi.internal (Postfix) with ESMTP id CC55C5805E5;
-        Wed, 26 May 2021 21:28:25 -0400 (EDT)
-Received: from imap2 ([10.202.2.52])
-  by compute3.internal (MEProxy); Wed, 26 May 2021 21:28:25 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=aj.id.au; h=
-        mime-version:message-id:in-reply-to:references:date:from:to:cc
-        :subject:content-type; s=fm2; bh=QugCToE2oD/Akw5181hdEz10jkbZriJ
-        +fq6eWbXxrco=; b=ShbfusHb2jQRdrZ4WtIJPdk34pieGO5nJI88/AnOM1NrEXH
-        mxxVr739gJoOcnpgcIfvGpavhJ/rzH5ynFWmziD7Sdd9QEM60CPQUyjthUscd+Ao
-        g5WJHjn6UVVrks0qs9h75p03IhEKNRhQBJ0zw8tRsbazhaNPG1ZwSVefr7WRPzAW
-        ZkcOtX4oAIa/YJEm+VlRkaMtu12mZ+XDUXgUeUdzMWVp8Qudidqs96dHp7wbqfEG
-        +mg7nDDE6CUP16N1GN9fjteKN0LKbEF1UM55izrJ0MWAOFDmMza5gjQm7BPkaOIz
-        7WxeK756xHVS3X9Z4A4UYzMXy+gvOiahEztNz0w==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=QugCTo
-        E2oD/Akw5181hdEz10jkbZriJ+fq6eWbXxrco=; b=O57hhZ27gBq5/8Pf+kfZwf
-        jyReChV75Usqb3IXGA4x7xP0PjN8Pam0CeyWMpwQpfx4VVh3ImlSE8SscUfxL0lJ
-        y3lhjSqS4O8Pk1m3zOZfvACCp7teGQzQcFl6QvRGaV5TVoMO2oXJnh20dhuRG8WZ
-        71DlFvD5NyQm/KtqrB1FA/MRnFFEcOYxzi5aOcGy2Wot8fWYBaMcgRL01usYPPEP
-        H7fBf+LKAZD71mnTOogNJ/1J3B4qWkBgQnRzLX46S55WOj/AnWI6S1lYhUqCl6YD
-        g1GkfnW5JmVq5e01VQLU8nXHQJrgdcliH852k2RN4gRrW4MvGiF1qwFIBliHJrSQ
-        ==
-X-ME-Sender: <xms:uPWuYNHXi0w5BmP6bqSOUeJdgJmJfG3ad_39EYd0YiWrCU96h1ux1w>
-    <xme:uPWuYCXGErZGIn27dshwhB1wPARFBNMq0Ap4Xd3WMbm7WIkrnh05SkxUq9eP5FhV9
-    Hl_iQP0o8DQqLpB1w>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrvdekgedggeegucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepofgfggfkjghffffhvffutgesthdtredtreertdenucfhrhhomhepfdetnhgu
-    rhgvficulfgvfhhfvghrhidfuceorghnughrvgifsegrjhdrihgurdgruheqnecuggftrf
-    grthhtvghrnhephefhfeekgfekudevheffheeihedujeefjeevjeefudfgfeeutdeuvdeh
-    hfevueffnecuvehluhhsthgvrhfuihiivgepudenucfrrghrrghmpehmrghilhhfrhhomh
-    eprghnughrvgifsegrjhdrihgurdgruh
-X-ME-Proxy: <xmx:uPWuYPLzfxsxLkof8NqAH2S60FJeAH8qnHWK6hzsG2oRqy7krdAPcQ>
-    <xmx:uPWuYDG2oa7wYPYiL8emwsggs7nfOWUwmkWVlLMi6GU2nWUNceeoJw>
-    <xmx:uPWuYDVd-lNbSJ6WxC63lZTbrktc-ZAuUMmPmx4gA7UXj3cL7F4rdA>
-    <xmx:ufWuYMOmtvPVzk96d2q2vndB3wP1QUwRzovt1Xqq4u3qaf-6ohPurQ>
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-        id 7D234A00079; Wed, 26 May 2021 21:28:24 -0400 (EDT)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.5.0-alpha0-468-gdb53729b73-fm-20210517.001-gdb53729b
-Mime-Version: 1.0
-Message-Id: <69b31043-957c-40af-9ab9-6bcc63ccdc85@www.fastmail.com>
-In-Reply-To: <20210526094609.14068-3-steven_lee@aspeedtech.com>
-References: <20210526094609.14068-1-steven_lee@aspeedtech.com>
- <20210526094609.14068-3-steven_lee@aspeedtech.com>
-Date:   Thu, 27 May 2021 10:57:43 +0930
-From:   "Andrew Jeffery" <andrew@aj.id.au>
-To:     "Steven Lee" <steven_lee@aspeedtech.com>,
-        "Linus Walleij" <linus.walleij@linaro.org>,
-        "Bartosz Golaszewski" <bgolaszewski@baylibre.com>,
-        "Rob Herring" <robh+dt@kernel.org>,
-        "Joel Stanley" <joel@jms.id.au>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        "moderated list:ARM/ASPEED MACHINE SUPPORT" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "moderated list:ARM/ASPEED MACHINE SUPPORT" 
-        <linux-aspeed@lists.ozlabs.org>,
-        "open list" <linux-kernel@vger.kernel.org>
-Cc:     "Hongwei Zhang" <Hongweiz@ami.com>,
-        "Ryan Chen" <ryan_chen@aspeedtech.com>,
-        "Billy Tsai" <billy_tsai@aspeedtech.com>
-Subject: Re: [PATCH v1 2/4] ARM: dts: aspeed-g6: Add SGPIO node.
-Content-Type: text/plain
+        Wed, 26 May 2021 21:29:44 -0400
+Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D24E1C061574;
+        Wed, 26 May 2021 18:28:11 -0700 (PDT)
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: ezequiel)
+        with ESMTPSA id BDB741F435B1
+Message-ID: <4fadcb3d33beadb113e0e41596e5255d0d8d08dd.camel@collabora.com>
+Subject: Re: [PATCH 05/10] media: hantro: add support for Rockchip RK3036
+From:   Ezequiel Garcia <ezequiel@collabora.com>
+To:     Heiko =?ISO-8859-1?Q?St=FCbner?= <heiko@sntech.de>,
+        Alex Bee <knaerzche@gmail.com>
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        linux-staging@lists.linux.dev, Rob Herring <robh+dt@kernel.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-media@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Lee Jones <lee.jones@linaro.org>, devicetree@vger.kernel.org,
+        linux-rockchip@lists.infradead.org
+Date:   Wed, 26 May 2021 22:27:55 -0300
+In-Reply-To: <3559518.1BCLMh4Saa@diego>
+References: <20210525152225.154302-1-knaerzche@gmail.com>
+         <b65236f3b8bbf35411b536df8b260d9f8a9dbd80.camel@collabora.com>
+         <2640d65e-772b-6af4-f4be-8ed090693c22@gmail.com> <3559518.1BCLMh4Saa@diego>
+Organization: Collabora
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.38.2-1 
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Steven,
-
-On Wed, 26 May 2021, at 19:16, Steven Lee wrote:
-> AST2600 supports 2 SGPIO master interfaces one with 128 pins another one
-> with 80 pins.
-
-Is there any chance the serial GPIO controllers can be explicitly 
-listed in the Memory Space Allocation Table of the datasheet? Currently 
-they're covered by the entry for "GPIO Controller (Parallel GPIO)" 
-which is listed as ranging from 0x1e780000-0x1e7807ff.
-
-Admittedly the details are listed in chapter 41 for the GPIO 
-Controller, but it would be handy to not have to dig.
-
+On Thu, 2021-05-27 at 01:58 +0200, Heiko Stübner wrote:
+> Am Donnerstag, 27. Mai 2021, 01:27:59 CEST schrieb Alex Bee:
+> > Hi Ezequiel,
+> > 
+> > Am 26.05.21 um 12:28 schrieb Ezequiel Garcia:
+> > > Hi Alex,
+> > > 
+> > > Thanks a lot for the patch.
+> > > 
+> > > On Tue, 2021-05-25 at 17:22 +0200, Alex Bee wrote:
+> > > > RK3036's VPU IP block is the same as RK3288 has, except that it doesn't
+> > > > have an encoder, decoding is supported up to 1920x1088 only and the axi
+> > > > clock can be set to 300 MHz max.
+> > > > 
+> > > > Add a new RK3036 variant which reflect this differences.
+> > > > 
+> > > > Signed-off-by: Alex Bee <knaerzche@gmail.com>
+> > > > ---
+> > > >   drivers/staging/media/hantro/hantro_drv.c    |  1 +
+> > > >   drivers/staging/media/hantro/hantro_hw.h     |  1 +
+> > > >   drivers/staging/media/hantro/rk3288_vpu_hw.c | 49 ++++++++++++++++++++
+> > > >   3 files changed, 51 insertions(+)
+> > > > 
+> > > > diff --git a/drivers/staging/media/hantro/hantro_drv.c b/drivers/staging/media/hantro/hantro_drv.c
+> > > > index 38ea7b24036e..4f3c08e85bb8 100644
+> > > > --- a/drivers/staging/media/hantro/hantro_drv.c
+> > > > +++ b/drivers/staging/media/hantro/hantro_drv.c
+> > > > @@ -490,6 +490,7 @@ static const struct of_device_id of_hantro_match[] = {
+> > > >          { .compatible = "rockchip,rk3328-vpu", .data = &rk3328_vpu_variant, },
+> > > >          { .compatible = "rockchip,rk3288-vpu", .data = &rk3288_vpu_variant, },
+> > > >          { .compatible = "rockchip,rk3066-vpu", .data = &rk3066_vpu_variant, },
+> > > > +       { .compatible = "rockchip,rk3036-vpu", .data = &rk3036_vpu_variant, },
+> > > >   #endif
+> > > >   #ifdef CONFIG_VIDEO_HANTRO_IMX8M
+> > > >          { .compatible = "nxp,imx8mq-vpu", .data = &imx8mq_vpu_variant, },
+> > > > diff --git a/drivers/staging/media/hantro/hantro_hw.h b/drivers/staging/media/hantro/hantro_hw.h
+> > > > index de2bc367a15a..d8d6b0d3c3b3 100644
+> > > > --- a/drivers/staging/media/hantro/hantro_hw.h
+> > > > +++ b/drivers/staging/media/hantro/hantro_hw.h
+> > > > @@ -164,6 +164,7 @@ extern const struct hantro_variant rk3399_vpu_variant;
+> > > >   extern const struct hantro_variant rk3328_vpu_variant;
+> > > >   extern const struct hantro_variant rk3288_vpu_variant;
+> > > >   extern const struct hantro_variant rk3066_vpu_variant;
+> > > > +extern const struct hantro_variant rk3036_vpu_variant;
+> > > >   extern const struct hantro_variant imx8mq_vpu_variant;
+> > > >   extern const struct hantro_variant sama5d4_vdec_variant;
+> > > >   
+> > > > diff --git a/drivers/staging/media/hantro/rk3288_vpu_hw.c b/drivers/staging/media/hantro/rk3288_vpu_hw.c
+> > > > index 29805c4bd92f..c4684df4e012 100644
+> > > > --- a/drivers/staging/media/hantro/rk3288_vpu_hw.c
+> > > > +++ b/drivers/staging/media/hantro/rk3288_vpu_hw.c
+> > > > @@ -174,6 +174,13 @@ static irqreturn_t rk3288_vepu_irq(int irq, void *dev_id)
+> > > >          return IRQ_HANDLED;
+> > > >   }
+> > > >   
+> > > > +static int rk3036_vpu_hw_init(struct hantro_dev *vpu)
+> > > > +{
+> > > > +       /* Bump ACLKs to max. possible freq. to improve performance. */
+> > > > +       clk_set_rate(vpu->clocks[0].clk, RK3066_ACLK_MAX_FREQ);
+> > > > +       return 0;
+> > > > +}
+> > > > +
+> > > >   static int rk3066_vpu_hw_init(struct hantro_dev *vpu)
+> > > >   {
+> > > >          /* Bump ACLKs to max. possible freq. to improve performance. */
+> > > > @@ -209,6 +216,27 @@ static void rk3288_vpu_enc_reset(struct hantro_ctx *ctx)
+> > > >   /*
+> > > >    * Supported codec ops.
+> > > >    */
+> > > > +static const struct hantro_codec_ops rk3036_vpu_codec_ops[] = {
+> > > > +       [HANTRO_MODE_H264_DEC] = {
+> > > > +               .run = hantro_g1_h264_dec_run,
+> > > > +               .reset = hantro_g1_reset,
+> > > > +               .init = hantro_h264_dec_init,
+> > > > +               .exit = hantro_h264_dec_exit,
+> > > > +       },
+> > > > +       [HANTRO_MODE_MPEG2_DEC] = {
+> > > > +               .run = hantro_g1_mpeg2_dec_run,
+> > > > +               .reset = hantro_g1_reset,
+> > > > +               .init = hantro_mpeg2_dec_init,
+> > > > +               .exit = hantro_mpeg2_dec_exit,
+> > > > +       },
+> > > > +       [HANTRO_MODE_VP8_DEC] = {
+> > > > +               .run = hantro_g1_vp8_dec_run,
+> > > > +               .reset = hantro_g1_reset,
+> > > > +               .init = hantro_vp8_dec_init,
+> > > > +               .exit = hantro_vp8_dec_exit,
+> > > > +       },
+> > > > +};
+> > > > +
+> > > >   static const struct hantro_codec_ops rk3066_vpu_codec_ops[] = {
+> > > >          [HANTRO_MODE_JPEG_ENC] = {
+> > > >                  .run = hantro_h1_jpeg_enc_run,
+> > > > @@ -269,6 +297,10 @@ static const struct hantro_codec_ops rk3288_vpu_codec_ops[] = {
+> > > >    * VPU variant.
+> > > >    */
+> > > >   
+> > > > +static const struct hantro_irq rk3036_irqs[] = {
+> > > > +       { "vdpu", hantro_g1_irq },
+> > > > +};
+> > > > +
+> > > >   static const struct hantro_irq rk3288_irqs[] = {
+> > > >          { "vepu", rk3288_vepu_irq },
+> > > >          { "vdpu", hantro_g1_irq },
+> > > > @@ -283,6 +315,23 @@ static const char * const rk3288_clk_names[] = {
+> > > >          "aclk", "hclk"
+> > > >   };
+> > > >   
+> > > > +const struct hantro_variant rk3036_vpu_variant = {
+> > > > +       .dec_offset = 0x400,
+> > > If it doesn't have an encoder, then you should just
+> > > use dec_offset = 0x0.
+> > > 
+> > > Thanks,
+> > > Ezequiel
+> > > 
+> > That would mean, I'd have to adapt the register offset in the device 
+> > tree - I'd prefer to keep it in line with the TRM. Unless you insist, 
+> > I'd like to keep it this way (It's , btw, the very same for RK3328).
 > 
-> Signed-off-by: Steven Lee <steven_lee@aspeedtech.com>
-> ---
->  arch/arm/boot/dts/aspeed-g6.dtsi | 32 ++++++++++++++++++++++++++++++++
->  1 file changed, 32 insertions(+)
+> I'd agree with Alex ... ideally the devicetree should match the block
+> register area from the TRM not some internal offset.
+> [DT describes hardware etc etc ;-) ]
 > 
-> diff --git a/arch/arm/boot/dts/aspeed-g6.dtsi b/arch/arm/boot/dts/aspeed-g6.dtsi
-> index f96607b7b4e2..556ce9535c22 100644
-> --- a/arch/arm/boot/dts/aspeed-g6.dtsi
-> +++ b/arch/arm/boot/dts/aspeed-g6.dtsi
-> @@ -377,6 +377,38 @@
->  				#interrupt-cells = <2>;
->  			};
->  
-> +			sgpiom0: sgpiom@1e780500 {
-> +				#gpio-cells = <2>;
-> +				gpio-controller;
-> +				compatible = "aspeed,ast2600-sgpiom";
-> +				reg = <0x1e780500 0x100>;
-> +				interrupts = <GIC_SPI 51 IRQ_TYPE_LEVEL_HIGH>;
-> +				max-ngpios = <128>;
 
-I need to think more about this one.
+Well, I've always considered this internal offset as something unfortunate
+we didn't do well when we upstreamed RK3288.
 
-Andrew
+The RK3288 TRM documents a so-called "VPU combo", and then documents
+the encoder and the decoder cores as separate engines, with
+separate register blocks (called VEPU and VDPU). In fact, for each
+register block you'll see swreg0 documented at offset 0x0.
+
+(In some integrations they can operate independently, but iirc not in RK3288.)
+
+So to be clear, instead of:
+
+        vpu: video-codec@ff9a0000 {
+                compatible = "rockchip,rk3288-vpu";
+                reg = <0x0 0xff9a0000 0x0 0x800>;
+                interrupts = <GIC_SPI 9 IRQ_TYPE_LEVEL_HIGH>,
+                             <GIC_SPI 10 IRQ_TYPE_LEVEL_HIGH>;
+                interrupt-names = "vepu", "vdpu";
+                clocks = <&cru ACLK_VCODEC>, <&cru HCLK_VCODEC>;
+                clock-names = "aclk", "hclk";
+                ...
+
+It could have looked like:
+
+        vpu: video-codec@ff9a0000 {
+                compatible = "rockchip,rk3288-vpu";
+                reg = <0x0 0xff9a0000 0x0 0x400>
+                      <0x0 0xff9a0400 0x0 0x400>;
+                ...
+
+I guess I missed this when RK3328 was pushed, but OTOH I don't
+see any real impact in doing things this way. So at the end
+of the day, I'm fine either way.
+
+BTW, the series is not adding the vpu node for arch/arm/boot/dts/rk3036.dtsi right?
+
+Thanks a lot!
+Ezequiel
+
