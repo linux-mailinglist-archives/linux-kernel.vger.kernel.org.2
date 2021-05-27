@@ -2,93 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 09F1E392A3D
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 11:05:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2755D392A44
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 11:09:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235682AbhE0JGw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 May 2021 05:06:52 -0400
-Received: from szxga02-in.huawei.com ([45.249.212.188]:2498 "EHLO
-        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235537AbhE0JGt (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 May 2021 05:06:49 -0400
-Received: from dggeml757-chm.china.huawei.com (unknown [172.30.72.53])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4FrMK64zXrzYqSk;
-        Thu, 27 May 2021 17:02:34 +0800 (CST)
-Received: from dggemi762-chm.china.huawei.com (10.1.198.148) by
- dggeml757-chm.china.huawei.com (10.1.199.137) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2176.2; Thu, 27 May 2021 17:05:14 +0800
-Received: from [10.174.178.208] (10.174.178.208) by
- dggemi762-chm.china.huawei.com (10.1.198.148) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2176.2; Thu, 27 May 2021 17:05:14 +0800
-Subject: Re: Linux 4.19.192
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        <linux-kernel@vger.kernel.org>, <akpm@linux-foundation.org>,
-        <torvalds@linux-foundation.org>, <stable@vger.kernel.org>
-CC:     <lwn@lwn.net>, <jslaby@suse.cz>
-References: <1622029720223218@kroah.com>
-From:   Samuel Zou <zou_wei@huawei.com>
-Message-ID: <82d9c37c-6fb5-45dd-00aa-f4da6e917763@huawei.com>
-Date:   Thu, 27 May 2021 17:05:13 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        id S235603AbhE0JK7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 May 2021 05:10:59 -0400
+Received: from muru.com ([72.249.23.125]:60950 "EHLO muru.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235475AbhE0JK6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 27 May 2021 05:10:58 -0400
+Received: from atomide.com (localhost [127.0.0.1])
+        by muru.com (Postfix) with ESMTPS id F289180A8;
+        Thu, 27 May 2021 09:09:29 +0000 (UTC)
+Date:   Thu, 27 May 2021 12:09:21 +0300
+From:   Tony Lindgren <tony@atomide.com>
+To:     Grygorii Strashko <grygorii.strashko@ti.com>
+Cc:     Gowtham Tammana <g-tammana@ti.com>, Suman Anna <s-anna@ti.com>,
+        bcousson@baylibre.com, robh+dt@kernel.org,
+        linux-omap@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        Nisanth Menon <nm@ti.com>
+Subject: Re: [PATCH v3] ARM: dts: dra7: Fix duplicate USB4 target module node
+Message-ID: <YK9hwV8DaC+d4OvV@atomide.com>
+References: <20210526213035.15448-1-g-tammana@ti.com>
+ <YK8ykeNA9AsjB89I@atomide.com>
+ <bd903d6a-2894-fc39-e431-5dfed04a3604@ti.com>
 MIME-Version: 1.0
-In-Reply-To: <1622029720223218@kroah.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.178.208]
-X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
- dggemi762-chm.china.huawei.com (10.1.198.148)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <bd903d6a-2894-fc39-e431-5dfed04a3604@ti.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 2021/5/26 19:48, Greg Kroah-Hartman wrote:
-> I'm announcing the release of the 4.19.192 kernel.
+* Grygorii Strashko <grygorii.strashko@ti.com> [210527 09:03]:
+> On 27/05/2021 08:48, Tony Lindgren wrote:
+> > But let's keep the target-module@140000 here as it puts it in the right
+> > location rather than directly on the ocp. Let's mark it with
+> > status = "disabled" in dra7-l4.dtsi, and add a comment noting it's only
+> > available on dra74x. So similar to what you had in your v1 patch, except
+> > disabled.
 > 
-> All users of the 4.19 kernel series must upgrade.
+> My preference would be not to mix SoC variant specific modules in common module,
+> and fix dra74x instead by placing usb4 node in proper place:
 > 
-> The updated 4.19.y git tree can be found at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable.git linux-4.19.y
-> and can be browsed at the normal kernel.org git web browser:
-> 	https://git.kernel.org/?p=linux/kernel/git/stable/linux-stable.git;a=summary
-> 
-> thanks,
-> 
-> greg k-h
-> 
+> &l4_per3 {						/* 0x48800000 */
+> 	segment@0 {	
+> -->
 
-Tested on arm64 and x86 for 4.19.192,
+Yeah that's even better, and leaves out status = "disabled".
+Sounds good to me.
 
-Kernel repo:
-https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
-Branch: linux-4.19.y
-Version: 4.19.192
-Commit: 6b7b0056defc6eb5c87bbe4690ccda547b2891aa
-Compiler: gcc version 7.3.0 (GCC)
+Regards,
 
-arm64:
---------------------------------------------------------------------
-Testcase Result Summary:
-total: 8855
-passed: 8855
-failed: 0
-timeout: 0
---------------------------------------------------------------------
-
-x86:
---------------------------------------------------------------------
-Testcase Result Summary:
-total: 8855
-passed: 8855
-failed: 0
-timeout: 0
---------------------------------------------------------------------
-
-Tested-by: Hulk Robot <hulkrobot@huawei.com>
+Tony
