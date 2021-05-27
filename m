@@ -2,45 +2,46 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A12C6392762
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 08:24:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7308939278A
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 08:26:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234845AbhE0G00 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 May 2021 02:26:26 -0400
-Received: from mx2.suse.de ([195.135.220.15]:59836 "EHLO mx2.suse.de"
+        id S235119AbhE0G2S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 May 2021 02:28:18 -0400
+Received: from mx2.suse.de ([195.135.220.15]:60922 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234725AbhE0G0U (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 May 2021 02:26:20 -0400
+        id S235117AbhE0G1p (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 27 May 2021 02:27:45 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1622096687; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+        t=1622096772; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=/Hag+eiNxG+wHXswAIXAdLaiio4cGsuWUJhVb8BY4+4=;
-        b=SHEmvyfx10zb3lcMILinaR1C2yX/Fh6gwP4ugMZJq+oQsfy29Fi4Ibmr/YC5tCFyigmaSj
-        tIHwaqK0BHj+6GjznJKTpF3Cphy9iLN+fd/V0qLh5byNXjT5qAD6qAg7F/6M5NV/jKroVU
-        aEb5lfyEoNMsP2jtPBUI05TyQOy+J2g=
+        bh=EHhBGYAVvr1rmhh8IHHDQcMfJJfDKceXHtgD4YyEFsw=;
+        b=cg8UG8PtQRdBxN3WZK3BG9bMokXnE9sJR3XnOnvP9vOlee1t8AdYI85y/xV8iop0tKdeg3
+        dZsk+Qlhhc1eGHQl11Ror/RZF6HRxLqK4tSTpxnYMPCey1/aUMIm8ixO6vl826/43hcSwy
+        4AFXpB5rvkLbhVVq3oqhhh7jcGLQ+CE=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1622096687;
+        s=susede2_ed25519; t=1622096772;
         h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=/Hag+eiNxG+wHXswAIXAdLaiio4cGsuWUJhVb8BY4+4=;
-        b=1F73jrjK50VQAX3Fb7DNdQAocl6C5ad4fbGTSlH2iqCbzPER2ZbXphCkIk+xBL2xOjqFF8
-        oKhIMMch6pLKzEBw==
+        bh=EHhBGYAVvr1rmhh8IHHDQcMfJJfDKceXHtgD4YyEFsw=;
+        b=Pqq2MrMqAu8QXsNDhDaSRqtuEymPcw8SfcZkOa6L414QCTjKxphxI7s9zbRow/j78bcYUd
+        4xnwLHnn39yGQUCQ==
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 390B4AC85;
-        Thu, 27 May 2021 06:24:47 +0000 (UTC)
-Date:   Thu, 27 May 2021 08:24:46 +0200
-Message-ID: <s5hk0nk8zip.wl-tiwai@suse.de>
+        by mx2.suse.de (Postfix) with ESMTP id 22126AAA6;
+        Thu, 27 May 2021 06:26:12 +0000 (UTC)
+Date:   Thu, 27 May 2021 08:26:12 +0200
+Message-ID: <s5hfsy88zgb.wl-tiwai@suse.de>
 From:   Takashi Iwai <tiwai@suse.de>
-To:     zuoqilin1@163.com
-Cc:     perex@perex.cz, tiwai@suse.com, joe@perches.com,
-        gustavoars@kernel.org, alsa-devel@alsa-project.org,
-        linux-kernel@vger.kernel.org, zuoqilin <zuoqilin@yulong.com>
-Subject: Re: [PATCH] sound/oss/dmasound: Remove superfluous "break"
-In-Reply-To: <20210527030445.1201-1-zuoqilin1@163.com>
-References: <20210527030445.1201-1-zuoqilin1@163.com>
+To:     Colin King <colin.king@canonical.com>
+Cc:     Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
+        Connor McAdams <conmanx360@gmail.com>,
+        alsa-devel@alsa-project.org, kernel-janitors@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH][next] ALSA: hda/ca0132: Make a const array static, makes object smaller
+In-Reply-To: <20210526160616.3764119-1-colin.king@canonical.com>
+References: <20210526160616.3764119-1-colin.king@canonical.com>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
  FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
  (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
@@ -50,14 +51,25 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 27 May 2021 05:04:45 +0200,
-zuoqilin1@163.com wrote:
+On Wed, 26 May 2021 18:06:16 +0200,
+Colin King wrote:
 > 
-> From: zuoqilin <zuoqilin@yulong.com>
+> From: Colin Ian King <colin.king@canonical.com>
 > 
-> Remove superfluous "break", as there is a "return" before them.
+> Don't populate the const array dsp_dma_stream_ids the stack but instead
+> make it static. Makes the object code smaller by 21 bytes.
 > 
-> Signed-off-by: zuoqilin <zuoqilin@yulong.com>
+> Before:
+>    text    data     bss     dec     hex filename
+>  189012   70376     192  259580   3f5fc ./sound/pci/hda/patch_ca0132.o
+> 
+> After:
+>    text    data     bss     dec     hex filename
+>  188927   70440     192  259559   3f5e7 ./sound/pci/hda/patch_ca0132.o
+> 
+> (gcc version 10.3.0)
+> 
+> Signed-off-by: Colin Ian King <colin.king@canonical.com>
 
 Thanks, applied.
 
