@@ -2,73 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B4DBA3927FE
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 08:48:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A74A8392801
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 08:49:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234071AbhE0GuD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 May 2021 02:50:03 -0400
-Received: from smtprelay0200.hostedemail.com ([216.40.44.200]:52220 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S229635AbhE0GuA (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 May 2021 02:50:00 -0400
-Received: from omf08.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay03.hostedemail.com (Postfix) with ESMTP id 45192837F24D;
-        Thu, 27 May 2021 06:48:25 +0000 (UTC)
-Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by omf08.hostedemail.com (Postfix) with ESMTPA id 2D8471A29F9;
-        Thu, 27 May 2021 06:48:23 +0000 (UTC)
-Message-ID: <39c5f5ea0367aa3bcfecc8c0ff2d6bb84f927d0c.camel@perches.com>
-Subject: Re: [PATCH v2] media: v4l2-ioctl: deleted the repeated word 'the'
- in the comments
-From:   Joe Perches <joe@perches.com>
-To:     lijian_8010a29@163.com, mchehab@kernel.org,
-        hverkuil-cisco@xs4all.nl, laurent.pinchart@ideasonboard.com,
-        arnd@arndb.de, sakari.ailus@linux.intel.com,
-        sergey.senozhatsky@gmail.com, gustavoars@kernel.org,
-        yepeilin.cs@gmail.com
-Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        lijian <lijian@yulong.com>
-Date:   Wed, 26 May 2021 23:48:21 -0700
-In-Reply-To: <20210527064107.149950-1-lijian_8010a29@163.com>
-References: <20210527064107.149950-1-lijian_8010a29@163.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.38.1-1 
+        id S234466AbhE0GvG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 May 2021 02:51:06 -0400
+Received: from mga02.intel.com ([134.134.136.20]:29272 "EHLO mga02.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229635AbhE0GvE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 27 May 2021 02:51:04 -0400
+IronPort-SDR: JXnUHM/qNB1gHTDYhRx7oCrE2R/totQ9B/YK4Rcd8vyEX1+fCDzo6JZ/pXYuRssC7ZvUJr0r63
+ LsVR8FM0aPvg==
+X-IronPort-AV: E=McAfee;i="6200,9189,9996"; a="189783144"
+X-IronPort-AV: E=Sophos;i="5.82,334,1613462400"; 
+   d="scan'208";a="189783144"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 May 2021 23:49:31 -0700
+IronPort-SDR: JfprkGlafku4ogdusz3p4L1MW8Y58pPf0ZTIzntLxSROntVCtCRzbr6y4tBl0Vz5h0mJ6W04SU
+ DVSs3ObhFQBw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.82,334,1613462400"; 
+   d="scan'208";a="477353474"
+Received: from unknown (HELO [10.239.154.58]) ([10.239.154.58])
+  by orsmga001.jf.intel.com with ESMTP; 26 May 2021 23:49:26 -0700
+Subject: Re: [PATCH v10] i2c: virtio: add a virtio i2c frontend driver
+To:     Wolfram Sang <wsa@kernel.org>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Linux I2C <linux-i2c@vger.kernel.org>,
+        virtualization@lists.linux-foundation.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        conghui.chen@intel.com, kblaiech@mellanox.com,
+        jarkko.nikula@linux.intel.com,
+        Sergey Semin <Sergey.Semin@baikalelectronics.ru>,
+        Mike Rapoport <rppt@kernel.org>, loic.poulain@linaro.org,
+        Tali Perry <tali.perry1@gmail.com>,
+        =?UTF-8?Q?Uwe_Kleine-K=c3=b6nig?= <u.kleine-koenig@pengutronix.de>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        yu1.wang@intel.com, shuo.a.liu@intel.com,
+        Stefan Hajnoczi <stefanha@redhat.com>
+References: <226a8d5663b7bb6f5d06ede7701eedb18d1bafa1.1616493817.git.jie.deng@intel.com>
+ <20210323072704.rgoelmq62fl2wjjf@vireshk-i7>
+ <a2994a8f-bbf9-b26f-a9d2-eb02df6623b8@intel.com>
+ <CAK8P3a3OBUZC2nxaQ2wyL9EeT3gzXUX9sfJ+ZJfJUiJK_3ZkrA@mail.gmail.com>
+ <20210415064538.a4vf7egk6l3u6zfz@vireshk-i7>
+ <b25d1f4e-f17f-8a14-e7e6-7577d25be877@intel.com>
+ <20210415072131.GA1006@kunai> <20210415072431.apntpcwrk5hp6zg4@vireshk-i7>
+ <20210415072823.GB1006@kunai>
+ <6849a8f0-204a-362a-ed97-e910065ab14f@intel.com>
+ <20210415081828.GD1006@kunai>
+From:   Jie Deng <jie.deng@intel.com>
+Message-ID: <e6523755-b0ac-c31f-d640-dd016fb8eff1@intel.com>
+Date:   Thu, 27 May 2021 14:49:25 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Firefox/78.0 Thunderbird/78.10.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=4.05
-X-Stat-Signature: 9f4z4j7akjbgmatq33dcqtweahpg6mmx
-X-Rspamd-Server: rspamout04
-X-Rspamd-Queue-Id: 2D8471A29F9
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Session-ID: U2FsdGVkX1+A5bVFSabqaHqE6UkBRL+DfXfEtKKt0AY=
-X-HE-Tag: 1622098103-576085
+In-Reply-To: <20210415081828.GD1006@kunai>
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 2021-05-27 at 14:41 +0800, lijian_8010a29@163.com wrote:
-> From: lijian <lijian@yulong.com>
-> 
-> deleted the repeated word 'the' in the comments of function
-> v4l_sanitize_format()
 
-Please update the suggested commit log message too as it
-doesn't match the patch.
+On 2021/4/15 16:18, Wolfram Sang wrote:
+> On Thu, Apr 15, 2021 at 04:15:07PM +0800, Jie Deng wrote:
+>> On 2021/4/15 15:28, Wolfram Sang wrote:
+>>
+>>>> Now that we were able to catch you, I will use the opportunity to
+>>>> clarify the doubts I had.
+>>>>
+>>>> - struct mutex lock in struct virtio_i2c, I don't think this is
+>>>>     required since the core takes care of locking in absence of this.
+>>> This is likely correct.
+>> OK. Then I will remove the lock.
+> Let me have a look first, please.
 
-> ---
-> v2: changed the repeated word 'the' to 'that' in the comments of
-> function v4l_sanitize_format()
-[]
-> diff --git a/drivers/media/v4l2-core/v4l2-ioctl.c b/drivers/media/v4l2-core/v4l2-ioctl.c
-[]
-> @@ -999,7 +999,7 @@ static void v4l_sanitize_format(struct v4l2_format *fmt)
->  	/*
->  	 * The v4l2_pix_format structure has been extended with fields that were
->  	 * not previously required to be set to zero by applications. The priv
-> -	 * field, when set to a magic value, indicates the extended fields
-> +	 * field, when set to a magic value, indicates that the extended fields
->  	 * are valid. Otherwise they will contain undefined values. To simplify
->  	 * the API towards drivers zero the extended fields and set the priv
->  	 * field to the magic value when the extended pixel format structure
+
+Hi Wolfram,
+
+I didn't receive your feedback yet. Do you have any more comments ?
+
+Thanks.
 
 
