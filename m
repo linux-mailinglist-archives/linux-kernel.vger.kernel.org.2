@@ -2,476 +2,188 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A8023923F0
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 02:55:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D4B103923F1
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 02:55:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235018AbhE0A46 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 May 2021 20:56:58 -0400
-Received: from twspam01.aspeedtech.com ([211.20.114.71]:19947 "EHLO
-        twspam01.aspeedtech.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235021AbhE0A44 (ORCPT
+        id S235075AbhE0A5E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 May 2021 20:57:04 -0400
+Received: from mx0a-00069f02.pphosted.com ([205.220.165.32]:27934 "EHLO
+        mx0a-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235024AbhE0A47 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 May 2021 20:56:56 -0400
-Received: from mail.aspeedtech.com ([192.168.0.24])
-        by twspam01.aspeedtech.com with ESMTP id 14R0g0So067386;
-        Thu, 27 May 2021 08:42:00 +0800 (GMT-8)
-        (envelope-from steven_lee@aspeedtech.com)
-Received: from slee-VirtualBox.localdomain (192.168.100.253) by
- TWMBX02.aspeed.com (192.168.0.24) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Thu, 27 May 2021 08:55:02 +0800
-From:   Steven Lee <steven_lee@aspeedtech.com>
-To:     Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Joel Stanley <joel@jms.id.au>,
-        Andrew Jeffery <andrew@aj.id.au>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        "moderated list:ARM/ASPEED MACHINE SUPPORT" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "moderated list:ARM/ASPEED MACHINE SUPPORT" 
-        <linux-aspeed@lists.ozlabs.org>,
-        open list <linux-kernel@vger.kernel.org>
-CC:     <steven_lee@aspeedtech.com>, <Hongweiz@ami.com>,
-        <ryan_chen@aspeedtech.com>, <billy_tsai@aspeedtech.com>
-Subject: [PATCH v2 4/4] gpio: gpio-aspeed-sgpio: Add AST2600 sgpio support
-Date:   Thu, 27 May 2021 08:54:53 +0800
-Message-ID: <20210527005455.25758-5-steven_lee@aspeedtech.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210527005455.25758-1-steven_lee@aspeedtech.com>
-References: <20210527005455.25758-1-steven_lee@aspeedtech.com>
+        Wed, 26 May 2021 20:56:59 -0400
+Received: from pps.filterd (m0246617.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 14R0snqS007637;
+        Thu, 27 May 2021 00:55:13 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
+ references : from : message-id : date : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=corp-2020-01-29;
+ bh=RuKXTDLwFwGxEae04mGgrvNeJD0bQuHyZn1qArKUWbg=;
+ b=xBMtu+GBkS+vIssMyorXIqf5FyrodllREQPugUaJ6bOgcP5dkusKc68nPosGzWUZ+yd7
+ UANtNQY5MXLXt05nw0L/1MEyMQVVeC9FkC0QaKqUZyryKA7eXbObZd7Zjbb4qNQl8b2F
+ dtJ61yoi8hRv0tCLiaVFcUveK+JjWFo7CrXR4TmQD55gxp01RXXqL53jKcD5hzPtWwfs
+ uHU8YvLnPPpL759G4n4H2WlBhYZEzSoeqIDqs/1wzHl3Zfkip6isn8WryoxZ5xldZRTu
+ E13Y0flhVOTFLyi+VbL9TrbXIVdUGZabHsAFo3CFaNLIgJWrnM0p73D9Gj3GcD383YK/ sg== 
+Received: from oracle.com (aserp3030.oracle.com [141.146.126.71])
+        by mx0b-00069f02.pphosted.com with ESMTP id 38ssybr4ta-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 27 May 2021 00:55:13 +0000
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [127.0.0.1])
+        by pps.podrdrct (8.16.0.36/8.16.0.36) with SMTP id 14R0sjHc002428;
+        Thu, 27 May 2021 00:55:12 GMT
+Received: from nam12-dm6-obe.outbound.protection.outlook.com (mail-dm6nam12lp2172.outbound.protection.outlook.com [104.47.59.172])
+        by aserp3030.oracle.com with ESMTP id 38pr0d5eu2-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 27 May 2021 00:55:12 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=gGaWleD6ZzitFOSk7lh3/XIB7ImDoHizMiy3oCWGF90lquL5hWYkG34iVX9EXilkgmdtCko+vVqhRPbofACuRnURN/irLqOgwM57mU/uIJysp6I7YrBFU04c530/njjMWAkK7zTi+7jsdqaDLyw4y4UhZnp3dPeRxgTUApkYwMQI3M9LfLSst4oHRZJzHllxyLqIEmYH8cMw557PRxkEr6tQT/O5ToskhEtgnmvdUCQQXb39HASQgznu3adHHZitHwdMPXmBf2MCUI2KqNl3Mp3DmdtcXxmjQNGPpB1ZHHrr8W2vjT973YvwkEZtLfGXZMkCKvMIiqmFq9mfOm6/6Q==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=RuKXTDLwFwGxEae04mGgrvNeJD0bQuHyZn1qArKUWbg=;
+ b=KokQy6WnmZeG3Q54nR6EwOFdb8LXGW7ZdtmuVNsnVy9iSns2jwdHXPlUybnIT32d4Qt/jl3jphIs3acx7K1wtsc3/ADkwYhGIgOzOa0So84gXP7b7LHgDoNg+n8qVKOkLpHZ8Ir3Ew8+YiNQjB07PjyW7AwGTZWiLDM8fgvc+tMpo/T8U2tf/wZ75h+s6n6WXGxKpdhkLmfn14FnvF2h7Jy90W0EBrdFDZVu9F5lVPsgoayR9V6hCdTvZCsjdSoJIEWTgf7i/dW4nSbMC7B5b3jW8VbLgm/tUm/Hzm53gZZBbUSELtNjop9Q95Ox7LJNo6JUJDu39taKXuwDSBS1eQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=RuKXTDLwFwGxEae04mGgrvNeJD0bQuHyZn1qArKUWbg=;
+ b=PJLqAeZUF0/xLvVn2GzzfcUJrqmjmRfaDFXPh5gWJc7VLxtiFDvwANZeNruE0TrXkr3kBzVzvMqCZza7PKDNm/y8siL9QG9FzGnHNLo0CrskxmVgx5RMsYgoofaPdEyz1F5ln6t0lbKjK2A/H1nimLB8vWA66lIwG+QiVEUBAX4=
+Authentication-Results: vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=none action=none header.from=oracle.com;
+Received: from BY5PR10MB4196.namprd10.prod.outlook.com (2603:10b6:a03:20d::23)
+ by SJ0PR10MB4783.namprd10.prod.outlook.com (2603:10b6:a03:2d9::20) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4150.27; Thu, 27 May
+ 2021 00:55:10 +0000
+Received: from BY5PR10MB4196.namprd10.prod.outlook.com
+ ([fe80::4407:2ff6:c0a:5d90]) by BY5PR10MB4196.namprd10.prod.outlook.com
+ ([fe80::4407:2ff6:c0a:5d90%8]) with mapi id 15.20.4173.021; Thu, 27 May 2021
+ 00:55:10 +0000
+Subject: Re: [PATCH v1] hugetlb: pass head page to remove_hugetlb_page()
+To:     Naoya Horiguchi <nao.horiguchi@gmail.com>, linux-mm@kvack.org
+Cc:     Michal Hocko <mhocko@suse.com>, Oscar Salvador <osalvador@suse.de>,
+        Muchun Song <songmuchun@bytedance.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        David Hildenbrand <david@redhat.com>,
+        Naoya Horiguchi <naoya.horiguchi@nec.com>,
+        linux-kernel@vger.kernel.org
+References: <20210526235257.2769473-1-nao.horiguchi@gmail.com>
+From:   Mike Kravetz <mike.kravetz@oracle.com>
+Message-ID: <adab93b7-1418-a955-9932-54981744b7b0@oracle.com>
+Date:   Wed, 26 May 2021 17:55:07 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.1.1
+In-Reply-To: <20210526235257.2769473-1-nao.horiguchi@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [50.38.35.18]
+X-ClientProxiedBy: MW4PR03CA0100.namprd03.prod.outlook.com
+ (2603:10b6:303:b7::15) To BY5PR10MB4196.namprd10.prod.outlook.com
+ (2603:10b6:a03:20d::23)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [192.168.100.253]
-X-ClientProxiedBy: TWMBX02.aspeed.com (192.168.0.24) To TWMBX02.aspeed.com
- (192.168.0.24)
-X-DNSRBL: 
-X-MAIL: twspam01.aspeedtech.com 14R0g0So067386
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [192.168.2.112] (50.38.35.18) by MW4PR03CA0100.namprd03.prod.outlook.com (2603:10b6:303:b7::15) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4173.20 via Frontend Transport; Thu, 27 May 2021 00:55:09 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 8ff78aa0-535e-48ba-3e6c-08d920aa13f3
+X-MS-TrafficTypeDiagnostic: SJ0PR10MB4783:
+X-Microsoft-Antispam-PRVS: <SJ0PR10MB4783CF84F5B646E4C0FA61DAE2239@SJ0PR10MB4783.namprd10.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:4125;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: n+OS+Als95oL1EA6Ln3HjKbJx9FGHJ0cjia90jhp8zP11n9zskqcztA2imsi4FVA1fKNRnqFyCAMEZd7RSs68N7T8XGIO0xp+xEbWdooS3AypRtrPfFDj97zECJUO+9onbWDqSK6VGYCbetlOQoYg+XJkXL05O71gJvFVRzsBsLT0ohibuMNeg038rlaZY9YaKh5mwbvRdiv3woGRp12rD9Ftcwh4auivvIKAYBXlGnGRL6fEvvFW/KJK97tKHK6OoX2IDmhaW1KGcxcc8zP5CjPZRzIokyj27DM3H3zo/rowRiVtjhGy7BQLCo8FpXCZdpCRKUC9vshypTQ8ArT96zO2oaqw3ps4msch9lytvwtD+Iok9oOZR47qliO365KrGZdiksexMRHRYtHJ75L9kx6+9d+oigU1c0fJGvhLGPKDcJUyOyRDqZcPiLBhvKBCYMKtYHl5zr9WdLqp99MnrO/3c0EGCpq81dcjvv1UwvbH/c5sgrpZQ3UMs97H7SMGm6yxtO1WrbekMkLQwpIUMgsCE39Oy+rngDyQHOabvTs10pwF93DNFhjCFbGsypDBtFi9JoJ4hPg+XgfYWBfFdJF5hGts6Axr7yBn9XBhSVlsHdjvdKFT05yLs/Kwn+DwTLoXKPGSEgVmyVvBR0/Y2e20HHR92TjVTbC9/c4nrD8vqwgttsyMOQQFlomdajR7PaVAxnCBdUyKZKqd1WDWQ==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR10MB4196.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(39860400002)(376002)(396003)(346002)(136003)(53546011)(44832011)(8936002)(5660300002)(31686004)(66476007)(16576012)(83380400001)(54906003)(31696002)(2616005)(8676002)(478600001)(16526019)(186003)(316002)(4326008)(26005)(956004)(66946007)(86362001)(36756003)(6486002)(66556008)(38350700002)(38100700002)(52116002)(2906002)(45980500001)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?YVZadjVkamZxME5yTjVMK3JiaVpSaDM4ejg5SzZKOThxd2pjaHlUTEFMZEF4?=
+ =?utf-8?B?VFNOMVFuUk1sVGhXZ0JQaFJRYlp3dmRwM1h5QkNBZG5CL2lpZVJTengrTVdY?=
+ =?utf-8?B?MXhVVmlhWHkxWDRuSFZsblcwUHVUTjlHS0ZMdUJRelhKZCtEWFlSa1NpRGx0?=
+ =?utf-8?B?SkpsckNpTjh4WXhvb0g3ZmtIdUVDTGI0NnNaOXk5TEpPMXF6Lzh3SHIvSDZm?=
+ =?utf-8?B?VVN0TkJJeVhIU2UrSklSQVJibHFURkEySnJRaEtmUlBmbDRjOG9qeW5oR1hS?=
+ =?utf-8?B?WVhGRE5xbTZDc1U2UXQ4ZVM3K3Q3d1lma2w2SzNta3hiMmJoSTVCUkRGb3Jy?=
+ =?utf-8?B?bEtic0RtOTllbzgwVEFEOGlXY2lYcUpVQk5JM1ZJVUVOZlhlcE1SZU85OTFY?=
+ =?utf-8?B?WUNNelFObVZZWmJ0RXlnQk0vVUFKaUh5V3EwYWpQTlNMY1dOcThvdURZeUkv?=
+ =?utf-8?B?dE0xeU5aLzJRZFFzemVlSjN1QU5HSGNsalZJSFlzalRnYTRDZFpURm50K3Qy?=
+ =?utf-8?B?TnUybEFVNU9LUWZkekFyVVVTS2R3ZXByRmxhY0Mrc0h5TVdFczkyNXo1Sm80?=
+ =?utf-8?B?MkU3VjQ1TUV6WTJCNXJ1N3IrSmhyQ0oremdVUHFJblBxREF1VmorUDVYODBh?=
+ =?utf-8?B?bkZuV2xFano2ZEZaODJWeWRCZGFTVlFqYVE3c3N1cXQ2WUJ4QUlWTzI4QVB3?=
+ =?utf-8?B?eVdlUUdUOSs2MjBCWmF5TU5HZTdKTFEyZU0vWlBabGtzUTRsd3o0OXU4cVE3?=
+ =?utf-8?B?VWpUamhWMU5mNDRDMGRFV21XcGRIN3hoVW9uWG5VSU80dnlkMjYxaFhzanRi?=
+ =?utf-8?B?bjJvUGJBT0RmNyt6a0RBMkJQUnVSRElOQnlibzQ2aDFtMWZ4MW03R1hyeFpw?=
+ =?utf-8?B?UHdZODQrY0xQWS90ZTZzRlZ3TXpsWjE0WVBtckZnQTZzeU1RaWR3YTFyOWFz?=
+ =?utf-8?B?RDEzRlFCZ1czREZyQk1GT1pQdi9TQk1TMUVTaEh2c3B1ckdZTkNoUU9oYkt4?=
+ =?utf-8?B?cGt1Z0RQcTRENmE5Q21EQ1VwYUZIUjEvZHFOVmZYdUgyekduZEdPTlp1eHZs?=
+ =?utf-8?B?dEUrcmNDV3RGNk9RSFJkWllQNTNMYThwbU8zMVRoeFdESk14OXJkWDZxS2VQ?=
+ =?utf-8?B?ZTlTdkVEQ1NRa1RaN3k3ajV0eUt6ZjdQV04vVkdtRnMxdUZJU1Z2blh0bnR0?=
+ =?utf-8?B?ZVQ3bFRUbEU3VWFWS2Y4MVVybVV0Y0pnMGE4ejAvUmFUN3NFYTRaeENoUUEr?=
+ =?utf-8?B?QXd6ai9sQUl1MFpoOEJyeXh2YXV2OWpydmxyY0UzY3F3QVlpZkVFUXJLRDFv?=
+ =?utf-8?B?VWxKYVFyT0J6Tzk1aEpGWTZkZGR0bGVYdzNPelFYYkxhTi9ldUZaWVNtSEQ2?=
+ =?utf-8?B?SVRRQmZXUU1XZ2FHNmQ3QU5EclpYSmkzdzFFYSs2NWlFMUpMZFZsaWcxUDVw?=
+ =?utf-8?B?dTZDSEhkQ1UxTHV6YS94NGxVdmpGLzlNK0pmU2RPN0lJZ3FvSmhrMXhONXhP?=
+ =?utf-8?B?b09raE5PbEhNeVBRS01KZFBqYTg5VE5wcU5XSVN0WG92NDJ4cHFKUEh0aEhX?=
+ =?utf-8?B?ZGhwa0F3UXNMcTNWMGlYaTNYTGw1TFZJNFE4SUVyUk1OTTVlTU1rbnoyWW5W?=
+ =?utf-8?B?dFhiS2JIakEvbHZaMnZEaldaS2R2VHpWZ2l5cnROdGxWS1Erd1VkRitxUlFr?=
+ =?utf-8?B?NUI3aEpnRUNveTJEbG9JUk1rYWRCOC9ZOTRseFBia3hSRkkwZ3ZNN042cEJz?=
+ =?utf-8?Q?I8uHfwm5BiCa5dkbgBcnk4ABJ2ILS6P1DYgPGGY?=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 8ff78aa0-535e-48ba-3e6c-08d920aa13f3
+X-MS-Exchange-CrossTenant-AuthSource: BY5PR10MB4196.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 27 May 2021 00:55:10.2944
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 5lNXHcFjhFvn0VNRF2+u9NJ0GdqasIxhlswD8t/CON8PxjAKI8DKy3rYjoslvIqkVmh45Mz1jdgya9NFs0a3Xw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR10MB4783
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9996 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 bulkscore=0 spamscore=0
+ mlxlogscore=999 malwarescore=0 adultscore=0 phishscore=0 suspectscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104190000
+ definitions=main-2105270003
+X-Proofpoint-ORIG-GUID: -7EQpg1SQGllCJ_nAK-CE1Pc560OySUx
+X-Proofpoint-GUID: -7EQpg1SQGllCJ_nAK-CE1Pc560OySUx
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-AST2600 SoC has 2 SGPIO master interfaces one with 128 pins another one
-with 80 pins, and AST2500/AST2400 SoC has 1 SGPIO master interface that
-supports up to 80 pins.
-In the current driver design, the max number of sgpio pins is hardcoded
-in macro MAX_NR_HW_SGPIO and the value is 80.
-The patch makes the maximum gpio number *constraint of chip* comes from
-the dts. The property name is max-ngpios.
+On 5/26/21 4:52 PM, Naoya Horiguchi wrote:
+> From: Naoya Horiguchi <naoya.horiguchi@nec.com>
+> 
+> When memory_failure() or soft_offline_page() is called on a tail page of
+> some hugetlb page, "BUG: unable to handle page fault" error can be
+> triggered.
+> 
+> remove_hugetlb_page() dereferences page->lru, so it's assumed that the
+> page points to a head page, but one of the caller,
+> dissolve_free_huge_page(), provides remove_hugetlb_page() with 'page'
+> which could be a tail page.  So pass 'head' to it, instead.
+> 
+> Fixes: 6eb4e88a6d27 ("hugetlb: create remove_hugetlb_page() to separate functionality")
+> Signed-off-by: Naoya Horiguchi <naoya.horiguchi@nec.com>
+> ---
+>  mm/hugetlb.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 
-Signed-off-by: Steven Lee <steven_lee@aspeedtech.com>
----
- drivers/gpio/gpio-aspeed-sgpio.c | 193 ++++++++++++++++++++-----------
- 1 file changed, 125 insertions(+), 68 deletions(-)
+Thanks Naoya!
 
-diff --git a/drivers/gpio/gpio-aspeed-sgpio.c b/drivers/gpio/gpio-aspeed-sgpio.c
-index 64e54f8c30d2..d01cdaeeada4 100644
---- a/drivers/gpio/gpio-aspeed-sgpio.c
-+++ b/drivers/gpio/gpio-aspeed-sgpio.c
-@@ -17,37 +17,28 @@
- #include <linux/spinlock.h>
- #include <linux/string.h>
- 
--/*
-- * MAX_NR_HW_GPIO represents the number of actual hardware-supported GPIOs (ie,
-- * slots within the clocked serial GPIO data). Since each HW GPIO is both an
-- * input and an output, we provide MAX_NR_HW_GPIO * 2 lines on our gpiochip
-- * device.
-- *
-- * We use SGPIO_OUTPUT_OFFSET to define the split between the inputs and
-- * outputs; the inputs start at line 0, the outputs start at OUTPUT_OFFSET.
-- */
--#define MAX_NR_HW_SGPIO			80
--#define SGPIO_OUTPUT_OFFSET		MAX_NR_HW_SGPIO
--
- #define ASPEED_SGPIO_CTRL		0x54
- 
--#define ASPEED_SGPIO_PINS_MASK		GENMASK(9, 6)
-+#define ASPEED_SGPIO_PINS_MASK		GENMASK(10, 6)
- #define ASPEED_SGPIO_CLK_DIV_MASK	GENMASK(31, 16)
- #define ASPEED_SGPIO_ENABLE		BIT(0)
- 
- struct aspeed_sgpio {
- 	struct gpio_chip chip;
-+	struct irq_chip intc;
- 	struct clk *pclk;
- 	spinlock_t lock;
- 	void __iomem *base;
- 	int irq;
-+	int max_ngpios;
- 	int n_sgpio;
- };
- 
- struct aspeed_sgpio_bank {
--	uint16_t    val_regs;
--	uint16_t    rdata_reg;
--	uint16_t    irq_regs;
-+	u16    val_regs;
-+	u16    rdata_reg;
-+	u16    irq_regs;
-+	u16    tolerance_regs;
- 	const char  names[4][3];
- };
- 
-@@ -63,19 +54,29 @@ static const struct aspeed_sgpio_bank aspeed_sgpio_banks[] = {
- 		.val_regs = 0x0000,
- 		.rdata_reg = 0x0070,
- 		.irq_regs = 0x0004,
-+		.tolerance_regs = 0x0018,
- 		.names = { "A", "B", "C", "D" },
- 	},
- 	{
- 		.val_regs = 0x001C,
- 		.rdata_reg = 0x0074,
- 		.irq_regs = 0x0020,
-+		.tolerance_regs = 0x0034,
- 		.names = { "E", "F", "G", "H" },
- 	},
- 	{
- 		.val_regs = 0x0038,
- 		.rdata_reg = 0x0078,
- 		.irq_regs = 0x003C,
--		.names = { "I", "J" },
-+		.tolerance_regs = 0x0050,
-+		.names = { "I", "J", "K", "L" },
-+	},
-+	{
-+		.val_regs = 0x0090,
-+		.rdata_reg = 0x007C,
-+		.irq_regs = 0x0094,
-+		.tolerance_regs = 0x00A8,
-+		.names = { "M", "N", "O", "P" },
- 	},
- };
- 
-@@ -87,14 +88,14 @@ enum aspeed_sgpio_reg {
- 	reg_irq_type1,
- 	reg_irq_type2,
- 	reg_irq_status,
-+	reg_tolerance,
- };
- 
--#define GPIO_VAL_VALUE      0x00
--#define GPIO_IRQ_ENABLE     0x00
--#define GPIO_IRQ_TYPE0      0x04
--#define GPIO_IRQ_TYPE1      0x08
--#define GPIO_IRQ_TYPE2      0x0C
--#define GPIO_IRQ_STATUS     0x10
-+#define GPIO_IRQ_OFFSET_ENABLE     0x00
-+#define GPIO_IRQ_OFFSET_TYPE0      0x04
-+#define GPIO_IRQ_OFFSET_TYPE1      0x08
-+#define GPIO_IRQ_OFFSET_TYPE2      0x0C
-+#define GPIO_IRQ_OFFSET_STATUS     0x10
- 
- static void __iomem *bank_reg(struct aspeed_sgpio *gpio,
- 				     const struct aspeed_sgpio_bank *bank,
-@@ -102,34 +103,37 @@ static void __iomem *bank_reg(struct aspeed_sgpio *gpio,
- {
- 	switch (reg) {
- 	case reg_val:
--		return gpio->base + bank->val_regs + GPIO_VAL_VALUE;
-+		return gpio->base + bank->val_regs;
- 	case reg_rdata:
- 		return gpio->base + bank->rdata_reg;
- 	case reg_irq_enable:
--		return gpio->base + bank->irq_regs + GPIO_IRQ_ENABLE;
-+		return gpio->base + bank->irq_regs + GPIO_IRQ_OFFSET_ENABLE;
- 	case reg_irq_type0:
--		return gpio->base + bank->irq_regs + GPIO_IRQ_TYPE0;
-+		return gpio->base + bank->irq_regs + GPIO_IRQ_OFFSET_TYPE0;
- 	case reg_irq_type1:
--		return gpio->base + bank->irq_regs + GPIO_IRQ_TYPE1;
-+		return gpio->base + bank->irq_regs + GPIO_IRQ_OFFSET_TYPE1;
- 	case reg_irq_type2:
--		return gpio->base + bank->irq_regs + GPIO_IRQ_TYPE2;
-+		return gpio->base + bank->irq_regs + GPIO_IRQ_OFFSET_TYPE2;
- 	case reg_irq_status:
--		return gpio->base + bank->irq_regs + GPIO_IRQ_STATUS;
-+		return gpio->base + bank->irq_regs + GPIO_IRQ_OFFSET_STATUS;
-+	case reg_tolerance:
-+		return gpio->base + bank->tolerance_regs;
- 	default:
- 		/* acturally if code runs to here, it's an error case */
- 		BUG();
- 	}
- }
- 
--#define GPIO_BANK(x)    ((x % SGPIO_OUTPUT_OFFSET) >> 5)
--#define GPIO_OFFSET(x)  ((x % SGPIO_OUTPUT_OFFSET) & 0x1f)
-+#define GPIO_BANK(x)    ((x) >> 5)
-+/* modulo 32 */
-+#define GPIO_OFFSET(x)  ((x) & 0x1f)
- #define GPIO_BIT(x)     BIT(GPIO_OFFSET(x))
- 
--static const struct aspeed_sgpio_bank *to_bank(unsigned int offset)
-+static const struct aspeed_sgpio_bank *to_bank(unsigned int offset, unsigned int max_ngpios)
- {
- 	unsigned int bank;
- 
--	bank = GPIO_BANK(offset);
-+	bank = GPIO_BANK(offset % max_ngpios);
- 
- 	WARN_ON(bank >= ARRAY_SIZE(aspeed_sgpio_banks));
- 	return &aspeed_sgpio_banks[bank];
-@@ -139,18 +143,19 @@ static int aspeed_sgpio_init_valid_mask(struct gpio_chip *gc,
- 		unsigned long *valid_mask, unsigned int ngpios)
- {
- 	struct aspeed_sgpio *sgpio = gpiochip_get_data(gc);
-+	int max_ngpios = sgpio->max_ngpios;
- 	int n = sgpio->n_sgpio;
--	int c = SGPIO_OUTPUT_OFFSET - n;
-+	int c = max_ngpios - n;
- 
--	WARN_ON(ngpios < MAX_NR_HW_SGPIO * 2);
-+	WARN_ON(ngpios < max_ngpios * 2);
- 
- 	/* input GPIOs in the lower range */
- 	bitmap_set(valid_mask, 0, n);
- 	bitmap_clear(valid_mask, n, c);
- 
--	/* output GPIOS above SGPIO_OUTPUT_OFFSET */
--	bitmap_set(valid_mask, SGPIO_OUTPUT_OFFSET, n);
--	bitmap_clear(valid_mask, SGPIO_OUTPUT_OFFSET + n, c);
-+	/* output GPIOS above max_ngpios */
-+	bitmap_set(valid_mask, max_ngpios, n);
-+	bitmap_clear(valid_mask, max_ngpios + n, c);
- 
- 	return 0;
- }
-@@ -161,30 +166,30 @@ static void aspeed_sgpio_irq_init_valid_mask(struct gpio_chip *gc,
- 	struct aspeed_sgpio *sgpio = gpiochip_get_data(gc);
- 	int n = sgpio->n_sgpio;
- 
--	WARN_ON(ngpios < MAX_NR_HW_SGPIO * 2);
-+	WARN_ON(ngpios < sgpio->max_ngpios * 2);
- 
- 	/* input GPIOs in the lower range */
- 	bitmap_set(valid_mask, 0, n);
- 	bitmap_clear(valid_mask, n, ngpios - n);
- }
- 
--static bool aspeed_sgpio_is_input(unsigned int offset)
-+static bool aspeed_sgpio_is_input(unsigned int offset, unsigned int max_ngpios)
- {
--	return offset < SGPIO_OUTPUT_OFFSET;
-+	return offset < max_ngpios;
- }
- 
- static int aspeed_sgpio_get(struct gpio_chip *gc, unsigned int offset)
- {
- 	struct aspeed_sgpio *gpio = gpiochip_get_data(gc);
--	const struct aspeed_sgpio_bank *bank = to_bank(offset);
-+	const struct aspeed_sgpio_bank *bank = to_bank(offset, gpio->max_ngpios);
- 	unsigned long flags;
- 	enum aspeed_sgpio_reg reg;
- 	int rc = 0;
- 
- 	spin_lock_irqsave(&gpio->lock, flags);
- 
--	reg = aspeed_sgpio_is_input(offset) ? reg_val : reg_rdata;
--	rc = !!(ioread32(bank_reg(gpio, bank, reg)) & GPIO_BIT(offset));
-+	reg = aspeed_sgpio_is_input(offset, gpio->max_ngpios) ? reg_val : reg_rdata;
-+	rc = !!(ioread32(bank_reg(gpio, bank, reg)) & GPIO_BIT(offset % gpio->max_ngpios));
- 
- 	spin_unlock_irqrestore(&gpio->lock, flags);
- 
-@@ -194,11 +199,11 @@ static int aspeed_sgpio_get(struct gpio_chip *gc, unsigned int offset)
- static int sgpio_set_value(struct gpio_chip *gc, unsigned int offset, int val)
- {
- 	struct aspeed_sgpio *gpio = gpiochip_get_data(gc);
--	const struct aspeed_sgpio_bank *bank = to_bank(offset);
-+	const struct aspeed_sgpio_bank *bank = to_bank(offset, gpio->max_ngpios);
- 	void __iomem *addr_r, *addr_w;
- 	u32 reg = 0;
- 
--	if (aspeed_sgpio_is_input(offset))
-+	if (aspeed_sgpio_is_input(offset, gpio->max_ngpios))
- 		return -EINVAL;
- 
- 	/* Since this is an output, read the cached value from rdata, then
-@@ -209,9 +214,9 @@ static int sgpio_set_value(struct gpio_chip *gc, unsigned int offset, int val)
- 	reg = ioread32(addr_r);
- 
- 	if (val)
--		reg |= GPIO_BIT(offset);
-+		reg |= GPIO_BIT(offset % gpio->max_ngpios);
- 	else
--		reg &= ~GPIO_BIT(offset);
-+		reg &= ~GPIO_BIT(offset % gpio->max_ngpios);
- 
- 	iowrite32(reg, addr_w);
- 
-@@ -232,7 +237,9 @@ static void aspeed_sgpio_set(struct gpio_chip *gc, unsigned int offset, int val)
- 
- static int aspeed_sgpio_dir_in(struct gpio_chip *gc, unsigned int offset)
- {
--	return aspeed_sgpio_is_input(offset) ? 0 : -EINVAL;
-+	struct aspeed_sgpio *gpio = gpiochip_get_data(gc);
-+
-+	return aspeed_sgpio_is_input(offset, gpio->max_ngpios) ? 0 : -EINVAL;
- }
- 
- static int aspeed_sgpio_dir_out(struct gpio_chip *gc, unsigned int offset, int val)
-@@ -253,7 +260,9 @@ static int aspeed_sgpio_dir_out(struct gpio_chip *gc, unsigned int offset, int v
- 
- static int aspeed_sgpio_get_direction(struct gpio_chip *gc, unsigned int offset)
- {
--	return !!aspeed_sgpio_is_input(offset);
-+	struct aspeed_sgpio *gpio = gpiochip_get_data(gc);
-+
-+	return !!aspeed_sgpio_is_input(offset, gpio->max_ngpios);
- }
- 
- static void irqd_to_aspeed_sgpio_data(struct irq_data *d,
-@@ -268,8 +277,8 @@ static void irqd_to_aspeed_sgpio_data(struct irq_data *d,
- 	WARN_ON(!internal);
- 
- 	*gpio = internal;
--	*bank = to_bank(*offset);
--	*bit = GPIO_BIT(*offset);
-+	*bank = to_bank(*offset, internal->max_ngpios);
-+	*bit = GPIO_BIT(*offset % internal->max_ngpios);
- }
- 
- static void aspeed_sgpio_irq_ack(struct irq_data *d)
-@@ -412,14 +421,6 @@ static void aspeed_sgpio_irq_handler(struct irq_desc *desc)
- 	chained_irq_exit(ic, desc);
- }
- 
--static struct irq_chip aspeed_sgpio_irqchip = {
--	.name       = "aspeed-sgpio",
--	.irq_ack    = aspeed_sgpio_irq_ack,
--	.irq_mask   = aspeed_sgpio_irq_mask,
--	.irq_unmask = aspeed_sgpio_irq_unmask,
--	.irq_set_type   = aspeed_sgpio_set_type,
--};
--
- static int aspeed_sgpio_setup_irqs(struct aspeed_sgpio *gpio,
- 				   struct platform_device *pdev)
- {
-@@ -442,8 +443,14 @@ static int aspeed_sgpio_setup_irqs(struct aspeed_sgpio *gpio,
- 		iowrite32(0xffffffff, bank_reg(gpio, bank, reg_irq_status));
- 	}
- 
-+	gpio->intc.name = dev_name(&pdev->dev);
-+	gpio->intc.irq_ack = aspeed_sgpio_irq_ack;
-+	gpio->intc.irq_mask = aspeed_sgpio_irq_mask;
-+	gpio->intc.irq_unmask = aspeed_sgpio_irq_unmask;
-+	gpio->intc.irq_set_type = aspeed_sgpio_set_type;
-+
- 	irq = &gpio->chip.irq;
--	irq->chip = &aspeed_sgpio_irqchip;
-+	irq->chip = &gpio->intc;
- 	irq->init_valid_mask = aspeed_sgpio_irq_init_valid_mask;
- 	irq->handler = handle_bad_irq;
- 	irq->default_type = IRQ_TYPE_NONE;
-@@ -466,9 +473,48 @@ static int aspeed_sgpio_setup_irqs(struct aspeed_sgpio *gpio,
- 	return 0;
- }
- 
-+static int aspeed_sgpio_reset_tolerance(struct gpio_chip *chip,
-+					unsigned int offset, bool enable)
-+{
-+	struct aspeed_sgpio *gpio = gpiochip_get_data(chip);
-+	unsigned long flags;
-+	void __iomem *reg;
-+	u32 val;
-+
-+	reg = bank_reg(gpio, to_bank(offset, gpio->max_ngpios), reg_tolerance);
-+
-+	spin_lock_irqsave(&gpio->lock, flags);
-+
-+	val = readl(reg);
-+
-+	if (enable)
-+		val |= GPIO_BIT(offset % gpio->max_ngpios);
-+	else
-+		val &= ~GPIO_BIT(offset % gpio->max_ngpios);
-+
-+	writel(val, reg);
-+
-+	spin_unlock_irqrestore(&gpio->lock, flags);
-+
-+	return 0;
-+}
-+
-+static int aspeed_sgpio_set_config(struct gpio_chip *chip, unsigned int offset,
-+				   unsigned long config)
-+{
-+	unsigned long param = pinconf_to_config_param(config);
-+	u32 arg = pinconf_to_config_argument(config);
-+
-+	if (param == PIN_CONFIG_PERSIST_STATE)
-+		return aspeed_sgpio_reset_tolerance(chip, offset, arg);
-+	else
-+		return -EOPNOTSUPP;
-+}
-+
- static const struct of_device_id aspeed_sgpio_of_table[] = {
--	{ .compatible = "aspeed,ast2400-sgpio" },
--	{ .compatible = "aspeed,ast2500-sgpio" },
-+	{ .compatible = "aspeed,ast2400-sgpiom" },
-+	{ .compatible = "aspeed,ast2500-sgpiom" },
-+	{ .compatible = "aspeed,ast2600-sgpiom" },
- 	{}
- };
- 
-@@ -476,8 +522,8 @@ MODULE_DEVICE_TABLE(of, aspeed_sgpio_of_table);
- 
- static int __init aspeed_sgpio_probe(struct platform_device *pdev)
- {
-+	u32 nr_gpios, sgpio_freq, sgpio_clk_div, max_ngpios;
- 	struct aspeed_sgpio *gpio;
--	u32 nr_gpios, sgpio_freq, sgpio_clk_div;
- 	int rc;
- 	unsigned long apb_freq;
- 
-@@ -489,13 +535,24 @@ static int __init aspeed_sgpio_probe(struct platform_device *pdev)
- 	if (IS_ERR(gpio->base))
- 		return PTR_ERR(gpio->base);
- 
-+	rc = of_property_read_u32(pdev->dev.of_node, "max-ngpios", &max_ngpios);
-+	if (rc < 0) {
-+		dev_err(&pdev->dev, "Could not read max-ngpios property\n");
-+		return -EINVAL;
-+	}
-+	gpio->max_ngpios = max_ngpios;
-+
- 	rc = of_property_read_u32(pdev->dev.of_node, "ngpios", &nr_gpios);
- 	if (rc < 0) {
- 		dev_err(&pdev->dev, "Could not read ngpios property\n");
- 		return -EINVAL;
--	} else if (nr_gpios > MAX_NR_HW_SGPIO) {
-+	} else if (nr_gpios % 8) {
-+		dev_err(&pdev->dev, "Number of GPIOs not multiple of 8: %d\n",
-+			nr_gpios);
-+		return -EINVAL;
-+	} else if (nr_gpios > gpio->max_ngpios) {
- 		dev_err(&pdev->dev, "Number of GPIOs exceeds the maximum of %d: %d\n",
--			MAX_NR_HW_SGPIO, nr_gpios);
-+			gpio->max_ngpios, nr_gpios);
- 		return -EINVAL;
- 	}
- 	gpio->n_sgpio = nr_gpios;
-@@ -539,7 +596,7 @@ static int __init aspeed_sgpio_probe(struct platform_device *pdev)
- 	spin_lock_init(&gpio->lock);
- 
- 	gpio->chip.parent = &pdev->dev;
--	gpio->chip.ngpio = MAX_NR_HW_SGPIO * 2;
-+	gpio->chip.ngpio = gpio->max_ngpios * 2;
- 	gpio->chip.init_valid_mask = aspeed_sgpio_init_valid_mask;
- 	gpio->chip.direction_input = aspeed_sgpio_dir_in;
- 	gpio->chip.direction_output = aspeed_sgpio_dir_out;
-@@ -548,7 +605,7 @@ static int __init aspeed_sgpio_probe(struct platform_device *pdev)
- 	gpio->chip.free = NULL;
- 	gpio->chip.get = aspeed_sgpio_get;
- 	gpio->chip.set = aspeed_sgpio_set;
--	gpio->chip.set_config = NULL;
-+	gpio->chip.set_config = aspeed_sgpio_set_config;
- 	gpio->chip.label = dev_name(&pdev->dev);
- 	gpio->chip.base = -1;
- 
+Reviewed-by: Mike Kravetz <mike.kravetz@oracle.com>
+
 -- 
-2.17.1
+Mike Kravetz
 
+> 
+> diff --git v5.13-rc3/mm/hugetlb.c v5.13-rc3_patched/mm/hugetlb.c
+> index 95918f410c0f..470f7b5b437e 100644
+> --- v5.13-rc3/mm/hugetlb.c
+> +++ v5.13-rc3_patched/mm/hugetlb.c
+> @@ -1793,7 +1793,7 @@ int dissolve_free_huge_page(struct page *page)
+>  			SetPageHWPoison(page);
+>  			ClearPageHWPoison(head);
+>  		}
+> -		remove_hugetlb_page(h, page, false);
+> +		remove_hugetlb_page(h, head, false);
+>  		h->max_huge_pages--;
+>  		spin_unlock_irq(&hugetlb_lock);
+>  		update_and_free_page(h, head);
+> 
