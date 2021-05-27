@@ -2,149 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 324A93923B5
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 02:20:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CD1123923B9
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 02:21:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233879AbhE0AWS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 May 2021 20:22:18 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43456 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233640AbhE0AWQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 May 2021 20:22:16 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id F1195613CD;
-        Thu, 27 May 2021 00:20:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1622074844;
-        bh=OhAGputHj8LGq3lVPwQDXhpZGAMwnpAJqfNe9xdfpgA=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=N3OIqpKhD37LVHkg6S/JzzVY6O0J+uxJdbcQIY6kdb0Cjjcepa8FchCJtG2RhmR9C
-         auNcHZAuI/02K3IPy1YynmHZ1w5a81ZEUmPqKtLtGgF3TDgLbLrkyofQYc9xeP8zUE
-         wmf4ef2EIUCdyQ0pa7AFlb2uy1ZQDNZB2bQCUv6UgcxnbczXZmeJhFqbYcOUbPV3He
-         9h3sJs/cLRGJTNRhXTfT5vQJR5Jt1hBhnmbMO4qs1x7s+S1mYbwORZvEXqX/Q7Bvy5
-         vu9y9j+uFJ4ZbrSq1aUr7JtMT/meyQ2vUTI2BduVg3vuamqP+dYYDAKwGqp/IIr4nv
-         RYYdYo5idHbSQ==
-Date:   Thu, 27 May 2021 09:20:39 +0900
-From:   Masami Hiramatsu <mhiramat@kernel.org>
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@kernel.org>, X86 ML <x86@kernel.org>,
-        Daniel Xu <dxu@dxuuu.xyz>,
-        open list <linux-kernel@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>, Jakub Kicinski <kuba@kernel.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Kernel Team <kernel-team@fb.com>, Yonghong Song <yhs@fb.com>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        linux-ia64@vger.kernel.org,
-        Abhishek Sagar <sagar.abhishek@gmail.com>
-Subject: Re: [PATCH -tip v6 00/13] kprobes: Fix stacktrace with kretprobes
- on x86
-Message-Id: <20210527092039.9bf13c221ee096cddc965cef@kernel.org>
-In-Reply-To: <CAEf4BzbTKwnuutnJG6ALYX_YgLPg0Tzm+BNRGYLfh62oZPNGpg@mail.gmail.com>
-References: <162201612941.278331.5293566981784464165.stgit@devnote2>
-        <CAEf4BzbTKwnuutnJG6ALYX_YgLPg0Tzm+BNRGYLfh62oZPNGpg@mail.gmail.com>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S233950AbhE0AXG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 May 2021 20:23:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54342 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232916AbhE0AXE (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 26 May 2021 20:23:04 -0400
+Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B2DAC06175F
+        for <linux-kernel@vger.kernel.org>; Wed, 26 May 2021 17:21:31 -0700 (PDT)
+Received: by mail-lf1-x130.google.com with SMTP id b26so5250360lfq.4
+        for <linux-kernel@vger.kernel.org>; Wed, 26 May 2021 17:21:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=lRcwXTkXFqjHbLkGyM+Iivo9S+3vdfLIMeWV2k96/WM=;
+        b=IcdHg9mtSIbKyQXE7To2tKBA5bjosTWl12QMBa/kT2sO6/0yLESdYBXhe/muIyLQvv
+         SDfxb7HhzfyCzr9groZNH5cT/VyTZl+SFMrPNtiEYC80BuIcBHt/CM1kcnTlXc+I52cG
+         jJ1rp51adY7ITDDDwKFKiWxeZT39YuNeKEVY4REpR8JJYwXY4P1GOdyACypnwShNTwEd
+         UuhGQL0rwxBHlC7RyWiqRpIcoHfVpGk94e9HrlqlLBoXJCms4y/o4Q5FkRume2lEACxC
+         Da4Wq0MKqA3qZYSDTd1OpR2yt47XE9w50Lzs/MgUpwmmqbDytgeEaYc9J96rcf114kvY
+         /82A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=lRcwXTkXFqjHbLkGyM+Iivo9S+3vdfLIMeWV2k96/WM=;
+        b=KInx8xR7rhgau46f6n0qlSGqJDmpnOHCXEwcq7s96x3Ryt0pKqQ8+HcD9XhBWqpGRW
+         bUoMgRhELqhhTJr/pKV4HpvNQPMM4lCGgXiaQRaa8ng1ZLHCSssfMjNMc1CaGam2HVNp
+         Q9ivufqgl83u7/rStTNoeSrcvsZMCKNYyeRDqfMFFzbX2IM5bKV5WY6vboY1wstq8OnQ
+         /1nxHr2fQSkjzRNBp1VcZ6QoSfoV2YwGn7GqoNtB4MfDuMOvLRsHf8TZLrPaorbVF3Pn
+         7DzC7xMFuOOi9lOu6NTOkkuZI7edGbQCTk6BxwtoNrAUj8DOrrQ1FDY4o6xVW6A3ECfd
+         6hQA==
+X-Gm-Message-State: AOAM533lNC7XwA5/ATf2MWHdBFn3pscGTh0ShqJhz3VHXALeBpml11G8
+        j7V3AdFCF25Bmo+nMxRV5+GDFyU5n4hGOM5Y1IOWev3I/zQ=
+X-Google-Smtp-Source: ABdhPJwrZ46JCTawi7sfWZOjm1/sDDo4oQx316hZrft4mHIMt1cbwJe4Y1fVtf3CXaYRK3O8LpBxZyR4eEcnsnV+p28=
+X-Received: by 2002:ac2:5145:: with SMTP id q5mr457753lfd.529.1622074889945;
+ Wed, 26 May 2021 17:21:29 -0700 (PDT)
+MIME-Version: 1.0
+References: <20210520190105.3772683-1-lee.jones@linaro.org> <20210520190105.3772683-2-lee.jones@linaro.org>
+In-Reply-To: <20210520190105.3772683-2-lee.jones@linaro.org>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Thu, 27 May 2021 02:21:18 +0200
+Message-ID: <CACRpkdYj=kU6ix5GoTYc4bKcskoJM1mmmSbKMW4yEjRy4f3Zwg@mail.gmail.com>
+Subject: Re: [PATCH 01/16] i2c: busses: i2c-nomadik: Fix formatting issue
+ pertaining to 'timeout'
+To:     Lee Jones <lee.jones@linaro.org>
+Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
+        Srinidhi Kasagar <srinidhi.kasagar@stericsson.com>,
+        Sachin Verma <sachin.verma@st.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        linux-i2c <linux-i2c@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 26 May 2021 10:39:57 -0700
-Andrii Nakryiko <andrii.nakryiko@gmail.com> wrote:
+On Thu, May 20, 2021 at 9:01 PM Lee Jones <lee.jones@linaro.org> wrote:
 
-> On Wed, May 26, 2021 at 1:02 AM Masami Hiramatsu <mhiramat@kernel.org> wrote:
-> >
-> > Hello,
-> >
-> > Here is the 6th version of the series to fix the stacktrace with kretprobe
-> > on x86.
-> >
-> > The previous version is;
-> >
-> >  https://lore.kernel.org/bpf/161676170650.330141.6214727134265514123.stgit@devnote2/
-> >
-> > This version is rebased on the latest tip tree and add some patches for
-> > improving stacktrace[13/13].
-> >
-> > Changes from v5:
-> > [02/13]:
-> >   - Use dereference_symbol_descriptor() instead of dereference_function_descriptor()
-> > [04/13]:
-> >   - Replace BUG_ON() with WARN_ON_ONCE() in __kretprobe_trampoline_handler().
-> > [13/13]:
-> >   - Add a new patch to fix return address in earlier stage.
-> >
-> >
-> > With this series, unwinder can unwind stack correctly from ftrace as below;
-> >
-> >   # cd /sys/kernel/debug/tracing
-> >   # echo > trace
-> >   # echo 1 > options/sym-offset
-> >   # echo r vfs_read >> kprobe_events
-> >   # echo r full_proxy_read >> kprobe_events
-> >   # echo traceoff:1 > events/kprobes/r_vfs_read_0/trigger
-> >   # echo stacktrace:1 > events/kprobes/r_full_proxy_read_0/trigger
-> >   # echo 1 > events/kprobes/enable
-> >   # cat /sys/kernel/debug/kprobes/list
-> > ffffffff8133b740  r  full_proxy_read+0x0    [FTRACE]
-> > ffffffff812560b0  r  vfs_read+0x0    [FTRACE]
-> >   # echo 0 > events/kprobes/enable
-> >   # cat trace
-> > # tracer: nop
-> > #
-> > # entries-in-buffer/entries-written: 3/3   #P:8
-> > #
-> > #                                _-----=> irqs-off
-> > #                               / _----=> need-resched
-> > #                              | / _---=> hardirq/softirq
-> > #                              || / _--=> preempt-depth
-> > #                              ||| /     delay
-> > #           TASK-PID     CPU#  ||||   TIMESTAMP  FUNCTION
-> > #              | |         |   ||||      |         |
-> >            <...>-134     [007] ...1    16.185877: r_full_proxy_read_0: (vfs_read+0x98/0x180 <- full_proxy_read)
-> >            <...>-134     [007] ...1    16.185901: <stack trace>
-> >  => kretprobe_trace_func+0x209/0x300
-> >  => kretprobe_dispatcher+0x4a/0x70
-> >  => __kretprobe_trampoline_handler+0xd4/0x170
-> >  => trampoline_handler+0x43/0x60
-> >  => kretprobe_trampoline+0x2a/0x50
-> >  => vfs_read+0x98/0x180
-> >  => ksys_read+0x5f/0xe0
-> >  => do_syscall_64+0x37/0x90
-> >  => entry_SYSCALL_64_after_hwframe+0x44/0xae
-> >            <...>-134     [007] ...1    16.185902: r_vfs_read_0: (ksys_read+0x5f/0xe0 <- vfs_read)
-> >
-> > This shows the double return probes (vfs_read and full_proxy_read) on the stack
-> > correctly unwinded. (vfs_read will return to ksys_read+0x5f and full_proxy_read
-> > will return to vfs_read+0x98)
-> >
-> > This actually changes the kretprobe behavisor a bit, now the instraction pointer in
-> > the pt_regs passed to kretprobe user handler is correctly set the real return
-> > address. So user handlers can get it via instruction_pointer() API.
-> >
-> > You can also get this series from
-> >  git://git.kernel.org/pub/scm/linux/kernel/git/mhiramat/linux.git kprobes/kretprobe-stackfix-v6
-> >
-> >
-> > Thank you,
-> >
-> > ---
-> >
-> 
-> Thanks for following up on this! I've applied this patch set on top of
-> bpf-next and tested with my local BPF-based tool that uses stack
-> traces in kretprobes heavily. It all works now and I'm getting
-> meaningful and correctly looking stacktraces. Thanks a lot!
-> 
-> Tested-by: Andrii Nakryik <andrii@kernel.org>
+> Fixes the following W=1 kernel build warning(s):
+>
+>  drivers/i2c/busses/i2c-nomadik.c:184: warning: Function parameter or member 'timeout' not described in 'nmk_i2c_dev'
+>
+> Cc: Linus Walleij <linus.walleij@linaro.org>
+> Cc: Srinidhi Kasagar <srinidhi.kasagar@stericsson.com>
+> Cc: Sachin Verma <sachin.verma@st.com>
+> Cc: linux-arm-kernel@lists.infradead.org
+> Cc: linux-i2c@vger.kernel.org
+> Signed-off-by: Lee Jones <lee.jones@linaro.org>
 
-Thanks for testing! I got a minor warning issue on [13/13] from kernel test
-bot, which can be fixed by adding a prototype. So I will update it.
+Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
 
-Thank you!
-
--- 
-Masami Hiramatsu <mhiramat@kernel.org>
+Yours,
+Linus Walleij
