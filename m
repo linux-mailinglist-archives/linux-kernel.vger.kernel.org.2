@@ -2,91 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F0E9D3929D1
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 10:46:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9AFFD3929CF
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 10:45:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235558AbhE0IsG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 May 2021 04:48:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54454 "EHLO
+        id S235576AbhE0IrR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 May 2021 04:47:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54266 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235457AbhE0IsE (ORCPT
+        with ESMTP id S235457AbhE0IrQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 May 2021 04:48:04 -0400
-Received: from mail-pf1-x432.google.com (mail-pf1-x432.google.com [IPv6:2607:f8b0:4864:20::432])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 507DBC061574;
-        Thu, 27 May 2021 01:46:32 -0700 (PDT)
-Received: by mail-pf1-x432.google.com with SMTP id 22so28510pfv.11;
-        Thu, 27 May 2021 01:46:32 -0700 (PDT)
+        Thu, 27 May 2021 04:47:16 -0400
+Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F1A0C061574;
+        Thu, 27 May 2021 01:45:42 -0700 (PDT)
+Received: by mail-ej1-x633.google.com with SMTP id s22so6758403ejv.12;
+        Thu, 27 May 2021 01:45:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=G6YOkfmoYTQzY6BFJvCrKbTuX6EkhVXWhoTaGEyzrqg=;
-        b=M8v6UDP7SkzMjXeIDuAOKB3SHRLOascPDy/s4mNYBn40bhixb8oZanP7aZuXWlMs9O
-         +WwQ/HmeYLFwosCJvq3bYf+0xBil+CDgq3WuRCtZBBKCndH04TKmDfOVA+SUp3BwBv4C
-         ZyYcuplcAPqbM2R5MaErMEpV/Os08LuxcTioK7k/JFI/1WStoEIjeorSnmAlZuFWlPVQ
-         yO5qhREBmHRoQW4uPRj3S4JG9nt3NHF+K9FTDhyV806Aqf5Vryl+wvBcpfefAft9zI+D
-         kpW0K9cG8+3aYMx4LTxAK3SXNCy4F3AmisgkDHfUQAKguq79QjS2d5QMVxScBM5wg27W
-         yV0w==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=/cQwyco3zF02M7nTlGhSF9ivKxGvmlRN3UcsYlTk9ek=;
+        b=fMYMAS3NLVBE7kNccGYVDzrj+orSZV945AABDdZdU+V2xrbX50R86WCxE4JduqlXtD
+         WMqlBAHnu6q9YqAzbYvEXz5CCTCsZM+zY7npUgCuZRrHGQdy/PvXiTFwT9S6eioVtH2/
+         speSEK2c4p0oq0x+wxwDDNG+J6dv1jflurLJnX1KpSJ+y08WWuFhD+MYY5XDjaAn7dOX
+         8VwmYB055k1KCJivPu+lhv52NY5xqpQ5vbPk4z3B8IQVfm2eciG+Y7xCSeMU4pfno4oo
+         Uotenboe1oZr/Yq4ueENY8l4l04tW7CdqnIIrcAwNrA/yVnPgMKsDgCP9lgYhjxfVo7D
+         MB8Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=G6YOkfmoYTQzY6BFJvCrKbTuX6EkhVXWhoTaGEyzrqg=;
-        b=l5QFDV04H8GVCAHSO9ZDC+PZKBHLCrI7MuhN/deoPcRjei2JbBU9652eLTEfB7zGng
-         X6YU8yaf03OsIlhgqyvTiVngn9grq4hXqjQxVZoUhZaCvWsWemmMssNJG6lZNsBrRwmH
-         zXIARrybu8kKrOeOEV2rh3+5FdJiuG4n753Bb8hBsIaIfqR8tcTHEqrlJN68to3hoABi
-         1iXO1wry3WL91oJXhTIpciBPTn91J/s/8XZNkprCfBjc49A8H+L7afeVoheK9AzaKwWs
-         NBylpDLSlwAzhfA8pl7mLPQQ62qbKSASiqMbg2c/jGVeCC27RMA7ucoO+Csa0GYP4nML
-         FKww==
-X-Gm-Message-State: AOAM532qro6s+/llHR407Pe4RnZGmBpq972GVbh6thWDjzG44+cadsXK
-        Kp2CLlpAv4v2r4Drl4KJJ50=
-X-Google-Smtp-Source: ABdhPJyutrX/JWhRjoZHJ97VrezGjFx49PxUNCF3PZZb/f0O8dHmXbDhA5PKkjkH7j4SBxaZKeSG2Q==
-X-Received: by 2002:a63:ee53:: with SMTP id n19mr2727304pgk.268.1622105191763;
-        Thu, 27 May 2021 01:46:31 -0700 (PDT)
-Received: from localhost.localdomain (2001-b011-5c02-729b-db77-9bf2-2339-2201.dynamic-ip6.hinet.net. [2001:b011:5c02:729b:db77:9bf2:2339:2201])
-        by smtp.googlemail.com with ESMTPSA id v12sm1278502pgi.44.2021.05.27.01.46.28
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=/cQwyco3zF02M7nTlGhSF9ivKxGvmlRN3UcsYlTk9ek=;
+        b=NHHngSkNSJgmbZ+oVtetr2mfKNjgu2YY93GT1Op4B5EKO91xcdZOGWT9ucvzd0T8jn
+         05W4PNVlknFmL0Aa0fiHfiP6PB+RYu2y78Kj7ZvATmRSUJ0Yb1KTGyoNtVJwHEM4JHjH
+         95yGZXQYGIjTJCa7Vy1OOzVUUWaLUqHxtJR5KjbbellfxzgpuNOtteGrYQlFNB5M3A4d
+         Y3BguBIHYplJlaZbRERbZpRJ1KSbCt4CCph6s/GMAaogXzVEFHSIYhCXM7JNHLlmT/0B
+         QwhHl6SjXXmornq9Nr4WYbSWJD4I0zerWUBCfrxQEi9NPflWhqAaRJjcJZM7X5j/efPC
+         LvAA==
+X-Gm-Message-State: AOAM530WlliBKMbI+tUScBmKUG+d/eNojhorqv6jiyJUUd7+IOYmpybr
+        DkmgicT8jHL/IHZuRAjzsRBCMiN7M58=
+X-Google-Smtp-Source: ABdhPJwkKT3yCdVllDuFVEIsx0pKHPYmRjfnymTyyoKwBYTwr/381V/lD+9K/PWm0yvn6ddu13Jpcg==
+X-Received: by 2002:a17:906:5d0c:: with SMTP id g12mr2613378ejt.447.1622105140804;
+        Thu, 27 May 2021 01:45:40 -0700 (PDT)
+Received: from localhost.localdomain.at (62-178-82-229.cable.dynamic.surfer.at. [62.178.82.229])
+        by smtp.gmail.com with ESMTPSA id jy21sm654578ejc.13.2021.05.27.01.45.39
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 27 May 2021 01:46:30 -0700 (PDT)
-From:   Crag Wang <crag0715@gmail.com>
-X-Google-Original-From: Crag Wang <crag.wang@dell.com>
-To:     Andreas Noever <andreas.noever@gmail.com>,
-        Michael Jamet <michael.jamet@intel.com>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Yehezkel Bernat <YehezkelShB@gmail.com>
-Cc:     mario.limonciello@outlook.com, crag.wang@dell.com,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 1/1] thunderbolt: add self-authenticate support for new dock
-Date:   Thu, 27 May 2021 16:45:03 +0800
-Message-Id: <20210527084504.7310-1-crag.wang@dell.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <crag.wang@dell.com>
-References: <crag.wang@dell.com>
+        Thu, 27 May 2021 01:45:40 -0700 (PDT)
+From:   Christian Gmeiner <christian.gmeiner@gmail.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     Christian Gmeiner <christian.gmeiner@gmail.com>,
+        Mark Brown <broonie@kernel.org>, linux-spi@vger.kernel.org
+Subject: [PATCH] spidev: add platform driver support
+Date:   Thu, 27 May 2021 10:45:15 +0200
+Message-Id: <20210527084531.18989-1-christian.gmeiner@gmail.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add new device known to support self-authenticate on disconnect.
+This makes it possible to use spidev in combination with the
+MFD subsystem. The MFD subsystem add platform_driver devices.
 
-Signed-off-by: Crag Wang <crag.wang@dell.com>
+Signed-off-by: Christian Gmeiner <christian.gmeiner@gmail.com>
 ---
- drivers/thunderbolt/quirks.c | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/spi/spidev.c | 45 ++++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 45 insertions(+)
 
-diff --git a/drivers/thunderbolt/quirks.c b/drivers/thunderbolt/quirks.c
-index 57e2978a3c21..892cf0e8ada5 100644
---- a/drivers/thunderbolt/quirks.c
-+++ b/drivers/thunderbolt/quirks.c
-@@ -21,6 +21,7 @@ struct tb_quirk {
- static const struct tb_quirk tb_quirks[] = {
- 	/* Dell WD19TB supports self-authentication on unplug */
- 	{ 0x00d4, 0xb070, quirk_force_power_link },
-+	{ 0x00d4, 0xb071, quirk_force_power_link },
+diff --git a/drivers/spi/spidev.c b/drivers/spi/spidev.c
+index f56e0e975a46..fb7b483ff70d 100644
+--- a/drivers/spi/spidev.c
++++ b/drivers/spi/spidev.c
+@@ -25,6 +25,8 @@
+ #include <linux/spi/spi.h>
+ #include <linux/spi/spidev.h>
+ 
++#include <linux/platform_device.h>
++
+ #include <linux/uaccess.h>
+ 
+ 
+@@ -827,6 +829,40 @@ static struct spi_driver spidev_spi_driver = {
+ 	 */
  };
  
- /**
++static int spidev_platform_probe(struct platform_device *pdev)
++{
++	struct device *parent = pdev->dev.parent;
++	struct spi_device *spi;
++
++	if (strcmp(parent->bus->name, "spi"))
++		return -ENODEV;
++
++	spi = to_spi_device(parent);
++
++	/* This only works if no drvdata is stored */
++	if (spi_get_drvdata(spi)) {
++		dev_err(&pdev->dev, "drvdata is not NULL\n");
++		return -EOPNOTSUPP;
++	}
++
++	return spidev_probe(spi);
++}
++
++static int spidev_platform_remove(struct platform_device *pdev)
++{
++	struct spi_device *spi = to_spi_device(pdev->dev.parent);
++
++	return spidev_remove(spi);
++}
++
++static struct platform_driver spidev_platfoem_driver = {
++	.probe = spidev_platform_probe,
++	.remove = spidev_platform_remove,
++	.driver = {
++		.name = "spidev",
++	},
++};
++
+ /*-------------------------------------------------------------------------*/
+ 
+ static int __init spidev_init(void)
+@@ -853,12 +889,21 @@ static int __init spidev_init(void)
+ 		class_destroy(spidev_class);
+ 		unregister_chrdev(SPIDEV_MAJOR, spidev_spi_driver.driver.name);
+ 	}
++
++	status = platform_driver_register(&spidev_platfoem_driver);
++	if (status < 0) {
++		spi_unregister_driver(&spidev_spi_driver);
++		class_destroy(spidev_class);
++		unregister_chrdev(SPIDEV_MAJOR, spidev_spi_driver.driver.name);
++	}
++
+ 	return status;
+ }
+ module_init(spidev_init);
+ 
+ static void __exit spidev_exit(void)
+ {
++	platform_driver_unregister(&spidev_platfoem_driver);
+ 	spi_unregister_driver(&spidev_spi_driver);
+ 	class_destroy(spidev_class);
+ 	unregister_chrdev(SPIDEV_MAJOR, spidev_spi_driver.driver.name);
 -- 
-2.25.1
+2.31.1
 
