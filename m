@@ -2,241 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 90120392E4A
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 14:50:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F239E392E4C
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 14:51:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235785AbhE0MwX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 May 2021 08:52:23 -0400
-Received: from smtp1.axis.com ([195.60.68.17]:34882 "EHLO smtp1.axis.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235761AbhE0MwW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 May 2021 08:52:22 -0400
+        id S235799AbhE0MxO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 May 2021 08:53:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54170 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234523AbhE0MxL (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 27 May 2021 08:53:11 -0400
+Received: from mail-wm1-x34a.google.com (mail-wm1-x34a.google.com [IPv6:2a00:1450:4864:20::34a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0556C061574
+        for <linux-kernel@vger.kernel.org>; Thu, 27 May 2021 05:51:38 -0700 (PDT)
+Received: by mail-wm1-x34a.google.com with SMTP id f141-20020a1c1f930000b029017ce5240ed6so79128wmf.5
+        for <linux-kernel@vger.kernel.org>; Thu, 27 May 2021 05:51:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=axis.com; q=dns/txt; s=axis-central1; t=1622119849;
-  x=1653655849;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=HE843OUk3i4titNovIMg/MrZrNh4mHoyES6G/9pokvw=;
-  b=fJh2MVjKYEFFQylK9BWHI6VSzT8N58RHSJLFuNGPwob/EjnbAsyP0jZm
-   zLY76HqcRJbTamsG6Dnsq1LLWGU2iqJYyd1GSYvAoSyDERaisNPM7pigP
-   M+MjQMmvhDNYScKaB3nFpC9zSCAYdrWb707y4Kp8Xn4eLyAWDe8JMgQ38
-   SSkJxbKKvUbo3PJb4YggmHrIO4UnO2DFzh5MXyMiGRfPaGMi347cYURm3
-   /+05lQ6KCxCxe81K29L1CN3mj0FCCXzd0kBJv3Aa9UwyRqcZmeXetSOUl
-   Oe2jQqtTsDJ/K998y2F43siq6BO9plc/M0dKsmGjHdQVDkkkQ6Xig+3vm
-   A==;
-From:   Vincent Whitchurch <vincent.whitchurch@axis.com>
-To:     <akpm@linux-foundation.org>,
-        Phillip Lougher <phillip@squashfs.org.uk>
-CC:     <kernel@axis.com>,
-        Vincent Whitchurch <vincent.whitchurch@axis.com>,
-        <linux-kernel@vger.kernel.org>
-Subject: [PATCH] squashfs: add option to panic on errors
-Date:   Thu, 27 May 2021 14:50:19 +0200
-Message-ID: <20210527125019.14511-1-vincent.whitchurch@axis.com>
-X-Mailer: git-send-email 2.28.0
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
+        d=google.com; s=20161025;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=OFJTCYvTlm44Js7Oh0x+dWK8ho65pfFD2cK8memDcmU=;
+        b=QB0AuKgJ00Z+R2vn+s/ZmfmnVBgsEKhuVuQ5GcbOcE0XrgCVuJ6+3mvy4BAzFdXFy2
+         1X1e/i9+3FlsRBqEHHm0KtN9SrVPvMu+S2ddDDgER5HsSXUzyEaApDT28GZ26LYc4kLD
+         p1S/TVyiTqbLFEKpoN51NO4vJcLb9llEHm1hPXEenjscHufgWUjbLPFWPcVnOrMennnS
+         LytX8aVgRwM9l/sQBgnwFzTnBYXKyxIAHjwuyyXS+ZFRIXPHSsnDThBI97VtcTWM2C3e
+         MvvORRmCCYIza9KQ6XEe0MOeu9OEXlC/ONYqaxNATER10dOwNAT4jwSKlvDUKeh5IBQO
+         +rDA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=OFJTCYvTlm44Js7Oh0x+dWK8ho65pfFD2cK8memDcmU=;
+        b=ucYeZVkBkfakFmAzmAssC7xVMUJkvRoDWmRr4QUp+iNNK1429hUD3b7xZOU/QbhqUX
+         Xzya7D7d6arp+9LYRkhDrMUBqVZ+eTvG5BlIhcn7zI3v6VO365le/cMRRwt1TEpiteYO
+         7ddqaihW0bWHYO/NsaIFFd3pQIhZ+VxjDq+jCnBJ0Bft9afmUsfBvjPNh9MGv+hW+L2H
+         m1ixSjcEpM3PwCMN5wu4yckq0EIKiwzkubvN5xfLQRmP+7pQdfjpX6mMI2dxAVSn92DS
+         yDnxS2AGBS10bb/sbUrcnGp6D/9HuicHJpzydNnGeF/Ki9xBGRIUULeHYI6iZ0QWgr3F
+         Qopw==
+X-Gm-Message-State: AOAM5313bO+67ShGu9he7aiCsW+FS6dFdH9qCGp/QdJwtP4XMcnvVUnn
+        S04jjhwKp5T2srGTAF/wuSUZ7Z/uWjnU
+X-Google-Smtp-Source: ABdhPJyAac0auDLnAIfnc5GbbqU7TodPnilNsvhasp1h2deq/n8uFLQy6e5SlSjZZmZ6iix6pWbwR7ycCt06
+X-Received: from r2d2-qp.c.googlers.com ([fda3:e722:ac3:cc00:28:9cb1:c0a8:1652])
+ (user=qperret job=sendgmr) by 2002:a05:600c:35cc:: with SMTP id
+ r12mr1310535wmq.1.1622119896122; Thu, 27 May 2021 05:51:36 -0700 (PDT)
+Date:   Thu, 27 May 2021 12:51:27 +0000
+Message-Id: <20210527125134.2116404-1-qperret@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.31.1.818.g46aad6cb9e-goog
+Subject: [PATCH 0/7] KVM: arm64: Reduce hyp_vmemmap overhead
+From:   Quentin Perret <qperret@google.com>
+To:     maz@kernel.org, will@kernel.org, james.morse@arm.com,
+        alexandru.elisei@arm.com, catalin.marinas@arm.com,
+        suzuki.poulose@arm.com
+Cc:     linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
+        kernel-team@android.com, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add an errors=panic mount option to make squashfs trigger a panic when
-errors are encountered, similar to several other filesystems.  This
-allows a kernel dump to be saved using which the corruption can be
-analysed and debugged.
+Hi all,
 
-Inspired by a pre-fs_context patch by Anton Eliasson.
+When running in nVHE protected mode, the hypervisor manages its own
+vmemmap and uses it to store page metadata, e.g. refcounts. This series
+shrinks the size of struct hyp_page from 32 bytes to 4 bytes without
+loss of functionality, hence reducing the cost of the hyp vmemmap from
+8MB/GB to 1MB/GB with 4K pages.
 
-Signed-off-by: Vincent Whitchurch <vincent.whitchurch@axis.com>
----
- fs/squashfs/block.c          |  5 ++-
- fs/squashfs/squashfs_fs_sb.h |  1 +
- fs/squashfs/super.c          | 86 ++++++++++++++++++++++++++++++++++++
- 3 files changed, 91 insertions(+), 1 deletion(-)
+The series has two immediate benefits:
+  - the memory overhead of the nVHE protected mode is reduced;
+  - it refactors the host stage-2 memory pools in a way that allows
+    better re-use of pages to map MMIO ranges, allowing more MMIO
+    mappings (currently limited to 1GB IPA space) most of the time.
 
-diff --git a/fs/squashfs/block.c b/fs/squashfs/block.c
-index b9e87ebb1060..855f0e87066d 100644
---- a/fs/squashfs/block.c
-+++ b/fs/squashfs/block.c
-@@ -226,8 +226,11 @@ int squashfs_read_data(struct super_block *sb, u64 index, int length,
- 	bio_free_pages(bio);
- 	bio_put(bio);
- out:
--	if (res < 0)
-+	if (res < 0) {
- 		ERROR("Failed to read block 0x%llx: %d\n", index, res);
-+		if (msblk->panic_on_errors)
-+			panic("squashfs read failed");
-+	}
- 
- 	return res;
- }
-diff --git a/fs/squashfs/squashfs_fs_sb.h b/fs/squashfs/squashfs_fs_sb.h
-index 166e98806265..1e90c2575f9b 100644
---- a/fs/squashfs/squashfs_fs_sb.h
-+++ b/fs/squashfs/squashfs_fs_sb.h
-@@ -65,5 +65,6 @@ struct squashfs_sb_info {
- 	unsigned int				fragments;
- 	int					xattr_ids;
- 	unsigned int				ids;
-+	bool					panic_on_errors;
- };
- #endif
-diff --git a/fs/squashfs/super.c b/fs/squashfs/super.c
-index 88cc94be1076..60d6951915f4 100644
---- a/fs/squashfs/super.c
-+++ b/fs/squashfs/super.c
-@@ -18,9 +18,11 @@
- 
- #include <linux/fs.h>
- #include <linux/fs_context.h>
-+#include <linux/fs_parser.h>
- #include <linux/vfs.h>
- #include <linux/slab.h>
- #include <linux/mutex.h>
-+#include <linux/seq_file.h>
- #include <linux/pagemap.h>
- #include <linux/init.h>
- #include <linux/module.h>
-@@ -37,6 +39,51 @@
- static struct file_system_type squashfs_fs_type;
- static const struct super_operations squashfs_super_ops;
- 
-+enum Opt_errors {
-+	Opt_errors_continue,
-+	Opt_errors_panic,
-+};
-+
-+enum squashfs_param {
-+	Opt_errors,
-+};
-+
-+struct squashfs_mount_opts {
-+	enum Opt_errors errors;
-+};
-+
-+static const struct constant_table squashfs_param_errors[] = {
-+	{"continue",   Opt_errors_continue },
-+	{"panic",      Opt_errors_panic },
-+	{}
-+};
-+
-+static const struct fs_parameter_spec squashfs_fs_parameters[] = {
-+	fsparam_enum("errors", Opt_errors, squashfs_param_errors),
-+	{}
-+};
-+
-+static int squashfs_parse_param(struct fs_context *fc, struct fs_parameter *param)
-+{
-+	struct squashfs_mount_opts *opts = fc->fs_private;
-+	struct fs_parse_result result;
-+	int opt;
-+
-+	opt = fs_parse(fc, squashfs_fs_parameters, param, &result);
-+	if (opt < 0)
-+		return opt;
-+
-+	switch (opt) {
-+	case Opt_errors:
-+		opts->errors = result.uint_32;
-+		break;
-+	default:
-+		return -EINVAL;
-+	}
-+
-+	return 0;
-+}
-+
- static const struct squashfs_decompressor *supported_squashfs_filesystem(
- 	struct fs_context *fc,
- 	short major, short minor, short id)
-@@ -67,6 +114,7 @@ static const struct squashfs_decompressor *supported_squashfs_filesystem(
- 
- static int squashfs_fill_super(struct super_block *sb, struct fs_context *fc)
- {
-+	struct squashfs_mount_opts *opts = fc->fs_private;
- 	struct squashfs_sb_info *msblk;
- 	struct squashfs_super_block *sblk = NULL;
- 	struct inode *root;
-@@ -85,6 +133,8 @@ static int squashfs_fill_super(struct super_block *sb, struct fs_context *fc)
- 	}
- 	msblk = sb->s_fs_info;
- 
-+	msblk->panic_on_errors = (opts->errors == Opt_errors_panic);
-+
- 	msblk->devblksize = sb_min_blocksize(sb, SQUASHFS_DEVBLK_SIZE);
- 	msblk->devblksize_log2 = ffz(~msblk->devblksize);
- 
-@@ -350,18 +400,52 @@ static int squashfs_get_tree(struct fs_context *fc)
- 
- static int squashfs_reconfigure(struct fs_context *fc)
- {
-+	struct super_block *sb = fc->root->d_sb;
-+	struct squashfs_sb_info *msblk = sb->s_fs_info;
-+	struct squashfs_mount_opts *opts = fc->fs_private;
-+
- 	sync_filesystem(fc->root->d_sb);
- 	fc->sb_flags |= SB_RDONLY;
-+
-+	msblk->panic_on_errors = (opts->errors == Opt_errors_panic);
-+
- 	return 0;
- }
- 
-+static void squashfs_free_fs_context(struct fs_context *fc)
-+{
-+	kfree(fc->fs_private);
-+}
-+
- static const struct fs_context_operations squashfs_context_ops = {
- 	.get_tree	= squashfs_get_tree,
-+	.free		= squashfs_free_fs_context,
-+	.parse_param	= squashfs_parse_param,
- 	.reconfigure	= squashfs_reconfigure,
- };
- 
-+static int squashfs_show_options(struct seq_file *s, struct dentry *root)
-+{
-+	struct super_block *sb = root->d_sb;
-+	struct squashfs_sb_info *msblk = sb->s_fs_info;
-+
-+	if (msblk->panic_on_errors)
-+		seq_puts(s, ",errors=panic");
-+	else
-+		seq_puts(s, ",errors=continue");
-+
-+	return 0;
-+}
-+
- static int squashfs_init_fs_context(struct fs_context *fc)
- {
-+	struct squashfs_mount_opts *opts;
-+
-+	opts = kzalloc(sizeof(*opts), GFP_KERNEL);
-+	if (!opts)
-+		return -ENOMEM;
-+
-+	fc->fs_private = opts;
- 	fc->ops = &squashfs_context_ops;
- 	return 0;
- }
-@@ -481,6 +565,7 @@ static struct file_system_type squashfs_fs_type = {
- 	.owner = THIS_MODULE,
- 	.name = "squashfs",
- 	.init_fs_context = squashfs_init_fs_context,
-+	.parameters = squashfs_fs_parameters,
- 	.kill_sb = kill_block_super,
- 	.fs_flags = FS_REQUIRES_DEV
- };
-@@ -491,6 +576,7 @@ static const struct super_operations squashfs_super_ops = {
- 	.free_inode = squashfs_free_inode,
- 	.statfs = squashfs_statfs,
- 	.put_super = squashfs_put_super,
-+	.show_options = squashfs_show_options,
- };
- 
- module_init(init_squashfs_fs);
+But more importantly, the series reduces the hyp vmemmap overhead enough
+that we might consider covering _all_ of memory with it at EL2 in the
+future. This would simplify significantly the dynamic admission of
+memory into the EL2 allocator, which will be required when the
+hypervisor will allocate stage-2 page-tables of guests for instance.
+This would also allow the hypervisor to refcount pages it doesn't 'own',
+which be useful to track shared pages and such.
+
+The series is split as follows
+  - patches 01-03 move the list_head of each page from struct hyp_page
+    to the page itself -- the pages are attached to the free lists only
+    when they are free by definition;
+  - patches 04-05 remove the hyp_pool pointer from struct hyp_page as
+    that information can be inferred from the context;
+  - patches 06-07 reduce the size of the remaining members of struct
+    hyp_page which are currently oversized for the needs of the
+    hypervisor.
+
+On a last note, I believe we could actually make hyp_page fit in 16bits
+when using 4K pages: limiting the MAX_ORDER to 7 should suffice and
+require only 3 bits, and 13bits should be enough for the refcount for
+the existing use-cases. I decided not to implement this as we probably
+want to keep some room to grow in hyp_page (e.g. add flags, ...), that
+might cause issues to make refcounts atomic, and 16bits are not enough
+with 64K pages so we'd have to deal with that separately, but that _is_
+a possibility.
+
+Thanks!
+Quentin
+
+Quentin Perret (7):
+  KVM: arm64: Move hyp_pool locking out of refcount helpers
+  KVM: arm64: Use refcount at hyp to check page availability
+  KVM: arm64: Remove list_head from hyp_page
+  KVM: arm64: Unify MMIO and mem host stage-2 pools
+  KVM: arm64: Remove hyp_pool pointer from struct hyp_page
+  KVM: arm64: Use less bits for hyp_page order
+  KVM: arm64: Use less bits for hyp_page refcount
+
+ arch/arm64/kvm/hyp/include/nvhe/gfp.h         | 33 ++-----
+ arch/arm64/kvm/hyp/include/nvhe/mem_protect.h |  2 +-
+ arch/arm64/kvm/hyp/include/nvhe/memory.h      |  7 +-
+ arch/arm64/kvm/hyp/include/nvhe/mm.h          | 13 +--
+ arch/arm64/kvm/hyp/nvhe/mem_protect.c         | 59 +++++++------
+ arch/arm64/kvm/hyp/nvhe/page_alloc.c          | 87 ++++++++++++-------
+ arch/arm64/kvm/hyp/nvhe/setup.c               | 30 ++++---
+ arch/arm64/kvm/hyp/reserved_mem.c             |  3 +-
+ 8 files changed, 123 insertions(+), 111 deletions(-)
+
 -- 
-2.28.0
+2.31.1.818.g46aad6cb9e-goog
 
