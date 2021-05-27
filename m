@@ -2,88 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C636392E60
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 14:52:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F3CF1392E64
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 14:53:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236007AbhE0MyP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 May 2021 08:54:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33526 "EHLO mail.kernel.org"
+        id S235832AbhE0MzN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 May 2021 08:55:13 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33820 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235734AbhE0MyO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 May 2021 08:54:14 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id F193B613E3;
-        Thu, 27 May 2021 12:52:40 +0000 (UTC)
+        id S235714AbhE0MzL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 27 May 2021 08:55:11 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B984D6109F;
+        Thu, 27 May 2021 12:53:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1622119961;
-        bh=KGKc5qTJru05K3irLK2cGRBe4SX+5pRyHRDPOJWvDGc=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=bfaVJXjELEf7LLxaXkgdVJHahVBB+ju++zovmbaa0+chX90t79PPMqqz3n6f4kmL8
-         S0bBw1BolgUc05EHIJEjjj5hD5ORLlqPGq+1UnxN05FAL5rRi7YDKfpgsyqH/c71ch
-         UaOtWPYzinuNcOC6J82vpAHsTad9pIffAnEV82Zo0Kp8QRD76ogQzaavy88ajyNcYI
-         PZW9egfAiKsmOKkxs11hjbUnklHxvyDVx8jPRrqCMO5cSmOC1GBfnu1QyeP9GnPJ6L
-         Ia6ljoNDZnZQDyHETvm+NEAdoXN1zkfEW2vwk0HDruwdm4RYgyrq0OdA2y9a4R6931
-         FwGlYVnkEZSyQ==
-Received: by mail-ej1-f46.google.com with SMTP id l1so7857223ejb.6;
-        Thu, 27 May 2021 05:52:40 -0700 (PDT)
-X-Gm-Message-State: AOAM532uuWcVZkQweZCDr+Chkb9BWvRjHlwNKjnYG07XhXVjb8/6Y/TJ
-        Pi+3XJhrM99ytM3lfXm4SgS7xOER9WBAtdAEWA==
-X-Google-Smtp-Source: ABdhPJxM9eAon4T+vscvp97uksDQ/yJYoFEbWoPuaJhe1RTrL2fLQKbAHlmkb+5lsjgn3fQ8A9nGVGaYIexET+dYCe8=
-X-Received: by 2002:a17:906:1d0a:: with SMTP id n10mr3605862ejh.341.1622119959571;
- Thu, 27 May 2021 05:52:39 -0700 (PDT)
+        s=k20201202; t=1622120018;
+        bh=mnHenbEzMbQdhDrGu816+dyeKu927RlHNDgNBf8bfNk=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=T2Q+xyFZywvya0fPBfvK4sRdbR/bde8Rq8P4FN21AACPVaQSQsdEc0x2+0v5r+abP
+         3/8E7TEJSHcMhmUgcHo1bhdAA9AfzEMLppzT6/0P8DePbBmTljtDkX4NEtYRaHLEM1
+         Gnn3YP4aa748IT6RrSs7VU9Pqy8c4Xvink86bWS+UgwCuEehm3hOhTqBJaoQ8WPXJq
+         ulYWtbHvYOw84jAR1SH3F2sv+RGThyTfyzG8N3saQSkF5BsBVg+8LW53nliUGD6EFQ
+         5/RBGn2iLBX38fmxUgOxq5fMNgVhtClQMCVzqiJ/tPC3LfS/b2F3cV49KGjPHavT/f
+         X+zziZDTtPkzw==
+Date:   Thu, 27 May 2021 13:53:28 +0100
+From:   Will Deacon <will@kernel.org>
+To:     Claire Chang <tientzu@chromium.org>
+Cc:     heikki.krogerus@linux.intel.com, thomas.hellstrom@linux.intel.com,
+        peterz@infradead.org, benh@kernel.crashing.org,
+        joonas.lahtinen@linux.intel.com, dri-devel@lists.freedesktop.org,
+        chris@chris-wilson.co.uk, grant.likely@arm.com, paulus@samba.org,
+        Frank Rowand <frowand.list@gmail.com>, mingo@kernel.org,
+        sstabellini@kernel.org, Saravana Kannan <saravanak@google.com>,
+        mpe@ellerman.id.au,
+        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        bskeggs@redhat.com, linux-pci@vger.kernel.org,
+        xen-devel@lists.xenproject.org,
+        Thierry Reding <treding@nvidia.com>,
+        intel-gfx@lists.freedesktop.org, matthew.auld@intel.com,
+        linux-devicetree <devicetree@vger.kernel.org>,
+        Jianxiong Gao <jxgao@google.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
+        maarten.lankhorst@linux.intel.com, airlied@linux.ie,
+        Dan Williams <dan.j.williams@intel.com>,
+        linuxppc-dev@lists.ozlabs.org, jani.nikula@linux.intel.com,
+        Rob Herring <robh+dt@kernel.org>, rodrigo.vivi@intel.com,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        boris.ostrovsky@oracle.com,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        jgross@suse.com, Nicolas Boichat <drinkcat@chromium.org>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        "list@263.net:IOMMU DRIVERS" <iommu@lists.linux-foundation.org>,
+        Jim Quinlan <james.quinlan@broadcom.com>, xypron.glpk@gmx.de,
+        Robin Murphy <robin.murphy@arm.com>, bauerman@linux.ibm.com
+Subject: Re: [PATCH v7 14/15] dt-bindings: of: Add restricted DMA pool
+Message-ID: <20210527125328.GA22352@willie-the-truck>
+References: <20210518064215.2856977-1-tientzu@chromium.org>
+ <20210518064215.2856977-15-tientzu@chromium.org>
+ <20210526121322.GA19313@willie-the-truck>
+ <20210526155321.GA19633@willie-the-truck>
+ <CALiNf2_sVXnb97++yWusB5PWz8Pzfn9bCKZc6z3tY4bx6-nW8w@mail.gmail.com>
+ <20210527113456.GA22019@willie-the-truck>
+ <CALiNf2_Qk5DmZSJO+jv=m5V-VFtmL9j0v66UY6qKmM-2pr3tRQ@mail.gmail.com>
 MIME-Version: 1.0
-References: <20210527121029.583611-1-kyletso@google.com> <YK+TZOAlc6zYRE0v@kroah.com>
-In-Reply-To: <YK+TZOAlc6zYRE0v@kroah.com>
-From:   Rob Herring <robh+dt@kernel.org>
-Date:   Thu, 27 May 2021 07:52:24 -0500
-X-Gmail-Original-Message-ID: <CAL_JsqKGS--ZPUrhVkve3hK2EzWYeN2AATEpqB9PfNEzipfZzA@mail.gmail.com>
-Message-ID: <CAL_JsqKGS--ZPUrhVkve3hK2EzWYeN2AATEpqB9PfNEzipfZzA@mail.gmail.com>
-Subject: Re: [PATCH v2] dt-bindings: connector: Replace BIT macro with generic
- bit ops
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     Kyle Tso <kyletso@google.com>,
-        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-        Badhri Jagan Sridharan <badhri@google.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        devicetree@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CALiNf2_Qk5DmZSJO+jv=m5V-VFtmL9j0v66UY6qKmM-2pr3tRQ@mail.gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 27, 2021 at 7:41 AM Greg KH <gregkh@linuxfoundation.org> wrote:
->
-> On Thu, May 27, 2021 at 08:10:29PM +0800, Kyle Tso wrote:
-> > BIT macro is not defined. Replace it with generic bit operations.
+On Thu, May 27, 2021 at 08:48:59PM +0800, Claire Chang wrote:
+> On Thu, May 27, 2021 at 7:35 PM Will Deacon <will@kernel.org> wrote:
 > >
-> > Fixes: 630dce2810b9 ("dt-bindings: connector: Add SVDM VDO properties")
-> > Signed-off-by: Kyle Tso <kyletso@google.com>
-> > ---
-> > Changes since v1:
-> > - re-word the commit message
+> > On Thu, May 27, 2021 at 07:29:20PM +0800, Claire Chang wrote:
+> > > On Wed, May 26, 2021 at 11:53 PM Will Deacon <will@kernel.org> wrote:
+> > > >
+> > > > On Wed, May 26, 2021 at 01:13:22PM +0100, Will Deacon wrote:
+> > > > > On Tue, May 18, 2021 at 02:42:14PM +0800, Claire Chang wrote:
+> > > > > > @@ -138,4 +160,9 @@ one for multimedia processing (named multimedia-memory@77000000, 64MiB).
+> > > > > >             memory-region = <&multimedia_reserved>;
+> > > > > >             /* ... */
+> > > > > >     };
+> > > > > > +
+> > > > > > +   pcie_device: pcie_device@0,0 {
+> > > > > > +           memory-region = <&restricted_dma_mem_reserved>;
+> > > > > > +           /* ... */
+> > > > > > +   };
+> > > > >
+> > > > > I still don't understand how this works for individual PCIe devices -- how
+> > > > > is dev->of_node set to point at the node you have above?
+> > > > >
+> > > > > I tried adding the memory-region to the host controller instead, and then
+> > > > > I see it crop up in dmesg:
+> > > > >
+> > > > >   | pci-host-generic 40000000.pci: assigned reserved memory node restricted_dma_mem_reserved
+> > > > >
+> > > > > but none of the actual PCI devices end up with 'dma_io_tlb_mem' set, and
+> > > > > so the restricted DMA area is not used. In fact, swiotlb isn't used at all.
+> > > > >
+> > > > > What am I missing to make this work with PCIe devices?
+> > > >
+> > > > Aha, looks like we're just missing the logic to inherit the DMA
+> > > > configuration. The diff below gets things working for me.
+> > >
+> > > I guess what was missing is the reg property in the pcie_device node.
+> > > Will update the example dts.
 > >
-> >  include/dt-bindings/usb/pd.h | 20 ++++++++++----------
-> >  1 file changed, 10 insertions(+), 10 deletions(-)
+> > Thanks. I still think something like my diff makes sense, if you wouldn't mind including
+> > it, as it allows restricted DMA to be used for situations where the PCIe
+> > topology is not static.
 > >
-> > diff --git a/include/dt-bindings/usb/pd.h b/include/dt-bindings/usb/pd.h
-> > index fef3ef65967f..cb70b4ceedde 100644
-> > --- a/include/dt-bindings/usb/pd.h
-> > +++ b/include/dt-bindings/usb/pd.h
-> > @@ -163,10 +163,10 @@
-> >  #define UFP_VDO_VER1_2               2
-> >
-> >  /* Device Capability */
-> > -#define DEV_USB2_CAPABLE     BIT(0)
-> > -#define DEV_USB2_BILLBOARD   BIT(1)
-> > -#define DEV_USB3_CAPABLE     BIT(2)
-> > -#define DEV_USB4_CAPABLE     BIT(3)
-> > +#define DEV_USB2_CAPABLE     (1 << 0)
-> > +#define DEV_USB2_BILLBOARD   (1 << 1)
-> > +#define DEV_USB3_CAPABLE     (1 << 2)
-> > +#define DEV_USB4_CAPABLE     (1 << 3)
->
-> Why not just include the proper .h file instead?
+> > Perhaps we should prefer dev->of_node if it exists, but then use the node
+> > of the host bridge's parent node otherwise?
+> 
+> Sure. Let me add in the next version.
 
-Because the DT headers can't depend on kernel headers as they get used
-separately.
+Brill, thanks! I'll take it for a spin once it lands on the list.
 
-Rob
+Will
