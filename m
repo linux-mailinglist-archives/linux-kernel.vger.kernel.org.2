@@ -2,173 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DC830393276
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 17:30:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D858E393282
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 17:35:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234515AbhE0Pby (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 May 2021 11:31:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34620 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235395AbhE0Pbt (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 May 2021 11:31:49 -0400
-Received: from mail-oi1-x236.google.com (mail-oi1-x236.google.com [IPv6:2607:f8b0:4864:20::236])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85E83C061760
-        for <linux-kernel@vger.kernel.org>; Thu, 27 May 2021 08:30:16 -0700 (PDT)
-Received: by mail-oi1-x236.google.com with SMTP id z3so1141817oib.5
-        for <linux-kernel@vger.kernel.org>; Thu, 27 May 2021 08:30:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:references:from:message-id:date:user-agent:mime-version
-         :in-reply-to:content-language:content-transfer-encoding;
-        bh=8Op4gnoaksdh+U4uxBaqZw6x+/2lPI5nN0JuZIQFbB8=;
-        b=ftbzGVXVapQHfjABpJplpIhe9rGYm/CFIzFI1r7uc4HRf8hXK5qre6sTQzNf8MHREw
-         HNJHRp8vmCtTbn3s6cKFePNAhTQD3r7wtXcFMj6UWu8rlKfOWHE1VSMmGZlmdtse5mci
-         7Sv7XhR7mtmgLMoim9CJH413G41rwl39cGJeYZYNPLDliRv18tUc3FhTq81zjJevzZ4H
-         SK2TXYIVxyDLpZX2VZxqyeENnH7dr3HqejjFhlDTPbJZ4MRy6ZidlxgDaPMD0IuAiDAn
-         Lnj4FAubI8vbgAhBh2+K9bAuebv8X+wCZTGipWVUYM2hwAtNx+PnLRVCRWmV8cjDFEPw
-         gk7Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=8Op4gnoaksdh+U4uxBaqZw6x+/2lPI5nN0JuZIQFbB8=;
-        b=I3AxKVMd9SzgIEGV4KobEniA5+wvIrCZeCdkq/EYDw0QQ/LuyDJhsf2xsXqoQH0i7v
-         UJ+5QKXVt4RjkYqTfALTbl/aI9A6x3BdDxmMUsKWQEcRi9HsZKULWlX1oWisISPq8/eh
-         NQVNvmfsic5jv/pGJ3QzUfodHRObVf7ou9MARqif5rCuuNqPrPocBPa5qK1Zndw7u9O/
-         M/CMEBVDb662witjHJMoFcPOQvg9Xc5hNhZV6IS01VGyzlGTLSQR9dhnTvjINPaG3kjT
-         /ZlSXBby49+EgpvyLTTjFuGqLINFEiijGTNbuoJcVEA9aK1Ph4wRfVnyt+LpOJOk4v4Z
-         TyQg==
-X-Gm-Message-State: AOAM530I8Uw2JwOWg4z88UczewcC6cL6iKKL6Tfn1IVN39q57iXIRsA6
-        K3XeSr3kCORIMcivgpLrCUuXUXoNC3WyPA==
-X-Google-Smtp-Source: ABdhPJyOMWKYlsBpZmjH/V0BtdExO+1W1NzPRHjkisI4EHVFLVPW4jEsaDT53gQtzfyezBL0luGdnA==
-X-Received: by 2002:a54:4e10:: with SMTP id a16mr6051687oiy.48.1622129415549;
-        Thu, 27 May 2021 08:30:15 -0700 (PDT)
-Received: from [192.168.1.30] ([207.135.233.147])
-        by smtp.gmail.com with ESMTPSA id t39sm476798ooi.42.2021.05.27.08.30.14
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 27 May 2021 08:30:15 -0700 (PDT)
-Subject: Re: [PATCH] io_uring: handle signals before letting io-worker exit
-To:     Olivier Langlois <olivier@trillion01.com>,
-        Pavel Begunkov <asml.silence@gmail.com>,
-        io-uring@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <60ae94d1.1c69fb81.94f7a.2a35SMTPIN_ADDED_MISSING@mx.google.com>
- <3d1bd9e2-b711-0aac-628e-89b95ff8dbc3@kernel.dk>
- <1e5c308bd25055ac8a899d40f00df08fc755e066.camel@trillion01.com>
-From:   Jens Axboe <axboe@kernel.dk>
-Message-ID: <7e10ffd2-5948-3869-b0dc-fd81d693fe33@kernel.dk>
-Date:   Thu, 27 May 2021 09:30:14 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S236124AbhE0Pgd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 May 2021 11:36:33 -0400
+Received: from mx2.suse.de ([195.135.220.15]:49616 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236083AbhE0Pgb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 27 May 2021 11:36:31 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1622129697; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=skSx5sYGBpIEBImjjBhZmKlc5nXzPfnPk6dSLZuNQd4=;
+        b=SQzth1qkiCZQ0J0Gkc81V1beK0rQVIS+1iG4kPoo7bqYTsVtkCb/oTfl6wjp2GhUe2Q4IR
+        33gcsj1EcTv3vIKowjbWCr35Mz544DUeUJ9bkCmJIpun/5b402Znr8XbYMXXejlC+2JTjh
+        2MIPkM9QcXj0WStrB8KlEyO2eqaZ5K8=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 708F2AEB3;
+        Thu, 27 May 2021 15:34:57 +0000 (UTC)
+Date:   Thu, 27 May 2021 17:34:56 +0200
+From:   Michal Hocko <mhocko@suse.com>
+To:     Feng Tang <feng.tang@intel.com>
+Cc:     linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
+        David Rientjes <rientjes@google.com>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Ben Widawsky <ben.widawsky@intel.com>,
+        linux-kernel@vger.kernel.org,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Andi Kleen <ak@linux.intel.com>,
+        Dan Williams <dan.j.williams@intel.com>, ying.huang@intel.com
+Subject: Re: [PATCH v1 4/4] mm/mempolicy: kill MPOL_F_LOCAL bit
+Message-ID: <YK+8IAphFzbCweHI@dhcp22.suse.cz>
+References: <1622005302-23027-1-git-send-email-feng.tang@intel.com>
+ <1622005302-23027-5-git-send-email-feng.tang@intel.com>
+ <YK9WOKBRsaFESPfR@dhcp22.suse.cz>
+ <20210527121041.GA7743@shbuild999.sh.intel.com>
+ <YK+P8GDH2kn4FDsA@dhcp22.suse.cz>
+ <20210527133436.GD7743@shbuild999.sh.intel.com>
 MIME-Version: 1.0
-In-Reply-To: <1e5c308bd25055ac8a899d40f00df08fc755e066.camel@trillion01.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210527133436.GD7743@shbuild999.sh.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5/27/21 9:21 AM, Olivier Langlois wrote:
-> On Thu, 2021-05-27 at 07:46 -0600, Jens Axboe wrote:
->> On 5/26/21 12:21 PM, Olivier Langlois wrote:
->>> This is required for proper core dump generation.
->>>
->>> Because signals are normally serviced before resuming userspace and
->>> an
->>> io_worker thread will never resume userspace, it needs to
->>> explicitly
->>> call the signal servicing functions.
->>>
->>> Also, notice that it is possible to exit from the io_wqe_worker()
->>> function main loop while having a pending signal such as when
->>> the IO_WQ_BIT_EXIT bit is set.
->>>
->>> It is crucial to service any pending signal before calling
->>> do_exit()
->>> Proper coredump generation is relying on PF_SIGNALED to be set.
->>>
->>> More specifically, exit_mm() is using this flag to wait for the
->>> core dump completion before releasing its memory descriptor.
->>>
->>> Signed-off-by: Olivier Langlois <olivier@trillion01.com>
->>> ---
->>>  fs/io-wq.c | 22 ++++++++++++++++++++--
->>>  1 file changed, 20 insertions(+), 2 deletions(-)
->>>
->>> diff --git a/fs/io-wq.c b/fs/io-wq.c
->>> index 5361a9b4b47b..b76c61e9aff2 100644
->>> --- a/fs/io-wq.c
->>> +++ b/fs/io-wq.c
->>> @@ -9,8 +9,6 @@
->>>  #include <linux/init.h>
->>>  #include <linux/errno.h>
->>>  #include <linux/sched/signal.h>
->>> -#include <linux/mm.h>
->>> -#include <linux/sched/mm.h>
->>>  #include <linux/percpu.h>
->>>  #include <linux/slab.h>
->>>  #include <linux/rculist_nulls.h>
->>> @@ -193,6 +191,26 @@ static void io_worker_exit(struct io_worker
->>> *worker)
->>>  
->>>         kfree_rcu(worker, rcu);
->>>         io_worker_ref_put(wqe->wq);
->>> +       /*
->>> +        * Because signals are normally serviced before resuming
->>> userspace and an
->>> +        * io_worker thread will never resume userspace, it needs
->>> to explicitly
->>> +        * call the signal servicing functions.
->>> +        *
->>> +        * Also notice that it is possible to exit from the
->>> io_wqe_worker()
->>> +        * function main loop while having a pending signal such as
->>> when
->>> +        * the IO_WQ_BIT_EXIT bit is set.
->>> +        *
->>> +        * It is crucial to service any pending signal before
->>> calling do_exit()
->>> +        * Proper coredump generation is relying on PF_SIGNALED to
->>> be set.
->>> +        *
->>> +        * More specifically, exit_mm() is using this flag to wait
->>> for the
->>> +        * core dump completion before releasing its memory
->>> descriptor.
->>> +        */
->>> +       if (signal_pending(current)) {
->>> +               struct ksignal ksig;
->>> +
->>> +               get_signal(&ksig);
->>> +       }
->>>         do_exit(0);
->>>  }
->>
->> Do we need the same thing in fs/io_uring.c:io_sq_thread()?
->>
-> Jens,
+On Thu 27-05-21 21:34:36, Feng Tang wrote:
+> On Thu, May 27, 2021 at 02:26:24PM +0200, Michal Hocko wrote:
+> > On Thu 27-05-21 20:10:41, Feng Tang wrote:
+> > > On Thu, May 27, 2021 at 10:20:08AM +0200, Michal Hocko wrote:
+> > > > On Wed 26-05-21 13:01:42, Feng Tang wrote:
+> > > > > Now the only remaining case of a real 'local' policy faked by
+> > > > > 'prefer' policy plus MPOL_F_LOCAL bit is:
+> > > > > 
+> > > > > A valid 'prefer' policy with a valid 'preferred' node is 'rebind'
+> > > > > to a nodemask which doesn't contains the 'preferred' node, then it
+> > > > > will handle allocation with 'local' policy.
+> > > > > 
+> > > > > Add a new 'MPOL_F_LOCAL_TEMP' bit for this case, and kill the
+> > > > > MPOL_F_LOCAL bit, which could simplify the code much.
+> > > > 
+> > > > As I've pointed out in the reply to the previous patch. It would have
+> > > > been much better if most of the MPOL_F_LOCAL usage was gone by this
+> > > > patch.
+> > > > 
+> > > > I also dislike a new MPOL_F_LOCAL_TEMP. This smells like sneaking the
+> > > > hack back in after you have painstakingly removed it. So this looks like
+> > > > a step backwards to me. I also do not understand why do we need the
+> > > > rebind callback for local policy at all. There is no node mask for local
+> > > > so what is going on here?
+> > > 
+> > > This is the special case 4 for 'perfer' policy with MPOL_F_STATIC_NODES
+> > > flag set, say it prefer node 1, when it is later 'refind' to a new
+> > > nodemask node 2-3, according to current code it will be add the
+> > > MPOL_F_LOCAL bit and performs 'local' policy acctually. And in future
+> > > it is 'rebind' again with a nodemask 1-2, it will be restored back
+> > > to 'prefer' policy with preferred node 1.
+> > 
+> > Honestly I still do not follow the actual problem. 
 > 
-> You are 100% correct. In fact, this is the same problem for ALL
-> currently existing and future io threads. Therefore, I start to think
-> that the right place for the fix might be straight into do_exit()...
+> I was confused too, and don't know the original thought behind it. This
+> case 4 was just imagined by reading the code.
+> 
+> > A preferred node is a
+> > _hint_. If you rebind the task to a different cpuset then why should we
+> > actually care? The allocator will fallback to the closest node according
+> > to the distance metric. Maybe the original code was trying to handle
+> > that in some way but I really do fail to understand that code and I
+> > strongly suspect it is more likely to overengineered rather than backed
+> > by a real usecase. I might be wrong here but then this is an excellent
+> > opportunity to clarify all those subtleties.
+> 
+> From the code, the original special handling may be needed in 3 cases:
+>     get_policy_nodemask()
+>     policy_node()
+>     mempolicy_slab_node()
+> to not return the preset prefer_nid.
 
-That is what I was getting at. To avoid poluting do_exit() with it, I
-think it'd be best to add an io_thread_exit() that simply does:
-
-void io_thread_exit(void)
-{
-	if (signal_pending(current)) {
-		struct ksignal ksig;
-		get_signal(&ksig);
-	}
-	do_exit(0);
-}
-
-and convert the do_exit() calls in io_uring/io-wq to io_thread_exit()
-instead.
-
+I am sorry but I do not follow. What is actually wrong if the preferred
+node is outside of the cpuset nodemask?
 -- 
-Jens Axboe
-
+Michal Hocko
+SUSE Labs
