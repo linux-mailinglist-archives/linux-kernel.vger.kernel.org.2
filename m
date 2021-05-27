@@ -2,117 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D0F7B39341B
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 18:37:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 61572393418
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 18:36:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236433AbhE0Qi0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 May 2021 12:38:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49990 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236343AbhE0QiV (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 May 2021 12:38:21 -0400
-Received: from mail-yb1-xb31.google.com (mail-yb1-xb31.google.com [IPv6:2607:f8b0:4864:20::b31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 511F6C061574;
-        Thu, 27 May 2021 09:36:48 -0700 (PDT)
-Received: by mail-yb1-xb31.google.com with SMTP id f9so1523222ybo.6;
-        Thu, 27 May 2021 09:36:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=nsrt/UTjaoln5+HvtE7btQi+ehNE1T01zBd6uuErEFI=;
-        b=R1v3QTZdxU9b+dUtRykAGN+UKmo8ptU44HBPkwQzqZhZLrhjC5iduiusBgZuKL/XBh
-         rUx2atp9N4Bd49AB2I/ifRGbjiIvggYa2SvoZ3lYOoV5lHVB55KJjBKf4GhExu1UyvBh
-         tJJ0XQehWHY5s9AFzmbWcWwSAUt+OXbjKS3qjoLBaLZxoysm8GSTN1NQFesL9Rq2dpiX
-         Q7X4EleoiI0cvsYP/lTVYsraKOpx8jKTdmbXlJhSceBrvNlaQoQ7mBThId/eYSwwyEjt
-         CbCWLAn2Fz5fIbd5W7KNkc7rN21d4jEnts5/bx8lKAy9sj5Rr2MxDY885hKEAoUIPSFB
-         NgaQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=nsrt/UTjaoln5+HvtE7btQi+ehNE1T01zBd6uuErEFI=;
-        b=Y66h19BGmQAoSeJZ/8XFTcDXvKBRPVpZOK7QZJNSchNu5Y7KQQdi/0nhMEKqyeie3V
-         4AbiIdd8VP+ahgp/zv1F0dBnOrPGnHyVa3qQDgXoY6iyjhSjqeqLQfSDeFLP8e4msMRC
-         tRnIHZSxOsIBJ/2EdSW0EM+fMwUdRy1L14EW/BUPN7NejmhpGa3Ulal5A111OIUtVnts
-         w/aUKJY1OOxLqCRCs8sTSCsIq9NdAdvkS3FC5NrAvllThCV0rXNmFcQAi9OOcR7CQY7F
-         jChur69PaVVJqTXiBToTSBds02QfvEuT2SbiQQJ3VcImbi4CazVK5/ZMQqSmJT7ezu+r
-         XLMw==
-X-Gm-Message-State: AOAM532mvIT8D8VxI1vb0Z7IVh8HOrcQd2AFmJ/COpGltv4vOKN664VK
-        mWsf00QwvDfxyrbrMWAPAE1k6KCnoUcm5WHxryYXq2ozaklkBg==
-X-Google-Smtp-Source: ABdhPJxfr4CZtOLabl+iIX/7fflp4ualxRtJaQPqcCxq25fqVm9SIPOK41eFRCxO4AaKrm5M9e/K2Xri5oiDFaZczvQ=
-X-Received: by 2002:a5b:f05:: with SMTP id x5mr5917611ybr.425.1622133407477;
- Thu, 27 May 2021 09:36:47 -0700 (PDT)
+        id S236361AbhE0QiW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 May 2021 12:38:22 -0400
+Received: from mga05.intel.com ([192.55.52.43]:22090 "EHLO mga05.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229861AbhE0QiT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 27 May 2021 12:38:19 -0400
+IronPort-SDR: KvmEi82ec9qOFR3jaBiID92nvJq47ABon0TtnzVU8E2IfqxyGqJS17d1JTx/wiGlt23NekhdUG
+ ppMq/Rf9oMcw==
+X-IronPort-AV: E=McAfee;i="6200,9189,9997"; a="288368366"
+X-IronPort-AV: E=Sophos;i="5.83,227,1616482800"; 
+   d="scan'208";a="288368366"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 May 2021 09:36:46 -0700
+IronPort-SDR: TKcEMCRwEJD7/IPQ5Dvf+tHZoPHzHTt9CFQo+Hv7GBwOEHsSmdq+YxsYwCg6eiaLX1bktZrb7v
+ J9h1ecuvASkw==
+X-IronPort-AV: E=Sophos;i="5.83,227,1616482800"; 
+   d="scan'208";a="445087108"
+Received: from sushilsu-mobl1.amr.corp.intel.com (HELO [10.209.3.242]) ([10.209.3.242])
+  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 May 2021 09:36:45 -0700
+Subject: Re: [RFC v2-fix-v2 1/1] x86/traps: Add #VE support for TDX guest
+To:     Sean Christopherson <seanjc@google.com>,
+        "Luck, Tony" <tony.luck@intel.com>
+Cc:     Kuppuswamy Sathyanarayanan 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Andi Kleen <ak@linux.intel.com>,
+        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
+        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
+        "Williams, Dan J" <dan.j.williams@intel.com>,
+        "Raj, Ashok" <ashok.raj@intel.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+References: <4031ffc2-a442-5da7-e793-ac1053533bb3@linux.intel.com>
+ <20210527002931.3632581-1-sathyanarayanan.kuppuswamy@linux.intel.com>
+ <636067f3ed65429ab1094b851aae5256@intel.com> <YK/H1CAc24UzPLDs@google.com>
+From:   Dave Hansen <dave.hansen@intel.com>
+Autocrypt: addr=dave.hansen@intel.com; keydata=
+ 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
+ z5cecg==
+Message-ID: <35c426d6-e468-9f4b-79fd-8d4a6f77f8ab@intel.com>
+Date:   Thu, 27 May 2021 09:36:43 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <20210527120251.GC30378@techsingularity.net> <CAEf4BzartMG36AGs-7LkQdpgrB6TYyTJ8PQhjkQWiTN=7sO1Bw@mail.gmail.com>
- <20210527145441.GE30378@techsingularity.net>
-In-Reply-To: <20210527145441.GE30378@techsingularity.net>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Thu, 27 May 2021 09:36:35 -0700
-Message-ID: <CAEf4BzbW2i4Y-i3TXW7x42PqEpw5_nNeReSXS77m4GC3uqD3wg@mail.gmail.com>
-Subject: Re: [PATCH v2] mm/page_alloc: Work around a pahole limitation with
- zero-sized struct pagesets
-To:     Mel Gorman <mgorman@techsingularity.net>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Christoph Hellwig <hch@infradead.org>,
-        Arnaldo Carvalho de Melo <acme@redhat.com>,
-        Michal Suchanek <msuchanek@suse.de>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Hritik Vijay <hritikxx8@gmail.com>,
-        Linux-BPF <bpf@vger.kernel.org>,
-        Linux-Net <netdev@vger.kernel.org>, Linux-MM <linux-mm@kvack.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <YK/H1CAc24UzPLDs@google.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 27, 2021 at 7:54 AM Mel Gorman <mgorman@techsingularity.net> wrote:
->
-> On Thu, May 27, 2021 at 07:37:05AM -0700, Andrii Nakryiko wrote:
-> > > This patch checks for older versions of pahole and only allows
-> > > DEBUG_INFO_BTF_MODULES if pahole supports zero-sized per-cpu structures.
-> > > DEBUG_INFO_BTF is still allowed as a KVM boot test passed with pahole
-> >
-> > Unfortunately this won't work. The problem is that vmlinux BTF is
-> > corrupted, which results in module BTFs to be rejected as well, as
-> > they depend on it.
-> >
-> > But vmlinux BTF corruption makes BPF subsystem completely unusable. So
-> > even though kernel boots, nothing BPF-related works. So we'd need to
-> > add dependency for DEBUG_INFO_BTF on pahole 1.22+.
-> >
->
-> While bpf usage would be broken, the kernel will boot and the effect
-> should be transparent to any kernel build based on "make oldconfig".
+On 5/27/21 9:24 AM, Sean Christopherson wrote:
+> On Thu, May 27, 2021, Luck, Tony wrote:
+>> +struct ve_info {
+>> +	u64 exit_reason;
+>> +	u64 exit_qual;
+>> +	u64 gla;
+>> +	u64 gpa;
+>> +	u32 instr_len;
+>> +	u32 instr_info;
+>> +};
+>>
+>> I guess that "gla" = Guest Linear Address ... which is a very "Intel" way of
+>> describing what everyone else would call a Guest Virtual Address.
+>>
+>> I don't feel strongly about this though. If this has already been hashed
+>> out already then stick with this name.
+> The "real" #VE information area that TDX is usurping is an architectural struct
+> that defines exit_reason, exit_qual, gla, and gpa, and those fields in turn come
+> directly from their corresponding VMCS fields with longer versions of the same
+> names, e.g. ve_info->gla is a reflection of vmcs.GUEST_LINEAR_ADDRESS.
+> 
+> So normally I would agree that the "linear" terminology is obnoxious, but in
+> this specific case I think it's warranted.
 
-I think if DEBUG_INFO_BTF=y has no chance of generating valid vmlinux
-BTF it has to be forced out. So if we are doing this at all, we should
-do it for CONFIG_DEBUG_INFO_BTF, not CONFIG_DEBUG_INFO_BTF_MODULES.
-CONFIG_DEBUG_INFO_BTF_MODULES will follow automatically.
+The architectural name needs to be *somewhere*.  But, we do diverge from
+the naming in plenty of places.  The architectural name "XSTATE_BV" is
+called xstate.xfeatures in the FPU code, for instance.
 
-> CONFIG_DEBUG_INFO_BTF defaults N so if that is forced out, it will be
-> easily missed by a distribution kernel maintainer.
+In this case, the _least_ we can do is:
 
-We actually had previous discussions on forcing build failure in cases
-when CONFIG_DEBUG_INFO_BTF=y can't be satisfied, but no one followed
-up. I'll look into this and will try to change the behavior. It's
-caused too much confusion previously and now with changes like this we
-are going to waste even more people's time.
+	u64 gla; /* Guest Linear (virtual) Address */
 
->
-> Yes, users of BPF will be affected and it may generate bug reports but
-> the fix will be to build with a working pahole. Breaking boot on the other
-> hand is a lot more visible and hacking around this with a non-zero struct
-> size has been shot down.
->
-> --
-> Mel Gorman
-> SUSE Labs
+although I also wouldn't mind if we did something like:
+
+	u64 guest_vaddr; /* Guest Linear Address (gla) in the spec */
+
+either.
