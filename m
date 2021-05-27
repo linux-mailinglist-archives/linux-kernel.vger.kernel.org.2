@@ -2,207 +2,200 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 01778392C9E
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 13:24:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1CE0C392CA1
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 13:26:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229897AbhE0L0L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 May 2021 07:26:11 -0400
-Received: from mail-dm6nam08on2089.outbound.protection.outlook.com ([40.107.102.89]:17472
-        "EHLO NAM04-DM6-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229640AbhE0L0K (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 May 2021 07:26:10 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=kyIzTy0eAzsB0htBrqIRq2slitk3cp2IUCJ2ZgBMHTxKXvx6NSvEweJGrFo/FUETdrAcGbjqdBzmbcaer40Q63ogfSworVl+i+joZA5GTcJONyZCpAG1emL532nfi9EHRXhCChw9PH5g0KVclxHliYOau3hf/InjaCP2NKAOiJZ+Pe9AiJgkmlawmXrkXtO3iowVCWb5JOdz2SYmtEIHEuHfSh1dv9EUE8Cnhye1V851Bk1PvAYtvU//BFbC606mpfZ+ICWHQbVl4DgtV46DW2Il6Ih/wscC1U+g1iyeR4G4Pi+vCRb5PTAlKkvSfb0J0PJZeXCwQXT0VGxEnc89eQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=m+GLlbyavN2s4LlXhC05paHiRoLrZ64ztRX12w67Qs8=;
- b=UOfRmGAAjvTEfhcQ5LuZYDh/hRHEAnUdOnFZgsyR0XUtz4xIbyaqLftuJ+JEbLhHsvbHM8OJPBE9/T8+cdV+uCHzlCoYwtugMczNNP9D82A1FJThlrtbWIe43TAhJbpToGtuIWV+MTXeRzKYNQcfMCMPdgwpaXUlJtKN/VqDb60toKE7dfTBCFkqknMtTLQe+WtUuD11fZPS3/w30PpqOBhNkPLVYX2mgHgDhozn2e2ON0SsB4hrzmsJqlLeDVBBurAPkmgesRpe3oWt5iFie4jhlyKl6yN/Ppggp0vZ675M5xpbKV+4H5DWw/13qtCLlXCsooJh1D/w7pz+ca0ZSQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=m+GLlbyavN2s4LlXhC05paHiRoLrZ64ztRX12w67Qs8=;
- b=iu6mWV6lPLcENYc847UpOBycMc8gcK8O9vUmDFF+pqoLte2G+WQYMXFoOcJND6Ux7Frn2Kr5C/IM9oX37rR8mhrOI/djhe87uxx1PSazBfwn/OpdRr/Rnw+k84DxNPoTEDnFLx+Mu+res9uMSv3rl3wJR/eqTC3YT2Fh+z7O7sj+ywHkxKXHfkKW2hlvf2U8whcrJcAgALBrFDen0WDeafyjbCAESv/xFwF9/kRP01Xrb9yYr8cXuUvflXel14xkQ2g2aRylBwRj1+HIqmsdkT0xDDFO+yLiZvUTkUSrpCLA/k6E+1zbVSB3gP2sd0xuhaRGDSR7OiE9jklXI3GGLQ==
-Authentication-Results: linux.ibm.com; dkim=none (message not signed)
- header.d=none;linux.ibm.com; dmarc=none action=none header.from=nvidia.com;
-Received: from BL0PR12MB5506.namprd12.prod.outlook.com (2603:10b6:208:1cb::22)
- by BL0PR12MB5556.namprd12.prod.outlook.com (2603:10b6:208:1cf::7) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4173.20; Thu, 27 May
- 2021 11:24:36 +0000
-Received: from BL0PR12MB5506.namprd12.prod.outlook.com
- ([fe80::3d51:a3b9:8611:684e]) by BL0PR12MB5506.namprd12.prod.outlook.com
- ([fe80::3d51:a3b9:8611:684e%7]) with mapi id 15.20.4173.023; Thu, 27 May 2021
- 11:24:36 +0000
-Date:   Thu, 27 May 2021 08:24:33 -0300
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Tony Krowiak <akrowiak@linux.ibm.com>
-Cc:     jjherne@linux.ibm.com, linux-s390@vger.kernel.org,
-        linux-kernel@vger.kernel.org, borntraeger@de.ibm.com,
-        cohuck@redhat.com, pasic@linux.vnet.ibm.com,
-        alex.williamson@redhat.com, kwankhede@nvidia.com,
-        frankja@linux.ibm.com, david@redhat.com, imbrenda@linux.ibm.com,
-        hca@linux.ibm.com
-Subject: Re: [PATCH v4 2/2] s390/vfio-ap: control access to PQAP(AQIC)
- interception handler
-Message-ID: <20210527112433.GX1002214@nvidia.com>
-References: <20210521193648.940864-1-akrowiak@linux.ibm.com>
- <20210521193648.940864-3-akrowiak@linux.ibm.com>
- <5d15fdf2-aee8-4e6c-c3e1-f07c76ce5974@linux.ibm.com>
- <e2bed0a6-f5e2-0a69-22b9-1b304cbe1362@linux.ibm.com>
- <20210525131912.GW1002214@nvidia.com>
- <c54ef522-f348-df16-a99f-1e31feb1b0bd@linux.ibm.com>
- <20210525162927.GC1002214@nvidia.com>
- <966142da-779f-d604-c6f6-e58cec128e5d@linux.ibm.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <966142da-779f-d604-c6f6-e58cec128e5d@linux.ibm.com>
-X-Originating-IP: [206.223.160.26]
-X-ClientProxiedBy: YT1PR01CA0028.CANPRD01.PROD.OUTLOOK.COM (2603:10b6:b01::41)
- To BL0PR12MB5506.namprd12.prod.outlook.com (2603:10b6:208:1cb::22)
+        id S232870AbhE0L1d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 May 2021 07:27:33 -0400
+Received: from szxga08-in.huawei.com ([45.249.212.255]:2315 "EHLO
+        szxga08-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229640AbhE0L1b (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 27 May 2021 07:27:31 -0400
+Received: from dggeml706-chm.china.huawei.com (unknown [172.30.72.56])
+        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4FrQPD27vgz1BFRR;
+        Thu, 27 May 2021 19:21:20 +0800 (CST)
+Received: from dggpemm500022.china.huawei.com (7.185.36.162) by
+ dggeml706-chm.china.huawei.com (10.3.17.144) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2176.2; Thu, 27 May 2021 19:25:55 +0800
+Received: from [10.174.185.220] (10.174.185.220) by
+ dggpemm500022.china.huawei.com (7.185.36.162) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Thu, 27 May 2021 19:25:54 +0800
+Subject: Re: [RFC PATCH v3 0/8] Add IOPF support for VFIO passthrough
+To:     Alex Williamson <alex.williamson@redhat.com>
+CC:     Cornelia Huck <cohuck@redhat.com>, Will Deacon <will@kernel.org>,
+        "Robin Murphy" <robin.murphy@arm.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        "Jean-Philippe Brucker" <jean-philippe@linaro.org>,
+        Eric Auger <eric.auger@redhat.com>, <kvm@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <iommu@lists.linux-foundation.org>, <linux-api@vger.kernel.org>,
+        Kevin Tian <kevin.tian@intel.com>,
+        Lu Baolu <baolu.lu@linux.intel.com>, <yi.l.liu@intel.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        "Barry Song" <song.bao.hua@hisilicon.com>,
+        <wanghaibin.wang@huawei.com>, <yuzenghui@huawei.com>
+References: <20210409034420.1799-1-lushenming@huawei.com>
+ <20210518125756.4c075300.alex.williamson@redhat.com>
+ <accfb404-1d7b-8d73-6fb7-50011a3e546f@huawei.com>
+ <20210524161136.03e9323d@x1.home.shazbot.org>
+From:   Shenming Lu <lushenming@huawei.com>
+Message-ID: <159f0e59-b2cc-ca4b-9796-3ad134a29c1f@huawei.com>
+Date:   Thu, 27 May 2021 19:25:53 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.2.2
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from mlx.ziepe.ca (206.223.160.26) by YT1PR01CA0028.CANPRD01.PROD.OUTLOOK.COM (2603:10b6:b01::41) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4150.27 via Frontend Transport; Thu, 27 May 2021 11:24:36 +0000
-Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1lmE7t-00FXJ3-SK; Thu, 27 May 2021 08:24:33 -0300
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: bce5b8be-498f-4705-3dc8-08d921020237
-X-MS-TrafficTypeDiagnostic: BL0PR12MB5556:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <BL0PR12MB555673A4B43E694886772653C2239@BL0PR12MB5556.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:7691;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 8Fyqh+IM8RZKzZtBithyk3tZ/Zjrx5ZM4EK9jqMC28lvd5WRA/41/j55fUy52C2Y78TuDntdpLN4CfCJdUW4d+r0rpoRLYMiHEH/GJIB2ybuixpP23OVaXYfNCvusrrYOkzzd3GxCN3Yv1NQ0Y9+t8h9AcdcUDhU+Nyb25MoEaI2XVEHhJOMeyBtxQqZ/2Zu0XBu3qDUQBRJaC6Fm6/YrjjpEAymTTLxwe///NLO2Nniyc/F4vy2aVM+8qFNOohqQc8dqiTNpuwtGARJEO6DfL69Yn5955qVjSFtReeCFiPV3NRSVByO+JztF2snVgsbOV2dEYpqX4PH0MJeuG9+JSgpxQKewPCnzw07HgavPe16MkrtEKk5ysad9ljE9kvRhP9+VCYyvpGtBJyMQ4UGcm9xuobgQ/ug8JBScHfmVfjMvrg/4dXwYQx2YStIOGhcPtF1a1p6UW0bpQf3JUfMbgKyftL4Qt1QHrIsrCsSGBqDP5Dr9cte/y+KMHppRwjdbfS/QRc6cZ3qR1vyHjwk0l9DjNZwSIlsxzMCFYw4CLP2RNAJZnT2vMtsScwyqmQUgHbwJjBqzYdwiUOH7IUmQpkrB/5dH/zchBz+wzipTHo=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL0PR12MB5506.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(376002)(366004)(346002)(396003)(39860400002)(83380400001)(478600001)(8936002)(7416002)(8676002)(38100700002)(5660300002)(426003)(33656002)(53546011)(86362001)(6916009)(1076003)(66556008)(316002)(66476007)(2906002)(26005)(9786002)(9746002)(36756003)(4326008)(186003)(2616005)(66946007);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?YHP2NGJFEhHYLbxMcpSQgK7pqbWSZIZSTWt6hFeA7YaSQKw+JSx7rnJXE7oO?=
- =?us-ascii?Q?oUI+PA+dMsiCj3dDs9Kr9pqXcC3qD53Qh7lC2qYY0fZDFc5LLfAvBwSWFHAB?=
- =?us-ascii?Q?Yh3b8FbugtwsVCWU+3mw1NBYXAkJ09mM7Nx5y4W5kHdr9GkoAVbyXlrpPbHp?=
- =?us-ascii?Q?L1rYrOivXVOvnP6MOuANicTR8Z2wM2pzCRG2d0vUx2mOIuPxf5Dpxj1Wc6J6?=
- =?us-ascii?Q?WKamYLCt20eC2ENe8s8EP2obXn6Vt9CIwqr3nhmrL8/v3J8uPs9Hnrps/JRo?=
- =?us-ascii?Q?oQnD6U9Ok2SbkMfQi1uKBEfWl5JsLIeAK1n6Yvn1yqjICgSZBgyj/ALeDggL?=
- =?us-ascii?Q?wLeucvvDJyOVKt4T/c6cO2bz7E9Vhd6+nRhSpjGefBRYfEDVOuCxrcsQN3h/?=
- =?us-ascii?Q?CGSyl9ZFqXEUaW67pEJLHPd7YdsqTdZOtYreH5dq2q7TQMs56YD82b4e6+yj?=
- =?us-ascii?Q?Pn0AEoeYUqy90wlSffOnWtGyPdP97kjPYRLVjzEBDPQI9bYGQNWxsZfDR59v?=
- =?us-ascii?Q?rmS9c/GCgrtdRJ7M7fR49Q5vav+GPYuID2kvMzGBSUZRao9urAKxqrH421CI?=
- =?us-ascii?Q?tRMxh3vrGoc9y1S2admI2ItWA8gcdugyb2ekZ7qQV/eEHSnx+tLyEnYaqbyU?=
- =?us-ascii?Q?tzqjEVGw/MzpeTcRGNIfmJeKIRIbA1zh19sweKrbM5wEsuh8Zc7LdRvPCVNF?=
- =?us-ascii?Q?Yzv1zIEVVihWPXiMM3441J/epNFWQrKAIahzqrIyElmZT0z69Q+mY9nZgSBc?=
- =?us-ascii?Q?D5NPoqg4o+8COmiNEH2iCtp+H8eMotDd6JTkBLuMef6THUcIvAv5ZSKrhTuu?=
- =?us-ascii?Q?FhVsuLVbfBN//sdPZzP+mcbHOYWR4E0bjwLkXL7OwsiuDWssDO59eoY7pmW7?=
- =?us-ascii?Q?ZObovA4+uRQMGzZ2eO6rYP+eWI+t/aQHoDrhQclkFJsK5SI4LVWiCUQPU5x0?=
- =?us-ascii?Q?uyKH+VJrBUUkaiZueQJJYIg7jYM3Co/AEQRcrvUuhoBzkywOXpQMFcoBiJew?=
- =?us-ascii?Q?ji0ly3dofyUqAjzVccobPfqm6JF+tLHhl/pDA2JpxchTSAgnFu96oaZFtZFx?=
- =?us-ascii?Q?hTV4UW7DUZDi5UISP6pZeJo2LUhDkKaD1DreXW5Kso9VXu4KpbsY0Pbadres?=
- =?us-ascii?Q?H+McgTnmT2wYVTS5fTJF955NA0kTLuYT+8PeHOg3pYN5f3QyC9q+7WZqrXh8?=
- =?us-ascii?Q?b15VXofKkdmQdQF8s+XeyKgQY9DOKH/wTvOYSo8xgH+YRWBweDdqldUaiKd1?=
- =?us-ascii?Q?MCbMPFcW7sAHsGfkOgw+k+AQipaAuAH0hZCXlsXXAHD6Gu5+YRgFRUeQJ8Vj?=
- =?us-ascii?Q?oqtQpGG4u2l/1hkgPPBTRjNc?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: bce5b8be-498f-4705-3dc8-08d921020237
-X-MS-Exchange-CrossTenant-AuthSource: BL0PR12MB5506.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 27 May 2021 11:24:36.3568
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: E/b71o+qYYJaq1rrLE0qAcC9EdJJS7S0ZX9GSCPp6bROoUXZ9IkwZVeJytZm6Rrx
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL0PR12MB5556
+In-Reply-To: <20210524161136.03e9323d@x1.home.shazbot.org>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.185.220]
+X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
+ dggpemm500022.china.huawei.com (7.185.36.162)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 26, 2021 at 10:28:29PM -0400, Tony Krowiak wrote:
+On 2021/5/25 6:11, Alex Williamson wrote:
+> On Fri, 21 May 2021 14:37:21 +0800
+> Shenming Lu <lushenming@huawei.com> wrote:
 > 
+>> Hi Alex,
+>>
+>> On 2021/5/19 2:57, Alex Williamson wrote:
+>>> On Fri, 9 Apr 2021 11:44:12 +0800
+>>> Shenming Lu <lushenming@huawei.com> wrote:
+>>>   
+>>>> Hi,
+>>>>
+>>>> Requesting for your comments and suggestions. :-)
+>>>>
+>>>> The static pinning and mapping problem in VFIO and possible solutions
+>>>> have been discussed a lot [1, 2]. One of the solutions is to add I/O
+>>>> Page Fault support for VFIO devices. Different from those relatively
+>>>> complicated software approaches such as presenting a vIOMMU that provides
+>>>> the DMA buffer information (might include para-virtualized optimizations),
+>>>> IOPF mainly depends on the hardware faulting capability, such as the PCIe
+>>>> PRI extension or Arm SMMU stall model. What's more, the IOPF support in
+>>>> the IOMMU driver has already been implemented in SVA [3]. So we add IOPF
+>>>> support for VFIO passthrough based on the IOPF part of SVA in this series.  
+>>>
+>>> The SVA proposals are being reworked to make use of a new IOASID
+>>> object, it's not clear to me that this shouldn't also make use of that
+>>> work as it does a significant expansion of the type1 IOMMU with fault
+>>> handlers that would duplicate new work using that new model.  
+>>
+>> It seems that the IOASID extension for guest SVA would not affect this series,
+>> will we do any host-guest IOASID translation in the VFIO fault handler?
 > 
-> On 5/25/21 12:29 PM, Jason Gunthorpe wrote:
-> > On Tue, May 25, 2021 at 11:56:50AM -0400, Tony Krowiak wrote:
-> > 
-> > > The vfio_ap_mdev_unset_kvm() function, however, is called both by
-> > > the group notifier when the KVM pointer has been cleared or when the
-> > > mdev is being removed. In both cases, the only way to get the KVM
-> > > pointer - which is needed to unplug the AP resources from the guest
-> > > - is from the matrix_mdev which contains it.
-> > Okay, but that isn't a problem, the matrix dev holds a ref on the kvm
-> > pointer so we can just copy it outside the lock after we prevent it
-> > from changing by unregistering the notifier:
-> > 
-> > @@ -1362,14 +1365,19 @@ static void vfio_ap_mdev_release(struct mdev_device *mdev)
-> >   {
-> >          struct ap_matrix_mdev *matrix_mdev = mdev_get_drvdata(mdev);
-> > -       mutex_lock(&matrix_dev->lock);
-> > -       vfio_ap_mdev_unset_kvm(matrix_mdev);
-> > -       mutex_unlock(&matrix_dev->lock);
-> > -
-> >          vfio_unregister_notifier(mdev_dev(mdev), VFIO_IOMMU_NOTIFY,
-> >                                   &matrix_mdev->iommu_notifier);
-> >          vfio_unregister_notifier(mdev_dev(mdev), VFIO_GROUP_NOTIFY,
-> >                                   &matrix_mdev->group_notifier);
-> > +
-> > +       mutex_lock(&matrix_dev->lock);
-> > +       /* matrix_dev->kvm cannot be changed now since we removed the notifiers */
-> > +       kvm = matrix_mdev->kvm;
-> > +       matrix_mdev->kvm = NULL;
-> > +       mutex_unlock(&matrix_dev->lock);
-> > +
-> > +       vfio_ap_mdev_unset_kvm(matrix_mdev, kvm);
-> > +
-> >          module_put(THIS_MODULE);
-> > 
-> > Note the above misordering is an existing bug too
-> > 
-> > And reoganize unset_kvm so it uses internal locking and gets the kvm
-> > from the argument.
+> Surely it will, we don't currently have any IOMMU fault handling or
+> forwarding of IOMMU faults through to the vfio bus driver, both of
+> those would be included in an IOASID implementation.  I think Jason's
+> vision is to use IOASID to deprecate type1 for all use cases, so even
+> if we were to choose to implement IOPF in type1 we should agree on
+> common interfaces with IOASID.
+
+Yeah, the guest IOPF(L1) handling may include the host-guest IOASID translation,
+which can be placed in the IOASID layer (in fact it can be placed in many places
+such as the vfio pci driver since it don't really handle the fault event, it just
+transfers the event to the vIOMMU).
+But the host IOPF(L2) has no relationship with IOASID at all, it needs to have a
+knowledge of the vfio_dma ranges.
+Could we add the host IOPF support to type1 first (integrate it within the MAP ioctl)?
+And we may migrate the generic iommu controls (such as MAP/UNMAP...) from type1 to
+IOASID in the future (it seems to be a huge work, I will be very happy if I could
+help this)... :-)
+
+>  
+>>>> We have measured its performance with UADK [4] (passthrough an accelerator
+>>>> to a VM(1U16G)) on Hisilicon Kunpeng920 board (and compared with host SVA):
+>>>>
+>>>> Run hisi_sec_test...
+>>>>  - with varying sending times and message lengths
+>>>>  - with/without IOPF enabled (speed slowdown)
+>>>>
+>>>> when msg_len = 1MB (and PREMAP_LEN (in Patch 4) = 1):
+>>>>             slowdown (num of faults)
+>>>>  times      VFIO IOPF      host SVA
+>>>>  1          63.4% (518)    82.8% (512)
+>>>>  100        22.9% (1058)   47.9% (1024)
+>>>>  1000       2.6% (1071)    8.5% (1024)
+>>>>
+>>>> when msg_len = 10MB (and PREMAP_LEN = 512):
+>>>>             slowdown (num of faults)
+>>>>  times      VFIO IOPF
+>>>>  1          32.6% (13)
+>>>>  100        3.5% (26)
+>>>>  1000       1.6% (26)  
+>>>
+>>> It seems like this is only an example that you can make a benchmark
+>>> show anything you want.  The best results would be to pre-map
+>>> everything, which is what we have without this series.  What is an
+>>> acceptable overhead to incur to avoid page pinning?  What if userspace
+>>> had more fine grained control over which mappings were available for
+>>> faulting and which were statically mapped?  I don't really see what
+>>> sense the pre-mapping range makes.  If I assume the user is QEMU in a
+>>> non-vIOMMU configuration, pre-mapping the beginning of each RAM section
+>>> doesn't make any logical sense relative to device DMA.  
+>>
+>> As you said in Patch 4, we can introduce full end-to-end functionality
+>> before trying to improve performance, and I will drop the pre-mapping patch
+>> in the current stage...
+>>
+>> Is there a need that userspace wants more fine grained control over which
+>> mappings are available for faulting? If so, we may evolve the MAP ioctl
+>> to support for specifying the faulting range.
 > 
-> As I told you in a previous email, this is not a trivial exercise.
+> You're essentially enabling this for a vfio bus driver via patch 7/8,
+> pinning for selective DMA faulting.  How would a driver in userspace
+> make equivalent requests?  In the case of performance, the user could
+> mlock the page but they have no mechanism here to pre-fault it.  Should
+> they?
 
-Well, it is not a 5 line patch, but it looks like 10 mins work and
-some testing to me, tracking down all the uses of matrx_mdev->kvm
-under the vfio_ap_mdev_unset_kvm() call does not seem difficult nor do
-there seem to be so many.
+Make sense.
 
-> vfio_ap_free_aqic_resources() function. In order to unregister the
-> the guest's ISC, the matrix_mdev->kvm pointer must still
-> be set, however, you cleared it above.
+It seems that we should additionally iommu_map the pages which are IOPF
+enabled and pinned in vfio_iommu_type1_pin_pages, and there is no need
+to add more tracking structures in Patch 7...
 
-Which is why I said unset_kvm needs to be reorganized to use the kvm
-argument, not the matrixt_mdev->kvm
-
-> Another thing you're overlooking is the fact that all of the
-> assignment/unassignment functions associated with the
-> corresponding syfs attributes of the mdev change the
-> content of the matrix_mdev->matrix and
-> matrix_mdev->shadow_apcb structures. In particular,
-> the matrix_mdev->matrix contains the APQNs of the
-> queues that must be reset. These sysfs attributes can
-> be accessed at any time including when the
-> vfio_ap_mdev_unset_kvm() function is executing,
-> so that is something that must also be taken into
-> consideration.
-
-I checked and thought they already had a lock?
- 
-> > Also the kvm_busy should be replaced by a proper rwsem, don't try to
-> > open code locks like that - it just defeats lockdep analysis.
 > 
-> I've had no luck trying to refactor this using rwsem. I always
-> run into lockdep problems between the matrix_dev->lock
-> and matrix_mdev->rwsem, even if the locking order is maintained.
+>> As for the overhead of IOPF, it is unavoidable if enabling on-demand paging
+>> (and page faults occur almost only when first accessing), and it seems that
+>> there is a large optimization space compared to CPU page faulting.
+> 
+> Yes, there's of course going to be overhead in terms of latency for the
+> page faults.  My point was more that when a host is not under memory
+> pressure we should trend towards the performance of pinned, static
+> mappings and we should be able to create arbitrarily large pre-fault
+> behavior to show that.
 
-Usually when people start open coding locks it is often because
-lockdep complained.
+Make sense.
 
-Open coding a lock makes lockdep stop because the lockdep code is
-removed, but it doesn't fix anything.
+> But I think what we really want to enable via IOPF is density, right?
 
-> Clearly, I am lacking in understanding of how these locks
-> interact. Any clues here?
+density? Did you mean the proportion of the IOPF enabled mappings?
 
-I'd have to see the lockdep reports and look at it quite a lot
-more. 
+> Therefore how many more assigned device guests
+> can you run on a host with IOPF?> How does the slope, plateau, and
+> inflection point of their aggregate throughput compare to static
+> pinning?  VM startup time is probably also a useful metric, ie. trading
+> device latency for startup latency.  Thanks,
 
-Jason
+Yeah, these are what we have to consider and test later. :-)
+And the slope, plateau, and inflection point of the aggregate throughput
+may depend on the specific device driver's behavior (such as whether they
+reuse the DMA buffer)...
+
+Thanks,
+Shenming
+
+> 
+> Alex
+> 
+> .
+> 
