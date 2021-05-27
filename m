@@ -2,140 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B249E393049
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 15:55:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2219A393051
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 15:58:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236774AbhE0N4i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 May 2021 09:56:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40898 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236696AbhE0N4U (ORCPT
+        id S236668AbhE0N73 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 May 2021 09:59:29 -0400
+Received: from fllv0016.ext.ti.com ([198.47.19.142]:60628 "EHLO
+        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236645AbhE0N7I (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 May 2021 09:56:20 -0400
-Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20AA6C06138D;
-        Thu, 27 May 2021 06:54:47 -0700 (PDT)
-Received: by mail-pl1-x631.google.com with SMTP id t21so24188plo.2;
-        Thu, 27 May 2021 06:54:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=e2Q9Fi4+Y3HDr0p6x7AzX3U4YPXNdxuFZ7l9M0bi/AI=;
-        b=qnB5RTc/6YtVrmIAgqR+Rr40dJeVcNVXbAQZVC8mLbmSj015v7oAcLdkklaMEt0zEa
-         CkL1MEkQA5E38KMEYXb8XIz/6CY2KwU+3bqo1pu06CINeMlOz4LOQ9+lF1D+IV7hcGEx
-         n9OUpJs4nr78QHJ06woTHGZahnmlfxZRAykB5wA8yJaG3GhPRRhoh56g+iN7J0szLGB6
-         slPwUQY+Wf7VzsFyPE80N7QqOfkXzI+w5o+no6YCFa5HSfQuACesMYWvq32xirStu1YX
-         iJWeLm1dT/pXwEsSZ6Twb8mMGpCftmw4ezSB30i7gvkieGakCIg23Bt83L06mdjzV5sk
-         cbNg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=e2Q9Fi4+Y3HDr0p6x7AzX3U4YPXNdxuFZ7l9M0bi/AI=;
-        b=f2qrdaGap/BXqZ7i2sCKmLnVC8GOlaZ3xSHWiXaBQcZqqtcVMMsMKBdHMGsVtWyLCc
-         Ua7hnrlzKwBftutRi+3jBR/ayHY1gj0Wae6jddfmrpS0r6dFzEYYjJOg4RQuLwSx/PSa
-         fVQa6UMMyJrNoOWxvXok+Ww0QtUgnBWGEiUguK/uep5BydOPp8qgk4eNKx7mCW9NWWk6
-         fK4T4IbAG3QhWu49R3h+pweQiGxqrCznrzWtyAxvJy+nxV8EoMP+OVFrxwmJN8Zp+H9o
-         3Y36CJIvKOYQIAJGOkmcfXcRVwilDcXrGczI+sTfKMdvYESfg2dOywqQpyLm6PZLTMLS
-         Bi+A==
-X-Gm-Message-State: AOAM533P6afiH0o+ARUDHGJ8du+sm2c6FYqDPUc/sHjOMfl7ukvmFA32
-        NMmW0tIfNvGrj/WQ9UxClXBBYIZaIy4=
-X-Google-Smtp-Source: ABdhPJyQUMsBrYjMTZ9of8jWYyYdJXwXhPAvB1qiqKeQreJ0Iw3GmWjgpd3Mi4dsoJyq8wiUlxPWpg==
-X-Received: by 2002:a17:90a:5309:: with SMTP id x9mr9483917pjh.111.1622123686351;
-        Thu, 27 May 2021 06:54:46 -0700 (PDT)
-Received: from localhost.localdomain ([203.205.141.39])
-        by smtp.gmail.com with ESMTPSA id 10sm2163387pgl.39.2021.05.27.06.54.43
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 27 May 2021 06:54:46 -0700 (PDT)
-From:   Hongbo Li <herbert.tencent@gmail.com>
-To:     keyrings@vger.kernel.org, linux-crypto@vger.kernel.org,
-        herbert@gondor.apana.org.au, ebiggers@kernel.org,
-        dhowells@redhat.com, jarkko@kernel.org,
-        tianjia.zhang@linux.alibaba.com, herberthbli@tencent.com
-Cc:     linux-kernel@vger.kernel.org, linux-integrity@vger.kernel.org
-Subject: [PATCH v2 7/7] crypto: add eddsa test vector
-Date:   Thu, 27 May 2021 21:53:35 +0800
-Message-Id: <1622123615-15517-8-git-send-email-herbert.tencent@gmail.com>
-X-Mailer: git-send-email 1.8.3.1
-In-Reply-To: <1622123615-15517-1-git-send-email-herbert.tencent@gmail.com>
-References: <1622123615-15517-1-git-send-email-herbert.tencent@gmail.com>
+        Thu, 27 May 2021 09:59:08 -0400
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 14RDvTGR020500;
+        Thu, 27 May 2021 08:57:29 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1622123849;
+        bh=N7lm3iC6z4c1vvCF3/BGcb13/gOgPoEV04H4Ao2pjik=;
+        h=Subject:To:CC:References:From:Date:In-Reply-To;
+        b=lTYbUdJQv98JuV38uG2wwr5BDya6C6j2W6soOtz3x4imoFqzKsj4PfS/4eXd1q8Wk
+         C6/FtX2h7DQKK1NJ2ZfJHB1taQ4BI8K6ruPiSrwzIe4UvfHUdN4Cd/skqVNNVRr81L
+         PNmaN6r5jdQdaWS7IXEUP+W2kvVyITZHQUPXaMho=
+Received: from DLEE102.ent.ti.com (dlee102.ent.ti.com [157.170.170.32])
+        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 14RDvT77030778
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Thu, 27 May 2021 08:57:29 -0500
+Received: from DLEE107.ent.ti.com (157.170.170.37) by DLEE102.ent.ti.com
+ (157.170.170.32) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Thu, 27
+ May 2021 08:57:29 -0500
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DLEE107.ent.ti.com
+ (157.170.170.37) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
+ Frontend Transport; Thu, 27 May 2021 08:57:29 -0500
+Received: from [10.250.234.148] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 14RDvPZ8125767;
+        Thu, 27 May 2021 08:57:26 -0500
+Subject: Re: [PATCH] arm64: dts: ti: j7200-main: Enable USB2 PHY RX
+ sensitivity workaround
+To:     Aswath Govindraju <a-govindraju@ti.com>
+CC:     <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Tero Kristo <kristo@kernel.org>, Nishanth Menon <nm@ti.com>,
+        Lokesh Vutla <lokeshvutla@ti.com>,
+        Kishon Vijay Abraham I <kishon@ti.com>
+References: <20210512153308.5840-1-a-govindraju@ti.com>
+From:   Vignesh Raghavendra <vigneshr@ti.com>
+Message-ID: <24eaca68-ff57-af91-c3d6-98095c159354@ti.com>
+Date:   Thu, 27 May 2021 19:27:25 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
+MIME-Version: 1.0
+In-Reply-To: <20210512153308.5840-1-a-govindraju@ti.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Hongbo Li <herberthbli@tencent.com>
 
-This patch adds the test vector for ed25519.
-The test vector is from RFC8032 section 7.1 [1]
 
-[1]https://datatracker.ietf.org/doc/html/rfc8032#section-7.1
+On 5/12/21 9:03 PM, Aswath Govindraju wrote:
+> From: Roger Quadros <rogerq@ti.com>
+> 
+> Enable work around feature built into the controller to address issue with
+> RX Sensitivity for USB2 PHY.
+> 
+> Fixes: 6197d7139d12 ("arm64: dts: ti: k3-j7200-main: Add USB controller")
+> Signed-off-by: Roger Quadros <rogerq@ti.com>
+> Signed-off-by: Aswath Govindraju <a-govindraju@ti.com>
+> ---
 
-Signed-off-by: Hongbo Li <herberthbli@tencent.com>
----
- crypto/testmgr.c |  6 ++++++
- crypto/testmgr.h | 32 ++++++++++++++++++++++++++++++++
- 2 files changed, 38 insertions(+)
+Reviewed-by: Vignesh Raghavendra <vigneshr@ti.com>
 
-diff --git a/crypto/testmgr.c b/crypto/testmgr.c
-index 10c5b3b01ec4..498d1866ef77 100644
---- a/crypto/testmgr.c
-+++ b/crypto/testmgr.c
-@@ -4938,6 +4938,12 @@ static const struct alg_test_desc alg_test_descs[] = {
- 		.suite = {
- 			.akcipher = __VECS(ecrdsa_tv_template)
- 		}
-+	}, {
-+		.alg = "eddsa-25519",
-+		.test = alg_test_akcipher,
-+		.suite = {
-+			.akcipher = __VECS(eddsa_25519_tv_template)
-+		}
- 	}, {
- 		.alg = "essiv(authenc(hmac(sha256),cbc(aes)),sha256)",
- 		.test = alg_test_aead,
-diff --git a/crypto/testmgr.h b/crypto/testmgr.h
-index 34e4a3db3991..11807a308ef9 100644
---- a/crypto/testmgr.h
-+++ b/crypto/testmgr.h
-@@ -1144,6 +1144,38 @@ static const struct akcipher_testvec ecrdsa_tv_template[] = {
- 	},
- };
- 
-+/*
-+ * EDDSA test vectors.
-+ * From RFC8032 section 7.1
-+ */
-+static const struct akcipher_testvec eddsa_25519_tv_template[] = {
-+	{
-+	.key =
-+	"\x3d\x40\x17\xc3\xe8\x43\x89\x5a\x92\xb7\x0a\xa7\x4d\x1b\x7e\xbc"
-+	"\x9c\x98\x2c\xcf\x2e\xc4\x96\x8c\xc0\xcd\x55\xf1\x2a\xf4\x66\x0c",
-+	.key_len = 32,
-+	/*
-+	 * RFC8032 section 5.1.7. m is SHA512(dom2(F, C) || R || A || PH(M))
-+	 * M is 0x72
-+	 */
-+	.m =
-+	"\xa2\x71\xdf\x0d\x2b\x0d\x03\xbd\x17\xb4\xed\x9a\x4b\x6a\xfd\xdf"
-+	"\x2e\x73\x28\x7f\xd6\x30\xf1\xa1\x37\xd8\x7c\xe8\x73\xa5\x91\xcc"
-+	"\x31\xb6\xdd\x85\x2a\x98\xb5\xdd\x12\x26\xfe\x99\x3d\x82\x28\x27"
-+	"\x8c\xeb\xa2\x1f\x80\xb8\xfc\x95\x98\x6a\x70\xd7\x1e\xdf\x3f\xaf",
-+	.m_size = 64,
-+	.c =
-+	"\x92\xa0\x09\xa9\xf0\xd4\xca\xb8\x72\x0e\x82\x0b\x5f\x64\x25\x40"
-+	"\xa2\xb2\x7b\x54\x16\x50\x3f\x8f\xb3\x76\x22\x23\xeb\xdb\x69\xda"
-+	"\x08\x5a\xc1\xe4\x3e\x15\x99\x6e\x45\x8f\x36\x13\xd0\xf1\x1d\x8c"
-+	"\x38\x7b\x2e\xae\xb4\x30\x2a\xee\xb0\x0d\x29\x16\x12\xbb\x0c\x00",
-+	.c_size = 64,
-+	.algo = OID_ed25519,
-+	.public_key_vec = true,
-+	.siggen_sigver_test = true,
-+	}
-+};
-+
- /*
-  * PKCS#1 RSA test vectors. Obtained from CAVS testing.
-  */
--- 
-2.27.0
-
+>  arch/arm64/boot/dts/ti/k3-j7200-main.dtsi | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/arch/arm64/boot/dts/ti/k3-j7200-main.dtsi b/arch/arm64/boot/dts/ti/k3-j7200-main.dtsi
+> index f86c493a44f1..07c0ce484cae 100644
+> --- a/arch/arm64/boot/dts/ti/k3-j7200-main.dtsi
+> +++ b/arch/arm64/boot/dts/ti/k3-j7200-main.dtsi
+> @@ -679,6 +679,7 @@
+>  					  "otg";
+>  			maximum-speed = "super-speed";
+>  			dr_mode = "otg";
+> +			cdns,phyrst-a-enable;
+>  		};
+>  	};
+>  
+> 
