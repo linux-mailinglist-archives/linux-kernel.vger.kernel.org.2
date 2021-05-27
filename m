@@ -2,130 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4309E39370B
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 22:23:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3204839370E
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 22:23:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235818AbhE0UYm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 May 2021 16:24:42 -0400
-Received: from mail-io1-f47.google.com ([209.85.166.47]:33752 "EHLO
-        mail-io1-f47.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236297AbhE0UYh (ORCPT
+        id S236361AbhE0UY4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 May 2021 16:24:56 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:28793 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S236282AbhE0UYn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 May 2021 16:24:37 -0400
-Received: by mail-io1-f47.google.com with SMTP id a6so1901912ioe.0
-        for <linux-kernel@vger.kernel.org>; Thu, 27 May 2021 13:23:03 -0700 (PDT)
+        Thu, 27 May 2021 16:24:43 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1622146989;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=RoKsIz4q4xSpRNm9hs0BrG9ToefGgP2GtNCOUn+H6ys=;
+        b=StCwmoe/U9yb1ZPiYPRb0UWIleBxM8AqFC6Cah0dnZCMxqw7v28kp0NB/I0l7l02ipmiFX
+        s8ErSPg0tMQOmOCgE3btmgBiNDwgVHHHAPM9G3tkT/ZbtN/BZ/gEUFdfa6GZoF0WPeTEyZ
+        37TsOJnZFd2xPO35QvRiGZ1OvBDanVs=
+Received: from mail-qv1-f69.google.com (mail-qv1-f69.google.com
+ [209.85.219.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-324-iozb4MsDMMaUI3q0h_XATw-1; Thu, 27 May 2021 16:23:08 -0400
+X-MC-Unique: iozb4MsDMMaUI3q0h_XATw-1
+Received: by mail-qv1-f69.google.com with SMTP id j14-20020a0cf30e0000b02902142ba51ef2so1021864qvl.10
+        for <linux-kernel@vger.kernel.org>; Thu, 27 May 2021 13:23:08 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition;
-        bh=KJxarqOA5UAquH//zCAX9LSHqifUGG7qrEUJvYDCc/U=;
-        b=MJ4qRjPH+B/mZZLNs5dl6YKqQ7fGQFda9TqpqI36/Dcoawo4vlmG3pHuWrRZYeS5ei
-         It0+7y/69vp8cF3+xpwN55M16OId82CaxRl5/Q3J68x93RaXlpPDwCpiexVG5nBvriYJ
-         REj2xm6PFYAZj8pdmsWdivw1GD+H/gqBvez+bVeXqMYnttPmWpBjzuvDyMgb5fLYWKQJ
-         987FFlBlTc7q9dMtMUkOeJTB1A6NlaP6n6qATmC0AjSeVgYA1sNUPY2B7A7ucLCww37o
-         V9/TorKXvx1SQ7efnuk0ScE2yZJUy4Nd1uyLGO3bE63xm7v4NjiZBX/fYXIfTXkTEE/X
-         vLlA==
-X-Gm-Message-State: AOAM530w9wGq8mNu8vlAr0Bfm4vEO7fzRVe++OxfZl2NVdSPwsgviJwN
-        Ul3yhBhQm0EANArLadRoLDg=
-X-Google-Smtp-Source: ABdhPJxsn+SDwP9x+hJL6MjuV5MUCe6IUz/t7g9fKuhdYGZIkDHkFYbJomPtSesAxzn4jGs6bChgZA==
-X-Received: by 2002:a02:ba08:: with SMTP id z8mr5241195jan.74.1622146982921;
-        Thu, 27 May 2021 13:23:02 -0700 (PDT)
-Received: from google.com (243.199.238.35.bc.googleusercontent.com. [35.238.199.243])
-        by smtp.gmail.com with ESMTPSA id y18sm1829721ili.18.2021.05.27.13.23.02
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=RoKsIz4q4xSpRNm9hs0BrG9ToefGgP2GtNCOUn+H6ys=;
+        b=PgDy2pgjQZr952O/yiVoitT6nRFkuEyetdyryrxqmPeOE4sgNjK2+19tPk0oLFxMtN
+         RUb2Z70s3Bdcl3vzUHiWbrcQXPHMy5NnIHVb9WQeqXtT9D6+Xmx4oN27wfa7KDGoNCoE
+         2hon8Zve+3FO/8/gjbCxltq37kLL9KO0MTx/6uzNi/06ThvzBhvpx0khqOjB5EwgPAmC
+         1ut8fXQ8Ovthj29knvi5KLpiBCvlnvgdsImBcS2twJ33J2cso973sHRI49o1m6ucxSNH
+         hh7e+iXHcgAl6WrRG66mDDeNHln7BSjgvsaLekn9tmCxl+hppoh2GouD33kLLBVnt8by
+         CyaA==
+X-Gm-Message-State: AOAM5332F/gcWWFkUVi79lU9yz5cLWlRAhnwyJH78ClNDt+E5/Xo7Q2R
+        0i7q+Ty4yByXidTXlvWVZz/fUBDtn81dboXUtHx8WXe+Z3uv7iCqm9QPUMdb/Pd2yewB0Rjdq6O
+        1j4H8deXsHWLiWz8W9M4BtgSI6crxfTVRRR18kJVgD+LvkbD62+2KmAHvABusQ13PIqhtGlqoeg
+        ==
+X-Received: by 2002:a05:620a:1654:: with SMTP id c20mr356030qko.282.1622146987454;
+        Thu, 27 May 2021 13:23:07 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxPBMzsCNUZPXEhKlaRCORWI9CkBI4AzSpTEO2+Zm/kawOiakFSPgTl6iyiNKbrAzVRR5rK5g==
+X-Received: by 2002:a05:620a:1654:: with SMTP id c20mr355999qko.282.1622146987200;
+        Thu, 27 May 2021 13:23:07 -0700 (PDT)
+Received: from localhost.localdomain (bras-base-toroon474qw-grc-72-184-145-4-219.dsl.bell.ca. [184.145.4.219])
+        by smtp.gmail.com with ESMTPSA id y20sm2076116qkm.5.2021.05.27.13.23.06
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 27 May 2021 13:23:02 -0700 (PDT)
-Date:   Thu, 27 May 2021 20:23:01 +0000
-From:   Dennis Zhou <dennis@kernel.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Tejun Heo <tj@kernel.org>, Christoph Lameter <cl@linux.com>,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Subject: [GIT PULL] percpu changes for v5.13-rc4
-Message-ID: <YK//pZfXvXnEFbuT@google.com>
+        Thu, 27 May 2021 13:23:06 -0700 (PDT)
+From:   Peter Xu <peterx@redhat.com>
+To:     linux-kernel@vger.kernel.org, linux-mm@kvack.org
+Cc:     Mike Rapoport <rppt@linux.vnet.ibm.com>, peterx@redhat.com,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Jerome Glisse <jglisse@redhat.com>,
+        Miaohe Lin <linmiaohe@huawei.com>,
+        Nadav Amit <nadav.amit@gmail.com>,
+        Hugh Dickins <hughd@google.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        "Kirill A . Shutemov" <kirill@shutemov.name>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Axel Rasmussen <axelrasmussen@google.com>
+Subject: [PATCH v3 16/27] mm/hugetlb: Drop __unmap_hugepage_range definition from hugetlb.h
+Date:   Thu, 27 May 2021 16:23:03 -0400
+Message-Id: <20210527202303.31817-1-peterx@redhat.com>
+X-Mailer: git-send-email 2.31.1
+In-Reply-To: <20210527201927.29586-1-peterx@redhat.com>
+References: <20210527201927.29586-1-peterx@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+Drop it in the header since it's only used in hugetlb.c.
 
-This contains a cleanup to lib/percpu-refcount.c and an update to the
-MAINTAINERS file to more formally take over support for lib/percpu*.
+Suggested-by: Mike Kravetz <mike.kravetz@oracle.com>
+Signed-off-by: Peter Xu <peterx@redhat.com>
+---
+ include/linux/hugetlb.h | 10 ----------
+ 1 file changed, 10 deletions(-)
 
-A few things I expect to have ready for-5.14, percpu depopulation
-(queued) and an updated to percpu memcg accounting (wip from Roman
-Gushchin).
-
-Thanks,
-Dennis
-
-The following changes since commit 6efb943b8616ec53a5e444193dccf1af9ad627b5:
-
-  Linux 5.13-rc1 (2021-05-09 14:17:44 -0700)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/dennis/percpu.git for-5.13-fixes
-
-for you to fetch changes up to c547addba7096debac4f99cdfe869a32a81081e2:
-
-  MAINTAINERS: Add lib/percpu* as part of percpu entry (2021-05-13 04:50:30 +0000)
-
-----------------------------------------------------------------
-Nikolay Borisov (2):
-      percpu_ref: Don't opencode percpu_ref_is_dying
-      MAINTAINERS: Add lib/percpu* as part of percpu entry
-
- MAINTAINERS           | 2 ++
- lib/percpu-refcount.c | 6 +++---
- 2 files changed, 5 insertions(+), 3 deletions(-)
-
-diff --git a/MAINTAINERS b/MAINTAINERS
-index bd7aff0c120f..9599e313d7f7 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -14317,10 +14317,12 @@ PER-CPU MEMORY ALLOCATOR
- M:	Dennis Zhou <dennis@kernel.org>
- M:	Tejun Heo <tj@kernel.org>
- M:	Christoph Lameter <cl@linux.com>
-+L:	linux-mm@kvack.org
- S:	Maintained
- T:	git git://git.kernel.org/pub/scm/linux/kernel/git/dennis/percpu.git
- F:	arch/*/include/asm/percpu.h
- F:	include/linux/percpu*.h
-+F:	lib/percpu*.c
- F:	mm/percpu*.c
+diff --git a/include/linux/hugetlb.h b/include/linux/hugetlb.h
+index d944aa0202f0..7ef2b8c2ff41 100644
+--- a/include/linux/hugetlb.h
++++ b/include/linux/hugetlb.h
+@@ -143,9 +143,6 @@ void __unmap_hugepage_range_final(struct mmu_gather *tlb,
+ 			  struct vm_area_struct *vma,
+ 			  unsigned long start, unsigned long end,
+ 			  struct page *ref_page);
+-void __unmap_hugepage_range(struct mmu_gather *tlb, struct vm_area_struct *vma,
+-				unsigned long start, unsigned long end,
+-				struct page *ref_page);
+ void hugetlb_report_meminfo(struct seq_file *);
+ int hugetlb_report_node_meminfo(char *buf, int len, int nid);
+ void hugetlb_show_meminfo(void);
+@@ -381,13 +378,6 @@ static inline void __unmap_hugepage_range_final(struct mmu_gather *tlb,
+ 	BUG();
+ }
  
- PER-TASK DELAY ACCOUNTING
-diff --git a/lib/percpu-refcount.c b/lib/percpu-refcount.c
-index a1071cdefb5a..af9302141bcf 100644
---- a/lib/percpu-refcount.c
-+++ b/lib/percpu-refcount.c
-@@ -275,7 +275,7 @@ static void __percpu_ref_switch_mode(struct percpu_ref *ref,
- 	wait_event_lock_irq(percpu_ref_switch_waitq, !data->confirm_switch,
- 			    percpu_ref_switch_lock);
- 
--	if (data->force_atomic || (ref->percpu_count_ptr & __PERCPU_REF_DEAD))
-+	if (data->force_atomic || percpu_ref_is_dying(ref))
- 		__percpu_ref_switch_to_atomic(ref, confirm_switch);
- 	else
- 		__percpu_ref_switch_to_percpu(ref);
-@@ -385,7 +385,7 @@ void percpu_ref_kill_and_confirm(struct percpu_ref *ref,
- 
- 	spin_lock_irqsave(&percpu_ref_switch_lock, flags);
- 
--	WARN_ONCE(ref->percpu_count_ptr & __PERCPU_REF_DEAD,
-+	WARN_ONCE(percpu_ref_is_dying(ref),
- 		  "%s called more than once on %ps!", __func__,
- 		  ref->data->release);
- 
-@@ -465,7 +465,7 @@ void percpu_ref_resurrect(struct percpu_ref *ref)
- 
- 	spin_lock_irqsave(&percpu_ref_switch_lock, flags);
- 
--	WARN_ON_ONCE(!(ref->percpu_count_ptr & __PERCPU_REF_DEAD));
-+	WARN_ON_ONCE(!percpu_ref_is_dying(ref));
- 	WARN_ON_ONCE(__ref_is_percpu(ref, &percpu_count));
- 
- 	ref->percpu_count_ptr &= ~__PERCPU_REF_DEAD;
+-static inline void __unmap_hugepage_range(struct mmu_gather *tlb,
+-			struct vm_area_struct *vma, unsigned long start,
+-			unsigned long end, struct page *ref_page)
+-{
+-	BUG();
+-}
+-
+ static inline vm_fault_t hugetlb_fault(struct mm_struct *mm,
+ 			struct vm_area_struct *vma, unsigned long address,
+ 			unsigned int flags)
+-- 
+2.31.1
+
