@@ -2,67 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 46E8D392DE3
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 14:23:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9180F392DEB
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 14:26:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235177AbhE0MZN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 May 2021 08:25:13 -0400
-Received: from mail.skyhub.de ([5.9.137.197]:33996 "EHLO mail.skyhub.de"
+        id S235143AbhE0M2A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 May 2021 08:28:00 -0400
+Received: from mx2.suse.de ([195.135.220.15]:54334 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234410AbhE0MZL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 May 2021 08:25:11 -0400
-Received: from zn.tnic (p200300ec2f0f0200feb4df54292f983f.dip0.t-ipconnect.de [IPv6:2003:ec:2f0f:200:feb4:df54:292f:983f])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 7CC271EC01DF;
-        Thu, 27 May 2021 14:23:37 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1622118217;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=XmPZBX9quvpk0nriJ9voXMcog/6QnU2qkiYE1ANKHdM=;
-        b=MehT+vNxndiAuJk5SqOte+CQFxNPHQD3le5s/qF9DvFyzrQpAL/X5Rjc4LCKYcSIwmM4vf
-        1c+BomWYBxyeugJTfBId24lmvaidt8QLTKLZvJ5DqIUojQx6sncr/ToCW/vAGsXe+G2jsH
-        t7VAj52oGLWysFxkc89avI71oEVvdxk=
-Date:   Thu, 27 May 2021 14:23:35 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Brijesh Singh <brijesh.singh@amd.com>
-Cc:     x86@kernel.org, linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        tglx@linutronix.de, jroedel@suse.de, thomas.lendacky@amd.com,
-        pbonzini@redhat.com, mingo@redhat.com, dave.hansen@intel.com,
-        rientjes@google.com, seanjc@google.com, peterz@infradead.org,
-        hpa@zytor.com, tony.luck@intel.com
-Subject: Re: [PATCH Part1 RFC v2 16/20] x86/kernel: Validate rom memory
- before accessing when SEV-SNP is active
-Message-ID: <YK+PR5mf/H6TNDt7@zn.tnic>
-References: <20210430121616.2295-1-brijesh.singh@amd.com>
- <20210430121616.2295-17-brijesh.singh@amd.com>
- <YK+HMZIgZWwCYKzq@zn.tnic>
- <588df124-6213-22c4-384f-49fa368bb7ed@amd.com>
+        id S234410AbhE0M17 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 27 May 2021 08:27:59 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1622118385; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=p6m1UupwhdYSujAphw4oD38lmCHHiCVAuGwd3toB9Ws=;
+        b=YsiDJtOKbirUC+7uiXh7QyxwpoIMpGx5Vdx/JayDLd4trdxaQ4EmIDoyaMltb3bfOxlkPJ
+        bNNJL/Nfd0FYhFjB1fO+GT213pHANILwSfikohgyeAMIMGyMqjaYmuLBTBrTv31qpbCQjB
+        w4G9ai2G2ev2g6ur8RV//VqALHlcLxU=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 9F8B4AD19;
+        Thu, 27 May 2021 12:26:25 +0000 (UTC)
+Date:   Thu, 27 May 2021 14:26:24 +0200
+From:   Michal Hocko <mhocko@suse.com>
+To:     Feng Tang <feng.tang@intel.com>
+Cc:     linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
+        David Rientjes <rientjes@google.com>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Ben Widawsky <ben.widawsky@intel.com>,
+        linux-kernel@vger.kernel.org,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Andi Kleen <ak@linux.intel.com>,
+        Dan Williams <dan.j.williams@intel.com>, ying.huang@intel.com
+Subject: Re: [PATCH v1 4/4] mm/mempolicy: kill MPOL_F_LOCAL bit
+Message-ID: <YK+P8GDH2kn4FDsA@dhcp22.suse.cz>
+References: <1622005302-23027-1-git-send-email-feng.tang@intel.com>
+ <1622005302-23027-5-git-send-email-feng.tang@intel.com>
+ <YK9WOKBRsaFESPfR@dhcp22.suse.cz>
+ <20210527121041.GA7743@shbuild999.sh.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <588df124-6213-22c4-384f-49fa368bb7ed@amd.com>
+In-Reply-To: <20210527121041.GA7743@shbuild999.sh.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 27, 2021 at 07:12:00AM -0500, Brijesh Singh wrote:
-> Let me know if you still think that snp_prep_memory() helper is required.
+On Thu 27-05-21 20:10:41, Feng Tang wrote:
+> On Thu, May 27, 2021 at 10:20:08AM +0200, Michal Hocko wrote:
+> > On Wed 26-05-21 13:01:42, Feng Tang wrote:
+> > > Now the only remaining case of a real 'local' policy faked by
+> > > 'prefer' policy plus MPOL_F_LOCAL bit is:
+> > > 
+> > > A valid 'prefer' policy with a valid 'preferred' node is 'rebind'
+> > > to a nodemask which doesn't contains the 'preferred' node, then it
+> > > will handle allocation with 'local' policy.
+> > > 
+> > > Add a new 'MPOL_F_LOCAL_TEMP' bit for this case, and kill the
+> > > MPOL_F_LOCAL bit, which could simplify the code much.
+> > 
+> > As I've pointed out in the reply to the previous patch. It would have
+> > been much better if most of the MPOL_F_LOCAL usage was gone by this
+> > patch.
+> > 
+> > I also dislike a new MPOL_F_LOCAL_TEMP. This smells like sneaking the
+> > hack back in after you have painstakingly removed it. So this looks like
+> > a step backwards to me. I also do not understand why do we need the
+> > rebind callback for local policy at all. There is no node mask for local
+> > so what is going on here?
+> 
+> This is the special case 4 for 'perfer' policy with MPOL_F_STATIC_NODES
+> flag set, say it prefer node 1, when it is later 'refind' to a new
+> nodemask node 2-3, according to current code it will be add the
+> MPOL_F_LOCAL bit and performs 'local' policy acctually. And in future
+> it is 'rebind' again with a nodemask 1-2, it will be restored back
+> to 'prefer' policy with preferred node 1.
 
-Yes, I still do think that because you can put the comment and all
-the manupulation of parameters in there and have a single oneliner in
-probe_roms.c:
-
-	snp_prep_memory(...);
-
-and have the details in sev.c where they belong.
-
-Thx.
-
+Honestly I still do not follow the actual problem. A preferred node is a
+_hint_. If you rebind the task to a different cpuset then why should we
+actually care? The allocator will fallback to the closest node according
+to the distance metric. Maybe the original code was trying to handle
+that in some way but I really do fail to understand that code and I
+strongly suspect it is more likely to overengineered rather than backed
+by a real usecase. I might be wrong here but then this is an excellent
+opportunity to clarify all those subtleties.
 -- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+Michal Hocko
+SUSE Labs
