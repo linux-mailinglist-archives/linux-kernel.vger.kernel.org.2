@@ -2,70 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CC4C4392AE6
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 11:35:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 93897392B30
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 11:55:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235970AbhE0JhF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 May 2021 05:37:05 -0400
-Received: from szxga08-in.huawei.com ([45.249.212.255]:2313 "EHLO
-        szxga08-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235825AbhE0Jgz (ORCPT
+        id S235939AbhE0J5J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 May 2021 05:57:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42130 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235768AbhE0J5I (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 May 2021 05:36:55 -0400
-Received: from dggeml713-chm.china.huawei.com (unknown [172.30.72.54])
-        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4FrMxf0FHPz19V00;
-        Thu, 27 May 2021 17:30:46 +0800 (CST)
-Received: from dggemi762-chm.china.huawei.com (10.1.198.148) by
- dggeml713-chm.china.huawei.com (10.3.17.124) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2176.2; Thu, 27 May 2021 17:35:20 +0800
-Received: from linux-lmwb.huawei.com (10.175.103.112) by
- dggemi762-chm.china.huawei.com (10.1.198.148) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2176.2; Thu, 27 May 2021 17:35:20 +0800
-From:   Zou Wei <zou_wei@huawei.com>
-To:     <matti.vaittinen@fi.rohmeurope.com>, <lgirdwood@gmail.com>,
-        <broonie@kernel.org>
-CC:     <linux-power@fi.rohmeurope.com>, <linux-kernel@vger.kernel.org>,
-        Zou Wei <zou_wei@huawei.com>
-Subject: [PATCH -next] regulator: bd71815: fix platform_no_drv_owner.cocci warnings
-Date:   Thu, 27 May 2021 17:54:04 +0800
-Message-ID: <1622109244-54739-1-git-send-email-zou_wei@huawei.com>
-X-Mailer: git-send-email 2.6.2
+        Thu, 27 May 2021 05:57:08 -0400
+Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88657C061574;
+        Thu, 27 May 2021 02:55:34 -0700 (PDT)
+Received: by mail-ed1-x52b.google.com with SMTP id s6so119314edu.10;
+        Thu, 27 May 2021 02:55:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=C58IMTIWG3aGpI31cvyq0/QCn2aAGcF3IZlr8Z32K/Y=;
+        b=AucBLzD1N+8LtmRlcHZj0bnRH597i8Rv5zSBdhDLzjoBgCqC8pa0xXJzg8WoHd4EiA
+         hzlkKVKxj6si3zT9ui9jP7tJQco7DXEN3fgi5H9k307nc0pGu26YUL6MGbF2jRuQfr/c
+         C5RZf2e0A554MP0GdifknkmBmgwZvO7IPXfVvZudjBpQSJ6cBl3D+EQtS515fvgSJ7ZC
+         HcTljKeD0z/mBtvPBrl1yODTAsFCsnt+Pt5zBxEt0yES4tMbuKHfPJ+KIBVyJsXZi08f
+         JUXVj6V7mSZEBszlWV1qKkghI0FuvdD3p0zBoJ04J6hiKZPYMwynaPDT9Rglc3de/pEC
+         pQsA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=C58IMTIWG3aGpI31cvyq0/QCn2aAGcF3IZlr8Z32K/Y=;
+        b=VjCxbIna+o7XJqwp189lmfVT9tIsrh7V+bKWlVZsNGtqdUgSvDlomc1nNN0zQa3CUk
+         ON/Ecz9NfiL5pDUkQq6LcJD8aVMaB5hwl13MvDJAkR7pUZ2Bc4EzZhQZc0AsdNH0qbL/
+         ONDysMQGu0Th43AiURyQtFqto87J+McIVCYG9P7ycDHjpvt6963tfWUoCwYA2wK3FX+p
+         3A9NfRWB0y4p5dwfU2D8S15XWPVPQKZuOPtVHDcLeRulNOeOhOoUawUW0DrHc8HGzmsE
+         OXeuNsRHVd1KU91k+FH1p6DjNfJtAFEXwh01PDp2HrAK7OiQD0Wiq1ZTcv2nX1p7bKpp
+         FvFg==
+X-Gm-Message-State: AOAM532+EmfLSvhqN1sDQ68RnwYEr83E6SnPFj+MVjjmuf0rnIs8cCUu
+        h0kUdVD5GohoDfkY27VpdqWjqGjTJoEyfQ==
+X-Google-Smtp-Source: ABdhPJxLJFoLPIpTk320Qan+reXcWHDotN+ksDZCmebp6yt3LtUtr0B6dIkx+wMTpySH/TodtK4L3w==
+X-Received: by 2002:a05:6402:74f:: with SMTP id p15mr3166309edy.333.1622109332779;
+        Thu, 27 May 2021 02:55:32 -0700 (PDT)
+Received: from localhost.localdomain.at (62-178-82-229.cable.dynamic.surfer.at. [62.178.82.229])
+        by smtp.gmail.com with ESMTPSA id l19sm70623edw.58.2021.05.27.02.55.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 27 May 2021 02:55:32 -0700 (PDT)
+From:   Christian Gmeiner <christian.gmeiner@gmail.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     Christian Gmeiner <christian.gmeiner@gmail.com>,
+        stable@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        YueHaibing <yuehaibing@huawei.com>,
+        Tobias Diedrich <tobiasdiedrich@gmail.com>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Du Huanpeng <u74147@gmail.com>,
+        Ralf Ramsauer <ralf.ramsauer@oth-regensburg.de>,
+        linux-serial@vger.kernel.org
+Subject: [PATCH] serial: 8250_pci: handle FL_NOIRQ board flag
+Date:   Thu, 27 May 2021 11:54:40 +0200
+Message-Id: <20210527095529.26281-1-christian.gmeiner@gmail.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.175.103.112]
-X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
- dggemi762-chm.china.huawei.com (10.1.198.148)
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-./drivers/regulator/bd71815-regulator.c:644:3-8: No need to set .owner here. The core will do it.
+In commit 8428413b1d14 ("serial: 8250_pci: Implement MSI(-X) support")
+the way the irq gets allocated was changed. With that change the
+handling FL_NOIRQ got lost. Restore the old behaviour.
 
- Remove .owner field if calls are used which set it automatically
-
-Generated by: scripts/coccinelle/api/platform_no_drv_owner.cocci
-
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Zou Wei <zou_wei@huawei.com>
+Fixes: 8428413b1d14 ("serial: 8250_pci: Implement MSI(-X) support")
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Christian Gmeiner <christian.gmeiner@gmail.com>
 ---
- drivers/regulator/bd71815-regulator.c | 1 -
- 1 file changed, 1 deletion(-)
+ drivers/tty/serial/8250/8250_pci.c | 29 +++++++++++++++++------------
+ 1 file changed, 17 insertions(+), 12 deletions(-)
 
-diff --git a/drivers/regulator/bd71815-regulator.c b/drivers/regulator/bd71815-regulator.c
-index a079efa..4dd21ac 100644
---- a/drivers/regulator/bd71815-regulator.c
-+++ b/drivers/regulator/bd71815-regulator.c
-@@ -641,7 +641,6 @@ MODULE_DEVICE_TABLE(platform, bd7181x_pmic_id);
- static struct platform_driver bd7181x_regulator = {
- 	.driver = {
- 		.name = "bd7181x-pmic",
--		.owner = THIS_MODULE,
- 	},
- 	.probe = bd7181x_probe,
- 	.id_table = bd7181x_pmic_id,
+diff --git a/drivers/tty/serial/8250/8250_pci.c b/drivers/tty/serial/8250/8250_pci.c
+index 689d8227f95f..3b8217844c0b 100644
+--- a/drivers/tty/serial/8250/8250_pci.c
++++ b/drivers/tty/serial/8250/8250_pci.c
+@@ -3944,21 +3944,26 @@ pciserial_init_ports(struct pci_dev *dev, const struct pciserial_board *board)
+ 	uart.port.flags = UPF_SKIP_TEST | UPF_BOOT_AUTOCONF | UPF_SHARE_IRQ;
+ 	uart.port.uartclk = board->base_baud * 16;
+ 
+-	if (pci_match_id(pci_use_msi, dev)) {
+-		dev_dbg(&dev->dev, "Using MSI(-X) interrupts\n");
+-		pci_set_master(dev);
+-		rc = pci_alloc_irq_vectors(dev, 1, 1, PCI_IRQ_ALL_TYPES);
++	if (board->flags & FL_NOIRQ) {
++		uart.port.irq = 0;
+ 	} else {
+-		dev_dbg(&dev->dev, "Using legacy interrupts\n");
+-		rc = pci_alloc_irq_vectors(dev, 1, 1, PCI_IRQ_LEGACY);
+-	}
+-	if (rc < 0) {
+-		kfree(priv);
+-		priv = ERR_PTR(rc);
+-		goto err_deinit;
++		if (pci_match_id(pci_use_msi, dev)) {
++			dev_dbg(&dev->dev, "Using MSI(-X) interrupts\n");
++			pci_set_master(dev);
++			rc = pci_alloc_irq_vectors(dev, 1, 1, PCI_IRQ_ALL_TYPES);
++		} else {
++			dev_dbg(&dev->dev, "Using legacy interrupts\n");
++			rc = pci_alloc_irq_vectors(dev, 1, 1, PCI_IRQ_LEGACY);
++		}
++		if (rc < 0) {
++			kfree(priv);
++			priv = ERR_PTR(rc);
++			goto err_deinit;
++		}
++
++		uart.port.irq = pci_irq_vector(dev, 0);
+ 	}
+ 
+-	uart.port.irq = pci_irq_vector(dev, 0);
+ 	uart.port.dev = &dev->dev;
+ 
+ 	for (i = 0; i < nr_ports; i++) {
 -- 
-2.6.2
+2.31.1
 
