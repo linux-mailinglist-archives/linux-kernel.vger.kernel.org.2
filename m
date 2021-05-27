@@ -2,91 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 896B1392F30
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 15:14:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 701C9392F32
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 15:15:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236350AbhE0NPu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 May 2021 09:15:50 -0400
-Received: from szxga02-in.huawei.com ([45.249.212.188]:2502 "EHLO
-        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235996AbhE0NPu (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 May 2021 09:15:50 -0400
-Received: from dggeml759-chm.china.huawei.com (unknown [172.30.72.55])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4FrSrP6fbMzYr0r;
-        Thu, 27 May 2021 21:11:33 +0800 (CST)
-Received: from dggpemm500009.china.huawei.com (7.185.36.225) by
- dggeml759-chm.china.huawei.com (10.1.199.138) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2176.2; Thu, 27 May 2021 21:14:13 +0800
-Received: from [10.174.179.24] (10.174.179.24) by
- dggpemm500009.china.huawei.com (7.185.36.225) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Thu, 27 May 2021 21:14:13 +0800
-Subject: Re: [PATCH] mm/page_alloc: fix counting of managed_pages
-To:     Andrew Morton <akpm@linux-foundation.org>,
-        yangerkun <yangerkun@huawei.com>,
-        Kefeng Wang <wangkefeng.wang@huawei.com>,
-        Baoquan He <bhe@redhat.com>
-References: <20210527125707.3760259-1-liushixin2@huawei.com>
-CC:     <linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>
-From:   Liu Shixin <liushixin2@huawei.com>
-Message-ID: <8ee4df3e-11f4-d826-e7cd-13e305024d9f@huawei.com>
-Date:   Thu, 27 May 2021 21:14:11 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:45.0) Gecko/20100101
- Thunderbird/45.7.1
+        id S236358AbhE0NQn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 May 2021 09:16:43 -0400
+Received: from mx2.suse.de ([195.135.220.15]:52090 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235996AbhE0NQl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 27 May 2021 09:16:41 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1622121308; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=NWh10ATxyrNz9Z6Ew/1MC4tHYel7uPGah1gbH11QuB4=;
+        b=q0RMs+CZTPYRVo07bfTkV9yM8bbBiS+U2g4J8uPB7fbTbQO8Iv5JQppG+PujD1FSH0pSj+
+        t65H8NMpWPZFULTkg1LAeOqZr8mtGyy6qDyhAVcGpXQiodUQRf8ezZqrAAECkrvvVClqw7
+        Qahwx3UV1nFRgDP/aPRu+CQvVuOs+EU=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id E5137AE86;
+        Thu, 27 May 2021 13:15:07 +0000 (UTC)
+Date:   Thu, 27 May 2021 15:15:04 +0200
+From:   Michal Hocko <mhocko@suse.com>
+To:     Feng Tang <feng.tang@intel.com>
+Cc:     linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
+        David Rientjes <rientjes@google.com>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Ben Widawsky <ben.widawsky@intel.com>,
+        linux-kernel@vger.kernel.org,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Andi Kleen <ak@linux.intel.com>,
+        Dan Williams <dan.j.williams@intel.com>, ying.huang@intel.com
+Subject: Re: [PATCH v1 1/4] mm/mempolicy: skip nodemask intersect check for
+ 'interleave' when oom
+Message-ID: <YK+bWP5TalB50v0S@dhcp22.suse.cz>
+References: <1622005302-23027-1-git-send-email-feng.tang@intel.com>
+ <1622005302-23027-2-git-send-email-feng.tang@intel.com>
+ <YK9KeOmXhuuZMEHy@dhcp22.suse.cz>
+ <20210527130501.GC7743@shbuild999.sh.intel.com>
 MIME-Version: 1.0
-In-Reply-To: <20210527125707.3760259-1-liushixin2@huawei.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.179.24]
-X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
- dggpemm500009.china.huawei.com (7.185.36.225)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210527130501.GC7743@shbuild999.sh.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-+ Baoquan
-
-
-On 2021/5/27 20:57, Liu Shixin wrote:
-> The commit f63661566fad (mm/page_alloc.c: clear out zone->lowmem_reserve[]
-> if the zone is empty) clear out zone->lowmem_reserve[] if zone is empty.
-> But when zone is not empty and sysctl_lowmem_reserve_ratio[i] is set to zero,
-> zone_managed_pages(zone) is not counted in the managed_pages either. This is
-> inconsistent with the description of lowmen_reserve, so fix it.
->
-> Fixes: f63661566fad ("mm/page_alloc.c: clear out zone->lowmem_reserve[] if the zone is empty")
-> Reported-by: yangerkun <yangerkun@huawei.com>
-> Signed-off-by: Liu Shixin <liushixin2@huawei.com>
-> ---
->  mm/page_alloc.c | 12 ++++++------
->  1 file changed, 6 insertions(+), 6 deletions(-)
->
-> diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-> index aaa1655cf682..49a2efce5a84 100644
-> --- a/mm/page_alloc.c
-> +++ b/mm/page_alloc.c
-> @@ -8061,14 +8061,14 @@ static void setup_per_zone_lowmem_reserve(void)
->  			unsigned long managed_pages = 0;
+On Thu 27-05-21 21:05:01, Feng Tang wrote:
+> On Thu, May 27, 2021 at 09:30:00AM +0200, Michal Hocko wrote:
+[...]
+> > Until now this was not a real problem even for OOM context because
+> > alloc_page_interleave is always used for the interleaving policy
+> > and that one doesn't use any node mask so the code is not really
+> > exercised. With your MPOL_PREFERRED this would no longer be the case.
 >  
->  			for (j = i + 1; j < MAX_NR_ZONES; j++) {
-> -				if (clear) {
-> -					zone->lowmem_reserve[j] = 0;
-> -				} else {
-> -					struct zone *upper_zone = &pgdat->node_zones[j];
-> +				struct zone *upper_zone = &pgdat->node_zones[j];
-> +
-> +				managed_pages += zone_managed_pages(upper_zone);
->  
-> -					managed_pages += zone_managed_pages(upper_zone);
-> +				if (clear)
-> +					zone->lowmem_reserve[j] = 0;
-> +				else
->  					zone->lowmem_reserve[j] = managed_pages / ratio;
-> -				}
->  			}
->  		}
->  	}
+> Given the 'interleave' task may have memory allocated from all nodes,
+> shouldn't the mempolicy_nodemask_intersects() return true for 'interleave'?
+> or I'm still missing something?
 
+Well, if you go with the renaming then it should be quite obvious that
+any policies which are not a hard binding should return true. 
+
+-- 
+Michal Hocko
+SUSE Labs
