@@ -2,56 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 69ADD392AB6
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 11:26:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 29F61392AA2
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 11:22:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235843AbhE0J2T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 May 2021 05:28:19 -0400
-Received: from mail.ispras.ru ([83.149.199.84]:57810 "EHLO mail.ispras.ru"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235777AbhE0J2P (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 May 2021 05:28:15 -0400
-Received: from hellwig.intra.ispras.ru (unknown [10.10.2.182])
-        by mail.ispras.ru (Postfix) with ESMTPS id BC19040D3BFF;
-        Thu, 27 May 2021 09:26:39 +0000 (UTC)
-From:   Evgeny Novikov <novikov@ispras.ru>
-To:     "Daniel W. S. Almeida" <dwlsalmeida@gmail.com>
-Cc:     Evgeny Novikov <novikov@ispras.ru>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        ldv-project@linuxtesting.org
-Subject: [PATCH] media: vidtv: Fix memory leak in remove
-Date:   Thu, 27 May 2021 12:26:24 +0300
-Message-Id: <20210527092624.29352-1-novikov@ispras.ru>
-X-Mailer: git-send-email 2.26.2
+        id S235731AbhE0JXz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 May 2021 05:23:55 -0400
+Received: from szxga08-in.huawei.com ([45.249.212.255]:2312 "EHLO
+        szxga08-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235559AbhE0JXx (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 27 May 2021 05:23:53 -0400
+Received: from dggeml756-chm.china.huawei.com (unknown [172.30.72.53])
+        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4FrMfc2c1hz19VVw;
+        Thu, 27 May 2021 17:17:44 +0800 (CST)
+Received: from dggpeml500017.china.huawei.com (7.185.36.243) by
+ dggeml756-chm.china.huawei.com (10.1.199.158) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2176.2; Thu, 27 May 2021 17:22:19 +0800
+Received: from huawei.com (10.175.103.91) by dggpeml500017.china.huawei.com
+ (7.185.36.243) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Thu, 27 May
+ 2021 17:22:18 +0800
+From:   Yang Yingliang <yangyingliang@huawei.com>
+To:     <linux-kernel@vger.kernel.org>, <linux-pm@vger.kernel.org>,
+        <linux-arm-msm@vger.kernel.org>
+CC:     <daniel.lezcano@linaro.org>, <colin.king@canonical.com>
+Subject: [PATCH -next resend] thermal: qcom: return error code on error path in adc_tm5_get_dt_channel_data()
+Date:   Thu, 27 May 2021 17:26:40 +0800
+Message-ID: <20210527092640.2070555-1-yangyingliang@huawei.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.103.91]
+X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
+ dggpeml500017.china.huawei.com (7.185.36.243)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-vidtv_bridge_remove() releases and cleans up everything except for dvb
-itself. The patch adds this missed release.
+Return -EINVAL when args is invalid.
 
-Found by Linux Driver Verification project (linuxtesting.org).
-
-Signed-off-by: Evgeny Novikov <novikov@ispras.ru>
+Fixes: ca66dca5eda6 ("thermal: qcom: add support for adc-tm5 PMIC thermal monitor")
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
 ---
- drivers/media/test-drivers/vidtv/vidtv_bridge.c | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/thermal/qcom/qcom-spmi-adc-tm5.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/media/test-drivers/vidtv/vidtv_bridge.c b/drivers/media/test-drivers/vidtv/vidtv_bridge.c
-index 75617709c8ce..0f6d998d18dc 100644
---- a/drivers/media/test-drivers/vidtv/vidtv_bridge.c
-+++ b/drivers/media/test-drivers/vidtv/vidtv_bridge.c
-@@ -557,6 +557,7 @@ static int vidtv_bridge_remove(struct platform_device *pdev)
- 	dvb_dmxdev_release(&dvb->dmx_dev);
- 	dvb_dmx_release(&dvb->demux);
- 	dvb_unregister_adapter(&dvb->adapter);
-+	kfree(dvb);
- 	dev_info(&pdev->dev, "Successfully removed vidtv\n");
+diff --git a/drivers/thermal/qcom/qcom-spmi-adc-tm5.c b/drivers/thermal/qcom/qcom-spmi-adc-tm5.c
+index b460b56e981c..8ccd5d22c13b 100644
+--- a/drivers/thermal/qcom/qcom-spmi-adc-tm5.c
++++ b/drivers/thermal/qcom/qcom-spmi-adc-tm5.c
+@@ -441,7 +441,7 @@ static int adc_tm5_get_dt_channel_data(struct adc_tm5_chip *adc_tm,
  
- 	return 0;
+ 	if (args.args_count != 1 || args.args[0] >= ADC5_MAX_CHANNEL) {
+ 		dev_err(dev, "%s: invalid ADC channel number %d\n", name, chan);
+-		return ret;
++		return -EINVAL;
+ 	}
+ 	channel->adc_channel = args.args[0];
+ 
 -- 
-2.26.2
+2.25.1
 
