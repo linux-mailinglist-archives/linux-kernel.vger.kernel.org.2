@@ -2,109 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B8EBB3930C7
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 16:23:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 662F53930CC
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 16:23:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236480AbhE0OZM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 May 2021 10:25:12 -0400
-Received: from mail-ot1-f51.google.com ([209.85.210.51]:37749 "EHLO
-        mail-ot1-f51.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236463AbhE0OZJ (ORCPT
+        id S236463AbhE0OZR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 May 2021 10:25:17 -0400
+Received: from mail-ot1-f49.google.com ([209.85.210.49]:43583 "EHLO
+        mail-ot1-f49.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236487AbhE0OZP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 May 2021 10:25:09 -0400
-Received: by mail-ot1-f51.google.com with SMTP id v19-20020a0568301413b0290304f00e3d88so369518otp.4;
-        Thu, 27 May 2021 07:23:36 -0700 (PDT)
+        Thu, 27 May 2021 10:25:15 -0400
+Received: by mail-ot1-f49.google.com with SMTP id i12-20020a05683033ecb02903346fa0f74dso339959otu.10;
+        Thu, 27 May 2021 07:23:41 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:in-reply-to:references:subject:date
          :message-id;
-        bh=cAYbEBVO41pPeY8bh55UYX2lkNaNSE4J1N93ZC37MH4=;
-        b=d/zDfJYMMHzzGwxn0k32VXT0HMcDGAW9IU0dXzCAh43nhv8w0EXJUAeYBVTtH5WYP2
-         50yH2qjKeZduKO5NWdKPgXmRPhjJWZ+oidWIQDy0KoL2qe6oyQcJkRJT+kKwsSEwoWoN
-         fQCJB8G1UjsXNZXQorGVRDU1lXLYJr+u7xm6G2A5kCASQGyz2Qfhpz590yUuegbAPivK
-         5ZwCFhghQoX74s3YEOiY6Vj2XoCXI0SthdgBj1X/hYspUQvL4sIXQP3GU8cmPVIScf4Y
-         UiDT5r6uo54D0VtMBQIqCxJifqvGdKPpQVySPgqsllclOO4/yZVf7XZzfUNstDsrhuTI
-         Xh+Q==
-X-Gm-Message-State: AOAM5311DwM/1AcPZIxYeO0OwuwuCgKBt1utYbjSxYBtdnXF0VnhkUws
-        4f+5N519yplmJpgL7Jf7og==
-X-Google-Smtp-Source: ABdhPJwI6N9HRRGnwxmBhqtCjiDJgmQ8vHKe6nUJBYkaRjOWH87S0oYGeVfXuEO4fIChEEkaQUI9NQ==
-X-Received: by 2002:a9d:39e3:: with SMTP id y90mr3093636otb.257.1622125415948;
-        Thu, 27 May 2021 07:23:35 -0700 (PDT)
+        bh=7Xzx1Ap7uXPfBOML/npjPvMW+NbvnTtd/CjxfaN9vTA=;
+        b=SfM7NLo/1JzdFVAm1j/cJAAqJeNNgk557IUbO/Rf0+B4jDeOR5S1xJzNwykRF/SeaY
+         LO2Yj3Dyh9yNT2wAoPg06kSSuGCcDQAeHdKY1aCEcEkfzWCL0Itq7nj4Bly6nN5QooXG
+         q7qJc5i/AlIWBwephzeUSKNq1iMZpSAOWsCKvOiwYBjEqcNxGPFOb6HNFV2QzMuOUbXx
+         nd/IP4UglyA0u+0Bl62O8Wwl1tl3zagnnv6lagJc8RCVYu3Rf1OWizwZ+dvVOkqjwzzZ
+         ei87tbiWxVbkJeqiKgHOqI9F7SERn2f9UIOiePQaNU8r6eozJ+tnfE6BOUsGMnzlvS11
+         lisg==
+X-Gm-Message-State: AOAM5339R+Z17H0EfLEtZp1TZAgVweaw0JOEqL2Scb3X9IWtZel60GOA
+        Hfzv1Ul2z4yn4RLegcx0NiKcCVga+A==
+X-Google-Smtp-Source: ABdhPJwO2qAwq+BaudGS4ht+Bx73RKcqrrecFHKoaEyr8S5895gmNT2goxvjFlZuQbC+7IirZ/hhDA==
+X-Received: by 2002:a9d:37b6:: with SMTP id x51mr2887336otb.159.1622125421118;
+        Thu, 27 May 2021 07:23:41 -0700 (PDT)
 Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id o14sm498437oik.29.2021.05.27.07.23.31
+        by smtp.gmail.com with ESMTPSA id k7sm451709ood.36.2021.05.27.07.23.37
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 27 May 2021 07:23:32 -0700 (PDT)
-Received: (nullmailer pid 731794 invoked by uid 1000);
+        Thu, 27 May 2021 07:23:38 -0700 (PDT)
+Received: (nullmailer pid 731792 invoked by uid 1000);
         Thu, 27 May 2021 14:23:27 -0000
 From:   Rob Herring <robh@kernel.org>
-To:     Jianqun Xu <jay.xu@rock-chips.com>
-Cc:     devicetree@vger.kernel.org, heiko@sntech.de, lee.jones@linaro.org,
-        linux-rockchip@lists.infradead.org, ulf.hansson@linaro.org,
-        linux-kernel@vger.kernel.org, robh+dt@kernel.org, jbx6244@gmail.com
-In-Reply-To: <20210527082905.1447591-2-jay.xu@rock-chips.com>
-References: <20210527082905.1447591-1-jay.xu@rock-chips.com> <20210527082905.1447591-2-jay.xu@rock-chips.com>
-Subject: Re: [PATCH v2 1/3] dt-bindings: soc: rockchip: convert io-domain.txt to YAML
+To:     Rajendra Nayak <rnayak@codeaurora.org>
+Cc:     devicetree@vger.kernel.org, ulf.hansson@linaro.org,
+        linux-kernel@vger.kernel.org, viresh.kumar@linaro.org,
+        bjorn.andersson@linaro.org, swboyd@chromium.org,
+        robh+dt@kernel.org, linux-pm@vger.kernel.org, rojay@codeaurora.org,
+        linux-arm-msm@vger.kernel.org
+In-Reply-To: <1622095949-2014-2-git-send-email-rnayak@codeaurora.org>
+References: <1622095949-2014-1-git-send-email-rnayak@codeaurora.org> <1622095949-2014-2-git-send-email-rnayak@codeaurora.org>
+Subject: Re: [PATCH v2 1/3] dt-bindings: power: Introduce 'assigned-performance-states' property
 Date:   Thu, 27 May 2021 09:23:27 -0500
-Message-Id: <1622125407.801041.731793.nullmailer@robh.at.kernel.org>
+Message-Id: <1622125407.790558.731791.nullmailer@robh.at.kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 27 May 2021 16:29:03 +0800, Jianqun Xu wrote:
-> This patch moves the rockchip-io-domain.txt from power/avs dir to soc
-> dir and rename to io-domain.txt, without any change in the step.
+On Thu, 27 May 2021 11:42:27 +0530, Rajendra Nayak wrote:
+> While most devices within power-domains which support performance states,
+> scale the performance state dynamically, some devices might want to
+> set a static/default performance state while the device is active.
+> These devices typically would also run off a fixed clock and not support
+> dynamically scaling the device's performance, also known as DVFS techniques.
+> Add a property 'assigned-performance-states' which client devices can
+> use to set this default performance state on their power-domains.
 > 
-> Then covert the io-domain.txt to YAML.
-> 
-> Signed-off-by: Jianqun Xu <jay.xu@rock-chips.com>
+> Signed-off-by: Rajendra Nayak <rnayak@codeaurora.org>
 > ---
-> v2:
-> - first version
->  .../bindings/power/rockchip-io-domain.txt     | 135 ------------------
->  .../bindings/soc/rockchip/io-domain.yaml      |  45 ++++++
->  2 files changed, 45 insertions(+), 135 deletions(-)
->  delete mode 100644 Documentation/devicetree/bindings/power/rockchip-io-domain.txt
->  create mode 100644 Documentation/devicetree/bindings/soc/rockchip/io-domain.yaml
+>  .../devicetree/bindings/power/power-domain.yaml    | 50 ++++++++++++++++++++++
+>  1 file changed, 50 insertions(+)
 > 
 
 My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
 on your patch (DT_CHECKER_FLAGS is new in v5.13):
 
 yamllint warnings/errors:
-./Documentation/devicetree/bindings/soc/rockchip/io-domain.yaml:17:13: [warning] wrong indentation: expected 14 but found 12 (indentation)
-./Documentation/devicetree/bindings/soc/rockchip/io-domain.yaml:36:1: [error] syntax error: found character '\t' that cannot start any token (syntax)
+./Documentation/devicetree/bindings/power/power-domain.yaml:72:8: [warning] wrong indentation: expected 6 but found 7 (indentation)
 
 dtschema/dtc warnings/errors:
-make[1]: *** Deleting file 'Documentation/devicetree/bindings/soc/rockchip/io-domain.example.dts'
-Traceback (most recent call last):
-  File "/usr/local/bin/dt-extract-example", line 45, in <module>
-    binding = yaml.load(open(args.yamlfile, encoding='utf-8').read())
-  File "/usr/local/lib/python3.8/dist-packages/ruamel/yaml/main.py", line 421, in load
-    return constructor.get_single_data()
-  File "/usr/local/lib/python3.8/dist-packages/ruamel/yaml/constructor.py", line 109, in get_single_data
-    node = self.composer.get_single_node()
-  File "_ruamel_yaml.pyx", line 706, in _ruamel_yaml.CParser.get_single_node
-  File "_ruamel_yaml.pyx", line 724, in _ruamel_yaml.CParser._compose_document
-  File "_ruamel_yaml.pyx", line 775, in _ruamel_yaml.CParser._compose_node
-  File "_ruamel_yaml.pyx", line 889, in _ruamel_yaml.CParser._compose_mapping_node
-  File "_ruamel_yaml.pyx", line 773, in _ruamel_yaml.CParser._compose_node
-  File "_ruamel_yaml.pyx", line 848, in _ruamel_yaml.CParser._compose_sequence_node
-  File "_ruamel_yaml.pyx", line 904, in _ruamel_yaml.CParser._parse_next_event
-ruamel.yaml.scanner.ScannerError: while scanning a block scalar
-  in "<unicode string>", line 32, column 5
-found a tab character where an indentation space is expected
-  in "<unicode string>", line 36, column 1
-make[1]: *** [Documentation/devicetree/bindings/Makefile:20: Documentation/devicetree/bindings/soc/rockchip/io-domain.example.dts] Error 1
-make[1]: *** Waiting for unfinished jobs....
-./Documentation/devicetree/bindings/soc/rockchip/io-domain.yaml:  while scanning a block scalar
-  in "<unicode string>", line 32, column 5
-found a tab character where an indentation space is expected
-  in "<unicode string>", line 36, column 1
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/soc/rockchip/io-domain.yaml: ignoring, error parsing file
-warning: no schema found in file: ./Documentation/devicetree/bindings/soc/rockchip/io-domain.yaml
-make: *** [Makefile:1416: dt_binding_check] Error 2
+Documentation/devicetree/bindings/power/power-domain.example.dt.yaml:0:0: /example-3/power-controller@43210000/opp-table: failed to match any schema with compatible: ['operating-points-v2']
 
-See https://patchwork.ozlabs.org/patch/1484505
+See https://patchwork.ozlabs.org/patch/1484441
 
 This check can fail if there are any dependencies. The base for a patch
 series is generally the most recent rc1.
