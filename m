@@ -2,169 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1830A392F07
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 15:05:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F1EDB392F09
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 15:05:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236155AbhE0NGh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 May 2021 09:06:37 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:44849 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235712AbhE0NGf (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 May 2021 09:06:35 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1622120702;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=4rzzOa6q+9jkHUrjBMT6aDA8TmT+khUNIgkx743Uidw=;
-        b=XBRT1l8UkjViDViZF7DaJKbAZGRmiVLPiLVkSlpEYfefyPR/5ZTaR+tJ5fE+3qnFRqG2W9
-        pju/9VxBri6P7ws2r0LXe9ol7Foah3xnneRyJtqoqSFQfYMGgBrQiD/3lgntWoyYMmRWgY
-        Zj5KD0dPuR/QVTeRBQFdOssNYJoQZ0o=
-Received: from mail-qk1-f199.google.com (mail-qk1-f199.google.com
- [209.85.222.199]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-190-KfSgf1DgMPmBnfu-SOF2cw-1; Thu, 27 May 2021 09:05:00 -0400
-X-MC-Unique: KfSgf1DgMPmBnfu-SOF2cw-1
-Received: by mail-qk1-f199.google.com with SMTP id n3-20020a378b030000b02903a624ca95adso359363qkd.17
-        for <linux-kernel@vger.kernel.org>; Thu, 27 May 2021 06:05:00 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=4rzzOa6q+9jkHUrjBMT6aDA8TmT+khUNIgkx743Uidw=;
-        b=HT1MHuXq5/YlmiKLP9zhhZGx7UPHYVkjplAp8YLatQnQp8yATSA4YFzGY4d2S7O4r7
-         wh01CPC+WXGIDxuIoejtp7rvEY86lM4iQc83ZU72stEZYwEL3nsMsjoTBEzPvR0o5Xfz
-         6a5OLI3cIC5X+AAtFYmj/E7YC2+sQ798QfxWKfCFcbzzr7bdZZ10DP5A2B4v2dp1uq+C
-         6WZ2FaKZPhuzbyE7HkrTJbFdJ7TgqqsRys044ZG0QD7BNQVwc2yumQZl3j5zFa5sykiR
-         cEYQ0CCRE7s8V/BPMTthCvAyjt5czKp5oK58D0hMQXN+CQ9Go7Ld3iuhk/D9Ky4QZhdM
-         iA6w==
-X-Gm-Message-State: AOAM5317w0ABXYmgTF1AOkhs87Fk0qUvpcWdeJY3btFtgfgDENddbM8h
-        xKN2c8jmtnfgdb3dRW1jWyFV5Xf6p9bMixF7joOQe4o2NXhvZrPPhMdMhhONX2WFEgjLx3EU91h
-        eLSpRrVtR90BBkZqXpjUqLb1n
-X-Received: by 2002:ac8:5f84:: with SMTP id j4mr2991625qta.240.1622120700036;
-        Thu, 27 May 2021 06:05:00 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzF9/f/oCcd+BBWrvSHgnJ7MXTSn158rInAQdiALMQLZF3k9Vcpr9xEm1OHlKUAk1TCJw9rGQ==
-X-Received: by 2002:ac8:5f84:: with SMTP id j4mr2991568qta.240.1622120699489;
-        Thu, 27 May 2021 06:04:59 -0700 (PDT)
-Received: from t490s (bras-base-toroon474qw-grc-72-184-145-4-219.dsl.bell.ca. [184.145.4.219])
-        by smtp.gmail.com with ESMTPSA id p63sm1325517qkf.31.2021.05.27.06.04.58
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 27 May 2021 06:04:58 -0700 (PDT)
-Date:   Thu, 27 May 2021 09:04:57 -0400
-From:   Peter Xu <peterx@redhat.com>
-To:     Alistair Popple <apopple@nvidia.com>
-Cc:     linux-mm@kvack.org, akpm@linux-foundation.org,
-        nouveau@lists.freedesktop.org, bskeggs@redhat.com,
-        rcampbell@nvidia.com, linux-doc@vger.kernel.org,
-        jhubbard@nvidia.com, bsingharora@gmail.com,
-        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        hch@infradead.org, jglisse@redhat.com, willy@infradead.org,
-        jgg@nvidia.com, hughd@google.com, Christoph Hellwig <hch@lst.de>
-Subject: Re: [PATCH v9 07/10] mm: Device exclusive memory access
-Message-ID: <YK+Y+aAZHDv8+w+Q@t490s>
-References: <20210524132725.12697-1-apopple@nvidia.com>
- <20210524132725.12697-8-apopple@nvidia.com>
- <YK6hYGEx+XzeZELV@t490s>
- <37725705.JvxlXkkoz5@nvdebian>
+        id S236319AbhE0NGn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 May 2021 09:06:43 -0400
+Received: from mga14.intel.com ([192.55.52.115]:3662 "EHLO mga14.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236306AbhE0NGk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 27 May 2021 09:06:40 -0400
+IronPort-SDR: y1gOM+kwcTfwoMxEr2oeTlVsUgvVGdw9uxvYLtm6FUT+NFgKluAbD1/mUoBkcfzP6Lx5+RLouI
+ IKt0ZfpVqjTQ==
+X-IronPort-AV: E=McAfee;i="6200,9189,9996"; a="202489671"
+X-IronPort-AV: E=Sophos;i="5.82,334,1613462400"; 
+   d="scan'208";a="202489671"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 May 2021 06:05:06 -0700
+IronPort-SDR: oDhBTO787SEsUd0BvLCjqWH/I/4+4Pv2FXxOSirzI2Vy5xJVKQOMGWbXBrD1LyiPaqFjbOkq9v
+ sS7KCVK3f/vw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.82,334,1613462400"; 
+   d="scan'208";a="477476320"
+Received: from shbuild999.sh.intel.com (HELO localhost) ([10.239.147.94])
+  by orsmga001.jf.intel.com with ESMTP; 27 May 2021 06:05:01 -0700
+Date:   Thu, 27 May 2021 21:05:01 +0800
+From:   Feng Tang <feng.tang@intel.com>
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
+        David Rientjes <rientjes@google.com>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Ben Widawsky <ben.widawsky@intel.com>,
+        linux-kernel@vger.kernel.org,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Andi Kleen <ak@linux.intel.com>,
+        Dan Williams <dan.j.williams@intel.com>, ying.huang@intel.com
+Subject: Re: [PATCH v1 1/4] mm/mempolicy: skip nodemask intersect check for
+ 'interleave' when oom
+Message-ID: <20210527130501.GC7743@shbuild999.sh.intel.com>
+References: <1622005302-23027-1-git-send-email-feng.tang@intel.com>
+ <1622005302-23027-2-git-send-email-feng.tang@intel.com>
+ <YK9KeOmXhuuZMEHy@dhcp22.suse.cz>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <37725705.JvxlXkkoz5@nvdebian>
+In-Reply-To: <YK9KeOmXhuuZMEHy@dhcp22.suse.cz>
+User-Agent: Mutt/1.5.24 (2015-08-30)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 27, 2021 at 01:35:39PM +1000, Alistair Popple wrote:
-> > > + *
-> > > + * @MMU_NOTIFY_EXCLUSIVE: to signal a device driver that the device will
-> > > no + * longer have exclusive access to the page. May ignore the
-> > > invalidation that's + * part of make_device_exclusive_range() if the
-> > > owner field
-> > > + * matches the value passed to make_device_exclusive_range().
+On Thu, May 27, 2021 at 09:30:00AM +0200, Michal Hocko wrote:
+> On Wed 26-05-21 13:01:39, Feng Tang wrote:
+> > mempolicy_nodemask_intersects() is used in oom case to check if a
+> > task may have memory allocated on some memory nodes.
 > > 
-> > Perhaps s/matches/does not match/?
-> 
-> No, "matches" is correct. The MMU_NOTIFY_EXCLUSIVE notifier is to notify a 
-> listener that a range is being invalidated for the purpose of making the range 
-> available for some device to have exclusive access to. Which does also mean a 
-> device getting the notification no longer has exclusive access if it already 
-> did.
-> 
-> A unique type is needed because when creating the range a driver needs to form 
-> a mmu critical section (with mmu_interval_read_begin()/
-> mmu_interval_read_end()) to ensure the entry remains valid long enough to 
-> program the device pte and hasn't been invalidated.
-> 
-> However without a way of filtering any invalidations will result in a retry, 
-> but make_device_exclusive_range() needs to do an invalidation during 
-> installation of the entry. To avoid this causing infinite retries the driver 
-> ignores specific invalidation events that it knows don't apply, ie. the 
-> invalidations that are a result of that driver asking for device exclusive 
-> entries.
-
-OK I think I get it now.. so the driver checks both EXCLUSIVE and owner, if all
-match it skips the notify, otherwise it's treated like all the rest.  Thanks.
-
-However then it's still confusing (as I raised it too in previous comment) that
-we use CLEAR when re-installing the valid pte.  It's merely against what CLEAR
-means.
-
-How about sending EXCLUSIVE for both mark/restore?  Just that when restore we
-notify with owner==NULL telling that no one is owning it anymore so driver
-needs to drop the ownership.  I assume your driver patch does not need change
-too.  Would that be much cleaner than CLEAR?  I bet it also makes commenting
-the new notify easier.
-
-What do you think?
-
-[...]
-
-> > > +                                   vma->vm_mm, address, min(vma->vm_end,
-> > > +                                   address + page_size(page)),
-> > > args->owner); +     mmu_notifier_invalidate_range_start(&range);
-> > > +
-> > > +     while (page_vma_mapped_walk(&pvmw)) {
-> > > +             /* Unexpected PMD-mapped THP? */
-> > > +             VM_BUG_ON_PAGE(!pvmw.pte, page);
-> > > +
-> > > +             if (!pte_present(*pvmw.pte)) {
-> > > +                     ret = false;
-> > > +                     page_vma_mapped_walk_done(&pvmw);
-> > > +                     break;
-> > > +             }
-> > > +
-> > > +             subpage = page - page_to_pfn(page) + pte_pfn(*pvmw.pte);
+> > Currently, the nodes_intersects() is run for both 'bind' and 'interleave'
+> > policies. But they are different regarding memory allocation, the nodemask
+> > is a forced requirement for 'bind', while just a hint for 'interleave'.
+> > Like in alloc_pages_vma():
 > > 
-> > I see that all pages passed in should be done after FOLL_SPLIT_PMD, so is
-> > this needed?  Or say, should subpage==page always be true?
+> > 	nmask = policy_nodemask(gfp, pol);
+> >         preferred_nid = policy_node(gfp, pol, node);
+> >         page = __alloc_pages(gfp, order, preferred_nid, nmask);
+> > 
+> > in plicy_nodemask(), only 'bind' policy may return its desired nodemask,
+> > while others return NULL.  And this 'NULL' enables the 'interleave' policy
+> > can get memory from other nodes than its nodemask.
+> > 
+> > So skip the nodemask intersect check for 'interleave' policy.
 > 
-> Not always, in the case of a thp there are small ptes which will get device 
-> exclusive entries.
+> The changelog is not really clear on the actual effect of the
+> patch and the above reference to alloc_pages_vma looks misleading to me
+> because that path is never called for interleaved policy.
 
-FOLL_SPLIT_PMD will first split the huge thp into smaller pages, then do
-follow_page_pte() on them (in follow_pmd_mask):
+You are right. thanks for pointing it out.
 
-	if (flags & FOLL_SPLIT_PMD) {
-		int ret;
-		page = pmd_page(*pmd);
-		if (is_huge_zero_page(page)) {
-			spin_unlock(ptl);
-			ret = 0;
-			split_huge_pmd(vma, pmd, address);
-			if (pmd_trans_unstable(pmd))
-				ret = -EBUSY;
-		} else {
-			spin_unlock(ptl);
-			split_huge_pmd(vma, pmd, address);
-			ret = pte_alloc(mm, pmd) ? -ENOMEM : 0;
-		}
+Only the 'bind' policy calls policy_nodemask() and gets its preset
+nodemask, while for 'interleave', alloc_page_interleave() calls
+__alloc_pages() with NULL nodemask, so the conclusion is the same
+that 'bind' policy can only get memory from its preset nodemask,
+while 'interleave' can get memory from all nodes.
 
-		return ret ? ERR_PTR(ret) :
-			follow_page_pte(vma, address, pmd, flags, &ctx->pgmap);
-	}
+> This is very likely my fault because I was rather vague. The existing
+> code in its current form is confusing but it _works_ properly. The
+> problem is that it sounds like a general helper and in that regards
+> the function is correct for the interleaved policy and your proposed
+> preferred-many. But its only existing caller wants a different semantic.
+> 
+> Until now this was not a real problem even for OOM context because
+> alloc_page_interleave is always used for the interleaving policy
+> and that one doesn't use any node mask so the code is not really
+> exercised. With your MPOL_PREFERRED this would no longer be the case.
+ 
+Given the 'interleave' task may have memory allocated from all nodes,
+shouldn't the mempolicy_nodemask_intersects() return true for 'interleave'?
+or I'm still missing something?
 
-So I thought all pages are small pages?
+> Your patch makes the code more robust for the oom context but it can
+> confuse other users who really want to do an intersect logic. So I think
+> it would really be best to rename the function and make it oom specific.
+> E.g. mempolicy_in_oom_domain(tsk, mask) this would make it clear that
+> this is not a general purpose function.
 
--- 
-Peter Xu
+Ok, will rename like this.
 
+Thanks,
+Feng
+
+> The changelog should be clear that this is just a code cleanup rather
+> than fix.
+> 
+> -- 
+> Michal Hocko
+> SUSE Labs
