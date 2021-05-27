@@ -2,128 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ADDCF392F2B
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 15:11:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 77D72392F19
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 15:06:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236303AbhE0NNN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 May 2021 09:13:13 -0400
-Received: from mga12.intel.com ([192.55.52.136]:32372 "EHLO mga12.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236007AbhE0NNJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 May 2021 09:13:09 -0400
-IronPort-SDR: BjQqo8Qa4ioM90TIe1Vhne9O4Y+xR0Mn8gB61VMheApCqLgKXzvhkMVSmUviuFNQ1GgArM5SY9
- G8rbKbPyTVqg==
-X-IronPort-AV: E=McAfee;i="6200,9189,9996"; a="182383803"
-X-IronPort-AV: E=Sophos;i="5.82,334,1613462400"; 
-   d="scan'208";a="182383803"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 May 2021 06:11:36 -0700
-IronPort-SDR: +JDOAma+uJ9hDhTIScQWJOcLnw2cYxnK/84jTZ/PK4VbPIahNfaIekTqdgGgSQwrxEMINZgJ4X
- zHyIs0jTop1g==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.82,334,1613462400"; 
-   d="scan'208";a="480574798"
-Received: from ranger.igk.intel.com ([10.102.21.164])
-  by fmsmga002.fm.intel.com with ESMTP; 27 May 2021 06:11:34 -0700
-Date:   Thu, 27 May 2021 14:58:41 +0200
-From:   Maciej Fijalkowski <maciej.fijalkowski@intel.com>
-To:     Colin Ian King <colin.king@canonical.com>
-Cc:     Jesper Dangaard Brouer <brouer@redhat.com>,
-        Hangbin Liu <liuhangbin@gmail.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Toke =?iso-8859-1?Q?H=F8iland-J=F8rgensen?= <toke@redhat.com>,
-        John Fastabend <john.fastabend@gmail.com>, bpf@vger.kernel.org,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: bpf: Run devmap xdp_prog on flush instead of bulk enqueue
-Message-ID: <20210527125841.GA5695@ranger.igk.intel.com>
-References: <86500107-ac79-6a17-7ef6-25033224c669@canonical.com>
+        id S236355AbhE0NIM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 May 2021 09:08:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57860 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236331AbhE0NH6 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 27 May 2021 09:07:58 -0400
+Received: from mail-qv1-xf35.google.com (mail-qv1-xf35.google.com [IPv6:2607:f8b0:4864:20::f35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D5B6C061574
+        for <linux-kernel@vger.kernel.org>; Thu, 27 May 2021 06:06:22 -0700 (PDT)
+Received: by mail-qv1-xf35.google.com with SMTP id 5so63246qvk.0
+        for <linux-kernel@vger.kernel.org>; Thu, 27 May 2021 06:06:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=tgPMjyY5jAkXYAxU2M6Xs7JOfdHxgDuWupSEgAOvuBU=;
+        b=HyAvfwEBrieOghAofexhSawgJJukm2YnQ2fAt2CFdEKEbDS1O9qhSu7HLdewyRfCVz
+         gEA6t08wyk35Bk0UPING6Rrv8blJD9d3z2B2GuwI2wJTrYZe4msm0UUHcQ98yGMgAfAw
+         jsaa2ecYO9Gel1C3uwINW+EKRzQM0HGE52Gr4=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=tgPMjyY5jAkXYAxU2M6Xs7JOfdHxgDuWupSEgAOvuBU=;
+        b=d+nFwzKS7YJb4+98kpWJ/TZPiXk69MuzTeC1mHKOnn7C0cS2jKV25KXl7JCQ9c5sPO
+         4orgntAa3oeZ1t/aNVxa1mK26aHBZziW1A+5uJ8esdo0NhcQ0QdfQM5onbEliJmUWAD+
+         IQ1C+y2qWO3xmKhOWjcDvKQO2Od7Hd9lY3VEosZoVrXOfyY6107rmiJEJI+/faap449I
+         knkzfiC+jOCTeYrDUY0FwFUPnHC9KggcWLCIgs8fMOa0EGDn8o47WkxMdXziDjFegC3X
+         Fs+jmpTOb1RfMcAbxrv90TOFBR3LjSJqi/hwiQxQhywM7qFCOwZJqVdRUgb9iGYG3i74
+         VpGg==
+X-Gm-Message-State: AOAM532/OhH4D1ayuJxgXbBgpnY0EO1grMqRwMbw3yEzL/zpdZXtYq/M
+        Ua6wr8RGwRGjbMIG3zHmmi17BmeZ9IfwaA==
+X-Google-Smtp-Source: ABdhPJyEB17bKboB9H0ivh+76MF/E3OSX4/4Oqjr0JCG9pi7Dr8WD6IHSGn9lp5SK/8iTBHel8Gewg==
+X-Received: by 2002:a0c:ee46:: with SMTP id m6mr3254869qvs.8.1622120781041;
+        Thu, 27 May 2021 06:06:21 -0700 (PDT)
+Received: from mail-qk1-f169.google.com (mail-qk1-f169.google.com. [209.85.222.169])
+        by smtp.gmail.com with ESMTPSA id w4sm1252327qki.57.2021.05.27.06.06.20
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 27 May 2021 06:06:20 -0700 (PDT)
+Received: by mail-qk1-f169.google.com with SMTP id h20so482227qko.11
+        for <linux-kernel@vger.kernel.org>; Thu, 27 May 2021 06:06:20 -0700 (PDT)
+X-Received: by 2002:a02:a505:: with SMTP id e5mr3414377jam.10.1622120419476;
+ Thu, 27 May 2021 06:00:19 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <86500107-ac79-6a17-7ef6-25033224c669@canonical.com>
-User-Agent: Mutt/1.12.1 (2019-06-15)
+References: <20210518064215.2856977-1-tientzu@chromium.org>
+In-Reply-To: <20210518064215.2856977-1-tientzu@chromium.org>
+From:   Claire Chang <tientzu@chromium.org>
+Date:   Thu, 27 May 2021 21:00:07 +0800
+X-Gmail-Original-Message-ID: <CALiNf2-dUFSCOz4=jmEm8ZcX+zQXKzo6yPg31iLLLG3FAr+g1w@mail.gmail.com>
+Message-ID: <CALiNf2-dUFSCOz4=jmEm8ZcX+zQXKzo6yPg31iLLLG3FAr+g1w@mail.gmail.com>
+Subject: Re: [PATCH v7 00/15] Restricted DMA
+To:     Rob Herring <robh+dt@kernel.org>, mpe@ellerman.id.au,
+        Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
+        boris.ostrovsky@oracle.com, jgross@suse.com,
+        Christoph Hellwig <hch@lst.de>,
+        Marek Szyprowski <m.szyprowski@samsung.com>
+Cc:     benh@kernel.crashing.org, paulus@samba.org,
+        "list@263.net:IOMMU DRIVERS" <iommu@lists.linux-foundation.org>,
+        sstabellini@kernel.org, Robin Murphy <robin.murphy@arm.com>,
+        grant.likely@arm.com, xypron.glpk@gmx.de,
+        Thierry Reding <treding@nvidia.com>, mingo@kernel.org,
+        bauerman@linux.ibm.com, peterz@infradead.org,
+        Greg KH <gregkh@linuxfoundation.org>,
+        Saravana Kannan <saravanak@google.com>,
+        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
+        heikki.krogerus@linux.intel.com,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        linux-devicetree <devicetree@vger.kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        linuxppc-dev@lists.ozlabs.org, xen-devel@lists.xenproject.org,
+        Nicolas Boichat <drinkcat@chromium.org>,
+        Jim Quinlan <james.quinlan@broadcom.com>,
+        Tomasz Figa <tfiga@chromium.org>, bskeggs@redhat.com,
+        Bjorn Helgaas <bhelgaas@google.com>, chris@chris-wilson.co.uk,
+        Daniel Vetter <daniel@ffwll.ch>, airlied@linux.ie,
+        dri-devel@lists.freedesktop.org, intel-gfx@lists.freedesktop.org,
+        jani.nikula@linux.intel.com, Jianxiong Gao <jxgao@google.com>,
+        joonas.lahtinen@linux.intel.com, linux-pci@vger.kernel.org,
+        maarten.lankhorst@linux.intel.com, matthew.auld@intel.com,
+        rodrigo.vivi@intel.com, thomas.hellstrom@linux.intel.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 27, 2021 at 11:43:20AM +0100, Colin Ian King wrote:
-> Hi,
-> 
-> Static analysis with Coverity on linux-next detected a minor issue that
-> was introduced with the following commit:
-> 
-> commit cb261b594b4108668e00f565184c7c221efe0359
-> Author: Jesper Dangaard Brouer <brouer@redhat.com>
-> Date:   Wed May 19 17:07:44 2021 +0800
-> 
->     bpf: Run devmap xdp_prog on flush instead of bulk enqueue
-> 
-> The analysis is as follows:
-> 
-> 370static void bq_xmit_all(struct xdp_dev_bulk_queue *bq, u32 flags)
-> 371{
-> 372        struct net_device *dev = bq->dev;
-> 373        int sent = 0, drops = 0, err = 0;
-> 374        unsigned int cnt = bq->count;
-> 375        int to_send = cnt;
-> 376        int i;
-> 377
-> 378        if (unlikely(!cnt))
-> 379                return;
-> 380
-> 381        for (i = 0; i < cnt; i++) {
-> 382                struct xdp_frame *xdpf = bq->q[i];
-> 383
-> 384                prefetch(xdpf);
-> 385        }
-> 386
-> 387        if (bq->xdp_prog) {
-> 388                to_send = dev_map_bpf_prog_run(bq->xdp_prog, bq->q,
-> cnt, dev);
-> 389                if (!to_send)
-> 390                        goto out;
-> 391
->    Unused value (UNUSED_VALUE)
->    assigned_value: Assigning value from cnt - to_send to drops here, but
-> that stored value is overwritten before it can be used.
-> 
-> 392                drops = cnt - to_send;
-> 393        }
-> 394
-> 395        sent = dev->netdev_ops->ndo_xdp_xmit(dev, to_send, bq->q, flags);
-> 396        if (sent < 0) {
-> 397                /* If ndo_xdp_xmit fails with an errno, no frames have
-> 398                 * been xmit'ed.
-> 399                 */
-> 400                err = sent;
-> 401                sent = 0;
-> 402        }
-> 403
-> 404        /* If not all frames have been transmitted, it is our
-> 405         * responsibility to free them
-> 406         */
-> 407        for (i = sent; unlikely(i < to_send); i++)
-
-FWIW at the time that I was suggesting a rewrite of bq_xmit_all we were
-using the 'drops' above via:
-
-		for (i = 0; i < cnt - drops; i++) {
-
-So looks like now the calculation at line 392 is actually not needed.
-
-> 408                xdp_return_frame_rx_napi(bq->q[i]);
-> 409
-> 410out:
-> 
->    value_overwrite: Overwriting previous write to drops with value from
-> cnt - sent.
-> 
-> 411        drops = cnt - sent;
-> 412        bq->count = 0;
-> 413        trace_xdp_devmap_xmit(bq->dev_rx, dev, sent, drops, err);
-> 414}
-> 
-> drops is being calculated twice but the first value is not used. Not
-> sure if that was intentional or an oversight.
-> 
-> Colin
+v8 here: https://lore.kernel.org/patchwork/cover/1437112/
