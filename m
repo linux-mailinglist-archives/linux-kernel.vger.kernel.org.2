@@ -2,97 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2BD903937BA
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 23:01:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 29E573937BE
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 23:05:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234153AbhE0VDW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 May 2021 17:03:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53012 "EHLO
+        id S234215AbhE0VGo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 May 2021 17:06:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53724 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233969AbhE0VDU (ORCPT
+        with ESMTP id S233788AbhE0VGl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 May 2021 17:03:20 -0400
-Received: from mail-il1-x12f.google.com (mail-il1-x12f.google.com [IPv6:2607:f8b0:4864:20::12f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C4FFC061574
-        for <linux-kernel@vger.kernel.org>; Thu, 27 May 2021 14:01:47 -0700 (PDT)
-Received: by mail-il1-x12f.google.com with SMTP id c2so1469555ilo.11
-        for <linux-kernel@vger.kernel.org>; Thu, 27 May 2021 14:01:47 -0700 (PDT)
+        Thu, 27 May 2021 17:06:41 -0400
+Received: from mail-yb1-xb34.google.com (mail-yb1-xb34.google.com [IPv6:2607:f8b0:4864:20::b34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F0B6C061574
+        for <linux-kernel@vger.kernel.org>; Thu, 27 May 2021 14:05:07 -0700 (PDT)
+Received: by mail-yb1-xb34.google.com with SMTP id g38so2559021ybi.12
+        for <linux-kernel@vger.kernel.org>; Thu, 27 May 2021 14:05:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
+        d=google.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=5k+QoYElPvv/JEIJG27i2r98ODrDTXojL8bBx2Ub4FU=;
-        b=BUozctgwF93n24U0ffApDB78imp2Sksep1yrBASZyXgVCWWSl3usAYapuhoUUReR41
-         /weePwO8Vhgj5Y68w7lcQ5ErFW+gQzwVL38U6pmYBGyWRz5raYcZu3bOSf3hlyw8TPhD
-         SShyZFspCKH3CHwLPl86qYQ8OoGV10Ww3wlN8=
+        bh=C4xtuCLIJzoRZ5qysXB/M8Lkr6wF9029ch4VKLEo4Nk=;
+        b=M53oZgchZQwKTASJqaHlFNcDyKB269ABJeaQwoFcv9LYbaN8P0OQ2nq1CunfZ1/oNn
+         CylgPjyHpEp6ezO+TduQV0l9CBLwehHjerBOjGllrc4MPtn/IQjkzXSQnNZDcA5DXBvJ
+         AjRqRCKlCf4m8TYGo91rQofT79vbs0evPB3/4soXp6o+CmGn1GcRd7O0B5rIsQOyhtGX
+         T/zrQN0iwgmR/kgthEQ3UdOt2U6r0IekeYs0W9qqSOYmHLr6PUOAeILWE0HWDj/pES4/
+         9qYYDZAHnwWyX5MbYRdXpY4cVexB6bUI2ROaGIRXU6DJVsHIeWKQLW/vNBxEj5HFcmfa
+         lKPQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=5k+QoYElPvv/JEIJG27i2r98ODrDTXojL8bBx2Ub4FU=;
-        b=K0ONOvywnu9WcBg/9t6W5/XuQ/HURBJ7+NfqhVjXFKsLf1wzmWoCMBXsbyhuOuxqGW
-         jP/GVvpYMAXn9ftMVx36Vb5sNgHeVctC3pwNuq+tRfmETqbvgWDZyByENjxBIppW47Ws
-         bucpZ0vrM/gPHyfVXInujgeNJcMsOsqs0V9V5Xq8wGMkdQ+2GGn1MYCZRwwE4zMicFEy
-         gB+bBNqmhOGmIpT/s/3SLvDpMh0gXdiJHgiN/0WK0K/Aw7pFcHjA37K4X3u6oko/XZwv
-         0rEDEXekRWawjagorvwv/0BaIt8xqTdRjzdw0m55/+9LvGy+1dSEKQrzBnxe1XmC/Qfk
-         ZhYQ==
-X-Gm-Message-State: AOAM530h1vAMCMBRR7Gx+0otz6AeHFxy3YDFmeH25hTGUs6tHAKmsHvi
-        gqq0bzWRCnokwMD1iT3Z5FhvcgEM8nPduSwOHZxQUw==
-X-Google-Smtp-Source: ABdhPJwoUZ3bji3NPjrdYGFjbYhXHgp0WBlB2r3lRKucT3PYjXiMnvg71VMZWXk/iiu7DtlSAMyuC8B7VBd5ltmCwuc=
-X-Received: by 2002:a92:dc45:: with SMTP id x5mr4174288ilq.95.1622149306562;
- Thu, 27 May 2021 14:01:46 -0700 (PDT)
+        bh=C4xtuCLIJzoRZ5qysXB/M8Lkr6wF9029ch4VKLEo4Nk=;
+        b=and1SMY/GxqH+2GXdNMd1nWQlGrqTWPIiPqSztmPNEg9ISfXmPPTDMmLObNTyNjHhQ
+         zQXvhx9FkoQ8dGtvdBpWaUbTz/3AA0E3XDDIpvs2aAWmE77uTutXiBd4xgxkftyRWTDc
+         Sjbba6UMqFZyI7dyTA8bUUsWwA6kgFyUsfZR5W1VG/IqOg4W/eP2CabAAzonFLTUaEjL
+         x1DWJc8hTnL6lul+8zXazLPLniHJNjaOKxMXvjzQCQX2R/zImyCVg5LvCTMEu8y8FUFf
+         rMBOERKZ306aRIKx6p9Xjk0I46oDZITH1ENu1MXZNwOyOGp01oc2InPm2jiIacDd4MQP
+         /R3g==
+X-Gm-Message-State: AOAM532mvbxXTpMC86bNFduCmObHdp13zQl3rgkOdVnQUBSLuSpFjAkv
+        8siU505LUhqOGt/JbTmFZK0t52XJND6pqgVfMdYCag==
+X-Google-Smtp-Source: ABdhPJxIbBnlg158ooaNKWjHJdmYHBAfidZeBGo2PABpWG07dsTPNUmMgL7YLngIV+HOvGB0sgIdZ8yl+/QSGMrLOQ0=
+X-Received: by 2002:a25:cbc4:: with SMTP id b187mr7710606ybg.466.1622149506118;
+ Thu, 27 May 2021 14:05:06 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210405202857.1265308-1-gwendal@google.com>
-In-Reply-To: <20210405202857.1265308-1-gwendal@google.com>
-From:   Gwendal Grignou <gwendal@chromium.org>
-Date:   Thu, 27 May 2021 14:01:34 -0700
-Message-ID: <CAPUE2uvZzXUoG+Fr7c3q0ysMUz0eb36PrdknG37FkG1v2h7zUg@mail.gmail.com>
-Subject: Re: [PATCH v2 0/2] platform/chrome: Update cros_ec sysfs attribute
- after sensors are found
-To:     Benson Leung <bleung@chromium.org>,
-        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
-        Guenter Roeck <groeck@chromium.org>
-Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
-        Gwendal Grignou <gwendal@google.com>,
-        Dmitry Torokhov <dtor@chromium.org>
+References: <1622102950-31688-1-git-send-email-orsonzhai@gmail.com>
+In-Reply-To: <1622102950-31688-1-git-send-email-orsonzhai@gmail.com>
+From:   Saravana Kannan <saravanak@google.com>
+Date:   Thu, 27 May 2021 14:04:30 -0700
+Message-ID: <CAGETcx9w-gYrPQuxOf9qQDwzyi8Bjp7cf_uK=Q5UcKuH+vWVFw@mail.gmail.com>
+Subject: Re: [PATCH] of: property: Add fw_devlink support for pwms
+To:     Orson Zhai <orsonzhai@gmail.com>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
+        Orson Zhai <orson.zhai@unisoc.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-[+dtor]
-Is this change acceptable? I was worried it could break when
-asynchronous probing is used [https://lwn.net/Articles/629895/], but
-since all probes are deferred in a single thread, it is safe.
-Gwendal.
+On Thu, May 27, 2021 at 1:09 AM Orson Zhai <orsonzhai@gmail.com> wrote:
+>
+> From: Orson Zhai <orson.zhai@unisoc.com>
+>
+> pwms is often required by backlight in embedded devices. Add device link
+> support for pwms as well.
+>
+> Signed-off-by: Orson Zhai <orson.zhai@unisoc.com>
+> ---
+>  drivers/of/property.c | 2 ++
+>  1 file changed, 2 insertions(+)
+>
+> diff --git a/drivers/of/property.c b/drivers/of/property.c
+> index 6c02863..93be977 100644
+> --- a/drivers/of/property.c
+> +++ b/drivers/of/property.c
+> @@ -1287,6 +1287,7 @@ DEFINE_SIMPLE_PROP(pinctrl6, "pinctrl-6", NULL)
+>  DEFINE_SIMPLE_PROP(pinctrl7, "pinctrl-7", NULL)
+>  DEFINE_SIMPLE_PROP(pinctrl8, "pinctrl-8", NULL)
+>  DEFINE_SIMPLE_PROP(remote_endpoint, "remote-endpoint", NULL)
+> +DEFINE_SIMPLE_PROP(pwms, "pwms", NULL)
+>  DEFINE_SUFFIX_PROP(regulators, "-supply", NULL)
+>  DEFINE_SUFFIX_PROP(gpio, "-gpio", "#gpio-cells")
+>
+> @@ -1371,6 +1372,7 @@ static const struct supplier_bindings of_supplier_bindings[] = {
+>         { .parse_prop = parse_pinctrl7, },
+>         { .parse_prop = parse_pinctrl8, },
+>         { .parse_prop = parse_remote_endpoint, .node_not_dev = true, },
+> +       { .parse_prop = parse_pwms, },
+>         { .parse_prop = parse_gpio_compat, },
+>         { .parse_prop = parse_interrupts, },
+>         { .parse_prop = parse_regulators, },
 
+I already have a local patch for this and "reset" bindings. But I'm
+holding off on adding support for new properties till fw_devlink=on
+fully lands in 5.13. Trying to avoid inadvertently adding new
+dependency issues. For example, the remote_endpoint binding I added to
+fix one issue caused more dependency issues. So far I've fixed them
+all.
 
-Gwendal.
+So, yeah, temporary Nak for this.
 
-On Mon, Apr 5, 2021 at 1:29 PM Gwendal Grignou <gwendal@chromium.org> wrote:
->
-> Attribute "kb_wake_angle" in /sys/<cros_ec hw path>/chromeos/cros_ec,
-> used to set at which angle the embedded controller must wake up the
-> host, is only set when there is at least 2 accelerometers in the
-> chromebook.
->
-> The detection of these sensors is done in cros_ec_sensorhub, driver that
-> can be probed after the cros_ec_sysfs driver that sets the attribute.
-> Therefore, we need to upgrade the cros_ec sysfs groups in the sensorhub
-> probe routine.
->
-> The first patch cleans up cros_ec_sysfs by using .dev_groups driver
-> field, the second patch fixes the problem.
->
-> Gwendal Grignou (2):
->   platform/chrome: Use dev_groups to set device sysfs attributes
->   platform/chrome: Update cros_ec sysfs attributes on sensors discovery
->
->  drivers/platform/chrome/cros_ec_sensorhub.c |  5 ++++-
->  drivers/platform/chrome/cros_ec_sysfs.c     | 22 +++++++--------------
->  include/linux/platform_data/cros_ec_proto.h |  2 ++
->  3 files changed, 13 insertions(+), 16 deletions(-)
->
-> --
-> 2.31.0.208.g409f899ff0-goog
->
+-Saravana
