@@ -2,210 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 81F7D3932D8
+	by mail.lfdr.de (Postfix) with ESMTP id 12F2A3932D6
 	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 17:49:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233676AbhE0PuI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 May 2021 11:50:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38848 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229732AbhE0Pt6 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 May 2021 11:49:58 -0400
-Received: from mail-oo1-xc29.google.com (mail-oo1-xc29.google.com [IPv6:2607:f8b0:4864:20::c29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8618BC061574
-        for <linux-kernel@vger.kernel.org>; Thu, 27 May 2021 08:48:23 -0700 (PDT)
-Received: by mail-oo1-xc29.google.com with SMTP id v13-20020a4ac00d0000b029020b43b918eeso208701oop.9
-        for <linux-kernel@vger.kernel.org>; Thu, 27 May 2021 08:48:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=yfSNFKosPU4+e760gCsV467KYelw7Cbptpl/kDRnoC8=;
-        b=FbtDb/DQyBp+GY9iEqxGg2/FRcFw3WW11uWrvwjePjlW6i8JYevnVBn2UDsOU7Lg4e
-         2Lbr3v2zNcR/lXgM3IBgXUHNWqOehYhHPwgIwFkGQFf4FJFn5zJZ0U9uQfS0vyFX5zJW
-         J1Oo4GZSzfO1mOykRiwvplTV0E3vXFaVdmLPkz13U+hnkRwpXSucSlUQw3Sfy+EymkL+
-         rA5jM7yC3tkJooLA1HfMJ3HhIz7E1dDGptteLT9vZAJD842zrQURe1P/eggjhT7rT3Of
-         jk0aZfKTuhRzXYhKJiCGA/dQcEcsSDsuQNAKVbCjVqvQEKjxkJsaH+/jnkZuAiKM1EfQ
-         Fa1A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=yfSNFKosPU4+e760gCsV467KYelw7Cbptpl/kDRnoC8=;
-        b=Bh7py6JpVUzVKCo60UMle+4DgQslZ9rMwtmhvy/5iiYZEu9St/ipg2TaWBOMsAicsQ
-         n/n7LqUuIXtkdt7yQzrpBuCYLdSdmHF/qnKxLl+3UmxaxNXbgb8BSIgUrWlMe2l//7ck
-         5eo3nGBGPFKxBqWGMnL1nkD79d0xO1ZLk9kDRiazkYz80HySGWeE23dOC+3rqUdlaa++
-         5sSkioxuyB1Vwn/s2ckBDyw8yOIr1ab+t48kub1hrKTA/bX3B9LeDH/Mq9Kmq4q0HlV9
-         t4CwZqnP4a04166aM9bSE5lCF1sCoXCpWtgH1oudR1XTPfsPHS48XRXUmDKzeq7ehKsq
-         wcEQ==
-X-Gm-Message-State: AOAM532P6BJ/Hd6SiMTVCxjwXUkwX+netDgbkQmU1XHOld/pn5YopUHH
-        FxEzLHI7qP+vjxJofEyr3Oh8HQ==
-X-Google-Smtp-Source: ABdhPJzyMrFe/vlEUMAHmB0t+9c7Fh3LmqLkK1n4GJOJbCS5aG3EzExhk/Kg2mW8d7RgfqCXHoh/ew==
-X-Received: by 2002:a4a:d4c7:: with SMTP id r7mr3291777oos.85.1622130502878;
-        Thu, 27 May 2021 08:48:22 -0700 (PDT)
-Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id l23sm533270oie.52.2021.05.27.08.48.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 27 May 2021 08:48:22 -0700 (PDT)
-Date:   Thu, 27 May 2021 10:48:20 -0500
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Konrad Dybcio <konrad.dybcio@somainline.org>
-Cc:     ~postmarketos/upstreaming@lists.sr.ht, martin.botka@somainline.org,
-        angelogioacchino.delregno@somainline.org,
-        marijn.suijten@somainline.org, jamipkettunen@somainline.org,
-        Andy Gross <agross@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Kees Cook <keescook@chromium.org>,
-        Anton Vorontsov <anton@enomsg.org>,
-        Colin Cross <ccross@android.com>,
-        Tony Luck <tony.luck@intel.com>
-Subject: Re: [PATCH 7/7] arm64: dts: qcom: Add support for SONY Xperia X
- Performance / XZ / XZs (msm8996, Tone platform)
-Message-ID: <YK+/RJX2DXvyHh0J@builder.lan>
-References: <20210525200246.118323-1-konrad.dybcio@somainline.org>
- <20210525200246.118323-7-konrad.dybcio@somainline.org>
- <YK3CxHZELSQzz4Dp@builder.lan>
- <3fbf451e-6bab-d72a-1d6b-851ece99c95b@somainline.org>
+        id S233750AbhE0PuC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 May 2021 11:50:02 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35270 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229591AbhE0Pt5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 27 May 2021 11:49:57 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 33E35613C3;
+        Thu, 27 May 2021 15:48:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1622130504;
+        bh=hQW1kh/BKjJFBNVUEjSKpbQOA8E3uC65goMUf6mc/ds=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=XHwNu/5mk1lELTcz2H+ibcCE7S/waMBOLYLsETanWXDunGmovFZp9iRu94Sr1J7d9
+         oix2ydjwWDmWgT9kr7hYXzBmo4mWKrJ82OMMlxjgG0/yzJ8hBlQuLkuaq82b/+oftE
+         VNE3wuyV1ceCKgy7ZjMsv2QGYOr1Zsx1HXwTWlKtygAMddafgNz3JHLeXEmhcPeZZz
+         z8RkWHf51NXxsClTWoKBPb+SY6Fp5tzYGoV7w/w1PM8IXfKloRupMgp2Az0FulZiqe
+         Mx8eJtTpUMTMI2gQpKqkKPA05nLCPhewpo0HUGPlx8B1B9vXjA826Cs/5Iob/lHqK2
+         af07Pdu7NLghQ==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id E86925C0176; Thu, 27 May 2021 08:48:23 -0700 (PDT)
+Date:   Thu, 27 May 2021 08:48:23 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Frederic Weisbecker <frederic@kernel.org>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        kernel test robot <oliver.sang@intel.com>,
+        stable@vger.kernel.org
+Subject: Re: [PATCH] tick/nohz: Only check for RCU deferred wakeup on
+ user/guest entry when needed
+Message-ID: <20210527154823.GC4397@paulmck-ThinkPad-P17-Gen-1>
+Reply-To: paulmck@kernel.org
+References: <20210527113441.465489-1-frederic@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <3fbf451e-6bab-d72a-1d6b-851ece99c95b@somainline.org>
+In-Reply-To: <20210527113441.465489-1-frederic@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed 26 May 04:21 CDT 2021, Konrad Dybcio wrote:
+On Thu, May 27, 2021 at 01:34:41PM +0200, Frederic Weisbecker wrote:
+> Checking for and processing RCU-nocb deferred wakeup upon user/guest
+> entry is only relevant when nohz_full runs on the local CPU, otherwise
+> the periodic tick should take care of it.
 
-> Hi,
-> 
-> 
-> > BSD license in all the files please.
-> 
-> msm8996.dtsi is gpl2-only, so I wasn't sure I can include it..
-> 
+The above initially confused me into thinking that we were dealing
+with non-local CPUs, and the patch itself straightened me out.
+How about something like this?
 
-Very good question, I think it's fine, would prefer it that way and will
-be merge it, but ianal.
+	Because the periodic tick is active during user/guest execution
+	on non-nohz_full CPUs, only nohz_full CPUs need to check for
+	RCU-nocb deferred wakeup on user/guest transitions.
 
+> Make sure we don't needlessly pollute these fast-paths as a -3%
+> performance regression on a will-it-scale.per_process_ops has been
+> reported so far.
 > 
-> >> +};
-> >> \ No newline at end of file
-> > [..]
-> 
-> Yikes... my mistake
-> 
-> 
-> >> +#include "pmi8994.dtsi"
-> >> +#include <dt-bindings/input/input.h>
-> >> +#include <dt-bindings/input/gpio-keys.h>
-> > This seems to be unused for now.
-> 
-> Right. I will add the keys in a separate patch, this one is plenty big already.
-> 
-> 
-> >> +		/*
-> >> +		 * Due to an unknown-for-a-few-years regression,
-> >> +		 * SDHCI only works on MSM8996 in PIO (lame) mode.
-> >> +		 */
-> >> +		bootargs = "sdhci.debug_quirks=0x40 sdhci.debug_quirks2=0x4 maxcpus=2";
-> > What's up with maxcpus=2? Is this simply because the last 2 are really
-> > really slow?
-> 
-> Yeah, I think the L2 and cci being stuck at bl clocks are to blame
-> again.. there was a lot of msm8996 cpufreq work but I am not sure if
-> anybody got it to *actually* work in the end, I'll try to look into
-> this soon(tm)..
-> 
+> Reported-by: kernel test robot <oliver.sang@intel.com>
+> Fixes: 47b8ff194c1f (entry: Explicitly flush pending rcuog wakeup before last rescheduling point)
+> Fixes: 4ae7dc97f726 (entry/kvm: Explicitly flush pending rcuog wakeup before last rescheduling point)
+> Cc: Ingo Molnar <mingo@kernel.org>
+> Cc: Peter Zijlstra <peterz@infradead.org>
+> Cc: stable@vger.kernel.org
+> Cc: Paul E. McKenney <paulmck@kernel.org>
+> Cc: Thomas Gleixner <tglx@linutronix.de>
+> Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
 
-Right, we have some lingering patches on our side for this as well,
-unfortunately I have one db82c0 that gets unstable when we bring the
-last 2 CPUs up to speed.
+Reviewed-by: Paul E. McKenney <paulmck@kernel.org>
 
-I started looking at this and found that some care needs to be taken
-when switching between the lower half and higher half of the frequencies
-(or perhaps it was voltages?) Unfortunately I didn't conclude anything
-in this area, but I would be happy to see this resolved.
-
+> ---
+>  include/linux/entry-kvm.h | 3 ++-
+>  include/linux/tick.h      | 7 +++++++
+>  kernel/entry/common.c     | 5 +++--
+>  kernel/time/tick-sched.c  | 1 +
+>  4 files changed, 13 insertions(+), 3 deletions(-)
 > 
-> >> +};
-> >> +
-> >> +&CPU0 {
-> >> +	cpu-supply = <&pmi8994_s11>;
-> > Isn't this the supply to the CPU-subsystem-internal LDO that actually
-> > feeds the CPU? Is there a benefit to describing this here?
+> diff --git a/include/linux/entry-kvm.h b/include/linux/entry-kvm.h
+> index 8b2b1d68b954..136b8d97d8c0 100644
+> --- a/include/linux/entry-kvm.h
+> +++ b/include/linux/entry-kvm.h
+> @@ -3,6 +3,7 @@
+>  #define __LINUX_ENTRYKVM_H
+>  
+>  #include <linux/entry-common.h>
+> +#include <linux/tick.h>
+>  
+>  /* Transfer to guest mode work */
+>  #ifdef CONFIG_KVM_XFER_TO_GUEST_WORK
+> @@ -57,7 +58,7 @@ int xfer_to_guest_mode_handle_work(struct kvm_vcpu *vcpu);
+>  static inline void xfer_to_guest_mode_prepare(void)
+>  {
+>  	lockdep_assert_irqs_disabled();
+> -	rcu_nocb_flush_deferred_wakeup();
+> +	tick_nohz_user_enter_prepare();
+>  }
+>  
+>  /**
+> diff --git a/include/linux/tick.h b/include/linux/tick.h
+> index 7340613c7eff..1a0ff88fa107 100644
+> --- a/include/linux/tick.h
+> +++ b/include/linux/tick.h
+> @@ -11,6 +11,7 @@
+>  #include <linux/context_tracking_state.h>
+>  #include <linux/cpumask.h>
+>  #include <linux/sched.h>
+> +#include <linux/rcupdate.h>
+>  
+>  #ifdef CONFIG_GENERIC_CLOCKEVENTS
+>  extern void __init tick_init(void);
+> @@ -300,4 +301,10 @@ static inline void tick_nohz_task_switch(void)
+>  		__tick_nohz_task_switch();
+>  }
+>  
+> +static inline void tick_nohz_user_enter_prepare(void)
+> +{
+> +	if (tick_nohz_full_cpu(smp_processor_id()))
+> +		rcu_nocb_flush_deferred_wakeup();
+> +}
+> +
+>  #endif
+> diff --git a/kernel/entry/common.c b/kernel/entry/common.c
+> index a0b3b04fb596..bf16395b9e13 100644
+> --- a/kernel/entry/common.c
+> +++ b/kernel/entry/common.c
+> @@ -5,6 +5,7 @@
+>  #include <linux/highmem.h>
+>  #include <linux/livepatch.h>
+>  #include <linux/audit.h>
+> +#include <linux/tick.h>
+>  
+>  #include "common.h"
+>  
+> @@ -186,7 +187,7 @@ static unsigned long exit_to_user_mode_loop(struct pt_regs *regs,
+>  		local_irq_disable_exit_to_user();
+>  
+>  		/* Check if any of the above work has queued a deferred wakeup */
+> -		rcu_nocb_flush_deferred_wakeup();
+> +		tick_nohz_user_enter_prepare();
+>  
+>  		ti_work = READ_ONCE(current_thread_info()->flags);
+>  	}
+> @@ -202,7 +203,7 @@ static void exit_to_user_mode_prepare(struct pt_regs *regs)
+>  	lockdep_assert_irqs_disabled();
+>  
+>  	/* Flush pending rcuog wakeup before the last need_resched() check */
+> -	rcu_nocb_flush_deferred_wakeup();
+> +	tick_nohz_user_enter_prepare();
+>  
+>  	if (unlikely(ti_work & EXIT_TO_USER_MODE_WORK))
+>  		ti_work = exit_to_user_mode_loop(regs, ti_work);
+> diff --git a/kernel/time/tick-sched.c b/kernel/time/tick-sched.c
+> index 828b091501ca..6784f27a3099 100644
+> --- a/kernel/time/tick-sched.c
+> +++ b/kernel/time/tick-sched.c
+> @@ -230,6 +230,7 @@ static void tick_sched_handle(struct tick_sched *ts, struct pt_regs *regs)
+>  
+>  #ifdef CONFIG_NO_HZ_FULL
+>  cpumask_var_t tick_nohz_full_mask;
+> +EXPORT_SYMBOL_GPL(tick_nohz_full_mask);
+>  bool tick_nohz_full_running;
+>  EXPORT_SYMBOL_GPL(tick_nohz_full_running);
+>  static atomic_t tick_dep_mask;
+> -- 
+> 2.25.1
 > 
-> I believe it was related to the cpufreq-dt madness, I will remove this.
-> 
-> 
-> >> +
-> >> +&pm8994_gpios {
-> >> +	pinctrl-names = "default";
-> >> +	pinctrl-0 = <&pm8994_gpio_1 &pm8994_vol_down_n &pm8994_vol_up_n
-> >> +		     &pm8994_cam_snap_n &pm8994_cam_focus_n &pm8994_gpio_6
-> >> +		     &pm8994_nfc_dload &pm8994_gpio_8 &pm8994_gpio_9
-> >> +		     &pm8994_gpio_nfc_clk &pm8994_gpio_11 &pm8994_gpio_12
-> >> +		     &pm8994_ear_en &pm8994_gpio_14 &pm8994_pm_divclk1
-> >> +		     &pm8994_pmi_clk &pm8994_gpio_17 &pm8994_rome_sleep
-> >> +		     &pm8994_gpio_19 &pm8994_gpio_22>;
-> > Shouldn't several of these reference be done from the relevant nodes?
-> 
-> Certainly, but not all peripherals have drivers upstream, and other ones
-> 
-> are hardcoded to their state downstream, and knowing what shady stuff
-> 
-> some vendors do, I'm reluctant to trust the bootloader-default state with
-> 
-> my expensive toys..
-> 
-
-I'm in agreement with you that we should vote for these somewhere, so
-I'm fine with us agreeing that they are voted for here for now.
-
-> 
-> 
-> > For the ones that isn't, and that you're not going to ever change I
-> > think it would look better to have a single:
-> >
-> > pm8994_gpios_defaults: default-state {
-> > 	nc {
-> > 		nc pins...
-> > 	};
-> >
-> > 	vol-up {
-> > 		...
-> > 	};
-> >
-> > 	...
-> > };
-> 
-> That does look like a good idea, but I also think it would become a big
-> 
-> mess if any of these pins turned out required for some obscure peripheral,
-> 
-> and then I'd have to dig it out of there, re-create the pin definition outside
-> 
-> and I think you know where this is going..
-> 
-
-But if this happens you need to override the giant pinctrl-0 in such
-device dts and hope that you don't miss any of the entries anyways.
-
-> 
-> > +/*
-> > + * For reasons that are currently unknown
-> > + * (but probably related to fusb301), USB
-> > + * takes about 6 minutes to wake up (nothing
-> > + * interesting in kernel logs), but then it
-> > + * works as it should.
-> > This is funny (but please make it ~80 chars wide).
-> 
-> Eh, Torvalds said 100 is fine :P
-> 
-
-Right, 100 is the new "limit", but 80 is still a good target. What I'm
-opposing is that you wrap at 44.
-
-Thanks,
-Bjorn
