@@ -2,118 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 64641393262
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 17:24:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 733FC393265
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 17:25:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235808AbhE0PZm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 May 2021 11:25:42 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:20389 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S237074AbhE0PZj (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 May 2021 11:25:39 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1622129043;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=1kCrvAGNk5x+9ZoqSebLak4g0PU0sL2l99GoIBSvwDw=;
-        b=MCT8H1y7KyRtD4PA7PRtFkbQCXUgJhC7FyjfYQmIY2ssEnCRtuyUOf5yZKhiyVwOdNSXqz
-        JHDstiLkKvmEfUQxZXddUYEX1PVBbWFLlovaonm15WMNsjtT/GsNANXWbElcPRKr7XX2Mu
-        Mb3TJMX5JV7nLpnybEEpyO7Qod7xn1Y=
-Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
- [209.85.221.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-452-Oma7yM0kN_eyTg9Lx6nGUg-1; Thu, 27 May 2021 11:24:02 -0400
-X-MC-Unique: Oma7yM0kN_eyTg9Lx6nGUg-1
-Received: by mail-wr1-f69.google.com with SMTP id p11-20020adfc38b0000b0290111f48b8adfso84437wrf.7
-        for <linux-kernel@vger.kernel.org>; Thu, 27 May 2021 08:24:02 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=1kCrvAGNk5x+9ZoqSebLak4g0PU0sL2l99GoIBSvwDw=;
-        b=AumDuXB0+AQlDtbVUQZyiUlDRgRjQoPKfCEcEhEAeRwXJohOgWch/GSEllQMw23PE4
-         pVSg3+w5sF2aJOpr8FlZvAsjs8at+QaXolPWRJEXMJ9qazCWtQ/3O+mo0ZVBzT8ofgL3
-         58EtinXSRJkeDajvjCxnOiNdzOzh9ussjsMt4HXqhnpLSfSk0NFpaGB0+ORUPPYtbQWS
-         XGgQckZCzuE+wSx/ON7OwbBoMWmgw/1h43wPZPTwJvlrEAlNYsBkTw4EFXqsgU1+qgiq
-         E8b8UGJv50ZDzNJLB8d8wviCIyzd/2/pHNABPHdMYgg/BrAZGTFXx8fLILj5BJeKAcrr
-         A5pg==
-X-Gm-Message-State: AOAM533zrp436cKeHDhyh7ooFYTxebvDwo1PGk0QnwLAZ11tQMGQFiO6
-        VO2h5EU5glrxSh0b1lz5JOQaDOMkhPUUyBnsOpIoBt7ICpMHUSG7qaZO213adUBWpFw5HJ4Triq
-        unwhGIsFzGQeEjycorEvLzaIrR9jUNf81WeUEieOk/7or2PExOKz8D4xkRbQAw2A/8vBsZ5NUbc
-        Q=
-X-Received: by 2002:a7b:cd04:: with SMTP id f4mr4246487wmj.84.1622129040509;
-        Thu, 27 May 2021 08:24:00 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJztaJymgHwJOsX1iIFw99a7GlGot9wAyRTZgOLuVZfzZW5nP4EfgoQ88bQesUBm7rDx0IdFNw==
-X-Received: by 2002:a7b:cd04:: with SMTP id f4mr4246461wmj.84.1622129040240;
-        Thu, 27 May 2021 08:24:00 -0700 (PDT)
-Received: from minerva.home ([92.176.231.106])
-        by smtp.gmail.com with ESMTPSA id s5sm3551714wrw.95.2021.05.27.08.23.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 27 May 2021 08:23:59 -0700 (PDT)
-From:   Javier Martinez Canillas <javierm@redhat.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     Javier Martinez Canillas <javierm@redhat.com>,
-        Alexander Wellbrock <a.wellbrock@mailbox.org>,
-        Jarkko Sakkinen <jarkko@kernel.org>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Peter Huewe <peterhuewe@gmx.de>,
-        Peter Robinson <pbrobinson@gmail.com>,
-        linux-integrity@vger.kernel.org
-Subject: [PATCH] tpm_tis_spi: add missing SPI device ID entries
-Date:   Thu, 27 May 2021 17:23:52 +0200
-Message-Id: <20210527152352.3835076-1-javierm@redhat.com>
-X-Mailer: git-send-email 2.31.1
+        id S235871AbhE0P0z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 May 2021 11:26:55 -0400
+Received: from mga06.intel.com ([134.134.136.31]:51115 "EHLO mga06.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235017AbhE0P0w (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 27 May 2021 11:26:52 -0400
+IronPort-SDR: WSPuou58lZto3/lIXv+rbk171bVf3o1DMH33ZmhzzW5PeLh6C+3eXNiYFLwMESUdepFkezyfZf
+ /3WJbrJ6SnOg==
+X-IronPort-AV: E=McAfee;i="6200,9189,9997"; a="263960612"
+X-IronPort-AV: E=Sophos;i="5.82,334,1613462400"; 
+   d="scan'208";a="263960612"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 May 2021 08:25:18 -0700
+IronPort-SDR: EyDJ59j1DX/f1fMCKGVOYC6j18om8AfkLU7eIDiIjUrWwxAmdBTeRrCDPlD9eS9UbTAStNpYoP
+ lC1OoEaQDZRw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.82,334,1613462400"; 
+   d="scan'208";a="472559815"
+Received: from fmsmsx606.amr.corp.intel.com ([10.18.126.86])
+  by FMSMGA003.fm.intel.com with ESMTP; 27 May 2021 08:25:17 -0700
+Received: from fmsmsx612.amr.corp.intel.com (10.18.126.92) by
+ fmsmsx606.amr.corp.intel.com (10.18.126.86) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2242.4; Thu, 27 May 2021 08:25:16 -0700
+Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
+ fmsmsx612.amr.corp.intel.com (10.18.126.92) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2242.4; Thu, 27 May 2021 08:25:16 -0700
+Received: from fmsmsx610.amr.corp.intel.com ([10.18.126.90]) by
+ fmsmsx610.amr.corp.intel.com ([10.18.126.90]) with mapi id 15.01.2242.008;
+ Thu, 27 May 2021 08:25:16 -0700
+From:   "Luck, Tony" <tony.luck@intel.com>
+To:     Kuppuswamy Sathyanarayanan 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        "Hansen, Dave" <dave.hansen@intel.com>
+CC:     Andi Kleen <ak@linux.intel.com>,
+        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
+        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
+        "Williams, Dan J" <dan.j.williams@intel.com>,
+        "Raj, Ashok" <ashok.raj@intel.com>,
+        Sean Christopherson <seanjc@google.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [RFC v2-fix-v2 1/1] x86/tdx: Add __tdx_module_call() and
+ __tdx_hypercall() helper functions
+Thread-Topic: [RFC v2-fix-v2 1/1] x86/tdx: Add __tdx_module_call() and
+ __tdx_hypercall() helper functions
+Thread-Index: AQHXUo+HGWahrGi/A0SEFraSQ6BB26r3cj8A
+Date:   Thu, 27 May 2021 15:25:16 +0000
+Message-ID: <974d8050cb974d6d80b0033e4b9fd0bf@intel.com>
+References: <77545da6-d534-e4c2-a60b-085705e3f0b7@linux.intel.com>
+ <20210527003033.3632700-1-sathyanarayanan.kuppuswamy@linux.intel.com>
+In-Reply-To: <20210527003033.3632700-1-sathyanarayanan.kuppuswamy@linux.intel.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+dlp-product: dlpe-windows
+dlp-reaction: no-action
+dlp-version: 11.5.1.3
+x-originating-ip: [10.1.200.100]
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The SPI core always reports a "MODALIAS=spi:<foo>", even if the device was
-registered via OF. This means that this module won't auto-load if a DT has
-for example has a node with a compatible "infineon,slb9670" string.
-
-In that case kmod will expect a "MODALIAS=of:N*T*Cinfineon,slb9670" uevent
-but instead will get a "MODALIAS=spi:slb9670", which is not present in the
-kernel module aliases:
-
-$ modinfo drivers/char/tpm/tpm_tis_spi.ko | grep alias
-alias:          of:N*T*Cgoogle,cr50C*
-alias:          of:N*T*Cgoogle,cr50
-alias:          of:N*T*Ctcg,tpm_tis-spiC*
-alias:          of:N*T*Ctcg,tpm_tis-spi
-alias:          of:N*T*Cinfineon,slb9670C*
-alias:          of:N*T*Cinfineon,slb9670
-alias:          of:N*T*Cst,st33htpm-spiC*
-alias:          of:N*T*Cst,st33htpm-spi
-alias:          spi:cr50
-alias:          spi:tpm_tis_spi
-alias:          acpi*:SMO0768:*
-
-To workaround this issue, add in the SPI device ID table all the entries
-that are present in the OF device ID table.
-
-Reported-by: Alexander Wellbrock <a.wellbrock@mailbox.org>
-Signed-off-by: Javier Martinez Canillas <javierm@redhat.com>
----
-
- drivers/char/tpm/tpm_tis_spi_main.c | 2 ++
- 1 file changed, 2 insertions(+)
-
-diff --git a/drivers/char/tpm/tpm_tis_spi_main.c b/drivers/char/tpm/tpm_tis_spi_main.c
-index 3856f6ebcb3..de4209003a4 100644
---- a/drivers/char/tpm/tpm_tis_spi_main.c
-+++ b/drivers/char/tpm/tpm_tis_spi_main.c
-@@ -260,6 +260,8 @@ static int tpm_tis_spi_remove(struct spi_device *dev)
- }
- 
- static const struct spi_device_id tpm_tis_spi_id[] = {
-+	{ "st33htpm-spi", (unsigned long)tpm_tis_spi_probe },
-+	{ "slb9670", (unsigned long)tpm_tis_spi_probe },
- 	{ "tpm_tis_spi", (unsigned long)tpm_tis_spi_probe },
- 	{ "cr50", (unsigned long)cr50_spi_probe },
- 	{}
--- 
-2.31.1
-
+PiBHdWVzdHMgY29tbXVuaWNhdGUgd2l0aCBWTU1zIHdpdGggaHlwZXJjYWxscy4gSGlzdG9yaWNh
+bGx5LCB0aGVzZQ0KPiBhcmUgaW1wbGVtZW50ZWQgdXNpbmcgaW5zdHJ1Y3Rpb25zIHRoYXQgYXJl
+IGtub3duIHRvIGNhdXNlIFZNRVhJVHMNCj4gbGlrZSB2bWNhbGwsIHZtbGF1bmNoLCBldGMuIEhv
+d2V2ZXIsIHdpdGggVERYLCBWTUVYSVRzIG5vIGxvbmdlcg0KPiBleHBvc2UgZ3Vlc3Qgc3RhdGUg
+dG8gdGhlIGhvc3QuIMKgVGhpcyBwcmV2ZW50cyB0aGUgb2xkIGh5cGVyY2FsbA0KPiBtZWNoYW5p
+c21zIGZyb20gd29ya2luZy4gU28gdG8gY29tbXVuaWNhdGUgd2l0aCBWTU0sIFREWA0KPiBzcGVj
+aWZpY2F0aW9uIGRlZmluZXMgYSBuZXcgaW5zdHJ1Y3Rpb24gY2FsbGVkICJ0ZGNhbGwiLg0KDQpZ
+b3UgdXNlIGFsbCBjYXBzIFREQ0FMTCBldmVyeXdoZXJlIGVsc2UgaW4gdGhpcyBjb21taXQgbWVz
+c2FnZS4NCkxvb2tzIG9kZCB0byBoYXZlIHF1b3RlZCBsb3dlciBjYXNlIGhlcmUuDQoNCj4gSW4g
+YSBURFggYmFzZWQgVk0sIHNpbmNlIFZNTSBpcyBhbiB1bnRydXN0ZWQgZW50aXR5LCBhIGludGVy
+bWVkaWFyeQ0KPiBsYXllciAoVERYIG1vZHVsZSkgZXhpc3RzIGJldHdlZW4gaG9zdCBhbmQgZ3Vl
+c3QgdG8gZmFjaWxpdGF0ZSB0aGUNCj4gc2VjdXJlIGNvbW11bmljYXRpb24uIFREWCBndWVzdHMg
+Y29tbXVuaWNhdGUgd2l0aCB0aGUgVERYIG1vZHVsZSBhbmQNCj4gd2l0aCB0aGUgVk1NIHVzaW5n
+IGEgbmV3IGluc3RydWN0aW9uOiBURENBTEwuDQoNClNlZW1zIGJvdGggcmVwZWF0IHdoYXQgd2Fz
+IGluIHRoZSBmaXJzdCBwYXJhZ3JhcGgsIGJ1dCBhbHNvIGZhaWwgdG8NCmV4cGxhaW4gaG93IHRo
+aXMgVERDQUxMIGlzIGRpZmZlcmVudCBmcm9tIHRoYXQgZmlyc3QgVERDQUxMLg0KDQo+IEltcGxl
+bWVudCBjb21tb24gaGVscGVyIGZ1bmN0aW9ucyB0byBjb21tdW5pY2F0ZSB3aXRowqB0aGUgVERY
+IE1vZHVsZQ0KPiBhbmQgVk1NICh1c2luZyBURENBTEwgaW5zdHJ1Y3Rpb24pLg0KPsKgIMKgDQo+
+IF9fdGR4X2h5cGVyY2FsbCgpICAgIC0gcmVxdWVzdCBzZXJ2aWNlc8KgZnJvbSB0aGUgVk1NLg0K
+PiBfX3RkeF9tb2R1bGVfY2FsbCgpwqAgLSBjb21tdW5pY2F0ZSB3aXRoIHRoZSBURFggTW9kdWxl
+Lg0KDQpMb29raW5nIGF0IHRoZSBjb2RlLCB0aGUgaHlwZXJjYWxsIGNhbiByZXR1cm4gYW4gZXJy
+b3IgaWYgVERDQUxMIGZhaWxzLA0KYnV0IG1vZHVsZV9jYWxsIGZvcmNlcyBhIHBhbmljIHdpdGgg
+VUQyIG9uIGVycm9yLiBUaGlzIGRpZmZlcmVuY2UgaXNuJ3QNCmV4cGxhaW5lZCBhbnl3aGVyZS4N
+Cg0KLVRvbnkNCg==
