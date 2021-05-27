@@ -2,220 +2,186 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F3223928E7
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 09:50:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 92D663928EA
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 09:51:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232870AbhE0HwI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 May 2021 03:52:08 -0400
-Received: from foss.arm.com ([217.140.110.172]:53564 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229579AbhE0HwH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 May 2021 03:52:07 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 2EC7E11D4;
-        Thu, 27 May 2021 00:50:34 -0700 (PDT)
-Received: from [192.168.1.179] (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 7C3F53F73B;
-        Thu, 27 May 2021 00:50:31 -0700 (PDT)
-Subject: Re: [PATCH v12 7/8] KVM: arm64: ioctl to fetch/store tags in a guest
-To:     Catalin Marinas <catalin.marinas@arm.com>
-Cc:     Marc Zyngier <maz@kernel.org>, Will Deacon <will@kernel.org>,
-        James Morse <james.morse@arm.com>,
-        Julien Thierry <julien.thierry.kdev@gmail.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        kvmarm@lists.cs.columbia.edu, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, Dave Martin <Dave.Martin@arm.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Thomas Gleixner <tglx@linutronix.de>, qemu-devel@nongnu.org,
-        Juan Quintela <quintela@redhat.com>,
-        "Dr. David Alan Gilbert" <dgilbert@redhat.com>,
-        Richard Henderson <richard.henderson@linaro.org>,
-        Peter Maydell <peter.maydell@linaro.org>,
-        Haibo Xu <Haibo.Xu@arm.com>, Andrew Jones <drjones@redhat.com>
-References: <20210517123239.8025-1-steven.price@arm.com>
- <20210517123239.8025-8-steven.price@arm.com> <20210520120556.GC12251@arm.com>
- <dd5ab3a0-5a74-b145-2485-d6d871be945b@arm.com>
- <20210520172713.GF12251@arm.com>
- <5eec330f-63c0-2af8-70f8-ba9b643e2558@arm.com>
- <20210524181129.GI14645@arm.com>
-From:   Steven Price <steven.price@arm.com>
-Message-ID: <58345eca-6e5f-0faa-e47d-e9149d73f6c5@arm.com>
-Date:   Thu, 27 May 2021 08:50:30 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        id S234072AbhE0HxB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 May 2021 03:53:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41648 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229735AbhE0Hw7 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 27 May 2021 03:52:59 -0400
+Received: from mail-qt1-x82f.google.com (mail-qt1-x82f.google.com [IPv6:2607:f8b0:4864:20::82f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D38C6C061574
+        for <linux-kernel@vger.kernel.org>; Thu, 27 May 2021 00:51:22 -0700 (PDT)
+Received: by mail-qt1-x82f.google.com with SMTP id v4so2858625qtp.1
+        for <linux-kernel@vger.kernel.org>; Thu, 27 May 2021 00:51:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=uged.al; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=H1K+CltDkIifzJ1ZXQpzAw36adTVLXU/8cQQG6X9chM=;
+        b=NeJDPoxQd8SETUNL2LwQdTKnsSIT2U11WXjT8ZX3IfqzKuKNBMlb8lHBZ552GiYKVu
+         4o+M09n6CdFkV1VvnJ4Ve2YOpyyK1/W4JL8tOhdePDo1TXf94GQWD2iueoPSJs829opU
+         iFkBKFWX82u/YQTFBumNdsKCK121GG8b0rXJtuLYd5GoMdww0Zm2dA6bOTCu+O2IfJDn
+         RL+oROPUCe9vKQgeY8nXME6sW9DTlMk8MPE6J0u+FsN91doUHZmG4TQ9RlNQmNqQeKMX
+         HYqWYDhfXhN/CtFI52cbOkioxVvJC/xqcfWCs952N/Jc7e4m2anpul5wp+mQuRljXfcg
+         77fg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=H1K+CltDkIifzJ1ZXQpzAw36adTVLXU/8cQQG6X9chM=;
+        b=XmFqLtyVokLPjhxtGTUO82sxLeTon5sEobMFthrfG6oceq3o9pYiyMisRkWXQz/GBG
+         /krE+l6Hs8V3m1W+PA86s4tL8yYx77PiYFGFnBVjgWzQe7yKDctmT4Hp4BusK7Esv1xK
+         mvBP4DkGiu3R3E/WC+wY4kR0D2irK9xK6ALX9k3pAGavvtDyYqvG4teKZmnUR1L+V3GF
+         E6YdjfFjFd1xqjpw96TUh7R7hJ1rgqvPCfL8rUtjJnP7cS0qtPkcM2zz5ObQxTqpmBLQ
+         KYlKEsA4a2+jmoSiBZzZpGC/DMQQhQbESH0CFCZ0MZg6cVDolAZE2loeh1rSSMmTuenf
+         pd8Q==
+X-Gm-Message-State: AOAM5329dI1N2E+hjIBeVlrElbKbndoBBJqUzTIwHH0VDtnlIPa1ZEL4
+        ryLv0FJqwr4HaAqYGG9hwZrFl8hqnf9YGsVPK8m6ZQ==
+X-Google-Smtp-Source: ABdhPJzp6z18DQ/0ZwLnYtBiAuBxAAbcDrlZQwXZTVIYRe5Gwo0aj9DS4V8OQiAs49soRiN3XszTvrRkiIHd0W/LRy0=
+X-Received: by 2002:ac8:45c2:: with SMTP id e2mr2080986qto.138.1622101881977;
+ Thu, 27 May 2021 00:51:21 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210524181129.GI14645@arm.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+References: <20210518125202.78658-1-odin@uged.al> <20210518125202.78658-2-odin@uged.al>
+ <CAKfTPtCCZhjOCZR6DMSxb9qffG2KceWONP_MzoY6TpYBmWp+hg@mail.gmail.com>
+ <CAFpoUr0f50hKUtWvpTy221xT+pUocY7LXCMCo3cPJupjgMtotg@mail.gmail.com>
+ <CAKfTPtCaZOSEzRXVN9fTR2vTxGiANEARo6iDNMFiQV5=qAA4Tw@mail.gmail.com> <CAKfTPtAFn3=anfTCxKTDXF0wpttpEiAhksLvcEPdSiYZTj38_A@mail.gmail.com>
+In-Reply-To: <CAKfTPtAFn3=anfTCxKTDXF0wpttpEiAhksLvcEPdSiYZTj38_A@mail.gmail.com>
+From:   Odin Ugedal <odin@uged.al>
+Date:   Thu, 27 May 2021 09:50:42 +0200
+Message-ID: <CAFpoUr1zGNf9vTbWjwsfY9E8YBjyE5xJ0SwzLebPiS7b=xz_Zw@mail.gmail.com>
+Subject: Re: [PATCH 1/3] sched/fair: Add tg_load_contrib cfs_rq decay checking
+To:     Vincent Guittot <vincent.guittot@linaro.org>
+Cc:     Odin Ugedal <odin@uged.al>, Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        "open list:CONTROL GROUP (CGROUP)" <cgroups@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 24/05/2021 19:11, Catalin Marinas wrote:
-> On Fri, May 21, 2021 at 10:42:09AM +0100, Steven Price wrote:
->> On 20/05/2021 18:27, Catalin Marinas wrote:
->>> On Thu, May 20, 2021 at 04:58:01PM +0100, Steven Price wrote:
->>>> On 20/05/2021 13:05, Catalin Marinas wrote:
->>>>> On Mon, May 17, 2021 at 01:32:38PM +0100, Steven Price wrote:
->>>>>> diff --git a/arch/arm64/kvm/arm.c b/arch/arm64/kvm/arm.c
->>>>>> index e89a5e275e25..4b6c83beb75d 100644
->>>>>> --- a/arch/arm64/kvm/arm.c
->>>>>> +++ b/arch/arm64/kvm/arm.c
->>>>>> @@ -1309,6 +1309,65 @@ static int kvm_vm_ioctl_set_device_addr(struct kvm *kvm,
->>>>>>  	}
->>>>>>  }
->>>>>>  
->>>>>> +static int kvm_vm_ioctl_mte_copy_tags(struct kvm *kvm,
->>>>>> +				      struct kvm_arm_copy_mte_tags *copy_tags)
->>>>>> +{
->>>>>> +	gpa_t guest_ipa = copy_tags->guest_ipa;
->>>>>> +	size_t length = copy_tags->length;
->>>>>> +	void __user *tags = copy_tags->addr;
->>>>>> +	gpa_t gfn;
->>>>>> +	bool write = !(copy_tags->flags & KVM_ARM_TAGS_FROM_GUEST);
->>>>>> +	int ret = 0;
->>>>>> +
->>>>>> +	if (copy_tags->reserved[0] || copy_tags->reserved[1])
->>>>>> +		return -EINVAL;
->>>>>> +
->>>>>> +	if (copy_tags->flags & ~KVM_ARM_TAGS_FROM_GUEST)
->>>>>> +		return -EINVAL;
->>>>>> +
->>>>>> +	if (length & ~PAGE_MASK || guest_ipa & ~PAGE_MASK)
->>>>>> +		return -EINVAL;
->>>>>> +
->>>>>> +	gfn = gpa_to_gfn(guest_ipa);
->>>>>> +
->>>>>> +	mutex_lock(&kvm->slots_lock);
->>>>>> +
->>>>>> +	while (length > 0) {
->>>>>> +		kvm_pfn_t pfn = gfn_to_pfn_prot(kvm, gfn, write, NULL);
->>>>>> +		void *maddr;
->>>>>> +		unsigned long num_tags = PAGE_SIZE / MTE_GRANULE_SIZE;
->>>>>> +
->>>>>> +		if (is_error_noslot_pfn(pfn)) {
->>>>>> +			ret = -EFAULT;
->>>>>> +			goto out;
->>>>>> +		}
->>>>>> +
->>>>>> +		maddr = page_address(pfn_to_page(pfn));
->>>>>> +
->>>>>> +		if (!write) {
->>>>>> +			num_tags = mte_copy_tags_to_user(tags, maddr, num_tags);
->>>>>> +			kvm_release_pfn_clean(pfn);
->>>>>
->>>>> Do we need to check if PG_mte_tagged is set? If the page was not faulted
->>>>> into the guest address space but the VMM has the page, does the
->>>>> gfn_to_pfn_prot() guarantee that a kvm_set_spte_gfn() was called? If
->>>>> not, this may read stale tags.
->>>>
->>>> Ah, I hadn't thought about that... No I don't believe gfn_to_pfn_prot()
->>>> will fault it into the guest.
->>>
->>> It doesn't indeed. What it does is a get_user_pages() but it's not of
->>> much help since the VMM pte wouldn't be tagged (we would have solved
->>> lots of problems if we required PROT_MTE in the VMM...)
->>
->> Sadly it solves some problems and creates others :(
-> 
-> I had some (random) thoughts on how to make things simpler, maybe. I
-> think most of these races would have been solved if we required PROT_MTE
-> in the VMM but this has an impact on the VMM if it wants to use MTE
-> itself. If such requirement was in place, all KVM needed to do is check
-> PG_mte_tagged.
-> 
-> So what we actually need is a set_pte_at() in the VMM to clear the tags
-> and set PG_mte_tagged. Currently, we only do this if the memory type is
-> tagged (PROT_MTE) but it's not strictly necessary.
-> 
-> As an optimisation for normal programs, we don't want to do this all the
-> time but the visible behaviour wouldn't change (well, maybe for ptrace
-> slightly). However, it doesn't mean we couldn't for a VMM, with an
-> opt-in via prctl(). This would add a MMCF_MTE_TAG_INIT bit (couldn't
-> think of a better name) to mm_context_t.flags and set_pte_at() would
-> behave as if the pte was tagged without actually mapping the memory in
-> user space as tagged (protection flags not changed). Pages that don't
-> support tagging are still safe, just some unnecessary ignored tag
-> writes. This would need to be set before the mmap() for the guest
-> memory.
-> 
-> If we want finer-grained control we'd have to store this information in
-> the vma flags, in addition to VM_MTE (e.g. VM_MTE_TAG_INIT) but without
-> affecting the actual memory type. The easiest would be another pte bit,
-> though we are short on them. A more intrusive (not too bad) approach is
-> to introduce a set_pte_at_vma() and read the flags directly in the arch
-> code. In most places where set_pte_at() is called on a user mm, the vma
-> is also available.
-> 
-> Anyway, I'm not saying we go this route, just thinking out loud, get
-> some opinions.
+Hi,
 
-Does get_user_pages() actually end up calling set_pte_at() normally? If
-not then on the normal user_mem_abort() route although we can easily
-check VM_MTE_TAG_INIT there's no obvious place to hook in to ensure that
-the pages actually allocated have the PG_mte_tagged flag.
+Did some quick testing with bpftrace, and it looks like it is
+"update_tg_cfs_load" that does this;
 
-I'm also not sure how well this would work with the MMU notifiers path
-in KVM. With MMU notifiers (i.e. the VMM replacing a page in the
-memslot) there's not even an obvious hook to enforce the VMA flag. So I
-think we'd end up with something like the sanitise_mte_tags() function
-to at least check that the PG_mte_tagged flag is set on the pages
-(assuming that the trigger for the MMU notifier has done the
-corresponding set_pte_at()). Admittedly this might close the current
-race documented there.
+ kretfunc:attach_entity_load_avg: cfs_rq: 0xffff8a3e6773e400,
+se.load_sum: 0, se.load_avg: 0, se->load.weight: 1048576 diff.sum: 0,
+diff.load: 0, new_sum: 0, new_load: 0, period_contrib: 821
 
-It also feels wrong to me to tie this to a process with prctl(), it
-seems much more normal to implement this as a new mprotect() flag as
-this is really a memory property not a process property. And I think
-we'll find some scary corner cases if we try to associate everything
-back to a process - although I can't instantly think of anything that
-will actually break.
+ // quite some time passes
 
->>> Another thing I forgot to ask, what's guaranteeing that the page
->>> supports tags? Does this ioctl ensure that it would attempt the tag
->>> copying from some device mapping? Do we need some kvm_is_device_pfn()
->>> check? I guess ZONE_DEVICE memory we just refuse to map in an earlier
->>> patch.
->>
->> Hmm, nothing much. While reads are now fine (the memory won't have
->> PG_mte_tagged), writes could potentially happen on ZONE_DEVICE memory.
-> 
-> I don't think it's a problem for writes either as the host wouldn't map
-> such memory as tagged. It's just that it returns zeros and writes are
-> ignored, so we could instead return an error (I haven't checked your
-> latest series yet).
+ kretfunc:update_tg_cfs_load: cfs_rq: 0xffff8a3e6773e400, old load_sum
+0, old load_avg: 0, new load_sum: 47876096, new load_avg: 1022
+tg_load_avg_contrib: 0, period_contrib: 82, on_list: 0, throttled: 0/0
+stack:
+         bpf_prog_a37cf01922e02958_update_tg_cfs_l+504
+         bpf_get_stackid_raw_tp+115
+         bpf_prog_a37cf01922e02958_update_tg_cfs_l+504
+         bpf_trampoline_6442466486_1+144
+         update_tg_cfs_load+5
+         update_load_avg+450
+         enqueue_entity+91
+         enqueue_task_fair+134
+         move_queued_task+172
+         affine_move_task+1282
+         __set_cpus_allowed_ptr+317
+         update_tasks_cpumask+70
+         update_cpumasks_hier+448
+         update_cpumask+345
+         cpuset_write_resmask+796
+         cgroup_file_write+162
+         kernfs_fop_write_iter+284
+         new_sync_write+345
+         vfs_write+511
+         ksys_write+103
+         do_syscall_64+51
+         entry_SYSCALL_64_after_hwframe+68
 
-The latest series uses pfn_to_online_page() to reject ZONE_DEVICE early.
+ // There might be more stuff happening here
+ // __update_load_avg_cfs_rq runs way too often to be able to
+ // trace it without filtering, and didn't look into that.
 
->>>> 		} else {
->>>> 			num_tags = mte_copy_tags_from_user(maddr, tags,
->>>> 							MTE_GRANULES_PER_PAGE);
->>>> 			kvm_release_pfn_dirty(pfn);
->>>> 		}
->>>>
->>>> 		if (num_tags != MTE_GRANULES_PER_PAGE) {
->>>> 			ret = -EFAULT;
->>>> 			goto out;
->>>> 		}
->>>>
->>>> 		if (write)
->>>> 			test_and_set_bit(PG_mte_tagged, &page->flags);
->>>
->>> I think a set_bit() would do, I doubt it's any more efficient. But why
->>
->> I'd seen test_and_set_bit() used elsewhere (I forget where now) as a
->> slightly more efficient approach. It complies down to a READ_ONCE and a
->> conditional atomic, vs a single non-conditional atomic. But I don't have
->> any actual data on the performance and this isn't a hot path, so I'll
->> switch to the more obvious set_bit().
-> 
-> Yeah, I think I've seen this as well. Anyway, it's probably lost in the
-> noise of tag writing here.
-> 
+ kretfunc:update_tg_cfs_load: cfs_rq: 0xffff8a3e6773e400, old load_sum
+48117265, old load_avg: 1025, new load_sum: 0, new load_avg: 2
+tg_load_avg_contrib: 1022, period_contrib: 223, on_list: 1, throttled:
+1/1 stack:
+         bpf_prog_a37cf01922e02958_update_tg_cfs_l+504
+         bpf_get_stackid_raw_tp+115
+         bpf_prog_a37cf01922e02958_update_tg_cfs_l+504
+         bpf_trampoline_6442466486_1+144
+         update_tg_cfs_load+5
+         update_load_avg+450
+         update_blocked_averages+723
+         newidle_balance+533
+         pick_next_task_fair+57
+         __schedule+376
+         schedule+91
+         schedule_hrtimeout_range_clock+164
+         do_sys_poll+1043
+         __x64_sys_poll+179
+         do_syscall_64+51
+         entry_SYSCALL_64_after_hwframe+68
 
-Agreed.
+This particular example resulted in a 75/25 share of cpu time for the
+two groups.
 
-Thanks,
+From this, it also looks like it doesn't matter if new load_avg is 0 or not
+(when new load_sum is 0), since tg_load_avg_contrib will not be properly
+removed either way (without this patch). There might be some other precision
 
-Steve
+
+> I have added a trace in cfs_rq_is_decayed() but I'm not able to
+> reproduce a situation where load_sum == 0 but not load_avg  even with
+> the script in the cover letter
+
+Hmm, strange. I am able to reproduce on both v5.12 and v5.13. I am running on
+a non SMT 4 core CPU (4670k), with CONFIG_HZ=250. Since this is timing
+sensitive,
+you might need to tweak the timings for either the CFS bw period/quota, or the
+time waiting between changing what cpu it runs on. If you have more than 4 cpus,
+you can also try to start on CPU 0 and move it through all cores and
+then onto CPU n.
+Maybe that makes it possible to reproduce.
+
+Since bpftrace doesn't work properly in v5.13, this particular test was
+on v1.12 with cherry-pick of 0258bdfaff5bd13c4d2383150b7097aecd6b6d82 and
+the other patch in this patchset.
+
+testscript.bt:
+
+  kfunc:attach_entity_load_avg {@a_sum[tid] =
+args->cfs_rq->avg.load_sum; @a_load[tid] =
+args->cfs_rq->avg.load_avg;}
+  kretfunc:attach_entity_load_avg{printf("%s: cfs_rq: %p, se.load_sum:
+%llu, se.load_avg: %llu, se->load.weight: %llu diff.sum: %llu,
+diff.load: %llu, new_sum: %llu, new_load: %llu, period_contrib:
+%llu\n", probe, args->cfs_rq,args->se->avg.load_sum,
+args->se->avg.load_avg,
+args->se->load.weight,args->cfs_rq->avg.load_sum - @a_sum[tid],
+args->cfs_rq->avg.load_avg - @a_load[tid], args->cfs_rq->avg.load_sum,
+args->cfs_rq->avg.load_avg, args->cfs_rq->avg.period_contrib)}
+
+  kfunc:update_tg_cfs_load {@beg_load_avg[tid] =
+args->cfs_rq->avg.load_avg; @beg_load_sum[tid] =
+args->cfs_rq->avg.load_sum}
+  kretfunc:update_tg_cfs_load {printf("%s: cfs_rq: %p, old load_sum
+%llu, old load_avg: %llu, new load_sum: %llu, new load_avg: %llu
+tg_load_avg_contrib: %llu, period_contrib: %llu, on_list: %d,
+throttled: %d/%d stack: %s\n",probe, args->cfs_rq, @beg_load_sum[tid],
+@beg_load_avg[tid], args->cfs_rq->avg.load_sum,
+args->cfs_rq->avg.load_avg, args->cfs_rq->tg_load_avg_contrib,
+args->cfs_rq->avg.period_contrib,args->cfs_rq->on_list,
+args->cfs_rq->throttled, args->cfs_rq->throttle_count,kstack)}
+
+Thanks
+Odin
