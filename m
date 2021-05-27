@@ -2,200 +2,298 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1CE0C392CA1
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 13:26:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D47B8392CA4
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 13:26:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232870AbhE0L1d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 May 2021 07:27:33 -0400
-Received: from szxga08-in.huawei.com ([45.249.212.255]:2315 "EHLO
-        szxga08-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229640AbhE0L1b (ORCPT
+        id S233375AbhE0L1z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 May 2021 07:27:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34502 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232943AbhE0L1q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 May 2021 07:27:31 -0400
-Received: from dggeml706-chm.china.huawei.com (unknown [172.30.72.56])
-        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4FrQPD27vgz1BFRR;
-        Thu, 27 May 2021 19:21:20 +0800 (CST)
-Received: from dggpemm500022.china.huawei.com (7.185.36.162) by
- dggeml706-chm.china.huawei.com (10.3.17.144) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2176.2; Thu, 27 May 2021 19:25:55 +0800
-Received: from [10.174.185.220] (10.174.185.220) by
- dggpemm500022.china.huawei.com (7.185.36.162) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Thu, 27 May 2021 19:25:54 +0800
-Subject: Re: [RFC PATCH v3 0/8] Add IOPF support for VFIO passthrough
-To:     Alex Williamson <alex.williamson@redhat.com>
-CC:     Cornelia Huck <cohuck@redhat.com>, Will Deacon <will@kernel.org>,
-        "Robin Murphy" <robin.murphy@arm.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        "Jean-Philippe Brucker" <jean-philippe@linaro.org>,
-        Eric Auger <eric.auger@redhat.com>, <kvm@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <iommu@lists.linux-foundation.org>, <linux-api@vger.kernel.org>,
-        Kevin Tian <kevin.tian@intel.com>,
-        Lu Baolu <baolu.lu@linux.intel.com>, <yi.l.liu@intel.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        "Barry Song" <song.bao.hua@hisilicon.com>,
-        <wanghaibin.wang@huawei.com>, <yuzenghui@huawei.com>
-References: <20210409034420.1799-1-lushenming@huawei.com>
- <20210518125756.4c075300.alex.williamson@redhat.com>
- <accfb404-1d7b-8d73-6fb7-50011a3e546f@huawei.com>
- <20210524161136.03e9323d@x1.home.shazbot.org>
-From:   Shenming Lu <lushenming@huawei.com>
-Message-ID: <159f0e59-b2cc-ca4b-9796-3ad134a29c1f@huawei.com>
-Date:   Thu, 27 May 2021 19:25:53 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.2.2
+        Thu, 27 May 2021 07:27:46 -0400
+Received: from mail-yb1-xb2f.google.com (mail-yb1-xb2f.google.com [IPv6:2607:f8b0:4864:20::b2f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05EA6C061574;
+        Thu, 27 May 2021 04:26:13 -0700 (PDT)
+Received: by mail-yb1-xb2f.google.com with SMTP id o18so156365ybc.8;
+        Thu, 27 May 2021 04:26:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=zzv6SpunBfg3gxxbotwT4IYWTA04kO5trsea2ypbug4=;
+        b=QK+c/PTwQNCAYIeeq4Z4xkUMO7VLjtt3m3LwNF/E9tovCA+z1cHjIrurHZ/+x2qtoE
+         6In75i9+WLoSs64PRFYrtwha9WXTAKiqg8jxxsGlE4/XumP61NVY2DZlHOOHKxd/3vhY
+         X5D/7ufK5LSOfTVmL33Hemtd334MRVjVObLwY7bwISGkcGuCsnRIpgM4j27tXI4OTnwZ
+         p7Nhy0xguLiicomFST6H8lzgogsDkPbMFr3OZJvmt/YXIlUUFcxRvo+C4DF+EdIgIM6/
+         euS1jbFEbexN5Fdk+Wx3n3mcL7vCiEuSDNytAY3jxZbwjeFyEVVfNwXifm3IbNvX2Pfk
+         6b3g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=zzv6SpunBfg3gxxbotwT4IYWTA04kO5trsea2ypbug4=;
+        b=Mf3Nd772lpNI8CZ8V3EbQy+1kwPHl6kT5e3swMVvMxOTKM20mVyDTAHyuzZROY7WiD
+         XPjlRfuAKpUMz9YexlEoPGhWq3DhdQ+68A4xvyMlE13CHjhbdt0Lv23ZqWbu2ufLDOqK
+         zciBn3amR7Ly0frtTuU7RbvobbBEOVD9AsU8/z5nxC9CxS61g9e3/mSqgX4l+iooRiEy
+         RA56N+QBTnH0oIBkrTvQpw9uXnHEqdIElPeqejcpK2vrbupIMWrYg3IwHRg2Siqmj3rt
+         oeHLPe9COr/Svj40g+2H9aW9GTJvBlxkGExvdLosjj17+7Et6TtF8RHqAtHIVq48cc+C
+         em4Q==
+X-Gm-Message-State: AOAM5309oBQFhQWbkIIZbeyDXWI6y7sCxps+oFhxkw3rkOi3YOv4ffLO
+        7WYr6EmM0UfwZ5RWekc6S5jmGdeMAhgd3DPJr3c=
+X-Google-Smtp-Source: ABdhPJzxecgBgZoRTo7GaYY515d78DbH0s23vxK0Ib0+iASmwacntd5adDNCI5BhPTAxqMhJGGnfGqH2iHu9McCGFGg=
+X-Received: by 2002:a25:9982:: with SMTP id p2mr4272245ybo.174.1622114772118;
+ Thu, 27 May 2021 04:26:12 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210524161136.03e9323d@x1.home.shazbot.org>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.185.220]
-X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
- dggpemm500022.china.huawei.com (7.185.36.162)
-X-CFilter-Loop: Reflected
+References: <20210526162342.GA20@8bbba9ba63a4> <CAMdYzYpZoKs3P62j02RW-+5BEpqC9JL3apjucTWLWmvNFrOrCg@mail.gmail.com>
+ <20210527105943.GA441@7698f5da3a10>
+In-Reply-To: <20210527105943.GA441@7698f5da3a10>
+From:   Peter Geis <pgwipeout@gmail.com>
+Date:   Thu, 27 May 2021 07:26:01 -0400
+Message-ID: <CAMdYzYq8c4=D6_LxG2jPfbtPkOp5tN8oRA0zKt_OM6HLbnfFTw@mail.gmail.com>
+Subject: Re: [PATCH] regulator: fan53555: add back tcs4526
+To:     Rudi Heitbaum <rudi@heitbaum.com>
+Cc:     devicetree@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "open list:ARM/Rockchip SoC..." <linux-rockchip@lists.infradead.org>,
+        Mark Brown <broonie@kernel.org>,
+        Ezequiel Garcia <ezequiel@collabora.com>, chenjh@rock-chips.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/5/25 6:11, Alex Williamson wrote:
-> On Fri, 21 May 2021 14:37:21 +0800
-> Shenming Lu <lushenming@huawei.com> wrote:
-> 
->> Hi Alex,
->>
->> On 2021/5/19 2:57, Alex Williamson wrote:
->>> On Fri, 9 Apr 2021 11:44:12 +0800
->>> Shenming Lu <lushenming@huawei.com> wrote:
->>>   
->>>> Hi,
->>>>
->>>> Requesting for your comments and suggestions. :-)
->>>>
->>>> The static pinning and mapping problem in VFIO and possible solutions
->>>> have been discussed a lot [1, 2]. One of the solutions is to add I/O
->>>> Page Fault support for VFIO devices. Different from those relatively
->>>> complicated software approaches such as presenting a vIOMMU that provides
->>>> the DMA buffer information (might include para-virtualized optimizations),
->>>> IOPF mainly depends on the hardware faulting capability, such as the PCIe
->>>> PRI extension or Arm SMMU stall model. What's more, the IOPF support in
->>>> the IOMMU driver has already been implemented in SVA [3]. So we add IOPF
->>>> support for VFIO passthrough based on the IOPF part of SVA in this series.  
->>>
->>> The SVA proposals are being reworked to make use of a new IOASID
->>> object, it's not clear to me that this shouldn't also make use of that
->>> work as it does a significant expansion of the type1 IOMMU with fault
->>> handlers that would duplicate new work using that new model.  
->>
->> It seems that the IOASID extension for guest SVA would not affect this series,
->> will we do any host-guest IOASID translation in the VFIO fault handler?
-> 
-> Surely it will, we don't currently have any IOMMU fault handling or
-> forwarding of IOMMU faults through to the vfio bus driver, both of
-> those would be included in an IOASID implementation.  I think Jason's
-> vision is to use IOASID to deprecate type1 for all use cases, so even
-> if we were to choose to implement IOPF in type1 we should agree on
-> common interfaces with IOASID.
+On Thu, May 27, 2021 at 6:59 AM Rudi Heitbaum <rudi@heitbaum.com> wrote:
+>
+> On Wed, May 26, 2021 at 02:41:00PM -0400, Peter Geis wrote:
+> > On Wed, May 26, 2021 at 12:23 PM Rudi Heitbaum <rudi@heitbaum.com> wrote:
+> > >
+> > >
+> > > For rk3399pro boards the tcs4526 regulator supports the vdd_gpu
+> > > regulator. The tcs4526 regulator has a chip id of <0>.
+> > > Add the compatibile tcs,tcs4526
+> > >
+> > > without this patch, the dmesg output is:
+> > >   fan53555-regulator 0-0010: Chip ID 0 not supported!
+> > >   fan53555-regulator 0-0010: Failed to setup device!
+> > >   fan53555-regulator: probe of 0-0010 failed with error -22
+> > > with this patch, the dmesg output is:
+> > >   vdd_gpu: supplied by vcc5v0_sys
+> > >
+> > > The regulators are described as:
+> > > - Dedicated power management IC TCS4525
+> > > - Lithium battery protection chip TCS4526
+> > >
+> > > This has been tested with a Radxa Rock Pi N10.
+> > >
+> > > Fixes: f9028dcdf589 ("regulator: fan53555: only bind tcs4525 to correct chip id")
+> > > Signed-off-by: Rudi Heitbaum <rudi@heitbaum.com>
+> >
+> > Considering the TCS4525 wasn't supported prior to its recent addition,
+> > and the TCS4526 wasn't supported by the driver at all, this isn't a
+> > fix but a feature addition.
+> > Binding only to the correct device ID exists for this reason, to
+> > prevent unsafe voltage setting.
+>
+> Hi Peter, thanks for the detailed feedback. You are quite right (I had
+> started using the tcs4525 patch as a tcs452x patch. I'll update that in
+> the resubmission.
+>
+> > I also don't see the TCS4525/TCS4526 regulators in the current
+> > linux-next device tree for the N10.
+>
+> I have a working rk3399pro-vmarc-som.dtsi that I intend to submit, but
+> wanted to get clarity on the tcs452x first. I have included it at the
+> bottom of this email.
+>
+> > > ---
+> > >  drivers/regulator/fan53555.c | 8 ++++++++
+> > >  1 file changed, 8 insertions(+)
+> > >
+> > > diff --git a/drivers/regulator/fan53555.c b/drivers/regulator/fan53555.c
+> > > index 2695be617373..ddab9359ea20 100644
+> > > --- a/drivers/regulator/fan53555.c
+> > > +++ b/drivers/regulator/fan53555.c
+> > > @@ -90,6 +90,7 @@ enum {
+> > >  };
+> > >
+> > >  enum {
+> > > +       TCS4525_CHIP_ID_00 = 0,
+> > >         TCS4525_CHIP_ID_12 = 12,
+> >
+> > This isn't a TCS4525, but a TCS4526.
+>
+> I'll update this to TCS4526_CHIP_ID_00
+>
+> > >  };
+> > >
+> > > @@ -373,6 +374,7 @@ static int fan53555_voltages_setup_silergy(struct fan53555_device_info *di)
+> > >  static int fan53526_voltages_setup_tcs(struct fan53555_device_info *di)
+> > >  {
+> > >         switch (di->chip_id) {
+> > > +       case TCS4525_CHIP_ID_00:
+> > >         case TCS4525_CHIP_ID_12:
+> > >                 di->slew_reg = TCS4525_TIME;
+> > >                 di->slew_mask = TCS_SLEW_MASK;
+> > > @@ -564,6 +566,9 @@ static const struct of_device_id __maybe_unused fan53555_dt_ids[] = {
+> > >         }, {
+> > >                 .compatible = "tcs,tcs4525",
+> > >                 .data = (void *)FAN53526_VENDOR_TCS
+> > > +       }, {
+> > > +               .compatible = "tcs,tcs4526",
+> > > +               .data = (void *)FAN53526_VENDOR_TCS
+> >
+> > Since you aren't adding any functional code, is there a particular
+> > reason you can't just add the chip id and simply use the tcs4525
+> > compatible?
+> > This will prevent you from needing to modify the dt-bindings as well.
+>
+> In and earlier commit to the BSP kernel the proposal was to rename to
+> tcs452x. ref:
+> https://github.com/CK-LINUX/kernel/commit/b3bbe8018c56362feed1e49c8d243a8dbcdcc07b
+>
+> I chose to follow the example of silergy,syr827 and silergy,syr828 for
+> tcs4526 (given I made the mistake in assuming that support for tcs4525
+> meant support for tcs4525.) This would maintain consistency of naming of
+> tcs4526 throughout the source. Is that ok?
 
-Yeah, the guest IOPF(L1) handling may include the host-guest IOASID translation,
-which can be placed in the IOASID layer (in fact it can be placed in many places
-such as the vfio pci driver since it don't really handle the fault event, it just
-transfers the event to the vIOMMU).
-But the host IOPF(L2) has no relationship with IOASID at all, it needs to have a
-knowledge of the vfio_dma ranges.
-Could we add the host IOPF support to type1 first (integrate it within the MAP ioctl)?
-And we may migrate the generic iommu controls (such as MAP/UNMAP...) from type1 to
-IOASID in the future (it seems to be a huge work, I will be very happy if I could
-help this)... :-)
+It's fine to have both compatibles (and avoids confusion in
+device-trees), just remember to update the dt-bindings as well.
+It's funny to see drivers with both schemes, so we really have to
+decide which path we want to go down.
+Considering the syr827/syr828 as convention, we should probably just
+go down that route for consistency within the driver.
 
->  
->>>> We have measured its performance with UADK [4] (passthrough an accelerator
->>>> to a VM(1U16G)) on Hisilicon Kunpeng920 board (and compared with host SVA):
->>>>
->>>> Run hisi_sec_test...
->>>>  - with varying sending times and message lengths
->>>>  - with/without IOPF enabled (speed slowdown)
->>>>
->>>> when msg_len = 1MB (and PREMAP_LEN (in Patch 4) = 1):
->>>>             slowdown (num of faults)
->>>>  times      VFIO IOPF      host SVA
->>>>  1          63.4% (518)    82.8% (512)
->>>>  100        22.9% (1058)   47.9% (1024)
->>>>  1000       2.6% (1071)    8.5% (1024)
->>>>
->>>> when msg_len = 10MB (and PREMAP_LEN = 512):
->>>>             slowdown (num of faults)
->>>>  times      VFIO IOPF
->>>>  1          32.6% (13)
->>>>  100        3.5% (26)
->>>>  1000       1.6% (26)  
->>>
->>> It seems like this is only an example that you can make a benchmark
->>> show anything you want.  The best results would be to pre-map
->>> everything, which is what we have without this series.  What is an
->>> acceptable overhead to incur to avoid page pinning?  What if userspace
->>> had more fine grained control over which mappings were available for
->>> faulting and which were statically mapped?  I don't really see what
->>> sense the pre-mapping range makes.  If I assume the user is QEMU in a
->>> non-vIOMMU configuration, pre-mapping the beginning of each RAM section
->>> doesn't make any logical sense relative to device DMA.  
->>
->> As you said in Patch 4, we can introduce full end-to-end functionality
->> before trying to improve performance, and I will drop the pre-mapping patch
->> in the current stage...
->>
->> Is there a need that userspace wants more fine grained control over which
->> mappings are available for faulting? If so, we may evolve the MAP ioctl
->> to support for specifying the faulting range.
-> 
-> You're essentially enabling this for a vfio bus driver via patch 7/8,
-> pinning for selective DMA faulting.  How would a driver in userspace
-> make equivalent requests?  In the case of performance, the user could
-> mlock the page but they have no mechanism here to pre-fault it.  Should
-> they?
+>
+> > >         },
+> > >         { }
+> > >  };
+> > > @@ -672,6 +677,9 @@ static const struct i2c_device_id fan53555_id[] = {
+> > >         }, {
+> > >                 .name = "tcs4525",
+> > >                 .driver_data = FAN53526_VENDOR_TCS
+> > > +       }, {
+> > > +               .name = "tcs4526",
+> > > +               .driver_data = FAN53526_VENDOR_TCS
+> > >         },
+> > >         { },
+> > >  };
+> > > --
+> > > 2.29.2
+> > >
+>
+> Below is the draft patch for the dtsi includeing the 2 missing regulators and
+> to enable the GPU on the Radxa Rock Pi N10 which utilises the VMARC RK3399Pro SoM.
+>
+> This will be submitted seperately to the "tcs4526 regulator" patch.
+>
+> --- a/arch/arm64/boot/dts/rockchip/rk3399pro-vmarc-som.dtsi     2021-05-08 09:11:59.000000000 +0000
+> +++ b/arch/arm64/boot/dts/rockchip/rk3399pro-vmarc-som.dtsi     2021-05-08 09:11:59.000000000 +0000
+> @@ -57,6 +57,22 @@
+>         pinctrl-0 = <&hdmi_cec>;
+>  };
+>
+> +&hdmi_sound {
+> +       status = "okay";
+> +};
+> +
+> +&gpu {
+> +       mali-supply = <&vdd_gpu>;
+> +       assigned-clocks = <&cru ACLK_GPU>;
+> +       assigned-clock-rates = <200000000>;
+> +       status = "okay";
+> +       /delete-property/ operating-points-v2;
 
-Make sense.
+Removal of the operating points kind of makes the gpu regulator moot,
+don't you think?
 
-It seems that we should additionally iommu_map the pages which are IOPF
-enabled and pinned in vfio_iommu_type1_pin_pages, and there is no need
-to add more tracking structures in Patch 7...
-
-> 
->> As for the overhead of IOPF, it is unavoidable if enabling on-demand paging
->> (and page faults occur almost only when first accessing), and it seems that
->> there is a large optimization space compared to CPU page faulting.
-> 
-> Yes, there's of course going to be overhead in terms of latency for the
-> page faults.  My point was more that when a host is not under memory
-> pressure we should trend towards the performance of pinned, static
-> mappings and we should be able to create arbitrarily large pre-fault
-> behavior to show that.
-
-Make sense.
-
-> But I think what we really want to enable via IOPF is density, right?
-
-density? Did you mean the proportion of the IOPF enabled mappings?
-
-> Therefore how many more assigned device guests
-> can you run on a host with IOPF?> How does the slope, plateau, and
-> inflection point of their aggregate throughput compare to static
-> pinning?  VM startup time is probably also a useful metric, ie. trading
-> device latency for startup latency.  Thanks,
-
-Yeah, these are what we have to consider and test later. :-)
-And the slope, plateau, and inflection point of the aggregate throughput
-may depend on the specific device driver's behavior (such as whether they
-reuse the DMA buffer)...
-
-Thanks,
-Shenming
-
-> 
-> Alex
-> 
-> .
-> 
+> +};
+> +
+> +&vopl {
+> +       status = "disabled";
+> +};
+> +
+>  &i2c0 {
+>         clock-frequency = <400000>;
+>         i2c-scl-falling-time-ns = <30>;
+> @@ -289,6 +288,50 @@
+>                         };
+>                 };
+>         };
+> +
+> +       vdd_cpu_b: tcs4525@1c {
+> +               compatible = "tcs,tcs4525";
+> +               reg = <0x1c>;
+> +               vin-supply = <&vcc5v0_sys>;
+> +               regulator-compatible = "fan53555-reg";
+> +               pinctrl-0 = <&vsel1_gpio>;
+> +               vsel-gpios = <&gpio1 RK_PC1 GPIO_ACTIVE_HIGH>;
+> +               regulator-name = "vdd_cpu_b";
+> +               regulator-min-microvolt = <712500>;
+> +               regulator-max-microvolt = <1500000>;
+> +               regulator-ramp-delay = <2300>;
+> +               fcs,suspend-voltage-selector = <1>;
+> +               regulator-always-on;
+> +               regulator-boot-on;
+> +               regulator-initial-state = <3>;
+> +               regulator-state-mem {
+> +                       regulator-off-in-suspend;
+> +               };
+> +       };
+> +
+> +       vdd_gpu: tcs4526@10 {
+> +               compatible = "tcs,tcs4526";
+> +               reg = <0x10>;
+> +               vin-supply = <&vcc5v0_sys>;
+> +               regulator-compatible = "fan53555-reg";
+> +               pinctrl-0 = <&vsel2_gpio>;
+> +               vsel-gpios = <&gpio1 RK_PB6 GPIO_ACTIVE_HIGH>;
+> +               regulator-name = "vdd_gpu";
+> +               regulator-min-microvolt = <735000>;
+> +               regulator-max-microvolt = <1400000>;
+> +               regulator-ramp-delay = <1000>;
+> +               fcs,suspend-voltage-selector = <1>;
+> +               regulator-always-on;
+> +               regulator-boot-on;
+> +               regulator-initial-state = <3>;
+> +               regulator-state-mem {
+> +                       regulator-off-in-suspend;
+> +               };
+> +       };
+>  };
+> +
+> +&i2s2 {
+> +       status = "okay";
+> +};
+>
+>  &i2c1 {
+> @@ -381,6 +380,29 @@
+>                 pmic_int_l: pmic-int-l {
+>                         rockchip,pins = <1 RK_PC2 0 &pcfg_pull_up>;
+>                 };
+> +               vsel1_gpio: vsel1-gpio {
+> +                       rockchip,pins =
+> +                               <1 RK_PC1 0 &pcfg_pull_down>;
+> +               };
+> +               vsel2_gpio: vsel2-gpio {
+> +                       rockchip,pins =
+> +                               <1 RK_PB6 0 &pcfg_pull_down>;
+> +               };
+> +
+> +               soc_slppin_gpio: soc-slppin-gpio {
+> +                       rockchip,pins =
+> +                               <1 RK_PA5 0 &pcfg_output_low>;
+> +               };
+> +
+> +               soc_slppin_slp: soc-slppin-slp {
+> +                       rockchip,pins =
+> +                               <1 RK_PA5 1 &pcfg_pull_down>;
+> +               };
+> +
+> +               soc_slppin_rst: soc-slppin-rst {
+> +                       rockchip,pins =
+> +                               <1 RK_PA5 2 &pcfg_pull_none>;
+> +               };
+>         };
+>
+>         sdio-pwrseq {
