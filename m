@@ -2,112 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C8955392395
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 02:07:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DDF14392393
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 02:07:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235016AbhE0AIr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 May 2021 20:08:47 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:18712 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234930AbhE0AIa (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S235041AbhE0AIy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 May 2021 20:08:54 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41314 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234961AbhE0AIa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 26 May 2021 20:08:30 -0400
-Received: from pps.filterd (m0098396.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 14R05eu4065320;
-        Wed, 26 May 2021 20:06:31 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : references : mime-version : content-type :
- in-reply-to; s=pp1; bh=u6hjFMW9TuMhe5YkAhMQg3fEC96Zzgog9npzUE1RTPo=;
- b=SQpO94vHOOjLLZDlJb4AHgwR3jRXwN3uYRhtinEOh4lWr5MZt8mmLsLCNbkocuimLkA7
- VOZXgElIT+TDYdYLXJFdKCKNHowdbEq3fGMGtVoaU1DwdAc595lejU8qFkMnTzFV8Uy/
- 1NhwunsUhEiO9NyuUb5XDUBSYRizc/jUpqwygQW3bpxt8P+XooPvl5ExWnSNJePw9Aks
- 2nNOawhc9013Io8fg7xFjRw5NhFZuYy8RAgQRqLQUtr7EvPRpizC6w+aUD3WwmcGafo3
- aT2VloIeEbc+UM1jeGSq39JeoJogaH1kvW9lvJSOTwFXbhvmRAUJ4UMeHrvNgfx1iU7A bQ== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 38sxy2j1ry-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 26 May 2021 20:06:31 -0400
-Received: from m0098396.ppops.net (m0098396.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 14R05sOc066176;
-        Wed, 26 May 2021 20:06:30 -0400
-Received: from ppma05fra.de.ibm.com (6c.4a.5195.ip4.static.sl-reverse.com [149.81.74.108])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 38sxy2j1r1-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 26 May 2021 20:06:30 -0400
-Received: from pps.filterd (ppma05fra.de.ibm.com [127.0.0.1])
-        by ppma05fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 14R03RXC003950;
-        Thu, 27 May 2021 00:06:28 GMT
-Received: from b06cxnps3075.portsmouth.uk.ibm.com (d06relay10.portsmouth.uk.ibm.com [9.149.109.195])
-        by ppma05fra.de.ibm.com with ESMTP id 38svvr015f-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 27 May 2021 00:06:28 +0000
-Received: from d06av26.portsmouth.uk.ibm.com (d06av26.portsmouth.uk.ibm.com [9.149.105.62])
-        by b06cxnps3075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 14R06PkA33620356
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 27 May 2021 00:06:25 GMT
-Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id F3631AE055;
-        Thu, 27 May 2021 00:06:24 +0000 (GMT)
-Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 8C943AE056;
-        Thu, 27 May 2021 00:06:24 +0000 (GMT)
-Received: from localhost (unknown [9.171.70.203])
-        by d06av26.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
-        Thu, 27 May 2021 00:06:24 +0000 (GMT)
-Date:   Thu, 27 May 2021 02:06:23 +0200
-From:   Vasily Gorbik <gor@linux.ibm.com>
-To:     Yejune Deng <yejune.deng@gmail.com>
-Cc:     hca@linux.ibm.com, borntraeger@de.ibm.com, tglx@linutronix.de,
-        keescook@chromium.org, linux-s390@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Yejune Deng <yejunedeng@gmail.com>
-Subject: Re: [PATCH] softirq/s390: Use the generic local_softirq_pending()
-Message-ID: <your-ad-here.call-01622073983-ext-1568@work.hours>
-References: <1621859957-4880-1-git-send-email-yejunedeng@gmail.com>
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CB4EA613BE;
+        Thu, 27 May 2021 00:06:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1622073991;
+        bh=8NhwXlSg8UPnsQu77o9LoXYEgrvPG79K+CwgTqUQ7C0=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=fWMno5OAx2Kn5nTNTJ9ud27nOEn5EGkqCi45QLgl1WRRLVaylyFA/ui1jf48TUHRX
+         ZxzT/N/DSvxIpBoj5Cn+sfiR2GftgSyrWyHwbtiLz58nWcqU0baMW1QHIKvGiCz+sK
+         Unse8p7MrW7iA/jCB62pfdIRrwu0siXaVuhIX935IwxczeNYRj4FPK49LJ32PQDS5h
+         EwG9v7PJSvrsvcOKQz9mWL5Ili4QLpdQz3Yr6Nqx/c5pd7/IBJOnB3NJjcHCZwWM1z
+         sfqFAq80WghpyblVX29acG4K1PpuVlSojJMRYDfoG9aOEbKgRuuVP/OWi0t2i1e4xb
+         YF5+7Wf5Y2qQA==
+Date:   Wed, 26 May 2021 17:06:30 -0700
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     George Cherian <george.cherian@marvell.com>
+Cc:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <davem@davemloft.net>, <gcherian@marvell.com>,
+        <sgoutham@marvell.com>
+Subject: Re: [net-next PATCH 1/5] octeontx2-af: add support for custom KPU
+ entries
+Message-ID: <20210526170630.1732c4b6@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <20210526155656.2689892-2-george.cherian@marvell.com>
+References: <20210526155656.2689892-1-george.cherian@marvell.com>
+        <20210526155656.2689892-2-george.cherian@marvell.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <1621859957-4880-1-git-send-email-yejunedeng@gmail.com>
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: sr6KE_qrqYKe0z_kuv59WS1yp1W0y5qx
-X-Proofpoint-ORIG-GUID: PV1CqHJdiWZAjrzfOC8WZsfeb7drC5nm
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
- definitions=2021-05-26_13:2021-05-26,2021-05-26 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0 impostorscore=0
- malwarescore=0 bulkscore=0 mlxscore=0 mlxlogscore=792 lowpriorityscore=0
- adultscore=0 priorityscore=1501 clxscore=1011 phishscore=0 suspectscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104190000
- definitions=main-2105260163
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 24, 2021 at 08:39:17PM +0800, Yejune Deng wrote:
-> Defined local_softirq_pending_ref macro and get rid of {local, set, or}
-> _softirq_pending macros. use {local, set, or}_softirq_pending
-> in <linux/interrupt.h> that rely on per-CPU mutators.
+On Wed, 26 May 2021 21:26:52 +0530 George Cherian wrote:
+> From: Stanislaw Kardach <skardach@marvell.com>
 > 
-> Signed-off-by: Yejune Deng <yejunedeng@gmail.com>
-> ---
->  arch/s390/include/asm/hardirq.h | 4 +---
->  1 file changed, 1 insertion(+), 3 deletions(-)
+> Add ability to load a set of custom KPU entries. This
+> allows for flexible support for custom protocol parsing.
 > 
-> diff --git a/arch/s390/include/asm/hardirq.h b/arch/s390/include/asm/hardirq.h
-> index 58668ff..ea643d6 100644
-> --- a/arch/s390/include/asm/hardirq.h
-> +++ b/arch/s390/include/asm/hardirq.h
-> @@ -13,9 +13,7 @@
->  
->  #include <asm/lowcore.h>
->  
-> -#define local_softirq_pending() (S390_lowcore.softirq_pending)
-> -#define set_softirq_pending(x) (S390_lowcore.softirq_pending = (x))
-> -#define or_softirq_pending(x)  (S390_lowcore.softirq_pending |= (x))
-> +#define local_softirq_pending_ref  S390_lowcore.softirq_pending
+> AF driver will attempt to load the profile and verify if it can fit
+> hardware capabilities. If not, it will revert to the built-in profile.
+> 
+> Next it will replace the first KPU_MAX_CST_LT (2) entries in each KPU
+> in default profile with entries read from the profile image.
+> The built-in profile should always contain KPU_MAX_CSR_LT first no-match
+> entries and AF driver will disable those in the KPU unless custom
+> profile is loaded.
+> 
+> Profile file contains also a list of default protocol overrides to
+> allow for custom protocols to be used there.
+> 
+> Signed-off-by: Stanislaw Kardach <skardach@marvell.com>
+> Signed-off-by: George Cherian <george.cherian@marvell.com>
 
-S390_lowcore is not a per-CPU variable, so it cannot be accessed with
-__this_cpu_read/write...
-
-"lowcore" is a kind of hardware "per-CPU" area on s390. Each cpu accessing
-first 2 pages at the real address 0 is actually touching pages at the
-"absolute" address specified by prefix register of this cpu.
-
+This one does not build.
