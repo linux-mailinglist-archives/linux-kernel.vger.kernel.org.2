@@ -2,95 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0126B3933AB
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 18:25:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 78BEC3933AD
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 18:26:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235300AbhE0Q1T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 May 2021 12:27:19 -0400
-Received: from mga12.intel.com ([192.55.52.136]:52113 "EHLO mga12.intel.com"
+        id S235431AbhE0Q13 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 May 2021 12:27:29 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46040 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229696AbhE0Q1S (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 May 2021 12:27:18 -0400
-IronPort-SDR: LzGqo17ynzD7b7JnFsSkzGJCBxWY8ANeEKFA/L0ePUHWSM3+JiexFxbjndMcNZvr3zrywkEzby
- yn7c/Zy2yCXg==
-X-IronPort-AV: E=McAfee;i="6200,9189,9997"; a="182433251"
-X-IronPort-AV: E=Sophos;i="5.83,227,1616482800"; 
-   d="scan'208";a="182433251"
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 May 2021 09:25:43 -0700
-IronPort-SDR: NSijAumnIAB9t0qJ6jjwzCEiXkzJXsTPSIn90BqWLX8cTAz5HG1r9M+GmNTPlnPIgpuFwxrZ9k
- sP4IcQ9V6ezQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.83,227,1616482800"; 
-   d="scan'208";a="398260081"
-Received: from fmsmsx603.amr.corp.intel.com ([10.18.126.83])
-  by orsmga006.jf.intel.com with ESMTP; 27 May 2021 09:25:43 -0700
-Received: from fmsmsx612.amr.corp.intel.com (10.18.126.92) by
- fmsmsx603.amr.corp.intel.com (10.18.126.83) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2242.4; Thu, 27 May 2021 09:25:42 -0700
-Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
- fmsmsx612.amr.corp.intel.com (10.18.126.92) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2242.4; Thu, 27 May 2021 09:25:42 -0700
-Received: from fmsmsx610.amr.corp.intel.com ([10.18.126.90]) by
- fmsmsx610.amr.corp.intel.com ([10.18.126.90]) with mapi id 15.01.2242.008;
- Thu, 27 May 2021 09:25:42 -0700
-From:   "Luck, Tony" <tony.luck@intel.com>
-To:     "Kuppuswamy, Sathyanarayanan" 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        "Hansen, Dave" <dave.hansen@intel.com>
-CC:     Andi Kleen <ak@linux.intel.com>,
-        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
-        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
-        "Williams, Dan J" <dan.j.williams@intel.com>,
-        "Raj, Ashok" <ashok.raj@intel.com>,
-        Sean Christopherson <seanjc@google.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [RFC v2-fix-v2 1/1] x86/tdx: Add __tdx_module_call() and
- __tdx_hypercall() helper functions
-Thread-Topic: [RFC v2-fix-v2 1/1] x86/tdx: Add __tdx_module_call() and
- __tdx_hypercall() helper functions
-Thread-Index: AQHXUo+HGWahrGi/A0SEFraSQ6BB26r3cj8AgAB+koD//5Lc8A==
-Date:   Thu, 27 May 2021 16:25:42 +0000
-Message-ID: <a40602af50a2473a9260dc0af9a9fd6e@intel.com>
-References: <77545da6-d534-e4c2-a60b-085705e3f0b7@linux.intel.com>
- <20210527003033.3632700-1-sathyanarayanan.kuppuswamy@linux.intel.com>
- <974d8050cb974d6d80b0033e4b9fd0bf@intel.com>
- <e644695a-849e-53d6-f84a-4fcb84988911@linux.intel.com>
-In-Reply-To: <e644695a-849e-53d6-f84a-4fcb84988911@linux.intel.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-dlp-product: dlpe-windows
-dlp-reaction: no-action
-dlp-version: 11.5.1.3
-x-originating-ip: [10.1.200.100]
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        id S235338AbhE0Q11 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 27 May 2021 12:27:27 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5885E60FF3;
+        Thu, 27 May 2021 16:25:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1622132754;
+        bh=Khua+DZPgivlFbIh9u5t7o96xy61LA45QdEqBeYyX5k=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=p5JMqWiirU63QukEEtKpD09CQVAMJs3+Q/OXlz3vaxgCOMFcozu8dEI4HYUr1ccJL
+         GacFQ+k6Dhvh6HymCw/X0t8uTBFFN8wdAGvcyugnug23jutz9k+yIF8rccxpjNnxgG
+         I/yc8YE9zPQMuJ6EPBHmP4VDOBRUFQllRUs6MrLKtC4Pfd06A7jSwSKH4bQDHBbI5p
+         8dpdwr7KnXOCToswCGPY+HeBGvdtBJ7zVe9RIR3X0y/x41OnfwKKDyU1dZfrnoGV3f
+         XNTgWI46TKAr+xOvEcQBaOYnenrB342uIoM4xHAsTXHeaAsg9rNqdVDBP9i4MSCc/H
+         7EdkDLgAeekXg==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id C1C4D4011C; Thu, 27 May 2021 13:25:51 -0300 (-03)
+Date:   Thu, 27 May 2021 13:25:51 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Ian Rogers <irogers@google.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        linux-perf-users <linux-perf-users@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Riccardo Mancini <rickyman7@gmail.com>,
+        Stephane Eranian <eranian@google.com>
+Subject: Re: [PATCH] perf: Move debug initialization earlier
+Message-ID: <YK/IDzRfX6AyTkbx@kernel.org>
+References: <20210519164447.2672030-1-irogers@google.com>
+ <CAP-5=fWRAbkd8MVAxdGf0YGE1oFPT40rZC3eb3OKjqWmBVq_BA@mail.gmail.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAP-5=fWRAbkd8MVAxdGf0YGE1oFPT40rZC3eb3OKjqWmBVq_BA@mail.gmail.com>
+X-Url:  http://acmel.wordpress.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Pj4gTG9va2luZyBhdCB0aGUgY29kZSwgdGhlIGh5cGVyY2FsbCBjYW4gcmV0dXJuIGFuIGVycm9y
-IGlmIFREQ0FMTCBmYWlscywNCj4+IGJ1dCBtb2R1bGVfY2FsbCBmb3JjZXMgYSBwYW5pYyB3aXRo
-IFVEMiBvbiBlcnJvci4gVGhpcyBkaWZmZXJlbmNlIGlzbid0DQo+PiBleHBsYWluZWQgYW55d2hl
-cmUuDQo+DQo+IEkgdGhpbmsgeW91IG1lYW50IGh5cGVyY2FsbCB3aWxsIHBhbmljIHZzIG1vZHVs
-ZSBjYWxsIHdpbGwgbm90Lg0KDQp5ZXMNCg0KPiBJbiBoeXBlcmNhbGwgY2FzZSwgc2luY2Ugd2Ug
-dXNlIHNhbWUgVERDQUxMIGluc3RydWN0aW9uLCB3ZSB3aWxsIGhhdmUgdHdvDQo+IHJldHVybiB2
-YWx1ZXMuIE9uZSBpcyBmb3IgVERDQUxMIGZhaWx1cmUgKGF0IHRoZSBURFggbW9kdWxlIGxldmVs
-KSBhbmQNCj4gb3RoZXIgaXMgcmV0dXJuIHZhbHVlIGZyb20gVk1NLiBTbyBpbiBoeXBlcmNhbGwg
-Y2FzZSwgd2UgcmV0dXJuIFZNTSB2YWx1ZQ0KPiB0byB0aGUgdXNlciBidXQgcGFuaWMgZm9yIFRE
-Q0FMTCBmYWlsdXJlcy4gQXMgcGVyIFREWCBzcGVjLCBmb3IgaHlwZXJjYWxsDQo+IHVzZSBjYXNl
-LCBpZiBldmVyeXRoaW5nIGlzIGluIG9yZGVyLCBURENBTEwgd2lsbCBuZXZlciBmYWlsLiBJZiB3
-ZSBub3RpY2UNCj4gVERDQUxMIGZhaWx1cmUgZXJyb3IgdGhlbiBpdCBtZWFucywgd2UgYXJlIHdv
-cmtpbmcgd2l0aCB0aGUgYnJva2VuIFREWCBtb2R1bGUuDQo+IFNvIHdlIHBhbmljLg0KDQpBZGQg
-YSBjb21tZW50IGluIHRoZSAuUyBmaWxlIHJpZ2h0IGJlZm9yZSB0aGF0IHVkMiBleHBsYWluaW5n
-IHRoaXMuIFRoYXQNCnNob3VsZCBoZWxwIGFueW9uZSB0cmFja2luZyBkb3duIHRoYXQgcGFuaWMg
-dW5kZXJzdGFuZCB0aGF0IHRoZSBwcm9ibGVtDQppcyBpbiB0aGUgVERYIG1vZHVsZS4NCg0KT3Ro
-ZXJ3aXNlIGxvb2tzIG9rLg0KDQpSZXZpZXdlZC1ieTogVG9ueSBMdWNrIDx0b255Lmx1Y2tAaW50
-ZWwuY29tPg0KDQotVG9ueQ0K
+Em Thu, May 27, 2021 at 08:51:41AM -0700, Ian Rogers escreveu:
+> On Wed, May 19, 2021 at 9:44 AM Ian Rogers <irogers@google.com> wrote:
+> >
+> > This avoids segfaults during option handlers that use pr_err. For
+> > example, "perf --debug nopager list" segfaults before this change.
+> >
+> > Fixes: 8abceacff87d (perf debug: Add debug_set_file function)
+> > Signed-off-by: Ian Rogers <irogers@google.com>
+> 
+> Ping.
+
+I thought I had this one in, its now, will go to Linus probably tomorrow,
+
+- Arnaldo
+ 
+> Thanks!
+> Ian
+> 
+> > ---
+> >  tools/perf/perf.c | 4 ++--
+> >  1 file changed, 2 insertions(+), 2 deletions(-)
+> >
+> > diff --git a/tools/perf/perf.c b/tools/perf/perf.c
+> > index 20cb91ef06ff..2f6b67189b42 100644
+> > --- a/tools/perf/perf.c
+> > +++ b/tools/perf/perf.c
+> > @@ -443,6 +443,8 @@ int main(int argc, const char **argv)
+> >         const char *cmd;
+> >         char sbuf[STRERR_BUFSIZE];
+> >
+> > +       perf_debug_setup();
+> > +
+> >         /* libsubcmd init */
+> >         exec_cmd_init("perf", PREFIX, PERF_EXEC_PATH, EXEC_PATH_ENVIRONMENT);
+> >         pager_init(PERF_PAGER_ENVIRONMENT);
+> > @@ -531,8 +533,6 @@ int main(int argc, const char **argv)
+> >          */
+> >         pthread__block_sigwinch();
+> >
+> > -       perf_debug_setup();
+> > -
+> >         while (1) {
+> >                 static int done_help;
+> >
+> > --
+> > 2.31.1.751.gd2f1c929bd-goog
+> >
+
+-- 
+
+- Arnaldo
