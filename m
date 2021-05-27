@@ -2,214 +2,192 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E096F392805
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 08:50:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A78639280C
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 08:53:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229596AbhE0Gv6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 May 2021 02:51:58 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33722 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229635AbhE0Gvy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 May 2021 02:51:54 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C01EC60FF3;
-        Thu, 27 May 2021 06:50:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1622098221;
-        bh=H0EQHOrXpzLNcQ0iwSBYSRvs8jQccJRm2PXUOu/X8Yw=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=nytTHl4IEOUqz9ZlgYkdoEjadwrRbnO25x0BW6yFP/d3HWW19vDCYKsmQFiH1D9Ue
-         NxxRk8sG58KWbWG1Hbr8AGvW2Gva5NM+h7SR0XhZ/+ROXnvZYv2I5fHpCtvVkOsHfX
-         Q/zzmg2hJTyt1K1AFkk8tIjPZFiMB+Nbn7dxKd9Y=
-Date:   Thu, 27 May 2021 08:50:18 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Ian Kent <raven@themaw.net>
-Cc:     Fox Chen <foxhlchen@gmail.com>, Tejun Heo <tj@kernel.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Eric Sandeen <sandeen@sandeen.net>,
-        Brice Goglin <brice.goglin@gmail.com>,
-        Rick Lindsley <ricklind@linux.vnet.ibm.com>,
-        David Howells <dhowells@redhat.com>,
-        Miklos Szeredi <miklos@szeredi.hu>,
-        Marcelo Tosatti <mtosatti@redhat.com>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v4 0/5] kernfs: proposed locking and concurrency
- improvement
-Message-ID: <YK9BKr5h8wOh6YpU@kroah.com>
-References: <YJtz6mmgPIwEQNgD@kroah.com>
- <CAC2o3D+28g67vbNOaVxuF0OfE0RjFGHVwAcA_3t1AAS_b_EnPg@mail.gmail.com>
- <CAC2o3DJm0ugq60c8mBafjd81nPmhpBKBT5cCKWvc4rYT0dDgGg@mail.gmail.com>
- <CAC2o3DJdwr0aqT6LwhuRj8kyXt6NAPex2nG5ToadUTJ3Jqr_4w@mail.gmail.com>
- <4eae44395ad321d05f47571b58fe3fe2413b6b36.camel@themaw.net>
- <CAC2o3DKvq12CrsgWTNmQmu3iDJ+9tytMdCJepdBjUKN1iUJ0RQ@mail.gmail.com>
- <bc9650145291b6e568a8f75d02663b9e4f2bcfd7.camel@themaw.net>
- <CAC2o3DL1VwbLgajSYSR_UPL-53cjHDp+X63CerQsZ8tgNgO=-A@mail.gmail.com>
- <da58dcefb59d2b51d95d1dfc012ba058bc77f23b.camel@themaw.net>
- <6df8d572c6e7a20fab3df13a64f28c1a69648c9f.camel@themaw.net>
+        id S229635AbhE0Gyt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 May 2021 02:54:49 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:23566 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229838AbhE0Gyr (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 27 May 2021 02:54:47 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1622098394;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=tbeJSxErj2lDV+ffr5QaXbXOERJDDIrzIVBIxT+6PUQ=;
+        b=KOF0OJOmc/Y3eSi1E4hGHYXRtqa7xf4n2HLB/Ud01HLzbAGeU4713k5LCQW2dexL2BUQpY
+        Vv7/cn+GWb8Qc2Rob3RQzplQLpWUKLDybt0nBwEWetAL+te6A2lSXBiw505ZrroBUd+QKu
+        HgMJPKHQqhWhJ6XNR0GsZCtAfiY0JGU=
+Received: from mail-pj1-f71.google.com (mail-pj1-f71.google.com
+ [209.85.216.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-532-OdDBa7JhPCi8q9jwyaLoTg-1; Thu, 27 May 2021 02:53:12 -0400
+X-MC-Unique: OdDBa7JhPCi8q9jwyaLoTg-1
+Received: by mail-pj1-f71.google.com with SMTP id w12-20020a17090a528cb029015d7f990752so1989858pjh.0
+        for <linux-kernel@vger.kernel.org>; Wed, 26 May 2021 23:53:12 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=tbeJSxErj2lDV+ffr5QaXbXOERJDDIrzIVBIxT+6PUQ=;
+        b=HmWMICMbvM4QnxejEl8z3IsBQZ+6bln8+S/B3q5V3bb5FAceXTO1jODXInazHqm7Tl
+         orWNKWfFjvyy4x2/h+nJ9bSJmSCJXlHL+TcCg9dz1JGfuf8J2VA1RNUXVkZO8d65tgZZ
+         FTQN9WBrCZt9eHVgnXzC8DNzFn0url7FnOsSwWVB5b+QULsQQJPFlPZArGj/itaiVGkW
+         +WOi6xzPPx4pTjGYesFd/oYt/mNbPhh3I7GEXJSsF74luP8DcsnNhZe7N0EBF0HmYjnv
+         QcpftybZzxAITsqYbp06fVswS+HjBuVn7i1pvIBvidHig19sjg740AtlBlZLQRnpCKnR
+         ymRA==
+X-Gm-Message-State: AOAM53350SOVFeSPBi0lq+mNqGkBR2zPO/Ms5wlxrWHPJD9Kcb8fWpaS
+        3vyRA6lD29z1mz3YWBQgh9Mk4tREuL9/ESlpw5y4bhV12GuwDEQ7P8MmygteXjgxMfX4VjoeOms
+        QGrCAbZac630DJwAHPsAXL4y2
+X-Received: by 2002:a63:935b:: with SMTP id w27mr2403406pgm.264.1622098391341;
+        Wed, 26 May 2021 23:53:11 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwbxRpvRjQPr6v5uVQ848wKew2CiohrQQ7CN8mymILSXGnMXBRVDCOnrMW6FbkBE6RAKnPk9A==
+X-Received: by 2002:a63:935b:: with SMTP id w27mr2403380pgm.264.1622098391079;
+        Wed, 26 May 2021 23:53:11 -0700 (PDT)
+Received: from wangxiaodeMacBook-Air.local ([209.132.188.80])
+        by smtp.gmail.com with ESMTPSA id b7sm957003pfv.149.2021.05.26.23.53.07
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 26 May 2021 23:53:10 -0700 (PDT)
+Subject: Re: [PATCH net-next] ptr_ring: make __ptr_ring_empty() checking more
+ reliable
+To:     Yunsheng Lin <linyunsheng@huawei.com>, davem@davemloft.net,
+        kuba@kernel.org
+Cc:     will@kernel.org, peterz@infradead.org, paulmck@kernel.org,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        mst@redhat.com, brouer@redhat.com
+References: <1622032173-11883-1-git-send-email-linyunsheng@huawei.com>
+ <d2287691-1ef9-d2c4-13f6-2baf7b80d905@redhat.com>
+ <25a6b73d-06ec-fe07-b34c-10fea709e055@huawei.com>
+From:   Jason Wang <jasowang@redhat.com>
+Message-ID: <51bc1c38-da20-1090-e3ef-1972f28adfee@redhat.com>
+Date:   Thu, 27 May 2021 14:53:02 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.10.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
+In-Reply-To: <25a6b73d-06ec-fe07-b34c-10fea709e055@huawei.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <6df8d572c6e7a20fab3df13a64f28c1a69648c9f.camel@themaw.net>
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 27, 2021 at 09:23:06AM +0800, Ian Kent wrote:
-> On Mon, 2021-05-17 at 09:32 +0800, Ian Kent wrote:
-> > On Fri, 2021-05-14 at 10:34 +0800, Fox Chen wrote:
-> > > On Fri, May 14, 2021 at 9:34 AM Ian Kent <raven@themaw.net> wrote:
-> > > > 
-> > > > On Thu, 2021-05-13 at 23:37 +0800, Fox Chen wrote:
-> > > > > Hi Ian
-> > > > > 
-> > > > > On Thu, May 13, 2021 at 10:10 PM Ian Kent <raven@themaw.net>
-> > > > > wrote:
-> > > > > > 
-> > > > > > On Wed, 2021-05-12 at 16:54 +0800, Fox Chen wrote:
-> > > > > > > On Wed, May 12, 2021 at 4:47 PM Fox Chen
-> > > > > > > <foxhlchen@gmail.com>
-> > > > > > > wrote:
-> > > > > > > > 
-> > > > > > > > Hi,
-> > > > > > > > 
-> > > > > > > > I ran it on my benchmark (
-> > > > > > > > https://github.com/foxhlchen/sysfs_benchmark).
-> > > > > > > > 
-> > > > > > > > machine: aws c5 (Intel Xeon with 96 logical cores)
-> > > > > > > > kernel: v5.12
-> > > > > > > > benchmark: create 96 threads and bind them to each core
-> > > > > > > > then
-> > > > > > > > run
-> > > > > > > > open+read+close on a sysfs file simultaneously for 1000
-> > > > > > > > times.
-> > > > > > > > result:
-> > > > > > > > Without the patchset, an open+read+close operation takes
-> > > > > > > > 550-
-> > > > > > > > 570
-> > > > > > > > us,
-> > > > > > > > perf shows significant time(>40%) spending on mutex_lock.
-> > > > > > > > After applying it, it takes 410-440 us for that operation
-> > > > > > > > and
-> > > > > > > > perf
-> > > > > > > > shows only ~4% time on mutex_lock.
-> > > > > > > > 
-> > > > > > > > It's weird, I don't see a huge performance boost compared
-> > > > > > > > to
-> > > > > > > > v2,
-> > > > > > > > even
-> > > > > > > 
-> > > > > > > I meant I don't see a huge performance boost here and it's
-> > > > > > > way
-> > > > > > > worse
-> > > > > > > than v2.
-> > > > > > > IIRC, for v2 fastest one only takes 40us
-> > > > > > 
-> > > > > > Thanks Fox,
-> > > > > > 
-> > > > > > I'll have a look at those reports but this is puzzling.
-> > > > > > 
-> > > > > > Perhaps the added overhead of the check if an update is
-> > > > > > needed is taking more than expected and more than just
-> > > > > > taking the lock and being done with it. Then there's
-> > > > > > the v2 series ... I'll see if I can dig out your reports
-> > > > > > on those too.
-> > > > > 
-> > > > > Apologies, I was mistaken, it's compared to V3, not V2.� The
-> > > > > previous
-> > > > > benchmark report is here.
-> > > > > https://lore.kernel.org/linux-fsdevel/CAC2o3DKNc=sL2n8291Dpiyb0bRHaX=nd33ogvO_LkJqpBj-YmA@mail.gmail.com/
-> > > > 
-> > > > Are all these tests using a single file name in the
-> > > > open/read/close
-> > > > loop?
-> > > 
-> > > Yes,� because It's easy to implement yet enough to trigger the
-> > > mutex_lock.
-> > > 
-> > > And you are right It's not a real-life pattern, but on the bright
-> > > side, it proves there is no original mutex_lock problem anymore. :)
-> > 
-> > I've been looking at your reports and they are quite interesting.
-> > 
-> > > 
-> > > > That being the case the per-object inode lock will behave like a
-> > > > mutex and once contention occurs any speed benefits of a spinlock
-> > > > over a mutex (or rwsem) will disappear.
-> > > > 
-> > > > In this case changing from a write lock to a read lock in those
-> > > > functions and adding the inode mutex will do nothing but add the
-> > > > overhead of taking the read lock. And similarly adding the update
-> > > > check function also just adds overhead and, as we see, once
-> > > > contention starts it has a cumulative effect that's often not
-> > > > linear.
-> > > > 
-> > > > The whole idea of a read lock/per-object spin lock was to reduce
-> > > > the possibility of contention for paths other than the same path
-> > > > while not impacting same path accesses too much for an overall
-> > > > gain. Based on this I'm thinking the update check function is
-> > > > probably not worth keeping, it just adds unnecessary churn and
-> > > > has a negative impact for same file contention access patterns.
-> > 
-> > The reports indicate (to me anyway) that the slowdown isn't
-> > due to kernfs. It looks more like kernfs is now putting pressure
-> > on the VFS, mostly on the file table lock but it looks like
-> > there's a mild amount of contention on a few other locks as well
-> > now.
-> > 
-> > That's a whole different problem and those file table handling
-> > functions don't appear to have any obvious problems so they are
-> > doing what they have to do and that can't be avoided.
-> > 
-> > That's definitely out of scope for these changes.
-> > 
-> > And, as you'd expect, once any appreciable amount of contention
-> > happens our measurements go out the window, certainly with
-> > respect to kernfs.
-> > 
-> > It also doesn't change my option that checking if an inode
-> > attribute update is needed in kernfs isn't useful since, IIUC
-> > that file table lock contention would result even if you were
-> > using different paths.
-> > 
-> > So I'll drop that patch from the series.
-> 
-> It will probably not make any difference, but for completeness
-> and after some thought, I felt I should post what I think is
-> happening with the benchmark.
-> 
-> The benchmark application runs a pthreads thread for each CPU
-> and goes into a tight open/read/close loop to demonstrate the
-> contention that can occur on the kernfs mutex as the number of
-> CPUs grows.
-> 
-> But that tight open/read/close loop causes contention on the VFS
-> file table because the pthreads threads share the process file
-> table.
-> 
-> So the poor performance is actually evidence the last patch is
-> doing what it's meant to do rather than evidence of a regression
-> with the series.
-> 
-> The benchmark is putting pressure on the process file table on
-> some hardware configurations but those critical sections are small
-> and there's really nothing obvious that can be done to improve the
-> file table locking.
-> 
-> It is however important to remember that the benckmark application
-> access pattern is not a normal access pattern by a long way.
-> 
-> So I don't see the need for a new revision of the series with the
-> last patch dropped.
-> 
-> If there's a change of heart and the series was to be merged I'll
-> leave whether to include this last patch to the discretion of the
-> maintainer as the bulk of the improvement comes from the earlier
-> patches anyway.
 
-Can you please resubmit the series, it is long-gone from my review
-queue.
+在 2021/5/27 下午2:07, Yunsheng Lin 写道:
+> On 2021/5/27 12:57, Jason Wang wrote:
+>> 在 2021/5/26 下午8:29, Yunsheng Lin 写道:
+>>> Currently r->queue[] is cleared after r->consumer_head is moved
+>>> forward, which makes the __ptr_ring_empty() checking called in
+>>> page_pool_refill_alloc_cache() unreliable if the checking is done
+>>> after the r->queue clearing and before the consumer_head moving
+>>> forward.
+>>>
+>>> Move the r->queue[] clearing after consumer_head moving forward
+>>> to make __ptr_ring_empty() checking more reliable.
+>>
+>> If I understand this correctly, this can only happens if you run __ptr_ring_empty() in parallel with ptr_ring_discard_one().
+> Yes.
+>
+>> I think those two needs to be serialized. Or did I miss anything?
+> As the below comment in __ptr_ring_discard_one, if the above is true, I
+> do not think we need to keep consumer_head valid at all times, right?
+>
+>
+> 	/* Note: we must keep consumer_head valid at all times for __ptr_ring_empty
+> 	 * to work correctly.
+> 	 */
 
-thanks,
 
-greg k-h
+I'm not sure I understand. But my point is that you need to synchronize 
+the __ptr_ring_discard_one() and __ptr_empty() as explained in the 
+comment above __ptr_ring_empty():
+
+/*
+  * Test ring empty status without taking any locks.
+  *
+  * NB: This is only safe to call if ring is never resized.
+  *
+  * However, if some other CPU consumes ring entries at the same time, 
+the value
+  * returned is not guaranteed to be correct.
+  *
+  * In this case - to avoid incorrectly detecting the ring
+  * as empty - the CPU consuming the ring entries is responsible
+  * for either consuming all ring entries until the ring is empty,
+  * or synchronizing with some other CPU and causing it to
+  * re-test __ptr_ring_empty and/or consume the ring enteries
+  * after the synchronization point.
+  *
+  * Note: callers invoking this in a loop must use a compiler barrier,
+  * for example cpu_relax().
+  */
+
+Thanks
+
+
+
+>> Thanks
+>>
+>>
+>>> Signed-off-by: Yunsheng Lin <linyunsheng@huawei.com>
+>>> ---
+>>>    include/linux/ptr_ring.h | 26 +++++++++++++++++---------
+>>>    1 file changed, 17 insertions(+), 9 deletions(-)
+>>>
+>>> diff --git a/include/linux/ptr_ring.h b/include/linux/ptr_ring.h
+>>> index 808f9d3..f32f052 100644
+>>> --- a/include/linux/ptr_ring.h
+>>> +++ b/include/linux/ptr_ring.h
+>>> @@ -261,8 +261,7 @@ static inline void __ptr_ring_discard_one(struct ptr_ring *r)
+>>>        /* Note: we must keep consumer_head valid at all times for __ptr_ring_empty
+>>>         * to work correctly.
+>>>         */
+>>> -    int consumer_head = r->consumer_head;
+>>> -    int head = consumer_head++;
+>>> +    int consumer_head = r->consumer_head + 1;
+>>>          /* Once we have processed enough entries invalidate them in
+>>>         * the ring all at once so producer can reuse their space in the ring.
+>>> @@ -271,19 +270,28 @@ static inline void __ptr_ring_discard_one(struct ptr_ring *r)
+>>>         */
+>>>        if (unlikely(consumer_head - r->consumer_tail >= r->batch ||
+>>>                 consumer_head >= r->size)) {
+>>> +        int tail = r->consumer_tail;
+>>> +        int head = consumer_head;
+>>> +
+>>> +        if (unlikely(consumer_head >= r->size)) {
+>>> +            r->consumer_tail = 0;
+>>> +            WRITE_ONCE(r->consumer_head, 0);
+>>> +        } else {
+>>> +            r->consumer_tail = consumer_head;
+>>> +            WRITE_ONCE(r->consumer_head, consumer_head);
+>>> +        }
+>>> +
+>>>            /* Zero out entries in the reverse order: this way we touch the
+>>>             * cache line that producer might currently be reading the last;
+>>>             * producer won't make progress and touch other cache lines
+>>>             * besides the first one until we write out all entries.
+>>>             */
+>>> -        while (likely(head >= r->consumer_tail))
+>>> -            r->queue[head--] = NULL;
+>>> -        r->consumer_tail = consumer_head;
+>>> -    }
+>>> -    if (unlikely(consumer_head >= r->size)) {
+>>> -        consumer_head = 0;
+>>> -        r->consumer_tail = 0;
+>>> +        while (likely(--head >= tail))
+>>> +            r->queue[head] = NULL;
+>>> +
+>>> +        return;
+>>>        }
+>>> +
+>>>        /* matching READ_ONCE in __ptr_ring_empty for lockless tests */
+>>>        WRITE_ONCE(r->consumer_head, consumer_head);
+>>>    }
+>>
+>> .
+>>
+
