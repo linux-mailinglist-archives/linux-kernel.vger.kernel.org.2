@@ -2,192 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A78639280C
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 08:53:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2940639280F
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 08:53:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229635AbhE0Gyt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 May 2021 02:54:49 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:23566 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229838AbhE0Gyr (ORCPT
+        id S233734AbhE0Gz2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 May 2021 02:55:28 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:49953 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233044AbhE0Gz1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 May 2021 02:54:47 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1622098394;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=tbeJSxErj2lDV+ffr5QaXbXOERJDDIrzIVBIxT+6PUQ=;
-        b=KOF0OJOmc/Y3eSi1E4hGHYXRtqa7xf4n2HLB/Ud01HLzbAGeU4713k5LCQW2dexL2BUQpY
-        Vv7/cn+GWb8Qc2Rob3RQzplQLpWUKLDybt0nBwEWetAL+te6A2lSXBiw505ZrroBUd+QKu
-        HgMJPKHQqhWhJ6XNR0GsZCtAfiY0JGU=
-Received: from mail-pj1-f71.google.com (mail-pj1-f71.google.com
- [209.85.216.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-532-OdDBa7JhPCi8q9jwyaLoTg-1; Thu, 27 May 2021 02:53:12 -0400
-X-MC-Unique: OdDBa7JhPCi8q9jwyaLoTg-1
-Received: by mail-pj1-f71.google.com with SMTP id w12-20020a17090a528cb029015d7f990752so1989858pjh.0
-        for <linux-kernel@vger.kernel.org>; Wed, 26 May 2021 23:53:12 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=tbeJSxErj2lDV+ffr5QaXbXOERJDDIrzIVBIxT+6PUQ=;
-        b=HmWMICMbvM4QnxejEl8z3IsBQZ+6bln8+S/B3q5V3bb5FAceXTO1jODXInazHqm7Tl
-         orWNKWfFjvyy4x2/h+nJ9bSJmSCJXlHL+TcCg9dz1JGfuf8J2VA1RNUXVkZO8d65tgZZ
-         FTQN9WBrCZt9eHVgnXzC8DNzFn0url7FnOsSwWVB5b+QULsQQJPFlPZArGj/itaiVGkW
-         +WOi6xzPPx4pTjGYesFd/oYt/mNbPhh3I7GEXJSsF74luP8DcsnNhZe7N0EBF0HmYjnv
-         QcpftybZzxAITsqYbp06fVswS+HjBuVn7i1pvIBvidHig19sjg740AtlBlZLQRnpCKnR
-         ymRA==
-X-Gm-Message-State: AOAM53350SOVFeSPBi0lq+mNqGkBR2zPO/Ms5wlxrWHPJD9Kcb8fWpaS
-        3vyRA6lD29z1mz3YWBQgh9Mk4tREuL9/ESlpw5y4bhV12GuwDEQ7P8MmygteXjgxMfX4VjoeOms
-        QGrCAbZac630DJwAHPsAXL4y2
-X-Received: by 2002:a63:935b:: with SMTP id w27mr2403406pgm.264.1622098391341;
-        Wed, 26 May 2021 23:53:11 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwbxRpvRjQPr6v5uVQ848wKew2CiohrQQ7CN8mymILSXGnMXBRVDCOnrMW6FbkBE6RAKnPk9A==
-X-Received: by 2002:a63:935b:: with SMTP id w27mr2403380pgm.264.1622098391079;
-        Wed, 26 May 2021 23:53:11 -0700 (PDT)
-Received: from wangxiaodeMacBook-Air.local ([209.132.188.80])
-        by smtp.gmail.com with ESMTPSA id b7sm957003pfv.149.2021.05.26.23.53.07
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 26 May 2021 23:53:10 -0700 (PDT)
-Subject: Re: [PATCH net-next] ptr_ring: make __ptr_ring_empty() checking more
- reliable
-To:     Yunsheng Lin <linyunsheng@huawei.com>, davem@davemloft.net,
-        kuba@kernel.org
-Cc:     will@kernel.org, peterz@infradead.org, paulmck@kernel.org,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        mst@redhat.com, brouer@redhat.com
-References: <1622032173-11883-1-git-send-email-linyunsheng@huawei.com>
- <d2287691-1ef9-d2c4-13f6-2baf7b80d905@redhat.com>
- <25a6b73d-06ec-fe07-b34c-10fea709e055@huawei.com>
-From:   Jason Wang <jasowang@redhat.com>
-Message-ID: <51bc1c38-da20-1090-e3ef-1972f28adfee@redhat.com>
-Date:   Thu, 27 May 2021 14:53:02 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.10.2
+        Thu, 27 May 2021 02:55:27 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1622098434; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=TQxrZsZkNMWPoXXaHnAVoq6d9by44utK3awW5Rc63x8=;
+ b=APgkOneOZWu6naU++4kEmd36fg/kYcl0xaSKSRnLECV7d+xf0QOsugDNDK7iVCKC0vM3BgF9
+ FSrQnhzTFxp8LiWG3Unr/oGKpsspb2dF9qAqm/QHFy4G3hThex29Gv+GnijTeG/wLTtb39FQ
+ 8wsb2eaJ78srTBcC7vTi95MGwGM=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n06.prod.us-east-1.postgun.com with SMTP id
+ 60af41f3d1aee7698ddbf904 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 27 May 2021 06:53:39
+ GMT
+Sender: cang=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id EAC5DC43460; Thu, 27 May 2021 06:53:38 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: cang)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id C9744C433F1;
+        Thu, 27 May 2021 06:53:36 +0000 (UTC)
 MIME-Version: 1.0
-In-Reply-To: <25a6b73d-06ec-fe07-b34c-10fea709e055@huawei.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Thu, 27 May 2021 14:53:36 +0800
+From:   Can Guo <cang@codeaurora.org>
+To:     jongmin jeong <jjmin.jeong@samsung.com>
+Cc:     jejb@linux.ibm.com, martin.petersen@oracle.com,
+        alim.akhtar@samsung.com, avri.altman@wdc.com, beanhuo@micron.com,
+        adrian.hunter@intel.com, linux-scsi@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 3/3] scsi: ufs: add quirk to support host reset only
+In-Reply-To: <20210527030901.88403-4-jjmin.jeong@samsung.com>
+References: <20210527030901.88403-1-jjmin.jeong@samsung.com>
+ <CGME20210527031220epcas2p41a5ba641919769ca95ccea81e5f3bfb0@epcas2p4.samsung.com>
+ <20210527030901.88403-4-jjmin.jeong@samsung.com>
+Message-ID: <a31867eaf47a298baeec714f29e9cafe@codeaurora.org>
+X-Sender: cang@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 2021-05-27 11:09, jongmin jeong wrote:
+> samsung ExynosAuto SoC has two types of host controller interface to
+> support the virtualization of UFS Device.
+> One is the physical host(PH) that the same as conventaional UFSHCI,
+> and the other is the virtual host(VH) that support data transfer 
+> function only.
+> 
+> In this structure, the virtual host does support host reset handler 
+> only.
+> This patch calls the host reset handler when abort or device reset 
+> handler
+> has occured in the virtual host.
 
-在 2021/5/27 下午2:07, Yunsheng Lin 写道:
-> On 2021/5/27 12:57, Jason Wang wrote:
->> 在 2021/5/26 下午8:29, Yunsheng Lin 写道:
->>> Currently r->queue[] is cleared after r->consumer_head is moved
->>> forward, which makes the __ptr_ring_empty() checking called in
->>> page_pool_refill_alloc_cache() unreliable if the checking is done
->>> after the r->queue clearing and before the consumer_head moving
->>> forward.
->>>
->>> Move the r->queue[] clearing after consumer_head moving forward
->>> to make __ptr_ring_empty() checking more reliable.
->>
->> If I understand this correctly, this can only happens if you run __ptr_ring_empty() in parallel with ptr_ring_discard_one().
-> Yes.
->
->> I think those two needs to be serialized. Or did I miss anything?
-> As the below comment in __ptr_ring_discard_one, if the above is true, I
-> do not think we need to keep consumer_head valid at all times, right?
->
->
-> 	/* Note: we must keep consumer_head valid at all times for __ptr_ring_empty
-> 	 * to work correctly.
-> 	 */
+One more question, as per the plot in the cover letter, the VH does 
+support TMRs.
+Why are you trying to make ufshcd_abort() and 
+ufshcd_eh_device_reset_handler()
+no-ops?
 
+Thanks,
 
-I'm not sure I understand. But my point is that you need to synchronize 
-the __ptr_ring_discard_one() and __ptr_empty() as explained in the 
-comment above __ptr_ring_empty():
+Can Guo.
 
-/*
-  * Test ring empty status without taking any locks.
-  *
-  * NB: This is only safe to call if ring is never resized.
-  *
-  * However, if some other CPU consumes ring entries at the same time, 
-the value
-  * returned is not guaranteed to be correct.
-  *
-  * In this case - to avoid incorrectly detecting the ring
-  * as empty - the CPU consuming the ring entries is responsible
-  * for either consuming all ring entries until the ring is empty,
-  * or synchronizing with some other CPU and causing it to
-  * re-test __ptr_ring_empty and/or consume the ring enteries
-  * after the synchronization point.
-  *
-  * Note: callers invoking this in a loop must use a compiler barrier,
-  * for example cpu_relax().
-  */
-
-Thanks
-
-
-
->> Thanks
->>
->>
->>> Signed-off-by: Yunsheng Lin <linyunsheng@huawei.com>
->>> ---
->>>    include/linux/ptr_ring.h | 26 +++++++++++++++++---------
->>>    1 file changed, 17 insertions(+), 9 deletions(-)
->>>
->>> diff --git a/include/linux/ptr_ring.h b/include/linux/ptr_ring.h
->>> index 808f9d3..f32f052 100644
->>> --- a/include/linux/ptr_ring.h
->>> +++ b/include/linux/ptr_ring.h
->>> @@ -261,8 +261,7 @@ static inline void __ptr_ring_discard_one(struct ptr_ring *r)
->>>        /* Note: we must keep consumer_head valid at all times for __ptr_ring_empty
->>>         * to work correctly.
->>>         */
->>> -    int consumer_head = r->consumer_head;
->>> -    int head = consumer_head++;
->>> +    int consumer_head = r->consumer_head + 1;
->>>          /* Once we have processed enough entries invalidate them in
->>>         * the ring all at once so producer can reuse their space in the ring.
->>> @@ -271,19 +270,28 @@ static inline void __ptr_ring_discard_one(struct ptr_ring *r)
->>>         */
->>>        if (unlikely(consumer_head - r->consumer_tail >= r->batch ||
->>>                 consumer_head >= r->size)) {
->>> +        int tail = r->consumer_tail;
->>> +        int head = consumer_head;
->>> +
->>> +        if (unlikely(consumer_head >= r->size)) {
->>> +            r->consumer_tail = 0;
->>> +            WRITE_ONCE(r->consumer_head, 0);
->>> +        } else {
->>> +            r->consumer_tail = consumer_head;
->>> +            WRITE_ONCE(r->consumer_head, consumer_head);
->>> +        }
->>> +
->>>            /* Zero out entries in the reverse order: this way we touch the
->>>             * cache line that producer might currently be reading the last;
->>>             * producer won't make progress and touch other cache lines
->>>             * besides the first one until we write out all entries.
->>>             */
->>> -        while (likely(head >= r->consumer_tail))
->>> -            r->queue[head--] = NULL;
->>> -        r->consumer_tail = consumer_head;
->>> -    }
->>> -    if (unlikely(consumer_head >= r->size)) {
->>> -        consumer_head = 0;
->>> -        r->consumer_tail = 0;
->>> +        while (likely(--head >= tail))
->>> +            r->queue[head] = NULL;
->>> +
->>> +        return;
->>>        }
->>> +
->>>        /* matching READ_ONCE in __ptr_ring_empty for lockless tests */
->>>        WRITE_ONCE(r->consumer_head, consumer_head);
->>>    }
->>
->> .
->>
-
+> 
+> Change-Id: I3f07e772415a35fe1e7374e02b3c37ef0bf5660d
+> Signed-off-by: jongmin jeong <jjmin.jeong@samsung.com>
+> ---
+>  drivers/scsi/ufs/ufshcd.c | 7 +++++++
+>  drivers/scsi/ufs/ufshcd.h | 6 ++++++
+>  2 files changed, 13 insertions(+)
+> 
+> diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
+> index 4787e40c6a2d..9d1912290f87 100644
+> --- a/drivers/scsi/ufs/ufshcd.c
+> +++ b/drivers/scsi/ufs/ufshcd.c
+> @@ -6826,6 +6826,9 @@ static int ufshcd_eh_device_reset_handler(struct
+> scsi_cmnd *cmd)
+>  	u8 resp = 0xF, lun;
+>  	unsigned long flags;
+> 
+> +	if (hba->quirks & UFSHCD_QUIRK_BROKEN_RESET_HANDLER)
+> +		return ufshcd_eh_host_reset_handler(cmd);
+> +
+>  	host = cmd->device->host;
+>  	hba = shost_priv(host);
+> 
+> @@ -6972,6 +6975,10 @@ static int ufshcd_abort(struct scsi_cmnd *cmd)
+>  	host = cmd->device->host;
+>  	hba = shost_priv(host);
+>  	tag = cmd->request->tag;
+> +
+> +	if (hba->quirks & UFSHCD_QUIRK_BROKEN_RESET_HANDLER)
+> +		return ufshcd_eh_host_reset_handler(cmd);
+> +
+>  	lrbp = &hba->lrb[tag];
+>  	if (!ufshcd_valid_tag(hba, tag)) {
+>  		dev_err(hba->dev,
+> diff --git a/drivers/scsi/ufs/ufshcd.h b/drivers/scsi/ufs/ufshcd.h
+> index 0ab4c296be32..82a9c6889978 100644
+> --- a/drivers/scsi/ufs/ufshcd.h
+> +++ b/drivers/scsi/ufs/ufshcd.h
+> @@ -581,6 +581,12 @@ enum ufshcd_quirks {
+>  	 * support interface configuration.
+>  	 */
+>  	UFSHCD_QUIRK_SKIP_INTERFACE_CONFIGURATION	= 1 << 16,
+> +
+> +	/*
+> +	 * This quirk needs to be enabled if the host controller support
+> +	 * host reset handler only.
+> +	 */
+> +	UFSHCD_QUIRK_BROKEN_RESET_HANDLER		= 1 << 17,
+>  };
+> 
+>  enum ufshcd_caps {
