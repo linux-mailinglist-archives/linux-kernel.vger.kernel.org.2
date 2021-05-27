@@ -2,182 +2,190 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 57952393812
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 23:41:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 67A33393821
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 23:43:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234633AbhE0VnD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 May 2021 17:43:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33474 "EHLO
+        id S234871AbhE0Vp3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 May 2021 17:45:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34052 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229822AbhE0Vm7 (ORCPT
+        with ESMTP id S234673AbhE0Vp0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 May 2021 17:42:59 -0400
-Received: from mail-qt1-x82a.google.com (mail-qt1-x82a.google.com [IPv6:2607:f8b0:4864:20::82a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B62BBC061760
-        for <linux-kernel@vger.kernel.org>; Thu, 27 May 2021 14:41:24 -0700 (PDT)
-Received: by mail-qt1-x82a.google.com with SMTP id k19so1376966qta.2
-        for <linux-kernel@vger.kernel.org>; Thu, 27 May 2021 14:41:24 -0700 (PDT)
+        Thu, 27 May 2021 17:45:26 -0400
+Received: from mail-lj1-x233.google.com (mail-lj1-x233.google.com [IPv6:2a00:1450:4864:20::233])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5F4BC061574;
+        Thu, 27 May 2021 14:43:51 -0700 (PDT)
+Received: by mail-lj1-x233.google.com with SMTP id a4so2722210ljd.5;
+        Thu, 27 May 2021 14:43:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=1zVv1GjmK07EWaIPDoxGxKRBfboRr4vWM9HdAWgd8h8=;
-        b=gFbhrH/lrOqgsguvnI/seGtIdQLXd0j1mB0K0q/fZNVu9/dKg42cRWlvGWBMdLcmsm
-         GR0LhjRyfauN/Us2dCVxfMDz0prbbMtTpZJJjo+6Ee/old3HeprB1ckBgqS2/neIatq6
-         DXeRV+iVk5XYHVkdu0Vcf+TzEWtQYMSmh4Myk=
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=IpKg7JupX016vkUr8LOBgfofAtv2uGPF5PgtxjtNaI0=;
+        b=q48ZaJwOcW6DIZbMe4yJ397qZinEcuaakxc3qOiuHjGiAonqMfLueNuCYSOSGMMN40
+         Z1enQcIXdclsZ0lqW0uwA0/uZWbzqzYO7S2wMCkBXKrugGHiV9VFD0dUZyuGBAZ63Ous
+         PyFbnryMJq0LAl/J68ttdsQTo+Vhu1jPLvH+K/OhDlQHFeOJZgga43yFpCxq6T5kUSdI
+         oQ+hlcr59g6pQbnUqiOaoOEADn8HuBzn+o4yxGrmJLWGro19+khhVYENnmqi81fccLbl
+         46DFmNy/t5WwBXUDUnfthzjo2JfhtjJEgrWsFlEoRfDyvHenAM7+J5W9ppggz4tCCw2b
+         UFdA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=1zVv1GjmK07EWaIPDoxGxKRBfboRr4vWM9HdAWgd8h8=;
-        b=NFDvFgETR2famwnxzv5O3X+/bV7zfPbGVsdJz5qXvfbVbNU9KkegzdEVkj+HAVjxcX
-         b2a4qwK3aZW5mA7oYeSC2NTExXPvpC7MobgiCHziopAh1fRD3BnvQ8X6ajpZazvy6PjW
-         yRcM/lBVVsDcinRyv+Yzt20dprun8jIPc5EVU6QTAi+MyU/kH5f/UyLUiSCTKYi5yfyT
-         prN3vbV1N5QhpLlJul+iITU8/LI/w9tT4kakbwL8lXCJP1qOGEjVu7ZB585UVj5icseC
-         p0BCzvADpXe5voV/3BFK6puWDwbJZCKMlBpb8lnTVxB9Lpu4YDVORFBINRk04MjOJh9+
-         4fJA==
-X-Gm-Message-State: AOAM533Tujlhy+cMXOmzZ+X22LaNgxIAtVlKprbZeA3ItjziaCefHoNr
-        NsB5WSU04hnrtWYo2Xvb24MrsWfMbnCjhA==
-X-Google-Smtp-Source: ABdhPJz5BydGSKzbZqRFDqYEyyquo+GHvx5rxbClTd6ZlFeMeJOKmk34i2MVtHHcqVt5Rrwinra7rw==
-X-Received: by 2002:a05:622a:507:: with SMTP id l7mr624834qtx.276.1622151682553;
-        Thu, 27 May 2021 14:41:22 -0700 (PDT)
-Received: from mail-yb1-f169.google.com (mail-yb1-f169.google.com. [209.85.219.169])
-        by smtp.gmail.com with ESMTPSA id v25sm2249731qtf.68.2021.05.27.14.41.20
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 27 May 2021 14:41:20 -0700 (PDT)
-Received: by mail-yb1-f169.google.com with SMTP id b13so2726871ybk.4
-        for <linux-kernel@vger.kernel.org>; Thu, 27 May 2021 14:41:20 -0700 (PDT)
-X-Received: by 2002:a25:8191:: with SMTP id p17mr7998436ybk.405.1622151679762;
- Thu, 27 May 2021 14:41:19 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=IpKg7JupX016vkUr8LOBgfofAtv2uGPF5PgtxjtNaI0=;
+        b=X8MtTPLSs10saApDUtZJUjub3LCEx7a9GYFtasJtjkmqy4YoA4wjvoStUKK3WE4kFa
+         wOB8+aFHnAHep3L/zDv3NyVhe9hZ3ACJfpR89LevsS+Dcyy+LNKwo5bu2IAcpQ/CkXWe
+         EtXWnLB2GLO0jtX10rNmf8OtosmXNBEDmiaa0RATZh3lqIMahnIPTMKBIv7wiAW8bNO1
+         qOSVIyFOPQyu1+e1xc+iux7hHsyo98kTXDdo0EMn0V/VMDGEE0s4VZbB3joLdmcTKlg3
+         s2CNZs7YkgrjU4Rn0GMK2aK9mLeVzPqHCX4aRJ1mVpEFOCDaHPpp4Z8ZjL+92WgaVcbt
+         /zew==
+X-Gm-Message-State: AOAM532/uCye/bEtHuPgvoWFsLAeAyHiwCBnuKppFa3EhA237NWc0RwD
+        Fcm6tBpJ84lX7UGGYgrNBIM=
+X-Google-Smtp-Source: ABdhPJz0SBD2NKypES3+FRERvocR1HDhJD13DgR4oIkb8gggc7e8g/B/P9TMGJRAwXEFVGQ59m0UvQ==
+X-Received: by 2002:a05:651c:329:: with SMTP id b9mr4172125ljp.128.1622151830017;
+        Thu, 27 May 2021 14:43:50 -0700 (PDT)
+Received: from localhost.localdomain (46-138-12-55.dynamic.spd-mgts.ru. [46.138.12.55])
+        by smtp.gmail.com with ESMTPSA id v11sm298153lfr.44.2021.05.27.14.43.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 27 May 2021 14:43:49 -0700 (PDT)
+From:   Dmitry Osipenko <digetx@gmail.com>
+To:     Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        =?UTF-8?q?Micha=C5=82=20Miros=C5=82aw?= <mirq-linux@rere.qmqm.pl>,
+        =?UTF-8?q?Nikola=20Milosavljevi=C4=87?= <mnidza@outlook.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Peter Geis <pgwipeout@gmail.com>,
+        Nicolas Chauvet <kwizart@gmail.com>,
+        Viresh Kumar <vireshk@kernel.org>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Matt Merhar <mattmerhar@protonmail.com>,
+        Paul Fertser <fercerpav@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Mikko Perttunen <mperttunen@nvidia.com>
+Cc:     linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-pm@vger.kernel.org,
+        Nathan Chancellor <nathan@kernel.org>,
+        linux-clk@vger.kernel.org
+Subject: [PATCH v4 00/14] NVIDIA Tegra memory and power management changes for 5.14
+Date:   Fri, 28 May 2021 00:43:03 +0300
+Message-Id: <20210527214317.31014-1-digetx@gmail.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-References: <1621927831-29471-1-git-send-email-rajeevny@codeaurora.org>
- <1621927831-29471-2-git-send-email-rajeevny@codeaurora.org>
- <CAD=FV=WzQ0Oc=e3kmNeBZUA+P1soKhBk8zt7bG1gqJ-Do-Tq_w@mail.gmail.com> <42db3a26684a5329287d57e1e78d0475@codeaurora.org>
-In-Reply-To: <42db3a26684a5329287d57e1e78d0475@codeaurora.org>
-From:   Doug Anderson <dianders@chromium.org>
-Date:   Thu, 27 May 2021 14:41:08 -0700
-X-Gmail-Original-Message-ID: <CAD=FV=UuWuKibpT15McweuZ24qxsSAsSvJ3Q2MbZqgw5oggBVQ@mail.gmail.com>
-Message-ID: <CAD=FV=UuWuKibpT15McweuZ24qxsSAsSvJ3Q2MbZqgw5oggBVQ@mail.gmail.com>
-Subject: Re: [v4 1/4] drm/panel-simple: Add basic DPCD backlight support
-To:     Rajeev Nandan <rajeevny@codeaurora.org>
-Cc:     "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        Daniel Thompson <daniel.thompson@linaro.org>,
-        mkrishn@codeaurora.org, Sam Ravnborg <sam@ravnborg.org>,
-        Jani Nikula <jani.nikula@intel.com>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        Abhinav Kumar <abhinavk@codeaurora.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        Andrzej Hajda <a.hajda@samsung.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Sean Paul <seanpaul@chromium.org>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Kalyan Thota <kalyan_t@codeaurora.org>,
-        "Kristian H. Kristensen" <hoegsberg@chromium.org>,
-        freedreno <freedreno@lists.freedesktop.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+This series:
 
-On Thu, May 27, 2021 at 5:21 AM <rajeevny@codeaurora.org> wrote:
->
-> >> @@ -171,6 +172,19 @@ struct panel_desc {
-> >>
-> >>         /** @connector_type: LVDS, eDP, DSI, DPI, etc. */
-> >>         int connector_type;
-> >> +
-> >> +       /**
-> >> +        * @uses_dpcd_backlight: Panel supports eDP dpcd backlight
-> >> control.
-> >> +        *
-> >> +        * Set true, if the panel supports backlight control over eDP
-> >> AUX channel
-> >> +        * using DPCD registers as per VESA's standard.
-> >> +        */
-> >> +       bool uses_dpcd_backlight;
-> >> +};
-> >> +
-> >> +struct edp_backlight {
-> >> +       struct backlight_device *dev;
-> >
-> > Can you pick a name other than "dev". In my mind "dev" means you've
-> > got a "struct device" or a "struct device *".
->
-> In the backlight.h "bd" is used for "struct backlight_device". I can use
-> "bd"?
+  1. Adds CPU/core voltage bump before system is rebooted.
+  2. Adds new devm_tegra_core_dev_init_opp_table() helper and switches
+     Tegra memory drivers to use it.
+  3. Adds compile-testing support to the Tegra memory drivers.
+  4. Adds Tegra SoC core power domain support.
 
-That would be OK w/ me since it's not "dev". In theory you could also
-call it "base" like panel-simple does with the base class drm_panel,
-but I'll leave that up to you. It's mostly that in my brain "dev" is
-reserved for "struct device" but otherwise I'm pretty flexible.
+Changelog:
 
+v4: - Fixed misplaced prototypes of tegra_pmc_core_domain_state_synced(),
+      which I noticed only after sending out v3. This fixes building with
+      !CONFIG_PM_SLEEP.
 
-> >> +       struct drm_edp_backlight_info info;
-> >>  };
-> >>
-> >>  struct panel_simple {
-> >> @@ -194,6 +208,8 @@ struct panel_simple {
-> >>
-> >>         struct edid *edid;
-> >>
-> >> +       struct edp_backlight *edp_bl;
-> >> +
-> >
-> > I don't think you need to add this pointer. See below for details, but
-> > basically the backlight device should be in base.backlight. Any code
-> > that needs the containing structure can use the standard
-> > "container_of" syntax.
-> >
->
-> The documentation of the "struct drm_panel -> backlight" mentions
-> "backlight is set by drm_panel_of_backlight() and drivers shall not
-> assign it."
-> That's why I was not sure if I should touch that part. Because of this,
-> I added
-> backlight enable/disable calls inside panel_simple_disable/enable().
+v3: - Dropped "Detach coupled regulator before coupling count is dropped"
+      patch that was added in v2 since it missed regulator locking and
+      it should be more reasonable to add a new generic hook for syncing
+      before detaching. For now it's optional to sync Tegra SoC regulators
+      before detaching since it's not something that happens in practice,
+      hence it's more optimal to simply drop that feature.
 
-Fair enough. In my opinion (subject to being overridden by the adults
-in the room), if you move your backlight code into drm_panel.c and
-call it drm_panel_dp_aux_backlight() then it's fair game to use. This
-basically means that it's no longer a "driver" assigning it since it's
-being done in drm_panel.c. ;-) Obviously you'd want to update the
-comment, too...
+    - Added more stubs for T210 clk driver which should fix compile-testing
+      problem reported for v2 by kernel robot.
 
+    - Added COMMON_CLK for COMPILE_TEST of memory drivers since for
+      today the problem of compile-testing of legacy platforms that use
+      HAVE_LEGACY_CLK isn't solved, we will be able to remove it after
+      fixing the legacy platforms.
 
-> >> +               err = drm_panel_of_backlight(&panel->base);
-> >> +               if (err)
-> >> +                       goto disable_pm_runtime;
-> >> +       }
-> >
-> > See above where I'm suggesting some different logic. Specifically:
-> > always try the drm_panel_of_backlight() call and then fallback to the
-> > AUX backlight if "panel->base.backlight" is NULL and "panel->aux" is
-> > not NULL.
->
-> What I understood:
-> 1. Create a new API drm_panel_dp_aux_backlight() in drm_panel.c
-> 1.1. Register DP AUX backlight if "struct drm_dp_aux" is given and
->      drm_edp_backlight_supported()
-> 2. Create a call back function for backlight ".update_status()" inside
-> drm_panel.c ?
->    This function should also handle the backlight enable/disable
-> operations.
-> 3. Use the suggested rules to call drm_panel_dp_aux_backlight() as a
-> fallback, if
->     no backlight is specified in the DT.
-> 4. Remove the @uses_dpcd_backlight flag from panel_desc as this should
-> be auto-detected.
+    - Factored out new PMC driver state syncing feature into a separate
+      patch "pmc: Add driver state syncing", which was requested by
+      Ulf Hansson in a review comment to v2.
 
-This sounds about right to me.
+    - Added r-b from Ulf Hansson to the PMC binding-update patch that he
+      gave to v2.
 
-As per all of my reviews in the DRM subsystem, this is all just my
-opinion and if someone more senior in DRM contradicts me then, of
-course, you might have to change directions. Hopefully that doesn't
-happen but it's always good to give warning...
+v2: - Added more clk stubs that should fix build error reported by the
+      kernel bot to v1 for the T210 memory driver.
 
--Doug
+    - Added r-b from Krzysztof Kozlowski to the memory patches.
+
+    - Added back voltage restore on detaching of coupled regulators to
+      the T20 regulator coupler which previously got missed by accident.
+
+    - Added new patch:
+
+        regulator: core: Detach coupled regulator before coupling count is dropped
+
+      It fixes skipped voltage balancing on detaching of regulators which I
+      happened to notice due to the recent regression of the MAX77620 driver
+      that made driver to re-probe and detach coupled regulators.
+
+v1: - Merged previous patches into this single series.
+
+    - Added ack from Rob Herring to the core domain DT binding patch.
+
+    - Implemented suggestions that were given by Krzysztof Kozlowski:
+
+        - Factored out soc_is_tegra() stub into standalone patch.
+        - Updated tags of the "Fix compilation warnings on 64bit platforms"
+          patch, added reported-by from lkp robot and removed suggested-by
+          from Nathan Chancellor.
+        - Switched to use use BIT() macro.
+
+    - Added r-b from Krzysztof Kozlowski to "Enable compile testing for
+      all drivers" patch.
+
+    - Added r-b from Nathan Chancellor.
+
+    - Dropped voltage floor/ceiling from devm_tegra_core_dev_init_opp_table()
+      since only memory drivers now need to initialize voltage vote and they
+      don't need floor/ceil. This was suggested by Viresh Kumar.
+
+Dmitry Osipenko (14):
+  regulator: core: Add regulator_sync_voltage_rdev()
+  soc/tegra: regulators: Bump voltages on system reboot
+  soc/tegra: Add stub for soc_is_tegra()
+  soc/tegra: Add devm_tegra_core_dev_init_opp_table()
+  soc/tegra: fuse: Add stubs needed for compile-testing
+  clk: tegra: Add stubs needed for compile-testing
+  memory: tegra: Fix compilation warnings on 64bit platforms
+  memory: tegra: Enable compile testing for all drivers
+  memory: tegra20-emc: Use devm_tegra_core_dev_init_opp_table()
+  memory: tegra30-emc: Use devm_tegra_core_dev_init_opp_table()
+  dt-bindings: soc: tegra-pmc: Document core power domain
+  soc/tegra: pmc: Add core power domain
+  soc/tegra: pmc: Add driver state syncing
+  soc/tegra: regulators: Support core domain state syncing
+
+ .../arm/tegra/nvidia,tegra20-pmc.yaml         |  35 +++++
+ drivers/memory/tegra/Kconfig                  |  16 +-
+ drivers/memory/tegra/tegra124-emc.c           |   4 +-
+ drivers/memory/tegra/tegra20-emc.c            |  48 +-----
+ drivers/memory/tegra/tegra30-emc.c            |  52 +------
+ drivers/regulator/core.c                      |  23 +++
+ drivers/soc/tegra/Kconfig                     |  14 ++
+ drivers/soc/tegra/common.c                    |  97 ++++++++++++
+ drivers/soc/tegra/pmc.c                       | 143 ++++++++++++++++++
+ drivers/soc/tegra/regulators-tegra20.c        |  94 +++++++++++-
+ drivers/soc/tegra/regulators-tegra30.c        |  93 +++++++++++-
+ include/linux/clk/tegra.h                     |  96 +++++++++---
+ include/linux/regulator/driver.h              |   1 +
+ include/soc/tegra/common.h                    |  31 ++++
+ include/soc/tegra/fuse.h                      |  20 ++-
+ include/soc/tegra/pmc.h                       |   7 +
+ 16 files changed, 648 insertions(+), 126 deletions(-)
+
+-- 
+2.30.2
+
