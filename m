@@ -2,99 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 062AE3932E2
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 17:51:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D1583932E3
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 17:52:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233827AbhE0PxR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 May 2021 11:53:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39590 "EHLO
+        id S233785AbhE0Pxc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 May 2021 11:53:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39650 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233288AbhE0PxM (ORCPT
+        with ESMTP id S233880AbhE0Px3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 May 2021 11:53:12 -0400
-Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2DDB5C061574
-        for <linux-kernel@vger.kernel.org>; Thu, 27 May 2021 08:51:39 -0700 (PDT)
-Received: by mail-pl1-x62a.google.com with SMTP id a7so185865plh.3
-        for <linux-kernel@vger.kernel.org>; Thu, 27 May 2021 08:51:39 -0700 (PDT)
+        Thu, 27 May 2021 11:53:29 -0400
+Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A549C0613CE
+        for <linux-kernel@vger.kernel.org>; Thu, 27 May 2021 08:51:55 -0700 (PDT)
+Received: by mail-wm1-x329.google.com with SMTP id u5-20020a7bc0450000b02901480e40338bso5343500wmc.1
+        for <linux-kernel@vger.kernel.org>; Thu, 27 May 2021 08:51:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=P8n+j10CtxBhN58oDikgqY5q7G+Pum8G2KPAGFOMoQM=;
-        b=jPc88E/Li2I3/MCp6PbTsfXs8TtZnXLmb8LdXdkTQ5vTSK/O4NfrBhYAFsH6149K2C
-         8Dzg7ZUxwJefPaH+g3ruPpkiFLF7d3xvk3kSUjBx4L00M574OXpCIFIg9slizleb/XLf
-         9Nu2PDmHJhXalDOOitKfMg4eR3sUk6Ao4FitbV3Nu+AQ6iEIkmtx2NhuQtH2osPxT+DY
-         qtWbLsybPkM6QNJoU4rd+zYP9JwSBdUkB3omFDtvv/EDYlqjpsX0pHzOmWz4AiV6Honq
-         L+HNC5YcOh5ieRsQ1ORuethWH/0SYGZHCCfEYziFX+45jC9ER0tmQBqm4qaC2LuLH683
-         Erxg==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=RGM578SjTx4HPSAuDayxd66VlRx8pMIDrOm8Ebr5U4U=;
+        b=cznRe/KbSwD4IKSBRhpDdAA3gr55mz4bVGiRHmEOhd+VXY2noIzcwDIN8KVpRNab0s
+         nNmAEgJP5V45qsvqJlkcj0eWxMAAMpkCy+r1l9Y0NP0GvnQY7OV2gMrsBXK7EY37bIXB
+         InUfP3Vt6XWH2PxXqeOHgC5Smseg6N4oXnvSRq1miEpcVYL0ka0TRiehugi5UU3YAAKx
+         A+ydECqCFTS3JsTmSlDp7KS1lieu/iAdSiWya/k2uyskIxRnB1v1+fMzMCUb/m6HaS7k
+         N4pOf6yK/Tf3NmNKEqyXRmOxwG+1PKz8qnEFZ+PSCqdIfgcylU3wBGEt30kLnNki5Frl
+         4/uQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=P8n+j10CtxBhN58oDikgqY5q7G+Pum8G2KPAGFOMoQM=;
-        b=OMRlgMzCPngndqld5xZdvEjDJfysBAtEwNv+i78Df+Q6GAxOlVzXZq94BaO4sD0YsW
-         51iEVi1av4/Qy3hfW2xn7Ie4fHNLNxGlWJedXhy3FaOm1Yf/2vNBv2Y4Mhk/jFxzIBF1
-         M25t0i76Ot20dnatkPZWZbfSbhqY000U6lK7zm4OjQOYzFqPW1uIGjwKE8kOR1yfCoL2
-         OBtPXP7piT+tv3M30NWqinrNxhTrTQpKHSlbshX+d8gl/P/LglzwLEprZ6lscOnOEleM
-         LVKNosC6uHwD3FtwdEbElSqYjdz/63s6P+jIsLtF4SYVMAcmXos0B3FHV5qiBOxqFk/p
-         O6Ew==
-X-Gm-Message-State: AOAM533cA//ImlwOTkH88F4PcEvYAgSDT9JQB2feCiYc4RVp7ZPneCe+
-        R0UfDiarBy2UTVoE41HiBFpqHA==
-X-Google-Smtp-Source: ABdhPJwoNPGZY0cleeBw9UHOnt01xQnmJp/s6zYtjQoV9W6cTuQL+NMaDUZgw+qbaQLY1O6LN3+TMw==
-X-Received: by 2002:a17:902:7c0b:b029:ff:5396:2edd with SMTP id x11-20020a1709027c0bb02900ff53962eddmr1462767pll.79.1622130698590;
-        Thu, 27 May 2021 08:51:38 -0700 (PDT)
-Received: from xps15 (S0106889e681aac74.cg.shawcable.net. [68.147.0.187])
-        by smtp.gmail.com with ESMTPSA id gt23sm2306226pjb.13.2021.05.27.08.51.37
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 27 May 2021 08:51:37 -0700 (PDT)
-Date:   Thu, 27 May 2021 09:51:35 -0600
-From:   Mathieu Poirier <mathieu.poirier@linaro.org>
-To:     Jeremy Linton <jeremy.linton@arm.com>
-Cc:     coresight@lists.linaro.org, suzuki.poulose@arm.com,
-        mike.leach@linaro.org, leo.yan@linaro.org,
-        alexander.shishkin@linux.intel.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] coresight: Propagate symlink failure
-Message-ID: <20210527155135.GA1297106@xps15>
-References: <20210526204042.2681700-1-jeremy.linton@arm.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=RGM578SjTx4HPSAuDayxd66VlRx8pMIDrOm8Ebr5U4U=;
+        b=t0UFmeGBUOfNaLwZt49V94lprro1XZAAOT86pQHqqeXrqNmeI23bOnF/wKdelkMbtS
+         MTkQK0co6N64G4VEyrcHesPJe1JrjCVP/xTdvCTYskpEYMeBqqKpzBBMRLz5jMelGgZn
+         qLxxkAY39/KUo/J8D1okBktwpbzu4hgEJcJxFTxWMVIQrxDPyYyWMXXzdKsRGVRvDuym
+         BvtaUYU3kpxlPqQVysyvX2nVDC6lJN7MonxlSoc8ATtUX8PFKbWFSFb/5VbOVZ/zHbIN
+         9XqRuqKxWyqmfqwRVJjsA5k6wU0LHZyDh9u46GxTHetiXXLtToVs5SnPa92Rl6oTIoAn
+         qh5w==
+X-Gm-Message-State: AOAM531fPQv3q8FLp0NhloPXqAeTUTQwTVd1fyHUxRJTl97NZvqkg3Oe
+        aSbzpEjjqLBBuIgVWKesrYs9UUwfrXn9d/AF1unVNA==
+X-Google-Smtp-Source: ABdhPJwx7qe8Y0mZV7gVdyHoTXhTi2y03ykKGYwRQyBeGlbNF1psf9XSsN2gpRnhJtd3uI0x5VZ2QVY/Dm3HlggI4mQ=
+X-Received: by 2002:a1c:4006:: with SMTP id n6mr6898753wma.58.1622130714011;
+ Thu, 27 May 2021 08:51:54 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210526204042.2681700-1-jeremy.linton@arm.com>
+References: <20210519164447.2672030-1-irogers@google.com>
+In-Reply-To: <20210519164447.2672030-1-irogers@google.com>
+From:   Ian Rogers <irogers@google.com>
+Date:   Thu, 27 May 2021 08:51:41 -0700
+Message-ID: <CAP-5=fWRAbkd8MVAxdGf0YGE1oFPT40rZC3eb3OKjqWmBVq_BA@mail.gmail.com>
+Subject: Re: [PATCH] perf: Move debug initialization earlier
+To:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        linux-perf-users <linux-perf-users@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Riccardo Mancini <rickyman7@gmail.com>
+Cc:     Stephane Eranian <eranian@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 26, 2021 at 03:40:42PM -0500, Jeremy Linton wrote:
-> If the symlink is unable to be created, the driver goes
-> ahead and continues device creation. Instead lets propagate
-> the failure, and fail the probe.
-> 
-> Signed-off-by: Jeremy Linton <jeremy.linton@arm.com>
+On Wed, May 19, 2021 at 9:44 AM Ian Rogers <irogers@google.com> wrote:
+>
+> This avoids segfaults during option handlers that use pr_err. For
+> example, "perf --debug nopager list" segfaults before this change.
+>
+> Fixes: 8abceacff87d (perf debug: Add debug_set_file function)
+> Signed-off-by: Ian Rogers <irogers@google.com>
+
+Ping.
+
+Thanks!
+Ian
+
 > ---
->  drivers/hwtracing/coresight/coresight-core.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/hwtracing/coresight/coresight-core.c b/drivers/hwtracing/coresight/coresight-core.c
-> index 6c68d34d956e..2dc4b0110442 100644
-> --- a/drivers/hwtracing/coresight/coresight-core.c
-> +++ b/drivers/hwtracing/coresight/coresight-core.c
-> @@ -1392,7 +1392,7 @@ static int coresight_fixup_device_conns(struct coresight_device *csdev)
->  		}
->  	}
->  
-> -	return 0;
-> +	return ret;
-
-I have applied your patch.
-
-Thanks,
-Mathieu
-
->  }
->  
->  static int coresight_remove_match(struct device *dev, void *data)
-> -- 
-> 2.31.1
-> 
+>  tools/perf/perf.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+>
+> diff --git a/tools/perf/perf.c b/tools/perf/perf.c
+> index 20cb91ef06ff..2f6b67189b42 100644
+> --- a/tools/perf/perf.c
+> +++ b/tools/perf/perf.c
+> @@ -443,6 +443,8 @@ int main(int argc, const char **argv)
+>         const char *cmd;
+>         char sbuf[STRERR_BUFSIZE];
+>
+> +       perf_debug_setup();
+> +
+>         /* libsubcmd init */
+>         exec_cmd_init("perf", PREFIX, PERF_EXEC_PATH, EXEC_PATH_ENVIRONMENT);
+>         pager_init(PERF_PAGER_ENVIRONMENT);
+> @@ -531,8 +533,6 @@ int main(int argc, const char **argv)
+>          */
+>         pthread__block_sigwinch();
+>
+> -       perf_debug_setup();
+> -
+>         while (1) {
+>                 static int done_help;
+>
+> --
+> 2.31.1.751.gd2f1c929bd-goog
+>
