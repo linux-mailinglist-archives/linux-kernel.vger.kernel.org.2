@@ -2,91 +2,220 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7038339391F
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 01:21:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2DB19393938
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 01:22:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236634AbhE0XXH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 May 2021 19:23:07 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:49106 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S236567AbhE0XXD (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 May 2021 19:23:03 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1622157689;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=nCWKzoy9kj1pT7s/LMAs2R0z3NMNhJpdEi2dqYprz/8=;
-        b=SRSPXVFG1Epz1+Asu3MkXQ0V9pBUz86biq/PMyYM3sL+RxhJVNmp/EQSe1cz5eHywEJ90q
-        V3RcaCjc4Yg7w8RYU3jyo+tLIbQm8V2Jc9VIk1Gw79rchdOmCM3hsQ3WJih0bTIhLu7ij7
-        q1xOME7VbubN4OQUW6/5bRLiP/eSHIA=
-Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
- [209.85.208.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-434-o1I5THqMObuaGC6DsFOQZA-1; Thu, 27 May 2021 19:21:27 -0400
-X-MC-Unique: o1I5THqMObuaGC6DsFOQZA-1
-Received: by mail-ed1-f69.google.com with SMTP id h18-20020a05640250d2b029038cc3938914so1086828edb.17
-        for <linux-kernel@vger.kernel.org>; Thu, 27 May 2021 16:21:27 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=nCWKzoy9kj1pT7s/LMAs2R0z3NMNhJpdEi2dqYprz/8=;
-        b=W2uxFtMLoKOsyASAa0d9OfeOebdd2LZqF/Bfrm1QFW0qx6d5nmWvdbagLieZ3p7hKh
-         E9Du7DtTNViU8ILpOfLXwJW3LzL+9EdZX11+OYJK8zFKIA7sHOky8SBhHw0p7OgA8Sv+
-         /2DVFvqkCbTfg7OLByO/I4BGa5E5VJky+7/RdGcogtBn7stO7FWfmeYj1AwRufkDMH6P
-         dFXPDzRqMm+Ho54cg2W/MzSTs0gSzLTNGHE2XmpzwY14Ux0+7UX8ZbyIPQFDjd/eXetI
-         A2Ns89WfSmfKLRjaXwioLbZMoLQY84CtZ/vEDyV0w7AEguqfumYQrsGC9RQ/PfINGwex
-         iVNw==
-X-Gm-Message-State: AOAM532suTJidLNNhDPM8OG+Z49Ol99NWarFXCs9VOf5CkAf2BPvbBsX
-        JYxMJvgDsVcH24BstPcaQiuHCNaMsfOmBys5lvg7MCHG4MAg5oExCLo5YPBpyIw9rF+6SKyW3d6
-        xcFgomdBpqazD/1hjCWaaVVaq
-X-Received: by 2002:a17:906:68c:: with SMTP id u12mr6263657ejb.470.1622157686503;
-        Thu, 27 May 2021 16:21:26 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzzgiXFMi0YlkhIN3byuem1Kgwi4TTcVzAYR+6zTso/Cq/N5U9JF7ehTOA7isPY90/EHZ2CWQ==
-X-Received: by 2002:a17:906:68c:: with SMTP id u12mr6263641ejb.470.1622157686347;
-        Thu, 27 May 2021 16:21:26 -0700 (PDT)
-Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
-        by smtp.gmail.com with ESMTPSA id e22sm1889267edu.35.2021.05.27.16.21.23
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 27 May 2021 16:21:25 -0700 (PDT)
-Subject: Re: [syzbot] WARNING in x86_emulate_instruction
-To:     Thomas Gleixner <tglx@linutronix.de>,
-        syzbot <syzbot+71271244f206d17f6441@syzkaller.appspotmail.com>,
-        bp@alien8.de, dave.hansen@linux.intel.com, hpa@zytor.com,
-        jarkko@kernel.org, jmattson@google.com, joro@8bytes.org,
-        kan.liang@linux.intel.com, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-sgx@vger.kernel.org,
-        mingo@redhat.com, peterz@infradead.org, seanjc@google.com,
-        steve.wahl@hpe.com, syzkaller-bugs@googlegroups.com,
-        vkuznets@redhat.com, wanpengli@tencent.com, x86@kernel.org
-References: <000000000000f3fc9305c2e24311@google.com>
- <87v9737pt8.ffs@nanos.tec.linutronix.de>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <0f6e6423-f93a-5d96-f452-4e08dbad9b23@redhat.com>
-Date:   Fri, 28 May 2021 01:21:22 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        id S236458AbhE0XYY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 May 2021 19:24:24 -0400
+Received: from aposti.net ([89.234.176.197]:36342 "EHLO aposti.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234974AbhE0XYX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 27 May 2021 19:24:23 -0400
+From:   Paul Cercueil <paul@crapouillou.net>
+To:     David Airlie <airlied@linux.ie>, Daniel Vetter <daniel@ffwll.ch>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Maxime Ripard <mripard@kernel.org>
+Cc:     list@opendingux.net, linux-mips@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Paul Cercueil <paul@crapouillou.net>
+Subject: [PATCH 10/11] drm/ingenic: Add doublescan feature
+Date:   Fri, 28 May 2021 00:22:05 +0100
+Message-Id: <20210527232206.152771-1-paul@crapouillou.net>
+In-Reply-To: <20210527232104.152577-1-paul@crapouillou.net>
+References: <20210527232104.152577-1-paul@crapouillou.net>
 MIME-Version: 1.0
-In-Reply-To: <87v9737pt8.ffs@nanos.tec.linutronix.de>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 28/05/21 00:52, Thomas Gleixner wrote:
-> 
-> So this is stale for a week now. It's fully reproducible and nobody
-> can't be bothered to look at that?
-> 
-> What's wrong with you people?
+A lot of devices with an Ingenic SoC have a weird LCD panel attached,
+where the pixels are not square. For instance, the AUO A030JTN01 and
+Innolux EJ030NA panels have a resolution of 320x480 with a 4:3 aspect
+ratio.
 
-Actually there's a patch on list ("KVM: X86: Fix warning caused by stale 
-emulation context").  Take care.
+All userspace applications are built with the assumption that the
+pixels are square. To be able to support these devices without too
+much effort, add a doublescan feature, which allows the f0 and f1
+planes to be used with only half of the screen's vertical resolution,
+where each line of the input is displayed twice.
 
-Paolo
+This is done using a chained list of DMA descriptors, one descriptor
+per output line.
+
+Signed-off-by: Paul Cercueil <paul@crapouillou.net>
+---
+ drivers/gpu/drm/ingenic/ingenic-drm-drv.c | 93 +++++++++++++++++++++--
+ 1 file changed, 87 insertions(+), 6 deletions(-)
+
+diff --git a/drivers/gpu/drm/ingenic/ingenic-drm-drv.c b/drivers/gpu/drm/ingenic/ingenic-drm-drv.c
+index 2761478b16e8..01d8490393d1 100644
+--- a/drivers/gpu/drm/ingenic/ingenic-drm-drv.c
++++ b/drivers/gpu/drm/ingenic/ingenic-drm-drv.c
+@@ -66,6 +66,8 @@ struct jz_soc_info {
+ 
+ struct ingenic_gem_object {
+ 	struct drm_gem_cma_object base;
++	struct ingenic_dma_hwdesc *hwdescs;
++	dma_addr_t hwdescs_phys;
+ };
+ 
+ struct ingenic_drm_private_state {
+@@ -73,6 +75,23 @@ struct ingenic_drm_private_state {
+ 
+ 	bool no_vblank;
+ 	bool use_palette;
++
++	/*
++	 * A lot of devices with an Ingenic SoC have a weird LCD panel attached,
++	 * where the pixels are not square. For instance, the AUO A030JTN01 and
++	 * Innolux EJ030NA panels have a resolution of 320x480 with a 4:3 aspect
++	 * ratio.
++	 *
++	 * All userspace applications are built with the assumption that the
++	 * pixels are square. To be able to support these devices without too
++	 * much effort, add a doublescan feature, which allows the f0 and f1
++	 * planes to be used with only half of the screen's vertical resolution,
++	 * where each line of the input is displayed twice.
++	 *
++	 * This is done using a chained list of DMA descriptors, one descriptor
++	 * per output line.
++	 */
++	bool doublescan;
+ };
+ 
+ struct ingenic_drm {
+@@ -465,7 +484,7 @@ static int ingenic_drm_plane_atomic_check(struct drm_plane *plane,
+ 		return PTR_ERR(priv_state);
+ 
+ 	ret = drm_atomic_helper_check_plane_state(new_plane_state, crtc_state,
+-						  DRM_PLANE_HELPER_NO_SCALING,
++						  0x8000,
+ 						  DRM_PLANE_HELPER_NO_SCALING,
+ 						  priv->soc_info->has_osd,
+ 						  true);
+@@ -482,6 +501,17 @@ static int ingenic_drm_plane_atomic_check(struct drm_plane *plane,
+ 	     (new_plane_state->src_h >> 16) != new_plane_state->crtc_h))
+ 		return -EINVAL;
+ 
++	/* Enable doublescan if the CRTC_H is twice the SRC_H. */
++	priv_state->doublescan = (new_plane_state->src_h >> 16) * 2 == new_plane_state->crtc_h;
++
++	/* Otherwise, fail if CRTC_H != SRC_H */
++	if (!priv_state->doublescan && (new_plane_state->src_h >> 16) != new_plane_state->crtc_h)
++		return -EINVAL;
++
++	/* Fail if CRTC_W != SRC_W */
++	if ((new_plane_state->src_w >> 16) != new_plane_state->crtc_w)
++		return -EINVAL;
++
+ 	priv_state->use_palette = new_plane_state->fb &&
+ 		new_plane_state->fb->format->format == DRM_FORMAT_C8;
+ 
+@@ -647,7 +677,9 @@ static void ingenic_drm_plane_atomic_update(struct drm_plane *plane,
+ 	struct ingenic_drm_private_state *priv_state;
+ 	struct drm_crtc_state *crtc_state;
+ 	struct ingenic_dma_hwdesc *hwdesc;
+-	unsigned int width, height, cpp;
++	unsigned int width, height, cpp, i;
++	struct drm_gem_object *gem_obj;
++	struct ingenic_gem_object *obj;
+ 	dma_addr_t addr, next_addr;
+ 	bool use_f1;
+ 	u32 fourcc;
+@@ -664,17 +696,39 @@ static void ingenic_drm_plane_atomic_update(struct drm_plane *plane,
+ 		height = newstate->src_h >> 16;
+ 		cpp = newstate->fb->format->cpp[0];
+ 
++		gem_obj = drm_gem_fb_get_obj(newstate->fb, 0);
++		obj = to_ingenic_gem_obj(gem_obj);
++
+ 		priv_state = ingenic_drm_get_new_priv_state(priv, state);
+ 		if (priv_state && priv_state->use_palette)
+ 			next_addr = dma_hwdesc_pal_addr(priv);
+ 		else
+ 			next_addr = dma_hwdesc_addr(priv, use_f1);
+ 
+-		hwdesc = &priv->dma_hwdescs->hwdesc[use_f1];
++		if (priv_state->doublescan) {
++			hwdesc = &obj->hwdescs[0];
++			/*
++			 * Use one DMA descriptor per output line, and display
++			 * each input line twice.
++			 */
++			for (i = 0; i < newstate->crtc_h; i++) {
++				hwdesc[i].next = obj->hwdescs_phys
++					+ (i + 1) * sizeof(*hwdesc);
++				hwdesc[i].addr = addr + (i / 2) * newstate->fb->pitches[0];
++				hwdesc[i].cmd = newstate->fb->pitches[0] / 4;
++			}
+ 
+-		hwdesc->addr = addr;
+-		hwdesc->cmd = JZ_LCD_CMD_EOF_IRQ | (width * height * cpp / 4);
+-		hwdesc->next = next_addr;
++			/* We want the EOF IRQ only on the very last transfer */
++			hwdesc[newstate->crtc_h - 1].cmd |= JZ_LCD_CMD_EOF_IRQ;
++			hwdesc[newstate->crtc_h - 1].next = next_addr;
++			priv->dma_hwdescs->hwdesc[use_f1] = *hwdesc;
++		} else {
++			/* Use one DMA descriptor for the whole frame. */
++			hwdesc = &priv->dma_hwdescs->hwdesc[use_f1];
++			hwdesc->addr = addr;
++			hwdesc->cmd = JZ_LCD_CMD_EOF_IRQ | (width * height * cpp / 4);
++			hwdesc->next = next_addr;
++		}
+ 
+ 		if (drm_atomic_crtc_needs_modeset(crtc_state)) {
+ 			fourcc = newstate->fb->format->format;
+@@ -848,6 +902,13 @@ static void ingenic_drm_disable_vblank(struct drm_crtc *crtc)
+ 
+ static void ingenic_drm_gem_fb_destroy(struct drm_framebuffer *fb)
+ {
++	struct ingenic_drm *priv = drm_device_get_priv(fb->dev);
++	struct drm_gem_object *gem_obj = drm_gem_fb_get_obj(fb, 0);
++	struct ingenic_gem_object *obj = to_ingenic_gem_obj(gem_obj);
++
++	dma_free_coherent(priv->dev,
++			  sizeof(*obj->hwdescs) * fb->height,
++			  obj->hwdescs, obj->hwdescs_phys);
+ 	drm_gem_fb_destroy(fb);
+ }
+ 
+@@ -868,6 +929,8 @@ ingenic_drm_gem_fb_create(struct drm_device *drm, struct drm_file *file,
+ {
+ 	struct ingenic_drm *priv = drm_device_get_priv(drm);
+ 	const struct drm_framebuffer_funcs *fb_funcs;
++	struct drm_gem_object *gem_obj;
++	struct ingenic_gem_object *obj;
+ 	struct drm_framebuffer *fb;
+ 
+ 	if (priv->soc_info->map_noncoherent)
+@@ -876,6 +939,24 @@ ingenic_drm_gem_fb_create(struct drm_device *drm, struct drm_file *file,
+ 		fb_funcs = &ingenic_drm_gem_fb_funcs;
+ 
+ 	fb = drm_gem_fb_create_with_funcs(drm, file, mode_cmd, fb_funcs);
++	if (IS_ERR(fb))
++		return fb;
++
++	gem_obj = drm_gem_fb_get_obj(fb, 0);
++	obj = to_ingenic_gem_obj(gem_obj);
++
++	/*
++	 * Create (fb->height * 2) DMA descriptors, in case we want to use the
++	 * doublescan feature.
++	 */
++	obj->hwdescs = dma_alloc_coherent(priv->dev,
++					  sizeof(*obj->hwdescs) * fb->height * 2,
++					  &obj->hwdescs_phys,
++					  GFP_KERNEL);
++	if (!obj->hwdescs) {
++		drm_gem_fb_destroy(fb);
++		return ERR_PTR(-ENOMEM);
++	}
+ 
+ 	return fb;
+ }
+-- 
+2.30.2
 
