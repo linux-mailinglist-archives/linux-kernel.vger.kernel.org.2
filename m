@@ -2,223 +2,285 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C701B392462
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 03:36:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 258D5392466
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 03:38:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234369AbhE0BiD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 May 2021 21:38:03 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35766 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232965AbhE0BiC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 May 2021 21:38:02 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4F463613C1;
-        Thu, 27 May 2021 01:36:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1622079390;
-        bh=2GbE2UL2BvCGcBj/G1qGXI5ev1fZKHVpVM904LzAnc0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=hk2GMSb8GMWW9e+T6H+mjDJVhmVtXZqRIpecNoPDP6L7yS0LApvvcvKJI9QhyV2Lr
-         nHcZoMG9UTf2SadioY9cZYRBV/1vbbhf8a/a2wUi5Ylppxx8tVMdoOGzOP3BB3p+D2
-         4XQ9h4lnJX7gsX7KXoV4emt0+87Y9X1RUJ7ujh/sPsSKuKDgYHJLjT8GFfXv+DjxC6
-         08RL7rX3UJbr36eBSkrvnGMqEiKqko56DEn0ah2H+cZvRoS259KF1Tpqiwti9D8DV1
-         XOfEUKy6nO1xRLupcxXtsM0pJqon+X4AWAOhIph1VZnAE97yayucvpht59Cze6s5ls
-         /0tk/J3RuCH5g==
-Date:   Wed, 26 May 2021 18:36:28 -0700
-From:   Jaegeuk Kim <jaegeuk@kernel.org>
-To:     Chao Yu <yuchao0@huawei.com>
-Cc:     linux-kernel@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net
-Subject: Re: [f2fs-dev] [PATCH 2/2 v3] f2fs: support RO feature
-Message-ID: <YK73nDvu1hPWr8t0@google.com>
-References: <20210521190217.2484099-1-jaegeuk@kernel.org>
- <20210521190217.2484099-2-jaegeuk@kernel.org>
- <YK5UOfzwdZni7c5W@google.com>
- <YK5edM0igwfd47LV@google.com>
- <9070633e-39ef-6e13-6467-534541d917b7@huawei.com>
+        id S234538AbhE0Bjv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 May 2021 21:39:51 -0400
+Received: from bhuna.collabora.co.uk ([46.235.227.227]:41010 "EHLO
+        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232262AbhE0Bjt (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 26 May 2021 21:39:49 -0400
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: ezequiel)
+        with ESMTPSA id 488FC1F409D7
+Message-ID: <4c92964a1e6396533283072a89ba3acfa934efe3.camel@collabora.com>
+Subject: Re: [PATCH 04/10] media: hantro: add support for Rockchip RK3066
+From:   Ezequiel Garcia <ezequiel@collabora.com>
+To:     Alex Bee <knaerzche@gmail.com>
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-staging@lists.linux.dev, devicetree@vger.kernel.org,
+        linux-rockchip@lists.infradead.org, linux-media@vger.kernel.org,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Lee Jones <lee.jones@linaro.org>,
+        Heiko Stuebner <heiko@sntech.de>
+Date:   Wed, 26 May 2021 22:38:04 -0300
+In-Reply-To: <fd0e0872-c661-def7-2c12-a268281bfd9b@gmail.com>
+References: <20210525152225.154302-1-knaerzche@gmail.com>
+         <20210525152225.154302-5-knaerzche@gmail.com>
+         <3b9a076c1c426a14ed10da743fdb86c1bf2eb603.camel@collabora.com>
+         <fd0e0872-c661-def7-2c12-a268281bfd9b@gmail.com>
+Organization: Collabora
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.38.2-1 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <9070633e-39ef-6e13-6467-534541d917b7@huawei.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 05/27, Chao Yu wrote:
-> On 2021/5/26 22:43, Jaegeuk Kim wrote:
-> > Given RO feature in superblock, we don't need to check provisioning/reserve
-> > spaces and SSA area.
-> > 
-> > Signed-off-by: Jaegeuk Kim <jaegeuk@kernel.org>
-> > ---
-> > Change log from v2:
-> >   - allow curseg updates
-> >   - fix some bugs
-> > 
-> >   fs/f2fs/f2fs.h    |  2 ++
-> >   fs/f2fs/segment.c |  4 ++++
-> >   fs/f2fs/super.c   | 37 +++++++++++++++++++++++++++++++------
-> >   3 files changed, 37 insertions(+), 6 deletions(-)
-> > 
-> > diff --git a/fs/f2fs/f2fs.h b/fs/f2fs/f2fs.h
-> > index eaf57b5f3c4b..9ad502f92529 100644
-> > --- a/fs/f2fs/f2fs.h
-> > +++ b/fs/f2fs/f2fs.h
-> > @@ -168,6 +168,7 @@ struct f2fs_mount_info {
-> >   #define F2FS_FEATURE_SB_CHKSUM		0x0800
-> >   #define F2FS_FEATURE_CASEFOLD		0x1000
-> >   #define F2FS_FEATURE_COMPRESSION	0x2000
-> > +#define F2FS_FEATURE_RO			0x4000
-> >   #define __F2FS_HAS_FEATURE(raw_super, mask)				\
-> >   	((raw_super->feature & cpu_to_le32(mask)) != 0)
-> > @@ -940,6 +941,7 @@ static inline void set_new_dnode(struct dnode_of_data *dn, struct inode *inode,
-> >   #define	NR_CURSEG_DATA_TYPE	(3)
-> >   #define NR_CURSEG_NODE_TYPE	(3)
-> >   #define NR_CURSEG_INMEM_TYPE	(2)
-> > +#define NR_CURSEG_RO_TYPE	(2)
-> >   #define NR_CURSEG_PERSIST_TYPE	(NR_CURSEG_DATA_TYPE + NR_CURSEG_NODE_TYPE)
-> >   #define NR_CURSEG_TYPE		(NR_CURSEG_INMEM_TYPE + NR_CURSEG_PERSIST_TYPE)
-> > diff --git a/fs/f2fs/segment.c b/fs/f2fs/segment.c
-> > index 8668df7870d0..02e0c38be7eb 100644
-> > --- a/fs/f2fs/segment.c
-> > +++ b/fs/f2fs/segment.c
-> > @@ -4683,6 +4683,10 @@ static int sanity_check_curseg(struct f2fs_sb_info *sbi)
-> >   		struct seg_entry *se = get_seg_entry(sbi, curseg->segno);
-> >   		unsigned int blkofs = curseg->next_blkoff;
-> > +		if (F2FS_HAS_FEATURE(sbi, F2FS_FEATURE_RO) &&
-> > +			i != CURSEG_HOT_DATA && i != CURSEG_HOT_NODE)
-> > +			continue;
-> > +
-> >   		sanity_check_seg_type(sbi, curseg->seg_type);
-> >   		if (f2fs_test_bit(blkofs, se->cur_valid_map))
-> > diff --git a/fs/f2fs/super.c b/fs/f2fs/super.c
-> > index e70aca8f97bd..6788e7b71e27 100644
-> > --- a/fs/f2fs/super.c
-> > +++ b/fs/f2fs/super.c
-> > @@ -555,7 +555,7 @@ static int parse_options(struct super_block *sb, char *options, bool is_remount)
-> >   	int ret;
-> >   	if (!options)
-> > -		return 0;
-> > +		goto default_check;
-> >   	while ((p = strsep(&options, ",")) != NULL) {
-> >   		int token;
-> > @@ -1090,6 +1090,7 @@ static int parse_options(struct super_block *sb, char *options, bool is_remount)
-> >   			return -EINVAL;
-> >   		}
-> >   	}
-> > +default_check:
-> >   #ifdef CONFIG_QUOTA
-> >   	if (f2fs_check_quota_options(sbi))
-> >   		return -EINVAL;
-> > @@ -1162,6 +1163,11 @@ static int parse_options(struct super_block *sb, char *options, bool is_remount)
-> >   	 */
-> >   	if (F2FS_OPTION(sbi).active_logs != NR_CURSEG_TYPE)
-> >   		F2FS_OPTION(sbi).whint_mode = WHINT_MODE_OFF;
-> > +
-> > +	if (F2FS_HAS_FEATURE(sbi, F2FS_FEATURE_RO) && !f2fs_readonly(sbi->sb)) {
-> > +		f2fs_err(sbi, "Allow to mount readonly mode only");
-> > +		return -EROFS;
-> > +	}
-> >   	return 0;
-> >   }
-> > @@ -1819,7 +1825,11 @@ static int f2fs_show_options(struct seq_file *seq, struct dentry *root)
-> >   static void default_options(struct f2fs_sb_info *sbi)
-> >   {
-> >   	/* init some FS parameters */
-> > -	F2FS_OPTION(sbi).active_logs = NR_CURSEG_PERSIST_TYPE;
-> > +	if (F2FS_HAS_FEATURE(sbi, F2FS_FEATURE_RO))
-> > +		F2FS_OPTION(sbi).active_logs = NR_CURSEG_RO_TYPE;
-> > +	else
-> > +		F2FS_OPTION(sbi).active_logs = NR_CURSEG_PERSIST_TYPE;
-> > +
-> >   	F2FS_OPTION(sbi).inline_xattr_size = DEFAULT_INLINE_XATTR_ADDRS;
-> >   	F2FS_OPTION(sbi).whint_mode = WHINT_MODE_OFF;
-> >   	F2FS_OPTION(sbi).alloc_mode = ALLOC_MODE_DEFAULT;
-> > @@ -2001,6 +2011,11 @@ static int f2fs_remount(struct super_block *sb, int *flags, char *data)
-> >   	if (f2fs_readonly(sb) && (*flags & SB_RDONLY))
-> >   		goto skip;
-> > +	if (F2FS_HAS_FEATURE(sbi, F2FS_FEATURE_RO) && !(*flags & SB_RDONLY)) {
-> > +		err = -EROFS;
-> > +		goto restore_opts;
-> > +	}
+On Thu, 2021-05-27 at 01:22 +0200, Alex Bee wrote:
+> Hi Ezequiel,
 > 
-> remount() -> parse_options() will fail due to below check, so it doesn't need
-> to check again? Am I missing something?
+> thanks for your feedback.
+> 
+> Am 26.05.21 um 12:32 schrieb Ezequiel Garcia:
+> > Hi Alex,
+> > 
+> > Thanks for the patch.
+> > 
+> > On Tue, 2021-05-25 at 17:22 +0200, Alex Bee wrote:
+> > > RK3066's VPU IP block is the predecessor from what RK3288 has.
+> > > The hardware differences are:
+> > >    - supports decoding frame sizes up to 1920x1088 only
+> > >    - doesn't have the 'G1_REG_SOFT_RESET' register
+> > >      (requires another .reset callback for hantro_codec_ops,
+> > >       since writing this register will result in non-working
+> > >       IP block)
+> > >    - has one ACLK/HCLK per vdpu/vepu
+> > >    - ACLKs can be clocked up to 300 MHz only
+> > >    - no MMU
+> > >      (no changes required: CMA will be transparently used)
+> > > 
+> > > Add a new RK3066 variant which reflect this differences. This variant
+> > > can be used for RK3188 as well.
+> > > 
+> > > Signed-off-by: Alex Bee <knaerzche@gmail.com>
+> > > ---
+> > >   drivers/staging/media/hantro/hantro_drv.c    |   1 +
+> > >   drivers/staging/media/hantro/hantro_hw.h     |   1 +
+> > >   drivers/staging/media/hantro/rk3288_vpu_hw.c | 116 +++++++++++++++++++
+> > >   3 files changed, 118 insertions(+)
+> > > 
+> > > diff --git a/drivers/staging/media/hantro/hantro_drv.c b/drivers/staging/media/hantro/hantro_drv.c
+> > > index 2f6b01c7a6a0..38ea7b24036e 100644
+> > > --- a/drivers/staging/media/hantro/hantro_drv.c
+> > > +++ b/drivers/staging/media/hantro/hantro_drv.c
+> > > @@ -489,6 +489,7 @@ static const struct of_device_id of_hantro_match[] = {
+> > >          { .compatible = "rockchip,rk3399-vpu", .data = &rk3399_vpu_variant, },
+> > >          { .compatible = "rockchip,rk3328-vpu", .data = &rk3328_vpu_variant, },
+> > >          { .compatible = "rockchip,rk3288-vpu", .data = &rk3288_vpu_variant, },
+> > > +       { .compatible = "rockchip,rk3066-vpu", .data = &rk3066_vpu_variant, },
+> > >   #endif
+> > >   #ifdef CONFIG_VIDEO_HANTRO_IMX8M
+> > >          { .compatible = "nxp,imx8mq-vpu", .data = &imx8mq_vpu_variant, },
+> > > diff --git a/drivers/staging/media/hantro/hantro_hw.h b/drivers/staging/media/hantro/hantro_hw.h
+> > > index 3d8b53567f16..de2bc367a15a 100644
+> > > --- a/drivers/staging/media/hantro/hantro_hw.h
+> > > +++ b/drivers/staging/media/hantro/hantro_hw.h
+> > > @@ -163,6 +163,7 @@ enum hantro_enc_fmt {
+> > >   extern const struct hantro_variant rk3399_vpu_variant;
+> > >   extern const struct hantro_variant rk3328_vpu_variant;
+> > >   extern const struct hantro_variant rk3288_vpu_variant;
+> > > +extern const struct hantro_variant rk3066_vpu_variant;
+> > >   extern const struct hantro_variant imx8mq_vpu_variant;
+> > >   extern const struct hantro_variant sama5d4_vdec_variant;
+> > >   
+> > > diff --git a/drivers/staging/media/hantro/rk3288_vpu_hw.c b/drivers/staging/media/hantro/rk3288_vpu_hw.c
+> > > index fefd45269e52..29805c4bd92f 100644
+> > > --- a/drivers/staging/media/hantro/rk3288_vpu_hw.c
+> > > +++ b/drivers/staging/media/hantro/rk3288_vpu_hw.c
+> > > @@ -10,8 +10,10 @@
+> > >   
+> > >   #include "hantro.h"
+> > >   #include "hantro_jpeg.h"
+> > > +#include "hantro_g1_regs.h"
+> > >   #include "hantro_h1_regs.h"
+> > >   
+> > > +#define RK3066_ACLK_MAX_FREQ (300 * 1000 * 1000)
+> > >   #define RK3288_ACLK_MAX_FREQ (400 * 1000 * 1000)
+> > >   
+> > >   /*
+> > > @@ -62,6 +64,52 @@ static const struct hantro_fmt rk3288_vpu_postproc_fmts[] = {
+> > >          },
+> > >   };
+> > >   
+> > > +static const struct hantro_fmt rk3066_vpu_dec_fmts[] = {
+> > > +       {
+> > > +               .fourcc = V4L2_PIX_FMT_NV12,
+> > > +               .codec_mode = HANTRO_MODE_NONE,
+> > > +       },
+> > > +       {
+> > > +               .fourcc = V4L2_PIX_FMT_H264_SLICE,
+> > > +               .codec_mode = HANTRO_MODE_H264_DEC,
+> > > +               .max_depth = 2,
+> > > +               .frmsize = {
+> > > +                       .min_width = 48,
+> > > +                       .max_width = 1920,
+> > > +                       .step_width = MB_DIM,
+> > > +                       .min_height = 48,
+> > > +                       .max_height = 1088,
+> > > +                       .step_height = MB_DIM,
+> > > +               },
+> > > +       },
+> > > +       {
+> > > +               .fourcc = V4L2_PIX_FMT_MPEG2_SLICE,
+> > > +               .codec_mode = HANTRO_MODE_MPEG2_DEC,
+> > > +               .max_depth = 2,
+> > > +               .frmsize = {
+> > > +                       .min_width = 48,
+> > > +                       .max_width = 1920,
+> > > +                       .step_width = MB_DIM,
+> > > +                       .min_height = 48,
+> > > +                       .max_height = 1088,
+> > > +                       .step_height = MB_DIM,
+> > > +               },
+> > > +       },
+> > > +       {
+> > > +               .fourcc = V4L2_PIX_FMT_VP8_FRAME,
+> > > +               .codec_mode = HANTRO_MODE_VP8_DEC,
+> > > +               .max_depth = 2,
+> > > +               .frmsize = {
+> > > +                       .min_width = 48,
+> > > +                       .max_width = 1920,
+> > > +                       .step_width = MB_DIM,
+> > > +                       .min_height = 48,
+> > > +                       .max_height = 1088,
+> > > +                       .step_height = MB_DIM,
+> > > +               },
+> > > +       },
+> > > +};
+> > > +
+> > >   static const struct hantro_fmt rk3288_vpu_dec_fmts[] = {
+> > >          {
+> > >                  .fourcc = V4L2_PIX_FMT_NV12,
+> > > @@ -126,6 +174,14 @@ static irqreturn_t rk3288_vepu_irq(int irq, void *dev_id)
+> > >          return IRQ_HANDLED;
+> > >   }
+> > >   
+> > > +static int rk3066_vpu_hw_init(struct hantro_dev *vpu)
+> > > +{
+> > > +       /* Bump ACLKs to max. possible freq. to improve performance. */
+> > > +       clk_set_rate(vpu->clocks[0].clk, RK3066_ACLK_MAX_FREQ);
+> > > +       clk_set_rate(vpu->clocks[0].clk, RK3066_ACLK_MAX_FREQ);
+> > > +       return 0;
+> > > +}
+> > > +
+> > >   static int rk3288_vpu_hw_init(struct hantro_dev *vpu)
+> > >   {
+> > >          /* Bump ACLK to max. possible freq. to improve performance. */
+> > > @@ -133,6 +189,14 @@ static int rk3288_vpu_hw_init(struct hantro_dev *vpu)
+> > >          return 0;
+> > >   }
+> > >   
+> > > +static void rk3066_vpu_dec_reset(struct hantro_ctx *ctx)
+> > > +{
+> > > +       struct hantro_dev *vpu = ctx->dev;
+> > > +
+> > > +       vdpu_write(vpu, G1_REG_INTERRUPT_DEC_IRQ_DIS, G1_REG_INTERRUPT);
+> > > +       vdpu_write(vpu, G1_REG_CONFIG_DEC_CLK_GATE_E, G1_REG_CONFIG);
+> > > +}
+> > > +
+> > >   static void rk3288_vpu_enc_reset(struct hantro_ctx *ctx)
+> > >   {
+> > >          struct hantro_dev *vpu = ctx->dev;
+> > > @@ -145,6 +209,33 @@ static void rk3288_vpu_enc_reset(struct hantro_ctx *ctx)
+> > >   /*
+> > >    * Supported codec ops.
+> > >    */
+> > > +static const struct hantro_codec_ops rk3066_vpu_codec_ops[] = {
+> > > +       [HANTRO_MODE_JPEG_ENC] = {
+> > > +               .run = hantro_h1_jpeg_enc_run,
+> > > +               .reset = rk3288_vpu_enc_reset,
+> > > +               .init = hantro_jpeg_enc_init,
+> > > +               .done = hantro_jpeg_enc_done,
+> > > +               .exit = hantro_jpeg_enc_exit,
+> > > +       },
+> > > +       [HANTRO_MODE_H264_DEC] = {
+> > > +               .run = hantro_g1_h264_dec_run,
+> > > +               .reset = rk3066_vpu_dec_reset,
+> > > +               .init = hantro_h264_dec_init,
+> > > +               .exit = hantro_h264_dec_exit,
+> > > +       },
+> > > +       [HANTRO_MODE_MPEG2_DEC] = {
+> > > +               .run = hantro_g1_mpeg2_dec_run,
+> > > +               .reset = rk3066_vpu_dec_reset,
+> > > +               .init = hantro_mpeg2_dec_init,
+> > > +               .exit = hantro_mpeg2_dec_exit,
+> > > +       },
+> > > +       [HANTRO_MODE_VP8_DEC] = {
+> > > +               .run = hantro_g1_vp8_dec_run,
+> > > +               .reset = rk3066_vpu_dec_reset,
+> > > +               .init = hantro_vp8_dec_init,
+> > > +               .exit = hantro_vp8_dec_exit,
+> > > +       },
+> > > +};
+> > >   
+> > >   static const struct hantro_codec_ops rk3288_vpu_codec_ops[] = {
+> > >          [HANTRO_MODE_JPEG_ENC] = {
+> > > @@ -183,10 +274,35 @@ static const struct hantro_irq rk3288_irqs[] = {
+> > >          { "vdpu", hantro_g1_irq },
+> > >   };
+> > >   
+> > > +static const char * const rk3066_clk_names[] = {
+> > > +       "aclk_vdpu", "hclk_vdpu",
+> > > +       "aclk_vepu", "hclk_vepu"
+> > > +};
+> > > +
+> > >   static const char * const rk3288_clk_names[] = {
+> > >          "aclk", "hclk"
+> > >   };
+> > >   
+> > > +const struct hantro_variant rk3066_vpu_variant = {
+> > > +       .enc_offset = 0x0,
+> > > +       .enc_fmts = rk3288_vpu_enc_fmts,
+> > > +       .num_enc_fmts = ARRAY_SIZE(rk3288_vpu_enc_fmts),
+> > > +       .dec_offset = 0x400,
+> > Having decoder and encoder supported by a single devicetree
+> > node was done for RK3288 to cope with some bug in the hardware
+> > that was effectively linking the decoder and the encoder.
+> > 
+> > AFAIK, Rockchip has fixed this, so unless there's a strong
+> > need, I prefer we keep them separated, with one DT node
+> > for the g1 decoder and one for the h1 encoder.
+> > 
+> > Thanks!
+> > Ezequiel
+> > 
+> I just checked it: despite it looks like we could use the decoder and 
+> encoder separately
+> 
+> (separate clocks for decoder / encoder) the VPU block won't work (SoC 
+> crashes),
+> 
+> if not all 4 clocks are enabled for neither decoding nor encoding.
+> 
+> I'd prefer the other way also, but it seems not possible.
+> 
 
-We haven't changed sb->ro at this point yet.
+That's really useful, so it seems it's safer to represent this
+in a single node, given there's at least some degree of sharing
+going on, which the VPU Combo naming suggests anyways :)
 
-> 
-> @@ -1162,6 +1163,11 @@
-> 
->  static int parse_options(struct super_block *sb, char *options, bool is_remount)
-> 
->  	 */
->  	if (F2FS_OPTION(sbi).active_logs != NR_CURSEG_TYPE)
->  		F2FS_OPTION(sbi).whint_mode = WHINT_MODE_OFF;
-> +
-> +	if (F2FS_HAS_FEATURE(sbi, F2FS_FEATURE_RO) && !f2fs_readonly(sbi->sb)) {
-> +		f2fs_err(sbi, "Allow to mount readonly mode only");
-> +		return -EROFS;
-> +	}
->  	return 0;
->  }
-> 
-> Thanks,
-> 
-> > +
-> >   #ifdef CONFIG_QUOTA
-> >   	if (!f2fs_readonly(sb) && (*flags & SB_RDONLY)) {
-> >   		err = dquot_suspend(sb, -1);
-> > @@ -3134,14 +3149,15 @@ int f2fs_sanity_check_ckpt(struct f2fs_sb_info *sbi)
-> >   	ovp_segments = le32_to_cpu(ckpt->overprov_segment_count);
-> >   	reserved_segments = le32_to_cpu(ckpt->rsvd_segment_count);
-> > -	if (unlikely(fsmeta < F2FS_MIN_META_SEGMENTS ||
-> > +	if (!F2FS_HAS_FEATURE(sbi, F2FS_FEATURE_RO) &&
-> > +			unlikely(fsmeta < F2FS_MIN_META_SEGMENTS ||
-> >   			ovp_segments == 0 || reserved_segments == 0)) {
-> >   		f2fs_err(sbi, "Wrong layout: check mkfs.f2fs version");
-> >   		return 1;
-> >   	}
-> > -
-> >   	user_block_count = le64_to_cpu(ckpt->user_block_count);
-> > -	segment_count_main = le32_to_cpu(raw_super->segment_count_main);
-> > +	segment_count_main = le32_to_cpu(raw_super->segment_count_main) +
-> > +			(F2FS_HAS_FEATURE(sbi, F2FS_FEATURE_RO) ? 1 : 0);
-> >   	log_blocks_per_seg = le32_to_cpu(raw_super->log_blocks_per_seg);
-> >   	if (!user_block_count || user_block_count >=
-> >   			segment_count_main << log_blocks_per_seg) {
-> > @@ -3172,6 +3188,10 @@ int f2fs_sanity_check_ckpt(struct f2fs_sb_info *sbi)
-> >   		if (le32_to_cpu(ckpt->cur_node_segno[i]) >= main_segs ||
-> >   			le16_to_cpu(ckpt->cur_node_blkoff[i]) >= blocks_per_seg)
-> >   			return 1;
-> > +
-> > +		if (F2FS_HAS_FEATURE(sbi, F2FS_FEATURE_RO))
-> > +			goto check_data;
-> > +
-> >   		for (j = i + 1; j < NR_CURSEG_NODE_TYPE; j++) {
-> >   			if (le32_to_cpu(ckpt->cur_node_segno[i]) ==
-> >   				le32_to_cpu(ckpt->cur_node_segno[j])) {
-> > @@ -3182,10 +3202,15 @@ int f2fs_sanity_check_ckpt(struct f2fs_sb_info *sbi)
-> >   			}
-> >   		}
-> >   	}
-> > +check_data:
-> >   	for (i = 0; i < NR_CURSEG_DATA_TYPE; i++) {
-> >   		if (le32_to_cpu(ckpt->cur_data_segno[i]) >= main_segs ||
-> >   			le16_to_cpu(ckpt->cur_data_blkoff[i]) >= blocks_per_seg)
-> >   			return 1;
-> > +
-> > +		if (F2FS_HAS_FEATURE(sbi, F2FS_FEATURE_RO))
-> > +			goto skip_cross;
-> > +
-> >   		for (j = i + 1; j < NR_CURSEG_DATA_TYPE; j++) {
-> >   			if (le32_to_cpu(ckpt->cur_data_segno[i]) ==
-> >   				le32_to_cpu(ckpt->cur_data_segno[j])) {
-> > @@ -3207,7 +3232,7 @@ int f2fs_sanity_check_ckpt(struct f2fs_sb_info *sbi)
-> >   			}
-> >   		}
-> >   	}
-> > -
-> > +skip_cross:
-> >   	sit_bitmap_size = le32_to_cpu(ckpt->sit_ver_bitmap_bytesize);
-> >   	nat_bitmap_size = le32_to_cpu(ckpt->nat_ver_bitmap_bytesize);
-> > 
+Could you add a comment in the code about this clock requirement?
+
+Also, does it make sense to merge rk3288_vpu_hw.c and rk3399_vpu_hw.c
+as just rockchip_vpu_hw.c?
+
+Thanks!
+Ezequiel
+
