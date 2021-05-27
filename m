@@ -2,82 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB851393527
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 19:50:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A8A439352A
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 19:53:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235482AbhE0Rw2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 May 2021 13:52:28 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45888 "EHLO mail.kernel.org"
+        id S235491AbhE0Ryo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 May 2021 13:54:44 -0400
+Received: from mga02.intel.com ([134.134.136.20]:23450 "EHLO mga02.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229791AbhE0RwZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 May 2021 13:52:25 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 91678613AB;
-        Thu, 27 May 2021 17:50:50 +0000 (UTC)
-Date:   Thu, 27 May 2021 18:50:48 +0100
-From:   Catalin Marinas <catalin.marinas@arm.com>
-To:     Mike Rapoport <rppt@linux.ibm.com>
-Cc:     Qian Cai <quic_qiancai@quicinc.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        David Hildenbrand <david@redhat.com>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        Will Deacon <will@kernel.org>, Marc Zyngier <maz@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>
-Subject: Re: Arm64 crash while reading memory sysfs
-Message-ID: <20210527175047.GK8661@arm.com>
-References: <DM5PR0201MB355723819DDAC439273F68848E259@DM5PR0201MB3557.namprd02.prod.outlook.com>
- <YK3tQ0a0S/CLxyyb@linux.ibm.com>
- <CY4PR0201MB35539FF5EE729283C4241F5A8E249@CY4PR0201MB3553.namprd02.prod.outlook.com>
- <YK6EXNZHY1xt7Kjs@linux.ibm.com>
- <d55f915c-ad01-e729-1e29-b57d78257cbb@quicinc.com>
- <YK9e0LgDOfCFo6TM@linux.ibm.com>
- <ce5a5920-3046-21b5-42c0-2237ec1eef13@quicinc.com>
- <YK/HKMgajBCwpLt8@linux.ibm.com>
+        id S229791AbhE0Ryn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 27 May 2021 13:54:43 -0400
+IronPort-SDR: j8sXyAYBkbklbtK4lFODG1EOnkZHKdygcd4ZmKNKMq8n50Gk514swlURuF6H56WGFzNbBOZEu+
+ AcKN5EbCaa5A==
+X-IronPort-AV: E=McAfee;i="6200,9189,9997"; a="189914585"
+X-IronPort-AV: E=Sophos;i="5.83,228,1616482800"; 
+   d="scan'208";a="189914585"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 May 2021 10:53:06 -0700
+IronPort-SDR: xcd39ppBoZq0k8DOoQutcMT3FCfu0KbNIcrtDbYAy0l04N2mPyeq+YoDGaVoNOHX7vsiPEIHhp
+ 6ZcTFeps13Yg==
+X-IronPort-AV: E=Sophos;i="5.83,228,1616482800"; 
+   d="scan'208";a="477592931"
+Received: from iweiny-desk2.sc.intel.com (HELO localhost) ([10.3.52.147])
+  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 May 2021 10:53:06 -0700
+Date:   Thu, 27 May 2021 10:53:05 -0700
+From:   Ira Weiny <ira.weiny@intel.com>
+To:     Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+Cc:     Ben Widawsky <ben.widawsky@intel.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Alison Schofield <alison.schofield@intel.com>,
+        Vishal Verma <vishal.l.verma@intel.com>,
+        linux-cxl@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 3/5] cxl/mem: Map registers based on capabilities
+Message-ID: <20210527175305.GF3697498@iweiny-DESK2.sc.intel.com>
+References: <20210522001154.2680157-1-ira.weiny@intel.com>
+ <20210522001154.2680157-4-ira.weiny@intel.com>
+ <20210525105214.00005e54@Huawei.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YK/HKMgajBCwpLt8@linux.ibm.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20210525105214.00005e54@Huawei.com>
+User-Agent: Mutt/1.11.1 (2018-12-01)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 27, 2021 at 07:22:00PM +0300, Mike Rapoport wrote:
-> On Thu, May 27, 2021 at 10:33:13AM -0400, Qian Cai wrote:
-> > On 5/27/2021 4:56 AM, Mike Rapoport wrote:
-> > > Let's drop memblock=debug for now and add this instead:
+On Tue, May 25, 2021 at 10:52:14AM +0100, Jonathan Cameron wrote:
+> On Fri, 21 May 2021 17:11:52 -0700
+> <ira.weiny@intel.com> wrote:
+> 
+> > From: Ira Weiny <ira.weiny@intel.com>
 > > 
-> > [    0.000000][    T0] Booting Linux on physical CPU 0x0000000000 [0x503f0002]
-> > [    0.000000][    T0] Linux version 5.13.0-rc3-next-20210526+ (root@admin5) (gcc (Ubuntu 9.3.0-17ubuntu1~20.04) 9.3.0, GNU ld (GNU Binutils for Ubuntu) 2.34) #31 SMP Thu May 27 12:32:40 UTC 2021
-> > [    0.000000][    T0] Inode-cache hash table entries: 4194304 (order: 9, 33554432 bytes, linear)
-> > [    0.000000][    T0] mem auto-init: stack:off, heap alloc:on, heap free:off
-> > [    0.000000][    T0] MEMBLOCK configuration:
-> > [    0.000000][    T0]  memory size = 0x0000001ff0000000 reserved size = 0x0000000421e33ae8
-> > [    0.000000][    T0]  memory.cnt  = 0xc
-> > [    0.000000][    T0] Memory: 777216K/133955584K available (17984K kernel code, 118722K rwdata, 4416K rodata, 6080K init, 67276K bss, 17379072K reserved, 0K cma-reserved)
-> 
-> I still cannot understand where most of the memory disappeared, but it
-> seems entirely different issue.
->  
-> > > Sorry, I've missed that the BUG is apparently triggered for pfn + i. Can
-> > > you please try this instead:
+> > The information required to map registers based on capabilities is
+> > contained within the bars themselves.  This means the bar must be mapped
+> > to read the information needed and then unmapped to map the individual
+> > parts of the BAR based on capabilities.
 > > 
-> > [  259.216661][ T1417] test_pages_in_a_zone: pfn 8000 is not valid
-> > [  259.226547][ T1417] page:00000000f4aa8c5c is uninitialized and poisoned
-> > [  259.226560][ T1417] page dumped because: VM_BUG_ON_PAGE(PagePoisoned(p))
+> > Change cxl_setup_device_regs() to return a new cxl_register_map, change
+> > the name to cxl_probe_device_regs().  Allocate and place
+> > cxl_register_maps on a list while processing all of the specified
+> > register blocks.
+> > 
+> > After probing all the register blocks go back and map smaller registers
+> > blocks based on their capabilities and dispose of the cxl_register_maps.
+> > 
+> > NOTE: pci_iomap() is not managed automatically via pcim_enable_device()
+> > so be careful to call pci_iounmap() correctly.
+> > 
+> > Signed-off-by: Ira Weiny <ira.weiny@intel.com>
+> A couple of really minor queries inline, but otherwise looks good to me.
 > 
-> Can you please try Anshuman's patch "arm64/mm: Drop HAVE_ARCH_PFN_VALID":
-> 
-> https://lore.kernel.org/lkml/1621947349-25421-1-git-send-email-anshuman.khandual@arm.com
-> 
-> It seems to me that the check for memblock_is_memory() in
-> arm64::pfn_valid() is what makes init_unavailable_range() to bail out for
-> section parts that are not actually populated and then we have
-> VM_BUG_ON_PAGE(PagePoisoned(p)) for these pages.
+> Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
 
-I acked Anshuman's patch, I think they all need to go in together.
+Thanks!
 
--- 
-Catalin
+> 
+> > 
+> > diff --git a/drivers/cxl/core.c b/drivers/cxl/core.c
+> > index 38979c97158d..add66a6ec875 100644
+> > --- a/drivers/cxl/core.c
+> > +++ b/drivers/cxl/core.c
+> > @@ -3,6 +3,7 @@
+> >  #include <linux/io-64-nonatomic-lo-hi.h>
+> >  #include <linux/device.h>
+> >  #include <linux/module.h>
+> > +#include <linux/pci.h>
+> >  #include "cxl.h"
+> >  
+> >  /**
+> > @@ -12,19 +13,13 @@
+> >   * point for cross-device interleave coordination through cxl ports.
+> >   */
+> >  
+> > -/**
+> > - * cxl_setup_device_regs() - Detect CXL Device register blocks
+> > - * @dev: Host device of the @base mapping
+> > - * @base: Mapping of CXL 2.0 8.2.8 CXL Device Register Interface
+> > - * @regs: Base pointers for device register blocks (see CXL_DEVICE_REGS())
+> > - */
+> 
+> Nice to keep docs given this is an exported function.
+
+I can write something better but the above does not add much IMO.  The
+parameter explanations are unnecessary IMO.
+
+> >  
+> > @@ -1030,30 +1091,38 @@ static int cxl_mem_setup_regs(struct cxl_mem *cxlm)
+> >  		dev_dbg(dev, "Found register block in bar %u @ 0x%llx of type %u\n",
+> >  			bar, offset, reg_type);
+> >  
+> > -		if (reg_type == CXL_REGLOC_RBI_MEMDEV) {
+> > -			base = cxl_mem_map_regblock(cxlm, bar, offset);
+> > -			if (!base)
+> > -				return -ENOMEM;
+> > -			break;
+> > +		base = cxl_mem_map_regblock(cxlm, bar, offset);
+> > +		if (!base) {
+> > +			ret = -ENOMEM;
+> > +			goto free_maps;
+> >  		}
+> > -	}
+> >  
+> > -	if (i == regblocks) {
+> > -		dev_err(dev, "Missing register locator for device registers\n");
+> > -		return -ENXIO;
+> 
+> Do we have or need an equivalent of this check somewhere else?
+
+Yes agreed!  I moved the check to cxl_probe_regs which returns -ENXIO if the
+register sets expected are not found.  A check is also added to RBI_COMPONENT
+register type in the following patch.  This was moved mainly because each
+register type is going to know better what it needs for proper operation.
+cxl_probe_device_regs() really can't know that after this series.
+
+Ira
