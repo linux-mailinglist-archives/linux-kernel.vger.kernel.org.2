@@ -2,68 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DFA653938B8
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 00:31:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A68373938BA
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 00:32:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235595AbhE0Wcc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 May 2021 18:32:32 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60162 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233203AbhE0Wca (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 May 2021 18:32:30 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 84445613BF;
-        Thu, 27 May 2021 22:30:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
-        s=korg; t=1622154655;
-        bh=WJmieutuwb6wkOGdzy8Hj2ZjOYjV2ibJ9Y9kPqy6aw4=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=tVGGg5rxq0/R2ltpNyFklO7UPieKW96IS8mI2FQx8Gx2qy0lRrWpGIOE6DQRfZrcW
-         Hi7LdCSO+n8i4Qc9c5HcqQXsprAuabloQ0N7uVsqO/kJcQv99d3S2r/c3CyqXNSwmg
-         fwUvxE8zqXG+/anrty4+uT9S+kfuilI+ybP9Nkro=
-Date:   Thu, 27 May 2021 15:30:55 -0700
-From:   Andrew Morton <akpm@linux-foundation.org>
-To:     zhoufeng <zhoufeng.zf@bytedance.com>
-Cc:     adobriyan@gmail.com, rppt@kernel.org, linux-kernel@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, songmuchun@bytedance.com,
-        zhouchengming@bytedance.com, chenying.kernel@bytedance.com,
-        zhengqi.arch@bytedance.com
-Subject: Re: [External] Re: [PATCH] fs/proc/kcore.c: add mmap interface
-Message-Id: <20210527153055.aefeee8d8385da8152bdbacc@linux-foundation.org>
-In-Reply-To: <d71a4ffa-f21e-62f5-7fa6-83ca14b3f05b@bytedance.com>
-References: <20210526075142.9740-1-zhoufeng.zf@bytedance.com>
-        <20210526173953.49fb3dc48c0f2a8b3c31fe2b@linux-foundation.org>
-        <d71a4ffa-f21e-62f5-7fa6-83ca14b3f05b@bytedance.com>
-X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.31; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S235538AbhE0Wd4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 May 2021 18:33:56 -0400
+Received: from mail-oi1-f182.google.com ([209.85.167.182]:42896 "EHLO
+        mail-oi1-f182.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233203AbhE0Wdy (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 27 May 2021 18:33:54 -0400
+Received: by mail-oi1-f182.google.com with SMTP id c196so2340724oib.9;
+        Thu, 27 May 2021 15:32:19 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Sza0E/+uMB5EM/AhsG1a1nI/szLc6wK8lbW1ACNSEJo=;
+        b=Sl7Br8nWqTrjpGclCN59/AsXepyfGH3jgGf1wp5HH81hcOrIZJmEwp+ghy818cQ0YA
+         KlKj4mhpdCvkQwWFPWP4qTvI7uWnsw4U0zWX8P7uA+Lv4PyuJ9hcFdKBCcPJjKG2ToGI
+         QrNKZ9gdUohDoO4iL4pd4JBPc8GBczhIeMCir+zSIMAWOlBmRwo3bklXxKAl7yekfkrP
+         NsQUz4sdoMdztydCGj0bIyB9r7oQ/UxvIcy0FSKNhlujgNrf7i/Y1+oRBh53zgymVVFX
+         LYBgubXIG0RyX9Z5/a6l02vYp5ruRCSWADdYol8H397H6BbnBgJ5982JshaJMdz6bC6/
+         kUjQ==
+X-Gm-Message-State: AOAM531T9cisJU2KFS3REUfAA2kNVjjokagvJuUs478Ywo3Cj0n72khT
+        53m/zlo7jZNpXlZnV04NryRFDa0aoA==
+X-Google-Smtp-Source: ABdhPJw9Y8cgQTbb5o9wbbrSLaSAyQsXhRIZd6foOJi06scZcPdfc87su3ecs3OLvzwpiG493Df+Uw==
+X-Received: by 2002:aca:4b16:: with SMTP id y22mr3874459oia.125.1622154739243;
+        Thu, 27 May 2021 15:32:19 -0700 (PDT)
+Received: from xps15.herring.priv (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.googlemail.com with ESMTPSA id q14sm766288ota.31.2021.05.27.15.32.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 27 May 2021 15:32:18 -0700 (PDT)
+From:   Rob Herring <robh@kernel.org>
+To:     devicetree@vger.kernel.org, Frank Rowand <frowand.list@gmail.com>
+Cc:     linux-kernel@vger.kernel.org, Christoph Hellwig <hch@lst.de>
+Subject: [PATCH] of: Drop reserved mem dependency on DMA_DECLARE_COHERENT and DMA_CMA
+Date:   Thu, 27 May 2021 17:32:17 -0500
+Message-Id: <20210527223217.1572631-1-robh@kernel.org>
+X-Mailer: git-send-email 2.27.0
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 27 May 2021 14:13:09 +0800 zhoufeng <zhoufeng.zf@bytedance.com> wrote:
+Reserved memory regions can be used for more than just DMA regions, so
+only enabling on DMA_DECLARE_COHERENT (via HAS_DMA) or DMA_CMA is wrong.
+This effectively doesn't matter except for the few cases arches select
+NO_DMA.
 
-> > I'm surprised that it makes this much difference.  Has DRGN been fully
-> > optimised to minimise the amount of pread()ing which it does?  Why does
-> > it do so much reading?
-> DRGN is a tool similar to Crash, but much lighter. It allows users to 
-> obtain kernel data structures from Python scripts. Based on this, we 
-> intend to use DRGN for kernel monitoring. So we used some pressure test 
-> scripts to test the loss of monitoring.
-> Monitoring is all about getting current real-time data, so every time 
-> DRGN tries to get kernel data, it needs to read /proc/kcore. In my 
-> script, I tried to loop 1000 times to obtain the information of all the 
-> processes in the machine, in order to construct a scene where kernel 
-> data is frequently read. So, the frequency in the default version of 
-> kcore, pread is very high. In view of this situation, our optimization 
-> idea is to reduce the number of context switches as much as possible 
-> under the scenario of frequent kernel data acquisition, to reduce the 
-> performance loss to a minimum, and then move the monitoring system to 
-> the production environment.
+At least, these users of RESERVEDMEM_OF_DECLARE depend on reserved memory
+support:
 
-Why would a pread() cause a context switch?
+arch/riscv/mm/init.c:RESERVEDMEM_OF_DECLARE(elfcorehdr, "linux,elfcorehdr", elfcore_hdr_setup);
+drivers/memory/tegra/tegra210-emc-table.c:RESERVEDMEM_OF_DECLARE(tegra210_emc_table, "nvidia,tegra210-emc-table",
+drivers/soc/fsl/qbman/bman_ccsr.c:RESERVEDMEM_OF_DECLARE(bman_fbpr, "fsl,bman-fbpr", bman_fbpr);
+drivers/soc/fsl/qbman/qman_ccsr.c:RESERVEDMEM_OF_DECLARE(qman_fqd, "fsl,qman-fqd", qman_fqd);
+drivers/soc/fsl/qbman/qman_ccsr.c:RESERVEDMEM_OF_DECLARE(qman_pfdr, "fsl,qman-pfdr", qman_pfdr);
 
-> After running for a long time in a 
-> production environment, the number of kernel data reads was added as 
-> time went on, and the pread number also increased. If users use mmap, 
-> it's once for all.
+Let's simplify things and enable OF_RESERVED_MEM when OF_EARLY_FLATTREE is
+enabled.
+
+Cc: Christoph Hellwig <hch@lst.de>
+Signed-off-by: Rob Herring <robh@kernel.org>
+---
+This is needed to prevent build break on UML with this patch:
+
+https://lore.kernel.org/lkml/20210527193841.1284169-1-robh@kernel.org/
+
+ drivers/of/Kconfig | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
+
+diff --git a/drivers/of/Kconfig b/drivers/of/Kconfig
+index 18450437d5d5..3dfeae8912df 100644
+--- a/drivers/of/Kconfig
++++ b/drivers/of/Kconfig
+@@ -75,9 +75,7 @@ config OF_NET
+ 	def_bool y
+ 
+ config OF_RESERVED_MEM
+-	bool
+-	depends on OF_EARLY_FLATTREE
+-	default y if DMA_DECLARE_COHERENT || DMA_CMA
++	def_bool OF_EARLY_FLATTREE
+ 
+ config OF_RESOLVE
+ 	bool
+-- 
+2.27.0
+
