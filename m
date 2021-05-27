@@ -2,180 +2,193 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 68A34392B4B
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 12:00:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C76D392B4F
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 12:01:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235964AbhE0KCL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 May 2021 06:02:11 -0400
-Received: from fllv0016.ext.ti.com ([198.47.19.142]:49422 "EHLO
-        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235770AbhE0KCH (ORCPT
+        id S236041AbhE0KDW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 May 2021 06:03:22 -0400
+Received: from esa.microchip.iphmx.com ([68.232.153.233]:14430 "EHLO
+        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236031AbhE0KDU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 May 2021 06:02:07 -0400
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 14RA0I9q048827;
-        Thu, 27 May 2021 05:00:18 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1622109618;
-        bh=yllhb6T/ZjUJw0h6DWNoAvUmFdqdIc4o5sqdU2Agvb8=;
-        h=Date:From:To:CC:Subject:References:In-Reply-To;
-        b=D7x35cR0S6rAw+r1IFeXtz1lsSReYmfPybhUHdM57cMUdHgNy2KoLNog7GyRFIWN9
-         aA4yiLxSuKH1TTvUspzOkrnpfaDPd9dtoes4ecor6TDs7UUj3W3AgIdXDnaTWkeoeU
-         46yTrDJeWGpU6ZbC+3RCfVZq4ClGtWS5HM/t7vUA=
-Received: from DFLE109.ent.ti.com (dfle109.ent.ti.com [10.64.6.30])
-        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 14RA0IEB057541
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Thu, 27 May 2021 05:00:18 -0500
-Received: from DFLE113.ent.ti.com (10.64.6.34) by DFLE109.ent.ti.com
- (10.64.6.30) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Thu, 27
- May 2021 05:00:18 -0500
-Received: from fllv0040.itg.ti.com (10.64.41.20) by DFLE113.ent.ti.com
- (10.64.6.34) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
- Frontend Transport; Thu, 27 May 2021 05:00:18 -0500
-Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 14RA0HXm042965;
-        Thu, 27 May 2021 05:00:18 -0500
-Date:   Thu, 27 May 2021 15:30:17 +0530
-From:   Pratyush Yadav <p.yadav@ti.com>
-To:     <patrice.chotard@foss.st.com>
-CC:     Mark Brown <broonie@kernel.org>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Boris Brezillon <boris.brezillon@collabora.com>,
-        <linux-mtd@lists.infradead.org>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        <linux-spi@vger.kernel.org>,
-        <linux-stm32@st-md-mailman.stormreply.com>,
+        Thu, 27 May 2021 06:03:20 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1622109708; x=1653645708;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=yz80Hjo1XW+O2NjLkpyn0DsjcDlcfjnTODrJ9v4dQc4=;
+  b=maiLJiUXpryT8l/osw1Zd9ZTUMh0YjstHLHEOr4T9GfMZdLxX6Am5sub
+   axXoLzh/+vDyw9uZPt6OMR9s2GY2D2eLDplkgHk7geZRFLowpbtfJaayT
+   o/kMaDP3vasPtH5iYrdpEhvRsdocoMa8BP310Y0mGfxRUM+HehgUikNCp
+   MAnrJBsE8Qdn6tAFKkpCVfIJvsdoTz2IpHGwv7YtQ6G7SOL7okr4m7xxb
+   Z/9dxdJztbX3hkh94MY9ZVZYLedOyg4ToYb9L+sWfqjOQ0epo2MeRzL3Y
+   ey+N90xYgo6yIT/OM57cT6bz7oiaHX2yVQKLNtyLhFZU1FrJj0WgERUfw
+   g==;
+IronPort-SDR: xxAs3LFHSKUQ6WoGduLNiFpckRc7SX2DtA7ZF2OUkAfKKGgfIfPGQylxJXdegD3EpOTonW8h19
+ Fj6BwYzkSpDjt5BYkt+utScK+7+XAMy97UvVud0vk9URma0VIKBWD0vlz1zA8x2Ba/wDPKQJSf
+ 5L+JOZUHqQCWQkP7O/qmZl3/tlPdmgZ17rmyzdgiDKiKjb+OCT6cwWQcifqr434bP8UJUNvTDJ
+ cDkQd99cr3YonTCKRqn+vRbERc7UPIOYwLQKJiKH9F8mdpKC8qWk2F7uFjEG1io84om73XZYaf
+ N+k=
+X-IronPort-AV: E=Sophos;i="5.82,334,1613458800"; 
+   d="scan'208";a="129696694"
+Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
+  by esa1.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 27 May 2021 03:01:46 -0700
+Received: from chn-vm-ex02.mchp-main.com (10.10.85.144) by
+ chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Thu, 27 May 2021 03:01:46 -0700
+Received: from ROB-ULT-M18282.microchip.com (10.10.115.15) by
+ chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server id
+ 15.1.2176.2 via Frontend Transport; Thu, 27 May 2021 03:01:33 -0700
+From:   Eugen Hristev <eugen.hristev@microchip.com>
+To:     <wim@linux-watchdog.org>, <linux@roeck-us.net>,
+        <robh+dt@kernel.org>
+CC:     <nicolas.ferre@microchip.com>, <linux-watchdog@vger.kernel.org>,
+        <devicetree@vger.kernel.org>,
         <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <christophe.kerello@foss.st.com>
-Subject: Re: mtd: spinand: add spi nand mtd resume handler
-Message-ID: <20210527100015.abxcroi23zyvcyzk@ti.com>
-References: <20210526153016.32653-1-patrice.chotard@foss.st.com>
+        <linux-kernel@vger.kernel.org>,
+        Eugen Hristev <eugen.hristev@microchip.com>
+Subject: [PATCH 1/3] dt-bindings: watchdog: sama5d4-wdt: convert to yaml
+Date:   Thu, 27 May 2021 13:01:18 +0300
+Message-ID: <20210527100120.266796-1-eugen.hristev@microchip.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20210526153016.32653-1-patrice.chotard@foss.st.com>
-User-Agent: NeoMutt/20171215
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 26/05/21 05:30PM, patrice.chotard@foss.st.com wrote:
-> From: Christophe Kerello <christophe.kerello@foss.st.com>
-> 
-> After power up, all SPI NAND's blocks are locked. Only read operations
-> are allowed, write and erase operations are forbidden.
-> The SPI NAND framework unlocks all the blocks during its initialization.
-> 
-> During a standby low power, the memory is powered down, losing its
-> configuration.
-> During the resume, the QSPI driver state is restored but the SPI NAND
-> framework does not reconfigured the memory.
-> 
-> This patch adds spi nand mtd PM handlers for resume ops.
-> SPI NAND resume op re-initializes SPI NAND flash to its probed state.
-> 
-> Signed-off-by: Christophe Kerello <christophe.kerello@foss.st.com>
-> Signed-off-by: Patrice Chotard <patrice.chotard@foss.st.com>
-> ---
->  drivers/mtd/nand/spi/core.c | 56 +++++++++++++++++++++++++++++++++++++
->  1 file changed, 56 insertions(+)
-> 
-> diff --git a/drivers/mtd/nand/spi/core.c b/drivers/mtd/nand/spi/core.c
-> index 17f63f95f4a2..6abaf874eb3f 100644
-> --- a/drivers/mtd/nand/spi/core.c
-> +++ b/drivers/mtd/nand/spi/core.c
-> @@ -1074,6 +1074,61 @@ static int spinand_detect(struct spinand_device *spinand)
->  	return 0;
->  }
->  
-> +static void spinand_mtd_resume(struct mtd_info *mtd)
-> +{
-> +	struct spinand_device *spinand = mtd_to_spinand(mtd);
-> +	struct nand_device *nand = mtd_to_nanddev(mtd);
-> +	struct device *dev = &spinand->spimem->spi->dev;
-> +	int ret, i;
-> +
-> +	ret = spinand_reset_op(spinand);
-> +	if (ret)
-> +		return;
-> +
-> +	ret = spinand_init_quad_enable(spinand);
-> +	if (ret) {
-> +		dev_err(dev,
-> +			"Failed to initialize the quad part (err = %d)\n",
-> +			ret);
-> +		return;
-> +	}
-> +
-> +	ret = spinand_upd_cfg(spinand, CFG_OTP_ENABLE, 0);
-> +	if (ret) {
-> +		dev_err(dev,
-> +			"Failed to updtae the OTP (err = %d)\n",
-> +			ret);
-> +		return;
-> +	}
+Convert the old txt binding to yaml format.
 
-Since you have reset the flash, this cache is invalid. You should reset 
-the cache and re-populate it before using it in any way.
+Signed-off-by: Eugen Hristev <eugen.hristev@microchip.com>
+---
+ .../bindings/watchdog/atmel,sama5d4-wdt.yaml  | 73 +++++++++++++++++++
+ .../bindings/watchdog/atmel-sama5d4-wdt.txt   | 34 ---------
+ 2 files changed, 73 insertions(+), 34 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/watchdog/atmel,sama5d4-wdt.yaml
+ delete mode 100644 Documentation/devicetree/bindings/watchdog/atmel-sama5d4-wdt.txt
 
-> +
-> +	ret = spinand_manufacturer_init(spinand);
-> +	if (ret) {
-> +		dev_err(dev,
-> +			"Failed to initialize the SPI NAND chip (err = %d)\n",
-> +			ret);
-> +		return;
-> +	}
-> +
-> +	/* After power up, all blocks are locked, so unlock them here. */
-> +	for (i = 0; i < nand->memorg.ntargets; i++) {
-> +		ret = spinand_select_target(spinand, i);
-> +		if (ret) {
-> +			dev_err(dev,
-> +				"Failed to select the target (err = %d)\n",
-> +				ret);
-> +			return;
-> +		}
-> +
-> +		ret = spinand_lock_block(spinand, BL_ALL_UNLOCKED);
-> +		if (ret) {
-> +			dev_err(dev,
-> +				"Failed to unlock block (err = %d)\n",
-> +				ret);
-> +			return;
-> +		}
-> +	}
-> +}
-> +
-
-Most of these seem to be copied from spinand_init(). I think it is 
-better to create a common function that can be called from both 
-spinand_init() and spinand_mtd_resume(). This way when someone adds 
-something new to the init procedure, like support for some other modes, 
-they won't have to remember to update it in two places.
-
->  static int spinand_init(struct spinand_device *spinand)
->  {
->  	struct device *dev = &spinand->spimem->spi->dev;
-> @@ -1167,6 +1222,7 @@ static int spinand_init(struct spinand_device *spinand)
->  	mtd->_block_isreserved = spinand_mtd_block_isreserved;
->  	mtd->_erase = spinand_mtd_erase;
->  	mtd->_max_bad_blocks = nanddev_mtd_max_bad_blocks;
-> +	mtd->_resume = spinand_mtd_resume;
-
-Is it possible that the userspace can use this mtd device before the 
-resume is finished? Is there a way to temporarily "pause" or unregister 
-an mtd device?
-
->  
->  	if (nand->ecc.engine) {
->  		ret = mtd_ooblayout_count_freebytes(mtd);
-
+diff --git a/Documentation/devicetree/bindings/watchdog/atmel,sama5d4-wdt.yaml b/Documentation/devicetree/bindings/watchdog/atmel,sama5d4-wdt.yaml
+new file mode 100644
+index 000000000000..0d0ab81da040
+--- /dev/null
++++ b/Documentation/devicetree/bindings/watchdog/atmel,sama5d4-wdt.yaml
+@@ -0,0 +1,73 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/watchdog/atmel,sama5d4-wdt.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: Atmel SAMA5D4 Watchdog Timer (WDT) Controller
++
++maintainers:
++  - Eugen Hristev <eugen.hristev@microchip.com>
++
++allOf:
++  - $ref: "watchdog.yaml#"
++
++properties:
++  compatible:
++    enum:
++      - atmel,sama5d4-wdt
++      - microchip,sam9x60-wdt
++
++  reg:
++    maxItems: 1
++
++  atmel,watchdog-type:
++    $ref: /schemas/types.yaml#/definitions/string
++    description: should be hardware or software.
++    oneOf:
++      - description:
++          Enable watchdog fault reset. A watchdog fault triggers
++          watchdog reset.
++        const: hardware
++      - description:
++          Enable watchdog fault interrupt. A watchdog fault asserts
++          watchdog interrupt.
++        const: software
++    default: hardware
++
++  atmel,idle-halt:
++    $ref: /schemas/types.yaml#/definitions/flag
++    description: |
++      present if you want to stop the watchdog when the CPU is in idle state.
++      CAUTION: This property should be used with care, it actually makes the
++      watchdog not counting when the CPU is in idle state, therefore the
++      watchdog reset time depends on mean CPU usage and will not reset at all
++      if the CPU stop working while it is in idle state, which is probably
++      not what you want.
++
++  atmel,dbg-halt:
++    $ref: /schemas/types.yaml#/definitions/flag
++    description: |
++      present if you want to stop the watchdog when the CPU is in debug state.
++
++required:
++  - compatible
++  - reg
++
++unevaluatedProperties: false
++
++examples:
++  - |
++    #include <dt-bindings/interrupt-controller/irq.h>
++
++    watchdog@fc068640 {
++      compatible = "atmel,sama5d4-wdt";
++      reg = <0xfc068640 0x10>;
++      interrupts = <4 IRQ_TYPE_LEVEL_HIGH 5>;
++      timeout-sec = <10>;
++      atmel,watchdog-type = "hardware";
++      atmel,dbg-halt;
++      atmel,idle-halt;
++    };
++
++...
+diff --git a/Documentation/devicetree/bindings/watchdog/atmel-sama5d4-wdt.txt b/Documentation/devicetree/bindings/watchdog/atmel-sama5d4-wdt.txt
+deleted file mode 100644
+index 44727fcc2729..000000000000
+--- a/Documentation/devicetree/bindings/watchdog/atmel-sama5d4-wdt.txt
++++ /dev/null
+@@ -1,34 +0,0 @@
+-* Atmel SAMA5D4 Watchdog Timer (WDT) Controller
+-
+-Required properties:
+-- compatible: "atmel,sama5d4-wdt" or "microchip,sam9x60-wdt"
+-- reg: base physical address and length of memory mapped region.
+-
+-Optional properties:
+-- timeout-sec: watchdog timeout value (in seconds).
+-- interrupts: interrupt number to the CPU.
+-- atmel,watchdog-type: should be "hardware" or "software".
+-	"hardware": enable watchdog fault reset. A watchdog fault triggers
+-		    watchdog reset.
+-	"software": enable watchdog fault interrupt. A watchdog fault asserts
+-		    watchdog interrupt.
+-- atmel,idle-halt: present if you want to stop the watchdog when the CPU is
+-		   in idle state.
+-	CAUTION: This property should be used with care, it actually makes the
+-	watchdog not counting when the CPU is in idle state, therefore the
+-	watchdog reset time depends on mean CPU usage and will not reset at all
+-	if the CPU stop working while it is in idle state, which is probably
+-	not what you want.
+-- atmel,dbg-halt: present if you want to stop the watchdog when the CPU is
+-		  in debug state.
+-
+-Example:
+-	watchdog@fc068640 {
+-		compatible = "atmel,sama5d4-wdt";
+-		reg = <0xfc068640 0x10>;
+-		interrupts = <4 IRQ_TYPE_LEVEL_HIGH 5>;
+-		timeout-sec = <10>;
+-		atmel,watchdog-type = "hardware";
+-		atmel,dbg-halt;
+-		atmel,idle-halt;
+-	};
 -- 
-Regards,
-Pratyush Yadav
-Texas Instruments Inc.
+2.25.1
+
