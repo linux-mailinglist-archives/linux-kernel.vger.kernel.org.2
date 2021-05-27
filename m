@@ -2,102 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D9907392C1E
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 12:47:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CBBC2392C25
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 12:49:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236238AbhE0KtB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 May 2021 06:49:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53978 "EHLO
+        id S236255AbhE0KvK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 May 2021 06:51:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54480 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236157AbhE0KtA (ORCPT
+        with ESMTP id S236217AbhE0KvI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 May 2021 06:49:00 -0400
-Received: from mail-qk1-x74a.google.com (mail-qk1-x74a.google.com [IPv6:2607:f8b0:4864:20::74a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79003C061574
-        for <linux-kernel@vger.kernel.org>; Thu, 27 May 2021 03:47:27 -0700 (PDT)
-Received: by mail-qk1-x74a.google.com with SMTP id d15-20020a05620a136fb02902e9e93c69c8so62575qkl.23
-        for <linux-kernel@vger.kernel.org>; Thu, 27 May 2021 03:47:27 -0700 (PDT)
+        Thu, 27 May 2021 06:51:08 -0400
+Received: from mail-lj1-x22f.google.com (mail-lj1-x22f.google.com [IPv6:2a00:1450:4864:20::22f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1406C061760
+        for <linux-kernel@vger.kernel.org>; Thu, 27 May 2021 03:49:35 -0700 (PDT)
+Received: by mail-lj1-x22f.google.com with SMTP id a4so186368ljd.5
+        for <linux-kernel@vger.kernel.org>; Thu, 27 May 2021 03:49:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:message-id:mime-version:subject:from:to:cc;
-        bh=WO9CaFGqiJFMkbwzjeUNBHkoPWoyOI+XUu9S7NdEwwA=;
-        b=wU3SwKlrpuWZIfHr8fLZMwogPujASUHhXs6Qe9xp/sv5KYzcDSSg0+afbNngMwC2EN
-         MKY8LOgxt0ab45272HHA4EKg1apuUWJ9B7rPm+Ys0VUulN58qaDxbbY+HsqFPFywjbQ2
-         eE4KlkKEH0vjGzBol/6luMI+73/EgaaL3j2jhZ8aVZrpqYM5lk+Muqui/kwruP0a3snf
-         IrfAOe4GFcc7dDdyaIdo7eScuWkoW43Bep22BbcQq1903l7wqpMhMsXXvfhYO8GaprfP
-         RQ3DTQv+zZFSpPuEv31y1R6O5AWrwGhlXX0LYTlaCfPo2PvNlUeidVpqYTxC/s+xxWyP
-         WUVw==
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Ua/saZqvwIMzSQnurwAoIde+A9NKg6vplyBhL5Gjil4=;
+        b=n3Ys6kd7oq4RSx9GNj8DAA5OwUiXPsXOyHkKi4ZRtB5UzEfN9jKd8g9uQ+py8Fchnu
+         fI7VGGVjbWZy5DS5ow4F8bDjLto8EruGhYNLiocK0BczIXSdROGiHePAUQv0qODETxxA
+         G2p21I16bmk3PmwbTJlbd/AbqrRwZohgPCkEIBMmzq0nbqqaJZmGrFqx9q4Y7ktsaM2S
+         /+UL/lN3Lu1j+/wVUJjJqf6gvjEkcxY26sZWu4IU5uWRbI3wyXkK9tzIx5CrU51KmbSw
+         EujG94Xm2TUwhicxy48R02bwtQQMzRXMSSY8dTBGEXDxAKL7en4rsM+CtVzkyhO+qq9V
+         ASyg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
-        bh=WO9CaFGqiJFMkbwzjeUNBHkoPWoyOI+XUu9S7NdEwwA=;
-        b=Cm+MiYqfK4cQq4g1I0BPon47Aq8s4zz0mktEyoVeqXfWsotY7QAlxgZ20NzYbMctmg
-         HSyZoDzmd/6oWC0mO5XapYAkw/z47rX8flGSJEEgILEIyiapL+SgbYZWoO8QlZwdgLFy
-         2Q1lzqvzccf5vP6cID/TfEWgXI2vOJ5aeaGDVB8ABrhZWB0tR0/nqdRHHuVJX8aAv7Ci
-         owCZkKy6ni9Dcgk/YajHqqd0w3Ndu/tAcwPpsIR2iXBE6oYOwtC/f45e4Bm7PSgITasP
-         JBrOFIU9uwzKjpy7DKc7qJmTachgjJ5JGV21gOcvtBcY4vXcvBqK3kzkscSDqzs0Alof
-         Wu2w==
-X-Gm-Message-State: AOAM533v30yZHDdJA1xb+mSGccou/xaYk5BjxEl5kpahzjhLL5xu4av7
-        X5OfEEb1tsDLpEGNOuxrFeBhZiGp2g==
-X-Google-Smtp-Source: ABdhPJzhSuM/uxNdSl7Hjm/KorLANFa/2m687tbdKOv9YcnVbfIv/bF1fkNlrDI2V1RAIgTzLuRRiOUG6A==
-X-Received: from elver.muc.corp.google.com ([2a00:79e0:15:13:74ba:ff42:8494:7f35])
- (user=elver job=sendgmr) by 2002:a05:6214:391:: with SMTP id
- l17mr2896057qvy.22.1622112446596; Thu, 27 May 2021 03:47:26 -0700 (PDT)
-Date:   Thu, 27 May 2021 12:47:11 +0200
-Message-Id: <20210527104711.2671610-1-elver@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.31.1.818.g46aad6cb9e-goog
-Subject: [PATCH] perf: Fix data race between pin_count increment/decrement
-From:   Marco Elver <elver@google.com>
-To:     elver@google.com, peterz@infradead.org, mingo@redhat.com,
-        acme@kernel.org, mark.rutland@arm.com,
-        alexander.shishkin@linux.intel.com, jolsa@redhat.com,
-        namhyung@kernel.org, linux-perf-users@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     kasan-dev@googlegroups.com, dvyukov@google.com,
-        syzbot+142c9018f5962db69c7e@syzkaller.appspotmail.com
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Ua/saZqvwIMzSQnurwAoIde+A9NKg6vplyBhL5Gjil4=;
+        b=sFWGrJMzGkhM71xrzO5lc3i0pjwCElg0NDap99vak4xELxzWCGDTV6lO+SzVgVvgHC
+         /HRVdB3BISP0rEHyixwc2eGl13/XHI6ZHEY+faI9kHmfbTctZ2vQLCYsxXvEknyJIR3b
+         TA7t8q8SuLBr0/WwkI1lGxf4CRFyBKuDZpqFUpE3fnuUnCgBfCgNWUJ8ak9VdfhaH/rm
+         TzOIV6ubeyHYiAuMBVMScWSoqoH7ayyprLbF0slrW7PQr94plwkCIy8LaYuZHi2L5oet
+         dbS3L4c2dd1r4/OAIQMFZlgRgZ6OE4AHwKQwk3YRd6zFPB9eEBDTCcOLoydhVLcqFz/v
+         DOOw==
+X-Gm-Message-State: AOAM533zxbSVgiutJUgwLa4qKDRfX6I/d0uWfWtt/XRc0XK5P/4wykCk
+        4F0pZ60t3i7YTro7LGtncYyCzkjpJw0xJaQnWE9HIA==
+X-Google-Smtp-Source: ABdhPJw5PrpS6wRAqAuy1LwBF+ZprULcob3L33drJjObvMSeJtf2Aj5MH+3//EqJ+/kgp6sn/feEUp2dJDEZSsa2X6g=
+X-Received: by 2002:a2e:8557:: with SMTP id u23mr2055801ljj.221.1622112574244;
+ Thu, 27 May 2021 03:49:34 -0700 (PDT)
+MIME-Version: 1.0
+References: <20210518125202.78658-1-odin@uged.al> <20210518125202.78658-2-odin@uged.al>
+ <CAKfTPtCCZhjOCZR6DMSxb9qffG2KceWONP_MzoY6TpYBmWp+hg@mail.gmail.com>
+ <CAFpoUr0f50hKUtWvpTy221xT+pUocY7LXCMCo3cPJupjgMtotg@mail.gmail.com>
+ <CAKfTPtCaZOSEzRXVN9fTR2vTxGiANEARo6iDNMFiQV5=qAA4Tw@mail.gmail.com>
+ <CAKfTPtAFn3=anfTCxKTDXF0wpttpEiAhksLvcEPdSiYZTj38_A@mail.gmail.com>
+ <CAFpoUr1zGNf9vTbWjwsfY9E8YBjyE5xJ0SwzLebPiS7b=xz_Zw@mail.gmail.com>
+ <CAKfTPtDRdFQqphysOL+0g=befwtJky0zixyme_V5eDz71hC5pQ@mail.gmail.com> <CAFpoUr0SOqyGifT5Lpf=t+A+REWdWezR-AY2fM_u1-CCs8KFYQ@mail.gmail.com>
+In-Reply-To: <CAFpoUr0SOqyGifT5Lpf=t+A+REWdWezR-AY2fM_u1-CCs8KFYQ@mail.gmail.com>
+From:   Vincent Guittot <vincent.guittot@linaro.org>
+Date:   Thu, 27 May 2021 12:49:22 +0200
+Message-ID: <CAKfTPtArj_XkgPXRJKZxN0MM2+v=3+RjAVVkmbpB1gBLCuzJvA@mail.gmail.com>
+Subject: Re: [PATCH 1/3] sched/fair: Add tg_load_contrib cfs_rq decay checking
+To:     Odin Ugedal <odin@uged.al>
+Cc:     Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        "open list:CONTROL GROUP (CGROUP)" <cgroups@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-KCSAN reports a data race between increment and decrement of pin_count:
+On Thu, 27 May 2021 at 11:46, Odin Ugedal <odin@uged.al> wrote:
+>
+> Hi,
+>
+> > I finally got it this morning with your script and I confirm that the
+> > problem of load_sum == 0 but load_avg != 0 comes from
+> > update_tg_cfs_load(). Then, it seems that we don't call
+> > update_tg_load_avg for this cfs_rq in __update_blocked_fair() because
+> > of a recent update while propagating child's load changes. At the end
+> > we remove the cfs_rq from the list without updating its contribution.
+> >
+> > I'm going to prepare a patch to fix this
+>
+> Yeah, that is another way to look at it. Have not verified, but
+> wouldn't update_tg_load_avg() in this case
+> just remove the diff (load_avg - tg_load_avg_contrib)? Wouldn't we
+> still see some tg_load_avg_contrib
+> after the cfs_rq is removed from the list then? Eg. in my example
+> above, the cfs_rq will be removed from
+> the list while tg_load_avg_contrib=2, or am I missing something? That
+> was my thought when I looked
+> at it last week at least..
 
-  write to 0xffff888237c2d4e0 of 4 bytes by task 15740 on cpu 1:
-   find_get_context		kernel/events/core.c:4617
-   __do_sys_perf_event_open	kernel/events/core.c:12097 [inline]
-   __se_sys_perf_event_open	kernel/events/core.c:11933
-   ...
-  read to 0xffff888237c2d4e0 of 4 bytes by task 15743 on cpu 0:
-   perf_unpin_context		kernel/events/core.c:1525 [inline]
-   __do_sys_perf_event_open	kernel/events/core.c:12328 [inline]
-   __se_sys_perf_event_open	kernel/events/core.c:11933
-   ...
+1st : ensure that cfs_rq->load_sum is not null if cfs_rq-> load_isn't too
+2nd : call update_tg_load_avg() during child update so we will be sure
+to update tg_load_avg_contrib before removing the cfs from the list
 
-Because neither read-modify-write here is atomic, this can lead to one of the
-operations being lost, resulting in an inconsistent pin_count. Fix it by adding
-the missing locking in the CPU-event case.
-
-Reported-by: syzbot+142c9018f5962db69c7e@syzkaller.appspotmail.com
-Signed-off-by: Marco Elver <elver@google.com>
----
- kernel/events/core.c | 2 ++
- 1 file changed, 2 insertions(+)
-
-diff --git a/kernel/events/core.c b/kernel/events/core.c
-index 6fee4a7e88d7..fe88d6eea3c2 100644
---- a/kernel/events/core.c
-+++ b/kernel/events/core.c
-@@ -4609,7 +4609,9 @@ find_get_context(struct pmu *pmu, struct task_struct *task,
- 		cpuctx = per_cpu_ptr(pmu->pmu_cpu_context, cpu);
- 		ctx = &cpuctx->ctx;
- 		get_ctx(ctx);
-+		raw_spin_lock_irqsave(&ctx->lock, flags);
- 		++ctx->pin_count;
-+		raw_spin_unlock_irqrestore(&ctx->lock, flags);
- 
- 		return ctx;
- 	}
--- 
-2.31.1.818.g46aad6cb9e-goog
-
+>
+> Thanks
+> Odin
