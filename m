@@ -2,90 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 099E139258E
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 05:47:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B8E7392591
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 05:48:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234099AbhE0DtR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 May 2021 23:49:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43560 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231470AbhE0DtQ (ORCPT
+        id S234806AbhE0DuS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 May 2021 23:50:18 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:35324 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234111AbhE0DuR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 May 2021 23:49:16 -0400
-Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CBD05C061574;
-        Wed, 26 May 2021 20:47:43 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4FrDKl2zqxz9s5R;
-        Thu, 27 May 2021 13:47:39 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1622087259;
-        bh=ixOj/LyZCZMg93j45320uMBGWVbjkfJAHTyx6wEnEoY=;
-        h=Date:From:To:Cc:Subject:From;
-        b=PtSBzP8LAyLgURC7LChKKniaGDL15DAGhdEoJwOQ9D1zBlSBskrBk86z57rLb2wpK
-         yRcBV5K6d4Vv4qjNhJxyTDTvXDrgFlQLhtsJc14Lk6c5w93tGzPKupYNQI5IUkn7lf
-         HzchIZrqjzvysf3vx7SZYUMRwIYOk8TE29NrRwME0HcK6zQDEoCge14iP7OsCwaVp3
-         NVolOqsn4wd9iem4dxVoivdpu4bGJR6CLC5DEkBnkV4IAw0Ko7Fc+bm+UqGu3hn3DA
-         nITnUbtF2BXwNz6m+DkjlCayFRzWVaOvVLU42a0uqZ6/pjhnH7L6qho0HWCWiqTKgP
-         vvHntmll/0HWQ==
-Date:   Thu, 27 May 2021 13:47:36 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     "Martin K. Petersen" <martin.petersen@oracle.com>
-Cc:     Hannes Reinecke <hare@suse.de>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: build failure after merge of the scsi-mkp tree
-Message-ID: <20210527134736.4522317c@canb.auug.org.au>
+        Wed, 26 May 2021 23:50:17 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1622087324;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=MndI0BhBeUi0uQEoIZPrttCcXIDrDdb+yFsBIF9E5vo=;
+        b=AccJWYss/Te/UD1RWUo7yzuQ3r3zz/DpErmkZcUGAtrUccYrJ75cJWPAVWI8UNieC/GsYh
+        TtqiWxYxcMTK+vZtf5sNBatRPgEZ4FTRpes9MJHq0cKxsnsbRJyQ54CdROXrk0oqJM5qrA
+        C3LMXBj8vdxLrtoOp802O9k5Z/8zCZQ=
+Received: from mail-pj1-f70.google.com (mail-pj1-f70.google.com
+ [209.85.216.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-442-jrkwS_5dPOWHh1tK3DbIqA-1; Wed, 26 May 2021 23:48:42 -0400
+X-MC-Unique: jrkwS_5dPOWHh1tK3DbIqA-1
+Received: by mail-pj1-f70.google.com with SMTP id ie24-20020a17090b4018b029015fe20666c9so1324742pjb.1
+        for <linux-kernel@vger.kernel.org>; Wed, 26 May 2021 20:48:42 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=MndI0BhBeUi0uQEoIZPrttCcXIDrDdb+yFsBIF9E5vo=;
+        b=rhdl2WNJij2mLIMZ5H4UevqK9KBeOWVDjs4sE75w58jCCBVrmrfsj3zO+qj5lbLpzg
+         WP8UOdz8pog6+G3bEM/r+sVKwWhwMiRUWPTroenxMxyElKF/C0jojhFtU3XoP2CanOkZ
+         UHis9XX+rZ0Nl10h6YVqjCKBMlguXpRQsYelP+4LeSN+YEZav+7KXKBDtAwC6mCEgsgO
+         K4Ff31Hp8ZjP9adL9x+7RAnlYe01N7VZ+kV79ELZdXQsTIuB6ikwC5T6ATagJpREIJNO
+         fGCsmY9zJ8WlzUxj2ASqcaP5sfQzK+sD1G07EyeLp///GvxZZLElPZfNDliGIXnmxV2W
+         Q0iA==
+X-Gm-Message-State: AOAM533sd8lcxtzaNZZiZR+Ke6YNAKYEtZ/bL4ZwhwlNjfwmoD8nOsJ1
+        kTA2pnCsfZcY2b4BucFYFD+wAZcYkvbr0n0SCFp5x5U6twhNhOPKUjFPsdlsSG0L1QXI0jtsxQd
+        /OvQ/Kpr37TNCE+h16fzUNVV0
+X-Received: by 2002:a17:90a:a014:: with SMTP id q20mr216636pjp.124.1622087321499;
+        Wed, 26 May 2021 20:48:41 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwNORR0VqV287Fr5cVhBXhwufI/OJV8Yc3ib3KYYstK5HpQVoRCvYfjDvdmrv8qmwzcLetATA==
+X-Received: by 2002:a17:90a:a014:: with SMTP id q20mr216615pjp.124.1622087321271;
+        Wed, 26 May 2021 20:48:41 -0700 (PDT)
+Received: from wangxiaodeMacBook-Air.local ([209.132.188.80])
+        by smtp.gmail.com with ESMTPSA id s1sm553256pfc.6.2021.05.26.20.48.38
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 26 May 2021 20:48:40 -0700 (PDT)
+Subject: Re: [PATCH v3 2/4] virtio_net: move txq wakeups under tx q lock
+To:     "Michael S. Tsirkin" <mst@redhat.com>, linux-kernel@vger.kernel.org
+Cc:     Jakub Kicinski <kuba@kernel.org>, Wei Wang <weiwan@google.com>,
+        David Miller <davem@davemloft.net>, netdev@vger.kernel.org,
+        Willem de Bruijn <willemb@google.com>,
+        virtualization@lists.linux-foundation.org
+References: <20210526082423.47837-1-mst@redhat.com>
+ <20210526082423.47837-3-mst@redhat.com>
+From:   Jason Wang <jasowang@redhat.com>
+Message-ID: <30c69182-cc6c-3e45-1db9-5b061e43e1d6@redhat.com>
+Date:   Thu, 27 May 2021 11:48:33 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.10.2
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/eRVKyPqF.AUjTejTlthFLUd";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+In-Reply-To: <20210526082423.47837-3-mst@redhat.com>
+Content-Type: text/plain; charset=gbk; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/eRVKyPqF.AUjTejTlthFLUd
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
 
-Hi all,
+ÔÚ 2021/5/26 ÏÂÎç4:24, Michael S. Tsirkin Ð´µÀ:
+> We currently check num_free outside tx q lock
+> which is unsafe: new packets can arrive meanwhile
+> and there won't be space in the queue.
+> Thus a spurious queue wakeup causing overhead
+> and even packet drops.
+>
+> Move the check under the lock to fix that.
+>
+> Signed-off-by: Michael S. Tsirkin <mst@redhat.com>
 
-After merging the scsi-mkp tree, today's linux-next build (x86_64
-allmodconfig) failed like this:
 
-drivers/scsi/pcmcia/nsp_cs.c: In function 'nsp_queuecommand_lck':
-drivers/scsi/pcmcia/nsp_cs.c:224:22: error: 'CHECK_CONDITION' undeclared (f=
-irst use in this function)
-  224 |  SCpnt->SCp.Status =3D CHECK_CONDITION;
-      |                      ^~~~~~~~~~~~~~~
+Acked-by: Jason Wang <jasowang@redhat.com>
 
-Caused by commit
 
-  57de15221f92 ("scsi: core: Drop obsolete Linux-specific SCSI status codes=
-")
+> ---
+>   drivers/net/virtio_net.c | 13 +++++++------
+>   1 file changed, 7 insertions(+), 6 deletions(-)
+>
+> diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
+> index 12512d1002ec..c29f42d1e04f 100644
+> --- a/drivers/net/virtio_net.c
+> +++ b/drivers/net/virtio_net.c
+> @@ -1434,11 +1434,12 @@ static void virtnet_poll_cleantx(struct receive_queue *rq)
+>   
+>   	if (__netif_tx_trylock(txq)) {
+>   		free_old_xmit_skbs(sq, true);
+> +
+> +		if (sq->vq->num_free >= 2 + MAX_SKB_FRAGS)
+> +			netif_tx_wake_queue(txq);
+> +
+>   		__netif_tx_unlock(txq);
+>   	}
+> -
+> -	if (sq->vq->num_free >= 2 + MAX_SKB_FRAGS)
+> -		netif_tx_wake_queue(txq);
+>   }
+>   
+>   static int virtnet_poll(struct napi_struct *napi, int budget)
+> @@ -1522,6 +1523,9 @@ static int virtnet_poll_tx(struct napi_struct *napi, int budget)
+>   	virtqueue_disable_cb(sq->vq);
+>   	free_old_xmit_skbs(sq, true);
+>   
+> +	if (sq->vq->num_free >= 2 + MAX_SKB_FRAGS)
+> +		netif_tx_wake_queue(txq);
+> +
+>   	opaque = virtqueue_enable_cb_prepare(sq->vq);
+>   
+>   	done = napi_complete_done(napi, 0);
+> @@ -1542,9 +1546,6 @@ static int virtnet_poll_tx(struct napi_struct *napi, int budget)
+>   		}
+>   	}
+>   
+> -	if (sq->vq->num_free >= 2 + MAX_SKB_FRAGS)
+> -		netif_tx_wake_queue(txq);
+> -
+>   	return 0;
+>   }
+>   
 
-I have used the scsi-mkp tree from next-20210526 for today.
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/eRVKyPqF.AUjTejTlthFLUd
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmCvFlgACgkQAVBC80lX
-0GzzWwgAiiT/okXGGqbkZaNHBXnhLywNC/MlabC0KiDYs8R0C4RmRZeC8Xxz3uBG
-DZB1DRUQaXVXpkdsPDw1U3MWVBFFKhh0vo8q0cT1dOMGVlRoxTiuI5YwhxUIBzr0
-uAGI80NqYAKIL5GUq7ru/3DRhqfRQ0UCzaU3F459aimzzZc6kVwfGLIfWkev2S8m
-R/HdJ+gjFXfhDU1s5kSGy6MulSHgTrrOk0zZw4yKpsJ/Gff533lqAUw1WkUGUxv3
-tV8ySMs1SF4x46uLT5E0EPyt3m+MeNFivvM3OlLrIA/KuzBZanUtUBH9lMYEdWQo
-YLdK3GoI+ioJovdPgdyuXtiqWuz1Hg==
-=z/0R
------END PGP SIGNATURE-----
-
---Sig_/eRVKyPqF.AUjTejTlthFLUd--
