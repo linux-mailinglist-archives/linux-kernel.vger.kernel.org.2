@@ -2,104 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A2207392598
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 05:51:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A26139259A
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 05:51:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234826AbhE0Dwa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 May 2021 23:52:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44274 "EHLO
+        id S234800AbhE0Dx1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 May 2021 23:53:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44490 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232631AbhE0Dw2 (ORCPT
+        with ESMTP id S233892AbhE0Dx0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 May 2021 23:52:28 -0400
-Received: from mail-pg1-x536.google.com (mail-pg1-x536.google.com [IPv6:2607:f8b0:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7570C061574;
-        Wed, 26 May 2021 20:50:56 -0700 (PDT)
-Received: by mail-pg1-x536.google.com with SMTP id j12so2679177pgh.7;
-        Wed, 26 May 2021 20:50:56 -0700 (PDT)
+        Wed, 26 May 2021 23:53:26 -0400
+Received: from mail-ot1-x329.google.com (mail-ot1-x329.google.com [IPv6:2607:f8b0:4864:20::329])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B13DC061574
+        for <linux-kernel@vger.kernel.org>; Wed, 26 May 2021 20:51:53 -0700 (PDT)
+Received: by mail-ot1-x329.google.com with SMTP id 66-20020a9d02c80000b02903615edf7c1aso3134297otl.13
+        for <linux-kernel@vger.kernel.org>; Wed, 26 May 2021 20:51:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=AYI299XEFIsol2OXh3weOrnSRFxV3puLyyVk9BQ8SdE=;
-        b=BMTba/gwToFKar+iGq6ZiegHVGnHyc5LzE1bZHkJwpGW/NiBWBBGjurXnliUTRNxPI
-         ymiw5mW1JhC9xoKQajNxqc1a8hpcrH+QMk7WusD6Xcw1IU1S4NdW4uyp7kfionD4WCl4
-         y3lZvxUptcAPjzvRp+CWLM7ooT0g+gjl2Rx6er62rUymzJhXc1o732Ftlr+0Eug+Py5f
-         3u7FpBnm5/Twsy/qCs+JbepWF6NYUGNl0btcOnViWiV3EVkJyKgLZbR01uzj2qyQD3y8
-         DiEQI51NE+u9fj6jBCFVAFWXn841GmGDtfB+xe/Ffz+XszyS1Lr8tC4xN309XOV4oHJQ
-         QF8A==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=ObVfNwPVO2PC2rJ9mQ29zRLy3G1wFkbEiSVflWMxPk4=;
+        b=bI4D1NOOpgtzq6luGnjJmHGV5j4sd9uC+nnz4zwFn2dCp2SPukZLmj+rS+Ra0LVncm
+         kT+0/v11S2ccVthKIOH+C+b12P2XUqegYcFbGb2tM60SY1kfCxuhkjH36LnDNKarTmLe
+         FlwSVyc7WBPgTFHmirMYMTQBiAxZv6mU4D6hIbDgZhtRbduzQphA2gwwMpTXgPzSMOjX
+         8uY7xAnrhMsfsv+Efn51gD0Yk4EicB5y4rckTYSmlWy1rWoh9e+zPLuqSp9pW+vWbaSA
+         nIAIH3JqV7zPtXopv8ahSj+4c9N5bN8YekfFmJTMhs7Kh/QZDs01vItMLmZqcX4ThW+g
+         LeyA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=AYI299XEFIsol2OXh3weOrnSRFxV3puLyyVk9BQ8SdE=;
-        b=YiphtGB4IAsiPNbvPhT8DjTxkQTSPLVY0Q0cEMEr06TLOWJ2m351CVnUxVYt2yZtWe
-         +Ib2yqVNjSEnFh7rOboaLv0718w9L+HCiAtrxDThwbsDzEnE0uNUEJy7Y5r0OstJ177e
-         bC8VGGIT7vF4GF6Ae/U3FvT+oCRky6CkUS09GsrXxnhuiLAt2xFlzjQ4+uxMAYELWJp8
-         dZ5iyxyJkPrCVHulFFtYLjmmrBrSJAoWc2aFTycN1V+hp+nd5ubHmI9SWkmyBcA6F0CV
-         EPvHc68YI6uv1oq20AjXdm5st2nElKfPT75iGDrXK8C4HEVeOn3MXK7OXguHoYq754GG
-         IqkA==
-X-Gm-Message-State: AOAM531nyHflmfspdpkPKkRTG/L3e9ckmvmpkL27JGmLKpr4WrUQdsOI
-        K6Ye5mEN5x2g6udBmoiyLw0=
-X-Google-Smtp-Source: ABdhPJyhhWiVII5BEppJnt8s4RvjmVbu6inOUvlx96JpvLtTOBJ/9XNNyKcBfG0S+rivoPsQIvOAUw==
-X-Received: by 2002:a63:581c:: with SMTP id m28mr1759791pgb.353.1622087456128;
-        Wed, 26 May 2021 20:50:56 -0700 (PDT)
-Received: from localhost.localdomain ([203.205.141.39])
-        by smtp.gmail.com with ESMTPSA id 25sm552196pfh.39.2021.05.26.20.50.52
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 26 May 2021 20:50:55 -0700 (PDT)
-From:   Haocheng Xie <xiehaocheng.cn@gmail.com>
-To:     peterz@infradead.org
-Cc:     acme@kernel.org, alexander.shishkin@linux.intel.com,
-        jolsa@redhat.com, linux-kernel@vger.kernel.org,
-        linux-perf-users@vger.kernel.org, mark.rutland@arm.com,
-        mingo@kernel.org, mingo@redhat.com, namhyung@kernel.org,
-        xiehaocheng.cn@gmail.com
-Subject: Re: [PATCH 1/3] perf core:  Make local function perf_pmu_snapshot_aux() static
-Date:   Thu, 27 May 2021 11:50:41 +0800
-Message-Id: <20210527035041.10965-1-xiehaocheng.cn@gmail.com>
-X-Mailer: git-send-email 2.9.5
-In-Reply-To: <YK45TSGv+DeuR8+X@hirez.programming.kicks-ass.net>
-References: <YK45TSGv+DeuR8+X@hirez.programming.kicks-ass.net>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=ObVfNwPVO2PC2rJ9mQ29zRLy3G1wFkbEiSVflWMxPk4=;
+        b=uiJexuzqvG7XdzjPRaFkyJ9+suPBWQ5VXg63hymz/CJxqUOYWU0fhF3DK/Gw1bZF1Z
+         6C+XakMV0oCQDoSz/jbLqcEkuMX5NPcalrnt+Qdj49vfH5EK4FwDgimGzZzJ/Xq5Fw7z
+         RR6mgzgWfvM3aNOWcOxtKbZyof+rSEuyEucA+c4preOVaI8sGyP0IkZ7+VR2JmaJ/PKV
+         HC9bKIQJS8IPNus2otw6qxwEV7rkC9pD0TFYbB6zlQSY7PBLl2Ki5By7Uw95y+JNxs23
+         Vmt6tVoj0hrB/2LO1HUfv6EhS7OUwPckOadwxhfWsAGxe9X/8x7L5YO6f5En9rCsbz/2
+         wDDQ==
+X-Gm-Message-State: AOAM5315opOPH1goCAwbr/11eXQKsubRj3MHk5dsY9srSSf5vvkxzZwy
+        UShvAV5qmwKRNhpRzELv6hRbxMXtxR4/AR2qCss=
+X-Google-Smtp-Source: ABdhPJzoXaQbaKR/UK+3tvFkSVSQl0hgYg8KapNW/jKmqAowfs7VRGNg2OuJK2CjLoD3C/186iR8I/cCd0c4HRWXKmo=
+X-Received: by 2002:a9d:57cd:: with SMTP id q13mr1201591oti.23.1622087513057;
+ Wed, 26 May 2021 20:51:53 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=y
-Content-Transfer-Encoding: 8bit
+References: <20210526084726.552052-1-lee.jones@linaro.org> <20210526084726.552052-4-lee.jones@linaro.org>
+In-Reply-To: <20210526084726.552052-4-lee.jones@linaro.org>
+From:   Alex Deucher <alexdeucher@gmail.com>
+Date:   Wed, 26 May 2021 23:51:41 -0400
+Message-ID: <CADnq5_MRrMWuCOrWx4iVrARkFs6HQzdQb8TMKMK4sm3bmNkv4Q@mail.gmail.com>
+Subject: Re: [PATCH 03/34] drm/amd/pm/powerplay/hwmgr/smu7_thermal: Provide
+ function name for 'smu7_fan_ctrl_set_default_mode()'
+To:     Lee Jones <lee.jones@linaro.org>
+Cc:     David Airlie <airlied@linux.ie>,
+        LKML <linux-kernel@vger.kernel.org>,
+        amd-gfx list <amd-gfx@lists.freedesktop.org>,
+        Maling list - DRI developers 
+        <dri-devel@lists.freedesktop.org>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        Evan Quan <evan.quan@amd.com>,
+        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-* Peter Zijlstra <peterz@infradead.org> wrote:
+Applied.  Thanks!
+
+On Wed, May 26, 2021 at 4:47 AM Lee Jones <lee.jones@linaro.org> wrote:
 >
-> On Wed, May 26, 2021 at 07:52:18PM +0800, Haocheng Xie wrote:
-> > Fixes the following W=1 kernel build warning:
-> >   kernel/events/core.c:6670:6: warning: no previous prototype for 'perf_pmu_snapshot_aux' [-Wmissing-prototypes]
-> >
-> > Signed-off-by: Haocheng Xie <xiehaocheng.cn@gmail.com>
-> > ---
-> >  kernel/events/core.c | 2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)
-> >
-> > diff --git a/kernel/events/core.c b/kernel/events/core.c
-> > index 6fee4a7..0d98d6a 100644
-> > --- a/kernel/events/core.c
-> > +++ b/kernel/events/core.c
-> > @@ -6667,7 +6667,7 @@ static unsigned long perf_prepare_sample_aux(struct perf_event *event,
-> >       return data->aux_size;
-> >  }
-> >
-> > -long perf_pmu_snapshot_aux(struct perf_buffer *rb,
-> > +static long perf_pmu_snapshot_aux(struct perf_buffer *rb,
-> >                          struct perf_event *event,
-> >                          struct perf_output_handle *handle,
-> >                          unsigned long size)
+> Fixes the following W=3D1 kernel build warning(s):
 >
-> Your $subject is broken (superfluous whitespace) and you've wrecked
-> alignment of the arguments in the core.
-
-Hi, Peter:
-  Sorry for bothering you for these simple mistakes.
-  I will optimize my patch series and send a "v2" version after that.
-
-Thanks,
-
-Haocheng Xie
+>  drivers/gpu/drm/amd/amdgpu/../pm/powerplay/hwmgr/smu7_thermal.c:132: war=
+ning: This comment starts with '/**', but isn't a kernel-doc comment. Refer=
+ Documentation/doc-guide/kernel-doc.rst
+>
+> Cc: Evan Quan <evan.quan@amd.com>
+> Cc: Alex Deucher <alexander.deucher@amd.com>
+> Cc: "Christian K=C3=B6nig" <christian.koenig@amd.com>
+> Cc: David Airlie <airlied@linux.ie>
+> Cc: Daniel Vetter <daniel@ffwll.ch>
+> Cc: amd-gfx@lists.freedesktop.org
+> Cc: dri-devel@lists.freedesktop.org
+> Signed-off-by: Lee Jones <lee.jones@linaro.org>
+> ---
+>  drivers/gpu/drm/amd/pm/powerplay/hwmgr/smu7_thermal.c | 8 ++++----
+>  1 file changed, 4 insertions(+), 4 deletions(-)
+>
+> diff --git a/drivers/gpu/drm/amd/pm/powerplay/hwmgr/smu7_thermal.c b/driv=
+ers/gpu/drm/amd/pm/powerplay/hwmgr/smu7_thermal.c
+> index 0d38d4206848a..6cfe148ed45bb 100644
+> --- a/drivers/gpu/drm/amd/pm/powerplay/hwmgr/smu7_thermal.c
+> +++ b/drivers/gpu/drm/amd/pm/powerplay/hwmgr/smu7_thermal.c
+> @@ -129,10 +129,10 @@ int smu7_fan_ctrl_set_static_mode(struct pp_hwmgr *=
+hwmgr, uint32_t mode)
+>  }
+>
+>  /**
+> -* Reset Fan Speed Control to default mode.
+> -* @hwmgr:  the address of the powerplay hardware manager.
+> -* Exception: Should always succeed.
+> -*/
+> + * smu7_fan_ctrl_set_default_mode - Reset Fan Speed Control to default m=
+ode.
+> + * @hwmgr:  the address of the powerplay hardware manager.
+> + * Exception: Should always succeed.
+> + */
+>  int smu7_fan_ctrl_set_default_mode(struct pp_hwmgr *hwmgr)
+>  {
+>         if (!hwmgr->fan_ctrl_is_in_default_mode) {
+> --
+> 2.31.1
+>
