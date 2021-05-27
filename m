@@ -2,139 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 12CFD392D2C
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 13:52:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9AF0E392D32
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 13:52:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233950AbhE0Lxt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 May 2021 07:53:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40496 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233825AbhE0Lxq (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 May 2021 07:53:46 -0400
-Received: from mail-yb1-xb2f.google.com (mail-yb1-xb2f.google.com [IPv6:2607:f8b0:4864:20::b2f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 571DAC061574;
-        Thu, 27 May 2021 04:52:13 -0700 (PDT)
-Received: by mail-yb1-xb2f.google.com with SMTP id r7so236212ybs.10;
-        Thu, 27 May 2021 04:52:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=3ztHqaJd8TZGg8MpcMneObhMgohg69m32H8qjFRoVWg=;
-        b=n0huFgbY3EuP++q2YDLUKvv6fsD71uqrbC6f/7lPdNA6UmRYfrTY/UL+54ImTfl0oe
-         /OPLpxQ2bJ3Pvuc4HwWWQ3/kmi116fgdqq+52UwhZaN1s2G/IDnT83LLvUphy574glt2
-         sJbli/a5PBCF9VdOXL2DNp62UVH2E5FoZS0hgOvpGN2kW0NyuTkmhu0f+VMZseS/xruW
-         WIE37TY9JDfOIMKzFZPi0DWhi2Mm7sxVEsCvihTVfcsXWyylmPMf4W1B6jXeTMW9PCQn
-         hXxJzZ74zFBWGmnQnMQgDPjLCDSRow2mYo0FcPLc46tdd2U6RbpAwVs4lBHs3eYnbN1a
-         cIjQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=3ztHqaJd8TZGg8MpcMneObhMgohg69m32H8qjFRoVWg=;
-        b=YWiZU4w9FSxwYOF9em8WvmXnfFgGNIdrU5RPFk+v+CGp5mUSMsBWmmtZZZLgOoNfYI
-         /HeHkiNiPUPOHZy9Ejs+/bsdiT6n8R0W9nNy5Hu12EbDuTwhTzXHQRRG9czbziKk6AyQ
-         8ChOWvmoFUq2Xkqa9B1pxYn8FxiDXP4TryFhQILBga1ux/BoWGDouZ9Sy7w2zkWNqkAN
-         HCzDdLlsC3c6flwvuA+0OZtF/p0O6yD5eGt/exFNhwfQuRHSeJcCGGxLWliLsUbd2ugN
-         /0bBdU8D5ulLzZlfn341QgKXnthtGbqGk9LXQ/jASkYZTqChkZCnuImNFR4oZlRlSs+7
-         gOgA==
-X-Gm-Message-State: AOAM531PxMp29xgxNBayu9NXFPISZu6IZ/Arz5QAtfOEQEInozvOCoP7
-        xpe0qXSezNnZD1CHI6opYXkGUzCnwI8ARHmuF2U=
-X-Google-Smtp-Source: ABdhPJzmSdh/2yuDgX+UGFst4MfR74s636tsnw14IC+qBQu5iC3o1HDP0MYdVUDDkqC63A5AmMqf6+tVrkFBeA8SWY8=
-X-Received: by 2002:a25:26c3:: with SMTP id m186mr3875079ybm.47.1622116332651;
- Thu, 27 May 2021 04:52:12 -0700 (PDT)
+        id S234395AbhE0Lyb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 May 2021 07:54:31 -0400
+Received: from mail-co1nam11on2048.outbound.protection.outlook.com ([40.107.220.48]:55264
+        "EHLO NAM11-CO1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S234215AbhE0Ly3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 27 May 2021 07:54:29 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=kSoQ1nfaxNys+Y6Y492/T+isBt2OcpLpAaANOjbAKKq2HNl82LT2goOKLFaf1r2K7I94ELgo5DSp7lAJhKRpqb5ZeI7dd++96GmWo321gKXmDnfz5UeoW+RKvaUVxFza1CuEKS1oQBVVZQkoAUI6uR05A/1/arxasMqsgqzYMZmcTvIeebiEaEV9/K78Vnn7Q3+UD5+NkKIImVY2SNNv110O4orlqKjGNw3MkDn/Q3GIuGjkJPAxTGXElK8tj2vaj0lJOXrDsX9sCem+MqPmpKdM9tGzq7a6On7KnPC+nxW1ksGCGyo09CRYqvQnKNu1XFeqUh8jeigiWIN57ZBePQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=nRWFIYLGIERz8anqg0F03cPoWlEMyVb62xjE4alU+Yg=;
+ b=oO1VpHPuYyN65/JfpL6xEpQNM+LVadgB+obg90elcC+5zeMYqhqYlpROGltb2c+oT3q3d+G56jegDFU5Lkwazd3XwbXFC5hAwGTYEsHB5/MKxrBiKXIfswdDdum8bNoDjWXp7k0R+T2mq8vBTqdk59CpAhZ3mSbZBBTv/FYq0Z4/A3szC0JwmnmLKWFi99H1m7PXzdb2+HNUO5sOKtQhdaGUXW4b6XdDtwFlupm2bZx3BIsk/SfZtoMVU9CgLbx5pRm5KPJ09ocbOPdqyKgKFzRSkraR5C1NBxIf29llFHwOqXo1+6KnLo7bbEFQvisRLiLdPguOZJDXfpse/gxCeg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 216.228.112.36) smtp.rcpttodomain=vger.kernel.org smtp.mailfrom=nvidia.com;
+ dmarc=pass (p=none sp=none pct=100) action=none header.from=nvidia.com;
+ dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=nRWFIYLGIERz8anqg0F03cPoWlEMyVb62xjE4alU+Yg=;
+ b=CQL5KdLNQUaYs1V1vlsq5ueM2NgPNB0uZDGImnc2t91uj7YicfeTBC/WwYlQRJTv/+8k+VyZPKzcyKPVUFj/jz9oL17PoK0kuUMK8iugqSL+viAQjAsE6zu/T4FM2Jg9Vnl/w8wY4/s9EQ10Vgmocrw+eOQAI0xpge7ctQxkCQTY8OBgmrf7n1emGax/cwXAVUKG7Fx7Ayymw0z8OmhcNzDRxYjf17e3DI4/Ct+Tp+B/h6tWYn8ujm/TA9EaugAEhOO1ClD4SZouaP8Kgdv3UO94br5TQaQ5i+rg2DFhbZ6j4/KAkXue2ptVh9yTEshZCxBW/xC088m/zxT7yOLInQ==
+Received: from DM5PR1101CA0002.namprd11.prod.outlook.com (2603:10b6:4:4c::12)
+ by CY4PR12MB1397.namprd12.prod.outlook.com (2603:10b6:903:41::18) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4150.27; Thu, 27 May
+ 2021 11:52:55 +0000
+Received: from DM6NAM11FT028.eop-nam11.prod.protection.outlook.com
+ (2603:10b6:4:4c:cafe::77) by DM5PR1101CA0002.outlook.office365.com
+ (2603:10b6:4:4c::12) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4173.20 via Frontend
+ Transport; Thu, 27 May 2021 11:52:55 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.112.36)
+ smtp.mailfrom=nvidia.com; vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=pass action=none header.from=nvidia.com;
+Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
+ 216.228.112.36 as permitted sender) receiver=protection.outlook.com;
+ client-ip=216.228.112.36; helo=mail.nvidia.com;
+Received: from mail.nvidia.com (216.228.112.36) by
+ DM6NAM11FT028.mail.protection.outlook.com (10.13.173.140) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ 15.20.4129.25 via Frontend Transport; Thu, 27 May 2021 11:52:55 +0000
+Received: from HQMAIL109.nvidia.com (172.20.187.15) by HQMAIL101.nvidia.com
+ (172.20.187.10) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Thu, 27 May
+ 2021 11:52:54 +0000
+Received: from buildserver-hdc-comms.nvidia.com (172.20.145.6) by
+ mail.nvidia.com (172.20.187.15) with Microsoft SMTP Server id 15.0.1497.2 via
+ Frontend Transport; Thu, 27 May 2021 04:52:51 -0700
+From:   Om Prakash Singh <omp@nvidia.com>
+To:     <vidyas@nvidia.com>, <lorenzo.pieralisi@arm.com>,
+        <bhelgaas@google.com>, <thierry.reding@gmail.com>,
+        <jonathanh@nvidia.com>
+CC:     <linux-tegra@vger.kernel.org>, <linux-pci@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <kthota@nvidia.com>,
+        <mmaddireddy@nvidia.com>, Om Prakash Singh <omp@nvidia.com>
+Subject: [RESEND PATCH V1 0/5] Update pcie-tegra194 driver
+Date:   Thu, 27 May 2021 17:22:41 +0530
+Message-ID: <20210527115246.20509-1-omp@nvidia.com>
+X-Mailer: git-send-email 2.17.1
+X-NVConfidentiality: public
 MIME-Version: 1.0
-References: <20210514192218.13022-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
- <20210514192218.13022-16-prabhakar.mahadev-lad.rj@bp.renesas.com> <CAMuHMdUNdZvPfU1Zu_F2CyneX-m3hGwwsp+TrYR3+ZjGfHxP-g@mail.gmail.com>
-In-Reply-To: <CAMuHMdUNdZvPfU1Zu_F2CyneX-m3hGwwsp+TrYR3+ZjGfHxP-g@mail.gmail.com>
-From:   "Lad, Prabhakar" <prabhakar.csengg@gmail.com>
-Date:   Thu, 27 May 2021 12:51:46 +0100
-Message-ID: <CA+V-a8vPn3S8tO-Rd0VCwBQm7GV9vhDy6ug9iDPS=WKZhea5UA@mail.gmail.com>
-Subject: Re: [PATCH 15/16] arm64: dts: renesas: Add initial DTSI for
- RZ/G2{L,LC} SoC's
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Magnus Damm <magnus.damm@gmail.com>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
-        linux-clk <linux-clk@vger.kernel.org>,
-        "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Biju Das <biju.das.jz@bp.renesas.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: a31a6a81-8a96-4566-3c63-08d92105f6fe
+X-MS-TrafficTypeDiagnostic: CY4PR12MB1397:
+X-Microsoft-Antispam-PRVS: <CY4PR12MB13978144B30240D0C8885DC5DA239@CY4PR12MB1397.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:1051;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: w/QRxt3V1MNoqw8Z8Z3MloHhSoSW+gk48JOw8AQ0vb8hV1BkeuitxoTDJyfAb5Iu06bgF8aVm1FWOBe0oyQ3n6w1pX2kToDTzQIciTh5LSXTvEH5GwwV7jNLzile1wEqQ7uCwq/xUXZ54+84IH1PHCstYcOyfiwalJqclAfWwduK9Kg1sjtswyPVpg2cBYdxL1D2AuL+bsYonXQ0rTQmfpPoV7GksF5pN1n2c4aybOAJ0DU/XzLdjZnTJaomb15PmGuaRJ1uXcZpjUBq7omYwr8YwSa/MLZKJO+Tycu5rHXstsMd0NoLQhHUpa8SKbifbpWnwqAGRbwtFyJ/0K11B9PEnYopcG6ML+skDQKhofM7r/nziyjUCbTWXQCb2kioeRToj0S6YlEuJ0DkCBN4tmE2fYKA2Dexg0kUt0iHP5giAubl8awmpCMJTAf0cgnX8scIkIrucWHCN0FbDM+tLmnR2pjeoR9hYSYKSf89C5OeeqAWqbHakVteeTcfPCP0744pNims857tZBwExhHzDVFwivtIKXaxawlZdrGOHl33MvSBOfWDdvAYNdb2BSJW5s+P9mO6FA/Q3YOUmiyaApxVtaAZPzMmG8B/K3hTIndh+MAIU4xa5K1oVBStpPZq/jhG2t/+RnMwFsVU22CUl0QTxv8HoXHUB6OypGDJZR0=
+X-Forefront-Antispam-Report: CIP:216.228.112.36;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:schybrid05.nvidia.com;CAT:NONE;SFS:(4636009)(39860400002)(396003)(346002)(136003)(376002)(36840700001)(46966006)(8676002)(70586007)(15650500001)(36906005)(186003)(336012)(26005)(356005)(70206006)(426003)(86362001)(107886003)(36860700001)(47076005)(5660300002)(478600001)(8936002)(7696005)(82740400003)(2616005)(6636002)(54906003)(7636003)(2906002)(1076003)(36756003)(6666004)(110136005)(83380400001)(82310400003)(4744005)(316002)(4326008);DIR:OUT;SFP:1101;
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 27 May 2021 11:52:55.0986
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: a31a6a81-8a96-4566-3c63-08d92105f6fe
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.112.36];Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-AuthSource: DM6NAM11FT028.eop-nam11.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY4PR12MB1397
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Geert,
+Update pcie-tegra194 driver with bug fixing and cleanup
 
-On Thu, May 27, 2021 at 12:17 PM Geert Uytterhoeven
-<geert@linux-m68k.org> wrote:
->
-> Hi Prabhakar,
->
-> On Fri, May 14, 2021 at 9:24 PM Lad Prabhakar
-> <prabhakar.mahadev-lad.rj@bp.renesas.com> wrote:
-> > Add initial DTSI for RZ/G2{L,LC} SoC's.
-> >
-> > File structure:
-> > r9a07g044.dtsi  => RZ/G2L family SoC common parts
-> > r9a07g044l.dtsi => Specific to RZ/G2L (R9A07G044L) SoC
-> > r9a07g044l1.dtsi => Specific to RZ/G2L (R9A07G044L single cortex A55) SoC
-> > r9a07g044l2.dtsi => Specific to RZ/G2L (R9A07G044L dual cortex A55) SoC
-> >
-> > Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-> > Signed-off-by: Biju Das <biju.das.jz@bp.renesas.com>
->
-> > --- /dev/null
-> > +++ b/arch/arm64/boot/dts/renesas/r9a07g044.dtsi
-> > @@ -0,0 +1,70 @@
-> > +// SPDX-License-Identifier: GPL-2.0
-> > +/*
-> > + * Device Tree Source for the RZ/G2L and RZ/G2LC common SoC parts
-> > + *
-> > + * Copyright (C) 2021 Renesas Electronics Corp.
-> > + */
-> > +
-> > +#include <dt-bindings/interrupt-controller/arm-gic.h>
-> > +#include <dt-bindings/clock/r9a07g044l-cpg.h>
-> > +
-> > +/ {
-> > +       compatible = "renesas,r9a07g044";
->
-> > --- /dev/null
-> > +++ b/arch/arm64/boot/dts/renesas/r9a07g044l1.dtsi
-> > @@ -0,0 +1,43 @@
-> > +// SPDX-License-Identifier: GPL-2.0
-> > +/*
-> > + * Device Tree Source for the RZ/G2L R9A07G044L1 common parts
-> > + *
-> > + * Copyright (C) 2021 Renesas Electronics Corp.
-> > + */
-> > +
-> > +/dts-v1/;
-> > +#include "r9a07g044l.dtsi"
-> > +
-> > +/ {
-> > +       compatible = "renesas,r9a07g044l1";
->
-> This overwrites the main compatible value set by r9a07g044.dtsi before.
-> As per your bindings, you want both:
->
->     compatible = "renesas,r9a07g044l1", "renesas,r9a07g044".
->
-Agreed will fix that in next respin.
+Om Prakash Singh (5):
+  PCI: tegra: Fix handling BME_CHGED event
+  PCI: tegra: Fix MSI-X programming
+  PCI: tegra: Disable interrupts before entering L2
+  PCI: tegra: Don't allow suspend when Tegra PCIe is in EP mode
+  PCI: tegra: Cleanup unused code
 
-Cheers,
-Prabhakar
+ drivers/pci/controller/dwc/pcie-tegra194.c | 36 +++++++++++++---------
+ 1 file changed, 22 insertions(+), 14 deletions(-)
+
+-- 
+2.17.1
+
