@@ -2,101 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C27F3923A1
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 02:13:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 26A293923A4
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 02:13:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234215AbhE0AOa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 May 2021 20:14:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52400 "EHLO
+        id S234244AbhE0AOx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 May 2021 20:14:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52496 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232829AbhE0AO2 (ORCPT
+        with ESMTP id S229497AbhE0AOw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 May 2021 20:14:28 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7134C061574;
-        Wed, 26 May 2021 17:12:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-        MIME-Version:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:
-        Content-ID:Content-Description:In-Reply-To:References;
-        bh=/mkS48c0mh9e8PGwzXLkD0N/csDVEEHF15MWB/exkqw=; b=2Z8CkuWyzbvSKkqqPdVKo0p4Cq
-        S4EdPYT/LXn94S81bYRBYp0gY3X0hw5rFwehV2CLt9siXvcRIFkDXGVQMW0MClPZ/rjGL1tY2HB+n
-        TUlEEv79v2EGgS84h/CIUWAGKuxg4qhpIMWN4j5vJy5IW1zPpCjYvDwqfT/xEbxit5avKQxzJWpXE
-        /u2zK8qEX0Zu66TywY5K/mECMEDjDZHs0XPpHtt+wUdPmZw3hC4xOe3VaYXpkQEvJ4pvoWQBiSQ00
-        YuyXROAsqsRA9ZLaqj3tYmfSRAVHGUgpSh4zmBvd9I2l6GovSzg/zOqt59JlMxKNI8DSumBHtWEDr
-        /OOvghhw==;
-Received: from [2601:1c0:6280:3f0::ce7d] (helo=bombadil.infradead.org)
-        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1lm3du-0014je-7c; Thu, 27 May 2021 00:12:54 +0000
-From:   Randy Dunlap <rdunlap@infradead.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Randy Dunlap <rdunlap@infradead.org>,
-        Michael Schmitz <schmitz@debian.org>,
-        Roman Zippel <zippel@linux-m68k.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        linux-input@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
-        Michael Schmitz <schmitzmic@gmail.com>
-Subject: [PATCH v2] MOUSE_ATARI: fix kconfig unmet dependency warning
-Date:   Wed, 26 May 2021 17:12:51 -0700
-Message-Id: <20210527001251.8529-1-rdunlap@infradead.org>
-X-Mailer: git-send-email 2.26.2
+        Wed, 26 May 2021 20:14:52 -0400
+Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8393FC061574;
+        Wed, 26 May 2021 17:13:20 -0700 (PDT)
+Received: by mail-pj1-x102e.google.com with SMTP id lr4-20020a17090b4b84b02901600455effdso145973pjb.5;
+        Wed, 26 May 2021 17:13:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:references:date:in-reply-to:message-id
+         :user-agent:mime-version;
+        bh=MK8a+wfYbMpZQpkMTO0OrrMNbE1xthA2KsqFjKZmXxY=;
+        b=lcjllHOuDcrH69QG2w9thgwDkpvfPP8QjTCtnCNQF+bzTG3yyrew7geBnk32udsm7y
+         qN3qkJdKXsmlkpFpF1axvZxCHwQeltQDNtiYuQaYiPctTfJpHI/p1PUuyzwePPmBBXpi
+         57KHnXuCc5ThYYrDV4T76wFViiGwRo0SDwfpUzHXc0QdN2iqqAWboqMi8RSRhKMsFJnB
+         4jia+ZmeAg7tFS+h5LWRV3ApWjRGMt+Bh0nc9oQSlpmPFv5bk9nyuzQ0bCy7tTohgn0f
+         34wcaGpfPYENnBvO2rKU/+gF308QNHL+NOyvQsPKutJHTLceYufM2B9VB6YMwrPooeDM
+         WRoQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:references:date:in-reply-to
+         :message-id:user-agent:mime-version;
+        bh=MK8a+wfYbMpZQpkMTO0OrrMNbE1xthA2KsqFjKZmXxY=;
+        b=sGrvPmLide6aJHp8qUQPhwc+sOi1Nn6UYVGgV3uxwyMc7u7vmnU2Gw7YCm+RFn0Viy
+         MI4xiHQafNpZr13hkxkMLEtMOOk0l4vYvcWGU3+pZdkzlYUfEY1wBk5W9FQtuOAP5UAO
+         +YJ1X4P4U7m9H99fNTMiaFrXGwQvvatDGjTOvwpV2cVPgwSppOy9Lns3jncQkwzCJeNw
+         Z9U5ujTJKwBf6+IsHVZJZWWgog1QATQk4mooP0obaglg+pkHqcDH/WtMy98NScuFuZgP
+         0xPakHtuzQGjpCsGppbXcKVWQ7pS2BApmicukTrddJkAcsAips79C44N5owmBWktVpZe
+         DbEQ==
+X-Gm-Message-State: AOAM533Vteb/eZOzs6HIoExQVzz5rSUCpJWgRNuceDXKEcus0xml5WUf
+        F7c6Ufg9IN9fbohUEe77GZA=
+X-Google-Smtp-Source: ABdhPJzUL5NJM4VTL7cocKg5ZVC2mJ+Wumyfgb51EzO/Yhg59dNUggwYPSJgoIzZDQ/TMAzaGigE1A==
+X-Received: by 2002:a17:90a:8581:: with SMTP id m1mr774224pjn.47.1622074399842;
+        Wed, 26 May 2021 17:13:19 -0700 (PDT)
+Received: from localhost (122x211x248x161.ap122.ftth.ucom.ne.jp. [122.211.248.161])
+        by smtp.gmail.com with ESMTPSA id c71sm282310pfc.148.2021.05.26.17.13.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 26 May 2021 17:13:18 -0700 (PDT)
+From:   Punit Agrawal <punitagrawal@gmail.com>
+To:     Rob Herring <robh+dt@kernel.org>
+Cc:     "open list:ARM/Rockchip SoC..." <linux-rockchip@lists.infradead.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Alexandru Elisei <alexandru.elisei@arm.com>, wqu@suse.com,
+        Robin Murphy <robin.murphy@arm.com>,
+        Peter Geis <pgwipeout@gmail.com>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Brian Norris <briannorris@chromium.org>,
+        Shawn Lin <shawn.lin@rock-chips.com>,
+        PCI <linux-pci@vger.kernel.org>, Heiko Stuebner <heiko@sntech.de>
+Subject: Re: [PATCH] arm64: dts: rockchip: Update PCI host bridge window to
+ 32-bit address memory
+References: <20210526133457.3102393-1-punitagrawal@gmail.com>
+        <CAL_JsqLYdXFG11oSmrAfcRoCkSPQYY-VvTr=QVOn8DDmDjm-dQ@mail.gmail.com>
+Date:   Thu, 27 May 2021 09:13:15 +0900
+In-Reply-To: <CAL_JsqLYdXFG11oSmrAfcRoCkSPQYY-VvTr=QVOn8DDmDjm-dQ@mail.gmail.com>
+        (Rob Herring's message of "Wed, 26 May 2021 09:00:51 -0500")
+Message-ID: <87a6ohniec.fsf@stealth>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.1 (gnu/linux)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Since the code for ATARI_KBD_CORE does not use drivers/input/keyboard/
-code, just move ATARI_KBD_CORE to arch/m68k/Kconfig.machine to remove
-this dependency.
+Hi Rob,
 
-Removes this kconfig warning:
+Thanks for taking a look.
 
-WARNING: unmet direct dependencies detected for ATARI_KBD_CORE
-  Depends on [n]: !UML && INPUT [=y] && INPUT_KEYBOARD [=n]
-  Selected by [y]:
-  - MOUSE_ATARI [=y] && !UML && INPUT [=y] && INPUT_MOUSE [=y] && ATARI [=y]
+Rob Herring <robh+dt@kernel.org> writes:
 
-Fixes: c04cb856e20a ("m68k: Atari keyboard and mouse support.")
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Cc: Michael Schmitz <schmitz@debian.org>
-Cc: Roman Zippel <zippel@linux-m68k.org>
-Cc: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: Dmitry Torokhov <dmitry.torokhov@gmail.com>
-Cc: linux-input@vger.kernel.org
-Cc: linux-m68k@lists.linux-m68k.org
-Suggested-by: Geert Uytterhoeven <geert@linux-m68k.org>
-Suggested-by: Michael Schmitz <schmitzmic@gmail.com>
----
-v2: move the symbol outside of INPUT_KEYBOARD (Geert) -- all the way
-    to Kconfig.machine (Michael). Thanks.
+> On Wed, May 26, 2021 at 8:35 AM Punit Agrawal <punitagrawal@gmail.com> wrote:
+>>
+>> The PCIe host bridge on RK3399 advertises a single address range
+>> marked as 64-bit memory even though it lies entirely below 4GB. While
+>> previously, the OF PCI range parser treated 64-bit ranges more
+>> leniently (i.e., as 32-bit), since commit 9d57e61bf723 ("of/pci: Add
+>> IORESOURCE_MEM_64 to resource flags for 64-bit memory addresses") the
+>> code takes a stricter view and treats the ranges as advertised in the
+>> device tree (i.e, as 64-bit).
+>>
+>> The change in behaviour causes failure when allocating bus addresses
+>> to devices connected behind a PCI-to-PCI bridge that require
+>> non-prefetchable memory ranges. The allocation failure was observed
+>> for certain Samsung NVMe drives connected to RockPro64 boards.
+>>
+>> Update the host bridge window attributes to treat it as 32-bit address
+>> memory. This fixes the allocation failure observed since commit
+>> 9d57e61bf723.
+>>
+>> Reported-by: Alexandru Elisei <alexandru.elisei@arm.com>
+>> Link: https://lore.kernel.org/r/7a1e2ebc-f7d8-8431-d844-41a9c36a8911@arm.com
+>> Suggested-by: Robin Murphy <robin.murphy@arm.com>
+>> Signed-off-by: Punit Agrawal <punitagrawal@gmail.com>
+>> Cc: Heiko Stuebner <heiko@sntech.de>
+>> Cc: Rob Herring <robh+dt@kernel.org>
+>> ---
+>> Hi,
+>>
+>> The patch fixes the failure observed with detecting certain Samsung
+>> NVMe drives on RK3399 based boards.
+>>
+>> Hopefully, the folks on this thread can provide some input on the
+>> reason the host bridge window was originally marked as 64-bit or if
+>> there are any downsides to applying the patch.
+>
+> We can't require *only* a DT update to fix this. Ideally, the Rockchip
+> PCI driver should clear the 64-bit flag in the resources though I'm
+> not sure if the bridge driver would have access early enough.
 
- arch/m68k/Kconfig.machine      |    3 +++
- drivers/input/keyboard/Kconfig |    3 ---
- 2 files changed, 3 insertions(+), 3 deletions(-)
+Following the discussion in the other thread, I tested the following
+changes to fixup 64-bit flag for non-prefetchable memory resources that
+fit below 4GB.
 
---- linux-next-20210525.orig/arch/m68k/Kconfig.machine
-+++ linux-next-20210525/arch/m68k/Kconfig.machine
-@@ -25,6 +25,9 @@ config ATARI
- 	  this kernel on an Atari, say Y here and browse the material
- 	  available in <file:Documentation/m68k>; otherwise say N.
- 
-+config ATARI_KBD_CORE
-+	bool
-+
- config MAC
- 	bool "Macintosh support"
- 	depends on MMU
---- linux-next-20210525.orig/drivers/input/keyboard/Kconfig
-+++ linux-next-20210525/drivers/input/keyboard/Kconfig
-@@ -67,9 +67,6 @@ config KEYBOARD_AMIGA
- 	  To compile this driver as a module, choose M here: the
- 	  module will be called amikbd.
- 
--config ATARI_KBD_CORE
--	bool
+If the changes look good, I'll send it out as a proper patch later
+today.
+
+---->8----
+diff --git a/drivers/pci/of.c b/drivers/pci/of.c
+index da5b414d585a..b9d0bee5a088 100644
+--- a/drivers/pci/of.c
++++ b/drivers/pci/of.c
+@@ -565,10 +565,14 @@ static int pci_parse_request_of_pci_ranges(struct device *dev,
+                case IORESOURCE_MEM:
+                        res_valid |= !(res->flags & IORESOURCE_PREFETCH);
+
+-                       if (!(res->flags & IORESOURCE_PREFETCH))
++                       if (!(res->flags & IORESOURCE_PREFETCH)) {
+                                if (upper_32_bits(resource_size(res)))
+                                        dev_warn(dev, "Memory resource size exceeds max for 32 bits\n");
 -
- config KEYBOARD_APPLESPI
- 	tristate "Apple SPI keyboard and trackpad"
- 	depends on ACPI && EFI
++                               if ((res->flags & IORESOURCE_MEM_64) && !upper_32_bits(res->end)) {
++                                       dev_warn(dev, "Overriding 64-bit flag for non-prefetchable memory below 4GB\n");
++                                       res->flags &= ~IORESOURCE_MEM_64;
++                               }
++                       }
+                        break;
+                }
+        }
