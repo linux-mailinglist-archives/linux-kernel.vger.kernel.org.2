@@ -2,124 +2,272 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8CAEC39341E
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 18:37:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8CBB7393420
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 18:38:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236412AbhE0Qj0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 May 2021 12:39:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50238 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234328AbhE0QjY (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 May 2021 12:39:24 -0400
-Received: from mail-oi1-x22c.google.com (mail-oi1-x22c.google.com [IPv6:2607:f8b0:4864:20::22c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21BB1C061574;
-        Thu, 27 May 2021 09:37:50 -0700 (PDT)
-Received: by mail-oi1-x22c.google.com with SMTP id j75so1332404oih.10;
-        Thu, 27 May 2021 09:37:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:to:cc:references:from:subject:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=tbaGejzn8q8uB1o7wU9OHplgpPZiIv19pAT7ms12ifA=;
-        b=emMat2JGS1mwG2NDSEM+B2hurHmJhHzASt2OOWYgG10zIyn/MHIZ/J1paPfCxYswru
-         evLbkupjnPARKSD6TeN8b37M36+NOnVILsdYyAHupy/NiuZ1bF/ptSrUA87mUcCRxl12
-         Z6mupC3iL9gQ9/6QpBYUh9+R3wJ2loL8SsRJR0hnoKKc23Fy6BNvjSnuoDj7NVr5zmYs
-         DrbLcnr5LX+j2fpwYCDwkk1y9zP8c9MceELkaxymPlpof2Pf0DF5LD73TIXZUFIJCC4i
-         HCQsL6G21HLPXzrJ16iLVBXM09Y05ApY/iXKiTOmSUD9eQbPSAPCRPzxa8+4PM2MXqxt
-         ASrw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:to:cc:references:from:subject:message-id
-         :date:user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=tbaGejzn8q8uB1o7wU9OHplgpPZiIv19pAT7ms12ifA=;
-        b=BLUJqP1HuVlfXgoprmCug6PyeuGkIBqRkFO7QbkbzAuWARsSQ+dJCMjiJ0eovA0/Nl
-         JJt3sQVlg0A/ej96mW3Xw7Sk1NO3LXkLZ9iJmuVgqj4W5D3ibGJWaNDpPP/oMch2lWdt
-         kX5++nLu4SJmomqyQ7hYCRKjlfY/n1Y8wizNLG4sDJUGRJzGjDP39Xd9OlTAfDPvDIFq
-         B9unx6tqwPj0+FKlyUZPOxI5WywAOUb9dkRUT1jVwwX/Iu2eHklluS0maestCwwiFXJq
-         aSRRpCd9Ia5cFzhj4SCW27RRMrIMPbefyN0LSXkZ1VDK7Nqs1eYDWaUyCEffr/FC4tR6
-         sjZg==
-X-Gm-Message-State: AOAM530qtGyg3H5B9vZdNjBkZ0V3tNJUStSRR3v7gutBtLRRmsLVBg+R
-        o50O9w/OlOg+wJKM5Pi2GrznVFHsDAg=
-X-Google-Smtp-Source: ABdhPJzhI8tpvObBfO6PqTIvKtbbD8pgJYJVAcb1oOdcuOkolE/4SYfSboX7C9eD20hhubbsIMbCtw==
-X-Received: by 2002:a54:4011:: with SMTP id x17mr2973033oie.112.1622133469498;
-        Thu, 27 May 2021 09:37:49 -0700 (PDT)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id z15sm579194otp.20.2021.05.27.09.37.47
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 27 May 2021 09:37:48 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-To:     Robert Marko <robert.marko@sartura.hr>
-Cc:     jdelvare@suse.com, corbet@lwn.net, linux-hwmon@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Luka Perkov <luka.perkov@sartura.hr>, jmp@epiphyte.org,
-        Paul Menzel <pmenzel@molgen.mpg.de>,
-        Donald Buczek <buczek@molgen.mpg.de>
-References: <20210430132735.127342-1-robert.marko@sartura.hr>
- <20210430134810.GA2714262@roeck-us.net>
- <CA+HBbNH+gQOmu_Ho0ivFuGHdu0zBtOrr1474z+7FA1zmNb4bug@mail.gmail.com>
- <2b990feb-dc26-debb-4f81-430bbc89b51c@roeck-us.net>
- <CA+HBbNHQHqD-wgryaBLZ5M2Lxafb0OwNcbiQJmRQPcZfprmUEg@mail.gmail.com>
- <2a1a63c7-c9b0-e38d-df1d-7643ad493aba@roeck-us.net>
- <CA+HBbNF62xzBt2r60qfzn9iveiusLKp6R-T4KU-NgoHaE6c3kQ@mail.gmail.com>
- <dec7d641-2954-29f0-124b-d0020866bf7b@roeck-us.net>
- <CA+HBbNGU4d4g0JrUKBhj07OsC7=s9qoubxNDi3MxPjmV457C+Q@mail.gmail.com>
- <8152a109-d76d-4f85-9da2-fe0a56c2019f@roeck-us.net>
- <CA+HBbNGBirE=Po7q5eUeHho0rBATa_ApWLiU_oPXsGN+6U9U+g@mail.gmail.com>
- <CA+HBbNGZ1axZpRy5UwQP_4eZCA32eyPJVcj6xN4i8AhOQMYeTA@mail.gmail.com>
- <493e4da4-8f2b-9856-b538-6e95e3766d5e@roeck-us.net>
- <CA+HBbNHspA5cZJSHJkLpnP+UODGy7w5i8mKP2NH9JALQ1RqQ_w@mail.gmail.com>
- <7af2d708-7e22-3970-7bf8-1cb23317cb55@roeck-us.net>
- <CA+HBbNFVKYPAPKkGJiRhW4VmEGX=da8QALNwbVA1gGegF6KPkQ@mail.gmail.com>
-From:   Guenter Roeck <linux@roeck-us.net>
-Subject: Re: [PATCH 1/3] hwmon: (pmbus) Add driver for Delta DPS-920AB PSU
-Message-ID: <2ba03d58-a4de-b683-6169-3f12482aa29e@roeck-us.net>
-Date:   Thu, 27 May 2021 09:37:46 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        id S236445AbhE0Qjo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 May 2021 12:39:44 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59652 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234301AbhE0Qjn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 27 May 2021 12:39:43 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 77A906103E;
+        Thu, 27 May 2021 16:38:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1622133490;
+        bh=vvNzxAIEG+4uJICqCeofDXiAarimtxF9FJNVXhh6BQU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=hFsIiGejymRYK5zkNbdppwXfrFe0eFC7mKV80e8qR1hRFKedpqAQzwgB6T0fRqLVP
+         gDUmsrQHqWQlU8XukMjR2N6pUKoVhlb9fVxHIYhLoit9bCjUjRW0BMZVsRFqYEZI9t
+         lx9KKtI9uvX+MYdgqYW/RUEpP9n4TFHkoqoWY2K0=
+Date:   Thu, 27 May 2021 18:38:07 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Piyush Thange <pthange19@gmail.com>
+Cc:     andreas.noever@gmail.com, michael.jamet@intel.com,
+        mika.westerberg@linux.intel.com, YehezkelShB@gmail.com,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] drivers: thunderbolt: Fixed Coding Style issues
+Message-ID: <YK/K78NOkRK6x+zT@kroah.com>
+References: <20210527160456.28592-1-pthange19@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <CA+HBbNFVKYPAPKkGJiRhW4VmEGX=da8QALNwbVA1gGegF6KPkQ@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210527160456.28592-1-pthange19@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5/27/21 7:58 AM, Robert Marko wrote:
-[ ... ]
-
->>>>>> I tried applying the block support for mv64xx as well:
->>>>>> https://patchwork.ozlabs.org/project/linux-i2c/patch/20200118115820.9080-1-fuga@studiofuga.com/
->>>>
->>>> That patch would be needed, but it looks buggy to me. This chunk:
->>>>
->>>> +               drv_data->effective_length = data+1;
->>>> +               drv_data->bytes_left = data+1;
->>>> +               drv_data->msg->len = data+1;
->>>>
->>>> should be:
->>>>
->>>> +               drv_data->effective_length = data+1;
->>>> +               drv_data->bytes_left = data;
->>>> +               drv_data->msg->len = data+1;
->>>>
->>>> It should also make sure that 'data' is not larger than I2C_SMBUS_BLOCK_MAX,
->>>> and bail out if it isn't.
->>>
->>> Yeah, I did not check the contents, I just saw 2 reviews and tested it
->>> since it can't hurt.
->>
->> That patch doesn't work at all. Make the above change, and also change
->> the type of effective_length from u32 to int, and try again.
+On Thu, May 27, 2021 at 09:34:56PM +0530, Piyush Thange wrote:
+> Fixed coding style issues generated by checkpatch.pl with --strict option.
 > 
-> I was just looking and it, and doing the changes you recommended make
-> no difference at all.
+> Signed-off-by: Piyush Thange <pthange19@gmail.com>
+> ---
+>  drivers/thunderbolt/switch.c | 43 ++++++++++++++++++++++--------------
+>  1 file changed, 27 insertions(+), 16 deletions(-)
+> 
+> diff --git a/drivers/thunderbolt/switch.c b/drivers/thunderbolt/switch.c
+> index e73cd296db7e..921d25590560 100644
+> --- a/drivers/thunderbolt/switch.c
+> +++ b/drivers/thunderbolt/switch.c
+> @@ -148,8 +148,9 @@ static int nvm_validate_and_write(struct tb_switch *sw)
+>  		if (sw->generation < 3) {
+>  			/* Write CSS headers first */
+>  			ret = dma_port_flash_write(sw->dma_port,
+> -				DMA_PORT_CSS_ADDRESS, buf + NVM_CSS,
+> -				DMA_PORT_CSS_MAX_SIZE);
+> +						   DMA_PORT_CSS_ADDRESS,
+> +						   buf + NVM_CSS,
+> +						   DMA_PORT_CSS_MAX_SIZE);
+>  			if (ret)
+>  				return ret;
+>  		}
+> @@ -463,7 +464,7 @@ static const char *tb_port_type(struct tb_regs_port_header *port)
+>  {
+>  	switch (port->type >> 16) {
+>  	case 0:
+> -		switch ((u8) port->type) {
+> +		switch ((u8)port->type) {
+>  		case 0:
+>  			return "Inactive";
+>  		case 1:
+> @@ -513,6 +514,7 @@ int tb_port_state(struct tb_port *port)
+>  {
+>  	struct tb_cap_phy phy;
+>  	int res;
+> +
+>  	if (port->cap_phy == 0) {
+>  		tb_port_WARN(port, "does not have a PHY\n");
+>  		return -EINVAL;
+> @@ -542,6 +544,7 @@ int tb_wait_for_port(struct tb_port *port, bool wait_if_unplugged)
+>  {
+>  	int retries = 10;
+>  	int state;
+> +
+>  	if (!port->cap_phy) {
+>  		tb_port_WARN(port, "does not have PHY\n");
+>  		return -EINVAL;
+> @@ -636,6 +639,7 @@ int tb_port_add_nfc_credits(struct tb_port *port, int credits)
+>  int tb_port_clear_counter(struct tb_port *port, int counter)
+>  {
+>  	u32 zero[3] = { 0, 0, 0 };
+> +
+>  	tb_port_dbg(port, "clearing counter %d\n", counter);
+>  	return tb_port_write(port, zero, TB_CFG_COUNTERS, 3 * counter, 3);
+>  }
+> @@ -748,7 +752,6 @@ static int tb_init_port(struct tb_port *port)
+>  
+>  	INIT_LIST_HEAD(&port->list);
+>  	return 0;
+> -
+>  }
+>  
+>  static int tb_port_alloc_hopid(struct tb_port *port, bool in, int min_hopid,
+> @@ -830,6 +833,7 @@ static inline bool tb_switch_is_reachable(const struct tb_switch *parent,
+>  					  const struct tb_switch *sw)
+>  {
+>  	u64 mask = (1ULL << parent->config.depth * 8) - 1;
+> +
+>  	return (tb_route(parent) & mask) == (tb_route(sw) & mask);
+>  }
+>  
+> @@ -1132,6 +1136,7 @@ bool tb_pci_port_is_enabled(struct tb_port *port)
+>  int tb_pci_port_enable(struct tb_port *port, bool enable)
+>  {
+>  	u32 word = enable ? ADP_PCIE_CS_0_PE : 0x0;
+> +
+>  	if (!port->cap_adap)
+>  		return -ENXIO;
+>  	return tb_port_write(port, &word, TB_CFG_PORT,
+> @@ -1241,7 +1246,7 @@ int tb_dp_port_enable(struct tb_port *port, bool enable)
+>  	int ret;
+>  
+>  	ret = tb_port_read(port, data, TB_CFG_PORT,
+> -			  port->cap_adap + ADP_DP_CS_0, ARRAY_SIZE(data));
+> +			   port->cap_adap + ADP_DP_CS_0, ARRAY_SIZE(data));
+>  	if (ret)
+>  		return ret;
+>  
+> @@ -1282,9 +1287,9 @@ static void tb_dump_switch(const struct tb *tb, const struct tb_switch *sw)
+>  	tb_dbg(tb, "  Max Port Number: %d\n", regs->max_port_number);
+>  	tb_dbg(tb, "  Config:\n");
+>  	tb_dbg(tb,
+> -		"   Upstream Port Number: %d Depth: %d Route String: %#llx Enabled: %d, PlugEventsDelay: %dms\n",
+> +	       "   Upstream Port Number: %d Depth: %d Route String: %#llx Enabled: %d, PlugEventsDelay: %dms\n",
+>  	       regs->upstream_port_number, regs->depth,
+> -	       (((u64) regs->route_hi) << 32) | regs->route_lo,
+> +	       (((u64)regs->route_hi) << 32) | regs->route_lo,
+>  	       regs->enabled, regs->plug_events_delay);
+>  	tb_dbg(tb, "   unknown1: %#x unknown4: %#x\n",
+>  	       regs->__unknown1, regs->__unknown4);
+> @@ -1305,7 +1310,7 @@ int tb_switch_reset(struct tb_switch *sw)
+>  
+>  	tb_sw_dbg(sw, "resetting switch\n");
+>  
+> -	res.err = tb_sw_write(sw, ((u32 *) &sw->config) + 2,
+> +	res.err = tb_sw_write(sw, ((u32 *)&sw->config) + 2,
+>  			      TB_CFG_SWITCH, 2, 2);
+>  	if (res.err)
+>  		return res.err;
+> @@ -1331,7 +1336,7 @@ static int tb_plug_events_active(struct tb_switch *sw, bool active)
+>  		return 0;
+>  
+>  	sw->config.plug_events_delay = 0xff;
+> -	res = tb_sw_write(sw, ((u32 *) &sw->config) + 4, TB_CFG_SWITCH, 4, 1);
+> +	res = tb_sw_write(sw, ((u32 *)&sw->config) + 4, TB_CFG_SWITCH, 4, 1);
+>  	if (res)
+>  		return res;
+>  
+> @@ -1579,7 +1584,7 @@ static DEVICE_ATTR(rx_lanes, 0444, lanes_show, NULL);
+>  static DEVICE_ATTR(tx_lanes, 0444, lanes_show, NULL);
+>  
+>  static ssize_t nvm_authenticate_show(struct device *dev,
+> -	struct device_attribute *attr, char *buf)
+> +				     struct device_attribute *attr, char *buf)
+>  {
+>  	struct tb_switch *sw = tb_to_switch(dev);
+>  	u32 status;
+> @@ -1646,9 +1651,12 @@ static ssize_t nvm_authenticate_sysfs(struct device *dev, const char *buf,
+>  }
+>  
+>  static ssize_t nvm_authenticate_store(struct device *dev,
+> -	struct device_attribute *attr, const char *buf, size_t count)
+> +				      struct device_attribute *attr,
+> +				      const char *buf,
+> +				      size_t count)
+>  {
+>  	int ret = nvm_authenticate_sysfs(dev, buf, false);
+> +
+>  	if (ret)
+>  		return ret;
+>  	return count;
+> @@ -1656,13 +1664,16 @@ static ssize_t nvm_authenticate_store(struct device *dev,
+>  static DEVICE_ATTR_RW(nvm_authenticate);
+>  
+>  static ssize_t nvm_authenticate_on_disconnect_show(struct device *dev,
+> -	struct device_attribute *attr, char *buf)
+> +						   struct device_attribute *attr,
+> +						   char *buf)
+>  {
+>  	return nvm_authenticate_show(dev, attr, buf);
+>  }
+>  
+>  static ssize_t nvm_authenticate_on_disconnect_store(struct device *dev,
+> -	struct device_attribute *attr, const char *buf, size_t count)
+> +						    struct device_attribute *attr,
+> +						    const char *buf,
+> +						    size_t count)
+>  {
+>  	int ret;
+>  
+> @@ -1859,7 +1870,7 @@ static int tb_switch_uevent(struct device *dev, struct kobj_uevent_env *env)
+>  		/* Device is hub if it has any downstream ports */
+>  		tb_switch_for_each_port(sw, port) {
+>  			if (!port->disabled && !tb_is_upstream_port(port) &&
+> -			     tb_port_is_null(port)) {
+> +			    tb_port_is_null(port)) {
+>  				hub = true;
+>  				break;
+>  			}
+> @@ -2032,7 +2043,7 @@ struct tb_switch *tb_switch_alloc(struct tb *tb, struct device *parent,
+>  
+>  	/* initialize ports */
+>  	sw->ports = kcalloc(sw->config.max_port_number + 1, sizeof(*sw->ports),
+> -				GFP_KERNEL);
+> +			    GFP_KERNEL);
+>  	if (!sw->ports) {
+>  		ret = -ENOMEM;
+>  		goto err_free_sw_ports;
+> @@ -2754,7 +2765,7 @@ int tb_switch_resume(struct tb_switch *sw)
+>  		}
+>  		if (sw->uid != uid) {
+>  			tb_sw_info(sw,
+> -				"changed while suspended (uid %#llx -> %#llx)\n",
+> +				   "changed while suspended (uid %#llx -> %#llx)\n",
+>  				sw->uid, uid);
+>  			return -ENODEV;
+>  		}
+> -- 
+> 2.25.1
 > 
 
-Is the i2c controller compatible with marvell,mv78230-i2c ?
-The block transfers would not work in that case. Let me know
-and I'll send you a patch that might fix it.
+Hi,
 
-Guenter
+This is the friendly patch-bot of Greg Kroah-Hartman.  You have sent him
+a patch that has triggered this response.  He used to manually respond
+to these common problems, but in order to save his sanity (he kept
+writing the same thing over and over, yet to different people), I was
+created.  Hopefully you will not take offence and will fix the problem
+in your patch and resubmit it so that it can be accepted into the Linux
+kernel tree.
+
+You are receiving this message because of the following common error(s)
+as indicated below:
+
+- Your patch did many different things all at once, making it difficult
+  to review.  All Linux kernel patches need to only do one thing at a
+  time.  If you need to do multiple things (such as clean up all coding
+  style issues in a file/driver), do it in a sequence of patches, each
+  one doing only one thing.  This will make it easier to review the
+  patches to ensure that they are correct, and to help alleviate any
+  merge issues that larger patches can cause.
+
+- You did not specify a description of why the patch is needed, or
+  possibly, any description at all, in the email body.  Please read the
+  section entitled "The canonical patch format" in the kernel file,
+  Documentation/SubmittingPatches for what is needed in order to
+  properly describe the change.
+
+- You did not write a descriptive Subject: for the patch, allowing Greg,
+  and everyone else, to know what this patch is all about.  Please read
+  the section entitled "The canonical patch format" in the kernel file,
+  Documentation/SubmittingPatches for what a proper Subject: line should
+  look like.
+
+If you wish to discuss this problem further, or you have questions about
+how to resolve this issue, please feel free to respond to this email and
+Greg will reply once he has dug out from the pending patches received
+from other developers.
+
+thanks,
+
+greg k-h's patch email bot
