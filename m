@@ -2,29 +2,29 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C48D3927CC
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 08:39:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 566553927CF
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 08:39:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229897AbhE0GlM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 May 2021 02:41:12 -0400
-Received: from mga03.intel.com ([134.134.136.65]:11441 "EHLO mga03.intel.com"
+        id S234144AbhE0GlQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 May 2021 02:41:16 -0400
+Received: from mga03.intel.com ([134.134.136.65]:11445 "EHLO mga03.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233847AbhE0GlB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 May 2021 02:41:01 -0400
-IronPort-SDR: 8P2qYlqmYv5LvHVlYRNquZEqhKniSMi2rzIfTU/Cf42+rwwzHNDZ2nw3kCuZQu3DcJw5E2MXQi
- prEL9X18KbqA==
-X-IronPort-AV: E=McAfee;i="6200,9189,9996"; a="202696291"
+        id S233918AbhE0GlD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 27 May 2021 02:41:03 -0400
+IronPort-SDR: jaPyVRyTsGQ63j1PpBj+vcVgmWQwuhQiYcpXSp2wzG3kZjGtZjoaxjlriCeoCvlBBkIz5U0v+L
+ cJT2jjAZSZDw==
+X-IronPort-AV: E=McAfee;i="6200,9189,9996"; a="202696310"
 X-IronPort-AV: E=Sophos;i="5.82,334,1613462400"; 
-   d="scan'208";a="202696291"
+   d="scan'208";a="202696310"
 Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 May 2021 23:39:14 -0700
-IronPort-SDR: uv7aJivqylP3zBY7i0ZpWj9vQcx0XwGzv5Y2brrulyEuJ4u9M+YtJlGmym+dOfo0LWBA2D2+Mg
- TjDsPZ6hveYg==
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 May 2021 23:39:18 -0700
+IronPort-SDR: L2z5zeTSqZ0fN7doKf84ty6PFSkpV6KdncaUemWDUbkvgOrHXk/igP6xVm7Rv0k3qyPnacx/7y
+ p5nE4Bqso0nQ==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.82,334,1613462400"; 
-   d="scan'208";a="615265858"
+   d="scan'208";a="615265884"
 Received: from bspteam04.iind.intel.com ([10.106.46.142])
-  by orsmga005.jf.intel.com with ESMTP; 26 May 2021 23:39:10 -0700
+  by orsmga005.jf.intel.com with ESMTP; 26 May 2021 23:39:14 -0700
 From:   shruthi.sanil@intel.com
 To:     daniel.lezcano@linaro.org, tglx@linutronix.de, robh+dt@kernel.org,
         linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
@@ -32,9 +32,9 @@ Cc:     andriy.shevchenko@linux.intel.com, kris.pan@linux.intel.com,
         mgross@linux.intel.com, srikanth.thokala@intel.com,
         lakshmi.bai.raja.subramanian@intel.com,
         mallikarjunappa.sangannavar@intel.com, shruthi.sanil@intel.com
-Subject: [PATCH v3 1/2] dt-bindings: timer: Add bindings for Intel Keem Bay SoC Timer
-Date:   Thu, 27 May 2021 12:09:05 +0530
-Message-Id: <20210527063906.18592-2-shruthi.sanil@intel.com>
+Subject: [PATCH v3 2/2] clocksource: Add Intel Keem Bay timer support
+Date:   Thu, 27 May 2021 12:09:06 +0530
+Message-Id: <20210527063906.18592-3-shruthi.sanil@intel.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20210527063906.18592-1-shruthi.sanil@intel.com>
 References: <20210527063906.18592-1-shruthi.sanil@intel.com>
@@ -44,202 +44,330 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Shruthi Sanil <shruthi.sanil@intel.com>
 
-Add Device Tree bindings for the Timer IP, which can be used as
-clocksource and clockevent device in the Intel Keem Bay SoC.
+The Intel Keem Bay timer driver supports clocksource and clockevent
+features for the timer IP used in Intel Keem Bay SoC.
+The timer block supports 1 free running counter and 8 timers.
+The free running counter can be used as a clocksource and
+the timers can be used as clockevent. Each timer is capable of
+generating individual interrupt.
+Both the features are enabled through the timer general config register.
 
 Reviewed-by: Andy Shevchenko <andriy.shevchenko@intel.com>
 Signed-off-by: Shruthi Sanil <shruthi.sanil@intel.com>
 ---
- .../bindings/timer/intel,keembay-timer.yaml   | 180 ++++++++++++++++++
- 1 file changed, 180 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/timer/intel,keembay-timer.yaml
+ MAINTAINERS                         |   5 +
+ drivers/clocksource/Kconfig         |  11 ++
+ drivers/clocksource/Makefile        |   1 +
+ drivers/clocksource/timer-keembay.c | 255 ++++++++++++++++++++++++++++
+ 4 files changed, 272 insertions(+)
+ create mode 100644 drivers/clocksource/timer-keembay.c
 
-diff --git a/Documentation/devicetree/bindings/timer/intel,keembay-timer.yaml b/Documentation/devicetree/bindings/timer/intel,keembay-timer.yaml
+diff --git a/MAINTAINERS b/MAINTAINERS
+index 04babfa8fc76..73543ed60e84 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -9278,6 +9278,11 @@ F:	drivers/crypto/keembay/keembay-ocs-hcu-core.c
+ F:	drivers/crypto/keembay/ocs-hcu.c
+ F:	drivers/crypto/keembay/ocs-hcu.h
+ 
++INTEL KEEM BAY TIMER SUPPORT
++M:	Shruthi Sanil <shruthi.sanil@intel.com>
++S:	Maintained
++F:	drivers/clocksource/timer-keembay.c
++
+ INTEL MANAGEMENT ENGINE (mei)
+ M:	Tomas Winkler <tomas.winkler@intel.com>
+ L:	linux-kernel@vger.kernel.org
+diff --git a/drivers/clocksource/Kconfig b/drivers/clocksource/Kconfig
+index 39aa21d01e05..08f491cf7f61 100644
+--- a/drivers/clocksource/Kconfig
++++ b/drivers/clocksource/Kconfig
+@@ -693,4 +693,15 @@ config MICROCHIP_PIT64B
+ 	  modes and high resolution. It is used as a clocksource
+ 	  and a clockevent.
+ 
++config KEEMBAY_TIMER
++	bool "Intel Keem Bay timer"
++	depends on ARCH_KEEMBAY
++	select TIMER_OF
++	help
++	  This option enables the support for the Intel Keem Bay
++	  general purpose timer and free running counter driver.
++	  Each timer can generate an individual interrupt and
++	  supports oneshot and periodic modes.
++	  The 64-bit counter can be used as a clock source.
++
+ endmenu
+diff --git a/drivers/clocksource/Makefile b/drivers/clocksource/Makefile
+index c17ee32a7151..ea319063ba47 100644
+--- a/drivers/clocksource/Makefile
++++ b/drivers/clocksource/Makefile
+@@ -88,3 +88,4 @@ obj-$(CONFIG_CSKY_MP_TIMER)		+= timer-mp-csky.o
+ obj-$(CONFIG_GX6605S_TIMER)		+= timer-gx6605s.o
+ obj-$(CONFIG_HYPERV_TIMER)		+= hyperv_timer.o
+ obj-$(CONFIG_MICROCHIP_PIT64B)		+= timer-microchip-pit64b.o
++obj-$(CONFIG_KEEMBAY_TIMER)		+= timer-keembay.o
+diff --git a/drivers/clocksource/timer-keembay.c b/drivers/clocksource/timer-keembay.c
 new file mode 100644
-index 000000000000..e0152e19208f
+index 000000000000..e62187eeb4f6
 --- /dev/null
-+++ b/Documentation/devicetree/bindings/timer/intel,keembay-timer.yaml
-@@ -0,0 +1,180 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/timer/intel,keembay-timer.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
++++ b/drivers/clocksource/timer-keembay.c
+@@ -0,0 +1,255 @@
++// SPDX-License-Identifier: GPL-2.0-only
++/*
++ * Intel Keem Bay Timer driver
++ *
++ * Copyright (C) 2020 Intel Corporation
++ */
 +
-+title: Intel Keem Bay SoC Timers
++#include <linux/bitops.h>
++#include <linux/idr.h>
++#include <linux/interrupt.h>
++#include <linux/io-64-nonatomic-lo-hi.h>
++#include <linux/module.h>
++#include <linux/of_address.h>
++#include <linux/sizes.h>
++#include <linux/slab.h>
 +
-+maintainers:
-+  - Shruthi Sanil <shruthi.sanil@intel.com>
++#include "timer-of.h"
 +
-+description: |
-+  The Intel Keem Bay timer driver supports clocksource and clockevent
-+  features for the timer IP used in Intel Keembay SoC.
-+  The timer block supports 1 free running counter and 8 timers.
-+  The free running counter can be used as a clocksouce and
-+  the timers can be used as clockevent. Each timer is capable of
-+  generating inividual interrupt.
-+  Both the features are enabled through the timer general config register.
++/* Timer register offset */
++#define TIM_CNT_VAL_OFFSET		0x0
++#define TIM_RELOAD_VAL_OFFSET		0x4
++#define TIM_CONFIG_OFFSET		0x8
 +
-+  The parent node represents the common general configuration details and
-+  the child nodes represents the counter and timers.
++/* Bit fields of timer general config register */
++#define TIM_CONFIG_PRESCALER_ENABLE	BIT(2)
++#define TIM_CONFIG_COUNTER_ENABLE	BIT(0)
 +
-+properties:
-+  reg:
-+    description: General configuration register address and length.
-+    maxItems: 1
++/* Bit fields of timer config register */
++#define TIM_CONFIG_INTERRUPT_PENDING	BIT(4)
++#define TIM_CONFIG_INTERRUPT_ENABLE	BIT(2)
++#define TIM_CONFIG_RESTART		BIT(1)
++#define TIM_CONFIG_ENABLE		BIT(0)
 +
-+  "#address-cells":
-+    const: 2
++#define TIM_GEN_MASK			GENMASK(31, 12)
++#define TIM_RATING			200
++#define TIM_CLKSRC_MASK_BITS		64
 +
-+  "#size-cells":
-+    const: 2
++#define TIMER_NAME_SIZE			25
 +
-+  ranges: true
++/* Provides a unique ID for each timer */
++static DEFINE_IDA(keembay_timer_ida);
 +
-+required:
-+  - compatible
-+  - reg
-+  - "#address-cells"
-+  - "#size-cells"
-+  - ranges
++static inline void keembay_timer_enable(void __iomem *base, u32 flags)
++{
++	writel(TIM_CONFIG_ENABLE | flags, base + TIM_CONFIG_OFFSET);
++}
 +
-+patternProperties:
-+  "^counter@[0-9a-f]+$":
-+    type: object
-+    description: Properties for Intel Keem Bay counter
++static inline void keembay_timer_disable(void __iomem *base)
++{
++	writel(0x0, base + TIM_CONFIG_OFFSET);
++}
 +
-+    properties:
-+      compatible:
-+        enum:
-+          - intel,keembay-counter
++static inline void keembay_timer_update_counter(void __iomem *base, u32 val)
++{
++	writel(val, base + TIM_CNT_VAL_OFFSET);
++	writel(val, base + TIM_RELOAD_VAL_OFFSET);
++}
 +
-+      reg:
-+        maxItems: 1
++static inline void keembay_timer_clear_pending_int(void __iomem *base)
++{
++	u32 val;
 +
-+      clocks:
-+        maxItems: 1
++	val = readl(base + TIM_CONFIG_OFFSET);
++	val &= ~TIM_CONFIG_INTERRUPT_PENDING;
++	writel(val, base + TIM_CONFIG_OFFSET);
++}
 +
-+    required:
-+      - compatible
-+      - reg
-+      - clocks
++static int keembay_timer_set_next_event(unsigned long evt, struct clock_event_device *ce)
++{
++	u32 flags = TIM_CONFIG_INTERRUPT_ENABLE;
++	struct timer_of *to = to_timer_of(ce);
++	void __iomem *tim_base = timer_of_base(to);
 +
-+  "^timer@[0-9a-f]+$":
-+    type: object
-+    description: Properties for Intel Keem Bay timer
++	keembay_timer_disable(tim_base);
++	keembay_timer_update_counter(tim_base, evt);
++	keembay_timer_enable(tim_base, flags);
 +
-+    properties:
-+      compatible:
-+        enum:
-+          - intel,keembay-timer
++	return 0;
++}
 +
-+      reg:
-+        maxItems: 1
++static int keembay_timer_periodic(struct clock_event_device *ce)
++{
++	u32 flags = TIM_CONFIG_INTERRUPT_ENABLE | TIM_CONFIG_RESTART;
++	struct timer_of *to = to_timer_of(ce);
++	void __iomem *tim_base = timer_of_base(to);
 +
-+      interrupts:
-+        maxItems: 1
++	keembay_timer_disable(tim_base);
++	keembay_timer_update_counter(tim_base, timer_of_period(to));
++	keembay_timer_enable(tim_base, flags);
 +
-+      clocks:
-+        maxItems: 1
++	return 0;
++}
 +
-+    required:
-+      - compatible
-+      - reg
-+      - interrupts
-+      - clocks
++static int keembay_timer_shutdown(struct clock_event_device *ce)
++{
++	struct timer_of *to = to_timer_of(ce);
 +
-+additionalProperties: false
++	keembay_timer_disable(timer_of_base(to));
 +
-+examples:
-+  - |
-+    #include <dt-bindings/interrupt-controller/arm-gic.h>
-+    #include <dt-bindings/interrupt-controller/irq.h>
-+    #define KEEM_BAY_A53_TIM
++	return 0;
++}
 +
-+    soc {
-+        #address-cells = <0x2>;
-+        #size-cells = <0x2>;
++static irqreturn_t keembay_timer_isr(int irq, void *dev_id)
++{
++	struct clock_event_device *evt = dev_id;
++	struct timer_of *to = to_timer_of(evt);
++	void __iomem *tim_base = timer_of_base(to);
++	u32 val;
 +
-+        gpt@20331000 {
-+            reg = <0x0 0x20331000 0x0 0xc>;
-+            #address-cells = <0x2>;
-+            #size-cells = <0x2>;
-+            ranges;
++	val = readl(tim_base + TIM_CONFIG_OFFSET);
 +
-+            counter@203300e8 {
-+                compatible = "intel,keembay-counter";
-+                reg = <0x0 0x203300e8 0x0 0x8>;
-+                clocks = <&scmi_clk KEEM_BAY_A53_TIM>;
-+                status = "okay";
-+            };
++	if (val & TIM_CONFIG_RESTART) {
++		/* Clear interrupt for periodic timer*/
++		keembay_timer_clear_pending_int(tim_base);
++	} else {
++		/* Disable the timer for one shot timer */
++		keembay_timer_disable(tim_base);
++	}
 +
-+            timer@20330010 {
-+                compatible = "intel,keembay-timer";
-+                reg = <0x0 0x20330010 0x0 0xc>;
-+                interrupts = <GIC_SPI 0x3 IRQ_TYPE_LEVEL_HIGH>;
-+                clocks = <&scmi_clk KEEM_BAY_A53_TIM>;
-+                status = "okay";
-+            };
++	evt->event_handler(evt);
 +
-+            timer@20330020 {
-+                compatible = "intel,keembay-timer";
-+                reg = <0x0 0x20330020 0x0 0xc>;
-+                interrupts = <GIC_SPI 0x4 IRQ_TYPE_LEVEL_HIGH>;
-+                clocks = <&scmi_clk KEEM_BAY_A53_TIM>;
-+                status = "okay";
-+            };
++	return IRQ_HANDLED;
++}
 +
-+            timer@20330030 {
-+                compatible = "intel,keembay-timer";
-+                reg = <0x0 0x20330030 0x0 0xc>;
-+                interrupts = <GIC_SPI 0x5 IRQ_TYPE_LEVEL_HIGH>;
-+                clocks = <&scmi_clk KEEM_BAY_A53_TIM>;
-+                status = "okay";
-+            };
++static int __init keembay_clockevent_init(struct device_node *np)
++{
++	struct device_node *gpt_node = np->parent;
++	struct timer_of *keembay_ce_to;
++	void __iomem *gpt_base;
++	char *timer_name;
++	int timer_id;
++	int ret;
++	u32 val;
 +
-+            timer@20330040 {
-+                compatible = "intel,keembay-timer";
-+                reg = <0x0 0x20330040 0x0 0xc>;
-+                interrupts = <GIC_SPI 0x6 IRQ_TYPE_LEVEL_HIGH>;
-+                clocks = <&scmi_clk KEEM_BAY_A53_TIM>;
-+                status = "okay";
-+            };
++	gpt_base = of_iomap(gpt_node, 0);
++	if (!gpt_base) {
++		pr_err("%pOF: Failed to get general config base address\n", np);
++		return -ENXIO;
++	}
 +
-+            timer@20330050 {
-+                compatible = "intel,keembay-timer";
-+                reg = <0x0 0x20330050 0x0 0xc>;
-+                interrupts = <GIC_SPI 0x7 IRQ_TYPE_LEVEL_HIGH>;
-+                clocks = <&scmi_clk KEEM_BAY_A53_TIM>;
-+                status = "okay";
-+            };
++	/* Prescaler must be enabled for the timer to operate */
++	val = readl(gpt_base + TIM_CONFIG_OFFSET);
++	if (!(val & TIM_CONFIG_PRESCALER_ENABLE)) {
++		pr_err("%pOF: Prescaler is not enabled\n", np);
++		ret = -ENODEV;
++		goto err_iounmap;
++	}
 +
-+            timer@20330060 {
-+                compatible = "intel,keembay-timer";
-+                reg = <0x0 0x20330060 0x0 0xc>;
-+                interrupts = <GIC_SPI 0x8 IRQ_TYPE_LEVEL_HIGH>;
-+                clocks = <&scmi_clk KEEM_BAY_A53_TIM>;
-+                status = "okay";
-+            };
++	keembay_ce_to = kzalloc(sizeof(*keembay_ce_to), GFP_KERNEL);
++	if (!keembay_ce_to) {
++		ret = -ENOMEM;
++		goto err_iounmap;
++	}
 +
-+            timer@20330070 {
-+                compatible = "intel,keembay-timer";
-+                reg = <0x0 0x20330070 0x0 0xc>;
-+                interrupts = <GIC_SPI 0x9 IRQ_TYPE_LEVEL_HIGH>;
-+                clocks = <&scmi_clk KEEM_BAY_A53_TIM>;
-+                status = "okay";
-+            };
++	timer_id = ida_alloc(&keembay_timer_ida, GFP_KERNEL);
++	if (timer_id < 0) {
++		ret = timer_id;
++		goto err_keembay_ce_to_free;
++	}
 +
-+            timer@20330080 {
-+                compatible = "intel,keembay-timer";
-+                reg = <0x0 0x20330080 0x0 0xc>;
-+                interrupts = <GIC_SPI 0xa IRQ_TYPE_LEVEL_HIGH>;
-+                clocks = <&scmi_clk KEEM_BAY_A53_TIM>;
-+                status = "okay";
-+            };
-+        };
-+    };
++	timer_name = kasprintf(GFP_KERNEL, "keembay_timer%d", timer_id);
++	if (!timer_name) {
++		ret = -ENOMEM;
++		goto err_free_ida;
++	}
 +
-+...
++	keembay_ce_to->flags = TIMER_OF_IRQ | TIMER_OF_BASE | TIMER_OF_CLOCK;
++	keembay_ce_to->clkevt.name = timer_name;
++	keembay_ce_to->clkevt.cpumask = cpumask_of(0);
++	keembay_ce_to->clkevt.features = CLOCK_EVT_FEAT_PERIODIC |
++					 CLOCK_EVT_FEAT_ONESHOT  |
++					 CLOCK_EVT_FEAT_DYNIRQ;
++	keembay_ce_to->clkevt.rating = TIM_RATING;
++	keembay_ce_to->clkevt.set_next_event = keembay_timer_set_next_event;
++	keembay_ce_to->clkevt.set_state_periodic = keembay_timer_periodic;
++	keembay_ce_to->clkevt.set_state_shutdown = keembay_timer_shutdown;
++	keembay_ce_to->of_irq.handler = keembay_timer_isr;
++	keembay_ce_to->of_irq.flags = IRQF_TIMER;
++
++	ret = timer_of_init(np, keembay_ce_to);
++	if (ret)
++		goto err_timer_name_free;
++
++	val = readl(gpt_base + TIM_RELOAD_VAL_OFFSET);
++	iounmap(gpt_base);
++
++	keembay_ce_to->of_clk.rate = keembay_ce_to->of_clk.rate / (val + 1);
++
++	clockevents_config_and_register(&keembay_ce_to->clkevt,
++					timer_of_rate(keembay_ce_to),
++					1,
++					U32_MAX);
++
++	return 0;
++
++err_timer_name_free:
++	kfree(timer_name);
++err_free_ida:
++	ida_free(&keembay_timer_ida, timer_id);
++err_keembay_ce_to_free:
++	kfree(keembay_ce_to);
++err_iounmap:
++	iounmap(gpt_base);
++
++	return ret;
++}
++
++static struct timer_of keembay_cs_to = {
++	.flags	= TIMER_OF_BASE | TIMER_OF_CLOCK,
++};
++
++static u64 notrace keembay_clocksource_read(struct clocksource *cs)
++{
++	return lo_hi_readq(timer_of_base(&keembay_cs_to));
++}
++
++static struct clocksource keembay_counter = {
++	.name	= "keembay_sys_counter",
++	.rating	= TIM_RATING,
++	.read	= keembay_clocksource_read,
++	.mask	= CLOCKSOURCE_MASK(TIM_CLKSRC_MASK_BITS),
++	.flags	= CLOCK_SOURCE_IS_CONTINUOUS |
++		  CLOCK_SOURCE_SUSPEND_NONSTOP,
++};
++
++static int __init keembay_clocksource_init(struct device_node *np)
++{
++	struct device_node *gpt_node = np->parent;
++	void __iomem *gpt_base;
++	u32 val;
++	int ret;
++
++	gpt_base = of_iomap(gpt_node, 0);
++	if (!gpt_base) {
++		pr_err("%pOF: Failed to get general config base address\n", np);
++		return -ENXIO;
++	}
++
++	/* Free Running Counter must be enabled */
++	val = readl(gpt_base + TIM_CONFIG_OFFSET);
++	iounmap(gpt_base);
++	if (!(val & TIM_CONFIG_COUNTER_ENABLE)) {
++		pr_err("%pOF: free running counter is not enabled\n", np);
++		return -ENODEV;
++	}
++
++	ret = timer_of_init(np, &keembay_cs_to);
++	if (ret)
++		return ret;
++
++	return clocksource_register_hz(&keembay_counter, timer_of_rate(&keembay_cs_to));
++}
++
++TIMER_OF_DECLARE(keembay_clockevent, "intel,keembay-timer", keembay_clockevent_init);
++TIMER_OF_DECLARE(keembay_clocksource, "intel,keembay-counter", keembay_clocksource_init);
 -- 
 2.17.1
 
