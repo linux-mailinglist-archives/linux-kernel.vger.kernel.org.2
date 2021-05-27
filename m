@@ -2,190 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C98C339385B
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 23:44:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F6E5393864
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 23:47:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236272AbhE0VqR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 May 2021 17:46:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34146 "EHLO
+        id S235075AbhE0VtZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 May 2021 17:49:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35010 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235793AbhE0Vpk (ORCPT
+        with ESMTP id S231419AbhE0VtX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 May 2021 17:45:40 -0400
-Received: from mail-lj1-x22e.google.com (mail-lj1-x22e.google.com [IPv6:2a00:1450:4864:20::22e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9ACD7C061763;
-        Thu, 27 May 2021 14:44:06 -0700 (PDT)
-Received: by mail-lj1-x22e.google.com with SMTP id w15so2696351ljo.10;
-        Thu, 27 May 2021 14:44:06 -0700 (PDT)
+        Thu, 27 May 2021 17:49:23 -0400
+Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5158C061574
+        for <linux-kernel@vger.kernel.org>; Thu, 27 May 2021 14:47:47 -0700 (PDT)
+Received: by mail-wm1-x32f.google.com with SMTP id n17-20020a7bc5d10000b0290169edfadac9so3445070wmk.1
+        for <linux-kernel@vger.kernel.org>; Thu, 27 May 2021 14:47:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=ifCod93ETyGPmmfLtl3IBeFp9blcjqCRjZs9HqcoCbk=;
-        b=nPhfvVba6cP0BsxSnupUbTN8KkPK56j2VMa1uLJTdRVW5RZCFL7FX9GwUvwVS3rI+g
-         H6YFZhLo9g2SyofsAiCuvMXBivwxzkNHe4izEQ4zgJc+SDB9JQCAhHr9AXz72vef7AV7
-         iR3VzdIF6dKNgRyxagem92kQLkcTuNR2v8nn6GQ6ZioWTVTG+dyksJuNnqkzZTvEgO41
-         YTiMUHmAyBl/fmB4h+1aYZai/PcKqRROb7Htt0O7Dz1c5qQmZrWKMUoyQhkxygBkedr0
-         OfzCdhKex2CrQrtG6MthkIfoi/7Y8MWQiVLYBCuhyhQRxpqQZ02++SEFXD+VFBuWcdoX
-         1W3w==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=c8610SbT0epVJTQqY9Ri5rpbvG7EHYsiNE4dwA9QJjw=;
+        b=hNShJ9WaRhPwbYFUC6iY9J4S0KDOFrfH8Jx06xdeLWvO5Bh8hj+sjy7HJlG3IhNo5C
+         SPh4vkU/2m8gN1HRbswSueFZGQyGuR2U5UbU4Eg3dwRPk7+kQSEG+lzG2x6naVtIbBQe
+         sf6StgpQ0OaQwlRu8yhhascwjpbMwfJ805jFyEoXArpsoWRtQAe7uSMPvzUsqSNLqQLP
+         Li9j21NrHZtUy4JOklRXW+0rdqIw9i4cmDTr7nbamMrrUsbabcWf82HegkH3pgcEsWqZ
+         coV8Q53DzWC2B40gMnyhHclVFQ2gocSGYI9xm0s5iSI0Ayn6h71bLXDNfrwm77coAkSU
+         WfUw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=ifCod93ETyGPmmfLtl3IBeFp9blcjqCRjZs9HqcoCbk=;
-        b=GuxdT3RUovlmfbbLZmTbZvt8yUJaQWEzhtphCPYinhgrMnxTzY8Wjr9YyiUXIH12r8
-         IJ9uqOudK66npo8IUIZeiUk2x3uGTF+F2KYNFdwDu9XFzLraYYx4yP2d4kz4tgpcFUBV
-         wQN0TqguQbzCnwR8xDCZWvasEjficLib//YH/QQT6b8g5VSs47tyn+OztU4bgo57tYjB
-         lWanyJTTcKCdtxohPYqJQjO9F/eMIHU7ENQNpqLAGX9maDtBuEIPG8srjkeDE/EaD3hv
-         hyBRo2kWpwG1SDtIsNYU4E91hgxCYjhOkN1DeF4MMqc644xgmrNuDuGVv8dc8dMEmaQW
-         wCoQ==
-X-Gm-Message-State: AOAM533u+LMhiWCXr8Xk/UsfYdeeleWv3jldZ+y6YrVtAL5oEx9PSsUF
-        JFOHjHH90RIyT2xL+I+eUHc=
-X-Google-Smtp-Source: ABdhPJz1x/bqO3NU1NuwIcmqW4wfmVQmcJChCi7EZh8Mu+lM7evAqaDHitFwDSlb+PX4gskMo00bqQ==
-X-Received: by 2002:a2e:9844:: with SMTP id e4mr4141681ljj.500.1622151844851;
-        Thu, 27 May 2021 14:44:04 -0700 (PDT)
-Received: from localhost.localdomain (46-138-12-55.dynamic.spd-mgts.ru. [46.138.12.55])
-        by smtp.gmail.com with ESMTPSA id v11sm298153lfr.44.2021.05.27.14.44.03
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=c8610SbT0epVJTQqY9Ri5rpbvG7EHYsiNE4dwA9QJjw=;
+        b=M2AAZNMWA4WJAbOzVTr8STv96wljBKh9wm3Qc/6QowQ8PI8g0TmCl6fADLlHYXO9uI
+         uzKqrnZuw3PzQIOmfHkoUHv/Gm7epVTD3Y21+Oi17t10sNSmgJMkvCV4PyAM8JpGhIk5
+         E/qp2SALWD322a3+vRhbzzpLTWwYdL2WTjFjG37+G/+oFZqHI5uaWCrI/j6m79VP1D29
+         i1g0RgRIJiFz0LY0OnLIFwBkcdhxAPHEksoe0YEGpmn5zYrUO8FAJX7b74EW0X4DuWiZ
+         hDyA1k32/aszOsS2e5icT7Gh0eiuhn6LRpwI4Ke2XMKMw46GZX7phnjLYAiF1iIUGdrE
+         Gjpg==
+X-Gm-Message-State: AOAM532KpS+hr1OLCszAYbsYi0abd+AR4u7sHa8s9GyokyEPGkqZcaFp
+        UsFQMVKDLpXhfEbA9gAM4K4=
+X-Google-Smtp-Source: ABdhPJzGqWZ9YWupljyKpDhrK6EHcxlHWYkAad2Xj0FxyRxu3Wr/85x2HSc/zcX2qITc/BFiycXepw==
+X-Received: by 2002:a1c:f212:: with SMTP id s18mr10131194wmc.172.1622152066518;
+        Thu, 27 May 2021 14:47:46 -0700 (PDT)
+Received: from lshz10676.. ([88.123.50.136])
+        by smtp.gmail.com with ESMTPSA id h1sm12571903wmq.0.2021.05.27.14.47.45
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 27 May 2021 14:44:04 -0700 (PDT)
-From:   Dmitry Osipenko <digetx@gmail.com>
-To:     Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        =?UTF-8?q?Micha=C5=82=20Miros=C5=82aw?= <mirq-linux@rere.qmqm.pl>,
-        =?UTF-8?q?Nikola=20Milosavljevi=C4=87?= <mnidza@outlook.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Peter Geis <pgwipeout@gmail.com>,
-        Nicolas Chauvet <kwizart@gmail.com>,
-        Viresh Kumar <vireshk@kernel.org>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Matt Merhar <mattmerhar@protonmail.com>,
-        Paul Fertser <fercerpav@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Mikko Perttunen <mperttunen@nvidia.com>
-Cc:     linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-pm@vger.kernel.org,
-        Nathan Chancellor <nathan@kernel.org>,
-        linux-clk@vger.kernel.org
-Subject: [PATCH v4 14/14] soc/tegra: regulators: Support core domain state syncing
-Date:   Fri, 28 May 2021 00:43:17 +0300
-Message-Id: <20210527214317.31014-15-digetx@gmail.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210527214317.31014-1-digetx@gmail.com>
-References: <20210527214317.31014-1-digetx@gmail.com>
+        Thu, 27 May 2021 14:47:46 -0700 (PDT)
+From:   Antonio Borneo <borneo.antonio@gmail.com>
+To:     Andy Whitcroft <apw@canonical.com>, Joe Perches <joe@perches.com>,
+        Dwaipayan Ray <dwaipayanray1@gmail.com>,
+        Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Cc:     Antonio Borneo <borneo.antonio@gmail.com>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] checkpatch: fix incorrect camelcase detection on numeric constant
+Date:   Thu, 27 May 2021 23:47:41 +0200
+Message-Id: <20210527214741.180449-1-borneo.antonio@gmail.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The core voltage shall not drop until state of core domain is synced,
-i.e. all device drivers that use core domain are loaded and ready.
+The code fragment below
+	int foo(int *array, int index)
+	{
+		return array[index & 0xFF];
+	}
+triggers an incorrect camelcase detection by checking a subset of
+the hex constant:
+	CHECK: Avoid CamelCase: <xFF>
+	#3: FILE: test.c:3:
+	+	return array[index & 0xFF];
 
-Support core domain state syncing. The core domain driver invokes the
-core-regulator voltage syncing once the state of domain is synced, at
-this point the core voltage is allowed to go lower than the level left
-after bootloader.
+This is caused by passing the whole string "array[index & 0xFF]"
+to the inner loop that iterates over a "$Ident" match.
+With no check to exclude a constant, the match iterates over
+"array", "index" and "xFF", thus the camelcase detection.
 
-Tested-by: Peter Geis <pgwipeout@gmail.com> # Ouya T30
-Tested-by: Paul Fertser <fercerpav@gmail.com> # PAZ00 T20
-Tested-by: Nicolas Chauvet <kwizart@gmail.com> # PAZ00 T20 and TK1 T124
-Tested-by: Matt Merhar <mattmerhar@protonmail.com> # Ouya T30
-Reviewed-by: Ulf Hansson <ulf.hansson@linaro.org>
-Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+Similar issue can be detected with other constants like "1uL",
+"0xffffU".
+
+Force the match to start at word boundary so the constants will be
+filtered-out.
+
+Signed-off-by: Antonio Borneo <borneo.antonio@gmail.com>
 ---
- drivers/soc/tegra/regulators-tegra20.c | 19 ++++++++++++++++++-
- drivers/soc/tegra/regulators-tegra30.c | 18 +++++++++++++++++-
- 2 files changed, 35 insertions(+), 2 deletions(-)
+ scripts/checkpatch.pl | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/soc/tegra/regulators-tegra20.c b/drivers/soc/tegra/regulators-tegra20.c
-index 3479be5ee494..b8ce9fd0650d 100644
---- a/drivers/soc/tegra/regulators-tegra20.c
-+++ b/drivers/soc/tegra/regulators-tegra20.c
-@@ -17,6 +17,8 @@
- #include <linux/regulator/driver.h>
- #include <linux/regulator/machine.h>
- 
-+#include <soc/tegra/pmc.h>
-+
- struct tegra_regulator_coupler {
- 	struct regulator_coupler coupler;
- 	struct regulator_dev *core_rdev;
-@@ -42,6 +44,21 @@ static int tegra20_core_limit(struct tegra_regulator_coupler *tegra,
- 	int core_cur_uV;
- 	int err;
- 
-+	/*
-+	 * Tegra20 SoC has critical DVFS-capable devices that are
-+	 * permanently-active or active at a boot time, like EMC
-+	 * (DRAM controller) or Display controller for example.
-+	 *
-+	 * The voltage of a CORE SoC power domain shall not be dropped below
-+	 * a minimum level, which is determined by device's clock rate.
-+	 * This means that we can't fully allow CORE voltage scaling until
-+	 * the state of all DVFS-critical CORE devices is synced.
-+	 */
-+	if (tegra_pmc_core_domain_state_synced() && !tegra->sys_reboot_mode) {
-+		pr_info_once("voltage state synced\n");
-+		return 0;
-+	}
-+
- 	if (tegra->core_min_uV > 0)
- 		return tegra->core_min_uV;
- 
-@@ -62,7 +79,7 @@ static int tegra20_core_limit(struct tegra_regulator_coupler *tegra,
- 	 */
- 	tegra->core_min_uV = core_max_uV;
- 
--	pr_info("core minimum voltage limited to %duV\n", tegra->core_min_uV);
-+	pr_info("core voltage initialized to %duV\n", tegra->core_min_uV);
- 
- 	return tegra->core_min_uV;
- }
-diff --git a/drivers/soc/tegra/regulators-tegra30.c b/drivers/soc/tegra/regulators-tegra30.c
-index 18fe53d0a870..e74bbc9c7859 100644
---- a/drivers/soc/tegra/regulators-tegra30.c
-+++ b/drivers/soc/tegra/regulators-tegra30.c
-@@ -18,6 +18,7 @@
- #include <linux/regulator/machine.h>
- 
- #include <soc/tegra/fuse.h>
-+#include <soc/tegra/pmc.h>
- 
- struct tegra_regulator_coupler {
- 	struct regulator_coupler coupler;
-@@ -43,6 +44,21 @@ static int tegra30_core_limit(struct tegra_regulator_coupler *tegra,
- 	int core_cur_uV;
- 	int err;
- 
-+	/*
-+	 * Tegra30 SoC has critical DVFS-capable devices that are
-+	 * permanently-active or active at a boot time, like EMC
-+	 * (DRAM controller) or Display controller for example.
-+	 *
-+	 * The voltage of a CORE SoC power domain shall not be dropped below
-+	 * a minimum level, which is determined by device's clock rate.
-+	 * This means that we can't fully allow CORE voltage scaling until
-+	 * the state of all DVFS-critical CORE devices is synced.
-+	 */
-+	if (tegra_pmc_core_domain_state_synced() && !tegra->sys_reboot_mode) {
-+		pr_info_once("voltage state synced\n");
-+		return 0;
-+	}
-+
- 	if (tegra->core_min_uV > 0)
- 		return tegra->core_min_uV;
- 
-@@ -63,7 +79,7 @@ static int tegra30_core_limit(struct tegra_regulator_coupler *tegra,
- 	 */
- 	tegra->core_min_uV = core_max_uV;
- 
--	pr_info("core minimum voltage limited to %duV\n", tegra->core_min_uV);
-+	pr_info("core voltage initialized to %duV\n", tegra->core_min_uV);
- 
- 	return tegra->core_min_uV;
- }
+To: Andy Whitcroft <apw@canonical.com>
+To: Joe Perches <joe@perches.com>
+To: Dwaipayan Ray <dwaipayanray1@gmail.com>
+To: Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Cc: linux-kernel@vger.kernel.org
+
+diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
+index 23697a6b1eaa..f0032166dfc1 100755
+--- a/scripts/checkpatch.pl
++++ b/scripts/checkpatch.pl
+@@ -5656,7 +5656,7 @@ sub process {
+ 			    $var !~ /^(?:[a-z0-9_]*|[A-Z0-9_]*)?_?[a-z][A-Z](?:_[a-z0-9_]+|_[A-Z0-9_]+)?$/ &&
+ #Ignore some three character SI units explicitly, like MiB and KHz
+ 			    $var !~ /^(?:[a-z_]*?)_?(?:[KMGT]iB|[KMGT]?Hz)(?:_[a-z_]+)?$/) {
+-				while ($var =~ m{($Ident)}g) {
++				while ($var =~ m{\b($Ident)}g) {
+ 					my $word = $1;
+ 					next if ($word !~ /[A-Z][a-z]|[a-z][A-Z]/);
+ 					if ($check) {
+
+base-commit: c4681547bcce777daf576925a966ffa824edd09d
 -- 
-2.30.2
+2.31.1
 
