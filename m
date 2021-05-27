@@ -2,135 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 61572393418
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 18:36:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8CAEC39341E
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 18:37:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236361AbhE0QiW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 May 2021 12:38:22 -0400
-Received: from mga05.intel.com ([192.55.52.43]:22090 "EHLO mga05.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229861AbhE0QiT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 May 2021 12:38:19 -0400
-IronPort-SDR: KvmEi82ec9qOFR3jaBiID92nvJq47ABon0TtnzVU8E2IfqxyGqJS17d1JTx/wiGlt23NekhdUG
- ppMq/Rf9oMcw==
-X-IronPort-AV: E=McAfee;i="6200,9189,9997"; a="288368366"
-X-IronPort-AV: E=Sophos;i="5.83,227,1616482800"; 
-   d="scan'208";a="288368366"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 May 2021 09:36:46 -0700
-IronPort-SDR: TKcEMCRwEJD7/IPQ5Dvf+tHZoPHzHTt9CFQo+Hv7GBwOEHsSmdq+YxsYwCg6eiaLX1bktZrb7v
- J9h1ecuvASkw==
-X-IronPort-AV: E=Sophos;i="5.83,227,1616482800"; 
-   d="scan'208";a="445087108"
-Received: from sushilsu-mobl1.amr.corp.intel.com (HELO [10.209.3.242]) ([10.209.3.242])
-  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 May 2021 09:36:45 -0700
-Subject: Re: [RFC v2-fix-v2 1/1] x86/traps: Add #VE support for TDX guest
-To:     Sean Christopherson <seanjc@google.com>,
-        "Luck, Tony" <tony.luck@intel.com>
-Cc:     Kuppuswamy Sathyanarayanan 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Andi Kleen <ak@linux.intel.com>,
-        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
-        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
-        "Williams, Dan J" <dan.j.williams@intel.com>,
-        "Raj, Ashok" <ashok.raj@intel.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-References: <4031ffc2-a442-5da7-e793-ac1053533bb3@linux.intel.com>
- <20210527002931.3632581-1-sathyanarayanan.kuppuswamy@linux.intel.com>
- <636067f3ed65429ab1094b851aae5256@intel.com> <YK/H1CAc24UzPLDs@google.com>
-From:   Dave Hansen <dave.hansen@intel.com>
-Autocrypt: addr=dave.hansen@intel.com; keydata=
- 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
- z5cecg==
-Message-ID: <35c426d6-e468-9f4b-79fd-8d4a6f77f8ab@intel.com>
-Date:   Thu, 27 May 2021 09:36:43 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S236412AbhE0Qj0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 May 2021 12:39:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50238 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234328AbhE0QjY (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 27 May 2021 12:39:24 -0400
+Received: from mail-oi1-x22c.google.com (mail-oi1-x22c.google.com [IPv6:2607:f8b0:4864:20::22c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21BB1C061574;
+        Thu, 27 May 2021 09:37:50 -0700 (PDT)
+Received: by mail-oi1-x22c.google.com with SMTP id j75so1332404oih.10;
+        Thu, 27 May 2021 09:37:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:to:cc:references:from:subject:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=tbaGejzn8q8uB1o7wU9OHplgpPZiIv19pAT7ms12ifA=;
+        b=emMat2JGS1mwG2NDSEM+B2hurHmJhHzASt2OOWYgG10zIyn/MHIZ/J1paPfCxYswru
+         evLbkupjnPARKSD6TeN8b37M36+NOnVILsdYyAHupy/NiuZ1bF/ptSrUA87mUcCRxl12
+         Z6mupC3iL9gQ9/6QpBYUh9+R3wJ2loL8SsRJR0hnoKKc23Fy6BNvjSnuoDj7NVr5zmYs
+         DrbLcnr5LX+j2fpwYCDwkk1y9zP8c9MceELkaxymPlpof2Pf0DF5LD73TIXZUFIJCC4i
+         HCQsL6G21HLPXzrJ16iLVBXM09Y05ApY/iXKiTOmSUD9eQbPSAPCRPzxa8+4PM2MXqxt
+         ASrw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:to:cc:references:from:subject:message-id
+         :date:user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=tbaGejzn8q8uB1o7wU9OHplgpPZiIv19pAT7ms12ifA=;
+        b=BLUJqP1HuVlfXgoprmCug6PyeuGkIBqRkFO7QbkbzAuWARsSQ+dJCMjiJ0eovA0/Nl
+         JJt3sQVlg0A/ej96mW3Xw7Sk1NO3LXkLZ9iJmuVgqj4W5D3ibGJWaNDpPP/oMch2lWdt
+         kX5++nLu4SJmomqyQ7hYCRKjlfY/n1Y8wizNLG4sDJUGRJzGjDP39Xd9OlTAfDPvDIFq
+         B9unx6tqwPj0+FKlyUZPOxI5WywAOUb9dkRUT1jVwwX/Iu2eHklluS0maestCwwiFXJq
+         aSRRpCd9Ia5cFzhj4SCW27RRMrIMPbefyN0LSXkZ1VDK7Nqs1eYDWaUyCEffr/FC4tR6
+         sjZg==
+X-Gm-Message-State: AOAM530qtGyg3H5B9vZdNjBkZ0V3tNJUStSRR3v7gutBtLRRmsLVBg+R
+        o50O9w/OlOg+wJKM5Pi2GrznVFHsDAg=
+X-Google-Smtp-Source: ABdhPJzhI8tpvObBfO6PqTIvKtbbD8pgJYJVAcb1oOdcuOkolE/4SYfSboX7C9eD20hhubbsIMbCtw==
+X-Received: by 2002:a54:4011:: with SMTP id x17mr2973033oie.112.1622133469498;
+        Thu, 27 May 2021 09:37:49 -0700 (PDT)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id z15sm579194otp.20.2021.05.27.09.37.47
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 27 May 2021 09:37:48 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+To:     Robert Marko <robert.marko@sartura.hr>
+Cc:     jdelvare@suse.com, corbet@lwn.net, linux-hwmon@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Luka Perkov <luka.perkov@sartura.hr>, jmp@epiphyte.org,
+        Paul Menzel <pmenzel@molgen.mpg.de>,
+        Donald Buczek <buczek@molgen.mpg.de>
+References: <20210430132735.127342-1-robert.marko@sartura.hr>
+ <20210430134810.GA2714262@roeck-us.net>
+ <CA+HBbNH+gQOmu_Ho0ivFuGHdu0zBtOrr1474z+7FA1zmNb4bug@mail.gmail.com>
+ <2b990feb-dc26-debb-4f81-430bbc89b51c@roeck-us.net>
+ <CA+HBbNHQHqD-wgryaBLZ5M2Lxafb0OwNcbiQJmRQPcZfprmUEg@mail.gmail.com>
+ <2a1a63c7-c9b0-e38d-df1d-7643ad493aba@roeck-us.net>
+ <CA+HBbNF62xzBt2r60qfzn9iveiusLKp6R-T4KU-NgoHaE6c3kQ@mail.gmail.com>
+ <dec7d641-2954-29f0-124b-d0020866bf7b@roeck-us.net>
+ <CA+HBbNGU4d4g0JrUKBhj07OsC7=s9qoubxNDi3MxPjmV457C+Q@mail.gmail.com>
+ <8152a109-d76d-4f85-9da2-fe0a56c2019f@roeck-us.net>
+ <CA+HBbNGBirE=Po7q5eUeHho0rBATa_ApWLiU_oPXsGN+6U9U+g@mail.gmail.com>
+ <CA+HBbNGZ1axZpRy5UwQP_4eZCA32eyPJVcj6xN4i8AhOQMYeTA@mail.gmail.com>
+ <493e4da4-8f2b-9856-b538-6e95e3766d5e@roeck-us.net>
+ <CA+HBbNHspA5cZJSHJkLpnP+UODGy7w5i8mKP2NH9JALQ1RqQ_w@mail.gmail.com>
+ <7af2d708-7e22-3970-7bf8-1cb23317cb55@roeck-us.net>
+ <CA+HBbNFVKYPAPKkGJiRhW4VmEGX=da8QALNwbVA1gGegF6KPkQ@mail.gmail.com>
+From:   Guenter Roeck <linux@roeck-us.net>
+Subject: Re: [PATCH 1/3] hwmon: (pmbus) Add driver for Delta DPS-920AB PSU
+Message-ID: <2ba03d58-a4de-b683-6169-3f12482aa29e@roeck-us.net>
+Date:   Thu, 27 May 2021 09:37:46 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-In-Reply-To: <YK/H1CAc24UzPLDs@google.com>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <CA+HBbNFVKYPAPKkGJiRhW4VmEGX=da8QALNwbVA1gGegF6KPkQ@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5/27/21 9:24 AM, Sean Christopherson wrote:
-> On Thu, May 27, 2021, Luck, Tony wrote:
->> +struct ve_info {
->> +	u64 exit_reason;
->> +	u64 exit_qual;
->> +	u64 gla;
->> +	u64 gpa;
->> +	u32 instr_len;
->> +	u32 instr_info;
->> +};
+On 5/27/21 7:58 AM, Robert Marko wrote:
+[ ... ]
+
+>>>>>> I tried applying the block support for mv64xx as well:
+>>>>>> https://patchwork.ozlabs.org/project/linux-i2c/patch/20200118115820.9080-1-fuga@studiofuga.com/
+>>>>
+>>>> That patch would be needed, but it looks buggy to me. This chunk:
+>>>>
+>>>> +               drv_data->effective_length = data+1;
+>>>> +               drv_data->bytes_left = data+1;
+>>>> +               drv_data->msg->len = data+1;
+>>>>
+>>>> should be:
+>>>>
+>>>> +               drv_data->effective_length = data+1;
+>>>> +               drv_data->bytes_left = data;
+>>>> +               drv_data->msg->len = data+1;
+>>>>
+>>>> It should also make sure that 'data' is not larger than I2C_SMBUS_BLOCK_MAX,
+>>>> and bail out if it isn't.
+>>>
+>>> Yeah, I did not check the contents, I just saw 2 reviews and tested it
+>>> since it can't hurt.
 >>
->> I guess that "gla" = Guest Linear Address ... which is a very "Intel" way of
->> describing what everyone else would call a Guest Virtual Address.
->>
->> I don't feel strongly about this though. If this has already been hashed
->> out already then stick with this name.
-> The "real" #VE information area that TDX is usurping is an architectural struct
-> that defines exit_reason, exit_qual, gla, and gpa, and those fields in turn come
-> directly from their corresponding VMCS fields with longer versions of the same
-> names, e.g. ve_info->gla is a reflection of vmcs.GUEST_LINEAR_ADDRESS.
+>> That patch doesn't work at all. Make the above change, and also change
+>> the type of effective_length from u32 to int, and try again.
 > 
-> So normally I would agree that the "linear" terminology is obnoxious, but in
-> this specific case I think it's warranted.
+> I was just looking and it, and doing the changes you recommended make
+> no difference at all.
+> 
 
-The architectural name needs to be *somewhere*.  But, we do diverge from
-the naming in plenty of places.  The architectural name "XSTATE_BV" is
-called xstate.xfeatures in the FPU code, for instance.
+Is the i2c controller compatible with marvell,mv78230-i2c ?
+The block transfers would not work in that case. Let me know
+and I'll send you a patch that might fix it.
 
-In this case, the _least_ we can do is:
-
-	u64 gla; /* Guest Linear (virtual) Address */
-
-although I also wouldn't mind if we did something like:
-
-	u64 guest_vaddr; /* Guest Linear Address (gla) in the spec */
-
-either.
+Guenter
