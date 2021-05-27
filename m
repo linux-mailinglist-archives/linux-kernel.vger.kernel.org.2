@@ -2,95 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 111E639363A
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 21:28:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2506539363D
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 21:28:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235064AbhE0T3w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 May 2021 15:29:52 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53466 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229764AbhE0T3v (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 May 2021 15:29:51 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 985EB613C0;
-        Thu, 27 May 2021 19:28:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1622143698;
-        bh=VZOoaPsOBzv8C0Yje3kVtf9Qi3JsLElEUzuvZK+Ee/M=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=vQjP1hSYwvUXxqwlm6zXRmjeoYlz98LjCpIDUE0fE3l6SL/5yguvgOI96WDkR5Pf9
-         KTdtfJPLck/uoOBdEvY3JWk19pMewLDX+cZtZyeGjVDjx7CSIltW+Hu8lP8CgIw0Gn
-         45tfK/XcSjBhLpbxDVH7pVFup59GlQzKT1fzhnh72GU1WJDieFH92u6wetn3vX7opd
-         8tjYlFrOqfGRTcyRimCI+KBCdjCwyzCgI1kEACyfHxKUglq2oALXtCRjIWDRKQ76+u
-         xHDgFdlv4sJtSx8o65m3nz+BbJ/1kCKLY2L8Rpp61B5e5LiKfmAjFgcIntMnLrkWSJ
-         eEshbBnUvgJFQ==
-Date:   Thu, 27 May 2021 21:28:11 +0200
-From:   Wolfram Sang <wsa@kernel.org>
-To:     Lee Jones <lee.jones@linaro.org>
-Cc:     linux-kernel@vger.kernel.org,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Srinidhi Kasagar <srinidhi.kasagar@stericsson.com>,
-        Sachin Verma <sachin.verma@st.com>,
-        linux-arm-kernel@lists.infradead.org, linux-i2c@vger.kernel.org
-Subject: Re: [PATCH 01/16] i2c: busses: i2c-nomadik: Fix formatting issue
- pertaining to 'timeout'
-Message-ID: <YK/yyypWeOnBNc4K@kunai>
-Mail-Followup-To: Wolfram Sang <wsa@kernel.org>,
-        Lee Jones <lee.jones@linaro.org>, linux-kernel@vger.kernel.org,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Srinidhi Kasagar <srinidhi.kasagar@stericsson.com>,
-        Sachin Verma <sachin.verma@st.com>,
-        linux-arm-kernel@lists.infradead.org, linux-i2c@vger.kernel.org
-References: <20210520190105.3772683-1-lee.jones@linaro.org>
- <20210520190105.3772683-2-lee.jones@linaro.org>
+        id S235109AbhE0TaK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 May 2021 15:30:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60164 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229764AbhE0TaI (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 27 May 2021 15:30:08 -0400
+Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com [IPv6:2607:f8b0:4864:20::435])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 383CCC061760
+        for <linux-kernel@vger.kernel.org>; Thu, 27 May 2021 12:28:34 -0700 (PDT)
+Received: by mail-pf1-x435.google.com with SMTP id d16so1337338pfn.12
+        for <linux-kernel@vger.kernel.org>; Thu, 27 May 2021 12:28:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=/O5ZhuBU+E+S9yjOSjBJ2tbmDg0k5UnIlNPV88NbNt8=;
+        b=LoaeLRZlDL3Zq3Zd/tewzbdTcRqd2FoIe2Ud3xVPjrou4mOgWkVGVhVv+yi2Etdq0C
+         JmvQQYY24N5EwBAXiJxrehqSo7HmuxfEDwPgstNdh3QYHUmI53WoTnYGS36k877OfA+1
+         saZWbIYrWK66PHlsX4RrzOiuMpPD5Oga7jHWPBI9zhOsxTAEVKF9Q3xkH700R4xEAMf4
+         LBzjyqSkXjZfiriZXMgYeVAqg9AIJO754AwePcmLCuIb570ChLM5GaUbJ1iiE9TER7aF
+         pCUezaNaivUZjPQJZlHlxFq6U/X0ENbEWroeJllH3T9JRGR5A7rBheWeMGaSD8HENDr8
+         4Msw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=/O5ZhuBU+E+S9yjOSjBJ2tbmDg0k5UnIlNPV88NbNt8=;
+        b=quI0XTK8wXbhn3cSkv4EZ7/Ew5aWqRgeUq9/GN7f8QCS1BY67+RuUiwU34UqKPes2h
+         /YiVpFUFfW4a08YSR3vBw+7OrcQ75i0b9Aoh0q0WjadoD98ooEe4FSdBBFqN1euqRZP1
+         8SZKFVCtlv8whvDeNPK31yr3l/DvGMMkt4db9IjWUdaIOwWyV7RiT74BKXRjZuYaWuro
+         y2pIIJW7+kFzgh0pUiMxU9569EnvWdnImjezng16g77vslaIISP8jCvWH7A2SE2YEaXK
+         bPkj+7VDIMvimsKMwauTNZGB1EFLfsGVV9x5bpQ5LZIpgDE1KXS2WR0bX96jEJKJaj1H
+         Ob3g==
+X-Gm-Message-State: AOAM531/qk1OCE9n+KMyX+mT4VdB+axWvqDLtvfT/AgRmP/+FGrQMGmg
+        mEScVbgP8kcycr2ViaIEfyqKNdtELvO23g==
+X-Google-Smtp-Source: ABdhPJyxUO8wraNuT3RiXmkpiKZMNkAonQRla5oCtqEG/+FP940vF05hrfXq1ETZufBsWncVy5pwEw==
+X-Received: by 2002:a05:6a00:88b:b029:2de:33b3:76c9 with SMTP id q11-20020a056a00088bb02902de33b376c9mr24401pfj.30.1622143713551;
+        Thu, 27 May 2021 12:28:33 -0700 (PDT)
+Received: from google.com (240.111.247.35.bc.googleusercontent.com. [35.247.111.240])
+        by smtp.gmail.com with ESMTPSA id r4sm2404750pff.197.2021.05.27.12.28.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 27 May 2021 12:28:32 -0700 (PDT)
+Date:   Thu, 27 May 2021 19:28:29 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     Lai Jiangshan <jiangshanlai@gmail.com>,
+        linux-kernel@vger.kernel.org,
+        Lai Jiangshan <laijs@linux.alibaba.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        Maxim Levitsky <mlevitsk@redhat.com>, kvm@vger.kernel.org
+Subject: Re: [PATCH] KVM: X86: fix tlb_flush_guest()
+Message-ID: <YK/y3QgSg+aYk9Z+@google.com>
+References: <20210527023922.2017-1-jiangshanlai@gmail.com>
+ <78ad9dff-9a20-c17f-cd8f-931090834133@redhat.com>
+ <YK/FGYejaIu6EzSn@google.com>
+ <YK/FbFzKhZEmI40C@google.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="HQSd1tkK5Tvx9OXc"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210520190105.3772683-2-lee.jones@linaro.org>
+In-Reply-To: <YK/FbFzKhZEmI40C@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, May 27, 2021, Sean Christopherson wrote:
+> > KVM_REQ_MMU_RELOAD is overkill, nuking the shadow page tables will completely
+> > offset the performance gains of the paravirtualized flush.
 
---HQSd1tkK5Tvx9OXc
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Argh, I take that back.  The PV KVM_VCPU_FLUSH_TLB flag doesn't distinguish
+between flushing a specific mm and flushing the entire TLB.  The HyperV usage
+(via KVM_REQ) also throws everything into a single bucket.  A full RELOAD still
+isn't necessary as KVM just needs to sync all roots, not blast them away.  For
+previous roots, KVM doesn't have a mechanism to defer the sync, so the immediate
+fix will need to unload those roots.
 
-On Thu, May 20, 2021 at 08:00:50PM +0100, Lee Jones wrote:
-> Fixes the following W=3D1 kernel build warning(s):
->=20
->  drivers/i2c/busses/i2c-nomadik.c:184: warning: Function parameter or mem=
-ber 'timeout' not described in 'nmk_i2c_dev'
->=20
-> Cc: Linus Walleij <linus.walleij@linaro.org>
-> Cc: Srinidhi Kasagar <srinidhi.kasagar@stericsson.com>
-> Cc: Sachin Verma <sachin.verma@st.com>
-> Cc: linux-arm-kernel@lists.infradead.org
-> Cc: linux-i2c@vger.kernel.org
-> Signed-off-by: Lee Jones <lee.jones@linaro.org>
+And looking at KVM's other flows, __kvm_mmu_new_pgd() and kvm_set_cr3() are also
+broken with respect to previous roots.  E.g. if the guest does a MOV CR3 that
+flushes the entire TLB, followed by a MOV CR3 with PCID_NOFLUSH=1, KVM will fail
+to sync the MMU on the second flush even though the guest can technically rely
+on the first MOV CR3 to have synchronized any previous changes relative to the
+fisrt MOV CR3.
 
-Applied to for-current, thanks!
+Lai, if it's ok with you, I'll massage this patch as discussed and fold it into
+a larger series to fix the other bugs and do additional cleanup/improvements.
 
-
---HQSd1tkK5Tvx9OXc
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmCv8scACgkQFA3kzBSg
-KbbvexAApTusSzMqzrObkcrUlym0RePoV6lS+OKbzAZdQbvbWlh9eEbs96Nsaier
-GeQ32L33gzmpKcTH1hVv4zMLbkejCfSxKsl4AoaG++A97G95wcUFEOplPFW8qC+M
-mu4j+/ZiEwb8D9K/dYoX9L8WKTiXgoDO+WHWK/TbD5eMPeHU/s5Tcw6kMCnrDIls
-NEyLfsnkI5V1Eyqztl63kmDXzK9Ni+WEPHytEwDcSFVchtrHIt9fwMpDD+KuCf9X
-V2xX0L/krkh6uERDGfxWU4E2ujnTK7w/Tk8wEXFZfwz+ar1S9uAtsJCmwDCfX39y
-G8EcuJAVGsjFIfFYlMQo0bWMGSkzjKO2Sjd5q/SCBhpc5FAml9jkVHRIGePwwXFR
-1Lsoue+HJqIGIVaaFE6C278wKm4ZVdLiCoVYQS/unByYSuYXpYKV0KLa8vZOYI9T
-+fsY4kB84fietcGXiPqB0Jnyp7HhvYm0xGJJhDYGtnPvhEfuPy40GcV2qfqXMtTG
-hKNoi4JHzYoFS5rLFM2gnLJGDFHhCsDE/lAmV6rhzljfCcNUPN2lk7SLk240VGIx
-dHuhIbSJiFu85Z+xuLfjvOw750QHygJqXnKbOAw3nYoI4eziy6KggzKY/I2QMu+o
-kWsdglAELyv6fFgZ41KliiekkxiiFNcGocpP7pvWVFwcATEt8hI=
-=Uacm
------END PGP SIGNATURE-----
-
---HQSd1tkK5Tvx9OXc--
+> > I believe the minimal fix is:
+> > 
+> > diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+> > index 81ab3b8f22e5..b0072063f9bf 100644
+> > --- a/arch/x86/kvm/x86.c
+> > +++ b/arch/x86/kvm/x86.c
+> > @@ -3072,6 +3072,9 @@ static void kvm_vcpu_flush_tlb_all(struct kvm_vcpu *vcpu)
+> >  static void kvm_vcpu_flush_tlb_guest(struct kvm_vcpu *vcpu)
+> >  {
+> >         ++vcpu->stat.tlb_flush;
+> > +
+> > +       if (!tdp_enabled)
+> > +               kvm_mmu_sync_roots(vcpu);
+> >         static_call(kvm_x86_tlb_flush_guest)(vcpu);
+> >  }
