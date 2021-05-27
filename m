@@ -2,160 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C6E8C393470
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 19:00:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C79ED393476
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 19:03:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236731AbhE0RCD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 May 2021 13:02:03 -0400
-Received: from alexa-out.qualcomm.com ([129.46.98.28]:21538 "EHLO
-        alexa-out.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233674AbhE0RB5 (ORCPT
+        id S236773AbhE0RF0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 May 2021 13:05:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56104 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235214AbhE0RFU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 May 2021 13:01:57 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=quicinc.com; i=@quicinc.com; q=dns/txt; s=qcdkim;
-  t=1622134824; x=1653670824;
-  h=subject:to:cc:references:from:message-id:date:
-   mime-version:in-reply-to:content-transfer-encoding;
-  bh=HiNVqjxm3qys3CVLirQSiLg09ThgTKZt+rV3bnxp1dc=;
-  b=jz9CVWHucnm2Xv8OfvCyG83DL/+1Rs1Pme4iOK384Bj5GUJmXwglFwyi
-   JkWeKb5I/L4AXZCXIePoLp9gWh0VdjDIyUREBqjPfVMIznzntd6oQlGkM
-   iRrqkxQXxeVmWKuzky8qRfWd+1OsaHkIwjk9iea5yDMaQ6IikcA02bzP4
-   g=;
-Received: from ironmsg-lv-alpha.qualcomm.com ([10.47.202.13])
-  by alexa-out.qualcomm.com with ESMTP; 27 May 2021 10:00:24 -0700
-X-QCInternal: smtphost
-Received: from nalasexr03e.na.qualcomm.com ([10.49.195.114])
-  by ironmsg-lv-alpha.qualcomm.com with ESMTP/TLS/AES256-SHA; 27 May 2021 10:00:22 -0700
-Received: from [10.111.161.43] (10.80.80.8) by nalasexr03e.na.qualcomm.com
- (10.49.195.114) with Microsoft SMTP Server (TLS) id 15.0.1497.18; Thu, 27 May
- 2021 10:00:21 -0700
-Subject: Re: Arm64 crash while reading memory sysfs
-To:     Mike Rapoport <rppt@linux.ibm.com>
-CC:     Andrew Morton <akpm@linux-foundation.org>,
-        David Hildenbrand <david@redhat.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        Will Deacon <will@kernel.org>, Marc Zyngier <maz@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>
-References: <DM5PR0201MB355723819DDAC439273F68848E259@DM5PR0201MB3557.namprd02.prod.outlook.com>
- <YK3tQ0a0S/CLxyyb@linux.ibm.com>
- <CY4PR0201MB35539FF5EE729283C4241F5A8E249@CY4PR0201MB3553.namprd02.prod.outlook.com>
- <YK6EXNZHY1xt7Kjs@linux.ibm.com>
- <d55f915c-ad01-e729-1e29-b57d78257cbb@quicinc.com>
- <YK9e0LgDOfCFo6TM@linux.ibm.com>
- <ce5a5920-3046-21b5-42c0-2237ec1eef13@quicinc.com>
- <YK/HKMgajBCwpLt8@linux.ibm.com>
-From:   Qian Cai <quic_qiancai@quicinc.com>
-Message-ID: <f388f2b1-1ea4-f882-d07e-6b641fd63895@quicinc.com>
-Date:   Thu, 27 May 2021 13:00:20 -0400
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.2
+        Thu, 27 May 2021 13:05:20 -0400
+Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A09DC061760
+        for <linux-kernel@vger.kernel.org>; Thu, 27 May 2021 10:03:45 -0700 (PDT)
+Received: by mail-pj1-x1035.google.com with SMTP id h20-20020a17090aa894b029015db8f3969eso810074pjq.3
+        for <linux-kernel@vger.kernel.org>; Thu, 27 May 2021 10:03:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=5leouNBqSbncovF7/pi4FMUbolKvi+txVAGYn4HmqBE=;
+        b=BblAxfZBMeo5LIBtMtaaTYt+eJ5Vyt9mWFBzkFknqPigDuOlbGxi1hJPv/Rjw7bY1+
+         L2RtMWfNYv8xSCUGmvNgzVAMKde/kZL0YBrUYT8jWIgTBrF6vaaFOxY3KvdWgkt0OnD2
+         rMfcXaqMgp9ddcDhemSY4nBnMM2kjFfmLCotjRSEMmcw7TvtRoIBJ7YclgoTr/Mh0uzp
+         U0oDXSsojhcTjWwl5fUfumBBK4msEC3vbgAhZt5hDJ+ZU4wnZM1y+h1vxObWdyuKJVkg
+         XIWpRpREPV5+IhGaWvUPueVl6cW1ArHCy3Hd0LEUgnWKhKJQjWmblLmLEVW5uFtZ7q8j
+         SFIw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=5leouNBqSbncovF7/pi4FMUbolKvi+txVAGYn4HmqBE=;
+        b=eyvUObscxY0fenIrywQBzZbNArljFbbD5Teu1azDwsLGGbKXmGBrlJNgRudjsAxGbN
+         GDb0poKo+sRcJYQKgZCTnBNF+gwb1jJOx0klEQY0ENtzqi+li7Y7BqMbB8rUEH1kII7W
+         /PZbJwWpagLTcXQL+JKkMSz1rTOQ8WQbB2hQAIcwEWSdYzrLp47DCJyZPju5tLuAKBG8
+         NW19TFA7FhcZU2Rjn39j1MPEDvxdKr6PrWmaQq/4NG2zWLf7l3phzW6OoWG7iSVVDrWD
+         kc+4sxoKyAuOZsIzYWjCskvfEOj+Rd0Q9tr9y0NQXXuCxSKVXrlGrHNiHqjiCEy51Zc/
+         vLUg==
+X-Gm-Message-State: AOAM532tWe6zm0ozlsmpeacmA8KwcjpucXtmLvXvQ0b78MHSO226Bz89
+        Dsk3jCoiqjOexYhxczqHYX5zeA==
+X-Google-Smtp-Source: ABdhPJwsntW6+MqBRSSV2P33Vx7GZgUNsyoEXFn5STwQRtlwac4QG1usUBodKlGM3hfCkjZQNORMvQ==
+X-Received: by 2002:a17:90a:ab8c:: with SMTP id n12mr10157011pjq.201.1622135024547;
+        Thu, 27 May 2021 10:03:44 -0700 (PDT)
+Received: from google.com (240.111.247.35.bc.googleusercontent.com. [35.247.111.240])
+        by smtp.gmail.com with ESMTPSA id y190sm2318551pgd.24.2021.05.27.10.03.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 27 May 2021 10:03:43 -0700 (PDT)
+Date:   Thu, 27 May 2021 17:03:40 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     Wanpeng Li <kernellwp@gmail.com>
+Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>
+Subject: Re: [PATCH v3 1/2] KVM: X86: Fix warning caused by stale emulation
+ context
+Message-ID: <YK/Q7ESa44lcqlMM@google.com>
+References: <1622091679-31683-1-git-send-email-wanpengli@tencent.com>
 MIME-Version: 1.0
-In-Reply-To: <YK/HKMgajBCwpLt8@linux.ibm.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanexm03g.na.qualcomm.com (10.85.0.49) To
- nalasexr03e.na.qualcomm.com (10.49.195.114)
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <1622091679-31683-1-git-send-email-wanpengli@tencent.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 5/27/2021 12:22 PM, Mike Rapoport wrote:
-> On Thu, May 27, 2021 at 10:33:13AM -0400, Qian Cai wrote:
->>
->>
->> On 5/27/2021 4:56 AM, Mike Rapoport wrote:
->>> Let's drop memblock=debug for now and add this instead:
->>
->> [    0.000000][    T0] Booting Linux on physical CPU 0x0000000000 [0x503f0002]
->> [    0.000000][    T0] Linux version 5.13.0-rc3-next-20210526+ (root@admin5) (gcc (Ubuntu 9.3.0-17ubuntu1~20.04) 9.3.0, GNU ld (GNU Binutils for Ubuntu) 2.34) #31 SMP Thu May 27 12:32:40 UTC 2021
->> [    0.000000][    T0] Inode-cache hash table entries: 4194304 (order: 9, 33554432 bytes, linear)
->> [    0.000000][    T0] mem auto-init: stack:off, heap alloc:on, heap free:off
->> [    0.000000][    T0] MEMBLOCK configuration:
->> [    0.000000][    T0]  memory size = 0x0000001ff0000000 reserved size = 0x0000000421e33ae8
->> [    0.000000][    T0]  memory.cnt  = 0xc
->> [    0.000000][    T0] Memory: 777216K/133955584K available (17984K kernel code, 118722K rwdata, 4416K rodata, 6080K init, 67276K bss, 17379072K reserved, 0K cma-reserved)
+On Wed, May 26, 2021, Wanpeng Li wrote:
+> From: Wanpeng Li <wanpengli@tencent.com>
 > 
-> I still cannot understand where most of the memory disappeared, but it
-> seems entirely different issue.
+> Reported by syzkaller:
+> 
+>   WARNING: CPU: 7 PID: 10526 at /home/kernel/ssd/linux/arch/x86/kvm//x86.c:7621 x86_emulate_instruction+0x41b/0x510 [kvm]
 
-Interesting, it seems those memory did come back after booting.
+"/home/kernel/ssd/linux/" can be omitted to make the line length a bit shorter.
+checkpatch also complains about using absolute path instead of relative path.
 
-# cat /proc/meminfo
-MemTotal:       116656448 kB
-MemFree:        110464000 kB
-MemAvailable:   101919872 kB
-Buffers:           16320 kB
-Cached:           118912 kB
-SwapCached:         3136 kB
-Active:            63360 kB
-Inactive:         199936 kB
-Active(anon):       9792 kB
-Inactive(anon):   132480 kB
-Active(file):      53568 kB
-Inactive(file):    67456 kB
-Unevictable:           0 kB
-Mlocked:               0 kB
-SwapTotal:       8388544 kB
-SwapFree:        8344704 kB
-Dirty:                 0 kB
-Writeback:             0 kB
-AnonPages:        125056 kB
-Mapped:            44992 kB
-Shmem:             14784 kB
-KReclaimable:      92160 kB
-Slab:            4943424 kB
-SReclaimable:      92160 kB
-SUnreclaim:      4851264 kB
-KernelStack:       24832 kB
-PageTables:        10240 kB
-NFS_Unstable:          0 kB
-Bounce:                0 kB
-WritebackTmp:          0 kB
-CommitLimit:    66716736 kB
-Committed_AS:     708096 kB
-VmallocTotal:   133143461888 kB
-VmallocUsed:       49600 kB
-VmallocChunk:          0 kB
-Percpu:            45056 kB
-HardwareCorrupted:     0 kB
-AnonHugePages:         0 kB
-ShmemHugePages:        0 kB
-ShmemPmdMapped:        0 kB
-FileHugePages:         0 kB
-FilePmdMapped:         0 kB
-CmaTotal:              0 kB
-CmaFree:               0 kB
-HugePages_Total:       0
-HugePages_Free:        0
-HugePages_Rsvd:        0
-HugePages_Surp:        0
-Hugepagesize:     524288 kB
-Hugetlb:               0 kB
-
+>   RIP: 0010:x86_emulate_instruction+0x41b/0x510 [kvm]
+>   Call Trace:
+>    kvm_mmu_page_fault+0x126/0x8f0 [kvm]
+>    vmx_handle_exit+0x11e/0x680 [kvm_intel]
+>    vcpu_enter_guest+0xd95/0x1b40 [kvm]
+>    kvm_arch_vcpu_ioctl_run+0x377/0x6a0 [kvm]
+>    kvm_vcpu_ioctl+0x389/0x630 [kvm]
+>    __x64_sys_ioctl+0x8e/0xd0
+>    do_syscall_64+0x3c/0xb0
+>    entry_SYSCALL_64_after_hwframe+0x44/0xae
+> 
+> Commit 4a1e10d5b5d8c (KVM: x86: handle hardware breakpoints during emulation())
+> adds hardware breakpoints check before emulation the instruction and parts of 
+> emulation context initialization, actually we don't have the EMULTYPE_NO_DECODE flag 
+> here and the emulation context will not be reused. Commit c8848cee74ff (KVM: x86: 
+> set ctxt->have_exception in x86_decode_insn()) triggers the warning because it 
+> catches the stale emulation context has #UD, however, it is not during instruction 
+> decoding which should result in EMULATION_FAILED. This patch fixes it by moving 
+> the second part emulation context initialization into init_emulate_ctxt() and 
+> before hardware breakpoints check.  
+> 
+> syzkaller source: https://syzkaller.appspot.com/x/repro.c?x=134683fdd00000
+> 
+> Reported-by: syzbot+71271244f206d17f6441@syzkaller.appspotmail.com
+> Fixes: 4a1e10d5b5d8 (KVM: x86: handle hardware breakpoints during emulation)
+> Signed-off-by: Wanpeng Li <wanpengli@tencent.com>
+> ---
+> v2 -> v3:
+>  * squash ctxt->ud
+> v1 -> v2:
+>  * move the second part emulation context initialization into init_emulate_ctxt()
+> 
+>  arch/x86/kvm/x86.c | 14 +++++++-------
+>  1 file changed, 7 insertions(+), 7 deletions(-)
+> 
+> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+> index bbc4e04..ae47b19 100644
+> --- a/arch/x86/kvm/x86.c
+> +++ b/arch/x86/kvm/x86.c
+> @@ -7226,6 +7226,13 @@ static void init_emulate_ctxt(struct kvm_vcpu *vcpu)
+>  	BUILD_BUG_ON(HF_SMM_MASK != X86EMUL_SMM_MASK);
+>  	BUILD_BUG_ON(HF_SMM_INSIDE_NMI_MASK != X86EMUL_SMM_INSIDE_NMI_MASK);
 >  
->>> Sorry, I've missed that the BUG is apparently triggered for pfn + i. Can
->>> you please try this instead:
->>
->> [  259.216661][ T1417] test_pages_in_a_zone: pfn 8000 is not valid
->> [  259.226547][ T1417] page:00000000f4aa8c5c is uninitialized and poisoned
->> [  259.226560][ T1417] page dumped because: VM_BUG_ON_PAGE(PagePoisoned(p))
-> 
-> Can you please try Anshuman's patch "arm64/mm: Drop HAVE_ARCH_PFN_VALID":
-> 
-> https://lore.kernel.org/lkml/1621947349-25421-1-git-send-email-anshuman.khandual@arm.com
-> 
-> It seems to me that the check for memblock_is_memory() in
-> arm64::pfn_valid() is what makes init_unavailable_range() to bail out for
-> section parts that are not actually populated and then we have
-> VM_BUG_ON_PAGE(PagePoisoned(p)) for these pages.
+> +	ctxt->interruptibility = 0;
+> +	ctxt->have_exception = false;
+> +	ctxt->exception.vector = -1;
+> +	ctxt->perm_ok = false;
+> +
+> +	ctxt->ud = emulation_type & EMULTYPE_TRAP_UD;
 
-That patch fixed it.
+"ctxt->ud" should be left where it is in patch 01.  "emulation_type" isn't passed
+to init_emulate_ctxt(), and I don't see any reason to add it to the params since
+ctxt->ud is only consumed by x86_decode_insn(), i.e. moving ctxt->ud isn't
+necessary to fix the bug.
+
+arch/x86/kvm/x86.c: In function ‘init_emulate_ctxt’:
+arch/x86/kvm/x86.c:7236:13: error: ‘emulation_type’ undeclared (first use in this function); did you mean ‘exception_type’?
+ 7236 |  ctxt->ud = emulation_type & EMULTYPE_TRAP_UD;
+      |             ^~~~~~~~~~~~~~
+      |             exception_type
+arch/x86/kvm/x86.c:7236:13: note: each undeclared identifier is reported only once for each function it appears in
+
+> +
+>  	init_decode_cache(ctxt);
+>  	vcpu->arch.emulate_regs_need_sync_from_vcpu = false;
+>  }
+> @@ -7561,13 +7568,6 @@ int x86_decode_emulated_instruction(struct kvm_vcpu *vcpu, int emulation_type,
+>  	    kvm_vcpu_check_breakpoint(vcpu, &r))
+>  		return r;
+>  
+> -	ctxt->interruptibility = 0;
+> -	ctxt->have_exception = false;
+> -	ctxt->exception.vector = -1;
+> -	ctxt->perm_ok = false;
+> -
+> -	ctxt->ud = emulation_type & EMULTYPE_TRAP_UD;
+> -
+>  	r = x86_decode_insn(ctxt, insn, insn_len);
+>  
+>  	trace_kvm_emulate_insn_start(vcpu);
+> -- 
+> 2.7.4
+> 
