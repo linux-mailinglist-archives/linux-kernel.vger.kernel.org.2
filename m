@@ -2,74 +2,222 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 77719393942
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 01:27:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DA07F39393E
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 01:26:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235313AbhE0X2q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 May 2021 19:28:46 -0400
-Received: from vps0.lunn.ch ([185.16.172.187]:32810 "EHLO vps0.lunn.ch"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233038AbhE0X2m (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 May 2021 19:28:42 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
-        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
-        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
-        bh=V4zv3tSkdbMop+5uGd/UYZ83LvN67WaQLJjf/Sfs61c=; b=wfg5R/awrSnPY8Z3K82p/HpQWQ
-        xBCMpn9ez3I0ku46o+cZcHLYuTdsqW5LRQxNw7axDWNcBaYkKH8kxFmyEo2QFJxmee576Yy3magKK
-        gTmPjvjNh5S4dDSI/kEfoa4TwI5x3VZNSax1/jXMI83knJ1YlI86T/Rsw6OzyAy/3UUg=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-        (envelope-from <andrew@lunn.ch>)
-        id 1lmPOg-006eAY-7v; Fri, 28 May 2021 01:26:38 +0200
-Date:   Fri, 28 May 2021 01:26:38 +0200
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Michael Sit Wei Hong <michael.wei.hong.sit@intel.com>
-Cc:     Jose.Abreu@synopsys.com, hkallweit1@gmail.com,
-        linux@armlinux.org.uk, kuba@kernel.org, netdev@vger.kernel.org,
-        peppe.cavallaro@st.com, alexandre.torgue@foss.st.com,
-        davem@davemloft.net, mcoquelin.stm32@gmail.com,
-        weifeng.voon@intel.com, boon.leong.ong@intel.com,
-        tee.min.tan@intel.com, vee.khee.wong@linux.intel.com,
-        vee.khee.wong@intel.com, linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net-next v3 2/3] net: pcs: add 2500BASEX support for
- Intel mGbE controller
-Message-ID: <YLAqrte9qwQ/64BI@lunn.ch>
-References: <20210527092415.25205-1-michael.wei.hong.sit@intel.com>
- <20210527092415.25205-3-michael.wei.hong.sit@intel.com>
+        id S233980AbhE0X21 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 May 2021 19:28:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56770 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233038AbhE0X2Z (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 27 May 2021 19:28:25 -0400
+Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0CD79C061574;
+        Thu, 27 May 2021 16:26:52 -0700 (PDT)
+Received: by mail-wr1-x432.google.com with SMTP id p7so1421251wru.10;
+        Thu, 27 May 2021 16:26:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=qgSfSSR25TpqE7DTHh0If3TkH6Ntnwzdv/kA+O29T0w=;
+        b=Wwf4fWPV9VWdORZV6WIy6v+2wR4tFAbg8gmFg5iHna4keVQvYWQoXsHyyNp6xOwPMJ
+         E/cTm/TrmMNQ1o+BKzU/MiU2m1oGdYuMd8r9TN/8C3PwbKBbK9Mm/9sjhw0jSto8LiTa
+         1O0+FHr2mlzE00E09Ms0JX4ScYuFA7xqAg3VdtS/VmUzH0UDRYGiXVS8mtsLHw0J7Ia+
+         o2FdtyB3U9CLX1xB5he52HoKUHjVDEMWRwwHCfJZwb+ZcBt5zSIrzrdJFusBC0iHSNJn
+         3JrA3l0mVuin1msDHwBwjnA//BTZPppRRN8DVX3KV1z580pFxPu+9HsFYP4Ie0G0xnoe
+         QsAA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=qgSfSSR25TpqE7DTHh0If3TkH6Ntnwzdv/kA+O29T0w=;
+        b=SxH3delMB2kJKeZsaw+xu7hpg1k+3g9ArOJA8m6iHip4ctdYy9nvU1Ky5WrPgD7nEp
+         NCbxhb7A7om2ycKGRA+mCUUrxYDro78V1f8xb6MBGqomEPIUhF36ZWxagTriAprSaLT3
+         d1n22Bi+stIQC+24OBXHHeYCgvcv1XlFpen33msdVtPzVmKdn0QcvN7fgeIR0IYWzV1K
+         rojATdoi+wfSuWegbfXUwIj/948KH5Qpqte5GNbLp2EZ2T/BSgxzr0i4hjNRqkMWnHL2
+         HUIq8y+fV1j58gqGZ2OjOrwwDNwTrnJDHMOezsrGVjFKY0aQMdyjb5jIp9Jgd5zxlTN5
+         evtw==
+X-Gm-Message-State: AOAM533Q9HGz0gV/AvcCtjcO942AbaB5XrzLs3UyhGlKVzknChL0krMf
+        yxhil594E39TqcqcNyI/UKBT0bI47ypM8v0+9Yo=
+X-Google-Smtp-Source: ABdhPJzcHlEcE3GJbLIcwKUWgBucK4ooOjc8OjwZQyp1IMnhdPdmlGHY+zKNBb8UKhuWJbJTK0FIWMl2d3U7gWaBjBg=
+X-Received: by 2002:adf:e84a:: with SMTP id d10mr5665911wrn.132.1622158010442;
+ Thu, 27 May 2021 16:26:50 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210527092415.25205-3-michael.wei.hong.sit@intel.com>
+References: <20210521124946.3617862-1-vkoul@kernel.org> <CAOCk7Nqep_Db+z3fr5asHZ1u0j8+6fKkPFs2Ai8CbA_zGqV6ZA@mail.gmail.com>
+ <YK3gxqXBRupN/N+Q@vkoul-mobl.Dlink> <CAOCk7NqvhGvYw8xCBctqj7H+o-Qwp2UuUJK1gatW9EWfXv56xA@mail.gmail.com>
+In-Reply-To: <CAOCk7NqvhGvYw8xCBctqj7H+o-Qwp2UuUJK1gatW9EWfXv56xA@mail.gmail.com>
+From:   Rob Clark <robdclark@gmail.com>
+Date:   Thu, 27 May 2021 16:30:34 -0700
+Message-ID: <CAF6AEGuoyPr8PgfwFX0JCYZ7S_pryn_OXacHBqoMAAPvSq6aRw@mail.gmail.com>
+Subject: Re: [Freedreno] [RFC PATCH 00/13] drm/msm: Add Display Stream
+ Compression Support
+To:     Jeffrey Hugo <jeffrey.l.hugo@gmail.com>
+Cc:     Vinod Koul <vkoul@kernel.org>, DTML <devicetree@vger.kernel.org>,
+        Jonathan Marek <jonathan@marek.ca>,
+        David Airlie <airlied@linux.ie>,
+        MSM <linux-arm-msm@vger.kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        Abhinav Kumar <abhinavk@codeaurora.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        "open list:DRM PANEL DRIVERS" <dri-devel@lists.freedesktop.org>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        freedreno <freedreno@lists.freedesktop.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> +static int xpcs_config_2500basex(struct mdio_xpcs_args *xpcs)
-> +{
-> +	int ret;
-> +
-> +		ret = xpcs_read(xpcs, MDIO_MMD_VEND2, DW_VR_MII_DIG_CTRL1);
-> +		if (ret < 0)
-> +			return ret;
-> +		ret |= DW_VR_MII_DIG_CTRL1_2G5_EN;
-> +		ret &= ~DW_VR_MII_DIG_CTRL1_MAC_AUTO_SW;
-> +		ret = xpcs_write(xpcs, MDIO_MMD_VEND2, DW_VR_MII_DIG_CTRL1, ret);
-> +		if (ret < 0)
-> +			return ret;
-> +
-> +		ret = xpcs_read(xpcs, MDIO_MMD_VEND2, DW_VR_MII_MMD_CTRL);
-> +		if (ret < 0)
-> +			return ret;
-> +		ret &= ~AN_CL37_EN;
-> +		ret |= SGMII_SPEED_SS6;
-> +		ret &= ~SGMII_SPEED_SS13;
-> +		return xpcs_write(xpcs, MDIO_MMD_VEND2, DW_VR_MII_MMD_CTRL, ret);
-> +
-> +	return 0;
+On Wed, May 26, 2021 at 8:00 AM Jeffrey Hugo <jeffrey.l.hugo@gmail.com> wrote:
+>
+> On Tue, May 25, 2021 at 11:46 PM Vinod Koul <vkoul@kernel.org> wrote:
+> >
+> > Hello Jeff,
+> >
+> > On 21-05-21, 08:09, Jeffrey Hugo wrote:
+> > > On Fri, May 21, 2021 at 6:50 AM Vinod Koul <vkoul@kernel.org> wrote:
+> > > >
+> > > > Display Stream Compression (DSC) compresses the display stream in host which
+> > > > is later decoded by panel. This series enables this for Qualcomm msm driver.
+> > > > This was tested on Google Pixel3 phone which use LGE SW43408 panel.
+> > > >
+> > > > The changes include adding DT properties for DSC then hardware blocks support
+> > > > required in DPU1 driver and support in encoder. We also add support in DSI
+> > > > and introduce required topology changes.
+> > > >
+> > > > In order for panel to set the DSC parameters we add dsc in drm_panel and set
+> > > > it from the msm driver.
+> > > >
+> > > > Complete changes which enable this for Pixel3 along with panel driver (not
+> > > > part of this series) and DT changes can be found at:
+> > > > git.linaro.org/people/vinod.koul/kernel.git pixel/dsc_rfc
+> > > >
+> > > > Comments welcome!
+> > >
+> > > This feels backwards to me.  I've only skimmed this series, and the DT
+> > > changes didn't come through for me, so perhaps I have an incomplete
+> > > view.
+> >
+> > Not sure why, I see it on lore:
+> > https://lore.kernel.org/dri-devel/20210521124946.3617862-3-vkoul@kernel.org/
+> >
+> > > DSC is not MSM specific.  There is a standard for it.  Yet it looks
+> > > like everything is implemented in a MSM specific way, and then pushed
+> > > to the panel.  So, every vendor needs to implement their vendor
+> > > specific way to get the DSC info, and then push it to the panel?
+> > > Seems wrong, given there is an actual standard for this feature.
+> >
+> > I have added slice and bpp info in the DT here under the host and then
+> > pass the generic struct drm_dsc_config to panel which allows panel to
+> > write the pps cmd
+> >
+> > Nothing above is MSM specific.. It can very well work with non MSM
+> > controllers too.
+>
+> I disagree.
+>
+> The DT bindings you defined (thanks for the direct link) are MSM
+> specific.  I'm not talking (yet) about the properties you defined, but
+> purely from the stand point that you defined the binding within the
+> scope of the MSM dsi binding.  No other vendor can use those bindings.
+> Of course, if we look at the properties themselves, they are prefixed
+> with "qcom", which is vendor specific.
+>
+> So, purely on the face of it, this is MSM specific.
+>
+> Assuming we want a DT solution for DSC, I think it should be something
+> like Documentation/devicetree/bindings/clock/clock-bindings.txt (the
+> first example that comes to mind), which is a non-vendor specific
+> generic set of properties that each vendor/device specific binding can
+> inherit.  Panel has similar things.
+>
+> Specific to the properties, I don't much like that you duplicate BPP,
+> which is already associated with the panel (although perhaps not in
+> the scope of DT).  What if the panel and your DSC bindings disagree?
+> Also, I guess I need to ask, have you read the DSC spec?  Last I
+> looked, there were something like 3 dozen properties that could be
+> configured.  You have five in your proposed binding.  To me, this is
+> not a generic DSC solution, this is MSM specific (and frankly I don't
+> think this supports all the configuration the MSM hardware can do,
+> either).
+>
+> I'm surprised Rob Herring didn't have more to say on this.
+>
+> > I didn't envision DSC to be a specific thing, most of
+> > the patches here are hardware enabling ones for DSC bits for MSM
+> > hardware.
+> >
+> > > Additionally, we define panel properties (resolution, BPP, etc) at the
+> > > panel, and have the display drivers pull it from the panel.  However,
+> > > for DSC, you do the reverse (define it in the display driver, and push
+> > > it to the panel).  If the argument is that DSC properties can be
+> > > dynamic, well, so can resolution.  Every panel for MSM MTPs supports
+> > > multiple resolutions, yet we define that with the panel in Linux.
+> >
+> > I dont have an answer for that right now, to start with yes the
+> > properties are in host but I am okay to discuss this and put wherever we
+> > feel is most correct thing.  I somehow dont like that we should pull
+> > from panel DT and program host with that. Here using struct
+> > drm_dsc_config allows me to configure panel based on resolution passed
+>
+> I somewhat agree that pulling from the panel and programing the host
+> based on that is an odd solution, but we have it currently.  Have a
+> look at Documentation/devicetree/bindings/display/panel in particular
+> panel-timing.  All of that ends up informing the mdss programing
+> anyways (particularly the dsi and its phy).  So my problem is that we
+> currently have a solution that seems to just need to be extended, and
+> instead you have proposed a completely different solution which is
+> arguably contradictory.
+>
+> However, I'd like to see thoughts from Rob Clark, David, and any
+> others that typically handle this stuff (maybe Sam Ravenborg from the
+> panel side?).  I consider them to be the experts, and if they think
+> your solution is the way to go, I'll shut up.  I consider myself to be
+> a novice that has dabbled in this area, and while this currently
+> doesn't make sense to me, maybe I need some education here to see the
+> light.
+>
+> > > Finally, I haven't seen the DT bits, but I'm concerned about using DT
+> > > for this.  It inherently excludes ACPI systems.  You appear to have
+> > > sdm845 support in this series, but what about ACPI boot on the Lenovo
+> > > C630 for example?  Or any of the 8cx laptops?  We don't read the panel
+> > > resolution, etc from DT, so why the DSC?
+> >
+> > But you must read from somewhere like ACPI tables. I think ACPI systems
+> > would have some ACPI table info out there which would help on this.
+> > Yes that is another task which we need to start with once we enable OF
+> > systems.
+>
+> Frankly, I don't like the MSM ACPI solution that I've seen on the laptops.
+> The ACPI assumes the entire MDSS (including DSI parts) and GPU is one
+> device, and ultimately handled by one driver.  That driver needs to
+> get a value from UEFI (set by the bootloader) that is the "panel id".
+> Then the driver calls into ACPI (I think its _ROM, but I might be
+> mistaken, doing this from memory) with that id.  It gets back a binary
+> blob which is mostly an xml file (format is publicly documented) that
+> contains the panel timings and such.
 
-Indentation is messed up here? Or a rebase gone wrong removing an if
-statement?
+tbh, I kinda suspect that having a single "gpu" device (which also
+includes venus, in addition to display, IIRC) in the ACPI tables is a
+windowsism, trying to make things look to userspace like a single "GPU
+card" in the x86 world.. but either way, I think the ACPI tables on
+the windows arm laptops which use dsi->bridge->edp is too much of a
+lost cause to even consider here.  Possibly ACPI boot on these devices
+would be more feasible on newer devices which have direct eDP out of
+the SoC without requiring external bridge/panel glue.
 
-	    Andrew
+I'd worry more about what makes sense in a DT world, when it comes to
+DT bindings.
+
+BR,
+-R
+
+> Generally we've defined simple-panel entities for these, with the
+> timings in code (you can see what Bjorn and I have upstreamed), and
+> just match on the compatible.
+>
+> In summary, I don't mean to be difficult, I just think this solution
+> needs more "baking".
