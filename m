@@ -2,93 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A68373938BA
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 00:32:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 241953938C1
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 00:38:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235538AbhE0Wd4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 May 2021 18:33:56 -0400
-Received: from mail-oi1-f182.google.com ([209.85.167.182]:42896 "EHLO
-        mail-oi1-f182.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233203AbhE0Wdy (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 May 2021 18:33:54 -0400
-Received: by mail-oi1-f182.google.com with SMTP id c196so2340724oib.9;
-        Thu, 27 May 2021 15:32:19 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Sza0E/+uMB5EM/AhsG1a1nI/szLc6wK8lbW1ACNSEJo=;
-        b=Sl7Br8nWqTrjpGclCN59/AsXepyfGH3jgGf1wp5HH81hcOrIZJmEwp+ghy818cQ0YA
-         KlKj4mhpdCvkQwWFPWP4qTvI7uWnsw4U0zWX8P7uA+Lv4PyuJ9hcFdKBCcPJjKG2ToGI
-         QrNKZ9gdUohDoO4iL4pd4JBPc8GBczhIeMCir+zSIMAWOlBmRwo3bklXxKAl7yekfkrP
-         NsQUz4sdoMdztydCGj0bIyB9r7oQ/UxvIcy0FSKNhlujgNrf7i/Y1+oRBh53zgymVVFX
-         LYBgubXIG0RyX9Z5/a6l02vYp5ruRCSWADdYol8H397H6BbnBgJ5982JshaJMdz6bC6/
-         kUjQ==
-X-Gm-Message-State: AOAM531T9cisJU2KFS3REUfAA2kNVjjokagvJuUs478Ywo3Cj0n72khT
-        53m/zlo7jZNpXlZnV04NryRFDa0aoA==
-X-Google-Smtp-Source: ABdhPJw9Y8cgQTbb5o9wbbrSLaSAyQsXhRIZd6foOJi06scZcPdfc87su3ecs3OLvzwpiG493Df+Uw==
-X-Received: by 2002:aca:4b16:: with SMTP id y22mr3874459oia.125.1622154739243;
-        Thu, 27 May 2021 15:32:19 -0700 (PDT)
-Received: from xps15.herring.priv (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.googlemail.com with ESMTPSA id q14sm766288ota.31.2021.05.27.15.32.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 27 May 2021 15:32:18 -0700 (PDT)
-From:   Rob Herring <robh@kernel.org>
-To:     devicetree@vger.kernel.org, Frank Rowand <frowand.list@gmail.com>
-Cc:     linux-kernel@vger.kernel.org, Christoph Hellwig <hch@lst.de>
-Subject: [PATCH] of: Drop reserved mem dependency on DMA_DECLARE_COHERENT and DMA_CMA
-Date:   Thu, 27 May 2021 17:32:17 -0500
-Message-Id: <20210527223217.1572631-1-robh@kernel.org>
-X-Mailer: git-send-email 2.27.0
+        id S235267AbhE0Wjv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 May 2021 18:39:51 -0400
+Received: from foss.arm.com ([217.140.110.172]:34840 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233203AbhE0Wjs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 27 May 2021 18:39:48 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 47AD114FF;
+        Thu, 27 May 2021 15:38:14 -0700 (PDT)
+Received: from [192.168.178.6] (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id B10EF3F719;
+        Thu, 27 May 2021 15:38:12 -0700 (PDT)
+Subject: Re: [PATCH] sched/fair: Fix util_est UTIL_AVG_UNCHANGED handling
+To:     Xuewen Yan <xuewen.yan94@gmail.com>
+Cc:     Vincent Donnefort <vincent.donnefort@arm.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Patrick Bellasi <patrick.bellasi@matbug.net>,
+        Quentin Perret <qperret@google.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+References: <20210514103748.737809-1-dietmar.eggemann@arm.com>
+ <20210519160633.GA230499@e120877-lin.cambridge.arm.com>
+ <cb72557a-6039-df95-7e25-a7f37d3f9cef@arm.com>
+ <CAB8ipk8POOzM2Dut0gcqsgNO0r2585GGv4SG+a1mOmMnrW=Vrw@mail.gmail.com>
+From:   Dietmar Eggemann <dietmar.eggemann@arm.com>
+Message-ID: <a8ab9455-a9be-2349-d23a-676aa89fbf2d@arm.com>
+Date:   Fri, 28 May 2021 00:38:11 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAB8ipk8POOzM2Dut0gcqsgNO0r2585GGv4SG+a1mOmMnrW=Vrw@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Reserved memory regions can be used for more than just DMA regions, so
-only enabling on DMA_DECLARE_COHERENT (via HAS_DMA) or DMA_CMA is wrong.
-This effectively doesn't matter except for the few cases arches select
-NO_DMA.
+On 27/05/2021 07:41, Xuewen Yan wrote:
+> Hi
+> 
+> On Wed, May 26, 2021 at 10:59 PM Dietmar Eggemann
+> <dietmar.eggemann@arm.com> wrote:
+>>
+>> On 19/05/2021 18:06, Vincent Donnefort wrote:
+>>> On Fri, May 14, 2021 at 12:37:48PM +0200, Dietmar Eggemann wrote:
 
-At least, these users of RESERVEDMEM_OF_DECLARE depend on reserved memory
-support:
+[...]
 
-arch/riscv/mm/init.c:RESERVEDMEM_OF_DECLARE(elfcorehdr, "linux,elfcorehdr", elfcore_hdr_setup);
-drivers/memory/tegra/tegra210-emc-table.c:RESERVEDMEM_OF_DECLARE(tegra210_emc_table, "nvidia,tegra210-emc-table",
-drivers/soc/fsl/qbman/bman_ccsr.c:RESERVEDMEM_OF_DECLARE(bman_fbpr, "fsl,bman-fbpr", bman_fbpr);
-drivers/soc/fsl/qbman/qman_ccsr.c:RESERVEDMEM_OF_DECLARE(qman_fqd, "fsl,qman-fqd", qman_fqd);
-drivers/soc/fsl/qbman/qman_ccsr.c:RESERVEDMEM_OF_DECLARE(qman_pfdr, "fsl,qman-pfdr", qman_pfdr);
+>> diff --git a/include/linux/sched.h b/include/linux/sched.h
+>> index c7e7d50e2fdc..0a0bca694536 100644
+>> --- a/include/linux/sched.h
+>> +++ b/include/linux/sched.h
+>> @@ -357,6 +357,16 @@ struct util_est {
+>>  #define UTIL_EST_WEIGHT_SHIFT          2
+>>  } __attribute__((__aligned__(sizeof(u64))));
+>>
+>> +/*
+>> + * This flag is used to synchronize util_est with util_avg updates.
+>> + * When a task is dequeued, its util_est should not be updated if its util_avg
+>> + * has not been updated in the meantime.
+>> + * This information is mapped into the MSB bit of util_est.enqueued at dequeue
+>> + * time. Since max value of util_est.enqueued for a task is 1024 (PELT util_avg
+>> + * for a task) it is safe to use MSB.
+>> + */
+>> +#define UTIL_AVG_UNCHANGED 0x80000000
+>> +
+> 
+> IMHO, Maybe it would be better to put it in the util_est structure
+> just like UTIL_EST_WEIGHT_SHIFT?
 
-Let's simplify things and enable OF_RESERVED_MEM when OF_EARLY_FLATTREE is
-enabled.
+Yeah, can do.
 
-Cc: Christoph Hellwig <hch@lst.de>
-Signed-off-by: Rob Herring <robh@kernel.org>
----
-This is needed to prevent build break on UML with this patch:
-
-https://lore.kernel.org/lkml/20210527193841.1284169-1-robh@kernel.org/
-
- drivers/of/Kconfig | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
-
-diff --git a/drivers/of/Kconfig b/drivers/of/Kconfig
-index 18450437d5d5..3dfeae8912df 100644
---- a/drivers/of/Kconfig
-+++ b/drivers/of/Kconfig
-@@ -75,9 +75,7 @@ config OF_NET
- 	def_bool y
- 
- config OF_RESERVED_MEM
--	bool
--	depends on OF_EARLY_FLATTREE
--	default y if DMA_DECLARE_COHERENT || DMA_CMA
-+	def_bool OF_EARLY_FLATTREE
- 
- config OF_RESOLVE
- 	bool
--- 
-2.27.0
-
+I just realized that 'kernel/sched/pelt.h' does not include
+<linux/sched.h> directly (or indirectly via "sched.h". But I can easily
+move cfs_se_util_change() (which uses UTIL_AVG_UNCHANGED) from pelt.h to
+pelt.c, its only consumer anyway.
