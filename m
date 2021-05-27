@@ -2,76 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B771739317D
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 16:52:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ED3E4393188
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 16:54:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236655AbhE0OyY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 May 2021 10:54:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54224 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229793AbhE0OyS (ORCPT
+        id S236663AbhE0O4S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 May 2021 10:56:18 -0400
+Received: from outbound-smtp30.blacknight.com ([81.17.249.61]:32952 "EHLO
+        outbound-smtp30.blacknight.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229793AbhE0O4Q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 May 2021 10:54:18 -0400
-Received: from mail-lj1-x22d.google.com (mail-lj1-x22d.google.com [IPv6:2a00:1450:4864:20::22d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B932C061574
-        for <linux-kernel@vger.kernel.org>; Thu, 27 May 2021 07:52:44 -0700 (PDT)
-Received: by mail-lj1-x22d.google.com with SMTP id w15so1164961ljo.10
-        for <linux-kernel@vger.kernel.org>; Thu, 27 May 2021 07:52:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=gbLxZVInwYy3qEUPV3OX+LQ3zzJzdzfdzUhZD/Ue/bg=;
-        b=IXaIB0Nni2fs5B9gNNEfAvL6rmSOEETjRJ/6oEyfVHXghb3kgUg5GcpBXZZ5o+QqOb
-         BpYowFocYox4Dq6gQqpolGYEgPeDGD4jrOSe0QOLHDyAV4kDhyfhux5IrYQR/3p5pdou
-         a7EIH9Yl/4mrlSnTAoRB+GkwaCFAc0hZyOr1XCIIpjv8ki7NI5biYt7unOV5aZD4J6AE
-         GUDpKQZVA1zZutLCkh2ESBMk5MbJz1w8dAMr+VWqPAAYVFPlKHwXu4Hk4xQizJXbrKwB
-         gRQ2ILP4/A8czIxl+WoMxXeqvspc+DZTiol3sw7MQvPNITxf4Mch+I3XKX7NNkNuqQaS
-         8ydg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=gbLxZVInwYy3qEUPV3OX+LQ3zzJzdzfdzUhZD/Ue/bg=;
-        b=WNUm7b6T845iKP4Ihu1HiSj18wKsN0Sq3UteGu22818A2Mzi6gYuoe8TGkJwUo0NIY
-         8xwcxR7ZQJ3kQIfuioOLZWHz9u24FbpkSMKIEZYbbZ8MtElaxDY5wLpnK6YyeVTyIisU
-         fHnffAXnuBjmNA1yWO6SOvM0nmpYS5EgU3FC3L/zx8TGZKbH3579fqO6Qvi7Z2EQq+hN
-         T3Hx066+lKKRlVgLkXV2OjPcIk/EJ9F9JFQhzXpkfdp89vnEatxXZuz5LcGxX6CNQQVE
-         2SlzUgr7h8TU1MkgqNC/qWoxXrYgsymHWEU4igVbQYS/bVJMAV6/1o8XgydMfaS/Vmg7
-         0DTQ==
-X-Gm-Message-State: AOAM532e0lqvv8Jh8CLOGP9MxyophEwjOTYe7xwF6zh+MARFSgEyJlAm
-        nSATUlik0TlyJQFdi7+qXH6A7oj62TJNMyhZvt6C+Q==
-X-Google-Smtp-Source: ABdhPJyOpPFO04F64d5pjW8QNYZ4e/HRx7gpPeHxd/mRVrxX7uKsLF7S1bM0/fx10bKuhTzUYcQo7VOPcuN/I7RO4+w=
-X-Received: by 2002:a2e:22c3:: with SMTP id i186mr2978367lji.273.1622127163004;
- Thu, 27 May 2021 07:52:43 -0700 (PDT)
+        Thu, 27 May 2021 10:56:16 -0400
+Received: from mail.blacknight.com (pemlinmail03.blacknight.ie [81.17.254.16])
+        by outbound-smtp30.blacknight.com (Postfix) with ESMTPS id ED38018024
+        for <linux-kernel@vger.kernel.org>; Thu, 27 May 2021 15:54:42 +0100 (IST)
+Received: (qmail 21500 invoked from network); 27 May 2021 14:54:42 -0000
+Received: from unknown (HELO techsingularity.net) (mgorman@techsingularity.net@[84.203.23.168])
+  by 81.17.254.9 with ESMTPSA (AES256-SHA encrypted, authenticated); 27 May 2021 14:54:42 -0000
+Date:   Thu, 27 May 2021 15:54:41 +0100
+From:   Mel Gorman <mgorman@techsingularity.net>
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Christoph Hellwig <hch@infradead.org>,
+        Arnaldo Carvalho de Melo <acme@redhat.com>,
+        Michal Suchanek <msuchanek@suse.de>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Hritik Vijay <hritikxx8@gmail.com>,
+        Linux-BPF <bpf@vger.kernel.org>,
+        Linux-Net <netdev@vger.kernel.org>, Linux-MM <linux-mm@kvack.org>
+Subject: Re: [PATCH v2] mm/page_alloc: Work around a pahole limitation with
+ zero-sized struct pagesets
+Message-ID: <20210527145441.GE30378@techsingularity.net>
+References: <20210527120251.GC30378@techsingularity.net>
+ <CAEf4BzartMG36AGs-7LkQdpgrB6TYyTJ8PQhjkQWiTN=7sO1Bw@mail.gmail.com>
 MIME-Version: 1.0
-References: <20210519162409.3755679-1-fparent@baylibre.com> <20210519162409.3755679-3-fparent@baylibre.com>
-In-Reply-To: <20210519162409.3755679-3-fparent@baylibre.com>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Thu, 27 May 2021 16:52:32 +0200
-Message-ID: <CACRpkdbQtBYMU80dXB3n179QQqpD5Cp7_q0MgEX264EeP_G-8A@mail.gmail.com>
-Subject: Re: [PATCH 3/3] pinctrl: mediatek: add support for mt8365 SoC
-To:     Fabien Parent <fparent@baylibre.com>
-Cc:     Sean Wang <sean.wang@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        mkorpershoek@baylibre.com,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=iso-8859-15
+Content-Disposition: inline
+In-Reply-To: <CAEf4BzartMG36AGs-7LkQdpgrB6TYyTJ8PQhjkQWiTN=7sO1Bw@mail.gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 19, 2021 at 6:24 PM Fabien Parent <fparent@baylibre.com> wrote:
+On Thu, May 27, 2021 at 07:37:05AM -0700, Andrii Nakryiko wrote:
+> > This patch checks for older versions of pahole and only allows
+> > DEBUG_INFO_BTF_MODULES if pahole supports zero-sized per-cpu structures.
+> > DEBUG_INFO_BTF is still allowed as a KVM boot test passed with pahole
+> 
+> Unfortunately this won't work. The problem is that vmlinux BTF is
+> corrupted, which results in module BTFs to be rejected as well, as
+> they depend on it.
+> 
+> But vmlinux BTF corruption makes BPF subsystem completely unusable. So
+> even though kernel boots, nothing BPF-related works. So we'd need to
+> add dependency for DEBUG_INFO_BTF on pahole 1.22+.
+> 
 
-> Add pinctrl driver for MT8365 SoC.
->
-> Signed-off-by: Fabien Parent <fparent@baylibre.com>
+While bpf usage would be broken, the kernel will boot and the effect
+should be transparent to any kernel build based on "make oldconfig".
+CONFIG_DEBUG_INFO_BTF defaults N so if that is forced out, it will be
+easily missed by a distribution kernel maintainer.
 
-Patch applied.
+Yes, users of BPF will be affected and it may generate bug reports but
+the fix will be to build with a working pahole. Breaking boot on the other
+hand is a lot more visible and hacking around this with a non-zero struct
+size has been shot down.
 
-Yours,
-Linus Walleij
+-- 
+Mel Gorman
+SUSE Labs
