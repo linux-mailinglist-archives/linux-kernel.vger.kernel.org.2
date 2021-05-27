@@ -2,81 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1AF86392414
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 03:03:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3AED7392419
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 03:06:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234194AbhE0BEt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 May 2021 21:04:49 -0400
-Received: from twspam01.aspeedtech.com ([211.20.114.71]:40056 "EHLO
-        twspam01.aspeedtech.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233592AbhE0BEr (ORCPT
+        id S234197AbhE0BHm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 May 2021 21:07:42 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:6642 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231419AbhE0BHl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 May 2021 21:04:47 -0400
-Received: from mail.aspeedtech.com ([192.168.0.24])
-        by twspam01.aspeedtech.com with ESMTP id 14R0o5pH068092;
-        Thu, 27 May 2021 08:50:05 +0800 (GMT-8)
-        (envelope-from steven_lee@aspeedtech.com)
-Received: from aspeedtech.com (192.168.100.253) by TWMBX02.aspeed.com
- (192.168.0.24) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Thu, 27 May
- 2021 09:03:07 +0800
-Date:   Thu, 27 May 2021 09:03:01 +0800
-From:   Steven Lee <steven_lee@aspeedtech.com>
-To:     Andrew Jeffery <andrew@aj.id.au>
-CC:     Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Joel Stanley <joel@jms.id.au>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        "moderated list:ARM/ASPEED MACHINE SUPPORT" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "moderated list:ARM/ASPEED MACHINE SUPPORT" 
-        <linux-aspeed@lists.ozlabs.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Hongwei Zhang <Hongweiz@ami.com>,
-        Ryan Chen <ryan_chen@aspeedtech.com>,
-        Billy Tsai <billy_tsai@aspeedtech.com>
-Subject: Re: [PATCH v1 1/4] dt-bindings: aspeed-sgpio: Convert txt bindings
- to yaml.
-Message-ID: <20210527010301.GA727@aspeedtech.com>
-References: <20210526094609.14068-1-steven_lee@aspeedtech.com>
- <20210526094609.14068-2-steven_lee@aspeedtech.com>
- <5c0670b1-269c-4aae-8639-c0866ac90dc9@www.fastmail.com>
+        Wed, 26 May 2021 21:07:41 -0400
+Received: from dggems703-chm.china.huawei.com (unknown [172.30.72.59])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4Fr8h10r4Cz1CF12;
+        Thu, 27 May 2021 09:03:13 +0800 (CST)
+Received: from dggemi762-chm.china.huawei.com (10.1.198.148) by
+ dggems703-chm.china.huawei.com (10.3.19.180) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
+ 15.1.2176.2; Thu, 27 May 2021 09:06:05 +0800
+Received: from [10.174.178.208] (10.174.178.208) by
+ dggemi762-chm.china.huawei.com (10.1.198.148) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2176.2; Thu, 27 May 2021 09:06:04 +0800
+Subject: Re: Linux 5.4.122
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        <linux-kernel@vger.kernel.org>, <akpm@linux-foundation.org>,
+        <torvalds@linux-foundation.org>, <stable@vger.kernel.org>
+CC:     <lwn@lwn.net>, <jslaby@suse.cz>
+References: <16220297281791@kroah.com>
+From:   Samuel Zou <zou_wei@huawei.com>
+Message-ID: <5dd43fd8-fc87-120c-486c-7f54832190a6@huawei.com>
+Date:   Thu, 27 May 2021 09:06:04 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Disposition: inline
-In-Reply-To: <5c0670b1-269c-4aae-8639-c0866ac90dc9@www.fastmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Originating-IP: [192.168.100.253]
-X-ClientProxiedBy: TWMBX02.aspeed.com (192.168.0.24) To TWMBX02.aspeed.com
- (192.168.0.24)
-X-DNSRBL: 
-X-MAIL: twspam01.aspeedtech.com 14R0o5pH068092
+In-Reply-To: <16220297281791@kroah.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.178.208]
+X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
+ dggemi762-chm.china.huawei.com (10.1.198.148)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The 05/27/2021 08:57, Andrew Jeffery wrote:
-> Hi Steven,
+
+
+On 2021/5/26 19:48, Greg Kroah-Hartman wrote:
+> I'm announcing the release of the 5.4.122 kernel.
 > 
-> On Wed, 26 May 2021, at 19:16, Steven Lee wrote:
-> > SGPIO bindings should be converted as yaml format.
-> > In addition to the file conversion, a new property max-ngpios is
-> > added in the yaml file as well.
-> > The new property is required by the enhanced sgpio driver for
-> > making the configuration of the max number of gpio pins more flexible.
+> All users of the 5.4 kernel series must upgrade.
 > 
-> Please add the new property in a separate patch to the YAML conversion. 
-> Having changes to the properties in addition to switching to dt schema 
-> makes it harder to catch errors, and it seems Rob's bot has already 
-> picked up some.
+> The updated 5.4.y git tree can be found at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable.git linux-5.4.y
+> and can be browsed at the normal kernel.org git web browser:
+> 	https://git.kernel.org/?p=linux/kernel/git/stable/linux-stable.git;a=summary
 > 
-> Reviewing the changes as separate patches means its easier to give you 
-> a Reviewed-by tag on that patches I'm happy with.
+> thanks,
+> 
+> greg k-h
 > 
 
-Thanks for your suggestion, I will add the new property in a
-separate patch in v3 patch series.
+Tested on arm64 and x86 for 5.4.122,
 
-> Andrew
+Kernel repo:
+https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
+Branch: linux-5.4.y
+Version: 5.4.122
+Commit: 67154cff6258e46b05acc9f797e3328ed839b0e2
+Compiler: gcc version 7.3.0 (GCC)
+
+arm64:
+--------------------------------------------------------------------
+Testcase Result Summary:
+total: 8895
+passed: 8895
+failed: 0
+timeout: 0
+--------------------------------------------------------------------
+
+x86:
+--------------------------------------------------------------------
+Testcase Result Summary:
+total: 8895
+passed: 8895
+failed: 0
+timeout: 0
+--------------------------------------------------------------------
+
+Tested-by: Hulk Robot <hulkrobot@huawei.com>
