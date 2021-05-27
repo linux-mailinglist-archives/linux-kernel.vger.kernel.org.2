@@ -2,157 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 73468392DAF
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 14:10:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4868F392DB1
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 14:10:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235075AbhE0MMU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 May 2021 08:12:20 -0400
-Received: from mga12.intel.com ([192.55.52.136]:27442 "EHLO mga12.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234914AbhE0MMU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 May 2021 08:12:20 -0400
-IronPort-SDR: Ys5aY3nx5fG4MFArO8nsxPoT1uppJZM+mJxwpxfkNSYTfuwfjpzXj2NbYOFmhZWBos/ziN4Kjs
- jY/TcI/Xu64g==
-X-IronPort-AV: E=McAfee;i="6200,9189,9996"; a="182372333"
-X-IronPort-AV: E=Sophos;i="5.82,334,1613462400"; 
-   d="scan'208";a="182372333"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 May 2021 05:10:46 -0700
-IronPort-SDR: j3BeS5ChWaizaWyXVOTfJ9JC6eiXr1QGHwkahv7ecwtnaJ3InzgHCJN73J/EFt+aClwmwzlr7J
- 9K8WeoJ5ss+w==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.82,334,1613462400"; 
-   d="scan'208";a="477457682"
-Received: from shbuild999.sh.intel.com (HELO localhost) ([10.239.147.94])
-  by orsmga001.jf.intel.com with ESMTP; 27 May 2021 05:10:41 -0700
-Date:   Thu, 27 May 2021 20:10:41 +0800
-From:   Feng Tang <feng.tang@intel.com>
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
-        David Rientjes <rientjes@google.com>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Ben Widawsky <ben.widawsky@intel.com>,
-        linux-kernel@vger.kernel.org,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Andi Kleen <ak@linux.intel.com>,
-        Dan Williams <dan.j.williams@intel.com>, ying.huang@intel.com
-Subject: Re: [PATCH v1 4/4] mm/mempolicy: kill MPOL_F_LOCAL bit
-Message-ID: <20210527121041.GA7743@shbuild999.sh.intel.com>
-References: <1622005302-23027-1-git-send-email-feng.tang@intel.com>
- <1622005302-23027-5-git-send-email-feng.tang@intel.com>
- <YK9WOKBRsaFESPfR@dhcp22.suse.cz>
+        id S235177AbhE0MM0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 May 2021 08:12:26 -0400
+Received: from mail-eopbgr30070.outbound.protection.outlook.com ([40.107.3.70]:32367
+        "EHLO EUR03-AM5-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S235085AbhE0MMV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 27 May 2021 08:12:21 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=hR5EHcVYSnN1wuVsIG0UnSubSnj/+q3hiBpM5NpyaGYghsEAbAVck7NwCtctVT3y0+D4jahYO+7L3hbqEdiRIzKOpjzeOeTVbRUa9muDnlOajXKP3v5etqZgSkUbexyYSF5RgiTk4739QLRm2RJxgxNW6xzqj8RkdT7iXnBxdRifRTCJtmwITnhiAtVc77sVHoDKZO5kCsob/XeF4dz9PucJCCfTaeRPORpTmsSVkbIm63g3VGj6B6XvT70IV68pTUutHJ1AzMekyjXQgWX0ZdKpGxkhRVHMUHi4st5FJHXQ99T4D14Z4qCqcLTNsxX1PzDV86ns77MJylFtpuzVpw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=E9/Mcide8nYiuCZjQ4WBFOznVxgzfGiP/V4Wz/6iT6U=;
+ b=MskePpwJl+eUvu2c8k+1A5tv2xADK5TjXk/EE9d+uXdq4w1nkTbwXBmBTvrw5Dn1FxxDZg/VB3kX/c49Pd+xv01i0zkG32ao48BTFaA9mPvqlr5TiwcEWYzWwXFc+7DrclT5j1BIB6F3C8dDXxDxq6z2KIsN/zt8jAFPf8OhOeMbV07+GphagCsbKuoWLKZmjmma8kApHiueDNFBSaHvYywy60211fJnsKBhWry4QudckkrBT1HAAuPweirqCUNSC5WtgCu2eF9IrAugvS+A4tl7hLx99BhclNmttg4A2ymzrNpFfWY3qHkpL8jfA/NVIXRc85OXhNKD/95FYVXYMA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=E9/Mcide8nYiuCZjQ4WBFOznVxgzfGiP/V4Wz/6iT6U=;
+ b=b61yr/PHFWqguKwt1Ks8kQikEMWkAuH03Onotv1XCN0PEmzji1cLhEffBnJc2Kd3+yhL2DZUNNrmiA+kqx1DLRkjWvZ/8XscEbCdcv+UzNqDQCG8QLBX8jdBd7m2zWtp/i/VTh47OoxD4Wk1Yc+/rsnuZLac58EQxG36wsI67KM=
+Received: from DB8PR04MB6795.eurprd04.prod.outlook.com (2603:10a6:10:fa::15)
+ by DB9PR04MB8137.eurprd04.prod.outlook.com (2603:10a6:10:244::9) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4173.21; Thu, 27 May
+ 2021 12:10:47 +0000
+Received: from DB8PR04MB6795.eurprd04.prod.outlook.com
+ ([fe80::3400:b139:f681:c8cf]) by DB8PR04MB6795.eurprd04.prod.outlook.com
+ ([fe80::3400:b139:f681:c8cf%9]) with mapi id 15.20.4150.027; Thu, 27 May 2021
+ 12:10:47 +0000
+From:   Joakim Zhang <qiangqing.zhang@nxp.com>
+To:     "davem@davemloft.net" <davem@davemloft.net>,
+        "kuba@kernel.org" <kuba@kernel.org>,
+        "frieder.schrempf@kontron.de" <frieder.schrempf@kontron.de>,
+        "andrew@lunn.ch" <andrew@lunn.ch>
+CC:     "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        dl-linux-imx <linux-imx@nxp.com>
+Subject: RE: [PATCH V1 net-next 0/2] net: fec: fix TX bandwidth fluctuations
+Thread-Topic: [PATCH V1 net-next 0/2] net: fec: fix TX bandwidth fluctuations
+Thread-Index: AQHXUvDdAkrP6ejNDkGcbE4OJnlbKqr3PELA
+Date:   Thu, 27 May 2021 12:10:47 +0000
+Message-ID: <DB8PR04MB679585D9D94C0D5D90003ED2E6239@DB8PR04MB6795.eurprd04.prod.outlook.com>
+References: <20210527120722.16965-1-qiangqing.zhang@nxp.com>
+In-Reply-To: <20210527120722.16965-1-qiangqing.zhang@nxp.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: davemloft.net; dkim=none (message not signed)
+ header.d=none;davemloft.net; dmarc=none action=none header.from=nxp.com;
+x-originating-ip: [119.31.174.71]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: f1c5d390-81ae-4ff5-f42c-08d9210875f5
+x-ms-traffictypediagnostic: DB9PR04MB8137:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <DB9PR04MB813766A584CACD55C04AD925E6239@DB9PR04MB8137.eurprd04.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:6790;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: bgV0G1KjeJxrCGm+E2y6tWZNngEvJd67QFSosG+nyyoWQPOAU5N3qGbAM6eJ4bLQssp81JJ1zcWd3Qwd6TpHV61cm46+RvhsZJSHz3gbJV5fffCov0sMADdHZoWb4PY2Uf7SuknEcLlk5c6ol9Z9YnUt+Vws1ROfEsEG89NajfXkuMaDkCV6kXYiYgyjhd8JMHiaPKN8owqt859awpWWaLmSh3Rk48DFPj/Eh3y7VzXjuFZGMbmXt9SQuDBCmUEp0z5DlfjP1pZEf2fWaSKlsPEuC2f1Dv/W3FQfKFFOaCoylatjM8nPm3k/gm/qLZet2K87LlghSPzbmu/c6kEBtYJUEf11xI8IWWAzd3BrL/ROFd9LAO8YEdDWFWlTeYi1i5/8lh3rimoX+i3X5pq/8+YPvdyB9MJ+TflHD1D8xzF0BwovquNLRE+n+y79RoKy9aleN4Y8CJANZCqVN0G8YgbmgzKmhzQbuF4satWHe0xfcc51/4dOG524xP7cOQ6/bnAV8Rhv9TjGEOwJZsITEftuLyE9qVKV2wqRL8CLjrQ8/RAtDg3Z8s9xtUR8OV/glOtSwxwRVqttKaDWVwKAA3Cd8XKlpwiX43MUQY3p8wvHb9/Uh4Jgazkrd7UfGdRqEfErtROB/APxi6ymCLKBCyBMf2Oz76DJmCm+8xrkpNhAKcMiMFjUpyd7vBFHOQTLn1Eda0KROelxKFi+zhOYQaFoeeG9gxm63EX7m+eka2Q=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB8PR04MB6795.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(39850400004)(136003)(376002)(346002)(366004)(66946007)(55016002)(2906002)(122000001)(86362001)(66476007)(52536014)(4326008)(54906003)(76116006)(83380400001)(38100700002)(8936002)(316002)(110136005)(64756008)(53546011)(9686003)(186003)(66446008)(26005)(6506007)(71200400001)(33656002)(478600001)(5660300002)(7696005)(8676002)(66556008)(966005);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata: =?gb2312?B?RC9PV216RUNtMWw0MVZCV3NRZ2l5aWMyMzIzbXV5eng1dC9YWXBZdFZCMFha?=
+ =?gb2312?B?RXUzWFdrVHJtcE1ZZ21nbVFpenRVRm9nT3FXYTFwRUJrOUVkc2Q2eWpweFpH?=
+ =?gb2312?B?Kzc4WEtXam0zWW9kYW5uU3RuOExJdjM3aUljajNvQXg3dHRiN0dqWEt6MnAz?=
+ =?gb2312?B?TXhvbksvMjUrWXN6R2FNTVlxOFNlc3N4RUxPMHFNckZta0pRK1k0Zk51UlNN?=
+ =?gb2312?B?ZDVVemxKellqQy9KcFVXNHNqdml5eEFlSVdGdjdVUGdMVVB4N3NEKzJLZ0VX?=
+ =?gb2312?B?MktISzcvZ3RHS1ltUXNDOGM1THZZRTE2eUZ1QUNwSy9MaGFqSE0zVXIwbk9M?=
+ =?gb2312?B?OFc2ZFNoenBQSjUwSHpSZTl6NjhnczJnZm8yMndIZStzS0RFSWg3bnVSb1Q2?=
+ =?gb2312?B?MmNTVVNHL012ZDhpTlNsRWkwdmgxTVN5b0Q0Ui9Eb2RVeDRyN3dzU0o0SWhI?=
+ =?gb2312?B?MzQzaGZPbnIxOE1DelZDUGxZWXU1bkRlVmYySmMzRUltVy9jalh0cmFrdkkr?=
+ =?gb2312?B?YjRZeGNsZkZ4TFcrY0pxWm0xSTE0bzIzRWo3TUVaZGpTb1FsWDR5SGowY1Ez?=
+ =?gb2312?B?WXF4WGY4YjBaR1FJZFh2Kzl3SWJxZVlRa2JhN1RTK0NOUkNSbWRBbDMwVFMz?=
+ =?gb2312?B?dW0weWpYWkxncmtlYlExSUZ5SlpVQ0ZQRXNRL2hYQjBLNnVYeS9BUzZGOHBL?=
+ =?gb2312?B?ajU5a0xEN0hLVGc5cXMvYXVFbFlVcVpTYmpvMHV1bVFKcThKVFcxNW9pUzFz?=
+ =?gb2312?B?L085MHhSMUF3S3piOW5KRGVObWJacWE4VVdYZDRaUk5ocG84MFh1cEM0M0dz?=
+ =?gb2312?B?QnVZbjJwUDA3aUNDYlh1N2pRVWNkRy9zYnBWSytSN3RxMzB5QmM3VmxWbXpl?=
+ =?gb2312?B?VXNLLzQweGdFTU5lZzVyQ1dhZ2ltVWhyTGVhckp2d3NyNlUyLzFwS0lMeGtm?=
+ =?gb2312?B?MDVaMnZuQ0dzUXd0bjhLSjFlaURQNHpBQ0VaWkUxMHVFSlM5aGJCNzZkdERK?=
+ =?gb2312?B?T1hRRDJGSlZ3ek5mREtTUWFQUDVubHFZdGlpU3ZDb0NsMHBxTWp3YkpiOE9q?=
+ =?gb2312?B?UGJyeUd4UmY4VFRvUWszay8vVkFKK1V3MDVJTkM1NnFZdkNpcHdSRnFuR0Jy?=
+ =?gb2312?B?V0hwaElMdWZKd3NQcWg5REhuMVRZb0lSK0x4VDQ2NHdwUnBId2d4U1kwUDh4?=
+ =?gb2312?B?WVRDWW0yK1h1dldUWjJwNjNscm8vSEg4ZWx3T1JEVTA5cjJOV3N3WDJkTmNa?=
+ =?gb2312?B?aFVaS0JzaUh4dTFkbzAxcW1sL0g0VGRjRmZqclhBRnZKSnR5Z3FWR1FuYVg4?=
+ =?gb2312?B?V296NllrMks3L29FdUJYdUV6dERsbFZSWVQ1QThHK3ZlWUlZQkRSUmNtUmxz?=
+ =?gb2312?B?UDhvSTJOZ0tPZVRBbkRVc2FkZHA3cGNmWTF5UzEySnFjMHc0UkNtVEJ5bzFN?=
+ =?gb2312?B?UVBTUUFSTlVmbkk4cFY4ZFVxWkFNSEh1QXM5UXNUQTZzbHM5UGltd2ZpR2xv?=
+ =?gb2312?B?R0NuMGNQRHZpTGVWSnV1ZEM0TnlYcUtrdTZMSUpTVVAxcGQ2UVV3ZThWYXUx?=
+ =?gb2312?B?Rm9PR21yS0ZCYThNNHRSY1RBb1oySUdVa2pGR0E3OEpXNFg5VUhtQzJ6d0xI?=
+ =?gb2312?B?UHhjOGI1clZWZnVsbTNRNFhLaWdBbkJuK3pCc1pNYUYzNThacEN3azdEaE9V?=
+ =?gb2312?B?VzJBM1IzS2xZVTlTT2dacmRSa1h1RkRIQWpDTHl6OXZnbUFNV0c3ME51bHJF?=
+ =?gb2312?Q?yhlh0ANR/brXaGajDM=3D?=
+Content-Type: text/plain; charset="gb2312"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YK9WOKBRsaFESPfR@dhcp22.suse.cz>
-User-Agent: Mutt/1.5.24 (2015-08-30)
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: DB8PR04MB6795.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: f1c5d390-81ae-4ff5-f42c-08d9210875f5
+X-MS-Exchange-CrossTenant-originalarrivaltime: 27 May 2021 12:10:47.0620
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: Y93qESMbWjGjplOTRqzZvV/hVcWB47diRXaQncAHWaSp13zYfKN4yqFwUiJz6+6CN5B70JzyiOnnqN6xEwOQEA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB9PR04MB8137
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 27, 2021 at 10:20:08AM +0200, Michal Hocko wrote:
-> On Wed 26-05-21 13:01:42, Feng Tang wrote:
-> > Now the only remaining case of a real 'local' policy faked by
-> > 'prefer' policy plus MPOL_F_LOCAL bit is:
-> > 
-> > A valid 'prefer' policy with a valid 'preferred' node is 'rebind'
-> > to a nodemask which doesn't contains the 'preferred' node, then it
-> > will handle allocation with 'local' policy.
-> > 
-> > Add a new 'MPOL_F_LOCAL_TEMP' bit for this case, and kill the
-> > MPOL_F_LOCAL bit, which could simplify the code much.
-> 
-> As I've pointed out in the reply to the previous patch. It would have
-> been much better if most of the MPOL_F_LOCAL usage was gone by this
-> patch.
-> 
-> I also dislike a new MPOL_F_LOCAL_TEMP. This smells like sneaking the
-> hack back in after you have painstakingly removed it. So this looks like
-> a step backwards to me. I also do not understand why do we need the
-> rebind callback for local policy at all. There is no node mask for local
-> so what is going on here?
-
-This is the special case 4 for 'perfer' policy with MPOL_F_STATIC_NODES
-flag set, say it prefer node 1, when it is later 'refind' to a new
-nodemask node 2-3, according to current code it will be add the
-MPOL_F_LOCAL bit and performs 'local' policy acctually. And in future
-it is 'rebind' again with a nodemask 1-2, it will be restored back
-to 'prefer' policy with preferred node 1.
-
-This patch tries to address this special case. I have struggled but 
-couldn't think of a good way. Any suggestions? thanks!
-
-- Feng
-
-> [...]
-> > +static void mpol_rebind_local(struct mempolicy *pol,
-> > +				const nodemask_t *nodes)
-> > +{
-> > +	if (unlikely(pol->flags & MPOL_F_STATIC_NODES)) {
-> > +		int node = first_node(pol->w.user_nodemask);
-> > +
-> > +		BUG_ON(!(pol->flags & MPOL_F_LOCAL_TEMP));
-> > +
-> > +		if (node_isset(node, *nodes)) {
-> > +			pol->v.preferred_node = node;
-> > +			pol->mode = MPOL_PREFERRED;
-> > +			pol->flags &= ~MPOL_F_LOCAL_TEMP;
-> > +		}
-> > +	}
-> > +}
-> > +
-> 
-> I have to confess I've got lost here. Could you explain why do you need
-> all this handling for a local policy?
-> 
-> >  static void mpol_rebind_preferred(struct mempolicy *pol,
-> >  						const nodemask_t *nodes)
-> >  {
-> > @@ -347,13 +363,19 @@ static void mpol_rebind_preferred(struct mempolicy *pol,
-> >  
-> >  		if (node_isset(node, *nodes)) {
-> >  			pol->v.preferred_node = node;
-> > -			pol->flags &= ~MPOL_F_LOCAL;
-> > -		} else
-> > -			pol->flags |= MPOL_F_LOCAL;
-> > +		} else {
-> > +			/*
-> > +			 * If there is no valid node, change the mode to
-> > +			 * MPOL_LOCAL, which will be restored back when
-> > +			 * next rebind() sees a valid node.
-> > +			 */
-> > +			pol->mode = MPOL_LOCAL;
-> > +			pol->flags |= MPOL_F_LOCAL_TEMP;
-> > +		}
-> >  	} else if (pol->flags & MPOL_F_RELATIVE_NODES) {
-> >  		mpol_relative_nodemask(&tmp, &pol->w.user_nodemask, nodes);
-> >  		pol->v.preferred_node = first_node(tmp);
-> > -	} else if (!(pol->flags & MPOL_F_LOCAL)) {
-> > +	} else {
-> >  		pol->v.preferred_node = node_remap(pol->v.preferred_node,
-> >  						   pol->w.cpuset_mems_allowed,
-> >  						   *nodes);
-> > @@ -372,7 +394,7 @@ static void mpol_rebind_policy(struct mempolicy *pol, const nodemask_t *newmask)
-> >  {
-> >  	if (!pol)
-> >  		return;
-> > -	if (!mpol_store_user_nodemask(pol) && !(pol->flags & MPOL_F_LOCAL) &&
-> > +	if (!mpol_store_user_nodemask(pol) &&
-> >  	    nodes_equal(pol->w.cpuset_mems_allowed, *newmask))
-> >  		return;
-> >  
-> > @@ -425,7 +447,7 @@ static const struct mempolicy_operations mpol_ops[MPOL_MAX] = {
-> >  	},
-> >  	[MPOL_LOCAL] = {
-> >  		.create = mpol_new_local,
-> > -		.rebind = mpol_rebind_default,
-> > +		.rebind = mpol_rebind_local,
-> >  	},
-> >  };
-> -- 
-> Michal Hocko
-> SUSE Labs
+DQpIaSBGcmllZGVyLA0KDQpBcyB3ZSB0YWxrZWQgYmVmb3JlLCBjb3VsZCB5b3UgcGxlYXNlIGhl
+bHAgdGVzdCB0aGUgcGF0Y2hlcyB3aGVuIHlvdSBhcmUgZnJlZT8gVGhhbmtzLg0KDQpCZXN0IFJl
+Z2FyZHMsDQpKb2FraW0gWmhhbmcNCg0KPiAtLS0tLU9yaWdpbmFsIE1lc3NhZ2UtLS0tLQ0KPiBG
+cm9tOiBKb2FraW0gWmhhbmcgPHFpYW5ncWluZy56aGFuZ0BueHAuY29tPg0KPiBTZW50OiAyMDIx
+xOo11MIyN8jVIDIwOjA3DQo+IFRvOiBkYXZlbUBkYXZlbWxvZnQubmV0OyBrdWJhQGtlcm5lbC5v
+cmc7IGZyaWVkZXIuc2NocmVtcGZAa29udHJvbi5kZTsNCj4gYW5kcmV3QGx1bm4uY2gNCj4gQ2M6
+IG5ldGRldkB2Z2VyLmtlcm5lbC5vcmc7IGxpbnV4LWtlcm5lbEB2Z2VyLmtlcm5lbC5vcmc7IGRs
+LWxpbnV4LWlteA0KPiA8bGludXgtaW14QG54cC5jb20+DQo+IFN1YmplY3Q6IFtQQVRDSCBWMSBu
+ZXQtbmV4dCAwLzJdIG5ldDogZmVjOiBmaXggVFggYmFuZHdpZHRoIGZsdWN0dWF0aW9ucw0KPiAN
+Cj4gVGhpcyBwYXRjaCBzZXQgaW50ZW5kcyB0byBmaXggVFggYmFuZHdpZHRoIGZsdWN0dWF0aW9u
+cywgYW55IGZlZWRiYWNrIHdvdWxkIGJlDQo+IGFwcHJlY2lhdGVkLg0KPiANCj4gLS0tDQo+IENo
+YW5nZUxvZ3M6DQo+IAlWMTogcmVtb3ZlIFJGQyB0YWcsIFJGQyBkaXNjdXNzaW9ucyBwbGVhc2Ug
+dHVybiB0byBiZWxvdzoNCj4gCSAgICBodHRwczovL2xvcmUua2VybmVsLm9yZy9sa21sL1lLMENl
+NVl4UjJXWWJyQW9AbHVubi5jaC9ULw0KPiANCj4gRnVnYW5nIER1YW4gKDEpOg0KPiAgIG5ldDog
+ZmVjOiBhZGQgbmRvX3NlbGVjdF9xdWV1ZSB0byBmaXggVFggYmFuZHdpZHRoIGZsdWN0dWF0aW9u
+cw0KPiANCj4gSm9ha2ltIFpoYW5nICgxKToNCj4gICBuZXQ6IGZlYzogYWRkIEZFQ19RVUlSS19I
+QVNfTVVMVElfUVVFVUVTIHJlcHJlc2VudHMgaS5NWDZTWCBFTkVUIElQDQo+IA0KPiAgZHJpdmVy
+cy9uZXQvZXRoZXJuZXQvZnJlZXNjYWxlL2ZlYy5oICAgICAgfCAgNSArKysNCj4gIGRyaXZlcnMv
+bmV0L2V0aGVybmV0L2ZyZWVzY2FsZS9mZWNfbWFpbi5jIHwgNDMgKysrKysrKysrKysrKysrKysr
+KystLS0NCj4gIDIgZmlsZXMgY2hhbmdlZCwgNDMgaW5zZXJ0aW9ucygrKSwgNSBkZWxldGlvbnMo
+LSkNCj4gDQo+IC0tDQo+IDIuMTcuMQ0KDQo=
