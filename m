@@ -2,92 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B5144393669
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 21:38:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E3DC239366B
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 21:38:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235375AbhE0Tjv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 May 2021 15:39:51 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56418 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235262AbhE0Tjt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 May 2021 15:39:49 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B749E6124C;
-        Thu, 27 May 2021 19:38:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1622144296;
-        bh=6yCYrb3lWShCqZYfxBU/X/so5AzWEYFsM0Feb0Sb1yE=;
-        h=Date:From:To:Subject:References:In-Reply-To:From;
-        b=NqxKvcsD2OT2Y0refy57h04VkZxL4T2ToC9MQY76pNz3Ew+Y7evxxdpJ26r7K5HQO
-         5s5wSGuLW3B47jYIpFZiYGT1p5hx3kZIkK5DjULnNyd/zsLq+4xw8jMiq4FYZIDqQQ
-         /vPqWqRKkcm1XBsSxpdIYjB1Fy81oXkvjU+oTKCwSrTj1S8b/IAmLhCyvn3QDfnRak
-         m1MC4nIvD9FdiuVkHcOhA9Yg6q+RBE3evZIYlOIWDbvhcynwXIXCgEgk5Eixqq2n7P
-         XIxd+BWkNdW31E5XmlGNjWYd5XcpdxpRYeok8yF7A3nBaua02NUDYR5DldcV0fw5PJ
-         9y7vwoWMd9whA==
-Date:   Thu, 27 May 2021 21:38:13 +0200
-From:   Wolfram Sang <wsa@kernel.org>
-To:     Lee Jones <lee.jones@linaro.org>, linux-kernel@vger.kernel.org,
-        Patrice Chotard <patrice.chotard@foss.st.com>,
-        Maxime Coquelin <maxime.coquelin@st.com>,
-        linux-arm-kernel@lists.infradead.org, linux-i2c@vger.kernel.org
-Subject: Re: [PATCH 16/16] i2c: busses: i2c-st: trivial: Fix spelling issue
- 'enmpty => empty'
-Message-ID: <YK/1JX62ClfRQYfX@kunai>
-Mail-Followup-To: Wolfram Sang <wsa@kernel.org>,
-        Lee Jones <lee.jones@linaro.org>, linux-kernel@vger.kernel.org,
-        Patrice Chotard <patrice.chotard@foss.st.com>,
-        Maxime Coquelin <maxime.coquelin@st.com>,
-        linux-arm-kernel@lists.infradead.org, linux-i2c@vger.kernel.org
-References: <20210520190105.3772683-1-lee.jones@linaro.org>
- <20210520190105.3772683-17-lee.jones@linaro.org>
- <20210521142349.GD17641@gnbcxd0016.gnb.st.com>
+        id S235452AbhE0TkU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 May 2021 15:40:20 -0400
+Received: from mail-ot1-f44.google.com ([209.85.210.44]:35619 "EHLO
+        mail-ot1-f44.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234229AbhE0TkT (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 27 May 2021 15:40:19 -0400
+Received: by mail-ot1-f44.google.com with SMTP id 69-20020a9d0a4b0000b02902ed42f141e1so1324893otg.2;
+        Thu, 27 May 2021 12:38:44 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=CXQaRsjyxbjBhulXP+EXEjVKoHjcMycPwM+d90hn2wY=;
+        b=ahDD0m1Wh/LAotatdpexKvIlYkw4ddtKIhq2YFise2ie49hNiJYAu4XdqOn1S6WWfx
+         40Qbmew9gqixqc07zgwNU0fWl+WbBNQ7KeDAvBioNe1V660IDARMIwJE8JSMAD821sUH
+         uUgZEwHq7zBy0SaHdhGcY8A08aa+FZLcfUBL9dM7tLWxOxgIoNnFaNy6m7rRr+hqFsYg
+         jRaxyH8uOLZMiLMqv2Ijq4vSzMgj+mCwi3NqRLF4rUwTKYZP3nn8NlggiJU/1QhdmpHf
+         wfwnlBVzENq5qnmfuFahebSyFiAzVX4lTlyfhUFHN3ukz+OElDVQvcxhAL9bZlq+UUfM
+         Z88g==
+X-Gm-Message-State: AOAM533Z1kUhPnohkh8Ot7HCRoUh5lXcrvDSzKZ5NkraXmFtBZJ2SDoW
+        dithof1BfNC1t6e+tzAnRQAVna9Ngg==
+X-Google-Smtp-Source: ABdhPJx0QQljnkdU3sMAlzrqVwx+MoGRd6IZ5qlgPRXeLB+jNZinWHyjWux0MGplGdAHy4AiQcgWWQ==
+X-Received: by 2002:a9d:7384:: with SMTP id j4mr4149697otk.268.1622144324018;
+        Thu, 27 May 2021 12:38:44 -0700 (PDT)
+Received: from xps15.herring.priv (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.googlemail.com with ESMTPSA id c18sm669935otm.1.2021.05.27.12.38.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 27 May 2021 12:38:43 -0700 (PDT)
+From:   Rob Herring <robh@kernel.org>
+To:     devicetree@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, Frank Rowand <frowand.list@gmail.com>
+Subject: [PATCH] of: Move reserved memory private function declarations
+Date:   Thu, 27 May 2021 14:38:41 -0500
+Message-Id: <20210527193841.1284169-1-robh@kernel.org>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="JCQv7L2LO5Px3hvq"
-Content-Disposition: inline
-In-Reply-To: <20210521142349.GD17641@gnbcxd0016.gnb.st.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+fdt_init_reserved_mem() and fdt_reserved_mem_save_node() are private to
+the DT code, so move there declarations to of_private.h. There's no need
+for the dummy functions as CONFIG_OF_RESERVED_MEM is always enabled for
+CONFIG_OF_EARLY_FLATTREE.
 
---JCQv7L2LO5Px3hvq
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Cc: Frank Rowand <frowand.list@gmail.com>
+Signed-off-by: Rob Herring <robh@kernel.org>
+---
+ drivers/of/of_private.h         | 4 ++++
+ include/linux/of_reserved_mem.h | 6 ------
+ 2 files changed, 4 insertions(+), 6 deletions(-)
 
-On Fri, May 21, 2021 at 04:23:49PM +0200, Alain Volmat wrote:
-> Thanks for the patch.
->=20
-> Reviewed-by: Alain Volmat <alain.volmat@foss.st.com>
->=20
-> On Thu, May 20, 2021 at 08:01:05PM +0100, Lee Jones wrote:
-> > Cc: Patrice Chotard <patrice.chotard@foss.st.com>
-> > Cc: Maxime Coquelin <maxime.coquelin@st.com>
-> > Cc: linux-arm-kernel@lists.infradead.org
-> > Cc: linux-i2c@vger.kernel.org
-> > Signed-off-by: Lee Jones <lee.jones@linaro.org>
+diff --git a/drivers/of/of_private.h b/drivers/of/of_private.h
+index d717efbd637d..631489f7f8c0 100644
+--- a/drivers/of/of_private.h
++++ b/drivers/of/of_private.h
+@@ -171,4 +171,8 @@ static inline int of_dma_get_range(struct device_node *np,
+ }
+ #endif
+ 
++void fdt_init_reserved_mem(void);
++void fdt_reserved_mem_save_node(unsigned long node, const char *uname,
++			       phys_addr_t base, phys_addr_t size);
++
+ #endif /* _LINUX_OF_PRIVATE_H */
+diff --git a/include/linux/of_reserved_mem.h b/include/linux/of_reserved_mem.h
+index 8216a4156263..76e4a0fffba4 100644
+--- a/include/linux/of_reserved_mem.h
++++ b/include/linux/of_reserved_mem.h
+@@ -39,9 +39,6 @@ int of_reserved_mem_device_init_by_name(struct device *dev,
+ 					const char *name);
+ void of_reserved_mem_device_release(struct device *dev);
+ 
+-void fdt_init_reserved_mem(void);
+-void fdt_reserved_mem_save_node(unsigned long node, const char *uname,
+-			       phys_addr_t base, phys_addr_t size);
+ struct reserved_mem *of_reserved_mem_lookup(struct device_node *np);
+ #else
+ static inline int of_reserved_mem_device_init_by_idx(struct device *dev,
+@@ -59,9 +56,6 @@ static inline int of_reserved_mem_device_init_by_name(struct device *dev,
+ 
+ static inline void of_reserved_mem_device_release(struct device *pdev) { }
+ 
+-static inline void fdt_init_reserved_mem(void) { }
+-static inline void fdt_reserved_mem_save_node(unsigned long node,
+-		const char *uname, phys_addr_t base, phys_addr_t size) { }
+ static inline struct reserved_mem *of_reserved_mem_lookup(struct device_node *np)
+ {
+ 	return NULL;
+-- 
+2.27.0
 
-Squashed the patch into the other one for i2c-st. Thanks!
-
-
---JCQv7L2LO5Px3hvq
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmCv9SUACgkQFA3kzBSg
-KbY77xAAgdbQSQreMsVlkRrmLqfbPB3NxMl4WrSUMSENNcBfY8Jn26sX378Z9374
-yuD1JxqH3Ue4OQC4lvsP9N98DCQPjachray0LEEnZmtx+cIp97HYyF66niUg+DiR
-FLYez/GaLnt8zPbUdJIk9VPTBnsPiuTGQ2xjGeOaRbp9XLi3c/KZGbDnBB1p7TTN
-seP4o98LrZparAfk5btQ08PPDovz552ZY0mf7tYvBeM1kQ5uaA9WOxUSrZ5oHyOv
-FZLLmFP34dJXuMmn2wYYvhqbm/7HSFgElOF5kDzqdJpdydLTjwNKcVT+3PTwcwlk
-TyKDjvp9+4cs6USsXgvP4C8RA/bmyMFZQvCYxsaC//osc+J8l28/C55pgZbN1Cjf
-XVE2cP1V+mpepcAXZ/CPZGIEK2uVRKSwajH1m8RpcUgU7hMHJMvZKaEc7nHOKFYt
-/2CvTOc0HKMZjLrdl7SfyKkAsz9i2PTIzWhzS+8CywL5u2SYFYc3jhpkLEl5jYj+
-/b9U9X47kfwK+6XUIPjpFqriNxVdLcxxUJbYOEhFlhNY3nNlgRoZdwfztxC6Eg4V
-wI6QLZ/4dHOWeUcxYM8onEw68g//+A+oc8WrOb6c/AMRylt4nmf344Ql5hCptedq
-BxwdbtNFVUQ5zhQuPqlLbvET3VO1U+H052sJQkO7Fd3cu2/7XY8=
-=y1z6
------END PGP SIGNATURE-----
-
---JCQv7L2LO5Px3hvq--
