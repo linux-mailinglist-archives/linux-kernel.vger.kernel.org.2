@@ -2,95 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9536D3924F8
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 04:43:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DADA03924FA
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 04:44:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232766AbhE0CpX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 May 2021 22:45:23 -0400
-Received: from twspam01.aspeedtech.com ([211.20.114.71]:48944 "EHLO
-        twspam01.aspeedtech.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229500AbhE0CpW (ORCPT
+        id S233054AbhE0Cpy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 May 2021 22:45:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57726 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229500AbhE0Cpx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 May 2021 22:45:22 -0400
-Received: from mail.aspeedtech.com ([192.168.0.24])
-        by twspam01.aspeedtech.com with ESMTP id 14R2Ui7a077457;
-        Thu, 27 May 2021 10:30:44 +0800 (GMT-8)
-        (envelope-from steven_lee@aspeedtech.com)
-Received: from aspeedtech.com (192.168.100.253) by TWMBX02.aspeed.com
- (192.168.0.24) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Thu, 27 May
- 2021 10:43:47 +0800
-Date:   Thu, 27 May 2021 10:43:41 +0800
-From:   Steven Lee <steven_lee@aspeedtech.com>
-To:     Andrew Jeffery <andrew@aj.id.au>
-CC:     Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Joel Stanley <joel@jms.id.au>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        "moderated list:ARM/ASPEED MACHINE SUPPORT" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "moderated list:ARM/ASPEED MACHINE SUPPORT" 
-        <linux-aspeed@lists.ozlabs.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Hongwei Zhang <Hongweiz@ami.com>,
-        Ryan Chen <ryan_chen@aspeedtech.com>,
-        Billy Tsai <billy_tsai@aspeedtech.com>
-Subject: Re: [PATCH v2 0/4] ASPEED sgpio driver enhancement.
-Message-ID: <20210527024341.GB9971@aspeedtech.com>
-References: <20210527005455.25758-1-steven_lee@aspeedtech.com>
- <4d995f6e-b582-4f45-b87c-2cd795de8d14@www.fastmail.com>
+        Wed, 26 May 2021 22:45:53 -0400
+Received: from mail-pf1-x431.google.com (mail-pf1-x431.google.com [IPv6:2607:f8b0:4864:20::431])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5859C061574
+        for <linux-kernel@vger.kernel.org>; Wed, 26 May 2021 19:44:21 -0700 (PDT)
+Received: by mail-pf1-x431.google.com with SMTP id e17so2511681pfl.5
+        for <linux-kernel@vger.kernel.org>; Wed, 26 May 2021 19:44:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=4OWnhIRtH41VW4/lCOTjupHX4TklN7EnBtE+milzxdg=;
+        b=yob++nCZ0jBPDz2/M6DUDb2d8Mvwd6Ed95UY9DwG4PoRNTQzWrjv4CXanUrje/xzkf
+         UxQNr2uSSbo8OhSCditOvGbwiWqcbB9qN9m6466EwmfkUQCT9HoakI5Ck/85h+GApPEe
+         uxFZ71gKN41HhskGj4Rohl9fklmpF3EUCOmR0XNv5Cy2AhBjuu0Wlet0h3L0DAoKHtvQ
+         5DBThvCeEeMKqXSRE75bZdbrVaDj6dleKXCxbNSCl/FdF5Q6Z5M4mlQsdhF5+YGZpHYY
+         R213dFkzbRR+RPOO+WU0WmZBoltgQrlZIfomRpywSEh8j1sXBUuifSA6IWR3aU9CH2zN
+         NvPg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=4OWnhIRtH41VW4/lCOTjupHX4TklN7EnBtE+milzxdg=;
+        b=hX2vcyUAy0EmmP/sDSQSLTIqDBhoHhPTflzIDQzWjZ5PfwjXHkNboYkb/F6t219+oV
+         IDTmxTAoEL7pCWwfAQWsk5SwVWuPpiFvG0wCFTpzse0nnLe6fW0JK+9keI5rLgimpfuU
+         IBd5ylPgZPu+qZ6BUVtb3JVvJ4d8+x/gcaRBwfAZ5ALbW4ystFwrecxtP5PDjAvwI7dc
+         6x8iowERl/p6lbUfroOUTL+ZeciuBvN6J5vT5elSj/mWVUF53TNnk1WALr690w1tuMZb
+         o/gMfFkc9oSrUrsI/iRlGtwlnpZvNe/CrMlJMuVk2N6fdpBOlU+L1f4N0GizlYFWkSYc
+         8Ihg==
+X-Gm-Message-State: AOAM533pSS0NST64fbAkh4bz4NoQtN9exZ1XTlyuHvZjfA3QLbSTAdiJ
+        Uvm7qTTNQyFGRD8Il65x0CHONLM1YpMtMtAKevUrvQ==
+X-Google-Smtp-Source: ABdhPJxwDUrGAubiCAOTx3bDKiXKskkBV2syNptAff9s59quefpdRyl+YKE1S1ZKVM0ylFbmM4m5YgcXjcb+W+2YUjw=
+X-Received: by 2002:a62:7b07:0:b029:2e3:b540:707f with SMTP id
+ w7-20020a627b070000b02902e3b540707fmr1505473pfc.59.1622083461024; Wed, 26 May
+ 2021 19:44:21 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Disposition: inline
-In-Reply-To: <4d995f6e-b582-4f45-b87c-2cd795de8d14@www.fastmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Originating-IP: [192.168.100.253]
-X-ClientProxiedBy: TWMBX02.aspeed.com (192.168.0.24) To TWMBX02.aspeed.com
- (192.168.0.24)
-X-DNSRBL: 
-X-MAIL: twspam01.aspeedtech.com 14R2Ui7a077457
+References: <20210526235257.2769473-1-nao.horiguchi@gmail.com>
+In-Reply-To: <20210526235257.2769473-1-nao.horiguchi@gmail.com>
+From:   Muchun Song <songmuchun@bytedance.com>
+Date:   Thu, 27 May 2021 10:43:44 +0800
+Message-ID: <CAMZfGtXgZ1R9BSE5=sgxKwHLUdo1zCmr4QBHhncpUxJVpzfi-Q@mail.gmail.com>
+Subject: Re: [External] [PATCH v1] hugetlb: pass head page to remove_hugetlb_page()
+To:     Naoya Horiguchi <nao.horiguchi@gmail.com>
+Cc:     Linux Memory Management List <linux-mm@kvack.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Michal Hocko <mhocko@suse.com>,
+        Oscar Salvador <osalvador@suse.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        David Hildenbrand <david@redhat.com>,
+        Naoya Horiguchi <naoya.horiguchi@nec.com>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The 05/27/2021 09:41, Andrew Jeffery wrote:
-> Hi Steven,
-> 
-> On Thu, 27 May 2021, at 10:24, Steven Lee wrote:
-> > AST2600 SoC has 2 SGPIO master interfaces one with 128 pins another one
-> > with 80 pins, AST2500/AST2400 SoC has 1 SGPIO master interface that
-> > supports up to 80 pins.
-> > In the current driver design, the max number of sgpio pins is hardcoded
-> > in macro MAX_NR_HW_SGPIO and the value is 80.
-> > 
-> > For supporting sgpio master interfaces of AST2600 SoC, the patch series
-> > contains the following enhancement:
-> > - Convert txt dt-bindings to yaml.
-> > - Update aspeed dtsi to support the enhanced sgpio.
-> > - Get the max number of sgpio that SoC supported from dts.
-> > - Support muiltiple SGPIO master interfaces.
-> > - Support up to 128 pins.
-> > 
-> > Changes from v1:
-> > * Fix yaml format issues.
-> > * Fix issues reported by kernel test robot.
-> > 
-> > Please help to review.
-> 
-> I think it's worth leaving a little more time between sending series.
-> 
-> I've just sent a bunch of reviews on v1.
-> 
+On Thu, May 27, 2021 at 7:53 AM Naoya Horiguchi <nao.horiguchi@gmail.com> wrote:
+>
+> From: Naoya Horiguchi <naoya.horiguchi@nec.com>
+>
+> When memory_failure() or soft_offline_page() is called on a tail page of
+> some hugetlb page, "BUG: unable to handle page fault" error can be
+> triggered.
+>
+> remove_hugetlb_page() dereferences page->lru, so it's assumed that the
+> page points to a head page, but one of the caller,
+> dissolve_free_huge_page(), provides remove_hugetlb_page() with 'page'
+> which could be a tail page.  So pass 'head' to it, instead.
+>
+> Fixes: 6eb4e88a6d27 ("hugetlb: create remove_hugetlb_page() to separate functionality")
+> Signed-off-by: Naoya Horiguchi <naoya.horiguchi@nec.com>
 
-I am worried about the patch series may be drop by reviewers due to
-the report of kernel test robot.
+Thanks Naoya!
 
-Regardless, thanks for the comment in v1 patch series.
-
-Steven
-
-> Cheers,
-> 
-> Andrew
+Reviewed-by: Muchun Song <songmuchun@bytedance.com>
