@@ -2,78 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BAB2B392986
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 10:25:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B348939298B
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 10:25:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235169AbhE0I0u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 May 2021 04:26:50 -0400
-Received: from lucky1.263xmail.com ([211.157.147.135]:57836 "EHLO
-        lucky1.263xmail.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235275AbhE0I0m (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 May 2021 04:26:42 -0400
-Received: from localhost (unknown [192.168.167.16])
-        by lucky1.263xmail.com (Postfix) with ESMTP id CE5A2AC9CC;
-        Thu, 27 May 2021 16:25:02 +0800 (CST)
-X-MAIL-GRAY: 0
-X-MAIL-DELIVERY: 1
-X-ADDR-CHECKED4: 1
-X-ANTISPAM-LEVEL: 2
-X-ABS-CHECKED: 0
-Received: from localhost.localdomain (unknown [58.22.7.114])
-        by smtp.263.net (postfix) whith ESMTP id P32529T140357225019136S1622103895766083_;
-        Thu, 27 May 2021 16:25:04 +0800 (CST)
-X-IP-DOMAINF: 1
-X-UNIQUE-TAG: <d3563f4e89431ee75e8e21db20c22762>
-X-RL-SENDER: jay.xu@rock-chips.com
-X-SENDER: xjq@rock-chips.com
-X-LOGIN-NAME: jay.xu@rock-chips.com
-X-FST-TO: heiko@sntech.de
-X-RCPT-COUNT: 9
-X-SENDER-IP: 58.22.7.114
-X-ATTACHMENT-NUM: 0
-X-System-Flag: 0
-From:   Jianqun Xu <jay.xu@rock-chips.com>
-To:     heiko@sntech.de, lee.jones@linaro.org, ulf.hansson@linaro.org,
-        robh+dt@kernel.org
-Cc:     devicetree@vger.kernel.org, jbx6244@gmail.com,
-        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Jianqun Xu <jay.xu@rock-chips.com>
-Subject: [PATCH v2 3/3] dt-bindings: soc: rockchip: add rk3568-pmu-io-domain support
-Date:   Thu, 27 May 2021 16:24:53 +0800
-Message-Id: <20210527082453.1447484-4-jay.xu@rock-chips.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210527082453.1447484-1-jay.xu@rock-chips.com>
-References: <20210527082453.1447484-1-jay.xu@rock-chips.com>
+        id S235540AbhE0I1U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 May 2021 04:27:20 -0400
+Received: from mga12.intel.com ([192.55.52.136]:10062 "EHLO mga12.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235492AbhE0I1E (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 27 May 2021 04:27:04 -0400
+IronPort-SDR: 9didIKyxiIC8vKPI42l31QdHMLQoz+oY+ZeTyBnoEXwTnLCZ4bu2zTlckd1BSgKMKEW/9e0Eps
+ oRygDG0CZoxA==
+X-IronPort-AV: E=McAfee;i="6200,9189,9996"; a="182334130"
+X-IronPort-AV: E=Sophos;i="5.82,334,1613462400"; 
+   d="scan'208";a="182334130"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 May 2021 01:25:21 -0700
+IronPort-SDR: zUuONXKllXerxgPUigzBX88IHvVlzT1yknWIKwbMimhnP/hw9nUDciABVzg0gTDb6yBz6kRjW2
+ EcZslD2h0dzA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.82,334,1613462400"; 
+   d="scan'208";a="414800514"
+Received: from linux.intel.com ([10.54.29.200])
+  by orsmga002.jf.intel.com with ESMTP; 27 May 2021 01:25:21 -0700
+Received: from abityuts-desk1.fi.intel.com (unknown [10.237.68.32])
+        by linux.intel.com (Postfix) with ESMTP id 7BE4B5808F1;
+        Thu, 27 May 2021 01:25:19 -0700 (PDT)
+Message-ID: <f5975692426cb27efd5779e7987a7def2a08728d.camel@linux.intel.com>
+Subject: Re: [PATCH] intel_idle: Adjust the SKX C6 latency and residency if
+ PC6 is disabled
+From:   Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
+To:     Chen Yu <yu.c.chen@intel.com>, linux-pm@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+        Len Brown <len.brown@intel.com>,
+        Zhang Rui <rui.zhang@intel.com>
+Date:   Thu, 27 May 2021 11:25:18 +0300
+In-Reply-To: <20210527045647.3599-1-yu.c.chen@intel.com>
+References: <20210527045647.3599-1-yu.c.chen@intel.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.38.4 (3.38.4-1.fc33) 
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add support for rk3568-pmu-io-domain.
+On Thu, 2021-05-27 at 12:56 +0800, Chen Yu wrote:
 
-Signed-off-by: Jianqun Xu <jay.xu@rock-chips.com>
----
-v2:
-- first version
- Documentation/devicetree/bindings/soc/rockchip/io-domain.yaml | 1 +
- 1 file changed, 1 insertion(+)
+... snip ...
 
-diff --git a/Documentation/devicetree/bindings/soc/rockchip/io-domain.yaml b/Documentation/devicetree/bindings/soc/rockchip/io-domain.yaml
-index 2931e0ea8fa8..debfcadd3f2f 100644
---- a/Documentation/devicetree/bindings/soc/rockchip/io-domain.yaml
-+++ b/Documentation/devicetree/bindings/soc/rockchip/io-domain.yaml
-@@ -24,6 +24,7 @@ properties:
-             - rockchip,rk3368-pmu-io-voltage-domain
-             - rockchip,rk3399-io-voltage-domain
-             - rockchip,rk3399-pmu-io-voltage-domain
-+            - rockchip,rk3568-pmu-io-voltage-domain
-             - rockchip,rv1108-io-voltage-domain
-             - rockchip,rv1108-pmu-io-voltage-domain
- 
--- 
-2.25.1
+> Exit latency:
+> The C6 exit latency is measured when woken up from CC6/PC6. In the past,
+> if PC6 is disabled, CPU would be demoted to CC6/PC3, which is close to
+> the latency from CC6/PC6 and there is no need to update the C6 exit latency.
+> However on newer platform there is no CC3/PC3 anymore, then the C6 exit
+> latency with PC6 disabled should be CC6/PC0.
+> 
+> Target residency:
+> With PC6 disabled and C3/PC3 supported, the OS requests C3 if idle
+> duration is within [CC6, PC6) target_residency. On new CPU generations
+> with C3/PC3 deprecated, the OS would request C1E. This would cause
+> low energy-efficiency. In summary, the question is, should we lower
+> the bar to request C6 when PC6 is disabled? The answer is yes.
+... snip ...
 
+Hi Yu,
 
+Thanks for this patch, it is very actual and helpful.
+
+Comments about the commit message below.
+
+This patch is specifically about SKX. It also covers CLX and CPX,
+because they have the same ID.
+
+Now, this platforms do not have C3 and PC3. So I would avoid talking
+about these states
+in the commit message. Why making a simple thing more complex?
+
+Here are all the SKX C-states.
+
+1. Linux-level C-states (linux can ask for): C1, C1E, C6.
+2. HW-level C-states (HW supports under the hood): C1, C1E, CC6, PC2,
+PC6.
+
+Here is the story of this patch in my understanding.
+
+1. C6 maps to CC6 and PC6.
+2. CC6 is "shallower" than PC6.
+3. Linux assumes worst case - PC6.
+4. Many datacenters and users disable PC6.
+5. We can optimize intel_idle in this case: adjust C6 latency and
+target residency to match (faster) CC6.
+
+That's it.
+
+Then may be it is worth mentioning that CC6 vs PC2 difference is not
+really measurable, so
+the adjustment is only for PC6.
+
+Artem.
 
