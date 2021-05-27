@@ -2,99 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 733FC393265
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 17:25:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BD74939326B
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 17:26:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235871AbhE0P0z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 May 2021 11:26:55 -0400
-Received: from mga06.intel.com ([134.134.136.31]:51115 "EHLO mga06.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235017AbhE0P0w (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 May 2021 11:26:52 -0400
-IronPort-SDR: WSPuou58lZto3/lIXv+rbk171bVf3o1DMH33ZmhzzW5PeLh6C+3eXNiYFLwMESUdepFkezyfZf
- /3WJbrJ6SnOg==
-X-IronPort-AV: E=McAfee;i="6200,9189,9997"; a="263960612"
-X-IronPort-AV: E=Sophos;i="5.82,334,1613462400"; 
-   d="scan'208";a="263960612"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 May 2021 08:25:18 -0700
-IronPort-SDR: EyDJ59j1DX/f1fMCKGVOYC6j18om8AfkLU7eIDiIjUrWwxAmdBTeRrCDPlD9eS9UbTAStNpYoP
- lC1OoEaQDZRw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.82,334,1613462400"; 
-   d="scan'208";a="472559815"
-Received: from fmsmsx606.amr.corp.intel.com ([10.18.126.86])
-  by FMSMGA003.fm.intel.com with ESMTP; 27 May 2021 08:25:17 -0700
-Received: from fmsmsx612.amr.corp.intel.com (10.18.126.92) by
- fmsmsx606.amr.corp.intel.com (10.18.126.86) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2242.4; Thu, 27 May 2021 08:25:16 -0700
-Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
- fmsmsx612.amr.corp.intel.com (10.18.126.92) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2242.4; Thu, 27 May 2021 08:25:16 -0700
-Received: from fmsmsx610.amr.corp.intel.com ([10.18.126.90]) by
- fmsmsx610.amr.corp.intel.com ([10.18.126.90]) with mapi id 15.01.2242.008;
- Thu, 27 May 2021 08:25:16 -0700
-From:   "Luck, Tony" <tony.luck@intel.com>
-To:     Kuppuswamy Sathyanarayanan 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        "Hansen, Dave" <dave.hansen@intel.com>
-CC:     Andi Kleen <ak@linux.intel.com>,
-        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
-        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
-        "Williams, Dan J" <dan.j.williams@intel.com>,
-        "Raj, Ashok" <ashok.raj@intel.com>,
-        Sean Christopherson <seanjc@google.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [RFC v2-fix-v2 1/1] x86/tdx: Add __tdx_module_call() and
- __tdx_hypercall() helper functions
-Thread-Topic: [RFC v2-fix-v2 1/1] x86/tdx: Add __tdx_module_call() and
- __tdx_hypercall() helper functions
-Thread-Index: AQHXUo+HGWahrGi/A0SEFraSQ6BB26r3cj8A
-Date:   Thu, 27 May 2021 15:25:16 +0000
-Message-ID: <974d8050cb974d6d80b0033e4b9fd0bf@intel.com>
-References: <77545da6-d534-e4c2-a60b-085705e3f0b7@linux.intel.com>
- <20210527003033.3632700-1-sathyanarayanan.kuppuswamy@linux.intel.com>
-In-Reply-To: <20210527003033.3632700-1-sathyanarayanan.kuppuswamy@linux.intel.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-dlp-product: dlpe-windows
-dlp-reaction: no-action
-dlp-version: 11.5.1.3
-x-originating-ip: [10.1.200.100]
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        id S235984AbhE0P2Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 May 2021 11:28:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33830 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235725AbhE0P2T (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 27 May 2021 11:28:19 -0400
+Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71D28C061760
+        for <linux-kernel@vger.kernel.org>; Thu, 27 May 2021 08:26:46 -0700 (PDT)
+Received: by mail-pj1-x1036.google.com with SMTP id o17-20020a17090a9f91b029015cef5b3c50so2572428pjp.4
+        for <linux-kernel@vger.kernel.org>; Thu, 27 May 2021 08:26:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=g41hxtedvAPuwE0Bgwohmu9YFT1X+9KIiXKB5j94JK0=;
+        b=v6RbfHZN4fmzVBDAHhBq4fGupOliqm3C4RorLbjgX1eKh46/G8OnlOsZVCQAsAGFgd
+         3k5flTuyj1wm9jsPGyU61yIP1foROUZhGL1HkGzfQysPRSKMki8Al+5oHDu5b99LDBbQ
+         ZT2h59wn2k8oi327W04t+82OHLAikBMOJtgXOobpeRmPzvPUMTDhaVJwkP/h0UsCNBs/
+         3y2ZC/VYTjieHv8W9VRGvrC/SdzdP2RL3IfzsINHiy2BZ0TNAnXZylw6Vl7Wv8XnHXnY
+         4C6GbpiO6EP3ixHcqOPDMOcGOOu3kSp4/K1DS5EaelkwPa+b9npI9e6Jzxvf7Vhq18vh
+         0vSg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=g41hxtedvAPuwE0Bgwohmu9YFT1X+9KIiXKB5j94JK0=;
+        b=uBkbu88emSn2LU5oS05q9qZh6xNECdkHGpaXWhf5c05cBPryoRphPcOpM628TrHYLz
+         jKHDwvJAn23E/PbY5uovrgKsHxg360P42WzNaN3RrsiS0uD1VgxS8poHtWPabQVtig70
+         kEkeRKqgVNCy1Di4toNcggOQ4Le/D+WZLGYx32AxJr9IhIRd7yfDkkzxhvMfr69bgFrU
+         rEQwim9iX3MO4krZE91XvDgNw4wTFrufbKEueVACfmaQeFv/lt8tXXpLkOFcK+ohHQQI
+         Ex7UzpNxm0pAYgLHjELZHIT1JhebEfOkPt2xQ+BB3nwV5OuwxJHvZe9i+tlsFopuf+NK
+         iyZA==
+X-Gm-Message-State: AOAM5321n8lbcdlGIK8y++pXUMmFWJmbjpQDj9mAfSBnDb1qzdVKPlnc
+        G/I7/E16/foWwl5W0CAJ1s5ddw==
+X-Google-Smtp-Source: ABdhPJzqQ75fPMFPAqqOHuJR82LI+ByIXCaHpYZ5DmitW6UIrwx+jhfulftdroLX41iYe6tVyNj4Pw==
+X-Received: by 2002:a17:902:9304:b029:fb:9edd:e628 with SMTP id bc4-20020a1709029304b02900fb9edde628mr3737519plb.73.1622129205811;
+        Thu, 27 May 2021 08:26:45 -0700 (PDT)
+Received: from google.com (240.111.247.35.bc.googleusercontent.com. [35.247.111.240])
+        by smtp.gmail.com with ESMTPSA id s2sm2233709pjz.41.2021.05.27.08.26.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 27 May 2021 08:26:45 -0700 (PDT)
+Date:   Thu, 27 May 2021 15:26:41 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     Ben Gardon <bgardon@google.com>, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org, Peter Xu <peterx@redhat.com>,
+        Peter Shier <pshier@google.com>,
+        Peter Feiner <pfeiner@google.com>,
+        Junaid Shahid <junaids@google.com>,
+        Jim Mattson <jmattson@google.com>,
+        Yulei Zhang <yulei.kernel@gmail.com>,
+        Wanpeng Li <kernellwp@gmail.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Xiao Guangrong <xiaoguangrong.eric@gmail.com>
+Subject: Re: [PATCH v2 00/13] More parallel operations for the TDP MMU
+Message-ID: <YK+6MdxA61gkxmzP@google.com>
+References: <20210401233736.638171-1-bgardon@google.com>
+ <c630df18-c1af-8ece-37d2-3db5dc18ecc8@redhat.com>
+ <YK6+9lmToiFTpvmq@google.com>
+ <822c0a82-2609-bd76-2bb6-43134271bccf@redhat.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <822c0a82-2609-bd76-2bb6-43134271bccf@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-PiBHdWVzdHMgY29tbXVuaWNhdGUgd2l0aCBWTU1zIHdpdGggaHlwZXJjYWxscy4gSGlzdG9yaWNh
-bGx5LCB0aGVzZQ0KPiBhcmUgaW1wbGVtZW50ZWQgdXNpbmcgaW5zdHJ1Y3Rpb25zIHRoYXQgYXJl
-IGtub3duIHRvIGNhdXNlIFZNRVhJVHMNCj4gbGlrZSB2bWNhbGwsIHZtbGF1bmNoLCBldGMuIEhv
-d2V2ZXIsIHdpdGggVERYLCBWTUVYSVRzIG5vIGxvbmdlcg0KPiBleHBvc2UgZ3Vlc3Qgc3RhdGUg
-dG8gdGhlIGhvc3QuIMKgVGhpcyBwcmV2ZW50cyB0aGUgb2xkIGh5cGVyY2FsbA0KPiBtZWNoYW5p
-c21zIGZyb20gd29ya2luZy4gU28gdG8gY29tbXVuaWNhdGUgd2l0aCBWTU0sIFREWA0KPiBzcGVj
-aWZpY2F0aW9uIGRlZmluZXMgYSBuZXcgaW5zdHJ1Y3Rpb24gY2FsbGVkICJ0ZGNhbGwiLg0KDQpZ
-b3UgdXNlIGFsbCBjYXBzIFREQ0FMTCBldmVyeXdoZXJlIGVsc2UgaW4gdGhpcyBjb21taXQgbWVz
-c2FnZS4NCkxvb2tzIG9kZCB0byBoYXZlIHF1b3RlZCBsb3dlciBjYXNlIGhlcmUuDQoNCj4gSW4g
-YSBURFggYmFzZWQgVk0sIHNpbmNlIFZNTSBpcyBhbiB1bnRydXN0ZWQgZW50aXR5LCBhIGludGVy
-bWVkaWFyeQ0KPiBsYXllciAoVERYIG1vZHVsZSkgZXhpc3RzIGJldHdlZW4gaG9zdCBhbmQgZ3Vl
-c3QgdG8gZmFjaWxpdGF0ZSB0aGUNCj4gc2VjdXJlIGNvbW11bmljYXRpb24uIFREWCBndWVzdHMg
-Y29tbXVuaWNhdGUgd2l0aCB0aGUgVERYIG1vZHVsZSBhbmQNCj4gd2l0aCB0aGUgVk1NIHVzaW5n
-IGEgbmV3IGluc3RydWN0aW9uOiBURENBTEwuDQoNClNlZW1zIGJvdGggcmVwZWF0IHdoYXQgd2Fz
-IGluIHRoZSBmaXJzdCBwYXJhZ3JhcGgsIGJ1dCBhbHNvIGZhaWwgdG8NCmV4cGxhaW4gaG93IHRo
-aXMgVERDQUxMIGlzIGRpZmZlcmVudCBmcm9tIHRoYXQgZmlyc3QgVERDQUxMLg0KDQo+IEltcGxl
-bWVudCBjb21tb24gaGVscGVyIGZ1bmN0aW9ucyB0byBjb21tdW5pY2F0ZSB3aXRowqB0aGUgVERY
-IE1vZHVsZQ0KPiBhbmQgVk1NICh1c2luZyBURENBTEwgaW5zdHJ1Y3Rpb24pLg0KPsKgIMKgDQo+
-IF9fdGR4X2h5cGVyY2FsbCgpICAgIC0gcmVxdWVzdCBzZXJ2aWNlc8KgZnJvbSB0aGUgVk1NLg0K
-PiBfX3RkeF9tb2R1bGVfY2FsbCgpwqAgLSBjb21tdW5pY2F0ZSB3aXRoIHRoZSBURFggTW9kdWxl
-Lg0KDQpMb29raW5nIGF0IHRoZSBjb2RlLCB0aGUgaHlwZXJjYWxsIGNhbiByZXR1cm4gYW4gZXJy
-b3IgaWYgVERDQUxMIGZhaWxzLA0KYnV0IG1vZHVsZV9jYWxsIGZvcmNlcyBhIHBhbmljIHdpdGgg
-VUQyIG9uIGVycm9yLiBUaGlzIGRpZmZlcmVuY2UgaXNuJ3QNCmV4cGxhaW5lZCBhbnl3aGVyZS4N
-Cg0KLVRvbnkNCg==
+On Thu, May 27, 2021, Paolo Bonzini wrote:
+> On 26/05/21 23:34, Sean Christopherson wrote:
+> > > Applied to kvm/mmu-notifier-queue, thanks.
+> > What's the plan for kvm/mmu-notifier-queue?  More specifically, are the hashes
+> > stable, i.e. will non-critical review feedback get squashed?  I was finally
+> > getting around to reviewing this, but what's sitting in that branch doesn't
+> > appear to be exactly what's posted here.  If the hashes are stable, I'll probably
+> > test and review functionality, but not do a thorough review.
+> 
+> It's all in 5.13 except for the lock elision patch, for which I was waiting
+> for a review.  I'll post that patch separately.
+
+Ha, stable indeed.  Thanks!
