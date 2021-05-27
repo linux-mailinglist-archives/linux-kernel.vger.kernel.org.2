@@ -2,304 +2,512 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 412D6392BA9
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 12:22:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9DC26392BB1
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 12:22:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236081AbhE0KX5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 May 2021 06:23:57 -0400
-Received: from de-smtp-delivery-102.mimecast.com ([62.140.7.102]:25755 "EHLO
-        de-smtp-delivery-102.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S236113AbhE0KXw (ORCPT
+        id S236182AbhE0KYT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 May 2021 06:24:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48344 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236162AbhE0KYR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 May 2021 06:23:52 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=mimecast20200619;
-        t=1622110937;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=dDJT6X4zSDczVsL85ePLb2edlKxANz9DzYCuH+VrkBU=;
-        b=Bea2V7SgcH15q7HGNTvJD0Al4JF+EyCkN17dq+BkRllStwM/Ll8GMGFXb0APahRrZ4P/DL
-        pU1n37y6OgdmmWIm7Sh3I6mQVj+r8Rez1RhpDjV7VDAHOWVFBge+u73ITLx6Nxxzh9GiQc
-        gnjyVkHYaCjDAXVbzJNrr8O1qN5hgNA=
-Received: from EUR02-HE1-obe.outbound.protection.outlook.com
- (mail-he1eur02lp2050.outbound.protection.outlook.com [104.47.5.50]) (Using
- TLS) by relay.mimecast.com with ESMTP id
- de-mta-40-WzIlkBHxPHKuom-AeqfSXg-1; Thu, 27 May 2021 12:22:16 +0200
-X-MC-Unique: WzIlkBHxPHKuom-AeqfSXg-1
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=OEFAL7/fLHGpH/Hj+UsjkOZtSk3nyW6G7d9Wsb90r3laD585mCdpaP46GFzLJS0SDADb+H/Z08K465lz9mMtFfc2KC3Gbyz1dvyKP+Q/vrQTM4XIX86yTyCzODK8TywrrK8hjAbgY01A96JB6HHGB0yvlwEONJW78qhf/70ZJGMtWp1KlB+lv1HyLG95ADvoCGjET9o1HpHuQUyeamv9IxoIR+C5GDGtJnRP1tRCnBr0SjC09heGu+sHne/nNvZMicVQSZyek7eiYEisCemBovJbnbADtKEZlK3dCDchD+Cn0i5AE8XaD1LqSpAnhjPNP0XgwF7e109TgtjQjyuGLw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=dDJT6X4zSDczVsL85ePLb2edlKxANz9DzYCuH+VrkBU=;
- b=bxYG9rLeOTkwBH/ZAVktqdtPtxgEF/r6y11gGV8k1DvmMg0TVnz6Y+A7LaisonbW7p+DS2VOFx9dKb2cafuhxQVjui2zEAxIuMpBQ9NUyBMSYtrsrIKPUifwKxG1UCBAv1mXmoTw+b5u8xJfadLDt988hcpVEjf0orpuLIxVAkQ9VcPNfiO2LmkhbaZ5VO0x1tPAJVTYvyjOzv2buezBK8k8dMiXKIO/h3r2zR9plcD9Jp1OPrT3xZyVLhNLvetw0VUnUDghcU1AECLJCRmOvF/S10lV0RqtrJdnPXmcG/aubcPcQ7wAkfjBB1zQlD36FOiqZslpzk01LYNw+yqAAQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=suse.com; dmarc=pass action=none header.from=suse.com;
- dkim=pass header.d=suse.com; arc=none
-Authentication-Results: linutronix.de; dkim=none (message not signed)
- header.d=none;linutronix.de; dmarc=none action=none header.from=suse.com;
-Received: from DB7PR04MB5177.eurprd04.prod.outlook.com (2603:10a6:10:20::21)
- by DBBPR04MB8059.eurprd04.prod.outlook.com (2603:10a6:10:1e9::18) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4150.25; Thu, 27 May
- 2021 10:22:12 +0000
-Received: from DB7PR04MB5177.eurprd04.prod.outlook.com
- ([fe80::790f:c865:4660:1565]) by DB7PR04MB5177.eurprd04.prod.outlook.com
- ([fe80::790f:c865:4660:1565%7]) with mapi id 15.20.4173.021; Thu, 27 May 2021
- 10:22:12 +0000
-Date:   Thu, 27 May 2021 18:21:57 +0800
-From:   Shung-Hsi Yu <shung-hsi.yu@suse.com>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     Nitesh Lal <nilal@redhat.com>,
-        Jesse Brandeburg <jesse.brandeburg@intel.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Marcelo Tosatti <mtosatti@redhat.com>,
-        Ingo Molnar <mingo@kernel.org>, linux-kernel@vger.kernel.org,
-        intel-wired-lan@lists.osuosl.org, jbrandeb@kernel.org,
-        "frederic@kernel.org" <frederic@kernel.org>,
-        "juri.lelli@redhat.com" <juri.lelli@redhat.com>,
-        Alex Belits <abelits@marvell.com>,
-        "linux-api@vger.kernel.org" <linux-api@vger.kernel.org>,
-        "bhelgaas@google.com" <bhelgaas@google.com>,
-        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
-        "rostedt@goodmis.org" <rostedt@goodmis.org>,
-        "peterz@infradead.org" <peterz@infradead.org>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
-        "sfr@canb.auug.org.au" <sfr@canb.auug.org.au>,
-        "stephen@networkplumber.org" <stephen@networkplumber.org>,
-        "rppt@linux.vnet.ibm.com" <rppt@linux.vnet.ibm.com>,
-        "jinyuqi@huawei.com" <jinyuqi@huawei.com>,
-        "zhangshaokun@hisilicon.com" <zhangshaokun@hisilicon.com>,
-        netdev@vger.kernel.org, chris.friesen@windriver.com,
-        Marc Zyngier <maz@kernel.org>,
-        Neil Horman <nhorman@tuxdriver.com>, pjwaskiewicz@gmail.com
-Subject: Re: [PATCH] genirq: Provide new interfaces for affinity hints
-Message-ID: <YK9yxQoBPeUfQG05@syu-laptop>
-References: <20210504092340.00006c61@intel.com>
- <87pmxpdr32.ffs@nanos.tec.linutronix.de>
- <CAFki+Lkjn2VCBcLSAfQZ2PEkx-TR0Ts_jPnK9b-5ne3PUX37TQ@mail.gmail.com>
- <87im3gewlu.ffs@nanos.tec.linutronix.de>
- <CAFki+L=gp10W1ygv7zdsee=BUGpx9yPAckKr7pyo=tkFJPciEg@mail.gmail.com>
- <CAFki+L=eQoMq+mWhw_jVT-biyuDXpxbXY5nO+F6HvCtpbG9V2w@mail.gmail.com>
- <CAFki+LkB1sk3mOv4dd1D-SoPWHOs28ZwN-PqL_6xBk=Qkm40Lw@mail.gmail.com>
- <87zgwo9u79.ffs@nanos.tec.linutronix.de>
- <87wnrs9tvp.ffs@nanos.tec.linutronix.de>
- <YK9ucRrjq+eck/G7@syu-laptop>
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <YK9ucRrjq+eck/G7@syu-laptop>
-X-Originating-IP: [27.242.200.212]
-X-ClientProxiedBy: PR3P189CA0040.EURP189.PROD.OUTLOOK.COM
- (2603:10a6:102:53::15) To DB7PR04MB5177.eurprd04.prod.outlook.com
- (2603:10a6:10:20::21)
+        Thu, 27 May 2021 06:24:17 -0400
+Received: from mail-il1-x135.google.com (mail-il1-x135.google.com [IPv6:2607:f8b0:4864:20::135])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63261C061760
+        for <linux-kernel@vger.kernel.org>; Thu, 27 May 2021 03:22:44 -0700 (PDT)
+Received: by mail-il1-x135.google.com with SMTP id h15so3649238ilr.2
+        for <linux-kernel@vger.kernel.org>; Thu, 27 May 2021 03:22:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=sartura-hr.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=hbsHyXqIYbPzTF/wYqtSAGRucBTIFLWMrmoeiMXCrDM=;
+        b=EsnoB1Ec9Ms/BBnSx90q6NhvJGyPapWprPdDaSoB5rknQOMM6WRwNBTQ1WHrcqAjB5
+         YCZq8vdcCLtV3l7mUv7cwS8xcOix9TbiBLfMZ0M3KsZ4qMF41BtFIoetls1BBg23QnHU
+         ySgSsM8YWNJ/8EfiteKSgpmik8MFYibxt+ECtHIeaQ+VoWf0WH/HV8p5aa134CEDY//H
+         XcOdrwvO4XpkXIFgNW4PPJEJuUVUlpKxZXctvXn6oXgJC686M36LzfvV/YDCzZymvMHi
+         LO6JdCypSPm8twZ9t3CRHYUy63CXa1JMFGP4RAbcjxaOjdl47neeolQ+tdhml93k+xjY
+         FiVw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=hbsHyXqIYbPzTF/wYqtSAGRucBTIFLWMrmoeiMXCrDM=;
+        b=s9D1O1y9dMxowsiAC3GvjcDL+3Vx3klPa4ry9W3CxOOxssH1Ujx5TGwM8kzJUvu9Bu
+         0paO8I7EcQvkoTr5yR4C/YpwIcQBXuALlf2K4yL6MTfQ2x73QbHJah7kDfs43SoIPYW3
+         aa32RegqawPy44XVRiXgnmWIuRZ1Iam1tf7tS1s/75hKNY1mocDIu2DcRntBUoAI9k6J
+         BfRjdDM++B7h1ISWpeXIi1Uws0hWnu/QBEOmpOe2Jz34o6a17+1Nd4VUMNLgA1GY6aOm
+         UCoXnZ1p2ZvdqP6rU71JtmnyAiHRQ7RQ34CI6RCSm8dn/9rO1IoxxyAB7ZlBTnSJ67bf
+         8RAQ==
+X-Gm-Message-State: AOAM533rvBAE16rygC5+wPgWZ6qPnEVd04eg19WXmAnXl5QgBYqsB9m9
+        1cvy90mGbPqopsgyY6yQtn5hrk1D//r1COdiHq7fbw==
+X-Google-Smtp-Source: ABdhPJxWkpUhxh9TcWiB2DO3TLGjRR0nnCs+9KCC6g2bDzMShVALtZBO+WAMjh0YV/7JJ1l5RF8BsOAnLbL4yta42Bc=
+X-Received: by 2002:a92:260b:: with SMTP id n11mr2373509ile.134.1622110963620;
+ Thu, 27 May 2021 03:22:43 -0700 (PDT)
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from syu-laptop (27.242.200.212) by PR3P189CA0040.EURP189.PROD.OUTLOOK.COM (2603:10a6:102:53::15) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4173.20 via Frontend Transport; Thu, 27 May 2021 10:22:03 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 69c3169f-7bc4-4362-6cd7-08d920f94a39
-X-MS-TrafficTypeDiagnostic: DBBPR04MB8059:
-X-Microsoft-Antispam-PRVS: <DBBPR04MB8059E3B7D3E61BD47316F47EBF239@DBBPR04MB8059.eurprd04.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: HB4GEiW1mioq+juFay0vOhwywXNlI/ZLEvuPDqzkhZ61XuOkaez90uwtCEOIEgr3+EW/EoY7DZgl9o3P/yLbWT0bflgllxMQeum3t254WpXjxTNMh1QGSJ3EzT4CZqqAf/25zX/hcTEUhfhtK7dTwHqIAq8Dk/tq5/E+qsyFknyYEJqAP+Wnfdzv2UcmiXSZy0vvYQr3tBsKZnIzvAk/nXtzAsEiCW/k250PUyWREwP/oZmFoHKIgK3lOqYEUe1o4X3npYm0xiAPjQTydj6cXbATL/EGhkFpy7ROOvI040Xj6oPEE4pM65FSBQYlXkj2u3v93w7O6e8HNXSR7fUAyPyv8O8VX06pLdTxR9g16xFNRniM2b04bHQwrf0pfiOuywROgbrLRhKczmsy9zPnpnsNBMuTtYpKZhHeqDWhdwodw1WX/NfamvKqSELNK8kM5hqBxnZAU8aUMa8BYN16WvqmbNbfIn6DU5ajLTgjVMoCLsAsu7FSfZaxdL7FZq9qkJ1aMYybJJnNMujtb/T7BKnF1DRcSE3CtfxKHOzopiIzGtZT0pUnioeOeQM5KppXa8rerM7bsRxrCWpL+ojzHaQBsLV1724vPxl3C+G+8+lBJ3Q3edYzP9Wm5Hs3Ct6Y1rzRhmduHp56B1FKZVO2iHgXpCMNDRK5mKB+t5HBoeEEuKLIXGEqp9ybgELd+KayIYQCHPna+PwKTdmRvl+l8vRW/kcvzArgfhvFBQtosBY=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB7PR04MB5177.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(4326008)(9686003)(8676002)(6496006)(66476007)(966005)(66946007)(55016002)(54906003)(66556008)(38100700002)(33716001)(5660300002)(6666004)(2906002)(498600001)(6916009)(186003)(26005)(16526019)(83380400001)(8936002)(86362001)(956004)(7416002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?dWNNc3JjdnBNZ3N3bVplMWRIWjM1S0F1MGpUWW1TSzBxRW4yTHg5NWpCUTdz?=
- =?utf-8?B?RS9VdkJNaXNxWWV2YkZVbmIyNG5PTmw0dVZTQ0RIbjVWVllYMm5YTTJqaWpr?=
- =?utf-8?B?d3YzenBOLzVaN0NOQThEbmxwalduZ3hpSzJUKzI4RnBjZTVYc0lGNkJNQWpP?=
- =?utf-8?B?MnBlR0xiQWYwSWVKS3lkcU1rN2FkU3VDclhHNGFJZld0OVhiazB6d0ZnWVhv?=
- =?utf-8?B?OVc5Y3ZOWVRYSVg0QW1DeHhkOUdTN0t4RW1BNit4UWdnWmJVVnc2NzRvR0RR?=
- =?utf-8?B?bS91cTNyYWxJdnY5TWdSano0NHNQUW5sUjlEYzF2T1VzMTZCVkZVVXVLSUFB?=
- =?utf-8?B?VGlnaVdkQ2QvNmJnekg5ZU9zY1BraFdOY0hEeEhISWdOOG5rQnhVdFA0TGlG?=
- =?utf-8?B?TGdpYzNCZDBTL1Z4eGdDRGNJZEFSb3IzSWNhM1dZakRpbmdPejVXd3RjT2Zz?=
- =?utf-8?B?OVM3bEd5UG9rRkFzS24zUkkwajlreTVKbVZ0enp4aVZKWFB5T3hBSXpqTkpT?=
- =?utf-8?B?dktGdENzOU5Sb2taWFBXaGJrTDk4eTZTMk1YRkpwWDI3VXhlaGhFUHREOHNj?=
- =?utf-8?B?VnplWEtPQ3dvRURXYkg2bExxUnB0NXp3MHhFaVZlLytrZDI1Z0V3Wm5aU2d5?=
- =?utf-8?B?Ui9rcEwxRkVOSG4rRlVaVlZVYzgxdExYdmhCQ2hQZStMSEV1akd0K21tRFB2?=
- =?utf-8?B?bGo5a3Z2djZyVmo3VTIxejB5ZUM0MW1RdzJSSkd0Y1h3YlpEY1A5OWIrQjd1?=
- =?utf-8?B?Zkh0YUk4ZERacm1ONVR4RGdKaWdyb0V3UzByQ3l5aGQ1YVE4SWFicTVvckpD?=
- =?utf-8?B?aDF4QVJPS0UwYUo3YlRENTYrVjErZWpZMEFIRzFJRDV2d1grZ0xyL0tnSmow?=
- =?utf-8?B?TG90ZzFKb0lrdFhwaW91TUI2SUtMSG5qaGliUndhdkpZaG1wYm1rWllaaFdz?=
- =?utf-8?B?ZElhUnhpa1h6R0FpUXNDRjZBbXptN2tyMjlPb01YTk1zazZvSzV2ZTY0OHZ3?=
- =?utf-8?B?S0hPYVQ5RUIxL1k2a2kwNlp0TjBHOFZTYlVmSFQrclUwOWpNRGFLMkRFY1dF?=
- =?utf-8?B?dlp6K2VNWTFNYm1oZjNRdk84MW1EOFl1c3Q3U3lmR0FKUWRRaWxuZXR2QW42?=
- =?utf-8?B?Rkx1Skl0dzZrNVdzWC9VMG9EaGhtQ0pTMWNPQVMvdDFyUTcybDQyejFCSU5u?=
- =?utf-8?B?SXh3TlR5L0x3bDhCT25KTWZFTlNPUFZJbW9OTSttQk5zdTJ4Z0Zyc2pncXhE?=
- =?utf-8?B?VytNTjNTLzFXOGhmNWFJaUdDYWxIS01YMzB1eEtWZVpBTWwvaUFXa2dvbmdN?=
- =?utf-8?B?REF5eEZLYzNOZVVQY1RIZ0c0SXhraCtRaFNnZjRRNGJyRmlTcGNUSTdma25x?=
- =?utf-8?B?ZU9HQWpaNjZudnBxeGtiZnFrVkpkL1VZTEpVTXppRmZrZWIxZWpXTHZETHlO?=
- =?utf-8?B?Ty9tV2VCZFZFTlVlUDdWa3ltMFBVMHVYb0xILzZuZXgwWUluNkdhZFZ5c1Q0?=
- =?utf-8?B?TVNxTTVuMGp1TGJtUlFDU04vcnZPR2EwRTUzSFc3Sno1blk4MExFWGNMTEo4?=
- =?utf-8?B?R1BGbVRlOUhJMExaR1B5alFPK2pPTUlPMXVOZkw5T2pTWEZpSGIydldRVitx?=
- =?utf-8?B?cjVZdDQzdTdhbS9NcHRHVkRLblByMWV4WWJpV1ptSzNHeTJwQU1vdDRjM3pk?=
- =?utf-8?B?V1dxMktxQndMbmlpc3lyV0RzRUx1VVBmU3ZqWGlxYjJaRDhoM1dVNjcxbjNG?=
- =?utf-8?Q?zabl/bgvFYILwcdvzh2u5PJAkouZK5w3JJYtw11?=
-X-OriginatorOrg: suse.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 69c3169f-7bc4-4362-6cd7-08d920f94a39
-X-MS-Exchange-CrossTenant-AuthSource: DB7PR04MB5177.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 27 May 2021 10:22:11.7546
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: f7a17af6-1c5c-4a36-aa8b-f5be247aa4ba
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: GAGPz0YnXXcLvFRKt0ziasUuCImVFmSSvommnGC1opvsUFo+aV8JZaMXd+HQjWp/lN9ex7Z4zkESty7iAU/MZg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DBBPR04MB8059
+References: <20210430132735.127342-1-robert.marko@sartura.hr>
+ <20210430134810.GA2714262@roeck-us.net> <CA+HBbNH+gQOmu_Ho0ivFuGHdu0zBtOrr1474z+7FA1zmNb4bug@mail.gmail.com>
+ <2b990feb-dc26-debb-4f81-430bbc89b51c@roeck-us.net> <CA+HBbNHQHqD-wgryaBLZ5M2Lxafb0OwNcbiQJmRQPcZfprmUEg@mail.gmail.com>
+ <2a1a63c7-c9b0-e38d-df1d-7643ad493aba@roeck-us.net> <CA+HBbNF62xzBt2r60qfzn9iveiusLKp6R-T4KU-NgoHaE6c3kQ@mail.gmail.com>
+ <dec7d641-2954-29f0-124b-d0020866bf7b@roeck-us.net> <CA+HBbNGU4d4g0JrUKBhj07OsC7=s9qoubxNDi3MxPjmV457C+Q@mail.gmail.com>
+ <8152a109-d76d-4f85-9da2-fe0a56c2019f@roeck-us.net>
+In-Reply-To: <8152a109-d76d-4f85-9da2-fe0a56c2019f@roeck-us.net>
+From:   Robert Marko <robert.marko@sartura.hr>
+Date:   Thu, 27 May 2021 12:22:32 +0200
+Message-ID: <CA+HBbNGBirE=Po7q5eUeHho0rBATa_ApWLiU_oPXsGN+6U9U+g@mail.gmail.com>
+Subject: Re: [PATCH 1/3] hwmon: (pmbus) Add driver for Delta DPS-920AB PSU
+To:     Guenter Roeck <linux@roeck-us.net>
+Cc:     jdelvare@suse.com, corbet@lwn.net, linux-hwmon@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Luka Perkov <luka.perkov@sartura.hr>, jmp@epiphyte.org,
+        Paul Menzel <pmenzel@molgen.mpg.de>,
+        Donald Buczek <buczek@molgen.mpg.de>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 27, 2021 at 06:03:29PM +0800, Shung-Hsi Yu wrote:
-> Hi,
-> 
-> On Fri, May 21, 2021 at 02:03:06PM +0200, Thomas Gleixner wrote:
-> > The discussion about removing the side effect of irq_set_affinity_hint() of
-> > actually applying the cpumask (if not NULL) as affinity to the interrupt,
-> > unearthed a few unpleasantries:
-> > 
-> >   1) The modular perf drivers rely on the current behaviour for the very
-> >      wrong reasons.
-> > 
-> >   2) While none of the other drivers prevents user space from changing
-> >      the affinity, a cursorily inspection shows that there are at least
-> >      expectations in some drivers.
-> > 
-> > #1 needs to be cleaned up anyway, so that's not a problem
-> > 
-> > #2 might result in subtle regressions especially when irqbalanced (which
-> >    nowadays ignores the affinity hint) is disabled.
-> > 
-> > Provide new interfaces:
-> > 
-> >   irq_update_affinity_hint() - Only sets the affinity hint pointer
-> >   irq_apply_affinity_hint()  - Set the pointer and apply the affinity to
-> >   			       the interrupt
-> > 
-> > Make irq_set_affinity_hint() a wrapper around irq_apply_affinity_hint() and
-> > document it to be phased out.
-> 
-> Is there recommended way to retrieve the CPU number that the interrupt has
-> affinity?
-> 
-> Previously a driver (I'm looking at drivers/net/ethernet/amazon/ena) that
-> uses irq_set_affinity_hint() to spread out IRQ knows the corresponding CPU
-> number since they're using their own spreading scheme. Now, phasing out
-> irq_set_affinity_hint(), and thus relying on request_irq() to spread the
-> load instead, there don't seem to be a easy way to get the CPU number.
+On Mon, May 24, 2021 at 3:47 PM Guenter Roeck <linux@roeck-us.net> wrote:
+>
+> On 5/24/21 5:21 AM, Robert Marko wrote:
+> > On Fri, May 21, 2021 at 4:46 PM Guenter Roeck <linux@roeck-us.net> wrote:
+> >>
+> >> On 5/21/21 4:56 AM, Robert Marko wrote:
+> >>> On Fri, May 21, 2021 at 12:56 PM Guenter Roeck <linux@roeck-us.net> wrote:
+> >>>>
+> >>>> On 5/21/21 1:36 AM, Robert Marko wrote:
+> >>>>> On Wed, May 19, 2021 at 3:19 PM Guenter Roeck <linux@roeck-us.net> wrote:
+> >>>>>>
+> >>>>>> On 5/19/21 5:38 AM, Robert Marko wrote:
+> >>>>>>> On Fri, Apr 30, 2021 at 3:48 PM Guenter Roeck <linux@roeck-us.net> wrote:
+> >>>>>>>>
+> >>>>>>>> On Fri, Apr 30, 2021 at 03:27:33PM +0200, Robert Marko wrote:
+> >>>>>>>>> This adds support for the Delta DPS-920AB PSU.
+> >>>>>>>>>
+> >>>>>>>>> Only missing feature is fan control which the PSU supports.
+> >>>>>>>>>
+> >>>>>>>>> Signed-off-by: Robert Marko <robert.marko@sartura.hr>
+> >>>>>>>>> ---
+> >>>>>>>>>      Documentation/hwmon/dps920ab.rst | 80 ++++++++++++++++++++++++++++++++
+> >>>>>>>>>      Documentation/hwmon/index.rst    |  1 +
+> >>>>>>>>>      drivers/hwmon/pmbus/Kconfig      |  9 ++++
+> >>>>>>>>>      drivers/hwmon/pmbus/Makefile     |  1 +
+> >>>>>>>>>      drivers/hwmon/pmbus/dps920ab.c   | 63 +++++++++++++++++++++++++
+> >>>>>>>>>      5 files changed, 154 insertions(+)
+> >>>>>>>>>      create mode 100644 Documentation/hwmon/dps920ab.rst
+> >>>>>>>>>      create mode 100644 drivers/hwmon/pmbus/dps920ab.c
+> >>>>>>>>>
+> >>>>>>>>> diff --git a/Documentation/hwmon/dps920ab.rst b/Documentation/hwmon/dps920ab.rst
+> >>>>>>>>> new file mode 100644
+> >>>>>>>>> index 000000000000..df0aef530c7e
+> >>>>>>>>> --- /dev/null
+> >>>>>>>>> +++ b/Documentation/hwmon/dps920ab.rst
+> >>>>>>>>> @@ -0,0 +1,80 @@
+> >>>>>>>>> +.. SPDX-License-Identifier: GPL-2.0-or-later
+> >>>>>>>>> +
+> >>>>>>>>> +Kernel driver dps920ab
+> >>>>>>>>> +========================
+> >>>>>>>>> +
+> >>>>>>>>> +Supported chips:
+> >>>>>>>>> +
+> >>>>>>>>> +  * Delta DPS920AB
+> >>>>>>>>> +
+> >>>>>>>>> +    Prefix: 'dps920ab'
+> >>>>>>>>> +
+> >>>>>>>>> +    Addresses scanned: -
+> >>>>>>>>> +
+> >>>>>>>>> +Authors:
+> >>>>>>>>> +    Robert Marko <robert.marko@sartura.hr>
+> >>>>>>>>> +
+> >>>>>>>>> +
+> >>>>>>>>> +Description
+> >>>>>>>>> +-----------
+> >>>>>>>>> +
+> >>>>>>>>> +This driver implements support for Delta DPS920AB 920W 54V DC single output
+> >>>>>>>>> +power supply with PMBus support.
+> >>>>>>>>> +
+> >>>>>>>>> +The driver is a client driver to the core PMBus driver.
+> >>>>>>>>> +Please see Documentation/hwmon/pmbus.rst for details on PMBus client drivers.
+> >>>>>>>>> +
+> >>>>>>>>> +
+> >>>>>>>>> +Usage Notes
+> >>>>>>>>> +-----------
+> >>>>>>>>> +
+> >>>>>>>>> +This driver does not auto-detect devices. You will have to instantiate the
+> >>>>>>>>> +devices explicitly. Please see Documentation/i2c/instantiating-devices.rst for
+> >>>>>>>>> +details.
+> >>>>>>>>> +
+> >>>>>>>>> +
+> >>>>>>>>> +Sysfs entries
+> >>>>>>>>> +-------------
+> >>>>>>>>> +
+> >>>>>>>>> +======================= ======================================================
+> >>>>>>>>> +curr1_label          "iin"
+> >>>>>>>>> +curr1_input          Measured input current
+> >>>>>>>>> +curr1_crit           Critical maximum current
+> >>>>>>>>> +curr1_crit_alarm     Current critical high alarm
+> >>>>>>>>> +
+> >>>>>>>>> +curr2_label          "iout1"
+> >>>>>>>>> +curr2_input          Measured output current
+> >>>>>>>>> +curr2_crit           Critical maximum current
+> >>>>>>>>> +curr2_crit_alarm     Current critical high alarm
+> >>>>>>>>> +
+> >>>>>>>>> +in1_label            "vin"
+> >>>>>>>>> +in1_input            Measured input voltage
+> >>>>>>>>> +in1_lcrit            Critical minimum input voltage
+> >>>>>>>>> +in1_lcrit_alarm              Input voltage critical low alarm
+> >>>>>>>>> +in1_crit             Critical maximum input voltage
+> >>>>>>>>> +in1_crit_alarm               Input voltage critical high alarm
+> >>>>>>>>> +
+> >>>>>>>>> +in2_label            "vout1"
+> >>>>>>>>> +in2_input            Measured output voltage
+> >>>>>>>>> +in2_lcrit            Critical minimum output voltage
+> >>>>>>>>> +in2_lcrit_alarm              Output voltage critical low alarm
+> >>>>>>>>> +in2_crit             Critical maximum output voltage
+> >>>>>>>>> +in2_crit_alarm               Output voltage critical high alarm
+> >>>>>>>>> +
+> >>>>>>>>> +power1_label         "pin"
+> >>>>>>>>> +power1_input         Measured input power
+> >>>>>>>>> +power1_alarm         Input power high alarm
+> >>>>>>>>> +
+> >>>>>>>>> +power2_label         "pout1"
+> >>>>>>>>> +power2_input         Measured output power
+> >>>>>>>>> +
+> >>>>>>>>> +temp[1-2]_input              Measured temperature
+> >>>>>>>>> +temp[1-2]_crit               Critical high temperature
+> >>>>>>>>> +temp[1-2]_crit_alarm Chip temperature critical high alarm
+> >>>>>>>>> +temp[1-2]_max                Maximum temperature
+> >>>>>>>>> +temp[1-2]_max_alarm  Chip temperature high alarm
+> >>>>>>>>> +
+> >>>>>>>>> +fan1_alarm           Fan 1 warning.
+> >>>>>>>>> +fan1_fault           Fan 1 fault.
+> >>>>>>>>> +fan1_input           Fan 1 speed in RPM.
+> >>>>>>>>> +======================= ======================================================
+> >>>>>>>>> diff --git a/Documentation/hwmon/index.rst b/Documentation/hwmon/index.rst
+> >>>>>>>>> index 8d5a2df1ecb6..b24436f22052 100644
+> >>>>>>>>> --- a/Documentation/hwmon/index.rst
+> >>>>>>>>> +++ b/Documentation/hwmon/index.rst
+> >>>>>>>>> @@ -54,6 +54,7 @@ Hardware Monitoring Kernel Drivers
+> >>>>>>>>>         dell-smm-hwmon
+> >>>>>>>>>         dme1737
+> >>>>>>>>>         drivetemp
+> >>>>>>>>> +   dps920ab
+> >>>>>>>>>         ds1621
+> >>>>>>>>>         ds620
+> >>>>>>>>>         emc1403
+> >>>>>>>>> diff --git a/drivers/hwmon/pmbus/Kconfig b/drivers/hwmon/pmbus/Kconfig
+> >>>>>>>>> index 32d2fc850621..865ade0aa205 100644
+> >>>>>>>>> --- a/drivers/hwmon/pmbus/Kconfig
+> >>>>>>>>> +++ b/drivers/hwmon/pmbus/Kconfig
+> >>>>>>>>> @@ -66,6 +66,15 @@ config SENSORS_IBM_CFFPS
+> >>>>>>>>>             This driver can also be built as a module. If so, the module will
+> >>>>>>>>>             be called ibm-cffps.
+> >>>>>>>>>
+> >>>>>>>>> +config SENSORS_DPS920AB
+> >>>>>>>>> +     tristate "Delta DPS920AB Power Supply"
+> >>>>>>>>> +     help
+> >>>>>>>>> +       If you say yes here you get hardware monitoring support for Delta
+> >>>>>>>>> +       DPS920AB Power Supplies.
+> >>>>>>>>> +
+> >>>>>>>>> +       This driver can also be built as a module. If so, the module will
+> >>>>>>>>> +       be called dps920ab.
+> >>>>>>>>> +
+> >>>>>>>>>      config SENSORS_INSPUR_IPSPS
+> >>>>>>>>>           tristate "INSPUR Power System Power Supply"
+> >>>>>>>>>           help
+> >>>>>>>>> diff --git a/drivers/hwmon/pmbus/Makefile b/drivers/hwmon/pmbus/Makefile
+> >>>>>>>>> index 6a4ba0fdc1db..f59ba0123d68 100644
+> >>>>>>>>> --- a/drivers/hwmon/pmbus/Makefile
+> >>>>>>>>> +++ b/drivers/hwmon/pmbus/Makefile
+> >>>>>>>>> @@ -9,6 +9,7 @@ obj-$(CONFIG_SENSORS_ADM1266) += adm1266.o
+> >>>>>>>>>      obj-$(CONFIG_SENSORS_ADM1275)        += adm1275.o
+> >>>>>>>>>      obj-$(CONFIG_SENSORS_BEL_PFE)        += bel-pfe.o
+> >>>>>>>>>      obj-$(CONFIG_SENSORS_IBM_CFFPS)      += ibm-cffps.o
+> >>>>>>>>> +obj-$(CONFIG_SENSORS_DPS920AB)       += dps920ab.o
+> >>>>>>>>>      obj-$(CONFIG_SENSORS_INSPUR_IPSPS) += inspur-ipsps.o
+> >>>>>>>>>      obj-$(CONFIG_SENSORS_IR35221)        += ir35221.o
+> >>>>>>>>>      obj-$(CONFIG_SENSORS_IR38064)        += ir38064.o
+> >>>>>>>>> diff --git a/drivers/hwmon/pmbus/dps920ab.c b/drivers/hwmon/pmbus/dps920ab.c
+> >>>>>>>>> new file mode 100644
+> >>>>>>>>> index 000000000000..d579ed9f879c
+> >>>>>>>>> --- /dev/null
+> >>>>>>>>> +++ b/drivers/hwmon/pmbus/dps920ab.c
+> >>>>>>>>> @@ -0,0 +1,63 @@
+> >>>>>>>>> +// SPDX-License-Identifier: GPL-2.0-or-later
+> >>>>>>>>> +/*
+> >>>>>>>>> + * Driver for Delta DPS920AB PSU
+> >>>>>>>>> + *
+> >>>>>>>>> + * Copyright (C) 2021 Delta Networks, Inc.
+> >>>>>>>>> + * Copyright (C) 2021 Sartura Ltd.
+> >>>>>>>>> + */
+> >>>>>>>>> +
+> >>>>>>>>> +#include <linux/i2c.h>
+> >>>>>>>>> +#include <linux/module.h>
+> >>>>>>>>> +#include <linux/of_device.h>
+> >>>>>>>>> +#include "pmbus.h"
+> >>>>>>>>> +
+> >>>>>>>>> +static struct pmbus_driver_info dps920ab_info = {
+> >>>>>>>>> +     .pages = 1,
+> >>>>>>>>> +
+> >>>>>>>>> +     .format[PSC_VOLTAGE_IN] = linear,
+> >>>>>>>>> +     .format[PSC_VOLTAGE_OUT] = linear,
+> >>>>>>>>> +     .format[PSC_CURRENT_IN] = linear,
+> >>>>>>>>> +     .format[PSC_CURRENT_OUT] = linear,
+> >>>>>>>>> +     .format[PSC_POWER] = linear,
+> >>>>>>>>> +     .format[PSC_FAN] = linear,
+> >>>>>>>>> +     .format[PSC_TEMPERATURE] = linear,
+> >>>>>>>>> +
+> >>>>>>>>> +     .func[0] = PMBUS_HAVE_VIN | PMBUS_HAVE_IIN  |
+> >>>>>>>>> +     PMBUS_HAVE_VOUT  | PMBUS_HAVE_STATUS_VOUT   |
+> >>>>>>>>> +     PMBUS_HAVE_IOUT  | PMBUS_HAVE_STATUS_IOUT   |
+> >>>>>>>>> +     PMBUS_HAVE_TEMP  | PMBUS_HAVE_TEMP2         |
+> >>>>>>>>> +     PMBUS_HAVE_PIN   | PMBUS_HAVE_POUT          |
+> >>>>>>>>> +     PMBUS_HAVE_FAN12 | PMBUS_HAVE_STATUS_FAN12  |
+> >>>>>>>>> +     PMBUS_HAVE_STATUS_INPUT | PMBUS_HAVE_STATUS_TEMP,
+> >>>>>>>>> +};
+> >>>>>>>>> +
+> >>>>>>>>> +static int dps920ab_probe(struct i2c_client *client)
+> >>>>>>>>> +{
+> >>>>>>>>> +     if (!i2c_check_functionality(client->adapter,
+> >>>>>>>>> +                                  I2C_FUNC_SMBUS_BYTE_DATA |
+> >>>>>>>>> +                                  I2C_FUNC_SMBUS_WORD_DATA))
+> >>>>>>>>> +             return -ENODEV;
+> >>>>>>>>
+> >>>>>>>> This check is done in pmbus_do_probe(), and repeating it here does not add
+> >>>>>>>> any value.
+> >>>>>>>
+> >>>>>>> Ok, makes sense.
+> >>>>>>>>
+> >>>>>>>> That makes me wonder: Is this driver needed in the first place, or could
+> >>>>>>>> it be added to drivers/hwmon/pmbus/pmbus.c ?
+> >>>>>>>
+> >>>>>>> It could be added as a generic driver, but that creates properties in
+> >>>>>>> the sysfs that this thing
+> >>>>>>> does not support like 3 voltage readings, 3 fans, and so on.
+> >>>>>>>
+> >>>>>>
+> >>>>>> Can you be more specific ? What additional unsupported attributes
+> >>>>>> are added, and why ? Are you saying the PSU reports registers as
+> >>>>>> existing which do not really exist ? If so, which registers are those ?
+> >>>>>
+> >>>>> Sure, when core does probing and autodiscovery, then the following
+> >>>>> sysfs attributes are created:
+> >>>>>>
+> >>>>>> curr1_crit         fan3_fault       in3_min_alarm      temp1_max
+> >>>>>> curr1_crit_alarm   fan3_input       in3_rated_max      temp1_max_alarm
+> >>>>>> curr1_input        fan3_target      in3_rated_min      temp1_min
+> >>>>>> curr1_label        in1_crit         name               temp1_min_alarm
+> >>>>>> curr1_max          in1_crit_alarm   of_node            temp1_rated_max
+> >>>>>> curr1_max_alarm    in1_input        power              temp2_crit
+> >>>>>> curr1_rated_max    in1_label        power1_alarm       temp2_crit_alarm
+> >>>>>> curr2_crit         in1_lcrit        power1_input       temp2_input
+> >>>>>> curr2_crit_alarm   in1_lcrit_alarm  power1_label       temp2_lcrit
+> >>>>>> curr2_input        in1_max          power1_max         temp2_lcrit_alarm
+> >>>>>> curr2_label        in1_max_alarm    power1_rated_max   temp2_max
+> >>>>>> curr2_lcrit        in1_min          power2_cap         temp2_max_alarm
+> >>>>>> curr2_lcrit_alarm  in1_min_alarm    power2_cap_alarm   temp2_min
+> >>>>>> curr2_max          in1_rated_max    power2_crit        temp2_min_alarm
+> >>>>>> curr2_max_alarm    in1_rated_min    power2_crit_alarm  temp2_rated_max
+> >>>>>> curr2_rated_max    in2_input        power2_input       temp3_crit
+> >>>>>> device             in2_label        power2_label       temp3_crit_alarm
+> >>>>>> fan1_alarm         in3_crit         power2_max         temp3_input
+> >>>>>> fan1_fault         in3_crit_alarm   power2_max_alarm   temp3_lcrit
+> >>>>>> fan1_input         in3_input        power2_rated_max   temp3_lcrit_alarm
+> >>>>>> fan1_target        in3_label        subsystem          temp3_max
+> >>>>>> fan2_alarm         in3_lcrit        temp1_crit         temp3_max_alarm
+> >>>>>> fan2_fault         in3_lcrit_alarm  temp1_crit_alarm   temp3_min
+> >>>>>> fan2_input         in3_max          temp1_input        temp3_min_alarm
+> >>>>>> fan2_target        in3_max_alarm    temp1_lcrit        temp3_rated_max
+> >>>>>> fan3_alarm         in3_min          temp1_lcrit_alarm  uevent
+> >>>>>
+> >>>>> The following return -1, or -500 so they are not supported.
+> >>>>> * fan2
+> >>>>> * in2
+> >>>>>
+> >>>>> Weirdly, with the external driver both fan2 and in2 are enabled and work fine,
+> >>>>> but when auto probing they are fan3 and in3.
+> >>>>>
+> >>>>> temp3 actually seems to return a valid temperature despite it not being used in
+> >>>>> the vendor driver that features were picked from.
+> >>>>>
+> >>>>
+> >>>> Can you run "grep . *" in the hwmon directory so I can see actual values ?
+> >>>>
+> >>> Sure:
+> >>>>
+> >>>> curr1_crit:-500
+> >>>> curr1_crit_alarm:0
+> >>>> curr1_input:195
+> >>>> curr1_label:iin
+> >>>> curr1_max:-500
+> >>>> curr1_max_alarm:0
+> >>>> curr1_rated_max:-500
+> >>>> curr2_crit:-500
+> >>>> curr2_crit_alarm:0
+> >>>> curr2_input:320
+> >>>> curr2_label:iout1
+> >>>> curr2_lcrit:-500
+> >>>> curr2_lcrit_alarm:0
+> >>>> curr2_max:18625
+> >>>> curr2_max_alarm:0
+> >>>> curr2_rated_max:16875
+> >>>> grep: device: Is a directory
+> >>>> fan1_alarm:0
+> >>>> fan1_fault:0
+> >>>> fan1_input:10000
+> >>>> fan1_target:0
+> >>>> fan2_alarm:1
+> >>>> fan2_fault:1
+> >>>> fan2_input:-1
+> >>>> fan2_target:-1
+> >>>> fan3_alarm:1
+> >>>> fan3_fault:1
+> >>>> fan3_input:-1
+> >>>> fan3_target:-1
+> >>>> in1_crit:-500
+> >>>> in1_crit_alarm:0
+> >>>> in1_input:245250
+> >>>> in1_label:vin
+> >>>> in1_lcrit:-500
+> >>>> in1_lcrit_alarm:0
+> >>>> in1_max:-500
+> >>>> in1_max_alarm:0
+> >>>> in1_min:-500
+> >>>> in1_min_alarm:0
+> >>>> in1_rated_max:-500
+> >>>> in1_rated_min:-500
+> >>>> in2_input:-500
+> >>>> in2_label:vcap
+> >>>> in3_crit:255996
+> >>>> in3_crit_alarm:0
+> >>>> in3_input:54511
+> >>>> in3_label:vout1
+> >>>> in3_lcrit:255996
+> >>>> in3_lcrit_alarm:0
+> >>>> in3_max:255996
+> >>>> in3_max_alarm:0
+> >>>> in3_min:255996
+> >>>> in3_min_alarm:0
+> >>>> in3_rated_max:56136
+> >>>> in3_rated_min:52863
+> >>>> name:dps920ab
+> >>>> grep: of_node: Is a directory
+> >>>> grep: power: Is a directory
+> >>>> power1_alarm:0
+> >>>> power1_input:33250000
+> >>>> power1_label:pin
+> >>>> power1_max:-500000
+> >>>> power1_rated_max:-500000
+> >>>> power2_cap:-500000
+> >>>> power2_cap_alarm:0
+> >>>> power2_crit:-500000
+> >>>> power2_crit_alarm:0
+> >>>> power2_input:17750000
+> >>>> power2_label:pout1
+> >>>> power2_max:-500000
+> >>>> power2_max_alarm:0
+> >>>> power2_rated_max:920000000
+> >>>> grep: subsystem: Is a directory
+> >>>> temp1_crit:-500
+> >>>> temp1_crit_alarm:0
+> >>>> temp1_input:23000
+> >>>> temp1_lcrit:-500
+> >>>> temp1_lcrit_alarm:0
+> >>>> temp1_max:-500
+> >>>> temp1_max_alarm:0
+> >>>> temp1_min:-500
+> >>>> temp1_min_alarm:0
+> >>>> temp1_rated_max:-500
+> >>>> temp2_crit:-500
+> >>>> temp2_crit_alarm:0
+> >>>> temp2_input:26000
+> >>>> temp2_lcrit:-500
+> >>>> temp2_lcrit_alarm:0
+> >>>> temp2_max:-500
+> >>>> temp2_max_alarm:0
+> >>>> temp2_min:-500
+> >>>> temp2_min_alarm:0
+> >>>> temp2_rated_max:-500
+> >>>> temp3_crit:-500
+> >>>> temp3_crit_alarm:0
+> >>>> temp3_input:30000
+> >>>> temp3_lcrit:-500
+> >>>> temp3_lcrit_alarm:0
+> >>>> temp3_max:-500
+> >>>> temp3_max_alarm:0
+> >>>> temp3_min:-500
+> >>>> temp3_min_alarm:0
+> >>>> temp3_rated_max:-500
+> >>>> uevent:OF_NAME=psu
+> >>>> uevent:OF_FULLNAME=/ap806/config-space@f0000000/i2c@511000/psu@5a
+> >>>> uevent:OF_COMPATIBLE_0=delta,dps920ab
+> >>>> uevent:OF_COMPATIBLE_N=1
+> >>>
+> >> Ok, good enough. It looks like the PSU reports values for pretty much everything,
+> >> including registers which don't exist. With that in mind, please check
+> >> the attributes generated by your driver - I suspect that some of the limit
+> >> attributes are not really supported (maybe none of them is supported).
+> >
+> > Yeah, I also think that none of those limits are actually supported.
+> > Does the core expose a way to not register those?
+> >
+>
+> Have the read_word function return -ENXIO for unsupported registers
+> (and add a comment to the code explaining why you do that).
+> See drivers/hwmon/pmbus/fsp-3y.c for an example.
 
-I should add that the main use-case for retrieving CPU number seems to be
-ensuring memory is allocated on the same NUMA node that serves the interrupt
-(again, looking at ena driver only, haven't check others yet).
+Thanks, will implement that.
+In the meantime I finally got the PMBus command list that
+the PSU supports.
+It implements PMBus 1.2, but it also claims that MFR_ID,
+MFR_MODEL and MFR_REVISION are supported.
 
-    int cpu = i % num_online_cpu();
-    cpumask_set_cpu(cpu, &affinity_hint_mask);
-    request_irq(irq, ...);
-    irq_set_affinity_hint(irq, &affinity_hint_mask);
-    int node = cpu_to_node(cpu);
-    buffer = vzalloc(node);
+Block read returns what looks like a correct length, but the buffer
+is empty.
+>
+> [  195.246464] dps920ab 0-005a: PMBUS_MFR_ID length: 5
+> [  195.251495] dps920ab 0-005a: PMBUS_MFR_ID:
+> [  195.300789] dps920ab 0-005b: PMBUS_MFR_ID length: 5
+> [  195.305762] dps920ab 0-005b: PMBUS_MFR_ID:
+> [  272.795222] dps920ab 0-005a: PMBUS_MFR_ID length: 5
+> [  272.800190] dps920ab 0-005a: PMBUS_MFR_ID:
+> [  272.804862] dps920ab 0-005a: PMBUS_MFR_MODEL length: 11
+> [  272.810172] dps920ab 0-005a: PMBUS_MFR_MODEL:
+> [  272.815098] dps920ab 0-005a: PMBUS_MFR_REVISION length: 2
+> [  272.820600] dps920ab 0-005a: PMBUS_MFR_REVISION:
+> [  272.874060] dps920ab 0-005b: PMBUS_MFR_ID length: 5
+> [  272.879102] dps920ab 0-005b: PMBUS_MFR_ID:
+> [  272.883833] dps920ab 0-005b: PMBUS_MFR_MODEL length: 11
+> [  272.889151] dps920ab 0-005b: PMBUS_MFR_MODEL:
+> [  272.894097] dps920ab 0-005b: PMBUS_MFR_REVISION length: 2
+> [  272.899548] dps920ab 0-005b: PMBUS_MFR_REVISION:
 
-> In theory the following could work, but including irq.h does not look like a
-> good idea given that the comment in its explicitly ask not to be included in
-> generic code.
-> 
->     #include <linux/irq.h>
->     int irq = request_irq(...);
->     struct irq_data *data = irq_get_irq_data(irq);
->     struct cpumask *mask = irq_data_get_effective_affinity_mask(data);
->     int cpu = cpumask_first(mask);
-> 
-> Any suggestions?
-> 
-> 
-> Thanks,
-> Shung-Hsi
-> 
-> > Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-> > Link: https://lore.kernel.org/r/20210501021832.743094-1-jesse.brandeburg@intel.com
-> > ---
-> > Applies on:
-> >    git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git irq/core
-> > ---
-> >  include/linux/interrupt.h |   41 ++++++++++++++++++++++++++++++++++++++++-
-> >  kernel/irq/manage.c       |    8 ++++----
-> >  2 files changed, 44 insertions(+), 5 deletions(-)
-> > 
-> > --- a/include/linux/interrupt.h
-> > +++ b/include/linux/interrupt.h
-> > @@ -328,7 +328,46 @@ extern int irq_force_affinity(unsigned i
-> >  extern int irq_can_set_affinity(unsigned int irq);
-> >  extern int irq_select_affinity(unsigned int irq);
-> >  
-> > -extern int irq_set_affinity_hint(unsigned int irq, const struct cpumask *m);
-> > +extern int __irq_apply_affinity_hint(unsigned int irq, const struct cpumask *m,
-> > +				     bool setaffinity);
-> > +
-> > +/**
-> > + * irq_update_affinity_hint - Update the affinity hint
-> > + * @irq:	Interrupt to update
-> > + * @cpumask:	cpumask pointer (NULL to clear the hint)
-> > + *
-> > + * Updates the affinity hint, but does not change the affinity of the interrupt.
-> > + */
-> > +static inline int
-> > +irq_update_affinity_hint(unsigned int irq, const struct cpumask *m)
-> > +{
-> > +	return __irq_apply_affinity_hint(irq, m, true);
-> > +}
-> > +
-> > +/**
-> > + * irq_apply_affinity_hint - Update the affinity hint and apply the provided
-> > + *			     cpumask to the interrupt
-> > + * @irq:	Interrupt to update
-> > + * @cpumask:	cpumask pointer (NULL to clear the hint)
-> > + *
-> > + * Updates the affinity hint and if @cpumask is not NULL it applies it as
-> > + * the affinity of that interrupt.
-> > + */
-> > +static inline int
-> > +irq_apply_affinity_hint(unsigned int irq, const struct cpumask *m)
-> > +{
-> > +	return __irq_apply_affinity_hint(irq, m, true);
-> > +}
-> > +
-> > +/*
-> > + * Deprecated. Use irq_update_affinity_hint() or irq_apply_affinity_hint()
-> > + * instead.
-> > + */
-> > +static inline int irq_set_affinity_hint(unsigned int irq, const struct cpumask *m)
-> > +{
-> > +	return irq_apply_affinity_hint(irq, cpumask);
-> > +}
-> > +
-> >  extern int irq_update_affinity_desc(unsigned int irq,
-> >  				    struct irq_affinity_desc *affinity);
-> >  
-> > --- a/kernel/irq/manage.c
-> > +++ b/kernel/irq/manage.c
-> > @@ -487,7 +487,8 @@ int irq_force_affinity(unsigned int irq,
-> >  }
-> >  EXPORT_SYMBOL_GPL(irq_force_affinity);
-> >  
-> > -int irq_set_affinity_hint(unsigned int irq, const struct cpumask *m)
-> > +int __irq_apply_affinity_hint(unsigned int irq, const struct cpumask *m,
-> > +			      bool setaffinity)
-> >  {
-> >  	unsigned long flags;
-> >  	struct irq_desc *desc = irq_get_desc_lock(irq, &flags, IRQ_GET_DESC_CHECK_GLOBAL);
-> > @@ -496,12 +497,11 @@ int irq_set_affinity_hint(unsigned int i
-> >  		return -EINVAL;
-> >  	desc->affinity_hint = m;
-> >  	irq_put_desc_unlock(desc, flags);
-> > -	/* set the initial affinity to prevent every interrupt being on CPU0 */
-> > -	if (m)
-> > +	if (m && setaffinity)
-> >  		__irq_set_affinity(irq, m, false);
-> >  	return 0;
-> >  }
-> > -EXPORT_SYMBOL_GPL(irq_set_affinity_hint);
-> > +EXPORT_SYMBOL_GPL(__irq_apply_affinity_hint);
-> >  
-> >  static void irq_affinity_notify(struct work_struct *work)
-> >  {
 
+However, manually reading using i2cget in word mode returns
+something that looks ok.
+i2cget -y 0 0x5a 0x9a w
+0x440b
+
+This would be D is ASCII, it looks like any kind of block read fails actually.
+
+I am now a bit confused.
+I tried applying the block support for mv64xx as well:
+https://patchwork.ozlabs.org/project/linux-i2c/patch/20200118115820.9080-1-fuga@studiofuga.com/
+
+But no luck.
+
+Regards,
+Robert
+>
+> Guenter
+
+
+
+-- 
+Robert Marko
+Staff Embedded Linux Engineer
+Sartura Ltd.
+Lendavska ulica 16a
+10000 Zagreb, Croatia
+Email: robert.marko@sartura.hr
+Web: www.sartura.hr
