@@ -2,117 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 106A5392CD1
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 13:35:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CF86D392CCE
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 13:35:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233807AbhE0Lgn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 May 2021 07:36:43 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45674 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233646AbhE0Lgk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 May 2021 07:36:40 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2886A6113B;
-        Thu, 27 May 2021 11:35:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1622115307;
-        bh=awWFyuDtGzTSFYuKnqnAwD8I2u8LvxPLkIedgwXpacY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=p4bPfFCD5PrcmECQ/JmYfkoIQvGIdlvd3Xmt5WsLHiji5zjF5hUpY/7jV/AEVHJHW
-         CB6f9oBS2X3aNGgQ3+WcdNwOGV1gPRmBycO/zJJUoapgziqu+7IL5STMx1dAhYz3+T
-         0bM7UEMZILv76zqCaWO+pWXqjNmfb4VQ6CH4Qz9dn7I0OepvY2P5/VxhAaiFsn1JPd
-         ce1hSAg7oNQpoYW+JbRsJjBqIARt3uf0TgyQ8bjr7saHdzXTBfM/jxaDHBHbhfTQ4Z
-         nDFzJaE8tdL5MVg6406RffF7r/1Of9XzA/MNxWJkmUtb6zscbeJZBFAuG32Qt3uWbG
-         DCkceG/OoqRLg==
-Date:   Thu, 27 May 2021 12:34:57 +0100
-From:   Will Deacon <will@kernel.org>
-To:     Claire Chang <tientzu@chromium.org>
-Cc:     heikki.krogerus@linux.intel.com, thomas.hellstrom@linux.intel.com,
-        peterz@infradead.org, benh@kernel.crashing.org,
-        joonas.lahtinen@linux.intel.com, dri-devel@lists.freedesktop.org,
-        chris@chris-wilson.co.uk, grant.likely@arm.com, paulus@samba.org,
-        Frank Rowand <frowand.list@gmail.com>, mingo@kernel.org,
-        sstabellini@kernel.org, Saravana Kannan <saravanak@google.com>,
-        mpe@ellerman.id.au,
-        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        bskeggs@redhat.com, linux-pci@vger.kernel.org,
-        xen-devel@lists.xenproject.org,
-        Thierry Reding <treding@nvidia.com>,
-        intel-gfx@lists.freedesktop.org, matthew.auld@intel.com,
-        linux-devicetree <devicetree@vger.kernel.org>,
-        Jianxiong Gao <jxgao@google.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
-        maarten.lankhorst@linux.intel.com, airlied@linux.ie,
-        Dan Williams <dan.j.williams@intel.com>,
-        linuxppc-dev@lists.ozlabs.org, jani.nikula@linux.intel.com,
-        Rob Herring <robh+dt@kernel.org>, rodrigo.vivi@intel.com,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        boris.ostrovsky@oracle.com,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        jgross@suse.com, Nicolas Boichat <drinkcat@chromium.org>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        "list@263.net:IOMMU DRIVERS" <iommu@lists.linux-foundation.org>,
-        Jim Quinlan <james.quinlan@broadcom.com>, xypron.glpk@gmx.de,
-        Robin Murphy <robin.murphy@arm.com>, bauerman@linux.ibm.com
-Subject: Re: [PATCH v7 14/15] dt-bindings: of: Add restricted DMA pool
-Message-ID: <20210527113456.GA22019@willie-the-truck>
-References: <20210518064215.2856977-1-tientzu@chromium.org>
- <20210518064215.2856977-15-tientzu@chromium.org>
- <20210526121322.GA19313@willie-the-truck>
- <20210526155321.GA19633@willie-the-truck>
- <CALiNf2_sVXnb97++yWusB5PWz8Pzfn9bCKZc6z3tY4bx6-nW8w@mail.gmail.com>
+        id S233771AbhE0Lgl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 May 2021 07:36:41 -0400
+Received: from out30-130.freemail.mail.aliyun.com ([115.124.30.130]:39652 "EHLO
+        out30-130.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232324AbhE0Lgj (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 27 May 2021 07:36:39 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R101e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04395;MF=xhao@linux.alibaba.com;NM=1;PH=DS;RN=11;SR=0;TI=SMTPD_---0UaGrBy7_1622115303;
+Received: from B-X3VXMD6M-2058.local(mailfrom:xhao@linux.alibaba.com fp:SMTPD_---0UaGrBy7_1622115303)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Thu, 27 May 2021 19:35:04 +0800
+From:   Xin Hao <xhao@linux.alibaba.com>
+Reply-To: xhao@linux.alibaba.com
+Subject: Re: [PATCH v2 2/5] tick/broadcast: Split
+ __tick_broadcast_oneshot_control() into a helper
+To:     Will Deacon <will@kernel.org>
+Cc:     fweisbec@gmail.com, john.stultz@linaro.org,
+        kernel-team@android.com, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, lorenzo@google.com, maz@kernel.org,
+        mika.penttila@nextfour.com, sboyd@kernel.org, tglx@linutronix.de
+References: <20210524221818.15850-3-will@kernel.org>
+ <c3573cd8-a4c8-43c2-be66-8b74d688a406@linux.alibaba.com>
+ <20210527082219.GA21311@willie-the-truck>
+Message-ID: <e0f6523f-36f8-188c-da99-4dcb51375522@linux.alibaba.com>
+Date:   Thu, 27 May 2021 19:35:03 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.10.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CALiNf2_sVXnb97++yWusB5PWz8Pzfn9bCKZc6z3tY4bx6-nW8w@mail.gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20210527082219.GA21311@willie-the-truck>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 27, 2021 at 07:29:20PM +0800, Claire Chang wrote:
-> On Wed, May 26, 2021 at 11:53 PM Will Deacon <will@kernel.org> wrote:
-> >
-> > On Wed, May 26, 2021 at 01:13:22PM +0100, Will Deacon wrote:
-> > > On Tue, May 18, 2021 at 02:42:14PM +0800, Claire Chang wrote:
-> > > > @@ -138,4 +160,9 @@ one for multimedia processing (named multimedia-memory@77000000, 64MiB).
-> > > >             memory-region = <&multimedia_reserved>;
-> > > >             /* ... */
-> > > >     };
-> > > > +
-> > > > +   pcie_device: pcie_device@0,0 {
-> > > > +           memory-region = <&restricted_dma_mem_reserved>;
-> > > > +           /* ... */
-> > > > +   };
-> > >
-> > > I still don't understand how this works for individual PCIe devices -- how
-> > > is dev->of_node set to point at the node you have above?
-> > >
-> > > I tried adding the memory-region to the host controller instead, and then
-> > > I see it crop up in dmesg:
-> > >
-> > >   | pci-host-generic 40000000.pci: assigned reserved memory node restricted_dma_mem_reserved
-> > >
-> > > but none of the actual PCI devices end up with 'dma_io_tlb_mem' set, and
-> > > so the restricted DMA area is not used. In fact, swiotlb isn't used at all.
-> > >
-> > > What am I missing to make this work with PCIe devices?
-> >
-> > Aha, looks like we're just missing the logic to inherit the DMA
-> > configuration. The diff below gets things working for me.
-> 
-> I guess what was missing is the reg property in the pcie_device node.
-> Will update the example dts.
 
-Thanks. I still think something like my diff makes sense, if you wouldn't mind including
-it, as it allows restricted DMA to be used for situations where the PCIe
-topology is not static.
+在 2021/5/27 下午4:22, Will Deacon 写道:
+> On Thu, May 27, 2021 at 03:23:06PM +0800, Xin Hao wrote:
+>>       I  had backport you  tick/broadcast: Prefer per-cpu relatives patches,
+>>
+>> but i did not get the true result,  the Wakeup Devices are all null, why?
+> Probably because you don't have any suitable per-cpu timers to act as a
+> wakeup. Do you have a per-cpu timer registered with CLOCK_EVT_FEAT_PERCPU
 
-Perhaps we should prefer dev->of_node if it exists, but then use the node
-of the host bridge's parent node otherwise?
+Yes, you are right, but i want to know why the timer do not support  
+CLOCK_EVT_FEAT_PERCPU.
 
-Will
+> and CLOCK_EVT_FEAT_ONESHOT but not CLOCK_EVT_FEAT_C3STOP?
+>
+> Will
+
+-- 
+Best Regards!
+Xin Hao
+
