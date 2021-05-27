@@ -2,187 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6AFB0392A34
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 11:03:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 55E2A392A3A
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 11:04:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235574AbhE0JFI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 May 2021 05:05:08 -0400
-Received: from fllv0015.ext.ti.com ([198.47.19.141]:33394 "EHLO
-        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235658AbhE0JFF (ORCPT
+        id S235663AbhE0JG3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 May 2021 05:06:29 -0400
+Received: from szxga01-in.huawei.com ([45.249.212.187]:5111 "EHLO
+        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235537AbhE0JG1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 May 2021 05:05:05 -0400
-Received: from fllv0034.itg.ti.com ([10.64.40.246])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 14R93REt099921;
-        Thu, 27 May 2021 04:03:27 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1622106207;
-        bh=PyUiBrI4wVr8wHXwd8i4QB6Nj7N8Tcm9ilMjq3+0nzs=;
-        h=Subject:To:CC:References:From:Date:In-Reply-To;
-        b=mI+gdUqICterh3QCDXFnCSCyrzhRkSfJxdfhUGfVQMfB11oPPknz5qOgKhryi31ON
-         CzPJBK8TnWY1WNZQZp/LYMCUvRRJ+B+QUZYX5q+bHVUxhlIBHbeG+l7nv6EdyDLv38
-         dbEkJv4y8+dK8BOJIF0k1aRPwkYkTbD5FYKprBIo=
-Received: from DFLE112.ent.ti.com (dfle112.ent.ti.com [10.64.6.33])
-        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 14R93RNa059974
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Thu, 27 May 2021 04:03:27 -0500
-Received: from DFLE115.ent.ti.com (10.64.6.36) by DFLE112.ent.ti.com
- (10.64.6.33) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Thu, 27
- May 2021 04:03:27 -0500
-Received: from fllv0040.itg.ti.com (10.64.41.20) by DFLE115.ent.ti.com
- (10.64.6.36) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
- Frontend Transport; Thu, 27 May 2021 04:03:27 -0500
-Received: from [10.250.100.73] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 14R93NtQ075516;
-        Thu, 27 May 2021 04:03:25 -0500
-Subject: Re: [PATCH v3] ARM: dts: dra7: Fix duplicate USB4 target module node
-To:     Tony Lindgren <tony@atomide.com>,
-        Gowtham Tammana <g-tammana@ti.com>
-CC:     Suman Anna <s-anna@ti.com>, <bcousson@baylibre.com>,
-        <robh+dt@kernel.org>, <linux-omap@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>, Nisanth Menon <nm@ti.com>
-References: <20210526213035.15448-1-g-tammana@ti.com>
- <YK8ykeNA9AsjB89I@atomide.com>
-From:   Grygorii Strashko <grygorii.strashko@ti.com>
-Message-ID: <bd903d6a-2894-fc39-e431-5dfed04a3604@ti.com>
-Date:   Thu, 27 May 2021 12:03:24 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Thu, 27 May 2021 05:06:27 -0400
+Received: from dggeml711-chm.china.huawei.com (unknown [172.30.72.53])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4FrMJj4VvKzYn5K;
+        Thu, 27 May 2021 17:02:13 +0800 (CST)
+Received: from dggpemm500006.china.huawei.com (7.185.36.236) by
+ dggeml711-chm.china.huawei.com (10.3.17.122) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2176.2; Thu, 27 May 2021 17:04:53 +0800
+Received: from thunder-town.china.huawei.com (10.174.177.72) by
+ dggpemm500006.china.huawei.com (7.185.36.236) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Thu, 27 May 2021 17:04:52 +0800
+From:   Zhen Lei <thunder.leizhen@huawei.com>
+To:     Jani Nikula <jani.nikula@linux.intel.com>,
+        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        intel-gfx <intel-gfx@lists.freedesktop.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+CC:     Zhen Lei <thunder.leizhen@huawei.com>
+Subject: [PATCH 1/1] drm/i915/hdcp: Simplify code in intel_hdcp_auth_downstream()
+Date:   Thu, 27 May 2021 17:04:21 +0800
+Message-ID: <20210527090421.9172-1-thunder.leizhen@huawei.com>
+X-Mailer: git-send-email 2.26.0.windows.1
 MIME-Version: 1.0
-In-Reply-To: <YK8ykeNA9AsjB89I@atomide.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.174.177.72]
+X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
+ dggpemm500006.china.huawei.com (7.185.36.236)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Tony,
+If intel_hdcp_validate_v_prime() has been successful within the allowed
+number of tries, we can directly call drm_dbg_kms() and "goto out" without
+jumping out of the loop and repeatedly judging whether the operation is
+successful. This can help us reduce an unnecessary if judgment. And it's
+a little clearer to read.
 
-On 27/05/2021 08:48, Tony Lindgren wrote:
-> Hi,
-> 
-> * Gowtham Tammana <g-tammana@ti.com> [210526 21:30]:
->> diff --git a/arch/arm/boot/dts/am5718.dtsi b/arch/arm/boot/dts/am5718.dtsi
->> index ebf4d3cc1cfb..6d7530a48c73 100644
->> --- a/arch/arm/boot/dts/am5718.dtsi
->> +++ b/arch/arm/boot/dts/am5718.dtsi
->> @@ -17,17 +17,13 @@ / {
->>    * VCP1, VCP2
->>    * MLB
->>    * ISS
->> - * USB3, USB4
->> + * USB3
->>    */
->>   
->>   &usb3_tm {
->>   	status = "disabled";
->>   };
->>   
->> -&usb4_tm {
->> -	status = "disabled";
->> -};
->> -
->>   &atl_tm {
->>   	status = "disabled";
->>   };
-> 
-> The above makes sense as usb4 is only on dra74x and should not be even
-> available otherwise.
-> 
->> diff --git a/arch/arm/boot/dts/dra7-l4.dtsi b/arch/arm/boot/dts/dra7-l4.dtsi
->> index 149144cdff35..648d23f7f748 100644
->> --- a/arch/arm/boot/dts/dra7-l4.dtsi
->> +++ b/arch/arm/boot/dts/dra7-l4.dtsi
->> @@ -4129,28 +4129,6 @@ usb3: usb@10000 {
->>   			};
->>   		};
->>   
->> -		usb4_tm: target-module@140000 {		/* 0x48940000, ap 75 3c.0 */
->> -			compatible = "ti,sysc-omap4", "ti,sysc";
->> -			reg = <0x140000 0x4>,
->> -			      <0x140010 0x4>;
->> -			reg-names = "rev", "sysc";
->> -			ti,sysc-mask = <SYSC_OMAP4_DMADISABLE>;
->> -			ti,sysc-midle = <SYSC_IDLE_FORCE>,
->> -					<SYSC_IDLE_NO>,
->> -					<SYSC_IDLE_SMART>,
->> -					<SYSC_IDLE_SMART_WKUP>;
->> -			ti,sysc-sidle = <SYSC_IDLE_FORCE>,
->> -					<SYSC_IDLE_NO>,
->> -					<SYSC_IDLE_SMART>,
->> -					<SYSC_IDLE_SMART_WKUP>;
->> -			/* Domains (P, C): l3init_pwrdm, l3init_clkdm */
->> -			clocks = <&l3init_clkctrl DRA7_L3INIT_USB_OTG_SS4_CLKCTRL 0>;
->> -			clock-names = "fck";
->> -			#address-cells = <1>;
->> -			#size-cells = <1>;
->> -			ranges = <0x0 0x140000 0x20000>;
->> -		};
->> -
-> 
-> But let's keep the target-module@140000 here as it puts it in the right
-> location rather than directly on the ocp. Let's mark it with
-> status = "disabled" in dra7-l4.dtsi, and add a comment noting it's only
-> available on dra74x. So similar to what you had in your v1 patch, except
-> disabled.
+No functional change.
 
-My preference would be not to mix SoC variant specific modules in common module,
-and fix dra74x instead by placing usb4 node in proper place:
+Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
+---
+ drivers/gpu/drm/i915/display/intel_hdcp.c | 24 ++++++++++-------------
+ 1 file changed, 10 insertions(+), 14 deletions(-)
 
-&l4_per3 {						/* 0x48800000 */
-	segment@0 {	
--->
-
-> 
->> diff --git a/arch/arm/boot/dts/dra71x.dtsi b/arch/arm/boot/dts/dra71x.dtsi
->> index cad0e4a2bd8d..9c270d8f75d5 100644
->> --- a/arch/arm/boot/dts/dra71x.dtsi
->> +++ b/arch/arm/boot/dts/dra71x.dtsi
->> @@ -11,7 +11,3 @@
->>   &rtctarget {
->>   	status = "disabled";
->>   };
->> -
->> -&usb4_tm {
->> -	status = "disabled";
->> -};
->> diff --git a/arch/arm/boot/dts/dra72x.dtsi b/arch/arm/boot/dts/dra72x.dtsi
->> index d403acc754b6..f3e934ef7d3e 100644
->> --- a/arch/arm/boot/dts/dra72x.dtsi
->> +++ b/arch/arm/boot/dts/dra72x.dtsi
->> @@ -108,7 +108,3 @@ &pcie1_ep {
->>   &pcie2_rc {
->>   	compatible = "ti,dra726-pcie-rc", "ti,dra7-pcie";
->>   };
->> -
->> -&usb4_tm {
->> -	status = "disabled";
->> -};
-> 
-> Then the above change can be kept.
-> 
->> diff --git a/arch/arm/boot/dts/dra74x.dtsi b/arch/arm/boot/dts/dra74x.dtsi
->> index e1850d6c841a..60f2ab8d34d5 100644
->> --- a/arch/arm/boot/dts/dra74x.dtsi
->> +++ b/arch/arm/boot/dts/dra74x.dtsi
->> @@ -49,7 +49,7 @@ dsp2_system: dsp_system@41500000 {
->>   			reg = <0x41500000 0x100>;
->>   		};
->>   
->> -		target-module@48940000 {
->> +		usb4_tm: target-module@48940000 {
->>   			compatible = "ti,sysc-omap4", "ti,sysc";
->>   			reg = <0x48940000 0x4>,
->>   			      <0x48940010 0x4>;
-> 
-> And in dra74x.dtsi just set it enabled then :)
-
-
+diff --git a/drivers/gpu/drm/i915/display/intel_hdcp.c b/drivers/gpu/drm/i915/display/intel_hdcp.c
+index d8570e14fe60..c32a854eda66 100644
+--- a/drivers/gpu/drm/i915/display/intel_hdcp.c
++++ b/drivers/gpu/drm/i915/display/intel_hdcp.c
+@@ -663,13 +663,13 @@ int intel_hdcp_auth_downstream(struct intel_connector *connector)
+ 
+ 	ret = shim->read_ksv_fifo(dig_port, num_downstream, ksv_fifo);
+ 	if (ret)
+-		goto err;
++		goto out;
+ 
+ 	if (drm_hdcp_check_ksvs_revoked(&dev_priv->drm, ksv_fifo,
+ 					num_downstream) > 0) {
+ 		drm_err(&dev_priv->drm, "Revoked Ksv(s) in ksv_fifo\n");
+ 		ret = -EPERM;
+-		goto err;
++		goto out;
+ 	}
+ 
+ 	/*
+@@ -680,20 +680,16 @@ int intel_hdcp_auth_downstream(struct intel_connector *connector)
+ 		ret = intel_hdcp_validate_v_prime(connector, shim,
+ 						  ksv_fifo, num_downstream,
+ 						  bstatus);
+-		if (!ret)
+-			break;
+-	}
+-
+-	if (i == tries) {
+-		drm_dbg_kms(&dev_priv->drm,
+-			    "V Prime validation failed.(%d)\n", ret);
+-		goto err;
++		if (!ret) {
++			drm_dbg_kms(&dev_priv->drm,
++				    "HDCP is enabled (%d downstream devices)\n",
++				    num_downstream);
++			goto out;
++		}
+ 	}
+ 
+-	drm_dbg_kms(&dev_priv->drm, "HDCP is enabled (%d downstream devices)\n",
+-		    num_downstream);
+-	ret = 0;
+-err:
++	drm_dbg_kms(&dev_priv->drm, "V Prime validation failed.(%d)\n", ret);
++out:
+ 	kfree(ksv_fifo);
+ 	return ret;
+ }
 -- 
-Best regards,
-grygorii
+2.25.1
+
+
