@@ -2,93 +2,174 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C99E393699
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 21:47:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4FE5B3936A1
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 21:48:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235774AbhE0Tsj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 May 2021 15:48:39 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58080 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235348AbhE0Tsh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 May 2021 15:48:37 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 48F606124C;
-        Thu, 27 May 2021 19:47:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1622144823;
-        bh=7TxnJJnNtwAUGZlPXh3fsE0Uo6KwnuA5yZH8z0w+sjU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=p9SqVy1QqWu0JV2zeKQ/gJlaS7FOcPgVN11Mx+qq+SpXvUCCTUU/QAo2svWSZr2Bd
-         Chdw9cls7OUGp3k6MZawfXS5M2NltR+SbS4QgBiaoDnRyvHoeNexjCzkWMkdIUc+Mb
-         vLabP1cXff/fLaFxHCFqfWA48zDMTuTruccKdpAEC5Aoo7w+WJzrygsc2L6cnKTi7j
-         KQUpOnADIsvR6JJMxJ7RjpK7azQLK6TsacwPFPSkoULJLgjvbTtzqfzVc55pYwf86F
-         OyOo8UkD+7bnaGzJj/qA9jw1eUy4LoPSThi6pcTwFByZ6XSwEl5zo64WUWWCtes17h
-         vHcJf5UnfmJBw==
-Date:   Thu, 27 May 2021 21:46:59 +0200
-From:   Wolfram Sang <wsa@kernel.org>
-To:     Zev Weiss <zev@bewilderbeest.net>
-Cc:     Brendan Higgins <brendanhiggins@google.com>,
-        Joel Stanley <joel@jms.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Andrew Jeffery <andrew@aj.id.au>, linux-i2c@vger.kernel.org,
-        openbmc@lists.ozlabs.org, linux-arm-kernel@lists.infradead.org,
-        linux-aspeed@lists.ozlabs.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] i2c: aspeed: disable additional device addresses on
- ast2[56]xx
-Message-ID: <YK/3M94uwuLQNwbz@kunai>
-Mail-Followup-To: Wolfram Sang <wsa@kernel.org>,
-        Zev Weiss <zev@bewilderbeest.net>,
-        Brendan Higgins <brendanhiggins@google.com>,
-        Joel Stanley <joel@jms.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Andrew Jeffery <andrew@aj.id.au>, linux-i2c@vger.kernel.org,
-        openbmc@lists.ozlabs.org, linux-arm-kernel@lists.infradead.org,
-        linux-aspeed@lists.ozlabs.org, linux-kernel@vger.kernel.org
-References: <20210506205419.26294-1-zev@bewilderbeest.net>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="JB9G8qcO/AQ7ihJy"
-Content-Disposition: inline
-In-Reply-To: <20210506205419.26294-1-zev@bewilderbeest.net>
+        id S235818AbhE0Ttk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 May 2021 15:49:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36484 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235522AbhE0Ttf (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 27 May 2021 15:49:35 -0400
+Received: from mail-pg1-x529.google.com (mail-pg1-x529.google.com [IPv6:2607:f8b0:4864:20::529])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0DF14C061761
+        for <linux-kernel@vger.kernel.org>; Thu, 27 May 2021 12:48:02 -0700 (PDT)
+Received: by mail-pg1-x529.google.com with SMTP id r1so729634pgk.8
+        for <linux-kernel@vger.kernel.org>; Thu, 27 May 2021 12:48:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=dilger-ca.20150623.gappssmtp.com; s=20150623;
+        h=from:message-id:mime-version:subject:date:in-reply-to:cc:to
+         :references;
+        bh=kuxMhIAnnWS+xhIDY8/Wo8MykHEq6iJW3UMaeh7ZK7U=;
+        b=nSRIvoY7lG1cQdvGcqoRcKIsPLZ/lmsyHJptUDK+fVpQONEWA6u6nWQqX09OblW5DT
+         zY0CKq3FRFRJuH9s12hJ7/iL3T6JONnuQWR7+SgHwrkN/NhYUG/i28/XqKK13pgpoFqC
+         XbEDe+/EUaC41FeTkKz/qwFQDsdiYSIRqHk1aLaIU61AWWV72+yyqgdqmfNwKKTuQb+M
+         BVTCBylEx3lyJFblDSPgmW+SaDX/HYnyFjToF7ABCqnip4kGystVP2wYED17n3j4QE1t
+         kIZMgvgr+kp6M2iSOZi4/5yDL533TWHQKOzjXwQUTbgor+IwNkcEGOMHUp0Pk1AHvTro
+         1MYA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:message-id:mime-version:subject:date
+         :in-reply-to:cc:to:references;
+        bh=kuxMhIAnnWS+xhIDY8/Wo8MykHEq6iJW3UMaeh7ZK7U=;
+        b=G3PAZTlwhLplwxFJBVfV+A1YV4RCVr6fM5o56PFtJJG/IGgvUbyghRiE7J1KuVWid0
+         /F6BbKRA1bc5YGJ5ycQWaIGek64e9RL6CuF2xtDl+hdMqt8kKVuaT8Qb7WxaIyxQWBne
+         48Xz/TZg1OBU7OiJq1+1H3vEcnEbBnXGUHCxLfISDVt7FuloAIfAFiI5F5l7y6lcKmNM
+         2ORVRqDYOD8m05bG0EkZk3msP102u+aw4TjICcwYn2sRWFDe2xD5biicY38bI+41BpwX
+         yiveC6MRKAoWRT2SyyT95sOelMEHbA3bPEIw93/KoT+toJjZA5zzBQjUdhFyrmsY+Dq3
+         Uulg==
+X-Gm-Message-State: AOAM532m2jLEcqJxIGOIWfXhiuIuHzCm4AXRko3sfpBeo/5oRpZTkTFc
+        nh1yUl6IG3gUw+ejudEOYKT0+A==
+X-Google-Smtp-Source: ABdhPJyvW92LZaYFBCZWvHpS+AW5yXFjTx7TFZi+bvoPYNvlSz1hECSMZqyFBqzZx6cb/i4gRaoP1g==
+X-Received: by 2002:aa7:800a:0:b029:250:c8c5:64b3 with SMTP id j10-20020aa7800a0000b0290250c8c564b3mr62298pfi.23.1622144881429;
+        Thu, 27 May 2021 12:48:01 -0700 (PDT)
+Received: from cabot.adilger.int (S01061cabc081bf83.cg.shawcable.net. [70.77.221.9])
+        by smtp.gmail.com with ESMTPSA id i13sm2545570pgg.30.2021.05.27.12.47.59
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 27 May 2021 12:48:00 -0700 (PDT)
+From:   Andreas Dilger <adilger@dilger.ca>
+Message-Id: <C666AA9C-9CC9-4E3E-B161-C82C7B739E7F@dilger.ca>
+Content-Type: multipart/signed;
+ boundary="Apple-Mail=_396E1356-CA76-4644-BCA7-C3802BBC147A";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
+Mime-Version: 1.0 (Mac OS X Mail 10.3 \(3273\))
+Subject: Re: [PATCH V2 1/7] ext4: remove the 'group' parameter of
+ ext4_trim_extent
+Date:   Thu, 27 May 2021 13:47:56 -0600
+In-Reply-To: <61eceb4c-6e5f-34d0-9317-a833d7c63b6f@gmail.com>
+Cc:     Theodore Ts'o <tytso@mit.edu>,
+        Ext4 Developers List <linux-ext4@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        lishujin@kuaishou.com
+To:     Wang Jianchao <jianchao.wan9@gmail.com>
+References: <164ffa3b-c4d5-6967-feba-b972995a6dfb@gmail.com>
+ <61eceb4c-6e5f-34d0-9317-a833d7c63b6f@gmail.com>
+X-Mailer: Apple Mail (2.3273)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
---JB9G8qcO/AQ7ihJy
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+--Apple-Mail=_396E1356-CA76-4644-BCA7-C3802BBC147A
 Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain;
+	charset=us-ascii
 
-On Thu, May 06, 2021 at 03:54:19PM -0500, Zev Weiss wrote:
-> The ast25xx and ast26xx have, respectively, two and three configurable
-> slave device addresses to the ast24xx's one.  We only support using
-> one at a time, but the others may come up in an indeterminate state
-> depending on hardware/bootloader behavior, so we need to make sure we
-> disable them so as to avoid ending up with phantom devices on the bus.
+
+> On May 26, 2021, at 2:42 AM, Wang Jianchao <jianchao.wan9@gmail.com> =
+wrote:
 >=20
-> Signed-off-by: Zev Weiss <zev@bewilderbeest.net>
+> Get rid of the 'group' parameter of ext4_trim_extent as we can get
+> it from the 'e4b'.
+>=20
+> Signed-off-by: Wang Jianchao <wangjianchao@kuaishou.com>
 
-Applied to for-next, thanks!
+Reviewed-by: Andreas Dilger <adilger@dilger.ca>
+
+> ---
+> fs/ext4/mballoc.c | 9 ++++-----
+> 1 file changed, 4 insertions(+), 5 deletions(-)
+>=20
+> diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
+> index a02fadf..d81f1fd22 100644
+> --- a/fs/ext4/mballoc.c
+> +++ b/fs/ext4/mballoc.c
+> @@ -5650,19 +5650,19 @@ int ext4_group_add_blocks(handle_t *handle, =
+struct super_block *sb,
+>  * @sb:		super block for the file system
+>  * @start:	starting block of the free extent in the alloc. group
+>  * @count:	number of blocks to TRIM
+> - * @group:	alloc. group we are working with
+>  * @e4b:	ext4 buddy for the group
+>  *
+>  * Trim "count" blocks starting at "start" in the "group". To assure =
+that no
+>  * one will allocate those blocks, mark it as used in buddy bitmap. =
+This must
+>  * be called with under the group lock.
+>  */
+> -static int ext4_trim_extent(struct super_block *sb, int start, int =
+count,
+> -			     ext4_group_t group, struct ext4_buddy *e4b)
+> +static int ext4_trim_extent(struct super_block *sb,
+> +		int start, int count, struct ext4_buddy *e4b)
+> __releases(bitlock)
+> __acquires(bitlock)
+> {
+> 	struct ext4_free_extent ex;
+> +	ext4_group_t group =3D e4b->bd_group;
+> 	int ret =3D 0;
+>=20
+> 	trace_ext4_trim_extent(sb, group, start, count);
+> @@ -5738,8 +5738,7 @@ static int ext4_trim_extent(struct super_block =
+*sb, int start, int count,
+> 		next =3D mb_find_next_bit(bitmap, max + 1, start);
+>=20
+> 		if ((next - start) >=3D minblocks) {
+> -			ret =3D ext4_trim_extent(sb, start,
+> -					       next - start, group, =
+&e4b);
+> +			ret =3D ext4_trim_extent(sb, start, next - =
+start, &e4b);
+> 			if (ret && ret !=3D -EOPNOTSUPP)
+> 				break;
+> 			ret =3D 0;
+> --
+> 1.8.3.1
 
 
---JB9G8qcO/AQ7ihJy
-Content-Type: application/pgp-signature; name="signature.asc"
+Cheers, Andreas
+
+
+
+
+
+
+--Apple-Mail=_396E1356-CA76-4644-BCA7-C3802BBC147A
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+	filename=signature.asc
+Content-Type: application/pgp-signature;
+	name=signature.asc
+Content-Description: Message signed with OpenPGP
 
 -----BEGIN PGP SIGNATURE-----
+Comment: GPGTools - http://gpgtools.org
 
-iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmCv9zMACgkQFA3kzBSg
-KbYoaw/+K6TmK5yofJdaPXVDzkuK9GycZAqgbQp7fiCMVeCJi9sp4sZfOC/qJHDl
-i+d/1nqKttII/RjpHvzcQDnzXK7Mx/KaolUoQGIRRUoXI5PT2Rsc1qjOGxswicee
-ncF/nG2SKuKQoiFfEchL9/OWsKn8JysNhrGRsBpK8S2bINXajAHf/3NHSuIB8hT8
-LHdFtx+P5yRB2t7NLwGx1OTv5keCUEpzVnuzYcYdvfwUcbcLgSaybvDmkjyx/LHv
-xwFBvls6D24yd526D5kOfedxA2zZPnxfS5vYSnfL4Qsek21QSK28PuOtF4bbNHwp
-wBddF4z3Ba1ZCmXp93FsH7HmzzB9X2gnQhOaK1lyf0Qd7UL1qJXsWoN0D38VAzG8
-pvxotK7zbPcLU+9Jfu7I6p37ff64MVz66+nblGDjttSR767uic7jlL/Hgyim8V16
-HeT5nrjHjJW7jeTLsDz8UZU3xzGNmZzpRTWreNm+TBJl9Kv7gPR5j1z3Z5cQ5jf8
-MstxERJwFnMBlb1ma5PrQm7iyddy3cKyp+jKic0adN/tLwtl9mfwi/tQgEjsCw9m
-O6AcGxtfwIFeysjtgI0DjZUo+IQii/o9CcUPmFu4xsOZSsWwISFimP+LwVZDx6MM
-bgATzrQ0pKryV+AD4W8TP9XI42w2u7eSW/5NBRjkkJAZ+p5d6Bk=
-=dwZ9
+iQIzBAEBCAAdFiEEDb73u6ZejP5ZMprvcqXauRfMH+AFAmCv92wACgkQcqXauRfM
+H+CzwxAAj0DnT91f2yhsPGX4qrxRdauP6pmSe5jSLeOurnHi0fYxMiJ431hQSuyL
+KLWaD5x1b2YNUbciBLlsk4qUqX0GMCs9ossJ12I68YWfGr161ZI3xuk6lHipf0nU
+jM0p6SKCh8/aS4BhUa611bW68vP+DIg6Qpl0GnUQvn9QWbb6RM6sQaKe4WARISXU
+MRrsm62FDrSwiboAHNBgkKuELrAIdES1/h9D+SHn7ko4itXaAW3B3uYc2VP/N9ya
+psrFaKhm4BI/wRLc3cbPhaIuoxDU4glep/TZYLemVTjwmQ25wUATfqLNxi5SgSq8
+xzvtsOrlX+tYmyqjmRkCamhhdJs0N2h2Pkrngoy1wGHbEaqFy5d3YtZzrKMyof+H
+jDgMJWiM87fNCYQZ/6vXhrFNUkyatvvGg1d9wcJtY2VcBiJO0mGQf6tWjOhf0597
+bkrzGgqbg+MHbW1PwBbhOY0jFAAUuiLrLrejVlMJhTvo3T5rzEV9jNoRU2s9n6hL
+kutxNZtPlYPXHapOk5OeN92TtCbyJecJ2Ul9JF7+9WmZjvABYWZnTzWG9g6aBOoW
+1ZF+Qfk8Of4bK8oHmRjW9mPQre/Z7uGHzM0MBBLnUUqIn9FugEiJQOIfqr7np1De
+qEwrKamQ5LpY+PAZfR/WXtqJH0SN2dbp3trkMt++jaCTKsZ54KM=
+=ij5x
 -----END PGP SIGNATURE-----
 
---JB9G8qcO/AQ7ihJy--
+--Apple-Mail=_396E1356-CA76-4644-BCA7-C3802BBC147A--
