@@ -2,105 +2,186 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 253B0393147
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 16:45:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 22A84393091
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 16:15:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236619AbhE0OrY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 May 2021 10:47:24 -0400
-Received: from aserp2120.oracle.com ([141.146.126.78]:34284 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234517AbhE0OrX (ORCPT
+        id S235952AbhE0ORW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 May 2021 10:17:22 -0400
+Received: from szxga08-in.huawei.com ([45.249.212.255]:2320 "EHLO
+        szxga08-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235170AbhE0ORV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 May 2021 10:47:23 -0400
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 14REdj7t028496;
-        Thu, 27 May 2021 14:45:46 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=corp-2020-01-29;
- bh=/18rGlo89bBRkqWF7xirF/2+WnB22rnW41V2JQDgTlo=;
- b=ccfGkehcYESaobmG2ep9GqmjF1FY+NILYxPPOVNe+9VPxze8mEcRRlm1yN0n4q1iMUOT
- 51aOjNhymtIgVQUPDs1NUKXjkBRdTV4UuTMfnhItQF1JUx2qgK+UjDhr18NgPUhTpKlh
- 9gQwhfdcNz9C2SGlpAdVnm4HaKJ2EXAe9uGz4CNgweRzOQb7jZJ4sB3OZ90hCdXwylqc
- f6Ob/7OBy4t9KjTIl9OefR9zjU2xyl1axDyRXvdm1yegmaftwor+MfDY6/9jXgwVIeWV
- Ey1UsVHZV9Cvz9gYLee4Nx1rUJjRjeIyZtHHWY5PhtRnXhB9qx8qVZqD6PVP4/OpDEZs Ww== 
-Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
-        by aserp2120.oracle.com with ESMTP id 38rne47y3j-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 27 May 2021 14:45:46 +0000
-Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
-        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 14REeJwk112760;
-        Thu, 27 May 2021 14:45:45 GMT
-Received: from pps.reinject (localhost [127.0.0.1])
-        by userp3020.oracle.com with ESMTP id 38qbqud3t7-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 27 May 2021 14:45:45 +0000
-Received: from userp3020.oracle.com (userp3020.oracle.com [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 14REjj3I126582;
-        Thu, 27 May 2021 14:45:45 GMT
-Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
-        by userp3020.oracle.com with ESMTP id 38qbqud3st-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 27 May 2021 14:45:45 +0000
-Received: from abhmp0008.oracle.com (abhmp0008.oracle.com [141.146.116.14])
-        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 14REjirx018098;
-        Thu, 27 May 2021 14:45:44 GMT
-Received: from kadam (/41.212.42.34)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Thu, 27 May 2021 07:45:43 -0700
-Date:   Thu, 27 May 2021 17:45:28 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     Krzysztof Kozlowski <krzk@kernel.org>
-Cc:     kbuild@lists.01.org, lkp@intel.com, kbuild-all@lists.01.org,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: drivers/memory/fsl_ifc.c:298 fsl_ifc_ctrl_probe() warn:
- 'fsl_ifc_ctrl_dev->gregs' not released on lines: 298.
-Message-ID: <20210527144528.GM24442@kadam>
-References: <202105271713.TLhpzN7N-lkp@intel.com>
- <CAJKOXPdkDe1iNpZa9X0eRyWO85WBWuhRk-t=ENqkRk3p0=-LuA@mail.gmail.com>
+        Thu, 27 May 2021 10:17:21 -0400
+Received: from dggeml752-chm.china.huawei.com (unknown [172.30.72.53])
+        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4FrV960Blwz1BFcL;
+        Thu, 27 May 2021 22:11:06 +0800 (CST)
+Received: from dggpemm000001.china.huawei.com (7.185.36.245) by
+ dggeml752-chm.china.huawei.com (10.1.199.151) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2176.2; Thu, 27 May 2021 22:15:41 +0800
+Received: from huawei.com (10.175.113.32) by dggpemm000001.china.huawei.com
+ (7.185.36.245) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Thu, 27 May
+ 2021 22:15:40 +0800
+From:   Nanyong Sun <sunnanyong@huawei.com>
+To:     <paul.walmsley@sifive.com>, <palmer@dabbelt.com>,
+        <aou@eecs.berkeley.edu>, <anup.patel@wdc.com>
+CC:     <linux-riscv@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
+        <palmerdabbelt@google.com>, <atish.patra@wdc.com>,
+        <wangkefeng.wang@huawei.com>, <sunnanyong@huawei.com>
+Subject: [PATCH -next] riscv: mm: remove redundant trampoline PGD for 64bit
+Date:   Thu, 27 May 2021 22:48:19 +0800
+Message-ID: <20210527144819.12101-1-sunnanyong@huawei.com>
+X-Mailer: git-send-email 2.18.0.huawei.25
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAJKOXPdkDe1iNpZa9X0eRyWO85WBWuhRk-t=ENqkRk3p0=-LuA@mail.gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Proofpoint-ORIG-GUID: tU20AmO6DfkZOaD2EODRvTtl7R6CnrRk
-X-Proofpoint-GUID: tU20AmO6DfkZOaD2EODRvTtl7R6CnrRk
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9996 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 bulkscore=0 phishscore=0
- mlxlogscore=999 spamscore=0 mlxscore=0 priorityscore=1501
- lowpriorityscore=0 impostorscore=0 adultscore=0 clxscore=1015
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104190000 definitions=main-2105270096
+Content-Type: text/plain
+X-Originating-IP: [10.175.113.32]
+X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
+ dggpemm000001.china.huawei.com (7.185.36.245)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 27, 2021 at 10:36:42AM -0400, Krzysztof Kozlowski wrote:
-> On Thu, 27 May 2021 at 05:31, Dan Carpenter <dan.carpenter@oracle.com> wrote:
-> >
-> > Hi Krzysztof,
-> >
-> > First bad commit (maybe != root cause):
-> >
-> > tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git  master
-> > head:   d7c5303fbc8ac874ae3e597a5a0d3707dc0230b4
-> > commit: ea0c0ad6b6eb36726088991d97a55b99cae456d0 memory: Enable compile testing for most of the drivers
-> > config: s390-randconfig-m031-20210527 (attached as .config)
-> > compiler: s390-linux-gcc (GCC) 9.3.0
-> >
-> > If you fix the issue, kindly add following tag as appropriate
-> > Reported-by: kernel test robot <lkp@intel.com>
-> > Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
-> >
-> > smatch warnings:
-> > drivers/memory/fsl_ifc.c:298 fsl_ifc_ctrl_probe() warn: 'fsl_ifc_ctrl_dev->gregs' not released on lines: 298.
-> 
-> Thanks, I will fix it. I also see some more leaks there...
+Remove redundant trampoline PGD for 64bit and add more comment
+for why 32bit systems need trampoline PGD.
 
-Oh, yeah?  Which ones?  I will add it to my table of alloc/free pairs.
+There was a patch and discussion similar to this,refer to
+the link [1][2].
 
-https://github.com/error27/smatch/blob/master/check_unwind.c#L43
+The trampoline PGD is redundant for 64bit systems because:
+1. The early PGD covers the entire kernel mapping. Directly
+loading early PGD can achieve the result in boot stage.
+A more trampoline PGD makes code hard to understand.
+2. Directly loading early PGD is safe in 64bit systems since
+the kernel virtual address starts as 0xFFFFxxxxxxxxxxxx,
+which has a very big gap with RAM address.It won't fall into
+the corner case that 32bit system worrys.
+3. Remove redundant trampoline PGD can benefit to code maintaince,
+because 64bit systems have more page table levels.For example:
+If we want to support SV48 which has 4 page table levels, we have
+to add a trampoline_pud and insert it before trampoline_pmd.
 
-regards,
-dan carpenter
+Reference link:
+[1]https://lore.kernel.org/linux-riscv/20190325092234.5451-4-anup.patel@wdc.com/
+[2]https://lkml.org/lkml/2019/3/28/147
+
+Signed-off-by: Nanyong Sun <sunnanyong@huawei.com>
+---
+ arch/riscv/kernel/head.S | 13 +++++++++++--
+ arch/riscv/mm/init.c     | 21 +++++++--------------
+ 2 files changed, 18 insertions(+), 16 deletions(-)
+
+diff --git a/arch/riscv/kernel/head.S b/arch/riscv/kernel/head.S
+index 89cc58ab52b4..1897b17c5fcc 100644
+--- a/arch/riscv/kernel/head.S
++++ b/arch/riscv/kernel/head.S
+@@ -93,12 +93,18 @@ relocate:
+ 	add a2, a2, a1
+ 	csrw CSR_TVEC, a2
+ 
+-	/* Compute satp for kernel page tables, but don't load it yet */
++	/* Compute satp for kernel page tables */
+ 	srl a2, a0, PAGE_SHIFT
+ 	li a1, SATP_MODE
+ 	or a2, a2, a1
+-
++#ifdef CONFIG_64BIT
++	/* Load kernel page directory */
++	sfence.vma
++	csrw CSR_SATP, a2
++#else
+ 	/*
++	 * 32bit system need a trampoline to handle a corner case where
++	 * load address range overlaps kernel virtual address range.
+ 	 * Load trampoline page directory, which will cause us to trap to
+ 	 * stvec if VA != PA, or simply fall through if VA == PA.  We need a
+ 	 * full fence here because setup_vm() just wrote these PTEs and we need
+@@ -110,6 +116,7 @@ relocate:
+ 	or a0, a0, a1
+ 	sfence.vma
+ 	csrw CSR_SATP, a0
++#endif /* CONFIG_64BIT */
+ .align 2
+ 1:
+ 	/* Set trap vector to spin forever to help debug */
+@@ -122,6 +129,7 @@ relocate:
+ 	la gp, __global_pointer$
+ .option pop
+ 
++#ifdef CONFIG_32BIT
+ 	/*
+ 	 * Switch to kernel page tables.  A full fence is necessary in order to
+ 	 * avoid using the trampoline translations, which are only correct for
+@@ -130,6 +138,7 @@ relocate:
+ 	 */
+ 	csrw CSR_SATP, a2
+ 	sfence.vma
++#endif /* CONFIG_32BIT */
+ 
+ 	ret
+ #endif /* CONFIG_MMU */
+diff --git a/arch/riscv/mm/init.c b/arch/riscv/mm/init.c
+index 11b61bea0c4d..b7226ac2d04f 100644
+--- a/arch/riscv/mm/init.c
++++ b/arch/riscv/mm/init.c
+@@ -210,13 +210,17 @@ unsigned long pfn_base __ro_after_init;
+ EXPORT_SYMBOL(pfn_base);
+ 
+ pgd_t swapper_pg_dir[PTRS_PER_PGD] __page_aligned_bss;
++#ifdef CONFIG_32BIT
+ pgd_t trampoline_pg_dir[PTRS_PER_PGD] __page_aligned_bss;
++#endif /* CONFIG_32BIT */
+ pte_t fixmap_pte[PTRS_PER_PTE] __page_aligned_bss;
+ 
+ pgd_t early_pg_dir[PTRS_PER_PGD] __initdata __aligned(PAGE_SIZE);
+ 
+ #ifdef CONFIG_XIP_KERNEL
++#ifdef CONFIG_32BIT
+ #define trampoline_pg_dir      ((pgd_t *)XIP_FIXUP(trampoline_pg_dir))
++#endif /* CONFIG_32BIT */
+ #define fixmap_pte             ((pte_t *)XIP_FIXUP(fixmap_pte))
+ #define early_pg_dir           ((pgd_t *)XIP_FIXUP(early_pg_dir))
+ #endif /* CONFIG_XIP_KERNEL */
+@@ -291,13 +295,11 @@ static void __init create_pte_mapping(pte_t *ptep,
+ 
+ #ifndef __PAGETABLE_PMD_FOLDED
+ 
+-pmd_t trampoline_pmd[PTRS_PER_PMD] __page_aligned_bss;
+ pmd_t fixmap_pmd[PTRS_PER_PMD] __page_aligned_bss;
+ pmd_t early_pmd[PTRS_PER_PMD] __initdata __aligned(PAGE_SIZE);
+ pmd_t early_dtb_pmd[PTRS_PER_PMD] __initdata __aligned(PAGE_SIZE);
+ 
+ #ifdef CONFIG_XIP_KERNEL
+-#define trampoline_pmd ((pmd_t *)XIP_FIXUP(trampoline_pmd))
+ #define fixmap_pmd     ((pmd_t *)XIP_FIXUP(fixmap_pmd))
+ #define early_pmd      ((pmd_t *)XIP_FIXUP(early_pmd))
+ #endif /* CONFIG_XIP_KERNEL */
+@@ -543,21 +545,12 @@ asmlinkage void __init setup_vm(uintptr_t dtb_pa)
+ 	/* Setup fixmap PMD */
+ 	create_pmd_mapping(fixmap_pmd, FIXADDR_START,
+ 			   (uintptr_t)fixmap_pte, PMD_SIZE, PAGE_TABLE);
+-	/* Setup trampoline PGD and PMD */
+-	create_pgd_mapping(trampoline_pg_dir, kernel_virt_addr,
+-			   (uintptr_t)trampoline_pmd, PGDIR_SIZE, PAGE_TABLE);
+-#ifdef CONFIG_XIP_KERNEL
+-	create_pmd_mapping(trampoline_pmd, kernel_virt_addr,
+-			   xiprom, PMD_SIZE, PAGE_KERNEL_EXEC);
+-#else
+-	create_pmd_mapping(trampoline_pmd, kernel_virt_addr,
+-			   load_pa, PMD_SIZE, PAGE_KERNEL_EXEC);
+-#endif
+-#else
++#endif /* __PAGETABLE_PMD_FOLDED */
++#ifdef CONFIG_32BIT
+ 	/* Setup trampoline PGD */
+ 	create_pgd_mapping(trampoline_pg_dir, kernel_virt_addr,
+ 			   load_pa, PGDIR_SIZE, PAGE_KERNEL_EXEC);
+-#endif
++#endif /* CONFIG_32BIT */
+ 
+ 	/*
+ 	 * Setup early PGD covering entire kernel which will allow
+-- 
+2.18.0.huawei.25
 
