@@ -2,48 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 15CD3392CE5
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 13:40:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D053F392CE7
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 13:41:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233734AbhE0LmH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 May 2021 07:42:07 -0400
-Received: from verein.lst.de ([213.95.11.211]:38448 "EHLO verein.lst.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233044AbhE0LmF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 May 2021 07:42:05 -0400
-Received: by verein.lst.de (Postfix, from userid 2407)
-        id D266468AFE; Thu, 27 May 2021 13:40:29 +0200 (CEST)
-Date:   Thu, 27 May 2021 13:40:29 +0200
-From:   Christoph Hellwig <hch@lst.de>
-To:     Kai-Heng Feng <kai.heng.feng@canonical.com>
-Cc:     Bjorn Helgaas <helgaas@kernel.org>, Christoph Hellwig <hch@lst.de>,
-        Keith Busch <kbusch@kernel.org>,
-        Koba Ko <koba.ko@canonical.com>, Jens Axboe <axboe@fb.com>,
-        Sagi Grimberg <sagi@grimberg.me>,
-        linux-nvme <linux-nvme@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Henrik Juul Hansen <hjhansen2020@gmail.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Linux PCI <linux-pci@vger.kernel.org>
-Subject: Re: [PATCH] nvme-pci: Avoid to go into d3cold if device can't use
- npss.
-Message-ID: <20210527114029.GC17266@lst.de>
-References: <CAAd53p6TJev=LgdvGxC92A9HOy3B6jbPLymAqeB5bDe2=5Fdsw@mail.gmail.com> <20210526150633.GA1291513@bjorn-Precision-5520> <CAAd53p7Mnv6HUv8hfjnsCpGeaSPXVAiA4D8gMxxdn6Bz8Z1fBQ@mail.gmail.com>
+        id S234067AbhE0LnC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 May 2021 07:43:02 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:33656 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233887AbhE0LnA (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 27 May 2021 07:43:00 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1622115687;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=9g5WJOZ1ArT+DH36KHFOthJm1HE1wLwgNsiQzlQx0kU=;
+        b=JheqoagPludxXNrVOoVnQpXcwpWPLb+zkLBJ1g5LWKMVf5AQcVm19ZOgNtT/6zoRV+IfxT
+        UEIpZ35h89Nbf535zm/C2aZcXgaRO3XWBalP8FjWefbOF+luNIovRACPdOPJMikKK+UBX0
+        ypGMnx6uIWVxL8h550T62SVZbwKKnk8=
+Received: from mail-ej1-f69.google.com (mail-ej1-f69.google.com
+ [209.85.218.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-342-frwhuE_MN-iDS52oBjVssw-1; Thu, 27 May 2021 07:41:26 -0400
+X-MC-Unique: frwhuE_MN-iDS52oBjVssw-1
+Received: by mail-ej1-f69.google.com with SMTP id r20-20020a170906c294b02903e0626b3387so1546143ejz.16
+        for <linux-kernel@vger.kernel.org>; Thu, 27 May 2021 04:41:25 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=9g5WJOZ1ArT+DH36KHFOthJm1HE1wLwgNsiQzlQx0kU=;
+        b=T2OfaNKVKnt5OWVeMU222tihHD5tk2L+OUWT93+7vFrq0I+qDQvtSDm5u+gsBuApib
+         5Gyfkl9S+cmryXzpd9S83/JlnbGP3kGtglofytyfw/RsTy/YsxHupbwQfft6H2OcN5Wp
+         p44CGsQ8sC0n55wsS5Dl+J9kxYyWF+4RoHNGiKEIUNkLHRwefQY9RwhNqOCqYoC+vBfc
+         PppALIu4KuFEiX0TJZ3NWBGCNQQ7B1pG+LSMX/+zs/V3+qpasd7trpn4RORGjLkNA0jP
+         dqwOL5TwtXczy4AjbUuQAA6/JgPyt0RW/TGJ+OzhqE5D0i0BRzTcw9LJx+KosV4XebG8
+         s4fw==
+X-Gm-Message-State: AOAM533TfVbe0eKXlJyFWUemZZP7tbFXMeOEdW0dk0ftZwbImfX4wwou
+        i07Tc4gkc5mzhx+3h/eFnJFJJaa7pWtl8NXTtX9+AMlq/uTZ96EB0gwkFHRhmrFFbbDVWpsxpIU
+        A9n8ZNP7eUbAMFVT2w7rNGYi0
+X-Received: by 2002:a17:906:fc0d:: with SMTP id ov13mr3238479ejb.504.1622115684862;
+        Thu, 27 May 2021 04:41:24 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzR8doZB7oXK5ggHD/FP2CwDu+40ZAeoM0tGfNqmRDSRO08FtdFL3e8lusOFGppcCAGKK8otg==
+X-Received: by 2002:a17:906:fc0d:: with SMTP id ov13mr3238463ejb.504.1622115684593;
+        Thu, 27 May 2021 04:41:24 -0700 (PDT)
+Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
+        by smtp.gmail.com with ESMTPSA id bv17sm858059ejb.37.2021.05.27.04.41.22
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 27 May 2021 04:41:23 -0700 (PDT)
+Subject: Re: [PATCH v2 00/13] More parallel operations for the TDP MMU
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     Ben Gardon <bgardon@google.com>, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org, Peter Xu <peterx@redhat.com>,
+        Peter Shier <pshier@google.com>,
+        Peter Feiner <pfeiner@google.com>,
+        Junaid Shahid <junaids@google.com>,
+        Jim Mattson <jmattson@google.com>,
+        Yulei Zhang <yulei.kernel@gmail.com>,
+        Wanpeng Li <kernellwp@gmail.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Xiao Guangrong <xiaoguangrong.eric@gmail.com>
+References: <20210401233736.638171-1-bgardon@google.com>
+ <c630df18-c1af-8ece-37d2-3db5dc18ecc8@redhat.com>
+ <YK6+9lmToiFTpvmq@google.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <822c0a82-2609-bd76-2bb6-43134271bccf@redhat.com>
+Date:   Thu, 27 May 2021 13:41:22 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAAd53p7Mnv6HUv8hfjnsCpGeaSPXVAiA4D8gMxxdn6Bz8Z1fBQ@mail.gmail.com>
-User-Agent: Mutt/1.5.17 (2007-11-01)
+In-Reply-To: <YK6+9lmToiFTpvmq@google.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 27, 2021 at 12:24:06AM +0800, Kai-Heng Feng wrote:
-> Yes, that's exactly what they said. Because Windows Modern Standby
-> always keep the NVMe at D0, so D3hot is untested by the vendors.
+On 26/05/21 23:34, Sean Christopherson wrote:
+>> Applied to kvm/mmu-notifier-queue, thanks.
+> What's the plan for kvm/mmu-notifier-queue?  More specifically, are the hashes
+> stable, i.e. will non-critical review feedback get squashed?  I was finally
+> getting around to reviewing this, but what's sitting in that branch doesn't
+> appear to be exactly what's posted here.  If the hashes are stable, I'll probably
+> test and review functionality, but not do a thorough review.
 
-So all the problems we've deal with latetly are that platforms cut the
-power off.  So it is not kept always at D0 which would be the right thing,
-but moved into D3cold.
+It's all in 5.13 except for the lock elision patch, for which I was 
+waiting for a review.  I'll post that patch separately.
 
-Which makes this patch to disable D3cold rather counterintuitive.
+Thanks,
+
+Paolo
+
