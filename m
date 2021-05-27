@@ -2,101 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E57EC39387E
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 00:01:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F218393885
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 00:04:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234892AbhE0WCa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 May 2021 18:02:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37912 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234404AbhE0WC2 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 May 2021 18:02:28 -0400
-Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4925AC061574
-        for <linux-kernel@vger.kernel.org>; Thu, 27 May 2021 15:00:55 -0700 (PDT)
-Received: by mail-pl1-x62d.google.com with SMTP id t21so651354plo.2
-        for <linux-kernel@vger.kernel.org>; Thu, 27 May 2021 15:00:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=W5Ra8gya7DQUEVO/jLAuK/07T8s5rUXgLTgiQgdaPvQ=;
-        b=WQ+Dq0ITAQ95iONVaD3B+evt043QWKTqUAwXjyoOq2sOQ+T/TxpiE4a2Q6hdtlyycE
-         2adXFmW2ucUhNWj7hZO5fOpV4RQ0PmE0X7pf1WhZybFr2OqDqjAF8eXAem+7nYFt0kGn
-         klegAab9A83L1NQMD+04uwMqBLjmLcMhmW9DaHhA6le/vo3bk5WBnImycgsGiffEwVyd
-         QOTv/vq3Ipnt5WPtp8r+fzNOs3LFbSyKk+4GR06CBV4ucVKxw+9CluagIr0lgznZ+S1i
-         AfaPchq87wQFzyvh3kAhd2xL4yCSyP90VvzLfaKGkFg7rqw013/uUPibIgsbHQwKJtLG
-         VAag==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
-         :mime-version:content-transfer-encoding;
-        bh=W5Ra8gya7DQUEVO/jLAuK/07T8s5rUXgLTgiQgdaPvQ=;
-        b=n9PeA7TKctF7OWfmZ2et3NX0w/B9AphVu3rJFM3Z+weBS4YL32yAdoaeEETbF9stdX
-         ZznhVw1Cv2DU5KXmJ0VibVhuEULPjMTVo4GDRlY4y2ZwbrX0iAQhuCR5RkK74BWaTCpV
-         QmPr6oHMUXujxOnuQKnIUS6ETYLpA1kjtxGSjSC7Z39rgcbSiz72crHTv/YLBur+mAqq
-         v1JgQHda36zOEgNm05xCHxp1Dhm3aOQzl+TlqYsy9XfA1VRgNDwxKwptlSFRpCGxRhLN
-         t9WVnOr61BnXRIMxot46Q7HqYR0lNs/IGVjTVuGr1NfPZiLdEQImGdQxFuFe86O7ns64
-         Cx0A==
-X-Gm-Message-State: AOAM533X95MZ5ON0qPoH2eHSKoXiLUe9sGV2bz9p33oaHimxp6K20vCY
-        DPqftG5zIV9gLLj7vNdziAA=
-X-Google-Smtp-Source: ABdhPJwuR4W8/uaq51UAKDYCNpK2TkIIUg4DDOIQaWwT/38W70EDweyguc9Wlh8PUdovQiUvcy3I7g==
-X-Received: by 2002:a17:90a:ca85:: with SMTP id y5mr746307pjt.140.1622152854866;
-        Thu, 27 May 2021 15:00:54 -0700 (PDT)
-Received: from balhae.hsd1.ca.comcast.net ([2601:647:4801:c8d0:69c7:536f:96be:7229])
-        by smtp.gmail.com with ESMTPSA id o27sm2613544pgb.70.2021.05.27.15.00.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 27 May 2021 15:00:54 -0700 (PDT)
-Sender: Namhyung Kim <namhyung@gmail.com>
-From:   Namhyung Kim <namhyung@kernel.org>
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Jiri Olsa <jolsa@redhat.com>
-Cc:     Ingo Molnar <mingo@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Andi Kleen <ak@linux.intel.com>,
-        Ian Rogers <irogers@google.com>,
-        Song Liu <songliubraving@fb.com>
-Subject: [PATCH] perf stat: Fix error check for bpf_program__attach
-Date:   Thu, 27 May 2021 15:00:52 -0700
-Message-Id: <20210527220052.1657578-1-namhyung@kernel.org>
-X-Mailer: git-send-email 2.32.0.rc0.204.g9fa02ecfa5-goog
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        id S234849AbhE0WG1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 May 2021 18:06:27 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57492 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233820AbhE0WGY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 27 May 2021 18:06:24 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id 3562B6113B;
+        Thu, 27 May 2021 22:04:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1622153091;
+        bh=2bg7AYKWQ4EveYV3/31OlV8Q9FSDG2CnmWSSOuw6aoQ=;
+        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+        b=Cl/fYhPjDXr+wRqwYoIbIFCe0jbde4iL45xOscGJisDrONK7WSwOrew7cjFdf0TMC
+         wCC/DhPtJdZa0n0fYa0KCh3HKj8fp2Vtr47F/lo1YV2F1GSNDJoza2jixmQg9d5ahY
+         iLhVVRBl6vHrMMEIixRYQTTY53WyVjsUW014wzb/xwIeaeZT1b1UvdNUyCH5Dvi45J
+         UW4SEQnuxPqLr/kyeru6XnC8clnmzGI+5ECMVk3eN5ZVUXMbH+yPQTeHQ9Oa6ouJdh
+         +0cmAnWTvF9xF3TEvEN5n7LyR920HtAfN4BB4cp2Zfb2T4Ji79yvPlfZ7v/KVHqj3G
+         /wRAPrOzBsJCA==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 2B9A1609F5;
+        Thu, 27 May 2021 22:04:51 +0000 (UTC)
+Subject: Re: [GIT PULL] arm64 fixes for 5.13-rc4
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <20210527190230.GA4576@arm.com>
+References: <20210527190230.GA4576@arm.com>
+X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
+X-PR-Tracked-Message-Id: <20210527190230.GA4576@arm.com>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux tags/arm64-fixes
+X-PR-Tracked-Commit-Id: e69012400b0cb42b2070748322cb72f9effec00f
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: 3c856a3180daf38d33166c0c98da921841588019
+Message-Id: <162215309111.27580.10960824136264737541.pr-tracker-bot@kernel.org>
+Date:   Thu, 27 May 2021 22:04:51 +0000
+To:     Catalin Marinas <catalin.marinas@arm.com>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Will Deacon <will@kernel.org>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-It seems the bpf_program__attach() returns a negative error code
-instead of a NULL pointer in case of error.
+The pull request you sent on Thu, 27 May 2021 20:02:32 +0100:
 
-Fixes: 7fac83aaf2ee ("perf stat: Introduce 'bperf' to share hardware PMCs with BPF")
-Cc: Song Liu <songliubraving@fb.com>
-Signed-off-by: Namhyung Kim <namhyung@kernel.org>
----
- tools/perf/util/bpf_counter.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+> git://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux tags/arm64-fixes
 
-diff --git a/tools/perf/util/bpf_counter.c b/tools/perf/util/bpf_counter.c
-index ddb52f748c8e..974f10e356f0 100644
---- a/tools/perf/util/bpf_counter.c
-+++ b/tools/perf/util/bpf_counter.c
-@@ -451,10 +451,10 @@ static int bperf_reload_leader_program(struct evsel *evsel, int attr_map_fd,
- 		goto out;
- 	}
- 
--	err = -1;
- 	link = bpf_program__attach(skel->progs.on_switch);
--	if (!link) {
-+	if (IS_ERR(link)) {
- 		pr_err("Failed to attach leader program\n");
-+		err = PTR_ERR(link);
- 		goto out;
- 	}
- 
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/3c856a3180daf38d33166c0c98da921841588019
+
+Thank you!
+
 -- 
-2.32.0.rc0.204.g9fa02ecfa5-goog
-
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
