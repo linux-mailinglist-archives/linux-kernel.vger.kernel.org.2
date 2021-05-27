@@ -2,198 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E12A392B90
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 12:14:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 59AAD392B93
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 12:15:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236159AbhE0KQ1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 May 2021 06:16:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46530 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236112AbhE0KQQ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 May 2021 06:16:16 -0400
-Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1165BC061761
-        for <linux-kernel@vger.kernel.org>; Thu, 27 May 2021 03:14:41 -0700 (PDT)
-Received: by mail-ed1-x535.google.com with SMTP id o5so213122edc.5
-        for <linux-kernel@vger.kernel.org>; Thu, 27 May 2021 03:14:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=o38M2BO4ULC4BwKVVDJHYXw+IueHUfFLXYDhWYbT5Ig=;
-        b=bk97lq21A/Gg9EU/Cabtt5Dqiuz3zBqg0ZUgn7vHbNo202Sf8zs+esbsZi1472wnDw
-         S7tg6T6IbhEKaYeIj4ycsX234NuYYQ0O03FJH5OuiLMpN12/IGb9B/GLV656R4LkrXT7
-         zQXhfkYtCReY5f9nCUn7YrhTXkoz5KTPkbYMp2eVWnOvCvOgMk7Ao4RZ5Kt3v2UB38LU
-         FgaCGvVGlM5kjH6PanAP74M5XXJO0vEBEDZcBdVLoVPKz7aiDJuuycVw1/jPmGZ/Y2Zw
-         NVvS36r16Wba8DeiGMEViGPX9yGp3JsaaE96mEEaPQwksZ0ldz0nzt72uYtVn0AqNCTd
-         81Rg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=o38M2BO4ULC4BwKVVDJHYXw+IueHUfFLXYDhWYbT5Ig=;
-        b=n+xza2M0tTfL/ac7AvYGcWJqbOXHMgY99LTxtLbUgVXW7uw24y0yFwrVbwySJqliAb
-         8Vzh66SSqcbSZTYFNeGY263lNMHl4ZsXsvfJIUPx1nhe8QwBvikz7d4mfldcFjYAsSUb
-         OfS7Iqrj7ykNIryAKqp94T++2WoskCdzyg1Cwhct3h4BYafiLMM9QURj+PZhhb9zH5Fj
-         FRK4C2iePK5KtH3hpbMKbiM09/A6zbcfNVK41/5o2zkzctBmMd6bzJbq7s7Tq4fN0TRq
-         Is4jYQgmDBhspZ+WZVaVkMcdR0Irn4rWPVMHYao+h6NeFza7vE9Iswx1JjVDRVshJi/l
-         vUvw==
-X-Gm-Message-State: AOAM532qW+qz+Nsdey4BobIGDYXHFXjLCoEAdJVaWz+Ot7/PvR18r+1m
-        HfvelgdYUmovYI2ldsrhOQoDr45JYcRx/9dpgwXZ
-X-Google-Smtp-Source: ABdhPJxWXHvU/O2LATe1oBP0kHpNNov+YKoz7byZgiRDTGMJZExbTJNux7H0l7VRJaIaAseiGKHKWtgXJ2fM2OTaKZE=
-X-Received: by 2002:a05:6402:4252:: with SMTP id g18mr3221715edb.195.1622110479663;
- Thu, 27 May 2021 03:14:39 -0700 (PDT)
+        id S236107AbhE0KRV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 May 2021 06:17:21 -0400
+Received: from mx2.suse.de ([195.135.220.15]:43844 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235978AbhE0KRT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 27 May 2021 06:17:19 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1622110544; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=7Tqg2oJdZxR+Sys5kciWyzhmhV8Hhlr9BuDDbot73Yw=;
+        b=ka1Rz5Q2HXdp4QGEFWfv0X0d+KGjYQmq+MZISm65jgJ0iZthoM902leBiSvR/fhMuOSCiH
+        b+H9xuspfgYD2cv9dY1Z7UU4iYjHgErDDufiO4AmLl2xPn418L2f7X28SrSObUo+oKXuc8
+        0WQjucNiM9jgPd5XwKSoTfbqT+9e7Ck=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 68397AAA6;
+        Thu, 27 May 2021 10:15:44 +0000 (UTC)
+Date:   Thu, 27 May 2021 12:15:43 +0200
+From:   Petr Mladek <pmladek@suse.com>
+To:     Oleg Nesterov <oleg@redhat.com>, liumartin@google.com,
+        akpm@linux-foundation.org, Tejun Heo <tj@kernel.org>
+Cc:     bp@suse.de, davidchao@google.com, jenhaochen@google.com,
+        jkosina@suse.cz, josh@joshtriplett.org, mhocko@suse.cz,
+        mingo@redhat.com, mm-commits@vger.kernel.org, nathan@kernel.org,
+        ndesaulniers@google.com, paulmck@linux.vnet.ibm.com,
+        peterz@infradead.org, rostedt@goodmis.org, stable@vger.kernel.org,
+        tglx@linutronix.de, tj@kernel.org, vbabka@suse.cz,
+        linux-kernel@vger.kernel.org
+Subject: Re: +
+ kthread-fix-kthread_mod_delayed_work-vs-kthread_cancel_delayed_work_sync-race.patch
+ added to -mm tree
+Message-ID: <YK9xTzlNSj83mAne@alley>
+References: <20210520214737.MrGGKbPrJ%akpm@linux-foundation.org>
+ <20210521163526.GA17916@redhat.com>
+ <YKvBVIJAc8/Qasdu@alley>
+ <20210526170604.GC4581@redhat.com>
 MIME-Version: 1.0
-References: <20210517095513.850-1-xieyongji@bytedance.com> <20210517095513.850-12-xieyongji@bytedance.com>
- <3740c7eb-e457-07f3-5048-917c8606275d@redhat.com> <CACycT3uAqa6azso_8MGreh+quj-JXO1piuGnrV8k2kTfc34N2g@mail.gmail.com>
- <5a68bb7c-fd05-ce02-cd61-8a601055c604@redhat.com> <CACycT3ve7YvKF+F+AnTQoJZMPua+jDvGMs_ox8GQe_=SGdeCMA@mail.gmail.com>
- <ee00efca-b26d-c1be-68d2-f9e34a735515@redhat.com> <CACycT3ufok97cKpk47NjUBTc0QAyfauFUyuFvhWKmuqCGJ7zZw@mail.gmail.com>
- <00ded99f-91b6-ba92-5d92-2366b163f129@redhat.com> <3cc7407d-9637-227e-9afa-402b6894d8ac@redhat.com>
-In-Reply-To: <3cc7407d-9637-227e-9afa-402b6894d8ac@redhat.com>
-From:   Yongji Xie <xieyongji@bytedance.com>
-Date:   Thu, 27 May 2021 18:14:27 +0800
-Message-ID: <CACycT3s6SkER09KL_Ns9d03quYSKOuZwd3=HJ_s1SL7eH7y5gA@mail.gmail.com>
-Subject: Re: Re: [PATCH v7 11/12] vduse: Introduce VDUSE - vDPA Device in Userspace
-To:     Jason Wang <jasowang@redhat.com>
-Cc:     "Michael S. Tsirkin" <mst@redhat.com>,
-        Stefan Hajnoczi <stefanha@redhat.com>,
-        Stefano Garzarella <sgarzare@redhat.com>,
-        Parav Pandit <parav@nvidia.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        Christian Brauner <christian.brauner@canonical.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Jens Axboe <axboe@kernel.dk>, bcrl@kvack.org,
-        Jonathan Corbet <corbet@lwn.net>,
-        =?UTF-8?Q?Mika_Penttil=C3=A4?= <mika.penttila@nextfour.com>,
-        Dan Carpenter <dan.carpenter@oracle.com>, joro@8bytes.org,
-        virtualization <virtualization@lists.linux-foundation.org>,
-        netdev@vger.kernel.org, kvm <kvm@vger.kernel.org>,
-        linux-fsdevel@vger.kernel.org, iommu@lists.linux-foundation.org,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210526170604.GC4581@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 27, 2021 at 4:43 PM Jason Wang <jasowang@redhat.com> wrote:
->
->
-> =E5=9C=A8 2021/5/27 =E4=B8=8B=E5=8D=884:41, Jason Wang =E5=86=99=E9=81=93=
-:
-> >
-> > =E5=9C=A8 2021/5/27 =E4=B8=8B=E5=8D=883:34, Yongji Xie =E5=86=99=E9=81=
-=93:
-> >> On Thu, May 27, 2021 at 1:40 PM Jason Wang <jasowang@redhat.com> wrote=
-:
-> >>>
-> >>> =E5=9C=A8 2021/5/27 =E4=B8=8B=E5=8D=881:08, Yongji Xie =E5=86=99=E9=
-=81=93:
-> >>>> On Thu, May 27, 2021 at 1:00 PM Jason Wang <jasowang@redhat.com>
-> >>>> wrote:
-> >>>>> =E5=9C=A8 2021/5/27 =E4=B8=8B=E5=8D=8812:57, Yongji Xie =E5=86=99=
-=E9=81=93:
-> >>>>>> On Thu, May 27, 2021 at 12:13 PM Jason Wang <jasowang@redhat.com>
-> >>>>>> wrote:
-> >>>>>>> =E5=9C=A8 2021/5/17 =E4=B8=8B=E5=8D=885:55, Xie Yongji =E5=86=99=
-=E9=81=93:
-> >>>>>>>> +
-> >>>>>>>> +static int vduse_dev_msg_sync(struct vduse_dev *dev,
-> >>>>>>>> +                           struct vduse_dev_msg *msg)
-> >>>>>>>> +{
-> >>>>>>>> +     init_waitqueue_head(&msg->waitq);
-> >>>>>>>> +     spin_lock(&dev->msg_lock);
-> >>>>>>>> +     vduse_enqueue_msg(&dev->send_list, msg);
-> >>>>>>>> +     wake_up(&dev->waitq);
-> >>>>>>>> +     spin_unlock(&dev->msg_lock);
-> >>>>>>>> +     wait_event_killable(msg->waitq, msg->completed);
-> >>>>>>> What happens if the userspace(malicous) doesn't give a response
-> >>>>>>> forever?
-> >>>>>>>
-> >>>>>>> It looks like a DOS. If yes, we need to consider a way to fix tha=
-t.
-> >>>>>>>
-> >>>>>> How about using wait_event_killable_timeout() instead?
-> >>>>> Probably, and then we need choose a suitable timeout and more
-> >>>>> important,
-> >>>>> need to report the failure to virtio.
-> >>>>>
-> >>>> Makes sense to me. But it looks like some
-> >>>> vdpa_config_ops/virtio_config_ops such as set_status() didn't have a
-> >>>> return value.  Now I add a WARN_ON() for the failure. Do you mean we
-> >>>> need to add some change for virtio core to handle the failure?
-> >>>
-> >>> Maybe, but I'm not sure how hard we can do that.
-> >>>
-> >> We need to change all virtio device drivers in this way.
-> >
-> >
-> > Probably.
-> >
-> >
-> >>
-> >>> We had NEEDS_RESET but it looks we don't implement it.
-> >>>
-> >> Could it handle the failure of get_feature() and get/set_config()?
-> >
-> >
-> > Looks not:
-> >
-> > "
-> >
-> > The device SHOULD set DEVICE_NEEDS_RESET when it enters an error state
-> > that a reset is needed. If DRIVER_OK is set, after it sets
-> > DEVICE_NEEDS_RESET, the device MUST send a device configuration change
-> > notification to the driver.
-> >
-> > "
-> >
-> > This looks implies that NEEDS_RESET may only work after device is
-> > probed. But in the current design, even the reset() is not reliable.
-> >
-> >
-> >>
-> >>> Or a rough idea is that maybe need some relaxing to be coupled loosel=
-y
-> >>> with userspace. E.g the device (control path) is implemented in the
-> >>> kernel but the datapath is implemented in the userspace like TUN/TAP.
-> >>>
-> >> I think it can work for most cases. One problem is that the set_config
-> >> might change the behavior of the data path at runtime, e.g.
-> >> virtnet_set_mac_address() in the virtio-net driver and
-> >> cache_type_store() in the virtio-blk driver. Not sure if this path is
-> >> able to return before the datapath is aware of this change.
-> >
-> >
-> > Good point.
-> >
-> > But set_config() should be rare:
-> >
-> > E.g in the case of virtio-net with VERSION_1, config space is read
-> > only, and it was set via control vq.
-> >
-> > For block, we can
-> >
-> > 1) start from without WCE or
-> > 2) we add a config change notification to userspace or
-> > 3) extend the spec to use vq instead of config space
-> >
-> > Thanks
->
->
-> Another thing if we want to go this way:
->
-> We need find a way to terminate the data path from the kernel side, to
-> implement to reset semantic.
->
+Added Tejun into CC because of the workqueue API related question
+at the end of the mail.
 
-Do you mean terminate the data path in vdpa_reset(). Is it ok to just
-notify userspace to stop data path asynchronously? Userspace should
-not be able to do any I/O at that time because the iotlb mapping is
-already removed.
+On Wed 2021-05-26 19:06:06, Oleg Nesterov wrote:
+> On 05/24, Petr Mladek wrote:
+> >
+> > Your patch changes the semantic. The current semantic is the same for
+> > the workqueue's counter-part mod_delayed_work_on().
+> 
+> OK, I see, thanks. I was confused by the comment.
+> 
+> > We should actually keep the "ret" value as is to stay compatible with
+> > workqueue API:
+> >
+> > 	/*
+> > 	 * Canceling could run in parallel from kthread_cancel_delayed_work_sync
+> > 	 * and change work's canceling count as the spinlock is released and regain
+> > 	 * in __kthread_cancel_work so we need to check the count again. Otherwise,
+> > 	 * we might incorrectly queue the dwork and further cause
+> > 	 * cancel_delayed_work_sync thread waiting for flush dwork endlessly.
+> > 	 *
+> > 	 * Keep the ret code. The API primary informs the caller
+> > 	 * whether some pending work has been canceled (not proceed).
+> > 	 */
+> > 	if (work->canceling)
+> > 		goto out;
+> 
+> Agreed, we should keep the "ret" value.
 
-Thanks,
-Yongji
+Martin Liu, could you please resend the patch without the "ret =
+false" line? See above.
+
+Andrew, could you please remove this patch from the -mm tree for now?
+
+> but unless I am confused again this doesn't match mod_delayed_work_on()
+> which always returns true if it races with cancel(). Nevermind, I think
+> this doesn't matter.
+
+Good point. I think that it is actually a bug. Most callers ignore
+the return code but there is the following user:
+
+static void addrconf_del_dad_work(struct inet6_ifaddr *ifp)
+{
+	if (cancel_delayed_work(&ifp->dad_work))
+		__in6_ifa_put(ifp);
+}
+static void addrconf_mod_dad_work(struct inet6_ifaddr *ifp,
+				   unsigned long delay)
+{
+	in6_ifa_hold(ifp);
+	if (mod_delayed_work(addrconf_wq, &ifp->dad_work, delay))
+		in6_ifa_put(ifp);
+}
+
+If mod_delayed_work() races with cancel_delayed_work() then both might
+return true and call in6_ifa_put(ifp).
+
+I thought that they were serialized by ifp->lock. But, for example,
+addrconf_dad_start() calls addrconf_mod_dad_work() after releasing
+this lock.
+
+It is possible that they are serialized another way. But I think that
+in principle only the one that really cancelled a pending work
+should return "true".
+
+Tejun, any opinion?  Feel free to ask for more context.
+
+Best Regards,
+Petr
