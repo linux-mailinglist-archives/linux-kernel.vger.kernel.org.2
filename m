@@ -2,30 +2,30 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 56F9E3939D7
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 01:58:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1BCB13939D9
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 01:58:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235001AbhE0X7i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 May 2021 19:59:38 -0400
-Received: from mga18.intel.com ([134.134.136.126]:10241 "EHLO mga18.intel.com"
+        id S235421AbhE0X7m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 May 2021 19:59:42 -0400
+Received: from mga06.intel.com ([134.134.136.31]:62232 "EHLO mga06.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236203AbhE0X7K (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 May 2021 19:59:10 -0400
-IronPort-SDR: 2tK2K3W07ILJL2kx6QxKhz5g4gnSdNWpUCqj0vR6S1HwDOBMe9LkTOLh1C81BZGCLZiX8fauEx
- cRcd/kEKA4gw==
-X-IronPort-AV: E=McAfee;i="6200,9189,9997"; a="190229892"
+        id S236706AbhE0X7M (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 27 May 2021 19:59:12 -0400
+IronPort-SDR: So1ghIB51NVU+2Yoh/DLuRtMcw89221B7nY6NCm+sNCoFbZTsg37F9QfrpszTAq/iOS8/vMldQ
+ Z7v7/HDqjycg==
+X-IronPort-AV: E=McAfee;i="6200,9189,9997"; a="264056306"
 X-IronPort-AV: E=Sophos;i="5.83,228,1616482800"; 
-   d="scan'208";a="190229892"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 May 2021 16:57:36 -0700
-IronPort-SDR: ZeIFmsdsFsOlue/8YEFXyR6NydiZCn/WmQ1NjqfrLjrWgFb8OJC/EeEGhPimHBbp8ROR/GbO2m
- 9PPKTfr6G0RQ==
+   d="scan'208";a="264056306"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 May 2021 16:57:37 -0700
+IronPort-SDR: 9ZFlg3sGbjSQxnOyaaTDmNRe3esrK6QKVLZjgaZeDojwcFOC1gLIryltHoXaSBDLcmDkBnsP99
+ M1Wcq2ajCfsA==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.83,228,1616482800"; 
-   d="scan'208";a="472807339"
+   d="scan'208";a="615568004"
 Received: from viggo.jf.intel.com (HELO localhost.localdomain) ([10.54.77.144])
-  by FMSMGA003.fm.intel.com with ESMTP; 27 May 2021 16:57:35 -0700
-Subject: [PATCH 2/5] x86/pkeys: rename write_pkru()
+  by orsmga005.jf.intel.com with ESMTP; 27 May 2021 16:57:37 -0700
+Subject: [PATCH 3/5] x86/pkeys: skip 'init_pkru' debugfs file creation when pkeys not supported
 To:     linux-mm@kvack.org
 Cc:     linux-kernel@vger.kernel.org,
         Dave Hansen <dave.hansen@linux.intel.com>, tglx@linutronix.de,
@@ -33,10 +33,10 @@ Cc:     linux-kernel@vger.kernel.org,
         shuah@kernel.org, babu.moger@amd.com, dave.kleikamp@oracle.com,
         linuxram@us.ibm.com, bauerman@linux.ibm.com, bigeasy@linutronix.de
 From:   Dave Hansen <dave.hansen@linux.intel.com>
-Date:   Thu, 27 May 2021 16:51:13 -0700
+Date:   Thu, 27 May 2021 16:51:16 -0700
 References: <20210527235109.B2A9F45F@viggo.jf.intel.com>
 In-Reply-To: <20210527235109.B2A9F45F@viggo.jf.intel.com>
-Message-Id: <20210527235113.C5DAFE12@viggo.jf.intel.com>
+Message-Id: <20210527235116.E5A35872@viggo.jf.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -44,12 +44,18 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Dave Hansen <dave.hansen@linux.intel.com>
 
-write_pkru() was once concerned purely with writing to the PKRU register.
-However, the current task XSAVE buffer must also be updated in a
-coordinated way.
+The PKRU hardware is permissive by default: all reads and writes are
+allowed.  The in-kernel policy is restrictive by default: deny all
+unnecessary access until explicitly requested.
 
-Change the naming to reflect that this is an operation which applies to
-a task (current) and its state in addition to the register itself.
+That policy can be modified with a debugfs file: "x86/init_pkru".
+This file is created unconditionally, regardless of PKRU support in
+the hardware, which is a little silly.
+
+Avoid creating the file when pkeys are not available.  This also
+removes the need to check for pkey support at runtime, which would be
+required once the new pkey modification infrastructure is put in place
+later in this series.
 
 Signed-off-by: Dave Hansen <dave.hansen@linux.intel.com>
 Cc: Thomas Gleixner <tglx@linutronix.de>
@@ -65,49 +71,21 @@ Cc: Thiago Jung Bauermann <bauerman@linux.ibm.com>
 Cc: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 ---
 
- b/arch/x86/include/asm/fpu/xstate.h |    6 +++++-
- b/arch/x86/kernel/fpu/xstate.c      |    2 +-
- b/arch/x86/mm/pkeys.c               |    2 +-
- 3 files changed, 7 insertions(+), 3 deletions(-)
+ b/arch/x86/mm/pkeys.c |    4 ++++
+ 1 file changed, 4 insertions(+)
 
-diff -puN arch/x86/include/asm/fpu/xstate.h~rename-write_pkru arch/x86/include/asm/fpu/xstate.h
---- a/arch/x86/include/asm/fpu/xstate.h~rename-write_pkru	2021-05-27 16:40:24.618705468 -0700
-+++ b/arch/x86/include/asm/fpu/xstate.h	2021-05-27 16:40:24.631705468 -0700
-@@ -124,7 +124,11 @@ static inline u32 read_pkru(void)
- 	return 0;
- }
+diff -puN arch/x86/mm/pkeys.c~x86-pkeys-skip-debugfs-file arch/x86/mm/pkeys.c
+--- a/arch/x86/mm/pkeys.c~x86-pkeys-skip-debugfs-file	2021-05-27 16:40:25.847705465 -0700
++++ b/arch/x86/mm/pkeys.c	2021-05-27 16:40:25.852705465 -0700
+@@ -193,6 +193,10 @@ static const struct file_operations fops
  
--static inline void write_pkru(u32 pkru)
-+/*
-+ * Update all of the PKRU state for the current task:
-+ * PKRU register and PKRU xstate.
-+ */
-+static inline void current_write_pkru(u32 pkru)
+ static int __init create_init_pkru_value(void)
  {
- 	struct pkru_state *pk;
- 
-diff -puN arch/x86/kernel/fpu/xstate.c~rename-write_pkru arch/x86/kernel/fpu/xstate.c
---- a/arch/x86/kernel/fpu/xstate.c~rename-write_pkru	2021-05-27 16:40:24.620705468 -0700
-+++ b/arch/x86/kernel/fpu/xstate.c	2021-05-27 16:40:24.633705468 -0700
-@@ -1026,7 +1026,7 @@ int arch_set_user_pkey_access(struct tas
- 	old_pkru &= ~((PKRU_AD_BIT|PKRU_WD_BIT) << pkey_shift);
- 
- 	/* Write old part along with new part: */
--	write_pkru(old_pkru | new_pkru_bits);
-+	current_write_pkru(old_pkru | new_pkru_bits);
- 
++	/* Do not expose the file if pkeys are not supported. */
++	if (!cpu_feature_enabled(X86_FEATURE_OSPKE))
++		return 0;
++
+ 	debugfs_create_file("init_pkru", S_IRUSR | S_IWUSR,
+ 			arch_debugfs_dir, NULL, &fops_init_pkru);
  	return 0;
- }
-diff -puN arch/x86/mm/pkeys.c~rename-write_pkru arch/x86/mm/pkeys.c
---- a/arch/x86/mm/pkeys.c~rename-write_pkru	2021-05-27 16:40:24.626705468 -0700
-+++ b/arch/x86/mm/pkeys.c	2021-05-27 16:40:24.634705468 -0700
-@@ -139,7 +139,7 @@ void copy_init_pkru_to_fpregs(void)
- 	 * Override the PKRU state that came from 'init_fpstate'
- 	 * with the baseline from the process.
- 	 */
--	write_pkru(init_pkru_value_snapshot);
-+	current_write_pkru(init_pkru_value_snapshot);
- }
- 
- static ssize_t init_pkru_read_file(struct file *file, char __user *user_buf,
 _
