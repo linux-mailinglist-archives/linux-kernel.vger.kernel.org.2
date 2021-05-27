@@ -2,86 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B49A392DF8
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 14:29:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3927C392DF6
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 14:29:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235530AbhE0MbX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 May 2021 08:31:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49114 "EHLO
+        id S235369AbhE0MbF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 May 2021 08:31:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49086 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235247AbhE0MbD (ORCPT
+        with ESMTP id S234683AbhE0Ma6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 May 2021 08:31:03 -0400
-Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8602EC061760
-        for <linux-kernel@vger.kernel.org>; Thu, 27 May 2021 05:29:25 -0700 (PDT)
-Received: by mail-wm1-x32e.google.com with SMTP id u5-20020a7bc0450000b02901480e40338bso5007682wmc.1
-        for <linux-kernel@vger.kernel.org>; Thu, 27 May 2021 05:29:25 -0700 (PDT)
+        Thu, 27 May 2021 08:30:58 -0400
+Received: from mail-pf1-x432.google.com (mail-pf1-x432.google.com [IPv6:2607:f8b0:4864:20::432])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6A40C061761
+        for <linux-kernel@vger.kernel.org>; Thu, 27 May 2021 05:29:22 -0700 (PDT)
+Received: by mail-pf1-x432.google.com with SMTP id p39so450787pfw.8
+        for <linux-kernel@vger.kernel.org>; Thu, 27 May 2021 05:29:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id;
-        bh=fRBr6xZkzmbnPWuRrXfAqA5xA8c0t9k1LP7xSr+ydFk=;
-        b=cJcApNTb2Db0TXRi89IcQr4nyCEsRga93qLPHyDs6EU05t1h6i/oYDaF12n8b+GavG
-         ZTXVAtZCnQhfQgxMigaLcHpVNLryZuBBpuoW+KlpDBxJ54QVoLEtjvPgnDCkYZ6+SpJO
-         2F1ysEYzdiZdJ9PUVM4ZgwEEsp8DQWN4MaZmWb6RSReO+9x4XZLMAxkH722s9bc2tS6m
-         bdewnwiQO7ZPndm31rDyT/lUAtMij5Cy6RClkiD6m0x5b4koK80XW+7mBR8bZa/7rgVw
-         c9ZhhwQw3YS0E2+Lc9cLJjDmwMUzc+1oWkkn3adS8EQV8WITToiaSbWN/GdJthsLhKdK
-         tqpg==
+        d=heitbaum.com; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=lzggwkwLPsGkqROCQrFoMo/EvgYIJci/zbm9PeGjIk0=;
+        b=EYmigkpQTz9NSx6So1qYsm7RWFpAJD9ork/TZ4owbGAgWg/9D7pft/OiwioWRV1UY/
+         4Pg1cmCoaaqMEPnMB5xnJxM+VImS9+YJqEXgohfTEPseh5vy11mnubEVGyYo5kieIuYF
+         JHMW+qzqun0WFNX0q15+sphLQq/NCObdjEM5k=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=fRBr6xZkzmbnPWuRrXfAqA5xA8c0t9k1LP7xSr+ydFk=;
-        b=cC/g2CogHRybpBTC87lChnBwy8utIKgx0ql9+7XOWf9WmJGqoqp0UhUkE4AlMDAInQ
-         r8W6R1PanWolhPT+zhWcmMeKQA0L46vcLECz9wD4SJzUPgE/4JXJRZe3Goj4V5G37KHU
-         KECxXe5IDDmpfinTNcApJ/hMV8wXvljS4BumsR8bq7Pb+E5VAniluMXJ01DLtACEmpSo
-         MWZ4Oc4p8QMoktxchZNSG0E7jcUSp1aPz1cp8BNcOylvwbs62G/hRtRRFDth+68x4w4p
-         dP8rtpxPLyCykbYUFpJWSMeVZK9Eqj+03SFfOR2phkdGxrtcsWPvedM8FqJiUS6kwl2V
-         xAZw==
-X-Gm-Message-State: AOAM532q0ofSxx3o9px+RuJNHYvYlJEVSANnXZLwIGpqF7G4WtMF6PcN
-        uOJAfsdcN6VEtveqEZ7Re3xGCA==
-X-Google-Smtp-Source: ABdhPJxwXWYlSzkfdCpPq2hqRvGToV4bq8IdyAbufEtlz9TIqwmM8pdsrrDfEYmYfhZiMB9DJr3ClQ==
-X-Received: by 2002:a1c:e243:: with SMTP id z64mr3167979wmg.25.1622118563877;
-        Thu, 27 May 2021 05:29:23 -0700 (PDT)
-Received: from localhost.localdomain ([2a01:e0a:f:6020:3db3:bb86:bbaa:56ab])
-        by smtp.gmail.com with ESMTPSA id z3sm2917721wrq.42.2021.05.27.05.29.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=lzggwkwLPsGkqROCQrFoMo/EvgYIJci/zbm9PeGjIk0=;
+        b=kS1nbs7xA9iCziXZ/68MKygTWmUYEc3r9TnPLBf42YhmewhQUW5wuaoTyw2r+28kpE
+         55G+Uh3F+IOKhBOurbNgldbFJMg7uk6/cV6wn4RVbjGli7SFGIu453atLQRquwHoGUqV
+         9h34Ls7gWItwJ0xYUXsqpAmqfYf6cHpBhzZmCVzk4FT7nggvAHci32OOEl4Tgzr0IZbC
+         IYp806kaPCFzfGCU3Jy/XtmqY3rhHCVen3wwHOU57SbulBwvk14/DGQSGdBf9wEwRTFI
+         yA2Nf4SUoT07DXjjIG1H9BoWcZEjtjaoRBt3KvA/LRO2NO7v+Ssz/oBCWwkZ8mD630A/
+         8Kvg==
+X-Gm-Message-State: AOAM532R0JBp3K2wOA15FqZc6kZ44P/yUzGBonvseM8IxEqKF7dozC4S
+        tFj/Tekf4mSUUOgJLVvhvvC8Xg==
+X-Google-Smtp-Source: ABdhPJxHlrGNoVThzD9jXDunpAOOoUVlqmsHj782bf3WpYVZpsXhZsPr8L6VnGUc3ZUFw5LcKkXdEw==
+X-Received: by 2002:a05:6a00:1a0f:b029:2dd:823b:3dce with SMTP id g15-20020a056a001a0fb02902dd823b3dcemr3487042pfv.35.1622118562288;
         Thu, 27 May 2021 05:29:22 -0700 (PDT)
-From:   Vincent Guittot <vincent.guittot@linaro.org>
-To:     mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com,
-        dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
-        mgorman@suse.de, bristot@redhat.com, linux-kernel@vger.kernel.org,
-        odin@uged.al, cgroups@vger.kernel.org
-Cc:     Vincent Guittot <vincent.guittot@linaro.org>
-Subject: [PATCH 0/2] schd/fair: fix stalled cfs_rq->tg_load_avg_contrib
-Date:   Thu, 27 May 2021 14:29:14 +0200
-Message-Id: <20210527122916.27683-1-vincent.guittot@linaro.org>
-X-Mailer: git-send-email 2.17.1
+Received: from 7698f5da3a10 ([124.170.34.40])
+        by smtp.gmail.com with ESMTPSA id h26sm1946892pfk.19.2021.05.27.05.29.18
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Thu, 27 May 2021 05:29:21 -0700 (PDT)
+Date:   Thu, 27 May 2021 12:29:15 +0000
+From:   Rudi Heitbaum <rudi@heitbaum.com>
+To:     Ezequiel Garcia <ezequiel@collabora.com>
+Cc:     Peter Geis <pgwipeout@gmail.com>, devicetree@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "open list:ARM/Rockchip SoC..." <linux-rockchip@lists.infradead.org>,
+        Mark Brown <broonie@kernel.org>, chenjh@rock-chips.com
+Subject: Re: [PATCH] regulator: fan53555: add back tcs4526
+Message-ID: <20210527122911.GA1640@7698f5da3a10>
+References: <20210526162342.GA20@8bbba9ba63a4>
+ <CAMdYzYpZoKs3P62j02RW-+5BEpqC9JL3apjucTWLWmvNFrOrCg@mail.gmail.com>
+ <20210527105943.GA441@7698f5da3a10>
+ <462b8d80447efb6c00e93704914169bceb5adc4d.camel@collabora.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <462b8d80447efb6c00e93704914169bceb5adc4d.camel@collabora.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Odin reported some fairness problem between cgroup because of stalled
-value in cfs_rq->tg_load_avg_contrib:
+Hi Ezequiel and Peter,
 
-https://lkml.org/lkml/2021/5/18/566
+Thanks for the feedback.
 
+On Thu, May 27, 2021 at 08:51:27AM -0300, Ezequiel Garcia wrote:
+> Hi Rudi,
+> 
+> Thanks for the patch.
+> 
+> On Thu, 2021-05-27 at 10:59 +0000, Rudi Heitbaum wrote:
+> > On Wed, May 26, 2021 at 02:41:00PM -0400, Peter Geis wrote:
+> > > On Wed, May 26, 2021 at 12:23 PM Rudi Heitbaum <rudi@heitbaum.com> wrote:
 
-2 problems generated this situation:
--1st: After propagating load in the hierarchy, load_sum can be null
- whereas load_avg isn't so the cfs_rq is removed whereas it still
- contribute to th tg's load
--2nd: cfs_rq->tg_load_avg_contrib was not always updated after
- significant changes like becoming null because cfs_rq had already
- been updated when propagating a child load.
+...
 
+> > I chose to follow the example of silergy,syr827 and silergy,syr828 for
+> > tcs4526 (given I made the mistake in assuming that support for tcs4525
+> > meant support for tcs4525.) This would maintain consistency of naming
+> > of
+> > tcs4526 throughout the source. Is that ok?
+> 
+> It's fine to have both compatibles (and avoids confusion in
+> device-trees), just remember to update the dt-bindings as well.
+> It's funny to see drivers with both schemes, so we really have to
+> decide which path we want to go down.
+> Considering the syr827/syr828 as convention, we should probably just
+> go down that route for consistency within the driver.
 
-Vincent Guittot (2):
-  sched/fair: keep load_avg and load_sum synced
-  sched/fair: make sure to update tg contrib for blocked load
+Thanks Peter - I will resubmit the tcs4526 patch along these lines.
 
- kernel/sched/fair.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+> > Removal of the operating points kind of makes the gpu regulator
+> > moot, don't you think?
 
--- 
-2.17.1
+> As Peter rightly said, this will prevent gpu devfreq from working.
 
+This is the draft that I have been working on within LibreELEC10, still
+a ways to go I'm afraid. Having decided to getting the SBC to run
+mainline kernel and u-boot. The regulator and subsequent regulator fix
+will hopefully address https://bugzilla.kernel.org/show_bug.cgi?id=212917 
+too. As you have identified - it is not ready for upstreaming :-)
+
+Thank you both for the direction and pointers on the dts. I will get the
+v2 patch going first.
+
+> Out of curiosity, why disabling the little VOP?
+
+Only disabled within my WIP dts so as to focus my attention on successful 
+running of LE10 on the rk3399pro, before I move to attempting to enable 
+the NPU and the other nodes.
+
+> I can be wrong, but I think regulator-compatible is deprecated.
+
+I will look it to this. 
+
+Now with the addition of the regulator and Peter's fix I will start
+qualifing each of the dts nodes and the correct options against the
+schematic.
+
+> > +??????????????????????????????vsel-gpios = <&gpio1 RK_PC1 GPIO_ACTIVE_HIGH>;
+> 
+> Is vsel-gpios ever used in the mainline driver?
+>
+> > +??????????????????????????????regulator-compatible = "fan53555-reg";
+> 
+> Ditto.
+>
+> > +??????????????????????????????vsel-gpios = <&gpio1 RK_PB6 GPIO_ACTIVE_HIGH>;
+> 
+> Ditto.
+>
+> > +??????????????????????????????regulator-boot-on;
+> 
+> Just out of curiosity, is regulator-boot-on really needed for the GPU?
+
+Will check.
