@@ -2,1024 +2,366 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A74FE393141
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 16:45:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E7A50393144
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 16:45:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236682AbhE0OqZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 May 2021 10:46:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52346 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236582AbhE0OqH (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 May 2021 10:46:07 -0400
-Received: from plekste.mt.lv (bute.mt.lv [IPv6:2a02:610:7501:2000::195])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0230FC061761;
-        Thu, 27 May 2021 07:44:33 -0700 (PDT)
-Received: from [2a02:610:7501:feff:1ccf:41ff:fe50:18b9] (helo=localhost.localdomain)
-        by plekste.mt.lv with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.89)
-        (envelope-from <gatis@mikrotik.com>)
-        id 1lmHFM-0002jz-AV; Thu, 27 May 2021 17:44:28 +0300
-From:   Gatis Peisenieks <gatis@mikrotik.com>
-To:     chris.snook@gmail.com, davem@davemloft.net, kuba@kernel.org,
-        hkallweit1@gmail.com, jesse.brandeburg@intel.com,
-        dchickles@marvell.com, tully@mikrotik.com, eric.dumazet@gmail.com
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Gatis Peisenieks <gatis@mikrotik.com>
-Subject: [PATCH net-next v4 4/4] atl1c: add 4 RX/TX queue support for Mikrotik 10/25G NIC
-Date:   Thu, 27 May 2021 17:44:23 +0300
-Message-Id: <20210527144423.3395719-5-gatis@mikrotik.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210527144423.3395719-1-gatis@mikrotik.com>
-References: <20210527144423.3395719-1-gatis@mikrotik.com>
+        id S236574AbhE0Oqu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 May 2021 10:46:50 -0400
+Received: from mga03.intel.com ([134.134.136.65]:52996 "EHLO mga03.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234517AbhE0Oqn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 27 May 2021 10:46:43 -0400
+IronPort-SDR: jiZpnm0OS9h4kYplaOw05fxo3/oTxFWQaUDK7ErmYtm8od1i3v/nD+GAejviSFnuw/tRsUl5UW
+ I/mxBlkoqKLg==
+X-IronPort-AV: E=McAfee;i="6200,9189,9996"; a="202786037"
+X-IronPort-AV: E=Sophos;i="5.82,334,1613462400"; 
+   d="scan'208";a="202786037"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 May 2021 07:44:37 -0700
+IronPort-SDR: FQ46C253kGb0+8zWxe2+Ol7ZTrgHk8H5N2JEuf3/OcBVNRupCJP8NJWoHR/cclU/z2H9CGnXq4
+ phEvXKRXfXiw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.82,334,1613462400"; 
+   d="scan'208";a="547834551"
+Received: from fmsmsx602.amr.corp.intel.com ([10.18.126.82])
+  by fmsmga001.fm.intel.com with ESMTP; 27 May 2021 07:44:37 -0700
+Received: from fmsmsx602.amr.corp.intel.com (10.18.126.82) by
+ fmsmsx602.amr.corp.intel.com (10.18.126.82) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2242.4; Thu, 27 May 2021 07:44:37 -0700
+Received: from fmsedg601.ED.cps.intel.com (10.1.192.135) by
+ fmsmsx602.amr.corp.intel.com (10.18.126.82) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2242.4
+ via Frontend Transport; Thu, 27 May 2021 07:44:37 -0700
+Received: from NAM02-DM3-obe.outbound.protection.outlook.com (104.47.56.41) by
+ edgegateway.intel.com (192.55.55.70) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2242.4; Thu, 27 May 2021 07:44:36 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=IeJKAWLfJx5wcXD/S1MCT1hgSu9dUulZp4TYcbtW1iJzQPLGAsbnQrnuy+g2fHqciIszmyiYcy4NPb5/C7BMN12Xt47yqJRknMKXpHYz49Q0y7e/3lAeSoUqZR9+omafNIixHSN34+EAN/xeHq0z3cedOOrE+OFve8QQE1pto2pOyPsXWzVU/NNPGYN3d7ayz+RcDY1KiID5cvX3U+5wWXW/1cYbtojG8RpIEa44kdtYtMSyIDL1slbJMjceCy+KljD8fvUqCGKI/CBqQrnN0IlkpOeaxnV8yLDetEfCcI67J4Zb/9k2pseSaOy3o3EzSzFmFopbgnGqmZ5+58Y/RQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=CRE/cwM8IDgkcGOUVXzmrBdMhR7I3nLZ2O98ICZTQpo=;
+ b=BqvxEe6ktHJN39bAJPoAHKlEPs1WNbmvjbPLoNXBgADuTXiIbK8bjDXBWIkWGL9G4x2JdMLL7Nd8ZnGCO6B8AHJT3UyVWaR636JFqsxJ+kJM22J6iBSRGY3OaFYgEdDx+QFrTa4XgCMgxf5dqBvTeeQGDvV7k/lfH0w10yWHIFJUCOm/vc8F+lIx/lEkUJ1psR/bK//NwnMxOzbDYiT2dqzTWzPdJrzulPyfBbUP/XBcdnG+lHT740bQwaOqoglyAduSGbC3qb0xpI7xO0zxJ9BwtnC5K2zNyA6O7QAJmy+GiaAPzNeU1eToVnc4n90rpw5nmzkRGixDnt7/2tIAgA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=intel.onmicrosoft.com;
+ s=selector2-intel-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=CRE/cwM8IDgkcGOUVXzmrBdMhR7I3nLZ2O98ICZTQpo=;
+ b=ISeUjgahXdY1VYX3nLr2DrBboFK94Tu2DWZlgvVlM+FK8F7rwTNpag8QwRtKtzCLUnJBfay1E3x32PIMn8q3qkNqHtBBAX2u7Dj3t5DhTOAztWkeOcadTo8mNnHco5B+teDxYuC8cLzE5BcFDKnMW1ZhJQHtRx45bhliCFJjVik=
+Received: from BL3PR11MB5699.namprd11.prod.outlook.com (2603:10b6:208:33e::8)
+ by MN2PR11MB4567.namprd11.prod.outlook.com (2603:10b6:208:26d::16) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4173.22; Thu, 27 May
+ 2021 14:44:35 +0000
+Received: from BL3PR11MB5699.namprd11.prod.outlook.com
+ ([fe80::b5b7:f65c:9c4:32ed]) by BL3PR11MB5699.namprd11.prod.outlook.com
+ ([fe80::b5b7:f65c:9c4:32ed%6]) with mapi id 15.20.4173.020; Thu, 27 May 2021
+ 14:44:35 +0000
+From:   "D, Lakshmi Sowjanya" <lakshmi.sowjanya.d@intel.com>
+To:     Linus Walleij <linus.walleij@linaro.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+CC:     "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        "Raja Subramanian, Lakshmi Bai" 
+        <lakshmi.bai.raja.subramanian@intel.com>,
+        "Saha, Tamal" <tamal.saha@intel.com>
+Subject: RE: [PATCH 2/2] pinctrl: Add Intel Keem Bay pinctrl driver
+Thread-Topic: [PATCH 2/2] pinctrl: Add Intel Keem Bay pinctrl driver
+Thread-Index: AQHXUH7egDXE82CU906Jg3vJan/mKqr2eHmAgADXJ2A=
+Date:   Thu, 27 May 2021 14:44:35 +0000
+Message-ID: <BL3PR11MB5699EF2B085A9A387199179FC4239@BL3PR11MB5699.namprd11.prod.outlook.com>
+References: <20210524092605.734-1-lakshmi.sowjanya.d@intel.com>
+ <20210524092605.734-3-lakshmi.sowjanya.d@intel.com>
+ <CACRpkdbJPSuNexLE6m-H+=ztaxHRAWT06wwMg95c17O-hR_Cdg@mail.gmail.com>
+In-Reply-To: <CACRpkdbJPSuNexLE6m-H+=ztaxHRAWT06wwMg95c17O-hR_Cdg@mail.gmail.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+dlp-product: dlpe-windows
+dlp-version: 11.5.1.3
+dlp-reaction: no-action
+authentication-results: linaro.org; dkim=none (message not signed)
+ header.d=none;linaro.org; dmarc=none action=none header.from=intel.com;
+x-originating-ip: [183.82.154.250]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: b359dd1b-465e-45bc-ae00-08d9211df295
+x-ms-traffictypediagnostic: MN2PR11MB4567:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <MN2PR11MB45676CBF6AD4C77BA5A60B90C4239@MN2PR11MB4567.namprd11.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:7219;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: pBB6ia/1kA7m3fhR3Su9A1bNny0F0ApaXX4/mzh9Ez7v46n4dtNc+ojo/vb+7g4BqgTpPPbQDMGX090qpTABbtCxsW1fXOHCWOPmlGnmkNvkoEtTIQn1a7pcPxFwFCptlTgmSvdw7mR1IRFcGGE8p8woDkK3/wOfeGB0J0OAaSMqRicXGc958wb0WD4g7nUvAWrbRDq9+6Xx8xhPeV4MYsx10V/nnMKoWco+mUaJZ9aY7IbJPOmqYU04ErFNwltjmkgO8cO+hJ5hp0/85f6gSFah6VwXnQup9dTcvIfSMd2+6b5/wXht/zjmRGs9AJe+53TMCJ/WdIxigBE7pYGa5rvePxcban/Pqsl1r5++cwBvWN3owhCu7SBc3f/IqiZ4/v7PaPe1OQxnBh/+vYSgI0504gubcMK1jgPiCu4f1RgFPsK25ZcAp9w2Jdm7uOnZTHcVwYnXeNa92LP1ULuEfYmTZfJnVtFgrir9/5YGAJlITshCN7NJOPXUxL7vNzh9fr6HQa54ZBXr75F2mF473pHTeE2tu5epBR7I3lBI4bM3gwPbdmuzb/sRCrpxJNfUDVGfXVdTjXiRA2cYwSlg/ZLwdLWEEpcVbG0qgXk6LgXuvZ7TTAIYHv20Ur//RIV93/A44+QaeijLGXgYs8P98lHU0A7mIhhOG/pscKVrmpyHpLWdkAE7uK80gvUHGPlstEh1D3mqnH5yQsJWf+tY310gHxHBoMAy4hBx1BxGvPA=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL3PR11MB5699.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(376002)(136003)(396003)(366004)(39860400002)(346002)(966005)(478600001)(83380400001)(86362001)(110136005)(54906003)(2906002)(8676002)(8936002)(316002)(38100700002)(30864003)(76116006)(5660300002)(66556008)(66446008)(66476007)(64756008)(66946007)(122000001)(186003)(9686003)(53546011)(6506007)(55016002)(7696005)(52536014)(33656002)(71200400001)(26005)(4326008);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: =?utf-8?B?bEJKV0VwcFplVkhKNmtXM0ltaVV6Sk1RY3FwNW1YeHFsdklENHN3MUQzcUJx?=
+ =?utf-8?B?MlJwdXNvczViaEJMTDN0YTF4aDVBeFIzbEkwaEZZN29uQmFEQk1vM3YyY0RM?=
+ =?utf-8?B?RS85RkluZ0lqSzQ4dXFYaU1BSU9WZEh1RVNneFErdGJNa3RXek9BV0VocjVk?=
+ =?utf-8?B?WmgxRk5GeUoxYWM5RnlINlZFU0tXNHNYNUkzOE5BbjMvOElJaFVzMHA3bG0y?=
+ =?utf-8?B?aWZIQSs4M2ZWbnc2Vm9WQU5MMXlrNEZoUUFqVk1EYkdLZG5TVC83dm9RWjQw?=
+ =?utf-8?B?SGx1Sk9paFZRTk5iTUkrWmQyZmRXY2MrMk8waFlvSVYvZ2JTQmNxYU9NdlBI?=
+ =?utf-8?B?Rm9qV2Z2Q2NycUpiVXR6b0xaUnB3UTVmNllwV1VQaVZqT2I2UlArOUEzTVZI?=
+ =?utf-8?B?SEMxTWovaXNoV091REFnYVdza3UvUytDYWcxV25iVkZnQytIUmY5NjJiSXQ5?=
+ =?utf-8?B?OWcvZG12Qnk0aU1EdUdkS3pURmszQzdTUXpiOG96bFZqYWlMMkhSRExuTU44?=
+ =?utf-8?B?UkI1TkxJZXlncGpjUEZLTjNDcHRGcFZUTVowUmxXZEFHMkxVUjZScmRMZi9D?=
+ =?utf-8?B?UXhVMTg2SmFwbC9YZzZPVHRmaWpoQ0hRc1RyWjVENy9vRmVtZkVRQ3BTZGlv?=
+ =?utf-8?B?dDU3bjRneVpJYkNmL2FiNU9PbW5VOUtReXg0eHdNZFJqMXNVcVVia2tWdkk1?=
+ =?utf-8?B?czA3enRzNGcxT2dwbVFzZ3lMWkJHa1NXVTNjd1UyU2NnY0xuUHNYRFprTmlw?=
+ =?utf-8?B?YlFSU1NMb01QdXUyQURjU1hyd1NuclB5Um43UFhTTGt0akxkVDkyZFB0YUYz?=
+ =?utf-8?B?VVNhOTIwYjdmZU9mbUFzV09jYmExYVU4Si9vWnpYQlFpdzB0VGdpZ1JEbGp4?=
+ =?utf-8?B?eUlpU1JrTmlZSHZncEhnZkhqelVUdy9ueGVNNVpORjRLNmc1ZjZyb251bGcz?=
+ =?utf-8?B?S0RCTjRRS2xBOHZBT25IM1FDdWlaUkVDSncvZzYrRzF4dzRTTk5oUFhhVXA0?=
+ =?utf-8?B?dEtTUUpXRlNiVXJKL1dhMlVCdXQ5ZkVnTjVSL3AyTG5kNVVIaUpZMUdDZ29X?=
+ =?utf-8?B?b1BBUlZKOWtYQVRVRTgrbzl2M09pVUtwMERDUVpMNlBVSXBkakpIVmZHU0k2?=
+ =?utf-8?B?K0RlQUlaRHZXWnVvdTZJMjBZdjRzTmtZRzM3N2dFc3lHY2ZCMmFBc3ZRaTh0?=
+ =?utf-8?B?N0oxaEJNTi9mK25ucjBQektvMlJ4dmZKbmdrMXZseVQyZk5TeDRJOWduYTNj?=
+ =?utf-8?B?d1JCWXM0eUQ5NmxJQXdjTmFWelFRdVl1bS85UDZId2ppbFFUWmFMSnkxOVVI?=
+ =?utf-8?B?Wm9raGYzQnBtVGJId0gvcTNMVGNTSWZtR1R4b2d4b3NDK1gvU3Q0emtBNFZ1?=
+ =?utf-8?B?dDZDK0lUU0JScTIreUR2WEVaQjJEU0o0N0pqTUNBcUMzaG5oSGJIU0JpdnpK?=
+ =?utf-8?B?OVM5cm1URk5lbXRDcnRXRjZKcHZkTHBBVndUWVpIS2UvNjF5T3hhaGIwS3Zt?=
+ =?utf-8?B?dkwwbFo2UnpvUTR1SEpvejZ3b244Ny92YWlEOEZVWGdXVHVkSlp3NnBzK1F5?=
+ =?utf-8?B?Z1kzOFF0V3Rhc2JGYlNlbHdZbnE2eWxDMzV5aDhFVXZRdlgxUmNjMmZZKzR0?=
+ =?utf-8?B?UHR5c2FwMklQNlJvRWxTY1ozNnlZVzFoMUNjc3pNS1FOaytQRURKQSswUHhV?=
+ =?utf-8?B?eFdvWXlSam5WRHJoVFJxZkJ6RDN3RXd5TFBnc2lOY1pQZlJGTGxXem1ycXdR?=
+ =?utf-8?Q?D5KwU3seuiCtW9vsskSADcoQEl1M/bEbyYGao7v?=
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: BL3PR11MB5699.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: b359dd1b-465e-45bc-ae00-08d9211df295
+X-MS-Exchange-CrossTenant-originalarrivaltime: 27 May 2021 14:44:35.5617
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: UZ1lIAzwzw2jVTqwbH/JXBCfeB7pNCPzoc6ON51TVZEBvclgTLsg99Uf58Pyo6maZG3v7zbaVxtQzJbYhig28xemhgK5Bwsdif+ljPeRGMQ=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR11MB4567
+X-OriginatorOrg: intel.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-More RX/TX queues on a network card help spread the CPU load among
-cores and achieve higher overall networking performance. The new
-Mikrotik 10/25G NIC supports 4 RX and 4 TX queues. TX queues are
-treated with equal priority. RX queue balancing is fixed based on
-L2/L3/L4 hash.
-
-This adds support for 4 RX/TX queues while maintaining backwards
-compatibility with older hardware.
-
-Simultaneous TX + RX performance on AMD Threadripper 3960X
-with Mikrotik 10/25G NIC improved from 1.6Mpps to 3.2Mpps per port.
-
-Backwards compatiblitiy was verified with AR8151 and AR8131 based
-NICs.
-
-Signed-off-by: Gatis Peisenieks <gatis@mikrotik.com>
----
- drivers/net/ethernet/atheros/atl1c/atl1c.h    |   9 +-
- drivers/net/ethernet/atheros/atl1c/atl1c_hw.h |  34 +-
- .../net/ethernet/atheros/atl1c/atl1c_main.c   | 406 +++++++++++-------
- 3 files changed, 291 insertions(+), 158 deletions(-)
-
-diff --git a/drivers/net/ethernet/atheros/atl1c/atl1c.h b/drivers/net/ethernet/atheros/atl1c/atl1c.h
-index 9edf90e1f028..43d821fe7a54 100644
---- a/drivers/net/ethernet/atheros/atl1c/atl1c.h
-+++ b/drivers/net/ethernet/atheros/atl1c/atl1c.h
-@@ -63,7 +63,7 @@
- 
- #define AT_MAX_RECEIVE_QUEUE    4
- #define AT_DEF_RECEIVE_QUEUE	1
--#define AT_MAX_TRANSMIT_QUEUE	2
-+#define AT_MAX_TRANSMIT_QUEUE  4
- 
- #define AT_DMA_HI_ADDR_MASK     0xffffffff00000000ULL
- #define AT_DMA_LO_ADDR_MASK     0x00000000ffffffffULL
-@@ -294,11 +294,6 @@ enum atl1c_nic_type {
- 	athr_mt,
- };
- 
--enum atl1c_trans_queue {
--	atl1c_trans_normal = 0,
--	atl1c_trans_high = 1
--};
--
- struct atl1c_hw_stats {
- 	/* rx */
- 	unsigned long rx_ok;		/* The number of good packet received. */
-@@ -522,6 +517,8 @@ struct atl1c_adapter {
- 	struct atl1c_hw_stats  hw_stats;
- 	struct mii_if_info  mii;    /* MII interface info */
- 	u16 rx_buffer_len;
-+	unsigned int tx_queue_count;
-+	unsigned int rx_queue_count;
- 
- 	unsigned long flags;
- #define __AT_TESTING        0x0001
-diff --git a/drivers/net/ethernet/atheros/atl1c/atl1c_hw.h b/drivers/net/ethernet/atheros/atl1c/atl1c_hw.h
-index c263b326cec5..c567c920628f 100644
---- a/drivers/net/ethernet/atheros/atl1c/atl1c_hw.h
-+++ b/drivers/net/ethernet/atheros/atl1c/atl1c_hw.h
-@@ -528,15 +528,24 @@ void atl1c_post_phy_linkchg(struct atl1c_hw *hw, u16 link_speed);
- #define REG_RX_BASE_ADDR_HI		0x1540
- #define REG_TX_BASE_ADDR_HI		0x1544
- #define REG_RFD0_HEAD_ADDR_LO		0x1550
-+#define REG_RFD1_HEAD_ADDR_LO          0x1554
-+#define REG_RFD2_HEAD_ADDR_LO          0x1558
-+#define REG_RFD3_HEAD_ADDR_LO          0x155C
- #define REG_RFD_RING_SIZE		0x1560
- #define RFD_RING_SIZE_MASK		0x0FFF
- #define REG_RX_BUF_SIZE			0x1564
- #define RX_BUF_SIZE_MASK		0xFFFF
- #define REG_RRD0_HEAD_ADDR_LO		0x1568
-+#define REG_RRD1_HEAD_ADDR_LO          0x156C
-+#define REG_RRD2_HEAD_ADDR_LO          0x1570
-+#define REG_RRD3_HEAD_ADDR_LO          0x1574
- #define REG_RRD_RING_SIZE		0x1578
- #define RRD_RING_SIZE_MASK		0x0FFF
- #define REG_TPD_PRI1_ADDR_LO		0x157C
- #define REG_TPD_PRI0_ADDR_LO		0x1580
-+#define REG_TPD_PRI2_ADDR_LO           0x1F10
-+#define REG_TPD_PRI3_ADDR_LO           0x1F14
-+
- #define REG_TPD_RING_SIZE		0x1584
- #define TPD_RING_SIZE_MASK		0xFFFF
- 
-@@ -655,15 +664,26 @@ void atl1c_post_phy_linkchg(struct atl1c_hw *hw, u16 link_speed);
- /* Mail box */
- #define MB_RFDX_PROD_IDX_MASK		0xFFFF
- #define REG_MB_RFD0_PROD_IDX		0x15E0
-+#define REG_MB_RFD1_PROD_IDX           0x15E4
-+#define REG_MB_RFD2_PROD_IDX           0x15E8
-+#define REG_MB_RFD3_PROD_IDX           0x15EC
- 
- #define REG_TPD_PRI1_PIDX               0x15F0	/* 16bit,hi-tpd producer idx */
- #define REG_TPD_PRI0_PIDX		0x15F2	/* 16bit,lo-tpd producer idx */
- #define REG_TPD_PRI1_CIDX		0x15F4	/* 16bit,hi-tpd consumer idx */
- #define REG_TPD_PRI0_CIDX		0x15F6	/* 16bit,lo-tpd consumer idx */
-+#define REG_TPD_PRI3_PIDX              0x1F18
-+#define REG_TPD_PRI2_PIDX              0x1F1A
-+#define REG_TPD_PRI3_CIDX              0x1F1C
-+#define REG_TPD_PRI2_CIDX              0x1F1E
-+
- 
- #define REG_MB_RFD01_CONS_IDX		0x15F8
- #define MB_RFD0_CONS_IDX_MASK		0x0000FFFF
- #define MB_RFD1_CONS_IDX_MASK		0xFFFF0000
-+#define REG_MB_RFD23_CONS_IDX          0x15FC
-+#define MB_RFD2_CONS_IDX_MASK          0x0000FFFF
-+#define MB_RFD3_CONS_IDX_MASK          0xFFFF0000
- 
- /* Interrupt Status Register */
- #define REG_ISR    			0x1600
-@@ -687,7 +707,7 @@ void atl1c_post_phy_linkchg(struct atl1c_hw *hw, u16 link_speed);
- /* GPHY low power state interrupt */
- #define ISR_GPHY_LPW           		0x00002000
- #define ISR_TXQ_TO_RST			0x00004000
--#define ISR_TX_PKT			0x00008000
-+#define ISR_TX_PKT_0                   0x00008000
- #define ISR_RX_PKT_0			0x00010000
- #define ISR_RX_PKT_1			0x00020000
- #define ISR_RX_PKT_2			0x00040000
-@@ -699,6 +719,9 @@ void atl1c_post_phy_linkchg(struct atl1c_hw *hw, u16 link_speed);
- #define ISR_NFERR_DETECTED		0x01000000
- #define ISR_CERR_DETECTED		0x02000000
- #define ISR_PHY_LINKDOWN		0x04000000
-+#define ISR_TX_PKT_1                   0x10000000
-+#define ISR_TX_PKT_2                   0x20000000
-+#define ISR_TX_PKT_3                   0x40000000
- #define ISR_DIS_INT			0x80000000
- 
- /* Interrupt Mask Register */
-@@ -713,11 +736,15 @@ void atl1c_post_phy_linkchg(struct atl1c_hw *hw, u16 link_speed);
- 		ISR_TXQ_TO_RST  |\
- 		ISR_DMAW_TO_RST	|\
- 		ISR_GPHY	|\
--		ISR_TX_PKT	|\
--		ISR_RX_PKT_0	|\
- 		ISR_GPHY_LPW    |\
- 		ISR_PHY_LINKDOWN)
- 
-+#define ISR_TX_PKT     (			\
-+	ISR_TX_PKT_0    |			\
-+	ISR_TX_PKT_1    |			\
-+	ISR_TX_PKT_2    |			\
-+	ISR_TX_PKT_3)
-+
- #define ISR_RX_PKT 	(\
- 	ISR_RX_PKT_0    |\
- 	ISR_RX_PKT_1    |\
-@@ -771,6 +798,7 @@ void atl1c_post_phy_linkchg(struct atl1c_hw *hw, u16 link_speed);
- #define REG_MT_VERSION			0x1F0C
- 
- #define MT_MAGIC			0xaabb1234
-+#define MT_MODE_4Q			BIT(0)
- 
- #define L1D_MPW_PHYID1			0xD01C  /* V7 */
- #define L1D_MPW_PHYID2			0xD01D  /* V1-V6 */
-diff --git a/drivers/net/ethernet/atheros/atl1c/atl1c_main.c b/drivers/net/ethernet/atheros/atl1c/atl1c_main.c
-index 79984735a2fd..1c6246a5dc22 100644
---- a/drivers/net/ethernet/atheros/atl1c/atl1c_main.c
-+++ b/drivers/net/ethernet/atheros/atl1c/atl1c_main.c
-@@ -36,6 +36,40 @@ MODULE_AUTHOR("Qualcomm Atheros Inc.");
- MODULE_DESCRIPTION("Qualcomm Atheros 100/1000M Ethernet Network Driver");
- MODULE_LICENSE("GPL");
- 
-+struct atl1c_qregs {
-+	u16 tpd_addr_lo;
-+	u16 tpd_prod;
-+	u16 tpd_cons;
-+	u16 rfd_addr_lo;
-+	u16 rrd_addr_lo;
-+	u16 rfd_prod;
-+	u32 tx_isr;
-+	u32 rx_isr;
-+};
-+
-+static struct atl1c_qregs atl1c_qregs[AT_MAX_TRANSMIT_QUEUE] = {
-+	{
-+		REG_TPD_PRI0_ADDR_LO, REG_TPD_PRI0_PIDX, REG_TPD_PRI0_CIDX,
-+		REG_RFD0_HEAD_ADDR_LO, REG_RRD0_HEAD_ADDR_LO,
-+		REG_MB_RFD0_PROD_IDX, ISR_TX_PKT_0, ISR_RX_PKT_0
-+	},
-+	{
-+		REG_TPD_PRI1_ADDR_LO, REG_TPD_PRI1_PIDX, REG_TPD_PRI1_CIDX,
-+		REG_RFD1_HEAD_ADDR_LO, REG_RRD1_HEAD_ADDR_LO,
-+		REG_MB_RFD1_PROD_IDX, ISR_TX_PKT_1, ISR_RX_PKT_1
-+	},
-+	{
-+		REG_TPD_PRI2_ADDR_LO, REG_TPD_PRI2_PIDX, REG_TPD_PRI2_CIDX,
-+		REG_RFD2_HEAD_ADDR_LO, REG_RRD2_HEAD_ADDR_LO,
-+		REG_MB_RFD2_PROD_IDX, ISR_TX_PKT_2, ISR_RX_PKT_2
-+	},
-+	{
-+		REG_TPD_PRI3_ADDR_LO, REG_TPD_PRI3_PIDX, REG_TPD_PRI3_CIDX,
-+		REG_RFD3_HEAD_ADDR_LO, REG_RRD3_HEAD_ADDR_LO,
-+		REG_MB_RFD3_PROD_IDX, ISR_TX_PKT_3, ISR_RX_PKT_3
-+	},
-+};
-+
- static int atl1c_stop_mac(struct atl1c_hw *hw);
- static void atl1c_disable_l0s_l1(struct atl1c_hw *hw);
- static void atl1c_set_aspm(struct atl1c_hw *hw, u16 link_speed);
-@@ -45,7 +79,8 @@ static void atl1c_down(struct atl1c_adapter *adapter);
- static int atl1c_reset_mac(struct atl1c_hw *hw);
- static void atl1c_reset_dma_ring(struct atl1c_adapter *adapter);
- static int atl1c_configure(struct atl1c_adapter *adapter);
--static int atl1c_alloc_rx_buffer(struct atl1c_adapter *adapter, bool napi_mode);
-+static int atl1c_alloc_rx_buffer(struct atl1c_adapter *adapter, u32 queue,
-+				 bool napi_mode);
- 
- 
- static const u32 atl1c_default_msg = NETIF_MSG_DRV | NETIF_MSG_PROBE |
-@@ -761,7 +796,7 @@ static int atl1c_sw_init(struct atl1c_adapter *adapter)
- 	struct atl1c_hw *hw   = &adapter->hw;
- 	struct pci_dev	*pdev = adapter->pdev;
- 	u32 revision;
--
-+	int i;
- 
- 	adapter->wol = 0;
- 	device_set_wakeup_enable(&pdev->dev, false);
-@@ -786,6 +821,10 @@ static int atl1c_sw_init(struct atl1c_adapter *adapter)
- 	atl1c_patch_assign(hw);
- 
- 	hw->intr_mask = IMR_NORMAL_MASK;
-+	for (i = 0; i < adapter->tx_queue_count; ++i)
-+		hw->intr_mask |= atl1c_qregs[i].tx_isr;
-+	for (i = 0; i < adapter->rx_queue_count; ++i)
-+		hw->intr_mask |= atl1c_qregs[i].rx_isr;
- 	hw->phy_configured = false;
- 	hw->preamble_len = 7;
- 	hw->max_frame_size = adapter->netdev->mtu;
-@@ -845,12 +884,12 @@ static inline void atl1c_clean_buffer(struct pci_dev *pdev,
- /**
-  * atl1c_clean_tx_ring - Free Tx-skb
-  * @adapter: board private structure
-- * @type: type of transmit queue
-+ * @queue: idx of transmit queue
-  */
- static void atl1c_clean_tx_ring(struct atl1c_adapter *adapter,
--				enum atl1c_trans_queue type)
-+				u32 queue)
- {
--	struct atl1c_tpd_ring *tpd_ring = &adapter->tpd_ring[type];
-+	struct atl1c_tpd_ring *tpd_ring = &adapter->tpd_ring[queue];
- 	struct atl1c_buffer *buffer_info;
- 	struct pci_dev *pdev = adapter->pdev;
- 	u16 index, ring_count;
-@@ -873,11 +912,12 @@ static void atl1c_clean_tx_ring(struct atl1c_adapter *adapter,
- /**
-  * atl1c_clean_rx_ring - Free rx-reservation skbs
-  * @adapter: board private structure
-+ * @queue: idx of transmit queue
-  */
--static void atl1c_clean_rx_ring(struct atl1c_adapter *adapter)
-+static void atl1c_clean_rx_ring(struct atl1c_adapter *adapter, u32 queue)
- {
--	struct atl1c_rfd_ring *rfd_ring = adapter->rfd_ring;
--	struct atl1c_rrd_ring *rrd_ring = adapter->rrd_ring;
-+	struct atl1c_rfd_ring *rfd_ring = &adapter->rfd_ring[queue];
-+	struct atl1c_rrd_ring *rrd_ring = &adapter->rrd_ring[queue];
- 	struct atl1c_buffer *buffer_info;
- 	struct pci_dev *pdev = adapter->pdev;
- 	int j;
-@@ -905,21 +945,23 @@ static void atl1c_init_ring_ptrs(struct atl1c_adapter *adapter)
- 	struct atl1c_buffer *buffer_info;
- 	int i, j;
- 
--	for (i = 0; i < AT_MAX_TRANSMIT_QUEUE; i++) {
-+	for (i = 0; i < adapter->tx_queue_count; i++) {
- 		tpd_ring[i].next_to_use = 0;
- 		atomic_set(&tpd_ring[i].next_to_clean, 0);
- 		buffer_info = tpd_ring[i].buffer_info;
- 		for (j = 0; j < tpd_ring->count; j++)
- 			ATL1C_SET_BUFFER_STATE(&buffer_info[i],
--					ATL1C_BUFFER_FREE);
--	}
--	rfd_ring->next_to_use = 0;
--	rfd_ring->next_to_clean = 0;
--	rrd_ring->next_to_use = 0;
--	rrd_ring->next_to_clean = 0;
--	for (j = 0; j < rfd_ring->count; j++) {
--		buffer_info = &rfd_ring->buffer_info[j];
--		ATL1C_SET_BUFFER_STATE(buffer_info, ATL1C_BUFFER_FREE);
-+					       ATL1C_BUFFER_FREE);
-+	}
-+	for (i = 0; i < adapter->rx_queue_count; i++) {
-+		rfd_ring[i].next_to_use = 0;
-+		rfd_ring[i].next_to_clean = 0;
-+		rrd_ring[i].next_to_use = 0;
-+		rrd_ring[i].next_to_clean = 0;
-+		for (j = 0; j < rfd_ring[i].count; j++) {
-+			buffer_info = &rfd_ring[i].buffer_info[j];
-+			ATL1C_SET_BUFFER_STATE(buffer_info, ATL1C_BUFFER_FREE);
-+		}
- 	}
- }
- 
-@@ -932,20 +974,24 @@ static void atl1c_init_ring_ptrs(struct atl1c_adapter *adapter)
- static void atl1c_free_ring_resources(struct atl1c_adapter *adapter)
- {
- 	struct pci_dev *pdev = adapter->pdev;
-+	int i;
- 
- 	dma_free_coherent(&pdev->dev, adapter->ring_header.size,
- 			  adapter->ring_header.desc, adapter->ring_header.dma);
- 	adapter->ring_header.desc = NULL;
- 
- 	/* Note: just free tdp_ring.buffer_info,
--	*  it contain rfd_ring.buffer_info, do not double free */
-+	 * it contain rfd_ring.buffer_info, do not double free
-+	 */
- 	if (adapter->tpd_ring[0].buffer_info) {
- 		kfree(adapter->tpd_ring[0].buffer_info);
- 		adapter->tpd_ring[0].buffer_info = NULL;
- 	}
--	if (adapter->rrd_ring[0].rx_page) {
--		put_page(adapter->rrd_ring[0].rx_page);
--		adapter->rrd_ring[0].rx_page = NULL;
-+	for (i = 0; i < adapter->rx_queue_count; ++i) {
-+		if (adapter->rrd_ring[i].rx_page) {
-+			put_page(adapter->rrd_ring[i].rx_page);
-+			adapter->rrd_ring[i].rx_page = NULL;
-+		}
- 	}
- }
- 
-@@ -962,36 +1008,43 @@ static int atl1c_setup_ring_resources(struct atl1c_adapter *adapter)
- 	struct atl1c_rfd_ring *rfd_ring = adapter->rfd_ring;
- 	struct atl1c_rrd_ring *rrd_ring = adapter->rrd_ring;
- 	struct atl1c_ring_header *ring_header = &adapter->ring_header;
-+	int tqc = adapter->tx_queue_count;
-+	int rqc = adapter->rx_queue_count;
- 	int size;
- 	int i;
- 	int count = 0;
--	int rx_desc_count = 0;
- 	u32 offset = 0;
- 
--	rrd_ring->count = rfd_ring->count;
--	for (i = 1; i < AT_MAX_TRANSMIT_QUEUE; i++)
-+	/* Even though only one tpd queue is actually used, the "high"
-+	 * priority tpd queue also gets initialized
-+	 */
-+	if (tqc == 1)
-+		tqc = 2;
-+
-+	for (i = 1; i < tqc; i++)
- 		tpd_ring[i].count = tpd_ring[0].count;
- 
--	/* 2 tpd queue, one high priority queue,
--	 * another normal priority queue */
--	size = sizeof(struct atl1c_buffer) * (tpd_ring->count * 2 +
--		rfd_ring->count);
-+	size = sizeof(struct atl1c_buffer) * (tpd_ring->count * tqc +
-+					      rfd_ring->count * rqc);
- 	tpd_ring->buffer_info = kzalloc(size, GFP_KERNEL);
- 	if (unlikely(!tpd_ring->buffer_info))
- 		goto err_nomem;
- 
--	for (i = 0; i < AT_MAX_TRANSMIT_QUEUE; i++) {
-+	for (i = 0; i < tqc; i++) {
- 		tpd_ring[i].adapter = adapter;
- 		tpd_ring[i].num = i;
--		tpd_ring[i].buffer_info =
--			(tpd_ring->buffer_info + count);
-+		tpd_ring[i].buffer_info = (tpd_ring->buffer_info + count);
- 		count += tpd_ring[i].count;
- 	}
- 
--	rfd_ring->buffer_info =
--		(tpd_ring->buffer_info + count);
--	count += rfd_ring->count;
--	rx_desc_count += rfd_ring->count;
-+	for (i = 0; i < rqc; i++) {
-+		rrd_ring[i].adapter = adapter;
-+		rrd_ring[i].num = i;
-+		rrd_ring[i].count = rfd_ring[0].count;
-+		rfd_ring[i].count = rfd_ring[0].count;
-+		rfd_ring[i].buffer_info = (tpd_ring->buffer_info + count);
-+		count += rfd_ring->count;
-+	}
- 
- 	/*
- 	 * real ring DMA buffer
-@@ -999,9 +1052,9 @@ static int atl1c_setup_ring_resources(struct atl1c_adapter *adapter)
- 	 * additional bytes tacked onto the end.
- 	 */
- 	ring_header->size = size =
--		sizeof(struct atl1c_tpd_desc) * tpd_ring->count * 2 +
--		sizeof(struct atl1c_rx_free_desc) * rx_desc_count +
--		sizeof(struct atl1c_recv_ret_status) * rx_desc_count +
-+		sizeof(struct atl1c_tpd_desc) * tpd_ring->count * tqc +
-+		sizeof(struct atl1c_rx_free_desc) * rfd_ring->count * rqc +
-+		sizeof(struct atl1c_recv_ret_status) * rfd_ring->count * rqc +
- 		8 * 4;
- 
- 	ring_header->desc = dma_alloc_coherent(&pdev->dev, ring_header->size,
-@@ -1014,27 +1067,28 @@ static int atl1c_setup_ring_resources(struct atl1c_adapter *adapter)
- 
- 	tpd_ring[0].dma = roundup(ring_header->dma, 8);
- 	offset = tpd_ring[0].dma - ring_header->dma;
--	for (i = 0; i < AT_MAX_TRANSMIT_QUEUE; i++) {
-+	for (i = 0; i < tqc; i++) {
- 		tpd_ring[i].dma = ring_header->dma + offset;
--		tpd_ring[i].desc = (u8 *) ring_header->desc + offset;
-+		tpd_ring[i].desc = (u8 *)ring_header->desc + offset;
- 		tpd_ring[i].size =
- 			sizeof(struct atl1c_tpd_desc) * tpd_ring[i].count;
- 		offset += roundup(tpd_ring[i].size, 8);
- 	}
--	/* init RFD ring */
--	rfd_ring->dma = ring_header->dma + offset;
--	rfd_ring->desc = (u8 *) ring_header->desc + offset;
--	rfd_ring->size = sizeof(struct atl1c_rx_free_desc) * rfd_ring->count;
--	offset += roundup(rfd_ring->size, 8);
--
--	/* init RRD ring */
--	rrd_ring->adapter = adapter;
--	rrd_ring->num = 0;
--	rrd_ring->dma = ring_header->dma + offset;
--	rrd_ring->desc = (u8 *) ring_header->desc + offset;
--	rrd_ring->size = sizeof(struct atl1c_recv_ret_status) *
--		rrd_ring->count;
--	offset += roundup(rrd_ring->size, 8);
-+	for (i = 0; i < rqc; i++) {
-+		/* init RFD ring */
-+		rfd_ring[i].dma = ring_header->dma + offset;
-+		rfd_ring[i].desc = (u8 *)ring_header->desc + offset;
-+		rfd_ring[i].size = sizeof(struct atl1c_rx_free_desc) *
-+			rfd_ring[i].count;
-+		offset += roundup(rfd_ring[i].size, 8);
-+
-+		/* init RRD ring */
-+		rrd_ring[i].dma = ring_header->dma + offset;
-+		rrd_ring[i].desc = (u8 *)ring_header->desc + offset;
-+		rrd_ring[i].size = sizeof(struct atl1c_recv_ret_status) *
-+			rrd_ring[i].count;
-+		offset += roundup(rrd_ring[i].size, 8);
-+	}
- 
- 	return 0;
- 
-@@ -1049,27 +1103,31 @@ static void atl1c_configure_des_ring(struct atl1c_adapter *adapter)
- 	struct atl1c_rfd_ring *rfd_ring = adapter->rfd_ring;
- 	struct atl1c_rrd_ring *rrd_ring = adapter->rrd_ring;
- 	struct atl1c_tpd_ring *tpd_ring = adapter->tpd_ring;
-+	int i;
-+	int tx_queue_count = adapter->tx_queue_count;
-+
-+	if (tx_queue_count == 1)
-+		tx_queue_count = 2;
- 
- 	/* TPD */
- 	AT_WRITE_REG(hw, REG_TX_BASE_ADDR_HI,
--			(u32)((tpd_ring[atl1c_trans_normal].dma &
--				AT_DMA_HI_ADDR_MASK) >> 32));
-+		     (u32)((tpd_ring[0].dma & AT_DMA_HI_ADDR_MASK) >> 32));
- 	/* just enable normal priority TX queue */
--	AT_WRITE_REG(hw, REG_TPD_PRI0_ADDR_LO,
--			(u32)(tpd_ring[atl1c_trans_normal].dma &
--				AT_DMA_LO_ADDR_MASK));
--	AT_WRITE_REG(hw, REG_TPD_PRI1_ADDR_LO,
--			(u32)(tpd_ring[atl1c_trans_high].dma &
--				AT_DMA_LO_ADDR_MASK));
-+	for (i = 0; i < tx_queue_count; i++) {
-+		AT_WRITE_REG(hw, atl1c_qregs[i].tpd_addr_lo,
-+			     (u32)(tpd_ring[i].dma & AT_DMA_LO_ADDR_MASK));
-+	}
- 	AT_WRITE_REG(hw, REG_TPD_RING_SIZE,
- 			(u32)(tpd_ring[0].count & TPD_RING_SIZE_MASK));
- 
- 
- 	/* RFD */
- 	AT_WRITE_REG(hw, REG_RX_BASE_ADDR_HI,
--			(u32)((rfd_ring->dma & AT_DMA_HI_ADDR_MASK) >> 32));
--	AT_WRITE_REG(hw, REG_RFD0_HEAD_ADDR_LO,
--			(u32)(rfd_ring->dma & AT_DMA_LO_ADDR_MASK));
-+		     (u32)((rfd_ring->dma & AT_DMA_HI_ADDR_MASK) >> 32));
-+	for (i = 0; i < adapter->rx_queue_count; i++) {
-+		AT_WRITE_REG(hw, atl1c_qregs[i].rfd_addr_lo,
-+			     (u32)(rfd_ring[i].dma & AT_DMA_LO_ADDR_MASK));
-+	}
- 
- 	AT_WRITE_REG(hw, REG_RFD_RING_SIZE,
- 			rfd_ring->count & RFD_RING_SIZE_MASK);
-@@ -1077,8 +1135,10 @@ static void atl1c_configure_des_ring(struct atl1c_adapter *adapter)
- 			adapter->rx_buffer_len & RX_BUF_SIZE_MASK);
- 
- 	/* RRD */
--	AT_WRITE_REG(hw, REG_RRD0_HEAD_ADDR_LO,
--			(u32)(rrd_ring->dma & AT_DMA_LO_ADDR_MASK));
-+	for (i = 0; i < adapter->rx_queue_count; i++) {
-+		AT_WRITE_REG(hw, atl1c_qregs[i].rrd_addr_lo,
-+			     (u32)(rrd_ring[i].dma & AT_DMA_LO_ADDR_MASK));
-+	}
- 	AT_WRITE_REG(hw, REG_RRD_RING_SIZE,
- 			(rrd_ring->count & RRD_RING_SIZE_MASK));
- 
-@@ -1431,14 +1491,28 @@ static int atl1c_configure(struct atl1c_adapter *adapter)
- {
- 	struct net_device *netdev = adapter->netdev;
- 	int num;
-+	int i;
-+
-+	if (adapter->hw.nic_type == athr_mt) {
-+		u32 mode;
-+
-+		AT_READ_REG(&adapter->hw, REG_MT_MODE, &mode);
-+		if (adapter->rx_queue_count == 4)
-+			mode |= MT_MODE_4Q;
-+		else
-+			mode &= ~MT_MODE_4Q;
-+		AT_WRITE_REG(&adapter->hw, REG_MT_MODE, mode);
-+	}
- 
- 	atl1c_init_ring_ptrs(adapter);
- 	atl1c_set_multi(netdev);
- 	atl1c_restore_vlan(adapter);
- 
--	num = atl1c_alloc_rx_buffer(adapter, false);
--	if (unlikely(num == 0))
--		return -ENOMEM;
-+	for (i = 0; i < adapter->rx_queue_count; ++i) {
-+		num = atl1c_alloc_rx_buffer(adapter, i, false);
-+		if (unlikely(num == 0))
-+			return -ENOMEM;
-+	}
- 
- 	if (atl1c_configure_mac(adapter))
- 		return -EIO;
-@@ -1537,6 +1611,8 @@ static int atl1c_clean_tx(struct napi_struct *napi, int budget)
- 	struct atl1c_tpd_ring *tpd_ring =
- 		container_of(napi, struct atl1c_tpd_ring, napi);
- 	struct atl1c_adapter *adapter = tpd_ring->adapter;
-+	struct netdev_queue *txq =
-+		netdev_get_tx_queue(napi->dev, tpd_ring->num);
- 	struct atl1c_buffer *buffer_info;
- 	struct pci_dev *pdev = adapter->pdev;
- 	u16 next_to_clean = atomic_read(&tpd_ring->next_to_clean);
-@@ -1544,7 +1620,8 @@ static int atl1c_clean_tx(struct napi_struct *napi, int budget)
- 	unsigned int total_bytes = 0, total_packets = 0;
- 	unsigned long flags;
- 
--	AT_READ_REGW(&adapter->hw, REG_TPD_PRI0_CIDX, &hw_next_to_clean);
-+	AT_READ_REGW(&adapter->hw, atl1c_qregs[tpd_ring->num].tpd_cons,
-+		     &hw_next_to_clean);
- 
- 	while (next_to_clean != hw_next_to_clean) {
- 		buffer_info = &tpd_ring->buffer_info[next_to_clean];
-@@ -1558,17 +1635,15 @@ static int atl1c_clean_tx(struct napi_struct *napi, int budget)
- 		atomic_set(&tpd_ring->next_to_clean, next_to_clean);
- 	}
- 
--	netdev_completed_queue(adapter->netdev, total_packets, total_bytes);
-+	netdev_tx_completed_queue(txq, total_packets, total_bytes);
- 
--	if (netif_queue_stopped(adapter->netdev) &&
--			netif_carrier_ok(adapter->netdev)) {
--		netif_wake_queue(adapter->netdev);
--	}
-+	if (netif_tx_queue_stopped(txq) && netif_carrier_ok(adapter->netdev))
-+		netif_tx_wake_queue(txq);
- 
- 	if (total_packets < budget) {
- 		napi_complete_done(napi, total_packets);
- 		spin_lock_irqsave(&adapter->hw.intr_mask_lock, flags);
--		adapter->hw.intr_mask |= ISR_TX_PKT;
-+		adapter->hw.intr_mask |= atl1c_qregs[tpd_ring->num].tx_isr;
- 		AT_WRITE_REG(&adapter->hw, REG_IMR, adapter->hw.intr_mask);
- 		spin_unlock_irqrestore(&adapter->hw.intr_mask_lock, flags);
- 		return total_packets;
-@@ -1576,6 +1651,38 @@ static int atl1c_clean_tx(struct napi_struct *napi, int budget)
- 	return budget;
- }
- 
-+static void atl1c_intr_rx_tx(struct atl1c_adapter *adapter, u32 status)
-+{
-+	struct atl1c_hw *hw = &adapter->hw;
-+	u32 intr_mask;
-+	int i;
-+
-+	spin_lock(&hw->intr_mask_lock);
-+	intr_mask = hw->intr_mask;
-+	for (i = 0; i < adapter->rx_queue_count; ++i) {
-+		if (!(status & atl1c_qregs[i].rx_isr))
-+			continue;
-+		if (napi_schedule_prep(&adapter->rrd_ring[i].napi)) {
-+			intr_mask &= ~atl1c_qregs[i].rx_isr;
-+			__napi_schedule(&adapter->rrd_ring[i].napi);
-+		}
-+	}
-+	for (i = 0; i < adapter->tx_queue_count; ++i) {
-+		if (!(status & atl1c_qregs[i].tx_isr))
-+			continue;
-+		if (napi_schedule_prep(&adapter->tpd_ring[i].napi)) {
-+			intr_mask &= ~atl1c_qregs[i].tx_isr;
-+			__napi_schedule(&adapter->tpd_ring[i].napi);
-+		}
-+	}
-+
-+	if (hw->intr_mask != intr_mask) {
-+		hw->intr_mask = intr_mask;
-+		AT_WRITE_REG(hw, REG_IMR, hw->intr_mask);
-+	}
-+	spin_unlock(&hw->intr_mask_lock);
-+}
-+
- /**
-  * atl1c_intr - Interrupt Handler
-  * @irq: interrupt number
-@@ -1606,24 +1713,8 @@ static irqreturn_t atl1c_intr(int irq, void *data)
- 			atl1c_clear_phy_int(adapter);
- 		/* Ack ISR */
- 		AT_WRITE_REG(hw, REG_ISR, status | ISR_DIS_INT);
--		if (status & ISR_RX_PKT) {
--			if (napi_schedule_prep(&adapter->rrd_ring[0].napi)) {
--				spin_lock(&hw->intr_mask_lock);
--				hw->intr_mask &= ~ISR_RX_PKT;
--				AT_WRITE_REG(hw, REG_IMR, hw->intr_mask);
--				spin_unlock(&hw->intr_mask_lock);
--				__napi_schedule(&adapter->rrd_ring[0].napi);
--			}
--		}
--		if (status & ISR_TX_PKT) {
--			if (napi_schedule_prep(&adapter->tpd_ring[0].napi)) {
--				spin_lock(&hw->intr_mask_lock);
--				hw->intr_mask &= ~ISR_TX_PKT;
--				AT_WRITE_REG(hw, REG_IMR, hw->intr_mask);
--				spin_unlock(&hw->intr_mask_lock);
--				__napi_schedule(&adapter->tpd_ring[0].napi);
--			}
--		}
-+		if (status & (ISR_RX_PKT | ISR_TX_PKT))
-+			atl1c_intr_rx_tx(adapter, status);
- 
- 		handled = IRQ_HANDLED;
- 		/* check if PCIE PHY Link down */
-@@ -1674,9 +1765,9 @@ static inline void atl1c_rx_checksum(struct atl1c_adapter *adapter,
- }
- 
- static struct sk_buff *atl1c_alloc_skb(struct atl1c_adapter *adapter,
--				       bool napi_mode)
-+				       u32 queue, bool napi_mode)
- {
--	struct atl1c_rrd_ring *rrd_ring = &adapter->rrd_ring[0];
-+	struct atl1c_rrd_ring *rrd_ring = &adapter->rrd_ring[queue];
- 	struct sk_buff *skb;
- 	struct page *page;
- 
-@@ -1711,9 +1802,10 @@ static struct sk_buff *atl1c_alloc_skb(struct atl1c_adapter *adapter,
- 	return skb;
- }
- 
--static int atl1c_alloc_rx_buffer(struct atl1c_adapter *adapter, bool napi_mode)
-+static int atl1c_alloc_rx_buffer(struct atl1c_adapter *adapter, u32 queue,
-+				 bool napi_mode)
- {
--	struct atl1c_rfd_ring *rfd_ring = adapter->rfd_ring;
-+	struct atl1c_rfd_ring *rfd_ring = &adapter->rfd_ring[queue];
- 	struct pci_dev *pdev = adapter->pdev;
- 	struct atl1c_buffer *buffer_info, *next_info;
- 	struct sk_buff *skb;
-@@ -1732,7 +1824,7 @@ static int atl1c_alloc_rx_buffer(struct atl1c_adapter *adapter, bool napi_mode)
- 	while (next_info->flags & ATL1C_BUFFER_FREE) {
- 		rfd_desc = ATL1C_RFD_DESC(rfd_ring, rfd_next_to_use);
- 
--		skb = atl1c_alloc_skb(adapter, napi_mode);
-+		skb = atl1c_alloc_skb(adapter, queue, napi_mode);
- 		if (unlikely(!skb)) {
- 			if (netif_msg_rx_err(adapter))
- 				dev_warn(&pdev->dev, "alloc rx buffer failed\n");
-@@ -1774,8 +1866,8 @@ static int atl1c_alloc_rx_buffer(struct atl1c_adapter *adapter, bool napi_mode)
- 		/* TODO: update mailbox here */
- 		wmb();
- 		rfd_ring->next_to_use = rfd_next_to_use;
--		AT_WRITE_REG(&adapter->hw, REG_MB_RFD0_PROD_IDX,
--			rfd_ring->next_to_use & MB_RFDX_PROD_IDX_MASK);
-+		AT_WRITE_REG(&adapter->hw, atl1c_qregs[queue].rfd_prod,
-+			     rfd_ring->next_to_use & MB_RFDX_PROD_IDX_MASK);
- 	}
- 
- 	return num_alloc;
-@@ -1824,7 +1916,6 @@ static int atl1c_clean_rx(struct napi_struct *napi, int budget)
- 		container_of(napi, struct atl1c_rrd_ring, napi);
- 	struct atl1c_adapter *adapter = rrd_ring->adapter;
- 	u16 rfd_num, rfd_index;
--	u16 count = 0;
- 	u16 length;
- 	struct pci_dev *pdev = adapter->pdev;
- 	struct net_device *netdev  = adapter->netdev;
-@@ -1897,16 +1988,15 @@ static int atl1c_clean_rx(struct napi_struct *napi, int budget)
- 		napi_gro_receive(napi, skb);
- 
- 		work_done++;
--		count++;
- 	}
--	if (count)
--		atl1c_alloc_rx_buffer(adapter, true);
-+	if (work_done)
-+		atl1c_alloc_rx_buffer(adapter, rrd_ring->num, true);
- 
- 	if (work_done < budget) {
- quit_polling:
- 		napi_complete_done(napi, work_done);
- 		spin_lock_irqsave(&adapter->hw.intr_mask_lock, flags);
--		adapter->hw.intr_mask |= ISR_RX_PKT;
-+		adapter->hw.intr_mask |= atl1c_qregs[rrd_ring->num].rx_isr;
- 		AT_WRITE_REG(&adapter->hw, REG_IMR, adapter->hw.intr_mask);
- 		spin_unlock_irqrestore(&adapter->hw.intr_mask_lock, flags);
- 	}
-@@ -1930,9 +2020,9 @@ static void atl1c_netpoll(struct net_device *netdev)
- }
- #endif
- 
--static inline u16 atl1c_tpd_avail(struct atl1c_adapter *adapter, enum atl1c_trans_queue type)
-+static inline u16 atl1c_tpd_avail(struct atl1c_adapter *adapter, u32 queue)
- {
--	struct atl1c_tpd_ring *tpd_ring = &adapter->tpd_ring[type];
-+	struct atl1c_tpd_ring *tpd_ring = &adapter->tpd_ring[queue];
- 	u16 next_to_use = 0;
- 	u16 next_to_clean = 0;
- 
-@@ -1950,9 +2040,9 @@ static inline u16 atl1c_tpd_avail(struct atl1c_adapter *adapter, enum atl1c_tran
-  * there is enough tpd to use
-  */
- static struct atl1c_tpd_desc *atl1c_get_tpd(struct atl1c_adapter *adapter,
--	enum atl1c_trans_queue type)
-+					    u32 queue)
- {
--	struct atl1c_tpd_ring *tpd_ring = &adapter->tpd_ring[type];
-+	struct atl1c_tpd_ring *tpd_ring = &adapter->tpd_ring[queue];
- 	struct atl1c_tpd_desc *tpd_desc;
- 	u16 next_to_use = 0;
- 
-@@ -1994,7 +2084,7 @@ static u16 atl1c_cal_tpd_req(const struct sk_buff *skb)
- static int atl1c_tso_csum(struct atl1c_adapter *adapter,
- 			  struct sk_buff *skb,
- 			  struct atl1c_tpd_desc **tpd,
--			  enum atl1c_trans_queue type)
-+			  u32 queue)
- {
- 	struct pci_dev *pdev = adapter->pdev;
- 	unsigned short offload_type;
-@@ -2039,7 +2129,7 @@ static int atl1c_tso_csum(struct atl1c_adapter *adapter,
- 				*(struct atl1c_tpd_ext_desc **)(tpd);
- 
- 			memset(etpd, 0, sizeof(struct atl1c_tpd_ext_desc));
--			*tpd = atl1c_get_tpd(adapter, type);
-+			*tpd = atl1c_get_tpd(adapter, queue);
- 			ipv6_hdr(skb)->payload_len = 0;
- 			/* check payload == 0 byte ? */
- 			hdr_len = (skb_transport_offset(skb) + tcp_hdrlen(skb));
-@@ -2091,9 +2181,9 @@ static int atl1c_tso_csum(struct atl1c_adapter *adapter,
- 
- static void atl1c_tx_rollback(struct atl1c_adapter *adpt,
- 			      struct atl1c_tpd_desc *first_tpd,
--			      enum atl1c_trans_queue type)
-+			      u32 queue)
- {
--	struct atl1c_tpd_ring *tpd_ring = &adpt->tpd_ring[type];
-+	struct atl1c_tpd_ring *tpd_ring = &adpt->tpd_ring[queue];
- 	struct atl1c_buffer *buffer_info;
- 	struct atl1c_tpd_desc *tpd;
- 	u16 first_index, index;
-@@ -2112,8 +2202,8 @@ static void atl1c_tx_rollback(struct atl1c_adapter *adpt,
- }
- 
- static int atl1c_tx_map(struct atl1c_adapter *adapter,
--		      struct sk_buff *skb, struct atl1c_tpd_desc *tpd,
--			enum atl1c_trans_queue type)
-+			struct sk_buff *skb, struct atl1c_tpd_desc *tpd,
-+			u32 queue)
- {
- 	struct atl1c_tpd_desc *use_tpd = NULL;
- 	struct atl1c_buffer *buffer_info = NULL;
-@@ -2153,7 +2243,7 @@ static int atl1c_tx_map(struct atl1c_adapter *adapter,
- 		if (mapped_len == 0)
- 			use_tpd = tpd;
- 		else {
--			use_tpd = atl1c_get_tpd(adapter, type);
-+			use_tpd = atl1c_get_tpd(adapter, queue);
- 			memcpy(use_tpd, tpd, sizeof(struct atl1c_tpd_desc));
- 		}
- 		buffer_info = atl1c_get_tx_buffer(adapter, use_tpd);
-@@ -2175,7 +2265,7 @@ static int atl1c_tx_map(struct atl1c_adapter *adapter,
- 	for (f = 0; f < nr_frags; f++) {
- 		skb_frag_t *frag = &skb_shinfo(skb)->frags[f];
- 
--		use_tpd = atl1c_get_tpd(adapter, type);
-+		use_tpd = atl1c_get_tpd(adapter, queue);
- 		memcpy(use_tpd, tpd, sizeof(struct atl1c_tpd_desc));
- 
- 		buffer_info = atl1c_get_tx_buffer(adapter, use_tpd);
-@@ -2208,23 +2298,22 @@ static int atl1c_tx_map(struct atl1c_adapter *adapter,
- 	return -1;
- }
- 
--static void atl1c_tx_queue(struct atl1c_adapter *adapter,
--			   enum atl1c_trans_queue type)
-+static void atl1c_tx_queue(struct atl1c_adapter *adapter, u32 queue)
- {
--	struct atl1c_tpd_ring *tpd_ring = &adapter->tpd_ring[type];
--	u16 reg;
-+	struct atl1c_tpd_ring *tpd_ring = &adapter->tpd_ring[queue];
- 
--	reg = type == atl1c_trans_high ? REG_TPD_PRI1_PIDX : REG_TPD_PRI0_PIDX;
--	AT_WRITE_REGW(&adapter->hw, reg, tpd_ring->next_to_use);
-+	AT_WRITE_REGW(&adapter->hw, atl1c_qregs[queue].tpd_prod,
-+		      tpd_ring->next_to_use);
- }
- 
- static netdev_tx_t atl1c_xmit_frame(struct sk_buff *skb,
- 					  struct net_device *netdev)
- {
- 	struct atl1c_adapter *adapter = netdev_priv(netdev);
--	u16 tpd_req;
-+	u32 queue = skb_get_queue_mapping(skb);
-+	struct netdev_queue *txq = netdev_get_tx_queue(netdev, queue);
- 	struct atl1c_tpd_desc *tpd;
--	enum atl1c_trans_queue type = atl1c_trans_normal;
-+	u16 tpd_req;
- 
- 	if (test_bit(__AT_DOWN, &adapter->flags)) {
- 		dev_kfree_skb_any(skb);
-@@ -2233,18 +2322,18 @@ static netdev_tx_t atl1c_xmit_frame(struct sk_buff *skb,
- 
- 	tpd_req = atl1c_cal_tpd_req(skb);
- 
--	if (atl1c_tpd_avail(adapter, type) < tpd_req) {
-+	if (atl1c_tpd_avail(adapter, queue) < tpd_req) {
- 		/* no enough descriptor, just stop queue */
--		atl1c_tx_queue(adapter, type);
--		netif_stop_queue(netdev);
-+		atl1c_tx_queue(adapter, queue);
-+		netif_tx_stop_queue(txq);
- 		return NETDEV_TX_BUSY;
- 	}
- 
--	tpd = atl1c_get_tpd(adapter, type);
-+	tpd = atl1c_get_tpd(adapter, queue);
- 
- 	/* do TSO and check sum */
--	if (atl1c_tso_csum(adapter, skb, &tpd, type) != 0) {
--		atl1c_tx_queue(adapter, type);
-+	if (atl1c_tso_csum(adapter, skb, &tpd, queue) != 0) {
-+		atl1c_tx_queue(adapter, queue);
- 		dev_kfree_skb_any(skb);
- 		return NETDEV_TX_OK;
- 	}
-@@ -2262,17 +2351,17 @@ static netdev_tx_t atl1c_xmit_frame(struct sk_buff *skb,
- 	if (skb_network_offset(skb) != ETH_HLEN)
- 		tpd->word1 |= 1 << TPD_ETH_TYPE_SHIFT; /* Ethernet frame */
- 
--	if (atl1c_tx_map(adapter, skb, tpd, type) < 0) {
-+	if (atl1c_tx_map(adapter, skb, tpd, queue) < 0) {
- 		netif_info(adapter, tx_done, adapter->netdev,
- 			   "tx-skb dropped due to dma error\n");
- 		/* roll back tpd/buffer */
--		atl1c_tx_rollback(adapter, tpd, type);
-+		atl1c_tx_rollback(adapter, tpd, queue);
- 		dev_kfree_skb_any(skb);
- 	} else {
- 		bool more = netdev_xmit_more();
- 
--		if (__netdev_sent_queue(adapter->netdev, skb->len, more))
--			atl1c_tx_queue(adapter, type);
-+		if (__netdev_tx_sent_queue(txq, skb->len, more))
-+			atl1c_tx_queue(adapter, queue);
- 	}
- 
- 	return NETDEV_TX_OK;
-@@ -2326,16 +2415,19 @@ static int atl1c_request_irq(struct atl1c_adapter *adapter)
- 
- static void atl1c_reset_dma_ring(struct atl1c_adapter *adapter)
- {
-+	int i;
- 	/* release tx-pending skbs and reset tx/rx ring index */
--	atl1c_clean_tx_ring(adapter, atl1c_trans_normal);
--	atl1c_clean_tx_ring(adapter, atl1c_trans_high);
--	atl1c_clean_rx_ring(adapter);
-+	for (i = 0; i < adapter->tx_queue_count; ++i)
-+		atl1c_clean_tx_ring(adapter, i);
-+	for (i = 0; i < adapter->rx_queue_count; ++i)
-+		atl1c_clean_rx_ring(adapter, i);
- }
- 
- static int atl1c_up(struct atl1c_adapter *adapter)
- {
- 	struct net_device *netdev = adapter->netdev;
- 	int err;
-+	int i;
- 
- 	netif_carrier_off(netdev);
- 
-@@ -2349,20 +2441,24 @@ static int atl1c_up(struct atl1c_adapter *adapter)
- 
- 	atl1c_check_link_status(adapter);
- 	clear_bit(__AT_DOWN, &adapter->flags);
--	napi_enable(&adapter->rrd_ring[0].napi);
--	napi_enable(&adapter->tpd_ring[0].napi);
-+	for (i = 0; i < adapter->tx_queue_count; ++i)
-+		napi_enable(&adapter->tpd_ring[i].napi);
-+	for (i = 0; i < adapter->rx_queue_count; ++i)
-+		napi_enable(&adapter->rrd_ring[i].napi);
- 	atl1c_irq_enable(adapter);
- 	netif_start_queue(netdev);
- 	return err;
- 
- err_up:
--	atl1c_clean_rx_ring(adapter);
-+	for (i = 0; i < adapter->rx_queue_count; ++i)
-+		atl1c_clean_rx_ring(adapter, i);
- 	return err;
- }
- 
- static void atl1c_down(struct atl1c_adapter *adapter)
- {
- 	struct net_device *netdev = adapter->netdev;
-+	int i;
- 
- 	atl1c_del_timer(adapter);
- 	adapter->work_event = 0; /* clear all event */
-@@ -2370,8 +2466,10 @@ static void atl1c_down(struct atl1c_adapter *adapter)
- 	 * reschedule our watchdog timer */
- 	set_bit(__AT_DOWN, &adapter->flags);
- 	netif_carrier_off(netdev);
--	napi_disable(&adapter->rrd_ring[0].napi);
--	napi_disable(&adapter->tpd_ring[0].napi);
-+	for (i = 0; i < adapter->tx_queue_count; ++i)
-+		napi_disable(&adapter->tpd_ring[i].napi);
-+	for (i = 0; i < adapter->rx_queue_count; ++i)
-+		napi_disable(&adapter->rrd_ring[i].napi);
- 	atl1c_irq_disable(adapter);
- 	atl1c_free_irq(adapter);
- 	/* disable ASPM if device inactive */
-@@ -2558,7 +2656,9 @@ static int atl1c_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
- 	static int cards_found;
- 	u8 __iomem *hw_addr;
- 	enum atl1c_nic_type nic_type;
-+	u32 queue_count = 1;
- 	int err = 0;
-+	int i;
- 
- 	/* enable device (incl. PCI PM wakeup and hotplug setup) */
- 	err = pci_enable_device_mem(pdev);
-@@ -2599,8 +2699,10 @@ static int atl1c_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
- 	}
- 
- 	nic_type = atl1c_get_mac_type(pdev, hw_addr);
-+	if (nic_type == athr_mt)
-+		queue_count = 4;
- 
--	netdev = alloc_etherdev(sizeof(struct atl1c_adapter));
-+	netdev = alloc_etherdev_mq(sizeof(struct atl1c_adapter), queue_count);
- 	if (netdev == NULL) {
- 		err = -ENOMEM;
- 		goto err_alloc_etherdev;
-@@ -2619,6 +2721,8 @@ static int atl1c_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
- 	adapter->hw.nic_type = nic_type;
- 	adapter->msg_enable = netif_msg_init(-1, atl1c_default_msg);
- 	adapter->hw.hw_addr = hw_addr;
-+	adapter->tx_queue_count = queue_count;
-+	adapter->rx_queue_count = queue_count;
- 
- 	/* init mii data */
- 	adapter->mii.dev = netdev;
-@@ -2627,8 +2731,12 @@ static int atl1c_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
- 	adapter->mii.phy_id_mask = 0x1f;
- 	adapter->mii.reg_num_mask = MDIO_CTRL_REG_MASK;
- 	dev_set_threaded(netdev, true);
--	netif_napi_add(netdev, &adapter->rrd_ring[0].napi, atl1c_clean_rx, 64);
--	netif_napi_add(netdev, &adapter->tpd_ring[0].napi, atl1c_clean_tx, 64);
-+	for (i = 0; i < adapter->rx_queue_count; ++i)
-+		netif_napi_add(netdev, &adapter->rrd_ring[i].napi,
-+			       atl1c_clean_rx, 64);
-+	for (i = 0; i < adapter->tx_queue_count; ++i)
-+		netif_napi_add(netdev, &adapter->tpd_ring[i].napi,
-+			       atl1c_clean_tx, 64);
- 	timer_setup(&adapter->phy_config_timer, atl1c_phy_config, 0);
- 	/* setup the private structure */
- 	err = atl1c_sw_init(adapter);
--- 
-2.31.1
-
+SGkgTGludXMgV2FsbGVpaiwNCg0KVGhhbmtzIGZvciB0aGUgcmV2aWV3Lg0KDQotLS0tLU9yaWdp
+bmFsIE1lc3NhZ2UtLS0tLQ0KRnJvbTogTGludXMgV2FsbGVpaiA8bGludXMud2FsbGVpakBsaW5h
+cm8ub3JnPiANClNlbnQ6IFRodXJzZGF5LCBNYXkgMjcsIDIwMjEgNTo0MSBBTQ0KVG86IEQsIExh
+a3NobWkgU293amFueWEgPGxha3NobWkuc293amFueWEuZEBpbnRlbC5jb20+OyBBbmR5IFNoZXZj
+aGVua28gPGFuZHJpeS5zaGV2Y2hlbmtvQGxpbnV4LmludGVsLmNvbT4NCkNjOiBvcGVuIGxpc3Q6
+R1BJTyBTVUJTWVNURU0gPGxpbnV4LWdwaW9Admdlci5rZXJuZWwub3JnPjsgbGludXgta2VybmVs
+IDxsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnPjsgUmFqYSBTdWJyYW1hbmlhbiwgTGFrc2ht
+aSBCYWkgPGxha3NobWkuYmFpLnJhamEuc3VicmFtYW5pYW5AaW50ZWwuY29tPjsgU2FoYSwgVGFt
+YWwgPHRhbWFsLnNhaGFAaW50ZWwuY29tPg0KU3ViamVjdDogUmU6IFtQQVRDSCAyLzJdIHBpbmN0
+cmw6IEFkZCBJbnRlbCBLZWVtIEJheSBwaW5jdHJsIGRyaXZlcg0KDQpIaSBMYWtzaG1pLA0KDQp0
+aGFua3MgZm9yIHlvdXIgcGF0Y2ghDQoNCk9uIE1vbiwgTWF5IDI0LCAyMDIxIGF0IDExOjI2IEFN
+IDxsYWtzaG1pLnNvd2phbnlhLmRAaW50ZWwuY29tPiB3cm90ZToNCg0KPiBGcm9tOiAiRCwgTGFr
+c2htaSBTb3dqYW55YSIgPGxha3NobWkuc293amFueWEuZEBpbnRlbC5jb20+DQo+DQo+IEFkZCBw
+aW5jdHJsIGRyaXZlciB0byBlbmFibGUgcGluIGNvbnRyb2wgc3VwcG9ydCBpbiB0aGUgSW50ZWwg
+S2VlbSBCYXkgU29DLg0KDQpUaGF0J3MgYSB2ZXJ5IHRlcnNlIHN1bW1hcnksIHBsZWFzZSBpbmNs
+dWRlIHNvbWUgaW5mbyBvbiB0aGUgU29DIGFuZCB0aGF0IGl0IGlzIG5vdCB4ODYgKEkgZ3Vlc3Mg
+bm90PykNCktlZW0gQmF5IChLTUIpIGlzIGEgQ29tcHV0ZXIgVmlzaW9uIEFJIHByb2Nlc3Npbmcg
+U29DIGJhc2VkIG9uIEFSTSBBNTMgQ1BVLg0KS2VlbWJheSBEb2N1bWVudGF0aW9uIDogaHR0cHM6
+Ly9sb3JlLmtlcm5lbC5vcmcvcGF0Y2h3b3JrL3BhdGNoLzEzNzY2NTkvLiANCkkgc2hhbGwgdXBk
+YXRlIHRoZSBjb21taXQgbWVzc2FnZSB3aXRoIGluZm8gb24gdGhlIFNvQyBpbiBuZXh0IHZlcnNp
+b24uDQoNCldoYXQgcmVhbGx5IGxhY2tzIGlzIGEgZGVzY3JpcHRpb24gb2YgaG93IHRoZSBpbnRl
+cnJ1cHRzIGFyZSByb3V0ZWQgYW5kIGdyb3VwZWQsIHRoZXJlIGlzIHNvbWUgZGV0YWlscyBhYm91
+dCA0IEdQSU9zIHNoYXJpbmcgb25lIGludGVycnVwdCBidXQgdGhpcyByZWFsbHkgbmVlZHMgdG8g
+YmUgZXhwbGFpbmVkLCB0aGUgY29kZSBpcyB3YXkgdG8gdGVyc2UgdG8gdW5kZXJzdGFuZC4gUHJv
+YmFibHkgd2UgYWxzbyBuZWVkIGNvbW1lbnRzIGluIHRoZSBjb2RlIGl0c2VsZiB0byBiZSBhYmxl
+IHRvIHJlYWQgaXQgYW5kIHVuZGVyc3RhbmQgdGhlIGludGVycnVwdCBoYW5kbGluZywgc28gYWRk
+IHNvbWUgb2YgdGhhdCwgaWxsdXN0cmF0aW9ucyB3b3VsZCBiZSBnb29kLCBhbnl0aGluZyB0aGF0
+IG1ha2UgaXQgY3J5c3RhbCBjbGVhciBob3cgdGhlIEdQSU8gaW50ZXJydXB0cyBhcmUgZ3JvdXBl
+ZCBhbmQgd29yay4NCldlIHdpbGwgYWRkIGEgc2ltcGxlIEFTQ0lJIGRpYWdyYW0vZGVzY3JpcHRp
+b24gYWJvdXQgdGhlIElQLg0KDQpUaGUgcGluIG11eCAvIGNvbmZpZyBvbiB0aGUgb3RoZXIgaGFu
+ZCBpcyB2ZXJ5IHN0cmFpZ2h0LWZvcndhcmQsIG5vdCBtdWNoIHRvIHNheSBhYm91dCB0aGF0Lg0K
+DQo+IFNpZ25lZC1vZmYtYnk6IFZpbmVldGhhIEcuIEpheWEgS3VtYXJhbiANCj4gPHZpbmVldGhh
+LmcuamF5YS5rdW1hcmFuQGludGVsLmNvbT4NCj4gU2lnbmVkLW9mZi1ieTogVmlqYXlha2FubmFu
+IEF5eWF0aHVyYWkgDQo+IDx2aWpheWFrYW5uYW4uYXl5YXRodXJhaUBpbnRlbC5jb20+DQo+IFNp
+Z25lZC1vZmYtYnk6IEQsIExha3NobWkgU293amFueWEgPGxha3NobWkuc293amFueWEuZEBpbnRl
+bC5jb20+DQo+IFJldmlld2VkLWJ5OiBNYXJrIEdyb3NzIDxtZ3Jvc3NAbGludXguaW50ZWwuY29t
+Pg0KPiBUZXN0ZWQtYnk6IEEsIEp5b3RoaVggPGp5b3RoaXguYUBpbnRlbC5jb20+DQoNCk15IGZp
+cnN0IHJlYWN0aW9uIGlzICJob3cgaXMgdGhpcyBoYXJkd2FyZSBkaWZmZXJlbnQgZnJvbSBwaW5j
+dHJsLWVxdWlsaWJyaXVtLmM/DQpBbHNvIGtub3duIGFzICJJbnRlbCBMaWdodG5pbmcgTW91bnRh
+aW4iLg0KQ2FuIGl0IHNoYXJlIGNvZGUgd2l0aCB0aGUgZm9ybWVyPw0KDQpDYW4geW91IGRvIHdo
+YXQgcG9zdCBwaW4gY29udHJvbGxlciBmYW1pbGllcyBkbyBhbmQgYWJzdHJhY3Qgb3V0IGEgZ2Vu
+ZXJpYyBwaW5jb250cm9sIGRyaXZlciBmb3IgdGhpcyBmYW1pbHkgd2l0aCBlcXVpbGlicml1bSBh
+bmQga2VlbWJheSBhcyBwbHVnLWlucz8gVGhlIHJlZ2lzdGVycyBzZWVtIHRvIGRpZmZlciBzbyBJ
+IGFtIG5vdCBzdXJlIGlmIGl0IGNhbiBiZSBkb25lLg0KUmVnaXN0ZXJzIGFyZSBub3QgY29tcGF0
+aWJsZSBhbmQgdGhlIElQIGlzIG5vdCBkZXJpdmVkIGZyb20gcGluY3RybC1lcXVpbGlicml1bS5j
+DQoNCj4gKyAgICAgICBzZWxlY3QgR1BJT19HRU5FUklDDQoNCkFyZSB5b3UgcmVhbGx5IHVzaW5n
+IHRoaXM/IEl0IHdvdWxkIGJlIGdyZWF0IGlmIHlvdSBkaWQuDQpXZSBhcmUgdXNpbmcgaXQuDQoN
+Cj4gKy8qIEdQSU8gZGF0YSByZWdpc3RlcnMnIG9mZnNldHMgKi8NCj4gKyNkZWZpbmUgS0VFTUJB
+WV9HUElPX0RBVEFfT1VUICAgICAgICAgIDB4MDAwDQo+ICsjZGVmaW5lIEtFRU1CQVlfR1BJT19E
+QVRBX0lOICAgICAgICAgICAweDAyMA0KPiArI2RlZmluZSBLRUVNQkFZX0dQSU9fREFUQV9JTl9S
+QVcgICAgICAgMHgwNDANCj4gKyNkZWZpbmUgS0VFTUJBWV9HUElPX0RBVEFfSElHSCAgICAgICAg
+IDB4MDYwDQo+ICsjZGVmaW5lIEtFRU1CQVlfR1BJT19EQVRBX0xPVyAgICAgICAgICAweDA4MA0K
+PiArDQo+ICsvKiBHUElPIEludGVycnVwdCBhbmQgbW9kZSByZWdpc3RlcnMnIG9mZnNldHMgKi8N
+Cj4gKyNkZWZpbmUgS0VFTUJBWV9HUElPX0lOVF9DRkcgICAgICAgICAgIDB4MDAwDQo+ICsjZGVm
+aW5lIEtFRU1CQVlfR1BJT19NT0RFICAgICAgICAgICAgICAweDA3MA0KDQpZZWFoIEkgaGF2ZW4n
+dCBzZWVuIHRoaXMgYmVmb3JlLg0KKEFuZHkgcGxlYXNlIG1ha2Ugc3VyZSBpdCBkb2Vzbid0IGxv
+b2sgbGlrZSBzb21lIG90aGVyIEludGVsLikNCg0KSSBndWVzcyB0aGlzIGhhcmR3YXJlIGlzIGFs
+bCBicmFuZCBuZXcuDQpZZXMsIEl0IGlzIGEgYnJhbmQgbmV3IElQLg0KDQo+ICsvKiBHUElPIG1v
+ZGUgcmVnaXN0ZXIgYml0IGZpZWxkcyAqLw0KPiArI2RlZmluZSBLRUVNQkFZX0dQSU9fTU9ERV9Q
+VUxMVVBfTUFTSyAgR0VOTUFTSygxMywgMTIpDQo+ICsjZGVmaW5lIEtFRU1CQVlfR1BJT19NT0RF
+X0RSSVZFX01BU0sgICBHRU5NQVNLKDgsIDcpDQo+ICsjZGVmaW5lIEtFRU1CQVlfR1BJT19NT0RF
+X0lOVl9NQVNLICAgICBHRU5NQVNLKDUsIDQpDQo+ICsjZGVmaW5lIEtFRU1CQVlfR1BJT19NT0RF
+X1NFTEVDVF9NQVNLICBHRU5NQVNLKDIsIDApDQo+ICsjZGVmaW5lIEtFRU1CQVlfR1BJT19NT0RF
+X0RJUl9PVlIgICAgICBCSVQoMTUpDQo+ICsjZGVmaW5lIEtFRU1CQVlfR1BJT19NT0RFX1JFTiAg
+ICAgICAgICBCSVQoMTEpDQo+ICsjZGVmaW5lIEtFRU1CQVlfR1BJT19NT0RFX1NDSE1JVFRfRU4g
+ICBCSVQoMTApDQo+ICsjZGVmaW5lIEtFRU1CQVlfR1BJT19NT0RFX1NMRVdfUkFURSAgICBCSVQo
+OSkNCj4gKyNkZWZpbmUgS0VFTUJBWV9HUElPX0lSUV9FTkFCTEUgICAgICAgICAgICAgICAgQklU
+KDcpDQo+ICsjZGVmaW5lIEtFRU1CQVlfR1BJT19NT0RFX0RJUiAgICAgICAgICBCSVQoMykNCj4g
+KyNkZWZpbmUgS0VFTUJBWV9HUElPX01PREVfREVGQVVMVCAgICAgIDB4Nw0KPiArI2RlZmluZSBL
+RUVNQkFZX0dQSU9fTU9ERV9JTlZfVkFMICAgICAgMHgzDQo+ICsNCj4gKyNkZWZpbmUgS0VFTUJB
+WV9HUElPX0RJU0FCTEUgICAgICAgICAgIDANCj4gKyNkZWZpbmUgS0VFTUJBWV9HUElPX1BVTExf
+VVAgICAgICAgICAgIDENCj4gKyNkZWZpbmUgS0VFTUJBWV9HUElPX1BVTExfRE9XTiAgICAgICAg
+IDINCj4gKyNkZWZpbmUgS0VFTUJBWV9HUElPX0JVU19IT0xEICAgICAgICAgIDMNCj4gKyNkZWZp
+bmUgS0VFTUJBWV9HUElPX05VTV9JUlEgICAgICAgICAgIDgNCj4gKyNkZWZpbmUgS0VFTUJBWV9H
+UElPX01BWF9QRVJfSVJRICAgICAgIDQNCj4gKyNkZWZpbmUgS0VFTUJBWV9HUElPX01BWF9QRVJf
+UkVHICAgICAgIDMyDQo+ICsjZGVmaW5lIEtFRU1CQVlfR1BJT19NSU5fU1RSRU5HVEggICAgICAy
+DQo+ICsjZGVmaW5lIEtFRU1CQVlfR1BJT19NQVhfU1RSRU5HVEggICAgICAxMg0KPiArI2RlZmlu
+ZSBLRUVNQkFZX0dQSU9fU0VOU0VfTE9XICAgICAgICAgKElSUV9UWVBFX0xFVkVMX0xPVyB8IElS
+UV9UWVBFX0VER0VfRkFMTElORykNCg0KTG90cyBvZiBjb25maWcgZmVhdHVyZXMhDQoNCiguLi4p
+DQo+ICsgICAgICAgS0VFTUJBWV9QSU5fREVTQyg3OSwgIkdQSU83OSIsDQo+ICsgICAgICAgICAg
+ICAgICAgICAgICAgICBLRUVNQkFZX01VWCgweDAsICJQQ0lFX00wIiksDQo+ICsgICAgICAgICAg
+ICAgICAgICAgICAgICBLRUVNQkFZX01VWCgweDEsICJJMkMyX00xIiksDQo+ICsgICAgICAgICAg
+ICAgICAgICAgICAgICBLRUVNQkFZX01VWCgweDIsICJTTFZEUzFfTTIiKSwNCj4gKyAgICAgICAg
+ICAgICAgICAgICAgICAgIEtFRU1CQVlfTVVYKDB4MywgIlRQSVVfTTMiKSwNCj4gKyAgICAgICAg
+ICAgICAgICAgICAgICAgIEtFRU1CQVlfTVVYKDB4NCwgIkkzQzJfTTQiKSwNCj4gKyAgICAgICAg
+ICAgICAgICAgICAgICAgIEtFRU1CQVlfTVVYKDB4NSwgIkxDRF9NNSIpLA0KPiArICAgICAgICAg
+ICAgICAgICAgICAgICAgS0VFTUJBWV9NVVgoMHg2LCAiVUFSVDNfTTYiKSwNCj4gKyAgICAgICAg
+ICAgICAgICAgICAgICAgIEtFRU1CQVlfTVVYKDB4NywgIkdQSU9fTTciKSksDQoNCkkgc2VlIGVh
+Y2ggcGluIGdldHMgbXV4ZWQgaW5kaXZpZHVhbGx5Lg0KDQo+ICtzdGF0aWMgaW5saW5lIHUzMiBr
+ZWVtYmF5X3JlYWRfZ3Bpb19yZWcodm9pZCBfX2lvbWVtICpiYXNlLCB1bnNpZ25lZCANCj4gK2lu
+dCBwaW4pIHsNCj4gKyAgICAgICByZXR1cm4ga2VlbWJheV9yZWFkX3JlZyhiYXNlLCBwaW4gLyBL
+RUVNQkFZX0dQSU9fTUFYX1BFUl9SRUcpOyANCj4gK30NCj4gKw0KPiArc3RhdGljIGlubGluZSB1
+MzIga2VlbWJheV9yZWFkX3Bpbih2b2lkIF9faW9tZW0gKmJhc2UsIHVuc2lnbmVkIGludCANCj4g
+K3Bpbikgew0KPiArICAgICAgIHUzMiB2YWwgPSBrZWVtYmF5X3JlYWRfZ3Bpb19yZWcoYmFzZSwg
+cGluKTsNCj4gKw0KPiArICAgICAgIHJldHVybiAhISh2YWwgJiBCSVQocGluICUgS0VFTUJBWV9H
+UElPX01BWF9QRVJfUkVHKSk7IH0NCg0KU28gdGhpcyBpcyBjbGFtcGluZyB0byAzMiBiaXRzLg0K
+DQpXaGF0IGFib3V0IHRoZSBvbGQgdHJpY2sgb2YgcmVnaXN0ZXJpbmcgb25lIGdwaW9jaGlwIHBl
+ciAzMiBiaXRzIGFuZCB1c2luZyBHRU5FUklDX0dQSU8gZm9yIGVhY2g/IE5vIGNhbiBkbz8gSXQg
+aXMgcHJldHR5IGVhc3kgdG8gdGllIGl0IHRvZ2V0aGVyIHVzaW5nIHRoZSBncGlvLXJhbmdlcyBz
+ZWUgRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL2dwaW8vZ3Bpby50eHQNCldlIHdp
+bGwgZXhwbG9yZSB1c2luZyBHRU5FUklDX0dQSU8uIENvbnNpZGVyaW5nIHRoZSBjb21wbGV4aXR5
+LCBvdmVyaGVhZCBhbmQgdXNlciBpbXBhY3QsIHdlIHdpbGwgY29uY2x1ZGUgaWYgaXQncyBmZWFz
+aWJsZSB0byBzd2l0Y2ggdG8gdGhlIHN1Z2dlc3RlZCBtb2RlbCBvciBjb250aW51ZSB3aXRoIHRo
+ZSBleGlzdGluZyBtb2RlbC4gDQoNCj4gK3N0YXRpYyB2b2lkIGtlZW1iYXlfZ3Bpb19pbnZlcnQo
+c3RydWN0IGtlZW1iYXlfcGluY3RybCAqa3BjLCB1bnNpZ25lZCANCj4gK2ludCBwaW4pIHsNCj4g
+KyAgICAgICB1bnNpZ25lZCBpbnQgdmFsID0ga2VlbWJheV9yZWFkX3JlZyhrcGMtPmJhc2UxICsg
+DQo+ICtLRUVNQkFZX0dQSU9fTU9ERSwgcGluKTsNCj4gKw0KPiArICAgICAgIHZhbCB8PSBGSUVM
+RF9QUkVQKEtFRU1CQVlfR1BJT19NT0RFX0lOVl9NQVNLLCBLRUVNQkFZX0dQSU9fTU9ERV9JTlZf
+VkFMKTsNCj4gKyAgICAgICBrZWVtYmF5X3dyaXRlX3JlZyh2YWwsIGtwYy0+YmFzZTEgKyBLRUVN
+QkFZX0dQSU9fTU9ERSwgcGluKTsgfQ0KDQpXaHkgd291bGQgeW91IHdhbnQgdG8gaW52ZXJ0PyBP
+SyBJIGd1ZXNzIEkgcmVhZCBhbmQgc2VlLi4NClRoZSBJUCBkb2Vzbid0IHN1cHBvcnQgdGhlIGZh
+bGxpbmcgZWRnZSBhbmQgbG93IGxldmVsIGludGVycnVwdCB0cmlnZ2VyLiBIZW5jZSB0aGUgaW52
+ZXJ0IEFQSSBpcyB1c2VkIHRvIG1pbWljIHRoZSBmYWxsaW5nIGVkZ2UgYW5kIGxvdyBsZXZlbCBz
+dXBwb3J0Lg0KDQo+ICtzdGF0aWMgaW50IGtlZW1iYXlfcmVxdWVzdF9ncGlvKHN0cnVjdCBwaW5j
+dHJsX2RldiAqcGN0bGRldiwNCj4gKyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBzdHJ1
+Y3QgcGluY3RybF9ncGlvX3JhbmdlICpyYW5nZSwgDQo+ICt1bnNpZ25lZCBpbnQgcGluKSB7DQo+
+ICsgICAgICAgc3RydWN0IGtlZW1iYXlfcGluY3RybCAqa3BjID0gcGluY3RybF9kZXZfZ2V0X2Ry
+dmRhdGEocGN0bGRldik7DQo+ICsgICAgICAgdW5zaWduZWQgaW50IHZhbDsNCj4gKw0KPiArICAg
+ICAgIGlmIChwaW4gPj0ga3BjLT5ucGlucykNCj4gKyAgICAgICAgICAgICAgIHJldHVybiAtRUlO
+VkFMOw0KPiArDQo+ICsgICAgICAgdmFsID0ga2VlbWJheV9yZWFkX3JlZyhrcGMtPmJhc2UxICsg
+S0VFTUJBWV9HUElPX01PREUsIHBpbik7DQo+ICsgICAgICAgdmFsID0gRklFTERfR0VUKEtFRU1C
+QVlfR1BJT19NT0RFX1NFTEVDVF9NQVNLLCB2YWwpOw0KPiArDQo+ICsgICAgICAgLyogQXMgcGVy
+IFBpbiBNdXggTWFwLCBNb2RlcyAwIHRvIDYgYXJlIGZvciBwZXJpcGhlcmFscyAqLw0KPiArICAg
+ICAgIGlmICh2YWwgIT0gS0VFTUJBWV9HUElPX01PREVfREVGQVVMVCkNCj4gKyAgICAgICAgICAg
+ICAgIHJldHVybiAtRUJVU1k7DQo+ICsNCj4gKyAgICAgICByZXR1cm4gMDsNCj4gK30NCg0KPiAr
+c3RhdGljIHUzMiBrZWVtYmF5X3BpbmNvbmZfZ2V0X3B1bGwoc3RydWN0IGtlZW1iYXlfcGluY3Ry
+bCAqa3BjLCANCj4gK3Vuc2lnbmVkIGludCBwaW4pDQoNCkFsbCBvZiB0aGVzZSBwaW5jb25mIGFj
+Y2Vzc29ycyBsb29rIHByZXR0eSBnb29kLg0KDQo+ICsgICAgICAgdmFsID0gdTMyX3JlcGxhY2Vf
+Yml0cyh2YWwsIHB1bGwsIA0KPiArIEtFRU1CQVlfR1BJT19NT0RFX1BVTExVUF9NQVNLKTsNCg0K
+QWhhIGJpdGZpZWxkLiBTbWFydCENCg0KPiArc3RhdGljIGNvbnN0IHN0cnVjdCBwaW5jdHJsX29w
+cyBrZWVtYmF5X3BjdGxvcHMgPSB7DQo+ICsgICAgICAgLmdldF9ncm91cHNfY291bnQgICAgICAg
+PSBwaW5jdHJsX2dlbmVyaWNfZ2V0X2dyb3VwX2NvdW50LA0KPiArICAgICAgIC5nZXRfZ3JvdXBf
+bmFtZSAgICAgICAgID0gcGluY3RybF9nZW5lcmljX2dldF9ncm91cF9uYW1lLA0KPiArICAgICAg
+IC5nZXRfZ3JvdXBfcGlucyAgICAgICAgID0gcGluY3RybF9nZW5lcmljX2dldF9ncm91cF9waW5z
+LA0KPiArICAgICAgIC5kdF9ub2RlX3RvX21hcCAgICAgICAgID0gcGluY29uZl9nZW5lcmljX2R0
+X25vZGVfdG9fbWFwX2FsbCwNCj4gKyAgICAgICAuZHRfZnJlZV9tYXAgICAgICAgICAgICA9IHBp
+bmNvbmZfZ2VuZXJpY19kdF9mcmVlX21hcCwNCj4gK307DQo+ICsNCj4gK3N0YXRpYyBjb25zdCBz
+dHJ1Y3QgcGlubXV4X29wcyBrZWVtYmF5X3BteG9wcyA9IHsNCj4gKyAgICAgICAuZ2V0X2Z1bmN0
+aW9uc19jb3VudCAgICA9IHBpbm11eF9nZW5lcmljX2dldF9mdW5jdGlvbl9jb3VudCwNCj4gKyAg
+ICAgICAuZ2V0X2Z1bmN0aW9uX25hbWUgICAgICA9IHBpbm11eF9nZW5lcmljX2dldF9mdW5jdGlv
+bl9uYW1lLA0KPiArICAgICAgIC5nZXRfZnVuY3Rpb25fZ3JvdXBzICAgID0gcGlubXV4X2dlbmVy
+aWNfZ2V0X2Z1bmN0aW9uX2dyb3VwcywNCj4gKyAgICAgICAuZ3Bpb19yZXF1ZXN0X2VuYWJsZSAg
+ICA9IGtlZW1iYXlfcmVxdWVzdF9ncGlvLA0KPiArICAgICAgIC5zZXRfbXV4ICAgICAgICAgICAg
+ICAgID0ga2VlbWJheV9zZXRfbXV4LA0KPiArfTsNCg0KTmljZSByZXVzZSBvZiB0aGUgZ2VuZXJp
+YyBzdHVmZiwgbmljZSB1c2Ugb2YgZ3Bpb19yZXF1ZXN0X2VuYWJsZSgpIQ0KDQo+ICtzdGF0aWMg
+aW50IGtlZW1iYXlfZ3Bpb19nZXQoc3RydWN0IGdwaW9fY2hpcCAqZ2MsIHVuc2lnbmVkIGludCBw
+aW4pIHsNCj4gKyAgICAgICBzdHJ1Y3Qga2VlbWJheV9waW5jdHJsICprcGMgPSBncGlvY2hpcF9n
+ZXRfZGF0YShnYyk7DQo+ICsgICAgICAgdW5zaWduZWQgaW50IHZhbCwgb2Zmc2V0Ow0KPiArICAg
+ICAgIHVuc2lnbmVkIGxvbmcgZmxhZ3M7DQo+ICsNCj4gKyAgICAgICByYXdfc3Bpbl9sb2NrX2ly
+cXNhdmUoJmtwYy0+bG9jaywgZmxhZ3MpOw0KPiArICAgICAgIHZhbCA9IGtlZW1iYXlfcmVhZF9y
+ZWcoa3BjLT5iYXNlMSArIEtFRU1CQVlfR1BJT19NT0RFLCBwaW4pOw0KPiArICAgICAgIG9mZnNl
+dCA9ICh2YWwgJiBLRUVNQkFZX0dQSU9fTU9ERV9ESVIpID8gS0VFTUJBWV9HUElPX0RBVEFfSU4g
+DQo+ICsgOiBLRUVNQkFZX0dQSU9fREFUQV9PVVQ7DQo+ICsNCj4gKyAgICAgICB2YWwgPSBrZWVt
+YmF5X3JlYWRfcGluKGtwYy0+YmFzZTAgKyBvZmZzZXQsIHBpbik7DQo+ICsgICAgICAgcmF3X3Nw
+aW5fdW5sb2NrX2lycXJlc3RvcmUoJmtwYy0+bG9jaywgZmxhZ3MpOw0KPiArDQo+ICsgICAgICAg
+cmV0dXJuIHZhbDsNCj4gK30NCj4gKw0KPiArc3RhdGljIHZvaWQga2VlbWJheV9ncGlvX3NldChz
+dHJ1Y3QgZ3Bpb19jaGlwICpnYywgdW5zaWduZWQgaW50IHBpbiwgDQo+ICtpbnQgdmFsKSB7DQo+
+ICsgICAgICAgc3RydWN0IGtlZW1iYXlfcGluY3RybCAqa3BjID0gZ3Bpb2NoaXBfZ2V0X2RhdGEo
+Z2MpOw0KPiArICAgICAgIHVuc2lnbmVkIGludCByZWdfdmFsOw0KPiArICAgICAgIHVuc2lnbmVk
+IGxvbmcgZmxhZ3M7DQo+ICsNCj4gKyAgICAgICByYXdfc3Bpbl9sb2NrX2lycXNhdmUoJmtwYy0+
+bG9jaywgZmxhZ3MpOw0KPiArICAgICAgIHJlZ192YWwgPSBrZWVtYmF5X3JlYWRfZ3Bpb19yZWco
+a3BjLT5iYXNlMCArIEtFRU1CQVlfR1BJT19EQVRBX09VVCwgcGluKTsNCj4gKyAgICAgICBpZiAo
+dmFsKQ0KPiArICAgICAgICAgICAgICAga2VlbWJheV93cml0ZV9ncGlvX3JlZyhyZWdfdmFsIHwg
+QklUKHBpbiAlIEtFRU1CQVlfR1BJT19NQVhfUEVSX1JFRyksDQo+ICsgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgIGtwYy0+YmFzZTAgKyBLRUVNQkFZX0dQSU9fREFUQV9ISUdI
+LCBwaW4pOw0KPiArICAgICAgIGVsc2UNCj4gKyAgICAgICAgICAgICAgIGtlZW1iYXlfd3JpdGVf
+Z3Bpb19yZWcofnJlZ192YWwgfCBCSVQocGluICUgS0VFTUJBWV9HUElPX01BWF9QRVJfUkVHKSwN
+Cj4gKyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAga3BjLT5iYXNlMCArIA0K
+PiArIEtFRU1CQVlfR1BJT19EQVRBX0xPVywgcGluKTsNCj4gKw0KPiArICAgICAgIHJhd19zcGlu
+X3VubG9ja19pcnFyZXN0b3JlKCZrcGMtPmxvY2ssIGZsYWdzKTsgfQ0KDQpTbyB0aGUgc3Bpbmxv
+Y2sgcHJvdGVjdHMgYWdhaW5zdCBzdHVmZiB0aGF0IEdQSU9fR0VORVJJQyBpbiBncGlvLW1taW8u
+YyBpcyBhbHJlYWR5IGltcGxlbWVudGluZyBmb3Igc2luZ2xlIDgvMTYvMzIvNjQgYml0IHJlZ2lz
+dGVycy4NCg0KU28gaWYgeW91IGNvdWxkIHNwbGl0IHRoaXMgY29udHJvbGxlciBpbnRvIG9uZSBn
+cGlvX2NoaXAgcGVyIHJlZ2lzdGVyLCB5b3UgY291bGQgcmV1c2UgYWxsIHRoYXQuDQpXZSB3aWxs
+IGV4cGxvcmUgdXNpbmcgR1BJT19HRU5FUklDLg0KDQo+ICtzdGF0aWMgdm9pZCBrZWVtYmF5X2dw
+aW9faXJxX2hhbmRsZXIoc3RydWN0IGlycV9kZXNjICpkZXNjKSB7DQo+ICsgICAgICAgc3RydWN0
+IGdwaW9fY2hpcCAqZ2MgPSBpcnFfZGVzY19nZXRfaGFuZGxlcl9kYXRhKGRlc2MpOw0KPiArICAg
+ICAgIHVuc2lnbmVkIGludCBrbWJfaXJxID0gaXJxX2Rlc2NfZ2V0X2lycShkZXNjKTsNCj4gKyAg
+ICAgICB1bnNpZ25lZCBsb25nIHJlZywgY2x1bXAgPSAwLCBiaXQgPSAwOw0KPiArICAgICAgIHVu
+c2lnbmVkIGludCBzcmMsIHRyaWcsIHBpbiwgdmFsOw0KPiArICAgICAgIHN0cnVjdCBpcnFfY2hp
+cCAqcGFyZW50X2NoaXA7DQo+ICsgICAgICAgc3RydWN0IGtlZW1iYXlfcGluY3RybCAqa3BjOw0K
+PiArDQo+ICsgICAgICAgZm9yIChzcmMgPSAwOyBzcmMgPCBLRUVNQkFZX0dQSU9fTlVNX0lSUTsg
+c3JjKyspIHsNCj4gKyAgICAgICAgICAgICAgIGlmIChrbWJfaXJxID09IGdjLT5pcnEucGFyZW50
+c1tzcmNdKQ0KPiArICAgICAgICAgICAgICAgICAgICAgICBicmVhazsNCj4gKyAgICAgICB9DQo+
+ICsNCj4gKyAgICAgICBpZiAoc3JjID09IEtFRU1CQVlfR1BJT19OVU1fSVJRKQ0KPiArICAgICAg
+ICAgICAgICAgcmV0dXJuOw0KDQpTbyB0aGlzIGdldHMgYSBiaXQgYXdrd2FyZCB0byBsb29rIHVw
+IHdlIG5lZWQgdG8gdW5kZXJzdGFuZCB0aGUgd2F5IEdQSU9zIGFyZSBncm91cGVkIGludG8gSVJR
+cyBoZXJlLg0KQW4gQVNDSUkgaWxsdXN0cmF0aW9uL2RvY3VtZW50YXRpb24gd2lsbCBiZSBhZGRl
+ZCBpbiBuZXh0IHBhdGNoIGNsYXJpZnlpbmcgdGhlIGxvZ2ljLg0KDQo+ICsNCj4gKyAgICAgICBw
+YXJlbnRfY2hpcCA9IGlycV9kZXNjX2dldF9jaGlwKGRlc2MpOw0KPiArICAgICAgIGtwYyA9IGdw
+aW9jaGlwX2dldF9kYXRhKGdjKTsNCj4gKw0KPiArICAgICAgIGNoYWluZWRfaXJxX2VudGVyKHBh
+cmVudF9jaGlwLCBkZXNjKTsNCj4gKyAgICAgICByZWcgPSBrZWVtYmF5X3JlYWRfcmVnKGtwYy0+
+YmFzZTEgKyBLRUVNQkFZX0dQSU9fSU5UX0NGRywgc3JjKTsNCj4gKyAgICAgICB0cmlnID0ga3Bj
+LT5pcnFbc3JjXS50cmlnZ2VyOw0KPiArDQo+ICsgICAgICAgLyoNCj4gKyAgICAgICAgKiBFYWNo
+IEludGVycnVwdCBsaW5lIGNhbiBiZSBzaGFyZWQgdXAgdG8gNCBHUElPIHBpbnMuIEVuYWJsZSBi
+aXQgYW5kDQo+ICsgICAgICAgICogaW5wdXQgdmFsdWVzIHdlcmUgY2hlY2tlZCB0byBpbmRlbnRp
+ZnkgdGhlIHNvdXJjZSBvZiB0aGUgSW50ZXJydXB0Lg0KDQpJbmRlbnRpZnk/DQpUaGFua3MuIFdp
+bGwgY29ycmVjdCBpdC4NCg0KPiArICAgICAgICAqIFRoZSBjaGVja2VkIGVuYWJsZSBiaXQgcG9z
+aXRpb25zIGFyZSA3LCAxNSwgMjMgYW5kIDMxLg0KPiArICAgICAgICAqLw0KPiArICAgICAgIGZv
+cl9lYWNoX3NldF9jbHVtcDgoYml0LCBjbHVtcCwgJnJlZywgQklUU19QRVJfVFlQRSh0eXBlb2Yo
+cmVnKSkpIHsNCj4gKyAgICAgICAgICAgICAgIHBpbiA9IGNsdW1wICYgfktFRU1CQVlfR1BJT19J
+UlFfRU5BQkxFOw0KPiArICAgICAgICAgICAgICAgdmFsID0ga2VlbWJheV9yZWFkX3BpbihrcGMt
+PmJhc2UwICsgS0VFTUJBWV9HUElPX0RBVEFfSU4sIHBpbik7DQo+ICsgICAgICAgICAgICAgICBr
+bWJfaXJxID0gaXJxX2xpbmVhcl9yZXZtYXAoZ2MtPmlycS5kb21haW4sIHBpbik7DQo+ICsNCj4g
+KyAgICAgICAgICAgICAgIGlmICh2YWwgJiYgKHRyaWcgJiBJUlFfVFlQRV9TRU5TRV9NQVNLKSkN
+Cj4gKyAgICAgICAgICAgICAgICAgICAgICAgZ2VuZXJpY19oYW5kbGVfaXJxKGttYl9pcnEpOw0K
+DQpQdXQgaW4gYSBjb21tZW50IHdoeSB5b3UgaGF2ZSB0byBjaGVjayB0aGUgdHJpZ2dlci4NCldp
+bGwgYWRkIHJlbGV2YW50IGNvbW1lbnRzIGluIG5leHQgdmVyc2lvbi4NCg0KKC4uLikNCg0KPiAr
+c3RhdGljIGludCBrZWVtYmF5X3BpbmN0cmxfcmVnKHN0cnVjdCBrZWVtYmF5X3BpbmN0cmwgKmtw
+YywgIHN0cnVjdCANCj4gK2RldmljZSAqZGV2KSB7DQo+ICsgICAgICAgaW50IHJldCA9IG9mX3By
+b3BlcnR5X3JlYWRfdTMyKGRldi0+b2Zfbm9kZSwgIm51bS1ncGlvcyIsIA0KPiArJmtwYy0+bnBp
+bnMpOw0KDQpuZ3Bpb3MgaXMgdGhlIHN0YW5kYXJkIHByb3BlcnR5LiBVc2UgdGhhdC4gQWxzbyBj
+aGFuZ2UgdGhlIGJpbmRpbmdzIHRvIHJlZmxlY3QgdGhpcy4NCldpbGwgY2hhbmdlIGl0IGluIG5l
+eHQgdmVyc2lvbi4NCg0KVGhlIEdQSU8gY2hpcCBkb2VzIG5vdCBpbXBsZW1lbnQgLnNldF9jb25m
+aWcgdGhvdWdoIGl0IHNob3VsZCBiZSBzdXBlciBzaW1wbGU6IGp1c3QgdXNlIGdwaW9jaGlwX2dl
+bmVyaWNfY29uZmlnKCkgbGlrZSBkcml2ZXJzL3BpbmN0cmwvaW50ZWwvcGluY3RybC1pbnRlbC5j
+IGRvZXMuDQpXaWxsIGFkZCB0aGUgaW1wbGVtZW50YXRpb24gaW4gbmV4dCB2ZXJzaW9uDQoNCkkg
+Z3Vlc3MgSSB3aWxsIGhhdmUgbW9yZSBjb21tZW50cyBvbmNlIEkgdW5kZXJzdGFuZCB0aGUgaGFy
+ZHdhcmUuDQoNCllvdXJzLA0KTGludXMgV2FsbGVpag0K
