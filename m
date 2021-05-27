@@ -2,171 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9EE54392548
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 05:12:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D7780392540
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 05:11:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234614AbhE0DOL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 May 2021 23:14:11 -0400
-Received: from mailout3.samsung.com ([203.254.224.33]:59664 "EHLO
-        mailout3.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234503AbhE0DN6 (ORCPT
+        id S234467AbhE0DNY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 May 2021 23:13:24 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:65102 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234456AbhE0DNT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 May 2021 23:13:58 -0400
-Received: from epcas2p1.samsung.com (unknown [182.195.41.53])
-        by mailout3.samsung.com (KnoxPortal) with ESMTP id 20210527031224epoutp031ca9df787c8bc3a020066e32560093a3~CzdhK4pkc2250922509epoutp032
-        for <linux-kernel@vger.kernel.org>; Thu, 27 May 2021 03:12:24 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout3.samsung.com 20210527031224epoutp031ca9df787c8bc3a020066e32560093a3~CzdhK4pkc2250922509epoutp032
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1622085144;
-        bh=cVkOyZXFci4e/LC+JGV+kk1apRazO3c51y6t6bo12bc=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=OFPsD0oThsb7QqSIouRArZpV8LvA+D2iTL8FCp4DOhO04LTzDmg1man/tkk3eIdJ3
-         8gQMPy2eNjyUJ2TahMmHeOd3bVWjYi3Snrom7mVHHlTk2YMzGhZUXG0tSAB3Mqx0nt
-         iPjknoI6fb5LuhqG2/SScjGEgw8dbjdimVFvpVyE=
-Received: from epsnrtp4.localdomain (unknown [182.195.42.165]) by
-        epcas2p2.samsung.com (KnoxPortal) with ESMTP id
-        20210527031223epcas2p2a4d153a87bbe9613dafc3a63bb587506~CzdgciFHj2939229392epcas2p2_;
-        Thu, 27 May 2021 03:12:23 +0000 (GMT)
-Received: from epsmges2p4.samsung.com (unknown [182.195.40.190]) by
-        epsnrtp4.localdomain (Postfix) with ESMTP id 4FrCY10Z5cz4x9Q1; Thu, 27 May
-        2021 03:12:21 +0000 (GMT)
-Received: from epcas2p4.samsung.com ( [182.195.41.56]) by
-        epsmges2p4.samsung.com (Symantec Messaging Gateway) with SMTP id
-        21.78.09717.41E0FA06; Thu, 27 May 2021 12:12:20 +0900 (KST)
-Received: from epsmtrp1.samsung.com (unknown [182.195.40.13]) by
-        epcas2p4.samsung.com (KnoxPortal) with ESMTPA id
-        20210527031220epcas2p41a5ba641919769ca95ccea81e5f3bfb0~CzddXBTAw0832808328epcas2p4_;
-        Thu, 27 May 2021 03:12:20 +0000 (GMT)
-Received: from epsmgms1p1new.samsung.com (unknown [182.195.42.41]) by
-        epsmtrp1.samsung.com (KnoxPortal) with ESMTP id
-        20210527031220epsmtrp1e96e025d35f0dc9691b6755c5d8bd083~CzddWEBJT0371003710epsmtrp1Z;
-        Thu, 27 May 2021 03:12:20 +0000 (GMT)
-X-AuditID: b6c32a48-4e5ff700000025f5-85-60af0e14ca4f
-Received: from epsmtip2.samsung.com ( [182.195.34.31]) by
-        epsmgms1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
-        34.06.08637.41E0FA06; Thu, 27 May 2021 12:12:20 +0900 (KST)
-Received: from localhost.localdomain (unknown [10.229.9.60]) by
-        epsmtip2.samsung.com (KnoxPortal) with ESMTPA id
-        20210527031220epsmtip26cce362e4d9749c78ab753a66c307239~CzddL--yv1633016330epsmtip29;
-        Thu, 27 May 2021 03:12:20 +0000 (GMT)
-From:   jongmin jeong <jjmin.jeong@samsung.com>
-To:     jejb@linux.ibm.com, martin.petersen@oracle.com
-Cc:     alim.akhtar@samsung.com, avri.altman@wdc.com, cang@codeaurora.org,
-        beanhuo@micron.com, adrian.hunter@intel.com,
-        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        jjmin.jeong@samsung.com
-Subject: [PATCH 3/3] scsi: ufs: add quirk to support host reset only
-Date:   Thu, 27 May 2021 12:09:01 +0900
-Message-Id: <20210527030901.88403-4-jjmin.jeong@samsung.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210527030901.88403-1-jjmin.jeong@samsung.com>
+        Wed, 26 May 2021 23:13:19 -0400
+Received: from pps.filterd (m0098409.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 14R3407s072108;
+        Wed, 26 May 2021 23:11:40 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=pp1; bh=Z7ib4nP+2xqCgM/Aq6MYwkMP4TlkDjzIOIT6pTUL6fM=;
+ b=M4GBwm+G9SSa+dZ/MXSt4L35LhDRe2TYZOHa7jkpKtpyDNmzss8bhz2Lnidktz7ov/sk
+ fyPykLRP7t6iSv5Tqsur/FVSuEXuJBcyzD+Q1fXCdLJ+1HOh/mkIf7O/DOc9JehqLPSG
+ tnyPO9KVu/rIhrcFocR4y40KLSkrHCFfmzGoXoDdn0B4XsR8WFAUIDr5yE7FxM0dB2AB
+ AfUq4GMSfUZU9qM7iT5XtKMNraBHNKvaS5oqFzBVAOvUGV/6VeEVW8+snAGOSQc23FgW
+ fXOKECGdAONxgOAtEf5btZ2xdfX3CWh8Vn/gKoRUmSLw60zOgXBgTyyvVl3AjsTxnJ4Y Yg== 
+Received: from ppma03fra.de.ibm.com (6b.4a.5195.ip4.static.sl-reverse.com [149.81.74.107])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 38t2whgr15-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 26 May 2021 23:11:40 -0400
+Received: from pps.filterd (ppma03fra.de.ibm.com [127.0.0.1])
+        by ppma03fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 14R392Li003171;
+        Thu, 27 May 2021 03:11:38 GMT
+Received: from b06cxnps4076.portsmouth.uk.ibm.com (d06relay13.portsmouth.uk.ibm.com [9.149.109.198])
+        by ppma03fra.de.ibm.com with ESMTP id 38s1ssrgy5-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 27 May 2021 03:11:38 +0000
+Received: from d06av23.portsmouth.uk.ibm.com (d06av23.portsmouth.uk.ibm.com [9.149.105.59])
+        by b06cxnps4076.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 14R3BZrT27984258
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 27 May 2021 03:11:35 GMT
+Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 89AD0A4040;
+        Thu, 27 May 2021 03:11:35 +0000 (GMT)
+Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 3225FA4053;
+        Thu, 27 May 2021 03:11:35 +0000 (GMT)
+Received: from localhost (unknown [9.85.91.152])
+        by d06av23.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Thu, 27 May 2021 03:11:35 +0000 (GMT)
+Date:   Thu, 27 May 2021 08:41:34 +0530
+From:   riteshh <riteshh@linux.ibm.com>
+To:     Lee Jones <lee.jones@linaro.org>
+Cc:     linux-kernel@vger.kernel.org, "Theodore Ts'o" <tytso@mit.edu>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        Remy Card <card@masi.ibp.fr>,
+        "David S. Miller" <davem@caip.rutgers.edu>,
+        linux-ext4@vger.kernel.org
+Subject: Re: [PATCH 1/1] fs: ext4: namei: trivial: Fix a couple of small
+ whitespace issues
+Message-ID: <20210527031134.zqewpd2tqo7umoho@riteshh-domain>
+References: <20210520125558.3476318-1-lee.jones@linaro.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFlrFJsWRmVeSWpSXmKPExsWy7bCmha4I3/oEg3/frSxOPlnDZvFg3jY2
-        i5c/r7JZHHzYyWLxaf0yVotFN7YxWay8ZmFxedccNovu6zvYLJYf/8fkwOVxua+XyWPxnpdM
-        HhMWHWD0+L6+g83j49NbLB59W1YxenzeJOfRfqCbKYAjKscmIzUxJbVIITUvOT8lMy/dVsk7
-        ON453tTMwFDX0NLCXEkhLzE31VbJxSdA1y0zB+hGJYWyxJxSoFBAYnGxkr6dTVF+aUmqQkZ+
-        cYmtUmpBSk6BoWGBXnFibnFpXrpecn6ulaGBgZEpUGVCTsal3n1MBd/4K7Z03WFsYJzN28XI
-        ySEhYCLR2v+ErYuRi0NIYAejxL2e08wQzidGiavdt6Ccb4wS6zr/sMK0nP//kgkisZdRYmb3
-        WkYI5yOjRMuuGUwgVWwCuhJnNr8EaufgEBEwkri2yhOkhlngJKNE79kXzCA1wgIuEs8+TWYE
-        sVkEVCX2d11mB7F5BWwk7jTdYIHYJi9x+sQ1RpA5nAK2EmuuZEKUCEqcnPkErIQZqKR562yw
-        SyUEpnJInLh2gRGi10Xibs8uNghbWOLV8S3sELaUxMv+Nii7XmJ3wx6o5gmMEt2dV6EW20v8
-        mr6FFWQxs4CmxPpd+iCmhICyxJFbUHv5JDoO/2WHCPNKdLQJQTSqSmxZvBHqAmmJpWuPQw30
-        kJjw6B0LJKiANj343sQ2gVFhFpJ3ZiF5ZxbC4gWMzKsYxVILinPTU4uNCkyQY3gTIzjRanns
-        YJz99oPeIUYmDsZDjBIczEoivAeb1yYI8aYkVlalFuXHF5XmpBYfYjQFhvVEZinR5Hxgqs8r
-        iTc0NTIzM7A0tTA1M7JQEuf9mVqXICSQnliSmp2aWpBaBNPHxMEp1cC05LzlZ7POm2s3Hvxj
-        0MK9YvrlyffDP7f+3Hwzp+ObWMSdO9uMaorXfve4YeeceDtMJXA9V6nuPg/+M4aJi2puFvRd
-        NHdOvHz+s6jNU0Ge3W4XWz3OMBn6X544JfWKw835x6xPTOyO4opMdONgZn60g8F6ZtTc1fdk
-        31mq+f/awHBj4/HvE802b340R+lD20Wp4lgN20u2nklVrg88puspzr3j/LjGaN/L5MpL857x
-        royb0hC1sEBdQWLOMavbxue8heY9rOWYcXJBpBSX7Ox9VasXNmTnslw42R/wfsOUXeuf7fy4
-        cmLWe6vYtJaMXXPOMQfOvBZcfyHWoXTrzwYZ9sbNjKcPPYi4YbZTZ4LoRyWW4oxEQy3mouJE
-        AIfLeBQ9BAAA
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFnrILMWRmVeSWpSXmKPExsWy7bCSvK4I3/oEg5f3ZC1OPlnDZvFg3jY2
-        i5c/r7JZHHzYyWLxaf0yVotFN7YxWay8ZmFxedccNovu6zvYLJYf/8fkwOVxua+XyWPxnpdM
-        HhMWHWD0+L6+g83j49NbLB59W1YxenzeJOfRfqCbKYAjissmJTUnsyy1SN8ugSvjUu8+poJv
-        /BVbuu4wNjDO5u1i5OSQEDCROP//JVMXIxeHkMBuRondy6axdDFyACWkJdbskYaoEZa433KE
-        FaLmPaPE0udX2UASbAK6Emc2v2QGsUWABs249Y4VxGYWuMwoMf1cNIgtLOAi8ezTZEYQm0VA
-        VWJ/12V2EJtXwEbiTtMNFogF8hKnT1xjBNnLKWArseZKJogpBFTyYlkKRLWgxMmZT1ggpstL
-        NG+dzTyBUWAWktQsJKkFjEyrGCVTC4pz03OLDQsM81LL9YoTc4tL89L1kvNzNzGCY0FLcwfj
-        9lUf9A4xMnEwHmKU4GBWEuE92Lw2QYg3JbGyKrUoP76oNCe1+BCjNAeLkjjvha6T8UIC6Ykl
-        qdmpqQWpRTBZJg5OqQYmgRuvHH5tmfCgNmvVb7MlAk84LVbMCNghqfTdQm5yaMvWqqyDB48b
-        cBbm/HyuZ/QqZvW1Ga7WEim7rctEVIxUtzxeXXY07UD4q5nKkSkbrrq2qT4wsuL8P2Hxe+U9
-        W3ZO1wgq8w3rWxUiETXRQcfdtc1sV2BezY/I/c8UDrJEfai5mHIgfsLJjG+8Z1gPOc00uC89
-        XdJisudH3/KEnRrWMpc+tE7jra2/eWrLwZNHn5pbiXulX/y2WLz9zRLRK7sCHZI8Uj1ehE5i
-        Sq/fvstL7GCbekaciNzlC91HJKeeqvl9SyblSr9W7LSdH5Q5a1/1pQXEvn1oZVr5+oXNlr98
-        HxNdH5tsX/XVaYMSb8gNJZbijERDLeai4kQAoDKvRvQCAAA=
-X-CMS-MailID: 20210527031220epcas2p41a5ba641919769ca95ccea81e5f3bfb0
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: AUTO_CONFIDENTIAL
-CMS-TYPE: 102P
-DLP-Filter: Pass
-X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20210527031220epcas2p41a5ba641919769ca95ccea81e5f3bfb0
-References: <20210527030901.88403-1-jjmin.jeong@samsung.com>
-        <CGME20210527031220epcas2p41a5ba641919769ca95ccea81e5f3bfb0@epcas2p4.samsung.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210520125558.3476318-1-lee.jones@linaro.org>
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: s-jjUVvTx-dlLQyaHuKN3uEBIpyem9Rb
+X-Proofpoint-ORIG-GUID: s-jjUVvTx-dlLQyaHuKN3uEBIpyem9Rb
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
+ definitions=2021-05-27_01:2021-05-26,2021-05-27 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1011 adultscore=0
+ impostorscore=0 priorityscore=1501 malwarescore=0 bulkscore=0 spamscore=0
+ mlxlogscore=999 lowpriorityscore=0 phishscore=0 suspectscore=0 mlxscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104190000
+ definitions=main-2105270019
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-samsung ExynosAuto SoC has two types of host controller interface to
-support the virtualization of UFS Device.
-One is the physical host(PH) that the same as conventaional UFSHCI,
-and the other is the virtual host(VH) that support data transfer function only.
+On 21/05/20 01:55PM, Lee Jones wrote:
 
-In this structure, the virtual host does support host reset handler only.
-This patch calls the host reset handler when abort or device reset handler
-has occured in the virtual host.
+Hi Lee,
 
-Change-Id: I3f07e772415a35fe1e7374e02b3c37ef0bf5660d
-Signed-off-by: jongmin jeong <jjmin.jeong@samsung.com>
----
- drivers/scsi/ufs/ufshcd.c | 7 +++++++
- drivers/scsi/ufs/ufshcd.h | 6 ++++++
- 2 files changed, 13 insertions(+)
+Thanks for your patch. I see we could a little better here.
+There are several other checkpatch ERROR msgs in this file.
+Care to fix all of those ERRORS within the same patch itself?
 
-diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
-index 4787e40c6a2d..9d1912290f87 100644
---- a/drivers/scsi/ufs/ufshcd.c
-+++ b/drivers/scsi/ufs/ufshcd.c
-@@ -6826,6 +6826,9 @@ static int ufshcd_eh_device_reset_handler(struct scsi_cmnd *cmd)
- 	u8 resp = 0xF, lun;
- 	unsigned long flags;
- 
-+	if (hba->quirks & UFSHCD_QUIRK_BROKEN_RESET_HANDLER)
-+		return ufshcd_eh_host_reset_handler(cmd);
-+
- 	host = cmd->device->host;
- 	hba = shost_priv(host);
- 
-@@ -6972,6 +6975,10 @@ static int ufshcd_abort(struct scsi_cmnd *cmd)
- 	host = cmd->device->host;
- 	hba = shost_priv(host);
- 	tag = cmd->request->tag;
-+
-+	if (hba->quirks & UFSHCD_QUIRK_BROKEN_RESET_HANDLER)
-+		return ufshcd_eh_host_reset_handler(cmd);
-+
- 	lrbp = &hba->lrb[tag];
- 	if (!ufshcd_valid_tag(hba, tag)) {
- 		dev_err(hba->dev,
-diff --git a/drivers/scsi/ufs/ufshcd.h b/drivers/scsi/ufs/ufshcd.h
-index 0ab4c296be32..82a9c6889978 100644
---- a/drivers/scsi/ufs/ufshcd.h
-+++ b/drivers/scsi/ufs/ufshcd.h
-@@ -581,6 +581,12 @@ enum ufshcd_quirks {
- 	 * support interface configuration.
- 	 */
- 	UFSHCD_QUIRK_SKIP_INTERFACE_CONFIGURATION	= 1 << 16,
-+
-+	/*
-+	 * This quirk needs to be enabled if the host controller support
-+	 * host reset handler only.
-+	 */
-+	UFSHCD_QUIRK_BROKEN_RESET_HANDLER		= 1 << 17,
- };
- 
- enum ufshcd_caps {
--- 
-2.31.1
+./scripts/checkpatch.pl -f fs/ext4/namei.c | sed -n '/ERROR/,/^$/p'
 
+e.g. to list a few of them -
+ERROR: do not use assignment in if condition
+#1605: FILE: fs/ext4/namei.c:1605:
++               if ((bh = bh_use[ra_ptr++]) == NULL)
+
+ERROR: space required after that ',' (ctx:VxV)
+#1902: FILE: fs/ext4/namei.c:1902:
++                       struct buffer_head **bh,struct dx_frame *frame,
+                                               ^
+
+ERROR: space required after that ',' (ctx:VxV)
+#2249: FILE: fs/ext4/namei.c:2249:
++       de = do_split(handle,dir, &bh2, frame, &fname->hinfo);
+                            ^
+
+ERROR: spaces required around that '=' (ctx:VxV)
+#2288: FILE: fs/ext4/namei.c:2288:
++       int     dx_fallback=0;
+
+-ritesh
+
+> Cc: "Theodore Ts'o" <tytso@mit.edu>
+> Cc: Andreas Dilger <adilger.kernel@dilger.ca>
+> Cc: Remy Card <card@masi.ibp.fr>
+> Cc: "David S. Miller" <davem@caip.rutgers.edu>
+> Cc: linux-ext4@vger.kernel.org
+> Signed-off-by: Lee Jones <lee.jones@linaro.org>
+> ---
+>  fs/ext4/namei.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+>
+> diff --git a/fs/ext4/namei.c b/fs/ext4/namei.c
+> index afb9d05a99bae..7e780cf311c5a 100644
+> --- a/fs/ext4/namei.c
+> +++ b/fs/ext4/namei.c
+> @@ -1899,7 +1899,7 @@ static struct ext4_dir_entry_2 *dx_pack_dirents(struct inode *dir, char *base,
+>   * Returns pointer to de in block into which the new entry will be inserted.
+>   */
+>  static struct ext4_dir_entry_2 *do_split(handle_t *handle, struct inode *dir,
+> -			struct buffer_head **bh,struct dx_frame *frame,
+> +			struct buffer_head **bh, struct dx_frame *frame,
+>  			struct dx_hash_info *hinfo)
+>  {
+>  	unsigned blocksize = dir->i_sb->s_blocksize;
+> @@ -2246,7 +2246,7 @@ static int make_indexed_dir(handle_t *handle, struct ext4_filename *fname,
+>  	if (retval)
+>  		goto out_frames;
+>
+> -	de = do_split(handle,dir, &bh2, frame, &fname->hinfo);
+> +	de = do_split(handle, dir, &bh2, frame, &fname->hinfo);
+>  	if (IS_ERR(de)) {
+>  		retval = PTR_ERR(de);
+>  		goto out_frames;
+> --
+> 2.31.1
+>
