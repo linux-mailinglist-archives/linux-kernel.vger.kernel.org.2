@@ -2,99 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 66BA63928AE
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 09:38:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A8F283928B1
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 09:39:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234996AbhE0HkF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 May 2021 03:40:05 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:32824 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234205AbhE0Hj5 (ORCPT
+        id S234949AbhE0Hkg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 May 2021 03:40:36 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:22418 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232985AbhE0Hkd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 May 2021 03:39:57 -0400
-Date:   Thu, 27 May 2021 07:38:23 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1622101103;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
+        Thu, 27 May 2021 03:40:33 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1622101140;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=aFPG8tfLl1K+ayt94VTNQmG3JxAwHc5JV+Nj4l7AQo8=;
-        b=oOyFgNMZwry8GuEyY4j5e5Wh9vLI9Xc44SpUd7NjxooIHt4/u/sgogcCyRfHBeBctdoFdw
-        GLziteXEeMPE7JImr56fM4nvzZY7t1TTzkFF00CtmkYxWxn9/sTAfJuwNSKcHjiT6UargP
-        4U3Y8p/S2Eh5hNc1ilA+E51yuEtQjcuOJRw4IAje7OmD4jDgqriG20/wKHKAXvfZgHCOmA
-        ligxrpfsqJ2RJwC0DA3JctM7pqSF6B09EYliPoOiiGIAx3rPvPk/AQKXEA/c+PqqISH/Zw
-        VrzW4t56rzzzbN9s2rTYIT4sreaE2q9DfI4uzh4b9fwC4UfoRbUo5y68mL0aYg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1622101103;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=aFPG8tfLl1K+ayt94VTNQmG3JxAwHc5JV+Nj4l7AQo8=;
-        b=VTHtnXok/xnPIst1cF+dd1fDH9QQNCVG6QKEliFeoDniBZdlN9lAZ83fum/muGkvitm22f
-        XkBt7h1DbH07fIDg==
-From:   "tip-bot2 for Haocheng Xie" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: perf/core] perf/core: Make local function
- perf_pmu_snapshot_aux() static
-Cc:     Haocheng Xie <xiehaocheng.cn@gmail.com>,
-        Ingo Molnar <mingo@kernel.org>, x86@kernel.org,
+        bh=tr9Om/qHWPld9nvtg7I4AilQwhNjlhgHg8Y3pfskr8o=;
+        b=YNPdnAQIyJCOx+iUwkhM4Q/F9kJHIrxRyUbISNOB2OhoT7rgXm6RgPbcuZN4hITCgAfZwL
+        sD0973VZNzlvDxL++CS3MEJuAhL+7RwN8+QSNaG3aF+B2lG/RMXFs1rFqJYFjFCZwmgX8z
+        jYfGI0c0PkGP7WOWT0Jm3e7+gOV4HUM=
+Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
+ [209.85.128.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-146-bM52Tfv-OYutp7rL9cj11A-1; Thu, 27 May 2021 03:38:58 -0400
+X-MC-Unique: bM52Tfv-OYutp7rL9cj11A-1
+Received: by mail-wm1-f71.google.com with SMTP id n2-20020a05600c4f82b0290181c444b9f1so1613580wmq.6
+        for <linux-kernel@vger.kernel.org>; Thu, 27 May 2021 00:38:58 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=tr9Om/qHWPld9nvtg7I4AilQwhNjlhgHg8Y3pfskr8o=;
+        b=NVOdiLfkSACmUriJLsvi2zeZDhhXup+rRVizeSF1ARWEjV1gp2jYPoBsNPmQpV0FXP
+         gkyobf8kYTT6sQeXp5NCiAKn6tSTjfbX17cvBAtAZEMpoZnlJ2hOgopY1WpXaDpGqG6B
+         ec//nP4DYGGbMghwyidHd+vnLrruIF52qeQyO7a1CG1MiduRctwMhJGvfBSFiN85e33Q
+         xsoVQ58pq+c0/pojOfVcspWPnh/Iyo727oTNP+FilxVXgFXr6L43PnkAluVyLkiXUhx5
+         ZxgNOQDuT+y1ktL4j9EzjJVgIlr6eT9iM2hMkRgA7vGhseRlim9Hnk89Hrhb1Yla0fGb
+         t5bA==
+X-Gm-Message-State: AOAM530Sn4XPIrVh/MaG0T0E/7uukl777MwFWQekCMlBIH86mYTcN1YK
+        nmGVUTDxzvE7Qu8gSDhXX84xy/AK4P5/phtwv1/P2GLqcu6Ut9YVLyWPoJiHmFrNAIS3uGuMJS6
+        A+jqoGi6i2HIjbqP8Rp83LYi6
+X-Received: by 2002:a1c:7407:: with SMTP id p7mr2052140wmc.36.1622101137741;
+        Thu, 27 May 2021 00:38:57 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyZVop6H2VW1mRjVUOgw8KEymXsvePOqGNAVjrj5q1DCCxN2zMbkp3L1Ndnzh3bt5xh50E+CQ==
+X-Received: by 2002:a1c:7407:: with SMTP id p7mr2052118wmc.36.1622101137559;
+        Thu, 27 May 2021 00:38:57 -0700 (PDT)
+Received: from [192.168.1.101] ([92.176.231.106])
+        by smtp.gmail.com with ESMTPSA id h9sm1753276wmb.35.2021.05.27.00.38.56
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 27 May 2021 00:38:57 -0700 (PDT)
+Subject: Re: [PATCH v2] drm/rockchip: remove existing generic drivers to take
+ over the device
+To:     Thomas Zimmermann <tzimmermann@suse.de>,
         linux-kernel@vger.kernel.org
-In-Reply-To: <20210527031947.1801-2-xiehaocheng.cn@gmail.com>
-References: <20210527031947.1801-2-xiehaocheng.cn@gmail.com>
+Cc:     Peter Robinson <pbrobinson@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        David Airlie <airlied@linux.ie>,
+        =?UTF-8?Q?Heiko_St=c3=bcbner?= <heiko@sntech.de>,
+        Sandy Huang <hjc@rock-chips.com>,
+        dri-devel@lists.freedesktop.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-rockchip@lists.infradead.org
+References: <20210516074833.451643-1-javierm@redhat.com>
+ <ef974dd8-5619-35b7-74de-4e270033a3c3@suse.de>
+From:   Javier Martinez Canillas <javierm@redhat.com>
+Message-ID: <1f781f88-24ff-98b8-9c86-ae4db311843f@redhat.com>
+Date:   Thu, 27 May 2021 09:38:55 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
 MIME-Version: 1.0
-Message-ID: <162210110309.29796.12559510690660075400.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
+In-Reply-To: <ef974dd8-5619-35b7-74de-4e270033a3c3@suse.de>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the perf/core branch of tip:
+Hello Thomas,
 
-Commit-ID:     32961aecf9da85c9e4c98d91ab8337424e0c8372
-Gitweb:        https://git.kernel.org/tip/32961aecf9da85c9e4c98d91ab8337424e0c8372
-Author:        Haocheng Xie <xiehaocheng.cn@gmail.com>
-AuthorDate:    Thu, 27 May 2021 11:19:45 +08:00
-Committer:     Ingo Molnar <mingo@kernel.org>
-CommitterDate: Thu, 27 May 2021 09:35:21 +02:00
+On 5/16/21 12:30 PM, Thomas Zimmermann wrote:
+> 
+> 
+> Am 16.05.21 um 09:48 schrieb Javier Martinez Canillas:
+>> There are drivers that register framebuffer devices very early in the boot
+>> process and make use of the existing framebuffer as setup by the firmware.
+>>
+>> If one of those drivers has registered a fbdev, then the fallback fbdev 
+> of
+>> the DRM driver won't be bound to the framebuffer console. To avoid that,
+>> remove any existing generic driver and take over the graphics device.
+>>
+>> By doing that, the fb mapped to the console is switched correctly from the
+>> early fbdev to the one registered by the rockchip DRM driver:
+>>
+>>      [   40.752420] fb0: switching to rockchip-drm-fb from EFI VGA
+>>
+>> Signed-off-by: Javier Martinez Canillas <javierm@redhat.com>
+> 
+> Acked-by: Thomas Zimmermann <tzimmermann@suse.de>
+>
 
-perf/core: Make local function perf_pmu_snapshot_aux() static
-
-Fixes the following W=1 kernel build warning:
-
-  kernel/events/core.c:6670:6: warning: no previous prototype for 'perf_pmu_snapshot_aux' [-Wmissing-prototypes]
-
-Signed-off-by: Haocheng Xie <xiehaocheng.cn@gmail.com>
-Signed-off-by: Ingo Molnar <mingo@kernel.org>
-Link: https://lore.kernel.org/r/20210527031947.1801-2-xiehaocheng.cn@gmail.com
----
- kernel/events/core.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
-
-diff --git a/kernel/events/core.c b/kernel/events/core.c
-index 2e947a4..4c6b320 100644
---- a/kernel/events/core.c
-+++ b/kernel/events/core.c
-@@ -6674,10 +6674,10 @@ out:
- 	return data->aux_size;
- }
+Thanks for the ack.
  
--long perf_pmu_snapshot_aux(struct perf_buffer *rb,
--			   struct perf_event *event,
--			   struct perf_output_handle *handle,
--			   unsigned long size)
-+static long perf_pmu_snapshot_aux(struct perf_buffer *rb,
-+                                 struct perf_event *event,
-+                                 struct perf_output_handle *handle,
-+                                 unsigned long size)
- {
- 	unsigned long flags;
- 	long ret;
+> Ping me if no one else merges the patch.
+>
+
+I would really appreciate if you merge this patch.
+ 
+> Best regards
+> Thomas
+
+Best regards,
+-- 
+Javier Martinez Canillas
+Software Engineer
+New Platform Technologies Enablement team
+RHEL Engineering
+
