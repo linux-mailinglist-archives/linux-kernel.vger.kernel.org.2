@@ -2,127 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B5967392CAC
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 13:28:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DDA68392CB6
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 13:29:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233288AbhE0LaL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 May 2021 07:30:11 -0400
-Received: from mail-vs1-f43.google.com ([209.85.217.43]:34356 "EHLO
-        mail-vs1-f43.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229836AbhE0LaK (ORCPT
+        id S232752AbhE0LbX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 May 2021 07:31:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35286 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229640AbhE0LbS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 May 2021 07:30:10 -0400
-Received: by mail-vs1-f43.google.com with SMTP id x13so192023vsh.1;
-        Thu, 27 May 2021 04:28:35 -0700 (PDT)
+        Thu, 27 May 2021 07:31:18 -0400
+Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97699C061760
+        for <linux-kernel@vger.kernel.org>; Thu, 27 May 2021 04:29:45 -0700 (PDT)
+Received: by mail-pl1-x633.google.com with SMTP id v13so2181532ple.9
+        for <linux-kernel@vger.kernel.org>; Thu, 27 May 2021 04:29:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=XepQkdRFyf5QwVg1KdPLbhegPooaNHd/1JiifJ+YyHM=;
+        b=J39qajy3UJ3qAzWqGeZGEnwMoSI9LW5BjibS8fd+Acudu4FxBAXa2OhDGjuMcgqW0/
+         wo/z5L5WO21v6biwP7ZKEgtIJf223PVujpTOF4zDsL3aPOmxJx+dxaS3A0oSwB4zv/i6
+         Jb0bh8tNiRStD2FZiusMVkFxa8G1teBBpM9vg=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=33GSI50sxu92I8IBITQZbN0A1jxl04eHMvNt/IrTGXc=;
-        b=aa/oY4yZZUa8yyXmF5vkq6/da72PygoCYSVxB+IllQhHK/kLZAfUSjONkqHi1kSPIs
-         JD0GxiavafwGTiiLykML129586f2Df2i9Z0WuuqiHGuGYOQDowNAWmKP80+6G+FmUxwu
-         uzXcGx3Zs0YKlk7B4CqXqxiTWTLJW6HwOTUKRFeDVaoWd5Eq8G4X4Q16BlFKgU44mMaW
-         6s/rZFDbXZFPoLoNQAN5EP/OPG95YX2Y35SLjdkR+7OHjco3Y6iggLe45VXYNYcwRe98
-         uvbPqlm73+ytGDaGM7GuxKNq57oq5XG8QMo4Zlz+k75nEARDQYNLAMV5bA8O5JzU0QLT
-         fozw==
-X-Gm-Message-State: AOAM530Fty12jBHE7NFvAEQzcvkuDSz+K6Dcr+1uvMmKSg6yWaP7R/dB
-        wRlZkucADDwfjgo3EcdgUSe1E3vt00ZtuhwCqIg=
-X-Google-Smtp-Source: ABdhPJw7dGjhkE2M0QJo1TMHQN5dIq1LOERf9w53NN4gy0CAFSv/lT9VSrQegZJtzjXjzQqnotB7VDTxF3be56GaASM=
-X-Received: by 2002:a67:4386:: with SMTP id q128mr1725781vsa.40.1622114915482;
- Thu, 27 May 2021 04:28:35 -0700 (PDT)
+        bh=XepQkdRFyf5QwVg1KdPLbhegPooaNHd/1JiifJ+YyHM=;
+        b=Hrjt++leFGl3pVH8MuWKTJD+FHRXTyy2UH937JwcX7AMMefGuELQmdsuPO+swJKXOE
+         ywAuL8ZsmafkZR9ZQP7BwJWWKxdqWgD7IFd5ut3u+oBH7BgUAEtHzCZhQgzI78v070+U
+         66G59UuUXkXfwF6ywfVfCt3nCCFAwln9nclIGml6C6mFtWkxTRJy/ZGb84cyxD+SZlOk
+         NnGtB4yau38lmj8gEQn8xzIb3xJVpLck22MhvRBQy2HOkssTLyGvFhTFtpX5yxD3AaO8
+         7p5I3GAxStu6zYTKbsH0kDKRt0PJEAOMz7khCUT3W1rDA2uhA8TRWJz++kb3u6ICd9zh
+         jphQ==
+X-Gm-Message-State: AOAM533dU+/OZO+6oJbIVf+3NtVq3sUycus8gLIXkl/DYePO8+YJCN/a
+        5WuBiXnzDmi67NsvCuHPs7ohU9yGdo59uw==
+X-Google-Smtp-Source: ABdhPJxsZB3BR5aWEUVm7LPVTk3HiDhupCKxwCo/RsL4iw2rvlATAJZlPgEfr6Y8CeDE2EUaDOIj1g==
+X-Received: by 2002:a17:902:d711:b029:f0:b127:8105 with SMTP id w17-20020a170902d711b02900f0b1278105mr2860331ply.20.1622114984716;
+        Thu, 27 May 2021 04:29:44 -0700 (PDT)
+Received: from mail-pf1-f169.google.com (mail-pf1-f169.google.com. [209.85.210.169])
+        by smtp.gmail.com with ESMTPSA id f12sm1696549pfv.155.2021.05.27.04.29.42
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 27 May 2021 04:29:44 -0700 (PDT)
+Received: by mail-pf1-f169.google.com with SMTP id x18so332851pfi.9
+        for <linux-kernel@vger.kernel.org>; Thu, 27 May 2021 04:29:42 -0700 (PDT)
+X-Received: by 2002:a05:6e02:e42:: with SMTP id l2mr2536928ilk.189.1622114971302;
+ Thu, 27 May 2021 04:29:31 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210514192218.13022-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
- <20210514192218.13022-3-prabhakar.mahadev-lad.rj@bp.renesas.com>
- <CAMuHMdXdATYWRGL9PMkR_Fj-m-E5GUuPbHq0hZ_Mh=ceedF=RA@mail.gmail.com> <CA+V-a8uNB-RyyweQ--vjdiA1NRB7_-VRYBPq9YUxFT4pFRTKBA@mail.gmail.com>
-In-Reply-To: <CA+V-a8uNB-RyyweQ--vjdiA1NRB7_-VRYBPq9YUxFT4pFRTKBA@mail.gmail.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Thu, 27 May 2021 13:28:24 +0200
-Message-ID: <CAMuHMdWKdrn7ikT_qRrb0pVYxk3g7MgVk+qwJER61gbesQiPHA@mail.gmail.com>
-Subject: Re: [PATCH 02/16] dt-bindings: arm: renesas: Document Renesas
- RZ/G2{L,LC} SoC variants
-To:     "Lad, Prabhakar" <prabhakar.csengg@gmail.com>
-Cc:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Magnus Damm <magnus.damm@gmail.com>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
-        linux-clk <linux-clk@vger.kernel.org>,
-        "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Biju Das <biju.das.jz@bp.renesas.com>
+References: <20210518064215.2856977-1-tientzu@chromium.org>
+ <20210518064215.2856977-15-tientzu@chromium.org> <20210526121322.GA19313@willie-the-truck>
+ <20210526155321.GA19633@willie-the-truck>
+In-Reply-To: <20210526155321.GA19633@willie-the-truck>
+From:   Claire Chang <tientzu@chromium.org>
+Date:   Thu, 27 May 2021 19:29:20 +0800
+X-Gmail-Original-Message-ID: <CALiNf2_sVXnb97++yWusB5PWz8Pzfn9bCKZc6z3tY4bx6-nW8w@mail.gmail.com>
+Message-ID: <CALiNf2_sVXnb97++yWusB5PWz8Pzfn9bCKZc6z3tY4bx6-nW8w@mail.gmail.com>
+Subject: Re: [PATCH v7 14/15] dt-bindings: of: Add restricted DMA pool
+To:     Will Deacon <will@kernel.org>
+Cc:     Rob Herring <robh+dt@kernel.org>, mpe@ellerman.id.au,
+        Joerg Roedel <joro@8bytes.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
+        boris.ostrovsky@oracle.com, jgross@suse.com,
+        Christoph Hellwig <hch@lst.de>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        benh@kernel.crashing.org, paulus@samba.org,
+        "list@263.net:IOMMU DRIVERS" <iommu@lists.linux-foundation.org>,
+        sstabellini@kernel.org, Robin Murphy <robin.murphy@arm.com>,
+        grant.likely@arm.com, xypron.glpk@gmx.de,
+        Thierry Reding <treding@nvidia.com>, mingo@kernel.org,
+        bauerman@linux.ibm.com, peterz@infradead.org,
+        Greg KH <gregkh@linuxfoundation.org>,
+        Saravana Kannan <saravanak@google.com>,
+        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
+        heikki.krogerus@linux.intel.com,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        linux-devicetree <devicetree@vger.kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        linuxppc-dev@lists.ozlabs.org, xen-devel@lists.xenproject.org,
+        Nicolas Boichat <drinkcat@chromium.org>,
+        Jim Quinlan <james.quinlan@broadcom.com>,
+        Tomasz Figa <tfiga@chromium.org>, bskeggs@redhat.com,
+        Bjorn Helgaas <bhelgaas@google.com>, chris@chris-wilson.co.uk,
+        Daniel Vetter <daniel@ffwll.ch>, airlied@linux.ie,
+        dri-devel@lists.freedesktop.org, intel-gfx@lists.freedesktop.org,
+        jani.nikula@linux.intel.com, Jianxiong Gao <jxgao@google.com>,
+        joonas.lahtinen@linux.intel.com, linux-pci@vger.kernel.org,
+        maarten.lankhorst@linux.intel.com, matthew.auld@intel.com,
+        rodrigo.vivi@intel.com, thomas.hellstrom@linux.intel.com
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Prabhakar,
-
-On Fri, May 21, 2021 at 7:10 PM Lad, Prabhakar
-<prabhakar.csengg@gmail.com> wrote:
-> On Fri, May 21, 2021 at 2:23 PM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
-> > On Fri, May 14, 2021 at 9:23 PM Lad Prabhakar
-> > <prabhakar.mahadev-lad.rj@bp.renesas.com> wrote:
-> > > Add device tree bindings documentation for Renesas RZ/G2{L,LC}
-> > > SoC variants.
-> > >
-> > > Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-> > > Reviewed-by: Biju Das <biju.das.jz@bp.renesas.com>
-> > > Reviewed-by: Chris Paterson <Chris.Paterson2@renesas.com>
+On Wed, May 26, 2021 at 11:53 PM Will Deacon <will@kernel.org> wrote:
+>
+> On Wed, May 26, 2021 at 01:13:22PM +0100, Will Deacon wrote:
+> > On Tue, May 18, 2021 at 02:42:14PM +0800, Claire Chang wrote:
+> > > @@ -138,4 +160,9 @@ one for multimedia processing (named multimedia-memory@77000000, 64MiB).
+> > >             memory-region = <&multimedia_reserved>;
+> > >             /* ... */
+> > >     };
+> > > +
+> > > +   pcie_device: pcie_device@0,0 {
+> > > +           memory-region = <&restricted_dma_mem_reserved>;
+> > > +           /* ... */
+> > > +   };
 > >
-> > > --- a/Documentation/devicetree/bindings/arm/renesas.yaml
-> > > +++ b/Documentation/devicetree/bindings/arm/renesas.yaml
-> > > @@ -308,6 +308,15 @@ properties:
-> > >                - renesas,r9a07g043u11 # Single Cortex-A55 RZ/G2UL
-> > >            - const: renesas,r9a07g043
-> > >
-> > > +      - description: RZ/G2{L,LC} (R9A07G044)
-> > > +        items:
-> > > +          - enum:
-> > > +              - renesas,r9a07g044c1 # Single Cortex-A55 RZ/G2LC
-> > > +              - renesas,r9a07g044c2 # Dual Cortex-A55 RZ/G2LC
-> > > +              - renesas,r9a07g044l1 # Single Cortex-A55 RZ/G2L
-> > > +              - renesas,r9a07g044l2 # Dual Cortex-A55 RZ/G2L
+> > I still don't understand how this works for individual PCIe devices -- how
+> > is dev->of_node set to point at the node you have above?
 > >
-> > Given the LSI DEVID is the same for all four, and presumably they're
-> > thus the same die with different packaging, do we need these four
-> > compatible values?
+> > I tried adding the memory-region to the host controller instead, and then
+> > I see it crop up in dmesg:
 > >
-> Yes the LSI DEVID is the same for all the above, so as to
-> differentiate between each SoC's, these compatible strings are added.
+> >   | pci-host-generic 40000000.pci: assigned reserved memory node restricted_dma_mem_reserved
+> >
+> > but none of the actual PCI devices end up with 'dma_io_tlb_mem' set, and
+> > so the restricted DMA area is not used. In fact, swiotlb isn't used at all.
+> >
+> > What am I missing to make this work with PCIe devices?
+>
+> Aha, looks like we're just missing the logic to inherit the DMA
+> configuration. The diff below gets things working for me.
 
-OK, especially for single-core versus dual-core, this can be useful,
-if "integration issues" pop up depending on the number of cores
-or other functionality being present.
-
-> * For example some IP blocks which are present on RZ/G2L aren't
-> present in RZ/G2LC.
-
-That'll be handled by the .dtsi, right?
-
-> * Adding this to DTS gives an opportunity to stop booting if the wrong
-> DTB is loaded into the board.
-
-This only works for SoCs with different LSI DEVIDs.
-As all four above have the same LSI DEVID, you can only distinguish
-them by the main compatible value.  It does not protect against
-loading an RZ/G2LC DTB on an RZ/G2L board or vice versa.
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+I guess what was missing is the reg property in the pcie_device node.
+Will update the example dts.
