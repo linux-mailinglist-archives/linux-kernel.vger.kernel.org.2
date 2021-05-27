@@ -2,136 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A8A439352A
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 19:53:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5CAD8393531
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 19:57:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235491AbhE0Ryo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 May 2021 13:54:44 -0400
-Received: from mga02.intel.com ([134.134.136.20]:23450 "EHLO mga02.intel.com"
+        id S235184AbhE0R7D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 May 2021 13:59:03 -0400
+Received: from 8bytes.org ([81.169.241.247]:41164 "EHLO theia.8bytes.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229791AbhE0Ryn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 May 2021 13:54:43 -0400
-IronPort-SDR: j8sXyAYBkbklbtK4lFODG1EOnkZHKdygcd4ZmKNKMq8n50Gk514swlURuF6H56WGFzNbBOZEu+
- AcKN5EbCaa5A==
-X-IronPort-AV: E=McAfee;i="6200,9189,9997"; a="189914585"
-X-IronPort-AV: E=Sophos;i="5.83,228,1616482800"; 
-   d="scan'208";a="189914585"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 May 2021 10:53:06 -0700
-IronPort-SDR: xcd39ppBoZq0k8DOoQutcMT3FCfu0KbNIcrtDbYAy0l04N2mPyeq+YoDGaVoNOHX7vsiPEIHhp
- 6ZcTFeps13Yg==
-X-IronPort-AV: E=Sophos;i="5.83,228,1616482800"; 
-   d="scan'208";a="477592931"
-Received: from iweiny-desk2.sc.intel.com (HELO localhost) ([10.3.52.147])
-  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 May 2021 10:53:06 -0700
-Date:   Thu, 27 May 2021 10:53:05 -0700
-From:   Ira Weiny <ira.weiny@intel.com>
-To:     Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-Cc:     Ben Widawsky <ben.widawsky@intel.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Alison Schofield <alison.schofield@intel.com>,
-        Vishal Verma <vishal.l.verma@intel.com>,
-        linux-cxl@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 3/5] cxl/mem: Map registers based on capabilities
-Message-ID: <20210527175305.GF3697498@iweiny-DESK2.sc.intel.com>
-References: <20210522001154.2680157-1-ira.weiny@intel.com>
- <20210522001154.2680157-4-ira.weiny@intel.com>
- <20210525105214.00005e54@Huawei.com>
+        id S233395AbhE0R7B (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 27 May 2021 13:59:01 -0400
+Received: by theia.8bytes.org (Postfix, from userid 1000)
+        id CE612247; Thu, 27 May 2021 19:57:26 +0200 (CEST)
+Date:   Thu, 27 May 2021 19:57:25 +0200
+From:   Joerg Roedel <joro@8bytes.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Will Deacon <will@kernel.org>, linux-kernel@vger.kernel.org,
+        iommu@lists.linux-foundation.org
+Subject: [git pull] IOMMU Fixes for Linux v5.13-rc3
+Message-ID: <YK/dheM2NZz6KOkb@8bytes.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="r7JlHYcG2r1PRoWj"
 Content-Disposition: inline
-In-Reply-To: <20210525105214.00005e54@Huawei.com>
-User-Agent: Mutt/1.11.1 (2018-12-01)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 25, 2021 at 10:52:14AM +0100, Jonathan Cameron wrote:
-> On Fri, 21 May 2021 17:11:52 -0700
-> <ira.weiny@intel.com> wrote:
-> 
-> > From: Ira Weiny <ira.weiny@intel.com>
-> > 
-> > The information required to map registers based on capabilities is
-> > contained within the bars themselves.  This means the bar must be mapped
-> > to read the information needed and then unmapped to map the individual
-> > parts of the BAR based on capabilities.
-> > 
-> > Change cxl_setup_device_regs() to return a new cxl_register_map, change
-> > the name to cxl_probe_device_regs().  Allocate and place
-> > cxl_register_maps on a list while processing all of the specified
-> > register blocks.
-> > 
-> > After probing all the register blocks go back and map smaller registers
-> > blocks based on their capabilities and dispose of the cxl_register_maps.
-> > 
-> > NOTE: pci_iomap() is not managed automatically via pcim_enable_device()
-> > so be careful to call pci_iounmap() correctly.
-> > 
-> > Signed-off-by: Ira Weiny <ira.weiny@intel.com>
-> A couple of really minor queries inline, but otherwise looks good to me.
-> 
-> Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
 
-Thanks!
+--r7JlHYcG2r1PRoWj
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-> 
-> > 
-> > diff --git a/drivers/cxl/core.c b/drivers/cxl/core.c
-> > index 38979c97158d..add66a6ec875 100644
-> > --- a/drivers/cxl/core.c
-> > +++ b/drivers/cxl/core.c
-> > @@ -3,6 +3,7 @@
-> >  #include <linux/io-64-nonatomic-lo-hi.h>
-> >  #include <linux/device.h>
-> >  #include <linux/module.h>
-> > +#include <linux/pci.h>
-> >  #include "cxl.h"
-> >  
-> >  /**
-> > @@ -12,19 +13,13 @@
-> >   * point for cross-device interleave coordination through cxl ports.
-> >   */
-> >  
-> > -/**
-> > - * cxl_setup_device_regs() - Detect CXL Device register blocks
-> > - * @dev: Host device of the @base mapping
-> > - * @base: Mapping of CXL 2.0 8.2.8 CXL Device Register Interface
-> > - * @regs: Base pointers for device register blocks (see CXL_DEVICE_REGS())
-> > - */
-> 
-> Nice to keep docs given this is an exported function.
+Hi Linus,
 
-I can write something better but the above does not add much IMO.  The
-parameter explanations are unnecessary IMO.
+The following changes since commit d07f6ca923ea0927a1024dfccafc5b53b61cfecc:
 
-> >  
-> > @@ -1030,30 +1091,38 @@ static int cxl_mem_setup_regs(struct cxl_mem *cxlm)
-> >  		dev_dbg(dev, "Found register block in bar %u @ 0x%llx of type %u\n",
-> >  			bar, offset, reg_type);
-> >  
-> > -		if (reg_type == CXL_REGLOC_RBI_MEMDEV) {
-> > -			base = cxl_mem_map_regblock(cxlm, bar, offset);
-> > -			if (!base)
-> > -				return -ENOMEM;
-> > -			break;
-> > +		base = cxl_mem_map_regblock(cxlm, bar, offset);
-> > +		if (!base) {
-> > +			ret = -ENOMEM;
-> > +			goto free_maps;
-> >  		}
-> > -	}
-> >  
-> > -	if (i == regblocks) {
-> > -		dev_err(dev, "Missing register locator for device registers\n");
-> > -		return -ENXIO;
-> 
-> Do we have or need an equivalent of this check somewhere else?
+  Linux 5.13-rc2 (2021-05-16 15:27:44 -0700)
 
-Yes agreed!  I moved the check to cxl_probe_regs which returns -ENXIO if the
-register sets expected are not found.  A check is also added to RBI_COMPONENT
-register type in the following patch.  This was moved mainly because each
-register type is going to know better what it needs for proper operation.
-cxl_probe_device_regs() really can't know that after this series.
+are available in the Git repository at:
 
-Ira
+  git://git.kernel.org/pub/scm/linux/kernel/git/joro/iommu.git tags/iommu-fixes-v5.13-rc3
+
+for you to fetch changes up to 0ee74d5a48635c848c20f152d0d488bf84641304:
+
+  iommu/vt-d: Fix sysfs leak in alloc_iommu() (2021-05-27 16:07:08 +0200)
+
+----------------------------------------------------------------
+IOMMU Fixes for Linux v5.13-rc3
+
+Including:
+
+	- Important fix for the AMD IOMMU driver in the recently added
+	  page-specific invalidation code to fix a calculation.
+
+	- Fix a NULL-ptr dereference in the AMD IOMMU driver when a
+	  device switches domain types.
+
+	- Fixes for the Intel VT-d driver to check for allocation
+	  failure and do correct cleanup.
+
+	- Another fix for Intel VT-d to not allow supervisor page
+	  requests from devices when using second level page
+	  translation.
+
+	- Add a MODULE_DEVICE_TABLE to the VIRTIO IOMMU driver
+
+----------------------------------------------------------------
+Bixuan Cui (1):
+      iommu/virtio: Add missing MODULE_DEVICE_TABLE
+
+Dan Carpenter (1):
+      iommu/vt-d: Check for allocation failure in aux_detach_device()
+
+Jean-Philippe Brucker (1):
+      iommu/amd: Clear DMA ops when switching domain
+
+Lu Baolu (1):
+      iommu/vt-d: Use user privilege for RID2PASID translation
+
+Nadav Amit (1):
+      iommu/amd: Fix wrong parentheses on page-specific invalidations
+
+Rolf Eike Beer (1):
+      iommu/vt-d: Fix sysfs leak in alloc_iommu()
+
+ drivers/iommu/amd/iommu.c    | 4 +++-
+ drivers/iommu/intel/dmar.c   | 4 +++-
+ drivers/iommu/intel/iommu.c  | 9 +++++++--
+ drivers/iommu/intel/pasid.c  | 3 ++-
+ drivers/iommu/virtio-iommu.c | 1 +
+ 5 files changed, 16 insertions(+), 5 deletions(-)
+
+Please pull.
+
+Thanks,
+
+	Joerg
+
+--r7JlHYcG2r1PRoWj
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCAAdFiEEr9jSbILcajRFYWYyK/BELZcBGuMFAmCv3YIACgkQK/BELZcB
+GuOAWw//WQuACOwVW8z+7/0rzSoYcfITOJ21HhiHYCHpr7G6+3w5gUJfia/vWeB1
+QkfS7IFtcnkjGCoI5ZLQN2c6NIHfXrv7hjk73A95XKAhy/t208u749EYvj0vJsFm
+LNevjwcpQuRFJZMFO+1oCVt+lCGTdneY+BXme2GV6D5tu/U8MNGlzrnoMk5+rcPr
+5jq60d9ELFxpLRVHc3/pd7uSn+LqzF2hPjxxifFgoZyVW9zC1Qp2pEOXhosb+HXv
+rBjDaXlo7k9osgRWLErGjkr3xSIfDaLFWfJmOAwCem7OvZn9NIdIsikiQdSgQMJ2
+fkwQcY8lwe6ZWvW5mCqy7gqIQVkYU2D3hoUdWUxpatrXoDLQyLpPJYEzNq6a4yMv
+QeMQ5gEWGiYKar0PQoG257TjMieT4FWsFUBZxWl3tSsg3Vf0pmDa3NJ7493u06D6
+d8nUFqjqDs4eFcivXop/sbGYyD9kpoEkzxKiciEsKw/5UvZb+zZ8aASl8JvY3nYC
+qeRNtcThiK5HJF78UrSfFxmke1v8pp+5wphBi5Z4yBimliwo4hGVleQLrR4wOfDr
+6EXDE+GA1mtzn0SvzMqhRy4C+VRUkz6f6gNTQFxhjLEa3j5MXjhHczZvSQeXFddX
+UmilTYT2f4QNVdX5oR4rSzMLa5j5fYQXCEeDUW1LtZAXDUxs6yg=
+=hxvZ
+-----END PGP SIGNATURE-----
+
+--r7JlHYcG2r1PRoWj--
