@@ -2,91 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 562083938D2
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 00:52:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6281E3938D4
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 00:53:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236219AbhE0Wxm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 May 2021 18:53:42 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:37420 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233203AbhE0Wxk (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 May 2021 18:53:40 -0400
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1622155923;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=uAIoLlMtrjzvrcsBxWhaicEwWt4fesWA8JrISGhrLd8=;
-        b=XK0pzWuM+eObk9PdHaBYcRiPNn68IG5lkkSx+/M1IFv1KJVDo4XGjreMmYtvfcptFdJaMK
-        o8SAPmC2vpJsvRPrME1koGoJpxNT6UHo6MNWwTVoUwCCdTjyFu2gEKbVN3gcCQ1uAWpKn2
-        eMP0WdUIgfjHREIlP0+JcDkIW057x0G6Nzuk+8V0P741kSHsc8BdMuqlCin/skeHZ1v9tl
-        d57tofIlP/91yyXfeHbJcEQb4au943NVBZRydPidUONCE+/77OLFVbPnRAffEEYUhuqdE1
-        1OVM4filzuJMq3TAb9snPrtMAq5hUXBcXu/CpEd4kL/ZC/dDScu36YsxvKFbiw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1622155923;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=uAIoLlMtrjzvrcsBxWhaicEwWt4fesWA8JrISGhrLd8=;
-        b=NgIBE2poQuAfCdybmeEvdWm3RcgZ7+Cwxqm+Hlou0f5BLGQUi1m1uWytGTEfuproQ+/nss
-        kUTkS29UD5CGimCw==
-To:     syzbot <syzbot+71271244f206d17f6441@syzkaller.appspotmail.com>,
-        bp@alien8.de, dave.hansen@linux.intel.com, hpa@zytor.com,
-        jarkko@kernel.org, jmattson@google.com, joro@8bytes.org,
-        kan.liang@linux.intel.com, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-sgx@vger.kernel.org,
-        mingo@redhat.com, pbonzini@redhat.com, peterz@infradead.org,
-        seanjc@google.com, steve.wahl@hpe.com,
-        syzkaller-bugs@googlegroups.com, vkuznets@redhat.com,
-        wanpengli@tencent.com, x86@kernel.org
-Subject: Re: [syzbot] WARNING in x86_emulate_instruction
-In-Reply-To: <000000000000f3fc9305c2e24311@google.com>
-References: <000000000000f3fc9305c2e24311@google.com>
-Date:   Fri, 28 May 2021 00:52:03 +0200
-Message-ID: <87v9737pt8.ffs@nanos.tec.linutronix.de>
-MIME-Version: 1.0
-Content-Type: text/plain
+        id S236311AbhE0WzH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 May 2021 18:55:07 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33632 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233203AbhE0WzG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 27 May 2021 18:55:06 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0978F6135C;
+        Thu, 27 May 2021 22:53:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
+        s=korg; t=1622156012;
+        bh=7MdWtmWeLlou3ty7YEAv5zFviKE2shm6r6htgP6Nn9U=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=IcJP0OI0FtMTbahWzdvfxcck32sUMoliVtZZyoCP2Utt0oTLZFGLuJKp3MNQk4VV3
+         5ZxiTd26MyZsJfu/MiV3rXmjxuUI/BFg7MtHbZ5WZkGL4s6QDJlj+VxotxZUWXweij
+         eclWsB/xlwobMugfIx6S+aRLLIYZ5g+KGnwQDmMM=
+Date:   Thu, 27 May 2021 15:53:31 -0700
+From:   Andrew Morton <akpm@linux-foundation.org>
+To:     Christoph Hellwig <hch@infradead.org>
+Cc:     Matthew Wilcox <willy@infradead.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, Zi Yan <ziy@nvidia.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Jeff Layton <jlayton@kernel.org>
+Subject: Re: [PATCH v10 07/33] mm: Add folio_get
+Message-Id: <20210527155331.3d96fca84dd25705f5c9897f@linux-foundation.org>
+In-Reply-To: <YK9T9xXaF6kU0nmU@infradead.org>
+References: <20210511214735.1836149-1-willy@infradead.org>
+        <20210511214735.1836149-8-willy@infradead.org>
+        <88a265ab-9ecd-18b7-c150-517a5c2e5041@suse.cz>
+        <YJ6IGgToV1wSv1gg@casper.infradead.org>
+        <YK9T9xXaF6kU0nmU@infradead.org>
+X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.31; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 21 2021 at 19:52, syzbot wrote:
+On Thu, 27 May 2021 09:10:31 +0100 Christoph Hellwig <hch@infradead.org> wrote:
 
-> Hello,
->
-> syzbot found the following issue on:
->
-> HEAD commit:    8ac91e6c Merge tag 'for-5.13-rc2-tag' of git://git.kernel...
-> git tree:       upstream
-> console output: https://syzkaller.appspot.com/x/log.txt?x=16a80fc7d00000
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=dddb87edd6431081
-> dashboard link: https://syzkaller.appspot.com/bug?extid=71271244f206d17f6441
-> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=12d1f89bd00000
-> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=134683fdd00000
->
-> The issue was bisected to:
->
-> commit 9a7832ce3d920426a36cdd78eda4b3568d4d09e3
-> Author: Steve Wahl <steve.wahl@hpe.com>
-> Date:   Fri Jan 8 15:35:49 2021 +0000
->
->     perf/x86/intel/uncore: With > 8 nodes, get pci bus die id from NUMA info
->
-> bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=152bf9b3d00000
-> final oops:     https://syzkaller.appspot.com/x/report.txt?x=172bf9b3d00000
-> console output: https://syzkaller.appspot.com/x/log.txt?x=132bf9b3d00000
->
-> IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> Reported-by: syzbot+71271244f206d17f6441@syzkaller.appspotmail.com
-> Fixes: 9a7832ce3d92 ("perf/x86/intel/uncore: With > 8 nodes, get pci bus die id from NUMA info")
+> On Fri, May 14, 2021 at 03:24:26PM +0100, Matthew Wilcox wrote:
+> > On Fri, May 14, 2021 at 01:56:46PM +0200, Vlastimil Babka wrote:
+> > > Nitpick: function names in subject should IMHO also end with (). But not a
+> > > reason for resend all patches that don't...
+> > 
+> > Hm, I thought it was preferred to not do that.  I can fix it
+> > easily enough when I go through and add the R-b.
+> 
+> I hate the pointless ().  Some maintainers insist on it.   No matter
+> what you do you'll make some folks happy and others not.
 
-So this is stale for a week now. It's fully reproducible and nobody
-can't be bothered to look at that?
+I prefer it.  It succinctly says "this identifier is a function" which
+is useful info.
 
-What's wrong with you people?
-
-Thanks,
-
-        tglx
+I get many changelogs saying "the foo function" or "the function foo". 
+"foo()" is better.
