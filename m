@@ -2,109 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B706393654
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 21:33:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F5E9393655
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 21:34:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235266AbhE0TfV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 May 2021 15:35:21 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55214 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235064AbhE0TfT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 May 2021 15:35:19 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DC8AF6124C;
-        Thu, 27 May 2021 19:33:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1622144026;
-        bh=TvQZ16/UGmoa9yxvoMiQl+XBpYesXD1RGo48P0vJEeU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=S8A/J1Wt9kaUM+cefTWoR0OhWmkX0nmg3+xppq7liq4bpSS31c84M+JNC+DzzbeK6
-         E2nSIEs+V8coYUj04xCK89JhMSViUn4q35afuqzJMjvnjkgfCy8QVwhmanQ40F5tnB
-         EjwNYmY1jBOO1KGS+sEvpgnx35f+RtfLjJu/MwqHUneu+Mma2JXk4bXAMnvgun2v2G
-         C/6JpG0yKCVOTIVNGDpxBmq6DnIrh+DFhxEWf5OkF5Ec1Wuc9aqLAyzzVTlhAv5AKk
-         x69E1iDmpBR9IFzJwzSeCW0e8cERIfXm2yqfFiAEwKQhHXxV+rwTSSDEYsJMiDYQkX
-         YYnAbMWIn89IQ==
-Date:   Thu, 27 May 2021 21:33:43 +0200
-From:   Wolfram Sang <wsa@kernel.org>
-To:     Lee Jones <lee.jones@linaro.org>
-Cc:     linux-kernel@vger.kernel.org,
-        Peter Korsgaard <peter@korsgaard.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Andreas Larsson <andreas@gaisler.com>,
-        linux-i2c@vger.kernel.org, linux-riscv@lists.infradead.org
-Subject: Re: [PATCH 10/16] i2c: busses: i2c-ocores: Place the expected
- function names into the documentation headers
-Message-ID: <YK/0F1Usuccf90Ls@kunai>
-Mail-Followup-To: Wolfram Sang <wsa@kernel.org>,
-        Lee Jones <lee.jones@linaro.org>, linux-kernel@vger.kernel.org,
-        Peter Korsgaard <peter@korsgaard.com>, Andrew Lunn <andrew@lunn.ch>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Andreas Larsson <andreas@gaisler.com>, linux-i2c@vger.kernel.org,
-        linux-riscv@lists.infradead.org
-References: <20210520190105.3772683-1-lee.jones@linaro.org>
- <20210520190105.3772683-11-lee.jones@linaro.org>
+        id S235365AbhE0Tfj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 May 2021 15:35:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33206 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235341AbhE0Tff (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 27 May 2021 15:35:35 -0400
+Received: from mail-pg1-x52a.google.com (mail-pg1-x52a.google.com [IPv6:2607:f8b0:4864:20::52a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 728A7C061574
+        for <linux-kernel@vger.kernel.org>; Thu, 27 May 2021 12:34:02 -0700 (PDT)
+Received: by mail-pg1-x52a.google.com with SMTP id m124so682842pgm.13
+        for <linux-kernel@vger.kernel.org>; Thu, 27 May 2021 12:34:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=URynco1M9J1CS+xfeICx2Aic9FrXa16sZQX08FVwppI=;
+        b=JWbp66autvivqvE6xXnUM0mrSHamWBlfCoWy1ZWALj8VvW28WyM4tOz9rD6Y2fn6mo
+         /oyZGbXmTh/osJD4yS8R/bJPNtVCB2fh7Y3x1mx6DyPm6KaanPvqp5TbRN5CiTLDrzN6
+         OkGmPaOpcJl0Qi0zelOJkqfUm26+PNgv66hjyoIfYfqJWbheVsudGZq5FG7FWv07+fjb
+         DvytOQ0MZag+Z7ghIgGS1PavZhi99FRB/mE07FrmnefM7tUcEvLPplRLjbzLGZmoH/S7
+         GLvYfNxr0eQw8tCUESt5VdSmJZ5rr8eOgCMoCDVuBOIFMnzkgI4pSCU4MdCvc1le2VaL
+         zwXg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=URynco1M9J1CS+xfeICx2Aic9FrXa16sZQX08FVwppI=;
+        b=A3ausqxOCNrXouTvJBO1Vu0CjNI9FDOQqOXy1DYD2UwXBKpwpYdmkVMYfEn3EXsmbR
+         OpiA/Seb3NqhODKKMuKfol6JXyYrC4sD0WN60x+t3fo/UcykTeo/TJ9Sb/8mGL8uQnMJ
+         N7KxbzIbGbo4qPIu9hBdjUWCiGTowWiAtahly/vbupcaL8ocSqAqa6i70U+67ME3yBy8
+         wcMP82/0VsmpN8Z+qhsuCvE6t7kkG4umuJKZxSDgln4dlwoNld6zw2RhlX5p1TnrbZc8
+         XeWJAy/kQYaceWv0pH27PzNQJIzD+RNWyu70B+VgeYQOCsixTWzqFQKfVE4e3TmPerJP
+         LTfg==
+X-Gm-Message-State: AOAM531zxUXEjOzSpcji+U2IPkOQWTB2PWDcLy/A4bpbaA+zbzyVmWHV
+        yvPoAd4wsiCuE8C0na5E/+g=
+X-Google-Smtp-Source: ABdhPJz+sXAlNDFgt9lhiOhSziH4x+rRM+NKppPo928SUPKY+IkClmNYEWstUNHj1eJ2L2PCXYdb0g==
+X-Received: by 2002:a63:cc11:: with SMTP id x17mr5165595pgf.159.1622144041765;
+        Thu, 27 May 2021 12:34:01 -0700 (PDT)
+Received: from nhaiderx-mobl1.gar.corp.intel.com ([2409:4063:2381:b5a9:2c37:cdf5:a1b0:c566])
+        by smtp.gmail.com with ESMTPSA id w123sm2475357pfb.109.2021.05.27.12.33.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 27 May 2021 12:34:01 -0700 (PDT)
+From:   nizamhaider786@gmail.com
+To:     laforge@gnumonks.org
+Cc:     arnd@arndb.de, gregkh@linuxfoundation.org,
+        linux-kernel@vger.kernel.org,
+        Nijam Haider <nizamhaider786@gmail.com>
+Subject: [PATCH V3 1/2] char: pcmcia: cm4000_cs: Fix failure handling
+Date:   Fri, 28 May 2021 01:03:50 +0530
+Message-Id: <20210527193351.638-1-nizamhaider786@gmail.com>
+X-Mailer: git-send-email 2.31.1.windows.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="Cf+dOQDvq50YH7O5"
-Content-Disposition: inline
-In-Reply-To: <20210520190105.3772683-11-lee.jones@linaro.org>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Nijam Haider <nizamhaider786@gmail.com>
 
---Cf+dOQDvq50YH7O5
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Handled failure cases of device_create()
 
-On Thu, May 20, 2021 at 08:00:59PM +0100, Lee Jones wrote:
-> Fixes the following W=3D1 kernel build warning(s):
->=20
->  drivers/i2c/busses/i2c-ocores.c:253: warning: This comment starts with '=
-/**', but isn't a kernel-doc comment. Refer Documentation/doc-guide/kernel-=
-doc.rst
->  drivers/i2c/busses/i2c-ocores.c:267: warning: This comment starts with '=
-/**', but isn't a kernel-doc comment. Refer Documentation/doc-guide/kernel-=
-doc.rst
->  drivers/i2c/busses/i2c-ocores.c:299: warning: This comment starts with '=
-/**', but isn't a kernel-doc comment. Refer Documentation/doc-guide/kernel-=
-doc.rst
->  drivers/i2c/busses/i2c-ocores.c:347: warning: expecting prototype for It=
- handles an IRQ(). Prototype was for ocores_process_polling() instead
->=20
-> Cc: Peter Korsgaard <peter@korsgaard.com>
-> Cc: Andrew Lunn <andrew@lunn.ch>
-> Cc: Palmer Dabbelt <palmer@dabbelt.com>
-> Cc: Paul Walmsley <paul.walmsley@sifive.com>
-> Cc: Andreas Larsson <andreas@gaisler.com>
-> Cc: linux-i2c@vger.kernel.org
-> Cc: linux-riscv@lists.infradead.org
-> Signed-off-by: Lee Jones <lee.jones@linaro.org>
+Signed-off-by: Nijam Haider <nizamhaider786@gmail.com>
+---
+V2 -> V3: Added label and moved the cleanup code
+V1 -> V2: Added description and changelog
+---
+ drivers/char/pcmcia/cm4000_cs.c | 22 +++++++++++++++-------
+ 1 file changed, 15 insertions(+), 7 deletions(-)
 
-Applied to for-current, thanks!
+diff --git a/drivers/char/pcmcia/cm4000_cs.c b/drivers/char/pcmcia/cm4000_cs.c
+index 89681f07bc78..e4a79866fbf3 100644
+--- a/drivers/char/pcmcia/cm4000_cs.c
++++ b/drivers/char/pcmcia/cm4000_cs.c
+@@ -1783,6 +1783,7 @@ static int cm4000_probe(struct pcmcia_device *link)
+ {
+ 	struct cm4000_dev *dev;
+ 	int i, ret;
++	struct device *dev_ret;
+ 
+ 	for (i = 0; i < CM4000_MAX_DEV; i++)
+ 		if (dev_table[i] == NULL)
+@@ -1808,15 +1809,22 @@ static int cm4000_probe(struct pcmcia_device *link)
+ 	init_waitqueue_head(&dev->readq);
+ 
+ 	ret = cm4000_config(link, i);
+-	if (ret) {
+-		dev_table[i] = NULL;
+-		kfree(dev);
+-		return ret;
+-	}
+-
+-	device_create(cmm_class, NULL, MKDEV(major, i), NULL, "cmm%d", i);
++	if (ret)
++		goto err_config;
+ 
++	dev_ret = device_create(cmm_class, NULL, MKDEV(major, i), NULL, "cmm%d", i);
++	if (IS_ERR(dev_ret)) {
++		dev_err(&link->dev, "device_create failed for %d\n", i);
++		goto err_device_create;
++	}
+ 	return 0;
++
++err_device_create:
++	cm4000_release(link);
++err_config:
++	dev_table[i] = NULL;
++	kfree(dev);
++	return -ENODEV;
+ }
+ 
+ static void cm4000_detach(struct pcmcia_device *link)
+-- 
+2.17.1
 
-
---Cf+dOQDvq50YH7O5
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmCv9BcACgkQFA3kzBSg
-KbZS7g//fLenLeqiftxDzn+Nkh+gHetgSFVjKOHR3pDLvod+2crf9gy4YORAeMOb
-JN1kmpunXMagFfp3K3YGHZneFXWb1cEg18HDH3a+GlA6lf/IUpd3+mrnO5arFgOR
-i1tODQo+WmgT0s/fdkKkX6BwX1Ygf9GYXnVQ6tQ3Tu8UVxUAv0bir7EZaFnlFsd9
-oEcBBA+jW9Mu7LAkAaGnGglxDa1GtSdI3zc5XwpW2K4mx/ieaA8yyIpnSyLaIk5F
-UnSmiQkmBvXyS/wZUWZ1Myhs4ChmDA/M5yx1mGsfIDvQ4ZNBribRPMb5rESBNxJi
-0lPXfB5pUwZ7oB9IyJh5XDBat2LxQjuBQO6C6db4QqOT4IOLlIxl0UVcyf6+VyTQ
-UPwZTXWSLV0ce9Q9VemkchMvV31MBb/iROORtuEAXuSXwA9MMJYviR+PXuxjejIh
-aqmzjOhSQ10BH3qwget7vRi5RqACIFjfbTO4hB8kG0u3JPDDxw24vXGyDN8EweaY
-arSb1K6DdxMLGANAMV65jvqw6EiMWAAt47xpZxBX4ytdYwA64o75NlNNOou4Fcog
-TApQR7b2GZ3P4KGPJj+byQMVtJYVnwmxSpl8IPEm6+vLjdtIKDyLiVttB77X+lSn
-KY3ROKLq3RuuV29eJZdqJIaRRDW6uBt7oGNoNsAzy0hgZbkz7CM=
-=FkD1
------END PGP SIGNATURE-----
-
---Cf+dOQDvq50YH7O5--
