@@ -2,98 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 29BAC39255B
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 05:20:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C7C1392560
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 05:25:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234670AbhE0DWE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 May 2021 23:22:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37496 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234627AbhE0DVy (ORCPT
+        id S234638AbhE0D0c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 May 2021 23:26:32 -0400
+Received: from mx0a-0016f401.pphosted.com ([67.231.148.174]:61754 "EHLO
+        mx0b-0016f401.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S233542AbhE0D0a (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 May 2021 23:21:54 -0400
-Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 675C0C061761;
-        Wed, 26 May 2021 20:20:20 -0700 (PDT)
-Received: by mail-pj1-x1032.google.com with SMTP id ne24-20020a17090b3758b029015f2dafecb0so1532619pjb.4;
-        Wed, 26 May 2021 20:20:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=jG9XU2eeNR1ehF2kR/N0/vaVpfMY3ZfXw7N9zluBZsA=;
-        b=pucBPDNbUbbymkln0VlLUx9Os/UgB/JcuM83p/uikHRap5OiDpCh/3bB5aFU7qtHYp
-         9OkFOUN26EkM3tz0EKPJIBrkqOBr23gDUlIE8kKgCgFmwAbetV1Nr858F1CShKql1uuo
-         GuRn5ZWQkG6eC0QNnCYGs9Pjwj03xqMXJ3uPGq8sZV2DF/iqTfnm35tV6UPVQWcI/qsd
-         Vh6dwXj6FleKq1PLxB8aIPVNpuyn9KDrUH7Qjl9Dl0kUTmu50twEOcQ/2Ao00BPCz0Li
-         YzfFrjXKi+J9T1aM3rHYC5znGXZgLBiroBYL4dt+S/2kbxMc3x+nKxHEjXYI7pkbo7tQ
-         C7mg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=jG9XU2eeNR1ehF2kR/N0/vaVpfMY3ZfXw7N9zluBZsA=;
-        b=akb+591AZTImpqdSVLn8pw+Krxpziw1UbBP2LfPekkMYHmOnzTlmcNUg3lYiLV/2l3
-         /WmmBmGHqTI9VSg3ZreyM6hlg9P7u5wPu0iDxv7cZEIOsYRvXLJ8/q+4m+10eXzC7l/a
-         03oWKVEQ73fq9JzZ5yEKmdwujLn8wKV9MrHdTITOPNy2xQ5khr38Pqh3XOeEctcmRNz0
-         YHNn7SR+wSKlZDiurJ+28CxQxfV64dJ3m7JiDbXcr9yjtVPIbjyk/LXg9tBjXH/Vqs+X
-         7fPy4qierpoe998OQyDPmOIhQqhZu5MELyg8fBKxS9fIOBouWTwTefG6pVQN7VdSeIVi
-         84/Q==
-X-Gm-Message-State: AOAM533oVnqBxkM47YCAnaelZk/2V9WLwjSc1G/y6PUYlCIR+DhyYoni
-        kS6zwZsAmjeqxq8ZB7rOurk=
-X-Google-Smtp-Source: ABdhPJyMfTroJFgSVZtAn6oWtnH/iUtjmTrB/qnFpH/K667kYelHNO0Z/B9baW5R4egcs9obJW/xRQ==
-X-Received: by 2002:a17:90a:aa96:: with SMTP id l22mr7063696pjq.173.1622085620045;
-        Wed, 26 May 2021 20:20:20 -0700 (PDT)
-Received: from localhost.localdomain ([203.205.141.39])
-        by smtp.gmail.com with ESMTPSA id l6sm554716pjf.28.2021.05.26.20.20.17
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 26 May 2021 20:20:19 -0700 (PDT)
-From:   Haocheng Xie <xiehaocheng.cn@gmail.com>
-To:     mingo@kernel.org, acme@kernel.org,
-        alexander.shishkin@linux.intel.com, jolsa@redhat.com,
-        mark.rutland@arm.com, mingo@redhat.com, namhyung@kernel.org,
-        peterz@infradead.org
-Cc:     linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
-        Haocheng Xie <xiehaocheng.cn@gmail.com>
-Subject: [PATCH v2 3/3] perf/hw_breakpoint: Fix kernel-doc warnings in perf hw_breakpoint
-Date:   Thu, 27 May 2021 11:19:47 +0800
-Message-Id: <20210527031947.1801-4-xiehaocheng.cn@gmail.com>
-X-Mailer: git-send-email 2.9.5
-In-Reply-To: <20210527031947.1801-1-xiehaocheng.cn@gmail.com>
-References: <20210527031947.1801-1-xiehaocheng.cn@gmail.com>
+        Wed, 26 May 2021 23:26:30 -0400
+Received: from pps.filterd (m0045849.ppops.net [127.0.0.1])
+        by mx0a-0016f401.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 14R3OvhS015435;
+        Wed, 26 May 2021 20:24:57 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-transfer-encoding :
+ content-type; s=pfpt0220; bh=V3AKUgEip2dGz1A7n15Ax1SlvshrVe4qk4Siw6WKtpA=;
+ b=EuLh/3Qn6GXM5k0TJMHVjCVZjtD8p37saFI9w5SoOWtCg1p2q7CTCgXyWuGZ1fGk7sjA
+ qJGuPJf19FJcL7waO0CeGGiYb2SfjuOhc9ZXPtPXZBf8a3mKlperEv6ldsKlapasJCnL
+ aoi93II3JpdIL96SFA9K6W7TQ3llbfnf1aGKpqvDtUbA13PRRBaPHyAgF5oPPaDmPMJV
+ W3tMS2pyAVDNY4q5I2U9y7OBNlqV61WtPTTX/1k7svlNO/iPy/6/6yDh45dK381WKTZ8
+ 763fLFFgbKyn2xcGTYhxz2hYWFNqiNZo5nUQ0L0WWzoE8pmHa+KwDdKGCubk/jhxm1BS Fg== 
+Received: from dc5-exch01.marvell.com ([199.233.59.181])
+        by mx0a-0016f401.pphosted.com with ESMTP id 38spf3b38w-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
+        Wed, 26 May 2021 20:24:56 -0700
+Received: from DC5-EXCH02.marvell.com (10.69.176.39) by DC5-EXCH01.marvell.com
+ (10.69.176.38) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Wed, 26 May
+ 2021 20:24:46 -0700
+Received: from maili.marvell.com (10.69.176.80) by DC5-EXCH02.marvell.com
+ (10.69.176.39) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Wed, 26 May 2021 20:24:47 -0700
+Received: from hyd1584.marvell.com (unknown [10.29.37.82])
+        by maili.marvell.com (Postfix) with ESMTP id 25AFF3F703F;
+        Wed, 26 May 2021 20:24:44 -0700 (PDT)
+From:   George Cherian <george.cherian@marvell.com>
+To:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+CC:     <kuba@kernel.org>, <davem@davemloft.net>, <gcherian@marvell.com>,
+        <sgoutham@marvell.com>
+Subject: [net-next PATCHv2 0/5] NPC KPU updates
+Date:   Thu, 27 May 2021 08:54:39 +0530
+Message-ID: <20210527032444.3204054-1-george.cherian@marvell.com>
+X-Mailer: git-send-email 2.25.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Proofpoint-GUID: i3N1i53fDO7bHzS0-yDb9U6Yz-ioxDgL
+X-Proofpoint-ORIG-GUID: i3N1i53fDO7bHzS0-yDb9U6Yz-ioxDgL
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
+ definitions=2021-05-27_01:2021-05-26,2021-05-27 signatures=0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix the following W=1 kernel build warning(s):
+Add support for
+ - Loading Custom KPU profile entries
+ - Add NPC profile Load from System Firmware DB
+ - Add Support fo Coalescing KPU profiles
+ - General Updates/Fixes to default KPU profile
 
-  kernel/events/hw_breakpoint.c:461: warning: Function parameter or member 'context' not described in 'register_user_hw_breakpoint'
-  kernel/events/hw_breakpoint.c:560: warning: Function parameter or member 'context' not described in 'register_wide_hw_breakpoint'
+George Cherian (1):
+  octeontx2-af: Update the default KPU profile and fixes
 
-Signed-off-by: Haocheng Xie <xiehaocheng.cn@gmail.com>
----
- kernel/events/hw_breakpoint.c | 2 ++
- 1 file changed, 2 insertions(+)
+Harman Kalra (3):
+  octeontx2-af: load NPC profile via firmware database
+  octeontx2-af: adding new lt def registers support
+  octeontx2-af: support for coalescing KPU profiles
 
-diff --git a/kernel/events/hw_breakpoint.c b/kernel/events/hw_breakpoint.c
-index b48d703..8359734 100644
---- a/kernel/events/hw_breakpoint.c
-+++ b/kernel/events/hw_breakpoint.c
-@@ -451,6 +451,7 @@ int register_perf_hw_breakpoint(struct perf_event *bp)
-  * register_user_hw_breakpoint - register a hardware breakpoint for user space
-  * @attr: breakpoint attributes
-  * @triggered: callback to trigger when we hit the breakpoint
-+ * @context: context data could be used in the triggered callback
-  * @tsk: pointer to 'task_struct' of the process to which the address belongs
-  */
- struct perf_event *
-@@ -550,6 +551,7 @@ EXPORT_SYMBOL_GPL(unregister_hw_breakpoint);
-  * register_wide_hw_breakpoint - register a wide breakpoint in the kernel
-  * @attr: breakpoint attributes
-  * @triggered: callback to trigger when we hit the breakpoint
-+ * @context: context data could be used in the triggered callback
-  *
-  * @return a set of per_cpu pointers to perf events
-  */
+Stanislaw Kardach (1):
+  octeontx2-af: add support for custom KPU entries
+
+ .../net/ethernet/marvell/octeontx2/af/npc.h   |  104 +-
+ .../marvell/octeontx2/af/npc_profile.h        | 8673 ++++++++++-------
+ .../net/ethernet/marvell/octeontx2/af/rvu.c   |    6 +
+ .../net/ethernet/marvell/octeontx2/af/rvu.h   |    5 +
+ .../ethernet/marvell/octeontx2/af/rvu_nix.c   |   34 +
+ .../ethernet/marvell/octeontx2/af/rvu_npc.c   |  294 +-
+ .../ethernet/marvell/octeontx2/af/rvu_reg.h   |    4 +-
+ 7 files changed, 5840 insertions(+), 3280 deletions(-)
+
 -- 
-2.9.5
+2.25.1
 
