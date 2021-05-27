@@ -2,191 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C95173933FE
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 18:30:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F4151393400
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 18:32:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236162AbhE0QcB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 May 2021 12:32:01 -0400
-Received: from mga02.intel.com ([134.134.136.20]:15850 "EHLO mga02.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236071AbhE0Qb7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 May 2021 12:31:59 -0400
-IronPort-SDR: nykKzoVZSRoxU6sp+uY2Swo9Ae1k7abKouCoBH+lyrcxWDOqdeaCu4VjjYke5Vv2cBJhPSUSpW
- BUbE5OWiVnEw==
-X-IronPort-AV: E=McAfee;i="6200,9189,9997"; a="189893907"
-X-IronPort-AV: E=Sophos;i="5.83,227,1616482800"; 
-   d="scan'208";a="189893907"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 May 2021 09:30:22 -0700
-IronPort-SDR: UoQdF0MYOZytwpBdlCPQHQ8YvUUjnfZ9dJhdfU/PtK9A4R4wZcT0g0zh6BST3zY4H1LWaE+BUD
- 62eHBVOhun5g==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.83,227,1616482800"; 
-   d="scan'208";a="409804797"
-Received: from orsmsx605.amr.corp.intel.com ([10.22.229.18])
-  by fmsmga007.fm.intel.com with ESMTP; 27 May 2021 09:30:22 -0700
-Received: from orsmsx609.amr.corp.intel.com (10.22.229.22) by
- ORSMSX605.amr.corp.intel.com (10.22.229.18) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2242.4; Thu, 27 May 2021 09:30:21 -0700
-Received: from orsmsx608.amr.corp.intel.com (10.22.229.21) by
- ORSMSX609.amr.corp.intel.com (10.22.229.22) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2242.4; Thu, 27 May 2021 09:30:21 -0700
-Received: from ORSEDG602.ED.cps.intel.com (10.7.248.7) by
- orsmsx608.amr.corp.intel.com (10.22.229.21) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2242.4
- via Frontend Transport; Thu, 27 May 2021 09:30:21 -0700
-Received: from NAM10-BN7-obe.outbound.protection.outlook.com (104.47.70.103)
- by edgegateway.intel.com (134.134.137.103) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2242.4; Thu, 27 May 2021 09:30:21 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=k+Am66WfXxBLEcE2NoJfP/PEOGZvuI1y96Vr/7D6QABKs0dUT9Sppqo0MuY7U7mzAbZV1DnJmlBO7Goauhh33bzTkIvRjdJ/AnUoMXWxWPYrnxBTeZDMC2EuaW48FoayvzlIohQ9jy8Wx8G5B3/tb4mEM61n263wZIX9QXdpcyWQYpL0Zy/+cxTdRd27aHZDURM2YcKE4koiwLTZMo/5fI89LEzRozy7r/vygs8Z4YmAZIZkPL0Lf1oiiUU1ermQROscFamwf8trT7Qt1T4JIgy+KR9pbnvk1Bqog+I8S9I52U5415k6iaAustStxfCu/YWuMGiaacwbbuHomqhwuQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=mM38SH85igAmxxdDHC6fmDZzUe+CHqaKUVVz5Tq18Rk=;
- b=gkL8fvYwWOjJN33q8433TF1ydm4RiucJZmC0achjBzSV8385Lh+pCSosNkjw2YLxKWzwKACjhjzGkI6tWbHCYNOJ2tpGYOEp6M60PGe5oIkXFE8raun7Jsp0VIb75gY40JRiTG0s4A0erAYk4KCXtvTnn5prmCWsThhfJNcRdGdrBhn+r1XKy/YzZYElbLkXlrOIs9zE0vqCHFtuJJY04BPXakWHcjCS+QtjhGmYhJZaICDMbq/V7n2+SKU1xCLPhWzb5O2+ammUWIcrfhQUrsLq82Mdm9JwL1SaJO+TKnNTEUcBu8jQF9YjMFwZvFOBnFj7s8hqrPG4jsfx0AZCkA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=intel.onmicrosoft.com;
- s=selector2-intel-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=mM38SH85igAmxxdDHC6fmDZzUe+CHqaKUVVz5Tq18Rk=;
- b=vWmkZxmOU2b+bIr/1LjQWjQOFoLhfClpToaqd20pBeWRJDCdFH5RZNMb3PieiqOzqq828g5B/A3GAxVf/S/BP4e3z7D0r0MACYUSMRAjGITVl1EIPv4nvHageCE9YGM7EAgNwjTwxZR7wZZk9Lat34B2S2gJeQ8hwTNP0Y2Zq3Q=
-Received: from BY5PR11MB4182.namprd11.prod.outlook.com (2603:10b6:a03:183::10)
- by BYAPR11MB2679.namprd11.prod.outlook.com (2603:10b6:a02:c7::17) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4150.26; Thu, 27 May
- 2021 16:30:17 +0000
-Received: from BY5PR11MB4182.namprd11.prod.outlook.com
- ([fe80::f071:7bd8:d502:a6eb]) by BY5PR11MB4182.namprd11.prod.outlook.com
- ([fe80::f071:7bd8:d502:a6eb%3]) with mapi id 15.20.4150.027; Thu, 27 May 2021
- 16:30:17 +0000
-From:   "Chrisanthus, Anitha" <anitha.chrisanthus@intel.com>
-To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        "Dea, Edmund J" <edmund.j.dea@intel.com>,
-        "airlied@linux.ie" <airlied@linux.ie>,
-        "daniel@ffwll.ch" <daniel@ffwll.ch>,
-        "sam@ravnborg.org" <sam@ravnborg.org>
-CC:     "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "kernel-janitors@vger.kernel.org" <kernel-janitors@vger.kernel.org>
-Subject: RE: [PATCH v2 2/2] drm/kmb: Do not report 0 (success) in case of
- error
-Thread-Topic: [PATCH v2 2/2] drm/kmb: Do not report 0 (success) in case of
- error
-Thread-Index: AQHXUr8HZVnzNXqjt021jkY4PneykKr3hXlQ
-Date:   Thu, 27 May 2021 16:30:16 +0000
-Message-ID: <BY5PR11MB4182EAEBA97588BD24E7EE748C239@BY5PR11MB4182.namprd11.prod.outlook.com>
-References: <91d2b0417ccb8497b977e175b0b44417e47405aa.1622095610.git.christophe.jaillet@wanadoo.fr>
- <8b7f10d6373e117cc26487e1c6963e637bc01dee.1622095610.git.christophe.jaillet@wanadoo.fr>
-In-Reply-To: <8b7f10d6373e117cc26487e1c6963e637bc01dee.1622095610.git.christophe.jaillet@wanadoo.fr>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-dlp-version: 11.5.1.3
-dlp-product: dlpe-windows
-dlp-reaction: no-action
-authentication-results: wanadoo.fr; dkim=none (message not signed)
- header.d=none;wanadoo.fr; dmarc=none action=none header.from=intel.com;
-x-originating-ip: [73.41.68.160]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 26ed9eeb-e9d3-4806-46f3-08d9212cb659
-x-ms-traffictypediagnostic: BYAPR11MB2679:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <BYAPR11MB2679FBC625FC082372C70E758C239@BYAPR11MB2679.namprd11.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:8273;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: mRKsZB1hR6Zpxqow0sfM597y6k37nuBbFbiSBJUKwtHqH/Mfxa6yroMfgZOR3aSTSvqRYryjqlqeyB51eAX139wIerI9iIgaRUJeVw9Wm0mBfFrzVprUr6bbge/JrNxB3bt3po0uCjAVbCsRnsDY9PEI1FaSB9+AFyHQo5/RIx5DtMOW/82fNzZvmc2iwbiZzf9moiGoCztL6XLBi6Yi/3Kb7uX1EEiZ/+4zA72OLc1XwG/gJnMPkoz2wwiWKHX7OVS9h/hnCoikt11dubhfUEz5Rny2vpZ1fsqQRsxtiqTR/U4tha2FUkqMijjVHwL59lv9gCd9lQCamuKyjQIf+A19BAZInB4KnOFic0qLopPmAP4Acylr77Yck56lCrulwgl//uXVD95l/I7IuCFIEH56RzMENVDqXVfuDuXBfUSAGBkdA/s8ML3OZBhl/HWxOUCb/3+DvTFhs8KzvvRwqLOmmeAzMLks1GIDfUiEZhWMdI0+2f4o6fznw0kibIvIh5S4WVauZ7LquN1dJ6MvE/7sawhdSAw4T7Hsq2bTN43qSxn2j2VkggYKpNswmrhnlVV1oAt0QVCo8QTLm+/4exSVdWUh1gUzHp9JyhTwNh8=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR11MB4182.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(396003)(376002)(39860400002)(346002)(366004)(136003)(33656002)(76116006)(66946007)(110136005)(7696005)(54906003)(186003)(6506007)(316002)(53546011)(83380400001)(66556008)(4326008)(71200400001)(9686003)(8676002)(86362001)(2906002)(66446008)(52536014)(66476007)(8936002)(478600001)(38100700002)(122000001)(64756008)(55016002)(5660300002)(26005);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: =?us-ascii?Q?5oNJV49gnZBH/0RHyIS1KIiGfaQY85oZJmU7nXDimrGO0KN2XVzWX0gtxTsd?=
- =?us-ascii?Q?rBHRtV6YbFQWvawBuad2PqBdXGB3CZcTPyohQ/doShHxI7YGU7O7HOzPhzlr?=
- =?us-ascii?Q?EWu6/Tys7Mq0MDAZd6xCdlj1MYbjpe2wrghpYAwJlshYrC7V/JUbYJq8T2Qn?=
- =?us-ascii?Q?dhTze2/Twd2hAPOiKlsgveJv3MFm+KezT3Y+OVTsxo1L4ryQu1jVzPvra0em?=
- =?us-ascii?Q?g8yIsiG4SZ0pY2JqoZEs83OJEXSDk146umUC63wgy6ftKPNPyGp/pa3iJLea?=
- =?us-ascii?Q?jqfhQEC8qMDg+4ukHnB8EEUaX/KcDjHzW62KHrvRMfmi5iYDPo06k/AlJUET?=
- =?us-ascii?Q?PzHxrWVjU2DrSDRNYO4+Qw5Jt3klWkrNvYBdEyr6SRb3NPZuN/kaEHWe/SYj?=
- =?us-ascii?Q?W6+NqUrDgFCBnI2xxk5JMAu2+KvBxBhVVkTs7g4UxUUekhLiE0I+XoaKsSDD?=
- =?us-ascii?Q?uEYEKp8tn42oACrYQ73DM+56Vrfub3rZQl5hchJb7zuU1M3NfhXBH0DzWE5B?=
- =?us-ascii?Q?O6yV9uleFv/gibAbzAJNSb0xHoieP/nb5kKQzsJXED8s/GvBqiXj3DHLxn/R?=
- =?us-ascii?Q?VR/nOGQZ+zirxYXMg8+di3hOvyryIpgdsdps4huVvqafgm8wRSZNHkqFqmWv?=
- =?us-ascii?Q?5Dxh/25MciSPAXrxrQdLBcE9hMpbvpc1OsQDGdpcYv8cIyzqq3SCCwRVn273?=
- =?us-ascii?Q?kyslcxXM5sJzrSAQJep/YyhrKj4HzqFNZrwsULEtlB7ojdRQ/Vts5YpUKqIc?=
- =?us-ascii?Q?IYfVZe1NL7eKZmGVvU5Eka3nJxbAizz8cPXleZ+dipJ67GGp0uBj+4Hn1kOn?=
- =?us-ascii?Q?+Qd6E58qT0uvsmB8hJRgKmrpHgRaVuRy5/K+d5Ci1j+39AZefnUwzEsVWd3c?=
- =?us-ascii?Q?H6iagbWGUlN+2QvlsYQR18r/9/HcbzSO7tem9zjM3Z9QInleJ7nNVE4z6fHh?=
- =?us-ascii?Q?J3onAsSmoD6RM4nrBGAgSYwX56jby7euqmBk1Jy38cDSRM3RIyj1D/tJrjli?=
- =?us-ascii?Q?i6jNOwI+v7Y0w9MgMdJTjo5SsfRCn5bxvApcXNmcZFGCOADrG14n8NnKXL0M?=
- =?us-ascii?Q?g79pPbYWnYKn1PQ5mvG8DlOdP878P/gcj1GOvZlA2NjZQaNJPrBh1B+yf6I9?=
- =?us-ascii?Q?L43Ko35+n4kxH/w7c7zLayd7ym0U0KNSVJPvb2z7TC3qzpNRL9fvv1WqXQAW?=
- =?us-ascii?Q?rUCaGVO0O5wC3KNQ0s3l1ltGmKBPRI1iqV96U0L2Y6kpcG49ciwLfc9NHPDd?=
- =?us-ascii?Q?8c8mld7wAO54H+JM3JzOYyV8LcyUlvbvy1L5oh8qd/RSn8q/rhXRwHqxtCs+?=
- =?us-ascii?Q?Hw4=3D?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        id S236144AbhE0Qdj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 May 2021 12:33:39 -0400
+Received: from heliosphere.sirena.org.uk ([172.104.155.198]:46222 "EHLO
+        heliosphere.sirena.org.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234897AbhE0Qdg (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 27 May 2021 12:33:36 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=sirena.org.uk; s=20170815-heliosphere; h=In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=dvDMkkVrI/aL8/9zlFpGlf5BX/Y4vnasiRl8zBV01Rg=; b=ibgQzFbvurX4a3pmdFnasmxTUB
+        zxznUDmF8AKBM0kNwoN0CvmocxlLrW3Zx6vZPTBznHOOVYISSHT4P4B6tAaCxNBvaDda0qAWDHsEO
+        YxUI8NNACLRW5ksdQh304QKpX8liLZUKiXK+35wcQg4AZPPr7Yt/G/fuOR2pIgiI0Dks=;
+Received: from 94.196.90.140.threembb.co.uk ([94.196.90.140] helo=fitzroy.sirena.org.uk)
+        by heliosphere.sirena.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <broonie@sirena.org.uk>)
+        id 1lmIvQ-006S0w-BQ; Thu, 27 May 2021 16:32:01 +0000
+Received: by fitzroy.sirena.org.uk (Postfix, from userid 1000)
+        id AC688D0EA1A; Thu, 27 May 2021 17:31:57 +0100 (BST)
+Date:   Thu, 27 May 2021 17:31:57 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Phillip Potter <phil@philpotter.co.uk>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 55/69] ASoC: rt5645: add error checking to rt5645_probe
+ function
+Message-ID: <YK/JfeMt9j9z+40Q@sirena.org.uk>
+References: <20210503115736.2104747-1-gregkh@linuxfoundation.org>
+ <20210503115736.2104747-56-gregkh@linuxfoundation.org>
+ <YK1uZdtgffiCnUVQ@sirena.org.uk>
+ <YK1z6AlOAMxYCh75@equinox>
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: BY5PR11MB4182.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 26ed9eeb-e9d3-4806-46f3-08d9212cb659
-X-MS-Exchange-CrossTenant-originalarrivaltime: 27 May 2021 16:30:16.9888
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: +L7N0TeSZl5KhSlsUkFk7+tymhcrIVV8ihfRP/3ReC5SoV9KVOcWiSwKTk8UidOrotM9qi5EHJSTWQhomG/4UeQHU/0LQxwjgjzIDXfrViE=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR11MB2679
-X-OriginatorOrg: intel.com
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="oYNRd8n5UUXjY5O4"
+Content-Disposition: inline
+In-Reply-To: <YK1z6AlOAMxYCh75@equinox>
+X-Cookie: A penny saved has not been spent.
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is already fixed in the patch from Zhen Lei.
 
-> -----Original Message-----
-> From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-> Sent: Wednesday, May 26, 2021 11:10 PM
-> To: Chrisanthus, Anitha <anitha.chrisanthus@intel.com>; Dea, Edmund J
-> <edmund.j.dea@intel.com>; airlied@linux.ie; daniel@ffwll.ch;
-> sam@ravnborg.org
-> Cc: dri-devel@lists.freedesktop.org; linux-kernel@vger.kernel.org; kernel=
--
-> janitors@vger.kernel.org; Christophe JAILLET <christophe.jaillet@wanadoo.=
-fr>
-> Subject: [PATCH v2 2/2] drm/kmb: Do not report 0 (success) in case of err=
-or
->=20
-> 'ret' is known to be 0 at this point.
-> Reporting the error from the previous 'platform_get_irq()' call is likely=
-,
-> so add the missing assignment.
->=20
-> Fixes: 7f7b96a8a0a1 ("drm/kmb: Add support for KeemBay Display")
-> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-> ---
-> v2: New patch
-> ---
->  drivers/gpu/drm/kmb/kmb_drv.c | 1 +
->  1 file changed, 1 insertion(+)
->=20
-> diff --git a/drivers/gpu/drm/kmb/kmb_drv.c
-> b/drivers/gpu/drm/kmb/kmb_drv.c
-> index fa28e42da460..d9e10ac9847c 100644
-> --- a/drivers/gpu/drm/kmb/kmb_drv.c
-> +++ b/drivers/gpu/drm/kmb/kmb_drv.c
-> @@ -138,6 +138,7 @@ static int kmb_hw_init(struct drm_device *drm,
-> unsigned long flags)
->  	irq_lcd =3D platform_get_irq(pdev, 0);
->  	if (irq_lcd < 0) {
->  		drm_err(&kmb->drm, "irq_lcd not found");
-> +		ret =3D irq_lcd;
->  		goto setup_fail;
->  	}
->=20
-> --
-> 2.30.2
+--oYNRd8n5UUXjY5O4
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
+On Tue, May 25, 2021 at 11:02:16PM +0100, Phillip Potter wrote:
+> On Tue, May 25, 2021 at 10:38:45PM +0100, Mark Brown wrote:
+
+> > Phillip, please follow the standard patch submission process,
+> > this is documented in submitting-paches.rst in the kernel tree.
+> > In particular please make sure that you copy the relevant
+
+> This patch was submitted to a closed mentoring group as part of the
+> University of Minnesota reversion/checking process. I was not
+> responsible for the final send out to the public mailing lists etc. as
+> the patches were collated first and sent out together en masse.
+
+OK, this is really unfortunate.
+
+> > This comment is not accurate, rt5645_remove() just resets the
+> > hardware - it's not going to clean up anything to do with any of
+> > the branches to error you've got above.  The core *will* clean up
+
+> My comment was adjusted after submission for brevity's sake. This was
+> what I originally wrote:
+>  /*
+>   * All of the above is cleaned up when we return an error here, as
+>   * the caller will notice the error and invoke rt5645_remove and
+>   * other cleanup routines, as it does for the snd_soc_dapm_* calls
+>   * above as well.
+>   */
+> Happy to resubmit/rewrite as needed? Based on what you've written
+> though it may be better to drop the patch?
+
+That is a lot better yes, it accurately reflects what was going
+on - the review definitely wasn't helping here.
+
+> > Also I'm guessing this was done purely through inspection rather
+> > than the code having been tested?  If there was a problem seen at
+> > runtime this isn't fixing it, TBH I'm more than a little dubious
+
+> Yes, that's correct - I did not test this directly other than making
+> sure it builds, as I don't have this hardware to test with.=20
+
+OK, in that case it's going to be safer to just drop the change,
+it's probably not going to cause any actual problems but it's
+certainly not something that should go in as a hurried fix.
+
+--oYNRd8n5UUXjY5O4
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmCvyXwACgkQJNaLcl1U
+h9CaPQf/dZpP6aPFUNxUHEFxOiW9U3mdS8RvjA8WvGKT1fNPNRa34nMlO0gA6+gQ
+4NTI7zOJS97EnAE7c2Ctsta9AFWuU3o8dV0/6P5mcQKd273BAxWnVMv1Wmzz7MFr
+e2gjLTcCcAdhqCqE/EFV6LduRGgsxjf2YnhZnNKFkcYkDcbagKRMgNb3N6Tp5OeS
+Lsk1rV5JGX4N+AaO7X9m3+YaC8wBpliKuZXl7sLzVCXqM5Oy83aNLGv3+27Uz6rP
+lSc2xHLXrCTR+LW53W/Fu6sikUsxfvPdY/nE25ESDSKVq79rA4xYx1Z1seqqF1r1
+jPnDHGaSDgp4uFbvP9ol92hkqhCSTQ==
+=6JuK
+-----END PGP SIGNATURE-----
+
+--oYNRd8n5UUXjY5O4--
