@@ -2,135 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B4E4A392835
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 09:12:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 000863926B2
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 07:00:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234753AbhE0HOD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 May 2021 03:14:03 -0400
-Received: from ozlabs.org ([203.11.71.1]:57533 "EHLO ozlabs.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234684AbhE0HNz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 May 2021 03:13:55 -0400
-Received: by ozlabs.org (Postfix, from userid 1007)
-        id 4FrJsx2tB6z9sWp; Thu, 27 May 2021 17:12:21 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-        d=gibson.dropbear.id.au; s=201602; t=1622099541;
-        bh=/Vk6QIsfClarCnHuWF3h00g/TTHnE4TtoS0mH61nSvk=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=PBJfr7UYZPAGjibTLx3tnWLHnRpaUShxpkGQgtqAMqSU1cRDoZa5GzhsXCRFM76n6
-         /2dBtWmxbyYYr4V+CxP4PSVzAwF4AD4T2TGF1pIXK0c44UNAZyDsnE8zGdVBo4KZpb
-         3ivmm4aCrXG/e3Jm6+/nRQqIJ3rfH7ZWRNAOeov4=
-Date:   Thu, 27 May 2021 14:58:30 +1000
-From:   David Gibson <david@gibson.dropbear.id.au>
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     Kirti Wankhede <kwankhede@nvidia.com>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        "Liu, Yi L" <yi.l.liu@intel.com>,
-        Jacob Pan <jacob.jun.pan@linux.intel.com>,
-        Auger Eric <eric.auger@redhat.com>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        "Tian, Kevin" <kevin.tian@intel.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Joerg Roedel <joro@8bytes.org>,
-        Lu Baolu <baolu.lu@linux.intel.com>,
-        David Woodhouse <dwmw2@infradead.org>,
-        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
-        "cgroups@vger.kernel.org" <cgroups@vger.kernel.org>,
-        Tejun Heo <tj@kernel.org>, Li Zefan <lizefan@huawei.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Jean-Philippe Brucker <jean-philippe@linaro.com>,
+        id S234928AbhE0FCA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 May 2021 01:02:00 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:57617 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233565AbhE0FB5 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 27 May 2021 01:01:57 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1622091625;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=WvNDULJK9zHRMwqe44K4RR3WKdtWUGMATeJjP7wtcZY=;
+        b=Fhldo+YVuaqR8B6kgE4vBkuNUbrVQcmUO5Vu4nCykBoNFl2MwcqwH0O/ZNRC2sQjfvmFz5
+        fVSE3PxIt0ykDX8QIvr2D2mm3K8Xyjv1wmfAUTvqf62Nz+RXryf5YYmQBxv39XxjgVc8h+
+        l4IkG9WrGgmEyE0BjVA1ArgMW+YidEk=
+Received: from mail-pf1-f200.google.com (mail-pf1-f200.google.com
+ [209.85.210.200]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-478-T92fe91yNzabtcDn1OaVVA-1; Thu, 27 May 2021 01:00:23 -0400
+X-MC-Unique: T92fe91yNzabtcDn1OaVVA-1
+Received: by mail-pf1-f200.google.com with SMTP id o11-20020a62f90b0000b02902db3045f898so2097280pfh.23
+        for <linux-kernel@vger.kernel.org>; Wed, 26 May 2021 22:00:23 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=WvNDULJK9zHRMwqe44K4RR3WKdtWUGMATeJjP7wtcZY=;
+        b=TBTW6785chIB2kCpBQyZzO01rD0Ai+gZ5OlJcf1tQH7NbjGUrOnorvqx+2qUJY2RDN
+         p1dR4ffK/tPMfHb2FQ2frNZWBneIimRRs4OEVMxNAbrONMxzBPgAjWbZCjRXAVfVUx/A
+         CHbBoT6Rh794CXSFER2wmRty6GzkpCR5j83STGaldYocItA2+okeaUvOmdXCyQxC9jhU
+         4/TVvw4zHEFkaQfrFUyBFCduhvOWivVeV36aJJpbNF7NjggnSIXbQYh3fsfx/BpSavEw
+         ZsPt4ZuAhUbZVwTWxDqtiG7nGIMySkm5Omk609E1oOpwJCnCa9GMHQUeIRpvRfli3aOV
+         16rQ==
+X-Gm-Message-State: AOAM531LWqWnbETjWeJbx7fDcFsVxxb7jJxREbBL+VlU8jbDnDF8snKu
+        GA8Zv4bRv3RHPSFRLW5aa0rmRe6STnKF+I9INGSLcVJa5R2SPnWWf3neR7fG53cQc1k6ndGgVyC
+        /z0QWRB8AMel5/oOoWO4zT2domPrjuL3sXmuaqLb3rDHy55hq5atz6YlgWhHb+/+D2Wyo5i8owJ
+        bv
+X-Received: by 2002:a17:90b:1d8f:: with SMTP id pf15mr1854547pjb.36.1622091617059;
+        Wed, 26 May 2021 22:00:17 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxbQssOI3XI76V4pKYYsFesmyrvxjTc0EKTWn6Zl6xKwlpjIji0dLlRJIWAqJ1uNqyHlcKbWw==
+X-Received: by 2002:a17:90b:1d8f:: with SMTP id pf15mr1854461pjb.36.1622091616242;
+        Wed, 26 May 2021 22:00:16 -0700 (PDT)
+Received: from wangxiaodeMacBook-Air.local ([209.132.188.80])
+        by smtp.gmail.com with ESMTPSA id u5sm715334pfi.179.2021.05.26.22.00.08
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 26 May 2021 22:00:15 -0700 (PDT)
+Subject: Re: [PATCH v7 11/12] vduse: Introduce VDUSE - vDPA Device in
+ Userspace
+To:     Yongji Xie <xieyongji@bytedance.com>
+Cc:     "Michael S. Tsirkin" <mst@redhat.com>,
+        Stefan Hajnoczi <stefanha@redhat.com>,
+        Stefano Garzarella <sgarzare@redhat.com>,
+        Parav Pandit <parav@nvidia.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        Christian Brauner <christian.brauner@canonical.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Jens Axboe <axboe@kernel.dk>, bcrl@kvack.org,
         Jonathan Corbet <corbet@lwn.net>,
-        "Raj, Ashok" <ashok.raj@intel.com>, "Wu, Hao" <hao.wu@intel.com>,
-        "Jiang, Dave" <dave.jiang@intel.com>,
-        Alexey Kardashevskiy <aik@ozlabs.ru>
-Subject: Re: [PATCH V4 05/18] iommu/ioasid: Redefine IOASID set and
- allocation APIs
-Message-ID: <YK8m9jNuvEzlXWlu@yekko>
-References: <YIizNdbA0+LYwQbI@yekko.fritz.box>
- <20210428145622.GU1370958@nvidia.com>
- <YIoiJRY3FM7xH2bH@yekko>
- <20210503161518.GM1370958@nvidia.com>
- <YJy9o8uEZs42/qDM@yekko>
- <20210513135938.GG1002214@nvidia.com>
- <YKtbWo7PwIlXjFIV@yekko>
- <20210524233744.GT1002214@nvidia.com>
- <ce2fcf21-1803-047b-03f0-7a4108dea7af@nvidia.com>
- <20210525195257.GG1002214@nvidia.com>
+        =?UTF-8?Q?Mika_Penttil=c3=a4?= <mika.penttila@nextfour.com>,
+        Dan Carpenter <dan.carpenter@oracle.com>, joro@8bytes.org,
+        virtualization <virtualization@lists.linux-foundation.org>,
+        netdev@vger.kernel.org, kvm <kvm@vger.kernel.org>,
+        linux-fsdevel@vger.kernel.org, iommu@lists.linux-foundation.org,
+        linux-kernel <linux-kernel@vger.kernel.org>
+References: <20210517095513.850-1-xieyongji@bytedance.com>
+ <20210517095513.850-12-xieyongji@bytedance.com>
+ <3740c7eb-e457-07f3-5048-917c8606275d@redhat.com>
+ <CACycT3uAqa6azso_8MGreh+quj-JXO1piuGnrV8k2kTfc34N2g@mail.gmail.com>
+From:   Jason Wang <jasowang@redhat.com>
+Message-ID: <5a68bb7c-fd05-ce02-cd61-8a601055c604@redhat.com>
+Date:   Thu, 27 May 2021 13:00:07 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.10.2
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="rKeY89V0ifZRRhP6"
-Content-Disposition: inline
-In-Reply-To: <20210525195257.GG1002214@nvidia.com>
+In-Reply-To: <CACycT3uAqa6azso_8MGreh+quj-JXO1piuGnrV8k2kTfc34N2g@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
---rKeY89V0ifZRRhP6
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+在 2021/5/27 下午12:57, Yongji Xie 写道:
+> On Thu, May 27, 2021 at 12:13 PM Jason Wang <jasowang@redhat.com> wrote:
+>>
+>> 在 2021/5/17 下午5:55, Xie Yongji 写道:
+>>> +
+>>> +static int vduse_dev_msg_sync(struct vduse_dev *dev,
+>>> +                           struct vduse_dev_msg *msg)
+>>> +{
+>>> +     init_waitqueue_head(&msg->waitq);
+>>> +     spin_lock(&dev->msg_lock);
+>>> +     vduse_enqueue_msg(&dev->send_list, msg);
+>>> +     wake_up(&dev->waitq);
+>>> +     spin_unlock(&dev->msg_lock);
+>>> +     wait_event_killable(msg->waitq, msg->completed);
+>>
+>> What happens if the userspace(malicous) doesn't give a response forever?
+>>
+>> It looks like a DOS. If yes, we need to consider a way to fix that.
+>>
+> How about using wait_event_killable_timeout() instead?
 
-On Tue, May 25, 2021 at 04:52:57PM -0300, Jason Gunthorpe wrote:
-> On Wed, May 26, 2021 at 12:56:30AM +0530, Kirti Wankhede wrote:
->=20
-> > 2. iommu backed mdev devices for SRIOV where mdev device is created per
-> > VF (mdev device =3D=3D VF device) then that mdev device has same iommu
-> > protection scope as VF associated to it.=20
->=20
-> This doesn't require, and certainly shouldn't create, a fake group.
 
-It's only fake if you start with a narrow view of what a group is.  A
-group is a set of devices (in the kernel sense of "device", not
-necessarily the hardware sense) which can't be isolated from each
-other.  The mdev device is a kernel device, and if working as intended
-it can be isolated from everything else, and is therefore in an
-absolute bona fide group of its own.
+Probably, and then we need choose a suitable timeout and more important, 
+need to report the failure to virtio.
 
-> Only the VF's real IOMMU group should be used to model an iommu domain
-> linked to a VF. Injecting fake groups that are proxies for real groups
-> only opens the possibility of security problems like David is
-> concerned with.
+Thanks
 
-It's not a proxy for a real group, it's a group of its own.  If you
-discover that (due to a hardware bug, for example) the mdev is *not*
-properly isolated from its parent PCI device, then both the mdev
-virtual device *and* the physical PCI device are in the same group.
-Groups including devices of different types and on different buses
-were considered from the start, and are precedented, if rare.
 
-> Max's series approaches this properly by fully linking the struct
-> pci_device of the VF throughout the entire VFIO scheme, including the
-> group and container, while still allowing override of various VFIO
-> operations.
->=20
-> Jason
->=20
+>
+> Thanks,
+> Yongji
+>
 
---=20
-David Gibson			| I'll have my music baroque, and my code
-david AT gibson.dropbear.id.au	| minimalist, thank you.  NOT _the_ _other_
-				| _way_ _around_!
-http://www.ozlabs.org/~dgibson
-
---rKeY89V0ifZRRhP6
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAEBCAAdFiEEdfRlhq5hpmzETofcbDjKyiDZs5IFAmCvJvYACgkQbDjKyiDZ
-s5IEqBAAp3p5NH8nnJVVcGSVZxbNrLeTTJqPwhNtEEsveVKJd5BmHf3EvT4BqqnK
-rXisyd2ygrY8fO1DiLJOa/WM6FDA05WD0XkqyDJ2XUFAOEHpyY0EesSw7CqSl1zz
-V2dbprWQAD9nJoPG/fidBsmuYEwpxjvptttrf1yEgFe+isfJLdalJbA+k/kfZOdd
-F4BL6+mtySC2DoKnQqoDQYCsXrSNzsYgv6SDbj4W7izUuOqYFADN7qawINcxAEBa
-I43JXW3Dhx3aLzL0JeEjFf2j/f1YMQo/RfkfLg9OWuHdsF+SF8+5lcikGWtjBZKT
-pC443P1CHOmJkW0TMr9Pz2lHJfjlcTaIq35qpaEP23tKmS60FDoLIvWPlFJYidaz
-tWDNMtMmS8UbcyzF868ZJiRc94+A8RTFFW7hSmHQoqLnxMqNnUoyOKrZ2ehaqg+j
-JjbsxFq37+jun2Fb2BxwPg+F2jFQmaw7l6FCdhePKc/h/HeCRPpZ+jTqF6AEqdU1
-KrET9bw9TE3euBNQK62gJNfdIdrkBelfcUjKluxCWamoHFeJBEnBKbqGR4wn0Jqg
-QucFQtoKZyEIXVKFtK0Pedz46dzxc5iH1hj+eIAGLw92/SIjWzVYEp6vCZYHxNSk
-VQFvdHTLJJ8vRVhLGJlo5Ji4EX+jgb9i7eIufxgqD+SxhzOoRvo=
-=ygK9
------END PGP SIGNATURE-----
-
---rKeY89V0ifZRRhP6--
