@@ -2,90 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 662F53930CC
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 16:23:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B9643930CD
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 16:23:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236463AbhE0OZR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 May 2021 10:25:17 -0400
-Received: from mail-ot1-f49.google.com ([209.85.210.49]:43583 "EHLO
-        mail-ot1-f49.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236487AbhE0OZP (ORCPT
+        id S236548AbhE0OZS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 May 2021 10:25:18 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:56418 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236501AbhE0OZP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 27 May 2021 10:25:15 -0400
-Received: by mail-ot1-f49.google.com with SMTP id i12-20020a05683033ecb02903346fa0f74dso339959otu.10;
-        Thu, 27 May 2021 07:23:41 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:in-reply-to:references:subject:date
-         :message-id;
-        bh=7Xzx1Ap7uXPfBOML/npjPvMW+NbvnTtd/CjxfaN9vTA=;
-        b=SfM7NLo/1JzdFVAm1j/cJAAqJeNNgk557IUbO/Rf0+B4jDeOR5S1xJzNwykRF/SeaY
-         LO2Yj3Dyh9yNT2wAoPg06kSSuGCcDQAeHdKY1aCEcEkfzWCL0Itq7nj4Bly6nN5QooXG
-         q7qJc5i/AlIWBwephzeUSKNq1iMZpSAOWsCKvOiwYBjEqcNxGPFOb6HNFV2QzMuOUbXx
-         nd/IP4UglyA0u+0Bl62O8Wwl1tl3zagnnv6lagJc8RCVYu3Rf1OWizwZ+dvVOkqjwzzZ
-         ei87tbiWxVbkJeqiKgHOqI9F7SERn2f9UIOiePQaNU8r6eozJ+tnfE6BOUsGMnzlvS11
-         lisg==
-X-Gm-Message-State: AOAM5339R+Z17H0EfLEtZp1TZAgVweaw0JOEqL2Scb3X9IWtZel60GOA
-        Hfzv1Ul2z4yn4RLegcx0NiKcCVga+A==
-X-Google-Smtp-Source: ABdhPJwO2qAwq+BaudGS4ht+Bx73RKcqrrecFHKoaEyr8S5895gmNT2goxvjFlZuQbC+7IirZ/hhDA==
-X-Received: by 2002:a9d:37b6:: with SMTP id x51mr2887336otb.159.1622125421118;
-        Thu, 27 May 2021 07:23:41 -0700 (PDT)
-Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id k7sm451709ood.36.2021.05.27.07.23.37
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 27 May 2021 07:23:38 -0700 (PDT)
-Received: (nullmailer pid 731792 invoked by uid 1000);
-        Thu, 27 May 2021 14:23:27 -0000
-From:   Rob Herring <robh@kernel.org>
-To:     Rajendra Nayak <rnayak@codeaurora.org>
-Cc:     devicetree@vger.kernel.org, ulf.hansson@linaro.org,
-        linux-kernel@vger.kernel.org, viresh.kumar@linaro.org,
-        bjorn.andersson@linaro.org, swboyd@chromium.org,
-        robh+dt@kernel.org, linux-pm@vger.kernel.org, rojay@codeaurora.org,
-        linux-arm-msm@vger.kernel.org
-In-Reply-To: <1622095949-2014-2-git-send-email-rnayak@codeaurora.org>
-References: <1622095949-2014-1-git-send-email-rnayak@codeaurora.org> <1622095949-2014-2-git-send-email-rnayak@codeaurora.org>
-Subject: Re: [PATCH v2 1/3] dt-bindings: power: Introduce 'assigned-performance-states' property
-Date:   Thu, 27 May 2021 09:23:27 -0500
-Message-Id: <1622125407.790558.731791.nullmailer@robh.at.kernel.org>
+Received: from imap.suse.de (imap-alt.suse-dmz.suse.de [192.168.254.47])
+        (using TLSv1.2 with cipher ECDHE-ECDSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id B1D9D2190B;
+        Thu, 27 May 2021 14:23:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1622125421; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=d8wgJqVTv1rNHg3817XcovAxG94o5OyrEsk/WWRy4VI=;
+        b=mj7GeSn2/5JwetOeT+5iWIbnhCw6Dpe47cPvPGa4282dm21UZ42LWGWrtFBYFmMl6AqQIa
+        BKdmyoEupm+kyLsBUGZp+n3y5hTiuOx7CoN8kUYZF8ZmXlO0nk0fRwj7Hry2iQJYWx1qMU
+        DdPnT3+CGJmdjNsfuG0rAwysnqUvFiY=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1622125421;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=d8wgJqVTv1rNHg3817XcovAxG94o5OyrEsk/WWRy4VI=;
+        b=vKXMzGOb1AiaPsu8a3S5oc8imG1I+MV1+cxAnW8JEhs2b9gBma2bkXKsZ31bYEelOFSKKa
+        X5Aisd/jAxZ2HZAQ==
+Received: from director2.suse.de (director2.suse-dmz.suse.de [192.168.254.72])
+        by imap.suse.de (Postfix) with ESMTPSA id 77A4111A98;
+        Thu, 27 May 2021 14:23:41 +0000 (UTC)
+Date:   Thu, 27 May 2021 16:23:36 +0200
+From:   Mian Yousaf Kaukab <ykaukab@suse.de>
+To:     a.zummo@towertech.it, alexandre.belloni@bootlin.com
+Cc:     linux-rtc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        biwen.li@nxp.com
+Subject: Re: [PATCH v4] rtc: pcf2127: handle timestamp interrupts
+Message-ID: <20210527142306.GA103044@suse.de>
+References: <20210525101107.9605-1-ykaukab@suse.de>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210525101107.9605-1-ykaukab@suse.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 27 May 2021 11:42:27 +0530, Rajendra Nayak wrote:
-> While most devices within power-domains which support performance states,
-> scale the performance state dynamically, some devices might want to
-> set a static/default performance state while the device is active.
-> These devices typically would also run off a fixed clock and not support
-> dynamically scaling the device's performance, also known as DVFS techniques.
-> Add a property 'assigned-performance-states' which client devices can
-> use to set this default performance state on their power-domains.
+On Tue, May 25, 2021 at 12:11:07PM +0200, Mian Yousaf Kaukab wrote:
+> commit 03623b4b041c ("rtc: pcf2127: add tamper detection support")
+> added support for timestamp interrupts. However they are not being
+> handled in the irq handler. If a timestamp interrupt occurs it
+> results in kernel disabling the interrupt and displaying the call
+> trace:
 > 
-> Signed-off-by: Rajendra Nayak <rnayak@codeaurora.org>
-> ---
->  .../devicetree/bindings/power/power-domain.yaml    | 50 ++++++++++++++++++++++
->  1 file changed, 50 insertions(+)
+> [  121.145580] irq 78: nobody cared (try booting with the "irqpoll" option)
+> ...
+> [  121.238087] [<00000000c4d69393>] irq_default_primary_handler threaded [<000000000a90d25b>] pcf2127_rtc_irq [rtc_pcf2127]
+> [  121.248971] Disabling IRQ #78
 > 
+> Handle timestamp interrupts in pcf2127_rtc_irq(). Save time stamp
+> before clearing TSF1 and TSF2 flags so that it can't be overwritten.
+> Set a flag to mark if the timestamp is valid and only report to sysfs
+> if the flag is set. To mimic the hardware behavior, don’t save
+> another timestamp until the first one has been read by the userspace.
+Alexandre, I hope this patch addresses all your concerns. Please let
+me know if thats not the case.
 
-My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
-on your patch (DT_CHECKER_FLAGS is new in v5.13):
-
-yamllint warnings/errors:
-./Documentation/devicetree/bindings/power/power-domain.yaml:72:8: [warning] wrong indentation: expected 6 but found 7 (indentation)
-
-dtschema/dtc warnings/errors:
-Documentation/devicetree/bindings/power/power-domain.example.dt.yaml:0:0: /example-3/power-controller@43210000/opp-table: failed to match any schema with compatible: ['operating-points-v2']
-
-See https://patchwork.ozlabs.org/patch/1484441
-
-This check can fail if there are any dependencies. The base for a patch
-series is generally the most recent rc1.
-
-If you already ran 'make dt_binding_check' and didn't see the above
-error(s), then make sure 'yamllint' is installed and dt-schema is up to
-date:
-
-pip3 install dtschema --upgrade
-
-Please check and re-submit.
-
+BR,
+Yousaf
