@@ -2,126 +2,180 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F3CF1392E64
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 14:53:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DCC7B392E6E
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 14:56:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235832AbhE0MzN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 May 2021 08:55:13 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33820 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235714AbhE0MzL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 May 2021 08:55:11 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B984D6109F;
-        Thu, 27 May 2021 12:53:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1622120018;
-        bh=mnHenbEzMbQdhDrGu816+dyeKu927RlHNDgNBf8bfNk=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=T2Q+xyFZywvya0fPBfvK4sRdbR/bde8Rq8P4FN21AACPVaQSQsdEc0x2+0v5r+abP
-         3/8E7TEJSHcMhmUgcHo1bhdAA9AfzEMLppzT6/0P8DePbBmTljtDkX4NEtYRaHLEM1
-         Gnn3YP4aa748IT6RrSs7VU9Pqy8c4Xvink86bWS+UgwCuEehm3hOhTqBJaoQ8WPXJq
-         ulYWtbHvYOw84jAR1SH3F2sv+RGThyTfyzG8N3saQSkF5BsBVg+8LW53nliUGD6EFQ
-         5/RBGn2iLBX38fmxUgOxq5fMNgVhtClQMCVzqiJ/tPC3LfS/b2F3cV49KGjPHavT/f
-         X+zziZDTtPkzw==
-Date:   Thu, 27 May 2021 13:53:28 +0100
-From:   Will Deacon <will@kernel.org>
-To:     Claire Chang <tientzu@chromium.org>
-Cc:     heikki.krogerus@linux.intel.com, thomas.hellstrom@linux.intel.com,
-        peterz@infradead.org, benh@kernel.crashing.org,
-        joonas.lahtinen@linux.intel.com, dri-devel@lists.freedesktop.org,
-        chris@chris-wilson.co.uk, grant.likely@arm.com, paulus@samba.org,
-        Frank Rowand <frowand.list@gmail.com>, mingo@kernel.org,
-        sstabellini@kernel.org, Saravana Kannan <saravanak@google.com>,
-        mpe@ellerman.id.au,
-        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        bskeggs@redhat.com, linux-pci@vger.kernel.org,
-        xen-devel@lists.xenproject.org,
-        Thierry Reding <treding@nvidia.com>,
-        intel-gfx@lists.freedesktop.org, matthew.auld@intel.com,
-        linux-devicetree <devicetree@vger.kernel.org>,
-        Jianxiong Gao <jxgao@google.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
-        maarten.lankhorst@linux.intel.com, airlied@linux.ie,
-        Dan Williams <dan.j.williams@intel.com>,
-        linuxppc-dev@lists.ozlabs.org, jani.nikula@linux.intel.com,
-        Rob Herring <robh+dt@kernel.org>, rodrigo.vivi@intel.com,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        boris.ostrovsky@oracle.com,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        jgross@suse.com, Nicolas Boichat <drinkcat@chromium.org>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        "list@263.net:IOMMU DRIVERS" <iommu@lists.linux-foundation.org>,
-        Jim Quinlan <james.quinlan@broadcom.com>, xypron.glpk@gmx.de,
-        Robin Murphy <robin.murphy@arm.com>, bauerman@linux.ibm.com
-Subject: Re: [PATCH v7 14/15] dt-bindings: of: Add restricted DMA pool
-Message-ID: <20210527125328.GA22352@willie-the-truck>
-References: <20210518064215.2856977-1-tientzu@chromium.org>
- <20210518064215.2856977-15-tientzu@chromium.org>
- <20210526121322.GA19313@willie-the-truck>
- <20210526155321.GA19633@willie-the-truck>
- <CALiNf2_sVXnb97++yWusB5PWz8Pzfn9bCKZc6z3tY4bx6-nW8w@mail.gmail.com>
- <20210527113456.GA22019@willie-the-truck>
- <CALiNf2_Qk5DmZSJO+jv=m5V-VFtmL9j0v66UY6qKmM-2pr3tRQ@mail.gmail.com>
+        id S235927AbhE0M5h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 May 2021 08:57:37 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:52324 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235819AbhE0M5g (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 27 May 2021 08:57:36 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1622120162;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=mjDjSQfgt4N66fzwKVYLXkqIe/sfqAKrR+Cjf7Vsstw=;
+        b=UoYTIoXhv9ihWsZKO5Y4XrQzkOg4dFQY6T2No0cl991TbUUOcsIg11n51MOC01nPOjgO7N
+        GkKfTLW6KzmS3D3f3RF6fR7ipwS8O7gsaR4anWjZWysdzj4XemRIwj0eiSJd7g6K1ANwV+
+        ALfr0mWwDYJGcnarAZ4NWTw9aRXx3KI=
+Received: from mail-ej1-f72.google.com (mail-ej1-f72.google.com
+ [209.85.218.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-140-i5dFBdIONpepAOPTTThEMA-1; Thu, 27 May 2021 08:56:00 -0400
+X-MC-Unique: i5dFBdIONpepAOPTTThEMA-1
+Received: by mail-ej1-f72.google.com with SMTP id x20-20020a1709061354b02903cff4894505so1631829ejb.14
+        for <linux-kernel@vger.kernel.org>; Thu, 27 May 2021 05:55:59 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=mjDjSQfgt4N66fzwKVYLXkqIe/sfqAKrR+Cjf7Vsstw=;
+        b=PPc3fOnN+EX6hhIr5KlsnwFhfQ5fEtSwf7e1z6eH3wkt3xzkxFUk8gkr5C8BdWgWCv
+         IACqYps+AFcYO8yFSF5vkt9UgEDw5t1KUOsqIBfMwXHYmUtFP6lDG6ze3fD8biwNMJHa
+         c3o9uzdCuCGBlL25jBEHpIEsNNrIFtfEUiNEl8BDCm2FTgDLR6Y47HAi1eiuhIr2WBpw
+         JRi6bL4a8EjAO+0s3V47BM+Cayx/juzzQOqm26TEe6OketD8hGaiYaGv5PJpdBYfMu0D
+         6N6UWN0RqO8tdFWIDrVwGQ7wWbFfStaeRikeua/bJH+aGKLO7s6eL7owCNLFdQOtQGgm
+         UEWg==
+X-Gm-Message-State: AOAM530QyIbR5K8tyKZI1/B7HdCe7n8Wfjyv5JGLenyW9HTa64QmtTt+
+        VRDmlRbHxn65OVy5ReUntUsW1p2SMv+kgVJUT8gtrcoo6ECcOGINyIZ5aqSnJlhBF01L0nGvoLA
+        XG69gHs1AOB/E0RFnxgkPMAsZ
+X-Received: by 2002:a17:906:7196:: with SMTP id h22mr3666768ejk.50.1622120158568;
+        Thu, 27 May 2021 05:55:58 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwfI9NMKAFexq0oe8zJSjqeobKTswha4YBrHP5ftbNdDrClxzRK0MsRZz0vHafsIq2ojkIjAQ==
+X-Received: by 2002:a17:906:7196:: with SMTP id h22mr3666740ejk.50.1622120158355;
+        Thu, 27 May 2021 05:55:58 -0700 (PDT)
+Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
+        by smtp.gmail.com with ESMTPSA id v12sm824871edy.75.2021.05.27.05.55.56
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 27 May 2021 05:55:57 -0700 (PDT)
+Subject: Re: [PATCH] KVM: X86: fix tlb_flush_guest()
+To:     Lai Jiangshan <jiangshanlai@gmail.com>,
+        linux-kernel@vger.kernel.org
+Cc:     Lai Jiangshan <laijs@linux.alibaba.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        =?UTF-8?B?UmFkaW0gS3LEjW3DocWZ?= <rkrcmar@redhat.com>,
+        kvm@vger.kernel.org
+References: <20210527023922.2017-1-jiangshanlai@gmail.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <78ad9dff-9a20-c17f-cd8f-931090834133@redhat.com>
+Date:   Thu, 27 May 2021 14:55:56 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CALiNf2_Qk5DmZSJO+jv=m5V-VFtmL9j0v66UY6qKmM-2pr3tRQ@mail.gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20210527023922.2017-1-jiangshanlai@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 27, 2021 at 08:48:59PM +0800, Claire Chang wrote:
-> On Thu, May 27, 2021 at 7:35 PM Will Deacon <will@kernel.org> wrote:
-> >
-> > On Thu, May 27, 2021 at 07:29:20PM +0800, Claire Chang wrote:
-> > > On Wed, May 26, 2021 at 11:53 PM Will Deacon <will@kernel.org> wrote:
-> > > >
-> > > > On Wed, May 26, 2021 at 01:13:22PM +0100, Will Deacon wrote:
-> > > > > On Tue, May 18, 2021 at 02:42:14PM +0800, Claire Chang wrote:
-> > > > > > @@ -138,4 +160,9 @@ one for multimedia processing (named multimedia-memory@77000000, 64MiB).
-> > > > > >             memory-region = <&multimedia_reserved>;
-> > > > > >             /* ... */
-> > > > > >     };
-> > > > > > +
-> > > > > > +   pcie_device: pcie_device@0,0 {
-> > > > > > +           memory-region = <&restricted_dma_mem_reserved>;
-> > > > > > +           /* ... */
-> > > > > > +   };
-> > > > >
-> > > > > I still don't understand how this works for individual PCIe devices -- how
-> > > > > is dev->of_node set to point at the node you have above?
-> > > > >
-> > > > > I tried adding the memory-region to the host controller instead, and then
-> > > > > I see it crop up in dmesg:
-> > > > >
-> > > > >   | pci-host-generic 40000000.pci: assigned reserved memory node restricted_dma_mem_reserved
-> > > > >
-> > > > > but none of the actual PCI devices end up with 'dma_io_tlb_mem' set, and
-> > > > > so the restricted DMA area is not used. In fact, swiotlb isn't used at all.
-> > > > >
-> > > > > What am I missing to make this work with PCIe devices?
-> > > >
-> > > > Aha, looks like we're just missing the logic to inherit the DMA
-> > > > configuration. The diff below gets things working for me.
-> > >
-> > > I guess what was missing is the reg property in the pcie_device node.
-> > > Will update the example dts.
-> >
-> > Thanks. I still think something like my diff makes sense, if you wouldn't mind including
-> > it, as it allows restricted DMA to be used for situations where the PCIe
-> > topology is not static.
-> >
-> > Perhaps we should prefer dev->of_node if it exists, but then use the node
-> > of the host bridge's parent node otherwise?
+On 27/05/21 04:39, Lai Jiangshan wrote:
+> From: Lai Jiangshan <laijs@linux.alibaba.com>
 > 
-> Sure. Let me add in the next version.
+> For KVM_VCPU_FLUSH_TLB used in kvm_flush_tlb_multi(), the guest expects
+> the hypervisor do the operation that equals to native_flush_tlb_global()
+> or invpcid_flush_all() in the specified guest CPU.
+> 
+> When TDP is enabled, there is no problem to just flush the hardware
+> TLB of the specified guest CPU.
+> 
+> But when using shadowpaging, the hypervisor should have to sync the
+> shadow pagetable at first before flushing the hardware TLB so that
+> it can truely emulate the operation of invpcid_flush_all() in guest.
 
-Brill, thanks! I'll take it for a spin once it lands on the list.
+Can you explain why?
 
-Will
+Also it is simpler to handle this in kvm_vcpu_flush_tlb_guest, using "if 
+(tdp_enabled).  This provides also a single, good place to add a comment 
+with the explanation of what invalid entries KVM_REQ_RELOAD is presenting.
+
+Paolo
+
+> The problem exists since the first implementation of KVM_VCPU_FLUSH_TLB
+> in commit f38a7b75267f ("KVM: X86: support paravirtualized help for TLB
+> shootdowns").  But I don't think it would be a real world problem that
+> time since the local CPU's tlb is flushed at first in guest before queuing
+> KVM_VCPU_FLUSH_TLB to other CPUs.  It means that the hypervisor syncs the
+> shadow pagetable before seeing the corresponding KVM_VCPU_FLUSH_TLBs.
+> 
+> After commit 4ce94eabac16 ("x86/mm/tlb: Flush remote and local TLBs
+> concurrently"), the guest doesn't flush local CPU's tlb at first and
+> the hypervisor can handle other VCPU's KVM_VCPU_FLUSH_TLB earlier than
+> local VCPU's tlb flush and might flush the hardware tlb without syncing
+> the shadow pagetable beforehand.
+> 
+> Fixes: f38a7b75267f ("KVM: X86: support paravirtualized help for TLB shootdowns")
+> Signed-off-by: Lai Jiangshan <laijs@linux.alibaba.com>
+> ---
+>   arch/x86/kvm/svm/svm.c | 16 +++++++++++++++-
+>   arch/x86/kvm/vmx/vmx.c |  8 +++++++-
+>   2 files changed, 22 insertions(+), 2 deletions(-)
+> 
+> diff --git a/arch/x86/kvm/svm/svm.c b/arch/x86/kvm/svm/svm.c
+> index 05eca131eaf2..f4523c859245 100644
+> --- a/arch/x86/kvm/svm/svm.c
+> +++ b/arch/x86/kvm/svm/svm.c
+> @@ -3575,6 +3575,20 @@ void svm_flush_tlb(struct kvm_vcpu *vcpu)
+>   		svm->current_vmcb->asid_generation--;
+>   }
+>   
+> +static void svm_flush_tlb_guest(struct kvm_vcpu *vcpu)
+> +{
+> +	/*
+> +	 * When NPT is enabled, just flush the ASID.
+> +	 *
+> +	 * When NPT is not enabled, the operation should be equal to
+> +	 * native_flush_tlb_global(), invpcid_flush_all() in guest.
+> +	 */
+> +	if (npt_enabled)
+> +		svm_flush_tlb(vcpu);
+> +	else
+> +		kvm_make_request(KVM_REQ_MMU_RELOAD, vcpu);
+> +}
+> +
+>   static void svm_flush_tlb_gva(struct kvm_vcpu *vcpu, gva_t gva)
+>   {
+>   	struct vcpu_svm *svm = to_svm(vcpu);
+> @@ -4486,7 +4500,7 @@ static struct kvm_x86_ops svm_x86_ops __initdata = {
+>   	.tlb_flush_all = svm_flush_tlb,
+>   	.tlb_flush_current = svm_flush_tlb,
+>   	.tlb_flush_gva = svm_flush_tlb_gva,
+> -	.tlb_flush_guest = svm_flush_tlb,
+> +	.tlb_flush_guest = svm_flush_tlb_guest,
+>   
+>   	.run = svm_vcpu_run,
+>   	.handle_exit = handle_exit,
+> diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
+> index 4bceb5ca3a89..1913504e3472 100644
+> --- a/arch/x86/kvm/vmx/vmx.c
+> +++ b/arch/x86/kvm/vmx/vmx.c
+> @@ -3049,8 +3049,14 @@ static void vmx_flush_tlb_guest(struct kvm_vcpu *vcpu)
+>   	 * are required to flush GVA->{G,H}PA mappings from the TLB if vpid is
+>   	 * disabled (VM-Enter with vpid enabled and vpid==0 is disallowed),
+>   	 * i.e. no explicit INVVPID is necessary.
+> +	 *
+> +	 * When EPT is not enabled, the operation should be equal to
+> +	 * native_flush_tlb_global(), invpcid_flush_all() in guest.
+>   	 */
+> -	vpid_sync_context(to_vmx(vcpu)->vpid);
+> +	if (enable_ept)
+> +		vpid_sync_context(to_vmx(vcpu)->vpid);
+> +	else
+> +		kvm_make_request(KVM_REQ_MMU_RELOAD, vcpu);
+>   }
+>   
+>   void vmx_ept_load_pdptrs(struct kvm_vcpu *vcpu)
+> 
+
