@@ -2,194 +2,176 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C3FB3923E8
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 02:53:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 608803923EB
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 02:54:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233221AbhE0AzW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 May 2021 20:55:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33260 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232692AbhE0AzU (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 May 2021 20:55:20 -0400
-Received: from mail-il1-x12c.google.com (mail-il1-x12c.google.com [IPv6:2607:f8b0:4864:20::12c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E08CC061574
-        for <linux-kernel@vger.kernel.org>; Wed, 26 May 2021 17:53:47 -0700 (PDT)
-Received: by mail-il1-x12c.google.com with SMTP id w2so2615361ilo.7
-        for <linux-kernel@vger.kernel.org>; Wed, 26 May 2021 17:53:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ob5N3fCbbDLB0UERbmW+vRDN/1QFz9ChAAVkpFKx6WE=;
-        b=PVRxPnxOEA+/JYbCOrw8gof/L0tDYA6KH+myRNCeNYJgvRZnXm7YSDr1t89NTga/hc
-         ijECgrQkelx4cpC544ttqJR0QAVvxmRs+dcOJPy4A3W4WMcyX4l+ncMQx6L7QR5uqMzf
-         RbQJkAG97zN9XoffEzawuX9uYdxNjc4G2ZQ/pKTdnbhlBMath7DaX7LzRHGFGlfqPEfP
-         S3gS1OXtU2IkFHM+Y5AOHGuMkS+L5b6VmksQO5Lw/52GzjtcQOOEXSTUobgsEBn1xZAo
-         61bif5xinqeibBnCUHQTjTW1VcBiM6zpvtUTIe+BS1od64d0+I+TSJeeNJ9TeW1+pwDi
-         hKiQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ob5N3fCbbDLB0UERbmW+vRDN/1QFz9ChAAVkpFKx6WE=;
-        b=UGUR3HROQyowBT0HWm52xGkdQ4ExZwyjw9UTk8deWPsAmz7Jmuwk1vnk1dLwG3pEBK
-         K6pjJqSWkHwhlJg1cXIl7Jo01LmYn3ByobW8YFIyg5c4KzXeir4KXCRBVv+fDidjjR7b
-         FYztOQpjwmmenBMh6iRbZ7yPEqN2wM+YQlry95g53GFoJvgbHNYDJer7maff6I3pIDyn
-         8TjWqMpwPXmoahUZFeN2NWUpwTYDczZNbpt+DYIY+gWQhfuS09VnVDVzLO8tlv9qHovE
-         khTQsEOo/xM5UDdOn1QAPQnI2zoYehpXtQgz7GZ57n19mVtNCn6YAGftqc/1NOEA0928
-         slPA==
-X-Gm-Message-State: AOAM533EJbMnPCmDHRUaDUl1WRNxjS9Ooz9LM7dezcMyVlMUDt9c5lq0
-        pFMQ9VbRPwqhpH7BvQ0LhgIUvtrFFNlThISbp0szeQ==
-X-Google-Smtp-Source: ABdhPJxS7nyUKrCQsDFuq4gpM9vG/4EXxxA61T+RkbgzfkVzdV5dCEzm0jA8Ai9X5nEB9uLsd5RLiJZXX8rsLCkVBp4=
-X-Received: by 2002:a05:6e02:2188:: with SMTP id j8mr871603ila.194.1622076826115;
- Wed, 26 May 2021 17:53:46 -0700 (PDT)
+        id S233683AbhE0A4V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 May 2021 20:56:21 -0400
+Received: from mail-mw2nam12on2083.outbound.protection.outlook.com ([40.107.244.83]:60087
+        "EHLO NAM12-MW2-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S232692AbhE0A4U (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 26 May 2021 20:56:20 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Iv6Ad+uDkVJZDjK5enZR7SNZIrqY6Zg/Vv31I0tM4IFlf7EMWqQr5+AI7BpQ7VAec/9NJJcE9ce/FdVXb8URDyi81oFMKy0uUvEuQcDtI3EKSbnke81Osr4a+za68FkLtmzg4TteqrtLCrqWl3V74CAgdj69Gc3UWlEn1PAWYlhW8BxfVsSkHiLcHvr+6pv2Bn4UzTkkj8jt7tJAfHqSXfct8RaO6v6eH7UvjhlC3pvx/eiiJ0Hn6OnenTLgejh0SD8berEJ3hbmkvMX0CvsurWX9ltYzE/Fgp8+7n5/46SsiSJaEVZV+pd5/s25jrANvO7ZqRCky7ttytxlxz0gsw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=ja/VIpaSI4TSAXk+JEUvwMu80q7fdlOp/W1206XuCvA=;
+ b=bD4OYiASpqPoEPaU7tccrCGDF4iiuubKWSWUU7KwLg57ORkyU2aA1Bqz4WXSfXvb0pFIUU6uA8vL45bFHP6CNI2vi+24FZaHh5T0ApFLgfQC91KB29W5UKRQBN7LldTGvQOKhRTE9FqlWdZZTbc9MqSc5LcwnDvUbK59IGLvaX5K/DAyZe4Tcgw51sEoyJbTVzLYGGXi7ny67lheRfp0Ae6bTkzcvAGjJ/UZK2Yj4Tv9GB29Ua9Mq/8AbOpbuvFsDu9RB8qe/FxhWaG4ue2wGmJiFrW2t4y1Do3SbWW3SY1U9ovDVSVJv/rcsPsWX3ZvwMNv4CH50qyGBEigZT+zfA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=ja/VIpaSI4TSAXk+JEUvwMu80q7fdlOp/W1206XuCvA=;
+ b=ZeswwNLWzooEv5RzsHQe9jl6/TlqWiQmhEnNcariQNYo8g2GcKXU/D7bGNKDTcufsn5MsER5JiV+fO7+yY8ZSmA1mH51aonN+LbBSGajV2BAhKKxs6w7KAsYHEFcPiFHseu/xpcGxzgjPMXIfqkPgsQUNaV0mh6YmQwktik0r9zGhmoi7DETgmxAe4xm94xxMsbH76Bs05oa22/LMYkmva4XveAoDQ+pJwDSZY7WWwlLxP36HpK/Y/eadZ7gzwrTPWC79t/APtbX7WN3kxPuJcHTRIYF5C1RNAxEWYdeZRfOu5pEx5JGFL4c7b8/JoEPLIpe5HcRk3Pv4kWM6w8S7Q==
+Authentication-Results: intel.com; dkim=none (message not signed)
+ header.d=none;intel.com; dmarc=none action=none header.from=nvidia.com;
+Received: from BL0PR12MB5506.namprd12.prod.outlook.com (2603:10b6:208:1cb::22)
+ by BL0PR12MB5554.namprd12.prod.outlook.com (2603:10b6:208:1cd::9) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4173.20; Thu, 27 May
+ 2021 00:54:45 +0000
+Received: from BL0PR12MB5506.namprd12.prod.outlook.com
+ ([fe80::3d51:a3b9:8611:684e]) by BL0PR12MB5506.namprd12.prod.outlook.com
+ ([fe80::3d51:a3b9:8611:684e%7]) with mapi id 15.20.4173.020; Thu, 27 May 2021
+ 00:54:45 +0000
+Date:   Wed, 26 May 2021 21:54:44 -0300
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     Dave Jiang <dave.jiang@intel.com>
+Cc:     alex.williamson@redhat.com, kwankhede@nvidia.com,
+        tglx@linutronix.de, vkoul@kernel.org, megha.dey@intel.com,
+        jacob.jun.pan@intel.com, ashok.raj@intel.com, yi.l.liu@intel.com,
+        baolu.lu@intel.com, kevin.tian@intel.com, sanjay.k.kumar@intel.com,
+        tony.luck@intel.com, dan.j.williams@intel.com,
+        eric.auger@redhat.com, pbonzini@redhat.com,
+        dmaengine@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org
+Subject: Re: [PATCH v6 15/20] vfio/mdev: idxd: ims domain setup for the vdcm
+Message-ID: <20210527005444.GV1002214@nvidia.com>
+References: <162164243591.261970.3439987543338120797.stgit@djiang5-desk3.ch.intel.com>
+ <162164283796.261970.11020270418798826121.stgit@djiang5-desk3.ch.intel.com>
+ <20210523235023.GL1002214@nvidia.com>
+ <29cec5cd-3f23-f947-4545-f507b3f70988@intel.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <29cec5cd-3f23-f947-4545-f507b3f70988@intel.com>
+X-Originating-IP: [206.223.160.26]
+X-ClientProxiedBy: YT1PR01CA0016.CANPRD01.PROD.OUTLOOK.COM (2603:10b6:b01::29)
+ To BL0PR12MB5506.namprd12.prod.outlook.com (2603:10b6:208:1cb::22)
 MIME-Version: 1.0
-References: <20210526212407.2753879-1-brendanhiggins@google.com> <20210526212407.2753879-2-brendanhiggins@google.com>
-In-Reply-To: <20210526212407.2753879-2-brendanhiggins@google.com>
-From:   Daniel Latypov <dlatypov@google.com>
-Date:   Wed, 26 May 2021 17:53:34 -0700
-Message-ID: <CAGS_qxqZsG8oqQx0hY5VjMNkX643Hb_uPKp_oxUcC34F230dgA@mail.gmail.com>
-Subject: Re: [PATCH v2 1/4] kunit: Add 'kunit_shutdown' option
-To:     Brendan Higgins <brendanhiggins@google.com>
-Cc:     shuah <shuah@kernel.org>, David Gow <davidgow@google.com>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        KUnit Development <kunit-dev@googlegroups.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Frank Rowand <frowand.list@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from mlx.ziepe.ca (206.223.160.26) by YT1PR01CA0016.CANPRD01.PROD.OUTLOOK.COM (2603:10b6:b01::29) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4150.27 via Frontend Transport; Thu, 27 May 2021 00:54:45 +0000
+Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1lm4IO-00FOQC-4L; Wed, 26 May 2021 21:54:44 -0300
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 9cf74d2f-5fc6-4476-7902-08d920aa0566
+X-MS-TrafficTypeDiagnostic: BL0PR12MB5554:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <BL0PR12MB5554F789CFE2E4A61A2ABC26C2239@BL0PR12MB5554.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:478;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: e/KOmqQ4jFqrTU4Za+N4bb6Czs0tAP+PlAhryljEzpNVIHg1j3/GhKHgXwSEez8wOz7jOC8AvaB0H1OwiOHykFvwFvmwuK0O3mtvR47iRxk5+Ms80cuZ2dXmcBDqGtW0cGMupB7TuDb7lFHuxY4opAzNZQ+/ytkXYiZ762yIL7vuW7XMuKz49ZFZFEkNewNqGSR93isOL9vDQfLg0ivT8gx74NoEvN4DN/yZqMmse4L2gCzH0vcJekrVRtRJL8nAg8F2B0UyBqSghdXcg19KLglNZNoh2z4J/CUS258b8HKZt8f9j2pCYgd/6rZsJoAR0DXfxTguHyQSSC76XQbbo4yC/k3sj3h6BsMUxrX4t+tZrGu+EpyGXIpOjIqf7YJs/oQg0+Cuqa/QyQ1F/E8n3yC/aOxQcdFWlanoC5468SDNo9hxHul4MZ8zhCmvvl/smQikNsuTIseA2wERxD5ehbi+aIKtiPDojfNJ4XmiHL36phLYsOSAqWf+7HnUAH74mKOvveAnRIs0xGDyzCthPjpgcdR/P9hWp9PedEWI1MvpM9xzd/XrrqivhsVkcFrv21ZVn//R1W9Z2bl/ujQpB3hfqYhYAPzGBlKVKENYgCg=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL0PR12MB5506.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(376002)(396003)(39860400002)(136003)(346002)(426003)(86362001)(2616005)(66946007)(66556008)(186003)(33656002)(1076003)(53546011)(5660300002)(7416002)(9786002)(316002)(9746002)(8676002)(8936002)(4326008)(6916009)(2906002)(26005)(38100700002)(36756003)(66476007)(478600001)(83380400001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?E4fF0o4eV3LHMl3gUlvNJyBjJvbJk4ypMxSX9VvtJYYNlzjgjhQhYQIkRVLN?=
+ =?us-ascii?Q?s3QSnhAloT0KS1IsNzvWL0kgmv1pdHZaJLM4NzCFa758MwsqeuR2a4jXhQWi?=
+ =?us-ascii?Q?zsT7UOAUattFRIgAzGgoCYM4jSqGBqsuiDUep+pcc2j5Dv32hQfqQLkkD9zV?=
+ =?us-ascii?Q?DgZG2ojhnqIhXJNN/jXMNGJVcn85wEfpehHpnb4vRVi0HA9QB3nd1vwIVKgB?=
+ =?us-ascii?Q?iaGkJtSjVgk4sgFb0LXn3Dkn2ccfsOqkMAK+IdQjwwZS2G/wqfmOfbuRFlHD?=
+ =?us-ascii?Q?pb2y06Z2FIVwDBcmK844zLTdWVzxkold94DJovZQK0Y+GYYNbHwu/2Ug+GnY?=
+ =?us-ascii?Q?IXMRw2pUam42ZRMHtHpEKy8KnZa61Tiums6ymDJGeKntWVLnbrE+FJ0SP4pR?=
+ =?us-ascii?Q?yTEtu4jSXFpGXV7oCIP5bsJS2vakClmrpK4dC9gAkEJ/yDPhdw+WvcIKfcQm?=
+ =?us-ascii?Q?Cu+xC++IHlgsyeJRvbB3UtkL4qhZ3D+ajThG5DES/rJaIJANHgHN1dS0CkOU?=
+ =?us-ascii?Q?hHEqxQfqkicMijFsKUsBOMbTPnJ3mQsCgOog54g2EOMKmlHVhpEdqR64jZ38?=
+ =?us-ascii?Q?gQG1/s8t7/R1EEd9ak26jAZ7H5HFda+Zf9mNUSqiWslcE9qzICukgB0YrHvj?=
+ =?us-ascii?Q?jMLykVe9gSz9r/VUvRYQROIye0ZLrH7GKsSh0gtDeWa4QwQ036sBquzL+mZ2?=
+ =?us-ascii?Q?iEl+NXGAXRadpIxHY9ASj5O0buV43g34BEiTk0vM5L17PkUKem/RGgoWUWtD?=
+ =?us-ascii?Q?JelYmnH/bW0L/CLHwQ8zR2CZ7QHWUy63b1JKt5F60EZD50vVgjLUYje6oVGi?=
+ =?us-ascii?Q?p9bg6PH1ynfiZhwQyFklQBN4deE0zQJktQUFPcdYlQsHUpf2Pcw3MFZxBBZa?=
+ =?us-ascii?Q?Jjkx6y1cd8OZN5oQ2WM6u1wR5KEb/rQkADWHaPA/+vdzX2dsFRUQBbXnXWJS?=
+ =?us-ascii?Q?eQrbAp++4PijFNsAiQVus5uigehPKCbjTD/d155h3ltMMw9tXW+SSP2dvZgy?=
+ =?us-ascii?Q?btdwPxIA9HV2+MQs7KP0h+un4Gwi3ikRAkJtyoMux3gjmqomjP06Ql3lPZiT?=
+ =?us-ascii?Q?VX9qegmJXg716oVmmbTrQN88NqU5q2fPR6DU0YnSq+8d3HW1DO0DdZa/6421?=
+ =?us-ascii?Q?7VnsOvI7YIIqhhpqnF9ZeL3DW7X2SfhuTSWycIji+NglZ0NwvonEHoqHAN7a?=
+ =?us-ascii?Q?X4giHgL1pbPGUF31OrRviuLyMq0AcPoFLWmnGf6WIEv1iLtOp0jYGpryCara?=
+ =?us-ascii?Q?yOFJvCvggm1J6yDjv0vEPtKwarSTFSetVGsszW7qjvuoF6xzr5Wy4D57pp9f?=
+ =?us-ascii?Q?gAZVA2jTr/Bu8HM9YP+WgbiT?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 9cf74d2f-5fc6-4476-7902-08d920aa0566
+X-MS-Exchange-CrossTenant-AuthSource: BL0PR12MB5506.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 27 May 2021 00:54:45.8160
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 5W9me2EFK39IW0VDQth85HPHxOqLQjDJGl/jo+UpVA0XkCkJ0Fog8qP68gMk0wCj
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL0PR12MB5554
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 26, 2021 at 2:24 PM Brendan Higgins
-<brendanhiggins@google.com> wrote:
->
-> From: David Gow <davidgow@google.com>
->
-> Add a new kernel command-line option, 'kunit_shutdown', which allows the
-> user to specify that the kernel poweroff, halt, or reboot after
-> completing all KUnit tests; this is very handy for running KUnit tests
-> on UML or a VM so that the UML/VM process exits cleanly immediately
-> after running all tests without needing a special initramfs.
->
-> Signed-off-by: David Gow <davidgow@google.com>
-> Signed-off-by: Brendan Higgins <brendanhiggins@google.com>
-> Reviewed-by: Stephen Boyd <sboyd@kernel.org>
-> Tested-By: Daniel Latypov <dlatypov@google.com>
+On Wed, May 26, 2021 at 05:22:22PM -0700, Dave Jiang wrote:
+> 
+> On 5/23/2021 4:50 PM, Jason Gunthorpe wrote:
+> > On Fri, May 21, 2021 at 05:20:37PM -0700, Dave Jiang wrote:
+> > > @@ -77,8 +80,18 @@ int idxd_mdev_host_init(struct idxd_device *idxd, struct mdev_driver *drv)
+> > >   		return rc;
+> > >   	}
+> > > +	ims_info.max_slots = idxd->ims_size;
+> > > +	ims_info.slots = idxd->reg_base + idxd->ims_offset;
+> > > +	idxd->ims_domain = pci_ims_array_create_msi_irq_domain(idxd->pdev, &ims_info);
+> > > +	if (!idxd->ims_domain) {
+> > > +		dev_warn(dev, "Fail to acquire IMS domain\n");
+> > > +		iommu_dev_disable_feature(dev, IOMMU_DEV_FEAT_AUX);
+> > > +		return -ENODEV;
+> > > +	}
+> > I'm quite surprised that every mdev doesn't create its own ims_domain
+> > in its probe function.
+> > 
+> > This places a global total limit on the # of vectors which makes me
+> > ask what was the point of using IMS in the first place ?
+> > 
+> > The entire idea for IMS was to make the whole allocation system fully
+> > dynamic based on demand.
+> 
+> Hi Jason, thank you for the review of the series.
+> 
+> My understanding is that the driver creates a single IMS domain for the
+> device and provides the address base and IMS numbers for the domain based on
+> device IMS resources. So the IMS region needs to be contiguous. Each mdev
+> can call msi_domain_alloc_irqs() and acquire the number of IMS vectors it
+> desires and the DEV MSI core code will keep track of which vectors are being
+> used. This allows the mdev devices to dynamically allocate based on demand.
+> If the driver allocates a domain per mdev, it'll needs to do internal
+> accounting of the base and vector numbers for each of those domains that the
+> MSI core already provides. Isn't that what we are trying to avoid? As mdevs
+> come and go, that partitioning will become fragmented.
 
-Reviewed-by: Daniel Latypov <dlatypov@google.com>
+I suppose it depends entirely on how the HW works.
 
-Looks good, one optional nit below.
+If the HW has a fixed number of interrupt vectors organized in a
+single table then by all means allocate a single domain that spans the
+entire fixed HW vector space. But then why do we have a ims_size
+variable here??
 
-Also, I tested this again on top of 5.13-r4 (7ac3a1c1ae51 ("Merge tag
-'mtd/fixes-for-5.13-rc4' of
-git://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux"))
+However, that really begs the question of why the HW is using IMS at
+all? I'd expect needing 2x-10x the max MSI-X vector size before
+reaching for IMS.
 
-$ echo -e "\nCONFIG_DEBUG_KERNEL=y\nCONFIG_DEBUG_INFO=y\nCONFIG_GCOV=y"
->> .kunit/.kunitconfig
-$ run_kunit --make_options=CC=/usr/bin/gcc-6
-$ <run coverage generation steps>
-Overall coverage rate:
-  lines......: 13.8% (17286 of 125320 lines)
-  functions..: 15.8% (1790 of 11336 functions)
+So does IDXD really have like a 4k - 40k entry linear IMS vector table
+to wrap a shared domain around?
 
-So coverage still seems to be fixed, no need to comment out the
-uml_abort() anymore and this sidesteps whatever weird issue I started
-running into these past few weeks.
-So that's very exciting.
+Basically, that isn't really "scalable" it is just "bigger".
 
-> ---
->  lib/kunit/executor.c                | 20 ++++++++++++++++++++
->  tools/testing/kunit/kunit_kernel.py |  2 +-
->  tools/testing/kunit/kunit_parser.py |  2 +-
->  3 files changed, 22 insertions(+), 2 deletions(-)
->
-> diff --git a/lib/kunit/executor.c b/lib/kunit/executor.c
-> index 15832ed446685..7db619624437c 100644
-> --- a/lib/kunit/executor.c
-> +++ b/lib/kunit/executor.c
-> @@ -1,5 +1,6 @@
->  // SPDX-License-Identifier: GPL-2.0
->
-> +#include <linux/reboot.h>
->  #include <kunit/test.h>
->  #include <linux/glob.h>
->  #include <linux/moduleparam.h>
-> @@ -18,6 +19,9 @@ module_param(filter_glob, charp, 0);
->  MODULE_PARM_DESC(filter_glob,
->                 "Filter which KUnit test suites run at boot-time, e.g. list*");
->
-> +static char *kunit_shutdown;
-> +core_param(kunit_shutdown, kunit_shutdown, charp, 0644);
-> +
->  static struct kunit_suite * const *
->  kunit_filter_subsuite(struct kunit_suite * const * const subsuite)
->  {
-> @@ -82,6 +86,20 @@ static struct suite_set kunit_filter_suites(void)
->         return filtered;
->  }
->
-> +static void kunit_handle_shutdown(void)
-> +{
-> +       if (!kunit_shutdown)
-> +               return;
-> +
-> +       if (!strcmp(kunit_shutdown, "poweroff"))
-> +               kernel_power_off();
-> +       else if (!strcmp(kunit_shutdown, "halt"))
-> +               kernel_halt();
-> +       else if (!strcmp(kunit_shutdown, "reboot"))
-> +               kernel_restart(NULL);
+Fully scalable would be for every mdev to point to its own 2k entry
+IMS table that is allocated on the fly. Every mdev gets a domain and
+every domain is fully utilized by the mdev in emulating
+MSI-X. Basically for a device like idxd every PASID would have to map
+to a IMS vector table array.
 
-nit: should we complain about an unknown option here?
+I suppose that was not what was done?
 
-> +
-> +}
-> +
->  static void kunit_print_tap_header(struct suite_set *suite_set)
->  {
->         struct kunit_suite * const * const *suites, * const *subsuite;
-> @@ -112,6 +130,8 @@ int kunit_run_all_tests(void)
->                 kfree(suite_set.start);
->         }
->
-> +       kunit_handle_shutdown();
-> +
->         return 0;
->  }
->
-> diff --git a/tools/testing/kunit/kunit_kernel.py b/tools/testing/kunit/kunit_kernel.py
-> index 89a7d4024e878..dbbceaee12305 100644
-> --- a/tools/testing/kunit/kunit_kernel.py
-> +++ b/tools/testing/kunit/kunit_kernel.py
-> @@ -208,7 +208,7 @@ class LinuxSourceTree(object):
->         def run_kernel(self, args=None, build_dir='', filter_glob='', timeout=None) -> Iterator[str]:
->                 if not args:
->                         args = []
-> -               args.extend(['mem=1G', 'console=tty'])
-> +               args.extend(['mem=1G', 'console=tty', 'kunit_shutdown=halt'])
->                 if filter_glob:
->                         args.append('kunit.filter_glob='+filter_glob)
->                 self._ops.linux_bin(args, timeout, build_dir)
-> diff --git a/tools/testing/kunit/kunit_parser.py b/tools/testing/kunit/kunit_parser.py
-> index e8bcc139702e2..8d8d4d70b39dd 100644
-> --- a/tools/testing/kunit/kunit_parser.py
-> +++ b/tools/testing/kunit/kunit_parser.py
-> @@ -49,7 +49,7 @@ class TestStatus(Enum):
->
->  kunit_start_re = re.compile(r'TAP version [0-9]+$')
->  kunit_end_re = re.compile('(List of all partitions:|'
-> -                         'Kernel panic - not syncing: VFS:)')
-> +                         'Kernel panic - not syncing: VFS:|reboot: System halted)')
->
->  def isolate_kunit_output(kernel_output) -> Iterator[str]:
->         started = False
-> --
-> 2.31.1.818.g46aad6cb9e-goog
->
+Jason
