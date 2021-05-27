@@ -2,70 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F0DAF392FAA
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 15:28:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 45661392FB6
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 15:29:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236493AbhE0NaD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 May 2021 09:30:03 -0400
-Received: from verein.lst.de ([213.95.11.211]:39102 "EHLO verein.lst.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236488AbhE0N37 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 May 2021 09:29:59 -0400
-Received: by verein.lst.de (Postfix, from userid 2407)
-        id 290AE68AFE; Thu, 27 May 2021 15:28:23 +0200 (CEST)
-Date:   Thu, 27 May 2021 15:28:22 +0200
-From:   Christoph Hellwig <hch@lst.de>
-To:     Claire Chang <tientzu@chromium.org>
-Cc:     Rob Herring <robh+dt@kernel.org>, mpe@ellerman.id.au,
-        Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
-        boris.ostrovsky@oracle.com, jgross@suse.com,
-        Christoph Hellwig <hch@lst.de>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        benh@kernel.crashing.org, paulus@samba.org,
-        "list@263.net:IOMMU DRIVERS" <iommu@lists.linux-foundation.org>,
-        sstabellini@kernel.org, Robin Murphy <robin.murphy@arm.com>,
-        grant.likely@arm.com, xypron.glpk@gmx.de,
-        Thierry Reding <treding@nvidia.com>, mingo@kernel.org,
-        bauerman@linux.ibm.com, peterz@infradead.org,
-        Greg KH <gregkh@linuxfoundation.org>,
-        Saravana Kannan <saravanak@google.com>,
-        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
-        heikki.krogerus@linux.intel.com,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        linux-devicetree <devicetree@vger.kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        linuxppc-dev@lists.ozlabs.org, xen-devel@lists.xenproject.org,
-        Nicolas Boichat <drinkcat@chromium.org>,
-        Jim Quinlan <james.quinlan@broadcom.com>, tfiga@chromium.org,
-        bskeggs@redhat.com, bhelgaas@google.com, chris@chris-wilson.co.uk,
-        daniel@ffwll.ch, airlied@linux.ie, dri-devel@lists.freedesktop.org,
-        intel-gfx@lists.freedesktop.org, jani.nikula@linux.intel.com,
-        jxgao@google.com, joonas.lahtinen@linux.intel.com,
-        linux-pci@vger.kernel.org, maarten.lankhorst@linux.intel.com,
-        matthew.auld@intel.com, rodrigo.vivi@intel.com,
-        thomas.hellstrom@linux.intel.com
-Subject: Re: [PATCH v7 07/15] swiotlb: Update is_swiotlb_active to add a
- struct device argument
-Message-ID: <20210527132822.GE26160@lst.de>
-References: <20210518064215.2856977-1-tientzu@chromium.org> <20210518064215.2856977-8-tientzu@chromium.org>
+        id S236500AbhE0NbG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 May 2021 09:31:06 -0400
+Received: from new4-smtp.messagingengine.com ([66.111.4.230]:50945 "EHLO
+        new4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S236335AbhE0NbD (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 27 May 2021 09:31:03 -0400
+Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
+        by mailnew.nyi.internal (Postfix) with ESMTP id 03E7658472F;
+        Thu, 27 May 2021 09:29:26 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute1.internal (MEProxy); Thu, 27 May 2021 09:29:26 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kroah.com; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm3; bh=6GRC/0MZj+00ZlSbSG5P9vkghEm
+        DAwpet/OoF+tag/w=; b=J30v3f1+Fi4bHN7Zn4dwceyEbf5fD488Th/llLcnfxg
+        1rz6UKwNj3gIPfRjzPu66rZ1QtWKMCU+bJdfrxyY2fqfmHrHL8NJC8eKqc54iVRa
+        quCEMoDTab5jRc91dT7ZT+pwuD+w6Z+YKM1q7WrGfaox0dgJrMl29aRL2LQKjW6z
+        5aSVawgcfKcFLMFOoHe/1VcKwfBBv/Ki94XiiyHalvg91O2eqfFw87pE3BKUibOV
+        53VUN3N3IPOC/dWKxsQe2PQmxMA6TrtudBhADFT4IpW7sIWRkN4fAbzCGx1//mgr
+        LcIbzvcBB9O5cc5bEa2QDReidoHHQQThTLwYkLqmGFQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=6GRC/0
+        MZj+00ZlSbSG5P9vkghEmDAwpet/OoF+tag/w=; b=LK+sfIEv8YeEF+e3vwIVGf
+        Y2aK45WaeUtarPyLe7y1UH8LAPgdmtSIKR2Rxw4oJpwWLewVHna1nsTVdtil4skT
+        FI0HW3TsE+HY+YF0pIYWpGlM0t/Xd4+wUVN0yK2pSgqyRjL6WkIGZdN1KR10IHTl
+        SZpyCAkg+5WkQQJvhcFpAnj0JrslVbOQhwtTyBcVBZewNuZu6g+yqm5PmJtbdkoa
+        iBVYi5J2gL70lNENxM+zouRkovpGmydn0YGiV/Fa2S6MP3uLoG1dS1+9uIW2Zz0h
+        R+bWSZ1ewImJ5uz0Wi/ulKM9T3YrnjN/lwH7CeL7tGuvCcZnVZfRcn3QFLkbu9JA
+        ==
+X-ME-Sender: <xms:tJ6vYJh9d7hPAKdE4nTdv8A2OU9nvV6H50bjfjx0PhCEQNliYEtUGA>
+    <xme:tJ6vYOAlzcXj-yHCUs8ygoKaHBp8TxtaK_h8BCYY0HnwUqUfXG-Q2aGk-qwZfdDeI
+    JfFsHrVCVJGMQ>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrvdekhedgieeiucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhvffukfhfgggtuggjsehttdertddttddvnecuhfhrohhmpefirhgvghcu
+    mffjuceoghhrvghgsehkrhhorghhrdgtohhmqeenucggtffrrghtthgvrhhnpeevueehje
+    fgfffgiedvudekvdektdelleelgefhleejieeugeegveeuuddukedvteenucfkphepkeef
+    rdekiedrjeegrdeigeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrih
+    hlfhhrohhmpehgrhgvgheskhhrohgrhhdrtghomh
+X-ME-Proxy: <xmx:tJ6vYJG4QKrbZvbduRD91eEuShjSfEhn51iSOiLpyKIyRce8Iq5Quw>
+    <xmx:tJ6vYORH8MtfBkmd705suIxefTdfwI59n9nQqle4CGuo1_6KXS1p1A>
+    <xmx:tJ6vYGw4WfBGZNbtnM_lsJ_wv2oJhm3o-u7k3qlTfooie76SJAQqMA>
+    <xmx:tZ6vYLGBmm35YucC4o8kg85jksAT9NRr2GsPTvGH_YzP87de6qsP3w>
+Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
+        by mail.messagingengine.com (Postfix) with ESMTPA;
+        Thu, 27 May 2021 09:29:24 -0400 (EDT)
+Date:   Thu, 27 May 2021 15:29:22 +0200
+From:   Greg KH <greg@kroah.com>
+To:     Christoph Lameter <cl@gentwo.de>
+Cc:     Theodore Ts'o <tytso@mit.edu>, Jiri Kosina <jikos@kernel.org>,
+        ksummit@lists.linux.dev, linux-kernel@vger.kernel.org,
+        linux-block@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-mm@kvack.org, netdev@vger.kernel.org,
+        linux-arch@vger.kernel.org, linux-api@vger.kernel.org
+Subject: Re: Maintainers / Kernel Summit 2021 planning kick-off
+Message-ID: <YK+esqGjKaPb+b/Q@kroah.com>
+References: <YH2hs6EsPTpDAqXc@mit.edu>
+ <nycvar.YFH.7.76.2104281228350.18270@cbobk.fhfr.pm>
+ <YIx7R6tmcRRCl/az@mit.edu>
+ <alpine.DEB.2.22.394.2105271522320.172088@gentwo.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210518064215.2856977-8-tientzu@chromium.org>
-User-Agent: Mutt/1.5.17 (2007-11-01)
+In-Reply-To: <alpine.DEB.2.22.394.2105271522320.172088@gentwo.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> +	if (is_swiotlb_active(NULL)) {
+On Thu, May 27, 2021 at 03:23:03PM +0200, Christoph Lameter wrote:
+> On Fri, 30 Apr 2021, Theodore Ts'o wrote:
+> 
+> > I know we're all really hungry for some in-person meetups and
+> > discussions, but at least for LPC, Kernel Summit, and Maintainer's
+> > Summit, we're going to have to wait for another year,
+> 
+> Well now that we are vaccinated: Can we still change it?
+> 
 
-Passing a NULL argument to this doesn't make sense.  They all should have
-a struct device at hand, you'll just need to dig for it.
+Speak for yourself, remember that Europe and other parts of the world
+are not as "flush" with vaccines as the US currently is :(
 
-And this function should be about to go away anyway, but until then we
-need to do this properly.
+greg k-h
