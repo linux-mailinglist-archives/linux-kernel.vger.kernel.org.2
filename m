@@ -2,132 +2,192 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ADBC83937FA
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 23:31:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D55213937FC
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 23:31:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234633AbhE0Vck (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 May 2021 17:32:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59452 "EHLO
+        id S234673AbhE0Vcu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 May 2021 17:32:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59494 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232975AbhE0Vci (ORCPT
+        with ESMTP id S234538AbhE0Vcs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 May 2021 17:32:38 -0400
-Received: from mail-pf1-x432.google.com (mail-pf1-x432.google.com [IPv6:2607:f8b0:4864:20::432])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44F3CC061574;
-        Thu, 27 May 2021 14:31:05 -0700 (PDT)
-Received: by mail-pf1-x432.google.com with SMTP id y202so1594534pfc.6;
-        Thu, 27 May 2021 14:31:05 -0700 (PDT)
+        Thu, 27 May 2021 17:32:48 -0400
+Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC2ACC061574
+        for <linux-kernel@vger.kernel.org>; Thu, 27 May 2021 14:31:14 -0700 (PDT)
+Received: by mail-pj1-x1034.google.com with SMTP id q6so1296141pjj.2
+        for <linux-kernel@vger.kernel.org>; Thu, 27 May 2021 14:31:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
+        d=chromium.org; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=92w7fK+Mm8d7VOHGtQ52zeEYrDzHrnqQNTrY91S9zlE=;
-        b=HazhiHbi8HLMATY1w/PBfotFYsroAHmVnINGVF5XK0WL44JaciHfcLhln/FOPc03Fn
-         ZpOSHgifIwQdd/v0p544gpYRXNh0onIVBceRZowMDcKxO0FiAuN3vDP98y5uhPVNhMma
-         j/U+dkWHExyFSwIX7YO8oXPUJ2PC6UJQFwccbWoePozzn6XaRQKoF/yNdO+fIPE7FG8q
-         j4AdhSE8CjWZNSNBIsDxggi7v7o0KIAoUSE/QSgswciDE74c7bLHBXC4SMKeW5CmXA08
-         OXHY2y45pHWAL1GvWjNCUzeNs4eCybxLnCFeL5Wcl5zFjyUhhQBYGr9l91KvS0KPLv1v
-         AKwg==
+        bh=ggxXu6khFzuHqhI0ulwwbMYsWS89137XDyToRCuLR6Y=;
+        b=dZ+XUsedmo86h4NhBMsgswFCTPlxr3liApdTFu+31HaTfDmWsBUULBS4+NAXxo95f9
+         1ORhr+Nb9eiOqs3M1fMfwySr/Lh2N8IRUndewhoIRakj+vjdn+eV4SZk38wSebLH2dI/
+         FbGaPq2YWUdTN7HT1Zx7F7bdsQnM2nSG7OnOc=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=92w7fK+Mm8d7VOHGtQ52zeEYrDzHrnqQNTrY91S9zlE=;
-        b=BYgGnDDlUAOrNfzCcAVNeu/rJNyPa4K0zcS+hbIitpWocCZd5RfUd04q/3TDkqtigu
-         lSCdD8IK5OM021EsDHWfYuPmxuS91zjjcgv0qFv7WH+5foowRQEBFA5NWO78tg00Rb+P
-         mW/vQ68MdIHE4ZRhgHXMtPrbv8A8QbMjgE20PxetOj9Y7Hs98OLu5buKnBmc8d913eYi
-         /co0fF1nURDwKLAmBLyZSRV/shvv5yz6sJDF+ekVCG2Vhx16xVyt3ZyGH1acePCHtdta
-         EKNcAE0xsYkqs2DK4PJEyOpIbdExrH2O5VpNFUkTcqETD9cGsUrjfT2IK983Thh4YAYr
-         A3kg==
-X-Gm-Message-State: AOAM530aelLZWdPP1JxSMIz+YYs/XAZ48o1SEpZuKS2k5DpmNGBNOTSa
-        ClBtq7BY+6YbsFfJqc8wy8Y=
-X-Google-Smtp-Source: ABdhPJymdw+FUE9i9tijpf70fKJR8T/iANZPDhQPP/DlbzKpjh5/smoRHCmmMGeXq54kKCQNxUYhKw==
-X-Received: by 2002:a05:6a00:23cf:b029:2d5:302e:dc77 with SMTP id g15-20020a056a0023cfb02902d5302edc77mr409995pfc.63.1622151064531;
-        Thu, 27 May 2021 14:31:04 -0700 (PDT)
-Received: from google.com ([2620:15c:202:201:2eca:168c:3933:43bc])
-        by smtp.gmail.com with ESMTPSA id z6sm2667635pgp.89.2021.05.27.14.31.01
+        bh=ggxXu6khFzuHqhI0ulwwbMYsWS89137XDyToRCuLR6Y=;
+        b=JAv7SdcwEFsrP8qHWQWaVKiq3VvbKIX6+hNt4iJFf7xQxxNVJflh0ou1gNzgVIrLSa
+         o+4MqQ96jqIyHbIbP1HP0eIF4RkpHDthwNAh0NnISx2V0jZOr3RhYc6KQwuNbqVy0ETn
+         9tgKGq9a9mcMRrEc8HtteWoL146G1nu7991uBaOz+VQNiuVJiTkg1kH0jyKOoSWChcOq
+         3L6d0d3klp7dXEpKOye/T91jvpwkzo9eNYbka5x4UQVtqsRHw5uLmz76T7tlCFSzVXcR
+         Fmr0zqmrAQ70fTOYGk8rD7Ex/3W2veXZBswR6y3xCguKDd4gwX+pZn8M9WFpM9hnIVZ1
+         PK/Q==
+X-Gm-Message-State: AOAM530lToeTS5Q87UUx/iGqChAQs/i49vN5pSWdU7GvDYWhILs7qBMX
+        qwJbiV9L0Wdlj8fA7/EnwiIh3Q==
+X-Google-Smtp-Source: ABdhPJzwu8ym8ft0mEUJfJozHYnglV77DSgsagFBD/Q4TMQwQdy9KB3lKermhhPFy/AQ7tte+s40xQ==
+X-Received: by 2002:a17:90a:390d:: with SMTP id y13mr568949pjb.133.1622151074440;
+        Thu, 27 May 2021 14:31:14 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id a12sm2952946pfg.102.2021.05.27.14.31.13
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 27 May 2021 14:31:02 -0700 (PDT)
-Date:   Thu, 27 May 2021 14:30:59 -0700
-From:   Dmitry Torokhov <dmitry.torokhov@gmail.com>
-To:     Takashi Iwai <tiwai@suse.de>
-Cc:     linux-input@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] Input: elants_i2c - Fix NULL dereference at probing
-Message-ID: <YLAPk+Vvjnbp7FY/@google.com>
-References: <20210527173153.16470-1-tiwai@suse.de>
+        Thu, 27 May 2021 14:31:13 -0700 (PDT)
+Date:   Thu, 27 May 2021 14:31:12 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     "Darrick J. Wong" <djwong@kernel.org>
+Cc:     "Gustavo A. R. Silva" <gustavo@embeddedor.com>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        linux-xfs@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-hardening@vger.kernel.org, joe@perches.com
+Subject: Re: [PATCH][next] xfs: Fix fall-through warnings for Clang
+Message-ID: <202105271358.22E0E2BFD@keescook>
+References: <20210420230652.GA70650@embeddedor>
+ <20210420233850.GQ3122264@magnolia>
+ <62895e8c-800d-fa7b-15f6-480179d552be@embeddedor.com>
+ <bcae9d46-644c-d6f6-3df5-e8f7c50a673d@embeddedor.com>
+ <20210526211624.GB202121@locust>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210527173153.16470-1-tiwai@suse.de>
+In-Reply-To: <20210526211624.GB202121@locust>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Takashi,
-
-On Thu, May 27, 2021 at 07:31:53PM +0200, Takashi Iwai wrote:
-> The recent change in elants_i2c driver to support more chips
-> introduced a regression leading to Oops at probing.  The driver reads
-> id->driver_data, but the id may be NULL depending on the device type
-> the driver gets bound.
+On Wed, May 26, 2021 at 02:16:24PM -0700, Darrick J. Wong wrote:
+> On Wed, May 26, 2021 at 01:21:06PM -0500, Gustavo A. R. Silva wrote:
+> > 
+> > 
+> > On 4/20/21 18:56, Gustavo A. R. Silva wrote:
+> > > 
+> > > 
+> > > On 4/20/21 18:38, Darrick J. Wong wrote:
+> > >> On Tue, Apr 20, 2021 at 06:06:52PM -0500, Gustavo A. R. Silva wrote:
+> > >>> In preparation to enable -Wimplicit-fallthrough for Clang, fix
+> > >>> the following warnings by replacing /* fall through */ comments,
+> > >>> and its variants, with the new pseudo-keyword macro fallthrough:
+> > >>>
+> > >>> fs/xfs/libxfs/xfs_alloc.c:3167:2: warning: unannotated fall-through between switch labels [-Wimplicit-fallthrough]
+> > >>> fs/xfs/libxfs/xfs_da_btree.c:286:3: warning: unannotated fall-through between switch labels [-Wimplicit-fallthrough]
+> > >>> fs/xfs/libxfs/xfs_ag_resv.c:346:2: warning: unannotated fall-through between switch labels [-Wimplicit-fallthrough]
+> > >>> fs/xfs/libxfs/xfs_ag_resv.c:388:2: warning: unannotated fall-through between switch labels [-Wimplicit-fallthrough]
+> > >>> fs/xfs/xfs_bmap_util.c:246:2: warning: unannotated fall-through between switch labels [-Wimplicit-fallthrough]
+> > >>> fs/xfs/xfs_export.c:88:2: warning: unannotated fall-through between switch labels [-Wimplicit-fallthrough]
+> > >>> fs/xfs/xfs_export.c:96:2: warning: unannotated fall-through between switch labels [-Wimplicit-fallthrough]
+> > >>> fs/xfs/xfs_file.c:867:3: warning: unannotated fall-through between switch labels [-Wimplicit-fallthrough]
+> > >>> fs/xfs/xfs_ioctl.c:562:2: warning: unannotated fall-through between switch labels [-Wimplicit-fallthrough]
+> > >>> fs/xfs/xfs_ioctl.c:1548:2: warning: unannotated fall-through between switch labels [-Wimplicit-fallthrough]
+> > >>> fs/xfs/xfs_iomap.c:1040:2: warning: unannotated fall-through between switch labels [-Wimplicit-fallthrough]
+> > >>> fs/xfs/xfs_inode.c:852:2: warning: unannotated fall-through between switch labels [-Wimplicit-fallthrough]
+> > >>> fs/xfs/xfs_log.c:2627:2: warning: unannotated fall-through between switch labels [-Wimplicit-fallthrough]
+> > >>> fs/xfs/xfs_trans_buf.c:298:2: warning: unannotated fall-through between switch labels [-Wimplicit-fallthrough]
+> > >>> fs/xfs/scrub/bmap.c:275:2: warning: unannotated fall-through between switch labels [-Wimplicit-fallthrough]
+> > >>> fs/xfs/scrub/btree.c:48:2: warning: unannotated fall-through between switch labels [-Wimplicit-fallthrough]
+> > >>> fs/xfs/scrub/common.c:85:2: warning: unannotated fall-through between switch labels [-Wimplicit-fallthrough]
+> > >>> fs/xfs/scrub/common.c:138:2: warning: unannotated fall-through between switch labels [-Wimplicit-fallthrough]
+> > >>> fs/xfs/scrub/common.c:698:2: warning: unannotated fall-through between switch labels [-Wimplicit-fallthrough]
+> > >>> fs/xfs/scrub/dabtree.c:51:2: warning: unannotated fall-through between switch labels [-Wimplicit-fallthrough]
+> > >>> fs/xfs/scrub/repair.c:951:2: warning: unannotated fall-through between switch labels [-Wimplicit-fallthrough]
+> > >>>
+> > >>> Notice that Clang doesn't recognize /* fall through */ comments as
+> > >>> implicit fall-through markings, so in order to globally enable
+> > >>> -Wimplicit-fallthrough for Clang, these comments need to be
+> > >>> replaced with fallthrough; in the whole codebase.
+> > >>>
+> > >>> Link: https://github.com/KSPP/linux/issues/115
+> > >>> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+> > >>
+> > >> I've already NAKd this twice, so I guess I'll NAK it a third time.
+> > > 
+> > > Darrick,
+> > > 
+> > > The adoption of fallthrough; has been already accepted and in use since Linux v5.7:
+> > > 
+> > > https://www.kernel.org/doc/html/v5.7/process/deprecated.html?highlight=fallthrough#implicit-switch-case-fall-through
+> > > 
+> > > This change is needed, and I would really prefer if this goes upstream through your tree.
+> > > 
+> > > Linus has taken these patches directly for a while, now.
+> > > 
+> > > Could you consider taking it this time? :)
+> > > 
+> > 
+> > Hi Darrick,
+> > 
+> > If you don't mind, I will take this in my -next[1] branch for v5.14, so we can globally enable
+> > -Wimplicit-fallthrough for Clang in that release.
+> > 
+> > We had thousands of these warnings and now we are down to 47 in next-20210526,
+> > 22 of which are fixed with this patch.
 > 
-> Replace the driver data extraction with the device_get_match_data()
-> helper, and define the driver data in OF table, too.
+> I guess we're all required to kowtow to a bunch of effing bots now.
+> Hooray for having to have a macro to code-switch for the sake of
+> stupid compiler writers who refuse to give the rest of us a single
+> workable way to signal "this switch code block should not end here":
 > 
-> Fixes: 9517b95bdc46 ("Input: elants_i2c - add support for eKTF3624")
-> BugLink: https://bugzilla.suse.com/show_bug.cgi?id=1186454
-> Cc: <stable@vger.kernel.org>
-> Signed-off-by: Takashi Iwai <tiwai@suse.de>
-> ---
-> v1->v2: Use device_get_match_data()
+> /* fall through */
+> __attribute__((fallthrough));
+> do { } while (0) /* fall through */
 > 
->  drivers/input/touchscreen/elants_i2c.c | 6 +++---
->  1 file changed, 3 insertions(+), 3 deletions(-)
+> and soon the ISO geniuses will make it worse by adding to C2x:
 > 
-> diff --git a/drivers/input/touchscreen/elants_i2c.c b/drivers/input/touchscreen/elants_i2c.c
-> index 17540bdb1eaf..29b5bb03cff9 100644
-> --- a/drivers/input/touchscreen/elants_i2c.c
-> +++ b/drivers/input/touchscreen/elants_i2c.c
-> @@ -1396,7 +1396,7 @@ static int elants_i2c_probe(struct i2c_client *client,
-
-Might want to switch to probe_new() to avoid same/similar issue down
-the road, either in the same patch or in a separate one.
-
-
->  	init_completion(&ts->cmd_done);
->  
->  	ts->client = client;
-> -	ts->chip_id = (enum elants_chip_id)id->driver_data;
-> +	ts->chip_id = (enum elants_chip_id)device_get_match_data(&client->dev);
-
-I think this might need to go through an intermediate cast to shut up
-compiler warnings:
-
-	ts->chip_id = (enum elants_chip_id)(uintptr_t)
-			device_get_match_data(&client->dev);
-
->  	i2c_set_clientdata(client, ts);
->  
->  	ts->vcc33 = devm_regulator_get(&client->dev, "vcc33");
-> @@ -1636,8 +1636,8 @@ MODULE_DEVICE_TABLE(acpi, elants_acpi_id);
->  
->  #ifdef CONFIG_OF
->  static const struct of_device_id elants_of_match[] = {
-> -	{ .compatible = "elan,ekth3500" },
-> -	{ .compatible = "elan,ektf3624" },
-> +	{ .compatible = "elan,ekth3500", .data = EKTH3500 },
-> +	{ .compatible = "elan,ektf3624", .data = EKTF3624 },
-
-As the bot mentioned this needs a cast.
-
->  	{ /* sentinel */ }
->  };
->  MODULE_DEVICE_TABLE(of, elants_of_match);
-> -- 
-> 2.26.2
+> [[fallthrough]];
 > 
+> Hooray!  Macros to abstractify stupidity!!!!
+> 
+> Dave and I have told you and Miaohe several[1] times[2] to fix[3] the
+> compiler, but clearly you don't care what we think and have decided to
+> ram this in through Linus anyway.
 
-Thanks.
+To clarify, we certainly _do_ care what you think. It's just that
+when faced with the difficulties of the compiler's implementations of
+handling this, the kernel had to get creative and pick the least-bad of
+many bad choices. We're trying to make the kernel safer for everyone,
+and this particular C language weakness has caused us a significant
+number of bugs. Eradicating it is worth the effort.
+
+All that said, as you pointed out, you _have_ asked before[1] to just
+have Linus take it without bothering you directly, so okay, that can be
+done. Generally maintainers have wanted these changes to go through their
+trees so it doesn't cause them merge pain, but it seems you'd prefer it
+the other way around.
+
+-Kees
+
+[1] https://lore.kernel.org/linux-xfs/20200820191237.GK6096@magnolia/
+"If you feel really passionate about ramming a bunch of pointless churn
+ into the kernel tree to make my life more painful, send this to Linus
+ and let him make the change."
+
+> Since that is what you choose, do not send me email again.
+> 
+> NAKed-by: Darrick J. Wong <djwong@kernel.org>
+> 
+> --D
+> 
+> [1] https://lore.kernel.org/linux-xfs/20200820191237.GK6096@magnolia/
+> [2] https://lore.kernel.org/linux-xfs/20210420230652.GA70650@embeddedor/
+> [3] https://lore.kernel.org/linux-xfs/20200708065512.GN2005@dread.disaster.area/
+> 
+> > 
+> > Thanks
+> > --
+> > Gustavo
+> > 
+> > [1] https://git.kernel.org/pub/scm/linux/kernel/git/gustavoars/linux.git/log/?h=for-next/kspp
 
 -- 
-Dmitry
+Kees Cook
