@@ -2,119 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D4274392DAE
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 14:10:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 73468392DAF
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 14:10:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235016AbhE0MMO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 May 2021 08:12:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44832 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234996AbhE0MMJ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 May 2021 08:12:09 -0400
-Received: from mail-pf1-x44a.google.com (mail-pf1-x44a.google.com [IPv6:2607:f8b0:4864:20::44a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D794C061763
-        for <linux-kernel@vger.kernel.org>; Thu, 27 May 2021 05:10:36 -0700 (PDT)
-Received: by mail-pf1-x44a.google.com with SMTP id a8-20020a62d4080000b029028db7db58adso310588pfh.22
-        for <linux-kernel@vger.kernel.org>; Thu, 27 May 2021 05:10:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:message-id:mime-version:subject:from:to:cc;
-        bh=iqIBI9XStvdUfyRfeYE0WncKiX+A9ECL2BS9Q2VVAXk=;
-        b=PArDcqPZfuuiN12JsR2xB6EirNwGgYJWbDfP5lgcIPFIeDhqMH/wNmSVOHVweoZeNk
-         f3sV5DmGKU0/ewkJNoXyEKlv/nCaFiCOT9wICSUbA/U9OkJaC/svciz7SLMA26FpE54s
-         klcC63OOcnVBt4y0geb2uD6pJVz+O1CAXZUaF14x8eYs2aV7n0wazobYxzWC3FO09g67
-         wRuy8q/FS8nPRxNEby+RRmUGpgYI4EtyxvGPwkcSicCIV9qt32fL/hLKyoGBmZX9bX0Z
-         zEzroG4ewtCoZTIXPXbqy9r1BGcJXCU0T2mGIKfrWK55LLEIbSUqVZTnsMy3WOXqmLi/
-         nQgw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
-        bh=iqIBI9XStvdUfyRfeYE0WncKiX+A9ECL2BS9Q2VVAXk=;
-        b=nLT+P+aRzR6L77Xg7IaCJnVsFQNKrS1lv4yweOh4qLqQZOWQDBrnJpbBky920aPX0k
-         JLecFRYE6RxSreCWZJ2LzhIqz+/g0YQOqIyZLNuEN+hCF3eZkWSQEe1DNOGRvlOPm2r7
-         8hSSVATyYpPAajmZVpnbsU/cBHozr3r+xIFC8gZcfFSILTlX6ceFM1Pbugq9eAfY5ELp
-         xUjJPKGS7Vt2J3N8Kq8nyO+1YoUAr3ihup6q0JQto+PghAnd7C6cTXnvga/5Nu7mLFBx
-         GEfbM5VC7RyT6rSeGLCPT0SqzTmdYolUkCCjg4JuVRm2TKCOc9hGg558VbaaYvqqg3Cj
-         Azow==
-X-Gm-Message-State: AOAM531P+FEBWUhI27+NI5Nq0g9D5Q9/uPM9bosFOlqJw7dXsFsqaPsv
-        nQ5YimCOVPka7GMNVJY3lWBwJaHMQ4zs
-X-Google-Smtp-Source: ABdhPJzQx0mkKyKy509zGxvF3O4kLLBMvsliBnvQibEk/5wxoseMmTXHX18oAgAf+d/mUzF8phl62QJALX/o
-X-Received: from kyletso.ntc.corp.google.com ([2401:fa00:fc:202:c563:7257:f641:cbcd])
- (user=kyletso job=sendgmr) by 2002:a17:902:7fc1:b029:f9:2580:8183 with SMTP
- id t1-20020a1709027fc1b02900f925808183mr2845341plb.63.1622117435978; Thu, 27
- May 2021 05:10:35 -0700 (PDT)
-Date:   Thu, 27 May 2021 20:10:29 +0800
-Message-Id: <20210527121029.583611-1-kyletso@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.31.1.818.g46aad6cb9e-goog
-Subject: [PATCH v2] dt-bindings: connector: Replace BIT macro with generic bit ops
-From:   Kyle Tso <kyletso@google.com>
-To:     heikki.krogerus@linux.intel.com, robh+dt@kernel.org,
-        gregkh@linuxfoundation.org
-Cc:     badhri@google.com, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, Kyle Tso <kyletso@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        id S235075AbhE0MMU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 May 2021 08:12:20 -0400
+Received: from mga12.intel.com ([192.55.52.136]:27442 "EHLO mga12.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234914AbhE0MMU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 27 May 2021 08:12:20 -0400
+IronPort-SDR: Ys5aY3nx5fG4MFArO8nsxPoT1uppJZM+mJxwpxfkNSYTfuwfjpzXj2NbYOFmhZWBos/ziN4Kjs
+ jY/TcI/Xu64g==
+X-IronPort-AV: E=McAfee;i="6200,9189,9996"; a="182372333"
+X-IronPort-AV: E=Sophos;i="5.82,334,1613462400"; 
+   d="scan'208";a="182372333"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 May 2021 05:10:46 -0700
+IronPort-SDR: j3BeS5ChWaizaWyXVOTfJ9JC6eiXr1QGHwkahv7ecwtnaJ3InzgHCJN73J/EFt+aClwmwzlr7J
+ 9K8WeoJ5ss+w==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.82,334,1613462400"; 
+   d="scan'208";a="477457682"
+Received: from shbuild999.sh.intel.com (HELO localhost) ([10.239.147.94])
+  by orsmga001.jf.intel.com with ESMTP; 27 May 2021 05:10:41 -0700
+Date:   Thu, 27 May 2021 20:10:41 +0800
+From:   Feng Tang <feng.tang@intel.com>
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
+        David Rientjes <rientjes@google.com>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Ben Widawsky <ben.widawsky@intel.com>,
+        linux-kernel@vger.kernel.org,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Andi Kleen <ak@linux.intel.com>,
+        Dan Williams <dan.j.williams@intel.com>, ying.huang@intel.com
+Subject: Re: [PATCH v1 4/4] mm/mempolicy: kill MPOL_F_LOCAL bit
+Message-ID: <20210527121041.GA7743@shbuild999.sh.intel.com>
+References: <1622005302-23027-1-git-send-email-feng.tang@intel.com>
+ <1622005302-23027-5-git-send-email-feng.tang@intel.com>
+ <YK9WOKBRsaFESPfR@dhcp22.suse.cz>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YK9WOKBRsaFESPfR@dhcp22.suse.cz>
+User-Agent: Mutt/1.5.24 (2015-08-30)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-BIT macro is not defined. Replace it with generic bit operations.
+On Thu, May 27, 2021 at 10:20:08AM +0200, Michal Hocko wrote:
+> On Wed 26-05-21 13:01:42, Feng Tang wrote:
+> > Now the only remaining case of a real 'local' policy faked by
+> > 'prefer' policy plus MPOL_F_LOCAL bit is:
+> > 
+> > A valid 'prefer' policy with a valid 'preferred' node is 'rebind'
+> > to a nodemask which doesn't contains the 'preferred' node, then it
+> > will handle allocation with 'local' policy.
+> > 
+> > Add a new 'MPOL_F_LOCAL_TEMP' bit for this case, and kill the
+> > MPOL_F_LOCAL bit, which could simplify the code much.
+> 
+> As I've pointed out in the reply to the previous patch. It would have
+> been much better if most of the MPOL_F_LOCAL usage was gone by this
+> patch.
+> 
+> I also dislike a new MPOL_F_LOCAL_TEMP. This smells like sneaking the
+> hack back in after you have painstakingly removed it. So this looks like
+> a step backwards to me. I also do not understand why do we need the
+> rebind callback for local policy at all. There is no node mask for local
+> so what is going on here?
 
-Fixes: 630dce2810b9 ("dt-bindings: connector: Add SVDM VDO properties")
-Signed-off-by: Kyle Tso <kyletso@google.com>
----
-Changes since v1:
-- re-word the commit message
+This is the special case 4 for 'perfer' policy with MPOL_F_STATIC_NODES
+flag set, say it prefer node 1, when it is later 'refind' to a new
+nodemask node 2-3, according to current code it will be add the
+MPOL_F_LOCAL bit and performs 'local' policy acctually. And in future
+it is 'rebind' again with a nodemask 1-2, it will be restored back
+to 'prefer' policy with preferred node 1.
 
- include/dt-bindings/usb/pd.h | 20 ++++++++++----------
- 1 file changed, 10 insertions(+), 10 deletions(-)
+This patch tries to address this special case. I have struggled but 
+couldn't think of a good way. Any suggestions? thanks!
 
-diff --git a/include/dt-bindings/usb/pd.h b/include/dt-bindings/usb/pd.h
-index fef3ef65967f..cb70b4ceedde 100644
---- a/include/dt-bindings/usb/pd.h
-+++ b/include/dt-bindings/usb/pd.h
-@@ -163,10 +163,10 @@
- #define UFP_VDO_VER1_2		2
- 
- /* Device Capability */
--#define DEV_USB2_CAPABLE	BIT(0)
--#define DEV_USB2_BILLBOARD	BIT(1)
--#define DEV_USB3_CAPABLE	BIT(2)
--#define DEV_USB4_CAPABLE	BIT(3)
-+#define DEV_USB2_CAPABLE	(1 << 0)
-+#define DEV_USB2_BILLBOARD	(1 << 1)
-+#define DEV_USB3_CAPABLE	(1 << 2)
-+#define DEV_USB4_CAPABLE	(1 << 3)
- 
- /* Connector Type */
- #define UFP_RECEPTACLE		2
-@@ -191,9 +191,9 @@
- 
- /* Alternate Modes */
- #define UFP_ALTMODE_NOT_SUPP	0
--#define UFP_ALTMODE_TBT3	BIT(0)
--#define UFP_ALTMODE_RECFG	BIT(1)
--#define UFP_ALTMODE_NO_RECFG	BIT(2)
-+#define UFP_ALTMODE_TBT3	(1 << 0)
-+#define UFP_ALTMODE_RECFG	(1 << 1)
-+#define UFP_ALTMODE_NO_RECFG	(1 << 2)
- 
- /* USB Highest Speed */
- #define UFP_USB2_ONLY		0
-@@ -217,9 +217,9 @@
-  * <4:0>   :: Port number
-  */
- #define DFP_VDO_VER1_1		1
--#define HOST_USB2_CAPABLE	BIT(0)
--#define HOST_USB3_CAPABLE	BIT(1)
--#define HOST_USB4_CAPABLE	BIT(2)
-+#define HOST_USB2_CAPABLE	(1 << 0)
-+#define HOST_USB3_CAPABLE	(1 << 1)
-+#define HOST_USB4_CAPABLE	(1 << 2)
- #define DFP_RECEPTACLE		2
- #define DFP_CAPTIVE		3
- 
--- 
-2.31.1.818.g46aad6cb9e-goog
+- Feng
 
+> [...]
+> > +static void mpol_rebind_local(struct mempolicy *pol,
+> > +				const nodemask_t *nodes)
+> > +{
+> > +	if (unlikely(pol->flags & MPOL_F_STATIC_NODES)) {
+> > +		int node = first_node(pol->w.user_nodemask);
+> > +
+> > +		BUG_ON(!(pol->flags & MPOL_F_LOCAL_TEMP));
+> > +
+> > +		if (node_isset(node, *nodes)) {
+> > +			pol->v.preferred_node = node;
+> > +			pol->mode = MPOL_PREFERRED;
+> > +			pol->flags &= ~MPOL_F_LOCAL_TEMP;
+> > +		}
+> > +	}
+> > +}
+> > +
+> 
+> I have to confess I've got lost here. Could you explain why do you need
+> all this handling for a local policy?
+> 
+> >  static void mpol_rebind_preferred(struct mempolicy *pol,
+> >  						const nodemask_t *nodes)
+> >  {
+> > @@ -347,13 +363,19 @@ static void mpol_rebind_preferred(struct mempolicy *pol,
+> >  
+> >  		if (node_isset(node, *nodes)) {
+> >  			pol->v.preferred_node = node;
+> > -			pol->flags &= ~MPOL_F_LOCAL;
+> > -		} else
+> > -			pol->flags |= MPOL_F_LOCAL;
+> > +		} else {
+> > +			/*
+> > +			 * If there is no valid node, change the mode to
+> > +			 * MPOL_LOCAL, which will be restored back when
+> > +			 * next rebind() sees a valid node.
+> > +			 */
+> > +			pol->mode = MPOL_LOCAL;
+> > +			pol->flags |= MPOL_F_LOCAL_TEMP;
+> > +		}
+> >  	} else if (pol->flags & MPOL_F_RELATIVE_NODES) {
+> >  		mpol_relative_nodemask(&tmp, &pol->w.user_nodemask, nodes);
+> >  		pol->v.preferred_node = first_node(tmp);
+> > -	} else if (!(pol->flags & MPOL_F_LOCAL)) {
+> > +	} else {
+> >  		pol->v.preferred_node = node_remap(pol->v.preferred_node,
+> >  						   pol->w.cpuset_mems_allowed,
+> >  						   *nodes);
+> > @@ -372,7 +394,7 @@ static void mpol_rebind_policy(struct mempolicy *pol, const nodemask_t *newmask)
+> >  {
+> >  	if (!pol)
+> >  		return;
+> > -	if (!mpol_store_user_nodemask(pol) && !(pol->flags & MPOL_F_LOCAL) &&
+> > +	if (!mpol_store_user_nodemask(pol) &&
+> >  	    nodes_equal(pol->w.cpuset_mems_allowed, *newmask))
+> >  		return;
+> >  
+> > @@ -425,7 +447,7 @@ static const struct mempolicy_operations mpol_ops[MPOL_MAX] = {
+> >  	},
+> >  	[MPOL_LOCAL] = {
+> >  		.create = mpol_new_local,
+> > -		.rebind = mpol_rebind_default,
+> > +		.rebind = mpol_rebind_local,
+> >  	},
+> >  };
+> -- 
+> Michal Hocko
+> SUSE Labs
