@@ -2,80 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A874D393027
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 15:53:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 33752393034
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 15:54:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236639AbhE0NzG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 May 2021 09:55:06 -0400
-Received: from outbound-smtp37.blacknight.com ([46.22.139.220]:49567 "EHLO
-        outbound-smtp37.blacknight.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S236580AbhE0NzF (ORCPT
+        id S236660AbhE0N4N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 May 2021 09:56:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40814 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236644AbhE0N4E (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 May 2021 09:55:05 -0400
-Received: from mail.blacknight.com (pemlinmail06.blacknight.ie [81.17.255.152])
-        by outbound-smtp37.blacknight.com (Postfix) with ESMTPS id 8DE711E30
-        for <linux-kernel@vger.kernel.org>; Thu, 27 May 2021 14:53:30 +0100 (IST)
-Received: (qmail 13155 invoked from network); 27 May 2021 13:53:30 -0000
-Received: from unknown (HELO techsingularity.net) (mgorman@techsingularity.net@[84.203.23.168])
-  by 81.17.254.9 with ESMTPSA (AES256-SHA encrypted, authenticated); 27 May 2021 13:53:30 -0000
-Date:   Thu, 27 May 2021 14:53:28 +0100
-From:   Mel Gorman <mgorman@techsingularity.net>
-To:     Randy Dunlap <rdunlap@infradead.org>
-Cc:     Ingo Molnar <mingo@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, Tom Rix <trix@redhat.com>
-Subject: Re: [PATCH] x86: fixmap: use CONFIG_NR_CPUS instead of NR_CPUS
-Message-ID: <20210527135328.GD30378@techsingularity.net>
-References: <20210521195918.2183-1-rdunlap@infradead.org>
- <YK3vrIB7cWop+UIW@gmail.com>
- <59676378-1b52-cae7-7944-adeffd27190e@infradead.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-15
-Content-Disposition: inline
-In-Reply-To: <59676378-1b52-cae7-7944-adeffd27190e@infradead.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+        Thu, 27 May 2021 09:56:04 -0400
+Received: from mail-pg1-x534.google.com (mail-pg1-x534.google.com [IPv6:2607:f8b0:4864:20::534])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F165C061574;
+        Thu, 27 May 2021 06:54:31 -0700 (PDT)
+Received: by mail-pg1-x534.google.com with SMTP id v14so3744634pgi.6;
+        Thu, 27 May 2021 06:54:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references;
+        bh=VBTc6GrR5fsw1SZ888oXO0FealYGM7xDUiPSmTCnIlY=;
+        b=OEELm/BdHHWKdbGzsyyxOAk0JElA8Ei4SqvYVVOB0t2O/sI2xUP9FaKaoLC4nzHab9
+         0Nk4v7YzQ326Oz+E4hLmVGZO7lRNlS2w6bT8EOK02C9yp6Rkiiu2HOg6HbY/t6T+63jr
+         +BDLyhEpCVKmF6Tn7fFQAWzUyfopXQ3lKqTqs1hf6J9gQ2qHJEhez7UCwCmh7FxeAN2w
+         5YToDOofqPoliIsKL3aHLzQ6Ct+mV2tZrVAkm8SgCPh2ado0RYdxQwZdBNFHwkYgQLmL
+         mC7YPGqcfBVEN22DuWyh5qY0F5985lC3LJcBjlJtsj96PSIQPylW96X0PeJ8qmsQeWn/
+         ahaA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references;
+        bh=VBTc6GrR5fsw1SZ888oXO0FealYGM7xDUiPSmTCnIlY=;
+        b=HfnOau9V3uHsFcfv4Qf5js+Mc+WhVZBCpYVTHW5o7FGmim92AvJ6YbHxGv4DFrU2yY
+         RiQMj2t6hZ7XzutmnutROOnI05xvesXut/07BDERwTsom1uSF7FssmX+g/TbKDRdIJ18
+         7sZHT/c3SnVeoBKNvDBY11prRnvl9x6RGTgMOkTfZiQ9REahTmAf02/RpEx90UiiaFLy
+         QrxczH0oQ2FxPNP27d2c0fqAJJjd0ejnPKSLNsP9JMxAJWOvQYRI/Q/KOCA4+TlDWSk/
+         TkXECyoSoA6mO/rXjkXr0JjoowkjslBhm8XeS9vWaYPlrXIp1DXHL9O0hC2tbAaSLQwf
+         rbSA==
+X-Gm-Message-State: AOAM533V2esGC3VPwbgFql4yJIJHXbQf1WTNUTt5pw3Alhhsq9nuY0bo
+        y6uCJgwakj12VwDmLY9j6GpnColDVus=
+X-Google-Smtp-Source: ABdhPJxxZeJ3yFKMK22o612/p4HcRQyAMzNsSJFAnv37EwlM7RSRqNiOMaQrT2EsAdbp90b67VkiPw==
+X-Received: by 2002:aa7:829a:0:b029:2e9:e53:198d with SMTP id s26-20020aa7829a0000b02902e90e53198dmr3906269pfm.72.1622123670544;
+        Thu, 27 May 2021 06:54:30 -0700 (PDT)
+Received: from localhost.localdomain ([203.205.141.39])
+        by smtp.gmail.com with ESMTPSA id 10sm2163387pgl.39.2021.05.27.06.54.27
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 27 May 2021 06:54:30 -0700 (PDT)
+From:   Hongbo Li <herbert.tencent@gmail.com>
+To:     keyrings@vger.kernel.org, linux-crypto@vger.kernel.org,
+        herbert@gondor.apana.org.au, ebiggers@kernel.org,
+        dhowells@redhat.com, jarkko@kernel.org,
+        tianjia.zhang@linux.alibaba.com, herberthbli@tencent.com
+Cc:     linux-kernel@vger.kernel.org, linux-integrity@vger.kernel.org
+Subject: [PATCH v2 1/7] crypto: fix a memory leak in sm2
+Date:   Thu, 27 May 2021 21:53:29 +0800
+Message-Id: <1622123615-15517-2-git-send-email-herbert.tencent@gmail.com>
+X-Mailer: git-send-email 1.8.3.1
+In-Reply-To: <1622123615-15517-1-git-send-email-herbert.tencent@gmail.com>
+References: <1622123615-15517-1-git-send-email-herbert.tencent@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 26, 2021 at 10:59:51AM -0700, Randy Dunlap wrote:
-> >  - Once early_ioremap.h is gone from io.h, it's potentially possible to 
-> >    include <linux/threads.h>. More work to resolve dependencies might be 
-> >    needed though.
-> 
-> Yes, my first patch for this (unsent) just included <linux/threads.h>
-> in fixmap.h unconditionally instead of conditionally.
-> 
-> > Frankly, I'd prefer if such a low level header dependencies change came in 
-> > via the x86 tree so we can properly review it, test it, and keep it 
-> > working. Right now I can only guess what is needed here...
-> 
-> Sure, makes sense.
-> 
-> Mel, do you have any patch suggestions here?  re:
+From: Hongbo Li <herberthbli@tencent.com>
 
-For whatever reason, I do not see the same build warnings you report.
+SM2 module alloc ec->Q in sm2_set_pub_key(), when doing alg test in
+test_akcipher_one(), it will set public key for every test vector,
+and don't free ec->Q. This will cause a memory leak.
 
-Dropping "mm/early_ioremap: add prototype for early_memremap_pgprot_adjust"
-is one option. Alternatively, this should also work and it's a more
-sensible dependency.
+This patch alloc ec->Q in sm2_ec_ctx_init().
 
-diff --git a/include/asm-generic/early_ioremap.h b/include/asm-generic/early_ioremap.h
-index 022f8f908b42..d95c693de640 100644
---- a/include/asm-generic/early_ioremap.h
-+++ b/include/asm-generic/early_ioremap.h
-@@ -3,7 +3,7 @@
- #define _ASM_EARLY_IOREMAP_H_
+Fixes: ea7ecb66440b ("crypto: sm2 - introduce OSCCA SM2 asymmetric cipher algorithm")
+Signed-off-by: Hongbo Li <herberthbli@tencent.com>
+Reviewed-by: Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
+---
+ crypto/sm2.c | 24 ++++++++++--------------
+ 1 file changed, 10 insertions(+), 14 deletions(-)
+
+diff --git a/crypto/sm2.c b/crypto/sm2.c
+index b21addc3ac06..db8a4a265669 100644
+--- a/crypto/sm2.c
++++ b/crypto/sm2.c
+@@ -79,10 +79,17 @@ static int sm2_ec_ctx_init(struct mpi_ec_ctx *ec)
+ 		goto free;
  
- #include <linux/types.h>
--#include <asm/fixmap.h>
-+#include <linux/pgtable.h>
+ 	rc = -ENOMEM;
++
++	ec->Q = mpi_point_new(0);
++	if (!ec->Q)
++		goto free;
++
+ 	/* mpi_ec_setup_elliptic_curve */
+ 	ec->G = mpi_point_new(0);
+-	if (!ec->G)
++	if (!ec->G) {
++		mpi_point_release(ec->Q);
+ 		goto free;
++	}
  
- /*
-  * early_ioremap() and early_iounmap() are for temporary early boot-time
-
+ 	mpi_set(ec->G->x, x);
+ 	mpi_set(ec->G->y, y);
+@@ -91,6 +98,7 @@ static int sm2_ec_ctx_init(struct mpi_ec_ctx *ec)
+ 	rc = -EINVAL;
+ 	ec->n = mpi_scanval(ecp->n);
+ 	if (!ec->n) {
++		mpi_point_release(ec->Q);
+ 		mpi_point_release(ec->G);
+ 		goto free;
+ 	}
+@@ -386,27 +394,15 @@ static int sm2_set_pub_key(struct crypto_akcipher *tfm,
+ 	MPI a;
+ 	int rc;
+ 
+-	ec->Q = mpi_point_new(0);
+-	if (!ec->Q)
+-		return -ENOMEM;
+-
+ 	/* include the uncompressed flag '0x04' */
+-	rc = -ENOMEM;
+ 	a = mpi_read_raw_data(key, keylen);
+ 	if (!a)
+-		goto error;
++		return -ENOMEM;
+ 
+ 	mpi_normalize(a);
+ 	rc = sm2_ecc_os2ec(ec->Q, a);
+ 	mpi_free(a);
+-	if (rc)
+-		goto error;
+-
+-	return 0;
+ 
+-error:
+-	mpi_point_release(ec->Q);
+-	ec->Q = NULL;
+ 	return rc;
+ }
+ 
 -- 
-Mel Gorman
-SUSE Labs
+2.27.0
+
