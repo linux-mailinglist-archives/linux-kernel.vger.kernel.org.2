@@ -2,95 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 51E5D392C4D
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 13:05:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DE6E8392C51
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 13:06:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236325AbhE0LGe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 May 2021 07:06:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57956 "EHLO
+        id S233521AbhE0LH6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 May 2021 07:07:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58268 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236229AbhE0LGc (ORCPT
+        with ESMTP id S232381AbhE0LH4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 May 2021 07:06:32 -0400
-Received: from mail-qt1-x830.google.com (mail-qt1-x830.google.com [IPv6:2607:f8b0:4864:20::830])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88F6BC061760
-        for <linux-kernel@vger.kernel.org>; Thu, 27 May 2021 04:04:58 -0700 (PDT)
-Received: by mail-qt1-x830.google.com with SMTP id t20so3118663qtx.8
-        for <linux-kernel@vger.kernel.org>; Thu, 27 May 2021 04:04:58 -0700 (PDT)
+        Thu, 27 May 2021 07:07:56 -0400
+Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com [IPv6:2a00:1450:4864:20::335])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87526C061760
+        for <linux-kernel@vger.kernel.org>; Thu, 27 May 2021 04:06:21 -0700 (PDT)
+Received: by mail-wm1-x335.google.com with SMTP id u4-20020a05600c00c4b02901774b80945cso2334577wmm.3
+        for <linux-kernel@vger.kernel.org>; Thu, 27 May 2021 04:06:21 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=uged.al; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=XKuENeFAgLIoL5+XgHz8hQNxrwiJoPEw10HrNs/Gaaw=;
-        b=tU4ZEb/yV70ErzupnLLI8qX0LRJtuEl5gH/tESbYnyYx1pkyGt2KvOBney1Tt7Squn
-         fQs2goEXPg8AwytKWVqyh9iAMVUSNLRZFcdGAQ74TZ58Kjiv3OzKkUSXPpw4v7TY8ODP
-         4tUUgSYsfYnZVoXM6fIVvtxhsllB7nE6Dg+SI+6pzkt8n3MUfXaJlV9Uxv5dnPceHKwW
-         52AkymOG9Zl4d6OHJ9tIpZuxM4KF8efcj8YxuuoWYKSaAVL4i+CMKq6okkHejryw4uVH
-         rgDbs5IICAp1yWk0uG7Ssdo6PkqfaAL+lqFPv82poBEsvU9UCDk/hOvrKVEMJ5pRsTEP
-         bU1A==
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=ummK6qfHHovxgsh1qAiAuit2Ah0G9hijqJN9zZVv1/0=;
+        b=y32EG0ZeB5pHnaFFE4hd3qjmELxCKWPasGNhZVK2KNPfjsmZjnOVJxKGniO03vuQ7E
+         58U2S8SiSp6qPG/R7EfiWnJnWPTySvr65KmGiOq4Te5SWv6I0/9QpSo5WDsxE8ShUdt5
+         qlu/E9ZSnbWC86PJwYn0HIcwy2LD/6zqEG9Dvnde5mjgIJAPLI0yUrwKmG40fVGigpwl
+         2csdVxTSZUqkfXvC5wlSZsyO7NYy0aBBb1pjd2pHy4eIdG2nnFpzM9ALSHNPy5UtXboo
+         GAVObA2n3XAAPrlJrPOE30mSHymCpotbb0v8hwe/XE9ZjwK9vKyrNlmWPkmGPqoX8LdE
+         lanQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=XKuENeFAgLIoL5+XgHz8hQNxrwiJoPEw10HrNs/Gaaw=;
-        b=rvUsOWYMq5SNrRmN7qKXsTMFuEYMg6158FHVHUZlA3NHdwRXnvapfeHp7ehqEXrihC
-         EDUO96jeNMgvI+YP/V+flKeio0GmZ0TkLawUY2cEb/ceuItq1ZQosahthWlIrewqSJUL
-         IscUt2aYrJNY8JaJBA0gQMYBQ0f55lArR0SrSPSfOBy9GHPIKpiW/13W9fWNP1cpry7l
-         epANeYJ8aXAuOSAk+huE7f8Y2T7p8behwuqxYY5HAuQFCBHX/AHWiZkoWbogNO8zDWP/
-         goIoSWXoj+jxElRaOc2RbN/5CCoycrk7KCI4Dp1x0fAY89PfMYLb+xAjIJpkx4Rdpche
-         NQUw==
-X-Gm-Message-State: AOAM532sJK077sw9wG0YHFh+wbKHK3EjEGXF7IGrXNm3E1OHTPIV+Izd
-        MLUrsRUu8dygiq+Cp0vJdQgDRlhDt8BtEhUHvwKicQ==
-X-Google-Smtp-Source: ABdhPJxG3Yh4FKpRHmIl7UWCdfFwkmIHsOAH3tfVOJdhnE1lTOzKuVWZNLOoodJuRQtg5f5FyQzEQK2rkPFr09zcBXs=
-X-Received: by 2002:ac8:5a0f:: with SMTP id n15mr2513244qta.313.1622113497672;
- Thu, 27 May 2021 04:04:57 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=ummK6qfHHovxgsh1qAiAuit2Ah0G9hijqJN9zZVv1/0=;
+        b=MvItpq/foRekZUMjt1x1QJaeHzAsuyp9sj+Wzn+OLgJVmscktS8k7QlSswcxJJYGE1
+         gcd6CojL9Dp8rKkx/6GmrGEl9a1a69xrPD8aDHSuZaalJMzXxZj4jxnreGbPZPd2h7sG
+         FVpHH6DrqBbilcIySGLy+6GZFWrM0iuQW8JUtqR8s4Kwud8tBlPE4fwkfZK+JFsbpGtv
+         XE2lkSFuP0chYejR4pDR6gylAwud0/MYdyE3GDLBfTbs2/DVOCNNjnrSkB+gEtxQlYze
+         Uulp8c6Q+5fQ45ZWi3XJustNv2+eTfqO243s0od+lvNgsp/wchMaiFVmdfWCYKTqTUIv
+         UTeA==
+X-Gm-Message-State: AOAM5332hpzSzSSRtaY2d0TjRDjfYUPghrwRpd2Nn2JoP0cwuXMvsOOc
+        shwCiLdjW0q0ZdzI7dcp9dElCQ==
+X-Google-Smtp-Source: ABdhPJxUkvVSOzieXINUUjbfGicjBFU/rPCLLdCo5DfT0V4Cs7PwsidbIX5NjFxx4+fN8wKazUYGjA==
+X-Received: by 2002:a1c:f70d:: with SMTP id v13mr2771652wmh.183.1622113580028;
+        Thu, 27 May 2021 04:06:20 -0700 (PDT)
+Received: from dell ([91.110.221.223])
+        by smtp.gmail.com with ESMTPSA id x2sm2381237wmj.3.2021.05.27.04.06.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 27 May 2021 04:06:19 -0700 (PDT)
+Date:   Thu, 27 May 2021 12:06:11 +0100
+From:   Lee Jones <lee.jones@linaro.org>
+To:     Mathias Nyman <mathias.nyman@linux.intel.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org,
+        Mathias Nyman <mathias.nyman@intel.com>,
+        linux-usb@vger.kernel.org
+Subject: Re: [PATCH 17/24] usb: host: xhci: Remove unused variable 'len'
+Message-ID: <20210527110611.GK543307@dell>
+References: <20210526130037.856068-1-lee.jones@linaro.org>
+ <20210526130037.856068-18-lee.jones@linaro.org>
+ <YK9Ju9/kdaRv1jcT@kroah.com>
+ <20210527081609.GF543307@dell>
+ <5958f870-1834-3132-a729-2b26a84349ea@linux.intel.com>
 MIME-Version: 1.0
-References: <20210518125202.78658-1-odin@uged.al> <20210518125202.78658-2-odin@uged.al>
- <CAKfTPtCCZhjOCZR6DMSxb9qffG2KceWONP_MzoY6TpYBmWp+hg@mail.gmail.com>
- <CAFpoUr0f50hKUtWvpTy221xT+pUocY7LXCMCo3cPJupjgMtotg@mail.gmail.com>
- <CAKfTPtCaZOSEzRXVN9fTR2vTxGiANEARo6iDNMFiQV5=qAA4Tw@mail.gmail.com>
- <CAKfTPtAFn3=anfTCxKTDXF0wpttpEiAhksLvcEPdSiYZTj38_A@mail.gmail.com>
- <CAFpoUr1zGNf9vTbWjwsfY9E8YBjyE5xJ0SwzLebPiS7b=xz_Zw@mail.gmail.com>
- <CAKfTPtDRdFQqphysOL+0g=befwtJky0zixyme_V5eDz71hC5pQ@mail.gmail.com>
- <CAFpoUr0SOqyGifT5Lpf=t+A+REWdWezR-AY2fM_u1-CCs8KFYQ@mail.gmail.com> <CAKfTPtArj_XkgPXRJKZxN0MM2+v=3+RjAVVkmbpB1gBLCuzJvA@mail.gmail.com>
-In-Reply-To: <CAKfTPtArj_XkgPXRJKZxN0MM2+v=3+RjAVVkmbpB1gBLCuzJvA@mail.gmail.com>
-From:   Odin Ugedal <odin@uged.al>
-Date:   Thu, 27 May 2021 13:04:18 +0200
-Message-ID: <CAFpoUr0PTYs+CSiWt3WOXnxq=wN3uEyC=h+_3kDc9wLoqaRC_Q@mail.gmail.com>
-Subject: Re: [PATCH 1/3] sched/fair: Add tg_load_contrib cfs_rq decay checking
-To:     Vincent Guittot <vincent.guittot@linaro.org>
-Cc:     Odin Ugedal <odin@uged.al>, Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        "open list:CONTROL GROUP (CGROUP)" <cgroups@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <5958f870-1834-3132-a729-2b26a84349ea@linux.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> 1st : ensure that cfs_rq->load_sum is not null if cfs_rq-> load_isn't too
-> 2nd : call update_tg_load_avg() during child update so we will be sure
-> to update tg_load_avg_contrib before removing the cfs from the list
+On Thu, 27 May 2021, Mathias Nyman wrote:
 
-Ahh, yeah, with "1st" that would work. Yeah, that was my initial
-implementation of the change, but I thought that it was better to keep
-the logic away from the "hot path". We can verify this in
-update_tg_cfs_load(), and then force update_tg_load_avg() inside
-__update_blocked_fair() when avg.load_avg is 0. (Given that this is
-the only place where we can end up in this situation. I can update
-this patch to do that instead.
+> On 27.5.2021 11.16, Lee Jones wrote:
+> > On Thu, 27 May 2021, Greg Kroah-Hartman wrote:
+> > 
+> >> On Wed, May 26, 2021 at 02:00:30PM +0100, Lee Jones wrote:
+> >>> Fixes the following W=1 kernel build warning(s):
+> >>>
+> >>>  drivers/usb/host/xhci.c: In function ‘xhci_unmap_temp_buf’:
+> >>>  drivers/usb/host/xhci.c:1349:15: warning: variable ‘len’ set but not used [-Wunused-but-set-variable]
+> >>>
+> >>> Cc: Mathias Nyman <mathias.nyman@intel.com>
+> >>> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> >>> Cc: linux-usb@vger.kernel.org
+> >>> Signed-off-by: Lee Jones <lee.jones@linaro.org>
+> >>> ---
+> >>>  drivers/usb/host/xhci.c | 9 ++++-----
+> >>>  1 file changed, 4 insertions(+), 5 deletions(-)
+> >>>
+> >>> diff --git a/drivers/usb/host/xhci.c b/drivers/usb/host/xhci.c
+> >>> index 27283654ca080..ac2a7d4288883 100644
+> >>> --- a/drivers/usb/host/xhci.c
+> >>> +++ b/drivers/usb/host/xhci.c
+> >>> @@ -1346,7 +1346,6 @@ static bool xhci_urb_temp_buffer_required(struct usb_hcd *hcd,
+> >>>  
+> >>>  static void xhci_unmap_temp_buf(struct usb_hcd *hcd, struct urb *urb)
+> >>>  {
+> >>> -	unsigned int len;
+> >>>  	unsigned int buf_len;
+> >>>  	enum dma_data_direction dir;
+> >>>  
+> >>> @@ -1362,10 +1361,10 @@ static void xhci_unmap_temp_buf(struct usb_hcd *hcd, struct urb *urb)
+> >>>  				 dir);
+> >>>  
+> >>>  	if (usb_urb_dir_in(urb))
+> >>> -		len = sg_pcopy_from_buffer(urb->sg, urb->num_sgs,
+> >>> -					   urb->transfer_buffer,
+> >>> -					   buf_len,
+> >>> -					   0);
+> >>> +		sg_pcopy_from_buffer(urb->sg, urb->num_sgs,
+> >>> +				     urb->transfer_buffer,
+> >>> +				     buf_len,
+> >>> +				     0);
+> >>
+> >> Sorry, but no, I keep rejecting this over and over, it needs to handle
+> >> the error handling properly and not paper over it like this :(
+> > 
+> > Will fix.
+> > 
+> >> All the bots keep tripping up on it, you are not alone.
+> > 
+> 
+> This is getting a lot of attention. Something like this should fix it:
+> 
+> diff --git a/drivers/usb/host/xhci.c b/drivers/usb/host/xhci.c
+> index 27283654ca08..306ab81421fd 100644
+> --- a/drivers/usb/host/xhci.c
+> +++ b/drivers/usb/host/xhci.c
+> @@ -1361,12 +1361,16 @@ static void xhci_unmap_temp_buf(struct usb_hcd *hcd, struct urb *urb)
+>  				 urb->transfer_buffer_length,
+>  				 dir);
+>  
+> -	if (usb_urb_dir_in(urb))
+> +	if (usb_urb_dir_in(urb)) {
+>  		len = sg_pcopy_from_buffer(urb->sg, urb->num_sgs,
+>  					   urb->transfer_buffer,
+>  					   buf_len,
+>  					   0);
+> -
+> +		if (len != buf_len) {
+> +			xhci_dbg(xhci, "Copy from tmp buf to urb sg list failed\n");
+> +			urb->actual_length = len;
+> +		}
+> +	}
+>  	urb->transfer_flags &= ~URB_DMA_MAP_SINGLE;
+>  	kfree(urb->transfer_buffer);
+>  	urb->transfer_buffer = NULL;
+>  
+> urb->actual_length is now properly set.
+> The debug level message will help me find the cause if we ever need
+> to debug oddly behaving devices.
+> 
+> Note this is a very rarly taken codepath for quirky xHC harware that
+> can't handle a specific sequence of buffer lengths queued.
+> 
+> I can write a proper commit message and push this forward
 
-Another solution is to update avg.load_avg
-inside__update_blocked_fair() when load_sum is 0, and then propagate
-that with update_tg_load_avg(). This removes the logic from the hot
-path all together.
+Okay by me.
 
-Not sure what the preferred way is. I have not found any other places
-where this situation _should_ occur, but who knows..
-
-Odin
+-- 
+Lee Jones [李琼斯]
+Senior Technical Lead - Developer Services
+Linaro.org │ Open source software for Arm SoCs
+Follow Linaro: Facebook | Twitter | Blog
