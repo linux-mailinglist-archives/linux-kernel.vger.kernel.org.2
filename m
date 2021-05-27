@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 24FF4392A8D
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 11:17:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 09D62392A8F
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 11:17:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235854AbhE0JTR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 May 2021 05:19:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33194 "EHLO
+        id S235912AbhE0JTW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 May 2021 05:19:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33244 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235829AbhE0JSj (ORCPT
+        with ESMTP id S235835AbhE0JSl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 May 2021 05:18:39 -0400
-Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F10A8C06138E;
-        Thu, 27 May 2021 02:17:04 -0700 (PDT)
-Received: by mail-pj1-x102c.google.com with SMTP id f8so108052pjh.0;
-        Thu, 27 May 2021 02:17:04 -0700 (PDT)
+        Thu, 27 May 2021 05:18:41 -0400
+Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33049C061760;
+        Thu, 27 May 2021 02:17:06 -0700 (PDT)
+Received: by mail-pl1-x634.google.com with SMTP id z4so2028745plg.8;
+        Thu, 27 May 2021 02:17:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=mDudRqbN4KMiYnUlaC27vKXaZtzg154lgxgDYGq9+eA=;
-        b=LFO36YKIyXwrUd4aJ7XRacUUZegsf0PpI03rA9TjWIT02VoUU89ldLbXk0jdC8o2LV
-         PL+lHLGVcFFj2PBpyH51DkLWwJSrv0xiODNkSVK31uJ5Yzx3Woi432JqIFFZqq39MHwm
-         fTCGxdZcV4MLT00Mlg2QkQDpVjt7oyNbyVeecx63ANGtTQiIInl659kp/Z7tIVE85CHK
-         zFYvbf8p8PM9xyachv7+ItWBSEANqi0N6p6TyIx4xl4klFygjhqduBNc0O1Lo2PXJZy1
-         wmkGTY44VcJ+qVKDAZSSBIbanA3r1YjpheIMV2GYhPDwdwAHFVGUO12uviQe2kx1UDTg
-         +uPg==
+        bh=cg0JBj0t9k90YMmoJUaJeIXOCJH7nE+15iPIyxQMRnY=;
+        b=NJmTeb5dJgpbisAd6L5or3jNf1J4aEV1LsrVDPx0W+7B3vbx7eCpoFcSj+8NS7myRL
+         FKS72Q3MgZdLCWB0AF51YBUp543C+RZsnOIUB1bYrUSapdhmfirDQ7Xj2G+11Fh32VjF
+         2EGCOJQJUy6xBottPleBwan3XK4XqKQikDzwXYfCvNIqri3Bd0kNVcVtAHAYbPEzFGqn
+         J7RQwZxAN/bMcvZd0LxyjLMqZxiUGbSHpNFFApt38eZSbrFDPU4YkPaDntbQ2u2NGmZX
+         zlnBJPURJ//n2s6f5/OUGDJCg+XK1SEJi76T0NFKB6b0hocTpxA6l3sTvVRhivsSv7bO
+         wOsQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=mDudRqbN4KMiYnUlaC27vKXaZtzg154lgxgDYGq9+eA=;
-        b=AJUAkVY9rwVaMrp7x+Lw5n8xHFeqvgRm9ol7cCBmDNGiwfkV3GWTQ9SaHWMbUbOjZA
-         W3qMUKTCQkGVC45CNgohIlT0eTUKQspV6PYDWNs/71hPS747dOhErbEuRNKj0ZzyRmGB
-         YkbRZaj3Ay4YC1EirCnHh/IOTo/UZtcsbKDtu4y7abJs+7v8ZfMizjOIBHnqAEp3k9T7
-         qQ0wTfbZesIj4J7jYfGOo32RQYWJ3iK13F/TzEkQx4SS3BMzZb5KzlqwOnfrrKXQ/gO6
-         xMgFlgfjqEfrnUYe5I9CnmYANIUw/OZaJo6tsNI9io85+e9NlhL+Lda66kTEJ9yLTs3r
-         Nqww==
-X-Gm-Message-State: AOAM530RzoMLoxGHEoAvV1WHkydJkTc13KrmA5lSBZUubo7089/vU2/c
-        UOsDlsVP4pIjQclAZbtgsbQ=
-X-Google-Smtp-Source: ABdhPJxh7Dzd751PQjWDoOZzyJKsB2rm/j3gLzdNlHKREuL5SrLsLG1OzsEMIYVzeQqmfpgEVwnJLQ==
-X-Received: by 2002:a17:90a:5142:: with SMTP id k2mr2381927pjm.5.1622107024483;
-        Thu, 27 May 2021 02:17:04 -0700 (PDT)
+        bh=cg0JBj0t9k90YMmoJUaJeIXOCJH7nE+15iPIyxQMRnY=;
+        b=BZdPIioa5V0ssBdxagd3v6swN7az92e4xpQqUOR201O1kxosCLFKnvcM3ad8aAYier
+         i/pd0roCnP6fIlR4efe1kWZcytczY9PfTDcWM11vo8U0pjv5cUCGwXvD7JfU1oCELBb3
+         HNiAWJJD7ihyY7tSiVGW5T2gcwzaZiP3RWOVbIHMXb3H1LC+7EKD/8o2Pbn5TCYdKuEi
+         WUX6ztW4JbF76dvyYJtH89a2BOsc98q5dQ2LBn/ujoPqEpKenrWUNemiBiXXeLA4EHTO
+         ivA3pnKv9x/Bo5W6W/7HBtBTniIU4SJn06dnDRBbfSWFCdMdSdAongHylKfwyQcJa1mm
+         1TJA==
+X-Gm-Message-State: AOAM533OkNPR2DZbGBRbpBdntb+CmCaR7ogjhcPzbb76dkMPO5vY6rzt
+        TgH7Wk6YKb0m/SJ71QRELZdDwd02yWIEfImvMJc=
+X-Google-Smtp-Source: ABdhPJw97eLPEbCRQd9h7hIKqsKJzO+DuNSdZsMbLKVDrdfpsLBFwXhem2ia5T9KQI5K90aDlK1yRg==
+X-Received: by 2002:a17:90a:6285:: with SMTP id d5mr2766488pjj.3.1622107026057;
+        Thu, 27 May 2021 02:17:06 -0700 (PDT)
 Received: from cl-arch-kdev.. (cl-arch-kdev.xen.prgmr.com. [2605:2700:0:2:a800:ff:fed6:fc0d])
-        by smtp.gmail.com with ESMTPSA id 126sm1473079pfv.82.2021.05.27.02.17.03
+        by smtp.gmail.com with ESMTPSA id 126sm1473079pfv.82.2021.05.27.02.17.04
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 27 May 2021 02:17:04 -0700 (PDT)
+        Thu, 27 May 2021 02:17:05 -0700 (PDT)
 From:   Fox Chen <foxhlchen@gmail.com>
 To:     neilb@suse.de
 Cc:     Fox Chen <foxhlchen@gmail.com>, corbet@lwn.net,
@@ -55,9 +55,9 @@ Cc:     Fox Chen <foxhlchen@gmail.com>, corbet@lwn.net,
         rdunlap@infradead.org, grandmaster@al2klimov.de,
         linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
         gregkh@linuxfoundation.org
-Subject: [PATCH v3 08/13] docs: path-lookup: update i_op->put_link and cookie description
-Date:   Thu, 27 May 2021 17:16:13 +0800
-Message-Id: <20210527091618.287093-9-foxhlchen@gmail.com>
+Subject: [PATCH v3 09/13] docs: path-lookup: no get_link()
+Date:   Thu, 27 May 2021 17:16:14 +0800
+Message-Id: <20210527091618.287093-10-foxhlchen@gmail.com>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210527091618.287093-1-foxhlchen@gmail.com>
 References: <20210527091618.287093-1-foxhlchen@gmail.com>
@@ -67,65 +67,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-No inode->put_link operation anymore. We use delayed_call to
-deal with link destruction. Cookie has been replaced with
-struct delayed_call.
+no get_link() anymore. we have step_into() and pick_link().
 
-Related commit: commit fceef393a538 ("switch ->get_link() to
-delayed_call, kill ->put_link()")
+walk_component() will call step_into(), in turn call pick_link,
+and return symlink name.
 
 Signed-off-by: Fox Chen <foxhlchen@gmail.com>
 ---
- Documentation/filesystems/path-lookup.rst | 30 ++++++-----------------
- 1 file changed, 8 insertions(+), 22 deletions(-)
+ Documentation/filesystems/path-lookup.rst | 10 ++++------
+ 1 file changed, 4 insertions(+), 6 deletions(-)
 
 diff --git a/Documentation/filesystems/path-lookup.rst b/Documentation/filesystems/path-lookup.rst
-index 4650c6427963..3855809784cf 100644
+index 3855809784cf..0a125673a8fe 100644
 --- a/Documentation/filesystems/path-lookup.rst
 +++ b/Documentation/filesystems/path-lookup.rst
-@@ -1066,34 +1066,20 @@ method. This is called both in RCU-walk and REF-walk. In RCU-walk the
- RCU-walk.  Much like the ``i_op->permission()`` method we
- looked at previously, ``->get_link()`` would need to be careful that
- all the data structures it references are safe to be accessed while
--holding no counted reference, only the RCU lock.  Though getting a
--reference with ``->follow_link()`` is not yet done in RCU-walk mode, the
--code is ready to release the reference when that does happen.
--
--This need to drop the reference to a symlink adds significant
--complexity.  It requires a reference to the inode so that the
--``i_op->put_link()`` inode operation can be called.  In REF-walk, that
--reference is kept implicitly through a reference to the dentry, so
--keeping the ``struct path`` of the symlink is easiest.  For RCU-walk,
--the pointer to the inode is kept separately.  To allow switching from
--RCU-walk back to REF-walk in the middle of processing nested symlinks
--we also need the seq number for the dentry so we can confirm that
--switching back was safe.
--
--Finally, when providing a reference to a symlink, the filesystem also
--provides an opaque "cookie" that must be passed to ``->put_link()`` so that it
--knows what to free.  This might be the allocated memory area, or a
--pointer to the ``struct page`` in the page cache, or something else
--completely.  Only the filesystem knows what it is.
-+holding no counted reference, only the RCU lock. A callback
-+``struct delayed_called`` will be passed to ``->get_link()``:
-+file systems can set their own put_link function and argument through
-+``set_delayed_call()``. Later on, when VFS wants to put link, it will call
-+``do_delayed_call()`` to invoke that callback function with the argument.
+@@ -1103,12 +1103,10 @@ doesn't need to notice.  Getting this ``name`` variable on and off the
+ stack is very straightforward; pushing and popping the references is
+ a little more complex.
  
- In order for the reference to each symlink to be dropped when the walk completes,
- whether in RCU-walk or REF-walk, the symlink stack needs to contain,
- along with the path remnants:
+-When a symlink is found, ``walk_component()`` returns the value ``1``
+-(``0`` is returned for any other sort of success, and a negative number
+-is, as usual, an error indicator).  This causes ``get_link()`` to be
+-called; it then gets the link from the filesystem.  Providing that
+-operation is successful, the old path ``name`` is placed on the stack,
+-and the new value is used as the ``name`` for a while.  When the end of
++When a symlink is found, ``walk_component()`` calls ``pick_link()`` via ``step_into()``
++which returns the link from the filesystem.
++Providing that operation is successful, the old path ``name`` is placed on the
++stack, and the new value is used as the ``name`` for a while.  When the end of
+ the path is found (i.e. ``*name`` is ``'\0'``) the old ``name`` is restored
+ off the stack and path walking continues.
  
--- the ``struct path`` to provide a reference to the inode in REF-walk
--- the ``struct inode *`` to provide a reference to the inode in RCU-walk
-+- the ``struct path`` to provide a reference to the previous path
-+- the ``const char *`` to provide a reference to the to previous name
- - the ``seq`` to allow the path to be safely switched from RCU-walk to REF-walk
--- the ``cookie`` that tells ``->put_path()`` what to put.
-+- the ``struct delayed_call`` for later invocation.
- 
- This means that each entry in the symlink stack needs to hold five
- pointers and an integer instead of just one pointer (the path
 -- 
 2.31.1
 
