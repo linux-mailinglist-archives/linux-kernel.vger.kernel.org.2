@@ -2,172 +2,232 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 094DA392C02
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 12:40:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 22C65392C06
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 12:41:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236205AbhE0Klp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 May 2021 06:41:45 -0400
-Received: from perceval.ideasonboard.com ([213.167.242.64]:35836 "EHLO
-        perceval.ideasonboard.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236103AbhE0Kln (ORCPT
+        id S236210AbhE0KnS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 May 2021 06:43:18 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:60970 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S236103AbhE0KnR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 May 2021 06:41:43 -0400
-Received: from [192.168.1.111] (91-157-208-71.elisa-laajakaista.fi [91.157.208.71])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 49DE6B2C;
-        Thu, 27 May 2021 12:40:08 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1622112009;
-        bh=iHLL5VJd59Tg8TpYorQpO0NHnKnXE5WGKXE1dvx9L3A=;
-        h=To:Cc:References:From:Subject:Date:In-Reply-To:From;
-        b=dWT6gF6CkIbE/b/gQ5+GjQFi5Wm3+apKMLsy5euTVQEWDa+FoudP9u2Xg9Me9AlBg
-         B1TkKiZ0kYBc80oRCp7ouxf4llg1Y9Xyc9GM2TNQATZQr7P9uB8N6SiUPrMDNo8edI
-         IF2LyMpiYAqiohIY9ERUt/Qj9SrpXQAVSWkNuUlU=
-To:     Paul Cercueil <paul@crapouillou.net>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>
-Cc:     linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        linux-mips@vger.kernel.org, Christoph Hellwig <hch@infradead.org>,
-        list@opendingux.net, Lokesh Vutla <lokeshvutla@ti.com>,
-        "Yadav, Pratyush" <p.yadav@ti.com>
-References: <20210523170415.90410-1-paul@crapouillou.net>
- <20210523170415.90410-2-paul@crapouillou.net>
-From:   Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
-Subject: Re: [PATCH v5 1/3] drm: Add support for GEM buffers backed by
- non-coherent memory
-Message-ID: <26b5424a-ff4c-090b-a08f-0e3e32278180@ideasonboard.com>
-Date:   Thu, 27 May 2021 13:40:07 +0300
+        Thu, 27 May 2021 06:43:17 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1622112104;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=DyoTEweFTx1lpA7uX8L7ddsbfDTqub/v0D1/rQ9tIVc=;
+        b=Vb8P/OR96c9bTPhyhSYrSfrAeMhva02sg+8pmFEzoQk5jpWAb09RNamJJA8FfZp+hsxr5D
+        zLXKK0RdKp7L2J103iR7u//CKx3AM83AJoTHhbtdDRbKoCbVf0r4aSkCxhVMCJFREECRGL
+        Kqlem7AEzXgjbufMG5GuqzxpniTjjJI=
+Received: from mail-ej1-f69.google.com (mail-ej1-f69.google.com
+ [209.85.218.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-344-HzemN6OGMUi0-4kPagC7jQ-1; Thu, 27 May 2021 06:41:43 -0400
+X-MC-Unique: HzemN6OGMUi0-4kPagC7jQ-1
+Received: by mail-ej1-f69.google.com with SMTP id la2-20020a170906ad82b02903d4bcc8de3bso1496865ejb.4
+        for <linux-kernel@vger.kernel.org>; Thu, 27 May 2021 03:41:42 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=DyoTEweFTx1lpA7uX8L7ddsbfDTqub/v0D1/rQ9tIVc=;
+        b=YXo4IBrZ9f0BSki/6LezfgSV2Q4QkN0MY1fr2DblwoPvae4kyWRcdaRH4I5+qlczFr
+         TWSxs6UOoaqLhnynilOfxFWoQ0RifNa7q4FQuXFSfAZG5AH6Sfhx4/V1y8A7YKhUmEVX
+         Sgp1S5mGuKQQKTDhQtJuRty8fqlo4sejfvmsyLIC186fgnyVlmyhtu/1CWa+n02hREAA
+         WlA9MS1rRjtx6ee1ycECZk9nivrKbOYs2J8bF2TFgJy5swRVoldDQ4rteJkqX9XT5xwZ
+         hbT+CzS6/LC0fZb8R3/f5leticDKfd4wojdeS57rAl9AsZgnNp0zDiGVGrcUz1UQRjeW
+         7Ydw==
+X-Gm-Message-State: AOAM532q2RA8WImkrCRLJTFbSjdu3kN9jB88bi27StVBi/LYEMWc2brE
+        tI1ZlRsckEIWj2k9HNbEbdhRVdesY2mwF+G5MlCJ9R+71RpwCQJZcfjLqD1HYc4sc+lg2f6JhPm
+        T+umrcfQcWRU0inT7zpDl/m4yHTLuPUvoVXeyk+l0eK9P/OVQVTXSyFlYuU/HPlLHOPuMyBbwqs
+        Uy
+X-Received: by 2002:a17:906:6d43:: with SMTP id a3mr3104894ejt.142.1622112100975;
+        Thu, 27 May 2021 03:41:40 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJy/B6NLDpnHprnd+r3zEqXv6WFixw8qwba7jliY2CHxhFvNGGR2p5k490P1utig7Gjm74mdvA==
+X-Received: by 2002:a17:906:6d43:: with SMTP id a3mr3104861ejt.142.1622112100604;
+        Thu, 27 May 2021 03:41:40 -0700 (PDT)
+Received: from x1.localdomain (2001-1c00-0c1e-bf00-1054-9d19-e0f0-8214.cable.dynamic.v6.ziggo.nl. [2001:1c00:c1e:bf00:1054:9d19:e0f0:8214])
+        by smtp.gmail.com with ESMTPSA id b9sm872604edt.71.2021.05.27.03.41.39
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 27 May 2021 03:41:40 -0700 (PDT)
+Subject: Re: [PATCH v3 0/6] RTL8231 GPIO expander support
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Sander Vanheule <sander@svanheule.net>
+Cc:     Andrew Lunn <andrew@lunn.ch>, Pavel Machek <pavel@ucw.cz>,
+        Rob Herring <robh+dt@kernel.org>,
+        Lee Jones <lee.jones@linaro.org>,
+        Mark Brown <broonie@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J . Wysocki" <rafael@kernel.org>,
+        Michael Walle <michael@walle.cc>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Linux LED Subsystem <linux-leds@vger.kernel.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <cover.1620735871.git.sander@svanheule.net>
+ <cover.1621809029.git.sander@svanheule.net> <YKr9G3EfrM34gCsL@lunn.ch>
+ <CAHp75VewCw8ES_9S48qmeCtSXMkGWt0s4iub0Fu4ZuwWANHpaQ@mail.gmail.com>
+ <02bbf73ea8a14119247f07a677993aad2f45b088.camel@svanheule.net>
+ <CAHp75Vf_dAfoMmziVLkEQ2Yr-e7Cj5=61ua5Q05Cyz-pLwVjpw@mail.gmail.com>
+ <8f96b24d782e5bdeabf5370ccf3475794d0c2818.camel@svanheule.net>
+ <CAHp75VfzEwVGR7ttdcKzirPDN8oUFw1uTDXPFE=P=9+S3CAFYQ@mail.gmail.com>
+ <CAHp75VfCBtcQX4rvmQnRMquM0k7ZBqOgZN15Z7TFNSO60SB9TA@mail.gmail.com>
+ <cbfba24a6206ec73ccc844da5d1331959e3f3520.camel@svanheule.net>
+ <CAHp75VdhAqFG1WpyMqpvL_W6mFchNd9AyRSV2Zgc1Vk5M6LnCg@mail.gmail.com>
+From:   Hans de Goede <hdegoede@redhat.com>
+Message-ID: <96026395-250a-e6ed-fc12-782c8bc54dc6@redhat.com>
+Date:   Thu, 27 May 2021 12:41:39 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+ Thunderbird/78.10.1
 MIME-Version: 1.0
-In-Reply-To: <20210523170415.90410-2-paul@crapouillou.net>
-Content-Type: text/plain; charset=utf-8; format=flowed
+In-Reply-To: <CAHp75VdhAqFG1WpyMqpvL_W6mFchNd9AyRSV2Zgc1Vk5M6LnCg@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 23/05/2021 20:04, Paul Cercueil wrote:
-> Having GEM buffers backed by non-coherent memory is interesting in the
-> particular case where it is faster to render to a non-coherent buffer
-> then sync the data cache, than to render to a write-combine buffer, and
-> (by extension) much faster than using a shadow buffer. This is true for
-> instance on some Ingenic SoCs, where even simple blits (e.g. memcpy)
-> are about three times faster using this method.
-> 
-> Add a 'map_noncoherent' flag to the drm_gem_cma_object structure, which
-> can be set by the drivers when they create the dumb buffer.
-> 
-> Since this really only applies to software rendering, disable this flag
-> as soon as the CMA objects are exported via PRIME.
-> 
-> v3: New patch. Now uses a simple 'map_noncoherent' flag to control how
->      the objects are mapped, and use the new dma_mmap_pages function.
-> 
-> v4: Make sure map_noncoherent is always disabled when creating GEM
->      objects meant to be used with dma-buf.
-> 
-> Signed-off-by: Paul Cercueil <paul@crapouillou.net>
-> Acked-by: Thomas Zimmermann <tzimmermann@suse.de>
-> ---
->   drivers/gpu/drm/drm_gem_cma_helper.c | 38 +++++++++++++++++++++-------
->   include/drm/drm_gem_cma_helper.h     |  3 +++
->   2 files changed, 32 insertions(+), 9 deletions(-)
-> 
-> diff --git a/drivers/gpu/drm/drm_gem_cma_helper.c b/drivers/gpu/drm/drm_gem_cma_helper.c
-> index 7942cf05cd93..235c7a63da2b 100644
-> --- a/drivers/gpu/drm/drm_gem_cma_helper.c
-> +++ b/drivers/gpu/drm/drm_gem_cma_helper.c
-> @@ -46,6 +46,7 @@ static const struct drm_gem_object_funcs drm_gem_cma_default_funcs = {
->    * __drm_gem_cma_create - Create a GEM CMA object without allocating memory
->    * @drm: DRM device
->    * @size: size of the object to allocate
-> + * @private: true if used for internal purposes
->    *
->    * This function creates and initializes a GEM CMA object of the given size,
->    * but doesn't allocate any memory to back the object.
-> @@ -55,11 +56,11 @@ static const struct drm_gem_object_funcs drm_gem_cma_default_funcs = {
->    * error code on failure.
->    */
->   static struct drm_gem_cma_object *
-> -__drm_gem_cma_create(struct drm_device *drm, size_t size)
-> +__drm_gem_cma_create(struct drm_device *drm, size_t size, bool private)
->   {
->   	struct drm_gem_cma_object *cma_obj;
->   	struct drm_gem_object *gem_obj;
-> -	int ret;
-> +	int ret = 0;
->   
->   	if (drm->driver->gem_create_object)
->   		gem_obj = drm->driver->gem_create_object(drm, size);
-> @@ -73,7 +74,14 @@ __drm_gem_cma_create(struct drm_device *drm, size_t size)
->   
->   	cma_obj = container_of(gem_obj, struct drm_gem_cma_object, base);
->   
-> -	ret = drm_gem_object_init(drm, gem_obj, size);
-> +	if (private) {
-> +		drm_gem_private_object_init(drm, gem_obj, size);
-> +
-> +		/* Always use writecombine for dma-buf mappings */
-> +		cma_obj->map_noncoherent = false;
-> +	} else {
-> +		ret = drm_gem_object_init(drm, gem_obj, size);
-> +	}
->   	if (ret)
->   		goto error;
->   
-> @@ -111,12 +119,19 @@ struct drm_gem_cma_object *drm_gem_cma_create(struct drm_device *drm,
->   
->   	size = round_up(size, PAGE_SIZE);
->   
-> -	cma_obj = __drm_gem_cma_create(drm, size);
-> +	cma_obj = __drm_gem_cma_create(drm, size, false);
->   	if (IS_ERR(cma_obj))
->   		return cma_obj;
->   
-> -	cma_obj->vaddr = dma_alloc_wc(drm->dev, size, &cma_obj->paddr,
-> -				      GFP_KERNEL | __GFP_NOWARN);
-> +	if (cma_obj->map_noncoherent) {
-> +		cma_obj->vaddr = dma_alloc_noncoherent(drm->dev, size,
-> +						       &cma_obj->paddr,
-> +						       DMA_TO_DEVICE,
-> +						       GFP_KERNEL | __GFP_NOWARN);
-> +	} else {
-> +		cma_obj->vaddr = dma_alloc_wc(drm->dev, size, &cma_obj->paddr,
-> +					      GFP_KERNEL | __GFP_NOWARN);
-> +	}
->   	if (!cma_obj->vaddr) {
->   		drm_dbg(drm, "failed to allocate buffer with size %zu\n",
->   			 size);
-> @@ -432,7 +447,7 @@ drm_gem_cma_prime_import_sg_table(struct drm_device *dev,
->   		return ERR_PTR(-EINVAL);
->   
->   	/* Create a CMA GEM buffer. */
-> -	cma_obj = __drm_gem_cma_create(dev, attach->dmabuf->size);
-> +	cma_obj = __drm_gem_cma_create(dev, attach->dmabuf->size, true);
->   	if (IS_ERR(cma_obj))
->   		return ERR_CAST(cma_obj);
->   
-> @@ -499,8 +514,13 @@ int drm_gem_cma_mmap(struct drm_gem_object *obj, struct vm_area_struct *vma)
->   
->   	cma_obj = to_drm_gem_cma_obj(obj);
->   
-> -	ret = dma_mmap_wc(cma_obj->base.dev->dev, vma, cma_obj->vaddr,
-> -			  cma_obj->paddr, vma->vm_end - vma->vm_start);
-> +	vma->vm_page_prot = vm_get_page_prot(vma->vm_flags);
-> +	if (!cma_obj->map_noncoherent)
-> +		vma->vm_page_prot = pgprot_writecombine(vma->vm_page_prot);
-> +
-> +	ret = dma_mmap_pages(cma_obj->base.dev->dev,
-> +			     vma, vma->vm_end - vma->vm_start,
-> +			     virt_to_page(cma_obj->vaddr));
+Hi,
 
-This breaks mmap on TI's J7 EVM (tidss driver). All DRM apps just die 
-when doing mmap. Changing these lines back to dma_mmap_wc() makes it work.
+On 5/27/21 12:38 PM, Andy Shevchenko wrote:
+> +Cc: Hans
+> 
+> Hans, sorry for disturbing you later too much. Here we have "nice"
+> hardware which can't be used in a glitch-free mode (somehow it reminds
+> me lynxpoint, baytrail, cherryview designs). If you have any ideas to
+> share (no need to dive deep or look at it if you have no time), you're
+> welcome.
 
-Is dma_alloc_wc() even compatible with dma_mmap_pages()?
+I'm afraid I've no ideas how to solve this nicely. Documenting the
+issue might be the best we can do.
 
-  Tomi
+Regards,
+
+Hans
+
+
+
+> 
+> On Thu, May 27, 2021 at 12:02 AM Sander Vanheule <sander@svanheule.net> wrote:
+>>
+>> On Tue, 2021-05-25 at 20:11 +0300, Andy Shevchenko wrote:
+>>> On Mon, May 24, 2021 at 7:30 PM Andy Shevchenko
+>>> <andy.shevchenko@gmail.com> wrote:
+>>>> On Mon, May 24, 2021 at 6:03 PM Sander Vanheule <sander@svanheule.net>
+>>>> wrote:
+>>>>> On Mon, 2021-05-24 at 15:54 +0300, Andy Shevchenko wrote:
+>>>
+>>> ...
+>>>
+>>>>> Sadly, I don't. Most of the info we have comes from code archives of
+>>>>> switch
+>>>>> vendors (Zyxel, Cisco etc). Boards need to be reverse engineered, and the
+>>>>> few
+>>>>> leaked datasheets that can be found on the internet aren't exactly thick
+>>>>> in
+>>>>> information.
+>>>>>
+>>>>> The RTL8231 datasheet is actually quite useful, but makes no mention of
+>>>>> the
+>>>>> output value isse. Since this isn't an official resource, I don't think it
+>>>>> would
+>>>>> be appropriate to link it via a Datasheet: tag.
+>>>>> https://github.com/libc0607/Realtek_switch_hacking/blob/files/RTL8231_Datasheet_
+>>>>> 1.2.pdf
+>>>>>
+>>>>> Looking at the datasheet again, I came up with a... terrible hack to work
+>>>>> around
+>>>>> the output value issue.
+>>>>>
+>>>>> The chip also has GPIO_INVERT registers that I hadn't used until now,
+>>>>> because
+>>>>> the logical inversion is handled in the kernel. However, these inversion
+>>>>> registers only apply to the output values. So, I could implement glitch-
+>>>>> free
+>>>>> output behaviour in the following way:
+>>>>>  * After chip reset, and before enabling the output driver (MFD
+>>>>> initialisation):
+>>>>>     - Mux all pins as GPIO
+>>>>>     - Change all pins to outputs,
+>>>>
+>>>> No. no, no. This is much worse than the glitches. You never know what
+>>>> the hardware is connected there and it's potential breakage (on hw
+>>>> level) possible.
+>>>>
+>>>>>  so the data registers (0x1c-0x1e) become writable
+>>>>>     - Write value 0 to all pins
+>>>>>     - Change all pins to GPI to change them into high-Z
+>>>>>  * In the pinctrl/gpio driver:
+>>>>>     - Use data registers as input-only
+>>>>>     - Use inversion register to determine output value (can be written any
+>>>>> time)
+>>>>>
+>>>>> The above gives glitch-free outputs, but the values that are read back
+>>>>> (when
+>>>>> configured as output), come from the data registers. They should now be
+>>>>> coming
+>>>>> from the inversion (reg_set_base) registers, but the code prefers to use
+>>>>> the
+>>>>> data registers (reg_dat_base).
+>>>>
+>>>> Lemme read the datasheet and see if I find any clue for the hw behaviour.
+>>>
+>>> Thank you for your patience!
+>>>
+>>> Have you explored the possibility of using En_Sync_GPIO?
+>>
+>> Got around to testing things.
+>>
+>> If En_Sync_GPIO is enabled, it's still possible to change the pin direction
+>> without also writing the Sync_GPIO bit. So even with the latching, glitches are
+>> still produced.
+>>
+>> As long as Sync_GPIO is not set to latch the new values, it also appears that
+>> reads of the data registers result in the current output value, not the new one.
+>>
+>> As a different test, I've added a pull-down, to make the input level low. Now I
+>> see the opposite behaviour as before (with set-value-before-direction):
+>>  * OUT-HIGH > IN (low) > OUT-LOW: results in a high level (i.e. old value)
+>>  * OUT-HIGH > IN (low) > OUT-HIGH: results in a high level (new/old value)
+>>  * OUT-LOW > IN (low) > OUT-HIGH: results in a high level (new value, or toggled
+>>    old value?)
+>>  * OUT-LOW > IN (low) > OUT-LOW: results in a low level (new/old value)
+>>
+>> For reference, with a pull-up:
+>>  * OUT-HIGH > IN (high) > OUT-HIGH: high result
+>>  * OUT-HIGH > IN (high) > OUT-LOW: low result
+>>  * OUT-LOW > IN (high) > OUT-HIGH: low result
+>>  * OUT-LOW > IN (high) > OUT-LOW: low result
+>>
+>> I've only tested this with the sysfs interface, so I don't know what the result
+>> would be on multiple writes to the data register (during input, but probably not
+>> very relevant). Nor have I tested direction changes if the input has changed
+>> between two output values.
+>>
+>> I may have some time tomorrow for more testing, but otherwise it'll have to wait
+>> until the weekend. Any other ideas in the meantime?
+> 
+> No ideas so far. In x86 we used to have something similar (baytrail,
+> cherryview, lynxpoint), but it's firmware assisted. I think that this
+> hardware (realtek) is supposed either
+> - to be firmware / bootloader assisted, so in a way that platform is
+> preconfigured when Linux starts and any GPIO request won't be harmful
+> as long as it doesn't change direction on the pins (which is usually
+> guaranteed by DT and corresponding drivers to do the correct things)
+> - be used for glitch-tolerant hardware (LEDs, for example, where
+> nobody usually will noticed 1ms blink)
+> 
+> That said, I have not been convinced we have to quirk gpio-regmap for
+> this one. Just describe the issues with hardware in the accompanying
+> documentation.
+> 
+> But if maintainers or somebody comes with a better / different
+> approach I am all ears.
+> 
+
