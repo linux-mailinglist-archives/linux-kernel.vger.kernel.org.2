@@ -2,118 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E361393001
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 15:45:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ADBA6393006
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 15:45:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236547AbhE0Nqt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 May 2021 09:46:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38702 "EHLO
+        id S236561AbhE0Nra (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 May 2021 09:47:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38888 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236335AbhE0Nqq (ORCPT
+        with ESMTP id S236335AbhE0Nr3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 May 2021 09:46:46 -0400
-Received: from mail-ot1-x334.google.com (mail-ot1-x334.google.com [IPv6:2607:f8b0:4864:20::334])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE8B6C061574
-        for <linux-kernel@vger.kernel.org>; Thu, 27 May 2021 06:45:12 -0700 (PDT)
-Received: by mail-ot1-x334.google.com with SMTP id t10-20020a05683022eab0290304ed8bc759so212732otc.12
-        for <linux-kernel@vger.kernel.org>; Thu, 27 May 2021 06:45:12 -0700 (PDT)
+        Thu, 27 May 2021 09:47:29 -0400
+Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32E1DC061760
+        for <linux-kernel@vger.kernel.org>; Thu, 27 May 2021 06:45:55 -0700 (PDT)
+Received: by mail-lf1-x12b.google.com with SMTP id j10so127084lfb.12
+        for <linux-kernel@vger.kernel.org>; Thu, 27 May 2021 06:45:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=zZ100OgAiDnND5MKuUNcSvGRwi3n6jrkgirwTZqtvBg=;
-        b=gbRqGxktvRNDpJhHKBHPOtxsKvnuredhB0CuEaHskvQPCL4yOMgC/+b8pSgZvHjKcv
-         TSvopIpxiSz656gT8XKPsawPiFgQT1pB24j0G2sWXB/+rX2QPFYFfqVX0CHnfRCeOuXS
-         zcWEmfkEkbZIF1eCbUOP1YoyJMn2cWmOM7ss947ScWLEV1HhOm5k9ZLjW0YKM3RHe0o4
-         tWeE9sdJfy1eRKLaGFK33oqxubYRgT9KO72CfBCumS5aEk/Q9oQBBRDXwiU0hoorXb4V
-         XTLPambzK+pC7h+XA3ENBaNgQmX1vYKH4Xn5sunS70WiPx/F0RMZu9SokTyxnLLRLiuW
-         /2eg==
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=W+RY/ZnJxUazn0U77RqA9l4c/3Pra+EKNP8BXkqQSSo=;
+        b=YqtqCpXaY77DgycIF3WQZ6O3jSe3xuuTR3mSksTjFk4UWlm9pv3ehJXzwbQxIY/2W4
+         bmyONPuytS9+vrVqbbagtVTJlfD9w8zl1zSJqscaodlTRrDfm7Ok74XtnmkpIQf0xpJI
+         42teqaJ5Ca9TieNzzbh2Y0LJ7WLu5JeGwaP1ZQPO4TamblRJqZNdU/X9Ubqs7CnF5zCm
+         qD1DoZoo9FV15TjyCdEYJzed+PmE//6qRK9KqPtk5NdYPhT0YpzbpTeK+08hC8BYU6Z6
+         dJA5NarG75cAlMf8j35puf7D/K00LVDT2oeWkdNj+fHYhQJJ2zf0yUCtrTzXsQ2VWNRW
+         eMjg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=zZ100OgAiDnND5MKuUNcSvGRwi3n6jrkgirwTZqtvBg=;
-        b=GARqWvhPGxlweVXuswjBFDH+GOblmYu6qWWawFw8jgRP1DdN5v9bC9vO2tNUZ1nW+p
-         Bma24UyNfmL6jtwVVa0xVPpGJ1OzhkTtoG0GrT2iF/7pdGme6+Y6XRsbM6j/4wx153tz
-         ZcA82ub2RCVqz6NMXainHguN3SoOl2uQ+sff2RBk4MNeIZCcxPHRbnkHzhJlNStRsuCw
-         /9ZBIORrXlhtIlCiLxLeX9m85ztIvVfKfha2EuSRLWuHPwv8krHrdHeNBs7ZQ5F+aFrj
-         2JBr+2b9Qm5MaslX6ITjlfuKyLTlyI8iCvF9nJ6cJjLfMuEaiqfuOsHhxYzULQKXb5M8
-         t+Lg==
-X-Gm-Message-State: AOAM5334Iknz4EEPEfZlAXDnM1Hs/rrqxLKZJvGCkEZXcp1jMhTHLAMU
-        RAdfw5viGLEmqyNZ5ESHIdLk7a/wypqdzw==
-X-Google-Smtp-Source: ABdhPJyyLtLz5hfiXO/rEMDie6ChH/diU9MrpmMhfVfQCaiuWDOoGL9lOGKSQ/S5a+SVLws/3OXrwA==
-X-Received: by 2002:a9d:5c08:: with SMTP id o8mr2856752otk.261.1622123111562;
-        Thu, 27 May 2021 06:45:11 -0700 (PDT)
-Received: from [192.168.1.30] ([207.135.233.147])
-        by smtp.gmail.com with ESMTPSA id k18sm515360otj.42.2021.05.27.06.45.10
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 27 May 2021 06:45:11 -0700 (PDT)
-Subject: Re: [PATCH] io_uring: fix data race to avoid potential NULL-deref
-To:     Marco Elver <elver@google.com>, asml.silence@gmail.com,
-        io-uring@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     kasan-dev@googlegroups.com, dvyukov@google.com,
-        syzbot+bf2b3d0435b9b728946c@syzkaller.appspotmail.com
-References: <20210527092547.2656514-1-elver@google.com>
-From:   Jens Axboe <axboe@kernel.dk>
-Message-ID: <893559c1-4510-3f7d-7c7f-82eb2468a5d5@kernel.dk>
-Date:   Thu, 27 May 2021 07:45:13 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=W+RY/ZnJxUazn0U77RqA9l4c/3Pra+EKNP8BXkqQSSo=;
+        b=f0GqB2GmOUb/bK/gYQ7qSHxeXGzJkxdccC/2kVLylQX4IXAiyVc8KPDZfcU84u0kVh
+         vCbwjOVaVX2IkBSdBsOAyJt3bZGqe67Qdd4CRU218dM6p8R8sXJfKlsGTBX0WQo1jgew
+         eg/TAer+FztdP3DwM8CnODjYCe+h6z0io3Pmixe9ONHhpKDt8iwEjc7MFuNV/bn6PSNw
+         bWmhJ3QQQAWwMlB3oX1rqEF6lp5lrK0xdWnAu8HwfjcaUCB3ShgmJp6IcD5lf3iIA1ab
+         R/82B8zsVTvUbrUrO9K2AJZrqHuXoaqUWh4fRMn+vA+AvwEeJHEhOJG6gjwAW9Vz7GdA
+         vTqw==
+X-Gm-Message-State: AOAM533Klk3mj5dYBRdrhY7uSxqGEhlNQZN8nDdyoEnqDuVHs4Sf165b
+        jRbjprfBCHIU6vEPgQPv9/nJyGC8zzR0qb86d4fWSk1tLsk=
+X-Google-Smtp-Source: ABdhPJz0SZ/0YT2tnJ88UE0/1hK3tktsGRtCG2FJ2ldHfMYh3qCu27J6/i0yDb7Q55GDD9Ii6r4OuTTTlVAdYpBHOM8=
+X-Received: by 2002:a05:6512:1185:: with SMTP id g5mr2454860lfr.586.1622123153392;
+ Thu, 27 May 2021 06:45:53 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210527092547.2656514-1-elver@google.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20201207155106.172057-1-colin.king@canonical.com>
+In-Reply-To: <20201207155106.172057-1-colin.king@canonical.com>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Thu, 27 May 2021 15:45:41 +0200
+Message-ID: <CACRpkdby8f0KjJygdmHLS818z6sVxs5vkV5Fx_X3qNea41NTQQ@mail.gmail.com>
+Subject: Re: [PATCH] ixp4xx: fix spelling mistake in Kconfig "Devce" -> "Device"
+To:     Colin King <colin.king@canonical.com>
+Cc:     Linus Walleij <linusw@kernel.org>, Imre Kaloz <kaloz@openwrt.org>,
+        Krzysztof Halasa <khalasa@piap.pl>,
+        Russell King <linux@armlinux.org.uk>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        kernel-janitors@vger.kernel.org,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5/27/21 3:25 AM, Marco Elver wrote:
-> Commit ba5ef6dc8a82 ("io_uring: fortify tctx/io_wq cleanup") introduced
-> setting tctx->io_wq to NULL a bit earlier. This has caused KCSAN to
-> detect a data race between accesses to tctx->io_wq:
-> 
->   write to 0xffff88811d8df330 of 8 bytes by task 3709 on cpu 1:
->    io_uring_clean_tctx                  fs/io_uring.c:9042 [inline]
->    __io_uring_cancel                    fs/io_uring.c:9136
->    io_uring_files_cancel                include/linux/io_uring.h:16 [inline]
->    do_exit                              kernel/exit.c:781
->    do_group_exit                        kernel/exit.c:923
->    get_signal                           kernel/signal.c:2835
->    arch_do_signal_or_restart            arch/x86/kernel/signal.c:789
->    handle_signal_work                   kernel/entry/common.c:147 [inline]
->    exit_to_user_mode_loop               kernel/entry/common.c:171 [inline]
->    ...
->   read to 0xffff88811d8df330 of 8 bytes by task 6412 on cpu 0:
->    io_uring_try_cancel_iowq             fs/io_uring.c:8911 [inline]
->    io_uring_try_cancel_requests         fs/io_uring.c:8933
->    io_ring_exit_work                    fs/io_uring.c:8736
->    process_one_work                     kernel/workqueue.c:2276
->    ...
-> 
-> With the config used, KCSAN only reports data races with value changes:
-> this implies that in the case here we also know that tctx->io_wq was
-> non-NULL. Therefore, depending on interleaving, we may end up with:
-> 
->               [CPU 0]                 |        [CPU 1]
->   io_uring_try_cancel_iowq()          | io_uring_clean_tctx()
->     if (!tctx->io_wq) // false        |   ...
->     ...                               |   tctx->io_wq = NULL
->     io_wq_cancel_cb(tctx->io_wq, ...) |   ...
->       -> NULL-deref                   |
-> 
-> Note: It is likely that thus far we've gotten lucky and the compiler
-> optimizes the double-read into a single read into a register -- but this
-> is never guaranteed, and can easily change with a different config!
-> 
-> Fix the data race by restoring the previous behaviour, where both
-> setting io_wq to NULL and put of the wq are _serialized_ after
-> concurrent io_uring_try_cancel_iowq() via acquisition of the uring_lock
-> and removal of the node in io_uring_del_task_file().
+On Mon, Dec 7, 2020 at 4:51 PM Colin King <colin.king@canonical.com> wrote:
 
-Applied, thanks.
+> From: Colin Ian King <colin.king@canonical.com>
+>
+> There is spelling mistake in the prompt text in the Kconfig. Fix it.
+>
+> Signed-off-by: Colin Ian King <colin.king@canonical.com>
 
--- 
-Jens Axboe
+Patch applied.
 
+Yours,
+Linus Walleij
