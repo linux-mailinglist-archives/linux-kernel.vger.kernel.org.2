@@ -2,91 +2,214 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A74A8392801
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 08:49:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E096F392805
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 08:50:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234466AbhE0GvG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 May 2021 02:51:06 -0400
-Received: from mga02.intel.com ([134.134.136.20]:29272 "EHLO mga02.intel.com"
+        id S229596AbhE0Gv6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 May 2021 02:51:58 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33722 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229635AbhE0GvE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 May 2021 02:51:04 -0400
-IronPort-SDR: JXnUHM/qNB1gHTDYhRx7oCrE2R/totQ9B/YK4Rcd8vyEX1+fCDzo6JZ/pXYuRssC7ZvUJr0r63
- LsVR8FM0aPvg==
-X-IronPort-AV: E=McAfee;i="6200,9189,9996"; a="189783144"
-X-IronPort-AV: E=Sophos;i="5.82,334,1613462400"; 
-   d="scan'208";a="189783144"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 May 2021 23:49:31 -0700
-IronPort-SDR: JfprkGlafku4ogdusz3p4L1MW8Y58pPf0ZTIzntLxSROntVCtCRzbr6y4tBl0Vz5h0mJ6W04SU
- DVSs3ObhFQBw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.82,334,1613462400"; 
-   d="scan'208";a="477353474"
-Received: from unknown (HELO [10.239.154.58]) ([10.239.154.58])
-  by orsmga001.jf.intel.com with ESMTP; 26 May 2021 23:49:26 -0700
-Subject: Re: [PATCH v10] i2c: virtio: add a virtio i2c frontend driver
-To:     Wolfram Sang <wsa@kernel.org>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Linux I2C <linux-i2c@vger.kernel.org>,
-        virtualization@lists.linux-foundation.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        conghui.chen@intel.com, kblaiech@mellanox.com,
-        jarkko.nikula@linux.intel.com,
-        Sergey Semin <Sergey.Semin@baikalelectronics.ru>,
-        Mike Rapoport <rppt@kernel.org>, loic.poulain@linaro.org,
-        Tali Perry <tali.perry1@gmail.com>,
-        =?UTF-8?Q?Uwe_Kleine-K=c3=b6nig?= <u.kleine-koenig@pengutronix.de>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        yu1.wang@intel.com, shuo.a.liu@intel.com,
-        Stefan Hajnoczi <stefanha@redhat.com>
-References: <226a8d5663b7bb6f5d06ede7701eedb18d1bafa1.1616493817.git.jie.deng@intel.com>
- <20210323072704.rgoelmq62fl2wjjf@vireshk-i7>
- <a2994a8f-bbf9-b26f-a9d2-eb02df6623b8@intel.com>
- <CAK8P3a3OBUZC2nxaQ2wyL9EeT3gzXUX9sfJ+ZJfJUiJK_3ZkrA@mail.gmail.com>
- <20210415064538.a4vf7egk6l3u6zfz@vireshk-i7>
- <b25d1f4e-f17f-8a14-e7e6-7577d25be877@intel.com>
- <20210415072131.GA1006@kunai> <20210415072431.apntpcwrk5hp6zg4@vireshk-i7>
- <20210415072823.GB1006@kunai>
- <6849a8f0-204a-362a-ed97-e910065ab14f@intel.com>
- <20210415081828.GD1006@kunai>
-From:   Jie Deng <jie.deng@intel.com>
-Message-ID: <e6523755-b0ac-c31f-d640-dd016fb8eff1@intel.com>
-Date:   Thu, 27 May 2021 14:49:25 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.10.0
+        id S229635AbhE0Gvy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 27 May 2021 02:51:54 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C01EC60FF3;
+        Thu, 27 May 2021 06:50:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1622098221;
+        bh=H0EQHOrXpzLNcQ0iwSBYSRvs8jQccJRm2PXUOu/X8Yw=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=nytTHl4IEOUqz9ZlgYkdoEjadwrRbnO25x0BW6yFP/d3HWW19vDCYKsmQFiH1D9Ue
+         NxxRk8sG58KWbWG1Hbr8AGvW2Gva5NM+h7SR0XhZ/+ROXnvZYv2I5fHpCtvVkOsHfX
+         Q/zzmg2hJTyt1K1AFkk8tIjPZFiMB+Nbn7dxKd9Y=
+Date:   Thu, 27 May 2021 08:50:18 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Ian Kent <raven@themaw.net>
+Cc:     Fox Chen <foxhlchen@gmail.com>, Tejun Heo <tj@kernel.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Eric Sandeen <sandeen@sandeen.net>,
+        Brice Goglin <brice.goglin@gmail.com>,
+        Rick Lindsley <ricklind@linux.vnet.ibm.com>,
+        David Howells <dhowells@redhat.com>,
+        Miklos Szeredi <miklos@szeredi.hu>,
+        Marcelo Tosatti <mtosatti@redhat.com>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v4 0/5] kernfs: proposed locking and concurrency
+ improvement
+Message-ID: <YK9BKr5h8wOh6YpU@kroah.com>
+References: <YJtz6mmgPIwEQNgD@kroah.com>
+ <CAC2o3D+28g67vbNOaVxuF0OfE0RjFGHVwAcA_3t1AAS_b_EnPg@mail.gmail.com>
+ <CAC2o3DJm0ugq60c8mBafjd81nPmhpBKBT5cCKWvc4rYT0dDgGg@mail.gmail.com>
+ <CAC2o3DJdwr0aqT6LwhuRj8kyXt6NAPex2nG5ToadUTJ3Jqr_4w@mail.gmail.com>
+ <4eae44395ad321d05f47571b58fe3fe2413b6b36.camel@themaw.net>
+ <CAC2o3DKvq12CrsgWTNmQmu3iDJ+9tytMdCJepdBjUKN1iUJ0RQ@mail.gmail.com>
+ <bc9650145291b6e568a8f75d02663b9e4f2bcfd7.camel@themaw.net>
+ <CAC2o3DL1VwbLgajSYSR_UPL-53cjHDp+X63CerQsZ8tgNgO=-A@mail.gmail.com>
+ <da58dcefb59d2b51d95d1dfc012ba058bc77f23b.camel@themaw.net>
+ <6df8d572c6e7a20fab3df13a64f28c1a69648c9f.camel@themaw.net>
 MIME-Version: 1.0
-In-Reply-To: <20210415081828.GD1006@kunai>
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <6df8d572c6e7a20fab3df13a64f28c1a69648c9f.camel@themaw.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, May 27, 2021 at 09:23:06AM +0800, Ian Kent wrote:
+> On Mon, 2021-05-17 at 09:32 +0800, Ian Kent wrote:
+> > On Fri, 2021-05-14 at 10:34 +0800, Fox Chen wrote:
+> > > On Fri, May 14, 2021 at 9:34 AM Ian Kent <raven@themaw.net> wrote:
+> > > > 
+> > > > On Thu, 2021-05-13 at 23:37 +0800, Fox Chen wrote:
+> > > > > Hi Ian
+> > > > > 
+> > > > > On Thu, May 13, 2021 at 10:10 PM Ian Kent <raven@themaw.net>
+> > > > > wrote:
+> > > > > > 
+> > > > > > On Wed, 2021-05-12 at 16:54 +0800, Fox Chen wrote:
+> > > > > > > On Wed, May 12, 2021 at 4:47 PM Fox Chen
+> > > > > > > <foxhlchen@gmail.com>
+> > > > > > > wrote:
+> > > > > > > > 
+> > > > > > > > Hi,
+> > > > > > > > 
+> > > > > > > > I ran it on my benchmark (
+> > > > > > > > https://github.com/foxhlchen/sysfs_benchmark).
+> > > > > > > > 
+> > > > > > > > machine: aws c5 (Intel Xeon with 96 logical cores)
+> > > > > > > > kernel: v5.12
+> > > > > > > > benchmark: create 96 threads and bind them to each core
+> > > > > > > > then
+> > > > > > > > run
+> > > > > > > > open+read+close on a sysfs file simultaneously for 1000
+> > > > > > > > times.
+> > > > > > > > result:
+> > > > > > > > Without the patchset, an open+read+close operation takes
+> > > > > > > > 550-
+> > > > > > > > 570
+> > > > > > > > us,
+> > > > > > > > perf shows significant time(>40%) spending on mutex_lock.
+> > > > > > > > After applying it, it takes 410-440 us for that operation
+> > > > > > > > and
+> > > > > > > > perf
+> > > > > > > > shows only ~4% time on mutex_lock.
+> > > > > > > > 
+> > > > > > > > It's weird, I don't see a huge performance boost compared
+> > > > > > > > to
+> > > > > > > > v2,
+> > > > > > > > even
+> > > > > > > 
+> > > > > > > I meant I don't see a huge performance boost here and it's
+> > > > > > > way
+> > > > > > > worse
+> > > > > > > than v2.
+> > > > > > > IIRC, for v2 fastest one only takes 40us
+> > > > > > 
+> > > > > > Thanks Fox,
+> > > > > > 
+> > > > > > I'll have a look at those reports but this is puzzling.
+> > > > > > 
+> > > > > > Perhaps the added overhead of the check if an update is
+> > > > > > needed is taking more than expected and more than just
+> > > > > > taking the lock and being done with it. Then there's
+> > > > > > the v2 series ... I'll see if I can dig out your reports
+> > > > > > on those too.
+> > > > > 
+> > > > > Apologies, I was mistaken, it's compared to V3, not V2.  The
+> > > > > previous
+> > > > > benchmark report is here.
+> > > > > https://lore.kernel.org/linux-fsdevel/CAC2o3DKNc=sL2n8291Dpiyb0bRHaX=nd33ogvO_LkJqpBj-YmA@mail.gmail.com/
+> > > > 
+> > > > Are all these tests using a single file name in the
+> > > > open/read/close
+> > > > loop?
+> > > 
+> > > Yes,  because It's easy to implement yet enough to trigger the
+> > > mutex_lock.
+> > > 
+> > > And you are right It's not a real-life pattern, but on the bright
+> > > side, it proves there is no original mutex_lock problem anymore. :)
+> > 
+> > I've been looking at your reports and they are quite interesting.
+> > 
+> > > 
+> > > > That being the case the per-object inode lock will behave like a
+> > > > mutex and once contention occurs any speed benefits of a spinlock
+> > > > over a mutex (or rwsem) will disappear.
+> > > > 
+> > > > In this case changing from a write lock to a read lock in those
+> > > > functions and adding the inode mutex will do nothing but add the
+> > > > overhead of taking the read lock. And similarly adding the update
+> > > > check function also just adds overhead and, as we see, once
+> > > > contention starts it has a cumulative effect that's often not
+> > > > linear.
+> > > > 
+> > > > The whole idea of a read lock/per-object spin lock was to reduce
+> > > > the possibility of contention for paths other than the same path
+> > > > while not impacting same path accesses too much for an overall
+> > > > gain. Based on this I'm thinking the update check function is
+> > > > probably not worth keeping, it just adds unnecessary churn and
+> > > > has a negative impact for same file contention access patterns.
+> > 
+> > The reports indicate (to me anyway) that the slowdown isn't
+> > due to kernfs. It looks more like kernfs is now putting pressure
+> > on the VFS, mostly on the file table lock but it looks like
+> > there's a mild amount of contention on a few other locks as well
+> > now.
+> > 
+> > That's a whole different problem and those file table handling
+> > functions don't appear to have any obvious problems so they are
+> > doing what they have to do and that can't be avoided.
+> > 
+> > That's definitely out of scope for these changes.
+> > 
+> > And, as you'd expect, once any appreciable amount of contention
+> > happens our measurements go out the window, certainly with
+> > respect to kernfs.
+> > 
+> > It also doesn't change my option that checking if an inode
+> > attribute update is needed in kernfs isn't useful since, IIUC
+> > that file table lock contention would result even if you were
+> > using different paths.
+> > 
+> > So I'll drop that patch from the series.
+> 
+> It will probably not make any difference, but for completeness
+> and after some thought, I felt I should post what I think is
+> happening with the benchmark.
+> 
+> The benchmark application runs a pthreads thread for each CPU
+> and goes into a tight open/read/close loop to demonstrate the
+> contention that can occur on the kernfs mutex as the number of
+> CPUs grows.
+> 
+> But that tight open/read/close loop causes contention on the VFS
+> file table because the pthreads threads share the process file
+> table.
+> 
+> So the poor performance is actually evidence the last patch is
+> doing what it's meant to do rather than evidence of a regression
+> with the series.
+> 
+> The benchmark is putting pressure on the process file table on
+> some hardware configurations but those critical sections are small
+> and there's really nothing obvious that can be done to improve the
+> file table locking.
+> 
+> It is however important to remember that the benckmark application
+> access pattern is not a normal access pattern by a long way.
+> 
+> So I don't see the need for a new revision of the series with the
+> last patch dropped.
+> 
+> If there's a change of heart and the series was to be merged I'll
+> leave whether to include this last patch to the discretion of the
+> maintainer as the bulk of the improvement comes from the earlier
+> patches anyway.
 
-On 2021/4/15 16:18, Wolfram Sang wrote:
-> On Thu, Apr 15, 2021 at 04:15:07PM +0800, Jie Deng wrote:
->> On 2021/4/15 15:28, Wolfram Sang wrote:
->>
->>>> Now that we were able to catch you, I will use the opportunity to
->>>> clarify the doubts I had.
->>>>
->>>> - struct mutex lock in struct virtio_i2c, I don't think this is
->>>>     required since the core takes care of locking in absence of this.
->>> This is likely correct.
->> OK. Then I will remove the lock.
-> Let me have a look first, please.
+Can you please resubmit the series, it is long-gone from my review
+queue.
 
+thanks,
 
-Hi Wolfram,
-
-I didn't receive your feedback yet. Do you have any more comments ?
-
-Thanks.
-
-
+greg k-h
