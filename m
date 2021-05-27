@@ -2,120 +2,189 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 67966393238
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 17:14:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9CBDC393223
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 17:14:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237079AbhE0PQT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 May 2021 11:16:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44318 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237103AbhE0PPY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 May 2021 11:15:24 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 449B0613D8;
-        Thu, 27 May 2021 15:13:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1622128431;
-        bh=TR9vGiWJQI7ifGZDSg2mVN/XhyP3rPp0dNlLw1qTPME=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=hj1uHVsf4ddCvaNlmfewoNqQirrUdSOSAb6GbpIZhD0A6Mc63e/5E/wqCmjP/mxEy
-         6MiuERoaw3+wOw0sL+4hZbK2DvM1V8v17WOmbDgmXNx2d7iW+lSgzHyeiXk2mKHbQQ
-         LcZMb1DDPKDqcmGfPqRjJoPoC9ZBaYSU0r1h2Mso=
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        syzbot+19bcfc64a8df1318d1c3@syzkaller.appspotmail.com,
-        Dongliang Mu <mudongliangabcd@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 5.12 7/7] NFC: nci: fix memory leak in nci_allocate_device
-Date:   Thu, 27 May 2021 17:13:08 +0200
-Message-Id: <20210527151139.479147283@linuxfoundation.org>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210527151139.241267495@linuxfoundation.org>
-References: <20210527151139.241267495@linuxfoundation.org>
-User-Agent: quilt/0.66
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+        id S237121AbhE0PP2 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 27 May 2021 11:15:28 -0400
+Received: from coyote.holtmann.net ([212.227.132.17]:34616 "EHLO
+        mail.holtmann.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237001AbhE0PPD (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 27 May 2021 11:15:03 -0400
+Received: from smtpclient.apple (p4fefc9d6.dip0.t-ipconnect.de [79.239.201.214])
+        by mail.holtmann.org (Postfix) with ESMTPSA id 341EFCED34;
+        Thu, 27 May 2021 17:21:24 +0200 (CEST)
+Content-Type: text/plain;
+        charset=utf-8
+Mime-Version: 1.0 (Mac OS X Mail 14.0 \(3654.100.0.2.22\))
+Subject: Re: [PATCH] Bluetooth: hci_h5: Add RTL8822CS capabilities
+From:   Marcel Holtmann <marcel@holtmann.org>
+In-Reply-To: <CAJQfnxF6zYr=-t46yjYSev+RtPhhnZep4Vh2AFaARfzoEM8mDA@mail.gmail.com>
+Date:   Thu, 27 May 2021 17:13:27 +0200
+Cc:     linux-bluetooth <linux-bluetooth@vger.kernel.org>,
+        CrosBT Upstreaming <chromeos-bluetooth-upstreaming@chromium.org>,
+        Archie Pusaka <apusaka@chromium.org>,
+        Abhishek Pandit-Subedi <abhishekpandit@chromium.org>,
+        Johan Hedberg <johan.hedberg@gmail.com>,
+        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Transfer-Encoding: 8BIT
+Message-Id: <872ECDCE-D007-47EA-B9EA-F971CA34540D@holtmann.org>
+References: <20210513165327.1.I4d214bb82746fb2ed94eb1c2100dda0f63cf9a25@changeid>
+ <7867EC1F-324A-4739-B5F7-DDEB3994EA7A@holtmann.org>
+ <CAJQfnxE4PY09GpxGYLKy2kXnaCQaUmCakhCKnhqGnoK+9aSyyg@mail.gmail.com>
+ <DAE03499-573B-4A72-A2A9-2E139B78AB2E@holtmann.org>
+ <CAJQfnxHg50mKGVpQoH-dobphAzpFwyc2gQMzVkLZeNUW0Yyh3Q@mail.gmail.com>
+ <CAJQfnxG1ba=imd_BiOXpuT8WF8HeWPcs5y4kdKx+fV6LEL9SyA@mail.gmail.com>
+ <3DB375AF-3BC3-43F3-A1F5-1E3CBF17318D@holtmann.org>
+ <CAJQfnxE+qiPor8xUd8zuJH45LmbrHb8YwcvjrnhkG0LovP1vyw@mail.gmail.com>
+ <CAJQfnxErqfZ-+NgT2xeeOADChJxs2hkwkn-qePtJTRcU53BmGw@mail.gmail.com>
+ <14DD0026-DE65-4EAA-B5EF-F98C3407BA1A@holtmann.org>
+ <CAJQfnxF6zYr=-t46yjYSev+RtPhhnZep4Vh2AFaARfzoEM8mDA@mail.gmail.com>
+To:     Archie Pusaka <apusaka@google.com>
+X-Mailer: Apple Mail (2.3654.100.0.2.22)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dongliang Mu <mudongliangabcd@gmail.com>
+Hi Archie,
 
-commit e0652f8bb44d6294eeeac06d703185357f25d50b upstream.
+>>>>>>>>>>> RTL8822 chipset supports WBS, and this information is conveyed in
+>>>>>>>>>>> btusb.c. However, the UART driver doesn't have this information just
+>>>>>>>>>>> yet.
+>>>>>>>>>>> 
+>>>>>>>>>>> Signed-off-by: Archie Pusaka <apusaka@chromium.org>
+>>>>>>>>>>> Reviewed-by: Abhishek Pandit-Subedi <abhishekpandit@chromium.org>
+>>>>>>>>>>> ---
+>>>>>>>>>>> 
+>>>>>>>>>>> drivers/bluetooth/btrtl.c  | 26 ++++++++++++++++----------
+>>>>>>>>>>> drivers/bluetooth/btrtl.h  |  2 ++
+>>>>>>>>>>> drivers/bluetooth/hci_h5.c |  5 +----
+>>>>>>>>>>> 3 files changed, 19 insertions(+), 14 deletions(-)
+>>>>>>>>>>> 
+>>>>>>>>>>> diff --git a/drivers/bluetooth/btrtl.c b/drivers/bluetooth/btrtl.c
+>>>>>>>>>>> index e7fe5fb22753..988a09860c6b 100644
+>>>>>>>>>>> --- a/drivers/bluetooth/btrtl.c
+>>>>>>>>>>> +++ b/drivers/bluetooth/btrtl.c
+>>>>>>>>>>> @@ -719,17 +719,8 @@ int btrtl_download_firmware(struct hci_dev *hdev,
+>>>>>>>>>>> }
+>>>>>>>>>>> EXPORT_SYMBOL_GPL(btrtl_download_firmware);
+>>>>>>>>>>> 
+>>>>>>>>>>> -int btrtl_setup_realtek(struct hci_dev *hdev)
+>>>>>>>>>>> +void btrtl_set_quirks(struct hci_dev *hdev, struct btrtl_device_info *btrtl_dev)
+>>>>>>>>>>> {
+>>>>>>>>>>> -     struct btrtl_device_info *btrtl_dev;
+>>>>>>>>>>> -     int ret;
+>>>>>>>>>>> -
+>>>>>>>>>>> -     btrtl_dev = btrtl_initialize(hdev, NULL);
+>>>>>>>>>>> -     if (IS_ERR(btrtl_dev))
+>>>>>>>>>>> -             return PTR_ERR(btrtl_dev);
+>>>>>>>>>>> -
+>>>>>>>>>>> -     ret = btrtl_download_firmware(hdev, btrtl_dev);
+>>>>>>>>>>> -
+>>>>>>>>>>>   /* Enable controller to do both LE scan and BR/EDR inquiry
+>>>>>>>>>>>    * simultaneously.
+>>>>>>>>>>>    */
+>>>>>>>>>>> @@ -750,6 +741,21 @@ int btrtl_setup_realtek(struct hci_dev *hdev)
+>>>>>>>>>>>           rtl_dev_dbg(hdev, "WBS supported not enabled.");
+>>>>>>>>>>>           break;
+>>>>>>>>>>>   }
+>>>>>>>>>>> +}
+>>>>>>>>>>> +EXPORT_SYMBOL_GPL(btrtl_set_quirks);
+>>>>>>>>>>> +
+>>>>>>>>>>> +int btrtl_setup_realtek(struct hci_dev *hdev)
+>>>>>>>>>>> +{
+>>>>>>>>>>> +     struct btrtl_device_info *btrtl_dev;
+>>>>>>>>>>> +     int ret;
+>>>>>>>>>>> +
+>>>>>>>>>>> +     btrtl_dev = btrtl_initialize(hdev, NULL);
+>>>>>>>>>>> +     if (IS_ERR(btrtl_dev))
+>>>>>>>>>>> +             return PTR_ERR(btrtl_dev);
+>>>>>>>>>>> +
+>>>>>>>>>>> +     ret = btrtl_download_firmware(hdev, btrtl_dev);
+>>>>>>>>>>> +
+>>>>>>>>>>> +     btrtl_set_quirks(hdev, btrtl_dev);
+>>>>>>>>>>> 
+>>>>>>>>>>>   btrtl_free(btrtl_dev);
+>>>>>>>>>>>   return ret;
+>>>>>>>>>>> diff --git a/drivers/bluetooth/btrtl.h b/drivers/bluetooth/btrtl.h
+>>>>>>>>>>> index 2a582682136d..260167f01b08 100644
+>>>>>>>>>>> --- a/drivers/bluetooth/btrtl.h
+>>>>>>>>>>> +++ b/drivers/bluetooth/btrtl.h
+>>>>>>>>>>> @@ -54,6 +54,8 @@ struct btrtl_device_info *btrtl_initialize(struct hci_dev *hdev,
+>>>>>>>>>>> void btrtl_free(struct btrtl_device_info *btrtl_dev);
+>>>>>>>>>>> int btrtl_download_firmware(struct hci_dev *hdev,
+>>>>>>>>>>>                       struct btrtl_device_info *btrtl_dev);
+>>>>>>>>>>> +void btrtl_set_quirks(struct hci_dev *hdev,
+>>>>>>>>>>> +                   struct btrtl_device_info *btrtl_dev);
+>>>>>>>>>>> int btrtl_setup_realtek(struct hci_dev *hdev);
+>>>>>>>>>>> int btrtl_shutdown_realtek(struct hci_dev *hdev);
+>>>>>>>>>>> int btrtl_get_uart_settings(struct hci_dev *hdev,
+>>>>>>>>>>> diff --git a/drivers/bluetooth/hci_h5.c b/drivers/bluetooth/hci_h5.c
+>>>>>>>>>>> index 27e96681d583..e0520639f4ba 100644
+>>>>>>>>>>> --- a/drivers/bluetooth/hci_h5.c
+>>>>>>>>>>> +++ b/drivers/bluetooth/hci_h5.c
+>>>>>>>>>>> @@ -906,10 +906,7 @@ static int h5_btrtl_setup(struct h5 *h5)
+>>>>>>>>>>>   /* Give the device some time before the hci-core sends it a reset */
+>>>>>>>>>>>   usleep_range(10000, 20000);
+>>>>>>>>>>> 
+>>>>>>>>>>> -     /* Enable controller to do both LE scan and BR/EDR inquiry
+>>>>>>>>>>> -      * simultaneously.
+>>>>>>>>>>> -      */
+>>>>>>>>>>> -     set_bit(HCI_QUIRK_SIMULTANEOUS_DISCOVERY, &h5->hu->hdev->quirks);
+>>>>>>>>>>> +     btrtl_set_quirks(h5->hu->hdev, btrtl_dev);
+>>>>>>>>>> 
+>>>>>>>>>> any reason why not just setting WBS quirk here?
+>>>>>>>>> 
+>>>>>>>>> Hmm, I think WBS is the feature of the chipset and not the transport.
+>>>>>>>>> Therefore isn't it better to just have it set in one place?
+>>>>>>>>> Setting the quirks here means we need to copy paste the settings from btrtl.c.
+>>>>>>>> 
+>>>>>>>> but since you are already setting HCI_QUIRK_SIMULTANEOUS_DISCOVERY right now, I don’t see the difference.
+>>>>>>> 
+>>>>>>> Sorry, I don't get what you mean.
+>>>>>>> With this patch I also moved HCI_QUIRK_SIMULTANEOUS_DISCOVERY into
+>>>>>>> btrtl.c, so it's together with the WBS quirk.
+>>>>>>> 
+>>>>>>>> Can we actually verify that we still need the WBS quirk. I think we fixed the broken errerrnous packet flag handling.
+>>>>>>> 
+>>>>>>> To be honest, I am not aware about the story of the broken erroneous
+>>>>>>> packet flag.
+>>>>>>> Last time I checked I still needed the quirk to have RTL8822 on UART
+>>>>>>> properly run WBS, but that was months ago...
+>>>>>>> Let me verify whether this quirk is still needed.
+>>>>>> 
+>>>>>> It looks like we still need the WBS quirk because otherwise the host
+>>>>>> wouldn't know whether the controller supports WBS or not. It's used in
+>>>>>> get_supported_settings() in mgmt.c.
+>>>>> 
+>>>>> and why not set it unconditionally for all Realtek chips?
+>>>> 
+>>>> Not all Realtek chips supports WBS, therefore
+>>>> HCI_QUIRK_WIDEBAND_SPEECH_SUPPORTED is only set on some of them.
+>>> 
+>>> Are there any other concerns you might have?
+>> 
+>> can we do the quirk setting in btrtl_setup_realtek() instead of creating another exported function.
+> 
+> It cannot be done easily since the first part of btrtl_setup_realtek()
+> is used exclusively for btusb, which is done differently in hci_h5.
+> 
+> We can have it another way: define btrtl_setup_realtek_h5() to do the
+> setup for h5 part in btrtl.c. This would effectively move all of
+> h5_btrtl_setup() inside hci_h5.c, most notably the serdev setup. In
+> turn, we don't have to expose btrtl_set_quirks(), and we can even hide
+> btrtl_initialize(), btrtl_free(), and btrtl_download_firmware() inside
+> btrtl.c.
+> I'm not sure though why would one want that? We still need to export
+> the new btrtl_setup_realtek_h5().
 
-nfcmrvl_disconnect fails to free the hci_dev field in struct nci_dev.
-Fix this by freeing hci_dev in nci_free_device.
+I am a bit disappointed that nobody took up the work on bt3wire.c so that we can have a clean serdev based driver for 3-Wire / H:5 support. That would make supporting USB and UART vendor setups from the same manufacturer a lot easier.
 
-BUG: memory leak
-unreferenced object 0xffff888111ea6800 (size 1024):
-  comm "kworker/1:0", pid 19, jiffies 4294942308 (age 13.580s)
-  hex dump (first 32 bytes):
-    00 00 00 00 00 00 00 00 00 60 fd 0c 81 88 ff ff  .........`......
-    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
-  backtrace:
-    [<000000004bc25d43>] kmalloc include/linux/slab.h:552 [inline]
-    [<000000004bc25d43>] kzalloc include/linux/slab.h:682 [inline]
-    [<000000004bc25d43>] nci_hci_allocate+0x21/0xd0 net/nfc/nci/hci.c:784
-    [<00000000c59cff92>] nci_allocate_device net/nfc/nci/core.c:1170 [inline]
-    [<00000000c59cff92>] nci_allocate_device+0x10b/0x160 net/nfc/nci/core.c:1132
-    [<00000000006e0a8e>] nfcmrvl_nci_register_dev+0x10a/0x1c0 drivers/nfc/nfcmrvl/main.c:153
-    [<000000004da1b57e>] nfcmrvl_probe+0x223/0x290 drivers/nfc/nfcmrvl/usb.c:345
-    [<00000000d506aed9>] usb_probe_interface+0x177/0x370 drivers/usb/core/driver.c:396
-    [<00000000bc632c92>] really_probe+0x159/0x4a0 drivers/base/dd.c:554
-    [<00000000f5009125>] driver_probe_device+0x84/0x100 drivers/base/dd.c:740
-    [<000000000ce658ca>] __device_attach_driver+0xee/0x110 drivers/base/dd.c:846
-    [<000000007067d05f>] bus_for_each_drv+0xb7/0x100 drivers/base/bus.c:431
-    [<00000000f8e13372>] __device_attach+0x122/0x250 drivers/base/dd.c:914
-    [<000000009cf68860>] bus_probe_device+0xc6/0xe0 drivers/base/bus.c:491
-    [<00000000359c965a>] device_add+0x5be/0xc30 drivers/base/core.c:3109
-    [<00000000086e4bd3>] usb_set_configuration+0x9d9/0xb90 drivers/usb/core/message.c:2164
-    [<00000000ca036872>] usb_generic_driver_probe+0x8c/0xc0 drivers/usb/core/generic.c:238
-    [<00000000d40d36f6>] usb_probe_device+0x5c/0x140 drivers/usb/core/driver.c:293
-    [<00000000bc632c92>] really_probe+0x159/0x4a0 drivers/base/dd.c:554
+The consistent hci_h5.c hacking is not doing anybody any favor in the long run. It will get more and more complicated especially since the underlying core design is a line discipline. This is a hint with a massively large hammer.
 
-Reported-by: syzbot+19bcfc64a8df1318d1c3@syzkaller.appspotmail.com
-Fixes: 11f54f228643 ("NFC: nci: Add HCI over NCI protocol support")
-Signed-off-by: Dongliang Mu <mudongliangabcd@gmail.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
----
- include/net/nfc/nci_core.h |    1 +
- net/nfc/nci/core.c         |    1 +
- net/nfc/nci/hci.c          |    5 +++++
- 3 files changed, 7 insertions(+)
+Regards
 
---- a/include/net/nfc/nci_core.h
-+++ b/include/net/nfc/nci_core.h
-@@ -298,6 +298,7 @@ int nci_nfcc_loopback(struct nci_dev *nd
- 		      struct sk_buff **resp);
- 
- struct nci_hci_dev *nci_hci_allocate(struct nci_dev *ndev);
-+void nci_hci_deallocate(struct nci_dev *ndev);
- int nci_hci_send_event(struct nci_dev *ndev, u8 gate, u8 event,
- 		       const u8 *param, size_t param_len);
- int nci_hci_send_cmd(struct nci_dev *ndev, u8 gate,
---- a/net/nfc/nci/core.c
-+++ b/net/nfc/nci/core.c
-@@ -1191,6 +1191,7 @@ EXPORT_SYMBOL(nci_allocate_device);
- void nci_free_device(struct nci_dev *ndev)
- {
- 	nfc_free_device(ndev->nfc_dev);
-+	nci_hci_deallocate(ndev);
- 	kfree(ndev);
- }
- EXPORT_SYMBOL(nci_free_device);
---- a/net/nfc/nci/hci.c
-+++ b/net/nfc/nci/hci.c
-@@ -792,3 +792,8 @@ struct nci_hci_dev *nci_hci_allocate(str
- 
- 	return hdev;
- }
-+
-+void nci_hci_deallocate(struct nci_dev *ndev)
-+{
-+	kfree(ndev->hci_dev);
-+}
-
+Marcel
 
