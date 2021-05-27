@@ -2,110 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9088C3937BF
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 23:05:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1128B3937C3
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 23:08:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234266AbhE0VG7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 May 2021 17:06:59 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51010 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233788AbhE0VG6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 May 2021 17:06:58 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6E8A4613E3;
-        Thu, 27 May 2021 21:05:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1622149524;
-        bh=usTkYUDMMgRLdDdQrjUeWJsC5bIfE442l+uBD1FDr1g=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=VLIMbVJsyqy5YGjl8qDmNMxdr1ATAL1r6WsSQmjjcVj+dBMkew+wV94lTdL2HxB4v
-         QSvry6tjjJjeDJ3vw3kujsAC83M60yt9G45NGzyPk8RQZeJi00ZOHRSEmsoi/sM4LI
-         Zs59P7WujpyFz379uIrEnPbnnPlTbjDQOIz5G8q30R9yhpyRQcrJtkt+ioCu9VpHU1
-         ED2genEOurwDsXL9gglF9yK4GJkF3meMx/lp6LXhGwNLlWO1B2FpWQrM167zVOBYEw
-         8qETaypfuU1OtOd1ZntWEXSXJcC3pqL/vg8xU03EPXz/LCOGibJjhNcf3l+fRae5+7
-         Y0gevS/QT/fbA==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 3C9C45C032C; Thu, 27 May 2021 14:05:24 -0700 (PDT)
-Date:   Thu, 27 May 2021 14:05:24 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     Andi Kleen <ak@linux.intel.com>, Feng Tang <feng.tang@intel.com>,
-        kernel test robot <oliver.sang@intel.com>,
-        John Stultz <john.stultz@linaro.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Mark Rutland <Mark.Rutland@arm.com>,
-        Marc Zyngier <maz@kernel.org>,
-        Xing Zhengjun <zhengjun.xing@linux.intel.com>,
-        Chris Mason <clm@fb.com>, LKML <linux-kernel@vger.kernel.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        lkp@lists.01.org, lkp@intel.com, ying.huang@intel.com,
-        zhengjun.xing@intel.com
-Subject: Re: [clocksource] 8901ecc231: stress-ng.lockbus.ops_per_sec -9.5%
- regression
-Message-ID: <20210527210524.GE4397@paulmck-ThinkPad-P17-Gen-1>
-Reply-To: paulmck@kernel.org
-References: <20210521083322.GG25531@xsang-OptiPlex-9020>
- <20210521135617.GT4441@paulmck-ThinkPad-P17-Gen-1>
- <20210522160827.GA2625834@paulmck-ThinkPad-P17-Gen-1>
- <20210526064922.GD5262@shbuild999.sh.intel.com>
- <20210526134911.GB4441@paulmck-ThinkPad-P17-Gen-1>
- <20210527182959.GA437082@paulmck-ThinkPad-P17-Gen-1>
- <138f81df-08e1-f96e-1915-c58b44f96a41@linux.intel.com>
- <20210527191923.GD4397@paulmck-ThinkPad-P17-Gen-1>
- <YK/zHMPSZSKrmXC6@casper.infradead.org>
+        id S234311AbhE0VJf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 May 2021 17:09:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54378 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233387AbhE0VJe (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 27 May 2021 17:09:34 -0400
+Received: from mail.andi.de1.cc (mail.andi.de1.cc [IPv6:2a01:238:4321:8900:456f:ecd6:43e:202c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E633C061574;
+        Thu, 27 May 2021 14:08:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=kemnade.info; s=20180802; h=Content-Transfer-Encoding:MIME-Version:
+        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
+        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+        :Resent-Message-ID:In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:
+        List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=wrfBx906CAcUfC7KWOT1YXQ50wHppB1mcK+ZUbjeBQo=; b=gLc286LMISIPMTHboduUKQzHIk
+        nZWih5TD9N4LOV0BNOoMJbLspToFUZdGToy0TjJ68OiMDchcomL0qoKL1PPrJdsrItW3iV0c+wUWg
+        RehpL2OYYVdc1DdmyCN6tIscvHMv9iIUY9W3ayKMb1mlLhX0XkkM2pZkZCccaLvPH/Rg=;
+Received: from p200300ccff1430001a3da2fffebfd33a.dip0.t-ipconnect.de ([2003:cc:ff14:3000:1a3d:a2ff:febf:d33a] helo=aktux)
+        by mail.andi.de1.cc with esmtpsa (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.89)
+        (envelope-from <andreas@kemnade.info>)
+        id 1lmNEP-0005M1-24; Thu, 27 May 2021 23:07:53 +0200
+Received: from andi by aktux with local (Exim 4.92)
+        (envelope-from <andreas@kemnade.info>)
+        id 1lmNEO-0000gy-Oc; Thu, 27 May 2021 23:07:52 +0200
+From:   Andreas Kemnade <andreas@kemnade.info>
+To:     robh+dt@kernel.org, shawnguo@kernel.org, s.hauer@pengutronix.de,
+        kernel@pengutronix.de, festevam@gmail.com, linux-imx@nxp.com,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Cc:     Andreas Kemnade <andreas@kemnade.info>
+Subject: [PATCH] ARM: dts: imx6sl: add PXP module
+Date:   Thu, 27 May 2021 23:07:42 +0200
+Message-Id: <20210527210742.2609-1-andreas@kemnade.info>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YK/zHMPSZSKrmXC6@casper.infradead.org>
+Content-Transfer-Encoding: 8bit
+X-Spam-Score: -1.0 (-)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 27, 2021 at 08:29:32PM +0100, Matthew Wilcox wrote:
-> On Thu, May 27, 2021 at 12:19:23PM -0700, Paul E. McKenney wrote:
-> > On Thu, May 27, 2021 at 12:01:23PM -0700, Andi Kleen wrote:
-> > > 
-> > > >      Nevertheless, it is quite possible that real-world use will result in
-> > > >      some situation requiring that high-stress workloads run on hardware
-> > > >      not designed to accommodate them, and also requiring that the kernel
-> > > >      refrain from marking clocksources unstable.
-> > > >      Therefore, provide an out-of-tree patch that reacts to this situation
-> > > 
-> > > out-of-tree means it will not be submitted?
-> > > 
-> > > I think it would make sense upstream, but perhaps guarded with some option.
-> > 
-> > The reason I do not intend to immediately upstream this patch is that
-> > it increases the probability that a real clocksource read-latency issue
-> > will be ignored, for example, during hardware bringup.  Furthermore,
-> > the only known need from it comes from hardware that is, in the words
-> > of the stress-ng man page, "poorly designed".  And the timing of this
-> > email thread leads me to believe that such hardware is not easy to obtain.
-> 
-> I think you're placing a little too much weight on the documentation
-> here.  It seems that a continuous stream of locked operations executed
-> in userspace on a single CPU can cause this problem to occur.  If that's
-> true all the way out to one guest in a hypervisor can cause problems
-> for the hypervisor itself, I think cloud providers everywhere are
-> going to want this patch?
+While the EPDC is optional, all editions have the PXP module, so adding
+it to the corresponding .dtsi
+Information taken from freescale kernel, compared with the
+reference manual and tested by a separate program.
 
-Only those cloud provides making heavy use of the aforementioned "poorly
-designed" hardware, correct?
+Since it does not depend on external wiring, the
+status = "disabled" is left out here.
 
-							Thanx, Paul
+Signed-off-by: Andreas Kemnade <andreas@kemnade.info>
+---
+ arch/arm/boot/dts/imx6sl.dtsi | 3 +++
+ 1 file changed, 3 insertions(+)
 
-> > My thought is therefore to keep this patch out of tree for now.
-> > If it becomes clear that long-latency clocksource reads really are
-> > a significant issue in their own right (as opposed to merely being a
-> > symptom of a hardware or firmware bug), then this patch is available to
-> > immediately respond to that issue.
-> > 
-> > And there would then be strong evidence in favor of me biting the bullet,
-> > adding the complexity and the additional option (with your Suggested-by),
-> > and getting that upstream and into -stable.
-> > 
-> > Seem reasonable?
-> > 
-> > 							Thanx, Paul
-> > 
+diff --git a/arch/arm/boot/dts/imx6sl.dtsi b/arch/arm/boot/dts/imx6sl.dtsi
+index 997b96c1c47b..6be83e863f19 100644
+--- a/arch/arm/boot/dts/imx6sl.dtsi
++++ b/arch/arm/boot/dts/imx6sl.dtsi
+@@ -762,8 +762,11 @@
+ 			};
+ 
+ 			pxp: pxp@20f0000 {
++				compatible = "fsl,imx6sl-pxp", "fsl,imx6ull-pxp";
+ 				reg = <0x020f0000 0x4000>;
+ 				interrupts = <0 98 IRQ_TYPE_LEVEL_HIGH>;
++				clocks = <&clks IMX6SL_CLK_PXP_AXI>;
++				clock-names = "axi";
+ 			};
+ 
+ 			epdc: epdc@20f4000 {
+-- 
+2.20.1
+
