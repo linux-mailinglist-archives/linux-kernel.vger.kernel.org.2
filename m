@@ -2,97 +2,575 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7EA24393093
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 16:17:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B2557393098
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 16:17:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236309AbhE0OSr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 May 2021 10:18:47 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:42872 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235170AbhE0OSq (ORCPT
+        id S236205AbhE0OTX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 May 2021 10:19:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46184 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235290AbhE0OTW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 May 2021 10:18:46 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1622125033;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=RFRh8Zq0BfhpvEnOLzrG4u+nWlZsKcz3rQE4b2A0A/I=;
-        b=dMqS7x97T5vd6gwbby8YQMwVe4SCBL+nCQ40K7RN9raFEhkBFfj5XILHtt1FnobzLXPAVm
-        v09gyEKGGJoY6NlAAEQBB/AtyAhTlMQai1DVsUxmhyrGSMd16n0efYZkq2ivSEisyWGTI+
-        jJtnIQZJsqwVYrGPecbd4RxMxDBo4Cs=
-Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
- [209.85.208.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-508-o5PoYpfSNQmxBQCFZkbsiQ-1; Thu, 27 May 2021 10:17:11 -0400
-X-MC-Unique: o5PoYpfSNQmxBQCFZkbsiQ-1
-Received: by mail-ed1-f71.google.com with SMTP id q18-20020a50cc920000b029038cf491864cso383274edi.14
-        for <linux-kernel@vger.kernel.org>; Thu, 27 May 2021 07:17:11 -0700 (PDT)
+        Thu, 27 May 2021 10:19:22 -0400
+Received: from mail-il1-x134.google.com (mail-il1-x134.google.com [IPv6:2607:f8b0:4864:20::134])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD76BC061761
+        for <linux-kernel@vger.kernel.org>; Thu, 27 May 2021 07:17:48 -0700 (PDT)
+Received: by mail-il1-x134.google.com with SMTP id h15so398953ilr.2
+        for <linux-kernel@vger.kernel.org>; Thu, 27 May 2021 07:17:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=sartura-hr.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=yI0AnVA4HodlrqXFzhESQgAnQNmg1xH8t8R8orJgXDE=;
+        b=J7i4FJSha60tSfQJ1gBpLOpeiTrCC4rTFMJLSEAC6FT2lQCiil799w1vDhePlBDS4u
+         4R2rzr6CyV7SVbC6zSnEbO+CIVSKLjOCOE6cFXUTzUXo5z0QHmJNZ+naeakRaG9D2c6D
+         zjGG5nd2inMfH5xG/zqfahYRwPfpPiQhZi3HZ1utMIEP1UB7Ce1uyFW0ByspetmLZG+s
+         fqLjUWLqEUHeX035gxZGcHSA72YvW/3GxJ5B9xeY1CCK4leTJp55qaUF1obQYTXsh2rx
+         l+9pdyIuPONbIGmtzWq/WZWMdTqdyHh1DsxdvzIywG8ZKtIXPeOqTvzzucj1/7QV7p8T
+         vuhA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=RFRh8Zq0BfhpvEnOLzrG4u+nWlZsKcz3rQE4b2A0A/I=;
-        b=iNHmuvZr+wHUyEkayeHFmtz49n3qIgWIGJQ/xEI8SuiliwLYaeWMKneFfNEuUk77t2
-         5HpG3SbP3rIr99MZ5bcCId6NXg8cB+i3qMJyu9APpSVl8w2b0ytql1nsKN03AFvD1F4I
-         QLo+tJffJLDjm0m8kBEm/SDJboTT4c+8pYXE4jsGpcBjIdqWnJFGz5I1UUDqQMBm93kR
-         iKsN2RGc096P8DcZCuVf2k+KQnwhNwrFKR9qp+2XXqXr90mYhLxp7D9t278ZxGk+AYqz
-         9ssWs1HWWSHS43sJILRsRRtKucRqTe0GIFpb+rJU/TZjODp1ZMp9oG33c9tlSaXyR3TE
-         qTvw==
-X-Gm-Message-State: AOAM530Ypwd51DzZBCPQfshvTRHIJ4mg3tMbYpD6bOnor0h+5b+RKVO8
-        RI0r1XKT8/OVu/FuvIDbbkeSTvbd3HeXVjQLlgn4LRSa7LJ6qJDhezQAsoBmgR1WgRz+g1JtdpR
-        fDBQLstHeHze1zR5XSN+kSm5J
-X-Received: by 2002:a17:906:854e:: with SMTP id h14mr3961594ejy.455.1622125030527;
-        Thu, 27 May 2021 07:17:10 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwSne7h0iO5WP+6HwZkcfRo6UFiyx8CquwEp6qtnZn5m/q38GOGPj/uq/PWB2psw697hNrogQ==
-X-Received: by 2002:a17:906:854e:: with SMTP id h14mr3961565ejy.455.1622125030207;
-        Thu, 27 May 2021 07:17:10 -0700 (PDT)
-Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
-        by smtp.gmail.com with ESMTPSA id k14sm1176846eds.0.2021.05.27.07.17.08
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 27 May 2021 07:17:09 -0700 (PDT)
-Subject: Re: [PATCH v2 0/7] KVM: nVMX: Fixes for nested state migration when
- eVMCS is in use
-To:     Maxim Levitsky <mlevitsk@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>
-Cc:     Sean Christopherson <seanjc@google.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org
-References: <20210517135054.1914802-1-vkuznets@redhat.com>
- <ea9a392d018ced61478482763f7a59472110104c.camel@redhat.com>
- <8735uc713d.fsf@vitty.brq.redhat.com>
- <5a6314ff3c7b9cc8e6bdf452008ad1b264c95608.camel@redhat.com>
- <87a6og7ghb.fsf@vitty.brq.redhat.com>
- <3b76c3da7af87c576862fa6a538505fe89a47702.camel@redhat.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <b7539613-2a25-bcdb-cfe2-c57c6c0da39f@redhat.com>
-Date:   Thu, 27 May 2021 16:17:07 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=yI0AnVA4HodlrqXFzhESQgAnQNmg1xH8t8R8orJgXDE=;
+        b=OhJyD/L7zBrTSAL1F9tUgzy8E2D1YWHTxXWiyjGsH0IrmstCyzQKFKNGtkeAYjzsKB
+         OE79VIS2F7ETlpQdudEWsFS6xpZ08114ulqsSZ2tUC0aucGbx7Y0n5B0U0yQ43Pkantq
+         YCnwA6bN4h/VNijYYg5BQAawzU5aNaa2MWV6ygDQDkuSiUC3FU+n53ta/8HacnbTBdab
+         vWWFq3nzlYYyDNldZz7OV3n5S7y/7eEAraYq6vL/hN1TQOHV8VRq0xDoJcUTUeiskT+x
+         uy6pKwbu1p8PjMzt9agVB83yJQ2auqGCRI4elA969v+9EtlpuF1SEfobIR3/FIIV/fHK
+         ywRw==
+X-Gm-Message-State: AOAM530eGEX86VjS12RgFA9dxq1D74eVBic69XHaW+cmw0s83XMEmN2J
+        ruFW17B/gJh9KWdQiN4m0+evuYstDkXcRKkICBYTeg==
+X-Google-Smtp-Source: ABdhPJz4oBCEiHDbXLkXgeg8DxrdpCw296m2wlXiV6gLvEQe0wx88lYVt5L5pLKlMMXMG7GoTfWT42Y8rjq4yfMmaLQ=
+X-Received: by 2002:a05:6e02:216b:: with SMTP id s11mr3183741ilv.267.1622125068030;
+ Thu, 27 May 2021 07:17:48 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <3b76c3da7af87c576862fa6a538505fe89a47702.camel@redhat.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210430132735.127342-1-robert.marko@sartura.hr>
+ <20210430134810.GA2714262@roeck-us.net> <CA+HBbNH+gQOmu_Ho0ivFuGHdu0zBtOrr1474z+7FA1zmNb4bug@mail.gmail.com>
+ <2b990feb-dc26-debb-4f81-430bbc89b51c@roeck-us.net> <CA+HBbNHQHqD-wgryaBLZ5M2Lxafb0OwNcbiQJmRQPcZfprmUEg@mail.gmail.com>
+ <2a1a63c7-c9b0-e38d-df1d-7643ad493aba@roeck-us.net> <CA+HBbNF62xzBt2r60qfzn9iveiusLKp6R-T4KU-NgoHaE6c3kQ@mail.gmail.com>
+ <dec7d641-2954-29f0-124b-d0020866bf7b@roeck-us.net> <CA+HBbNGU4d4g0JrUKBhj07OsC7=s9qoubxNDi3MxPjmV457C+Q@mail.gmail.com>
+ <8152a109-d76d-4f85-9da2-fe0a56c2019f@roeck-us.net> <CA+HBbNGBirE=Po7q5eUeHho0rBATa_ApWLiU_oPXsGN+6U9U+g@mail.gmail.com>
+ <CA+HBbNGZ1axZpRy5UwQP_4eZCA32eyPJVcj6xN4i8AhOQMYeTA@mail.gmail.com> <493e4da4-8f2b-9856-b538-6e95e3766d5e@roeck-us.net>
+In-Reply-To: <493e4da4-8f2b-9856-b538-6e95e3766d5e@roeck-us.net>
+From:   Robert Marko <robert.marko@sartura.hr>
+Date:   Thu, 27 May 2021 16:17:37 +0200
+Message-ID: <CA+HBbNHspA5cZJSHJkLpnP+UODGy7w5i8mKP2NH9JALQ1RqQ_w@mail.gmail.com>
+Subject: Re: [PATCH 1/3] hwmon: (pmbus) Add driver for Delta DPS-920AB PSU
+To:     Guenter Roeck <linux@roeck-us.net>
+Cc:     jdelvare@suse.com, corbet@lwn.net, linux-hwmon@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Luka Perkov <luka.perkov@sartura.hr>, jmp@epiphyte.org,
+        Paul Menzel <pmenzel@molgen.mpg.de>,
+        Donald Buczek <buczek@molgen.mpg.de>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 27/05/21 16:11, Maxim Levitsky wrote:
->> Using 'nested_run_pending=1' perhaps? Or, we can get back to 'vm_bugged'
->> idea and kill the guest immediately if something forces such an exit.
-> Exactly, this is my idea. Set the nested_run_pending=1 always after the migration
-> It shoudn't cause any issues and it would avoid cases like that.
-> 
-> That variable can then be renamed too to something like 'nested_vmexit_not_allowed'
-> or something like that.
-> 
-> Paolo, what do you think?
+On Thu, May 27, 2021 at 4:03 PM Guenter Roeck <linux@roeck-us.net> wrote:
+>
+> On 5/27/21 3:59 AM, Robert Marko wrote:
+> > On Thu, May 27, 2021 at 12:22 PM Robert Marko <robert.marko@sartura.hr> wrote:
+> >>
+> >> On Mon, May 24, 2021 at 3:47 PM Guenter Roeck <linux@roeck-us.net> wrote:
+> >>>
+> >>> On 5/24/21 5:21 AM, Robert Marko wrote:
+> >>>> On Fri, May 21, 2021 at 4:46 PM Guenter Roeck <linux@roeck-us.net> wrote:
+> >>>>>
+> >>>>> On 5/21/21 4:56 AM, Robert Marko wrote:
+> >>>>>> On Fri, May 21, 2021 at 12:56 PM Guenter Roeck <linux@roeck-us.net> wrote:
+> >>>>>>>
+> >>>>>>> On 5/21/21 1:36 AM, Robert Marko wrote:
+> >>>>>>>> On Wed, May 19, 2021 at 3:19 PM Guenter Roeck <linux@roeck-us.net> wrote:
+> >>>>>>>>>
+> >>>>>>>>> On 5/19/21 5:38 AM, Robert Marko wrote:
+> >>>>>>>>>> On Fri, Apr 30, 2021 at 3:48 PM Guenter Roeck <linux@roeck-us.net> wrote:
+> >>>>>>>>>>>
+> >>>>>>>>>>> On Fri, Apr 30, 2021 at 03:27:33PM +0200, Robert Marko wrote:
+> >>>>>>>>>>>> This adds support for the Delta DPS-920AB PSU.
+> >>>>>>>>>>>>
+> >>>>>>>>>>>> Only missing feature is fan control which the PSU supports.
+> >>>>>>>>>>>>
+> >>>>>>>>>>>> Signed-off-by: Robert Marko <robert.marko@sartura.hr>
+> >>>>>>>>>>>> ---
+> >>>>>>>>>>>>       Documentation/hwmon/dps920ab.rst | 80 ++++++++++++++++++++++++++++++++
+> >>>>>>>>>>>>       Documentation/hwmon/index.rst    |  1 +
+> >>>>>>>>>>>>       drivers/hwmon/pmbus/Kconfig      |  9 ++++
+> >>>>>>>>>>>>       drivers/hwmon/pmbus/Makefile     |  1 +
+> >>>>>>>>>>>>       drivers/hwmon/pmbus/dps920ab.c   | 63 +++++++++++++++++++++++++
+> >>>>>>>>>>>>       5 files changed, 154 insertions(+)
+> >>>>>>>>>>>>       create mode 100644 Documentation/hwmon/dps920ab.rst
+> >>>>>>>>>>>>       create mode 100644 drivers/hwmon/pmbus/dps920ab.c
+> >>>>>>>>>>>>
+> >>>>>>>>>>>> diff --git a/Documentation/hwmon/dps920ab.rst b/Documentation/hwmon/dps920ab.rst
+> >>>>>>>>>>>> new file mode 100644
+> >>>>>>>>>>>> index 000000000000..df0aef530c7e
+> >>>>>>>>>>>> --- /dev/null
+> >>>>>>>>>>>> +++ b/Documentation/hwmon/dps920ab.rst
+> >>>>>>>>>>>> @@ -0,0 +1,80 @@
+> >>>>>>>>>>>> +.. SPDX-License-Identifier: GPL-2.0-or-later
+> >>>>>>>>>>>> +
+> >>>>>>>>>>>> +Kernel driver dps920ab
+> >>>>>>>>>>>> +========================
+> >>>>>>>>>>>> +
+> >>>>>>>>>>>> +Supported chips:
+> >>>>>>>>>>>> +
+> >>>>>>>>>>>> +  * Delta DPS920AB
+> >>>>>>>>>>>> +
+> >>>>>>>>>>>> +    Prefix: 'dps920ab'
+> >>>>>>>>>>>> +
+> >>>>>>>>>>>> +    Addresses scanned: -
+> >>>>>>>>>>>> +
+> >>>>>>>>>>>> +Authors:
+> >>>>>>>>>>>> +    Robert Marko <robert.marko@sartura.hr>
+> >>>>>>>>>>>> +
+> >>>>>>>>>>>> +
+> >>>>>>>>>>>> +Description
+> >>>>>>>>>>>> +-----------
+> >>>>>>>>>>>> +
+> >>>>>>>>>>>> +This driver implements support for Delta DPS920AB 920W 54V DC single output
+> >>>>>>>>>>>> +power supply with PMBus support.
+> >>>>>>>>>>>> +
+> >>>>>>>>>>>> +The driver is a client driver to the core PMBus driver.
+> >>>>>>>>>>>> +Please see Documentation/hwmon/pmbus.rst for details on PMBus client drivers.
+> >>>>>>>>>>>> +
+> >>>>>>>>>>>> +
+> >>>>>>>>>>>> +Usage Notes
+> >>>>>>>>>>>> +-----------
+> >>>>>>>>>>>> +
+> >>>>>>>>>>>> +This driver does not auto-detect devices. You will have to instantiate the
+> >>>>>>>>>>>> +devices explicitly. Please see Documentation/i2c/instantiating-devices.rst for
+> >>>>>>>>>>>> +details.
+> >>>>>>>>>>>> +
+> >>>>>>>>>>>> +
+> >>>>>>>>>>>> +Sysfs entries
+> >>>>>>>>>>>> +-------------
+> >>>>>>>>>>>> +
+> >>>>>>>>>>>> +======================= ======================================================
+> >>>>>>>>>>>> +curr1_label          "iin"
+> >>>>>>>>>>>> +curr1_input          Measured input current
+> >>>>>>>>>>>> +curr1_crit           Critical maximum current
+> >>>>>>>>>>>> +curr1_crit_alarm     Current critical high alarm
+> >>>>>>>>>>>> +
+> >>>>>>>>>>>> +curr2_label          "iout1"
+> >>>>>>>>>>>> +curr2_input          Measured output current
+> >>>>>>>>>>>> +curr2_crit           Critical maximum current
+> >>>>>>>>>>>> +curr2_crit_alarm     Current critical high alarm
+> >>>>>>>>>>>> +
+> >>>>>>>>>>>> +in1_label            "vin"
+> >>>>>>>>>>>> +in1_input            Measured input voltage
+> >>>>>>>>>>>> +in1_lcrit            Critical minimum input voltage
+> >>>>>>>>>>>> +in1_lcrit_alarm              Input voltage critical low alarm
+> >>>>>>>>>>>> +in1_crit             Critical maximum input voltage
+> >>>>>>>>>>>> +in1_crit_alarm               Input voltage critical high alarm
+> >>>>>>>>>>>> +
+> >>>>>>>>>>>> +in2_label            "vout1"
+> >>>>>>>>>>>> +in2_input            Measured output voltage
+> >>>>>>>>>>>> +in2_lcrit            Critical minimum output voltage
+> >>>>>>>>>>>> +in2_lcrit_alarm              Output voltage critical low alarm
+> >>>>>>>>>>>> +in2_crit             Critical maximum output voltage
+> >>>>>>>>>>>> +in2_crit_alarm               Output voltage critical high alarm
+> >>>>>>>>>>>> +
+> >>>>>>>>>>>> +power1_label         "pin"
+> >>>>>>>>>>>> +power1_input         Measured input power
+> >>>>>>>>>>>> +power1_alarm         Input power high alarm
+> >>>>>>>>>>>> +
+> >>>>>>>>>>>> +power2_label         "pout1"
+> >>>>>>>>>>>> +power2_input         Measured output power
+> >>>>>>>>>>>> +
+> >>>>>>>>>>>> +temp[1-2]_input              Measured temperature
+> >>>>>>>>>>>> +temp[1-2]_crit               Critical high temperature
+> >>>>>>>>>>>> +temp[1-2]_crit_alarm Chip temperature critical high alarm
+> >>>>>>>>>>>> +temp[1-2]_max                Maximum temperature
+> >>>>>>>>>>>> +temp[1-2]_max_alarm  Chip temperature high alarm
+> >>>>>>>>>>>> +
+> >>>>>>>>>>>> +fan1_alarm           Fan 1 warning.
+> >>>>>>>>>>>> +fan1_fault           Fan 1 fault.
+> >>>>>>>>>>>> +fan1_input           Fan 1 speed in RPM.
+> >>>>>>>>>>>> +======================= ======================================================
+> >>>>>>>>>>>> diff --git a/Documentation/hwmon/index.rst b/Documentation/hwmon/index.rst
+> >>>>>>>>>>>> index 8d5a2df1ecb6..b24436f22052 100644
+> >>>>>>>>>>>> --- a/Documentation/hwmon/index.rst
+> >>>>>>>>>>>> +++ b/Documentation/hwmon/index.rst
+> >>>>>>>>>>>> @@ -54,6 +54,7 @@ Hardware Monitoring Kernel Drivers
+> >>>>>>>>>>>>          dell-smm-hwmon
+> >>>>>>>>>>>>          dme1737
+> >>>>>>>>>>>>          drivetemp
+> >>>>>>>>>>>> +   dps920ab
+> >>>>>>>>>>>>          ds1621
+> >>>>>>>>>>>>          ds620
+> >>>>>>>>>>>>          emc1403
+> >>>>>>>>>>>> diff --git a/drivers/hwmon/pmbus/Kconfig b/drivers/hwmon/pmbus/Kconfig
+> >>>>>>>>>>>> index 32d2fc850621..865ade0aa205 100644
+> >>>>>>>>>>>> --- a/drivers/hwmon/pmbus/Kconfig
+> >>>>>>>>>>>> +++ b/drivers/hwmon/pmbus/Kconfig
+> >>>>>>>>>>>> @@ -66,6 +66,15 @@ config SENSORS_IBM_CFFPS
+> >>>>>>>>>>>>              This driver can also be built as a module. If so, the module will
+> >>>>>>>>>>>>              be called ibm-cffps.
+> >>>>>>>>>>>>
+> >>>>>>>>>>>> +config SENSORS_DPS920AB
+> >>>>>>>>>>>> +     tristate "Delta DPS920AB Power Supply"
+> >>>>>>>>>>>> +     help
+> >>>>>>>>>>>> +       If you say yes here you get hardware monitoring support for Delta
+> >>>>>>>>>>>> +       DPS920AB Power Supplies.
+> >>>>>>>>>>>> +
+> >>>>>>>>>>>> +       This driver can also be built as a module. If so, the module will
+> >>>>>>>>>>>> +       be called dps920ab.
+> >>>>>>>>>>>> +
+> >>>>>>>>>>>>       config SENSORS_INSPUR_IPSPS
+> >>>>>>>>>>>>            tristate "INSPUR Power System Power Supply"
+> >>>>>>>>>>>>            help
+> >>>>>>>>>>>> diff --git a/drivers/hwmon/pmbus/Makefile b/drivers/hwmon/pmbus/Makefile
+> >>>>>>>>>>>> index 6a4ba0fdc1db..f59ba0123d68 100644
+> >>>>>>>>>>>> --- a/drivers/hwmon/pmbus/Makefile
+> >>>>>>>>>>>> +++ b/drivers/hwmon/pmbus/Makefile
+> >>>>>>>>>>>> @@ -9,6 +9,7 @@ obj-$(CONFIG_SENSORS_ADM1266) += adm1266.o
+> >>>>>>>>>>>>       obj-$(CONFIG_SENSORS_ADM1275)        += adm1275.o
+> >>>>>>>>>>>>       obj-$(CONFIG_SENSORS_BEL_PFE)        += bel-pfe.o
+> >>>>>>>>>>>>       obj-$(CONFIG_SENSORS_IBM_CFFPS)      += ibm-cffps.o
+> >>>>>>>>>>>> +obj-$(CONFIG_SENSORS_DPS920AB)       += dps920ab.o
+> >>>>>>>>>>>>       obj-$(CONFIG_SENSORS_INSPUR_IPSPS) += inspur-ipsps.o
+> >>>>>>>>>>>>       obj-$(CONFIG_SENSORS_IR35221)        += ir35221.o
+> >>>>>>>>>>>>       obj-$(CONFIG_SENSORS_IR38064)        += ir38064.o
+> >>>>>>>>>>>> diff --git a/drivers/hwmon/pmbus/dps920ab.c b/drivers/hwmon/pmbus/dps920ab.c
+> >>>>>>>>>>>> new file mode 100644
+> >>>>>>>>>>>> index 000000000000..d579ed9f879c
+> >>>>>>>>>>>> --- /dev/null
+> >>>>>>>>>>>> +++ b/drivers/hwmon/pmbus/dps920ab.c
+> >>>>>>>>>>>> @@ -0,0 +1,63 @@
+> >>>>>>>>>>>> +// SPDX-License-Identifier: GPL-2.0-or-later
+> >>>>>>>>>>>> +/*
+> >>>>>>>>>>>> + * Driver for Delta DPS920AB PSU
+> >>>>>>>>>>>> + *
+> >>>>>>>>>>>> + * Copyright (C) 2021 Delta Networks, Inc.
+> >>>>>>>>>>>> + * Copyright (C) 2021 Sartura Ltd.
+> >>>>>>>>>>>> + */
+> >>>>>>>>>>>> +
+> >>>>>>>>>>>> +#include <linux/i2c.h>
+> >>>>>>>>>>>> +#include <linux/module.h>
+> >>>>>>>>>>>> +#include <linux/of_device.h>
+> >>>>>>>>>>>> +#include "pmbus.h"
+> >>>>>>>>>>>> +
+> >>>>>>>>>>>> +static struct pmbus_driver_info dps920ab_info = {
+> >>>>>>>>>>>> +     .pages = 1,
+> >>>>>>>>>>>> +
+> >>>>>>>>>>>> +     .format[PSC_VOLTAGE_IN] = linear,
+> >>>>>>>>>>>> +     .format[PSC_VOLTAGE_OUT] = linear,
+> >>>>>>>>>>>> +     .format[PSC_CURRENT_IN] = linear,
+> >>>>>>>>>>>> +     .format[PSC_CURRENT_OUT] = linear,
+> >>>>>>>>>>>> +     .format[PSC_POWER] = linear,
+> >>>>>>>>>>>> +     .format[PSC_FAN] = linear,
+> >>>>>>>>>>>> +     .format[PSC_TEMPERATURE] = linear,
+> >>>>>>>>>>>> +
+> >>>>>>>>>>>> +     .func[0] = PMBUS_HAVE_VIN | PMBUS_HAVE_IIN  |
+> >>>>>>>>>>>> +     PMBUS_HAVE_VOUT  | PMBUS_HAVE_STATUS_VOUT   |
+> >>>>>>>>>>>> +     PMBUS_HAVE_IOUT  | PMBUS_HAVE_STATUS_IOUT   |
+> >>>>>>>>>>>> +     PMBUS_HAVE_TEMP  | PMBUS_HAVE_TEMP2         |
+> >>>>>>>>>>>> +     PMBUS_HAVE_PIN   | PMBUS_HAVE_POUT          |
+> >>>>>>>>>>>> +     PMBUS_HAVE_FAN12 | PMBUS_HAVE_STATUS_FAN12  |
+> >>>>>>>>>>>> +     PMBUS_HAVE_STATUS_INPUT | PMBUS_HAVE_STATUS_TEMP,
+> >>>>>>>>>>>> +};
+> >>>>>>>>>>>> +
+> >>>>>>>>>>>> +static int dps920ab_probe(struct i2c_client *client)
+> >>>>>>>>>>>> +{
+> >>>>>>>>>>>> +     if (!i2c_check_functionality(client->adapter,
+> >>>>>>>>>>>> +                                  I2C_FUNC_SMBUS_BYTE_DATA |
+> >>>>>>>>>>>> +                                  I2C_FUNC_SMBUS_WORD_DATA))
+> >>>>>>>>>>>> +             return -ENODEV;
+> >>>>>>>>>>>
+> >>>>>>>>>>> This check is done in pmbus_do_probe(), and repeating it here does not add
+> >>>>>>>>>>> any value.
+> >>>>>>>>>>
+> >>>>>>>>>> Ok, makes sense.
+> >>>>>>>>>>>
+> >>>>>>>>>>> That makes me wonder: Is this driver needed in the first place, or could
+> >>>>>>>>>>> it be added to drivers/hwmon/pmbus/pmbus.c ?
+> >>>>>>>>>>
+> >>>>>>>>>> It could be added as a generic driver, but that creates properties in
+> >>>>>>>>>> the sysfs that this thing
+> >>>>>>>>>> does not support like 3 voltage readings, 3 fans, and so on.
+> >>>>>>>>>>
+> >>>>>>>>>
+> >>>>>>>>> Can you be more specific ? What additional unsupported attributes
+> >>>>>>>>> are added, and why ? Are you saying the PSU reports registers as
+> >>>>>>>>> existing which do not really exist ? If so, which registers are those ?
+> >>>>>>>>
+> >>>>>>>> Sure, when core does probing and autodiscovery, then the following
+> >>>>>>>> sysfs attributes are created:
+> >>>>>>>>>
+> >>>>>>>>> curr1_crit         fan3_fault       in3_min_alarm      temp1_max
+> >>>>>>>>> curr1_crit_alarm   fan3_input       in3_rated_max      temp1_max_alarm
+> >>>>>>>>> curr1_input        fan3_target      in3_rated_min      temp1_min
+> >>>>>>>>> curr1_label        in1_crit         name               temp1_min_alarm
+> >>>>>>>>> curr1_max          in1_crit_alarm   of_node            temp1_rated_max
+> >>>>>>>>> curr1_max_alarm    in1_input        power              temp2_crit
+> >>>>>>>>> curr1_rated_max    in1_label        power1_alarm       temp2_crit_alarm
+> >>>>>>>>> curr2_crit         in1_lcrit        power1_input       temp2_input
+> >>>>>>>>> curr2_crit_alarm   in1_lcrit_alarm  power1_label       temp2_lcrit
+> >>>>>>>>> curr2_input        in1_max          power1_max         temp2_lcrit_alarm
+> >>>>>>>>> curr2_label        in1_max_alarm    power1_rated_max   temp2_max
+> >>>>>>>>> curr2_lcrit        in1_min          power2_cap         temp2_max_alarm
+> >>>>>>>>> curr2_lcrit_alarm  in1_min_alarm    power2_cap_alarm   temp2_min
+> >>>>>>>>> curr2_max          in1_rated_max    power2_crit        temp2_min_alarm
+> >>>>>>>>> curr2_max_alarm    in1_rated_min    power2_crit_alarm  temp2_rated_max
+> >>>>>>>>> curr2_rated_max    in2_input        power2_input       temp3_crit
+> >>>>>>>>> device             in2_label        power2_label       temp3_crit_alarm
+> >>>>>>>>> fan1_alarm         in3_crit         power2_max         temp3_input
+> >>>>>>>>> fan1_fault         in3_crit_alarm   power2_max_alarm   temp3_lcrit
+> >>>>>>>>> fan1_input         in3_input        power2_rated_max   temp3_lcrit_alarm
+> >>>>>>>>> fan1_target        in3_label        subsystem          temp3_max
+> >>>>>>>>> fan2_alarm         in3_lcrit        temp1_crit         temp3_max_alarm
+> >>>>>>>>> fan2_fault         in3_lcrit_alarm  temp1_crit_alarm   temp3_min
+> >>>>>>>>> fan2_input         in3_max          temp1_input        temp3_min_alarm
+> >>>>>>>>> fan2_target        in3_max_alarm    temp1_lcrit        temp3_rated_max
+> >>>>>>>>> fan3_alarm         in3_min          temp1_lcrit_alarm  uevent
+> >>>>>>>>
+> >>>>>>>> The following return -1, or -500 so they are not supported.
+> >>>>>>>> * fan2
+> >>>>>>>> * in2
+> >>>>>>>>
+> >>>>>>>> Weirdly, with the external driver both fan2 and in2 are enabled and work fine,
+> >>>>>>>> but when auto probing they are fan3 and in3.
+> >>>>>>>>
+> >>>>>>>> temp3 actually seems to return a valid temperature despite it not being used in
+> >>>>>>>> the vendor driver that features were picked from.
+> >>>>>>>>
+> >>>>>>>
+> >>>>>>> Can you run "grep . *" in the hwmon directory so I can see actual values ?
+> >>>>>>>
+> >>>>>> Sure:
+> >>>>>>>
+> >>>>>>> curr1_crit:-500
+> >>>>>>> curr1_crit_alarm:0
+> >>>>>>> curr1_input:195
+> >>>>>>> curr1_label:iin
+> >>>>>>> curr1_max:-500
+> >>>>>>> curr1_max_alarm:0
+> >>>>>>> curr1_rated_max:-500
+> >>>>>>> curr2_crit:-500
+> >>>>>>> curr2_crit_alarm:0
+> >>>>>>> curr2_input:320
+> >>>>>>> curr2_label:iout1
+> >>>>>>> curr2_lcrit:-500
+> >>>>>>> curr2_lcrit_alarm:0
+> >>>>>>> curr2_max:18625
+> >>>>>>> curr2_max_alarm:0
+> >>>>>>> curr2_rated_max:16875
+> >>>>>>> grep: device: Is a directory
+> >>>>>>> fan1_alarm:0
+> >>>>>>> fan1_fault:0
+> >>>>>>> fan1_input:10000
+> >>>>>>> fan1_target:0
+> >>>>>>> fan2_alarm:1
+> >>>>>>> fan2_fault:1
+> >>>>>>> fan2_input:-1
+> >>>>>>> fan2_target:-1
+> >>>>>>> fan3_alarm:1
+> >>>>>>> fan3_fault:1
+> >>>>>>> fan3_input:-1
+> >>>>>>> fan3_target:-1
+> >>>>>>> in1_crit:-500
+> >>>>>>> in1_crit_alarm:0
+> >>>>>>> in1_input:245250
+> >>>>>>> in1_label:vin
+> >>>>>>> in1_lcrit:-500
+> >>>>>>> in1_lcrit_alarm:0
+> >>>>>>> in1_max:-500
+> >>>>>>> in1_max_alarm:0
+> >>>>>>> in1_min:-500
+> >>>>>>> in1_min_alarm:0
+> >>>>>>> in1_rated_max:-500
+> >>>>>>> in1_rated_min:-500
+> >>>>>>> in2_input:-500
+> >>>>>>> in2_label:vcap
+> >>>>>>> in3_crit:255996
+> >>>>>>> in3_crit_alarm:0
+> >>>>>>> in3_input:54511
+> >>>>>>> in3_label:vout1
+> >>>>>>> in3_lcrit:255996
+> >>>>>>> in3_lcrit_alarm:0
+> >>>>>>> in3_max:255996
+> >>>>>>> in3_max_alarm:0
+> >>>>>>> in3_min:255996
+> >>>>>>> in3_min_alarm:0
+> >>>>>>> in3_rated_max:56136
+> >>>>>>> in3_rated_min:52863
+> >>>>>>> name:dps920ab
+> >>>>>>> grep: of_node: Is a directory
+> >>>>>>> grep: power: Is a directory
+> >>>>>>> power1_alarm:0
+> >>>>>>> power1_input:33250000
+> >>>>>>> power1_label:pin
+> >>>>>>> power1_max:-500000
+> >>>>>>> power1_rated_max:-500000
+> >>>>>>> power2_cap:-500000
+> >>>>>>> power2_cap_alarm:0
+> >>>>>>> power2_crit:-500000
+> >>>>>>> power2_crit_alarm:0
+> >>>>>>> power2_input:17750000
+> >>>>>>> power2_label:pout1
+> >>>>>>> power2_max:-500000
+> >>>>>>> power2_max_alarm:0
+> >>>>>>> power2_rated_max:920000000
+> >>>>>>> grep: subsystem: Is a directory
+> >>>>>>> temp1_crit:-500
+> >>>>>>> temp1_crit_alarm:0
+> >>>>>>> temp1_input:23000
+> >>>>>>> temp1_lcrit:-500
+> >>>>>>> temp1_lcrit_alarm:0
+> >>>>>>> temp1_max:-500
+> >>>>>>> temp1_max_alarm:0
+> >>>>>>> temp1_min:-500
+> >>>>>>> temp1_min_alarm:0
+> >>>>>>> temp1_rated_max:-500
+> >>>>>>> temp2_crit:-500
+> >>>>>>> temp2_crit_alarm:0
+> >>>>>>> temp2_input:26000
+> >>>>>>> temp2_lcrit:-500
+> >>>>>>> temp2_lcrit_alarm:0
+> >>>>>>> temp2_max:-500
+> >>>>>>> temp2_max_alarm:0
+> >>>>>>> temp2_min:-500
+> >>>>>>> temp2_min_alarm:0
+> >>>>>>> temp2_rated_max:-500
+> >>>>>>> temp3_crit:-500
+> >>>>>>> temp3_crit_alarm:0
+> >>>>>>> temp3_input:30000
+> >>>>>>> temp3_lcrit:-500
+> >>>>>>> temp3_lcrit_alarm:0
+> >>>>>>> temp3_max:-500
+> >>>>>>> temp3_max_alarm:0
+> >>>>>>> temp3_min:-500
+> >>>>>>> temp3_min_alarm:0
+> >>>>>>> temp3_rated_max:-500
+> >>>>>>> uevent:OF_NAME=psu
+> >>>>>>> uevent:OF_FULLNAME=/ap806/config-space@f0000000/i2c@511000/psu@5a
+> >>>>>>> uevent:OF_COMPATIBLE_0=delta,dps920ab
+> >>>>>>> uevent:OF_COMPATIBLE_N=1
+> >>>>>>
+> >>>>> Ok, good enough. It looks like the PSU reports values for pretty much everything,
+> >>>>> including registers which don't exist. With that in mind, please check
+> >>>>> the attributes generated by your driver - I suspect that some of the limit
+> >>>>> attributes are not really supported (maybe none of them is supported).
+> >>>>
+> >>>> Yeah, I also think that none of those limits are actually supported.
+> >>>> Does the core expose a way to not register those?
+> >>>>
+> >>>
+> >>> Have the read_word function return -ENXIO for unsupported registers
+> >>> (and add a comment to the code explaining why you do that).
+> >>> See drivers/hwmon/pmbus/fsp-3y.c for an example.
+> >>
+> >> Thanks, will implement that.
+> >> In the meantime I finally got the PMBus command list that
+> >> the PSU supports.
+> >> It implements PMBus 1.2, but it also claims that MFR_ID,
+> >> MFR_MODEL and MFR_REVISION are supported.
+> >>
+> >> Block read returns what looks like a correct length, but the buffer
+> >> is empty.
+> >>>
+> >>> [  195.246464] dps920ab 0-005a: PMBUS_MFR_ID length: 5
+> >>> [  195.251495] dps920ab 0-005a: PMBUS_MFR_ID:
+> >>> [  195.300789] dps920ab 0-005b: PMBUS_MFR_ID length: 5
+> >>> [  195.305762] dps920ab 0-005b: PMBUS_MFR_ID:
+> >>> [  272.795222] dps920ab 0-005a: PMBUS_MFR_ID length: 5
+> >>> [  272.800190] dps920ab 0-005a: PMBUS_MFR_ID:
+> >>> [  272.804862] dps920ab 0-005a: PMBUS_MFR_MODEL length: 11
+> >>> [  272.810172] dps920ab 0-005a: PMBUS_MFR_MODEL:
+> >>> [  272.815098] dps920ab 0-005a: PMBUS_MFR_REVISION length: 2
+> >>> [  272.820600] dps920ab 0-005a: PMBUS_MFR_REVISION:
+> >>> [  272.874060] dps920ab 0-005b: PMBUS_MFR_ID length: 5
+> >>> [  272.879102] dps920ab 0-005b: PMBUS_MFR_ID:
+> >>> [  272.883833] dps920ab 0-005b: PMBUS_MFR_MODEL length: 11
+> >>> [  272.889151] dps920ab 0-005b: PMBUS_MFR_MODEL:
+> >>> [  272.894097] dps920ab 0-005b: PMBUS_MFR_REVISION length: 2
+> >>> [  272.899548] dps920ab 0-005b: PMBUS_MFR_REVISION:
+> >>
+> >>
+> >> However, manually reading using i2cget in word mode returns
+> >> something that looks ok.
+> >> i2cget -y 0 0x5a 0x9a w
+> >> 0x440b
+> >>
+> >> This would be D is ASCII, it looks like any kind of block read fails actually.
+> >
+> > Ok, so after using i2c_smbus_read_i2c_block_data() I can actually read
+> > the model kind of OK.
+> > There actually are 10 bytes of valid data, no idea why
+> > i2c_smbus_read_block_data() does not work.
+> >>
+> >> [  721.194706] dps920ab 0-005a: MFR MODEL:
+> >>                                             DPS-920AB
+> >> [  721.245502] dps920ab 0-005b: MFR MODEL:
+> >>                                             DPS-920AB
+> >
+> > It behaves weirdly when printing by creating a newline before and
+> > stuff like that.
+> >
+>
+> I suspect it prints the first byte, which should be the length.
+> I also suspect that the i2c controller driver has a bug and doesn't
+> support SMBus block data correctly. Did you try i2cdump with i and s
+> options ?
 
-(If it works :)) that's clever.  It can even be set unconditionally on 
-the save side and would even work for new->old migration.
+That could be the case, I just wanted to see whether the controller or
+PSU are at fault.
+I tried using s with i2cdump and it will error out on the controller
+not supporting block reads.
+The controller most likely has a bug in the driver.
+>
+> >> I tried applying the block support for mv64xx as well:
+> >> https://patchwork.ozlabs.org/project/linux-i2c/patch/20200118115820.9080-1-fuga@studiofuga.com/
+>
+> That patch would be needed, but it looks buggy to me. This chunk:
+>
+> +               drv_data->effective_length = data+1;
+> +               drv_data->bytes_left = data+1;
+> +               drv_data->msg->len = data+1;
+>
+> should be:
+>
+> +               drv_data->effective_length = data+1;
+> +               drv_data->bytes_left = data;
+> +               drv_data->msg->len = data+1;
+>
+> It should also make sure that 'data' is not larger than I2C_SMBUS_BLOCK_MAX,
+> and bail out if it isn't.
 
-Paolo
+Yeah, I did not check the contents, I just saw 2 reviews and tested it
+since it can't hurt.
+>
+> Do you see a difference with the patch applied ?
 
+No, unfortunately not, i2cdump in s mode returns all zeroes.
+I can see that it gets the correct length but returns all zeroes.
+
+I did some development on the driver, added whitelisting for
+word-based registers.
+Found that this thing actually has the third temperature sensor after
+all and a lot of warnings
+and stuff are supported.
+
+I need to review the byte-based registers and whitelist those if needed.
+
+Tried adding PWM/DC control for the fan as it supports it, but it was
+a bit confusing so I
+gave up on that for now.
+
+Regards,
+Robert
+>
+> Guenter
+
+
+
+-- 
+Robert Marko
+Staff Embedded Linux Engineer
+Sartura Ltd.
+Lendavska ulica 16a
+10000 Zagreb, Croatia
+Email: robert.marko@sartura.hr
+Web: www.sartura.hr
