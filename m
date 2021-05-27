@@ -2,72 +2,233 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B3328392826
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 09:04:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F1275392828
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 09:05:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234572AbhE0HGD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 May 2021 03:06:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59210 "EHLO
+        id S234651AbhE0HG6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 May 2021 03:06:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59418 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233092AbhE0HF7 (ORCPT
+        with ESMTP id S233092AbhE0HGz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 May 2021 03:05:59 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6EF45C061574;
-        Thu, 27 May 2021 00:04:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=PPArDtmVSbaIBK9KdQAml3WznYWv8zCY7djwFtezsUU=; b=PddqSj8fdb7piv+KzrHrYivWZG
-        n+ZYlhNLxGxVHAARYUTLxs1UfgeIbQtyHv4pD2swQr/TqEmzgn+zLdlD9T2pj9WGLVJb1UPPtL0nj
-        e+eqlgFHSbCrWu5IVx3YnoMq32A4ug4xu+n7waRl5OWh3FkdfUT62gtJwOmDoLH4Muy2VwFKeWEBT
-        U2gtTNk+oH3Ah+beTBKOB2zXK7o3eQMHcIz0lsZl8Lijtk5qpbztkW6iCmEL/FeVsvvZcs6NSjN0r
-        nNZiqPuaxdku9HjZBZB1aLeRYAy1QMhXG3L14vimBnIbMBFlzCTNXP6PLf4lXIanp++/8fmCLVyfS
-        QfcFXYkw==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1lmA3t-000wH0-PJ; Thu, 27 May 2021 07:04:16 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 2B9F9300223;
-        Thu, 27 May 2021 09:04:16 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 1414E2C6D2B90; Thu, 27 May 2021 09:04:16 +0200 (CEST)
-Date:   Thu, 27 May 2021 09:04:16 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Boqun Feng <boqun.feng@gmail.com>
-Cc:     Xiongwei Song <sxwjean@me.com>, mingo@redhat.com, will@kernel.org,
-        longman@redhat.com, corbet@lwn.net, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Xiongwei Song <sxwjean@gmail.com>
-Subject: Re: [PATCH] docs: lockdep-design: improve readability of the block
- matrix
-Message-ID: <YK9EcCOJhknGA6qE@hirez.programming.kicks-ass.net>
-References: <1621868745-23311-1-git-send-email-sxwjean@me.com>
- <YK8SRvhp1+iR2y6G@boqun-archlinux>
+        Thu, 27 May 2021 03:06:55 -0400
+Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35C19C061760
+        for <linux-kernel@vger.kernel.org>; Thu, 27 May 2021 00:05:22 -0700 (PDT)
+Received: by mail-lf1-x136.google.com with SMTP id e17so5865840lfb.2
+        for <linux-kernel@vger.kernel.org>; Thu, 27 May 2021 00:05:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=yK4NtyP2YDloKEM3MRgN2MPiK62c2cwQQp+Gi12UUm0=;
+        b=bd/TflAT1QFQ8BRPCZfHrcM/q0Oj8PMqOslGeo/HvkSSeXwPdPZ4i+0B3NuJu51VBC
+         ud/fwYG7p9f7k8sCzFyt/6DKrURCGp7iR4fG1DrBdML1AY3zSISxvCFsQTbxTbh/FVhW
+         1ggaMD+Ht17wMsnr5Q0rQGIjaGUafhDT5MyQAmnFPoQKm9lFxqgSJPSJZIOfl5gh7vjc
+         lKKpjT15DZMGMv2VElJNuqad5S8rf++uCLQLBHaOsmYNcbWytOW6VS74Qo+Xa58PY9sL
+         zyXzlZ09kfOlvpyAIBxAqagfzNRB+1aLVEPhKPxy4SylmmxfdKmfk3BH0axzckiR0iii
+         i1CA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=yK4NtyP2YDloKEM3MRgN2MPiK62c2cwQQp+Gi12UUm0=;
+        b=Vl2YDPItwTFB1HPg9/1irIkeOTJ9oSQVBvv4WynNJR80SyTWCiQQjkBOLT9DEhdowx
+         iZ7k0NRM9xR/fjSjgdIBl4AlqUFUS9mOFBE43LafUKpmQGPxTqYlOneFhyh93pJ5w6xa
+         WA7Svfq4QDUZOZDBq5b+eFmpPi4l3WCtTp5CmWxsgaNBa/D3BdIUhMycJW1cxhDEP4ll
+         51ABF6Te77RthXd8EaxVPyGYaIlNk4JA5zl92mm3SHnwVIvCmFtaCWHrQqKPUre9W17o
+         QKwjcXxm2tQcZ2y4xu8Ee2kSwX0CfVVzKMJa61kGiOFWtBcRazQy6jkdbrRH/lx45TY0
+         02lA==
+X-Gm-Message-State: AOAM5308nBiNo9jO4vuBhnxAUWbkbKgsD6iPxvFnsKDur9fS6dtfjBl7
+        HRQKYKal98cTCIEGaSUNHE3QHVVJo5WPWzAx/lpeyQ==
+X-Google-Smtp-Source: ABdhPJx4bMA6MXFlrjrowJpEEpwS5VVepNDaw7TtP8sTCsBHxS0gJ8cwcTZ442OgncQy1EEydmlJuFVleW9Lky0ejng=
+X-Received: by 2002:a05:6512:44b:: with SMTP id y11mr1340009lfk.451.1622099120084;
+ Thu, 27 May 2021 00:05:20 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YK8SRvhp1+iR2y6G@boqun-archlinux>
+References: <20210513165327.1.I4d214bb82746fb2ed94eb1c2100dda0f63cf9a25@changeid>
+ <7867EC1F-324A-4739-B5F7-DDEB3994EA7A@holtmann.org> <CAJQfnxE4PY09GpxGYLKy2kXnaCQaUmCakhCKnhqGnoK+9aSyyg@mail.gmail.com>
+ <DAE03499-573B-4A72-A2A9-2E139B78AB2E@holtmann.org> <CAJQfnxHg50mKGVpQoH-dobphAzpFwyc2gQMzVkLZeNUW0Yyh3Q@mail.gmail.com>
+ <CAJQfnxG1ba=imd_BiOXpuT8WF8HeWPcs5y4kdKx+fV6LEL9SyA@mail.gmail.com>
+ <3DB375AF-3BC3-43F3-A1F5-1E3CBF17318D@holtmann.org> <CAJQfnxE+qiPor8xUd8zuJH45LmbrHb8YwcvjrnhkG0LovP1vyw@mail.gmail.com>
+ <CAJQfnxErqfZ-+NgT2xeeOADChJxs2hkwkn-qePtJTRcU53BmGw@mail.gmail.com> <14DD0026-DE65-4EAA-B5EF-F98C3407BA1A@holtmann.org>
+In-Reply-To: <14DD0026-DE65-4EAA-B5EF-F98C3407BA1A@holtmann.org>
+From:   Archie Pusaka <apusaka@google.com>
+Date:   Thu, 27 May 2021 15:05:09 +0800
+Message-ID: <CAJQfnxF6zYr=-t46yjYSev+RtPhhnZep4Vh2AFaARfzoEM8mDA@mail.gmail.com>
+Subject: Re: [PATCH] Bluetooth: hci_h5: Add RTL8822CS capabilities
+To:     Marcel Holtmann <marcel@holtmann.org>
+Cc:     linux-bluetooth <linux-bluetooth@vger.kernel.org>,
+        CrosBT Upstreaming <chromeos-bluetooth-upstreaming@chromium.org>,
+        Archie Pusaka <apusaka@chromium.org>,
+        Abhishek Pandit-Subedi <abhishekpandit@chromium.org>,
+        Johan Hedberg <johan.hedberg@gmail.com>,
+        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 27, 2021 at 11:30:14AM +0800, Boqun Feng wrote:
-> On Mon, May 24, 2021 at 11:05:45PM +0800, Xiongwei Song wrote:
-> > From: Xiongwei Song <sxwjean@gmail.com>
-> > 
-> > The block condition matrix is using 'E' as the writer notation, however,
-> > the writer reminder below the matrix is using 'W', to make them consistent
-> > and make the matrix more readable, we'd better to use 'W' to represent
-> > writer.
-> > 
-> > Suggested-by: Waiman Long <llong@redhat.com>
-> > Suggested-by: Boqun Feng <boqun.feng@gmail.com>
-> > Signed-off-by: Xiongwei Song <sxwjean@gmail.com>
-> 
-> Reviewed-by: Boqun Feng <boqun.feng@gmail.com>
+Hi Marcel,
 
-Thanks!
+On Wed, 26 May 2021 at 22:59, Marcel Holtmann <marcel@holtmann.org> wrote:
+>
+> Hi Archie,
+>
+> >>>>>>>>> RTL8822 chipset supports WBS, and this information is conveyed =
+in
+> >>>>>>>>> btusb.c. However, the UART driver doesn't have this information=
+ just
+> >>>>>>>>> yet.
+> >>>>>>>>>
+> >>>>>>>>> Signed-off-by: Archie Pusaka <apusaka@chromium.org>
+> >>>>>>>>> Reviewed-by: Abhishek Pandit-Subedi <abhishekpandit@chromium.or=
+g>
+> >>>>>>>>> ---
+> >>>>>>>>>
+> >>>>>>>>> drivers/bluetooth/btrtl.c  | 26 ++++++++++++++++----------
+> >>>>>>>>> drivers/bluetooth/btrtl.h  |  2 ++
+> >>>>>>>>> drivers/bluetooth/hci_h5.c |  5 +----
+> >>>>>>>>> 3 files changed, 19 insertions(+), 14 deletions(-)
+> >>>>>>>>>
+> >>>>>>>>> diff --git a/drivers/bluetooth/btrtl.c b/drivers/bluetooth/btrt=
+l.c
+> >>>>>>>>> index e7fe5fb22753..988a09860c6b 100644
+> >>>>>>>>> --- a/drivers/bluetooth/btrtl.c
+> >>>>>>>>> +++ b/drivers/bluetooth/btrtl.c
+> >>>>>>>>> @@ -719,17 +719,8 @@ int btrtl_download_firmware(struct hci_dev=
+ *hdev,
+> >>>>>>>>> }
+> >>>>>>>>> EXPORT_SYMBOL_GPL(btrtl_download_firmware);
+> >>>>>>>>>
+> >>>>>>>>> -int btrtl_setup_realtek(struct hci_dev *hdev)
+> >>>>>>>>> +void btrtl_set_quirks(struct hci_dev *hdev, struct btrtl_devic=
+e_info *btrtl_dev)
+> >>>>>>>>> {
+> >>>>>>>>> -     struct btrtl_device_info *btrtl_dev;
+> >>>>>>>>> -     int ret;
+> >>>>>>>>> -
+> >>>>>>>>> -     btrtl_dev =3D btrtl_initialize(hdev, NULL);
+> >>>>>>>>> -     if (IS_ERR(btrtl_dev))
+> >>>>>>>>> -             return PTR_ERR(btrtl_dev);
+> >>>>>>>>> -
+> >>>>>>>>> -     ret =3D btrtl_download_firmware(hdev, btrtl_dev);
+> >>>>>>>>> -
+> >>>>>>>>>    /* Enable controller to do both LE scan and BR/EDR inquiry
+> >>>>>>>>>     * simultaneously.
+> >>>>>>>>>     */
+> >>>>>>>>> @@ -750,6 +741,21 @@ int btrtl_setup_realtek(struct hci_dev *hd=
+ev)
+> >>>>>>>>>            rtl_dev_dbg(hdev, "WBS supported not enabled.");
+> >>>>>>>>>            break;
+> >>>>>>>>>    }
+> >>>>>>>>> +}
+> >>>>>>>>> +EXPORT_SYMBOL_GPL(btrtl_set_quirks);
+> >>>>>>>>> +
+> >>>>>>>>> +int btrtl_setup_realtek(struct hci_dev *hdev)
+> >>>>>>>>> +{
+> >>>>>>>>> +     struct btrtl_device_info *btrtl_dev;
+> >>>>>>>>> +     int ret;
+> >>>>>>>>> +
+> >>>>>>>>> +     btrtl_dev =3D btrtl_initialize(hdev, NULL);
+> >>>>>>>>> +     if (IS_ERR(btrtl_dev))
+> >>>>>>>>> +             return PTR_ERR(btrtl_dev);
+> >>>>>>>>> +
+> >>>>>>>>> +     ret =3D btrtl_download_firmware(hdev, btrtl_dev);
+> >>>>>>>>> +
+> >>>>>>>>> +     btrtl_set_quirks(hdev, btrtl_dev);
+> >>>>>>>>>
+> >>>>>>>>>    btrtl_free(btrtl_dev);
+> >>>>>>>>>    return ret;
+> >>>>>>>>> diff --git a/drivers/bluetooth/btrtl.h b/drivers/bluetooth/btrt=
+l.h
+> >>>>>>>>> index 2a582682136d..260167f01b08 100644
+> >>>>>>>>> --- a/drivers/bluetooth/btrtl.h
+> >>>>>>>>> +++ b/drivers/bluetooth/btrtl.h
+> >>>>>>>>> @@ -54,6 +54,8 @@ struct btrtl_device_info *btrtl_initialize(st=
+ruct hci_dev *hdev,
+> >>>>>>>>> void btrtl_free(struct btrtl_device_info *btrtl_dev);
+> >>>>>>>>> int btrtl_download_firmware(struct hci_dev *hdev,
+> >>>>>>>>>                        struct btrtl_device_info *btrtl_dev);
+> >>>>>>>>> +void btrtl_set_quirks(struct hci_dev *hdev,
+> >>>>>>>>> +                   struct btrtl_device_info *btrtl_dev);
+> >>>>>>>>> int btrtl_setup_realtek(struct hci_dev *hdev);
+> >>>>>>>>> int btrtl_shutdown_realtek(struct hci_dev *hdev);
+> >>>>>>>>> int btrtl_get_uart_settings(struct hci_dev *hdev,
+> >>>>>>>>> diff --git a/drivers/bluetooth/hci_h5.c b/drivers/bluetooth/hci=
+_h5.c
+> >>>>>>>>> index 27e96681d583..e0520639f4ba 100644
+> >>>>>>>>> --- a/drivers/bluetooth/hci_h5.c
+> >>>>>>>>> +++ b/drivers/bluetooth/hci_h5.c
+> >>>>>>>>> @@ -906,10 +906,7 @@ static int h5_btrtl_setup(struct h5 *h5)
+> >>>>>>>>>    /* Give the device some time before the hci-core sends it a =
+reset */
+> >>>>>>>>>    usleep_range(10000, 20000);
+> >>>>>>>>>
+> >>>>>>>>> -     /* Enable controller to do both LE scan and BR/EDR inquir=
+y
+> >>>>>>>>> -      * simultaneously.
+> >>>>>>>>> -      */
+> >>>>>>>>> -     set_bit(HCI_QUIRK_SIMULTANEOUS_DISCOVERY, &h5->hu->hdev->=
+quirks);
+> >>>>>>>>> +     btrtl_set_quirks(h5->hu->hdev, btrtl_dev);
+> >>>>>>>>
+> >>>>>>>> any reason why not just setting WBS quirk here?
+> >>>>>>>
+> >>>>>>> Hmm, I think WBS is the feature of the chipset and not the transp=
+ort.
+> >>>>>>> Therefore isn't it better to just have it set in one place?
+> >>>>>>> Setting the quirks here means we need to copy paste the settings =
+from btrtl.c.
+> >>>>>>
+> >>>>>> but since you are already setting HCI_QUIRK_SIMULTANEOUS_DISCOVERY=
+ right now, I don=E2=80=99t see the difference.
+> >>>>>
+> >>>>> Sorry, I don't get what you mean.
+> >>>>> With this patch I also moved HCI_QUIRK_SIMULTANEOUS_DISCOVERY into
+> >>>>> btrtl.c, so it's together with the WBS quirk.
+> >>>>>
+> >>>>>> Can we actually verify that we still need the WBS quirk. I think w=
+e fixed the broken errerrnous packet flag handling.
+> >>>>>
+> >>>>> To be honest, I am not aware about the story of the broken erroneou=
+s
+> >>>>> packet flag.
+> >>>>> Last time I checked I still needed the quirk to have RTL8822 on UAR=
+T
+> >>>>> properly run WBS, but that was months ago...
+> >>>>> Let me verify whether this quirk is still needed.
+> >>>>
+> >>>> It looks like we still need the WBS quirk because otherwise the host
+> >>>> wouldn't know whether the controller supports WBS or not. It's used =
+in
+> >>>> get_supported_settings() in mgmt.c.
+> >>>
+> >>> and why not set it unconditionally for all Realtek chips?
+> >>
+> >> Not all Realtek chips supports WBS, therefore
+> >> HCI_QUIRK_WIDEBAND_SPEECH_SUPPORTED is only set on some of them.
+> >
+> > Are there any other concerns you might have?
+>
+> can we do the quirk setting in btrtl_setup_realtek() instead of creating =
+another exported function.
+
+It cannot be done easily since the first part of btrtl_setup_realtek()
+is used exclusively for btusb, which is done differently in hci_h5.
+
+We can have it another way: define btrtl_setup_realtek_h5() to do the
+setup for h5 part in btrtl.c. This would effectively move all of
+h5_btrtl_setup() inside hci_h5.c, most notably the serdev setup. In
+turn, we don't have to expose btrtl_set_quirks(), and we can even hide
+btrtl_initialize(), btrtl_free(), and btrtl_download_firmware() inside
+btrtl.c.
+I'm not sure though why would one want that? We still need to export
+the new btrtl_setup_realtek_h5().
+
+BTW I just noticed I missed a declaration in btrtl.h, so I will send a
+v2 patch to fix it.
+
+Cheers,
+Archie
