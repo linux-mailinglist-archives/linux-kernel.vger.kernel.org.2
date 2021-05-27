@@ -2,92 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 45661392FB6
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 15:29:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A56A392FBC
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 15:30:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236500AbhE0NbG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 May 2021 09:31:06 -0400
-Received: from new4-smtp.messagingengine.com ([66.111.4.230]:50945 "EHLO
-        new4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S236335AbhE0NbD (ORCPT
+        id S236507AbhE0Nbf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 May 2021 09:31:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35172 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236441AbhE0Nbd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 May 2021 09:31:03 -0400
-Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
-        by mailnew.nyi.internal (Postfix) with ESMTP id 03E7658472F;
-        Thu, 27 May 2021 09:29:26 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute1.internal (MEProxy); Thu, 27 May 2021 09:29:26 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kroah.com; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm3; bh=6GRC/0MZj+00ZlSbSG5P9vkghEm
-        DAwpet/OoF+tag/w=; b=J30v3f1+Fi4bHN7Zn4dwceyEbf5fD488Th/llLcnfxg
-        1rz6UKwNj3gIPfRjzPu66rZ1QtWKMCU+bJdfrxyY2fqfmHrHL8NJC8eKqc54iVRa
-        quCEMoDTab5jRc91dT7ZT+pwuD+w6Z+YKM1q7WrGfaox0dgJrMl29aRL2LQKjW6z
-        5aSVawgcfKcFLMFOoHe/1VcKwfBBv/Ki94XiiyHalvg91O2eqfFw87pE3BKUibOV
-        53VUN3N3IPOC/dWKxsQe2PQmxMA6TrtudBhADFT4IpW7sIWRkN4fAbzCGx1//mgr
-        LcIbzvcBB9O5cc5bEa2QDReidoHHQQThTLwYkLqmGFQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=6GRC/0
-        MZj+00ZlSbSG5P9vkghEmDAwpet/OoF+tag/w=; b=LK+sfIEv8YeEF+e3vwIVGf
-        Y2aK45WaeUtarPyLe7y1UH8LAPgdmtSIKR2Rxw4oJpwWLewVHna1nsTVdtil4skT
-        FI0HW3TsE+HY+YF0pIYWpGlM0t/Xd4+wUVN0yK2pSgqyRjL6WkIGZdN1KR10IHTl
-        SZpyCAkg+5WkQQJvhcFpAnj0JrslVbOQhwtTyBcVBZewNuZu6g+yqm5PmJtbdkoa
-        iBVYi5J2gL70lNENxM+zouRkovpGmydn0YGiV/Fa2S6MP3uLoG1dS1+9uIW2Zz0h
-        R+bWSZ1ewImJ5uz0Wi/ulKM9T3YrnjN/lwH7CeL7tGuvCcZnVZfRcn3QFLkbu9JA
-        ==
-X-ME-Sender: <xms:tJ6vYJh9d7hPAKdE4nTdv8A2OU9nvV6H50bjfjx0PhCEQNliYEtUGA>
-    <xme:tJ6vYOAlzcXj-yHCUs8ygoKaHBp8TxtaK_h8BCYY0HnwUqUfXG-Q2aGk-qwZfdDeI
-    JfFsHrVCVJGMQ>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrvdekhedgieeiucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvffukfhfgggtuggjsehttdertddttddvnecuhfhrohhmpefirhgvghcu
-    mffjuceoghhrvghgsehkrhhorghhrdgtohhmqeenucggtffrrghtthgvrhhnpeevueehje
-    fgfffgiedvudekvdektdelleelgefhleejieeugeegveeuuddukedvteenucfkphepkeef
-    rdekiedrjeegrdeigeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrih
-    hlfhhrohhmpehgrhgvgheskhhrohgrhhdrtghomh
-X-ME-Proxy: <xmx:tJ6vYJG4QKrbZvbduRD91eEuShjSfEhn51iSOiLpyKIyRce8Iq5Quw>
-    <xmx:tJ6vYORH8MtfBkmd705suIxefTdfwI59n9nQqle4CGuo1_6KXS1p1A>
-    <xmx:tJ6vYGw4WfBGZNbtnM_lsJ_wv2oJhm3o-u7k3qlTfooie76SJAQqMA>
-    <xmx:tZ6vYLGBmm35YucC4o8kg85jksAT9NRr2GsPTvGH_YzP87de6qsP3w>
-Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
-        by mail.messagingengine.com (Postfix) with ESMTPA;
-        Thu, 27 May 2021 09:29:24 -0400 (EDT)
-Date:   Thu, 27 May 2021 15:29:22 +0200
-From:   Greg KH <greg@kroah.com>
-To:     Christoph Lameter <cl@gentwo.de>
-Cc:     Theodore Ts'o <tytso@mit.edu>, Jiri Kosina <jikos@kernel.org>,
-        ksummit@lists.linux.dev, linux-kernel@vger.kernel.org,
-        linux-block@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-mm@kvack.org, netdev@vger.kernel.org,
-        linux-arch@vger.kernel.org, linux-api@vger.kernel.org
-Subject: Re: Maintainers / Kernel Summit 2021 planning kick-off
-Message-ID: <YK+esqGjKaPb+b/Q@kroah.com>
-References: <YH2hs6EsPTpDAqXc@mit.edu>
- <nycvar.YFH.7.76.2104281228350.18270@cbobk.fhfr.pm>
- <YIx7R6tmcRRCl/az@mit.edu>
- <alpine.DEB.2.22.394.2105271522320.172088@gentwo.de>
+        Thu, 27 May 2021 09:31:33 -0400
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1C3BC061760;
+        Thu, 27 May 2021 06:30:00 -0700 (PDT)
+Received: from [192.168.1.111] (91-157-208-71.elisa-laajakaista.fi [91.157.208.71])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 09864ED;
+        Thu, 27 May 2021 15:29:57 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1622122199;
+        bh=yR/grf3p5cSL4FQsJoHO8ZzmX5PWtfRjN/6uJPBLG88=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=NlhgSUinbel7MPx12HO9bd/P/4jf+w5eh2bVQ2Qb/bOL81/PiYqcuqnwoUWC8xBpV
+         lLY0TaW80I6r5gwLIfhe0pfI6QQ5cfsg/luV8Nzpi+mjmKKM04fjvVV4bPTGG21R/4
+         6wDQ9T5TnA0Vabmq1aCNx5XPkyw83FShlhn7doi4=
+Subject: Re: [PATCH v2 13/18] media: ti: Add CSI2RX support for J721E
+To:     Pratyush Yadav <p.yadav@ti.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        Vinod Koul <vkoul@kernel.org>,
+        Peter Ujfalusi <peter.ujfalusi@gmail.com>,
+        Steve Longerbeam <slongerbeam@gmail.com>,
+        Benoit Parrot <bparrot@ti.com>, linux-media@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-phy@lists.infradead.org, dmaengine@vger.kernel.org
+Cc:     Vignesh Raghavendra <vigneshr@ti.com>,
+        Chunfeng Yun <chunfeng.yun@mediatek.com>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+References: <20210526152308.16525-1-p.yadav@ti.com>
+ <20210526152308.16525-14-p.yadav@ti.com>
+From:   Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
+Message-ID: <5e00444a-683f-b4fa-9156-4450ca4edaf6@ideasonboard.com>
+Date:   Thu, 27 May 2021 16:29:57 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <alpine.DEB.2.22.394.2105271522320.172088@gentwo.de>
+In-Reply-To: <20210526152308.16525-14-p.yadav@ti.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 27, 2021 at 03:23:03PM +0200, Christoph Lameter wrote:
-> On Fri, 30 Apr 2021, Theodore Ts'o wrote:
-> 
-> > I know we're all really hungry for some in-person meetups and
-> > discussions, but at least for LPC, Kernel Summit, and Maintainer's
-> > Summit, we're going to have to wait for another year,
-> 
-> Well now that we are vaccinated: Can we still change it?
-> 
+Hi Pratyush,
 
-Speak for yourself, remember that Europe and other parts of the world
-are not as "flush" with vaccines as the US currently is :(
+On 26/05/2021 18:23, Pratyush Yadav wrote:
+> TI's J721E uses the Cadence CSI2RX and DPHY peripherals to facilitate
+> capture over a CSI-2 bus.
+> 
+> The Cadence CSI2RX IP acts as a bridge between the TI specific parts and
+> the CSI-2 protocol parts. TI then has a wrapper on top of this bridge
+> called the SHIM layer. It takes in data from stream 0, repacks it, and
+> sends it to memory over PSI-L DMA.
+> 
+> This driver acts as the "front end" to V4L2 client applications. It
+> implements the required ioctls and buffer operations, passes the
+> necessary calls on to the bridge, programs the SHIM layer, and performs
+> DMA via the dmaengine API to finally return the data to a buffer
+> supplied by the application.
+> 
+> Signed-off-by: Pratyush Yadav <p.yadav@ti.com>
 
-greg k-h
+I noticed that my test app didn't work at all with this, and I also 
+wasn't able to use v4l2-ctl to set the format.
+
+At least for my test app the problem was that this driver doesn't 
+initialize the format at all. My app first calls VIDIOC_G_FMT with 
+v4l2_format.type == V4L2_BUF_TYPE_VIDEO_CAPTURE, then after the call 
+modifies the fields it wants to change and calls VIDIOC_S_FMT. This 
+failed, as G_FMT returned uninitialized fmt, i.e. type was 0, which my 
+app didn't set again.
+
+I believe the driver should have an initial format, something that it 
+will accept if an app calls G_FMT and then S_FMT.
+
+  Tomi
