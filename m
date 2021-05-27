@@ -2,86 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 710C3392B57
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 12:02:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E007392B4C
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 12:01:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236058AbhE0KDq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 May 2021 06:03:46 -0400
-Received: from esa.microchip.iphmx.com ([68.232.154.123]:64945 "EHLO
-        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236071AbhE0KDa (ORCPT
+        id S236012AbhE0KDH convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 27 May 2021 06:03:07 -0400
+Received: from relay11.mail.gandi.net ([217.70.178.231]:58745 "EHLO
+        relay11.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235770AbhE0KDG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 May 2021 06:03:30 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1622109717; x=1653645717;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=NHC7O/pOqdLxXD582td2chdxDt8JFmxVEAYC1qsDiec=;
-  b=hlw3ltutZJqMeGeCImyu4JuTkASyBN/LoTIm1qB37KjLJAok+nbQ8Ixr
-   uthKjE1vH73v6dC5At8j//5s5tHWE8xo8k6Pp3ScgBvSAon0f4vmHfRUT
-   SMHspN8W/zvYwwBTYqrtppwQuFtKe/9SbRfXu8cOZXNdoN7gqRfPcyJ7Z
-   LLbmSLV2r7Jd+4yoyfLL5agj6YIU5LQlqEBj9sFmp9M6GkObUPI89wYWJ
-   f3e2E0C2p+N9e1uMdEHRIP9bkEQUxewgO3KGX879+xJ6EmmYnhYQhZkF4
-   Fxs6VqD7hANqTDfUuKFS71CWTWF0FomUou6Xna81TsuFq5BD1vcg+2/yD
-   A==;
-IronPort-SDR: HoyDt9JX0VCmKZZHh0afcs5zD3TN+Axb5Z48rdJuRlNdiCQcbhTV/vyZYdFYGusVwcBx/TthGw
- FGh6G5LrlrjpIA8o+fv/flqEWdsG7zZWBWSsrVnK4/3ySsbrh9N0h3jLpBqVb97c16M5mL1YKm
- bJxZ4SzXFPX3XI+i26ITwVyqd0uNitBDk6hmoV8OhV47xvkeoZM4F2Aw89luhLfEvuNVJuQxN+
- VOtuGoiNXtggRUpci/ae6P9F7gWCQpe+ZZK7xTLwX9yeCi1YgseZKSehk9YxvQgC3KXZwMHR2j
- pPU=
-X-IronPort-AV: E=Sophos;i="5.82,334,1613458800"; 
-   d="scan'208";a="119361978"
-Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa2.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 27 May 2021 03:01:56 -0700
-Received: from chn-vm-ex02.mchp-main.com (10.10.85.144) by
- chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Thu, 27 May 2021 03:01:55 -0700
-Received: from ROB-ULT-M18282.microchip.com (10.10.115.15) by
- chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server id
- 15.1.2176.2 via Frontend Transport; Thu, 27 May 2021 03:01:49 -0700
-From:   Eugen Hristev <eugen.hristev@microchip.com>
-To:     <wim@linux-watchdog.org>, <linux@roeck-us.net>,
-        <robh+dt@kernel.org>
-CC:     <nicolas.ferre@microchip.com>, <linux-watchdog@vger.kernel.org>,
-        <devicetree@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>,
-        Eugen Hristev <eugen.hristev@microchip.com>
-Subject: [PATCH 3/3] dt-bindings: watchdog: sama5d4-wdt: add compatible for sama7g5-wdt
-Date:   Thu, 27 May 2021 13:01:20 +0300
-Message-ID: <20210527100120.266796-3-eugen.hristev@microchip.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210527100120.266796-1-eugen.hristev@microchip.com>
-References: <20210527100120.266796-1-eugen.hristev@microchip.com>
+        Thu, 27 May 2021 06:03:06 -0400
+Received: (Authenticated sender: miquel.raynal@bootlin.com)
+        by relay11.mail.gandi.net (Postfix) with ESMTPSA id 75FBD100005;
+        Thu, 27 May 2021 10:01:29 +0000 (UTC)
+Date:   Thu, 27 May 2021 12:01:23 +0200
+From:   Miquel Raynal <miquel.raynal@bootlin.com>
+To:     Yang Yingliang <yangyingliang@huawei.com>
+Cc:     <linux-kernel@vger.kernel.org>, <linux-i3c@lists.infradead.org>,
+        <alexandre.belloni@bootlin.com>
+Subject: Re: [PATCH -next] i3c: master: svc: drop free_irq of
+ devm_request_irq allocated irq
+Message-ID: <20210527120123.75f2ea09@xps13>
+In-Reply-To: <20210518131127.1308550-1-yangyingliang@huawei.com>
+References: <20210518131127.1308550-1-yangyingliang@huawei.com>
+Organization: Bootlin
+X-Mailer: Claws Mail 3.17.7 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This driver is also compatible with the watchdog on sama7g5 SoC.
-Add the corresponding compatible string to the binding.
+Hi Yang,
 
-Signed-off-by: Eugen Hristev <eugen.hristev@microchip.com>
----
- .../devicetree/bindings/watchdog/atmel,sama5d4-wdt.yaml          | 1 +
- 1 file changed, 1 insertion(+)
+Yang Yingliang <yangyingliang@huawei.com> wrote on Tue, 18 May 2021
+21:11:27 +0800:
 
-diff --git a/Documentation/devicetree/bindings/watchdog/atmel,sama5d4-wdt.yaml b/Documentation/devicetree/bindings/watchdog/atmel,sama5d4-wdt.yaml
-index 0d0ab81da040..9856cd76c28d 100644
---- a/Documentation/devicetree/bindings/watchdog/atmel,sama5d4-wdt.yaml
-+++ b/Documentation/devicetree/bindings/watchdog/atmel,sama5d4-wdt.yaml
-@@ -17,6 +17,7 @@ properties:
-     enum:
-       - atmel,sama5d4-wdt
-       - microchip,sam9x60-wdt
-+      - microchip,sama7g5-wdt
- 
-   reg:
-     maxItems: 1
--- 
-2.25.1
+> irq allocated with devm_request_irq should not be freed using
+> free_irq, because doing so causes a dangling pointer, and a
+> subsequent double free.
+> 
+> Reported-by: Hulk Robot <hulkci@huawei.com>
+> Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
+> ---
+>  drivers/i3c/master/svc-i3c-master.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/i3c/master/svc-i3c-master.c b/drivers/i3c/master/svc-i3c-master.c
+> index 1f6ba4221817..761c9c468357 100644
+> --- a/drivers/i3c/master/svc-i3c-master.c
+> +++ b/drivers/i3c/master/svc-i3c-master.c
+> @@ -1448,7 +1448,7 @@ static int svc_i3c_master_remove(struct platform_device *pdev)
+>  	if (ret)
+>  		return ret;
+>  
+> -	free_irq(master->irq, master);
+> +	devm_free_irq(&pdev->dev, master->irq, master);
 
+Wouldn't removing this call the right solution? If it's a device
+managed resource, it won't probably be needed to free it explicitly in
+the remove path.
+
+>  	clk_disable_unprepare(master->pclk);
+>  	clk_disable_unprepare(master->fclk);
+>  	clk_disable_unprepare(master->sclk);
+
+Thanks,
+Miquèl
