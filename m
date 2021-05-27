@@ -2,92 +2,308 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A6DD392C41
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 13:01:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 660A0392C4A
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 13:03:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236314AbhE0LDK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 May 2021 07:03:10 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40794 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236286AbhE0LDF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 May 2021 07:03:05 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id ECFDC60241;
-        Thu, 27 May 2021 11:01:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1622113291;
-        bh=w82Buwz/8VJBRCQ6+DiA09zJU8SzJBV2/yXUWLoIPNI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=PNo5sgQh8W4nwNmlyMXlmg3EVLOOeUMmjYjTnWGTA78pT7GO3cQOr9FMehZHN7Grh
-         A5mrNzTX6w9bYGiMev/+ojShZQYwVISxD46AhkoG94sFRSLepZWQ5RhTj1mSUMRD+z
-         4kNopQpYgv9nK7xvvZrW4xAJsDodnb6PKQvr8hxA=
-Date:   Thu, 27 May 2021 13:01:28 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Bixuan Cui <cuibixuan@huawei.com>
-Cc:     dan.carpenter@oracle.com, desmondcheongzx@gmail.com,
-        marcocesati@gmail.com, fabioaiuto83@gmail.com,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH next] staging: rtl8723bs: HalBtc8723b1Ant.c: Remove
- unused variables
-Message-ID: <YK98CL3+Gg5hGH9g@kroah.com>
-References: <20210526074537.46259-1-cuibixuan@huawei.com>
+        id S236319AbhE0LFJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 May 2021 07:05:09 -0400
+Received: from szxga02-in.huawei.com ([45.249.212.188]:2501 "EHLO
+        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236239AbhE0LFC (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 27 May 2021 07:05:02 -0400
+Received: from dggeml758-chm.china.huawei.com (unknown [172.30.72.54])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4FrPxV3zWJzYqPF;
+        Thu, 27 May 2021 19:00:46 +0800 (CST)
+Received: from dggpemm500022.china.huawei.com (7.185.36.162) by
+ dggeml758-chm.china.huawei.com (10.1.199.159) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2176.2; Thu, 27 May 2021 19:03:26 +0800
+Received: from [10.174.185.220] (10.174.185.220) by
+ dggpemm500022.china.huawei.com (7.185.36.162) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Thu, 27 May 2021 19:03:25 +0800
+Subject: Re: [RFC PATCH v3 8/8] vfio: Add nested IOPF support
+To:     Alex Williamson <alex.williamson@redhat.com>,
+        Lu Baolu <baolu.lu@linux.intel.com>
+CC:     Eric Auger <eric.auger@redhat.com>,
+        Cornelia Huck <cohuck@redhat.com>,
+        Will Deacon <will@kernel.org>,
+        Robin Murphy <robin.murphy@arm.com>,
+        "Joerg Roedel" <joro@8bytes.org>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        <kvm@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <iommu@lists.linux-foundation.org>, <linux-api@vger.kernel.org>,
+        Kevin Tian <kevin.tian@intel.com>, <yi.l.liu@intel.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Barry Song <song.bao.hua@hisilicon.com>,
+        <wanghaibin.wang@huawei.com>, <yuzenghui@huawei.com>
+References: <20210409034420.1799-1-lushenming@huawei.com>
+ <20210409034420.1799-9-lushenming@huawei.com>
+ <20210518125808.345b812c.alex.williamson@redhat.com>
+ <ea8c92a8-6e51-8be6-de19-d5e6f1d5527f@huawei.com>
+ <83747758-ceb6-b498-8d95-609fdd0d763b@huawei.com>
+ <20210524161129.085503ad@x1.home.shazbot.org>
+From:   Shenming Lu <lushenming@huawei.com>
+Message-ID: <90b00e7d-7934-ee79-7643-e2949e2d3af4@huawei.com>
+Date:   Thu, 27 May 2021 19:03:14 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.2.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210526074537.46259-1-cuibixuan@huawei.com>
+In-Reply-To: <20210524161129.085503ad@x1.home.shazbot.org>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.185.220]
+X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
+ dggpemm500022.china.huawei.com (7.185.36.162)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 26, 2021 at 03:45:37PM +0800, Bixuan Cui wrote:
-> Fix the build warning: [-Wunused-but-set-variable]
+On 2021/5/25 6:11, Alex Williamson wrote:
+> On Mon, 24 May 2021 21:11:11 +0800
+> Shenming Lu <lushenming@huawei.com> wrote:
 > 
-> drivers/staging/rtl8723bs/hal/HalBtc8723b1Ant.c:2710:6: warning: variable ‘u4Tmp’ set but not used
->  2710 |  u32 u4Tmp;
->       |      ^~~~~
-> drivers/staging/rtl8723bs/hal/HalBtc8723b1Ant.c:2709:13: warning: variable ‘u1Tmpb’ set but not used
->  2709 |  u8 u1Tmpa, u1Tmpb;
->       |             ^~~~~~
-> drivers/staging/rtl8723bs/hal/HalBtc8723b1Ant.c:2709:5: warning: variable ‘u1Tmpa’ set but not used
->  2709 |  u8 u1Tmpa, u1Tmpb;
->       |     ^~~~~~
+>> On 2021/5/21 15:59, Shenming Lu wrote:
+>>> On 2021/5/19 2:58, Alex Williamson wrote:  
+>>>> On Fri, 9 Apr 2021 11:44:20 +0800
+>>>> Shenming Lu <lushenming@huawei.com> wrote:
+>>>>  
+>>>>> To set up nested mode, drivers such as vfio_pci need to register a
+>>>>> handler to receive stage/level 1 faults from the IOMMU, but since
+>>>>> currently each device can only have one iommu dev fault handler,
+>>>>> and if stage 2 IOPF is already enabled (VFIO_IOMMU_ENABLE_IOPF),
+>>>>> we choose to update the registered handler (a consolidated one) via
+>>>>> flags (set FAULT_REPORT_NESTED_L1), and further deliver the received
+>>>>> stage 1 faults in the handler to the guest through a newly added
+>>>>> vfio_device_ops callback.  
+>>>>
+>>>> Are there proposed in-kernel drivers that would use any of these
+>>>> symbols?  
+>>>
+>>> I hope that such as Eric's SMMUv3 Nested Stage Setup series [1] can
+>>> use these symbols to consolidate the two page fault handlers into one.
+>>>
+>>> [1] https://patchwork.kernel.org/project/kvm/cover/20210411114659.15051-1-eric.auger@redhat.com/
+>>>   
+>>>>  
+>>>>> Signed-off-by: Shenming Lu <lushenming@huawei.com>
+>>>>> ---
+>>>>>  drivers/vfio/vfio.c             | 81 +++++++++++++++++++++++++++++++++
+>>>>>  drivers/vfio/vfio_iommu_type1.c | 49 +++++++++++++++++++-
+>>>>>  include/linux/vfio.h            | 12 +++++
+>>>>>  3 files changed, 141 insertions(+), 1 deletion(-)
+>>>>>
+>>>>> diff --git a/drivers/vfio/vfio.c b/drivers/vfio/vfio.c
+>>>>> index 44c8dfabf7de..4245f15914bf 100644
+>>>>> --- a/drivers/vfio/vfio.c
+>>>>> +++ b/drivers/vfio/vfio.c
+>>>>> @@ -2356,6 +2356,87 @@ struct iommu_domain *vfio_group_iommu_domain(struct vfio_group *group)
+>>>>>  }
+>>>>>  EXPORT_SYMBOL_GPL(vfio_group_iommu_domain);
+>>>>>  
+>>>>> +/*
+>>>>> + * Register/Update the VFIO IOPF handler to receive
+>>>>> + * nested stage/level 1 faults.
+>>>>> + */
+>>>>> +int vfio_iommu_dev_fault_handler_register_nested(struct device *dev)
+>>>>> +{
+>>>>> +	struct vfio_container *container;
+>>>>> +	struct vfio_group *group;
+>>>>> +	struct vfio_iommu_driver *driver;
+>>>>> +	int ret;
+>>>>> +
+>>>>> +	if (!dev)
+>>>>> +		return -EINVAL;
+>>>>> +
+>>>>> +	group = vfio_group_get_from_dev(dev);
+>>>>> +	if (!group)
+>>>>> +		return -ENODEV;
+>>>>> +
+>>>>> +	ret = vfio_group_add_container_user(group);
+>>>>> +	if (ret)
+>>>>> +		goto out;
+>>>>> +
+>>>>> +	container = group->container;
+>>>>> +	driver = container->iommu_driver;
+>>>>> +	if (likely(driver && driver->ops->register_handler))
+>>>>> +		ret = driver->ops->register_handler(container->iommu_data, dev);
+>>>>> +	else
+>>>>> +		ret = -ENOTTY;
+>>>>> +
+>>>>> +	vfio_group_try_dissolve_container(group);
+>>>>> +
+>>>>> +out:
+>>>>> +	vfio_group_put(group);
+>>>>> +	return ret;
+>>>>> +}
+>>>>> +EXPORT_SYMBOL_GPL(vfio_iommu_dev_fault_handler_register_nested);
+>>>>> +
+>>>>> +int vfio_iommu_dev_fault_handler_unregister_nested(struct device *dev)
+>>>>> +{
+>>>>> +	struct vfio_container *container;
+>>>>> +	struct vfio_group *group;
+>>>>> +	struct vfio_iommu_driver *driver;
+>>>>> +	int ret;
+>>>>> +
+>>>>> +	if (!dev)
+>>>>> +		return -EINVAL;
+>>>>> +
+>>>>> +	group = vfio_group_get_from_dev(dev);
+>>>>> +	if (!group)
+>>>>> +		return -ENODEV;
+>>>>> +
+>>>>> +	ret = vfio_group_add_container_user(group);
+>>>>> +	if (ret)
+>>>>> +		goto out;
+>>>>> +
+>>>>> +	container = group->container;
+>>>>> +	driver = container->iommu_driver;
+>>>>> +	if (likely(driver && driver->ops->unregister_handler))
+>>>>> +		ret = driver->ops->unregister_handler(container->iommu_data, dev);
+>>>>> +	else
+>>>>> +		ret = -ENOTTY;
+>>>>> +
+>>>>> +	vfio_group_try_dissolve_container(group);
+>>>>> +
+>>>>> +out:
+>>>>> +	vfio_group_put(group);
+>>>>> +	return ret;
+>>>>> +}
+>>>>> +EXPORT_SYMBOL_GPL(vfio_iommu_dev_fault_handler_unregister_nested);
+>>>>> +
+>>>>> +int vfio_transfer_iommu_fault(struct device *dev, struct iommu_fault *fault)
+>>>>> +{
+>>>>> +	struct vfio_device *device = dev_get_drvdata(dev);
+>>>>> +
+>>>>> +	if (unlikely(!device->ops->transfer))
+>>>>> +		return -EOPNOTSUPP;
+>>>>> +
+>>>>> +	return device->ops->transfer(device->device_data, fault);
+>>>>> +}
+>>>>> +EXPORT_SYMBOL_GPL(vfio_transfer_iommu_fault);
+>>>>> +
+>>>>>  /**
+>>>>>   * Module/class support
+>>>>>   */
+>>>>> diff --git a/drivers/vfio/vfio_iommu_type1.c b/drivers/vfio/vfio_iommu_type1.c
+>>>>> index ba2b5a1cf6e9..9d1adeddb303 100644
+>>>>> --- a/drivers/vfio/vfio_iommu_type1.c
+>>>>> +++ b/drivers/vfio/vfio_iommu_type1.c
+>>>>> @@ -3821,13 +3821,32 @@ static int vfio_iommu_type1_dma_map_iopf(struct iommu_fault *fault, void *data)
+>>>>>  	struct vfio_batch batch;
+>>>>>  	struct vfio_range *range;
+>>>>>  	dma_addr_t iova = ALIGN_DOWN(fault->prm.addr, PAGE_SIZE);
+>>>>> -	int access_flags = 0;
+>>>>> +	int access_flags = 0, nested;
+>>>>>  	size_t premap_len, map_len, mapped_len = 0;
+>>>>>  	unsigned long bit_offset, vaddr, pfn, i, npages;
+>>>>>  	int ret;
+>>>>>  	enum iommu_page_response_code status = IOMMU_PAGE_RESP_INVALID;
+>>>>>  	struct iommu_page_response resp = {0};
+>>>>>  
+>>>>> +	if (vfio_dev_domian_nested(dev, &nested))
+>>>>> +		return -ENODEV;
+>>>>> +
+>>>>> +	/*
+>>>>> +	 * When configured in nested mode, further deliver the
+>>>>> +	 * stage/level 1 faults to the guest.
+>>>>> +	 */
+>>>>> +	if (nested) {
+>>>>> +		bool l2;
+>>>>> +
+>>>>> +		if (fault->type == IOMMU_FAULT_PAGE_REQ)
+>>>>> +			l2 = fault->prm.flags & IOMMU_FAULT_PAGE_REQUEST_L2;
+>>>>> +		if (fault->type == IOMMU_FAULT_DMA_UNRECOV)
+>>>>> +			l2 = fault->event.flags & IOMMU_FAULT_UNRECOV_L2;
+>>>>> +
+>>>>> +		if (!l2)
+>>>>> +			return vfio_transfer_iommu_fault(dev, fault);
+>>>>> +	}
+>>>>> +
+>>>>>  	if (fault->type != IOMMU_FAULT_PAGE_REQ)
+>>>>>  		return -EOPNOTSUPP;
+>>>>>  
+>>>>> @@ -4201,6 +4220,32 @@ static void vfio_iommu_type1_notify(void *iommu_data,
+>>>>>  	wake_up_all(&iommu->vaddr_wait);
+>>>>>  }
+>>>>>  
+>>>>> +static int vfio_iommu_type1_register_handler(void *iommu_data,
+>>>>> +					     struct device *dev)
+>>>>> +{
+>>>>> +	struct vfio_iommu *iommu = iommu_data;
+>>>>> +
+>>>>> +	if (iommu->iopf_enabled)
+>>>>> +		return iommu_update_device_fault_handler(dev, ~0,
+>>>>> +						FAULT_REPORT_NESTED_L1);
+>>>>> +	else
+>>>>> +		return iommu_register_device_fault_handler(dev,
+>>>>> +						vfio_iommu_type1_dma_map_iopf,
+>>>>> +						FAULT_REPORT_NESTED_L1, dev);
+>>>>> +}
+>>>>> +
+>>>>> +static int vfio_iommu_type1_unregister_handler(void *iommu_data,
+>>>>> +					       struct device *dev)
+>>>>> +{
+>>>>> +	struct vfio_iommu *iommu = iommu_data;
+>>>>> +
+>>>>> +	if (iommu->iopf_enabled)
+>>>>> +		return iommu_update_device_fault_handler(dev,
+>>>>> +						~FAULT_REPORT_NESTED_L1, 0);
+>>>>> +	else
+>>>>> +		return iommu_unregister_device_fault_handler(dev);
+>>>>> +}  
+>>>>
+>>>>
+>>>> The path through vfio to register this is pretty ugly, but I don't see
+>>>> any reason for the the update interfaces here, the previously
+>>>> registered handler just changes its behavior.  
+>>>
+>>> Yeah, this seems not an elegant way...
+>>>
+>>> If IOPF(L2) enabled, the fault handler has already been registered, so for
+>>> nested mode setup, we only need to change the flags of the handler in the
+>>> IOMMU driver to receive L1 faults.
+>>> (assume that L1 IOPF is configured after L2 IOPF)
+>>>
+>>> Currently each device can only have one iommu dev fault handler, and L1
+>>> and L2 IOPF are configured separately in nested mode, I am also wondering
+>>> that is there a better solution for this.  
 > 
-> Reported-by: Hulk Robot <hulkci@huawei.com>
-> Signed-off-by: Bixuan Cui <cuibixuan@huawei.com>
-> ---
->  drivers/staging/rtl8723bs/hal/HalBtc8723b1Ant.c | 9 +++------
->  1 file changed, 3 insertions(+), 6 deletions(-)
-> 
-> diff --git a/drivers/staging/rtl8723bs/hal/HalBtc8723b1Ant.c b/drivers/staging/rtl8723bs/hal/HalBtc8723b1Ant.c
-> index 518d5354bda4..adfdc4f14b08 100644
-> --- a/drivers/staging/rtl8723bs/hal/HalBtc8723b1Ant.c
-> +++ b/drivers/staging/rtl8723bs/hal/HalBtc8723b1Ant.c
-> @@ -2706,9 +2706,6 @@ void EXhalbtc8723b1ant_ScanNotify(struct btc_coexist *pBtCoexist, u8 type)
->  	bool bBtCtrlAggBufSize = false;
->  	u8 aggBufSize = 5;
->  
-> -	u8 u1Tmpa, u1Tmpb;
-> -	u32 u4Tmp;
-> -
->  	if (pBtCoexist->bManualControl || pBtCoexist->bStopCoexDm)
->  		return;
->  
-> @@ -2716,9 +2713,9 @@ void EXhalbtc8723b1ant_ScanNotify(struct btc_coexist *pBtCoexist, u8 type)
->  		pCoexSta->bWiFiIsHighPriTask = true;
->  
->  		halbtc8723b1ant_PsTdma(pBtCoexist, FORCE_EXEC, false, 8);  /* Force antenna setup for no scan result issue */
-> -		u4Tmp = pBtCoexist->fBtcRead4Byte(pBtCoexist, 0x948);
-> -		u1Tmpa = pBtCoexist->fBtcRead1Byte(pBtCoexist, 0x765);
-> -		u1Tmpb = pBtCoexist->fBtcRead1Byte(pBtCoexist, 0x67);
-> +		pBtCoexist->fBtcRead4Byte(pBtCoexist, 0x948);
-> +		pBtCoexist->fBtcRead1Byte(pBtCoexist, 0x765);
-> +		pBtCoexist->fBtcRead1Byte(pBtCoexist, 0x67);
->  	} else {
->  		pCoexSta->bWiFiIsHighPriTask = false;
->  
-> -- 
-> 2.17.1
-> 
-> 
+> I haven't fully read all the references, but who imposes the fact that
+> there's only one fault handler per device?  If type1 could register one
+> handler and the vfio-pci bus driver another for the other level, would
+> we need this path through vfio-core?
 
-Does not apply to my tree :(
+If we could register more than one handler per device, things would become
+much more simple, and the path through vfio-core would not be needed.
+
+Hi Baolu,
+Is there any restriction for having more than one handler per device?
+
+> 
+>> Let me simply add, maybe there is another way for this:
+>> Would it be better to set host IOPF enabled (L2 faults) in the VFIO_IOMMU_MAP_DMA
+>> ioctl (no need to add a new ioctl, and we can specify whether this mapping is IOPF
+>> available or statically pinned), and set guest IOPF enabled (L1 faults) in the
+>> VFIO_IOMMU_SET_PASID_TABLE (from Eric's series) ioctl?
+>> And we have no requirement for the sequence of these two ioctls. The first called
+>> one will register the handler, and the later one will just update the handler...
+> 
+> This is looking more and more like it belongs with the IOASID work.  I
+> think Eric has shifted his focus there too.  Thanks,
+
+I will pay more attention to the IOASID work.
+
+Thanks,
+Shenming
+
+> 
+> Alex
+> 
+> .
+> 
