@@ -2,85 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F118A392D15
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 13:49:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 22D7D392D2D
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 13:52:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234224AbhE0LvT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 May 2021 07:51:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39896 "EHLO
+        id S234255AbhE0Lxa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 May 2021 07:53:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40390 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233633AbhE0LvS (ORCPT
+        with ESMTP id S234334AbhE0LxY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 May 2021 07:51:18 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 511B7C061574;
-        Thu, 27 May 2021 04:49:45 -0700 (PDT)
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1622116183;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=KpJO8/wUONUzp+lF25GXIlQ0ASXxx+GAXWN69tVWybM=;
-        b=luSN3hdXA90fnIwYe7NygmIBDq9maKK/qrasbv8wHHA5XtNPKkZtE/AQalBVLJ52L9XBKW
-        XwjBkHd6nuCkrKdQ4tVJ6DggzAkQtFt0eDTJjZCXEHap1GjFIrsTXcMPVniTgUALV3FPxG
-        2w4uarEfDk6diyXvdyUJb7SBWSuQigNEfLsmEl7kPgsH/gKQLB7mtfEeo70E2B2CPfIIVE
-        jGj2lWJMFhapo20dLtLULSamX+NTLZJYbfKuwyWbJFG7PfSJNx2SgljCRJj6fQH6Ldi806
-        xrzBfHF+dqzXkufsY28zBnh9TIgYjaN4igXiIOhLDcNgsxtqggeVshvvsd+9hw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1622116183;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=KpJO8/wUONUzp+lF25GXIlQ0ASXxx+GAXWN69tVWybM=;
-        b=6lIJmAPeNZzRVa7qPhy+UsX4TXKyKEUoXs1xxXMM3hjbDoHKXPA5ugrTGWG+WKhp1VezHc
-        juA0Ssr9VxsIO8CQ==
-To:     Borislav Petkov <bp@suse.de>, James Feeney <james@nurealm.net>
-Cc:     linux-smp@vger.kernel.org, Jens Axboe <axboe@kernel.dk>,
-        lkml <linux-kernel@vger.kernel.org>,
-        Zhang Rui <rui.zhang@intel.com>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        x86-ml <x86@kernel.org>
-Subject: Re: [PATCH] x86/thermal: Fix LVT thermal setup for SMI delivery mode
-In-Reply-To: <YK905sC/2cVOYo6I@zn.tnic>
-References: <YKWAt1zLM2vfv4Sp@zn.tnic> <e7701de5-35f3-da9d-7339-df2de6d8b3cf@nurealm.net> <YKYqABhSTTUG8cgV@zn.tnic> <a264eaef-1c94-77e1-dfbf-e436a41588be@nurealm.net> <YKjJfu4kRDflQS5e@zn.tnic> <373464e3-b8a0-0fe0-b890-41df0eecf090@nurealm.net> <YKqLSqIM7Gi5x+IA@zn.tnic> <b550a241-2097-cf4b-cc41-e4d0a45cda72@nurealm.net> <YKtbBXZGpVZS1M4R@zn.tnic> <1f6c70f4-6680-d6ea-465a-548dc7698317@nurealm.net> <YK905sC/2cVOYo6I@zn.tnic>
-Date:   Thu, 27 May 2021 13:49:42 +0200
-Message-ID: <87h7io8kh5.ffs@nanos.tec.linutronix.de>
+        Thu, 27 May 2021 07:53:24 -0400
+Received: from mail-lj1-x232.google.com (mail-lj1-x232.google.com [IPv6:2a00:1450:4864:20::232])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA8C0C0613CE
+        for <linux-kernel@vger.kernel.org>; Thu, 27 May 2021 04:51:51 -0700 (PDT)
+Received: by mail-lj1-x232.google.com with SMTP id t17so381408ljd.9
+        for <linux-kernel@vger.kernel.org>; Thu, 27 May 2021 04:51:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kinvolk.io; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=AC3MmOTUuOGnepZXQGZ9Vafob+m6VNi00uwAJjSXdhg=;
+        b=iyZqWizjPMOTwqAW/a19v/NIgvvIwslHpX+4ycAXvsYAh93yczNrf6UoKXR00H6+Ad
+         eJkLO7BgJ1VRuOffPYI2KsAsoQwB2bTbN1pxGC7D2gPrOb/zS/8P9UNppfs7v4ftRBWd
+         L5opBVj+Eigq6yuSPmw+vClubBqnsXFlYOj4Y=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=AC3MmOTUuOGnepZXQGZ9Vafob+m6VNi00uwAJjSXdhg=;
+        b=eJMpjkYEJSeLcTk1kKWhGyrZjJpV7TAEE/l7FspsChOKrY1WLC8EsyiZmKKlbAQJ09
+         1bUl3u1/XwMvtg5kx07Yc/KyyQriQh2HuRDRBD4zfcRvYeXbi4+RT/N7NRPJsufV/ymR
+         Kn8t+5959tLWOpvsGJ+Ty41pe6agWOnfwAz7AkGiQl9zCZanWUppF4dcoJ01xfq2/Vze
+         BwA96w229z2nY4rxD6nUCxlVJOhOJrYx5fQKjxaINnlsDnIE+V7/3vPN1QUS+tbks6Gm
+         O9TTslztKlOD3pQJ0Ug53Hb+uvxOUO5RJobMcXQGJ/VHijycK58DyEg5K0/KNLwqqdNn
+         o5IQ==
+X-Gm-Message-State: AOAM532nuDpoaW1Jyn6Yo0NSAt0lfLTTy8ZbK+GnNosxE2Y1DRSFyxDP
+        P1JMyC+jbALpQzTUFnXXstDL+/lL6AUVESf3DfIgPA==
+X-Google-Smtp-Source: ABdhPJwO3O73I5qS7aTaftIM5JMjFZ7cv8RtwV2LsTuk+kYGU6SqcCJiX6IyKH65RR8Sb0/1k1krHdt/yOY+LnGheJA=
+X-Received: by 2002:a2e:b4b3:: with SMTP id q19mr2185724ljm.374.1622116309916;
+ Thu, 27 May 2021 04:51:49 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
+References: <20210517193908.3113-1-sargun@sargun.me> <20210517193908.3113-3-sargun@sargun.me>
+In-Reply-To: <20210517193908.3113-3-sargun@sargun.me>
+From:   Rodrigo Campos <rodrigo@kinvolk.io>
+Date:   Thu, 27 May 2021 13:51:13 +0200
+Message-ID: <CACaBj2YUiowSKzvh02OjpQNqQViA8N0eyRMimkK=90NagRF40w@mail.gmail.com>
+Subject: Re: [PATCH v2 2/4] seccomp: Refactor notification handler to prepare
+ for new semantics
+To:     Sargun Dhillon <sargun@sargun.me>
+Cc:     Kees Cook <keescook@chromium.org>,
+        LKML <linux-kernel@vger.kernel.org>, containers@lists.linux.dev,
+        Tycho Andersen <tycho@tycho.pizza>,
+        Andy Lutomirski <luto@kernel.org>,
+        =?UTF-8?Q?Mauricio_V=C3=A1squez_Bernal?= <mauricio@kinvolk.io>,
+        Giuseppe Scrivano <gscrivan@redhat.com>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        =?UTF-8?B?TWlja2HDq2wgU2FsYcO8bg==?= <mic@linux.microsoft.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 27 2021 at 12:31, Borislav Petkov wrote:
-> @@ -1226,6 +1227,14 @@ void __init setup_arch(char **cmdline_p)
->  
->  	x86_init.timers.wallclock_init();
->  
-> +	/*
-> +	 * This needs to run before setup_local_APIC() which soft-disables the
-> +	 * local APIC temporarily and that masks the thermal LVT interrupt,
-> +	 * leading to softlockups on machines which have configured SMI
-> +	 * interrupt delivery.
-> +	 */
-> +	therm_lvt_init();
+On Mon, May 17, 2021 at 9:39 PM Sargun Dhillon <sargun@sargun.me> wrote:
+>
+> This refactors the user notification code to have a do / while loop around
+> the completion condition. This has a small change in semantic, in that
+> previously we ignored addfd calls upon wakeup if the notification had been
+> responded to, but instead with the new change we check for an outstanding
+> addfd calls prior to returning to userspace.
+>
+> Rodrigo Campos also identified a bug that can result in addfd causing
+> an early return, when the supervisor didn't actually handle the
+> syscall [1].
+>
+> [1]: https://lore.kernel.org/lkml/20210413160151.3301-1-rodrigo@kinvolk.io/
+>
+> Fixes: 7cf97b125455 ("seccomp: Introduce addfd ioctl to seccomp user notifier")
+> Signed-off-by: Sargun Dhillon <sargun@sargun.me>
+> Acked-by: Tycho Andersen <tycho@tycho.pizza>
 
-That works, but TBH, it's a hack....
+Kees, as I mentioned in the linked thread, this issue is present in
+5.9+ kernels. Should we add the cc to stable for this patch? Or should
+we cc to stable the one linked, that just fixes the issue without
+semantic changes to userspace?
 
-What I really fail to understand is how disabling that LVT entry makes
-the machine lock up. 
-
-Also if disabling this entry is causing the BIOS/SMM gunk to go south, then
-disabling CONFIG_X86_THERMAL_VECTOR should have the same effect.
-
-Which made me look at other places like lapic_suspend/resume which does
-the save/restore Kconfig conditional as well.
-
-Thanks,
-
-        tglx
-
+Just to be clear, the other patch that fixes the problem without
+userspace visible changes is this:
+https://lore.kernel.org/lkml/20210413160151.3301-1-rodrigo@kinvolk.io/
 
 
-
-
+Best,
+Rodrigo
