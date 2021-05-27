@@ -2,255 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 017A4393325
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 18:07:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 23277393328
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 18:07:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235286AbhE0QHQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 May 2021 12:07:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42782 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234504AbhE0QHA (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 May 2021 12:07:00 -0400
-Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39160C061574;
-        Thu, 27 May 2021 09:05:27 -0700 (PDT)
-Received: by mail-pj1-x1034.google.com with SMTP id h20-20020a17090aa894b029015db8f3969eso701994pjq.3;
-        Thu, 27 May 2021 09:05:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=j8ig93088yhOLRiXVoppbEZV7zLLcbW2urVcFHDp3X0=;
-        b=P95zcJo8WOpilBEUz/zyjNlhtvNSaeumaVf1hbh7J1vOqPWwUagTV3YVDkKwIB5ofI
-         ymwtKv+gko7EtUaRlmJ9VcO46ujYf51m3t9UEu/3B0F1RaifQ9J/hWzPQyMgjAg73aYR
-         te2u+vw5b94Ah7kY2d5TZ+GDbncLasE1qqq4oQ8yWVtnZu71uD4agpz6Vt0HBf290DQU
-         f7ftowJB02oPG6gzNG84ofUHdX3OV/JrZ2Ku5MA6Lf0XDGSBwQXJ+cIda1fAal7EYqS7
-         +8cS/cuXajf9YEiERyWDHKjP3YbIk3TtI3JAwLCzdV/IbLBRsCOdEnOMX+GITasRvUS+
-         oOnw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=j8ig93088yhOLRiXVoppbEZV7zLLcbW2urVcFHDp3X0=;
-        b=AbyMntvYovnan05G11YzijBqgJZ5TEGGmhsXHgiXBYXoFtvt/YuVSFq+f3qY1jI8BM
-         pytfb+ZuZUDGSezs0A6ZEamTchcd9X5czQVde3b1YsYX6GA79qQcHckt/znaCi6GPkFF
-         StJpfkYmIVW+CBo0XDq/qYoUFGJrGJxeOM8UjunaLxzuPnxIGdFvLGmQn0wrOJzDLG1r
-         vVdEsu7clZrSnSf5PpQeEWujS5QmuZBz5trL9iYEG3M+DW9zq4Vd6vZ5kK8ukz2u/1iy
-         oabwXYbvLjr/4O+lTl4xVH/pDh8agXsu2wP4V+5FYXkPv3ojnOnGS8c9o4TxodFgVYVx
-         fiEA==
-X-Gm-Message-State: AOAM53165E9DqiJ0uB9bx5zoQms6bdY3hZnHpb6Yn63kK1GimubrHGan
-        pqpml7jTk0cOh/lfGx2mKpg=
-X-Google-Smtp-Source: ABdhPJwFxGoZHs+Q0LTsDQGR+cu4wAVW1Ar5mLf+lCSYOejkweHVA/FtEUSuTL/Y1Ifj8jfYtB0GmQ==
-X-Received: by 2002:a17:90a:9704:: with SMTP id x4mr10045791pjo.202.1622131526473;
-        Thu, 27 May 2021 09:05:26 -0700 (PDT)
-Received: from localhost.localdomain ([27.97.130.197])
-        by smtp.gmail.com with ESMTPSA id b124sm2294252pfa.27.2021.05.27.09.05.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 27 May 2021 09:05:25 -0700 (PDT)
-From:   Piyush Thange <pthange19@gmail.com>
-To:     andreas.noever@gmail.com, michael.jamet@intel.com,
-        mika.westerberg@linux.intel.com, YehezkelShB@gmail.com
-Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Piyush Thange <pthange19@gmail.com>
-Subject: [PATCH] drivers: thunderbolt: Fixed Coding Style issues
-Date:   Thu, 27 May 2021 21:34:56 +0530
-Message-Id: <20210527160456.28592-1-pthange19@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        id S235031AbhE0QHp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 May 2021 12:07:45 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54028 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234504AbhE0QHo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 27 May 2021 12:07:44 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0E6666100A;
+        Thu, 27 May 2021 16:06:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1622131571;
+        bh=vqPlEi+k8FKHa/wZ6C7jWBQ7Xe+r7OWX8AUIx1IvgWI=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=RkOpmWWeptig8/+4q2OhLLy7Q0y/L+G1z3zmpazjNvoHI843AGona0A9EG1KCW7Ss
+         FPvp2MIHkk6e3URWVv2jV0ZKddPxIAWvu9FNOdZXUb0s2jXaTJJBRC8FhsrS6h/QZf
+         L9DPeikJzviAV4ft4Vba1UmTiuG+GN++bs5n6um6DTAO9T/+Yz99imHpzJWm0Ag8/k
+         Y00UL8y8zcc5JzUvCs5gTuXX8pmXHOFAxcMYQ7SJKwR3QSmHkgKIdpdGUpPE1vXY0f
+         /XBkS1+VXNedIbL/yf3DKBKxYc1XMobzc2wunb0fqus6Vq0sEoY6jBJ5b9aVxGRqJD
+         xKn1+bHBlBt8A==
+Date:   Thu, 27 May 2021 11:06:09 -0500
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Om Prakash Singh <omp@nvidia.com>
+Cc:     vidyas@nvidia.com, lorenzo.pieralisi@arm.com, bhelgaas@google.com,
+        thierry.reding@gmail.com, jonathanh@nvidia.com,
+        linux-tegra@vger.kernel.org, linux-pci@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kthota@nvidia.com,
+        mmaddireddy@nvidia.com
+Subject: Re: [RESEND PATCH V1 1/5] PCI: tegra: Fix handling BME_CHGED event
+Message-ID: <20210527160609.GA1400341@bjorn-Precision-5520>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210527115246.20509-2-omp@nvidia.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fixed coding style issues generated by checkpatch.pl with --strict option.
+On Thu, May 27, 2021 at 05:22:42PM +0530, Om Prakash Singh wrote:
+> In tegra_pcie_ep_hard_irq(), APPL_INTR_STATUS_L0 is stored in val and again
+> APPL_INTR_STATUS_L1_0_0 is also stored in val. So when execution reaches
+> "if (val & APPL_INTR_STATUS_L0_PCI_CMD_EN_INT)", val is not correct.
+> 
+> Signed-off-by: Om Prakash Singh <omp@nvidia.com>
+> ---
+>  drivers/pci/controller/dwc/pcie-tegra194.c | 12 ++++++------
+>  1 file changed, 6 insertions(+), 6 deletions(-)
+> 
+> diff --git a/drivers/pci/controller/dwc/pcie-tegra194.c b/drivers/pci/controller/dwc/pcie-tegra194.c
+> index bafd2c6ab3c2..c51d666c9d87 100644
+> --- a/drivers/pci/controller/dwc/pcie-tegra194.c
+> +++ b/drivers/pci/controller/dwc/pcie-tegra194.c
+> @@ -615,10 +615,10 @@ static irqreturn_t tegra_pcie_ep_hard_irq(int irq, void *arg)
+>  	struct tegra_pcie_dw *pcie = arg;
+>  	struct dw_pcie_ep *ep = &pcie->pci.ep;
+>  	int spurious = 1;
+> -	u32 val, tmp;
+> +	u32 val_l0, val, tmp;
 
-Signed-off-by: Piyush Thange <pthange19@gmail.com>
----
- drivers/thunderbolt/switch.c | 43 ++++++++++++++++++++++--------------
- 1 file changed, 27 insertions(+), 16 deletions(-)
+Too bad this uses such bad variable names.  Names like "status_l0",
+"status_l1", "link_status" would have avoided this in the first place.
 
-diff --git a/drivers/thunderbolt/switch.c b/drivers/thunderbolt/switch.c
-index e73cd296db7e..921d25590560 100644
---- a/drivers/thunderbolt/switch.c
-+++ b/drivers/thunderbolt/switch.c
-@@ -148,8 +148,9 @@ static int nvm_validate_and_write(struct tb_switch *sw)
- 		if (sw->generation < 3) {
- 			/* Write CSS headers first */
- 			ret = dma_port_flash_write(sw->dma_port,
--				DMA_PORT_CSS_ADDRESS, buf + NVM_CSS,
--				DMA_PORT_CSS_MAX_SIZE);
-+						   DMA_PORT_CSS_ADDRESS,
-+						   buf + NVM_CSS,
-+						   DMA_PORT_CSS_MAX_SIZE);
- 			if (ret)
- 				return ret;
- 		}
-@@ -463,7 +464,7 @@ static const char *tb_port_type(struct tb_regs_port_header *port)
- {
- 	switch (port->type >> 16) {
- 	case 0:
--		switch ((u8) port->type) {
-+		switch ((u8)port->type) {
- 		case 0:
- 			return "Inactive";
- 		case 1:
-@@ -513,6 +514,7 @@ int tb_port_state(struct tb_port *port)
- {
- 	struct tb_cap_phy phy;
- 	int res;
-+
- 	if (port->cap_phy == 0) {
- 		tb_port_WARN(port, "does not have a PHY\n");
- 		return -EINVAL;
-@@ -542,6 +544,7 @@ int tb_wait_for_port(struct tb_port *port, bool wait_if_unplugged)
- {
- 	int retries = 10;
- 	int state;
-+
- 	if (!port->cap_phy) {
- 		tb_port_WARN(port, "does not have PHY\n");
- 		return -EINVAL;
-@@ -636,6 +639,7 @@ int tb_port_add_nfc_credits(struct tb_port *port, int credits)
- int tb_port_clear_counter(struct tb_port *port, int counter)
- {
- 	u32 zero[3] = { 0, 0, 0 };
-+
- 	tb_port_dbg(port, "clearing counter %d\n", counter);
- 	return tb_port_write(port, zero, TB_CFG_COUNTERS, 3 * counter, 3);
- }
-@@ -748,7 +752,6 @@ static int tb_init_port(struct tb_port *port)
- 
- 	INIT_LIST_HEAD(&port->list);
- 	return 0;
--
- }
- 
- static int tb_port_alloc_hopid(struct tb_port *port, bool in, int min_hopid,
-@@ -830,6 +833,7 @@ static inline bool tb_switch_is_reachable(const struct tb_switch *parent,
- 					  const struct tb_switch *sw)
- {
- 	u64 mask = (1ULL << parent->config.depth * 8) - 1;
-+
- 	return (tb_route(parent) & mask) == (tb_route(sw) & mask);
- }
- 
-@@ -1132,6 +1136,7 @@ bool tb_pci_port_is_enabled(struct tb_port *port)
- int tb_pci_port_enable(struct tb_port *port, bool enable)
- {
- 	u32 word = enable ? ADP_PCIE_CS_0_PE : 0x0;
-+
- 	if (!port->cap_adap)
- 		return -ENXIO;
- 	return tb_port_write(port, &word, TB_CFG_PORT,
-@@ -1241,7 +1246,7 @@ int tb_dp_port_enable(struct tb_port *port, bool enable)
- 	int ret;
- 
- 	ret = tb_port_read(port, data, TB_CFG_PORT,
--			  port->cap_adap + ADP_DP_CS_0, ARRAY_SIZE(data));
-+			   port->cap_adap + ADP_DP_CS_0, ARRAY_SIZE(data));
- 	if (ret)
- 		return ret;
- 
-@@ -1282,9 +1287,9 @@ static void tb_dump_switch(const struct tb *tb, const struct tb_switch *sw)
- 	tb_dbg(tb, "  Max Port Number: %d\n", regs->max_port_number);
- 	tb_dbg(tb, "  Config:\n");
- 	tb_dbg(tb,
--		"   Upstream Port Number: %d Depth: %d Route String: %#llx Enabled: %d, PlugEventsDelay: %dms\n",
-+	       "   Upstream Port Number: %d Depth: %d Route String: %#llx Enabled: %d, PlugEventsDelay: %dms\n",
- 	       regs->upstream_port_number, regs->depth,
--	       (((u64) regs->route_hi) << 32) | regs->route_lo,
-+	       (((u64)regs->route_hi) << 32) | regs->route_lo,
- 	       regs->enabled, regs->plug_events_delay);
- 	tb_dbg(tb, "   unknown1: %#x unknown4: %#x\n",
- 	       regs->__unknown1, regs->__unknown4);
-@@ -1305,7 +1310,7 @@ int tb_switch_reset(struct tb_switch *sw)
- 
- 	tb_sw_dbg(sw, "resetting switch\n");
- 
--	res.err = tb_sw_write(sw, ((u32 *) &sw->config) + 2,
-+	res.err = tb_sw_write(sw, ((u32 *)&sw->config) + 2,
- 			      TB_CFG_SWITCH, 2, 2);
- 	if (res.err)
- 		return res.err;
-@@ -1331,7 +1336,7 @@ static int tb_plug_events_active(struct tb_switch *sw, bool active)
- 		return 0;
- 
- 	sw->config.plug_events_delay = 0xff;
--	res = tb_sw_write(sw, ((u32 *) &sw->config) + 4, TB_CFG_SWITCH, 4, 1);
-+	res = tb_sw_write(sw, ((u32 *)&sw->config) + 4, TB_CFG_SWITCH, 4, 1);
- 	if (res)
- 		return res;
- 
-@@ -1579,7 +1584,7 @@ static DEVICE_ATTR(rx_lanes, 0444, lanes_show, NULL);
- static DEVICE_ATTR(tx_lanes, 0444, lanes_show, NULL);
- 
- static ssize_t nvm_authenticate_show(struct device *dev,
--	struct device_attribute *attr, char *buf)
-+				     struct device_attribute *attr, char *buf)
- {
- 	struct tb_switch *sw = tb_to_switch(dev);
- 	u32 status;
-@@ -1646,9 +1651,12 @@ static ssize_t nvm_authenticate_sysfs(struct device *dev, const char *buf,
- }
- 
- static ssize_t nvm_authenticate_store(struct device *dev,
--	struct device_attribute *attr, const char *buf, size_t count)
-+				      struct device_attribute *attr,
-+				      const char *buf,
-+				      size_t count)
- {
- 	int ret = nvm_authenticate_sysfs(dev, buf, false);
-+
- 	if (ret)
- 		return ret;
- 	return count;
-@@ -1656,13 +1664,16 @@ static ssize_t nvm_authenticate_store(struct device *dev,
- static DEVICE_ATTR_RW(nvm_authenticate);
- 
- static ssize_t nvm_authenticate_on_disconnect_show(struct device *dev,
--	struct device_attribute *attr, char *buf)
-+						   struct device_attribute *attr,
-+						   char *buf)
- {
- 	return nvm_authenticate_show(dev, attr, buf);
- }
- 
- static ssize_t nvm_authenticate_on_disconnect_store(struct device *dev,
--	struct device_attribute *attr, const char *buf, size_t count)
-+						    struct device_attribute *attr,
-+						    const char *buf,
-+						    size_t count)
- {
- 	int ret;
- 
-@@ -1859,7 +1870,7 @@ static int tb_switch_uevent(struct device *dev, struct kobj_uevent_env *env)
- 		/* Device is hub if it has any downstream ports */
- 		tb_switch_for_each_port(sw, port) {
- 			if (!port->disabled && !tb_is_upstream_port(port) &&
--			     tb_port_is_null(port)) {
-+			    tb_port_is_null(port)) {
- 				hub = true;
- 				break;
- 			}
-@@ -2032,7 +2043,7 @@ struct tb_switch *tb_switch_alloc(struct tb *tb, struct device *parent,
- 
- 	/* initialize ports */
- 	sw->ports = kcalloc(sw->config.max_port_number + 1, sizeof(*sw->ports),
--				GFP_KERNEL);
-+			    GFP_KERNEL);
- 	if (!sw->ports) {
- 		ret = -ENOMEM;
- 		goto err_free_sw_ports;
-@@ -2754,7 +2765,7 @@ int tb_switch_resume(struct tb_switch *sw)
- 		}
- 		if (sw->uid != uid) {
- 			tb_sw_info(sw,
--				"changed while suspended (uid %#llx -> %#llx)\n",
-+				   "changed while suspended (uid %#llx -> %#llx)\n",
- 				sw->uid, uid);
- 			return -ENODEV;
- 		}
--- 
-2.25.1
-
+"val" makes sense in places like config accessors where we're reading
+or writing unspecified registers.  But when we're accessing specific
+named registers?  Not so much.
