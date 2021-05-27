@@ -2,108 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2034D392617
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 06:22:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 18154392619
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 06:24:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229779AbhE0EYI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 May 2021 00:24:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51348 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229453AbhE0EYH (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 May 2021 00:24:07 -0400
-Received: from mail-oi1-x234.google.com (mail-oi1-x234.google.com [IPv6:2607:f8b0:4864:20::234])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79896C061574
-        for <linux-kernel@vger.kernel.org>; Wed, 26 May 2021 21:22:34 -0700 (PDT)
-Received: by mail-oi1-x234.google.com with SMTP id y76so3867040oia.6
-        for <linux-kernel@vger.kernel.org>; Wed, 26 May 2021 21:22:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=9DG+xjWGZv67nZFsC1Ee5TRyVRy4OYoOSwlGHHWJ58U=;
-        b=l5L+bJvVQJRe0kOb+T6Yq6UuOZ5NfHBWYe+QjQ7AgzNd+wN4b3ZnT/+xjry1OUKU5N
-         b7coSP0dZSCIsI8RQl16xUD53gX/HGThF6Grwe7Xg7Z8usXdJN6sZgHHUv26XnVfrU1o
-         +ppKtu8BbRLChINfqvdf588PZrqLhmbZZ87cZzANzPyy1ETBrw4ACHMJkzsY0v8oEpkw
-         fGTT44+uA014dkuBUxX5/v2Tqix4JRPNgfuvu1rEgcXKRE1U7D8cWCFm4N7lUn+vFitX
-         G0q2S549q0TCFxy4SWASelCCEgXGhqrI6/zri1K9lvZGnYohCU+ZRWelJHA5FUwXtTYW
-         6sfQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=9DG+xjWGZv67nZFsC1Ee5TRyVRy4OYoOSwlGHHWJ58U=;
-        b=jwFYJyJYYKtV5E+RbW3Q+PdQ8oWu/M2dGVOifG/06QpSn6UzeFfF0RdcfZvl6NyTla
-         fmzMqDiBOYlbJO+5NQGYBsQmmQLWat/UhBi0xZYbVTF+8spZCUGnT3ZgeOZtN6sAwKAf
-         wkDuPAw2AcK3uwfn8a2B+td54R2qduzesjK7xHNHYs7jXgXDJG7V0Si31Szf3iZWq9LB
-         MY2yl7fOCw6mult/zkhFbm+6QgfivYwNoUv8ciM/i0sLOlupVqLy0nwzrspLOt+6w7p0
-         vSoA41X+XVSPFD0r2GIcH91R2kgnaIwXnwydExMrzRjK9SChsoS9Vz09Lh5gJlfWunxj
-         rk1w==
-X-Gm-Message-State: AOAM531y2924eu06VJXIHX6+7dhKijETpoeMewrSdcEk6qCPVnO7y2iy
-        1hWzrJahqAWqTJW4dVBrzF8+tdtBgGFevMf2EEA9HoE+
-X-Google-Smtp-Source: ABdhPJz0CbLS9N2IE55TBBnETmt0sI7XDgqlj2lorRpi5OkRDYWOIcqZMgSfJ+Zx6228a69CfujHU7uG5Czu0vDD8Ms=
-X-Received: by 2002:a05:6808:206:: with SMTP id l6mr4057313oie.5.1622089353925;
- Wed, 26 May 2021 21:22:33 -0700 (PDT)
+        id S229791AbhE0EZs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 May 2021 00:25:48 -0400
+Received: from mga17.intel.com ([192.55.52.151]:56123 "EHLO mga17.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229453AbhE0EZp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 27 May 2021 00:25:45 -0400
+IronPort-SDR: lcOFcnNHPCxk2/uvZUR2stcHLGvQFc5G/LTLFKSs9spX6rnIVkhbNH/39EKowiXscIn2TKKdrg
+ 9z1gxPWiBXnA==
+X-IronPort-AV: E=McAfee;i="6200,9189,9996"; a="182979643"
+X-IronPort-AV: E=Sophos;i="5.82,333,1613462400"; 
+   d="scan'208";a="182979643"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 May 2021 21:24:12 -0700
+IronPort-SDR: vTsaw6QNaM/5cgvOZHBHc/jzqVYYdLz1srgA4CeZJ31uwN1Yn8rbWDsNebYiorPAs3KYb8QZkS
+ QlN/fpwTAjwQ==
+X-IronPort-AV: E=Sophos;i="5.82,333,1613462400"; 
+   d="scan'208";a="480391407"
+Received: from skgangad-mobl.amr.corp.intel.com (HELO skuppusw-desk1.amr.corp.intel.com) ([10.254.33.45])
+  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 May 2021 21:24:12 -0700
+From:   Kuppuswamy Sathyanarayanan 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>
+To:     Peter Zijlstra <peterz@infradead.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Dan Williams <dan.j.williams@intel.com>
+Cc:     Andi Kleen <ak@linux.intel.com>,
+        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
+        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
+        Raj Ashok <ashok.raj@intel.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Kuppuswamy Sathyanarayanan 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        linux-kernel@vger.kernel.org
+Subject: [RFC v2-fix-v1 0/3] x86/tdx: Handle port I/O
+Date:   Wed, 26 May 2021 21:23:53 -0700
+Message-Id: <20210527042356.3983284-1-sathyanarayanan.kuppuswamy@linux.intel.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <CAPcyv4gBNqDFQEYjWqYTckPg-yy=LrvMw_FNY+tUuEwD35CfyA@mail.gmail.com>
+References: <CAPcyv4gBNqDFQEYjWqYTckPg-yy=LrvMw_FNY+tUuEwD35CfyA@mail.gmail.com>
 MIME-Version: 1.0
-References: <20210526084726.552052-1-lee.jones@linaro.org> <20210526084726.552052-21-lee.jones@linaro.org>
-In-Reply-To: <20210526084726.552052-21-lee.jones@linaro.org>
-From:   Alex Deucher <alexdeucher@gmail.com>
-Date:   Thu, 27 May 2021 00:22:22 -0400
-Message-ID: <CADnq5_OHSFsckrZ4_Oy64fT+fDOf4QXudkhpGeaDqXvTc4JwXA@mail.gmail.com>
-Subject: Re: [PATCH 20/34] drm/amd/display/amdgpu_dm/amdgpu_dm: Fix kernel-doc
- formatting issue
-To:     Lee Jones <lee.jones@linaro.org>
-Cc:     Leo Li <sunpeng.li@amd.com>, LKML <linux-kernel@vger.kernel.org>,
-        amd-gfx list <amd-gfx@lists.freedesktop.org>,
-        David Airlie <airlied@linux.ie>,
-        Maling list - DRI developers 
-        <dri-devel@lists.freedesktop.org>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Applied.  Thanks!
+This patchset addresses the review comments in the patch titled
+"[RFC v2 14/32] x86/tdx: Handle port I/O". Since it requires
+patch split, sending these together.
 
-On Wed, May 26, 2021 at 4:48 AM Lee Jones <lee.jones@linaro.org> wrote:
->
-> Fixes the following W=3D1 kernel build warning(s):
->
->  drivers/gpu/drm/amd/amdgpu/../display/amdgpu_dm/amdgpu_dm.c:608: warning=
-: Function parameter or member 'interrupt_params' not described in 'dm_dcn_=
-vertical_interrupt0_high_irq'
->
-> Cc: Harry Wentland <harry.wentland@amd.com>
-> Cc: Leo Li <sunpeng.li@amd.com>
-> Cc: Alex Deucher <alexander.deucher@amd.com>
-> Cc: "Christian K=C3=B6nig" <christian.koenig@amd.com>
-> Cc: David Airlie <airlied@linux.ie>
-> Cc: Daniel Vetter <daniel@ffwll.ch>
-> Cc: amd-gfx@lists.freedesktop.org
-> Cc: dri-devel@lists.freedesktop.org
-> Signed-off-by: Lee Jones <lee.jones@linaro.org>
-> ---
->  drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c b/drivers/=
-gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
-> index ae0a95c5f1d8c..0b4841f377e41 100644
-> --- a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
-> +++ b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
-> @@ -605,7 +605,7 @@ static void dm_crtc_high_irq(void *interrupt_params)
->  /**
->   * dm_dcn_vertical_interrupt0_high_irq() - Handles OTG Vertical interrup=
-t0 for
->   * DCN generation ASICs
-> - * @interrupt params - interrupt parameters
-> + * @interrupt_params: interrupt parameters
->   *
->   * Used to set crc window/read out crc value at vertical line 0 position
->   */
-> --
-> 2.31.1
->
+Changes since RFC v2:
+ * Removed assembly implementation of port IO emulation code
+   and modified __in/__out IO helpers to directly call C function
+   for in/out instruction emulation in decompression code.
+ * Added helper function tdx_get_iosize() to make it easier for
+   calling tdg_out/tdg_int() C functions from decompression code.
+ * Added support for early exception handler to support IO
+   instruction emulation in early boot kernel code.
+ * Removed alternative_ usage and made kernel only use #VE based
+   IO instruction emulation support outside the decompression module.
+ * Added support for protection_guest_has() API to generalize
+   AMD SEV/TDX specific initialization code in common drivers.
+ * Fixed commit log and comments as per review comments.
+
+
+Andi Kleen (1):
+  x86/tdx: Handle early IO operations
+
+Kirill A. Shutemov (1):
+  x86/tdx: Handle port I/O
+
+Kuppuswamy Sathyanarayanan (1):
+  tdx: Introduce generic protected_guest abstraction
+
+ arch/Kconfig                           |   3 +
+ arch/x86/Kconfig                       |   1 +
+ arch/x86/boot/compressed/Makefile      |   1 +
+ arch/x86/boot/compressed/tdcall.S      |   3 +
+ arch/x86/boot/compressed/tdx.c         |  28 ++++++
+ arch/x86/include/asm/io.h              |   7 +-
+ arch/x86/include/asm/protected_guest.h |  24 +++++
+ arch/x86/include/asm/tdx.h             |  60 ++++++++++++-
+ arch/x86/kernel/head64.c               |   4 +
+ arch/x86/kernel/tdx.c                  | 116 +++++++++++++++++++++++++
+ include/linux/protected_guest.h        |  23 +++++
+ 11 files changed, 267 insertions(+), 3 deletions(-)
+ create mode 100644 arch/x86/boot/compressed/tdcall.S
+ create mode 100644 arch/x86/include/asm/protected_guest.h
+ create mode 100644 include/linux/protected_guest.h
+
+-- 
+2.25.1
+
