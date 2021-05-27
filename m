@@ -2,140 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 41E14392A61
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 11:14:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B1A5E392A3F
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 11:05:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235751AbhE0JQK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 May 2021 05:16:10 -0400
-Received: from mx2.suse.de ([195.135.220.15]:42364 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235554AbhE0JQF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 May 2021 05:16:05 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1622106870; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=wF0gVNjinmo0Hc0sps+4CX8PBKyxO99eUnpQyoVA9wM=;
-        b=W/qOh1xTlNtrjaLmf+AL1hXvMsato1qiJBN2mBzHO0jBeKH7Ln3zzg/a9uaH3c8SswJ0j0
-        HjRPf8OkDOVJjkaouS8NvT/SakvUPcG2WewQzWCLGc7Mw5XihX3wt/cCURrDdL3gGTMZA7
-        F3d0KxnCtJlJ45Or6mhxloo6XWHvzJE=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 69D54AB71;
-        Thu, 27 May 2021 09:14:30 +0000 (UTC)
-Date:   Thu, 27 May 2021 11:14:29 +0200
-From:   Petr Mladek <pmladek@suse.com>
-To:     Justin He <Justin.He@arm.com>
-Cc:     Steven Rostedt <rostedt@goodmis.org>,
-        Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Al Viro <viro@ftp.linux.org.uk>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        "Eric W . Biederman" <ebiederm@xmission.com>,
-        "Darrick J. Wong" <darrick.wong@oracle.com>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Ira Weiny <ira.weiny@intel.com>,
-        Eric Biggers <ebiggers@google.com>, nd <nd@arm.com>,
-        "Ahmed S. Darwish" <a.darwish@linutronix.de>,
-        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-s390@vger.kernel.org" <linux-s390@vger.kernel.org>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>
-Subject: Re: [PATCH RFC 2/3] lib/vsprintf.c: make %pD print full path for file
-Message-ID: <YK9i9Y7LVTYgpad7@alley>
-References: <20210508122530.1971-1-justin.he@arm.com>
- <20210508122530.1971-3-justin.he@arm.com>
- <YJkveb46BoFbXi0q@alley>
- <AM6PR08MB43764A5026A92DEF45EF8DBFF7239@AM6PR08MB4376.eurprd08.prod.outlook.com>
+        id S235714AbhE0JHA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 May 2021 05:07:00 -0400
+Received: from szxga08-in.huawei.com ([45.249.212.255]:2311 "EHLO
+        szxga08-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235690AbhE0JG7 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 27 May 2021 05:06:59 -0400
+Received: from dggeml706-chm.china.huawei.com (unknown [172.30.72.54])
+        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4FrMH64bSmz19VRg;
+        Thu, 27 May 2021 17:00:50 +0800 (CST)
+Received: from dggpeml500020.china.huawei.com (7.185.36.88) by
+ dggeml706-chm.china.huawei.com (10.3.17.144) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2176.2; Thu, 27 May 2021 17:05:25 +0800
+Received: from huawei.com (10.175.127.227) by dggpeml500020.china.huawei.com
+ (7.185.36.88) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Thu, 27 May
+ 2021 17:05:24 +0800
+From:   Baokun Li <libaokun1@huawei.com>
+To:     <gregkh@linuxfoundation.org>, <rafael@kernel.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     <weiyongjun1@huawei.com>, <yuehaibing@huawei.com>,
+        <yangjihong1@huawei.com>, <yukuai3@huawei.com>,
+        <libaokun1@huawei.com>
+Subject: [PATCH -next] driver core: Remove set but not used variable 'no_warn'
+Date:   Thu, 27 May 2021 17:14:53 +0800
+Message-ID: <20210527091453.3880695-1-libaokun1@huawei.com>
+X-Mailer: git-send-email 2.25.4
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <AM6PR08MB43764A5026A92DEF45EF8DBFF7239@AM6PR08MB4376.eurprd08.prod.outlook.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.175.127.227]
+X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
+ dggpeml500020.china.huawei.com (7.185.36.88)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu 2021-05-27 07:20:55, Justin He wrote:
-> > > @@ -923,10 +924,17 @@ static noinline_for_stack
-> > >  char *file_dentry_name(char *buf, char *end, const struct file *f,
-> > >  			struct printf_spec spec, const char *fmt)
-> > >  {
-> > > +	const struct path *path = &f->f_path;
-> > 
-> > This dereferences @f before it is checked by check_pointer().
-> > 
-> > > +	char *p;
-> > > +	char tmp[128];
-> > > +
-> > >  	if (check_pointer(&buf, end, f, spec))
-> > >  		return buf;
-> > >
-> > > -	return dentry_name(buf, end, f->f_path.dentry, spec, fmt);
-> > > +	p = d_path_fast(path, (char *)tmp, 128);
-> > > +	buf = string(buf, end, p, spec);
-> > 
-> > Is 128 a limit of the path or just a compromise, please?
-> > 
-> > d_path_fast() limits the size of the buffer so we could use @buf
-> > directly. We basically need to imitate what string_nocheck() does:
-> > 
-> >      + the length is limited by min(spec.precision, end-buf);
-> >      + the string need to get shifted by widen_string()
-> > 
-> > We already do similar thing in dentry_name(). It might look like:
-> > 
-> > char *file_dentry_name(char *buf, char *end, const struct file *f,
-> > 			struct printf_spec spec, const char *fmt)
-> > {
-> > 	const struct path *path;
-> > 	int lim, len;
-> > 	char *p;
-> > 
-> > 	if (check_pointer(&buf, end, f, spec))
-> > 		return buf;
-> > 
-> > 	path = &f->f_path;
-> > 	if (check_pointer(&buf, end, path, spec))
-> > 		return buf;
-> > 
-> > 	lim = min(spec.precision, end - buf);
-> > 	p = d_path_fast(path, buf, lim);
-> 
-> After further think about it, I prefer to choose pass stack space instead of _buf_.
-> 
-> vsnprintf() should return the size it requires after formatting the string.
-> vprintk_store() will invoke 1st vsnprintf() will 8 bytes to get the reserve_size.
-> Then invoke 2nd printk_sprint()->vscnprintf()->vsnprintf() to fill the space.
-> 
-> Hence end-buf is <0 in the 1st vsnprintf case.
+Fixes gcc '-Wunused-but-set-variable' warning:
 
-Grr, you are right, I have completely missed this. I felt that there
-must had been a catch but I did not see it.
+drivers/base/module.c: In function 'module_create_drivers_dir':
+drivers/base/module.c:36:6: warning:
+ variable ‘no_warn’ set but not used [-Wunused-but-set-variable]
 
-> If I call d_path_fast(path, buf, lim) with _buf_ instead of stack space, the
-> logic in prepend_name should be changed a lot. 
-> 
-> What do you think of it?
+It never used since introduction.
 
-I wonder if vsprintf() could pass a bigger static buffer
-when (str >= end). I would be safe if the dentry API only writes
-to the buffer and does not depend on reading what has already
-been written there. Then it will not matter that it is shared
-between more vsprintf() callers.
+Signed-off-by: Baokun Li <libaokun1@huawei.com>
+---
+ drivers/base/module.c | 7 +++----
+ 1 file changed, 3 insertions(+), 4 deletions(-)
 
-It is a dirty hack. I do not have a good feeling about it. Of course,
-a better solution would be when some dentry API just returns
-the required size in this case.
+diff --git a/drivers/base/module.c b/drivers/base/module.c
+index 46ad4d636731..07ecd66b12b0 100644
+--- a/drivers/base/module.c
++++ b/drivers/base/module.c
+@@ -33,7 +33,6 @@ static void module_create_drivers_dir(struct module_kobject *mk)
+ void module_add_driver(struct module *mod, struct device_driver *drv)
+ {
+ 	char *driver_name;
+-	int no_warn;
+ 	struct module_kobject *mk = NULL;
+ 
+ 	if (!drv)
+@@ -59,12 +58,12 @@ void module_add_driver(struct module *mod, struct device_driver *drv)
+ 		return;
+ 
+ 	/* Don't check return codes; these calls are idempotent */
+-	no_warn = sysfs_create_link(&drv->p->kobj, &mk->kobj, "module");
++	sysfs_create_link(&drv->p->kobj, &mk->kobj, "module");
+ 	driver_name = make_driver_name(drv);
+ 	if (driver_name) {
+ 		module_create_drivers_dir(mk);
+-		no_warn = sysfs_create_link(mk->drivers_dir, &drv->p->kobj,
+-					    driver_name);
++		sysfs_create_link(mk->drivers_dir, &drv->p->kobj,
++				  driver_name);
+ 		kfree(driver_name);
+ 	}
+ }
+-- 
+2.25.4
 
-Anyway, the buffer on stack would be more safe. It looks like a good
-compromise. We could always improve it when it is not good enough in
-the real life.
-
-Best Regards,
-Petr
