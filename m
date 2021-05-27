@@ -2,78 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CCDB33936A2
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 21:48:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D39B13936AC
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 21:53:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235874AbhE0Ttp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 May 2021 15:49:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36506 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235790AbhE0Ttj (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 May 2021 15:49:39 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21540C0613CE
-        for <linux-kernel@vger.kernel.org>; Thu, 27 May 2021 12:48:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-        Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:References:Cc:To:From:
-        Subject:Sender:Reply-To:Content-ID:Content-Description;
-        bh=aKY5/pZ25eI5CRHO3fjsTiwQYdvDAEtrB/FByVR9LZI=; b=M2b1hgNM/5y6HtxLVTrSeXxCKq
-        gB54LyEyvgoKvpjfbcbz9pWsQfCw6v2UzFsc5ueyIqfE2U8Y0V5C4jdGT5ynB3blSgCOre30uugU5
-        2f3IYUFNYwJqVLiqW965vNFalkNNpbdkgKmv+61RwzBWtYaGQmd8oJ9UOcgPM590K5DtBkTBNSr4a
-        J9gddyKdWk05zCyAGMBrj4wZXyLdFnoicjV/DDI20tCm75xfeJqnZCbHHhphP46UnQfrGPGsRVGyk
-        FwBbhR19ydHPqwezzkcjpL0ZH/xnG8JSp/EYnVfvsrngd9WC9qhICmn8txJsVF/DXBgCFrS0AQ+Fe
-        QeLUXRLQ==;
-Received: from [2601:1c0:6280:3f0::ce7d]
-        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1lmLzB-0096QD-7f; Thu, 27 May 2021 19:48:05 +0000
-Subject: Re: [PATCH] afs: fix no return statement in function returning
- non-void
-From:   Randy Dunlap <rdunlap@infradead.org>
-To:     David Howells <dhowells@redhat.com>,
-        Zheng Zengkai <zhengzengkai@huawei.com>
-Cc:     linux-afs@lists.infradead.org, linux-kernel@vger.kernel.org,
-        huawei.libin@huawei.com
-References: <20210327121624.194639-1-zhengzengkai@huawei.com>
- <6575.1617890815@warthog.procyon.org.uk>
- <02f8940c-e1af-fffa-8bb3-3bfa96bfafa9@infradead.org>
-Message-ID: <2bc0f5fd-2519-7b53-7535-99054607ea4c@infradead.org>
-Date:   Thu, 27 May 2021 12:48:04 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.0
+        id S235566AbhE0Tye (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 May 2021 15:54:34 -0400
+Received: from mga11.intel.com ([192.55.52.93]:30929 "EHLO mga11.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234847AbhE0Tyc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 27 May 2021 15:54:32 -0400
+IronPort-SDR: E4qv/9KaH5DrZLvFMJ9iyun+0LXpQQM9of3SE0NwpJ0qnQHW6ZxGqByiy7yiKGf07M8fNkTEBx
+ m1M9YFzD2qLg==
+X-IronPort-AV: E=McAfee;i="6200,9189,9997"; a="199779939"
+X-IronPort-AV: E=Sophos;i="5.83,228,1616482800"; 
+   d="scan'208";a="199779939"
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 May 2021 12:52:57 -0700
+IronPort-SDR: pykGfpnCpfM7zswMkG1eNMwP9EvLV5DsCACCVn3dUeT7jqZBMj0NRGrSZAVwLC8FKINODHNq71
+ ZMTuGZ+adxrw==
+X-IronPort-AV: E=Sophos;i="5.83,228,1616482800"; 
+   d="scan'208";a="547747177"
+Received: from paasikivi.fi.intel.com ([10.237.72.42])
+  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 May 2021 12:52:55 -0700
+Received: from paasikivi.fi.intel.com (localhost [127.0.0.1])
+        by paasikivi.fi.intel.com (Postfix) with SMTP id 1C2A120248;
+        Thu, 27 May 2021 22:52:23 +0300 (EEST)
+Date:   Thu, 27 May 2021 22:52:23 +0300
+From:   Sakari Ailus <sakari.ailus@linux.intel.com>
+To:     "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
+Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-media@vger.kernel.org, linux-staging@lists.linux.dev,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] staging: media: atomisp: pci: Remove checks before
+ kfree/kvfree
+Message-ID: <20210527195222.GK3@paasikivi.fi.intel.com>
+References: <20210527193922.25225-1-fmdefrancesco@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <02f8940c-e1af-fffa-8bb3-3bfa96bfafa9@infradead.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210527193922.25225-1-fmdefrancesco@gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 4/19/21 3:31 PM, Randy Dunlap wrote:
-> On 4/8/21 7:06 AM, David Howells wrote:
->> Zheng Zengkai <zhengzengkai@huawei.com> wrote:
->>
->>>  static int afs_dir_set_page_dirty(struct page *page)
->>>  {
->>>  	BUG(); /* This should never happen. */
->>> +	return 0;
->>>  }
->>
->> That shouldn't be necessary.  BUG() should be marked as 'no return' to the
->> compiler.  What arch and compiler are you using?
+On Thu, May 27, 2021 at 09:39:22PM +0200, Fabio M. De Francesco wrote:
+> Removed checks for pointers != NULL before freeing memory. If kvfree()
+> and kfree() are given NULL pointers no operations are performed, so
+> there is no need for the above-mentioned checks. Coccinelle detected the
+> second of the two unnecessary checks.
 > 
-> How do mark a #define BUG() as __noreturn?
-> 
-> Several arch-es use #define for BUG() instead of using a function.
+> Signed-off-by: Fabio M. De Francesco <fmdefrancesco@gmail.com>
 
-Hi David,
-
-So you are counting of BUG() being a function and not a macro?
-
-Doesn't seem like a good idea.
+Acked-by: Sakari Ailus <sakari.ailus@linux.intel.com>
 
 -- 
-~Randy
-
+Sakari Ailus
