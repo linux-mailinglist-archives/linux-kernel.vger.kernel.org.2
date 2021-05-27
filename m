@@ -2,154 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C3349392AB8
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 11:28:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E0A9392ABD
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 11:29:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235849AbhE0J3z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 May 2021 05:29:55 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:52258 "EHLO m43-7.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235608AbhE0J3y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 May 2021 05:29:54 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1622107701; h=Content-Transfer-Encoding: Content-Type:
- In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
- Subject: Sender; bh=WkY2YTOgRI4Ys9jejhJv/SZd6Pl6W+z9jTGwMepK7Jc=; b=NjoJkB6hiSSpLZwqLNqtWkos6RMie6N2YYHgz7bxNdTejdQAwfA5sQ+5ZMzyma2olOqYRxPL
- 1ALFO2MRTrRnR7ATprHbHuZwHG8EKwV4dtEEJqY3Cm62BxuBsBa+pYmnMmgYSqhAf2utNRaP
- yUbURwkL8V65za/BhaoNGTIHDHg=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n07.prod.us-west-2.postgun.com with SMTP id
- 60af662c5f788b52a508b26f (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 27 May 2021 09:28:12
- GMT
-Sender: charante=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 3E385C43143; Thu, 27 May 2021 09:28:12 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        NICE_REPLY_A,SPF_FAIL autolearn=no autolearn_force=no version=3.4.0
-Received: from [192.168.29.110] (unknown [49.37.159.213])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: charante)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id DC715C433F1;
-        Thu, 27 May 2021 09:28:06 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org DC715C433F1
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=charante@codeaurora.org
-Subject: Re: [PATCH V2] mm: compaction: support triggering of proactive
- compaction by user
-To:     Nitin Gupta <nigupta@nvidia.com>,
-        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
-        "mcgrof@kernel.org" <mcgrof@kernel.org>,
-        "keescook@chromium.org" <keescook@chromium.org>,
-        "yzaikin@google.com" <yzaikin@google.com>,
-        "vbabka@suse.cz" <vbabka@suse.cz>,
-        "bhe@redhat.com" <bhe@redhat.com>,
-        "mateusznosek0@gmail.com" <mateusznosek0@gmail.com>,
-        "sh_def@163.com" <sh_def@163.com>,
-        "iamjoonsoo.kim@lge.com" <iamjoonsoo.kim@lge.com>,
-        "vinmenon@codeaurora.org" <vinmenon@codeaurora.org>
-Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>
-References: <1621345058-26676-1-git-send-email-charante@codeaurora.org>
- <BYAPR12MB3416727DB2BE2198C324124CD8259@BYAPR12MB3416.namprd12.prod.outlook.com>
-From:   Charan Teja Kalla <charante@codeaurora.org>
-Message-ID: <2733c513-d9ca-9c33-42ee-38df0a057f8a@codeaurora.org>
-Date:   Thu, 27 May 2021 14:58:04 +0530
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.2
+        id S235763AbhE0JbP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 May 2021 05:31:15 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:55358 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235608AbhE0JbN (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 27 May 2021 05:31:13 -0400
+Received: from pps.filterd (m0187473.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 14R92e8Y041964;
+        Thu, 27 May 2021 05:29:40 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=M5xuCEVvPBaEIEc6OCW7xYa9va/DlzwC9UTwv3y0UMU=;
+ b=rM5FYWCYpK1qpevLuhwmSMaVGCzY76s5TVjOL4toqYC05o/JW8HZURCArYIMbg9angKN
+ mRrujQarSL0A7m85Ettnn//0NbxBbzbiQDUvRVLfIxXwNrrxpEYZiat2KOUq00bG7wPK
+ 0zJ10xAeUKJJeO76/biAzBjz6Jbei2otBHgrItRUFZ9HLdwQ/NZJwpq66hI5EnCNxWh1
+ OW9ofCwZA/qxnaWEzdIJuKHOMyX5VHNKRmJTTqmWJ6VpL6zIB08083RktokYLTkSCEDq
+ 8bS0V1dNupM2eJa6fyHEGcCSdQmo79FAoCtczurW6iwjL3YCQd6oQPx8VpQRPFaiPdFb 0g== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 38t74ubqcu-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 27 May 2021 05:29:40 -0400
+Received: from m0187473.ppops.net (m0187473.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 14R93MwX044142;
+        Thu, 27 May 2021 05:29:40 -0400
+Received: from ppma03ams.nl.ibm.com (62.31.33a9.ip4.static.sl-reverse.com [169.51.49.98])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 38t74ubqbx-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 27 May 2021 05:29:39 -0400
+Received: from pps.filterd (ppma03ams.nl.ibm.com [127.0.0.1])
+        by ppma03ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 14R9HQ4n016704;
+        Thu, 27 May 2021 09:29:37 GMT
+Received: from b06cxnps3074.portsmouth.uk.ibm.com (d06relay09.portsmouth.uk.ibm.com [9.149.109.194])
+        by ppma03ams.nl.ibm.com with ESMTP id 38sba2rurg-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 27 May 2021 09:29:37 +0000
+Received: from d06av25.portsmouth.uk.ibm.com (d06av25.portsmouth.uk.ibm.com [9.149.105.61])
+        by b06cxnps3074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 14R9TYYB15008252
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 27 May 2021 09:29:34 GMT
+Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 4F4B411C04C;
+        Thu, 27 May 2021 09:29:34 +0000 (GMT)
+Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id D272711C04A;
+        Thu, 27 May 2021 09:29:33 +0000 (GMT)
+Received: from localhost.localdomain (unknown [9.145.86.253])
+        by d06av25.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Thu, 27 May 2021 09:29:33 +0000 (GMT)
+Subject: Re: [PATCH v1 06/11] KVM: s390: pv: usage counter instead of flag
+To:     Claudio Imbrenda <imbrenda@linux.ibm.com>, kvm@vger.kernel.org
+Cc:     cohuck@redhat.com, borntraeger@de.ibm.com, thuth@redhat.com,
+        pasic@linux.ibm.com, david@redhat.com, linux-s390@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20210517200758.22593-1-imbrenda@linux.ibm.com>
+ <20210517200758.22593-7-imbrenda@linux.ibm.com>
+From:   Janosch Frank <frankja@linux.ibm.com>
+Message-ID: <e3e47640-2ee6-3529-24da-fcf0694be858@linux.ibm.com>
+Date:   Thu, 27 May 2021 11:29:33 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
 MIME-Version: 1.0
-In-Reply-To: <BYAPR12MB3416727DB2BE2198C324124CD8259@BYAPR12MB3416.namprd12.prod.outlook.com>
+In-Reply-To: <20210517200758.22593-7-imbrenda@linux.ibm.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: gE_QXIrLfGa540eSuIYWDqpwCdlPyMv-
+X-Proofpoint-GUID: DtkjGaIfeKvHw9FnHG49xFLToFKgyg7p
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
+ definitions=2021-05-27_04:2021-05-26,2021-05-27 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=999 clxscore=1015
+ suspectscore=0 priorityscore=1501 bulkscore=0 spamscore=0 malwarescore=0
+ lowpriorityscore=0 adultscore=0 mlxscore=0 impostorscore=0 phishscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104190000
+ definitions=main-2105270060
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Thanks Nitin for your inputs!!
-
-On 5/26/2021 2:05 AM, Nitin Gupta wrote:
-> The proactive compaction[1] gets triggered for every 500msec and run
-> compaction on the node for COMPACTION_HPAGE_ORDER (usually order-9)
-> pages based on the value set to sysctl.compaction_proactiveness.
-> Triggering the compaction for every 500msec in search of
+On 5/17/21 10:07 PM, Claudio Imbrenda wrote:
+> Use the is_protected field as a counter instead of a flag. This will
+> be used in upcoming patches.
 > 
-> COMPACTION_HPAGE_ORDER pages is not needed for all applications,
->> especially on the embedded system usecases which may have few MB's of
->> RAM. Enabling the proactive compaction in its state will endup in running
->> almost always on such systems.
->>
-> You can disable proactive compaction by setting sysctl.compaction_proactiveness to 0.
-
-Agree. But proactive compaction got its own uses too like it knows when
-to stop the compaction, instead of simply doing the full node
-compaction, thus we don't want to disable it always.
-
+> Increment the counter when a secure configuration is created, and
+> decrement it when it is destroyed. Previously the flag was set when the
+> set secure parameters UVC was performed.
 > 
+> Signed-off-by: Claudio Imbrenda <imbrenda@linux.ibm.com>
+
+Acked-by: Janosch Frank <frankja@linux.ibm.com>
+
+> ---
+>  arch/s390/kvm/pv.c | 12 +++++++-----
+>  1 file changed, 7 insertions(+), 5 deletions(-)
 > 
->> As an example, say app
->> launcher decide to launch the memory heavy application which can be
->> launched fast if it gets more higher order pages thus launcher can prepare
->> the system in advance by triggering the proactive compaction from
->> userspace.
->>
-> You can always do: echo 1 > /proc/sys/vm/compact_memory
-> On a small system, this should not take much time.
-
-Hmm... With 3GB Snapdragon system, we have observed that write to
-compact_memory is taking peak time of 400+msec, could be that
-MIGRATE_SYNC on a full node is causing this peak, which is much time.
-
-
+> diff --git a/arch/s390/kvm/pv.c b/arch/s390/kvm/pv.c
+> index c3f9f30d2ed4..59039b8a7be7 100644
+> --- a/arch/s390/kvm/pv.c
+> +++ b/arch/s390/kvm/pv.c
+> @@ -218,7 +218,8 @@ int kvm_s390_pv_deinit_vm(struct kvm *kvm, u16 *rc, u16 *rrc)
+>  	cc = uv_cmd_nodata(kvm_s390_pv_get_handle(kvm),
+>  			   UVC_CMD_DESTROY_SEC_CONF, rc, rrc);
+>  	WRITE_ONCE(kvm->arch.gmap->guest_handle, 0);
+> -	atomic_set(&kvm->mm->context.is_protected, 0);
+> +	if (!cc)
+> +		atomic_dec(&kvm->mm->context.is_protected);
+>  	KVM_UV_EVENT(kvm, 3, "PROTVIRT DESTROY VM: rc %x rrc %x", *rc, *rrc);
+>  	WARN_ONCE(cc, "protvirt destroy vm failed rc %x rrc %x", *rc, *rrc);
+>  	/* Intended memory leak on "impossible" error */
+> @@ -259,11 +260,14 @@ int kvm_s390_pv_init_vm(struct kvm *kvm, u16 *rc, u16 *rrc)
+>  	/* Outputs */
+>  	kvm->arch.pv.handle = uvcb.guest_handle;
+>  
+> +	atomic_inc(&kvm->mm->context.is_protected);
+>  	if (cc) {
+> -		if (uvcb.header.rc & UVC_RC_NEED_DESTROY)
+> +		if (uvcb.header.rc & UVC_RC_NEED_DESTROY) {
+>  			kvm_s390_pv_deinit_vm(kvm, &dummy, &dummy);
+> -		else
+> +		} else {
+> +			atomic_dec(&kvm->mm->context.is_protected);
+>  			kvm_s390_pv_dealloc_vm(kvm);
+> +		}
+>  		return -EIO;
+>  	}
+>  	kvm->arch.gmap->guest_handle = uvcb.guest_handle;
+> @@ -286,8 +290,6 @@ int kvm_s390_pv_set_sec_parms(struct kvm *kvm, void *hdr, u64 length, u16 *rc,
+>  	*rrc = uvcb.header.rrc;
+>  	KVM_UV_EVENT(kvm, 3, "PROTVIRT VM SET PARMS: rc %x rrc %x",
+>  		     *rc, *rrc);
+> -	if (!cc)
+> -		atomic_set(&kvm->mm->context.is_protected, 1);
+>  	return cc ? -EINVAL : 0;
+>  }
+>  
 > 
-> Hijacking proactive compaction for one-off compaction (say, before a large app launch)
-> does not sound right to me.
 
-Actually we are using the proactive compaction to 'just prepare the
-system before asking for huge memory' as compact_memory can take longer
-and is not controllable like proactive compaction.
-
-In the V1 of this patch, we actually created a /proc interface(similar
-to compact_memory), providing a way to trigger the proactive compaction
-from user space. https://lore.kernel.org/patchwork/patch/1417064/. But
-since this involved a new /proc interface addition, in V2 we just
-implemented an alternative way to it.
-
-Another problem, I think, this patch tried to address is that, in the
-existing implementation it is not guaranteed the user set value of
-compaction_proactiveness is effective unless atleast
-HPAGE_FRAG_CHECK_INTERVAL_MSEC(500msec) is elapsed, Right? Does this
-seems correct provided we had given this user interface and can't
-specified any where when this value will be effective(where it comes
-into effect in the next compact thread wake up for proactive compaction).
-
-Consider the below testcase where a user thinks that the application he
-is going to run is performance critical thus decides to do the below steps:
-1) Save the present the compaction_proactiveness (Say it is zero thus
-disabled)
-2) Set the compaction_proactiveness to 100.
-3) Allocate memory for the application.
-4) Restore the compaction_proactiveness.(set to disabled again)
-5) Then proactive compaction is tried to run.
-
-First, Does the user doing the above steps are valid?
-If yes, then we should guarantee to the user that proactive compaction
-atleast tried to run when the user changed the proactiveness.
-If not, I feel, we should document that 'once user changed the
-compaction_proactiveness, he need to wait atleast
-HPAGE_FRAG_CHECK_INTERVAL_MSEC before considering that the value he
-tried to set is effective and proactive compaction tried to run on
-that'. Doesn't this seem okay?
-
---Charan
--- 
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora
-Forum, a Linux Foundation Collaborative Project
