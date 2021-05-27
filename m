@@ -2,77 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 00A00392ECE
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 15:02:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 65D1A392ED3
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 15:02:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235963AbhE0ND4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 May 2021 09:03:56 -0400
-Received: from verein.lst.de ([213.95.11.211]:38801 "EHLO verein.lst.de"
+        id S236010AbhE0NE3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 May 2021 09:04:29 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36480 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235634AbhE0NDu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 May 2021 09:03:50 -0400
-Received: by verein.lst.de (Postfix, from userid 2407)
-        id D40FB68AFE; Thu, 27 May 2021 15:02:11 +0200 (CEST)
-Date:   Thu, 27 May 2021 15:02:11 +0200
-From:   Christoph Hellwig <hch@lst.de>
-To:     Florian Fainelli <f.fainelli@gmail.com>
-Cc:     Claire Chang <tientzu@chromium.org>,
-        Rob Herring <robh+dt@kernel.org>, mpe@ellerman.id.au,
-        Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
-        boris.ostrovsky@oracle.com, jgross@suse.com,
-        Christoph Hellwig <hch@lst.de>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        benh@kernel.crashing.org, paulus@samba.org,
-        "list@263.net:IOMMU DRIVERS" <iommu@lists.linux-foundation.org>,
-        sstabellini@kernel.org, Robin Murphy <robin.murphy@arm.com>,
-        grant.likely@arm.com, xypron.glpk@gmx.de,
-        Thierry Reding <treding@nvidia.com>, mingo@kernel.org,
-        bauerman@linux.ibm.com, peterz@infradead.org,
-        Greg KH <gregkh@linuxfoundation.org>,
-        Saravana Kannan <saravanak@google.com>,
-        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
-        heikki.krogerus@linux.intel.com,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        linux-devicetree <devicetree@vger.kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        linuxppc-dev@lists.ozlabs.org, xen-devel@lists.xenproject.org,
-        Nicolas Boichat <drinkcat@chromium.org>,
-        Jim Quinlan <james.quinlan@broadcom.com>, tfiga@chromium.org,
-        bskeggs@redhat.com, bhelgaas@google.com, chris@chris-wilson.co.uk,
-        daniel@ffwll.ch, airlied@linux.ie, dri-devel@lists.freedesktop.org,
-        intel-gfx@lists.freedesktop.org, jani.nikula@linux.intel.com,
-        jxgao@google.com, joonas.lahtinen@linux.intel.com,
-        linux-pci@vger.kernel.org, maarten.lankhorst@linux.intel.com,
-        matthew.auld@intel.com, rodrigo.vivi@intel.com,
-        thomas.hellstrom@linux.intel.com,
-        Tom Lendacky <thomas.lendacky@amd.com>
-Subject: Re: [PATCH v7 01/15] swiotlb: Refactor swiotlb init functions
-Message-ID: <20210527130211.GA24344@lst.de>
-References: <20210518064215.2856977-1-tientzu@chromium.org> <20210518064215.2856977-2-tientzu@chromium.org> <170a54f2-be20-ec29-1d7f-3388e5f928c6@gmail.com>
+        id S235177AbhE0NE2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 27 May 2021 09:04:28 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A0099610A2;
+        Thu, 27 May 2021 13:02:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1622120574;
+        bh=eA7hFQjhjlkA6FGzsMI9qG2tJxSORQ8/zD5C/vVFOsw=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=IDA685ydk5IwY08vYougvVTSpbadl4AfWVhExFtxyasStnLxobzjttrsWWSXEvGPB
+         BKHuGOGlowt+e8RA8eWWzkclXhCIz1cWHBKaiiIYrXuFVJEdF4zE6g0p32cmuxjnvx
+         CcdVGDnpD+iAbK/snbwWc0MmKYL/M6Pyi3zgIQfA=
+Date:   Thu, 27 May 2021 15:02:51 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Rob Herring <robh+dt@kernel.org>
+Cc:     Kyle Tso <kyletso@google.com>,
+        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+        Badhri Jagan Sridharan <badhri@google.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        devicetree@vger.kernel.org
+Subject: Re: [PATCH v2] dt-bindings: connector: Replace BIT macro with
+ generic bit ops
+Message-ID: <YK+Ye9fCq2Z02qjl@kroah.com>
+References: <20210527121029.583611-1-kyletso@google.com>
+ <YK+TZOAlc6zYRE0v@kroah.com>
+ <CAL_JsqKGS--ZPUrhVkve3hK2EzWYeN2AATEpqB9PfNEzipfZzA@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <170a54f2-be20-ec29-1d7f-3388e5f928c6@gmail.com>
-User-Agent: Mutt/1.5.17 (2007-11-01)
+In-Reply-To: <CAL_JsqKGS--ZPUrhVkve3hK2EzWYeN2AATEpqB9PfNEzipfZzA@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 19, 2021 at 11:50:07AM -0700, Florian Fainelli wrote:
-> You convert this call site with swiotlb_init_io_tlb_mem() which did not
-> do the set_memory_decrypted()+memset(). Is this okay or should
-> swiotlb_init_io_tlb_mem() add an additional argument to do this
-> conditionally?
+On Thu, May 27, 2021 at 07:52:24AM -0500, Rob Herring wrote:
+> On Thu, May 27, 2021 at 7:41 AM Greg KH <gregkh@linuxfoundation.org> wrote:
+> >
+> > On Thu, May 27, 2021 at 08:10:29PM +0800, Kyle Tso wrote:
+> > > BIT macro is not defined. Replace it with generic bit operations.
+> > >
+> > > Fixes: 630dce2810b9 ("dt-bindings: connector: Add SVDM VDO properties")
+> > > Signed-off-by: Kyle Tso <kyletso@google.com>
+> > > ---
+> > > Changes since v1:
+> > > - re-word the commit message
+> > >
+> > >  include/dt-bindings/usb/pd.h | 20 ++++++++++----------
+> > >  1 file changed, 10 insertions(+), 10 deletions(-)
+> > >
+> > > diff --git a/include/dt-bindings/usb/pd.h b/include/dt-bindings/usb/pd.h
+> > > index fef3ef65967f..cb70b4ceedde 100644
+> > > --- a/include/dt-bindings/usb/pd.h
+> > > +++ b/include/dt-bindings/usb/pd.h
+> > > @@ -163,10 +163,10 @@
+> > >  #define UFP_VDO_VER1_2               2
+> > >
+> > >  /* Device Capability */
+> > > -#define DEV_USB2_CAPABLE     BIT(0)
+> > > -#define DEV_USB2_BILLBOARD   BIT(1)
+> > > -#define DEV_USB3_CAPABLE     BIT(2)
+> > > -#define DEV_USB4_CAPABLE     BIT(3)
+> > > +#define DEV_USB2_CAPABLE     (1 << 0)
+> > > +#define DEV_USB2_BILLBOARD   (1 << 1)
+> > > +#define DEV_USB3_CAPABLE     (1 << 2)
+> > > +#define DEV_USB4_CAPABLE     (1 << 3)
+> >
+> > Why not just include the proper .h file instead?
+> 
+> Because the DT headers can't depend on kernel headers as they get used
+> separately.
 
-The zeroing is useful and was missing before.  I think having a clean
-state here is the right thing.
-
-Not sure about the set_memory_decrypted, swiotlb_update_mem_attributes
-kinda suggests it is too early to set the memory decrupted.
-
-Adding Tom who should now about all this.
+Lame.  :)
