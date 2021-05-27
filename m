@@ -2,109 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D3A23932E4
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 17:52:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 93AC63932E6
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 17:52:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235989AbhE0PyS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 May 2021 11:54:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39802 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233936AbhE0PyE (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 May 2021 11:54:04 -0400
-Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8970C061574
-        for <linux-kernel@vger.kernel.org>; Thu, 27 May 2021 08:52:28 -0700 (PDT)
-Received: by mail-wm1-x329.google.com with SMTP id n5-20020a1c72050000b0290192e1f9a7e1so775116wmc.2
-        for <linux-kernel@vger.kernel.org>; Thu, 27 May 2021 08:52:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=SlgmpzlXrGPb4adzxgTzuNIO/2YBxtpJ9xpzMiqFgFw=;
-        b=XSTD9340EamIS2ZjQNaRsw5UgXNY2HMxLCvLI9bdSj8Iea3fde0JEAY3wLkLsHjV1c
-         /MhBeBdeS+ie68i3NmmmB53Oz4AaJ2u8DZK5oFiW7XkmgjC/izgKLAtcur7H+36HjD6h
-         ppD6WJhjpSwtyft1byckOTPuzvxG8hl9BqPdrmzHZ2+jrc2rB0y5jIi9GyItDMB/bc0s
-         nHuJn0f4M6+DoOk/dOESaSKoHCsmUPbhMOAtwm9sdP2gUV0DyR1o0WevT5AT7UbC3dLF
-         r0GZ0VvBf/W429+f65G7U9SPXtLnFfePvoB84Ebn7szU9lrU9K0tmm81tN5Xx71jcxuV
-         NEUg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=SlgmpzlXrGPb4adzxgTzuNIO/2YBxtpJ9xpzMiqFgFw=;
-        b=KOJjYw3VQKZ+QwjzISm7YLee2JCab4nzEAoUNYAUAltaeIZsF7Bm9m295bQFJvioVI
-         vNhiM1UOtc/3yLtZ51T/iNpflccizoaibT4uYOUHICiWFKCc6tA9kosTuoMyafc2JC8w
-         LkWO1JBPnsb5RUAjNw8hxKKquAcd2ruH9xzYNx+/9WnqHpUmSyTE52hGkfMhH5oGGAD7
-         P/QvvDDs/R5OoLZiw8Bpn3JhbWiHeF2FVVEIQUYAb5XHH5ejFVEDQO/ueL9WLHCkdUWB
-         SrbXCL1LPlztkrQfoDOFQV85n+DALR+PmU4T+oaIOVu9Gqz/Knx5i05FmDkZWe18Nnqe
-         N9VQ==
-X-Gm-Message-State: AOAM530AHS9cxqoj4APk/oljEGr1pcYoTdUKRUATur8hciyNYHOSKqQL
-        j22HhPOEVbvLW4yFm9j+M0W9m0vSNGl7zqvwGImxRw==
-X-Google-Smtp-Source: ABdhPJxecOp9yIEugWSR4DBipzJE9LPuNgsMpZ5JckoAPWek0qsw0htS6vxLt0+yoDyAJ+GoVqLA/y/ieSQqQxx2VL8=
-X-Received: by 2002:a05:600c:414a:: with SMTP id h10mr1416201wmm.77.1622130747362;
- Thu, 27 May 2021 08:52:27 -0700 (PDT)
+        id S237102AbhE0PyV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 May 2021 11:54:21 -0400
+Received: from mga12.intel.com ([192.55.52.136]:49092 "EHLO mga12.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236227AbhE0PyL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 27 May 2021 11:54:11 -0400
+IronPort-SDR: UwZf/3mp6vXlX/zVhBep9dSocf0jicKdDIK7jelv8oIs7sYSatoUpKzELq5DksF1WrU6kC5XhF
+ cEPOKxtHJ+ew==
+X-IronPort-AV: E=McAfee;i="6200,9189,9997"; a="182423953"
+X-IronPort-AV: E=Sophos;i="5.83,334,1616482800"; 
+   d="scan'208";a="182423953"
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 May 2021 08:52:32 -0700
+IronPort-SDR: vi1sBJKGxSpVz71rOrh75KRpaRsqlzBadY0+7RMY/QxUJXaumVUuf/3+yJXONBQd2YhMUZ+zB3
+ 1QvcyrzhkZ4A==
+X-IronPort-AV: E=Sophos;i="5.83,334,1616482800"; 
+   d="scan'208";a="409790638"
+Received: from clblake-mobl-x280.amr.corp.intel.com (HELO skuppusw-mobl5.amr.corp.intel.com) ([10.209.5.237])
+  by fmsmga007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 May 2021 08:52:31 -0700
+Subject: Re: [RFC v2-fix-v2 1/1] x86/tdx: Add __tdx_module_call() and
+ __tdx_hypercall() helper functions
+To:     "Luck, Tony" <tony.luck@intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        "Hansen, Dave" <dave.hansen@intel.com>
+Cc:     Andi Kleen <ak@linux.intel.com>,
+        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
+        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
+        "Williams, Dan J" <dan.j.williams@intel.com>,
+        "Raj, Ashok" <ashok.raj@intel.com>,
+        Sean Christopherson <seanjc@google.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+References: <77545da6-d534-e4c2-a60b-085705e3f0b7@linux.intel.com>
+ <20210527003033.3632700-1-sathyanarayanan.kuppuswamy@linux.intel.com>
+ <974d8050cb974d6d80b0033e4b9fd0bf@intel.com>
+From:   "Kuppuswamy, Sathyanarayanan" 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>
+Message-ID: <e644695a-849e-53d6-f84a-4fcb84988911@linux.intel.com>
+Date:   Thu, 27 May 2021 08:52:29 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-References: <20210519151213.2643570-1-irogers@google.com>
-In-Reply-To: <20210519151213.2643570-1-irogers@google.com>
-From:   Ian Rogers <irogers@google.com>
-Date:   Thu, 27 May 2021 08:52:14 -0700
-Message-ID: <CAP-5=fXpibzr2Vdzy4RHPVzQbSAOLimpHeuVY_L_YsXDy-2_1Q@mail.gmail.com>
-Subject: Re: [PATCH] perf test: Test 2 libpfm4 error cases
-To:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Thomas Richter <tmricht@linux.ibm.com>,
-        linux-perf-users <linux-perf-users@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Riccardo Mancini <rickyman7@gmail.com>
-Cc:     Stephane Eranian <eranian@google.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <974d8050cb974d6d80b0033e4b9fd0bf@intel.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 19, 2021 at 8:12 AM Ian Rogers <irogers@google.com> wrote:
->
-> Proposed in:
-> https://lore.kernel.org/lkml/20210517140931.2559364-1-tmricht@linux.ibm.com/
->
-> Signed-off-by: Ian Rogers <irogers@google.com>
 
-Ping.
 
-Thanks!
-Ian
+On 5/27/21 8:25 AM, Luck, Tony wrote:
+>> Guests communicate with VMMs with hypercalls. Historically, these
+>> are implemented using instructions that are known to cause VMEXITs
+>> like vmcall, vmlaunch, etc. However, with TDX, VMEXITs no longer
+>> expose guest state to the host.  This prevents the old hypercall
+>> mechanisms from working. So to communicate with VMM, TDX
+>> specification defines a new instruction called "tdcall".
+> 
+> You use all caps TDCALL everywhere else in this commit message.
+> Looks odd to have quoted lower case here.
 
-> ---
->  tools/perf/tests/pfm.c | 10 ++++++++++
->  1 file changed, 10 insertions(+)
->
-> diff --git a/tools/perf/tests/pfm.c b/tools/perf/tests/pfm.c
-> index d4b0ef74defc..acd50944f6af 100644
-> --- a/tools/perf/tests/pfm.c
-> +++ b/tools/perf/tests/pfm.c
-> @@ -155,6 +155,16 @@ static int test__pfm_group(void)
->                         .nr_events = 3,
->                         .nr_groups = 1,
->                 },
-> +               {
-> +                       .events = "instructions}",
-> +                       .nr_events = 1,
-> +                       .nr_groups = 0,
-> +               },
-> +               {
-> +                       .events = "{{instructions}}",
-> +                       .nr_events = 0,
-> +                       .nr_groups = 0,
-> +               },
->         };
->
->         for (i = 0; i < ARRAY_SIZE(table); i++) {
-> --
-> 2.31.1.751.gd2f1c929bd-goog
->
+I will use TDCALL uniformly.
+
+> 
+>> In a TDX based VM, since VMM is an untrusted entity, a intermediary
+>> layer (TDX module) exists between host and guest to facilitate the
+>> secure communication. TDX guests communicate with the TDX module and
+>> with the VMM using a new instruction: TDCALL.
+> 
+> Seems both repeat what was in the first paragraph, but also fail to
+> explain how this TDCALL is different from that first TDCALL.
+
+Both cases uses TDCALL instruction. Arguments we pass confirms the
+type of TDCALL ( one used to communicate with TDX module vs one used
+to communicate with VMM).
+
+I can modify the description to convey the difference between both
+cases.
+
+> 
+>> Implement common helper functions to communicate with the TDX Module
+>> and VMM (using TDCALL instruction).
+>>     
+>> __tdx_hypercall()    - request services from the VMM.
+>> __tdx_module_call()  - communicate with the TDX Module.
+> 
+> Looking at the code, the hypercall can return an error if TDCALL fails,
+> but module_call forces a panic with UD2 on error. This difference isn't
+> explained anywhere.
+
+I think you meant hypercall will panic vs module call will not.
+
+In hypercall case, since we use same TDCALL instruction, we will have two
+return values. One is for TDCALL failure (at the TDX module level) and
+other is return value from VMM. So in hypercall case, we return VMM value
+to the user but panic for TDCALL failures. As per TDX spec, for hypercall
+use case, if everything is in order, TDCALL will never fail. If we notice
+TDCALL failure error then it means, we are working with the broken TDX module.
+So we panic.
+
+> -Tony
+> 
+
+-- 
+Sathyanarayanan Kuppuswamy
+Linux Kernel Developer
