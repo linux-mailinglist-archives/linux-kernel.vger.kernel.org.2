@@ -2,78 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 528A9392997
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 10:29:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AE4E439299A
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 10:31:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235551AbhE0Iar (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 May 2021 04:30:47 -0400
-Received: from lucky1.263xmail.com ([211.157.147.135]:34916 "EHLO
-        lucky1.263xmail.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235509AbhE0Iao (ORCPT
+        id S235501AbhE0Ic5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 May 2021 04:32:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50932 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235336AbhE0Icz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 May 2021 04:30:44 -0400
-Received: from localhost (unknown [192.168.167.235])
-        by lucky1.263xmail.com (Postfix) with ESMTP id B8D3FAC981;
-        Thu, 27 May 2021 16:29:09 +0800 (CST)
-X-MAIL-GRAY: 0
-X-MAIL-DELIVERY: 1
-X-ADDR-CHECKED4: 1
-X-ANTISPAM-LEVEL: 2
-X-ABS-CHECKED: 0
-Received: from localhost.localdomain (unknown [58.22.7.114])
-        by smtp.263.net (postfix) whith ESMTP id P31748T140095126476544S1622104146775929_;
-        Thu, 27 May 2021 16:29:10 +0800 (CST)
-X-IP-DOMAINF: 1
-X-UNIQUE-TAG: <1953f266d8f4e49cd1b138fe1e6ffe77>
-X-RL-SENDER: jay.xu@rock-chips.com
-X-SENDER: xjq@rock-chips.com
-X-LOGIN-NAME: jay.xu@rock-chips.com
-X-FST-TO: heiko@sntech.de
-X-RCPT-COUNT: 9
-X-SENDER-IP: 58.22.7.114
-X-ATTACHMENT-NUM: 0
-X-System-Flag: 0
-From:   Jianqun Xu <jay.xu@rock-chips.com>
-To:     heiko@sntech.de, lee.jones@linaro.org, ulf.hansson@linaro.org,
-        robh+dt@kernel.org
-Cc:     devicetree@vger.kernel.org, jbx6244@gmail.com,
-        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Jianqun Xu <jay.xu@rock-chips.com>
-Subject: [PATCH v2 3/3] dt-bindings: soc: rockchip: add rk3568-pmu-io-domain support
-Date:   Thu, 27 May 2021 16:29:05 +0800
-Message-Id: <20210527082905.1447591-4-jay.xu@rock-chips.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210527082905.1447591-1-jay.xu@rock-chips.com>
-References: <20210527082905.1447591-1-jay.xu@rock-chips.com>
+        Thu, 27 May 2021 04:32:55 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 534B4C061574;
+        Thu, 27 May 2021 01:31:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=i7BWqfskeK9kW3dSo9ld0sv/Je9/N41pQm9p0c/HcNQ=; b=Yozlr+C0MAefXsNXcCwqD2C1+3
+        n/ks5zxvGw25ayN20tLSWFEC5h+F41iNKBwAcN7h+LhIKbAL9xhZ3phR1TYoWsmrDMSpGlnVH9/Sr
+        g2aXJsbycGI41VWSTZzRcgMn4MomUUdWyCggj10GaE0zJIX0km20jHpVNzxXheIEVpx/6bDUd2lID
+        VfkZK05V/iL3D4wfMRSSUCrtgRa+tM0rmoISTJiTcfA4Gbdszhi1uoJEyBqkTprcjlSu7W2gQd76/
+        v8x7OeoHB6bVCFHfTebDTX8l6Cd3W34xcqF9VpTo5u+1V2cpaS4GysN75FOkfa7OAi+KTNVqjt3Wr
+        mZh54MYA==;
+Received: from hch by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
+        id 1lmBQ5-005Ksd-DJ; Thu, 27 May 2021 08:31:10 +0000
+Date:   Thu, 27 May 2021 09:31:09 +0100
+From:   Christoph Hellwig <hch@infradead.org>
+To:     "Matthew Wilcox (Oracle)" <willy@infradead.org>
+Cc:     akpm@linux-foundation.org, linux-fsdevel@vger.kernel.org,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v10 33/33] mm: Add folio_mapped
+Message-ID: <YK9YzS1T3xp3QI8/@infradead.org>
+References: <20210511214735.1836149-1-willy@infradead.org>
+ <20210511214735.1836149-34-willy@infradead.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210511214735.1836149-34-willy@infradead.org>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add support for rk3568-pmu-io-domain.
+On Tue, May 11, 2021 at 10:47:35PM +0100, Matthew Wilcox (Oracle) wrote:
+> This function is the equivalent of page_mapped().  It is slightly
+> shorter as we do not need to handle the PageTail() case.  Reimplement
+> page_mapped() as a wrapper around folio_mapped().
 
-Signed-off-by: Jianqun Xu <jay.xu@rock-chips.com>
----
-v2:
-- first version
- Documentation/devicetree/bindings/soc/rockchip/io-domain.yaml | 1 +
- 1 file changed, 1 insertion(+)
+No byte savings numbers as for the other patches?
 
-diff --git a/Documentation/devicetree/bindings/soc/rockchip/io-domain.yaml b/Documentation/devicetree/bindings/soc/rockchip/io-domain.yaml
-index 2931e0ea8fa8..debfcadd3f2f 100644
---- a/Documentation/devicetree/bindings/soc/rockchip/io-domain.yaml
-+++ b/Documentation/devicetree/bindings/soc/rockchip/io-domain.yaml
-@@ -24,6 +24,7 @@ properties:
-             - rockchip,rk3368-pmu-io-voltage-domain
-             - rockchip,rk3399-io-voltage-domain
-             - rockchip,rk3399-pmu-io-voltage-domain
-+            - rockchip,rk3568-pmu-io-voltage-domain
-             - rockchip,rv1108-io-voltage-domain
-             - rockchip,rv1108-pmu-io-voltage-domain
- 
--- 
-2.25.1
+The patch itself looks good, although I'd go for a slightly easier
+readable structure:
 
+bool folio_mapped(struct folio *folio)
+{
+	if (folio_single(folio))
+		return atomic_read(&folio->_mapcount) >= 0;
 
+	if (atomic_read(compound_mapcount_ptr(&folio->page)) >= 0)
+		return true;
 
+	if (!folio_hugetlb(folio)) {
+		unsigned long i;
+
+		for (i = 0; i < folio_nr_pages(folio); i++)
+			if (atomic_read(&folio_page(folio, i)->_mapcount) >= 0)
+ 				return true;
+ 	}
+ 	return false;
+ }
+
+ Shouldn't we also have a folio version of compound_mapcount_ptr?
