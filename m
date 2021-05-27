@@ -2,104 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D090F3934BC
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 19:27:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 090013934DA
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 19:32:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236963AbhE0R2i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 May 2021 13:28:38 -0400
-Received: from outbound-smtp02.blacknight.com ([81.17.249.8]:49772 "EHLO
-        outbound-smtp02.blacknight.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234994AbhE0R2g (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 May 2021 13:28:36 -0400
-Received: from mail.blacknight.com (pemlinmail05.blacknight.ie [81.17.254.26])
-        by outbound-smtp02.blacknight.com (Postfix) with ESMTPS id 383EF2600B
-        for <linux-kernel@vger.kernel.org>; Thu, 27 May 2021 18:27:02 +0100 (IST)
-Received: (qmail 27096 invoked from network); 27 May 2021 17:27:01 -0000
-Received: from unknown (HELO techsingularity.net) (mgorman@techsingularity.net@[84.203.23.168])
-  by 81.17.254.9 with ESMTPSA (AES256-SHA encrypted, authenticated); 27 May 2021 17:27:01 -0000
-Date:   Thu, 27 May 2021 18:27:00 +0100
-From:   Mel Gorman <mgorman@techsingularity.net>
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Christoph Hellwig <hch@infradead.org>,
-        Arnaldo Carvalho de Melo <acme@redhat.com>,
-        Michal Suchanek <msuchanek@suse.de>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Hritik Vijay <hritikxx8@gmail.com>,
-        Linux-BPF <bpf@vger.kernel.org>,
-        Linux-Net <netdev@vger.kernel.org>, Linux-MM <linux-mm@kvack.org>
-Subject: Re: [PATCH v2] mm/page_alloc: Work around a pahole limitation with
- zero-sized struct pagesets
-Message-ID: <20210527172700.GH30378@techsingularity.net>
-References: <20210527120251.GC30378@techsingularity.net>
- <CAEf4BzartMG36AGs-7LkQdpgrB6TYyTJ8PQhjkQWiTN=7sO1Bw@mail.gmail.com>
- <20210527145441.GE30378@techsingularity.net>
- <CAEf4BzbW2i4Y-i3TXW7x42PqEpw5_nNeReSXS77m4GC3uqD3wg@mail.gmail.com>
+        id S235153AbhE0Rdb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 May 2021 13:33:31 -0400
+Received: from mx2.suse.de ([195.135.220.15]:51330 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234594AbhE0Rd3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 27 May 2021 13:33:29 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1622136715; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=Vcp0ishBAVDXErBr76dnKHnF04NivYv1vP+Y4e0QWgU=;
+        b=vkDySjB8Zt07EvJMg+2lKAUYK9E7EP82QLUORhga5AEeuJbxSQGeXeXRRycT/3559+UqAf
+        NcO0vvMcwgBCgFkOQ8wVVFaGQxzEHuWuJP87wOvML9WQpHaFzcqhCc0/PQ1dKeUziaLRh6
+        XzeHXi4YHfUEv5qkdqLLhXGCNxRnj6I=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1622136715;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=Vcp0ishBAVDXErBr76dnKHnF04NivYv1vP+Y4e0QWgU=;
+        b=zNbZ7sv8GQFlGwBk1ddnxsd2yDElvn2I2Z97CjljmXPSgiVg3xUG651ie0vZ17aeoRPVLe
+        pA/b7hLNn3iUjQCA==
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 3B262ACC5;
+        Thu, 27 May 2021 17:31:55 +0000 (UTC)
+From:   Takashi Iwai <tiwai@suse.de>
+To:     Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Cc:     linux-input@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v2] Input: elants_i2c - Fix NULL dereference at probing
+Date:   Thu, 27 May 2021 19:31:53 +0200
+Message-Id: <20210527173153.16470-1-tiwai@suse.de>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-15
-Content-Disposition: inline
-In-Reply-To: <CAEf4BzbW2i4Y-i3TXW7x42PqEpw5_nNeReSXS77m4GC3uqD3wg@mail.gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 27, 2021 at 09:36:35AM -0700, Andrii Nakryiko wrote:
-> On Thu, May 27, 2021 at 7:54 AM Mel Gorman <mgorman@techsingularity.net> wrote:
-> >
-> > On Thu, May 27, 2021 at 07:37:05AM -0700, Andrii Nakryiko wrote:
-> > > > This patch checks for older versions of pahole and only allows
-> > > > DEBUG_INFO_BTF_MODULES if pahole supports zero-sized per-cpu structures.
-> > > > DEBUG_INFO_BTF is still allowed as a KVM boot test passed with pahole
-> > >
-> > > Unfortunately this won't work. The problem is that vmlinux BTF is
-> > > corrupted, which results in module BTFs to be rejected as well, as
-> > > they depend on it.
-> > >
-> > > But vmlinux BTF corruption makes BPF subsystem completely unusable. So
-> > > even though kernel boots, nothing BPF-related works. So we'd need to
-> > > add dependency for DEBUG_INFO_BTF on pahole 1.22+.
-> > >
-> >
-> > While bpf usage would be broken, the kernel will boot and the effect
-> > should be transparent to any kernel build based on "make oldconfig".
-> 
-> I think if DEBUG_INFO_BTF=y has no chance of generating valid vmlinux
-> BTF it has to be forced out. So if we are doing this at all, we should
-> do it for CONFIG_DEBUG_INFO_BTF, not CONFIG_DEBUG_INFO_BTF_MODULES.
-> CONFIG_DEBUG_INFO_BTF_MODULES will follow automatically.
-> 
+The recent change in elants_i2c driver to support more chips
+introduced a regression leading to Oops at probing.  The driver reads
+id->driver_data, but the id may be NULL depending on the device type
+the driver gets bound.
 
-Ok, I sent a version that prevents DEBUG_INFO_BTF being set unless
-pahole is at least 1.22.
+Replace the driver data extraction with the device_get_match_data()
+helper, and define the driver data in OF table, too.
 
-> > CONFIG_DEBUG_INFO_BTF defaults N so if that is forced out, it will be
-> > easily missed by a distribution kernel maintainer.
-> 
-> We actually had previous discussions on forcing build failure in cases
-> when CONFIG_DEBUG_INFO_BTF=y can't be satisfied, but no one followed
-> up.
+Fixes: 9517b95bdc46 ("Input: elants_i2c - add support for eKTF3624")
+BugLink: https://bugzilla.suse.com/show_bug.cgi?id=1186454
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+---
+v1->v2: Use device_get_match_data()
 
-It is weird how it is handled. DEBUG_INFO_BTF can be set and then fail to
-build vmlinux because pahole is too old. With DEBUG_INFO_BTF now requiring
-at least 1.22, the other version checks for 1.16 and 1.19 are redundant
-and could be cleaned up.
+ drivers/input/touchscreen/elants_i2c.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-> I'll look into this and will try to change the behavior. It's
-> caused too much confusion previously and now with changes like this we
-> are going to waste even more people's time.
-> 
-
-Thanks.
-
+diff --git a/drivers/input/touchscreen/elants_i2c.c b/drivers/input/touchscreen/elants_i2c.c
+index 17540bdb1eaf..29b5bb03cff9 100644
+--- a/drivers/input/touchscreen/elants_i2c.c
++++ b/drivers/input/touchscreen/elants_i2c.c
+@@ -1396,7 +1396,7 @@ static int elants_i2c_probe(struct i2c_client *client,
+ 	init_completion(&ts->cmd_done);
+ 
+ 	ts->client = client;
+-	ts->chip_id = (enum elants_chip_id)id->driver_data;
++	ts->chip_id = (enum elants_chip_id)device_get_match_data(&client->dev);
+ 	i2c_set_clientdata(client, ts);
+ 
+ 	ts->vcc33 = devm_regulator_get(&client->dev, "vcc33");
+@@ -1636,8 +1636,8 @@ MODULE_DEVICE_TABLE(acpi, elants_acpi_id);
+ 
+ #ifdef CONFIG_OF
+ static const struct of_device_id elants_of_match[] = {
+-	{ .compatible = "elan,ekth3500" },
+-	{ .compatible = "elan,ektf3624" },
++	{ .compatible = "elan,ekth3500", .data = EKTH3500 },
++	{ .compatible = "elan,ektf3624", .data = EKTF3624 },
+ 	{ /* sentinel */ }
+ };
+ MODULE_DEVICE_TABLE(of, elants_of_match);
 -- 
-Mel Gorman
-SUSE Labs
+2.26.2
+
