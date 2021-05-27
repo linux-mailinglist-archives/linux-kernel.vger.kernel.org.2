@@ -2,111 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8823939259E
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 05:52:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B4E953925A0
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 05:52:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234827AbhE0DyO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 May 2021 23:54:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44662 "EHLO
+        id S234834AbhE0DyS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 May 2021 23:54:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44674 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233037AbhE0DyM (ORCPT
+        with ESMTP id S233008AbhE0DyP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 May 2021 23:54:12 -0400
-Received: from mail-ot1-x32c.google.com (mail-ot1-x32c.google.com [IPv6:2607:f8b0:4864:20::32c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14071C061574
-        for <linux-kernel@vger.kernel.org>; Wed, 26 May 2021 20:52:40 -0700 (PDT)
-Received: by mail-ot1-x32c.google.com with SMTP id 69-20020a9d0a4b0000b02902ed42f141e1so3173292otg.2
-        for <linux-kernel@vger.kernel.org>; Wed, 26 May 2021 20:52:40 -0700 (PDT)
+        Wed, 26 May 2021 23:54:15 -0400
+Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com [IPv6:2a00:1450:4864:20::630])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA524C061574;
+        Wed, 26 May 2021 20:52:42 -0700 (PDT)
+Received: by mail-ej1-x630.google.com with SMTP id gb17so5771686ejc.8;
+        Wed, 26 May 2021 20:52:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=GMNN8zidej8CCx7epceEx2ySsZhlFSGB0Zr+V9xhpsE=;
-        b=WQ51LN90zU6GGhJNh70xPboiDCxVvC0k64dOhSBqzbuqmTIQkgmACc4VQ5GwW4Se4z
-         P/W1tAMTAiQuc/lV0vYTMOuxr+lq6YtLgXeHd1X+bpdb1QmsP0O8aU9u8opmJuxmPZVk
-         fCHVDsIylgwUOb+pb+E4Y7RoCtT9c/xQ6aeBGU7DKQDwbZPdWm32zl+aNpEUzfE0YFsu
-         R9iAh1YEPhE5lK6T1dqZcPoLHzHK67z/1QJ+hmriu9c4o9kDW5jpOqr9HKlwcQAhjhMb
-         PCTQJU6lvh0to4U1UGg5qDu9PS2IoI3ooVD658khTIFNijds2dbBJ3atoa4PMRkhuVV6
-         SzJw==
+         :cc;
+        bh=BspH1HZcZITcxF0rmbgmhpFuqnFljD02VxCFnbohkfI=;
+        b=vY1zXogmOP0GIzyh/iHbgLk/GxpMTSu+9llO/2m960FTS8sqW3bj713Mhd7P2a1bPU
+         BxMufd7w4LdnLm9i00eMCb23g4j74KDyGIm0wc7ueJghhhNOYCmsMyPCT+Zd/0tsAL1j
+         vSbfu6CxS4sMTEU4rBuefmNE7rIFSiDYDrPbemk8T4FWzuNoKRDVGozUaLaCPGl9v0SG
+         k9atr42HXSgWVGxncZ7Mv2rMk152UvBxgJKeV0uTofuvBKXcabeWf8jO+ltP9qx48QjH
+         UBqtbArSbSQDpN1cpjsitr2bIJmIIeDt7pLQ4M9I5Z73dfErXCXurCIMWTbnrz8q1WNS
+         sS0A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=GMNN8zidej8CCx7epceEx2ySsZhlFSGB0Zr+V9xhpsE=;
-        b=QYdupOG2jzhRua8EwhUPugqjTHdSnDJWSB1NDtWKp7rmzGGO3oZsA9LBKFxpcWNGKN
-         aVwJtAxh1Z00Me8iZdTo230saSrlwAIB2Q21EL2J66Sx9yHEh8DbCrvMcuaPlZ35TUbY
-         wC3VakLJuAsK5S454w/UiKnHUnFIiBqoRruCCFNhotzz2bLbjod3IokaakmUF3CDrWdF
-         cgj2KX9PxzfGl+jZhfl7OSXcsGM6dYj9jmdzXgHtDuO2KGMzJFfenOIlGq3xaH1+ntaU
-         dQ86fPslOA90+92ptIO9L7waQ6leHSl5ic4KcjDlAIIIOoPSjXGaw+S2XC8PuvLahm+2
-         cQhg==
-X-Gm-Message-State: AOAM531bcGkR6T/f4Jnh8q5PMVhA3nvG19vRblgIiAe88/PooZrBXJKW
-        Dk8EiLorXcU+wPdtnb9bAdtOmdxVlUW/8S4pwVU=
-X-Google-Smtp-Source: ABdhPJwejt1H97rNvX0CfGW0uyBD5BPQYzbjUvBiuVZWOTUQktXyL/vOFPR6r2TmKVdvNZPBu2gg5fAoui3ceq/p3ek=
-X-Received: by 2002:a9d:6548:: with SMTP id q8mr1197817otl.311.1622087559482;
- Wed, 26 May 2021 20:52:39 -0700 (PDT)
+         :message-id:subject:to:cc;
+        bh=BspH1HZcZITcxF0rmbgmhpFuqnFljD02VxCFnbohkfI=;
+        b=A3pTFynxScBt6ngEPyDdYuPhKwYoBBU2sTp3QeN+gm7Ig596MrX8D3ydvKYGq8ZnYq
+         rPusdHgpsQL7NC4GrepKF5ubWJqv2Lr3ScUZOM8unbOy01GDR5nMqz9hxPJPG/bBhOmo
+         eXo3SCin6tCzQokBd1WekoPAwjRwL5ilAWz/FypTtGy/5uM6OYoq9IQDXmOADMmL+TGN
+         SX+ZyhqWlXlHH227s/qN0BG62uuRtCcnRwL+JcVwtah0a/i+Um094QS9zN8gMb6ccxQc
+         /18l3XOS0pTUp2aw1zMEulXUoOvDPN9L+cB/ItWHb9vCdgXhyoXHE4cUyrSB7u6FBfB6
+         OmnA==
+X-Gm-Message-State: AOAM530Lw7c50cG4Y92KwVPT9QvJjcpSbvZ6uHuOK03ZvvJslbBRIl9l
+        yZRvv980qOFUPD3szMDU0PLt75xvC62AyKniTr0=
+X-Google-Smtp-Source: ABdhPJzmavZLEvwaFRAllGRc7d81w9sfgMiF8hYavyCuCd2nlJI0HCiYwD0IsiV6LPy/zGQE2bx/WPQm1FPnVON71sY=
+X-Received: by 2002:a17:906:4714:: with SMTP id y20mr1659206ejq.235.1622087561499;
+ Wed, 26 May 2021 20:52:41 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210526084726.552052-1-lee.jones@linaro.org> <20210526084726.552052-5-lee.jones@linaro.org>
-In-Reply-To: <20210526084726.552052-5-lee.jones@linaro.org>
-From:   Alex Deucher <alexdeucher@gmail.com>
-Date:   Wed, 26 May 2021 23:52:28 -0400
-Message-ID: <CADnq5_Pm3rtKnmjGND7vs5eSNF5xEzT9FmfUsT81JmNW55mmcw@mail.gmail.com>
-Subject: Re: [PATCH 04/34] drm/amd/pm/powerplay/hwmgr/vega12_thermal: Provide
- function name
-To:     Lee Jones <lee.jones@linaro.org>
-Cc:     David Airlie <airlied@linux.ie>,
-        LKML <linux-kernel@vger.kernel.org>,
-        amd-gfx list <amd-gfx@lists.freedesktop.org>,
-        Maling list - DRI developers 
-        <dri-devel@lists.freedesktop.org>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        Evan Quan <evan.quan@amd.com>,
-        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>
+References: <20210525125925.112306-1-lambert.q.wang@gmail.com>
+ <20210525132035.GA66609@rocinante.localdomain> <CAATamay8WTiJnB=5OLYdFTqVUcRF9LarN6_1Eej3QUgFzWRnkA@mail.gmail.com>
+ <20210526181810.GA13052@wunner.de>
+In-Reply-To: <20210526181810.GA13052@wunner.de>
+From:   Lambert Wang <lambert.q.wang@gmail.com>
+Date:   Thu, 27 May 2021 11:52:30 +0800
+Message-ID: <CAATamazbYRnTJuPKVt_ypu_PVPXN407dSmo1EyExXHH0aHeyaQ@mail.gmail.com>
+Subject: Re: [PATCH] pci: add pci_dev_is_alive API
+To:     Lukas Wunner <lukas@wunner.de>
+Cc:     "Krzysztof Wilczy??ski" <kw@linux.com>,
+        Bjorn Helgaas <bhelgaas@google.com>, linux-pci@vger.kernel.org,
+        linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Applied.  Thanks!
+On Thu, May 27, 2021 at 2:18 AM Lukas Wunner <lukas@wunner.de> wrote:
+>
+> On Wed, May 26, 2021 at 02:12:38PM +0800, Lambert Wang wrote:
+> > The user is our new PCI driver under development for WWAN devices .
+> > Surprise removal could happen under multiple circumstances.
+> > e.g. Exception, Link Failure, etc.
+> >
+> > We wanted this API to detect surprise removal or check device recovery
+> > when AER and Hotplug are disabled.
+>
+> You may want to take a look at pci_dev_is_disconnected().
+>
+> Be aware of its limitations, which Bjorn has already pointed out
+> and which are discussed in more detail under the following link
+> in the "Surprise removal" section:
+>
+> https://lwn.net/Articles/767885/
+>
 
-On Wed, May 26, 2021 at 4:47 AM Lee Jones <lee.jones@linaro.org> wrote:
+Thanks for the suggestion and the article. Currently I prefer
+pci_device_is_present() for my scenario.
+
+e.g. pci_dev_is_disconnected() seems to use a cached value. If the
+driver wants to check the device's absence
+after it *senses* something abnormal, pci_device_is_present() is more suitable.
+
+> Thanks,
 >
-> Fixes the following W=3D1 kernel build warning(s):
->
->  drivers/gpu/drm/amd/amdgpu/../pm/powerplay/hwmgr/vega12_thermal.c:171: w=
-arning: expecting prototype for Set the requested temperature range for hig=
-h and low alert signals(). Prototype was for vega12_thermal_set_temperature=
-_range() instead
->
-> Cc: Evan Quan <evan.quan@amd.com>
-> Cc: Alex Deucher <alexander.deucher@amd.com>
-> Cc: "Christian K=C3=B6nig" <christian.koenig@amd.com>
-> Cc: David Airlie <airlied@linux.ie>
-> Cc: Daniel Vetter <daniel@ffwll.ch>
-> Cc: amd-gfx@lists.freedesktop.org
-> Cc: dri-devel@lists.freedesktop.org
-> Signed-off-by: Lee Jones <lee.jones@linaro.org>
-> ---
->  drivers/gpu/drm/amd/pm/powerplay/hwmgr/vega12_thermal.c | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
->
-> diff --git a/drivers/gpu/drm/amd/pm/powerplay/hwmgr/vega12_thermal.c b/dr=
-ivers/gpu/drm/amd/pm/powerplay/hwmgr/vega12_thermal.c
-> index 0dc16f25a463b..ed3dff0b52d21 100644
-> --- a/drivers/gpu/drm/amd/pm/powerplay/hwmgr/vega12_thermal.c
-> +++ b/drivers/gpu/drm/amd/pm/powerplay/hwmgr/vega12_thermal.c
-> @@ -159,7 +159,8 @@ int vega12_thermal_get_temperature(struct pp_hwmgr *h=
-wmgr)
->  }
->
->  /**
-> - * Set the requested temperature range for high and low alert signals
-> + * vega12_thermal_set_temperature_range - Set the requested temperature =
-range
-> + *                                        for high and low alert signals
->   *
->   * @hwmgr: The address of the hardware manager.
->   * @range: Temperature range to be programmed for
-> --
-> 2.31.1
->
+> Lukas
