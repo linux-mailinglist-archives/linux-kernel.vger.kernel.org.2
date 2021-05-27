@@ -2,64 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 01EF6392B7D
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 12:10:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 04BE9392B7F
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 12:10:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236120AbhE0KMW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 May 2021 06:12:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45586 "EHLO
+        id S236132AbhE0KM3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 May 2021 06:12:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45618 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236096AbhE0KMR (ORCPT
+        with ESMTP id S236096AbhE0KMX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 May 2021 06:12:17 -0400
-Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10950C061574
-        for <linux-kernel@vger.kernel.org>; Thu, 27 May 2021 03:10:44 -0700 (PDT)
-Received: by mail-lf1-x136.google.com with SMTP id q1so7169433lfo.3
-        for <linux-kernel@vger.kernel.org>; Thu, 27 May 2021 03:10:43 -0700 (PDT)
+        Thu, 27 May 2021 06:12:23 -0400
+Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com [IPv6:2a00:1450:4864:20::134])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7AA9EC061574
+        for <linux-kernel@vger.kernel.org>; Thu, 27 May 2021 03:10:50 -0700 (PDT)
+Received: by mail-lf1-x134.google.com with SMTP id q1so7169869lfo.3
+        for <linux-kernel@vger.kernel.org>; Thu, 27 May 2021 03:10:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chromium.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=Jm/6jFCe3/7FOinz4SHy1Ee5ISvSki/EZvOhN9srBpY=;
-        b=LGZVhXqBUDdX1KmMdSxzLcJeA+4qUVmlfy8wrXeVpW8TABCjHmnkD9dGcbbP71xWLg
-         7Vxy1H6Br35G36rwv5dOVypvJYzC0jSVtg/wZomZQDxm2xB/vkWoMCzI/Tjgg9wl6R7j
-         do9h37JCcYmF5NUhoh1KeG2QlKpOrIcgL4R+s=
+        bh=DAPD4ukT6eCf6HIGe5wvyHRlg/DJMReQYqQE1gSOFEE=;
+        b=MuYBL86U5dNPZzYeIcrgWG2vi8zuGy7jo0PD9uelsBqLAf+9oXfb7SJ8DVVqvqUp6c
+         51P6kaiGH6GHS0efDbeHaOaIInAi6nHcPFllEp9opUet4VMHfrBeX8+Tqp2R5D8jfPj3
+         LG0X+qcYI0YvKRHxY6aFDIsr29BgyYjFq/zO0=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=Jm/6jFCe3/7FOinz4SHy1Ee5ISvSki/EZvOhN9srBpY=;
-        b=PHRNyq37GQvCGHSr6ZdEE1/lfvynEc1ObEKRnF7GiOR+ksb1oT2GNgonuqJFKN01cp
-         Wd+l4bNROixEjDyywTw4eOlLvgmc+KHZAp4X/pFD2jAt4IkITwSMMCOshvxTZE54dwA8
-         AM9Zcfycf5tcPjEMnw7W8rLH0oGJ9Ni1Tt6NXOb1SKLkhkDjn9VaYH3drWw9uPGRR0eo
-         d3vOVcNrvB3cvVpYi4Fv5C9zC+cAG52atCg8gblvnIPXy+KYVpOLFAOxXawO2ChXVUqM
-         XsnyzWUaAPbYgyFOXM9kv7jl32VaKJeHfFva02Lb6U8GQGJKHnLKlyzG4LZUfm+OLA0D
-         zm1Q==
-X-Gm-Message-State: AOAM532TcTUXqbmngMo7Sl2YrNmiKkn8HIKcHnlUJBlNSYjuSgcmQN86
-        7RnMoO8gpreZWr89tWVI8lHZPxKpUmzb/Q==
-X-Google-Smtp-Source: ABdhPJzlNO3ZNP+bIy2Kmsoe4NVvuXpjCGl/7GQdHHdsCDNKOayRxii/3Dlq1UUaGoJeXIs5yz9gRA==
-X-Received: by 2002:ac2:4919:: with SMTP id n25mr1835367lfi.646.1622110242205;
-        Thu, 27 May 2021 03:10:42 -0700 (PDT)
-Received: from mail-lj1-f178.google.com (mail-lj1-f178.google.com. [209.85.208.178])
-        by smtp.gmail.com with ESMTPSA id s20sm183874ljs.116.2021.05.27.03.10.41
+        bh=DAPD4ukT6eCf6HIGe5wvyHRlg/DJMReQYqQE1gSOFEE=;
+        b=uV1d5T8ajUxIlmk/2LoMzOqhPbrlsBvWHNyv3HXS9BJQlHGoPK+qJBLojlWyN6ITnW
+         QlEsT2CesMiLUYRKh5PM1IUfgwLHyTTSrCqx1rqbfFNnR5opgR4CVM21VLhaedqDPemT
+         s1W4Z6lGFXH8xpNlaqusUXgJinwWn2NddM8/POq/msXtS0mNAx9rF6zliav8hQJGOssJ
+         9gXi04nTDW995d2Bx9aut++TDh/xANhh0hWDhtIiSwx9F33TR5uXGcGuVcWt0jjuRg4B
+         VwYuEe4oWyqmRREPhmSp+9zujXDAFOGno/gis5Z8N6YG9kohAoFF9uZq0yJJ3di2VooK
+         f2+A==
+X-Gm-Message-State: AOAM530k+207lo/DhGupQ8rm+ZxZJbKY/p0AMrdEIjZ7WTkJp64F0zbp
+        kaz4lbNtnkrXXGIJ80CVXw1sbrL/v98LSg==
+X-Google-Smtp-Source: ABdhPJzM7js68qDpncz1Z5gIZxnpfjGj7jMe+w0ybBMGjCOp9H5LVum2WOBjhXNXweoxR97STEivdw==
+X-Received: by 2002:a05:6512:1188:: with SMTP id g8mr1853382lfr.410.1622110248757;
+        Thu, 27 May 2021 03:10:48 -0700 (PDT)
+Received: from mail-lf1-f41.google.com (mail-lf1-f41.google.com. [209.85.167.41])
+        by smtp.gmail.com with ESMTPSA id j8sm159502lfh.192.2021.05.27.03.10.47
         for <linux-kernel@vger.kernel.org>
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 27 May 2021 03:10:41 -0700 (PDT)
-Received: by mail-lj1-f178.google.com with SMTP id f12so77771ljp.2
-        for <linux-kernel@vger.kernel.org>; Thu, 27 May 2021 03:10:41 -0700 (PDT)
-X-Received: by 2002:a2e:988b:: with SMTP id b11mr2014124ljj.87.1622110241115;
- Thu, 27 May 2021 03:10:41 -0700 (PDT)
+        Thu, 27 May 2021 03:10:48 -0700 (PDT)
+Received: by mail-lf1-f41.google.com with SMTP id w33so7179892lfu.7
+        for <linux-kernel@vger.kernel.org>; Thu, 27 May 2021 03:10:47 -0700 (PDT)
+X-Received: by 2002:ac2:528d:: with SMTP id q13mr1944901lfm.73.1622110247228;
+ Thu, 27 May 2021 03:10:47 -0700 (PDT)
 MIME-Version: 1.0
 References: <20210519143011.1175546-1-acourbot@chromium.org>
- <20210519143011.1175546-7-acourbot@chromium.org> <CA+Px+wV2N9uRuMGBzZDibCYqPVigPb5K40Q1BuLa58K2RY_eaA@mail.gmail.com>
-In-Reply-To: <CA+Px+wV2N9uRuMGBzZDibCYqPVigPb5K40Q1BuLa58K2RY_eaA@mail.gmail.com>
+ <20210519143011.1175546-12-acourbot@chromium.org> <CA+Px+wXXtsmG2q4aJ4Em1pzFcA-mA6CuATfXKevNyEOuBq+zYw@mail.gmail.com>
+In-Reply-To: <CA+Px+wXXtsmG2q4aJ4Em1pzFcA-mA6CuATfXKevNyEOuBq+zYw@mail.gmail.com>
 From:   Alexandre Courbot <acourbot@chromium.org>
-Date:   Thu, 27 May 2021 19:10:28 +0900
-X-Gmail-Original-Message-ID: <CAPBb6MXFrneXmhA=1FshkrGLZOder4_KeyzD7xGdw66o0hTBZw@mail.gmail.com>
-Message-ID: <CAPBb6MXFrneXmhA=1FshkrGLZOder4_KeyzD7xGdw66o0hTBZw@mail.gmail.com>
-Subject: Re: [PATCH v5 06/14] media: mtk-vcodec: vdec: move stateful ops into
- their own file
+Date:   Thu, 27 May 2021 19:10:34 +0900
+X-Gmail-Original-Message-ID: <CAPBb6MUR9nXQc=Dua67Ep7U_7LMGcEhw=yhB42KN03R19oEgCg@mail.gmail.com>
+Message-ID: <CAPBb6MUR9nXQc=Dua67Ep7U_7LMGcEhw=yhB42KN03R19oEgCg@mail.gmail.com>
+Subject: Re: [PATCH v5 11/14] media: mtk-vcodec: vdec: support stateless H.264 decoding
 To:     Tzung-Bi Shih <tzungbi@google.com>
 Cc:     Tiffany Lin <tiffany.lin@mediatek.com>,
         Andrew-CT Chen <andrew-ct.chen@mediatek.com>,
@@ -76,140 +75,101 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 21, 2021 at 10:37 PM Tzung-Bi Shih <tzungbi@google.com> wrote:
+On Fri, May 21, 2021 at 10:38 PM Tzung-Bi Shih <tzungbi@google.com> wrote:
 >
 > On Wed, May 19, 2021 at 10:31 PM Alexandre Courbot
 > <acourbot@chromium.org> wrote:
-> > diff --git a/drivers/media/platform/mtk-vcodec/mtk_vcodec_dec_stateful.c b/drivers/media/platform/mtk-vcodec/mtk_vcodec_dec_stateful.c
-> > new file mode 100644
-> > index 000000000000..ed4b1308a0e4
-> > --- /dev/null
-> > +++ b/drivers/media/platform/mtk-vcodec/mtk_vcodec_dec_stateful.c
-> > @@ -0,0 +1,667 @@
-> > +// SPDX-License-Identifier: GPL-2.0
-> > +
-> > +#include <media/v4l2-event.h>
-> > +#include <media/v4l2-mem2mem.h>
-> > +#include <media/videobuf2-dma-contig.h>
-> > +
-> > +#include "mtk_vcodec_drv.h"
-> > +#include "mtk_vcodec_dec.h"
-> > +#include "mtk_vcodec_intr.h"
-> > +#include "mtk_vcodec_util.h"
-> > +#include "vdec_drv_if.h"
-> > +#include "mtk_vcodec_dec_pm.h"
+> > +#include "../vdec_drv_if.h"
+> > +#include "../mtk_vcodec_util.h"
+> > +#include "../mtk_vcodec_dec.h"
+> > +#include "../mtk_vcodec_intr.h"
+> > +#include "../vdec_vpu_if.h"
+> > +#include "../vdec_drv_base.h"
 >
 > Would be good practice to sort them.
 
-Did what I could, but the order seems to somehow matter. :/
+Done as much as possible.
 
 >
-> > +static struct vb2_buffer *get_display_buffer(struct mtk_vcodec_ctx *ctx)
+> > +static int allocate_predication_buf(struct vdec_h264_slice_inst *inst)
 > > +{
-> > +       struct vdec_fb *disp_frame_buffer = NULL;
-> > +       struct mtk_video_dec_buf *dstbuf;
-> > +       struct vb2_v4l2_buffer *vb;
-> > +
-> > +       mtk_v4l2_debug(3, "[%d]", ctx->id);
-> > +       if (vdec_if_get_param(ctx,
-> > +                       GET_PARAM_DISP_FRAME_BUFFER,
-> > +                       &disp_frame_buffer)) {
-> > +               mtk_v4l2_err("[%d]Cannot get param : GET_PARAM_DISP_FRAME_BUFFER",
-> > +                       ctx->id);
-> > +               return NULL;
-> > +       }
-> > +
-> > +       if (disp_frame_buffer == NULL) {
+> > +       int err = 0;
 >
-> Although this is a move refactor, to be neat, !disp_frame_buffer.
-
-These were also raised by checkpatch.pl --strict, they are now all fixed.
-
->
-> > +static struct vb2_buffer *get_free_buffer(struct mtk_vcodec_ctx *ctx)
-> > +{
-> > +       struct mtk_video_dec_buf *dstbuf;
-> > +       struct vdec_fb *free_frame_buffer = NULL;
-> > +       struct vb2_v4l2_buffer *vb;
-> > +
-> > +       if (vdec_if_get_param(ctx,
-> > +                               GET_PARAM_FREE_FRAME_BUFFER,
-> > +                               &free_frame_buffer)) {
-> > +               mtk_v4l2_err("[%d] Error!! Cannot get param", ctx->id);
-> > +               return NULL;
-> > +       }
-> > +       if (free_frame_buffer == NULL) {
->
-> The same concern as above.
->
-> > +static void clean_display_buffer(struct mtk_vcodec_ctx *ctx)
-> > +{
-> > +       struct vb2_buffer *framptr;
-> > +
-> > +       do {
-> > +               framptr = get_display_buffer(ctx);
-> > +       } while (framptr);
-> > +}
-> > +
-> > +static void clean_free_buffer(struct mtk_vcodec_ctx *ctx)
-> > +{
-> > +       struct vb2_buffer *framptr;
-> > +
-> > +       do {
-> > +               framptr = get_free_buffer(ctx);
-> > +       } while (framptr);
-> > +}
->
-> while (get_display_buffer(ctx)) ;
-> and
-> while (get_free_buffer(ctx)) ;
-> looks better.
+> No need to initialize.  It will be overridden soon.
 
 Done.
 
 >
-> > +static int mtk_vdec_flush_decoder(struct mtk_vcodec_ctx *ctx)
+> > +static void free_predication_buf(struct vdec_h264_slice_inst *inst)
 > > +{
-> > +       bool res_chg;
-> > +       int ret = 0;
->
-> No need to initialize.
-
-Done.
-
->
-> > +static void mtk_vdec_worker(struct work_struct *work)
-> > +{
-> > +       struct mtk_vcodec_ctx *ctx = container_of(work, struct mtk_vcodec_ctx,
-> > +                               decode_work);
-> > +       struct mtk_vcodec_dev *dev = ctx->dev;
-> > +       struct vb2_v4l2_buffer *src_buf, *dst_buf;
-> > +       struct mtk_vcodec_mem buf;
-> > +       struct vdec_fb *pfb;
-> > +       bool res_chg = false;
-> > +       int ret;
-> > +       struct mtk_video_dec_buf *dst_buf_info, *src_buf_info;
+> > +       struct mtk_vcodec_mem *mem = NULL;
 > > +
-> > +       src_buf = v4l2_m2m_next_src_buf(ctx->m2m_ctx);
-> > +       if (src_buf == NULL) {
+> > +       mtk_vcodec_debug_enter(inst);
+> > +
+> > +       inst->vsi_ctx.pred_buf_dma = 0;
+> > +       mem = &inst->pred_buf;
 >
-> To neat, !src_buf.
->
-> > +       dst_buf = v4l2_m2m_next_dst_buf(ctx->m2m_ctx);
-> > +       if (dst_buf == NULL) {
->
-> To neat, !dst_buf.
->
-> > +static void vb2ops_vdec_stateful_buf_queue(struct vb2_buffer *vb)
-> > +{
-> > +       struct vb2_v4l2_buffer *src_buf;
-> > +       struct mtk_vcodec_mem src_mem;
-> > +       bool res_chg = false;
-> > +       int ret = 0;
-> > +       unsigned int dpbsize = 1, i = 0;
-> > +       struct mtk_vcodec_ctx *ctx = vb2_get_drv_priv(vb->vb2_queue);
-> > +       struct vb2_v4l2_buffer *vb2_v4l2 = NULL;
->
-> ret, i, and vb2_v4l2 are obviously no need to initialize.
+> Is it possible to inline to the variable declaration?  Or mem no need
+> to initialize.
 
-Done, thanks!
+Indeed - done (also done all other suggestions in this email).
+
+
+>
+> > +static int alloc_mv_buf(struct vdec_h264_slice_inst *inst,
+> > +       struct vdec_pic_info *pic)
+> > +{
+> > +       int i;
+> > +       int err;
+> > +       struct mtk_vcodec_mem *mem = NULL;
+>
+> No need to initialize.  It will be overridden soon.
+>
+> > +static void free_mv_buf(struct vdec_h264_slice_inst *inst)
+> > +{
+> > +       int i;
+> > +       struct mtk_vcodec_mem *mem = NULL;
+>
+> No need to initialize.  It will be overridden soon.
+>
+> > +static int vdec_h264_slice_init(struct mtk_vcodec_ctx *ctx)
+> > +{
+> > +       struct vdec_h264_slice_inst *inst = NULL;
+>
+> No need to initialize.  It will be overridden soon.
+>
+> > +static void vdec_h264_slice_deinit(void *h_vdec)
+> > +{
+> > +       struct vdec_h264_slice_inst *inst =
+> > +               (struct vdec_h264_slice_inst *)h_vdec;
+>
+> No need to cast from void *.
+>
+> > +static int vdec_h264_slice_decode(void *h_vdec, struct mtk_vcodec_mem *bs,
+> > +                                 struct vdec_fb *fb, bool *res_chg)
+> > +{
+> > +       struct vdec_h264_slice_inst *inst =
+> > +               (struct vdec_h264_slice_inst *)h_vdec;
+>
+> No need to cast from void *.
+>
+> > +       const struct v4l2_ctrl_h264_decode_params *dec_params =
+> > +               get_ctrl_ptr(inst->ctx, V4L2_CID_STATELESS_H264_DECODE_PARAMS);
+> > +       struct vdec_vpu_inst *vpu = &inst->vpu;
+> > +       uint32_t data[2];
+> > +       uint64_t y_fb_dma;
+> > +       uint64_t c_fb_dma;
+> > +       int err;
+> > +
+> > +       /* bs NULL means flush decoder */
+> > +       if (bs == NULL)
+>
+> To neat, !bs.
+>
+> > +static int vdec_h264_slice_get_param(void *h_vdec,
+> > +                              enum vdec_get_param_type type, void *out)
+> > +{
+> > +       struct vdec_h264_slice_inst *inst =
+> > +               (struct vdec_h264_slice_inst *)h_vdec;
+>
+> No need to cast from void *.
