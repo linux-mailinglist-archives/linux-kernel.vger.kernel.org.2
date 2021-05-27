@@ -2,119 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4848139288E
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 09:30:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EA6DD39288F
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 09:30:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229844AbhE0Hbf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 May 2021 03:31:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36660 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234927AbhE0HbI (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 May 2021 03:31:08 -0400
-Received: from mail-lf1-x142.google.com (mail-lf1-x142.google.com [IPv6:2a00:1450:4864:20::142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7179C061574;
-        Thu, 27 May 2021 00:29:34 -0700 (PDT)
-Received: by mail-lf1-x142.google.com with SMTP id q7so6540928lfr.6;
-        Thu, 27 May 2021 00:29:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=1c4xwHXGGH1sejR0TUAI0AnMRSAgsr2C+wu36PqGz4g=;
-        b=H8zeQu+eGMTrFrWohbctnGNggExgciyKjSFweAeZ5yi75WASzHLuC2DRrHzjv+lDFM
-         QcxNPlyHvJON1F9oHy9YJWtyTn+zbxk31SfN/oucRoiK/ng69AkASErakarkA9UmgW9X
-         Vudo4TkSk9kb1j1DKCjPA7K/ZAetPGEQH1f+VmXfdv/bY901w9PdbSN/fK++G0+cAB0+
-         W8x5OzsrdM5wcAwfPDmUt1N3w4HEgGMe3m+n2jm4ftQK/B4VNsoHw3jaOynaSq1UZFun
-         2fOSyDzDDuWHMynrg18PT+60oXzMw3JQi4o7ofYSCPKPmkjqNYBua8Fn7DaMa+gFzVYU
-         r09w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=1c4xwHXGGH1sejR0TUAI0AnMRSAgsr2C+wu36PqGz4g=;
-        b=n+4NUyQyth17QCs0S8U6ML7IYzP9crs4GHgId38ZnkIdxD/O7lKVIcNju+ZtgUWWD3
-         h+Xwayl16ekyP4WgxLQdM43859sNZXsFVBjN3Wk001G35T//4vYKAetD1mHjSeCwTEe6
-         hhI7aaedvu66nRJvmH0o4vlo+NCWUtOIGkXDb5SjxtWQ5U64oZQhuqGofJoLj6RfHjXW
-         smCN3SLnlY157N3Xa+HSCzPS0UM4cwtpmQB5EArRwBsX5/26nBy/Qx+CiRTjQNGLR+1t
-         bNL8PjltqHAM3C1PCYuzbdBHJDy4S+tTLU6+DjyejO8li5X4CBREjLVLLWM8XzU9NAIf
-         Kbyg==
-X-Gm-Message-State: AOAM532cs/XDueQyXRKE9+4BMVmMBnMgQRNZo88bkFury9fiBwlxq4G5
-        KjkFtm0xrcE3TMGGTpgiPkqtHpOmstxQpVKRx9Q=
-X-Google-Smtp-Source: ABdhPJxPj0Ski8hZJ2fdA/b4uoV3r7vKalt/kVCf/x6dYXgUUtfdc8u0vpPBo4B0dYwMUv+rCujEF0oNzz56WHCJA4I=
-X-Received: by 2002:a19:3f0a:: with SMTP id m10mr1585850lfa.477.1622100573127;
- Thu, 27 May 2021 00:29:33 -0700 (PDT)
+        id S234976AbhE0Hbo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 May 2021 03:31:44 -0400
+Received: from mx2.suse.de ([195.135.220.15]:39676 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234639AbhE0Hbe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 27 May 2021 03:31:34 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1622100601; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=aE0dvW9c3iBnlniLVw4vbi/CrxQFHGZcwfM/wq3ucwg=;
+        b=pdvXSoaYoAV/yMnLFqU7Zxp56oHKQRKjczewKSnITuCek8T3TsZYZmaPlOZldHv7xBbdS0
+        nlgJiisXfL3MSVxd5AB3LQJT315JZxnAbAt2JFPxonKm8abUs0iTu/Dhtd2J8zr/g7PP9J
+        MFAOJ1TttQ1JecK42EIb6Srvad7Doic=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 3AAD5AAA6;
+        Thu, 27 May 2021 07:30:01 +0000 (UTC)
+Date:   Thu, 27 May 2021 09:30:00 +0200
+From:   Michal Hocko <mhocko@suse.com>
+To:     Feng Tang <feng.tang@intel.com>
+Cc:     linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
+        David Rientjes <rientjes@google.com>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Ben Widawsky <ben.widawsky@intel.com>,
+        linux-kernel@vger.kernel.org,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Andi Kleen <ak@linux.intel.com>,
+        Dan Williams <dan.j.williams@intel.com>, ying.huang@intel.com
+Subject: Re: [PATCH v1 1/4] mm/mempolicy: skip nodemask intersect check for
+ 'interleave' when oom
+Message-ID: <YK9KeOmXhuuZMEHy@dhcp22.suse.cz>
+References: <1622005302-23027-1-git-send-email-feng.tang@intel.com>
+ <1622005302-23027-2-git-send-email-feng.tang@intel.com>
 MIME-Version: 1.0
-References: <20210525141524.3995-1-dong.menglong@zte.com.cn>
- <20210525141524.3995-3-dong.menglong@zte.com.cn> <m18s42odgz.fsf@fess.ebiederm.org>
- <CADxym3a5nsuw2hiDF=ZS51Wpjs-i_VW+OGd-sgGDVrKYw2AiHQ@mail.gmail.com>
- <m11r9umb4y.fsf@fess.ebiederm.org> <YK3Pb/OGwWVzvDZM@localhost>
- <CADxym3bznknEWLaa-SgYZAsTGucP_9m+9=JW7oc6=ggrUaBk7A@mail.gmail.com> <20210526090310.GI4332@42.do-not-panic.com>
-In-Reply-To: <20210526090310.GI4332@42.do-not-panic.com>
-From:   Menglong Dong <menglong8.dong@gmail.com>
-Date:   Thu, 27 May 2021 15:29:20 +0800
-Message-ID: <CADxym3YD6QakhB4mw6reN1EH_4hrmHNHOYyeh4pM2WjyWiag9Q@mail.gmail.com>
-Subject: Re: [PATCH v2 2/3] init/do_cmounts.c: introduce 'user_root' for initramfs
-To:     Luis Chamberlain <mcgrof@kernel.org>
-Cc:     Josh Triplett <josh@joshtriplett.org>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Kees Cook <keescook@chromium.org>,
-        Sami Tolvanen <samitolvanen@google.com>, ojeda@kernel.org,
-        johan@kernel.org, Bjorn Helgaas <bhelgaas@google.com>,
-        masahiroy@kernel.org, Menglong Dong <dong.menglong@zte.com.cn>,
-        joe@perches.com, Jens Axboe <axboe@kernel.dk>, hare@suse.de,
-        Jan Kara <jack@suse.cz>, tj@kernel.org,
-        gregkh@linuxfoundation.org, song@kernel.org,
-        NeilBrown <neilb@suse.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        f.fainelli@gmail.com, arnd@arndb.de,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        wangkefeng.wang@huawei.com, Barret Rhoden <brho@google.com>,
-        mhiramat@kernel.org, Steven Rostedt <rostedt@goodmis.org>,
-        vbabka@suse.cz, Alexander Potapenko <glider@google.com>,
-        pmladek@suse.com, Chris Down <chris@chrisdown.name>,
-        jojing64@gmail.com, terrelln@fb.com, geert@linux-m68k.org,
-        mingo@kernel.org, linux-fsdevel@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>, jeyu@kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1622005302-23027-2-git-send-email-feng.tang@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 26, 2021 at 5:03 PM Luis Chamberlain <mcgrof@kernel.org> wrote:
->
-[...]
->
-> I asked for the kconfig entry. And it would be good to document then
+On Wed 26-05-21 13:01:39, Feng Tang wrote:
+> mempolicy_nodemask_intersects() is used in oom case to check if a
+> task may have memory allocated on some memory nodes.
+> 
+> Currently, the nodes_intersects() is run for both 'bind' and 'interleave'
+> policies. But they are different regarding memory allocation, the nodemask
+> is a forced requirement for 'bind', while just a hint for 'interleave'.
+> Like in alloc_pages_vma():
+> 
+> 	nmask = policy_nodemask(gfp, pol);
+>         preferred_nid = policy_node(gfp, pol, node);
+>         page = __alloc_pages(gfp, order, preferred_nid, nmask);
+> 
+> in plicy_nodemask(), only 'bind' policy may return its desired nodemask,
+> while others return NULL.  And this 'NULL' enables the 'interleave' policy
+> can get memory from other nodes than its nodemask.
+> 
+> So skip the nodemask intersect check for 'interleave' policy.
 
-Wow, I didn't recognize it's you, haha~
+The changelog is not really clear on the actual effect of the
+patch and the above reference to alloc_pages_vma looks misleading to me
+because that path is never called for interleaved policy.
 
-> also the worst case expected on boot for what this could do to you. I
-> mean, we are opening a different evil universe. So that's why the
-> kconfig exists.  How bad and evil can this be?
+This is very likely my fault because I was rather vague. The existing
+code in its current form is confusing but it _works_ properly. The
+problem is that it sounds like a general helper and in that regards
+the function is correct for the interleaved policy and your proposed
+preferred-many. But its only existing caller wants a different semantic.
 
-I just dig into it a little deeper today. Except the boot time you
-mentioned, I haven't dig out other bad case yet.
+Until now this was not a real problem even for OOM context because
+alloc_page_interleave is always used for the interleaving policy
+and that one doesn't use any node mask so the code is not really
+exercised. With your MPOL_PREFERRED this would no longer be the case.
 
-I don't think this will affect the path lookup you mentioned before.
-As I know, all threads in kernel are using the same root, and after
-change root to 'user root', path lookup will be inside this root.
+Your patch makes the code more robust for the oom context but it can
+confuse other users who really want to do an intersect logic. So I think
+it would really be best to rename the function and make it oom specific.
+E.g. mempolicy_in_oom_domain(tsk, mask) this would make it clear that
+this is not a general purpose function.
 
-One thing, the name of the root mount will change from 'rootfs' to 'tmpfs'
-or 'ramfs'. Before this change, what you can see with 'mount' is:
+The changelog should be clear that this is just a code cleanup rather
+than fix.
 
-$ mount
-rootfs on / type rootfs (rw,size=903476k,nr_inodes=225869)
-
-After this patch, it will become:
-
-$ mount
-tmpfs on / type tmpfs (rw,size=903476k,nr_inodes=225869)
-
-I'm not sure if this is a risk. And I tried to change pivot_root to make
-it support the root that have not a parent mount, but not success yet.
-That seems much more complex.
-
-Thanks!
-Menglong Dong
+-- 
+Michal Hocko
+SUSE Labs
