@@ -2,90 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 158A0392C93
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 13:22:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D84E5392CC6
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 13:32:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229746AbhE0LYD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 May 2021 07:24:03 -0400
-Received: from szxga03-in.huawei.com ([45.249.212.189]:2371 "EHLO
-        szxga03-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229591AbhE0LXw (ORCPT
+        id S233657AbhE0Ldg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 May 2021 07:33:36 -0400
+Received: from mailgw02.mediatek.com ([210.61.82.184]:49293 "EHLO
+        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S233253AbhE0Lde (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 May 2021 07:23:52 -0400
-Received: from dggeml765-chm.china.huawei.com (unknown [172.30.72.53])
-        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4FrQL62R6Kz663t;
-        Thu, 27 May 2021 19:18:38 +0800 (CST)
-Received: from dggema761-chm.china.huawei.com (10.1.198.203) by
- dggeml765-chm.china.huawei.com (10.1.199.175) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2176.2; Thu, 27 May 2021 19:22:16 +0800
-Received: from huawei.com (10.175.127.227) by dggema761-chm.china.huawei.com
- (10.1.198.203) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Thu, 27
- May 2021 19:22:15 +0800
-From:   Zhihao Cheng <chengzhihao1@huawei.com>
-To:     <stefanr@s5r6.in-berlin.de>, <yoshfuji@linux-ipv6.org>,
-        <davem@davemloft.net>
-CC:     <linux1394-devel@lists.sourceforge.net>,
-        <linux-kernel@vger.kernel.org>, <chengzhihao1@huawei.com>,
-        <yukuai3@huawei.com>
-Subject: [PATCH] firewire: net: Remove unused variable 'dev' and 'guid'
-Date:   Thu, 27 May 2021 19:31:40 +0800
-Message-ID: <20210527113140.304008-1-chengzhihao1@huawei.com>
-X-Mailer: git-send-email 2.25.4
+        Thu, 27 May 2021 07:33:34 -0400
+X-UUID: 4ad4a21d1d84468e80715bde6dc324b1-20210527
+X-UUID: 4ad4a21d1d84468e80715bde6dc324b1-20210527
+Received: from mtkmbs10n1.mediatek.inc [(172.21.101.34)] by mailgw02.mediatek.com
+        (envelope-from <qii.wang@mediatek.com>)
+        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
+        with ESMTP id 1140780065; Thu, 27 May 2021 19:31:59 +0800
+Received: from mtkcas07.mediatek.inc (172.21.101.84) by
+ mtkmbs07n2.mediatek.inc (172.21.101.141) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Thu, 27 May 2021 19:31:57 +0800
+Received: from localhost.localdomain (10.17.3.153) by mtkcas07.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Thu, 27 May 2021 19:31:57 +0800
+From:   <qii.wang@mediatek.com>
+To:     <wsa@the-dreams.de>
+CC:     <matthias.bgg@gmail.com>, <linux-i2c@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-mediatek@lists.infradead.org>,
+        <srv_heupstream@mediatek.com>, <leilk.liu@mediatek.com>,
+        <qii.wang@mediatek.com>
+Subject: [RESEND] i2c: mediatek: Rename i2c irq name
+Date:   Thu, 27 May 2021 19:31:50 +0800
+Message-ID: <1622115110-7051-1-git-send-email-qii.wang@mediatek.com>
+X-Mailer: git-send-email 1.9.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.175.127.227]
-X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
- dggema761-chm.china.huawei.com (10.1.198.203)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain
+X-MTK:  N
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix the following gcc warning:
+From: Qii Wang <qii.wang@mediatek.com>
 
-drivers/firewire/net.c:491:23: warning: variable ‘dev’ set but not used
-[-Wunused-but-set-variable]
+Rename i2c irq name with dev_name() which can provide unique
+naming in /proc/interrupts for each instance of the I2C IP core.
 
-Fixes: 6752c8db8e0cf ("firewire net, ipv4 arp: Extend hardware ...")
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Zhihao Cheng <chengzhihao1@huawei.com>
+Signed-off-by: Qii Wang <qii.wang@mediatek.com>
 ---
- drivers/firewire/net.c | 4 ----
- 1 file changed, 4 deletions(-)
+ drivers/i2c/busses/i2c-mt65xx.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/firewire/net.c b/drivers/firewire/net.c
-index 715e491dfbc3..4c3fd2eed1da 100644
---- a/drivers/firewire/net.c
-+++ b/drivers/firewire/net.c
-@@ -488,9 +488,7 @@ static int fwnet_finish_incoming_packet(struct net_device *net,
- 					struct sk_buff *skb, u16 source_node_id,
- 					bool is_broadcast, u16 ether_type)
- {
--	struct fwnet_device *dev;
- 	int status;
--	__be64 guid;
+diff --git a/drivers/i2c/busses/i2c-mt65xx.c b/drivers/i2c/busses/i2c-mt65xx.c
+index 5ddfa4e..ea337ba 100644
+--- a/drivers/i2c/busses/i2c-mt65xx.c
++++ b/drivers/i2c/busses/i2c-mt65xx.c
+@@ -1281,7 +1281,7 @@ static int mtk_i2c_probe(struct platform_device *pdev)
  
- 	switch (ether_type) {
- 	case ETH_P_ARP:
-@@ -503,7 +501,6 @@ static int fwnet_finish_incoming_packet(struct net_device *net,
- 		goto err;
- 	}
- 
--	dev = netdev_priv(net);
- 	/* Write metadata, and then pass to the receive level */
- 	skb->dev = net;
- 	skb->ip_summed = CHECKSUM_NONE;
-@@ -512,7 +509,6 @@ static int fwnet_finish_incoming_packet(struct net_device *net,
- 	 * Parse the encapsulation header. This actually does the job of
- 	 * converting to an ethernet-like pseudo frame header.
- 	 */
--	guid = cpu_to_be64(dev->card->guid);
- 	if (dev_hard_header(skb, net, ether_type,
- 			   is_broadcast ? net->broadcast : net->dev_addr,
- 			   NULL, skb->len) >= 0) {
+ 	ret = devm_request_irq(&pdev->dev, irq, mtk_i2c_irq,
+ 			       IRQF_NO_SUSPEND | IRQF_TRIGGER_NONE,
+-			       I2C_DRV_NAME, i2c);
++			       dev_name(&pdev->dev), i2c);
+ 	if (ret < 0) {
+ 		dev_err(&pdev->dev,
+ 			"Request I2C IRQ %d fail\n", irq);
 -- 
-2.25.4
+1.9.1
 
