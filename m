@@ -2,103 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EA1DA3933B3
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 18:26:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F00163933B6
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 18:26:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235790AbhE0Q1p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 May 2021 12:27:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47578 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235589AbhE0Q1m (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 May 2021 12:27:42 -0400
-Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com [IPv6:2a00:1450:4864:20::433])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A5CAC061763
-        for <linux-kernel@vger.kernel.org>; Thu, 27 May 2021 09:26:08 -0700 (PDT)
-Received: by mail-wr1-x433.google.com with SMTP id v12so486044wrq.6
-        for <linux-kernel@vger.kernel.org>; Thu, 27 May 2021 09:26:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=sYfRojD79IjGqc7nXmoUz1TVBKWvqSb4uV+m+zK9THk=;
-        b=lgrw5ga3WKPAoziTjNoBM5nBMOAQDvKM3uLTPCxqTZFAFeNVTFjk4a/+4JLAdmLVPN
-         Dm8Lu+EttQQjXJO/l5z4zx8rCYTD2Dkleix1U0EhD8B1ugYZT4bFp0taxSuw7tAG8LbV
-         gRWSOodIJOTqgNWQBrtpf+Wo7H9hJlh5/krjKfdoFbTwlXTxymPpXi3YpQA5AqIknzJj
-         ZJnDqjfTLlepY9LvnsOGKpdkltNV0eAgLQSWL5Gv3DIAQQmhT5YCKDYYDHAgH3fPdZ8c
-         +YF9sN8dYhVCHfuLCBkwquugfBQtuLj2l2eWCHbWOOgHbPJOAsTzMzCpESvsFhz8pP++
-         0dAQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=sYfRojD79IjGqc7nXmoUz1TVBKWvqSb4uV+m+zK9THk=;
-        b=Yvlvfw6h/dm3fZyDNstaA+dkECMYoi4knbqkOSz+iQBeIifT28T2isqA0hJAHSWIUC
-         2f2y0jTg+aKYessVN7EurEMxpzh/0chaizknMiDlxxZCkdlDl1ea+VsxAawxblBh4fhC
-         He/dA9VMR9/0mKm6AAj9e7lY4Whd3GU6H6/AqmOyWJZztZ8NJZBV3cxDgSLebvgcBw7D
-         cEAEUi+0+Z1jTLz0XmU4U5z3LQaabjluSQRliteE/xO0fBwaCgi1sc9Ro17csLlTZl3G
-         shxROW5av7MFRnm3icUkrTTT2M/gFOeERreahnWzHcv/SX0zv2SCg1Hsg+vSWrOha+Ju
-         yAsQ==
-X-Gm-Message-State: AOAM530MY0xKfItqHSezqSCPxcuObf4tKnDCXEq96fNT/Hh1Qsvi2fTb
-        sWwlMnX5ulYUKx9nrJ2869LlRg==
-X-Google-Smtp-Source: ABdhPJxM+yIpAp4eL9sHrYNbLxW3nG30aoIiJSUnb2poiCGc7Ta6Z2ALK/q7HvKiZyAPXq3UXZYhug==
-X-Received: by 2002:adf:f64b:: with SMTP id x11mr1040670wrp.73.1622132766819;
-        Thu, 27 May 2021 09:26:06 -0700 (PDT)
-Received: from dell ([91.110.221.223])
-        by smtp.gmail.com with ESMTPSA id i5sm3955864wrw.29.2021.05.27.09.26.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 27 May 2021 09:26:06 -0700 (PDT)
-Date:   Thu, 27 May 2021 17:26:04 +0100
-From:   Lee Jones <lee.jones@linaro.org>
-To:     Konrad Dybcio <konrad.dybcio@somainline.org>
-Cc:     Daniel Thompson <daniel.thompson@linaro.org>,
-        phone-devel@vger.kernel.org, ~postmarketos/upstreaming@lists.sr.ht,
-        martin.botka@somainline.org,
-        angelogioacchino.delregno@somainline.org,
-        marijn.suijten@somainline.org, Jingoo Han <jingoohan1@gmail.com>,
-        Pavel Machek <pavel@ucw.cz>, Dan Murphy <dmurphy@ti.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Kiran Gunda <kgunda@codeaurora.org>,
-        dri-devel@lists.freedesktop.org, linux-leds@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, linux-fbdev@vger.kernel.org
-Subject: Re: [PATCH 2/2] video: backlight: qcom-wled: Add PMI8994 compatible
-Message-ID: <20210527162604.GL543307@dell>
-References: <20210228124106.135812-1-konrad.dybcio@somainline.org>
- <20210228124106.135812-2-konrad.dybcio@somainline.org>
- <20210322161810.biagj2qro66rv4gt@maple.lan>
- <20210323083935.GF2916463@dell>
- <a81bfa44-ed86-207c-0f8c-c9bbad62733d@somainline.org>
+        id S235823AbhE0Q22 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 May 2021 12:28:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47298 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235589AbhE0Q21 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 27 May 2021 12:28:27 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A4E346100C;
+        Thu, 27 May 2021 16:26:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1622132813;
+        bh=6yMbrF+OTPauQf1W+8cY34/65ezovBZNW8a6Zi9Ji4k=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=jwI74TETjlVVnaZOrDweNtb+9uRx0I/avnHxkzJoT1rHHMNerlej2e4eTfzG1CZzi
+         xD7b0HYMOO+moYEGvL660CrPm3LA7DyQPbQZct1xrC+zPSTvBHpJ/zs9SIgibVVcft
+         wIk5QiSa1LX+QJCaiYCsRxYTnCazP0vYlp4PFb/pgnhDLAmErSz2k+Uf8OFKW3xPzm
+         p4PGeY6aRm+1bCbVHI+U0KB+KqX/bWmufsOgIg8RSax8nTv49K3IqioHE5oZqUiUjV
+         M2onma0lPY+q4FUo0mWeaO1+WAknrz+/S261P1qleEJuE2nB0fEI4YWXCT7/Z7q2jn
+         7g+lUdRmGfoHw==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 4A8154011C; Thu, 27 May 2021 13:26:51 -0300 (-03)
+Date:   Thu, 27 May 2021 13:26:51 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Ian Rogers <irogers@google.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Thomas Richter <tmricht@linux.ibm.com>,
+        linux-perf-users <linux-perf-users@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Riccardo Mancini <rickyman7@gmail.com>,
+        Stephane Eranian <eranian@google.com>
+Subject: Re: [PATCH] perf test: Test 2 libpfm4 error cases
+Message-ID: <YK/IS9cQeSuZT4cK@kernel.org>
+References: <20210519151213.2643570-1-irogers@google.com>
+ <CAP-5=fXpibzr2Vdzy4RHPVzQbSAOLimpHeuVY_L_YsXDy-2_1Q@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <a81bfa44-ed86-207c-0f8c-c9bbad62733d@somainline.org>
+In-Reply-To: <CAP-5=fXpibzr2Vdzy4RHPVzQbSAOLimpHeuVY_L_YsXDy-2_1Q@mail.gmail.com>
+X-Url:  http://acmel.wordpress.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 27 May 2021, Konrad Dybcio wrote:
-
-> Hi,
+Em Thu, May 27, 2021 at 08:52:14AM -0700, Ian Rogers escreveu:
+> On Wed, May 19, 2021 at 8:12 AM Ian Rogers <irogers@google.com> wrote:
+> >
+> > Proposed in:
+> > https://lore.kernel.org/lkml/20210517140931.2559364-1-tmricht@linux.ibm.com/
+> >
+> > Signed-off-by: Ian Rogers <irogers@google.com>
 > 
-> > Why are you Reviewing/Acking a patch that was applied on the 10th?
+> Ping.
+
+Thanks, applied.
+
+- Arnaldo
+
+ 
+> Thanks!
+> Ian
 > 
-> Forgive me if it turns out I'm blind, but I can't see the patch
-> being in either -next, backlight/for-next, or 5.13-rc3. Perhaps it
-> was omitted after all?
-
-Interesting.  It's not you, it's me!
-
-No idea what happened exactly TBH, but it's applied again.
-
-Should be in -next tomorrow.  Apologies for the delay.
+> > ---
+> >  tools/perf/tests/pfm.c | 10 ++++++++++
+> >  1 file changed, 10 insertions(+)
+> >
+> > diff --git a/tools/perf/tests/pfm.c b/tools/perf/tests/pfm.c
+> > index d4b0ef74defc..acd50944f6af 100644
+> > --- a/tools/perf/tests/pfm.c
+> > +++ b/tools/perf/tests/pfm.c
+> > @@ -155,6 +155,16 @@ static int test__pfm_group(void)
+> >                         .nr_events = 3,
+> >                         .nr_groups = 1,
+> >                 },
+> > +               {
+> > +                       .events = "instructions}",
+> > +                       .nr_events = 1,
+> > +                       .nr_groups = 0,
+> > +               },
+> > +               {
+> > +                       .events = "{{instructions}}",
+> > +                       .nr_events = 0,
+> > +                       .nr_groups = 0,
+> > +               },
+> >         };
+> >
+> >         for (i = 0; i < ARRAY_SIZE(table); i++) {
+> > --
+> > 2.31.1.751.gd2f1c929bd-goog
+> >
 
 -- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+
+- Arnaldo
