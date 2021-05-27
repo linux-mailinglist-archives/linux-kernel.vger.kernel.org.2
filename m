@@ -2,245 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C12B23937E9
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 23:25:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E42593937F8
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 23:30:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234047AbhE0V0y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 May 2021 17:26:54 -0400
-Received: from mga02.intel.com ([134.134.136.20]:41038 "EHLO mga02.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229649AbhE0V0s (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 May 2021 17:26:48 -0400
-IronPort-SDR: WZkG8Wpd1kQGdQQvBexS+GexV5/gCa7ps5yik5gNM6TnOJaH/iifu55eF9K9WmMmHAqH3Y4SDH
- oPjt1L8+PJLQ==
-X-IronPort-AV: E=McAfee;i="6200,9189,9997"; a="189954356"
-X-IronPort-AV: E=Sophos;i="5.83,228,1616482800"; 
-   d="scan'208";a="189954356"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 May 2021 14:25:12 -0700
-IronPort-SDR: NuKE+vIrvUV+UFHN17ZhPUfAkQVoS3E01Lw00HYY93w2z/soU8oxFdmt21nBlGYQRp6PWqdMzc
- SWS3TqwowP6w==
-X-IronPort-AV: E=Sophos;i="5.83,228,1616482800"; 
-   d="scan'208";a="465550409"
-Received: from wbrionex-mobl2.gar.corp.intel.com (HELO skuppusw-desk1.amr.corp.intel.com) ([10.254.33.247])
-  by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 May 2021 14:25:11 -0700
-From:   Kuppuswamy Sathyanarayanan 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>
-To:     Peter Zijlstra <peterz@infradead.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Dan Williams <dan.j.williams@intel.com>
-Cc:     Andi Kleen <ak@linux.intel.com>,
-        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
-        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
-        Raj Ashok <ashok.raj@intel.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Kuppuswamy Sathyanarayanan 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        linux-kernel@vger.kernel.org
-Subject: [RFC v2-fix-v4 1/1] x86/boot: Avoid #VE during boot for TDX platforms
-Date:   Thu, 27 May 2021 14:25:02 -0700
-Message-Id: <20210527212502.1061857-1-sathyanarayanan.kuppuswamy@linux.intel.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210524232735.801740-1-sathyanarayanan.kuppuswamy@linux.intel.com>
-References: <20210524232735.801740-1-sathyanarayanan.kuppuswamy@linux.intel.com>
+        id S234527AbhE0VcR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 May 2021 17:32:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59364 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232975AbhE0VcQ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 27 May 2021 17:32:16 -0400
+Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC2C6C061574
+        for <linux-kernel@vger.kernel.org>; Thu, 27 May 2021 14:30:42 -0700 (PDT)
+Received: by mail-pj1-x1036.google.com with SMTP id pi6-20020a17090b1e46b029015cec51d7cdso1244316pjb.5
+        for <linux-kernel@vger.kernel.org>; Thu, 27 May 2021 14:30:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=intel-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=S8iOtQ0X/my+H1BXO/43lHQWXZDSXQklyVNvDzzmcng=;
+        b=Rrqt81EL8jZO92aEa7H8trfJbdwjHhKDawyLao+RR6AeRPjzKVrO9C3KdkRXm25WQO
+         GRLib1dQUkipP+mPE/Gk2Uhhdbca/odaXJS37UttXFsBxaKm2oNlVa7G6j9OYgyvscWO
+         pkNAGMa8bN0tOs5asbat2etgpagQ30FOxVFJBE7LV+Xn5C6kNCmg3UTX+MKpLbLYxwmH
+         RTRPldUkGo1Tzljl4F+B3iTcy3XcpfEy4v/k8YH6fwa9fPNdMv9bFxubh1zbXcrsp6Ol
+         mK792pHk2tNa5wAFgKr8XgkSCNjzjbGgZpN/05GuTEQvkAnE+i+7Q7WbStCidr6xsQvo
+         iuKA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=S8iOtQ0X/my+H1BXO/43lHQWXZDSXQklyVNvDzzmcng=;
+        b=XwfkrGpbaCDWvzPduQnORRgXE7FG+rBSkL6eIVFCWsVQOFyd3youwW4s+4S4nMFYLj
+         b/Avv1P79w6r3fb5EDCnh3H/Ufk5oI6L/bUYuuWKlpAi49fA7B5XUfSRtWRQwd7/hB4Q
+         VyWdHD9H2hM3ooLEACswgOOm58Q2VWSzfsWEq7OrSiRRdWekWGcpRByfJaSZ65qbB8l4
+         kWywR7xqKPKzh63LsVghWQ/ALGfyLZH6hVjRP8fOcy9FSp4Hfmn5FUm4hVRVDnyw98FA
+         TNCoVdrChnyyaCxvW6WeQXsU+I6QqoSGDNAOgj5bm2HFX0JQhrSinKlxFd/HQSSjK+zO
+         MTzw==
+X-Gm-Message-State: AOAM530Jy7eNpVcdVtGL7PyH2UA0nvfLaEu3C9s6PL2DkkswAsHnHNZk
+        eaPwSmMPMUze5vWezlWeXF7PsVaDhhyKMzI8aRcW/A==
+X-Google-Smtp-Source: ABdhPJyAJFdoqNILHiLrNqqm39umrsbUXjufPPoG05dlLsB2ZffzTsq7bHfWPu5BbnwLXCnmaNLzaveNasZvSD8Sz4w=
+X-Received: by 2002:a17:90b:3709:: with SMTP id mg9mr557497pjb.149.1622151042284;
+ Thu, 27 May 2021 14:30:42 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+References: <159009507306.847224.8502634072429766747.stgit@dwillia2-desk3.amr.corp.intel.com>
+ <20210527205845.GA1421476@bjorn-Precision-5520>
+In-Reply-To: <20210527205845.GA1421476@bjorn-Precision-5520>
+From:   Dan Williams <dan.j.williams@intel.com>
+Date:   Thu, 27 May 2021 14:30:31 -0700
+Message-ID: <CAPcyv4j-ygPddjuZqq8PMvsN-E8rJQszc+WuUu1MBXVXiQZddg@mail.gmail.com>
+Subject: Re: [PATCH v4] /dev/mem: Revoke mappings when a driver claims the region
+To:     Bjorn Helgaas <helgaas@kernel.org>
+Cc:     Greg KH <gregkh@linuxfoundation.org>,
+        Arnd Bergmann <arnd@arndb.de>, Ingo Molnar <mingo@redhat.com>,
+        Kees Cook <keescook@chromium.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Russell King <linux@arm.linux.org.uk>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux MM <linux-mm@kvack.org>,
+        Linux PCI <linux-pci@vger.kernel.org>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        =?UTF-8?Q?Krzysztof_Wilczy=C5=84ski?= <kw@linux.com>,
+        Jason Gunthorpe <jgg@nvidia.com>,
+        Christoph Hellwig <hch@lst.de>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sean Christopherson <sean.j.christopherson@intel.com>
+On Thu, May 27, 2021 at 1:58 PM Bjorn Helgaas <helgaas@kernel.org> wrote:
+>
+> [+cc Daniel, Krzysztof, Jason, Christoph, linux-pci]
+>
+> On Thu, May 21, 2020 at 02:06:17PM -0700, Dan Williams wrote:
+> > Close the hole of holding a mapping over kernel driver takeover event of
+> > a given address range.
+> >
+> > Commit 90a545e98126 ("restrict /dev/mem to idle io memory ranges")
+> > introduced CONFIG_IO_STRICT_DEVMEM with the goal of protecting the
+> > kernel against scenarios where a /dev/mem user tramples memory that a
+> > kernel driver owns. However, this protection only prevents *new* read(),
+> > write() and mmap() requests. Established mappings prior to the driver
+> > calling request_mem_region() are left alone.
+> >
+> > Especially with persistent memory, and the core kernel metadata that is
+> > stored there, there are plentiful scenarios for a /dev/mem user to
+> > violate the expectations of the driver and cause amplified damage.
+> >
+> > Teach request_mem_region() to find and shoot down active /dev/mem
+> > mappings that it believes it has successfully claimed for the exclusive
+> > use of the driver. Effectively a driver call to request_mem_region()
+> > becomes a hole-punch on the /dev/mem device.
+>
+> This idea of hole-punching /dev/mem has since been extended to PCI
+> BARs via [1].
+>
+> Correct me if I'm wrong: I think this means that if a user process has
+> mmapped a PCI BAR via sysfs, and a kernel driver subsequently requests
+> that region via pci_request_region() or similar, we punch holes in the
+> the user process mmap.  The driver might be happy, but my guess is the
+> user starts seeing segmentation violations for no obvious reason and
+> is not happy.
+>
+> Apart from the user process issue, the implementation of [1] is
+> problematic for PCI because the mmappable sysfs attributes now depend
+> on iomem_init_inode(), an fs_initcall, which means they can't be
+> static attributes, which ultimately leads to races in creating them.
 
-There are a few MSRs and control register bits which the kernel
-normally needs to modify during boot. But, TDX disallows
-modification of these registers to help provide consistent
-security guarantees. Fortunately, TDX ensures that these are all
-in the correct state before the kernel loads, which means the
-kernel has no need to modify them.
+See the comments in iomem_get_mapping(), and revoke_iomem():
 
-The conditions to avoid are:
+        /*
+         * Check that the initialization has completed. Losing the race
+         * is ok because it means drivers are claiming resources before
+         * the fs_initcall level of init and prevent iomem_get_mapping users
+         * from establishing mappings.
+         */
 
-  * Any writes to the EFER MSR
-  * Clearing CR0.NE
-  * Clearing CR3.MCE
+...the observation being that it is ok for the revocation inode to
+come on later in the boot process because userspace won't be able to
+use the fs yet. So any missed calls to revoke_iomem() would fall back
+to userspace just seeing the resource busy in the first instance. I.e.
+through the normal devmem_is_allowed() exclusion.
 
-This theoretically makes guest boot more fragile. If, for
-instance, EFER was set up incorrectly and a WRMSR was performed,
-it will trigger early exception panic or a triple fault, if it's
-before early exceptions are set up. However, this is likely to
-trip up the guest BIOS long before control reaches the kernel. In
-any case, these kinds of problems are unlikely to occur in
-production environments, and developers have good debug
-tools to fix them quickly. 
+>
+> So I'm raising the question of whether this hole-punch is the right
+> strategy.
+>
+>   - Prior to revoke_iomem(), __request_region() was very
+>     self-contained and really only depended on the resource tree.  Now
+>     it depends on a lot of higher-level MM machinery to shoot down
+>     mappings of other tasks.  This adds quite a bit of complexity and
+>     some new ordering constraints.
+>
+>   - Punching holes in the address space of an existing process seems
+>     unfriendly.  Maybe the driver's __request_region() should fail
+>     instead, since the driver should be prepared to handle failure
+>     there anyway.
 
-Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
-Reviewed-by: Andi Kleen <ak@linux.intel.com>
-Signed-off-by: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
----
-Changes since RFC v2-fix-v3:
- * Removed uncessary contents from commit log. No code changes.
+It's prepared to handle failure, but in this case it is dealing with a
+root user of 2 minds.
 
-Changes since RFC v2-fix-v2:
- * Fixed commit log as per review comments.
+>
+>   - [2] suggests that the hole punch protects drivers from /dev/mem
+>     writers, especially with persistent memory.  I'm not really
+>     convinced.  The hole punch does nothing to prevent a user process
+>     from mmapping and corrupting something before the driver loads.
 
-Changes since RFC v2-fix:
- * Fixed commit and comments as per Dave and Dan's suggestions.
- * Merged CR0.NE related change in pa_trampoline_compat() from patch
-   titled "x86/boot: Add a trampoline for APs booting in 64-bit mode"
-   to this patch. It belongs in this patch.
- * Merged TRAMPOLINE_32BIT_CODE_SIZE related change from patch titled
-   "x86/boot: Add a trampoline for APs booting in 64-bit mode" to this
-   patch (since it was wrongly merged to that patch during patch split).
-
- arch/x86/boot/compressed/head_64.S   | 16 ++++++++++++----
- arch/x86/boot/compressed/pgtable.h   |  2 +-
- arch/x86/kernel/head_64.S            | 20 ++++++++++++++++++--
- arch/x86/realmode/rm/trampoline_64.S | 23 +++++++++++++++++++----
- 4 files changed, 50 insertions(+), 11 deletions(-)
-
-diff --git a/arch/x86/boot/compressed/head_64.S b/arch/x86/boot/compressed/head_64.S
-index e94874f4bbc1..f848569e3fb0 100644
---- a/arch/x86/boot/compressed/head_64.S
-+++ b/arch/x86/boot/compressed/head_64.S
-@@ -616,12 +616,20 @@ SYM_CODE_START(trampoline_32bit_src)
- 	movl	$MSR_EFER, %ecx
- 	rdmsr
- 	btsl	$_EFER_LME, %eax
-+	/* Avoid writing EFER if no change was made (for TDX guest) */
-+	jc	1f
- 	wrmsr
--	popl	%edx
-+1:	popl	%edx
- 	popl	%ecx
- 
- 	/* Enable PAE and LA57 (if required) paging modes */
--	movl	$X86_CR4_PAE, %eax
-+	movl	%cr4, %eax
-+	/*
-+	 * Clear all bits except CR4.MCE, which is preserved.
-+	 * Clearing CR4.MCE will #VE in TDX guests.
-+	 */
-+	andl	$X86_CR4_MCE, %eax
-+	orl	$X86_CR4_PAE, %eax
- 	testl	%edx, %edx
- 	jz	1f
- 	orl	$X86_CR4_LA57, %eax
-@@ -635,8 +643,8 @@ SYM_CODE_START(trampoline_32bit_src)
- 	pushl	$__KERNEL_CS
- 	pushl	%eax
- 
--	/* Enable paging again */
--	movl	$(X86_CR0_PG | X86_CR0_PE), %eax
-+	/* Enable paging again. Avoid clearing X86_CR0_NE for TDX */
-+	movl	$(X86_CR0_PG | X86_CR0_NE | X86_CR0_PE), %eax
- 	movl	%eax, %cr0
- 
- 	lret
-diff --git a/arch/x86/boot/compressed/pgtable.h b/arch/x86/boot/compressed/pgtable.h
-index 6ff7e81b5628..cc9b2529a086 100644
---- a/arch/x86/boot/compressed/pgtable.h
-+++ b/arch/x86/boot/compressed/pgtable.h
-@@ -6,7 +6,7 @@
- #define TRAMPOLINE_32BIT_PGTABLE_OFFSET	0
- 
- #define TRAMPOLINE_32BIT_CODE_OFFSET	PAGE_SIZE
--#define TRAMPOLINE_32BIT_CODE_SIZE	0x70
-+#define TRAMPOLINE_32BIT_CODE_SIZE	0x80
- 
- #define TRAMPOLINE_32BIT_STACK_END	TRAMPOLINE_32BIT_SIZE
- 
-diff --git a/arch/x86/kernel/head_64.S b/arch/x86/kernel/head_64.S
-index 04bddaaba8e2..6cf8d126b80a 100644
---- a/arch/x86/kernel/head_64.S
-+++ b/arch/x86/kernel/head_64.S
-@@ -141,7 +141,13 @@ SYM_INNER_LABEL(secondary_startup_64_no_verify, SYM_L_GLOBAL)
- 1:
- 
- 	/* Enable PAE mode, PGE and LA57 */
--	movl	$(X86_CR4_PAE | X86_CR4_PGE), %ecx
-+	movq	%cr4, %rcx
-+	/*
-+	 * Clear all bits except CR4.MCE, which is preserved.
-+	 * Clearing CR4.MCE will #VE in TDX guests.
-+	 */
-+	andl	$X86_CR4_MCE, %ecx
-+	orl	$(X86_CR4_PAE | X86_CR4_PGE), %ecx
- #ifdef CONFIG_X86_5LEVEL
- 	testl	$1, __pgtable_l5_enabled(%rip)
- 	jz	1f
-@@ -229,13 +235,23 @@ SYM_INNER_LABEL(secondary_startup_64_no_verify, SYM_L_GLOBAL)
- 	/* Setup EFER (Extended Feature Enable Register) */
- 	movl	$MSR_EFER, %ecx
- 	rdmsr
-+	/*
-+	 * Preserve current value of EFER for comparison and to skip
-+	 * EFER writes if no change was made (for TDX guest)
-+	 */
-+	movl    %eax, %edx
- 	btsl	$_EFER_SCE, %eax	/* Enable System Call */
- 	btl	$20,%edi		/* No Execute supported? */
- 	jnc     1f
- 	btsl	$_EFER_NX, %eax
- 	btsq	$_PAGE_BIT_NX,early_pmd_flags(%rip)
--1:	wrmsr				/* Make changes effective */
- 
-+	/* Avoid writing EFER if no change was made (for TDX guest) */
-+1:	cmpl	%edx, %eax
-+	je	1f
-+	xor	%edx, %edx
-+	wrmsr				/* Make changes effective */
-+1:
- 	/* Setup cr0 */
- 	movl	$CR0_STATE, %eax
- 	/* Make changes effective */
-diff --git a/arch/x86/realmode/rm/trampoline_64.S b/arch/x86/realmode/rm/trampoline_64.S
-index 957bb21ce105..f121f5e29d50 100644
---- a/arch/x86/realmode/rm/trampoline_64.S
-+++ b/arch/x86/realmode/rm/trampoline_64.S
-@@ -143,13 +143,27 @@ SYM_CODE_START(startup_32)
- 	movl	%eax, %cr3
- 
- 	# Set up EFER
-+	movl	$MSR_EFER, %ecx
-+	rdmsr
-+	/*
-+	 * Skip writing to EFER if the register already has desired
-+	 * value (to avoid #VE for the TDX guest).
-+	 */
-+	cmp	pa_tr_efer, %eax
-+	jne	.Lwrite_efer
-+	cmp	pa_tr_efer + 4, %edx
-+	je	.Ldone_efer
-+.Lwrite_efer:
- 	movl	pa_tr_efer, %eax
- 	movl	pa_tr_efer + 4, %edx
--	movl	$MSR_EFER, %ecx
- 	wrmsr
- 
--	# Enable paging and in turn activate Long Mode
--	movl	$(X86_CR0_PG | X86_CR0_WP | X86_CR0_PE), %eax
-+.Ldone_efer:
-+	/*
-+	 * Enable paging and in turn activate Long Mode. Avoid clearing
-+	 * X86_CR0_NE for TDX.
-+	 */
-+	movl	$(X86_CR0_PG | X86_CR0_WP | X86_CR0_NE | X86_CR0_PE), %eax
- 	movl	%eax, %cr0
- 
- 	/*
-@@ -169,7 +183,8 @@ SYM_CODE_START(pa_trampoline_compat)
- 	movl	$rm_stack_end, %esp
- 	movw	$__KERNEL_DS, %dx
- 
--	movl	$X86_CR0_PE, %eax
-+	/* Avoid clearing X86_CR0_NE for TDX */
-+	movl	$(X86_CR0_NE | X86_CR0_PE), %eax
- 	movl	%eax, %cr0
- 	ljmpl   $__KERNEL32_CS, $pa_startup_32
- SYM_CODE_END(pa_trampoline_compat)
--- 
-2.25.1
-
+The motivation for this was a case that was swapping between /dev/mem
+access and /dev/pmem0 access and they forgot to stop using /dev/mem
+when they switched to /dev/pmem0. If root wants to use /dev/mem it can
+use it, if root wants to stop the driver from loading it can set
+mopdrobe policy or manually unbind, and if root asks the kernel to
+load the driver while it is actively using /dev/mem something has to
+give. Given root has other options to stop a driver the decision to
+revoke userspace access when root messes up and causes a collision
+seems prudent to me.
