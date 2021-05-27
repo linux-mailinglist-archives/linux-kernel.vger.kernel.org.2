@@ -2,212 +2,288 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 56C693928B9
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 09:41:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 562723928BD
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 09:42:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234985AbhE0HnX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 May 2021 03:43:23 -0400
-Received: from gloria.sntech.de ([185.11.138.130]:34610 "EHLO gloria.sntech.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229614AbhE0HnX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 May 2021 03:43:23 -0400
-Received: from ip5f5aa64a.dynamic.kabel-deutschland.de ([95.90.166.74] helo=diego.localnet)
-        by gloria.sntech.de with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <heiko@sntech.de>)
-        id 1lmAeI-0006Xu-60; Thu, 27 May 2021 09:41:46 +0200
-From:   Heiko =?ISO-8859-1?Q?St=FCbner?= <heiko@sntech.de>
-To:     lee.jones@linaro.org, ulf.hansson@linaro.org,
-        Jianqun Xu <jay.xu@rock-chips.com>
-Cc:     linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Jianqun Xu <jay.xu@rock-chips.com>
-Subject: Re: [PATCH] soc: rockchip: io-domain: add rk3568 support
-Date:   Thu, 27 May 2021 09:41:45 +0200
-Message-ID: <3994395.Isy0gbHreE@diego>
-In-Reply-To: <20210527072917.1425321-1-jay.xu@rock-chips.com>
-References: <20210527072917.1425321-1-jay.xu@rock-chips.com>
+        id S235057AbhE0Hno (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 May 2021 03:43:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39520 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234922AbhE0Hnm (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 27 May 2021 03:43:42 -0400
+Received: from mail-pf1-x42a.google.com (mail-pf1-x42a.google.com [IPv6:2607:f8b0:4864:20::42a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85F46C061760
+        for <linux-kernel@vger.kernel.org>; Thu, 27 May 2021 00:42:10 -0700 (PDT)
+Received: by mail-pf1-x42a.google.com with SMTP id d78so2984922pfd.10
+        for <linux-kernel@vger.kernel.org>; Thu, 27 May 2021 00:42:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=iKoyZrvsFP6hj+sTecEKs84BWsddp7iyyNAfS5YrByY=;
+        b=K2es2FAtpGv9fegvJdeh5YP/A0RC9TqvE4FiUuLQ+d2zmZAPotE3JnwGCLTnpT2oJO
+         pTLqwj//EAA5370QnKt5idZr716DsDeIAwj1bCoAhRQhnmQI0DN7wgyP7autSDSLQ/ZA
+         yCwkrVajawz3Iir7PKF7uzIzNHgfb1o+PerWo=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=iKoyZrvsFP6hj+sTecEKs84BWsddp7iyyNAfS5YrByY=;
+        b=kIR1vfHbrAxSX966tILL8avuuminFtePDgarL8yC4juyi3GGvCIsfaaJzXyW1FfRAk
+         78276Aac72twGA7pjIARXMLh42KEnCiAPU0c7/i8RIKwiNHzdOpxMY4oeoBF2oUXjDeC
+         BDSfO+e1WM7n9QxZ0R4vL9NtxRyVXFXLWux3dOY77fXFg59NYaCTM8sQ7vniii66VR5q
+         zsyW6eIAC7R08i8xufdRK/zCZpp1fbMCH+Y75fYLclW6vW6h6GUYD9eElZMqlYFDjEQn
+         pW8Fo0QZ1bvZIwlrXVWo+9ROMbb90QDpWqWjpubVrdK66E5WKYr4ksG8/lzEze+jsxf7
+         w2IQ==
+X-Gm-Message-State: AOAM530UWW27rf5ZklP5EZ7niG2StWpZs26NolkXyjCvvs1cPCefYXOi
+        5Qb0xDi+SqUbLrZAO5yG1pIPsw==
+X-Google-Smtp-Source: ABdhPJyh8VQ7P/mYb4jkCg+CyiZPlNFyGqOdhZl1TfgjEhu4HrLCi0thLRH2AAf5Ehe9ojNiLBlGIQ==
+X-Received: by 2002:a05:6a00:7c5:b029:2e8:d5f5:9677 with SMTP id n5-20020a056a0007c5b02902e8d5f59677mr2488009pfu.68.1622101329884;
+        Thu, 27 May 2021 00:42:09 -0700 (PDT)
+Received: from hsinyi-z840.tpe.corp.google.com ([2401:fa00:1:10:ece5:55a4:6ad3:d20f])
+        by smtp.gmail.com with ESMTPSA id h24sm1184857pfn.180.2021.05.27.00.42.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 27 May 2021 00:42:09 -0700 (PDT)
+From:   Hsin-Yi Wang <hsinyi@chromium.org>
+To:     dri-devel@lists.freedesktop.org
+Cc:     Robert Foss <robert.foss@linaro.org>,
+        Chun-Kuang Hu <chunkuang.hu@kernel.org>,
+        Sean Paul <sean@poorly.run>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>, linux-kernel@vger.kernel.org,
+        Rob Herring <robh+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, intel-gfx@lists.freedesktop.org
+Subject: [PATCH v6 RESEND 1/3] gpu: drm: separate panel orientation property creating and value setting
+Date:   Thu, 27 May 2021 15:42:00 +0800
+Message-Id: <20210527074202.1706724-1-hsinyi@chromium.org>
+X-Mailer: git-send-email 2.31.1.818.g46aad6cb9e-goog
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jay,
+drm_dev_register() sets connector->registration_state to
+DRM_CONNECTOR_REGISTERED and dev->registered to true. If
+drm_connector_set_panel_orientation() is first called after
+drm_dev_register(), it will fail several checks and results in following
+warning.
 
-Am Donnerstag, 27. Mai 2021, 09:29:17 CEST schrieb Jianqun Xu:
-> The io-domain registers on RK3568 SoCs have three separated bits to
-> enable/disable the 1.8v/2.5v/3.3v power.
-> 
-> This patch make the write to be a operation, allow rk3568 uses a private
-> register set function.
-> 
-> Since the 2.5v is not used on RK3568, so the driver only set
-> 1.8v [enable] + 3.3v [disable] for 1.8v mode
-> 1.8v [disable] + 3.3v [enable] for 3.3v mode
-> 
-> There is not register order requirement which has been cleared by our IC
-> team.
-> 
-> Signed-off-by: Jianqun Xu <jay.xu@rock-chips.com>
+Add a function to create panel orientation property and set default value
+to UNKNOWN, so drivers can call this function to init the property earlier
+, and let the panel set the real value later.
 
-can you add a separate patch that adds the necessary compatible to the
-dt-binding please?
+[    4.480976] ------------[ cut here ]------------
+[    4.485603] WARNING: CPU: 5 PID: 369 at drivers/gpu/drm/drm_mode_object.c:45 __drm_mode_object_add+0xb4/0xbc
+<snip>
+[    4.609772] Call trace:
+[    4.612208]  __drm_mode_object_add+0xb4/0xbc
+[    4.616466]  drm_mode_object_add+0x20/0x2c
+[    4.620552]  drm_property_create+0xdc/0x174
+[    4.624723]  drm_property_create_enum+0x34/0x98
+[    4.629241]  drm_connector_set_panel_orientation+0x64/0xa0
+[    4.634716]  boe_panel_get_modes+0x88/0xd8
+[    4.638802]  drm_panel_get_modes+0x2c/0x48
+[    4.642887]  panel_bridge_get_modes+0x1c/0x28
+[    4.647233]  drm_bridge_connector_get_modes+0xa0/0xd4
+[    4.652273]  drm_helper_probe_single_connector_modes+0x218/0x700
+[    4.658266]  drm_mode_getconnector+0x1b4/0x45c
+[    4.662699]  drm_ioctl_kernel+0xac/0x128
+[    4.666611]  drm_ioctl+0x268/0x410
+[    4.670002]  drm_compat_ioctl+0xdc/0xf0
+[    4.673829]  __arm64_compat_sys_ioctl+0xc8/0x100
+[    4.678436]  el0_svc_common+0xf4/0x1c0
+[    4.682174]  do_el0_svc_compat+0x28/0x3c
+[    4.686088]  el0_svc_compat+0x10/0x1c
+[    4.689738]  el0_sync_compat_handler+0xa8/0xcc
+[    4.694171]  el0_sync_compat+0x178/0x180
+[    4.698082] ---[ end trace b4f2db9d9c88610b ]---
+[    4.702721] ------------[ cut here ]------------
+[    4.707329] WARNING: CPU: 5 PID: 369 at drivers/gpu/drm/drm_mode_object.c:243 drm_object_attach_property+0x48/0xb8
+<snip>
+[    4.833830] Call trace:
+[    4.836266]  drm_object_attach_property+0x48/0xb8
+[    4.840958]  drm_connector_set_panel_orientation+0x84/0xa0
+[    4.846432]  boe_panel_get_modes+0x88/0xd8
+[    4.850516]  drm_panel_get_modes+0x2c/0x48
+[    4.854600]  panel_bridge_get_modes+0x1c/0x28
+[    4.858946]  drm_bridge_connector_get_modes+0xa0/0xd4
+[    4.863984]  drm_helper_probe_single_connector_modes+0x218/0x700
+[    4.869978]  drm_mode_getconnector+0x1b4/0x45c
+[    4.874410]  drm_ioctl_kernel+0xac/0x128
+[    4.878320]  drm_ioctl+0x268/0x410
+[    4.881711]  drm_compat_ioctl+0xdc/0xf0
+[    4.885536]  __arm64_compat_sys_ioctl+0xc8/0x100
+[    4.890142]  el0_svc_common+0xf4/0x1c0
+[    4.893879]  do_el0_svc_compat+0x28/0x3c
+[    4.897791]  el0_svc_compat+0x10/0x1c
+[    4.901441]  el0_sync_compat_handler+0xa8/0xcc
+[    4.905873]  el0_sync_compat+0x178/0x180
+[    4.909783] ---[ end trace b4f2db9d9c88610c ]---
 
-One more thing below.
+Signed-off-by: Hsin-Yi Wang <hsinyi@chromium.org>
+Reviewed-by: Sean Paul <seanpaul@chromium.org>
+---
+ drivers/gpu/drm/drm_connector.c         | 58 ++++++++++++++++++-------
+ drivers/gpu/drm/i915/display/icl_dsi.c  |  1 +
+ drivers/gpu/drm/i915/display/intel_dp.c |  1 +
+ drivers/gpu/drm/i915/display/vlv_dsi.c  |  1 +
+ include/drm/drm_connector.h             |  2 +
+ 5 files changed, 47 insertions(+), 16 deletions(-)
 
-> ---
->  drivers/soc/rockchip/io-domain.c | 75 +++++++++++++++++++++++++++++++-
->  1 file changed, 73 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/soc/rockchip/io-domain.c b/drivers/soc/rockchip/io-domain.c
-> index cf8182fc3642..32b3bd645d56 100644
-> --- a/drivers/soc/rockchip/io-domain.c
-> +++ b/drivers/soc/rockchip/io-domain.c
-> @@ -51,6 +51,10 @@
->  #define RK3399_PMUGRF_CON0_VSEL		BIT(8)
->  #define RK3399_PMUGRF_VSEL_SUPPLY_NUM	9
->  
-> +#define RK3568_PMU_GRF_IO_VSEL0		(0x0140)
-> +#define RK3568_PMU_GRF_IO_VSEL1		(0x0144)
-> +#define RK3568_PMU_GRF_IO_VSEL2		(0x0148)
-> +
->  struct rockchip_iodomain;
->  
->  struct rockchip_iodomain_soc_data {
-> @@ -71,8 +75,51 @@ struct rockchip_iodomain {
->  	struct regmap *grf;
->  	const struct rockchip_iodomain_soc_data *soc_data;
->  	struct rockchip_iodomain_supply supplies[MAX_SUPPLIES];
-> +	int (*write)(struct rockchip_iodomain_supply *supply, int uV);
->  };
->  
-> +static int rk3568_pmu_iodomain_write(struct rockchip_iodomain_supply *supply,
-> +				     int uV)
-> +{
-> +	struct rockchip_iodomain *iod = supply->iod;
-> +	u32 is_3v3 = uV > MAX_VOLTAGE_1_8;
-> +	u32 val0, val1;
-> +	int b;
-> +
-> +	switch (supply->idx) {
-> +	case 0: /* pmuio1 */
-> +		break;
-> +	case 1: /* pmuio2 */
-> +		b = supply->idx;
-> +		val0 = BIT(16 + b) | (is_3v3 ? 0 : BIT(b));
-> +		b = supply->idx + 4;
-> +		val1 = BIT(16 + b) | (is_3v3 ? BIT(b) : 0);
-> +
-> +		regmap_write(iod->grf, RK3568_PMU_GRF_IO_VSEL2, val0);
-> +		regmap_write(iod->grf, RK3568_PMU_GRF_IO_VSEL2, val1);
-> +		break;
-> +	case 3: /* vccio2 */
-> +		break;
-> +	case 2: /* vccio1 */
-> +	case 4: /* vccio3 */
-> +	case 5: /* vccio4 */
-> +	case 6: /* vccio5 */
-> +	case 7: /* vccio6 */
-> +	case 8: /* vccio7 */
-> +		b = supply->idx - 1;
-> +		val0 = BIT(16 + b) | (is_3v3 ? 0 : BIT(b));
-> +		val1 = BIT(16 + b) | (is_3v3 ? BIT(b) : 0);
-> +
-> +		regmap_write(iod->grf, RK3568_PMU_GRF_IO_VSEL0, val0);
-> +		regmap_write(iod->grf, RK3568_PMU_GRF_IO_VSEL1, val1);
-> +		break;
-> +	default:
-> +		return -EINVAL;
-> +	};
-> +
-> +	return 0;
-> +}
-> +
->  static int rockchip_iodomain_write(struct rockchip_iodomain_supply *supply,
->  				   int uV)
->  {
-> @@ -136,7 +183,7 @@ static int rockchip_iodomain_notify(struct notifier_block *nb,
->  			return NOTIFY_BAD;
->  	}
->  
-> -	ret = rockchip_iodomain_write(supply, uV);
-> +	ret = supply->iod->write(supply, uV);
->  	if (ret && event == REGULATOR_EVENT_PRE_VOLTAGE_CHANGE)
->  		return NOTIFY_BAD;
->  
-> @@ -398,6 +445,21 @@ static const struct rockchip_iodomain_soc_data soc_data_rk3399_pmu = {
->  	.init = rk3399_pmu_iodomain_init,
->  };
->  
-> +static const struct rockchip_iodomain_soc_data soc_data_rk3568_pmu = {
-> +	.grf_offset = 0x140,
-> +	.supply_names = {
-> +		"pmuio1",
-> +		"pmuio2",
-> +		"vccio1",
-> +		"vccio2",
-> +		"vccio3",
-> +		"vccio4",
-> +		"vccio5",
-> +		"vccio6",
-> +		"vccio7",
-> +	},
-
-+	.write = rk3568_iodomain_write,
-
-> +};
-> +
->  static const struct rockchip_iodomain_soc_data soc_data_rv1108 = {
->  	.grf_offset = 0x404,
->  	.supply_names = {
-> @@ -469,6 +531,10 @@ static const struct of_device_id rockchip_iodomain_match[] = {
->  		.compatible = "rockchip,rk3399-pmu-io-voltage-domain",
->  		.data = &soc_data_rk3399_pmu
->  	},
-> +	{
-> +		.compatible = "rockchip,rk3568-pmu-io-voltage-domain",
-> +		.data = &soc_data_rk3568_pmu
-> +	},
->  	{
->  		.compatible = "rockchip,rv1108-io-voltage-domain",
->  		.data = &soc_data_rv1108
-> @@ -502,6 +568,11 @@ static int rockchip_iodomain_probe(struct platform_device *pdev)
->  	match = of_match_node(rockchip_iodomain_match, np);
->  	iod->soc_data = match->data;
->  
-> +	if (match->data == &soc_data_rk3568_pmu)
-> +		iod->write = rk3568_pmu_iodomain_write;
-> +	else
-> +		iod->write = rockchip_iodomain_write;
-> +
-
-So, please make the write callback part of the rockchip_iodomain_soc_data
-struct. That way we don't need to compare for individual soc-types,
-especially if later socs need a different approach again.
-
-	if (match->data->write)
-		iod->ops = match->data->write;
-	else
-		iod->ops = rockchip_iodomain_write;
-
-Thanks
-Heiko
-
->  	parent = pdev->dev.parent;
->  	if (parent && parent->of_node) {
->  		iod->grf = syscon_node_to_regmap(parent->of_node);
-> @@ -562,7 +633,7 @@ static int rockchip_iodomain_probe(struct platform_device *pdev)
->  		supply->reg = reg;
->  		supply->nb.notifier_call = rockchip_iodomain_notify;
->  
-> -		ret = rockchip_iodomain_write(supply, uV);
-> +		ret = iod->write(supply, uV);
->  		if (ret) {
->  			supply->reg = NULL;
->  			goto unreg_notify;
-> 
-
-
-
+diff --git a/drivers/gpu/drm/drm_connector.c b/drivers/gpu/drm/drm_connector.c
+index 7631f76e7f34..7189baaabf41 100644
+--- a/drivers/gpu/drm/drm_connector.c
++++ b/drivers/gpu/drm/drm_connector.c
+@@ -1210,7 +1210,7 @@ static const struct drm_prop_enum_list dp_colorspaces[] = {
+  *	INPUT_PROP_DIRECT) will still map 1:1 to the actual LCD panel
+  *	coordinates, so if userspace rotates the picture to adjust for
+  *	the orientation it must also apply the same transformation to the
+- *	touchscreen input coordinates. This property is initialized by calling
++ *	touchscreen input coordinates. This property value is set by calling
+  *	drm_connector_set_panel_orientation() or
+  *	drm_connector_set_panel_orientation_with_quirk()
+  *
+@@ -2173,8 +2173,8 @@ EXPORT_SYMBOL(drm_connector_set_vrr_capable_property);
+  * @connector: connector for which to set the panel-orientation property.
+  * @panel_orientation: drm_panel_orientation value to set
+  *
+- * This function sets the connector's panel_orientation and attaches
+- * a "panel orientation" property to the connector.
++ * This function sets the connector's panel_orientation value. If the property
++ * doesn't exist, it will return an error.
+  *
+  * Calling this function on a connector where the panel_orientation has
+  * already been set is a no-op (e.g. the orientation has been overridden with
+@@ -2205,19 +2205,11 @@ int drm_connector_set_panel_orientation(
+ 	info->panel_orientation = panel_orientation;
+ 
+ 	prop = dev->mode_config.panel_orientation_property;
+-	if (!prop) {
+-		prop = drm_property_create_enum(dev, DRM_MODE_PROP_IMMUTABLE,
+-				"panel orientation",
+-				drm_panel_orientation_enum_list,
+-				ARRAY_SIZE(drm_panel_orientation_enum_list));
+-		if (!prop)
+-			return -ENOMEM;
+-
+-		dev->mode_config.panel_orientation_property = prop;
+-	}
++	if (WARN_ON(!prop))
++		return -EINVAL;
+ 
+-	drm_object_attach_property(&connector->base, prop,
+-				   info->panel_orientation);
++	drm_object_property_set_value(&connector->base, prop,
++				      info->panel_orientation);
+ 	return 0;
+ }
+ EXPORT_SYMBOL(drm_connector_set_panel_orientation);
+@@ -2225,7 +2217,7 @@ EXPORT_SYMBOL(drm_connector_set_panel_orientation);
+ /**
+  * drm_connector_set_panel_orientation_with_quirk -
+  *	set the connector's panel_orientation after checking for quirks
+- * @connector: connector for which to init the panel-orientation property.
++ * @connector: connector for which to set the panel-orientation property.
+  * @panel_orientation: drm_panel_orientation value to set
+  * @width: width in pixels of the panel, used for panel quirk detection
+  * @height: height in pixels of the panel, used for panel quirk detection
+@@ -2252,6 +2244,40 @@ int drm_connector_set_panel_orientation_with_quirk(
+ }
+ EXPORT_SYMBOL(drm_connector_set_panel_orientation_with_quirk);
+ 
++/**
++ * drm_connector_init_panel_orientation_property -
++ * 	create the connector's panel orientation property
++ *
++ * This function attaches a "panel orientation" property to the connector
++ * and initializes its value to DRM_MODE_PANEL_ORIENTATION_UNKNOWN.
++ *
++ * The value of the property can be set by drm_connector_set_panel_orientation()
++ * or drm_connector_set_panel_orientation_with_quirk() later.
++ *
++ * Returns:
++ * Zero on success, negative errno on failure.
++ */
++int drm_connector_init_panel_orientation_property(
++	struct drm_connector *connector)
++{
++	struct drm_device *dev = connector->dev;
++	struct drm_property *prop;
++
++	prop = drm_property_create_enum(dev, DRM_MODE_PROP_IMMUTABLE,
++			"panel orientation",
++			drm_panel_orientation_enum_list,
++			ARRAY_SIZE(drm_panel_orientation_enum_list));
++	if (!prop)
++		return -ENOMEM;
++
++	dev->mode_config.panel_orientation_property = prop;
++	drm_object_attach_property(&connector->base, prop,
++				   DRM_MODE_PANEL_ORIENTATION_UNKNOWN);
++
++	return 0;
++}
++EXPORT_SYMBOL(drm_connector_init_panel_orientation_property);
++
+ int drm_connector_set_obj_prop(struct drm_mode_object *obj,
+ 				    struct drm_property *property,
+ 				    uint64_t value)
+diff --git a/drivers/gpu/drm/i915/display/icl_dsi.c b/drivers/gpu/drm/i915/display/icl_dsi.c
+index 9282978060b0..5ac4538e4283 100644
+--- a/drivers/gpu/drm/i915/display/icl_dsi.c
++++ b/drivers/gpu/drm/i915/display/icl_dsi.c
+@@ -1903,6 +1903,7 @@ static void icl_dsi_add_properties(struct intel_connector *connector)
+ 
+ 	connector->base.state->scaling_mode = DRM_MODE_SCALE_ASPECT;
+ 
++	drm_connector_init_panel_orientation_property(&connector->base);
+ 	drm_connector_set_panel_orientation_with_quirk(&connector->base,
+ 				intel_dsi_get_panel_orientation(connector),
+ 				connector->panel.fixed_mode->hdisplay,
+diff --git a/drivers/gpu/drm/i915/display/intel_dp.c b/drivers/gpu/drm/i915/display/intel_dp.c
+index a5231ac3443a..f1d664e5abb2 100644
+--- a/drivers/gpu/drm/i915/display/intel_dp.c
++++ b/drivers/gpu/drm/i915/display/intel_dp.c
+@@ -5263,6 +5263,7 @@ static bool intel_edp_init_connector(struct intel_dp *intel_dp,
+ 	intel_panel_setup_backlight(connector, pipe);
+ 
+ 	if (fixed_mode) {
++		drm_connector_init_panel_orientation_property(connector);
+ 		drm_connector_set_panel_orientation_with_quirk(connector,
+ 				dev_priv->vbt.orientation,
+ 				fixed_mode->hdisplay, fixed_mode->vdisplay);
+diff --git a/drivers/gpu/drm/i915/display/vlv_dsi.c b/drivers/gpu/drm/i915/display/vlv_dsi.c
+index 9bee99fe5495..853855482af1 100644
+--- a/drivers/gpu/drm/i915/display/vlv_dsi.c
++++ b/drivers/gpu/drm/i915/display/vlv_dsi.c
+@@ -1632,6 +1632,7 @@ static void vlv_dsi_add_properties(struct intel_connector *connector)
+ 
+ 		connector->base.state->scaling_mode = DRM_MODE_SCALE_ASPECT;
+ 
++		drm_connector_init_panel_orientation_property(&connector->base);
+ 		drm_connector_set_panel_orientation_with_quirk(
+ 				&connector->base,
+ 				intel_dsi_get_panel_orientation(connector),
+diff --git a/include/drm/drm_connector.h b/include/drm/drm_connector.h
+index 1922b278ffad..4396c1c4a5db 100644
+--- a/include/drm/drm_connector.h
++++ b/include/drm/drm_connector.h
+@@ -1696,6 +1696,8 @@ int drm_connector_set_panel_orientation_with_quirk(
+ 	struct drm_connector *connector,
+ 	enum drm_panel_orientation panel_orientation,
+ 	int width, int height);
++int drm_connector_init_panel_orientation_property(
++	struct drm_connector *connector);
+ int drm_connector_attach_max_bpc_property(struct drm_connector *connector,
+ 					  int min, int max);
+ 
+-- 
+2.31.1.818.g46aad6cb9e-goog
 
