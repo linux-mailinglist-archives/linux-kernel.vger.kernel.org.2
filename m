@@ -2,118 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 23381392C5C
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 13:10:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5618D392C5D
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 13:10:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233969AbhE0LLc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 May 2021 07:11:32 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41930 "EHLO mail.kernel.org"
+        id S234048AbhE0LMC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 May 2021 07:12:02 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42016 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232891AbhE0LLa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 May 2021 07:11:30 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5C26C613C3;
-        Thu, 27 May 2021 11:09:55 +0000 (UTC)
+        id S232891AbhE0LL7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 27 May 2021 07:11:59 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2F1F561028;
+        Thu, 27 May 2021 11:10:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1622113795;
-        bh=S50i7V9zKqp9ykst0hBUpLzOjqYDdl+ARgnpmCYzUKo=;
+        s=korg; t=1622113825;
+        bh=M3DIHT756xXhbeiWHhuicNBdTbcwyCz9skDBLtVxm5k=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=AzeNixbI+DBhHFQgy4SwLLSanKMFEHVM1BMqaO84c3N7bNXbOGyjVwBxHoH+BuTPq
-         3jqPbuY+EAo13Wg/hwUw8EXMTZ+lDPh6h9zcbnNaXiBhCVndbC698nG6Kd7Uwq/t8d
-         jkPvwBJ6P2ykWeo1hTy9cl/QmN0MHIi+ea4wwwgg=
-Date:   Thu, 27 May 2021 13:09:53 +0200
+        b=Rw9eANvjxWl1Odcz8PbgicIBK5gDbzfhfAPerFRKhTAgwHAkJfk9WMGaBQWoO39eb
+         PG+CUcrmGQAxWWSe2TG+7BvH0yhVfxhH8Gy28ug2ajgBweAbRIYsH8IHoKytprQw+e
+         OtwbAE9hT7mNWWnyjcOTYohFFGh9mpJD0xj5vB+E=
+Date:   Thu, 27 May 2021 13:10:23 +0200
 From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Swapnil <swocp19@gmail.com>
-Cc:     linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] Fixed kernel code formatting
-Message-ID: <YK9+AXt/XsUh3G1a@kroah.com>
-References: <20210524143741.GA529321@cryptik>
+To:     Michael Ellerman <mpe@ellerman.id.au>
+Cc:     Nathan Lynch <nathanl@linux.ibm.com>,
+        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+        jirislaby@kernel.org
+Subject: Re: [PATCH] powerpc/udbg_hvc: retry putc on -EAGAIN
+Message-ID: <YK9+HyS3zE09iUSe@kroah.com>
+References: <20210514214422.3019105-1-nathanl@linux.ibm.com>
+ <YKer6KPaHDgaWS8k@kroah.com>
+ <87mtsliuzm.fsf@mpe.ellerman.id.au>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210524143741.GA529321@cryptik>
+In-Reply-To: <87mtsliuzm.fsf@mpe.ellerman.id.au>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 24, 2021 at 08:07:41PM +0530, Swapnil wrote:
-> Fixed lines ending with '(' by moving an actual function parameter from
-> the next line to the end of the current line.
+On Sun, May 23, 2021 at 08:51:09PM +1000, Michael Ellerman wrote:
+> Greg KH <gregkh@linuxfoundation.org> writes:
+> > On Fri, May 14, 2021 at 04:44:22PM -0500, Nathan Lynch wrote:
+> >> hvterm_raw_put_chars() calls hvc_put_chars(), which may return -EAGAIN
+> >> when the underlying hcall returns a "busy" status, but udbg_hvc_putc()
+> >> doesn't handle this. When using xmon on a PowerVM guest, this can
+> >> result in incomplete or garbled output when printing relatively large
+> >> amounts of data quickly, such as when dumping the kernel log buffer.
+> >> 
+> >> Call again on -EAGAIN.
+> >> 
+> >> Signed-off-by: Nathan Lynch <nathanl@linux.ibm.com>
+> >> ---
+> >>  drivers/tty/hvc/hvc_vio.c | 2 +-
+> >
+> > Subject line does not match up with this file name.
+> >
+> > Don't you want "tty" and "hvc" in there somewhere?
 > 
-> Signed-off-by: Swapnil <swocp19@gmail.com>
-> ---
->  drivers/staging/emxx_udc/emxx_udc.c | 11 ++++-------
->  1 file changed, 4 insertions(+), 7 deletions(-)
+> It's a powerpc only driver, but I guess the subject should still be
+> "tty: hvc: ..." to match convention.
 > 
-> diff --git a/drivers/staging/emxx_udc/emxx_udc.c b/drivers/staging/emxx_udc/emxx_udc.c
-> index ecc5c9da9027..b6abd3770e81 100644
-> --- a/drivers/staging/emxx_udc/emxx_udc.c
-> +++ b/drivers/staging/emxx_udc/emxx_udc.c
-> @@ -1073,9 +1073,8 @@ static int _nbu2ss_epn_in_pio(struct nbu2ss_udc *udc, struct nbu2ss_ep *ep,
->  		i_word_length = length / sizeof(u32);
->  		if (i_word_length > 0) {
->  			for (i = 0; i < i_word_length; i++) {
-> -				_nbu2ss_writel(
-> -					&preg->EP_REGS[ep->epnum - 1].EP_WRITE,
-> -					p_buf_32->dw);
-> +				_nbu2ss_writel(&preg->EP_REGS[ep->epnum - 1].EP_WRITE,
-> +					       p_buf_32->dw);
->  
->  				p_buf_32++;
->  			}
-> @@ -1225,8 +1224,7 @@ static void _nbu2ss_restert_transfer(struct nbu2ss_ep *ep)
->  		return;
->  
->  	if (ep->epnum > 0) {
-> -		length = _nbu2ss_readl(
-> -			&ep->udc->p_regs->EP_REGS[ep->epnum - 1].EP_LEN_DCNT);
-> +		length = _nbu2ss_readl(&ep->udc->p_regs->EP_REGS[ep->epnum - 1].EP_LEN_DCNT);
->  
->  		length &= EPN_LDATA;
->  		if (length < ep->ep.maxpacket)
-> @@ -1462,8 +1460,7 @@ static void _nbu2ss_epn_set_stall(struct nbu2ss_udc *udc,
->  		for (limit_cnt = 0
->  			; limit_cnt < IN_DATA_EMPTY_COUNT
->  			; limit_cnt++) {
-> -			regdata = _nbu2ss_readl(
-> -				&preg->EP_REGS[ep->epnum - 1].EP_STATUS);
-> +			regdata = _nbu2ss_readl(&preg->EP_REGS[ep->epnum - 1].EP_STATUS);
->  
->  			if ((regdata & EPN_IN_DATA) == 0)
->  				break;
-> -- 
-> 2.25.1
-> 
-> 
+> I was planning to take this via the powerpc tree, but I can drop it if
+> you'd rather take it.
 
-Hi,
+No problem, feel free to take it yourself!
 
-This is the friendly patch-bot of Greg Kroah-Hartman.  You have sent him
-a patch that has triggered this response.  He used to manually respond
-to these common problems, but in order to save his sanity (he kept
-writing the same thing over and over, yet to different people), I was
-created.  Hopefully you will not take offence and will fix the problem
-in your patch and resubmit it so that it can be accepted into the Linux
-kernel tree.
-
-You are receiving this message because of the following common error(s)
-as indicated below:
-
-- You did not write a descriptive Subject: for the patch, allowing Greg,
-  and everyone else, to know what this patch is all about.  Please read
-  the section entitled "The canonical patch format" in the kernel file,
-  Documentation/SubmittingPatches for what a proper Subject: line should
-  look like.
-
-- It looks like you did not use your "real" name for the patch on either
-  the Signed-off-by: line, or the From: line (both of which have to
-  match).  Please read the kernel file, Documentation/SubmittingPatches
-  for how to do this correctly.
-
-If you wish to discuss this problem further, or you have questions about
-how to resolve this issue, please feel free to respond to this email and
-Greg will reply once he has dug out from the pending patches received
-from other developers.
-
-thanks,
-
-greg k-h's patch email bot
+greg k-h
