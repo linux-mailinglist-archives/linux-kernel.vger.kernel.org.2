@@ -2,81 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 06557393343
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 18:12:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2AA4939336F
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 18:14:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237044AbhE0QNk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 May 2021 12:13:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44290 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234509AbhE0QNd (ORCPT
+        id S237306AbhE0QQI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 May 2021 12:16:08 -0400
+Received: from mx08-00178001.pphosted.com ([91.207.212.93]:29456 "EHLO
+        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S237218AbhE0QPA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 May 2021 12:13:33 -0400
-Received: from mail-qk1-x732.google.com (mail-qk1-x732.google.com [IPv6:2607:f8b0:4864:20::732])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C9DBC061760
-        for <linux-kernel@vger.kernel.org>; Thu, 27 May 2021 09:11:59 -0700 (PDT)
-Received: by mail-qk1-x732.google.com with SMTP id c20so1173390qkm.3
-        for <linux-kernel@vger.kernel.org>; Thu, 27 May 2021 09:11:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=1DCYsxPcwgz6wGBXKddPfgeFqjOqmPMV5wFOCxRJ+3A=;
-        b=PngmZ1AInSHpKNoMvNBtIfyeQ/6Llk/gXeRI9Pd0xGn54rwNOD/XdwequEEpKUbM53
-         6VlYrgeQs1Wi1y9TNmxlBivIkc8Si+ODQGVBXt+Ie0XI6nBRrOqUSTLPB2U83Sk0pWju
-         4Rzy6Q6+G5uqk1pkzlP2nb9SxHeLPmPRRS2IsmZT/Yg/cCbcMzATIstA5PS9jp/YNwFb
-         kfvokaxjIB6487ZnmGgCD2xOLe54oPJmjKTpqFjrBnf6WMAhBE3kXD7F6XmsGPQlXIik
-         VmLapHyeddMc5C2ybH8Jcd/IrWAI3N8u6eOXcKxlYY1qIaFgqRT/MiFqZQmMOGuJWA9U
-         zGzg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=1DCYsxPcwgz6wGBXKddPfgeFqjOqmPMV5wFOCxRJ+3A=;
-        b=ublDK9bOQRehtBtki5QcAwYv+L6/DNaxpYyuzJ6dv/xOs/l3Zdn1awhps7tMurqJDQ
-         bk4byesqJSznx2GeRMp25vi2tSnKJyYzQo17RbPsqZz+r0ap41gAzOpswVmLhMIf4ZaV
-         nTHYBhwmt8z4y9DvBjX+U/urJdhZ7F5M0ycEAl4KIOfrlrDNMeHhdMBYr78KWWNEh24R
-         mB0vRPMlVcWrF6xrM9ZbPC2lToGweb2b+FjwV5uXuyYfhX1eLEbHJMEBXDbHM3TccVqi
-         H5EBRkHrzHJDw8bkWO/5daHrbpCRqUbpflhXi3TWR0BgMVMT+cdKE39QBzjgtwvPQsAE
-         faHA==
-X-Gm-Message-State: AOAM531d9VqjWLGoM5hBMCxB7tPxsLHuvwBzkQRgB481psVSL4uoGNnq
-        +dma1wqpZ7G2vGzkEsGnMgPwvULAGHy8NA==
-X-Google-Smtp-Source: ABdhPJxSGGCq2RcvTVfyqdH4MeLuYORIVug/LGCAqFWth8scx61JtGxD+Zd0VUKM5Xo7RbDMK1wHOQ==
-X-Received: by 2002:a37:6645:: with SMTP id a66mr4272666qkc.314.1622131918489;
-        Thu, 27 May 2021 09:11:58 -0700 (PDT)
-Received: from ziepe.ca ([206.223.160.26])
-        by smtp.gmail.com with ESMTPSA id x9sm1587665qto.33.2021.05.27.09.11.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 27 May 2021 09:11:57 -0700 (PDT)
-Received: from jgg by mlx with local (Exim 4.94)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1lmIc0-00Fc4q-Ni; Thu, 27 May 2021 13:11:56 -0300
-Date:   Thu, 27 May 2021 13:11:56 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Javier Martinez Canillas <javierm@redhat.com>
-Cc:     linux-kernel@vger.kernel.org,
-        Alexander Wellbrock <a.wellbrock@mailbox.org>,
-        Jarkko Sakkinen <jarkko@kernel.org>,
-        Peter Huewe <peterhuewe@gmx.de>,
-        Peter Robinson <pbrobinson@gmail.com>,
-        linux-integrity@vger.kernel.org
-Subject: Re: [PATCH] tpm_tis_spi: add missing SPI device ID entries
-Message-ID: <20210527161156.GH1096940@ziepe.ca>
-References: <20210527152352.3835076-1-javierm@redhat.com>
+        Thu, 27 May 2021 12:15:00 -0400
+Received: from pps.filterd (m0046660.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 14RGD6cs000887;
+        Thu, 27 May 2021 18:13:06 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-type; s=selector1;
+ bh=LCxObs1JJa3ITzuaD/aVq/zLo/TMl80lt7ojHZ3IzB4=;
+ b=xmZmy1rFGwT1ZdtLjqXrzY17MuN3xjjX0VY1FItCFhTxWQN+8bu0Fy4tPuJyQiHkeUJG
+ Vv2i8sizcXh2T2wfSnvakFpYznm48Et6S87Z90r1SBTo0jo7xIdh0sVJNXEfN7Q0YLf3
+ +2BC0fKrFVRBhbgLfXGMaAIYqxpEm9pKrD8WYu5Mq19G7xAAzHZE0KQt9OXALQKW4nhc
+ MpQpEYy6eiv2JEUYwhje9e5p889SzjAtLCCgDky4j3/GHHMO9yqUmBkAWvTMyiIBLxXs
+ xUxZUuMh/W8epTMcsHUzZzKEDVeLUJtBO4XUcQ43YPuNf+DXMgsVEF/4oZMfnZch8q6Z zQ== 
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com with ESMTP id 38t7k3av0a-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 27 May 2021 18:13:06 +0200
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 1A73B10002A;
+        Thu, 27 May 2021 18:13:03 +0200 (CEST)
+Received: from Webmail-eu.st.com (sfhdag2node3.st.com [10.75.127.6])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id F1C29236565;
+        Thu, 27 May 2021 18:13:02 +0200 (CEST)
+Received: from localhost (10.75.127.45) by SFHDAG2NODE3.st.com (10.75.127.6)
+ with Microsoft SMTP Server (TLS) id 15.0.1497.2; Thu, 27 May 2021 18:13:02
+ +0200
+From:   <patrice.chotard@foss.st.com>
+To:     Mark Brown <broonie@kernel.org>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Boris Brezillon <boris.brezillon@collabora.com>,
+        <linux-mtd@lists.infradead.org>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        <linux-spi@vger.kernel.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     <patrice.chotard@foss.st.com>, <christophe.kerello@foss.st.com>
+Subject: [PATCH v3 0/3] mtd: spinand: add SPI-NAND MTD resume handler
+Date:   Thu, 27 May 2021 18:12:49 +0200
+Message-ID: <20210527161252.16620-1-patrice.chotard@foss.st.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210527152352.3835076-1-javierm@redhat.com>
+Content-Type: text/plain
+X-Originating-IP: [10.75.127.45]
+X-ClientProxiedBy: SFHDAG2NODE2.st.com (10.75.127.5) To SFHDAG2NODE3.st.com
+ (10.75.127.6)
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
+ definitions=2021-05-27_09:2021-05-27,2021-05-27 signatures=0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 27, 2021 at 05:23:52PM +0200, Javier Martinez Canillas wrote:
-> The SPI core always reports a "MODALIAS=spi:<foo>", even if the device was
-> registered via OF. This means that this module won't auto-load if a DT has
-> for example has a node with a compatible "infineon,slb9670" string.
+From: Patrice Chotard <patrice.chotard@foss.st.com>
 
-Really? Then why do we have of_tis_spi_match and why does spi have an
-of_match_table?
+Changes in v3:
+  - Add spinand_read_cfg() helper 
+  - Add spinand_read_cfg() call to repopulate cache during resume
+  - Split v2 patch in 3 patches
 
-Jason
+Changes in v2:
+  - Add helper spinand_block_unlock().
+  - Add spinand_ecc_enable() call.
+  - Remove some dev_err().
+  - Fix commit's title and message.
+
+Patrice Chotard (3):
+  mtd: spinand: Add spinand_block_unlock() helper
+  mtd: spinand: add spinand_read_cfg() helper
+  mtd: spinand: add SPI-NAND MTD resume handler
+
+ drivers/mtd/nand/spi/core.c | 90 +++++++++++++++++++++++++++++--------
+ 1 file changed, 71 insertions(+), 19 deletions(-)
+
+-- 
+2.17.1
+
