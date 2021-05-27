@@ -2,72 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 775C839332F
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 18:09:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 515A2393335
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 18:09:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235391AbhE0QKt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 May 2021 12:10:49 -0400
-Received: from ms.lwn.net ([45.79.88.28]:48144 "EHLO ms.lwn.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233839AbhE0QKs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 May 2021 12:10:48 -0400
-Received: from localhost (unknown [IPv6:2601:281:8300:104d::5f6])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ms.lwn.net (Postfix) with ESMTPSA id C28A02B7;
-        Thu, 27 May 2021 16:09:14 +0000 (UTC)
-DKIM-Filter: OpenDKIM Filter v2.11.0 ms.lwn.net C28A02B7
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lwn.net; s=20201203;
-        t=1622131754; bh=SHD3f2phNx3RQy0BeoJkPi5F8ovNBRDQqpw2shszU+c=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=nW/vDELVdwjFjxZ7Ho+auafF7LPov1jpZI4DERbqsJkSwLGUxF3paV8KaJQhxr2Ef
-         I2Zev7p1O7YnJgc6NtZ41RFYCKRpjjUr+jSK8Ot5geMd0xptK+owkq0OKzWqSNIrjn
-         4Mdt6pSQEi6rXqxE33rD/+xjuoj255pp+XMVJAJtHBbfMeSbWMLoaYQO5AxRyOQumk
-         UesCVTzq4DQBdEo+x8SN30IY9TqIh8BNW4VnTPu2Od9rDlI20jYn4dV5p+eRlscVfP
-         HL9/1yXbGifkclso2Ssbzutg+uVnjEhrgtZffTRpn3XsJgKaAwLsZrzo9cj6SToyLd
-         LJO/EzoBVbciw==
-From:   Jonathan Corbet <corbet@lwn.net>
-To:     Jonathan Cameron <jic23@kernel.org>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Cc:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        linux-kernel@vger.kernel.org, Lars-Peter Clausen <lars@metafoo.de>,
-        linux-iio@vger.kernel.org
-Subject: Re: [PATCH 0/2] doc: add a couple fixups for IIO ABI files
-In-Reply-To: <20210526175908.42db03a0@jic23-huawei>
-References: <cover.1621944866.git.mchehab+huawei@kernel.org>
- <20210526175908.42db03a0@jic23-huawei>
-Date:   Thu, 27 May 2021 10:09:14 -0600
-Message-ID: <87zgwg2m6t.fsf@meer.lwn.net>
+        id S235665AbhE0QLX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 May 2021 12:11:23 -0400
+Received: from cloud48395.mywhc.ca ([173.209.37.211]:53278 "EHLO
+        cloud48395.mywhc.ca" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233839AbhE0QLV (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 27 May 2021 12:11:21 -0400
+Received: from modemcable064.203-130-66.mc.videotron.ca ([66.130.203.64]:58506 helo=[192.168.1.179])
+        by cloud48395.mywhc.ca with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <olivier@trillion01.com>)
+        id 1lmIZv-0001O5-GO; Thu, 27 May 2021 12:09:47 -0400
+Message-ID: <6b67bd40815f779059f7f3d3ad22f638789452b1.camel@trillion01.com>
+Subject: Re: [PATCH] io_uring: handle signals before letting io-worker exit
+From:   Olivier Langlois <olivier@trillion01.com>
+To:     Jens Axboe <axboe@kernel.dk>,
+        Pavel Begunkov <asml.silence@gmail.com>,
+        io-uring@vger.kernel.org, linux-kernel@vger.kernel.org
+Date:   Thu, 27 May 2021 12:09:46 -0400
+In-Reply-To: <7e10ffd2-5948-3869-b0dc-fd81d693fe33@kernel.dk>
+References: <60ae94d1.1c69fb81.94f7a.2a35SMTPIN_ADDED_MISSING@mx.google.com>
+         <3d1bd9e2-b711-0aac-628e-89b95ff8dbc3@kernel.dk>
+         <1e5c308bd25055ac8a899d40f00df08fc755e066.camel@trillion01.com>
+         <7e10ffd2-5948-3869-b0dc-fd81d693fe33@kernel.dk>
+Organization: Trillion01 Inc
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.40.1 
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Transfer-Encoding: 8bit
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - cloud48395.mywhc.ca
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - trillion01.com
+X-Get-Message-Sender-Via: cloud48395.mywhc.ca: authenticated_id: olivier@trillion01.com
+X-Authenticated-Sender: cloud48395.mywhc.ca: olivier@trillion01.com
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Jonathan Cameron <jic23@kernel.org> writes:
+On Thu, 2021-05-27 at 09:30 -0600, Jens Axboe wrote:
+> > > 
+> > Jens,
+> > 
+> > You are 100% correct. In fact, this is the same problem for ALL
+> > currently existing and future io threads. Therefore, I start to
+> > think
+> > that the right place for the fix might be straight into
+> > do_exit()...
+> 
+> That is what I was getting at. To avoid poluting do_exit() with it, I
+> think it'd be best to add an io_thread_exit() that simply does:
+> 
+> void io_thread_exit(void)
+> {
+>         if (signal_pending(current)) {
+>                 struct ksignal ksig;
+>                 get_signal(&ksig);
+>         }
+>         do_exit(0);
+> }
+> 
+> and convert the do_exit() calls in io_uring/io-wq to io_thread_exit()
+> instead.
+> 
+IMHO, that would be an acceptable compromise because it does fix my
+problem. However, I am of the opinion that it wouldn't be poluting
+do_exit() and would in fact be the right place to do it considering
+that create_io_thread() is in kernel and theoritically, anyone can call
+it to create an io_thread and would be susceptible to get bitten by the
+exact same problem and would have to come up with a similar solution if
+it is not addressed directly by the kernel.
 
-> On Tue, 25 May 2021 14:23:51 +0200
-> Mauro Carvalho Chehab <mchehab+huawei@kernel.org> wrote:
->
->> Patch 1 was already submitted as patch 10/10 on this series:
->> 	https://lore.kernel.org/linux-doc/87wnrtnpko.fsf@meer.lwn.net/
->> 
->> However, it generated a new warning, due to a separate issue.
->> 
->> So, resend it together with a warning fix patch.
->> 
->> As these patches are independent from the other ones, I guess it
->> can either be applied via IIO or via docs tree, whatever works
->> best for the doc and IIO maintainers.
->> So, I should leave such decision to Jonathan & Jonathan ;-)
->
-> Either works for me, but on basis I got here first.
->
-> Acked-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
->
-> Jon, if you'd prefer I picked these up, then let me know.
+Also, since I have submitted the patch, I have made the following
+realization:
 
-I've applied them, thanks; I took the liberty of fixing the spelling of
-"specify" in the second one :)
+I got bitten by the problem because of a race condition between the io-
+mgr thread and its io-wrks threads for processing their pending SIGKILL
+and the proposed patch does correct my problem.
 
-jon
+The issue would have most likely been buried by 5.13 io-mgr removal...
+
+BUT, even the proposed patch isn't 100% perfect. AFAIK, it is still
+possible, but very unlikely, to get a signal between calling
+signal_pending() and do_exit().
+
+It might be possible to implement the solution and be 100% correct all
+the time by doing it inside do_exit()... I am currently eyeing
+exit_signals() as a potential good site for the patch...
+
+
