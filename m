@@ -2,154 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6746439296E
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 10:22:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 807FD392977
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 10:23:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235391AbhE0IXv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 May 2021 04:23:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48774 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235396AbhE0IXn (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 May 2021 04:23:43 -0400
-Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23BC0C061574
-        for <linux-kernel@vger.kernel.org>; Thu, 27 May 2021 01:22:09 -0700 (PDT)
-Received: by mail-wr1-x430.google.com with SMTP id n4so3804660wrw.3
-        for <linux-kernel@vger.kernel.org>; Thu, 27 May 2021 01:22:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=7AhqvpsgmWy2utZlqk5NzWiQ2z3M3gpksG7TnXtqeGI=;
-        b=luW6ubII76vBnT2s6nkHUfGzZJWQrjTCwJ5KYrMuaTV9rpuj7v1ybUL2SylCnFcIpb
-         //Gw6xZ3ys9MsL907hsknXI/N5rYDjmwpa3r6fLy8auZCoJFLQiIYVKrGHHVGKg8q5Xg
-         tl/MKTR59m6QGA/pY4SnvtHu9QXUPaEhC+PmeUyzHmRUezJF5j1IRwe9aFJ9wnSpUx0H
-         IogYsSDK+vO7mLvGPL1i1la00sgwWp1KNW5W/1iqgvC1uF5zZhh+g8yPBPyY7hYm0gDZ
-         LpIQE2oGSObRBHBNqEEjieGKSwk0lNKJXvhrIHe9VOaBZ46cv32/Asd0r3MX6GZNjm/o
-         qQaw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=7AhqvpsgmWy2utZlqk5NzWiQ2z3M3gpksG7TnXtqeGI=;
-        b=BpvLH32fn3+4DdfYWRby7hm1ZImvoip39m/Sr8Y/x2nP+QWVgM8SBGpjBcguynBouC
-         vhqB3NY4BNvkMdVfzo9Vol3u2PGEfYlF2E22DfK8UdR0xdZ+JqrBvCU+5noCV1Zecy33
-         HBml7ZdmPg67B+B/0K2UaZvJpldyQjGrlfwnzbpMbf29CGFPH+VG8tnoMkOjUurxn5QK
-         WMCh+0MZrd9VHhOEEf5VjNDjBIF3EVGJTaw2C0JBNcDxPDkuxxrXSmIlabeOYOcyik2E
-         pXdXgMSTAI5V48c3XSc+cuU0NbaD2Coj7vGRAxJ10rf3ilVsxtmEkuqRsaC5flwfRcrK
-         xd3Q==
-X-Gm-Message-State: AOAM531sVQixV/1Rg5RaeAWlOJLR+sZEwKplfWddn+1ptP10ughU6Xb6
-        jqNdcDdh2oeBYq8D67RPFV0gYwuyYthd3RUNitZ+/A==
-X-Google-Smtp-Source: ABdhPJxPCQalwyeBkXjY/Yb/DJyH/zBayTrgJ3+jS7bW8/5z88RmZqOeU6CNi0ikb2rBvRbsuE4Q+xDChb4Du7thstk=
-X-Received: by 2002:a05:6000:1147:: with SMTP id d7mr2067742wrx.302.1622103727662;
- Thu, 27 May 2021 01:22:07 -0700 (PDT)
+        id S235424AbhE0IYy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 May 2021 04:24:54 -0400
+Received: from mga02.intel.com ([134.134.136.20]:37972 "EHLO mga02.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235359AbhE0IYx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 27 May 2021 04:24:53 -0400
+IronPort-SDR: Lhi7fOBKCE7Zu6qrkAjKI53zu6LAETiA2EyJT6noTxi/ju0SfQReSgiLtLucNPrAT65AJwFJSe
+ oHDE/KH9KO+Q==
+X-IronPort-AV: E=McAfee;i="6200,9189,9996"; a="189799606"
+X-IronPort-AV: E=Sophos;i="5.82,334,1613462400"; 
+   d="scan'208";a="189799606"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 May 2021 01:23:19 -0700
+IronPort-SDR: 6Dbe1S41vi/PfqU5I9/mmPBexyuLn5xnamuBsUggtOZavmdxnAcz9zbcSQ8VReaaTGOg41WoPD
+ zrfDMfkirZjg==
+X-IronPort-AV: E=Sophos;i="5.82,334,1613462400"; 
+   d="scan'208";a="477387908"
+Received: from shao2-debian.sh.intel.com (HELO [10.239.13.11]) ([10.239.13.11])
+  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 May 2021 01:23:17 -0700
+Subject: Re: [kbuild-all] Re: [PATCH v8 4/4] arm64: dts: mt8192: add spmi node
+To:     Hsin-hsiung Wang <hsin-hsiung.wang@mediatek.com>,
+        kernel test robot <lkp@intel.com>
+Cc:     Stephen Boyd <sboyd@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        kbuild-all@lists.01.org, clang-built-linux@googlegroups.com,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, srv_heupstream@mediatek.com,
+        Project_Global_Chrome_Upstream_Group@mediatek.com
+References: <1622025344-31888-5-git-send-email-hsin-hsiung.wang@mediatek.com>
+ <202105270021.c336cIqx-lkp@intel.com> <1622081330.22138.0.camel@mtksdaap41>
+From:   Rong Chen <rong.a.chen@intel.com>
+Message-ID: <d9a87eca-ae28-8da4-d78e-ae2602201648@intel.com>
+Date:   Thu, 27 May 2021 16:22:03 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.6.1
 MIME-Version: 1.0
-References: <20210526081112.3652290-1-davidgow@google.com> <YK4O1DkP1/DKzVU5@elver.google.com>
-In-Reply-To: <YK4O1DkP1/DKzVU5@elver.google.com>
-From:   David Gow <davidgow@google.com>
-Date:   Thu, 27 May 2021 16:21:56 +0800
-Message-ID: <CABVgOS=Tw1NkUfh1pDfo-3stAKqg_Pt0EtM7+rH2Qk6EUw2+Vw@mail.gmail.com>
-Subject: Re: [PATCH 1/3] kunit: Support skipped tests
-To:     Marco Elver <elver@google.com>
-Cc:     Brendan Higgins <brendanhiggins@google.com>,
-        Alan Maguire <alan.maguire@oracle.com>,
-        Shuah Khan <skhan@linuxfoundation.org>,
-        KUnit Development <kunit-dev@googlegroups.com>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Alexander Potapenko <glider@google.com>,
-        Andrey Konovalov <andreyknvl@gmail.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        kasan-dev <kasan-dev@googlegroups.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <1622081330.22138.0.camel@mtksdaap41>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 26, 2021 at 5:03 PM Marco Elver <elver@google.com> wrote:
->
-> On Wed, May 26, 2021 at 01:11AM -0700, David Gow wrote:
-> > The kunit_mark_skipped() macro marks the current test as "skipped", with
-> > the provided reason. The kunit_skip() macro will mark the test as
-> > skipped, and abort the test.
-> >
-> > The TAP specification supports this "SKIP directive" as a comment after
-> > the "ok" / "not ok" for a test. See the "Directives" section of the TAP
-> > spec for details:
-> > https://testanything.org/tap-specification.html#directives
-> >
-> > The 'success' field for KUnit tests is replaced with a kunit_status
-> > enum, which can be SUCCESS, FAILURE, or SKIPPED, combined with a
-> > 'status_comment' containing information on why a test was skipped.
-> >
-> > A new 'kunit_status' test suite is added to test this.
-> >
-> > Signed-off-by: David Gow <davidgow@google.com>
-> [...]
-> >  include/kunit/test.h   | 68 ++++++++++++++++++++++++++++++++++++++----
-> >  lib/kunit/kunit-test.c | 42 +++++++++++++++++++++++++-
-> >  lib/kunit/test.c       | 51 ++++++++++++++++++-------------
-> >  3 files changed, 134 insertions(+), 27 deletions(-)
->
-> Very nice, thank you.
->
->         Tested-by: Marco Elver <elver@google.com>
->
-> , with the below changes to test_kasan.c. If you would like an immediate
-> user of kunit_skip(), please feel free to add the below patch to your
-> series.
->
-> Thanks,
-> -- Marco
->
+Hi Hsin-Hsiung,
 
-Thanks! I'll add this to the next version.
+Thanks for the clarification, the bot can't parse the previous patchset 
+from a link,
+but can get the base from '--base' option in 
+https://git-scm.com/docs/git-format-patch.
 
-Cheers,
--- David
+Best Regards,
+Rong Chen
 
-> ------ >8 ------
+On 5/27/21 10:08 AM, Hsin-hsiung Wang wrote:
+> Hi, Sirs
+> Thanks for the review.
+> This series is based on Chun-Jie's patches[1].
 >
-> From: Marco Elver <elver@google.com>
-> Date: Wed, 26 May 2021 10:43:12 +0200
-> Subject: [PATCH] kasan: test: make use of kunit_skip()
+> [1]
+> https://patchwork.kernel.org/project/linux-mediatek/list/?series=488239
 >
-> Make use of the recently added kunit_skip() to skip tests, as it permits
-> TAP parsers to recognize if a test was deliberately skipped.
->
-> Signed-off-by: Marco Elver <elver@google.com>
-> ---
->  lib/test_kasan.c | 12 ++++--------
->  1 file changed, 4 insertions(+), 8 deletions(-)
->
-> diff --git a/lib/test_kasan.c b/lib/test_kasan.c
-> index cacbbbdef768..0a2029d14c91 100644
-> --- a/lib/test_kasan.c
-> +++ b/lib/test_kasan.c
-> @@ -111,17 +111,13 @@ static void kasan_test_exit(struct kunit *test)
->  } while (0)
->
->  #define KASAN_TEST_NEEDS_CONFIG_ON(test, config) do {                  \
-> -       if (!IS_ENABLED(config)) {                                      \
-> -               kunit_info((test), "skipping, " #config " required");   \
-> -               return;                                                 \
-> -       }                                                               \
-> +       if (!IS_ENABLED(config))                                        \
-> +               kunit_skip((test), "Test requires " #config "=y");      \
->  } while (0)
->
->  #define KASAN_TEST_NEEDS_CONFIG_OFF(test, config) do {                 \
-> -       if (IS_ENABLED(config)) {                                       \
-> -               kunit_info((test), "skipping, " #config " enabled");    \
-> -               return;                                                 \
-> -       }                                                               \
-> +       if (IS_ENABLED(config))                                         \
-> +               kunit_skip((test), "Test requires " #config "=n");      \
->  } while (0)
->
->  static void kmalloc_oob_right(struct kunit *test)
-> --
-> 2.31.1.818.g46aad6cb9e-goog
->
+> On Thu, 2021-05-27 at 00:46 +0800, kernel test robot wrote:
+>> Hi Hsin-Hsiung,
+>>
+>> Thank you for the patch! Yet something to improve:
+>>
+>> [auto build test ERROR on robh/for-next]
+>> [also build test ERROR on mediatek/for-next linus/master v5.13-rc3 next-20210526]
+>> [If your patch is applied to the wrong git tree, kindly drop us a note.
+>> And when submitting patch, we suggest to use '--base' as documented in
+>> https://git-scm.com/docs/git-format-patch]
+>>
+>> url:    https://github.com/0day-ci/linux/commits/Hsin-Hsiung-Wang/Add-SPMI-support-for-Mediatek-MT6873-8192-SoC-IC/20210526-183803
+>> base:   https://git.kernel.org/pub/scm/linux/kernel/git/robh/linux.git for-next
+>> config: arm64-randconfig-r016-20210526 (attached as .config)
+>> compiler: clang version 13.0.0 (https://github.com/llvm/llvm-project 99155e913e9bad5f7f8a247f8bb3a3ff3da74af1)
+>> reproduce (this is a W=1 build):
+>>          wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+>>          chmod +x ~/bin/make.cross
+>>          # install arm64 cross compiling tool for clang build
+>>          # apt-get install binutils-aarch64-linux-gnu
+>>          # https://github.com/0day-ci/linux/commit/423b4a1660f5157dbac566f9c498c61927f09022
+>>          git remote add linux-review https://github.com/0day-ci/linux
+>>          git fetch --no-tags linux-review Hsin-Hsiung-Wang/Add-SPMI-support-for-Mediatek-MT6873-8192-SoC-IC/20210526-183803
+>>          git checkout 423b4a1660f5157dbac566f9c498c61927f09022
+>>          # save the attached .config to linux build tree
+>>          COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross ARCH=arm64
+>>
+>> If you fix the issue, kindly add following tag as appropriate
+>> Reported-by: kernel test robot <lkp@intel.com>
+>>
+>> All errors (new ones prefixed by >>):
+>>
+>>>> Error: arch/arm64/boot/dts/mediatek/mt8192.dtsi:299.24-25 syntax error
+>>     FATAL ERROR: Unable to parse input tree
+>>
+>> ---
+>> 0-DAY CI Kernel Test Service, Intel Corporation
+>> https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+> _______________________________________________
+> kbuild-all mailing list -- kbuild-all@lists.01.org
+> To unsubscribe send an email to kbuild-all-leave@lists.01.org
+
