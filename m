@@ -2,84 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 031C4393178
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 16:51:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 40B3539317B
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 16:52:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236557AbhE0OxX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 May 2021 10:53:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53984 "EHLO
+        id S236564AbhE0Oxk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 May 2021 10:53:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54072 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235134AbhE0OxP (ORCPT
+        with ESMTP id S235254AbhE0Oxj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 May 2021 10:53:15 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58691C061574;
-        Thu, 27 May 2021 07:51:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=npPt/wweDD4gAB4M4/7EGJsgjBLetKg+ztbe714ojBI=; b=OFjWhLUkQrqv2SnNjS8xOO9wI2
-        AMs5Ygrsa+ZgSvyCvnHpZwTIX8sH7eQSlZyqVAaMthIQ1449j49eiH+OiNIIEE5ivHZbK8EpsvZvn
-        kDeWsEa6amY3VJaPkCsu6OQx0mzSAeG+/wh3Tshe5rTa2dPMYqvEegtbQy/i8kximwzXQiK1nw4QF
-        TF77C+MAPmLPBWcNmdEq9Q6+z1el34oN6iJXvxpLlaFhJkITsoA4hd6PAQmbcvQtAsCZiG4m6nz5Q
-        01RKYnYeXcPaI3FjTO2EexNqa5X/Y09r5E9+OGyfDW8M0mvoFIMT/XHPrZZ3ys7psTIyzrjNQR8a3
-        AwyAB1PQ==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1lmHLg-005dw6-4v; Thu, 27 May 2021 14:51:03 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 1076B300221;
-        Thu, 27 May 2021 16:50:59 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id E9AFA2018A4FC; Thu, 27 May 2021 16:50:58 +0200 (CEST)
-Date:   Thu, 27 May 2021 16:50:58 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Will Deacon <will@kernel.org>
-Cc:     linux-arm-kernel@lists.infradead.org, linux-arch@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Marc Zyngier <maz@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Morten Rasmussen <morten.rasmussen@arm.com>,
-        Qais Yousef <qais.yousef@arm.com>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Quentin Perret <qperret@google.com>, Tejun Heo <tj@kernel.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        kernel-team@android.com
-Subject: Re: [PATCH v7 16/22] sched: Defer wakeup in ttwu() for unschedulable
- frozen tasks
-Message-ID: <YK+x0tA/Xlm+N/vw@hirez.programming.kicks-ass.net>
-References: <20210525151432.16875-1-will@kernel.org>
- <20210525151432.16875-17-will@kernel.org>
- <YK+oSPlNQJKiMYYc@hirez.programming.kicks-ass.net>
- <YK+tV/DTNlpGJ7J8@hirez.programming.kicks-ass.net>
+        Thu, 27 May 2021 10:53:39 -0400
+Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C8CDC061574
+        for <linux-kernel@vger.kernel.org>; Thu, 27 May 2021 07:52:03 -0700 (PDT)
+Received: by mail-lf1-x135.google.com with SMTP id j10so450623lfb.12
+        for <linux-kernel@vger.kernel.org>; Thu, 27 May 2021 07:52:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=+jqOWEVHuZGkfA6MD8Z68F0r2FOE/7+7mfKMuVI/ccg=;
+        b=cJoEDb4CQ/mHG5hJsPhdH+w76PE7kgmJxWhbPuRqPqvqTaEib07YsiwAXxRgaLuM0+
+         /bKteq6nUzAEouzLWj9/mJJCmYoGxyisr2QDmn5KYOcDs0m4/dwPxdSsczE7qsZsc8K0
+         U3oAGI1C8St8Aalf/NABCefTVRYf6G3kYRaUeWDu8G5pLRxzT0Hv4U9yWMI8kOE8vZd5
+         VGU7U9oSdwVl8I2Qv6PmTHaVqzWJm7tjB3YYFJkOqzD3Nrz6poXMtRbx+ICPPy+9zPsA
+         TjotsHzY9phpNO1B2bvHVe22wACZlNtJBsBnufuS3agHuoZ3BDjmLeQSH5JT0ryyChOF
+         MpPQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=+jqOWEVHuZGkfA6MD8Z68F0r2FOE/7+7mfKMuVI/ccg=;
+        b=nm6QWCrC3/qljYTktbgvRCFjhDlak0kAtz6LvRw7nUxP0q0Hc4QhRNhB1HrGxzKPfF
+         lxd2P6+5zjVRfYCL74oP/DI+eORHHYjZcxMYRon7k+YXfxsHzwDo6HZRglizVyn+g3PP
+         fsbtKGP97wC/khzDV0gHoMqWG8h6lScFB7a7Fwxol9K7ZXbwEPj3X+H4HQXF6hVb2LfT
+         c8Ev0rtnk31tAV4F6lL/ilyRREvj36OPO9GQx0BIDXqbiXlaZdpcM8Gi4jR7PtKzqKWD
+         lVPsvy5du0tlSi6F1w7xE85vIoph4yaOOwLWf4TFRANONtkK32aOVSWMSmspnYQxho6N
+         5Gcg==
+X-Gm-Message-State: AOAM532XVsPyMQOH8PluMVwGI0I4SZiR/JzP8NLjXsvHGo7mrw8ejrsL
+        ie2WQrxDcRuSipm4SQp1uenB6jV6qMBu8bMNbp2oRg==
+X-Google-Smtp-Source: ABdhPJwOz7U2P9wcNokB7S5LqfRAKa5kO1E7gucgX+G5ePQajC2FmgoKGqJaaeDH5utID4W/FYcBSXnMCsWi5qkepiY=
+X-Received: by 2002:a05:6512:1185:: with SMTP id g5mr2652587lfr.586.1622127121750;
+ Thu, 27 May 2021 07:52:01 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YK+tV/DTNlpGJ7J8@hirez.programming.kicks-ass.net>
+References: <20210519162409.3755679-1-fparent@baylibre.com> <20210519162409.3755679-2-fparent@baylibre.com>
+In-Reply-To: <20210519162409.3755679-2-fparent@baylibre.com>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Thu, 27 May 2021 16:51:50 +0200
+Message-ID: <CACRpkdZ70OcbgyFN2cQtLgsXFCTsvstsrBYYt3UY6Wc=NbXuag@mail.gmail.com>
+Subject: Re: [PATCH 2/3] pinctrl: mediatek: don't hardcode mode encoding in
+ common code
+To:     Fabien Parent <fparent@baylibre.com>
+Cc:     Sean Wang <sean.wang@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        mkorpershoek@baylibre.com,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 27, 2021 at 04:31:51PM +0200, Peter Zijlstra wrote:
-> @@ -149,7 +144,7 @@ void __thaw_task(struct task_struct *p)
->  
->  	spin_lock_irqsave(&freezer_lock, flags);
->  	if (frozen(p))
-> -		wake_up_process(p);
-> +		wake_up_state(p, TASK_FROZEN);
+On Wed, May 19, 2021 at 6:24 PM Fabien Parent <fparent@baylibre.com> wrote:
 
-Possibly, that wants | TASK_NORMAL added.
+> MT8365 encode the pins mode differently than other
+> MTK pinctrl drivers that use the PINCTRL_MTK common code.
+>
+> Add 3 new fields in mtk_pinctrl_devdata in order to store how
+> pin modes are encoded into the register. At the
+> same time update all the pinctrl driver that depends on
+> CONFIG_PINCTRL_MTK.
+>
+> Signed-off-by: Fabien Parent <fparent@baylibre.com>
 
->  	spin_unlock_irqrestore(&freezer_lock, flags);
->  }
+Patch applied.
+
+Yours,
+Linus Walleij
