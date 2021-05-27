@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 31CE039290A
+	by mail.lfdr.de (Postfix) with ESMTP id 7B02239290B
 	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 09:56:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235262AbhE0H5d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 May 2021 03:57:33 -0400
-Received: from mga05.intel.com ([192.55.52.43]:39420 "EHLO mga05.intel.com"
+        id S235179AbhE0H5f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 May 2021 03:57:35 -0400
+Received: from mga05.intel.com ([192.55.52.43]:39423 "EHLO mga05.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233375AbhE0H5K (ORCPT <rfc822;Linux-kernel@vger.kernel.org>);
-        Thu, 27 May 2021 03:57:10 -0400
-IronPort-SDR: PEst/Ct3eayDBzJSZIaq1k5ExgjS+9ghklmNEcgG47PR3NbQl3ZmVRBsiF9L5MaBvnCfn+6gNK
- G9VxDVd4UQeQ==
-X-IronPort-AV: E=McAfee;i="6200,9189,9996"; a="288262852"
+        id S235114AbhE0H5M (ORCPT <rfc822;Linux-kernel@vger.kernel.org>);
+        Thu, 27 May 2021 03:57:12 -0400
+IronPort-SDR: 3xaUHKIpK67nrAyA3zxn7MNxS4JO6MsxEhvx1N/sJSJLSnzCQuyFbZGyKTC1oNrbLwKckREmt7
+ FUMHkpfniCiw==
+X-IronPort-AV: E=McAfee;i="6200,9189,9996"; a="288262857"
 X-IronPort-AV: E=Sophos;i="5.82,334,1613462400"; 
-   d="scan'208";a="288262852"
+   d="scan'208";a="288262857"
 Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 May 2021 00:54:50 -0700
-IronPort-SDR: CEAB2tbHsmbXE+gtCiJ2IwoLMjtNAUApqrzWeCXUOtUR0O6qs3LKZOJoUnrLCFZ7gcyVXXHmVy
- /HvbA9l6Q0XQ==
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 May 2021 00:54:52 -0700
+IronPort-SDR: KILY9+EQ/1nTzgMKEPk3nS6q84zn6AVYFZvz/lXHXQ7L85eLlUaSTCVs/uvAc5FlGunFM+dBWZ
+ TVere13ufnTg==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.82,334,1613462400"; 
-   d="scan'208";a="547586604"
+   d="scan'208";a="547586621"
 Received: from kbl-ppc.sh.intel.com ([10.239.159.163])
-  by fmsmga001.fm.intel.com with ESMTP; 27 May 2021 00:54:48 -0700
+  by fmsmga001.fm.intel.com with ESMTP; 27 May 2021 00:54:50 -0700
 From:   Jin Yao <yao.jin@linux.intel.com>
 To:     acme@kernel.org, jolsa@kernel.org, peterz@infradead.org,
         mingo@redhat.com, alexander.shishkin@linux.intel.com
 Cc:     Linux-kernel@vger.kernel.org, ak@linux.intel.com,
         kan.liang@intel.com, yao.jin@intel.com,
         Jin Yao <yao.jin@linux.intel.com>
-Subject: [PATCH v2 7/8] perf mem: Disable 'mem-loads-aux' group before reporting
-Date:   Thu, 27 May 2021 08:16:09 +0800
-Message-Id: <20210527001610.10553-8-yao.jin@linux.intel.com>
+Subject: [PATCH v2 8/8] perf c2c: Support record for hybrid platform
+Date:   Thu, 27 May 2021 08:16:10 +0800
+Message-Id: <20210527001610.10553-9-yao.jin@linux.intel.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20210527001610.10553-1-yao.jin@linux.intel.com>
 References: <20210527001610.10553-1-yao.jin@linux.intel.com>
@@ -41,80 +41,108 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-For some platforms, such as Alderlake, the 'mem-loads' event is required
-to use together with 'mem-loads-aux' within a group and 'mem-loads-aux'
-must be the group leader. Now we disable this group before reporting
-because 'mem-loads-aux' is just an auxiliary event. It doesn't carry
-any valid memory load result. If we show the 'mem-loads-aux' +
-'mem-loads' as a group in report, it needs many of changes but they
-are totally unnecessary.
+Support 'perf c2c record' for hybrid platform. On hybrid platform,
+such as Alderlake, when executing 'perf c2c record', it actually calls:
+
+record -W -d --phys-data --sample-cpu
+-e {cpu_core/mem-loads-aux/,cpu_core/mem-loads,ldlat=30/}:P
+-e cpu_atom/mem-loads,ldlat=30/P
+-e cpu_core/mem-stores/P
+-e cpu_atom/mem-stores/P
 
 Signed-off-by: Jin Yao <yao.jin@linux.intel.com>
 ---
 v2:
- - New in v2.
+ - For hybrid, rec_argc = argc + 11 * perf_pmu__hybrid_pmu_num().
+ - Directly 'free(rec_tmp[i])', don't need to check NULL.
 
- tools/perf/builtin-report.c |  2 ++
- tools/perf/util/evlist.c    | 25 +++++++++++++++++++++++++
- tools/perf/util/evlist.h    |  1 +
- 3 files changed, 28 insertions(+)
+ tools/perf/builtin-c2c.c | 40 +++++++++++++++++++++++-----------------
+ 1 file changed, 23 insertions(+), 17 deletions(-)
 
-diff --git a/tools/perf/builtin-report.c b/tools/perf/builtin-report.c
-index 36f9ccfeb38a..bc5c393021dc 100644
---- a/tools/perf/builtin-report.c
-+++ b/tools/perf/builtin-report.c
-@@ -934,6 +934,8 @@ static int __cmd_report(struct report *rep)
- 		return ret;
+diff --git a/tools/perf/builtin-c2c.c b/tools/perf/builtin-c2c.c
+index a4fd375acdd1..6dea37f141b2 100644
+--- a/tools/perf/builtin-c2c.c
++++ b/tools/perf/builtin-c2c.c
+@@ -42,6 +42,8 @@
+ #include "ui/ui.h"
+ #include "ui/progress.h"
+ #include "../perf.h"
++#include "pmu.h"
++#include "pmu-hybrid.h"
+ 
+ struct c2c_hists {
+ 	struct hists		hists;
+@@ -2907,8 +2909,9 @@ static const char * const *record_mem_usage = __usage_record;
+ 
+ static int perf_c2c__record(int argc, const char **argv)
+ {
+-	int rec_argc, i = 0, j;
++	int rec_argc, i = 0, j, rec_tmp_nr = 0;
+ 	const char **rec_argv;
++	char **rec_tmp;
+ 	int ret;
+ 	bool all_user = false, all_kernel = false;
+ 	bool event_set = false;
+@@ -2932,11 +2935,21 @@ static int perf_c2c__record(int argc, const char **argv)
+ 	argc = parse_options(argc, argv, options, record_mem_usage,
+ 			     PARSE_OPT_KEEP_UNKNOWN);
+ 
+-	rec_argc = argc + 11; /* max number of arguments */
++	if (!perf_pmu__has_hybrid())
++		rec_argc = argc + 11; /* max number of arguments */
++	else
++		rec_argc = argc + 11 * perf_pmu__hybrid_pmu_num();
++
+ 	rec_argv = calloc(rec_argc + 1, sizeof(char *));
+ 	if (!rec_argv)
+ 		return -1;
+ 
++	rec_tmp = calloc(rec_argc + 1, sizeof(char *));
++	if (!rec_tmp) {
++		free(rec_argv);
++		return -1;
++	}
++
+ 	rec_argv[i++] = "record";
+ 
+ 	if (!event_set) {
+@@ -2964,21 +2977,9 @@ static int perf_c2c__record(int argc, const char **argv)
+ 	rec_argv[i++] = "--phys-data";
+ 	rec_argv[i++] = "--sample-cpu";
+ 
+-	for (j = 0; j < PERF_MEM_EVENTS__MAX; j++) {
+-		e = perf_mem_events__ptr(j);
+-		if (!e->record)
+-			continue;
+-
+-		if (!e->supported) {
+-			pr_err("failed: event '%s' not supported\n",
+-			       perf_mem_events__name(j, NULL));
+-			free(rec_argv);
+-			return -1;
+-		}
+-
+-		rec_argv[i++] = "-e";
+-		rec_argv[i++] = perf_mem_events__name(j, NULL);
+-	}
++	ret = perf_mem_events__record_args(rec_argv, &i, rec_tmp, &rec_tmp_nr);
++	if (ret)
++		goto out;
+ 
+ 	if (all_user)
+ 		rec_argv[i++] = "--all-user";
+@@ -3002,6 +3003,11 @@ static int perf_c2c__record(int argc, const char **argv)
  	}
  
-+	evlist__check_mem_load_aux(session->evlist);
+ 	ret = cmd_record(i, rec_argv);
++out:
++	for (i = 0; i < rec_tmp_nr; i++)
++		free(rec_tmp[i]);
 +
- 	if (rep->stats_mode)
- 		return stats_print(rep);
- 
-diff --git a/tools/perf/util/evlist.c b/tools/perf/util/evlist.c
-index 6ea3e677dc1e..6ba9664089bd 100644
---- a/tools/perf/util/evlist.c
-+++ b/tools/perf/util/evlist.c
-@@ -2161,3 +2161,28 @@ int evlist__scnprintf_evsels(struct evlist *evlist, size_t size, char *bf)
- 
- 	return printed;
++	free(rec_tmp);
+ 	free(rec_argv);
+ 	return ret;
  }
-+
-+void evlist__check_mem_load_aux(struct evlist *evlist)
-+{
-+	struct evsel *leader, *evsel, *pos;
-+
-+	/*
-+	 * For some platforms, the 'mem-loads' event is required to use
-+	 * together with 'mem-loads-aux' within a group and 'mem-loads-aux'
-+	 * must be the group leader. Now we disable this group before reporting
-+	 * because 'mem-loads-aux' is just an auxiliary event. It doesn't carry
-+	 * any valid memory load information.
-+	 */
-+	evlist__for_each_entry(evlist, evsel) {
-+		leader = evsel->leader;
-+		if (leader == evsel)
-+			continue;
-+
-+		if (leader->name && strstr(leader->name, "mem-loads-aux")) {
-+			for_each_group_evsel(pos, leader) {
-+				pos->leader = pos;
-+				pos->core.nr_members = 0;
-+			}
-+		}
-+	}
-+}
-diff --git a/tools/perf/util/evlist.h b/tools/perf/util/evlist.h
-index a8b97b50cceb..2073cfa79f79 100644
---- a/tools/perf/util/evlist.h
-+++ b/tools/perf/util/evlist.h
-@@ -367,4 +367,5 @@ int evlist__ctlfd_ack(struct evlist *evlist);
- struct evsel *evlist__find_evsel(struct evlist *evlist, int idx);
- 
- int evlist__scnprintf_evsels(struct evlist *evlist, size_t size, char *bf);
-+void evlist__check_mem_load_aux(struct evlist *evlist);
- #endif /* __PERF_EVLIST_H */
 -- 
 2.17.1
 
