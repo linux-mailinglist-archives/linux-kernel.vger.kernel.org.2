@@ -2,89 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B6339392C2A
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 12:52:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2CE8D392C2B
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 12:52:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236276AbhE0Kxo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 May 2021 06:53:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55058 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236246AbhE0Kxn (ORCPT
+        id S236285AbhE0KyU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 May 2021 06:54:20 -0400
+Received: from outbound-smtp47.blacknight.com ([46.22.136.64]:46465 "EHLO
+        outbound-smtp47.blacknight.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S236221AbhE0KyR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 May 2021 06:53:43 -0400
-Received: from mail-lj1-x232.google.com (mail-lj1-x232.google.com [IPv6:2a00:1450:4864:20::232])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59749C061574
-        for <linux-kernel@vger.kernel.org>; Thu, 27 May 2021 03:52:10 -0700 (PDT)
-Received: by mail-lj1-x232.google.com with SMTP id 131so206803ljj.3
-        for <linux-kernel@vger.kernel.org>; Thu, 27 May 2021 03:52:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=shutemov-name.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=1xcT6jrG5YT/VGJt3xj4b4RVYNWNiBhF6jGh+aukeaw=;
-        b=aim5QEULZnMrRAJ2tmIJ7KoGEzeUF0BHqci45vYMqHDHPtvWM/bp43D7N97Pe3wg0e
-         fBhx8jwCuI1wxc1ZGcZ1nwND00fWf/l/4V1+1bejZnPfK46FJS26t4LQ0ps8T5e7Y39d
-         fK8QUaTVQNN6hE15jibeDML9CWUgPcovJVenNC6lddTd3aztW6NeA+pSXkO/Rj9L2Nay
-         /BZvlQHaG0RXLGgKw3mU+2nPxbjRJefjePgITiVHJ3lI8enSESnm46G2I8qz5atJggeb
-         2EO7Tz9fQu/EtW3GqW1tnrTSEdXEqSszTSOgTiu7ykaRyo07r+dotyZ9WeyoWr/l6Tn+
-         SKSg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=1xcT6jrG5YT/VGJt3xj4b4RVYNWNiBhF6jGh+aukeaw=;
-        b=EaUKZ+EVTqscSBVo8w1HbrsywpcDEXEzXpBQb5yjUY7ZqSximoUt4rZon+Am+csC2/
-         3Xmb2DSBeidWeDhOxJcxZqEVAb11MaaNNFMCCUXuydffsJQKdKbrxOWNsbpLGq1K7RHf
-         TYeqeWa/Ele020AJePVTw0hzESOSvchRh4aUt1jWlMx1oQPuvx1ffaVq3kK5FGUSC3yG
-         /tY6FiOAOPF/YcOO9hyfD4fW5xpLqQO+irOem5p5qTpTDlQtM0r9x8HWilEtQ8s6Qy+h
-         8CCSoT5rcAxIsN3GfC3eygE6gCsaXbknHCzkOxIyihQmu8YALEIAGxkK62PZXicvKK2n
-         VBzg==
-X-Gm-Message-State: AOAM530vqJJ8lTHNmf0qeApbP93pdhNA+lbaamPhyuds8ORDsdJWDlkn
-        1L6+yeEIF3KvBnIYJ56iJbqABg==
-X-Google-Smtp-Source: ABdhPJwIadPyUd2DJfPZ0J/5KQtbOrPXt4kiqessaF9VpSaheJK8Vxnjff3O2MofSuRvXcrHcU+D9w==
-X-Received: by 2002:a2e:9746:: with SMTP id f6mr2130245ljj.262.1622112728743;
-        Thu, 27 May 2021 03:52:08 -0700 (PDT)
-Received: from box.localdomain ([86.57.175.117])
-        by smtp.gmail.com with ESMTPSA id h23sm169441lfc.52.2021.05.27.03.52.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 27 May 2021 03:52:07 -0700 (PDT)
-Received: by box.localdomain (Postfix, from userid 1000)
-        id 96AA610278E; Thu, 27 May 2021 13:52:14 +0300 (+03)
-Date:   Thu, 27 May 2021 13:52:14 +0300
-From:   "Kirill A. Shutemov" <kirill@shutemov.name>
-To:     Yang Shi <shy828301@gmail.com>
-Cc:     hughd@google.com, ziy@nvidia.com, kirill.shutemov@linux.intel.com,
-        minchan@kernel.org, naoya.horiguchi@nec.com,
-        wangyugui@e16-tech.com, akpm@linux-foundation.org,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Subject: Re: [v4 PATCH 1/2] mm: thp: replace DEBUG_VM BUG with VM_WARN when
- unmap fails for split
-Message-ID: <20210527105214.jqbmyufsdtb5vdhm@box>
-References: <20210526201239.3351-1-shy828301@gmail.com>
+        Thu, 27 May 2021 06:54:17 -0400
+Received: from mail.blacknight.com (pemlinmail05.blacknight.ie [81.17.254.26])
+        by outbound-smtp47.blacknight.com (Postfix) with ESMTPS id C4608FB19B
+        for <linux-kernel@vger.kernel.org>; Thu, 27 May 2021 11:52:43 +0100 (IST)
+Received: (qmail 18388 invoked from network); 27 May 2021 10:52:43 -0000
+Received: from unknown (HELO techsingularity.net) (mgorman@techsingularity.net@[84.203.23.168])
+  by 81.17.254.9 with ESMTPSA (AES256-SHA encrypted, authenticated); 27 May 2021 10:52:43 -0000
+Date:   Thu, 27 May 2021 11:52:41 +0100
+From:   Mel Gorman <mgorman@techsingularity.net>
+To:     Vlastimil Babka <vbabka@suse.cz>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Hillf Danton <hdanton@sina.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Michal Hocko <mhocko@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux-MM <linux-mm@kvack.org>
+Subject: Re: [PATCH 2/6] mm/page_alloc: Disassociate the pcp->high from
+ pcp->batch
+Message-ID: <20210527105241.GB30378@techsingularity.net>
+References: <20210525080119.5455-1-mgorman@techsingularity.net>
+ <20210525080119.5455-3-mgorman@techsingularity.net>
+ <10cb326c-b4ad-3a82-a38b-aba7d2192736@suse.cz>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-15
 Content-Disposition: inline
-In-Reply-To: <20210526201239.3351-1-shy828301@gmail.com>
+In-Reply-To: <10cb326c-b4ad-3a82-a38b-aba7d2192736@suse.cz>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 26, 2021 at 01:12:38PM -0700, Yang Shi wrote:
-> When debugging the bug reported by Wang Yugui [1], try_to_unmap() may
-> fail, but the first VM_BUG_ON_PAGE() just checks page_mapcount() however
-> it may miss the failure when head page is unmapped but other subpage is
-> mapped.  Then the second DEBUG_VM BUG() that check total mapcount would
-> catch it.  This may incur some confusion.  And this is not a fatal issue,
-> so consolidate the two DEBUG_VM checks into one VM_WARN_ON_ONCE_PAGE().
+On Wed, May 26, 2021 at 08:14:13PM +0200, Vlastimil Babka wrote:
+> > @@ -6698,11 +6717,10 @@ static void __zone_set_pageset_high_and_batch(struct zone *zone, unsigned long h
+> >   */
+> >  static void zone_set_pageset_high_and_batch(struct zone *zone)
+> >  {
+> > -	unsigned long new_high, new_batch;
+> > +	int new_high, new_batch;
+> >  
+> > -	new_batch = zone_batchsize(zone);
+> > -	new_high = 6 * new_batch;
+> > -	new_batch = max(1UL, 1 * new_batch);
+> > +	new_batch = max(1, zone_batchsize(zone));
+> > +	new_high = zone_highsize(zone, new_batch);
+> >  
+> >  	if (zone->pageset_high == new_high &&
+> >  	    zone->pageset_batch == new_batch)
+> > @@ -8170,6 +8188,12 @@ static void __setup_per_zone_wmarks(void)
+> >  		zone->_watermark[WMARK_LOW]  = min_wmark_pages(zone) + tmp;
+> >  		zone->_watermark[WMARK_HIGH] = min_wmark_pages(zone) + tmp * 2;
+> >  
+> > +		/*
+> > +		 * The watermark size have changed so update the pcpu batch
+> > +		 * and high limits or the limits may be inappropriate.
+> > +		 */
+> > +		zone_set_pageset_high_and_batch(zone);
 > 
-> [1] https://lore.kernel.org/linux-mm/20210412180659.B9E3.409509F4@e16-tech.com/
+> Hm so this puts the call in the path of various watermark related sysctl
+> handlers, but it's not protected by pcp_batch_high_lock. The zone lock won't
+> help against zone_pcp_update() from a hotplug handler. On the other hand, since
+> hotplug handlers also call __setup_per_zone_wmarks(), the zone_pcp_update()
+> calls there are now redundant and could be removed, no?
+> But later there will be a new sysctl in patch 6/6 using pcp_batch_high_lock,
+> thus that one will not be protected against the watermark related sysctl
+> handlers that reach here.
 > 
-> Reviewed-by: Zi Yan <ziy@nvidia.com>
-> Signed-off-by: Yang Shi <shy828301@gmail.com>
+> To solve all this, seems like the static lock in setup_per_zone_wmarks() could
+> become a top-level visible lock and pcp high/batch updates could switch to that
+> one instead of own pcp_batch_high_lock. And zone_pcp_update() calls from hotplug
+> handlers could be removed.
+> 
 
-For both patches: 
+Hmm, the locking has very different hold times. The static lock in
+setup_per_zone_wmarks is a spinlock that protects against parallel updates
+of watermarks and is held for a short duration. The pcp_batch_high_lock
+is a mutex that is held for a relatively long time while memory is being
+offlined and can sleep. Memory hotplug updates the watermarks without
+pcp_batch_high_lock held so overall, unifying the locking there should
+be a separate series.
 
-Acked-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
+How about this as a fix for this patch?
 
--- 
- Kirill A. Shutemov
+---8<---
+mm/page_alloc: Disassociate the pcp->high from pcp->batch -fix
+
+Vlastimil Babka noted that __setup_per_zone_wmarks updating pcp->high
+did not protect watermark-related sysctl handlers from a parallel
+memory hotplug operations. This patch moves the PCP update to
+setup_per_zone_wmarks and updates the PCP high value while protected
+by the pcp_batch_high_lock mutex.
+
+This is a fix to the mmotm patch mm-page_alloc-disassociate-the-pcp-high-from-pcp-batch.patch.
+It'll cause a conflict with mm-page_alloc-adjust-pcp-high-after-cpu-hotplug-events.patch
+but the resolution is simply to change the caller in setup_per_zone_wmarks
+to zone_pcp_update(zone, 0)
+
+Signed-off-by: Mel Gorman <mgorman@techsingularity.net>
+---
+ mm/page_alloc.c | 14 ++++++++------
+ 1 file changed, 8 insertions(+), 6 deletions(-)
+
+diff --git a/mm/page_alloc.c b/mm/page_alloc.c
+index 329b71e41db4..b1b3c66e9d88 100644
+--- a/mm/page_alloc.c
++++ b/mm/page_alloc.c
+@@ -8199,12 +8199,6 @@ static void __setup_per_zone_wmarks(void)
+ 		zone->_watermark[WMARK_LOW]  = min_wmark_pages(zone) + tmp;
+ 		zone->_watermark[WMARK_HIGH] = min_wmark_pages(zone) + tmp * 2;
+ 
+-		/*
+-		 * The watermark size have changed so update the pcpu batch
+-		 * and high limits or the limits may be inappropriate.
+-		 */
+-		zone_set_pageset_high_and_batch(zone);
+-
+ 		spin_unlock_irqrestore(&zone->lock, flags);
+ 	}
+ 
+@@ -8221,11 +8215,19 @@ static void __setup_per_zone_wmarks(void)
+  */
+ void setup_per_zone_wmarks(void)
+ {
++	struct zone *zone;
+ 	static DEFINE_SPINLOCK(lock);
+ 
+ 	spin_lock(&lock);
+ 	__setup_per_zone_wmarks();
+ 	spin_unlock(&lock);
++
++	/*
++	 * The watermark size have changed so update the pcpu batch
++	 * and high limits or the limits may be inappropriate.
++	 */
++	for_each_zone(zone)
++		zone_pcp_update(zone);
+ }
+ 
+ /*
