@@ -2,162 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 23F1B392EC3
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 15:00:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ADDCF392F2B
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 15:11:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236225AbhE0NCD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 May 2021 09:02:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56380 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235845AbhE0NB6 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 May 2021 09:01:58 -0400
-Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F7E5C061763
-        for <linux-kernel@vger.kernel.org>; Thu, 27 May 2021 06:00:23 -0700 (PDT)
-Received: by mail-pj1-x1029.google.com with SMTP id n6-20020a17090ac686b029015d2f7aeea8so2302075pjt.1
-        for <linux-kernel@vger.kernel.org>; Thu, 27 May 2021 06:00:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=gCZEoBF15DvIVGSc+3j8Uk27721eHnYQC5cQOW6yZk4=;
-        b=FaFXCFWJLCD/gigBOGfY4F270yO0Alvb7EMZVKQJ9L8utcEPvn3XtnKI3BEMvmJtEK
-         gYgjai80HZHDiRLWnq4ZnWFUPWMggGA/Wo+QuTb4wDh5MX+6KsOXKwWCEnZzHAaiuA3T
-         2/Aqi7L4LhIRGkedSPRMYz9qyuKketwP3p78k=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=gCZEoBF15DvIVGSc+3j8Uk27721eHnYQC5cQOW6yZk4=;
-        b=Dm8nrx0i4tdRltGuH5UZDUJa55Lvz/vi5ouCTnbKYqzZDjrSs6u8ubaRMjGao5DHiz
-         BOEKkbGJeJtbeMPwlDCDL9x7Bfbji9Yh5XO7LEZSu7s++NPM1ZJDGCrN+Wp3z2I/BCM6
-         kdvGYtRKu9fAl0TayWV/l+WP9+44k+NxZNvD7PgVAgcSKsftrOHl7qhsH2HaungpdpN6
-         nQ3Jf550hBEhVnYUV89a9MVec1HNTup42YZYeRupJU2lq5c7Enu1Jm14siY5iRuM8POd
-         gBzgK6jbvjvHeyDjNk4wTdg+QRX/+/W8vNbU9Yc+wfo3BFh35Ew1zrRosVMRbVl5tZSO
-         FLTw==
-X-Gm-Message-State: AOAM533KiDR9ndq/cznOjCU5vpBi2LEYXAzP9sKyYzJMV25BIwhR8u0M
-        cLOVG4ZZiSew9X5IMAw5bzYmiA==
-X-Google-Smtp-Source: ABdhPJyRdfD5aP84oP+O3UZ9D5kP+7R8Jjf69TCVtMPqoqtl6dZXUjZXcnaxnn4OXnc5bmDzFDOgsA==
-X-Received: by 2002:a17:90a:74f:: with SMTP id s15mr4091622pje.90.1622120423164;
-        Thu, 27 May 2021 06:00:23 -0700 (PDT)
-Received: from localhost ([2401:fa00:95:205:a93:378d:9a9e:3b70])
-        by smtp.gmail.com with UTF8SMTPSA id 66sm2009117pgj.9.2021.05.27.06.00.15
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 27 May 2021 06:00:22 -0700 (PDT)
-From:   Claire Chang <tientzu@chromium.org>
-To:     Rob Herring <robh+dt@kernel.org>, mpe@ellerman.id.au,
-        Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
-        boris.ostrovsky@oracle.com, jgross@suse.com,
-        Christoph Hellwig <hch@lst.de>,
-        Marek Szyprowski <m.szyprowski@samsung.com>
-Cc:     benh@kernel.crashing.org, paulus@samba.org,
-        "list@263.net:IOMMU DRIVERS" <iommu@lists.linux-foundation.org>,
-        sstabellini@kernel.org, Robin Murphy <robin.murphy@arm.com>,
-        grant.likely@arm.com, xypron.glpk@gmx.de,
-        Thierry Reding <treding@nvidia.com>, mingo@kernel.org,
-        bauerman@linux.ibm.com, peterz@infradead.org,
-        Greg KH <gregkh@linuxfoundation.org>,
-        Saravana Kannan <saravanak@google.com>,
-        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
-        heikki.krogerus@linux.intel.com,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        linux-devicetree <devicetree@vger.kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        linuxppc-dev@lists.ozlabs.org, xen-devel@lists.xenproject.org,
-        Nicolas Boichat <drinkcat@chromium.org>,
-        Jim Quinlan <james.quinlan@broadcom.com>, tfiga@chromium.org,
-        bskeggs@redhat.com, bhelgaas@google.com, chris@chris-wilson.co.uk,
-        tientzu@chromium.org, daniel@ffwll.ch, airlied@linux.ie,
-        dri-devel@lists.freedesktop.org, intel-gfx@lists.freedesktop.org,
-        jani.nikula@linux.intel.com, jxgao@google.com,
-        joonas.lahtinen@linux.intel.com, linux-pci@vger.kernel.org,
-        maarten.lankhorst@linux.intel.com, matthew.auld@intel.com,
-        rodrigo.vivi@intel.com, thomas.hellstrom@linux.intel.com
-Subject: [PATCH v8 10/15] swiotlb: Refactor swiotlb_tbl_unmap_single
-Date:   Thu, 27 May 2021 20:58:40 +0800
-Message-Id: <20210527125845.1852284-11-tientzu@chromium.org>
-X-Mailer: git-send-email 2.31.1.818.g46aad6cb9e-goog
-In-Reply-To: <20210527125845.1852284-1-tientzu@chromium.org>
-References: <20210527125845.1852284-1-tientzu@chromium.org>
+        id S236303AbhE0NNN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 May 2021 09:13:13 -0400
+Received: from mga12.intel.com ([192.55.52.136]:32372 "EHLO mga12.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236007AbhE0NNJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 27 May 2021 09:13:09 -0400
+IronPort-SDR: BjQqo8Qa4ioM90TIe1Vhne9O4Y+xR0Mn8gB61VMheApCqLgKXzvhkMVSmUviuFNQ1GgArM5SY9
+ G8rbKbPyTVqg==
+X-IronPort-AV: E=McAfee;i="6200,9189,9996"; a="182383803"
+X-IronPort-AV: E=Sophos;i="5.82,334,1613462400"; 
+   d="scan'208";a="182383803"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 May 2021 06:11:36 -0700
+IronPort-SDR: +JDOAma+uJ9hDhTIScQWJOcLnw2cYxnK/84jTZ/PK4VbPIahNfaIekTqdgGgSQwrxEMINZgJ4X
+ zHyIs0jTop1g==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.82,334,1613462400"; 
+   d="scan'208";a="480574798"
+Received: from ranger.igk.intel.com ([10.102.21.164])
+  by fmsmga002.fm.intel.com with ESMTP; 27 May 2021 06:11:34 -0700
+Date:   Thu, 27 May 2021 14:58:41 +0200
+From:   Maciej Fijalkowski <maciej.fijalkowski@intel.com>
+To:     Colin Ian King <colin.king@canonical.com>
+Cc:     Jesper Dangaard Brouer <brouer@redhat.com>,
+        Hangbin Liu <liuhangbin@gmail.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Toke =?iso-8859-1?Q?H=F8iland-J=F8rgensen?= <toke@redhat.com>,
+        John Fastabend <john.fastabend@gmail.com>, bpf@vger.kernel.org,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: bpf: Run devmap xdp_prog on flush instead of bulk enqueue
+Message-ID: <20210527125841.GA5695@ranger.igk.intel.com>
+References: <86500107-ac79-6a17-7ef6-25033224c669@canonical.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <86500107-ac79-6a17-7ef6-25033224c669@canonical.com>
+User-Agent: Mutt/1.12.1 (2019-06-15)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add a new function, release_slots, to make the code reusable for supporting
-different bounce buffer pools, e.g. restricted DMA pool.
+On Thu, May 27, 2021 at 11:43:20AM +0100, Colin Ian King wrote:
+> Hi,
+> 
+> Static analysis with Coverity on linux-next detected a minor issue that
+> was introduced with the following commit:
+> 
+> commit cb261b594b4108668e00f565184c7c221efe0359
+> Author: Jesper Dangaard Brouer <brouer@redhat.com>
+> Date:   Wed May 19 17:07:44 2021 +0800
+> 
+>     bpf: Run devmap xdp_prog on flush instead of bulk enqueue
+> 
+> The analysis is as follows:
+> 
+> 370static void bq_xmit_all(struct xdp_dev_bulk_queue *bq, u32 flags)
+> 371{
+> 372        struct net_device *dev = bq->dev;
+> 373        int sent = 0, drops = 0, err = 0;
+> 374        unsigned int cnt = bq->count;
+> 375        int to_send = cnt;
+> 376        int i;
+> 377
+> 378        if (unlikely(!cnt))
+> 379                return;
+> 380
+> 381        for (i = 0; i < cnt; i++) {
+> 382                struct xdp_frame *xdpf = bq->q[i];
+> 383
+> 384                prefetch(xdpf);
+> 385        }
+> 386
+> 387        if (bq->xdp_prog) {
+> 388                to_send = dev_map_bpf_prog_run(bq->xdp_prog, bq->q,
+> cnt, dev);
+> 389                if (!to_send)
+> 390                        goto out;
+> 391
+>    Unused value (UNUSED_VALUE)
+>    assigned_value: Assigning value from cnt - to_send to drops here, but
+> that stored value is overwritten before it can be used.
+> 
+> 392                drops = cnt - to_send;
+> 393        }
+> 394
+> 395        sent = dev->netdev_ops->ndo_xdp_xmit(dev, to_send, bq->q, flags);
+> 396        if (sent < 0) {
+> 397                /* If ndo_xdp_xmit fails with an errno, no frames have
+> 398                 * been xmit'ed.
+> 399                 */
+> 400                err = sent;
+> 401                sent = 0;
+> 402        }
+> 403
+> 404        /* If not all frames have been transmitted, it is our
+> 405         * responsibility to free them
+> 406         */
+> 407        for (i = sent; unlikely(i < to_send); i++)
 
-Signed-off-by: Claire Chang <tientzu@chromium.org>
----
- kernel/dma/swiotlb.c | 35 ++++++++++++++++++++---------------
- 1 file changed, 20 insertions(+), 15 deletions(-)
+FWIW at the time that I was suggesting a rewrite of bq_xmit_all we were
+using the 'drops' above via:
 
-diff --git a/kernel/dma/swiotlb.c b/kernel/dma/swiotlb.c
-index 88b3471ac6a8..c4fc2e444e7a 100644
---- a/kernel/dma/swiotlb.c
-+++ b/kernel/dma/swiotlb.c
-@@ -550,27 +550,15 @@ phys_addr_t swiotlb_tbl_map_single(struct device *dev, phys_addr_t orig_addr,
- 	return tlb_addr;
- }
- 
--/*
-- * tlb_addr is the physical address of the bounce buffer to unmap.
-- */
--void swiotlb_tbl_unmap_single(struct device *hwdev, phys_addr_t tlb_addr,
--			      size_t mapping_size, enum dma_data_direction dir,
--			      unsigned long attrs)
-+static void release_slots(struct device *dev, phys_addr_t tlb_addr)
- {
--	struct io_tlb_mem *mem = get_io_tlb_mem(hwdev);
-+	struct io_tlb_mem *mem = get_io_tlb_mem(dev);
- 	unsigned long flags;
--	unsigned int offset = swiotlb_align_offset(hwdev, tlb_addr);
-+	unsigned int offset = swiotlb_align_offset(dev, tlb_addr);
- 	int index = (tlb_addr - offset - mem->start) >> IO_TLB_SHIFT;
- 	int nslots = nr_slots(mem->slots[index].alloc_size + offset);
- 	int count, i;
- 
--	/*
--	 * First, sync the memory before unmapping the entry
--	 */
--	if (!(attrs & DMA_ATTR_SKIP_CPU_SYNC) &&
--	    (dir == DMA_FROM_DEVICE || dir == DMA_BIDIRECTIONAL))
--		swiotlb_bounce(hwdev, tlb_addr, mapping_size, DMA_FROM_DEVICE);
--
- 	/*
- 	 * Return the buffer to the free list by setting the corresponding
- 	 * entries to indicate the number of contiguous entries available.
-@@ -605,6 +593,23 @@ void swiotlb_tbl_unmap_single(struct device *hwdev, phys_addr_t tlb_addr,
- 	spin_unlock_irqrestore(&mem->lock, flags);
- }
- 
-+/*
-+ * tlb_addr is the physical address of the bounce buffer to unmap.
-+ */
-+void swiotlb_tbl_unmap_single(struct device *dev, phys_addr_t tlb_addr,
-+			      size_t mapping_size, enum dma_data_direction dir,
-+			      unsigned long attrs)
-+{
-+	/*
-+	 * First, sync the memory before unmapping the entry
-+	 */
-+	if (!(attrs & DMA_ATTR_SKIP_CPU_SYNC) &&
-+	    (dir == DMA_FROM_DEVICE || dir == DMA_BIDIRECTIONAL))
-+		swiotlb_bounce(dev, tlb_addr, mapping_size, DMA_FROM_DEVICE);
-+
-+	release_slots(dev, tlb_addr);
-+}
-+
- void swiotlb_sync_single_for_device(struct device *dev, phys_addr_t tlb_addr,
- 		size_t size, enum dma_data_direction dir)
- {
--- 
-2.31.1.818.g46aad6cb9e-goog
+		for (i = 0; i < cnt - drops; i++) {
 
+So looks like now the calculation at line 392 is actually not needed.
+
+> 408                xdp_return_frame_rx_napi(bq->q[i]);
+> 409
+> 410out:
+> 
+>    value_overwrite: Overwriting previous write to drops with value from
+> cnt - sent.
+> 
+> 411        drops = cnt - sent;
+> 412        bq->count = 0;
+> 413        trace_xdp_devmap_xmit(bq->dev_rx, dev, sent, drops, err);
+> 414}
+> 
+> drops is being calculated twice but the first value is not used. Not
+> sure if that was intentional or an oversight.
+> 
+> Colin
