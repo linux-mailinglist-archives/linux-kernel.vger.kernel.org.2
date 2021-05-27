@@ -2,132 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CC641392579
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 05:31:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C92EE392577
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 05:30:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234627AbhE0Dch (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 May 2021 23:32:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39914 "EHLO
+        id S234393AbhE0Dbz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 May 2021 23:31:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39768 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233717AbhE0Dce (ORCPT
+        with ESMTP id S232762AbhE0Dby (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 May 2021 23:32:34 -0400
-Received: from mail-io1-xd35.google.com (mail-io1-xd35.google.com [IPv6:2607:f8b0:4864:20::d35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3DEFC061574;
-        Wed, 26 May 2021 20:31:00 -0700 (PDT)
-Received: by mail-io1-xd35.google.com with SMTP id k22so3358900ioa.9;
-        Wed, 26 May 2021 20:31:00 -0700 (PDT)
+        Wed, 26 May 2021 23:31:54 -0400
+Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F33E4C061574
+        for <linux-kernel@vger.kernel.org>; Wed, 26 May 2021 20:30:21 -0700 (PDT)
+Received: by mail-pj1-x102d.google.com with SMTP id v13-20020a17090abb8db029015f9f7d7290so4712666pjr.0
+        for <linux-kernel@vger.kernel.org>; Wed, 26 May 2021 20:30:21 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=w3LWi3pqlr3B4AlunE4XQO/yKeeRdh+JIp87c9hiyZo=;
-        b=ISi8Q4CD6rbdfXzcoV0mi4T5raNiBIUZIsyxFzTMz6b+efBYqUsq59GLd5/jhvGeJY
-         u3TJrU0zcb6Y10Y1XLDZjeWTQnUONB1tYT9PJPRSGqN88Jfflqx9XhUeOpz9M052KnVN
-         WOWEuqQJH3/OfeSu4o6ENGoQb4rnYN1PGrbtV30P4OqgpAR9PnHvKxllz6CGc/VqdQ0t
-         ZsHa/+tvfv4yZ474fYuLGvasWhlaLCo5hOwFIE5FDEEvSlBjIaPRW8hS6yuge8stWqmW
-         J0JQp2/bA7Ni73i8ZWqP5KLFQI8Fl19WON2VYEEXaerQYHeWpq6/YXFGKYrgTXA+C2/s
-         IVeA==
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=NDFRD/MnroMzwShB8KPyuuiXqZ9lYk7B6Up7JR9HCSY=;
+        b=nPR8Ubr37KjdsCNSlw4n5AeiMWqC6vs51qoHYMRW2MieC7JDbH/2ACj9jsZAWpXGIF
+         9JGdZ3CD1yW+GODQYfOmB44oRlYOJaeZ5BG4F8iOaaFU0jVY8BkfhtyXxwKmHYHxVam0
+         59IQso6CHNjKM0jDe1DT+gAVxl2FJiU15XFZw=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=w3LWi3pqlr3B4AlunE4XQO/yKeeRdh+JIp87c9hiyZo=;
-        b=qWpK5gFWU5JYXJ3+UT+VQIIVJ26ZRH0oBCKyCS8pvJOSSdtvKGgKPAGI5T3TuQfutL
-         Xnc2TwuTIp5fvDNAGtvubkmJidF5G+FkNG+xkLHYDyEGjnD1jfvuoeXoG9t+3uDfqXZc
-         FLZyeBcNi91HoUbIITCOSlFm1UbRnj40uwomH5rkGD1bwSGWsQr9dHRqZcQI1S5qejk+
-         gVX9DLTR3dFssFwUodPhzt69XquxZTxKHDF8tAJLnytod+R/VTaVRpAAXFcMT7G7vGVl
-         Ij2Izw7IFGlcn3yIEhgde1MG1Z9X3IqRA2//mtWcJ4CgPscf0M2jNgxX2PN0pXaWdcep
-         fYlw==
-X-Gm-Message-State: AOAM531x9tuTST8cmj6Ch/a8egYqSCAyQ1MqOGoYLAln5X72dJIR8MYg
-        B2EO+ea4P/sk3pANP4WioVo=
-X-Google-Smtp-Source: ABdhPJx2GlTFjea70whpnKFaQxVADVYnUsZSDO1oFK0G4U4Wyj8GSFiitDfYy6Hht0e29l3al8TjMg==
-X-Received: by 2002:a05:6602:1212:: with SMTP id y18mr1199110iot.189.1622086260183;
-        Wed, 26 May 2021 20:31:00 -0700 (PDT)
-Received: from auth1-smtp.messagingengine.com (auth1-smtp.messagingengine.com. [66.111.4.227])
-        by smtp.gmail.com with ESMTPSA id n5sm492754ilq.14.2021.05.26.20.30.59
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=NDFRD/MnroMzwShB8KPyuuiXqZ9lYk7B6Up7JR9HCSY=;
+        b=eCwRg8j/rxgB+ELNrcw2FkVINx8akzudOOY53UVWb0tSwsZsXdkhbfXp+eveRyrnH7
+         tWYWC6sldDnNu4bV4+kEmIKHgwWsNgB4CbbCXAhTj3Mo8GSu1kOIzxdXmvKXdk+Ij1um
+         eaPCDItRfG+0KwoyouaiZmCMsEfGb+0fClC5R5/IhQK/g4RiJ/cnoENk7EanU1R/ixgH
+         Yb2jc9TrkWgpkBC/ET2jI3nIinpSj9rczJ7vk3pFXUTFWFB4KZFxVqRHdd9B5V2IKHnm
+         C3h7MnrLbwQR+xpERyh0Ly+HIkDITpwBCa90JIg4f2Wmi+TMtFpyy8qjsvzwhZPUwHDI
+         ieag==
+X-Gm-Message-State: AOAM532RD5gT/caeRI9xwAaPmt2YLxCUOVUYd6PUb/o5zPSpX4PzTW+r
+        HO1UUAwKdddIFz6beFO6XSdM9O7wwrQHZQ==
+X-Google-Smtp-Source: ABdhPJwlW4I9Ur9Gzdlr+YKxu44krneyEH1+faFi2ojpnK9Jx6HOT3qi5Scc8Xj5JynZAB6zpynw1A==
+X-Received: by 2002:a17:90b:2357:: with SMTP id ms23mr1486021pjb.96.1622086221577;
+        Wed, 26 May 2021 20:30:21 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id o134sm523280pfd.58.2021.05.26.20.30.20
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 26 May 2021 20:30:59 -0700 (PDT)
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-        by mailauth.nyi.internal (Postfix) with ESMTP id AA47827C0054;
-        Wed, 26 May 2021 23:30:58 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute5.internal (MEProxy); Wed, 26 May 2021 23:30:58 -0400
-X-ME-Sender: <xms:cRKvYINYvIKw7NmsTCtaxjdO-HwO7M8TEdOm_YD66rlrh-1PmS6GeA>
-    <xme:cRKvYO99cVwYAeTPnScnBPQORQQAO3RAXKbXKmTgKuN38tsUmzVM90iQQ2S4gZkf2
-    a5mwaIZFiWt285pBw>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrvdekgedgieelucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucenucfjughrpeffhffvuffkfhggtggujgesthdtre
-    dttddtvdenucfhrhhomhepuehoqhhunhcuhfgvnhhguceosghoqhhunhdrfhgvnhhgsehg
-    mhgrihhlrdgtohhmqeenucggtffrrghtthgvrhhnpedvleeigedugfegveejhfejveeuve
-    eiteejieekvdfgjeefudehfefhgfegvdegjeenucfkphepudefuddruddtjedruddrvdeh
-    geenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegsoh
-    hquhhnodhmvghsmhhtphgruhhthhhpvghrshhonhgrlhhithihqdeiledvgeehtdeigedq
-    udejjeekheehhedvqdgsohhquhhnrdhfvghngheppehgmhgrihhlrdgtohhmsehfihigmh
-    gvrdhnrghmvg
-X-ME-Proxy: <xmx:cRKvYPSwK6U4zIyOGU3t1n6ZDP_XH9YYpc5DkT1irr9Hkloul_2SQQ>
-    <xmx:cRKvYAv8aJL9fDVQO5GG6FIplz_dEInxbO17ec5329LEr6fa2fxXVA>
-    <xmx:cRKvYAf3jMmEy9oN9hKWSqfwN7cOBXQD4TLzU9kYuDljpystupulAQ>
-    <xmx:chKvYOthgv4CFyyWbCiwFyv0je8jdFJbSQi_lA_byfAGL7h2S2sXvw>
-Received: from localhost (unknown [131.107.1.254])
-        by mail.messagingengine.com (Postfix) with ESMTPA;
-        Wed, 26 May 2021 23:30:57 -0400 (EDT)
-Date:   Thu, 27 May 2021 11:30:14 +0800
-From:   Boqun Feng <boqun.feng@gmail.com>
-To:     Xiongwei Song <sxwjean@me.com>
-Cc:     peterz@infradead.org, mingo@redhat.com, will@kernel.org,
-        longman@redhat.com, corbet@lwn.net, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Xiongwei Song <sxwjean@gmail.com>
-Subject: Re: [PATCH] docs: lockdep-design: improve readability of the block
- matrix
-Message-ID: <YK8SRvhp1+iR2y6G@boqun-archlinux>
-References: <1621868745-23311-1-git-send-email-sxwjean@me.com>
+        Wed, 26 May 2021 20:30:21 -0700 (PDT)
+From:   Kees Cook <keescook@chromium.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Kees Cook <keescook@chromium.org>,
+        Andy Lutomirski <luto@amacapital.net>,
+        Will Drewry <wad@chromium.org>
+Subject: [PATCH] selftests/seccomp: Flush benchmark output regularly
+Date:   Wed, 26 May 2021 20:30:18 -0700
+Message-Id: <20210527033018.3731126-1-keescook@chromium.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1621868745-23311-1-git-send-email-sxwjean@me.com>
+X-Patch-Hashes: v=1; h=sha256; g=bd641d3971b51b9a068073ed18f974f18a380d43; i=7hLQTCF2EV2fIOUF6saf13OApWBFbccyMw31e/DaLUo=; m=fow9+w90zfO2bRGSX/3NCf1HjH+mLALgEf1U9iLJQ5U=; p=aiPY1gyVpT+EspIxQwCwrr3Ov+y9RTYRckxw+wJ/fn0=
+X-Patch-Sig: m=pgp; i=keescook@chromium.org; s=0x0x8972F4DFDC6DC026; b=iQIzBAABCgAdFiEEpcP2jyKd1g9yPm4TiXL039xtwCYFAmCvEkkACgkQiXL039xtwCZB2hAAlYz n3mRIhI1FeYxCWcP5GRLJRF3ygd4dl88Z3cp01ttDk3jx7ajGG4YLoHypnqi+FC6D9Wi5rh75gKwG tGq9xUU2TLtF3oG9ecLr8CcNuQpLoSyG/WWjFGMwQULbW4rwjZMK53znZxeiEr+XQbbUfIsn85IBw ZT0K2SYz0KfdjtQOgtL5O6jUxKF8S5WHUuNZ+vUxUvQO7tdEJytT9ZCuPoUWEKY/Hsj6ADQeUYsY2 EIcOrEMsZeQiAhCicLoJ+ay6KuI69QeSEPt0HItiJCndXB6BMdw+Eg3yw1j2fqF9wtaMpNoPLVkdJ oUtD307DO3Psw77DYCjZH7XLdFQmXyPEOwXnyYN+8LRL4j97d2Ko9IUAti5Dr3FJk+FRgEtdoAOAb DEdkiUcRUEYhfelXruTIpD5D7/Sc17GKG+uNgVq5fPvl/kJ1ce0FclTdYCFRSwfgMfTjQtU09LxZN NtSjgDlq+/rrzWVkppooqdZYNNIVdpF6iTeZdeW6wdsM36pagK9gwJ4iotuBStv6yTjN24YYofg/m Psq/I0Ho+Y+z5TJJQ3iH3grD06E32DT1JR/b0FVY/R6HMWgnk9TtWGWKOQZ/8iWCQLJMKBCxg1rKj lodlIbD21XtTtv2zOQK3v610LyrN2uQLIdg782WYeAg5SklZw/wLflEIJqn0iCbc=
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 24, 2021 at 11:05:45PM +0800, Xiongwei Song wrote:
-> From: Xiongwei Song <sxwjean@gmail.com>
-> 
-> The block condition matrix is using 'E' as the writer notation, however,
-> the writer reminder below the matrix is using 'W', to make them consistent
-> and make the matrix more readable, we'd better to use 'W' to represent
-> writer.
-> 
-> Suggested-by: Waiman Long <llong@redhat.com>
-> Suggested-by: Boqun Feng <boqun.feng@gmail.com>
-> Signed-off-by: Xiongwei Song <sxwjean@gmail.com>
+When running the seccomp benchmark under a test runner, it wouldn't
+provide any feedback on progress. Force IO flushes during the test.
 
-Reviewed-by: Boqun Feng <boqun.feng@gmail.com>
+Signed-off-by: Kees Cook <keescook@chromium.org>
+---
+ tools/testing/selftests/seccomp/seccomp_benchmark.c | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
-Regards,
-Boqun
+diff --git a/tools/testing/selftests/seccomp/seccomp_benchmark.c b/tools/testing/selftests/seccomp/seccomp_benchmark.c
+index fcc806585266..7be1e2131f79 100644
+--- a/tools/testing/selftests/seccomp/seccomp_benchmark.c
++++ b/tools/testing/selftests/seccomp/seccomp_benchmark.c
+@@ -42,6 +42,7 @@ unsigned long long timing(clockid_t clk_id, unsigned long long samples)
+ 		finish.tv_sec, finish.tv_nsec,
+ 		start.tv_sec, start.tv_nsec,
+ 		i, (double)i / 1000000000.0);
++	fflush(NULL);
+ 
+ 	return i;
+ }
+@@ -54,6 +55,7 @@ unsigned long long calibrate(void)
+ 	int seconds = 15;
+ 
+ 	printf("Calibrating sample size for %d seconds worth of syscalls ...\n", seconds);
++	fflush(NULL);
+ 
+ 	samples = 0;
+ 	pid = getpid();
+@@ -157,6 +159,7 @@ int main(int argc, char *argv[])
+ 	/* Native call */
+ 	native = timing(CLOCK_PROCESS_CPUTIME_ID, samples) / samples;
+ 	printf("getpid native: %llu ns\n", native);
++	fflush(NULL);
+ 
+ 	ret = prctl(PR_SET_NO_NEW_PRIVS, 1, 0, 0, 0);
+ 	assert(ret == 0);
+@@ -167,6 +170,7 @@ int main(int argc, char *argv[])
+ 
+ 	bitmap1 = timing(CLOCK_PROCESS_CPUTIME_ID, samples) / samples;
+ 	printf("getpid RET_ALLOW 1 filter (bitmap): %llu ns\n", bitmap1);
++	fflush(NULL);
+ 
+ 	/* Second filter resulting in a bitmap */
+ 	ret = prctl(PR_SET_SECCOMP, SECCOMP_MODE_FILTER, &bitmap_prog);
+@@ -174,6 +178,7 @@ int main(int argc, char *argv[])
+ 
+ 	bitmap2 = timing(CLOCK_PROCESS_CPUTIME_ID, samples) / samples;
+ 	printf("getpid RET_ALLOW 2 filters (bitmap): %llu ns\n", bitmap2);
++	fflush(NULL);
+ 
+ 	/* Third filter, can no longer be converted to bitmap */
+ 	ret = prctl(PR_SET_SECCOMP, SECCOMP_MODE_FILTER, &prog);
+@@ -181,6 +186,7 @@ int main(int argc, char *argv[])
+ 
+ 	filter1 = timing(CLOCK_PROCESS_CPUTIME_ID, samples) / samples;
+ 	printf("getpid RET_ALLOW 3 filters (full): %llu ns\n", filter1);
++	fflush(NULL);
+ 
+ 	/* Fourth filter, can not be converted to bitmap because of filter 3 */
+ 	ret = prctl(PR_SET_SECCOMP, SECCOMP_MODE_FILTER, &bitmap_prog);
+@@ -188,6 +194,7 @@ int main(int argc, char *argv[])
+ 
+ 	filter2 = timing(CLOCK_PROCESS_CPUTIME_ID, samples) / samples;
+ 	printf("getpid RET_ALLOW 4 filters (full): %llu ns\n", filter2);
++	fflush(NULL);
+ 
+ 	/* Estimations */
+ #define ESTIMATE(fmt, var, what)	do {			\
+-- 
+2.25.1
 
-> ---
->  Documentation/locking/lockdep-design.rst | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/Documentation/locking/lockdep-design.rst b/Documentation/locking/lockdep-design.rst
-> index 9f3cfca..82f36ca 100644
-> --- a/Documentation/locking/lockdep-design.rst
-> +++ b/Documentation/locking/lockdep-design.rst
-> @@ -453,9 +453,9 @@ There are simply four block conditions:
->  Block condition matrix, Y means the row blocks the column, and N means otherwise.
->  
->  	+---+---+---+---+
-> -	|   | E | r | R |
-> +	|   | W | r | R |
->  	+---+---+---+---+
-> -	| E | Y | Y | Y |
-> +	| W | Y | Y | Y |
->  	+---+---+---+---+
->  	| r | Y | Y | N |
->  	+---+---+---+---+
-> -- 
-> 2.7.4
-> 
