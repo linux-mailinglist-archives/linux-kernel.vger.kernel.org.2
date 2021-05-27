@@ -2,123 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F011392D87
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 14:04:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 641FF392D8D
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 14:05:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234797AbhE0MG2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 May 2021 08:06:28 -0400
-Received: from mail-vs1-f48.google.com ([209.85.217.48]:35737 "EHLO
-        mail-vs1-f48.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234540AbhE0MG0 (ORCPT
+        id S234811AbhE0MHV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 May 2021 08:07:21 -0400
+Received: from mail-pl1-f179.google.com ([209.85.214.179]:42717 "EHLO
+        mail-pl1-f179.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234574AbhE0MHR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 May 2021 08:06:26 -0400
-Received: by mail-vs1-f48.google.com with SMTP id x22so236297vsn.2;
-        Thu, 27 May 2021 05:04:51 -0700 (PDT)
+        Thu, 27 May 2021 08:07:17 -0400
+Received: by mail-pl1-f179.google.com with SMTP id v13so2224164ple.9;
+        Thu, 27 May 2021 05:05:43 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Uh4zzMKY6luxk0/SSNclejeRcmWG2GmwP9Z21NWThdc=;
-        b=asW3k569xrt+g9/xBoM3MSOxqw+0cWd14K6oi1Wl3YNxZqS2q569Pga0JdbTa25w21
-         YcodyfhNLPuUtzEsspO1dbMv9TQ/kSEiQsa6qxVvV6goaponRUkXg02xR52X/kVxsiyU
-         K5Li9uInR0M/PFGYPWdS97hK7SiVmx+juwkLizPeV/wjMBXbE1NqKngzY+spnqldSMCm
-         gs7qmUv72ybHsCFZrLFGcls1TBgCerkPb0bBf0kd0efe8ZwwoYuan5AbBmFacKIgHXoj
-         jYwWiS7230iEH2sJBTRFjbgbBtz5KXtrli8LOsxIl0+GJDxcXFZ6/Ugbbw8PuLSnaTBn
-         Vqbg==
-X-Gm-Message-State: AOAM530c6j/Y4vJLigg2kcF7oxi9XuwzzLtQRQdYcZQtr0SoSdfDf8c6
-        OyHzPaaa1lXWbOQKtQp4TPC6uRa/3Bvz0XDOtBU=
-X-Google-Smtp-Source: ABdhPJzBFvcXREuBIQYuRn70o9fXD4fkLjhIMPBlK3HLIgpWiKiyIy29QjGBrmD2cFoYRf6BqEL19Uz/PEFSKm9Yabc=
-X-Received: by 2002:a05:6102:392:: with SMTP id m18mr1556875vsq.40.1622117091488;
- Thu, 27 May 2021 05:04:51 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=YPiMEwGlMbValClUSlx6NzlbN5+iiX4yU0EKTF230x0=;
+        b=pT9gOuNC6izptvwsqIv8ZiEah+pFgewb0fZxJ1sOzA6YQEBxZqKXT+DY630mVEhaWU
+         kH73SI3/m9tNClsH+JE+mEQELJls7Z1IF9pExEA6xeDaRglt3OPCLpWILl3m+385gKYk
+         XHXuCLTRd5tWzJHVtOlRfcZ9pc3el9tX8QgR21VoM8C9bOLu60AE61N4KZ+MP6RaKmuE
+         x6J/VtAqka30xmvrMYzjqlPED/CeQWWvPRM9LNOCKAuuxAYzH2NflwwJtXO8G30kydct
+         KsKs3oHLuTb6MYHpbbgvvGo8lAR55Wpnj4NwEN/c/gwD4Kh93eYFUyuNgr5cX5Kulfbr
+         wpxw==
+X-Gm-Message-State: AOAM532LSQAjtJyAb7aAqKIzcgOd19ga52jnZ0vY5UJ2CSCJvBmw9iaH
+        G6usDmL19t5lU3VAozm59cM=
+X-Google-Smtp-Source: ABdhPJyq4o82UeSB/VMcI2HzJRqIKhAhsKPTexGNNjmDEjXXMkumsNeSiYwS1PfP5p1QerPuXbAhgw==
+X-Received: by 2002:a17:90a:5d8e:: with SMTP id t14mr3367014pji.85.1622117143281;
+        Thu, 27 May 2021 05:05:43 -0700 (PDT)
+Received: from rocinante.localdomain ([95.155.85.46])
+        by smtp.gmail.com with ESMTPSA id e23sm1888250pfl.84.2021.05.27.05.05.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 27 May 2021 05:05:42 -0700 (PDT)
+Date:   Thu, 27 May 2021 14:05:31 +0200
+From:   Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>
+To:     Om Prakash Singh <omp@nvidia.com>
+Cc:     vidyas@nvidia.com, lorenzo.pieralisi@arm.com, bhelgaas@google.com,
+        thierry.reding@gmail.com, jonathanh@nvidia.com,
+        linux-tegra@vger.kernel.org, linux-pci@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kthota@nvidia.com,
+        mmaddireddy@nvidia.com
+Subject: Re: [RESEND PATCH V1 4/5] PCI: tegra: Don't allow suspend when Tegra
+ PCIe is in EP mode
+Message-ID: <20210527120531.GB213718@rocinante.localdomain>
+References: <20210527115246.20509-1-omp@nvidia.com>
+ <20210527115246.20509-5-omp@nvidia.com>
 MIME-Version: 1.0
-References: <20210514192218.13022-1-prabhakar.mahadev-lad.rj@bp.renesas.com> <20210514192218.13022-14-prabhakar.mahadev-lad.rj@bp.renesas.com>
-In-Reply-To: <20210514192218.13022-14-prabhakar.mahadev-lad.rj@bp.renesas.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Thu, 27 May 2021 14:04:39 +0200
-Message-ID: <CAMuHMdXd==dM2QJN5gg0ka_7-HDQbeKZK66nmyASFJAnsVsSQA@mail.gmail.com>
-Subject: Re: [PATCH 13/16] clk: renesas: Add CPG core wrapper for RZ/G2L SoC
-To:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Magnus Damm <magnus.damm@gmail.com>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
-        linux-clk <linux-clk@vger.kernel.org>,
-        "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Biju Das <biju.das.jz@bp.renesas.com>,
-        Prabhakar <prabhakar.csengg@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20210527115246.20509-5-omp@nvidia.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Prabhakar,
+Hi Prakash
 
-On Fri, May 14, 2021 at 9:24 PM Lad Prabhakar
-<prabhakar.mahadev-lad.rj@bp.renesas.com> wrote:
-> Add CPG core wrapper for RZ/G2L family.
->
-> Based on a patch in the BSP by Binh Nguyen
-> <binh.nguyen.jz@renesas.com>.
->
-> Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-> Reviewed-by: Biju Das <biju.das.jz@bp.renesas.com>
+[...]
+> @@ -2276,6 +2276,11 @@ static int tegra_pcie_dw_suspend_late(struct device *dev)
+[...]
+> +	if (pcie->mode == DW_PCIE_EP_TYPE) {
+> +		dev_err(dev, "Tegra PCIe is in EP mode, suspend not allowed");
+> +		return -EPERM;
+> +	}
 
-> --- /dev/null
-> +++ b/drivers/clk/renesas/renesas-rzg2l-cpg.c
+Would the -EINVAL be more appropriate here?  It seem more appropriate
+when something is an invalid operation, rather than access to the
+resource being denied (or something along these lines), what do you
+think?
 
-> +static int rzg2l_mod_clock_endisable(struct clk_hw *hw, bool enable)
-> +{
-> +       struct mstp_clock *clock = to_mod_clock(hw);
-> +       struct cpg_mssr_priv *priv = clock->priv;
-> +       unsigned int reg = MSSR_OFF(clock->bit) * 4;
-
-The "* 4" here makes it difficult to review the module clock tables.
-
-E.g.
-
-       DEF_MOD("gic",          R9A07G044_CLK_GIC600,
-                               R9A07G044_CLK_P1,
-                               MSSR(5, BIT(0), (BIT(0) | BIT(1)))),
-
-The "5" means the CLK_ON_GIC600 register is at offset CLK_ON_R(5 * 4)
- = 0x514.  Removing the "* 4" means you could use
-"MSSR(0x14, BIT(0), (BIT(0) | BIT(1))" instead.
-
-Unless it has unpleasant side effects, I'd even consider putting
-the full CLK_ON offset there, i.e.
-"MSSR(0x514, BIT(0), (BIT(0) | BIT(1))" and change the macros like:
-
-    #define CLK_ON_R(reg)          (reg)
-    #define CLK_MON_R(reg)         (0x680 - 0x500 + (reg))
-
-> --- /dev/null
-> +++ b/drivers/clk/renesas/renesas-rzg2l-cpg.h
-
-> +#define CLK_ON_R(reg)          (0x500 + reg)
-> +#define CLK_MON_R(reg)         (0x680 + reg)
-> +#define CLK_RST_R(reg)         (0x800 + reg)
-> +#define CLK_MRST_R(reg)                (0x980 + reg)
-
-The last three don't seem to be documented?
-
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+	Krzysztof
