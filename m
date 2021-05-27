@@ -2,84 +2,220 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 07B1F3928E6
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 09:47:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F3223928E7
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 09:50:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235140AbhE0HtX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 May 2021 03:49:23 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:54078 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234626AbhE0HtU (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 May 2021 03:49:20 -0400
-Received: from imap.suse.de (imap-alt.suse-dmz.suse.de [192.168.254.47])
-        (using TLSv1.2 with cipher ECDHE-ECDSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id A2330218DD;
-        Thu, 27 May 2021 07:47:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1622101666; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=YtO/FPGQ00p8RJySPIi3YpYdx7Hc9TaIxbimA4veYEo=;
-        b=0jMjswuqM3ju6nongb+Egwt0eOKJByPjqb7MWzJneWPk7esOWKvfI99Z9LrRO7xriyF3E8
-        3yYUdpK1esyrQx7xqsrdel2EUqlyGpFJv/IVrqZx9DCNe6MLRxb2sA/tfw44/doycGIPKb
-        OTM2gx1Q1GWas/Qmr9g39pKls+vKInA=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1622101666;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=YtO/FPGQ00p8RJySPIi3YpYdx7Hc9TaIxbimA4veYEo=;
-        b=xYql4C3qYFxsP6Ur19ynYgw/EFoxCZSqDWVIknwMaDVd9elA0IEhTfrM0uQ065tH2JKY4a
-        17aUUNincV3zEYDQ==
-Received: from director2.suse.de (director2.suse-dmz.suse.de [192.168.254.72])
-        by imap.suse.de (Postfix) with ESMTPSA id 0962311A98;
-        Thu, 27 May 2021 07:47:45 +0000 (UTC)
-Date:   Thu, 27 May 2021 09:47:44 +0200
-From:   Oscar Salvador <osalvador@suse.de>
-To:     Naoya Horiguchi <nao.horiguchi@gmail.com>
-Cc:     linux-mm@kvack.org, Mike Kravetz <mike.kravetz@oracle.com>,
-        Michal Hocko <mhocko@suse.com>,
-        Muchun Song <songmuchun@bytedance.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        David Hildenbrand <david@redhat.com>,
-        Naoya Horiguchi <naoya.horiguchi@nec.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v1] hugetlb: pass head page to remove_hugetlb_page()
-Message-ID: <YK9OoPzkBB1jTpC1@localhost.localdomain>
-References: <20210526235257.2769473-1-nao.horiguchi@gmail.com>
+        id S232870AbhE0HwI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 May 2021 03:52:08 -0400
+Received: from foss.arm.com ([217.140.110.172]:53564 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229579AbhE0HwH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 27 May 2021 03:52:07 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 2EC7E11D4;
+        Thu, 27 May 2021 00:50:34 -0700 (PDT)
+Received: from [192.168.1.179] (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 7C3F53F73B;
+        Thu, 27 May 2021 00:50:31 -0700 (PDT)
+Subject: Re: [PATCH v12 7/8] KVM: arm64: ioctl to fetch/store tags in a guest
+To:     Catalin Marinas <catalin.marinas@arm.com>
+Cc:     Marc Zyngier <maz@kernel.org>, Will Deacon <will@kernel.org>,
+        James Morse <james.morse@arm.com>,
+        Julien Thierry <julien.thierry.kdev@gmail.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        kvmarm@lists.cs.columbia.edu, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, Dave Martin <Dave.Martin@arm.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Thomas Gleixner <tglx@linutronix.de>, qemu-devel@nongnu.org,
+        Juan Quintela <quintela@redhat.com>,
+        "Dr. David Alan Gilbert" <dgilbert@redhat.com>,
+        Richard Henderson <richard.henderson@linaro.org>,
+        Peter Maydell <peter.maydell@linaro.org>,
+        Haibo Xu <Haibo.Xu@arm.com>, Andrew Jones <drjones@redhat.com>
+References: <20210517123239.8025-1-steven.price@arm.com>
+ <20210517123239.8025-8-steven.price@arm.com> <20210520120556.GC12251@arm.com>
+ <dd5ab3a0-5a74-b145-2485-d6d871be945b@arm.com>
+ <20210520172713.GF12251@arm.com>
+ <5eec330f-63c0-2af8-70f8-ba9b643e2558@arm.com>
+ <20210524181129.GI14645@arm.com>
+From:   Steven Price <steven.price@arm.com>
+Message-ID: <58345eca-6e5f-0faa-e47d-e9149d73f6c5@arm.com>
+Date:   Thu, 27 May 2021 08:50:30 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210526235257.2769473-1-nao.horiguchi@gmail.com>
+In-Reply-To: <20210524181129.GI14645@arm.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 27, 2021 at 08:52:57AM +0900, Naoya Horiguchi wrote:
-> From: Naoya Horiguchi <naoya.horiguchi@nec.com>
+On 24/05/2021 19:11, Catalin Marinas wrote:
+> On Fri, May 21, 2021 at 10:42:09AM +0100, Steven Price wrote:
+>> On 20/05/2021 18:27, Catalin Marinas wrote:
+>>> On Thu, May 20, 2021 at 04:58:01PM +0100, Steven Price wrote:
+>>>> On 20/05/2021 13:05, Catalin Marinas wrote:
+>>>>> On Mon, May 17, 2021 at 01:32:38PM +0100, Steven Price wrote:
+>>>>>> diff --git a/arch/arm64/kvm/arm.c b/arch/arm64/kvm/arm.c
+>>>>>> index e89a5e275e25..4b6c83beb75d 100644
+>>>>>> --- a/arch/arm64/kvm/arm.c
+>>>>>> +++ b/arch/arm64/kvm/arm.c
+>>>>>> @@ -1309,6 +1309,65 @@ static int kvm_vm_ioctl_set_device_addr(struct kvm *kvm,
+>>>>>>  	}
+>>>>>>  }
+>>>>>>  
+>>>>>> +static int kvm_vm_ioctl_mte_copy_tags(struct kvm *kvm,
+>>>>>> +				      struct kvm_arm_copy_mte_tags *copy_tags)
+>>>>>> +{
+>>>>>> +	gpa_t guest_ipa = copy_tags->guest_ipa;
+>>>>>> +	size_t length = copy_tags->length;
+>>>>>> +	void __user *tags = copy_tags->addr;
+>>>>>> +	gpa_t gfn;
+>>>>>> +	bool write = !(copy_tags->flags & KVM_ARM_TAGS_FROM_GUEST);
+>>>>>> +	int ret = 0;
+>>>>>> +
+>>>>>> +	if (copy_tags->reserved[0] || copy_tags->reserved[1])
+>>>>>> +		return -EINVAL;
+>>>>>> +
+>>>>>> +	if (copy_tags->flags & ~KVM_ARM_TAGS_FROM_GUEST)
+>>>>>> +		return -EINVAL;
+>>>>>> +
+>>>>>> +	if (length & ~PAGE_MASK || guest_ipa & ~PAGE_MASK)
+>>>>>> +		return -EINVAL;
+>>>>>> +
+>>>>>> +	gfn = gpa_to_gfn(guest_ipa);
+>>>>>> +
+>>>>>> +	mutex_lock(&kvm->slots_lock);
+>>>>>> +
+>>>>>> +	while (length > 0) {
+>>>>>> +		kvm_pfn_t pfn = gfn_to_pfn_prot(kvm, gfn, write, NULL);
+>>>>>> +		void *maddr;
+>>>>>> +		unsigned long num_tags = PAGE_SIZE / MTE_GRANULE_SIZE;
+>>>>>> +
+>>>>>> +		if (is_error_noslot_pfn(pfn)) {
+>>>>>> +			ret = -EFAULT;
+>>>>>> +			goto out;
+>>>>>> +		}
+>>>>>> +
+>>>>>> +		maddr = page_address(pfn_to_page(pfn));
+>>>>>> +
+>>>>>> +		if (!write) {
+>>>>>> +			num_tags = mte_copy_tags_to_user(tags, maddr, num_tags);
+>>>>>> +			kvm_release_pfn_clean(pfn);
+>>>>>
+>>>>> Do we need to check if PG_mte_tagged is set? If the page was not faulted
+>>>>> into the guest address space but the VMM has the page, does the
+>>>>> gfn_to_pfn_prot() guarantee that a kvm_set_spte_gfn() was called? If
+>>>>> not, this may read stale tags.
+>>>>
+>>>> Ah, I hadn't thought about that... No I don't believe gfn_to_pfn_prot()
+>>>> will fault it into the guest.
+>>>
+>>> It doesn't indeed. What it does is a get_user_pages() but it's not of
+>>> much help since the VMM pte wouldn't be tagged (we would have solved
+>>> lots of problems if we required PROT_MTE in the VMM...)
+>>
+>> Sadly it solves some problems and creates others :(
 > 
-> When memory_failure() or soft_offline_page() is called on a tail page of
-> some hugetlb page, "BUG: unable to handle page fault" error can be
-> triggered.
+> I had some (random) thoughts on how to make things simpler, maybe. I
+> think most of these races would have been solved if we required PROT_MTE
+> in the VMM but this has an impact on the VMM if it wants to use MTE
+> itself. If such requirement was in place, all KVM needed to do is check
+> PG_mte_tagged.
 > 
-> remove_hugetlb_page() dereferences page->lru, so it's assumed that the
-> page points to a head page, but one of the caller,
-> dissolve_free_huge_page(), provides remove_hugetlb_page() with 'page'
-> which could be a tail page.  So pass 'head' to it, instead.
+> So what we actually need is a set_pte_at() in the VMM to clear the tags
+> and set PG_mte_tagged. Currently, we only do this if the memory type is
+> tagged (PROT_MTE) but it's not strictly necessary.
 > 
-> Fixes: 6eb4e88a6d27 ("hugetlb: create remove_hugetlb_page() to separate functionality")
-> Signed-off-by: Naoya Horiguchi <naoya.horiguchi@nec.com>
+> As an optimisation for normal programs, we don't want to do this all the
+> time but the visible behaviour wouldn't change (well, maybe for ptrace
+> slightly). However, it doesn't mean we couldn't for a VMM, with an
+> opt-in via prctl(). This would add a MMCF_MTE_TAG_INIT bit (couldn't
+> think of a better name) to mm_context_t.flags and set_pte_at() would
+> behave as if the pte was tagged without actually mapping the memory in
+> user space as tagged (protection flags not changed). Pages that don't
+> support tagging are still safe, just some unnecessary ignored tag
+> writes. This would need to be set before the mmap() for the guest
+> memory.
+> 
+> If we want finer-grained control we'd have to store this information in
+> the vma flags, in addition to VM_MTE (e.g. VM_MTE_TAG_INIT) but without
+> affecting the actual memory type. The easiest would be another pte bit,
+> though we are short on them. A more intrusive (not too bad) approach is
+> to introduce a set_pte_at_vma() and read the flags directly in the arch
+> code. In most places where set_pte_at() is called on a user mm, the vma
+> is also available.
+> 
+> Anyway, I'm not saying we go this route, just thinking out loud, get
+> some opinions.
 
-Reviewed-by: Oscar Salvador <osalvador@suse.de>
+Does get_user_pages() actually end up calling set_pte_at() normally? If
+not then on the normal user_mem_abort() route although we can easily
+check VM_MTE_TAG_INIT there's no obvious place to hook in to ensure that
+the pages actually allocated have the PG_mte_tagged flag.
 
-It is probably worth adding a comment in remove_hugetlb_page() noting
-that we need a head page, so future users do not repeat the same
-mistake.
+I'm also not sure how well this would work with the MMU notifiers path
+in KVM. With MMU notifiers (i.e. the VMM replacing a page in the
+memslot) there's not even an obvious hook to enforce the VMA flag. So I
+think we'd end up with something like the sanitise_mte_tags() function
+to at least check that the PG_mte_tagged flag is set on the pages
+(assuming that the trigger for the MMU notifier has done the
+corresponding set_pte_at()). Admittedly this might close the current
+race documented there.
 
-Thanks 
+It also feels wrong to me to tie this to a process with prctl(), it
+seems much more normal to implement this as a new mprotect() flag as
+this is really a memory property not a process property. And I think
+we'll find some scary corner cases if we try to associate everything
+back to a process - although I can't instantly think of anything that
+will actually break.
 
--- 
-Oscar Salvador
-SUSE L3
+>>> Another thing I forgot to ask, what's guaranteeing that the page
+>>> supports tags? Does this ioctl ensure that it would attempt the tag
+>>> copying from some device mapping? Do we need some kvm_is_device_pfn()
+>>> check? I guess ZONE_DEVICE memory we just refuse to map in an earlier
+>>> patch.
+>>
+>> Hmm, nothing much. While reads are now fine (the memory won't have
+>> PG_mte_tagged), writes could potentially happen on ZONE_DEVICE memory.
+> 
+> I don't think it's a problem for writes either as the host wouldn't map
+> such memory as tagged. It's just that it returns zeros and writes are
+> ignored, so we could instead return an error (I haven't checked your
+> latest series yet).
+
+The latest series uses pfn_to_online_page() to reject ZONE_DEVICE early.
+
+>>>> 		} else {
+>>>> 			num_tags = mte_copy_tags_from_user(maddr, tags,
+>>>> 							MTE_GRANULES_PER_PAGE);
+>>>> 			kvm_release_pfn_dirty(pfn);
+>>>> 		}
+>>>>
+>>>> 		if (num_tags != MTE_GRANULES_PER_PAGE) {
+>>>> 			ret = -EFAULT;
+>>>> 			goto out;
+>>>> 		}
+>>>>
+>>>> 		if (write)
+>>>> 			test_and_set_bit(PG_mte_tagged, &page->flags);
+>>>
+>>> I think a set_bit() would do, I doubt it's any more efficient. But why
+>>
+>> I'd seen test_and_set_bit() used elsewhere (I forget where now) as a
+>> slightly more efficient approach. It complies down to a READ_ONCE and a
+>> conditional atomic, vs a single non-conditional atomic. But I don't have
+>> any actual data on the performance and this isn't a hot path, so I'll
+>> switch to the more obvious set_bit().
+> 
+> Yeah, I think I've seen this as well. Anyway, it's probably lost in the
+> noise of tag writing here.
+> 
+
+Agreed.
+
+Thanks,
+
+Steve
