@@ -2,139 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2940639280F
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 08:53:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B634392817
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 08:56:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233734AbhE0Gz2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 May 2021 02:55:28 -0400
-Received: from so254-9.mailgun.net ([198.61.254.9]:49953 "EHLO
-        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233044AbhE0Gz1 (ORCPT
+        id S233887AbhE0G6Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 May 2021 02:58:16 -0400
+Received: from mail-ua1-f42.google.com ([209.85.222.42]:36511 "EHLO
+        mail-ua1-f42.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232310AbhE0G6P (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 May 2021 02:55:27 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1622098434; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=TQxrZsZkNMWPoXXaHnAVoq6d9by44utK3awW5Rc63x8=;
- b=APgkOneOZWu6naU++4kEmd36fg/kYcl0xaSKSRnLECV7d+xf0QOsugDNDK7iVCKC0vM3BgF9
- FSrQnhzTFxp8LiWG3Unr/oGKpsspb2dF9qAqm/QHFy4G3hThex29Gv+GnijTeG/wLTtb39FQ
- 8wsb2eaJ78srTBcC7vTi95MGwGM=
-X-Mailgun-Sending-Ip: 198.61.254.9
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n06.prod.us-east-1.postgun.com with SMTP id
- 60af41f3d1aee7698ddbf904 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 27 May 2021 06:53:39
- GMT
-Sender: cang=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id EAC5DC43460; Thu, 27 May 2021 06:53:38 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: cang)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id C9744C433F1;
-        Thu, 27 May 2021 06:53:36 +0000 (UTC)
+        Thu, 27 May 2021 02:58:15 -0400
+Received: by mail-ua1-f42.google.com with SMTP id b1so2242802uap.3;
+        Wed, 26 May 2021 23:56:42 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=h2t6IMzVIqTCod2+uOSHEsZTJdw+bDIz54J1tQ79MxI=;
+        b=XlOuxH1buXg5CZFPe8aLOkWpPUIQR/YRSU7Lzjb/aX7RvSv7FwQLszU+jWHyvTMNlc
+         BBr3TMxh/qWHdYJRT4c6700RG1Ode2CUYM6qd+uBGkQOl1aZpzjQQ2J9SG/G2x6BIYnU
+         OXqI9kJN0ldIt23/nMdfG7fNIhvnDsFlZk5RIJYkzCoWymzao1p8au5SdylYCZxSJAaY
+         0CjRwElqR+StZWjVF72PFA0jk+n3RjTe4hmK6G456vmNobfYER8neISIuNWUXWj9S18S
+         QAFQ/JLXDzJQkisCwv+YBSWD932ekMqH64qs+YPT7KrxwBU84FYMY+OXbCc5rI5ddVE8
+         qjnQ==
+X-Gm-Message-State: AOAM53192Kt2b7tXeGnv47+5odLEGTv9AyVEOQkxGK5JM6U0EVRPjmFy
+        kKb4S9DxJqzGZwTpjbJMMtSD6RMGtssjJvxai9A=
+X-Google-Smtp-Source: ABdhPJy2YAKKfxFxxvKdmhExBLtPw5lTCiBuF+JtcYk8I7TJ0hfYqoU1o0Y8QVH5FiEH0N4Sj81vPMLvvnlXq+SMexU=
+X-Received: by 2002:a1f:d8c3:: with SMTP id p186mr1066978vkg.1.1622098602086;
+ Wed, 26 May 2021 23:56:42 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Thu, 27 May 2021 14:53:36 +0800
-From:   Can Guo <cang@codeaurora.org>
-To:     jongmin jeong <jjmin.jeong@samsung.com>
-Cc:     jejb@linux.ibm.com, martin.petersen@oracle.com,
-        alim.akhtar@samsung.com, avri.altman@wdc.com, beanhuo@micron.com,
-        adrian.hunter@intel.com, linux-scsi@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 3/3] scsi: ufs: add quirk to support host reset only
-In-Reply-To: <20210527030901.88403-4-jjmin.jeong@samsung.com>
-References: <20210527030901.88403-1-jjmin.jeong@samsung.com>
- <CGME20210527031220epcas2p41a5ba641919769ca95ccea81e5f3bfb0@epcas2p4.samsung.com>
- <20210527030901.88403-4-jjmin.jeong@samsung.com>
-Message-ID: <a31867eaf47a298baeec714f29e9cafe@codeaurora.org>
-X-Sender: cang@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+References: <20210527001251.8529-1-rdunlap@infradead.org>
+In-Reply-To: <20210527001251.8529-1-rdunlap@infradead.org>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Thu, 27 May 2021 08:56:30 +0200
+Message-ID: <CAMuHMdWxBDM6za4_zPrkPGja8K6vy47gfdzYMNjJ-i1n1ySsHA@mail.gmail.com>
+Subject: Re: [PATCH v2] MOUSE_ATARI: fix kconfig unmet dependency warning
+To:     Randy Dunlap <rdunlap@infradead.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Michael Schmitz <schmitz@debian.org>,
+        Roman Zippel <zippel@linux-m68k.org>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        linux-input <linux-input@vger.kernel.org>,
+        linux-m68k <linux-m68k@lists.linux-m68k.org>,
+        Michael Schmitz <schmitzmic@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-05-27 11:09, jongmin jeong wrote:
-> samsung ExynosAuto SoC has two types of host controller interface to
-> support the virtualization of UFS Device.
-> One is the physical host(PH) that the same as conventaional UFSHCI,
-> and the other is the virtual host(VH) that support data transfer 
-> function only.
-> 
-> In this structure, the virtual host does support host reset handler 
-> only.
-> This patch calls the host reset handler when abort or device reset 
-> handler
-> has occured in the virtual host.
+On Thu, May 27, 2021 at 2:12 AM Randy Dunlap <rdunlap@infradead.org> wrote:
+> Since the code for ATARI_KBD_CORE does not use drivers/input/keyboard/
+> code, just move ATARI_KBD_CORE to arch/m68k/Kconfig.machine to remove
+> this dependency.
+>
+> Removes this kconfig warning:
+>
+> WARNING: unmet direct dependencies detected for ATARI_KBD_CORE
+>   Depends on [n]: !UML && INPUT [=y] && INPUT_KEYBOARD [=n]
+>   Selected by [y]:
+>   - MOUSE_ATARI [=y] && !UML && INPUT [=y] && INPUT_MOUSE [=y] && ATARI [=y]
+>
+> Fixes: c04cb856e20a ("m68k: Atari keyboard and mouse support.")
+> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+> Cc: Michael Schmitz <schmitz@debian.org>
+> Cc: Roman Zippel <zippel@linux-m68k.org>
+> Cc: Geert Uytterhoeven <geert@linux-m68k.org>
+> Cc: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+> Cc: linux-input@vger.kernel.org
+> Cc: linux-m68k@lists.linux-m68k.org
+> Suggested-by: Geert Uytterhoeven <geert@linux-m68k.org>
+> Suggested-by: Michael Schmitz <schmitzmic@gmail.com>
 
-One more question, as per the plot in the cover letter, the VH does 
-support TMRs.
-Why are you trying to make ufshcd_abort() and 
-ufshcd_eh_device_reset_handler()
-no-ops?
-
-Thanks,
-
-Can Guo.
-
-> 
-> Change-Id: I3f07e772415a35fe1e7374e02b3c37ef0bf5660d
-> Signed-off-by: jongmin jeong <jjmin.jeong@samsung.com>
 > ---
->  drivers/scsi/ufs/ufshcd.c | 7 +++++++
->  drivers/scsi/ufs/ufshcd.h | 6 ++++++
->  2 files changed, 13 insertions(+)
-> 
-> diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
-> index 4787e40c6a2d..9d1912290f87 100644
-> --- a/drivers/scsi/ufs/ufshcd.c
-> +++ b/drivers/scsi/ufs/ufshcd.c
-> @@ -6826,6 +6826,9 @@ static int ufshcd_eh_device_reset_handler(struct
-> scsi_cmnd *cmd)
->  	u8 resp = 0xF, lun;
->  	unsigned long flags;
-> 
-> +	if (hba->quirks & UFSHCD_QUIRK_BROKEN_RESET_HANDLER)
-> +		return ufshcd_eh_host_reset_handler(cmd);
-> +
->  	host = cmd->device->host;
->  	hba = shost_priv(host);
-> 
-> @@ -6972,6 +6975,10 @@ static int ufshcd_abort(struct scsi_cmnd *cmd)
->  	host = cmd->device->host;
->  	hba = shost_priv(host);
->  	tag = cmd->request->tag;
-> +
-> +	if (hba->quirks & UFSHCD_QUIRK_BROKEN_RESET_HANDLER)
-> +		return ufshcd_eh_host_reset_handler(cmd);
-> +
->  	lrbp = &hba->lrb[tag];
->  	if (!ufshcd_valid_tag(hba, tag)) {
->  		dev_err(hba->dev,
-> diff --git a/drivers/scsi/ufs/ufshcd.h b/drivers/scsi/ufs/ufshcd.h
-> index 0ab4c296be32..82a9c6889978 100644
-> --- a/drivers/scsi/ufs/ufshcd.h
-> +++ b/drivers/scsi/ufs/ufshcd.h
-> @@ -581,6 +581,12 @@ enum ufshcd_quirks {
->  	 * support interface configuration.
->  	 */
->  	UFSHCD_QUIRK_SKIP_INTERFACE_CONFIGURATION	= 1 << 16,
-> +
-> +	/*
-> +	 * This quirk needs to be enabled if the host controller support
-> +	 * host reset handler only.
-> +	 */
-> +	UFSHCD_QUIRK_BROKEN_RESET_HANDLER		= 1 << 17,
->  };
-> 
->  enum ufshcd_caps {
+> v2: move the symbol outside of INPUT_KEYBOARD (Geert) -- all the way
+>     to Kconfig.machine (Michael). Thanks.
+
+Acked-by: Geert Uytterhoeven <geert@linux-m68k.org>
+
+I'm willing to queue this in the m68k for-v5.14 branch, if Dmitry agrees.
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
