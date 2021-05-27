@@ -2,251 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F899392F9A
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 15:27:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D5886392FA1
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 15:27:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236377AbhE0N3G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 May 2021 09:29:06 -0400
-Received: from verein.lst.de ([213.95.11.211]:39063 "EHLO verein.lst.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236455AbhE0N3B (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 May 2021 09:29:01 -0400
-Received: by verein.lst.de (Postfix, from userid 2407)
-        id BAAFB68AFE; Thu, 27 May 2021 15:27:23 +0200 (CEST)
-Date:   Thu, 27 May 2021 15:27:23 +0200
-From:   Christoph Hellwig <hch@lst.de>
-To:     Claire Chang <tientzu@chromium.org>
-Cc:     Rob Herring <robh+dt@kernel.org>, mpe@ellerman.id.au,
-        Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
-        boris.ostrovsky@oracle.com, jgross@suse.com,
-        Christoph Hellwig <hch@lst.de>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        benh@kernel.crashing.org, paulus@samba.org,
-        "list@263.net:IOMMU DRIVERS" <iommu@lists.linux-foundation.org>,
-        sstabellini@kernel.org, Robin Murphy <robin.murphy@arm.com>,
-        grant.likely@arm.com, xypron.glpk@gmx.de,
-        Thierry Reding <treding@nvidia.com>, mingo@kernel.org,
-        bauerman@linux.ibm.com, peterz@infradead.org,
-        Greg KH <gregkh@linuxfoundation.org>,
-        Saravana Kannan <saravanak@google.com>,
-        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
-        heikki.krogerus@linux.intel.com,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        linux-devicetree <devicetree@vger.kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        linuxppc-dev@lists.ozlabs.org, xen-devel@lists.xenproject.org,
-        Nicolas Boichat <drinkcat@chromium.org>,
-        Jim Quinlan <james.quinlan@broadcom.com>, tfiga@chromium.org,
-        bskeggs@redhat.com, bhelgaas@google.com, chris@chris-wilson.co.uk,
-        daniel@ffwll.ch, airlied@linux.ie, dri-devel@lists.freedesktop.org,
-        intel-gfx@lists.freedesktop.org, jani.nikula@linux.intel.com,
-        jxgao@google.com, joonas.lahtinen@linux.intel.com,
-        linux-pci@vger.kernel.org, maarten.lankhorst@linux.intel.com,
-        matthew.auld@intel.com, rodrigo.vivi@intel.com,
-        thomas.hellstrom@linux.intel.com
-Subject: Re: [PATCH v7 04/15] swiotlb: Add restricted DMA pool
- initialization
-Message-ID: <20210527132723.GD26160@lst.de>
-References: <20210518064215.2856977-1-tientzu@chromium.org> <20210518064215.2856977-5-tientzu@chromium.org>
+        id S236466AbhE0N3S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 May 2021 09:29:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34606 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236483AbhE0N3M (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 27 May 2021 09:29:12 -0400
+Received: from mail-ej1-x632.google.com (mail-ej1-x632.google.com [IPv6:2a00:1450:4864:20::632])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4B91C061574;
+        Thu, 27 May 2021 06:27:37 -0700 (PDT)
+Received: by mail-ej1-x632.google.com with SMTP id s22so18231ejv.12;
+        Thu, 27 May 2021 06:27:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=ppiS+kUHEmNMA/rfiFdU2fGCovIYKgvsvBDMkMx1l8g=;
+        b=N1ld5ltqPVFeWqGp+B9xVK3nRLjNtJfBEO3iq55ubS3wXZjWH65JSzfQL20TnWsEwg
+         Qw1WwKn39XWjuFxzRXL6jAu6RJJymed0cbr5GjwRlZABwYYffYfVrlXuyYLQAZENPvJD
+         CiPKtinmr7xwogY5ChiR2cMTCrW1G5C0ZSTGtSDF/L88GmokztHKdFSzX/fU+fzu7HiM
+         sodB2E25l3ZqtpXhJDpcOv/zm/vIH2TWjY/dQECaj/IAVweEe4lLx+KO1IxKYs0K8pns
+         jlVj9lmjcZM5OJL0BLeF6bqI/nDvTt5VCpb7MovQHrGafqNpIqd4388FoH9ucvjv0JOq
+         ylsw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=ppiS+kUHEmNMA/rfiFdU2fGCovIYKgvsvBDMkMx1l8g=;
+        b=qqadja0NUmDxLQaw148Vknbl7WeBfpigH+4uk9qYYdovl8EcxiWuZ0aikI03TA9nT2
+         Q8JvKVyMMXVeMXnY04uFRipu8HhTRH4WTEg2JG4RmYBWwll9mVnhz1F6CL0wm1aE39RP
+         0/+A5RckpNJRCdYW/0pOyyJcps/pFwC6CJwC+fyaOZugFDgHC2kAYp0DljDvl7e6IC89
+         jPdpG5da0Pnk9IwkIKwockGeY6kW0XNE8L+puGhdd1NIBrV3Pc46/gDOmPAlr787VrUq
+         JjAJMx5F3DALS1cJzqSnx71cmuMP1ZNYZo7BwTRzRInV3N0zrTLF3GeuEIOdBvMXTS3F
+         PwlA==
+X-Gm-Message-State: AOAM533qdGex8ym7yGVksPecJSH7arPJc+Fx/d+G5C22A1n6Fo0qBvBz
+        j7G6Gwa8YmbcYdWsnQA71sc=
+X-Google-Smtp-Source: ABdhPJwHz+PO0bxmokSeO7kLTi0+JZ/h/GLDeWjzuo/3J0bHnA1plBUGwNC8SjCRQyMwcMX/Beskxw==
+X-Received: by 2002:a17:906:90c9:: with SMTP id v9mr3813868ejw.102.1622122056454;
+        Thu, 27 May 2021 06:27:36 -0700 (PDT)
+Received: from BV030612LT ([188.24.140.160])
+        by smtp.gmail.com with ESMTPSA id p25sm1011450eja.35.2021.05.27.06.27.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 27 May 2021 06:27:35 -0700 (PDT)
+Date:   Thu, 27 May 2021 16:27:33 +0300
+From:   Cristian Ciocaltea <cristian.ciocaltea@gmail.com>
+To:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+Cc:     Stephen Boyd <sboyd@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+        Andreas =?iso-8859-1?Q?F=E4rber?= <afaerber@suse.de>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Edgar Bernardi Righi <edgar.righi@lsitec.org.br>,
+        linux-clk@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-actions@lists.infradead.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org
+Subject: Re: [PATCH 2/6] clk: actions: Fix SD clocks factor table on Owl S500
+ SoC
+Message-ID: <20210527132733.GA1300160@BV030612LT>
+References: <cover.1615221459.git.cristian.ciocaltea@gmail.com>
+ <973b08fe414321ba4ade096a4917cadc2013426e.1615221459.git.cristian.ciocaltea@gmail.com>
+ <20210316035845.GB1798@thinkpad>
+ <20210316181437.GB1111731@BV030612LT>
+ <20210526100719.GC10723@work>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210518064215.2856977-5-tientzu@chromium.org>
-User-Agent: Mutt/1.5.17 (2007-11-01)
+In-Reply-To: <20210526100719.GC10723@work>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-I'd still much prefer to always have the pointer in struct device.
-Especially as we're also looking into things like a global 64-bit bounce
-buffer.  Something like this untested patch ontop of your series:
+On Wed, May 26, 2021 at 03:37:43PM +0530, Manivannan Sadhasivam wrote:
+> On Tue, Mar 16, 2021 at 08:14:37PM +0200, Cristian Ciocaltea wrote:
+> > Hi Mani,
+> > 
+> > Thanks for reviewing this patch series!
+> > 
+> > On Tue, Mar 16, 2021 at 09:28:45AM +0530, Manivannan Sadhasivam wrote:
+> > > On Mon, Mar 08, 2021 at 07:18:27PM +0200, Cristian Ciocaltea wrote:
+> > > > Drop the unsupported entries in the factor table used for the SD[0-2]
+> > > > clocks definitions on the Actions Semi Owl S500 SoC.
+> > > > 
+> > > > Fixes: ed6b4795ece4 ("clk: actions: Add clock driver for S500 SoC")
+> > > > Signed-off-by: Cristian Ciocaltea <cristian.ciocaltea@gmail.com>
+> > > > ---
+> > > >  drivers/clk/actions/owl-s500.c | 4 ----
+> > > >  1 file changed, 4 deletions(-)
+> > > > 
+> > > > diff --git a/drivers/clk/actions/owl-s500.c b/drivers/clk/actions/owl-s500.c
+> > > > index 75b7186185b0..69cd959205f5 100644
+> > > > --- a/drivers/clk/actions/owl-s500.c
+> > > > +++ b/drivers/clk/actions/owl-s500.c
+> > > > @@ -127,8 +127,6 @@ static struct clk_factor_table sd_factor_table[] = {
+> > > >  	{ 12, 1, 13 }, { 13, 1, 14 }, { 14, 1, 15 }, { 15, 1, 16 },
+> > > >  	{ 16, 1, 17 }, { 17, 1, 18 }, { 18, 1, 19 }, { 19, 1, 20 },
+> > > >  	{ 20, 1, 21 }, { 21, 1, 22 }, { 22, 1, 23 }, { 23, 1, 24 },
+> > > > -	{ 24, 1, 25 }, { 25, 1, 26 }, { 26, 1, 27 }, { 27, 1, 28 },
+> > > > -	{ 28, 1, 29 }, { 29, 1, 30 }, { 30, 1, 31 }, { 31, 1, 32 },
+> > > 
+> 
+> [...]
+> 
+> > This is basically what gets translated to sd_factor_table and I removed
+> > the extra entries 25..31. Actually I also dropped the 24th one, since
+> > that would give us an odd number of items, although I'm not quite sure
+> > this is a bug in the xapp-le code or the HW is really supposed to work
+> > like that.
+> > 
+> 
+> In my datasheet I can see the factor values till 24. So let's remove the
+> entries from 25-31.
 
+I got an updated datasheet and I confirm 24 is a valid selector. Applied
+the correction in v2:
 
-diff --git a/drivers/base/core.c b/drivers/base/core.c
-index 628e33939aca..3cb95fa29f70 100644
---- a/drivers/base/core.c
-+++ b/drivers/base/core.c
-@@ -29,6 +29,7 @@
- #include <linux/sched/mm.h>
- #include <linux/sysfs.h>
- #include <linux/dma-map-ops.h> /* for dma_default_coherent */
-+#include <linux/swiotlb.h>
- 
- #include "base.h"
- #include "power/power.h"
-@@ -2814,6 +2815,9 @@ void device_initialize(struct device *dev)
-     defined(CONFIG_ARCH_HAS_SYNC_DMA_FOR_CPU_ALL)
- 	dev->dma_coherent = dma_default_coherent;
- #endif
-+#ifdef CONFIG_SWIOTLB
-+	dev->dma_io_tlb_mem = &io_tlb_default_mem;
-+#endif
- }
- EXPORT_SYMBOL_GPL(device_initialize);
- 
-diff --git a/include/linux/device.h b/include/linux/device.h
-index 4987608ea4ff..6aca6fa0facc 100644
---- a/include/linux/device.h
-+++ b/include/linux/device.h
-@@ -416,7 +416,7 @@ struct dev_links_info {
-  * @dma_pools:	Dma pools (if dma'ble device).
-  * @dma_mem:	Internal for coherent mem override.
-  * @cma_area:	Contiguous memory area for dma allocations
-- * @dma_io_tlb_mem: Internal for swiotlb io_tlb_mem override.
-+ * @dma_io_tlb_mem: Pointer to the swiotlb pool used.  Not for driver use.
-  * @archdata:	For arch-specific additions.
-  * @of_node:	Associated device tree node.
-  * @fwnode:	Associated device node supplied by platform firmware.
-@@ -523,7 +523,7 @@ struct device {
- 	struct cma *cma_area;		/* contiguous memory area for dma
- 					   allocations */
- #endif
--#ifdef CONFIG_DMA_RESTRICTED_POOL
-+#ifdef CONFIG_SWIOTLB
- 	struct io_tlb_mem *dma_io_tlb_mem;
- #endif
- 	/* arch specific additions */
-diff --git a/include/linux/swiotlb.h b/include/linux/swiotlb.h
-index e8cf49bd90c5..c153cd0c469c 100644
---- a/include/linux/swiotlb.h
-+++ b/include/linux/swiotlb.h
-@@ -95,6 +95,7 @@ struct io_tlb_mem {
- 	spinlock_t lock;
- 	struct dentry *debugfs;
- 	bool late_alloc;
-+	bool force_swiotlb;
- 	struct io_tlb_slot {
- 		phys_addr_t orig_addr;
- 		size_t alloc_size;
-@@ -103,30 +104,16 @@ struct io_tlb_mem {
- };
- extern struct io_tlb_mem *io_tlb_default_mem;
- 
--static inline struct io_tlb_mem *get_io_tlb_mem(struct device *dev)
--{
--#ifdef CONFIG_DMA_RESTRICTED_POOL
--	if (dev && dev->dma_io_tlb_mem)
--		return dev->dma_io_tlb_mem;
--#endif /* CONFIG_DMA_RESTRICTED_POOL */
--
--	return io_tlb_default_mem;
--}
--
- static inline bool is_swiotlb_buffer(struct device *dev, phys_addr_t paddr)
- {
--	struct io_tlb_mem *mem = get_io_tlb_mem(dev);
-+	struct io_tlb_mem *mem = dev->dma_io_tlb_mem;
- 
- 	return mem && paddr >= mem->start && paddr < mem->end;
- }
- 
- static inline bool is_dev_swiotlb_force(struct device *dev)
- {
--#ifdef CONFIG_DMA_RESTRICTED_POOL
--	if (dev->dma_io_tlb_mem)
--		return true;
--#endif /* CONFIG_DMA_RESTRICTED_POOL */
--	return false;
-+	return dev->dma_io_tlb_mem->force_swiotlb;
- }
- 
- void __init swiotlb_exit(void);
-@@ -134,10 +121,8 @@ unsigned int swiotlb_max_segment(void);
- size_t swiotlb_max_mapping_size(struct device *dev);
- bool is_swiotlb_active(struct device *dev);
- void __init swiotlb_adjust_size(unsigned long size);
--#ifdef CONFIG_DMA_RESTRICTED_POOL
- struct page *swiotlb_alloc(struct device *dev, size_t size);
- bool swiotlb_free(struct device *dev, struct page *page, size_t size);
--#endif /* CONFIG_DMA_RESTRICTED_POOL */
- #else
- #define swiotlb_force SWIOTLB_NO_FORCE
- static inline bool is_swiotlb_buffer(struct device *dev, phys_addr_t paddr)
-diff --git a/kernel/dma/swiotlb.c b/kernel/dma/swiotlb.c
-index d3fa4669229b..69d62e18f493 100644
---- a/kernel/dma/swiotlb.c
-+++ b/kernel/dma/swiotlb.c
-@@ -347,7 +347,7 @@ void __init swiotlb_exit(void)
- static void swiotlb_bounce(struct device *dev, phys_addr_t tlb_addr, size_t size,
- 			   enum dma_data_direction dir)
- {
--	struct io_tlb_mem *mem = get_io_tlb_mem(dev);
-+	struct io_tlb_mem *mem = dev->dma_io_tlb_mem;
- 	int index = (tlb_addr - mem->start) >> IO_TLB_SHIFT;
- 	phys_addr_t orig_addr = mem->slots[index].orig_addr;
- 	size_t alloc_size = mem->slots[index].alloc_size;
-@@ -429,7 +429,7 @@ static unsigned int wrap_index(struct io_tlb_mem *mem, unsigned int index)
- static int find_slots(struct device *dev, phys_addr_t orig_addr,
- 		size_t alloc_size)
- {
--	struct io_tlb_mem *mem = get_io_tlb_mem(dev);
-+	struct io_tlb_mem *mem = dev->dma_io_tlb_mem;
- 	unsigned long boundary_mask = dma_get_seg_boundary(dev);
- 	dma_addr_t tbl_dma_addr =
- 		phys_to_dma_unencrypted(dev, mem->start) & boundary_mask;
-@@ -510,7 +510,7 @@ phys_addr_t swiotlb_tbl_map_single(struct device *dev, phys_addr_t orig_addr,
- 		size_t mapping_size, size_t alloc_size,
- 		enum dma_data_direction dir, unsigned long attrs)
- {
--	struct io_tlb_mem *mem = get_io_tlb_mem(dev);
-+	struct io_tlb_mem *mem = dev->dma_io_tlb_mem;
- 	unsigned int offset = swiotlb_align_offset(dev, orig_addr);
- 	unsigned int i;
- 	int index;
-@@ -553,7 +553,7 @@ phys_addr_t swiotlb_tbl_map_single(struct device *dev, phys_addr_t orig_addr,
- 
- static void release_slots(struct device *dev, phys_addr_t tlb_addr)
- {
--	struct io_tlb_mem *mem = get_io_tlb_mem(dev);
-+	struct io_tlb_mem *mem = dev->dma_io_tlb_mem;
- 	unsigned long flags;
- 	unsigned int offset = swiotlb_align_offset(dev, tlb_addr);
- 	int index = (tlb_addr - offset - mem->start) >> IO_TLB_SHIFT;
-@@ -670,7 +670,7 @@ size_t swiotlb_max_mapping_size(struct device *dev)
- 
- bool is_swiotlb_active(struct device *dev)
- {
--	return get_io_tlb_mem(dev) != NULL;
-+	return dev->dma_io_tlb_mem;
- }
- EXPORT_SYMBOL_GPL(is_swiotlb_active);
- 
-@@ -741,7 +741,7 @@ static int rmem_swiotlb_device_init(struct reserved_mem *rmem,
- 	struct io_tlb_mem *mem = rmem->priv;
- 	unsigned long nslabs = rmem->size >> IO_TLB_SHIFT;
- 
--	if (dev->dma_io_tlb_mem)
-+	if (dev->dma_io_tlb_mem != io_tlb_default_mem)
- 		return 0;
- 
- 	/*
-@@ -760,6 +760,7 @@ static int rmem_swiotlb_device_init(struct reserved_mem *rmem,
- 		}
- 
- 		swiotlb_init_io_tlb_mem(mem, rmem->base, nslabs, false);
-+		mem->force_swiotlb = true;
- 
- 		rmem->priv = mem;
- 
-@@ -768,15 +769,13 @@ static int rmem_swiotlb_device_init(struct reserved_mem *rmem,
- 	}
- 
- 	dev->dma_io_tlb_mem = mem;
--
- 	return 0;
- }
- 
- static void rmem_swiotlb_device_release(struct reserved_mem *rmem,
- 					struct device *dev)
- {
--	if (dev)
--		dev->dma_io_tlb_mem = NULL;
-+	dev->dma_io_tlb_mem = io_tlb_default_mem;
- }
- 
- static const struct reserved_mem_ops rmem_swiotlb_ops = {
+https://lore.kernel.org/lkml/cover.1622119892.git.cristian.ciocaltea@gmail.com/
+
+Thanks,
+Cristi
+
+> Thanks,
+> Mani
+> 
+> > Kind regards,
+> > Cristi
+> > 
+> > > Thanks,
+> > > Mani
+> > > 
+> > > >  
+> > > >  	/* bit8: /128 */
+> > > >  	{ 256, 1, 1 * 128 }, { 257, 1, 2 * 128 }, { 258, 1, 3 * 128 }, { 259, 1, 4 * 128 },
+> > > > @@ -137,8 +135,6 @@ static struct clk_factor_table sd_factor_table[] = {
+> > > >  	{ 268, 1, 13 * 128 }, { 269, 1, 14 * 128 }, { 270, 1, 15 * 128 }, { 271, 1, 16 * 128 },
+> > > >  	{ 272, 1, 17 * 128 }, { 273, 1, 18 * 128 }, { 274, 1, 19 * 128 }, { 275, 1, 20 * 128 },
+> > > >  	{ 276, 1, 21 * 128 }, { 277, 1, 22 * 128 }, { 278, 1, 23 * 128 }, { 279, 1, 24 * 128 },
+> > > > -	{ 280, 1, 25 * 128 }, { 281, 1, 26 * 128 }, { 282, 1, 27 * 128 }, { 283, 1, 28 * 128 },
+> > > > -	{ 284, 1, 29 * 128 }, { 285, 1, 30 * 128 }, { 286, 1, 31 * 128 }, { 287, 1, 32 * 128 },
+> > > >  	{ 0, 0, 0 },
+> > > >  };
+> > > >  
+> > > > -- 
+> > > > 2.30.1
+> > > > 
