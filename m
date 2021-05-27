@@ -2,58 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A15D339324F
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 17:18:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B15F3931A5
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 17:03:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235595AbhE0PUL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 May 2021 11:20:11 -0400
-Received: from sender11-op-o11.zoho.eu ([31.186.226.225]:17120 "EHLO
-        sender11-op-o11.zoho.eu" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235683AbhE0PTk (ORCPT
+        id S236730AbhE0PEr convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 27 May 2021 11:04:47 -0400
+Received: from relay11.mail.gandi.net ([217.70.178.231]:54615 "EHLO
+        relay11.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231419AbhE0PEp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 May 2021 11:19:40 -0400
-X-Greylist: delayed 905 seconds by postgrey-1.27 at vger.kernel.org; Thu, 27 May 2021 11:19:39 EDT
-ARC-Seal: i=1; a=rsa-sha256; t=1622127771; cv=none; 
-        d=zohomail.eu; s=zohoarc; 
-        b=B8O4rpU9cliQfNQvgtHtVd5VlcwBlm4k2zygcq1bAsS5Hl86KPLX0WJo/mCirxoDuBFt2AMQWHIdXlTtU3YFABIiYXg9gslTTKtm987i7/kePzvrG+uSRdKoNRewGPen48qM3xVnurUrNCZmSmriIXif5s9Zu+2qUS8aOYjFpc0=
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=zohomail.eu; s=zohoarc; 
-        t=1622127771; h=Content-Type:Content-Transfer-Encoding:Cc:Date:From:In-Reply-To:MIME-Version:Message-ID:References:Subject:To; 
-        bh=Ney13/SDgPkyWtR1MJDUY+tAf59DyZxsIbEbYe1aHpI=; 
-        b=MPQY3TWUPCn+eC++jzIuTNVSZi8QFoNlxNfnXbSSjnrheXHxzxhhHDwTx+BCqKj0X32+Qa45DubOHSiojpSUavBGiJWR4XR2S6LfTS8dBVexHZroWxZE+UAGKXJyt/c3sbaFsmRQWsX/Wnv1bjnQPc90ugAls0lmm5wq+THeSyM=
-ARC-Authentication-Results: i=1; mx.zohomail.eu;
-        spf=pass  smtp.mailfrom=jes@trained-monkey.org;
-        dmarc=pass header.from=<jes@trained-monkey.org>
-Received: from [192.168.99.29] (pool-72-69-75-15.nycmny.fios.verizon.net [72.69.75.15]) by mx.zoho.eu
-        with SMTPS id 1622127768365197.51234161517937; Thu, 27 May 2021 17:02:48 +0200 (CEST)
-Subject: Re: [PATCH net-next] net: hippi: remove leading spaces before tabs
-To:     Hui Tang <tanghui20@huawei.com>
-Cc:     linux-kernel@vger.kernel.org
-References: <1621483047-32583-1-git-send-email-tanghui20@huawei.com>
-From:   Jes Sorensen <jes@trained-monkey.org>
-Message-ID: <04909949-0316-ff34-682b-9286fac1a8a7@trained-monkey.org>
-Date:   Thu, 27 May 2021 11:02:47 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+        Thu, 27 May 2021 11:04:45 -0400
+Received: (Authenticated sender: miquel.raynal@bootlin.com)
+        by relay11.mail.gandi.net (Postfix) with ESMTPSA id D2B14100007;
+        Thu, 27 May 2021 15:03:10 +0000 (UTC)
+Date:   Thu, 27 May 2021 17:03:09 +0200
+From:   Miquel Raynal <miquel.raynal@bootlin.com>
+To:     Colin King <colin.king@canonical.com>
+Cc:     Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        linux-mtd@lists.infradead.org, kernel-janitors@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH][next] mtd: rawnand: ensure return variable is
+ initialized
+Message-ID: <20210527170309.4d99bc31@xps13>
+In-Reply-To: <20210527145048.795954-1-colin.king@canonical.com>
+References: <20210527145048.795954-1-colin.king@canonical.com>
+Organization: Bootlin
+X-Mailer: Claws Mail 3.17.7 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-In-Reply-To: <1621483047-32583-1-git-send-email-tanghui20@huawei.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-ZohoMailClient: External
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5/19/21 11:57 PM, Hui Tang wrote:
-> There are a few leading spaces before tabs and remove it by running
-> the following commard:
+Hi Colin,
+
+Colin King <colin.king@canonical.com> wrote on Thu, 27 May 2021
+15:50:48 +0100:
+
+> From: Colin Ian King <colin.king@canonical.com>
 > 
->     $ find . -name '*.[ch]' | xargs sed -r -i 's/^[ ]+\t/\t/'
-> 
-> Signed-off-by: Hui Tang <tanghui20@huawei.com>
+> Currently there are corner cases where spec_times is NULL and
+> chip->parameters.onfi or when best_mode is zero where ret is
+
+                       ^
+something is missing here, the sentence is not clear
+
+> not assigned a value and an uninitialized return value can be
+> returned. Fix this by ensuring ret is initialized to -EINVAL.
+
+I don't see how this situation can happen.
+
+In both cases, no matter the value of best_mode, the for loop will
+always execute at least one time (mode 0) so ret will be populated.
+
+Maybe the robot does not know that best_mode cannot be negative and
+should be defined unsigned, but the current patch is invalid.
+
+> Addresses-Coverity: ("Uninitialized scalar variable")
+> Fixes: 9d3194bf2aef ("mtd: rawnand: Allow SDR timings to be nacked")
+> Fixes: a9ecc8c814e9 ("mtd: rawnand: Choose the best timings, NV-DDR included")
+> Signed-off-by: Colin Ian King <colin.king@canonical.com>
 > ---
->  drivers/net/hippi/rrunner.c | 6 +++---
->  1 file changed, 3 insertions(+), 3 deletions(-)
+>  drivers/mtd/nand/raw/nand_base.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/mtd/nand/raw/nand_base.c b/drivers/mtd/nand/raw/nand_base.c
+> index 57a583149cc0..18db742f650c 100644
+> --- a/drivers/mtd/nand/raw/nand_base.c
+> +++ b/drivers/mtd/nand/raw/nand_base.c
+> @@ -926,7 +926,7 @@ int nand_choose_best_sdr_timings(struct nand_chip *chip,
+>  				 struct nand_sdr_timings *spec_timings)
+>  {
+>  	const struct nand_controller_ops *ops = chip->controller->ops;
+> -	int best_mode = 0, mode, ret;
+> +	int best_mode = 0, mode, ret = -EINVAL;
+>  
+>  	iface->type = NAND_SDR_IFACE;
+>  
+> @@ -977,7 +977,7 @@ int nand_choose_best_nvddr_timings(struct nand_chip *chip,
+>  				   struct nand_nvddr_timings *spec_timings)
+>  {
+>  	const struct nand_controller_ops *ops = chip->controller->ops;
+> -	int best_mode = 0, mode, ret;
+> +	int best_mode = 0, mode, ret = 0;
+>  
+>  	iface->type = NAND_NVDDR_IFACE;
+>  
 
-Acked-by: Jes Sorensen <jes@trained-monkey.org>
-
+Thanks,
+Miquèl
