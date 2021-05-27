@@ -2,74 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 31D6B392D13
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 13:49:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B0C3392D1A
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 13:50:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234215AbhE0Lur (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 May 2021 07:50:47 -0400
-Received: from mail.skyhub.de ([5.9.137.197]:54910 "EHLO mail.skyhub.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233633AbhE0Lup (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 May 2021 07:50:45 -0400
-Received: from zn.tnic (p200300ec2f0f02008ae29220a5f6f448.dip0.t-ipconnect.de [IPv6:2003:ec:2f0f:200:8ae2:9220:a5f6:f448])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id C06C21EC01DF;
-        Thu, 27 May 2021 13:49:11 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1622116151;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=4hf7uF3C3I8f6GPjngHoeAScPG99btQaF7u7u7H1D/A=;
-        b=Sgaak1NAhP9i6jE1h6KeI0CFwvsb66ueQKL0EFfIisNKKFKCoTW1tpdbkI7bXxWcuy/MCK
-        80H09PtaLz2sMTfzm5E9z7fMJcu+d/OVcF8V0Bywzlm2RLd5hoiasH2O0YGO4vm7DOsPPZ
-        I7YCb5bhulGA5S2gyslVXUGbksoe9/Y=
-Date:   Thu, 27 May 2021 13:49:05 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Brijesh Singh <brijesh.singh@amd.com>
-Cc:     x86@kernel.org, linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        tglx@linutronix.de, jroedel@suse.de, thomas.lendacky@amd.com,
-        pbonzini@redhat.com, mingo@redhat.com, dave.hansen@intel.com,
-        rientjes@google.com, seanjc@google.com, peterz@infradead.org,
-        hpa@zytor.com, tony.luck@intel.com
-Subject: Re: [PATCH Part1 RFC v2 16/20] x86/kernel: Validate rom memory
- before accessing when SEV-SNP is active
-Message-ID: <YK+HMZIgZWwCYKzq@zn.tnic>
-References: <20210430121616.2295-1-brijesh.singh@amd.com>
- <20210430121616.2295-17-brijesh.singh@amd.com>
+        id S234286AbhE0Lvl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 May 2021 07:51:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39980 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233633AbhE0Lvk (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 27 May 2021 07:51:40 -0400
+Received: from mail-yb1-xb34.google.com (mail-yb1-xb34.google.com [IPv6:2607:f8b0:4864:20::b34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2EABC061574;
+        Thu, 27 May 2021 04:50:06 -0700 (PDT)
+Received: by mail-yb1-xb34.google.com with SMTP id y2so206388ybq.13;
+        Thu, 27 May 2021 04:50:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=q1kENDG0WR8mOBK1OsInJzP26DtLwlvBt7ZWJLHTsCU=;
+        b=ethVlmFYyKvR07Bfu9hSsFdqECyFYAc27wDmhxhmRy+O+zS8rHtUNJB7sO1v8LJPQt
+         DC5z4Q4kKHt7QZjqLYlovBiZ6pPK/aT4WH7NMKRWWYhXhkO8rK3xNsS9bP9CK1Xv0JCi
+         iBDf+bY5dnYTILyxnI8VvkElAeCJenOPE+XLFrLPtzhkbEFA5R/DoTbKTsROK00sMWWg
+         y9+Ol7/zsRHv1QNWw6ICt+gIfBm33k7j6ZxDZc4wimTtFi1jP9klA/3fRLZNiJmRr87g
+         rptRrDVUyJp9uS1Ue+lfkofBl3dY3EiWwAC36pu7jZD5Efz5vKLULPV3UjsZbhMdB4Jx
+         p9CA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=q1kENDG0WR8mOBK1OsInJzP26DtLwlvBt7ZWJLHTsCU=;
+        b=cFEshztxC4y9RHZ9ISJ2YXas7gRkBNNkQcUBIo9KMtrcH7Q1AMR9pC+WbcWtZmsyLA
+         JEQqvNdfdJ7NwY6b9q9ofCcXzJ8rvNItTlB165mi62VCcuDLfPHIToJdfwGl2fuauPJn
+         yVCTD8cMoS6fY3rHEHQn2FUiw9dlH+Wk9qNq81TC2VzVRHcvNOr9t5PeXHGbkA8/N3zN
+         5VIvfw+E9Wr53yApLMY+pEbUGpqGRK/yZtsqLkSEmxhaLO2dCptYGwGXP7mDoSvycQMo
+         rIYUnoi7uZgvpQYAh+oZ+beLo6Bvcsvtv3Yvut3nPvAhQ9yvyncyBR2XbZuZvWAVdwDG
+         7dPA==
+X-Gm-Message-State: AOAM5339/Gh0ORyIYNV4fITQOqBzI2TGNwZw9ZLx2spMt0XZgTCrrGro
+        YNMf8mzy5ukb+YGgOo2uEThmnI249c6r9N46dRM=
+X-Google-Smtp-Source: ABdhPJyxwMUStrDxwfF3K0zzCJrk3hadYFH3qRVvvtR+hbTLebxhsKoBQApK/1kGsfGE7L5iwcI/D2VUdnoE4W4PhPY=
+X-Received: by 2002:a5b:54a:: with SMTP id r10mr4049339ybp.476.1622116205936;
+ Thu, 27 May 2021 04:50:05 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210430121616.2295-17-brijesh.singh@amd.com>
+References: <20210514192218.13022-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
+ <20210514192218.13022-3-prabhakar.mahadev-lad.rj@bp.renesas.com>
+ <CAMuHMdXdATYWRGL9PMkR_Fj-m-E5GUuPbHq0hZ_Mh=ceedF=RA@mail.gmail.com>
+ <CA+V-a8uNB-RyyweQ--vjdiA1NRB7_-VRYBPq9YUxFT4pFRTKBA@mail.gmail.com> <CAMuHMdWKdrn7ikT_qRrb0pVYxk3g7MgVk+qwJER61gbesQiPHA@mail.gmail.com>
+In-Reply-To: <CAMuHMdWKdrn7ikT_qRrb0pVYxk3g7MgVk+qwJER61gbesQiPHA@mail.gmail.com>
+From:   "Lad, Prabhakar" <prabhakar.csengg@gmail.com>
+Date:   Thu, 27 May 2021 12:49:40 +0100
+Message-ID: <CA+V-a8uB5308YszoxeuTr_3UwXC-BK9bXz58B2iR4kfadTUOjg@mail.gmail.com>
+Subject: Re: [PATCH 02/16] dt-bindings: arm: renesas: Document Renesas
+ RZ/G2{L,LC} SoC variants
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Magnus Damm <magnus.damm@gmail.com>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        linux-clk <linux-clk@vger.kernel.org>,
+        "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Biju Das <biju.das.jz@bp.renesas.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 30, 2021 at 07:16:12AM -0500, Brijesh Singh wrote:
-> +	/*
-> +	 * The ROM memory is not part of the E820 system RAM and is not pre-validated
-> +	 * by the BIOS. The kernel page table maps the ROM region as encrypted memory,
-> +	 * the SEV-SNP requires the encrypted memory must be validated before the
-> +	 * access. Validate the ROM before accessing it.
-> +	 */
-> +	n = ((system_rom_resource.end + 1) - video_rom_resource.start) >> PAGE_SHIFT;
-> +	early_snp_set_memory_private((unsigned long)__va(video_rom_resource.start),
-> +			video_rom_resource.start, n);
+Hi Geert,
 
-From last review:
+On Thu, May 27, 2021 at 12:28 PM Geert Uytterhoeven
+<geert@linux-m68k.org> wrote:
+>
+> Hi Prabhakar,
+>
+> On Fri, May 21, 2021 at 7:10 PM Lad, Prabhakar
+> <prabhakar.csengg@gmail.com> wrote:
+> > On Fri, May 21, 2021 at 2:23 PM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
+> > > On Fri, May 14, 2021 at 9:23 PM Lad Prabhakar
+> > > <prabhakar.mahadev-lad.rj@bp.renesas.com> wrote:
+> > > > Add device tree bindings documentation for Renesas RZ/G2{L,LC}
+> > > > SoC variants.
+> > > >
+> > > > Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+> > > > Reviewed-by: Biju Das <biju.das.jz@bp.renesas.com>
+> > > > Reviewed-by: Chris Paterson <Chris.Paterson2@renesas.com>
+> > >
+> > > > --- a/Documentation/devicetree/bindings/arm/renesas.yaml
+> > > > +++ b/Documentation/devicetree/bindings/arm/renesas.yaml
+> > > > @@ -308,6 +308,15 @@ properties:
+> > > >                - renesas,r9a07g043u11 # Single Cortex-A55 RZ/G2UL
+> > > >            - const: renesas,r9a07g043
+> > > >
+> > > > +      - description: RZ/G2{L,LC} (R9A07G044)
+> > > > +        items:
+> > > > +          - enum:
+> > > > +              - renesas,r9a07g044c1 # Single Cortex-A55 RZ/G2LC
+> > > > +              - renesas,r9a07g044c2 # Dual Cortex-A55 RZ/G2LC
+> > > > +              - renesas,r9a07g044l1 # Single Cortex-A55 RZ/G2L
+> > > > +              - renesas,r9a07g044l2 # Dual Cortex-A55 RZ/G2L
+> > >
+> > > Given the LSI DEVID is the same for all four, and presumably they're
+> > > thus the same die with different packaging, do we need these four
+> > > compatible values?
+> > >
+> > Yes the LSI DEVID is the same for all the above, so as to
+> > differentiate between each SoC's, these compatible strings are added.
+>
+> OK, especially for single-core versus dual-core, this can be useful,
+> if "integration issues" pop up depending on the number of cores
+> or other functionality being present.
+>
+> > * For example some IP blocks which are present on RZ/G2L aren't
+> > present in RZ/G2LC.
+>
+> That'll be handled by the .dtsi, right?
+>
+Agreed.
 
-I don't like this sprinkling of SNP-special stuff that needs to be done,
-around the tree. Instead, pls define a function called
+Cheers,
+Prabhakar
 
-        snp_prep_memory(unsigned long pa, unsigned int num_pages, enum operation);
-
-or so which does all the manipulation needed and the callsites only
-simply unconditionally call that function so that all detail is
-extracted and optimized away when not config-enabled.
-
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+> > * Adding this to DTS gives an opportunity to stop booting if the wrong
+> > DTB is loaded into the board.
+>
+> This only works for SoCs with different LSI DEVIDs.
+> As all four above have the same LSI DEVID, you can only distinguish
+> them by the main compatible value.  It does not protect against
+> loading an RZ/G2LC DTB on an RZ/G2L board or vice versa.
+>
+> Gr{oetje,eeting}s,
+>
+>                         Geert
+>
+> --
+> Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+>
+> In personal conversations with technical people, I call myself a hacker. But
+> when I'm talking to journalists I just say "programmer" or something like that.
+>                                 -- Linus Torvalds
