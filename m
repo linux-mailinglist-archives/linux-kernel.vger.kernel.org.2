@@ -2,72 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 641FF392D8D
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 14:05:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0AD06392D8F
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 14:06:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234811AbhE0MHV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 May 2021 08:07:21 -0400
-Received: from mail-pl1-f179.google.com ([209.85.214.179]:42717 "EHLO
-        mail-pl1-f179.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234574AbhE0MHR (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 May 2021 08:07:17 -0400
-Received: by mail-pl1-f179.google.com with SMTP id v13so2224164ple.9;
-        Thu, 27 May 2021 05:05:43 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=YPiMEwGlMbValClUSlx6NzlbN5+iiX4yU0EKTF230x0=;
-        b=pT9gOuNC6izptvwsqIv8ZiEah+pFgewb0fZxJ1sOzA6YQEBxZqKXT+DY630mVEhaWU
-         kH73SI3/m9tNClsH+JE+mEQELJls7Z1IF9pExEA6xeDaRglt3OPCLpWILl3m+385gKYk
-         XHXuCLTRd5tWzJHVtOlRfcZ9pc3el9tX8QgR21VoM8C9bOLu60AE61N4KZ+MP6RaKmuE
-         x6J/VtAqka30xmvrMYzjqlPED/CeQWWvPRM9LNOCKAuuxAYzH2NflwwJtXO8G30kydct
-         KsKs3oHLuTb6MYHpbbgvvGo8lAR55Wpnj4NwEN/c/gwD4Kh93eYFUyuNgr5cX5Kulfbr
-         wpxw==
-X-Gm-Message-State: AOAM532LSQAjtJyAb7aAqKIzcgOd19ga52jnZ0vY5UJ2CSCJvBmw9iaH
-        G6usDmL19t5lU3VAozm59cM=
-X-Google-Smtp-Source: ABdhPJyq4o82UeSB/VMcI2HzJRqIKhAhsKPTexGNNjmDEjXXMkumsNeSiYwS1PfP5p1QerPuXbAhgw==
-X-Received: by 2002:a17:90a:5d8e:: with SMTP id t14mr3367014pji.85.1622117143281;
-        Thu, 27 May 2021 05:05:43 -0700 (PDT)
-Received: from rocinante.localdomain ([95.155.85.46])
-        by smtp.gmail.com with ESMTPSA id e23sm1888250pfl.84.2021.05.27.05.05.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 27 May 2021 05:05:42 -0700 (PDT)
-Date:   Thu, 27 May 2021 14:05:31 +0200
-From:   Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>
-To:     Om Prakash Singh <omp@nvidia.com>
-Cc:     vidyas@nvidia.com, lorenzo.pieralisi@arm.com, bhelgaas@google.com,
-        thierry.reding@gmail.com, jonathanh@nvidia.com,
-        linux-tegra@vger.kernel.org, linux-pci@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kthota@nvidia.com,
-        mmaddireddy@nvidia.com
-Subject: Re: [RESEND PATCH V1 4/5] PCI: tegra: Don't allow suspend when Tegra
- PCIe is in EP mode
-Message-ID: <20210527120531.GB213718@rocinante.localdomain>
-References: <20210527115246.20509-1-omp@nvidia.com>
- <20210527115246.20509-5-omp@nvidia.com>
+        id S234821AbhE0MIW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 May 2021 08:08:22 -0400
+Received: from mga02.intel.com ([134.134.136.20]:55173 "EHLO mga02.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234473AbhE0MIV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 27 May 2021 08:08:21 -0400
+IronPort-SDR: G082CGLFBMH8x+YUPvRzzmyXh82L8RgFFWmZWHLEcQ00BDYHfY/1SBvV4yGk3MoJs5QcKXitY+
+ 03KhggXmED5Q==
+X-IronPort-AV: E=McAfee;i="6200,9189,9996"; a="189834806"
+X-IronPort-AV: E=Sophos;i="5.82,334,1613462400"; 
+   d="scan'208";a="189834806"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 May 2021 05:06:47 -0700
+IronPort-SDR: 6dMBmsoiyi2tlDJUNAFJYwIR7h9/PdVjoY4FOZJFvyli6+W18HJCASDPQpKYQoKyWFTWpSMS3M
+ YPRebWN414lw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.82,334,1613462400"; 
+   d="scan'208";a="477456220"
+Received: from shbuild999.sh.intel.com (HELO localhost) ([10.239.147.94])
+  by orsmga001.jf.intel.com with ESMTP; 27 May 2021 05:06:43 -0700
+Date:   Thu, 27 May 2021 20:06:42 +0800
+From:   Feng Tang <feng.tang@intel.com>
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
+        David Rientjes <rientjes@google.com>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Ben Widawsky <ben.widawsky@intel.com>,
+        linux-kernel@vger.kernel.org,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Andi Kleen <ak@linux.intel.com>,
+        Dan Williams <dan.j.williams@intel.com>, ying.huang@intel.com
+Subject: Re: [PATCH v1 3/4] mm/mempolicy: don't handle MPOL_LOCAL like a fake
+ MPOL_PREFERRED policy
+Message-ID: <20210527120642.GA85753@shbuild999.sh.intel.com>
+References: <1622005302-23027-1-git-send-email-feng.tang@intel.com>
+ <1622005302-23027-4-git-send-email-feng.tang@intel.com>
+ <YK9UX9WY6GSnTPoB@dhcp22.suse.cz>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210527115246.20509-5-omp@nvidia.com>
+In-Reply-To: <YK9UX9WY6GSnTPoB@dhcp22.suse.cz>
+User-Agent: Mutt/1.5.24 (2015-08-30)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Prakash
+Hi Michal,
 
-[...]
-> @@ -2276,6 +2276,11 @@ static int tegra_pcie_dw_suspend_late(struct device *dev)
-[...]
-> +	if (pcie->mode == DW_PCIE_EP_TYPE) {
-> +		dev_err(dev, "Tegra PCIe is in EP mode, suspend not allowed");
-> +		return -EPERM;
-> +	}
+Many thanks for the reivews!
 
-Would the -EINVAL be more appropriate here?  It seem more appropriate
-when something is an invalid operation, rather than access to the
-resource being denied (or something along these lines), what do you
-think?
+On Thu, May 27, 2021 at 10:12:15AM +0200, Michal Hocko wrote:
+> On Wed 26-05-21 13:01:41, Feng Tang wrote:
+> > MPOL_LOCAL policy has been setup as a real policy, but it is still
+> > handled like a faked POL_PREFERRED policy with one internal
+> > MPOL_F_LOCAL flag bit set, and there are many places having to
+> > judge the real 'prefer' or the 'local' policy, which are quite
+> > confusing.
+> > 
+> > In current code, there are four cases that MPOL_LOCAL are used:
+> > * user specifies 'local' policy
+> > * user specifies 'prefer' policy, but with empty nodemask
+> > * system 'default' policy is used
+> > * 'prefer' policy + valid 'preferred' node with MPOL_F_STATIC_NODES
+> >   flag set, and when it is 'rebind' to a nodemask which doesn't
+> >   contains the 'preferred' node, it will add the MPOL_F_LOCAL bit
+> >   and performs as 'local' policy. In future if it is 'rebind' again
+> >   with valid nodemask, the policy will be restored back to 'prefer'
+> > 
+> > So for the first three cases, we make 'local' a real policy
+> > instead of a fake 'prefer' one, this will reduce confusion for
+> > reading code.
+> > 
+> > And next optional patch will kill the 'MPOL_F_LOCAL' bit.
+> 
+> I do like this approach. An additional policy should be much easier to
+> grasp than a special casing. This code is quite tricky so another pair
+> of eyes would be definitely good for the review.
+> 
+> > Signed-off-by: Feng Tang <feng.tang@intel.com>
+> 
+> Acked-by: Michal Hocko <mhocko@suse.com>
 
-	Krzysztof
+Thanks!
+
+> Just few nits.
+> 
+> >  static int migrate_page_add(struct page *page, struct list_head *pagelist,
+> > @@ -1965,6 +1965,8 @@ unsigned int mempolicy_slab_node(void)
+> >  							&policy->v.nodes);
+> >  		return z->zone ? zone_to_nid(z->zone) : node;
+> >  	}
+> > +	case MPOL_LOCAL:
+> > +		return node;
+> 
+> Any reason you haven't removed MPOL_F_LOCAL in this and following
+> functions? It would make it much more easier to review this patch if
+> there was no actual use of the flag in the code after this patch.
+
+As in the commit log, there are 4 cases using 'prefer' + MPOL_F_LOCAL 
+to represent 'local' policy. 
+
+I'm confident in this patch which handle the case 1/2/3, while not 
+sure if the solution (patch 4/4) for case 4 is the right method. So
+I separte them into 3/4 and 4/4
+
+Thanks,
+Feng
+
+
+> >  
+> >  	default:
+> >  		BUG();
+> > @@ -2089,6 +2091,11 @@ bool init_nodemask_of_mempolicy(nodemask_t *mask)
+> >  		*mask =  mempolicy->v.nodes;
+> >  		break;
+> >  
+> > +	case MPOL_LOCAL:
+> > +		nid = numa_node_id();
+> > +		init_nodemask_of_node(mask, nid);
+> > +		break;
+> > +
+> >  	default:
+> >  		BUG();
+> >  	}
+> > @@ -2333,6 +2340,8 @@ bool __mpol_equal(struct mempolicy *a, struct mempolicy *b)
+> >  		if (a->flags & MPOL_F_LOCAL)
+> >  			return true;
+> >  		return a->v.preferred_node == b->v.preferred_node;
+> > +	case MPOL_LOCAL:
+> > +		return true;
+> >  	default:
+> >  		BUG();
+> >  		return false;
+> > @@ -2476,6 +2485,10 @@ int mpol_misplaced(struct page *page, struct vm_area_struct *vma, unsigned long
+> >  			polnid = pol->v.preferred_node;
+> >  		break;
+> >  
+> > +	case MPOL_LOCAL:
+> > +		polnid = numa_node_id();
+> > +		break;
+> > +
+> >  	case MPOL_BIND:
+> >  		/* Optimize placement among multiple nodes via NUMA balancing */
+> >  		if (pol->flags & MPOL_F_MORON) {
+> -- 
+> Michal Hocko
+> SUSE Labs
