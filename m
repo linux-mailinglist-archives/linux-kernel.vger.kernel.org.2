@@ -2,101 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B279392D9C
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 14:08:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 05F20392D99
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 14:08:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235117AbhE0MJk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 May 2021 08:09:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44154 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234920AbhE0MJX (ORCPT
+        id S235057AbhE0MJd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 May 2021 08:09:33 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:39331 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234976AbhE0MJR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 May 2021 08:09:23 -0400
-Received: from mail-pg1-x533.google.com (mail-pg1-x533.google.com [IPv6:2607:f8b0:4864:20::533])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E6ADC061574
-        for <linux-kernel@vger.kernel.org>; Thu, 27 May 2021 05:07:49 -0700 (PDT)
-Received: by mail-pg1-x533.google.com with SMTP id m190so3548623pga.2
-        for <linux-kernel@vger.kernel.org>; Thu, 27 May 2021 05:07:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=su0O5FV409YaRMKGvRpPKfi0LrBh7fwsvzSA0kBU1sE=;
-        b=Xv3kyScbmQ5IRzwLDM9eQ447g4FpCFR4/KS0RgqSR37umZVRfOribwztM9uzykUFXP
-         FI5iTWmzu+OM2Lu0wOO/spEFli1T9W9sO06nr0275kydbB81UHoufNEE3eO1NSte8ST6
-         DJrz0gJQig63PPw0QtWSHAbRa1nLeR3igStDYhow2JSs4CHrzTmsJMKwwJPFLZnIdMa/
-         ncBwlZ3sDRVjM5Jb0mfbVPISQ1YaoWIjKHD+PEfaJmT5y6JHC8KeJ4lFaZJc3a6FX4D7
-         bOWDUw9QHjaRn073+0r3qTYIzNnBbG/+/tjOLgBjRjE3aF1+W8fFSSkywVOdOdF6jvXM
-         emkg==
+        Thu, 27 May 2021 08:09:17 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1622117263;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=glX8WQ37pPY27Hd4W81doplaosjS1gaDjtsB4N8hjlA=;
+        b=N1dih72XUXqaJE21Ib2lgHXiKApFicYWy7opS78YDodUUpcbhNoIuhOOW/k7JlV861QxWH
+        7NsEgDIsi9IjM3TDpzbO2Iwe8jIVzfF4y1odZtBmdkJ3Q+MYvfqT86Z8s0jcYGJIf1xhVf
+        B5TgChbRV0RFIyz2S/OqCH+GOYKzSJA=
+Received: from mail-ej1-f72.google.com (mail-ej1-f72.google.com
+ [209.85.218.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-597-nuj6LfPPPwaJXW_NPGaMfg-1; Thu, 27 May 2021 08:07:42 -0400
+X-MC-Unique: nuj6LfPPPwaJXW_NPGaMfg-1
+Received: by mail-ej1-f72.google.com with SMTP id qh7-20020a170906eca7b02903e635498f8aso96898ejb.9
+        for <linux-kernel@vger.kernel.org>; Thu, 27 May 2021 05:07:41 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=su0O5FV409YaRMKGvRpPKfi0LrBh7fwsvzSA0kBU1sE=;
-        b=bgKWkmBrT9grbPfJ4BDqQyOKEH8aS8meTWdm8LJ0wNsBJMx0I/9pa57UOBSOOq1R+r
-         phkHPz9IDalgsm2h7bhuILl2B+npvTFcg9Dja4HJUAkNgFxIoioAXzZyIDG1B9Snliqs
-         vSPJeIeW1ISueS3zQrkDPzFWezq+LRSo+K7tsGHYfVIeY2aF+f3omO4EB/2CZ+FP/xnf
-         wJMG/UiHCwWbGyALX3ltsxYOIsJ5nkpQpwC7RBP1WYqZ1Cz4FQ/d4MgAXB8oeWXAe8u9
-         lYdlMYiuz/y+gmyNPUOJekpoDSxSgHo+q9NQNa5GEa3z+xeqfubBT9sTEioCGjUOY27O
-         AXHg==
-X-Gm-Message-State: AOAM530b2Ous0AdynhONCQbuhNw6QG5TXXw/t03muxsi63omLVNHDygl
-        m/9n3bKJx3srTHcUbZGKbOxfNVYkFaMF4LsfNLNbKQ==
-X-Google-Smtp-Source: ABdhPJzrqHID30vvgX7I2t/bFeS/8VdFGXiWrQdZ72tP//W5u7dnB1zTHScMvcthanv4J1s929ipN/6/At+9SlZ89aA=
-X-Received: by 2002:a05:6a00:88a:b029:261:6d37:dac6 with SMTP id
- q10-20020a056a00088ab02902616d37dac6mr3437864pfj.18.1622117268484; Thu, 27
- May 2021 05:07:48 -0700 (PDT)
-MIME-Version: 1.0
-References: <1622109018-54648-1-git-send-email-zou_wei@huawei.com>
-In-Reply-To: <1622109018-54648-1-git-send-email-zou_wei@huawei.com>
-From:   Robert Foss <robert.foss@linaro.org>
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=glX8WQ37pPY27Hd4W81doplaosjS1gaDjtsB4N8hjlA=;
+        b=Bjn0Oozav5sZ/HMBdl2v76PNPPn7qGx+onIMxBPEP6J/58boNl04j/Pp9ab6tPF0Fk
+         3DG+O9kJB0hwJMdsYFbjSwkKOYIJZISQMRQLwZYH/FpfH1t5L+XDjUexrUSk1pTQ7eoa
+         2RhFFrQvJCzAlfCaP5y+vTPpfdvAHZg/u6MTIPeBlx9CrCA3C9/yh0INoVOhU2bXJlxk
+         uIZfLtNvFqinroT1FX76zKJCYvSN4yw23795VVGS/CrwOryTxRQEzpSMTyP9omUrpOjY
+         wHZPlyCA/mTZqqLmqjjdt07PxD8Ncq9aZesefoTSQUY/GAYqxEPiwPjAqtBovIUBCLCV
+         +f3w==
+X-Gm-Message-State: AOAM5333zywKhvi/hMHbGPsIVoRsa9Tg7yGgZlFz5ZgKiAC848b5phQa
+        fRO4BDtU67lhO1eNxAnWwNZPe2s76m8zmkUH0Ci69emF0C1LPickD2xOXL0QwiLqr0E54PYlsfb
+        xDkGGY0Qxsim97ySUOGaIfMF8
+X-Received: by 2002:a05:6402:944:: with SMTP id h4mr3724872edz.319.1622117260690;
+        Thu, 27 May 2021 05:07:40 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxv10JLbulmg0QMgMPpe90hcd0MvW50aSfs6BIzQ1tQse3og6v1oLXz64YgVJLSeticJHDFVQ==
+X-Received: by 2002:a05:6402:944:: with SMTP id h4mr3724852edz.319.1622117260436;
+        Thu, 27 May 2021 05:07:40 -0700 (PDT)
+Received: from localhost.localdomain ([151.29.18.58])
+        by smtp.gmail.com with ESMTPSA id bx21sm1012677edb.64.2021.05.27.05.07.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 27 May 2021 05:07:39 -0700 (PDT)
 Date:   Thu, 27 May 2021 14:07:37 +0200
-Message-ID: <CAG3jFyt=to+Cq14BtggT=mfMQ3Tv50XzekPCycThLcyizXzwMg@mail.gmail.com>
-Subject: Re: [PATCH -next] drm/bridge: lt8912b: fix platform_no_drv_owner.cocci
- warnings
-To:     Zou Wei <zou_wei@huawei.com>
-Cc:     Adrien Grassein <adrien.grassein@gmail.com>,
-        Andrzej Hajda <a.hajda@samsung.com>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
-        Jonas Karlman <jonas@kwiboo.se>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+From:   Juri Lelli <juri.lelli@redhat.com>
+To:     Daniel Bristot de Oliveira <bristot@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, Phil Auld <pauld@redhat.com>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Kate Carcia <kcarcia@redhat.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Alexandre Chartre <alexandre.chartre@oracle.com>,
+        Clark Willaims <williams@redhat.com>,
+        John Kacur <jkacur@redhat.com>, linux-doc@vger.kernel.org
+Subject: Re: [PATCH V3 0/9] hwlat improvements and osnoise/timerlat tracers
+Message-ID: <YK+LiSdWQngXjior@localhost.localdomain>
+References: <cover.1621024265.git.bristot@redhat.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <cover.1621024265.git.bristot@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Reviewed & pushed to drm-misc-next.
+Hi,
 
-On Thu, 27 May 2021 at 11:31, Zou Wei <zou_wei@huawei.com> wrote:
->
-> ./drivers/gpu/drm/bridge/lontium-lt8912b.c:758:3-8: No need to set .owner here. The core will do it.
->
->  Remove .owner field if calls are used which set it automatically
->
-> Generated by: scripts/coccinelle/api/platform_no_drv_owner.cocci
->
-> Reported-by: Hulk Robot <hulkci@huawei.com>
-> Signed-off-by: Zou Wei <zou_wei@huawei.com>
-> ---
->  drivers/gpu/drm/bridge/lontium-lt8912b.c | 1 -
->  1 file changed, 1 deletion(-)
->
-> diff --git a/drivers/gpu/drm/bridge/lontium-lt8912b.c b/drivers/gpu/drm/bridge/lontium-lt8912b.c
-> index 443f1b4..34baa82 100644
-> --- a/drivers/gpu/drm/bridge/lontium-lt8912b.c
-> +++ b/drivers/gpu/drm/bridge/lontium-lt8912b.c
-> @@ -755,7 +755,6 @@ static struct i2c_driver lt8912_i2c_driver = {
->         .driver = {
->                 .name = "lt8912",
->                 .of_match_table = lt8912_dt_match,
-> -               .owner = THIS_MODULE,
->         },
->         .probe = lt8912_probe,
->         .remove = lt8912_remove,
-> --
-> 2.6.2
->
+On 14/05/21 22:51, Daniel Bristot de Oliveira wrote:
+> This series proposes a set of improvements and new features for the
+> tracing subsystem to facilitate the debugging of low latency
+> deployments.
+> 
+> Currently, hwlat runs on a single CPU at a time, migrating across a
+> set of CPUs in a round-robin fashion. This series improves hwlat 
+> to allow hwlat to run on multiple CPUs in parallel, increasing the
+> chances of detecting a hardware latency, at the cost of using more
+> CPU time.
+> 
+> It also proposes a new tracer named osnoise, that aims to help users
+> of isolcpus= (or a similar method) to measure how much noise the OS
+> and the hardware add to the isolated application. The osnoise tracer
+> bases on the hwlat detector code. The difference is that, instead of
+> sampling with interrupts disabled, the osnoise tracer samples the CPU with
+> interrupts and preemption enabled. In this way, the sampling thread will
+> suffer any source of noise from the OS. The detection and classification
+> of the type of noise are then made by observing the entry points of NMIs,
+> IRQs, SoftIRQs, and threads. If none of these sources of noise is detected,
+> the tool associates the noise with the hardware. The tool periodically
+> prints a status, printing the total noise of the period, the max single
+> noise observed, the percentage of CPU available for the task, along with
+> the counters of each source of the noise. To debug the sources of noise,
+> the tracer also adds a set of tracepoints that print any NMI, IRQ, SofIRQ,
+> and thread occurrence. These tracepoints print the starting time and the
+> noise's net duration at the end of the noise. In this way, it reduces the
+> number of tracepoints (one instead of two) and the need to manually
+> accounting the contribution of each noise independently.
+> 
+> Finaly, the timerlat tracer aims to help the preemptive kernel developers
+> to find sources of wakeup latencies of real-time threads. The tracer
+> creates a per-cpu kernel thread with real-time priority. The tracer thread
+> sets a periodic timer to wakeup itself, and goes to sleep waiting for the
+> timer to fire. At the wakeup, the thread then computes a wakeup latency
+> value as the difference between the current time and the absolute time
+> that the timer was set to expire. The tracer prints two lines at every
+> activation. The first is the timer latency observed at the hardirq context
+> before the activation of the thread. The second is the timer latency
+> observed by the thread, which is the same level that cyclictest reports.
+> The ACTIVATION ID field serves to relate the irq execution to its
+> respective thread execution. The tracer is build on top of osnoise tracer,
+> and the osnoise: events can be used to trace the source of interference
+> from NMI, IRQs and other threads. It also enables the capture of the
+> stacktrace at the IRQ context, which helps to identify the code path
+> that can cause thread delay.
+
+FWIW, I've been using the new tracers extensively downstream for a while
+now and I find them very useful and quite more precise to detect
+problems than what we currently have available.
+
+The fact that one can do almost everything needed to spot latency issues
+from entirely inside the kernel with a simple interface is a big plus to me
+as well.
+
+I wouldn't mind if this gets accepted very soon! :)
+
+Best,
+Juri
+
