@@ -2,155 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E58D392CCA
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 13:34:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 106A5392CD1
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 13:35:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233702AbhE0LgY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 May 2021 07:36:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45580 "EHLO mail.kernel.org"
+        id S233807AbhE0Lgn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 May 2021 07:36:43 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45674 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229657AbhE0LgT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 May 2021 07:36:19 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1A9E76113B;
-        Thu, 27 May 2021 11:34:44 +0000 (UTC)
+        id S233646AbhE0Lgk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 27 May 2021 07:36:40 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2886A6113B;
+        Thu, 27 May 2021 11:35:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1622115286;
-        bh=qIR0Xp1IFWI6K0A1WmRCygyc0qbztkIIn5fbZJjjmBU=;
-        h=From:To:Cc:Subject:Date:From;
-        b=Hr3465MFEWrrqP/VBjCjykFMuzlQ9RZTiAZgO1TunecUPQEyX/YQGucXhwOFFWlFd
-         RYAcjfrN9WBsXW4XEPvkGN6A1bnL5Uya21bUpiSLK+SMdhckecpxMr39X7+V8D5TAT
-         aZYfz2l/ju+OjinrQZ1ccz85Y+E4URiixf65sWSfA1Zb5QFR4e3QdkhjzgYWQL4coB
-         PzIWqC/Dx1iiQUsFP56R84DG3I4+26vu93LnNgDIbN4FiUo9W/T7GgMh7WgaZCILD1
-         2MGOAk04KuSaGd6fXXIAA8qQkAimJky+4lTQBRb/rd+qPDLI/nLUyaxKWuGWFjEPq4
-         sFOIcwUPO8Amg==
-From:   Frederic Weisbecker <frederic@kernel.org>
-To:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        kernel test robot <oliver.sang@intel.com>,
-        stable@vger.kernel.org, "Paul E . McKenney" <paulmck@kernel.org>
-Subject: [PATCH] tick/nohz: Only check for RCU deferred wakeup on user/guest entry when needed
-Date:   Thu, 27 May 2021 13:34:41 +0200
-Message-Id: <20210527113441.465489-1-frederic@kernel.org>
-X-Mailer: git-send-email 2.25.1
+        s=k20201202; t=1622115307;
+        bh=awWFyuDtGzTSFYuKnqnAwD8I2u8LvxPLkIedgwXpacY=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=p4bPfFCD5PrcmECQ/JmYfkoIQvGIdlvd3Xmt5WsLHiji5zjF5hUpY/7jV/AEVHJHW
+         CB6f9oBS2X3aNGgQ3+WcdNwOGV1gPRmBycO/zJJUoapgziqu+7IL5STMx1dAhYz3+T
+         0bM7UEMZILv76zqCaWO+pWXqjNmfb4VQ6CH4Qz9dn7I0OepvY2P5/VxhAaiFsn1JPd
+         ce1hSAg7oNQpoYW+JbRsJjBqIARt3uf0TgyQ8bjr7saHdzXTBfM/jxaDHBHbhfTQ4Z
+         nDFzJaE8tdL5MVg6406RffF7r/1Of9XzA/MNxWJkmUtb6zscbeJZBFAuG32Qt3uWbG
+         DCkceG/OoqRLg==
+Date:   Thu, 27 May 2021 12:34:57 +0100
+From:   Will Deacon <will@kernel.org>
+To:     Claire Chang <tientzu@chromium.org>
+Cc:     heikki.krogerus@linux.intel.com, thomas.hellstrom@linux.intel.com,
+        peterz@infradead.org, benh@kernel.crashing.org,
+        joonas.lahtinen@linux.intel.com, dri-devel@lists.freedesktop.org,
+        chris@chris-wilson.co.uk, grant.likely@arm.com, paulus@samba.org,
+        Frank Rowand <frowand.list@gmail.com>, mingo@kernel.org,
+        sstabellini@kernel.org, Saravana Kannan <saravanak@google.com>,
+        mpe@ellerman.id.au,
+        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        bskeggs@redhat.com, linux-pci@vger.kernel.org,
+        xen-devel@lists.xenproject.org,
+        Thierry Reding <treding@nvidia.com>,
+        intel-gfx@lists.freedesktop.org, matthew.auld@intel.com,
+        linux-devicetree <devicetree@vger.kernel.org>,
+        Jianxiong Gao <jxgao@google.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
+        maarten.lankhorst@linux.intel.com, airlied@linux.ie,
+        Dan Williams <dan.j.williams@intel.com>,
+        linuxppc-dev@lists.ozlabs.org, jani.nikula@linux.intel.com,
+        Rob Herring <robh+dt@kernel.org>, rodrigo.vivi@intel.com,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        boris.ostrovsky@oracle.com,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        jgross@suse.com, Nicolas Boichat <drinkcat@chromium.org>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        "list@263.net:IOMMU DRIVERS" <iommu@lists.linux-foundation.org>,
+        Jim Quinlan <james.quinlan@broadcom.com>, xypron.glpk@gmx.de,
+        Robin Murphy <robin.murphy@arm.com>, bauerman@linux.ibm.com
+Subject: Re: [PATCH v7 14/15] dt-bindings: of: Add restricted DMA pool
+Message-ID: <20210527113456.GA22019@willie-the-truck>
+References: <20210518064215.2856977-1-tientzu@chromium.org>
+ <20210518064215.2856977-15-tientzu@chromium.org>
+ <20210526121322.GA19313@willie-the-truck>
+ <20210526155321.GA19633@willie-the-truck>
+ <CALiNf2_sVXnb97++yWusB5PWz8Pzfn9bCKZc6z3tY4bx6-nW8w@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CALiNf2_sVXnb97++yWusB5PWz8Pzfn9bCKZc6z3tY4bx6-nW8w@mail.gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Checking for and processing RCU-nocb deferred wakeup upon user/guest
-entry is only relevant when nohz_full runs on the local CPU, otherwise
-the periodic tick should take care of it.
+On Thu, May 27, 2021 at 07:29:20PM +0800, Claire Chang wrote:
+> On Wed, May 26, 2021 at 11:53 PM Will Deacon <will@kernel.org> wrote:
+> >
+> > On Wed, May 26, 2021 at 01:13:22PM +0100, Will Deacon wrote:
+> > > On Tue, May 18, 2021 at 02:42:14PM +0800, Claire Chang wrote:
+> > > > @@ -138,4 +160,9 @@ one for multimedia processing (named multimedia-memory@77000000, 64MiB).
+> > > >             memory-region = <&multimedia_reserved>;
+> > > >             /* ... */
+> > > >     };
+> > > > +
+> > > > +   pcie_device: pcie_device@0,0 {
+> > > > +           memory-region = <&restricted_dma_mem_reserved>;
+> > > > +           /* ... */
+> > > > +   };
+> > >
+> > > I still don't understand how this works for individual PCIe devices -- how
+> > > is dev->of_node set to point at the node you have above?
+> > >
+> > > I tried adding the memory-region to the host controller instead, and then
+> > > I see it crop up in dmesg:
+> > >
+> > >   | pci-host-generic 40000000.pci: assigned reserved memory node restricted_dma_mem_reserved
+> > >
+> > > but none of the actual PCI devices end up with 'dma_io_tlb_mem' set, and
+> > > so the restricted DMA area is not used. In fact, swiotlb isn't used at all.
+> > >
+> > > What am I missing to make this work with PCIe devices?
+> >
+> > Aha, looks like we're just missing the logic to inherit the DMA
+> > configuration. The diff below gets things working for me.
+> 
+> I guess what was missing is the reg property in the pcie_device node.
+> Will update the example dts.
 
-Make sure we don't needlessly pollute these fast-paths as a -3%
-performance regression on a will-it-scale.per_process_ops has been
-reported so far.
+Thanks. I still think something like my diff makes sense, if you wouldn't mind including
+it, as it allows restricted DMA to be used for situations where the PCIe
+topology is not static.
 
-Reported-by: kernel test robot <oliver.sang@intel.com>
-Fixes: 47b8ff194c1f (entry: Explicitly flush pending rcuog wakeup before last rescheduling point)
-Fixes: 4ae7dc97f726 (entry/kvm: Explicitly flush pending rcuog wakeup before last rescheduling point)
-Cc: Ingo Molnar <mingo@kernel.org>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Cc: stable@vger.kernel.org
-Cc: Paul E. McKenney <paulmck@kernel.org>
-Cc: Thomas Gleixner <tglx@linutronix.de>
-Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
----
- include/linux/entry-kvm.h | 3 ++-
- include/linux/tick.h      | 7 +++++++
- kernel/entry/common.c     | 5 +++--
- kernel/time/tick-sched.c  | 1 +
- 4 files changed, 13 insertions(+), 3 deletions(-)
+Perhaps we should prefer dev->of_node if it exists, but then use the node
+of the host bridge's parent node otherwise?
 
-diff --git a/include/linux/entry-kvm.h b/include/linux/entry-kvm.h
-index 8b2b1d68b954..136b8d97d8c0 100644
---- a/include/linux/entry-kvm.h
-+++ b/include/linux/entry-kvm.h
-@@ -3,6 +3,7 @@
- #define __LINUX_ENTRYKVM_H
- 
- #include <linux/entry-common.h>
-+#include <linux/tick.h>
- 
- /* Transfer to guest mode work */
- #ifdef CONFIG_KVM_XFER_TO_GUEST_WORK
-@@ -57,7 +58,7 @@ int xfer_to_guest_mode_handle_work(struct kvm_vcpu *vcpu);
- static inline void xfer_to_guest_mode_prepare(void)
- {
- 	lockdep_assert_irqs_disabled();
--	rcu_nocb_flush_deferred_wakeup();
-+	tick_nohz_user_enter_prepare();
- }
- 
- /**
-diff --git a/include/linux/tick.h b/include/linux/tick.h
-index 7340613c7eff..1a0ff88fa107 100644
---- a/include/linux/tick.h
-+++ b/include/linux/tick.h
-@@ -11,6 +11,7 @@
- #include <linux/context_tracking_state.h>
- #include <linux/cpumask.h>
- #include <linux/sched.h>
-+#include <linux/rcupdate.h>
- 
- #ifdef CONFIG_GENERIC_CLOCKEVENTS
- extern void __init tick_init(void);
-@@ -300,4 +301,10 @@ static inline void tick_nohz_task_switch(void)
- 		__tick_nohz_task_switch();
- }
- 
-+static inline void tick_nohz_user_enter_prepare(void)
-+{
-+	if (tick_nohz_full_cpu(smp_processor_id()))
-+		rcu_nocb_flush_deferred_wakeup();
-+}
-+
- #endif
-diff --git a/kernel/entry/common.c b/kernel/entry/common.c
-index a0b3b04fb596..bf16395b9e13 100644
---- a/kernel/entry/common.c
-+++ b/kernel/entry/common.c
-@@ -5,6 +5,7 @@
- #include <linux/highmem.h>
- #include <linux/livepatch.h>
- #include <linux/audit.h>
-+#include <linux/tick.h>
- 
- #include "common.h"
- 
-@@ -186,7 +187,7 @@ static unsigned long exit_to_user_mode_loop(struct pt_regs *regs,
- 		local_irq_disable_exit_to_user();
- 
- 		/* Check if any of the above work has queued a deferred wakeup */
--		rcu_nocb_flush_deferred_wakeup();
-+		tick_nohz_user_enter_prepare();
- 
- 		ti_work = READ_ONCE(current_thread_info()->flags);
- 	}
-@@ -202,7 +203,7 @@ static void exit_to_user_mode_prepare(struct pt_regs *regs)
- 	lockdep_assert_irqs_disabled();
- 
- 	/* Flush pending rcuog wakeup before the last need_resched() check */
--	rcu_nocb_flush_deferred_wakeup();
-+	tick_nohz_user_enter_prepare();
- 
- 	if (unlikely(ti_work & EXIT_TO_USER_MODE_WORK))
- 		ti_work = exit_to_user_mode_loop(regs, ti_work);
-diff --git a/kernel/time/tick-sched.c b/kernel/time/tick-sched.c
-index 828b091501ca..6784f27a3099 100644
---- a/kernel/time/tick-sched.c
-+++ b/kernel/time/tick-sched.c
-@@ -230,6 +230,7 @@ static void tick_sched_handle(struct tick_sched *ts, struct pt_regs *regs)
- 
- #ifdef CONFIG_NO_HZ_FULL
- cpumask_var_t tick_nohz_full_mask;
-+EXPORT_SYMBOL_GPL(tick_nohz_full_mask);
- bool tick_nohz_full_running;
- EXPORT_SYMBOL_GPL(tick_nohz_full_running);
- static atomic_t tick_dep_mask;
--- 
-2.25.1
-
+Will
