@@ -2,86 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F218D392555
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 05:18:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E966C392558
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 05:20:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234259AbhE0DTt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 May 2021 23:19:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37022 "EHLO
+        id S234283AbhE0DVr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 May 2021 23:21:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37450 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232801AbhE0DTs (ORCPT
+        with ESMTP id S231843AbhE0DVp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 May 2021 23:19:48 -0400
-Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B69E4C061760
-        for <linux-kernel@vger.kernel.org>; Wed, 26 May 2021 20:18:14 -0700 (PDT)
-Received: by mail-pj1-x1033.google.com with SMTP id lx17-20020a17090b4b11b029015f3b32b8dbso1564040pjb.0
-        for <linux-kernel@vger.kernel.org>; Wed, 26 May 2021 20:18:14 -0700 (PDT)
+        Wed, 26 May 2021 23:21:45 -0400
+Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B02D4C061574;
+        Wed, 26 May 2021 20:20:11 -0700 (PDT)
+Received: by mail-pj1-x1034.google.com with SMTP id q6so1940813pjj.2;
+        Wed, 26 May 2021 20:20:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=qm4MPaPjgxt6Wt7O1hXCl4uTGIhUVq8pe5tFWqw47T8=;
-        b=IApI7MULqMdbV/c3QU4t8dUPgrxbMVJ1EO9hRH9e/bBQW75OyyL0P+BJkWGvrh7Jlr
-         geDpOIgUZRaqa5d2GZCzdCxRO5z8GP3AAgx3CGws37O6oHfCbuwiKMWTS0tVNF340fu5
-         lTCBSXL68/fPRrIrg0vbkPh9PR0gsILO+F6Nw=
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=R7HKUgolZlXbPFqSrogXo/GPxcpvCMNR1c+E1WFALmk=;
+        b=VIOsnDpr1Zu1Jz55aBnwNdIgDcB4U2CpVLJPQdsXR4mEP8PEnVzaQ2txOcggmJrRLT
+         1yOhPvX7YWwoMMOuYzw3D2PFivXN9eeXPZWRUqOjr4p3VjAk3vdH0Gzkh7UZf7BiVrTf
+         8n7R2adMnnHPNymgk5uWOlGWgnffDNiEhldkZ9F8Wx3JQ8Ehwu9I40ox/mVibS48KTLO
+         hKTzVwyJUMXsy0n8ZBHDlpytuyakQn0Li2HeIQ7akN1NkFGUQsYFpokyuL5kVBO3eHpx
+         PJcgtryC72ul5aBzcGAgrC2Q2GC1k7s6k3/Ehtl/PROunnbqdXg44GCuh9ruWBBwsyTp
+         EiDQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=qm4MPaPjgxt6Wt7O1hXCl4uTGIhUVq8pe5tFWqw47T8=;
-        b=lVnSNZqHZe35JCYdeO9VQa2Cuh1QK6e+n8TgsjECmFsieERdy0D8RRdprnIMew3iaD
-         QFDKY4HcGV6CQySm0c6APsm45dTGLzrw9PPtg5vXLn1iSE9jAyy/fQrMmUcC07S+Zl2y
-         6vG2/8FvvszZ15+cOOlsSyXL5TanAo9zu70k446etlNfl80pCPdQPaEJDiqiHWqUKwq+
-         vuMWiAgxm3tHoBeupKpPJkLFkvQ/k7dHFzdksqj80blnQs5SSqudbNclwV+QwjBXAM7P
-         eWKTcEN5/PfTeo9VljxSAElb7sDOcOVQOhhd2xNX9wFnkEZgyZ9NQmgTX+u89wviyndP
-         q9Vg==
-X-Gm-Message-State: AOAM532o8f4bO4/UDs+BtgOePiGTTh+gGNTtUQo4eDUfDuXkamtPzwnw
-        rpFy4k2+0b2hsTxPaiP/h86oGFSrBJQN0w==
-X-Google-Smtp-Source: ABdhPJwGuMO4GkZzq25uRtBGQg9C93YagPPD0GwnSROAAnh9tVcSlfKeo/cgglMqPxPQERxGY4G/lw==
-X-Received: by 2002:a17:90b:33d1:: with SMTP id lk17mr1484840pjb.154.1622085494279;
-        Wed, 26 May 2021 20:18:14 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id g13sm537971pfi.18.2021.05.26.20.18.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 26 May 2021 20:18:13 -0700 (PDT)
-From:   Kees Cook <keescook@chromium.org>
-To:     linux-kernel@vger.kernel.org, Shuah Khan <shuah@kernel.org>
-Cc:     Kees Cook <keescook@chromium.org>, linux-kselftest@vger.kernel.org
-Subject: [PATCH] selftests: lib.mk: Also install "config" and "settings"
-Date:   Wed, 26 May 2021 20:17:54 -0700
-Message-Id: <20210527031753.3729663-1-keescook@chromium.org>
-X-Mailer: git-send-email 2.25.1
-MIME-Version: 1.0
-X-Patch-Hashes: v=1; h=sha256; g=bde6084bfd555742aaf47be0d27afc429f6b4361; i=xpi8zqp3LrE2VaWlX//Wey2rtF1y5nvUA2wZvOpxGVQ=; m=wDveoOB1Q4vREEjZya4mp/PbmZdFoPgUOgy++USArxE=; p=7N26PE2lhk1+zwus22jZblzAFntKKriypdOsBgfRx4U=
-X-Patch-Sig: m=pgp; i=keescook@chromium.org; s=0x0x8972F4DFDC6DC026; b=iQIzBAABCgAdFiEEpcP2jyKd1g9yPm4TiXL039xtwCYFAmCvD2EACgkQiXL039xtwCbqzRAAgFt 8z83s21nUXgWIPjIVwx4tJlgeufq8tXMxQOC5OGPpR4ogesBZgpbM7zVMwAbTSae4itb64zRA/2T2 JAccB1MdvcjAmJ/XWtm5QlxZasXSC4fuTbgwxJWuFe/hsxCPgCrw1kk5k7s8SPTcywCLabPY/Ncel iYWhwyHnR2/6QS2X9RAYHlBO8q1KaX8lSWhGJS2kWOdAewj8my4zHUIFXl/nYwhqL1rLlo5VqIb9+ jtN1TC+yyT4pAMXaRu0DN5/z721NGHLrH/PBlDIXoSdZ2vvdCajNl183sqkxZ101DfBlRaBsqLoMU PHfV8KhrtObcl1zTqr8haGTPxodzk4tdR2trA0b878aPpneuiwaCIpbBRt9zfQUx089se0Uhi7rms 43eMd30gM4dQc29PM7E+ns+bnA1s+eUrtu5J2QviJ1ujnW84Q5+fUHZ2bEjFZHB3tB4zX2LtslkWV q9RCTviJZ9SaMQVqIUc4lsv5VxXk/oBCvgDZ3Zq2ecr+scETL9vtf54WprVXAGyBlAsmPJ1Yo5/1w 5hEX7jNxRVyiWwuXHBCVawLUlIuOYarO6f16K0wWtNQ4aDSY1BK9BCTjAMeS9ITDtwBmx08I8P/DO buRo44jfB4HqIUaX6SQijboRM554tU/NdFEU5mlCDdjWeqMBFKN9jozEvK7TF2/4=
-Content-Transfer-Encoding: 8bit
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=R7HKUgolZlXbPFqSrogXo/GPxcpvCMNR1c+E1WFALmk=;
+        b=dAPKfUi+6yymUFel1CuUlVRrbb48AKJ3yEwmfOmix4O8tG6LugJzQa4yB4To3HlYOi
+         g8FxzVzIu+BXS7v3e8uCBV/fpWt0Qu4oCXsc52EgtPdhZmrNWKqHHY03FrImscRDsy1i
+         JKBDz4AouQV0AOD33EQn4m0zmP4pXI5fFF7EosZ3mqU6yojiREtq/K4sgktEeNge9gtt
+         sYHReAw3esr1Z3uWogU1fRDGgEwIbxKZwgU1CGLjsU+9gd1/AzWet8iWT1yGSMq0dk2a
+         SnengbSJYhyUdzTHC1tyduaAeAfNpjiq3xkEAP6jREhCxJ1MSiJEP/71CkMV3I36Wle4
+         /TAg==
+X-Gm-Message-State: AOAM533PWxKZJ9WMmATrl/6p2nEHV4606/d0livrTuquPUUbgSNTPS07
+        FyhL1CxiDVgGVijTZtEj8MA=
+X-Google-Smtp-Source: ABdhPJxbz5+mVf8/WlwEPTlkYsyIDPjxNAnfqWeLBsfaA3pT0Jeae0Oef1kCcCs9Lu2x7TFFC59u6w==
+X-Received: by 2002:a17:90b:4d85:: with SMTP id oj5mr7236447pjb.178.1622085611138;
+        Wed, 26 May 2021 20:20:11 -0700 (PDT)
+Received: from localhost.localdomain ([203.205.141.39])
+        by smtp.gmail.com with ESMTPSA id l6sm554716pjf.28.2021.05.26.20.20.07
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 26 May 2021 20:20:10 -0700 (PDT)
+From:   Haocheng Xie <xiehaocheng.cn@gmail.com>
+To:     mingo@kernel.org, acme@kernel.org,
+        alexander.shishkin@linux.intel.com, jolsa@redhat.com,
+        mark.rutland@arm.com, mingo@redhat.com, namhyung@kernel.org,
+        peterz@infradead.org
+Cc:     linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
+        Haocheng Xie <xiehaocheng.cn@gmail.com>
+Subject: [PATCH v2 0/3] perf/events: Fix some build warnings in perf/events subsystem.
+Date:   Thu, 27 May 2021 11:19:44 +0800
+Message-Id: <20210527031947.1801-1-xiehaocheng.cn@gmail.com>
+X-Mailer: git-send-email 2.9.5
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Installed seccomp tests would time out because the "settings" file was
-missing. Install both "settings" (needed for proper test execution) and
-"config" (needed for informational purposes) with the other test
-targets.
+I have got these warnings when building kernel with  'W=1' options:
 
-Signed-off-by: Kees Cook <keescook@chromium.org>
----
- tools/testing/selftests/lib.mk | 1 +
- 1 file changed, 1 insertion(+)
+  kernel/events/core.c:6670:6: warning: no previous prototype for 'perf_pmu_snapshot_aux' [-Wmissing-prototypes]
+  kernel/events/core.c:143: warning: Function parameter or member 'cpu' not described in 'cpu_function_call'
+  kernel/events/core.c:11924: warning: Function parameter or member 'flags' not described in 'sys_perf_event_open'
+  kernel/events/core.c:12382: warning: Function parameter or member 'overflow_handler' not described in 'perf_event_create_kernel_counter'
+  kernel/events/core.c:12382: warning: Function parameter or member 'context' not described in 'perf_event_create_kernel_counter'
+  kernel/events/hw_breakpoint.c:461: warning: Function parameter or member 'context' not described in 'register_user_hw_breakpoint'
+  kernel/events/hw_breakpoint.c:560: warning: Function parameter or member 'context' not described in 'register_wide_hw_breakpoint'
 
-diff --git a/tools/testing/selftests/lib.mk b/tools/testing/selftests/lib.mk
-index 0af84ad48aa7..fa2ac0e56b43 100644
---- a/tools/testing/selftests/lib.mk
-+++ b/tools/testing/selftests/lib.mk
-@@ -100,6 +100,7 @@ define INSTALL_RULE
- 	$(eval INSTALL_LIST = $(TEST_CUSTOM_PROGS)) $(INSTALL_SINGLE_RULE)
- 	$(eval INSTALL_LIST = $(TEST_GEN_PROGS_EXTENDED)) $(INSTALL_SINGLE_RULE)
- 	$(eval INSTALL_LIST = $(TEST_GEN_FILES)) $(INSTALL_SINGLE_RULE)
-+	$(eval INSTALL_LIST = $(wildcard config settings)) $(INSTALL_SINGLE_RULE)
- endef
- 
- install: all
+The 3-patch series will fix these warnings.
+
+Changes from v1:
+  - optimize the commit message format.
+  - remove superfluous whitespace in the subject.
+  - align the arguments of modified function.
+
+Haocheng Xie (3):
+  perf core: Make local function perf_pmu_snapshot_aux() static
+  perf core: Fix some kernel-doc warnings.
+  perf/hw_breakpoint: Fix kernel-doc warnings in perf hw_breakpoint
+
+ kernel/events/core.c          | 12 ++++++++----
+ kernel/events/hw_breakpoint.c |  2 ++
+ 2 files changed, 10 insertions(+), 4 deletions(-)
+
 -- 
-2.25.1
+2.9.5
 
