@@ -2,105 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E58E7392F0F
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 15:06:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A4BE392F18
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 15:06:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236306AbhE0NHl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 May 2021 09:07:41 -0400
-Received: from heliosphere.sirena.org.uk ([172.104.155.198]:48358 "EHLO
-        heliosphere.sirena.org.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236007AbhE0NHi (ORCPT
+        id S236350AbhE0NIH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 May 2021 09:08:07 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:22780 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S236007AbhE0NHy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 May 2021 09:07:38 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=sirena.org.uk; s=20170815-heliosphere; h=In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=UXGNIaSzoW/C0FndVcq3C1mNY97nbWGbAJ+OPbR6xYY=; b=GTWa8l9C5zkrPNxJlOYo7Hcxy+
-        sxlKtTMD2sjrnxzrzqm69B0IMVgd/fflUJPk9clctfyXy4ceG/M16kogIT6FfB8kwFoXsg7B9uYj2
-        CY+DdYz7iwBSilGJFFAT61J6JNVR9qZGkijAPgAoVxWFgTQcKroVaDxPR+0YSkloPXzQ=;
-Received: from 94.196.90.140.threembb.co.uk ([94.196.90.140] helo=fitzroy.sirena.org.uk)
-        by heliosphere.sirena.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.94.2)
-        (envelope-from <broonie@sirena.org.uk>)
-        id 1lmFhy-006O7I-Kt; Thu, 27 May 2021 13:05:54 +0000
-Received: by fitzroy.sirena.org.uk (Postfix, from userid 1000)
-        id 1D2C1D0EA33; Thu, 27 May 2021 14:05:53 +0100 (BST)
-Date:   Thu, 27 May 2021 14:05:53 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Ezequiel Garcia <ezequiel@collabora.com>
-Cc:     Rudi Heitbaum <rudi@heitbaum.com>,
-        Peter Geis <pgwipeout@gmail.com>, devicetree@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "open list:ARM/Rockchip SoC..." <linux-rockchip@lists.infradead.org>,
-        chenjh@rock-chips.com
-Subject: Re: [PATCH] regulator: fan53555: add back tcs4526
-Message-ID: <YK+ZMdD+7uqQwCow@sirena.org.uk>
-References: <20210526162342.GA20@8bbba9ba63a4>
- <CAMdYzYpZoKs3P62j02RW-+5BEpqC9JL3apjucTWLWmvNFrOrCg@mail.gmail.com>
- <20210527105943.GA441@7698f5da3a10>
- <462b8d80447efb6c00e93704914169bceb5adc4d.camel@collabora.com>
+        Thu, 27 May 2021 09:07:54 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1622120780;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=ULXKpUDeK1p76UZ59lVMj02cPEcED36GdHXBm75qmHc=;
+        b=Y1hAOBL533VZEuaVjLcLfomkbIC2d79ooZx43AG9UbwdKS2q444xeYFCy4myDD+waSfdFJ
+        TlEqkJ/+prVJRbwdDzC3xktBVSKIMQJi982svYvODIlLaoyH5FUHGs77v30aQqvy3rY6GJ
+        NC3TdcvEopIxi040x6/Yc+kkoLkV9WY=
+Received: from mail-lj1-f198.google.com (mail-lj1-f198.google.com
+ [209.85.208.198]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-580-kYtrQdXUP0mEFvecPL4EPQ-1; Thu, 27 May 2021 09:06:19 -0400
+X-MC-Unique: kYtrQdXUP0mEFvecPL4EPQ-1
+Received: by mail-lj1-f198.google.com with SMTP id v4-20020a2e96040000b02900ce9d1504b5so209961ljh.16
+        for <linux-kernel@vger.kernel.org>; Thu, 27 May 2021 06:06:18 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ULXKpUDeK1p76UZ59lVMj02cPEcED36GdHXBm75qmHc=;
+        b=K5jntEtMB6iABDnC8CVDwB8e/ZpUSGxcCHqY59QVsinX+GnZRFtGjP212CHSqkHqtP
+         wH9Tq2SgxQ9pTUS5L8wra1Q6h7TTp+BekemhoXpPh45EqtuIi6uPhx18rmcx0pM0pDeE
+         RKabUMxfTpzxOHsow3eQR6yoog6vnqcsnuwimQeDgv7js/JlC6+iKQHsuZYANa+4SXs6
+         wDNzfFkAbBAGNvw3yqrO3M5WsvCHrwbDlaQn7mS8xsy+9vUV26FQ3LvyCwnz2MSMIfPr
+         zwTk2YHzzp4O5rbNSzvqXMmDveeySiWmTPdYjECopVZmUk2vb4W34e7Oz5Qa31HY76vZ
+         m0tQ==
+X-Gm-Message-State: AOAM531ig8Gglx83V57bY3+TYAImF0V6yBqy70UdipUSlkLO/qNqShpB
+        XVMCcYC1zdoedqylL2jhspXLOitQt7chDLabGmUfZ8iFG03aG/3XkG3aggvqjkIUl48WDxtP0bZ
+        0ELuAD957uDiTKMAVsMRkC8ChnH4YE+QLdYLKy711
+X-Received: by 2002:a05:651c:511:: with SMTP id o17mr2571074ljp.14.1622120777521;
+        Thu, 27 May 2021 06:06:17 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxZlraGIBVHBafxiPicFv+vN1bDWs7vAmvm5tSF3zLlOVmiHaJA9AlrZjZFdI/T3bbEWL91czd9UgOjRUHHQgQ=
+X-Received: by 2002:a05:651c:511:: with SMTP id o17mr2571013ljp.14.1622120777212;
+ Thu, 27 May 2021 06:06:17 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="NyUceJCoDarUvku8"
-Content-Disposition: inline
-In-Reply-To: <462b8d80447efb6c00e93704914169bceb5adc4d.camel@collabora.com>
-X-Cookie: A penny saved has not been spent.
+References: <20210504092340.00006c61@intel.com> <87pmxpdr32.ffs@nanos.tec.linutronix.de>
+ <CAFki+Lkjn2VCBcLSAfQZ2PEkx-TR0Ts_jPnK9b-5ne3PUX37TQ@mail.gmail.com>
+ <87im3gewlu.ffs@nanos.tec.linutronix.de> <CAFki+L=gp10W1ygv7zdsee=BUGpx9yPAckKr7pyo=tkFJPciEg@mail.gmail.com>
+ <CAFki+L=eQoMq+mWhw_jVT-biyuDXpxbXY5nO+F6HvCtpbG9V2w@mail.gmail.com>
+ <CAFki+LkB1sk3mOv4dd1D-SoPWHOs28ZwN-PqL_6xBk=Qkm40Lw@mail.gmail.com>
+ <87zgwo9u79.ffs@nanos.tec.linutronix.de> <87wnrs9tvp.ffs@nanos.tec.linutronix.de>
+ <YK9ucRrjq+eck/G7@syu-laptop>
+In-Reply-To: <YK9ucRrjq+eck/G7@syu-laptop>
+From:   Nitesh Lal <nilal@redhat.com>
+Date:   Thu, 27 May 2021 09:06:04 -0400
+Message-ID: <CAFki+LnuharcwJy=x4Z27ixCMK1u2s2cvHh9=Bcf90rO06osEw@mail.gmail.com>
+Subject: Re: [PATCH] genirq: Provide new interfaces for affinity hints
+To:     Shung-Hsi Yu <shung-hsi.yu@suse.com>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Jesse Brandeburg <jesse.brandeburg@intel.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Marcelo Tosatti <mtosatti@redhat.com>,
+        Ingo Molnar <mingo@kernel.org>, linux-kernel@vger.kernel.org,
+        intel-wired-lan@lists.osuosl.org, jbrandeb@kernel.org,
+        "frederic@kernel.org" <frederic@kernel.org>,
+        "juri.lelli@redhat.com" <juri.lelli@redhat.com>,
+        Alex Belits <abelits@marvell.com>,
+        "linux-api@vger.kernel.org" <linux-api@vger.kernel.org>,
+        "bhelgaas@google.com" <bhelgaas@google.com>,
+        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
+        "rostedt@goodmis.org" <rostedt@goodmis.org>,
+        "peterz@infradead.org" <peterz@infradead.org>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
+        "sfr@canb.auug.org.au" <sfr@canb.auug.org.au>,
+        "stephen@networkplumber.org" <stephen@networkplumber.org>,
+        "rppt@linux.vnet.ibm.com" <rppt@linux.vnet.ibm.com>,
+        "jinyuqi@huawei.com" <jinyuqi@huawei.com>,
+        "zhangshaokun@hisilicon.com" <zhangshaokun@hisilicon.com>,
+        netdev@vger.kernel.org, chris.friesen@windriver.com,
+        Marc Zyngier <maz@kernel.org>,
+        Neil Horman <nhorman@tuxdriver.com>, pjwaskiewicz@gmail.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, May 27, 2021 at 6:03 AM Shung-Hsi Yu <shung-hsi.yu@suse.com> wrote:
+>
+> Hi,
+>
+> On Fri, May 21, 2021 at 02:03:06PM +0200, Thomas Gleixner wrote:
+> > The discussion about removing the side effect of irq_set_affinity_hint() of
+> > actually applying the cpumask (if not NULL) as affinity to the interrupt,
+> > unearthed a few unpleasantries:
+> >
+> >   1) The modular perf drivers rely on the current behaviour for the very
+> >      wrong reasons.
+> >
+> >   2) While none of the other drivers prevents user space from changing
+> >      the affinity, a cursorily inspection shows that there are at least
+> >      expectations in some drivers.
+> >
+> > #1 needs to be cleaned up anyway, so that's not a problem
+> >
+> > #2 might result in subtle regressions especially when irqbalanced (which
+> >    nowadays ignores the affinity hint) is disabled.
+> >
+> > Provide new interfaces:
+> >
+> >   irq_update_affinity_hint() - Only sets the affinity hint pointer
+> >   irq_apply_affinity_hint()  - Set the pointer and apply the affinity to
+> >                              the interrupt
+> >
+> > Make irq_set_affinity_hint() a wrapper around irq_apply_affinity_hint() and
+> > document it to be phased out.
+>
+> Is there recommended way to retrieve the CPU number that the interrupt has
+> affinity?
+>
+> Previously a driver (I'm looking at drivers/net/ethernet/amazon/ena) that
+> uses irq_set_affinity_hint() to spread out IRQ knows the corresponding CPU
+> number since they're using their own spreading scheme. Now, phasing out
+> irq_set_affinity_hint(), and thus relying on request_irq() to spread the
+> load instead, there don't seem to be a easy way to get the CPU number.
+>
 
---NyUceJCoDarUvku8
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+For drivers that don't want to rely on request_irq for spreading and want
+to force their own affinity mask can use irq_set_affinity() which is an
+exported interface now [1] and clearly indicates the purpose of the usage.
 
-On Thu, May 27, 2021 at 08:51:27AM -0300, Ezequiel Garcia wrote:
-> On Thu, 2021-05-27 at 10:59 +0000, Rudi Heitbaum wrote:
+As Thomas suggested we are still keeping irq_set_affinity_hint() as a
+wrapper until we make appropriate changes in individual drivers that use
+this API for different reasons. Please feel free to send out a patch
+for this driver once the changes are merged.
 
-> > +=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0reg =3D <0x1c>;
-> > +=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0vin-supply =3D <&vcc5v0_s=
-ys>;
-> > +=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0regulator-compatible =3D =
-"fan53555-reg";
+[1] https://lkml.org/lkml/2021/5/18/271
 
-> I can be wrong, but I think regulator-compatible is deprecated.
+-- 
+Thanks
+Nitesh
 
-Yes.
-
-> > +=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0regulator-ramp-delay =3D =
-<1000>;
-> > +=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0fcs,suspend-voltage-selec=
-tor =3D <1>;
-> > +=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0regulator-always-on;
-> > +=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0regulator-boot-on;
-
-> Just out of curiosity, is regulator-boot-on really needed for the GPU?
-
-It should only be used if it's not possible to read the state of
-the regulator enable from the hardware.
-
-Please delete unneeded context from mails when replying.  Doing this
-makes it much easier to find your reply in the message, helping ensure
-it won't be missed by people scrolling through the irrelevant quoted
-material.
-
---NyUceJCoDarUvku8
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmCvmTAACgkQJNaLcl1U
-h9CX9ggAgzyzUvDEBdNIyiQB7N7iaoLnBcDf4WWsOC8pOpOinrfXGplncFDVXzcz
-jirCOSxb0jLmCwKEMbFrSaOYw2SZuDbVtDDnYwsFBXBmL4wedkU8n0c5eJ5DK88L
-bJ5gToio6MmqIL1Yb9QPI7XsQeEvF/LxN/QzwXr3KqTZeB6hATgg4EqrRNyLjbvS
-Ra7dmlehkgQ6Ym6aL5cTaxFPkffpASi1MnvaUhyEEsbiXTbC+dWmLGovVMRrf6GY
-g4/vglOQe0uuMBGRpoy1s2SRLOSeKcCwZOKoLITxpTsT6YhZw1BDw48o2Vaxzcdb
-up/35XqdtRuBzEDTd/sC9Fv2raCEzQ==
-=vK9F
------END PGP SIGNATURE-----
-
---NyUceJCoDarUvku8--
