@@ -2,145 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E088D392839
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 09:12:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B087B3926B6
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 07:02:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234805AbhE0HOQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 May 2021 03:14:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60980 "EHLO
+        id S234957AbhE0FDp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 May 2021 01:03:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60262 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234709AbhE0HOD (ORCPT
+        with ESMTP id S232324AbhE0FDn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 May 2021 03:14:03 -0400
-Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04F81C061574;
-        Thu, 27 May 2021 00:12:25 -0700 (PDT)
-Received: by ozlabs.org (Postfix, from userid 1007)
-        id 4FrJsx3nZ0z9sX5; Thu, 27 May 2021 17:12:21 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-        d=gibson.dropbear.id.au; s=201602; t=1622099541;
-        bh=Lefrtr63WtZPzxCJD/a0Dt0CwKqdjDj9tbK9ydRsQZA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=fMUbeAdG8FfOw30NsEJoAerE2i88uoQM3TbXYsIqJzw49r1s6kG8D5t4trO1VCikP
-         +rVJ2VxCicTOzRkJBR0xiHrYjWjJgK1YyFW/0R83MMdBht/clN1NyHUc7DS35Yjt17
-         S75HTnNVpEtzMDbFQRWK1Q6j/r/BpiosihFY3ZeM=
-Date:   Thu, 27 May 2021 15:00:12 +1000
-From:   David Gibson <david@gibson.dropbear.id.au>
-To:     Kirti Wankhede <kwankhede@nvidia.com>
-Cc:     Jason Gunthorpe <jgg@nvidia.com>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        "Liu, Yi L" <yi.l.liu@intel.com>,
-        Jacob Pan <jacob.jun.pan@linux.intel.com>,
-        Auger Eric <eric.auger@redhat.com>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        "Tian, Kevin" <kevin.tian@intel.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Joerg Roedel <joro@8bytes.org>,
-        Lu Baolu <baolu.lu@linux.intel.com>,
-        David Woodhouse <dwmw2@infradead.org>,
-        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
-        "cgroups@vger.kernel.org" <cgroups@vger.kernel.org>,
-        Tejun Heo <tj@kernel.org>, Li Zefan <lizefan@huawei.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Jean-Philippe Brucker <jean-philippe@linaro.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        "Raj, Ashok" <ashok.raj@intel.com>, "Wu, Hao" <hao.wu@intel.com>,
-        "Jiang, Dave" <dave.jiang@intel.com>,
-        Alexey Kardashevskiy <aik@ozlabs.ru>, Neo Jia <cjia@nvidia.com>
-Subject: Re: [PATCH V4 05/18] iommu/ioasid: Redefine IOASID set and
- allocation APIs
-Message-ID: <YK8nXKAJdfT5UVEu@yekko>
-References: <20210428145622.GU1370958@nvidia.com>
- <YIoiJRY3FM7xH2bH@yekko>
- <20210503161518.GM1370958@nvidia.com>
- <YJy9o8uEZs42/qDM@yekko>
- <20210513135938.GG1002214@nvidia.com>
- <YKtbWo7PwIlXjFIV@yekko>
- <20210524233744.GT1002214@nvidia.com>
- <ce2fcf21-1803-047b-03f0-7a4108dea7af@nvidia.com>
- <20210525195257.GG1002214@nvidia.com>
- <6b13399d-cf03-1e71-3624-c39d4d05e958@nvidia.com>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="Z64+IwN5nyf9pBFr"
-Content-Disposition: inline
-In-Reply-To: <6b13399d-cf03-1e71-3624-c39d4d05e958@nvidia.com>
+        Thu, 27 May 2021 01:03:43 -0400
+Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A43BC061574;
+        Wed, 26 May 2021 22:02:11 -0700 (PDT)
+Received: by mail-pf1-x434.google.com with SMTP id q67so2732282pfb.4;
+        Wed, 26 May 2021 22:02:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=JyLaYThv3NNpHzg8SQfk89DGWSaPbCfxZj9NwLUkGkc=;
+        b=JniPRzLBCo1/vCFwMMamhh/yUPPMCJEiF+NF9ut+dLAonrFX/PPFbMeJFE6IvbLRai
+         uiAHhTOAgIie7aKlt1G/vobcCBeEXisOn619t0xajxw+5qddHvj8+znCaSgZnqZ7VjFr
+         dJ8o7DZe0XR2av6Ska+8BgQr89es+5V6Sg2rELxZY4y5r0RLX75LYs13TE5QCGiZ7vyw
+         pmrLEkwVzfPxCoY/KpCOi0TWAO33VdvbvHXSj2CH0y8skLN727htkEQt8pZMkK62viO8
+         p0iu7MCe7h0RlQMdzLOVQmrv4mx++G0aEz5a3UDoXpOBEkzROyJWauqv1R5/2LBh0AIw
+         HPww==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=JyLaYThv3NNpHzg8SQfk89DGWSaPbCfxZj9NwLUkGkc=;
+        b=uAbZkMl4D8P7I9tYP5zqVgcj2sQoUwaaWtEJ9iA0I0B+czcWWbfNPvOXDCSB+EB22U
+         90FCUYfXJeGGk7hE92TvpsDONhgneXfrWC78QWiYUoqKiEu4sjYynHBG7WumqnFtJLW0
+         kMM0UmQObXxe+wkvqHDwSn5Fk9bJqmmlXDffhEoyOv6AW/eUtEawj93LbmNMeTqAmaAG
+         qqT7cjWOe+EQYdMg+3lR62jjywmrCz/vjvVm+PqAO6GDxILkfe0uXD7fGymIfZweRqnV
+         lRSOtFnDrQWO/8SDUJc8ddlTbzXiZLPbpqHhPtwEpPI9IhOPLGzTWeB3EN22JSmOAbq3
+         CpWA==
+X-Gm-Message-State: AOAM532+eK+4LBiNJw5EONNJpUW5lPpLe69vujM5Nb61XhQmb8tJ2DHG
+        9S5FUbl1eoLW1EDh5yQAp4v0b+ExlxM=
+X-Google-Smtp-Source: ABdhPJykSfoIMilDriJP/wgdluGR2twpNZG+C1IxxNAuGD3mkXExMbtBxK7kA2l5j9dPVbtPVyo3OA==
+X-Received: by 2002:a05:6a00:2126:b029:2e2:89d8:5c89 with SMTP id n6-20020a056a002126b02902e289d85c89mr1951538pfj.37.1622091730652;
+        Wed, 26 May 2021 22:02:10 -0700 (PDT)
+Received: from localhost.localdomain ([203.205.141.40])
+        by smtp.googlemail.com with ESMTPSA id z7sm668384pgr.28.2021.05.26.22.02.07
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 26 May 2021 22:02:10 -0700 (PDT)
+From:   Wanpeng Li <kernellwp@gmail.com>
+X-Google-Original-From: Wanpeng Li <wanpengli@tencent.com>
+To:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>
+Subject: [PATCH v3 1/2] KVM: X86: Fix warning caused by stale emulation context
+Date:   Wed, 26 May 2021 22:01:18 -0700
+Message-Id: <1622091679-31683-1-git-send-email-wanpengli@tencent.com>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Wanpeng Li <wanpengli@tencent.com>
 
---Z64+IwN5nyf9pBFr
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Reported by syzkaller:
 
-On Wed, May 26, 2021 at 02:48:03AM +0530, Kirti Wankhede wrote:
->=20
->=20
-> On 5/26/2021 1:22 AM, Jason Gunthorpe wrote:
-> > On Wed, May 26, 2021 at 12:56:30AM +0530, Kirti Wankhede wrote:
-> >=20
-> > > 2. iommu backed mdev devices for SRIOV where mdev device is created p=
-er
-> > > VF (mdev device =3D=3D VF device) then that mdev device has same iommu
-> > > protection scope as VF associated to it.
-> >=20
-> > This doesn't require, and certainly shouldn't create, a fake group.
-> >=20
-> > Only the VF's real IOMMU group should be used to model an iommu domain
-> > linked to a VF. Injecting fake groups that are proxies for real groups
-> > only opens the possibility of security problems like David is
-> > concerned with.
-> >=20
->=20
-> I think this security issue should be addressed by letting mdev device
-> inherit its parent's iommu_group, i.e. VF's iommu_group here.
+  WARNING: CPU: 7 PID: 10526 at /home/kernel/ssd/linux/arch/x86/kvm//x86.c:7621 x86_emulate_instruction+0x41b/0x510 [kvm]
+  RIP: 0010:x86_emulate_instruction+0x41b/0x510 [kvm]
+  Call Trace:
+   kvm_mmu_page_fault+0x126/0x8f0 [kvm]
+   vmx_handle_exit+0x11e/0x680 [kvm_intel]
+   vcpu_enter_guest+0xd95/0x1b40 [kvm]
+   kvm_arch_vcpu_ioctl_run+0x377/0x6a0 [kvm]
+   kvm_vcpu_ioctl+0x389/0x630 [kvm]
+   __x64_sys_ioctl+0x8e/0xd0
+   do_syscall_64+0x3c/0xb0
+   entry_SYSCALL_64_after_hwframe+0x44/0xae
 
-No, that doesn't work.  AIUI part of the whole point of mdevs is to
-allow chunks of a single PCI function to be handed out to different
-places, because they're isolated from each other not by the system
-IOMMU, but by a combination of MMU hardware in the hardware (e.g. in a
-GPU card) and software in the mdev driver.  If mdevs inherited the
-group of their parent device they wouldn't count as isolated from each
-other, which they should.
+Commit 4a1e10d5b5d8c (KVM: x86: handle hardware breakpoints during emulation())
+adds hardware breakpoints check before emulation the instruction and parts of 
+emulation context initialization, actually we don't have the EMULTYPE_NO_DECODE flag 
+here and the emulation context will not be reused. Commit c8848cee74ff (KVM: x86: 
+set ctxt->have_exception in x86_decode_insn()) triggers the warning because it 
+catches the stale emulation context has #UD, however, it is not during instruction 
+decoding which should result in EMULATION_FAILED. This patch fixes it by moving 
+the second part emulation context initialization into init_emulate_ctxt() and 
+before hardware breakpoints check.  
 
->=20
-> Kirti
->=20
-> > Max's series approaches this properly by fully linking the struct
-> > pci_device of the VF throughout the entire VFIO scheme, including the
-> > group and container, while still allowing override of various VFIO
-> > operations.
-> >=20
-> > Jason
-> >=20
->=20
+syzkaller source: https://syzkaller.appspot.com/x/repro.c?x=134683fdd00000
 
---=20
-David Gibson			| I'll have my music baroque, and my code
-david AT gibson.dropbear.id.au	| minimalist, thank you.  NOT _the_ _other_
-				| _way_ _around_!
-http://www.ozlabs.org/~dgibson
+Reported-by: syzbot+71271244f206d17f6441@syzkaller.appspotmail.com
+Fixes: 4a1e10d5b5d8 (KVM: x86: handle hardware breakpoints during emulation)
+Signed-off-by: Wanpeng Li <wanpengli@tencent.com>
+---
+v2 -> v3:
+ * squash ctxt->ud
+v1 -> v2:
+ * move the second part emulation context initialization into init_emulate_ctxt()
 
---Z64+IwN5nyf9pBFr
-Content-Type: application/pgp-signature; name="signature.asc"
+ arch/x86/kvm/x86.c | 14 +++++++-------
+ 1 file changed, 7 insertions(+), 7 deletions(-)
 
------BEGIN PGP SIGNATURE-----
+diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+index bbc4e04..ae47b19 100644
+--- a/arch/x86/kvm/x86.c
++++ b/arch/x86/kvm/x86.c
+@@ -7226,6 +7226,13 @@ static void init_emulate_ctxt(struct kvm_vcpu *vcpu)
+ 	BUILD_BUG_ON(HF_SMM_MASK != X86EMUL_SMM_MASK);
+ 	BUILD_BUG_ON(HF_SMM_INSIDE_NMI_MASK != X86EMUL_SMM_INSIDE_NMI_MASK);
+ 
++	ctxt->interruptibility = 0;
++	ctxt->have_exception = false;
++	ctxt->exception.vector = -1;
++	ctxt->perm_ok = false;
++
++	ctxt->ud = emulation_type & EMULTYPE_TRAP_UD;
++
+ 	init_decode_cache(ctxt);
+ 	vcpu->arch.emulate_regs_need_sync_from_vcpu = false;
+ }
+@@ -7561,13 +7568,6 @@ int x86_decode_emulated_instruction(struct kvm_vcpu *vcpu, int emulation_type,
+ 	    kvm_vcpu_check_breakpoint(vcpu, &r))
+ 		return r;
+ 
+-	ctxt->interruptibility = 0;
+-	ctxt->have_exception = false;
+-	ctxt->exception.vector = -1;
+-	ctxt->perm_ok = false;
+-
+-	ctxt->ud = emulation_type & EMULTYPE_TRAP_UD;
+-
+ 	r = x86_decode_insn(ctxt, insn, insn_len);
+ 
+ 	trace_kvm_emulate_insn_start(vcpu);
+-- 
+2.7.4
 
-iQIzBAEBCAAdFiEEdfRlhq5hpmzETofcbDjKyiDZs5IFAmCvJ1wACgkQbDjKyiDZ
-s5LA1A/9HdoNik7wBiSYXbYApT72IFI+LhekrRCOipo8yeKeq0f2VM5RS34wrfFw
-1Uhvw2jZYG8HWgG6XQczVwGyXtXtKQQL/S8djvv2Nqp3xY+++sPj2HO1xy7051m6
-UpAR0ILjYOHTzj4DQI4uR7iRt6JcfK6+gedGouV++4suDp95Ta4xBo5rLBkjqn8l
-VrPRt6AVMCYvVRcDb6iRhofAvhFOIjGJfarivrhPS3BzDCBrk2/BXxQ61lYy1dR9
-8qqb3CFFQWbyfgtaQXz8gAQLULpWX10Ob2tUaQRrWz3iZG0H/Iq5ffX3PPuQUsjg
-fIs8GH7xxWe0/7tUVzS+iwhGwcS7TmA5uktxiITJHNB/aDG3yQpzLNoLGn9fQP6h
-POpSLPQY1MyPvTO9ZF91celXdAZialXuchORnG+zHmzDcG0z1NPUYORzmR0G8D8V
-tuCAUL/3ayA5pR6j0X4zcpWmn32CQyC6WJ113cDDQga7fFXCbyw7zilXISGRcxHY
-7PA6tsnrBbVpuuYsJINgP/NM/eHgW1U07NSiNyIjj8UNPJPjGYFm/8obYwwXTIbF
-Fqv0tBPGrmq9rKbfG9Xl12SVKMdmF7f1wHVNLc6SUvUiAIVswax4YPMJmiBBoSZ9
-dbzfFlE13orgt8fbZ+nYuBx9L7xc2E+kNJcw/7a45nldRaqkH8U=
-=yhde
------END PGP SIGNATURE-----
-
---Z64+IwN5nyf9pBFr--
