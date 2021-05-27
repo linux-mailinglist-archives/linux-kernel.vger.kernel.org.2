@@ -2,116 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE4F2392594
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 05:49:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A2207392598
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 05:51:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234823AbhE0DvL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 May 2021 23:51:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43984 "EHLO
+        id S234826AbhE0Dwa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 May 2021 23:52:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44274 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232631AbhE0DvK (ORCPT
+        with ESMTP id S232631AbhE0Dw2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 May 2021 23:51:10 -0400
-Received: from mail-oi1-x22a.google.com (mail-oi1-x22a.google.com [IPv6:2607:f8b0:4864:20::22a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7776CC061574
-        for <linux-kernel@vger.kernel.org>; Wed, 26 May 2021 20:49:36 -0700 (PDT)
-Received: by mail-oi1-x22a.google.com with SMTP id j75so3786183oih.10
-        for <linux-kernel@vger.kernel.org>; Wed, 26 May 2021 20:49:36 -0700 (PDT)
+        Wed, 26 May 2021 23:52:28 -0400
+Received: from mail-pg1-x536.google.com (mail-pg1-x536.google.com [IPv6:2607:f8b0:4864:20::536])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7570C061574;
+        Wed, 26 May 2021 20:50:56 -0700 (PDT)
+Received: by mail-pg1-x536.google.com with SMTP id j12so2679177pgh.7;
+        Wed, 26 May 2021 20:50:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=DX5LZ59j/U95L+mNk2w46JLq9y9MxosdgzOg6i0ZZ6E=;
-        b=u8DB9ze/Jw3EU/Y4+kWrZQ6Cw2+PcWjxFCoDTqyt4TeM+BZFS+KrGfLZhaEBSCoXpl
-         dbTbZeMaDXuKOHyGSU0lPjSHx2ndTerJYw44ctn2yUTQaIfyXZB5TJwBjJth9OqkAEV6
-         x83RO7YGxNxPM/MaGdoq2HGnCY7nfNSzu9g1OahvUbuq5DRf4t1PJ6pebrxZ8TzsIms5
-         qKG9MaTmsOH59Nsk07lS+oksXQZ+1tdCjsbJoz63DHEUGIvQ2XXrTu2wor6Z3rjKLhL2
-         Twidj3FMOFJDlN43g/in2ikXjQo8WuW0AqC3nRnZ9OfrD9xn8oUMtfr19h62A7pbta5S
-         hHTA==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=AYI299XEFIsol2OXh3weOrnSRFxV3puLyyVk9BQ8SdE=;
+        b=BMTba/gwToFKar+iGq6ZiegHVGnHyc5LzE1bZHkJwpGW/NiBWBBGjurXnliUTRNxPI
+         ymiw5mW1JhC9xoKQajNxqc1a8hpcrH+QMk7WusD6Xcw1IU1S4NdW4uyp7kfionD4WCl4
+         y3lZvxUptcAPjzvRp+CWLM7ooT0g+gjl2Rx6er62rUymzJhXc1o732Ftlr+0Eug+Py5f
+         3u7FpBnm5/Twsy/qCs+JbepWF6NYUGNl0btcOnViWiV3EVkJyKgLZbR01uzj2qyQD3y8
+         DiEQI51NE+u9fj6jBCFVAFWXn841GmGDtfB+xe/Ffz+XszyS1Lr8tC4xN309XOV4oHJQ
+         QF8A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=DX5LZ59j/U95L+mNk2w46JLq9y9MxosdgzOg6i0ZZ6E=;
-        b=E/BX8ccg3pmzIt0lIw1XmAs/+Y/Q5oZW5xr1PzwbpKMqalNHSUruaJai3DOmR9M3xn
-         4SmLU9LfwljuO2XKzAltJHFkNf5ArH8KjPdoTVoQ5lIFh4AjxEFW8+Ube/dWWA/7g3KA
-         1Ny0BhArqkJbXwNLP3LjAGiGAMCSdnrGIiyMaB9IJEWph4yzIBNce4pCDTIiVT9xqc0m
-         Y1qh9bbFMEzkIFq3RnLDezoGDXaQH3EExENZ+SaIlRJUNrJy7rEMLV5ItJ09zZ8VA4xb
-         Qd8Hh2Rr85L2H3WC0YOK4ai62ggHYkuvezdfv39UoBh/haFWpf5lSMJksTzADxtLmI2/
-         BDug==
-X-Gm-Message-State: AOAM533EARNjT4OjZfCXTf8lCQMFN/sSBiFbtiH/8bb8U7/MeooLBPsS
-        GbuzkGQkwESPoxbeYQuADaIRFMmknbhY5ICJ78w=
-X-Google-Smtp-Source: ABdhPJw0QDyylvjNLg3lab3rvIBcqi4+H2nhMuvkGY8U8GQq5XqOtT75RF0uJDw4uQ0NCdsuXqZO/VBBrP1e7C1e4Yk=
-X-Received: by 2002:a05:6808:249:: with SMTP id m9mr1011124oie.120.1622087375887;
- Wed, 26 May 2021 20:49:35 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=AYI299XEFIsol2OXh3weOrnSRFxV3puLyyVk9BQ8SdE=;
+        b=YiphtGB4IAsiPNbvPhT8DjTxkQTSPLVY0Q0cEMEr06TLOWJ2m351CVnUxVYt2yZtWe
+         +Ib2yqVNjSEnFh7rOboaLv0718w9L+HCiAtrxDThwbsDzEnE0uNUEJy7Y5r0OstJ177e
+         bC8VGGIT7vF4GF6Ae/U3FvT+oCRky6CkUS09GsrXxnhuiLAt2xFlzjQ4+uxMAYELWJp8
+         dZ5iyxyJkPrCVHulFFtYLjmmrBrSJAoWc2aFTycN1V+hp+nd5ubHmI9SWkmyBcA6F0CV
+         EPvHc68YI6uv1oq20AjXdm5st2nElKfPT75iGDrXK8C4HEVeOn3MXK7OXguHoYq754GG
+         IqkA==
+X-Gm-Message-State: AOAM531nyHflmfspdpkPKkRTG/L3e9ckmvmpkL27JGmLKpr4WrUQdsOI
+        K6Ye5mEN5x2g6udBmoiyLw0=
+X-Google-Smtp-Source: ABdhPJyhhWiVII5BEppJnt8s4RvjmVbu6inOUvlx96JpvLtTOBJ/9XNNyKcBfG0S+rivoPsQIvOAUw==
+X-Received: by 2002:a63:581c:: with SMTP id m28mr1759791pgb.353.1622087456128;
+        Wed, 26 May 2021 20:50:56 -0700 (PDT)
+Received: from localhost.localdomain ([203.205.141.39])
+        by smtp.gmail.com with ESMTPSA id 25sm552196pfh.39.2021.05.26.20.50.52
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 26 May 2021 20:50:55 -0700 (PDT)
+From:   Haocheng Xie <xiehaocheng.cn@gmail.com>
+To:     peterz@infradead.org
+Cc:     acme@kernel.org, alexander.shishkin@linux.intel.com,
+        jolsa@redhat.com, linux-kernel@vger.kernel.org,
+        linux-perf-users@vger.kernel.org, mark.rutland@arm.com,
+        mingo@kernel.org, mingo@redhat.com, namhyung@kernel.org,
+        xiehaocheng.cn@gmail.com
+Subject: Re: [PATCH 1/3] perf core:  Make local function perf_pmu_snapshot_aux() static
+Date:   Thu, 27 May 2021 11:50:41 +0800
+Message-Id: <20210527035041.10965-1-xiehaocheng.cn@gmail.com>
+X-Mailer: git-send-email 2.9.5
+In-Reply-To: <YK45TSGv+DeuR8+X@hirez.programming.kicks-ass.net>
+References: <YK45TSGv+DeuR8+X@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
-References: <20210526084726.552052-1-lee.jones@linaro.org> <20210526084726.552052-3-lee.jones@linaro.org>
-In-Reply-To: <20210526084726.552052-3-lee.jones@linaro.org>
-From:   Alex Deucher <alexdeucher@gmail.com>
-Date:   Wed, 26 May 2021 23:49:25 -0400
-Message-ID: <CADnq5_OFMz2tCCCwXbQ-sj+zOyp2GGNLDCkVADXaRo=GJ1wOTg@mail.gmail.com>
-Subject: Re: [PATCH 02/34] drm/amd/pm/swsmu/smu13/aldebaran_ppt: Remove unused
- variable 'ret'
-To:     Lee Jones <lee.jones@linaro.org>
-Cc:     David Airlie <airlied@linux.ie>,
-        LKML <linux-kernel@vger.kernel.org>,
-        amd-gfx list <amd-gfx@lists.freedesktop.org>,
-        Maling list - DRI developers 
-        <dri-devel@lists.freedesktop.org>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=y
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This should be checked.  Will send out a patch momentarily.
+* Peter Zijlstra <peterz@infradead.org> wrote:
+>
+> On Wed, May 26, 2021 at 07:52:18PM +0800, Haocheng Xie wrote:
+> > Fixes the following W=1 kernel build warning:
+> >   kernel/events/core.c:6670:6: warning: no previous prototype for 'perf_pmu_snapshot_aux' [-Wmissing-prototypes]
+> >
+> > Signed-off-by: Haocheng Xie <xiehaocheng.cn@gmail.com>
+> > ---
+> >  kernel/events/core.c | 2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
+> >
+> > diff --git a/kernel/events/core.c b/kernel/events/core.c
+> > index 6fee4a7..0d98d6a 100644
+> > --- a/kernel/events/core.c
+> > +++ b/kernel/events/core.c
+> > @@ -6667,7 +6667,7 @@ static unsigned long perf_prepare_sample_aux(struct perf_event *event,
+> >       return data->aux_size;
+> >  }
+> >
+> > -long perf_pmu_snapshot_aux(struct perf_buffer *rb,
+> > +static long perf_pmu_snapshot_aux(struct perf_buffer *rb,
+> >                          struct perf_event *event,
+> >                          struct perf_output_handle *handle,
+> >                          unsigned long size)
+>
+> Your $subject is broken (superfluous whitespace) and you've wrecked
+> alignment of the arguments in the core.
+
+Hi, Peter:
+  Sorry for bothering you for these simple mistakes.
+  I will optimize my patch series and send a "v2" version after that.
 
 Thanks,
 
-Alex
-
-On Wed, May 26, 2021 at 4:47 AM Lee Jones <lee.jones@linaro.org> wrote:
->
-> Fixes the following W=3D1 kernel build warning(s):
->
->  drivers/gpu/drm/amd/amdgpu/../pm/swsmu/smu13/aldebaran_ppt.c: In functio=
-n =E2=80=98aldebaran_is_dpm_running=E2=80=99:
->  drivers/gpu/drm/amd/amdgpu/../pm/swsmu/smu13/aldebaran_ppt.c:1260:6: war=
-ning: variable =E2=80=98ret=E2=80=99 set but not used [-Wunused-but-set-var=
-iable]
->
-> Cc: Alex Deucher <alexander.deucher@amd.com>
-> Cc: "Christian K=C3=B6nig" <christian.koenig@amd.com>
-> Cc: David Airlie <airlied@linux.ie>
-> Cc: Daniel Vetter <daniel@ffwll.ch>
-> Cc: amd-gfx@lists.freedesktop.org
-> Cc: dri-devel@lists.freedesktop.org
-> Signed-off-by: Lee Jones <lee.jones@linaro.org>
-> ---
->  drivers/gpu/drm/amd/pm/swsmu/smu13/aldebaran_ppt.c | 3 +--
->  1 file changed, 1 insertion(+), 2 deletions(-)
->
-> diff --git a/drivers/gpu/drm/amd/pm/swsmu/smu13/aldebaran_ppt.c b/drivers=
-/gpu/drm/amd/pm/swsmu/smu13/aldebaran_ppt.c
-> index d6ce665baaf3b..d077e211017a9 100644
-> --- a/drivers/gpu/drm/amd/pm/swsmu/smu13/aldebaran_ppt.c
-> +++ b/drivers/gpu/drm/amd/pm/swsmu/smu13/aldebaran_ppt.c
-> @@ -1368,10 +1368,9 @@ static int aldebaran_usr_edit_dpm_table(struct smu=
-_context *smu, enum PP_OD_DPM_
->
->  static bool aldebaran_is_dpm_running(struct smu_context *smu)
->  {
-> -       int ret =3D 0;
->         uint32_t feature_mask[2];
->         unsigned long feature_enabled;
-> -       ret =3D smu_cmn_get_enabled_mask(smu, feature_mask, 2);
-> +       smu_cmn_get_enabled_mask(smu, feature_mask, 2);
->         feature_enabled =3D (unsigned long)((uint64_t)feature_mask[0] |
->                                           ((uint64_t)feature_mask[1] << 3=
-2));
->         return !!(feature_enabled & SMC_DPM_FEATURE);
-> --
-> 2.31.1
->
+Haocheng Xie
