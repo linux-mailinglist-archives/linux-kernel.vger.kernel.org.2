@@ -2,79 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 12F88393459
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 18:54:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4AA0739345E
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 18:55:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236728AbhE0Qzp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 May 2021 12:55:45 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47220 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236661AbhE0Qzn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 May 2021 12:55:43 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5C1C6613B6;
-        Thu, 27 May 2021 16:54:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1622134449;
-        bh=sZLWaISTsJ//42CHwenwNlSj6laAVOW8hNFDdz+z+tU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=DHDLO/JoKhYFOP7Kz3elb/c37u9khtQidp7WaaY2U6BZUURPF+QkxK3brY2ombUJ+
-         PuVFBSTwwn6egkEvODjRtx3+Ejcm049f0j2Qt9TwM+oCMN+ZR7aVoVAEeaYfFtGE4u
-         p2boVTWXyirhv3LaMgViJhHYYj6aGg5Fd53JTleA=
-Date:   Thu, 27 May 2021 18:54:07 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Hyeonggon Yoo <42.hyeyoo@gmail.com>
-Cc:     Jiri Kosina <jikos@kernel.org>,
-        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
-        linux-usb@vger.kernel.org, linux-input@vger.kernel.org,
+        id S236687AbhE0Q4q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 May 2021 12:56:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54186 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234487AbhE0Q4m (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 27 May 2021 12:56:42 -0400
+Received: from mail-ot1-x329.google.com (mail-ot1-x329.google.com [IPv6:2607:f8b0:4864:20::329])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 962FEC061574;
+        Thu, 27 May 2021 09:55:08 -0700 (PDT)
+Received: by mail-ot1-x329.google.com with SMTP id 69-20020a9d0a4b0000b02902ed42f141e1so850461otg.2;
+        Thu, 27 May 2021 09:55:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=d0V6V02YDwePwW8CyIzqlzEZIjOOvufvHwiqqcZr0v4=;
+        b=JgHKJpjUAiidW2o343Qw/DhxAeEP8n7+wPR9WfHR0B9EI9SlSt/3kBYTXyKXsiK09I
+         tKbr9CSXnHmp4A50Zi3N7P0QK1lMHtFKRU8Rt+5NfKh2+8chau5lpKzbXh8Zk43wXq2H
+         RwUzE6Agjkf88BdT+BJbAwrE/CzWdPA9ZGZBqTODIX5akI76bRpA4btFpK1lkGlKMGLP
+         70LI0/F0EfBWYKe0M/cmTwCf5IlTX4T6RKVmd4y3pMgPlJzVWSgm0esrkJSVusRvAVdO
+         wt0dFGD9babfms6DrG+QybUf0YHEILV7vXM+ihMYtxLq/ZmT0mUXw2JaiCXzpgNZe9R+
+         XlFw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=d0V6V02YDwePwW8CyIzqlzEZIjOOvufvHwiqqcZr0v4=;
+        b=O3SCYPJNW9Kw9XXahQ83tRr4Vl78FgayOdiMo/xUmjJPipz/p1bHTGR6UvgvAkrUA7
+         ZEOHChaTwX/3idqQEj0TzgPW3Vi5Il+pbuLq5URP0WvsUvnIhiieHwlX//brtCOq6PAF
+         5/SmE5C6PyJe0LN9AnKqBVn4DUSk6N+55mHF6W0bAEP7oVARstpUGsOJxGq12cKBi3ui
+         fYXrkW7bFh2v2H90eab7/N9ObnPvJlP67zxC6LvQfOZOCsGz0Mq5WnqZG6iwTdRQYDP+
+         O/lCFJFih4Y1dPe0hIx2/wtOROHYu0umencOfy+yol3WR7QOCoV7s2sPIcIeLQA8A6+r
+         lo5A==
+X-Gm-Message-State: AOAM531yJe2LsTTjfItI6sQKsBbjhRtEbZ9x89Q2RueBQo1kKwXsB6rD
+        LqJpoxmZSGtEsef6IkWDV+M=
+X-Google-Smtp-Source: ABdhPJxmeUo29fYhwesUz/4K0U6W4SL1tqF4cln7bK1kWkGWsiFHuyRMGSk0EiuYy9gv0f4ovNit1g==
+X-Received: by 2002:a9d:6e7:: with SMTP id 94mr3620033otx.366.1622134508006;
+        Thu, 27 May 2021 09:55:08 -0700 (PDT)
+Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id e6sm581636otr.53.2021.05.27.09.55.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 27 May 2021 09:55:07 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date:   Thu, 27 May 2021 09:55:06 -0700
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     Eugen Hristev <eugen.hristev@microchip.com>
+Cc:     wim@linux-watchdog.org, robh+dt@kernel.org,
+        nicolas.ferre@microchip.com, linux-watchdog@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] HID: usbmouse: Avoid GFP_ATOMIC when GFP_KERNEL is
- possible
-Message-ID: <YK/Or91JIpbpwWjL@kroah.com>
-References: <20210524145743.GA92203@hyeyoo>
- <20210527164517.GA143281@hyeyoo>
+Subject: Re: [PATCH 2/3] watchdog: sama5d4_wdt: add support for sama7g5-wdt
+Message-ID: <20210527165506.GA1294623@roeck-us.net>
+References: <20210527100120.266796-1-eugen.hristev@microchip.com>
+ <20210527100120.266796-2-eugen.hristev@microchip.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210527164517.GA143281@hyeyoo>
+In-Reply-To: <20210527100120.266796-2-eugen.hristev@microchip.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 28, 2021 at 01:45:17AM +0900, Hyeonggon Yoo wrote:
-> On Mon, May 24, 2021 at 11:57:43PM +0900, Hyeonggon Yoo wrote:
-> > probe in usb don't need to be atomic. So GFP_KERNEL can be used here,
-> > instead of GFP_ATOMIC.
-> > 
-> > Signed-off-by: Hyeonggon Yoo <42.hyeyoo@gmail.com>
-> > ---
-> >  drivers/hid/usbhid/usbmouse.c | 2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)
-> > 
-> > diff --git a/drivers/hid/usbhid/usbmouse.c b/drivers/hid/usbhid/usbmouse.c
-> > index 073127e65ac1..c89332017d5d 100644
-> > --- a/drivers/hid/usbhid/usbmouse.c
-> > +++ b/drivers/hid/usbhid/usbmouse.c
-> > @@ -130,7 +130,7 @@ static int usb_mouse_probe(struct usb_interface *intf, const struct usb_device_i
-> >  	if (!mouse || !input_dev)
-> >  		goto fail1;
-> >  
-> > -	mouse->data = usb_alloc_coherent(dev, 8, GFP_ATOMIC, &mouse->data_dma);
-> > +	mouse->data = usb_alloc_coherent(dev, 8, GFP_KERNEL, &mouse->data_dma);
-> >  	if (!mouse->data)
-> >  		goto fail1;
-> >  
-> > -- 
-> > 2.25.1
-> > 
+On Thu, May 27, 2021 at 01:01:19PM +0300, Eugen Hristev wrote:
+> Add support for compatible sama7g5-wdt.
+> The sama7g5 wdt is the same hardware block as on sam9x60.
+> Adapt the driver to use the sam9x60/sama7g5 variant if either
+> of the two compatibles are selected (sam9x60-wdt/sama7g5-wdt).
 > 
-> Hello for me it was simple and obvious patch.
-> Is there something wrong about it?
+> Signed-off-by: Eugen Hristev <eugen.hristev@microchip.com>
 
-It has been only 4 days.  For a non-bugfix and for something that is
-only a "cleanup" change, give it at least 2 weeks please.
+Reviewed-by: Guenter Roeck <linux@roeck-us.net>
 
-Relax, there is no rush for stuff like this.
-
-thanks,
-
-greg k-h
+> ---
+>  drivers/watchdog/sama5d4_wdt.c | 10 ++++++++--
+>  1 file changed, 8 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/watchdog/sama5d4_wdt.c b/drivers/watchdog/sama5d4_wdt.c
+> index e5d11d6a2600..ec20ad4e534f 100644
+> --- a/drivers/watchdog/sama5d4_wdt.c
+> +++ b/drivers/watchdog/sama5d4_wdt.c
+> @@ -268,8 +268,10 @@ static int sama5d4_wdt_probe(struct platform_device *pdev)
+>  	wdd->min_timeout = MIN_WDT_TIMEOUT;
+>  	wdd->max_timeout = MAX_WDT_TIMEOUT;
+>  	wdt->last_ping = jiffies;
+> -	wdt->sam9x60_support = of_device_is_compatible(dev->of_node,
+> -						       "microchip,sam9x60-wdt");
+> +
+> +	if (of_device_is_compatible(dev->of_node, "microchip,sam9x60-wdt") ||
+> +	    of_device_is_compatible(dev->of_node, "microchip,sama7g5-wdt"))
+> +		wdt->sam9x60_support = true;
+>  
+>  	watchdog_set_drvdata(wdd, wdt);
+>  
+> @@ -329,6 +331,10 @@ static const struct of_device_id sama5d4_wdt_of_match[] = {
+>  	{
+>  		.compatible = "microchip,sam9x60-wdt",
+>  	},
+> +	{
+> +		.compatible = "microchip,sama7g5-wdt",
+> +	},
+> +
+>  	{ }
+>  };
+>  MODULE_DEVICE_TABLE(of, sama5d4_wdt_of_match);
+> -- 
+> 2.25.1
+> 
