@@ -2,131 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C28F1393257
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 17:21:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 22EC639325E
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 17:24:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235555AbhE0PWn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 May 2021 11:22:43 -0400
-Received: from cloud48395.mywhc.ca ([173.209.37.211]:36896 "EHLO
-        cloud48395.mywhc.ca" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235017AbhE0PWn (ORCPT
+        id S237054AbhE0PZe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 May 2021 11:25:34 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:40892 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235795AbhE0PY0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 May 2021 11:22:43 -0400
-Received: from modemcable064.203-130-66.mc.videotron.ca ([66.130.203.64]:58504 helo=[192.168.1.179])
-        by cloud48395.mywhc.ca with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.94.2)
-        (envelope-from <olivier@trillion01.com>)
-        id 1lmHor-0007mF-6e; Thu, 27 May 2021 11:21:09 -0400
-Message-ID: <1e5c308bd25055ac8a899d40f00df08fc755e066.camel@trillion01.com>
-Subject: Re: [PATCH] io_uring: handle signals before letting io-worker exit
-From:   Olivier Langlois <olivier@trillion01.com>
-To:     Jens Axboe <axboe@kernel.dk>,
-        Pavel Begunkov <asml.silence@gmail.com>,
-        io-uring@vger.kernel.org, linux-kernel@vger.kernel.org
-Date:   Thu, 27 May 2021 11:21:08 -0400
-In-Reply-To: <3d1bd9e2-b711-0aac-628e-89b95ff8dbc3@kernel.dk>
-References: <60ae94d1.1c69fb81.94f7a.2a35SMTPIN_ADDED_MISSING@mx.google.com>
-         <3d1bd9e2-b711-0aac-628e-89b95ff8dbc3@kernel.dk>
-Organization: Trillion01 Inc
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.40.1 
+        Thu, 27 May 2021 11:24:26 -0400
+Received: from 1.general.cking.uk.vpn ([10.172.193.212])
+        by youngberry.canonical.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.93)
+        (envelope-from <colin.king@canonical.com>)
+        id 1lmHqT-0007O9-9F; Thu, 27 May 2021 15:22:49 +0000
+Subject: Re: [PATCH][next] mtd: rawnand: ensure return variable is initialized
+To:     Miquel Raynal <miquel.raynal@bootlin.com>
+Cc:     Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        linux-mtd@lists.infradead.org, kernel-janitors@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20210527145048.795954-1-colin.king@canonical.com>
+ <20210527170309.4d99bc31@xps13>
+From:   Colin Ian King <colin.king@canonical.com>
+Message-ID: <06e72a95-1f01-f9b7-d172-51f22224a2a7@canonical.com>
+Date:   Thu, 27 May 2021 16:22:47 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
+In-Reply-To: <20210527170309.4d99bc31@xps13>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - cloud48395.mywhc.ca
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - trillion01.com
-X-Get-Message-Sender-Via: cloud48395.mywhc.ca: authenticated_id: olivier@trillion01.com
-X-Authenticated-Sender: cloud48395.mywhc.ca: olivier@trillion01.com
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 2021-05-27 at 07:46 -0600, Jens Axboe wrote:
-> On 5/26/21 12:21 PM, Olivier Langlois wrote:
-> > This is required for proper core dump generation.
-> > 
-> > Because signals are normally serviced before resuming userspace and
-> > an
-> > io_worker thread will never resume userspace, it needs to
-> > explicitly
-> > call the signal servicing functions.
-> > 
-> > Also, notice that it is possible to exit from the io_wqe_worker()
-> > function main loop while having a pending signal such as when
-> > the IO_WQ_BIT_EXIT bit is set.
-> > 
-> > It is crucial to service any pending signal before calling
-> > do_exit()
-> > Proper coredump generation is relying on PF_SIGNALED to be set.
-> > 
-> > More specifically, exit_mm() is using this flag to wait for the
-> > core dump completion before releasing its memory descriptor.
-> > 
-> > Signed-off-by: Olivier Langlois <olivier@trillion01.com>
-> > ---
-> >  fs/io-wq.c | 22 ++++++++++++++++++++--
-> >  1 file changed, 20 insertions(+), 2 deletions(-)
-> > 
-> > diff --git a/fs/io-wq.c b/fs/io-wq.c
-> > index 5361a9b4b47b..b76c61e9aff2 100644
-> > --- a/fs/io-wq.c
-> > +++ b/fs/io-wq.c
-> > @@ -9,8 +9,6 @@
-> >  #include <linux/init.h>
-> >  #include <linux/errno.h>
-> >  #include <linux/sched/signal.h>
-> > -#include <linux/mm.h>
-> > -#include <linux/sched/mm.h>
-> >  #include <linux/percpu.h>
-> >  #include <linux/slab.h>
-> >  #include <linux/rculist_nulls.h>
-> > @@ -193,6 +191,26 @@ static void io_worker_exit(struct io_worker
-> > *worker)
-> >  
-> >         kfree_rcu(worker, rcu);
-> >         io_worker_ref_put(wqe->wq);
-> > +       /*
-> > +        * Because signals are normally serviced before resuming
-> > userspace and an
-> > +        * io_worker thread will never resume userspace, it needs
-> > to explicitly
-> > +        * call the signal servicing functions.
-> > +        *
-> > +        * Also notice that it is possible to exit from the
-> > io_wqe_worker()
-> > +        * function main loop while having a pending signal such as
-> > when
-> > +        * the IO_WQ_BIT_EXIT bit is set.
-> > +        *
-> > +        * It is crucial to service any pending signal before
-> > calling do_exit()
-> > +        * Proper coredump generation is relying on PF_SIGNALED to
-> > be set.
-> > +        *
-> > +        * More specifically, exit_mm() is using this flag to wait
-> > for the
-> > +        * core dump completion before releasing its memory
-> > descriptor.
-> > +        */
-> > +       if (signal_pending(current)) {
-> > +               struct ksignal ksig;
-> > +
-> > +               get_signal(&ksig);
-> > +       }
-> >         do_exit(0);
-> >  }
+On 27/05/2021 16:03, Miquel Raynal wrote:
+> Hi Colin,
 > 
-> Do we need the same thing in fs/io_uring.c:io_sq_thread()?
+> Colin King <colin.king@canonical.com> wrote on Thu, 27 May 2021
+> 15:50:48 +0100:
 > 
-Jens,
+>> From: Colin Ian King <colin.king@canonical.com>
+>>
+>> Currently there are corner cases where spec_times is NULL and
+>> chip->parameters.onfi or when best_mode is zero where ret is
+> 
+>                        ^
+> something is missing here, the sentence is not clear
+> 
+>> not assigned a value and an uninitialized return value can be
+>> returned. Fix this by ensuring ret is initialized to -EINVAL.
+> 
+> I don't see how this situation can happen.
+> 
+> In both cases, no matter the value of best_mode, the for loop will
+> always execute at least one time (mode 0) so ret will be populated.
+> 
+> Maybe the robot does not know that best_mode cannot be negative and
+> should be defined unsigned, but the current patch is invalid.
 
-You are 100% correct. In fact, this is the same problem for ALL
-currently existing and future io threads. Therefore, I start to think
-that the right place for the fix might be straight into do_exit()...
+Yep, I've looked at this again and it does seem like a false positive.
+Apologies for the noise.
 
+> 
+>> Addresses-Coverity: ("Uninitialized scalar variable")
+>> Fixes: 9d3194bf2aef ("mtd: rawnand: Allow SDR timings to be nacked")
+>> Fixes: a9ecc8c814e9 ("mtd: rawnand: Choose the best timings, NV-DDR included")
+>> Signed-off-by: Colin Ian King <colin.king@canonical.com>
+>> ---
+>>  drivers/mtd/nand/raw/nand_base.c | 4 ++--
+>>  1 file changed, 2 insertions(+), 2 deletions(-)
+>>
+>> diff --git a/drivers/mtd/nand/raw/nand_base.c b/drivers/mtd/nand/raw/nand_base.c
+>> index 57a583149cc0..18db742f650c 100644
+>> --- a/drivers/mtd/nand/raw/nand_base.c
+>> +++ b/drivers/mtd/nand/raw/nand_base.c
+>> @@ -926,7 +926,7 @@ int nand_choose_best_sdr_timings(struct nand_chip *chip,
+>>  				 struct nand_sdr_timings *spec_timings)
+>>  {
+>>  	const struct nand_controller_ops *ops = chip->controller->ops;
+>> -	int best_mode = 0, mode, ret;
+>> +	int best_mode = 0, mode, ret = -EINVAL;
+>>  
+>>  	iface->type = NAND_SDR_IFACE;
+>>  
+>> @@ -977,7 +977,7 @@ int nand_choose_best_nvddr_timings(struct nand_chip *chip,
+>>  				   struct nand_nvddr_timings *spec_timings)
+>>  {
+>>  	const struct nand_controller_ops *ops = chip->controller->ops;
+>> -	int best_mode = 0, mode, ret;
+>> +	int best_mode = 0, mode, ret = 0;
+>>  
+>>  	iface->type = NAND_NVDDR_IFACE;
+>>  
+> 
+> Thanks,
+> MiquÃ¨l
+> 
 
