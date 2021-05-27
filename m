@@ -2,125 +2,242 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 45B4B392C79
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 13:17:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B4E6392C7B
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 13:17:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229866AbhE0LSv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 May 2021 07:18:51 -0400
-Received: from mail-vs1-f42.google.com ([209.85.217.42]:34769 "EHLO
-        mail-vs1-f42.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229591AbhE0LSs (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 May 2021 07:18:48 -0400
-Received: by mail-vs1-f42.google.com with SMTP id x13so177796vsh.1;
-        Thu, 27 May 2021 04:17:14 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=hN1/8UMtMXWBr9/Apat6KXcCH2jMM7TnJ6pU4YI+Zco=;
-        b=cJIBu4m7kmw0I7qNe1JMLX1kguAO7cUH/JkDGSPsJbJLUsNC3N3K1jIqHkLFpwtuAj
-         MzF6+Wo2iV40FnLVMN7f6l4z18ZFrbEZR7hDjBXbR9fLFTgTxkP0tjdsL447n0Qgl3Id
-         ZJoUOeRWPmRd9qzfTlzeYv6rEwrcKAfCSW0J+mU87bfPm2QVaNdLApYGRE6FdW3PLUVi
-         NGp0cttFIm02OOA6veve3LYKWR/TyPWzUHakTUdofJ97h7FLM0492gM1eDUMrtqnTadH
-         B9os6zQJPHUR3qyb+msQxWeWgjgXTSgEllyNlM8Cxm/Z6xkTtyz8WeLeIPFbryzeyHOJ
-         zJig==
-X-Gm-Message-State: AOAM531HYD+TfxuTYcGIyjt6jTur1/YndFZCXU5ruE79ASxGRM8HYG3P
-        nCKNfnQamZxnCq13FGzHeS4Oy7e9gfXR7AdfshvutxqRhQE=
-X-Google-Smtp-Source: ABdhPJyTxN3vfxK8w0+8Ed879hEUH6Ox8bLKVQrcvJxd3fyFc3G0uk9H3VlenKR5+88csy9ssh/X0w6m4xMO00cQl44=
-X-Received: by 2002:a67:fb52:: with SMTP id e18mr1533054vsr.18.1622114234015;
- Thu, 27 May 2021 04:17:14 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210514192218.13022-1-prabhakar.mahadev-lad.rj@bp.renesas.com> <20210514192218.13022-16-prabhakar.mahadev-lad.rj@bp.renesas.com>
-In-Reply-To: <20210514192218.13022-16-prabhakar.mahadev-lad.rj@bp.renesas.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Thu, 27 May 2021 13:17:02 +0200
-Message-ID: <CAMuHMdUNdZvPfU1Zu_F2CyneX-m3hGwwsp+TrYR3+ZjGfHxP-g@mail.gmail.com>
-Subject: Re: [PATCH 15/16] arm64: dts: renesas: Add initial DTSI for
- RZ/G2{L,LC} SoC's
-To:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Magnus Damm <magnus.damm@gmail.com>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
-        linux-clk <linux-clk@vger.kernel.org>,
-        "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Biju Das <biju.das.jz@bp.renesas.com>,
-        Prabhakar <prabhakar.csengg@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+        id S229640AbhE0LTN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 May 2021 07:19:13 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43012 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229893AbhE0LTH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 27 May 2021 07:19:07 -0400
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4AD05610A6;
+        Thu, 27 May 2021 11:17:34 +0000 (UTC)
+Received: from 78.163-31-62.static.virginmediabusiness.co.uk ([62.31.163.78] helo=why.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <maz@kernel.org>)
+        id 1lmE16-003vcg-9c; Thu, 27 May 2021 12:17:32 +0100
+Date:   Thu, 27 May 2021 12:17:31 +0100
+Message-ID: <87zgwgs9x0.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     Valentin Schneider <valentin.schneider@arm.com>
+Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>
+Subject: Re: [RFC PATCH v2 00/10] irqchip/irq-gic: Optimize masking by leveraging EOImode=1
+In-Reply-To: <20210525173255.620606-1-valentin.schneider@arm.com>
+References: <20210525173255.620606-1-valentin.schneider@arm.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/27.1
+ (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 62.31.163.78
+X-SA-Exim-Rcpt-To: valentin.schneider@arm.com, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, tglx@linutronix.de, lorenzo.pieralisi@arm.com, vincenzo.frascino@arm.com
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Prabhakar,
+On Tue, 25 May 2021 18:32:45 +0100,
+Valentin Schneider <valentin.schneider@arm.com> wrote:
+> 
+> Hi folks!
+> 
+> This is the spiritual successor to [1], which was over 6 years ago (!).
+> 
+> Revisions
+> =========
+> 
+> RFCv1 -> RFCv2
+> ++++++++++++++
+> 
+> o Rebased against latest tip/irq/core
+> o Applied cleanups suggested by Thomas
+> 
+> o Collected some performance results
+> 
+> Background
+> ==========
+> 
+> GIC mechanics
+> +++++++++++++
+> 
+> There are three IRQ operations:
+> o Acknowledge. This gives us the IRQ number that interrupted us, and also
+>   - raises the running priority of the CPU interface to that of the IRQ
+>   - sets the active bit of the IRQ
+> o Priority Drop. This "clears" the running priority.
+> o Deactivate. This clears the active bit of the IRQ.
+> 
+> o The CPU interface has a running priority value. No interrupt of lower or
+>   equal priority will be signaled to the CPU attached to that interface. On
+>   Linux, we only have two priority values: pNMIs at highest priority, and
+>   everything else at the other priority.
+> o Most GIC interrupts have an "active" bit. This bit is set on Acknowledge
+>   and cleared on Deactivate. A given interrupt cannot be re-signaled to a
+>   CPU if it has its active bit set (i.e. if it "fires" again while it's
+>   being handled).
+> 
+> EOImode fun
+> +++++++++++
+> 
+> In EOImode=0, Priority Drop and Deactivate are undissociable. The
+> (simplified) interrupt handling flow is as follows: 
+> 
+>   <~IRQ>
+>     Acknowledge
+>     Priority Drop + Deactivate
+>     <interrupts can once again be signaled, once interrupts are re-enabled>
+> 
+> With EOImode=1, we can invoke each operation individually. This gives us:
+> 
+>   <~IRQ>
+>     Acknowledge
+>     Priority Drop
+>     <*other* interrupts can be signaled from here, once interrupts are re-enabled>
+>     Deactivate
+>     <*this* interrupt can be signaled again>
+> 
+> What this means is that with EOImode=1, any interrupt is kept "masked" by
+> its active bit between Priority Drop and Deactivate.
+> 
+> Threaded IRQs and ONESHOT
+> =========================
+> 
+> ONESHOT threaded IRQs must remain masked between the main handler and the
+> threaded handler. Right now we do this using the conventional irq_mask()
+> operations, which looks like this: 
+> 
+>  <irq handler>
+>    Acknowledge
+>    Priority Drop   
+>    irq_mask()
+>    Deactivate
+> 
+>  <threaded handler>
+>    irq_unmask()
+> 
+> However, masking for the GICs means poking the distributor, and there's no
+> sysreg for that - it's an MMIO access. We've seen above that our IRQ
+> handling can give us masking "for free", and this is what this patch set is
+> all about. It turns the above handling into:
+> 
+>   <irq handler>
+>     Acknowledge
+>     Priority Drop
+> 
+>   <threaded handler>
+>     Deactivate
+> 
+> No irq_mask() => fewer MMIO accesses => happier users (or so I've been
+> told). This is especially relevant to PREEMPT_RT which forces threaded
+> IRQs.
+>     
+> Functional testing
+> ==================
+> 
+> GICv2
+> +++++
+> 
+> I've tested this on my Juno with forced irqthreads. This makes the pl011
+> IRQ into a threaded ONESHOT IRQ, so I spammed my keyboard into the console
+> and verified via ftrace that there were no irq_mask() / irq_unmask()
+> involved.
+> 
+> GICv3
+> +++++
+> 
+> I've tested this on my Ampere eMAG, which uncovered "fun" interactions with
+> the MSI domains. Did the same trick as the Juno with the pl011.
+> 
+> pNMIs cause said eMAG to freeze, but that's true even without my patches. I
+> did try them out under QEMU+KVM and that looked fine, although that means I
+> only got to test EOImode=0. I'll try to dig into this when I get some more
+> cycles.
 
-On Fri, May 14, 2021 at 9:24 PM Lad Prabhakar
-<prabhakar.mahadev-lad.rj@bp.renesas.com> wrote:
-> Add initial DTSI for RZ/G2{L,LC} SoC's.
->
-> File structure:
-> r9a07g044.dtsi  => RZ/G2L family SoC common parts
-> r9a07g044l.dtsi => Specific to RZ/G2L (R9A07G044L) SoC
-> r9a07g044l1.dtsi => Specific to RZ/G2L (R9A07G044L single cortex A55) SoC
-> r9a07g044l2.dtsi => Specific to RZ/G2L (R9A07G044L dual cortex A55) SoC
->
-> Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-> Signed-off-by: Biju Das <biju.das.jz@bp.renesas.com>
+That's interesting/worrying. As far as I remember, this machine uses
+GIC500, which is a well known quantity. If pNMIs are causing issues,
+that'd probably be a CPU interface problem. Can you elaborate on how
+you tried to test that part? Just using the below benchmark?
 
-> --- /dev/null
-> +++ b/arch/arm64/boot/dts/renesas/r9a07g044.dtsi
-> @@ -0,0 +1,70 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/*
-> + * Device Tree Source for the RZ/G2L and RZ/G2LC common SoC parts
-> + *
-> + * Copyright (C) 2021 Renesas Electronics Corp.
-> + */
-> +
-> +#include <dt-bindings/interrupt-controller/arm-gic.h>
-> +#include <dt-bindings/clock/r9a07g044l-cpg.h>
-> +
-> +/ {
-> +       compatible = "renesas,r9a07g044";
+> 
+> Performance impact
+> ==================
+> 
+> Benchmark
+> +++++++++
+> 
+> Finding a benchmark that leverages a force-threaded IRQ has proved to be
+> somewhat of a pain, so I crafted my own. It's a bit daft, but so are most
+> benchmarks (though this one might win a prize).
 
-> --- /dev/null
-> +++ b/arch/arm64/boot/dts/renesas/r9a07g044l1.dtsi
-> @@ -0,0 +1,43 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/*
-> + * Device Tree Source for the RZ/G2L R9A07G044L1 common parts
-> + *
-> + * Copyright (C) 2021 Renesas Electronics Corp.
-> + */
-> +
-> +/dts-v1/;
-> +#include "r9a07g044l.dtsi"
-> +
-> +/ {
-> +       compatible = "renesas,r9a07g044l1";
+I love it (and wrote similar hacks in my time)! :D Can you put that up
+somewhere so that I can run the same test on my own zoo and find out
+how it fares?
 
-This overwrites the main compatible value set by r9a07g044.dtsi before.
-As per your bindings, you want both:
+> 
+> Long story short, I'm picking an unused IRQ and have it be
+> force-threaded. The benchmark then is:
+> 
+>   <bench thread>
+>     loop:
+>       irq_set_irqchip_state(irq, IRQCHIP_STATE_PENDING, true);
+>       wait_for_completion(&done);
+> 
+>   <threaded handler>
+>     complete(&done);
+> 
+> A more complete picture would be:
+> 
+>   <bench thread>   <whatever is on CPU0>   <IRQ thread>
+>     raise IRQ
+>     wait
+> 		    run flow handler
+> 		      wake IRQ thread
+> 					    finish handling
+> 					    wake bench thread
+>     
+> Letting this run for a fixed amount of time lets me measure an entire IRQ
+> handling cycle, which is what I'm after since there's one less mask() in
+> the flow handler and one less unmask() in the threaded handler.
+> 
+> You'll note there's some potential "noise" in there due to scheduling both
+> the benchmark thread and the IRQ thread. However, the IRQ thread is pinned
+> to the IRQ's affinity, and I also pinned the benchmark thread in my tests,
+> which should keep this noise to a minimum.
+> 
+> Results
+> +++++++
+> 
+> On a Juno r0, 20 iterations of 5 seconds of that benchmark yields
+> (measuring irqs/sec): 
+> 
+>   | mean | median | 90th percentile | 99th percentile |
+>   |------+--------+-----------------+-----------------|
+>   | +11% |   +11% |            +12% |            +14% |
+> 
+> On an Ampere eMAG, 20 iterations of 5 seconds of that benchmark yields
+> (measuring irqs/sec):
+> 
+>   | mean | median | 90th percentile | 99th percentile |
+>   |------+--------+-----------------+-----------------|
+>   | +20% |   +20% |            +20% |            +20% |
+> 
+> This is still quite "artificial", but it reassures me in that skipping those
+> (un)mask operations can yield some measurable improvement.
 
-    compatible = "renesas,r9a07g044l1", "renesas,r9a07g044".
+20% improvement is even higher than I suspected!
 
-Gr{oetje,eeting}s,
+Thanks,
 
-                        Geert
+	M.
 
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+-- 
+Without deviation from the norm, progress is not possible.
