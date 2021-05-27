@@ -2,95 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 25735393728
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 22:26:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 74E4F39372B
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 22:29:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235847AbhE0U2L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 May 2021 16:28:11 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43056 "EHLO mail.kernel.org"
+        id S235984AbhE0Uai (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 May 2021 16:30:38 -0400
+Received: from mga05.intel.com ([192.55.52.43]:41701 "EHLO mga05.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235524AbhE0U2J (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 May 2021 16:28:09 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8A7A061360;
-        Thu, 27 May 2021 20:26:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1622147196;
-        bh=cy1zdvQCkbyF8cbGtaUW+3spYF3RmL4ltiIOEIZGXTs=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=LRpAz+Zy10IieHd0zOw9oMrAFqOFjHdkQ6rnJvVonE+xMbFBybp6MaAj2gQXI1IdH
-         wEgPAZhR9pK2rKbl6aj/DAEug8PiyLXkjLp1WbIeQkKXB2zPcjGzYItapkH7Ke3sf+
-         LFSiC79CS4PLUPwsR9Mj1THEJaJkcUZzN4Rh4O9ZOd+9wz2hPirbanP8youDZtvMEy
-         TlEqbF574UBIrMurNf0tAOCp1W6YPs/IIusOsurS7ldudHPWe/9GfmmQQLkZ7tbdVt
-         O9YfBRJv4ZCaEoEtiGJzyFaBwW+yKq7NyV2vMzV50qjH/MpGw4OkXplZgTCQT23JLD
-         wN75hpiRFkqZg==
-Date:   Thu, 27 May 2021 22:26:33 +0200
-From:   Wolfram Sang <wsa@kernel.org>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     Hans de Goede <hdegoede@redhat.com>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        linux-i2c@vger.kernel.org, linux-acpi@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
-        linux-staging@lists.linux.dev,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: Re: [PATCH v1 1/6] i2c: acpi: Export i2c_acpi_find_client_by_adev()
- for users
-Message-ID: <YLAAedlB6UaJQh0X@kunai>
-Mail-Followup-To: Wolfram Sang <wsa@kernel.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        linux-i2c@vger.kernel.org, linux-acpi@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
-        linux-staging@lists.linux.dev,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-References: <20210526124322.48915-1-andriy.shevchenko@linux.intel.com>
+        id S235696AbhE0Uae (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 27 May 2021 16:30:34 -0400
+IronPort-SDR: cNgY7cTfF+xgfO+NovXsdIzLEqU0+QbWWL2qtTHAdeBHLCMfhckFt3IvpaL8mqXRm/eanypNlx
+ VUZ0SHBGr3eg==
+X-IronPort-AV: E=McAfee;i="6200,9189,9997"; a="288419120"
+X-IronPort-AV: E=Sophos;i="5.83,228,1616482800"; 
+   d="scan'208";a="288419120"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 May 2021 13:28:59 -0700
+IronPort-SDR: JLiZzsfA6DBo/toa1dn7JuXcq5kVfGrWsmm/qi6D4P/Bb78eNqi42xAfQH+2N6lMgpgPNFmxyG
+ kdfV8wqGwMhA==
+X-IronPort-AV: E=Sophos;i="5.83,228,1616482800"; 
+   d="scan'208";a="443717461"
+Received: from pcotting-mobl.amr.corp.intel.com ([10.209.101.152])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 May 2021 13:28:59 -0700
+Message-ID: <7e45be0d83c823fa48bac3494bed0eb9b71b8425.camel@linux.intel.com>
+Subject: Re: [PATCH] x86/thermal: Fix LVT thermal setup for SMI delivery mode
+From:   Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     Borislav Petkov <bp@suse.de>, James Feeney <james@nurealm.net>,
+        linux-smp@vger.kernel.org, Jens Axboe <axboe@kernel.dk>,
+        lkml <linux-kernel@vger.kernel.org>,
+        Zhang Rui <rui.zhang@intel.com>, x86-ml <x86@kernel.org>
+Date:   Thu, 27 May 2021 13:28:59 -0700
+In-Reply-To: <YK/sjypdlYbk/NHC@zn.tnic>
+References: <YKYqABhSTTUG8cgV@zn.tnic>
+         <a264eaef-1c94-77e1-dfbf-e436a41588be@nurealm.net>
+         <YKjJfu4kRDflQS5e@zn.tnic>
+         <373464e3-b8a0-0fe0-b890-41df0eecf090@nurealm.net>
+         <YKqLSqIM7Gi5x+IA@zn.tnic>
+         <b550a241-2097-cf4b-cc41-e4d0a45cda72@nurealm.net>
+         <YKtbBXZGpVZS1M4R@zn.tnic>
+         <1f6c70f4-6680-d6ea-465a-548dc7698317@nurealm.net>
+         <YK905sC/2cVOYo6I@zn.tnic>
+         <d2d7d50f274d5143305282c99491ebe590f33ccd.camel@linux.intel.com>
+         <YK/sjypdlYbk/NHC@zn.tnic>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.4-0ubuntu1 
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="YkSC1hApOCzGjIKM"
-Content-Disposition: inline
-In-Reply-To: <20210526124322.48915-1-andriy.shevchenko@linux.intel.com>
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, 2021-05-27 at 21:01 +0200, Borislav Petkov wrote:
+> On Thu, May 27, 2021 at 11:09:59AM -0700, Srinivas Pandruvada wrote:
+> > My guess is that system is booting hot sometimes. SMM started fan
+> > or
+> > some cooling and set a temperature threshold. It is waiting for
+> > thermal
+> > interrupt for temperature threshold, which it never got.
+> 
+> Are you saying that that replication of lvtthmr_init to the APs in
+> intel_init_thermal() is absolutely needed on those SMI machines
+> running
+> hot?
 
---YkSC1hApOCzGjIKM
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+We have seen some SMM uses thermal interrupts. We had one issue in one
+Yoga systems several years back where SMM handling of thermal interrupt
+related to HWP caused hard hang as it crashed there.
+So yes, there may be special thing for cooling also.
 
-On Wed, May 26, 2021 at 03:43:17PM +0300, Andy Shevchenko wrote:
-> There is at least one user that will gain from the
-> i2c_acpi_find_client_by_adev() being exported.
+> 
+> That thing:
+> 
+>          * If BIOS takes over the thermal interrupt and sets its
+> interrupt
+>          * delivery mode to SMI (not fixed), it restores the value
+> that the
+>          * BIOS has programmed on AP based on BSP's info we saved
+> since BIOS
+>          * is always setting the same value for all threads/cores.
+> 
+> ?
+> 
+> Me moving that lvtthmr_init read later would replicate the wrong
+> value
+> because we'd soft-disable the APIC and thus the core would lockup
+> waiting...
+I think so.
+I will try to force replicate wrong value in Yoga system which used to
+crash in thermal interrupt handling of SMM code and check what happens.
+ This shouldn't crash as it will not get thermal interrupt. Since the
+system is not with me, I can try next week.
 
-No objections per se. But as the user is in staging, I want to ask if
-the use there is really a solution we would also accept outside of
-staging? Or is it a hack?
+> 
+> The other interesting thing is that the core would always lockup when
+> trying to IPI another core to remote-flush the TLBs.
+> 
+Here I think the other core didn't exit SMM mode.
+
+Thanks,
+Srinivas
 
 
---YkSC1hApOCzGjIKM
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmCwAHkACgkQFA3kzBSg
-KbZ39Q//Xi/xhfYvz+yPnbg09qxKQMLjTghIum8+MBovB6wG5KO3xJquun3lgwi2
-91cLMUs4vccepTNqhLc9E2aTpEj7vXT+TXXdi5lquG7A5UyRRXtLjdUUpocgQkK2
-c7XgdaghXzIHL2WQg/D69kWuCeqjDI2zKwozAUHj/xlq1VYH3G9t+JQjdCT2Mxr8
-cxLfc3CMIGALlPUY7KWJs4D094vladvWSenCpsQMMLbkJVXEGfBGbnvntrOEhNqZ
-w6WCapfG80/xPcVesMaQSRAkyTLIVwea/d0njRwmb3vd9GjhAtpc+2EHGJL16y0Y
-WAywSlzqXFHg50laA7nnV8nGUBPOwztSI000Lpry/jWqeG2sGKkwer0vl6701+84
-YBP7n1e3Fed/tNwlP5Ge38MAZg7q9tyhWn+PZmjccu3OPz0I/ITmQ3u3xjvVPyGp
-1VtJ8kH124M6l7VsnaQVv1iA827+rPQVmZ6DWtuRFDNjuhtuLgnAf726hS9ZW3U6
-tuR+BQDqM+Gno64KiErYiIEal5YVveCV3H5nub70hvVGKTsi2/Wpu5It3isQUppv
-puv31INxtAA0lqivGAwNAQ9JyIYWH32Yktfl7MQGfR8WkKiDcgG0o9krHDXhTXWK
-BAFQOOKvzTAmth8WGRktwJo2Pf3vQ6Yd6bb0yaNR9zIJbfV2hKM=
-=CIL7
------END PGP SIGNATURE-----
-
---YkSC1hApOCzGjIKM--
