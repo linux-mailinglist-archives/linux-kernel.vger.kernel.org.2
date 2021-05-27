@@ -2,18 +2,18 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ADCC7392FC1
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 15:30:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 09C76392FC8
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 15:32:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236501AbhE0Nc2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 May 2021 09:32:28 -0400
-Received: from verein.lst.de ([213.95.11.211]:39143 "EHLO verein.lst.de"
+        id S236514AbhE0Ndv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 May 2021 09:33:51 -0400
+Received: from verein.lst.de ([213.95.11.211]:39183 "EHLO verein.lst.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236007AbhE0NcZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 May 2021 09:32:25 -0400
+        id S236007AbhE0Nds (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 27 May 2021 09:33:48 -0400
 Received: by verein.lst.de (Postfix, from userid 2407)
-        id DA26F68AFE; Thu, 27 May 2021 15:30:46 +0200 (CEST)
-Date:   Thu, 27 May 2021 15:30:46 +0200
+        id 9130268AFE; Thu, 27 May 2021 15:32:12 +0200 (CEST)
+Date:   Thu, 27 May 2021 15:32:12 +0200
 From:   Christoph Hellwig <hch@lst.de>
 To:     Claire Chang <tientzu@chromium.org>
 Cc:     Rob Herring <robh+dt@kernel.org>, mpe@ellerman.id.au,
@@ -49,33 +49,17 @@ Cc:     Rob Herring <robh+dt@kernel.org>, mpe@ellerman.id.au,
         linux-pci@vger.kernel.org, maarten.lankhorst@linux.intel.com,
         matthew.auld@intel.com, rodrigo.vivi@intel.com,
         thomas.hellstrom@linux.intel.com
-Subject: Re: [PATCH v7 13/15] dma-direct: Allocate memory from restricted
- DMA pool if available
-Message-ID: <20210527133046.GF26160@lst.de>
-References: <20210518064215.2856977-1-tientzu@chromium.org> <20210518064215.2856977-14-tientzu@chromium.org>
+Subject: Re: [PATCH v8 00/15] Restricted DMA
+Message-ID: <20210527133212.GA27432@lst.de>
+References: <20210527125845.1852284-1-tientzu@chromium.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210518064215.2856977-14-tientzu@chromium.org>
+In-Reply-To: <20210527125845.1852284-1-tientzu@chromium.org>
 User-Agent: Mutt/1.5.17 (2007-11-01)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> +#ifdef CONFIG_DMA_RESTRICTED_POOL
-> +	if (swiotlb_free(dev, page, size))
-> +		return;
-> +#endif
-
-Please avoid the ifdefs by either stubbing out the function to be a no-op
-or by using IS_ENABLED.
-
-> +#ifdef CONFIG_DMA_RESTRICTED_POOL
-> +	page = swiotlb_alloc(dev, size);
-> +	if (page && !dma_coherent_ok(dev, page_to_phys(page), size)) {
-> +		__dma_direct_free_pages(dev, page, size);
-> +		page = NULL;
-> +	}
-> +#endif
-
-Same here, for the stub it would just return NULL.
+I just finished reviewing v7, sorry.  Let me find some time to see what
+difference this version makes.
