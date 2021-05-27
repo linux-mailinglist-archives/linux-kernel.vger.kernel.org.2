@@ -2,145 +2,265 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A313392AAB
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 11:23:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 30EA6392ACB
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 May 2021 11:30:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235817AbhE0JZ2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 May 2021 05:25:28 -0400
-Received: from mga05.intel.com ([192.55.52.43]:47318 "EHLO mga05.intel.com"
+        id S235928AbhE0Jby (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 May 2021 05:31:54 -0400
+Received: from mga12.intel.com ([192.55.52.136]:15291 "EHLO mga12.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235699AbhE0JZ1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 May 2021 05:25:27 -0400
-IronPort-SDR: c5Exn7zCIbDzv9gxTLSAv726rzRPmMWjJ4QsTLDe66OjaoR5mHv6pEjaLDycsEaUsbODweFNsX
- 7Xmogk+kW/jw==
-X-IronPort-AV: E=McAfee;i="6200,9189,9996"; a="288277859"
+        id S235893AbhE0Jbk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 27 May 2021 05:31:40 -0400
+IronPort-SDR: N/xrCBSY+5fYUc8rNApR8rXTg6k/ChNHCbDaBn5qqmbTzD//fVeOXMVTqLnZmaptS+efkWOCrq
+ 2JtSKYkFAM2w==
+X-IronPort-AV: E=McAfee;i="6200,9189,9996"; a="182345426"
 X-IronPort-AV: E=Sophos;i="5.82,334,1613462400"; 
-   d="scan'208";a="288277859"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 May 2021 02:23:55 -0700
-IronPort-SDR: +zPwMvPqWjJaGITy6u17k9Dl02fHfHPahnIW4RE2PM1CJnKV0l4AorqSvgVeLC8NGTh+6NHOSp
- iGnIXKuq3Wkg==
+   d="scan'208";a="182345426"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 May 2021 02:30:07 -0700
+IronPort-SDR: p6LuMRGCAVR+nDbnWf1D74HGEonl2BEgytHcJrc+JPc1lxZtRg82wfkPMFzaO33jFOAFC6x8cr
+ EPY2ut8oeX3Q==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.82,334,1613462400"; 
-   d="scan'208";a="480498295"
-Received: from ahunter-desktop.fi.intel.com (HELO [10.237.72.174]) ([10.237.72.174])
-  by fmsmga002.fm.intel.com with ESMTP; 27 May 2021 02:23:52 -0700
-Subject: Re: [PATCH v1 1/2] perf auxtrace: Change to use SMP memory barriers
-From:   Adrian Hunter <adrian.hunter@intel.com>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Leo Yan <leo.yan@linaro.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Andi Kleen <ak@linux.intel.com>,
-        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210519140319.1673043-1-leo.yan@linaro.org>
- <d1fc3dd3-e79a-4e93-1083-6b08e0cabe59@intel.com>
- <YK9UFl7Grv/mwmVc@hirez.programming.kicks-ass.net>
- <3c7dcd5d-fddd-5d3b-81ac-cb7b615b0338@intel.com>
-Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
- Business Identity Code: 0357606 - 4, Domiciled in Helsinki
-Message-ID: <7cdc3578-a50e-89ef-477a-3dc1f84f96bb@intel.com>
-Date:   Thu, 27 May 2021 12:24:15 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
-MIME-Version: 1.0
-In-Reply-To: <3c7dcd5d-fddd-5d3b-81ac-cb7b615b0338@intel.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+   d="scan'208";a="436485938"
+Received: from mike-ilbpg1.png.intel.com ([10.88.227.76])
+  by orsmga007.jf.intel.com with ESMTP; 27 May 2021 02:30:03 -0700
+From:   Michael Sit Wei Hong <michael.wei.hong.sit@intel.com>
+To:     Jose.Abreu@synopsys.com, andrew@lunn.ch, hkallweit1@gmail.com,
+        linux@armlinux.org.uk, kuba@kernel.org, netdev@vger.kernel.org,
+        peppe.cavallaro@st.com, alexandre.torgue@foss.st.com,
+        davem@davemloft.net, mcoquelin.stm32@gmail.com,
+        weifeng.voon@intel.com, boon.leong.ong@intel.com,
+        tee.min.tan@intel.com, vee.khee.wong@linux.intel.com,
+        vee.khee.wong@intel.com, michael.wei.hong.sit@intel.com,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [PATCH net-next v3 3/3] net: stmmac: enable Intel mGbE 2.5Gbps link speed
+Date:   Thu, 27 May 2021 17:24:15 +0800
+Message-Id: <20210527092415.25205-4-michael.wei.hong.sit@intel.com>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20210527092415.25205-1-michael.wei.hong.sit@intel.com>
+References: <20210527092415.25205-1-michael.wei.hong.sit@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 27/05/21 11:25 am, Adrian Hunter wrote:
-> On 27/05/21 11:11 am, Peter Zijlstra wrote:
->> On Thu, May 27, 2021 at 10:54:56AM +0300, Adrian Hunter wrote:
->>> On 19/05/21 5:03 pm, Leo Yan wrote:
->>>> The AUX ring buffer's head and tail can be accessed from multiple CPUs
->>>> on SMP system, so changes to use SMP memory barriers to replace the
->>>> uniprocessor barriers.
->>>
->>> I don't think user space should attempt to be SMP-aware.
->>
->> Uhh, what? It pretty much has to. Since userspace cannot assume UP, it
->> must assume SMP.
-> 
-> Yeah that is what I meant, but consequently we generally shouldn't be
-> using functions called smp_<anything>
-> 
->>
->>> For perf tools, on __x86_64__ it looks like smp_rmb() is only a compiler barrier, whereas
->>> rmb() is a "lfence" memory barrier instruction, so this patch does not
->>> seem to do what the commit message says at least for x86.
->>
->> The commit message is somewhat confused; *mb() are not UP barriers
->> (although they are available and useful on UP). They're device/dma
->> barriers.
->>
->>> With regard to the AUX area, we don't know in general how data gets there,
->>> so using memory barriers seems sensible.
->>
->> IIRC (but I ddn't check) the rule was that the kernel needs to ensure
->> the AUX area is complete before it updates the head pointer. So if
->> userspace can observe the head pointer, it must then also be able to
->> observe the data. This is not something userspace can fix up anyway.
->>
->> The ordering here is between the head pointer and the data, and from a
->> userspace perspective that's a regular smp ordering. Similar for the
->> tail update, that's between our reading the data and writing the tail,
->> regular cache coherent smp ordering.
->>
->> So ACK on the patch, it's sane and an optimization for both x86 and ARM.
->> Just the Changelog needs work.
-> 
-> If all we want is a compiler barrier, then shouldn't that be what we use?
-> i.e. barrier()
+From: Voon Weifeng <weifeng.voon@intel.com>
 
-I guess you are saying we still need to stop potential re-ordering across
-CPUs, so please ignore my comments.
+The Intel mGbE supports 2.5Gbps link speed by increasing the clock rate by
+2.5 times of the original rate. In this mode, the serdes/PHY operates at a
+serial baud rate of 3.125 Gbps and the PCS data path and GMII interface of
+the MAC operate at 312.5 MHz instead of 125 MHz.
 
-> 
->>
->>>> Signed-off-by: Leo Yan <leo.yan@linaro.org>
->>>> ---
->>>>  tools/perf/util/auxtrace.h | 6 +++---
->>>>  1 file changed, 3 insertions(+), 3 deletions(-)
->>>>
->>>> diff --git a/tools/perf/util/auxtrace.h b/tools/perf/util/auxtrace.h
->>>> index 472c0973b1f1..8bed284ccc82 100644
->>>> --- a/tools/perf/util/auxtrace.h
->>>> +++ b/tools/perf/util/auxtrace.h
->>>> @@ -452,7 +452,7 @@ static inline u64 auxtrace_mmap__read_snapshot_head(struct auxtrace_mmap *mm)
->>>>  	u64 head = READ_ONCE(pc->aux_head);
->>>>  
->>>>  	/* Ensure all reads are done after we read the head */
->>>> -	rmb();
->>>> +	smp_rmb();
->>>>  	return head;
->>>>  }
->>>>  
->>>> @@ -466,7 +466,7 @@ static inline u64 auxtrace_mmap__read_head(struct auxtrace_mmap *mm)
->>>>  #endif
->>>>  
->>>>  	/* Ensure all reads are done after we read the head */
->>>> -	rmb();
->>>> +	smp_rmb();
->>>>  	return head;
->>>>  }
->>>>  
->>>> @@ -478,7 +478,7 @@ static inline void auxtrace_mmap__write_tail(struct auxtrace_mmap *mm, u64 tail)
->>>>  #endif
->>>>  
->>>>  	/* Ensure all reads are done before we write the tail out */
->>>> -	mb();
->>>> +	smp_mb();
->>>>  #if BITS_PER_LONG == 64 || !defined(HAVE_SYNC_COMPARE_AND_SWAP_SUPPORT)
->>>>  	pc->aux_tail = tail;
->>>>  #else
->>>>
->>>
-> 
+For Intel mGbE, the overclocking of 2.5 times clock rate to support 2.5G is
+only able to be configured in the BIOS during boot time. Kernel driver has
+no access to modify the clock rate for 1Gbps/2.5G mode. The way to
+determined the current 1G/2.5G mode is by reading a dedicated adhoc
+register through mdio bus. In short, after the system boot up, it is either
+in 1G mode or 2.5G mode which not able to be changed on the fly.
+
+Compared to 1G mode, the 2.5G mode selects the 2500BASEX as PHY interface and
+disables the xpcs_an_inband. This is to cater for some PHYs that only
+supports 2500BASEX PHY interface with no autonegotiation.
+
+v2: remove MAC supported link speed masking
+v3: Restructure  to introduce intel_speed_mode_2500() to read serdes registers
+    for max speed supported and select the appropritate configuration.
+    Use max_speed to determine the supported link speed mask.
+
+Signed-off-by: Voon Weifeng <weifeng.voon@intel.com>
+Signed-off-by: Michael Sit Wei Hong <michael.wei.hong.sit@intel.com>
+---
+ .../net/ethernet/stmicro/stmmac/dwmac-intel.c | 48 ++++++++++++++++++-
+ .../net/ethernet/stmicro/stmmac/dwmac-intel.h | 13 +++++
+ .../net/ethernet/stmicro/stmmac/dwmac4_core.c |  1 +
+ .../net/ethernet/stmicro/stmmac/stmmac_main.c |  7 +++
+ include/linux/stmmac.h                        |  1 +
+ 5 files changed, 69 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/net/ethernet/stmicro/stmmac/dwmac-intel.c b/drivers/net/ethernet/stmicro/stmmac/dwmac-intel.c
+index e36a8cc59ad0..08f1703d1a1f 100644
+--- a/drivers/net/ethernet/stmicro/stmmac/dwmac-intel.c
++++ b/drivers/net/ethernet/stmicro/stmmac/dwmac-intel.c
+@@ -102,6 +102,22 @@ static int intel_serdes_powerup(struct net_device *ndev, void *priv_data)
+ 
+ 	serdes_phy_addr = intel_priv->mdio_adhoc_addr;
+ 
++	/* Set the serdes rate and the PCLK rate */
++	data = mdiobus_read(priv->mii, serdes_phy_addr,
++			    SERDES_GCR0);
++
++	data &= ~SERDES_RATE_MASK;
++	data &= ~SERDES_PCLK_MASK;
++
++	if (priv->plat->max_speed == 2500)
++		data |= SERDES_RATE_PCIE_GEN2 << SERDES_RATE_PCIE_SHIFT |
++			SERDES_PCLK_37p5MHZ << SERDES_PCLK_SHIFT;
++	else
++		data |= SERDES_RATE_PCIE_GEN1 << SERDES_RATE_PCIE_SHIFT |
++			SERDES_PCLK_70MHZ << SERDES_PCLK_SHIFT;
++
++	mdiobus_write(priv->mii, serdes_phy_addr, SERDES_GCR0, data);
++
+ 	/* assert clk_req */
+ 	data = mdiobus_read(priv->mii, serdes_phy_addr, SERDES_GCR0);
+ 	data |= SERDES_PLL_CLK;
+@@ -230,6 +246,32 @@ static void intel_serdes_powerdown(struct net_device *ndev, void *intel_data)
+ 	}
+ }
+ 
++static void intel_speed_mode_2500(struct net_device *ndev, void *intel_data)
++{
++	struct intel_priv_data *intel_priv = intel_data;
++	struct stmmac_priv *priv = netdev_priv(ndev);
++	int serdes_phy_addr = 0;
++	u32 data = 0;
++
++	serdes_phy_addr = intel_priv->mdio_adhoc_addr;
++
++	/* Determine the link speed mode: 2.5Gbps/1Gbps */
++	data = mdiobus_read(priv->mii, serdes_phy_addr,
++			    SERDES_GCR);
++
++	if (((data & SERDES_LINK_MODE_MASK) >> SERDES_LINK_MODE_SHIFT) ==
++	    SERDES_LINK_MODE_2G5) {
++		dev_info(priv->device, "Link Speed Mode: 2.5Gbps\n");
++		priv->plat->max_speed = 2500;
++		priv->plat->phy_interface = PHY_INTERFACE_MODE_2500BASEX;
++		priv->plat->mdio_bus_data->xpcs_an_inband = false;
++	} else {
++		priv->plat->max_speed = 1000;
++		priv->plat->phy_interface = PHY_INTERFACE_MODE_SGMII;
++		priv->plat->mdio_bus_data->xpcs_an_inband = true;
++	}
++}
++
+ /* Program PTP Clock Frequency for different variant of
+  * Intel mGBE that has slightly different GPO mapping
+  */
+@@ -576,7 +618,7 @@ static int ehl_sgmii_data(struct pci_dev *pdev,
+ {
+ 	plat->bus_id = 1;
+ 	plat->phy_interface = PHY_INTERFACE_MODE_SGMII;
+-
++	plat->speed_mode_2500 = intel_speed_mode_2500;
+ 	plat->serdes_powerup = intel_serdes_powerup;
+ 	plat->serdes_powerdown = intel_serdes_powerdown;
+ 
+@@ -629,6 +671,7 @@ static int ehl_pse0_sgmii1g_data(struct pci_dev *pdev,
+ 				 struct plat_stmmacenet_data *plat)
+ {
+ 	plat->phy_interface = PHY_INTERFACE_MODE_SGMII;
++	plat->speed_mode_2500 = intel_speed_mode_2500;
+ 	plat->serdes_powerup = intel_serdes_powerup;
+ 	plat->serdes_powerdown = intel_serdes_powerdown;
+ 	return ehl_pse0_common_data(pdev, plat);
+@@ -667,6 +710,7 @@ static int ehl_pse1_sgmii1g_data(struct pci_dev *pdev,
+ 				 struct plat_stmmacenet_data *plat)
+ {
+ 	plat->phy_interface = PHY_INTERFACE_MODE_SGMII;
++	plat->speed_mode_2500 = intel_speed_mode_2500;
+ 	plat->serdes_powerup = intel_serdes_powerup;
+ 	plat->serdes_powerdown = intel_serdes_powerdown;
+ 	return ehl_pse1_common_data(pdev, plat);
+@@ -691,6 +735,7 @@ static int tgl_sgmii_phy0_data(struct pci_dev *pdev,
+ {
+ 	plat->bus_id = 1;
+ 	plat->phy_interface = PHY_INTERFACE_MODE_SGMII;
++	plat->speed_mode_2500 = intel_speed_mode_2500;
+ 	plat->serdes_powerup = intel_serdes_powerup;
+ 	plat->serdes_powerdown = intel_serdes_powerdown;
+ 	return tgl_common_data(pdev, plat);
+@@ -705,6 +750,7 @@ static int tgl_sgmii_phy1_data(struct pci_dev *pdev,
+ {
+ 	plat->bus_id = 2;
+ 	plat->phy_interface = PHY_INTERFACE_MODE_SGMII;
++	plat->speed_mode_2500 = intel_speed_mode_2500;
+ 	plat->serdes_powerup = intel_serdes_powerup;
+ 	plat->serdes_powerdown = intel_serdes_powerdown;
+ 	return tgl_common_data(pdev, plat);
+diff --git a/drivers/net/ethernet/stmicro/stmmac/dwmac-intel.h b/drivers/net/ethernet/stmicro/stmmac/dwmac-intel.h
+index 542acb8ce467..20d14e588044 100644
+--- a/drivers/net/ethernet/stmicro/stmmac/dwmac-intel.h
++++ b/drivers/net/ethernet/stmicro/stmmac/dwmac-intel.h
+@@ -9,6 +9,7 @@
+ #define POLL_DELAY_US 8
+ 
+ /* SERDES Register */
++#define SERDES_GCR	0x0	/* Global Conguration */
+ #define SERDES_GSR0	0x5	/* Global Status Reg0 */
+ #define SERDES_GCR0	0xb	/* Global Configuration Reg0 */
+ 
+@@ -17,8 +18,20 @@
+ #define SERDES_PHY_RX_CLK	BIT(1)		/* PSE SGMII PHY rx clk */
+ #define SERDES_RST		BIT(2)		/* Serdes Reset */
+ #define SERDES_PWR_ST_MASK	GENMASK(6, 4)	/* Serdes Power state*/
++#define SERDES_RATE_MASK	GENMASK(9, 8)
++#define SERDES_PCLK_MASK	GENMASK(14, 12)	/* PCLK rate to PHY */
++#define SERDES_LINK_MODE_MASK	GENMASK(2, 1)
++#define SERDES_LINK_MODE_SHIFT	1
+ #define SERDES_PWR_ST_SHIFT	4
+ #define SERDES_PWR_ST_P0	0x0
+ #define SERDES_PWR_ST_P3	0x3
++#define SERDES_LINK_MODE_2G5	0x3
++#define SERSED_LINK_MODE_1G	0x2
++#define SERDES_PCLK_37p5MHZ	0x0
++#define SERDES_PCLK_70MHZ	0x1
++#define SERDES_RATE_PCIE_GEN1	0x0
++#define SERDES_RATE_PCIE_GEN2	0x1
++#define SERDES_RATE_PCIE_SHIFT	8
++#define SERDES_PCLK_SHIFT	12
+ 
+ #endif /* __DWMAC_INTEL_H__ */
+diff --git a/drivers/net/ethernet/stmicro/stmmac/dwmac4_core.c b/drivers/net/ethernet/stmicro/stmmac/dwmac4_core.c
+index f35c03c9f91e..67ba083eb90c 100644
+--- a/drivers/net/ethernet/stmicro/stmmac/dwmac4_core.c
++++ b/drivers/net/ethernet/stmicro/stmmac/dwmac4_core.c
+@@ -1358,6 +1358,7 @@ int dwmac4_setup(struct stmmac_priv *priv)
+ 	mac->link.speed10 = GMAC_CONFIG_PS;
+ 	mac->link.speed100 = GMAC_CONFIG_FES | GMAC_CONFIG_PS;
+ 	mac->link.speed1000 = 0;
++	mac->link.speed2500 = GMAC_CONFIG_FES;
+ 	mac->link.speed_mask = GMAC_CONFIG_FES | GMAC_CONFIG_PS;
+ 	mac->mii.addr = GMAC_MDIO_ADDR;
+ 	mac->mii.data = GMAC_MDIO_DATA;
+diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
+index 59505fa7afa1..a4e45e9f384f 100644
+--- a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
++++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
+@@ -931,6 +931,10 @@ static void stmmac_validate(struct phylink_config *config,
+ 	if ((max_speed > 0) && (max_speed < 1000)) {
+ 		phylink_set(mask, 1000baseT_Full);
+ 		phylink_set(mask, 1000baseX_Full);
++	} else if (priv->plat->has_gmac4) {
++		if (!max_speed || max_speed >= 2500)
++			phylink_set(mac_supported, 2500baseT_Full);
++			phylink_set(mac_supported, 2500baseX_Full);
+ 	} else if (priv->plat->has_xgmac) {
+ 		if (!max_speed || (max_speed >= 2500)) {
+ 			phylink_set(mac_supported, 2500baseT_Full);
+@@ -6989,6 +6993,9 @@ int stmmac_dvr_probe(struct device *device,
+ 		}
+ 	}
+ 
++	if (priv->plat->speed_mode_2500)
++		priv->plat->speed_mode_2500(ndev, priv->plat->bsp_priv);
++
+ 	if (priv->plat->mdio_bus_data->has_xpcs) {
+ 		ret = stmmac_xpcs_setup(priv->mii);
+ 		if (ret)
+diff --git a/include/linux/stmmac.h b/include/linux/stmmac.h
+index e14a12df381b..e215bf9255f7 100644
+--- a/include/linux/stmmac.h
++++ b/include/linux/stmmac.h
+@@ -210,6 +210,7 @@ struct plat_stmmacenet_data {
+ 	void (*fix_mac_speed)(void *priv, unsigned int speed);
+ 	int (*serdes_powerup)(struct net_device *ndev, void *priv);
+ 	void (*serdes_powerdown)(struct net_device *ndev, void *priv);
++	void (*speed_mode_2500)(struct net_device *ndev, void *priv);
+ 	void (*ptp_clk_freq_config)(void *priv);
+ 	int (*init)(struct platform_device *pdev, void *priv);
+ 	void (*exit)(struct platform_device *pdev, void *priv);
+-- 
+2.17.1
 
