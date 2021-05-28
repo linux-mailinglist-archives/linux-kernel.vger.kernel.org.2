@@ -2,94 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4ED11393EA4
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 10:18:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9FB05393EA7
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 10:20:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235999AbhE1IUS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 May 2021 04:20:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34350 "EHLO
+        id S236093AbhE1IWb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 May 2021 04:22:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34872 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236110AbhE1IUH (ORCPT
+        with ESMTP id S235754AbhE1IWa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 May 2021 04:20:07 -0400
-Received: from mail-wm1-x32b.google.com (mail-wm1-x32b.google.com [IPv6:2a00:1450:4864:20::32b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74761C06174A
-        for <linux-kernel@vger.kernel.org>; Fri, 28 May 2021 01:18:28 -0700 (PDT)
-Received: by mail-wm1-x32b.google.com with SMTP id 16so1606729wmj.5
-        for <linux-kernel@vger.kernel.org>; Fri, 28 May 2021 01:18:28 -0700 (PDT)
+        Fri, 28 May 2021 04:22:30 -0400
+Received: from mail-wm1-x333.google.com (mail-wm1-x333.google.com [IPv6:2a00:1450:4864:20::333])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0814FC061574
+        for <linux-kernel@vger.kernel.org>; Fri, 28 May 2021 01:20:54 -0700 (PDT)
+Received: by mail-wm1-x333.google.com with SMTP id m18so1653958wmq.0
+        for <linux-kernel@vger.kernel.org>; Fri, 28 May 2021 01:20:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=raspberrypi.com; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=nxtUCORFUv1eRR4XIVBf88/R8ChiE/6MK9LbrGzsY3g=;
-        b=O1S/OFyLGA1Z9G6YG2xz/c/bCK2liCA49AwY0X0jpGR4UnFRHDo2izD6P6BCZJiBAy
-         Oxghns1L7rdtVmUtPv3wTqv15IEbGkbbQ8GYSQQ7VbshWcHuZ/kpmAq/pUgHdJQ9bGz5
-         gkJ0ZfS2hu1xlAzaP2is3rVkppts2+b3SxLa2EQod9EQ7L45N8xZXWGBO6V4EX7qpzLG
-         AowHxdyRFyYESkb9XRtRqJk8iwkrO3T2Tg7vC8h2vVScZJCV4cBejYeU4yfB6PuZq4SX
-         xJJLXNsshCJR5mVteuWSd+cuV9agT9ljxZfmKgoknP9gkskB3WODiM8XRQdKG0CyimcG
-         AHAg==
+        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=EoggRuztRaQb06EHbjm5w3ArdngW4v/4mBdTsb5ErtQ=;
+        b=koocXNzabsa+z2FZjXCuOMKjhuLbFaZf1RMaPtHcyc1fETT2PbmvaL43QH00369ajd
+         QgjBJVTG/df2YG7O7p6TkLNTOzgSEQIE784hPljU2rcguhdKqh4Ep2TsgsCVHe6c/Mam
+         AaKZn0SyF/rxX8xVxO5j9dVaXFTR8tdeLuWPE//zpd7PSkF0oR9IJmr4q+zR8pd6xA6Q
+         mOh0axHU+5CZvFr1ntNW57kbn0g0np6K/peiuA8mEZALfD+x0yyLvDrak8FGcGIoCKFc
+         89kmbSEFnk6Wjb++wMFWX35GZRf78oQleY6Fn2Cm9+8D9+HWA41a0BiCPhNPST6IsBFG
+         57XA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=nxtUCORFUv1eRR4XIVBf88/R8ChiE/6MK9LbrGzsY3g=;
-        b=toMJ8G2DjyQY6aiEqNCtNnGzhg4htU2K7q3vb8RQ57MQggJhDUr+tDuSinJ4Hs4apu
-         MImZZ9VBzTNl68q4ngzVCoasdtyltofmY1sACxj0a3m/C+pevpDgeSnuGfR7AdVU4OYv
-         Ssq9x+PYBlJp8r2E4ubywCQpgFxBkOpCiNr+EIZUNom10Set6fr73mCWle1oaJbyN3hq
-         54MsRkY0wGRTwD/7qVZo3DbeWfHvO6/tHN1nvPLGsBIvNqxcB7EUAHDEkxM1l+TWcQyf
-         vHrKaEj5iCMvYG/DOb8TgluEgxNICENoJsLMEEuobKcQkDdqsA5l3gcXEZW5NsY2Doeu
-         TSVQ==
-X-Gm-Message-State: AOAM533HB2uhJHVYqXSLNST9Ep+bkziD/QB5E/dC8N0fyDJL5D2Y1KeF
-        xEUrK5AGnmnFGzylsJLywZmybg==
-X-Google-Smtp-Source: ABdhPJwTaPerNtSc6U5py9eIAjcVtCvEr9c3x0LBoZ22BD4HFfXyewvA20ELiHPoPtVa6Sn1Pbyo+g==
-X-Received: by 2002:a1c:b755:: with SMTP id h82mr5824751wmf.140.1622189907116;
-        Fri, 28 May 2021 01:18:27 -0700 (PDT)
-Received: from buildbot.pitowers.org ([2a00:1098:3142:14:ae1f:6bff:fedd:de54])
-        by smtp.gmail.com with ESMTPSA id u17sm6285689wrt.61.2021.05.28.01.18.25
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=EoggRuztRaQb06EHbjm5w3ArdngW4v/4mBdTsb5ErtQ=;
+        b=FKh9acVMPTZp9o+4wcP4YvFEhfbTebuEX1mTKM8cvkXfr2C9UGPm1X3VPfk6L2rxpK
+         QIa31Ds73VKRHmhQAL1VRjo2vJi0u6XuymC7W/GHPJ0WEIxnRAIBWeabqtCXkIi1P33U
+         oGNZBpLD9psc5Re1iH82RxrDnt8FggbQRd1Hnd1yZsu+Soe2wRH8woY33sovO75Ip2l1
+         txOYnh4YLZSEjE45LscH2Ab9wagduoPdyBJPJCrJ7oLCeRpFMo3l9sj5uF28AN0zDVhI
+         oHIlzepzyM1d2YQ1rQe82BKqGEvfDDew8mM7V6JbSPf70VvtfvRAayrU0ML7SnZDlUDU
+         MSNQ==
+X-Gm-Message-State: AOAM530esbuRe+Nrt5eTId4Xn/KKxrSc9FlovYvo6/NYDFPKeXuDtsIq
+        LqlxwUuh7EVpghTHYahrGyjAoQ==
+X-Google-Smtp-Source: ABdhPJytUinbQud6bM2Ds2pPY24+kKqOPqnVudJSoC+UQpyMiZK/m4xWzouaOvkQE4EjS6/OgGbDoA==
+X-Received: by 2002:a05:600c:244:: with SMTP id 4mr12398190wmj.163.1622190052387;
+        Fri, 28 May 2021 01:20:52 -0700 (PDT)
+Received: from localhost.localdomain ([2a01:e0a:90c:e290:668d:49f3:7f84:14a7])
+        by smtp.gmail.com with ESMTPSA id j10sm6068985wrt.32.2021.05.28.01.20.51
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 28 May 2021 01:18:26 -0700 (PDT)
-From:   Phil Elwell <phil@raspberrypi.com>
-To:     Minas Harutyunyan <hminas@synopsys.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Sasha Levin <sashal@kernel.org>,
-        Artur Petrosyan <Arthur.Petrosyan@synopsys.com>,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Phil Elwell <phil@raspberrypi.com>
-Subject: [PATCH] usb: dwc2: Fix build in periphal-only mode
-Date:   Fri, 28 May 2021 09:18:18 +0100
-Message-Id: <20210528081818.2601382-1-phil@raspberrypi.com>
+        Fri, 28 May 2021 01:20:51 -0700 (PDT)
+From:   Neil Armstrong <narmstrong@baylibre.com>
+To:     Neil Armstrong <narmstrong@baylibre.com>, khilman@baylibre.com,
+        jbrunet@baylibre.com, martin.blumenstingl@googlemail.com
+Cc:     linux-kernel@vger.kernel.org, linux-amlogic@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH v3 0/3] arm64: meson-sm1: add support for Banana PI BPI-M5
+Date:   Fri, 28 May 2021 10:20:45 +0200
+Message-Id: <162218886298.197461.17389630028036069974.b4-ty@baylibre.com>
 X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20210514143255.3352774-1-narmstrong@baylibre.com>
+References: <20210514143255.3352774-1-narmstrong@baylibre.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The bus_suspended member of struct dwc2_hsotg is only present in builds
-that support host-mode.
+On Fri, 14 May 2021 16:32:52 +0200, Neil Armstrong wrote:
+> Banana Pi BPI-M5 is a credit card format SBC with the following features:
+> - Amlogic S905X3 quad core Cortex-A55
+> - Mali-G31 GPU
+> - 4GB LPDDR4
+> - 16GB eMMC flash
+> - 4 USB 3.0
+> - 1 GbE ethernet
+> - HDMI output
+> - 2x LEDS
+> - SDCard
+> - 2.5mm Jack with Stereo Audio + CVBS
+> - Infrared Received
+> - ADC Button
+> - GPIO Button
+> - 40 pins header + 3pins debug header
+> 
+> [...]
 
-Fixes: 62bb46f51f91 ("usb: dwc2: Fix hibernation between host and device modes.")
-Signed-off-by: Phil Elwell <phil@raspberrypi.com>
----
- drivers/usb/dwc2/core_intr.c | 4 ++++
- 1 file changed, 4 insertions(+)
+Applied, thanks!
 
-diff --git a/drivers/usb/dwc2/core_intr.c b/drivers/usb/dwc2/core_intr.c
-index a5ab03808da6..03d0c034cf57 100644
---- a/drivers/usb/dwc2/core_intr.c
-+++ b/drivers/usb/dwc2/core_intr.c
-@@ -725,7 +725,11 @@ static inline void dwc_handle_gpwrdn_disc_det(struct dwc2_hsotg *hsotg,
- 	dwc2_writel(hsotg, gpwrdn_tmp, GPWRDN);
- 
- 	hsotg->hibernated = 0;
-+
-+#if IS_ENABLED(CONFIG_USB_DWC2_HOST) ||	\
-+	IS_ENABLED(CONFIG_USB_DWC2_DUAL_ROLE)
- 	hsotg->bus_suspended = 0;
-+#endif
- 
- 	if (gpwrdn & GPWRDN_IDSTS) {
- 		hsotg->op_state = OTG_STATE_B_PERIPHERAL;
+[1/3] arm64: dts: meson-sm1: add toacodec node
+      commit: ddbdaa4d596396e3aa0d60a0ab023d19822a3682
+[2/3] dt-bindings: arm: amlogic: add Banana PI M5 bindings
+      commit: c53ab8f96af1f1fcaa0c1bc851a7704ae4b413d2
+[3/3] arm64: dts: meson-sm1: add Banana PI BPI-M5 board dts
+      commit: 976e920183e406726637db925efdf8b407a2d03a
+
+Best regards,
 -- 
-2.25.1
-
+Neil Armstrong <narmstrong@baylibre.com>
