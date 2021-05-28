@@ -2,196 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D417B3947D3
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 22:12:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E7810394800
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 22:37:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229631AbhE1UOC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 May 2021 16:14:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53448 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229522AbhE1UN5 (ORCPT
+        id S229543AbhE1UjB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 May 2021 16:39:01 -0400
+Received: from gateway23.websitewelcome.com ([192.185.49.60]:41192 "EHLO
+        gateway23.websitewelcome.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229482AbhE1Ui6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 May 2021 16:13:57 -0400
-Received: from mail-lj1-x22c.google.com (mail-lj1-x22c.google.com [IPv6:2a00:1450:4864:20::22c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46234C061574
-        for <linux-kernel@vger.kernel.org>; Fri, 28 May 2021 13:12:21 -0700 (PDT)
-Received: by mail-lj1-x22c.google.com with SMTP id 131so6794650ljj.3
-        for <linux-kernel@vger.kernel.org>; Fri, 28 May 2021 13:12:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=730RyWLlIkS/afgq41VA6uiOuJV1jg//1PGLIJFflks=;
-        b=BQ50FtejrBVyVqQUY/NBLy9VUR41u+QA76G1LEStdWRUZebctaoGJgefENCsC7X3uH
-         mwgWf7xp+6cFf1urBc6X1nv4zEHIqt+VkUoE9UGXVCiyBRj4+8oJqGy6RkSQaea3NBVn
-         sdabQBUwfPQFqjJYzAjQN8EljA8VVRPttQBB0a5d2aoRPVNZ3+0tSLxGljTQ4eh60ra3
-         hxygaZwSLfmGUvC9jVjchooqV/hKujjWUcXY6uvMlyDh6SBVH8EdXGmsgEgdOu6HDK27
-         uREc2v2lkqfZs4jGf+ubCqr0fHadrZlpndswfMDvDUtWmJUGiLll7a1aBR5+86kwiUHG
-         TjUw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=730RyWLlIkS/afgq41VA6uiOuJV1jg//1PGLIJFflks=;
-        b=IQ5SUxmImDCzTQCjwowKiJkb+Qx/AcO39Q3UafpxfuSEJpiUoxt57frrkRBhrvfDb2
-         Hqa0C2PfPH7VPuv/yACpysXRXFsSd2y7rkpnaeHGi5TZ5yeB05ZZzh4Hz7rkLJYnhTYN
-         yV7YrKqqLXkKn+yanLHNQiL9TdtR/n31koJ/FeQ+Xv0QfKqY0LTywhRPtIT9WyIQ3Dyq
-         y6UWNKvxicgGtRcbWeOvUM0MnwgSr40sh7CjhlGJ4RsUTDa7K3z6jEhadIZnQu+W7rOl
-         d5ylkdvKHkfB6JI9TlR8JRvGNjugQatfYrLNLVUzBvnuhQtYqUlC42rzOIR1MyDdBDQf
-         Ooqw==
-X-Gm-Message-State: AOAM532AG+ycflimJVQUuvHXszWCPLyqWHkgzbMtrG0Rh4Hn7+GX+f6N
-        iWnsQqalwDRufNFWsWtR37c=
-X-Google-Smtp-Source: ABdhPJxv2uOke6XN8IS5T4v7yudXiebRpa/quKhMDWEqh5IwHgZCJ96mU+2mxHhPrtq04ix2crFY8Q==
-X-Received: by 2002:a2e:b4f3:: with SMTP id s19mr7781563ljm.10.1622232739678;
-        Fri, 28 May 2021 13:12:19 -0700 (PDT)
-Received: from HyperiorArchMachine.bb.dnainternet.fi (dcx7x4yg81q1---xrfn1y-3.rev.dnainternet.fi. [2001:14ba:14f7:3c00:bcab:6bff:fe6e:22ea])
-        by smtp.gmail.com with ESMTPSA id u16sm550980lfl.83.2021.05.28.13.12.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 28 May 2021 13:12:19 -0700 (PDT)
-From:   Jarmo Tiitto <jarmo.tiitto@gmail.com>
-To:     samitolvanen@google.com
-Cc:     wcw@google.com, nathan@kernel.org, ndesaulniers@google.com,
-        linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com,
-        Jarmo Tiitto <jarmo.tiitto@gmail.com>
-Subject: [PATCH 6/6] pgo: Fixup code style issues.
-Date:   Fri, 28 May 2021 23:12:13 +0300
-Message-Id: <20210528201213.459483-1-jarmo.tiitto@gmail.com>
-X-Mailer: git-send-email 2.31.1
+        Fri, 28 May 2021 16:38:58 -0400
+X-Greylist: delayed 717 seconds by postgrey-1.27 at vger.kernel.org; Fri, 28 May 2021 16:38:58 EDT
+Received: from cm14.websitewelcome.com (cm14.websitewelcome.com [100.42.49.7])
+        by gateway23.websitewelcome.com (Postfix) with ESMTP id 7FCF71F061
+        for <linux-kernel@vger.kernel.org>; Fri, 28 May 2021 15:13:07 -0500 (CDT)
+Received: from gator4166.hostgator.com ([108.167.133.22])
+        by cmsmtp with SMTP
+        id miqxlN41B8ElSmiqxllRrM; Fri, 28 May 2021 15:13:07 -0500
+X-Authority-Reason: nr=8
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=embeddedor.com; s=default; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
+        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=b4RggtcWr10kE7KQSbvkFrlP2HqZbnYXFSkESTT5YzU=; b=jDhCpVBDQPiR6pSO/44S+ji/65
+        zw/rNxeXFgQl+RDXlIeWnjHkLw9BufEyUT44CjqyUPZguiWGsXmo9x+G2WPGwcjOeaZCd+aYs6DOf
+        5H06UkXLE5pUICjMxIWRTKnWeTugzL6stOZW8lnnsKk6vgh819QA1MN81jv6aAFtCNPhvG7bYnEYJ
+        QO2AoBwfu0wz5vbYbDTtLffnodoyinVoHYS0DlfCnmhhmBpDrOFscnpc85i2ruM6sSxBkkIKa1Uei
+        jJljBqw4j8wiz3V8/u+vv08wl9S0Vvr9gKoYiPaNL+1Q4Rg/4CG27t1r/JyYxsQ1nCjs0/H/M6hNs
+        F5e38Hyw==;
+Received: from 187-162-31-110.static.axtel.net ([187.162.31.110]:38312 helo=[192.168.15.8])
+        by gator4166.hostgator.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.94.2)
+        (envelope-from <gustavo@embeddedor.com>)
+        id 1lmiqv-003PAP-29; Fri, 28 May 2021 15:13:05 -0500
+Subject: Re: [PATCH][next] ring-buffer: Fix fall-through warning for Clang
+To:     Steven Rostedt <rostedt@goodmis.org>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>
+Cc:     Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org,
+        linux-hardening@vger.kernel.org
+References: <20210528195942.GA39174@embeddedor>
+ <20210528160858.287e33ac@gandalf.local.home>
+From:   "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+Message-ID: <b8f5aef0-ea0b-07b3-c46f-302e456f9a24@embeddedor.com>
+Date:   Fri, 28 May 2021 15:13:54 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210528160858.287e33ac@gandalf.local.home>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - embeddedor.com
+X-BWhitelist: no
+X-Source-IP: 187.162.31.110
+X-Source-L: No
+X-Exim-ID: 1lmiqv-003PAP-29
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
+X-Source-Sender: 187-162-31-110.static.axtel.net ([192.168.15.8]) [187.162.31.110]:38312
+X-Source-Auth: gustavo@embeddedor.com
+X-Email-Count: 4
+X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
+X-Local-Domain: yes
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Signed-off-by: Jarmo Tiitto <jarmo.tiitto@gmail.com>
----
- kernel/pgo/instrument.c | 106 ++++++++++++++++++++--------------------
- 1 file changed, 53 insertions(+), 53 deletions(-)
 
-diff --git a/kernel/pgo/instrument.c b/kernel/pgo/instrument.c
-index a95c86d668b5..b30104411879 100644
---- a/kernel/pgo/instrument.c
-+++ b/kernel/pgo/instrument.c
-@@ -31,7 +31,7 @@
-  * ensures that we don't try to serialize data that's only partially updated.
-  */
- static DEFINE_SPINLOCK(pgo_lock);
--static int current_node = 0;
-+static int current_node;
- 
- unsigned long prf_lock(void)
- {
-@@ -55,58 +55,58 @@ void prf_unlock(unsigned long flags)
- static struct llvm_prf_value_node *allocate_node(struct llvm_prf_data *p,
- 						 u32 index, u64 value)
- {
--    struct prf_mod_private_data *pmod;
--    struct llvm_prf_data *start = __llvm_prf_data_start;
--    struct llvm_prf_data *end = __llvm_prf_data_end;
--    struct module * mod;
--    struct llvm_prf_value_node * vnds = __llvm_prf_vnds_start;
--    struct llvm_prf_value_node * vnds_end = __llvm_prf_vnds_end;
--
--    if(start <= p && p < end) {
--        /* vmlinux core node */
--        if (&vnds[current_node + 1] >= vnds_end)
--            return NULL; /* Out of nodes */
--
--        current_node++;
--
--        /* Make sure the node is entirely within the section
--         */
--        if (&vnds[current_node] >= vnds_end ||
--            &vnds[current_node + 1] > vnds_end)
--            return NULL;
--
--        return &vnds[current_node];
--
--    } else {
--        /* maybe an module node
--         * find in what module section p points into and
--         * then allocate from that module
--         */
--        rcu_read_lock();
--        list_for_each_entry_rcu(pmod,&prf_mod_list,link) {
--            mod = READ_ONCE(pmod->mod);
--            if(mod) {
--                /* get section bounds */
--                start = mod->prf_data;
--                end = mod->prf_data + mod->prf_data_size;
--                if(start <= p && p < end)
--                {
--                    vnds = mod->prf_vnds;
--                    vnds_end = mod->prf_vnds + mod->prf_vnds_size;
--                    if (&vnds[pmod->current_node + 1] < vnds_end) {
--                        pmod->current_node++;
--
--                        vnds = &vnds[pmod->current_node];
--                        rcu_read_unlock();
--                        return vnds;
--                        break;
--                    }
--                }
--            }
--        }
--        rcu_read_unlock();
--        return NULL; /* Out of nodes */
--    }
-+	struct prf_mod_private_data *pmod;
-+	struct llvm_prf_data *start = __llvm_prf_data_start;
-+	struct llvm_prf_data *end = __llvm_prf_data_end;
-+	struct module *mod;
-+	struct llvm_prf_value_node *vnds = __llvm_prf_vnds_start;
-+	struct llvm_prf_value_node *vnds_end = __llvm_prf_vnds_end;
-+
-+	if (start <= p && p < end) {
-+		/* vmlinux core node */
-+		if (&vnds[current_node + 1] >= vnds_end)
-+			return NULL; /* Out of nodes */
-+
-+		current_node++;
-+
-+		/* Make sure the node is entirely within the section
-+		 */
-+		if (&vnds[current_node] >= vnds_end ||
-+			&vnds[current_node + 1] > vnds_end)
-+			return NULL;
-+
-+		return &vnds[current_node];
-+
-+	} else {
-+		/* maybe an module node
-+		 * find in what module section p points into and
-+		 * then allocate from that module
-+		 */
-+		rcu_read_lock();
-+		list_for_each_entry_rcu(pmod, &prf_mod_list, link) {
-+			mod = READ_ONCE(pmod->mod);
-+			if (mod) {
-+				/* get section bounds */
-+				start = mod->prf_data;
-+				end = mod->prf_data + mod->prf_data_size;
-+
-+				if (start <= p && p < end) {
-+					vnds = mod->prf_vnds;
-+					vnds_end = mod->prf_vnds + mod->prf_vnds_size;
-+
-+					if (&vnds[pmod->current_node + 1] < vnds_end) {
-+						pmod->current_node++;
-+
-+						vnds = &vnds[pmod->current_node];
-+						rcu_read_unlock();
-+						return vnds;
-+					}
-+				}
-+			}
-+		}
-+		rcu_read_unlock();
-+		return NULL; /* Out of nodes */
-+	}
- }
- 
- /*
--- 
-2.31.1
 
+On 5/28/21 15:08, Steven Rostedt wrote:
+> On Fri, 28 May 2021 14:59:42 -0500
+> "Gustavo A. R. Silva" <gustavoars@kernel.org> wrote:
+> 
+>> In preparation to enable -Wimplicit-fallthrough for Clang, fix
+>> a fall-through warning by replacing a /* fall through */ comment
+>> with the new pseudo-keyword macro fallthrough;
+>>
+>> Notice that Clang doesn't recognize /* fall through */ comments as
+>> implicit fall-through markings, so in order to globally enable
+>> -Wimplicit-fallthrough for Clang, these comments need to be
+>> replaced with fallthrough; in the whole codebase.
+>>
+>> Link: https://github.com/KSPP/linux/issues/115
+>> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+>> ---
+>> JFYI: We had thousands of these sorts of warnings and now we are down
+>>       to just 25 in linux-next. This is one of those last remaining
+>>       warnings.
+> 
+> And I have it fixed locally already.
+> 
+>   https://lore.kernel.org/lkml/20210511140246.18868-1-jj251510319013@gmail.com/
+> 
+> I've just been on vacation and haven't pushed it to next yet. It's still in
+> the "to be tested" queue.
+
+Awesome! :)
+
+Thanks, Steven.
+--
+Gustavo
