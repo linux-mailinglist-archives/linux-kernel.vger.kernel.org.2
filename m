@@ -2,177 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2EF54393BC3
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 04:58:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3999E393BCE
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 05:07:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236264AbhE1C74 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 May 2021 22:59:56 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:54731 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234877AbhE1C7z (ORCPT
+        id S236269AbhE1DI7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 May 2021 23:08:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49928 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234085AbhE1DI6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 May 2021 22:59:55 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1622170701;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=PDfo64ot3MfXTHWM7lsjrQfamO1epBDIMTrTHrz5+EA=;
-        b=HNM5CAwh9ygD9eGkk83ES8G5vdjWPRrlo4AJVFv56HR9eup5EAiMzUgNJ0+7Dwwh/WMCIM
-        47GYBVRYf6Az4QL2RLviZ+4hs70MpAGRcDE/c7ZCu3c6Tz/KTK7ByJBbxejTSohIDTZCZi
-        aB2LmkUE1VI/UHlmdPlsK3fw+Zp78v4=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-544-qcKtirEwOdGYA8lAqqPSyA-1; Thu, 27 May 2021 22:58:19 -0400
-X-MC-Unique: qcKtirEwOdGYA8lAqqPSyA-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 59B4A1005D50;
-        Fri, 28 May 2021 02:58:18 +0000 (UTC)
-Received: from T590 (ovpn-12-72.pek2.redhat.com [10.72.12.72])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 34B1310016FF;
-        Fri, 28 May 2021 02:58:09 +0000 (UTC)
-Date:   Fri, 28 May 2021 10:58:04 +0800
-From:   Ming Lei <ming.lei@redhat.com>
-To:     Roman Gushchin <guro@fb.com>
-Cc:     Jan Kara <jack@suse.cz>, Tejun Heo <tj@kernel.org>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, Alexander Viro <viro@zeniv.linux.org.uk>,
-        Dennis Zhou <dennis@kernel.org>,
-        Dave Chinner <dchinner@redhat.com>, cgroups@vger.kernel.org
-Subject: Re: [PATCH v5 2/2] writeback, cgroup: release dying cgwbs by
- switching attached inodes
-Message-ID: <YLBcPCHJOYH4YGl6@T590>
-References: <20210526222557.3118114-1-guro@fb.com>
- <20210526222557.3118114-3-guro@fb.com>
+        Thu, 27 May 2021 23:08:58 -0400
+Received: from mail-oi1-x233.google.com (mail-oi1-x233.google.com [IPv6:2607:f8b0:4864:20::233])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C859CC061574
+        for <linux-kernel@vger.kernel.org>; Thu, 27 May 2021 20:07:23 -0700 (PDT)
+Received: by mail-oi1-x233.google.com with SMTP id d21so2885342oic.11
+        for <linux-kernel@vger.kernel.org>; Thu, 27 May 2021 20:07:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=89Ift1OU78vKtiGlNnIxDJCwM07AOIScHSivLdjVYhE=;
+        b=rn4NEkcrpv1c/o1jdjygsc3kzakWgXejAkh0y1fGD1jSkvspt5vZv+KUbcnjnTjZ9H
+         zlS2ox/g2O+oQBf53t1niN+/XlEmpiWCHOd1X7vK9OkmlfPtMhLkjqFLKs45elo1z642
+         7fVvKztv7sbNjq2c2zKKeyVqhajiW+OgNiPCs3qY+uB9z8EcL2GaKwbyOhLu56QXB5Sz
+         5lXxL7enT8hcp7UhIHuhCkZkcRx/Q20aN87kEO29Wr9Jy4soHZdoEICnZ894JwPuH/d5
+         aEmEVx8mAHksbR2iLe8CUQrNDPuOpnaSiwhmO3ApTAeqqC4taueSEQLJ4xifBgwWw9zx
+         GJ+A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=89Ift1OU78vKtiGlNnIxDJCwM07AOIScHSivLdjVYhE=;
+        b=XEdVSlmrRtOIal2ZNp0wBZ2tI/LDAUD+ORe3HJEGEQjJyI1nyQhTWHLVtyAMSsMp7O
+         BzsH22jJNf00uOtDdfJzWIzybfZEqVHKX2HmEHloyAFtwLJX4LxLQVsB+qX58LdszCF0
+         hboI/Q9g8qAMyTR7lGqyK+7oVORBM3eeVYArVnRpzLN2N8UyT9Ya+gK6T5Rj1OxXxa4w
+         rrFpAkcEV9o6AcfsPnXwmjWifX+OVdqTWTGFff6oB60l9GdMGtM/NOaedJVjkgI/azwr
+         ovNcpvQ61BxT9B88NGQcfe+NDfUYGDLujDxEtqPOhSntg4zSeYxUm4F4dCvujlT3pCs9
+         0OhQ==
+X-Gm-Message-State: AOAM531aZmFlHOHqp+uVpXEqeMPxYEuTnoXqtoGHO6ORrHsW0WRRf/8D
+        OqEeikQZiPb600xyj/ECrPCTSCPCdWTYTQ==
+X-Google-Smtp-Source: ABdhPJy3bKWc2VMwI2rT0Nf0xgty4fAnT+udrJLeLwBkNxnBNKtnjPN2Q3vPH3brtW8w7DJZ6oZPHQ==
+X-Received: by 2002:aca:1916:: with SMTP id l22mr4606188oii.48.1622171243112;
+        Thu, 27 May 2021 20:07:23 -0700 (PDT)
+Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
+        by smtp.gmail.com with ESMTPSA id i17sm825381oou.37.2021.05.27.20.07.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 27 May 2021 20:07:22 -0700 (PDT)
+Date:   Thu, 27 May 2021 22:07:20 -0500
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Mathieu Poirier <mathieu.poirier@linaro.org>
+Cc:     Suman Anna <s-anna@ti.com>, linux-remoteproc@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 2/2] remoteproc: Fix various kernel-doc warnings
+Message-ID: <YLBeaE8IWlmDjHaY@builder.lan>
+References: <20210519180304.23563-1-s-anna@ti.com>
+ <20210519180304.23563-3-s-anna@ti.com>
+ <20210525180006.GD1113058@xps15>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210526222557.3118114-3-guro@fb.com>
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+In-Reply-To: <20210525180006.GD1113058@xps15>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 26, 2021 at 03:25:57PM -0700, Roman Gushchin wrote:
-> Asynchronously try to release dying cgwbs by switching clean attached
-> inodes to the bdi's wb. It helps to get rid of per-cgroup writeback
-> structures themselves and of pinned memory and block cgroups, which
-> are way larger structures (mostly due to large per-cpu statistics
-> data). It helps to prevent memory waste and different scalability
-> problems caused by large piles of dying cgroups.
+On Tue 25 May 13:00 CDT 2021, Mathieu Poirier wrote:
+> On Wed, May 19, 2021 at 01:03:04PM -0500, Suman Anna wrote:
+> > diff --git a/drivers/remoteproc/remoteproc_elf_loader.c b/drivers/remoteproc/remoteproc_elf_loader.c
+[..]
+> > @@ -362,7 +366,7 @@ EXPORT_SYMBOL(rproc_elf_load_rsc_table);
+> >   * This function finds the location of the loaded resource table. Don't
+> >   * call this function if the table wasn't loaded yet - it's a bug if you do.
+> >   *
+> > - * Returns the pointer to the resource table if it is found or NULL otherwise.
+> > + * Return: pointer to the resource table if it is found or NULL otherwise.
 > 
-> A cgwb cleanup operation can fail due to different reasons (e.g. the
-> cgwb has in-glight/pending io, an attached inode is locked or isn't
-> clean, etc). In this case the next scheduled cleanup will make a new
-> attempt. An attempt is made each time a new cgwb is offlined (in other
-> words a memcg and/or a blkcg is deleted by a user). In the future an
-> additional attempt scheduled by a timer can be implemented.
-> 
-> Signed-off-by: Roman Gushchin <guro@fb.com>
-> ---
->  fs/fs-writeback.c                | 35 ++++++++++++++++++
->  include/linux/backing-dev-defs.h |  1 +
->  include/linux/writeback.h        |  1 +
->  mm/backing-dev.c                 | 61 ++++++++++++++++++++++++++++++--
->  4 files changed, 96 insertions(+), 2 deletions(-)
+> Here the '.' has been kept while it was remove for all of the above.  I don't
+> know that the right guidelines are for this. 
 > 
 
-Hello Roman,
+Reviewing https://www.kernel.org/doc/html/latest/doc-guide/kernel-doc.html
+I don't see that this is defined. So I'm fine with whatever looks good.
 
-The following kernel panic is triggered by this patch:
-
-[root@ktest-01 xfstests-dev]# ./check generic/563
-[   47.186811] SGI XFS with ACLs, security attributes, realtime, verbose warnings, quota, no debug enabled
-[   47.190152] XFS (sdb): Mounting V5 Filesystem
-[   47.201551] XFS (sdb): Ending clean mount
-[   47.205501] xfs filesystem being mounted at /mnt/test supports timestamps until 2038 (0x7fffffff)
-FSTYP         -- xfs (non-debug)
-PLATFORM      -- Linux/x86_64 ktest-01 5.13.0-rc3+ #294 SMP Fri May 28 10:51:02 CST 2021
-MKFS_OPTIONS  -- -f -bsize=4096 /dev/sda
-MOUNT_OPTIONS -- /dev/sda /mnt/scratch
-
-[   47.431775] XFS (sda): Mounting V5 Filesystem
-[   47.441731] XFS (sda): Ending clean mount
-[   47.445080] xfs filesystem being mounted at /mnt/scratch supports timestamps until 2038 (0x7fffffff)
-[   47.449189] XFS (sda): Unmounting Filesystem
-[   47.473863] XFS (sdb): Unmounting Filesystem
-[   47.614561] XFS (sdb): Mounting V5 Filesystem
-[   47.628670] XFS (sdb): Ending clean mount
-[   47.631904] xfs filesystem being mounted at /mnt/test supports timestamps until 2038 (0x7fffffff)
-generic/563 1s ... [   47.661393] run fstests generic/563 at 2021-05-28 02:54:59
-[   47.947414] loop0: detected capacity change from 0 to 16777216
-[   48.034564] XFS (loop0): Mounting V5 Filesystem
-[   48.069959] XFS (loop0): Ending clean mount
-[   48.070726] xfs filesystem being mounted at /mnt/scratch supports timestamps until 2038 (0x7fffffff)
-[   48.132314] XFS (loop0): Unmounting Filesystem
-[   48.204548] XFS (loop0): Mounting V5 Filesystem
-[   48.215500] XFS (loop0): Ending clean mount
-[   48.219223] xfs filesystem being mounted at /mnt/scratch supports timestamps until 2038 (0x7fffffff)
-[   48.534420] XFS (loop0): Unmounting Filesystem
-[   48.535142] ------------[ cut here ]------------
-[   48.535921] WARNING: CPU: 3 PID: 114 at mm/backing-dev.c:402 cgwb_release_workfn+0xa4/0xd8
-[   48.537461] Modules linked in: xfs libcrc32c iTCO_wdt i2c_i801 iTCO_vendor_support nvme i2c_smbus lpc_ich usb_storage i2c_s
-[   48.540613] CPU: 3 PID: 114 Comm: kworker/3:1 Not tainted 5.13.0-rc3+ #294
-[   48.541927] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.14.0-1.fc33 04/01/2014
-[   48.543439] Workqueue: cgwb_release cgwb_release_workfn
-[   48.544365] RIP: 0010:cgwb_release_workfn+0xa4/0xd8
-[   48.545185] Code: 00 00 00 48 85 db 75 d5 48 8d 7d 80 e8 98 71 20 00 48 8d bd 70 ff ff ff e8 36 7b 1d 00 48 8b 55 f0 48 8d4
-[   48.548935] RSP: 0018:ffffc90001f47e88 EFLAGS: 00010202
-[   48.549844] RAX: ffff88810321d280 RBX: ffffffff82f69ac0 RCX: 0000000080400011
-[   48.552645] RDX: ffffffff82669f00 RSI: 0000000000210d00 RDI: ffff888100042500
-[   48.553935] RBP: ffff88810321d290 R08: 0000000000000001 R09: ffffffff811c8754
-[   48.555054] R10: 000000000000005e R11: 0000000000000046 R12: ffff88810321d000
-[   48.556183] R13: ffff88815c4f2300 R14: 0000000000000000 R15: 0000000000000000
-[   48.557116] FS:  0000000000000000(0000) GS:ffff88815c4c0000(0000) knlGS:0000000000000000
-[   48.558131] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-[   48.558818] CR2: 00007f3aba17f9c0 CR3: 0000000108e86004 CR4: 0000000000370ee0
-[   48.559950] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-[   48.561057] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-[   48.562075] Call Trace:
-[   48.562421]  elfcorehdr_read+0xf/0xf
-[   48.562920]  ? worker_thread+0x117/0x1b9
-[   48.563443]  ? rescuer_thread+0x291/0x291
-[   48.564001]  ? kthread+0xec/0xf4
-[   48.564411]  ? kthread_create_worker_on_cpu+0x65/0x65
-[   48.565086]  ? ret_from_fork+0x1f/0x30
-[   48.565594] ---[ end trace bdeef00aa75cca5c ]---
-[   48.601694] XFS (loop0): Mounting V5 Filesystem
-[   48.605863] XFS (loop0): Ending clean mount
-[   48.607129] xfs filesystem being mounted at /mnt/scratch supports timestamps until 2038 (0x7fffffff)
-[   48.830734] general protection fault, probably for non-canonical address 0xffff11033f71f000: 0000 [#1] SMP NOPTI
-[   48.832720] CPU: 10 PID: 234 Comm: kworker/10:1 Tainted: G        W         5.13.0-rc3+ #294
-[   48.833932] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.14.0-1.fc33 04/01/2014
-[   48.835146] Workqueue: events cleanup_offline_cgwbs_workfn
-[   48.835952] RIP: 0010:percpu_ref_tryget_many.constprop.0+0x12/0x43
-[   48.836849] Code: 48 8b 47 08 48 8b 40 08 ff d0 0f 1f 00 eb 04 65 48 ff 08 e9 25 fd ff ff 41 54 48 8b 07 a8 03 74 09 48 8b4
-[   48.839494] RSP: 0018:ffffc90001383e58 EFLAGS: 00010046
-[   48.840246] RAX: ffff88810321f000 RBX: ffff88810321d280 RCX: ffff8881016f9770
-[   48.841165] RDX: ffffffff82669f00 RSI: 0000000000000280 RDI: ffff88810321d200
-[   48.842050] RBP: ffffc90001383e68 R08: ffff88810006c8b0 R09: 000073746e657665
-[   48.843224] R10: 8080808080808080 R11: fefefefefefefeff R12: ffff88810321d200
-[   48.844133] R13: ffff88810321d000 R14: 0000000000000000 R15: 0000000000000000
-[   48.845022] FS:  0000000000000000(0000) GS:ffff88823c500000(0000) knlGS:0000000000000000
-[   48.845903] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-[   48.846495] CR2: 00007fb630166198 CR3: 0000000179a1e006 CR4: 0000000000370ee0
-[   48.847414] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-[   48.848405] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-[   48.849126] Call Trace:
-[   48.849388]  cleanup_offline_cgwbs_workfn+0x8a/0x14c
-[   48.849906]  process_one_work+0x15c/0x234
-[   48.850346]  worker_thread+0x117/0x1b9
-[   48.850706]  ? rescuer_thread+0x291/0x291
-[   48.851065]  kthread+0xec/0xf4
-[   48.851346]  ? kthread_create_worker_on_cpu+0x65/0x65
-[   48.851815]  ret_from_fork+0x1f/0x30
-[   48.852151] Modules linked in: xfs libcrc32c iTCO_wdt i2c_i801 iTCO_vendor_support nvme i2c_smbus lpc_ich usb_storage i2c_s
-[   48.854166] Dumping ftrace buffer:
-[   48.854546]    (ftrace buffer empty)
-[   48.854909] ---[ end trace bdeef00aa75cca5d ]---
+That said, the section about "Return values" shows that the "Return:
+..." line should be short and concise and if needed followed by a
+newline and then a longer paragraph.
 
 
+I'll fix the capitalization of "the" below and apply this as is and we
+can go back an reformat these multiline Return entries later...
 
-Thanks, 
-Ming
+> >   * If the table wasn't loaded yet the result is unspecified.
+> >   */
+[..]
+> > diff --git a/include/linux/remoteproc.h b/include/linux/remoteproc.h
+[..]
+> > + * 2. immediately following this structure is the virtio config space for
+> > + *    this vdev (which is specific to the vdev; for more info, read the virtio
+> > + *    spec). the size of the config space is specified by @config_len.
+> 
+> s/the/The
+> 
+[..]
+> >  struct rproc {
+> > @@ -613,10 +617,10 @@ struct rproc_vring {
+> >   * struct rproc_vdev - remoteproc state for a supported virtio device
+> >   * @refcount: reference counter for the vdev and vring allocations
+> >   * @subdev: handle for registering the vdev as a rproc subdevice
+> > + * @dev: device struct used for reference count semantics
+> >   * @id: virtio device id (as in virtio_ids.h)
+> >   * @node: list node
+> >   * @rproc: the rproc handle
+> > - * @vdev: the virio device
+> >   * @vring: the vrings for this vdev
+> >   * @rsc_offset: offset of the vdev's resource entry
+> >   * @index: vdev position versus other vdev declared in resource table
+> 
+> With or without the above:
+> 
+> Reviewed-by: Mathieu Poirier <mathieu.poirier@linaro.org>
+> 
 
+Thanks Mathieu, and thanks Suman.
+
+Regards,
+Bjorn
