@@ -2,115 +2,241 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 60C6B393CE2
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 08:07:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C1522393CE1
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 08:06:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235430AbhE1GIY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 May 2021 02:08:24 -0400
-Received: from mo4-p02-ob.smtp.rzone.de ([85.215.255.81]:26360 "EHLO
-        mo4-p02-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235369AbhE1GIV (ORCPT
+        id S235033AbhE1GIX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 May 2021 02:08:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32822 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235400AbhE1GIU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 May 2021 02:08:21 -0400
-ARC-Seal: i=1; a=rsa-sha256; t=1622181888; cv=none;
-    d=strato.com; s=strato-dkim-0002;
-    b=FhUn1Q58cZq49c79zFXau2b9FqHoMJswXwm4iJuvrqiD3dIYc9RE2K7lgQACUzoEso
-    QHFw6tbucoZvCghjSEO+FbhW3hOP9AS0hYYZuv1OTqYKbiNlMm2KnGS3XglteIO0T95r
-    NfH35YxjBTbrobv9zPDNon3qjB42ujjAHd/Q91rlShHPFJw2C9hVy5fO/I1tHfKJvs1Z
-    Ry7JFQFkn3PlEXywj1W7B2cS0HKz2uMKt+PMedD91yEnz2GQn56vOHIqt5H+IimgZfB0
-    AnD/k1izM2SjAfST1cGXeBifbSvshFBDNF1Rzg1W1WnDVrRjwOX6iHDXNNlrQMJIQ7rO
-    oAQw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1622181888;
-    s=strato-dkim-0002; d=strato.com;
-    h=References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:Cc:Date:
-    From:Subject:Sender;
-    bh=gWmFG7oG6qtY2QVKiNxgiaFmpIb8N+W6XlWAARy8VDA=;
-    b=KcQhzp0cRjQZx5T9dy/EkyklQyVcLpy0n1HFrFDuU/FUrJqj/mrhw8WlBK/wtebjwi
-    /431+PBaVO02PfNOoYs3NmcdmkKSFPr4shYOCzBFmLuBgE3Y3fpwgxhGg+fWLNTReet7
-    pBq835XL6piul826fTzQrLbfYH4CZYm9eb/g5JsrNXjBSVvVTteVcij/ZcP2NKbeceKe
-    t5RxRNlbd0K/GEnVcXtB+uelkq8sPM4Bb17XMb3YgfNBJtYR2bXh5wYewj8RqIJbXjbO
-    6MNixhaEx0a8DzpN/RbGkxqnpAlQTPiewsmIky5uj8br4tG9Ynlx1wj+cqAbB1W5WjxI
-    11PQ==
-ARC-Authentication-Results: i=1; strato.com;
-    dkim=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1622181888;
-    s=strato-dkim-0002; d=chronox.de;
-    h=References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:Cc:Date:
-    From:Subject:Sender;
-    bh=gWmFG7oG6qtY2QVKiNxgiaFmpIb8N+W6XlWAARy8VDA=;
-    b=D7fDBv52YIiOAxeBqHa48208C5P0ldtBuBlCoUvk0nFuszzoE4dLE+Br4QNYRoyPrE
-    BjeX7bg+lowICtpjpFD/d+okZq6159L9wIZhPaN8SlQdkVftkvXOwr19TfNaDfFdzqrx
-    0vk+kpOd2rlsG+OYDg5q7F4STBy0LieljS5IpWfxpWYzaFO1QiIx1f43PnsNjNBX33Df
-    7C8VHCW6SwQuqEriBOhIGjaoe5xsQI4mWWMQHmBqA+/CnXNNSixrVLu7kWZk2FDlwJX0
-    f5scbJGa2ltofbqB9MsnikMn/2jXrjn7zlEe3t8Ii8HurYQSj0/t5nDWXkXaWSfpzUT/
-    WRdw==
-Authentication-Results: strato.com;
-    dkim=none
-X-RZG-AUTH: ":P2ERcEykfu11Y98lp/T7+hdri+uKZK8TKWEqNyiHySGSa9k9xmwdNnzGHXPaIfScuAh3"
-X-RZG-CLASS-ID: mo00
-Received: from positron.chronox.de
-    by smtp.strato.de (RZmta 47.26.3 DYNA|AUTH)
-    with ESMTPSA id R0123ax4S64k2Ou
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
-        (Client did not present a certificate);
-    Fri, 28 May 2021 08:04:46 +0200 (CEST)
-From:   Stephan =?ISO-8859-1?Q?M=FCller?= <smueller@chronox.de>
-To:     Tso Ted <tytso@mit.edu>, linux-crypto@vger.kernel.org,
-        kernel test robot <lkp@intel.com>
-Cc:     kbuild-all@lists.01.org, Willy Tarreau <w@1wt.eu>,
-        Nicolai Stange <nstange@suse.de>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        "Alexander E. Patrakov" <patrakov@gmail.com>,
-        "Ahmed S. Darwish" <darwish.07@gmail.com>
-Subject: Re: [PATCH v40 01/13] Linux Random Number Generator
-Date:   Fri, 28 May 2021 08:04:45 +0200
-Message-ID: <2921350.VP03N2d09h@positron.chronox.de>
-In-Reply-To: <202105280808.AgyBCLBL-lkp@intel.com>
-References: <2939683.iCPfFBJNGb@positron.chronox.de> <202105280808.AgyBCLBL-lkp@intel.com>
+        Fri, 28 May 2021 02:08:20 -0400
+Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2DCFBC061574
+        for <linux-kernel@vger.kernel.org>; Thu, 27 May 2021 23:05:12 -0700 (PDT)
+Received: by mail-ej1-x62e.google.com with SMTP id l1so3608906ejb.6
+        for <linux-kernel@vger.kernel.org>; Thu, 27 May 2021 23:05:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=6KYJnQac1+UPmeLw0qtofsMJ4Bz2s3RkpAZuEomoHKY=;
+        b=JjIxzdBt3Cn7+COPTYCdUDee+2n8dtuy/viZAR//PzFJzUox2opZ4Br8elvmxAXDYz
+         rTtcRwBO3hws6RGKKMA4X0a/cXEQ3Uj5chqVwVw4H4N1+rbhcBI/NwR48jgAKMTzbWvu
+         X0rSt2Syv+ADE0J+WuvPlgF0xvVDEwAXYJYtEYGl/T+VM8Ywmevhfmgrg4fOKwxDhl7I
+         1CJl1b6dHB/dXKDcJWmACPk8uVUbc2qPNDdYOM8XfnYBkO3n2TrG/QPso+ghHH68XFLg
+         UZghb9uoKxzmH8EOUBDE8zN2g66P2JwNXBjUzhQy5WufWc2DmFYkOzEFJb2Nfo5FCRZf
+         /vwg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=6KYJnQac1+UPmeLw0qtofsMJ4Bz2s3RkpAZuEomoHKY=;
+        b=ngqhiEC6eKPfqTJ0Aj+7NPQ3kEIG4owXXZ55smuscakzglvury6WE1VGnvgCMHZEUr
+         t6NoJQNzwBBxEeX9BSwKkUtG2JRKs78zuRAs6ZX63XucPcQ4Im9OqWhXbfvLPTGWpbwK
+         itxUEBSNhUD4dKePf8PmWYWxkasE44mBNtaaJtzy40EWORUZyv+7J1ppiibyx82ECz9G
+         QRfjgIJnpx40pzWmhm7VjlXXD+LSxdqy3w14IbqOl0ZyiQocZ1Ofvf8l9i0HlGNAeoGF
+         MpgE9sbwXPQP8D5eDTQMw8vaFgSJsHtMw31lBeJal4jOru3bYuLrOrfbmlEt5ktAidiV
+         /QQQ==
+X-Gm-Message-State: AOAM530WHINT0wmzdGbzm/ZrE8Rrfp07IWSt28Y4y52H+p9Yy29f0lmM
+        9VmUFqmC6gZL2b+uF5x/v7ER5+/wO/2uYd/aMB4slhqhyxCy0RSS
+X-Google-Smtp-Source: ABdhPJzbZ0/LfIqI4DAXKqRWViiVndxtDImFPCn1T+4P1yzNrEKW7NfTRw+8K+byPGBGn7GE63eatibKr1LEp2wcecc=
+X-Received: by 2002:a17:907:37b:: with SMTP id rs27mr7695964ejb.287.1622181910622;
+ Thu, 27 May 2021 23:05:10 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+References: <20210527151139.241267495@linuxfoundation.org>
+In-Reply-To: <20210527151139.241267495@linuxfoundation.org>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Fri, 28 May 2021 11:34:59 +0530
+Message-ID: <CA+G9fYuYukN5wz2F65DfNmsqSzdHQ6+C1VTzNHAYzsU8GKd8Zw@mail.gmail.com>
+Subject: Re: [PATCH 5.12 0/7] 5.12.8-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     open list <linux-kernel@vger.kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Shuah Khan <shuah@kernel.org>, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, Pavel Machek <pavel@denx.de>,
+        Jon Hunter <jonathanh@nvidia.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        linux-stable <stable@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am Freitag, 28. Mai 2021, 02:41:09 CEST schrieb kernel test robot:
+On Thu, 27 May 2021 at 20:44, Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+>
+> This is the start of the stable review cycle for the 5.12.8 release.
+> There are 7 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+>
+> Responses should be made by Sat, 29 May 2021 15:11:29 +0000.
+> Anything received after that time might be too late.
+>
+> The whole patch series can be found in one patch at:
+>         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-=
+5.12.8-rc1.gz
+> or in the git tree and branch at:
+>         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
+-rc.git linux-5.12.y
+> and the diffstat can be found below.
+>
+> thanks,
+>
+> greg k-h
 
-Hi,
+Results from Linaro=E2=80=99s test farm.
+No regressions on arm64, arm, x86_64, and i386.
 
-> All errors (new ones prefixed by >>):
-> >> drivers/char/lrng/lrng_chacha20.c:32:8: error: structure variable
-> >> 'chacha20' with 'latent_entropy' attribute has a non-integer field
-> >> 'block'
->       32 | struct chacha20_state chacha20 __latent_entropy;
-> 
->          |        ^~~~~~~~~~~~~~
+Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
 
-Thanks for the notification.
+## Build
+* kernel: 5.12.8-rc1
+* git: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-=
+rc.git
+* git branch: linux-5.12.y
+* git commit: 6fc814b4a8b359a7a3231350692901f00e9d179b
+* git describe: v5.12.7-8-g6fc814b4a8b3
+* test details:
+https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-5.12.y/build/v5.12=
+.7-8-g6fc814b4a8b3
 
-I think this is a false-positive discussed before. __latent_entropy is 
-seemingly allowed for an entire linear buffer as seen in the declaration of 
-the variable input_pool_data in driver/char/random.c which is an array of u32.
+## No regressions (compared to v5.12.7)
 
-The struct chacha20_state is a linear buffer of u32 words. 
-
-struct chacha20_block {
-        u32 constants[4];
-        union {
-                u32 u[CHACHA_KEY_SIZE_WORDS];
-                u8  b[CHACHA_KEY_SIZE];
-        } key;
-        u32 counter;
-        u32 nonce[3];
-};
-
-Therefore it should be identical to the aforementioned example. The 
-__latent_entropy marker therefore seems to be appropriate for this structure.
-
-Ciao
-Stephan
+## No fixes (compared to v5.12.7)
 
 
+## Test result summary
+ total: 79064, pass: 65069, fail: 2108, skip: 11299, xfail: 588,
+
+## Build Summary
+* arc: 10 total, 10 passed, 0 failed
+* arm: 193 total, 193 passed, 0 failed
+* arm64: 27 total, 27 passed, 0 failed
+* dragonboard-410c: 1 total, 1 passed, 0 failed
+* hi6220-hikey: 1 total, 1 passed, 0 failed
+* i386: 26 total, 26 passed, 0 failed
+* juno-r2: 1 total, 1 passed, 0 failed
+* mips: 45 total, 45 passed, 0 failed
+* parisc: 9 total, 9 passed, 0 failed
+* powerpc: 27 total, 27 passed, 0 failed
+* riscv: 21 total, 21 passed, 0 failed
+* s390: 18 total, 18 passed, 0 failed
+* sh: 18 total, 18 passed, 0 failed
+* sparc: 9 total, 9 passed, 0 failed
+* x15: 1 total, 0 passed, 1 failed
+* x86: 1 total, 1 passed, 0 failed
+* x86_64: 27 total, 27 passed, 0 failed
+
+## Test suites summary
+* fwts
+* igt-gpu-tools
+* install-android-platform-tools-r2600
+* kselftes[
+* kselftest-
+* kselftest-android
+* kselftest-bpf
+* kselftest-breakpoints
+* kselftest-capabilities
+* kselftest-cgroup
+* kselftest-clone3
+* kselftest-core
+* kselftest-cpu-hotplug
+* kselftest-cpufreq
+* kselftest-drivers
+* kselftest-efivarfs
+* kselftest-filesystems
+* kselftest-firmware
+* kselftest-fpu
+* kselftest-futex
+* kselftest-gpio
+* kselftest-intel_pstate
+* kselftest-ipc
+* kselftest-ir
+* kselftest-kcmp
+* kselftest-kexec
+* kselftest-kvm
+* kselftest-lib
+* kselftest-livepatch
+* kselftest-lkdtm
+* kselftest-membarrier
+* kselftest-memfd
+* kselftest-memory-hotplug
+* kselftest-mincore
+* kselftest-mount
+* kselftest-mqueue
+* kselftest-net
+* kselftest-netfilter
+* kselftest-nsfs
+* kselftest-openat2
+* kselftest-pid_namespace
+* kselftest-pidfd
+* kselftest-proc
+* kselftest-pstore
+* kselftest-ptrace
+* kselftest-rseq
+* kselftest-rtc
+* kselftest-seccomp
+* kselftest-sigaltstack
+* kselftest-size
+* kselftest-splice
+* kselftest-static_keys
+* kselftest-sync
+* kselftest-sysctl
+* kselftest-tc-testing
+* kselftest-timens
+* kselftest-timers
+* kselftest-tmpfs
+* kselftest-tpm2
+* kselftest-user
+* kselftest-vm
+* kselftest-vsyscall-mode-native-
+* kselftest-vsyscall-mode-none-
+* kselftest-x86
+* kselftest-zram
+* kunit
+* kvm-unit-tests
+* libhugetlbfs
+* linux-log-parser
+* ltp-cap_bounds-tests
+* ltp-commands-tests
+* ltp-containers-tests
+* ltp-controllers-tests
+* ltp-cpuhotplug-tests
+* ltp-crypto-tests
+* ltp-cve-tests
+* ltp-dio-tests
+* ltp-fcntl-locktests-tests
+* ltp-filecaps-tests
+* ltp-fs-tests
+* ltp-fs_bind-tests
+* ltp-fs_perms_simple-tests
+* ltp-fsx-tests
+* ltp-hugetlb-tests
+* ltp-io-tests
+* ltp-ipc-tests
+* ltp-math-tests
+* ltp-mm-tests
+* ltp-nptl-tests
+* ltp-open-posix-tests
+* ltp-pty-tests
+* ltp-sched-tests
+* ltp-securebits-tests
+* ltp-syscalls-tests
+* ltp-tracing-tests
+* network-basic-tests
+* packetdrill
+* perf
+* rcutorture
+* ssuite
+* timesync-off
+* v4l2-compliance
+
+--
+Linaro LKFT
+https://lkft.linaro.org
