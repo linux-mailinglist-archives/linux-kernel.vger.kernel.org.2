@@ -2,220 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A013393C1E
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 05:55:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 04ECE393C20
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 05:55:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236386AbhE1D4e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 May 2021 23:56:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60478 "EHLO
+        id S236392AbhE1D4w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 May 2021 23:56:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60536 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236364AbhE1D43 (ORCPT
+        with ESMTP id S236361AbhE1D4m (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 May 2021 23:56:29 -0400
-Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com [IPv6:2a00:1450:4864:20::62f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B941C061761
-        for <linux-kernel@vger.kernel.org>; Thu, 27 May 2021 20:54:54 -0700 (PDT)
-Received: by mail-ej1-x62f.google.com with SMTP id s22so3220476ejv.12
-        for <linux-kernel@vger.kernel.org>; Thu, 27 May 2021 20:54:54 -0700 (PDT)
+        Thu, 27 May 2021 23:56:42 -0400
+Received: from mail-ot1-x336.google.com (mail-ot1-x336.google.com [IPv6:2607:f8b0:4864:20::336])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6021C06174A
+        for <linux-kernel@vger.kernel.org>; Thu, 27 May 2021 20:55:07 -0700 (PDT)
+Received: by mail-ot1-x336.google.com with SMTP id h24-20020a9d64180000b029036edcf8f9a6so2316357otl.3
+        for <linux-kernel@vger.kernel.org>; Thu, 27 May 2021 20:55:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=2ZLRemtbPVIGxGdr14fJ4jpBPRhMcvlWcSDK9Lq8+cA=;
-        b=UFv0CeSDqvB7H4mkMIIZWvzf4ZRd39QgluC5dBflrM0VjpNZjb4IxVcqKSaFjQwfoU
-         rWgDGpgWI0xme5OQoPqmq8AD4Bg47GUZ3YvvnYsyOqUgiOAVd+/QgHxhOseSV4531t1Y
-         q98vrZOP0RiW2TNaGpGtHw15oZuuCxpO73Asd1j4SQ6gy0lkm58WXtdB/hN4BqYh6FU9
-         yEPJgHuNA8Ks60yGNmeOlV3X8KsoFvpP05Rqnp8tYwo8GUgycM88TNuz9mDhgbSWS0TP
-         NxrAo+V30nyDjMdF8BGfXOf5ZfkePuBez8giFvm6iDMPI8AxgjdRKhgpEh9WCjnfb+4Q
-         JHEQ==
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=th3cMW/uHqfkYc4UAOg+68J71gkXcehibaZ/5iZlr+s=;
+        b=xBfmnwAvVEUMVB/IoBr91C77WEN0JHUM8/mdBFp5ZizTxDt+Mv6uWo0VjT8fzACfEs
+         XtVuTNhwb2YaLBZtFccc8jGKJpTcQTO9mkadStybxRRlDqbufgp88Gxc6KQtYWHhzve9
+         QGkAvnIzkVk2BSpKrf6De3UXb0a+5GPd3oLxRfWkdljlXF2sD1OL1siIApk7/v14MJw+
+         K6MSgJu8dghGFKRzzBKk/RyTYm6kZcYp6cqH1bfk1HjSaDJjlQE5kgKkyFLxnW5/tlP5
+         EU1CcbTS04Q5shgEuch0xXhwTzHmmwSTW9hPvpgEz7GUSYPa2Gj8jcgkUxDPOA7nMejn
+         6FKQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=2ZLRemtbPVIGxGdr14fJ4jpBPRhMcvlWcSDK9Lq8+cA=;
-        b=YxhbTmWgabZEWfvFOlT2kszv8Ot+60JH1ccKrkJiAeDgnwzX/x6Dseym7QKM48OEE5
-         8nRTunp430bM0cKknyuxLtOdYHZN6t+4EH2jUo0GroH6luJZrw0fv2iKpCfI8BBdSKfo
-         GzwBTgMydZ9e8NqO0vjo/oCKcvNQMhWvoA/kX5fcHH0QvQoGWeXIRcCOpvXAV4hkUEff
-         adVnFJAqhdXPoyNop/b1wIh8ExXR6PVcLqLP0o3HpKqT1+JP/msXwyv34P+jEXXszFt9
-         ENAyS8UnlCrjWl7glLQlmUGgWg4rslotOQSfbLxoC2H0jvoFa3PxaLTgZM7lsLd7FJQr
-         K35g==
-X-Gm-Message-State: AOAM532B6d2Hrwpy0o1P45J0JfieO6poYrGbmvBY3Ns3uhbqaF/vHTkT
-        SsAIp8SEkFTWwgRuK014jXsEXGn2p4vCyyBZnEA0
-X-Google-Smtp-Source: ABdhPJxDXENlmXrhp9PJ7iDubTy3e2MiMZjJiP/T1ExNiyEHROjd2EqD6OIxlhrl7NlegeNQLvRVHcx+LTeAeQsIVcE=
-X-Received: by 2002:a17:906:edaf:: with SMTP id sa15mr7021823ejb.174.1622174093482;
- Thu, 27 May 2021 20:54:53 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=th3cMW/uHqfkYc4UAOg+68J71gkXcehibaZ/5iZlr+s=;
+        b=op9jK+KeULPIeMtD0ymfXacEunFSid1QzFLbCUUASsSTkK6cN7Ns/Q/ZxMyk8q3vA8
+         Lq5IuVZUs5B2DAYfU9PIwPoMy6J4jIVAb0YJ4MPENJWfy3b5TGYbjVwufRG+A/sP9XQt
+         16ezDihxzwlcPTQTBBFHytl5xkcakEGddi4e2A4YpmeAja+6IGVTP0ZW811qNdz3+juW
+         QXBLMVvD/JOGOvW2oKoqQwaPeoCkoZBejO0d0dhsgrU8SksYbhy3jO+vSBzjoGar0tN0
+         9aQuMB9RgOnnxxWlNt7DEWvm/0s70wx7oB9k8mSUXqzUf7RnYU66Xn1W1d4Hpk6m9nmQ
+         AF9A==
+X-Gm-Message-State: AOAM533yI5T6FrqNHJGj/XpxTLOw9NCJZaD6m/AFIlqg+75PPtv25rk9
+        ZHWPHJ7klKKloiiL+CDW0QSBiQ==
+X-Google-Smtp-Source: ABdhPJyDjy4sDP0bdooOXQLn6eUpfZaVIiDaLEexdnEGytBrx8jC2j+YdBBJpdpi5+1rOt/08jbEgw==
+X-Received: by 2002:a05:6830:20ce:: with SMTP id z14mr5570554otq.87.1622174107241;
+        Thu, 27 May 2021 20:55:07 -0700 (PDT)
+Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
+        by smtp.gmail.com with ESMTPSA id z15sm922202otp.20.2021.05.27.20.55.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 27 May 2021 20:55:06 -0700 (PDT)
+Date:   Thu, 27 May 2021 22:55:05 -0500
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Alex Elder <elder@linaro.org>
+Cc:     ohad@wizery.com, mathieu.poirier@linaro.org,
+        linux-remoteproc@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/1] remoteproc: use freezable workqueue for crash
+ notifications
+Message-ID: <YLBpmdZoGDXNz64y@builder.lan>
+References: <20210519234418.1196387-1-elder@linaro.org>
+ <20210519234418.1196387-2-elder@linaro.org>
 MIME-Version: 1.0
-References: <20210517095513.850-1-xieyongji@bytedance.com> <20210517095513.850-12-xieyongji@bytedance.com>
- <3740c7eb-e457-07f3-5048-917c8606275d@redhat.com> <CACycT3uAqa6azso_8MGreh+quj-JXO1piuGnrV8k2kTfc34N2g@mail.gmail.com>
- <5a68bb7c-fd05-ce02-cd61-8a601055c604@redhat.com> <CACycT3ve7YvKF+F+AnTQoJZMPua+jDvGMs_ox8GQe_=SGdeCMA@mail.gmail.com>
- <ee00efca-b26d-c1be-68d2-f9e34a735515@redhat.com> <CACycT3ufok97cKpk47NjUBTc0QAyfauFUyuFvhWKmuqCGJ7zZw@mail.gmail.com>
- <00ded99f-91b6-ba92-5d92-2366b163f129@redhat.com> <3cc7407d-9637-227e-9afa-402b6894d8ac@redhat.com>
- <CACycT3s6SkER09KL_Ns9d03quYSKOuZwd3=HJ_s1SL7eH7y5gA@mail.gmail.com> <baf0016a-7930-2ae2-399f-c28259f415c1@redhat.com>
-In-Reply-To: <baf0016a-7930-2ae2-399f-c28259f415c1@redhat.com>
-From:   Yongji Xie <xieyongji@bytedance.com>
-Date:   Fri, 28 May 2021 11:54:42 +0800
-Message-ID: <CACycT3vKZ3y0gga8PrSVtssZfNV0Y-A8=iYZSi9sbpHRNkVf-A@mail.gmail.com>
-Subject: Re: Re: [PATCH v7 11/12] vduse: Introduce VDUSE - vDPA Device in Userspace
-To:     Jason Wang <jasowang@redhat.com>
-Cc:     "Michael S. Tsirkin" <mst@redhat.com>,
-        Stefan Hajnoczi <stefanha@redhat.com>,
-        Stefano Garzarella <sgarzare@redhat.com>,
-        Parav Pandit <parav@nvidia.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        Christian Brauner <christian.brauner@canonical.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Jens Axboe <axboe@kernel.dk>, bcrl@kvack.org,
-        Jonathan Corbet <corbet@lwn.net>,
-        =?UTF-8?Q?Mika_Penttil=C3=A4?= <mika.penttila@nextfour.com>,
-        Dan Carpenter <dan.carpenter@oracle.com>, joro@8bytes.org,
-        virtualization <virtualization@lists.linux-foundation.org>,
-        netdev@vger.kernel.org, kvm <kvm@vger.kernel.org>,
-        linux-fsdevel@vger.kernel.org, iommu@lists.linux-foundation.org,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210519234418.1196387-2-elder@linaro.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 28, 2021 at 9:33 AM Jason Wang <jasowang@redhat.com> wrote:
->
->
-> =E5=9C=A8 2021/5/27 =E4=B8=8B=E5=8D=886:14, Yongji Xie =E5=86=99=E9=81=93=
-:
-> > On Thu, May 27, 2021 at 4:43 PM Jason Wang <jasowang@redhat.com> wrote:
-> >>
-> >> =E5=9C=A8 2021/5/27 =E4=B8=8B=E5=8D=884:41, Jason Wang =E5=86=99=E9=81=
-=93:
-> >>> =E5=9C=A8 2021/5/27 =E4=B8=8B=E5=8D=883:34, Yongji Xie =E5=86=99=E9=
-=81=93:
-> >>>> On Thu, May 27, 2021 at 1:40 PM Jason Wang <jasowang@redhat.com> wro=
-te:
-> >>>>> =E5=9C=A8 2021/5/27 =E4=B8=8B=E5=8D=881:08, Yongji Xie =E5=86=99=E9=
-=81=93:
-> >>>>>> On Thu, May 27, 2021 at 1:00 PM Jason Wang <jasowang@redhat.com>
-> >>>>>> wrote:
-> >>>>>>> =E5=9C=A8 2021/5/27 =E4=B8=8B=E5=8D=8812:57, Yongji Xie =E5=86=99=
-=E9=81=93:
-> >>>>>>>> On Thu, May 27, 2021 at 12:13 PM Jason Wang <jasowang@redhat.com=
->
-> >>>>>>>> wrote:
-> >>>>>>>>> =E5=9C=A8 2021/5/17 =E4=B8=8B=E5=8D=885:55, Xie Yongji =E5=86=
-=99=E9=81=93:
-> >>>>>>>>>> +
-> >>>>>>>>>> +static int vduse_dev_msg_sync(struct vduse_dev *dev,
-> >>>>>>>>>> +                           struct vduse_dev_msg *msg)
-> >>>>>>>>>> +{
-> >>>>>>>>>> +     init_waitqueue_head(&msg->waitq);
-> >>>>>>>>>> +     spin_lock(&dev->msg_lock);
-> >>>>>>>>>> +     vduse_enqueue_msg(&dev->send_list, msg);
-> >>>>>>>>>> +     wake_up(&dev->waitq);
-> >>>>>>>>>> +     spin_unlock(&dev->msg_lock);
-> >>>>>>>>>> +     wait_event_killable(msg->waitq, msg->completed);
-> >>>>>>>>> What happens if the userspace(malicous) doesn't give a response
-> >>>>>>>>> forever?
-> >>>>>>>>>
-> >>>>>>>>> It looks like a DOS. If yes, we need to consider a way to fix t=
-hat.
-> >>>>>>>>>
-> >>>>>>>> How about using wait_event_killable_timeout() instead?
-> >>>>>>> Probably, and then we need choose a suitable timeout and more
-> >>>>>>> important,
-> >>>>>>> need to report the failure to virtio.
-> >>>>>>>
-> >>>>>> Makes sense to me. But it looks like some
-> >>>>>> vdpa_config_ops/virtio_config_ops such as set_status() didn't have=
- a
-> >>>>>> return value.  Now I add a WARN_ON() for the failure. Do you mean =
-we
-> >>>>>> need to add some change for virtio core to handle the failure?
-> >>>>> Maybe, but I'm not sure how hard we can do that.
-> >>>>>
-> >>>> We need to change all virtio device drivers in this way.
-> >>>
-> >>> Probably.
-> >>>
-> >>>
-> >>>>> We had NEEDS_RESET but it looks we don't implement it.
-> >>>>>
-> >>>> Could it handle the failure of get_feature() and get/set_config()?
-> >>>
-> >>> Looks not:
-> >>>
-> >>> "
-> >>>
-> >>> The device SHOULD set DEVICE_NEEDS_RESET when it enters an error stat=
-e
-> >>> that a reset is needed. If DRIVER_OK is set, after it sets
-> >>> DEVICE_NEEDS_RESET, the device MUST send a device configuration chang=
-e
-> >>> notification to the driver.
-> >>>
-> >>> "
-> >>>
-> >>> This looks implies that NEEDS_RESET may only work after device is
-> >>> probed. But in the current design, even the reset() is not reliable.
-> >>>
-> >>>
-> >>>>> Or a rough idea is that maybe need some relaxing to be coupled loos=
-ely
-> >>>>> with userspace. E.g the device (control path) is implemented in the
-> >>>>> kernel but the datapath is implemented in the userspace like TUN/TA=
-P.
-> >>>>>
-> >>>> I think it can work for most cases. One problem is that the set_conf=
-ig
-> >>>> might change the behavior of the data path at runtime, e.g.
-> >>>> virtnet_set_mac_address() in the virtio-net driver and
-> >>>> cache_type_store() in the virtio-blk driver. Not sure if this path i=
-s
-> >>>> able to return before the datapath is aware of this change.
-> >>>
-> >>> Good point.
-> >>>
-> >>> But set_config() should be rare:
-> >>>
-> >>> E.g in the case of virtio-net with VERSION_1, config space is read
-> >>> only, and it was set via control vq.
-> >>>
-> >>> For block, we can
-> >>>
-> >>> 1) start from without WCE or
-> >>> 2) we add a config change notification to userspace or
-> >>> 3) extend the spec to use vq instead of config space
-> >>>
-> >>> Thanks
-> >>
-> >> Another thing if we want to go this way:
-> >>
-> >> We need find a way to terminate the data path from the kernel side, to
-> >> implement to reset semantic.
-> >>
-> > Do you mean terminate the data path in vdpa_reset().
->
->
-> Yes.
->
->
-> >   Is it ok to just
-> > notify userspace to stop data path asynchronously?
->
->
-> For well-behaved userspace, yes but no for buggy or malicious ones.
->
+On Wed 19 May 18:44 CDT 2021, Alex Elder wrote:
 
-But the buggy or malicious daemons can't do anything if my
-understanding is correct.
+> When a remoteproc has crashed, rproc_report_crash() is called to
+> handle whatever recovery is desired.  This can happen at almost any
+> time, often triggered by an interrupt, though it can also be
+> initiated by a write to debugfs file remoteproc/remoteproc*/crash.
+> 
+> When a crash is reported, the crash handler worker is scheduled to
+> run (rproc_crash_handler_work()).  One thing that worker does is
+> call rproc_trigger_recovery(), which calls rproc_stop().  That calls
+> the ->stop method for any remoteproc subdevices before making the
+> remote processor go offline.
+> 
+> The Q6V5 modem remoteproc driver implements an SSR subdevice that
+> notifies registered drivers when the modem changes operational state
+> (prepare, started, stop/crash, unprepared).  The IPA driver
+> registers to receive these notifications.
+> 
+> With that as context, I'll now describe the problem.
+> 
+> There was a situation in which buggy modem firmware led to a modem
+> crash very soon after system (AP) resume had begun.  The crash caused
+> a remoteproc SSR crash notification to be sent to the IPA driver.
+> The problem was that, although system resume had begun, it had not
+> yet completed, and the IPA driver was still in a suspended state.
+> 
+> This scenario could happen to any driver that registers for these
+> SSR notifications, because they are delivered without knowledge of
+> the (suspend) state of registered recipient drivers.
+> 
+> This patch offers a simple fix for this, by having the crash
+> handling worker function run on the system freezable workqueue.
+> This workqueue does not operate if user space is frozen (for
+> suspend).  As a result, the SSR subdevice only delivers its
+> crash notification when the system is fully operational (i.e.,
+> neither suspended nor in suspend/resume transition).
+> 
 
-> I had an idea, how about terminate IOTLB in this case? Then we're in
-> fact turn datapath off.
->
+This makes sense to me; both that it ensures that we spend our resources
+on the actual system resume and that it avoids surprises from this
+happening while the system still is in a funky state...
 
-Sorry, I didn't get your point here. What do you mean by terminating
-IOTLB? Remove iotlb mapping? But userspace can still access the mapped
-region.
+Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
 
-Thanks,
-Yongji
+But it would be nice to get some input from other users of the
+framework.
+
+Regards,
+Bjorn
+
+> Signed-off-by: Alex Elder <elder@linaro.org>
+> ---
+>  drivers/remoteproc/remoteproc_core.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/remoteproc/remoteproc_core.c b/drivers/remoteproc/remoteproc_core.c
+> index 39cf44cb08035..6bedf2d2af239 100644
+> --- a/drivers/remoteproc/remoteproc_core.c
+> +++ b/drivers/remoteproc/remoteproc_core.c
+> @@ -2724,8 +2724,8 @@ void rproc_report_crash(struct rproc *rproc, enum rproc_crash_type type)
+>  	dev_err(&rproc->dev, "crash detected in %s: type %s\n",
+>  		rproc->name, rproc_crash_to_string(type));
+>  
+> -	/* create a new task to handle the error */
+> -	schedule_work(&rproc->crash_handler);
+> +	/* Have a worker handle the error; ensure system is not suspended */
+> +	queue_work(system_freezable_wq, &rproc->crash_handler);
+>  }
+>  EXPORT_SYMBOL(rproc_report_crash);
+>  
+> -- 
+> 2.27.0
+> 
