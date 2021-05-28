@@ -2,77 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 76D4D3943F2
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 16:16:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 370D73943FD
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 16:17:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235732AbhE1ORy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 May 2021 10:17:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58480 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234663AbhE1ORv (ORCPT
+        id S235931AbhE1OSk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 May 2021 10:18:40 -0400
+Received: from mx08-00178001.pphosted.com ([91.207.212.93]:48866 "EHLO
+        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S234663AbhE1OSh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 May 2021 10:17:51 -0400
-Received: from mail-yb1-xb2c.google.com (mail-yb1-xb2c.google.com [IPv6:2607:f8b0:4864:20::b2c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23F6BC061574
-        for <linux-kernel@vger.kernel.org>; Fri, 28 May 2021 07:16:15 -0700 (PDT)
-Received: by mail-yb1-xb2c.google.com with SMTP id p184so5686219yba.11
-        for <linux-kernel@vger.kernel.org>; Fri, 28 May 2021 07:16:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=564lIXJmUSRyPqFJlY/VG6GLWxzT7sFnElx9pZNWZ0Y=;
-        b=kZjxD/XLUKAJRsFR10qsGWga9yCHiM4caQusEIzywLJTQitKx8CFvgxazYA1OLoNpg
-         oIaYOM6TTkwQM6Cy2d/QLqr3U/4ITdRqLUFLcwI+TlHNcHAjcpL2fZIz4bOlZt8Qie8n
-         BkzfIVvkdvRrQBA4/0NqtpreoZPyhu7tiIOtnIggj7SqB7GH2WixMVX6HRTN3Q+1ETpD
-         c7aTzgqqXJpPtE1p1ip11rFy8ea7iVe8oMKEB3Ev6jY2FMtlM3D4zjoZREUXsfLRBtzE
-         bt8dRM12FUnBrJcJ4IhH+/pLMd5nMHUB60072JduXiOcOh61hrzOIj47vXamyCw+OmNL
-         g3Vg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=564lIXJmUSRyPqFJlY/VG6GLWxzT7sFnElx9pZNWZ0Y=;
-        b=kV8e7SwQgvMX3rEBQ9BYaKR1ac8Fj00q52r/Yfqz8dWMpohyJ8i3qFjWN9x5wcv2uf
-         /h+TxRr6q+xjXosMojnWxmnI36aUv1BGEW6IiNa6i4bJ+teB2+eHpSGukwPsH0UncgF6
-         P+TuKrvzh+Ue/xf0fc2hhWYLKenXj2FfFHf8DooqCb6szbe7POfeprXMJB4obThDij+V
-         LhGtc7KfXI3zMH99gjNhlHZYBMKrvoVVff7e67vF3KgjdIlMmEks0UdkTaiPaxZWhLDt
-         ntiTxbvv42TwnpcjdEHl+YNTx27MYPfSsHXwAWJ43KZyMHYw4ZwfZ7RkXcvmEPQW5Jd3
-         r7cA==
-X-Gm-Message-State: AOAM531qG5UKUx1n7ud8CfBofgkntHQIEX05N4bORL97O6v/8A8DN8aF
-        WLe0tXmdJRAkG8Zwgdbe0sPXFIEHBaaLBVCHXAqszQ==
-X-Google-Smtp-Source: ABdhPJyRxTidvS3VVFRjXDKd6um96n906eUKfbj5uB0G7ztaJaiaUTpOwq09iDR67FWrBoMTISAeLrycHfkgDWcqyZY=
-X-Received: by 2002:a25:8804:: with SMTP id c4mr12800276ybl.469.1622211374439;
- Fri, 28 May 2021 07:16:14 -0700 (PDT)
+        Fri, 28 May 2021 10:18:37 -0400
+Received: from pps.filterd (m0046661.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 14SE8Ko8015760;
+        Fri, 28 May 2021 16:16:52 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-type; s=selector1;
+ bh=J9cCHQmx5QoploGmp8jbPHbbyQ+pCZrTHANTM4SDrNw=;
+ b=pv7XMiYoyDzolZZj0g1hCwotTA61B90w94YQnffKdh8FbNyrVJTkt8AfIvw59Dw9xbsm
+ 6j9jIUSpAgs9s/hP9Rfnn9oGArAR5TAuNIOxkZ8N3v9wMvKCD8qF0RHNnTwfjBhPjBtx
+ q2mgthZ3ABvf2vvw/LeECabJmwPp0inuhyjzudNObvTNiXQrzvP6b1EaYgYqOV8/VJNB
+ vXF18sa9Tngv8OOYzP/YhcewGht7rpwlcd8Dp3Q519BVeAkcM6zk/Ri9qhPSACUcYm30
+ d2ujbD/+Kbp7b5C1K7iynIN2e+zNafbDxgzuIX/t5ix2eDdqJYG7F1wRWC+G1+5VilLp KA== 
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com with ESMTP id 38ttn02ptx-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 28 May 2021 16:16:52 +0200
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 856EC10002A;
+        Fri, 28 May 2021 16:16:51 +0200 (CEST)
+Received: from Webmail-eu.st.com (sfhdag2node3.st.com [10.75.127.6])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 717E6231DC0;
+        Fri, 28 May 2021 16:16:51 +0200 (CEST)
+Received: from localhost (10.75.127.44) by SFHDAG2NODE3.st.com (10.75.127.6)
+ with Microsoft SMTP Server (TLS) id 15.0.1497.2; Fri, 28 May 2021 16:16:51
+ +0200
+From:   <patrice.chotard@foss.st.com>
+To:     Mark Brown <broonie@kernel.org>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Boris Brezillon <boris.brezillon@collabora.com>,
+        <linux-mtd@lists.infradead.org>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        <linux-spi@vger.kernel.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, Pratyush Yadav <p.yadav@ti.com>
+CC:     <patrice.chotard@foss.st.com>, <christophe.kerello@foss.st.com>
+Subject: [PATCH v4 0/3] mtd: spinand: add SPI-NAND MTD resume handler
+Date:   Fri, 28 May 2021 16:16:36 +0200
+Message-ID: <20210528141639.3194-1-patrice.chotard@foss.st.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-References: <20210525183518.63149-1-andriy.shevchenko@linux.intel.com>
-In-Reply-To: <20210525183518.63149-1-andriy.shevchenko@linux.intel.com>
-From:   Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Date:   Fri, 28 May 2021 16:16:03 +0200
-Message-ID: <CAMpxmJWgNFFvUnanQXgffcp_+JXb2OGFH=vjK7H9nB+qOGfxFA@mail.gmail.com>
-Subject: Re: [PATCH v1 1/2] gpiolib: Split fastpath array to two
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     Kent Gibson <warthog618@gmail.com>,
-        linux-gpio <linux-gpio@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
+X-Originating-IP: [10.75.127.44]
+X-ClientProxiedBy: SFHDAG2NODE2.st.com (10.75.127.5) To SFHDAG2NODE3.st.com
+ (10.75.127.6)
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
+ definitions=2021-05-28_05:2021-05-27,2021-05-28 signatures=0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 25, 2021 at 8:35 PM Andy Shevchenko
-<andriy.shevchenko@linux.intel.com> wrote:
->
-> Split fastpath array to two, i.e. for mask and for bits.
-> At the same time declare them as bitmaps.
->
-> This makes code better to read and gives a clue about use of
-> bitmap API.
->
-> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-> ---
+From: Patrice Chotard <patrice.chotard@foss.st.com>
 
-Applied, thanks!
+Changes in v4:
+  - Add spinand_init_flash helper()
+  - Remove no more needed spinand_block_unlock() helper introduced in v2	
 
-Bart
+Changes in v3:
+  - Add spinand_read_cfg() helper 
+  - Add spinand_read_cfg() call to repopulate cache during resume
+  - Split v2 patch in 3 patches
+
+Changes in v2:
+  - Add helper spinand_block_unlock().
+  - Add spinand_ecc_enable() call.
+  - Remove some dev_err().
+  - Fix commit's title and message.
+
+Patrice Chotard (3):
+  mtd: spinand: Add spinand_init_flash() helper
+  mtd: spinand: add spinand_read_cfg() helper
+  mtd: spinand: add SPI-NAND MTD resume handler
+
+ drivers/mtd/nand/spi/core.c | 113 +++++++++++++++++++++++++-----------
+ 1 file changed, 79 insertions(+), 34 deletions(-)
+
+-- 
+2.17.1
+
