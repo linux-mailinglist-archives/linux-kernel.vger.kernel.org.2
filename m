@@ -2,77 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 959C2394214
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 13:43:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C542B394216
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 13:44:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235591AbhE1LpC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 May 2021 07:45:02 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:33008 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230080AbhE1LpB (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 May 2021 07:45:01 -0400
-Received: from imap.suse.de (imap-alt.suse-dmz.suse.de [192.168.254.47])
-        (using TLSv1.2 with cipher ECDHE-ECDSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 2DBB6218B3;
-        Fri, 28 May 2021 11:43:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1622202206; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=9s7qI6fPmWwhDVK9qhBrtaB5fZd7wpN4H+FoavsyRvU=;
-        b=XWiSlIDB6KkoR49po06mLRto3/A32EMGCudYyxt10YqwFLf/nNuCI+9vl6XcPRGI6Na2EW
-        93UTaQG4cXtleSCkIkQ8D03/S5792juPugf+d/aXIrlsqCtE9IevyKrcXnymMWQpB3fT4p
-        f5V1Mwzxb5BxSYKDTwbp8DyaYmGrqu0=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1622202206;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=9s7qI6fPmWwhDVK9qhBrtaB5fZd7wpN4H+FoavsyRvU=;
-        b=a8tqcbBTFQ/74aCA0n5xh+ioMuH7uHviKJG4bNNebDFhd2MB0tubODn0lARVsaFUI9bS99
-        trbr9A4Q4z64giBw==
-Received: from imap3-int (imap-alt.suse-dmz.suse.de [192.168.254.47])
-        by imap.suse.de (Postfix) with ESMTP id 167D211A98;
-        Fri, 28 May 2021 11:43:26 +0000 (UTC)
-Received: from director2.suse.de ([192.168.254.72])
-        by imap3-int with ESMTPSA
-        id 20L8BF7XsGAvEAAALh3uQQ
-        (envelope-from <vbabka@suse.cz>); Fri, 28 May 2021 11:43:26 +0000
-Subject: Re: [PATCH 5/6] mm/page_alloc: Limit the number of pages on PCP lists
- when reclaim is active
-To:     Mel Gorman <mgorman@techsingularity.net>,
-        Andrew Morton <akpm@linux-foundation.org>
-Cc:     Hillf Danton <hdanton@sina.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Michal Hocko <mhocko@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux-MM <linux-mm@kvack.org>
-References: <20210525080119.5455-1-mgorman@techsingularity.net>
- <20210525080119.5455-6-mgorman@techsingularity.net>
-From:   Vlastimil Babka <vbabka@suse.cz>
-Message-ID: <e839f84f-0cc2-2e6a-70c8-99c0d6b8ddf8@suse.cz>
-Date:   Fri, 28 May 2021 13:43:25 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.2
+        id S235643AbhE1Lpb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 May 2021 07:45:31 -0400
+Received: from msg-2.mailo.com ([213.182.54.12]:59786 "EHLO msg-2.mailo.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230080AbhE1Lpa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 28 May 2021 07:45:30 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=mailoo.org; s=mailo;
+        t=1622202230; bh=9F46d+D6PUZw4iBYp6wdpPgYDs/Z6g3cZyzLMyCuorQ=;
+        h=X-EA-Auth:From:To:Cc:Subject:Date:Message-Id:X-Mailer:
+         MIME-Version:Content-Transfer-Encoding;
+        b=ESroWzDW2mGr7tgwcFQnIq+Eb5e1OXWb7bvAuUViOW2pi2aB54I7bDcBaDHShA+OE
+         ptbF3CIc8cisgKrdEmMvIooI5W4wWZrOmNYT7lGTHM+LXgwsx7Fun5tw86t6xO6IAS
+         /hxq96ce6SL/XTl3Q8eQDjs1un3Cq0H2mDnGp3Fg=
+Received: by 192.168.90.14 [192.168.90.14] with ESMTP
+        via proxy.mailoo.org [213.182.55.207]
+        Fri, 28 May 2021 13:43:50 +0200 (CEST)
+X-EA-Auth: iF3NUtHNTTfqpVliJfCgyjzHXkJzdXaznTY8yvhAR8LNEKgCrFf7prSbm93bcfkQmLTCj+lYQrI/AP+fJz6gRBeIL9tpUD86xSmf0Kv9y1U=
+From:   Vincent Knecht <vincent.knecht@mailoo.org>
+To:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     phone-devel@vger.kernel.org, ~postmarketos/upstreaming@lists.sr.ht,
+        Vincent Knecht <vincent.knecht@mailoo.org>
+Subject: [PATCH v1] arm64: dts: qcom: msm8916-alcatel-idol347: enable touchscreen
+Date:   Fri, 28 May 2021 13:43:45 +0200
+Message-Id: <20210528114345.543761-1-vincent.knecht@mailoo.org>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-In-Reply-To: <20210525080119.5455-6-mgorman@techsingularity.net>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5/25/21 10:01 AM, Mel Gorman wrote:
-> When kswapd is active then direct reclaim is potentially active. In
-> either case, it is possible that a zone would be balanced if pages were
-> not trapped on PCP lists. Instead of draining remote pages, simply limit
-> the size of the PCP lists while kswapd is active.
-> 
-> Signed-off-by: Mel Gorman <mgorman@techsingularity.net>
+Enable the MStar msg2638 touchscreen.
 
-Acked-by: Vlastimil Babka <vbabka@suse.cz>
+Signed-off-by: Vincent Knecht <vincent.knecht@mailoo.org>
+---
+ .../boot/dts/qcom/msm8916-alcatel-idol347.dts | 26 +++++++++++++++++++
+ 1 file changed, 26 insertions(+)
+
+diff --git a/arch/arm64/boot/dts/qcom/msm8916-alcatel-idol347.dts b/arch/arm64/boot/dts/qcom/msm8916-alcatel-idol347.dts
+index 540b1fa4b260..670bd1bebd73 100644
+--- a/arch/arm64/boot/dts/qcom/msm8916-alcatel-idol347.dts
++++ b/arch/arm64/boot/dts/qcom/msm8916-alcatel-idol347.dts
+@@ -45,6 +45,24 @@ &blsp1_uart2 {
+ 	status = "okay";
+ };
+ 
++&blsp_i2c4 {
++	status = "okay";
++
++	touchscreen@26 {
++		compatible = "mstar,msg2638";
++		reg = <0x26>;
++		interrupt-parent = <&msmgpio>;
++		interrupts = <13 IRQ_TYPE_EDGE_FALLING>;
++		reset-gpios = <&msmgpio 100 GPIO_ACTIVE_LOW>;
++		pinctrl-names = "default";
++		pinctrl-0 = <&ts_int_reset_default>;
++		vdd-supply = <&pm8916_l17>;
++		vddio-supply = <&pm8916_l5>;
++		touchscreen-size-x = <2048>;
++		touchscreen-size-y = <2048>;
++	};
++};
++
+ &blsp_i2c5 {
+ 	status = "okay";
+ 
+@@ -281,6 +299,14 @@ proximity_int_default: proximity-int-default {
+ 		bias-pull-up;
+ 	};
+ 
++	ts_int_reset_default: ts-int-reset-default {
++		pins = "gpio13", "gpio100";
++		function = "gpio";
++
++		drive-strength = <2>;
++		bias-disable;
++	};
++
+ 	usb_id_default: usb-id-default {
+ 		pins = "gpio69";
+ 		function = "gpio";
+-- 
+2.31.1
+
+
+
