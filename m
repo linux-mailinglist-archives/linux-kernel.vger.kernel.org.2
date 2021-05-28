@@ -2,104 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B7232393E75
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 10:11:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 37C80393E77
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 10:13:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235956AbhE1IND (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 May 2021 04:13:03 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43314 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230187AbhE1INB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 May 2021 04:13:01 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id AE723613D4;
-        Fri, 28 May 2021 08:11:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1622189487;
-        bh=nTpZYj8T50obfP/gOWNJZOk7cTQMZWYDkJeXsHFzFt4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=hAuswPccSd5PNajb21LhrXERffLP1B2ZQPKooIljM6YgSYm+/U9IVAhYOhPZ8rh/R
-         7WaGTPIX17NIS5GT06DuRHz+osEnYdWgdcxllLr3fKZ4HQvsj6ept6lbQH3nt0zf6n
-         qKKikdcVHcP/XBjvjpugzqf5wOXEYFGfNcq6h4N2V6ldAVNktj/uEd1YJ+uM1apKx8
-         DeW9erXiKubD6XycrnX/J2JW2El1OBguew5Ndl7MJoKPyGwdKqE9I6GVkk+rUX203p
-         Vgl82LbpUpN/U+R/am3yP+I3ydncLSmDNibwQfyb8G/7kycyIzBai3vuvHrYsSwyeB
-         Oe9T85pZO+ffw==
-Date:   Fri, 28 May 2021 10:11:23 +0200
-From:   Wolfram Sang <wsa@kernel.org>
-To:     Roja Rani Yarubandi <rojay@codeaurora.org>
-Cc:     swboyd@chromium.org, dianders@chromium.org,
-        saiprakash.ranjan@codeaurora.org, gregkh@linuxfoundation.org,
-        mka@chromium.org, skananth@codeaurora.org,
-        msavaliy@qti.qualcomm.com, skakit@codeaurora.org,
-        rnayak@codeaurora.org, agross@kernel.org,
-        bjorn.andersson@linaro.org, linux-arm-msm@vger.kernel.org,
-        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org,
-        sumit.semwal@linaro.org, linux-media@vger.kernel.org
-Subject: Re: [PATCH V11 1/2] i2c: i2c-qcom-geni: Add shutdown callback for i2c
-Message-ID: <YLClq6hZKUA1Y4ZW@kunai>
-Mail-Followup-To: Wolfram Sang <wsa@kernel.org>,
-        Roja Rani Yarubandi <rojay@codeaurora.org>, swboyd@chromium.org,
-        dianders@chromium.org, saiprakash.ranjan@codeaurora.org,
-        gregkh@linuxfoundation.org, mka@chromium.org,
-        skananth@codeaurora.org, msavaliy@qti.qualcomm.com,
-        skakit@codeaurora.org, rnayak@codeaurora.org, agross@kernel.org,
-        bjorn.andersson@linaro.org, linux-arm-msm@vger.kernel.org,
-        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org,
-        sumit.semwal@linaro.org, linux-media@vger.kernel.org
-References: <20210525131051.31250-1-rojay@codeaurora.org>
- <20210525131051.31250-2-rojay@codeaurora.org>
+        id S235798AbhE1IOp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 May 2021 04:14:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32968 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230187AbhE1IOn (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 28 May 2021 04:14:43 -0400
+Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com [IPv6:2607:f8b0:4864:20::62f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 558C7C061574;
+        Fri, 28 May 2021 01:13:09 -0700 (PDT)
+Received: by mail-pl1-x62f.google.com with SMTP id t21so1284339plo.2;
+        Fri, 28 May 2021 01:13:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=WFpvdJz81Rofrn0SCvWRF+k7het9w/ooU9Ou53sso1U=;
+        b=RQfAOsj/JemwJemXCE6fis1wMnfcIp6Y+sHLpnm3HOZg1fPMfqMp1raHj6xbFggLAh
+         8qYd7A+Rx+nd9H+HezIX1/GpsOvzukrzIUmLfPhVWEy2BF+rvQFzZGe0bWK1iPWW5m/H
+         6g12Gr3CAV7K6lqgHF/WrxOTTJYOYcQZDpgYTcPVcJuO+eIV8RFqlIcUrnwhxrX8V6ML
+         DlF7euw8OBla2Ur0XBAj8oWru5S7u9BYsOahSqoLX2N8NG+Vi2lDRzqqflDsgZLmCfih
+         pT3pDHNjysGbC2DsFzDC3TSqPB7GAbw7qGdU3SKJwRH2w/vArotIvbRv8fNg88t5id3i
+         +Xig==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=WFpvdJz81Rofrn0SCvWRF+k7het9w/ooU9Ou53sso1U=;
+        b=BfSS8WFVp2vxwhqFc1NAPunqXfgikNB/7JqZXQDqZSGXSqvDRP/yF6j26APt37Fl4j
+         Pi9EldTBABiTVpQG9EDDvX5SsNtqvsxZjS8MG+HlpI5NauomVx8sSB4CUOeW/dbGNyPs
+         lvkqeYSm3cuwdMkObekJY+TFe0gv7czW9dLSBSSFRL984SCsF0q9iiDcIODxyAMImiVr
+         D23zvht6a/lsmyCm9dOrpVHdJFWtyWHn3hyBLPDESmHh3RbDyvHEH2J9wxw3ynnN9Od+
+         zeICfSkrW+VeSWt2MdLGBRHz8XlEo8WKNxMPrH8na/yXHAQMKmtTfq+DiUe+o/VRjIvD
+         KNZg==
+X-Gm-Message-State: AOAM533rd4uoEM/fvZlZhpkdQxqZdxRRqvMMBoV74MVI53mCdTSq3own
+        rl1sJrVIfBUT4R4Sn73MCS0=
+X-Google-Smtp-Source: ABdhPJz+VoBj7k8vwcL64HR51mNk+YLRUvpLavlP+rVuUsDqQcGrzR7m5IyQvsxLL+ZbK6YMUSBeJw==
+X-Received: by 2002:a17:90a:d90a:: with SMTP id c10mr3032756pjv.209.1622189588876;
+        Fri, 28 May 2021 01:13:08 -0700 (PDT)
+Received: from localhost.localdomain ([2402:7500:46b:3194:b541:419e:4878:8a93])
+        by smtp.gmail.com with ESMTPSA id z18sm3846594pfc.23.2021.05.28.01.13.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 28 May 2021 01:13:08 -0700 (PDT)
+From:   Gene Chen <gene.chen.richtek@gmail.com>
+To:     sre@kernel.org, matthias.bgg@gmail.com,
+        matti.vaittinen@fi.rohmeurope.com
+Cc:     broonie@kernel.org, robh+dt@kernel.org, devicetree@vger.kernel.org,
+        inux-pm@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
+        rdunlap@infradead.org, gene_chen@richtek.com,
+        Wilma.Wu@mediatek.com, shufan_lee@richtek.com,
+        cy_huang@richtek.com, benjamin.chao@mediatek.com
+Subject: [PATCH v5 0/3] power: supply: mt6360_charger: add MT6360 charger support
+Date:   Fri, 28 May 2021 16:12:57 +0800
+Message-Id: <20210528081300.64759-1-gene.chen.richtek@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="ek337UlQrmDDG+TY"
-Content-Disposition: inline
-In-Reply-To: <20210525131051.31250-2-rojay@codeaurora.org>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+This patch series add MT6360 Charger support contains driver and binding
+document
 
---ek337UlQrmDDG+TY
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Gene Chen (3)
+ lib: add linear range get selector within
+ dt-bindings: power: Add bindings document for Charger support on MT6360 PMIC
+ power: supply: mt6360_charger: add MT6360 charger support
 
-On Tue, May 25, 2021 at 06:40:50PM +0530, Roja Rani Yarubandi wrote:
-> If the hardware is still accessing memory after SMMU translation
-> is disabled (as part of smmu shutdown callback), then the
-> IOVAs (I/O virtual address) which it was using will go on the bus
-> as the physical addresses which will result in unknown crashes
-> like NoC/interconnect errors.
->=20
-> So, implement shutdown callback for i2c driver to suspend the bus
-> during system "reboot" or "shutdown".
->=20
-> Fixes: 37692de5d523 ("i2c: i2c-qcom-geni: Add bus driver for the Qualcomm=
- GENI I2C controller")
-> Signed-off-by: Roja Rani Yarubandi <rojay@codeaurora.org>
+ Documentation/devicetree/bindings/power/supply/mt6360_charger.yaml |   48 
+ drivers/power/supply/Kconfig                                       |   11 
+ drivers/power/supply/Makefile                                      |    1 
+ drivers/power/supply/mt6360_charger.c                              |  856 ++++++++++
+ include/linux/linear_range.h                                       |    2 
+ lib/linear_ranges.c                                                |   31 
+ 6 files changed, 949 insertions(+)
 
-Do we need patch 1 after patch 2 was applied? I always thought all
-devices are suspended before shutdown/reboot?
+changelogs between v1 & v2
+ - Add binding property with unit and custom name prefix
+ - Remove extcon device, redundant brackets and interrupts
+ - Fix power supply prop "charger type"
 
-Nice to see that 'mark_adapter_suspended' becomes useful again!
+changelogs between v2 & v3
+ - Add register selector to value mapping
+
+changelogs between v3 & v4
+ - move pdata vinovp to mt6360_chg_info
+ - remove unuse sysfs attribute
+ - refactor debug log and warning
+ - add power supply prop input voltage limit
+
+changelogs between v4 & v5
+ - add linear range selector mapping
+ - use linear range to map charger setting
 
 
---ek337UlQrmDDG+TY
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmCwpasACgkQFA3kzBSg
-KbYxaQ//ZoP6wYYkxIedf6wA51iLmKm16cI2fTF5PkMosb8js+bEB0ffK5NryrVX
-zPdkmFNLHC9TsKp003YeBSdfJIAv8QQwdB9gHq4rscCcZyuFRgmjGxPPOlZzL7ce
-qddFnVVond15qVi1DcdW/gap6OqK0QvjX4ZMEDhi38QpXtLC+cZEiZgjQkqNxwXG
-eeVYE/nEO5I368PBfIfTRtjWSlVoJnWKYzfEoysm+cgkaANQwxp2ElI3c2P3qXTU
-VwCPZFAS2cDk1LQSdmMq4ugqEyekBkBFxubTFDeCPQR7XBlNE1VqecTF1h5GGU+X
-ZgCHltEjukcPyPbr1ocY7gtUnH8xpwDjyWa1yKjariIO9IwtMAgSgYI+Nt0ieQZv
-3snvjuVVcvmFYteRfXf4u4CK+/52bSLKsie/bcI3Nhrk58hC0zdTO2OXyvr9LeBg
-GzcIQoRbc+PIS0auopwnSXehNDesDLhVO3E0KQ1qu+et2z1vCchypCJVauzT97Al
-n4JuK0KTBvVejTy2Z/VaMQBHBbjkFcP+X64jyezJMvyV4NMjkBOWZ44ckHWjfxbs
-/7C6YPhC+BLxcQN82lpZrK/+cPAjaqga7i1OJyKit1iWWowHpU8lRsYMySUAf97w
-L7N/etgPoDeIjotZNWZ0GUeXilAH3/CaczUuh7lLe+kL9Vsb1O0=
-=3DXB
------END PGP SIGNATURE-----
-
---ek337UlQrmDDG+TY--
