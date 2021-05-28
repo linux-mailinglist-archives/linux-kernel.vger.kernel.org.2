@@ -2,119 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2374E394230
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 13:51:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F019394231
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 13:51:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236141AbhE1LxI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 May 2021 07:53:08 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:41036 "EHLO
+        id S236118AbhE1LxK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 May 2021 07:53:10 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:41062 "EHLO
         youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235076AbhE1LxA (ORCPT
+        with ESMTP id S236210AbhE1LxI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 May 2021 07:53:00 -0400
-Received: from mail-ua1-f71.google.com ([209.85.222.71])
+        Fri, 28 May 2021 07:53:08 -0400
+Received: from mail-ua1-f70.google.com ([209.85.222.70])
         by youngberry.canonical.com with esmtps  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
         (Exim 4.93)
         (envelope-from <krzysztof.kozlowski@canonical.com>)
-        id 1lmb1R-00041J-C3
-        for linux-kernel@vger.kernel.org; Fri, 28 May 2021 11:51:25 +0000
-Received: by mail-ua1-f71.google.com with SMTP id f2-20020ab006020000b02902124881cdf4so1798613uaf.7
-        for <linux-kernel@vger.kernel.org>; Fri, 28 May 2021 04:51:25 -0700 (PDT)
+        id 1lmb1Z-00044F-9f
+        for linux-kernel@vger.kernel.org; Fri, 28 May 2021 11:51:33 +0000
+Received: by mail-ua1-f70.google.com with SMTP id f15-20020a9f2bcf0000b02901f8fe91b89cso1829398uaj.0
+        for <linux-kernel@vger.kernel.org>; Fri, 28 May 2021 04:51:33 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=+A7NmETeNVsWXQhhgLVcq4I2U3ly5GO/4a+00+Ltec0=;
-        b=ms63Drl9UMhn2vdZBtRMND8JPXeK5fHzH6j1evGWNCBMDnp70AOpCQXkVOkIIIJ6yK
-         JBBNclm+TdGttjwh99w3qnb5KQBkfwS8mVespn/UIHzDVTdcUs0fpxINjzSPvEOb2JPH
-         3h+dXcjjhljCi7bwab3vqDwCxdjINxi/yvP6GjvPmQ+IFd+1FEII90gfRYhE/l0wA7M1
-         G0/6byNE7ozKQMDbRd7w3Z0MTf+YS78bBXEpQzReLTxbmR4u/Jqf6d2qU6hmhoOJ6Y5t
-         ns5HkPMwlT7tLy319t/2zxxc0/Rf+NDqeTLDnb8TC0utk7IcysZrOQ3hBTmJEq9D2LvN
-         sDAQ==
-X-Gm-Message-State: AOAM530V1mwk0hmqtqncq2cxN46/0XsGE0M1SDw05ngHHVY91F7GYuuj
-        U8Lvm9ZPguO0I2RzOKGazRmi3DmCJYlh0PkWwbStBxs2wfo0bEONCCYAxXu+Tc6vxD8gYnMyYJ6
-        Km5Xm+VSTWF74Ugw9KvyA6C+Ob6eme+E1ftCleGMkbw==
-X-Received: by 2002:a67:6a02:: with SMTP id f2mr6264730vsc.49.1622202680526;
-        Fri, 28 May 2021 04:51:20 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJz8wp965ZXdOS/URJI0BlvrioKqZR1rbzc1/KfnNkSONQtzH+C+OVVa8fj46i7Np0GVLTF3wQ==
-X-Received: by 2002:a67:6a02:: with SMTP id f2mr6264723vsc.49.1622202680342;
-        Fri, 28 May 2021 04:51:20 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=VDDdDO5zT/FpNTH0UFvF0auYibTyw8ssCiY7hlTfIzE=;
+        b=fpmsPZuXcffJNdNMZslcD4w55su64k5sCjFsxqz/Tn+U8UJsGq9sU+uSChd17mjErB
+         /O4r52Kqv0J1cG7Hi7c+q7rbx5JxXhoxul2eFHOrP9bIY7hDQnuem3R5h8rRxNNDYtpu
+         BKjJlrLlLuL9onOun8lvXTa/bgWFgCcWlVmXSDWnBctM741kb8uRHw+BBToysHJ1gJ/+
+         QDAU+dF2ItnKzp3Q49dRsZ2Rim94zP6WTQ914IBfMgOT+0sJZAxeD8DoDBDEWngnZad9
+         BRPYDbFSV12iq2ddi4MGuGAlN061FreYUBO9l7De4ORjT6PgWLc1PRhkL+G3yAOjWPCS
+         mHqw==
+X-Gm-Message-State: AOAM533Aozq5okFWLquZjDPkcxxYV1Oc9jtEVbiouspyW5LTXWqI8sDk
+        9hj1TMBsfpI1xM56W6aFkGjzTWTo3YZlx6aB+R+8+M4+U9ikwwb5ljRDfkT+mIlqnlrjj9OWiPG
+        d4W2To2NMz56ftON5awwnP/rFft5FvebxbvdcKc88WA==
+X-Received: by 2002:ab0:356f:: with SMTP id e15mr2357763uaa.52.1622202692261;
+        Fri, 28 May 2021 04:51:32 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwi3BVn9RTHeqdJR/hqXHbAjq5i1bbLsv6dv1NoE6k/rYs7s/3DgGEJnIp6q5kA0YP8RgPKUw==
+X-Received: by 2002:ab0:356f:: with SMTP id e15mr2357754uaa.52.1622202692127;
+        Fri, 28 May 2021 04:51:32 -0700 (PDT)
 Received: from localhost.localdomain ([45.237.48.5])
-        by smtp.gmail.com with ESMTPSA id 189sm669831vkz.51.2021.05.28.04.51.18
+        by smtp.gmail.com with ESMTPSA id 34sm657900vkn.53.2021.05.28.04.51.31
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 28 May 2021 04:51:19 -0700 (PDT)
+        Fri, 28 May 2021 04:51:31 -0700 (PDT)
 From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-To:     Zhang Rui <rui.zhang@intel.com>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Amit Kucheria <amitk@kernel.org>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Orson Zhai <orsonzhai@gmail.com>,
-        Baolin Wang <baolin.wang7@gmail.com>,
-        Chunyan Zhang <zhang.lyra@gmail.com>, linux-pm@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+To:     Lee Jones <lee.jones@linaro.org>,
+        Samuel Ortiz <sameo@linux.intel.com>,
+        linux-kernel@vger.kernel.org
 Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Subject: [RESEND PATCH 2/2] thermal: sprd: add missing of_node_put for loop iteration
-Date:   Fri, 28 May 2021 07:50:36 -0400
-Message-Id: <20210528115036.18222-2-krzysztof.kozlowski@canonical.com>
+Subject: [RESEND PATCH] mfd: Add missing of_node_put for loop iteration
+Date:   Fri, 28 May 2021 07:51:26 -0400
+Message-Id: <20210528115126.18370-1-krzysztof.kozlowski@canonical.com>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20210528115036.18222-1-krzysztof.kozlowski@canonical.com>
-References: <20210528115036.18222-1-krzysztof.kozlowski@canonical.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Early exits from for_each_available_child_of_node() should decrement the
+Early exits from for_each_child_of_node() should decrement the
 node reference counter.  Reported by Coccinelle:
 
-  drivers/thermal/sprd_thermal.c:387:1-23: WARNING:
-    Function "for_each_child_of_node" should have of_node_put() before goto around lines 391.
+  drivers/mfd/mfd-core.c:197:2-24: WARNING:
+    Function "for_each_child_of_node" should have of_node_put() before goto around lines 209.
 
+Fixes: c94bb233a9fe ("mfd: Make MFD core code Device Tree and IRQ domain aware")
 Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Acked-by: Chunyan Zhang <zhang.lyra@gmail.com>
 ---
- drivers/thermal/sprd_thermal.c | 4 ++++
- 1 file changed, 4 insertions(+)
+ drivers/mfd/mfd-core.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/drivers/thermal/sprd_thermal.c b/drivers/thermal/sprd_thermal.c
-index 3682edb2f466..2778971aaf03 100644
---- a/drivers/thermal/sprd_thermal.c
-+++ b/drivers/thermal/sprd_thermal.c
-@@ -388,6 +388,7 @@ static int sprd_thm_probe(struct platform_device *pdev)
- 		sen = devm_kzalloc(&pdev->dev, sizeof(*sen), GFP_KERNEL);
- 		if (!sen) {
- 			ret = -ENOMEM;
-+			of_node_put(sen_child);
- 			goto disable_clk;
- 		}
- 
-@@ -397,12 +398,14 @@ static int sprd_thm_probe(struct platform_device *pdev)
- 		ret = of_property_read_u32(sen_child, "reg", &sen->id);
- 		if (ret) {
- 			dev_err(&pdev->dev, "get sensor reg failed");
-+			of_node_put(sen_child);
- 			goto disable_clk;
- 		}
- 
- 		ret = sprd_thm_sensor_calibration(sen_child, thm, sen);
- 		if (ret) {
- 			dev_err(&pdev->dev, "efuse cal analysis failed");
-+			of_node_put(sen_child);
- 			goto disable_clk;
- 		}
- 
-@@ -416,6 +419,7 @@ static int sprd_thm_probe(struct platform_device *pdev)
- 			dev_err(&pdev->dev, "register thermal zone failed %d\n",
- 				sen->id);
- 			ret = PTR_ERR(sen->tzd);
-+			of_node_put(sen_child);
- 			goto disable_clk;
- 		}
+diff --git a/drivers/mfd/mfd-core.c b/drivers/mfd/mfd-core.c
+index 79f5c6a18815..684a011a6396 100644
+--- a/drivers/mfd/mfd-core.c
++++ b/drivers/mfd/mfd-core.c
+@@ -198,6 +198,7 @@ static int mfd_add_device(struct device *parent, int id,
+ 			if (of_device_is_compatible(np, cell->of_compatible)) {
+ 				/* Ignore 'disabled' devices error free */
+ 				if (!of_device_is_available(np)) {
++					of_node_put(np);
+ 					ret = 0;
+ 					goto fail_alias;
+ 				}
+@@ -205,6 +206,7 @@ static int mfd_add_device(struct device *parent, int id,
+ 				ret = mfd_match_of_node_to_dev(pdev, np, cell);
+ 				if (ret == -EAGAIN)
+ 					continue;
++				of_node_put(np);
+ 				if (ret)
+ 					goto fail_alias;
  
 -- 
 2.27.0
