@@ -2,73 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 63D623944AC
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 16:57:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3BBB13944AA
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 16:57:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236917AbhE1O6o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 May 2021 10:58:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39368 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236600AbhE1O6Q (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 May 2021 10:58:16 -0400
-Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B5E0C06138B
-        for <linux-kernel@vger.kernel.org>; Fri, 28 May 2021 07:56:33 -0700 (PDT)
-Received: by mail-wr1-x444.google.com with SMTP id m18so3607668wrv.2
-        for <linux-kernel@vger.kernel.org>; Fri, 28 May 2021 07:56:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to
-         :content-transfer-encoding;
-        bh=wB3+kaSOnVVrotHlQpymu40WDaasYhj3FXnraZZPQ9s=;
-        b=IR0+i7p8QIpAkduNrPTTkzGFuD642LWASKa/AN11SbqxdlK7gRQIuidiDAUs2jM59J
-         44uFemmYQV+6EUsG1y2U/QQxtWS8WqlD0F/vV4jhskHE/TNl3hGyaBW6AOXh54rYeFD4
-         4E0qTg16ft9K9ZfyDd1kIRCOw5oi/8pOFRYS2j3ZIXwsXk+M6vYSJmXszuKnaWn0/IbB
-         cAqE7ziVvXnFOK8N0PKRDcm6xALEeH2M5w3BBA5vlJATEw355vO+3bO3ADcYhBUViPCB
-         ozUflAPWQyNkOHaWq9f3uThwAOgcSIwN04v9g33hQ3C+78TF8syYKggS5ZBAGX8d0xa1
-         SwSg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to:content-transfer-encoding;
-        bh=wB3+kaSOnVVrotHlQpymu40WDaasYhj3FXnraZZPQ9s=;
-        b=K0GsJIDLmi3woz6jYlryq+Rseg3ZDNY1pvmTOVpwoK9P9kInRT7pwD6Y9g2VpLWeT3
-         NtZHMuB1OWMQLBe4l15TS78oCBzMEmgJ6/Qpe8uvOkGXf9RSJEtmg2byw16+fiipZPW9
-         AJ88BVKK1Odidy8Hi+20mU2+eaPRthtZgIaGkbkP8H1bM+htdwW/gUWndP4gKSYzoCpt
-         FIDYNil57a3rcLG1ga6ZI5fSoFlbzbAA7KMSobm30vcB76iZZYFaW+1awkLGiHRPNNwy
-         Fk3280PrbeIOqE8TIBC7VYSXNTyPzKYyiUYpO9FZ0/KRhP4IelxZzcJGOBwqvwT9BkjP
-         UoGg==
-X-Gm-Message-State: AOAM531fh3g1lN6BD+7Q/g1MdiYvR+DgSeYaWLiRMZBc/4eiRtKI7QJd
-        3rzoGd6j+pd9nqpSWqdPviMfO+u71QC15/YhPf8=
-X-Google-Smtp-Source: ABdhPJxbKtvcLGdxu53mn7nWjeEdEX9WlDl4vy+UQtyInIX7NrTF4z21ZSSy6w/IJmEnYXlGUcxDjs4BqqRQuEcrR44=
-X-Received: by 2002:adf:f60c:: with SMTP id t12mr9220212wrp.152.1622213792102;
- Fri, 28 May 2021 07:56:32 -0700 (PDT)
+        id S236606AbhE1O6h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 May 2021 10:58:37 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44158 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236551AbhE1O6L (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 28 May 2021 10:58:11 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 43FA56109F;
+        Fri, 28 May 2021 14:56:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1622213796;
+        bh=9baTcwyVYHyrr3UGzx4nvGBYny1VEy+pk93u4/C9tTM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=oclZbnlf2bwYWO5MjMB1KT11RoV9HJw25FE4iUYWaBV34oM0U0rFlnRdHhKwvNXHU
+         0CPLsVyVwXyW5vUEqs520ROPKy3pgKWKAortq84XD8j+f4J77zEtX2qRHBhOXPK6I7
+         x/r4p1R7bXr3z2v3wRh1tw9FaoULX1KEwPKwT7hU=
+Date:   Fri, 28 May 2021 16:56:33 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Sebastian Reichel <sebastian.reichel@collabora.com>
+Cc:     Mark Brown <broonie@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>, Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>, Ian Ray <ian.ray@ge.com>,
+        linux-kernel@vger.kernel.org, linux-spi@vger.kernel.org,
+        devicetree@vger.kernel.org, kernel@collabora.com
+Subject: Re: [PATCHv3 5/5] misc: gehc-achc: new driver
+Message-ID: <YLEEoV7d0rXn53n0@kroah.com>
+References: <20210528113346.37137-1-sebastian.reichel@collabora.com>
+ <20210528113346.37137-6-sebastian.reichel@collabora.com>
+ <YLDfvD1nLgWqEavS@kroah.com>
+ <20210528140654.ffhetiikhde6seuo@earth.universe>
 MIME-Version: 1.0
-Received: by 2002:a1c:230e:0:0:0:0:0 with HTTP; Fri, 28 May 2021 07:56:31
- -0700 (PDT)
-Reply-To: davidbojana20@gmail.com
-From:   david bojana <zeidaniccc5@gmail.com>
-Date:   Fri, 28 May 2021 14:56:31 +0000
-Message-ID: <CAJ2z3_AcSzVebXq6GWC9mpBArcCstNWDx3Wy-ZBG8xDXbs9TGg@mail.gmail.com>
-Subject: 
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210528140654.ffhetiikhde6seuo@earth.universe>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hallo, wir informieren Sie freundlich, dass diese E-Mail, die Ihre
-Mailbox erreicht hat, kein Fehler ist, sondern an Sie gerichtet ist.
-Ich habe ein Angebot (7.500.000,00 USD) von meinem verstorbenen
-Kunden, Ingenieur Carlos, der den gleichen Namen tr=C3=A4gt und einst hier
-in Lome Togo gearbeitet und gelebt hat. Mein verstorbener Klient und
-meine Familie waren in einen Autounfall verwickelt, bei dem sie ums
-Leben kamen. Ich werde Sie als n=C3=A4chsten Angeh=C3=B6rigen des Verstorbe=
-nen
-kontaktieren, damit Sie Geld f=C3=BCr die Anspr=C3=BCche erhalten k=C3=B6nn=
-en. Nach
-einer kurzen Antwort werde ich Sie =C3=BCber die M=C3=B6glichkeiten zur
-Umsetzung dieses Testaments informieren. Bitte kontaktieren Sie mich
-zu diesem Thema (davidbojana20@gmail.com).
+On Fri, May 28, 2021 at 04:06:54PM +0200, Sebastian Reichel wrote:
+> > > +	/*
+> > > +	 * The sysfs properties are bound to the dummy device, since the main device already
+> > > +	 * uses drvdata assigned by the spidev driver.
+> > > +	 */
+> > > +	spi_set_drvdata(achc->ezport, achc);
+> > > +	ret = devm_device_add_group(&achc->ezport->dev, &gehc_achc_attr_group);
+> > 
+> > You just raced and lost. Please use the default groups attribute for
+> > your driver instead of this. Or properly attach it to the device some
+> > other way, but what you have done here does not work, sorry.
+> 
+> I've been told the race got fixed from kernel POV?
+> 
+> https://lore.kernel.org/linux-input/20200521055400.GX89269@dtor-ws/
+
+Kind of, it's still not good to do this "by hand", the driver core
+should do it for you.
+
+> If this is still an issue, I think most (all?) existing instances of
+> devm_device_add_group() are a problem and it makes sense to have a
+> checkpatch warning for it.
+
+Yes, I need to just get rid of that call entirely.  I'll sick one of my
+interns on it...
+
+thanks,
+
+greg k-h
