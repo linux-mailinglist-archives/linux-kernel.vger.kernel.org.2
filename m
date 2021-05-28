@@ -2,112 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 961063942B3
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 14:38:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 51AB33942B5
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 14:39:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236708AbhE1Mjh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 May 2021 08:39:37 -0400
-Received: from outbound-smtp63.blacknight.com ([46.22.136.252]:33843 "EHLO
-        outbound-smtp63.blacknight.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235513AbhE1Mi7 (ORCPT
+        id S233429AbhE1Mk2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 May 2021 08:40:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36060 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234486AbhE1MkN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 May 2021 08:38:59 -0400
-Received: from mail.blacknight.com (pemlinmail06.blacknight.ie [81.17.255.152])
-        by outbound-smtp63.blacknight.com (Postfix) with ESMTPS id A7934FA8D1
-        for <linux-kernel@vger.kernel.org>; Fri, 28 May 2021 13:37:23 +0100 (IST)
-Received: (qmail 8040 invoked from network); 28 May 2021 12:37:23 -0000
-Received: from unknown (HELO techsingularity.net) (mgorman@techsingularity.net@[84.203.23.168])
-  by 81.17.254.9 with ESMTPSA (AES256-SHA encrypted, authenticated); 28 May 2021 12:37:23 -0000
-Date:   Fri, 28 May 2021 13:37:22 +0100
-From:   Mel Gorman <mgorman@techsingularity.net>
-To:     Vlastimil Babka <vbabka@suse.cz>
-Cc:     Dave Hansen <dave.hansen@intel.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Hillf Danton <hdanton@sina.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Michal Hocko <mhocko@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux-MM <linux-mm@kvack.org>, "Tang, Feng" <feng.tang@intel.com>
-Subject: Re: [PATCH 0/6 v2] Calculate pcp->high based on zone sizes and
- active CPUs
-Message-ID: <20210528123721.GO30378@techsingularity.net>
-References: <20210525080119.5455-1-mgorman@techsingularity.net>
- <7177f59b-dc05-daff-7dc6-5815b539a790@intel.com>
- <20210528085545.GJ30378@techsingularity.net>
- <416f39e7-704a-86d0-8261-dc27366336ab@suse.cz>
+        Fri, 28 May 2021 08:40:13 -0400
+Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF677C061574
+        for <linux-kernel@vger.kernel.org>; Fri, 28 May 2021 05:38:37 -0700 (PDT)
+Received: by mail-pj1-x1036.google.com with SMTP id h20-20020a17090aa894b029015db8f3969eso2440533pjq.3
+        for <linux-kernel@vger.kernel.org>; Fri, 28 May 2021 05:38:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ingics-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=QOiLxUjpo2oQOwyVvttRY0YkBpGLqZoOW124JZCFc10=;
+        b=oCQadO3ZEmQpMTvV/1axTRAuuDUQ3M/P8Tl9ABkauh2hWV/g6REb2o5ZOb5RdLErno
+         fKQu3tZsfRDc3+FnDV3ghJ3lbdoDe8r9IajsUu0/Sq5f2cNiRCh5+dUvRP7dV53NkNU/
+         dAJn6n3p09/wmQsHRBZydW+8PtrzO4a4UXi0Idjh2JrBdr6ZBh+87HriZm0yLAnWY08U
+         Vb4x08Ij7qtBqsRP96aThvu9lwHdQ/rsrMBVFZXS507rpVXlAUnsASVR9ivurfuYq6SW
+         RZncg57dJ6SHiaFvhcrjK+fA2Y+8+QOSKiKc7kOJGvlaInAebEFRAhiyDTsNi8BBiZTk
+         eezg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=QOiLxUjpo2oQOwyVvttRY0YkBpGLqZoOW124JZCFc10=;
+        b=T4BjLtsDzObexXHNnJPipZA5IwJf26Nf/uamC+sWhQJucLgglYtbC1U7t3h6OFTm6H
+         UbIRCOYTvnEMEbGYVYUOWIp/dZ8ibquKY3J1TjvI8R/IAZADRRiJzcgiIXT9cnl9URQl
+         rGwmdlTajco7DRq4gBBy2IouqswKA+mmoShqDPoHkh/0qSz64RlI6LnCEuEOpHDlVFIf
+         Lao5eyhE7SWt6mBQQOL2zQ1zu7nzXLIQaE4aP81/JavvvfJs3ALtn28oHs+rqCTOlI62
+         RZ0qcqZ1a+sU00h5s7OieQAB1qqPQn7R8UxCZRuM/pyYnjyI0PMZSM0960CGT3/RdgiY
+         UiPg==
+X-Gm-Message-State: AOAM5325OUAFctdO+GhdNBcxMYHYB0OUIh8Lgt2DhGeidIpvPCbUB/CU
+        PA8/3JduQfqGkbIsdEFpOrhTDg==
+X-Google-Smtp-Source: ABdhPJzmmvfKI2YfOUivLyOnWiZjRtTLUl2bwNA2jEpnIexvx0J2q22TJFGNE9C5La9Y2VyugC5e3Q==
+X-Received: by 2002:a17:90a:1d0c:: with SMTP id c12mr4276342pjd.122.1622205517352;
+        Fri, 28 May 2021 05:38:37 -0700 (PDT)
+Received: from localhost.localdomain (122-117-179-2.HINET-IP.hinet.net. [122.117.179.2])
+        by smtp.gmail.com with ESMTPSA id v11sm1563523pju.27.2021.05.28.05.38.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 28 May 2021 05:38:36 -0700 (PDT)
+From:   Axel Lin <axel.lin@ingics.com>
+To:     Mark Brown <broonie@kernel.org>
+Cc:     Manivannan Sadhasivam <mani@kernel.org>,
+        Cristian Ciocaltea <cristian.ciocaltea@gmail.com>,
+        linux-actions@lists.infradead.org,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        linux-kernel@vger.kernel.org, Axel Lin <axel.lin@ingics.com>
+Subject: [PATCH RFT] regulator: atc260x: Fix n_voltages and min_sel for pickable linear ranges
+Date:   Fri, 28 May 2021 20:38:26 +0800
+Message-Id: <20210528123826.350771-1-axel.lin@ingics.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-15
-Content-Disposition: inline
-In-Reply-To: <416f39e7-704a-86d0-8261-dc27366336ab@suse.cz>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 28, 2021 at 02:12:09PM +0200, Vlastimil Babka wrote:
-> > mm/page_alloc: Split pcp->high across all online CPUs for cpuless nodes
-> > 
-> > Dave Hansen reported the following about Feng Tang's tests on a machine
-> > with persistent memory onlined as a DRAM-like device.
-> > 
-> >   Feng Tang tossed these on a "Cascade Lake" system with 96 threads and
-> >   ~512G of persistent memory and 128G of DRAM.  The PMEM is in "volatile
-> >   use" mode and being managed via the buddy just like the normal RAM.
-> > 
-> >   The PMEM zones are big ones:
-> > 
-> >         present  65011712 = 248 G
-> >         high       134595 = 525 M
-> > 
-> >   The PMEM nodes, of course, don't have any CPUs in them.
-> > 
-> >   With your series, the pcp->high value per-cpu is 69584 pages or about
-> >   270MB per CPU.  Scaled up by the 96 CPU threads, that's ~26GB of
-> >   worst-case memory in the pcps per zone, or roughly 10% of the size of
-> >   the zone.
-> > 
-> > This should not cause a problem as such although it could trigger reclaim
-> > due to pages being stored on per-cpu lists for CPUs remote to a node. It
-> > is not possible to treat cpuless nodes exactly the same as normal nodes
-> > but the worst-case scenario can be mitigated by splitting pcp->high across
-> > all online CPUs for cpuless memory nodes.
-> > 
-> > Suggested-by: Dave Hansen <dave.hansen@intel.com>
-> > Signed-off-by: Mel Gorman <mgorman@techsingularity.net>
-> 
-> Acked-by: Vlastimil Babka <vbabka@suse.cz>
-> 
+The .n_voltages was missed for pickable linear ranges, fix it.
+The min_sel for each pickable range should be starting from 0.
 
-Thanks.
+Fixes: 3b15ccac161a ("regulator: Add regulator driver for ATC260x PMICs")
+Signed-off-by: Axel Lin <axel.lin@ingics.com>
+---
+Hi Cristian,
+I don't have this h/w to test, please review and test this patch.
+Thanks,
+Axel
+ drivers/regulator/atc260x-regulator.c | 17 +++++++++--------
+ 1 file changed, 9 insertions(+), 8 deletions(-)
 
-> Maybe we should even consider distinguishing high limits for local-to-cpu zones
-> vs remote, for example for the local-to-cpu zones we would divide by the number
-> of local cpus, for remote-to-cpu zones we would divide by all cpus.
-> 
-> Because we can expect cpus to allocate mostly from local zones, so leaving more
-> pages on percpu for those zones can be beneficial.
-> 
-
-I did think about whether the ratios should be different but failed to
-conclude that it was necessary or useful so I kept it simple.
-
-> But as the motivation here was to reduce lock contention on freeing, that's less
-> clear. We probably can't expect the cpu to be freeing mostly local pages (in
-> case of e.g. a large process exiting), because no mechanism works towards that,
-> or does it? In case of cpu freeing to remote zone, the lower high limit could hurt.
-> 
-
-This is the major issue. Even if an application was NUMA aware and heavily
-threaded, the process exiting is potentially freeing remote memory and
-there is nothing wrong about that. The remote memory will be partially
-drained by pcp->high being reached and the remaining memory will be
-cleaned up by vmstat. It's a similar problem if a process is truncating
-a large file with page cache allocated on a remote node.
-
-Hence I decided to do nothing fancy with the ratios until a practical
-problem was identified that could be alleviated by adjusting pcp->high
-based on whether the CPU is remote or local to memory.
-
+diff --git a/drivers/regulator/atc260x-regulator.c b/drivers/regulator/atc260x-regulator.c
+index d8b429955d33..5dee02394cd9 100644
+--- a/drivers/regulator/atc260x-regulator.c
++++ b/drivers/regulator/atc260x-regulator.c
+@@ -28,12 +28,12 @@ static const struct linear_range atc2609a_dcdc_voltage_ranges[] = {
+ 
+ static const struct linear_range atc2609a_ldo_voltage_ranges0[] = {
+ 	REGULATOR_LINEAR_RANGE(700000, 0, 15, 100000),
+-	REGULATOR_LINEAR_RANGE(2100000, 16, 28, 100000),
++	REGULATOR_LINEAR_RANGE(2100000, 0, 12, 100000),
+ };
+ 
+ static const struct linear_range atc2609a_ldo_voltage_ranges1[] = {
+ 	REGULATOR_LINEAR_RANGE(850000, 0, 15, 100000),
+-	REGULATOR_LINEAR_RANGE(2100000, 16, 27, 100000),
++	REGULATOR_LINEAR_RANGE(2100000, 0, 11, 100000),
+ };
+ 
+ static const unsigned int atc260x_ldo_voltage_range_sel[] = {
+@@ -411,7 +411,7 @@ enum atc2609a_reg_ids {
+ 	.owner = THIS_MODULE, \
+ }
+ 
+-#define atc2609a_reg_desc_ldo_range_pick(num, n_range) { \
++#define atc2609a_reg_desc_ldo_range_pick(num, n_range, n_volt) { \
+ 	.name = "LDO"#num, \
+ 	.supply_name = "ldo"#num, \
+ 	.of_match = of_match_ptr("ldo"#num), \
+@@ -421,6 +421,7 @@ enum atc2609a_reg_ids {
+ 	.type = REGULATOR_VOLTAGE, \
+ 	.linear_ranges = atc2609a_ldo_voltage_ranges##n_range, \
+ 	.n_linear_ranges = ARRAY_SIZE(atc2609a_ldo_voltage_ranges##n_range), \
++	.n_voltages = n_volt, \
+ 	.vsel_reg = ATC2609A_PMU_LDO##num##_CTL0, \
+ 	.vsel_mask = GENMASK(4, 1), \
+ 	.vsel_range_reg = ATC2609A_PMU_LDO##num##_CTL0, \
+@@ -458,12 +459,12 @@ static const struct regulator_desc atc2609a_reg[] = {
+ 	atc2609a_reg_desc_ldo_bypass(0),
+ 	atc2609a_reg_desc_ldo_bypass(1),
+ 	atc2609a_reg_desc_ldo_bypass(2),
+-	atc2609a_reg_desc_ldo_range_pick(3, 0),
+-	atc2609a_reg_desc_ldo_range_pick(4, 0),
++	atc2609a_reg_desc_ldo_range_pick(3, 0, 29),
++	atc2609a_reg_desc_ldo_range_pick(4, 0, 29),
+ 	atc2609a_reg_desc_ldo(5),
+-	atc2609a_reg_desc_ldo_range_pick(6, 1),
+-	atc2609a_reg_desc_ldo_range_pick(7, 0),
+-	atc2609a_reg_desc_ldo_range_pick(8, 0),
++	atc2609a_reg_desc_ldo_range_pick(6, 1, 28),
++	atc2609a_reg_desc_ldo_range_pick(7, 0, 29),
++	atc2609a_reg_desc_ldo_range_pick(8, 0, 29),
+ 	atc2609a_reg_desc_ldo_fixed(9),
+ };
+ 
 -- 
-Mel Gorman
-SUSE Labs
+2.25.1
+
