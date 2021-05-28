@@ -2,98 +2,216 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CCDE4393BF7
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 05:34:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F25D0393C07
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 05:44:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236032AbhE1DgS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 May 2021 23:36:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55994 "EHLO
+        id S236330AbhE1Dpr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 May 2021 23:45:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58058 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233801AbhE1DgR (ORCPT
+        with ESMTP id S235754AbhE1Dpn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 May 2021 23:36:17 -0400
-Received: from mail-pf1-x429.google.com (mail-pf1-x429.google.com [IPv6:2607:f8b0:4864:20::429])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1FD2EC061574;
-        Thu, 27 May 2021 20:34:43 -0700 (PDT)
-Received: by mail-pf1-x429.google.com with SMTP id x188so2205828pfd.7;
-        Thu, 27 May 2021 20:34:43 -0700 (PDT)
+        Thu, 27 May 2021 23:45:43 -0400
+Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5DABC061760
+        for <linux-kernel@vger.kernel.org>; Thu, 27 May 2021 20:44:08 -0700 (PDT)
+Received: by mail-pj1-x1030.google.com with SMTP id m8-20020a17090a4148b029015fc5d36343so1754390pjg.1
+        for <linux-kernel@vger.kernel.org>; Thu, 27 May 2021 20:44:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=3YOhXjfhIZJ1T20VU1xRyXuzy1Lchldmw8x3TbufWfU=;
-        b=rV1jrMGUwYeOrjKM8E6kompkg8FuPBvw7mHZXD0HIVuVlWi3Vy2MRU8DpXbkyovu4A
-         DIkyEN3AeiCsP/kI1V2wmQZCRArD3NrrGprz5fqLhlZubh28wxswN0pH+CWH5Pf3vpDK
-         M5yevDL733M+2p3Nw+Ty+K9A5TeiNnxBKygitl0W7OFDlyoBYen7eJwkFVRFR2pFLvHb
-         cnJaAU4eVEZrYXi48MShlDq7TBllX77NiVMqs8rfWGGD1BlVzxWZZinnzgs/yUpCem27
-         bQLsY6NmcDQRkvCScbLk9Qq3XkU+/yfNWCZzwkYtb8ONCd3cmEav7g8sTuTEwVgzehds
-         BH7A==
+        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=lh+EYCLoUcN5j6D/Y+n/b8ai24Cn5mqFXxFcteegjFo=;
+        b=vozsVGeqo0Ckn0+Y2O/TK9Dbw7JR8a9ngc9iFrch/sN3pXDdiz1RJXvthFLjcFcuQi
+         zBas4i1V6UykahH0BLxKklVImiDhHYXKsfSFOTNVYQmzhXbBYtKHBnvMHb/Fjw5QAXWu
+         zH+nhDvQ1EE3mJlbDtCL+Q+Um2Pb3HKG6XKNKgGbBk3TtZnAVjCsJZUjx0RQmmCC0yB2
+         gOrpVaL4wBbOpQ1kt03atdfWrbQa2ebWu2gEQfzxhgxZpdhqJGrUbCQX1AqTMQHVwU+Z
+         OF4Jwrk94JM5/+5AzDpuAS8OR39XhxeAFBFbayLMucDFunIhBkTkm6ZkRcMsZxbpPs7g
+         BdjA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=3YOhXjfhIZJ1T20VU1xRyXuzy1Lchldmw8x3TbufWfU=;
-        b=gjxAZ4xqDPGN+S1i+wRjGE4d/ugUaJ9uFOUWCifCtQLP585Bv9pB4FjowYSeStzQlQ
-         mTYGggXNlBXuuStz4Ry9yw3B/fxpg16F1oj7tq1jzpgB+RAm/kTcHTsKVqodrRzubPaX
-         r2vDtTUPchxm6GXp5+va1PzwDsjVwy4vhC9u1iBXxbIWcXcW1sNq8ztMrBJNE1JJEahz
-         Yv8jV19Qn7ZbD+GsGDzZDq066qJO4w4fpnlTyFdW4m54PE0RJqZhCT9uT34AHkgVyN31
-         yEW3hiBOzJFCf6GM01vYGgsF5mlLJLMxSVZ8XxVrAnzvj47F43fEOBXl3OKXpxxEnKen
-         N/JQ==
-X-Gm-Message-State: AOAM530f6o3d1DF8SFqSor/egZfxC84Vp39eR74AayVUFFY6O+sLlLBW
-        7o69PXfCispZbmzvnnUnwwntZ+GMamo=
-X-Google-Smtp-Source: ABdhPJzdtyZiQ5dyTYI9kanfN2lRRBSxgYHOG/UvZvNw2k1w5sy6Z+oP5/hlkYoqb357hvdbo9L6Sw==
-X-Received: by 2002:a63:a749:: with SMTP id w9mr6845892pgo.234.1622172882194;
-        Thu, 27 May 2021 20:34:42 -0700 (PDT)
-Received: from [10.230.29.202] ([192.19.223.252])
-        by smtp.gmail.com with ESMTPSA id l126sm2991771pga.41.2021.05.27.20.34.40
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 27 May 2021 20:34:41 -0700 (PDT)
-Subject: Re: [PATCH 5.12 0/7] 5.12.8-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org
-Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        stable@vger.kernel.org
-References: <20210527151139.241267495@linuxfoundation.org>
-From:   Florian Fainelli <f.fainelli@gmail.com>
-Message-ID: <425204b7-8848-60b9-531d-5361d3910782@gmail.com>
-Date:   Thu, 27 May 2021 20:34:39 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.10.2
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=lh+EYCLoUcN5j6D/Y+n/b8ai24Cn5mqFXxFcteegjFo=;
+        b=Y3behIARmaetwsJvv0txVhRUYl3x9QdSFkQk+UWPYGwcd1rX6en0XjNsTAcD694Rbi
+         Bu7+nwcdKbMMnksDiIz0al7CAJP9YHEXhQN8q0/jtKofiVcT2V62XXffvalrK72hbQMF
+         5JC6Qt6rlQFlgO1OhFL/ARIRN5ZT8mm2hv+ah/NzurY355acZGtRoQXRLgWuJ0GWe3Qb
+         W+YpNeUNcK5+My9Mx8M+NLv8CQ7q54z+Vd1T60L8oCkKMkiu3YG5gkcHqmX8LHIy6DOL
+         zqX1ckGJRTnoz4r4f99K/2uxtlcOg+RfM42Qs1+wXpIGnhThNr5C6vjZbsYr/NqHOa9u
+         3idg==
+X-Gm-Message-State: AOAM530Goju1rK2yL9A/QYdlFFpDetJcBc4tnbba+vir7Nc12qQBkJ1q
+        Os9Hj6br5bIiZSsotqHIO9hOdQCopIXAw0cVp4XkVQ==
+X-Google-Smtp-Source: ABdhPJxVg/yaMOcm8kfjg+lyfSkRngQO04M367IWDQJgFRhkfJgKJsl/ryGstDi7um2yVreMtfAldziCbcHmzYltWGM=
+X-Received: by 2002:a17:902:d2c8:b029:fe:cd9a:a6bb with SMTP id
+ n8-20020a170902d2c8b02900fecd9aa6bbmr5516453plc.34.1622173448368; Thu, 27 May
+ 2021 20:44:08 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210527151139.241267495@linuxfoundation.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <20210527062148.9361-1-songmuchun@bytedance.com>
+ <20210527062148.9361-18-songmuchun@bytedance.com> <YK+LhWvabd+KQWOJ@casper.infradead.org>
+In-Reply-To: <YK+LhWvabd+KQWOJ@casper.infradead.org>
+From:   Muchun Song <songmuchun@bytedance.com>
+Date:   Fri, 28 May 2021 11:43:29 +0800
+Message-ID: <CAMZfGtWUNBaGmSq-WKXc+DJTbTiSi96SzmGVZsnc-SQ=UiL=QQ@mail.gmail.com>
+Subject: Re: [External] Re: [PATCH v2 17/21] mm: list_lru: replace linear
+ array with xarray
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Roman Gushchin <guro@fb.com>, Yang Shi <shy828301@gmail.com>,
+        Alex Shi <alexs@kernel.org>,
+        Wei Yang <richard.weiyang@gmail.com>,
+        Dave Chinner <david@fromorbit.com>,
+        trond.myklebust@hammerspace.com, anna.schumaker@netapp.com,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        linux-nfs@vger.kernel.org, zhengqi.arch@bytedance.com,
+        Xiongchun duan <duanxiongchun@bytedance.com>,
+        fam.zheng@bytedance.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, May 27, 2021 at 8:08 PM Matthew Wilcox <willy@infradead.org> wrote:
+>
+> On Thu, May 27, 2021 at 02:21:44PM +0800, Muchun Song wrote:
+> > If we run 10k containers in the system, the size of the
+> > list_lru_memcg->lrus can be ~96KB per list_lru. When we decrease the
+> > number containers, the size of the array will not be shrinked. It is
+> > not scalable. The xarray is a good choice for this case. We can save
+> > a lot of memory when there are tens of thousands continers in the
+> > system. If we use xarray, we also can remove the logic code of
+> > resizing array, which can simplify the code.
+>
+> I am all for this, in concept.  Some thoughts below ...
+>
+> > @@ -56,10 +51,8 @@ struct list_lru {
+> >  #ifdef CONFIG_MEMCG_KMEM
+> >       struct list_head        list;
+> >       int                     shrinker_id;
+> > -     /* protects ->memcg_lrus->lrus[i] */
+> > -     spinlock_t              lock;
+> >       /* for cgroup aware lrus points to per cgroup lists, otherwise NULL */
+> > -     struct list_lru_memcg   __rcu *memcg_lrus;
+> > +     struct xarray           *xa;
+> >  #endif
+>
+> Normally, we embed an xarray in its containing structure instead of
+> allocating it.  It's only a pointer, int and spinlock, so generally
+> 16 bytes, as opposed to the 8 bytes for the pointer and a 16 byte
+> allocation.  There is a minor wrinkle in that currently 'NULL' is
+> used to indicate "is not cgroup aware".  Maybe there's another way
+> to indicate that?
+
+Sure. I can drop patch 8 in this series. In that case, we can use
+->memcg_aware to indicate that.
 
 
-On 5/27/2021 8:13 AM, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 5.12.8 release.
-> There are 7 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Sat, 29 May 2021 15:11:29 +0000.
-> Anything received after that time might be too late.
-> 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.12.8-rc1.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.12.y
-> and the diffstat can be found below.
-> 
-> thanks,
-> 
-> greg k-h
+>
+> > @@ -51,22 +51,12 @@ static int lru_shrinker_id(struct list_lru *lru)
+> >  static inline struct list_lru_one *
+> >  list_lru_from_memcg_idx(struct list_lru *lru, int nid, int idx)
+> >  {
+> > -     struct list_lru_memcg *memcg_lrus;
+> > -     struct list_lru_node *nlru = &lru->node[nid];
+> > +     if (list_lru_memcg_aware(lru) && idx >= 0) {
+> > +             struct list_lru_per_memcg *mlru = xa_load(lru->xa, idx);
+> >
+> > -     /*
+> > -      * Either lock or RCU protects the array of per cgroup lists
+> > -      * from relocation (see memcg_update_list_lru).
+> > -      */
+> > -     memcg_lrus = rcu_dereference_check(lru->memcg_lrus,
+> > -                                        lockdep_is_held(&nlru->lock));
+> > -     if (memcg_lrus && idx >= 0) {
+> > -             struct list_lru_per_memcg *mlru;
+> > -
+> > -             mlru = rcu_dereference_check(memcg_lrus->lrus[idx], true);
+> >               return mlru ? &mlru->nodes[nid] : NULL;
+> >       }
+> > -     return &nlru->lru;
+> > +     return &lru->node[nid].lru;
+> >  }
+>
+> ... perhaps we move the xarray out from under the #ifdef and use index 0
+> for non-memcg-aware lrus?  The XArray is specially optimised for arrays
+> which only have one entry at 0.
 
-On ARCH_BRCMSTB, using 32-bit and 64-bit ARM kernels:
+Sounds like a good idea. I can do a try.
 
-Tested-by: Florian Fainelli <f.fainelli@gmail.com>
--- 
-Florian
+>
+> >  int list_lru_memcg_alloc(struct list_lru *lru, struct mem_cgroup *memcg, gfp_t gfp)
+> >  {
+> > +     XA_STATE(xas, lru->xa, 0);
+> >       unsigned long flags;
+> > -     struct list_lru_memcg *memcg_lrus;
+> > -     int i;
+> > +     int i, ret = 0;
+> >
+> >       struct list_lru_memcg_table {
+> >               struct list_lru_per_memcg *mlru;
+> > @@ -601,22 +522,45 @@ int list_lru_memcg_alloc(struct list_lru *lru, struct mem_cgroup *memcg, gfp_t g
+> >               }
+> >       }
+> >
+> > -     spin_lock_irqsave(&lru->lock, flags);
+> > -     memcg_lrus = rcu_dereference_protected(lru->memcg_lrus, true);
+> > +     xas_lock_irqsave(&xas, flags);
+> >       while (i--) {
+> >               int index = memcg_cache_id(table[i].memcg);
+> >               struct list_lru_per_memcg *mlru = table[i].mlru;
+> >
+> > -             if (index < 0 || rcu_dereference_protected(memcg_lrus->lrus[index], true))
+> > +             xas_set(&xas, index);
+> > +retry:
+> > +             if (unlikely(index < 0 || ret || xas_load(&xas))) {
+> >                       kfree(mlru);
+> > -             else
+> > -                     rcu_assign_pointer(memcg_lrus->lrus[index], mlru);
+> > +             } else {
+> > +                     ret = xa_err(xas_store(&xas, mlru));
+>
+> This is mixing advanced and normal XArray concepts ... sorry to have
+> confused you.  I think what you meant to do here was:
+>
+>                         xas_store(&xas, mlru);
+>                         ret = xas_error(&xas);
+
+Sure. Thanks for pointing it out. It's my bad usage.
+
+>
+> Or you can avoid introducing 'ret' at all, and keep your errors in the
+> xa_state.  You're kind of mirroring the xa_state errors into 'ret'
+> anyway, so that seems easier to understand?
+
+Make sense. I will do this in the next version. Thanks for your
+all suggestions.
+
+>
+> > -     memcg_id = memcg_alloc_cache_id();
+> > +     memcg_id = ida_simple_get(&memcg_cache_ida, 0, MEMCG_CACHES_MAX_SIZE,
+> > +                               GFP_KERNEL);
+>
+>         memcg_id = ida_alloc_max(&memcg_cache_ida,
+>                         MEMCG_CACHES_MAX_SIZE - 1, GFP_KERNEL);
+>
+> ... although i think there's actually a fencepost error, and this really
+> should be MEMCG_CACHES_MAX_SIZE.
+
+Totally agree. I have fixed this issue in patch 19.
+
+>
+> >       objcg = obj_cgroup_alloc();
+> >       if (!objcg) {
+> > -             memcg_free_cache_id(memcg_id);
+> > +             ida_simple_remove(&memcg_cache_ida, memcg_id);
+>
+>                 ida_free(&memcg_cache_ida, memcg_id);
+
+I Will update to this new API.
+
+>
