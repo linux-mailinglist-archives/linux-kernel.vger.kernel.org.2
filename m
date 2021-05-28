@@ -2,55 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5682E394278
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 14:23:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 76C3539427B
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 14:23:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236560AbhE1MYe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 May 2021 08:24:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33028 "EHLO
+        id S236574AbhE1MZN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 May 2021 08:25:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33178 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234187AbhE1MYc (ORCPT
+        with ESMTP id S232852AbhE1MZM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 May 2021 08:24:32 -0400
-Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09791C061574
-        for <linux-kernel@vger.kernel.org>; Fri, 28 May 2021 05:22:58 -0700 (PDT)
-Received: by mail-lf1-x12c.google.com with SMTP id w33so5028457lfu.7
-        for <linux-kernel@vger.kernel.org>; Fri, 28 May 2021 05:22:57 -0700 (PDT)
+        Fri, 28 May 2021 08:25:12 -0400
+Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5930DC061574
+        for <linux-kernel@vger.kernel.org>; Fri, 28 May 2021 05:23:37 -0700 (PDT)
+Received: by mail-lf1-x12b.google.com with SMTP id i9so4987585lfe.13
+        for <linux-kernel@vger.kernel.org>; Fri, 28 May 2021 05:23:37 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=s5GJu063Gw5ZbFrtD3YsVKTbBF15tEOnNiGylTuWMmw=;
-        b=hiFcuBg+jA7/zqZxsAY8bv+zDTwqxW10vRmnkNm7MWP3K+pA4kPUVm9A+1kxts4GZy
-         KTR+hzo44By4YtgzME54Mz0tOr1lr/eNnWonLzY3sRJ7vKJgVJ4x6LsYN9oI48UaymeW
-         r09y6UEXvZZwAvYi3UvYBIpfv5/zpnvE3HyQ5ImozU1oDn3aSI8pXIZqYQtnf0KQxKIY
-         /1OepQz9LbjnLzT2MA+BnRUjYV2ay+MUtCxbzq4SKL35MVQOBrWDZ7vOUX1GRO00t/Cx
-         e+GNC84mPmDjDsKOxhkqq7XsGidJkqJr9y2towtQLkMksyFR9ZjZG0qrckfPTbgEY5Wb
-         qiSg==
+        bh=G3Q2tksrkhJxdvwhNQPoZFzNaFf4kubWs5c1nK9+kN8=;
+        b=go3a0/QldXwLUCsSTRpbFZ8KKeW0RPYh5QJ3Wnsw2S8BJIvnzKSMDOABlCZXC032Yn
+         Y6cjXU/fvNXI/J6bLEYNA2lUU9/Vcv63xjhqBhkKQhn8v8dO8gythQqEtfQ1wsedwsZn
+         SrUsXCgC44fWU7SNCmDWBwNdv/yMiNyGtcYRM9ATua43XblVjvKYQLqH81wNe51rVgJL
+         JOKKPj4XAHE2Rxd6vLKAY+2A+FYRpK+XWs+RoJoKrJeM8TrABZY3z5t2iJsZVr87yjjn
+         3ctC552sZTl4wFvMXcK+93OWsBfzpCs9bM3e/Gw0KDZD468Jo/FjdscYpw+klYplKoCz
+         wV1w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=s5GJu063Gw5ZbFrtD3YsVKTbBF15tEOnNiGylTuWMmw=;
-        b=VDxA82A1KcIyr0l3DhneqmmvXiiM7RGAic9hhDy5QApaUH2/QVI1uh48cLHPlR2RVW
-         tz3bOfkhG2m1D3YFlETb3Hakk8oxt+t7nMswu/e3r12kgh8c3sqayE9aj4vGEP0GnJWg
-         Dji+EaYrSYmeH5uHIhjm/EkTvulDeu49q5a1LhlX896RQyW1BsHJdUZrmDz4SSc6pLWb
-         nO8ZlDqgIjvRzM1M0Ab2sAHGUEEf5iuyESw9Ogr96QtkOy7LqxSEMLbb/xhpeG6Z/5N0
-         8444eEicR3FE3TUlK+YKBgJHA4nTM1loo3Ro1DOcZdGeuPqOu194tAVDlC+JrGp/wZm6
-         hctg==
-X-Gm-Message-State: AOAM530m82IvDZWuknwaRmMYjmkSN6vJsqj/cxVa19OHlxCGrceRAMo+
-        MPOkE0x1QuzbzBh/0ZqFj/ReJPLfJYSEoQZCBAcBBQ==
-X-Google-Smtp-Source: ABdhPJwr4HGMRaigMytFUC7yINpbDEU0FYhukRaY+t8k5aTb95ijDVaPyFBzWrwqlX0GqNMmY0QT7/i9fyxzncN34zQ=
-X-Received: by 2002:a05:6512:1185:: with SMTP id g5mr5752902lfr.586.1622204576386;
- Fri, 28 May 2021 05:22:56 -0700 (PDT)
+        bh=G3Q2tksrkhJxdvwhNQPoZFzNaFf4kubWs5c1nK9+kN8=;
+        b=kGIFWmJw6jMVtZiZWux8PsIx6kve7GYXq794iSr/itZoow31c67DYT0mv65JAesT5A
+         Ylz7mPHOi5qai9U02XVbRocN9sy66br8bhFxPoZcEiRIZ41ib98WJLAZ06AQ4Qwb6ap8
+         2SFtcHBCtGxuCxgsHuWi9dbMfUjTg9nwdSntmNb3NdjxOSwcpZ1hYucMgNscfHi6rQkD
+         1T9jm7I3v5WxJr7HYFzyvvnL2gyFt4P3QX27J3H68xR+BM5O4MdCMBkhgJVrwSZGz5Z7
+         6f06z2y1FUlOK9I8T4Le4I/jSoqH7ueNA5s+MxGEuO1DaE4KjqHWjd8iW7hX+Sv70FE9
+         3M3w==
+X-Gm-Message-State: AOAM533ygtkvwtuCe5pmu9AoA/kdPFPpHfMyHCwJOBes+bMn2WrGuzDE
+        mLeAMaoqgKGb2tPSGcWXLB+il+IngUOffTNwiH4sbQ==
+X-Google-Smtp-Source: ABdhPJz5+pz0FCkYumJbEZ2ldKixmZ92VlhWiia9pBi/RAIyoShGa1yO7X5Tgko1t6nf+oXETJwWL0HyK4ajxCvE0i4=
+X-Received: by 2002:ac2:544f:: with SMTP id d15mr5674797lfn.465.1622204614193;
+ Fri, 28 May 2021 05:23:34 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210518120633.GW12395@shell.armlinux.org.uk> <E1lmZT1-0005Te-4i@rmk-PC.armlinux.org.uk>
-In-Reply-To: <E1lmZT1-0005Te-4i@rmk-PC.armlinux.org.uk>
+References: <20210518120633.GW12395@shell.armlinux.org.uk> <E1lmZT6-0005U2-8e@rmk-PC.armlinux.org.uk>
+In-Reply-To: <E1lmZT6-0005U2-8e@rmk-PC.armlinux.org.uk>
 From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Fri, 28 May 2021 14:22:45 +0200
-Message-ID: <CACRpkda305YyYRn468UZ6fy3CrLuha5jOndnX_yPCxO037PEMw@mail.gmail.com>
-Subject: Re: [PATCH v2 4/6] ARM: change vmalloc_start to vmalloc_size
+Date:   Fri, 28 May 2021 14:23:23 +0200
+Message-ID: <CACRpkdZmDrw6mp_ZeF8xaT5yyfrs9MuOXkVeccpwMuv_-f_Rgg@mail.gmail.com>
+Subject: Re: [PATCH v2 5/6] ARM: use "* SZ_1M" rather than "<< 20"
 To:     "Russell King (Oracle)" <rmk+kernel@armlinux.org.uk>
 Cc:     Yanfei Xu <yanfei.xu@windriver.com>,
         Mike Rapoport <rppt@kernel.org>,
@@ -68,12 +68,12 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 On Fri, May 28, 2021 at 12:11 PM Russell King (Oracle)
 <rmk+kernel@armlinux.org.uk> wrote:
 
-> Rather than storing the start of vmalloc space, store the size, and
-> move the calculation into adjust_lowmem_limit(). We now have one single
-> place where this calculation takes place.
+> Make the default vmalloc size clearer by using a more natural
+> multiplication by SZ_1M rather than a shift left by 20 bits.
 >
 > Signed-off-by: Russell King (Oracle) <rmk+kernel@armlinux.org.uk>
 
+Excellent, thanks!
 Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
 
 Yours,
