@@ -2,68 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 53260393FFA
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 11:29:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 05353394000
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 11:32:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235412AbhE1JbG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 May 2021 05:31:06 -0400
-Received: from out30-133.freemail.mail.aliyun.com ([115.124.30.133]:33943 "EHLO
-        out30-133.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234226AbhE1JbE (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 May 2021 05:31:04 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R111e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04400;MF=jiapeng.chong@linux.alibaba.com;NM=1;PH=DS;RN=11;SR=0;TI=SMTPD_---0UaMfT3T_1622194161;
-Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:jiapeng.chong@linux.alibaba.com fp:SMTPD_---0UaMfT3T_1622194161)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Fri, 28 May 2021 17:29:27 +0800
-From:   Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-To:     alexander.deucher@amd.com
-Cc:     christian.koenig@amd.com, airlied@linux.ie, daniel@ffwll.ch,
-        sumit.semwal@linaro.org, amd-gfx@lists.freedesktop.org,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        linux-media@vger.kernel.org, linaro-mm-sig@lists.linaro.org,
-        Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-Subject: [PATCH v3] amdgpu: remove unreachable code
-Date:   Fri, 28 May 2021 17:29:18 +0800
-Message-Id: <1622194158-70898-1-git-send-email-jiapeng.chong@linux.alibaba.com>
-X-Mailer: git-send-email 1.8.3.1
+        id S234476AbhE1Jdb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 May 2021 05:33:31 -0400
+Received: from mga12.intel.com ([192.55.52.136]:63888 "EHLO mga12.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229774AbhE1Jd3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 28 May 2021 05:33:29 -0400
+IronPort-SDR: rd9JKdBpjZoO4pdsteUnKyqyXls5iy66ay4As1pLnczxgejOfz6cc5reVM4UipvACGpmR5aVIP
+ WmaDQF8LvNtA==
+X-IronPort-AV: E=McAfee;i="6200,9189,9997"; a="182588124"
+X-IronPort-AV: E=Sophos;i="5.83,229,1616482800"; 
+   d="scan'208";a="182588124"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 May 2021 02:31:55 -0700
+IronPort-SDR: eOvRP1Wcyudl8jebpfyNVAeRlikWPc6SvEcQa0J4i3ECKV0lVPl7X6d353InsFTc09f6Q24Hy/
+ NsKsuExFQRIA==
+X-IronPort-AV: E=Sophos;i="5.83,229,1616482800"; 
+   d="scan'208";a="436881295"
+Received: from paasikivi.fi.intel.com ([10.237.72.42])
+  by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 May 2021 02:31:53 -0700
+Received: from paasikivi.fi.intel.com (localhost [127.0.0.1])
+        by paasikivi.fi.intel.com (Postfix) with SMTP id DC31E202F7;
+        Fri, 28 May 2021 12:31:50 +0300 (EEST)
+Date:   Fri, 28 May 2021 12:31:50 +0300
+From:   Sakari Ailus <sakari.ailus@linux.intel.com>
+To:     Lee Jones <lee.jones@linaro.org>
+Cc:     linux-kernel@vger.kernel.org, Pavel Machek <pavel@ucw.cz>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        linux-leds@vger.kernel.org
+Subject: Re: [PATCH 05/15] leds: leds-as3645a: Fix function name
+ 'as3645a_set_current()'
+Message-ID: <20210528093150.GN3@paasikivi.fi.intel.com>
+References: <20210528090629.1800173-1-lee.jones@linaro.org>
+ <20210528090629.1800173-6-lee.jones@linaro.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210528090629.1800173-6-lee.jones@linaro.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In the function amdgpu_uvd_cs_msg(), every branch in the switch
-statement will have a return, so the code below the switch statement
-will not be executed.
+Hi Lee,
 
-Eliminate the follow smatch warning:
+On Fri, May 28, 2021 at 10:06:19AM +0100, Lee Jones wrote:
+> Fixes the following W=1 kernel build warning(s):
+> 
+>  drivers/leds/leds-as3645a.c:198: warning: expecting prototype for as3645a_set_config(). Prototype was for as3645a_set_current() instead
+> 
+> Cc: Sakari Ailus <sakari.ailus@linux.intel.com>
+> Cc: Pavel Machek <pavel@ucw.cz>
+> Cc: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+> Cc: linux-leds@vger.kernel.org
+> Signed-off-by: Lee Jones <lee.jones@linaro.org>
+> ---
+>  drivers/leds/leds-as3645a.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/leds/leds-as3645a.c b/drivers/leds/leds-as3645a.c
+> index e8922fa033796..c41937ff8fd33 100644
+> --- a/drivers/leds/leds-as3645a.c
+> +++ b/drivers/leds/leds-as3645a.c
+> @@ -185,7 +185,7 @@ static int as3645a_read(struct as3645a *flash, u8 addr)
+>   */
+>  
+>  /**
+> - * as3645a_set_config - Set flash configuration registers
+> + * as3645a_set_current - Set flash configuration registers
+>   * @flash: The flash
+>   *
+>   * Configure the hardware with flash, assist and indicator currents, as well as
 
-drivers/gpu/drm/amd/amdgpu/amdgpu_uvd.c:845 amdgpu_uvd_cs_msg() warn:
-ignoring unreachable code.
+Thanks for the patch.
 
-Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
----
-Changes in v2:
-  -For the follow advice: https://lore.kernel.org/patchwork/patch/1435968/
+The entire comment could be removed. It's wrong and doesn't really tell
+more than what you can read in the two functions below (the two are result
+of splitting one the documentation was written for).
 
- drivers/gpu/drm/amd/amdgpu/amdgpu_uvd.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
-
-diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_uvd.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_uvd.c
-index c6dbc08..35f6874 100644
---- a/drivers/gpu/drm/amd/amdgpu/amdgpu_uvd.c
-+++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_uvd.c
-@@ -829,9 +829,8 @@ static int amdgpu_uvd_cs_msg(struct amdgpu_uvd_cs_ctx *ctx,
- 
- 	default:
- 		DRM_ERROR("Illegal UVD message type (%d)!\n", msg_type);
--		return -EINVAL;
- 	}
--	BUG();
-+
- 	return -EINVAL;
- }
- 
 -- 
-1.8.3.1
+Kind regards,
 
+Sakari Ailus
