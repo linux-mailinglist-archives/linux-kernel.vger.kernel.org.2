@@ -2,82 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A2994393A3F
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 02:28:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9DADF393A45
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 02:30:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234815AbhE1AaR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 May 2021 20:30:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42620 "EHLO
+        id S235017AbhE1Abo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 May 2021 20:31:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42952 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233785AbhE1AaQ (ORCPT
+        with ESMTP id S234926AbhE1Abl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 May 2021 20:30:16 -0400
-Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46577C061760
-        for <linux-kernel@vger.kernel.org>; Thu, 27 May 2021 17:28:41 -0700 (PDT)
-Received: by mail-pj1-x1030.google.com with SMTP id m8-20020a17090a4148b029015fc5d36343so1528345pjg.1
-        for <linux-kernel@vger.kernel.org>; Thu, 27 May 2021 17:28:41 -0700 (PDT)
+        Thu, 27 May 2021 20:31:41 -0400
+Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6DBF0C061761
+        for <linux-kernel@vger.kernel.org>; Thu, 27 May 2021 17:30:06 -0700 (PDT)
+Received: by mail-lf1-x12f.google.com with SMTP id x38so2707406lfa.10
+        for <linux-kernel@vger.kernel.org>; Thu, 27 May 2021 17:30:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=I7wy99R89NcBY4kuPu7JFHQrrTyxSqc5+QStHaB/eUU=;
-        b=tda8JphBgw5jUTht2VrzpvbblgBlHPLgA3xnHbpUUtFQj5cYEJIfAGND1LawcJHqXZ
-         t6iw1s8vareTh+zcsT+FIAfvWEtwKf40lKNniQtL0gEUX+2XMoB7qmwn12KCELABYEc8
-         sv6hxDh5H4ZgULvz7fKdhrwUKjG+nusz2yCFMhu7pIe0FFXu1BC00LnKjVLrT8yzDiV9
-         nsy67CFHpjlh3hwatKuZCpEQb10MWcdTR2GbsFdPlaYQS2XjDiAAfdMyJGIuTd/PRI2x
-         UyHHyU100te1VyBhEcvO4oupoPIch1h6AO6nwVDn7hh4U6ANCLJVG1ZJlo2ZU7zapRlK
-         1BLg==
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=cAYxSZ2/LUsSsn8d06yEcKP0Gfca5oqTYVqfarEyY4Q=;
+        b=CGtHb0yWAyWtrKrDJIeR8VvZXgsNXy84JWlXeb19e88ME4csylVRHl7Lcd0FSfDG0h
+         ryKXiFr8u9YGB+o8gN9tyhxz+8cY1mpCam+L8sKlzDjb/42QPB8sNGoba6bPqd9anVEN
+         kxYBVVuI2MpYL5detAHUgrZRAHMV3L25XISvh6/vovNXuIn3BTU2ZD5RJuDCVhmLP+LF
+         aHdccEzIYbbY9D1GDhNCytmG45H5v/JQZyvRqjYzagGmAfhnPFrh4qIu6DsGUN8B55zh
+         wxYwjrkV1MIPbk8KDhuf3kM6wY3c0iOY5tgMqzWgJrnM/Rhk3RniD0Lwb2pb7uCZJZXs
+         UV2g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=I7wy99R89NcBY4kuPu7JFHQrrTyxSqc5+QStHaB/eUU=;
-        b=Ad7vOrnfR5JkZkk/DPz8CDTxb7QwvPmWzIsDW/vBQ/KV9nltvIfUTGOSZfUrrun9g6
-         yK3Iz/kiTBXx3mQOeR+I1QDzkR14yiuvEmY1A4xgq9G0cyzRfZ6EX+5J16zN4uIB+gJS
-         JniVeft0DEGortPD3Vdg7GaqT5GBVev3CgJ/Hml4Y9Z0SxhCq63BEPejRntBwY3UB1IE
-         hBCEnocCh0//9vJzqYZfKXqikUZPzXjiqcB3peGrwQdRkYd3wkJBNJcZa2yl2MPHCv4Y
-         mvODE7Rvyql0V2tGVrVLz+xZCRsIuMC0npPbuE95/yp0mS9lfh5/ZVnBW8Oc7pLr4d0z
-         Tpjg==
-X-Gm-Message-State: AOAM530N9hypudtCUCB7FeDD/Q4ocx2MelIKj2wOwLxiycx1rK0E+oJ/
-        z7IfL40n7e9hCo9D6w0BJTpiwg==
-X-Google-Smtp-Source: ABdhPJzw4drT7C9GHtNuv8i4niDLo5ACJsDJ9OeneWGvOpOu4EAkz/8JH6tc9Od1aqrcDMQbqLZO8Q==
-X-Received: by 2002:a17:90a:a013:: with SMTP id q19mr1331687pjp.29.1622161720673;
-        Thu, 27 May 2021 17:28:40 -0700 (PDT)
-Received: from google.com (240.111.247.35.bc.googleusercontent.com. [35.247.111.240])
-        by smtp.gmail.com with ESMTPSA id pg5sm2585505pjb.28.2021.05.27.17.28.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 27 May 2021 17:28:40 -0700 (PDT)
-Date:   Fri, 28 May 2021 00:28:36 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Wanpeng Li <kernellwp@gmail.com>
-Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>
-Subject: Re: [PATCH v4 2/2] KVM: X86: Kill off ctxt->ud
-Message-ID: <YLA5NFSGemfAOrMa@google.com>
-References: <1622160097-37633-1-git-send-email-wanpengli@tencent.com>
- <1622160097-37633-2-git-send-email-wanpengli@tencent.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=cAYxSZ2/LUsSsn8d06yEcKP0Gfca5oqTYVqfarEyY4Q=;
+        b=k6P/yOo2NDCn7IsMxGK0hjsahTU3FgBpiDrvccCYEjSG3FgiFNJ7sMVvRBNr9jJANG
+         M3RAq3urNHV9NzSkUlcUDTMZEvmAP3+nKFQU7av+BgEVghAQHSTulmziEUGJxms0+ZBG
+         tmx2Sb8lLKs579Jsq29Ytp+y6BA53X8FRWjnQasotdYjo3AwYoBz0YgdjvdP+3haNY49
+         y4pemDJZNs1yiSa4tGHUVVOIKz7Plx0vxiRbVPK6Li5a7MTViU9+rE+j4FoURGk/Vfy/
+         FVe3a3Qs3GRmvlPk5T0JQYhxkEHsZPFbLQFIP3Z8nsoXEA0zkwAn69/HZkyojsKvIWC4
+         GxPg==
+X-Gm-Message-State: AOAM530QuXrzpW3ZbBYZmJuZqnzzBt/1fsv2yaZYHZrkuv3HbpwFg4P4
+        CAqoAXke/KF9ztHg/Ox4pCAkYSjNxs7D4PnsMCt4Fg==
+X-Google-Smtp-Source: ABdhPJxjKWZl4nXKcEb8D++9zwhUGTk9lmQJdMjIN1Wc6enAt0Oqdih6wD8S0QT6XSpnKxPCjDnCZ7wSs6HcuOnh1dU=
+X-Received: by 2002:a19:f616:: with SMTP id x22mr3924647lfe.291.1622161804749;
+ Thu, 27 May 2021 17:30:04 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1622160097-37633-2-git-send-email-wanpengli@tencent.com>
+References: <20210525000159.3384921-1-dianders@chromium.org> <20210524165920.v8.3.I98bf729846c37c4c143f6ab88b1e299280e2fe26@changeid>
+In-Reply-To: <20210524165920.v8.3.I98bf729846c37c4c143f6ab88b1e299280e2fe26@changeid>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Fri, 28 May 2021 02:29:53 +0200
+Message-ID: <CACRpkdZQ_4OMfUPZj1hXzRzqcfbhnrOHZ42NdP+giKbcz3=2VQ@mail.gmail.com>
+Subject: Re: [PATCH v8 03/11] dt-bindings: drm/bridge: ti-sn65dsi86: Add
+ aux-bus child
+To:     Douglas Anderson <dianders@chromium.org>
+Cc:     Andrzej Hajda <a.hajda@samsung.com>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        MSM <linux-arm-msm@vger.kernel.org>,
+        Lyude Paul <lyude@redhat.com>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Steev Klimaszewski <steev@kali.org>,
+        Rob Clark <robdclark@chromium.org>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Thierry Reding <treding@nvidia.com>,
+        "open list:DRM PANEL DRIVERS" <dri-devel@lists.freedesktop.org>,
+        Stanislav Lisovskiy <stanislav.lisovskiy@intel.com>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        David Airlie <airlied@linux.ie>,
+        Rob Herring <robh+dt@kernel.org>,
+        Sandeep Panda <spanda@codeaurora.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 27, 2021, Wanpeng Li wrote:
-> From: Wanpeng Li <wanpengli@tencent.com>
-> 
-> ctxt->ud is consumed only by x86_decode_insn(), we can kill it off by 
-> passing emulation_type to x86_decode_insn() and dropping ctxt->ud 
-> altogether. Tracking that info in ctxt for literally one call is silly.
-> 
-> Suggested-by: Sean Christopherson <seanjc@google.com>
-> Signed-off-by: Wanpeng Li <wanpengli@tencent.com>
-> ---
+On Tue, May 25, 2021 at 2:02 AM Douglas Anderson <dianders@chromium.org> wrote:
 
-Reviewed-by: Sean Christopherson <seanjc@google.com>
+> The patch ("dt-bindings: drm: Introduce the DP AUX bus") talks about
+> how using the DP AUX bus is better than learning how to slice
+> bread. Let's add it to the ti-sn65dsi86 bindings.
+>
+> Signed-off-by: Douglas Anderson <dianders@chromium.org>
+(...)
+>      description: See ../../pwm/pwm.yaml for description of the cell formats.>
+
+Just use the full path:
+/schemas/pwm/pwm.yaml
+
+> +  aux-bus:
+> +    $ref: ../dp-aux-bus.yaml#
+
+Use the full path. (Same method as above)
+
+This removes the need for ../../... ....
+
+You do it here:
+
+>    ports:
+>      $ref: /schemas/graph.yaml#/properties/ports
+
+Other than that I think it looks all right!
+
+Yours,
+Linus Walleij
