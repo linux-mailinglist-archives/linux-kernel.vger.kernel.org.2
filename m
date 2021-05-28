@@ -2,84 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DCEE7393D84
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 09:10:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B338393D86
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 09:10:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235038AbhE1HMF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 May 2021 03:12:05 -0400
-Received: from mx2.suse.de ([195.135.220.15]:44724 "EHLO mx2.suse.de"
+        id S235298AbhE1HMS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 May 2021 03:12:18 -0400
+Received: from helcar.hmeau.com ([216.24.177.18]:49906 "EHLO deadmen.hmeau.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234927AbhE1HMB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 May 2021 03:12:01 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1622185826; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=BwgXQ9oy+Jp0j3qXdKyBDPbJOS4YWNwV57qE6gV32HM=;
-        b=meEbrH/VCJvx/3YxQuUsrCcMxFqbox2ZUmxPvz5MG4sz6ewPNGYsnjUdgVxhcDNyXbj6W3
-        D2WnwR6fu187Q4dypeD9IJVJJbTqHLH3h7qKe5+/1GPIXhmyj83YmrXl1gTCJddxMvtwNf
-        VSnHr2TvffnwMfH2THSi7xCnuG54O+8=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1622185826;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=BwgXQ9oy+Jp0j3qXdKyBDPbJOS4YWNwV57qE6gV32HM=;
-        b=tRvr7VV6MsFwhC2BjgGbBiA3s8ziOcN0AjqKALMgEDjQx/iSEaGPX6KmNq5ZzAip5plSC6
-        tW9yC2VOOfTj+uAw==
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 09938B175;
-        Fri, 28 May 2021 07:10:26 +0000 (UTC)
-From:   Takashi Iwai <tiwai@suse.de>
-To:     Dmitry Torokhov <dmitry.torokhov@gmail.com>
-Cc:     linux-input@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v3 2/2] Input: elants_i2c - Switch to probe_new
-Date:   Fri, 28 May 2021 09:10:24 +0200
-Message-Id: <20210528071024.26450-2-tiwai@suse.de>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20210528071024.26450-1-tiwai@suse.de>
-References: <20210528071024.26450-1-tiwai@suse.de>
+        id S234999AbhE1HME (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 28 May 2021 03:12:04 -0400
+Received: from gondobar.mordor.me.apana.org.au ([192.168.128.4] helo=gondobar)
+        by deadmen.hmeau.com with esmtp (Exim 4.92 #5 (Debian))
+        id 1lmWdY-0003NN-RA; Fri, 28 May 2021 15:10:28 +0800
+Received: from herbert by gondobar with local (Exim 4.92)
+        (envelope-from <herbert@gondor.apana.org.au>)
+        id 1lmWdV-0007Ru-Qg; Fri, 28 May 2021 15:10:25 +0800
+Date:   Fri, 28 May 2021 15:10:25 +0800
+From:   Herbert Xu <herbert@gondor.apana.org.au>
+To:     Kai Ye <yekai13@huawei.com>
+Cc:     linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
+        wangzhou1@hisilicon.com
+Subject: Re: [PATCH 2/2] crypto: hisilicon/sec - driver adapt to new SQE
+Message-ID: <20210528071025.GB22601@gondor.apana.org.au>
+References: <1621249800-11582-1-git-send-email-yekai13@huawei.com>
+ <1621249800-11582-3-git-send-email-yekai13@huawei.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1621249800-11582-3-git-send-email-yekai13@huawei.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Now that we get rid of the usage of id argument at probe again, let's
-switch to the new i2c probe method; this will avoid for people
-misusing the possibly unassigned id pointer again.
+On Mon, May 17, 2021 at 07:10:00PM +0800, Kai Ye wrote:
+> Due to Kunpeng930 adds new SQE data structure, the SEC driver needs
+> to be upgraded. It mainly includes bd parsing process and bd filling
+> process.
+> 
+> Signed-off-by: Wenkai Lin <linwenkai6@hisilicon.com>
+> Signed-off-by: Kai Ye <yekai13@huawei.com>
+> ---
+>  drivers/crypto/hisilicon/sec2/sec.h        |   1 +
+>  drivers/crypto/hisilicon/sec2/sec_crypto.c | 291 ++++++++++++++++++++++++-----
 
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
----
- drivers/input/touchscreen/elants_i2c.c | 5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
+This triggers two sparse warnings.  Please fix.
 
-diff --git a/drivers/input/touchscreen/elants_i2c.c b/drivers/input/touchscreen/elants_i2c.c
-index 0f9e3ec99aae..68f542bb809f 100644
---- a/drivers/input/touchscreen/elants_i2c.c
-+++ b/drivers/input/touchscreen/elants_i2c.c
-@@ -1369,8 +1369,7 @@ static bool elants_acpi_is_hid_device(struct device *dev)
- }
- #endif
- 
--static int elants_i2c_probe(struct i2c_client *client,
--			    const struct i2c_device_id *id)
-+static int elants_i2c_probe(struct i2c_client *client)
- {
- 	union i2c_smbus_data dummy;
- 	struct elants_data *ts;
-@@ -1644,7 +1643,7 @@ MODULE_DEVICE_TABLE(of, elants_of_match);
- #endif
- 
- static struct i2c_driver elants_i2c_driver = {
--	.probe = elants_i2c_probe,
-+	.probe_new = elants_i2c_probe,
- 	.id_table = elants_i2c_id,
- 	.driver = {
- 		.name = DEVICE_NAME,
+Thanks,
 -- 
-2.26.2
-
+Email: Herbert Xu <herbert@gondor.apana.org.au>
+Home Page: http://gondor.apana.org.au/~herbert/
+PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
