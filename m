@@ -2,97 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 416E5394477
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 16:49:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DCE45394479
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 16:50:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235854AbhE1Ov2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 May 2021 10:51:28 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35160 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234677AbhE1Ov1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 May 2021 10:51:27 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CDFF6613D4;
-        Fri, 28 May 2021 14:49:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1622213392;
-        bh=HW5gpAOajiaaDbUKDPQUwX1k4WKIkDBYYV5yjj9Tss0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=sHZ2h26nrNJzzgaALyHnTxn/t0jq2asszflc0ijAIknp93GBlRXW3/n6wSPM3a7AH
-         1Igi9EBji7zi2nXeRLKv8MHc3rU+YF9yS12R2+SaZPkByrWcbHFaS/pa2D/ZDagCov
-         hkcBKRxm3b5dybwjoPeXfp2hrPGLb5mnqLfVWXDBP801sstDv3BmECovWz7pNJRlPd
-         inBc8qexF5eplX1fKGJTce8nQP2//V1jAlsktqB3QEgXcA99/xdNG/LyNGTsOeHq1X
-         gaaQRlTJwfSNaAOcsCCM90N5q4aPkYYZhARChiOr2YO5l2Q2uTVzuSi0IdM42meI7t
-         1olDK7YlDcaMA==
-Date:   Fri, 28 May 2021 16:49:49 +0200
-From:   Wolfram Sang <wsa@kernel.org>
-To:     Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Jarkko Nikula <jarkko.nikula@linux.intel.com>,
-        Lee Jones <lee.jones@linaro.org>, linux-i2c@vger.kernel.org,
-        Ralf Ramsauer <ralf.ramsauer@oth-regensburg.de>,
-        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] MAINTAINERS: adjust to removing i2c designware platform
- data
-Message-ID: <YLEDDbkH9pIufslp@kunai>
-Mail-Followup-To: Wolfram Sang <wsa@kernel.org>,
-        Lukas Bulwahn <lukas.bulwahn@gmail.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Jarkko Nikula <jarkko.nikula@linux.intel.com>,
-        Lee Jones <lee.jones@linaro.org>, linux-i2c@vger.kernel.org,
-        Ralf Ramsauer <ralf.ramsauer@oth-regensburg.de>,
-        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210419061809.15045-1-lukas.bulwahn@gmail.com>
+        id S236022AbhE1Ove (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 May 2021 10:51:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37834 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236018AbhE1Ovc (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 28 May 2021 10:51:32 -0400
+Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com [IPv6:2a00:1450:4864:20::335])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7250BC06174A
+        for <linux-kernel@vger.kernel.org>; Fri, 28 May 2021 07:49:57 -0700 (PDT)
+Received: by mail-wm1-x335.google.com with SMTP id f75-20020a1c1f4e0000b0290171001e7329so2562759wmf.1
+        for <linux-kernel@vger.kernel.org>; Fri, 28 May 2021 07:49:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=k4/Q9LKJZ/p6Cfz4YScBzLWuD3IoHybG41Fusz0viNw=;
+        b=DjqQFgPMrmgF8ovO8dwMR4Nfxhev3NPadgHxm1SDIFyXXyUwa8KmTLbkwDNXfKAM6e
+         p05dlo8Ik9Z8QMaHhPW1N5Oe4p9jKMSXbXNkE0YHyqhab5nMGz9AmG6mAq7uk54J6BjS
+         kmciIFCM3oFeFeTLJ+IT+unKBzlbwZEGmxWeDVjebizU/pNUQq9O+pnNYuWQ0FbdhdKG
+         dF35OtPqiweR5FY3x5MOdr7B29DeWnJIsgmupQWchKK+87/hl/DVpIkMgg209sAEKl2h
+         LhnnyS0/RpjKfC0Ld9Ac7lTUv+b9pWkogobWVDsVuFiQI9S/OxP1+Ot266WSPUznzsKL
+         p1Vg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=k4/Q9LKJZ/p6Cfz4YScBzLWuD3IoHybG41Fusz0viNw=;
+        b=sBgWPaJFa72KK1oAN7/147/xHXVd0OAojX9+Fl5gNMPju5nlyUE0i78jRcGgMvb+d4
+         qMBLZGeS1ExoNLvNts7Kxcdjol8X9cQIzNxxiFHaXslvnUvJlRZ/M2tcxBV6P+PKsdAB
+         DLBXbff53rEr4YnecvcGO/3iTNcn2CZDW+X5mLXvor0+p/Ti1Y7dc+5yln35zekt0gJK
+         +/9bq0o5g/lSRWNOZTsB0R/9cEXhAcZJYTPXHOjDrGiDzc3ZUUPvPVDbTItjVdD5tM1L
+         VnjiqiXYrX7NtDUoda27rUu5rO2sRHwyBwXQa0I6tqDX5HHRyuFjKYS9mfCfZJe8kieK
+         pv2w==
+X-Gm-Message-State: AOAM5323Ib/j1DZFZ9DX+zw7Z5UEzCAK1ebOaO2YKpAI0eiQD0v1LXWh
+        dwUgQKfvnpx17UWCmzlC0b+AGA==
+X-Google-Smtp-Source: ABdhPJxIiUPehbrKrAqkbtQEM9myk7dxHYdKgdQo+sg6gS7VxEodQks76xQP1JHtyeUljY3gF6MedQ==
+X-Received: by 2002:a7b:c084:: with SMTP id r4mr8733938wmh.102.1622213395995;
+        Fri, 28 May 2021 07:49:55 -0700 (PDT)
+Received: from maple.lan (cpc141216-aztw34-2-0-cust174.18-1.cable.virginm.net. [80.7.220.175])
+        by smtp.gmail.com with ESMTPSA id 89sm626826wrq.14.2021.05.28.07.49.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 28 May 2021 07:49:55 -0700 (PDT)
+Date:   Fri, 28 May 2021 15:49:53 +0100
+From:   Daniel Thompson <daniel.thompson@linaro.org>
+To:     Zhen Lei <thunder.leizhen@huawei.com>
+Cc:     Jason Wessel <jason.wessel@windriver.com>,
+        Douglas Anderson <dianders@chromium.org>,
+        Balbir Singh <bsingharora@gmail.com>,
+        Barry Song <song.bao.hua@hisilicon.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Darren Hart <dvhart@infradead.org>,
+        Davidlohr Bueso <dave@stgolabs.net>,
+        Eric Biederman <ebiederm@xmission.com>,
+        "Naveen N . Rao" <naveen.n.rao@linux.ibm.com>,
+        Anil S Keshavamurthy <anil.s.keshavamurthy@intel.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Jessica Yu <jeyu@kernel.org>,
+        Steffen Klassert <steffen.klassert@secunet.com>,
+        Daniel Jordan <daniel.m.jordan@oracle.com>,
+        Oleg Nesterov <oleg@redhat.com>,
+        John Stultz <john.stultz@linaro.org>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Tejun Heo <tj@kernel.org>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        kgdb-bugreport <kgdb-bugreport@lists.sourceforge.net>,
+        kexec <kexec@lists.infradead.org>,
+        linux-crypto <linux-crypto@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 1/1] kernel: fix numerous spelling mistakes
+Message-ID: <20210528144953.akwuf5nwky4kt3to@maple.lan>
+References: <20210526035345.9113-1-thunder.leizhen@huawei.com>
+ <20210526035345.9113-2-thunder.leizhen@huawei.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="/SYVXHJ05aITRah3"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210419061809.15045-1-lukas.bulwahn@gmail.com>
+In-Reply-To: <20210526035345.9113-2-thunder.leizhen@huawei.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, May 26, 2021 at 11:53:45AM +0800, Zhen Lei wrote:
+> Fix some spelling mistakes in comments:
+> suspeneded ==> suspended
+> occuring ==> occurring
+> wont ==> won't
+> detatch ==> detach
+> represntation ==> representation
+> hexidecimal ==> hexadecimal
+> delimeter ==> delimiter
+> architecure ==> architecture
+> accumalator ==> accumulator
+> evertything ==> everything
+> contingous ==> contiguous
+> useable ==> usable
+> musn't ==> mustn't
+> alloed ==> allowed
+> immmediately ==> immediately
+> Allocted ==> Allocated
+> noone ==> no one
+> unparseable ==> unparsable
+> dependend ==> dependent
+> callled ==> called
+> alreay ==> already
+> childs ==> children
+> implemention ==> implementation
+> situration ==> situation
+> overriden ==> overridden
+> asynchonous ==> asynchronous
+> accumalate ==> accumulate
+> syncrhonized ==> synchronized
+> therefor ==> therefore
+> ther ==> their
+> capabilites ==> capabilities
+> lentgh ==> length
+> watchog ==> watchdog
+> assing ==> assign
+> Retun ==> Return
+> 
+> Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
+> ---
+>  kernel/acct.c                  | 2 +-
+>  kernel/context_tracking.c      | 2 +-
+>  kernel/cpu.c                   | 2 +-
+>  kernel/debug/debug_core.c      | 2 +-
+>  kernel/debug/kdb/kdb_main.c    | 8 ++++----
+>  kernel/debug/kdb/kdb_private.h | 2 +-
 
---/SYVXHJ05aITRah3
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+For these three files:
 
-On Mon, Apr 19, 2021 at 08:18:09AM +0200, Lukas Bulwahn wrote:
-> Commit 5a517b5bf687 ("i2c: designware: Get rid of legacy platform data")
-> removes ./include/linux/platform_data/i2c-designware.h, but misses to
-> adjust the SYNOPSYS DESIGNWARE I2C DRIVER section in MAINTAINERS.
->=20
-> Hence, ./scripts/get_maintainer.pl --self-test=3Dpatterns complains:
->=20
->   warning: no file matches F: include/linux/platform_data/i2c-designware.h
->=20
-> Remove the file entry to this removed file as well.
->=20
-> Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
-
-Applied to for-current, thanks!
+Acked-by: Daniel Thompson <daniel.thompson@linaro.org>
 
 
---/SYVXHJ05aITRah3
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmCxAw0ACgkQFA3kzBSg
-Kbbqbw/+JFzwGVl90rpGi1N/ORK4mem/yngh+TDVOYgTyNI8to6K+pz05/RZiM/w
-XTvVniRp554zDdQUUwFoLRo8FmuGvzqwwRG+dqR0rAeQhuap4mS1oya+uz+PB8sx
-dbvmVhjixLQKaI3adwYoWacGgtQzE7lIR0w3JZCdXUqrRM/l8gscNQ7tURGC7nlY
-7hw8SdwST8Cu5mJ0vgl+I3QJxStk4cld2kIKW4y9622T0dDtuGYR/rnzibf6Q4cR
-F1OXRdX3Yt+kYbs5ZGL1Qs0LcsBLSC0mtKFBtAElcFcemxCfD8wXtHANrt4j6sAS
-aTd8abVrPDWKBtoCnpUOkImYl1otkiaIC7MJ/nSOfr01/UrIJdMhTm4XU9572H1B
-kNFL+XGFAggvxhPmQ5QuYVuUqDa+ora5BoN9t7AUs8FZhSkBONUj1NMSVslTWtOj
-mEK9DcFWIWuqvoWCpMz36yKvovFnuEfmqdQ8Yveqe+OQTRo5NNzIJr66sXXSoPH4
-xoGes3RB709eDIYcBa4JK3kjjbqCaFt9Xwphn2jn0QekS23Gr1k8jXiBee74/H9F
-Mm6xtyUSz5pVspS3s8GV427KE2uvKikpbiid7YymdnY7NWxYK162PIrzqRWDtwoV
-jss/oz3HzP+VBU4s9LblTeW2ct7+sv1LzTV2oGubIgbBsxYrcec=
-=zICk
------END PGP SIGNATURE-----
-
---/SYVXHJ05aITRah3--
+Daniel.
