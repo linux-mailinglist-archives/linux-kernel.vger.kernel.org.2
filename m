@@ -2,100 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 02BCC3948C5
-	for <lists+linux-kernel@lfdr.de>; Sat, 29 May 2021 00:42:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 581D13948CD
+	for <lists+linux-kernel@lfdr.de>; Sat, 29 May 2021 00:43:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229656AbhE1Wo2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 May 2021 18:44:28 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52480 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229541AbhE1Wo0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 May 2021 18:44:26 -0400
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 73D3561378;
-        Fri, 28 May 2021 22:42:50 +0000 (UTC)
-Date:   Fri, 28 May 2021 18:42:48 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Olivier Langlois <olivier@trillion01.com>
-Cc:     Stefan Metzmacher <metze@samba.org>,
-        Pavel Begunkov <asml.silence@gmail.com>,
-        Jens Axboe <axboe@kernel.dk>, Ingo Molnar <mingo@redhat.com>,
-        io-uring@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] io_uring: Add to traces the req pointer when available
-Message-ID: <20210528184248.46926090@gandalf.local.home>
-In-Reply-To: <9505850ae4c203f6b8f056265eddbffaae501806.camel@trillion01.com>
-References: <60ac946e.1c69fb81.5efc2.65deSMTPIN_ADDED_MISSING@mx.google.com>
-        <439a2ab8-765d-9a77-5dfd-dde2bd6884c4@gmail.com>
-        <9a8abcc9-8f7a-8350-cf34-f86e4ac13f5c@samba.org>
-        <9505850ae4c203f6b8f056265eddbffaae501806.camel@trillion01.com>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S229764AbhE1WpS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 May 2021 18:45:18 -0400
+Received: from linux.microsoft.com ([13.77.154.182]:55800 "EHLO
+        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229547AbhE1WpR (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 28 May 2021 18:45:17 -0400
+Received: from linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net (linux.microsoft.com [13.77.154.182])
+        by linux.microsoft.com (Postfix) with ESMTPSA id 245C520B7188;
+        Fri, 28 May 2021 15:43:42 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 245C520B7188
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1622241822;
+        bh=LId5jFjtAstOF7XqIEEYkqZMWrzY32BUiTvVgQERhNc=;
+        h=From:To:Cc:Subject:Date:From;
+        b=syeh0ubADcd8hPJ1oAsyOaYdSGR1PlN6Dg1Ar8mRiBP1e6f7u+a2Jjd/o+492Lc5M
+         1X5pyp9fzidMzLAr9xrIp4vsFLwqCOjfhCvuA66kjUsU7pgCVQM+r/uE9RcYRcrwqy
+         Y8jydwzZf3dys8AsmCL1TxzC7Az6iE7wG91X7Jug=
+From:   Nuno Das Neves <nunodasneves@linux.microsoft.com>
+To:     linux-hyperv@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     virtualization@lists.linux-foundation.org, mikelley@microsoft.com,
+        viremana@linux.microsoft.com, sunilmut@microsoft.com,
+        wei.liu@kernel.org, vkuznets@redhat.com, ligrassi@microsoft.com,
+        kys@microsoft.com
+Subject: [PATCH 00/19] Microsoft Hypervisor root partition ioctl interface
+Date:   Fri, 28 May 2021 15:43:20 -0700
+Message-Id: <1622241819-21155-1-git-send-email-nunodasneves@linux.microsoft.com>
+X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 26 May 2021 12:18:37 -0400
-Olivier Langlois <olivier@trillion01.com> wrote:
+This patch series provides a userspace interface for creating and running guest
+virtual machines while running on the Microsoft Hypervisor [0].
 
-> > If that gets changed, could be also include the personality id and
-> > flags here,
-> > and maybe also translated the opcode and flags to human readable
-> > strings?
-> >   
-> If Jens and Pavel agrees that they would like to see this info in the
-> traces, I have no objection adding it.
-> 
-> Still waiting input from Steven Rostedt which I believe is the trace
-> system maintainer concerning the hash-ptr situation.
-> 
-> I did receive an auto-respond from him saying that he was in vacation
-> until May 28th...
+Since managing guest machines can only be done when Linux is the root partition,
+this series depends on Wei Liu's patch series merged in 5.12:
+https://lore.kernel.org/linux-hyperv/20210203150435.27941-1-wei.liu@kernel.org/
 
-Yep, I'm back now.
+The first two patches provide some helpers for converting hypervisor status
+codes to linux error codes, and printing hypervisor status codes to dmesg for
+debugging.
 
-Here's how it works using your patch as an example:
+Hyper-V related headers asm-generic/hyperv-tlfs.h and x86/asm/hyperv-tlfs.h are
+split into uapi and non-uapi. The uapi versions contain structures used in both
+the ioctl interface and the kernel.
 
->  	TP_fast_assign(
->  		__entry->ctx		= ctx;
-> +		__entry->req		= req;
+The mshv API is introduced in drivers/hv/mshv_main.c. As each interface is
+introduced, documentation is added in Documentation/virt/mshv/api.rst.
+The API is file-desciptor based, like KVM. The entry point is /dev/mshv.
 
-The "__entry" is a structure defined by TP_STRUCT__entry() that is located
-on the ring buffer that can be read directly by user space (aka trace-cmd).
-So yes, that value is never hashed, and one of the reasons that tracefs
-requires root privilege to read it.
+/dev/mshv ioctls:
+MSHV_CHECK_EXTENSION
+MSHV_CREATE_PARTITION
 
->  		__entry->opcode		= opcode;
->  		__entry->user_data	= user_data;
->  		__entry->force_nonblock	= force_nonblock;
->  		__entry->sq_thread	= sq_thread;
->  	),
->  
-> -	TP_printk("ring %p, op %d, data 0x%llx, non block %d, sq_thread %d",
-> -			  __entry->ctx, __entry->opcode,
-> -			  (unsigned long long) __entry->user_data,
-> -			  __entry->force_nonblock, __entry->sq_thread)
-> +	TP_printk("ring %p, req %p, op %d, data 0x%llx, non block %d, "
-> +		  "sq_thread %d",  __entry->ctx, __entry->req,
-> +		  __entry->opcode, (unsigned long long)__entry->user_data,
-> +		  __entry->force_nonblock, __entry->sq_thread)
->  );
+Partition (vm) ioctls:
+MSHV_MAP_GUEST_MEMORY, MSHV_UNMAP_GUEST_MEMORY
+MSHV_INSTALL_INTERCEPT
+MSHV_ASSERT_INTERRUPT
+MSHV_GET_PARTITION_PROPERTY, MSHV_SET_PARTITION_PROPERTY
+MSHV_CREATE_VP
 
-The TP_printk() macro *is* used when reading the "trace" or "trace_pipe"
-file, and that uses vsnprintf() to process it. Which will hash the values
-for %p (by default, because that's what it always did when vsnprintf()
-started hashing values).
+Vp (vcpu) ioctls:
+MSHV_GET_VP_REGISTERS, MSHV_SET_VP_REGISTERS
+MSHV_RUN_VP
+MSHV_GET_VP_STATE, MSHV_SET_VP_STATE
+MSHV_TRANSLATE_GVA
+mmap() (register page)
 
-Masami Hiramatsu added the hash-ptr option (which I told him to be the
-default as that was the behavior before that option was created), where the
-use could turn off the hashing.
+[0] Hyper-V is more well-known, but it really refers to the whole stack
+    including the hypervisor and other components that run in Windows kernel
+    and userspace.
 
-There's lots of trace events that expose the raw pointers when hash-ptr is
-off or if the ring buffers are read via the trace_pip_raw interface.
+Changes since RFC:
+1. Moved code from virt/mshv to drivers/hv
+2. Split hypercall helper functions and synic code to hv_call.c and hv_synic.c
+3. MSHV_REQUEST_VERSION ioctl replaced with MSHV_CHECK_EXTENSION
+3. Numerous suggestions, fixes, style changes, etc from Michael Kelley, Vitaly
+   Kuznetsov, Wei Liu, and Vineeth Pillai
+4. Added patch to enable hypervisor enlightenments on partition creation
+5. Added Wei Liu's patch for GVA to GPA translation
 
-What's special about these pointers to hash them before they are recorded?
+Nuno Das Neves (18):
+  x86/hyperv: convert hyperv statuses to linux error codes
+  asm-generic/hyperv: convert hyperv statuses to strings
+  drivers/hv: minimal mshv module (/dev/mshv/)
+  drivers/hv: check extension ioctl
+  drivers/hv: create partition ioctl
+  drivers/hv: create, initialize, finalize, delete partition hypercalls
+  drivers/hv: withdraw memory hypercall
+  drivers/hv: map and unmap guest memory
+  drivers/hv: create vcpu ioctl
+  drivers/hv: get and set vcpu registers ioctls
+  drivers/hv: set up synic pages for intercept messages
+  drivers/hv: run vp ioctl and isr
+  drivers/hv: install intercept ioctl
+  drivers/hv: assert interrupt ioctl
+  drivers/hv: get and set vp state ioctls
+  drivers/hv: mmap vp register page
+  drivers/hv: get and set partition property ioctls
+  drivers/hv: Add enlightenment bits to create partition ioctl
 
--- Steve
+Wei Liu (1):
+  drivers/hv: Translate GVA to GPA
+
+ .../userspace-api/ioctl/ioctl-number.rst      |    2 +
+ Documentation/virt/mshv/api.rst               |  173 +++
+ arch/x86/hyperv/Makefile                      |    1 +
+ arch/x86/hyperv/hv_init.c                     |    2 +-
+ arch/x86/hyperv/hv_proc.c                     |   42 +-
+ arch/x86/include/asm/hyperv-tlfs.h            |   15 +-
+ arch/x86/include/asm/mshyperv.h               |    1 +
+ arch/x86/include/uapi/asm/hyperv-tlfs.h       | 1274 +++++++++++++++++
+ arch/x86/kernel/cpu/mshyperv.c                |   16 +
+ drivers/hv/Kconfig                            |   18 +
+ drivers/hv/Makefile                           |    3 +
+ drivers/hv/hv_call.c                          |  744 ++++++++++
+ drivers/hv/hv_synic.c                         |  181 +++
+ drivers/hv/mshv.h                             |  120 ++
+ drivers/hv/mshv_main.c                        | 1153 +++++++++++++++
+ include/asm-generic/hyperv-tlfs.h             |  353 +++--
+ include/asm-generic/mshyperv.h                |   11 +
+ include/linux/mshv.h                          |   61 +
+ include/uapi/asm-generic/hyperv-tlfs.h        |  242 ++++
+ include/uapi/linux/mshv.h                     |  117 ++
+ 20 files changed, 4384 insertions(+), 145 deletions(-)
+ create mode 100644 Documentation/virt/mshv/api.rst
+ create mode 100644 arch/x86/include/uapi/asm/hyperv-tlfs.h
+ create mode 100644 drivers/hv/hv_call.c
+ create mode 100644 drivers/hv/hv_synic.c
+ create mode 100644 drivers/hv/mshv.h
+ create mode 100644 drivers/hv/mshv_main.c
+ create mode 100644 include/linux/mshv.h
+ create mode 100644 include/uapi/asm-generic/hyperv-tlfs.h
+ create mode 100644 include/uapi/linux/mshv.h
+
+-- 
+2.25.1
+
