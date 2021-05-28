@@ -2,88 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 19E24394790
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 21:52:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 54739394795
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 21:57:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229565AbhE1Txk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 May 2021 15:53:40 -0400
-Received: from userp2130.oracle.com ([156.151.31.86]:42360 "EHLO
-        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229476AbhE1Txg (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 May 2021 15:53:36 -0400
-Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
-        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 14SJiAgf134480;
-        Fri, 28 May 2021 19:51:59 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : subject : to :
- cc : references : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=corp-2020-01-29;
- bh=d7lYFVRu2/DsTt9miAcAAYzp4TfW5m6k0vsj37rIFlc=;
- b=XPR8/WA8hKa4vhLJponB1HSE+DK9786wj/pZNTnf5iEkMzhFykToTMDWz3xeEipTwtxd
- HVuuFY9p2uOACZ/lGI1xbzh/OnV+6DR5FZ5CzPZGiMfp7qVi2K/Q+DPbdgBqVHQGUOCu
- /nMEkvdWqYwCHg7cjQ/CIqqofVDYwHJJgD/0perVCnLNLZPnc85x6Z4GJWA+JoEX9Ykv
- JZ25G5daGKpWjlX5Py0a2cL5G8jos+kYbc0aeLQnDGWCPNnH/267viMKptgBFJq22+ko
- H15jVB36Ae6nGU/L1Pxi2hyv/DVzCx2pWi+HmaHFD+YvxDR/SOkbfx1C5z1bAa/xF7UP jg== 
-Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
-        by userp2130.oracle.com with ESMTP id 38q3q97gkh-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 28 May 2021 19:51:59 +0000
-Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
-        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 14SJjglN127300;
-        Fri, 28 May 2021 19:51:58 GMT
-Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
-        by userp3030.oracle.com with ESMTP id 38pq2xsje9-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 28 May 2021 19:51:58 +0000
-Received: from abhmp0008.oracle.com (abhmp0008.oracle.com [141.146.116.14])
-        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 14SJpvtb011909;
-        Fri, 28 May 2021 19:51:57 GMT
-Received: from [10.175.200.219] (/10.175.200.219)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Fri, 28 May 2021 12:51:57 -0700
-From:   "Maciej S. Szmigiero" <maciej.szmigiero@oracle.com>
-Subject: Re: [PATCH] selftests: kvm: fix overlapping addresses in
- memslot_perf_test
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org
-References: <20210528191134.3740950-1-pbonzini@redhat.com>
-Message-ID: <285623f6-52e4-7f8d-fab6-0476a00af68b@oracle.com>
-Date:   Fri, 28 May 2021 21:51:48 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.0
+        id S229608AbhE1T7J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 May 2021 15:59:09 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37010 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229476AbhE1T7H (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 28 May 2021 15:59:07 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A27B76139A;
+        Fri, 28 May 2021 19:57:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1622231852;
+        bh=tQpTxrP2joGOYQdqOzFop8WIaDhpH3bLD1I/70SrXG0=;
+        h=Date:From:To:Cc:Subject:From;
+        b=WCauMO5ihg0wfEB80CFuTyAeRgG33OTri97341Ag7I1KxKxMbTj8+xZIRqiurLfg9
+         ZYDGHeC2PubIwrX8RBvYTGBD9Q5IOsecZ3HsWWOoLPeBeHAa33kuhr3lP92TFzg9S/
+         fGh6J5fg+a9wu168fnz0ww8Ic7/+0t+pvDzy1vAHHatrRGbqA3R53qxg0XLshplsCf
+         5BDN5UD3eMHlLqfXUmUrk5WUC1MwHVK42Kb2zCzAQfw2hXNVXbFgqjUtwaSaHNGcF0
+         RK/WkOELcSmXHMHo52JwUln3GWH+iLN5RaRD2Pb3JClboh6IV76ynOb9h4Ginzz/UV
+         la+LOGu8vYwqg==
+Date:   Fri, 28 May 2021 14:58:31 -0500
+From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
+To:     Radhey Shyam Pandey <radhey.shyam.pandey@xilinx.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Michal Simek <michal.simek@xilinx.com>
+Cc:     netdev@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        linux-hardening@vger.kernel.org
+Subject: [PATCH][next] net: axienet: Fix fall-through warning for Clang
+Message-ID: <20210528195831.GA39131@embeddedor>
 MIME-Version: 1.0
-In-Reply-To: <20210528191134.3740950-1-pbonzini@redhat.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9998 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 malwarescore=0 spamscore=0
- adultscore=0 bulkscore=0 mlxlogscore=999 suspectscore=0 mlxscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104190000
- definitions=main-2105280129
-X-Proofpoint-GUID: MPS4dkIngEeJ4_2CxoGLaE1zHn5s3WVv
-X-Proofpoint-ORIG-GUID: MPS4dkIngEeJ4_2CxoGLaE1zHn5s3WVv
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9998 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 mlxscore=0 clxscore=1011
- malwarescore=0 bulkscore=0 impostorscore=0 phishscore=0 spamscore=0
- adultscore=0 priorityscore=1501 mlxlogscore=999 lowpriorityscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104190000
- definitions=main-2105280129
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 28.05.2021 21:11, Paolo Bonzini wrote:
-> The memory that is allocated in vm_create is already mapped close to
-> GPA 0, because test_execute passes the requested memory to
-> prepare_vm.  This causes overlapping memory regions and the
-> test crashes.  For simplicity just move MEM_GPA higher.
-> 
-> Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
+In preparation to enable -Wimplicit-fallthrough for Clang, fix multiple
+warnings by explicitly adding a fallthrough statement instead of just
+letting the code fall through to the next case.
 
-I am not sure that I understand the issue correctly, is vm_create_default()
-already reserving low GPAs (around 0x10000000) on some arches or run
-environments?
+Link: https://github.com/KSPP/linux/issues/115
+Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+---
+JFYI: We had thousands of these sorts of warnings and now we are down
+      to just 25 in linux-next. This is one of those last remaining
+      warnings.
 
-Thanks,
-Maciej
+ drivers/net/ethernet/xilinx/xilinx_axienet_main.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/drivers/net/ethernet/xilinx/xilinx_axienet_main.c b/drivers/net/ethernet/xilinx/xilinx_axienet_main.c
+index b508c9453f40..e29ad9a86a3c 100644
+--- a/drivers/net/ethernet/xilinx/xilinx_axienet_main.c
++++ b/drivers/net/ethernet/xilinx/xilinx_axienet_main.c
+@@ -1543,6 +1543,7 @@ static void axienet_validate(struct phylink_config *config,
+ 	case PHY_INTERFACE_MODE_MII:
+ 		phylink_set(mask, 100baseT_Full);
+ 		phylink_set(mask, 10baseT_Full);
++		fallthrough;
+ 	default:
+ 		break;
+ 	}
+-- 
+2.27.0
+
