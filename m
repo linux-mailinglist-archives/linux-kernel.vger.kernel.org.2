@@ -2,181 +2,450 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C6FE5394109
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 12:36:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E44E4394116
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 12:38:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236509AbhE1KiG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 May 2021 06:38:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37424 "EHLO
+        id S236579AbhE1KkV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 May 2021 06:40:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37912 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235972AbhE1KiE (ORCPT
+        with ESMTP id S236450AbhE1KkO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 May 2021 06:38:04 -0400
-Received: from mail-lj1-x233.google.com (mail-lj1-x233.google.com [IPv6:2a00:1450:4864:20::233])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C80CCC061574
-        for <linux-kernel@vger.kernel.org>; Fri, 28 May 2021 03:36:27 -0700 (PDT)
-Received: by mail-lj1-x233.google.com with SMTP id e2so4645427ljk.4
-        for <linux-kernel@vger.kernel.org>; Fri, 28 May 2021 03:36:27 -0700 (PDT)
+        Fri, 28 May 2021 06:40:14 -0400
+Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 034B8C061574
+        for <linux-kernel@vger.kernel.org>; Fri, 28 May 2021 03:38:36 -0700 (PDT)
+Received: by mail-ej1-x62b.google.com with SMTP id ss26so4648340ejb.5
+        for <linux-kernel@vger.kernel.org>; Fri, 28 May 2021 03:38:36 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=RR9aCa9Fk1AeEQeB1a7U6H9kC0xMAO6dnDCAHEDi0SI=;
-        b=yiMz6B5SYuvBzuFIME7sP9Bn3VZo6YFTVXBW3XSARrbiEm4DrxokDFdhzmi5vN1qOy
-         KyyNTVuiLDyvbxeNu2fm7Q6usGpuDBxa1L+mlevW0FH6wkl5dZhoGRDZyKqZG/6hYJnu
-         VQxfieqB8G8hXaLWKW1lWrVZ9EFkulgjvjECS1o7jSi2RCiDPizIws+xTP4Epx9hu1DH
-         03c+l3fnGQqs8ONy5FwymjXM72hACeZvzPvJw+Cuoo5uEbiPpVDE6J4i4KeCAfK6BRDy
-         sbJsMkyWOwL19AAt6+NDCDiAwSAJ4pp3DIXnge7rtjO8nlGsZ5hiWI4Hg5Q+IZ+oTQGZ
-         OQWQ==
+        d=sartura-hr.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=cSYhcaztb4lantt7D7ci6iqGUPsIeDRbyndPy1mVepA=;
+        b=ajojPZE7ywFxlkkleU/xmYwQOyDxFI6A5RipiW3IFaeFF7DV6vfNq2fNjR2wMVPzlh
+         6aE5UfglU02qQC5RIECvGlS8No+0FUmyVxbK44+SMqZruJLbslPd+k1J8lYjyKbZ7EiR
+         9NyWYr2K/GNpRhnuw41o7/qyphzqIKbBSi395oa3LQTEOTbUxJCTuYiNieaumDZip+tL
+         qXJ/ELyPPFFSMuGsklX9MvBvOXm4a7fOwp5EFmP7nbhqo2SV9M5zSyqODI0c504Feyqz
+         pfxfNfoMmwP+5B8wQg1heDQxV0SnvUiga1io9um30eJcTGq0y+DlLnujFZAM2u1e57pp
+         83xw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=RR9aCa9Fk1AeEQeB1a7U6H9kC0xMAO6dnDCAHEDi0SI=;
-        b=EBRgDSPGrwip7CxGrwBqoAXHUDwtmJhWnNF0D5w6tuD9kjIspjgsFYn5Jp71eAiYiD
-         dePyf4snucuY6zlfHNL2npHJnt5biSCRRLR8FyOUHFrU+qECc8tRg2kglK4NKQ2qaCFf
-         8e7TVA+ouUjHCI78oe1mFqWVAkzclpj86i8U3NlAxiShfqCZQbNC/J/ucsrdZYGHlvaB
-         n2RVBrZf9Ay94mQWLm6dKs514qTrgWK+L4y5rPvhiMKgdpnI17z3FhworsPgvKk/NJHO
-         IOTbgt58ikv00oVUXSR81BeLXZzA/rwCUIVMjPOBJcSdx7tI0GCNZgYAEJXIVkC7MWPp
-         W2YA==
-X-Gm-Message-State: AOAM531AuSJiGtFImzgGPgb7rvjn8YfkRkWYvOjI1uKKxRKYDDj8xCVM
-        D/IxiBRIoFhd9jlPlHBS+MZfDQ==
-X-Google-Smtp-Source: ABdhPJzBHl9y7Py40EKPhM3j6vdNArq5eiVI3abzPIby43QpcRZeOCJsS5VukeIzJneEkb5ITPC8Ig==
-X-Received: by 2002:a05:651c:1a7:: with SMTP id c7mr5917480ljn.77.1622198186160;
-        Fri, 28 May 2021 03:36:26 -0700 (PDT)
-Received: from [192.168.1.211] ([37.153.55.125])
-        by smtp.gmail.com with ESMTPSA id v138sm440261lfa.224.2021.05.28.03.36.25
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 28 May 2021 03:36:25 -0700 (PDT)
-Subject: Re: [RFC PATCH 09/13] drm/msm/disp/dpu1: Don't use DSC with mode_3d
-To:     Vinod Koul <vkoul@kernel.org>, Rob Clark <robdclark@gmail.com>
-Cc:     linux-arm-msm@vger.kernel.org,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Jonathan Marek <jonathan@marek.ca>,
-        Abhinav Kumar <abhinavk@codeaurora.org>,
-        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        freedreno@lists.freedesktop.org
-References: <20210521124946.3617862-1-vkoul@kernel.org>
- <20210521124946.3617862-13-vkoul@kernel.org>
-From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Message-ID: <32463a8c-3baa-cc88-6e55-f65bc2d92608@linaro.org>
-Date:   Fri, 28 May 2021 13:36:25 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.0
+        bh=cSYhcaztb4lantt7D7ci6iqGUPsIeDRbyndPy1mVepA=;
+        b=QFSveda9y5q+GhGB9l4aMEbAj8xw30D8e/Ko4hISZBnpl/0cBt9xxn1aChTFCRZIlr
+         5rvE6AA1bIGzUvOZHa4OlNkJldXrAKH12PXYZeDK10FySgOEZ87vGwTXMFeLIL8krnF4
+         Wu9zoU4gWmvRApoTdLUQ0tybf+JWWKrjqVlI+PllbaG/1FU0SJZ57wFw3L7vyuEfYvZR
+         p4vJ7mIgtIZcwnF0K9LYbQpDti4YnlZ1LFFfWTiQ/fvNYc2hxrBJwyem4ijSRNTTksgU
+         6+3ZMpadyLqfcPvABJ5TtuxDdjAq01XLKcbEtYHbL09K/VJFl4LYcjG+SfkVm1B1oZ3d
+         X3CQ==
+X-Gm-Message-State: AOAM5307McSahwDGJoj/fQZnIvsf3h7kJTDFnQIYD0ynVPdQ1VZ5anjs
+        CNLFs8koAZB9jI3gjcRvzeCtsw==
+X-Google-Smtp-Source: ABdhPJwtmS+T7a8UVbEgIgq9GuyvUZkSjZ1gMv8695vY8Jn1JxaXrBMU4hvANZ22hTqUQsRZSeYB4w==
+X-Received: by 2002:a17:906:368e:: with SMTP id a14mr8079449ejc.366.1622198315423;
+        Fri, 28 May 2021 03:38:35 -0700 (PDT)
+Received: from localhost.localdomain (dh207-97-158.xnet.hr. [88.207.97.158])
+        by smtp.googlemail.com with ESMTPSA id jw9sm2192446ejb.77.2021.05.28.03.38.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 28 May 2021 03:38:34 -0700 (PDT)
+From:   Robert Marko <robert.marko@sartura.hr>
+To:     robh+dt@kernel.org, jdelvare@suse.com, linux@roeck-us.net,
+        corbet@lwn.net, linux-hwmon@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        trivial@kernel.org, Jonathan.Cameron@huawei.com,
+        alexandre.belloni@bootlin.com, sst@poczta.fm, krzk@kernel.org,
+        alexandru.ardelean@analog.com, devicetree@vger.kernel.org
+Cc:     luka.perkov@sartura.hr, jmp@epiphyte.org, pmenzel@molgen.mpg.de,
+        buczek@molgen.mpg.de, Robert Marko <robert.marko@sartura.hr>
+Subject: [PATCH v2 1/3] hwmon: (pmbus) Add driver for Delta DPS-920AB PSU
+Date:   Fri, 28 May 2021 12:38:26 +0200
+Message-Id: <20210528103828.53320-1-robert.marko@sartura.hr>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-In-Reply-To: <20210521124946.3617862-13-vkoul@kernel.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 21/05/2021 15:49, Vinod Koul wrote:
-> We cannot enable mode_3d when we are using the DSC. So pass
-> configuration to detect DSC is enabled and not enable mode_3d
-> when we are using DSC
-> 
-> We add a helper dpu_encoder_helper_get_dsc_mode() to detect dsc
-> enabled and pass this to .setup_intf_cfg()
-> 
-> Signed-off-by: Vinod Koul <vkoul@kernel.org>
-> ---
->   drivers/gpu/drm/msm/disp/dpu1/dpu_encoder_phys.h     | 11 +++++++++++
->   drivers/gpu/drm/msm/disp/dpu1/dpu_encoder_phys_cmd.c |  2 ++
->   drivers/gpu/drm/msm/disp/dpu1/dpu_hw_ctl.c           |  5 +++--
->   drivers/gpu/drm/msm/disp/dpu1/dpu_hw_ctl.h           |  2 ++
->   4 files changed, 18 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder_phys.h b/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder_phys.h
-> index ecbc4be98980..d43b804528eb 100644
-> --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder_phys.h
-> +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder_phys.h
-> @@ -336,6 +336,17 @@ static inline enum dpu_3d_blend_mode dpu_encoder_helper_get_3d_blend_mode(
->   	return BLEND_3D_NONE;
->   }
->   
-> +static inline bool dpu_encoder_helper_get_dsc_mode(struct dpu_encoder_phys *phys_enc)
-> +{
-> +	struct drm_encoder *drm_enc = phys_enc->parent;
-> +	struct msm_drm_private *priv = drm_enc->dev->dev_private;
-> +
-> +	if (priv->dsc)
-> +		return true;
-> +
-> +	return false;
-> +}
-> +
->   /**
->    * dpu_encoder_helper_split_config - split display configuration helper function
->    *	This helper function may be used by physical encoders to configure
-> diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder_phys_cmd.c b/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder_phys_cmd.c
-> index b2be39b9144e..5fe87881c30c 100644
-> --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder_phys_cmd.c
-> +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder_phys_cmd.c
-> @@ -69,6 +69,8 @@ static void _dpu_encoder_phys_cmd_update_intf_cfg(
->   	intf_cfg.intf_mode_sel = DPU_CTL_MODE_SEL_CMD;
->   	intf_cfg.stream_sel = cmd_enc->stream_sel;
->   	intf_cfg.mode_3d = dpu_encoder_helper_get_3d_blend_mode(phys_enc);
-> +	intf_cfg.dsc = dpu_encoder_helper_get_dsc_mode(phys_enc);
-> +
->   	ctl->ops.setup_intf_cfg(ctl, &intf_cfg);
->   }
->   
-> diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_ctl.c b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_ctl.c
-> index aeea6add61ee..f059416311ee 100644
-> --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_ctl.c
-> +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_ctl.c
-> @@ -121,7 +121,7 @@ static u32 dpu_hw_ctl_get_pending_flush(struct dpu_hw_ctl *ctx)
->   	return ctx->pending_flush_mask;
->   }
->   
-> -static inline void dpu_hw_ctl_trigger_flush_v1(struct dpu_hw_ctl *ctx)
-> +static void dpu_hw_ctl_trigger_flush_v1(struct dpu_hw_ctl *ctx)
->   {
->   	DPU_REG_WRITE(&ctx->hw, CTL_DSC_FLUSH, BIT(0) | BIT(1) | BIT(2) | BIT(3));
->   
-> @@ -522,7 +522,8 @@ static void dpu_hw_ctl_intf_cfg(struct dpu_hw_ctl *ctx,
->   
->   	intf_cfg |= (cfg->intf & 0xF) << 4;
->   
-> -	if (cfg->mode_3d) {
-> +	/* In DSC we can't set merge, so check for dsc too */
-> +	if (cfg->mode_3d && !cfg->dsc) {
+This adds support for the Delta DPS-920AB PSU.
 
-I think we should catch this earlier (in atomic_check?), so that we 
-won't enable modes that would require merge_3d with DSC enabled (until 
-we support DSC merge?)
+Only missing feature is fan control which the PSU supports.
 
->   		intf_cfg |= BIT(19);
->   		intf_cfg |= (cfg->mode_3d - 0x1) << 20;
->   	}
-> diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_ctl.h b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_ctl.h
-> index 806c171e5df2..347a653c1e01 100644
-> --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_ctl.h
-> +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_ctl.h
-> @@ -39,6 +39,7 @@ struct dpu_hw_stage_cfg {
->    * @mode_3d:               3d mux configuration
->    * @merge_3d:              3d merge block used
->    * @intf_mode_sel:         Interface mode, cmd / vid
-> + * @dsc:                   DSC is enabled
->    * @stream_sel:            Stream selection for multi-stream interfaces
->    */
->   struct dpu_hw_intf_cfg {
-> @@ -46,6 +47,7 @@ struct dpu_hw_intf_cfg {
->   	enum dpu_3d_blend_mode mode_3d;
->   	enum dpu_merge_3d merge_3d;
->   	enum dpu_ctl_mode_sel intf_mode_sel;
-> +	bool dsc;
->   	int stream_sel;
->   };
->   
-> 
+Signed-off-by: Robert Marko <robert.marko@sartura.hr>
+---
+Changes in v2:
+* Check for Manufacturer and Model
+* Restrict word read/write to supported only
+* Update documentation to reflect driver changes
+* Add basic debugfs entries
 
+ Documentation/hwmon/dps920ab.rst |  73 ++++++++++
+ Documentation/hwmon/index.rst    |   1 +
+ drivers/hwmon/pmbus/Kconfig      |   9 ++
+ drivers/hwmon/pmbus/Makefile     |   1 +
+ drivers/hwmon/pmbus/dps920ab.c   | 229 +++++++++++++++++++++++++++++++
+ 5 files changed, 313 insertions(+)
+ create mode 100644 Documentation/hwmon/dps920ab.rst
+ create mode 100644 drivers/hwmon/pmbus/dps920ab.c
 
+diff --git a/Documentation/hwmon/dps920ab.rst b/Documentation/hwmon/dps920ab.rst
+new file mode 100644
+index 000000000000..c33b4cdc0a60
+--- /dev/null
++++ b/Documentation/hwmon/dps920ab.rst
+@@ -0,0 +1,73 @@
++.. SPDX-License-Identifier: GPL-2.0-or-later
++
++Kernel driver dps920ab
++========================
++
++Supported chips:
++
++  * Delta DPS920AB
++
++    Prefix: 'dps920ab'
++
++    Addresses scanned: -
++
++Authors:
++    Robert Marko <robert.marko@sartura.hr>
++
++
++Description
++-----------
++
++This driver implements support for Delta DPS920AB 920W 54V DC single output
++power supply with PMBus support.
++
++The driver is a client driver to the core PMBus driver.
++Please see Documentation/hwmon/pmbus.rst for details on PMBus client drivers.
++
++
++Usage Notes
++-----------
++
++This driver does not auto-detect devices. You will have to instantiate the
++devices explicitly. Please see Documentation/i2c/instantiating-devices.rst for
++details.
++
++
++Sysfs entries
++-------------
++
++======================= ======================================================
++curr1_label		"iin"
++curr1_input		Measured input current
++curr1_alarm		Input current high alarm
++
++curr2_label		"iout1"
++curr2_input		Measured output current
++curr2_max		Maximum output current
++curr2_rated_max		Maximum rated output current
++
++in1_label		"vin"
++in1_input		Measured input voltage
++in1_alarm		Input voltage alarm
++
++in2_label		"vout1"
++in2_input		Measured output voltage
++in2_rated_min		Minimum rated output voltage
++in2_rated_max		Maximum rated output voltage
++in2_alarm		Output voltage alarm
++
++power1_label		"pin"
++power1_input		Measured input power
++power1_alarm		Input power high alarm
++
++power2_label		"pout1"
++power2_input		Measured output power
++power2_rated_max	Maximum rated output power
++
++temp[1-3]_input		Measured temperature
++temp[1-3]_alarm		Temperature alarm
++
++fan1_alarm		Fan 1 warning.
++fan1_fault		Fan 1 fault.
++fan1_input		Fan 1 speed in RPM.
++======================= ======================================================
+diff --git a/Documentation/hwmon/index.rst b/Documentation/hwmon/index.rst
+index 8d5a2df1ecb6..b24436f22052 100644
+--- a/Documentation/hwmon/index.rst
++++ b/Documentation/hwmon/index.rst
+@@ -54,6 +54,7 @@ Hardware Monitoring Kernel Drivers
+    dell-smm-hwmon
+    dme1737
+    drivetemp
++   dps920ab
+    ds1621
+    ds620
+    emc1403
+diff --git a/drivers/hwmon/pmbus/Kconfig b/drivers/hwmon/pmbus/Kconfig
+index 32d2fc850621..865ade0aa205 100644
+--- a/drivers/hwmon/pmbus/Kconfig
++++ b/drivers/hwmon/pmbus/Kconfig
+@@ -66,6 +66,15 @@ config SENSORS_IBM_CFFPS
+ 	  This driver can also be built as a module. If so, the module will
+ 	  be called ibm-cffps.
+ 
++config SENSORS_DPS920AB
++	tristate "Delta DPS920AB Power Supply"
++	help
++	  If you say yes here you get hardware monitoring support for Delta
++	  DPS920AB Power Supplies.
++
++	  This driver can also be built as a module. If so, the module will
++	  be called dps920ab.
++
+ config SENSORS_INSPUR_IPSPS
+ 	tristate "INSPUR Power System Power Supply"
+ 	help
+diff --git a/drivers/hwmon/pmbus/Makefile b/drivers/hwmon/pmbus/Makefile
+index 6a4ba0fdc1db..f59ba0123d68 100644
+--- a/drivers/hwmon/pmbus/Makefile
++++ b/drivers/hwmon/pmbus/Makefile
+@@ -9,6 +9,7 @@ obj-$(CONFIG_SENSORS_ADM1266)	+= adm1266.o
+ obj-$(CONFIG_SENSORS_ADM1275)	+= adm1275.o
+ obj-$(CONFIG_SENSORS_BEL_PFE)	+= bel-pfe.o
+ obj-$(CONFIG_SENSORS_IBM_CFFPS)	+= ibm-cffps.o
++obj-$(CONFIG_SENSORS_DPS920AB)	+= dps920ab.o
+ obj-$(CONFIG_SENSORS_INSPUR_IPSPS) += inspur-ipsps.o
+ obj-$(CONFIG_SENSORS_IR35221)	+= ir35221.o
+ obj-$(CONFIG_SENSORS_IR38064)	+= ir38064.o
+diff --git a/drivers/hwmon/pmbus/dps920ab.c b/drivers/hwmon/pmbus/dps920ab.c
+new file mode 100644
+index 000000000000..de084a42dec3
+--- /dev/null
++++ b/drivers/hwmon/pmbus/dps920ab.c
+@@ -0,0 +1,229 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
++/*
++ * Driver for Delta DPS920AB PSU
++ *
++ * Copyright (C) 2021 Delta Networks, Inc.
++ * Copyright (C) 2021 Sartura Ltd.
++ */
++
++#include <linux/debugfs.h>
++#include <linux/i2c.h>
++#include <linux/module.h>
++#include <linux/of_device.h>
++#include "pmbus.h"
++
++struct dps920ab_data {
++	struct i2c_client *client;
++	struct dentry *debugfs_dir;
++};
++
++static int dps920ab_read_word_data(struct i2c_client *client, int page, int phase, int reg)
++{
++	int ret;
++
++	/*
++	 * This masks commands which are not supported.
++	 * PSU advertises that all features are supported,
++	 * in reality that unfortunately is not true.
++	 * So enable only those that the datasheet confirms.
++	 */
++	switch (reg) {
++	case PMBUS_FAN_COMMAND_1:
++	case PMBUS_IOUT_OC_WARN_LIMIT:
++	case PMBUS_STATUS_WORD:
++	case PMBUS_READ_VIN:
++	case PMBUS_READ_IIN:
++	case PMBUS_READ_VOUT:
++	case PMBUS_READ_IOUT:
++	case PMBUS_READ_TEMPERATURE_1:
++	case PMBUS_READ_TEMPERATURE_2:
++	case PMBUS_READ_TEMPERATURE_3:
++	case PMBUS_READ_FAN_SPEED_1:
++	case PMBUS_READ_POUT:
++	case PMBUS_READ_PIN:
++	case PMBUS_MFR_VOUT_MIN:
++	case PMBUS_MFR_VOUT_MAX:
++	case PMBUS_MFR_IOUT_MAX:
++	case PMBUS_MFR_POUT_MAX:
++		break;
++	default:
++		return -ENXIO;
++	}
++
++	ret = pmbus_set_page(client, page, phase);
++	if (ret < 0)
++		return ret;
++
++	return i2c_smbus_read_word_data(client, reg);
++}
++
++static int dps920ab_write_word_data(struct i2c_client *client, int page, int reg,
++				    u16 word)
++{
++	int ret;
++
++	/*
++	 * This masks commands which are not supported.
++	 * PSU only has one R/W register and that is
++	 * for the fan.
++	 */
++	switch (reg) {
++	case PMBUS_FAN_COMMAND_1:
++		break;
++	default:
++		ret = -ENODATA;
++	}
++
++	ret = pmbus_set_page(client, page, 0xff);
++	if (ret < 0)
++		return ret;
++
++	return i2c_smbus_write_word_data(client, reg, word);
++}
++
++static struct pmbus_driver_info dps920ab_info = {
++	.pages = 1,
++
++	.format[PSC_VOLTAGE_IN] = linear,
++	.format[PSC_VOLTAGE_OUT] = linear,
++	.format[PSC_CURRENT_IN] = linear,
++	.format[PSC_CURRENT_OUT] = linear,
++	.format[PSC_POWER] = linear,
++	.format[PSC_FAN] = linear,
++	.format[PSC_TEMPERATURE] = linear,
++
++	.func[0] =
++		PMBUS_HAVE_VIN | PMBUS_HAVE_IIN | PMBUS_HAVE_PIN |
++		PMBUS_HAVE_VOUT | PMBUS_HAVE_IOUT | PMBUS_HAVE_POUT |
++		PMBUS_HAVE_TEMP  | PMBUS_HAVE_TEMP2 | PMBUS_HAVE_TEMP3 |
++		PMBUS_HAVE_FAN12 | PMBUS_HAVE_STATUS_FAN12 |
++		PMBUS_HAVE_STATUS_VOUT | PMBUS_HAVE_STATUS_IOUT |
++		PMBUS_HAVE_STATUS_INPUT | PMBUS_HAVE_STATUS_TEMP,
++	.read_word_data = dps920ab_read_word_data,
++	.write_word_data = dps920ab_write_word_data,
++};
++
++static int dps920ab_mfr_id_show(struct seq_file *s, void *data)
++{
++	struct dps920ab_data *priv = s->private;
++	u8 buf[I2C_SMBUS_BLOCK_MAX + 1];
++	int ret;
++
++	ret = i2c_smbus_read_block_data(priv->client, PMBUS_MFR_ID, buf);
++	if (ret < 0)
++		return ret;
++
++	seq_printf(s, "%s\n", buf);
++
++	return 0;
++}
++
++DEFINE_SHOW_ATTRIBUTE(dps920ab_mfr_id);
++
++static int dps920ab_mfr_model_show(struct seq_file *s, void *data)
++{
++	struct dps920ab_data *priv = s->private;
++	u8 buf[I2C_SMBUS_BLOCK_MAX + 1];
++	int ret;
++
++	ret = i2c_smbus_read_block_data(priv->client, PMBUS_MFR_MODEL, buf);
++	if (ret < 0)
++		return ret;
++
++	buf[ret] = '\0';
++
++	seq_printf(s, "%s\n", buf);
++
++	return 0;
++}
++
++DEFINE_SHOW_ATTRIBUTE(dps920ab_mfr_model);
++
++static void dps920ab_init_debugfs(struct dps920ab_data *data)
++{
++	struct dentry *root;
++
++	root = pmbus_get_debugfs_dir(data->client);
++	if (!root)
++		return;
++
++	data->debugfs_dir = debugfs_create_dir(data->client->name, root);
++	if (!data->debugfs_dir)
++		return;
++
++	debugfs_create_file("mfr_id",
++			    0400,
++			    data->debugfs_dir,
++			    data,
++			    &dps920ab_mfr_id_fops);
++
++	debugfs_create_file("mfr_model",
++			    0400,
++			    data->debugfs_dir,
++			    data,
++			    &dps920ab_mfr_model_fops);
++}
++
++static int dps920ab_probe(struct i2c_client *client)
++{
++	u8 buf[I2C_SMBUS_BLOCK_MAX + 1];
++	struct dps920ab_data *data;
++	int ret;
++
++	ret = i2c_smbus_read_block_data(client, PMBUS_MFR_ID, buf);
++	if (ret < 0) {
++		dev_err(&client->dev, "Failed to read Manufacturer ID\n");
++		return ret;
++	}
++	if (ret != 5 || strncmp(buf, "DELTA", 5)) {
++		buf[ret] = '\0';
++		dev_err(&client->dev, "Unsupported Manufacturer ID '%s'\n", buf);
++		return -ENODEV;
++	}
++
++	ret = i2c_smbus_read_block_data(client, PMBUS_MFR_MODEL, buf);
++	if (ret < 0) {
++		dev_err(&client->dev, "Failed to read Manufacturer Model\n");
++		return ret;
++	}
++	if (ret != 11 || strncmp(buf, "DPS-920AB", 9)) {
++		buf[ret] = '\0';
++		dev_err(&client->dev, "Unsupported Manufacturer Model '%s'\n", buf);
++		return -ENODEV;
++	}
++
++	ret = pmbus_do_probe(client, &dps920ab_info);
++	if (ret)
++		return ret;
++
++	data = devm_kzalloc(&client->dev, sizeof(*data), GFP_KERNEL);
++	if (!data)
++		return -ENOMEM;
++
++	data->client = client;
++
++	dps920ab_init_debugfs(data);
++
++	return 0;
++}
++
++static const struct of_device_id __maybe_unused dps920ab_of_match[] = {
++	{ .compatible = "delta,dps920ab", },
++	{}
++};
++
++MODULE_DEVICE_TABLE(of, dps920ab_of_match);
++
++static struct i2c_driver dps920ab_driver = {
++	.driver = {
++		   .name = "dps920ab",
++		   .of_match_table = of_match_ptr(dps920ab_of_match),
++	},
++	.probe_new = dps920ab_probe,
++};
++
++module_i2c_driver(dps920ab_driver);
++
++MODULE_AUTHOR("Robert Marko <robert.marko@sartura.hr>");
++MODULE_DESCRIPTION("PMBus driver for Delta DPS920AB PSU");
++MODULE_LICENSE("GPL");
 -- 
-With best wishes
-Dmitry
+2.31.1
+
