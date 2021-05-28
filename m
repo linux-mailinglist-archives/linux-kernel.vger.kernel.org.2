@@ -2,137 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DFA2F393E31
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 09:52:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A641393E32
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 09:52:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234786AbhE1HxZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 May 2021 03:53:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56386 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229608AbhE1HxX (ORCPT
+        id S235185AbhE1Hxg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 May 2021 03:53:36 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:59372 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230099AbhE1Hxf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 May 2021 03:53:23 -0400
-Received: from mail-yb1-xb2b.google.com (mail-yb1-xb2b.google.com [IPv6:2607:f8b0:4864:20::b2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0823FC061574;
-        Fri, 28 May 2021 00:51:48 -0700 (PDT)
-Received: by mail-yb1-xb2b.google.com with SMTP id z38so4335149ybh.5;
-        Fri, 28 May 2021 00:51:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=QjtThE/GvdTTwDHRzO7RqKpnpwomxf3ZkcySrQwdFO8=;
-        b=n96WUpjFckScqSNEnzFn0eCPHUzD52Jb779iKMf6j4qX7rctUuS2QMGfQEka+3Aaao
-         gsVWRAKAqq30ZATI9czY8QsgfLhzH56Vv44Rv9nwBY4fQ+zsM5na1I6P9uOlMjmX8pWy
-         AARR1E7AtcEVgxIKPqvby0Yy4FjOX7dc4HrmyLooeiLESkSX9Klv2Evt/AWUI3PILGCR
-         pRz8FplnRR0nt9A4/+vPlQRg3ApKzzmC7ZwUxysTCwZr65xWYXgQAdYrfEGs9IeRukCB
-         qRYZ8gQBEyrxMAvmyW/vQtP3+KipaH6yWHfTIa8n2wFAmSxss13C0G/HNplcR+ji1j2Q
-         EZMw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=QjtThE/GvdTTwDHRzO7RqKpnpwomxf3ZkcySrQwdFO8=;
-        b=PBTiciQyk3kuxOh7AsZg1lnRircMQDWGyuknajiYNuvM3nz/iI4wLqWCNy0fUuF1Z7
-         fylo8kfZpysU2oA900gS04FMe0i0EyIezMUoi9YnE8eltU1p/s+6BA8hzsy002rsGFUA
-         5GIZMb47038/cJajWULmMFQz8bV3XXjed9gP0BkGHGbbu7fhEkCBcyflAscbZaTEVzdh
-         d02C0IVgT3qwi/FOJGE/dzcin1hm2YLcD0/xAKZDZKpZaE2XlMyM+Po0qfQylCu4BirX
-         N0kUUyJbAfqJaAlvowfUCTXXXtn+guw/htWHdMEET25uBKfR4FUQ8kqsfV7EWr3XUICp
-         gKEQ==
-X-Gm-Message-State: AOAM531Qs3/9eg0NHJ6uLkRkLYMgBqVgQSgLw4bo8RwMNYqOlDrGUfXG
-        EBWCZpLBFfGgWWHYeoT+Xstpev8b7nqRWqAOCWc=
-X-Google-Smtp-Source: ABdhPJwWq5KIWkIdAqgVVIgQeSChmW1pD4dENRG4Yvitazs2XGQp+jjE4SAk+lUsFx4YIMAmVUhb3uFSCgiX1n1lv5U=
-X-Received: by 2002:a25:26c3:: with SMTP id m186mr9924697ybm.47.1622188307294;
- Fri, 28 May 2021 00:51:47 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210514192218.13022-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
- <20210514192218.13022-14-prabhakar.mahadev-lad.rj@bp.renesas.com> <CAMuHMdXd==dM2QJN5gg0ka_7-HDQbeKZK66nmyASFJAnsVsSQA@mail.gmail.com>
-In-Reply-To: <CAMuHMdXd==dM2QJN5gg0ka_7-HDQbeKZK66nmyASFJAnsVsSQA@mail.gmail.com>
-From:   "Lad, Prabhakar" <prabhakar.csengg@gmail.com>
-Date:   Fri, 28 May 2021 08:51:21 +0100
-Message-ID: <CA+V-a8vHQLCL+V0f7bKZOKhtgo9_Rsqy_YjBOa_gCvgZMmBLnA@mail.gmail.com>
-Subject: Re: [PATCH 13/16] clk: renesas: Add CPG core wrapper for RZ/G2L SoC
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Magnus Damm <magnus.damm@gmail.com>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
-        linux-clk <linux-clk@vger.kernel.org>,
-        "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Biju Das <biju.das.jz@bp.renesas.com>
-Content-Type: text/plain; charset="UTF-8"
+        Fri, 28 May 2021 03:53:35 -0400
+Received: from imap.suse.de (imap-alt.suse-dmz.suse.de [192.168.254.47])
+        (using TLSv1.2 with cipher ECDHE-ECDSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id A2501218B3;
+        Fri, 28 May 2021 07:52:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1622188320; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc;
+        bh=ejLAcKBj1HyRFBYRWQnOnTKNhRyWpmjRKdoHUgHMJok=;
+        b=f9IDGY3BeU24qZ062IbdDfIBaMHHTwjCNwmqWtX63p5JHTyXbFUQUtEhmiyjVCt1hJ7mMk
+        OlA42usaLiMTpAPtt17RF0Zvxn7aqVHMQodUxBCjyE7Kc1ajUYQ5S6kgI4LZ7btr/j/p38
+        EjxFaNVfNBoUANFwbrgUOKHtZM2ka/c=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1622188320;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc;
+        bh=ejLAcKBj1HyRFBYRWQnOnTKNhRyWpmjRKdoHUgHMJok=;
+        b=zPIJPgNdhx/aM2DNwYygCG9WHZYaa0X4JQbYBSJZMYDW0vDkCQYiJYP6bZQJ5HcdiQDHh9
+        vH1i6zGYMmcj0aCA==
+Received: from director2.suse.de (director2.suse-dmz.suse.de [192.168.254.72])
+        by imap.suse.de (Postfix) with ESMTPSA id CD1EF11A98;
+        Fri, 28 May 2021 07:51:59 +0000 (UTC)
+From:   Oscar Salvador <osalvador@suse.de>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     David Hildenbrand <david@redhat.com>,
+        Michal Hocko <mhocko@kernel.org>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Pavel Tatashin <pasha.tatashin@soleen.com>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, Oscar Salvador <osalvador@suse.de>
+Subject: [PATCH RFC] mm,memory_hotplug: Drop unneeded locking
+Date:   Fri, 28 May 2021 09:51:55 +0200
+Message-Id: <20210528075155.358-1-osalvador@suse.de>
+X-Mailer: git-send-email 2.13.7
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Geert,
+Currently, memory-hotplug code takes zone's span_writelock
+and pgdat's resize_lock when resizing the node/zone's spanned
+pages via {move_pfn_range_to_zone(),remove_pfn_range_from_zone()}
+and when resizing node and zone's present pages via
+adjust_present_page_count().
 
-On Thu, May 27, 2021 at 1:04 PM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
->
-> Hi Prabhakar,
->
-> On Fri, May 14, 2021 at 9:24 PM Lad Prabhakar
-> <prabhakar.mahadev-lad.rj@bp.renesas.com> wrote:
-> > Add CPG core wrapper for RZ/G2L family.
-> >
-> > Based on a patch in the BSP by Binh Nguyen
-> > <binh.nguyen.jz@renesas.com>.
-> >
-> > Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-> > Reviewed-by: Biju Das <biju.das.jz@bp.renesas.com>
->
-> > --- /dev/null
-> > +++ b/drivers/clk/renesas/renesas-rzg2l-cpg.c
->
-> > +static int rzg2l_mod_clock_endisable(struct clk_hw *hw, bool enable)
-> > +{
-> > +       struct mstp_clock *clock = to_mod_clock(hw);
-> > +       struct cpg_mssr_priv *priv = clock->priv;
-> > +       unsigned int reg = MSSR_OFF(clock->bit) * 4;
->
-> The "* 4" here makes it difficult to review the module clock tables.
->
-> E.g.
->
->        DEF_MOD("gic",          R9A07G044_CLK_GIC600,
->                                R9A07G044_CLK_P1,
->                                MSSR(5, BIT(0), (BIT(0) | BIT(1)))),
->
-> The "5" means the CLK_ON_GIC600 register is at offset CLK_ON_R(5 * 4)
->  = 0x514.  Removing the "* 4" means you could use
-> "MSSR(0x14, BIT(0), (BIT(0) | BIT(1))" instead.
->
-> Unless it has unpleasant side effects, I'd even consider putting
-> the full CLK_ON offset there, i.e.
-> "MSSR(0x514, BIT(0), (BIT(0) | BIT(1))" and change the macros like:
->
->     #define CLK_ON_R(reg)          (reg)
->     #define CLK_MON_R(reg)         (0x680 - 0x500 + (reg))
->
-OK will do that.
+These locks are also taken during the initialization of the system
+at boot time, where it protects parallel struct page initialization,
+but they should not really be needed in memory-hotplug where all
+operations are a) synchronized on device level and b) serialized by
+the mem_hotplug_lock lock.
 
-> > --- /dev/null
-> > +++ b/drivers/clk/renesas/renesas-rzg2l-cpg.h
->
-> > +#define CLK_ON_R(reg)          (0x500 + reg)
-> > +#define CLK_MON_R(reg)         (0x680 + reg)
-> > +#define CLK_RST_R(reg)         (0x800 + reg)
-> > +#define CLK_MRST_R(reg)                (0x980 + reg)
->
-> The last three don't seem to be documented?
->
-I have asked Chris to send the document across.
+Signed-off-by: Oscar Salvador <osalvador@suse.de>
+---
+During the review of [1], it was brought up that we might need to revisit
+the locking scheme in memory-hotplug code wrt. node and zone locks.
+Given that memory-hotplug is serialized and synchronized by memory-hotplug lock
+and the device, I do not think we need to hold zone/node's resize lock anymore.
+After the system has been brought up, memory-hotplug is the only code allow to
+touch {spanned,present}_pages, so it cannot really go off when serialized by its
+own lock. Or am I missing something?
+The only think I am not really sure is: if the from remove_pfn_range_from_zone,
+shrink_zone_span, update_pgdat_span and move_pfn_range_to_zone can really go
+(because those functions are already serialized by the memory-hotplug lock),
+what about mhp_(de)init_memmap_on_memory that calls those functions?
+Those are not protected by the lock. I have to confess that when it comes to locking
+in this code, I always have to scratch my head.
 
-Cheers,
-Prabhakar
+[1] https://patchwork.kernel.org/project/linux-mm/patch/20210416112411.9826-4-osalvador@suse.de/
+
+ mm/memory_hotplug.c | 10 ----------
+ 1 file changed, 10 deletions(-)
+
+diff --git a/mm/memory_hotplug.c b/mm/memory_hotplug.c
+index 075b34803fec..6edd7e267cad 100644
+--- a/mm/memory_hotplug.c
++++ b/mm/memory_hotplug.c
+@@ -329,7 +329,6 @@ static void shrink_zone_span(struct zone *zone, unsigned long start_pfn,
+ 	unsigned long pfn;
+ 	int nid = zone_to_nid(zone);
+ 
+-	zone_span_writelock(zone);
+ 	if (zone->zone_start_pfn == start_pfn) {
+ 		/*
+ 		 * If the section is smallest section in the zone, it need
+@@ -362,7 +361,6 @@ static void shrink_zone_span(struct zone *zone, unsigned long start_pfn,
+ 			zone->spanned_pages = 0;
+ 		}
+ 	}
+-	zone_span_writeunlock(zone);
+ }
+ 
+ static void update_pgdat_span(struct pglist_data *pgdat)
+@@ -424,10 +422,8 @@ void __ref remove_pfn_range_from_zone(struct zone *zone,
+ 
+ 	clear_zone_contiguous(zone);
+ 
+-	pgdat_resize_lock(zone->zone_pgdat, &flags);
+ 	shrink_zone_span(zone, start_pfn, start_pfn + nr_pages);
+ 	update_pgdat_span(pgdat);
+-	pgdat_resize_unlock(zone->zone_pgdat, &flags);
+ 
+ 	set_zone_contiguous(zone);
+ }
+@@ -639,14 +635,10 @@ void __ref move_pfn_range_to_zone(struct zone *zone, unsigned long start_pfn,
+ 	clear_zone_contiguous(zone);
+ 
+ 	/* TODO Huh pgdat is irqsave while zone is not. It used to be like that before */
+-	pgdat_resize_lock(pgdat, &flags);
+-	zone_span_writelock(zone);
+ 	if (zone_is_empty(zone))
+ 		init_currently_empty_zone(zone, start_pfn, nr_pages);
+ 	resize_zone_range(zone, start_pfn, nr_pages);
+-	zone_span_writeunlock(zone);
+ 	resize_pgdat_range(pgdat, start_pfn, nr_pages);
+-	pgdat_resize_unlock(pgdat, &flags);
+ 
+ 	/*
+ 	 * Subsection population requires care in pfn_to_online_page().
+@@ -739,9 +731,7 @@ void adjust_present_page_count(struct zone *zone, long nr_pages)
+ 	unsigned long flags;
+ 
+ 	zone->present_pages += nr_pages;
+-	pgdat_resize_lock(zone->zone_pgdat, &flags);
+ 	zone->zone_pgdat->node_present_pages += nr_pages;
+-	pgdat_resize_unlock(zone->zone_pgdat, &flags);
+ }
+ 
+ int mhp_init_memmap_on_memory(unsigned long pfn, unsigned long nr_pages,
+-- 
+2.16.3
+
