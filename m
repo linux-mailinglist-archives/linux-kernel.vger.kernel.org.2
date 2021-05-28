@@ -2,102 +2,420 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3625C393E4A
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 09:59:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 39C78393E52
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 10:01:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235473AbhE1IA6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 May 2021 04:00:58 -0400
-Received: from eu-smtp-delivery-151.mimecast.com ([185.58.86.151]:22180 "EHLO
-        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234582AbhE1IA4 (ORCPT
+        id S235529AbhE1IDE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 May 2021 04:03:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58174 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235640AbhE1ICE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 May 2021 04:00:56 -0400
-Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) (Using
- TLS) by relay.mimecast.com with ESMTP id
- uk-mta-219-eLCskAZIMDikJDdguKFpzA-1; Fri, 28 May 2021 08:59:18 +0100
-X-MC-Unique: eLCskAZIMDikJDdguKFpzA-1
-Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) by
- AcuMS.aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) with Microsoft SMTP
- Server (TLS) id 15.0.1497.2; Fri, 28 May 2021 08:59:17 +0100
-Received: from AcuMS.Aculab.com ([fe80::994c:f5c2:35d6:9b65]) by
- AcuMS.aculab.com ([fe80::994c:f5c2:35d6:9b65%12]) with mapi id
- 15.00.1497.015; Fri, 28 May 2021 08:59:17 +0100
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     'Justin Forbes' <jforbes@redhat.com>, Jens Axboe <axboe@kernel.dk>
-CC:     "asml.silence@gmail.com" <asml.silence@gmail.com>,
-        "io-uring@vger.kernel.org" <io-uring@vger.kernel.org>,
-        "Linux Kernel Mailing List" <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH] io_uring: Remove CONFIG_EXPERT
-Thread-Topic: [PATCH] io_uring: Remove CONFIG_EXPERT
-Thread-Index: AQHXUxGQwtYNg0KjnUesFiYT/RG7N6r4h1mw
-Date:   Fri, 28 May 2021 07:59:17 +0000
-Message-ID: <3a358a36cc7840aa9b7deef2a367e241@AcuMS.aculab.com>
-References: <20210526223445.317749-1-jforbes@fedoraproject.org>
- <aa130828-03c9-b49b-ab31-1fb83a0349fb@kernel.dk>
- <CAFbkSA1G2ajKQg4eA947dv0Pcmyf-JQbkn8-jYnmUeMAEpfHtw@mail.gmail.com>
- <01c2a63f-23f6-2228-264d-6f3e581e647d@kernel.dk>
- <CAFbkSA2zt5QLBH0S8pcBROCaV3zSw_M-RvaQ-2yccCKgV-_2BQ@mail.gmail.com>
-In-Reply-To: <CAFbkSA2zt5QLBH0S8pcBROCaV3zSw_M-RvaQ-2yccCKgV-_2BQ@mail.gmail.com>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
-MIME-Version: 1.0
-Authentication-Results: relay.mimecast.com;
-        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: base64
+        Fri, 28 May 2021 04:02:04 -0400
+Received: from mail-qt1-x849.google.com (mail-qt1-x849.google.com [IPv6:2607:f8b0:4864:20::849])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD6A8C06174A
+        for <linux-kernel@vger.kernel.org>; Fri, 28 May 2021 00:59:38 -0700 (PDT)
+Received: by mail-qt1-x849.google.com with SMTP id q3-20020a05622a0303b02902390ac8c906so1679334qtw.11
+        for <linux-kernel@vger.kernel.org>; Fri, 28 May 2021 00:59:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=eQHu2YdWATuwRdd03+33a1i15kG3qW3lUQiAO7CgbYM=;
+        b=WbYbq3S49gzHHeCT4z1fGJmZKXEZI0AUV4OUBbBeqYD0nqxQlhXriGu9WFhE2TWEsa
+         AGihSouN7nLW8cSmND1AGcxaM9Jq3J2PvtUypUHakxo1D2RySovKCzUmMAP4+TH2qjf7
+         ueniZOAUXvX1FSEphD5vMaKGLcALTMBtiMoz7b8XvN/gPI4JWp5ejto2vRQi1l34Iq/k
+         LB+lLQVjRTVgl5RIrZeNr8okG7kYihoUlQ68hHkDW9akb38p3xi0Em6nJtF4O7281Jk0
+         e0uor5azoYL+3TDTuPut/fZcNf1+nICMStUCcV1hGAtKd3v3nAczxaV+0mJFkFHRr/Yg
+         khPQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=eQHu2YdWATuwRdd03+33a1i15kG3qW3lUQiAO7CgbYM=;
+        b=tSSjKKsqFxOfPAcpNdUOT672TPPaCYZJoGeQI5xdBYSlau88PsK6JPVqYw2qSVseKl
+         3eZKqYDGnWsQQI9ijOsqDbepPcyPMeetzExCCN7Tt79r4InPA4uTXnsy5NgU0Hd14LKf
+         8e/PJmvn6+/kPEjLuhve1pU4ddpisJMsVd9LgrnNQqO5gEApcuBDJl5VZGKS92Ckdg+h
+         NLbAzLb3KM7jfktlpICexG/tMBfOZb9ANRjlkpAnQDIN1++9Ag0lVV+J9Gf/C4ZAgsQ/
+         n9uYcbbvqUH2Gwkk4JMNB+AKBZ4MbzcKmo/QtKJgRQAnv4o6ELzyZUCGb3P1Qsdvi+XO
+         TOmg==
+X-Gm-Message-State: AOAM530a3VS5JVKBwBiqLwZUeWQawPChP74LY99Oox91LbooWUyp5NwQ
+        +7shw4056RPcLs/vXCb9ZhJCE92zinOVrQ==
+X-Google-Smtp-Source: ABdhPJwdlbBkTjSZEB2JTLX98zimYFThcL5s2BVzI+8+ChDFzyXtBcfXEcKUcVTUABdxQ9tpIFcBD+ipVkl96g==
+X-Received: from spirogrip.svl.corp.google.com ([2620:15c:2cb:201:621b:e8e2:f86a:41f])
+ (user=davidgow job=sendgmr) by 2002:a0c:f642:: with SMTP id
+ s2mr2713238qvm.32.1622188777804; Fri, 28 May 2021 00:59:37 -0700 (PDT)
+Date:   Fri, 28 May 2021 00:59:29 -0700
+Message-Id: <20210528075932.347154-1-davidgow@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.32.0.rc0.204.g9fa02ecfa5-goog
+Subject: [PATCH v2 1/4] kunit: Support skipped tests
+From:   David Gow <davidgow@google.com>
+To:     Brendan Higgins <brendanhiggins@google.com>,
+        Alan Maguire <alan.maguire@oracle.com>
+Cc:     David Gow <davidgow@google.com>,
+        Daniel Latypov <dlatypov@google.com>,
+        Shuah Khan <skhan@linuxfoundation.org>,
+        Marco Elver <elver@google.com>, kunit-dev@googlegroups.com,
+        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-RnJvbTogSnVzdGluIEZvcmJlcw0KPiBTZW50OiAyNyBNYXkgMjAyMSAxNzowMQ0KPiANCj4gT24g
-VGh1LCBNYXkgMjcsIDIwMjEgYXQgOToxOSBBTSBKZW5zIEF4Ym9lIDxheGJvZUBrZXJuZWwuZGs+
-IHdyb3RlOg0KPiA+DQo+ID4gT24gNS8yNy8yMSA4OjEyIEFNLCBKdXN0aW4gRm9yYmVzIHdyb3Rl
-Og0KPiA+ID4gT24gVGh1LCBNYXkgMjcsIDIwMjEgYXQgODo0MyBBTSBKZW5zIEF4Ym9lIDxheGJv
-ZUBrZXJuZWwuZGs+IHdyb3RlOg0KPiA+ID4+DQo+ID4gPj4gT24gNS8yNi8yMSA0OjM0IFBNLCBK
-dXN0aW4gTS4gRm9yYmVzIHdyb3RlOg0KPiA+ID4+PiBXaGlsZSBJT19VUklORyBoYXMgYmVlbiBp
-biBmYWlybHkgaGVhdnkgZGV2ZWxvcG1lbnQsIGl0IGlzIGhpZGRlbiBiZWhpbmQNCj4gPiA+Pj4g
-Q09ORklHX0VYUEVSVCB3aXRoIGEgZGVmYXVsdCBvZiBvbi4gIEl0IGhhcyBiZWVuIGxvbmcgZW5v
-dWdoIG5vdyB0aGF0IEkNCj4gPiA+Pj4gdGhpbmsgd2Ugc2hvdWxkIHJlbW92ZSBFWFBFUlQgYW5k
-IGFsbG93IHVzZXJzIGFuZCBkaXN0cm9zIHRvIGRlY2lkZSBob3cNCj4gPiA+Pj4gdGhleSB3YW50
-IHRoaXMgY29uZmlnIG9wdGlvbiBzZXQgd2l0aG91dCBqdW1waW5nIHRocm91Z2ggaG9vcHMuDQo+
-ID4gPj4NCj4gPiA+PiBUaGUgd2hvbGUgcG9pbnQgb2YgRVhQRVJUIGlzIHRvIGVuc3VyZSB0aGF0
-IGl0IGRvZXNuJ3QgZ2V0IHR1cm5lZCBvZmYNCj4gPiA+PiAiYnkgYWNjaWRlbnQiLiBJdCdzIGEg
-Y29yZSBmZWF0dXJlLCBhbmQgc29tZXRoaW5nIHRoYXQgbW9yZSBhbmQgbW9yZQ0KPiA+ID4+IGFw
-cHMgb3IgbGlicmFyaWVzIGFyZSByZWx5aW5nIG9uLiBJdCdzIG5vdCBzb21ldGhpbmcgSSBpbnRl
-bmRlZCB0byBldmVyDQo+ID4gPj4gZ28gYXdheSwganVzdCBsaWtlIGl0IHdvdWxkIG5ldmVyIGdv
-IGF3YXkgZm9yIGVnIGZ1dGV4IG9yIGVwb2xsIHN1cHBvcnQuDQo+ID4gPj4NCj4gPiA+DQo+ID4g
-PiBJIGFtIG5vdCBhcmd1aW5nIHdpdGggdGhhdCwgSSBkb24ndCBleHBlY3QgaXQgd2lsbCBnbyBh
-d2F5LiBJDQo+ID4gPiBjZXJ0YWlubHkgZG8gbm90IGhhdmUgYW4gaXNzdWUgd2l0aCBpdCBkZWZh
-dWx0aW5nIHRvIG9uLCBhbmQgSSBkaWRuJ3QNCj4gPiA+IGV2ZW4gc3VibWl0IHRoaXMgd2l0aCBp
-bnRlbnRpb24gdG8gdHVybiBpdCBvZmYgZm9yIGRlZmF1bHQgRmVkb3JhLiBJDQo+ID4gPiBkbyB0
-aGluayB0aGF0IHRoZXJlIGFyZSBjYXNlcyB3aGVyZSBwZW9wbGUgbWlnaHQgbm90IHdpc2ggaXQg
-dHVybmVkIG9uDQo+ID4gPiBhdCB0aGlzIHBvaW50IGluIHRpbWUuIEhpZGluZyBpdCBiZWhpbmQg
-RVhQRVJUIG1ha2VzIGl0IG11Y2ggbW9yZQ0KPiA+ID4gZGlmZmljdWx0IHRoYW4gaXQgbmVlZHMg
-dG8gYmUuICBUaGVyZSBhcmUgcGxlbnR5IG9mIGNvbmZpZyBvcHRpb25zDQo+ID4gPiB0aGF0IGFy
-ZSBsYXJnZWx5IGV4cGVjdGVkIGRlZmF1bHQgYW5kIG5vdCBoaWRkZW4gYmVoaW5kIEVYUEVSVC4N
-Cj4gPg0KPiA+IFJpZ2h0IHRoZXJlIGFyZSwgYnV0IG5vdCByZWFsbHkgY29yZSBrZXJuZWwgZmVh
-dHVyZXMgbGlrZSB0aGUgb25lcw0KPiA+IEkgbWVudGlvbmVkLiBIZW5jZSBteSBhcmd1bWVudCBm
-b3Igd2h5IGl0J3MgY29ycmVjdCBhcy1pcyBhbmQgSQ0KPiA+IGRvbid0IHRoaW5rIGl0IHNob3Vs
-ZCBiZSBjaGFuZ2VkLg0KPiA+DQo+IA0KPiBIb25lc3RseSwgdGhpcyBpcyBmYWlyLCBhbmQgSSB1
-bmRlcnN0YW5kIHlvdXIgY29uY2VybnMgYmVoaW5kIGl0LiBJDQo+IHRoaW5rIG15IHJlYWwgaXNz
-dWUgaXMgdGhhdCB0aGVyZSBpcyBubyBzaW1wbGUgd2F5IHRvIG92ZXJyaWRlIG9uZQ0KPiBFWFBF
-UlQgc2V0dGluZyB3aXRob3V0IGhhdmluZyB0byBzZXQgdGhlbSBhbGwuICBJdCB3b3VsZCBiZSBu
-aWNlIGlmDQo+IGV4cGVydCB3ZXJlIGEgInZpc2libGUgaWYiIG1lbnUsIHNldHRpbmcgZGVmYXVs
-dHMgaWYgbm90IHNlbGVjdGVkLA0KPiB3aGljaCBhbGxvd3MgZGlyZWN0IG92ZXJyaWRlIHdpdGgg
-YSBjb25maWcgZmlsZS4gUGVyaGFwcyBJIHdpbGwgdHJ5IHRvDQo+IGZpeCB0aGlzIGluIGtidWls
-ZC4NCg0KU29tZW9uZSBtaWdodCB3YW50IHRvIGRpc2FibGUgdGhpbmdzIGxpa2UgSU9fVVJJTkcg
-Zm9yIGFuIGVtYmVkZGVkDQpzeXN0ZW0ganVzdCB0byByZW1vdmUgY29kZSB0aGF0IG1pZ2h0IGhh
-dmUgcG9zc2libGUgYXR0YWNrIHZlY3RvcnMNCmFuZCBpc24ndCByZXF1aXJlZCBieSB0aGUgc3Vi
-c2V0IG9mIGtlcm5lbCBmZWF0dXJlcyB0aGV5IG5lZWQuDQoNCklmIHR1cm5pbmcgb24gJ0VYUEVS
-VCcgbWFrZXMgZXh0cmEgY29uZmlnIG9wdGlvbnMgdmlzaWJsZSB0aGlzIGlzIG9rLg0KQnV0IGlm
-IHRoYXQgY2hhbmdlcyB0aGUgZGVmYXVsdHMgaXQgZ2V0cyB0byBiZSBhIHJlYWwgUElUQS4NCg0K
-CURhdmlkDQoNCi0NClJlZ2lzdGVyZWQgQWRkcmVzcyBMYWtlc2lkZSwgQnJhbWxleSBSb2FkLCBN
-b3VudCBGYXJtLCBNaWx0b24gS2V5bmVzLCBNSzEgMVBULCBVSw0KUmVnaXN0cmF0aW9uIE5vOiAx
-Mzk3Mzg2IChXYWxlcykNCg==
+The kunit_mark_skipped() macro marks the current test as "skipped", with
+the provided reason. The kunit_skip() macro will mark the test as
+skipped, and abort the test.
+
+The TAP specification supports this "SKIP directive" as a comment after
+the "ok" / "not ok" for a test. See the "Directives" section of the TAP
+spec for details:
+https://testanything.org/tap-specification.html#directives
+
+The 'success' field for KUnit tests is replaced with a kunit_status
+enum, which can be SUCCESS, FAILURE, or SKIPPED, combined with a
+'status_comment' containing information on why a test was skipped.
+
+A new 'kunit_status' test suite is added to test this.
+
+Signed-off-by: David Gow <davidgow@google.com>
+Tested-by: Marco Elver <elver@google.com>
+Reviewed-by: Daniel Latypov <dlatypov@google.com>
+---
+
+Changes since v1:
+https://lore.kernel.org/linux-kselftest/20210526081112.3652290-1-davidgow@google.com/
+- Renamed kunit_status_to_string() to kunit_status_to_ok_not_ok
+- Fixed incorrect printing of status comments on non-skipped tests.
+
+Not changes:
+- Still using kunit_log(KERN_INFO,...) instead of kunit_info() as it
+  seems to be consistently used for printing results in the KUnit code.
+
+ include/kunit/test.h   | 68 ++++++++++++++++++++++++++++++++++++++----
+ lib/kunit/kunit-test.c | 42 +++++++++++++++++++++++++-
+ lib/kunit/test.c       | 51 ++++++++++++++++++-------------
+ 3 files changed, 134 insertions(+), 27 deletions(-)
+
+diff --git a/include/kunit/test.h b/include/kunit/test.h
+index b68c61348121..1401c620ac5e 100644
+--- a/include/kunit/test.h
++++ b/include/kunit/test.h
+@@ -105,6 +105,18 @@ struct kunit;
+ #define KUNIT_SUBTEST_INDENT		"    "
+ #define KUNIT_SUBSUBTEST_INDENT		"        "
+ 
++/**
++ * enum kunit_status - Type of result for a test or test suite
++ * @KUNIT_SUCCESS: Denotes the test suite has not failed nor been skipped
++ * @KUNIT_FAILURE: Denotes the test has failed.
++ * @KUNIT_SKIPPED: Denotes the test has been skipped.
++ */
++enum kunit_status {
++	KUNIT_SUCCESS,
++	KUNIT_FAILURE,
++	KUNIT_SKIPPED,
++};
++
+ /**
+  * struct kunit_case - represents an individual test case.
+  *
+@@ -148,13 +160,20 @@ struct kunit_case {
+ 	const void* (*generate_params)(const void *prev, char *desc);
+ 
+ 	/* private: internal use only. */
+-	bool success;
++	enum kunit_status status;
+ 	char *log;
+ };
+ 
+-static inline char *kunit_status_to_string(bool status)
++static inline char *kunit_status_to_ok_not_ok(enum kunit_status status)
+ {
+-	return status ? "ok" : "not ok";
++	switch (status) {
++	case KUNIT_SKIPPED:
++	case KUNIT_SUCCESS:
++		return "ok";
++	case KUNIT_FAILURE:
++		return "not ok";
++	}
++	return "invalid";
+ }
+ 
+ /**
+@@ -212,6 +231,7 @@ struct kunit_suite {
+ 	struct kunit_case *test_cases;
+ 
+ 	/* private: internal use only */
++	char status_comment[256];
+ 	struct dentry *debugfs;
+ 	char *log;
+ };
+@@ -245,19 +265,21 @@ struct kunit {
+ 	 * be read after the test case finishes once all threads associated
+ 	 * with the test case have terminated.
+ 	 */
+-	bool success; /* Read only after test_case finishes! */
+ 	spinlock_t lock; /* Guards all mutable test state. */
++	enum kunit_status status; /* Read only after test_case finishes! */
+ 	/*
+ 	 * Because resources is a list that may be updated multiple times (with
+ 	 * new resources) from any thread associated with a test case, we must
+ 	 * protect it with some type of lock.
+ 	 */
+ 	struct list_head resources; /* Protected by lock. */
++
++	char status_comment[256];
+ };
+ 
+ static inline void kunit_set_failure(struct kunit *test)
+ {
+-	WRITE_ONCE(test->success, false);
++	WRITE_ONCE(test->status, KUNIT_FAILURE);
+ }
+ 
+ void kunit_init_test(struct kunit *test, const char *name, char *log);
+@@ -348,7 +370,7 @@ static inline int kunit_run_all_tests(void)
+ #define kunit_suite_for_each_test_case(suite, test_case)		\
+ 	for (test_case = suite->test_cases; test_case->run_case; test_case++)
+ 
+-bool kunit_suite_has_succeeded(struct kunit_suite *suite);
++enum kunit_status kunit_suite_has_succeeded(struct kunit_suite *suite);
+ 
+ /*
+  * Like kunit_alloc_resource() below, but returns the struct kunit_resource
+@@ -612,6 +634,40 @@ void kunit_cleanup(struct kunit *test);
+ 
+ void kunit_log_append(char *log, const char *fmt, ...);
+ 
++/**
++ * kunit_mark_skipped() - Marks @test_or_suite as skipped
++ *
++ * @test_or_suite: The test context object.
++ * @fmt:  A printk() style format string.
++ *
++ * Marks the test as skipped. @fmt is given output as the test status
++ * comment, typically the reason the test was skipped.
++ *
++ * Test execution continues after kunit_mark_skipped() is called.
++ */
++#define kunit_mark_skipped(test_or_suite, fmt, ...)			\
++	do {								\
++		WRITE_ONCE((test_or_suite)->status, KUNIT_SKIPPED);	\
++		scnprintf((test_or_suite)->status_comment, 256, fmt, ##__VA_ARGS__); \
++	} while (0)
++
++/**
++ * kunit_skip() - Marks @test_or_suite as skipped
++ *
++ * @test_or_suite: The test context object.
++ * @fmt:  A printk() style format string.
++ *
++ * Skips the test. @fmt is given output as the test status
++ * comment, typically the reason the test was skipped.
++ *
++ * Test execution is halted after kunit_skip() is called.
++ */
++#define kunit_skip(test_or_suite, fmt, ...)				\
++	do {								\
++		kunit_mark_skipped((test_or_suite), fmt, ##__VA_ARGS__);\
++		kunit_try_catch_throw(&((test_or_suite)->try_catch));	\
++	} while (0)
++
+ /*
+  * printk and log to per-test or per-suite log buffer.  Logging only done
+  * if CONFIG_KUNIT_DEBUGFS is 'y'; if it is 'n', no log is allocated/used.
+diff --git a/lib/kunit/kunit-test.c b/lib/kunit/kunit-test.c
+index 69f902440a0e..d69efcbed624 100644
+--- a/lib/kunit/kunit-test.c
++++ b/lib/kunit/kunit-test.c
+@@ -437,7 +437,47 @@ static void kunit_log_test(struct kunit *test)
+ #endif
+ }
+ 
++static void kunit_status_set_failure_test(struct kunit *test)
++{
++	struct kunit fake;
++
++	kunit_init_test(&fake, "fake test", NULL);
++
++	KUNIT_EXPECT_EQ(test, fake.status, (enum kunit_status)KUNIT_SUCCESS);
++	kunit_set_failure(&fake);
++	KUNIT_EXPECT_EQ(test, fake.status, (enum kunit_status)KUNIT_FAILURE);
++}
++
++static void kunit_status_mark_skipped_test(struct kunit *test)
++{
++	struct kunit fake;
++
++	kunit_init_test(&fake, "fake test", NULL);
++
++	/* Before: Should be SUCCESS with no comment. */
++	KUNIT_EXPECT_EQ(test, fake.status, KUNIT_SUCCESS);
++	KUNIT_EXPECT_STREQ(test, fake.status_comment, "");
++
++	/* Mark the test as skipped. */
++	kunit_mark_skipped(&fake, "Accepts format string: %s", "YES");
++
++	/* After: Should be SKIPPED with our comment. */
++	KUNIT_EXPECT_EQ(test, fake.status, (enum kunit_status)KUNIT_SKIPPED);
++	KUNIT_EXPECT_STREQ(test, fake.status_comment, "Accepts format string: YES");
++}
++
++static struct kunit_case kunit_status_test_cases[] = {
++	KUNIT_CASE(kunit_status_set_failure_test),
++	KUNIT_CASE(kunit_status_mark_skipped_test),
++	{}
++};
++
++static struct kunit_suite kunit_status_test_suite = {
++	.name = "kunit_status",
++	.test_cases = kunit_status_test_cases,
++};
++
+ kunit_test_suites(&kunit_try_catch_test_suite, &kunit_resource_test_suite,
+-		  &kunit_log_test_suite);
++		  &kunit_log_test_suite, &kunit_status_test_suite);
+ 
+ MODULE_LICENSE("GPL v2");
+diff --git a/lib/kunit/test.c b/lib/kunit/test.c
+index 2f6cc0123232..8ce0c8fddb96 100644
+--- a/lib/kunit/test.c
++++ b/lib/kunit/test.c
+@@ -98,12 +98,14 @@ static void kunit_print_subtest_start(struct kunit_suite *suite)
+ 
+ static void kunit_print_ok_not_ok(void *test_or_suite,
+ 				  bool is_test,
+-				  bool is_ok,
++				  enum kunit_status status,
+ 				  size_t test_number,
+-				  const char *description)
++				  const char *description,
++				  const char *directive)
+ {
+ 	struct kunit_suite *suite = is_test ? NULL : test_or_suite;
+ 	struct kunit *test = is_test ? test_or_suite : NULL;
++	const char *directive_header = (status == KUNIT_SKIPPED) ? " # SKIP " : "";
+ 
+ 	/*
+ 	 * We do not log the test suite results as doing so would
+@@ -114,25 +116,31 @@ static void kunit_print_ok_not_ok(void *test_or_suite,
+ 	 * representation.
+ 	 */
+ 	if (suite)
+-		pr_info("%s %zd - %s\n",
+-			kunit_status_to_string(is_ok),
+-			test_number, description);
++		pr_info("%s %zd - %s%s%s\n",
++			kunit_status_to_ok_not_ok(status),
++			test_number, description, directive_header,
++			(status == KUNIT_SKIPPED) ? directive : "");
+ 	else
+-		kunit_log(KERN_INFO, test, KUNIT_SUBTEST_INDENT "%s %zd - %s",
+-			  kunit_status_to_string(is_ok),
+-			  test_number, description);
++		kunit_log(KERN_INFO, test,
++			  KUNIT_SUBTEST_INDENT "%s %zd - %s%s%s",
++			  kunit_status_to_ok_not_ok(status),
++			  test_number, description, directive_header,
++			  (status == KUNIT_SKIPPED) ? directive : "");
+ }
+ 
+-bool kunit_suite_has_succeeded(struct kunit_suite *suite)
++enum kunit_status kunit_suite_has_succeeded(struct kunit_suite *suite)
+ {
+ 	const struct kunit_case *test_case;
++	enum kunit_status status = KUNIT_SKIPPED;
+ 
+ 	kunit_suite_for_each_test_case(suite, test_case) {
+-		if (!test_case->success)
+-			return false;
++		if (test_case->status == KUNIT_FAILURE)
++			return KUNIT_FAILURE;
++		else if (test_case->status == KUNIT_SUCCESS)
++			status = KUNIT_SUCCESS;
+ 	}
+ 
+-	return true;
++	return status;
+ }
+ EXPORT_SYMBOL_GPL(kunit_suite_has_succeeded);
+ 
+@@ -143,7 +151,8 @@ static void kunit_print_subtest_end(struct kunit_suite *suite)
+ 	kunit_print_ok_not_ok((void *)suite, false,
+ 			      kunit_suite_has_succeeded(suite),
+ 			      kunit_suite_counter++,
+-			      suite->name);
++			      suite->name,
++			      suite->status_comment);
+ }
+ 
+ unsigned int kunit_test_case_num(struct kunit_suite *suite,
+@@ -252,7 +261,8 @@ void kunit_init_test(struct kunit *test, const char *name, char *log)
+ 	test->log = log;
+ 	if (test->log)
+ 		test->log[0] = '\0';
+-	test->success = true;
++	test->status = KUNIT_SUCCESS;
++	test->status_comment[0] = '\0';
+ }
+ EXPORT_SYMBOL_GPL(kunit_init_test);
+ 
+@@ -376,7 +386,8 @@ static void kunit_run_case_catch_errors(struct kunit_suite *suite,
+ 	context.test_case = test_case;
+ 	kunit_try_catch_run(try_catch, &context);
+ 
+-	test_case->success = test->success;
++	test_case->status = test->status;
++
+ }
+ 
+ int kunit_run_tests(struct kunit_suite *suite)
+@@ -388,7 +399,6 @@ int kunit_run_tests(struct kunit_suite *suite)
+ 
+ 	kunit_suite_for_each_test_case(suite, test_case) {
+ 		struct kunit test = { .param_value = NULL, .param_index = 0 };
+-		bool test_success = true;
+ 
+ 		if (test_case->generate_params) {
+ 			/* Get initial param. */
+@@ -398,7 +408,6 @@ int kunit_run_tests(struct kunit_suite *suite)
+ 
+ 		do {
+ 			kunit_run_case_catch_errors(suite, test_case, &test);
+-			test_success &= test_case->success;
+ 
+ 			if (test_case->generate_params) {
+ 				if (param_desc[0] == '\0') {
+@@ -410,7 +419,7 @@ int kunit_run_tests(struct kunit_suite *suite)
+ 					  KUNIT_SUBTEST_INDENT
+ 					  "# %s: %s %d - %s",
+ 					  test_case->name,
+-					  kunit_status_to_string(test.success),
++					  kunit_status_to_ok_not_ok(test.status),
+ 					  test.param_index + 1, param_desc);
+ 
+ 				/* Get next param. */
+@@ -420,9 +429,10 @@ int kunit_run_tests(struct kunit_suite *suite)
+ 			}
+ 		} while (test.param_value);
+ 
+-		kunit_print_ok_not_ok(&test, true, test_success,
++		kunit_print_ok_not_ok(&test, true, test_case->status,
+ 				      kunit_test_case_num(suite, test_case),
+-				      test_case->name);
++				      test_case->name,
++				      test.status_comment);
+ 	}
+ 
+ 	kunit_print_subtest_end(suite);
+@@ -434,6 +444,7 @@ EXPORT_SYMBOL_GPL(kunit_run_tests);
+ static void kunit_init_suite(struct kunit_suite *suite)
+ {
+ 	kunit_debugfs_create_suite(suite);
++	suite->status_comment[0] = '\0';
+ }
+ 
+ int __kunit_test_suites_init(struct kunit_suite * const * const suites)
+-- 
+2.32.0.rc0.204.g9fa02ecfa5-goog
 
