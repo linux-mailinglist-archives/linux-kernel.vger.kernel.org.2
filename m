@@ -2,145 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B2343943BA
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 16:02:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B848F3943BB
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 16:02:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236165AbhE1ODd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 May 2021 10:03:33 -0400
-Received: from mx07-00178001.pphosted.com ([185.132.182.106]:1124 "EHLO
-        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232426AbhE1ODW (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 May 2021 10:03:22 -0400
-Received: from pps.filterd (m0046668.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 14SDqN6v032433;
-        Fri, 28 May 2021 16:01:32 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=subject : to :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=selector1;
- bh=sm24cA2zEfcJexsSN/4wut2e6Xb1GhYhh0sMYqJJil8=;
- b=uRF1qkrItmVll5rTwkYKYzbOGlC1MiH45m9mc0ZFqCLNEykuHXlkhc1YOI/CTeUPU608
- a/nEDyoDLDfbu3ko8LtpaGHbC6x9hlo2ba+tkmUH32v0/SaOWk/49FlPRWbH222G4SZA
- XJwh7gUIkRGq2q2mzhR1Kevm6ktstsHIC3ERb7ebZUqnMEoBZPL4gCI2TbESkhyUZke0
- UWptztS5UGlXSjCwdD7n6mUvxyZENPA+EQyaXFW+KVBtAuQ33mwaX0UXftW+eTFDeRrE
- 4rOhwjxukLDPObdbLRKCPMFvvy7cpLTz2cSMN8PvULk1GagDU4slfcKC4D3PYQd6RNGA Eg== 
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com with ESMTP id 38tsq0juum-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 28 May 2021 16:01:32 +0200
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 1D6D710002A;
-        Fri, 28 May 2021 16:01:31 +0200 (CEST)
-Received: from Webmail-eu.st.com (sfhdag2node3.st.com [10.75.127.6])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id ECF5822D619;
-        Fri, 28 May 2021 16:01:30 +0200 (CEST)
-Received: from lmecxl0951.lme.st.com (10.75.127.47) by SFHDAG2NODE3.st.com
- (10.75.127.6) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Fri, 28 May
- 2021 16:01:30 +0200
-Subject: Re: [PATCH] drm/stm: Remove usage of drm_display_mode_to_videomode()
-To:     Philippe Cornu <philippe.cornu@foss.st.com>,
-        Antonio Borneo <antonio.borneo@st.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        "Alexandre Torgue" <alexandre.torgue@st.com>,
-        <dri-devel@lists.freedesktop.org>,
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, "Marek Vasut" <marex@denx.de>
-References: <20210528080513.8168-1-yannick.fertre@foss.st.com>
-From:   yannick Fertre <yannick.fertre@foss.st.com>
-Message-ID: <7f99af28-f4ef-303b-2844-89dc266d1ace@foss.st.com>
-Date:   Fri, 28 May 2021 16:01:29 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S236286AbhE1ODk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 May 2021 10:03:40 -0400
+Received: from www.zeus03.de ([194.117.254.33]:59476 "EHLO mail.zeus03.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234131AbhE1ODZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 28 May 2021 10:03:25 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple; d=sang-engineering.com; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=k1; bh=mosejSqzfpsohsvt8TG8Cc+GV5Rf
+        j8NU3vRUE9MBWu4=; b=zRu65FuPBkZuHU1NXnv4uvnDOD7VcXFAncyB0pYoD65Y
+        7tFkWbsjKXPiUPgnABoTbfhLFk2AJsuWKCJrdG7W4gr1K7bEv9t+Essbz4/O0ZRp
+        7SjgchpP+yMrzWMV9MwnFaJI7cayCcuTA+rh8kJ3F0iLU2ym28Ade1D2fuOgVYo=
+Received: (qmail 2395082 invoked from network); 28 May 2021 16:01:48 +0200
+Received: by mail.zeus03.de with ESMTPSA (TLS_AES_256_GCM_SHA384 encrypted, authenticated); 28 May 2021 16:01:48 +0200
+X-UD-Smtp-Session: l3s3148p1@kSccUWTDQuEgAwDPXwoXAEGfoBQqamfc
+Date:   Fri, 28 May 2021 16:01:47 +0200
+From:   Wolfram Sang <wsa+renesas@sang-engineering.com>
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 1/2] i2c: core: Make debug message even more debuggish
+Message-ID: <YLD3y3rtMI4jAxxu@kunai>
+Mail-Followup-To: Wolfram Sang <wsa+renesas@sang-engineering.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210528091351.70699-1-andriy.shevchenko@linux.intel.com>
 MIME-Version: 1.0
-In-Reply-To: <20210528080513.8168-1-yannick.fertre@foss.st.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.75.127.47]
-X-ClientProxiedBy: SFHDAG2NODE2.st.com (10.75.127.5) To SFHDAG2NODE3.st.com
- (10.75.127.6)
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
- definitions=2021-05-28_05:2021-05-27,2021-05-28 signatures=0
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="WWhmVuFii2NK0j4u"
+Content-Disposition: inline
+In-Reply-To: <20210528091351.70699-1-andriy.shevchenko@linux.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-Hi Philippe,
-I have already reviewed this patch on January 7, 2020.
-(https://lore.kernel.org/dri-devel/0ab4ee45-4437-3b02-cf63-0e3b1b53920f@st.com/)
-Could you please review it and merge it?
+--WWhmVuFii2NK0j4u
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Best regards
+On Fri, May 28, 2021 at 12:13:50PM +0300, Andy Shevchenko wrote:
+> One may notice that dev_printk(KERN_DEBUG ...) is *not* an equivalent
+> to dev_dbg(). It will be printed whenever loglevel is high enough.
+> And currently it will be the only message in the I=C2=B2C core in some
+> configurations that got printed under above conditions.
+>=20
+> Moving to dev_dbg() will hide it in the configurations where Dynamic Debug
+> is enabled and hence align with all other debug messages in the I=C2=B2C =
+core..
+>=20
+> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 
-Yannick
+Applied to for-next, thanks!
 
-On 5/28/21 10:05 AM, Yannick Fertre wrote:
-> There is not much value in the extra conversion step, the calculations
-> required for the LTDC IP are different than what is used in the
-> drm_display_mode_to_videomode(), so just do the right ones in the LTDC
-> driver right away.
-> 
-> Signed-off-by: Marek Vasut <marex@denx.de>
-> Signed-off-by: Yannick Fertre <yannick.fertre@foss.st.com>
-> ---
->   drivers/gpu/drm/stm/ltdc.c | 32 +++++++++++++++++---------------
->   1 file changed, 17 insertions(+), 15 deletions(-)
-> 
-> diff --git a/drivers/gpu/drm/stm/ltdc.c b/drivers/gpu/drm/stm/ltdc.c
-> index e99771b947b6..d113b9be12c0 100644
-> --- a/drivers/gpu/drm/stm/ltdc.c
-> +++ b/drivers/gpu/drm/stm/ltdc.c
-> @@ -570,31 +570,33 @@ static void ltdc_crtc_mode_set_nofb(struct drm_crtc *crtc)
->   		}
->   	}
->   
-> -	drm_display_mode_to_videomode(mode, &vm);
-> -
->   	DRM_DEBUG_DRIVER("CRTC:%d mode:%s\n", crtc->base.id, mode->name);
-> -	DRM_DEBUG_DRIVER("Video mode: %dx%d", vm.hactive, vm.vactive);
-> +	DRM_DEBUG_DRIVER("Video mode: %dx%d", mode->hdisplay, mode->vdisplay);
->   	DRM_DEBUG_DRIVER(" hfp %d hbp %d hsl %d vfp %d vbp %d vsl %d\n",
-> -			 vm.hfront_porch, vm.hback_porch, vm.hsync_len,
-> -			 vm.vfront_porch, vm.vback_porch, vm.vsync_len);
-> +			 mode->hsync_start - mode->hdisplay,
-> +			 mode->htotal - mode->hsync_end,
-> +			 mode->hsync_end - mode->hsync_start,
-> +			 mode->vsync_start - mode->vdisplay,
-> +			 mode->vtotal - mode->vsync_end,
-> +			 mode->vsync_end - mode->vsync_start);
->   
->   	/* Convert video timings to ltdc timings */
-> -	hsync = vm.hsync_len - 1;
-> -	vsync = vm.vsync_len - 1;
-> -	accum_hbp = hsync + vm.hback_porch;
-> -	accum_vbp = vsync + vm.vback_porch;
-> -	accum_act_w = accum_hbp + vm.hactive;
-> -	accum_act_h = accum_vbp + vm.vactive;
-> -	total_width = accum_act_w + vm.hfront_porch;
-> -	total_height = accum_act_h + vm.vfront_porch;
-> +	hsync = mode->hsync_end - mode->hsync_start - 1;
-> +	vsync = mode->vsync_end - mode->vsync_start - 1;
-> +	accum_hbp = mode->htotal - mode->hsync_start - 1;
-> +	accum_vbp = mode->vtotal - mode->vsync_start - 1;
-> +	accum_act_w = accum_hbp + mode->hdisplay;
-> +	accum_act_h = accum_vbp + mode->vdisplay;
-> +	total_width = mode->htotal - 1;
-> +	total_height = mode->vtotal - 1;
->   
->   	/* Configures the HS, VS, DE and PC polarities. Default Active Low */
->   	val = 0;
->   
-> -	if (vm.flags & DISPLAY_FLAGS_HSYNC_HIGH)
-> +	if (mode->flags & DRM_MODE_FLAG_PHSYNC)
->   		val |= GCR_HSPOL;
->   
-> -	if (vm.flags & DISPLAY_FLAGS_VSYNC_HIGH)
-> +	if (mode->flags & DRM_MODE_FLAG_PVSYNC)
->   		val |= GCR_VSPOL;
->   
->   	if (bus_flags & DRM_BUS_FLAG_DE_LOW)
-> 
+
+--WWhmVuFii2NK0j4u
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmCw98sACgkQFA3kzBSg
+KbamaA//eNoMbrQMeNh/xy5vPj5eREfsvtuucQ48SVbDdFIT9SE4ZOj55FDiPFoy
+6d/hDukvfJG7WtsBXuueZjdhc/90UFCRU/Yt4e1No+30MHn+j5cak/AyHkB2Id6E
+M5cP2m6ZwmH2CcRqTO5F5JijG03emU5YR5c2zaJaz8+jLeIwkn1hOJmiQgZ7kkzw
+FuITDMwDU1QH3LVdsBmcDk1LUdZ613tp1J84Y8+HpcdSw1Fupn0N9I57hB0S0/jf
+gky7W4OcJ3ZkWHhCrwLOadGoIMORQEsbxlni/1625v3zpOl+zuvBbisptqV+qFlA
++dV9EzTQhfAbTb9d1PDj9KApnMa/PsiUacr0xMpjCXTGx5zYVkiYGVKV/J1B4QpU
+zYb+mhzs5uI8yjm/YfjC2UZ+dccCBGEPkkRAUCrlHuwpcsBPw4MeJ+v26FNw+ieL
+ZuYSR/yjG8XjU/M1HCVRx3d2F/RoV+y5LSR2CNYnuAKrq9CCifcO1K16HiEgnAX+
+TekHpkLMW/86H0xpKvASX/kFyiVE4uhWIQNfmag9/1NBEHfpQdqrpM9aIfjmtgla
+cG75dEYswbpToPSKvPum/eBuKxEP3/cmPAXp852IQ2TaQetevdnD485FglwcxPUa
+4U5BVE80F7E/yPq1RdRJNtaUEGOYsOwaUWwAMwQjgrwBac0KKBI=
+=x/EN
+-----END PGP SIGNATURE-----
+
+--WWhmVuFii2NK0j4u--
