@@ -2,96 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A5EF3393FA8
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 11:14:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A267393FA5
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 11:13:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235876AbhE1JP5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 May 2021 05:15:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47016 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234610AbhE1JPu (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 May 2021 05:15:50 -0400
-Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85373C06174A
-        for <linux-kernel@vger.kernel.org>; Fri, 28 May 2021 02:14:13 -0700 (PDT)
-Received: by mail-wm1-x32e.google.com with SMTP id f20-20020a05600c4e94b0290181f6edda88so4151413wmq.2
-        for <linux-kernel@vger.kernel.org>; Fri, 28 May 2021 02:14:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=raspberrypi.com; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=IDOJscwMhR8iji5F8vTyzpyDdL2c4rVCTLrFY76zsdo=;
-        b=G45Fe2j5tJR8IhOVQgq6lJYIwNxx25/ft+H4yJZepoBdCbBfsWMNA6Xb3dDeSlaewI
-         jDhuGHmx3uQe+iZE9P4NTkLaovkoy6gbp3atL6Yrxo7eR7szR9CUbUf1q9pDGnMPjL3z
-         JpFYffLOMQof1UBuJk/bqgDvPiHf5u3bJH+1nRylaN7it/5uY4oAUBS6dn4IFGdZaLh5
-         s+X0gS5M2zzIuapSd7xXbJBjp89nfWH5Uz+0z/fC7QM6iJ2XBmEn8j7L8SwZF4sU85b0
-         vI1o/Kns6XsxIVtfOAlIx+wKkVojoaFarlI/9S6AOXmBQSJ6juun6AxCV+nDJ+23mlg4
-         dZEg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=IDOJscwMhR8iji5F8vTyzpyDdL2c4rVCTLrFY76zsdo=;
-        b=dXh2o6FBEvayHDGLrIKHGHGCseghEQEsyPaRyI8ViayarFrbwfkmRsOGLC42S52bzc
-         nGgdsQLKmukGVmDZ80djexEh1CmO2AtTqXQ9BiJYldCcOUxUgfiLAuXzNPgLI5amk9fT
-         pC7hsd6DnfXYNemUkFSxuG3W2rvOcw7Lg/divq+dt+pWL/qUIfLz9/B0nQynCkwy6Akl
-         fkrJu68ScPI0X6gG8fAk6022V6YvTrgPu2zsU/RwFQ/D5SAXAW6erO2xFQ4QWaek5aoj
-         0nrMcT4u6aZ4PG0jbdv7hCBfEhZzpFRRGU3J25/BVr4dCncPALDRo4Pqe6csJhEL6afV
-         Bq2A==
-X-Gm-Message-State: AOAM533znSmYr6/PPC1aSH+9rPUgHe1Xi7ufjc65EcLLVlKWlMoSJfFZ
-        rgErTzQZiIjKWmEEivVgVAxDfQ==
-X-Google-Smtp-Source: ABdhPJzziqNFHtrXPxF5dFvbCO1aXhH4+4X10jIWfi7UZwcGkDpHML/Jgu+b0Msy878Bm3TsP7vDpA==
-X-Received: by 2002:a1c:f717:: with SMTP id v23mr12329684wmh.32.1622193252133;
-        Fri, 28 May 2021 02:14:12 -0700 (PDT)
-Received: from buildbot.pitowers.org ([2a00:1098:3142:14:ae1f:6bff:fedd:de54])
-        by smtp.gmail.com with ESMTPSA id h13sm6329061wml.26.2021.05.28.02.14.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 28 May 2021 02:14:11 -0700 (PDT)
-From:   Phil Elwell <phil@raspberrypi.com>
-To:     Minas Harutyunyan <hminas@synopsys.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Sasha Levin <sashal@kernel.org>,
-        Artur Petrosyan <Arthur.Petrosyan@synopsys.com>,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Phil Elwell <phil@raspberrypi.com>
-Subject: [PATCH v2] usb: dwc2: Fix build in periphal-only mode
-Date:   Fri, 28 May 2021 10:13:50 +0100
-Message-Id: <20210528091349.2602410-1-phil@raspberrypi.com>
-X-Mailer: git-send-email 2.25.1
+        id S235992AbhE1JPT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 May 2021 05:15:19 -0400
+Received: from mga18.intel.com ([134.134.136.126]:19597 "EHLO mga18.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234770AbhE1JPJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 28 May 2021 05:15:09 -0400
+IronPort-SDR: FYX/+ELiTC9A0ySI6clSkxmLaYQ6VASrKZGUvCoUS67vHrFl3EkGXYicbd1lpeXSYVBmFxHhni
+ 1iu2aoo6WTgQ==
+X-IronPort-AV: E=McAfee;i="6200,9189,9997"; a="190294525"
+X-IronPort-AV: E=Sophos;i="5.83,229,1616482800"; 
+   d="scan'208";a="190294525"
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 May 2021 02:13:34 -0700
+IronPort-SDR: T3YZv1SPiP3EGYAqEXSRgwDaJaVqt5f8jcaC3i4cRzpeJwncc5ni4hcwvizhACAEJ9vhHL/iYk
+ 9RDop+ElwNzg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.83,229,1616482800"; 
+   d="scan'208";a="631740210"
+Received: from black.fi.intel.com ([10.237.72.28])
+  by fmsmga006.fm.intel.com with ESMTP; 28 May 2021 02:13:32 -0700
+Received: by black.fi.intel.com (Postfix, from userid 1003)
+        id 46ECB3B6; Fri, 28 May 2021 12:13:55 +0300 (EEST)
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Wolfram Sang <wsa+renesas@sang-engineering.com>,
+        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Wolfram Sang <wsa@kernel.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Subject: [PATCH v2 1/2] i2c: core: Make debug message even more debuggish
+Date:   Fri, 28 May 2021 12:13:50 +0300
+Message-Id: <20210528091351.70699-1-andriy.shevchenko@linux.intel.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The bus_suspended member of struct dwc2_hsotg is only present in builds
-that support host-mode.
+One may notice that dev_printk(KERN_DEBUG ...) is *not* an equivalent
+to dev_dbg(). It will be printed whenever loglevel is high enough.
+And currently it will be the only message in the I²C core in some
+configurations that got printed under above conditions.
 
-Fixes: 24d209dba5a3 ("usb: dwc2: Fix hibernation between host and device modes.")
-Signed-off-by: Phil Elwell <phil@raspberrypi.com>
+Moving to dev_dbg() will hide it in the configurations where Dynamic Debug
+is enabled and hence align with all other debug messages in the I²C core..
+
+Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 ---
- drivers/usb/dwc2/core_intr.c | 4 ++++
- 1 file changed, 4 insertions(+)
+v2: renamed error_or_debug to is_error_level (Wolfram)
+ drivers/i2c/i2c-core-base.c | 10 +++++++---
+ 1 file changed, 7 insertions(+), 3 deletions(-)
 
-v2: Correct commit hash used in the Fixes line.
-
-diff --git a/drivers/usb/dwc2/core_intr.c b/drivers/usb/dwc2/core_intr.c
-index a5ab03808da6..03d0c034cf57 100644
---- a/drivers/usb/dwc2/core_intr.c
-+++ b/drivers/usb/dwc2/core_intr.c
-@@ -725,7 +725,11 @@ static inline void dwc_handle_gpwrdn_disc_det(struct dwc2_hsotg *hsotg,
- 	dwc2_writel(hsotg, gpwrdn_tmp, GPWRDN);
+diff --git a/drivers/i2c/i2c-core-base.c b/drivers/i2c/i2c-core-base.c
+index 5a97e4a02fa2..ae1b1b610aca 100644
+--- a/drivers/i2c/i2c-core-base.c
++++ b/drivers/i2c/i2c-core-base.c
+@@ -399,7 +399,8 @@ static int i2c_gpio_init_recovery(struct i2c_adapter *adap)
+ static int i2c_init_recovery(struct i2c_adapter *adap)
+ {
+ 	struct i2c_bus_recovery_info *bri = adap->bus_recovery_info;
+-	char *err_str, *err_level = KERN_ERR;
++	bool is_error_level = true;
++	char *err_str;
  
- 	hsotg->hibernated = 0;
-+
-+#if IS_ENABLED(CONFIG_USB_DWC2_HOST) ||	\
-+	IS_ENABLED(CONFIG_USB_DWC2_DUAL_ROLE)
- 	hsotg->bus_suspended = 0;
-+#endif
+ 	if (!bri)
+ 		return 0;
+@@ -409,7 +410,7 @@ static int i2c_init_recovery(struct i2c_adapter *adap)
  
- 	if (gpwrdn & GPWRDN_IDSTS) {
- 		hsotg->op_state = OTG_STATE_B_PERIPHERAL;
+ 	if (!bri->recover_bus) {
+ 		err_str = "no suitable method provided";
+-		err_level = KERN_DEBUG;
++		is_error_level = false;
+ 		goto err;
+ 	}
+ 
+@@ -436,7 +437,10 @@ static int i2c_init_recovery(struct i2c_adapter *adap)
+ 
+ 	return 0;
+  err:
+-	dev_printk(err_level, &adap->dev, "Not using recovery: %s\n", err_str);
++	if (is_error_level)
++		dev_err(&adap->dev, "Not using recovery: %s\n", err_str);
++	else
++		dev_dbg(&adap->dev, "Not using recovery: %s\n", err_str);
+ 	adap->bus_recovery_info = NULL;
+ 
+ 	return -EINVAL;
 -- 
-2.25.1
+2.30.2
 
