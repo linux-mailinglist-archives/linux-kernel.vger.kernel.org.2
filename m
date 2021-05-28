@@ -2,88 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 05353394000
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 11:32:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 622D8394015
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 11:34:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234476AbhE1Jdb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 May 2021 05:33:31 -0400
-Received: from mga12.intel.com ([192.55.52.136]:63888 "EHLO mga12.intel.com"
+        id S235997AbhE1JgO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 May 2021 05:36:14 -0400
+Received: from mga17.intel.com ([192.55.52.151]:6659 "EHLO mga17.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229774AbhE1Jd3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 May 2021 05:33:29 -0400
-IronPort-SDR: rd9JKdBpjZoO4pdsteUnKyqyXls5iy66ay4As1pLnczxgejOfz6cc5reVM4UipvACGpmR5aVIP
- WmaDQF8LvNtA==
-X-IronPort-AV: E=McAfee;i="6200,9189,9997"; a="182588124"
+        id S235526AbhE1JgJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 28 May 2021 05:36:09 -0400
+IronPort-SDR: /SaKLMw/jUIwJNaJK3b5Oy3fFjQRTj3zm/p1Wg4Lq5xMnH4NWBD7poX1w/po088D5ueFsWr35f
+ mZwCeaiv3peA==
+X-IronPort-AV: E=McAfee;i="6200,9189,9997"; a="183267172"
 X-IronPort-AV: E=Sophos;i="5.83,229,1616482800"; 
-   d="scan'208";a="182588124"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 May 2021 02:31:55 -0700
-IronPort-SDR: eOvRP1Wcyudl8jebpfyNVAeRlikWPc6SvEcQa0J4i3ECKV0lVPl7X6d353InsFTc09f6Q24Hy/
- NsKsuExFQRIA==
+   d="scan'208";a="183267172"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 May 2021 02:34:32 -0700
+IronPort-SDR: uB+8xYzoqucfKoRlgcPZPfMoWDR0sWUKEK/wrZ/nqFlwTj+F6xJJ7fiV6iEKowckLbTzfDkcjQ
+ zs+Dt78+3+Dw==
 X-IronPort-AV: E=Sophos;i="5.83,229,1616482800"; 
-   d="scan'208";a="436881295"
-Received: from paasikivi.fi.intel.com ([10.237.72.42])
-  by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 May 2021 02:31:53 -0700
-Received: from paasikivi.fi.intel.com (localhost [127.0.0.1])
-        by paasikivi.fi.intel.com (Postfix) with SMTP id DC31E202F7;
-        Fri, 28 May 2021 12:31:50 +0300 (EEST)
-Date:   Fri, 28 May 2021 12:31:50 +0300
-From:   Sakari Ailus <sakari.ailus@linux.intel.com>
-To:     Lee Jones <lee.jones@linaro.org>
-Cc:     linux-kernel@vger.kernel.org, Pavel Machek <pavel@ucw.cz>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        linux-leds@vger.kernel.org
-Subject: Re: [PATCH 05/15] leds: leds-as3645a: Fix function name
- 'as3645a_set_current()'
-Message-ID: <20210528093150.GN3@paasikivi.fi.intel.com>
-References: <20210528090629.1800173-1-lee.jones@linaro.org>
- <20210528090629.1800173-6-lee.jones@linaro.org>
+   d="scan'208";a="443938483"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 May 2021 02:34:29 -0700
+Received: from andy by smile with local (Exim 4.94)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1lmYss-00FHPQ-JM; Fri, 28 May 2021 12:34:26 +0300
+Date:   Fri, 28 May 2021 12:34:26 +0300
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Wolfram Sang <wsa@kernel.org>, Hans de Goede <hdegoede@redhat.com>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        linux-i2c@vger.kernel.org, linux-acpi@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
+        linux-staging@lists.linux.dev,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>
+Subject: Re: [PATCH v1 1/6] i2c: acpi: Export i2c_acpi_find_client_by_adev()
+ for users
+Message-ID: <YLC5IstyPFQA6mBp@smile.fi.intel.com>
+References: <20210526124322.48915-1-andriy.shevchenko@linux.intel.com>
+ <YLAAedlB6UaJQh0X@kunai>
+ <YLC3HzCUhEYmfckj@kroah.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210528090629.1800173-6-lee.jones@linaro.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <YLC3HzCUhEYmfckj@kroah.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Lee,
-
-On Fri, May 28, 2021 at 10:06:19AM +0100, Lee Jones wrote:
-> Fixes the following W=1 kernel build warning(s):
+On Fri, May 28, 2021 at 11:25:51AM +0200, Greg Kroah-Hartman wrote:
+> On Thu, May 27, 2021 at 10:26:33PM +0200, Wolfram Sang wrote:
+> > On Wed, May 26, 2021 at 03:43:17PM +0300, Andy Shevchenko wrote:
+> > > There is at least one user that will gain from the
+> > > i2c_acpi_find_client_by_adev() being exported.
+> > 
+> > No objections per se. But as the user is in staging, I want to ask if
+> > the use there is really a solution we would also accept outside of
+> > staging? Or is it a hack?
 > 
->  drivers/leds/leds-as3645a.c:198: warning: expecting prototype for as3645a_set_config(). Prototype was for as3645a_set_current() instead
+> staging drivers should be self-contained, do not accept code in the core
+> kernel that only is used by staging drivers.
 > 
-> Cc: Sakari Ailus <sakari.ailus@linux.intel.com>
-> Cc: Pavel Machek <pavel@ucw.cz>
-> Cc: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-> Cc: linux-leds@vger.kernel.org
-> Signed-off-by: Lee Jones <lee.jones@linaro.org>
-> ---
->  drivers/leds/leds-as3645a.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/leds/leds-as3645a.c b/drivers/leds/leds-as3645a.c
-> index e8922fa033796..c41937ff8fd33 100644
-> --- a/drivers/leds/leds-as3645a.c
-> +++ b/drivers/leds/leds-as3645a.c
-> @@ -185,7 +185,7 @@ static int as3645a_read(struct as3645a *flash, u8 addr)
->   */
->  
->  /**
-> - * as3645a_set_config - Set flash configuration registers
-> + * as3645a_set_current - Set flash configuration registers
->   * @flash: The flash
->   *
->   * Configure the hardware with flash, assist and indicator currents, as well as
+> So I would not recommend this be accepted at this point in time.
 
-Thanks for the patch.
+Fair enough.
 
-The entire comment could be removed. It's wrong and doesn't really tell
-more than what you can read in the two functions below (the two are result
-of splitting one the documentation was written for).
+> Andy, work to get the driver out of staging first before doing stuff
+> like this.
+
+Okay, I'll drop first one and patches related to it in the v2.
+It should bring us closer to the mentioned point.
+
+Thanks for clarification!
 
 -- 
-Kind regards,
+With Best Regards,
+Andy Shevchenko
 
-Sakari Ailus
+
