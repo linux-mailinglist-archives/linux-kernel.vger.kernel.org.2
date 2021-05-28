@@ -2,52 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 41516394682
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 19:32:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0DAE6394684
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 19:32:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229563AbhE1ReY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 May 2021 13:34:24 -0400
-Received: from gloria.sntech.de ([185.11.138.130]:44424 "EHLO gloria.sntech.de"
+        id S229574AbhE1Rec (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 May 2021 13:34:32 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43658 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229453AbhE1ReQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 May 2021 13:34:16 -0400
-Received: from ip5f5aa64a.dynamic.kabel-deutschland.de ([95.90.166.74] helo=phil.lan)
-        by gloria.sntech.de with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <heiko@sntech.de>)
-        id 1lmgLf-0006NM-DL; Fri, 28 May 2021 19:32:39 +0200
-From:   Heiko Stuebner <heiko@sntech.de>
-To:     linux-clk@vger.kernel.org, Alex Bee <knaerzche@gmail.com>,
-        linux-rockchip@lists.infradead.org
-Cc:     Heiko Stuebner <heiko@sntech.de>,
-        linux-arm-kernel@lists.infradead.org,
-        Michael Turquette <mturquette@baylibre.com>,
-        linux-kernel@vger.kernel.org, Stephen Boyd <sboyd@kernel.org>
-Subject: Re: [PATCH] clk: rockchip: export ACLK_VCODEC for RK3036
-Date:   Fri, 28 May 2021 19:32:37 +0200
-Message-Id: <162222314613.2865009.9291015386212006336.b4-ty@sntech.de>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20210528140736.79686-1-knaerzche@gmail.com>
-References: <20210528140736.79686-1-knaerzche@gmail.com>
+        id S229500AbhE1Rea (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 28 May 2021 13:34:30 -0400
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6579A613B5;
+        Fri, 28 May 2021 17:32:55 +0000 (UTC)
+Date:   Fri, 28 May 2021 13:32:53 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Nicolas Saenz Julienne <nsaenzju@redhat.com>
+Cc:     linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        mingo@redhat.com, corbet@lwn.net, mtosatti@redhat.com
+Subject: Re: [RFC] trace: Add option for polling ring buffers
+Message-ID: <20210528133253.27c749ab@gandalf.local.home>
+In-Reply-To: <20210519175755.670876-1-nsaenzju@redhat.com>
+References: <20210519175755.670876-1-nsaenzju@redhat.com>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 28 May 2021 16:07:36 +0200, Alex Bee wrote:
-> It is required for the series at [1] to let hantro driver aquire the
-> clock and set the rate for RK3036 correctly, but I didn't want to
-> add a patch for yet another subsystem to this series.
+On Wed, 19 May 2021 19:57:55 +0200
+Nicolas Saenz Julienne <nsaenzju@redhat.com> wrote:
+
+> To minimize trace's effect on isolated CPUs. That is, CPUs were only a
+> handful or a single, process are allowed to run. Introduce a new trace
+> option: 'poll-rb'.
 > 
-> [1] https://lore.kernel.org/linux-media/20210525152225.154302-1-knaerzche@gmail.com/
+> This option changes the heuristic used to wait for data on trace
+> buffers. The default one, based on wait queues, will trigger an IPI[1]
+> on the CPU responsible for new data, which will take care of waking up
+> the trace gathering process (generally trace-cmd). Whereas with
+> 'poll-rb' we will poll (as in busy-wait) the ring buffers from the trace
+> gathering process, releasing the CPUs writing trace data from doing any
+> wakeup work.
+> 
+> This wakeup work, although negligible in the vast majority of workloads,
+> may cause unwarranted latencies on systems running trace on isolated
+> CPUs. This is made worse on PREEMPT_RT kernels, as they defer the IPI
+> handling into a kernel thread, forcing unwarranted context switches on
+> otherwise extremely busy CPUs.
+> 
+> To illustrate this, tracing with PREEMPT_RT=y on an isolated CPU with a
+> single process pinned to it (NO_HZ_FULL=y, and plenty more isolation
+> options enabled). I see:
+>   - 50-100us latency spikes with the default trace-cmd options
+>   - 14-10us latency spikes with 'poll-rb'
+>   - 11-8us latency spikes with no tracing at all
+> 
+> The obvious drawback of 'poll-rb' is putting more pressure on the
+> housekeeping CPUs. Wasting cycles. Hence the notice in the documentation
+> discouraging its use in general.
+> 
+> [1] The IPI, in this case, an irq_work, is needed since trace might run
+> in NMI context. Which is not suitable for wake-ups.
 
-Applied, thanks!
+Can't this simply be done in user-space?
 
-[1/1] clk: rockchip: export ACLK_VCODEC for RK3036
-      commit: 2adafc0512625bbd090dc37a353ddda15d525e9d
+Set the reading of the trace buffers to O_NONBLOCK and it wont wait for
+buffering to happen, and should prevent it from causing the IPI wake ups.
 
-Best regards,
--- 
-Heiko Stuebner <heiko@sntech.de>
+If you need this for trace-cmd, we can add a --poll option that would do
+this.
+
+-- Steve
