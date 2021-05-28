@@ -2,79 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 81A5C393ACC
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 02:59:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E78E6393AD0
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 02:59:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234510AbhE1BAa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 May 2021 21:00:30 -0400
-Received: from mga03.intel.com ([134.134.136.65]:39044 "EHLO mga03.intel.com"
+        id S234853AbhE1BAq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 May 2021 21:00:46 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55066 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229843AbhE1BA3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 May 2021 21:00:29 -0400
-IronPort-SDR: rNCe4A8iK7RZ4oT2apTMCInuEXrE1rUi1dVa//cTZgNZziny9yQTCkztPrb+1gRHkhk/JwiNef
- H3EosxDRd7Gw==
-X-IronPort-AV: E=McAfee;i="6200,9189,9997"; a="202904457"
-X-IronPort-AV: E=Sophos;i="5.83,228,1616482800"; 
-   d="scan'208";a="202904457"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 May 2021 17:58:55 -0700
-IronPort-SDR: izcikGdFV1LtOs5sI0F18rj7l/4fqxxuLlLpDvbMi4KFrDxpo7zWFQa6qg/K8Vw5qIW8Q7abjz
- sX7BWllJUXpA==
-X-IronPort-AV: E=Sophos;i="5.83,228,1616482800"; 
-   d="scan'208";a="548379223"
-Received: from akleen-mobl1.amr.corp.intel.com (HELO [10.252.135.183]) ([10.252.135.183])
-  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 May 2021 17:58:53 -0700
-Subject: Re: [clocksource] 8901ecc231: stress-ng.lockbus.ops_per_sec -9.5%
- regression
-To:     paulmck@kernel.org, Matthew Wilcox <willy@infradead.org>
-Cc:     Feng Tang <feng.tang@intel.com>,
-        kernel test robot <oliver.sang@intel.com>,
-        John Stultz <john.stultz@linaro.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Mark Rutland <Mark.Rutland@arm.com>,
-        Marc Zyngier <maz@kernel.org>,
-        Xing Zhengjun <zhengjun.xing@linux.intel.com>,
-        Chris Mason <clm@fb.com>, LKML <linux-kernel@vger.kernel.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        lkp@lists.01.org, lkp@intel.com, ying.huang@intel.com,
-        zhengjun.xing@intel.com
-References: <20210521083322.GG25531@xsang-OptiPlex-9020>
- <20210521135617.GT4441@paulmck-ThinkPad-P17-Gen-1>
- <20210522160827.GA2625834@paulmck-ThinkPad-P17-Gen-1>
- <20210526064922.GD5262@shbuild999.sh.intel.com>
- <20210526134911.GB4441@paulmck-ThinkPad-P17-Gen-1>
- <20210527182959.GA437082@paulmck-ThinkPad-P17-Gen-1>
- <138f81df-08e1-f96e-1915-c58b44f96a41@linux.intel.com>
- <20210527191923.GD4397@paulmck-ThinkPad-P17-Gen-1>
- <YK/zHMPSZSKrmXC6@casper.infradead.org>
- <20210527210524.GE4397@paulmck-ThinkPad-P17-Gen-1>
-From:   Andi Kleen <ak@linux.intel.com>
-Message-ID: <7bda8e6a-2179-b431-973b-d074cd8d93db@linux.intel.com>
-Date:   Thu, 27 May 2021 17:58:53 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.2
+        id S229843AbhE1BAo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 27 May 2021 21:00:44 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 73662610CB;
+        Fri, 28 May 2021 00:59:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1622163550;
+        bh=5fr2tOZXPXgmOeuMonLn2qyfNql+3/KXvyMif/kzSQ4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=rz/dgQma4eMrS5SwHWrS3xYkhwmeMX2Mnlg/6YyzQ/h79CPKrxr6+AsREttFrRu+w
+         92+DIodggE7gdMo7CPhSMGySp5dvSTldXk0997uKS+0XIZFA+es0TWga+Yfni39XrS
+         jbVAHMuzHaP4TADOi7WXwZT9+YXa2025tZWRHx0iZUIffuej1iGFhNmbd41L7pq71R
+         7tHm0EJnf73bqseNCKMaVsiI4NvZqd3vq8MLMMrFgpMEZqzqP+2135eVCZavDE5HL2
+         z4R7SPYLZAb0In/WFR+hX9TVAjEYJbfM2tjGgcPe+npwIbvldmdV1rljYQhM0Mgrwl
+         dT0z4Q44QAffw==
+Date:   Fri, 28 May 2021 08:59:06 +0800
+From:   Peter Chen <peter.chen@kernel.org>
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Pawel Laszczak <pawell@cadence.com>,
+        Roger Quadros <rogerq@kernel.org>,
+        Aswath Govindraju <a-govindraju@ti.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Felipe Balbi <balbi@kernel.org>, devicetree@vger.kernel.org,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] dt-bindings: usb: cdns,usb3: Fix interrupts order
+Message-ID: <20210528005906.GA10856@nchen>
+References: <20210527193952.1705127-1-geert@linux-m68k.org>
 MIME-Version: 1.0
-In-Reply-To: <20210527210524.GE4397@paulmck-ThinkPad-P17-Gen-1>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210527193952.1705127-1-geert@linux-m68k.org>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 21-05-27 21:39:52, Geert Uytterhoeven wrote:
+> Correct the order of the descriptions for the "interrupts" property to
+> match the order of the "interrupt-names" property.
+> 
+> Fixes: 68989fe1c39d9b32 ("dt-bindings: usb: Convert cdns-usb3.txt to YAML schema")
+> Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+> ---
+>  Documentation/devicetree/bindings/usb/cdns,usb3.yaml | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/Documentation/devicetree/bindings/usb/cdns,usb3.yaml b/Documentation/devicetree/bindings/usb/cdns,usb3.yaml
+> index a407e1143cf4251b..8dedfa16c9929d77 100644
+> --- a/Documentation/devicetree/bindings/usb/cdns,usb3.yaml
+> +++ b/Documentation/devicetree/bindings/usb/cdns,usb3.yaml
+> @@ -28,9 +28,9 @@ properties:
+>    interrupts:
+>      minItems: 3
+>      items:
+> -      - description: OTG/DRD controller interrupt
+>        - description: XHCI host controller interrupt
+>        - description: Device controller interrupt
+> +      - description: OTG/DRD controller interrupt
+>        - description: interrupt used to wake up core, e.g when usbcmd.rs is
+>                       cleared by xhci core, this interrupt is optional
+>  
+> -- 
+> 2.25.1
+> 
 
-> Only those cloud provides making heavy use of the aforementioned "poorly
-> designed" hardware, correct?
+Acked-by: Peter Chen <peter.chen@nxp.com>
 
-If any such hardware is deployed in non homeopathic quantities, we 
-probably need to support it out of the box. So far I'm not seeing any 
-evidence that it does not.
+-- 
 
-That would argue for including the patch in the patch series.
-
-Especially since stress-ng is somewhat popular for system testing.
-
-
+Thanks,
+Peter Chen
 
