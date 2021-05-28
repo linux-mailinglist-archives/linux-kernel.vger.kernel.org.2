@@ -2,122 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A47F1393A34
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 02:19:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C2E4393A38
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 02:24:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234432AbhE1AVK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 May 2021 20:21:10 -0400
-Received: from mo-csw1114.securemx.jp ([210.130.202.156]:38318 "EHLO
-        mo-csw.securemx.jp" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229911AbhE1AVI (ORCPT
+        id S233633AbhE1AZ6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 May 2021 20:25:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41642 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232310AbhE1AZ5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 May 2021 20:21:08 -0400
-Received: by mo-csw.securemx.jp (mx-mo-csw1114) id 14S0J9AJ025780; Fri, 28 May 2021 09:19:09 +0900
-X-Iguazu-Qid: 2wGqimLSozX9hKxvxD
-X-Iguazu-QSIG: v=2; s=0; t=1622161149; q=2wGqimLSozX9hKxvxD; m=Pb46Z15qciiqLgO5v7wtl2OcpgmVSghjbHQivoSirVw=
-Received: from imx12-a.toshiba.co.jp (imx12-a.toshiba.co.jp [61.202.160.135])
-        by relay.securemx.jp (mx-mr1112) id 14S0J8hT010418
-        (version=TLSv1.2 cipher=AES128-GCM-SHA256 bits=128 verify=NOT);
-        Fri, 28 May 2021 09:19:08 +0900
-Received: from enc02.toshiba.co.jp (enc02.toshiba.co.jp [61.202.160.51])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by imx12-a.toshiba.co.jp (Postfix) with ESMTPS id 143891000A4;
-        Fri, 28 May 2021 09:19:08 +0900 (JST)
-Received: from hop101.toshiba.co.jp ([133.199.85.107])
-        by enc02.toshiba.co.jp  with ESMTP id 14S0J7TP028838;
-        Fri, 28 May 2021 09:19:07 +0900
-Date:   Fri, 28 May 2021 09:19:05 +0900
-From:   Nobuhiro Iwamatsu <nobuhiro1.iwamatsu@toshiba.co.jp>
-To:     Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>
-Cc:     Bjorn Helgaas <bhelgaas@google.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        linux-pci@vger.kernel.org, punit1.agrawal@toshiba.co.jp,
-        yuji2.ishikawa@toshiba.co.jp, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 2/3] PCI: Visconti: Add Toshiba Visconti PCIe host
- controller driver
-X-TSB-HOP: ON
-Message-ID: <20210528001905.26fvguz7fk7cxxsj@toshiba.co.jp>
-References: <20210524063004.132043-1-nobuhiro1.iwamatsu@toshiba.co.jp>
- <20210524063004.132043-3-nobuhiro1.iwamatsu@toshiba.co.jp>
- <20210524111051.GB244904@rocinante.localdomain>
+        Thu, 27 May 2021 20:25:57 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2EFFC061574;
+        Thu, 27 May 2021 17:24:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+        MIME-Version:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:
+        Content-ID:Content-Description:In-Reply-To:References;
+        bh=rlpGn++d9tstEjDDHdqw3SW5bi3c66Txwye4h8Wez14=; b=waOZezbtkVwHCYhEn2aNH/3u5J
+        PHQwZ7V5EoXl2Cb6KjaZpkCgxXjabD88x0fFvzgI0fDVCm/CImtxRIpoCA/Av1ObaZ3yuJNVh3wb0
+        VUBAYnrJzFEGO1202+dHTjWrbZkAv/6b524oT9yPSm2bF2KZ8uLMpP7IRO/26NbeFxyQ9W/7epLNb
+        vqfXyVc3UO2r26f9EM4wsq79o6J813JQjVNiy/MvG/T3t+OBif9Rdn0wfXNe+q8axm1W+EI150ndQ
+        jx+tAaVzKHeVfQeQOFSgBwbznkFcdB+C5mJ1T3MTffKHvevULjXKNTsz2L75x1O3VsWrO5ileZ0BM
+        ey7nXToA==;
+Received: from [2601:1c0:6280:3f0::ce7d] (helo=bombadil.infradead.org)
+        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1lmQIY-00AYmZ-Kb; Fri, 28 May 2021 00:24:22 +0000
+From:   Randy Dunlap <rdunlap@infradead.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Randy Dunlap <rdunlap@infradead.org>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        linux-s390@vger.kernel.org
+Subject: [PATCH] S390: appldata depends on PROC_SYSCTL
+Date:   Thu, 27 May 2021 17:24:20 -0700
+Message-Id: <20210528002420.17634-1-rdunlap@infradead.org>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210524111051.GB244904@rocinante.localdomain>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi, 
+APPLDATA_BASE should depend on PROC_SYSCTL instead of PROC_FS.
+Building with PROC_FS but not PROC_SYSCTL causes a build error,
+since appldata_base.c uses data and APIs from fs/proc/proc_sysctl.c.
 
-Thanks for your review.
+arch/s390/appldata/appldata_base.o: in function `appldata_generic_handler':
+appldata_base.c:(.text+0x192): undefined reference to `sysctl_vals'
 
-On Mon, May 24, 2021 at 01:10:51PM +0200, Krzysztof Wilczyński wrote:
-> Hi Nobuhiro,
-> 
-> Thank you for working on this!
-> 
-> [...]
-> > +static int visconti_get_resources(struct platform_device *pdev,
-> > +				  struct visconti_pcie *pcie)
-> > +{
-> [...]
-> > +	pcie->refclk = devm_clk_get(dev, "pcie_refclk");
-> > +	if (IS_ERR(pcie->refclk)) {
-> > +		dev_err(dev, "Failed to get refclk clock: %ld\n",
-> > +			PTR_ERR(pcie->refclk));
-> > +		return PTR_ERR(pcie->refclk);
-> > +	}
-> > +
-> > +	pcie->sysclk = devm_clk_get(dev, "sysclk");
-> > +	if (IS_ERR(pcie->sysclk)) {
-> > +		dev_err(dev, "Failed to get sysclk clock: %ld\n",
-> > +			PTR_ERR(pcie->sysclk));
-> > +		return PTR_ERR(pcie->sysclk);
-> > +	}
-> > +
-> > +	pcie->auxclk = devm_clk_get(dev, "auxclk");
-> > +	if (IS_ERR(pcie->auxclk)) {
-> > +		dev_err(dev, "Failed to get auxclk clock: %ld\n",
-> > +			PTR_ERR(pcie->auxclk));
-> > +		return PTR_ERR(pcie->auxclk);
-> > +	}
-> 
-> Do you think you could use the dev_err_probe() to handle the
-> devm_clk_get() failed?  Where applicable this is becoming a common
-> patter drivers apply, for example:
-> 
->   pcie->refclk = devm_clk_get(dev, "pcie_refclk");
->   if (IS_ERR(pcie->refclk))
->   	return dev_err_probe(dev, PTR_ERR(pcie->refclk),
-> 			     "failed to get refclk clock\n");
-> 
-> [...]
+Fixes: c185b783b099 ("[S390] Remove config options.")
+Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+Cc: Heiko Carstens <hca@linux.ibm.com>
+Cc: Vasily Gorbik <gor@linux.ibm.com>
+Cc: Christian Borntraeger <borntraeger@de.ibm.com>
+Cc: linux-s390@vger.kernel.org
+---
+ arch/s390/Kconfig |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Thanks for your suggestion. I will fix using dev_err_probe().
-
-> > +	pci->link_gen = of_pci_get_max_link_speed(pdev->dev.of_node);
-> > +	if (pci->link_gen < 0 || pci->link_gen > 3) {
-> > +		pci->link_gen = 3;
-> > +		dev_dbg(dev, "Applied default link speed\n");
-> > +	}
-> > +
-> > +	dev_dbg(dev, "Link speed Gen %d", pci->link_gen);
-> 
-> Question about the above debug messages.
-> 
-> Given that both are at the same level and the link speed will be printed
-> regardless of whether it was set to a default value or not, does it make
-> sense to still print the message about applying the default link speed?
-> Unless this is something that will be indeed useful during debugging and
-> troubleshooting (and in which case just ignore this question).
-
-I guess so, the message about the default value is not important.
-I will remove this, thank you.
-
-Best regards,
-  Nobuhiro
+--- linux-next-20210526.orig/arch/s390/Kconfig
++++ linux-next-20210526/arch/s390/Kconfig
+@@ -853,7 +853,7 @@ config CMM_IUCV
+ config APPLDATA_BASE
+ 	def_bool n
+ 	prompt "Linux - VM Monitor Stream, base infrastructure"
+-	depends on PROC_FS
++	depends on PROC_SYSCTL
+ 	help
+ 	  This provides a kernel interface for creating and updating z/VM APPLDATA
+ 	  monitor records. The monitor records are updated at certain time
