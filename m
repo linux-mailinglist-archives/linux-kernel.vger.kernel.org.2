@@ -2,106 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 60665393F0A
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 10:56:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 41390393F08
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 10:56:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236018AbhE1I6E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 May 2021 04:58:04 -0400
-Received: from szxga01-in.huawei.com ([45.249.212.187]:5129 "EHLO
-        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235116AbhE1I6C (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 May 2021 04:58:02 -0400
-Received: from dggeml717-chm.china.huawei.com (unknown [172.30.72.56])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4Frz4R0RkDzYn0x;
-        Fri, 28 May 2021 16:53:43 +0800 (CST)
-Received: from dggpemm500006.china.huawei.com (7.185.36.236) by
- dggeml717-chm.china.huawei.com (10.3.17.128) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2176.2; Fri, 28 May 2021 16:56:23 +0800
-Received: from thunder-town.china.huawei.com (10.174.177.72) by
- dggpemm500006.china.huawei.com (7.185.36.236) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Fri, 28 May 2021 16:56:22 +0800
-From:   Zhen Lei <thunder.leizhen@huawei.com>
-To:     Douglas Miller <dougmill@linux.ibm.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jeff Garzik <jeff@garzik.org>,
-        Jan-Bernd Themann <ossthema@de.ibm.com>,
-        netdev <netdev@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-CC:     Zhen Lei <thunder.leizhen@huawei.com>
-Subject: [PATCH 1/1] ehea: fix error return code in ehea_restart_qps()
-Date:   Fri, 28 May 2021 16:55:55 +0800
-Message-ID: <20210528085555.9390-1-thunder.leizhen@huawei.com>
-X-Mailer: git-send-email 2.26.0.windows.1
+        id S235895AbhE1I5k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 May 2021 04:57:40 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55634 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235788AbhE1I5i (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 28 May 2021 04:57:38 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 16644610A5;
+        Fri, 28 May 2021 08:56:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1622192164;
+        bh=m+ComzkrlyF52OQE+pnXGUScIGVYh7O2OuH8zdu9W74=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=lDCCRU5HFWiz+I3jUPSeKwM8DfVdll0IHMSxpxtu9/3CHWKUx/w1NKrkpwpYDCOZL
+         XlKFtAI2v/esjIyh4yIwqP3Kf8aBb5GOzyX1n0InYFGg7ZToYVIs92djaRa4E83dVb
+         JbSEi0+Leh9G1OWnbUSImA2WKLA15p6FSzpDlIho=
+Date:   Fri, 28 May 2021 10:56:01 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Ian Kent <raven@themaw.net>, Fox Chen <foxhlchen@gmail.com>
+Cc:     Tejun Heo <tj@kernel.org>, Eric Sandeen <sandeen@sandeen.net>,
+        Brice Goglin <brice.goglin@gmail.com>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Rick Lindsley <ricklind@linux.vnet.ibm.com>,
+        David Howells <dhowells@redhat.com>,
+        Miklos Szeredi <miklos@szeredi.hu>,
+        Marcelo Tosatti <mtosatti@redhat.com>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [REPOST PATCH v4 0/5] kernfs: proposed locking and concurrency
+ improvement
+Message-ID: <YLCwIfYxM7jYKQxe@kroah.com>
+References: <162218354775.34379.5629941272050849549.stgit@web.messagingengine.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.174.177.72]
-X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
- dggpemm500006.china.huawei.com (7.185.36.236)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <162218354775.34379.5629941272050849549.stgit@web.messagingengine.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix to return -EFAULT from the error handling case instead of 0, as done
-elsewhere in this function.
+On Fri, May 28, 2021 at 02:33:42PM +0800, Ian Kent wrote:
+> There have been a few instances of contention on the kernfs_mutex during
+> path walks, a case on very large IBM systems seen by myself, a report by
+> Brice Goglin and followed up by Fox Chen, and I've since seen a couple
+> of other reports by CoreOS users.
+> 
+> The common thread is a large number of kernfs path walks leading to
+> slowness of path walks due to kernfs_mutex contention.
+> 
+> The problem being that changes to the VFS over some time have increased
+> it's concurrency capabilities to an extent that kernfs's use of a mutex
+> is no longer appropriate. There's also an issue of walks for non-existent
+> paths causing contention if there are quite a few of them which is a less
+> common problem.
+> 
+> This patch series is relatively straight forward.
+> 
+> All it does is add the ability to take advantage of VFS negative dentry
+> caching to avoid needless dentry alloc/free cycles for lookups of paths
+> that don't exit and change the kernfs_mutex to a read/write semaphore.
+> 
+> The patch that tried to stay in VFS rcu-walk mode during path walks has
+> been dropped for two reasons. First, it doesn't actually give very much
+> improvement and, second, if there's a place where mistakes could go
+> unnoticed it would be in that path. This makes the patch series simpler
+> to review and reduces the likelihood of problems going unnoticed and
+> popping up later.
+> 
+> The patch to use a revision to identify if a directory has changed has
+> also been dropped. If the directory has changed the dentry revision
+> needs to be updated to avoid subsequent rb tree searches and after
+> changing to use a read/write semaphore the update also requires a lock.
+> But the d_lock is the only lock available at this point which might
+> itself be contended.
 
-By the way, when get_zeroed_page() fails, directly return -ENOMEM to
-simplify code.
+Fox, can you take some time and test these to verify it all still works
+properly with your benchmarks?
 
-Fixes: 2c69448bbced ("ehea: DLPAR memory add fix")
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
----
- drivers/net/ethernet/ibm/ehea/ehea_main.c | 9 +++++----
- 1 file changed, 5 insertions(+), 4 deletions(-)
+thanks,
 
-diff --git a/drivers/net/ethernet/ibm/ehea/ehea_main.c b/drivers/net/ethernet/ibm/ehea/ehea_main.c
-index ea55314b209d..d105bfbc7c1c 100644
---- a/drivers/net/ethernet/ibm/ehea/ehea_main.c
-+++ b/drivers/net/ethernet/ibm/ehea/ehea_main.c
-@@ -2618,10 +2618,8 @@ static int ehea_restart_qps(struct net_device *dev)
- 	u16 dummy16 = 0;
- 
- 	cb0 = (void *)get_zeroed_page(GFP_KERNEL);
--	if (!cb0) {
--		ret = -ENOMEM;
--		goto out;
--	}
-+	if (!cb0)
-+		return -ENOMEM;
- 
- 	for (i = 0; i < (port->num_def_qps); i++) {
- 		struct ehea_port_res *pr =  &port->port_res[i];
-@@ -2641,6 +2639,7 @@ static int ehea_restart_qps(struct net_device *dev)
- 					    cb0);
- 		if (hret != H_SUCCESS) {
- 			netdev_err(dev, "query_ehea_qp failed (1)\n");
-+			ret = -EFAULT;
- 			goto out;
- 		}
- 
-@@ -2653,6 +2652,7 @@ static int ehea_restart_qps(struct net_device *dev)
- 					     &dummy64, &dummy16, &dummy16);
- 		if (hret != H_SUCCESS) {
- 			netdev_err(dev, "modify_ehea_qp failed (1)\n");
-+			ret = -EFAULT;
- 			goto out;
- 		}
- 
-@@ -2661,6 +2661,7 @@ static int ehea_restart_qps(struct net_device *dev)
- 					    cb0);
- 		if (hret != H_SUCCESS) {
- 			netdev_err(dev, "query_ehea_qp failed (2)\n");
-+			ret = -EFAULT;
- 			goto out;
- 		}
- 
--- 
-2.25.1
-
-
+greg k-h
