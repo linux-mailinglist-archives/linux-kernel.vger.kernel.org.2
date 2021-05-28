@@ -2,69 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 41008393D15
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 08:28:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 757B9393D19
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 08:29:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230302AbhE1G3V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 May 2021 02:29:21 -0400
-Received: from out30-54.freemail.mail.aliyun.com ([115.124.30.54]:38192 "EHLO
-        out30-54.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229753AbhE1G3T (ORCPT
+        id S231219AbhE1GbQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 May 2021 02:31:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37948 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229753AbhE1GbO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 May 2021 02:29:19 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R521e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=alimailimapcm10staff010182156082;MF=tianjia.zhang@linux.alibaba.com;NM=1;PH=DS;RN=10;SR=0;TI=SMTPD_---0UaLIcr6_1622183262;
-Received: from B-455UMD6M-2027.local(mailfrom:tianjia.zhang@linux.alibaba.com fp:SMTPD_---0UaLIcr6_1622183262)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Fri, 28 May 2021 14:27:42 +0800
-Subject: Re: [PATCH v2 1/7] crypto: fix a memory leak in sm2
-To:     Hongbo Li <herbert.tencent@gmail.com>, keyrings@vger.kernel.org,
-        linux-crypto@vger.kernel.org, herbert@gondor.apana.org.au,
-        ebiggers@kernel.org, dhowells@redhat.com, jarkko@kernel.org,
-        herberthbli@tencent.com
-Cc:     linux-kernel@vger.kernel.org, linux-integrity@vger.kernel.org
-References: <1622123615-15517-1-git-send-email-herbert.tencent@gmail.com>
- <1622123615-15517-2-git-send-email-herbert.tencent@gmail.com>
-From:   Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
-Message-ID: <47cf4353-b4bb-3907-6017-60bf87805d0c@linux.alibaba.com>
-Date:   Fri, 28 May 2021 14:27:41 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.10.2
+        Fri, 28 May 2021 02:31:14 -0400
+Received: from ssl.serverraum.org (ssl.serverraum.org [IPv6:2a01:4f8:151:8464::1:2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 270B2C061574;
+        Thu, 27 May 2021 23:29:40 -0700 (PDT)
+Received: from ssl.serverraum.org (web.serverraum.org [172.16.0.2])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ssl.serverraum.org (Postfix) with ESMTPSA id 3577F22239;
+        Fri, 28 May 2021 08:29:34 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2016061301;
+        t=1622183376;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=tvDryGjFc2b0KujgcUtBe5I3gcYMEk3E/mVvu6Bxf/A=;
+        b=LjKnecBf9GWDYelaXriWtkwJLN0XzciFDPhk3Py6yqDSW73C1NwfxuMyy9lCqPtU8rzdvc
+        CwAxmkDMpa/6TXJzBSxvbbOaHxLaufxpeSwWkbl53Ml1b3+IJEymd8ydw8x/j/8tjYm9PO
+        8YkC/Nr1g8H9TgFJZnNJGEvnDe5ntYE=
 MIME-Version: 1.0
-In-Reply-To: <1622123615-15517-2-git-send-email-herbert.tencent@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
 Content-Transfer-Encoding: 7bit
+Date:   Fri, 28 May 2021 08:29:33 +0200
+From:   Michael Walle <michael@walle.cc>
+To:     Sander Vanheule <sander@svanheule.net>
+Cc:     Pavel Machek <pavel@ucw.cz>, Rob Herring <robh+dt@kernel.org>,
+        Lee Jones <lee.jones@linaro.org>,
+        Mark Brown <broonie@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J . Wysocki" <rafael@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        linux-leds@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-gpio@vger.kernel.org, Andrew Lunn <andrew@lunn.ch>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 5/6] pinctrl: Add RTL8231 pin control and GPIO support
+In-Reply-To: <185e8c61893502575c542750c8f27b09029e3078.1621809029.git.sander@svanheule.net>
+References: <cover.1621809029.git.sander@svanheule.net>
+ <185e8c61893502575c542750c8f27b09029e3078.1621809029.git.sander@svanheule.net>
+User-Agent: Roundcube Webmail/1.4.11
+Message-ID: <452144b056cb474321481c011ac9ccfb@walle.cc>
+X-Sender: michael@walle.cc
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Herbert, Hongbo,
+> +	gpio_cfg.reg_dat_base = GPIO_REGMAP_ADDR(RTL8231_REG_GPIO_DATA0);
+> +	gpio_cfg.reg_set_base = GPIO_REGMAP_ADDR(RTL8231_REG_GPIO_DATA0);
+> +	gpio_cfg.reg_dir_in_base = GPIO_REGMAP_ADDR(RTL8231_REG_GPIO_DIR0);
 
-On 5/27/21 9:53 PM, Hongbo Li wrote:
-> From: Hongbo Li <herberthbli@tencent.com>
-> 
-> SM2 module alloc ec->Q in sm2_set_pub_key(), when doing alg test in
-> test_akcipher_one(), it will set public key for every test vector,
-> and don't free ec->Q. This will cause a memory leak.
-> 
-> This patch alloc ec->Q in sm2_ec_ctx_init().
-> 
-> Fixes: ea7ecb66440b ("crypto: sm2 - introduce OSCCA SM2 asymmetric cipher algorithm")
-> Signed-off-by: Hongbo Li <herberthbli@tencent.com>
-> Reviewed-by: Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
-> ---
->   crypto/sm2.c | 24 ++++++++++--------------
->   1 file changed, 10 insertions(+), 14 deletions(-)
-> 
+Btw. you'd only need GPIO_REGMAP_ADDR(x) if x might be 0. Because you 
+have
+a constant != 0 there, you could save the GPIO_REGMAP_ADDR() call. You
+could drop this if you like, but no need to respin the series for this.
 
-Patch 1/7 is an independent bugfix patch. If possible, consider applying 
-it first.
-
-The commit message header should start with: crypto: sm2 -
-
-Also added:
-
-Cc: stable@vger.kernel.org # v5.10+
-
-Best regards,
-Tianjia
+-michael
