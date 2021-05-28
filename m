@@ -2,101 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 56A25393CDE
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 08:03:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 60C6B393CE2
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 08:07:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235361AbhE1GEn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 May 2021 02:04:43 -0400
-Received: from szxga01-in.huawei.com ([45.249.212.187]:5126 "EHLO
-        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233824AbhE1GEY (ORCPT
+        id S235430AbhE1GIY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 May 2021 02:08:24 -0400
+Received: from mo4-p02-ob.smtp.rzone.de ([85.215.255.81]:26360 "EHLO
+        mo4-p02-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235369AbhE1GIV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 May 2021 02:04:24 -0400
-Received: from dggeml703-chm.china.huawei.com (unknown [172.30.72.53])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4FrvCt18ZbzYn7p;
-        Fri, 28 May 2021 13:59:54 +0800 (CST)
-Received: from dggemi762-chm.china.huawei.com (10.1.198.148) by
- dggeml703-chm.china.huawei.com (10.3.17.136) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2176.2; Fri, 28 May 2021 14:02:34 +0800
-Received: from [10.174.178.208] (10.174.178.208) by
- dggemi762-chm.china.huawei.com (10.1.198.148) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2176.2; Fri, 28 May 2021 14:02:33 +0800
-Subject: Re: [PATCH 5.4 0/7] 5.4.123-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        <linux-kernel@vger.kernel.org>
-CC:     <torvalds@linux-foundation.org>, <akpm@linux-foundation.org>,
-        <linux@roeck-us.net>, <shuah@kernel.org>, <patches@kernelci.org>,
-        <lkft-triage@lists.linaro.org>, <pavel@denx.de>,
-        <jonathanh@nvidia.com>, <f.fainelli@gmail.com>,
-        <stable@vger.kernel.org>
-References: <20210527151139.224619013@linuxfoundation.org>
-From:   Samuel Zou <zou_wei@huawei.com>
-Message-ID: <2726a2d4-6a50-79a5-015d-d22a6329baca@huawei.com>
-Date:   Fri, 28 May 2021 14:02:33 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        Fri, 28 May 2021 02:08:21 -0400
+ARC-Seal: i=1; a=rsa-sha256; t=1622181888; cv=none;
+    d=strato.com; s=strato-dkim-0002;
+    b=FhUn1Q58cZq49c79zFXau2b9FqHoMJswXwm4iJuvrqiD3dIYc9RE2K7lgQACUzoEso
+    QHFw6tbucoZvCghjSEO+FbhW3hOP9AS0hYYZuv1OTqYKbiNlMm2KnGS3XglteIO0T95r
+    NfH35YxjBTbrobv9zPDNon3qjB42ujjAHd/Q91rlShHPFJw2C9hVy5fO/I1tHfKJvs1Z
+    Ry7JFQFkn3PlEXywj1W7B2cS0HKz2uMKt+PMedD91yEnz2GQn56vOHIqt5H+IimgZfB0
+    AnD/k1izM2SjAfST1cGXeBifbSvshFBDNF1Rzg1W1WnDVrRjwOX6iHDXNNlrQMJIQ7rO
+    oAQw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1622181888;
+    s=strato-dkim-0002; d=strato.com;
+    h=References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:Cc:Date:
+    From:Subject:Sender;
+    bh=gWmFG7oG6qtY2QVKiNxgiaFmpIb8N+W6XlWAARy8VDA=;
+    b=KcQhzp0cRjQZx5T9dy/EkyklQyVcLpy0n1HFrFDuU/FUrJqj/mrhw8WlBK/wtebjwi
+    /431+PBaVO02PfNOoYs3NmcdmkKSFPr4shYOCzBFmLuBgE3Y3fpwgxhGg+fWLNTReet7
+    pBq835XL6piul826fTzQrLbfYH4CZYm9eb/g5JsrNXjBSVvVTteVcij/ZcP2NKbeceKe
+    t5RxRNlbd0K/GEnVcXtB+uelkq8sPM4Bb17XMb3YgfNBJtYR2bXh5wYewj8RqIJbXjbO
+    6MNixhaEx0a8DzpN/RbGkxqnpAlQTPiewsmIky5uj8br4tG9Ynlx1wj+cqAbB1W5WjxI
+    11PQ==
+ARC-Authentication-Results: i=1; strato.com;
+    dkim=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1622181888;
+    s=strato-dkim-0002; d=chronox.de;
+    h=References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:Cc:Date:
+    From:Subject:Sender;
+    bh=gWmFG7oG6qtY2QVKiNxgiaFmpIb8N+W6XlWAARy8VDA=;
+    b=D7fDBv52YIiOAxeBqHa48208C5P0ldtBuBlCoUvk0nFuszzoE4dLE+Br4QNYRoyPrE
+    BjeX7bg+lowICtpjpFD/d+okZq6159L9wIZhPaN8SlQdkVftkvXOwr19TfNaDfFdzqrx
+    0vk+kpOd2rlsG+OYDg5q7F4STBy0LieljS5IpWfxpWYzaFO1QiIx1f43PnsNjNBX33Df
+    7C8VHCW6SwQuqEriBOhIGjaoe5xsQI4mWWMQHmBqA+/CnXNNSixrVLu7kWZk2FDlwJX0
+    f5scbJGa2ltofbqB9MsnikMn/2jXrjn7zlEe3t8Ii8HurYQSj0/t5nDWXkXaWSfpzUT/
+    WRdw==
+Authentication-Results: strato.com;
+    dkim=none
+X-RZG-AUTH: ":P2ERcEykfu11Y98lp/T7+hdri+uKZK8TKWEqNyiHySGSa9k9xmwdNnzGHXPaIfScuAh3"
+X-RZG-CLASS-ID: mo00
+Received: from positron.chronox.de
+    by smtp.strato.de (RZmta 47.26.3 DYNA|AUTH)
+    with ESMTPSA id R0123ax4S64k2Ou
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
+        (Client did not present a certificate);
+    Fri, 28 May 2021 08:04:46 +0200 (CEST)
+From:   Stephan =?ISO-8859-1?Q?M=FCller?= <smueller@chronox.de>
+To:     Tso Ted <tytso@mit.edu>, linux-crypto@vger.kernel.org,
+        kernel test robot <lkp@intel.com>
+Cc:     kbuild-all@lists.01.org, Willy Tarreau <w@1wt.eu>,
+        Nicolai Stange <nstange@suse.de>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        "Alexander E. Patrakov" <patrakov@gmail.com>,
+        "Ahmed S. Darwish" <darwish.07@gmail.com>
+Subject: Re: [PATCH v40 01/13] Linux Random Number Generator
+Date:   Fri, 28 May 2021 08:04:45 +0200
+Message-ID: <2921350.VP03N2d09h@positron.chronox.de>
+In-Reply-To: <202105280808.AgyBCLBL-lkp@intel.com>
+References: <2939683.iCPfFBJNGb@positron.chronox.de> <202105280808.AgyBCLBL-lkp@intel.com>
 MIME-Version: 1.0
-In-Reply-To: <20210527151139.224619013@linuxfoundation.org>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.178.208]
-X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
- dggemi762-chm.china.huawei.com (10.1.198.148)
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Am Freitag, 28. Mai 2021, 02:41:09 CEST schrieb kernel test robot:
 
+Hi,
 
-On 2021/5/27 23:12, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 5.4.123 release.
-> There are 7 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
+> All errors (new ones prefixed by >>):
+> >> drivers/char/lrng/lrng_chacha20.c:32:8: error: structure variable
+> >> 'chacha20' with 'latent_entropy' attribute has a non-integer field
+> >> 'block'
+>       32 | struct chacha20_state chacha20 __latent_entropy;
 > 
-> Responses should be made by Sat, 29 May 2021 15:11:29 +0000.
-> Anything received after that time might be too late.
-> 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.4.123-rc1.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.4.y
-> and the diffstat can be found below.
-> 
-> thanks,
-> 
-> greg k-h
-> 
+>          |        ^~~~~~~~~~~~~~
 
-Tested on arm64 and x86 for 5.4.123-rc1,
+Thanks for the notification.
 
-Kernel repo:
-https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
-Branch: linux-5.4.y
-Version: 5.4.123-rc1
-Commit: 69500752c0577511bd2a31b0169e1bcb6f710905
-Compiler: gcc version 7.3.0 (GCC)
+I think this is a false-positive discussed before. __latent_entropy is 
+seemingly allowed for an entire linear buffer as seen in the declaration of 
+the variable input_pool_data in driver/char/random.c which is an array of u32.
 
-arm64:
---------------------------------------------------------------------
-Testcase Result Summary:
-total: 8895
-passed: 8895
-failed: 0
-timeout: 0
---------------------------------------------------------------------
+The struct chacha20_state is a linear buffer of u32 words. 
 
-x86:
---------------------------------------------------------------------
-Testcase Result Summary:
-total: 8895
-passed: 8895
-failed: 0
-timeout: 0
---------------------------------------------------------------------
+struct chacha20_block {
+        u32 constants[4];
+        union {
+                u32 u[CHACHA_KEY_SIZE_WORDS];
+                u8  b[CHACHA_KEY_SIZE];
+        } key;
+        u32 counter;
+        u32 nonce[3];
+};
 
-Tested-by: Hulk Robot <hulkrobot@huawei.com>
+Therefore it should be identical to the aforementioned example. The 
+__latent_entropy marker therefore seems to be appropriate for this structure.
+
+Ciao
+Stephan
+
+
