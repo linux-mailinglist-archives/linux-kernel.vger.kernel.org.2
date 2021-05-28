@@ -2,247 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D3FB3942F4
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 14:52:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6AFCF3942FD
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 14:53:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233967AbhE1Mxl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 May 2021 08:53:41 -0400
-Received: from mx08-00178001.pphosted.com ([91.207.212.93]:21656 "EHLO
-        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S229552AbhE1Mxj (ORCPT
+        id S234961AbhE1Mye (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 May 2021 08:54:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39832 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230261AbhE1Myc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 May 2021 08:53:39 -0400
-Received: from pps.filterd (m0046660.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 14SCmRFI006751;
-        Fri, 28 May 2021 14:51:47 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=selector1;
- bh=5bkRV64JeR7S4Wy1xYkqeAsCLKk3+CJqtFN26Joa1a0=;
- b=U573ueW0+UpmYW85v1qxLZoNjxN0NSUbzt1y+Wt9/XHpWam/AOXMlUWxIhDSaVWHNu9r
- hXb/+9y6ud9UZKZN7pKZaNIk1n77QJb5Tq5mGKQaRvov4wOyiWHCA/Kqr04hqy3RQ/m5
- 1moj71CHuKFZBa7jXLnnNagw9L4aACAbkEuVwzRyXcRoi6AoFNLB4eAh73M6lNHOTZde
- KMN2qoEI+c2kw82H2XMgRz/z5XdcT2hOqI3c9d/mIpp1UT/IX7bW7uxpX2OzW5BDYZJa
- R5VyZjNBVh0vG+9gTNOWFOjqp1bmJib70Y1PbQ6oIEqlUsSPJOdctEi/vfo7U8/wKcjM pg== 
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com with ESMTP id 38u03c0805-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 28 May 2021 14:51:47 +0200
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 5F5DA10002A;
-        Fri, 28 May 2021 14:51:46 +0200 (CEST)
-Received: from Webmail-eu.st.com (sfhdag2node3.st.com [10.75.127.6])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 47C622291AB;
-        Fri, 28 May 2021 14:51:46 +0200 (CEST)
-Received: from lmecxl0573.lme.st.com (10.75.127.47) by SFHDAG2NODE3.st.com
- (10.75.127.6) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Fri, 28 May
- 2021 14:51:45 +0200
-Subject: Re: [PATCH v3 3/3] mtd: spinand: add SPI-NAND MTD resume handler
-To:     Pratyush Yadav <p.yadav@ti.com>
-CC:     Mark Brown <broonie@kernel.org>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Boris Brezillon <boris.brezillon@collabora.com>,
-        <linux-mtd@lists.infradead.org>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        <linux-spi@vger.kernel.org>,
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <christophe.kerello@foss.st.com>
-References: <20210527161252.16620-1-patrice.chotard@foss.st.com>
- <20210527161252.16620-4-patrice.chotard@foss.st.com>
- <20210528120508.f6viglv3gkzgweqq@ti.com>
-From:   Patrice CHOTARD <patrice.chotard@foss.st.com>
-Message-ID: <3238725c-d7ff-c000-23d1-f18298e1556f@foss.st.com>
-Date:   Fri, 28 May 2021 14:51:44 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Fri, 28 May 2021 08:54:32 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E397C061574;
+        Fri, 28 May 2021 05:52:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=wHOvG1vDEULjx9dh7AJNtG0WjNHcmlGHIun6OjtdMM0=; b=fGrPFSQdJb65SToPvKgOHyY0AR
+        It3eAVUf9rZxrA+8xkck2GzCBktNCbZjNOm7ndxfNU1GUir6kJX0YQ2nD666Yw647m9FwwPOW7JXy
+        lZvveL35XRpp9n4lvPBqT5z20rN2G08+8sp7iTO00vXryVZF3vRCiRyJRLvCg66O9WB8++72SCybP
+        uhburtlL4UgsYqTeYOjCCx9k077b4fWoCHyvKNPMA1mbnweCFC2J7F7PMwj8nQ+IOqTqBbCLxyeBQ
+        Ti3EKSXsIvYXSf/UswH+VdEX/LKqxewEPIaxzdNNDU+WYK9xgaMBuuw8/RgeERMvdC5fQtpz147lA
+        bVO5YeQA==;
+Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
+        id 1lmby1-006cNL-1Y; Fri, 28 May 2021 12:51:59 +0000
+Date:   Fri, 28 May 2021 13:51:57 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Jia He <justin.he@arm.com>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Petr Mladek <pmladek@suse.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Luca Coelho <luciano.coelho@intel.com>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Johannes Berg <johannes.berg@intel.com>,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        linux-s390@vger.kernel.org
+Subject: Re: [PATCH RFCv2 1/3] fs: introduce helper d_path_fast()
+Message-ID: <YLDnbafc6mEXENfy@casper.infradead.org>
+References: <20210528113951.6225-1-justin.he@arm.com>
+ <20210528113951.6225-2-justin.he@arm.com>
 MIME-Version: 1.0
-In-Reply-To: <20210528120508.f6viglv3gkzgweqq@ti.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.75.127.47]
-X-ClientProxiedBy: SFHDAG3NODE1.st.com (10.75.127.7) To SFHDAG2NODE3.st.com
- (10.75.127.6)
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
- definitions=2021-05-28_04:2021-05-27,2021-05-28 signatures=0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210528113951.6225-2-justin.he@arm.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Pratyush
+On Fri, May 28, 2021 at 07:39:49PM +0800, Jia He wrote:
+> +/**
+> + * d_path_fast - fast return the full path of a dentry without taking
+> + * any seqlock/spinlock. This helper is typical for debugging purpose
+> + */
+> +char *d_path_fast(const struct path *path, char *buf, int buflen)
 
-On 5/28/21 2:05 PM, Pratyush Yadav wrote:
-> On 27/05/21 06:12PM, patrice.chotard@foss.st.com wrote:
->> From: Patrice Chotard <patrice.chotard@foss.st.com>
->>
->> After power up, all SPI NAND's blocks are locked. Only read operations
->> are allowed, write and erase operations are forbidden.
->> The SPI NAND framework unlocks all the blocks during its initialization.
->>
->> During a standby low power, the memory is powered down, losing its
->> configuration.
->> During the resume, the QSPI driver state is restored but the SPI NAND
->> framework does not reconfigured the memory.
->>
->> This patch adds SPI-NAND MTD PM handlers for resume ops.
->> SPI NAND resume op re-initializes SPI NAND flash to its probed state.
->>
->> Signed-off-by: Christophe Kerello <christophe.kerello@foss.st.com>
->> Signed-off-by: Patrice Chotard <patrice.chotard@foss.st.com>
->> ---
->> Changes in v3:
->>   - Add spinand_read_cfg() call to repopulate cache
->>
->> Changes in v2:
->>   - Add helper spinand_block_unlock().
->>   - Add spinand_ecc_enable() call.
->>   - Remove some dev_err().
->>   - Fix commit's title and message.
->>
->>  drivers/mtd/nand/spi/core.c | 33 +++++++++++++++++++++++++++++++++
->>  1 file changed, 33 insertions(+)
->>
->> diff --git a/drivers/mtd/nand/spi/core.c b/drivers/mtd/nand/spi/core.c
->> index 1f699ad84f1b..e3fcbcf381c3 100644
->> --- a/drivers/mtd/nand/spi/core.c
->> +++ b/drivers/mtd/nand/spi/core.c
->> @@ -1099,6 +1099,38 @@ static int spinand_block_unlock(struct spinand_device *spinand)
->>  	return ret;
->>  }
->>  
->> +static void spinand_mtd_resume(struct mtd_info *mtd)
->> +{
->> +	struct spinand_device *spinand = mtd_to_spinand(mtd);
->> +	int ret;
->> +
->> +	ret = spinand_reset_op(spinand);
->> +	if (ret)
->> +		return;
->> +
->> +	ret = spinand_read_cfg(spinand);
->> +	if (ret)
->> +		return;
->> +
->> +	ret = spinand_init_quad_enable(spinand);
->> +	if (ret)
->> +		return;
->> +
->> +	ret = spinand_upd_cfg(spinand, CFG_OTP_ENABLE, 0);
->> +	if (ret)
->> +		return;
->> +
->> +	ret = spinand_manufacturer_init(spinand);
->> +	if (ret)
->> +		return;
->> +
->> +	ret = spinand_block_unlock(spinand);
->> +	if (ret)
->> +		return;
->> +
->> +	spinand_ecc_enable(spinand, false);
->> +}
->> +
-> 
-> I don't think you quite get what me and Miquel are suggesting.
-> 
-> The helper should call all these functions like read_cfg() 
-> quad_enable(), etc. So it should look something like:
+I'd suggest calling it d_path_unsafe().  Otherwise people will call it
+instead of d_path because who doesn't like fast?
 
-Yes, this series was sent too quickly on my side, and i misunderstood 
-what you suggested, sorry for that.
+> +{
+> +	struct path root;
+> +	struct mount *mnt = real_mount(path->mnt);
+> +	DECLARE_BUFFER(b, buf, buflen);
+> +
+> +	rcu_read_lock();
+> +	get_fs_root_rcu(current->fs, &root);
+> +
+> +	prepend(&b, "", 1);
+> +	__prepend_path(path->dentry, mnt, &root, &b);
+> +	rcu_read_unlock();
+> +
+> +	return extract_string(&b);
+> +}
+> +EXPORT_SYMBOL(d_path_fast);
 
-> 
-> int spinand_init_flash()
-> {
-> 	ret = spinand_read_cfg(spinand);
-> 	if (ret)
-> 		return;
-> 
-
-The new helper spinand_read_cfg() must not be called in spinand_init_flash()
-but directly in spinand_resume().
-This because spinand_read_cfg() only performs a REG_CFG read without doing the
-memory allocation of spinand->cfg_cache.
-
-In spinand_init(), spinand_init_cfg_cache() must be called as previously as it does spinand->cfg_cache
-memory allocation and call the new helper spinand_read_cfg(). 
-Then after, spinand_init_flash() can be called.
-
-> 	ret = spinand_init_quad_enable(spinand);
-> 	if (ret)
-> 		return;
-> 
-> 	ret = spinand_upd_cfg(spinand, CFG_OTP_ENABLE, 0);
-> 	if (ret)
-> 		return;
-> 
-> 	ret = spinand_manufacturer_init(spinand);
-> 	if (ret)
-> 		return;
-> 
-> 	ret = spinand_block_unlock(spinand);
-> 	if (ret)
-> 		return;
-> 
-> 	spinand_ecc_enable(spinand, false);
-> }
-> 
-> Then spinand_mtd_resume should look something like:
-> 
-> int spinand_mtd_resume()
-> {
-> 	ret = spinand_reset_op(spinand);
-> 	if (ret)
-> 		return;
-> 
-> 	return spinand_init_flash();
-> }
-> 
-> And spinand_init() should look something like:
-> 
-> int spinand_init()
-> {
-> 	...
-> 	spinand->oobbuf = ...
-> 
-> 	spinand_init_flash();
-> 
-> 	spinand_create_dirmaps();
-> 
-> 	...
-
-As explained just above, spinand_init() will look like :
-
-int spinand_init()
-{
-	...
-	spinand->oobbuf = ...
-
-	spinand_init_cfg_cache();     => perform cfg cache memory allocation and read the REG_CFG
-
-	spinand_init_flash();
-
-	spinand_create_dirmaps();
-
-> }
-> 
-> 
->>  static int spinand_init(struct spinand_device *spinand)
->>  {
->>  	struct device *dev = &spinand->spimem->spi->dev;
->> @@ -1186,6 +1218,7 @@ static int spinand_init(struct spinand_device *spinand)
->>  	mtd->_block_isreserved = spinand_mtd_block_isreserved;
->>  	mtd->_erase = spinand_mtd_erase;
->>  	mtd->_max_bad_blocks = nanddev_mtd_max_bad_blocks;
->> +	mtd->_resume = spinand_mtd_resume;
->>  
->>  	if (nand->ecc.engine) {
->>  		ret = mtd_ooblayout_count_freebytes(mtd);
->> -- 
->> 2.17.1
-> 
-
-Thanks
-Patrice
+Why export it?  What module needs this?
