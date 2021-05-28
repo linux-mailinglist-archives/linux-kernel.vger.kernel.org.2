@@ -2,147 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0190B393BEA
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 05:27:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 854F7393BF0
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 05:30:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236255AbhE1D2c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 May 2021 23:28:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54266 "EHLO
+        id S236328AbhE1DcC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 May 2021 23:32:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55050 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229977AbhE1D23 (ORCPT
+        with ESMTP id S233801AbhE1DcB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 May 2021 23:28:29 -0400
-Received: from mail-oo1-xc2e.google.com (mail-oo1-xc2e.google.com [IPv6:2607:f8b0:4864:20::c2e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C427C06174A
-        for <linux-kernel@vger.kernel.org>; Thu, 27 May 2021 20:26:55 -0700 (PDT)
-Received: by mail-oo1-xc2e.google.com with SMTP id f22-20020a4aeb160000b029021135f0f404so618070ooj.6
-        for <linux-kernel@vger.kernel.org>; Thu, 27 May 2021 20:26:55 -0700 (PDT)
+        Thu, 27 May 2021 23:32:01 -0400
+Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5965DC061574;
+        Thu, 27 May 2021 20:30:26 -0700 (PDT)
+Received: by mail-pj1-x102e.google.com with SMTP id o17-20020a17090a9f91b029015cef5b3c50so3673218pjp.4;
+        Thu, 27 May 2021 20:30:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=0HYf019K48D/mZa9Ja8MZiRvjhcE/p6r/Rzw+0fAH1Q=;
-        b=GVCREBsOQ4o6K8NcnK5Pn767Q+hYZllknZgla56DkQ9AqmhzIfQM9qbWDdpIXvg22U
-         lxVIifjsW/J5f2/aCFokEYLo0UrF5JgLW4Hcz+YLBK/Pi18Ee8/kKameDE2YNj+UB3NU
-         4U63p9plG9om1Zf+v8P0D7fPmeL3f+fBBGj2yVsg0EkJzTkreBIiprgEImJE0VHI5t+W
-         23yEtHvOjeNZ0/l/SKc2oYRwfQgyfx9eCSB9VZtRO90IFpbSZVC3iFuIoK3JeidNyKVH
-         BjuwgiJmgPV0WtkYhnGtgXAOGS8Sf+pz2p0qZ3yb8Kv9aoOwR9tqBCWIttjBQKPNy0C8
-         jZqQ==
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:mail-followup-to:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=DYyj/O1oTsd8iPKaVYhCgJww9/pqZoeLfUmd7MZl1oU=;
+        b=cPmc8KgOTsg3pE5+BSz6K0jniO74D3kCLW+5AppZpT9ifnfOsjpln4Cel8Y27tyWeW
+         iO9cHjYF8Y1XwS1VdqjjaQGZUpYJXP0z1JO7PjE67PfIabSv2A2Winze59JtFZVLcVFW
+         Yp/MvzIcusBHhYyJWiMnjEvku3/i0zj8KzfQZOiSsUF3MrW1qdp81kPKonzyf1AXfiPg
+         Lk9TjmFtwbTEvfszbm1zmAOrSjhzubKytvF+ojKJsVRRyDuLbmvdnaofbtOduTYd3Cy7
+         m5mawJJb6XaAHauZlejrrYbLu8Nk4s1EbLNf3+8DkULNem6vEnzSRuSUKz+cdYqt1E9T
+         p0lg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=0HYf019K48D/mZa9Ja8MZiRvjhcE/p6r/Rzw+0fAH1Q=;
-        b=GEatWWXM2BYaiS/ckAoUcjRUZ+oeEnrUNuC6N4MA9T2L15dy2tWPAoQ8/c15mRqtHj
-         JyoEj0H4lzpw0RnlGn+TC6/CyH9kHUZ/vwYsqPyCCauqVeYQCkv/cVz119mx5wDIA8Ue
-         HLQGbai1t5xkClp7EUjtvghFJZZycXY43W/4dLS7rGxrgkTqKs3vILtNZkwSIuhMAgFy
-         f3Fk4f+hRexe8zGWy3G5B1Z2jEkwb8/KHWq4o6ZfubVnWKUpLAU7MnYT0iz0VEjbjudi
-         R4AHJd/zIXeMKVNMnF3gcJl1u128E6SaiGyjsFspFhX6/lR5huyJCUmKWzx7Mc5mnlvg
-         MoFQ==
-X-Gm-Message-State: AOAM533rhNmW+rmCMz/SdQP183ut1yBhmsUaZvZwYfslF9xEoaMeIZ0m
-        J8ads8zu7cZn9rz+P7op6IU4WbMrOXbCdA==
-X-Google-Smtp-Source: ABdhPJzqLW8dwF9K7NcPJC+8aIVz9h46MznLNDQmiFkSkPnpckPqEgHuAn2s3bheumm48LahOF9Eqg==
-X-Received: by 2002:a4a:d30e:: with SMTP id g14mr5212330oos.32.1622172414871;
-        Thu, 27 May 2021 20:26:54 -0700 (PDT)
-Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id p1sm950576otk.58.2021.05.27.20.26.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 27 May 2021 20:26:54 -0700 (PDT)
-Date:   Thu, 27 May 2021 22:26:52 -0500
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
-Cc:     Ohad Ben-Cohen <ohad@wizery.com>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        linux-remoteproc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com
-Subject: Re: [PATCH] remoteproc: stm32: fix mbox_send_message call
-Message-ID: <YLBi/JZ0u8394tI8@builder.lan>
-References: <20210420091922.29429-1-arnaud.pouliquen@foss.st.com>
+        h=x-gm-message-state:date:from:to:cc:subject:message-id
+         :mail-followup-to:references:mime-version:content-disposition
+         :in-reply-to:user-agent;
+        bh=DYyj/O1oTsd8iPKaVYhCgJww9/pqZoeLfUmd7MZl1oU=;
+        b=Os/zgquyU9P19V3bgaQIJYJjVnIDPUyHopJI9RI1udv0EwoppQzvgGyuZuQKqS2q4o
+         9A/mMsBaMH2oPpLMw5Q7UGiepF4d4LPoysvXkQRriLj0odkFlr+NJdobDs0XA+a5WTrz
+         kOXoRk1CQ3w8W94panxNHtcTmEkqhRM+tLQQTmdUTwHC2IvglDuDKTDykaryxN7mb2/8
+         qxdF5CQ+XUa+1OkYC5rymCRXFhf0iKAKDgtu9cVyheRdfpjUivTHIxzppXzsRuAHUaXj
+         sRe86blQF1shpxS8ILts3jxIKa41oujHHvaRyJ8Z9zDmSzRAP0yLHN1SLrI7US1RO1oP
+         oZyw==
+X-Gm-Message-State: AOAM530oNSD9UcfJGFmMS7XPkj9ONO1/+j4odrsa3LtfaP3vxUSJXYkc
+        wxHtZ2NowkjdkxK8JvYceuU=
+X-Google-Smtp-Source: ABdhPJwZPI3hO/T0Ck2SsoY0yMUQ5UpwbkRfH2+N+d8eIr44Ev4oXd4X2xtIWgeYpERrVHKj7gzgpg==
+X-Received: by 2002:a17:90a:7e84:: with SMTP id j4mr2040025pjl.101.1622172625917;
+        Thu, 27 May 2021 20:30:25 -0700 (PDT)
+Received: from lenovo ([117.18.48.102])
+        by smtp.gmail.com with ESMTPSA id z2sm2912359pgz.64.2021.05.27.20.30.22
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 27 May 2021 20:30:25 -0700 (PDT)
+Date:   Fri, 28 May 2021 11:30:19 +0800
+From:   Orson Zhai <orsonzhai@gmail.com>
+To:     Saravana Kannan <saravanak@google.com>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
+        Orson Zhai <orson.zhai@unisoc.com>
+Subject: Re: [PATCH] of: property: Add fw_devlink support for pwms
+Message-ID: <20210528033019.GA11683@lenovo>
+Mail-Followup-To: Saravana Kannan <saravanak@google.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" <devicetree@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Orson Zhai <orson.zhai@unisoc.com>
+References: <1622102950-31688-1-git-send-email-orsonzhai@gmail.com>
+ <CAGETcx9w-gYrPQuxOf9qQDwzyi8Bjp7cf_uK=Q5UcKuH+vWVFw@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210420091922.29429-1-arnaud.pouliquen@foss.st.com>
+In-Reply-To: <CAGETcx9w-gYrPQuxOf9qQDwzyi8Bjp7cf_uK=Q5UcKuH+vWVFw@mail.gmail.com>
+User-Agent: Mutt/1.5.24 (2015-08-30)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue 20 Apr 04:19 CDT 2021, Arnaud Pouliquen wrote:
-
-> mbox_send_message is called by passing a local dummy message or
-> a function parameter. As the message is queued, it is dereferenced.
-> This works because the message field is not used by the stm32 ipcc
-> driver, but it is not clean.
+On Thu, May 27, 2021 at 02:04:30PM -0700, Saravana Kannan wrote:
+> On Thu, May 27, 2021 at 1:09 AM Orson Zhai <orsonzhai@gmail.com> wrote:
+> >
+> > From: Orson Zhai <orson.zhai@unisoc.com>
+> >
+> > pwms is often required by backlight in embedded devices. Add device link
+> > support for pwms as well.
+> >
+> > Signed-off-by: Orson Zhai <orson.zhai@unisoc.com>
+> > ---
+> >  drivers/of/property.c | 2 ++
+> >  1 file changed, 2 insertions(+)
+> >
+> > diff --git a/drivers/of/property.c b/drivers/of/property.c
+> > index 6c02863..93be977 100644
+> > --- a/drivers/of/property.c
+> > +++ b/drivers/of/property.c
+> > @@ -1287,6 +1287,7 @@ DEFINE_SIMPLE_PROP(pinctrl6, "pinctrl-6", NULL)
+> >  DEFINE_SIMPLE_PROP(pinctrl7, "pinctrl-7", NULL)
+> >  DEFINE_SIMPLE_PROP(pinctrl8, "pinctrl-8", NULL)
+> >  DEFINE_SIMPLE_PROP(remote_endpoint, "remote-endpoint", NULL)
+> > +DEFINE_SIMPLE_PROP(pwms, "pwms", NULL)
+> >  DEFINE_SUFFIX_PROP(regulators, "-supply", NULL)
+> >  DEFINE_SUFFIX_PROP(gpio, "-gpio", "#gpio-cells")
+> >
+> > @@ -1371,6 +1372,7 @@ static const struct supplier_bindings of_supplier_bindings[] = {
+> >         { .parse_prop = parse_pinctrl7, },
+> >         { .parse_prop = parse_pinctrl8, },
+> >         { .parse_prop = parse_remote_endpoint, .node_not_dev = true, },
+> > +       { .parse_prop = parse_pwms, },
+> >         { .parse_prop = parse_gpio_compat, },
+> >         { .parse_prop = parse_interrupts, },
+> >         { .parse_prop = parse_regulators, },
 > 
-> Fix by passing a constant string in all cases.
-> 
-> The associated comments are removed because rproc should not have to
-> deal with the behavior of the mailbox frame.
-> 
+> I already have a local patch for this and "reset" bindings. But I'm
+> holding off on adding support for new properties till fw_devlink=on
+> fully lands in 5.13. Trying to avoid inadvertently adding new
+> dependency issues. For example, the remote_endpoint binding I added to
+> fix one issue caused more dependency issues. So far I've fixed them
+> all.
 
-Didn't we conclude that the mailbox driver doesn't actually dereference
-the pointer being passed?
+Got it. Good to know your plan.
 
-If so I would prefer that you just pass NULL, so that if you in the
-future need to pass some actual data it will be easy to distinguish the
-old and new case.
-
-Regards,
-Bjorn
-
-> Reported-by: Bjorn Andersson <bjorn.andersson@linaro.org>
-> Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
-> ---
->  drivers/remoteproc/stm32_rproc.c | 14 +++++---------
->  1 file changed, 5 insertions(+), 9 deletions(-)
 > 
-> diff --git a/drivers/remoteproc/stm32_rproc.c b/drivers/remoteproc/stm32_rproc.c
-> index 7353f9e7e7af..0e8203a432ab 100644
-> --- a/drivers/remoteproc/stm32_rproc.c
-> +++ b/drivers/remoteproc/stm32_rproc.c
-> @@ -474,14 +474,12 @@ static int stm32_rproc_attach(struct rproc *rproc)
->  static int stm32_rproc_detach(struct rproc *rproc)
->  {
->  	struct stm32_rproc *ddata = rproc->priv;
-> -	int err, dummy_data, idx;
-> +	int err, idx;
->  
->  	/* Inform the remote processor of the detach */
->  	idx = stm32_rproc_mbox_idx(rproc, STM32_MBX_DETACH);
->  	if (idx >= 0 && ddata->mb[idx].chan) {
-> -		/* A dummy data is sent to allow to block on transmit */
-> -		err = mbox_send_message(ddata->mb[idx].chan,
-> -					&dummy_data);
-> +		err = mbox_send_message(ddata->mb[idx].chan, "stop");
->  		if (err < 0)
->  			dev_warn(&rproc->dev, "warning: remote FW detach without ack\n");
->  	}
-> @@ -493,15 +491,13 @@ static int stm32_rproc_detach(struct rproc *rproc)
->  static int stm32_rproc_stop(struct rproc *rproc)
->  {
->  	struct stm32_rproc *ddata = rproc->priv;
-> -	int err, dummy_data, idx;
-> +	int err, idx;
->  
->  	/* request shutdown of the remote processor */
->  	if (rproc->state != RPROC_OFFLINE) {
->  		idx = stm32_rproc_mbox_idx(rproc, STM32_MBX_SHUTDOWN);
->  		if (idx >= 0 && ddata->mb[idx].chan) {
-> -			/* a dummy data is sent to allow to block on transmit */
-> -			err = mbox_send_message(ddata->mb[idx].chan,
-> -						&dummy_data);
-> +			err = mbox_send_message(ddata->mb[idx].chan, "detach");
->  			if (err < 0)
->  				dev_warn(&rproc->dev, "warning: remote FW shutdown without ack\n");
->  		}
-> @@ -556,7 +552,7 @@ static void stm32_rproc_kick(struct rproc *rproc, int vqid)
->  			continue;
->  		if (!ddata->mb[i].chan)
->  			return;
-> -		err = mbox_send_message(ddata->mb[i].chan, (void *)(long)vqid);
-> +		err = mbox_send_message(ddata->mb[i].chan, "kick");
->  		if (err < 0)
->  			dev_err(&rproc->dev, "%s: failed (%s, err:%d)\n",
->  				__func__, ddata->mb[i].name, err);
-> -- 
-> 2.17.1
+> So, yeah, temporary Nak for this.
+
+No problem.
+
+-Orson
+
 > 
+> -Saravana
