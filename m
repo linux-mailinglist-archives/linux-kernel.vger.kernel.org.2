@@ -2,131 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 57CB9393A70
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 02:47:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C5732393A73
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 02:49:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234573AbhE1Asc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 May 2021 20:48:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46756 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229864AbhE1Asb (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 May 2021 20:48:31 -0400
-Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB035C061574
-        for <linux-kernel@vger.kernel.org>; Thu, 27 May 2021 17:46:57 -0700 (PDT)
-Received: by mail-yb1-xb49.google.com with SMTP id m205-20020a25d4d60000b029052a8de1fe41so2351612ybf.23
-        for <linux-kernel@vger.kernel.org>; Thu, 27 May 2021 17:46:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:message-id:mime-version:subject:from:cc;
-        bh=PlH95++B36nHBbK4Jduk7vzZIY/Sp5eibx3QUHpkfY4=;
-        b=d8JjgOYRm5B+az3o5xuyhJh4s4yOm3NSMPpy9CvUAUdDygC5AmVSotAECzCOWOmOCK
-         MtEFJvT/fk65zwVtYPJ1TEzGWEeN9Ca6yQDjrucYfC5pfTScNpzBQm9l187O49k7+yo8
-         ncN6n70im6MOOYNAsIho6nIgWGXR0TLfKrJGaggtrh5V7bEZuHwcLrYT207BjNul4F51
-         VXa+rKxgOFpC4IlNQDcb5aNKTXzQUQpVaEbDaKWn6f2OGeYOMAmdDgqKqetmyUKN3UOd
-         Y+Ky2OCUKLTsa6/W9PbdMpIq6ERJtuNnbcztazqZkEYzAa4/DoW2pq3FSK62fzEusbFu
-         h8uw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:message-id:mime-version:subject:from:cc;
-        bh=PlH95++B36nHBbK4Jduk7vzZIY/Sp5eibx3QUHpkfY4=;
-        b=QRZUSN1czLwLZ8RNbbhbHVHvCFx1EAbNXjNYSWf+YerR4XeGOncKsMAkWnC1MZ7F1H
-         qo3q7pQewGWP4q/oT4QMY9H8vSD6VotbdDLywkir6avzrhVBzNruPApBq5pU6H7QLMKK
-         1lDx/z4NpkEI38W+fvOREzn5t+AGx9U5EX/V3XS4WvTzbaoqoOLOyz5GbHOuVPhaQnKn
-         4lQdBAf5SngsA4kh1Z/+kqkm3cesjel0FqpnguCZgCpwyXMLbkgd0W3E7gDun0hqbmtg
-         To5EuuhkvWCtTqa0d1Olrvz+0F6hgJOVk32lFHVVatpMmoGH20TXcuJHUqpUEq3KOZki
-         XXQw==
-X-Gm-Message-State: AOAM532TxPc9vIrY5yxJN/+Znaj68+MNE/RYWaYQIhd5jKzKGFDmFHFA
-        zE3fVwm8JEyE+kmqCL3Q47r7oKcF6RNi8G4HAQ==
-X-Google-Smtp-Source: ABdhPJypQIi7OLeQOMkKC8MqPd+cdGydq1CCA7pc+vFNILHmJek6bUDtkR6qrp28z/EouWBP2MGghJ0c3azUecOTpw==
-X-Received: from almasrymina.svl.corp.google.com ([2620:15c:2cd:202:b35:38bd:7e0f:3b1d])
- (user=almasrymina job=sendgmr) by 2002:a25:7a41:: with SMTP id
- v62mr8586302ybc.225.1622162816966; Thu, 27 May 2021 17:46:56 -0700 (PDT)
-Date:   Thu, 27 May 2021 17:46:49 -0700
-Message-Id: <20210528004649.85298-1-almasrymina@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.32.0.rc0.204.g9fa02ecfa5-goog
-Subject: [PATCH v4] mm, hugetlb: Fix simple resv_huge_pages underflow on UFFDIO_COPY
-From:   Mina Almasry <almasrymina@google.com>
-Cc:     Mina Almasry <almasrymina@google.com>,
-        Axel Rasmussen <axelrasmussen@google.com>,
-        Peter Xu <peterx@redhat.com>, linux-mm@kvack.org,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-To:     unlisted-recipients:; (no To-header on input)
+        id S234853AbhE1AvE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 May 2021 20:51:04 -0400
+Received: from mga04.intel.com ([192.55.52.120]:54485 "EHLO mga04.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229822AbhE1AvB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 27 May 2021 20:51:01 -0400
+IronPort-SDR: PQFiKI63xyPAZHovu8cVx75jS7AzMyKviNk5O9g1glJLsWhxJyUR+27wHRcXaGiwLKrnRct1Q6
+ cKLIXDp1Gslg==
+X-IronPort-AV: E=McAfee;i="6200,9189,9997"; a="200977676"
+X-IronPort-AV: E=Sophos;i="5.83,228,1616482800"; 
+   d="scan'208";a="200977676"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 May 2021 17:49:26 -0700
+IronPort-SDR: zVQQH3v2xd+LxDnXvdv09uRsLErVWOQZoyeCN2eLQD+vtbxK1hPaSPXsKySNkm7C1NDqDNpe05
+ wvSjPIZTQnjg==
+X-IronPort-AV: E=Sophos;i="5.83,228,1616482800"; 
+   d="scan'208";a="445261698"
+Received: from iweiny-desk2.sc.intel.com (HELO localhost) ([10.3.52.147])
+  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 May 2021 17:49:26 -0700
+From:   ira.weiny@intel.com
+To:     Ben Widawsky <ben.widawsky@intel.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Cc:     Ira Weiny <ira.weiny@intel.com>,
+        Alison Schofield <alison.schofield@intel.com>,
+        Vishal Verma <vishal.l.verma@intel.com>,
+        linux-cxl@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH V3 0/5] Map register blocks individually
+Date:   Thu, 27 May 2021 17:49:17 -0700
+Message-Id: <20210528004922.3980613-1-ira.weiny@intel.com>
+X-Mailer: git-send-email 2.28.0.rc0.12.gb6a658bd00c9
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The userfaultfd hugetlb tests detect a resv_huge_pages underflow. This
-happens when hugetlb_mcopy_atomic_pte() is called with !is_continue on
-an index for which we already have a page in the cache. When this
-happens, we allocate a second page, double consuming the reservation,
-and then fail to insert the page into the cache and return -EEXIST.
+From: Ira Weiny <ira.weiny@intel.com>
 
-To fix this, we first if there exists a page in the cache which already
-consumed the reservation, and return -EEXIST immediately if so.
+Changes for v3:
+	From Jonathan:
+		Add Reviews.  Thanks!
+		Add back the kernel doc comment and enhance it a bit
+		Update commit messages with more details.
+		Remove CXL_REGLOC_RBI_MAX
+	Dan
+		Add pcim_enable_device() back in because it is needed
+		and is not incompatible with pci_release_mem_regions()
+		like I originally though.
+		Change cxl_ioremap_block() to devm_cxl_iomap_block()
 
-There is still a rare condition where we fail to copy the page contents
-AND race with a call for hugetlb_no_page() for this index and again we
-will underflow resv_huge_pages. That is fixed in a more complicated
-patch not targeted for -stable.
+	Add kernel doc comment for cxl_probe_component_regs()
+	Update HDM patch to devm_cxl_iomap_block() call.
 
-Test:
-Hacked the code locally such that resv_huge_pages underflows produce
-a warning, then:
+Some hardware implementations mix component and device registers into the same
+BAR and the driver stack is going to have independent mapping implementations
+for those 2 cases.  Furthermore, it will be nice to have finer grained mappings
+should user space want to map some register blocks.
 
-./tools/testing/selftests/vm/userfaultfd hugetlb_shared 10
-	2 /tmp/kokonut_test/huge/userfaultfd_test && echo test success
-./tools/testing/selftests/vm/userfaultfd hugetlb 10
-	2 /tmp/kokonut_test/huge/userfaultfd_test && echo test success
+Unfortunately, the information for the register blocks is contained inside the
+BARs themselves.  Which means the BAR must be mapped, probed, and unmapped
+prior to the registers being mapped individually.
 
-Both tests succeed and produce no warnings. After the
-test runs number of free/resv hugepages is correct.
+The series starts by introducing the helper function
+cxl_decode_register_block().  Then breaks out region reservation and register
+mapping.  Separates mapping the registers into a probe stage and mapping stage.
+The probe stage creates a list of register blocks which is then iterated to map
+the individual register blocks.
 
-Signed-off-by: Mina Almasry <almasrymina@google.com>
-Cc: Axel Rasmussen <axelrasmussen@google.com>
-Cc: Peter Xu <peterx@redhat.com>
-Cc: linux-mm@kvack.org
-Cc: Mike Kravetz <mike.kravetz@oracle.com>
-Cc: Andrew Morton <akpm@linux-foundation.org>
-Cc: linux-mm@kvack.org
-Cc: linux-kernel@vger.kernel.org
-Cc: stable@vger.kernel.org
+Once mapping is performed in 2 steps the pci device management is removed and
+the resource reservation can be done per register block as well.
 
----
- mm/hugetlb.c | 14 ++++++++++++--
- 1 file changed, 12 insertions(+), 2 deletions(-)
+Finally, mapping the HDM decoder register block is added.
 
-diff --git a/mm/hugetlb.c b/mm/hugetlb.c
-index ead5d12e0604..76e2a6efc165 100644
---- a/mm/hugetlb.c
-+++ b/mm/hugetlb.c
-@@ -4925,10 +4925,20 @@ int hugetlb_mcopy_atomic_pte(struct mm_struct *dst_mm,
- 		if (!page)
- 			goto out;
- 	} else if (!*pagep) {
--		ret = -ENOMEM;
-+		/* If a page already exists, then it's UFFDIO_COPY for
-+		 * a non-missing case. Return -EEXIST.
-+		 */
-+		if (vm_shared &&
-+		    hugetlbfs_pagecache_present(h, dst_vma, dst_addr)) {
-+			ret = -EEXIST;
-+			goto out;
-+		}
-+
- 		page = alloc_huge_page(dst_vma, dst_addr, 0);
--		if (IS_ERR(page))
-+		if (IS_ERR(page)) {
-+			ret = -ENOMEM;
- 			goto out;
-+		}
 
- 		ret = copy_huge_page_from_user(page,
- 						(const void __user *) src_addr,
---
-2.32.0.rc0.204.g9fa02ecfa5-goog
+Ben Widawsky (1):
+  cxl/pci: Add HDM decoder capabilities
+
+Ira Weiny (4):
+  cxl/mem: Introduce cxl_decode_register_block()
+  cxl/mem: Reserve all device regions at once
+  cxl/mem: Map registers based on capabilities
+  cxl/mem: Reserve individual register block regions
+
+ drivers/cxl/core.c | 193 ++++++++++++++++++++++++++++++++++++++++++---
+ drivers/cxl/cxl.h  |  98 ++++++++++++++++++++---
+ drivers/cxl/pci.c  | 164 ++++++++++++++++++++++++++++++--------
+ 3 files changed, 402 insertions(+), 53 deletions(-)
+
+-- 
+2.28.0.rc0.12.gb6a658bd00c9
+
