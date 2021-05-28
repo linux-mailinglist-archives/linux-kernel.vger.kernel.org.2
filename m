@@ -2,128 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 12B56394259
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 14:14:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5506D394255
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 14:13:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236711AbhE1MPp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 May 2021 08:15:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58830 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236705AbhE1MPB (ORCPT
+        id S236559AbhE1MOp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 May 2021 08:14:45 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:33152 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236579AbhE1MNp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 May 2021 08:15:01 -0400
-Received: from mail-pf1-x42d.google.com (mail-pf1-x42d.google.com [IPv6:2607:f8b0:4864:20::42d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 452BEC061343
-        for <linux-kernel@vger.kernel.org>; Fri, 28 May 2021 05:12:35 -0700 (PDT)
-Received: by mail-pf1-x42d.google.com with SMTP id g18so3098347pfr.2
-        for <linux-kernel@vger.kernel.org>; Fri, 28 May 2021 05:12:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=rk9k9ChEl7Vg+ae/8wyh9IS3nb1o6P9TvR8ucb6RQfk=;
-        b=arqhkqGKXLOp9FYHW7F+1Qvr074ccA2539eWwXlR56VpI8MXOo85su1pyIaHg0BqWu
-         0NZ7luwzcaR4BGwU4mpiQxcfQqvWeVlG6ySfbP1OtydShiz4i3qBXRSJ5DC8lz/lfcJB
-         O3N6dQpAghVgnGP0GnkiBJiJmx5tBVJ3s/3ktgyUFTQWppk14d2q+EnT5kRK5Dwjgxhs
-         7XwAjiFEwCCKvCGfk4xUHWOmG6+BVV8sX+nZT0eYl/QHFh0wA8F2CHYPSXk2BvGlKBMO
-         t5KdqmIat2cMwZEhI6pOP6shRpgbiIwUoxmnExevIPF8DeO1tmtzXvTLRwo5UYDLhlij
-         AcCQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=rk9k9ChEl7Vg+ae/8wyh9IS3nb1o6P9TvR8ucb6RQfk=;
-        b=LueUeCU36AH7JN9YkxvWivWNz2Qe8EWl2kx3LeFAfuPHEDmkxMCPNoYDZT0hubW/Wr
-         FFXhTWIz261n73/2Ifuyh+5IhUkZap/RiKvLa/Yn+X/oLXKH4LuMKox6qvGR2NFImnck
-         3N5jgDsMAg6sl4UdmIYTWdPl9aZZFEI4UOWekGlw75LVH50KMkSfzNV74gkiG45NmUIc
-         bw9wBvQYpVengDOr+i7AtRQr2ONWRlFf/Lhq5MBBUmgghLnslhBQ+zYsQdeMtEI/OqfA
-         bWz2Az0TvbNUxUOFILSslrm1PM+DvFkwxKJm0MHdvCKj6oN34zSrkkKu1Za7nXFJ3rmR
-         qckQ==
-X-Gm-Message-State: AOAM531EOi+b+fjuAG7I6sEq7ja5t1Ofb6PYy0FggD2ZIWhMz3XFO04o
-        wRMfiVAHmsvF9S86s9kobaAW
-X-Google-Smtp-Source: ABdhPJxCxfvZSsLHbJBwI8eroHQylFucorI0drDHYYSNCh2VDuiQT518+4R0U1INuo90BpJtJj2vZQ==
-X-Received: by 2002:a63:5052:: with SMTP id q18mr8594951pgl.349.1622203954848;
-        Fri, 28 May 2021 05:12:34 -0700 (PDT)
-Received: from localhost ([139.177.225.253])
-        by smtp.gmail.com with ESMTPSA id c1sm4165321pfo.181.2021.05.28.05.12.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 28 May 2021 05:12:33 -0700 (PDT)
-From:   Xie Yongji <xieyongji@bytedance.com>
-To:     mst@redhat.com, jasowang@redhat.com, kuba@kernel.org
-Cc:     virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v3] virtio-net: Add validation for used length
-Date:   Fri, 28 May 2021 20:11:57 +0800
-Message-Id: <20210528121157.105-1-xieyongji@bytedance.com>
-X-Mailer: git-send-email 2.25.1
+        Fri, 28 May 2021 08:13:45 -0400
+Received: from imap.suse.de (imap-alt.suse-dmz.suse.de [192.168.254.47])
+        (using TLSv1.2 with cipher ECDHE-ECDSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id DE8DA218B3;
+        Fri, 28 May 2021 12:12:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1622203929; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=vri3iLgnuhvZlNDsWXgWeFnIHTDjEjZ+Fvja7rOAqd8=;
+        b=0E5X5iS2BZy6FaWcZxfwQgKnCD45BvZP6XN2h4g0IsJZXsqF2iY6srPWwVL7JmhPorL+x0
+        RcCTk1v7dXc7RpD1NQPOpQOfaaD4U5espBE5Co6WWpWZvLBumuxMpZ1QrZynlIOUa6J/SR
+        42MKh+tsbi/PWSmYIugADPeRqVpzpzY=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1622203929;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=vri3iLgnuhvZlNDsWXgWeFnIHTDjEjZ+Fvja7rOAqd8=;
+        b=mJwRHXkpMbm3U06RZTGrRETPMoScqMqf2bx9sGLAIY/Q9toomS2UBLiBPAqmQX4Mnm0hMH
+        q59gCIEE6gGY5zAQ==
+Received: from imap3-int (imap-alt.suse-dmz.suse.de [192.168.254.47])
+        by imap.suse.de (Postfix) with ESMTP id C30F111A98;
+        Fri, 28 May 2021 12:12:09 +0000 (UTC)
+Received: from director2.suse.de ([192.168.254.72])
+        by imap3-int with ESMTPSA
+        id mNbELhnesGCBHwAALh3uQQ
+        (envelope-from <vbabka@suse.cz>); Fri, 28 May 2021 12:12:09 +0000
+To:     Mel Gorman <mgorman@techsingularity.net>,
+        Dave Hansen <dave.hansen@intel.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Hillf Danton <hdanton@sina.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Michal Hocko <mhocko@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux-MM <linux-mm@kvack.org>, "Tang, Feng" <feng.tang@intel.com>
+References: <20210525080119.5455-1-mgorman@techsingularity.net>
+ <7177f59b-dc05-daff-7dc6-5815b539a790@intel.com>
+ <20210528085545.GJ30378@techsingularity.net>
+From:   Vlastimil Babka <vbabka@suse.cz>
+Subject: Re: [PATCH 0/6 v2] Calculate pcp->high based on zone sizes and active
+ CPUs
+Message-ID: <416f39e7-704a-86d0-8261-dc27366336ab@suse.cz>
+Date:   Fri, 28 May 2021 14:12:09 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.2
 MIME-Version: 1.0
+In-Reply-To: <20210528085545.GJ30378@techsingularity.net>
+Content-Type: text/plain; charset=iso-8859-15
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This adds validation for used length (might come
-from an untrusted device) to avoid data corruption
-or loss.
+On 5/28/21 10:55 AM, Mel Gorman wrote:
+> On Thu, May 27, 2021 at 12:36:21PM -0700, Dave Hansen wrote:
+>> Hi Mel,
+>> 
+>> Feng Tang tossed these on a "Cascade Lake" system with 96 threads and
+>> ~512G of persistent memory and 128G of DRAM.  The PMEM is in "volatile
+>> use" mode and being managed via the buddy just like the normal RAM.
+>> 
+>> The PMEM zones are big ones:
+>> 
+>>         present  65011712 = 248 G
+>>         high       134595 = 525 M
+>> 
+>> The PMEM nodes, of course, don't have any CPUs in them.
+>> 
+>> With your series, the pcp->high value per-cpu is 69584 pages or about
+>> 270MB per CPU.  Scaled up by the 96 CPU threads, that's ~26GB of
+>> worst-case memory in the pcps per zone, or roughly 10% of the size of
+>> the zone.
+>> 
+>> I did see quite a few pcp->counts above 60,000, so it's definitely
+>> possible in practice to see the pcps filled up.  This was not observed
+>> to cause any actual problems in practice.  But, it's still a bit worrisome.
+>> 
+> 
+> Ok, it does have the potential to trigger early reclaim as pages are
+> stored on remote PCP lists. The problem would be transient because
+> vmstat would drain those pages over time but still, how about this patch
+> on top of the series?
+> 
+> --8<--
+> mm/page_alloc: Split pcp->high across all online CPUs for cpuless nodes
+> 
+> Dave Hansen reported the following about Feng Tang's tests on a machine
+> with persistent memory onlined as a DRAM-like device.
+> 
+>   Feng Tang tossed these on a "Cascade Lake" system with 96 threads and
+>   ~512G of persistent memory and 128G of DRAM.  The PMEM is in "volatile
+>   use" mode and being managed via the buddy just like the normal RAM.
+> 
+>   The PMEM zones are big ones:
+> 
+>         present  65011712 = 248 G
+>         high       134595 = 525 M
+> 
+>   The PMEM nodes, of course, don't have any CPUs in them.
+> 
+>   With your series, the pcp->high value per-cpu is 69584 pages or about
+>   270MB per CPU.  Scaled up by the 96 CPU threads, that's ~26GB of
+>   worst-case memory in the pcps per zone, or roughly 10% of the size of
+>   the zone.
+> 
+> This should not cause a problem as such although it could trigger reclaim
+> due to pages being stored on per-cpu lists for CPUs remote to a node. It
+> is not possible to treat cpuless nodes exactly the same as normal nodes
+> but the worst-case scenario can be mitigated by splitting pcp->high across
+> all online CPUs for cpuless memory nodes.
+> 
+> Suggested-by: Dave Hansen <dave.hansen@intel.com>
+> Signed-off-by: Mel Gorman <mgorman@techsingularity.net>
 
-Signed-off-by: Xie Yongji <xieyongji@bytedance.com>
----
- drivers/net/virtio_net.c | 28 +++++++++++++++++++++-------
- 1 file changed, 21 insertions(+), 7 deletions(-)
+Acked-by: Vlastimil Babka <vbabka@suse.cz>
 
-diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
-index 073fec4c0df1..01f15b65824c 100644
---- a/drivers/net/virtio_net.c
-+++ b/drivers/net/virtio_net.c
-@@ -732,6 +732,17 @@ static struct sk_buff *receive_small(struct net_device *dev,
- 
- 	rcu_read_lock();
- 	xdp_prog = rcu_dereference(rq->xdp_prog);
-+	if (unlikely(len > GOOD_PACKET_LEN)) {
-+		pr_debug("%s: rx error: len %u exceeds max size %d\n",
-+			 dev->name, len, GOOD_PACKET_LEN);
-+		dev->stats.rx_length_errors++;
-+		if (xdp_prog)
-+			goto err_xdp;
-+
-+		rcu_read_unlock();
-+		put_page(page);
-+		return NULL;
-+	}
- 	if (xdp_prog) {
- 		struct virtio_net_hdr_mrg_rxbuf *hdr = buf + header_offset;
- 		struct xdp_frame *xdpf;
-@@ -888,6 +899,16 @@ static struct sk_buff *receive_mergeable(struct net_device *dev,
- 
- 	rcu_read_lock();
- 	xdp_prog = rcu_dereference(rq->xdp_prog);
-+	if (unlikely(len > truesize)) {
-+		pr_debug("%s: rx error: len %u exceeds truesize %lu\n",
-+			 dev->name, len, (unsigned long)ctx);
-+		dev->stats.rx_length_errors++;
-+		if (xdp_prog)
-+			goto err_xdp;
-+
-+		rcu_read_unlock();
-+		goto err_skb;
-+	}
- 	if (xdp_prog) {
- 		struct xdp_frame *xdpf;
- 		struct page *xdp_page;
-@@ -1012,13 +1033,6 @@ static struct sk_buff *receive_mergeable(struct net_device *dev,
- 	}
- 	rcu_read_unlock();
- 
--	if (unlikely(len > truesize)) {
--		pr_debug("%s: rx error: len %u exceeds truesize %lu\n",
--			 dev->name, len, (unsigned long)ctx);
--		dev->stats.rx_length_errors++;
--		goto err_skb;
--	}
--
- 	head_skb = page_to_skb(vi, rq, page, offset, len, truesize, !xdp_prog,
- 			       metasize, !!headroom);
- 	curr_skb = head_skb;
--- 
-2.11.0
+Maybe we should even consider distinguishing high limits for local-to-cpu zones
+vs remote, for example for the local-to-cpu zones we would divide by the number
+of local cpus, for remote-to-cpu zones we would divide by all cpus.
 
+Because we can expect cpus to allocate mostly from local zones, so leaving more
+pages on percpu for those zones can be beneficial.
+
+But as the motivation here was to reduce lock contention on freeing, that's less
+clear. We probably can't expect the cpu to be freeing mostly local pages (in
+case of e.g. a large process exiting), because no mechanism works towards that,
+or does it? In case of cpu freeing to remote zone, the lower high limit could hurt.
+
+So that would have to be evaluated if that works in practice. Out of scope here,
+just an idea to discuss.
