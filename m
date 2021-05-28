@@ -2,116 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 33F96394323
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 15:01:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 54441394327
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 15:03:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235792AbhE1NCo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 May 2021 09:02:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41666 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230080AbhE1NCi (ORCPT
+        id S235818AbhE1NE2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 May 2021 09:04:28 -0400
+Received: from szxga02-in.huawei.com ([45.249.212.188]:2453 "EHLO
+        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234233AbhE1NE1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 May 2021 09:02:38 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9A74C061574;
-        Fri, 28 May 2021 06:01:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=ZUYH3Mi14wG7kdhKEHxhtXEvN0lUYTCSCOFLNtrHy8U=; b=ApeMuFTFAmYrhq5vjgQD8SK9L/
-        3Jr36omDQW+jP9z71Yj9q4mcFfIz/QvWcbW3MCmXI72eJdE1Y5CazcfgIM1KZlUU0nj8C/g9CsVzw
-        JKe4dEZD2Sixv0LFh+4vEfEAGlUJLVI+4zFcx3bk1VkKcBWsJrhdhAS1cELocq0ONIO/futC6J2Aq
-        HGOB9N/6/r+hJ0EseI9fOa1ZvYakcOj6SqqytcT2I2IAB4wjRGFqVs5x0EFt7375ZAMJCnZjchi1y
-        Q7rzBYzdSQoBv+iMBZ8WNrVbZOtW5VIuygblyl3g40Gqxjo83YwPPspTP3s1kczXA3S3m/uzVwy9l
-        7IyoDrsQ==;
-Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
-        id 1lmc5i-006clg-A9; Fri, 28 May 2021 12:59:59 +0000
-Date:   Fri, 28 May 2021 13:59:54 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Jia He <justin.he@arm.com>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Petr Mladek <pmladek@suse.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Luca Coelho <luciano.coelho@intel.com>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Johannes Berg <johannes.berg@intel.com>,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        linux-s390@vger.kernel.org
-Subject: Re: [PATCH RFCv2 2/3] lib/vsprintf.c: make %pD print full path for
- file
-Message-ID: <YLDpSnV9XBUJq5RU@casper.infradead.org>
-References: <20210528113951.6225-1-justin.he@arm.com>
- <20210528113951.6225-3-justin.he@arm.com>
+        Fri, 28 May 2021 09:04:27 -0400
+Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.56])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4Fs4XY0Kj8z66qQ;
+        Fri, 28 May 2021 20:59:57 +0800 (CST)
+Received: from dggema769-chm.china.huawei.com (10.1.198.211) by
+ dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
+ 15.1.2176.2; Fri, 28 May 2021 21:02:47 +0800
+Received: from localhost (10.174.179.215) by dggema769-chm.china.huawei.com
+ (10.1.198.211) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Fri, 28
+ May 2021 21:02:47 +0800
+From:   YueHaibing <yuehaibing@huawei.com>
+To:     <dwmw2@infradead.org>, <baolu.lu@linux.intel.com>,
+        <joro@8bytes.org>, <will@kernel.org>
+CC:     <iommu@lists.linux-foundation.org>, <linux-kernel@vger.kernel.org>,
+        YueHaibing <yuehaibing@huawei.com>
+Subject: [PATCH -next] iommu/vt-d: use DEVICE_ATTR_RO macro
+Date:   Fri, 28 May 2021 21:02:29 +0800
+Message-ID: <20210528130229.22108-1-yuehaibing@huawei.com>
+X-Mailer: git-send-email 2.10.2.windows.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210528113951.6225-3-justin.he@arm.com>
+Content-Type: text/plain
+X-Originating-IP: [10.174.179.215]
+X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
+ dggema769-chm.china.huawei.com (10.1.198.211)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 28, 2021 at 07:39:50PM +0800, Jia He wrote:
-> We have '%pD' for printing a filename. It may not be perfect (by
-> default it only prints one component.)
-> 
-> As suggested by Linus at [1]:
-> A dentry has a parent, but at the same time, a dentry really does
-> inherently have "one name" (and given just the dentry pointers, you
-> can't show mount-related parenthood, so in many ways the "show just
-> one name" makes sense for "%pd" in ways it doesn't necessarily for
-> "%pD"). But while a dentry arguably has that "one primary component",
-> a _file_ is certainly not exclusively about that last component.
-> 
-> Hence "file_dentry_name()" simply shouldn't use "dentry_name()" at all.
-> Despite that shared code origin, and despite that similar letter
-> choice (lower-vs-upper case), a dentry and a file really are very
-> different from a name standpoint.
-> 
-> Here stack space is preferred for file_d_path_name() because it is
-> much safer. The stack size 256 is a compromise between stack overflow
-> and too short full path.
+Use DEVICE_ATTR_RO() helper instead of plain DEVICE_ATTR(),
+which makes the code a bit shorter and easier to read.
 
-How is it "safer"?  You already have a buffer passed from the caller.
-Are you saying that d_path_fast() might overrun a really small buffer
-but won't overrun a 256 byte buffer?
+Signed-off-by: YueHaibing <yuehaibing@huawei.com>
+---
+ drivers/iommu/intel/iommu.c | 42 ++++++++++++++++---------------------
+ 1 file changed, 18 insertions(+), 24 deletions(-)
 
-> @@ -920,13 +921,25 @@ char *dentry_name(char *buf, char *end, const struct dentry *d, struct printf_sp
->  }
->  
->  static noinline_for_stack
-> -char *file_dentry_name(char *buf, char *end, const struct file *f,
-> +char *file_d_path_name(char *buf, char *end, const struct file *f,
->  			struct printf_spec spec, const char *fmt)
->  {
-> +	const struct path *path;
-> +	char *p;
-> +	char full_path[256];
-> +
->  	if (check_pointer(&buf, end, f, spec))
->  		return buf;
->  
-> -	return dentry_name(buf, end, f->f_path.dentry, spec, fmt);
-> +	path = &f->f_path;
-> +	if (check_pointer(&buf, end, path, spec))
-> +		return buf;
-> +
-> +	p = d_path_fast(path, full_path, sizeof(full_path));
-> +	if (IS_ERR(p))
-> +		return err_ptr(buf, end, p, spec);
-> +
-> +	return string_nocheck(buf, end, p, spec);
->  }
->  #ifdef CONFIG_BLOCK
->  static noinline_for_stack
+diff --git a/drivers/iommu/intel/iommu.c b/drivers/iommu/intel/iommu.c
+index be35284a2016..0638ea8f6f7d 100644
+--- a/drivers/iommu/intel/iommu.c
++++ b/drivers/iommu/intel/iommu.c
+@@ -4138,62 +4138,56 @@ static inline struct intel_iommu *dev_to_intel_iommu(struct device *dev)
+ 	return container_of(iommu_dev, struct intel_iommu, iommu);
+ }
+ 
+-static ssize_t intel_iommu_show_version(struct device *dev,
+-					struct device_attribute *attr,
+-					char *buf)
++static ssize_t version_show(struct device *dev,
++			    struct device_attribute *attr, char *buf)
+ {
+ 	struct intel_iommu *iommu = dev_to_intel_iommu(dev);
+ 	u32 ver = readl(iommu->reg + DMAR_VER_REG);
+ 	return sprintf(buf, "%d:%d\n",
+ 		       DMAR_VER_MAJOR(ver), DMAR_VER_MINOR(ver));
+ }
+-static DEVICE_ATTR(version, S_IRUGO, intel_iommu_show_version, NULL);
++static DEVICE_ATTR_RO(version);
+ 
+-static ssize_t intel_iommu_show_address(struct device *dev,
+-					struct device_attribute *attr,
+-					char *buf)
++static ssize_t address_show(struct device *dev,
++			    struct device_attribute *attr, char *buf)
+ {
+ 	struct intel_iommu *iommu = dev_to_intel_iommu(dev);
+ 	return sprintf(buf, "%llx\n", iommu->reg_phys);
+ }
+-static DEVICE_ATTR(address, S_IRUGO, intel_iommu_show_address, NULL);
++static DEVICE_ATTR_RO(address);
+ 
+-static ssize_t intel_iommu_show_cap(struct device *dev,
+-				    struct device_attribute *attr,
+-				    char *buf)
++static ssize_t cap_show(struct device *dev,
++			struct device_attribute *attr, char *buf)
+ {
+ 	struct intel_iommu *iommu = dev_to_intel_iommu(dev);
+ 	return sprintf(buf, "%llx\n", iommu->cap);
+ }
+-static DEVICE_ATTR(cap, S_IRUGO, intel_iommu_show_cap, NULL);
++static DEVICE_ATTR_RO(cap);
+ 
+-static ssize_t intel_iommu_show_ecap(struct device *dev,
+-				    struct device_attribute *attr,
+-				    char *buf)
++static ssize_t ecap_show(struct device *dev,
++			 struct device_attribute *attr, char *buf)
+ {
+ 	struct intel_iommu *iommu = dev_to_intel_iommu(dev);
+ 	return sprintf(buf, "%llx\n", iommu->ecap);
+ }
+-static DEVICE_ATTR(ecap, S_IRUGO, intel_iommu_show_ecap, NULL);
++static DEVICE_ATTR_RO(ecap);
+ 
+-static ssize_t intel_iommu_show_ndoms(struct device *dev,
+-				      struct device_attribute *attr,
+-				      char *buf)
++static ssize_t domains_supported_show(struct device *dev,
++				      struct device_attribute *attr, char *buf)
+ {
+ 	struct intel_iommu *iommu = dev_to_intel_iommu(dev);
+ 	return sprintf(buf, "%ld\n", cap_ndoms(iommu->cap));
+ }
+-static DEVICE_ATTR(domains_supported, S_IRUGO, intel_iommu_show_ndoms, NULL);
++static DEVICE_ATTR_RO(domains_supported);
+ 
+-static ssize_t intel_iommu_show_ndoms_used(struct device *dev,
+-					   struct device_attribute *attr,
+-					   char *buf)
++static ssize_t domains_used_show(struct device *dev,
++				 struct device_attribute *attr, char *buf)
+ {
+ 	struct intel_iommu *iommu = dev_to_intel_iommu(dev);
+ 	return sprintf(buf, "%d\n", bitmap_weight(iommu->domain_ids,
+ 						  cap_ndoms(iommu->cap)));
+ }
+-static DEVICE_ATTR(domains_used, S_IRUGO, intel_iommu_show_ndoms_used, NULL);
++static DEVICE_ATTR_RO(domains_used);
+ 
+ static struct attribute *intel_iommu_attrs[] = {
+ 	&dev_attr_version.attr,
+-- 
+2.17.1
+
