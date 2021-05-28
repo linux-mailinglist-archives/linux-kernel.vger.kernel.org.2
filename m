@@ -2,304 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6360F39418F
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 13:00:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2542A394191
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 13:00:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236604AbhE1K7z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 May 2021 06:59:55 -0400
-Received: from smtp-fw-9103.amazon.com ([207.171.188.200]:26710 "EHLO
-        smtp-fw-9103.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236170AbhE1K7x (ORCPT
+        id S236633AbhE1LBP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 May 2021 07:01:15 -0400
+Received: from outbound-smtp31.blacknight.com ([81.17.249.62]:60647 "EHLO
+        outbound-smtp31.blacknight.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S236170AbhE1LBD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 May 2021 06:59:53 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1622199499; x=1653735499;
-  h=from:to:cc:subject:date:message-id:mime-version;
-  bh=yZyidGGPey8OqTV94sQHteniUkyrpOuBwdRzVGsW9iA=;
-  b=S0x7qOu4N/G+uzSH15QdgK6xyrcH85AsW9loyjKskGUVlbgOD6kB0OyP
-   2YvpPzGEZdI3BXzdW/GIVX6gC6JmL1KCJZIdM2M8JN7MKr+nWD1fdHN7J
-   /LDSw8nXzoIdcWLHhGJaEF8ElV0qH6WBVvv7mXI3WkQ6CRR74q81ZegF3
-   0=;
-X-IronPort-AV: E=Sophos;i="5.83,229,1616457600"; 
-   d="scan'208";a="935515109"
-Received: from pdx4-co-svc-p1-lb2-vlan3.amazon.com (HELO email-inbound-relay-2b-5bdc5131.us-west-2.amazon.com) ([10.25.36.214])
-  by smtp-border-fw-9103.sea19.amazon.com with ESMTP; 28 May 2021 10:58:12 +0000
-Received: from EX13MTAUEE001.ant.amazon.com (pdx1-ws-svc-p6-lb9-vlan3.pdx.amazon.com [10.236.137.198])
-        by email-inbound-relay-2b-5bdc5131.us-west-2.amazon.com (Postfix) with ESMTPS id BD264A1C11;
-        Fri, 28 May 2021 10:58:11 +0000 (UTC)
-Received: from EX13D08UEB004.ant.amazon.com (10.43.60.142) by
- EX13MTAUEE001.ant.amazon.com (10.43.62.200) with Microsoft SMTP Server (TLS)
- id 15.0.1497.18; Fri, 28 May 2021 10:58:09 +0000
-Received: from EX13MTAUWB001.ant.amazon.com (10.43.161.207) by
- EX13D08UEB004.ant.amazon.com (10.43.60.142) with Microsoft SMTP Server (TLS)
- id 15.0.1497.18; Fri, 28 May 2021 10:58:09 +0000
-Received: from uae075a0dfd4c51.ant.amazon.com (10.106.82.21) by
- mail-relay.amazon.com (10.43.161.249) with Microsoft SMTP Server id
- 15.0.1497.18 via Frontend Transport; Fri, 28 May 2021 10:58:05 +0000
-From:   Ilias Stamatis <ilstam@amazon.com>
-To:     <kvm@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <pbonzini@redhat.com>
-CC:     <mlevitsk@redhat.com>, <seanjc@google.com>, <vkuznets@redhat.com>,
-        <wanpengli@tencent.com>, <jmattson@google.com>, <joro@8bytes.org>,
-        <zamsden@gmail.com>, <mtosatti@redhat.com>, <dwmw@amazon.co.uk>,
-        <ilstam@amazon.com>
-Subject: [PATCH v5 09/11] KVM: X86: Add vendor callbacks for writing the TSC multiplier
-Date:   Fri, 28 May 2021 11:57:45 +0100
-Message-ID: <20210528105745.1047-1-ilstam@amazon.com>
-X-Mailer: git-send-email 2.17.1
+        Fri, 28 May 2021 07:01:03 -0400
+Received: from mail.blacknight.com (pemlinmail03.blacknight.ie [81.17.254.16])
+        by outbound-smtp31.blacknight.com (Postfix) with ESMTPS id 831DAC0B7C
+        for <linux-kernel@vger.kernel.org>; Fri, 28 May 2021 11:59:26 +0100 (IST)
+Received: (qmail 11325 invoked from network); 28 May 2021 10:59:26 -0000
+Received: from unknown (HELO techsingularity.net) (mgorman@techsingularity.net@[84.203.23.168])
+  by 81.17.254.9 with ESMTPSA (AES256-SHA encrypted, authenticated); 28 May 2021 10:59:26 -0000
+Date:   Fri, 28 May 2021 11:59:25 +0100
+From:   Mel Gorman <mgorman@techsingularity.net>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     Vlastimil Babka <vbabka@suse.cz>, Hillf Danton <hdanton@sina.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Michal Hocko <mhocko@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux-MM <linux-mm@kvack.org>
+Subject: [PATCH] mm/page_alloc: Disassociate the pcp->high from pcp->batch
+ -fix
+Message-ID: <20210528105925.GN30378@techsingularity.net>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=iso-8859-15
+Content-Disposition: inline
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Currently vmx_vcpu_load_vmcs() writes the TSC_MULTIPLIER field of the
-VMCS every time the VMCS is loaded. Instead of doing this, set this
-field from common code on initialization and whenever the scaling ratio
-changes.
+Vlastimil Babka noted that __setup_per_zone_wmarks updating
+pcp->high did not protect watermark-related sysctl handlers from a
+parallel memory hotplug operations. This patch moves the PCP update to
+setup_per_zone_wmarks and updates the PCP high value while protected by
+the pcp_batch_high_lock mutex. As a side-effect, the zone_pcp_update calls
+during memory hotplug operations becomes redundant and can be removed.
 
-Additionally remove vmx->current_tsc_ratio. This field is redundant as
-vcpu->arch.tsc_scaling_ratio already tracks the current TSC scaling
-ratio. The vmx->current_tsc_ratio field is only used for avoiding
-unnecessary writes but it is no longer needed after removing the code
-from the VMCS load path.
+This is a fix to the mmotm patch
+mm-page_alloc-disassociate-the-pcp-high-from-pcp-batch.patch.
+It'll cause a conflict with
+mm-page_alloc-adjust-pcp-high-after-cpu-hotplug-events.patch
+but the resolution is simple as the zone_pcp_update callers in
+setup_per_zone_wmarks no longer exist.
 
-Suggested-by: Sean Christopherson <seanjc@google.com>
-Signed-off-by: Ilias Stamatis <ilstam@amazon.com>
+Signed-off-by: Mel Gorman <mgorman@techsingularity.net>
+Acked-by: Vlastimil Babka <vbabka@suse.cz>
 ---
- arch/x86/include/asm/kvm-x86-ops.h |  1 +
- arch/x86/include/asm/kvm_host.h    |  1 +
- arch/x86/kvm/svm/svm.c             |  6 ++++++
- arch/x86/kvm/vmx/nested.c          |  9 ++++-----
- arch/x86/kvm/vmx/vmx.c             | 11 ++++++-----
- arch/x86/kvm/vmx/vmx.h             |  8 --------
- arch/x86/kvm/x86.c                 | 30 +++++++++++++++++++++++-------
- 7 files changed, 41 insertions(+), 25 deletions(-)
+ mm/memory_hotplug.c |  6 +++---
+ mm/page_alloc.c     | 14 ++++++++------
+ 2 files changed, 11 insertions(+), 9 deletions(-)
 
-diff --git a/arch/x86/include/asm/kvm-x86-ops.h b/arch/x86/include/asm/kvm-x86-ops.h
-index 029c9615378f..34ad7a17458a 100644
---- a/arch/x86/include/asm/kvm-x86-ops.h
-+++ b/arch/x86/include/asm/kvm-x86-ops.h
-@@ -90,6 +90,7 @@ KVM_X86_OP_NULL(has_wbinvd_exit)
- KVM_X86_OP(get_l2_tsc_offset)
- KVM_X86_OP(get_l2_tsc_multiplier)
- KVM_X86_OP(write_tsc_offset)
-+KVM_X86_OP(write_tsc_multiplier)
- KVM_X86_OP(get_exit_info)
- KVM_X86_OP(check_intercept)
- KVM_X86_OP(handle_exit_irqoff)
-diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
-index f099277b993d..a334ce7741ab 100644
---- a/arch/x86/include/asm/kvm_host.h
-+++ b/arch/x86/include/asm/kvm_host.h
-@@ -1308,6 +1308,7 @@ struct kvm_x86_ops {
- 	u64 (*get_l2_tsc_offset)(struct kvm_vcpu *vcpu);
- 	u64 (*get_l2_tsc_multiplier)(struct kvm_vcpu *vcpu);
- 	void (*write_tsc_offset)(struct kvm_vcpu *vcpu, u64 offset);
-+	void (*write_tsc_multiplier)(struct kvm_vcpu *vcpu, u64 multiplier);
+diff --git a/mm/memory_hotplug.c b/mm/memory_hotplug.c
+index 70620d0dd923..974a565797d8 100644
+--- a/mm/memory_hotplug.c
++++ b/mm/memory_hotplug.c
+@@ -961,7 +961,6 @@ int __ref online_pages(unsigned long pfn, unsigned long nr_pages, struct zone *z
+ 	node_states_set_node(nid, &arg);
+ 	if (need_zonelists_rebuild)
+ 		build_all_zonelists(NULL);
+-	zone_pcp_update(zone);
  
- 	/*
- 	 * Retrieve somewhat arbitrary exit information.  Intended to be used
-diff --git a/arch/x86/kvm/svm/svm.c b/arch/x86/kvm/svm/svm.c
-index 8dfb2513b72a..cb701b42b08b 100644
---- a/arch/x86/kvm/svm/svm.c
-+++ b/arch/x86/kvm/svm/svm.c
-@@ -1103,6 +1103,11 @@ static void svm_write_tsc_offset(struct kvm_vcpu *vcpu, u64 offset)
- 	vmcb_mark_dirty(svm->vmcb, VMCB_INTERCEPTS);
- }
+ 	/* Basic onlining is complete, allow allocation of onlined pages. */
+ 	undo_isolate_page_range(pfn, pfn + nr_pages, MIGRATE_MOVABLE);
+@@ -974,6 +973,7 @@ int __ref online_pages(unsigned long pfn, unsigned long nr_pages, struct zone *z
+ 	 */
+ 	shuffle_zone(zone);
  
-+static void svm_write_tsc_multiplier(struct kvm_vcpu *vcpu, u64 multiplier)
-+{
-+	wrmsrl(MSR_AMD64_TSC_RATIO, multiplier);
-+}
-+
- /* Evaluate instruction intercepts that depend on guest CPUID features. */
- static void svm_recalc_instruction_intercepts(struct kvm_vcpu *vcpu,
- 					      struct vcpu_svm *svm)
-@@ -4528,6 +4533,7 @@ static struct kvm_x86_ops svm_x86_ops __initdata = {
- 	.get_l2_tsc_offset = svm_get_l2_tsc_offset,
- 	.get_l2_tsc_multiplier = svm_get_l2_tsc_multiplier,
- 	.write_tsc_offset = svm_write_tsc_offset,
-+	.write_tsc_multiplier = svm_write_tsc_multiplier,
++	/* reinitialise watermarks and update pcp limits */
+ 	init_per_zone_wmark_min();
  
- 	.load_mmu_pgd = svm_load_mmu_pgd,
+ 	kswapd_run(nid);
+@@ -1829,13 +1829,13 @@ int __ref offline_pages(unsigned long start_pfn, unsigned long nr_pages)
+ 	adjust_managed_page_count(pfn_to_page(start_pfn), -nr_pages);
+ 	adjust_present_page_count(zone, -nr_pages);
  
-diff --git a/arch/x86/kvm/vmx/nested.c b/arch/x86/kvm/vmx/nested.c
-index 6058a65a6ede..239154d3e4e7 100644
---- a/arch/x86/kvm/vmx/nested.c
-+++ b/arch/x86/kvm/vmx/nested.c
-@@ -2533,9 +2533,8 @@ static int prepare_vmcs02(struct kvm_vcpu *vcpu, struct vmcs12 *vmcs12,
++	/* reinitialise watermarks and update pcp limits */
+ 	init_per_zone_wmark_min();
+ 
+ 	if (!populated_zone(zone)) {
+ 		zone_pcp_reset(zone);
+ 		build_all_zonelists(NULL);
+-	} else
+-		zone_pcp_update(zone);
++	}
+ 
+ 	node_states_clear_node(node, &arg);
+ 	if (arg.status_change_nid >= 0) {
+diff --git a/mm/page_alloc.c b/mm/page_alloc.c
+index c0536e5d088a..b686344e3889 100644
+--- a/mm/page_alloc.c
++++ b/mm/page_alloc.c
+@@ -8188,12 +8188,6 @@ static void __setup_per_zone_wmarks(void)
+ 		zone->_watermark[WMARK_LOW]  = min_wmark_pages(zone) + tmp;
+ 		zone->_watermark[WMARK_HIGH] = min_wmark_pages(zone) + tmp * 2;
+ 
+-		/*
+-		 * The watermark size have changed so update the pcpu batch
+-		 * and high limits or the limits may be inappropriate.
+-		 */
+-		zone_set_pageset_high_and_batch(zone);
+-
+ 		spin_unlock_irqrestore(&zone->lock, flags);
  	}
  
- 	vmcs_write64(TSC_OFFSET, vcpu->arch.tsc_offset);
--
- 	if (kvm_has_tsc_control)
--		decache_tsc_multiplier(vmx);
-+		vmcs_write64(TSC_MULTIPLIER, vcpu->arch.tsc_scaling_ratio);
+@@ -8210,11 +8204,19 @@ static void __setup_per_zone_wmarks(void)
+  */
+ void setup_per_zone_wmarks(void)
+ {
++	struct zone *zone;
+ 	static DEFINE_SPINLOCK(lock);
  
- 	nested_vmx_transition_tlb_flush(vcpu, vmcs12, true);
- 
-@@ -4501,12 +4500,12 @@ void nested_vmx_vmexit(struct kvm_vcpu *vcpu, u32 vm_exit_reason,
- 	vmcs_write32(VM_EXIT_MSR_LOAD_COUNT, vmx->msr_autoload.host.nr);
- 	vmcs_write32(VM_ENTRY_MSR_LOAD_COUNT, vmx->msr_autoload.guest.nr);
- 	vmcs_write64(TSC_OFFSET, vcpu->arch.tsc_offset);
-+	if (kvm_has_tsc_control)
-+		vmcs_write64(TSC_MULTIPLIER, vcpu->arch.tsc_scaling_ratio);
+ 	spin_lock(&lock);
+ 	__setup_per_zone_wmarks();
+ 	spin_unlock(&lock);
 +
- 	if (vmx->nested.l1_tpr_threshold != -1)
- 		vmcs_write32(TPR_THRESHOLD, vmx->nested.l1_tpr_threshold);
- 
--	if (kvm_has_tsc_control)
--		decache_tsc_multiplier(vmx);
--
- 	if (vmx->nested.change_vmcs01_virtual_apic_mode) {
- 		vmx->nested.change_vmcs01_virtual_apic_mode = false;
- 		vmx_set_virtual_apic_mode(vcpu);
-diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
-index 4b70431c2edd..bf845a08995e 100644
---- a/arch/x86/kvm/vmx/vmx.c
-+++ b/arch/x86/kvm/vmx/vmx.c
-@@ -1390,11 +1390,6 @@ void vmx_vcpu_load_vmcs(struct kvm_vcpu *vcpu, int cpu,
- 
- 		vmx->loaded_vmcs->cpu = cpu;
- 	}
--
--	/* Setup TSC multiplier */
--	if (kvm_has_tsc_control &&
--	    vmx->current_tsc_ratio != vcpu->arch.tsc_scaling_ratio)
--		decache_tsc_multiplier(vmx);
++	/*
++	 * The watermark size have changed so update the pcpu batch
++	 * and high limits or the limits may be inappropriate.
++	 */
++	for_each_zone(zone)
++		zone_pcp_update(zone);
  }
  
  /*
-@@ -1813,6 +1808,11 @@ static void vmx_write_tsc_offset(struct kvm_vcpu *vcpu, u64 offset)
- 	vmcs_write64(TSC_OFFSET, offset);
- }
- 
-+static void vmx_write_tsc_multiplier(struct kvm_vcpu *vcpu, u64 multiplier)
-+{
-+	vmcs_write64(TSC_MULTIPLIER, multiplier);
-+}
-+
- /*
-  * nested_vmx_allowed() checks whether a guest should be allowed to use VMX
-  * instructions and MSRs (i.e., nested VMX). Nested VMX is disabled for
-@@ -7707,6 +7707,7 @@ static struct kvm_x86_ops vmx_x86_ops __initdata = {
- 	.get_l2_tsc_offset = vmx_get_l2_tsc_offset,
- 	.get_l2_tsc_multiplier = vmx_get_l2_tsc_multiplier,
- 	.write_tsc_offset = vmx_write_tsc_offset,
-+	.write_tsc_multiplier = vmx_write_tsc_multiplier,
- 
- 	.load_mmu_pgd = vmx_load_mmu_pgd,
- 
-diff --git a/arch/x86/kvm/vmx/vmx.h b/arch/x86/kvm/vmx/vmx.h
-index aa97c82e3451..3eaa86a0ba3e 100644
---- a/arch/x86/kvm/vmx/vmx.h
-+++ b/arch/x86/kvm/vmx/vmx.h
-@@ -322,8 +322,6 @@ struct vcpu_vmx {
- 	/* apic deadline value in host tsc */
- 	u64 hv_deadline_tsc;
- 
--	u64 current_tsc_ratio;
--
- 	unsigned long host_debugctlmsr;
- 
- 	/*
-@@ -532,12 +530,6 @@ static inline struct vmcs *alloc_vmcs(bool shadow)
- 			      GFP_KERNEL_ACCOUNT);
- }
- 
--static inline void decache_tsc_multiplier(struct vcpu_vmx *vmx)
--{
--	vmx->current_tsc_ratio = vmx->vcpu.arch.tsc_scaling_ratio;
--	vmcs_write64(TSC_MULTIPLIER, vmx->current_tsc_ratio);
--}
--
- static inline bool vmx_has_waitpkg(struct vcpu_vmx *vmx)
- {
- 	return vmx->secondary_exec_control &
-diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-index 801fa1e8e915..c1e14dadad2d 100644
---- a/arch/x86/kvm/x86.c
-+++ b/arch/x86/kvm/x86.c
-@@ -2179,14 +2179,15 @@ static u32 adjust_tsc_khz(u32 khz, s32 ppm)
- 	return v;
- }
- 
-+static void kvm_vcpu_write_tsc_multiplier(struct kvm_vcpu *vcpu, u64 l1_multiplier);
-+
- static int set_tsc_khz(struct kvm_vcpu *vcpu, u32 user_tsc_khz, bool scale)
- {
- 	u64 ratio;
- 
- 	/* Guest TSC same frequency as host TSC? */
- 	if (!scale) {
--		vcpu->arch.l1_tsc_scaling_ratio = kvm_default_tsc_scaling_ratio;
--		vcpu->arch.tsc_scaling_ratio = kvm_default_tsc_scaling_ratio;
-+		kvm_vcpu_write_tsc_multiplier(vcpu, kvm_default_tsc_scaling_ratio);
- 		return 0;
- 	}
- 
-@@ -2212,7 +2213,7 @@ static int set_tsc_khz(struct kvm_vcpu *vcpu, u32 user_tsc_khz, bool scale)
- 		return -1;
- 	}
- 
--	vcpu->arch.l1_tsc_scaling_ratio = vcpu->arch.tsc_scaling_ratio = ratio;
-+	kvm_vcpu_write_tsc_multiplier(vcpu, ratio);
- 	return 0;
- }
- 
-@@ -2224,8 +2225,7 @@ static int kvm_set_tsc_khz(struct kvm_vcpu *vcpu, u32 user_tsc_khz)
- 	/* tsc_khz can be zero if TSC calibration fails */
- 	if (user_tsc_khz == 0) {
- 		/* set tsc_scaling_ratio to a safe value */
--		vcpu->arch.l1_tsc_scaling_ratio = kvm_default_tsc_scaling_ratio;
--		vcpu->arch.tsc_scaling_ratio = kvm_default_tsc_scaling_ratio;
-+		kvm_vcpu_write_tsc_multiplier(vcpu, kvm_default_tsc_scaling_ratio);
- 		return -1;
- 	}
- 
-@@ -2383,6 +2383,23 @@ static void kvm_vcpu_write_tsc_offset(struct kvm_vcpu *vcpu, u64 l1_offset)
- 	static_call(kvm_x86_write_tsc_offset)(vcpu, vcpu->arch.tsc_offset);
- }
- 
-+static void kvm_vcpu_write_tsc_multiplier(struct kvm_vcpu *vcpu, u64 l1_multiplier)
-+{
-+	vcpu->arch.l1_tsc_scaling_ratio = l1_multiplier;
-+
-+	/* Userspace is changing the multiplier while L2 is active */
-+	if (is_guest_mode(vcpu))
-+		vcpu->arch.tsc_scaling_ratio = kvm_calc_nested_tsc_multiplier(
-+			l1_multiplier,
-+			static_call(kvm_x86_get_l2_tsc_multiplier)(vcpu));
-+	else
-+		vcpu->arch.tsc_scaling_ratio = l1_multiplier;
-+
-+	if (kvm_has_tsc_control)
-+		static_call(kvm_x86_write_tsc_multiplier)(
-+			vcpu, vcpu->arch.tsc_scaling_ratio);
-+}
-+
- static inline bool kvm_check_tsc_unstable(void)
- {
- #ifdef CONFIG_X86_64
-@@ -10343,8 +10360,6 @@ int kvm_arch_vcpu_create(struct kvm_vcpu *vcpu)
- 	else
- 		vcpu->arch.mp_state = KVM_MP_STATE_UNINITIALIZED;
- 
--	kvm_set_tsc_khz(vcpu, max_tsc_khz);
--
- 	r = kvm_mmu_create(vcpu);
- 	if (r < 0)
- 		return r;
-@@ -10443,6 +10458,7 @@ void kvm_arch_vcpu_postcreate(struct kvm_vcpu *vcpu)
- 	if (mutex_lock_killable(&vcpu->mutex))
- 		return;
- 	vcpu_load(vcpu);
-+	kvm_set_tsc_khz(vcpu, max_tsc_khz);
- 	kvm_synchronize_tsc(vcpu, 0);
- 	vcpu_put(vcpu);
- 
+
 -- 
-2.17.1
-
+Mel Gorman
+SUSE Labs
