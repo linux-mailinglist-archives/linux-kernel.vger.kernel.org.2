@@ -2,90 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0953C393C39
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 06:08:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C22DA393C3B
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 06:10:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230083AbhE1EJl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 May 2021 00:09:41 -0400
-Received: from conuserg-10.nifty.com ([210.131.2.77]:50669 "EHLO
-        conuserg-10.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229810AbhE1EJi (ORCPT
+        id S230099AbhE1ELf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 May 2021 00:11:35 -0400
+Received: from twspam01.aspeedtech.com ([211.20.114.71]:40202 "EHLO
+        twspam01.aspeedtech.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230116AbhE1ELe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 May 2021 00:09:38 -0400
-X-Greylist: delayed 135290 seconds by postgrey-1.27 at vger.kernel.org; Fri, 28 May 2021 00:09:38 EDT
-Received: from localhost.localdomain (133-32-232-101.west.xps.vectant.ne.jp [133.32.232.101]) (authenticated)
-        by conuserg-10.nifty.com with ESMTP id 14S47JsI029078;
-        Fri, 28 May 2021 13:07:19 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conuserg-10.nifty.com 14S47JsI029078
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1622174839;
-        bh=eCaXXEaS9iNAFPd8MjrkGhV7FV2xPRig2DCKM2Obfno=;
-        h=From:To:Cc:Subject:Date:From;
-        b=s4NjdZwR7kUHALBOMuoO71qORYQnyaQ8x9S+/eaYmCZ8s9h+8fNKxB7GuXPj1vRX5
-         fV/IXsNZV+2JzttplssmphqGXaqHtfXXlFSKFN/mJBXrSAunYMVbfwA/+MrvxmnpJG
-         x8DBfdW/NBa20Auie9l++veei3ekKBCut4FYJqvgEojdYfnwHGvNM2B98KrwHsP0AQ
-         a8e6tNUgqO7hK53nrEK+ZlJD9DmcFAXEPPoB3Sc6+Ideuicy6nrv0n7Dp5QLHm1CZz
-         Vb4HrrFAxjN/7u+qz/5bkEvJIRmwnsdhQwxlnKbUo9kE6aoO2/t4h4A248Iyp9yz62
-         XeXALSyS0eJOw==
-X-Nifty-SrcIP: [133.32.232.101]
-From:   Masahiro Yamada <masahiroy@kernel.org>
-To:     "David S . Miller" <davem@davemloft.net>,
-        sparclinux@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [PATCH] sparc: syscalls: use pattern rules to generate syscall headers
-Date:   Fri, 28 May 2021 13:07:17 +0900
-Message-Id: <20210528040717.2162382-1-masahiroy@kernel.org>
-X-Mailer: git-send-email 2.27.0
+        Fri, 28 May 2021 00:11:34 -0400
+Received: from mail.aspeedtech.com ([192.168.0.24])
+        by twspam01.aspeedtech.com with ESMTP id 14S3uTIr014580;
+        Fri, 28 May 2021 11:56:29 +0800 (GMT-8)
+        (envelope-from steven_lee@aspeedtech.com)
+Received: from aspeedtech.com (192.168.100.253) by TWMBX02.aspeed.com
+ (192.168.0.24) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Fri, 28 May
+ 2021 12:09:36 +0800
+Date:   Fri, 28 May 2021 12:09:34 +0800
+From:   Steven Lee <steven_lee@aspeedtech.com>
+To:     Linus Walleij <linus.walleij@linaro.org>
+CC:     Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Joel Stanley <joel@jms.id.au>,
+        Andrew Jeffery <andrew@aj.id.au>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        "moderated list:ARM/ASPEED MACHINE SUPPORT" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "moderated list:ARM/ASPEED MACHINE SUPPORT" 
+        <linux-aspeed@lists.ozlabs.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Hongwei Zhang <Hongweiz@ami.com>,
+        Ryan Chen <ryan_chen@aspeedtech.com>,
+        Billy Tsai <billy_tsai@aspeedtech.com>
+Subject: Re: [PATCH v2 1/4] dt-bindings: aspeed-sgpio: Convert txt bindings
+ to yaml.
+Message-ID: <20210528040934.GA28403@aspeedtech.com>
+References: <20210527005455.25758-1-steven_lee@aspeedtech.com>
+ <20210527005455.25758-2-steven_lee@aspeedtech.com>
+ <CACRpkdZFcFuT9rdrc8BfEBmhy0--9uLMSJWfr=A+nU117_BT8A@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="utf-8"
+Content-Disposition: inline
+In-Reply-To: <CACRpkdZFcFuT9rdrc8BfEBmhy0--9uLMSJWfr=A+nU117_BT8A@mail.gmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Originating-IP: [192.168.100.253]
+X-ClientProxiedBy: TWMBX02.aspeed.com (192.168.0.24) To TWMBX02.aspeed.com
+ (192.168.0.24)
+X-DNSRBL: 
+X-MAIL: twspam01.aspeedtech.com 14S3uTIr014580
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use pattern rules to unify similar build rules between 32-bit and 64-bit.
+The 05/28/2021 07:51, Linus Walleij wrote:
+> On Thu, May 27, 2021 at 2:55 AM Steven Lee <steven_lee@aspeedtech.com> wrote:
+> 
+> > SGPIO bindings should be converted as yaml format.
+> > In addition to the file conversion, a new property max-ngpios is
+> > added in the yaml file as well.
+> > The new property is required by the enhanced sgpio driver for
+> > making the configuration of the max number of gpio pins more flexible.
+> >
+> > Signed-off-by: Steven Lee <steven_lee@aspeedtech.com>
+> (...)
+> > +  max-ngpios:
+> > +    description:
+> > +      represents the number of actual hardware-supported GPIOs (ie,
+> > +      slots within the clocked serial GPIO data). Since each HW GPIO is both an
+> > +      input and an output, we provide max_ngpios * 2 lines on our gpiochip
+> > +      device. We also use it to define the split between the inputs and
+> > +      outputs; the inputs start at line 0, the outputs start at max_ngpios.
+> > +    minimum: 0
+> > +    maximum: 128
+> 
+> Why can this not be derived from the compatible value?
+> 
+> Normally there should be one compatible per hardware variant
+> of the block. And this should be aligned with that, should it not?
+> 
+> If this is not the case, maybe more detailed compatible strings
+> are needed, maybe double compatibles with compatible per
+> family and SoC?
+> 
 
-Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
----
+Thanks for your suggestion.
+I add max-ngpios in dt-bindings as there is ngpios defined in
+dt-bindings, users can get the both max-ngpios and ngpios information
+from dtsi without digging sgpio driver.
 
- arch/sparc/kernel/syscalls/Makefile | 18 ++++--------------
- 1 file changed, 4 insertions(+), 14 deletions(-)
+https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/arch/arm/boot/dts/aspeed-g5.dtsi#n354
 
-diff --git a/arch/sparc/kernel/syscalls/Makefile b/arch/sparc/kernel/syscalls/Makefile
-index 0f2ea5bcb0d7..d63f18dd058d 100644
---- a/arch/sparc/kernel/syscalls/Makefile
-+++ b/arch/sparc/kernel/syscalls/Makefile
-@@ -10,25 +10,15 @@ syshdr := $(srctree)/scripts/syscallhdr.sh
- systbl := $(srctree)/scripts/syscalltbl.sh
- 
- quiet_cmd_syshdr = SYSHDR  $@
--      cmd_syshdr = $(CONFIG_SHELL) $(syshdr) --emit-nr --abis $(abis) $< $@
-+      cmd_syshdr = $(CONFIG_SHELL) $(syshdr) --emit-nr --abis common,$* $< $@
- 
- quiet_cmd_systbl = SYSTBL  $@
--      cmd_systbl = $(CONFIG_SHELL) $(systbl) --abis $(abis) $< $@
-+      cmd_systbl = $(CONFIG_SHELL) $(systbl) --abis common,$* $< $@
- 
--$(uapi)/unistd_32.h: abis := common,32
--$(uapi)/unistd_32.h: $(syscall) $(syshdr) FORCE
-+$(uapi)/unistd_%.h: $(syscall) $(syshdr) FORCE
- 	$(call if_changed,syshdr)
- 
--$(uapi)/unistd_64.h: abis := common,64
--$(uapi)/unistd_64.h: $(syscall) $(syshdr) FORCE
--	$(call if_changed,syshdr)
--
--$(kapi)/syscall_table_32.h: abis := common,32
--$(kapi)/syscall_table_32.h: $(syscall) $(systbl) FORCE
--	$(call if_changed,systbl)
--
--$(kapi)/syscall_table_64.h: abis := common,64
--$(kapi)/syscall_table_64.h: $(syscall) $(systbl) FORCE
-+$(kapi)/syscall_table_%.h: $(syscall) $(systbl) FORCE
- 	$(call if_changed,systbl)
- 
- uapisyshdr-y		+= unistd_32.h unistd_64.h
--- 
-2.27.0
+If adding more detailed compatibles is better, I will add them to sgpio driver
+in V3 patch and remove max-ngpios from dt-bindings.
 
+Since AST2600 has 2 sgpio controller one with 128 pins and another one with 80 pins.
+For supporting max-ngpios in compatibles, 2 platform data for each
+ast2600 sgpio controller as follows are necessary.
+
+```
+static const struct aspeed_sgpio_pdata ast2600_sgpiom1_pdata = {
+        .max_ngpios = 128;
+};
+static const struct aspeed_sgpio_pdata ast2600_sgpiom2_pdata = {
+        .max_ngpios = 80;
+};
+
+{ .compatible = "aspeed,ast2500-sgpio" , .data = &ast2400_sgpio_pdata, },
+{ .compatible = "aspeed,ast2600-sgpiom1", .data = &ast2600_sgpiom1_pdata, },
+{ .compatible = "aspeed,ast2600-sgpiom2", .data = &ast2600_sgpiom2_pdata, },
+```
+
+Thanks,
+Steven
+
+> Yours,
+> Linus Walleij
