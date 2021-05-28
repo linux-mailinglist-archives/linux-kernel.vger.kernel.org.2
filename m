@@ -2,50 +2,50 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0577339419B
+	by mail.lfdr.de (Postfix) with ESMTP id 4E64839419C
 	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 13:03:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236720AbhE1LC6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 May 2021 07:02:58 -0400
+        id S236701AbhE1LDE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 May 2021 07:03:04 -0400
 Received: from mail-eopbgr30042.outbound.protection.outlook.com ([40.107.3.42]:25731
         "EHLO EUR03-AM5-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S236672AbhE1LCu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 May 2021 07:02:50 -0400
+        id S236687AbhE1LCw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 28 May 2021 07:02:52 -0400
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=mICGJOHr3d/xeKkBvzAmXI7K7M7lAyJhCQr8c3J40oNXM7KpkzUUkoawbiQr012bYAoqCILtaAyEJIbWTNE+Gn6jDFMTH95fzSXK2JSsJXxpT922cuh/2b+KPQEzI2LsY9sI7B7qCLR6SBdVMxOnJTl02PQ6iQoFWKk0GG3zaXVMD37OMX81ZsN8UpZYzDg7jZPu5unPeI1Dym1pu3mSBA/VoQ7xcEg9VCSABFebbRMPjKNVDVooEbp0CXb+Vv531WSBOdigWjaHDRKYheqneRsC1IonzMDmQgxxVAJD7v/aCRV570HKPT6m61xgdfKXfo08R5ge5snnGLEsL3OMMg==
+ b=SXOg35OreDN2YMxVn5mPKa2un6OY0ZFw4jav7hI6pl/YVpsJp6r6t+s5AcgoH5r1EScvcW5TExS6ei6RqZNpNw/zUgyNCiVzB5g4jMYPYBbyMmOrqB1LVf4lKLM1pmtvTEM9z8o+aa8yFZKGtxxLd+cHCb6Ee2IVPjSqwRAXrfjf80dYy9467LfbaewVlo834uPXML8qq9SOuAmTgnLJmUCt71RZ9N5xZT6fji0So6S7xMFhThJ9x0DCWIlTtU7m6fomibwPzpW0NT5547mCm/BxJmDSq4A37WoI48HmpJ72Aa0cseZQOKAhR1t2PJVlS/N4z6C5th7I+OFtZGPK4Q==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ehnDs1bKvjCnIAHP+ItHg3liG51qTsbsRbjUrdM7d6M=;
- b=BzkMwOUfGKiOq3hkKnjRLKSvHw4JxBz1JcnywmQC2g7pujWatHZ5GMshoy9FDEBDlt7qJUpSrZZGocd6YI4f8/T/5PID99ixgnOQpgX3s8Rb6R7E3fttg3PhXP6fyeB6dkzWQNE9BeUWpl0hfabAvBWeU5zHSkqgS98Y2htuRmi9k6Mnw/+NC3m4RHU4Vn4+9HJpWA1KfjX0256CyoTktQiHgq4bYpQQ/hrAeCSC+BuCADds4s//aQ8ZL/oP0lmcdUKrgqPvmL7R+TjGHdEv4vJhzt/UtFiLxPhiN3+NCK45WDTJbmYwkixwYzyFJB40i5xBOMQRc2Iz1GLGU+F4nA==
+ bh=5Z2SQXkgBc5fTMJwrLqnoN/cVuxBR8AzI1NHhM1Zcqs=;
+ b=WUII9cMdjGZwxDL8z0+PAm+l0GWVAHf1Qa4DOYMgANq8m988/+cCdHCfbAuwrhZARCugGE7qNlBz3m3/iXXxMwS0t6FEJaTJceRGvzkBJ8yEkxB1/3CieWGbjztdVtoutpyIaidrBRzd7/KyawwCyB5bH7b9pd/zczL+Bv3lCxIB8W15V5AE79xX0Js3xtilbR1RKxlB54LpFvE7GCXOHgV5rFkzvylycWnQyEDxhe0dCj22ZFeUqYrnoVGanrfVy7TY0aoTkmBC0Rk026Ck8QGaIsegMdChDNFu47sjgb+/wFU9SbZ6qOmN/Onshn2mB1Jc/emU7VJSFHLeK9PA6Q==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=oss.nxp.com; dmarc=pass action=none header.from=oss.nxp.com;
  dkim=pass header.d=oss.nxp.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=NXP1.onmicrosoft.com;
  s=selector2-NXP1-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ehnDs1bKvjCnIAHP+ItHg3liG51qTsbsRbjUrdM7d6M=;
- b=XFZVqL1HAl0XOQ5cM8f42jYjOkj63YrKKKO5KmZ78JCJcV8+aW0HsVf599DFFv67ce5Lhy8QhIXJo0jvTivJ5LHtWrS2zBTSCe7bdYgd6sJwGjgBpJsQ02FXh0S2Fz4WH4l+uWYVZZ1yzfH5IHaqHY9X6v2+uEjxOTvLUIKot+8=
+ bh=5Z2SQXkgBc5fTMJwrLqnoN/cVuxBR8AzI1NHhM1Zcqs=;
+ b=hLTnqpdW5XybEfKx499nF53SHY8uGN1G9uZdHs8LJQ9uGANdXT/s7hYSHOFfOzZ42qZWJW6C9KZudaendM0GUI+NzpvmkNQ/rYXjYLdVXTECnnfYyinTTTqpRv8ftj1b7uAMK0DJXt6JB0dsgMxNfil2Atcx47WLNxKPBJ4YpjQ=
 Authentication-Results: kernel.org; dkim=none (message not signed)
  header.d=none;kernel.org; dmarc=none action=none header.from=oss.nxp.com;
 Received: from DB6PR0402MB2760.eurprd04.prod.outlook.com (2603:10a6:4:a1::14)
  by DBBPR04MB7515.eurprd04.prod.outlook.com (2603:10a6:10:202::14) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4173.24; Fri, 28 May
- 2021 11:01:12 +0000
+ 2021 11:01:15 +0000
 Received: from DB6PR0402MB2760.eurprd04.prod.outlook.com
  ([fe80::45b9:c993:87ec:9a64]) by DB6PR0402MB2760.eurprd04.prod.outlook.com
  ([fe80::45b9:c993:87ec:9a64%8]) with mapi id 15.20.4173.024; Fri, 28 May 2021
- 11:01:12 +0000
+ 11:01:15 +0000
 From:   "Peng Fan (OSS)" <peng.fan@oss.nxp.com>
 To:     sboyd@kernel.org, mturquette@baylibre.com
 Cc:     linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org,
         linux-arm-kernel@lists.infradead.org, kernel@pengutronix.de,
         Peng Fan <peng.fan@nxp.com>
-Subject: [PATCH 1/3] clk: mux: support regmap
-Date:   Fri, 28 May 2021 19:34:01 +0800
-Message-Id: <20210528113403.5374-2-peng.fan@oss.nxp.com>
+Subject: [PATCH 2/3] clk: fractional-divider: support regmap
+Date:   Fri, 28 May 2021 19:34:02 +0800
+Message-Id: <20210528113403.5374-3-peng.fan@oss.nxp.com>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20210528113403.5374-1-peng.fan@oss.nxp.com>
 References: <20210528113403.5374-1-peng.fan@oss.nxp.com>
@@ -57,51 +57,51 @@ X-ClientProxiedBy: SG2PR06CA0158.apcprd06.prod.outlook.com
  (2603:10a6:4:a1::14)
 MIME-Version: 1.0
 X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from linux-1xn6.ap.freescale.net (119.31.174.71) by SG2PR06CA0158.apcprd06.prod.outlook.com (2603:1096:1:1e::12) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4173.20 via Frontend Transport; Fri, 28 May 2021 11:01:10 +0000
+Received: from linux-1xn6.ap.freescale.net (119.31.174.71) by SG2PR06CA0158.apcprd06.prod.outlook.com (2603:1096:1:1e::12) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4173.20 via Frontend Transport; Fri, 28 May 2021 11:01:13 +0000
 X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 3d3dc950-8f6c-4719-60cd-08d921c7e7f3
+X-MS-Office365-Filtering-Correlation-Id: 10468c9c-3cfd-43bd-63b6-08d921c7e9c6
 X-MS-TrafficTypeDiagnostic: DBBPR04MB7515:
 X-MS-Exchange-SharedMailbox-RoutingAgent-Processed: True
 X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <DBBPR04MB75155F76987308C91146AB76C9229@DBBPR04MB7515.eurprd04.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:792;
+X-Microsoft-Antispam-PRVS: <DBBPR04MB751520D565E999313DA97741C9229@DBBPR04MB7515.eurprd04.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:256;
 X-MS-Exchange-SenderADCheck: 1
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: bAssaWqBvG5tHfhSZgeSPdNEvGzfakFpDvrnrdxRr3YmhRjW6PR7f/sssy7yT7lXoElBsmRfkAEA/NtzKNxVMgZ9nSAMElTpi3auLgnFQ18bHWQ1jZUGeaFkp4U4HTklLeWEbd34iQV49c8y3IaS+TfuBbddHATBfBl43lcpxdDFuZxzEqm63qugip8lzJDHZ7sEDJeaCGSy4GjyzxLpfAxkU8Yxwut5/LXgXr/yZyhic2Q/ig5LDzexXusRxwFrtH+jQ0IO0C6n/nxnGSp0dBMe91+zC1YbEvadmmGV3gu6UEqAOoVUWv+5vzgxy2zvE2FdguTRUGrwR5ZgmIBaUtySlaLWPeiu0SsIbVBBkCGX3O5OFKahahmwoBxhJ8Y8yRWyGs9VjRep5xtabJBqHQB7Ut7OutKYt5sfVyKsCQMe/qskOnufJEtFypn/inIj/ZQtGXBb/nIdWpQdunF1DrkThop+eXNsdsBkYOfEdK1dsF2K5ij90Gp0Mxyvgjr94vHyIyfL8P+oyftDy3QmQBQUAdIV3SdMp3fxwsR61rTClGZ8APpdPYIrDBMNVMbeRnPIvQGg1X/TyY4ta+D3/kPf1VuX/wr18DM8gGwYLZ2WWL+xJ1nGaxt0d4IIjmoxqJ8pWphmHWPkoDbE+Fob4rn9e49Spvm5BalLu0LCXCc=
+X-Microsoft-Antispam-Message-Info: MBOI86ncsA31EqqNPNbmZc7UFUoWCIJvsqjidETW0RoqvtTzUqZACeo1qqHaoCsKjG4qtdF0Dk4zvYEsMKJGH/wVngFD1Q1D9Ornd3Vn7Gvtr2UwBgKaSf5uSj81A+c0ZdDZY+JbP8KlWJahbIp+XP3RBPjg0tC1CML6NXdhIDb1IwSsbU+3FTNeDIablAKPQOb6dL69VHD9MhCcxlQlL2ib19vKtAp8c8qnRTjXAJ3Y6cPEsN2JaUvD0s4xZ+1ZQszmN/cCVh+yEcYLPZNp2yDG+HQMGZrfb5V3G/wRscbta3hDxIGW1PhdDRiJUbC1AGf/h5ZavVOTg53k2LPIwcB/1XjFnk1YfHctFRZhYItXiE6N2R3xOwvlM6kkqCpGgASTkVQlFNBhRJDz/acPPiDlKOfJFLdT0lgSIfvrs6J5tOmfJojEhQJP7rcFDQ9jyN7dHzvT2+LkOTavePP74cGB3la1XFxuP0N6F8Bs41XI5ZWMkwAwrktNx3eI8krJcYYHB8VbD1vBVvNk1sBuwHBx9uy8souIUKMBgCns9YXbGvSZwfMFQEt/rVt+/U1vNDIwtOSOvVKGm3w7vvBB3VnGiwHnhe7v/dmlvS1Dv2+/qmhbBsmRvorxP8HegyXJYlIOzvqT+9swTdocuO69xL8KVGkdIxV5v9y9DFK7ks0=
 X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB6PR0402MB2760.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39850400004)(346002)(136003)(376002)(396003)(366004)(52116002)(6506007)(38100700002)(38350700002)(26005)(86362001)(83380400001)(2906002)(1076003)(8936002)(66476007)(2616005)(956004)(16526019)(186003)(4326008)(6666004)(66556008)(66946007)(6486002)(8676002)(5660300002)(316002)(478600001)(6512007);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?/ScGhPNRRidAiVibOTrq4UTklce72F7RY2b4Cv6Yu0e3WvgdORodw4T5W99+?=
- =?us-ascii?Q?B0DMdIcNvXEAJ68myhF7llputX/GH7zSEA+xNGDKglpjxx0WggGnitZQJQz7?=
- =?us-ascii?Q?jUou5UApC6mChIUefOG8luesfHCO0hJ6qwi1fvQZHNJsJhDnHHximjW4lNY4?=
- =?us-ascii?Q?VI9IecECIptoKbOB/4+4P/BZbrYtqxuAaRQUaRu5xOdUDwJpPsAhR+INegAT?=
- =?us-ascii?Q?nAi3vr2y5T9aN9jvZqkd/wrvh+qK2Hm35EFgkROaYgn875hAbhKpOqnzqVnw?=
- =?us-ascii?Q?C9LQFczFlD4/50LNKyNQOaFCl8ZUdGOgbtBiaHYuBPi6ZOGKMYNF7aPZkU32?=
- =?us-ascii?Q?gfT4Bd3Gq0vJTj9ZsXxHqPrLgwq6nkCmMgGFOt2zMHrHVxsS+YOucmymb0bv?=
- =?us-ascii?Q?jp1ZtuaWVX32k68AEbfSS+atex1qkqov7beU8posVpG5CVht/OCnc2Id9NF5?=
- =?us-ascii?Q?Y94qNFSFmJSBAYZqZWzBpFX+RsiSSqCNzMZij15Oeia4wwTQYRR1q37UCXLd?=
- =?us-ascii?Q?adPGo6Y+zSqdghJfwX5dIGaGULQ6AhuNgJM9oYOFQT/3RkCsBxSedIYtaW95?=
- =?us-ascii?Q?aev6/JTeRMT2sWGk/OQWvcDu13Aks46VBeXCgu+uxu1yKHEjkMVUD2mgciQ5?=
- =?us-ascii?Q?G/es1dI1UnLrFrZv77LtvRVrMUJfSomGpUWIVyCb86gTFiScLRWvuEnWAj5C?=
- =?us-ascii?Q?r8Z/Onnez8k+WDg6F/AFS/O+u9K/wM2UZ1g8sLPGAGKYbW5qViLJ9LgnRUPS?=
- =?us-ascii?Q?Z1P8AoY1twggKjQLNN2Iw1YH0aOwMOcohvbtJ9LpQjG+XxWFAe8Fs0AXrGt+?=
- =?us-ascii?Q?Eb2T41e0TPGoTgqxJxaT4cuTZTpGb+e8QLAuTmvSgKed/f0noL++56YUAXZQ?=
- =?us-ascii?Q?DYHwEyMzW+W62NStR1mS8orXs0QR0XrGkTTxRetvRu++a69Pg72JGvfFPJ8E?=
- =?us-ascii?Q?LybTZ8Mfqfcm2ag/f2k2fZltFEP9fKQTsPVKeH08A+n62WDQ0nR/fL04KcO4?=
- =?us-ascii?Q?63sdEzi/Ldw775T8Ep6ad9Tcrsz765ocoFFVPQcaEZldrX4Uz4G5dfxKT6Fi?=
- =?us-ascii?Q?Rxruoz5At55ggZOQHqhsAarEGWlLpiTuUV0thuvrfMYOV77hf7m+TmklwkDk?=
- =?us-ascii?Q?ptG/Van+F0jOkI8oFZhb6H0kjENAm3HgbmoXK5g4O4n0Lic6WR3vUDGc/fGX?=
- =?us-ascii?Q?gWsJh/Tn0DoIDMaa0S/0wNqt/8g2/7ndIfSuI87dNqkM2jSkqVjVHDDF8KMQ?=
- =?us-ascii?Q?ffCGvZRd1GrmE7JKSHzmBlPmD0OuAQy7d3gJDXnQuc96KBGcDqntXOYdqd55?=
- =?us-ascii?Q?+YDXTFrjMPDBoqY4/UHYbw2GhZaG6SM0yfAuvDujEl4gug=3D=3D?=
+X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?uG4CStC/ufoy5Kp2DivrqAWO4gxkR7W1L4PHJ5OKvo3vwVCLzg2wzbMjh2YZ?=
+ =?us-ascii?Q?daCpXm8X32x8bCwpUqGAgFD9JEd3njnxiLVxD5XhWsllQ2ZHZQPNNAy6moc3?=
+ =?us-ascii?Q?YZ3FHXS2Qqv5/m7BKQm3uEagv+jjVBxXdVHXdNB7gwGqebYsvEV5U7p6WRSr?=
+ =?us-ascii?Q?pEi3o2umF3pUqV/BRdwcnpSRHZAB7L7/Ha/IHoihUJeNQWjP51F0RhYyLnge?=
+ =?us-ascii?Q?sU1QO0II6M+J34EArlkrJttXRnRcLp4GVX1/DZMQ1uZ82aHHq8bqXyuDK1bT?=
+ =?us-ascii?Q?kGOVgITgV4TrSdxZjqj+/u+TLc8eSgQZoUctOdcon5AbwPMUIwLlBcV2imIK?=
+ =?us-ascii?Q?0pGMhBZRpxzaIpRWlwzl8+qhF8zBXWuq0/rvyuPBifSKzrn2tFg0O6KjX2oI?=
+ =?us-ascii?Q?jwplFCFQAY0P3Z+WfzJ9PQdpgyA9RuvgS5O6+7M9wqEOlioG+8ObRPeQPhd5?=
+ =?us-ascii?Q?Ilr0RSrb2gCLgHM4iaH8oQlJb29JnTyVSVBfznFuXLAfQyyvJ95H2oWE5p16?=
+ =?us-ascii?Q?p+uuPb/oOVL8FeSZKX7fbMp3PXURRTOaUXxfAHiWUEb2666UppC1hGAb9wVA?=
+ =?us-ascii?Q?6xucG+nsruYtQePCrEVMF551jhYJ0uSVNE7YGu7IMe9RxbaCoya5RXQ7r3Xo?=
+ =?us-ascii?Q?+Tik5rDdZ4r8W3+msr6fWwAyrEO3PSGm/4D+0wquSBTycBsDPEvuAS8Wh5K+?=
+ =?us-ascii?Q?Ld4AfNBrvQwgVeWVgyGo33utGw7cltHIJNEsUSSVcceY3guwOcdBJf3um9eL?=
+ =?us-ascii?Q?WEWXY0ENDTokQAjbGg108FU6P9sVpvZhE32f1vhwdBRy2AmBjbN6frfZwCqG?=
+ =?us-ascii?Q?o9A6A9kmbPOPIt7mj2WZNktQgd1xvkxW5t+D46xyl9JxEX8oyGIkzu+Rm+nC?=
+ =?us-ascii?Q?rT3JHUhjFWC1dUHAHTt5GIOYSBS+om/YYiHmtUS6HrsCNNgvFAXWgNWF8G9P?=
+ =?us-ascii?Q?sT0+1V/hR2F9Mqxbw65xaRXjGaAzM4jHplGHdjqCSwfYwseIOCS+S2BysMNL?=
+ =?us-ascii?Q?ahezC6wOci5xdT/n3lyXV/tbZz3byjCbldNBPX+4T8Rv1qpZ8bm7YBzvSdE5?=
+ =?us-ascii?Q?mfDpS9xUNXLzpUyMwvrdpR8CXy+qRS7ZFMWleVlxYrqCuHdiNZcUgiA5pgzg?=
+ =?us-ascii?Q?+ysUOqjvgmYaVPtRwxNjN4PjUTqQLUAkq37YwiQ/Pn5UHQ44gbYwKYe+tr2o?=
+ =?us-ascii?Q?lc/U8j1dcfNUBqJmTYBG/I6jPvkxfo/pjL4qNPvAC6XxpLCzL4YBQiQ3E4L2?=
+ =?us-ascii?Q?7zAO/mqdjMdbtkXSTfoP/iK9g9mRiQS9MBl/3+BtNCx9BeHCBSNDYz/NdZ5W?=
+ =?us-ascii?Q?Uhr4xZZrpFtG67saH+1497r0EMZTfEw3bzJlS2Fw5WE6Vw=3D=3D?=
 X-OriginatorOrg: oss.nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 3d3dc950-8f6c-4719-60cd-08d921c7e7f3
+X-MS-Exchange-CrossTenant-Network-Message-Id: 10468c9c-3cfd-43bd-63b6-08d921c7e9c6
 X-MS-Exchange-CrossTenant-AuthSource: DB6PR0402MB2760.eurprd04.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 28 May 2021 11:01:12.6509
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 28 May 2021 11:01:15.5866
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: h+1TRMAVrLm5UbXKlVPIaW8Bysk3ewqT1JODPEko1we+8wm9s09PMrwf+SRfUKxUti3go2s+Y+wzsMvnFZdnPg==
+X-MS-Exchange-CrossTenant-UserPrincipalName: peCL8F1SbSHlR4Edx1YbpH0kX1DTtT3onfWCIV4J5NS2YXMPGnjpQvH2Nlw7BGuadKBZQmtqQQNtTi9MRdFqGg==
 X-MS-Exchange-Transport-CrossTenantHeadersStamped: DBBPR04MB7515
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
@@ -117,101 +117,91 @@ So let's use regmap here.
 
 Signed-off-by: Peng Fan <peng.fan@nxp.com>
 ---
- drivers/clk/clk-mux.c        | 26 +++++++++++++++++++++++---
- include/linux/clk-provider.h |  6 ++++++
- 2 files changed, 29 insertions(+), 3 deletions(-)
+ drivers/clk/clk-fractional-divider.c | 26 +++++++++++++++++++++++---
+ include/linux/clk-provider.h         |  5 +++++
+ 2 files changed, 28 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/clk/clk-mux.c b/drivers/clk/clk-mux.c
-index 20582aae7a35..90facb6eafe6 100644
---- a/drivers/clk/clk-mux.c
-+++ b/drivers/clk/clk-mux.c
-@@ -10,6 +10,7 @@
- #include <linux/clk-provider.h>
- #include <linux/device.h>
+diff --git a/drivers/clk/clk-fractional-divider.c b/drivers/clk/clk-fractional-divider.c
+index b1e556f20911..f2df5d278214 100644
+--- a/drivers/clk/clk-fractional-divider.c
++++ b/drivers/clk/clk-fractional-divider.c
+@@ -11,23 +11,43 @@
+ #include <linux/io.h>
  #include <linux/module.h>
+ #include <linux/device.h>
 +#include <linux/regmap.h>
  #include <linux/slab.h>
- #include <linux/io.h>
- #include <linux/err.h>
-@@ -26,18 +27,37 @@
+ #include <linux/rational.h>
  
- static inline u32 clk_mux_readl(struct clk_mux *mux)
+ static inline u32 clk_fd_readl(struct clk_fractional_divider *fd)
  {
--	if (mux->flags & CLK_MUX_BIG_ENDIAN)
+-	if (fd->flags & CLK_FRAC_DIVIDER_BIG_ENDIAN)
 +	int ret;
-+	uint32_t val;
++	u32 val;
 +
-+	if (mux->flags & CLK_MUX_BIG_ENDIAN) {
- 		return ioread32be(mux->reg);
-+	} else if (mux->flags & CLK_MUX_REGMAP) {
-+		ret = regmap_read(mux->regmap, mux->reg_off, &val);
++	if (fd->flags & CLK_FRAC_DIVIDER_BIG_ENDIAN) {
+ 		return ioread32be(fd->reg);
++	} else if (fd->flags & CLK_FRAC_DIVIDER_REGMAP) {
++		ret = regmap_read(fd->regmap, fd->reg_off, &val);
 +		if (ret < 0) {
-+			pr_warn("%s: failed read %x, %d\n", __func__, mux->reg_off, ret);
++			pr_warn("%s: failed %x, %d\n", __func__, fd->reg_off, ret);
 +			return ret;
 +		} else {
 +			return val;
 +		}
 +	}
  
- 	return readl(mux->reg);
+ 	return readl(fd->reg);
  }
  
- static inline void clk_mux_writel(struct clk_mux *mux, u32 val)
+ static inline void clk_fd_writel(struct clk_fractional_divider *fd, u32 val)
  {
--	if (mux->flags & CLK_MUX_BIG_ENDIAN)
+-	if (fd->flags & CLK_FRAC_DIVIDER_BIG_ENDIAN)
 +	int ret;
 +
-+	if (mux->flags & CLK_MUX_BIG_ENDIAN) {
- 		iowrite32be(val, mux->reg);
++	if (fd->flags & CLK_FRAC_DIVIDER_BIG_ENDIAN) {
+ 		iowrite32be(val, fd->reg);
 -	else
-+	} else if (mux->flags & CLK_MUX_REGMAP) {
-+		ret = regmap_write(mux->regmap, mux->reg_off, val);
++	} else if (fd->flags & CLK_FRAC_DIVIDER_REGMAP) {
++		ret = regmap_write(fd->regmap, fd->reg_off, val);
 +		if (ret < 0)
-+			pr_warn("%s: failed write %x, %d\n", __func__, mux->reg_off, ret);
++			pr_warn("%s: failed %x, %d\n", __func__, fd->reg_off, ret);
 +	} else {
- 		writel(val, mux->reg);
+ 		writel(val, fd->reg);
 +	}
  }
  
- int clk_mux_val_to_index(struct clk_hw *hw, u32 *table, unsigned int flags,
+ static unsigned long clk_fd_recalc_rate(struct clk_hw *hw,
 diff --git a/include/linux/clk-provider.h b/include/linux/clk-provider.h
-index 162a2e5546a3..6bd9288b953d 100644
+index 6bd9288b953d..3902f883cdaf 100644
 --- a/include/linux/clk-provider.h
 +++ b/include/linux/clk-provider.h
-@@ -837,6 +837,8 @@ void clk_hw_unregister_divider(struct clk_hw *hw);
-  * @mask:	mask of mutliplexer bit field
-  * @flags:	hardware-specific flags
+@@ -990,6 +990,8 @@ struct clk_hw *devm_clk_hw_register_fixed_factor(struct device *dev,
+  * @nshift:	shift to the denominator bit field
+  * @nwidth:	width of the denominator bit field
   * @lock:	register lock
-+ * @regmap:	register controlling regmap
++ * @regmap:	register regmap
 + * @reg_off:	register offset
   *
-  * Clock with multiple selectable parents.  Implements .get_parent, .set_parent
-  * and .recalc_rate
-@@ -855,6 +857,7 @@ void clk_hw_unregister_divider(struct clk_hw *hw);
-  * CLK_MUX_BIG_ENDIAN - By default little endian register accesses are used for
-  *	the mux register.  Setting this flag makes the register accesses big
-  *	endian.
-+ * CLK_MUX_REGMAP - Indicate the accessing method is using regmap API.
-  */
- struct clk_mux {
- 	struct clk_hw	hw;
-@@ -864,6 +867,8 @@ struct clk_mux {
- 	u8		shift;
+  * Clock with adjustable fractional divider affecting its output frequency.
+  *
+@@ -1012,6 +1014,8 @@ struct clk_fractional_divider {
+ 	u8		nwidth;
+ 	u32		nmask;
  	u8		flags;
- 	spinlock_t	*lock;
 +	struct regmap	*regmap;
 +	u32		reg_off;
- };
+ 	void		(*approximation)(struct clk_hw *hw,
+ 				unsigned long rate, unsigned long *parent_rate,
+ 				unsigned long *m, unsigned long *n);
+@@ -1022,6 +1026,7 @@ struct clk_fractional_divider {
  
- #define to_clk_mux(_hw) container_of(_hw, struct clk_mux, hw)
-@@ -874,6 +879,7 @@ struct clk_mux {
- #define CLK_MUX_READ_ONLY		BIT(3) /* mux can't be changed */
- #define CLK_MUX_ROUND_CLOSEST		BIT(4)
- #define CLK_MUX_BIG_ENDIAN		BIT(5)
-+#define CLK_MUX_REGMAP			BIT(6)
+ #define CLK_FRAC_DIVIDER_ZERO_BASED		BIT(0)
+ #define CLK_FRAC_DIVIDER_BIG_ENDIAN		BIT(1)
++#define CLK_FRAC_DIVIDER_REGMAP			BIT(2)
  
- extern const struct clk_ops clk_mux_ops;
- extern const struct clk_ops clk_mux_ro_ops;
+ extern const struct clk_ops clk_fractional_divider_ops;
+ struct clk *clk_register_fractional_divider(struct device *dev,
 -- 
 2.30.0
 
