@@ -2,121 +2,328 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C0F4394936
-	for <lists+linux-kernel@lfdr.de>; Sat, 29 May 2021 01:42:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EC790394938
+	for <lists+linux-kernel@lfdr.de>; Sat, 29 May 2021 01:43:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229698AbhE1XoL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 May 2021 19:44:11 -0400
-Received: from mail-bn8nam12on2077.outbound.protection.outlook.com ([40.107.237.77]:24033
-        "EHLO NAM12-BN8-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229549AbhE1XoK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 May 2021 19:44:10 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=OnSKBsNWkktNUxmhavFm5LvwMCtr6ayotHE9G0Qua0is8jXOjU7ioRVn8auhGrNw0AplOKVHW8dWf1NDd2GFFfYcvpCxnfBdGd0N2jLeRoo2P5aYY6o1Xt9nvzF4ZsNdJbGaj4/6C/Pq5fS4KNRKubN9qKVT55ABO4CfRB/vRqWeSWtgnW/99U+MkG/oPEpkYm2P7GdIAvgmBjkH70fhcwXtbV4zeteSJ9xk3rOQrMlHxAKYqU5YNw0fL9kE61tuD5aouD6yaqu9ENuzp04wQhJXgDqeW83a7IWIlnXmTH+MVfARVWIeBu2uVddXDBu2CtJWzvAMh+YO+IMNaItSPQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=oLmjvlO1MTD6wssDJKXmepYd9W+CdRRsYZOAP57KeCk=;
- b=G9JSmRVUYcoTkoK+YSWDWAAv5Kv3+gPYElDptUpfJ9GvWyj9AdOY8p+Saqvs51bkqJLGOmGfimDeQSpDCTXN3x+B3osaBoklmRjXCYOUFoWefh4hCQ4lh8qt3SO71hGlsanXDGKD7H30zwhYQOywqshtICYyUVp0cZmLao0rlQR4Gjr0H54eDN0dFK1D9qulgJirGVjc8dTZs27NXWIohXfwHK/riEAK75GlUwOVwkX8IPpWyNoRxAhNjHA+GsaJwKz08OmU5uyY6CnIAg2m1jvS6ICbxbHDJpNQiKG8PioXVa6jSuw0AkPyZbK+Q+Bb2W0apn0n9CkLuk4q8YXqTQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=oLmjvlO1MTD6wssDJKXmepYd9W+CdRRsYZOAP57KeCk=;
- b=R+4tl6yoT4Wl7NP+59zZ8UGR6u9KygV167UFxTMKIGGUtVeGvYTshEryFK7x3evMwYTwA4ArkTyBxcuE7kREsn0to8Ls6pVkIToMSL9pHCvHZaj/Vc9H1IGOP6a+GWwWpNeL5DIt5E0jSiJjlWzaEvgqFPPoRQQ/T4042jaeBNijinlHjMAIUmD43pg9I74gaWRoYDqacYiVjRVthxxugXva9h6UvsREEdBbmwo/4NUFvtsbkWPLOp5s1MYsdLW4WljwqHAuJSNaSolbQ9JBXDFksJdWkTw1tQSMptTX0JKx3rOeB1xSJMxi1ajJtUECw7aCyy2mZKSS3E3xzhJCYA==
-Authentication-Results: huawei.com; dkim=none (message not signed)
- header.d=none;huawei.com; dmarc=none action=none header.from=nvidia.com;
-Received: from BL0PR12MB5506.namprd12.prod.outlook.com (2603:10b6:208:1cb::22)
- by BL1PR12MB5159.namprd12.prod.outlook.com (2603:10b6:208:318::6) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4173.20; Fri, 28 May
- 2021 23:42:34 +0000
-Received: from BL0PR12MB5506.namprd12.prod.outlook.com
- ([fe80::3d51:a3b9:8611:684e]) by BL0PR12MB5506.namprd12.prod.outlook.com
- ([fe80::3d51:a3b9:8611:684e%7]) with mapi id 15.20.4173.023; Fri, 28 May 2021
- 23:42:34 +0000
-Date:   Fri, 28 May 2021 20:42:33 -0300
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     YueHaibing <yuehaibing@huawei.com>
-Cc:     bvanassche@acm.org, dledford@redhat.com,
-        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 -next] RDMA/srp: use DEVICE_ATTR_*() macro
-Message-ID: <20210528234233.GC3874396@nvidia.com>
-References: <20210528125750.20788-1-yuehaibing@huawei.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210528125750.20788-1-yuehaibing@huawei.com>
-X-Originating-IP: [47.55.113.94]
-X-ClientProxiedBy: BL1PR13CA0288.namprd13.prod.outlook.com
- (2603:10b6:208:2bc::23) To BL0PR12MB5506.namprd12.prod.outlook.com
- (2603:10b6:208:1cb::22)
+        id S229709AbhE1Xof (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 May 2021 19:44:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43050 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229500AbhE1Xoe (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 28 May 2021 19:44:34 -0400
+Received: from bedivere.hansenpartnership.com (bedivere.hansenpartnership.com [IPv6:2607:fcd0:100:8a00::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE850C061574;
+        Fri, 28 May 2021 16:42:58 -0700 (PDT)
+Received: from localhost (localhost [127.0.0.1])
+        by bedivere.hansenpartnership.com (Postfix) with ESMTP id 722E0128031E;
+        Fri, 28 May 2021 16:42:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+        d=hansenpartnership.com; s=20151216; t=1622245378;
+        bh=gq8FfEXJg7EJ+NuAngyXAoCosv1fKt/Rn6GxmetO9qs=;
+        h=Message-ID:Subject:From:To:Date:From;
+        b=hkKhrpOTgDWSXeIZ92SXk6BsEWxjDV+lGJr441pPGNY0upBnPjABHJTRAaB/+pjyJ
+         WyiQ3xaA6v32ITzWg+bB0BguqglnrWkWF4/OZ5k17euc8U+Qkl/7DrASWDCaqg6Z2/
+         +ouPcAM9tAiyQNczRKPqMzjyCeLomec/MRwf8hRw=
+Received: from bedivere.hansenpartnership.com ([127.0.0.1])
+        by localhost (bedivere.hansenpartnership.com [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id abaeoOe8Xa7F; Fri, 28 May 2021 16:42:58 -0700 (PDT)
+Received: from jarvis.int.hansenpartnership.com (unknown [IPv6:2601:600:8280:66d1::527])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by bedivere.hansenpartnership.com (Postfix) with ESMTPSA id 00E6A128026A;
+        Fri, 28 May 2021 16:42:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+        d=hansenpartnership.com; s=20151216; t=1622245378;
+        bh=gq8FfEXJg7EJ+NuAngyXAoCosv1fKt/Rn6GxmetO9qs=;
+        h=Message-ID:Subject:From:To:Date:From;
+        b=hkKhrpOTgDWSXeIZ92SXk6BsEWxjDV+lGJr441pPGNY0upBnPjABHJTRAaB/+pjyJ
+         WyiQ3xaA6v32ITzWg+bB0BguqglnrWkWF4/OZ5k17euc8U+Qkl/7DrASWDCaqg6Z2/
+         +ouPcAM9tAiyQNczRKPqMzjyCeLomec/MRwf8hRw=
+Message-ID: <153a81f4d08a49071194ce7d626a8fe8e71f17b5.camel@HansenPartnership.com>
+Subject: [GIT PULL] SCSI fixes for 5.13-rc3
+From:   James Bottomley <James.Bottomley@HansenPartnership.com>
+To:     Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     linux-scsi <linux-scsi@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Date:   Fri, 28 May 2021 16:42:57 -0700
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.34.4 
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from mlx.ziepe.ca (47.55.113.94) by BL1PR13CA0288.namprd13.prod.outlook.com (2603:10b6:208:2bc::23) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4195.9 via Frontend Transport; Fri, 28 May 2021 23:42:33 +0000
-Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1lmm7d-00GFw6-8w; Fri, 28 May 2021 20:42:33 -0300
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: f43b774c-7443-4ab2-1b0b-08d922324451
-X-MS-TrafficTypeDiagnostic: BL1PR12MB5159:
-X-Microsoft-Antispam-PRVS: <BL1PR12MB51594E777C149126565F5C45C2229@BL1PR12MB5159.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:6108;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: tsPJhuQTF1pMo3YMoRgC/eZC7uObjY6IygGROlRRBeEx1L85oMBZo/JbKUN8dVV2XEtfHveip4l52wkjcnnsu7cf3vImkvURpYvOgGJY9GUqpU0CK8+9+2bc19W1lYScbEMO+DKpd9XXqoJsZlAJPItfrvNZkh3+9XU4kkVdGcdvINwNElTr/N80W22ZdST+u8qF+bOk8gCyxe0Q8+fQqKOepDCA0e/btkXYTWKU6Q0OVGp4Ga/kBbgTby0CJP3cAr905iwttAhRrFseZ9hibcs9Yu0/+dtt1UfbohMylWQauPmgDjk7HOu/wlrILc1ACqc3EOmfQ9Atr5xuqg5MXXY1EIusRGS96NkBIsgKD8Id0hRQkhU0kfZEkH+VYdnfRtc1ue1XAhqKZoDb6n0vdaPsLhgq8HtZQvI9QJPsHmlkDrmbO6nL1VlSADaFKZZ8vrRqXFrTz/HIOjVY/lfUVSTM5AmCnsnXGgkqT1nt7iANZI0pRdCqfxZDREHFH4S7Gmn9xSxaMu1cw9DC/jGajiwjdcevHSmxKQXH5KAAhfnDvHvHRaUfp3+aiyGYBjWt4MQbY6ebv3kmVr9BvaJF5WN3jUu/jfzWpM6biRdFcB8=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL0PR12MB5506.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(366004)(136003)(39860400002)(346002)(396003)(86362001)(83380400001)(8676002)(6916009)(316002)(2616005)(186003)(2906002)(426003)(1076003)(66556008)(66476007)(66946007)(26005)(5660300002)(33656002)(38100700002)(9786002)(9746002)(478600001)(4326008)(4744005)(36756003)(8936002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?i2Umf3w6ryISKCz9x8BjUk3IjfOlqR/tgLF0ZUmjkTM07oGldEBzmM269DHT?=
- =?us-ascii?Q?Eb8K9asXfOhGliIagY/cQuHGy7zc6+nRF2h/Fzi5Ze8dP0qfXPU33pCNAH7E?=
- =?us-ascii?Q?ZBWZovWaolx0rSxUXu1zhBvQw1NPjoIMKLkkxV0asBzUGsNh0I/d6Legjxq5?=
- =?us-ascii?Q?GM+fUFeEDWFUfG+FSw7ACW92iGyDKgtuaTkuGUZ0k4dOg78Eifp2Et6leDV+?=
- =?us-ascii?Q?UdJfbyIpH8JhlGWnKF0XVEFj5thbsHE5ZYFGOvbFoQyu0FR4GJkBRTXXeSq4?=
- =?us-ascii?Q?7ESQ9D5MheNbKJP8A5RBRrXD36uqnfa3NxAuwkXuHhj5GPN4mJOaPg+5PCQm?=
- =?us-ascii?Q?1OTYfJJp2taP6p0qlUnocqbGdmV8DY7pp9+yKaVN9eRzs3FfTernJ6w2N1Yq?=
- =?us-ascii?Q?nSHzllNYadL8psPXlj+8oJSPKaq8i0Lnj37+QLAW6gyX0UUClo+lOrOBaJVV?=
- =?us-ascii?Q?pKRyVKNaRsJ2lX5yRr6RWiaPYGgMJ6chuRTfP6iKyQv756rk99i4wE7Csg8Y?=
- =?us-ascii?Q?LWtC1FoQwtJrJtRIf/OHc7dTtnjepEZ6Gk+Uzxjj7e9A1yU62h3YA59jD5Ko?=
- =?us-ascii?Q?vqgRETAEN3x/hpFKRXzjL5BSbujZXnT+xS5EfNiFPHMWixr6lcEV9ZeTu8gZ?=
- =?us-ascii?Q?ErhZYVSmzWSJ6r/vmSvcHij/AVXxMpBfbQGKnQZ/nYjxbaiFFTHWQqjPsLCH?=
- =?us-ascii?Q?KLZhGmbdIb3SIUkGpdeity7YIY0tzZ10wg4+KfhO40Tie2QUivewr1rIoetS?=
- =?us-ascii?Q?2mZrqoc8LL58tAjVGPjdCAjoy3A7yZYt3m2wqj66DebyUb8M2E48iXHvus3E?=
- =?us-ascii?Q?IoFP/VYjNsxJ3IHUPSSM7K1wp6P8IMa165vUIZODWdhlr8iE8q9Y6nBtZpkw?=
- =?us-ascii?Q?y9y6t07cbmzEsuBaJoqfkIzdWM73Iuin+POHVh6mZLe6aPYDHq5AATRzErJw?=
- =?us-ascii?Q?Q1KDfmt8A1Q+2kt0PynsFT6lYnRI2cSKLxG0y9Qt4FCVCUOabBsb+JE4lXOL?=
- =?us-ascii?Q?IIdjAkRM3YPEm6IJF7RUPO1ohzpbslODdmGyK5XXM6kpFCCgDTR866IlLjT8?=
- =?us-ascii?Q?2si13hfZIoXerOwn7FvmjdEClZFB8gEDE/3hdCVJzjFRp+Lg0ywzDlAKRQ+Q?=
- =?us-ascii?Q?cZmVeeu0Wd0ac7QDTd9IEpi4680opSO4HxtBfmdPSbcDyyHIkKmJI8sMx08L?=
- =?us-ascii?Q?jt9UTC3xkE7AzQch1nkYeAM1RVImRDi4MROAPPv9EdInUdXf0Mp3y0Mu+prQ?=
- =?us-ascii?Q?kT61nU6034gqQrGGMrFs1IIZz2RrcxfMt+oRTWhmxlEPzT1+o6XbMl5xSVrY?=
- =?us-ascii?Q?WNruPjC9KXoA6X1/rMnj0BE3?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: f43b774c-7443-4ab2-1b0b-08d922324451
-X-MS-Exchange-CrossTenant-AuthSource: BL0PR12MB5506.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 28 May 2021 23:42:34.1104
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: /fiHYshrufFQ30wtz6Tjn/5h7zxPhiqL38CjRwvmzBOG8asmRempNOLxszGlLDSB
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL1PR12MB5159
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 28, 2021 at 08:57:50PM +0800, YueHaibing wrote:
-> Use DEVICE_ATTR_*() helper instead of plain DEVICE_ATTR,
-> which makes the code a bit shorter and easier to read.
-> 
-> Signed-off-by: YueHaibing <yuehaibing@huawei.com>
-> ---
-> v3: rearrange attrs
-> v2: convert show_port device attr
-> 
->  drivers/infiniband/ulp/srp/ib_srp.c | 109 ++++++++++++++++------------
->  1 file changed, 62 insertions(+), 47 deletions(-)
+10 small fixes, all in drivers.
 
-Applied to for-next, again with clang-format
+The patch is available here:
 
-Thanks,
-Jason
+git://git.kernel.org/pub/scm/linux/kernel/git/jejb/scsi.git scsi-fixes
+
+The short changelog is:
+
+Bodo Stroesser (1):
+      scsi: target: tcmu: Fix xarray RCU warning
+
+Dan Carpenter (1):
+      scsi: libsas: Use _safe() loop in sas_resume_port()
+
+Dmitry Bogdanov (1):
+      scsi: target: qla2xxx: Wait for stop_phase1 at WWN removal
+
+Javed Hasan (1):
+      scsi: bnx2fc: Return failure if io_req is already in ABTS processing
+
+Matt Wang (1):
+      scsi: vmw_pvscsi: Set correct residual data length
+
+Mike Christie (1):
+      scsi: target: iblock: Fix smp_processor_id() BUG messages
+
+Shin'ichiro Kawasaki (1):
+      scsi: target: core: Avoid smp_processor_id() in preemptible code
+
+Tom Rix (2):
+      scsi: aic7xxx: Remove multiple definition of globals
+      scsi: aic7xxx: Restore several defines for aic7xxx firmware build
+
+Yang Yingliang (1):
+      scsi: hisi_sas: Drop free_irq() of devm_request_irq() allocated irq
+
+And the diffstat:
+
+ drivers/scsi/aic7xxx/aicasm/aicasm_gram.y   |  1 -
+ drivers/scsi/aic7xxx/aicasm/aicasm_symbol.h |  2 +-
+ drivers/scsi/aic7xxx/scsi_message.h         | 11 +++++++++++
+ drivers/scsi/bnx2fc/bnx2fc_io.c             |  1 +
+ drivers/scsi/hisi_sas/hisi_sas_v3_hw.c      |  8 ++++----
+ drivers/scsi/libsas/sas_port.c              |  4 ++--
+ drivers/scsi/qla2xxx/qla_target.c           |  2 ++
+ drivers/scsi/vmw_pvscsi.c                   |  8 +++++++-
+ drivers/target/target_core_iblock.c         |  4 ++--
+ drivers/target/target_core_transport.c      |  2 +-
+ drivers/target/target_core_user.c           | 12 +++++++-----
+ 11 files changed, 38 insertions(+), 17 deletions(-)
+
+With full diff below.
+
+James
+
+---
+
+diff --git a/drivers/scsi/aic7xxx/aicasm/aicasm_gram.y b/drivers/scsi/aic7xxx/aicasm/aicasm_gram.y
+index 924d55a8acbf..65182ad9cdf8 100644
+--- a/drivers/scsi/aic7xxx/aicasm/aicasm_gram.y
++++ b/drivers/scsi/aic7xxx/aicasm/aicasm_gram.y
+@@ -58,7 +58,6 @@
+ #include "aicasm_symbol.h"
+ #include "aicasm_insformat.h"
+ 
+-int yylineno;
+ char *yyfilename;
+ char stock_prefix[] = "aic_";
+ char *prefix = stock_prefix;
+diff --git a/drivers/scsi/aic7xxx/aicasm/aicasm_symbol.h b/drivers/scsi/aic7xxx/aicasm/aicasm_symbol.h
+index 7bf7fd5953ac..ed3bdd43c297 100644
+--- a/drivers/scsi/aic7xxx/aicasm/aicasm_symbol.h
++++ b/drivers/scsi/aic7xxx/aicasm/aicasm_symbol.h
+@@ -108,7 +108,7 @@ struct macro_arg {
+ 	regex_t	arg_regex;
+ 	char   *replacement_text;
+ };
+-STAILQ_HEAD(macro_arg_list, macro_arg) args;
++STAILQ_HEAD(macro_arg_list, macro_arg);
+ 
+ struct macro_info {
+ 	struct macro_arg_list args;
+diff --git a/drivers/scsi/aic7xxx/scsi_message.h b/drivers/scsi/aic7xxx/scsi_message.h
+index a7515c3039ed..53343a6d8ae1 100644
+--- a/drivers/scsi/aic7xxx/scsi_message.h
++++ b/drivers/scsi/aic7xxx/scsi_message.h
+@@ -3,6 +3,17 @@
+  * $FreeBSD: src/sys/cam/scsi/scsi_message.h,v 1.2 2000/05/01 20:21:29 peter Exp $
+  */
+ 
++/* Messages (1 byte) */		     /* I/T (M)andatory or (O)ptional */
++#define MSG_SAVEDATAPOINTER	0x02 /* O/O */
++#define MSG_RESTOREPOINTERS	0x03 /* O/O */
++#define MSG_DISCONNECT		0x04 /* O/O */
++#define MSG_MESSAGE_REJECT	0x07 /* M/M */
++#define MSG_NOOP		0x08 /* M/M */
++
++/* Messages (2 byte) */
++#define MSG_SIMPLE_Q_TAG	0x20 /* O/O */
++#define MSG_IGN_WIDE_RESIDUE	0x23 /* O/O */
++
+ /* Identify message */		     /* M/M */	
+ #define MSG_IDENTIFYFLAG	0x80 
+ #define MSG_IDENTIFY_DISCFLAG	0x40 
+diff --git a/drivers/scsi/bnx2fc/bnx2fc_io.c b/drivers/scsi/bnx2fc/bnx2fc_io.c
+index 1a0dc18d6915..ed300a279a38 100644
+--- a/drivers/scsi/bnx2fc/bnx2fc_io.c
++++ b/drivers/scsi/bnx2fc/bnx2fc_io.c
+@@ -1220,6 +1220,7 @@ int bnx2fc_eh_abort(struct scsi_cmnd *sc_cmd)
+ 		   was a result from the ABTS request rather than the CLEANUP
+ 		   request */
+ 		set_bit(BNX2FC_FLAG_IO_CLEANUP,	&io_req->req_flags);
++		rc = FAILED;
+ 		goto done;
+ 	}
+ 
+diff --git a/drivers/scsi/hisi_sas/hisi_sas_v3_hw.c b/drivers/scsi/hisi_sas/hisi_sas_v3_hw.c
+index 499c770d405c..e95408314078 100644
+--- a/drivers/scsi/hisi_sas/hisi_sas_v3_hw.c
++++ b/drivers/scsi/hisi_sas/hisi_sas_v3_hw.c
+@@ -4811,14 +4811,14 @@ hisi_sas_v3_destroy_irqs(struct pci_dev *pdev, struct hisi_hba *hisi_hba)
+ {
+ 	int i;
+ 
+-	free_irq(pci_irq_vector(pdev, 1), hisi_hba);
+-	free_irq(pci_irq_vector(pdev, 2), hisi_hba);
+-	free_irq(pci_irq_vector(pdev, 11), hisi_hba);
++	devm_free_irq(&pdev->dev, pci_irq_vector(pdev, 1), hisi_hba);
++	devm_free_irq(&pdev->dev, pci_irq_vector(pdev, 2), hisi_hba);
++	devm_free_irq(&pdev->dev, pci_irq_vector(pdev, 11), hisi_hba);
+ 	for (i = 0; i < hisi_hba->cq_nvecs; i++) {
+ 		struct hisi_sas_cq *cq = &hisi_hba->cq[i];
+ 		int nr = hisi_sas_intr_conv ? 16 : 16 + i;
+ 
+-		free_irq(pci_irq_vector(pdev, nr), cq);
++		devm_free_irq(&pdev->dev, pci_irq_vector(pdev, nr), cq);
+ 	}
+ 	pci_free_irq_vectors(pdev);
+ }
+diff --git a/drivers/scsi/libsas/sas_port.c b/drivers/scsi/libsas/sas_port.c
+index 19cf418928fa..e3d03d744713 100644
+--- a/drivers/scsi/libsas/sas_port.c
++++ b/drivers/scsi/libsas/sas_port.c
+@@ -25,7 +25,7 @@ static bool phy_is_wideport_member(struct asd_sas_port *port, struct asd_sas_phy
+ 
+ static void sas_resume_port(struct asd_sas_phy *phy)
+ {
+-	struct domain_device *dev;
++	struct domain_device *dev, *n;
+ 	struct asd_sas_port *port = phy->port;
+ 	struct sas_ha_struct *sas_ha = phy->ha;
+ 	struct sas_internal *si = to_sas_internal(sas_ha->core.shost->transportt);
+@@ -44,7 +44,7 @@ static void sas_resume_port(struct asd_sas_phy *phy)
+ 	 * 1/ presume every device came back
+ 	 * 2/ force the next revalidation to check all expander phys
+ 	 */
+-	list_for_each_entry(dev, &port->dev_list, dev_list_node) {
++	list_for_each_entry_safe(dev, n, &port->dev_list, dev_list_node) {
+ 		int i, rc;
+ 
+ 		rc = sas_notify_lldd_dev_found(dev);
+diff --git a/drivers/scsi/qla2xxx/qla_target.c b/drivers/scsi/qla2xxx/qla_target.c
+index b2008fb1dd38..12a6848ade43 100644
+--- a/drivers/scsi/qla2xxx/qla_target.c
++++ b/drivers/scsi/qla2xxx/qla_target.c
+@@ -1563,10 +1563,12 @@ void qlt_stop_phase2(struct qla_tgt *tgt)
+ 		return;
+ 	}
+ 
++	mutex_lock(&tgt->ha->optrom_mutex);
+ 	mutex_lock(&vha->vha_tgt.tgt_mutex);
+ 	tgt->tgt_stop = 0;
+ 	tgt->tgt_stopped = 1;
+ 	mutex_unlock(&vha->vha_tgt.tgt_mutex);
++	mutex_unlock(&tgt->ha->optrom_mutex);
+ 
+ 	ql_dbg(ql_dbg_tgt_mgt, vha, 0xf00c, "Stop of tgt %p finished\n",
+ 	    tgt);
+diff --git a/drivers/scsi/vmw_pvscsi.c b/drivers/scsi/vmw_pvscsi.c
+index 8a79605d9652..b9969fce6b4d 100644
+--- a/drivers/scsi/vmw_pvscsi.c
++++ b/drivers/scsi/vmw_pvscsi.c
+@@ -585,7 +585,13 @@ static void pvscsi_complete_request(struct pvscsi_adapter *adapter,
+ 		case BTSTAT_SUCCESS:
+ 		case BTSTAT_LINKED_COMMAND_COMPLETED:
+ 		case BTSTAT_LINKED_COMMAND_COMPLETED_WITH_FLAG:
+-			/* If everything went fine, let's move on..  */
++			/*
++			 * Commands like INQUIRY may transfer less data than
++			 * requested by the initiator via bufflen. Set residual
++			 * count to make upper layer aware of the actual amount
++			 * of data returned.
++			 */
++			scsi_set_resid(cmd, scsi_bufflen(cmd) - e->dataLen);
+ 			cmd->result = (DID_OK << 16);
+ 			break;
+ 
+diff --git a/drivers/target/target_core_iblock.c b/drivers/target/target_core_iblock.c
+index d6fdd1c61f90..a526f9678c34 100644
+--- a/drivers/target/target_core_iblock.c
++++ b/drivers/target/target_core_iblock.c
+@@ -204,11 +204,11 @@ static struct se_dev_plug *iblock_plug_device(struct se_device *se_dev)
+ 	struct iblock_dev_plug *ib_dev_plug;
+ 
+ 	/*
+-	 * Each se_device has a per cpu work this can be run from. Wwe
++	 * Each se_device has a per cpu work this can be run from. We
+ 	 * shouldn't have multiple threads on the same cpu calling this
+ 	 * at the same time.
+ 	 */
+-	ib_dev_plug = &ib_dev->ibd_plug[smp_processor_id()];
++	ib_dev_plug = &ib_dev->ibd_plug[raw_smp_processor_id()];
+ 	if (test_and_set_bit(IBD_PLUGF_PLUGGED, &ib_dev_plug->flags))
+ 		return NULL;
+ 
+diff --git a/drivers/target/target_core_transport.c b/drivers/target/target_core_transport.c
+index 8fbfe75c5744..05d7ffd59df6 100644
+--- a/drivers/target/target_core_transport.c
++++ b/drivers/target/target_core_transport.c
+@@ -1416,7 +1416,7 @@ void __target_init_cmd(
+ 	cmd->orig_fe_lun = unpacked_lun;
+ 
+ 	if (!(cmd->se_cmd_flags & SCF_USE_CPUID))
+-		cmd->cpuid = smp_processor_id();
++		cmd->cpuid = raw_smp_processor_id();
+ 
+ 	cmd->state_active = false;
+ }
+diff --git a/drivers/target/target_core_user.c b/drivers/target/target_core_user.c
+index 198d25ae482a..4bba10e7755a 100644
+--- a/drivers/target/target_core_user.c
++++ b/drivers/target/target_core_user.c
+@@ -516,8 +516,10 @@ static inline int tcmu_get_empty_block(struct tcmu_dev *udev,
+ 	dpi = dbi * udev->data_pages_per_blk;
+ 	/* Count the number of already allocated pages */
+ 	xas_set(&xas, dpi);
++	rcu_read_lock();
+ 	for (cnt = 0; xas_next(&xas) && cnt < page_cnt;)
+ 		cnt++;
++	rcu_read_unlock();
+ 
+ 	for (i = cnt; i < page_cnt; i++) {
+ 		/* try to get new page from the mm */
+@@ -699,11 +701,10 @@ static inline void tcmu_copy_data(struct tcmu_dev *udev,
+ 				  struct scatterlist *sg, unsigned int sg_nents,
+ 				  struct iovec **iov, size_t data_len)
+ {
+-	XA_STATE(xas, &udev->data_pages, 0);
+ 	/* start value of dbi + 1 must not be a valid dbi */
+ 	int dbi = -2;
+ 	size_t page_remaining, cp_len;
+-	int page_cnt, page_inx;
++	int page_cnt, page_inx, dpi;
+ 	struct sg_mapping_iter sg_iter;
+ 	unsigned int sg_flags;
+ 	struct page *page;
+@@ -726,9 +727,10 @@ static inline void tcmu_copy_data(struct tcmu_dev *udev,
+ 		if (page_cnt > udev->data_pages_per_blk)
+ 			page_cnt = udev->data_pages_per_blk;
+ 
+-		xas_set(&xas, dbi * udev->data_pages_per_blk);
+-		for (page_inx = 0; page_inx < page_cnt && data_len; page_inx++) {
+-			page = xas_next(&xas);
++		dpi = dbi * udev->data_pages_per_blk;
++		for (page_inx = 0; page_inx < page_cnt && data_len;
++		     page_inx++, dpi++) {
++			page = xa_load(&udev->data_pages, dpi);
+ 
+ 			if (direction == TCMU_DATA_AREA_TO_SG)
+ 				flush_dcache_page(page);
+
