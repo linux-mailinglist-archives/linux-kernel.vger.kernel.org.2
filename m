@@ -2,104 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5BE32393A6F
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 02:45:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 57CB9393A70
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 02:47:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234805AbhE1ArK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 May 2021 20:47:10 -0400
-Received: from linux.microsoft.com ([13.77.154.182]:58910 "EHLO
-        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229864AbhE1ArE (ORCPT
+        id S234573AbhE1Asc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 May 2021 20:48:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46756 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229864AbhE1Asb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 May 2021 20:47:04 -0400
-Received: from mail-pg1-f173.google.com (mail-pg1-f173.google.com [209.85.215.173])
-        by linux.microsoft.com (Postfix) with ESMTPSA id 232C220B8013;
-        Thu, 27 May 2021 17:45:30 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 232C220B8013
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1622162730;
-        bh=gJOAEM/qWgeTmQ+5OlWHexIiLlQlSznhjnMwrDLR26A=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=tGsEGQoVWWobYMCevWyihyRyeYtDAZu/0V28GqhPsbLxGO/cV2GevSslRSpHyMJ/w
-         UG92R2PxJmtsFh5kpnlvJ/lt446e5YXrf+EO+rsp7mQJ2u1jjDnLPXnn9qtDFZZ+3C
-         Gp9FPe7kdURhI/IZg8W8CjLuGzL0TWNf1qhcP3AI=
-Received: by mail-pg1-f173.google.com with SMTP id e22so1251772pgv.10;
-        Thu, 27 May 2021 17:45:30 -0700 (PDT)
-X-Gm-Message-State: AOAM5326mQ8sMbCfB9N2tQtL7H3uTXdN3RmY1dHcpgOhgKZ7bwgDNQu/
-        7C8YuZzIhJGzb8jYEQy3h6Z5UXsWjZEHXR4NYAI=
-X-Google-Smtp-Source: ABdhPJySR+SvD3TYa0wBijrGzLqj+wD1cE2OL/bszWdPJ3fAW5tlnPRlsMvwC9B9adpY8jt1rCKgFWG3XC/3Lvt1eDw=
-X-Received: by 2002:a63:6f8e:: with SMTP id k136mr6409565pgc.326.1622162729506;
- Thu, 27 May 2021 17:45:29 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210521161527.34607-1-mcroce@linux.microsoft.com>
-In-Reply-To: <20210521161527.34607-1-mcroce@linux.microsoft.com>
-From:   Matteo Croce <mcroce@linux.microsoft.com>
-Date:   Fri, 28 May 2021 02:44:53 +0200
-X-Gmail-Original-Message-ID: <CAFnufp1Xv5V_6Rb_wpA43sfcSr+giqygGmUjr92RRi=fncKtTw@mail.gmail.com>
-Message-ID: <CAFnufp1Xv5V_6Rb_wpA43sfcSr+giqygGmUjr92RRi=fncKtTw@mail.gmail.com>
-Subject: Re: [PATCH net-next v6 0/5] page_pool: recycle buffers
-To:     netdev@vger.kernel.org, linux-mm@kvack.org
-Cc:     Ayush Sawal <ayush.sawal@chelsio.com>,
-        Vinay Kumar Yadav <vinay.yadav@chelsio.com>,
-        Rohit Maheshwari <rohitm@chelsio.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        Marcin Wojtas <mw@semihalf.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Mirko Lindner <mlindner@marvell.com>,
-        Stephen Hemminger <stephen@networkplumber.org>,
-        Tariq Toukan <tariqt@nvidia.com>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Boris Pismenny <borisp@nvidia.com>,
-        Arnd Bergmann <arnd@arndb.de>,
+        Thu, 27 May 2021 20:48:31 -0400
+Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB035C061574
+        for <linux-kernel@vger.kernel.org>; Thu, 27 May 2021 17:46:57 -0700 (PDT)
+Received: by mail-yb1-xb49.google.com with SMTP id m205-20020a25d4d60000b029052a8de1fe41so2351612ybf.23
+        for <linux-kernel@vger.kernel.org>; Thu, 27 May 2021 17:46:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:message-id:mime-version:subject:from:cc;
+        bh=PlH95++B36nHBbK4Jduk7vzZIY/Sp5eibx3QUHpkfY4=;
+        b=d8JjgOYRm5B+az3o5xuyhJh4s4yOm3NSMPpy9CvUAUdDygC5AmVSotAECzCOWOmOCK
+         MtEFJvT/fk65zwVtYPJ1TEzGWEeN9Ca6yQDjrucYfC5pfTScNpzBQm9l187O49k7+yo8
+         ncN6n70im6MOOYNAsIho6nIgWGXR0TLfKrJGaggtrh5V7bEZuHwcLrYT207BjNul4F51
+         VXa+rKxgOFpC4IlNQDcb5aNKTXzQUQpVaEbDaKWn6f2OGeYOMAmdDgqKqetmyUKN3UOd
+         Y+Ky2OCUKLTsa6/W9PbdMpIq6ERJtuNnbcztazqZkEYzAa4/DoW2pq3FSK62fzEusbFu
+         h8uw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:cc;
+        bh=PlH95++B36nHBbK4Jduk7vzZIY/Sp5eibx3QUHpkfY4=;
+        b=QRZUSN1czLwLZ8RNbbhbHVHvCFx1EAbNXjNYSWf+YerR4XeGOncKsMAkWnC1MZ7F1H
+         qo3q7pQewGWP4q/oT4QMY9H8vSD6VotbdDLywkir6avzrhVBzNruPApBq5pU6H7QLMKK
+         1lDx/z4NpkEI38W+fvOREzn5t+AGx9U5EX/V3XS4WvTzbaoqoOLOyz5GbHOuVPhaQnKn
+         4lQdBAf5SngsA4kh1Z/+kqkm3cesjel0FqpnguCZgCpwyXMLbkgd0W3E7gDun0hqbmtg
+         To5EuuhkvWCtTqa0d1Olrvz+0F6hgJOVk32lFHVVatpMmoGH20TXcuJHUqpUEq3KOZki
+         XXQw==
+X-Gm-Message-State: AOAM532TxPc9vIrY5yxJN/+Znaj68+MNE/RYWaYQIhd5jKzKGFDmFHFA
+        zE3fVwm8JEyE+kmqCL3Q47r7oKcF6RNi8G4HAQ==
+X-Google-Smtp-Source: ABdhPJypQIi7OLeQOMkKC8MqPd+cdGydq1CCA7pc+vFNILHmJek6bUDtkR6qrp28z/EouWBP2MGghJ0c3azUecOTpw==
+X-Received: from almasrymina.svl.corp.google.com ([2620:15c:2cd:202:b35:38bd:7e0f:3b1d])
+ (user=almasrymina job=sendgmr) by 2002:a25:7a41:: with SMTP id
+ v62mr8586302ybc.225.1622162816966; Thu, 27 May 2021 17:46:56 -0700 (PDT)
+Date:   Thu, 27 May 2021 17:46:49 -0700
+Message-Id: <20210528004649.85298-1-almasrymina@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.32.0.rc0.204.g9fa02ecfa5-goog
+Subject: [PATCH v4] mm, hugetlb: Fix simple resv_huge_pages underflow on UFFDIO_COPY
+From:   Mina Almasry <almasrymina@google.com>
+Cc:     Mina Almasry <almasrymina@google.com>,
+        Axel Rasmussen <axelrasmussen@google.com>,
+        Peter Xu <peterx@redhat.com>, linux-mm@kvack.org,
+        Mike Kravetz <mike.kravetz@oracle.com>,
         Andrew Morton <akpm@linux-foundation.org>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Vlastimil Babka <vbabka@suse.cz>, Yu Zhao <yuzhao@google.com>,
-        Will Deacon <will@kernel.org>,
-        Fenghua Yu <fenghua.yu@intel.com>,
-        Roman Gushchin <guro@fb.com>, Hugh Dickins <hughd@google.com>,
-        Peter Xu <peterx@redhat.com>, Jason Gunthorpe <jgg@ziepe.ca>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        Alexander Lobakin <alobakin@pm.me>,
-        Cong Wang <cong.wang@bytedance.com>, wenxu <wenxu@ucloud.cn>,
-        Kevin Hao <haokexin@gmail.com>,
-        Jakub Sitnicki <jakub@cloudflare.com>,
-        Marco Elver <elver@google.com>,
-        Willem de Bruijn <willemb@google.com>,
-        Miaohe Lin <linmiaohe@huawei.com>,
-        Yunsheng Lin <linyunsheng@huawei.com>,
-        Guillaume Nault <gnault@redhat.com>,
-        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
-        bpf@vger.kernel.org, Matthew Wilcox <willy@infradead.org>,
-        Eric Dumazet <edumazet@google.com>,
-        David Ahern <dsahern@gmail.com>,
-        Lorenzo Bianconi <lorenzo@kernel.org>,
-        Saeed Mahameed <saeedm@nvidia.com>,
-        Andrew Lunn <andrew@lunn.ch>, Paolo Abeni <pabeni@redhat.com>,
-        Sven Auhagen <sven.auhagen@voleatech.de>
+        linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 21, 2021 at 6:15 PM Matteo Croce <mcroce@linux.microsoft.com> wrote:
-> Note that this series depends on the change "mm: fix struct page layout
-> on 32-bit systems"[2] which is not yet in master.
->
+The userfaultfd hugetlb tests detect a resv_huge_pages underflow. This
+happens when hugetlb_mcopy_atomic_pte() is called with !is_continue on
+an index for which we already have a page in the cache. When this
+happens, we allocate a second page, double consuming the reservation,
+and then fail to insert the page into the cache and return -EEXIST.
 
-I see that it just entered net-next:
+To fix this, we first if there exists a page in the cache which already
+consumed the reservation, and return -EEXIST immediately if so.
 
-commit 9ddb3c14afba8bc5950ed297f02d4ae05ff35cd1
-Author: Matthew Wilcox (Oracle) <willy@infradead.org>
-Date:   Fri May 14 17:27:24 2021 -0700
+There is still a rare condition where we fail to copy the page contents
+AND race with a call for hugetlb_no_page() for this index and again we
+will underflow resv_huge_pages. That is fixed in a more complicated
+patch not targeted for -stable.
 
-   mm: fix struct page layout on 32-bit systems
+Test:
+Hacked the code locally such that resv_huge_pages underflows produce
+a warning, then:
 
-Regards,
--- 
-per aspera ad upstream
+./tools/testing/selftests/vm/userfaultfd hugetlb_shared 10
+	2 /tmp/kokonut_test/huge/userfaultfd_test && echo test success
+./tools/testing/selftests/vm/userfaultfd hugetlb 10
+	2 /tmp/kokonut_test/huge/userfaultfd_test && echo test success
+
+Both tests succeed and produce no warnings. After the
+test runs number of free/resv hugepages is correct.
+
+Signed-off-by: Mina Almasry <almasrymina@google.com>
+Cc: Axel Rasmussen <axelrasmussen@google.com>
+Cc: Peter Xu <peterx@redhat.com>
+Cc: linux-mm@kvack.org
+Cc: Mike Kravetz <mike.kravetz@oracle.com>
+Cc: Andrew Morton <akpm@linux-foundation.org>
+Cc: linux-mm@kvack.org
+Cc: linux-kernel@vger.kernel.org
+Cc: stable@vger.kernel.org
+
+---
+ mm/hugetlb.c | 14 ++++++++++++--
+ 1 file changed, 12 insertions(+), 2 deletions(-)
+
+diff --git a/mm/hugetlb.c b/mm/hugetlb.c
+index ead5d12e0604..76e2a6efc165 100644
+--- a/mm/hugetlb.c
++++ b/mm/hugetlb.c
+@@ -4925,10 +4925,20 @@ int hugetlb_mcopy_atomic_pte(struct mm_struct *dst_mm,
+ 		if (!page)
+ 			goto out;
+ 	} else if (!*pagep) {
+-		ret = -ENOMEM;
++		/* If a page already exists, then it's UFFDIO_COPY for
++		 * a non-missing case. Return -EEXIST.
++		 */
++		if (vm_shared &&
++		    hugetlbfs_pagecache_present(h, dst_vma, dst_addr)) {
++			ret = -EEXIST;
++			goto out;
++		}
++
+ 		page = alloc_huge_page(dst_vma, dst_addr, 0);
+-		if (IS_ERR(page))
++		if (IS_ERR(page)) {
++			ret = -ENOMEM;
+ 			goto out;
++		}
+
+ 		ret = copy_huge_page_from_user(page,
+ 						(const void __user *) src_addr,
+--
+2.32.0.rc0.204.g9fa02ecfa5-goog
