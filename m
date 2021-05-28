@@ -2,59 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D9094393F5E
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 11:08:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 516C3393F5F
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 11:08:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236733AbhE1JJN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 May 2021 05:09:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45250 "EHLO
+        id S236772AbhE1JJ0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 May 2021 05:09:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45248 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236469AbhE1JI0 (ORCPT
+        with ESMTP id S236454AbhE1JI0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 28 May 2021 05:08:26 -0400
-Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com [IPv6:2a00:1450:4864:20::334])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4B8FC06174A
-        for <linux-kernel@vger.kernel.org>; Fri, 28 May 2021 02:06:44 -0700 (PDT)
-Received: by mail-wm1-x334.google.com with SMTP id h3so1692862wmq.3
-        for <linux-kernel@vger.kernel.org>; Fri, 28 May 2021 02:06:44 -0700 (PDT)
+Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com [IPv6:2a00:1450:4864:20::335])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6AA91C061351
+        for <linux-kernel@vger.kernel.org>; Fri, 28 May 2021 02:06:45 -0700 (PDT)
+Received: by mail-wm1-x335.google.com with SMTP id h3so1692876wmq.3
+        for <linux-kernel@vger.kernel.org>; Fri, 28 May 2021 02:06:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=qo0P3VAUaaC0rGaccceg1Xwi3VOmQzxxnDFSUtDbQVY=;
-        b=xkMc8n03C9qNMBP/ffDVyelt5dkLTk0NiMhYljGoR9aSGgQ9Cs4GyIJmg18iZB2QTS
-         ywpN6CG8rPcBrlOQPylthnjZSEQBfHZYL95JU0Vefkra+p1LqvDZKZc5CpJtxgMXqzjj
-         XrQwfzp+S30Xwf9eOg69yPkLUkm14RL/vJHfIyuCoWP6j6AcVgunnc/RFnlE73AEcMtm
-         vJabvm6+dlKL3OWCZHz2FGFA86bo9k25qMtJhA8AZxXXH93C3/eW+4nZcg8VNIFI3BNV
-         faRaKQX+SzN65xqgCNBxGl0Hw1W0QHyK1dJJmcJPkji1eskeJs08uCI+goiABDlKS9Uc
-         8V2w==
+        bh=PSfiWENpoM0SVqY08Fc1sBXBHZUZoCh156k1W1PW9W0=;
+        b=UEuBzkedHEMrTHy5u8204Bozcy2vdO7A2pfhZryB8XNJYAKtfW/LvR3Y4Ytcl1MK75
+         QTmIJsDrylbrnd58ZY2lYweT4H+qzBD83bEPkIudrOitPmG9m2ejS5nqtxTYptFJYWp+
+         zVXxR7IgOQ7J9DViQQoUTUJ+iQqH7wU67WS+RdVPS/KLb9eKX3FLklqC+wD5wUeckG3e
+         zyZhM7jvN9xT6Ry4S/Mjybe03xW+sozSBgnfTsBQNRz7liILeaE//+Dn6snL8gMPX2th
+         UEcBNROeLD0nNAP0VVmQEiGI9q6bzL2VlduVI6JhiIb6RrmcdK/oeui66yqWfh9WX8vV
+         iU/g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=qo0P3VAUaaC0rGaccceg1Xwi3VOmQzxxnDFSUtDbQVY=;
-        b=W+wFEAqaJtcQUoy9raTx4il/KmQd3x6HuJ3FC/h6WFxwfRqztvudKaHqXcN3afR30/
-         3NboXZQvfi8uvpQjIbgxFQMP0hdMcBzKJvZhbTEyzESi8wY8AugsHRN2Olw+73uOlX4E
-         hFVTB5v6WEJ+BP5pzZzXEninWEJn4sTtETZSg76wDdpa7Ky7CRuGYtAT4TD1EZdvJtnh
-         YDDlgPptazXnYw1UJtHjx0PQ/dTtAJCGpEEg9B5BVT0Br4ZEPQJIRhzMW5bM96Q+yBk4
-         LUA1oGqhU7w6f2wlwcCZwP3uNzOn5gob7NV/dOyVwPjJovN/RQO3tyzPFB17Anh3Y2N2
-         efgw==
-X-Gm-Message-State: AOAM531J/ANsc075Ws9S+t24O8+qPBor+XOSqBZfPO+DSH/c1jqqyO0A
-        AZ10Z5URoChLUEIF2v4EyKntWDP4tL+fLQ==
-X-Google-Smtp-Source: ABdhPJyU6zXR8SFXvZz50vH8VHCtYys5A47i8rDLyIqLHxAtoL+cffb40Ec70xnTYtFPcIueYqwCHA==
-X-Received: by 2002:a7b:c24a:: with SMTP id b10mr12362865wmj.157.1622192803306;
-        Fri, 28 May 2021 02:06:43 -0700 (PDT)
+        bh=PSfiWENpoM0SVqY08Fc1sBXBHZUZoCh156k1W1PW9W0=;
+        b=NWHnTx9sUGIHbj0L294ScZyDh+1jrO4hZSlzBuP1QN3V66L3VDbfs9LEo7CwDiwRDI
+         ZA4YaQlqifF7LHN3hqp/o9xFJEYDKdwxcMWjse1lHE2r4EJ2+keFEfVisiwlMNdi/nxq
+         8tSPVhvJHBhuIa3NOrSciYYKoSHc1dS0V2tc5fLPoPqKaUdfkynobSteUZzQWgK/42yg
+         lotnV83aWYjrRGlhkNlRtMUkGcCF+TnILzULSKAJC+0R+n+lzsb/2o3MrtZ4EL4ye/rv
+         EdV3be5eSkF8PUCRL1R+Rnf1G4a7PGunXbpF80T0BPCOrtBOmg7vARzST8CeItko02X+
+         A60Q==
+X-Gm-Message-State: AOAM531rsGDejqBks1lbxjMb1N4BE830zpBLmiCibqxkNp7z/I71z167
+        kfM5vNT2ouozey8uzIWcKO3BmA==
+X-Google-Smtp-Source: ABdhPJynURgTSqGp3nPp38Jlf+d7Bcv27IHY7P1bQdoAoKiPF74mikzq52auixb4D6gvAgAEsmlC1g==
+X-Received: by 2002:a05:600c:2f17:: with SMTP id r23mr7369609wmn.94.1622192804096;
+        Fri, 28 May 2021 02:06:44 -0700 (PDT)
 Received: from dell.default ([91.110.221.223])
-        by smtp.gmail.com with ESMTPSA id m132sm6105911wmf.11.2021.05.28.02.06.42
+        by smtp.gmail.com with ESMTPSA id m132sm6105911wmf.11.2021.05.28.02.06.43
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 28 May 2021 02:06:42 -0700 (PDT)
+        Fri, 28 May 2021 02:06:43 -0700 (PDT)
 From:   Lee Jones <lee.jones@linaro.org>
 To:     lee.jones@linaro.org
-Cc:     linux-kernel@vger.kernel.org, Pavel Machek <pavel@ucw.cz>,
-        Dan Murphy <dmurphy@ti.com>, linux-leds@vger.kernel.org
-Subject: [PATCH 11/15] leds: leds-lm3697: Provide some missing descriptions for struct members
-Date:   Fri, 28 May 2021 10:06:25 +0100
-Message-Id: <20210528090629.1800173-12-lee.jones@linaro.org>
+Cc:     linux-kernel@vger.kernel.org, Vadim Pasternak <vadimp@nvidia.com>,
+        Pavel Machek <pavel@ucw.cz>, linux-leds@vger.kernel.org
+Subject: [PATCH 12/15] leds: leds-mlxreg: Fix incorrect documentation of struct member 'led_cdev' and 'led_cdev_name'
+Date:   Fri, 28 May 2021 10:06:26 +0100
+Message-Id: <20210528090629.1800173-13-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210528090629.1800173-1-lee.jones@linaro.org>
 References: <20210528090629.1800173-1-lee.jones@linaro.org>
@@ -66,41 +66,34 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 Fixes the following W=1 kernel build warning(s):
 
- drivers/leds/leds-lm3697.c:60: warning: Function parameter or member 'enabled' not described in 'lm3697_led'
- drivers/leds/leds-lm3697.c:60: warning: Function parameter or member 'num_leds' not described in 'lm3697_led'
- drivers/leds/leds-lm3697.c:84: warning: Function parameter or member 'bank_cfg' not described in 'lm3697'
- drivers/leds/leds-lm3697.c:84: warning: Function parameter or member 'num_banks' not described in 'lm3697'
+ drivers/leds/leds-mlxreg.c:42: warning: Function parameter or member 'led_cdev' not described in 'mlxreg_led_data'
+ drivers/leds/leds-mlxreg.c:42: warning: Function parameter or member 'led_cdev_name' not described in 'mlxreg_led_data'
 
+Cc: Vadim Pasternak <vadimp@nvidia.com>
 Cc: Pavel Machek <pavel@ucw.cz>
-Cc: Dan Murphy <dmurphy@ti.com>
 Cc: linux-leds@vger.kernel.org
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/leds/leds-lm3697.c | 4 ++++
- 1 file changed, 4 insertions(+)
+ drivers/leds/leds-mlxreg.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/leds/leds-lm3697.c b/drivers/leds/leds-lm3697.c
-index 7d216cdb91a8a..0d10d12134479 100644
---- a/drivers/leds/leds-lm3697.c
-+++ b/drivers/leds/leds-lm3697.c
-@@ -47,6 +47,8 @@
-  * @lmu_data: Register and setting values for common code
-  * @control_bank: Control bank the LED is associated to. 0 is control bank A
-  *		   1 is control bank B
-+ * @enabled: LED brightness level (or LED_OFF)
-+ * @num_leds: Number of LEDs available
+diff --git a/drivers/leds/leds-mlxreg.c b/drivers/leds/leds-mlxreg.c
+index 82aea1cd0c125..b7855c93bd725 100644
+--- a/drivers/leds/leds-mlxreg.c
++++ b/drivers/leds/leds-mlxreg.c
+@@ -28,10 +28,11 @@
+  * struct mlxreg_led_data - led control data:
+  *
+  * @data: led configuration data;
+- * @led_classdev: led class data;
++ * @led_cdev: led class data;
+  * @base_color: base led color (other colors have constant offset from base);
+  * @led_data: led data;
+  * @data_parent: pointer to private device control data of parent;
++ * @led_cdev_name: class device name
   */
- struct lm3697_led {
- 	u32 hvled_strings[LM3697_MAX_LED_STRINGS];
-@@ -68,6 +70,8 @@ struct lm3697_led {
-  * @dev: Pointer to the devices device struct
-  * @lock: Lock for reading/writing the device
-  * @leds: Array of LED strings
-+ * @bank_cfg: OUTPUT_CONFIG register values
-+ * @num_banks: Number of control banks
-  */
- struct lm3697 {
- 	struct gpio_desc *enable_gpio;
+ struct mlxreg_led_data {
+ 	struct mlxreg_core_data *data;
 -- 
 2.31.1
 
