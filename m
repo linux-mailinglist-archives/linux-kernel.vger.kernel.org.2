@@ -2,223 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F1B2E393BDA
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 05:17:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C092393BD6
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 05:16:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236330AbhE1DTD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 May 2021 23:19:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52148 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236316AbhE1DTA (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 May 2021 23:19:00 -0400
-Received: from mail-oi1-x231.google.com (mail-oi1-x231.google.com [IPv6:2607:f8b0:4864:20::231])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB22FC061574
-        for <linux-kernel@vger.kernel.org>; Thu, 27 May 2021 20:17:25 -0700 (PDT)
-Received: by mail-oi1-x231.google.com with SMTP id w127so2905267oig.12
-        for <linux-kernel@vger.kernel.org>; Thu, 27 May 2021 20:17:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=Fj6yd4g3TXDmWwf/fK4MDrrZ2Jmwp4JZlzW8aDmDn3Y=;
-        b=zsMQpJ5RdRYryTFtLjl5EbEWvN/bwGgRWNHBN7gYmTygCYZ5R9g/TJlWSVUpADeOaf
-         hezuDxTM8XY0AKG0emXIMEv2rHeP6Xn2qVmHL/Wy+uWstqNX00TG/lXuhXSecLa0CwXU
-         RdVdPKsyqoUBvqNj6pKsM9B/oQnkVu9lw/bALcKx6Ii1AUiJpkX8XGjnF9cukwmudse4
-         BxJTVZ2nhsGHYWcMNsaZCv1cZZXjWIl/7/k50kz74KFOwKBv7c1qGivzhLYYUW47NFRV
-         sCOgHk/YiFCoSMW0b/kWaMFoV9sDiEL4frFnl7SP09ujaH6WyQqG3GF8UGnSnXQs+a6F
-         fUbg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Fj6yd4g3TXDmWwf/fK4MDrrZ2Jmwp4JZlzW8aDmDn3Y=;
-        b=RD0qXH9qHKDdvpDDCLuugAWxSIpIyzfaJqIcLzsDRalk4pk2IZRB/taIPgrgWPU7iy
-         V2I1ZjOEp5ObWXdlZvaK8IQnFk5PPExB6mzTIEaUGMK/HquwRQDouie3qJhTAs8vweo1
-         kZUmprVb2Agl84YkWzUtyeZwgRT1dadpPFtBg1rmT3QbqR613dQ0bDIDZVi7MNaqWFop
-         F4mRtasiqCBNBteLC4jOUI/7Ym2hVhTo7QO0RCxMbkfP769VmY+s5Xqhy0qGUbhUix2C
-         GdlxKyTaTbiC/BR6oHJ3iaPr5VD8MPLKvlAt9G8CgUh0auoY8PJfsQbOyzeihmHARlhB
-         z4JA==
-X-Gm-Message-State: AOAM532BtLgHoN1xGyxldo9iIxjo48p03oyjzn/Z4DegZ4NKM9XQpTWx
-        6FN176s6UiUKa5ixhio1y/Xhtg==
-X-Google-Smtp-Source: ABdhPJxqRihBpgL6lj+evaoTo7huY41OzFJ14nffnsAKGVI8c/xGw0DoIXBOhbBGoZeejZoxUvA7WA==
-X-Received: by 2002:aca:af8f:: with SMTP id y137mr7422874oie.159.1622171845173;
-        Thu, 27 May 2021 20:17:25 -0700 (PDT)
-Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id h4sm857667ooq.6.2021.05.27.20.17.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 27 May 2021 20:17:24 -0700 (PDT)
-Date:   Thu, 27 May 2021 22:17:22 -0500
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Suman Anna <s-anna@ti.com>
-Cc:     Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Lokesh Vutla <lokeshvutla@ti.com>,
-        linux-remoteproc@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 1/2] dt-bindings: remoteproc: k3-r5f: Update bindings
- for AM64x SoCs
-Message-ID: <YLBgwkiT9PE3Cu82@builder.lan>
-References: <20210327143117.1840-1-s-anna@ti.com>
- <20210327143117.1840-2-s-anna@ti.com>
- <8948a30c-1a2f-1fb0-05bb-37be9c02c5d5@ti.com>
- <ff8edffb-d926-9641-740b-2c292139aa07@ti.com>
- <20210521204053.GA1011163@xps15>
- <911bfb1d-8e66-298a-83ba-998040f5596d@ti.com>
+        id S236312AbhE1DRj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 May 2021 23:17:39 -0400
+Received: from mga03.intel.com ([134.134.136.65]:17457 "EHLO mga03.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236023AbhE1DRh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 27 May 2021 23:17:37 -0400
+IronPort-SDR: 1uJ5F7lVWGag/1RLKtoapE8wfXrusWc2xGJPTO79sjWmgXgAWtwfSry9vPJ6YXqu1o66uvRVR4
+ dQDXIIY/ZuAg==
+X-IronPort-AV: E=McAfee;i="6200,9189,9997"; a="202919618"
+X-IronPort-AV: E=Sophos;i="5.83,228,1616482800"; 
+   d="scan'208";a="202919618"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 May 2021 20:16:02 -0700
+IronPort-SDR: k6k4oW7BOPAJL29GdrGA0ZY1pJfaCwU0lhxI3HU5CnHbksoAbL/i9IVjxtV7O6vwH9Q1eRDj2N
+ p/Rzc6PdANBw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.83,228,1616482800"; 
+   d="scan'208";a="415155080"
+Received: from chenyu-desktop.sh.intel.com ([10.239.158.131])
+  by orsmga002.jf.intel.com with ESMTP; 27 May 2021 20:15:56 -0700
+From:   Chen Yu <yu.c.chen@intel.com>
+To:     linux-pm@vger.kernel.org
+Cc:     "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+        Len Brown <len.brown@intel.com>,
+        Artem Bityutskiy <artem.bityutskiy@linux.intel.com>,
+        Zhang Rui <rui.zhang@intel.com>, linux-kernel@vger.kernel.org,
+        Chen Yu <yu.c.chen@intel.com>
+Subject: [PATCH][v2] intel_idle: Adjust the SKX C6 latency and residency if PC6 is disabled
+Date:   Fri, 28 May 2021 11:20:54 +0800
+Message-Id: <20210528032054.7572-1-yu.c.chen@intel.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <911bfb1d-8e66-298a-83ba-998040f5596d@ti.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon 24 May 10:47 CDT 2021, Suman Anna wrote:
+Currently cpuidle assumes worst-case C-state parameters, and so C6
+is described with PC6 parameters, which is worst case for requesting
+CC6. When PC6 is enabled, this is appropriate. But if PC6 is disabled
+in BIOS, the exit latency and target_residency should be adjusted
+accordingly.
 
-> On 5/21/21 3:40 PM, Mathieu Poirier wrote:
-> > Hi suman,
-> > 
-> > On Wed, May 12, 2021 at 09:47:44PM -0500, Suman Anna wrote:
-> >> Hi Rob,
-> >>
-> >> On 4/19/21 8:55 AM, Suman Anna wrote:
-> >>> Hi Rob,
-> >>>
-> >>> On 3/27/21 9:31 AM, Suman Anna wrote:
-> >>>> The K3 AM64x SoCs have two dual-core Arm R5F clusters/subsystems, with
-> >>>> 2 R5F cores each, both in the MAIN voltage domain.
-> >>>>
-> >>>> These clusters are a revised IP version compared to those present on
-> >>>> J721E and J7200 SoCs, and supports a new "Single-CPU" mode instead of
-> >>>> LockStep mode. Update the K3 R5F remoteproc bindings with the compatible
-> >>>> info relevant to these R5F clusters/subsystems on K3 AM64x SoCs.
-> >>>>
-> >>>> Signed-off-by: Suman Anna <s-anna@ti.com>
-> >>>> ---
-> >>>> v2: No changes
-> >>>>
-> >>>>  .../bindings/remoteproc/ti,k3-r5f-rproc.yaml  | 31 ++++++++++++++++---
-> >>>
-> >>> Looks like this patch has fallen through the cracks, can you please review and
-> >>> give your ack for this patch so that Bjorn can pick up the series for 5.13?
-> >>
-> >> Gentle reminder, do you have any comments on this patch. Appreciate your ack so
-> >> that we can get this in for 5.14?
-> > 
-> > If memory serves me well Rob indicated that he would not review or comment on
-> > bindings related to multi-core remote processors.  On the flip side he also
-> > mentioned that he would not object to their presence.  And since this is an
-> > increment to an existing binding rather than a new one, I think it is fair for
-> > us to pick it up.  
-> > 
-> > Rob - please intervene if my recollections are not accurate and accept my honest
-> > apologies.  Otherwise: 
-> > 
-> > Reviewed-by: Mathieu Poirier <mathieu.poirier@linaro.org> 
-> > 
-> 
-> Thank you Mathieu.
-> 
-> Bjorn,
-> Is it possible for you to give an immutable branch with just this bindings so we
-> can add the R5F nodes as well and avoid any checkpatch warnings on Nishanth's
-> tree with our K3 dts patches?
-> 
+Exit latency:
+Previously the C6 exit latency was measured when woken up from CC6/PC6.
+With PC6 disabled, the C6 exit latency should be CC6/PC0.
 
-Hi Suman,
+Target residency:
+With PC6 disabled, idle duration within [CC6, PC6) would make the
+idle governor choose C1E over C6. This would cause low energy-efficiency.
+We should lower the bar to request C6 when PC6 is disabled.
 
-That sounds rather ambitious, but you can now find this at:
-https://git.kernel.org/pub/scm/linux/kernel/git/andersson/remoteproc.git/tag/?h=20210327143117.1840-2-s-anna@ti.com
+To fill this gap, check if PC6 is disabled in the BIOS in the
+MSR_PKG_CST_CONFIG_CONTROL(0xe2). If so, use CC6/PC0 parameters as the
+new exit latency. Meanwhile, update target_residency to 3 times of the new
+exit latency. This is consistent with how intel_idle driver uses _CST to
+calculate the target_residency. The consequence is that, the OS would
+be more offen to choose C6 over C1E when PC6 is disabled. This is reasonable
+because if the user is using C6, it implies that the user cares about energy,
+so choosing C6 more frequently is in accordance with user requirement.
 
-Regards,
-Bjorn
+The new exit latency of CC6/PC0 92us was from wult[1] result on SKX, which was
+measured via NIC wakeup from 99.99th latency. Besides SKX, the CLX and CPX
+both have the same CPU model number. And since they have similar CC6 exit latency
+to SKX, 96us and 89us respectively, reuse the value of SKX.
 
-> regards
-> Suman
-> 
-> >>
-> >> regards
-> >> Suman
-> >>
-> >>>
-> >>> regards
-> >>> Suman
-> >>>
-> >>>>  1 file changed, 26 insertions(+), 5 deletions(-)
-> >>>>
-> >>>> diff --git a/Documentation/devicetree/bindings/remoteproc/ti,k3-r5f-rproc.yaml b/Documentation/devicetree/bindings/remoteproc/ti,k3-r5f-rproc.yaml
-> >>>> index d905d614502b..130fbaacc4b1 100644
-> >>>> --- a/Documentation/devicetree/bindings/remoteproc/ti,k3-r5f-rproc.yaml
-> >>>> +++ b/Documentation/devicetree/bindings/remoteproc/ti,k3-r5f-rproc.yaml
-> >>>> @@ -14,8 +14,12 @@ description: |
-> >>>>    processor subsystems/clusters (R5FSS). The dual core cluster can be used
-> >>>>    either in a LockStep mode providing safety/fault tolerance features or in a
-> >>>>    Split mode providing two individual compute cores for doubling the compute
-> >>>> -  capacity. These are used together with other processors present on the SoC
-> >>>> -  to achieve various system level goals.
-> >>>> +  capacity on most SoCs. These are used together with other processors present
-> >>>> +  on the SoC to achieve various system level goals.
-> >>>> +
-> >>>> +  AM64x SoCs do not support LockStep mode, but rather a new non-safety mode
-> >>>> +  called "Single-CPU" mode, where only Core0 is used, but with ability to use
-> >>>> +  Core1's TCMs as well.
-> >>>>  
-> >>>>    Each Dual-Core R5F sub-system is represented as a single DTS node
-> >>>>    representing the cluster, with a pair of child DT nodes representing
-> >>>> @@ -33,6 +37,7 @@ properties:
-> >>>>        - ti,am654-r5fss
-> >>>>        - ti,j721e-r5fss
-> >>>>        - ti,j7200-r5fss
-> >>>> +      - ti,am64-r5fss
-> >>>>  
-> >>>>    power-domains:
-> >>>>      description: |
-> >>>> @@ -56,11 +61,12 @@ properties:
-> >>>>  
-> >>>>    ti,cluster-mode:
-> >>>>      $ref: /schemas/types.yaml#/definitions/uint32
-> >>>> -    enum: [0, 1]
-> >>>>      description: |
-> >>>>        Configuration Mode for the Dual R5F cores within the R5F cluster.
-> >>>> -      Should be either a value of 1 (LockStep mode) or 0 (Split mode),
-> >>>> -      default is LockStep mode if omitted.
-> >>>> +      Should be either a value of 1 (LockStep mode) or 0 (Split mode) on
-> >>>> +      most SoCs (AM65x, J721E, J7200), default is LockStep mode if omitted;
-> >>>> +      and should be either a value of 0 (Split mode) or 2 (Single-CPU mode)
-> >>>> +      on AM64x SoCs, default is Split mode if omitted.
-> >>>>  
-> >>>>  # R5F Processor Child Nodes:
-> >>>>  # ==========================
-> >>>> @@ -97,6 +103,7 @@ patternProperties:
-> >>>>            - ti,am654-r5f
-> >>>>            - ti,j721e-r5f
-> >>>>            - ti,j7200-r5f
-> >>>> +          - ti,am64-r5f
-> >>>>  
-> >>>>        reg:
-> >>>>          items:
-> >>>> @@ -198,6 +205,20 @@ patternProperties:
-> >>>>  
-> >>>>      unevaluatedProperties: false
-> >>>>  
-> >>>> +if:
-> >>>> +  properties:
-> >>>> +    compatible:
-> >>>> +      enum:
-> >>>> +        - ti,am64-r5fss
-> >>>> +then:
-> >>>> +  properties:
-> >>>> +    ti,cluster-mode:
-> >>>> +      enum: [0, 2]
-> >>>> +else:
-> >>>> +  properties:
-> >>>> +    ti,cluster-mode:
-> >>>> +      enum: [0, 1]
-> >>>> +
-> >>>>  required:
-> >>>>    - compatible
-> >>>>    - power-domains
-> >>>>
-> >>>
-> >>
-> 
+There is concern that if we should introduce a more generic solution
+rather than optimizing on each platforms. However consider the
+code complexity and different PC6 bit interpretation on different
+platforms, tune the code per platform seems to be an acceptable trade-off.
+
+[1] https://intel.github.io/wult/
+
+Suggested-by: Len Brown <len.brown@intel.com>
+Signed-off-by: Chen Yu <yu.c.chen@intel.com>
+---
+v2: Simplify the commit log to not mention C3/PC3. (Artem)
+    Confirm the exit latency on CLX and CPX.(Artem)
+---
+ drivers/idle/intel_idle.c | 33 +++++++++++++++++++++++++++++++++
+ 1 file changed, 33 insertions(+)
+
+diff --git a/drivers/idle/intel_idle.c b/drivers/idle/intel_idle.c
+index ec1b9d306ba6..e6c543b5ee1d 100644
+--- a/drivers/idle/intel_idle.c
++++ b/drivers/idle/intel_idle.c
+@@ -1484,6 +1484,36 @@ static void __init sklh_idle_state_table_update(void)
+ 	skl_cstates[6].flags |= CPUIDLE_FLAG_UNUSABLE;	/* C9-SKL */
+ }
+ 
++/**
++ * skx_idle_state_table_update - Adjust the Sky Lake/Cascade Lake
++ * idle states table.
++ */
++static void __init skx_idle_state_table_update(void)
++{
++	unsigned long long msr;
++
++	rdmsrl(MSR_PKG_CST_CONFIG_CONTROL, msr);
++
++	/*
++	 * 000b: C0/C1 (no package C-state support)
++	 * 001b: C2
++	 * 010b: C6 (non-retention)
++	 * 011b: C6 (retention)
++	 * 111b: No Package C state limits.
++	 */
++	if ((msr & 0x7) < 2) {
++		/*
++		 * Uses the CC6 + PC0 latency and 3 times of
++		 * latency for target_residency if the PC6
++		 * is disabled in BIOS. This is consistent
++		 * with how intel_idle driver uses _CST
++		 * to set the target_residency.
++		 */
++		skx_cstates[2].exit_latency = 92;
++		skx_cstates[2].target_residency = 276;
++	}
++}
++
+ static bool __init intel_idle_verify_cstate(unsigned int mwait_hint)
+ {
+ 	unsigned int mwait_cstate = MWAIT_HINT2CSTATE(mwait_hint) + 1;
+@@ -1515,6 +1545,9 @@ static void __init intel_idle_init_cstates_icpu(struct cpuidle_driver *drv)
+ 	case INTEL_FAM6_SKYLAKE:
+ 		sklh_idle_state_table_update();
+ 		break;
++	case INTEL_FAM6_SKYLAKE_X:
++		skx_idle_state_table_update();
++		break;
+ 	}
+ 
+ 	for (cstate = 0; cstate < CPUIDLE_STATE_MAX; ++cstate) {
+-- 
+2.25.1
+
