@@ -2,118 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C053394453
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 16:39:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A09D394454
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 16:41:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236421AbhE1OlS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 May 2021 10:41:18 -0400
-Received: from mga03.intel.com ([134.134.136.65]:19075 "EHLO mga03.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236332AbhE1OlI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 May 2021 10:41:08 -0400
-IronPort-SDR: +tkowm8VDek7IXjxh2N1ESoAaDP/g/gyJtHRZH1pxR0OeccAK0ybnJs2OhdIVmd6h+5grGKzu7
- 0lYAkJvqnDJQ==
-X-IronPort-AV: E=McAfee;i="6200,9189,9998"; a="203001921"
-X-IronPort-AV: E=Sophos;i="5.83,229,1616482800"; 
-   d="scan'208";a="203001921"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 May 2021 07:39:32 -0700
-IronPort-SDR: 2a6rd7eHfNnn9G08o28SW4+k/wLRHR+FGambmhbJqOqXg0uAiCDbJ2QlFnXrRDPpsID/+yb+X9
- g6MrJ2FjD/LA==
-X-IronPort-AV: E=Sophos;i="5.83,229,1616482800"; 
-   d="scan'208";a="481068021"
-Received: from yihleong-mobl.amr.corp.intel.com (HELO [10.255.228.69]) ([10.255.228.69])
-  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 May 2021 07:39:31 -0700
-Subject: Re: [PATCH 0/6 v2] Calculate pcp->high based on zone sizes and active
- CPUs
-To:     Mel Gorman <mgorman@techsingularity.net>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Hillf Danton <hdanton@sina.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Michal Hocko <mhocko@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux-MM <linux-mm@kvack.org>, "Tang, Feng" <feng.tang@intel.com>
-References: <20210525080119.5455-1-mgorman@techsingularity.net>
- <7177f59b-dc05-daff-7dc6-5815b539a790@intel.com>
- <20210528085545.GJ30378@techsingularity.net>
-From:   Dave Hansen <dave.hansen@intel.com>
-Autocrypt: addr=dave.hansen@intel.com; keydata=
- xsFNBE6HMP0BEADIMA3XYkQfF3dwHlj58Yjsc4E5y5G67cfbt8dvaUq2fx1lR0K9h1bOI6fC
- oAiUXvGAOxPDsB/P6UEOISPpLl5IuYsSwAeZGkdQ5g6m1xq7AlDJQZddhr/1DC/nMVa/2BoY
- 2UnKuZuSBu7lgOE193+7Uks3416N2hTkyKUSNkduyoZ9F5twiBhxPJwPtn/wnch6n5RsoXsb
- ygOEDxLEsSk/7eyFycjE+btUtAWZtx+HseyaGfqkZK0Z9bT1lsaHecmB203xShwCPT49Blxz
- VOab8668QpaEOdLGhtvrVYVK7x4skyT3nGWcgDCl5/Vp3TWA4K+IofwvXzX2ON/Mj7aQwf5W
- iC+3nWC7q0uxKwwsddJ0Nu+dpA/UORQWa1NiAftEoSpk5+nUUi0WE+5DRm0H+TXKBWMGNCFn
- c6+EKg5zQaa8KqymHcOrSXNPmzJuXvDQ8uj2J8XuzCZfK4uy1+YdIr0yyEMI7mdh4KX50LO1
- pmowEqDh7dLShTOif/7UtQYrzYq9cPnjU2ZW4qd5Qz2joSGTG9eCXLz5PRe5SqHxv6ljk8mb
- ApNuY7bOXO/A7T2j5RwXIlcmssqIjBcxsRRoIbpCwWWGjkYjzYCjgsNFL6rt4OL11OUF37wL
- QcTl7fbCGv53KfKPdYD5hcbguLKi/aCccJK18ZwNjFhqr4MliQARAQABzShEYXZpZCBDaHJp
- c3RvcGhlciBIYW5zZW4gPGRhdmVAc3I3MS5uZXQ+wsF7BBMBAgAlAhsDBgsJCAcDAgYVCAIJ
- CgsEFgIDAQIeAQIXgAUCTo3k0QIZAQAKCRBoNZUwcMmSsMO2D/421Xg8pimb9mPzM5N7khT0
- 2MCnaGssU1T59YPE25kYdx2HntwdO0JA27Wn9xx5zYijOe6B21ufrvsyv42auCO85+oFJWfE
- K2R/IpLle09GDx5tcEmMAHX6KSxpHmGuJmUPibHVbfep2aCh9lKaDqQR07gXXWK5/yU1Dx0r
- VVFRaHTasp9fZ9AmY4K9/BSA3VkQ8v3OrxNty3OdsrmTTzO91YszpdbjjEFZK53zXy6tUD2d
- e1i0kBBS6NLAAsqEtneplz88T/v7MpLmpY30N9gQU3QyRC50jJ7LU9RazMjUQY1WohVsR56d
- ORqFxS8ChhyJs7BI34vQusYHDTp6PnZHUppb9WIzjeWlC7Jc8lSBDlEWodmqQQgp5+6AfhTD
- kDv1a+W5+ncq+Uo63WHRiCPuyt4di4/0zo28RVcjtzlGBZtmz2EIC3vUfmoZbO/Gn6EKbYAn
- rzz3iU/JWV8DwQ+sZSGu0HmvYMt6t5SmqWQo/hyHtA7uF5Wxtu1lCgolSQw4t49ZuOyOnQi5
- f8R3nE7lpVCSF1TT+h8kMvFPv3VG7KunyjHr3sEptYxQs4VRxqeirSuyBv1TyxT+LdTm6j4a
- mulOWf+YtFRAgIYyyN5YOepDEBv4LUM8Tz98lZiNMlFyRMNrsLV6Pv6SxhrMxbT6TNVS5D+6
- UorTLotDZKp5+M7BTQRUY85qARAAsgMW71BIXRgxjYNCYQ3Xs8k3TfAvQRbHccky50h99TUY
- sqdULbsb3KhmY29raw1bgmyM0a4DGS1YKN7qazCDsdQlxIJp9t2YYdBKXVRzPCCsfWe1dK/q
- 66UVhRPP8EGZ4CmFYuPTxqGY+dGRInxCeap/xzbKdvmPm01Iw3YFjAE4PQ4hTMr/H76KoDbD
- cq62U50oKC83ca/PRRh2QqEqACvIH4BR7jueAZSPEDnzwxvVgzyeuhwqHY05QRK/wsKuhq7s
- UuYtmN92Fasbxbw2tbVLZfoidklikvZAmotg0dwcFTjSRGEg0Gr3p/xBzJWNavFZZ95Rj7Et
- db0lCt0HDSY5q4GMR+SrFbH+jzUY/ZqfGdZCBqo0cdPPp58krVgtIGR+ja2Mkva6ah94/oQN
- lnCOw3udS+Eb/aRcM6detZr7XOngvxsWolBrhwTQFT9D2NH6ryAuvKd6yyAFt3/e7r+HHtkU
- kOy27D7IpjngqP+b4EumELI/NxPgIqT69PQmo9IZaI/oRaKorYnDaZrMXViqDrFdD37XELwQ
- gmLoSm2VfbOYY7fap/AhPOgOYOSqg3/Nxcapv71yoBzRRxOc4FxmZ65mn+q3rEM27yRztBW9
- AnCKIc66T2i92HqXCw6AgoBJRjBkI3QnEkPgohQkZdAb8o9WGVKpfmZKbYBo4pEAEQEAAcLB
- XwQYAQIACQUCVGPOagIbDAAKCRBoNZUwcMmSsJeCEACCh7P/aaOLKWQxcnw47p4phIVR6pVL
- e4IEdR7Jf7ZL00s3vKSNT+nRqdl1ugJx9Ymsp8kXKMk9GSfmZpuMQB9c6io1qZc6nW/3TtvK
- pNGz7KPPtaDzvKA4S5tfrWPnDr7n15AU5vsIZvgMjU42gkbemkjJwP0B1RkifIK60yQqAAlT
- YZ14P0dIPdIPIlfEPiAWcg5BtLQU4Wg3cNQdpWrCJ1E3m/RIlXy/2Y3YOVVohfSy+4kvvYU3
- lXUdPb04UPw4VWwjcVZPg7cgR7Izion61bGHqVqURgSALt2yvHl7cr68NYoFkzbNsGsye9ft
- M9ozM23JSgMkRylPSXTeh5JIK9pz2+etco3AfLCKtaRVysjvpysukmWMTrx8QnI5Nn5MOlJj
- 1Ov4/50JY9pXzgIDVSrgy6LYSMc4vKZ3QfCY7ipLRORyalFDF3j5AGCMRENJjHPD6O7bl3Xo
- 4DzMID+8eucbXxKiNEbs21IqBZbbKdY1GkcEGTE7AnkA3Y6YB7I/j9mQ3hCgm5muJuhM/2Fr
- OPsw5tV/LmQ5GXH0JQ/TZXWygyRFyyI2FqNTx4WHqUn3yFj8rwTAU1tluRUYyeLy0ayUlKBH
- ybj0N71vWO936MqP6haFERzuPAIpxj2ezwu0xb1GjTk4ynna6h5GjnKgdfOWoRtoWndMZxbA
- z5cecg==
-Message-ID: <893ce8ed-df14-612b-693f-48c9dac0eb19@intel.com>
-Date:   Fri, 28 May 2021 07:39:29 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S234752AbhE1OnZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 May 2021 10:43:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35954 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231993AbhE1OnX (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 28 May 2021 10:43:23 -0400
+Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A70DEC061574
+        for <linux-kernel@vger.kernel.org>; Fri, 28 May 2021 07:41:48 -0700 (PDT)
+Received: from zn.tnic (p200300ec2f0e8e00d6a866fcf7197725.dip0.t-ipconnect.de [IPv6:2003:ec:2f0e:8e00:d6a8:66fc:f719:7725])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id CAB5E1EC056D;
+        Fri, 28 May 2021 16:41:46 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1622212906;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=uAb+kHRjxNwR2MPKE4B203s8wVuUkqC3DTmz/XimwzU=;
+        b=F+/yKSQQJiNdc21euAgys4F02wyOKPVdB1h8CAT9RqVK34A0ES2/C/aLgURHnR27HFEuaS
+        ekfK0nhCIUYqswVrFJWM/iVuxCJHsBV2ltlo8oMcZXYdLKzLorpO9uoPgsYXWeC2GCPPLg
+        VDuaOY/GF7rCg4oLhQtO/ZEfL+VxDdA=
+Date:   Fri, 28 May 2021 16:41:40 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Mike Rapoport <rppt@kernel.org>
+Cc:     Ingo Molnar <mingo@redhat.com>, "H. Peter Anvin" <hpa@zytor.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        untaintableangel@hotmail.co.uk, x86@kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] x86/Kconfig: decrease maximum of X86_RESERVE_LOW to 512K
+Message-ID: <YLEBJM0HbQkuDdqV@zn.tnic>
+References: <20210526081100.12239-1-rppt@kernel.org>
+ <YK4LGUDWXJWOp7IR@zn.tnic>
+ <YK53kWHb4cPeeHsd@kernel.org>
+ <YK6QFLUoPZ7btQfH@zn.tnic>
+ <YK+gv0vDfLVD7Sqp@kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <20210528085545.GJ30378@techsingularity.net>
-Content-Type:   text/plain; charset=US-ASCII
-Content-Language: en-US
-Content-Transfer-Encoding: 7BIT
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <YK+gv0vDfLVD7Sqp@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5/28/21 1:55 AM, Mel Gorman wrote:
-> -	 * onlined.
-> -	 */
-> -	nr_local_cpus = max(1U, cpumask_weight(cpumask_of_node(zone_to_nid(zone)))) + cpu_online;
-> -	high = total_pages / nr_local_cpus;
-> +	 * onlined. For memory nodes that have no CPUs, split pcp->high across
-> +	 * all online CPUs to mitigate the risk that reclaim is triggered
-> +	 * prematurely due to pages stored on pcp lists.
-> +	 */
-> +	nr_split_cpus = cpumask_weight(cpumask_of_node(zone_to_nid(zone))) + cpu_online;
-> +	if (!nr_split_cpus)
-> +		nr_split_cpus = num_online_cpus();
-> +	high = total_pages / nr_split_cpus;
+On Thu, May 27, 2021 at 04:38:07PM +0300, Mike Rapoport wrote:
+> Well 640K is well known memory limit :)
 
-Updated version looks fine to me, thanks!
+Yah, that I remember - was just wondering why but I guess it was out of
+caution to cover all that a BIOS *could* touch, see hpa's reply.
 
-BTW, to do some of this testing, Feng was doing a plain old kernel
-build.  On the one system where this got run, he noted a ~2% regression
-in build times.  Nothing major, but you might want to be on the lookout
-in case 0day or the other test harnesses find something similar once
-this series gets to them.
+> Another aspect IMHO is that making things explicit would reduce the amount
+> of hidden dependencies and in the end make x86::setup_arch() less fragile.
 
-Acked-by: Dave Hansen <dave.hansen@intel.com>
+Hohumm.
+
+> I'm looking now also at:
+> 
+> 5bc653b73182 ("x86/efi: Allocate a trampoline if needed in efi_free_boot_services()")
+> 
+> that retries the allocation of trampoline when we free EFI services, so
+> there is also could be a conflict between reserve_real_mode() and
+> reserve_bios_regions() in case EBDA is too low.
+> 
+> So what we have is
+> - BIOSes that corrupt low memory
+> - EBDA of unknown size that can be as low as 128k, so we reserve everything
+>   from EBDA start to 640k because we don't trust BIOSes to report EBDA size 
+>   properly
+> - Real mode blob of about 20-30k that must live in the first 640k
+> - Build time setting to reserve Xk (4K <= X <= 640k) with the default set
+>   to 64k
+> - Command line option to reserve Yk (4K <= Y <= 640k), this takes precedence
+>   over the build time option.
+> - A late fallback that uses memory freed from EFI data to place real mode
+>   trampoline there
+> 
+> It seems to me that we can drop both  build time and run time options
+> entirely, reserve 64k early to avoid having trampoline there and then
+> always reserve everything below 640k after reserve_real_mode().
+> 
+> The late fallback for systems that have most of low memory busy with
+> BIOS/EFI will remain intact as it does not do memblock allocation anyway.
+
+Yah, I certainly like the simplification. The first 640K seem to be a
+minefield anyway and to quote from that bugzilla again:
+
+https://bugzilla.kernel.org/show_bug.cgi?id=16661#c2
+
+"As far as I know, Windows 7 actually reserves all memory below 1 MiB to
+avoid BIOS bugs."
+
+so yeah, I think we should do that. But pls put that justification above
+in the commit message so that we know why we did it.
+
+Thx.
+
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
