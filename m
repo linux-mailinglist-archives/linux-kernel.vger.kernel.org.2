@@ -2,96 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DB39F393A49
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 02:31:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 27921393A4D
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 02:34:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234926AbhE1AdI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 May 2021 20:33:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43266 "EHLO
+        id S234455AbhE1AgQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 May 2021 20:36:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43960 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234347AbhE1AdE (ORCPT
+        with ESMTP id S229761AbhE1AgO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 May 2021 20:33:04 -0400
-Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D717FC061574
-        for <linux-kernel@vger.kernel.org>; Thu, 27 May 2021 17:31:28 -0700 (PDT)
-Received: by mail-lf1-x12e.google.com with SMTP id q1so2777580lfo.3
-        for <linux-kernel@vger.kernel.org>; Thu, 27 May 2021 17:31:28 -0700 (PDT)
+        Thu, 27 May 2021 20:36:14 -0400
+Received: from mail-ot1-x334.google.com (mail-ot1-x334.google.com [IPv6:2607:f8b0:4864:20::334])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D90DEC061574;
+        Thu, 27 May 2021 17:34:39 -0700 (PDT)
+Received: by mail-ot1-x334.google.com with SMTP id v19-20020a0568301413b0290304f00e3d88so1977625otp.4;
+        Thu, 27 May 2021 17:34:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
+        d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=nACOEvpFPcdmw/HFjZn82A0S5koii2HQf8n4dSZ8kUc=;
-        b=He9atcVUlHOl31CBA9dnNly8sJj3fpy0sjqip4IgivvZiMY6nJj6LKbRS8c4oqRw7w
-         xtlA6u58J+k4wpgTjwAiRfSihTmKOQCh3ku8VwR1DE06L0BRvlY6APIjntzcq4rsW4QU
-         UNdrYzJTU3pPlsnt5W6uZiuAJs0sjALtd/niqUs8SdPeatLGMZPWCSLM9wlQ5aAbqWxj
-         P3buPWbFsHpW/vgtLuLZS1kSUt53VNiXAsvWZs5LEmECxQ0Z2IToJDsSMbafQ0us34wq
-         jQW0gC4Ypn/kYPw7f2anjK5Rkio4nslpi8CehAmR+HZWbpGLAd2DFDO/MBjo7bYA/u87
-         AjlQ==
+        bh=dXpGjTuhJwdRDIKxoQcJr6oyH9WSthGNETSc4xMDJiU=;
+        b=mDShOZJCbc9ZnRkk2LlbbSi09w/Ql99qc0RDXNWU7hUfKzZX6foOiRij32BVbIQvbt
+         4zFfs/6ksoeux2CqMGxOvTBk4Q09lMR+HKpmdacdGqV7mtcNSC6bvrnbAfjWY2Tbe488
+         yWHCp88x3MCUjStSj71LZXbrXpg2gLrvkm3AIcdTRhLAlIKKVl3SmMPonvkPr8FEfKb+
+         ktZRxodTbcgNBRYS+9yasC0iT/VFyl2Xped+x/2QyFliSDT6syrOa7SbR36IHvWdhMj9
+         sR+yPeowlGwrdaWcYo6eeNOlJg4skRhzhV68Y+fawuxCDimT8GQn9rOryalMd3N7IIYW
+         EgXw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=nACOEvpFPcdmw/HFjZn82A0S5koii2HQf8n4dSZ8kUc=;
-        b=JW99GAjnsXChKcpnxkTRkdtsrDvGvxtJn7PGZ7KgX+q/pS2FKBIQNDCQMM7D9HsoDk
-         sqDWZFNhTOQvaJUYLlK6gLNwUXcBv32aX/BeY10rfHzSbGPTQdFoK1jhZHtvDUWwi4AI
-         7BzajhsSElnZQv08+BRvOZXdeT5sgp1N2fjCfg40D7hjtBNnJaT4+yTdR44KrD4Gplpr
-         c0TVBFudp9gcKxLFG31iedvs5a+Yyj5T8jS2IzsRgT/iES2+neLSKnG3eF9cdgs6M7UO
-         WaZWHv/CN/YPg6zvCRcx1wgczljqp+TZUvfSHUe9Ns2+WcYp2S6dcr3MvPgzf71ZORnr
-         8Rsw==
-X-Gm-Message-State: AOAM531OzpEtA6yEH6uPpYBNNQEvUlJcmBRfFy7MtAEx+3fL/QkJ0bTB
-        gOmoM+/430gClbQYgS6ZfBDSLrGU2zGODWSVfJqy1Q==
-X-Google-Smtp-Source: ABdhPJzyNmeLKVoRU1NdOgocbRYiFNBbVgmN0igEpSoGd2uCo/A6lb/ej5LtKxFNhraw8Pjt1blGen8fCMiOv26hz4k=
-X-Received: by 2002:ac2:47e6:: with SMTP id b6mr3909543lfp.649.1622161887248;
- Thu, 27 May 2021 17:31:27 -0700 (PDT)
+        bh=dXpGjTuhJwdRDIKxoQcJr6oyH9WSthGNETSc4xMDJiU=;
+        b=UuHmMyVGCufA0KyaUr4deuL5WjfZ4g3D2/iokmC2faoPIsre3ot9eqZ4KjBNvoplp4
+         qu60fzgitZ+LG6oce2wPDoJoB2tGIKcsJSsMbN3KDUAmYhwhorMKXLVy7GMnMDfFtCGp
+         RlyErqz6Tz+I9Fe+YFpqJS5O8O+KBQ8EZYjrFmqmDEGJaKcpCPMU0+saHpeftZcCGyIH
+         Nc0P27srMGt16dG1H6aSpJItnAQHDdDe9fDID5GkgDaJv14sAIzN0odMbiZjz61Ctmi8
+         l+Gs2KrLtkFBkzy7kmDY7AvQlp3qUH2DwdqITqMiL3LAGKGEPv/aj9J0SiVrISXUg0C5
+         DNmQ==
+X-Gm-Message-State: AOAM533aYPliif57XCkrSA++B5hFtdtjRCe64KfoamVrQWYIwISXOOS8
+        x+Q01uJpJ0dVrIbsJnrow9qLTrCKS6KbLWlLXOs=
+X-Google-Smtp-Source: ABdhPJxEcBwHj6vd/TqmuZNb80xYTokDdKd6XNumwURVReeBHpvw4YJ1X6m7fUzPJd/TgtRg1OB+4jszG60GapH0+5g=
+X-Received: by 2002:a9d:6655:: with SMTP id q21mr4901572otm.185.1622162079228;
+ Thu, 27 May 2021 17:34:39 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210525000159.3384921-1-dianders@chromium.org> <20210524165920.v8.4.I79c7ed8815a07d285dd3b38e680e980d1024dbf1@changeid>
-In-Reply-To: <20210524165920.v8.4.I79c7ed8815a07d285dd3b38e680e980d1024dbf1@changeid>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Fri, 28 May 2021 02:31:16 +0200
-Message-ID: <CACRpkdYxAtD09cgVFd=_rusdVcr5LGF=z=mzG-22enhtRK+NBQ@mail.gmail.com>
-Subject: Re: [PATCH v8 04/11] dt-bindings: drm/aux-bus: Add an example
-To:     Douglas Anderson <dianders@chromium.org>
-Cc:     Andrzej Hajda <a.hajda@samsung.com>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
-        Jonas Karlman <jonas@kwiboo.se>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        MSM <linux-arm-msm@vger.kernel.org>,
-        Lyude Paul <lyude@redhat.com>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Steev Klimaszewski <steev@kali.org>,
-        Rob Clark <robdclark@chromium.org>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Thierry Reding <treding@nvidia.com>,
-        "open list:DRM PANEL DRIVERS" <dri-devel@lists.freedesktop.org>,
-        Stanislav Lisovskiy <stanislav.lisovskiy@intel.com>,
-        Stephen Boyd <swboyd@chromium.org>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        David Airlie <airlied@linux.ie>,
-        Rob Herring <robh+dt@kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
+References: <000000000000f3fc9305c2e24311@google.com> <87v9737pt8.ffs@nanos.tec.linutronix.de>
+ <0f6e6423-f93a-5d96-f452-4e08dbad9b23@redhat.com> <87sg277muh.ffs@nanos.tec.linutronix.de>
+In-Reply-To: <87sg277muh.ffs@nanos.tec.linutronix.de>
+From:   Wanpeng Li <kernellwp@gmail.com>
+Date:   Fri, 28 May 2021 08:34:28 +0800
+Message-ID: <CANRm+CxaJ2Wu-f0Ys-1Fi7mo4FY9YBXNymdt142poSuND-K36A@mail.gmail.com>
+Subject: Re: [syzbot] WARNING in x86_emulate_instruction
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        syzbot <syzbot+71271244f206d17f6441@syzkaller.appspotmail.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, jarkko@kernel.org,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kan.liang@linux.intel.com,
+        kvm <kvm@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
+        linux-sgx@vger.kernel.org, Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Sean Christopherson <seanjc@google.com>, steve.wahl@hpe.com,
+        syzkaller-bugs@googlegroups.com,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        "the arch/x86 maintainers" <x86@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 25, 2021 at 2:02 AM Douglas Anderson <dianders@chromium.org> wrote:
-
-> Now that we have an eDP controller that lists aux-bus, we can safely
-> add an example to the aux-bus bindings.
+On Fri, 28 May 2021 at 08:31, Thomas Gleixner <tglx@linutronix.de> wrote:
 >
-> NOTE: this example is just a copy of the one in the 'ti-sn65dsi86'
-> one. It feels useful to have the example in both places simply because
-> it's important to document the interaction between the two bindings in
-> both places.
+> On Fri, May 28 2021 at 01:21, Paolo Bonzini wrote:
+> > On 28/05/21 00:52, Thomas Gleixner wrote:
+> >>
+> >> So this is stale for a week now. It's fully reproducible and nobody
+> >> can't be bothered to look at that?
+> >>
+> >> What's wrong with you people?
+> >
+> > Actually there's a patch on list ("KVM: X86: Fix warning caused by stale
+> > emulation context").  Take care.
 >
-> Signed-off-by: Douglas Anderson <dianders@chromium.org>
+> That's useful, but does not change the fact that nobody bothered to
+> reply to this report ...
 
-Looks good.
-Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
-
-Yours,
-Linus Walleij
+Will do it next time. Have a nice evening, guys!
