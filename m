@@ -2,89 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BA2B739439D
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 15:53:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DC5F23943A2
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 15:56:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236093AbhE1Ny5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 May 2021 09:54:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53244 "EHLO
+        id S236119AbhE1N5m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 May 2021 09:57:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53848 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235543AbhE1Nyz (ORCPT
+        with ESMTP id S235379AbhE1N5j (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 May 2021 09:54:55 -0400
-Received: from mail-ot1-x332.google.com (mail-ot1-x332.google.com [IPv6:2607:f8b0:4864:20::332])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D00A7C06174A
-        for <linux-kernel@vger.kernel.org>; Fri, 28 May 2021 06:53:19 -0700 (PDT)
-Received: by mail-ot1-x332.google.com with SMTP id u25-20020a0568302319b02902ac3d54c25eso3540251ote.1
-        for <linux-kernel@vger.kernel.org>; Fri, 28 May 2021 06:53:19 -0700 (PDT)
+        Fri, 28 May 2021 09:57:39 -0400
+Received: from mail-lj1-x234.google.com (mail-lj1-x234.google.com [IPv6:2a00:1450:4864:20::234])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB71CC061574;
+        Fri, 28 May 2021 06:56:04 -0700 (PDT)
+Received: by mail-lj1-x234.google.com with SMTP id c15so5363415ljr.7;
+        Fri, 28 May 2021 06:56:04 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxtx.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=ratv6BUca1F7+J2AtSIDBJ81TFRTS5Nnw/PddyoDNuU=;
-        b=JxVq6wCc8vfTqSyQD0W4f87uD71N4V6fNQnzCSHfrgpBN3RMYr7bTdrrJDJ/vULyEK
-         icVIfCKUCxBPohN2EhSK7lIZlK1bAg1Y9cH+q9AFEgPAyuB73Pe7TUjR/wn1Flwd+PaR
-         J5Mibv3QRVbeQRYyxYlksey8k9ZprJr4BoRzs=
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=bu3MQ6DgF0fcfplCjXBBOAim/Uo1qYJNmd9RnH8e+ks=;
+        b=tVF+0kOaRRXhQna7qmOYKGJIdz3n8LS488iOoSBLmTiEfRpf0rxZ5GDdWAw97Amj5b
+         N6XUEXQog0DDfJyMoez4vePANL3E893LsEQIfNfeCneI+hjM0GLI5KoM9FMFwl+INMUq
+         MTFMoDr6e1gx6swr8vrpKxdhFH9oGaoPLVcBcyC7x/z7GPtnKfgfRfOv0zzdfNHADg+m
+         N4IeDRSwBbtS1/iHe+GOa+/hkpWBrPdWGSrLQSONcRFNs2/TeQBK6KolPn1RWeIq+PX9
+         DNu4KSv4smF14u2ueH1JT1pUfTKQRjMtclV9aY1dCqPNXAdhZ3Fqv/Dp5MkJW4/ZlL4n
+         vQyA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=ratv6BUca1F7+J2AtSIDBJ81TFRTS5Nnw/PddyoDNuU=;
-        b=uIMGuQ3JtJadz+GLNjdLY7Ni+s5n12i0+VGfyGs/sSrXeGHxw5ygUnN7NasCcbQRTT
-         fTQZ0enNuadskhrdyM5AzCxtTG/fk1CRr2p0hGe5+xMY/w1PSccymbRK13a9TFxRuV9v
-         31GLelisgf0TdJUjV9D2TNFqhdUxY1GX8kh8QucwD+9jwsIFBkTGc3WIispyzAJ2D35P
-         /nfwg37aMeSWLiu+M51gM3ES/RSpsmQrU+/oU2t1oYf6+0aDWgqJmcq864aWt4OxqChd
-         17X2Y0AuhMEk/52z0Y4Hwf+aCsSTp6sd6CQ8xmxYox1Vg4eVIzPSsNRRg5Y272GqyCWy
-         s7VA==
-X-Gm-Message-State: AOAM530lmizircX6frDrLFCPBDMNckt2WSLSGRhXCTuVnMN8KZ8RoeNp
-        CzD2AaOi+ESYjBlObp+RzsMwDQ==
-X-Google-Smtp-Source: ABdhPJzoSjo/06O9XqdUS+WhJSyHxsfhmpdiOliLDv9/z3eE3e2m0M4PWrxiEUG2UFFV/uvmARgxzQ==
-X-Received: by 2002:a9d:3675:: with SMTP id w108mr7021666otb.58.1622209999050;
-        Fri, 28 May 2021 06:53:19 -0700 (PDT)
-Received: from fedora64.linuxtx.org (104-189-158-32.lightspeed.rcsntx.sbcglobal.net. [104.189.158.32])
-        by smtp.gmail.com with ESMTPSA id d19sm1111983oop.26.2021.05.28.06.53.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 28 May 2021 06:53:18 -0700 (PDT)
-Date:   Fri, 28 May 2021 08:53:16 -0500
-From:   Justin Forbes <jmforbes@linuxtx.org>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
-        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
-        jonathanh@nvidia.com, f.fainelli@gmail.com, stable@vger.kernel.org
-Subject: Re: [PATCH 5.12 0/7] 5.12.8-rc1 review
-Message-ID: <YLD1zKeoht2EsKZb@fedora64.linuxtx.org>
-References: <20210527151139.241267495@linuxfoundation.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=bu3MQ6DgF0fcfplCjXBBOAim/Uo1qYJNmd9RnH8e+ks=;
+        b=jTc9qa1W7sLJJKcGfMJeOipe/v9zlLi3aTHVgkcEiQsL+1GQh6n4PUL5lUicWiozay
+         swwQNfFWzJ9W+x+KDo6FZnKc7Y+F+NedVemqG4GPXJnVrOcMxKWv8WbvvIaUOiRqnM8X
+         3AK20CeUUS6aqpXDqBGk2IcE1gC1qsGQwbWyZUFqRuGPCne2dEqAWfz5i+9m/Unwr2FL
+         qNWX+DhQzNbNinCnqe2c9RtgTfzxyl51xseUJ3OpxKZbVdVCojuIXs759kPhSqDtRJ5Q
+         MgRep0IsHimr/8bcx+FRA5ERv8nRMzFJJuqmBEN4lWNv/KHJ24b+cOy+tj5Ki+HiO1mo
+         DRRw==
+X-Gm-Message-State: AOAM53192MBFx65Wq6HtLz6TqkpK0NZbxglbtTOJU20zrx7xOPpiUeTH
+        pZrEyQpc6bbp1zsLfUxYvh9H3N40rTRVdjAeDSpTDusxWAM=
+X-Google-Smtp-Source: ABdhPJzdoAyrq+MXYaDETTn9Y5LvOV5jUsKpvHXTLV4U6vofzDvdswL5xJxnJoQQIYuEWUXo8MoedyvPApORUmIN3Rg=
+X-Received: by 2002:a2e:824c:: with SMTP id j12mr6650994ljh.490.1622210163006;
+ Fri, 28 May 2021 06:56:03 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210527151139.241267495@linuxfoundation.org>
+References: <20210528072351.1639575-1-hs@denx.de> <20210528072351.1639575-3-hs@denx.de>
+In-Reply-To: <20210528072351.1639575-3-hs@denx.de>
+From:   Fabio Estevam <festevam@gmail.com>
+Date:   Fri, 28 May 2021 10:55:51 -0300
+Message-ID: <CAOMZO5Cq6BT_46tKGWMoLUvaHEzD-mbEF56S0TzWpQXtXRsVmQ@mail.gmail.com>
+Subject: Re: [PATCH v1 2/2] mtd: devices: add support for microchip 48l640 EERAM
+To:     Heiko Schocher <hs@denx.de>
+Cc:     linux-mtd <linux-mtd@lists.infradead.org>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 27, 2021 at 05:13:01PM +0200, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 5.12.8 release.
-> There are 7 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Sat, 29 May 2021 15:11:29 +0000.
-> Anything received after that time might be too late.
-> 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.12.8-rc1.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.12.y
-> and the diffstat can be found below.
-> 
-> thanks,
-> 
-> greg k-h
-> 
+Hi Heiko,
 
-Tested rc1 against the Fedora build system (aarch64, armv7, ppc64le,
-s390x, x86_64), and boot tested x86_64. No regressions noted.
+On Fri, May 28, 2021 at 4:26 AM Heiko Schocher <hs@denx.de> wrote:
+>
+> The Microchip 48l640 is a 8KByte EERAM connected via SPI.
+>
+> Signed-off-by: Heiko Schocher <hs@denx.de>
+> ---
+> I tried to use drivers/mtd/devices/mchp23k256.c but this
+> driver does not use any status register and there seems
+> slight differences in registers (no write enable register
+> for example), so I decided to make a new driver.
+>
+> This driver sets the continuous mode bit in Status register,
+> which states you can write continuous ... but after writting
+> 32 bytes the chip goes into an undefined state, so driver now
+> writes data in 32 byte chunks.
+>
+> I also tried to use regmap, but it leads in a lot of more code,
+> and as this chip has only spi interface it makes no sense, or?
+>
+> Tested  this driver on board imx8mp-phyboard-pollux-rdk
+> board, which is already in mainline.
+>
+> Made some tbot tests, which write at random offset random
+> length bytes with dd and and random content. Reread the data
+> after a reboot and compare with the written data. Works fine.
 
-Tested-by: Justin M. Forbes <jforbes@fedoraproject.org>
+Works for me too on an imx7d based board, thanks:
 
+Tested-by: Fabio Estevam <festevam@denx.de>
