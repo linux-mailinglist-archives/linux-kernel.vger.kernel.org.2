@@ -2,127 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5ECBF393CB6
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 07:28:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1FCBA393CBC
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 07:40:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235008AbhE1F3e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 May 2021 01:29:34 -0400
-Received: from bhuna.collabora.co.uk ([46.235.227.227]:59766 "EHLO
-        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233253AbhE1F3d (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 May 2021 01:29:33 -0400
-Received: from [IPv6:2a00:a040:193:3500:ed56:60fb:a74f:177d] (unknown [IPv6:2a00:a040:193:3500:ed56:60fb:a74f:177d])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: dafna)
-        by bhuna.collabora.co.uk (Postfix) with ESMTPSA id 53FA91F43EF3;
-        Fri, 28 May 2021 06:27:55 +0100 (BST)
-Subject: Re: [PATCH v4,5/6] media: mtk-vcodec: Add MT8192 H264 venc driver
-To:     Irui Wang <irui.wang@mediatek.com>,
-        Alexandre Courbot <acourbot@chromium.org>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Tiffany Lin <tiffany.lin@mediatek.com>,
-        Andrew-CT Chen <andrew-ct.chen@mediatek.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Tomasz Figa <tfiga@google.com>,
-        Hsin-Yi Wang <hsinyi@chromium.org>,
-        Maoguang Meng <maoguang.meng@mediatek.com>,
-        Longfei Wang <longfei.wang@mediatek.com>,
-        Yong Wu <yong.wu@mediatek.com>
-Cc:     Yunfei Dong <yunfei.dong@mediatek.com>,
-        Fritz Koenig <frkoenig@chromium.org>,
-        Tzung-Bi Shih <tzungbi@chromium.org>,
-        linux-media@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        srv_heupstream@mediatek.com, linux-mediatek@lists.infradead.org,
-        Project_Global_Chrome_Upstream_Group@mediatek.com
-References: <20210521070139.20644-1-irui.wang@mediatek.com>
- <20210521070139.20644-6-irui.wang@mediatek.com>
-From:   Dafna Hirschfeld <dafna.hirschfeld@collabora.com>
-Message-ID: <e95b8c85-4878-eec7-f568-5f16f7fcf955@collabora.com>
-Date:   Fri, 28 May 2021 08:27:51 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S234288AbhE1Fld (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 May 2021 01:41:33 -0400
+Received: from muru.com ([72.249.23.125]:33102 "EHLO muru.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229749AbhE1Fla (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 28 May 2021 01:41:30 -0400
+Received: from atomide.com (localhost [127.0.0.1])
+        by muru.com (Postfix) with ESMTPS id 4F1B380A8;
+        Fri, 28 May 2021 05:40:00 +0000 (UTC)
+Date:   Fri, 28 May 2021 08:39:51 +0300
+From:   Tony Lindgren <tony@atomide.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Vignesh Raghavendra <vigneshr@ti.com>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        Jan Kiszka <jan.kiszka@siemens.com>,
+        linux-serial@vger.kernel.org, linux-omap@vger.kernel.org,
+        Linux ARM Mailing List <linux-arm-kernel@lists.infradead.org>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] serial: 8250: 8250_omap: Fix possible interrupt storm
+Message-ID: <YLCCJzkkB4N7LTQS@atomide.com>
+References: <20210511151955.28071-1-vigneshr@ti.com>
+ <YJ008MjjewRUTn9Z@kroah.com>
 MIME-Version: 1.0
-In-Reply-To: <20210521070139.20644-6-irui.wang@mediatek.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YJ008MjjewRUTn9Z@kroah.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi
+Hi Greg, Vignesh & Jan,
 
-On 21.05.21 10:01, Irui Wang wrote:
-> Add MT8192 venc driver's compatible and device private data.
+* Greg Kroah-Hartman <gregkh@linuxfoundation.org> [210513 14:17]:
+> On Tue, May 11, 2021 at 08:49:55PM +0530, Vignesh Raghavendra wrote:
+> > It is possible that RX TIMEOUT is signalled after RX FIFO has been
+> > drained, in which case a dummy read of RX FIFO is required to clear RX
+> > TIMEOUT condition. Otherwise, RX TIMEOUT condition is not cleared
+> > leading to an interrupt storm
+> > 
+> > Cc: stable@vger.kernel.org
 > 
-> Signed-off-by: Irui Wang <irui.wang@mediatek.com>
-> ---
->   drivers/media/platform/mtk-vcodec/mtk_vcodec_drv.h |  1 +
->   .../media/platform/mtk-vcodec/mtk_vcodec_enc_drv.c | 14 ++++++++++++++
->   2 files changed, 15 insertions(+)
-> 
-> diff --git a/drivers/media/platform/mtk-vcodec/mtk_vcodec_drv.h b/drivers/media/platform/mtk-vcodec/mtk_vcodec_drv.h
-> index d03cca95e99b..14893d277bb8 100644
-> --- a/drivers/media/platform/mtk-vcodec/mtk_vcodec_drv.h
-> +++ b/drivers/media/platform/mtk-vcodec/mtk_vcodec_drv.h
-> @@ -302,6 +302,7 @@ struct mtk_vcodec_ctx {
->   enum mtk_chip {
->   	MTK_MT8173,
->   	MTK_MT8183,
-> +	MTK_MT8192,
->   };
->   
->   /**
-> diff --git a/drivers/media/platform/mtk-vcodec/mtk_vcodec_enc_drv.c b/drivers/media/platform/mtk-vcodec/mtk_vcodec_enc_drv.c
-> index 26b089e81213..78f3dd166917 100644
-> --- a/drivers/media/platform/mtk-vcodec/mtk_vcodec_enc_drv.c
-> +++ b/drivers/media/platform/mtk-vcodec/mtk_vcodec_enc_drv.c
-> @@ -425,12 +425,26 @@ static const struct mtk_vcodec_enc_pdata mt8183_pdata = {
->   	.core_id = VENC_SYS,
->   };
->   
-> +static const struct mtk_vcodec_enc_pdata mt8192_pdata = {
-> +	.chip = MTK_MT8192,
-> +	.uses_ext = true,
-> +	/* MT8192 supports the same capture formats as MT8183*/
+> How far back does this need to go?  What commit id does this fix?  What
+> caused this to just show up now vs. previously?
 
-missing space before '*/'
+I just noticed this causes the following regression in Linux next when
+pressing a key on uart console after boot at least on omap3. This seems
+to happen on serial_port_in(port, UART_RX) in the quirk handling.
 
-> +	.capture_formats = mtk_video_formats_capture_mt8183,
-> +	.num_capture_formats = ARRAY_SIZE(mtk_video_formats_capture_mt8183),
-> +	/* MT8192 supports the same output formats as MT8173 */
-> +	.output_formats = mtk_video_formats_output_mt8173,
-> +	.num_output_formats = ARRAY_SIZE(mtk_video_formats_output_mt8173),
+Vignesh, it seems this quirk needs some soc specific flag added to
+it maybe? Or maybe UART_OMAP_RX_LVL register is not available for
+all the SoCs?
 
-If all three models mt8173, mt8183 and mt8192 support the same formats then
-we should probably not name the structs according to one of the models, so maybe:
+I think it's best to drop this patch until the issues are resolved,
+also there are some open comments above that might be answered by
+limiting this quirk to a specific range of SoCs :)
 
-s/mtk_video_formats_capture_mt8183/mtk_video_formats_capture/
-s/mtk_video_formats_output_mt8173/mtk_video_formats_output/
+Regards,
 
-or some other naming
+Tony
 
-Thanks,
-Dafna
+8< ------------------------
+#regzb introduced: 31fae7c8b18c ("serial: 8250: 8250_omap: Fix possible interrupt storm")
 
-
-> +	.min_bitrate = 64,
-> +	.max_bitrate = 100000000,
-> +	.core_id = VENC_SYS,
-> +};
->   static const struct of_device_id mtk_vcodec_enc_match[] = {
->   	{.compatible = "mediatek,mt8173-vcodec-enc",
->   			.data = &mt8173_avc_pdata},
->   	{.compatible = "mediatek,mt8173-vcodec-enc-vp8",
->   			.data = &mt8173_vp8_pdata},
->   	{.compatible = "mediatek,mt8183-vcodec-enc", .data = &mt8183_pdata},
-> +	{.compatible = "mediatek,mt8192-vcodec-enc", .data = &mt8192_pdata},
->   	{},
->   };
->   MODULE_DEVICE_TABLE(of, mtk_vcodec_enc_match);
-> 
+Internal error: : 1028 [#1] SMP ARM
+Modules linked in:
+CPU: 0 PID: 870 Comm: syslog Not tainted 5.13.0-rc3-next-20210527-00001-g9b545469a50f #34
+Hardware name: Generic OMAP36xx (Flattened Device Tree)
+PC is at mem_serial_in+0xc/0x20
+LR is at omap8250_irq+0x258/0x2d4
+pc : [<c06762f0>]    lr : [<c0681720>]    psr: 60000193
+sp : c2975c90  ip : 00000000  fp : c1836000
+r10: c0ff7f20  r9 : c0ff7f40  r8 : 00000058
+r7 : c2975ce0  r6 : 00000000  r5 : 00000001  r4 : c1031a24
+r3 : fa06a000  r2 : 00000002  r1 : 00000000  r0 : c1031a24
+Flags: nZCv  IRQs off  FIQs on  Mode SVC_32  ISA ARM  Segment none
+Control: 10c5387d  Table: 829cc019  DAC: 00000051
+Register r0 information: non-slab/vmalloc memory
+Register r1 information: NULL pointer
+Register r2 information: non-paged memory
+Register r3 information: 0-page vmalloc region starting at 0xfa000000 allocated at iotable_init+0x0/0xf4
+Register r4 information: non-slab/vmalloc memory
+Register r5 information: non-paged memory
+Register r6 information: NULL pointer
+Register r7 information: non-slab/vmalloc memory
+Register r8 information: non-paged memory
+Register r9 information: non-slab/vmalloc memory
+Register r10 information: non-slab/vmalloc memory
+Register r11 information: slab kmalloc-256 start c1836000 pointer offset 0 size 256
+Register r12 information: NULL pointer
+Process syslog (pid: 870, stack limit = 0x64988e4e)
+...
+[<c06762f0>] (mem_serial_in) from [<c0681720>] (omap8250_irq+0x258/0x2d4)
+[<c0681720>] (omap8250_irq) from [<c01a00b8>] (__handle_irq_event_percpu+0x58/0x1f0)
+[<c01a00b8>] (__handle_irq_event_percpu) from [<c01a0334>] (handle_irq_event+0x68/0xcc)
+[<c01a0334>] (handle_irq_event) from [<c01a4b6c>] (handle_level_irq+0xc4/0x1c8)
+[<c01a4b6c>] (handle_level_irq) from [<c019f968>] (__handle_domain_irq+0x84/0xfc)
+[<c019f968>] (__handle_domain_irq) from [<c0100b6c>] (__irq_svc+0x6c/0x90)
+Exception stack(0xc2975d28 to 0xc2975d70)
+5d20:                   c2532990 c25328a8 00000006 c289a015 c2532888 c2532990
+5d40: 00000002 00000000 00000006 64407df7 c2532880 64407df7 00000006 c2975d78
+5d60: c02ef31c c030097c 60000013 ffffffff
+[<c0100b6c>] (__irq_svc) from [<c030097c>] (__d_lookup_rcu+0xbc/0x1b8)
+[<c030097c>] (__d_lookup_rcu) from [<c02ef31c>] (lookup_fast+0x48/0x180)
+[<c02ef31c>] (lookup_fast) from [<c02f23b8>] (walk_component+0x3c/0x1c8)
+[<c02f23b8>] (walk_component) from [<c02f2780>] (link_path_walk.part.0+0x23c/0x364)
+[<c02f2780>] (link_path_walk.part.0) from [<c02f28dc>] (path_parentat+0x34/0x74)
+[<c02f28dc>] (path_parentat) from [<c02f48c8>] (filename_parentat+0x88/0x19c)
+[<c02f48c8>] (filename_parentat) from [<c02f4a20>] (filename_create+0x44/0x150)
+[<c02f4a20>] (filename_create) from [<c02f4c2c>] (do_mkdirat+0x58/0x11c)
+[<c02f4c2c>] (do_mkdirat) from [<c0100080>] (ret_fast_syscall+0x0/0x58)
