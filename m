@@ -2,128 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3999E393BCE
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 05:07:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 569E6393BD0
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 05:08:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236269AbhE1DI7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 May 2021 23:08:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49928 "EHLO
+        id S236286AbhE1DK3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 May 2021 23:10:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50270 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234085AbhE1DI6 (ORCPT
+        with ESMTP id S234085AbhE1DK2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 May 2021 23:08:58 -0400
-Received: from mail-oi1-x233.google.com (mail-oi1-x233.google.com [IPv6:2607:f8b0:4864:20::233])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C859CC061574
-        for <linux-kernel@vger.kernel.org>; Thu, 27 May 2021 20:07:23 -0700 (PDT)
-Received: by mail-oi1-x233.google.com with SMTP id d21so2885342oic.11
-        for <linux-kernel@vger.kernel.org>; Thu, 27 May 2021 20:07:23 -0700 (PDT)
+        Thu, 27 May 2021 23:10:28 -0400
+Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76A1FC061574;
+        Thu, 27 May 2021 20:08:53 -0700 (PDT)
+Received: by mail-pl1-x62c.google.com with SMTP id d20so933359pls.13;
+        Thu, 27 May 2021 20:08:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=89Ift1OU78vKtiGlNnIxDJCwM07AOIScHSivLdjVYhE=;
-        b=rn4NEkcrpv1c/o1jdjygsc3kzakWgXejAkh0y1fGD1jSkvspt5vZv+KUbcnjnTjZ9H
-         zlS2ox/g2O+oQBf53t1niN+/XlEmpiWCHOd1X7vK9OkmlfPtMhLkjqFLKs45elo1z642
-         7fVvKztv7sbNjq2c2zKKeyVqhajiW+OgNiPCs3qY+uB9z8EcL2GaKwbyOhLu56QXB5Sz
-         5lXxL7enT8hcp7UhIHuhCkZkcRx/Q20aN87kEO29Wr9Jy4soHZdoEICnZ894JwPuH/d5
-         aEmEVx8mAHksbR2iLe8CUQrNDPuOpnaSiwhmO3ApTAeqqC4taueSEQLJ4xifBgwWw9zx
-         GJ+A==
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=OgH48G6jS/shq0yobRMKYMCpLZwcGy0o1ktzLZXa1kw=;
+        b=djJn2BUHCYqwEH/pHiNL5QhiH7vwsxkK8dtvxU/T0VEdi/s+9gGxa/tk8MGyKf+UmB
+         i7Cy8YVLpRY7jG7aFS9I7NIFr0tLCYqx0e73mr/e2FQU0cJ5Ov4rgrG/XsLvlPFltqlM
+         iJbL8UH5BPYU4ktgcG6xIdZRkg59uwyMo4VfxVrtnJGLbL5iyl0OZnKKxKAr10MW4IXJ
+         fgCV1XiPstZD/iaOlRojh5GVXMr79LhW7ew+dDkBASWStJw3OjJw7d9WAwOuK7G7TIe1
+         Zur0vdJHpUtWOoC+XGTU5SRUGXtFFcFDqaBz0gKewCdavFOjPk1bi3zSyzdeEDk6bqHf
+         wdIA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=89Ift1OU78vKtiGlNnIxDJCwM07AOIScHSivLdjVYhE=;
-        b=XEdVSlmrRtOIal2ZNp0wBZ2tI/LDAUD+ORe3HJEGEQjJyI1nyQhTWHLVtyAMSsMp7O
-         BzsH22jJNf00uOtDdfJzWIzybfZEqVHKX2HmEHloyAFtwLJX4LxLQVsB+qX58LdszCF0
-         hboI/Q9g8qAMyTR7lGqyK+7oVORBM3eeVYArVnRpzLN2N8UyT9Ya+gK6T5Rj1OxXxa4w
-         rrFpAkcEV9o6AcfsPnXwmjWifX+OVdqTWTGFff6oB60l9GdMGtM/NOaedJVjkgI/azwr
-         ovNcpvQ61BxT9B88NGQcfe+NDfUYGDLujDxEtqPOhSntg4zSeYxUm4F4dCvujlT3pCs9
-         0OhQ==
-X-Gm-Message-State: AOAM531aZmFlHOHqp+uVpXEqeMPxYEuTnoXqtoGHO6ORrHsW0WRRf/8D
-        OqEeikQZiPb600xyj/ECrPCTSCPCdWTYTQ==
-X-Google-Smtp-Source: ABdhPJy3bKWc2VMwI2rT0Nf0xgty4fAnT+udrJLeLwBkNxnBNKtnjPN2Q3vPH3brtW8w7DJZ6oZPHQ==
-X-Received: by 2002:aca:1916:: with SMTP id l22mr4606188oii.48.1622171243112;
-        Thu, 27 May 2021 20:07:23 -0700 (PDT)
-Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id i17sm825381oou.37.2021.05.27.20.07.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 27 May 2021 20:07:22 -0700 (PDT)
-Date:   Thu, 27 May 2021 22:07:20 -0500
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Mathieu Poirier <mathieu.poirier@linaro.org>
-Cc:     Suman Anna <s-anna@ti.com>, linux-remoteproc@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/2] remoteproc: Fix various kernel-doc warnings
-Message-ID: <YLBeaE8IWlmDjHaY@builder.lan>
-References: <20210519180304.23563-1-s-anna@ti.com>
- <20210519180304.23563-3-s-anna@ti.com>
- <20210525180006.GD1113058@xps15>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=OgH48G6jS/shq0yobRMKYMCpLZwcGy0o1ktzLZXa1kw=;
+        b=INx+oHYUSfl/mzVYqhau2f2YEcsVrft1M1b4MGZaW/vifBa7zbVLDifvhAN65MYwKz
+         aug3nTnMLUB/eNILv9sqOXtuur9SGXHmQEm9RFZoaF67rFNvHdO/t3ZC7t20/M7kV42P
+         Q6sOpME1zK1Y3WX2jeXJ3nmVpKPFwaBeQvB4eXAodGJ6gpXZocTqgik/vbdwBVt6gnYL
+         agNGN9QM676t/PcvM7qJYiUA6UAexm3oiUBO6AHKQ8zLZH8IufV/nhsnjeSJfy3Y9qdi
+         8HGMeh52rUCerRt5TmdUgRCwgB///lGzMku1KI3Sd4vNGfVIjUg1RRzg4JqoNwzQS7Kg
+         3hrA==
+X-Gm-Message-State: AOAM530nL4US10zotk1uNupDMqni6TDQg65mEkytf1/gQ95r1MDL14sY
+        comQdAxB2jeDga546O3I8m3aXmDkwCrEpg==
+X-Google-Smtp-Source: ABdhPJwFXMrUlE1Dw03TX27HiPVmTE81U4SDh5S8IiCI1b+K7ZZEGjUXGII5/EX+zLuB2UOaooM5+w==
+X-Received: by 2002:a17:902:ce8d:b029:fc:86b1:51ea with SMTP id f13-20020a170902ce8db02900fc86b151eamr6005042plg.3.1622171332585;
+        Thu, 27 May 2021 20:08:52 -0700 (PDT)
+Received: from [192.168.1.67] (99-44-17-11.lightspeed.irvnca.sbcglobal.net. [99.44.17.11])
+        by smtp.gmail.com with ESMTPSA id u12sm2958387pfm.2.2021.05.27.20.08.50
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 27 May 2021 20:08:51 -0700 (PDT)
+Subject: Re: [PATCH 5.10 0/9] 5.10.41-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org
+Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        stable@vger.kernel.org
+References: <20210527151139.242182390@linuxfoundation.org>
+From:   Florian Fainelli <f.fainelli@gmail.com>
+Message-ID: <1dda0b01-2ee9-9891-0dd5-a54019e65706@gmail.com>
+Date:   Thu, 27 May 2021 20:08:49 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Firefox/78.0 Thunderbird/78.10.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210525180006.GD1113058@xps15>
+In-Reply-To: <20210527151139.242182390@linuxfoundation.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue 25 May 13:00 CDT 2021, Mathieu Poirier wrote:
-> On Wed, May 19, 2021 at 01:03:04PM -0500, Suman Anna wrote:
-> > diff --git a/drivers/remoteproc/remoteproc_elf_loader.c b/drivers/remoteproc/remoteproc_elf_loader.c
-[..]
-> > @@ -362,7 +366,7 @@ EXPORT_SYMBOL(rproc_elf_load_rsc_table);
-> >   * This function finds the location of the loaded resource table. Don't
-> >   * call this function if the table wasn't loaded yet - it's a bug if you do.
-> >   *
-> > - * Returns the pointer to the resource table if it is found or NULL otherwise.
-> > + * Return: pointer to the resource table if it is found or NULL otherwise.
-> 
-> Here the '.' has been kept while it was remove for all of the above.  I don't
-> know that the right guidelines are for this. 
-> 
-
-Reviewing https://www.kernel.org/doc/html/latest/doc-guide/kernel-doc.html
-I don't see that this is defined. So I'm fine with whatever looks good.
-
-That said, the section about "Return values" shows that the "Return:
-..." line should be short and concise and if needed followed by a
-newline and then a longer paragraph.
 
 
-I'll fix the capitalization of "the" below and apply this as is and we
-can go back an reformat these multiline Return entries later...
+On 5/27/2021 8:12 AM, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 5.10.41 release.
+> There are 9 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+> 
+> Responses should be made by Sat, 29 May 2021 15:11:29 +0000.
+> Anything received after that time might be too late.
+> 
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.10.41-rc1.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.10.y
+> and the diffstat can be found below.
+> 
+> thanks,
+> 
+> greg k-h
 
-> >   * If the table wasn't loaded yet the result is unspecified.
-> >   */
-[..]
-> > diff --git a/include/linux/remoteproc.h b/include/linux/remoteproc.h
-[..]
-> > + * 2. immediately following this structure is the virtio config space for
-> > + *    this vdev (which is specific to the vdev; for more info, read the virtio
-> > + *    spec). the size of the config space is specified by @config_len.
-> 
-> s/the/The
-> 
-[..]
-> >  struct rproc {
-> > @@ -613,10 +617,10 @@ struct rproc_vring {
-> >   * struct rproc_vdev - remoteproc state for a supported virtio device
-> >   * @refcount: reference counter for the vdev and vring allocations
-> >   * @subdev: handle for registering the vdev as a rproc subdevice
-> > + * @dev: device struct used for reference count semantics
-> >   * @id: virtio device id (as in virtio_ids.h)
-> >   * @node: list node
-> >   * @rproc: the rproc handle
-> > - * @vdev: the virio device
-> >   * @vring: the vrings for this vdev
-> >   * @rsc_offset: offset of the vdev's resource entry
-> >   * @index: vdev position versus other vdev declared in resource table
-> 
-> With or without the above:
-> 
-> Reviewed-by: Mathieu Poirier <mathieu.poirier@linaro.org>
-> 
+On ARCH_BRCMSTB, using 32-bit and 64-bit ARM kernels:
 
-Thanks Mathieu, and thanks Suman.
-
-Regards,
-Bjorn
+Tested-by: Florian Fainelli <f.fainelli@gmail.com>
+-- 
+Florian
