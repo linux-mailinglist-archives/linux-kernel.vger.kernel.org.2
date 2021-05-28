@@ -2,132 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 68888393FA3
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 11:13:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AC628393FAE
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 11:16:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235398AbhE1JPM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 May 2021 05:15:12 -0400
-Received: from mga02.intel.com ([134.134.136.20]:32115 "EHLO mga02.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234967AbhE1JPJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 May 2021 05:15:09 -0400
-IronPort-SDR: QgrU6mBBd4z6qej/kxakXkpI3PsEOUH1Z00hMM0I7uJOOs07sB74K8DzFxl+78znduAapWCkNO
- oEghAcqJ3eRQ==
-X-IronPort-AV: E=McAfee;i="6200,9189,9997"; a="190040211"
-X-IronPort-AV: E=Sophos;i="5.83,229,1616482800"; 
-   d="scan'208";a="190040211"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 May 2021 02:13:34 -0700
-IronPort-SDR: 9w4uSKreoXGZPMZikJmizy0IOVXPpcwXWsO0G2R2+zOTfY75UchsXRmhA+8tVemaOoNcv/9lp5
- trbTOBBfW3MA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.83,229,1616482800"; 
-   d="scan'208";a="473013704"
-Received: from black.fi.intel.com ([10.237.72.28])
-  by FMSMGA003.fm.intel.com with ESMTP; 28 May 2021 02:13:32 -0700
-Received: by black.fi.intel.com (Postfix, from userid 1003)
-        id 4E9EBB7; Fri, 28 May 2021 12:13:55 +0300 (EEST)
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Wolfram Sang <wsa+renesas@sang-engineering.com>,
-        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Wolfram Sang <wsa@kernel.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Subject: [PATCH v2 2/2] i2c: core: Propagate all possible errors when requesting recovery GPIOs
-Date:   Fri, 28 May 2021 12:13:51 +0300
-Message-Id: <20210528091351.70699-2-andriy.shevchenko@linux.intel.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210528091351.70699-1-andriy.shevchenko@linux.intel.com>
-References: <20210528091351.70699-1-andriy.shevchenko@linux.intel.com>
+        id S235964AbhE1JRr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 May 2021 05:17:47 -0400
+Received: from conssluserg-01.nifty.com ([210.131.2.80]:42880 "EHLO
+        conssluserg-01.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235842AbhE1JRo (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 28 May 2021 05:17:44 -0400
+Received: from mail-pj1-f41.google.com (mail-pj1-f41.google.com [209.85.216.41]) (authenticated)
+        by conssluserg-01.nifty.com with ESMTP id 14S9Fb3b005528
+        for <linux-kernel@vger.kernel.org>; Fri, 28 May 2021 18:15:37 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-01.nifty.com 14S9Fb3b005528
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1622193338;
+        bh=39pO5BBOVAifJjDbCOX9efx90Asg6bB9LleYJ3FOvGg=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=pyUjby031ZX4HJMzkOwIHs2C3oZNFl5YMCWN81bFPwmn9+dW/rnPyUMBCy/mCToGl
+         J1d6K8/iouONtqtMRG6FivLoYb2g01NMKKmBeN5GP+Dhv9lbYryVV9PgZP30d86nxg
+         4jVhQpCH8owU6baFNKB6sFb8e021xDBoZRSbaJWvAHRVOTwh3hySa9MfSex1tUFSRT
+         piz9A7e8+bUAh/SRMAzJ1TyUOIO0LYjzu8bSzRUUUJOOGlEFHvwiQFl33Fr7Uyvxx3
+         6qgerrZjL3jIUJKdzj7xedS2Wb3Hs4gGrwx2AhdfzpxxBjQtZH6RQQSSwx1LAFeoui
+         Wyh0Mpy0wqSpw==
+X-Nifty-SrcIP: [209.85.216.41]
+Received: by mail-pj1-f41.google.com with SMTP id mp9-20020a17090b1909b029015fd1e3ad5aso4107633pjb.3
+        for <linux-kernel@vger.kernel.org>; Fri, 28 May 2021 02:15:37 -0700 (PDT)
+X-Gm-Message-State: AOAM533WjrfJU1i9GWTQNW5j7xdb6TmWnx0bD5mt8NdU9bYh51Ikz5sV
+        NHDVIfk35Gsnb8uOV9Ox6yl8Qk8tYwucpB/2hyo=
+X-Google-Smtp-Source: ABdhPJx/Gs6ZJu3IBJC4ZL1qePsWol28jUvqkwVgk7KREdjpso85oPRTG0pjN6WSUguAjJf3YAFqGOTyjHBq0mX9ekU=
+X-Received: by 2002:a17:902:bcc7:b029:ed:6f73:ffc4 with SMTP id
+ o7-20020a170902bcc7b02900ed6f73ffc4mr7226469pls.1.1622193337038; Fri, 28 May
+ 2021 02:15:37 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210528035209.2157823-1-masahiroy@kernel.org> <CACRpkdb-CsQtaiRjUWsimSmBw8tAgvr_ET1BS47rsVxd-eY0VA@mail.gmail.com>
+In-Reply-To: <CACRpkdb-CsQtaiRjUWsimSmBw8tAgvr_ET1BS47rsVxd-eY0VA@mail.gmail.com>
+From:   Masahiro Yamada <masahiroy@kernel.org>
+Date:   Fri, 28 May 2021 18:15:00 +0900
+X-Gmail-Original-Message-ID: <CAK7LNARmuJxp66VMhJdQ487uua0ynppXHoMA7ukbfsLpyGQV6g@mail.gmail.com>
+Message-ID: <CAK7LNARmuJxp66VMhJdQ487uua0ynppXHoMA7ukbfsLpyGQV6g@mail.gmail.com>
+Subject: Re: [PATCH] ARM: simplify the build rule of mach-types.h
+To:     Linus Walleij <linus.walleij@linaro.org>
+Cc:     patches@arm.linux.org.uk,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Russell King <linux@armlinux.org.uk>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If GPIO is available but we can't get it by some other, than deferred probe,
-reason, propagate it to the caller.
+On Fri, May 28, 2021 at 5:24 PM Linus Walleij <linus.walleij@linaro.org> wrote:
+>
+> On Fri, May 28, 2021 at 5:52 AM Masahiro Yamada <masahiroy@kernel.org> wrote:
+>
+> > The directory of mach-types.h is created a couple of lines above:
+> >
+> >   _dummy := $(shell [ -d '$(kapi)' ] || mkdir -p '$(kapi)') \
+> >
+> > The 'mkdir -p' command is redundant.
+> >
+> > scripts/Kbuild.include defines real-prereqs as a shorthand for
+> > $(filter-out $(PHONY),$^). Let's use it to simplify the code.
+> >
+> > Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+>
+> Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+>
+> Can you put this into Russell's patch tracker or shall I sign
+> it off and put it there?
 
-No functional change since i2c_register_adapter() still cares only about
-deferred probe.
 
-Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
----
-v2: made it as a series to avoid error when applying (LKP)
- drivers/i2c/i2c-core-base.c | 28 ++++++++++++++++------------
- 1 file changed, 16 insertions(+), 12 deletions(-)
+I sent this to patches@arm.linux.org.uk
 
-diff --git a/drivers/i2c/i2c-core-base.c b/drivers/i2c/i2c-core-base.c
-index ae1b1b610aca..40b8aa91db9a 100644
---- a/drivers/i2c/i2c-core-base.c
-+++ b/drivers/i2c/i2c-core-base.c
-@@ -348,19 +348,20 @@ static int i2c_gpio_init_generic_recovery(struct i2c_adapter *adap)
- 	 * GPIO recovery is available
- 	 */
- 	if (!bri->scl_gpiod) {
--		gpiod = devm_gpiod_get(dev, "scl", GPIOD_OUT_HIGH_OPEN_DRAIN);
--		if (PTR_ERR(gpiod) == -EPROBE_DEFER) {
--			ret  = -EPROBE_DEFER;
-+		gpiod = devm_gpiod_get_optional(dev, "scl", GPIOD_OUT_HIGH_OPEN_DRAIN);
-+		if (IS_ERR(gpiod)) {
-+			ret = PTR_ERR(gpiod);
- 			goto cleanup_pinctrl_state;
- 		}
--		if (!IS_ERR(gpiod)) {
-+
-+		if (gpiod) {
- 			bri->scl_gpiod = gpiod;
- 			bri->recover_bus = i2c_generic_scl_recovery;
- 			dev_info(dev, "using generic GPIOs for recovery\n");
- 		}
- 	}
- 
--	/* SDA GPIOD line is optional, so we care about DEFER only */
-+	/* SDA GPIO line is optional */
- 	if (!bri->sda_gpiod) {
- 		/*
- 		 * We have SCL. Pull SCL low and wait a bit so that SDA glitches
-@@ -368,18 +369,19 @@ static int i2c_gpio_init_generic_recovery(struct i2c_adapter *adap)
- 		 */
- 		gpiod_direction_output(bri->scl_gpiod, 0);
- 		udelay(10);
--		gpiod = devm_gpiod_get(dev, "sda", GPIOD_IN);
-+
-+		gpiod = devm_gpiod_get_optional(dev, "sda", GPIOD_IN);
- 
- 		/* Wait a bit in case of a SDA glitch, and then release SCL. */
- 		udelay(10);
- 		gpiod_direction_output(bri->scl_gpiod, 1);
- 
--		if (PTR_ERR(gpiod) == -EPROBE_DEFER) {
--			ret = -EPROBE_DEFER;
-+		if (IS_ERR(gpiod)) {
-+			ret = PTR_ERR(gpiod);
- 			goto cleanup_pinctrl_state;
- 		}
--		if (!IS_ERR(gpiod))
--			bri->sda_gpiod = gpiod;
-+
-+		bri->sda_gpiod = gpiod;
- 	}
- 
- cleanup_pinctrl_state:
-@@ -401,12 +403,14 @@ static int i2c_init_recovery(struct i2c_adapter *adap)
- 	struct i2c_bus_recovery_info *bri = adap->bus_recovery_info;
- 	bool is_error_level = true;
- 	char *err_str;
-+	int ret;
- 
- 	if (!bri)
- 		return 0;
- 
--	if (i2c_gpio_init_recovery(adap) == -EPROBE_DEFER)
--		return -EPROBE_DEFER;
-+	ret = i2c_gpio_init_recovery(adap);
-+	if (ret)
-+		return ret;
- 
- 	if (!bri->recover_bus) {
- 		err_str = "no suitable method provided";
+It is already there.
+https://www.arm.linux.org.uk/developer/patches/section.php?section=0
+
+
+
 -- 
-2.30.2
-
+Best Regards
+Masahiro Yamada
