@@ -2,75 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 34D87393B29
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 03:47:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 111CF393B49
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 04:07:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234928AbhE1Bsf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 May 2021 21:48:35 -0400
-Received: from szxga01-in.huawei.com ([45.249.212.187]:5120 "EHLO
-        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229749AbhE1Bse (ORCPT
+        id S235871AbhE1CIT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 May 2021 22:08:19 -0400
+Received: from szxga03-in.huawei.com ([45.249.212.189]:2382 "EHLO
+        szxga03-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234834AbhE1CIS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 May 2021 21:48:34 -0400
-Received: from dggeml759-chm.china.huawei.com (unknown [172.30.72.57])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4FrnXy3mlmzYnqS;
-        Fri, 28 May 2021 09:44:18 +0800 (CST)
-Received: from dggemi762-chm.china.huawei.com (10.1.198.148) by
- dggeml759-chm.china.huawei.com (10.1.199.138) with Microsoft SMTP Server
+        Thu, 27 May 2021 22:08:18 -0400
+Received: from dggeml709-chm.china.huawei.com (unknown [172.30.72.53])
+        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4Frnyb5bgcz66QC;
+        Fri, 28 May 2021 10:03:03 +0800 (CST)
+Received: from dggpemm000001.china.huawei.com (7.185.36.245) by
+ dggeml709-chm.china.huawei.com (10.3.17.139) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2176.2; Fri, 28 May 2021 09:46:58 +0800
-Received: from linux-lmwb.huawei.com (10.175.103.112) by
- dggemi762-chm.china.huawei.com (10.1.198.148) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2176.2; Fri, 28 May 2021 09:46:57 +0800
-From:   Zou Wei <zou_wei@huawei.com>
-To:     <nbd@nbd.name>, <lorenzo.bianconi83@gmail.com>,
-        <ryder.lee@mediatek.com>, <kvalo@codeaurora.org>,
-        <davem@davemloft.net>, <kuba@kernel.org>, <matthias.bgg@gmail.com>
-CC:     <linux-wireless@vger.kernel.org>, <netdev@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-mediatek@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, Zou Wei <zou_wei@huawei.com>
-Subject: [PATCH -next] mt76: mt7915: Fix unsigned comparison to zero
-Date:   Fri, 28 May 2021 10:05:37 +0800
-Message-ID: <1622167537-74981-1-git-send-email-zou_wei@huawei.com>
-X-Mailer: git-send-email 2.6.2
+ 15.1.2176.2; Fri, 28 May 2021 10:06:42 +0800
+Received: from [10.174.177.231] (10.174.177.231) by
+ dggpemm000001.china.huawei.com (7.185.36.245) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Fri, 28 May 2021 10:06:41 +0800
+Subject: Re: [PATCH -next] khugepaged: selftests: remove debug_cow
+To:     <shuah@kernel.org>, <sfr@canb.auug.org.au>,
+        <akpm@linux-foundation.org>
+CC:     <linux-kernel@vger.kernel.org>, <kirill.shutemov@linux.intel.com>,
+        <yang.shi@linux.alibaba.com>, <wangkefeng.wang@huawei.com>,
+        <linux-kselftest@vger.kernel.org>
+References: <20210430051117.400189-1-sunnanyong@huawei.com>
+From:   "Sunnanyong (Nanyong Sun, Intelligent Computing Solution Development
+        Dep)" <sunnanyong@huawei.com>
+Message-ID: <30666493-ad8a-67a3-9ee4-310466bcff7e@huawei.com>
+Date:   Fri, 28 May 2021 10:06:41 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.175.103.112]
-X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
- dggemi762-chm.china.huawei.com (10.1.198.148)
+In-Reply-To: <20210430051117.400189-1-sunnanyong@huawei.com>
+Content-Type: text/plain; charset="gbk"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.177.231]
+X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
+ dggpemm000001.china.huawei.com (7.185.36.245)
 X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fixes coccicheck warnings:
+On 2021/4/30 13:11, Nanyong Sun wrote:
 
-./drivers/net/wireless/mediatek/mt76/mt7915/mcu.c:3450:5-8: WARNING: Unsigned expression compared with zero: idx < 0
+> The debug_cow attribute had been removed since commit 4958e4d86ecb01
+> ("mm: thp: remove debug_cow switch"), so remove it in selftest code too,
+> otherwise the khugepaged test will fail.
+>
+> Signed-off-by: Nanyong Sun <sunnanyong@huawei.com>
+> ---
+>   tools/testing/selftests/vm/khugepaged.c | 4 ----
+>   1 file changed, 4 deletions(-)
+>
+> diff --git a/tools/testing/selftests/vm/khugepaged.c b/tools/testing/selftests/vm/khugepaged.c
+> index 8b7582130..155120b67 100644
+> --- a/tools/testing/selftests/vm/khugepaged.c
+> +++ b/tools/testing/selftests/vm/khugepaged.c
+> @@ -86,7 +86,6 @@ struct settings {
+>   	enum thp_enabled thp_enabled;
+>   	enum thp_defrag thp_defrag;
+>   	enum shmem_enabled shmem_enabled;
+> -	bool debug_cow;
+>   	bool use_zero_page;
+>   	struct khugepaged_settings khugepaged;
+>   };
+> @@ -95,7 +94,6 @@ static struct settings default_settings = {
+>   	.thp_enabled = THP_MADVISE,
+>   	.thp_defrag = THP_DEFRAG_ALWAYS,
+>   	.shmem_enabled = SHMEM_NEVER,
+> -	.debug_cow = 0,
+>   	.use_zero_page = 0,
+>   	.khugepaged = {
+>   		.defrag = 1,
+> @@ -268,7 +266,6 @@ static void write_settings(struct settings *settings)
+>   	write_string("defrag", thp_defrag_strings[settings->thp_defrag]);
+>   	write_string("shmem_enabled",
+>   			shmem_enabled_strings[settings->shmem_enabled]);
+> -	write_num("debug_cow", settings->debug_cow);
+>   	write_num("use_zero_page", settings->use_zero_page);
+>   
+>   	write_num("khugepaged/defrag", khugepaged->defrag);
+> @@ -304,7 +301,6 @@ static void save_settings(void)
+>   		.thp_defrag = read_string("defrag", thp_defrag_strings),
+>   		.shmem_enabled =
+>   			read_string("shmem_enabled", shmem_enabled_strings),
+> -		.debug_cow = read_num("debug_cow"),
+>   		.use_zero_page = read_num("use_zero_page"),
+>   	};
+>   	saved_settings.khugepaged = (struct khugepaged_settings) {
 
-Fixes: 495184ac91bb ("mt76: mt7915: add support for applying pre-calibration data")
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Zou Wei <zou_wei@huawei.com>
----
- drivers/net/wireless/mediatek/mt76/mt7915/mcu.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+This patch has not been responded for a long time.
 
-diff --git a/drivers/net/wireless/mediatek/mt76/mt7915/mcu.c b/drivers/net/wireless/mediatek/mt76/mt7915/mcu.c
-index b3f14ff..764f25a 100644
---- a/drivers/net/wireless/mediatek/mt76/mt7915/mcu.c
-+++ b/drivers/net/wireless/mediatek/mt76/mt7915/mcu.c
-@@ -3440,8 +3440,9 @@ int mt7915_mcu_apply_tx_dpd(struct mt7915_phy *phy)
- {
- 	struct mt7915_dev *dev = phy->dev;
- 	struct cfg80211_chan_def *chandef = &phy->mt76->chandef;
--	u16 total = 2, idx, center_freq = chandef->center_freq1;
-+	u16 total = 2, center_freq = chandef->center_freq1;
- 	u8 *cal = dev->cal, *eep = dev->mt76.eeprom.data;
-+	int idx;
- 
- 	if (!(eep[MT_EE_DO_PRE_CAL] & MT_EE_WIFI_CAL_DPD))
- 		return 0;
--- 
-2.6.2
+Could someone please help to deal with it ?
 
