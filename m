@@ -2,73 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DB07E393EC1
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 10:28:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E242393EC5
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 10:30:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232310AbhE1I3z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 May 2021 04:29:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36584 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229774AbhE1I3w (ORCPT
+        id S234153AbhE1Ibi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 May 2021 04:31:38 -0400
+Received: from perceval.ideasonboard.com ([213.167.242.64]:50454 "EHLO
+        perceval.ideasonboard.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229774AbhE1Ibg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 May 2021 04:29:52 -0400
-Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 166DAC061574
-        for <linux-kernel@vger.kernel.org>; Fri, 28 May 2021 01:28:18 -0700 (PDT)
-Received: by mail-lf1-x133.google.com with SMTP id e17so4181756lfb.2
-        for <linux-kernel@vger.kernel.org>; Fri, 28 May 2021 01:28:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=tuKdr3clPQFY4vFcSd6QvBJfUu3c3Jilu+2Bfl+rzoM=;
-        b=MhoBQJh+m696S6cQCrg981+kwGFIxIKNRDrZ8mAuAvNcNnF8/XY0ZAFBBmFtL8T1SS
-         KdwfGp5/a1WkGI5fiSaq/nM4nLFx5a5FqtCnsDF7sXIQRRTxTrxQPKI5Fw32hyW0V9up
-         i4NY3fkh/uD5SCrfufxUE01gCH0N4N7UKviJKqH2TBABMRM4qoAUDApARYPqsQsVIN+Y
-         kzh2K3jvMlQx+t6fiJMCeEKkErvz7OrvVcrmjqDvmxG/X3hIWiG5DtvUHFit4zg4+h0P
-         +I4FmP6JeF1kmW7cy1cJGhNYfanFQYNCmNIE9VvK8qmLDrbXKGqLtJ2LsaHUmWHacLQu
-         1MPQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=tuKdr3clPQFY4vFcSd6QvBJfUu3c3Jilu+2Bfl+rzoM=;
-        b=hN75U5RFCh5FexBuiQM1otynZwO1+OxxgTzZgyzyhN+Kfun0GqNRw4TEtRVmnrlqPr
-         QhqrO2kZNvkgAJd20NwR9xNnKykd84DK4TiRjQtKDMJPQu6F19VMJY1LP+97sG2ujEEy
-         ip82JMFXLz5XUaIJ32usHEMyiNAtP8V8ycilAAEdwN/oi93mXmKVGDQPhULtDIOR1FMW
-         tc0PnFj7s9aUbc4KrQOo/bicthRJc5wdO1gt+Rrv3j3WV1bvPQtInpNH9XEDQrFM1Nyx
-         Mr352OD0wuHyzzDb4N+vsCbdSeqRm3ETG8Dw5CH3wMIijqUFZacOuGhGVk8W6+lanF61
-         scjQ==
-X-Gm-Message-State: AOAM530YbZ/E9LTQH2UQsGSkvjL235nGC1SsGIx2AR89TdPZoXRFGwej
-        sCd7mwlSW7Hk3Ikmps/GxAkMCZVgOol+1aa0EIYW7A==
-X-Google-Smtp-Source: ABdhPJy8I+Z3LL7pF49eMUMgfEMrgyTz4OYJFg2iSNiTJ1cu24hMiUC9Qfwo0rVc93R+bLY9UXkyg2vh6oyTSeCOzgQ=
-X-Received: by 2002:a05:6512:49b:: with SMTP id v27mr5382880lfq.29.1622190496436;
- Fri, 28 May 2021 01:28:16 -0700 (PDT)
+        Fri, 28 May 2021 04:31:36 -0400
+Received: from [192.168.1.111] (91-157-208-71.elisa-laajakaista.fi [91.157.208.71])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 1F66D8C7;
+        Fri, 28 May 2021 10:29:59 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1622190600;
+        bh=AU4smLRKI56chamFC/06ImQhk+wIOSduD/OW7VNLncE=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=SZTktZ9Lml3BMvsaf43+G20gQyBnl1hPRCHCKdZ1yA67HkxVNG41b9kNVEdQqBzcf
+         g+uVx7zed9vbJJOF5WBr9em6KBXaAQq8w92LQ5xffceGC9G6jF7NqZUnIMv8yjx66R
+         Ap4YNuqLyf7nYmuaPvIC6Dqo7DXbka5b7MJjotOQ=
+Subject: Re: [PATCH v2 12/18] media: Re-structure TI platform drivers
+To:     Pratyush Yadav <p.yadav@ti.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        Vinod Koul <vkoul@kernel.org>,
+        Peter Ujfalusi <peter.ujfalusi@gmail.com>,
+        Steve Longerbeam <slongerbeam@gmail.com>,
+        Benoit Parrot <bparrot@ti.com>, linux-media@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-phy@lists.infradead.org, dmaengine@vger.kernel.org
+Cc:     Vignesh Raghavendra <vigneshr@ti.com>,
+        Chunfeng Yun <chunfeng.yun@mediatek.com>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+References: <20210526152308.16525-1-p.yadav@ti.com>
+ <20210526152308.16525-13-p.yadav@ti.com>
+From:   Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
+Message-ID: <ab57c57f-d362-34a6-e740-b297769ee817@ideasonboard.com>
+Date:   Fri, 28 May 2021 11:29:58 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-References: <20210528040542.2161208-1-masahiroy@kernel.org>
-In-Reply-To: <20210528040542.2161208-1-masahiroy@kernel.org>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Fri, 28 May 2021 10:28:05 +0200
-Message-ID: <CACRpkdaSZuqziQUScVQGNdA54rnrHEW96LZtPjkcnk7Tbn2-YQ@mail.gmail.com>
-Subject: Re: [PATCH] ARM: syscalls: use pattern rules to generate syscall headers
-To:     Masahiro Yamada <masahiroy@kernel.org>
-Cc:     patches@arm.linux.org.uk,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Russell King <linux@armlinux.org.uk>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210526152308.16525-13-p.yadav@ti.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 28, 2021 at 6:06 AM Masahiro Yamada <masahiroy@kernel.org> wrote:
+On 26/05/2021 18:23, Pratyush Yadav wrote:
+> The ti-vpe/ sub-directory does not only contain the VPE-specific things.
+> It also contains the CAL driver, which is a completely different
+> subsystem. This is also not a good place to add new drivers for other TI
+> platforms since they will all get mixed up.
+> 
+> Separate the VPE and CAL parts into different sub-directories and rename
+> the ti-vpe/ sub-directory to ti/. This is now the place where new TI
+> platform drivers can be added.
+> 
+> Signed-off-by: Pratyush Yadav <p.yadav@ti.com>
+> 
+> ---
+> Compile tested only. There should be no functional change.
 
-> Use pattern rules to unify similar build rules between OABI and EABI.
->
-> Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+Reviewed-by: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
 
-Looks correct to me.
-Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+  Tomi
 
-Yours,
-Linus Walleij
