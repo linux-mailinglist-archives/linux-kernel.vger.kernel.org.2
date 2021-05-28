@@ -2,130 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 67098393E6A
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 10:05:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C3301393E6B
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 10:06:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235871AbhE1IHQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 May 2021 04:07:16 -0400
-Received: from mx07-00178001.pphosted.com ([185.132.182.106]:56477 "EHLO
-        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230187AbhE1IHN (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 May 2021 04:07:13 -0400
-Received: from pps.filterd (m0046668.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 14S82QEb008172;
-        Fri, 28 May 2021 10:05:22 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=from : to : subject
- : date : message-id : mime-version : content-type; s=selector1;
- bh=zlUZ4FPCmueUwNdjwddPrmOdSMDAIN5yHnfc9LimaJk=;
- b=DQpZRYdF3x2GZjYZ/XlPglm9ICNw6a/v8KgxfiXb7wvjWdXjAk/q523nQeUd8FMYQbTj
- cVrsvoYSHYjdjPZYV9Xkd5jHVbAjXxVbrEYdRY8jykQqOTdcffNpf4nNbGmpVuHQZtl7
- DFF74lM1RNpxMwMc1Fr4EWf/l2x8vv3WZKri5S7+HHuBsnTPYDMJIoyeAAGmG5VT/3VP
- Hqe1i9E14myhP7+Wg8eg+7W13WhuAUM9FPlhkMy5AjPLjmijquMO/8QHwGU3v5/+hAEs
- jjvuoKMPr/q2XOlzt11OH2zI2E/HqTrsJxkNwkmMTyuKrs5GDpf2bZaVFqzvOTnKkuQA kQ== 
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com with ESMTP id 38tsq0gyy5-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 28 May 2021 10:05:22 +0200
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 7C3C2100034;
-        Fri, 28 May 2021 10:05:21 +0200 (CEST)
-Received: from Webmail-eu.st.com (sfhdag2node3.st.com [10.75.127.6])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 499C021B521;
-        Fri, 28 May 2021 10:05:21 +0200 (CEST)
-Received: from localhost (10.75.127.48) by SFHDAG2NODE3.st.com (10.75.127.6)
- with Microsoft SMTP Server (TLS) id 15.0.1497.2; Fri, 28 May 2021 10:05:20
- +0200
-From:   Yannick Fertre <yannick.fertre@foss.st.com>
-To:     Yannick Fertre <yannick.fertre@foss.st.com>,
-        Philippe Cornu <philippe.cornu@foss.st.com>,
-        Antonio Borneo <antonio.borneo@st.com>,
-        "David Airlie" <airlied@linux.ie>, Daniel Vetter <daniel@ffwll.ch>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexandre Torgue <alexandre.torgue@st.com>,
-        <dri-devel@lists.freedesktop.org>,
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: [PATCH] drm/stm: Remove usage of drm_display_mode_to_videomode()
-Date:   Fri, 28 May 2021 10:05:13 +0200
-Message-ID: <20210528080513.8168-1-yannick.fertre@foss.st.com>
-X-Mailer: git-send-email 2.17.1
-MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.75.127.48]
-X-ClientProxiedBy: SFHDAG3NODE2.st.com (10.75.127.8) To SFHDAG2NODE3.st.com
- (10.75.127.6)
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
- definitions=2021-05-28_04:2021-05-27,2021-05-28 signatures=0
+        id S235781AbhE1II2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 May 2021 04:08:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42048 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230187AbhE1IIZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 28 May 2021 04:08:25 -0400
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 559D560D07;
+        Fri, 28 May 2021 08:06:51 +0000 (UTC)
+Received: from 78.163-31-62.static.virginmediabusiness.co.uk ([62.31.163.78] helo=why.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <maz@kernel.org>)
+        id 1lmXW4-0046B7-Q7; Fri, 28 May 2021 09:06:49 +0100
+Date:   Fri, 28 May 2021 09:06:43 +0100
+Message-ID: <871r9r2sfg.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     Catalin Marinas <catalin.marinas@arm.com>
+Cc:     kexec@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, Will Deacon <will@kernel.org>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        James Morse <james.morse@arm.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Hanjun Guo <guohanjun@huawei.com>,
+        Sudeep Holla <sudeep.holla@arm.com>,
+        Eric Biederman <ebiederm@xmission.com>,
+        Bhupesh SHARMA <bhupesh.sharma@linaro.org>,
+        AKASHI Takahiro <takahiro.akashi@linaro.org>,
+        Dave Young <dyoung@redhat.com>,
+        Moritz Fischer <mdf@kernel.org>, kernel-team@android.com
+Subject: Re: [PATCH 2/4] kernel/resource: Populate child pointer in find_next_iomem_res()
+In-Reply-To: <20210527165355.GF8661@arm.com>
+References: <20210526190531.62751-1-maz@kernel.org>
+        <20210526190531.62751-3-maz@kernel.org>
+        <20210527165355.GF8661@arm.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/27.1
+ (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 62.31.163.78
+X-SA-Exim-Rcpt-To: catalin.marinas@arm.com, kexec@lists.infradead.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, will@kernel.org, ardb@kernel.org, mark.rutland@arm.com, james.morse@arm.com, lorenzo.pieralisi@arm.com, guohanjun@huawei.com, sudeep.holla@arm.com, ebiederm@xmission.com, bhupesh.sharma@linaro.org, takahiro.akashi@linaro.org, dyoung@redhat.com, mdf@kernel.org, kernel-team@android.com
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There is not much value in the extra conversion step, the calculations
-required for the LTDC IP are different than what is used in the
-drm_display_mode_to_videomode(), so just do the right ones in the LTDC
-driver right away.
+On Thu, 27 May 2021 17:53:56 +0100,
+Catalin Marinas <catalin.marinas@arm.com> wrote:
+> 
+> On Wed, May 26, 2021 at 08:05:29PM +0100, Marc Zyngier wrote:
+> > When find_next_iomem_res() returns a resource, it doesn't
+> > populate the child pointer (but does so with the parent).
+> > 
+> > As we are about to need to arse child resources, populate
+> > this pointer as well.
+> 
+> Did you mean "parse"? ;)
 
-Signed-off-by: Marek Vasut <marex@denx.de>
-Signed-off-by: Yannick Fertre <yannick.fertre@foss.st.com>
----
- drivers/gpu/drm/stm/ltdc.c | 32 +++++++++++++++++---------------
- 1 file changed, 17 insertions(+), 15 deletions(-)
+This is so embarrassing... :-/ Let me fix that right now.
 
-diff --git a/drivers/gpu/drm/stm/ltdc.c b/drivers/gpu/drm/stm/ltdc.c
-index e99771b947b6..d113b9be12c0 100644
---- a/drivers/gpu/drm/stm/ltdc.c
-+++ b/drivers/gpu/drm/stm/ltdc.c
-@@ -570,31 +570,33 @@ static void ltdc_crtc_mode_set_nofb(struct drm_crtc *crtc)
- 		}
- 	}
- 
--	drm_display_mode_to_videomode(mode, &vm);
--
- 	DRM_DEBUG_DRIVER("CRTC:%d mode:%s\n", crtc->base.id, mode->name);
--	DRM_DEBUG_DRIVER("Video mode: %dx%d", vm.hactive, vm.vactive);
-+	DRM_DEBUG_DRIVER("Video mode: %dx%d", mode->hdisplay, mode->vdisplay);
- 	DRM_DEBUG_DRIVER(" hfp %d hbp %d hsl %d vfp %d vbp %d vsl %d\n",
--			 vm.hfront_porch, vm.hback_porch, vm.hsync_len,
--			 vm.vfront_porch, vm.vback_porch, vm.vsync_len);
-+			 mode->hsync_start - mode->hdisplay,
-+			 mode->htotal - mode->hsync_end,
-+			 mode->hsync_end - mode->hsync_start,
-+			 mode->vsync_start - mode->vdisplay,
-+			 mode->vtotal - mode->vsync_end,
-+			 mode->vsync_end - mode->vsync_start);
- 
- 	/* Convert video timings to ltdc timings */
--	hsync = vm.hsync_len - 1;
--	vsync = vm.vsync_len - 1;
--	accum_hbp = hsync + vm.hback_porch;
--	accum_vbp = vsync + vm.vback_porch;
--	accum_act_w = accum_hbp + vm.hactive;
--	accum_act_h = accum_vbp + vm.vactive;
--	total_width = accum_act_w + vm.hfront_porch;
--	total_height = accum_act_h + vm.vfront_porch;
-+	hsync = mode->hsync_end - mode->hsync_start - 1;
-+	vsync = mode->vsync_end - mode->vsync_start - 1;
-+	accum_hbp = mode->htotal - mode->hsync_start - 1;
-+	accum_vbp = mode->vtotal - mode->vsync_start - 1;
-+	accum_act_w = accum_hbp + mode->hdisplay;
-+	accum_act_h = accum_vbp + mode->vdisplay;
-+	total_width = mode->htotal - 1;
-+	total_height = mode->vtotal - 1;
- 
- 	/* Configures the HS, VS, DE and PC polarities. Default Active Low */
- 	val = 0;
- 
--	if (vm.flags & DISPLAY_FLAGS_HSYNC_HIGH)
-+	if (mode->flags & DRM_MODE_FLAG_PHSYNC)
- 		val |= GCR_HSPOL;
- 
--	if (vm.flags & DISPLAY_FLAGS_VSYNC_HIGH)
-+	if (mode->flags & DRM_MODE_FLAG_PVSYNC)
- 		val |= GCR_VSPOL;
- 
- 	if (bus_flags & DRM_BUS_FLAG_DE_LOW)
+	M.
+
 -- 
-2.17.1
-
+Without deviation from the norm, progress is not possible.
