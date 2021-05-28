@@ -2,106 +2,181 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1307B3940FB
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 12:35:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C6FE5394109
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 12:36:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236475AbhE1KhS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 May 2021 06:37:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37206 "EHLO
+        id S236509AbhE1KiG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 May 2021 06:38:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37424 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236086AbhE1KhL (ORCPT
+        with ESMTP id S235972AbhE1KiE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 May 2021 06:37:11 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A66DC06174A
-        for <linux-kernel@vger.kernel.org>; Fri, 28 May 2021 03:35:36 -0700 (PDT)
-Received: from ptx.hi.pengutronix.de ([2001:67c:670:100:1d::c0])
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1lmZq1-0008LY-79; Fri, 28 May 2021 12:35:33 +0200
-Received: from ukl by ptx.hi.pengutronix.de with local (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1lmZq0-0001Tk-PA; Fri, 28 May 2021 12:35:32 +0200
-Date:   Fri, 28 May 2021 12:35:32 +0200
-From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-To:     Lee Jones <lee.jones@linaro.org>
-Cc:     linux-kernel@vger.kernel.org, Pavel Machek <pavel@ucw.cz>,
-        linux-leds@vger.kernel.org
-Subject: Re: [PATCH 02/15] leds: leds-gpio-register: Supply description for
- param 'id'
-Message-ID: <20210528103532.5n6zzr26hqglvz2p@pengutronix.de>
-References: <20210528090629.1800173-1-lee.jones@linaro.org>
- <20210528090629.1800173-3-lee.jones@linaro.org>
- <20210528094118.xw53q46i676wx6gb@pengutronix.de>
- <20210528095531.GO543307@dell>
+        Fri, 28 May 2021 06:38:04 -0400
+Received: from mail-lj1-x233.google.com (mail-lj1-x233.google.com [IPv6:2a00:1450:4864:20::233])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C80CCC061574
+        for <linux-kernel@vger.kernel.org>; Fri, 28 May 2021 03:36:27 -0700 (PDT)
+Received: by mail-lj1-x233.google.com with SMTP id e2so4645427ljk.4
+        for <linux-kernel@vger.kernel.org>; Fri, 28 May 2021 03:36:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=RR9aCa9Fk1AeEQeB1a7U6H9kC0xMAO6dnDCAHEDi0SI=;
+        b=yiMz6B5SYuvBzuFIME7sP9Bn3VZo6YFTVXBW3XSARrbiEm4DrxokDFdhzmi5vN1qOy
+         KyyNTVuiLDyvbxeNu2fm7Q6usGpuDBxa1L+mlevW0FH6wkl5dZhoGRDZyKqZG/6hYJnu
+         VQxfieqB8G8hXaLWKW1lWrVZ9EFkulgjvjECS1o7jSi2RCiDPizIws+xTP4Epx9hu1DH
+         03c+l3fnGQqs8ONy5FwymjXM72hACeZvzPvJw+Cuoo5uEbiPpVDE6J4i4KeCAfK6BRDy
+         sbJsMkyWOwL19AAt6+NDCDiAwSAJ4pp3DIXnge7rtjO8nlGsZ5hiWI4Hg5Q+IZ+oTQGZ
+         OQWQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=RR9aCa9Fk1AeEQeB1a7U6H9kC0xMAO6dnDCAHEDi0SI=;
+        b=EBRgDSPGrwip7CxGrwBqoAXHUDwtmJhWnNF0D5w6tuD9kjIspjgsFYn5Jp71eAiYiD
+         dePyf4snucuY6zlfHNL2npHJnt5biSCRRLR8FyOUHFrU+qECc8tRg2kglK4NKQ2qaCFf
+         8e7TVA+ouUjHCI78oe1mFqWVAkzclpj86i8U3NlAxiShfqCZQbNC/J/ucsrdZYGHlvaB
+         n2RVBrZf9Ay94mQWLm6dKs514qTrgWK+L4y5rPvhiMKgdpnI17z3FhworsPgvKk/NJHO
+         IOTbgt58ikv00oVUXSR81BeLXZzA/rwCUIVMjPOBJcSdx7tI0GCNZgYAEJXIVkC7MWPp
+         W2YA==
+X-Gm-Message-State: AOAM531AuSJiGtFImzgGPgb7rvjn8YfkRkWYvOjI1uKKxRKYDDj8xCVM
+        D/IxiBRIoFhd9jlPlHBS+MZfDQ==
+X-Google-Smtp-Source: ABdhPJzBHl9y7Py40EKPhM3j6vdNArq5eiVI3abzPIby43QpcRZeOCJsS5VukeIzJneEkb5ITPC8Ig==
+X-Received: by 2002:a05:651c:1a7:: with SMTP id c7mr5917480ljn.77.1622198186160;
+        Fri, 28 May 2021 03:36:26 -0700 (PDT)
+Received: from [192.168.1.211] ([37.153.55.125])
+        by smtp.gmail.com with ESMTPSA id v138sm440261lfa.224.2021.05.28.03.36.25
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 28 May 2021 03:36:25 -0700 (PDT)
+Subject: Re: [RFC PATCH 09/13] drm/msm/disp/dpu1: Don't use DSC with mode_3d
+To:     Vinod Koul <vkoul@kernel.org>, Rob Clark <robdclark@gmail.com>
+Cc:     linux-arm-msm@vger.kernel.org,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Jonathan Marek <jonathan@marek.ca>,
+        Abhinav Kumar <abhinavk@codeaurora.org>,
+        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        freedreno@lists.freedesktop.org
+References: <20210521124946.3617862-1-vkoul@kernel.org>
+ <20210521124946.3617862-13-vkoul@kernel.org>
+From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Message-ID: <32463a8c-3baa-cc88-6e55-f65bc2d92608@linaro.org>
+Date:   Fri, 28 May 2021 13:36:25 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="orhpy32uu5qcw7jc"
-Content-Disposition: inline
-In-Reply-To: <20210528095531.GO543307@dell>
-X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c0
-X-SA-Exim-Mail-From: ukl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+In-Reply-To: <20210521124946.3617862-13-vkoul@kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 21/05/2021 15:49, Vinod Koul wrote:
+> We cannot enable mode_3d when we are using the DSC. So pass
+> configuration to detect DSC is enabled and not enable mode_3d
+> when we are using DSC
+> 
+> We add a helper dpu_encoder_helper_get_dsc_mode() to detect dsc
+> enabled and pass this to .setup_intf_cfg()
+> 
+> Signed-off-by: Vinod Koul <vkoul@kernel.org>
+> ---
+>   drivers/gpu/drm/msm/disp/dpu1/dpu_encoder_phys.h     | 11 +++++++++++
+>   drivers/gpu/drm/msm/disp/dpu1/dpu_encoder_phys_cmd.c |  2 ++
+>   drivers/gpu/drm/msm/disp/dpu1/dpu_hw_ctl.c           |  5 +++--
+>   drivers/gpu/drm/msm/disp/dpu1/dpu_hw_ctl.h           |  2 ++
+>   4 files changed, 18 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder_phys.h b/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder_phys.h
+> index ecbc4be98980..d43b804528eb 100644
+> --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder_phys.h
+> +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder_phys.h
+> @@ -336,6 +336,17 @@ static inline enum dpu_3d_blend_mode dpu_encoder_helper_get_3d_blend_mode(
+>   	return BLEND_3D_NONE;
+>   }
+>   
+> +static inline bool dpu_encoder_helper_get_dsc_mode(struct dpu_encoder_phys *phys_enc)
+> +{
+> +	struct drm_encoder *drm_enc = phys_enc->parent;
+> +	struct msm_drm_private *priv = drm_enc->dev->dev_private;
+> +
+> +	if (priv->dsc)
+> +		return true;
+> +
+> +	return false;
+> +}
+> +
+>   /**
+>    * dpu_encoder_helper_split_config - split display configuration helper function
+>    *	This helper function may be used by physical encoders to configure
+> diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder_phys_cmd.c b/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder_phys_cmd.c
+> index b2be39b9144e..5fe87881c30c 100644
+> --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder_phys_cmd.c
+> +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder_phys_cmd.c
+> @@ -69,6 +69,8 @@ static void _dpu_encoder_phys_cmd_update_intf_cfg(
+>   	intf_cfg.intf_mode_sel = DPU_CTL_MODE_SEL_CMD;
+>   	intf_cfg.stream_sel = cmd_enc->stream_sel;
+>   	intf_cfg.mode_3d = dpu_encoder_helper_get_3d_blend_mode(phys_enc);
+> +	intf_cfg.dsc = dpu_encoder_helper_get_dsc_mode(phys_enc);
+> +
+>   	ctl->ops.setup_intf_cfg(ctl, &intf_cfg);
+>   }
+>   
+> diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_ctl.c b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_ctl.c
+> index aeea6add61ee..f059416311ee 100644
+> --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_ctl.c
+> +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_ctl.c
+> @@ -121,7 +121,7 @@ static u32 dpu_hw_ctl_get_pending_flush(struct dpu_hw_ctl *ctx)
+>   	return ctx->pending_flush_mask;
+>   }
+>   
+> -static inline void dpu_hw_ctl_trigger_flush_v1(struct dpu_hw_ctl *ctx)
+> +static void dpu_hw_ctl_trigger_flush_v1(struct dpu_hw_ctl *ctx)
+>   {
+>   	DPU_REG_WRITE(&ctx->hw, CTL_DSC_FLUSH, BIT(0) | BIT(1) | BIT(2) | BIT(3));
+>   
+> @@ -522,7 +522,8 @@ static void dpu_hw_ctl_intf_cfg(struct dpu_hw_ctl *ctx,
+>   
+>   	intf_cfg |= (cfg->intf & 0xF) << 4;
+>   
+> -	if (cfg->mode_3d) {
+> +	/* In DSC we can't set merge, so check for dsc too */
+> +	if (cfg->mode_3d && !cfg->dsc) {
 
---orhpy32uu5qcw7jc
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+I think we should catch this earlier (in atomic_check?), so that we 
+won't enable modes that would require merge_3d with DSC enabled (until 
+we support DSC merge?)
 
-Hey Lee,
+>   		intf_cfg |= BIT(19);
+>   		intf_cfg |= (cfg->mode_3d - 0x1) << 20;
+>   	}
+> diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_ctl.h b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_ctl.h
+> index 806c171e5df2..347a653c1e01 100644
+> --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_ctl.h
+> +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_ctl.h
+> @@ -39,6 +39,7 @@ struct dpu_hw_stage_cfg {
+>    * @mode_3d:               3d mux configuration
+>    * @merge_3d:              3d merge block used
+>    * @intf_mode_sel:         Interface mode, cmd / vid
+> + * @dsc:                   DSC is enabled
+>    * @stream_sel:            Stream selection for multi-stream interfaces
+>    */
+>   struct dpu_hw_intf_cfg {
+> @@ -46,6 +47,7 @@ struct dpu_hw_intf_cfg {
+>   	enum dpu_3d_blend_mode mode_3d;
+>   	enum dpu_merge_3d merge_3d;
+>   	enum dpu_ctl_mode_sel intf_mode_sel;
+> +	bool dsc;
+>   	int stream_sel;
+>   };
+>   
+> 
 
-On Fri, May 28, 2021 at 10:55:31AM +0100, Lee Jones wrote:
-> On Fri, 28 May 2021, Uwe Kleine-K=F6nig wrote:
-> > On Fri, May 28, 2021 at 10:06:16AM +0100, Lee Jones wrote:
-> > > diff --git a/drivers/leds/leds-gpio-register.c b/drivers/leds/leds-gp=
-io-register.c
-> > > index b9187e71e0cf2..de3f12c2b80d7 100644
-> > > --- a/drivers/leds/leds-gpio-register.c
-> > > +++ b/drivers/leds/leds-gpio-register.c
-> > > @@ -11,6 +11,7 @@
-> > >  /**
-> > >   * gpio_led_register_device - register a gpio-led device
-> > >   * @pdata: the platform data used for the new device
-> > > + * @id: platform ID
-> > >   *
-> >=20
-> > Given that id is the first parameter and pdata the second I suggest to
-> > swap the order here and describe id first.
->=20
-> That's super picky.
->=20
-> I can do it as a follow-up patch if you *really* care about it.
 
-I'd say introducing the one-line description for id now in the "wrong"
-location and then reordering as a followup is ridiculus. But having said
-that: I don't care at all.
-
-Best regards
-Uwe
-
---=20
-Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
-Industrial Linux Solutions                 | https://www.pengutronix.de/ |
-
---orhpy32uu5qcw7jc
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAmCwx3IACgkQwfwUeK3K
-7AmYMQgAm08olKVQR6dfF4Wu5P6Bqc4husZSDdRqbWvQC8u7FSzA8jBtys9hA6Wr
-DWThj/opDyZHhfhlVtS1YRjps0eVkv9Li3HW0Ig77+MvCIJX64jrN0Yfga9j3Qwg
-eYr1dss13EEQXy3VD16SBkwOHxYcN1sUM0XBTYiLeIlpvBPTuHfaDdDdK1n5ea6U
-pwy4hhaN1GCcYK+Wh9N0brrwB6AT/XTts90fpaCOrs5c3KP1rgZomqUWpMQaMc+C
-rny5L6BGY17sbp0j9FGAdl/hN6ammWMPE7Aj+ognh1spdwgFBxBNnTY2//90zE9t
-m2khCyRq6mMycxmYwcKYC6hEAyokVQ==
-=eRgO
------END PGP SIGNATURE-----
-
---orhpy32uu5qcw7jc--
+-- 
+With best wishes
+Dmitry
