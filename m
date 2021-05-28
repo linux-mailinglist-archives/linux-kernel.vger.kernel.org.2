@@ -2,78 +2,239 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B4B3B393D0A
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 08:17:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5AF3C393D0C
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 08:22:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230045AbhE1GTX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 May 2021 02:19:23 -0400
-Received: from szxga08-in.huawei.com ([45.249.212.255]:2330 "EHLO
-        szxga08-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229561AbhE1GTV (ORCPT
+        id S230080AbhE1GYY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 May 2021 02:24:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36430 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229561AbhE1GYX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 May 2021 02:19:21 -0400
-Received: from dggeml714-chm.china.huawei.com (unknown [172.30.72.55])
-        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4FrvW92NnNz1BFv5;
-        Fri, 28 May 2021 14:13:09 +0800 (CST)
-Received: from dggema769-chm.china.huawei.com (10.1.198.211) by
- dggeml714-chm.china.huawei.com (10.3.17.125) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2176.2; Fri, 28 May 2021 14:17:45 +0800
-Received: from localhost (10.174.179.215) by dggema769-chm.china.huawei.com
- (10.1.198.211) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Fri, 28
- May 2021 14:17:44 +0800
-From:   YueHaibing <yuehaibing@huawei.com>
-To:     <will@kernel.org>, <mark.rutland@arm.com>
-CC:     <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, YueHaibing <yuehaibing@huawei.com>
-Subject: [PATCH v2 -next] perf: arm_spe: use DEVICE_ATTR_RO macro
-Date:   Fri, 28 May 2021 14:17:38 +0800
-Message-ID: <20210528061738.23392-1-yuehaibing@huawei.com>
-X-Mailer: git-send-email 2.10.2.windows.1
+        Fri, 28 May 2021 02:24:23 -0400
+Received: from mail-ej1-x634.google.com (mail-ej1-x634.google.com [IPv6:2a00:1450:4864:20::634])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DBF90C061574
+        for <linux-kernel@vger.kernel.org>; Thu, 27 May 2021 23:22:47 -0700 (PDT)
+Received: by mail-ej1-x634.google.com with SMTP id h20so3711601ejg.1
+        for <linux-kernel@vger.kernel.org>; Thu, 27 May 2021 23:22:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=hZG+K5o9x93608ffGiO2O9Ngv/oiNofV4zjyg74md5k=;
+        b=QzQjFN9gxYe1wOtfY73V1aFqAd/0OGyHo7JPgM4uCoHhui/jHJFbqE0K0F4HiiF5eg
+         I5el5Fv3VFvR/wZOc9gR017FPTNzuzxbGVfvnFDe5G68q7N1Ztccq5sOvudQCAn+eOGA
+         1kCfP85tcSWhbab5FWiLw47XTXa4moF2k0Dkg3UyheQfqq+zRif7VkcxjDpBSXReSyPV
+         IAl2iTd9ETItZwG+wgt24aMrFxfaLEd0QNQ6lqq/3m1k9LogB4CCyVVsnrp+P4Sbju8Y
+         /5qzxuRFUBbjlP+JOpaq3tS815XTvWAajnHLHFgUd16P2qT9PjbR8daeI9/VVMe+fRug
+         8YiA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=hZG+K5o9x93608ffGiO2O9Ngv/oiNofV4zjyg74md5k=;
+        b=XTnmml1hoNyWLfY5Ve2YWbFehIn3zibA3NgHUjvmFcJzmFJEYv/oSkJQtOAP/JtS4I
+         bcgXhGdNgPamfIkivSy4bnWoBdL1p560tm0Hw302PuzJWTGXuGqlm64xkZiFwqeBF1nn
+         SP9/pbm4hw2tjEyyO0M5roPNj+SNM1kf4al3vADkd8ov3CkmbQgENDIpzW0NCa6QKXXY
+         euue7rei8wi7fj3qqHkTFetZsGpwAEQl17WbTloQNYA+Plj2cIJR3TM5JOYIreIYYdEP
+         IHzBSwyuN2za3rKk42APPtJmi6mjMIKTXXsgh7C4yAtilgBFDNuI2mcNq+9VtzeddR3F
+         qeaA==
+X-Gm-Message-State: AOAM533v8d8arFmIC1fzW9uvWSpJW++TfVw+G+NA564/UTcFKWaDvp4L
+        8OPirtBfm8uEeiNwI4GdNQZkuU5oHJX7BSX20ZyaLg==
+X-Google-Smtp-Source: ABdhPJwSRHmAcY0UCICO1Np4fXcde1DpMd+W6fvPIBm31r1yRnjRKQVkc1c3255Db5m+nKHx1gciOgN3/y84TitM/TY=
+X-Received: by 2002:a17:906:c211:: with SMTP id d17mr7572074ejz.247.1622182966154;
+ Thu, 27 May 2021 23:22:46 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.174.179.215]
-X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
- dggema769-chm.china.huawei.com (10.1.198.211)
-X-CFilter-Loop: Reflected
+References: <20210527151139.242182390@linuxfoundation.org>
+In-Reply-To: <20210527151139.242182390@linuxfoundation.org>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Fri, 28 May 2021 11:52:34 +0530
+Message-ID: <CA+G9fYuk3Q0x4_LiFZQv96D8hYWcs3Vdb7bKEgJn6BkmrdnwOQ@mail.gmail.com>
+Subject: Re: [PATCH 5.10 0/9] 5.10.41-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     open list <linux-kernel@vger.kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Shuah Khan <shuah@kernel.org>, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, Pavel Machek <pavel@denx.de>,
+        Jon Hunter <jonathanh@nvidia.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        linux-stable <stable@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use DEVICE_ATTR_RO() helper instead of plain DEVICE_ATTR(),
-which makes the code a bit shorter and easier to read.
+On Thu, 27 May 2021 at 20:43, Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+>
+> This is the start of the stable review cycle for the 5.10.41 release.
+> There are 9 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+>
+> Responses should be made by Sat, 29 May 2021 15:11:29 +0000.
+> Anything received after that time might be too late.
+>
+> The whole patch series can be found in one patch at:
+>         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-=
+5.10.41-rc1.gz
+> or in the git tree and branch at:
+>         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
+-rc.git linux-5.10.y
+> and the diffstat can be found below.
+>
+> thanks,
+>
+> greg k-h
 
-Signed-off-by: YueHaibing <yuehaibing@huawei.com>
----
-v2: Fix build error
 
- drivers/perf/arm_spe_pmu.c | 7 +++----
- 1 file changed, 3 insertions(+), 4 deletions(-)
+Results from Linaro=E2=80=99s test farm.
+No regressions on arm64, arm, x86_64, and i386.
 
-diff --git a/drivers/perf/arm_spe_pmu.c b/drivers/perf/arm_spe_pmu.c
-index e3711cb4c1b5..773285dd539f 100644
---- a/drivers/perf/arm_spe_pmu.c
-+++ b/drivers/perf/arm_spe_pmu.c
-@@ -231,15 +231,14 @@ static const struct attribute_group arm_spe_pmu_format_group = {
- 	.attrs	= arm_spe_pmu_formats_attr,
- };
- 
--static ssize_t arm_spe_pmu_get_attr_cpumask(struct device *dev,
--					    struct device_attribute *attr,
--					    char *buf)
-+static ssize_t cpumask_show(struct device *dev,
-+			    struct device_attribute *attr, char *buf)
- {
- 	struct arm_spe_pmu *spe_pmu = dev_get_drvdata(dev);
- 
- 	return cpumap_print_to_pagebuf(true, buf, &spe_pmu->supported_cpus);
- }
--static DEVICE_ATTR(cpumask, S_IRUGO, arm_spe_pmu_get_attr_cpumask, NULL);
-+static DEVICE_ATTR_RO(cpumask);
- 
- static struct attribute *arm_spe_pmu_attrs[] = {
- 	&dev_attr_cpumask.attr,
--- 
-2.17.1
+Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
 
+## Build
+* kernel: 5.10.41-rc1
+* git: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-=
+rc.git
+* git branch: linux-5.10.y
+* git commit: ec1cc3ee7be23032bad8bf00052c9b75fdfe9971
+* git describe: v5.10.40-10-gec1cc3ee7be2
+* test details:
+https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-5.10.y/build/v5.10=
+.40-10-gec1cc3ee7be2
+
+## No regressions (compared to v5.10.40)
+
+## No fixes (compared to v5.10.40)
+
+## Test result summary
+ total: 78784, pass: 64361, fail: 2504, skip: 11224, xfail: 695,
+
+## Build Summary
+* arc: 10 total, 10 passed, 0 failed
+* arm: 193 total, 193 passed, 0 failed
+* arm64: 27 total, 27 passed, 0 failed
+* dragonboard-410c: 1 total, 1 passed, 0 failed
+* hi6220-hikey: 1 total, 1 passed, 0 failed
+* i386: 26 total, 26 passed, 0 failed
+* juno-r2: 1 total, 1 passed, 0 failed
+* mips: 45 total, 45 passed, 0 failed
+* parisc: 9 total, 9 passed, 0 failed
+* powerpc: 27 total, 27 passed, 0 failed
+* riscv: 21 total, 21 passed, 0 failed
+* s390: 18 total, 18 passed, 0 failed
+* sh: 18 total, 18 passed, 0 failed
+* sparc: 9 total, 9 passed, 0 failed
+* x15: 1 total, 1 passed, 0 failed
+* x86: 1 total, 1 passed, 0 failed
+* x86_64: 27 total, 27 passed, 0 failed
+
+## Test suites summary
+* fwts
+* igt-gpu-tools
+* install-android-platform-tools-r2600
+* kselftest-
+* kselftest-android
+* kselftest-bpf
+* kselftest-breakpoints
+* kselftest-capabilities
+* kselftest-cgroup
+* kselftest-clone3
+* kselftest-core
+* kselftest-cpu-hotplug
+* kselftest-cpufreq
+* kselftest-drivers
+* kselftest-efivarfs
+* kselftest-filesystems
+* kselftest-firmware
+* kselftest-fpu
+* kselftest-futex
+* kselftest-gpio
+* kselftest-intel_pstate
+* kselftest-ipc
+* kselftest-ir
+* kselftest-kcmp
+* kselftest-kexec
+* kselftest-kvm
+* kselftest-lib
+* kselftest-livepatch
+* kselftest-lkdtm
+* kselftest-membarrier
+* kselftest-memfd
+* kselftest-memory-hotplug
+* kselftest-mincore
+* kselftest-mount
+* kselftest-mqueue
+* kselftest-net
+* kselftest-netfilter
+* kselftest-nsfs
+* kselftest-openat2
+* kselftest-pid_namespace
+* kselftest-pidfd
+* kselftest-proc
+* kselftest-pstore
+* kselftest-ptrace
+* kselftest-rseq
+* kselftest-rtc
+* kselftest-seccomp
+* kselftest-sigaltstack
+* kselftest-size
+* kselftest-splice
+* kselftest-static_keys
+* kselftest-sync
+* kselftest-sysctl
+* kselftest-tc-testing
+* kselftest-timens
+* kselftest-timers
+* kselftest-tmpfs
+* kselftest-tpm2
+* kselftest-user
+* kselftest-vm
+* kselftest-vsyscall-mode-native-
+* kselftest-vsyscall-mode-none-
+* kselftest-x86
+* kselftest-zram
+* kunit
+* kvm-unit-tests
+* libhugetlbfs
+* linux-log-parser
+* ltp-cap_bounds-tests
+* ltp-commands-tests
+* ltp-containers-tests
+* ltp-controllers-tests
+* ltp-cpuhotplug-tests
+* ltp-crypto-tests
+* ltp-cve-tests
+* ltp-dio-tests
+* ltp-fcntl-locktests-tests
+* ltp-filecaps-tests
+* ltp-fs-tests
+* ltp-fs_bind-tests
+* ltp-fs_perms_simple-tests
+* ltp-fsx-tests
+* ltp-hugetlb-tests
+* ltp-io-tests
+* ltp-ipc-tests
+* ltp-math-tests
+* ltp-mm-tests
+* ltp-nptl-tests
+* ltp-open-posix-tests
+* ltp-pty-tests
+* ltp-sched-tests
+* ltp-securebits-tests
+* ltp-syscalls-tests
+* ltp-tracing-tests
+* network-basic-tests
+* packetdrill
+* perf
+* rcutorture
+* ssuite
+* v4l2-compliance
+
+--
+Linaro LKFT
+https://lkft.linaro.org
