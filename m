@@ -2,89 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CCA09393A95
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 02:52:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5BC9B393AAB
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 02:53:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233932AbhE1Axk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 May 2021 20:53:40 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53306 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235702AbhE1Axf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 May 2021 20:53:35 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1C9856128B;
-        Fri, 28 May 2021 00:52:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1622163121;
-        bh=0QaWPrjkB6WGGB1gpdLNx41kPgSJM747S9zrT/p+Xfo=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=CQ59ejthgL68KyVgGIKRUR42w8cfbFo3MUd30YN/IWz1+EtF5mkKfpbkUVvsPUDTM
-         VREWIAVKMsWnhOUbdbBaoM2DEKxi7oAc/ybErwNaVx+LslxX0K9oF3BBI5CRjOVSLt
-         C/IDVVFR0IerG4cP4jSsBoRH5E4vwcqpHfmLHQ6OOYBdUFp/awClcpPK/z300uVoXM
-         rPA16cxDcuyijcyt/LPt0OHH1gNvlexIzeXgZdE/jeP54EprkeOz5J8uuTwSQg0pkJ
-         UvJ3s7UiDp0fbvIh8AtDrVXvG07t1yCIrAVOpXk5SEs/HRnOPKRJz47zZ5KBrJbYY6
-         CgBifrYvLs5OQ==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 893304011C; Thu, 27 May 2021 21:51:57 -0300 (-03)
-Date:   Thu, 27 May 2021 21:51:57 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Namhyung Kim <namhyung@kernel.org>
-Cc:     Jiri Olsa <jolsa@redhat.com>, Ingo Molnar <mingo@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Andi Kleen <ak@linux.intel.com>,
-        Ian Rogers <irogers@google.com>,
-        Song Liu <songliubraving@fb.com>
-Subject: Re: [PATCH] perf stat: Fix error check for bpf_program__attach
-Message-ID: <YLA+rfZ4Jb3oBFun@kernel.org>
-References: <20210527220052.1657578-1-namhyung@kernel.org>
+        id S235937AbhE1Ayz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 May 2021 20:54:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48348 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234783AbhE1Ayx (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 27 May 2021 20:54:53 -0400
+Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3A61C061574
+        for <linux-kernel@vger.kernel.org>; Thu, 27 May 2021 17:53:17 -0700 (PDT)
+Received: by mail-lf1-x12f.google.com with SMTP id f30so2854217lfj.1
+        for <linux-kernel@vger.kernel.org>; Thu, 27 May 2021 17:53:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=vbX6pM+seZu9wlyfbAeur9NPZdT7LDl780JRgegZV7Y=;
+        b=GFq0cmtEv7xS+1fzxOfXQ7FjbeJRs3m631Nx2J4Cd/9cvIuSueyKLRXo2PBC92s7BO
+         GefnKuBO6SiDsBzraZmhlg5wmODvAqPQ4OKhuhy4QiRfAxKbK8XSX/3mapffw4Hsauqj
+         umsgZrH5g5PvNs+862RKm51R6xLlfIkYAFpM2tqbZUNg4S29CKWimpROvIv0wFoR+3HV
+         t5lqsbfBbHkdDiFHewL1XZKrcv4ffuINTPyrKS+3Wv9XJZpqE/tcv59wP06YOjBE7YVQ
+         37c05LHLqvWAsTzb1zgW5AaRgODruiy5oskubd+WZhcSHw9Dg342JNDkv3qPSD2aid4e
+         +MWw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=vbX6pM+seZu9wlyfbAeur9NPZdT7LDl780JRgegZV7Y=;
+        b=bPHgL8KRVFIseTL5GdnQZsPll/pC7aQJhKjC/WUol0jR3uFrM6tbyMoaTqjYWwULrT
+         3oNtv5KX57iputUXO+1nYWDvgiuz1lrf0p96Hue1MKf/5tQzxjsj6MiBGvcHzWKuc7ZK
+         rEwGwAQPN4xdnKmMsk6Q61+TmgwxPEZZgysfFHIivKIGsDKZ664rJqasRcWRHJZlj7GB
+         LVPiFY4xe6gOu6nujwSI4A3ruyjLK6d9UFXADpsJ8pc21I3Fl7VbP5W8f2CoDBBV+gSO
+         Zg8oC9kQqmsmnzi5FnuRxQ7CWPgqQktJ5YYOXQoS3Z/lZXR6aitwHxBN2+gHesogBkwf
+         4lag==
+X-Gm-Message-State: AOAM531GWANdAThFcGqz8Nl9CV4K6fZy7I6g3rY6HHBtr9LRe3ASFPWd
+        yMmZ9B4+lctmcpQlrOjaH/5loFPjgBmr3HNjC1tkfw==
+X-Google-Smtp-Source: ABdhPJyiVLd2k1988bBN8brTDYX+FK7yEB0nKuBfhRFviLijkC7Brn667eZDBeWRCanjXoe9PhoIJB5+M94CSeQcFA8=
+X-Received: by 2002:a19:f616:: with SMTP id x22mr3976589lfe.291.1622163196370;
+ Thu, 27 May 2021 17:53:16 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210527220052.1657578-1-namhyung@kernel.org>
-X-Url:  http://acmel.wordpress.com
+References: <cover.1622008846.git.matti.vaittinen@fi.rohmeurope.com>
+ <CACRpkdaSr_CV1pKS44Ru15AEJ0-1429+6E7Lei2sPHdaijr9iw@mail.gmail.com> <0c2a8ffab666ef31f5cee50b8b47767285dfe829.camel@fi.rohmeurope.com>
+In-Reply-To: <0c2a8ffab666ef31f5cee50b8b47767285dfe829.camel@fi.rohmeurope.com>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Fri, 28 May 2021 02:53:05 +0200
+Message-ID: <CACRpkdZ2GdrGr8-XnVvf59O4AVBueBjX0PHYGtOeOdGXi=iE4A@mail.gmail.com>
+Subject: Re: [PATCH v4 0/3] gpio: gpio-regmap: Support few custom operations
+To:     Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
+Cc:     Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Michael Walle <michael@walle.cc>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        bcm-kernel-feedback-list <bcm-kernel-feedback-list@broadcom.com>,
+        Jonas Gorski <jonas.gorski@gmail.com>,
+        =?UTF-8?B?w4FsdmFybyBGZXJuw6FuZGV6IFJvamFz?= <noltari@gmail.com>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        linux-power@fi.rohmeurope.com,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Thu, May 27, 2021 at 03:00:52PM -0700, Namhyung Kim escreveu:
-> It seems the bpf_program__attach() returns a negative error code
-> instead of a NULL pointer in case of error.
+On Thu, May 27, 2021 at 8:32 AM Matti Vaittinen
+<matti.vaittinen@fi.rohmeurope.com> wrote:
 
-Thanks, applied.
+> I think that the disagreement boils down to few styling issues - and
+> one more pragmatic one. And only what comes to how we allow
+> implementing the IC specific call-backs for these more complex HW
+> specific cases. "Styling" boils down to providing getter-functions for
+> well-defined gpio_regmap properties like regmap, device and fwnode
+> pointers Vs. exposing these in a well-defined structure as function
+> parameters.
 
-- Arnaldo
+Just do it the way the maintainer likes it I guess? Michael wrote
+the driver so do it in his fashion.
 
- 
-> Fixes: 7fac83aaf2ee ("perf stat: Introduce 'bperf' to share hardware PMCs with BPF")
-> Cc: Song Liu <songliubraving@fb.com>
-> Signed-off-by: Namhyung Kim <namhyung@kernel.org>
-> ---
->  tools/perf/util/bpf_counter.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/tools/perf/util/bpf_counter.c b/tools/perf/util/bpf_counter.c
-> index ddb52f748c8e..974f10e356f0 100644
-> --- a/tools/perf/util/bpf_counter.c
-> +++ b/tools/perf/util/bpf_counter.c
-> @@ -451,10 +451,10 @@ static int bperf_reload_leader_program(struct evsel *evsel, int attr_map_fd,
->  		goto out;
->  	}
->  
-> -	err = -1;
->  	link = bpf_program__attach(skel->progs.on_switch);
-> -	if (!link) {
-> +	if (IS_ERR(link)) {
->  		pr_err("Failed to attach leader program\n");
-> +		err = PTR_ERR(link);
->  		goto out;
->  	}
->  
-> -- 
-> 2.32.0.rc0.204.g9fa02ecfa5-goog
-> 
+> So
+> at the end of the day it's fair to go on in a way Michael and You find
+> easiest to maintain.
 
--- 
+What makes things easy for me to maintain is active and happy
+driver maintainers, so it is paramount that the file looks to Michael
+like something he wants to keep maintaining. This removes work
+from me and Bartosz.
 
-- Arnaldo
+Maintainer style quirks are common, I have some myself (like
+never allowing __underscore_functions) we just adapt to their
+quirks and be good diplomats.
+
+Yours,
+Linus Walleij
