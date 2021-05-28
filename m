@@ -2,59 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D7C8393F39
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 11:06:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C4A9393F3B
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 11:06:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236500AbhE1JHL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 May 2021 05:07:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44842 "EHLO
+        id S236530AbhE1JHS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 May 2021 05:07:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44862 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236355AbhE1JGr (ORCPT
+        with ESMTP id S236340AbhE1JGs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 May 2021 05:06:47 -0400
-Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com [IPv6:2a00:1450:4864:20::336])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88EFAC061760
-        for <linux-kernel@vger.kernel.org>; Fri, 28 May 2021 02:05:11 -0700 (PDT)
-Received: by mail-wm1-x336.google.com with SMTP id m18so1726312wmq.0
-        for <linux-kernel@vger.kernel.org>; Fri, 28 May 2021 02:05:11 -0700 (PDT)
+        Fri, 28 May 2021 05:06:48 -0400
+Received: from mail-wm1-x331.google.com (mail-wm1-x331.google.com [IPv6:2a00:1450:4864:20::331])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43140C061761
+        for <linux-kernel@vger.kernel.org>; Fri, 28 May 2021 02:05:12 -0700 (PDT)
+Received: by mail-wm1-x331.google.com with SMTP id f6-20020a1c1f060000b0290175ca89f698so4118094wmf.5
+        for <linux-kernel@vger.kernel.org>; Fri, 28 May 2021 02:05:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=ZsHhVHMMYIUUYCsqaGFFBiP85xJeW/vO/rf3whWDDj8=;
-        b=SIcUru8N6ThJ47KmOebae2ZxgyMlirYEl5oYCYXI3f39QL5dEKUq6iGP213gEajmqt
-         vFLw3dvcc0L0Wn/AvCNHCv1uqyZ+RcMndY9vwSI+Bu7Ugrd1PGVPWS9OdzlWjimQDSkM
-         Tz6KWxf/teNDipZndHHzAarn4J+lhG1/K4CzzmvwvC6prVwx++46fca92QMTnlg682QG
-         6I/lJFQ73Nsm5pLH5oTV2UuD9FOdmdkV+IvVDHv5ukCcEEFAgwJwWObg8+gZlWUufJQR
-         phQZS/ZqEqrlwxvRQKKS9qo4EbcsD0f24h9vsywpBbzsJGIyYFCTZNJyheChmViUuUHc
-         a77Q==
+        bh=q31aHu4d2EyGCNum2ZU2yD6ze38ZUxKCEqsQOMZ06Lw=;
+        b=iHU4SmZtE0qceEDUVqwq0nooHVzMWLGqymHGWYwomhTQJQR+Wh9lEwitqZaNDTujXb
+         YL+eLd3W0ZNq90heaVygzxuMYhQ6ksvqadoN75LjUvZWdHtaR+ZLlbhoz1aE/It5SYWE
+         XnvSsgn+mqTByNkFXZEzNNiGo4wjaWGYrkCgI0XQlyX+yYQCexn6CvTXyt3w6HdSeFD1
+         cBtAAst4erMizizLtAPP2GJZyadGgzfVEQaluAjV4l1zffplaMFZPKJmsNC49ACOoi5y
+         tpev3tSwpxVBb/ErkeotHdN3dsjj3fkCNWPzCRudvWsotXrg4Jgwg7VA+tPpvf3cuHQv
+         zqvg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=ZsHhVHMMYIUUYCsqaGFFBiP85xJeW/vO/rf3whWDDj8=;
-        b=TRVN7fysD5oMRakXX/Kww0SCgS7t+b/qDQOARavdwdMvhHtnODa/e1CRwvfuhUiENR
-         V9fNyYpRT8GVaXu8/OkwKmGqrvslTRhrM35ZbUA748uO8GcG3t+jpM1HybYNXCVbMRaF
-         anU3kWqAz6csEq0jqWhLx2mtWuBn331dT+DGiKYGlicOm42qNhyRT17P8Q0B8olI3Eoq
-         GHAvhCxB9/yky8rff05vCpNuzOEImOQ55unwXaX98uR6eUpr3X4Gk+Eulc0xT0786laH
-         k2kWZDXj983RfZdLl7LKUBXVb7JqFr04ggkZiFpPuCzq53z9Zchn4iw9X8YWMBK1uubs
-         wKFA==
-X-Gm-Message-State: AOAM533G9Z1icI1yE6gvOvPvtHWfTdVRQVkqkuxgQtv42P0kZUZNDQXh
-        XQctbaH9YirvaQFp+N1vGrH1Ow==
-X-Google-Smtp-Source: ABdhPJz/Wq66VAjAnT4wZ1Q2aaa/482ptBEHUsF/scU2EIAP/gUhIYAPl6l6JWEn8ew55cOgcTm3Uw==
-X-Received: by 2002:a1c:4601:: with SMTP id t1mr7514479wma.27.1622192710115;
+        bh=q31aHu4d2EyGCNum2ZU2yD6ze38ZUxKCEqsQOMZ06Lw=;
+        b=i9fOGqJ33L3hcBi+Od7u4oCkgy7vjARy2E+76ZwZv4zFFCIq465Fmvy21dq9slMhl6
+         gwwYxYm0B3JbV8o+4Q6kMMhtzd8n3fCiN7NzK1KkywheAwLl4rVJQlb/yzOr55kV5n+Z
+         MFiCmock8VkeeGkeVcamBa6vk1u96NOyr69Eum/UAIbhUBJ9EnUvnd3B7lPhpUuC/+55
+         zSCt6pIuhRUvB2YvYT4PnTQcKLe+rJJxjaX0m8ZzhfnSG8EYX5wOyXTYvBObSdxDzEw8
+         WUbcPawagpMJuvPQon1lQBTalfziKFUFWTq4gMi/qPunVCuH5OLp19uMuoZ3Umd8xZHV
+         HDkQ==
+X-Gm-Message-State: AOAM533X3dLNJuIVz2T+bny/5nbleaKdCJHXPg3Efa/L05hrW+5Oo4Vl
+        UMvKetxrcv7cuA1FoOQaL6fg0A==
+X-Google-Smtp-Source: ABdhPJztjboOyPvoUhgaD1zdQe8HIPehEzyszSEHX6rN62P1I/Uqy+OvhLlZnpuYvbpKVFAHI4ZfoA==
+X-Received: by 2002:a7b:cd83:: with SMTP id y3mr7622742wmj.155.1622192710912;
         Fri, 28 May 2021 02:05:10 -0700 (PDT)
 Received: from dell.default ([91.110.221.223])
-        by smtp.gmail.com with ESMTPSA id q11sm7193937wrx.80.2021.05.28.02.05.08
+        by smtp.gmail.com with ESMTPSA id q11sm7193937wrx.80.2021.05.28.02.05.10
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 28 May 2021 02:05:09 -0700 (PDT)
+        Fri, 28 May 2021 02:05:10 -0700 (PDT)
 From:   Lee Jones <lee.jones@linaro.org>
 To:     lee.jones@linaro.org
 Cc:     linux-kernel@vger.kernel.org, Jens Axboe <axboe@kernel.dk>,
-        linux-ide@vger.kernel.org
-Subject: [PATCH 05/11] ata: sata_nv: Do not over-write initialise fields in 'nv_adma_sht' and 'nv_swncq_sht'
-Date:   Fri, 28 May 2021 10:04:56 +0100
-Message-Id: <20210528090502.1799866-6-lee.jones@linaro.org>
+        ATI Inc <hyu@ati.com>, linux-ide@vger.kernel.org
+Subject: [PATCH 06/11] ata: pata_atiixp: Avoid overwriting initialised field in 'atiixp_sht'
+Date:   Fri, 28 May 2021 10:04:57 +0100
+Message-Id: <20210528090502.1799866-7-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210528090502.1799866-1-lee.jones@linaro.org>
 References: <20210528090502.1799866-1-lee.jones@linaro.org>
@@ -67,54 +67,32 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 Fixes the following W=1 kernel build warning(s):
 
- drivers/ata/sata_nv.c:379:16: warning: initialized field overwritten [-Woverride-init]
- drivers/ata/sata_nv.c:379:16: note: (near initialization for ‘nv_adma_sht.can_queue’)
- drivers/ata/sata_nv.c:382:21: warning: initialized field overwritten [-Woverride-init]
- drivers/ata/sata_nv.c:382:21: note: (near initialization for ‘nv_adma_sht.slave_configure’)
- drivers/ata/sata_nv.c:387:16: warning: initialized field overwritten [-Woverride-init]
- drivers/ata/sata_nv.c:387:16: note: (near initialization for ‘nv_swncq_sht.can_queue’)
- drivers/ata/sata_nv.c:390:21: warning: initialized field overwritten [-Woverride-init]
- drivers/ata/sata_nv.c:390:21: note: (near initialization for ‘nv_swncq_sht.slave_configure’)
+ drivers/ata/pata_atiixp.c:256:19: warning: initialized field overwritten [-Woverride-init]
+ drivers/ata/pata_atiixp.c:256:19: note: (near initialization for ‘atiixp_sht.sg_tablesize’)
 
 Cc: Jens Axboe <axboe@kernel.dk>
+Cc: ATI Inc <hyu@ati.com>
 Cc: linux-ide@vger.kernel.org
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/ata/sata_nv.c | 10 ++++++++--
- 1 file changed, 8 insertions(+), 2 deletions(-)
+ drivers/ata/pata_atiixp.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/ata/sata_nv.c b/drivers/ata/sata_nv.c
-index de45045566692..c385d18ce87b7 100644
---- a/drivers/ata/sata_nv.c
-+++ b/drivers/ata/sata_nv.c
-@@ -375,19 +375,25 @@ static struct scsi_host_template nv_sht = {
+diff --git a/drivers/ata/pata_atiixp.c b/drivers/ata/pata_atiixp.c
+index d671d33ef2874..c3a65ccd4b799 100644
+--- a/drivers/ata/pata_atiixp.c
++++ b/drivers/ata/pata_atiixp.c
+@@ -252,8 +252,9 @@ static void atiixp_bmdma_stop(struct ata_queued_cmd *qc)
+ }
+ 
+ static struct scsi_host_template atiixp_sht = {
+-	ATA_BMDMA_SHT(DRV_NAME),
++	ATA_BASE_SHT(DRV_NAME),
+ 	.sg_tablesize		= LIBATA_DUMB_MAX_PRD,
++	.dma_boundary		= ATA_DMA_BOUNDARY,
  };
  
- static struct scsi_host_template nv_adma_sht = {
--	ATA_NCQ_SHT(DRV_NAME),
-+	__ATA_BASE_SHT(DRV_NAME),
- 	.can_queue		= NV_ADMA_MAX_CPBS,
- 	.sg_tablesize		= NV_ADMA_SGTBL_TOTAL_LEN,
- 	.dma_boundary		= NV_ADMA_DMA_BOUNDARY,
- 	.slave_configure	= nv_adma_slave_config,
-+	.sdev_attrs             = ata_ncq_sdev_attrs,
-+	.change_queue_depth     = ata_scsi_change_queue_depth,
-+	.tag_alloc_policy	= BLK_TAG_ALLOC_RR,
- };
- 
- static struct scsi_host_template nv_swncq_sht = {
--	ATA_NCQ_SHT(DRV_NAME),
-+	__ATA_BASE_SHT(DRV_NAME),
- 	.can_queue		= ATA_MAX_QUEUE - 1,
- 	.sg_tablesize		= LIBATA_MAX_PRD,
- 	.dma_boundary		= ATA_DMA_BOUNDARY,
- 	.slave_configure	= nv_swncq_slave_config,
-+	.sdev_attrs             = ata_ncq_sdev_attrs,
-+	.change_queue_depth     = ata_scsi_change_queue_depth,
-+	.tag_alloc_policy	= BLK_TAG_ALLOC_RR,
- };
- 
- /*
+ static struct ata_port_operations atiixp_port_ops = {
 -- 
 2.31.1
 
