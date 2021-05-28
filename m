@@ -2,210 +2,225 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0094139424D
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 14:05:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 89F3E394250
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 14:07:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236295AbhE1MHH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 May 2021 08:07:07 -0400
-Received: from fllv0015.ext.ti.com ([198.47.19.141]:40768 "EHLO
-        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230256AbhE1MHE (ORCPT
+        id S236296AbhE1MIg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 May 2021 08:08:36 -0400
+Received: from fllv0016.ext.ti.com ([198.47.19.142]:41008 "EHLO
+        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230256AbhE1MIc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 May 2021 08:07:04 -0400
-Received: from fllv0034.itg.ti.com ([10.64.40.246])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 14SC5C3R108777;
-        Fri, 28 May 2021 07:05:12 -0500
+        Fri, 28 May 2021 08:08:32 -0400
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 14SC6oFV032378;
+        Fri, 28 May 2021 07:06:50 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1622203512;
-        bh=nMRdEEamvcKJH/qN3ewY45s4ipyYomOhcEWAkp78/cA=;
-        h=Date:From:To:CC:Subject:References:In-Reply-To;
-        b=CVx4WocW2E9CkKPkN1cx06Q//TIU33axHqMyLwZhPLjMv5TBeMxTH8EKVbFLhQ5TM
-         8+i0kfAEjSzbuRGSm2gZlW2xQ8LUA7s8hXhWoiNZpqgDBdmjOyRNr4vvkerJzgosHA
-         eVG2I8Q9XTiKTU703ELHk7w1HOnZio5daP7GSy94=
-Received: from DFLE108.ent.ti.com (dfle108.ent.ti.com [10.64.6.29])
-        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 14SC5CeS128302
+        s=ti-com-17Q1; t=1622203610;
+        bh=tRHNNFt2JHywjRCZ7Ucj/4SrNodlgTnXD+qr/UJVcDs=;
+        h=Subject:To:CC:References:From:Date:In-Reply-To;
+        b=FDIxaK2dSSIQ6KO6CXQhd5IhZXoBpxVnnfr1V60Y5GhWzMMUuXIoe+bJ6bmDTX/pW
+         4SHR+e8jkA2csuQi7/nF08taVzLeqpmVafN3W2vKtEL1mvXWC3hzBty6O+/wSOHuwj
+         k45YZ9QV/Qr5AtSJVuYBnfQN4AiA5OAvJxcXPtWQ=
+Received: from DLEE105.ent.ti.com (dlee105.ent.ti.com [157.170.170.35])
+        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 14SC6ofm005350
         (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Fri, 28 May 2021 07:05:12 -0500
-Received: from DFLE114.ent.ti.com (10.64.6.35) by DFLE108.ent.ti.com
- (10.64.6.29) with Microsoft SMTP Server (version=TLS1_2,
+        Fri, 28 May 2021 07:06:50 -0500
+Received: from DLEE100.ent.ti.com (157.170.170.30) by DLEE105.ent.ti.com
+ (157.170.170.35) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Fri, 28
- May 2021 07:05:12 -0500
-Received: from lelv0327.itg.ti.com (10.180.67.183) by DFLE114.ent.ti.com
- (10.64.6.35) with Microsoft SMTP Server (version=TLS1_2,
+ May 2021 07:06:50 -0500
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DLEE100.ent.ti.com
+ (157.170.170.30) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
- Frontend Transport; Fri, 28 May 2021 07:05:12 -0500
-Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 14SC5BbN130682;
-        Fri, 28 May 2021 07:05:11 -0500
-Date:   Fri, 28 May 2021 17:35:10 +0530
-From:   Pratyush Yadav <p.yadav@ti.com>
-To:     <patrice.chotard@foss.st.com>
-CC:     Mark Brown <broonie@kernel.org>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Boris Brezillon <boris.brezillon@collabora.com>,
-        <linux-mtd@lists.infradead.org>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        <linux-spi@vger.kernel.org>,
-        <linux-stm32@st-md-mailman.stormreply.com>,
+ Frontend Transport; Fri, 28 May 2021 07:06:50 -0500
+Received: from [10.250.35.153] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 14SC6n5q042873;
+        Fri, 28 May 2021 07:06:49 -0500
+Subject: Re: [PATCH v2 1/2] dt-bindings: remoteproc: k3-r5f: Update bindings
+ for AM64x SoCs
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>
+CC:     Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Lokesh Vutla <lokeshvutla@ti.com>,
+        <linux-remoteproc@vger.kernel.org>, <devicetree@vger.kernel.org>,
         <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <christophe.kerello@foss.st.com>
-Subject: Re: [PATCH v3 3/3] mtd: spinand: add SPI-NAND MTD resume handler
-Message-ID: <20210528120508.f6viglv3gkzgweqq@ti.com>
-References: <20210527161252.16620-1-patrice.chotard@foss.st.com>
- <20210527161252.16620-4-patrice.chotard@foss.st.com>
+        <linux-kernel@vger.kernel.org>
+References: <20210327143117.1840-1-s-anna@ti.com>
+ <20210327143117.1840-2-s-anna@ti.com>
+ <8948a30c-1a2f-1fb0-05bb-37be9c02c5d5@ti.com>
+ <ff8edffb-d926-9641-740b-2c292139aa07@ti.com>
+ <20210521204053.GA1011163@xps15>
+ <911bfb1d-8e66-298a-83ba-998040f5596d@ti.com> <YLBgwkiT9PE3Cu82@builder.lan>
+From:   Suman Anna <s-anna@ti.com>
+Message-ID: <e98d49c4-78b5-9a49-1f00-a52d20ea3b95@ti.com>
+Date:   Fri, 28 May 2021 07:06:44 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20210527161252.16620-4-patrice.chotard@foss.st.com>
-User-Agent: NeoMutt/20171215
+In-Reply-To: <YLBgwkiT9PE3Cu82@builder.lan>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 27/05/21 06:12PM, patrice.chotard@foss.st.com wrote:
-> From: Patrice Chotard <patrice.chotard@foss.st.com>
+On 5/27/21 10:17 PM, Bjorn Andersson wrote:
+> On Mon 24 May 10:47 CDT 2021, Suman Anna wrote:
 > 
-> After power up, all SPI NAND's blocks are locked. Only read operations
-> are allowed, write and erase operations are forbidden.
-> The SPI NAND framework unlocks all the blocks during its initialization.
+>> On 5/21/21 3:40 PM, Mathieu Poirier wrote:
+>>> Hi suman,
+>>>
+>>> On Wed, May 12, 2021 at 09:47:44PM -0500, Suman Anna wrote:
+>>>> Hi Rob,
+>>>>
+>>>> On 4/19/21 8:55 AM, Suman Anna wrote:
+>>>>> Hi Rob,
+>>>>>
+>>>>> On 3/27/21 9:31 AM, Suman Anna wrote:
+>>>>>> The K3 AM64x SoCs have two dual-core Arm R5F clusters/subsystems, with
+>>>>>> 2 R5F cores each, both in the MAIN voltage domain.
+>>>>>>
+>>>>>> These clusters are a revised IP version compared to those present on
+>>>>>> J721E and J7200 SoCs, and supports a new "Single-CPU" mode instead of
+>>>>>> LockStep mode. Update the K3 R5F remoteproc bindings with the compatible
+>>>>>> info relevant to these R5F clusters/subsystems on K3 AM64x SoCs.
+>>>>>>
+>>>>>> Signed-off-by: Suman Anna <s-anna@ti.com>
+>>>>>> ---
+>>>>>> v2: No changes
+>>>>>>
+>>>>>>  .../bindings/remoteproc/ti,k3-r5f-rproc.yaml  | 31 ++++++++++++++++---
+>>>>>
+>>>>> Looks like this patch has fallen through the cracks, can you please review and
+>>>>> give your ack for this patch so that Bjorn can pick up the series for 5.13?
+>>>>
+>>>> Gentle reminder, do you have any comments on this patch. Appreciate your ack so
+>>>> that we can get this in for 5.14?
+>>>
+>>> If memory serves me well Rob indicated that he would not review or comment on
+>>> bindings related to multi-core remote processors.  On the flip side he also
+>>> mentioned that he would not object to their presence.  And since this is an
+>>> increment to an existing binding rather than a new one, I think it is fair for
+>>> us to pick it up.  
+>>>
+>>> Rob - please intervene if my recollections are not accurate and accept my honest
+>>> apologies.  Otherwise: 
+>>>
+>>> Reviewed-by: Mathieu Poirier <mathieu.poirier@linaro.org> 
+>>>
+>>
+>> Thank you Mathieu.
+>>
+>> Bjorn,
+>> Is it possible for you to give an immutable branch with just this bindings so we
+>> can add the R5F nodes as well and avoid any checkpatch warnings on Nishanth's
+>> tree with our K3 dts patches?
+>>
 > 
-> During a standby low power, the memory is powered down, losing its
-> configuration.
-> During the resume, the QSPI driver state is restored but the SPI NAND
-> framework does not reconfigured the memory.
+> Hi Suman,
 > 
-> This patch adds SPI-NAND MTD PM handlers for resume ops.
-> SPI NAND resume op re-initializes SPI NAND flash to its probed state.
+> That sounds rather ambitious, but you can now find this at:
+> https://git.kernel.org/pub/scm/linux/kernel/git/andersson/remoteproc.git/tag/?h=20210327143117.1840-2-s-anna@ti.com
+
+Thanks a lot Bjorn. Appreciate this a lot.
+
+regards
+Suman
+
 > 
-> Signed-off-by: Christophe Kerello <christophe.kerello@foss.st.com>
-> Signed-off-by: Patrice Chotard <patrice.chotard@foss.st.com>
-> ---
-> Changes in v3:
->   - Add spinand_read_cfg() call to repopulate cache
+> Regards,
+> Bjorn
 > 
-> Changes in v2:
->   - Add helper spinand_block_unlock().
->   - Add spinand_ecc_enable() call.
->   - Remove some dev_err().
->   - Fix commit's title and message.
-> 
->  drivers/mtd/nand/spi/core.c | 33 +++++++++++++++++++++++++++++++++
->  1 file changed, 33 insertions(+)
-> 
-> diff --git a/drivers/mtd/nand/spi/core.c b/drivers/mtd/nand/spi/core.c
-> index 1f699ad84f1b..e3fcbcf381c3 100644
-> --- a/drivers/mtd/nand/spi/core.c
-> +++ b/drivers/mtd/nand/spi/core.c
-> @@ -1099,6 +1099,38 @@ static int spinand_block_unlock(struct spinand_device *spinand)
->  	return ret;
->  }
->  
-> +static void spinand_mtd_resume(struct mtd_info *mtd)
-> +{
-> +	struct spinand_device *spinand = mtd_to_spinand(mtd);
-> +	int ret;
-> +
-> +	ret = spinand_reset_op(spinand);
-> +	if (ret)
-> +		return;
-> +
-> +	ret = spinand_read_cfg(spinand);
-> +	if (ret)
-> +		return;
-> +
-> +	ret = spinand_init_quad_enable(spinand);
-> +	if (ret)
-> +		return;
-> +
-> +	ret = spinand_upd_cfg(spinand, CFG_OTP_ENABLE, 0);
-> +	if (ret)
-> +		return;
-> +
-> +	ret = spinand_manufacturer_init(spinand);
-> +	if (ret)
-> +		return;
-> +
-> +	ret = spinand_block_unlock(spinand);
-> +	if (ret)
-> +		return;
-> +
-> +	spinand_ecc_enable(spinand, false);
-> +}
-> +
+>> regards
+>> Suman
+>>
+>>>>
+>>>> regards
+>>>> Suman
+>>>>
+>>>>>
+>>>>> regards
+>>>>> Suman
+>>>>>
+>>>>>>  1 file changed, 26 insertions(+), 5 deletions(-)
+>>>>>>
+>>>>>> diff --git a/Documentation/devicetree/bindings/remoteproc/ti,k3-r5f-rproc.yaml b/Documentation/devicetree/bindings/remoteproc/ti,k3-r5f-rproc.yaml
+>>>>>> index d905d614502b..130fbaacc4b1 100644
+>>>>>> --- a/Documentation/devicetree/bindings/remoteproc/ti,k3-r5f-rproc.yaml
+>>>>>> +++ b/Documentation/devicetree/bindings/remoteproc/ti,k3-r5f-rproc.yaml
+>>>>>> @@ -14,8 +14,12 @@ description: |
+>>>>>>    processor subsystems/clusters (R5FSS). The dual core cluster can be used
+>>>>>>    either in a LockStep mode providing safety/fault tolerance features or in a
+>>>>>>    Split mode providing two individual compute cores for doubling the compute
+>>>>>> -  capacity. These are used together with other processors present on the SoC
+>>>>>> -  to achieve various system level goals.
+>>>>>> +  capacity on most SoCs. These are used together with other processors present
+>>>>>> +  on the SoC to achieve various system level goals.
+>>>>>> +
+>>>>>> +  AM64x SoCs do not support LockStep mode, but rather a new non-safety mode
+>>>>>> +  called "Single-CPU" mode, where only Core0 is used, but with ability to use
+>>>>>> +  Core1's TCMs as well.
+>>>>>>  
+>>>>>>    Each Dual-Core R5F sub-system is represented as a single DTS node
+>>>>>>    representing the cluster, with a pair of child DT nodes representing
+>>>>>> @@ -33,6 +37,7 @@ properties:
+>>>>>>        - ti,am654-r5fss
+>>>>>>        - ti,j721e-r5fss
+>>>>>>        - ti,j7200-r5fss
+>>>>>> +      - ti,am64-r5fss
+>>>>>>  
+>>>>>>    power-domains:
+>>>>>>      description: |
+>>>>>> @@ -56,11 +61,12 @@ properties:
+>>>>>>  
+>>>>>>    ti,cluster-mode:
+>>>>>>      $ref: /schemas/types.yaml#/definitions/uint32
+>>>>>> -    enum: [0, 1]
+>>>>>>      description: |
+>>>>>>        Configuration Mode for the Dual R5F cores within the R5F cluster.
+>>>>>> -      Should be either a value of 1 (LockStep mode) or 0 (Split mode),
+>>>>>> -      default is LockStep mode if omitted.
+>>>>>> +      Should be either a value of 1 (LockStep mode) or 0 (Split mode) on
+>>>>>> +      most SoCs (AM65x, J721E, J7200), default is LockStep mode if omitted;
+>>>>>> +      and should be either a value of 0 (Split mode) or 2 (Single-CPU mode)
+>>>>>> +      on AM64x SoCs, default is Split mode if omitted.
+>>>>>>  
+>>>>>>  # R5F Processor Child Nodes:
+>>>>>>  # ==========================
+>>>>>> @@ -97,6 +103,7 @@ patternProperties:
+>>>>>>            - ti,am654-r5f
+>>>>>>            - ti,j721e-r5f
+>>>>>>            - ti,j7200-r5f
+>>>>>> +          - ti,am64-r5f
+>>>>>>  
+>>>>>>        reg:
+>>>>>>          items:
+>>>>>> @@ -198,6 +205,20 @@ patternProperties:
+>>>>>>  
+>>>>>>      unevaluatedProperties: false
+>>>>>>  
+>>>>>> +if:
+>>>>>> +  properties:
+>>>>>> +    compatible:
+>>>>>> +      enum:
+>>>>>> +        - ti,am64-r5fss
+>>>>>> +then:
+>>>>>> +  properties:
+>>>>>> +    ti,cluster-mode:
+>>>>>> +      enum: [0, 2]
+>>>>>> +else:
+>>>>>> +  properties:
+>>>>>> +    ti,cluster-mode:
+>>>>>> +      enum: [0, 1]
+>>>>>> +
+>>>>>>  required:
+>>>>>>    - compatible
+>>>>>>    - power-domains
+>>>>>>
+>>>>>
+>>>>
+>>
 
-I don't think you quite get what me and Miquel are suggesting.
-
-The helper should call all these functions like read_cfg() 
-quad_enable(), etc. So it should look something like:
-
-int spinand_init_flash()
-{
-	ret = spinand_read_cfg(spinand);
-	if (ret)
-		return;
-
-	ret = spinand_init_quad_enable(spinand);
-	if (ret)
-		return;
-
-	ret = spinand_upd_cfg(spinand, CFG_OTP_ENABLE, 0);
-	if (ret)
-		return;
-
-	ret = spinand_manufacturer_init(spinand);
-	if (ret)
-		return;
-
-	ret = spinand_block_unlock(spinand);
-	if (ret)
-		return;
-
-	spinand_ecc_enable(spinand, false);
-}
-
-Then spinand_mtd_resume should look something like:
-
-int spinand_mtd_resume()
-{
-	ret = spinand_reset_op(spinand);
-	if (ret)
-		return;
-
-	return spinand_init_flash();
-}
-
-And spinand_init() should look something like:
-
-int spinand_init()
-{
-	...
-	spinand->oobbuf = ...
-
-	spinand_init_flash();
-
-	spinand_create_dirmaps();
-
-	...
-}
-
-
->  static int spinand_init(struct spinand_device *spinand)
->  {
->  	struct device *dev = &spinand->spimem->spi->dev;
-> @@ -1186,6 +1218,7 @@ static int spinand_init(struct spinand_device *spinand)
->  	mtd->_block_isreserved = spinand_mtd_block_isreserved;
->  	mtd->_erase = spinand_mtd_erase;
->  	mtd->_max_bad_blocks = nanddev_mtd_max_bad_blocks;
-> +	mtd->_resume = spinand_mtd_resume;
->  
->  	if (nand->ecc.engine) {
->  		ret = mtd_ooblayout_count_freebytes(mtd);
-> -- 
-> 2.17.1
-
--- 
-Regards,
-Pratyush Yadav
-Texas Instruments Inc.
