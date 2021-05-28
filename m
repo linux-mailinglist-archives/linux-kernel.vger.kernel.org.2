@@ -2,106 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 62AFA3945C5
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 18:22:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 02A653945C9
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 18:22:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236606AbhE1QXg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 May 2021 12:23:36 -0400
-Received: from mail-oo1-f53.google.com ([209.85.161.53]:33742 "EHLO
-        mail-oo1-f53.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234131AbhE1QXb (ORCPT
+        id S236389AbhE1QYD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 May 2021 12:24:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58544 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230243AbhE1QYA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 May 2021 12:23:31 -0400
-Received: by mail-oo1-f53.google.com with SMTP id j17-20020a4ad6d10000b02901fef5280522so1061714oot.0;
-        Fri, 28 May 2021 09:21:56 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:in-reply-to:references:subject:date
-         :message-id;
-        bh=Tu1wUpDQ2+j5UU78R8du5GXImtZHnLMb7l4b4wsjriU=;
-        b=RRA1uHmQdQFsIZJCFJzYZuuKXOk5cfID7ivYhLqGMcuhohFVAZ/tWgyuAGCgdqYsuo
-         52TwTEPNDpzCen7sv2uQoi3f9AqNpi9ybWDYI8XlA2h7pQmv5Q0LxhLxpHXkQiHA+9sF
-         4EKvRwEKEoUTLhdXkVNzUe1yjuEbPF8xhs1FmjCoWob0B2rNx6hX/5QWgQ1jcDsSJiH/
-         MG/6BQz6UjB/pwQT8HaGulyIjQGaOFv1Omj5ykzCcChXo2GfZN1GD88KUquBaIlySzth
-         GGxEu/yb61y3+drLdjP0/2ifWvrIKLG/VoV5FDHcYIRnsgaS94PGNAxnkhpHI4O0Ssp1
-         Ymyg==
-X-Gm-Message-State: AOAM530G5RzO+U5E9UTdVwHW2GLdzPWyMiA65gAPwTccTtd3L+0+lxv5
-        YdEEfRP10HC5XSxyWoMEqQ==
-X-Google-Smtp-Source: ABdhPJyQAgqeac1wSrTsBTPaEDXesAkPGK2rEOb8wsxmgaco/ReNmaQ36i+O0/XSbunkdSyoH6oHKw==
-X-Received: by 2002:a4a:49c8:: with SMTP id z191mr7570889ooa.62.1622218916165;
-        Fri, 28 May 2021 09:21:56 -0700 (PDT)
-Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id c13sm1211997oto.18.2021.05.28.09.21.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 28 May 2021 09:21:54 -0700 (PDT)
-Received: (nullmailer pid 3720616 invoked by uid 1000);
-        Fri, 28 May 2021 16:21:50 -0000
-From:   Rob Herring <robh@kernel.org>
-To:     Sebastian Reichel <sebastian.reichel@collabora.com>
-Cc:     kernel@collabora.com, Arnd Bergmann <arnd@arndb.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        Sascha Hauer <kernel@pengutronix.de>,
-        Rob Herring <robh+dt@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Shawn Guo <shawnguo@kernel.org>, Ian Ray <ian.ray@ge.com>,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        Mark Brown <broonie@kernel.org>, linux-spi@vger.kernel.org
-In-Reply-To: <20210528113346.37137-4-sebastian.reichel@collabora.com>
-References: <20210528113346.37137-1-sebastian.reichel@collabora.com> <20210528113346.37137-4-sebastian.reichel@collabora.com>
-Subject: Re: [PATCHv3 3/5] dt-bindings: misc: ge-achc: Convert to DT schema format
-Date:   Fri, 28 May 2021 11:21:50 -0500
-Message-Id: <1622218910.762365.3720615.nullmailer@robh.at.kernel.org>
+        Fri, 28 May 2021 12:24:00 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA389C061574;
+        Fri, 28 May 2021 09:22:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+        Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:
+        Subject:Sender:Reply-To:Content-ID:Content-Description;
+        bh=z9V7Sz2Li++gpMer9U2Re90Rrj9gFCj79IAmGS6MWIY=; b=nLkvP0H1Abvl178UUUziHUuFvA
+        yqI0K4SJIfnOF62n1OJIK+XxwsRALbCvC7r/fFSPCjX5Dr0vhUCY8dt3FmqDty6ieRWV3zmRtfeVK
+        6tlWLrxBQtah7A+cgal4VF094w2dOTx7jvajnbOm63pX07qfmX900LDklOZqFulkxO7WDw8xK6Vwj
+        rNf7ZOjDvD2CMIJhUPFXVah1kCl2IZ/yZuD1lzKQOtWiRiKZ6iXMgcnVuHO/mIIvEZiUVJQYkvmjm
+        pkOCLYSbVMMqmq3yazaTtQd2y25JDORu5Qtvw0bXg/HnD4EnRoIYgpms91auCDfx9mamiSBfasaS0
+        oZhZ3IsQ==;
+Received: from c-73-157-219-8.hsd1.or.comcast.net ([73.157.219.8] helo=[10.0.0.253])
+        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1lmfFe-00GxOI-7V; Fri, 28 May 2021 16:22:22 +0000
+Subject: Re: [PATCH v5 3/3] power: supply: mt6360_charger: add MT6360 charger
+ support
+To:     Gene Chen <gene.chen.richtek@gmail.com>, sre@kernel.org,
+        matthias.bgg@gmail.com, matti.vaittinen@fi.rohmeurope.com
+Cc:     broonie@kernel.org, robh+dt@kernel.org, devicetree@vger.kernel.org,
+        inux-pm@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
+        gene_chen@richtek.com, Wilma.Wu@mediatek.com,
+        shufan_lee@richtek.com, cy_huang@richtek.com,
+        benjamin.chao@mediatek.com
+References: <20210528081300.64759-1-gene.chen.richtek@gmail.com>
+ <20210528081300.64759-4-gene.chen.richtek@gmail.com>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <61bc1ea0-0a67-0b36-6d9f-407ca074c815@infradead.org>
+Date:   Fri, 28 May 2021 09:22:20 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.0
+MIME-Version: 1.0
+In-Reply-To: <20210528081300.64759-4-gene.chen.richtek@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 28 May 2021 13:33:45 +0200, Sebastian Reichel wrote:
-> Convert the binding to DT schema format. Also update the binding
-> to fix shortcomings
-> 
->  * Add "nxp,kinetis-k20" fallback compatible
->  * add programming SPI interface and reset GPIO
->  * add main clock
->  * add voltage supplies
->  * drop spi-max-frequency from required properties,
->    driver will setup max. frequency
-> 
-> Signed-off-by: Sebastian Reichel <sebastian.reichel@collabora.com>
-> ---
->  .../devicetree/bindings/misc/ge-achc.txt      | 26 -------
->  .../devicetree/bindings/misc/ge-achc.yaml     | 67 +++++++++++++++++++
->  2 files changed, 67 insertions(+), 26 deletions(-)
->  delete mode 100644 Documentation/devicetree/bindings/misc/ge-achc.txt
->  create mode 100644 Documentation/devicetree/bindings/misc/ge-achc.yaml
-> 
+On 5/28/21 1:13 AM, Gene Chen wrote:
+> diff --git a/drivers/power/supply/Kconfig b/drivers/power/supply/Kconfig
+> index e696364126f1..3257b1ad5e36 100644
+> --- a/drivers/power/supply/Kconfig
+> +++ b/drivers/power/supply/Kconfig
+> @@ -577,6 +577,17 @@ config CHARGER_MP2629
+>  	  Battery charger. This driver provides Battery charger power management
+>  	  functions on the systems.
+>  
+> +config CHARGER_MT6360
+> +	tristate "Mediatek MT6360 Charger Driver"
+> +	depends on MFD_MT6360
+> +	depends on REGULATOR
+> +	select LINEAR_RANGES
+> +	help
+> +	  Say Y here to enable MT6360 Charger Part.
+> +	  The device supports High-Accuracy Voltage/Current Regulation,
+> +	  Average Input Current Regulation, Battery Tempature Sensing,
 
-My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
-on your patch (DT_CHECKER_FLAGS is new in v5.13):
+	                                            Temperature
 
-yamllint warnings/errors:
+> +	  Over-Temperature Protection, DPDM Detection for BC1.2
+	                                                  BC1.2.
 
-dtschema/dtc warnings/errors:
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/misc/ge-achc.yaml: properties:reg:minItems: False schema does not allow 2
-	hint: "minItems/maxItems" equal to the "items" list length are not necessary
-	from schema $id: http://devicetree.org/meta-schemas/items.yaml#
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/misc/ge-achc.yaml: properties:reg:maxItems: False schema does not allow 2
-	hint: "minItems/maxItems" equal to the "items" list length are not necessary
-	from schema $id: http://devicetree.org/meta-schemas/items.yaml#
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/misc/ge-achc.yaml: ignoring, error in schema: properties: reg: minItems
-warning: no schema found in file: ./Documentation/devicetree/bindings/misc/ge-achc.yaml
-Documentation/devicetree/bindings/misc/ge-achc.example.dt.yaml:0:0: /example-0/spi/spi@1: failed to match any schema with compatible: ['ge,achc', 'nxp,kinetis-k20']
-Documentation/devicetree/bindings/misc/ge-achc.example.dt.yaml:0:0: /example-0/spi/spi@1: failed to match any schema with compatible: ['ge,achc', 'nxp,kinetis-k20']
 
-See https://patchwork.ozlabs.org/patch/1485219
-
-This check can fail if there are any dependencies. The base for a patch
-series is generally the most recent rc1.
-
-If you already ran 'make dt_binding_check' and didn't see the above
-error(s), then make sure 'yamllint' is installed and dt-schema is up to
-date:
-
-pip3 install dtschema --upgrade
-
-Please check and re-submit.
+thanks.
+-- 
+~Randy
 
