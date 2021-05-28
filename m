@@ -2,121 +2,179 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C22DA393C3B
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 06:10:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7AF28393C40
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 06:12:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230099AbhE1ELf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 May 2021 00:11:35 -0400
-Received: from twspam01.aspeedtech.com ([211.20.114.71]:40202 "EHLO
-        twspam01.aspeedtech.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230116AbhE1ELe (ORCPT
+        id S230243AbhE1ENz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 May 2021 00:13:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35920 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230180AbhE1ENm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 May 2021 00:11:34 -0400
-Received: from mail.aspeedtech.com ([192.168.0.24])
-        by twspam01.aspeedtech.com with ESMTP id 14S3uTIr014580;
-        Fri, 28 May 2021 11:56:29 +0800 (GMT-8)
-        (envelope-from steven_lee@aspeedtech.com)
-Received: from aspeedtech.com (192.168.100.253) by TWMBX02.aspeed.com
- (192.168.0.24) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Fri, 28 May
- 2021 12:09:36 +0800
-Date:   Fri, 28 May 2021 12:09:34 +0800
-From:   Steven Lee <steven_lee@aspeedtech.com>
-To:     Linus Walleij <linus.walleij@linaro.org>
-CC:     Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Joel Stanley <joel@jms.id.au>,
-        Andrew Jeffery <andrew@aj.id.au>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        "moderated list:ARM/ASPEED MACHINE SUPPORT" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "moderated list:ARM/ASPEED MACHINE SUPPORT" 
-        <linux-aspeed@lists.ozlabs.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Hongwei Zhang <Hongweiz@ami.com>,
-        Ryan Chen <ryan_chen@aspeedtech.com>,
-        Billy Tsai <billy_tsai@aspeedtech.com>
-Subject: Re: [PATCH v2 1/4] dt-bindings: aspeed-sgpio: Convert txt bindings
- to yaml.
-Message-ID: <20210528040934.GA28403@aspeedtech.com>
-References: <20210527005455.25758-1-steven_lee@aspeedtech.com>
- <20210527005455.25758-2-steven_lee@aspeedtech.com>
- <CACRpkdZFcFuT9rdrc8BfEBmhy0--9uLMSJWfr=A+nU117_BT8A@mail.gmail.com>
+        Fri, 28 May 2021 00:13:42 -0400
+Received: from mail-ot1-x32a.google.com (mail-ot1-x32a.google.com [IPv6:2607:f8b0:4864:20::32a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30E5CC061760
+        for <linux-kernel@vger.kernel.org>; Thu, 27 May 2021 21:11:27 -0700 (PDT)
+Received: by mail-ot1-x32a.google.com with SMTP id 66-20020a9d02c80000b02903615edf7c1aso2285721otl.13
+        for <linux-kernel@vger.kernel.org>; Thu, 27 May 2021 21:11:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=NLZGZk1IIUiKipUefoX6gAEG+SOaK13kBUUCFsP8sw8=;
+        b=h2/FxC+BMuT6MTN05CbIXCkDh70SSJ/JVH1Z6T8TxND5Svhp95Zko9eP+iIt7pKZRU
+         Jv6RUjaR0W+NhmIssmJ4yvw4s27vA5tm8+IzV/7eIfCz2vTDs9iFgOae+3KYcXjYfaDH
+         7X++Z6CSq9QTJvFF7ZO+fHxm08UuhK0UEyCQQzQXPiPGoCo+ZUk0oanWAOZv4q8M9E6x
+         TxYeAkHVcXZ41f76kM6RZDa8yxAj6Q6Ax+cfETcvgX7/FbhsV7NbER/+GYqvf9U9yZwQ
+         MP/fSY+sWAdS1rW/9Fkevf/6VKJzMjz98kkB8FDXlJ7+3xLc8rFv/NBfknUqj93KEqTp
+         Y3Vw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=NLZGZk1IIUiKipUefoX6gAEG+SOaK13kBUUCFsP8sw8=;
+        b=L54WAuQgfm5/1rkWuO9MlN7LY/frAUYRVKOsBPLn+2BypAIQ6vWk+LrjzPTm1eFcGR
+         fHVIQ8jsTyHtF8TCFpnmJprHqt7ZytcNqO1wgzRg/2+9S0XbA2ZhWRe7sQufHC63jEGY
+         ZCCA0JLbNN+RsIzGUW18UyARz1xE9zYrFq61UdGIT/oR1Qg6dXoRcf/F79ix1H8MN/d2
+         G64AS0+N/XhkAU8h4vY6WEuUsknBJoiu02oVsOrzu3UW6F2bjyQ0bwRNutqMoLr+8rLW
+         8OJcRbmv6fBT4+HmGDG80AO6c0Wl3ebXHnMZxrwm3UlkyMGyKkg3kHmYQelA6Dqyg1GR
+         +34g==
+X-Gm-Message-State: AOAM531eR8HBv5MCEsAv7FKfpYa3bIpsLn+b18yFwWcEKXs7F/zJUSof
+        +JM8LiE/mu6ACN8yUN5kv+793A==
+X-Google-Smtp-Source: ABdhPJwbvxEw3q/rplu08WTagIMx82WZaclJjEH+c1ed8iW5Cla9oL9CC7SALMVKw9KE6kg1IQEeRQ==
+X-Received: by 2002:a9d:73d8:: with SMTP id m24mr5398946otk.269.1622175086540;
+        Thu, 27 May 2021 21:11:26 -0700 (PDT)
+Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
+        by smtp.gmail.com with ESMTPSA id l9sm863355oou.43.2021.05.27.21.11.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 27 May 2021 21:11:26 -0700 (PDT)
+Date:   Thu, 27 May 2021 23:11:24 -0500
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Suman Anna <s-anna@ti.com>
+Cc:     Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Lokesh Vutla <lokeshvutla@ti.com>,
+        Tero Kristo <kristo@kernel.org>,
+        linux-remoteproc@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 2/6] remoteproc: Add support for detach-only during
+ shutdown
+Message-ID: <YLBtbHevzyxT4RTK@builder.lan>
+References: <20210522000309.26134-1-s-anna@ti.com>
+ <20210522000309.26134-3-s-anna@ti.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CACRpkdZFcFuT9rdrc8BfEBmhy0--9uLMSJWfr=A+nU117_BT8A@mail.gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Originating-IP: [192.168.100.253]
-X-ClientProxiedBy: TWMBX02.aspeed.com (192.168.0.24) To TWMBX02.aspeed.com
- (192.168.0.24)
-X-DNSRBL: 
-X-MAIL: twspam01.aspeedtech.com 14S3uTIr014580
+In-Reply-To: <20210522000309.26134-3-s-anna@ti.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The 05/28/2021 07:51, Linus Walleij wrote:
-> On Thu, May 27, 2021 at 2:55 AM Steven Lee <steven_lee@aspeedtech.com> wrote:
+On Fri 21 May 19:03 CDT 2021, Suman Anna wrote:
+
+> The remoteproc core has support for both stopping and detaching a
+> remote processor that was attached to previously, through both the
+> remoteproc sysfs and cdev interfaces. The rproc_shutdown() though
+> unconditionally only uses the stop functionality at present. This
+> may not be the default desired functionality for all the remoteproc
+> platform drivers.
 > 
-> > SGPIO bindings should be converted as yaml format.
-> > In addition to the file conversion, a new property max-ngpios is
-> > added in the yaml file as well.
-> > The new property is required by the enhanced sgpio driver for
-> > making the configuration of the max number of gpio pins more flexible.
-> >
-> > Signed-off-by: Steven Lee <steven_lee@aspeedtech.com>
-> (...)
-> > +  max-ngpios:
-> > +    description:
-> > +      represents the number of actual hardware-supported GPIOs (ie,
-> > +      slots within the clocked serial GPIO data). Since each HW GPIO is both an
-> > +      input and an output, we provide max_ngpios * 2 lines on our gpiochip
-> > +      device. We also use it to define the split between the inputs and
-> > +      outputs; the inputs start at line 0, the outputs start at max_ngpios.
-> > +    minimum: 0
-> > +    maximum: 128
-> 
-> Why can this not be derived from the compatible value?
-> 
-> Normally there should be one compatible per hardware variant
-> of the block. And this should be aligned with that, should it not?
-> 
-> If this is not the case, maybe more detailed compatible strings
-> are needed, maybe double compatibles with compatible per
-> family and SoC?
+> Introduce a new rproc state flag 'detach_on_shutdown' that individual
+> remoteproc drivers can set to only allow detach in rproc_shutdown()
+> that would have been invoked when the driver is uninstalled, so that
+> remote processor continues to run undisturbed even after the driver
+> removal.
 > 
 
-Thanks for your suggestion.
-I add max-ngpios in dt-bindings as there is ngpios defined in
-dt-bindings, users can get the both max-ngpios and ngpios information
-from dtsi without digging sgpio driver.
+I dislike the introduction of knobs for everything and would much rather
+see that we define some sound defaults. Can we make shutdown just do
+detach() if that's supported otherwise stop().
 
-https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/arch/arm/boot/dts/aspeed-g5.dtsi#n354
+This still allows userspace to explicitly stop the detachable remoteproc
+before shutdown, if for some reason that's what you want...
 
-If adding more detailed compatibles is better, I will add them to sgpio driver
-in V3 patch and remove max-ngpios from dt-bindings.
+Regards,
+Bjorn
 
-Since AST2600 has 2 sgpio controller one with 128 pins and another one with 80 pins.
-For supporting max-ngpios in compatibles, 2 platform data for each
-ast2600 sgpio controller as follows are necessary.
-
-```
-static const struct aspeed_sgpio_pdata ast2600_sgpiom1_pdata = {
-        .max_ngpios = 128;
-};
-static const struct aspeed_sgpio_pdata ast2600_sgpiom2_pdata = {
-        .max_ngpios = 80;
-};
-
-{ .compatible = "aspeed,ast2500-sgpio" , .data = &ast2400_sgpio_pdata, },
-{ .compatible = "aspeed,ast2600-sgpiom1", .data = &ast2600_sgpiom1_pdata, },
-{ .compatible = "aspeed,ast2600-sgpiom2", .data = &ast2600_sgpiom2_pdata, },
-```
-
-Thanks,
-Steven
-
-> Yours,
-> Linus Walleij
+> Signed-off-by: Suman Anna <s-anna@ti.com>
+> ---
+>  drivers/remoteproc/remoteproc_cdev.c  | 7 +++++++
+>  drivers/remoteproc/remoteproc_core.c  | 5 ++++-
+>  drivers/remoteproc/remoteproc_sysfs.c | 6 ++++++
+>  include/linux/remoteproc.h            | 3 +++
+>  4 files changed, 20 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/remoteproc/remoteproc_cdev.c b/drivers/remoteproc/remoteproc_cdev.c
+> index 0b8a84c04f76..473467711a09 100644
+> --- a/drivers/remoteproc/remoteproc_cdev.c
+> +++ b/drivers/remoteproc/remoteproc_cdev.c
+> @@ -42,6 +42,13 @@ static ssize_t rproc_cdev_write(struct file *filp, const char __user *buf, size_
+>  		    rproc->state != RPROC_ATTACHED)
+>  			return -EINVAL;
+>  
+> +		if (rproc->state == RPROC_ATTACHED &&
+> +		    rproc->detach_on_shutdown) {
+> +			dev_err(&rproc->dev,
+> +				"stop not supported for this rproc, use detach\n");
+> +			return -EINVAL;
+> +		}
+> +
+>  		rproc_shutdown(rproc);
+>  	} else if (!strncmp(cmd, "detach", len)) {
+>  		if (rproc->state != RPROC_ATTACHED)
+> diff --git a/drivers/remoteproc/remoteproc_core.c b/drivers/remoteproc/remoteproc_core.c
+> index 6019f46001c8..e8ab3eb41f00 100644
+> --- a/drivers/remoteproc/remoteproc_core.c
+> +++ b/drivers/remoteproc/remoteproc_core.c
+> @@ -2074,7 +2074,10 @@ void rproc_shutdown(struct rproc *rproc)
+>  	if (!atomic_dec_and_test(&rproc->power))
+>  		goto out;
+>  
+> -	ret = rproc_stop(rproc, false);
+> +	if (rproc->detach_on_shutdown && rproc->state == RPROC_ATTACHED)
+> +		ret = __rproc_detach(rproc);
+> +	else
+> +		ret = rproc_stop(rproc, false);
+>  	if (ret) {
+>  		atomic_inc(&rproc->power);
+>  		goto out;
+> diff --git a/drivers/remoteproc/remoteproc_sysfs.c b/drivers/remoteproc/remoteproc_sysfs.c
+> index ea8b89f97d7b..1785fbcb1075 100644
+> --- a/drivers/remoteproc/remoteproc_sysfs.c
+> +++ b/drivers/remoteproc/remoteproc_sysfs.c
+> @@ -206,6 +206,12 @@ static ssize_t state_store(struct device *dev,
+>  		    rproc->state != RPROC_ATTACHED)
+>  			return -EINVAL;
+>  
+> +		if (rproc->state == RPROC_ATTACHED &&
+> +		    rproc->detach_on_shutdown) {
+> +			dev_err(&rproc->dev, "stop not supported for this rproc, use detach\n");
+> +			return -EINVAL;
+> +		}
+> +
+>  		rproc_shutdown(rproc);
+>  	} else if (sysfs_streq(buf, "detach")) {
+>  		if (rproc->state != RPROC_ATTACHED)
+> diff --git a/include/linux/remoteproc.h b/include/linux/remoteproc.h
+> index 42a1f30e33a7..35ef921676a1 100644
+> --- a/include/linux/remoteproc.h
+> +++ b/include/linux/remoteproc.h
+> @@ -530,6 +530,8 @@ struct rproc_dump_segment {
+>   * @elf_machine: firmware ELF machine
+>   * @cdev: character device of the rproc
+>   * @cdev_put_on_release: flag to indicate if remoteproc should be shutdown on @char_dev release
+> + * @detach_on_shutdown: flag to indicate if remoteproc cannot be shutdown in
+> + *			attached state and _only_ support detach
+>   */
+>  struct rproc {
+>  	struct list_head node;
+> @@ -569,6 +571,7 @@ struct rproc {
+>  	u16 elf_machine;
+>  	struct cdev cdev;
+>  	bool cdev_put_on_release;
+> +	bool detach_on_shutdown;
+>  };
+>  
+>  /**
+> -- 
+> 2.30.1
+> 
