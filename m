@@ -2,108 +2,273 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E2C843944EC
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 17:18:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6BF083944F0
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 17:19:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235786AbhE1PUW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 May 2021 11:20:22 -0400
-Received: from outbound-smtp37.blacknight.com ([46.22.139.220]:55263 "EHLO
-        outbound-smtp37.blacknight.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229684AbhE1PUM (ORCPT
+        id S236086AbhE1PVC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 May 2021 11:21:02 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:34742 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229684AbhE1PUz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 May 2021 11:20:12 -0400
-Received: from mail.blacknight.com (pemlinmail06.blacknight.ie [81.17.255.152])
-        by outbound-smtp37.blacknight.com (Postfix) with ESMTPS id DE78618E2
-        for <linux-kernel@vger.kernel.org>; Fri, 28 May 2021 16:18:35 +0100 (IST)
-Received: (qmail 17224 invoked from network); 28 May 2021 15:18:35 -0000
-Received: from unknown (HELO techsingularity.net) (mgorman@techsingularity.net@[84.203.23.168])
-  by 81.17.254.9 with ESMTPSA (AES256-SHA encrypted, authenticated); 28 May 2021 15:18:35 -0000
-Date:   Fri, 28 May 2021 16:18:34 +0100
-From:   Mel Gorman <mgorman@techsingularity.net>
-To:     Dave Hansen <dave.hansen@intel.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Hillf Danton <hdanton@sina.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Michal Hocko <mhocko@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux-MM <linux-mm@kvack.org>, "Tang, Feng" <feng.tang@intel.com>
-Subject: Re: [PATCH 0/6 v2] Calculate pcp->high based on zone sizes and
- active CPUs
-Message-ID: <20210528151834.GR30378@techsingularity.net>
-References: <20210525080119.5455-1-mgorman@techsingularity.net>
- <7177f59b-dc05-daff-7dc6-5815b539a790@intel.com>
- <20210528085545.GJ30378@techsingularity.net>
- <893ce8ed-df14-612b-693f-48c9dac0eb19@intel.com>
+        Fri, 28 May 2021 11:20:55 -0400
+Received: from imap.suse.de (imap-alt.suse-dmz.suse.de [192.168.254.47])
+        (using TLSv1.2 with cipher ECDHE-ECDSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 297D4218B3;
+        Fri, 28 May 2021 15:19:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1622215157; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=6chLmJiVPfngVtoOuiXkJhibKoKI1Z0mcSpxFoLAEO0=;
+        b=0I2NkE/E2tbZCBqQMU2AaqFOT9qgYDZzA4Rd7KE1e5g6HXPTaxkUumQe6OJ1fYLevSyZVz
+        U3dDidhvDu6gJksIlh1OnGFidc9eA7LmdL8T/tEP/zLXEAuBrakksowKsUqAplbK92pIYD
+        /MKDpbElkhtubczmsMObQ3+CH5+dq5g=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1622215157;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=6chLmJiVPfngVtoOuiXkJhibKoKI1Z0mcSpxFoLAEO0=;
+        b=RaH83uhsppZPP6az8xJA4xoDDBJ3YX9ZyWC6C+H2OmE25e6WxCeWa3jL9xJwA3g58J1Grj
+        vM0rR1JocaBjNVAg==
+Received: from imap3-int (imap-alt.suse-dmz.suse.de [192.168.254.47])
+        by imap.suse.de (Postfix) with ESMTP id 8E55E11906;
+        Fri, 28 May 2021 15:19:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1622215156; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=6chLmJiVPfngVtoOuiXkJhibKoKI1Z0mcSpxFoLAEO0=;
+        b=vMi8WxIufMXntdFavFta+efUU1589XCbzj3X/1BQSaIf52uMUiUWk8iwc3gVsTGmntafoo
+        TsdtD5Aux6W1iQBnMQR/NwtfPgvVRQZFYRZxEqSbUDaMD6dRZprAPJ6PWJjh3iCjX2U2Lh
+        SEpT07aL260zBJlDjhh65+OFOOTXb/M=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1622215156;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=6chLmJiVPfngVtoOuiXkJhibKoKI1Z0mcSpxFoLAEO0=;
+        b=ufdPVlK9iEILtLMAbFsxuReiP3w06diFZ30cQrskibGruW8RbafJjY1jZ4+MYxPPV3/l8m
+        yCJ4zKJV9g8CKCDQ==
+Received: from director2.suse.de ([192.168.254.72])
+        by imap3-int with ESMTPSA
+        id mb4zIvQJsWBcDQAALh3uQQ
+        (envelope-from <vbabka@suse.cz>); Fri, 28 May 2021 15:19:16 +0000
+To:     Charan Teja Reddy <charante@codeaurora.org>,
+        akpm@linux-foundation.org, mcgrof@kernel.org,
+        keescook@chromium.org, yzaikin@google.com, nigupta@nvidia.com,
+        bhe@redhat.com, mateusznosek0@gmail.com, sh_def@163.com,
+        iamjoonsoo.kim@lge.com, vinmenon@codeaurora.org
+Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        linux-fsdevel@vger.kernel.org,
+        Linux API <linux-api@vger.kernel.org>
+References: <1621345058-26676-1-git-send-email-charante@codeaurora.org>
+From:   Vlastimil Babka <vbabka@suse.cz>
+Subject: Re: [PATCH V2] mm: compaction: support triggering of proactive
+ compaction by user
+Message-ID: <a29f0cf6-d007-ea17-25b7-642168b6efdd@suse.cz>
+Date:   Fri, 28 May 2021 17:19:16 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-15
-Content-Disposition: inline
-In-Reply-To: <893ce8ed-df14-612b-693f-48c9dac0eb19@intel.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <1621345058-26676-1-git-send-email-charante@codeaurora.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+Authentication-Results: imap.suse.de;
+        none
+X-Spam-Level: 
+X-Spam-Score: 0.00
+X-Spamd-Result: default: False [0.00 / 100.00];
+         ARC_NA(0.00)[];
+         RCVD_VIA_SMTP_AUTH(0.00)[];
+         FROM_HAS_DN(0.00)[];
+         TO_DN_SOME(0.00)[];
+         TO_MATCH_ENVRCPT_ALL(0.00)[];
+         FREEMAIL_ENVRCPT(0.00)[163.com,gmail.com];
+         MIME_GOOD(-0.10)[text/plain];
+         DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+         RCPT_COUNT_TWELVE(0.00)[15];
+         FREEMAIL_TO(0.00)[codeaurora.org,linux-foundation.org,kernel.org,chromium.org,google.com,nvidia.com,redhat.com,gmail.com,163.com,lge.com];
+         RCVD_NO_TLS_LAST(0.10)[];
+         FROM_EQ_ENVFROM(0.00)[];
+         MIME_TRACE(0.00)[0:+];
+         RCVD_COUNT_TWO(0.00)[2];
+         MID_RHS_MATCH_FROM(0.00)[]
+X-Spam-Flag: NO
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 28, 2021 at 07:39:29AM -0700, Dave Hansen wrote:
-> On 5/28/21 1:55 AM, Mel Gorman wrote:
-> > -	 * onlined.
-> > -	 */
-> > -	nr_local_cpus = max(1U, cpumask_weight(cpumask_of_node(zone_to_nid(zone)))) + cpu_online;
-> > -	high = total_pages / nr_local_cpus;
-> > +	 * onlined. For memory nodes that have no CPUs, split pcp->high across
-> > +	 * all online CPUs to mitigate the risk that reclaim is triggered
-> > +	 * prematurely due to pages stored on pcp lists.
-> > +	 */
-> > +	nr_split_cpus = cpumask_weight(cpumask_of_node(zone_to_nid(zone))) + cpu_online;
-> > +	if (!nr_split_cpus)
-> > +		nr_split_cpus = num_online_cpus();
-> > +	high = total_pages / nr_split_cpus;
++CC linux-api
+
+On 5/18/21 3:37 PM, Charan Teja Reddy wrote:
+> The proactive compaction[1] gets triggered for every 500msec and run
+> compaction on the node for COMPACTION_HPAGE_ORDER (usually order-9)
+> pages based on the value set to sysctl.compaction_proactiveness.
+> Triggering the compaction for every 500msec in search of
+> COMPACTION_HPAGE_ORDER pages is not needed for all applications,
+> especially on the embedded system usecases which may have few MB's of
+> RAM. Enabling the proactive compaction in its state will endup in
+> running almost always on such systems.
 > 
-> Updated version looks fine to me, thanks!
+> Other side, proactive compaction can still be very much useful for
+> getting a set of higher order pages in some controllable
+> manner(controlled by using the sysctl.compaction_proactiveness). Thus on
+> systems where enabling the proactive compaction always may proove not
+> required, can trigger the same from user space on write to its sysctl
+> interface. As an example, say app launcher decide to launch the memory
+> heavy application which can be launched fast if it gets more higher
+> order pages thus launcher can prepare the system in advance by
+> triggering the proactive compaction from userspace.
 > 
-> BTW, to do some of this testing, Feng was doing a plain old kernel
-> build.  On the one system where this got run, he noted a ~2% regression
-> in build times.  Nothing major, but you might want to be on the lookout
-> in case 0day or the other test harnesses find something similar once
-> this series gets to them.
+> This triggering of proactive compaction is done on a write to
+> sysctl.compaction_proactiveness by user.
+> 
+> [1]https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit?id=facdaa917c4d5a376d09d25865f5a863f906234a
+> 
+> Signed-off-by: Charan Teja Reddy <charante@codeaurora.org>
+
+Cancelling all current sleeps immediately when the controlling variable changes
+doesn't sound wrong to me.
+A question below:
+
+> ---
+> changes in V2: 
+>     - remove /proc interface trigger for proactive compaction
+>     - Intention is same that add a way to trigger proactive compaction by user.
+> 
+> changes in V1:
+>     -  https://lore.kernel.org/lkml/1619098678-8501-1-git-send-email-charante@codeaurora.org/
+> 
+>  include/linux/compaction.h |  2 ++
+>  include/linux/mmzone.h     |  1 +
+>  kernel/sysctl.c            |  2 +-
+>  mm/compaction.c            | 35 ++++++++++++++++++++++++++++++++---
+>  4 files changed, 36 insertions(+), 4 deletions(-)
+> 
+> diff --git a/include/linux/compaction.h b/include/linux/compaction.h
+> index 4221888..04d5d9f 100644
+> --- a/include/linux/compaction.h
+> +++ b/include/linux/compaction.h
+> @@ -84,6 +84,8 @@ static inline unsigned long compact_gap(unsigned int order)
+>  extern unsigned int sysctl_compaction_proactiveness;
+>  extern int sysctl_compaction_handler(struct ctl_table *table, int write,
+>  			void *buffer, size_t *length, loff_t *ppos);
+> +extern int compaction_proactiveness_sysctl_handler(struct ctl_table *table,
+> +		int write, void *buffer, size_t *length, loff_t *ppos);
+>  extern int sysctl_extfrag_threshold;
+>  extern int sysctl_compact_unevictable_allowed;
+>  
+> diff --git a/include/linux/mmzone.h b/include/linux/mmzone.h
+> index 0d53eba..9455809 100644
+> --- a/include/linux/mmzone.h
+> +++ b/include/linux/mmzone.h
+> @@ -815,6 +815,7 @@ typedef struct pglist_data {
+>  	enum zone_type kcompactd_highest_zoneidx;
+>  	wait_queue_head_t kcompactd_wait;
+>  	struct task_struct *kcompactd;
+> +	bool proactive_compact_trigger;
+>  #endif
+>  	/*
+>  	 * This is a per-node reserve of pages that are not available
+> diff --git a/kernel/sysctl.c b/kernel/sysctl.c
+> index 14edf84..bed2fad 100644
+> --- a/kernel/sysctl.c
+> +++ b/kernel/sysctl.c
+> @@ -2840,7 +2840,7 @@ static struct ctl_table vm_table[] = {
+>  		.data		= &sysctl_compaction_proactiveness,
+>  		.maxlen		= sizeof(sysctl_compaction_proactiveness),
+>  		.mode		= 0644,
+> -		.proc_handler	= proc_dointvec_minmax,
+> +		.proc_handler	= compaction_proactiveness_sysctl_handler,
+>  		.extra1		= SYSCTL_ZERO,
+>  		.extra2		= &one_hundred,
+>  	},
+> diff --git a/mm/compaction.c b/mm/compaction.c
+> index 84fde27..9056693 100644
+> --- a/mm/compaction.c
+> +++ b/mm/compaction.c
+> @@ -2708,6 +2708,30 @@ static void compact_nodes(void)
+>   */
+>  unsigned int __read_mostly sysctl_compaction_proactiveness = 20;
+>  
+> +int compaction_proactiveness_sysctl_handler(struct ctl_table *table, int write,
+> +		void *buffer, size_t *length, loff_t *ppos)
+> +{
+> +	int rc, nid;
+> +
+> +	rc = proc_dointvec_minmax(table, write, buffer, length, ppos);
+> +	if (rc)
+> +		return rc;
+> +
+> +	if (write && sysctl_compaction_proactiveness) {
+> +		for_each_online_node(nid) {
+> +			pg_data_t *pgdat = NODE_DATA(nid);
+> +
+> +			if (pgdat->proactive_compact_trigger)
+> +				continue;
+> +
+> +			pgdat->proactive_compact_trigger = true;
+> +			wake_up_interruptible(&pgdat->kcompactd_wait);
+> +		}
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+>  /*
+>   * This is the entry point for compacting all nodes via
+>   * /proc/sys/vm/compact_memory
+> @@ -2752,7 +2776,8 @@ void compaction_unregister_node(struct node *node)
+>  
+>  static inline bool kcompactd_work_requested(pg_data_t *pgdat)
+>  {
+> -	return pgdat->kcompactd_max_order > 0 || kthread_should_stop();
+> +	return pgdat->kcompactd_max_order > 0 || kthread_should_stop() ||
+> +		pgdat->proactive_compact_trigger;
+>  }
+>  
+>  static bool kcompactd_node_suitable(pg_data_t *pgdat)
+> @@ -2905,7 +2930,8 @@ static int kcompactd(void *p)
+>  		trace_mm_compaction_kcompactd_sleep(pgdat->node_id);
+>  		if (wait_event_freezable_timeout(pgdat->kcompactd_wait,
+>  			kcompactd_work_requested(pgdat),
+> -			msecs_to_jiffies(HPAGE_FRAG_CHECK_INTERVAL_MSEC))) {
+> +			msecs_to_jiffies(HPAGE_FRAG_CHECK_INTERVAL_MSEC)) &&
+> +			!pgdat->proactive_compact_trigger) {
+>  
+>  			psi_memstall_enter(&pflags);
+>  			kcompactd_do_work(pgdat);
+> @@ -2919,7 +2945,7 @@ static int kcompactd(void *p)
+>  
+>  			if (proactive_defer) {
+>  				proactive_defer--;
+> -				continue;
+> +				goto loop;
+
+I don't understand this part. If we kick kcompactd from the sysctl handler
+because we are changing proactiveness, shouldn't we also discard any accumulated
+defer score?
+
+>  			}
+>  			prev_score = fragmentation_score_node(pgdat);
+>  			proactive_compact_node(pgdat);
+> @@ -2931,6 +2957,9 @@ static int kcompactd(void *p)
+>  			proactive_defer = score < prev_score ?
+>  					0 : 1 << COMPACT_MAX_DEFER_SHIFT;
+>  		}
+> +loop:
+> +		if (pgdat->proactive_compact_trigger)
+> +			pgdat->proactive_compact_trigger = false;
+>  	}
+>  
+>  	return 0;
 > 
 
-What type of system was it?
-
-I noticed minor differences for some thread counts on kernel compilations
-but for CascadeLake at least, it was mostly neutral. Below is an old test
-result based on a previous revision.
-
-kernbench
-                               5.13.0-rc2             5.13.0-rc2
-                                  vanilla       mm-pcpburst-v2r3
-Amean     elsp-2        469.22 (   0.00%)      470.03 *  -0.17%*
-Amean     elsp-4        251.03 (   0.00%)      250.83 (   0.08%)
-Amean     elsp-8        131.39 (   0.00%)      130.89 (   0.38%)
-Amean     elsp-16        74.37 (   0.00%)       75.11 (  -0.99%)
-Amean     elsp-32        42.10 (   0.00%)       42.20 (  -0.24%)
-Amean     elsp-64        32.21 (   0.00%)       32.14 (   0.23%)
-Amean     elsp-128       31.59 (   0.00%)       31.68 (  -0.27%)
-Amean     elsp-160       31.76 (   0.00%)       31.69 (   0.21%)
-
-A Haswell machine showed the worst results for kernbench
-
-Amean     elsp-2        459.99 (   0.00%)      465.27 *  -1.15%*
-Amean     elsp-4        250.76 (   0.00%)      253.17 *  -0.96%*
-Amean     elsp-8        141.28 (   0.00%)      141.78 (  -0.36%)
-Amean     elsp-16        77.71 (   0.00%)       77.88 (  -0.22%)
-Amean     elsp-32        44.09 (   0.00%)       44.40 (  -0.69%)
-Amean     elsp-64        33.79 (   0.00%)       33.46 (   0.96%)
-Amean     elsp-128       33.14 (   0.00%)       33.26 (  -0.37%)
-Amean     elsp-160       33.26 (   0.00%)       33.36 *  -0.30%*
-
-The series with review feedback and dealing with cpuless nodes is queued
-and should complete over the weekend.
-
-> Acked-by: Dave Hansen <dave.hansen@intel.com>
-
-Thanks!
-
--- 
-Mel Gorman
-SUSE Labs
