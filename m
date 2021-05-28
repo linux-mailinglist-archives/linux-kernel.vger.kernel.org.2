@@ -2,110 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CC3013947C6
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 22:06:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0256B3947C1
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 22:05:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229647AbhE1UIU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 May 2021 16:08:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52110 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229493AbhE1UIS (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 May 2021 16:08:18 -0400
-Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 494C9C06174A
-        for <linux-kernel@vger.kernel.org>; Fri, 28 May 2021 13:06:41 -0700 (PDT)
-Received: by mail-lf1-x12c.google.com with SMTP id b18so2886440lfv.11
-        for <linux-kernel@vger.kernel.org>; Fri, 28 May 2021 13:06:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rasmusvillemoes.dk; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=SOmtzfnBo6NCPJmKRQ2bxbkBgbCrNqNnPAbwGffPcTs=;
-        b=L006ZDgfzIz2uNo0e1HI0KncA6d5iUevfwGopHwj6KZ0AzwLFmI7P+KSXJTBenAtKt
-         YvhygMCnEymm4R7ZuS6YSodjYjIrJh7LSsEhj+yn2mu+dh45d5tZjF54ls96OiZjrKl0
-         /pLSn9bC8pY1aZrCrWbmH+zopo0dZdc4fx0t0=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=SOmtzfnBo6NCPJmKRQ2bxbkBgbCrNqNnPAbwGffPcTs=;
-        b=iamj5aLXzGPGclKKEEYVBWtpQPdJ5HYqh6b6NK4Y8SezhLEO8HGQJLPKTfg/2kz5OK
-         Gq87m0SYrXnSSL/DNe6NJY2ZxbEyXK6pX0pShWJH4EcFNUoKSN2HBtUFAv/1kiBi42Te
-         0Jz1gnVIx2fjboABGo2c2A7o6ky6nV0chKZMoPttPVTvNOMxCr7Jwxy7EBqV5/EuhfiZ
-         Wzi1EWqVTRGbbU2eJEBcZ1G9LLH9boJkEbc/dgZoegy9uoFostwFxI4pwzpFDIXNhc0b
-         r09bpyBGkn5aWiqjbwHLImMVhELHJqRyBip9BQg9bGKyAItiE8srbXYAblVnDyhNFNI7
-         qqZA==
-X-Gm-Message-State: AOAM531uwOpQ2cVyWT6C+4Zj973ibx+zpG/yZcIeRbVzE+VVIqC2d2jn
-        L9qDGh3i49GVEqwHSJRKFZkmXw==
-X-Google-Smtp-Source: ABdhPJzKa/84djfH8kXaEz32MIwheVqy9u5D3igsMvIDbXW8m90h4yHajGL+aZ2UQYuvum5S2hn3pA==
-X-Received: by 2002:a05:6512:28e:: with SMTP id j14mr6669923lfp.360.1622232399648;
-        Fri, 28 May 2021 13:06:39 -0700 (PDT)
-Received: from [172.17.20.105] ([81.216.59.226])
-        by smtp.gmail.com with ESMTPSA id k8sm600385lfg.190.2021.05.28.13.06.38
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 28 May 2021 13:06:39 -0700 (PDT)
-Subject: Re: [PATCH RFCv2 2/3] lib/vsprintf.c: make %pD print full path for
- file
-To:     Justin He <Justin.He@arm.com>, Matthew Wilcox <willy@infradead.org>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Petr Mladek <pmladek@suse.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Luca Coelho <luciano.coelho@intel.com>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Johannes Berg <johannes.berg@intel.com>,
-        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-s390@vger.kernel.org" <linux-s390@vger.kernel.org>
-References: <20210528113951.6225-1-justin.he@arm.com>
- <20210528113951.6225-3-justin.he@arm.com>
- <YLDpSnV9XBUJq5RU@casper.infradead.org>
- <AM6PR08MB437691E7314C6B774EFED4BDF7229@AM6PR08MB4376.eurprd08.prod.outlook.com>
-From:   Rasmus Villemoes <linux@rasmusvillemoes.dk>
-Message-ID: <89fc3919-ca2c-50fd-35e1-33bf3a59b993@rasmusvillemoes.dk>
-Date:   Fri, 28 May 2021 22:06:37 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        id S229615AbhE1UH0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 May 2021 16:07:26 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38350 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229476AbhE1UHZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 28 May 2021 16:07:25 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 281956108E;
+        Fri, 28 May 2021 20:05:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1622232350;
+        bh=rNXvajikrlV72340IFgnljvPJYbW/u6BaNNESC1jKf0=;
+        h=Date:From:To:Cc:Subject:From;
+        b=VtnyLHFzS0lwpm6U1rJ8sgkc5VKIHXO/znswk7NtAo+H20DeC8uhhSF/NqCjH0wJF
+         HP+6Avq4ZtHr2wv8h2qoD042KHsbPpLyL1+ZpVH0j4Yo/b2EC2hTZUHl9ItVI2YgRx
+         XTd0at2dLV41sO7y4kKvzRNVeBUmKLpvtU49x3O8+iH1efKGVEno0u0PCSPxiaVmV3
+         UnRXyarSpdWbLxMNpiPZiTcU6xfprPXi6ZD27pSRrtKbLmnz8jAfLwnrxIRY9lbp1q
+         CN9UdyrXRP6H5V2V+PvROhaZgIXbFYz5jaeEUOKv8N74xwClak4LrWRaE8IjRiqZY1
+         yU4Wfxh/wPQog==
+Date:   Fri, 28 May 2021 15:06:50 -0500
+From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
+To:     Larry Finger <Larry.Finger@lwfinger.net>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        linux-hardening@vger.kernel.org
+Subject: [PATCH][next] staging: rtl8188eu: Fix fall-through warnings for Clang
+Message-ID: <20210528200650.GA39289@embeddedor>
 MIME-Version: 1.0
-In-Reply-To: <AM6PR08MB437691E7314C6B774EFED4BDF7229@AM6PR08MB4376.eurprd08.prod.outlook.com>
-Content-Type: text/plain; charset=windows-1252
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 28/05/2021 16.22, Justin He wrote:
-> 
->> From: Matthew Wilcox <willy@infradead.org>
+In preparation to enable -Wimplicit-fallthrough for Clang, fix multiple
+warnings by explicitly adding multiple break statements instead
+of just letting the code fall through to the next case.
 
->> How is it "safer"?  You already have a buffer passed from the caller.
->> Are you saying that d_path_fast() might overrun a really small buffer
->> but won't overrun a 256 byte buffer?
-> No, it won't overrun a 256 byte buf. When the full path size is larger than 256, the p->len is < 0 in prepend_name, and this overrun will be
-> dectected in extract_string() with "-ENAMETOOLONG".
-> 
-> Each printk contains 2 vsnprintf. vsnprintf() returns the required size after formatting the string.>
-> 1. vprintk_store() will invoke 1st vsnprintf() will 8 bytes space to get the reserve_size. In this case, the _buf_ could be less than _end_ by design.
-> 2. Then it invokes 2nd printk_sprint()->vscnprintf()->vsnprintf() to really fill the space.
+Link: https://github.com/KSPP/linux/issues/115
+Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+---
+JFYI: We had thousands of these sorts of warnings and now we are down
+      to just 25 in linux-next. These are some of those last remaining
+      warnings.
 
-Please do not assume that printk is the only user of vsnprintf() or the
-only one that would use a given %p<foo> extension.
+ drivers/staging/rtl8188eu/core/rtw_mlme_ext.c  | 1 +
+ drivers/staging/rtl8188eu/core/rtw_wlan_util.c | 2 ++
+ 2 files changed, 3 insertions(+)
 
-Also, is it clear that nothing can change underneath you in between two
-calls to vsnprintf()? IOW, is it certain that the path will fit upon a
-second call using the size returned from the first?
+diff --git a/drivers/staging/rtl8188eu/core/rtw_mlme_ext.c b/drivers/staging/rtl8188eu/core/rtw_mlme_ext.c
+index b4d81d3a856c..6803e9327eb2 100644
+--- a/drivers/staging/rtl8188eu/core/rtw_mlme_ext.c
++++ b/drivers/staging/rtl8188eu/core/rtw_mlme_ext.c
+@@ -3378,6 +3378,7 @@ static unsigned int OnAssocRsp(struct adapter *padapter,
+ 			break;
+ 		case WLAN_EID_ERP_INFO:
+ 			ERP_IE_handler(padapter, pIE);
++			break;
+ 		default:
+ 			break;
+ 		}
+diff --git a/drivers/staging/rtl8188eu/core/rtw_wlan_util.c b/drivers/staging/rtl8188eu/core/rtw_wlan_util.c
+index 3e244e949995..c9043f49ec9e 100644
+--- a/drivers/staging/rtl8188eu/core/rtw_wlan_util.c
++++ b/drivers/staging/rtl8188eu/core/rtw_wlan_util.c
+@@ -1029,6 +1029,7 @@ unsigned int is_ap_in_tkip(struct adapter *padapter)
+ 			case WLAN_EID_RSN:
+ 				if (!memcmp((pIE->data + 8), RSN_TKIP_CIPHER, 4))
+ 					return true;
++				break;
+ 			default:
+ 				break;
+ 			}
+@@ -1226,6 +1227,7 @@ unsigned char check_assoc_AP(u8 *pframe, uint len)
+ 			} else {
+ 				break;
+ 			}
++			break;
+ 
+ 		default:
+ 			break;
+-- 
+2.27.0
 
-Rasmus
