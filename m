@@ -2,99 +2,357 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 76D273946DF
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 20:14:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C88283946E2
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 20:14:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229597AbhE1SPY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 May 2021 14:15:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55394 "EHLO
+        id S229579AbhE1SQI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 May 2021 14:16:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55586 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229493AbhE1SPR (ORCPT
+        with ESMTP id S229492AbhE1SQC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 May 2021 14:15:17 -0400
-Received: from mail-pg1-x52f.google.com (mail-pg1-x52f.google.com [IPv6:2607:f8b0:4864:20::52f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08AD2C0613ED
-        for <linux-kernel@vger.kernel.org>; Fri, 28 May 2021 11:13:42 -0700 (PDT)
-Received: by mail-pg1-x52f.google.com with SMTP id r1so3112656pgk.8
-        for <linux-kernel@vger.kernel.org>; Fri, 28 May 2021 11:13:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=mRXKn2a2TJxYpNg614xQbH+vgHW7yySJqcrC710VWeE=;
-        b=JrEGdHhP7EFQ1SgkGbszsPMb+bl/KdtbyLCtWuYiqIWndBXagmFrCFffFHn12mBaFe
-         v4mY9qlnt+JfEotilQMrF+en1bU+WoiUtTZUMtsQC2SsVufVCdjHQvfcnHwYSFMwkVQ4
-         xaMcJ1hhe1R8fFbRNUStlFVu9RvgRLrPYVxSQ=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=mRXKn2a2TJxYpNg614xQbH+vgHW7yySJqcrC710VWeE=;
-        b=PD/yWK6xlNt1mLLVsgJpCdsQvlhdVVKB5tfTL8gmpb5XXpwA2rsLWeDkESPa9nR/5p
-         o1PFKo0Wlo8P5ds6ZbBcbVGkIexkiVOMzcn6C+lC2QB4sx7dbYVhKbX2Cvgdszx+6PNc
-         QM5XqVt1+4ynAo5LKgC0zsqltLNtOE1r2hecJjcoYotgGaqjZDlo04h3Whf2C8pIRpqv
-         IFJ7d9JtdW3LYhNoCqin6ZQxLqH1ywYbuxA+qNsWsnpqxdgpmt5XtNapaCEN5zFbu3Pz
-         O4GoqEwOILOkdBBBZz/3f0PogOMS/Vsx8jFFZgDoa8pRxS//+zfzwSpE7l7RLY13vq0h
-         15og==
-X-Gm-Message-State: AOAM532lWDnSqG2Iybxb0D8YjLzBCKtrAn8ohDV83sF+LoxbZMiXw5w/
-        KIuPWJiXDpWigavMjaRJcJQRHw==
-X-Google-Smtp-Source: ABdhPJxONg4ZMLOBq2VKLCPpR2hd5Drqrxa8BYCsNQHzbr0Z55Qng5iRcr3wufgddr3PDf9/LyuVTQ==
-X-Received: by 2002:a65:60da:: with SMTP id r26mr10169451pgv.133.1622225621525;
-        Fri, 28 May 2021 11:13:41 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id g8sm4637163pfo.85.2021.05.28.11.13.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 28 May 2021 11:13:40 -0700 (PDT)
-From:   Kees Cook <keescook@chromium.org>
-To:     "Martin K . Petersen" <martin.petersen@oracle.com>
-Cc:     Kees Cook <keescook@chromium.org>, Hannes Reinecke <hare@suse.de>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Bradley Grove <linuxdrivers@attotech.com>,
-        Artur Paszkiewicz <artur.paszkiewicz@intel.com>,
-        linux-kernel@vger.kernel.org, linux-scsi@vger.kernel.org,
-        linux-hardening@vger.kernel.org
-Subject: [PATCH 3/3] scsi: isci: Use correctly sized target buffer for memcpy()
-Date:   Fri, 28 May 2021 11:13:37 -0700
-Message-Id: <20210528181337.792268-4-keescook@chromium.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210528181337.792268-1-keescook@chromium.org>
-References: <20210528181337.792268-1-keescook@chromium.org>
+        Fri, 28 May 2021 14:16:02 -0400
+Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A605C061574;
+        Fri, 28 May 2021 11:14:25 -0700 (PDT)
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: krisman)
+        with ESMTPSA id 1E24B1F44270
+From:   Gabriel Krisman Bertazi <krisman@collabora.com>
+To:     shuah@kernel.org
+Cc:     peterz@infradead.org, luto@kernel.org,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        Gabriel Krisman Bertazi <krisman@collabora.com>,
+        kernel@collabora.com, Will Deacon <will@kernel.org>
+Subject: [PATCH] selftest: Add test for Soft-Dirty PTE bit
+Date:   Fri, 28 May 2021 14:14:13 -0400
+Message-Id: <20210528181413.2795332-1-krisman@collabora.com>
+X-Mailer: git-send-email 2.31.0
 MIME-Version: 1.0
-X-Patch-Hashes: v=1; h=sha256; g=62b6a772dcc28a3c942828f5b8f7820ee6d3a41f; i=YaeUnfBq3TJQDjDDQLTzHyZVVP6D3nm5nxLM0EpXtRA=; m=ctjrtOVcMtkveReIPPzBsDxfD/jI9YKdALG3fA7QedE=; p=3kYPPaGRNOcMgxn+oYl2l/LriCur9INYsJLjiNU5VNI=
-X-Patch-Sig: m=pgp; i=keescook@chromium.org; s=0x0x8972F4DFDC6DC026; b=iQIzBAABCgAdFiEEpcP2jyKd1g9yPm4TiXL039xtwCYFAmCxMtAACgkQiXL039xtwCZbHxAAhEo sXvA3Z4idNWsm6GyioGcjMQaWDbmW26hmGnFs3/evp3/s2LzULDQ9oYbjBZV5nFM69+nk7pvUMH4Z PbUr5phF7psaj/IF2tsE/J2DyuPnGATxV/9EeBHZdebDS1LAkpmMJQvb810y2bfiqq7zQRXml0erN j8LmuWaES5kiIO0jKBQskL1qBd1eJ+iSDj3EsW6xI7FPpHF6Jb8+hSgjcs6fM+WbI90Y2mxr+zlHb PAuhV+6i3HjVBEwIIVl0Wqm2m8xJEQJbD01mu0DB8y25QQlpBnPwvViurDDKdDnKfpnKR5zxXGGFw Ji9G4OiYP2RDaAVRbKBFOkHKr2BHWGssqcUoC52B+9krw3iAk/OYqQC1aX5dZivSVhoxbYeYUWDBU 7ro14x8WoYuEYUEoM3iGisb027eDktUbz34YA2aOdEO/KpIoMpIwMREmjQgVMbzA6mqzIhqgWaHTf r24DWjL5keQsYfJTu47AGMcrl40Q7U6kvXxYYPPqv87wrZBptj4MF9QlJiIfzB2VquFIiYKlf0d1V yzT94zTBjQECveM1CnVy/Yxj7zbjy6QGAduMN5qLnkP0GQtHpvQh8beMXVX9ZXe6hrMRaz8WZvH5J XrqaQ/KQrNIrwQj5lWHjFg6nVAeY2LqLd8FMhzIk9px3tH6W6Q7AcDJGWbJEDods=
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In preparation for FORTIFY_SOURCE performing compile-time and run-time
-field bounds checking for memcpy(), avoid intentionally writing across
-neighboring array fields.
+This introduces three tests:
 
-Switch from rsp_ui to resp_buf, since resp_ui isn't SSP_RESP_IU_MAX_SIZE
-bytes in length. This avoids future compile-time warnings.
+1) Sanity check soft dirty basic semantics: allocate area, clean, dirty,
+check if the SD bit flipped.
 
-Signed-off-by: Kees Cook <keescook@chromium.org>
+2) Check VMA reuse: validate the VM_SOFTDIRTY usage
+
+3) Check soft-dirty on huge pages
+
+This was motivated by Will Deacon's fix commit 912efa17e512 ("mm: proc:
+Invalidate TLB after clearing soft-dirty page state"). I was tracking the
+same issue that he fixed, and this test would have caught it.
+
+Cc: Will Deacon <will@kernel.org>
+Signed-off-by: Gabriel Krisman Bertazi <krisman@collabora.com>
 ---
- drivers/scsi/isci/task.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ tools/testing/selftests/Makefile              |   1 +
+ tools/testing/selftests/soft-dirty/.gitignore |   1 +
+ tools/testing/selftests/soft-dirty/Makefile   |   9 +
+ .../testing/selftests/soft-dirty/soft-dirty.c | 254 ++++++++++++++++++
+ 4 files changed, 265 insertions(+)
+ create mode 100644 tools/testing/selftests/soft-dirty/.gitignore
+ create mode 100644 tools/testing/selftests/soft-dirty/Makefile
+ create mode 100644 tools/testing/selftests/soft-dirty/soft-dirty.c
 
-diff --git a/drivers/scsi/isci/task.c b/drivers/scsi/isci/task.c
-index 62062ed6cd9a..eeaec26ac324 100644
---- a/drivers/scsi/isci/task.c
-+++ b/drivers/scsi/isci/task.c
-@@ -709,8 +709,8 @@ isci_task_request_complete(struct isci_host *ihost,
- 		tmf->status = completion_status;
- 
- 		if (tmf->proto == SAS_PROTOCOL_SSP) {
--			memcpy(&tmf->resp.resp_iu,
--			       &ireq->ssp.rsp,
-+			memcpy(tmf->resp.rsp_buf,
-+			       ireq->ssp.rsp_buf,
- 			       SSP_RESP_IU_MAX_SIZE);
- 		} else if (tmf->proto == SAS_PROTOCOL_SATA) {
- 			memcpy(&tmf->resp.d2h_fis,
+diff --git a/tools/testing/selftests/Makefile b/tools/testing/selftests/Makefile
+index bc3299a20338..c8dcd7defd33 100644
+--- a/tools/testing/selftests/Makefile
++++ b/tools/testing/selftests/Makefile
+@@ -55,6 +55,7 @@ TARGETS += seccomp
+ TARGETS += sgx
+ TARGETS += sigaltstack
+ TARGETS += size
++TARGETS += soft-dirty
+ TARGETS += sparc64
+ TARGETS += splice
+ TARGETS += static_keys
+diff --git a/tools/testing/selftests/soft-dirty/.gitignore b/tools/testing/selftests/soft-dirty/.gitignore
+new file mode 100644
+index 000000000000..cfb0cfda9bdf
+--- /dev/null
++++ b/tools/testing/selftests/soft-dirty/.gitignore
+@@ -0,0 +1 @@
++soft-dirty
+diff --git a/tools/testing/selftests/soft-dirty/Makefile b/tools/testing/selftests/soft-dirty/Makefile
+new file mode 100644
+index 000000000000..d76ad8e0f10d
+--- /dev/null
++++ b/tools/testing/selftests/soft-dirty/Makefile
+@@ -0,0 +1,9 @@
++# SPDX-License-Identifier: GPL-2.0
++top_srcdir = ../../../..
++INSTALL_HDR_PATH = $(top_srcdir)/usr
++LINUX_HDR_PATH = $(INSTALL_HDR_PATH)/include/
++
++CFLAGS += -Wall -I$(LINUX_HDR_PATH) -O0 -g3
++
++TEST_GEN_PROGS := soft-dirty
++include ../lib.mk
+diff --git a/tools/testing/selftests/soft-dirty/soft-dirty.c b/tools/testing/selftests/soft-dirty/soft-dirty.c
+new file mode 100644
+index 000000000000..47af76f9df50
+--- /dev/null
++++ b/tools/testing/selftests/soft-dirty/soft-dirty.c
+@@ -0,0 +1,254 @@
++// SPDX-License-Identifier: GPL-2.0
++#include <sys/types.h>
++#include <sys/stat.h>
++#include <fcntl.h>
++#include <stdint.h>
++#include <unistd.h>
++#include <stdio.h>
++#include <unistd.h>
++#include <syscall.h>
++#include <errno.h>
++#include <stdlib.h>
++#include <sys/mman.h>
++#include <err.h>
++#include <string.h>
++#include <stdbool.h>
++#include <malloc.h>
++
++#define PAGEMAP_PATH "/proc/self/pagemap"
++#define CLEAR_REFS_PATH "/proc/self/clear_refs"
++#define SMAP_PATH "/proc/self/smaps"
++#define MAX_LINE_LENGTH 512
++
++#define TEST_ITERATIONS 10000
++
++#define PMD_SIZE_PATH "/sys/kernel/mm/transparent_hugepage/hpage_pmd_size"
++
++int clear_refs;
++int pagemap;
++
++int pagesize;
++int mmap_size;	/* Size of test region */
++
++static void clear_all_refs(void)
++{
++	if (write(clear_refs, "4\n", 2) != 2)
++		printf("%s: failed to clear references\n", __func__);
++}
++
++static void touch_page(char *map, int n)
++{
++	map[(page_size * n) + 1]++;
++}
++
++static int check_page(char *map, uint64_t n, int clear)
++{
++	uint64_t off;
++	uint64_t buf = 0;
++
++	off = (n + ((uint64_t)map >> 12)) << 3;
++
++	if (lseek(pagemap, off, SEEK_SET) == (off_t) -1)
++		errx(EXIT_FAILURE, "pagemap llseek failed");
++
++	if (read(pagemap, &buf, 8) != 8)
++		errx(EXIT_FAILURE, "pagemap read failed");
++
++	if (clear)
++		clear_all_refs();
++
++	return ((buf >> 55) & 1);
++}
++
++static void test_simple(void)
++{
++	int i;
++	char *map;
++
++	printf("- Test %s:\n", __func__);
++
++	map = aligned_alloc(page_size, mmap_size);
++	if (!map)
++		errx(EXIT_FAILURE, "mmap");
++
++	clear_all_refs();
++
++	for (i = 0 ; i < TEST_ITERATIONS; i++) {
++		if (check_page(map, 2, 1) == 1) {
++			errx(EXIT_FAILURE, "dirty bit was 1, but should be 0 (i=%d)", i);
++			break;
++		}
++
++		touch_page(map, 2);
++
++		if (check_page(map, 2, 1) == 0) {
++			errx(EXIT_FAILURE, "dirty bit was 0, but should be 1 (i=%d)", i);
++			break;
++		}
++
++	}
++	free(map);
++
++	printf("success\n");
++}
++
++static void test_vma_reuse(void)
++{
++	char *map, *map2;
++
++	printf("- Test %s:\n", __func__);
++
++	map = (char *) 0x900000000000;
++	map = mmap(map, mmap_size, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANON, -1, 0);
++	if (map == MAP_FAILED)
++		errx(EXIT_FAILURE, "mmap");
++
++	clear_all_refs();
++	touch_page(map, 2);
++
++	munmap(map, mmap_size);
++	map2 = mmap(map, mmap_size, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANON, -1, 0);
++	if (map2 == MAP_FAILED)
++		errx(EXIT_FAILURE, "mmap2");
++
++	if (map != map2)
++		errx(EXIT_FAILURE, "map != map2");
++
++	if (check_page(map, 2, 1) == 0)
++		errx(-1, "map/unmap lost dirty");
++
++	munmap(map2, mmap_size);
++
++	printf("success\n");
++}
++
++/*
++ * read_pmd_pagesize(), check_for_pattern() and check_huge() adapted
++ * from 'tools/testing/selftest/vm/split_huge_page_test.c'
++ */
++static uint64_t read_pmd_pagesize(void)
++{
++	int fd;
++	char buf[20];
++	ssize_t num_read;
++
++	fd = open(PMD_SIZE_PATH, O_RDONLY);
++	if (fd == -1)
++		errx(EXIT_FAILURE, "Open hpage_pmd_size failed");
++
++	num_read = read(fd, buf, 19);
++	if (num_read < 1) {
++		close(fd);
++		errx(EXIT_FAILURE, "Read hpage_pmd_size failed");
++	}
++	buf[num_read] = '\0';
++	close(fd);
++
++	return strtoul(buf, NULL, 10);
++}
++
++static bool check_for_pattern(FILE *fp, const char *pattern, char *buf)
++{
++	while (fgets(buf, MAX_LINE_LENGTH, fp) != NULL) {
++		if (!strncmp(buf, pattern, strlen(pattern)))
++			return true;
++	}
++	return false;
++}
++
++static uint64_t check_huge(void *addr)
++{
++	uint64_t thp = 0;
++	int ret;
++	FILE *fp;
++	char buffer[MAX_LINE_LENGTH];
++	char addr_pattern[MAX_LINE_LENGTH];
++
++	ret = snprintf(addr_pattern, MAX_LINE_LENGTH, "%08lx-",
++		       (unsigned long) addr);
++	if (ret >= MAX_LINE_LENGTH)
++		errx(EXIT_FAILURE, "%s: Pattern is too long\n", __func__);
++
++	fp = fopen(SMAP_PATH, "r");
++	if (!fp)
++		errx(EXIT_FAILURE, "%s: Failed to open file %s\n", __func__, SMAP_PATH);
++
++	if (!check_for_pattern(fp, addr_pattern, buffer))
++		goto err_out;
++
++	/*
++	 * Fetch the AnonHugePages: in the same block and check the number of
++	 * hugepages.
++	 */
++	if (!check_for_pattern(fp, "AnonHugePages:", buffer))
++		goto err_out;
++
++	if (sscanf(buffer, "AnonHugePages:%10ld kB", &thp) != 1)
++		errx(EXIT_FAILURE, "Reading smap error\n");
++
++err_out:
++	fclose(fp);
++
++	return thp;
++}
++
++static void test_hugepage(void)
++{
++	char *map;
++	int i, ret;
++	size_t hpage_len = read_pmd_pagesize();
++
++	printf("- Test %s:\n", __func__);
++
++	map = memalign(hpage_len, hpage_len);
++	if (!map)
++		errx(EXIT_FAILURE, "memalign");
++
++	ret = madvise(map, hpage_len, MADV_HUGEPAGE);
++	if (ret)
++		errx(EXIT_FAILURE, "madvise %d", ret);
++
++	for (i = 0; i < hpage_len; i++)
++		map[i] = (char)i;
++
++	if (!check_huge(map))
++		errx(EXIT_FAILURE, "failed to allocate THP");
++
++	clear_all_refs();
++	for (i = 0 ; i < TEST_ITERATIONS ; i++) {
++		if (check_page(map, 2, 1) == 1) {
++			errx(EXIT_FAILURE, "dirty bit was 1, but should be 0 (i=%d)", i);
++			break;
++		}
++
++		touch_page(map, 2);
++
++		if (check_page(map, 2, 1) == 0) {
++			errx(EXIT_FAILURE, "dirty bit was 0, but should be 1 (i=%d)", i);
++			break;
++		}
++	}
++	munmap(map, mmap_size);
++
++	printf("success\n");
++}
++
++int main(int argc, char **argv)
++{
++	pagemap = open(PAGEMAP_PATH, O_RDONLY, 0);
++	if (pagemap < 0)
++		errx(EXIT_FAILURE, "Failed to open %s", PAGEMAP_PATH);
++
++	clear_refs = open(CLEAR_REFS_PATH, O_WRONLY, 0);
++	if (clear_refs < 0)
++		errx(EXIT_FAILURE, "Failed to open %s", CLEAR_REFS_PATH);
++
++	pagesize = getpagesize();
++	mmap_size = 10 * pagesize();
++
++	test_simple();
++	test_vma_reuse();
++	test_hugepage();
++
++	return 0;
++}
 -- 
-2.25.1
+2.31.0
 
