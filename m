@@ -2,235 +2,233 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9AF7D393D39
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 08:39:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A4ADF393D3C
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 08:39:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230189AbhE1Gkb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 May 2021 02:40:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40044 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229569AbhE1Gka (ORCPT
+        id S233253AbhE1Gkr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 May 2021 02:40:47 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:20309 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230127AbhE1Gko (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 May 2021 02:40:30 -0400
-Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA831C061574
-        for <linux-kernel@vger.kernel.org>; Thu, 27 May 2021 23:38:54 -0700 (PDT)
-Received: by mail-ej1-x629.google.com with SMTP id l3so3732240ejc.4
-        for <linux-kernel@vger.kernel.org>; Thu, 27 May 2021 23:38:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=NYBo8xCArOcC/hKNmPEOzfIERhkQSl/7u9OtlFmmITw=;
-        b=qi7J8c+fsoS+yumWB+/OoQMPoiJITwUNEH3Q++3AhZeMf0Sl9mZqRSD03rliMKMSFT
-         NUeYsGCTgZV2bb8wVn7J2hlTT75uW8G2INCZ83UlwBkXFrh2P+JcSnR/5fdZTAS1uTae
-         Qj1lRwFPVJcVG9HkP6tGfxRq20L68Tauu5nJPlLupHSh36J/jcQyuxDGZaKQGrZNbX81
-         2o/Z/1u7MvcizGEr0Sp1HMBpYU/6zuDXP2/D/jCFKMqWnfTYZuACUMwWgB0GwUO76QKD
-         SB78KWuN8rDIb7npgy1ObppG8iiTvvRwsGyEQJEmJqPqAMgGwQysfLVD+drnILVmpSIT
-         2vgA==
+        Fri, 28 May 2021 02:40:44 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1622183949;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=6RpP8rpfd8a3e0y5nF0RPgT5RVi2VhGM0rPjlvoSzx4=;
+        b=gDBkzqxqKfaeQ7Oxt0B4O42Rxx8iJ+KkV0cRLpR+v1/ymXcZ2RyWNdQEd9H1xErqpdsmpU
+        ubdptE17Ves63meELxr8LXNnSDBJ+xtKlme4FoujSB0IqVUPSIJCYndhJ+2Whg2U5TyJGf
+        W2P1AE1/z0j7H437mAmElCaTSoMZIFo=
+Received: from mail-pf1-f200.google.com (mail-pf1-f200.google.com
+ [209.85.210.200]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-129-tTWc6Mv7NX2BXkGBA5T1_A-1; Fri, 28 May 2021 02:39:08 -0400
+X-MC-Unique: tTWc6Mv7NX2BXkGBA5T1_A-1
+Received: by mail-pf1-f200.google.com with SMTP id o16-20020a056a0015d0b02902e11ab01eb7so1883958pfu.14
+        for <linux-kernel@vger.kernel.org>; Thu, 27 May 2021 23:39:08 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=NYBo8xCArOcC/hKNmPEOzfIERhkQSl/7u9OtlFmmITw=;
-        b=Ddt8N3HQRQnKnKXu7tWllUt+KxvSyEzwH6Q7Va2aqW8YsO+MmlmefSekhokgU80n5S
-         IaIJ4d8uz9CLZ6WdhXuYJDPMLIbnmpmWnSN6FF/Q9J6jdR48Ah4UXAjRcw5f2kcdsXR4
-         L9O/8to3uihM2+xVc9+7Cq3yyXmMUusQ5aOopgSCuERtvaPLSV5xpAcPuis86AWxpE52
-         2QCOSYEuRi3v3ADv4DAWaBCXWCtxyJuHknqnBu7uYC1Bbd9AK1lyJkUGefPHXs6RNMSd
-         89b9wMgvgvTogrc/Po2GAODe12QPCm4fc2VvS600mMIaESn2BuJpfgo8XtilDyezHSbs
-         ubaw==
-X-Gm-Message-State: AOAM530WAtHfdVONJ3asJOAvvS/oIbgS/Boo0EjR3u8hh8rnKrhyDGuX
-        YDEpwqx1WyJdGyTd+scLi1KWTJvo/+nyC33D0qWuVg==
-X-Google-Smtp-Source: ABdhPJyl75rNKQLPStQfrgLCbH4CtLvEi82w9sH4VS9qL7w6lPcH8eJhZkWoqClFi3ReT/2SYdtQ8NXO3nMq9udMlQg=
-X-Received: by 2002:a17:906:8394:: with SMTP id p20mr5264438ejx.170.1622183933016;
- Thu, 27 May 2021 23:38:53 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=6RpP8rpfd8a3e0y5nF0RPgT5RVi2VhGM0rPjlvoSzx4=;
+        b=Ga0LOKkVvKwXRpj+juxGas5AxCe0j0G9lUgQIUCLf32dF+NhrUJkfP2kexHJUhGXwq
+         EQZGfLXgRAMpzwKvYyFs9l9Lrrx70zWhpWP2TS9Ef2aPAcxYHDFtgcovVdMOJMb3RWjb
+         /eaRJB1/zWpBASW7ghDT8hZcEbDMF8+qWixufs/dUGCk1I1GSTxPPhyFv0A2pMUSxnTf
+         QNaykvcXXKWo9ZP0QM0Aj70UDwkSGKIs2d6/5S+rRhD/EgNxxzDXWVwSqfUZxEVWsT21
+         eq25Bn/Y6J8VoTsS9rN720rbvMuzwkh2/6RuMe7tEw7X/G/JY1eMvpa6Pqj9LJfMLQiH
+         F83Q==
+X-Gm-Message-State: AOAM531cgcLfgV+W4SR8Lhiosgzqti9PrkPJHa9t+66l2wnhgh+o3bgy
+        XATN/2dIr7ztipArit26+0Xw5iUfbE64DZ530v7aybFx8oJAOJSFR6Uo0UW7XGLEP6yFrPPpDgx
+        LKy0m0Gp8FmpB3w8y5FzvJPf/EIzdpWVKx3ekvDcJYAv/6ZD6YhNW8NHxKYIlpX05GEO7jhuUGK
+        QY
+X-Received: by 2002:a17:90a:bd05:: with SMTP id y5mr2664335pjr.229.1622183947193;
+        Thu, 27 May 2021 23:39:07 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxGNmAqjgmxntdDKOd5qocBDSk4ZjOlVFy0XRLBTCjKcdzj+d4zuGqzz/QNeE7UYpYTrC3W9A==
+X-Received: by 2002:a17:90a:bd05:: with SMTP id y5mr2664285pjr.229.1622183946816;
+        Thu, 27 May 2021 23:39:06 -0700 (PDT)
+Received: from wangxiaodeMacBook-Air.local ([209.132.188.80])
+        by smtp.gmail.com with ESMTPSA id q24sm3476480pjp.6.2021.05.27.23.38.59
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 27 May 2021 23:39:06 -0700 (PDT)
+Subject: Re: [PATCH v7 11/12] vduse: Introduce VDUSE - vDPA Device in
+ Userspace
+To:     Yongji Xie <xieyongji@bytedance.com>
+Cc:     "Michael S. Tsirkin" <mst@redhat.com>,
+        Stefan Hajnoczi <stefanha@redhat.com>,
+        Stefano Garzarella <sgarzare@redhat.com>,
+        Parav Pandit <parav@nvidia.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        Christian Brauner <christian.brauner@canonical.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Jens Axboe <axboe@kernel.dk>, bcrl@kvack.org,
+        Jonathan Corbet <corbet@lwn.net>,
+        =?UTF-8?Q?Mika_Penttil=c3=a4?= <mika.penttila@nextfour.com>,
+        Dan Carpenter <dan.carpenter@oracle.com>, joro@8bytes.org,
+        virtualization <virtualization@lists.linux-foundation.org>,
+        netdev@vger.kernel.org, kvm <kvm@vger.kernel.org>,
+        linux-fsdevel@vger.kernel.org, iommu@lists.linux-foundation.org,
+        linux-kernel <linux-kernel@vger.kernel.org>
+References: <20210517095513.850-1-xieyongji@bytedance.com>
+ <20210517095513.850-12-xieyongji@bytedance.com>
+ <3740c7eb-e457-07f3-5048-917c8606275d@redhat.com>
+ <CACycT3uAqa6azso_8MGreh+quj-JXO1piuGnrV8k2kTfc34N2g@mail.gmail.com>
+ <5a68bb7c-fd05-ce02-cd61-8a601055c604@redhat.com>
+ <CACycT3ve7YvKF+F+AnTQoJZMPua+jDvGMs_ox8GQe_=SGdeCMA@mail.gmail.com>
+ <ee00efca-b26d-c1be-68d2-f9e34a735515@redhat.com>
+ <CACycT3ufok97cKpk47NjUBTc0QAyfauFUyuFvhWKmuqCGJ7zZw@mail.gmail.com>
+ <00ded99f-91b6-ba92-5d92-2366b163f129@redhat.com>
+ <3cc7407d-9637-227e-9afa-402b6894d8ac@redhat.com>
+ <CACycT3s6SkER09KL_Ns9d03quYSKOuZwd3=HJ_s1SL7eH7y5gA@mail.gmail.com>
+ <baf0016a-7930-2ae2-399f-c28259f415c1@redhat.com>
+ <CACycT3vKZ3y0gga8PrSVtssZfNV0Y-A8=iYZSi9sbpHRNkVf-A@mail.gmail.com>
+From:   Jason Wang <jasowang@redhat.com>
+Message-ID: <503cee35-e5d7-7ccf-347b-73487872ac11@redhat.com>
+Date:   Fri, 28 May 2021 14:38:54 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.10.2
 MIME-Version: 1.0
-References: <20210527151139.224619013@linuxfoundation.org>
-In-Reply-To: <20210527151139.224619013@linuxfoundation.org>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Fri, 28 May 2021 12:08:41 +0530
-Message-ID: <CA+G9fYvKmEeRsc5uYaPCp4h6gS38W7epM3kZEUSoOi1J+xtC1Q@mail.gmail.com>
-Subject: Re: [PATCH 5.4 0/7] 5.4.123-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     open list <linux-kernel@vger.kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Shuah Khan <shuah@kernel.org>, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, Pavel Machek <pavel@denx.de>,
-        Jon Hunter <jonathanh@nvidia.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        linux-stable <stable@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <CACycT3vKZ3y0gga8PrSVtssZfNV0Y-A8=iYZSi9sbpHRNkVf-A@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 27 May 2021 at 20:42, Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
+
+在 2021/5/28 上午11:54, Yongji Xie 写道:
+> On Fri, May 28, 2021 at 9:33 AM Jason Wang <jasowang@redhat.com> wrote:
+>>
+>> 在 2021/5/27 下午6:14, Yongji Xie 写道:
+>>> On Thu, May 27, 2021 at 4:43 PM Jason Wang <jasowang@redhat.com> wrote:
+>>>> 在 2021/5/27 下午4:41, Jason Wang 写道:
+>>>>> 在 2021/5/27 下午3:34, Yongji Xie 写道:
+>>>>>> On Thu, May 27, 2021 at 1:40 PM Jason Wang <jasowang@redhat.com> wrote:
+>>>>>>> 在 2021/5/27 下午1:08, Yongji Xie 写道:
+>>>>>>>> On Thu, May 27, 2021 at 1:00 PM Jason Wang <jasowang@redhat.com>
+>>>>>>>> wrote:
+>>>>>>>>> 在 2021/5/27 下午12:57, Yongji Xie 写道:
+>>>>>>>>>> On Thu, May 27, 2021 at 12:13 PM Jason Wang <jasowang@redhat.com>
+>>>>>>>>>> wrote:
+>>>>>>>>>>> 在 2021/5/17 下午5:55, Xie Yongji 写道:
+>>>>>>>>>>>> +
+>>>>>>>>>>>> +static int vduse_dev_msg_sync(struct vduse_dev *dev,
+>>>>>>>>>>>> +                           struct vduse_dev_msg *msg)
+>>>>>>>>>>>> +{
+>>>>>>>>>>>> +     init_waitqueue_head(&msg->waitq);
+>>>>>>>>>>>> +     spin_lock(&dev->msg_lock);
+>>>>>>>>>>>> +     vduse_enqueue_msg(&dev->send_list, msg);
+>>>>>>>>>>>> +     wake_up(&dev->waitq);
+>>>>>>>>>>>> +     spin_unlock(&dev->msg_lock);
+>>>>>>>>>>>> +     wait_event_killable(msg->waitq, msg->completed);
+>>>>>>>>>>> What happens if the userspace(malicous) doesn't give a response
+>>>>>>>>>>> forever?
+>>>>>>>>>>>
+>>>>>>>>>>> It looks like a DOS. If yes, we need to consider a way to fix that.
+>>>>>>>>>>>
+>>>>>>>>>> How about using wait_event_killable_timeout() instead?
+>>>>>>>>> Probably, and then we need choose a suitable timeout and more
+>>>>>>>>> important,
+>>>>>>>>> need to report the failure to virtio.
+>>>>>>>>>
+>>>>>>>> Makes sense to me. But it looks like some
+>>>>>>>> vdpa_config_ops/virtio_config_ops such as set_status() didn't have a
+>>>>>>>> return value.  Now I add a WARN_ON() for the failure. Do you mean we
+>>>>>>>> need to add some change for virtio core to handle the failure?
+>>>>>>> Maybe, but I'm not sure how hard we can do that.
+>>>>>>>
+>>>>>> We need to change all virtio device drivers in this way.
+>>>>> Probably.
+>>>>>
+>>>>>
+>>>>>>> We had NEEDS_RESET but it looks we don't implement it.
+>>>>>>>
+>>>>>> Could it handle the failure of get_feature() and get/set_config()?
+>>>>> Looks not:
+>>>>>
+>>>>> "
+>>>>>
+>>>>> The device SHOULD set DEVICE_NEEDS_RESET when it enters an error state
+>>>>> that a reset is needed. If DRIVER_OK is set, after it sets
+>>>>> DEVICE_NEEDS_RESET, the device MUST send a device configuration change
+>>>>> notification to the driver.
+>>>>>
+>>>>> "
+>>>>>
+>>>>> This looks implies that NEEDS_RESET may only work after device is
+>>>>> probed. But in the current design, even the reset() is not reliable.
+>>>>>
+>>>>>
+>>>>>>> Or a rough idea is that maybe need some relaxing to be coupled loosely
+>>>>>>> with userspace. E.g the device (control path) is implemented in the
+>>>>>>> kernel but the datapath is implemented in the userspace like TUN/TAP.
+>>>>>>>
+>>>>>> I think it can work for most cases. One problem is that the set_config
+>>>>>> might change the behavior of the data path at runtime, e.g.
+>>>>>> virtnet_set_mac_address() in the virtio-net driver and
+>>>>>> cache_type_store() in the virtio-blk driver. Not sure if this path is
+>>>>>> able to return before the datapath is aware of this change.
+>>>>> Good point.
+>>>>>
+>>>>> But set_config() should be rare:
+>>>>>
+>>>>> E.g in the case of virtio-net with VERSION_1, config space is read
+>>>>> only, and it was set via control vq.
+>>>>>
+>>>>> For block, we can
+>>>>>
+>>>>> 1) start from without WCE or
+>>>>> 2) we add a config change notification to userspace or
+>>>>> 3) extend the spec to use vq instead of config space
+>>>>>
+>>>>> Thanks
+>>>> Another thing if we want to go this way:
+>>>>
+>>>> We need find a way to terminate the data path from the kernel side, to
+>>>> implement to reset semantic.
+>>>>
+>>> Do you mean terminate the data path in vdpa_reset().
+>>
+>> Yes.
+>>
+>>
+>>>    Is it ok to just
+>>> notify userspace to stop data path asynchronously?
+>>
+>> For well-behaved userspace, yes but no for buggy or malicious ones.
+>>
+> But the buggy or malicious daemons can't do anything if my
+> understanding is correct.
+
+
+You're right. I originally thought there can still have bouncing. But 
+consider we don't do that during fault.
+
+It should be safe.
+
+
 >
-> This is the start of the stable review cycle for the 5.4.123 release.
-> There are 7 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
+>> I had an idea, how about terminate IOTLB in this case? Then we're in
+>> fact turn datapath off.
+>>
+> Sorry, I didn't get your point here. What do you mean by terminating
+> IOTLB?
+
+
+I meant terminate the bouncing but it looks safe after a second thought :)
+
+Thanks
+
+
+>   Remove iotlb mapping? But userspace can still access the mapped
+> region.
 >
-> Responses should be made by Sat, 29 May 2021 15:11:29 +0000.
-> Anything received after that time might be too late.
+> Thanks,
+> Yongji
 >
-> The whole patch series can be found in one patch at:
->         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-=
-5.4.123-rc1.gz
-> or in the git tree and branch at:
->         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
--rc.git linux-5.4.y
-> and the diffstat can be found below.
->
-> thanks,
->
-> greg k-h
 
-
-Results from Linaro=E2=80=99s test farm.
-No regressions on arm64, arm, x86_64, and i386.
-
-Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
-
-## Build
-* kernel: 5.4.123-rc1
-* git: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-=
-rc.git
-* git branch: linux-5.4.y
-* git commit: 69500752c0577511bd2a31b0169e1bcb6f710905
-* git describe: v5.4.122-8-g69500752c057
-* test details:
-https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-5.4.y/build/v5.4.1=
-22-8-g69500752c057
-
-## No regressions (compared to v5.4.122)
-
-## No fixes (compared to v5.4.122)
-
-## Test result summary
- total: 76612, pass: 62193, fail: 1553, skip: 12114, xfail: 752,
-
-## Build Summary
-* arc: 10 total, 10 passed, 0 failed
-* arm: 192 total, 192 passed, 0 failed
-* arm64: 26 total, 26 passed, 0 failed
-* dragonboard-410c: 1 total, 1 passed, 0 failed
-* hi6220-hikey: 1 total, 1 passed, 0 failed
-* i386: 15 total, 15 passed, 0 failed
-* juno-r2: 1 total, 1 passed, 0 failed
-* mips: 45 total, 45 passed, 0 failed
-* parisc: 9 total, 9 passed, 0 failed
-* powerpc: 27 total, 27 passed, 0 failed
-* riscv: 21 total, 21 passed, 0 failed
-* s390: 9 total, 9 passed, 0 failed
-* sh: 18 total, 18 passed, 0 failed
-* sparc: 9 total, 9 passed, 0 failed
-* x15: 1 total, 1 passed, 0 failed
-* x86: 1 total, 1 passed, 0 failed
-* x86_64: 26 total, 26 passed, 0 failed
-
-## Test suites summary
-* fwts
-* igt-gpu-tools
-* install-android-platform-tools-r2600
-* kselftest-android
-* kselftest-bpf
-* kselftest-breakpoints
-* kselftest-capabilities
-* kselftest-cgroup
-* kselftest-clone3
-* kselftest-core
-* kselftest-cpu-hotplug
-* kselftest-cpufreq
-* kselftest-drivers
-* kselftest-efivarfs
-* kselftest-filesystems
-* kselftest-firmware
-* kselftest-fpu
-* kselftest-futex
-* kselftest-gpio
-* kselftest-intel_pstate
-* kselftest-ipc
-* kselftest-ir
-* kselftest-kcmp
-* kselftest-kexec
-* kselftest-kvm
-* kselftest-lib
-* kselftest-livepatch
-* kselftest-lkdtm
-* kselftest-membarrier
-* kselftest-memfd
-* kselftest-memory-hotplug
-* kselftest-mincore
-* kselftest-mount
-* kselftest-mqueue
-* kselftest-net
-* kselftest-netfilter
-* kselftest-nsfs
-* kselftest-openat2
-* kselftest-pid_namespace
-* kselftest-pidfd
-* kselftest-proc
-* kselftest-pstore
-* kselftest-ptrace
-* kselftest-rseq
-* kselftest-rtc
-* kselftest-seccomp
-* kselftest-sigaltstack
-* kselftest-size
-* kselftest-splice
-* kselftest-static_keys
-* kselftest-sync
-* kselftest-sysctl
-* kselftest-tc-testing
-* kselftest-timens
-* kselftest-timers
-* kselftest-tmpfs
-* kselftest-tpm2
-* kselftest-user
-* kselftest-vm
-* kselftest-x86
-* kselftest-zram
-* kvm-unit-tests
-* libhugetlbfs
-* linux-log-parser
-* ltp-cap_bounds-tests
-* ltp-commands-tests
-* ltp-containers-tests
-* ltp-controllers-tests
-* ltp-cpuhotplug-tests
-* ltp-crypto-tests
-* ltp-cve-tests
-* ltp-dio-tests
-* ltp-fcntl-locktests-tests
-* ltp-filecaps-tests
-* ltp-fs-tests
-* ltp-fs_bind-tests
-* ltp-fs_perms_simple-tests
-* ltp-fsx-tests
-* ltp-hugetlb-tests
-* ltp-io-tests
-* ltp-ipc-tests
-* ltp-math-tests
-* ltp-mm-tests
-* ltp-nptl-tests
-* ltp-open-posix-tests
-* ltp-pty-tests
-* ltp-sched-tests
-* ltp-securebits-tests
-* ltp-syscalls-tests
-* ltp-tracing-tests
-* network-basic-tests
-* packetdrill
-* perf
-* rcutorture
-* ssuite
-* v4l2-compliance
-
---
-Linaro LKFT
-https://lkft.linaro.org
