@@ -2,85 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC628393FAE
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 11:16:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 938FA393FC3
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 11:20:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235964AbhE1JRr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 May 2021 05:17:47 -0400
-Received: from conssluserg-01.nifty.com ([210.131.2.80]:42880 "EHLO
-        conssluserg-01.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235842AbhE1JRo (ORCPT
+        id S235972AbhE1JW0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 May 2021 05:22:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48438 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233521AbhE1JWV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 May 2021 05:17:44 -0400
-Received: from mail-pj1-f41.google.com (mail-pj1-f41.google.com [209.85.216.41]) (authenticated)
-        by conssluserg-01.nifty.com with ESMTP id 14S9Fb3b005528
-        for <linux-kernel@vger.kernel.org>; Fri, 28 May 2021 18:15:37 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-01.nifty.com 14S9Fb3b005528
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1622193338;
-        bh=39pO5BBOVAifJjDbCOX9efx90Asg6bB9LleYJ3FOvGg=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=pyUjby031ZX4HJMzkOwIHs2C3oZNFl5YMCWN81bFPwmn9+dW/rnPyUMBCy/mCToGl
-         J1d6K8/iouONtqtMRG6FivLoYb2g01NMKKmBeN5GP+Dhv9lbYryVV9PgZP30d86nxg
-         4jVhQpCH8owU6baFNKB6sFb8e021xDBoZRSbaJWvAHRVOTwh3hySa9MfSex1tUFSRT
-         piz9A7e8+bUAh/SRMAzJ1TyUOIO0LYjzu8bSzRUUUJOOGlEFHvwiQFl33Fr7Uyvxx3
-         6qgerrZjL3jIUJKdzj7xedS2Wb3Hs4gGrwx2AhdfzpxxBjQtZH6RQQSSwx1LAFeoui
-         Wyh0Mpy0wqSpw==
-X-Nifty-SrcIP: [209.85.216.41]
-Received: by mail-pj1-f41.google.com with SMTP id mp9-20020a17090b1909b029015fd1e3ad5aso4107633pjb.3
-        for <linux-kernel@vger.kernel.org>; Fri, 28 May 2021 02:15:37 -0700 (PDT)
-X-Gm-Message-State: AOAM533WjrfJU1i9GWTQNW5j7xdb6TmWnx0bD5mt8NdU9bYh51Ikz5sV
-        NHDVIfk35Gsnb8uOV9Ox6yl8Qk8tYwucpB/2hyo=
-X-Google-Smtp-Source: ABdhPJx/Gs6ZJu3IBJC4ZL1qePsWol28jUvqkwVgk7KREdjpso85oPRTG0pjN6WSUguAjJf3YAFqGOTyjHBq0mX9ekU=
-X-Received: by 2002:a17:902:bcc7:b029:ed:6f73:ffc4 with SMTP id
- o7-20020a170902bcc7b02900ed6f73ffc4mr7226469pls.1.1622193337038; Fri, 28 May
- 2021 02:15:37 -0700 (PDT)
+        Fri, 28 May 2021 05:22:21 -0400
+Received: from mail-lj1-x22a.google.com (mail-lj1-x22a.google.com [IPv6:2a00:1450:4864:20::22a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98A31C061574
+        for <linux-kernel@vger.kernel.org>; Fri, 28 May 2021 02:20:46 -0700 (PDT)
+Received: by mail-lj1-x22a.google.com with SMTP id o8so4451909ljp.0
+        for <linux-kernel@vger.kernel.org>; Fri, 28 May 2021 02:20:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=9NyLm4M6sno3u68FwAJ1r8D39ashG0coxPAL+2ytbo8=;
+        b=m3KjY1b2H8lewGLvYfwdijyr0kT3Wu1LNZP93AXyhqs4bkCFph4GD0igddPrB5cwtJ
+         SLE8Z0Hj94599O30PbmqxaWGcDKwpl8evubGvvvDUo9qnFujjaHmzdEyVbVJGsAT9g23
+         06hlKbVRew3zE4IWYQxfbqY5/yf+h889FoOBQqzqS2DDJlYqqed2ErBfg1e2FRQMj1BU
+         3sCl43FNTZ/cWgLdzbSnCyVGjLytnIrwWAYZDB3jOEZZF7wbL7VH5XoWnkIcWlSil00x
+         WYVF1NimFto7/MwtV39GJ9iW9GCP7v/zxWwpJ900USlaLozoL38IpIVS2PdswG5uS+W8
+         +q2w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=9NyLm4M6sno3u68FwAJ1r8D39ashG0coxPAL+2ytbo8=;
+        b=q855h/MmsKvB9AYCx40dpEl6ghnMwJvIOgzVhLxXuAC05SIYE5uPSrrbF84Jpg6WAU
+         MaB2vedT6BoHxgKFNqR86Sn08mVxv9o7oUUDCdl4rsPgRxtzZhBo99cyYG0AvQs2xeu8
+         h3EUmQ2pxPggQ8Z9HWsI4RYpq7X2lpHFczV42B7OY+RwB6ztguL1qX8kaq0zIYHO5ZbY
+         0ISTUC/N1W/1+iLvPDHSvIFe0Jn6xmG/4ECUpl6djDK/pn+aB2/fhPCdIfdBhOIkwtnp
+         VrUwsBLxdZulsKKB0aKPaRpTphRvRCe1KE6Ww/qKjGQpJJMQun/NdPVFenuPosqGbyrg
+         oPlw==
+X-Gm-Message-State: AOAM531fLaYETJeU5nNK5ZihQNzIou5BItx7/EODdjoJCdpQTWaXiTHu
+        Wafgp1WC5bhx/vYHViWfLSa0b+u10yZyENoYmmXDPw==
+X-Google-Smtp-Source: ABdhPJwaCkUllAD2rNdoBS/S0G1y0aXKEWfHDRy7bbdri1JLQs5273AM4VtJgQ1pOaZbsnf9vhQWoA0ph9fTHhrOsWI=
+X-Received: by 2002:a05:651c:4c6:: with SMTP id e6mr5831209lji.326.1622193644998;
+ Fri, 28 May 2021 02:20:44 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210528035209.2157823-1-masahiroy@kernel.org> <CACRpkdb-CsQtaiRjUWsimSmBw8tAgvr_ET1BS47rsVxd-eY0VA@mail.gmail.com>
-In-Reply-To: <CACRpkdb-CsQtaiRjUWsimSmBw8tAgvr_ET1BS47rsVxd-eY0VA@mail.gmail.com>
-From:   Masahiro Yamada <masahiroy@kernel.org>
-Date:   Fri, 28 May 2021 18:15:00 +0900
-X-Gmail-Original-Message-ID: <CAK7LNARmuJxp66VMhJdQ487uua0ynppXHoMA7ukbfsLpyGQV6g@mail.gmail.com>
-Message-ID: <CAK7LNARmuJxp66VMhJdQ487uua0ynppXHoMA7ukbfsLpyGQV6g@mail.gmail.com>
-Subject: Re: [PATCH] ARM: simplify the build rule of mach-types.h
-To:     Linus Walleij <linus.walleij@linaro.org>
-Cc:     patches@arm.linux.org.uk,
+References: <20210519162409.3755679-1-fparent@baylibre.com>
+ <20210519162409.3755679-2-fparent@baylibre.com> <CACRpkdZ70OcbgyFN2cQtLgsXFCTsvstsrBYYt3UY6Wc=NbXuag@mail.gmail.com>
+ <CAOwMV_zin4ODuv8pA8_tfVyg3g9=Mrt2Txdk0O2wL8JqDefzog@mail.gmail.com>
+In-Reply-To: <CAOwMV_zin4ODuv8pA8_tfVyg3g9=Mrt2Txdk0O2wL8JqDefzog@mail.gmail.com>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Fri, 28 May 2021 11:20:33 +0200
+Message-ID: <CACRpkdZmyD-s-J50G8FJPXDyDYEJbLURSCz+DT+H7VFHJt5uLw@mail.gmail.com>
+Subject: Re: [PATCH 2/3] pinctrl: mediatek: don't hardcode mode encoding in
+ common code
+To:     Fabien Parent <fparent@baylibre.com>
+Cc:     Sean Wang <sean.wang@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Mattijs Korpershoek <mkorpershoek@baylibre.com>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
         linux-kernel <linux-kernel@vger.kernel.org>,
-        Russell King <linux@armlinux.org.uk>,
         Linux ARM <linux-arm-kernel@lists.infradead.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 28, 2021 at 5:24 PM Linus Walleij <linus.walleij@linaro.org> wrote:
+On Fri, May 28, 2021 at 11:11 AM Fabien Parent <fparent@baylibre.com> wrote:
+
+> -       bit = BIT(pin & 0xf);
+> +       bit = BIT(offset & pctl->devdata->mode_mask);
 >
-> On Fri, May 28, 2021 at 5:52 AM Masahiro Yamada <masahiroy@kernel.org> wrote:
->
-> > The directory of mach-types.h is created a couple of lines above:
-> >
-> >   _dummy := $(shell [ -d '$(kapi)' ] || mkdir -p '$(kapi)') \
-> >
-> > The 'mkdir -p' command is redundant.
-> >
-> > scripts/Kbuild.include defines real-prereqs as a shorthand for
-> > $(filter-out $(PHONY),$^). Let's use it to simplify the code.
-> >
-> > Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
->
-> Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
->
-> Can you put this into Russell's patch tracker or shall I sign
-> it off and put it there?
+> I should not have replaced 'pin' by 'offset' here. What do you
+> recommend me to do here, shall I send a V2 of this series and you will
+> drop my V1 from your tree, or do you want me to make a new patch that
+> fixes the error created by this patch?
 
+I just made the small patch myself, it's faster.
+Sending it out as we speak.
 
-I sent this to patches@arm.linux.org.uk
-
-It is already there.
-https://www.arm.linux.org.uk/developer/patches/section.php?section=0
-
-
-
--- 
-Best Regards
-Masahiro Yamada
+Yours,
+Linus Walleij
