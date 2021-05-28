@@ -2,108 +2,180 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6472C393F8D
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 11:09:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2514A393F94
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 11:11:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235265AbhE1JK7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 May 2021 05:10:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45756 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234226AbhE1JKy (ORCPT
+        id S234926AbhE1JMs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 May 2021 05:12:48 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:20794 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S229950AbhE1JMq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 May 2021 05:10:54 -0400
-Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78FB1C0613ED;
-        Fri, 28 May 2021 02:09:19 -0700 (PDT)
-Received: by mail-wm1-x329.google.com with SMTP id z19-20020a7bc7d30000b029017521c1fb75so4161701wmk.0;
-        Fri, 28 May 2021 02:09:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=message-id:date:from:user-agent:mime-version:to:cc:subject
-         :references:in-reply-to:content-transfer-encoding;
-        bh=sMSHq+umZzE3XCm8WFGhy8tszcRmNHLJp/XbtDNl2gM=;
-        b=iLSHCIfYtpvNu+mmjCpLRw7Zr8Yy5cqFGVLfeRG17HK/ggdqc1QY5wiE0lyZoUI/gJ
-         hZ6sWyKh1ngYopmcClgKY5/8zzHmaJQx2V+BquCAf2KEtG7w8HE3LBXzlOJp2AuiLVRH
-         UYgmcDE/ZlQHqomON5ZEDozqkQifjbdn7QXrhxjjaM8gFjAyVimja4WS6JYTQjUg1zlT
-         q/FUf4C4NTmhrmrPHO5IY5eiLz3wolaeDyjcGA6Aqq7A6SlrdREq3euyvsMzt7kUMaq2
-         EZ77AFrxa7JWFOUZO4T08FxP/dMUmXg6eC0VS8c7PD6lJusMjEHN2IMfiokP7vFcDT0b
-         5kyQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:date:from:user-agent:mime-version:to
-         :cc:subject:references:in-reply-to:content-transfer-encoding;
-        bh=sMSHq+umZzE3XCm8WFGhy8tszcRmNHLJp/XbtDNl2gM=;
-        b=rBdGwJY4mUJIVsWIAk68vmgWLvdfgmj6oLDxMr4GdWhrKryrjXv6hr9YpSfYbAsFLx
-         Prmu/3l+tBgwb+dbd7nRalAtRiNXCjfBSC+0H6mwn/nKZ6Oh22GjjPi0NxKb/J3Nh3rp
-         cjbAGmXtCf33s41RFHCE6fTHPbkfRlJvvzN01l3D380mVXiP7/A/jpyITPptOi6a4TQT
-         o0GUXF7LzoG1NG+YpvszyRTuCwNmn8BMPv8Dy1+NIY9K8T6L/2X91dHc5MJJ4Xo2gViX
-         LSh9UTemmGuaoKliizeWrm6ckWKXiTkWs8mhQg0nRo4Pyy8yhx2KC+uUbdPvlNALgW8H
-         OiAQ==
-X-Gm-Message-State: AOAM5314S33vhUAiqCFc1uWXn9vczjDjsBBxjLYqnvM86DAQkEJzRhiy
-        cFqPSob/2vVnKR2h8ces7lWV7309pF4=
-X-Google-Smtp-Source: ABdhPJz4Lkxtd9X8inDqLggacXo3tIs3S9OZpddSW82trALuGFL5G4Vs5Zydzn79SJVBLXgadoyw1w==
-X-Received: by 2002:a7b:ce8d:: with SMTP id q13mr6484003wmj.67.1622192958075;
-        Fri, 28 May 2021 02:09:18 -0700 (PDT)
-Received: from [89.139.227.208] (89-139-227-208.bb.netvision.net.il. [89.139.227.208])
-        by smtp.gmail.com with ESMTPSA id z135sm433559wmc.26.2021.05.28.02.09.16
-        (version=TLS1 cipher=AES128-SHA bits=128/128);
-        Fri, 28 May 2021 02:09:17 -0700 (PDT)
-Message-ID: <60B0B31A.7070301@gmail.com>
-Date:   Fri, 28 May 2021 12:08:42 +0300
-From:   Eli Billauer <eli.billauer@gmail.com>
-User-Agent: Mozilla/5.0 (X11; U; Linux x86_64; en-US; rv:1.9.1.12) Gecko/20100907 Fedora/3.0.7-1.fc12 Thunderbird/3.0.7
+        Fri, 28 May 2021 05:12:46 -0400
+Received: from pps.filterd (m0098413.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 14S93QYu104548;
+        Fri, 28 May 2021 05:11:10 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding; s=pp1;
+ bh=tn2zEgwVzSteBJj+sZRcP8OL5JTaJ+MzcqK70H+dNVs=;
+ b=UVIzg4MsCkmsrPqAdhEUWs5X/8C9nI+1mGa2HfMl+Zb7BWvD13GwQf/Rx756TdKvaiCa
+ CxOgnvvB+Vz3iEUIGrJvf6mYzaGy8V3bP7QqfCQlOcdodt5WTWxhSxRqS+DFECQinP5H
+ 9NovM4XhAX58tXcWHwBcr2GrvMkUaPbr2WlqCCusslG0DQhaTalAbUPdA0NSqPxY6+nC
+ D3yWHOivbF+OSGpy492L2sppPcK0aottrbVeloW9rJ4km/iXx/HYavv3FZk+pOut6pJR
+ 0lrQGox8QFEJ5g71t489/VDC68NWUD4/3olvYdzCiZL8sjfrsKP1og93wlCbnukSH80S 0g== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 38twh48ak4-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 28 May 2021 05:11:10 -0400
+Received: from m0098413.ppops.net (m0098413.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 14S94ID9108778;
+        Fri, 28 May 2021 05:11:09 -0400
+Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 38twh48aje-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 28 May 2021 05:11:09 -0400
+Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
+        by ppma06ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 14S98L5U013200;
+        Fri, 28 May 2021 09:11:08 GMT
+Received: from b06cxnps4076.portsmouth.uk.ibm.com (d06relay13.portsmouth.uk.ibm.com [9.149.109.198])
+        by ppma06ams.nl.ibm.com with ESMTP id 38s1ukhngk-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 28 May 2021 09:11:08 +0000
+Received: from d06av26.portsmouth.uk.ibm.com (d06av26.portsmouth.uk.ibm.com [9.149.105.62])
+        by b06cxnps4076.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 14S9B55A25035078
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 28 May 2021 09:11:05 GMT
+Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 36E36AE056;
+        Fri, 28 May 2021 09:11:05 +0000 (GMT)
+Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id D7CF5AE045;
+        Fri, 28 May 2021 09:11:04 +0000 (GMT)
+Received: from tuxmaker.boeblingen.de.ibm.com (unknown [9.152.85.9])
+        by d06av26.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Fri, 28 May 2021 09:11:04 +0000 (GMT)
+From:   Thomas Richter <tmricht@linux.ibm.com>
+To:     linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
+        acme@kernel.org, irogers@google.com, acme@redhat.com
+Cc:     svens@linux.ibm.com, gor@linux.ibm.com, sumanthk@linux.ibm.com,
+        hca@linux.ibm.com, Thomas Richter <tmricht@linux.ibm.com>
+Subject: [PATCH V2][Ping] perf test: Test 17 fails with make LIBPFM4=1 on s390 z/VM
+Date:   Fri, 28 May 2021 11:10:50 +0200
+Message-Id: <20210528091050.245838-1-tmricht@linux.ibm.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-To:     Greg KH <gregkh@linuxfoundation.org>
-CC:     arnd@arndb.de, linux-kernel@vger.kernel.org,
-        linux-usb@vger.kernel.org
-Subject: Re: [PATCH v5 2/2] char: xillybus: Add driver for XillyUSB (Xillybus
- variant for USB)
-References: <20210526100311.56327-1-eli.billauer@gmail.com> <20210526100311.56327-3-eli.billauer@gmail.com> <YK+Mlw0Tn7eGFPI2@kroah.com>
-In-Reply-To: <YK+Mlw0Tn7eGFPI2@kroah.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: 3KdXJix7-7tzRLR4Aian1nmwIuJ0bASC
+X-Proofpoint-GUID: RGBhQ0F45C9cvUNWBOtzbx1XreMXWnkY
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
+ definitions=2021-05-28_04:2021-05-27,2021-05-28 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 suspectscore=0
+ spamscore=0 adultscore=0 phishscore=0 impostorscore=0 bulkscore=0
+ priorityscore=1501 mlxscore=0 lowpriorityscore=0 mlxlogscore=999
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104190000 definitions=main-2105280059
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 27/05/21 15:12, Greg KH wrote:
->> diff --git a/drivers/char/xillybus/Makefile b/drivers/char/xillybus/Makefile
->> >  index 591615264591..16f31d03209d 100644
->> >  --- a/drivers/char/xillybus/Makefile
->> >  +++ b/drivers/char/xillybus/Makefile
->> >  @@ -7,3 +7,4 @@ obj-$(CONFIG_XILLYBUS_CLASS)	+= xillybus_class.o
->> >    obj-$(CONFIG_XILLYBUS)		+= xillybus_core.o
->> >    obj-$(CONFIG_XILLYBUS_PCIE)	+= xillybus_pcie.o
->> >    obj-$(CONFIG_XILLYBUS_OF)	+= xillybus_of.o
->> >  +obj-$(CONFIG_XILLYUSB)		+= xillyusb.o
->>      
-> This doesn't quite work.
->
-> Even if I have not selected CONFIG_XILLYBUS I get asked aboug
-> CONFIG_XILLYUSB.
-The symbol tree is:
+Version 2:
+   As suggested by Ian Rogers make perf_event_attribute member
+   exclude_hv more robust and accept value 0 or 1 to handle more
+   test cases which might fail on s390 virtual machine z/VM.
 
-XILLYBUS_CLASS --+-- XILLYBUS --+-- XILLYBUS_PCIE
-                  |              |
-                  |              +-- XILLYBUS_OF
-                  |
-                  +-- XILLYUSB
+This test case fails on s390 virtual machine z/VM which has no PMU support
+when the perf tool is built with LIBPFM4=1.
 
+Using make LIBPFM4=1 builds the perf tool with support for libpfm
+event notation. The command line flag --pfm-events is valid:
+ # ./perf record --pfm-events cycles -- true
+ [ perf record: Woken up 1 times to write data ]
+ [ perf record: Captured and wrote 0.001 MB perf.data (2 samples) ]
+ #
 
-Hence not selecting CONFIG_XILLYBUS doesn't eliminate CONFIG_XILLYUSB. 
-The behavior you described is correct: CONFIG_XILLYUSB doesn't depend on 
-CONFIG_XILLYBUS.
+However the command 'perf test -Fv 17' fails on s390 z/VM virtual machine
+with LIBPFM4=1:
+  # perf test -Fv 17
+  17: Setup struct perf_event_attr                                    :
+  --- start ---
+  .....
+  running './tests/attr/test-record-group2'
+  unsupp  './tests/attr/test-record-group2'
+  running './tests/attr/test-record-pfm-period'
+  expected exclude_hv=0, got 1
+ FAILED './tests/attr/test-record-pfm-period' - match failure
+ ---- end ----
+ Setup struct perf_event_attr: FAILED!
 
->   And if I say 'm' to CONFIG_XILLYUSB, nothing gets
-> built.
->
->    
-Sorry, my bad. The directory is currently invoked based upon 
-CONFIG_XILLYBUS, which was correct before, but now it should be 
-CONFIG_XILLYBUS_CLASS. I'll submit a patch fixing that promptly.
+When --pfm-event system is not supported, the test returns unsupported
+and continues. Here is an example using a virtual machine on x86 and
+Fedora 34:
+ [root@f33 perf]# perf test -Fv 17
+ 17: Setup struct perf_event_attr                                    :
+ --- start ---
+ .....
+ running './tests/attr/test-record-group2'
+ unsupp  './tests/attr/test-record-group2'
+ running './tests/attr/test-record-pfm-period'
+ unsupp  './tests/attr/test-record-pfm-period'
+ ....
 
-Plus another patch removing MODULE_VERSION() from all C files, per your 
-earlier comment.
+The issue is file ./tests/attr/test-record-pfm-period
+which requires perf event attribute member exclude_hv to be zero.
+This is not the case on s390 where the value of exclude_hv is one when
+executing on a z/VM virtual machine without PMU hardware support.
 
-Thanks and regards,
-    Eli
+Fix this by allowing value exlucde_hv to be zero or one.
+
+Output before:
+ # /usr/bin/python ./tests/attr.py -d ./tests/attr/ -t \
+	test-record-pfm-period -p ./perf  -vvv 2>&1| fgrep match
+    matching [event:base-record]
+    match: [event:base-record] matches []
+ FAILED './tests/attr//test-record-pfm-period' - match failure
+ #
+
+Output after:
+ # /usr/bin/python ./tests/attr.py -d ./tests/attr/ -t \
+	test-record-pfm-period -p ./perf  -vvv 2>&1| fgrep match
+    matching [event:base-record]
+    match: [event:base-record] matches ['event-1-0-6', 'event-1-0-5']
+  matched
+
+Background:
+Using libpfm library ends up in this function call sequence
+
+pfm_get_perf_event_encoding()
++-- pfm_get_os_event_encoding()
+    +-- pfmlib_perf_event_encode()
+
+is called when no hardware specific PMU unit can be detected
+as in the s390 z/VM virtual machine case. This uses the
+"perf_events generic PMU" data structure which sets exclude_hv
+to 1 per default.  Using this PMU that test case always fails.
+
+That is the reason why exclude_hv attribute setting varies.
+
+Signed-off-by: Thomas Richter <tmricht@linux.ibm.com>
+Suggested-by: Ian Rogers <irogers@google.com>
+---
+ tools/perf/tests/attr/base-record | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/tools/perf/tests/attr/base-record b/tools/perf/tests/attr/base-record
+index 4a7b8deef3fd..8c10955eff93 100644
+--- a/tools/perf/tests/attr/base-record
++++ b/tools/perf/tests/attr/base-record
+@@ -16,7 +16,7 @@ pinned=0
+ exclusive=0
+ exclude_user=0
+ exclude_kernel=0|1
+-exclude_hv=0
++exclude_hv=0|1
+ exclude_idle=0
+ mmap=1
+ comm=1
+-- 
+2.31.1
+
