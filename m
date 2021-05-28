@@ -2,91 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 502E1393E9B
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 10:17:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4ED11393EA4
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 10:18:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236105AbhE1ITZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 May 2021 04:19:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34140 "EHLO
+        id S235999AbhE1IUS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 May 2021 04:20:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34350 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235690AbhE1ITY (ORCPT
+        with ESMTP id S236110AbhE1IUH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 May 2021 04:19:24 -0400
-Received: from mail-wm1-x333.google.com (mail-wm1-x333.google.com [IPv6:2a00:1450:4864:20::333])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C740C061574
-        for <linux-kernel@vger.kernel.org>; Fri, 28 May 2021 01:17:48 -0700 (PDT)
-Received: by mail-wm1-x333.google.com with SMTP id z19-20020a7bc7d30000b029017521c1fb75so4076180wmk.0
-        for <linux-kernel@vger.kernel.org>; Fri, 28 May 2021 01:17:47 -0700 (PDT)
+        Fri, 28 May 2021 04:20:07 -0400
+Received: from mail-wm1-x32b.google.com (mail-wm1-x32b.google.com [IPv6:2a00:1450:4864:20::32b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74761C06174A
+        for <linux-kernel@vger.kernel.org>; Fri, 28 May 2021 01:18:28 -0700 (PDT)
+Received: by mail-wm1-x32b.google.com with SMTP id 16so1606729wmj.5
+        for <linux-kernel@vger.kernel.org>; Fri, 28 May 2021 01:18:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=AHWFtZ4JtVb0qrwTUD5lBPRsvkcKEz5Qmj3nhhGehuo=;
-        b=BkAhcBwQsg5TOd1uYuKBkMFFqIq3uka7Hrkjmgn43dyehF2KDMqvOzcDwgQOlZReFv
-         RQVYSR9jBmRP5NWzQTw2oRhydDHPg0jsVmnA9EC5JZGySoMyNKJFXPQjxja3G1O12JBl
-         QVLS9bfS6DAJfDEheF2GedEsunvRR800RrCtoQqdX38bb1LRzqGcErYigDnbTtSBWXSj
-         9v4ohQ1vt3ekfBiiqCCRaQziW5/YBr+rlSPpkTpy5b0B8TH+Yhxr9wCsakTVoeyEWGQ0
-         lEDrUVvzpSySN9F+xaMY1Y4YeuMdBjKPScLg0ww5FN2Ow7zrWp4dVmxV0Tnngouex975
-         JnfA==
+        d=raspberrypi.com; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=nxtUCORFUv1eRR4XIVBf88/R8ChiE/6MK9LbrGzsY3g=;
+        b=O1S/OFyLGA1Z9G6YG2xz/c/bCK2liCA49AwY0X0jpGR4UnFRHDo2izD6P6BCZJiBAy
+         Oxghns1L7rdtVmUtPv3wTqv15IEbGkbbQ8GYSQQ7VbshWcHuZ/kpmAq/pUgHdJQ9bGz5
+         gkJ0ZfS2hu1xlAzaP2is3rVkppts2+b3SxLa2EQod9EQ7L45N8xZXWGBO6V4EX7qpzLG
+         AowHxdyRFyYESkb9XRtRqJk8iwkrO3T2Tg7vC8h2vVScZJCV4cBejYeU4yfB6PuZq4SX
+         xJJLXNsshCJR5mVteuWSd+cuV9agT9ljxZfmKgoknP9gkskB3WODiM8XRQdKG0CyimcG
+         AHAg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=AHWFtZ4JtVb0qrwTUD5lBPRsvkcKEz5Qmj3nhhGehuo=;
-        b=aj/a5/OypR8JTMqvQsyakCugRqqys/HrXezgVKDB/d7HRJ6jYQJL4OkNy3cpx6rDtB
-         sdktsOoc9pNdiZqKllfgUcvN/75kZGF7izlzOQnnUN8d7Kr0Qy2eRGl9RQapmtESHkBp
-         Qgz9fKKcR4mohfFyMqPDgdytxiH6Dc4SSKeay4IK9NwyMQ9vam5THCO5eGkZX97LGZuq
-         BXR1Wew2rTQEGPAIxArJYeyhmUwWfUCLitnbe7BRf+cxV7VfVRWc4OFeAxAXsd5hbhRE
-         kamqPfER5vGCYZOle9N5f+Hiu8uk25uExEI0a484vKvsAQ9t5y7ftZdfiwctyhr8sul8
-         8I4w==
-X-Gm-Message-State: AOAM533+jm7f8pQ8wG6alA0VJpfeurtzjfVUtpZkDe+CBGOJmwdy4k3N
-        D/8a+LtlB/r0WMk2ufxRSyh3zA==
-X-Google-Smtp-Source: ABdhPJy6PzNqD1BYPWB5auyCe89oOV8OLtsOqwTIL8Kb/M2+C88LJBE3wznE13EspYbEpENySQDPoA==
-X-Received: by 2002:a05:600c:2dd7:: with SMTP id e23mr12339222wmh.186.1622189866195;
-        Fri, 28 May 2021 01:17:46 -0700 (PDT)
-Received: from dell ([91.110.221.223])
-        by smtp.gmail.com with ESMTPSA id q20sm17559400wmq.2.2021.05.28.01.17.45
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=nxtUCORFUv1eRR4XIVBf88/R8ChiE/6MK9LbrGzsY3g=;
+        b=toMJ8G2DjyQY6aiEqNCtNnGzhg4htU2K7q3vb8RQ57MQggJhDUr+tDuSinJ4Hs4apu
+         MImZZ9VBzTNl68q4ngzVCoasdtyltofmY1sACxj0a3m/C+pevpDgeSnuGfR7AdVU4OYv
+         Ssq9x+PYBlJp8r2E4ubywCQpgFxBkOpCiNr+EIZUNom10Set6fr73mCWle1oaJbyN3hq
+         54MsRkY0wGRTwD/7qVZo3DbeWfHvO6/tHN1nvPLGsBIvNqxcB7EUAHDEkxM1l+TWcQyf
+         vHrKaEj5iCMvYG/DOb8TgluEgxNICENoJsLMEEuobKcQkDdqsA5l3gcXEZW5NsY2Doeu
+         TSVQ==
+X-Gm-Message-State: AOAM533HB2uhJHVYqXSLNST9Ep+bkziD/QB5E/dC8N0fyDJL5D2Y1KeF
+        xEUrK5AGnmnFGzylsJLywZmybg==
+X-Google-Smtp-Source: ABdhPJwTaPerNtSc6U5py9eIAjcVtCvEr9c3x0LBoZ22BD4HFfXyewvA20ELiHPoPtVa6Sn1Pbyo+g==
+X-Received: by 2002:a1c:b755:: with SMTP id h82mr5824751wmf.140.1622189907116;
+        Fri, 28 May 2021 01:18:27 -0700 (PDT)
+Received: from buildbot.pitowers.org ([2a00:1098:3142:14:ae1f:6bff:fedd:de54])
+        by smtp.gmail.com with ESMTPSA id u17sm6285689wrt.61.2021.05.28.01.18.25
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 28 May 2021 01:17:45 -0700 (PDT)
-Date:   Fri, 28 May 2021 09:17:44 +0100
-From:   Lee Jones <lee.jones@linaro.org>
-To:     Wolfram Sang <wsa@kernel.org>, linux-kernel@vger.kernel.org,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Srinidhi Kasagar <srinidhi.kasagar@stericsson.com>,
-        Sachin Verma <sachin.verma@st.com>,
-        linux-arm-kernel@lists.infradead.org, linux-i2c@vger.kernel.org
-Subject: Re: [PATCH 01/16] i2c: busses: i2c-nomadik: Fix formatting issue
- pertaining to 'timeout'
-Message-ID: <20210528081744.GN543307@dell>
-References: <20210520190105.3772683-1-lee.jones@linaro.org>
- <20210520190105.3772683-2-lee.jones@linaro.org>
- <YK/yyypWeOnBNc4K@kunai>
- <20210528075806.GM543307@dell>
- <YLCjDHmAG0FcePyJ@kunai>
+        Fri, 28 May 2021 01:18:26 -0700 (PDT)
+From:   Phil Elwell <phil@raspberrypi.com>
+To:     Minas Harutyunyan <hminas@synopsys.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Sasha Levin <sashal@kernel.org>,
+        Artur Petrosyan <Arthur.Petrosyan@synopsys.com>,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Phil Elwell <phil@raspberrypi.com>
+Subject: [PATCH] usb: dwc2: Fix build in periphal-only mode
+Date:   Fri, 28 May 2021 09:18:18 +0100
+Message-Id: <20210528081818.2601382-1-phil@raspberrypi.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <YLCjDHmAG0FcePyJ@kunai>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 28 May 2021, Wolfram Sang wrote:
+The bus_suspended member of struct dwc2_hsotg is only present in builds
+that support host-mode.
 
-> 
-> > > Applied to for-current, thanks!
-> > 
-> > Thanks for these buddy.
-> 
-> You're welcome. The rest will also land in 5.13, but I want to give the
-> driver maintainers one week more time.
+Fixes: 62bb46f51f91 ("usb: dwc2: Fix hibernation between host and device modes.")
+Signed-off-by: Phil Elwell <phil@raspberrypi.com>
+---
+ drivers/usb/dwc2/core_intr.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-Understood.  There is no rush from my side.
-
+diff --git a/drivers/usb/dwc2/core_intr.c b/drivers/usb/dwc2/core_intr.c
+index a5ab03808da6..03d0c034cf57 100644
+--- a/drivers/usb/dwc2/core_intr.c
++++ b/drivers/usb/dwc2/core_intr.c
+@@ -725,7 +725,11 @@ static inline void dwc_handle_gpwrdn_disc_det(struct dwc2_hsotg *hsotg,
+ 	dwc2_writel(hsotg, gpwrdn_tmp, GPWRDN);
+ 
+ 	hsotg->hibernated = 0;
++
++#if IS_ENABLED(CONFIG_USB_DWC2_HOST) ||	\
++	IS_ENABLED(CONFIG_USB_DWC2_DUAL_ROLE)
+ 	hsotg->bus_suspended = 0;
++#endif
+ 
+ 	if (gpwrdn & GPWRDN_IDSTS) {
+ 		hsotg->op_state = OTG_STATE_B_PERIPHERAL;
 -- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+2.25.1
+
