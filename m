@@ -2,125 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C2BF9393E33
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 09:53:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 756B1393E39
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 09:55:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235398AbhE1HzP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 May 2021 03:55:15 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:26602 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230099AbhE1HzO (ORCPT
+        id S235437AbhE1H4n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 May 2021 03:56:43 -0400
+Received: from mout.kundenserver.de ([212.227.126.133]:37603 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234430AbhE1H4m (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 May 2021 03:55:14 -0400
-Received: from pps.filterd (m0187473.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 14S7jRS1067321;
-        Fri, 28 May 2021 03:53:11 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=E07mYIrIbcD8S7M7I/zguYPr5COGTFcFtbpS8VoDEuI=;
- b=cS0TRI5w0TsO9jbFZAPrrmyXaYSz+ddYGsrRB4Yzib6Uz0Y7i8FumMl5eTlu4EklCfdI
- waMu0CYUUPRCTdQT7Xic0COYw5Ob6Cb70i+P8v9QcqaAaCbflrr+dlptgfqXhPQJWcP7
- NI9AU3HGouxPBGOkSd6mVh/5yrskkzuixr0zfJZqvpeaQeHWs+Up8RLgRMQPh+GIzw+U
- ahewgUkkC4xdeOM7Le7t5jw7UnAawP4kY5sHx4HuqPihctZGSSIW5JcYKEIXAAU6J6zY
- ctiSuSWdilUArnZosXn45KXz3cEMGeEb1++WO0CbNwIEewcTZrMNeYSMdPVFs9CDIM+x Vg== 
-Received: from ppma03dal.us.ibm.com (b.bd.3ea9.ip4.static.sl-reverse.com [169.62.189.11])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 38tvdn0659-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 28 May 2021 03:53:11 -0400
-Received: from pps.filterd (ppma03dal.us.ibm.com [127.0.0.1])
-        by ppma03dal.us.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 14S7mLG8019243;
-        Fri, 28 May 2021 07:53:10 GMT
-Received: from b03cxnp08028.gho.boulder.ibm.com (b03cxnp08028.gho.boulder.ibm.com [9.17.130.20])
-        by ppma03dal.us.ibm.com with ESMTP id 38s1vamsve-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 28 May 2021 07:53:10 +0000
-Received: from b03ledav005.gho.boulder.ibm.com (b03ledav005.gho.boulder.ibm.com [9.17.130.236])
-        by b03cxnp08028.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 14S7r9xB34341194
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 28 May 2021 07:53:09 GMT
-Received: from b03ledav005.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id EA6E1BE068;
-        Fri, 28 May 2021 07:53:08 +0000 (GMT)
-Received: from b03ledav005.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 790F7BE04F;
-        Fri, 28 May 2021 07:53:02 +0000 (GMT)
-Received: from localhost.localdomain (unknown [9.199.32.139])
-        by b03ledav005.gho.boulder.ibm.com (Postfix) with ESMTP;
-        Fri, 28 May 2021 07:53:02 +0000 (GMT)
-Subject: Re: [RFC v2 4/4] powerpc/papr_scm: Add cpu hotplug support for nvdimm
- pmu device
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     mpe@ellerman.id.au, linuxppc-dev@lists.ozlabs.org,
-        linux-nvdimm@lists.01.org, linux-kernel@vger.kernel.org,
-        maddy@linux.vnet.ibm.com, santosh@fossix.org,
-        aneesh.kumar@linux.ibm.com, vaibhav@linux.ibm.com,
-        dan.j.williams@intel.com, ira.weiny@intel.com,
-        atrajeev@linux.vnet.ibm.com, tglx@linutronix.de,
-        rnsastry@linux.ibm.com
-References: <20210525132216.1239259-1-kjain@linux.ibm.com>
- <20210525132216.1239259-5-kjain@linux.ibm.com>
- <YK0G1nmvhOPimRay@hirez.programming.kicks-ass.net>
- <b89d1954-638b-34c0-2d79-5d1ce4e72a3a@linux.ibm.com>
- <YK4Ho7e+LCqjYA2X@hirez.programming.kicks-ass.net>
-From:   kajoljain <kjain@linux.ibm.com>
-Message-ID: <ab7ee13b-fccf-4366-c18c-f63ddf0552e2@linux.ibm.com>
-Date:   Fri, 28 May 2021 13:23:00 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        Fri, 28 May 2021 03:56:42 -0400
+Received: from mail-wr1-f54.google.com ([209.85.221.54]) by
+ mrelayeu.kundenserver.de (mreue009 [213.165.67.97]) with ESMTPSA (Nemesis) id
+ 1MD9Kj-1ldyd13tQH-009AlW for <linux-kernel@vger.kernel.org>; Fri, 28 May 2021
+ 09:55:06 +0200
+Received: by mail-wr1-f54.google.com with SMTP id r10so2277592wrj.11
+        for <linux-kernel@vger.kernel.org>; Fri, 28 May 2021 00:55:06 -0700 (PDT)
+X-Gm-Message-State: AOAM532MPSsrnF36mqjS0OuGYprczzzKUZxbEwrpoIm1MafWJr55y4lz
+        9qiOLSoIN8Uc1wTHsN/oSZiBJ3JJL7CIJo/hReE=
+X-Google-Smtp-Source: ABdhPJxtCA/iAW+OLP8xFsKArHSqvDr2GZoepVyWwZ73PMdxndP7NC9IdOzIAudCmGD4ukdBOEvRicXG4Tq8D72DlMc=
+X-Received: by 2002:a05:6000:1b0b:: with SMTP id f11mr7342217wrz.165.1622188506607;
+ Fri, 28 May 2021 00:55:06 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <YK4Ho7e+LCqjYA2X@hirez.programming.kicks-ass.net>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: 0MXISzsXWyIm5rY7s9lJENnNmh6HXMYm
-X-Proofpoint-ORIG-GUID: 0MXISzsXWyIm5rY7s9lJENnNmh6HXMYm
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
- definitions=2021-05-28_03:2021-05-27,2021-05-28 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0 phishscore=0
- mlxlogscore=959 malwarescore=0 clxscore=1015 impostorscore=0 mlxscore=0
- suspectscore=0 adultscore=0 lowpriorityscore=0 priorityscore=1501
- bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104190000 definitions=main-2105280049
+References: <be1c35eb997959b4939b304ef26664dfb9cd2275.1621941451.git.esben@geanix.com>
+In-Reply-To: <be1c35eb997959b4939b304ef26664dfb9cd2275.1621941451.git.esben@geanix.com>
+From:   Arnd Bergmann <arnd@arndb.de>
+Date:   Fri, 28 May 2021 09:53:37 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a1HGJpYnmhGb_eZzrv0ZopOJ-JuC6hyNP8V87C1Po9ruw@mail.gmail.com>
+Message-ID: <CAK8P3a1HGJpYnmhGb_eZzrv0ZopOJ-JuC6hyNP8V87C1Po9ruw@mail.gmail.com>
+Subject: Re: [PATCH] ARM: imx: only enable pinctrl as needed
+To:     Esben Haabendal <esben@geanix.com>
+Cc:     Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Russell King <linux@armlinux.org.uk>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Nobuhiro Iwamatsu <nobuhiro1.iwamatsu@toshiba.co.jp>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Provags-ID: V03:K1:gt4cA1GgoMHRZ98J2I02Mo35o2S92yAxbOjfsm3fk4VvPVFtecX
+ LX8rV3jlOI7TEc/zNAzqYpVeso3h8t95e317HLRJLJgJ2AVgkW9b2Cl/ZV5up7InWmR3hkL
+ U2pC+G2wHuwneeeyh7UhKj9G68MBh6Kykp/cb7+nYaxmbfuw4JsuItK2aLocq09T1vA28mA
+ comJayP/isE3f0bda00hw==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:N/ySsRk9ywg=:I28dxJS5eP5VsZo/PH8UvF
+ Aym0MDq80wcDg1McPkpssiq6IL6OAbnEKXec+OHoC658aaorAWY/xiWgPjFCwUkr2EzH7grXf
+ DoL8ZzWeloNWfEh7pOusUcWSa4gOrSt94YZpzmNOXsbO355+bP/zJwjW2FH8FXA3Fzbc7D+YN
+ Q2yfa+2teNRfX46Ok/dh5rdQ66uOQh24JOrwQf1rkf/oITTDqki88I1rAVj9TKn2rC6155pBx
+ OXZbS/hMiDsKddcYaHrID1mS3Z7jd4WMkV5rwXMsTRsxLpAGgziAEyaqYQuSPb92UIfTJw9m6
+ m0Vd9rWDDBCZr+TThdH43RCPzJlKN0QAcjk/FTLG9kJXNEq5tPvtm7arNg2RXDfLV/TC5Mj+F
+ 8o39Ij4511I+HQiOh8/6gaEtn6wNpwW8mNvLc60baxja4N+DKu4/vBA2a4tlUqVvEShlEyvbz
+ 2gnKybBiYwxBmIXoxEg5Sa89mXSXDRXcIN8pZyk/DyzE1iOIn43Y61ZrwUpFoqFQ6AXDdcvtU
+ q0BISCXarGCBLxdjA4nd/EUyrcCSIS9Nlxz8apypP0yUyJwM9anaKx+gJiFtpHZwtShvkQk9S
+ ObU+I2kbbmKNp/V8Z7i+uXcC5AFt1p7Q/ruiBwQjRssMccRWdvKTv99rAnsGmnojOAjwyiN1i
+ f+0w=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, May 25, 2021 at 1:22 PM Esben Haabendal <esben@geanix.com> wrote:
+>
+> As not all mach-imx platforms has support for run-time changes of pin
+> configurations (such as LS1021A), a more selective approach to enabling
+> pinctrl infrastructure makes sense, so that an e.g. an LS1021A only kernel
+> could be built without pinctrl support.
+>
+> Signed-off-by: Esben Haabendal <esben@geanix.com>
 
+I think it would be even better to leave all these drivers to be
+user-configurable. The symbols are currently defined as e.g.
 
-On 5/26/21 2:02 PM, Peter Zijlstra wrote:
-> On Wed, May 26, 2021 at 12:56:58PM +0530, kajoljain wrote:
->> On 5/25/21 7:46 PM, Peter Zijlstra wrote:
->>> On Tue, May 25, 2021 at 06:52:16PM +0530, Kajol Jain wrote:
-> 
->>>> It adds cpumask to designate a cpu to make HCALL to
->>>> collect the counter data for the nvdimm device and
->>>> update ABI documentation accordingly.
->>>>
->>>> Result in power9 lpar system:
->>>> command:# cat /sys/devices/nmem0/cpumask
->>>> 0
->>>
->>> Is this specific to the papr thing, or should this be in generic nvdimm
->>> code?
->>
->> This code is not specific to papr device and we can move it to
->> generic nvdimm interface. But do we need to add some checks on whether
->> any arch/platform specific driver want that support or we can assume 
->> that this will be something needed by all platforms?
-> 
-> I'm a complete NVDIMM n00b, but to me it would appear they would have to
-> conform to the normal memory hierarchy and would thus always be
-> per-node.
-> 
-> Also, if/when deviation from this rule is observed, we can always
-> rework/extend this. For now I think it would make sense to have the
-> per-node ness of the thing expressed in the generic layer.
-> 
+config PINCTRL_IMX51
+        bool "IMX51 pinctrl driver"
+        depends on SOC_IMX51
+        select PINCTRL_IMX
+        help
+          Say Y here to enable the imx51 pinctrl driver
 
-Hi Peter,
-  Thanks for the suggestion, I will send new RFC patchset with these changes.
+which could be changed to
 
-Thanks,
-Kajol Jain
+config PINCTRL_IMX51
+        bool "IMX51 pinctrl driver" if COMPILE_TEST && !SOC_IMX51
+        depends on OF
+        default SOC_IMX51
+        select PINCTRL_IMX
+        help
+          Say Y here to enable the imx51 pinctrl driver
+
+Today, having it configurable is pointless because you can't turn it off
+when SOC_IMX51 is set, and you can't turn it on when SOC_IMX51
+is disabled.
+
+The second version allows turning off PINCTRL completely though, as
+we do for other top-level subsystems that would likely make the system
+unusable when disabled (block, serial, ...), and it allows compile-testing
+on other machines, provided some dependencies (CONFIG_OF in the
+example) are met. It could theoretically also allow making it a 'tristate'
+option, as we do for an increasing number of drivers.
+
+       Arnd
