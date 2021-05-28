@@ -2,143 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 265A63939F7
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 02:03:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B211393A10
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 02:05:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236062AbhE1AEb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 May 2021 20:04:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36676 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235905AbhE1AEH (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 May 2021 20:04:07 -0400
-Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B426AC061574;
-        Thu, 27 May 2021 17:02:32 -0700 (PDT)
-Received: by mail-pj1-x102a.google.com with SMTP id ep16-20020a17090ae650b029015d00f578a8so1489912pjb.2;
-        Thu, 27 May 2021 17:02:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=SeFLBMDAzUrHuAE4pyFWQsjz2vLHikZIPIbOi3aXJRY=;
-        b=CKb+NO3Gk54mgnmoEzsQL7aKkPTIg5FavdZK4Rhmrcam7EGIbYZ02VyNUZKcky8mu/
-         8LWcxxn7++Ts1Dz365SF9DYs4EJL5zTX3ygEH0UPKreOH/8E8tnWl7JgV5e0d2KfFPZX
-         oEGoAee0mhY24cijXV6sGzgg80QQOS/orWxYU6yYWvVoChNvhTMFEODrNJ8p7oS5dVaC
-         tupWiz08CacShghQOIo39pIRnIwMrW2ZCvX7BiaI6GtHq+DVw0EQOW3oqU29VwK0Is3n
-         1SVBxfSGVTgT7vAIh8DpwouKuHIQ30/pYy5vaKObaK+BBVAKTrLj7jJifwUwh6bU15FC
-         uMvw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=SeFLBMDAzUrHuAE4pyFWQsjz2vLHikZIPIbOi3aXJRY=;
-        b=A7t8nJnk0sHHV0OePpQMy/HrHOGUuF7oditXTSbhPG6DQN7Dq11Pg401PFkRG7WMjU
-         rWIeeQCFHcYpBVk+nCJDFobwan1aqUKdjsdotXbkeYm1ibHWe0GKnEHjycaCT4mCo+ir
-         lMADctB4LptR2fD4E7PdqF88LQrribRG/PsxEqr+7NUc7QyVVOeBCV3GxBMAOmQnN9Jm
-         KiMaAtkK0ihH4+2RvrsNL7wmHmB7eybJRQos84NuMNmvEVRxoXGoizusJT7STwEijl14
-         y/5272AYi0jYAxS0Y0wSZrt8/IEGF+1DxczKpuMBDrDFWjJWD/511VPFXusRSWL8RG2Z
-         0vpg==
-X-Gm-Message-State: AOAM5322D6KHD/N7qAU4sAzXlI6C2uCNXoDx1VfXuHpnGxQ6rl92Ve36
-        FL5N/Eeew1Jdx/L8i96R1BhKRmkozgw=
-X-Google-Smtp-Source: ABdhPJxdS2H2V1t0rm57l4hxI6q0xWG8U+Cu3Q5eunWX4qMMDDGS228qYrphOmEawfZRP9mM9ZOm8w==
-X-Received: by 2002:a17:903:230b:b029:f4:b7cf:44aa with SMTP id d11-20020a170903230bb02900f4b7cf44aamr5404262plh.31.1622160151952;
-        Thu, 27 May 2021 17:02:31 -0700 (PDT)
-Received: from localhost.localdomain ([203.205.141.56])
-        by smtp.googlemail.com with ESMTPSA id l126sm2726245pga.41.2021.05.27.17.02.29
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 27 May 2021 17:02:31 -0700 (PDT)
-From:   Wanpeng Li <kernellwp@gmail.com>
-X-Google-Original-From: Wanpeng Li <wanpengli@tencent.com>
-To:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>
-Subject: [PATCH v4 2/2] KVM: X86: Kill off ctxt->ud
-Date:   Thu, 27 May 2021 17:01:37 -0700
-Message-Id: <1622160097-37633-2-git-send-email-wanpengli@tencent.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1622160097-37633-1-git-send-email-wanpengli@tencent.com>
-References: <1622160097-37633-1-git-send-email-wanpengli@tencent.com>
+        id S236326AbhE1AG5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 May 2021 20:06:57 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47748 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236427AbhE1AGZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 27 May 2021 20:06:25 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CEE7C611C9;
+        Fri, 28 May 2021 00:04:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1622160291;
+        bh=TZsH9RQGe/a33Z6yw5NLchRnLE8vX8Hg1n2GCyvagA8=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=TBgKHkOazsQ7QfqPxCNEY/o1LC5pYCERsQkE4+sVBu48iv25laBloAwoh/3B2croO
+         bzJdzYOac5hXjuMDUBjdHPzarEOWAlOVaCAx7yVn+zcTRfM+pIo7hI2oZR/gHQUsYm
+         AOVcphI2SNg2ScWuXwaIduuPtAAS6fXXFQDvJzT5vURu3JJBP9FqZSgToAG6WlPYeZ
+         mzlxca3QCnC+CThfW+13c21NyCPdkFsZwLJChm0k5HJx4R3z+Z6YH6HUuNHx2NxjAB
+         2U8IgyE3suSzdB+4ECYMDAtEfFuC9osMudp6aajmORNL5AZ/ukOeHqhAfS7S685yRU
+         uKaH7XQa2LBDQ==
+Date:   Thu, 27 May 2021 19:04:48 -0500
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Amey Narkhede <ameynarkhede03@gmail.com>
+Cc:     linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Leon Romanovsky <leon@kernel.org>
+Subject: Re: [PATCH v2] PCI: Check value of resource alignment before using
+ __ffs
+Message-ID: <20210528000448.GA1448205@bjorn-Precision-5520>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210526090612.a6i66ugimoxvyomg@archlinux>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Wanpeng Li <wanpengli@tencent.com>
+On Wed, May 26, 2021 at 02:36:12PM +0530, Amey Narkhede wrote:
+> On 21/05/25 05:01PM, Bjorn Helgaas wrote:
+> > On Thu, Apr 22, 2021 at 04:25:38PM +0530, Amey Narkhede wrote:
+> > > Return value of __ffs is undefined if no set bit exists in
+> > > its argument. This indicates that the associated BAR has
+> > > invalid alignment.
+> > >
+> > > Signed-off-by: Amey Narkhede <ameynarkhede03@gmail.com>
+> > > ---
+> > >  drivers/pci/setup-bus.c | 9 +++++----
+> > >  1 file changed, 5 insertions(+), 4 deletions(-)
+> > >
+> > > diff --git a/drivers/pci/setup-bus.c b/drivers/pci/setup-bus.c
+> > > index 2ce636937c6e..ce5380bdd2fd 100644
+> > > --- a/drivers/pci/setup-bus.c
+> > > +++ b/drivers/pci/setup-bus.c
+> > > @@ -1044,10 +1044,11 @@ static int pbus_size_mem(struct pci_bus *bus, unsigned long mask,
+> > >  			 * resources.
+> > >  			 */
+> > >  			align = pci_resource_alignment(dev, r);
+> > > -			order = __ffs(align) - 20;
+> > > -			if (order < 0)
+> > > -				order = 0;
+> > > -			if (order >= ARRAY_SIZE(aligns)) {
+> > > +			if (align) {
+> > > +				order = __ffs(align) - 20;
+> > > +				order = (order < 0) ? 0 : order;
+> > > +			}
+> > > +			if (!align || order >= ARRAY_SIZE(aligns)) {
+> > >  				pci_warn(dev, "disabling BAR %d: %pR (bad alignment %#llx)\n",
+> > >  					 i, r, (unsigned long long) align);
+> > >  				r->flags = 0;
+> >
+> > I know this is solving a theoretical problem.  Is it also solving a
+> > *real* problem?
+> >
+> > I dislike the way it complicates the code and the usage of "align" and
+> > "order".  I know that when "!align", we don't evaluate the
+> > "order >= ARRAY_SIZE()" (which would involve an uninitialized value),
+> > but it just seems ugly, and I'm not sure how much we benefit.
+> >
+> > And the "disabling BAR" part is gross.  I know you're not changing
+> > that part, but it's just wrong.  Setting r->flags = 0 certainly does
+> > not disable the BAR.  It might make Linux ignore it, but that doesn't
+> > mean the hardware ignores it.  When we turn on PCI_COMMAND_MEMORY, the
+> > BAR is enabled along with all the other memory BARs.
+> >
+> > Bjorn
+> 
+> Thanks for the detailed explanation. Is there any way to properly
+> disable the BAR?
 
-ctxt->ud is consumed only by x86_decode_insn(), we can kill it off by 
-passing emulation_type to x86_decode_insn() and dropping ctxt->ud 
-altogether. Tracking that info in ctxt for literally one call is silly.
+Unfortunately there is no way to disable an individual BAR.
+PCI_COMMAND_MEMORY applied to *all* memory BARs, and the same for
+PCI_COMMAND_IO.
 
-Suggested-by: Sean Christopherson <seanjc@google.com>
-Signed-off-by: Wanpeng Li <wanpengli@tencent.com>
----
- arch/x86/kvm/emulate.c     | 5 +++--
- arch/x86/kvm/kvm_emulate.h | 3 +--
- arch/x86/kvm/x86.c         | 4 +---
- 3 files changed, 5 insertions(+), 7 deletions(-)
+> On the side note do you think this problem is
+> worth solving? I came across this during code inspection.
+> I mean if practically there aren't chances of
+> this bug occuring I'm okay with dropping this patch.
 
-diff --git a/arch/x86/kvm/emulate.c b/arch/x86/kvm/emulate.c
-index 8a0ccdb..5e5de05 100644
---- a/arch/x86/kvm/emulate.c
-+++ b/arch/x86/kvm/emulate.c
-@@ -5111,7 +5111,7 @@ static int decode_operand(struct x86_emulate_ctxt *ctxt, struct operand *op,
- 	return rc;
- }
- 
--int x86_decode_insn(struct x86_emulate_ctxt *ctxt, void *insn, int insn_len)
-+int x86_decode_insn(struct x86_emulate_ctxt *ctxt, void *insn, int insn_len, int emulation_type)
- {
- 	int rc = X86EMUL_CONTINUE;
- 	int mode = ctxt->mode;
-@@ -5322,7 +5322,8 @@ int x86_decode_insn(struct x86_emulate_ctxt *ctxt, void *insn, int insn_len)
- 
- 	ctxt->execute = opcode.u.execute;
- 
--	if (unlikely(ctxt->ud) && likely(!(ctxt->d & EmulateOnUD)))
-+	if (unlikely(emulation_type & EMULTYPE_TRAP_UD) &&
-+	    likely(!(ctxt->d & EmulateOnUD)))
- 		return EMULATION_FAILED;
- 
- 	if (unlikely(ctxt->d &
-diff --git a/arch/x86/kvm/kvm_emulate.h b/arch/x86/kvm/kvm_emulate.h
-index f016838..3e870bf 100644
---- a/arch/x86/kvm/kvm_emulate.h
-+++ b/arch/x86/kvm/kvm_emulate.h
-@@ -314,7 +314,6 @@ struct x86_emulate_ctxt {
- 	int interruptibility;
- 
- 	bool perm_ok; /* do not check permissions if true */
--	bool ud;	/* inject an #UD if host doesn't support insn */
- 	bool tf;	/* TF value before instruction (after for syscall/sysret) */
- 
- 	bool have_exception;
-@@ -491,7 +490,7 @@ enum x86_intercept {
- #define X86EMUL_MODE_HOST X86EMUL_MODE_PROT64
- #endif
- 
--int x86_decode_insn(struct x86_emulate_ctxt *ctxt, void *insn, int insn_len);
-+int x86_decode_insn(struct x86_emulate_ctxt *ctxt, void *insn, int insn_len, int emulation_type);
- bool x86_page_table_writing_insn(struct x86_emulate_ctxt *ctxt);
- #define EMULATION_FAILED -1
- #define EMULATION_OK 0
-diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-index dba8077..d752345 100644
---- a/arch/x86/kvm/x86.c
-+++ b/arch/x86/kvm/x86.c
-@@ -7566,9 +7566,7 @@ int x86_decode_emulated_instruction(struct kvm_vcpu *vcpu, int emulation_type,
- 	    kvm_vcpu_check_breakpoint(vcpu, &r))
- 		return r;
- 
--	ctxt->ud = emulation_type & EMULTYPE_TRAP_UD;
--
--	r = x86_decode_insn(ctxt, insn, insn_len);
-+	r = x86_decode_insn(ctxt, insn, insn_len, emulation_type);
- 
- 	trace_kvm_emulate_insn_start(vcpu);
- 	++vcpu->stat.insn_emulation;
--- 
-2.7.4
+I guess I would just drop it.  Yes, it's a potential problem, but I
+couldn't figure out a solution that really seemed clean.
 
+Bjorn
