@@ -2,82 +2,235 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6284B393EB3
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 10:24:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C6B2F393EB4
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 10:24:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236332AbhE1IZ5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 May 2021 04:25:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35642 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235958AbhE1IZq (ORCPT
+        id S236334AbhE1I0W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 May 2021 04:26:22 -0400
+Received: from relay4-d.mail.gandi.net ([217.70.183.196]:57295 "EHLO
+        relay4-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235827AbhE1I0V (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 May 2021 04:25:46 -0400
-Received: from mail-lj1-x230.google.com (mail-lj1-x230.google.com [IPv6:2a00:1450:4864:20::230])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C7CFC061574
-        for <linux-kernel@vger.kernel.org>; Fri, 28 May 2021 01:24:11 -0700 (PDT)
-Received: by mail-lj1-x230.google.com with SMTP id o8so4267820ljp.0
-        for <linux-kernel@vger.kernel.org>; Fri, 28 May 2021 01:24:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=r0sxrV3i0KPoPCBtAeF9wpjfeXf/1JMQgY054n8rtMA=;
-        b=xw4bNl917hEV10RuSfp0fXTPhGRHUyeEtmvCn6xEDq1V8t+O/ks+Nid/2WSjBLV7VC
-         Z9C/ioPjli0bkRURHkrM6y6eO49pLtzgX4TCZPWpsABqSiQgvdMMRSYJ9ffaPEr4Q1Ra
-         ZjQO4QfzgQKFZRfu/ETQ4TSKzkirYKFvdYKAXmSHe+R/yeF6+gHvCWBfyMkRNYIbXqMc
-         MzZkg3rtL2BbeXQuC3JVBYpY+BiTp/zZ0B5KqV+LGAiWkqtLtuaLkQKeIBviCltQmnKt
-         TY12G1f5fd+Af+cOqPCpb7ZQaWd9LbKgf2LtRUwWDbTDnWP5wG4Lr80w0t08Ywx+4+jm
-         lSVg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=r0sxrV3i0KPoPCBtAeF9wpjfeXf/1JMQgY054n8rtMA=;
-        b=jzZgsQzm1FMpkFwpShKLt22OfP+gKQYQ8VB8AJBW/6+ck/r7K41u+hJISIyCXw2d3Y
-         /PYuKO+NjgQ7H9j44NYakzYd8gm3AFov57Q/D+FaKSssztTVdgPhTv8D/cL3YWWKiGzH
-         kI3Acg+05P90hlMaGkmvcDZnQj4Xrs2xsp7QOyBbVZQ4hwo8XY4Jaz5Pksj4lBBbIbSn
-         rJHGJZFUu9TEBACev6zelJLhjVlbp7i2f/6XWIrb01PkYAPnznXHQChX8gr6O2vf6qT2
-         bxmKgXYXt0av1pReq6bsjsB0eVLC2Hnim2GA4X8NiLc6HP8/L9V17Ja181CrfT01XAR1
-         wDwQ==
-X-Gm-Message-State: AOAM530uvIy0gB+6k5bwfPQuuUCT8VZzRySpzfax+LbtRBNYKyZCbPq7
-        Qp7mKq/FvgM/3NzhlzJ+UHACQyBuAvSeqPmrcd2vY5F908I=
-X-Google-Smtp-Source: ABdhPJyM1XvyOsxWGFG4wNTD/2cZcXzm5CymVosSszClAb7zPBtL7mYK6fbjUSEt6CtfCATvHzhHXUkxamEdLnarOsI=
-X-Received: by 2002:a2e:1319:: with SMTP id 25mr5619292ljt.200.1622190249395;
- Fri, 28 May 2021 01:24:09 -0700 (PDT)
+        Fri, 28 May 2021 04:26:21 -0400
+Received: (Authenticated sender: alex@ghiti.fr)
+        by relay4-d.mail.gandi.net (Postfix) with ESMTPSA id 9834BE000F;
+        Fri, 28 May 2021 08:24:43 +0000 (UTC)
+Subject: Re: [PATCH v2] riscv: Map the kernel with correct permissions the
+ first time
+To:     Christoph Hellwig <hch@infradead.org>
+Cc:     Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Jisheng Zhang <jszhang@kernel.org>,
+        Zong Li <zong.li@sifive.com>, Anup Patel <anup@brainfault.org>,
+        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
+References: <20210526134110.217073-1-alex@ghiti.fr>
+ <YK89yVQirCLdodxG@infradead.org>
+From:   Alex Ghiti <alex@ghiti.fr>
+Message-ID: <fe6fe4ba-00df-4695-c31e-7078bd77be50@ghiti.fr>
+Date:   Fri, 28 May 2021 10:24:43 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.2
 MIME-Version: 1.0
-References: <20210528035209.2157823-1-masahiroy@kernel.org>
-In-Reply-To: <20210528035209.2157823-1-masahiroy@kernel.org>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Fri, 28 May 2021 10:23:58 +0200
-Message-ID: <CACRpkdb-CsQtaiRjUWsimSmBw8tAgvr_ET1BS47rsVxd-eY0VA@mail.gmail.com>
-Subject: Re: [PATCH] ARM: simplify the build rule of mach-types.h
-To:     Masahiro Yamada <masahiroy@kernel.org>
-Cc:     patches@arm.linux.org.uk,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Russell King <linux@armlinux.org.uk>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <YK89yVQirCLdodxG@infradead.org>
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Language: fr
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 28, 2021 at 5:52 AM Masahiro Yamada <masahiroy@kernel.org> wrote:
+Hi Christoph,
 
-> The directory of mach-types.h is created a couple of lines above:
->
->   _dummy := $(shell [ -d '$(kapi)' ] || mkdir -p '$(kapi)') \
->
-> The 'mkdir -p' command is redundant.
->
-> scripts/Kbuild.include defines real-prereqs as a shorthand for
-> $(filter-out $(PHONY),$^). Let's use it to simplify the code.
->
-> Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+Le 27/05/2021 à 08:35, Christoph Hellwig a écrit :
+> On Wed, May 26, 2021 at 03:41:10PM +0200, Alexandre Ghiti wrote:
+>>   #ifdef CONFIG_64BIT
+>> +#define is_kernel_mapping(x)	((x) >= kernel_virt_addr && (x) < (kernel_virt_addr + load_sz))
+>> +#define is_linear_mapping(x)	((x) >= PAGE_OFFSET && (x) < kernel_virt_addr)
+>> +
+> 
+> Overly long lines.  Independ of that complex macros are generally much
+> more readable if they are written more function-like, that is the name
+> and paramtes are kept on a line of their own:
+> 
+> #define is_kernel_mapping(x) \
+> 	((x) >= kernel_virt_addr && (x) < (kernel_virt_addr + load_sz))
+> 
+> But what is the reason to not make them type-safe inline functions
+> anyway?
 
-Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+No reason. I will then make those macros inline functions and send 
+another patchset to make the below macro an inline function too.
 
-Can you put this into Russell's patch tracker or shall I sign
-it off and put it there?
+> 
+>>   #define __va_to_pa_nodebug(x)	({						\
+>>   	unsigned long _x = x;							\
+>> -	(_x < kernel_virt_addr) ?						\
+>> +	is_linear_mapping(_x) ?							\
+>>   		linear_mapping_va_to_pa(_x) : kernel_mapping_va_to_pa(_x);	\
+>>   	})
+> 
+> ... especially for something complex like this.
+> 
+>> +static inline bool is_va_kernel_lm_alias_text(uintptr_t va)
+>> +{
+>> +	return (va >= (uintptr_t)lm_alias(_start) && va < (uintptr_t)lm_alias(__init_text_begin));
+> 
+> Overly long line as well.  And useless braces.
 
-Yours,
-Linus Walleij
+Ok.
+
+> 
+>> +static inline bool is_va_kernel_init_text(uintptr_t va)
+>> +{
+>> +	return (va >= (uintptr_t)__init_text_begin && va < (uintptr_t)__init_data_begin);
+>> +}
+> 
+> Same here.
+
+checkpatch does not complain about those lines which are under 100 
+characters, what's the point in breaking them on multiple lines?
+
+> 
+>> +#ifdef CONFIG_STRICT_KERNEL_RWX
+>> +static __init pgprot_t pgprot_from_va(uintptr_t va)
+>> +{
+>> +#ifdef CONFIG_64BIT
+>> +	if (is_va_kernel_text(va) || is_va_kernel_init_text(va))
+>> +		return PAGE_KERNEL_READ_EXEC;
+>> +
+>> +	/*
+>> +	 * We must mark only text as read-only as init text will get freed later
+>> +	 * and rodata section is marked readonly in mark_rodata_ro.
+>> +	 */
+>> +	if (is_va_kernel_lm_alias_text(va))
+>> +		return PAGE_KERNEL_READ;
+>> +
+>> +	return PAGE_KERNEL;
+>> +#else
+>> +	if (is_va_kernel_text(va))
+>> +		return PAGE_KERNEL_READ_EXEC;
+>> +
+>> +	if (is_va_kernel_init_text(va))
+>> +		return PAGE_KERNEL_EXEC;
+>> +
+>> +	return PAGE_KERNEL;
+>> +#endif /* CONFIG_64BIT */
+>> +}
+> 
+> If the entire function is different for config symbols please just
+> split it into two separate functions.  But to make the difference more
+> clear IS_ENABLED might fit better here:
+> 
+> static __init pgprot_t pgprot_from_va(uintptr_t va)
+> {
+> 	if (is_va_kernel_text(va))
+> 		return PAGE_KERNEL_READ_EXEC;
+> 	if (is_va_kernel_init_text(va))
+> 		return IS_ENABLED(CONFIG_64BIT) ?
+> 			PAGE_KERNEL_READ_EXEC : PAGE_KERNEL_EXEC;
+> 	if (IS_ENABLED(CONFIG_64BIT) && is_va_kernel_lm_alias_text(va))
+> 		return PAGE_KERNEL_READ;
+> 	return PAGE_KERNEL;
+> }
+> 
+> Preferable with comments explaining the 32-bit vs 64-bit difference.
+
+Ok this is more compact, I'll do that with the comment.
+
+> 
+>> +void mark_rodata_ro(void)
+>> +{
+>> +	unsigned long rodata_start = (unsigned long)__start_rodata;
+>> +	unsigned long data_start = (unsigned long)_data;
+>> +	unsigned long __maybe_unused lm_rodata_start = (unsigned long)lm_alias(__start_rodata);
+>> +	unsigned long __maybe_unused lm_data_start = (unsigned long)lm_alias(_data);
+>> +
+>> +	set_memory_ro(rodata_start, (data_start - rodata_start) >> PAGE_SHIFT);
+>> +#ifdef CONFIG_64BIT
+>> +	set_memory_ro(lm_rodata_start, (lm_data_start - lm_rodata_start) >> PAGE_SHIFT);
+>> +#endif
+> 
+> Lots of unreadable overly lone lines.  Why not add a helper and do
+> something like:
+> 
+> static void set_kernel_memory_ro(char *startp, char *endp)
+> {
+>          unsigned long start = (unsigned long)startp;
+> 	unsigned long end = (unsigned long)endp;
+> 
+> 	set_memory_ro(start, (start - end) >> PAGE_SHIFT);
+> }
+> 
+>          set_kernel_memory_ro(_start_rodata, _data);
+> 	if (IS_ENABLED(CONFIG_64BIT))
+> 		set_kernel_memory_ro(lm_alias(__start_rodata), lm_alias(_data));
+> 
+> 
+
+Ok, that's better indeed. I will do something like that instead, to 
+avoid multiple versions of this helper:
+
+int set_kernel_memory(char *startp, char *endp, 
+
+                       int (*set_memory)(unsigned long start, int 
+num_pages))
+
+>> +static __init pgprot_t pgprot_from_va(uintptr_t va)
+>> +{
+>> +#ifdef CONFIG_64BIT
+>> +	if (is_kernel_mapping(va))
+>> +		return PAGE_KERNEL_EXEC;
+>> +
+>> +	if (is_linear_mapping(va))
+>> +		return PAGE_KERNEL;
+>> +
+>> +	return PAGE_KERNEL;
+>> +#else
+>> +	return PAGE_KERNEL_EXEC;
+>> +#endif /* CONFIG_64BIT */
+>> +}
+>> +#endif /* CONFIG_STRICT_KERNEL_RWX */
+>> +
+> 
+> Same comment as for the other version.  This could become:
+> 
+> static __init pgprot_t pgprot_from_va(uintptr_t va)
+> {
+> 	if (IS_ENABLED(CONFIG_64BIT) && !is_kernel_mapping(va))
+> 		return PAGE_KERNEL;
+> 	return PAGE_KERNEL_EXEC;
+> }
+
+Ok I'll do that.
+
+> 
+>> -static void __init create_kernel_page_table(pgd_t *pgdir, uintptr_t map_size)
+>> +static void __init create_kernel_page_table(pgd_t *pgdir, uintptr_t map_size, bool early)
+> 
+> Overly long line.
+> 
+>>   	for (va = kernel_virt_addr; va < end_va; va += map_size)
+>>   		create_pgd_mapping(pgdir, va,
+>>   				   load_pa + (va - kernel_virt_addr),
+>> -				   map_size, PAGE_KERNEL_EXEC);
+>> +				   map_size, early ? PAGE_KERNEL_EXEC : pgprot_from_va(va));
+> 
+> Same here.  But why not pass in a "pgprot_t ram_pgprot" instead of the
+> bool, which would be self-documenting.
+
+This function is used to map the kernel mapping, the pgprot_t is then 
+different in create_kernel_page_table depending on the virtual address 
+so I can't pass a single pgprot_t for that or I would need a dummy 
+pgprot_t to test anyway.
+
+Thank you for your review,
+
+Alex
+
+> 
+> _______________________________________________
+> linux-riscv mailing list
+> linux-riscv@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-riscv
+> 
