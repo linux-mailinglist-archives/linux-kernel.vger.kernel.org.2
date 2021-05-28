@@ -2,109 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BDE89393BE3
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 05:23:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 37C13393BE7
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 05:26:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234614AbhE1DYv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 May 2021 23:24:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53456 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234244AbhE1DYs (ORCPT
+        id S235974AbhE1D2Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 May 2021 23:28:25 -0400
+Received: from szxga03-in.huawei.com ([45.249.212.189]:2386 "EHLO
+        szxga03-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229977AbhE1D2X (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 May 2021 23:24:48 -0400
-Received: from mail-ot1-x32e.google.com (mail-ot1-x32e.google.com [IPv6:2607:f8b0:4864:20::32e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4BEBC061574
-        for <linux-kernel@vger.kernel.org>; Thu, 27 May 2021 20:23:12 -0700 (PDT)
-Received: by mail-ot1-x32e.google.com with SMTP id d25-20020a0568300459b02902f886f7dd43so2243102otc.6
-        for <linux-kernel@vger.kernel.org>; Thu, 27 May 2021 20:23:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=iBoABoXGVEa26J6F9F+2JMduVsAPFL5b+xGIvhg/4IE=;
-        b=p4Mj3FtJ5pxI+R00Ltm9+OfNZyxEbsyNr0j+slHqk2xPQydrge/J/fLKquCwEAygxB
-         BMamVP8ukqf4hPUre1PsNQa3/9lMuXN3+2LhYKRhKDsd50nY8za1uYkg6B8Kh8CsnRWZ
-         B6ZI4M06N+/dVQa0t/19rJGaKm3kWLspFHpN9m4irqd4erKdLGd2p9DxlX+JOnDOQkFG
-         nK1TQI3V3IU9XQtjfRkEdz/HKrvfCNJ30bc9xvZvCNQfTO+wRiqmlLykj86Xg6EiTWNF
-         Ki+LMFcwjUq5mosnmgA1MEee9Gb2YjK07MZ0cY6k+wjqlqWdcfMlB6DKiNPDCnHG0zmR
-         +1Aw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=iBoABoXGVEa26J6F9F+2JMduVsAPFL5b+xGIvhg/4IE=;
-        b=iMWMg4uw/lJRfW4ljn823BsTc8c/Uh7sjTO1l4hMUmEXRrXqHSaUaaqBAi9oEhkZZP
-         uC3AqB89uWrm3M5Fii0ZXe9oqIALhXWAt3YJcxgVZ/g9Xs9I5OSiAZH0lDdJ5EUBJi6D
-         YZWFRL0HvQLkl+Ud2No4CRN+dpXJjJhrUNbOsqVfO0HcPGqaCEp9G5QvsY4cdEYdRtLI
-         Xk07f7PHBC0fgqMhKWSl76ecge6yQ+JRwuBbHD8yL0vx0GTOCEQgGU1QGCcDHUfWRRVg
-         cpg8uylOhJMRTNa4mZ3qdAdmE4gQtp6Btc2VmErLDhpUAg6qMkj9mRiQQP2bTgRGYKyv
-         cNgg==
-X-Gm-Message-State: AOAM530OPCT41CPAasyA4n0MBZVY7EKnXWxqcd9lV06TitO3p1x6uSP7
-        H0mERx7Sk3CfeWn4Fkggu5LNUg==
-X-Google-Smtp-Source: ABdhPJwAh6Qd9Zru7S20u3fiNv40kZbjB5VjE+6kH7YUPz5VQcENH7fS7PdezVqyZiK0PMQ6QQwSXw==
-X-Received: by 2002:a05:6830:17cc:: with SMTP id p12mr5235975ota.270.1622172192118;
-        Thu, 27 May 2021 20:23:12 -0700 (PDT)
-Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id 88sm894485ott.51.2021.05.27.20.23.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 27 May 2021 20:23:11 -0700 (PDT)
-Date:   Thu, 27 May 2021 22:23:09 -0500
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Wilken Gottwalt <wilken.gottwalt@posteo.net>
-Cc:     Samuel Holland <samuel@sholland.org>, linux-kernel@vger.kernel.org,
-        Ohad Ben-Cohen <ohad@wizery.com>,
-        Baolin Wang <baolin.wang7@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Maxime Ripard <mripard@kernel.org>,
-        Chen-Yu Tsai <wens@csie.org>,
-        Jernej Skrabec <jernej.skrabec@siol.net>
-Subject: Re: [PATCH v7 0/2] hwspinlock: add sun6i hardware spinlock support
-Message-ID: <YLBiHQaW6H4K7QyO@builder.lan>
-References: <cover.1615713499.git.wilken.gottwalt@posteo.net>
- <95e93676-cfcf-1aed-1741-d69b72286033@sholland.org>
- <20210525180744.24187bb1@monster.powergraphx.local>
+        Thu, 27 May 2021 23:28:23 -0400
+Received: from dggeml767-chm.china.huawei.com (unknown [172.30.72.57])
+        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4Frql06CgYz63c0;
+        Fri, 28 May 2021 11:23:08 +0800 (CST)
+Received: from dggpemm500006.china.huawei.com (7.185.36.236) by
+ dggeml767-chm.china.huawei.com (10.1.199.177) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2176.2; Fri, 28 May 2021 11:26:47 +0800
+Received: from thunder-town.china.huawei.com (10.174.177.72) by
+ dggpemm500006.china.huawei.com (7.185.36.236) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Fri, 28 May 2021 11:26:46 +0800
+From:   Zhen Lei <thunder.leizhen@huawei.com>
+To:     Johannes Thumshirn <morbidrsa@gmail.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Tony Luck <tony.luck@intel.com>,
+        James Morse <james.morse@arm.com>,
+        Robert Richter <rric@kernel.org>,
+        "Doug Thompson" <dougthompson@xmission.com>,
+        Dave Jiang <djiang@mvista.com>,
+        "Andrew Morton" <akpm@linux-foundation.org>,
+        linux-edac <linux-edac@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+CC:     Zhen Lei <thunder.leizhen@huawei.com>
+Subject: [PATCH 1/1] EDAC, mpc85xx: Fix error return code in two functions
+Date:   Fri, 28 May 2021 11:26:37 +0800
+Message-ID: <20210528032637.9231-1-thunder.leizhen@huawei.com>
+X-Mailer: git-send-email 2.26.0.windows.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210525180744.24187bb1@monster.powergraphx.local>
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.174.177.72]
+X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
+ dggpemm500006.china.huawei.com (7.185.36.236)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue 25 May 11:07 CDT 2021, Wilken Gottwalt wrote:
+Fix to return -EFAULT from the error handling case instead of 0, as done
+elsewhere in its function.
 
-> On Mon, 15 Mar 2021 23:33:31 -0500
-> Samuel Holland <samuel@sholland.org> wrote:
-> 
-> > On 3/14/21 4:30 AM, Wilken Gottwalt wrote:
-> > > Wilken Gottwalt (2):
-> > >   dt-bindings: hwlock: add sun6i_hwspinlock
-> > >   hwspinlock: add sun6i hardware spinlock support
-> > > 
-> > >  .../allwinner,sun6i-a31-hwspinlock.yaml       |  45 ++++
-> > >  MAINTAINERS                                   |   6 +
-> > >  drivers/hwspinlock/Kconfig                    |   9 +
-> > >  drivers/hwspinlock/Makefile                   |   1 +
-> > >  drivers/hwspinlock/sun6i_hwspinlock.c         | 210 ++++++++++++++++++
-> > >  5 files changed, 271 insertions(+)
-> > >  create mode 100644 Documentation/devicetree/bindings/hwlock/allwinner,sun6i-a31-hwspinlock.yaml
-> > >  create mode 100644 drivers/hwspinlock/sun6i_hwspinlock.c
-> > > 
-> > 
-> > Thanks for the very thorough testing!
-> 
-> So when will this end up in mainstream? Or do I have to somehing to get this
-> triggered? This is not my first driver and back then it was included into
-> mainline without anything special on my side. I'm a bit confused. Did I miss
-> something?
-> 
+Fixes: a9a753d53204 ("drivers-edac: add freescale mpc85xx driver")
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
+---
+ drivers/edac/mpc85xx_edac.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-Sorry, I wasn't paying enough attention and you didn't Cc
-linux-remoteproc@ (as described in MAINTAINERS) so I lost track of the
-patch.
+diff --git a/drivers/edac/mpc85xx_edac.c b/drivers/edac/mpc85xx_edac.c
+index 67f7bc3fe5b3..b2eaa62c9412 100644
+--- a/drivers/edac/mpc85xx_edac.c
++++ b/drivers/edac/mpc85xx_edac.c
+@@ -248,6 +248,7 @@ static int mpc85xx_pci_err_probe(struct platform_device *op)
+ 
+ 	if (edac_pci_add_device(pci, pdata->edac_idx) > 0) {
+ 		edac_dbg(3, "failed edac_pci_add_device()\n");
++		res = -EFAULT;
+ 		goto err;
+ 	}
+ 
+@@ -552,6 +553,7 @@ static int mpc85xx_l2_err_probe(struct platform_device *op)
+ 
+ 	if (edac_device_add_device(edac_dev) > 0) {
+ 		edac_dbg(3, "failed edac_device_add_device()\n");
++		res = -EFAULT;
+ 		goto err;
+ 	}
+ 
+-- 
+2.25.1
 
-It's now been applied, I'll do some build testing on the way out but it
-should show up in linux-next in the coming days.
 
-Thank you,
-Bjorn
