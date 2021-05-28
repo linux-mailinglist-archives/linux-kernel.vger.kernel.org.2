@@ -2,326 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D91713941E6
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 13:36:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F421394200
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 13:40:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234781AbhE1Lhx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 May 2021 07:37:53 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49334 "EHLO mail.kernel.org"
+        id S235301AbhE1Llt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 May 2021 07:41:49 -0400
+Received: from foss.arm.com ([217.140.110.172]:39628 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234684AbhE1Lhq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 May 2021 07:37:46 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 61CEF613D1;
-        Fri, 28 May 2021 11:36:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1622201770;
-        bh=xsWC38tmeYp8iq/Gsp6+dftEFPqm7T0DSic5sdI+Uao=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Cqv/nRzRqNEuIu/k19SP5IQhN83JArpfzBwRX2LEU6PlWHgCaeRwZYZ5XbN4TmMln
-         n1fksbQdiefzrTatq8BIPx7vyYY+qfxN1rP2bGgCovZ+pHeG/mtMCBNoXAFXp5JZ27
-         gHgkWxT5MUbps3u97McXJW6A7S0OV0YDVbD4Z4OI=
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org, akpm@linux-foundation.org,
-        torvalds@linux-foundation.org, stable@vger.kernel.org
-Cc:     lwn@lwn.net, jslaby@suse.cz,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: Re: Linux 5.12.8
-Date:   Fri, 28 May 2021 13:36:02 +0200
-Message-Id: <162220176213942@kroah.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <162220176213976@kroah.com>
-References: <162220176213976@kroah.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        id S233583AbhE1Llo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 28 May 2021 07:41:44 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 4ACCE11D4;
+        Fri, 28 May 2021 04:40:09 -0700 (PDT)
+Received: from entos-ampere-02.shanghai.arm.com (entos-ampere-02.shanghai.arm.com [10.169.214.103])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 144CE3F73B;
+        Fri, 28 May 2021 04:40:02 -0700 (PDT)
+From:   Jia He <justin.he@arm.com>
+To:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Petr Mladek <pmladek@suse.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Luca Coelho <luciano.coelho@intel.com>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>
+Cc:     Christian Borntraeger <borntraeger@de.ibm.com>,
+        Johannes Berg <johannes.berg@intel.com>,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        linux-s390@vger.kernel.org, Jia He <justin.he@arm.com>
+Subject: [PATCH RFCv2 0/3] make '%pD' print full path for file
+Date:   Fri, 28 May 2021 19:39:48 +0800
+Message-Id: <20210528113951.6225-1-justin.he@arm.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-diff --git a/Makefile b/Makefile
-index 6a73dee7c221..a20afcb7d2bf 100644
---- a/Makefile
-+++ b/Makefile
-@@ -1,7 +1,7 @@
- # SPDX-License-Identifier: GPL-2.0
- VERSION = 5
- PATCHLEVEL = 12
--SUBLEVEL = 7
-+SUBLEVEL = 8
- EXTRAVERSION =
- NAME = Frozen Wasteland
- 
-diff --git a/arch/x86/kvm/svm/svm.c b/arch/x86/kvm/svm/svm.c
-index 48ee3deab64b..9a6825feaf53 100644
---- a/arch/x86/kvm/svm/svm.c
-+++ b/arch/x86/kvm/svm/svm.c
-@@ -3815,15 +3815,15 @@ static noinstr void svm_vcpu_enter_exit(struct kvm_vcpu *vcpu,
- 	 * have them in state 'on' as recorded before entering guest mode.
- 	 * Same as enter_from_user_mode().
- 	 *
--	 * guest_exit_irqoff() restores host context and reinstates RCU if
--	 * enabled and required.
-+	 * context_tracking_guest_exit() restores host context and reinstates
-+	 * RCU if enabled and required.
- 	 *
- 	 * This needs to be done before the below as native_read_msr()
- 	 * contains a tracepoint and x86_spec_ctrl_restore_host() calls
- 	 * into world and some more.
- 	 */
- 	lockdep_hardirqs_off(CALLER_ADDR0);
--	guest_exit_irqoff();
-+	context_tracking_guest_exit();
- 
- 	instrumentation_begin();
- 	trace_hardirqs_off_finish();
-diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
-index f68ed9a1abcc..ae63d59be38c 100644
---- a/arch/x86/kvm/vmx/vmx.c
-+++ b/arch/x86/kvm/vmx/vmx.c
-@@ -6701,15 +6701,15 @@ static noinstr void vmx_vcpu_enter_exit(struct kvm_vcpu *vcpu,
- 	 * have them in state 'on' as recorded before entering guest mode.
- 	 * Same as enter_from_user_mode().
- 	 *
--	 * guest_exit_irqoff() restores host context and reinstates RCU if
--	 * enabled and required.
-+	 * context_tracking_guest_exit() restores host context and reinstates
-+	 * RCU if enabled and required.
- 	 *
- 	 * This needs to be done before the below as native_read_msr()
- 	 * contains a tracepoint and x86_spec_ctrl_restore_host() calls
- 	 * into world and some more.
- 	 */
- 	lockdep_hardirqs_off(CALLER_ADDR0);
--	guest_exit_irqoff();
-+	context_tracking_guest_exit();
- 
- 	instrumentation_begin();
- 	trace_hardirqs_off_finish();
-diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-index 87311d39f914..86678f8b3502 100644
---- a/arch/x86/kvm/x86.c
-+++ b/arch/x86/kvm/x86.c
-@@ -9236,6 +9236,15 @@ static int vcpu_enter_guest(struct kvm_vcpu *vcpu)
- 	local_irq_disable();
- 	kvm_after_interrupt(vcpu);
- 
-+	/*
-+	 * Wait until after servicing IRQs to account guest time so that any
-+	 * ticks that occurred while running the guest are properly accounted
-+	 * to the guest.  Waiting until IRQs are enabled degrades the accuracy
-+	 * of accounting via context tracking, but the loss of accuracy is
-+	 * acceptable for all known use cases.
-+	 */
-+	vtime_account_guest_exit();
-+
- 	if (lapic_in_kernel(vcpu)) {
- 		s64 delta = vcpu->arch.apic->lapic_timer.advance_expire_delta;
- 		if (delta != S64_MIN) {
-diff --git a/include/linux/context_tracking.h b/include/linux/context_tracking.h
-index bceb06498521..4f4556232dcf 100644
---- a/include/linux/context_tracking.h
-+++ b/include/linux/context_tracking.h
-@@ -131,16 +131,26 @@ static __always_inline void guest_enter_irqoff(void)
- 	}
- }
- 
--static __always_inline void guest_exit_irqoff(void)
-+static __always_inline void context_tracking_guest_exit(void)
- {
- 	if (context_tracking_enabled())
- 		__context_tracking_exit(CONTEXT_GUEST);
-+}
- 
--	instrumentation_begin();
-+static __always_inline void vtime_account_guest_exit(void)
-+{
- 	if (vtime_accounting_enabled_this_cpu())
- 		vtime_guest_exit(current);
- 	else
- 		current->flags &= ~PF_VCPU;
-+}
-+
-+static __always_inline void guest_exit_irqoff(void)
-+{
-+	context_tracking_guest_exit();
-+
-+	instrumentation_begin();
-+	vtime_account_guest_exit();
- 	instrumentation_end();
- }
- 
-@@ -159,12 +169,19 @@ static __always_inline void guest_enter_irqoff(void)
- 	instrumentation_end();
- }
- 
-+static __always_inline void context_tracking_guest_exit(void) { }
-+
-+static __always_inline void vtime_account_guest_exit(void)
-+{
-+	vtime_account_kernel(current);
-+	current->flags &= ~PF_VCPU;
-+}
-+
- static __always_inline void guest_exit_irqoff(void)
- {
- 	instrumentation_begin();
- 	/* Flush the guest cputime we spent on the guest */
--	vtime_account_kernel(current);
--	current->flags &= ~PF_VCPU;
-+	vtime_account_guest_exit();
- 	instrumentation_end();
- }
- #endif /* CONFIG_VIRT_CPU_ACCOUNTING_GEN */
-diff --git a/include/net/nfc/nci_core.h b/include/net/nfc/nci_core.h
-index 43c9c5d2bedb..33979017b782 100644
---- a/include/net/nfc/nci_core.h
-+++ b/include/net/nfc/nci_core.h
-@@ -298,6 +298,7 @@ int nci_nfcc_loopback(struct nci_dev *ndev, void *data, size_t data_len,
- 		      struct sk_buff **resp);
- 
- struct nci_hci_dev *nci_hci_allocate(struct nci_dev *ndev);
-+void nci_hci_deallocate(struct nci_dev *ndev);
- int nci_hci_send_event(struct nci_dev *ndev, u8 gate, u8 event,
- 		       const u8 *param, size_t param_len);
- int nci_hci_send_cmd(struct nci_dev *ndev, u8 gate,
-diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index 7fa6fc6bedf1..21247e49fe82 100644
---- a/kernel/bpf/verifier.c
-+++ b/kernel/bpf/verifier.c
-@@ -5863,18 +5863,10 @@ enum {
- };
- 
- static int retrieve_ptr_limit(const struct bpf_reg_state *ptr_reg,
--			      const struct bpf_reg_state *off_reg,
--			      u32 *alu_limit, u8 opcode)
-+			      u32 *alu_limit, bool mask_to_left)
- {
--	bool off_is_neg = off_reg->smin_value < 0;
--	bool mask_to_left = (opcode == BPF_ADD &&  off_is_neg) ||
--			    (opcode == BPF_SUB && !off_is_neg);
- 	u32 max = 0, ptr_limit = 0;
- 
--	if (!tnum_is_const(off_reg->var_off) &&
--	    (off_reg->smin_value < 0) != (off_reg->smax_value < 0))
--		return REASON_BOUNDS;
--
- 	switch (ptr_reg->type) {
- 	case PTR_TO_STACK:
- 		/* Offset 0 is out-of-bounds, but acceptable start for the
-@@ -5940,15 +5932,20 @@ static bool sanitize_needed(u8 opcode)
- 	return opcode == BPF_ADD || opcode == BPF_SUB;
- }
- 
-+struct bpf_sanitize_info {
-+	struct bpf_insn_aux_data aux;
-+	bool mask_to_left;
-+};
-+
- static int sanitize_ptr_alu(struct bpf_verifier_env *env,
- 			    struct bpf_insn *insn,
- 			    const struct bpf_reg_state *ptr_reg,
- 			    const struct bpf_reg_state *off_reg,
- 			    struct bpf_reg_state *dst_reg,
--			    struct bpf_insn_aux_data *tmp_aux,
-+			    struct bpf_sanitize_info *info,
- 			    const bool commit_window)
- {
--	struct bpf_insn_aux_data *aux = commit_window ? cur_aux(env) : tmp_aux;
-+	struct bpf_insn_aux_data *aux = commit_window ? cur_aux(env) : &info->aux;
- 	struct bpf_verifier_state *vstate = env->cur_state;
- 	bool off_is_imm = tnum_is_const(off_reg->var_off);
- 	bool off_is_neg = off_reg->smin_value < 0;
-@@ -5969,7 +5966,16 @@ static int sanitize_ptr_alu(struct bpf_verifier_env *env,
- 	if (vstate->speculative)
- 		goto do_sim;
- 
--	err = retrieve_ptr_limit(ptr_reg, off_reg, &alu_limit, opcode);
-+	if (!commit_window) {
-+		if (!tnum_is_const(off_reg->var_off) &&
-+		    (off_reg->smin_value < 0) != (off_reg->smax_value < 0))
-+			return REASON_BOUNDS;
-+
-+		info->mask_to_left = (opcode == BPF_ADD &&  off_is_neg) ||
-+				     (opcode == BPF_SUB && !off_is_neg);
-+	}
-+
-+	err = retrieve_ptr_limit(ptr_reg, &alu_limit, info->mask_to_left);
- 	if (err < 0)
- 		return err;
- 
-@@ -5977,8 +5983,8 @@ static int sanitize_ptr_alu(struct bpf_verifier_env *env,
- 		/* In commit phase we narrow the masking window based on
- 		 * the observed pointer move after the simulated operation.
- 		 */
--		alu_state = tmp_aux->alu_state;
--		alu_limit = abs(tmp_aux->alu_limit - alu_limit);
-+		alu_state = info->aux.alu_state;
-+		alu_limit = abs(info->aux.alu_limit - alu_limit);
- 	} else {
- 		alu_state  = off_is_neg ? BPF_ALU_NEG_VALUE : 0;
- 		alu_state |= off_is_imm ? BPF_ALU_IMMEDIATE : 0;
-@@ -5993,8 +5999,12 @@ static int sanitize_ptr_alu(struct bpf_verifier_env *env,
- 	/* If we're in commit phase, we're done here given we already
- 	 * pushed the truncated dst_reg into the speculative verification
- 	 * stack.
-+	 *
-+	 * Also, when register is a known constant, we rewrite register-based
-+	 * operation to immediate-based, and thus do not need masking (and as
-+	 * a consequence, do not need to simulate the zero-truncation either).
- 	 */
--	if (commit_window)
-+	if (commit_window || off_is_imm)
- 		return 0;
- 
- 	/* Simulate and find potential out-of-bounds access under
-@@ -6139,7 +6149,7 @@ static int adjust_ptr_min_max_vals(struct bpf_verifier_env *env,
- 	    smin_ptr = ptr_reg->smin_value, smax_ptr = ptr_reg->smax_value;
- 	u64 umin_val = off_reg->umin_value, umax_val = off_reg->umax_value,
- 	    umin_ptr = ptr_reg->umin_value, umax_ptr = ptr_reg->umax_value;
--	struct bpf_insn_aux_data tmp_aux = {};
-+	struct bpf_sanitize_info info = {};
- 	u8 opcode = BPF_OP(insn->code);
- 	u32 dst = insn->dst_reg;
- 	int ret;
-@@ -6208,7 +6218,7 @@ static int adjust_ptr_min_max_vals(struct bpf_verifier_env *env,
- 
- 	if (sanitize_needed(opcode)) {
- 		ret = sanitize_ptr_alu(env, insn, ptr_reg, off_reg, dst_reg,
--				       &tmp_aux, false);
-+				       &info, false);
- 		if (ret < 0)
- 			return sanitize_err(env, insn, ret, off_reg, dst_reg);
- 	}
-@@ -6349,7 +6359,7 @@ static int adjust_ptr_min_max_vals(struct bpf_verifier_env *env,
- 		return -EACCES;
- 	if (sanitize_needed(opcode)) {
- 		ret = sanitize_ptr_alu(env, insn, dst_reg, off_reg, dst_reg,
--				       &tmp_aux, true);
-+				       &info, true);
- 		if (ret < 0)
- 			return sanitize_err(env, insn, ret, off_reg, dst_reg);
- 	}
-diff --git a/net/nfc/nci/core.c b/net/nfc/nci/core.c
-index 59257400697d..142d71c8d652 100644
---- a/net/nfc/nci/core.c
-+++ b/net/nfc/nci/core.c
-@@ -1191,6 +1191,7 @@ EXPORT_SYMBOL(nci_allocate_device);
- void nci_free_device(struct nci_dev *ndev)
- {
- 	nfc_free_device(ndev->nfc_dev);
-+	nci_hci_deallocate(ndev);
- 	kfree(ndev);
- }
- EXPORT_SYMBOL(nci_free_device);
-diff --git a/net/nfc/nci/hci.c b/net/nfc/nci/hci.c
-index 6b275a387a92..96865142104f 100644
---- a/net/nfc/nci/hci.c
-+++ b/net/nfc/nci/hci.c
-@@ -792,3 +792,8 @@ struct nci_hci_dev *nci_hci_allocate(struct nci_dev *ndev)
- 
- 	return hdev;
- }
-+
-+void nci_hci_deallocate(struct nci_dev *ndev)
-+{
-+	kfree(ndev->hci_dev);
-+}
+Background
+==========
+Linus suggested printing full path for file instead of printing
+the components as '%pd'.
+
+Typically, there is no need for printk specifiers to take any real locks
+(ie mount_lock or rename_lock). So I introduce a new helper d_path_fast
+which is similar to d_path except it doesn't take any seqlock/spinlock.
+
+This series is based on Al Viro's d_path cleanup patches [1] which
+lifted the inner lockless loop into a new helper. 
+
+[1] https://lkml.org/lkml/2021/5/18/1260
+
+Test
+====
+The cases I tested:
+1. print '%pD' with full path of ext4 file
+2. mount a ext4 filesystem upon a ext4 filesystem, and print the file
+   with '%pD'
+3. print file path which has more than 256 chars,"-ENAMETOOLONG" will
+   be returned
+4. print file path with '%32pD'
+5. all test_print selftests
+   
+After this set, I found many lines containing '%pD[234]' should be changed
+to '%pD'. I don't want to involve those subsystems in this patch series
+before the helper is stable enough.
+   
+You can get the lines by:
+$find fs/ -name \*.[ch] | xargs grep -rn "\%pD[234"
+
+fs/overlayfs/file.c:65: pr_debug("open(%p[%pD2/%c], 0%o) -> (%p, 0%o)\n",
+fs/nfs/direct.c:453:    dfprintk(FILE, "NFS: direct read(%pD2, %zd@%Ld)\n",
+fs/nfs/direct.c:908:    dfprintk(FILE, "NFS: direct write(%pD2, %zd@%Ld)\n",
+fs/nfs/write.c:1371:    dprintk("NFS:       nfs_updatepage(%pD2 %d@%lld)\n",
+fs/nfs/nfs4file.c:116:  dprintk("NFS: flush(%pD2)\n", file);
+fs/nfs/file.c:69:       dprintk("NFS: open file(%pD2)\n", filp);
+fs/nfs/file.c:83:       dprintk("NFS: release(%pD2)\n", filp);
+fs/nfs/file.c:117:      dprintk("NFS: llseek file(%pD2, %lld, %d)\n",
+fs/nfs/file.c:145:      dprintk("NFS: flush(%pD2)\n", file);
+fs/nfs/file.c:166:      dprintk("NFS: read(%pD2, %zu@%lu)\n",
+fs/nfs/file.c:188:      dprintk("NFS: mmap(%pD2)\n", file);
+fs/nfs/file.c:213:      dprintk("NFS: fsync file(%pD2) datasync %d\n", file, datasync);
+fs/nfs/file.c:328:      dfprintk(PAGECACHE, "NFS: write_begin(%pD2(%lu), %u@%lld)\n",
+fs/nfs/file.c:360:      dfprintk(PAGECACHE, "NFS: write_end(%pD2(%lu), %u@%lld)\n",
+fs/nfs/file.c:551:      dfprintk(PAGECACHE, "NFS: vm_page_mkwrite(%pD2(%lu), offset %lld)\n",
+fs/nfs/file.c:621:      dprintk("NFS: write(%pD2, %zu@%Ld)\n",
+fs/nfs/file.c:803:      dprintk("NFS: lock(%pD2, t=%x, fl=%x, r=%lld:%lld)\n",
+fs/nfs/file.c:841:      dprintk("NFS: flock(%pD2, t=%x, fl=%x)\n",
+fs/nfs/dir.c:111:       dfprintk(FILE, "NFS: open dir(%pD2)\n", filp);
+fs/nfs/dir.c:456:                                               pr_notice("NFS: directory %pD2 contains a readdir loop."
+fs/nfs/dir.c:1084:      dfprintk(FILE, "NFS: readdir(%pD2) starting at cookie %llu\n",
+fs/nfs/dir.c:1158:      dfprintk(FILE, "NFS: readdir(%pD2) returns %d\n", file, res);
+fs/nfs/dir.c:1166:      dfprintk(FILE, "NFS: llseek dir(%pD2, %lld, %d)\n",
+fs/nfs/dir.c:1208:      dfprintk(FILE, "NFS: fsync dir(%pD2) datasync %d\n", filp, datasync);
+fs/nfsd/nfs4state.c:2439:         seq_printf(s, "filename: \"%pD2\"", f->nf_file);
+fs/exec.c:817:          pr_warn_once("process '%pD4' started with executable stack\n",
+fs/iomap/direct-io.c:429:               pr_warn_ratelimited("Direct I/O collision with buffered writes! File: %pD4 Comm: %.20s\n",
+fs/ioctl.c:81:          pr_warn_ratelimited("[%s/%d] FS: %s File: %pD4 would truncate fibmap result\n",
+fs/read_write.c:425:            "kernel %s not supported for file %pD4 (pid: %d comm: %.20s)\n",
+fs/splice.c:754:                "splice %s not supported for file %pD4 (pid: %d comm: %.20s)\n",
+fs/afs/mntpt.c:64:      _enter("%p,%p{%pD2}", inode, file, file);
+
+Changelog:
+v2: 
+- implement new d_path_fast based on Al Viro's patches
+- add check_pointer check (by Petr)
+- change the max full path size to 256 in stack space
+v1: https://lkml.org/lkml/2021/5/8/122
+
+Jia He (3):
+  fs: introduce helper d_path_fast()
+  lib/vsprintf.c: make %pD print full path for file
+  s390/hmcdrv: remove the redundant directory path in debug message
+
+ Documentation/core-api/printk-formats.rst |  5 +++--
+ drivers/s390/char/hmcdrv_dev.c            | 10 +++++-----
+ fs/d_path.c                               | 21 +++++++++++++++++++++
+ include/linux/dcache.h                    |  1 +
+ lib/vsprintf.c                            | 21 +++++++++++++++++----
+ 5 files changed, 47 insertions(+), 11 deletions(-)
+
+-- 
+2.17.1
+
