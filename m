@@ -2,98 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 569E6393BD0
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 05:08:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AA896393BD2
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 05:11:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236286AbhE1DK3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 May 2021 23:10:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50270 "EHLO
+        id S236294AbhE1DMg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 May 2021 23:12:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50750 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234085AbhE1DK2 (ORCPT
+        with ESMTP id S234085AbhE1DMf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 May 2021 23:10:28 -0400
-Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76A1FC061574;
-        Thu, 27 May 2021 20:08:53 -0700 (PDT)
-Received: by mail-pl1-x62c.google.com with SMTP id d20so933359pls.13;
-        Thu, 27 May 2021 20:08:53 -0700 (PDT)
+        Thu, 27 May 2021 23:12:35 -0400
+Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6044FC061574
+        for <linux-kernel@vger.kernel.org>; Thu, 27 May 2021 20:11:01 -0700 (PDT)
+Received: by mail-ed1-x52f.google.com with SMTP id o5so3183663edc.5
+        for <linux-kernel@vger.kernel.org>; Thu, 27 May 2021 20:11:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=OgH48G6jS/shq0yobRMKYMCpLZwcGy0o1ktzLZXa1kw=;
-        b=djJn2BUHCYqwEH/pHiNL5QhiH7vwsxkK8dtvxU/T0VEdi/s+9gGxa/tk8MGyKf+UmB
-         i7Cy8YVLpRY7jG7aFS9I7NIFr0tLCYqx0e73mr/e2FQU0cJ5Ov4rgrG/XsLvlPFltqlM
-         iJbL8UH5BPYU4ktgcG6xIdZRkg59uwyMo4VfxVrtnJGLbL5iyl0OZnKKxKAr10MW4IXJ
-         fgCV1XiPstZD/iaOlRojh5GVXMr79LhW7ew+dDkBASWStJw3OjJw7d9WAwOuK7G7TIe1
-         Zur0vdJHpUtWOoC+XGTU5SRUGXtFFcFDqaBz0gKewCdavFOjPk1bi3zSyzdeEDk6bqHf
-         wdIA==
+        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=95ovB6mTl7unMYoP9NBE1G6j4ilgAKOEVr/KalCHM70=;
+        b=ftL2S4RcCxB8zP1xz37/HlN8LOJqNtdf+TWIE/PzfqqY/v8OFLsK4yuPwRXYeTJu+t
+         YfKeqQfPqGzkxg+x3ORJ6KZR7mjoMCpZhr4pjTxucOHmIO2IaZ9+7l9eOdLsnquZBalu
+         rXoEI0R8WJR1BVHYYENxcXqE5ur6nFyk03THB6WO5VBpl61ivQfnd2R3j7VvHA/Ze52F
+         vm8HW3GAovh8pzdPhKgH2ESLp1f3guKR3400RuV8PL+scP1EALjBukwSNs4e966nIPhI
+         Dh0Z5znqILCuzN9qUoNGeCyk4+EN22QRsNAfFYU3XYy/8zWT3u9nlCFbId3bpEZSBrJY
+         +AHA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=OgH48G6jS/shq0yobRMKYMCpLZwcGy0o1ktzLZXa1kw=;
-        b=INx+oHYUSfl/mzVYqhau2f2YEcsVrft1M1b4MGZaW/vifBa7zbVLDifvhAN65MYwKz
-         aug3nTnMLUB/eNILv9sqOXtuur9SGXHmQEm9RFZoaF67rFNvHdO/t3ZC7t20/M7kV42P
-         Q6sOpME1zK1Y3WX2jeXJ3nmVpKPFwaBeQvB4eXAodGJ6gpXZocTqgik/vbdwBVt6gnYL
-         agNGN9QM676t/PcvM7qJYiUA6UAexm3oiUBO6AHKQ8zLZH8IufV/nhsnjeSJfy3Y9qdi
-         8HGMeh52rUCerRt5TmdUgRCwgB///lGzMku1KI3Sd4vNGfVIjUg1RRzg4JqoNwzQS7Kg
-         3hrA==
-X-Gm-Message-State: AOAM530nL4US10zotk1uNupDMqni6TDQg65mEkytf1/gQ95r1MDL14sY
-        comQdAxB2jeDga546O3I8m3aXmDkwCrEpg==
-X-Google-Smtp-Source: ABdhPJwFXMrUlE1Dw03TX27HiPVmTE81U4SDh5S8IiCI1b+K7ZZEGjUXGII5/EX+zLuB2UOaooM5+w==
-X-Received: by 2002:a17:902:ce8d:b029:fc:86b1:51ea with SMTP id f13-20020a170902ce8db02900fc86b151eamr6005042plg.3.1622171332585;
-        Thu, 27 May 2021 20:08:52 -0700 (PDT)
-Received: from [192.168.1.67] (99-44-17-11.lightspeed.irvnca.sbcglobal.net. [99.44.17.11])
-        by smtp.gmail.com with ESMTPSA id u12sm2958387pfm.2.2021.05.27.20.08.50
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 27 May 2021 20:08:51 -0700 (PDT)
-Subject: Re: [PATCH 5.10 0/9] 5.10.41-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org
-Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        stable@vger.kernel.org
-References: <20210527151139.242182390@linuxfoundation.org>
-From:   Florian Fainelli <f.fainelli@gmail.com>
-Message-ID: <1dda0b01-2ee9-9891-0dd5-a54019e65706@gmail.com>
-Date:   Thu, 27 May 2021 20:08:49 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.10.2
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=95ovB6mTl7unMYoP9NBE1G6j4ilgAKOEVr/KalCHM70=;
+        b=allX4HAEaNogVH7EW3pzuGi2AxuspTnl9VcQ1kWY/Chj+bvV3Hc5g0gxTPg4DRi2Cq
+         6E1gMK3uHx52FcQBbMrFP4qfFK39o26O7haE310keXKYW59HQ3+jFj2/Tla/duDLcaDj
+         vo9fYITa3idSN7blf2MGHqWF8glKGJLCvZYKPUq+9O4yexvmUtnSMGQIzQ15d3r2uus6
+         0rWEeOwdM76Qm1UA0Wyt7q3w9+ePhOPnUA1qaC2UW9qoO5YqCQBATuaLbcbiwQTbTW5h
+         ntFRwIKXlxeJ5fQMkooDTh0nnedoc5+6okZxfCX4cZdmfCbYyMYKkDp4sjHhYDIHJls0
+         MFjw==
+X-Gm-Message-State: AOAM531zZr0tj9vnTLqYfCWXRMKzwgS5ZrmDCWwsSYXk9+iC65iCYW90
+        RLM42qBPKxPOLtMG+3mujI83SkHsI29Vb1XpK8XE
+X-Google-Smtp-Source: ABdhPJyH4BzfWPIE7jZQJvXQcS6awX2OGahW6eCLQJo3LGQSsV7ghk8tANbxW7hsA9utyUgEbjmSjrX+ariNFOwxSQg=
+X-Received: by 2002:a05:6402:128d:: with SMTP id w13mr7465577edv.253.1622171459983;
+ Thu, 27 May 2021 20:10:59 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210527151139.242182390@linuxfoundation.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <20210527073643.123-1-xieyongji@bytedance.com> <20210527110730.7a5cc468@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
+In-Reply-To: <20210527110730.7a5cc468@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
+From:   Yongji Xie <xieyongji@bytedance.com>
+Date:   Fri, 28 May 2021 11:10:49 +0800
+Message-ID: <CACycT3tHi8zHJZu+OPVFs3Bk-M6sUx-fQz6aJ+hGSHLWd2Rh8w@mail.gmail.com>
+Subject: Re: Re: [PATCH v2] virtio-net: Add validation for used length
+To:     Jakub Kicinski <kuba@kernel.org>
+Cc:     "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        virtualization <virtualization@lists.linux-foundation.org>,
+        netdev@vger.kernel.org, linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, May 28, 2021 at 2:07 AM Jakub Kicinski <kuba@kernel.org> wrote:
+>
+> On Thu, 27 May 2021 15:36:43 +0800 Xie Yongji wrote:
+> > This adds validation for used length (might come
+> > from an untrusted device) to avoid data corruption
+> > or loss.
+> >
+> > Signed-off-by: Xie Yongji <xieyongji@bytedance.com>
+>
+> This does not apply to net nor net-next.
 
+Will send v3. Thanks for the reminder.
 
-On 5/27/2021 8:12 AM, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 5.10.41 release.
-> There are 9 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Sat, 29 May 2021 15:11:29 +0000.
-> Anything received after that time might be too late.
-> 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.10.41-rc1.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.10.y
-> and the diffstat can be found below.
-> 
-> thanks,
-> 
-> greg k-h
-
-On ARCH_BRCMSTB, using 32-bit and 64-bit ARM kernels:
-
-Tested-by: Florian Fainelli <f.fainelli@gmail.com>
--- 
-Florian
+Thanks,
+Yongji
