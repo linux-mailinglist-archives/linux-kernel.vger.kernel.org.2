@@ -2,236 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 57FE1394429
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 16:23:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 373F139442C
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 16:24:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235895AbhE1OZA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 May 2021 10:25:00 -0400
-Received: from mail-eopbgr130088.outbound.protection.outlook.com ([40.107.13.88]:57942
-        "EHLO EUR01-HE1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S235452AbhE1OY5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 May 2021 10:24:57 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=armh.onmicrosoft.com;
- s=selector2-armh-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=fHAqq4g7WQA7t7xeEHKV+McZXBisJ9yCtl/vMi+XBAw=;
- b=387ZJ7JuvREbWzT/m2wpmmsB+FnNGjvuQ+EOZXBF9trJvFlHa//PhUZGVIy691lFhnNZvKJ6Npa0SijQLpE/o6aAQG1DR347/oGwuXppfiX4lNuCdKAt8FfaVFxd5WRI4uPNLBmvq1VBYxBHh1unYFYRnkm6ssF1kPsvvztFhSw=
-Received: from AM6PR10CA0055.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:209:80::32)
- by AM4PR0802MB2147.eurprd08.prod.outlook.com (2603:10a6:200:61::12) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4150.23; Fri, 28 May
- 2021 14:23:19 +0000
-Received: from AM5EUR03FT004.eop-EUR03.prod.protection.outlook.com
- (2603:10a6:209:80:cafe::fa) by AM6PR10CA0055.outlook.office365.com
- (2603:10a6:209:80::32) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4173.20 via Frontend
- Transport; Fri, 28 May 2021 14:23:19 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 63.35.35.123)
- smtp.mailfrom=arm.com; vger.kernel.org; dkim=pass (signature was verified)
- header.d=armh.onmicrosoft.com;vger.kernel.org; dmarc=pass action=none
- header.from=arm.com;
-Received-SPF: Pass (protection.outlook.com: domain of arm.com designates
- 63.35.35.123 as permitted sender) receiver=protection.outlook.com;
- client-ip=63.35.35.123; helo=64aa7808-outbound-1.mta.getcheckrecipient.com;
-Received: from 64aa7808-outbound-1.mta.getcheckrecipient.com (63.35.35.123) by
- AM5EUR03FT004.mail.protection.outlook.com (10.152.16.163) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.4150.30 via Frontend Transport; Fri, 28 May 2021 14:23:19 +0000
-Received: ("Tessian outbound a5ae8c02e74f:v93"); Fri, 28 May 2021 14:23:18 +0000
-X-CR-MTA-TID: 64aa7808
-Received: from 832eb8e6627f.1
-        by 64aa7808-outbound-1.mta.getcheckrecipient.com id A68925D0-6B8E-42BD-9EBC-863F3F7EF3B2.1;
-        Fri, 28 May 2021 14:23:13 +0000
-Received: from EUR04-HE1-obe.outbound.protection.outlook.com
-    by 64aa7808-outbound-1.mta.getcheckrecipient.com with ESMTPS id 832eb8e6627f.1
-    (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384);
-    Fri, 28 May 2021 14:23:13 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=nifhs1jueJmr2XLCzMfMupQqTVpGT5QYK6hcSk7agAiAVZtoKO9ge5qgXd7cbxz3Doe4unPGEhgqldnAhNCdybNAc7cdyZ9wOjyunn233kDIfik5t7WUabiO/qYf6mXXRhBEnXp/QKomDYc9CEkqpfc6qtjYW6LAsMJ9yj3CdniJUa+clk3lByfYtIuAaxIea3OvXuLVIzbENuOZzkHOeEROKDz2KgCrEbcuBvCrbCOqZuMQlYJ9GvRIyi0Y4u12U3mB24JQinkk1f8Ewm/nijnmZ8BZYIIvuYahBrEnUaUafSQvRwR2C/Y5KgPWUYl6k5ZI3l+CSjTMlky6qV/6wQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=fHAqq4g7WQA7t7xeEHKV+McZXBisJ9yCtl/vMi+XBAw=;
- b=fHvcFSJO4tUSJzpQo938JcBz6qr+GGcg9+yrxo7ZvIxnRAB9Z7Ov9/Q2C3WsN39b9f/qt1kreEJtLF/Ipb8QlEhTGdz3nkQtKD0yanoMOq8oZtk0veS+YFn8S7KIN2DgrWU4O61nrkfio1ZRzy10mvpelrnBvFh65vpjF2YR0yUVWDL7ZSAmwfa0zFgYN1UCzejvusqbZxm91C8/mhNR9NZXm6Putos4RyWAeN7Ach27FDHeg7XA5HTm+cOpZ3LQJSp0n0la7583na62kfIoIpcnBv0Tz577q3ESa5qIpEDql5a/7a4nBaOddwqBuSJ6eT1vi0Vq5BP7g9xoR46VCQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=arm.com; dmarc=pass action=none header.from=arm.com; dkim=pass
- header.d=arm.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=armh.onmicrosoft.com;
- s=selector2-armh-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=fHAqq4g7WQA7t7xeEHKV+McZXBisJ9yCtl/vMi+XBAw=;
- b=387ZJ7JuvREbWzT/m2wpmmsB+FnNGjvuQ+EOZXBF9trJvFlHa//PhUZGVIy691lFhnNZvKJ6Npa0SijQLpE/o6aAQG1DR347/oGwuXppfiX4lNuCdKAt8FfaVFxd5WRI4uPNLBmvq1VBYxBHh1unYFYRnkm6ssF1kPsvvztFhSw=
-Received: from AM6PR08MB4376.eurprd08.prod.outlook.com (2603:10a6:20b:bb::21)
- by AM6PR08MB3062.eurprd08.prod.outlook.com (2603:10a6:209:45::19) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4173.21; Fri, 28 May
- 2021 14:23:08 +0000
-Received: from AM6PR08MB4376.eurprd08.prod.outlook.com
- ([fe80::18c4:33fd:d055:fe60]) by AM6PR08MB4376.eurprd08.prod.outlook.com
- ([fe80::18c4:33fd:d055:fe60%3]) with mapi id 15.20.4173.021; Fri, 28 May 2021
- 14:23:08 +0000
-From:   Justin He <Justin.He@arm.com>
-To:     Matthew Wilcox <willy@infradead.org>
-CC:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Petr Mladek <pmladek@suse.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Luca Coelho <luciano.coelho@intel.com>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Johannes Berg <johannes.berg@intel.com>,
-        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-s390@vger.kernel.org" <linux-s390@vger.kernel.org>
-Subject: RE: [PATCH RFCv2 1/3] fs: introduce helper d_path_fast()
-Thread-Topic: [PATCH RFCv2 1/3] fs: introduce helper d_path_fast()
-Thread-Index: AQHXU7Zi1wKgbL37X06FgTdtF6ajcqr42Q+AgAAZQNA=
-Date:   Fri, 28 May 2021 14:23:08 +0000
-Message-ID: <AM6PR08MB43769A2CDB9584A2AD554A39F7229@AM6PR08MB4376.eurprd08.prod.outlook.com>
-References: <20210528113951.6225-1-justin.he@arm.com>
- <20210528113951.6225-2-justin.he@arm.com>
- <YLDnbafc6mEXENfy@casper.infradead.org>
-In-Reply-To: <YLDnbafc6mEXENfy@casper.infradead.org>
-Accept-Language: en-US, zh-CN
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ts-tracking-id: DEB36E7F64792C4CA5D0900C1B209CE8.0
-x-checkrecipientchecked: true
-Authentication-Results-Original: infradead.org; dkim=none (message not signed)
- header.d=none;infradead.org; dmarc=none action=none header.from=arm.com;
-x-originating-ip: [223.166.32.249]
-x-ms-publictraffictype: Email
-X-MS-Office365-Filtering-Correlation-Id: 2132ab73-f0d6-4142-001c-08d921e42490
-x-ms-traffictypediagnostic: AM6PR08MB3062:|AM4PR0802MB2147:
-X-Microsoft-Antispam-PRVS: <AM4PR0802MB2147C77F81D89A890715AE24F7229@AM4PR0802MB2147.eurprd08.prod.outlook.com>
-x-checkrecipientrouted: true
-nodisclaimer: true
-x-ms-oob-tlc-oobclassifiers: OLM:4714;OLM:8882;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam-Untrusted: BCL:0;
-X-Microsoft-Antispam-Message-Info-Original: Nngp9owH1jYKkg5SYjWHEFYAKNdi2MjXeRQKwRD6vTwaK4B3me6mmxME7zGMj/lWvdg1KAQavlQgXx/Who37IwzxMrT8698mr2cHRwUk+2Mx/IilahUNxyTq0WN+Ke54pwL+gDN4TRwiyfeMEJhodP/d4xPOpMrluz/SByBvf6pv2haEizgazFZveeq5c6uQuo/Q/+CsNWa6fcB5vQKnQfu99nqaaZjGPQL7LDxEDvN/2MmbglCquSlsGyXMu6QYj1NoX7ydBKyUgMPW4bjA5cNDS97t8kKhSrj7z+KgJszwCGDURG/tpS+1qK0kaRt+GmNnXJBCXOvba4UY/9PyPf+So9AxdS9THKHITO7d4h4p08K9JlFDxcpsF7M0FTy+h7snuxdxwg/EE4BkNMQRl4blgExj9NaRM5/hhfX7cx2aN1zhBPgKXCca04EFEd3fSXMflYU9/7vhCM+HLj6HrO9IC0D6OSdDuaNwIxLx4izawldYARDmMQWcSQdNmLzgXdbohYbq0/lAOqb18Z/fcI/uk2n64VauX+LNcQIj8AfDkRPxBDhprKvhbmY+tqgK6585BPFqnQjW3tcFuvyHJk6gxAYyoBdostaG0X9wZpM=
-X-Forefront-Antispam-Report-Untrusted: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM6PR08MB4376.eurprd08.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(376002)(396003)(136003)(346002)(39850400004)(186003)(38100700002)(26005)(6506007)(7696005)(33656002)(122000001)(54906003)(53546011)(55016002)(71200400001)(7416002)(6916009)(86362001)(66946007)(76116006)(52536014)(4326008)(66446008)(66556008)(64756008)(66476007)(5660300002)(8936002)(9686003)(8676002)(2906002)(478600001)(316002)(83380400001);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata: =?us-ascii?Q?S2wkQEkzqt8zm8KLH1kUqNTkDWVZ3QWr1nT972uXaxo5hrXyfTBIK4Em8S8f?=
- =?us-ascii?Q?+A1JM7JVRP5B1pVEXcX9e+l8hq+Aejbmdn2HmsW6K7OHlKZ3lEJopeqFpSmD?=
- =?us-ascii?Q?G86yuQQoffRSpGDQtSpEAFit9GaxSfyOh/suv/DFgQZ+m4thkfSaZiH6iQf2?=
- =?us-ascii?Q?r1uArE/7y4QR8+30t/G0RKehHsJ7yvbiTwK1zwEcb1d7jaOKdtw/1BGjmdKe?=
- =?us-ascii?Q?QVqyZckch3VyzTcxgz68RpFrGJnjIJeZW5mT/OajiPhZAR7fFajFVeVUzuGW?=
- =?us-ascii?Q?1d/WIELVqWcJVO+lyYS1KDZLE2clnJKp6Okxd1HXwi4oTApJZtb1H34fpRvv?=
- =?us-ascii?Q?6PUMIF/r6jrc07JAX+dugLWl+11UdEZsIVsEOeABYktBGi+v1YWrtNN80HT5?=
- =?us-ascii?Q?AWUgNIg5ZkUa16kGz34tLaPeT2Y1V5f/6GHu5N3AgbqdMj2nsw1Rw7f9WD6v?=
- =?us-ascii?Q?yWtQP2YtjRZt/F932H9XrIyq3TzSc0Rdjl/NGnz104lNVPNqgvCDUX+OVK3P?=
- =?us-ascii?Q?+KNQYExo0LM4lg8yi00Bw9JVSDvz8SAAHvoljmqP4FIz85yMI1LcDhaxjjJg?=
- =?us-ascii?Q?pp/EzWfCZ/A0Y//D1RrdZrksDvQ97W5YJZlswpymbLVJKGRnzaCYhwGmNkdG?=
- =?us-ascii?Q?s2F4UnAHu8qpR6oBiTRfNIloTuFPKc+aA6F4g+uOm7oIgM5cHEGryD5IyHS8?=
- =?us-ascii?Q?P9umBrD6XRL1YMPh7fBSRZGf6waVhpPKzxPWXjNfKZ0FjlWAYXRrS21BQTI+?=
- =?us-ascii?Q?C9IWRZpYZ4dgcPrHR3itZhBPG8Gz+3b9Flca9g5bc4t/d9nQy1MDg9i7TKI5?=
- =?us-ascii?Q?sYyMsNIdscJkXDxUQETfvSL9pI8bZHAN2PQ8aJXfHDImTjnOwjAw/LmVZG7F?=
- =?us-ascii?Q?ydxtFxuEZEMNQlQBsy+hfya3ivBN5gA9MtxkVbHCMxj1pM3imjGJjcJuH05k?=
- =?us-ascii?Q?afM+umhG1ahhHOVUFLc/eiVO5H35tXoVgtbi8ZVhSymnW69KCbNfFr0mCmcG?=
- =?us-ascii?Q?k2mDYmz0cTsp6aFSiYLK0o6c6fmNtipBrlP0SLAh8OyFbpvfwUfpv72XzFcl?=
- =?us-ascii?Q?1IJm5HsuonBhxZwsRpGaUQM4O5iFg8nFZs3auiAQNCqEoDyQAtSUpLRZpq9/?=
- =?us-ascii?Q?wvhysHIsUG7LLxFv5lvf9Ml1/rLYeqoQ6DuDH0e0ZivxzlCkECa7+sc1NVtB?=
- =?us-ascii?Q?SAAsl176deXc/nSuSJ/pe7oB6U9XLlNtafq67wjcNQGbOhNqpzCI3JGgkaou?=
- =?us-ascii?Q?nUFpfa3iAyQR+NEraVj9vY/HqYK5UEECFrYnS5Yg1KBfHsvHfF0BoFkC8w/6?=
- =?us-ascii?Q?O2Qi7C6yWRCMgmhWqTHCIlqo?=
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        id S235543AbhE1O0L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 May 2021 10:26:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60360 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233298AbhE1O0K (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 28 May 2021 10:26:10 -0400
+Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 530ADC061574
+        for <linux-kernel@vger.kernel.org>; Fri, 28 May 2021 07:24:35 -0700 (PDT)
+Received: by mail-lf1-x135.google.com with SMTP id e17so5622114lfb.2
+        for <linux-kernel@vger.kernel.org>; Fri, 28 May 2021 07:24:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=0qB23gabRSVjg16uX7Swp2PUtcfjaqZT0ss7Q1VTLtc=;
+        b=IvyyHPQK78oRsjX1trLtzkEWbZQcBcxDmBNKDEIV+TWkLXpTAhEGYGhUT825yUWDe3
+         HOvyK8czIZ8a/ziv8VdJNnsD9f+hyMTaBr5Z+11W2jfphSAUBUxWQl/JWAt3zOXKWK6+
+         6WUWRnllmUwqo5uppaUBK2Cq3Rv0mk1NHU+hMS8DvwcBKuUtoI1WQEn+wFV1v1D7FR0h
+         R2FBAsikMQO2RkiEx0k/I7Q6IjnpFTWHC+wDb7pTIoo6GmvpGAtbG/NQcT5d/sPtZGxB
+         iedBqp2shjY21Mr6l5/B2DiYGmsxz8ofmdNn4UGqxsp/a7/6//BIkloKnws+EG6oNOB2
+         sx1A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=0qB23gabRSVjg16uX7Swp2PUtcfjaqZT0ss7Q1VTLtc=;
+        b=MwBurg2qGnZAc5pa68XfWu4I6+RIz/AMbc11hOkKwOVAVlqFSd2acj3nFFQyCUjC3G
+         ZzWAS12Y4IT4Jlj9LHpUYoIhcnpHVjXIz1bBOUwag+/EHWDb4XRWtOqBwEb7fgfmYMXh
+         yde6ZT539ukOXGpy9eHCRknqIm7GKg2Z8toiCptUj/x+qgBG7EFFyawLFmgpQTmGEsSi
+         N5EfVQNCxcDCAIBBsJfX2ofle0SOPX176YUX2hpTBE0dyUOYnDneKsmPntHlQV2wPuZU
+         4NuKaKbi3K9hXtDb5wcd4kufjYJG8XetnQMqNSIVmPyC4Kqz/XA/csHCD+00Y1oZslXq
+         OQ6g==
+X-Gm-Message-State: AOAM5313uRumkkMYPYJkAjD14y/cHJAZCeoG3yBDuZyK1ye8ZMqAhJCW
+        zMcOiKZMsKKdoCwrwRl77fgDUxXt9aomX9307l6P9g==
+X-Google-Smtp-Source: ABdhPJy0F/Mm6KcZwDdOCTk1XjyjllVwhD7rJDCScs/W95trYbOm2PhE+XQkRRJf8qLMPSwvPnMGq4ehF/H4gBq/Jbk=
+X-Received: by 2002:ac2:5111:: with SMTP id q17mr6128288lfb.277.1622211873614;
+ Fri, 28 May 2021 07:24:33 -0700 (PDT)
 MIME-Version: 1.0
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM6PR08MB3062
-Original-Authentication-Results: infradead.org; dkim=none (message not signed)
- header.d=none;infradead.org; dmarc=none action=none header.from=arm.com;
-X-EOPAttributedMessage: 0
-X-MS-Exchange-Transport-CrossTenantHeadersStripped: AM5EUR03FT004.eop-EUR03.prod.protection.outlook.com
-X-MS-Office365-Filtering-Correlation-Id-Prvs: fb776b47-5720-491e-5872-08d921e41de3
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: r6kOYAzJ17o9D5D8tNwKxnm1Wnhe4PILSdMWryhMuFN2v1TZn+CiKclCrCqLj7XtNcI/N0bMaLWc+MukeC2d9+bbeUz9zzAgX6lEPkaPPQ1bLuiCMjj4w+VWpmONzV3LCQDmwLqcd7juKKMfLEVugxQy/AW7S4b42iwq7M42KdVBmvWvclo9PYYnlLHH9mGNXX+eSw86c9I0muAnkmXKW5zJ175l0e83qzrWTE91RIAWjWEgx4ELiwZn6rCpywWKxMGLl1DmB4Cbchfw+hU2bSncIRMql06XPRAc1VCc9tV1LfEgBKwceWex8lvHDlsJMNbw2/qbR7uo4uODksO2qJLRBdZYabyJBRSovEc4Ye6m70M7bIrC6yxiZKkDhQoYNaDV+fnFN5b4K570JJvmY0NKzsiUdxquFI6K/vvbKmwTKf7p69L/gvcgVih0W39wQaa8jKCXkSF/nDGi9JMyJ91aSU/3MKRHkp7ahQQQ21xtnyWNaks8c0H48f6ehlodlg2i+LG8R+mI11i3+5WazehqX+PGHkQkORUUPWjspSxO73hYw8k2Xl7NqLSvSSrXZBawyFF2jmkM+dICMl6rSjusEZmLWk4augUK2DxM/877FBDa8yMQZOCi4hQUTc+ueMDC323vLgb1rfMTLqsnUg==
-X-Forefront-Antispam-Report: CIP:63.35.35.123;CTRY:IE;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:64aa7808-outbound-1.mta.getcheckrecipient.com;PTR:ec2-63-35-35-123.eu-west-1.compute.amazonaws.com;CAT:NONE;SFS:(4636009)(376002)(396003)(346002)(136003)(39850400004)(46966006)(36840700001)(55016002)(6862004)(186003)(4326008)(26005)(83380400001)(8936002)(70206006)(478600001)(82740400003)(6506007)(450100002)(53546011)(9686003)(33656002)(47076005)(7696005)(82310400003)(52536014)(86362001)(81166007)(8676002)(2906002)(54906003)(356005)(336012)(70586007)(316002)(36860700001)(5660300002);DIR:OUT;SFP:1101;
-X-OriginatorOrg: arm.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 28 May 2021 14:23:19.7933
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 2132ab73-f0d6-4142-001c-08d921e42490
-X-MS-Exchange-CrossTenant-Id: f34e5979-57d9-4aaa-ad4d-b122a662184d
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=f34e5979-57d9-4aaa-ad4d-b122a662184d;Ip=[63.35.35.123];Helo=[64aa7808-outbound-1.mta.getcheckrecipient.com]
-X-MS-Exchange-CrossTenant-AuthSource: AM5EUR03FT004.eop-EUR03.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM4PR0802MB2147
+References: <20210518125202.78658-1-odin@uged.al> <20210518125202.78658-3-odin@uged.al>
+In-Reply-To: <20210518125202.78658-3-odin@uged.al>
+From:   Vincent Guittot <vincent.guittot@linaro.org>
+Date:   Fri, 28 May 2021 16:24:22 +0200
+Message-ID: <CAKfTPtCiV5LMoXBQVdSsvNq-vurFVVd4aVWW-C=8Tza8uJTCjg@mail.gmail.com>
+Subject: Re: [PATCH 2/3] sched/fair: Correctly insert cfs_rq's to list on unthrottle
+To:     Odin Ugedal <odin@uged.al>
+Cc:     Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        "open list:CONTROL GROUP (CGROUP)" <cgroups@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-> -----Original Message-----
-> From: Matthew Wilcox <willy@infradead.org>
-> Sent: Friday, May 28, 2021 8:52 PM
-> To: Justin He <Justin.He@arm.com>
-> Cc: Linus Torvalds <torvalds@linux-foundation.org>; Petr Mladek
-> <pmladek@suse.com>; Steven Rostedt <rostedt@goodmis.org>; Sergey
-> Senozhatsky <senozhatsky@chromium.org>; Andy Shevchenko
-> <andriy.shevchenko@linux.intel.com>; Rasmus Villemoes
-> <linux@rasmusvillemoes.dk>; Jonathan Corbet <corbet@lwn.net>; Alexander
-> Viro <viro@zeniv.linux.org.uk>; Luca Coelho <luciano.coelho@intel.com>;
-> Kalle Valo <kvalo@codeaurora.org>; David S. Miller <davem@davemloft.net>;
-> Jakub Kicinski <kuba@kernel.org>; Heiko Carstens <hca@linux.ibm.com>;
-> Vasily Gorbik <gor@linux.ibm.com>; Christian Borntraeger
-> <borntraeger@de.ibm.com>; Johannes Berg <johannes.berg@intel.com>; linux-
-> doc@vger.kernel.org; linux-kernel@vger.kernel.org; linux-
-> wireless@vger.kernel.org; netdev@vger.kernel.org; linux-
-> s390@vger.kernel.org
-> Subject: Re: [PATCH RFCv2 1/3] fs: introduce helper d_path_fast()
+On Tue, 18 May 2021 at 14:54, Odin Ugedal <odin@uged.al> wrote:
 >
-> On Fri, May 28, 2021 at 07:39:49PM +0800, Jia He wrote:
-> > +/**
-> > + * d_path_fast - fast return the full path of a dentry without taking
-> > + * any seqlock/spinlock. This helper is typical for debugging purpose
-> > + */
-> > +char *d_path_fast(const struct path *path, char *buf, int buflen)
+> This fixes an issue where fairness is decreased since cfs_rq's can
+> end up not being decayed properly. For two sibling control groups with
+> the same priority, this can often lead to a load ratio of 99/1 (!!).
 >
-> I'd suggest calling it d_path_unsafe().  Otherwise people will call it
-> instead of d_path because who doesn't like fast?
+> This happen because when a cfs_rq is throttled, all the descendant cfs_rq's
+> will be removed from the leaf list. When they initial cfs_rq is
+> unthrottled, it will currently only re add descendant cfs_rq's if they
+> have one or more entities enqueued. This is not a perfect heuristic.
+
+What would be the other condition in addition to the current one
+:cfs_rq->nr_running >= 1 ?
+We need to add a cfs_rq in the list if it still contributes to the
+tg->load_avg and the split of the share. Can't we add a condition for
+this instead of adding a new field ?
+
 >
-Okay, thanks
-
-> > +{
-> > +   struct path root;
-> > +   struct mount *mnt =3D real_mount(path->mnt);
-> > +   DECLARE_BUFFER(b, buf, buflen);
-> > +
-> > +   rcu_read_lock();
-> > +   get_fs_root_rcu(current->fs, &root);
-> > +
-> > +   prepend(&b, "", 1);
-> > +   __prepend_path(path->dentry, mnt, &root, &b);
-> > +   rcu_read_unlock();
-> > +
-> > +   return extract_string(&b);
-> > +}
-> > +EXPORT_SYMBOL(d_path_fast);
+> This fix change this behavior to save what cfs_rq's was removed from the
+> list, and readds them properly on unthrottle.
 >
-> Why export it?  What module needs this?
-Okay, indeed
-
---
-Cheers,
-Justin (Jia He)
-
-
-IMPORTANT NOTICE: The contents of this email and any attachments are confid=
-ential and may also be privileged. If you are not the intended recipient, p=
-lease notify the sender immediately and do not disclose the contents to any=
- other person, use it for any purpose, or store or copy the information in =
-any medium. Thank you.
+> Can often lead to sutiations like this for equally weighted control
+> groups:
+>
+> $ ps u -C stress
+> USER         PID %CPU %MEM    VSZ   RSS TTY      STAT START   TIME COMMAND
+> root       10009 88.8  0.0   3676   100 pts/1    R+   11:04   0:13 stress --cpu 1
+> root       10023  3.0  0.0   3676   104 pts/1    R+   11:04   0:00 stress --cpu 1
+>
+> Fixes: 31bc6aeaab1d ("sched/fair: Optimize update_blocked_averages()")
+> Signed-off-by: Odin Ugedal <odin@uged.al>
+> ---
+>  kernel/sched/fair.c  | 11 ++++++-----
+>  kernel/sched/sched.h |  1 +
+>  2 files changed, 7 insertions(+), 5 deletions(-)
+>
+> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+> index ceda53c2a87a..e7423d658389 100644
+> --- a/kernel/sched/fair.c
+> +++ b/kernel/sched/fair.c
+> @@ -376,7 +376,8 @@ static inline bool list_add_leaf_cfs_rq(struct cfs_rq *cfs_rq)
+>         return false;
+>  }
+>
+> -static inline void list_del_leaf_cfs_rq(struct cfs_rq *cfs_rq)
+> +/* Returns 1 if cfs_rq was present in the list and removed */
+> +static inline bool list_del_leaf_cfs_rq(struct cfs_rq *cfs_rq)
+>  {
+>         if (cfs_rq->on_list) {
+>                 struct rq *rq = rq_of(cfs_rq);
+> @@ -393,7 +394,9 @@ static inline void list_del_leaf_cfs_rq(struct cfs_rq *cfs_rq)
+>
+>                 list_del_rcu(&cfs_rq->leaf_cfs_rq_list);
+>                 cfs_rq->on_list = 0;
+> +               return 1;
+>         }
+> +       return 0;
+>  }
+>
+>  static inline void assert_list_leaf_cfs_rq(struct rq *rq)
+> @@ -4742,9 +4745,7 @@ static int tg_unthrottle_up(struct task_group *tg, void *data)
+>         if (!cfs_rq->throttle_count) {
+>                 cfs_rq->throttled_clock_task_time += rq_clock_task(rq) -
+>                                              cfs_rq->throttled_clock_task;
+> -
+> -               /* Add cfs_rq with already running entity in the list */
+> -               if (cfs_rq->nr_running >= 1)
+> +               if (cfs_rq->insert_on_unthrottle)
+>                         list_add_leaf_cfs_rq(cfs_rq);
+>         }
+>
+> @@ -4759,7 +4760,7 @@ static int tg_throttle_down(struct task_group *tg, void *data)
+>         /* group is entering throttled state, stop time */
+>         if (!cfs_rq->throttle_count) {
+>                 cfs_rq->throttled_clock_task = rq_clock_task(rq);
+> -               list_del_leaf_cfs_rq(cfs_rq);
+> +               cfs_rq->insert_on_unthrottle = list_del_leaf_cfs_rq(cfs_rq);
+>         }
+>         cfs_rq->throttle_count++;
+>
+> diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
+> index a189bec13729..12a707d99ee6 100644
+> --- a/kernel/sched/sched.h
+> +++ b/kernel/sched/sched.h
+> @@ -602,6 +602,7 @@ struct cfs_rq {
+>         u64                     throttled_clock_task_time;
+>         int                     throttled;
+>         int                     throttle_count;
+> +       int                     insert_on_unthrottle;
+>         struct list_head        throttled_list;
+>  #endif /* CONFIG_CFS_BANDWIDTH */
+>  #endif /* CONFIG_FAIR_GROUP_SCHED */
+> --
+> 2.31.1
+>
