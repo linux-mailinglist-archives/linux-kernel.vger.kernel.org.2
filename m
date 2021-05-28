@@ -2,140 +2,219 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1608C394055
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 11:53:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7FAEC394059
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 11:53:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235793AbhE1Jyl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 May 2021 05:54:41 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:23938 "EHLO
+        id S236086AbhE1Jy6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 May 2021 05:54:58 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:43916 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234926AbhE1Jyg (ORCPT
+        by vger.kernel.org with ESMTP id S234926AbhE1Jyw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 May 2021 05:54:36 -0400
+        Fri, 28 May 2021 05:54:52 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1622195581;
+        s=mimecast20190719; t=1622195597;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=nsLO7oE7ppzKwDyWlT5ZZ5W2YnsqsWgEvpJ/TDeViTw=;
-        b=XdPGe3pltsNwZc/TCmjMQc3ZaIakei7UQGNqiohwvUcuJoXkAs2EQgGjteqXguCOZLdvWa
-        tcdWHVtU0o+mHSGUREVx2gW5kgQrHz65cpkSXole8ap3zBljXQrDKuoXOLMv1Iu8u66NAf
-        9jwRptGr9IdFa0zr/jHI8mNIvecY0zM=
-Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
- [209.85.128.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-555-EkW52LtdNg2gE3RGojgbKQ-1; Fri, 28 May 2021 05:52:55 -0400
-X-MC-Unique: EkW52LtdNg2gE3RGojgbKQ-1
-Received: by mail-wm1-f69.google.com with SMTP id v2-20020a7bcb420000b0290146b609814dso975780wmj.0
-        for <linux-kernel@vger.kernel.org>; Fri, 28 May 2021 02:52:55 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:organization
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=nsLO7oE7ppzKwDyWlT5ZZ5W2YnsqsWgEvpJ/TDeViTw=;
-        b=pDscDc1CYd5c8ZTWcdqjgn1MEqyDVkSbWzczjfGeWGNJKvPTS6JGUBZ3v+eZsXJdAF
-         15m7QzPyjFJBmLueWO/PgY9d7UfRfR3Ss+TotPFJ7GnkI6TKcDyh9asan6vhWFS08GeX
-         1qESRH5MUXpI9cHpKVk/K2nDl+Kg4rF/CJvtnGv9CertyvmwWROEv5hNfmmRAZQj9M9Y
-         eMhQeKG6Ar7qV+9bPnZjqzI17rDpy8o9CQmAtSz62MdpPlJGNtOI5JRKc3pYg9iCocCv
-         6f8EmmO5lA3KMWHGXxDlkFp9nX9fd+GvcIHlPo06B4lo0/gRtwRbitQ2Yt5VALz1o4yO
-         zfxA==
-X-Gm-Message-State: AOAM533YWHU870WKc0sTu6cpMS1bd+14oCO/4uF2fMevrw9i/M/ORq/n
-        ZHFY5cjRUccjuklzrZ6ngSaIpqUFWQlj6EiG5XZSZvZJ4yg0RpR1F8EB2Ai1Xff9R/Q9Q+DDT8m
-        KqILiupQvUhKHIjf/As5fpKpp
-X-Received: by 2002:a5d:678d:: with SMTP id v13mr7837036wru.83.1622195574371;
-        Fri, 28 May 2021 02:52:54 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxG4YyUeXor4MT0iGqBaZAOV/7On75O7U8GctRL57wC7nBOjUUfEzxiFJ/HR6a3s5j8EhW+Lg==
-X-Received: by 2002:a5d:678d:: with SMTP id v13mr7837021wru.83.1622195574175;
-        Fri, 28 May 2021 02:52:54 -0700 (PDT)
-Received: from [192.168.3.132] (p5b0c6870.dip0.t-ipconnect.de. [91.12.104.112])
-        by smtp.gmail.com with ESMTPSA id y22sm15948776wma.36.2021.05.28.02.52.53
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 28 May 2021 02:52:53 -0700 (PDT)
-Subject: Re: [PATCH 0/6 v2] Calculate pcp->high based on zone sizes and active
- CPUs
-To:     Mel Gorman <mgorman@techsingularity.net>
-Cc:     Dave Hansen <dave.hansen@intel.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Hillf Danton <hdanton@sina.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Michal Hocko <mhocko@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux-MM <linux-mm@kvack.org>, "Tang, Feng" <feng.tang@intel.com>
-References: <20210525080119.5455-1-mgorman@techsingularity.net>
- <7177f59b-dc05-daff-7dc6-5815b539a790@intel.com>
- <20210528085545.GJ30378@techsingularity.net>
- <54ff0363-2f39-71d1-e26c-962c3fddedae@redhat.com>
- <e73d39cc-df2f-5000-0212-6073955fb291@redhat.com>
- <20210528094949.GL30378@techsingularity.net>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat
-Message-ID: <6c189def-11cc-80db-0fde-56aa506cfdea@redhat.com>
-Date:   Fri, 28 May 2021 11:52:53 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+        bh=0JEyT4Qen3ccTPRK6zwJJW/dqDZ8R3N8AbSzkF9MSlk=;
+        b=Q3YQTbNTKQAun1v+fw0v5yN2eOnKPybIc6Yrp9EKVhxqsEJHfeC4B6rzP3kH6MLNEjIZ/c
+        2rqQJsd5P+SpsTXQB21ssf/y1ctx8qDT67Al61AVkIddudHQ2Q8KWv65cE6sW4BbfTcmej
+        k3DBwMbBzdIeyeFgabuXLhgG9PK93Ps=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-341-ptzWPf6ROl-wSzCnc4zXfQ-1; Fri, 28 May 2021 05:53:16 -0400
+X-MC-Unique: ptzWPf6ROl-wSzCnc4zXfQ-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id E0F85107ACC7;
+        Fri, 28 May 2021 09:53:13 +0000 (UTC)
+Received: from krava (unknown [10.40.192.177])
+        by smtp.corp.redhat.com (Postfix) with SMTP id 6F14B50450;
+        Fri, 28 May 2021 09:53:09 +0000 (UTC)
+Date:   Fri, 28 May 2021 11:53:08 +0200
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     Daniel Borkmann <daniel@iogearbox.net>
+Cc:     Paul Moore <paul@paul-moore.com>,
+        Ondrej Mosnacek <omosnace@redhat.com>,
+        linux-security-module@vger.kernel.org,
+        James Morris <jmorris@namei.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Stephen Smalley <stephen.smalley.work@gmail.com>,
+        selinux@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        linux-fsdevel@vger.kernel.org, bpf@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Casey Schaufler <casey@schaufler-ca.com>
+Subject: Re: [PATCH v2] lockdown,selinux: avoid bogus SELinux lockdown
+ permission checks
+Message-ID: <YLC9hIou6f7U7JLe@krava>
+References: <20210517092006.803332-1-omosnace@redhat.com>
+ <CAHC9VhTasra0tU=bKwVqAwLRYaC+hYakirRz0Mn5jbVMuDkwrA@mail.gmail.com>
+ <01135120-8bf7-df2e-cff0-1d73f1f841c3@iogearbox.net>
 MIME-Version: 1.0
-In-Reply-To: <20210528094949.GL30378@techsingularity.net>
-Content-Type: text/plain; charset=iso-8859-15; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <01135120-8bf7-df2e-cff0-1d73f1f841c3@iogearbox.net>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 28.05.21 11:49, Mel Gorman wrote:
-> On Fri, May 28, 2021 at 11:08:01AM +0200, David Hildenbrand wrote:
->> On 28.05.21 11:03, David Hildenbrand wrote:
->>> On 28.05.21 10:55, Mel Gorman wrote:
->>>> On Thu, May 27, 2021 at 12:36:21PM -0700, Dave Hansen wrote:
->>>>> Hi Mel,
->>>>>
->>>>> Feng Tang tossed these on a "Cascade Lake" system with 96 threads and
->>>>> ~512G of persistent memory and 128G of DRAM.  The PMEM is in "volatile
->>>>> use" mode and being managed via the buddy just like the normal RAM.
->>>>>
->>>>> The PMEM zones are big ones:
->>>>>
->>>>>            present  65011712 = 248 G
->>>>>            high       134595 = 525 M
->>>>>
->>>>> The PMEM nodes, of course, don't have any CPUs in them.
->>>>>
->>>>> With your series, the pcp->high value per-cpu is 69584 pages or about
->>>>> 270MB per CPU.  Scaled up by the 96 CPU threads, that's ~26GB of
->>>>> worst-case memory in the pcps per zone, or roughly 10% of the size of
->>>>> the zone.
->>>
->>> When I read about having such big amounts of free memory theoretically
->>> stuck in PCP lists, I guess we really want to start draining the PCP in
->>> alloc_contig_range(), just as we do with memory hotunplug when offlining.
->>>
->>
->> Correction: we already drain the pcp, we just don't temporarily disable it,
->> so a race as described in offline_pages() could apply:
->>
->> "Disable pcplists so that page isolation cannot race with freeing
->>   in a way that pages from isolated pageblock are left on pcplists."
->>
->> Guess we'd then want to move the draining before start_isolate_page_range()
->> in alloc_contig_range().
->>
+On Fri, May 28, 2021 at 09:09:57AM +0200, Daniel Borkmann wrote:
+> On 5/28/21 3:37 AM, Paul Moore wrote:
+> > On Mon, May 17, 2021 at 5:22 AM Ondrej Mosnacek <omosnace@redhat.com> wrote:
+> > > 
+> > > Commit 59438b46471a ("security,lockdown,selinux: implement SELinux
+> > > lockdown") added an implementation of the locked_down LSM hook to
+> > > SELinux, with the aim to restrict which domains are allowed to perform
+> > > operations that would breach lockdown.
+> > > 
+> > > However, in several places the security_locked_down() hook is called in
+> > > situations where the current task isn't doing any action that would
+> > > directly breach lockdown, leading to SELinux checks that are basically
+> > > bogus.
+> > > 
+> > > Since in most of these situations converting the callers such that
+> > > security_locked_down() is called in a context where the current task
+> > > would be meaningful for SELinux is impossible or very non-trivial (and
+> > > could lead to TOCTOU issues for the classic Lockdown LSM
+> > > implementation), fix this by modifying the hook to accept a struct cred
+> > > pointer as argument, where NULL will be interpreted as a request for a
+> > > "global", task-independent lockdown decision only. Then modify SELinux
+> > > to ignore calls with cred == NULL.
+> > 
+> > I'm not overly excited about skipping the access check when cred is
+> > NULL.  Based on the description and the little bit that I've dug into
+> > thus far it looks like using SECINITSID_KERNEL as the subject would be
+> > much more appropriate.  *Something* (the kernel in most of the
+> > relevant cases it looks like) is requesting that a potentially
+> > sensitive disclosure be made, and ignoring it seems like the wrong
+> > thing to do.  Leaving the access control intact also provides a nice
+> > avenue to audit these requests should users want to do that.
 > 
-> Or instead of draining, validate the PFN range in alloc_contig_range
-> is within the same zone and if so, call zone_pcp_disable() before
-> start_isolate_page_range and enable after __alloc_contig_migrate_range.
+> I think the rationale/workaround for ignoring calls with cred == NULL (or the previous
+> patch with the unimplemented hook) from Ondrej was two-fold, at least speaking for his
+> seen tracing cases:
 > 
+>   i) The audit events that are triggered due to calls to security_locked_down()
+>      can OOM kill a machine, see below details [0].
+> 
+>  ii) It seems to be causing a deadlock via slow_avc_audit() -> audit_log_end()
+>      when presumingly trying to wake up kauditd [1].
 
-We require the caller to only pass a range within a single zone, so that 
-should be fine.
+hi,
+I saw the same deadlock, ended up with this sequence:
 
-The only ugly thing about zone_pcp_disable() is 
-mutex_lock(&pcp_batch_high_lock) which would serialize all 
-alloc_contig_range() and even with offline_pages().
+  rq_lock(rq) -> trace_sched_switch -> bpf_prog -> selinux_lockdown -> audit_log_end -> wake_up_interruptible -> try_to_wake_up -> rq_lock(rq)
 
--- 
-Thanks,
+problem is that trace_sched_switch already holds rq_lock
 
-David / dhildenb
+I had powerpc server where I could reproduce this easily,
+but now for some reason I can't hit the issue anymore
+
+jirka
+
+> 
+> How would your suggestion above solve both i) and ii)?
+> 
+> [0] https://bugzilla.redhat.com/show_bug.cgi?id=1955585 :
+> 
+>   I starting seeing this with F-34. When I run a container that is traced with eBPF
+>   to record the syscalls it is doing, auditd is flooded with messages like:
+> 
+>   type=AVC msg=audit(1619784520.593:282387): avc:  denied  { confidentiality } for
+>    pid=476 comm="auditd" lockdown_reason="use of bpf to read kernel RAM"
+>     scontext=system_u:system_r:auditd_t:s0 tcontext=system_u:system_r:auditd_t:s0 tclass=lockdown permissive=0
+> 
+>   This seems to be leading to auditd running out of space in the backlog buffer and
+>   eventually OOMs the machine.
+> 
+>   auditd running at 99% CPU presumably processing all the messages, eventually I get:
+>   Apr 30 12:20:42 fedora kernel: audit: backlog limit exceeded
+>   Apr 30 12:20:42 fedora kernel: audit: backlog limit exceeded
+>   Apr 30 12:20:42 fedora kernel: audit: audit_backlog=2152579 > audit_backlog_limit=64
+>   Apr 30 12:20:42 fedora kernel: audit: audit_backlog=2152626 > audit_backlog_limit=64
+>   Apr 30 12:20:42 fedora kernel: audit: audit_backlog=2152694 > audit_backlog_limit=64
+>   Apr 30 12:20:42 fedora kernel: audit: audit_lost=6878426 audit_rate_limit=0 audit_backlog_limit=64
+>   Apr 30 12:20:45 fedora kernel: oci-seccomp-bpf invoked oom-killer: gfp_mask=0x100cca(GFP_HIGHUSER_MOVABLE), order=0, oom_score_adj=-1000
+>   Apr 30 12:20:45 fedora kernel: CPU: 0 PID: 13284 Comm: oci-seccomp-bpf Not tainted 5.11.12-300.fc34.x86_64 #1
+>   Apr 30 12:20:45 fedora kernel: Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.13.0-2.fc32 04/01/2014
+> 
+> [1] https://lore.kernel.org/linux-audit/CANYvDQN7H5tVp47fbYcRasv4XF07eUbsDwT_eDCHXJUj43J7jQ@mail.gmail.com/ :
+> 
+>   Upstream kernel 5.11.0-rc7 and later was found to deadlock during a bpf_probe_read_compat()
+>   call within a sched_switch tracepoint. The problem is reproducible with the reg_alloc3
+>   testcase from SystemTap's BPF backend testsuite on x86_64 as well as the runqlat,runqslower
+>   tools from bcc on ppc64le. Example stack trace from [1]:
+> 
+>   [  730.868702] stack backtrace:
+>   [  730.869590] CPU: 1 PID: 701 Comm: in:imjournal Not tainted, 5.12.0-0.rc2.20210309git144c79ef3353.166.fc35.x86_64 #1
+>   [  730.871605] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.13.0-2.fc32 04/01/2014
+>   [  730.873278] Call Trace:
+>   [  730.873770]  dump_stack+0x7f/0xa1
+>   [  730.874433]  check_noncircular+0xdf/0x100
+>   [  730.875232]  __lock_acquire+0x1202/0x1e10
+>   [  730.876031]  ? __lock_acquire+0xfc0/0x1e10
+>   [  730.876844]  lock_acquire+0xc2/0x3a0
+>   [  730.877551]  ? __wake_up_common_lock+0x52/0x90
+>   [  730.878434]  ? lock_acquire+0xc2/0x3a0
+>   [  730.879186]  ? lock_is_held_type+0xa7/0x120
+>   [  730.880044]  ? skb_queue_tail+0x1b/0x50
+>   [  730.880800]  _raw_spin_lock_irqsave+0x4d/0x90
+>   [  730.881656]  ? __wake_up_common_lock+0x52/0x90
+>   [  730.882532]  __wake_up_common_lock+0x52/0x90
+>   [  730.883375]  audit_log_end+0x5b/0x100
+>   [  730.884104]  slow_avc_audit+0x69/0x90
+>   [  730.884836]  avc_has_perm+0x8b/0xb0
+>   [  730.885532]  selinux_lockdown+0xa5/0xd0
+>   [  730.886297]  security_locked_down+0x20/0x40
+>   [  730.887133]  bpf_probe_read_compat+0x66/0xd0
+>   [  730.887983]  bpf_prog_250599c5469ac7b5+0x10f/0x820
+>   [  730.888917]  trace_call_bpf+0xe9/0x240
+>   [  730.889672]  perf_trace_run_bpf_submit+0x4d/0xc0
+>   [  730.890579]  perf_trace_sched_switch+0x142/0x180
+>   [  730.891485]  ? __schedule+0x6d8/0xb20
+>   [  730.892209]  __schedule+0x6d8/0xb20
+>   [  730.892899]  schedule+0x5b/0xc0
+>   [  730.893522]  exit_to_user_mode_prepare+0x11d/0x240
+>   [  730.894457]  syscall_exit_to_user_mode+0x27/0x70
+>   [  730.895361]  entry_SYSCALL_64_after_hwframe+0x44/0xae
+> 
+> > > Since most callers will just want to pass current_cred() as the cred
+> > > parameter, rename the hook to security_cred_locked_down() and provide
+> > > the original security_locked_down() function as a simple wrapper around
+> > > the new hook.
+> [...]
+> > 
+> > > 3. kernel/trace/bpf_trace.c:bpf_probe_read_kernel{,_str}_common()
+> > >       Called when a BPF program calls a helper that could leak kernel
+> > >       memory. The task context is not relevant here, since the program
+> > >       may very well be run in the context of a different task than the
+> > >       consumer of the data.
+> > >       See: https://bugzilla.redhat.com/show_bug.cgi?id=1955585
+> > 
+> > The access control check isn't so much who is consuming the data, but
+> > who is requesting a potential violation of a "lockdown", yes?  For
+> > example, the SELinux policy rule for the current lockdown check looks
+> > something like this:
+> > 
+> >    allow <who> <who> : lockdown { <reason> };
+> > 
+> > It seems to me that the task context is relevant here and performing
+> > the access control check based on the task's domain is correct.
+> This doesn't make much sense to me, it's /not/ the task 'requesting a potential
+> violation of a "lockdown"', but rather the running tracing program which is e.g.
+> inspecting kernel data structures around the triggered event. If I understood
+> you correctly, having an 'allow' check on, say, httpd would be rather odd since
+> things like perf/bcc/bpftrace/systemtap/etc is installing the tracing probe instead.
+> 
+> Meaning, if we would /not/ trace such events (like in the prior mentioned syscall
+> example), then there is also no call to the security_locked_down() from that same/
+> unmodified application.
+> 
+> Thanks,
+> Daniel
+> 
 
