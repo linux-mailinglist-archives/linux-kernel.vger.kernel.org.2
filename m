@@ -2,96 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C3E593948EF
-	for <lists+linux-kernel@lfdr.de>; Sat, 29 May 2021 00:44:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B9E023948F7
+	for <lists+linux-kernel@lfdr.de>; Sat, 29 May 2021 00:53:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229966AbhE1Wqa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 May 2021 18:46:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58712 "EHLO
+        id S229640AbhE1Wy2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 May 2021 18:54:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60526 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229821AbhE1Wp6 (ORCPT
+        with ESMTP id S229620AbhE1WyY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 May 2021 18:45:58 -0400
-Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8AB1C06138D
-        for <linux-kernel@vger.kernel.org>; Fri, 28 May 2021 15:44:20 -0700 (PDT)
-Received: by mail-wr1-x42a.google.com with SMTP id j14so4691298wrq.5
-        for <linux-kernel@vger.kernel.org>; Fri, 28 May 2021 15:44:20 -0700 (PDT)
+        Fri, 28 May 2021 18:54:24 -0400
+Received: from mail-ej1-x634.google.com (mail-ej1-x634.google.com [IPv6:2a00:1450:4864:20::634])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A697DC06174A
+        for <linux-kernel@vger.kernel.org>; Fri, 28 May 2021 15:52:47 -0700 (PDT)
+Received: by mail-ej1-x634.google.com with SMTP id z12so7679782ejw.0
+        for <linux-kernel@vger.kernel.org>; Fri, 28 May 2021 15:52:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:from:date:message-id:subject:to:cc;
-        bh=CcDQVZ0nU17dgGlT8JDrJAgpEne80TrIbiiyOtshi98=;
-        b=PM1tWasXilBCst3gWMa2b/0/xpVoozvR0328xKHifsIy1fdFEWtsO4f5dnFiwe79z1
-         /iJKuJaqO4B5y2CIpF/kD5zVrNkUwBEp4jk9AID9gpSeiDMZHb8kK8QXHLCuREsYk5XS
-         FQ6yNduMsUOi19UGFM0jACee7rPqIoDvwsCadcQq+6jpXczE2U+HrjKe3fSVxOMWopj4
-         Es+aMfv+b/Um6uULXP6qz5MK6w7pNPpy3J5c/98CHi1RfaDj7IeTGKCKHNfn71rZDxlR
-         4H00nAZqm6DEc4gfaHxBrmS8RlmB7NYi3brGkb5RxLoWi8ScZjLXX6RpEYxVob/wZlAx
-         OR9A==
+        d=paul-moore-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=hYw5L9uovAkFsfHnHeXQzSMU5L4IRTMjhY6/K5rzT9U=;
+        b=yuNgeXWN+6xWyHkZN3hopiuhLwOwLkMW4jfx/Ke9qnP+4D2F8F70wSggXfODvDfJTi
+         ILz10rk+8ClZi8HbQdGtQbcSvgtB1sGOONGOZStOBth62K6Hz5gg9CX1vrt+j4VA5tlX
+         Ix+Nfa7RDnmnOhfUmMbJi+8cg+u3ye37cM6IYBcAIMHhRDDaEBkVCskOi0kOs7gnKSdI
+         mXKdCDDvyo3dLsxWV8KBORTR/cOBJBOknrc9qVd3Bzm0TtTxq1bM5m5gMw8Uhs9lgJXG
+         aX1MQzG+pMBsWwu0lszw5ECGLix/RDqMzdlR8Bx+v92dGBI1vhRO3aOIv5eom6bntiJ4
+         /j8w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
-        bh=CcDQVZ0nU17dgGlT8JDrJAgpEne80TrIbiiyOtshi98=;
-        b=bvQaHQIPkyDTcMSvm8YdwsUaXMa4L3FARvIGpgECNjfaDPFzOPcufVBA/uqNdgKRQY
-         EZAoOzOaIwV28ySrONlxFuGvhN6DI8oRMpaUSsQphNeh9sUjBg5JeP2WbhlhaxI3Y8y/
-         160ECPRnqagjzjFgnWsR2duzOuIpxrh+fK7kK8oGXaiC3c4AeklMNK81edtMmG0x5asc
-         WGJOvog9V69611hjxQ9u/rvhNoH2utM74jA5eNkz3a1A0bJ1KRRh9JCOYZQ0K5c5u6SC
-         WDIOlo+lAjk8qbCYmsw7bPhjBONUmGMNEL7YaPcK8m0d1yFqDuSgU06bIyWh5Hp2IIT2
-         tp5g==
-X-Gm-Message-State: AOAM531ypZhmEDxdLY4rM/AMdYlAneqphSAcGCgonycjiAGgiFodad0E
-        aLrRuV6ECMlGxK9I5CJkls7AZ3Pun069FWcWgwRX7xdFlstAkA==
-X-Google-Smtp-Source: ABdhPJyzDouPR3C9BExdhA1/PxEx6Il0L8aZcbbeoyC8D0nVjpa46avb+GKBgyXYttW2Toq/PlW8URS0+HNIxjKD4Xg=
-X-Received: by 2002:a5d:4e85:: with SMTP id e5mr10865910wru.68.1622241859093;
- Fri, 28 May 2021 15:44:19 -0700 (PDT)
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=hYw5L9uovAkFsfHnHeXQzSMU5L4IRTMjhY6/K5rzT9U=;
+        b=N+OtMxecCuVo50WTlcndEUUBOdzA8CPPKNSGOEJoK4jEB9wPQ9AK9dIGiTI416hP6k
+         ZMa9Q8eL0xJAKb8Mr4zpITREqiyBvy9deYCNWadJII9jHlKZMzpGpRFFeSi8NLX6hFcC
+         HvjZENLo3U11tSz9MolQo1G/qYevxjn9Jm/SCkrKJHplmKeAAcgS1Q/W5fsLy6lnowdQ
+         vdWledF8tpvraPpnbs4IaXDsu5krXxMzrhw6DbSe4YWCRhhLTIKRNcuP5Vu7YOfCygWJ
+         2/K0hFS/J/vMpEmNlQDnMt7d2rI2tdq3ljn3nn2jjThrpB3x9AikSjJtHVSoFbVINaG/
+         ci2Q==
+X-Gm-Message-State: AOAM532bucdHTArbqgaLyQZI5FXPG/2BU8tlnIuv9/9FrB5XjwCwbE5C
+        G2ywWnHIATfb9/gq10fm0hMKACtiMnvRKkdl/ekZ
+X-Google-Smtp-Source: ABdhPJyM59D/3ndTZ2tM5xKxQiqHabnQvuoHlfDxd+J5YttV0ukxr9SsE/gZ/BunSIgaPf5x9SH6g251CYE//WbdFbc=
+X-Received: by 2002:a17:906:4111:: with SMTP id j17mr1665351ejk.488.1622242365987;
+ Fri, 28 May 2021 15:52:45 -0700 (PDT)
 MIME-Version: 1.0
-From:   Steve French <smfrench@gmail.com>
-Date:   Fri, 28 May 2021 17:44:08 -0500
-Message-ID: <CAH2r5mumd-nG0ikX0ZDFnJt+oGcgZBPgqzjuye=AjycSEYE43g@mail.gmail.com>
-Subject: [GIT PULL] SMB3 fixes
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>
+References: <20210517092006.803332-1-omosnace@redhat.com> <CAHC9VhTasra0tU=bKwVqAwLRYaC+hYakirRz0Mn5jbVMuDkwrA@mail.gmail.com>
+ <01135120-8bf7-df2e-cff0-1d73f1f841c3@iogearbox.net> <CAHC9VhR-kYmMA8gsqkiL5=poN9FoL-uCyx1YOLCoG2hRiUBYug@mail.gmail.com>
+ <c7c2d7e1-e253-dce0-d35c-392192e4926e@iogearbox.net>
+In-Reply-To: <c7c2d7e1-e253-dce0-d35c-392192e4926e@iogearbox.net>
+From:   Paul Moore <paul@paul-moore.com>
+Date:   Fri, 28 May 2021 18:52:34 -0400
+Message-ID: <CAHC9VhRkz48MLv_QNfnRWFPvFxEV7oJH5eNHGUtvWdjG4M1YFA@mail.gmail.com>
+Subject: Re: [PATCH v2] lockdown,selinux: avoid bogus SELinux lockdown
+ permission checks
+To:     Daniel Borkmann <daniel@iogearbox.net>
+Cc:     Ondrej Mosnacek <omosnace@redhat.com>,
+        linux-security-module@vger.kernel.org,
+        James Morris <jmorris@namei.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Stephen Smalley <stephen.smalley.work@gmail.com>,
+        selinux@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        linux-fsdevel@vger.kernel.org, bpf@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Casey Schaufler <casey@schaufler-ca.com>, jolsa@redhat.com
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Please pull the following changes since commit
-c4681547bcce777daf576925a966ffa824edd09d:
+On Fri, May 28, 2021 at 2:28 PM Daniel Borkmann <daniel@iogearbox.net> wrote:
+> On 5/28/21 5:47 PM, Paul Moore wrote:
+> > Let's reset.
+>
+> Sure, yep, lets shortly take one step back. :)
+>
+> > What task_struct is running the BPF tracing program which is calling
+> > into security_locked_down()?  My current feeling is that it is this
+> > context/domain/cred that should be used for the access control check;
+> > in the cases where it is a kernel thread, I think passing NULL is
+> > reasonable, but I think the proper thing for SELinux is to interpret
+> > NULL as kernel_t.
+>
+> If this was a typical LSM hook and, say, your app calls into bind(2) where
+> we then invoke security_socket_bind() and check 'current' task, then I'm all
+> with you, because this was _explicitly initiated_ by the httpd app, so that
+> allow/deny policy belongs in the context of httpd.
+>
+> In the case of tracing, it's different. You install small programs that are
+> triggered when certain events fire. Random example from bpftrace's README [0],
+> you want to generate a histogram of syscall counts by program. One-liner is:
+>
+>    bpftrace -e 'tracepoint:raw_syscalls:sys_enter { @[comm] = count(); }'
+>
+> bpftrace then goes and generates a BPF prog from this internally. One way of
+> doing it could be to call bpf_get_current_task() helper and then access
+> current->comm via one of bpf_probe_read_kernel{,_str}() helpers. So the
+> program itself has nothing to do with httpd or any other random app doing
+> a syscall here. The BPF prog _explicitly initiated_ the lockdown check.
+> The allow/deny policy belongs in the context of bpftrace: meaning, you want
+> to grant bpftrace access to use these helpers, but other tracers on the
+> systems like my_random_tracer not. While this works for prior mentioned
+> cases of security_locked_down() with open_kcore() for /proc/kcore access
+> or the module_sig_check(), it is broken for tracing as-is, and the patch
+> I sent earlier fixes this.
 
-  Linux 5.13-rc3 (2021-05-23 11:42:48 -1000)
+Sigh.
 
-are available in the Git repository at:
+Generally it's helpful when someone asks a question if you answer it
+directly before going off and answering your own questions.  Listen, I
+get it, you wrote a patch and it fixes your problem (you've mentioned
+that already) and it's wonderful and all that, but the rest of us
+(maybe just me) need to sort this out too and talking past questions
+isn't a great way to help us get there (once again, maybe just me).  I
+think I can infer an answer from you, but you've made me grumpy now so
+I'm not ACK'ing or NACK'ing anything right now; I clearly need to go
+spend some time reading through BPF code.  Woo.
 
-  git://git.samba.org/sfrench/cifs-2.6.git tags/5.13-rc4-smb3
-
-for you to fetch changes up to 1bb56810677f26b78d57a3038054943efd334a1c:
-
-  cifs: change format of CIFS_FULL_KEY_DUMP ioctl (2021-05-27 15:26:32 -0500)
-
-----------------------------------------------------------------
-3 SMB3 fixes: two for stable, including a fix for "UNSAFE MEMORY"
-message logged, and the other fix addresses a problem pointed out with
-a recently added ioctl including a build error on ARM)
-
-Regression test results:
-http://smb3-test-rhel-75.southcentralus.cloudapp.azure.com/#/builders/2/builds/659
-----------------------------------------------------------------
-Aurelien Aptel (2):
-      cifs: set server->cipher_type to AES-128-CCM for SMB3.0
-      cifs: change format of CIFS_FULL_KEY_DUMP ioctl
-
-Shyam Prasad N (1):
-      cifs: fix string declarations and assignments in tracepoints
-
- fs/cifs/cifs_ioctl.h |  25 +++++++++++++++++++------
- fs/cifs/cifspdu.h    |   3 ++-
- fs/cifs/ioctl.c      | 143
-+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++--------------------------------------
- fs/cifs/smb2pdu.c    |   7 +++++++
- fs/cifs/trace.h      |  29 +++++++++++++++++------------
- 5 files changed, 150 insertions(+), 57 deletions(-)
-
+>    [0] https://github.com/iovisor/bpftrace
 
 -- 
-Thanks,
-
-Steve
+paul moore
+www.paul-moore.com
