@@ -2,70 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 757B9393D19
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 08:29:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 857D3393D56
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 08:47:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231219AbhE1GbQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 May 2021 02:31:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37948 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229753AbhE1GbO (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 May 2021 02:31:14 -0400
-Received: from ssl.serverraum.org (ssl.serverraum.org [IPv6:2a01:4f8:151:8464::1:2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 270B2C061574;
-        Thu, 27 May 2021 23:29:40 -0700 (PDT)
-Received: from ssl.serverraum.org (web.serverraum.org [172.16.0.2])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ssl.serverraum.org (Postfix) with ESMTPSA id 3577F22239;
-        Fri, 28 May 2021 08:29:34 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2016061301;
-        t=1622183376;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=tvDryGjFc2b0KujgcUtBe5I3gcYMEk3E/mVvu6Bxf/A=;
-        b=LjKnecBf9GWDYelaXriWtkwJLN0XzciFDPhk3Py6yqDSW73C1NwfxuMyy9lCqPtU8rzdvc
-        CwAxmkDMpa/6TXJzBSxvbbOaHxLaufxpeSwWkbl53Ml1b3+IJEymd8ydw8x/j/8tjYm9PO
-        8YkC/Nr1g8H9TgFJZnNJGEvnDe5ntYE=
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Fri, 28 May 2021 08:29:33 +0200
-From:   Michael Walle <michael@walle.cc>
-To:     Sander Vanheule <sander@svanheule.net>
-Cc:     Pavel Machek <pavel@ucw.cz>, Rob Herring <robh+dt@kernel.org>,
-        Lee Jones <lee.jones@linaro.org>,
-        Mark Brown <broonie@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J . Wysocki" <rafael@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        linux-leds@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-gpio@vger.kernel.org, Andrew Lunn <andrew@lunn.ch>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 5/6] pinctrl: Add RTL8231 pin control and GPIO support
-In-Reply-To: <185e8c61893502575c542750c8f27b09029e3078.1621809029.git.sander@svanheule.net>
-References: <cover.1621809029.git.sander@svanheule.net>
- <185e8c61893502575c542750c8f27b09029e3078.1621809029.git.sander@svanheule.net>
-User-Agent: Roundcube Webmail/1.4.11
-Message-ID: <452144b056cb474321481c011ac9ccfb@walle.cc>
-X-Sender: michael@walle.cc
+        id S232481AbhE1Gsl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 May 2021 02:48:41 -0400
+Received: from inva021.nxp.com ([92.121.34.21]:40930 "EHLO inva021.nxp.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229569AbhE1Gsh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 28 May 2021 02:48:37 -0400
+Received: from inva021.nxp.com (localhost [127.0.0.1])
+        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 4275A201D6F;
+        Fri, 28 May 2021 08:47:02 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 inva021.eu-rdc02.nxp.com 4275A201D6F
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com;
+        s=nselector4; t=1622184422;
+        bh=YwS4G5iPwgQpNzJLl6tLYsJ2x2Dx6Yg++Sh0zyyxTlM=;
+        h=From:To:Cc:Subject:Date:From;
+        b=IEANqepTzW+LLmLgtt5T2CjgCOVWBxJvZfr9kQcYf/+Hhtur6OcIfe7IIeDizh3E+
+         M/kZMCvDv0ZiSPQBqf1pyr+E2751ncUzPdGF1gwjD7pDasPNoIHu1Y2VzPDHKOPBkE
+         X77Ysliu/K1+kJO7obR/wSGmT2OsXvryeE0dAvp/pxgKdrYB7l4NWhWSp9U42nlfyp
+         6q2zaH2fl/ihVVv1NSE0MmKcK/9GPPysertxqXo7pRR7mNhx4nrfXz2TARd/a6eSR0
+         GcviaU89sGE4CoDR39MRFsruv6EQgf8UB5SffJMyd/P2Qpz5MOF6gxMinVSfF6fxqL
+         1TH2ulvXXizkw==
+Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com [165.114.16.14])
+        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 7BE02200C3C;
+        Fri, 28 May 2021 08:46:57 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 inva021.eu-rdc02.nxp.com 7BE02200C3C
+Received: from localhost.localdomain (shlinux2.ap.freescale.net [10.192.224.44])
+        by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id 670394029B;
+        Fri, 28 May 2021 14:46:51 +0800 (+08)
+From:   Richard Zhu <hongxing.zhu@nxp.com>
+To:     l.stach@pengutronix.de, andrew.smirnov@gmail.com,
+        shawnguo@kernel.org, kw@linux.com, bhelgaas@google.com,
+        stefan@agner.ch, lorenzo.pieralisi@arm.com
+Cc:     linux-pci@vger.kernel.org, linux-imx@nxp.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        kernel@pengutronix.de
+Subject: [PATCH v5 0/2] PCI: imx6: add one regulator used to power up pcie phy
+Date:   Fri, 28 May 2021 14:29:41 +0800
+Message-Id: <1622183383-3287-1-git-send-email-hongxing.zhu@nxp.com>
+X-Mailer: git-send-email 2.7.4
+X-Virus-Scanned: ClamAV using ClamSMTP
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> +	gpio_cfg.reg_dat_base = GPIO_REGMAP_ADDR(RTL8231_REG_GPIO_DATA0);
-> +	gpio_cfg.reg_set_base = GPIO_REGMAP_ADDR(RTL8231_REG_GPIO_DATA0);
-> +	gpio_cfg.reg_dir_in_base = GPIO_REGMAP_ADDR(RTL8231_REG_GPIO_DIR0);
+Documentation/devicetree/bindings/pci/fsl,imx6q-pcie.txt |  3 +++
+drivers/pci/controller/dwc/pci-imx6.c                    | 20 ++++++++++++++++++++
+2 files changed, 23 insertions(+)
 
-Btw. you'd only need GPIO_REGMAP_ADDR(x) if x might be 0. Because you 
-have
-a constant != 0 there, you could save the GPIO_REGMAP_ADDR() call. You
-could drop this if you like, but no need to respin the series for this.
-
--michael
+[PATCH v5 1/2] dt-bindings: imx6q-pcie: Add "vph-supply" for PHY
+[PATCH v5 2/2] PCI: imx6: Enable PHY internal regulator when supplied
