@@ -2,55 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E0B95394892
-	for <lists+linux-kernel@lfdr.de>; Sat, 29 May 2021 00:13:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C58E394894
+	for <lists+linux-kernel@lfdr.de>; Sat, 29 May 2021 00:14:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229681AbhE1WPS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 May 2021 18:15:18 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44910 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229539AbhE1WPR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 May 2021 18:15:17 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 88C066128B;
-        Fri, 28 May 2021 22:13:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1622240021;
-        bh=4t3bTBnmw2j3cFgTgpLqUFrdn1rsAkOR9rikoDksBF8=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=nfQHvRL0/V64gnFRYckBl7mDDkzBzBomv5eMTTfYTZVh7BcV/eul6fK6Q4UbenchD
-         AhRWwKoic9HYS7q6n2gs6do6muPtAAN6vR80b039sDnWr0c+7yFDonjpovrFzW+8ro
-         5yc5mJZkBeEorUkS2awLSgXBwxpkc5n6K7K8BF5C9CI/Z3YCBRf9vCVz9LdsT180Xi
-         h2Gv6B4LQzSYfiqTuPZKU1LbveZFHIf9lfzRfbfz7jzTwNxuGPTRtQF42neV/9wpGO
-         j8J32W5FwYjHhr/+TBksF1CPKu5BXyWVSCTFIihJpjxw5c7RE/q5rrPCNIzNGbMU+B
-         5AbcuU5S2foqA==
-Date:   Fri, 28 May 2021 15:13:40 -0700
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Randy Dunlap <rdunlap@infradead.org>, linux-nfc@lists.01.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: Re: [PATCH 01/11] nfc: fdp: drop ftrace-like debugging messages
-Message-ID: <20210528151340.7ea69c15@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
-In-Reply-To: <20210528145330.125055-1-krzysztof.kozlowski@canonical.com>
-References: <20210528145330.125055-1-krzysztof.kozlowski@canonical.com>
+        id S229686AbhE1WP6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 May 2021 18:15:58 -0400
+Received: from mail-pg1-f176.google.com ([209.85.215.176]:35530 "EHLO
+        mail-pg1-f176.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229494AbhE1WPz (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 28 May 2021 18:15:55 -0400
+Received: by mail-pg1-f176.google.com with SMTP id m190so3577811pga.2;
+        Fri, 28 May 2021 15:14:20 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=JNGpts24AsddyGX9anj8MvAz3SLVAw0SCqNJwlDSL/c=;
+        b=sVlSJ+Nn0CELjGBUc66QccYv6/XJLxQi3xCZZJHQF3zTmwc0eHiZldaR/3B2FZqnyQ
+         mdA4xbbvLrjcrZ98d/cTRf14KkRY/EnqxidE08a0F3D468fu3Rw7vyn8NPtxYm9Vzvlc
+         K/S1BbPhM1R4ry6n6BNCQaGx6zzB5UApC2aZf7z1pWJ53AYiI/qnHl1Im5ORhDzD741e
+         to/rR2PikgwtIvnUJVZW82aaajgjOdYnxXKmCec0m0K9zKwOI/2yQxAGutu9vYXwilY1
+         9KB0OohrPhNoB9LWkf4nE1bEKlbnNJsf2466Y/6ZRBO3/BA8mm8NrKulwJB5I8hkSYDL
+         EgQA==
+X-Gm-Message-State: AOAM531mbfLIO6B1oCbTcd1/vnPJjUDUOo34cn5VwWNS/7bHRrEW7v5P
+        3CHknYfaP6wmlRoyVUV07JI=
+X-Google-Smtp-Source: ABdhPJy6SCN6YWQU2XAi34y1EHfmfd2cb1NOhApHM2dylkDGI7hyzVplHD3S8m33pKULjL0HnHSdZw==
+X-Received: by 2002:a63:5a64:: with SMTP id k36mr11130858pgm.365.1622240060434;
+        Fri, 28 May 2021 15:14:20 -0700 (PDT)
+Received: from localhost ([2601:647:5b00:1161:a4cc:eef9:fbc0:2781])
+        by smtp.gmail.com with ESMTPSA id 191sm5034851pfx.121.2021.05.28.15.14.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 28 May 2021 15:14:19 -0700 (PDT)
+Date:   Fri, 28 May 2021 15:14:18 -0700
+From:   Moritz Fischer <mdf@kernel.org>
+To:     Navin Sankar Velliangiri <navin@linumiz.com>
+Cc:     linux-fpga@vger.kernel.org, linux-kernel@vger.kernel.org,
+        mdf@kernel.org, trix@redhat.com
+Subject: Re: [PATCH] fpga: fpga-bridge: removed repeated word
+Message-ID: <YLFrOm09nVevsafh@epycbox.lan>
+References: <20210528150557.22970-1-navin@linumiz.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210528150557.22970-1-navin@linumiz.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 28 May 2021 10:53:20 -0400 Krzysztof Kozlowski wrote:
-> Now that the kernel has ftrace, any debugging calls that just do "made
-> it to this function!" and "leaving this function!" can be removed.
-> Better to use standard debugging tools.
+On Fri, May 28, 2021 at 08:35:57PM +0530, Navin Sankar Velliangiri wrote:
+> Removed repeated word and.
+> Reported by checkpatch.
 > 
-> This allows also to remove several local variables and entire
-> fdp_nci_recv_frame() function (whose purpose was only to log).
+> Signed-off-by: Navin Sankar Velliangiri <navin@linumiz.com>
+> ---
+>  drivers/fpga/fpga-bridge.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
 > 
-> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+> diff --git a/drivers/fpga/fpga-bridge.c b/drivers/fpga/fpga-bridge.c
+> index e9266b2a357f..9ada1126faf7 100644
+> --- a/drivers/fpga/fpga-bridge.c
+> +++ b/drivers/fpga/fpga-bridge.c
+> @@ -228,7 +228,7 @@ EXPORT_SYMBOL_GPL(fpga_bridges_put);
+>   * @info: fpga image specific information
+>   * @bridge_list: list of FPGA bridges
+>   *
+> - * Get an exclusive reference to the bridge and and it to the list.
+> + * Get an exclusive reference to the bridge and it to the list.
+>   *
+>   * Return 0 for success, error code from of_fpga_bridge_get() othewise.
+>   */
+> @@ -258,7 +258,7 @@ EXPORT_SYMBOL_GPL(of_fpga_bridge_get_to_list);
+>   * @info: fpga image specific information
+>   * @bridge_list: list of FPGA bridges
+>   *
+> - * Get an exclusive reference to the bridge and and it to the list.
+> + * Get an exclusive reference to the bridge and it to the list.
+>   *
+>   * Return 0 for success, error code from fpga_bridge_get() othewise.
+>   */
+> -- 
+> 2.31.1
+> 
 
-Hi! Would you mind reposting these 11 fixes? build bots don't
-understand series dependencies and the last patch here depends 
-on the previous clean up set.
+Didn't apply on top of Tom's change, so I fixed it up. Queued.
+
+- Moritz
