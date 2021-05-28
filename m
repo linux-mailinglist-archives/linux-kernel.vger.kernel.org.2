@@ -2,72 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 79A0E3939DE
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 01:58:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6FC533939E5
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 02:00:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235696AbhE1AAQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 May 2021 20:00:16 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46232 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235756AbhE1AAE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 May 2021 20:00:04 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B7FB460233;
-        Thu, 27 May 2021 23:58:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1622159911;
-        bh=LReRf0mXlMHM2Ka7rklNEdQGl/501pPEF+NpmvBZqYU=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=eNXa/m/uSA7ovrxDeAzCRvUR3coWOr84LPHuK7rlUtoyTxuQtSC7Ff2iqznjWpTPH
-         GIgkwIDOgJZF2SfV8s9jG+wusmsIZwZ6NtDZ12Lk92NG8wDOjW9Af+BS0kBh7u1PvQ
-         o4oL14ApRwxKzZfMrdrllJ5KxMuX+b/1249cSnBNCNxniRWazIlkpudWCu0U3o/7pl
-         JdiHK/hver9Swk2sh5j7wjM8aY9SZN+dwKOahlq9QJNaeul8ZNBGZE6ChMX8ctr18/
-         x9TBF5TB/E++bt4pg3BDKJZtFxYV1pS8kXjtalowXe+ZDvMf+8sSQvet8Ls7Eo8fxX
-         ym2isvlMvFVlg==
-Date:   Thu, 27 May 2021 18:58:29 -0500
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     Niklas Schnelle <schnelle@linux.ibm.com>
-Cc:     Bjorn Helgaas <bhelgaas@google.com>, linux-pci@vger.kernel.org,
+        id S235368AbhE1ACX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 May 2021 20:02:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36208 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233896AbhE1ACV (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 27 May 2021 20:02:21 -0400
+Received: from mail-io1-xd35.google.com (mail-io1-xd35.google.com [IPv6:2607:f8b0:4864:20::d35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E710C061574
+        for <linux-kernel@vger.kernel.org>; Thu, 27 May 2021 17:00:47 -0700 (PDT)
+Received: by mail-io1-xd35.google.com with SMTP id o21so2338542iow.13
+        for <linux-kernel@vger.kernel.org>; Thu, 27 May 2021 17:00:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linuxfoundation.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=ljSzjBpLO08RTVC/SmajITBY80h8dDg5ABRIUSJP3a4=;
+        b=a/NZBSFJLI2NSzZKistpWfK+Q/KrokILHyQRUnUkxStcv7hT32+B+HsZpBrK7Ceaa4
+         gwVukz61EtzVvkO2PJJWXlzXIr9Wp1C4kVdXOxM/V73rJR2Cj0p3h3HnbF7ItNlvO/26
+         VoUBVnILofr9d8U/Xf1BiyECxgZ+DKL1pSg+c=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=ljSzjBpLO08RTVC/SmajITBY80h8dDg5ABRIUSJP3a4=;
+        b=fQe4yUi5XBZwoYDdwErpbcZ3hMlmEDheyXYtcJsQ14OZYORwpzThJJGSk/kkeed3Hv
+         W3b359wM/gS1VYSbsN292uLIsiVks9DeuSAV0IuKeNP6NLZJpWUNi7BJInhAdgmRKhtQ
+         CQXOf87lq3VO3Hk0iBHH3of5OPhkFPczKkXLrbP6OAvfCHFNVmMx0t8msjmiBRfSsu07
+         FWZJsreb3tZTb8YpwNMz4VyRMyn69LBtr0YriFDo5XtpoA6fATGtZXU+EnZoXF9dxyJL
+         q0wdzKjnJjVZJQOa0DY5qKzYnDlXv965svcAOlk+KGh5fUWH5Xg/btcgvDHJmtsmm7kd
+         YO2Q==
+X-Gm-Message-State: AOAM531ulEZEKanQhQ8Ks9oAcJl8CeYfFP9et2UhAwifW8PohQoV4+Bb
+        nPOWuLC3ur9nxvgCUzgL3AC1Cw==
+X-Google-Smtp-Source: ABdhPJyGQNyh44gU0Cx3ddDvrl8sfLOEPvpx0lhiuzLLWYLdApJSv/5edEVXab2Xcc9MkooHE1P7kQ==
+X-Received: by 2002:a6b:7901:: with SMTP id i1mr4889264iop.41.1622160046942;
+        Thu, 27 May 2021 17:00:46 -0700 (PDT)
+Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
+        by smtp.gmail.com with ESMTPSA id h15sm1491621ild.61.2021.05.27.17.00.46
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 27 May 2021 17:00:46 -0700 (PDT)
+Subject: Re: [PATCH 5.12 0/7] 5.12.8-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] PCI: Print a debug message on PCI device release
-Message-ID: <20210527235829.GA1447806@bjorn-Precision-5520>
+Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        f.fainelli@gmail.com, stable@vger.kernel.org,
+        Shuah Khan <skhan@linuxfoundation.org>
+References: <20210527151139.241267495@linuxfoundation.org>
+From:   Shuah Khan <skhan@linuxfoundation.org>
+Message-ID: <caed6d8f-2fe0-a02b-3d37-edf5b1d04e27@linuxfoundation.org>
+Date:   Thu, 27 May 2021 18:00:45 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210311132312.2882425-1-schnelle@linux.ibm.com>
+In-Reply-To: <20210527151139.241267495@linuxfoundation.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Mar 11, 2021 at 02:23:12PM +0100, Niklas Schnelle wrote:
-> Commit 62795041418d ("PCI: enhance physical slot debug information")
-> added a debug print on releasing the PCI slot and another message on
-> destroying it. There is however no debug print on releasing the PCI
-> device structure itself and even with closely looking at the kernel log
-> during hotplug testing, I overlooked several missing pci_dev_put() calls
-> for way too long. So let's add a debug print in pci_release_dev() making
-> it much easier to spot when the PCI device structure is not released
-> when it is supposed to.
+On 5/27/21 9:13 AM, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 5.12.8 release.
+> There are 7 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
 > 
-> Signed-off-by: Niklas Schnelle <schnelle@linux.ibm.com>
+> Responses should be made by Sat, 29 May 2021 15:11:29 +0000.
+> Anything received after that time might be too late.
+> 
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.12.8-rc1.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.12.y
+> and the diffstat can be found below.
+> 
+> thanks,
+> 
+> greg k-h
+> 
 
-Applied to pci/enumeration for v5.14, thanks!
+Compiled and booted on my test system. No dmesg regressions.
 
-> ---
->  drivers/pci/probe.c | 1 +
->  1 file changed, 1 insertion(+)
-> 
-> diff --git a/drivers/pci/probe.c b/drivers/pci/probe.c
-> index 953f15abc850..3e3669a00a2f 100644
-> --- a/drivers/pci/probe.c
-> +++ b/drivers/pci/probe.c
-> @@ -2226,6 +2226,7 @@ static void pci_release_dev(struct device *dev)
->  	pci_bus_put(pci_dev->bus);
->  	kfree(pci_dev->driver_override);
->  	bitmap_free(pci_dev->dma_alias_mask);
-> +	dev_dbg(dev, "device released\n");
->  	kfree(pci_dev);
->  }
->  
-> -- 
-> 2.25.1
-> 
+Tested-by: Shuah Khan <skhan@linuxfoundation.org>
+
+thanks,
+-- Shuah
