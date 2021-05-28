@@ -2,139 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F080B39423F
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 13:57:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C9950394240
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 13:59:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236251AbhE1L6q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 May 2021 07:58:46 -0400
-Received: from mo4-p02-ob.smtp.rzone.de ([81.169.146.168]:14924 "EHLO
-        mo4-p02-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233262AbhE1L6m (ORCPT
+        id S236137AbhE1MBO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 May 2021 08:01:14 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:41180 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233262AbhE1MBN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 May 2021 07:58:42 -0400
-ARC-Seal: i=1; a=rsa-sha256; t=1622203024; cv=none;
-    d=strato.com; s=strato-dkim-0002;
-    b=antOzkoX49nOE9T3UJfhvXSv6XH0ztXYwa5304znwlFmSLtCvKXYkowTgHxBCBGIzN
-    mXvEb6FVQvCcVvla3R7XIwgiha7WXNm+m3mA0dELO3VJf3+SRtRz39EmjwXzvY85Zv8H
-    HvRjHzx79NvQ74WMWC8M9JaO29e9POkHxGEZ9/tGnb7UG8d2ybwzMz0vHYfjv+jXvG5k
-    NiTabIJQnQRhSA1UlWGzx7sGHEakfQQQm77Mj3Dn4eVz4oJRjptKZj/gJHp16bkuNNRk
-    HFPVGzbhzs9n0PGWOj28aZeov+OxGFPusv0B8jNjo3F0J7YNInBsykdRHpOpQBmLNa7r
-    T2Rg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1622203024;
-    s=strato-dkim-0002; d=strato.com;
-    h=In-Reply-To:References:Message-ID:Subject:Cc:To:From:Date:Cc:Date:
-    From:Subject:Sender;
-    bh=Q/L9hl8VwyWHuAq5AZ8u3vsGnL+SPsZZXhvKMIEnenY=;
-    b=ovbbj5CIw3nO/nHP+jKkZeIzZXBJmXwzRFXAgB2AFxrs1uJzdMxUC/+XnPw6WT2c+9
-    ofEyiWLD/76dCh1wKXcEAzXo85LZBLN7P9Me2QTA+RlZw3HM+tXn5T7lKaEEfb1cl/Vx
-    MSoSQlilbd3rk6WA5X+6LigkGx/TjlaKHaH56XXvobt4NViY8t6ASgiOBCuH1Ar0HAIz
-    PcXn0AFLAklB2FSslpCpgDr8wO2iHeDwgkCujJeIVSvcs8xlNOKSDhSQ1E3IMunv8COQ
-    pjGpEQkO0iki563RF0jCJHPJ2t7oVYq0scc8sUvvHNdAH5Te7xqUEw7MVWlTQ+/xCt7L
-    EbIA==
-ARC-Authentication-Results: i=1; strato.com;
-    dkim=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1622203024;
-    s=strato-dkim-0002; d=gerhold.net;
-    h=In-Reply-To:References:Message-ID:Subject:Cc:To:From:Date:Cc:Date:
-    From:Subject:Sender;
-    bh=Q/L9hl8VwyWHuAq5AZ8u3vsGnL+SPsZZXhvKMIEnenY=;
-    b=EQA3JCAeZizbYsJpQINZk3qkAIqkhg84lxkkxLR3KcCdtIHF7yYDeU8K7ENdwywS9l
-    bV9vspwlIMQ0heWlTMCIYPnyuF7Rq+kSNwPscNPUqRGfctTnXzfRNuWala5ScOj+HpiB
-    DCCiJwE6CZnf044SLwj0hCVOi7TD60EYbDikBehD2zEvyMNusRyqNqqyQdAJiCqMt051
-    ZO1TdrGPgSv1j1S0aEBVGWNY5zGum2SSY/ehiVSncSXWeYP2PqWmlBdSBbJz5d6Ejr3X
-    iJ/RYD8FrEy4I2MyhrIQWJOZRoF7QPkbQRZgo47FToy5ybHokfFbQgahKyeLDIIztewp
-    ZQdg==
-Authentication-Results: strato.com;
-    dkim=none
-X-RZG-AUTH: ":P3gBZUipdd93FF5ZZvYFPugejmSTVR2nRPhVOQ/OcYgojyw4j34+u26zEodhPgRDZ8j6IczFY4o="
-X-RZG-CLASS-ID: mo00
-Received: from gerhold.net
-    by smtp.strato.de (RZmta 47.26.3 DYNA|AUTH)
-    with ESMTPSA id U0b2c9x4SBv366O
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
-        (Client did not present a certificate);
-    Fri, 28 May 2021 13:57:03 +0200 (CEST)
-Date:   Fri, 28 May 2021 13:57:02 +0200
-From:   Stephan Gerhold <stephan@gerhold.net>
-To:     Vincent Knecht <vincent.knecht@mailoo.org>
-Cc:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, phone-devel@vger.kernel.org,
-        ~postmarketos/upstreaming@lists.sr.ht
-Subject: Re: [PATCH v1] arm64: dts: qcom: msm8916-alcatel-idol347: enable
- touchscreen
-Message-ID: <YLDajqW826vi/edi@gerhold.net>
-References: <20210528114345.543761-1-vincent.knecht@mailoo.org>
+        Fri, 28 May 2021 08:01:13 -0400
+Received: from imap.suse.de (imap-alt.suse-dmz.suse.de [192.168.254.47])
+        (using TLSv1.2 with cipher ECDHE-ECDSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id B95181FD2E;
+        Fri, 28 May 2021 11:59:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1622203177; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Tyj9l9ik9fiIzg7ahnLVcj3TFNtj4jX5IrQ8z2cWPgA=;
+        b=sdVeV8ySnJTQu+Ca7f81XuRHK4s3f4zOZkd7iI2juhIk9CE0wSMoVODxn2zP5huAUkhyDs
+        lWghtWP1rCAZ2VLjJNPEum/30qcBNpgGe3Or9Lj0Y+YNRxd43BbljEREkEdN3mK8ce9uNI
+        ppVP+Q7TTCc+55a/Czu3plq3vwkrNfM=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1622203177;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Tyj9l9ik9fiIzg7ahnLVcj3TFNtj4jX5IrQ8z2cWPgA=;
+        b=6xtxs6wu8gQnc+RhFPNUB1RttB7BEmlJBYfrKl9wxIEnVMnLk5lKDRaXX8KQAd1oWknvVq
+        ImgSg2IQ6sEZm/Cw==
+Received: from imap3-int (imap-alt.suse-dmz.suse.de [192.168.254.47])
+        by imap.suse.de (Postfix) with ESMTP id A0CEE11A98;
+        Fri, 28 May 2021 11:59:37 +0000 (UTC)
+Received: from director2.suse.de ([192.168.254.72])
+        by imap3-int with ESMTPSA
+        id tAS5JinbsGCJGAAALh3uQQ
+        (envelope-from <vbabka@suse.cz>); Fri, 28 May 2021 11:59:37 +0000
+To:     Mel Gorman <mgorman@techsingularity.net>,
+        Andrew Morton <akpm@linux-foundation.org>
+Cc:     Hillf Danton <hdanton@sina.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Michal Hocko <mhocko@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux-MM <linux-mm@kvack.org>
+References: <20210525080119.5455-1-mgorman@techsingularity.net>
+ <20210525080119.5455-7-mgorman@techsingularity.net>
+From:   Vlastimil Babka <vbabka@suse.cz>
+Subject: Re: [PATCH 6/6] mm/page_alloc: Introduce
+ vm.percpu_pagelist_high_fraction
+Message-ID: <018c4b99-81a5-bc12-03cd-662a938ef05a@suse.cz>
+Date:   Fri, 28 May 2021 13:59:37 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210528114345.543761-1-vincent.knecht@mailoo.org>
+In-Reply-To: <20210525080119.5455-7-mgorman@techsingularity.net>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 28, 2021 at 01:43:45PM +0200, Vincent Knecht wrote:
-> Enable the MStar msg2638 touchscreen.
+On 5/25/21 10:01 AM, Mel Gorman wrote:
+> This introduces a new sysctl vm.percpu_pagelist_high_fraction. It is
+> similar to the old vm.percpu_pagelist_fraction. The old sysctl increased
+> both pcp->batch and pcp->high with the higher pcp->high potentially
+> reducing zone->lock contention. However, the higher pcp->batch value also
+> potentially increased allocation latency while the PCP was refilled.
+> This sysctl only adjusts pcp->high so that zone->lock contention is
+> potentially reduced but allocation latency during a PCP refill remains
+> the same.
 > 
-> Signed-off-by: Vincent Knecht <vincent.knecht@mailoo.org>
+>   # grep -E "high:|batch" /proc/zoneinfo | tail -2
+>               high:  649
+>               batch: 63
+> 
+>   # sysctl vm.percpu_pagelist_high_fraction=8
+>   # grep -E "high:|batch" /proc/zoneinfo | tail -2
+>               high:  35071
+>               batch: 63
+> 
+>   # sysctl vm.percpu_pagelist_high_fraction=64
+>               high:  4383
+>               batch: 63
+> 
+>   # sysctl vm.percpu_pagelist_high_fraction=0
+>               high:  649
+>               batch: 63
+> 
+> Signed-off-by: Mel Gorman <mgorman@techsingularity.net>
+> Acked-by: Dave Hansen <dave.hansen@linux.intel.com>
 
-Reviewed-by: Stephan Gerhold <stephan@gerhold.net>
+Acked-by: Vlastimil Babka <vbabka@suse.cz>
 
-Thanks!
-Stephan
+Documentation nit below:
 
-> ---
->  .../boot/dts/qcom/msm8916-alcatel-idol347.dts | 26 +++++++++++++++++++
->  1 file changed, 26 insertions(+)
-> 
-> diff --git a/arch/arm64/boot/dts/qcom/msm8916-alcatel-idol347.dts b/arch/arm64/boot/dts/qcom/msm8916-alcatel-idol347.dts
-> index 540b1fa4b260..670bd1bebd73 100644
-> --- a/arch/arm64/boot/dts/qcom/msm8916-alcatel-idol347.dts
-> +++ b/arch/arm64/boot/dts/qcom/msm8916-alcatel-idol347.dts
-> @@ -45,6 +45,24 @@ &blsp1_uart2 {
->  	status = "okay";
->  };
+> @@ -789,6 +790,25 @@ panic_on_oom=2+kdump gives you very strong tool to investigate
+>  why oom happens. You can get snapshot.
 >  
-> +&blsp_i2c4 {
-> +	status = "okay";
-> +
-> +	touchscreen@26 {
-> +		compatible = "mstar,msg2638";
-> +		reg = <0x26>;
-> +		interrupt-parent = <&msmgpio>;
-> +		interrupts = <13 IRQ_TYPE_EDGE_FALLING>;
-> +		reset-gpios = <&msmgpio 100 GPIO_ACTIVE_LOW>;
-> +		pinctrl-names = "default";
-> +		pinctrl-0 = <&ts_int_reset_default>;
-> +		vdd-supply = <&pm8916_l17>;
-> +		vddio-supply = <&pm8916_l5>;
-> +		touchscreen-size-x = <2048>;
-> +		touchscreen-size-y = <2048>;
-> +	};
-> +};
-> +
->  &blsp_i2c5 {
->  	status = "okay";
 >  
-> @@ -281,6 +299,14 @@ proximity_int_default: proximity-int-default {
->  		bias-pull-up;
->  	};
->  
-> +	ts_int_reset_default: ts-int-reset-default {
-> +		pins = "gpio13", "gpio100";
-> +		function = "gpio";
+> +percpu_pagelist_high_fraction
+> +=============================
 > +
-> +		drive-strength = <2>;
-> +		bias-disable;
-> +	};
+> +This is the fraction of pages in each zone that are allocated for each
+> +per cpu page list.  The min value for this is 8.  It means that we do
+> +not allow more than 1/8th of pages in each zone to be allocated in any
+> +single per_cpu_pagelist.
+
+This, while technically correct (as an upper limit) is somewhat misleading as
+the limit for a single per_cpu_pagelist also considers the number of local cpus.
+
+>  This entry only changes the value of hot per
+> +cpu pagelists. User can specify a number like 100 to allocate 1/100th
+> +of each zone to each per cpu page list.
+
+This is worse. Anyone trying to reproduce this example on a system with multiple
+cpus per node and checking the result will be puzzled.
+So I think the part about number of local cpus should be mentioned to avoid
+confusion.
+
+> +The batch value of each per cpu pagelist remains the same regardless of the
+> +value of the high fraction so allocation latencies are unaffected.
 > +
->  	usb_id_default: usb-id-default {
->  		pins = "gpio69";
->  		function = "gpio";
-> -- 
-> 2.31.1
-> 
-> 
-> 
+> +The initial value is zero. Kernel uses this value to set the high pcp->high
+> +mark based on the low watermark for the zone and the number of local
+> +online CPUs.  If the user writes '0' to this sysctl, it will revert to
+> +this default behavior.
+> +
+> +
