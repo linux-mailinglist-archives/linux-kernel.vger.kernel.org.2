@@ -2,123 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 55048393F66
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 11:08:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6472C393F8D
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 11:09:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236435AbhE1JKF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 May 2021 05:10:05 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:24008 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235721AbhE1JJk (ORCPT
+        id S235265AbhE1JK7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 May 2021 05:10:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45756 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234226AbhE1JKy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 May 2021 05:09:40 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1622192885;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=t4+d8v/qkCpPOmJXEAWQ9CljZYiiDXo4O63BP6isPck=;
-        b=HLMkz+C3AvccMkVUsqkQMcfu7Qri36Dw84kk9vjW88jkTb4cp992Yt2hdcZXT5y9aGtFxI
-        0THM5fiBFnLzK6TeQPz5E5BBLdsgjIOqq8xg09lJjGlwNKeyeta2qD6kzUjOul6Bhy3o6o
-        4r21XXe5v6sykNI9aMFTFeLY4jxu+00=
-Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
- [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-416-ZVi_zlj9M_ugqqBRiV06lg-1; Fri, 28 May 2021 05:08:03 -0400
-X-MC-Unique: ZVi_zlj9M_ugqqBRiV06lg-1
-Received: by mail-wr1-f72.google.com with SMTP id z13-20020adfec8d0000b0290114cc6b21c4so377915wrn.22
-        for <linux-kernel@vger.kernel.org>; Fri, 28 May 2021 02:08:03 -0700 (PDT)
+        Fri, 28 May 2021 05:10:54 -0400
+Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78FB1C0613ED;
+        Fri, 28 May 2021 02:09:19 -0700 (PDT)
+Received: by mail-wm1-x329.google.com with SMTP id z19-20020a7bc7d30000b029017521c1fb75so4161701wmk.0;
+        Fri, 28 May 2021 02:09:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=message-id:date:from:user-agent:mime-version:to:cc:subject
+         :references:in-reply-to:content-transfer-encoding;
+        bh=sMSHq+umZzE3XCm8WFGhy8tszcRmNHLJp/XbtDNl2gM=;
+        b=iLSHCIfYtpvNu+mmjCpLRw7Zr8Yy5cqFGVLfeRG17HK/ggdqc1QY5wiE0lyZoUI/gJ
+         hZ6sWyKh1ngYopmcClgKY5/8zzHmaJQx2V+BquCAf2KEtG7w8HE3LBXzlOJp2AuiLVRH
+         UYgmcDE/ZlQHqomON5ZEDozqkQifjbdn7QXrhxjjaM8gFjAyVimja4WS6JYTQjUg1zlT
+         q/FUf4C4NTmhrmrPHO5IY5eiLz3wolaeDyjcGA6Aqq7A6SlrdREq3euyvsMzt7kUMaq2
+         EZ77AFrxa7JWFOUZO4T08FxP/dMUmXg6eC0VS8c7PD6lJusMjEHN2IMfiokP7vFcDT0b
+         5kyQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:from:to:cc:references:organization
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=t4+d8v/qkCpPOmJXEAWQ9CljZYiiDXo4O63BP6isPck=;
-        b=R3Mf6rCKccwGvwseGB3ReGwcQ4/ted2amzYAqWEtt7UUI5jiBLIGdu3p1SJWkjM2ty
-         Mi41kY/zSZtypdEIa7z2eHEw9Ogr5BV23GVl6iNZP7vSGweILmm+CG3gdrtwXPjl8e2Y
-         xsMwzo/hv/GNW9+GzBdFQ0RH5foOgqw2p+bihfZGRSbFEN/ky+TErsYD41Eq/fQH15Iu
-         U0PAedMWaru8aUIXfg9qSMD1ur0SLV2rTN8tXbZx7tPw9YBSODyznoDqHkT4AiVQawj1
-         VTWdY1BHdaZ/cEqbCBfKzg/LrcdifPZwot88gNqVCa6STrgd3CgYxS+LQ4RkMyRuIpyl
-         rGmQ==
-X-Gm-Message-State: AOAM5334F/E8b6kvwWlleH7RC4367ovMk90rDtIek7WpqwgZEAgeVgBd
-        Rzq4GpVJA2Be0Y6mAdNwJQIDT11LO2RRcNYU4m/YMMgzfFBSWDQ1JPzWUyq05LqEvlzEjR+ykuO
-        fqcrRRpyrY5CHJ4baWOjvCbC3
-X-Received: by 2002:a1c:7d13:: with SMTP id y19mr7412756wmc.41.1622192882687;
-        Fri, 28 May 2021 02:08:02 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwStphUgOtrZgsXGu3HMG2jWcUMSuKIuhUwPBTShPcCPhJAw9GQpEe/8M8+3RQysprF6UZVkg==
-X-Received: by 2002:a1c:7d13:: with SMTP id y19mr7412742wmc.41.1622192882490;
-        Fri, 28 May 2021 02:08:02 -0700 (PDT)
-Received: from [192.168.3.132] (p5b0c6870.dip0.t-ipconnect.de. [91.12.104.112])
-        by smtp.gmail.com with ESMTPSA id c64sm14091213wma.15.2021.05.28.02.08.01
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 28 May 2021 02:08:02 -0700 (PDT)
-Subject: Re: [PATCH 0/6 v2] Calculate pcp->high based on zone sizes and active
- CPUs
-From:   David Hildenbrand <david@redhat.com>
-To:     Mel Gorman <mgorman@techsingularity.net>,
-        Dave Hansen <dave.hansen@intel.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Hillf Danton <hdanton@sina.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Michal Hocko <mhocko@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux-MM <linux-mm@kvack.org>, "Tang, Feng" <feng.tang@intel.com>
-References: <20210525080119.5455-1-mgorman@techsingularity.net>
- <7177f59b-dc05-daff-7dc6-5815b539a790@intel.com>
- <20210528085545.GJ30378@techsingularity.net>
- <54ff0363-2f39-71d1-e26c-962c3fddedae@redhat.com>
-Organization: Red Hat
-Message-ID: <e73d39cc-df2f-5000-0212-6073955fb291@redhat.com>
-Date:   Fri, 28 May 2021 11:08:01 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+        h=x-gm-message-state:message-id:date:from:user-agent:mime-version:to
+         :cc:subject:references:in-reply-to:content-transfer-encoding;
+        bh=sMSHq+umZzE3XCm8WFGhy8tszcRmNHLJp/XbtDNl2gM=;
+        b=rBdGwJY4mUJIVsWIAk68vmgWLvdfgmj6oLDxMr4GdWhrKryrjXv6hr9YpSfYbAsFLx
+         Prmu/3l+tBgwb+dbd7nRalAtRiNXCjfBSC+0H6mwn/nKZ6Oh22GjjPi0NxKb/J3Nh3rp
+         cjbAGmXtCf33s41RFHCE6fTHPbkfRlJvvzN01l3D380mVXiP7/A/jpyITPptOi6a4TQT
+         o0GUXF7LzoG1NG+YpvszyRTuCwNmn8BMPv8Dy1+NIY9K8T6L/2X91dHc5MJJ4Xo2gViX
+         LSh9UTemmGuaoKliizeWrm6ckWKXiTkWs8mhQg0nRo4Pyy8yhx2KC+uUbdPvlNALgW8H
+         OiAQ==
+X-Gm-Message-State: AOAM5314S33vhUAiqCFc1uWXn9vczjDjsBBxjLYqnvM86DAQkEJzRhiy
+        cFqPSob/2vVnKR2h8ces7lWV7309pF4=
+X-Google-Smtp-Source: ABdhPJz4Lkxtd9X8inDqLggacXo3tIs3S9OZpddSW82trALuGFL5G4Vs5Zydzn79SJVBLXgadoyw1w==
+X-Received: by 2002:a7b:ce8d:: with SMTP id q13mr6484003wmj.67.1622192958075;
+        Fri, 28 May 2021 02:09:18 -0700 (PDT)
+Received: from [89.139.227.208] (89-139-227-208.bb.netvision.net.il. [89.139.227.208])
+        by smtp.gmail.com with ESMTPSA id z135sm433559wmc.26.2021.05.28.02.09.16
+        (version=TLS1 cipher=AES128-SHA bits=128/128);
+        Fri, 28 May 2021 02:09:17 -0700 (PDT)
+Message-ID: <60B0B31A.7070301@gmail.com>
+Date:   Fri, 28 May 2021 12:08:42 +0300
+From:   Eli Billauer <eli.billauer@gmail.com>
+User-Agent: Mozilla/5.0 (X11; U; Linux x86_64; en-US; rv:1.9.1.12) Gecko/20100907 Fedora/3.0.7-1.fc12 Thunderbird/3.0.7
 MIME-Version: 1.0
-In-Reply-To: <54ff0363-2f39-71d1-e26c-962c3fddedae@redhat.com>
-Content-Type: text/plain; charset=iso-8859-15; format=flowed
-Content-Language: en-US
+To:     Greg KH <gregkh@linuxfoundation.org>
+CC:     arnd@arndb.de, linux-kernel@vger.kernel.org,
+        linux-usb@vger.kernel.org
+Subject: Re: [PATCH v5 2/2] char: xillybus: Add driver for XillyUSB (Xillybus
+ variant for USB)
+References: <20210526100311.56327-1-eli.billauer@gmail.com> <20210526100311.56327-3-eli.billauer@gmail.com> <YK+Mlw0Tn7eGFPI2@kroah.com>
+In-Reply-To: <YK+Mlw0Tn7eGFPI2@kroah.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 28.05.21 11:03, David Hildenbrand wrote:
-> On 28.05.21 10:55, Mel Gorman wrote:
->> On Thu, May 27, 2021 at 12:36:21PM -0700, Dave Hansen wrote:
->>> Hi Mel,
->>>
->>> Feng Tang tossed these on a "Cascade Lake" system with 96 threads and
->>> ~512G of persistent memory and 128G of DRAM.  The PMEM is in "volatile
->>> use" mode and being managed via the buddy just like the normal RAM.
->>>
->>> The PMEM zones are big ones:
->>>
->>>           present  65011712 = 248 G
->>>           high       134595 = 525 M
->>>
->>> The PMEM nodes, of course, don't have any CPUs in them.
->>>
->>> With your series, the pcp->high value per-cpu is 69584 pages or about
->>> 270MB per CPU.  Scaled up by the 96 CPU threads, that's ~26GB of
->>> worst-case memory in the pcps per zone, or roughly 10% of the size of
->>> the zone.
-> 
-> When I read about having such big amounts of free memory theoretically
-> stuck in PCP lists, I guess we really want to start draining the PCP in
-> alloc_contig_range(), just as we do with memory hotunplug when offlining.
-> 
+On 27/05/21 15:12, Greg KH wrote:
+>> diff --git a/drivers/char/xillybus/Makefile b/drivers/char/xillybus/Makefile
+>> >  index 591615264591..16f31d03209d 100644
+>> >  --- a/drivers/char/xillybus/Makefile
+>> >  +++ b/drivers/char/xillybus/Makefile
+>> >  @@ -7,3 +7,4 @@ obj-$(CONFIG_XILLYBUS_CLASS)	+= xillybus_class.o
+>> >    obj-$(CONFIG_XILLYBUS)		+= xillybus_core.o
+>> >    obj-$(CONFIG_XILLYBUS_PCIE)	+= xillybus_pcie.o
+>> >    obj-$(CONFIG_XILLYBUS_OF)	+= xillybus_of.o
+>> >  +obj-$(CONFIG_XILLYUSB)		+= xillyusb.o
+>>      
+> This doesn't quite work.
+>
+> Even if I have not selected CONFIG_XILLYBUS I get asked aboug
+> CONFIG_XILLYUSB.
+The symbol tree is:
 
-Correction: we already drain the pcp, we just don't temporarily disable 
-it, so a race as described in offline_pages() could apply:
+XILLYBUS_CLASS --+-- XILLYBUS --+-- XILLYBUS_PCIE
+                  |              |
+                  |              +-- XILLYBUS_OF
+                  |
+                  +-- XILLYUSB
 
-"Disable pcplists so that page isolation cannot race with freeing
-  in a way that pages from isolated pageblock are left on pcplists."
 
-Guess we'd then want to move the draining before 
-start_isolate_page_range() in alloc_contig_range().
+Hence not selecting CONFIG_XILLYBUS doesn't eliminate CONFIG_XILLYUSB. 
+The behavior you described is correct: CONFIG_XILLYUSB doesn't depend on 
+CONFIG_XILLYBUS.
 
--- 
-Thanks,
+>   And if I say 'm' to CONFIG_XILLYUSB, nothing gets
+> built.
+>
+>    
+Sorry, my bad. The directory is currently invoked based upon 
+CONFIG_XILLYBUS, which was correct before, but now it should be 
+CONFIG_XILLYBUS_CLASS. I'll submit a patch fixing that promptly.
 
-David / dhildenb
+Plus another patch removing MODULE_VERSION() from all C files, per your 
+earlier comment.
 
+Thanks and regards,
+    Eli
