@@ -2,148 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DCE45394479
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 16:50:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F5C4394486
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 16:53:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236022AbhE1Ove (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 May 2021 10:51:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37834 "EHLO
+        id S236181AbhE1OzK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 May 2021 10:55:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38624 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236018AbhE1Ovc (ORCPT
+        with ESMTP id S235415AbhE1OzI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 May 2021 10:51:32 -0400
-Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com [IPv6:2a00:1450:4864:20::335])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7250BC06174A
-        for <linux-kernel@vger.kernel.org>; Fri, 28 May 2021 07:49:57 -0700 (PDT)
-Received: by mail-wm1-x335.google.com with SMTP id f75-20020a1c1f4e0000b0290171001e7329so2562759wmf.1
-        for <linux-kernel@vger.kernel.org>; Fri, 28 May 2021 07:49:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=k4/Q9LKJZ/p6Cfz4YScBzLWuD3IoHybG41Fusz0viNw=;
-        b=DjqQFgPMrmgF8ovO8dwMR4Nfxhev3NPadgHxm1SDIFyXXyUwa8KmTLbkwDNXfKAM6e
-         p05dlo8Ik9Z8QMaHhPW1N5Oe4p9jKMSXbXNkE0YHyqhab5nMGz9AmG6mAq7uk54J6BjS
-         kmciIFCM3oFeFeTLJ+IT+unKBzlbwZEGmxWeDVjebizU/pNUQq9O+pnNYuWQ0FbdhdKG
-         dF35OtPqiweR5FY3x5MOdr7B29DeWnJIsgmupQWchKK+87/hl/DVpIkMgg209sAEKl2h
-         LhnnyS0/RpjKfC0Ld9Ac7lTUv+b9pWkogobWVDsVuFiQI9S/OxP1+Ot266WSPUznzsKL
-         p1Vg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=k4/Q9LKJZ/p6Cfz4YScBzLWuD3IoHybG41Fusz0viNw=;
-        b=sBgWPaJFa72KK1oAN7/147/xHXVd0OAojX9+Fl5gNMPju5nlyUE0i78jRcGgMvb+d4
-         qMBLZGeS1ExoNLvNts7Kxcdjol8X9cQIzNxxiFHaXslvnUvJlRZ/M2tcxBV6P+PKsdAB
-         DLBXbff53rEr4YnecvcGO/3iTNcn2CZDW+X5mLXvor0+p/Ti1Y7dc+5yln35zekt0gJK
-         +/9bq0o5g/lSRWNOZTsB0R/9cEXhAcZJYTPXHOjDrGiDzc3ZUUPvPVDbTItjVdD5tM1L
-         VnjiqiXYrX7NtDUoda27rUu5rO2sRHwyBwXQa0I6tqDX5HHRyuFjKYS9mfCfZJe8kieK
-         pv2w==
-X-Gm-Message-State: AOAM5323Ib/j1DZFZ9DX+zw7Z5UEzCAK1ebOaO2YKpAI0eiQD0v1LXWh
-        dwUgQKfvnpx17UWCmzlC0b+AGA==
-X-Google-Smtp-Source: ABdhPJxIiUPehbrKrAqkbtQEM9myk7dxHYdKgdQo+sg6gS7VxEodQks76xQP1JHtyeUljY3gF6MedQ==
-X-Received: by 2002:a7b:c084:: with SMTP id r4mr8733938wmh.102.1622213395995;
-        Fri, 28 May 2021 07:49:55 -0700 (PDT)
-Received: from maple.lan (cpc141216-aztw34-2-0-cust174.18-1.cable.virginm.net. [80.7.220.175])
-        by smtp.gmail.com with ESMTPSA id 89sm626826wrq.14.2021.05.28.07.49.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 28 May 2021 07:49:55 -0700 (PDT)
-Date:   Fri, 28 May 2021 15:49:53 +0100
-From:   Daniel Thompson <daniel.thompson@linaro.org>
-To:     Zhen Lei <thunder.leizhen@huawei.com>
-Cc:     Jason Wessel <jason.wessel@windriver.com>,
-        Douglas Anderson <dianders@chromium.org>,
-        Balbir Singh <bsingharora@gmail.com>,
-        Barry Song <song.bao.hua@hisilicon.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Darren Hart <dvhart@infradead.org>,
-        Davidlohr Bueso <dave@stgolabs.net>,
-        Eric Biederman <ebiederm@xmission.com>,
-        "Naveen N . Rao" <naveen.n.rao@linux.ibm.com>,
-        Anil S Keshavamurthy <anil.s.keshavamurthy@intel.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Jessica Yu <jeyu@kernel.org>,
-        Steffen Klassert <steffen.klassert@secunet.com>,
-        Daniel Jordan <daniel.m.jordan@oracle.com>,
-        Oleg Nesterov <oleg@redhat.com>,
-        John Stultz <john.stultz@linaro.org>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Tejun Heo <tj@kernel.org>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        kgdb-bugreport <kgdb-bugreport@lists.sourceforge.net>,
-        kexec <kexec@lists.infradead.org>,
-        linux-crypto <linux-crypto@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 1/1] kernel: fix numerous spelling mistakes
-Message-ID: <20210528144953.akwuf5nwky4kt3to@maple.lan>
-References: <20210526035345.9113-1-thunder.leizhen@huawei.com>
- <20210526035345.9113-2-thunder.leizhen@huawei.com>
+        Fri, 28 May 2021 10:55:08 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00C92C061574;
+        Fri, 28 May 2021 07:53:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=eYPDj+LfIhrv+LaA3M9K/3pjJ6DaX5CeFYMC/mFkVBE=; b=gQ1U2K3Xo+QlISz1KdFvyYrZPb
+        2mqImu2CRR6ObYKJPMvmMOg/7qtwA9DlvVtyqKYsUFY+L3x3eJ4NpTZG66ztCfFhlim23uBIxdXDZ
+        VoxIcoucNkIsQLnwbk8AHiOx4l0MGYhHcjgyhFR6tXvkoO2mPqN1pSeIIyvDT9EfOibSwfoyEhuC5
+        MISE/nlH1O+MJaoECgujjrTSwn14YwX3+mzTqtXMu3j3Iq1YPbeMdYizz12fUbsh/NiH4TqEMw8SS
+        lfQzgxngIwHJmBqY4CA+Lcd/WAsbCFNn4A1An8SH2nrtg+P24dR+b303UHZOr8EG5ggdyScucqrDQ
+        6AmUmNYA==;
+Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
+        id 1lmdqz-006iup-0i; Fri, 28 May 2021 14:52:49 +0000
+Date:   Fri, 28 May 2021 15:52:48 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Justin He <Justin.He@arm.com>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Petr Mladek <pmladek@suse.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Luca Coelho <luciano.coelho@intel.com>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Johannes Berg <johannes.berg@intel.com>,
+        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-s390@vger.kernel.org" <linux-s390@vger.kernel.org>
+Subject: Re: [PATCH RFCv2 2/3] lib/vsprintf.c: make %pD print full path for
+ file
+Message-ID: <YLEDwFCPcFx+qeul@casper.infradead.org>
+References: <20210528113951.6225-1-justin.he@arm.com>
+ <20210528113951.6225-3-justin.he@arm.com>
+ <YLDpSnV9XBUJq5RU@casper.infradead.org>
+ <AM6PR08MB437691E7314C6B774EFED4BDF7229@AM6PR08MB4376.eurprd08.prod.outlook.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210526035345.9113-2-thunder.leizhen@huawei.com>
+In-Reply-To: <AM6PR08MB437691E7314C6B774EFED4BDF7229@AM6PR08MB4376.eurprd08.prod.outlook.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 26, 2021 at 11:53:45AM +0800, Zhen Lei wrote:
-> Fix some spelling mistakes in comments:
-> suspeneded ==> suspended
-> occuring ==> occurring
-> wont ==> won't
-> detatch ==> detach
-> represntation ==> representation
-> hexidecimal ==> hexadecimal
-> delimeter ==> delimiter
-> architecure ==> architecture
-> accumalator ==> accumulator
-> evertything ==> everything
-> contingous ==> contiguous
-> useable ==> usable
-> musn't ==> mustn't
-> alloed ==> allowed
-> immmediately ==> immediately
-> Allocted ==> Allocated
-> noone ==> no one
-> unparseable ==> unparsable
-> dependend ==> dependent
-> callled ==> called
-> alreay ==> already
-> childs ==> children
-> implemention ==> implementation
-> situration ==> situation
-> overriden ==> overridden
-> asynchonous ==> asynchronous
-> accumalate ==> accumulate
-> syncrhonized ==> synchronized
-> therefor ==> therefore
-> ther ==> their
-> capabilites ==> capabilities
-> lentgh ==> length
-> watchog ==> watchdog
-> assing ==> assign
-> Retun ==> Return
+On Fri, May 28, 2021 at 02:22:01PM +0000, Justin He wrote:
+> > On Fri, May 28, 2021 at 07:39:50PM +0800, Jia He wrote:
+> > > We have '%pD' for printing a filename. It may not be perfect (by
+> > > default it only prints one component.)
+> > >
+> > > As suggested by Linus at [1]:
+> > > A dentry has a parent, but at the same time, a dentry really does
+> > > inherently have "one name" (and given just the dentry pointers, you
+> > > can't show mount-related parenthood, so in many ways the "show just
+> > > one name" makes sense for "%pd" in ways it doesn't necessarily for
+> > > "%pD"). But while a dentry arguably has that "one primary component",
+> > > a _file_ is certainly not exclusively about that last component.
+> > >
+> > > Hence "file_dentry_name()" simply shouldn't use "dentry_name()" at all.
+> > > Despite that shared code origin, and despite that similar letter
+> > > choice (lower-vs-upper case), a dentry and a file really are very
+> > > different from a name standpoint.
+> > >
+> > > Here stack space is preferred for file_d_path_name() because it is
+> > > much safer. The stack size 256 is a compromise between stack overflow
+> > > and too short full path.
+> >
+> > How is it "safer"?  You already have a buffer passed from the caller.
+> > Are you saying that d_path_fast() might overrun a really small buffer
+> > but won't overrun a 256 byte buffer?
+> No, it won't overrun a 256 byte buf. When the full path size is larger than 256, the p->len is < 0 in prepend_name, and this overrun will be
+> dectected in extract_string() with "-ENAMETOOLONG".
 > 
-> Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
-> ---
->  kernel/acct.c                  | 2 +-
->  kernel/context_tracking.c      | 2 +-
->  kernel/cpu.c                   | 2 +-
->  kernel/debug/debug_core.c      | 2 +-
->  kernel/debug/kdb/kdb_main.c    | 8 ++++----
->  kernel/debug/kdb/kdb_private.h | 2 +-
+> Each printk contains 2 vsnprintf. vsnprintf() returns the required size after formatting the string.
+> 1. vprintk_store() will invoke 1st vsnprintf() will 8 bytes space to get the reserve_size. In this case, the _buf_ could be less than _end_ by design.
+> 2. Then it invokes 2nd printk_sprint()->vscnprintf()->vsnprintf() to really fill the space.
 
-For these three files:
+I think you need to explain _that_ in the commit log, not make some
+nebulous claim of "safer".
 
-Acked-by: Daniel Thompson <daniel.thompson@linaro.org>
+> If we choose the stack space, it can meet above 2 cases.
+> 
+> If we pass the parameter like:
+> p = d_path_fast(path, buf, end - buf);
+> We need to handle the complicated logic in prepend_name()
+> I have tried this way in local test, the code logic is very complicated
+> and not so graceful.
+> e.g. I need to firstly go through the loop and get the full path size of
+> that file. And then return reserved_size for that 1st vsnprintf
 
-
-Daniel.
+I'm not sure why it's so complicated.  p->len records how many bytes
+are needed for the entire path; can't you just return -p->len ?
