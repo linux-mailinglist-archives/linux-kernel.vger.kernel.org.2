@@ -2,205 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9365D39487C
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 23:56:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C77A394888
+	for <lists+linux-kernel@lfdr.de>; Sat, 29 May 2021 00:07:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229560AbhE1V6O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 May 2021 17:58:14 -0400
-Received: from mga06.intel.com ([134.134.136.31]:9352 "EHLO mga06.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229481AbhE1V6M (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 May 2021 17:58:12 -0400
-IronPort-SDR: Yig4BDJ9T3wVdDaWLnG0Wc+zq8mJqetSIo4DV2w8r5EfNbGh8kxRgMcxC3957y4v+DVREj76gr
- KyrtzcXnDGiA==
-X-IronPort-AV: E=McAfee;i="6200,9189,9998"; a="264232719"
-X-IronPort-AV: E=Sophos;i="5.83,231,1616482800"; 
-   d="scan'208";a="264232719"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 May 2021 14:56:36 -0700
-IronPort-SDR: VSYvN113wmKmwqehhqJdDcHTyN6/LLf9mmajjc9KV2Nj+KhfBV57Nhl+3tNkIjfd5ySvfAmH+V
- YUZXuQfpBZiQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.83,231,1616482800"; 
-   d="scan'208";a="466039088"
-Received: from orsmsx605.amr.corp.intel.com ([10.22.229.18])
-  by fmsmga004.fm.intel.com with ESMTP; 28 May 2021 14:56:35 -0700
-Received: from orsmsx607.amr.corp.intel.com (10.22.229.20) by
- ORSMSX605.amr.corp.intel.com (10.22.229.18) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2242.4; Fri, 28 May 2021 14:56:34 -0700
-Received: from orsmsx603.amr.corp.intel.com (10.22.229.16) by
- ORSMSX607.amr.corp.intel.com (10.22.229.20) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2242.4; Fri, 28 May 2021 14:56:34 -0700
-Received: from ORSEDG602.ED.cps.intel.com (10.7.248.7) by
- orsmsx603.amr.corp.intel.com (10.22.229.16) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2242.4
- via Frontend Transport; Fri, 28 May 2021 14:56:34 -0700
-Received: from NAM10-MW2-obe.outbound.protection.outlook.com (104.47.55.102)
- by edgegateway.intel.com (134.134.137.103) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2242.4; Fri, 28 May 2021 14:56:34 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=PDnqtX/yxjUQ1v8jA//ObGYPvmcqM0+elHlr+9l6YFUPpj0US6JaNxczUxOACXqCuE/opphiQ/R0CDdTajkJIwRKNXNkTaXOupvueEKLsqBCF8CHSWOxL03RLAmIITpSsbG6cILB6dPIngRTVJDegY1+PeTjuTHeHhtnITW+06FavbnShpjbzA0mf+fUg+qkB1JJnZba+Iw+KskhYTaijKv3Zc9vAD7F0Ix/WWGgU+FWxr2e6+izC0inL0DFWqfqnPwfgw7Tuwj4kKdQbnxlsmsQrvKKOVxKs4BSR3Awpiw09281FvO1V9m6dsJXxwz6eDE8KZFSqwISIVT2dqIDWw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=xgJUFNBEd9uzuvty1jfIG+kfOXMez4MXrLGmuz4/YFM=;
- b=Tx3tJJWODgl1fPNneC2JHqcmRnycaEAg398OPxuo6OF5PCakHMce/0S6B57swsmlM6aiOSEfTq2ZS9I0gc9Jd6rtx0clyYQF+CGe3KP0lTu81VHkXA6eidlhVLbm3JvzfU3UXkV+Z6IXHZe3i1EqlS/qEaRWnS/PD1dNFpIgu/p9esH2seNHcL2h5T/0J3ALostOc/V8EfEeiSJhRcsSEGL/ss5Cf6j5tt6LJjCxFty2jldl6zPa4KcQ5gP9JkNkpqFYXCjA81RHRc5Pb74k7fFCZuE6uKnCWOjHSZzW0VjxO5HeU4esjXvz+tRc4b/yrFdZptDjilnpcl+SEb61ew==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=intel.onmicrosoft.com;
- s=selector2-intel-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=xgJUFNBEd9uzuvty1jfIG+kfOXMez4MXrLGmuz4/YFM=;
- b=uEu24+vj/kLfy7c7jxb4WcXyrQZfDrfvUDRIlMRaCZ6N9lnGsEYl++UgkrVzgXGygekD5vsbHrjP57ieDsNaqUF+StdMVb7rOiqrZ6V18RzyTiZsALzsTbZ381Wn9L5xw504KYJgRWiXE7F3kEQ7flq/TFBMc8m7ZiV0eASxddo=
-Received: from SN6PR11MB3229.namprd11.prod.outlook.com (2603:10b6:805:ba::28)
- by SA2PR11MB4809.namprd11.prod.outlook.com (2603:10b6:806:112::10) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4173.20; Fri, 28 May
- 2021 21:56:33 +0000
-Received: from SN6PR11MB3229.namprd11.prod.outlook.com
- ([fe80::7ca2:37ff:9cbd:c87c]) by SN6PR11MB3229.namprd11.prod.outlook.com
- ([fe80::7ca2:37ff:9cbd:c87c%6]) with mapi id 15.20.4173.023; Fri, 28 May 2021
- 21:56:33 +0000
-From:   "Nguyen, Anthony L" <anthony.l.nguyen@intel.com>
-To:     "Brandeburg, Jesse" <jesse.brandeburg@intel.com>,
-        "gustavoars@kernel.org" <gustavoars@kernel.org>
-CC:     "Keller, Jacob E" <jacob.e.keller@intel.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "intel-wired-lan@lists.osuosl.org" <intel-wired-lan@lists.osuosl.org>,
-        "linux-hardening@vger.kernel.org" <linux-hardening@vger.kernel.org>
-Subject: Re: [PATCH][next] virtchnl: Replace one-element array in struct
- virtchnl_vsi_queue_config_info
-Thread-Topic: [PATCH][next] virtchnl: Replace one-element array in struct
- virtchnl_vsi_queue_config_info
-Thread-Index: AQHXUbwDbnIYY2RrYUqZlp9C9hVLLKr5dd4A
-Date:   Fri, 28 May 2021 21:56:32 +0000
-Message-ID: <f3674339c0390ced22b365101f2d3e3a2bf26845.camel@intel.com>
-References: <20210525231658.GA176466@embeddedor>
-In-Reply-To: <20210525231658.GA176466@embeddedor>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-user-agent: Evolution 3.36.5 (3.36.5-2.fc32) 
-authentication-results: intel.com; dkim=none (message not signed)
- header.d=none;intel.com; dmarc=none action=none header.from=intel.com;
-x-originating-ip: [134.134.136.219]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: b4160765-fa3f-4247-30c2-08d9222374e6
-x-ms-traffictypediagnostic: SA2PR11MB4809:
-x-ld-processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <SA2PR11MB48096058F38C95140F1DAB41C6229@SA2PR11MB4809.namprd11.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:10000;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: t1EcRayAqGYi+PaTtk6cTzdhbVGjGV270+A7cYWLsjIsdlPeTfnAE/JjNjUyb4htMIcQpzd4249FLy6+EHSQAyxBS5nDS3gwoSnnOgPdoP5rjvEEJACyPEPmqdIz1l4IGARwrcMt6c1JJwYsmTB7SWDPaKaaWskRJOSh6gLkQ9djUHHOTrJ2hq+/yt0zfrW44f1/cXFg19DRwD3+zvp/IMgC0B2VgCEQpZYlKdFanEcIA8IklDV6ZB01KOfJlGY3kc/I7Q0VJ1y1spMzxHiIxCBE+Ne3uzFxMpHn+BV5EJHAiS+HfFzjYC0tWsMxnb2huyTD+Eg8anpqoYzgcRRFii0GweoSodEn9R/TqdZb1dlPn+aZl7xZVZmZ6Y3Zfglnx0gSTUEWhjU2IQaeILvnf4qWXdoDEmS4bY0jFzEEEPRqnh2c9mTDBab9p4nZXINJkjeB2E62P0Yma9RufhpW2ddNaWztpITPmKRHYMU7H79FK6xVqy9LqYqSX7ONJMJg+UjC1SuA6LuyTYhGtpzye0BWB1pqkYm9NMkaQiuzbXbiNpOLGcOJ/dwHnFkygiLmiNwmBNptW5Znpc9iYmzS50X5OVqw0CdGiONd/oMa2ig1sod2WPgXh3sKmE9kHbjGDmmh5mHZBvd5pN+zM14jdvhGBoe3g4MDw8pVloaZYkrhIhpRMIGUE46KagvR9SolRKJqFB8f81FV9OpgTxkckZPpeQDqkg9jhda6geF8F8EZDSI4HKFhLUDqt2OkKoxJ
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR11MB3229.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(39860400002)(346002)(376002)(396003)(136003)(6512007)(186003)(316002)(6506007)(5660300002)(71200400001)(110136005)(966005)(54906003)(4326008)(6486002)(36756003)(478600001)(2906002)(86362001)(91956017)(122000001)(83380400001)(8676002)(2616005)(66556008)(64756008)(66446008)(66946007)(8936002)(66476007)(76116006)(26005)(38100700002);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: =?utf-8?B?aVBYZks3OUJnYzV0b2xueDU1VVhnbG8yZjVGR0lrYmpyb21iNkRlUi9FSXU3?=
- =?utf-8?B?WkVNRHhjOWZ4U0hJU3pHSFE3eUppNDdqa21hdjZaNVhwVFQxUUF2bVZHS1VO?=
- =?utf-8?B?dlpjdDkxR1RqNmRCTVo1cWJXNnNCYmp2WkR2eVFVdTl4bzFLQ2NadFFqc3A2?=
- =?utf-8?B?Y2JWTDdzQWE1eFFDeXk1WDVvVDdET3BMV2RuK2JDRXhtWGJ0T0RJMjZ3S3JP?=
- =?utf-8?B?dHlDT243cExid2JpM2JZUFRtUWNhdUh3T2U3SFMyT21KZUxrMnlQY2FTa21M?=
- =?utf-8?B?aFhBN0dvbnpBZFk0MDEvOWd5V0RhVERBRktQMUNMTWIrWW5Zc3NzNUpYUG5J?=
- =?utf-8?B?bEt5alp0VHFVdHVQbUplVDJZYjROVjBITkNUN3BWb1lpdjk4aG5GY2dxaVRa?=
- =?utf-8?B?ckVIUDJFRWx6Tld1UXp4THVEQzJ6MWtZMm5TTmN0SGlyaVh2RHlBR1RoSDhT?=
- =?utf-8?B?OUxmWHc3SExHMXAwUFJieWNjWVdMYTBWQzVaU2Irc0RNV3FpaFo0dTB2QWRN?=
- =?utf-8?B?Q285anZ3K095RXN1L2pBWFVNSDlMeGpoSk95TWFWY2ZKeW5qcG41cU9RQmx3?=
- =?utf-8?B?Q3BNVWIrdkREOXU5ZDF4aVhuYUZnOHdkV0phM0Q3RFhSMVhXQWlDU21KNm90?=
- =?utf-8?B?d0w2d09qK0VZTnIvK0lzK0tlelh5dWUzaDVUVDZMK21sdGV5OTBYby9IdU5i?=
- =?utf-8?B?b0tNSWtQY09GTjlpbHorTFhsV2VGWEhwWHZMSi9oVkxhcitHczFHck9tOEVO?=
- =?utf-8?B?MGRlWjJBUkh3YzRkTzY0RnJ1M3NqM3NIVjlZTGkyV3hkY0swNUNhaWRHVTJZ?=
- =?utf-8?B?WUhRblliRGJybUY3R3RnY3NXeXIrdkMxWk5HMU85T0R2VE1wMTU2YjN1ZHhT?=
- =?utf-8?B?bXFtTEVEc0ZFaUZBK0ZTemRYMEhJK0NDWkZNVER0Z3h1ZDRna0MvVUJnWXBu?=
- =?utf-8?B?eGhLNjYzZXQ2Wm5XZHB4VGRXR3BqUVhpOUhERXVtUkt6dUNtQjIyTmtTNEtw?=
- =?utf-8?B?WjZzZEFKd0lvQTJwZUZaWU1UODJ5VU1kdUk2dUticUk1UmxpUUhpZXQ5SWIy?=
- =?utf-8?B?dExoTFpYNkNzb3dGbWlhOVpCSEZDYWptTjAvSm9OamZmZXVMUDJqaThPV2hk?=
- =?utf-8?B?bEw3WVh1R3JTaUtvc0kxYWtqSmMwa1VZd0FJNmVsN1p2T0pjL2hOS2J0TDZY?=
- =?utf-8?B?TTdoUS8rL2xaTkRPV1R1NG1yY3F0RWxTOE5JM2pCU3lLd011VjcxVUJLcWxZ?=
- =?utf-8?B?SURUK1U2MDU3T09FNlMvb3YwQjZ2WkNyMWxZdzRuelhYL2pBS3k0aHh4Qm1P?=
- =?utf-8?B?Q1lwenJCR3JDNTd2enZSd0N1NDJUWithVUNhL0Y5Tm44RVNwSm1VT1VJUENw?=
- =?utf-8?B?RHB0TkFjM0dZK3lKSTU3WUtMRGNQMjlldHMwcVVBZUJETlFaRWwrc0hSWXpp?=
- =?utf-8?B?Vms4aEt1MS84WTlOTTRVZ0J3dEFhbW91Sk9PbFV5c01pYzVmZUI4N1I4UW5q?=
- =?utf-8?B?MGZzd0psK0NxTmFJM0Qwc0srWURDOE9vMFdiSGxQZ1QvU1dwcUtHcjBWdzQ5?=
- =?utf-8?B?SEs0OWpHbmV3V01lR3lWYkY5Mm5XbE5pL05IRnBNTzk0QkVEVFQzVHo4Vmpm?=
- =?utf-8?B?THlPVkVjaDJLMkUwcUx1RU5RSjFJRW1HSXVPRGtMYy9XQ2piQldBbmVobnRT?=
- =?utf-8?B?THExSnlpSHZFMjh6NGZFeEZJaS8xaFpGaGdQVnF2TUZxWGNZZHNDWDRxd0pO?=
- =?utf-8?B?ZWpUZzVnTG1ObjZvOWwzNTk3bGkwNmZrNVNPUG9CbDNPQ2lFZW9saEx4V0JO?=
- =?utf-8?B?WFNNL2tLSzdzdlFQb0RPZz09?=
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <6F66FF93FF33794B88587E2EBB431CEE@namprd11.prod.outlook.com>
-Content-Transfer-Encoding: base64
+        id S229559AbhE1WIK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 May 2021 18:08:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50476 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229481AbhE1WIJ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 28 May 2021 18:08:09 -0400
+Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com [IPv6:2a00:1450:4864:20::62f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47D0FC061574
+        for <linux-kernel@vger.kernel.org>; Fri, 28 May 2021 15:06:32 -0700 (PDT)
+Received: by mail-ej1-x62f.google.com with SMTP id jt22so7441910ejb.7
+        for <linux-kernel@vger.kernel.org>; Fri, 28 May 2021 15:06:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=NzCrO4wlDrdYtQq84vapD2PcfJSMaNXC/prU18bHpGA=;
+        b=W7WrForHIkI8KZA9dDE4G5G5NzSc2AIhtcdg3OJvuDS9l8Ocb83fUXXdymKb+x2DG3
+         TTfvizavhAjCAqA6fg5Ql9G0vXAtI+5AX41jNXpa7LyQ7Svohs6nlYBAdqzSSgABsHvl
+         YGlCG4bfcj9jZeIaLvmGBN6stSY21Ns3pDFvXpadkklE0qwSOgOgU5dZvOlqEilIjT+e
+         0wCCGydmlWuhhJPQR1LZhwGFaK/Y3UVtGyBvGObUXmftEGhkHh23oGYGfkhcz8GXM5Qz
+         CBtTklY5xkXTzUpakI0OEK+BVxjy72EfyQM7UaWkzYBHJBs47IjRKVwCy/jBEVN8SVDW
+         TL/g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=NzCrO4wlDrdYtQq84vapD2PcfJSMaNXC/prU18bHpGA=;
+        b=pvNjZJdT5HahOk+deXtpOb4zba73rI3I2lqXucA+z/9xSuF0kVSD9aUunk0sVpWMCy
+         H87faVS98skibT487xRF71flvIjYVgjlcnTeSTGpBnVYhUZ1p36bGqZEbEp2+Ch1UAXw
+         01vCTOiiE5wel7Z613EkByBeQlKvKvpfp2BScIN8ygboyeUh0EeTsRzsHQLAWtiPA69r
+         mfeT1N04lq6vy4rKGo2ftNEkrY/m2v+KyHAkfKCffsWrNrUL2pcXX7rKR+XpEUyDV+jQ
+         +DS8yZiBww0/7tvIJIeYIzVRLjn1jpuo0f7AulVkTcMip4ItukftVb6d2VccN7gCq1oI
+         G/LA==
+X-Gm-Message-State: AOAM533NJxSuu+bQ9wTp5QN/t7ZEa7p8GEV3JWfygPUtSWGqGFtxAP4p
+        h9xCjSeAwvKQ+/wduyxB7FQ=
+X-Google-Smtp-Source: ABdhPJyKnNWH86SGCr9vyNUEsTihT9AkVhNe6h7L2ATrdO71d0smP+t83hHxb5XxRRdSWeyPk0oisg==
+X-Received: by 2002:a17:906:aac8:: with SMTP id kt8mr10704408ejb.402.1622239589733;
+        Fri, 28 May 2021 15:06:29 -0700 (PDT)
+Received: from BV030612LT ([188.24.140.160])
+        by smtp.gmail.com with ESMTPSA id l19sm1081420eja.62.2021.05.28.15.06.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 28 May 2021 15:06:28 -0700 (PDT)
+Date:   Sat, 29 May 2021 01:06:26 +0300
+From:   Cristian Ciocaltea <cristian.ciocaltea@gmail.com>
+To:     Axel Lin <axel.lin@ingics.com>
+Cc:     Mark Brown <broonie@kernel.org>,
+        Manivannan Sadhasivam <mani@kernel.org>,
+        linux-actions@lists.infradead.org,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH RFT] regulator: atc260x: Fix n_voltages and min_sel for
+ pickable linear ranges
+Message-ID: <20210528220626.GA222540@BV030612LT>
+References: <20210528123826.350771-1-axel.lin@ingics.com>
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: SN6PR11MB3229.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: b4160765-fa3f-4247-30c2-08d9222374e6
-X-MS-Exchange-CrossTenant-originalarrivaltime: 28 May 2021 21:56:32.9168
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: dq4IR7mq8Q0oAKNbGuve50jLA72H+FxxzyZ6bs7RABsGG1b44Qo2tsuvkjvXESLG8jDLGLJbMpmN0xAp93mUV5VtFX93uKmkGPXIYwzHwyA=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA2PR11MB4809
-X-OriginatorOrg: intel.com
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210528123826.350771-1-axel.lin@ingics.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gVHVlLCAyMDIxLTA1LTI1IGF0IDE4OjE2IC0wNTAwLCBHdXN0YXZvIEEuIFIuIFNpbHZhIHdy
-b3RlOg0KPiBUaGVyZSBpcyBhIHJlZ3VsYXIgbmVlZCBpbiB0aGUga2VybmVsIHRvIHByb3ZpZGUg
-YSB3YXkgdG8gZGVjbGFyZQ0KPiBoYXZpbmcgYQ0KPiBkeW5hbWljYWxseSBzaXplZCBzZXQgb2Yg
-dHJhaWxpbmcgZWxlbWVudHMgaW4gYSBzdHJ1Y3R1cmUuIEtlcm5lbA0KPiBjb2RlDQo+IHNob3Vs
-ZCBhbHdheXMgdXNlIOKAnGZsZXhpYmxlIGFycmF5IG1lbWJlcnPigJ1bMV0gZm9yIHRoZXNlIGNh
-c2VzLiBUaGUNCj4gb2xkZXINCj4gc3R5bGUgb2Ygb25lLWVsZW1lbnQgb3IgemVyby1sZW5ndGgg
-YXJyYXlzIHNob3VsZCBubyBsb25nZXIgYmUNCj4gdXNlZFsyXS4NCj4gDQo+IFJlZmFjdG9yIHRo
-ZSBjb2RlIGFjY29yZGluZyB0byB0aGUgdXNlIG9mIGEgZmxleGlibGUtYXJyYXkgbWVtYmVyIGlu
-DQo+IHN0cnVjdA0KPiB2aXJ0Y2hubF92c2lfcXVldWVfY29uZmlnX2luZm8gaW5zdGVhZCBvZiBv
-bmUtZWxlbWVudCBhcnJheSwgYW5kIHVzZQ0KPiB0aGUNCj4gZmxleF9hcnJheV9zaXplKCkgaGVs
-cGVyLg0KPiANCj4gWzFdIGh0dHBzOi8vZW4ud2lraXBlZGlhLm9yZy93aWtpL0ZsZXhpYmxlX2Fy
-cmF5X21lbWJlcg0KPiBbMl0gDQo+IGh0dHBzOi8vd3d3Lmtlcm5lbC5vcmcvZG9jL2h0bWwvdjUu
-MTAvcHJvY2Vzcy9kZXByZWNhdGVkLmh0bWwjemVyby1sZW5ndGgtYW5kLW9uZS1lbGVtZW50LWFy
-cmF5cw0KPiANCj4gTGluazogaHR0cHM6Ly9naXRodWIuY29tL0tTUFAvbGludXgvaXNzdWVzLzc5
-DQo+IFNpZ25lZC1vZmYtYnk6IEd1c3Rhdm8gQS4gUi4gU2lsdmEgPGd1c3Rhdm9hcnNAa2VybmVs
-Lm9yZz4NCj4gLS0tDQo+ICBpbmNsdWRlL2xpbnV4L2F2Zi92aXJ0Y2hubC5oIHwgOSArKysrLS0t
-LS0NCj4gIDEgZmlsZSBjaGFuZ2VkLCA0IGluc2VydGlvbnMoKyksIDUgZGVsZXRpb25zKC0pDQo+
-IA0KPiBkaWZmIC0tZ2l0IGEvaW5jbHVkZS9saW51eC9hdmYvdmlydGNobmwuaA0KPiBiL2luY2x1
-ZGUvbGludXgvYXZmL3ZpcnRjaG5sLmgNCj4gaW5kZXggYjU1NDkxMzgwNGJkLi5lZDljNDk5OGY4
-YWMgMTAwNjQ0DQo+IC0tLSBhL2luY2x1ZGUvbGludXgvYXZmL3ZpcnRjaG5sLmgNCj4gKysrIGIv
-aW5jbHVkZS9saW51eC9hdmYvdmlydGNobmwuaA0KPiBAQCAtMzM4LDEwICszMzgsMTAgQEAgc3Ry
-dWN0IHZpcnRjaG5sX3ZzaV9xdWV1ZV9jb25maWdfaW5mbyB7DQo+ICAJdTE2IHZzaV9pZDsNCj4g
-IAl1MTYgbnVtX3F1ZXVlX3BhaXJzOw0KPiAgCXUzMiBwYWQ7DQo+IC0Jc3RydWN0IHZpcnRjaG5s
-X3F1ZXVlX3BhaXJfaW5mbyBxcGFpclsxXTsNCj4gKwlzdHJ1Y3QgdmlydGNobmxfcXVldWVfcGFp
-cl9pbmZvIHFwYWlyW107DQo+ICB9Ow0KPiAgDQo+IC1WSVJUQ0hOTF9DSEVDS19TVFJVQ1RfTEVO
-KDcyLCB2aXJ0Y2hubF92c2lfcXVldWVfY29uZmlnX2luZm8pOw0KPiArVklSVENITkxfQ0hFQ0tf
-U1RSVUNUX0xFTig4LCB2aXJ0Y2hubF92c2lfcXVldWVfY29uZmlnX2luZm8pOw0KPiAgDQo+ICAv
-KiBWSVJUQ0hOTF9PUF9SRVFVRVNUX1FVRVVFUw0KPiAgICogVkYgc2VuZHMgdGhpcyBtZXNzYWdl
-IHRvIHJlcXVlc3QgdGhlIFBGIHRvIGFsbG9jYXRlIGFkZGl0aW9uYWwNCj4gcXVldWVzIHRvDQo+
-IEBAIC05OTcsOSArOTk3LDggQEAgdmlydGNobmxfdmNfdmFsaWRhdGVfdmZfbXNnKHN0cnVjdA0K
-PiB2aXJ0Y2hubF92ZXJzaW9uX2luZm8gKnZlciwgdTMyIHZfb3Bjb2RlLA0KPiAgCQlpZiAobXNn
-bGVuID49IHZhbGlkX2xlbikgew0KPiAgCQkJc3RydWN0IHZpcnRjaG5sX3ZzaV9xdWV1ZV9jb25m
-aWdfaW5mbyAqdnFjID0NCj4gIAkJCSAgICAoc3RydWN0IHZpcnRjaG5sX3ZzaV9xdWV1ZV9jb25m
-aWdfaW5mbw0KPiAqKW1zZzsNCj4gLQkJCXZhbGlkX2xlbiArPSAodnFjLT5udW1fcXVldWVfcGFp
-cnMgKg0KPiAtCQkJCSAgICAgIHNpemVvZihzdHJ1Y3QNCj4gLQkJCQkJICAgICB2aXJ0Y2hubF9x
-dWV1ZV9wYWlyX2luZm8pKQ0KPiA7DQo+ICsJCQl2YWxpZF9sZW4gKz0gZmxleF9hcnJheV9zaXpl
-KHZxYywgcXBhaXIsDQo+ICsJCQkJCQkgICAgIHZxYy0NCj4gPm51bV9xdWV1ZV9wYWlycyk7DQoN
-ClRoZSB2aXJ0Y2hubCBmaWxlIGFjdHMgYXMgYSBiaW5hcnkgaW50ZXJmYWNlIGJldHdlZW4gcGh5
-c2ljYWwgYW5kDQp2aXJ0dWFsIGZ1bmN0aW9ucy4gVGhlcmUncyBubyBndWFydW50ZWUgdGhhdCB0
-aGUgUEYgYW5kIFZGIHdpbGwgYm90aA0KaGF2ZSB0aGUgbmV3ZXN0IHZlcnNpb24uIFRodXMgY2hh
-bmdpbmcgdGhpcyB3aWxsIGJyZWFrIGNvbXBhdGliaWxpdHkuDQpTcGVjaWZpY2FsbHksIHRoZSB3
-YXkgdGhlIHNpemUgd2FzIHZhbGlkYXRlZCBmb3IgdGhpcyBvcCBjb2RlDQppbmNvcnJlY3RseSBl
-eHBlY3RzIGFuIGV4dHJhIHF1ZXVlIHBhaXIgc3RydWN0dXJlLiBTb21lIG90aGVyDQpzdHJ1Y3R1
-cmVzIGhhdmUgc2ltaWxhciBsZW5ndGggY2FsY3VsYXRpb24gZmxhd3MuIFdlIGFncmVlIHRoYXQg
-Zml4aW5nDQp0aGlzIGlzIGltcG9ydGFudCwgYnV0IHRoZSBmaXggbmVlZHMgdG8gYWNjb3VudCB0
-aGF0IG9sZCBkcml2ZXJzIHdpbGwNCnNlbmQgYW4gb2ZmIGJ5IDEgc2l6ZS4gDQoNClRvIHByb3Bl
-cmx5IGhhbmRsZSBjb21wYXRpYmlsaXR5IHdlIG5lZWQgdG8gaW50cm9kdWNlIGEgZmVhdHVyZSBm
-bGFnIHRvDQppbmRpY2F0ZSB0aGUgbmV3IGJlaGF2aW9yLiBJZiB0aGUgZmVhdHVyZSBmbGFnIGlz
-IG5vdCBzZXQsIHdlIGFjY2NlcHQNCm1lc3NhZ2VzIHdpdGggdGhlIG9sZCBmb3JtYXQgKHdpdGgg
-dGhlIGV4dHJhIHNpemUpLiBJZiBib3RoIHRoZSBQRiBhbmQNClZGIHN1cHBvcnQgdGhlIGZlYXR1
-cmUgZmxhZywgd2UnbGwgdXNlIHRoZSBjb3JyZWN0IHNpemUgY2FsY3VsYXRpb25zLg0KV2UncmUg
-bG9va2luZyB0byBhZGQgdGhpcyBhbmQgd291bGQgbGlrZSB0byBkbyBhbGwgdGhlIHZpcnRjaG5s
-DQpzdHJ1Y3R1cmUgZml4ZXMgaW4gb25lIHNlcmllcy4NCg0KPiAgCQkJaWYgKHZxYy0+bnVtX3F1
-ZXVlX3BhaXJzID09IDApDQo+ICAJCQkJZXJyX21zZ19mb3JtYXQgPSB0cnVlOw0KPiAgCQl9DQo=
+Hi Axel,
+
+On Fri, May 28, 2021 at 08:38:26PM +0800, Axel Lin wrote:
+> The .n_voltages was missed for pickable linear ranges, fix it.
+
+Nice spot! I'm not quite sure if this is really mandatory to be manually
+specified or gets computed internally based on the provided linear
+ranges, but let's be on the safe side.
+
+> The min_sel for each pickable range should be starting from 0.
+
+Right, although in this particular case the driver behaves correctly
+because the overflow bit of every item in the 2nd range is exactly the
+range selector (bit 5 - LDO<N>_VOL_SEL in datasheet). Additionally, this
+bit is not cleared internally as the selector mask (vsel_mask) is not
+applied directly, but in conjunction with the range mask, according to
+the implementation of "regulator_set_voltage_sel_pickable_regmap()":
+
+	[...]
+		ret = regmap_update_bits(rdev->regmap,
+					 rdev->desc->vsel_reg,
+					 rdev->desc->vsel_range_mask |
+					 rdev->desc->vsel_mask, sel | range);
+	[...]
+
+As a matter of fact, using 0-based ranges will break the driver because
+the 2nd item in the range sel array "atc260x_ldo_voltage_range_sel" is
+not correct, it should be 0x20 instead of 0x1 (0x1<<5, since it is not
+shifted automatically as in the case of the voltage selectors).
+
+> Fixes: 3b15ccac161a ("regulator: Add regulator driver for ATC260x PMICs")
+> Signed-off-by: Axel Lin <axel.lin@ingics.com>
+> ---
+> Hi Cristian,
+> I don't have this h/w to test, please review and test this patch.
+
+Unfortunately I can only test the ATC2603C variant, I haven't been able
+to get a 2609A based board yet.
+
+Thanks,
+Cristi
+
+> Thanks,
+> Axel
+>  drivers/regulator/atc260x-regulator.c | 17 +++++++++--------
+>  1 file changed, 9 insertions(+), 8 deletions(-)
+> 
+> diff --git a/drivers/regulator/atc260x-regulator.c b/drivers/regulator/atc260x-regulator.c
+> index d8b429955d33..5dee02394cd9 100644
+> --- a/drivers/regulator/atc260x-regulator.c
+> +++ b/drivers/regulator/atc260x-regulator.c
+> @@ -28,12 +28,12 @@ static const struct linear_range atc2609a_dcdc_voltage_ranges[] = {
+>  
+>  static const struct linear_range atc2609a_ldo_voltage_ranges0[] = {
+>  	REGULATOR_LINEAR_RANGE(700000, 0, 15, 100000),
+> -	REGULATOR_LINEAR_RANGE(2100000, 16, 28, 100000),
+> +	REGULATOR_LINEAR_RANGE(2100000, 0, 12, 100000),
+>  };
+>  
+>  static const struct linear_range atc2609a_ldo_voltage_ranges1[] = {
+>  	REGULATOR_LINEAR_RANGE(850000, 0, 15, 100000),
+> -	REGULATOR_LINEAR_RANGE(2100000, 16, 27, 100000),
+> +	REGULATOR_LINEAR_RANGE(2100000, 0, 11, 100000),
+>  };
+>  
+>  static const unsigned int atc260x_ldo_voltage_range_sel[] = {
+> @@ -411,7 +411,7 @@ enum atc2609a_reg_ids {
+>  	.owner = THIS_MODULE, \
+>  }
+>  
+> -#define atc2609a_reg_desc_ldo_range_pick(num, n_range) { \
+> +#define atc2609a_reg_desc_ldo_range_pick(num, n_range, n_volt) { \
+>  	.name = "LDO"#num, \
+>  	.supply_name = "ldo"#num, \
+>  	.of_match = of_match_ptr("ldo"#num), \
+> @@ -421,6 +421,7 @@ enum atc2609a_reg_ids {
+>  	.type = REGULATOR_VOLTAGE, \
+>  	.linear_ranges = atc2609a_ldo_voltage_ranges##n_range, \
+>  	.n_linear_ranges = ARRAY_SIZE(atc2609a_ldo_voltage_ranges##n_range), \
+> +	.n_voltages = n_volt, \
+>  	.vsel_reg = ATC2609A_PMU_LDO##num##_CTL0, \
+>  	.vsel_mask = GENMASK(4, 1), \
+>  	.vsel_range_reg = ATC2609A_PMU_LDO##num##_CTL0, \
+> @@ -458,12 +459,12 @@ static const struct regulator_desc atc2609a_reg[] = {
+>  	atc2609a_reg_desc_ldo_bypass(0),
+>  	atc2609a_reg_desc_ldo_bypass(1),
+>  	atc2609a_reg_desc_ldo_bypass(2),
+> -	atc2609a_reg_desc_ldo_range_pick(3, 0),
+> -	atc2609a_reg_desc_ldo_range_pick(4, 0),
+> +	atc2609a_reg_desc_ldo_range_pick(3, 0, 29),
+> +	atc2609a_reg_desc_ldo_range_pick(4, 0, 29),
+>  	atc2609a_reg_desc_ldo(5),
+> -	atc2609a_reg_desc_ldo_range_pick(6, 1),
+> -	atc2609a_reg_desc_ldo_range_pick(7, 0),
+> -	atc2609a_reg_desc_ldo_range_pick(8, 0),
+> +	atc2609a_reg_desc_ldo_range_pick(6, 1, 28),
+> +	atc2609a_reg_desc_ldo_range_pick(7, 0, 29),
+> +	atc2609a_reg_desc_ldo_range_pick(8, 0, 29),
+>  	atc2609a_reg_desc_ldo_fixed(9),
+>  };
+>  
+> -- 
+> 2.25.1
+> 
