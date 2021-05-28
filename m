@@ -2,88 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4EE90393F97
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 11:11:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F3109393F9A
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 11:12:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235297AbhE1JNQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 May 2021 05:13:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46418 "EHLO
+        id S235072AbhE1JNg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 May 2021 05:13:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46476 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235031AbhE1JNN (ORCPT
+        with ESMTP id S235332AbhE1JN1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 May 2021 05:13:13 -0400
-Received: from mail-il1-x133.google.com (mail-il1-x133.google.com [IPv6:2607:f8b0:4864:20::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E60FC061760
-        for <linux-kernel@vger.kernel.org>; Fri, 28 May 2021 02:11:35 -0700 (PDT)
-Received: by mail-il1-x133.google.com with SMTP id g11so2741127ilq.3
-        for <linux-kernel@vger.kernel.org>; Fri, 28 May 2021 02:11:35 -0700 (PDT)
+        Fri, 28 May 2021 05:13:27 -0400
+Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22627C06174A
+        for <linux-kernel@vger.kernel.org>; Fri, 28 May 2021 02:11:53 -0700 (PDT)
+Received: by mail-lf1-x133.google.com with SMTP id j10so4255345lfb.12
+        for <linux-kernel@vger.kernel.org>; Fri, 28 May 2021 02:11:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=gIUXlVBGOqZPspzkSPyviaBDLyPSaDvhzeC44ewpxPM=;
-        b=fi5Azr0qFURaRzo6mc6Hkid9uTMOG5gmKyG1OokAxJyeV9GDgDGWcDbPAzHwGhMCdN
-         OSDz8xznB0MNPzPxAXvV7N90UC2NcBHagcJhMu10gZyG8aSekkerVqLScm+qbMKJ2UhE
-         c5HlSWYrs4dWQv8MknJ+AWxiLPwRe35Wlk+jZfmwKV+XvZJmf6Yjwa4Nx+2VPIKh48oC
-         C+c7+2ljHgtOyOufxWX9eY9GhZzuv0bfyJHXxqrraylx/u8M3sp7aoZ5DlT4QNWEuNWW
-         64G270cl15PRefcyYTZa03mzWTETxgzhYIKmLM3Jn7QIf6SCRcqM7qtefKDFIb0PV8LW
-         oTqw==
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=sUYpUgduivuCVF6eHvNxAOyVhrifC73di+ff0lHlcsA=;
+        b=wyZ4T5i+3aVchglrAZqFAVF0C6hOe/zQhiG/Y2DqaSz/q2fNL7xknah6KEG0xpQN3A
+         qg34hQVg80hsXJnqaNIMyx+RpN/y8DQ41nGBEPG/xBJ8/N6MfM+4yG5VAI1iwDWtJ7IN
+         vsdoma7Wxm/rhHsbi4rGtxG7lNuXCSDOXForFR1s6FEyAt+o5MJp4tps0GAuUyCiq25r
+         yr0E0DXczvkGlrHEnEXfWRWJnuw3Mqo7iNaozOpvj5rllSI1mfflbG4RSybvt24L5Dro
+         G3tKsOcQCYEmNN4QEe42/KZJa+zWf5t/d7Qt17qWGFIULkOsu0hVEJC9j5VCRTzildIH
+         nTHA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=gIUXlVBGOqZPspzkSPyviaBDLyPSaDvhzeC44ewpxPM=;
-        b=hRkJGuV/ve2mGCZ7KJq6/mVkVcvh9hhNMlyrq/zZWO5bEghFTHhqzmBQ4SBkDHnBXX
-         ORoBCqT9D6nNhy/9heTWKCaAfn8cooWNVptEAozkXb/QbKmiB0rhdgrNcplSfZAhpGoJ
-         oJvTiyPDLU5jq69BP/YOU7W2bUC5jX8OpLmc3DyAR3jMtc0HO1tkSMI2Akc3VF+a2fsH
-         +w4yVM2pp9fbcWfSWIwEZBhhP0dmPOlzODlSndlHtPYrkLqX46XHYH8YId8lPE1rmGbT
-         2GxxcMDzJTMhJLeKs4ffL2up9FWQ4bgsadRIYd+M4iQjsiVya+gF61Vmkh/UacPe9cXJ
-         nXhA==
-X-Gm-Message-State: AOAM533YCLMOQekNTqHFIwThL0yGjzBiZ0CVG9If0MNMs/E+ChaM7zmq
-        yugVxPTWTbBhACQRgVg+kyBzJ8ZR80nQegV1GSPD6Q==
-X-Google-Smtp-Source: ABdhPJzz9rOUDpGPa2k1X+CT6JiP+65z+CY6LsrZEuqJFDmZI8kWeEM5cEjMXBWhdy7/LYK+vuehDuP9GrqspsnMOpk=
-X-Received: by 2002:a92:260b:: with SMTP id n11mr6323557ile.134.1622193095281;
- Fri, 28 May 2021 02:11:35 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=sUYpUgduivuCVF6eHvNxAOyVhrifC73di+ff0lHlcsA=;
+        b=tjIlAqllYT4ZQ2umzEyDZH38AvMuHTu4YXPin5XKmUs2gqgdQtOCWa4MpElKGG45gf
+         joYmpMvAGFxSWgU9CAs66I9vyfZ2qA+Xc4LQf1xp5hSdIujaSLjrQnmHKhu8UHzyagCJ
+         RGoAEsVf6URE1QLvV5DQ8pJ7M/2oHxJ10o1brb4Fp8heqsGN5ySrwCDSCDbXGvcKE5HZ
+         eqgDjLyN2bxe9G5updR1qTwsgL4Io0Mx4GQ0i57TwdOrBLoicmHYXUjCc5eisoa3qAeC
+         XsM/iVo+EQQNlFf70+UCOYvzE614B9s6ouenuwkl0uMOj5Q8A1oiZCELsgfgSKXss0xV
+         Nm9Q==
+X-Gm-Message-State: AOAM533nyb9TrcCN33+vkd4V+9JUoMKIeZYEDdJrm7updp8z58O1Ygin
+        PUtAL/SDUfYJWiSFcjXll8PJOVK3WEwl/I4/
+X-Google-Smtp-Source: ABdhPJwsVzF+nC4WNJPqBtVliQbqeg943XE0P+2MUBvV2a1tnubgAiDDFZnyk++mWwJZ3eEuHuTE4Q==
+X-Received: by 2002:ac2:4908:: with SMTP id n8mr5125093lfi.641.1622193111489;
+        Fri, 28 May 2021 02:11:51 -0700 (PDT)
+Received: from localhost.localdomain (h-155-4-129-146.NA.cust.bahnhof.se. [155.4.129.146])
+        by smtp.gmail.com with ESMTPSA id n15sm421927lfq.274.2021.05.28.02.11.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 28 May 2021 02:11:50 -0700 (PDT)
+From:   Ulf Hansson <ulf.hansson@linaro.org>
+To:     "Rafael J . Wysocki" <rjw@rjwysocki.net>, linux-pm@vger.kernel.org
+Cc:     Ulf Hansson <ulf.hansson@linaro.org>,
+        Saravana Kannan <saravanak@google.com>,
+        Alan Stern <stern@rowland.harvard.edu>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Tony Lindgren <tony@atomide.com>,
+        Kevin Hilman <khilman@kernel.org>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [PATCH 1/2] PM: runtime: Improve path in rpm_idle() when no callback
+Date:   Fri, 28 May 2021 11:11:47 +0200
+Message-Id: <20210528091147.11541-1-ulf.hansson@linaro.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <20210519162409.3755679-1-fparent@baylibre.com>
- <20210519162409.3755679-2-fparent@baylibre.com> <CACRpkdZ70OcbgyFN2cQtLgsXFCTsvstsrBYYt3UY6Wc=NbXuag@mail.gmail.com>
-In-Reply-To: <CACRpkdZ70OcbgyFN2cQtLgsXFCTsvstsrBYYt3UY6Wc=NbXuag@mail.gmail.com>
-From:   Fabien Parent <fparent@baylibre.com>
-Date:   Fri, 28 May 2021 11:11:24 +0200
-Message-ID: <CAOwMV_zin4ODuv8pA8_tfVyg3g9=Mrt2Txdk0O2wL8JqDefzog@mail.gmail.com>
-Subject: Re: [PATCH 2/3] pinctrl: mediatek: don't hardcode mode encoding in
- common code
-To:     Linus Walleij <linus.walleij@linaro.org>
-Cc:     Sean Wang <sean.wang@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Mattijs Korpershoek <mkorpershoek@baylibre.com>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+When pm_runtime_no_callbacks() has been called for a struct device to set
+the dev->power.no_callbacks flag for it, it enables rpm_idle() to take a
+slightly quicker path by assuming that a ->runtime_idle() callback would
+have returned 0 to indicate success.
 
-> Patch applied.
+A device that does not have the dev->power.no_callbacks flag set for it,
+may still be missing a corresponding ->runtime_idle() callback, in which
+case the slower path in rpm_idle() is taken. Let's improve the behaviour
+for this case, by aligning code to the quicker path.
 
-I just noticed an error in my patch:
-@@ -135,7 +134,7 @@ static int mtk_pconf_set_ies_smt(struct
-mtk_pinctrl *pctl, unsigned pin,
-                        pin, pctl->devdata->port_align, value, arg);
-        }
+Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
+---
+ drivers/base/power/runtime.c | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
 
--       bit = BIT(pin & 0xf);
-+       bit = BIT(offset & pctl->devdata->mode_mask);
+diff --git a/drivers/base/power/runtime.c b/drivers/base/power/runtime.c
+index b570848d23e0..68bebbf81347 100644
+--- a/drivers/base/power/runtime.c
++++ b/drivers/base/power/runtime.c
+@@ -446,7 +446,10 @@ static int rpm_idle(struct device *dev, int rpmflags)
+ 	/* Pending requests need to be canceled. */
+ 	dev->power.request = RPM_REQ_NONE;
+ 
+-	if (dev->power.no_callbacks)
++	callback = RPM_GET_CALLBACK(dev, runtime_idle);
++
++	/* If no callback assume success. */
++	if (!callback || dev->power.no_callbacks)
+ 		goto out;
+ 
+ 	/* Carry out an asynchronous or a synchronous idle notification. */
+@@ -462,10 +465,7 @@ static int rpm_idle(struct device *dev, int rpmflags)
+ 
+ 	dev->power.idle_notification = true;
+ 
+-	callback = RPM_GET_CALLBACK(dev, runtime_idle);
+-
+-	if (callback)
+-		retval = __rpm_callback(callback, dev);
++	retval = __rpm_callback(callback, dev);
+ 
+ 	dev->power.idle_notification = false;
+ 	wake_up_all(&dev->power.wait_queue);
+-- 
+2.25.1
 
-I should not have replaced 'pin' by 'offset' here. What do you
-recommend me to do here, shall I send a V2 of this series and you will
-drop my V1 from your tree, or do you want me to make a new patch that
-fixes the error created by this patch?
-
-Thanks,
-Fabien
