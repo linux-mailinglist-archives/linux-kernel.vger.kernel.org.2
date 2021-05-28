@@ -2,38 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 042243946CA
+	by mail.lfdr.de (Postfix) with ESMTP id 700CB3946CB
 	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 20:10:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229570AbhE1SL3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 May 2021 14:11:29 -0400
-Received: from gloria.sntech.de ([185.11.138.130]:44690 "EHLO gloria.sntech.de"
+        id S229589AbhE1SLa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 May 2021 14:11:30 -0400
+Received: from gloria.sntech.de ([185.11.138.130]:44696 "EHLO gloria.sntech.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229450AbhE1SL2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S229488AbhE1SL2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 28 May 2021 14:11:28 -0400
 Received: from ip5f5aa64a.dynamic.kabel-deutschland.de ([95.90.166.74] helo=phil.lan)
         by gloria.sntech.de with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <heiko@sntech.de>)
-        id 1lmgve-0006Ve-Pv; Fri, 28 May 2021 20:09:50 +0200
+        id 1lmgvf-0006Ve-5R; Fri, 28 May 2021 20:09:51 +0200
 From:   Heiko Stuebner <heiko@sntech.de>
-To:     linux-kernel@vger.kernel.org, Andrzej Hajda <a.hajda@samsung.com>,
-        Nickey Yang <nickey.yang@rock-chips.com>,
-        Thomas Hebb <tommyhebb@gmail.com>
-Cc:     Heiko Stuebner <heiko@sntech.de>,
-        Brian Norris <briannorris@chromium.org>,
+To:     linux-kernel@vger.kernel.org, Thomas Hebb <tommyhebb@gmail.com>
+Cc:     Heiko Stuebner <heiko@sntech.de>, stable@vger.kernel.org,
         linux-rockchip@lists.infradead.org,
-        Sean Paul <seanpaul@chromium.org>,
-        David Airlie <airlied@linux.ie>,
+        Andrzej Hajda <a.hajda@samsung.com>,
+        dri-devel@lists.freedesktop.org, David Airlie <airlied@linux.ie>,
         Sandy Huang <hjc@rock-chips.com>,
-        dri-devel@lists.freedesktop.org,
         linux-arm-kernel@lists.infradead.org
-Subject: Re: [RESEND PATCH] drm/rockchip: dsi: move all lane config except LCDC mux to bind()
-Date:   Fri, 28 May 2021 20:09:44 +0200
-Message-Id: <162222530163.2887132.15086890641493370565.b4-ty@sntech.de>
+Subject: Re: [RESEND PATCH] drm/rockchip: dsi: remove extra component_del() call
+Date:   Fri, 28 May 2021 20:09:45 +0200
+Message-Id: <162222530163.2887132.8458225826944784611.b4-ty@sntech.de>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <55fe7f3454d8c91dc3837ba5aa741d4a0e67378f.1618797813.git.tommyhebb@gmail.com>
-References: <55fe7f3454d8c91dc3837ba5aa741d4a0e67378f.1618797813.git.tommyhebb@gmail.com>
+In-Reply-To: <201385acb0eeb5dfb037afdc6a94bfbcdab97f99.1618797778.git.tommyhebb@gmail.com>
+References: <201385acb0eeb5dfb037afdc6a94bfbcdab97f99.1618797778.git.tommyhebb@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
@@ -41,20 +37,21 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 18 Apr 2021 19:04:10 -0700, Thomas Hebb wrote:
-> When we first enable the DSI encoder, we currently program some per-chip
-> configuration that we look up in rk3399_chip_data based on the device
-> tree compatible we match. This data configures various parameters of the
-> MIPI lanes, including on RK3399 whether DSI1 is slaved to DSI0 in a
-> dual-mode configuration. It also selects which LCDC (i.e. VOP) to scan
-> out from.
+On Sun, 18 Apr 2021 19:03:04 -0700, Thomas Hebb wrote:
+> commit cf6d100dd238 ("drm/rockchip: dsi: add dual mipi support") added
+> this devcnt field and call to component_del(). However, these both
+> appear to be erroneous changes left over from an earlier version of the
+> patch. In the version merged, nothing ever modifies devcnt, meaning
+> component_del() runs unconditionally and in addition to the
+> component_del() calls in dw_mipi_dsi_rockchip_host_detach(). The second
+> call fails to delete anything and produces a warning in dmesg.
 > 
 > [...]
 
 Applied, thanks!
 
-[1/1] drm/rockchip: dsi: move all lane config except LCDC mux to bind()
-      commit: 43c2de1002d2b70fb5941fa14e97a34e3dc214d4
+[1/1] drm/rockchip: dsi: remove extra component_del() call
+      commit: b354498bbe65c917d521b3b56317ddc9ab217425
 
 Best regards,
 -- 
