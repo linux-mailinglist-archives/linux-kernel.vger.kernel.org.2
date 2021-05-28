@@ -2,119 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E97A3947F2
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 22:29:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 48A003947F5
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 22:31:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229575AbhE1Uac (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 May 2021 16:30:32 -0400
-Received: from gateway21.websitewelcome.com ([192.185.45.31]:32199 "EHLO
-        gateway21.websitewelcome.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229492AbhE1Uab (ORCPT
+        id S229599AbhE1Ucg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 May 2021 16:32:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57540 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229482AbhE1Uc3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 May 2021 16:30:31 -0400
-Received: from cm14.websitewelcome.com (cm14.websitewelcome.com [100.42.49.7])
-        by gateway21.websitewelcome.com (Postfix) with ESMTP id 2545C400CC652
-        for <linux-kernel@vger.kernel.org>; Fri, 28 May 2021 15:28:54 -0500 (CDT)
-Received: from gator4166.hostgator.com ([108.167.133.22])
-        by cmsmtp with SMTP
-        id mj6ElNL7u8ElSmj6Elliiw; Fri, 28 May 2021 15:28:54 -0500
-X-Authority-Reason: nr=8
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=embeddedor.com; s=default; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
-        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=L3zwx02/a4qpuCrv9Ng4KVesaQf7X0hbM+48SL7llOw=; b=BXiFY5HalugiWU9BTfssC7wnet
-        kLkPs6B0zXCSMe5NRtPgkGtGzAk1YnInlYGzLbgWUZIQdRv161BcZJxn85KtCVRuK4J0l5z26e7VB
-        6jfy7MlnGhyhPzFH0R6qUkGqWcllxR7/Je5vqmVw/sQ0EKVdRk/WBgwuxedo8ngYHZaNfM2pc4n7u
-        O6B4cNG/QgZ9UpQLnzu5MPAYEhKsXwkSY6d4LKVf90acuNJPu3TUk9inxU0lmN3lQgrq/f1GsuzNx
-        8wYoRRsFGbcM4aJEy9AzE5ldF09UryO6pcWHo15B85Z27agBNorK5+w233Wbwo/5Ns1jgbXeELtSG
-        SzEXm2yA==;
-Received: from 187-162-31-110.static.axtel.net ([187.162.31.110]:38342 helo=[192.168.15.8])
-        by gator4166.hostgator.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.94.2)
-        (envelope-from <gustavo@embeddedor.com>)
-        id 1lmj6A-003lbU-Ig; Fri, 28 May 2021 15:28:50 -0500
-Subject: Re: [PATCH 3/3] scsi: isci: Use correctly sized target buffer for
- memcpy()
-To:     Kees Cook <keescook@chromium.org>,
-        "Martin K . Petersen" <martin.petersen@oracle.com>
-Cc:     Hannes Reinecke <hare@suse.de>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Bradley Grove <linuxdrivers@attotech.com>,
-        Artur Paszkiewicz <artur.paszkiewicz@intel.com>,
-        linux-kernel@vger.kernel.org, linux-scsi@vger.kernel.org,
-        linux-hardening@vger.kernel.org
-References: <20210528181337.792268-1-keescook@chromium.org>
- <20210528181337.792268-4-keescook@chromium.org>
-From:   "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-Message-ID: <5741ac53-81ef-5106-0b58-51ddf5f65851@embeddedor.com>
-Date:   Fri, 28 May 2021 15:29:46 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        Fri, 28 May 2021 16:32:29 -0400
+Received: from mail-lj1-x22a.google.com (mail-lj1-x22a.google.com [IPv6:2a00:1450:4864:20::22a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14130C061574
+        for <linux-kernel@vger.kernel.org>; Fri, 28 May 2021 13:30:54 -0700 (PDT)
+Received: by mail-lj1-x22a.google.com with SMTP id b12so6848938ljp.1
+        for <linux-kernel@vger.kernel.org>; Fri, 28 May 2021 13:30:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=EyvgwRI+ps+5cZkOoI1nKyi/eTvA8tNSToZ1i/xJfHs=;
+        b=pZtHbzfNZT0l32ly8ZjAkBQBqTYRrsBOsrvg9W43j/9U5fUtyPPQakbfC5+eN6OXzD
+         Tz/RcuK3FNFKeMGNYTrmtMkkL4q8QE1r8hk1KG7tHvD242nwimuzt1sy988vSyhq2jAX
+         Ur+HWapaE0Ps+LNQm3AkXkwEOiwLiDhU3hmwWjmrG+M8/3VGRrJXanxtIacfSNvHnj0E
+         fSw1Q5dOjQE47KNonictsJ0Z4sHuuSVHeM1N45TpazX25VeTB5MXBFmgKjAaSu+UqxHH
+         PApAyMonACbTzGCzuvvlCdWJ8YmG7KU2E5OjFiFtEuDnK7CX8UxDa1CCUngLtI0PGOcL
+         KqKQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=EyvgwRI+ps+5cZkOoI1nKyi/eTvA8tNSToZ1i/xJfHs=;
+        b=YkcB1T3Ee7V11QfvbUGLKHNNOPGgJ3sPOWV46vakc4UzK6vm+i3WuYX+P2ju7b0+NL
+         KR8HTxN9grfBTKC/EmbqsnOytAQnae/5G3gW7Z3t79azhEsP4YLQHIX/iaGG0/U7Cg1j
+         X7salcTAgEW3M0J7PhK/ztybsn9LM3qDKVQwf52A4GnCN8QkNaz7Cpqfd9fcO9oELOY4
+         wUsRCX22+7AZ04wGAfzNT5HUDXE+LA4jXdoUqjkDwhfvVxwU2cQFnRPJaZ0dvUU1taaO
+         juyVXdaOk3zgCNzRzuXrsYUCTUYGldZHwcE3IJkQ/V46s7ymnOLDBJOu7DiPJhYSmx3Z
+         n6nw==
+X-Gm-Message-State: AOAM533sPq872z4SEzBDAQtWfZbmRCI+irhv6v+LetP9pvf6GNwAAa/j
+        28/rlUs1xv4cUciHB3hHvhsCcn70crM=
+X-Google-Smtp-Source: ABdhPJx5zcOiUuDL6xseZn6lzPS63Y1BXiSrMEjSU2d2O8NQ4SzN/viQhRsxgmJNXs9MkmZLu0kalQ==
+X-Received: by 2002:a2e:9d8f:: with SMTP id c15mr7932970ljj.111.1622233852168;
+        Fri, 28 May 2021 13:30:52 -0700 (PDT)
+Received: from roman-S500CA.. (72-28-179-94.pool.ukrtel.net. [94.179.28.72])
+        by smtp.gmail.com with ESMTPSA id a12sm655820ljk.34.2021.05.28.13.30.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 28 May 2021 13:30:51 -0700 (PDT)
+From:   Roman Stratiienko <r.stratiienko@gmail.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     mripard@kernel.org, wens@csie.org, jernej.skrabec@siol.net,
+        megous@megous.com, linux-sunxi@googlegroups.com,
+        dri-devel@lists.freedesktop.org
+Subject: [PATCH v4 0/2] drm/sun4i: Set mixer frame to display size for DE2.0+
+Date:   Fri, 28 May 2021 23:30:34 +0300
+Message-Id: <20210528203036.17999-1-r.stratiienko@gmail.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-In-Reply-To: <20210528181337.792268-4-keescook@chromium.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - embeddedor.com
-X-BWhitelist: no
-X-Source-IP: 187.162.31.110
-X-Source-L: No
-X-Exim-ID: 1lmj6A-003lbU-Ig
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
-X-Source-Sender: 187-162-31-110.static.axtel.net ([192.168.15.8]) [187.162.31.110]:38342
-X-Source-Auth: gustavo@embeddedor.com
-X-Email-Count: 23
-X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
-X-Local-Domain: yes
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+This patchset fixes corrupted display picture when primary plane isn't
+full-screen.
 
+Please review/merge.
 
-On 5/28/21 13:13, Kees Cook wrote:
-> In preparation for FORTIFY_SOURCE performing compile-time and run-time
-> field bounds checking for memcpy(), avoid intentionally writing across
-> neighboring array fields.
-> 
-> Switch from rsp_ui to resp_buf, since resp_ui isn't SSP_RESP_IU_MAX_SIZE
-> bytes in length. This avoids future compile-time warnings.
-> 
-> Signed-off-by: Kees Cook <keescook@chromium.org>
+v2:
+- Split commit in 2 parts
+- Add Fixes line to the commit message
 
-Reviewed-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+v3:
+- Address review comments of v2 + removed 3 local varibles
+- Change 'Fixes' line
 
-Thanks
---
-Gustavo
+v4:
+Resend (author's email changed). Reword commit message.
+Drop fixes line to allow more testing before back-porting.
 
-> ---
->  drivers/scsi/isci/task.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/scsi/isci/task.c b/drivers/scsi/isci/task.c
-> index 62062ed6cd9a..eeaec26ac324 100644
-> --- a/drivers/scsi/isci/task.c
-> +++ b/drivers/scsi/isci/task.c
-> @@ -709,8 +709,8 @@ isci_task_request_complete(struct isci_host *ihost,
->  		tmf->status = completion_status;
->  
->  		if (tmf->proto == SAS_PROTOCOL_SSP) {
-> -			memcpy(&tmf->resp.resp_iu,
-> -			       &ireq->ssp.rsp,
-> +			memcpy(tmf->resp.rsp_buf,
-> +			       ireq->ssp.rsp_buf,
->  			       SSP_RESP_IU_MAX_SIZE);
->  		} else if (tmf->proto == SAS_PROTOCOL_SATA) {
->  			memcpy(&tmf->resp.d2h_fis,
-> 
+ drivers/gpu/drm/sun4i/sun4i_crtc.c     |  3 +++
+ drivers/gpu/drm/sun4i/sun8i_mixer.c    | 28 ++++++++++++++++++++++++++++
+ drivers/gpu/drm/sun4i/sun8i_ui_layer.c | 30 ------------------------------
+ drivers/gpu/drm/sun4i/sunxi_engine.h   | 12 ++++++++++++
+ 4 files changed, 43 insertions(+), 30 deletions(-)
+
