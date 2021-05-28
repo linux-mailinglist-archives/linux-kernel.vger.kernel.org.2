@@ -2,376 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D1EDF39460C
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 18:50:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B6C0B39460F
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 18:51:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236611AbhE1Qvv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 May 2021 12:51:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36206 "EHLO
+        id S235825AbhE1QwU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 May 2021 12:52:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36600 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236492AbhE1Qum (ORCPT
+        with ESMTP id S236845AbhE1QwM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 May 2021 12:50:42 -0400
-Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com [IPv6:2607:f8b0:4864:20::62f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35B9DC06174A
-        for <linux-kernel@vger.kernel.org>; Fri, 28 May 2021 09:48:42 -0700 (PDT)
-Received: by mail-pl1-x62f.google.com with SMTP id d20so1874657pls.13
-        for <linux-kernel@vger.kernel.org>; Fri, 28 May 2021 09:48:42 -0700 (PDT)
+        Fri, 28 May 2021 12:52:12 -0400
+Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74978C061760
+        for <linux-kernel@vger.kernel.org>; Fri, 28 May 2021 09:50:35 -0700 (PDT)
+Received: by mail-pj1-x102a.google.com with SMTP id b15-20020a17090a550fb029015dad75163dso2886138pji.0
+        for <linux-kernel@vger.kernel.org>; Fri, 28 May 2021 09:50:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chromium.org; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=Fk4P26xr686tF+xIyGU/aKm4+K/mCK1doFPb6J9/qRU=;
-        b=DmDHuAu+RWumXnkd9P+goeN9Ajbi8qMiZnNjPNWHRguReyu5RFohhzxijmyhw5nO1H
-         SpA8SlWJAjzKi4wLm1yZSXFhGn8q3DEwX7Ri9KmFiAB4R1bE71qQdyMk+yw8JBaBjBXi
-         K2dRiR6TgDrE9E2Vn6wG5mfANKklClZmc2QAc=
+        bh=Bf/qW3piWCuBBeLZ+p4pokx2iGuE3UcRHm7BvkTCNSc=;
+        b=g+Y+IAxG0cB1wATcml49hmgG5JMzliGRY7NR1ATb6fl2roE3wT1z6tSIAd7myl8+Hc
+         T0UIVvOmFc6nKXl5zyyVLm6MzbLhhNPBADN5JeWU/LNd6sA7q1Gokgtjg7j+dtmFJg6b
+         j8Dm5mDF396YU4G0m4gwEVELa8pWBomUZTjF8=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=Fk4P26xr686tF+xIyGU/aKm4+K/mCK1doFPb6J9/qRU=;
-        b=N/3YxXthPCRwjjMtKXgNXX6Zy72F/0fZlDK/o1jXeFWQaQhLCeMdiKDVviH7xRHeF2
-         AWUyxf+PHMOYptUWlZNstH6LzgR62skipJn6kBAyXZpixFjXv+sESHN4MWeO2pXyuZjS
-         2kDonpMFfOplN8s8mwxWF6DqYBxrB6GzxCYrVOtSvKdP3kTC0SfZ11sVoIfvLxoKgKO9
-         i6PbZTIbiIUKD/oE+ePFgHn0cEKjYUsCNOmvhi89xk/IsPubq80LX72m1omn9tJ8oIJP
-         IDm2kAIhpIw+Y3RpSqpLGv0V8ivGsO1US6aNZae9zRikFt+ndSe+lIOaUZ+hxFwTY7FM
-         S/LA==
-X-Gm-Message-State: AOAM531Q4DhrCm3R4ZwBriQFBNWLAIz8Zfk/SPmtqyDzHLx87Yb3KffI
-        DYWs4gEwEkweH8ctNDzuc8iiRA==
-X-Google-Smtp-Source: ABdhPJz4tN3fsTmPtH+o2ZGij1qrcH42kyM2eEUecEgZ96t09kDhE2CHnwD+wXVGAK4Bq4zsbMvCiA==
-X-Received: by 2002:a17:90a:74f:: with SMTP id s15mr5411481pje.90.1622220521634;
-        Fri, 28 May 2021 09:48:41 -0700 (PDT)
+        bh=Bf/qW3piWCuBBeLZ+p4pokx2iGuE3UcRHm7BvkTCNSc=;
+        b=ITd3GZVOhboc3MjNqCjsIYYFor79imHwhs55WDW2oWzgkbmcLizoOhlC9fg58OApRT
+         Jzxv4IUkfjAK5JS2xOcQ26i6n+kkSJFQW/0t9dsLoZv4n3bZjMvv7lc18/paIMQXNV/t
+         K/5ILGAWTyBq4CtvaijnL/CLZjrHav9phk5dWy/FoQ+6zyASKq+NZUfMuF3c5Rsw+agx
+         Pu1NhRwtAfkGDMyj2rKQRxhalM5PiCgM4VojfzZw2GZmLxlQZERBW81cuthCIMWFyHdO
+         uAVWGDahcoETXrfyNiZiT3DpS4qsVFWa3pyW/bkj7uryZIJQe1sKueSp6iP6KVLkKTiE
+         HTFQ==
+X-Gm-Message-State: AOAM532aqS5ba9GyWfRhZSCTSIeAK473Pvs/EDxI2WQJ/pbqlTUbfbCQ
+        1dp85lWDVJCZ5ooSILM73w1xEg==
+X-Google-Smtp-Source: ABdhPJwBG9lRb7x6OUHwPfbld8YZaCMUZ7MT9zFSclWeTljnDURj7UmLVNDXrMQZsqKhuPw7Zu5qmw==
+X-Received: by 2002:a17:903:2290:b029:f3:9129:8397 with SMTP id b16-20020a1709032290b02900f391298397mr8875442plh.13.1622220634969;
+        Fri, 28 May 2021 09:50:34 -0700 (PDT)
 Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id d66sm985280pfa.32.2021.05.28.09.48.40
+        by smtp.gmail.com with ESMTPSA id 25sm4640452pfh.39.2021.05.28.09.50.33
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 28 May 2021 09:48:40 -0700 (PDT)
-Date:   Fri, 28 May 2021 09:48:39 -0700
+        Fri, 28 May 2021 09:50:34 -0700 (PDT)
+Date:   Fri, 28 May 2021 09:50:33 -0700
 From:   Kees Cook <keescook@chromium.org>
-To:     "Darrick J. Wong" <djwong@kernel.org>
-Cc:     "Gustavo A. R. Silva" <gustavo@embeddedor.com>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        linux-xfs@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-hardening@vger.kernel.org, joe@perches.com
-Subject: Re: [PATCH][next] xfs: Fix fall-through warnings for Clang
-Message-ID: <202105280915.9117D7C@keescook>
-References: <20210420230652.GA70650@embeddedor>
- <20210420233850.GQ3122264@magnolia>
- <62895e8c-800d-fa7b-15f6-480179d552be@embeddedor.com>
- <bcae9d46-644c-d6f6-3df5-e8f7c50a673d@embeddedor.com>
- <20210526211624.GB202121@locust>
- <202105271358.22E0E2BFD@keescook>
- <20210528003454.GN2402049@locust>
+To:     Rodrigo Campos <rodrigo@kinvolk.io>
+Cc:     Sargun Dhillon <sargun@sargun.me>,
+        LKML <linux-kernel@vger.kernel.org>, containers@lists.linux.dev,
+        Tycho Andersen <tycho@tycho.pizza>,
+        Andy Lutomirski <luto@kernel.org>,
+        Mauricio =?iso-8859-1?Q?V=E1squez?= Bernal 
+        <mauricio@kinvolk.io>, Giuseppe Scrivano <gscrivan@redhat.com>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        =?iso-8859-1?Q?Micka=EBl_Sala=FCn?= <mic@linux.microsoft.com>
+Subject: Re: [PATCH v2 2/4] seccomp: Refactor notification handler to prepare
+ for new semantics
+Message-ID: <202105280949.00DE5B3018@keescook>
+References: <20210517193908.3113-1-sargun@sargun.me>
+ <20210517193908.3113-3-sargun@sargun.me>
+ <CACaBj2YUiowSKzvh02OjpQNqQViA8N0eyRMimkK=90NagRF40w@mail.gmail.com>
+ <202105271137.C491991621@keescook>
+ <CACaBj2aaDkJwDM8ugR5LxWEOho3nZuHjYLLsth3XYjf39tpaQQ@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210528003454.GN2402049@locust>
+In-Reply-To: <CACaBj2aaDkJwDM8ugR5LxWEOho3nZuHjYLLsth3XYjf39tpaQQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 27, 2021 at 05:34:54PM -0700, Darrick J. Wong wrote:
-> The choices are bad, so **turn it off** in fs/xfs/Makefile and don't go
-> making us clutter up shared library code that will then have to be
-> ported to userspace.
+On Fri, May 28, 2021 at 05:27:39PM +0200, Rodrigo Campos wrote:
+> On Thu, May 27, 2021 at 8:42 PM Kees Cook <keescook@chromium.org> wrote:
+> >
+> > On Thu, May 27, 2021 at 01:51:13PM +0200, Rodrigo Campos wrote:
+> > >
+> > > Kees, as I mentioned in the linked thread, this issue is present in
+> > > 5.9+ kernels. Should we add the cc to stable for this patch? Or should
+> > > we cc to stable the one linked, that just fixes the issue without
+> > > semantic changes to userspace?
+> >
+> > It sounds like the problem is with Go, using addfd, on 5.9-5.13 kernels,
+> > yes?
+> 
+> Yes.
+> 
+> > Would the semantic change be a problem there? (i.e. it sounds like
+> > the semantic change was fine for the 5.14+ kernels, so I'm assuming it's
+> > fine for earlier ones too.)
+> 
+> No, I don't think it will cause any problem.
+> 
+> > > Just to be clear, the other patch that fixes the problem without
+> > > userspace visible changes is this:
+> > > https://lore.kernel.org/lkml/20210413160151.3301-1-rodrigo@kinvolk.io/
+> >
+> > I'd prefer to use the now-in-next fix if we can. Is it possible to build
+> > a test case that triggers the race so we can have some certainty that
+> > any fix in -stable covers it appropriately?
+> 
+> I've verified that Sargun's patch also solves the problem in mainline.
+> I have now also verified that it applies cleany and fixes the issue
+> for linux-stable/5.10.y and linux-stable/5.12.y too (without the patch
+> I see the problem, with the patch I don't see it).  5.11 is already
+> EOL, so I didn't try it (probably will work as well).
 
-Ah! So the concern you have is with portable code shared outside of
-the kernel? This came up also with the ACPICA code (which is regularly
-imported into the kernel tree), and they just included their own macro
-directly[1].
+Great! Thanks for doing that testing.
 
-Would you prefer something like that, which would be XFS-specific? I'm
-just trying to find a way to avoid losing fall-through coverage
-in XFS. (Especially since distros are slowly moving toward enabling
--Wimplicit-fallthrough by default since it's a long-standing weakness
-in the C language, and has been hiding real bugs for years.)
+> The test case that I have is quite a complicated one, though. I'm
+> using the PR we opened to runc to add support for seccomp notify[1]
+> and a seccomp agent slightly modified from the example in the PR with
+> some cgo to use addfd, and need to run it for several thousand
+> iterations, as the kernel needs to be interrupted in a specific line
+> and some kernel locks to be acquired in a specific order for this to
+> trigger. If you think it is important, I can try to cleanup the code
+> and share it, but the issue is basically what I explained here:
+> https://lore.kernel.org/lkml/20210413160151.3301-2-rodrigo@kinvolk.io/
 
-It seems like the options here could be:
-1) Use an XFS-specific macro like ACPICA does, so that the out-of-tree
-   userspace code can share it (more typing, keep coverage).
-2) Add -Wno-implicit-fallthrough to fs/xfs/Makefile (easy, lose coverage).
+Okay; yeah, sounds like that'll be hard to port sanely. :)
 
-For 1), which portions are shared between xfsprogs and the kernel? Only
-libxfs/ and scrub/? How does the below patch look? I could prepare similar
-for all of xfsprogs, or do this only for xfsprogs and leave the stuff
-outside of libxfs/ and scrube/ using the kernel's "fallthrough" macro?
+> Can we cc this patch to stable, then? :)
 
-diff --git a/fs/xfs/libxfs/xfs_shared.h b/fs/xfs/libxfs/xfs_shared.h
-index 782fdd08f759..ade529ddb60b 100644
---- a/fs/xfs/libxfs/xfs_shared.h
-+++ b/fs/xfs/libxfs/xfs_shared.h
-@@ -184,4 +184,14 @@ struct xfs_ino_geometry {
- 
- };
- 
-+/* Programmatically mark implicit fallthroughs for GCC and Clang. */
-+#ifndef __has_attribute
-+#define __has_attribute(x) 0
-+#endif
-+#if __has_attribute(__fallthrough__)
-+#define XFS_FALLTHROUGH __attribute__((__fallthrough__))
-+#else
-+#define XFS_FALLTHROUGH do { } while (0)
-+#endif
-+
- #endif /* __XFS_SHARED_H__ */
-diff --git a/fs/xfs/libxfs/xfs_ag_resv.c b/fs/xfs/libxfs/xfs_ag_resv.c
-index e32a1833d523..2cf035ce6a3e 100644
---- a/fs/xfs/libxfs/xfs_ag_resv.c
-+++ b/fs/xfs/libxfs/xfs_ag_resv.c
-@@ -354,7 +354,7 @@ xfs_ag_resv_alloc_extent(
- 		break;
- 	default:
- 		ASSERT(0);
--		/* fall through */
-+		XFS_FALLTHROUGH;
- 	case XFS_AG_RESV_NONE:
- 		field = args->wasdel ? XFS_TRANS_SB_RES_FDBLOCKS :
- 				       XFS_TRANS_SB_FDBLOCKS;
-@@ -396,7 +396,7 @@ xfs_ag_resv_free_extent(
- 		break;
- 	default:
- 		ASSERT(0);
--		/* fall through */
-+		XFS_FALLTHROUGH;
- 	case XFS_AG_RESV_NONE:
- 		xfs_trans_mod_sb(tp, XFS_TRANS_SB_FDBLOCKS, (int64_t)len);
- 		return;
-diff --git a/fs/xfs/libxfs/xfs_alloc.c b/fs/xfs/libxfs/xfs_alloc.c
-index 82b7cbb1f24f..5694e5ac925c 100644
---- a/fs/xfs/libxfs/xfs_alloc.c
-+++ b/fs/xfs/libxfs/xfs_alloc.c
-@@ -3174,7 +3174,7 @@ xfs_alloc_vextent(
- 		}
- 		args->agbno = XFS_FSB_TO_AGBNO(mp, args->fsbno);
- 		args->type = XFS_ALLOCTYPE_NEAR_BNO;
--		/* FALLTHROUGH */
-+		XFS_FALLTHROUGH;
- 	case XFS_ALLOCTYPE_FIRST_AG:
- 		/*
- 		 * Rotate through the allocation groups looking for a winner.
-diff --git a/fs/xfs/libxfs/xfs_da_btree.c b/fs/xfs/libxfs/xfs_da_btree.c
-index 83ac9771bfb5..20a518757b75 100644
---- a/fs/xfs/libxfs/xfs_da_btree.c
-+++ b/fs/xfs/libxfs/xfs_da_btree.c
-@@ -282,7 +282,7 @@ xfs_da3_node_read_verify(
- 						__this_address);
- 				break;
- 			}
--			/* fall through */
-+			XFS_FALLTHROUGH;
- 		case XFS_DA_NODE_MAGIC:
- 			fa = xfs_da3_node_verify(bp);
- 			if (fa)
-diff --git a/fs/xfs/scrub/bmap.c b/fs/xfs/scrub/bmap.c
-index b5ebf1d1b4db..17964bc0c04d 100644
---- a/fs/xfs/scrub/bmap.c
-+++ b/fs/xfs/scrub/bmap.c
-@@ -271,7 +271,7 @@ xchk_bmap_iextent_xref(
- 	case XFS_DATA_FORK:
- 		if (xfs_is_reflink_inode(info->sc->ip))
- 			break;
--		/* fall through */
-+		XFS_FALLTHROUGH;
- 	case XFS_ATTR_FORK:
- 		xchk_xref_is_not_shared(info->sc, agbno,
- 				irec->br_blockcount);
-diff --git a/fs/xfs/scrub/btree.c b/fs/xfs/scrub/btree.c
-index a94bd8122c60..051b79442c68 100644
---- a/fs/xfs/scrub/btree.c
-+++ b/fs/xfs/scrub/btree.c
-@@ -44,7 +44,7 @@ __xchk_btree_process_error(
- 		/* Note the badness but don't abort. */
- 		sc->sm->sm_flags |= errflag;
- 		*error = 0;
--		/* fall through */
-+		XFS_FALLTHROUGH;
- 	default:
- 		if (cur->bc_flags & XFS_BTREE_ROOT_IN_INODE)
- 			trace_xchk_ifork_btree_op_error(sc, cur, level,
-diff --git a/fs/xfs/scrub/common.c b/fs/xfs/scrub/common.c
-index aa874607618a..30ec2ac1228d 100644
---- a/fs/xfs/scrub/common.c
-+++ b/fs/xfs/scrub/common.c
-@@ -81,7 +81,7 @@ __xchk_process_error(
- 		/* Note the badness but don't abort. */
- 		sc->sm->sm_flags |= errflag;
- 		*error = 0;
--		/* fall through */
-+		XFS_FALLTHROUGH;
- 	default:
- 		trace_xchk_op_error(sc, agno, bno, *error,
- 				ret_ip);
-@@ -134,7 +134,7 @@ __xchk_fblock_process_error(
- 		/* Note the badness but don't abort. */
- 		sc->sm->sm_flags |= errflag;
- 		*error = 0;
--		/* fall through */
-+		XFS_FALLTHROUGH;
- 	default:
- 		trace_xchk_file_op_error(sc, whichfork, offset, *error,
- 				ret_ip);
-@@ -694,7 +694,7 @@ xchk_get_inode(
- 		if (error)
- 			return -ENOENT;
- 		error = -EFSCORRUPTED;
--		/* fall through */
-+		XFS_FALLTHROUGH;
- 	default:
- 		trace_xchk_op_error(sc,
- 				XFS_INO_TO_AGNO(mp, sc->sm->sm_ino),
-diff --git a/fs/xfs/scrub/dabtree.c b/fs/xfs/scrub/dabtree.c
-index 653f3280e1c1..afbfe731e160 100644
---- a/fs/xfs/scrub/dabtree.c
-+++ b/fs/xfs/scrub/dabtree.c
-@@ -47,7 +47,7 @@ xchk_da_process_error(
- 		/* Note the badness but don't abort. */
- 		sc->sm->sm_flags |= XFS_SCRUB_OFLAG_CORRUPT;
- 		*error = 0;
--		/* fall through */
-+		XFS_FALLTHROUGH;
- 	default:
- 		trace_xchk_file_op_error(sc, ds->dargs.whichfork,
- 				xfs_dir2_da_to_db(ds->dargs.geo,
-diff --git a/fs/xfs/scrub/repair.c b/fs/xfs/scrub/repair.c
-index c2857d854c83..68b0f2248b8d 100644
---- a/fs/xfs/scrub/repair.c
-+++ b/fs/xfs/scrub/repair.c
-@@ -947,7 +947,7 @@ xrep_ino_dqattach(
- 			xrep_force_quotacheck(sc, XFS_DQTYPE_GROUP);
- 		if (XFS_IS_PQUOTA_ON(sc->mp) && !sc->ip->i_pdquot)
- 			xrep_force_quotacheck(sc, XFS_DQTYPE_PROJ);
--		/* fall through */
-+		XFS_FALLTHROUGH;
- 	case -ESRCH:
- 		error = 0;
- 		break;
-diff --git a/fs/xfs/xfs_bmap_util.c b/fs/xfs/xfs_bmap_util.c
-index a5e9d7d34023..3e467aa11ee5 100644
---- a/fs/xfs/xfs_bmap_util.c
-+++ b/fs/xfs/xfs_bmap_util.c
-@@ -242,7 +242,7 @@ xfs_bmap_count_blocks(
- 		 */
- 		*count += btblocks - 1;
- 
--		/* fall through */
-+		XFS_FALLTHROUGH;
- 	case XFS_DINODE_FMT_EXTENTS:
- 		*nextents = xfs_bmap_count_leaves(ifp, count);
- 		break;
-diff --git a/fs/xfs/xfs_export.c b/fs/xfs/xfs_export.c
-index 465fd9e048d4..dcf92f90be05 100644
---- a/fs/xfs/xfs_export.c
-+++ b/fs/xfs/xfs_export.c
-@@ -84,7 +84,7 @@ xfs_fs_encode_fh(
- 	case FILEID_INO32_GEN_PARENT:
- 		fid->i32.parent_ino = XFS_I(parent)->i_ino;
- 		fid->i32.parent_gen = parent->i_generation;
--		/*FALLTHRU*/
-+		XFS_FALLTHROUGH;
- 	case FILEID_INO32_GEN:
- 		fid->i32.ino = XFS_I(inode)->i_ino;
- 		fid->i32.gen = inode->i_generation;
-@@ -92,7 +92,7 @@ xfs_fs_encode_fh(
- 	case FILEID_INO32_GEN_PARENT | XFS_FILEID_TYPE_64FLAG:
- 		fid64->parent_ino = XFS_I(parent)->i_ino;
- 		fid64->parent_gen = parent->i_generation;
--		/*FALLTHRU*/
-+		XFS_FALLTHROUGH;
- 	case FILEID_INO32_GEN | XFS_FILEID_TYPE_64FLAG:
- 		fid64->ino = XFS_I(inode)->i_ino;
- 		fid64->gen = inode->i_generation;
-diff --git a/fs/xfs/xfs_file.c b/fs/xfs/xfs_file.c
-index 396ef36dcd0a..f4f58e5e8d3b 100644
---- a/fs/xfs/xfs_file.c
-+++ b/fs/xfs/xfs_file.c
-@@ -863,7 +863,7 @@ xfs_break_layouts(
- 			error = xfs_break_dax_layouts(inode, &retry);
- 			if (error || retry)
- 				break;
--			/* fall through */
-+			XFS_FALLTHROUGH;
- 		case BREAK_WRITE:
- 			error = xfs_break_leased_layouts(inode, iolock, &retry);
- 			break;
-diff --git a/fs/xfs/xfs_fsmap.c b/fs/xfs/xfs_fsmap.c
-index 34f2b971ce43..d6cdd87eb2cf 100644
---- a/fs/xfs/xfs_fsmap.c
-+++ b/fs/xfs/xfs_fsmap.c
-@@ -100,7 +100,6 @@ xfs_fsmap_owner_to_rmap(
- 		dest->rm_owner = XFS_RMAP_OWN_COW;
- 		break;
- 	case XFS_FMR_OWN_DEFECTIVE:	/* not implemented */
--		/* fall through */
- 	default:
- 		return -EINVAL;
- 	}
-diff --git a/fs/xfs/xfs_inode.c b/fs/xfs/xfs_inode.c
-index 0369eb22c1bb..cb9ae2cb209a 100644
---- a/fs/xfs/xfs_inode.c
-+++ b/fs/xfs/xfs_inode.c
-@@ -848,7 +848,7 @@ xfs_init_new_inode(
- 			xfs_inode_inherit_flags(ip, pip);
- 		if (pip && (pip->i_diflags2 & XFS_DIFLAG2_ANY))
- 			xfs_inode_inherit_flags2(ip, pip);
--		/* FALLTHROUGH */
-+		XFS_FALLTHROUGH;
- 	case S_IFLNK:
- 		ip->i_df.if_format = XFS_DINODE_FMT_EXTENTS;
- 		ip->i_df.if_bytes = 0;
-diff --git a/fs/xfs/xfs_ioctl.c b/fs/xfs/xfs_ioctl.c
-index 3925bfcb2365..ae4bffc3a979 100644
---- a/fs/xfs/xfs_ioctl.c
-+++ b/fs/xfs/xfs_ioctl.c
-@@ -558,7 +558,7 @@ xfs_ioc_attrmulti_one(
- 	case ATTR_OP_REMOVE:
- 		value = NULL;
- 		*len = 0;
--		/* fall through */
-+		XFS_FALLTHROUGH;
- 	case ATTR_OP_SET:
- 		error = mnt_want_write_file(parfilp);
- 		if (error)
-@@ -1544,7 +1544,7 @@ xfs_ioc_getbmap(
- 	switch (cmd) {
- 	case XFS_IOC_GETBMAPA:
- 		bmx.bmv_iflags = BMV_IF_ATTRFORK;
--		/*FALLTHRU*/
-+		XFS_FALLTHROUGH;
- 	case XFS_IOC_GETBMAP:
- 		/* struct getbmap is a strict subset of struct getbmapx. */
- 		recsize = sizeof(struct getbmap);
-diff --git a/fs/xfs/xfs_iomap.c b/fs/xfs/xfs_iomap.c
-index d154f42e2dc6..8fc7afb9b070 100644
---- a/fs/xfs/xfs_iomap.c
-+++ b/fs/xfs/xfs_iomap.c
-@@ -1036,7 +1036,7 @@ xfs_buffered_write_iomap_begin(
- 			prealloc_blocks = 0;
- 			goto retry;
- 		}
--		/*FALLTHRU*/
-+		XFS_FALLTHROUGH;
- 	default:
- 		goto out_unlock;
- 	}
-diff --git a/fs/xfs/xfs_trans_buf.c b/fs/xfs/xfs_trans_buf.c
-index 9aced0a00003..dc5d8b8d32e3 100644
---- a/fs/xfs/xfs_trans_buf.c
-+++ b/fs/xfs/xfs_trans_buf.c
-@@ -294,7 +294,7 @@ xfs_trans_read_buf_map(
- 	default:
- 		if (tp && (tp->t_flags & XFS_TRANS_DIRTY))
- 			xfs_force_shutdown(tp->t_mountp, SHUTDOWN_META_IO_ERROR);
--		/* fall through */
-+		XFS_FALLTHROUGH;
- 	case -ENOMEM:
- 	case -EAGAIN:
- 		return error;
+Yup, sounds good to me. I will adjust the tags.
 
-
+Thanks!
 
 -Kees
 
-[1] https://github.com/acpica/acpica/commit/4b9135f5774caa796ddf826448811e8e7f08ef2f
+> Best,
+> Rodrigo
+> 
+> [1]: https://github.com/opencontainers/runc/pull/2682
 
 -- 
 Kees Cook
