@@ -2,93 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A0BCF394618
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 18:53:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0FF42394616
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 18:52:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236910AbhE1Qy2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 May 2021 12:54:28 -0400
-Received: from vps0.lunn.ch ([185.16.172.187]:34250 "EHLO vps0.lunn.ch"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236624AbhE1QyZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 May 2021 12:54:25 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
-        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
-        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
-        bh=6cDg1RXPGmWw0L+86ZDaBALRGmDDzfxkeGMCVHlpckk=; b=xME48x3w0xYzMJ8PrIo2DbtAJ4
-        VE1m0PblhrI2CSrNE292WnptRwo6PNK5CWK4gbEXv58ytB3RoPXXPsV//bmWE8vMDc4cSGMwwReaH
-        0qW0sI86P/1gLiMFoM7oXLVpioMKsDQjYCK0gphnoyyhwSzPM2AlrqGl1kr5dpRuzMhI=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-        (envelope-from <andrew@lunn.ch>)
-        id 1lmfix-006m6h-IV; Fri, 28 May 2021 18:52:39 +0200
-Date:   Fri, 28 May 2021 18:52:39 +0200
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     "Bajjuri, Praneeth" <praneeth@ti.com>
-Cc:     "Modi, Geet" <geet.modi@ti.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [EXTERNAL] Re: [PATCH] net: phy: dp83867: perform soft reset and
- retain established link
-Message-ID: <YLEf128OEADi0Kb1@lunn.ch>
-References: <20210324010006.32576-1-praneeth@ti.com>
- <YFsxaBj/AvPpo13W@lunn.ch>
- <404285EC-BBF0-4482-8454-3289C7AF3084@ti.com>
- <YGSk4W4mW8JQPyPl@lunn.ch>
- <3494dcf6-14ca-be2b-dbf8-dda2e208b70b@ti.com>
+        id S236611AbhE1QyX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 May 2021 12:54:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37124 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236551AbhE1QyV (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 28 May 2021 12:54:21 -0400
+Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com [IPv6:2a00:1450:4864:20::42d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD19EC061574;
+        Fri, 28 May 2021 09:52:44 -0700 (PDT)
+Received: by mail-wr1-x42d.google.com with SMTP id c3so3923242wrp.8;
+        Fri, 28 May 2021 09:52:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=DbqI7yh1gYf7BO1u8PXps5kbtKhnNfg9iPWdTJDyzbY=;
+        b=P5OkV2pBtCeSDhzkTEpNC2GHdmDBMXz4ql0E7L5d5YjFcX3g50g15lbEjZ1oM2N3+i
+         v0ntLXYyHLEKtAf6kIqw8bqsFMcQDDGSeWRjw9IdO0TqBUQo5M6eqdUnKS6ou1C5YbtR
+         vj1D30kjDSoxnsmD2L4eykQ+yFeIXKywEUIS1/iY0//WD1J5+z7l88iLNKHSNkdOGwg0
+         tpNh7ihDplh0wHBRmctgAK08f1Ta7F2EpQORgajn26E4oHzUTWaQjM9sve+z/LoaIy9w
+         7T9YSQ4XPlv0tsn+e6/QTQi76ltzXH3zqJdbZh8qZ9iPD2YiwLD1hjEkKEDZEmu1adFS
+         Rdcg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=DbqI7yh1gYf7BO1u8PXps5kbtKhnNfg9iPWdTJDyzbY=;
+        b=o+VHG39zfUXrnFYKlhOuY2mQ9n4HUNObAzhhnUVTeMJqwF8HvJsVCdPWSzwbpl9ry/
+         TN8tnQFtA6En+M6Q6CJJ0Bhkmz5eRjv35ij3FK1f/Sfs8cnyglcHqhR+71g6+nIGr0kk
+         AllMGTUQU3bt3gCt/AcRCtjIhGVYI5HheJn4CYmbL0nY8BvxpiezHzHlPDzuIr+OtuuC
+         1szPNfqnCpuoSON7WiMVsqBT0S1Mh3s2AGsT7Qc66TGmQpOJXvCv4l9YsGH+kjLJy+Oq
+         Iu6/kNomeVqCpDphmU12j3vpExIf7rYsTCAcgWFN5zLbH/J0avdcyDE+oNuSfMp2vjXX
+         7kvw==
+X-Gm-Message-State: AOAM530zQlz0xhLpJ3BIT1mqOdxRHSl9ufceoNcTVKImSEbuwtAntaWy
+        hrHlJbeyiZaFbjj+PjwUK8U=
+X-Google-Smtp-Source: ABdhPJyZu3hSXvc3cYYjznnznPb2J26x9jj9JEefaoi4jUdm4CfkMsvaANVd3Ior4L8Fah2SiE3ESg==
+X-Received: by 2002:a05:6000:1544:: with SMTP id 4mr9648139wry.370.1622220763411;
+        Fri, 28 May 2021 09:52:43 -0700 (PDT)
+Received: from debian (host-2-98-62-17.as13285.net. [2.98.62.17])
+        by smtp.gmail.com with ESMTPSA id z12sm7745988wrv.68.2021.05.28.09.52.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 28 May 2021 09:52:42 -0700 (PDT)
+Date:   Fri, 28 May 2021 17:52:41 +0100
+From:   Sudip Mukherjee <sudipm.mukherjee@gmail.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
+        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
+        jonathanh@nvidia.com, f.fainelli@gmail.com, stable@vger.kernel.org
+Subject: Re: [PATCH 5.4 0/7] 5.4.123-rc1 review
+Message-ID: <YLEf2emlXGs2cNxb@debian>
+References: <20210527151139.224619013@linuxfoundation.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <3494dcf6-14ca-be2b-dbf8-dda2e208b70b@ti.com>
+In-Reply-To: <20210527151139.224619013@linuxfoundation.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 28, 2021 at 11:32:15AM -0500, Bajjuri, Praneeth wrote:
-> Hi Andrew,
+Hi Greg,
+
+On Thu, May 27, 2021 at 05:12:42PM +0200, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 5.4.123 release.
+> There are 7 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
 > 
-> On 3/31/2021 11:35 AM, Andrew Lunn wrote:
-> > >      > as per datasheet: https://www.ti.com/lit/ds/symlink/dp83867cr.pdf
-> > > 
-> > >      > 8.6.26 Control Register (CTRL)
-> > >      > do SW_RESTART to perform a reset not including the registers and is
-> > >      > acceptable to do this if a link is already present.
-> > > 
-> > > 
-> > >      I don't see any code here to determine if the like is present. What if
-> > >      the cable is not plugged in?
-> > > 
-> > >      This API is primarily used for reset. Link Status is checked thru different
-> > > register. This shall not impact the cable plug in/out. With this change, it
-> > > will align with DP83822 driver API.
-> > 
-> > So why is there the comment:
-> > 
-> > >      >                                            and is
-> > >      > acceptable to do this if a link is already present.
-> > 
-> > That kind of says, it is not acceptable to do this if the link is not
-> > present. Which is why i'm asking.
-> 
-> Does the feedback from Geet help in clarity you requested.
-> Ref:
-> https://lore.kernel.org/netdev/4838EA12-7BF4-4FF2-8305-7446C3498DDF@ti.com/
+> Responses should be made by Sat, 29 May 2021 15:11:29 +0000.
+> Anything received after that time might be too late.
 
-Not really.
+Build test:
+mips (gcc version 11.1.1 20210523): 65 configs -> no failure
+arm (gcc version 11.1.1 20210523): 107 configs -> no new failure
+arm64 (gcc version 11.1.1 20210523): 2 configs -> no failure
+x86_64 (gcc version 10.2.1 20210110): 2 configs -> no failure
 
->                                                        and is
-> > >      > acceptable to do this if a link is already present.
+Boot test:
+x86_64: Booted on my test laptop. No regression.
+x86_64: Booted on qemu. No regression.
 
-There needs to be something to either:
 
-1) Ensure there is link, so we known we are within acceptable
-behaviour.
+Tested-by: Sudip Mukherjee <sudip.mukherjee@codethink.co.uk>
 
-2) Document what happens when there is no link, meaning we do
-something which is not acceptable. Is the magic smoke going to be
-released? Does the link die until the next reboot? Or despite it being
-unacceptable, nothing really happens, and it is not a problem?
+--
+Regards
+Sudip
 
-	      Andrew
