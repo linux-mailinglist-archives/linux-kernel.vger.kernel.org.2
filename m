@@ -2,243 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 17BCF393E68
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 10:04:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 67098393E6A
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 10:05:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235763AbhE1IGV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 May 2021 04:06:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59330 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230187AbhE1IGU (ORCPT
+        id S235871AbhE1IHQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 May 2021 04:07:16 -0400
+Received: from mx07-00178001.pphosted.com ([185.132.182.106]:56477 "EHLO
+        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230187AbhE1IHN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 May 2021 04:06:20 -0400
-Received: from mail-pg1-x531.google.com (mail-pg1-x531.google.com [IPv6:2607:f8b0:4864:20::531])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C38E2C061760
-        for <linux-kernel@vger.kernel.org>; Fri, 28 May 2021 01:04:44 -0700 (PDT)
-Received: by mail-pg1-x531.google.com with SMTP id t193so1950452pgb.4
-        for <linux-kernel@vger.kernel.org>; Fri, 28 May 2021 01:04:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=JhQPjLykR01Qp+NSeFFJI6fs6yER95zPQTTz3vzX0YM=;
-        b=olovBvIActNmkePfVD5Pug5meGIIltnoam/DS0feX69PrH5AWeqb/+XlZ1XTzUaESW
-         ZcTXp0PKgC71S5Rp1U8usKjBcZdSfrRdFFeNZ0dWNZsaMFmYJycBNUmWyeCv3cCuP2IR
-         Ibx6sRQElSaZkYu0Y3JuU0j7Ou+928szLcOwGMobKVEEqq762kkW95+nX8+7hb4zotV/
-         obpKtG1JfIq3N3ZNFOO0+ZGUm3GIIb8BtC1tLsav+PcMHC1gqwUivohdBa/j9zqxQouL
-         dAoLqxJem+D6o2Py5pPf2IvpM7Pv9MR1xIUhY8RFGmRsWEWaBEW7VaqgKe1dOeAzfcZE
-         kN7A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=JhQPjLykR01Qp+NSeFFJI6fs6yER95zPQTTz3vzX0YM=;
-        b=t3e82YBXyz2BhhABMeg7VLO8Tc7+Kt8Vskh23tls64IeKed12bxU6QUflmpmHLaguO
-         4OpuPZgJ8StUhw4qYp6eNVd+KgTi58xlz14T5REf+h+qKEamAhc7dUlCrUrLpdgN67jg
-         NbX43PnfbOiMefjpf6rkWURdB94H9zl5WIep2D4pL/STYeNoexE6yzvlC2KQNEjz8bky
-         FheMaSSNL/IUXwvw1alGEdOjfZf0jbEK5E8BhexgGy66E7S6cp8E1nWf8Ph/QIGBbOkd
-         I5SsYQzaYOOUj/Q9YLpcnsE0KCcN+jmUsF9VeVkY1vkx8CjkOD3N9tuav0TgWZkaCCZD
-         AGtQ==
-X-Gm-Message-State: AOAM530Co7Q+8Y2R65kcxAvP6jfrGObfDmgwhdiBVXxh8KCZOJgR3jT8
-        XGc8bmy/fwt7Pl7gNIAekxqMCSFFBSKgGk+Z4j5jzQ==
-X-Google-Smtp-Source: ABdhPJzIQiwrZqUIU/7odmrvbjoVqWScYQNEHtklusDGA07cMOOcTJxGQSELDjMuvbe6w5bzfvVdGVzjsS64c1m7uyw=
-X-Received: by 2002:a62:7b07:0:b029:2e3:b540:707f with SMTP id
- w7-20020a627b070000b02902e3b540707fmr2602202pfc.59.1622189084220; Fri, 28 May
- 2021 01:04:44 -0700 (PDT)
+        Fri, 28 May 2021 04:07:13 -0400
+Received: from pps.filterd (m0046668.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 14S82QEb008172;
+        Fri, 28 May 2021 10:05:22 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=from : to : subject
+ : date : message-id : mime-version : content-type; s=selector1;
+ bh=zlUZ4FPCmueUwNdjwddPrmOdSMDAIN5yHnfc9LimaJk=;
+ b=DQpZRYdF3x2GZjYZ/XlPglm9ICNw6a/v8KgxfiXb7wvjWdXjAk/q523nQeUd8FMYQbTj
+ cVrsvoYSHYjdjPZYV9Xkd5jHVbAjXxVbrEYdRY8jykQqOTdcffNpf4nNbGmpVuHQZtl7
+ DFF74lM1RNpxMwMc1Fr4EWf/l2x8vv3WZKri5S7+HHuBsnTPYDMJIoyeAAGmG5VT/3VP
+ Hqe1i9E14myhP7+Wg8eg+7W13WhuAUM9FPlhkMy5AjPLjmijquMO/8QHwGU3v5/+hAEs
+ jjvuoKMPr/q2XOlzt11OH2zI2E/HqTrsJxkNwkmMTyuKrs5GDpf2bZaVFqzvOTnKkuQA kQ== 
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com with ESMTP id 38tsq0gyy5-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 28 May 2021 10:05:22 +0200
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 7C3C2100034;
+        Fri, 28 May 2021 10:05:21 +0200 (CEST)
+Received: from Webmail-eu.st.com (sfhdag2node3.st.com [10.75.127.6])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 499C021B521;
+        Fri, 28 May 2021 10:05:21 +0200 (CEST)
+Received: from localhost (10.75.127.48) by SFHDAG2NODE3.st.com (10.75.127.6)
+ with Microsoft SMTP Server (TLS) id 15.0.1497.2; Fri, 28 May 2021 10:05:20
+ +0200
+From:   Yannick Fertre <yannick.fertre@foss.st.com>
+To:     Yannick Fertre <yannick.fertre@foss.st.com>,
+        Philippe Cornu <philippe.cornu@foss.st.com>,
+        Antonio Borneo <antonio.borneo@st.com>,
+        "David Airlie" <airlied@linux.ie>, Daniel Vetter <daniel@ffwll.ch>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre Torgue <alexandre.torgue@st.com>,
+        <dri-devel@lists.freedesktop.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: [PATCH] drm/stm: Remove usage of drm_display_mode_to_videomode()
+Date:   Fri, 28 May 2021 10:05:13 +0200
+Message-ID: <20210528080513.8168-1-yannick.fertre@foss.st.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-References: <20210527062148.9361-1-songmuchun@bytedance.com>
- <20210527062148.9361-18-songmuchun@bytedance.com> <YK+LhWvabd+KQWOJ@casper.infradead.org>
- <CAMZfGtWUNBaGmSq-WKXc+DJTbTiSi96SzmGVZsnc-SQ=UiL=QQ@mail.gmail.com>
-In-Reply-To: <CAMZfGtWUNBaGmSq-WKXc+DJTbTiSi96SzmGVZsnc-SQ=UiL=QQ@mail.gmail.com>
-From:   Muchun Song <songmuchun@bytedance.com>
-Date:   Fri, 28 May 2021 16:04:07 +0800
-Message-ID: <CAMZfGtXeDC+dy4gnoB3e=CqpTRNB8MHQF+b+r2TsbMt8924T6g@mail.gmail.com>
-Subject: Re: [External] Re: [PATCH v2 17/21] mm: list_lru: replace linear
- array with xarray
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Roman Gushchin <guro@fb.com>, Yang Shi <shy828301@gmail.com>,
-        Alex Shi <alexs@kernel.org>,
-        Wei Yang <richard.weiyang@gmail.com>,
-        Dave Chinner <david@fromorbit.com>,
-        trond.myklebust@hammerspace.com, anna.schumaker@netapp.com,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        linux-nfs@vger.kernel.org, zhengqi.arch@bytedance.com,
-        Xiongchun duan <duanxiongchun@bytedance.com>,
-        fam.zheng@bytedance.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
+X-Originating-IP: [10.75.127.48]
+X-ClientProxiedBy: SFHDAG3NODE2.st.com (10.75.127.8) To SFHDAG2NODE3.st.com
+ (10.75.127.6)
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
+ definitions=2021-05-28_04:2021-05-27,2021-05-28 signatures=0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 28, 2021 at 11:43 AM Muchun Song <songmuchun@bytedance.com> wrote:
->
-> On Thu, May 27, 2021 at 8:08 PM Matthew Wilcox <willy@infradead.org> wrote:
-> >
-> > On Thu, May 27, 2021 at 02:21:44PM +0800, Muchun Song wrote:
-> > > If we run 10k containers in the system, the size of the
-> > > list_lru_memcg->lrus can be ~96KB per list_lru. When we decrease the
-> > > number containers, the size of the array will not be shrinked. It is
-> > > not scalable. The xarray is a good choice for this case. We can save
-> > > a lot of memory when there are tens of thousands continers in the
-> > > system. If we use xarray, we also can remove the logic code of
-> > > resizing array, which can simplify the code.
-> >
-> > I am all for this, in concept.  Some thoughts below ...
-> >
-> > > @@ -56,10 +51,8 @@ struct list_lru {
-> > >  #ifdef CONFIG_MEMCG_KMEM
-> > >       struct list_head        list;
-> > >       int                     shrinker_id;
-> > > -     /* protects ->memcg_lrus->lrus[i] */
-> > > -     spinlock_t              lock;
-> > >       /* for cgroup aware lrus points to per cgroup lists, otherwise NULL */
-> > > -     struct list_lru_memcg   __rcu *memcg_lrus;
-> > > +     struct xarray           *xa;
-> > >  #endif
-> >
-> > Normally, we embed an xarray in its containing structure instead of
-> > allocating it.  It's only a pointer, int and spinlock, so generally
-> > 16 bytes, as opposed to the 8 bytes for the pointer and a 16 byte
-> > allocation.  There is a minor wrinkle in that currently 'NULL' is
-> > used to indicate "is not cgroup aware".  Maybe there's another way
-> > to indicate that?
->
-> Sure. I can drop patch 8 in this series. In that case, we can use
-> ->memcg_aware to indicate that.
->
->
-> >
-> > > @@ -51,22 +51,12 @@ static int lru_shrinker_id(struct list_lru *lru)
-> > >  static inline struct list_lru_one *
-> > >  list_lru_from_memcg_idx(struct list_lru *lru, int nid, int idx)
-> > >  {
-> > > -     struct list_lru_memcg *memcg_lrus;
-> > > -     struct list_lru_node *nlru = &lru->node[nid];
-> > > +     if (list_lru_memcg_aware(lru) && idx >= 0) {
-> > > +             struct list_lru_per_memcg *mlru = xa_load(lru->xa, idx);
-> > >
-> > > -     /*
-> > > -      * Either lock or RCU protects the array of per cgroup lists
-> > > -      * from relocation (see memcg_update_list_lru).
-> > > -      */
-> > > -     memcg_lrus = rcu_dereference_check(lru->memcg_lrus,
-> > > -                                        lockdep_is_held(&nlru->lock));
-> > > -     if (memcg_lrus && idx >= 0) {
-> > > -             struct list_lru_per_memcg *mlru;
-> > > -
-> > > -             mlru = rcu_dereference_check(memcg_lrus->lrus[idx], true);
-> > >               return mlru ? &mlru->nodes[nid] : NULL;
-> > >       }
-> > > -     return &nlru->lru;
-> > > +     return &lru->node[nid].lru;
-> > >  }
-> >
-> > ... perhaps we move the xarray out from under the #ifdef and use index 0
-> > for non-memcg-aware lrus?  The XArray is specially optimised for arrays
-> > which only have one entry at 0.
->
-> Sounds like a good idea. I can do a try.
+There is not much value in the extra conversion step, the calculations
+required for the LTDC IP are different than what is used in the
+drm_display_mode_to_videomode(), so just do the right ones in the LTDC
+driver right away.
 
-I have thought more about this. If we do this, we need to allocate a
-list_lru_per_memcg structure for the root memcg. Since the structure
-of list_lru_node already aligns with cache line size. From this point
-of view, this just wastes memory. We do not gain anything. Right?
+Signed-off-by: Marek Vasut <marex@denx.de>
+Signed-off-by: Yannick Fertre <yannick.fertre@foss.st.com>
+---
+ drivers/gpu/drm/stm/ltdc.c | 32 +++++++++++++++++---------------
+ 1 file changed, 17 insertions(+), 15 deletions(-)
 
-Another approach is introducing a new structure of list_lru_nodes,
-which is described as following.
+diff --git a/drivers/gpu/drm/stm/ltdc.c b/drivers/gpu/drm/stm/ltdc.c
+index e99771b947b6..d113b9be12c0 100644
+--- a/drivers/gpu/drm/stm/ltdc.c
++++ b/drivers/gpu/drm/stm/ltdc.c
+@@ -570,31 +570,33 @@ static void ltdc_crtc_mode_set_nofb(struct drm_crtc *crtc)
+ 		}
+ 	}
+ 
+-	drm_display_mode_to_videomode(mode, &vm);
+-
+ 	DRM_DEBUG_DRIVER("CRTC:%d mode:%s\n", crtc->base.id, mode->name);
+-	DRM_DEBUG_DRIVER("Video mode: %dx%d", vm.hactive, vm.vactive);
++	DRM_DEBUG_DRIVER("Video mode: %dx%d", mode->hdisplay, mode->vdisplay);
+ 	DRM_DEBUG_DRIVER(" hfp %d hbp %d hsl %d vfp %d vbp %d vsl %d\n",
+-			 vm.hfront_porch, vm.hback_porch, vm.hsync_len,
+-			 vm.vfront_porch, vm.vback_porch, vm.vsync_len);
++			 mode->hsync_start - mode->hdisplay,
++			 mode->htotal - mode->hsync_end,
++			 mode->hsync_end - mode->hsync_start,
++			 mode->vsync_start - mode->vdisplay,
++			 mode->vtotal - mode->vsync_end,
++			 mode->vsync_end - mode->vsync_start);
+ 
+ 	/* Convert video timings to ltdc timings */
+-	hsync = vm.hsync_len - 1;
+-	vsync = vm.vsync_len - 1;
+-	accum_hbp = hsync + vm.hback_porch;
+-	accum_vbp = vsync + vm.vback_porch;
+-	accum_act_w = accum_hbp + vm.hactive;
+-	accum_act_h = accum_vbp + vm.vactive;
+-	total_width = accum_act_w + vm.hfront_porch;
+-	total_height = accum_act_h + vm.vfront_porch;
++	hsync = mode->hsync_end - mode->hsync_start - 1;
++	vsync = mode->vsync_end - mode->vsync_start - 1;
++	accum_hbp = mode->htotal - mode->hsync_start - 1;
++	accum_vbp = mode->vtotal - mode->vsync_start - 1;
++	accum_act_w = accum_hbp + mode->hdisplay;
++	accum_act_h = accum_vbp + mode->vdisplay;
++	total_width = mode->htotal - 1;
++	total_height = mode->vtotal - 1;
+ 
+ 	/* Configures the HS, VS, DE and PC polarities. Default Active Low */
+ 	val = 0;
+ 
+-	if (vm.flags & DISPLAY_FLAGS_HSYNC_HIGH)
++	if (mode->flags & DRM_MODE_FLAG_PHSYNC)
+ 		val |= GCR_HSPOL;
+ 
+-	if (vm.flags & DISPLAY_FLAGS_VSYNC_HIGH)
++	if (mode->flags & DRM_MODE_FLAG_PVSYNC)
+ 		val |= GCR_VSPOL;
+ 
+ 	if (bus_flags & DRM_BUS_FLAG_DE_LOW)
+-- 
+2.17.1
 
-struct list_lru_nodes {
-         struct list_lru_node nodes[0];
-};
-
-Then we insert struct list_lru_nodes to the XArray (index == 0).
-There will be two different types in the XArray. If index == 0,
-the xa_load() returns list_lru_nodes pointer, otherwise, it returns
-list_lru_per_memcg pointer. So list_lru_from_memcg_idx() still
-need to handle different cases.
-
-It looks like both approaches do not have any obvious
-advantages.
-
-What do you think about this, Mattew?
-
->
-> >
-> > >  int list_lru_memcg_alloc(struct list_lru *lru, struct mem_cgroup *memcg, gfp_t gfp)
-> > >  {
-> > > +     XA_STATE(xas, lru->xa, 0);
-> > >       unsigned long flags;
-> > > -     struct list_lru_memcg *memcg_lrus;
-> > > -     int i;
-> > > +     int i, ret = 0;
-> > >
-> > >       struct list_lru_memcg_table {
-> > >               struct list_lru_per_memcg *mlru;
-> > > @@ -601,22 +522,45 @@ int list_lru_memcg_alloc(struct list_lru *lru, struct mem_cgroup *memcg, gfp_t g
-> > >               }
-> > >       }
-> > >
-> > > -     spin_lock_irqsave(&lru->lock, flags);
-> > > -     memcg_lrus = rcu_dereference_protected(lru->memcg_lrus, true);
-> > > +     xas_lock_irqsave(&xas, flags);
-> > >       while (i--) {
-> > >               int index = memcg_cache_id(table[i].memcg);
-> > >               struct list_lru_per_memcg *mlru = table[i].mlru;
-> > >
-> > > -             if (index < 0 || rcu_dereference_protected(memcg_lrus->lrus[index], true))
-> > > +             xas_set(&xas, index);
-> > > +retry:
-> > > +             if (unlikely(index < 0 || ret || xas_load(&xas))) {
-> > >                       kfree(mlru);
-> > > -             else
-> > > -                     rcu_assign_pointer(memcg_lrus->lrus[index], mlru);
-> > > +             } else {
-> > > +                     ret = xa_err(xas_store(&xas, mlru));
-> >
-> > This is mixing advanced and normal XArray concepts ... sorry to have
-> > confused you.  I think what you meant to do here was:
-> >
-> >                         xas_store(&xas, mlru);
-> >                         ret = xas_error(&xas);
->
-> Sure. Thanks for pointing it out. It's my bad usage.
->
-> >
-> > Or you can avoid introducing 'ret' at all, and keep your errors in the
-> > xa_state.  You're kind of mirroring the xa_state errors into 'ret'
-> > anyway, so that seems easier to understand?
->
-> Make sense. I will do this in the next version. Thanks for your
-> all suggestions.
->
-> >
-> > > -     memcg_id = memcg_alloc_cache_id();
-> > > +     memcg_id = ida_simple_get(&memcg_cache_ida, 0, MEMCG_CACHES_MAX_SIZE,
-> > > +                               GFP_KERNEL);
-> >
-> >         memcg_id = ida_alloc_max(&memcg_cache_ida,
-> >                         MEMCG_CACHES_MAX_SIZE - 1, GFP_KERNEL);
-> >
-> > ... although i think there's actually a fencepost error, and this really
-> > should be MEMCG_CACHES_MAX_SIZE.
->
-> Totally agree. I have fixed this issue in patch 19.
->
-> >
-> > >       objcg = obj_cgroup_alloc();
-> > >       if (!objcg) {
-> > > -             memcg_free_cache_id(memcg_id);
-> > > +             ida_simple_remove(&memcg_cache_ida, memcg_id);
-> >
-> >                 ida_free(&memcg_cache_ida, memcg_id);
->
-> I Will update to this new API.
->
-> >
