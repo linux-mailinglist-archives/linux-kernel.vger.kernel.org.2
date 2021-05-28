@@ -2,93 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 22C45393EBC
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 10:26:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A5EA393EBD
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 10:26:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236386AbhE1I2A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 May 2021 04:28:00 -0400
-Received: from szxga02-in.huawei.com ([45.249.212.188]:2512 "EHLO
-        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236190AbhE1I14 (ORCPT
+        id S236265AbhE1I2M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 May 2021 04:28:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36196 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235754AbhE1I2I (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 May 2021 04:27:56 -0400
-Received: from dggeml762-chm.china.huawei.com (unknown [172.30.72.53])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4FryPl5xZmzYq13;
-        Fri, 28 May 2021 16:23:39 +0800 (CST)
-Received: from dggpemm500006.china.huawei.com (7.185.36.236) by
- dggeml762-chm.china.huawei.com (10.1.199.172) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2176.2; Fri, 28 May 2021 16:26:20 +0800
-Received: from thunder-town.china.huawei.com (10.174.177.72) by
- dggpemm500006.china.huawei.com (7.185.36.236) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Fri, 28 May 2021 16:26:19 +0800
-From:   Zhen Lei <thunder.leizhen@huawei.com>
-To:     David Kershner <david.kershner@unisys.com>,
-        Tim Sell <timothy.sell@unisys.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        sparmaintainer <sparmaintainer@unisys.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-CC:     Zhen Lei <thunder.leizhen@huawei.com>
-Subject: [PATCH 1/1] visorbus: fix error return code in visorchipset_init()
-Date:   Fri, 28 May 2021 16:26:14 +0800
-Message-ID: <20210528082614.9337-1-thunder.leizhen@huawei.com>
-X-Mailer: git-send-email 2.26.0.windows.1
+        Fri, 28 May 2021 04:28:08 -0400
+Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67241C061574
+        for <linux-kernel@vger.kernel.org>; Fri, 28 May 2021 01:26:33 -0700 (PDT)
+Received: by mail-lf1-x12a.google.com with SMTP id q1so4160751lfo.3
+        for <linux-kernel@vger.kernel.org>; Fri, 28 May 2021 01:26:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=zq5o+DLPuG61PjhQgI8+kLrm3pIXfLo+aZxZqsHuNkk=;
+        b=zJ2ABZ4A7vmq2DcxuyXlsj6bcgBi0vy8Ig6WUO7joB5gYNKVRlZWarhvHwlsTRxNzN
+         7viqsYExLxNY1uBPfy2GBWsw6lw1cbAeO1WqlIwZea3Dr6ZuhJPGwyanHjS/6UkL9WUE
+         pYHhC7fEvD+qTrL6GgyFFrqzSGyMlkEZo6x4rBtHBq0aSgTeJMpOQsJSuRp8+9gIZHD9
+         t1QAC3LVMEtkYhkekXzJMitJ/thRi202cQqSonaXgSEyd7tgFDUPOlbKo7F341bk+IiB
+         VBZEXbmSEI/TDJjLf18vs7P3zZlh4ZiDExntJuTNNeeRX5m29oAkjuBF6w7pHZhto6ln
+         I0KA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=zq5o+DLPuG61PjhQgI8+kLrm3pIXfLo+aZxZqsHuNkk=;
+        b=BlGAyMyvGknCo91lGL9lqw7r+5L6ViEK+JqJwzs63HY8PEKGBsIH4iNH+HKnc7yLk9
+         08kFfNjd7ZmbydXIgfRExLYJW0haBzF021dXErWKb0GF/p+ymNHi2Qd2zDt1e3eEc8eN
+         ORD/LrluzneeEJY2dJ65Zv97hcKm2qCuCVK6d/zO2p2qLhAX8sMbzs+kwakpwiQ3jZ2E
+         TAPe/vCmwUrvstBF8NVUFR97lFU/pxYQ+Yzzf2gSz4JM8SujXfZp7IzFfplnD6wEMTgX
+         hy3Ryat8jWfxPXgPmLNNgO1ML6MHXkF3fWpoDsOsWHtp9Pa6xeaWbnzJxLhUyti6x8OV
+         gA2w==
+X-Gm-Message-State: AOAM532M1OaKB12v5naV51oJjyMMQ/oQB0YvhvOD0j9HyAAjE9WZ995J
+        XoV6sbm5Rm+xzS7vGV53dTj5FqSF8Y17QxXcVkWaG6ynd6w=
+X-Google-Smtp-Source: ABdhPJzDGckvCASarcU2Hl/DxaIetWMJUiQvpwfAlKm+KCEj6vYQB9/KQVNt//05QQAZ91c4CQhTjwsxe7LqlP3odVE=
+X-Received: by 2002:ac2:47e6:: with SMTP id b6mr4984338lfp.649.1622190391813;
+ Fri, 28 May 2021 01:26:31 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.174.177.72]
-X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
- dggpemm500006.china.huawei.com (7.185.36.236)
-X-CFilter-Loop: Reflected
+References: <20210528040014.2160181-1-masahiroy@kernel.org>
+In-Reply-To: <20210528040014.2160181-1-masahiroy@kernel.org>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Fri, 28 May 2021 10:26:20 +0200
+Message-ID: <CACRpkdbov_w0-bXdaUOdZs8f+QeVbPjmpr0U3VP7pwd+hSK6HQ@mail.gmail.com>
+Subject: Re: [PATCH] ARM: remove unneeded abi parameter to syscallnr.sh
+To:     Masahiro Yamada <masahiroy@kernel.org>
+Cc:     patches@arm.linux.org.uk,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Russell King <linux@armlinux.org.uk>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Commit 1366a3db3dcf ("staging: unisys: visorbus: visorchipset_init clean
-up gotos") assigns the initial value -ENODEV to the local variable 'err',
-and the first several error branches will return this value after "goto
-error". But commit f1f537c2e7f5 ("staging: unisys: visorbus: Consolidate
-controlvm channel creation.") overwrites 'err' in the middle of the way.
-As a result, some error branches do not successfully return the initial
-value -ENODEV of 'err', but return 0.
+On Fri, May 28, 2021 at 6:00 AM Masahiro Yamada <masahiroy@kernel.org> wrote:
 
-In addition, when kzalloc() fails, -ENOMEM should be returned instead of
--ENODEV.
+> You do not need to pass the abi parameter to syscallnr.sh because it
+> parses all the lines of syscall.tbl except comments anyway.
+>
+> Simplify the code. Also, remove unneeded single-quoting.
+>
+> Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
 
-Fixes: f1f537c2e7f5 ("staging: unisys: visorbus: Consolidate controlvm channel creation.")
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
----
- drivers/visorbus/visorchipset.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
 
-diff --git a/drivers/visorbus/visorchipset.c b/drivers/visorbus/visorchipset.c
-index cb1eb7e05f87..5668cad86e37 100644
---- a/drivers/visorbus/visorchipset.c
-+++ b/drivers/visorbus/visorchipset.c
-@@ -1561,7 +1561,7 @@ static void controlvm_periodic_work(struct work_struct *work)
- 
- static int visorchipset_init(struct acpi_device *acpi_device)
- {
--	int err = -ENODEV;
-+	int err = -ENOMEM;
- 	struct visorchannel *controlvm_channel;
- 
- 	chipset_dev = kzalloc(sizeof(*chipset_dev), GFP_KERNEL);
-@@ -1584,8 +1584,10 @@ static int visorchipset_init(struct acpi_device *acpi_device)
- 				 "controlvm",
- 				 sizeof(struct visor_controlvm_channel),
- 				 VISOR_CONTROLVM_CHANNEL_VERSIONID,
--				 VISOR_CHANNEL_SIGNATURE))
-+				 VISOR_CHANNEL_SIGNATURE)) {
-+		err = -ENODEV;
- 		goto error_delete_groups;
-+	}
- 	/* if booting in a crash kernel */
- 	if (is_kdump_kernel())
- 		INIT_DELAYED_WORK(&chipset_dev->periodic_controlvm_work,
--- 
-2.25.1
-
-
+Yours,
+Linus Walleij
