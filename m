@@ -2,117 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D97F394640
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 19:14:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 00383394641
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 19:15:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236666AbhE1RPf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 May 2021 13:15:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35954 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229641AbhE1RPc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 May 2021 13:15:32 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 95338613B6;
-        Fri, 28 May 2021 17:13:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1622222037;
-        bh=btu1XKYl/SxptLijDHm9O5VtHEC06LI6a/VkclgT8tE=;
-        h=In-Reply-To:References:Date:From:To:Cc:Subject:From;
-        b=o0O+4tmo1e3pS1ydtGlw+kn/keT9AcWAQQMJE+kzkkp6aXqL6LN9KCGW3u0msJJsr
-         UdXTfQSR737WilcuaFQ5JkMeVw2w8zyGDzFxM6z9SNZiulb2+YlJ0vAs84eoNzmlsI
-         TBHNe574uCR3h7DvAAGTjFlXpioNQ7Xvy+4DO0SiPvNonDoxS/o4NJU5CvBr2IJAWx
-         Tvr2kVWadNIEFHCdA5msCESZ6VishJPDfFMMFWuhbGqiEz7lviMgRO0DSFgQsG4Vd+
-         RSHGjm7+6zjTyo3VjIkYOLOscQ7Gu0cIYBlo1+Tf8CS7J7ogEX2nhJDxFVowDJTcjr
-         /w/fBViEKDw7A==
-Received: from compute2.internal (compute2.nyi.internal [10.202.2.42])
-        by mailauth.nyi.internal (Postfix) with ESMTP id 97B1327C0054;
-        Fri, 28 May 2021 13:13:55 -0400 (EDT)
-Received: from imap21 ([10.202.2.71])
-  by compute2.internal (MEProxy); Fri, 28 May 2021 13:13:55 -0400
-X-ME-Sender: <xms:0SSxYBNhLLEQhbE5DlCdjIGAyc9hsbxC88yUOT8kiJNc-79KkN_ErQ>
-    <xme:0SSxYD-Dlo4OwdnTb9LhWVsB5TmvH6bMtUBT4Nby4DknY5hnYDzWU6Mhd_QogPfd4
-    q3ZwhuLBHfRAMXbgFk>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrvdekjedguddutdcutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
-    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
-    enucfjughrpefofgggkfgjfhffhffvufgtsehttdertderredtnecuhfhrohhmpedftehn
-    ugihucfnuhhtohhmihhrshhkihdfuceolhhuthhosehkvghrnhgvlhdrohhrgheqnecugg
-    ftrfgrthhtvghrnheptdfhheettddvtedvtedugfeuuefhtddugedvleevleefvdetleff
-    gfefvdekgeefnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrh
-    homheprghnugihodhmvghsmhhtphgruhhthhhpvghrshhonhgrlhhithihqdduudeiudek
-    heeifedvqddvieefudeiiedtkedqlhhuthhopeepkhgvrhhnvghlrdhorhhgsehlihhnuh
-    igrdhluhhtohdruhhs
-X-ME-Proxy: <xmx:0SSxYATUdIenlKMLAPrg3ZlMLp6CCWhFef7S9ts1Z1KwHGgGWsVBFQ>
-    <xmx:0SSxYNtJzdNZLuD9AN8onvkX235_vbNUV3WOxikkpBbKHXEt9TlcOw>
-    <xmx:0SSxYJf46tqmrSAugiHt6K14v0Lq-MOLy1gwKJsT4Tfu6x-jl58qkA>
-    <xmx:0ySxYKXebEBWDDxDG6P_oBXOkEF1Hoj-mhn_Suz3FSF2FCO5syMBsvwvicCtyH26>
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-        id 014BB51C0060; Fri, 28 May 2021 13:13:52 -0400 (EDT)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.5.0-alpha0-468-gdb53729b73-fm-20210517.001-gdb53729b
-Mime-Version: 1.0
-Message-Id: <3781d3ec-6d1b-4d04-8bed-19985115153d@www.fastmail.com>
-In-Reply-To: <4c3bfc27-a542-8e91-7ccf-4be8b1e6c844@intel.com>
-References: <20210527235109.B2A9F45F@viggo.jf.intel.com>
- <87eedq7u2b.ffs@nanos.tec.linutronix.de>
- <4c3bfc27-a542-8e91-7ccf-4be8b1e6c844@intel.com>
-Date:   Fri, 28 May 2021 10:13:32 -0700
-From:   "Andy Lutomirski" <luto@kernel.org>
-To:     "Dave Hansen" <dave.hansen@intel.com>,
-        "Thomas Gleixner" <tglx@linutronix.de>,
-        "Dave Hansen" <dave.hansen@linux.intel.com>, linux-mm@kvack.org
-Cc:     "Linux Kernel Mailing List" <linux-kernel@vger.kernel.org>,
-        "Ingo Molnar" <mingo@redhat.com>, "Borislav Petkov" <bp@alien8.de>,
-        "the arch/x86 maintainers" <x86@kernel.org>, shuah@kernel.org,
-        "Babu Moger" <babu.moger@amd.com>, dave.kleikamp@oracle.com,
-        linuxram@us.ibm.com, bauerman@linux.ibm.com
-Subject: Re: [PATCH 0/5] x86/pkeys: PKRU manipulation bug fixes and cleanups
-Content-Type: text/plain
+        id S236425AbhE1RQP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 May 2021 13:16:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42220 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229599AbhE1RQJ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 28 May 2021 13:16:09 -0400
+Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1BB0CC061574
+        for <linux-kernel@vger.kernel.org>; Fri, 28 May 2021 10:14:33 -0700 (PDT)
+Received: by mail-pj1-x102d.google.com with SMTP id m8-20020a17090a4148b029015fc5d36343so2910809pjg.1
+        for <linux-kernel@vger.kernel.org>; Fri, 28 May 2021 10:14:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=jdSDHqrpODkjWfBbbyG6vrMb009iDQOh1kwEFeMeXVQ=;
+        b=JqDww1mmvzIwNQsCG0aunTaF8NLcrJ0Ibo9IfukAcFtkxDz1RT+h5IH3I6n61mpYfV
+         SBce2TSfwOSlKsp8BgY0uPzalxWGBM9cXO2qx7/jvVFNOMnmjjKy6gRG0j0CS+CQCQCK
+         gDT+Y/5uMTCjknH3QY1BFZiEHumHYubymuQ2w=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=jdSDHqrpODkjWfBbbyG6vrMb009iDQOh1kwEFeMeXVQ=;
+        b=r0Op3exMW8wyBIf4ib1/gGurFyWStuJ5KQ8fNmn1glJwV/vhWA+PrIgQtEyTPMQTKl
+         EMkAdSOzNLwV6ZTRcERXOVu7UBid1xtiSyNrEvSbvN3aBqIIkcCCyChyFMolhYv4FsIq
+         Tad3zY3vp7hbBJ2zWu/H4Z3kn2d57trvidBaikgt0CPY7JDZ8NO3uhwxEPcuWo0dGK7o
+         X68ZY01rIIB7XVqEvpwF31bpja8pPwq1n8fwGWo3mY4nAE52HsiIZIzi34pNwy98HGe4
+         ynvB1rpMRzV+7NVc9E8xdMyokGC7CKPgNQn3lhPKwWO2vBJ4MN8mhJEwh0ec3/NGjq4I
+         MUVA==
+X-Gm-Message-State: AOAM5319AOi0zSqM1fKb07pfOm4D7QG98mTfs6DeT9hJkzjribb8UAvy
+        v6uN95FV7+e9lOpszCdy1z4Qyw==
+X-Google-Smtp-Source: ABdhPJw0tPyzD2F7Jyx6FGKRdozODrroXNe9pqxuACKJUfpUIY0AqTbpb540nh3W0zU0XJllHER3Kg==
+X-Received: by 2002:a17:90a:6343:: with SMTP id v3mr5530405pjs.61.1622222072618;
+        Fri, 28 May 2021 10:14:32 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id p15sm4816757pjb.8.2021.05.28.10.14.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 28 May 2021 10:14:32 -0700 (PDT)
+Date:   Fri, 28 May 2021 10:14:31 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Rodrigo Campos <rodrigo@kinvolk.io>
+Cc:     Sargun Dhillon <sargun@sargun.me>,
+        LKML <linux-kernel@vger.kernel.org>, containers@lists.linux.dev,
+        Tycho Andersen <tycho@tycho.pizza>,
+        Andy Lutomirski <luto@kernel.org>,
+        Mauricio =?iso-8859-1?Q?V=E1squez?= Bernal 
+        <mauricio@kinvolk.io>, Giuseppe Scrivano <gscrivan@redhat.com>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        =?iso-8859-1?Q?Micka=EBl_Sala=FCn?= <mic@linux.microsoft.com>
+Subject: Re: [PATCH v2 2/4] seccomp: Refactor notification handler to prepare
+ for new semantics
+Message-ID: <202105281014.EECE3D3048@keescook>
+References: <20210517193908.3113-1-sargun@sargun.me>
+ <20210517193908.3113-3-sargun@sargun.me>
+ <CACaBj2YUiowSKzvh02OjpQNqQViA8N0eyRMimkK=90NagRF40w@mail.gmail.com>
+ <202105271137.C491991621@keescook>
+ <CACaBj2aaDkJwDM8ugR5LxWEOho3nZuHjYLLsth3XYjf39tpaQQ@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CACaBj2aaDkJwDM8ugR5LxWEOho3nZuHjYLLsth3XYjf39tpaQQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On Fri, May 28, 2021, at 9:11 AM, Dave Hansen wrote:
-> On 5/28/21 8:32 AM, Thomas Gleixner wrote:
-> >>
-> >> This series:
-> >>  * Moves the PKRU manipulation to a more appropriate location,
-> >>    away from the page table code
-> >>  * Wraps get_xsave_addr() with more structured, less error-prone
-> >>    interfaces.
-> >>  * Conditionally hides a pkey debugfs file, eliminating the need
-> >>    for new runtime checks to work with the new interface.
-> >>  * Add a selftest to make it more likely to catch bugs like this
-> >>    in the future.  This improved selftest catches this issue on
-> >>    Intel CPUs.  Without the improvement, it only triggers on AMD.
-> > I think all of this is fundamentaly wrong.
-> > 
-> > Contrary to FPU state, PKRU has to be updated at context switch
-> > time. There is absolutely no point in having PKRU XSAVES managed.
-> > 
-> > It's broken in several ways. Anything which clears and loads the FPU
-> > will load the wrong PKRU value. Go figure...
-> > 
-> > So the right thing is to disable PKRU in XCR0 and on sched out simply do
-> > 
-> >    task->thread.pkru = read_pkru();
-> > 
-> > and on sched in
-> > 
-> >    write_pkru(task->thread.pkru);
-> > 
-> > Simple, trivial and not going to be wreckaged by anything which fiddles
-> > with xstates. We all know by now that xstates is a trainwreck and not
-> > having stuff like that in there is making the fixes I'm doing way
-> > simpler.
+On Fri, May 28, 2021 at 05:27:39PM +0200, Rodrigo Campos wrote:
+> On Thu, May 27, 2021 at 8:42 PM Kees Cook <keescook@chromium.org> wrote:
+> >
+> > On Thu, May 27, 2021 at 01:51:13PM +0200, Rodrigo Campos wrote:
+> > >
+> > > Kees, as I mentioned in the linked thread, this issue is present in
+> > > 5.9+ kernels. Should we add the cc to stable for this patch? Or should
+> > > we cc to stable the one linked, that just fixes the issue without
+> > > semantic changes to userspace?
+> >
+> > It sounds like the problem is with Go, using addfd, on 5.9-5.13 kernels,
+> > yes?
 > 
-> As for the general sentiment that PKRU is not suitable for management
-> with XSAVE, I'm with you.
+> Yes.
 > 
-> I have a few concerns about moving away from XSAVE management, though.
-> I'm not nixing the whole idea, but there are some things we need to resolve.
+> > Would the semantic change be a problem there? (i.e. it sounds like
+> > the semantic change was fine for the 5.14+ kernels, so I'm assuming it's
+> > fine for earlier ones too.)
 > 
-> First is that there _may_ be ABI concerns.  
+> No, I don't think it will cause any problem.
+> 
+> > > Just to be clear, the other patch that fixes the problem without
+> > > userspace visible changes is this:
+> > > https://lore.kernel.org/lkml/20210413160151.3301-1-rodrigo@kinvolk.io/
+> >
+> > I'd prefer to use the now-in-next fix if we can. Is it possible to build
+> > a test case that triggers the race so we can have some certainty that
+> > any fix in -stable covers it appropriately?
+> 
+> I've verified that Sargun's patch also solves the problem in mainline.
+> I have now also verified that it applies cleany and fixes the issue
+> for linux-stable/5.10.y and linux-stable/5.12.y too (without the patch
+> I see the problem, with the patch I don't see it).  5.11 is already
+> EOL, so I didn't try it (probably will work as well).
 
-I tend to think that, for -stable, we should fix the bug without an ABI change.
+Oh, btw, may I add a Tested-by: from you for this fix?
+
+Thanks!
+
+-Kees
+
+-- 
+Kees Cook
