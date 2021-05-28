@@ -2,92 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F3DF3944DF
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 17:11:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B30E3944E8
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 17:17:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236606AbhE1PN1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 May 2021 11:13:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42806 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234653AbhE1PNY (ORCPT
+        id S235589AbhE1PSv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 May 2021 11:18:51 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:50186 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229684AbhE1PSs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 May 2021 11:13:24 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16C96C061574;
-        Fri, 28 May 2021 08:11:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=DKqV70MMMK3G6vetpPVH3agOFHnwPsPuzF2wR4m/9r8=; b=EiNIcVQXpM/nr6D6KBoUNOviYJ
-        /d+VzVV6EQmbOPYoJ2fsaoNxs+05SzPCb72qQuUNR1UVoa/DdpoGHza5kblsDuN73rG5Yh5IgXeVW
-        a5tJFw8kX0WbgLn9ke23nLEhwfAycVa82ApYgkzJIAO0C8RSgVax5NS5sL4kApo1OXGk+oAYfzk0G
-        cwQiIeyz8laGNuTQy9RKj5RSnZfYSNHvRNHA5aNIXouBbT1mbc3SQag5xfmqw34OBxx1r7ArBUogr
-        +9z4/1YKrc6LdWlXgK0b1dGXivcm5GWP3QL/dAs5pSIWBPuIN8GG5+BBnsJlIRESAKhgjyTYq9PLm
-        YPiYZekw==;
-Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
-        id 1lme9C-006jtR-8E; Fri, 28 May 2021 15:11:39 +0000
-Date:   Fri, 28 May 2021 16:11:38 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     James Bottomley <James.Bottomley@hansenpartnership.com>
-Cc:     Greg KH <greg@kroah.com>, Christoph Lameter <cl@gentwo.de>,
-        Theodore Ts'o <tytso@mit.edu>, Jiri Kosina <jikos@kernel.org>,
-        ksummit@lists.linux.dev, linux-kernel@vger.kernel.org,
-        linux-block@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-mm@kvack.org, netdev@vger.kernel.org,
-        linux-arch@vger.kernel.org, linux-api@vger.kernel.org
-Subject: Re: Maintainers / Kernel Summit 2021 planning kick-off
-Message-ID: <YLEIKk7IuWu6W4Sy@casper.infradead.org>
-References: <YH2hs6EsPTpDAqXc@mit.edu>
- <nycvar.YFH.7.76.2104281228350.18270@cbobk.fhfr.pm>
- <YIx7R6tmcRRCl/az@mit.edu>
- <alpine.DEB.2.22.394.2105271522320.172088@gentwo.de>
- <YK+esqGjKaPb+b/Q@kroah.com>
- <c46dbda64558ab884af060f405e3f067112b9c8a.camel@HansenPartnership.com>
+        Fri, 28 May 2021 11:18:48 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1622215032;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=PeVjxSGQBiim5YfC7ahaYUGzUsgYFEGwePuVxjiCW3M=;
+        b=OeMqW6/kaWDaBLBXEh3mG7HdML8dinwjc+uYZfXpYGE5ODLbPDcfehYcU/lefeBlX6c2DU
+        oAOPb0f2GodJ02BZJPMurMDsswhh0JaNkkgRKdpN9TI5N0fmlm/A98IPDL4aEKnOQzGqfh
+        7w9DOCdWXILAzYwqCnuIavaR4a7/R9A=
+Received: from mail-oi1-f199.google.com (mail-oi1-f199.google.com
+ [209.85.167.199]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-155-FAKodLvROxKdsURJ1eJvZw-1; Fri, 28 May 2021 11:17:11 -0400
+X-MC-Unique: FAKodLvROxKdsURJ1eJvZw-1
+Received: by mail-oi1-f199.google.com with SMTP id x10-20020a54400a0000b02901e9af7e39cbso1847607oie.22
+        for <linux-kernel@vger.kernel.org>; Fri, 28 May 2021 08:17:11 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=PeVjxSGQBiim5YfC7ahaYUGzUsgYFEGwePuVxjiCW3M=;
+        b=YZcH/CBYePsWIickhtGJUQQtRs5E1goPQxs8camsHa1jLQPlp1CLYG0GLiP6zIKtNq
+         0iP+pqpLWRUWBhP298FbUexalxgobrieEwxsaQXIZA6CnlYV0niXliGEMxcrxJ/txPqI
+         xB5R38G5W0HEOCbh3xQ+qcfRNVB5O5eJARXkpUqvFb39d2U4szHHfAyMwxNAB/YO1v0n
+         61Po/FcFIMFOYKAFfaAH0ErRXcNG8sPIYcOFkCrsDO9XrBzpWMaW0rhz4U1gHdUIgcGi
+         pIdH50iaAp22PN8cAEIdure/jKb+wVlUjKkxqj3RbSBERXHJnQxYv84eBrfd+EN8KqQk
+         Owig==
+X-Gm-Message-State: AOAM5302uzq13/LtfdYhBy0QI6BAVU5wSwVgm+wnvVQiEfetlks9Khci
+        QzkpD6UV44pnVNdK5EFWjZ+Y8txcql+bdRAtdPE9DavNSaevaZKS+nPT4vvl4Fh/wXilKuVyKws
+        RAIeYw1vKCn7j4WwiVeYg+nRM
+X-Received: by 2002:aca:4954:: with SMTP id w81mr9392037oia.59.1622215030580;
+        Fri, 28 May 2021 08:17:10 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyofwf0lzJsiefQ+3w/OwwhVo+2cUUNr9ztQGmZVQIcm8BzGc7vgSU/MiyGQE7WieVWrWK62A==
+X-Received: by 2002:aca:4954:: with SMTP id w81mr9392027oia.59.1622215030443;
+        Fri, 28 May 2021 08:17:10 -0700 (PDT)
+Received: from localhost.localdomain (075-142-250-213.res.spectrum.com. [75.142.250.213])
+        by smtp.gmail.com with ESMTPSA id n11sm1164944oom.1.2021.05.28.08.17.09
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 28 May 2021 08:17:09 -0700 (PDT)
+Subject: Re: [PATCH] fpga: fpga-bridge: removed repeated word
+To:     Navin Sankar Velliangiri <navin@linumiz.com>,
+        linux-fpga@vger.kernel.org, linux-kernel@vger.kernel.org,
+        "mdf@kernel.org" <mdf@kernel.org>
+References: <20210528150557.22970-1-navin@linumiz.com>
+From:   Tom Rix <trix@redhat.com>
+Message-ID: <6f1cda18-ce61-ea6c-423f-263612d748e8@redhat.com>
+Date:   Fri, 28 May 2021 08:17:08 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <c46dbda64558ab884af060f405e3f067112b9c8a.camel@HansenPartnership.com>
+In-Reply-To: <20210528150557.22970-1-navin@linumiz.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 28, 2021 at 07:58:10AM -0700, James Bottomley wrote:
-> On Thu, 2021-05-27 at 15:29 +0200, Greg KH wrote:
-> > On Thu, May 27, 2021 at 03:23:03PM +0200, Christoph Lameter wrote:
-> > > On Fri, 30 Apr 2021, Theodore Ts'o wrote:
-> > > 
-> > > > I know we're all really hungry for some in-person meetups and
-> > > > discussions, but at least for LPC, Kernel Summit, and
-> > > > Maintainer's Summit, we're going to have to wait for another
-> > > > year,
-> > > 
-> > > Well now that we are vaccinated: Can we still change it?
-> > > 
-> > 
-> > Speak for yourself, remember that Europe and other parts of the world
-> > are not as "flush" with vaccines as the US currently is :(
-> 
-> The rollout is accelerating in Europe.  At least in Germany, I know
-> people younger than me are already vaccinated.  I think by the end of
-> September the situation will be better ... especially if the EU and US
-> agree on this air bridge (and the US actually agrees to let EU people
-> in).
-> 
-> One of the things Plumbers is thinking of is having a meetup at what
-> was OSS EU but which is now in Seattle.  The Maintainer's summit could
-> do the same thing.  We couldn't actually hold Plumbers in Seattle
-> because the hotels still had masks and distancing requirements for
-> events that effectively precluded the collaborative aspects of
-> microconferences, but evening events will be governed by local
-> protocols, rather than the Hotel, which are already more relaxed.
 
-Umm.  Let's remember that the vaccines are 33-93% effective [1],
-which means that there's approximately a 100% certainty that at least
-one person arriving at the event from a trans-atlantic flight has been
-exposed to someone who has the virus.  I'm not convinced that holding a
-"more relaxed protocol" event is a great idea.
+On 5/28/21 8:05 AM, Navin Sankar Velliangiri wrote:
+> Removed repeated word and.
+> Reported by checkpatch.
+>
+> Signed-off-by: Navin Sankar Velliangiri <navin@linumiz.com>
+> ---
+>   drivers/fpga/fpga-bridge.c | 4 ++--
+>   1 file changed, 2 insertions(+), 2 deletions(-)
+>
+> diff --git a/drivers/fpga/fpga-bridge.c b/drivers/fpga/fpga-bridge.c
+> index e9266b2a357f..9ada1126faf7 100644
+> --- a/drivers/fpga/fpga-bridge.c
+> +++ b/drivers/fpga/fpga-bridge.c
+> @@ -228,7 +228,7 @@ EXPORT_SYMBOL_GPL(fpga_bridges_put);
+>    * @info: fpga image specific information
+>    * @bridge_list: list of FPGA bridges
+>    *
+> - * Get an exclusive reference to the bridge and and it to the list.
+> + * Get an exclusive reference to the bridge and it to the list.
+>    *
+>    * Return 0 for success, error code from of_fpga_bridge_get() othewise.
+>    */
+> @@ -258,7 +258,7 @@ EXPORT_SYMBOL_GPL(of_fpga_bridge_get_to_list);
+>    * @info: fpga image specific information
+>    * @bridge_list: list of FPGA bridges
+>    *
+> - * Get an exclusive reference to the bridge and and it to the list.
+> + * Get an exclusive reference to the bridge and it to the list.
 
-[1] Depending exactly which vaccine, which variant, how many doses, etc, etc
-https://www.sciencemediacentre.org/expert-reaction-to-preprint-from-phe-on-vaccine-effectiveness-against-the-b-1-617-2-indian-variant/
+Looks good.
+
+Reviewed-by: Tom Rix <trix@redhat.com>
+
+Moritz,
+
+This patch and my spelling cleanup are low risk, can we get these into 
+fpga-next ?
+
+https://lore.kernel.org/linux-fpga/20210527200900.GA875457@mail.gmail.com/
+
+Tom
+
+>    *
+>    * Return 0 for success, error code from fpga_bridge_get() othewise.
+>    */
 
