@@ -2,104 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BA26C394445
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 16:35:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E6A039444C
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 16:39:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236154AbhE1OhY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 May 2021 10:37:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34588 "EHLO
+        id S236209AbhE1Okr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 May 2021 10:40:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35334 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230080AbhE1OhX (ORCPT
+        with ESMTP id S233711AbhE1Okp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 May 2021 10:37:23 -0400
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5DC29C061574
-        for <linux-kernel@vger.kernel.org>; Fri, 28 May 2021 07:35:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:
-        Content-Transfer-Encoding:Content-Type:MIME-Version:References:Message-ID:
-        Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-         bh=R4ITbO2zQ8+lQSlzYrqLkEM0zhWRWfeQJIIZ5GiIeA8=; b=eo/JmWVlEvb6d7ZTxUyMeDveB
-        k4g9KxD+wLtVzPfA8XlBRYVbAQYrXKqpVqeQSmBlOEOwYvIdaejXctscaVFmzPeMhz37UD3KJhVG8
-        ZbPll31d6s0h19rEC9xTjyEjFxigmG+CbdkzAOF8+bn5WjIrH8KbPfzyohjFNdHyp71u+cnIF09Z9
-        qLvgDmh0QtNdpIij93/nFNpotFyxnnBV2R8SIqQMO7u/NWCrkxXsQzI0Cv1g+sG083QQ4ihNnA/Io
-        8irfy1kx20apIZc15THyTauPDvsQXDLvpqyFXe/nW7TYqOxpC5ofI0VgijwM+V4jdS8Bil4QCTlGU
-        0aB1kHC+Q==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:44444)
-        by pandora.armlinux.org.uk with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <linux@armlinux.org.uk>)
-        id 1lmdaU-000063-FN; Fri, 28 May 2021 15:35:46 +0100
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
-        (envelope-from <linux@shell.armlinux.org.uk>)
-        id 1lmdaS-0004mG-TV; Fri, 28 May 2021 15:35:44 +0100
-Date:   Fri, 28 May 2021 15:35:44 +0100
-From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
-To:     Krzysztof =?utf-8?Q?Ha=C5=82asa?= <khalasa@piap.pl>
-Cc:     linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        lkml <linux-kernel@vger.kernel.org>
-Subject: Re: Data corruption on i.MX6 IPU in arm_copy_from_user()
-Message-ID: <20210528143544.GQ30436@shell.armlinux.org.uk>
-References: <m3y2c1uchh.fsf@t19.piap.pl>
- <20210526100843.GD30436@shell.armlinux.org.uk>
- <m3r1htu19o.fsf@t19.piap.pl>
- <20210526131853.GE30436@shell.armlinux.org.uk>
- <m3h7intbub.fsf@t19.piap.pl>
+        Fri, 28 May 2021 10:40:45 -0400
+Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55FE7C06174A;
+        Fri, 28 May 2021 07:39:11 -0700 (PDT)
+Received: by mail-pf1-x442.google.com with SMTP id f22so3439423pfn.0;
+        Fri, 28 May 2021 07:39:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Lv0Kb494zFJwqBOfwUjOAI6JWygR12iP5UgAX5IqtW8=;
+        b=dEqvQr3dOmcSgqSUciWdOQWg+qp2Vj6exhTuu5GNWOXP2keZSQMBqMOiVDechqOAPB
+         MYw+9VNd8qFhij33PpiL2+s+J9VKQ6tjCStmJtzUIgFZ/2XZEs1Zb5nlQAHrVX2MZO57
+         tZZ5sPSVo9O/n96JEkVR98WkM9wTOhT4bsQ/T03U+9rS4VnUq/Zvqppc5xELV/jVlkJt
+         Nd3AKiLGAllI80wcsVSrIeyZ/bIckNQ50vThBZp9UfHV9six+kkE7+i3yvOKCJS9pwQq
+         0qo3CdlggPlkDJ85jMZPiVXfRDawTIXdsT5IOroI/rCOgsBuYDMCihWAGoF9niqXPFUu
+         vE5w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Lv0Kb494zFJwqBOfwUjOAI6JWygR12iP5UgAX5IqtW8=;
+        b=CMxbHjAB1ZzN/F4tbTMcN2FnmgnyoY2CjpxToq4m+MhvIBzsfteDi3GDuRzuGJpior
+         TkugEVDXTEHJfBpmWNcKwBTUvQPKDRf8U1S6HVPyeDSazR9grSPHeeVBm67Yf49aGh2T
+         R6/dUb95troCv2q8c6vmxKxbyK7ftJaxikP7twH5RphLr6k3eXUDE5tEKVuGbu1iIqM/
+         ZmHnXrgdUI7qCcmP9vDy/DmGsDi0/k4zKOZr0yN+1Pci1v+nuNw3LBuTYq+Nkchcjunj
+         PeQGU/DgjLSoHWo6MWj9ly/1seqD/7hevmnGIe8kp8ThgBwNguyNxEp4h5/uxMLUaTtw
+         8u+Q==
+X-Gm-Message-State: AOAM532VxCHsQedT2mL8vI/N0VwA1rUWovz64YicxJhhzQg8dxW54qkp
+        7aTgDrqg+FfgUL9pwLrS3EQ=
+X-Google-Smtp-Source: ABdhPJy03nWY9owzxjn9rnRYAvbH4gVJdjtWe36Wnq2cuYeA4P4jEugkBCunZsGC1AcwvG+tsNbwsg==
+X-Received: by 2002:a63:7703:: with SMTP id s3mr9423616pgc.339.1622212750907;
+        Fri, 28 May 2021 07:39:10 -0700 (PDT)
+Received: from localhost ([178.236.46.205])
+        by smtp.gmail.com with ESMTPSA id n2sm4424540pjo.1.2021.05.28.07.39.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 28 May 2021 07:39:10 -0700 (PDT)
+From:   menglong8.dong@gmail.com
+X-Google-Original-From: dong.menglong@zte.com.cn
+To:     mhiramat@kernel.org, mcgrof@kernel.org, josh@joshtriplett.org
+Cc:     viro@zeniv.linux.org.uk, keescook@chromium.org,
+        samitolvanen@google.com, ojeda@kernel.org, johan@kernel.org,
+        jeyu@kernel.org, masahiroy@kernel.org, dong.menglong@zte.com.cn,
+        joe@perches.com, axboe@kernel.dk, jack@suse.cz, hare@suse.de,
+        tj@kernel.org, gregkh@linuxfoundation.org, song@kernel.org,
+        neilb@suse.de, akpm@linux-foundation.org, f.fainelli@gmail.com,
+        wangkefeng.wang@huawei.com, arnd@arndb.de,
+        linux@rasmusvillemoes.dk, brho@google.com, rostedt@goodmis.org,
+        vbabka@suse.cz, pmladek@suse.com, glider@google.com,
+        chris@chrisdown.name, jojing64@gmail.com, ebiederm@xmission.com,
+        mingo@kernel.org, terrelln@fb.com, geert@linux-m68k.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        bhelgaas@google.com
+Subject: [PATCH v3 0/3] init/initramfs.c: make initramfs support pivot_root
+Date:   Fri, 28 May 2021 22:37:59 +0800
+Message-Id: <20210528143802.78635-1-dong.menglong@zte.com.cn>
+X-Mailer: git-send-email 2.32.0.rc0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <m3h7intbub.fsf@t19.piap.pl>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-Sender: Russell King (Oracle) <linux@armlinux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 28, 2021 at 12:02:52PM +0200, Krzysztof Hałasa wrote:
-> "Russell King (Oracle)" <linux@armlinux.org.uk> writes:
-> 
-> > In any case, looking at the architecture reference manual, LDM is
-> > permitted on device and strongly ordered mappings, and the memory
-> > subsystem is required to decompose it into a series of 32-bit accesses.
-> > So, it sounds to me like there could be a hardware bug in the buses/IPU
-> > causing this.
-> 
-> It seems so.
-> 
-> I modified the kernel IPU module a bit, initialized a bunch of IPU
-> registers to known values (1..0xD). Results (from 1 to 13 IPU
-> registers) obtained with different instructions:
-> 
-> readl(13 consecutive registers): CSI = 1 2 3 4 5 6 7 8 9 A B C D
-> 1 = register #0 and so on - readl() results are obviously correct.
-> 
-> LDM1:  1 (not corrupted)
-> LDM2:  1 3
-> LDM3:  1 3 4
-> LDM4:  2 3 4 4
-> LDM5:  1 3 4 5 6
-> LDM6:  1 3 4 5 6 7
-> LDM7:  1 3 4 5 6 7 8
-> LDM8:  2 3 4 5 6 7 8 8
-> LDM9:  1 3 4 5 6 7 8 9 A
-> LDM10: 1 3 4 5 6 7 8 9 A B
-> LDM11: 1 3 4 5 6 7 8 9 A B C
-> LDM12: 1 3 4 5 6 7 8 9 A B C D
+From: Menglong Dong <dong.menglong@zte.com.cn>
 
-That's rather sad, and does look very much like a hardware bug.
+As Luis Chamberlain suggested, I split the patch:
+[init/initramfs.c: make initramfs support pivot_root]
+(https://lore.kernel.org/linux-fsdevel/20210520154244.20209-1-dong.menglong@zte.com.cn/)
+into three.
 
-The question is what to do about it... there's Linus' "do not break
-userspace" edict and that's exactly what this change has done. So I
-suppose we're going to have to revert the change and put up with
-everything being slightly slower on arm32 than it otherwise would
-have been. That probably means we'll end up with almost every kernel
-tree out there carrying a revert of the revert to work around the
-fact that seemingly NXP broke their hardware - which itself is not
-a good idea. I guess we're just going to have to put up with that.
+The goal of the series patches is to make pivot_root() support initramfs.
+
+In the first patch, I introduce the function ramdisk_exec_exist(), which
+is used to check the exist of 'ramdisk_execute_command' in LOOKUP_DOWN
+lookup mode.
+
+In the second patch, I create a second mount, which is called
+'user root', and make it become the root. Therefore, the root has a
+parent mount, and it can be umounted or pivot_root.
+
+In the third patch, I fix rootfs_fs_type with ramfs, as it is not used
+directly any more, and it make no sense to switch it between ramfs and
+tmpfs, just fix it with ramfs to simplify the code.
+
+
+Changes since V2:
+
+In the first patch, I use vfs_path_lookup() in init_eaccess() to make the
+path lookup follow the mount on '/'. After this, the problem reported by
+Masami Hiramatsu is solved. Thanks for your report :/
+
+
+Changes since V1:
+
+In the first patch, I add the flag LOOKUP_DOWN to init_eaccess(), to make
+it support the check of filesystem mounted on '/'.
+
+In the second patch, I control 'user root' with kconfig option
+'CONFIG_INITRAMFS_USER_ROOT', and add some comments, as Luis Chamberlain
+suggested.
+
+In the third patch, I make 'rootfs_fs_type' in control of
+'CONFIG_INITRAMFS_USER_ROOT'.
+
+
+
+Menglong Dong (3):
+  init/main.c: introduce function ramdisk_exec_exist()
+  init/do_cmounts.c: introduce 'user_root' for initramfs
+  init/do_mounts.c: fix rootfs_fs_type with ramfs
+
+ fs/init.c            |  11 ++++-
+ include/linux/init.h |   5 ++
+ init/do_mounts.c     | 109 +++++++++++++++++++++++++++++++++++++++++++
+ init/do_mounts.h     |  18 ++++++-
+ init/initramfs.c     |  10 ++++
+ init/main.c          |   7 ++-
+ usr/Kconfig          |  10 ++++
+ 7 files changed, 166 insertions(+), 4 deletions(-)
 
 -- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
+2.32.0.rc0
+
