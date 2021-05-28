@@ -2,59 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 007A939486A
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 23:43:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A573C39486E
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 23:44:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229585AbhE1Vok (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 May 2021 17:44:40 -0400
-Received: from fllv0015.ext.ti.com ([198.47.19.141]:40976 "EHLO
+        id S229647AbhE1Vpo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 May 2021 17:45:44 -0400
+Received: from fllv0015.ext.ti.com ([198.47.19.141]:41150 "EHLO
         fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229500AbhE1Voj (ORCPT
+        with ESMTP id S229481AbhE1Vpn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 May 2021 17:44:39 -0400
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 14SLgvli080286;
-        Fri, 28 May 2021 16:42:57 -0500
+        Fri, 28 May 2021 17:45:43 -0400
+Received: from fllv0034.itg.ti.com ([10.64.40.246])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 14SLi5Qm080565;
+        Fri, 28 May 2021 16:44:05 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1622238177;
-        bh=NTS8xGfi85s6wvVH3H4ut0lmVjGNdF1kNZLJAI0SOG0=;
+        s=ti-com-17Q1; t=1622238245;
+        bh=ODd0n3dflzbhY/03B1UThV8AHlU6a5GrjTAri2QThnY=;
         h=From:To:CC:Subject:Date:In-Reply-To:References;
-        b=fJqRQJLPQBrixpcE2q0govjHRSJwSI2YAuDIF6MhZBU7cpDY4XNvJiOtoR7nzS6Oz
-         3JbUngRGVy9mHNl/JpaxctSz836yYYSrJsKwcXqQU/0Pq7cTSYS+kySvY+jSJjncqu
-         BC8j/e2TRx3nFLCrLMKkqoafYJBfgsKjytOpJKRA=
+        b=v8Td6C/LHK/tv/8nsucA+2qaErQIBVpLyLtt2WfaGoIkTfJC0uSHQVqffU6qHQwtG
+         GuWtcgE2BetiiezonCseNmU4RkO2w4YovjQAq9NH1DNsb+W4FDV9Kc32ylTZ0fXuV9
+         CdZcf68UvgaHLk2MbS0TcOvv77szIqW1fwlIs9ZQ=
 Received: from DFLE112.ent.ti.com (dfle112.ent.ti.com [10.64.6.33])
-        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 14SLgvrk121396
+        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 14SLi5xs120696
         (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Fri, 28 May 2021 16:42:57 -0500
-Received: from DFLE115.ent.ti.com (10.64.6.36) by DFLE112.ent.ti.com
+        Fri, 28 May 2021 16:44:05 -0500
+Received: from DFLE110.ent.ti.com (10.64.6.31) by DFLE112.ent.ti.com
  (10.64.6.33) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Fri, 28
- May 2021 16:42:57 -0500
-Received: from lelv0326.itg.ti.com (10.180.67.84) by DFLE115.ent.ti.com
- (10.64.6.36) with Microsoft SMTP Server (version=TLS1_2,
+ May 2021 16:44:03 -0500
+Received: from fllv0040.itg.ti.com (10.64.41.20) by DFLE110.ent.ti.com
+ (10.64.6.31) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
- Frontend Transport; Fri, 28 May 2021 16:42:57 -0500
+ Frontend Transport; Fri, 28 May 2021 16:44:03 -0500
 Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 14SLgv3V058266;
-        Fri, 28 May 2021 16:42:57 -0500
+        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 14SLi3BD064683;
+        Fri, 28 May 2021 16:44:03 -0500
 From:   Nishanth Menon <nm@ti.com>
-To:     Aswath Govindraju <a-govindraju@ti.com>,
-        Andre Przywara <andre.przywara@arm.com>
-CC:     Nishanth Menon <nm@ti.com>, Tero Kristo <kristo@kernel.org>,
-        Grygorii Strashko <grygorii.strashko@ti.com>,
-        Faiz Abbas <faiz_abbas@ti.com>,
+To:     Aswath Govindraju <a-govindraju@ti.com>
+CC:     Nishanth Menon <nm@ti.com>, Kishon Vijay Abraham I <kishon@ti.com>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        <linux-kernel@vger.kernel.org>, Rob Herring <robh+dt@kernel.org>,
+        Tero Kristo <kristo@kernel.org>,
         Lokesh Vutla <lokeshvutla@ti.com>,
-        Rob Herring <robh+dt@kernel.org>, Sekhar Nori <nsekhar@ti.com>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Vignesh Raghavendra <vigneshr@ti.com>
-Subject: Re: [PATCH] arm64: dts: ti: k3-j7200: Remove "#address-cells" property from GPIO DT nodes
-Date:   Fri, 28 May 2021 16:42:56 -0500
-Message-ID: <162223779305.32487.3166148122451417989.b4-ty@ti.com>
+        <devicetree@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>
+Subject: Re: [PATCH] arm64: dts: ti: j7200-main: Enable USB2 PHY RX sensitivity workaround
+Date:   Fri, 28 May 2021 16:44:02 -0500
+Message-ID: <162223819173.1776.3954231528480171021.b4-ty@ti.com>
 X-Mailer: git-send-email 2.31.0
-In-Reply-To: <20210423064758.25520-1-a-govindraju@ti.com>
-References: <20210423064758.25520-1-a-govindraju@ti.com>
+In-Reply-To: <20210512153308.5840-1-a-govindraju@ti.com>
+References: <20210512153308.5840-1-a-govindraju@ti.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
@@ -63,26 +60,17 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 23 Apr 2021 12:17:57 +0530, Aswath Govindraju wrote:
-> GPIO device tree nodes do not have child nodes. Therefore, "#address-cells"
-> property should not be added.
+On Wed, 12 May 2021 21:03:08 +0530, Aswath Govindraju wrote:
+> Enable work around feature built into the controller to address issue with
+> RX Sensitivity for USB2 PHY.
 
 Hi Aswath Govindraju,
 
-I have applied the following to branch ti-k3-next on [1].
-
-NOTE: I know this adds warnings with W=2 build of dtbs, BUT, just like
-xilinx guys[2] and us[33 -> we have already established #address-cells = <0>
-make no sense and dtc is still broken as of next-20210528
-
-So, as far as I am concerned, I am going to keep ignoring these kind of
-warnings - and "To" Andre as well.. hopefully we can get around to cleaning
-this up some day.
-
+I have applied the following to branch ti-k3-dts-next on [1].
 Thank you!
 
-[1/1] arm64: dts: ti: k3-j7200: Remove "#address-cells" property from GPIO DT nodes
-      commit: 6ec8ba764165f6ecb6f6f7efbfd2ec7ad76dedcb
+[1/1] arm64: dts: ti: j7200-main: Enable USB2 PHY RX sensitivity workaround
+      commit: a2894d85f44ba3f2bdf5806c8dc62e2ec40c1c09
 
 
 All being well this means that it will be integrated into the linux-next
@@ -102,8 +90,6 @@ Please add any relevant lists and maintainers to the CCs when replying
 to this mail.
 
 [1] git://git.kernel.org/pub/scm/linux/kernel/git/nmenon/linux.git
-[2] https://lore.kernel.org/linux-devicetree/CAL_Jsq++DyiKG9smQGx9FAPDJnVrezcXNb0Y5uh-5_2GBzTQpQ@mail.gmail.com/
-[3] https://lore.kernel.org/linux-devicetree/20210126163839.57491132@slackpad.fritz.box/
 -- 
 Regards,
 Nishanth Menon
