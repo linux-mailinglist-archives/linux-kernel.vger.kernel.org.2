@@ -2,141 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F0AE8394300
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 14:53:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 17BFF394302
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 14:53:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234618AbhE1MzN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 May 2021 08:55:13 -0400
-Received: from outbound-smtp29.blacknight.com ([81.17.249.32]:38706 "EHLO
-        outbound-smtp29.blacknight.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229552AbhE1MzM (ORCPT
+        id S235297AbhE1MzP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 May 2021 08:55:15 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:33492 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229552AbhE1MzO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 May 2021 08:55:12 -0400
-Received: from mail.blacknight.com (pemlinmail02.blacknight.ie [81.17.254.11])
-        by outbound-smtp29.blacknight.com (Postfix) with ESMTPS id 8FF7ABEBBC
-        for <linux-kernel@vger.kernel.org>; Fri, 28 May 2021 13:53:36 +0100 (IST)
-Received: (qmail 15377 invoked from network); 28 May 2021 12:53:36 -0000
-Received: from unknown (HELO techsingularity.net) (mgorman@techsingularity.net@[84.203.23.168])
-  by 81.17.254.9 with ESMTPSA (AES256-SHA encrypted, authenticated); 28 May 2021 12:53:36 -0000
-Date:   Fri, 28 May 2021 13:53:35 +0100
-From:   Mel Gorman <mgorman@techsingularity.net>
-To:     Vlastimil Babka <vbabka@suse.cz>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Hillf Danton <hdanton@sina.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Michal Hocko <mhocko@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux-MM <linux-mm@kvack.org>
-Subject: Re: [PATCH 6/6] mm/page_alloc: Introduce
- vm.percpu_pagelist_high_fraction
-Message-ID: <20210528125334.GP30378@techsingularity.net>
-References: <20210525080119.5455-1-mgorman@techsingularity.net>
- <20210525080119.5455-7-mgorman@techsingularity.net>
- <018c4b99-81a5-bc12-03cd-662a938ef05a@suse.cz>
+        Fri, 28 May 2021 08:55:14 -0400
+Received: from imap.suse.de (imap-alt.suse-dmz.suse.de [192.168.254.47])
+        (using TLSv1.2 with cipher ECDHE-ECDSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id B2D5B218B3;
+        Fri, 28 May 2021 12:53:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1622206418; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=9CQB6EWZ6xfQcnCaj2E3znJZU9HdjEBg7Abqu1tWIqQ=;
+        b=iV0LyRnJj1ccNBJDvAyJhV75xTk06LrvOshh2YO2gQB8ELXJ8aD0+o7Zl39riZjabuhTed
+        tt6hFo3Rv/ANBzAPsALdB4wsjG2k6DMjjEovLBXnLVTAg60cJjg88RG3IvsfQ5pPeOB/gI
+        77Z+oLTH1NKqSyMbgHvQavPEfxRjQFk=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1622206418;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=9CQB6EWZ6xfQcnCaj2E3znJZU9HdjEBg7Abqu1tWIqQ=;
+        b=cBYwmct3DOk0O8sYKqASgki4a4xQrw9S+2lIhjfcx9d6lv7lP0HpNHVBwiErSG0gX66YL0
+        mAa99vB8lwo7wbDg==
+Received: from imap3-int (imap-alt.suse-dmz.suse.de [192.168.254.47])
+        by imap.suse.de (Postfix) with ESMTP id 9EC1611A98;
+        Fri, 28 May 2021 12:53:38 +0000 (UTC)
+Received: from director2.suse.de ([192.168.254.72])
+        by imap3-int with ESMTPSA
+        id Kxg7JtLnsGDyNQAALh3uQQ
+        (envelope-from <vbabka@suse.cz>); Fri, 28 May 2021 12:53:38 +0000
+Subject: Re: [PATCH v4] mm/page_alloc: bail out on fatal signal during
+ reclaim/compaction retry attempt
+To:     Aaron Tomlin <atomlin@redhat.com>, linux-mm@kvack.org
+Cc:     akpm@linux-foundation.org, mhocko@suse.com, willy@infradead.org,
+        linux-kernel@vger.kernel.org
+References: <YKZObDpduqwWi/Zm@casper.infradead.org>
+ <20210520142901.3371299-1-atomlin@redhat.com>
+From:   Vlastimil Babka <vbabka@suse.cz>
+Message-ID: <c94f4323-1f63-e9f0-6dfd-402cbbc39a87@suse.cz>
+Date:   Fri, 28 May 2021 14:53:38 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-15
-Content-Disposition: inline
-In-Reply-To: <018c4b99-81a5-bc12-03cd-662a938ef05a@suse.cz>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20210520142901.3371299-1-atomlin@redhat.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 28, 2021 at 01:59:37PM +0200, Vlastimil Babka wrote:
-> On 5/25/21 10:01 AM, Mel Gorman wrote:
-> > This introduces a new sysctl vm.percpu_pagelist_high_fraction. It is
-> > similar to the old vm.percpu_pagelist_fraction. The old sysctl increased
-> > both pcp->batch and pcp->high with the higher pcp->high potentially
-> > reducing zone->lock contention. However, the higher pcp->batch value also
-> > potentially increased allocation latency while the PCP was refilled.
-> > This sysctl only adjusts pcp->high so that zone->lock contention is
-> > potentially reduced but allocation latency during a PCP refill remains
-> > the same.
-> > 
-> >   # grep -E "high:|batch" /proc/zoneinfo | tail -2
-> >               high:  649
-> >               batch: 63
-> > 
-> >   # sysctl vm.percpu_pagelist_high_fraction=8
-> >   # grep -E "high:|batch" /proc/zoneinfo | tail -2
-> >               high:  35071
-> >               batch: 63
-> > 
-> >   # sysctl vm.percpu_pagelist_high_fraction=64
-> >               high:  4383
-> >               batch: 63
-> > 
-> >   # sysctl vm.percpu_pagelist_high_fraction=0
-> >               high:  649
-> >               batch: 63
-> > 
-> > Signed-off-by: Mel Gorman <mgorman@techsingularity.net>
-> > Acked-by: Dave Hansen <dave.hansen@linux.intel.com>
+On 5/20/21 4:29 PM, Aaron Tomlin wrote:
+> A customer experienced a low-memory situation and decided to issue a
+> SIGKILL (i.e. a fatal signal). Instead of promptly terminating as one
+> would expect, the aforementioned task remained unresponsive.
 > 
-> Acked-by: Vlastimil Babka <vbabka@suse.cz>
+> Further investigation indicated that the task was "stuck" in the
+> reclaim/compaction retry loop. Now, it does not make sense to retry
+> compaction when a fatal signal is pending.
+> 
+> In the context of try_to_compact_pages(), indeed COMPACT_SKIPPED can be
+> returned; albeit, not every zone, on the zone list, would be considered
+> in the case a fatal signal is found to be pending.
+> Yet, in should_compact_retry(), given the last known compaction result,
+> each zone, on the zone list, can be considered/or checked
+> (see compaction_zonelist_suitable()). For example, if a zone was found
+> to succeed, then reclaim/compaction would be tried again
+> (notwithstanding the above).
+> 
+> This patch ensures that compaction is not needlessly retried
+> irrespective of the last known compaction result e.g. if it was skipped,
+> in the unlikely case a fatal signal is found pending.
+> So, OOM is at least attempted.
+> 
+> Signed-off-by: Aaron Tomlin <atomlin@redhat.com>
+
+Reviewed-by: Vlastimil Babka <vbabka@suse.cz>
+
+> ---
+>  mm/page_alloc.c | 3 +++
+>  1 file changed, 3 insertions(+)
+> 
+> diff --git a/mm/page_alloc.c b/mm/page_alloc.c
+> index aaa1655cf682..b317057ac186 100644
+> --- a/mm/page_alloc.c
+> +++ b/mm/page_alloc.c
+> @@ -4252,6 +4252,9 @@ should_compact_retry(struct alloc_context *ac, int order, int alloc_flags,
+>  	if (!order)
+>  		return false;
+>  
+> +	if (fatal_signal_pending(current))
+> +		return false;
+> +
+>  	if (compaction_made_progress(compact_result))
+>  		(*compaction_retries)++;
+>  
 > 
 
-Thanks.
-
-> Documentation nit below:
-> 
-> > @@ -789,6 +790,25 @@ panic_on_oom=2+kdump gives you very strong tool to investigate
-> >  why oom happens. You can get snapshot.
-> >  
-> >  
-> > +percpu_pagelist_high_fraction
-> > +=============================
-> > +
-> > +This is the fraction of pages in each zone that are allocated for each
-> > +per cpu page list.  The min value for this is 8.  It means that we do
-> > +not allow more than 1/8th of pages in each zone to be allocated in any
-> > +single per_cpu_pagelist.
-> 
-> This, while technically correct (as an upper limit) is somewhat misleading as
-> the limit for a single per_cpu_pagelist also considers the number of local cpus.
-> 
-> >  This entry only changes the value of hot per
-> > +cpu pagelists. User can specify a number like 100 to allocate 1/100th
-> > +of each zone to each per cpu page list.
-> 
-> This is worse. Anyone trying to reproduce this example on a system with multiple
-> cpus per node and checking the result will be puzzled.
-> So I think the part about number of local cpus should be mentioned to avoid
-> confusion.
-> 
-
-Is this any better?
-
-diff --git a/Documentation/admin-guide/sysctl/vm.rst b/Documentation/admin-guide/sysctl/vm.rst
-index e85c2f21d209..2da25735a629 100644
---- a/Documentation/admin-guide/sysctl/vm.rst
-+++ b/Documentation/admin-guide/sysctl/vm.rst
-@@ -793,15 +793,16 @@ why oom happens. You can get snapshot.
- percpu_pagelist_high_fraction
- =============================
- 
--This is the fraction of pages in each zone that are allocated for each
--per cpu page list.  The min value for this is 8.  It means that we do
--not allow more than 1/8th of pages in each zone to be allocated in any
--single per_cpu_pagelist.  This entry only changes the value of hot per
--cpu pagelists. User can specify a number like 100 to allocate 1/100th
--of each zone to each per cpu page list.
--
--The batch value of each per cpu pagelist remains the same regardless of the
--value of the high fraction so allocation latencies are unaffected.
-+This is the fraction of pages in each zone that are can be stored to
-+per-cpu page lists. It is an upper boundary that is divided depending
-+on the number of online CPUs. The min value for this is 8 which means
-+that we do not allow more than 1/8th of pages in each zone to be stored
-+on per-cpu page lists. This entry only changes the value of hot per-cpu
-+page lists. A user can specify a number like 100 to allocate 1/100th of
-+each zone between per-cpu lists.
-+
-+The batch value of each per-cpu page list remains the same regardless of
-+the value of the high fraction so allocation latencies are unaffected.
- 
- The initial value is zero. Kernel uses this value to set the high pcp->high
- mark based on the low watermark for the zone and the number of local
--- 
-Mel Gorman
-SUSE Labs
