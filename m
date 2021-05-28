@@ -2,155 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E7A0B3944A9
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 16:57:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 63D623944AC
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 16:57:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236702AbhE1O6f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 May 2021 10:58:35 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:47191 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236662AbhE1O6K (ORCPT
+        id S236917AbhE1O6o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 May 2021 10:58:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39368 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236600AbhE1O6Q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 May 2021 10:58:10 -0400
-Received: from mail-vs1-f72.google.com ([209.85.217.72])
-        by youngberry.canonical.com with esmtps  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.93)
-        (envelope-from <krzysztof.kozlowski@canonical.com>)
-        id 1lmdub-0004EX-DN
-        for linux-kernel@vger.kernel.org; Fri, 28 May 2021 14:56:33 +0000
-Received: by mail-vs1-f72.google.com with SMTP id q16-20020a67d7900000b0290228198e77b6so1082241vsj.23
+        Fri, 28 May 2021 10:58:16 -0400
+Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B5E0C06138B
         for <linux-kernel@vger.kernel.org>; Fri, 28 May 2021 07:56:33 -0700 (PDT)
+Received: by mail-wr1-x444.google.com with SMTP id m18so3607668wrv.2
+        for <linux-kernel@vger.kernel.org>; Fri, 28 May 2021 07:56:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:from:date:message-id:subject:to
+         :content-transfer-encoding;
+        bh=wB3+kaSOnVVrotHlQpymu40WDaasYhj3FXnraZZPQ9s=;
+        b=IR0+i7p8QIpAkduNrPTTkzGFuD642LWASKa/AN11SbqxdlK7gRQIuidiDAUs2jM59J
+         44uFemmYQV+6EUsG1y2U/QQxtWS8WqlD0F/vV4jhskHE/TNl3hGyaBW6AOXh54rYeFD4
+         4E0qTg16ft9K9ZfyDd1kIRCOw5oi/8pOFRYS2j3ZIXwsXk+M6vYSJmXszuKnaWn0/IbB
+         cAqE7ziVvXnFOK8N0PKRDcm6xALEeH2M5w3BBA5vlJATEw355vO+3bO3ADcYhBUViPCB
+         ozUflAPWQyNkOHaWq9f3uThwAOgcSIwN04v9g33hQ3C+78TF8syYKggS5ZBAGX8d0xa1
+         SwSg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=g1FAyvgyu/qVXx6L5siomBosL8eH4sVo53XTzJaTdO0=;
-        b=dd+sqtGUImeeIND/jF2r938RGUpDK8duoYGAZhlD0SRrbpv7s/+Komu/eJrpkzMM0a
-         5/B/c0JD0EsOCFhbl8ry/WPnND45LyLoEFPDJimminjVgRe/Y8owsltMptAYKk1BC4pM
-         5RPImhC1cSEhvmKJv9o6iT0WsviFOel3EvVR36FzlJGyAwkpY4FjZSpaSKJrVX0wLPoJ
-         NqRxzdZeWLlNT2pyQPzf1vTPFrfBPLPVMWf36k9nEAEhvr1Gg2HnXyqjZjwzteB9+6l9
-         ojp4d+qZbarvmY+bcWBJ6Km9xHO0JY9hyYKBAGBzJ1Ix+3RxWDRIqcv4eHCAhYYtW5y+
-         B4kA==
-X-Gm-Message-State: AOAM532R6pjNE+Lns2JalwopL5cErc6OVPZMcBGX7Vmm4WeqyTtOKaA+
-        CPY+luWtrRntF4X1rIzNPa4Z1vbohSXbS+4C3UTB+gGeiPIC7tsJ6bJOmgpr7C4TKytGzFX+huq
-        1mtW7ZL8ZKChNveyAwKVD8fbdTfdFIgMNUUeSwB6TCA==
-X-Received: by 2002:a67:33cf:: with SMTP id z198mr7481781vsz.26.1622213791431;
-        Fri, 28 May 2021 07:56:31 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxZhcUy/Eyxiw7e6U4bQ98nUY4VVuGrJOajsdjwsm6PruHAj7+t20RSsLFzmTRv6CfhQnNdzA==
-X-Received: by 2002:a67:33cf:: with SMTP id z198mr7481747vsz.26.1622213791169;
-        Fri, 28 May 2021 07:56:31 -0700 (PDT)
-Received: from localhost.localdomain ([45.237.48.3])
-        by smtp.gmail.com with ESMTPSA id c15sm743661vko.15.2021.05.28.07.56.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 28 May 2021 07:56:30 -0700 (PDT)
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Jakub Kicinski <kuba@kernel.org>, linux-nfc@lists.01.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: [PATCH 10/11] nfc: st-nci: drop ftrace-like debugging messages
-Date:   Fri, 28 May 2021 10:55:33 -0400
-Message-Id: <20210528145534.125460-7-krzysztof.kozlowski@canonical.com>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20210528145534.125460-1-krzysztof.kozlowski@canonical.com>
-References: <20210528145330.125055-1-krzysztof.kozlowski@canonical.com>
- <20210528145534.125460-1-krzysztof.kozlowski@canonical.com>
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to:content-transfer-encoding;
+        bh=wB3+kaSOnVVrotHlQpymu40WDaasYhj3FXnraZZPQ9s=;
+        b=K0GsJIDLmi3woz6jYlryq+Rseg3ZDNY1pvmTOVpwoK9P9kInRT7pwD6Y9g2VpLWeT3
+         NtZHMuB1OWMQLBe4l15TS78oCBzMEmgJ6/Qpe8uvOkGXf9RSJEtmg2byw16+fiipZPW9
+         AJ88BVKK1Odidy8Hi+20mU2+eaPRthtZgIaGkbkP8H1bM+htdwW/gUWndP4gKSYzoCpt
+         FIDYNil57a3rcLG1ga6ZI5fSoFlbzbAA7KMSobm30vcB76iZZYFaW+1awkLGiHRPNNwy
+         Fk3280PrbeIOqE8TIBC7VYSXNTyPzKYyiUYpO9FZ0/KRhP4IelxZzcJGOBwqvwT9BkjP
+         UoGg==
+X-Gm-Message-State: AOAM531fh3g1lN6BD+7Q/g1MdiYvR+DgSeYaWLiRMZBc/4eiRtKI7QJd
+        3rzoGd6j+pd9nqpSWqdPviMfO+u71QC15/YhPf8=
+X-Google-Smtp-Source: ABdhPJxbKtvcLGdxu53mn7nWjeEdEX9WlDl4vy+UQtyInIX7NrTF4z21ZSSy6w/IJmEnYXlGUcxDjs4BqqRQuEcrR44=
+X-Received: by 2002:adf:f60c:: with SMTP id t12mr9220212wrp.152.1622213792102;
+ Fri, 28 May 2021 07:56:32 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Received: by 2002:a1c:230e:0:0:0:0:0 with HTTP; Fri, 28 May 2021 07:56:31
+ -0700 (PDT)
+Reply-To: davidbojana20@gmail.com
+From:   david bojana <zeidaniccc5@gmail.com>
+Date:   Fri, 28 May 2021 14:56:31 +0000
+Message-ID: <CAJ2z3_AcSzVebXq6GWC9mpBArcCstNWDx3Wy-ZBG8xDXbs9TGg@mail.gmail.com>
+Subject: 
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Now that the kernel has ftrace, any debugging calls that just do "made
-it to this function!" and "leaving this function!" can be removed.
-Better to use standard debugging tools.
-
-Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
----
- drivers/nfc/st-nci/i2c.c | 5 -----
- drivers/nfc/st-nci/se.c  | 6 ------
- drivers/nfc/st-nci/spi.c | 5 -----
- 3 files changed, 16 deletions(-)
-
-diff --git a/drivers/nfc/st-nci/i2c.c b/drivers/nfc/st-nci/i2c.c
-index 663d1cc19b81..46981405e8b1 100644
---- a/drivers/nfc/st-nci/i2c.c
-+++ b/drivers/nfc/st-nci/i2c.c
-@@ -206,9 +206,6 @@ static int st_nci_i2c_probe(struct i2c_client *client,
- 	struct st_nci_i2c_phy *phy;
- 	int r;
- 
--	dev_dbg(&client->dev, "%s\n", __func__);
--	dev_dbg(&client->dev, "IRQ: %d\n", client->irq);
--
- 	if (!i2c_check_functionality(client->adapter, I2C_FUNC_I2C)) {
- 		nfc_err(&client->dev, "Need I2C_FUNC_I2C\n");
- 		return -ENODEV;
-@@ -261,8 +258,6 @@ static int st_nci_i2c_remove(struct i2c_client *client)
- {
- 	struct st_nci_i2c_phy *phy = i2c_get_clientdata(client);
- 
--	dev_dbg(&client->dev, "%s\n", __func__);
--
- 	ndlc_remove(phy->ndlc);
- 
- 	return 0;
-diff --git a/drivers/nfc/st-nci/se.c b/drivers/nfc/st-nci/se.c
-index 8657e025166f..5fd89f72969d 100644
---- a/drivers/nfc/st-nci/se.c
-+++ b/drivers/nfc/st-nci/se.c
-@@ -470,8 +470,6 @@ int st_nci_disable_se(struct nci_dev *ndev, u32 se_idx)
- {
- 	int r;
- 
--	pr_debug("st_nci_disable_se\n");
--
- 	/*
- 	 * According to upper layer, se_idx == NFC_SE_UICC when
- 	 * info->se_info.se_status->is_uicc_enable is true should never happen
-@@ -496,8 +494,6 @@ int st_nci_enable_se(struct nci_dev *ndev, u32 se_idx)
- {
- 	int r;
- 
--	pr_debug("st_nci_enable_se\n");
--
- 	/*
- 	 * According to upper layer, se_idx == NFC_SE_UICC when
- 	 * info->se_info.se_status->is_uicc_enable is true should never happen.
-@@ -602,8 +598,6 @@ int st_nci_discover_se(struct nci_dev *ndev)
- 	int se_count = 0;
- 	struct st_nci_info *info = nci_get_drvdata(ndev);
- 
--	pr_debug("st_nci_discover_se\n");
--
- 	r = st_nci_hci_network_init(ndev);
- 	if (r != 0)
- 		return r;
-diff --git a/drivers/nfc/st-nci/spi.c b/drivers/nfc/st-nci/spi.c
-index 5f1a2173b2e7..250d56f204c3 100644
---- a/drivers/nfc/st-nci/spi.c
-+++ b/drivers/nfc/st-nci/spi.c
-@@ -216,9 +216,6 @@ static int st_nci_spi_probe(struct spi_device *dev)
- 	struct st_nci_spi_phy *phy;
- 	int r;
- 
--	dev_dbg(&dev->dev, "%s\n", __func__);
--	dev_dbg(&dev->dev, "IRQ: %d\n", dev->irq);
--
- 	/* Check SPI platform functionnalities */
- 	if (!dev) {
- 		pr_debug("%s: dev is NULL. Device is not accessible.\n",
-@@ -274,8 +271,6 @@ static int st_nci_spi_remove(struct spi_device *dev)
- {
- 	struct st_nci_spi_phy *phy = spi_get_drvdata(dev);
- 
--	dev_dbg(&dev->dev, "%s\n", __func__);
--
- 	ndlc_remove(phy->ndlc);
- 
- 	return 0;
--- 
-2.27.0
-
+Hallo, wir informieren Sie freundlich, dass diese E-Mail, die Ihre
+Mailbox erreicht hat, kein Fehler ist, sondern an Sie gerichtet ist.
+Ich habe ein Angebot (7.500.000,00 USD) von meinem verstorbenen
+Kunden, Ingenieur Carlos, der den gleichen Namen tr=C3=A4gt und einst hier
+in Lome Togo gearbeitet und gelebt hat. Mein verstorbener Klient und
+meine Familie waren in einen Autounfall verwickelt, bei dem sie ums
+Leben kamen. Ich werde Sie als n=C3=A4chsten Angeh=C3=B6rigen des Verstorbe=
+nen
+kontaktieren, damit Sie Geld f=C3=BCr die Anspr=C3=BCche erhalten k=C3=B6nn=
+en. Nach
+einer kurzen Antwort werde ich Sie =C3=BCber die M=C3=B6glichkeiten zur
+Umsetzung dieses Testaments informieren. Bitte kontaktieren Sie mich
+zu diesem Thema (davidbojana20@gmail.com).
