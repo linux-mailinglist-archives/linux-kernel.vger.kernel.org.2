@@ -2,125 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 344B4393E45
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 09:57:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F19F7393E48
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 09:58:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235496AbhE1H6o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 May 2021 03:58:44 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:64566 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S232936AbhE1H6m (ORCPT
+        id S235523AbhE1H7r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 May 2021 03:59:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57810 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232936AbhE1H7p (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 May 2021 03:58:42 -0400
-Received: from pps.filterd (m0098413.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 14S7XTko150171;
-        Fri, 28 May 2021 03:56:58 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=I9GSDxLw2OFjMZjZL+4Nucr6EUSKF2Q6aOelYfQQvrI=;
- b=k0Q/N+F3jYfTSDmZwyewZyg7MakiVePgG7qx2BkNMZtyrjqVbgTHeFDBS+42bhkU74WW
- vBOA9cOGvhj3LQ6/Nm19LVxrDOQS8yo3w25JCpZo58s/3AQZZAD72pYcxn1evtXBuPKU
- qrDJXt8iaG3aGaFP94azt53b6fH90CrRK4VJl6PIC+suI2Riugt6DCJQkAinTVPjwZWQ
- dIh37mAa10sND8zLJVawiBcq7YuYZeTOI4gMsSXMftP0/2rmsJyidTY61z49F7V9zhMi
- NBtalImLYaf0nCFxEe8ddBPGBkSGt4QE2nUYaN/gZpKQbL1AH/85VSlaM+1yBh7T+ffx PQ== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 38tuj7hra1-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 28 May 2021 03:56:58 -0400
-Received: from m0098413.ppops.net (m0098413.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 14S7YT46153142;
-        Fri, 28 May 2021 03:56:58 -0400
-Received: from ppma04dal.us.ibm.com (7a.29.35a9.ip4.static.sl-reverse.com [169.53.41.122])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 38tuj7hr9s-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 28 May 2021 03:56:58 -0400
-Received: from pps.filterd (ppma04dal.us.ibm.com [127.0.0.1])
-        by ppma04dal.us.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 14S7mjbs019817;
-        Fri, 28 May 2021 07:56:57 GMT
-Received: from b03cxnp07029.gho.boulder.ibm.com (b03cxnp07029.gho.boulder.ibm.com [9.17.130.16])
-        by ppma04dal.us.ibm.com with ESMTP id 38s1ggw5du-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 28 May 2021 07:56:57 +0000
-Received: from b03ledav005.gho.boulder.ibm.com (b03ledav005.gho.boulder.ibm.com [9.17.130.236])
-        by b03cxnp07029.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 14S7utlJ36831556
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 28 May 2021 07:56:55 GMT
-Received: from b03ledav005.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id C9369BE051;
-        Fri, 28 May 2021 07:56:55 +0000 (GMT)
-Received: from b03ledav005.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 096B1BE04F;
-        Fri, 28 May 2021 07:56:52 +0000 (GMT)
-Received: from localhost.localdomain (unknown [9.199.32.139])
-        by b03ledav005.gho.boulder.ibm.com (Postfix) with ESMTP;
-        Fri, 28 May 2021 07:56:51 +0000 (GMT)
-Subject: Re: [PATCH] perf vendor events: Fix eventcode of power10 json events
-To:     Nageswara Sastry <rnsastry@linux.ibm.com>,
-        "Paul A. Clarke" <pc@us.ibm.com>
-Cc:     acme@kernel.org, maddy@linux.vnet.ibm.com,
-        Athira Rajeev <atrajeev@linux.vnet.ibm.com>,
-        linux-kernel@vger.kernel.org, jolsa@redhat.com, mpe@ellerman.id.au,
-        ravi.bangoria@linux.ibm.com, linux-perf-users@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org
-References: <20210525063723.1191514-1-kjain@linux.ibm.com>
- <20210525144215.GA2135213@li-24c3614c-2adc-11b2-a85c-85f334518bdb.ibm.com>
- <20210525152736.GB2135213@li-24c3614c-2adc-11b2-a85c-85f334518bdb.ibm.com>
- <5960AF7C-64BD-4E57-BA6D-08AA9932B063@linux.ibm.com>
-From:   kajoljain <kjain@linux.ibm.com>
-Message-ID: <da7617f8-050e-c597-ec3d-5e803775252c@linux.ibm.com>
-Date:   Fri, 28 May 2021 13:26:50 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        Fri, 28 May 2021 03:59:45 -0400
+Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com [IPv6:2a00:1450:4864:20::332])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E754C06174A
+        for <linux-kernel@vger.kernel.org>; Fri, 28 May 2021 00:58:10 -0700 (PDT)
+Received: by mail-wm1-x332.google.com with SMTP id z19-20020a7bc7d30000b029017521c1fb75so4041978wmk.0
+        for <linux-kernel@vger.kernel.org>; Fri, 28 May 2021 00:58:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=J8h+yFVl6+gCK72TQ/wrXM/Zn2HyvnRokyOnyrHJCmY=;
+        b=e10BoW9b9Oh70+ncmEXa9Eo2Di9Q6o1FwGRs0YgOfwsVqDuEm3XXLEuroy53nucqde
+         x0OR4DH3FIub0gIu4ItskClAA4PX2VIaTgMZ+PcjATm1Qmsqowcr+M0HngT4nnpN+TY5
+         6X4IoU214k7xsB7ahJeXUNWLeEXYAXEZ+7YlLR6exsMF8JbtuDJZgtgmf816FhllytI9
+         nWxUmefZOA3e66ysnVIuNSVf3RE93nZMAu0vQ0xyYrJzBSmG+i64f/E2uaQ6IG1mR/qa
+         rd6LQ7VUqoO9BXTUeM7QsBGXJG9kSZefIIdbKizXCtcKQ0tJpTqqrowJ1PaFKLHkV9JF
+         iUwg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=J8h+yFVl6+gCK72TQ/wrXM/Zn2HyvnRokyOnyrHJCmY=;
+        b=QZ7mGAAfkxx+lkJ/ipcMmS0RMGBBesOdWQSlO8jvRLTxJIdImMkP2qAAOE2XckLfc3
+         +y/yRWkS21T7wMVXH3ajv5Ce9CZP2mrWmPei6UIj/ZcNw6gSdTFQBL7AUG4dbhgCtMKE
+         U3KBszFz1lW6dB3Y6j6gd3gdbkFPs0pUFw6ZQB2BZIgH9n2IUaimLWyU7EojVbZFAGTG
+         Y3PwLPF+qUXaALhttbxQ6xyGEQGxIHuIOKk/bCcZ84C6pBZhHuvWvO+ftSvx1W/6sXls
+         QBpL4Mwv693fkLKWTQTJanPCrrfJpJV0OG+qX6v9Y/l4u+ztq0zavLztFXcHUGIcuQp4
+         G7+Q==
+X-Gm-Message-State: AOAM530wFzjBOwLTZ5wM4lbObgtBgv3pXvtc9yQEO7cLMyA7LYgYTtxd
+        Y+Bp4Dsv9RoW65LFLD/cx5Xvyg==
+X-Google-Smtp-Source: ABdhPJymjtlrG22+gwhoT1VXIV/D4JKTkswUDAuInEGKJfFD/yuMx3EgDcdgEjS01C4DdE59TX4mYA==
+X-Received: by 2002:a1c:b087:: with SMTP id z129mr11829782wme.67.1622188688963;
+        Fri, 28 May 2021 00:58:08 -0700 (PDT)
+Received: from dell ([91.110.221.223])
+        by smtp.gmail.com with ESMTPSA id a77sm743427wmd.14.2021.05.28.00.58.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 28 May 2021 00:58:08 -0700 (PDT)
+Date:   Fri, 28 May 2021 08:58:06 +0100
+From:   Lee Jones <lee.jones@linaro.org>
+To:     Wolfram Sang <wsa@kernel.org>, linux-kernel@vger.kernel.org,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Srinidhi Kasagar <srinidhi.kasagar@stericsson.com>,
+        Sachin Verma <sachin.verma@st.com>,
+        linux-arm-kernel@lists.infradead.org, linux-i2c@vger.kernel.org
+Subject: Re: [PATCH 01/16] i2c: busses: i2c-nomadik: Fix formatting issue
+ pertaining to 'timeout'
+Message-ID: <20210528075806.GM543307@dell>
+References: <20210520190105.3772683-1-lee.jones@linaro.org>
+ <20210520190105.3772683-2-lee.jones@linaro.org>
+ <YK/yyypWeOnBNc4K@kunai>
 MIME-Version: 1.0
-In-Reply-To: <5960AF7C-64BD-4E57-BA6D-08AA9932B063@linux.ibm.com>
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: ZSdboY5I7P0ZuRjbV59BiYfJTgz4Aqwv
-X-Proofpoint-GUID: ZKg8vDmluwCrGnYCIOS6qImFI73e-oEB
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
- definitions=2021-05-28_03:2021-05-27,2021-05-28 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=999 adultscore=0
- clxscore=1015 bulkscore=0 lowpriorityscore=0 impostorscore=0
- malwarescore=0 mlxscore=0 priorityscore=1501 phishscore=0 suspectscore=0
- spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104190000 definitions=main-2105280049
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <YK/yyypWeOnBNc4K@kunai>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, 27 May 2021, Wolfram Sang wrote:
 
-
-On 5/26/21 11:42 AM, Nageswara Sastry wrote:
+> On Thu, May 20, 2021 at 08:00:50PM +0100, Lee Jones wrote:
+> > Fixes the following W=1 kernel build warning(s):
+> > 
+> >  drivers/i2c/busses/i2c-nomadik.c:184: warning: Function parameter or member 'timeout' not described in 'nmk_i2c_dev'
+> > 
+> > Cc: Linus Walleij <linus.walleij@linaro.org>
+> > Cc: Srinidhi Kasagar <srinidhi.kasagar@stericsson.com>
+> > Cc: Sachin Verma <sachin.verma@st.com>
+> > Cc: linux-arm-kernel@lists.infradead.org
+> > Cc: linux-i2c@vger.kernel.org
+> > Signed-off-by: Lee Jones <lee.jones@linaro.org>
 > 
-> 
->> On 25-May-2021, at 8:57 PM, Paul A. Clarke <pc@us.ibm.com> wrote:
->>>
->> I lost the original message, but Nageswara Sastry said:
->>> 1. Extracted all the 244 events from the patch.
->>> 2. Check them in 'perf list' - all 244 events found
->>> 3. Ran all the events with 'perf stat -e "event name" sleep 1', all ran fine.
->>>    No errors were seen in 'dmesg'
->>
->> I count 255 events.
->>
->> PC
-> 
-> Seems while extracting I filtered out newly added ones, so I got 244(255-11). 
-> Now checked with all 255 events. Thanks for pointing out.
-> 
-> Thanks!!
-> R.Nageswara Sastry
-> 
+> Applied to for-current, thanks!
 
-Hi Paul/Nageswara,
-   Yes we currently have 255 power10 json events which is updated in this patch. 
-Thanks for reviewing the patch.
+Thanks for these buddy.
 
-Arnaldo can you pull this patch if changes looks fine to you.
-
-Thanks,
-Kajol Jain
-
+-- 
+Lee Jones [李琼斯]
+Senior Technical Lead - Developer Services
+Linaro.org │ Open source software for Arm SoCs
+Follow Linaro: Facebook | Twitter | Blog
