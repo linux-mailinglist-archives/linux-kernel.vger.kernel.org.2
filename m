@@ -2,112 +2,177 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0374A3948B5
-	for <lists+linux-kernel@lfdr.de>; Sat, 29 May 2021 00:33:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2245A3948B2
+	for <lists+linux-kernel@lfdr.de>; Sat, 29 May 2021 00:32:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229748AbhE1WeK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 May 2021 18:34:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56126 "EHLO
+        id S229674AbhE1Wd4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 May 2021 18:33:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56066 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229493AbhE1WeJ (ORCPT
+        with ESMTP id S229493AbhE1Wdy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 May 2021 18:34:09 -0400
-Received: from mail-lj1-x22b.google.com (mail-lj1-x22b.google.com [IPv6:2a00:1450:4864:20::22b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67270C061574
-        for <linux-kernel@vger.kernel.org>; Fri, 28 May 2021 15:32:33 -0700 (PDT)
-Received: by mail-lj1-x22b.google.com with SMTP id v5so7095043ljg.12
-        for <linux-kernel@vger.kernel.org>; Fri, 28 May 2021 15:32:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kinvolk.io; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=nbrsHa/rQMz3BdevUmx8wLV3ihqPlTItaOywe0j/k9E=;
-        b=idX417g+x6jiPQOwBGJDlnUAEo09JmsPhMAYuRYmitcN8A130VeL1zBDcQoZd1/Fp6
-         2onD5/XnCLhZXuWZkWhLmRk8R4rgHaJP2BW/SYNDUktfK82DUXDLgEjQQttU2nmUU8Xg
-         e5ppX/dygP8is9w/IHr06JjTGva8IGhxLjwMA=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=nbrsHa/rQMz3BdevUmx8wLV3ihqPlTItaOywe0j/k9E=;
-        b=qxJnfoi2lT+Rzv0OEB5tSc2FzHBCBdgF5wjIdfar7yEJQdDBTLClKIVGgQkhzVELeb
-         R1J+JkCPtVf+MIuXg3gRa3wVq72UHVWpbH82/3PbDTq9RJkFBeuPAvwDLB9spN2joTuo
-         kxmF/kXC7VMRSPZ8QKqSNg25MGwKA+Wd1MToRdXx3b4DJuDqYfdAxg1sOIdnF/n2qx6k
-         Hx9G8fnodT/NcZKZ+Doc2xR6utr6ffMFb/f/Xfjf9s4ZQjg9KaAIl2Rl/9dZtZNt09Oi
-         pq3YusmiK+Kb4Wo+JCSxa4tXW49g2W83R9uPGNWu96SAN8Y3ErwoiWt1hyeNx1qYbfVE
-         N3/g==
-X-Gm-Message-State: AOAM531iYdFVN9bEtEnUeZokSzxw5bS0+lG5oDIhJczgRvkD0r4JxvBL
-        QGxUVnQ3P+SDDQdVNVIDnr3cU3DNW5b3uKIiPnZ4HG/hgQpzLZKW3TQ=
-X-Google-Smtp-Source: ABdhPJzRLaWOCJV49qefgqtgXRstiScihTWBAfCs2EkuxoSRrLUthng2+WJzOtCsDX/F8NWyp1SuZLOukrk0w6yxpp4=
-X-Received: by 2002:a2e:b61b:: with SMTP id r27mr8039309ljn.327.1622241151503;
- Fri, 28 May 2021 15:32:31 -0700 (PDT)
+        Fri, 28 May 2021 18:33:54 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E8B8C061574;
+        Fri, 28 May 2021 15:32:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+        Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:References:Cc:To:
+        Subject:From:Sender:Reply-To:Content-ID:Content-Description;
+        bh=apjM9IBBEivf1N1jq2SLlWpHF+MrhD5Eys7i/QlMi4U=; b=ViYPIrJQwuPweUbjSeuFkRdnAG
+        XgvTs8/lrsyZUGGWtfsZb3p5OaDBl3DAvtW5DmQPo0+JhB/ugDHfhZagPiTJ29loI4yyREIYvlXT5
+        3zZBB8t+1O6e0qR6+0h3WzoezVQaTbuf7ayv8+hs54RgNqxoZa1/ZTvJBcpPoIBFT6syvtjdCnXCx
+        CrQWj/yduAUX535geJsp1KWpvEsAnPZpRMo/g8R2MocUr685KyTjEbeigWNr5lNjV1nVuqUL+35e6
+        e64BTggBxbiKITByK7q8qv3RB4Eu11ea+Sn7VVrsUkqEZyuueVvnNpMCCbGYvSyMHwvluk09TrL+C
+        j2MRRw+g==;
+Received: from [2601:1c0:6280:3f0::ce7d]
+        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1lml1d-001WhY-SD; Fri, 28 May 2021 22:32:17 +0000
+From:   Randy Dunlap <rdunlap@infradead.org>
+Subject: Re: [PATCH] of: Drop reserved mem dependency on DMA_DECLARE_COHERENT
+ and DMA_CMA
+To:     Rob Herring <robh@kernel.org>, devicetree@vger.kernel.org,
+        Frank Rowand <frowand.list@gmail.com>
+Cc:     linux-kernel@vger.kernel.org, Christoph Hellwig <hch@lst.de>
+References: <20210527223217.1572631-1-robh@kernel.org>
+ <e477c3a3-5180-8a5c-7b1d-d429e45d7dc5@infradead.org>
+Message-ID: <93bcda31-00ad-e97f-f700-b84977ede981@infradead.org>
+Date:   Fri, 28 May 2021 15:32:16 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.0
 MIME-Version: 1.0
-References: <20210517193908.3113-1-sargun@sargun.me> <20210517193908.3113-3-sargun@sargun.me>
- <CACaBj2YUiowSKzvh02OjpQNqQViA8N0eyRMimkK=90NagRF40w@mail.gmail.com>
- <202105271137.C491991621@keescook> <CACaBj2aaDkJwDM8ugR5LxWEOho3nZuHjYLLsth3XYjf39tpaQQ@mail.gmail.com>
- <202105281014.EECE3D3048@keescook>
-In-Reply-To: <202105281014.EECE3D3048@keescook>
-From:   Rodrigo Campos <rodrigo@kinvolk.io>
-Date:   Sat, 29 May 2021 00:31:55 +0200
-Message-ID: <CACaBj2aM0FxsTSeCDu+3tfdBY9-rbPaLA88YW3Fg-ZQDJRGoXQ@mail.gmail.com>
-Subject: Re: [PATCH v2 2/4] seccomp: Refactor notification handler to prepare
- for new semantics
-To:     Kees Cook <keescook@chromium.org>
-Cc:     Sargun Dhillon <sargun@sargun.me>,
-        LKML <linux-kernel@vger.kernel.org>, containers@lists.linux.dev,
-        Tycho Andersen <tycho@tycho.pizza>,
-        Andy Lutomirski <luto@kernel.org>,
-        =?UTF-8?Q?Mauricio_V=C3=A1squez_Bernal?= <mauricio@kinvolk.io>,
-        Giuseppe Scrivano <gscrivan@redhat.com>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        =?UTF-8?B?TWlja2HDq2wgU2FsYcO8bg==?= <mic@linux.microsoft.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <e477c3a3-5180-8a5c-7b1d-d429e45d7dc5@infradead.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 28, 2021 at 7:14 PM Kees Cook <keescook@chromium.org> wrote:
->
-> On Fri, May 28, 2021 at 05:27:39PM +0200, Rodrigo Campos wrote:
-> > On Thu, May 27, 2021 at 8:42 PM Kees Cook <keescook@chromium.org> wrote:
-> > >
-> > > On Thu, May 27, 2021 at 01:51:13PM +0200, Rodrigo Campos wrote:
-> > > >
-> > > > Kees, as I mentioned in the linked thread, this issue is present in
-> > > > 5.9+ kernels. Should we add the cc to stable for this patch? Or should
-> > > > we cc to stable the one linked, that just fixes the issue without
-> > > > semantic changes to userspace?
-> > >
-> > > It sounds like the problem is with Go, using addfd, on 5.9-5.13 kernels,
-> > > yes?
-> >
-> > Yes.
-> >
-> > > Would the semantic change be a problem there? (i.e. it sounds like
-> > > the semantic change was fine for the 5.14+ kernels, so I'm assuming it's
-> > > fine for earlier ones too.)
-> >
-> > No, I don't think it will cause any problem.
-> >
-> > > > Just to be clear, the other patch that fixes the problem without
-> > > > userspace visible changes is this:
-> > > > https://lore.kernel.org/lkml/20210413160151.3301-1-rodrigo@kinvolk.io/
-> > >
-> > > I'd prefer to use the now-in-next fix if we can. Is it possible to build
-> > > a test case that triggers the race so we can have some certainty that
-> > > any fix in -stable covers it appropriately?
-> >
-> > I've verified that Sargun's patch also solves the problem in mainline.
-> > I have now also verified that it applies cleany and fixes the issue
-> > for linux-stable/5.10.y and linux-stable/5.12.y too (without the patch
-> > I see the problem, with the patch I don't see it).  5.11 is already
-> > EOL, so I didn't try it (probably will work as well).
->
-> Oh, btw, may I add a Tested-by: from you for this fix?
+On 5/28/21 3:09 PM, Randy Dunlap wrote:
+> On 5/27/21 3:32 PM, Rob Herring wrote:
+>> Reserved memory regions can be used for more than just DMA regions, so
+>> only enabling on DMA_DECLARE_COHERENT (via HAS_DMA) or DMA_CMA is wrong.
+>> This effectively doesn't matter except for the few cases arches select
+>> NO_DMA.
+>>
+>> At least, these users of RESERVEDMEM_OF_DECLARE depend on reserved memory
+>> support:
+>>
+>> arch/riscv/mm/init.c:RESERVEDMEM_OF_DECLARE(elfcorehdr, "linux,elfcorehdr", elfcore_hdr_setup);
+>> drivers/memory/tegra/tegra210-emc-table.c:RESERVEDMEM_OF_DECLARE(tegra210_emc_table, "nvidia,tegra210-emc-table",
+>> drivers/soc/fsl/qbman/bman_ccsr.c:RESERVEDMEM_OF_DECLARE(bman_fbpr, "fsl,bman-fbpr", bman_fbpr);
+>> drivers/soc/fsl/qbman/qman_ccsr.c:RESERVEDMEM_OF_DECLARE(qman_fqd, "fsl,qman-fqd", qman_fqd);
+>> drivers/soc/fsl/qbman/qman_ccsr.c:RESERVEDMEM_OF_DECLARE(qman_pfdr, "fsl,qman-pfdr", qman_pfdr);
+>>
+>> Let's simplify things and enable OF_RESERVED_MEM when OF_EARLY_FLATTREE is
+>> enabled.
+>>
+>> Cc: Christoph Hellwig <hch@lst.de>
+>> Signed-off-by: Rob Herring <robh@kernel.org>
+> 
+> Hi Rob,
+> 
+> I'm OK with this patch, but with or without this patch,
+> compiling kernel/dma/coherent.c without HAS_IOMEM (!)
+> has build errors:
+> 
+> s390-linux-ld: kernel/dma/coherent.o: in function `dma_init_coherent_memory':
+> coherent.c:(.text+0x5ae): undefined reference to `memremap'
+> s390-linux-ld: coherent.c:(.text+0x7a4): undefined reference to `memunmap'
+> s390-linux-ld: kernel/dma/coherent.o: in function `dma_declare_coherent_memory':
+> coherent.c:(.text+0xd84): undefined reference to `memunmap'
+> 
+> 
+> along with a slew of other build errors (arch/s390/, CONFIG_PCI is not set,
+> CONFIG_HAS_IOMEM is not set):
+> 
+> s390-linux-ld: drivers/irqchip/irq-al-fic.o: in function `al_fic_init_dt':
+> irq-al-fic.c:(.init.text+0x6a0): undefined reference to `iounmap'
+> s390-linux-ld: drivers/char/xillybus/xillybus_of.o: in function `xilly_drv_probe':
+> xillybus_of.c:(.text+0x2c8): undefined reference to `devm_platform_ioremap_resource'
+> s390-linux-ld: drivers/pcmcia/cistpl.o: in function `set_cis_map':
+> cistpl.c:(.text+0x87a): undefined reference to `ioremap'
+> s390-linux-ld: cistpl.c:(.text+0x99a): undefined reference to `iounmap'
+> s390-linux-ld: cistpl.c:(.text+0xa34): undefined reference to `iounmap'
+> s390-linux-ld: cistpl.c:(.text+0xaa6): undefined reference to `ioremap'
+> s390-linux-ld: drivers/pcmcia/cistpl.o: in function `release_cis_mem':
+> cistpl.c:(.text+0x2976): undefined reference to `iounmap'
+> s390-linux-ld: drivers/of/address.o: in function `of_iomap':
+> address.c:(.text+0x1f02): undefined reference to `ioremap'
+> s390-linux-ld: drivers/of/address.o: in function `of_io_request_and_map':
+> address.c:(.text+0x2030): undefined reference to `ioremap'
+> 
 
-Oh, right! Yes. Here it goes so it's simpler to add :)
+Oops, sorry. I should have said that this is also with my
+experimental path that I thought you suggested earlier this
+week (although I could have misunderstood you):
 
-Tested-by: Rodrigo Campos <rodrigo@kinvolk.io>
+--- linux-next-20210526.orig/drivers/of/Kconfig
++++ linux-next-20210526/drivers/of/Kconfig
+@@ -64,7 +64,7 @@ config OF_DYNAMIC
+ 
+ config OF_ADDRESS
+ 	def_bool y
+-	depends on !SPARC && (HAS_IOMEM || UML)
++	depends on !SPARC
+ 
+ config OF_IRQ
+ 	def_bool y
+
+[rebuild]
+
+OK, even without this small patch, the result is about the same (just
+a few different function names):
+
+s390-linux-ld: kernel/dma/coherent.o: in function `dma_init_coherent_memory':
+coherent.c:(.text+0x5ae): undefined reference to `memremap'
+s390-linux-ld: coherent.c:(.text+0x7a4): undefined reference to `memunmap'
+s390-linux-ld: kernel/dma/coherent.o: in function `dma_declare_coherent_memory':
+coherent.c:(.text+0xd84): undefined reference to `memunmap'
+
+s390-linux-ld: drivers/irqchip/irq-al-fic.o: in function `al_fic_init_dt':
+irq-al-fic.c:(.init.text+0x64): undefined reference to `of_iomap'
+s390-linux-ld: irq-al-fic.c:(.init.text+0x6a0): undefined reference to `iounmap'
+s390-linux-ld: drivers/char/xillybus/xillybus_of.o: in function `xilly_drv_probe':
+xillybus_of.c:(.text+0x2c8): undefined reference to `devm_platform_ioremap_resource'
+s390-linux-ld: drivers/pcmcia/cistpl.o: in function `set_cis_map':
+cistpl.c:(.text+0x87a): undefined reference to `ioremap'
+s390-linux-ld: cistpl.c:(.text+0x99a): undefined reference to `iounmap'
+s390-linux-ld: cistpl.c:(.text+0xa34): undefined reference to `iounmap'
+s390-linux-ld: cistpl.c:(.text+0xaa6): undefined reference to `ioremap'
+s390-linux-ld: drivers/pcmcia/cistpl.o: in function `release_cis_mem':
+cistpl.c:(.text+0x2976): undefined reference to `iounmap'
 
 
-Thanks!
+>> ---
+>> This is needed to prevent build break on UML with this patch:
+>>
+>> https://lore.kernel.org/lkml/20210527193841.1284169-1-robh@kernel.org/
+>>
+>>  drivers/of/Kconfig | 4 +---
+>>  1 file changed, 1 insertion(+), 3 deletions(-)
+>>
+>> diff --git a/drivers/of/Kconfig b/drivers/of/Kconfig
+>> index 18450437d5d5..3dfeae8912df 100644
+>> --- a/drivers/of/Kconfig
+>> +++ b/drivers/of/Kconfig
+>> @@ -75,9 +75,7 @@ config OF_NET
+>>  	def_bool y
+>>  
+>>  config OF_RESERVED_MEM
+>> -	bool
+>> -	depends on OF_EARLY_FLATTREE
+>> -	default y if DMA_DECLARE_COHERENT || DMA_CMA
+>> +	def_bool OF_EARLY_FLATTREE
+>>  
+>>  config OF_RESOLVE
+>>  	bool
+>>
+> 
+> 
+
+
+-- 
+~Randy
+
