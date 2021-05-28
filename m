@@ -2,105 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B97D23942B9
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 14:42:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A4D03942BC
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 14:42:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235477AbhE1Mnh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 May 2021 08:43:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37330 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230311AbhE1Mnf (ORCPT
+        id S235737AbhE1Mnr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 May 2021 08:43:47 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:42480 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235562AbhE1Mno (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 May 2021 08:43:35 -0400
-Received: from mail-qt1-x82b.google.com (mail-qt1-x82b.google.com [IPv6:2607:f8b0:4864:20::82b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 934B1C061574
-        for <linux-kernel@vger.kernel.org>; Fri, 28 May 2021 05:42:00 -0700 (PDT)
-Received: by mail-qt1-x82b.google.com with SMTP id a15so2595979qta.0
-        for <linux-kernel@vger.kernel.org>; Fri, 28 May 2021 05:42:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=38syo+ldw1QudlXVlbps0ms54ePB01IrTOpMTCdiin4=;
-        b=ooF8ERF7a6r8xrauEEaMoj9ZArPxs7jrtDMzGogESnc6KzPvWLjnBC9jgTJwLBUQD1
-         aNE2iNZk/Chaw98DRWKEdePQJjP/Ivx3zY012Uum3Yhb/wB8Uq0QTR4jLQZp1gN3NyP9
-         ++fTyQp/S+1xDCAiqMxSCWCEpis+FxB+OWQ2C6fQIwpczi94QMxIlwBcfmBOiwypkM0W
-         Pyv1gXsOR2r2LhJCWb+UHhYX10JuBloy857iZzB94ofuZSGXss0S1tND0AqzpftWef8J
-         40Q6gvrX/T/0QHvz9OUFpjHSEgd01GqomC5vy33/7M+LtsNfvhQljuc0KFiYOhYHsdFF
-         q30w==
+        Fri, 28 May 2021 08:43:44 -0400
+Received: from mail-ua1-f72.google.com ([209.85.222.72])
+        by youngberry.canonical.com with esmtps  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.93)
+        (envelope-from <krzysztof.kozlowski@canonical.com>)
+        id 1lmboX-0007wT-Ey
+        for linux-kernel@vger.kernel.org; Fri, 28 May 2021 12:42:09 +0000
+Received: by mail-ua1-f72.google.com with SMTP id y10-20020ab025ca0000b0290221adb2995aso1858680uan.8
+        for <linux-kernel@vger.kernel.org>; Fri, 28 May 2021 05:42:09 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=38syo+ldw1QudlXVlbps0ms54ePB01IrTOpMTCdiin4=;
-        b=CC/IYU9QK8A5ZWfcq4R7YVlNpjeR3UQk2lTiWtW0oHyyUjY26rs0VUhMgAz6sOESIc
-         s7035PjWPBxe1rZRadx6f2bQKntrlCvj4LjmB1s20Jw2N++AE0QmqtMMFECVI8cEJxlF
-         4GhPE2hhCy6XlqtKHugbDYeoTZ0X20rYyFiCGsLB3HA2mJRGhgmLGLyi8mldW7Z7y47j
-         9y8ta7obbsDK8B9b5FaVAfJ03Vy+n6Sg0eBo52aF/GXG5/9Aq1F/YffprMTBO8hlp/Qz
-         rG/HvjFg7AnEPwmIUKbvExTU+65eof55+aSwuqBpC3pVlGgXQc4CUnNyWRo6t/9gcCS+
-         4sCA==
-X-Gm-Message-State: AOAM533o/rOa/vSAj6GCYDsGhYSdVGm/nV9woCTLXNDk09Cqisg933dO
-        ePBggntMlLAdzPWzQxaKEw9EN4X00eOcWg==
-X-Google-Smtp-Source: ABdhPJx0XdIKvgVkkQdcEeX3hjpMCqmMQ8Ir8T1hCTh8diPdnphWR3PsUsIgV6qkehzFoZMWRUdLow==
-X-Received: by 2002:aed:210f:: with SMTP id 15mr3247806qtc.149.1622205719777;
-        Fri, 28 May 2021 05:41:59 -0700 (PDT)
-Received: from localhost.localdomain (ec2-35-169-212-159.compute-1.amazonaws.com. [35.169.212.159])
-        by smtp.gmail.com with ESMTPSA id v8sm3319707qkg.102.2021.05.28.05.41.58
+        h=x-gm-message-state:from:to:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=rFH/OkxJX+1bf3RA1MwdAa7s8lhCFQ3NsGd/fHMtrBU=;
+        b=O1NxfxsNQakWsWqh638bUFtxKZy4rSAtapEE4V/KBocR5zXiY5KJOz2zS5Y15u22Ia
+         Re9lVjrztrm8CiW4cxXYs5PvBZcO4FrlSCCSqVwaK8o/VKflhrbpx8Xo4VgxpkX4p27+
+         8kQ6UXon2cz5PUNN6KVnJIsNKbDPTo/FL84Cazp88YTlzzIRR0awFePLZJkcRR/ku1WR
+         kvB0Q4CEf2lbHkCgMwx/ZN5lEdx1d5FZn/DiP/3AK1/DhE3RlX0/5y1Ua8jSDntDlvKl
+         /iFOomYeO/7zZ7euDbVeESetIXZY4CRzILB+m7RQ/owESAfaSFoNwHjJ+u5y4b7yCGzN
+         t8aw==
+X-Gm-Message-State: AOAM533qwesO5md//qYyEckWLAgk9kvSLtJFD/KXmesAu011uorjs6CW
+        w5UMWU2Ofpptn2R5Rah3W6o+0r3AipPhT/aZcZZVRhu3zdkdUao9TezYazRr4IGGHgh5QXCXbNS
+        HLcOX2L+ZCSgM4yTVz/pi8mXNmntESEtv1j5dGAI5DA==
+X-Received: by 2002:a05:6102:5d0:: with SMTP id v16mr7076733vsf.31.1622205728643;
+        Fri, 28 May 2021 05:42:08 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxEVlZcqgPeeaF4dSVhZblaqkKUAk6rrB1qIKVtSVM+CD1gahWuLY4xUCoT2Axwd6Dn2W6LIg==
+X-Received: by 2002:a05:6102:5d0:: with SMTP id v16mr7076718vsf.31.1622205728478;
+        Fri, 28 May 2021 05:42:08 -0700 (PDT)
+Received: from localhost.localdomain ([45.237.48.6])
+        by smtp.gmail.com with ESMTPSA id b35sm782328uae.20.2021.05.28.05.42.07
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 28 May 2021 05:41:59 -0700 (PDT)
-From:   SeongJae Park <sj38.park@gmail.com>
-X-Google-Original-From: SeongJae Park <sjpark@amazon.de>
-To:     ksummit-discuss@lists.linux.dev
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Subject: [TECH TOPIC] Writing a fine-grained access pattern oriented lightweight kernel module using DAMON/DAMOS in 10 minutes
-Date:   Fri, 28 May 2021 12:41:25 +0000
-Message-Id: <20210528124125.9051-1-sjpark@amazon.de>
-X-Mailer: git-send-email 2.17.1
+        Fri, 28 May 2021 05:42:07 -0700 (PDT)
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, linux-nfc@lists.01.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH 01/12] nfc: fdp: correct kerneldoc for structure
+Date:   Fri, 28 May 2021 08:41:49 -0400
+Message-Id: <20210528124200.79655-1-krzysztof.kozlowski@canonical.com>
+X-Mailer: git-send-email 2.27.0
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: SeongJae Park <sjpark@amazon.de>
+Since structure comments are not kerneldoc, remove the double ** to fix
+W=1 warnings:
 
-DAMON and DAMOS
----------------
+    warning: This comment starts with '/**', but isn't a kernel-doc comment.
 
-DAMON[1] is a framework for general data access monitoring of kernel
-subsystems.  It provides best-effort high quality monitoring results while
-incurring only minimal and upper-bounded overhead, due to its practical
-overhead-accuracy tradeoff mechanism.  On a production machine utilizing 70 GB
-memory, it can repeatedly scan accesses to the whole memory for every 5ms,
-while consuming only 1% single CPU time.
+Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+---
+ drivers/nfc/fdp/fdp.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-On top of it, a data access pattern-oriented memory management engine called
-DAMON-based Operation Schemes (DAMOS) is implemented.  It allows clients to
-implement their access pattern oriented memory management logic with very
-simple scheme descriptions.  We implemented fine-grained access-aware THP and
-proactive reclamation using this engine in three lines of scheme and achieved
-remarkable improvements[2].
+diff --git a/drivers/nfc/fdp/fdp.c b/drivers/nfc/fdp/fdp.c
+index fe0719ed81a0..125d71c27b8b 100644
+--- a/drivers/nfc/fdp/fdp.c
++++ b/drivers/nfc/fdp/fdp.c
+@@ -149,7 +149,7 @@ static void fdp_nci_send_patch_cb(struct nci_dev *ndev)
+ 	wake_up(&info->setup_wq);
+ }
+ 
+-/**
++/*
+  * Register a packet sent counter and a callback
+  *
+  * We have no other way of knowing when all firmware packets were sent out
+@@ -167,7 +167,7 @@ static void fdp_nci_set_data_pkt_counter(struct nci_dev *ndev,
+ 	info->data_pkt_counter_cb = cb;
+ }
+ 
+-/**
++/*
+  * The device is expecting a stream of packets. All packets need to
+  * have the PBF flag set to 0x0 (last packet) even if the firmware
+  * file is segmented and there are multiple packets. If we give the
+-- 
+2.27.0
 
-As of this writing (2021-05-28), the code is not in the mainline but available
-at its development tree[3], and regularly posted to LKML as patchsets[4,5,6].
-Nevertheless, the code has already merged in the public Amazon Linux kernel
-trees[7,8], and all Amazon Linux users can use DAMON/DAMOS off the box. We are
-also supporting the two latest upstream LTS stable kernels[9,10].
-
-Agenda
-------
-
-In this talk, I will briefly introduce DAMON/DAMOS and present how you can
-write a fine-grained data access pattern oriented lightweight kernel module on
-top of DAMON/DAMOS.  With the talk, I will write an example module and evaluate
-its performance on live.  A data access-aware proactive reclamation kernel
-module for production use will also introduced as a use case.  After that, I
-will discuss my future plans for improving DAMON and improving other kernel
-subsystems using DAMON/DAMOS.
-
-[1] https://damonitor.github.io (https://damonitor.github.io/)
-[2] https://damonitor.github.io/doc/html/latest/vm/damon/eval.html
-[3] https://https://github.com/sjp38/linux/tree/damon/master (https://https//github.com/sjp38/linux/tree/damon/master)
-[4] https://lore.kernel.org/linux-mm/20210520075629.4332-1-sj38.park@gmail.com/
-[5] https://lore.kernel.org/linux-mm/20201216084404.23183-1-sjpark@amazon.com/
-[6] https://lore.kernel.org/linux-mm/20201216094221.11898-1-sjpark@amazon.com/
-[7] https://github.com/amazonlinux/linux/tree/amazon-5.4.y/master/mm/damon
-[8] https://github.com/amazonlinux/linux/tree/amazon-5.10.y/master/mm/damon
-[9] https://github.com/sjp38/linux/tree/damon/for-v5.4.y
-[10] https://github.com/sjp38/linux/tree/damon/for-v5.10.y
