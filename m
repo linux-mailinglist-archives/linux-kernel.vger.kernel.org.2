@@ -2,104 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 69B01393B51
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 04:10:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E5FEB393B53
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 04:13:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236026AbhE1CMJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 May 2021 22:12:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37482 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234834AbhE1CMF (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 May 2021 22:12:05 -0400
-Received: from mail-pg1-x530.google.com (mail-pg1-x530.google.com [IPv6:2607:f8b0:4864:20::530])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42F03C061574
-        for <linux-kernel@vger.kernel.org>; Thu, 27 May 2021 19:10:30 -0700 (PDT)
-Received: by mail-pg1-x530.google.com with SMTP id q15so1372191pgg.12
-        for <linux-kernel@vger.kernel.org>; Thu, 27 May 2021 19:10:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-transfer-encoding;
-        bh=v+SsYqHRR/RJ2vuPiv+eqG29wbplMivXPG8IiOrrLnM=;
-        b=sIbw/QaVCgWRNBJNdHkNrAqeT3Pjq7PWyq5SAhXrEPVzo0yXmysC4kjRVwzApIyJNA
-         xWJ4kS8DWQ3xk4FFLqulePDZ7gqBjqHDYjEeXKehf3PKj47PiCEQRycUK0FwHj+KBEGF
-         TpcfEySwaXHWINwsdTgw4rRtnZsG7qzRS/u3k8QNdcn9cMUxNwyqnWEwLYjyp2y3cHoO
-         jxRsufKBHgwGNPLqnTgA9bal4bY/uL6aBR/rBrX9+MrLVwhkwrSCG+SPb1Z0/4oisNLA
-         noTSOmgrPp/3IvAkYPbA+9ra9kjDfiqZO5a/dKYb/Sx3J5Y7culyEvsso+gkJBy6NTBR
-         Y8EQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding;
-        bh=v+SsYqHRR/RJ2vuPiv+eqG29wbplMivXPG8IiOrrLnM=;
-        b=bFgVoTffRb4sXY1h8Lg21A/Jhl3hCvBQBD9gb3C4sUNfNh3pSZLUg/QXbRF5UAZP7d
-         abPgywG3m2doHFqIFNqdeBI4kqfxDQlm7zxR4hHMr2LZe5TraFKltsVsogVpkkyQ0yzR
-         gBPHcp4gqKpkYvRdpEDqatHNUHp7fkipOo0L5YGxDMcnnLxpmzBvZA530mVSQZrqOeFr
-         RWetHgMcTZrjVbNi6hDrwi3Idp+Lm2H9X+zxOB0TSlvrn1gdis0EbQXxYKVkzh9Vu15c
-         1ZyBo99ilQAZjZ5xiK0/rLMWHkaaTC25ye2PikhEk59aktKT/dJDEWgLNNZFXblf2uqO
-         mU/A==
-X-Gm-Message-State: AOAM531du9BYLH8pF/F2QoiZmZ6pMvTzQYVB6cEhgeJvGOI4WiEylCM9
-        URdEyuAzAXo5KdqRO9z4QMNEPw==
-X-Google-Smtp-Source: ABdhPJxQPhDpq0Ub4uva2R6FuXj7T55eOSlSy33otSXAEV5oqDlsIzviCKGT+I9tdtgTwgix2LBYLg==
-X-Received: by 2002:a62:148c:0:b029:2cf:3c2d:7ba with SMTP id 134-20020a62148c0000b02902cf3c2d07bamr1399070pfu.79.1622167829740;
-        Thu, 27 May 2021 19:10:29 -0700 (PDT)
-Received: from [10.86.119.121] ([139.177.225.240])
-        by smtp.gmail.com with ESMTPSA id l1sm2829449pjt.40.2021.05.27.19.10.25
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 27 May 2021 19:10:29 -0700 (PDT)
-Subject: Re: [External] Re: [PATCH] fs/proc/kcore.c: add mmap interface
-To:     Andrew Morton <akpm@linux-foundation.org>, adobriyan@gmail.com,
-        rppt@kernel.org
-Cc:     linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        songmuchun@bytedance.com, zhouchengming@bytedance.com,
-        chenying.kernel@bytedance.com, zhengqi.arch@bytedance.com
-References: <20210526075142.9740-1-zhoufeng.zf@bytedance.com>
- <20210526173953.49fb3dc48c0f2a8b3c31fe2b@linux-foundation.org>
- <d71a4ffa-f21e-62f5-7fa6-83ca14b3f05b@bytedance.com>
- <20210527153055.aefeee8d8385da8152bdbacc@linux-foundation.org>
-From:   zhoufeng <zhoufeng.zf@bytedance.com>
-Message-ID: <d36b56ca-6405-d7dc-a531-fcbe0acc425d@bytedance.com>
-Date:   Fri, 28 May 2021 10:10:23 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.10.2
+        id S235925AbhE1COy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 May 2021 22:14:54 -0400
+Received: from terminus.zytor.com ([198.137.202.136]:47805 "EHLO
+        mail.zytor.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229836AbhE1COw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 27 May 2021 22:14:52 -0400
+Received: from hanvin-mobl2.amr.corp.intel.com (fmdmzpr04-ext.fm.intel.com [192.55.55.39])
+        (authenticated bits=0)
+        by mail.zytor.com (8.16.1/8.15.2) with ESMTPSA id 14S2Cqai1217795
+        (version=TLSv1.3 cipher=TLS_AES_128_GCM_SHA256 bits=128 verify=NO);
+        Thu, 27 May 2021 19:12:53 -0700
+DKIM-Filter: OpenDKIM Filter v2.11.0 mail.zytor.com 14S2Cqai1217795
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zytor.com;
+        s=2021042801; t=1622167974;
+        bh=FOpZQZWIKm4fpWEVe6TLHGEjmvOF63tMJaRYeEveBSM=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=l5QhUJ97oAQc2Lrbrozgh+UVrvgUWNPBAhjHpk2HMB1L+cn4Ayb7L+1U/0Sy8YnRT
+         0XfnaVYG6JYG9ikpkQw8doOkamNqNPN+6ZzRrPXOtluH/3iwj4MmvG2ZWF9IlnjXR3
+         zQV19QRlY5JBksMzApO9tlc9FZ1rxozewJS6ddeNWGY82N7iFc4qWJ+VOQtMkaK/ce
+         LJvaPCpBXg5jHecRfA5lQpnn9yQBd0tyuilagG+z0VUVgWk0e1lV90fvns1FXYR3yC
+         kKLB52C3wwb9kqEZItgUvKW7U+8R25vgrUpiQzGnrAP4sIqq3OYG8kEA31GGsCFkqC
+         emqYI3XVy7ZOg==
+Subject: Re: [PATCH] x86/Kconfig: decrease maximum of X86_RESERVE_LOW to 512K
+To:     Borislav Petkov <bp@alien8.de>, Mike Rapoport <rppt@kernel.org>
+Cc:     Ingo Molnar <mingo@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        untaintableangel@hotmail.co.uk, x86@kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20210526081100.12239-1-rppt@kernel.org>
+ <YK4LGUDWXJWOp7IR@zn.tnic> <YK53kWHb4cPeeHsd@kernel.org>
+ <YK6QFLUoPZ7btQfH@zn.tnic>
+From:   "H. Peter Anvin" <hpa@zytor.com>
+Message-ID: <f7525409-3987-f79d-9f52-71f6c0231491@zytor.com>
+Date:   Thu, 27 May 2021 19:12:51 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
 MIME-Version: 1.0
-In-Reply-To: <20210527153055.aefeee8d8385da8152bdbacc@linux-foundation.org>
-Content-Type: text/plain; charset=gbk; format=flowed
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <YK6QFLUoPZ7btQfH@zn.tnic>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-ÔÚ 2021/5/28 ÉÏÎç6:30, Andrew Morton Ð´µÀ:
-> On Thu, 27 May 2021 14:13:09 +0800 zhoufeng <zhoufeng.zf@bytedance.com> wrote:
+On 5/26/21 11:14 AM, Borislav Petkov wrote:
+> On Wed, May 26, 2021 at 07:30:09PM +0300, Mike Rapoport wrote:
+>> We can restore that behaviour, but it feels like cheating to me. We let
+>> user say "Hey, don't touch low memory at all", even though we know we must
+>> use at least some of it. And then we sneak in an allocation under 640K
+>> despite user's request not to use it.
 > 
->>> I'm surprised that it makes this much difference.  Has DRGN been fully
->>> optimised to minimise the amount of pread()ing which it does?  Why does
->>> it do so much reading?
->> DRGN is a tool similar to Crash, but much lighter. It allows users to
->> obtain kernel data structures from Python scripts. Based on this, we
->> intend to use DRGN for kernel monitoring. So we used some pressure test
->> scripts to test the loss of monitoring.
->> Monitoring is all about getting current real-time data, so every time
->> DRGN tries to get kernel data, it needs to read /proc/kcore. In my
->> script, I tried to loop 1000 times to obtain the information of all the
->> processes in the machine, in order to construct a scene where kernel
->> data is frequently read. So, the frequency in the default version of
->> kcore, pread is very high. In view of this situation, our optimization
->> idea is to reduce the number of context switches as much as possible
->> under the scenario of frequent kernel data acquisition, to reduce the
->> performance loss to a minimum, and then move the monitoring system to
->> the production environment.
+> Sure but how are we going to tell the user that if we don't sneak that
+> allocation, we won't boot at all. I believe user would kinda like the
+> box to boot still, no? :-)
 > 
-> Why would a pread() cause a context switch?
+> Yeah, you have that now:
+> 
+> +         Note, that a part of the low memory range is still required for
+> +         kernel to boot properly.
+> 
+> but then why is 512 ok? And why was 640K the upper limit?
+> 
+> Looking at:
+> 
+> d0cd7425fab7 ("x86, bios: By default, reserve the low 64K for all BIOSes")
+> 
+> and reading that bugzilla
+> 
+> https://bugzilla.kernel.org/show_bug.cgi?id=16661
+> 
+> it sounds like it is the amount of memory where BIOS could put crap in.
+> 
+> Long story short, we reserve the first 64K by default so if someone
+> reserves the total range of 640K the early code could probably say
+> something like
+> 
+> "adjusting upper reserve limit to X for the real-time trampoline"
+> 
+> when the upper limit is too high so that a trampoline can't fit...
+> 
+> Which is basically what your solution does...
+> 
+> But then the previous behavior used to work everywhere so if it is only
+> cheating, I don't mind doing that as long as boxes keep on booting.
+> 
+> Or am I missing an aspect?
 > 
 
-Sorry, my English is poor. I mean trigger the system call.
+BIOSes have been known to clobber more than 64K. They aren't supposed to
+clobber any.
 
->> After running for a long time in a
->> production environment, the number of kernel data reads was added as
->> time went on, and the pread number also increased. If users use mmap,
->> it's once for all.
+640K is the limit because that is the address of the EGA/VGA frame
+buffer. In the words of Bill Gates "640K ought to be enough for anyone."
+
+	-hpa
