@@ -2,84 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 622D8394015
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 11:34:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BE0A939401B
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 11:37:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235997AbhE1JgO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 May 2021 05:36:14 -0400
-Received: from mga17.intel.com ([192.55.52.151]:6659 "EHLO mga17.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235526AbhE1JgJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 May 2021 05:36:09 -0400
-IronPort-SDR: /SaKLMw/jUIwJNaJK3b5Oy3fFjQRTj3zm/p1Wg4Lq5xMnH4NWBD7poX1w/po088D5ueFsWr35f
- mZwCeaiv3peA==
-X-IronPort-AV: E=McAfee;i="6200,9189,9997"; a="183267172"
-X-IronPort-AV: E=Sophos;i="5.83,229,1616482800"; 
-   d="scan'208";a="183267172"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 May 2021 02:34:32 -0700
-IronPort-SDR: uB+8xYzoqucfKoRlgcPZPfMoWDR0sWUKEK/wrZ/nqFlwTj+F6xJJ7fiV6iEKowckLbTzfDkcjQ
- zs+Dt78+3+Dw==
-X-IronPort-AV: E=Sophos;i="5.83,229,1616482800"; 
-   d="scan'208";a="443938483"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 May 2021 02:34:29 -0700
-Received: from andy by smile with local (Exim 4.94)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1lmYss-00FHPQ-JM; Fri, 28 May 2021 12:34:26 +0300
-Date:   Fri, 28 May 2021 12:34:26 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Wolfram Sang <wsa@kernel.org>, Hans de Goede <hdegoede@redhat.com>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        linux-i2c@vger.kernel.org, linux-acpi@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
-        linux-staging@lists.linux.dev,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>
-Subject: Re: [PATCH v1 1/6] i2c: acpi: Export i2c_acpi_find_client_by_adev()
- for users
-Message-ID: <YLC5IstyPFQA6mBp@smile.fi.intel.com>
-References: <20210526124322.48915-1-andriy.shevchenko@linux.intel.com>
- <YLAAedlB6UaJQh0X@kunai>
- <YLC3HzCUhEYmfckj@kroah.com>
+        id S235292AbhE1Jij (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 May 2021 05:38:39 -0400
+Received: from szxga08-in.huawei.com ([45.249.212.255]:2333 "EHLO
+        szxga08-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229774AbhE1JiV (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 28 May 2021 05:38:21 -0400
+Received: from dggeml711-chm.china.huawei.com (unknown [172.30.72.54])
+        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4Frzwm4fBvz1BFYK;
+        Fri, 28 May 2021 17:32:08 +0800 (CST)
+Received: from dggpemm500006.china.huawei.com (7.185.36.236) by
+ dggeml711-chm.china.huawei.com (10.3.17.122) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2176.2; Fri, 28 May 2021 17:36:44 +0800
+Received: from [127.0.0.1] (10.174.177.72) by dggpemm500006.china.huawei.com
+ (7.185.36.236) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Fri, 28 May
+ 2021 17:36:44 +0800
+Subject: Re: [PATCH 1/1] drm/i915/hdcp: Simplify code in
+ intel_hdcp_auth_downstream()
+To:     Jani Nikula <jani.nikula@linux.intel.com>,
+        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        intel-gfx <intel-gfx@lists.freedesktop.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+References: <20210527090421.9172-1-thunder.leizhen@huawei.com>
+ <87sg28a3xg.fsf@intel.com>
+From:   "Leizhen (ThunderTown)" <thunder.leizhen@huawei.com>
+Message-ID: <86f64463-87df-9e62-a5ea-f411fcb54c19@huawei.com>
+Date:   Fri, 28 May 2021 17:36:43 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YLC3HzCUhEYmfckj@kroah.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+In-Reply-To: <87sg28a3xg.fsf@intel.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.177.72]
+X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
+ dggpemm500006.china.huawei.com (7.185.36.236)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 28, 2021 at 11:25:51AM +0200, Greg Kroah-Hartman wrote:
-> On Thu, May 27, 2021 at 10:26:33PM +0200, Wolfram Sang wrote:
-> > On Wed, May 26, 2021 at 03:43:17PM +0300, Andy Shevchenko wrote:
-> > > There is at least one user that will gain from the
-> > > i2c_acpi_find_client_by_adev() being exported.
-> > 
-> > No objections per se. But as the user is in staging, I want to ask if
-> > the use there is really a solution we would also accept outside of
-> > staging? Or is it a hack?
+
+
+On 2021/5/27 18:04, Jani Nikula wrote:
+> On Thu, 27 May 2021, Zhen Lei <thunder.leizhen@huawei.com> wrote:
+>> If intel_hdcp_validate_v_prime() has been successful within the allowed
+>> number of tries, we can directly call drm_dbg_kms() and "goto out" without
+>> jumping out of the loop and repeatedly judging whether the operation is
+>> successful. This can help us reduce an unnecessary if judgment. And it's
+>> a little clearer to read.
 > 
-> staging drivers should be self-contained, do not accept code in the core
-> kernel that only is used by staging drivers.
+> Generally I think the "happy day scenario" should be at the topmost
+> indentation level and not buried in the ifs with a goto exit.
+
+for (xxx) {
+   if (a == b)
+       return found;
+}
+
+At least this way of writing is common.
+
+
 > 
-> So I would not recommend this be accepted at this point in time.
-
-Fair enough.
-
-> Andy, work to get the driver out of staging first before doing stuff
-> like this.
-
-Okay, I'll drop first one and patches related to it in the v2.
-It should bring us closer to the mentioned point.
-
-Thanks for clarification!
-
--- 
-With Best Regards,
-Andy Shevchenko
-
+> BR,
+> Jani.
+> 
+>>
+>> No functional change.
+>>
+>> Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
+>> ---
+>>  drivers/gpu/drm/i915/display/intel_hdcp.c | 24 ++++++++++-------------
+>>  1 file changed, 10 insertions(+), 14 deletions(-)
+>>
+>> diff --git a/drivers/gpu/drm/i915/display/intel_hdcp.c b/drivers/gpu/drm/i915/display/intel_hdcp.c
+>> index d8570e14fe60..c32a854eda66 100644
+>> --- a/drivers/gpu/drm/i915/display/intel_hdcp.c
+>> +++ b/drivers/gpu/drm/i915/display/intel_hdcp.c
+>> @@ -663,13 +663,13 @@ int intel_hdcp_auth_downstream(struct intel_connector *connector)
+>>  
+>>  	ret = shim->read_ksv_fifo(dig_port, num_downstream, ksv_fifo);
+>>  	if (ret)
+>> -		goto err;
+>> +		goto out;
+>>  
+>>  	if (drm_hdcp_check_ksvs_revoked(&dev_priv->drm, ksv_fifo,
+>>  					num_downstream) > 0) {
+>>  		drm_err(&dev_priv->drm, "Revoked Ksv(s) in ksv_fifo\n");
+>>  		ret = -EPERM;
+>> -		goto err;
+>> +		goto out;
+>>  	}
+>>  
+>>  	/*
+>> @@ -680,20 +680,16 @@ int intel_hdcp_auth_downstream(struct intel_connector *connector)
+>>  		ret = intel_hdcp_validate_v_prime(connector, shim,
+>>  						  ksv_fifo, num_downstream,
+>>  						  bstatus);
+>> -		if (!ret)
+>> -			break;
+>> -	}
+>> -
+>> -	if (i == tries) {
+>> -		drm_dbg_kms(&dev_priv->drm,
+>> -			    "V Prime validation failed.(%d)\n", ret);
+>> -		goto err;
+>> +		if (!ret) {
+>> +			drm_dbg_kms(&dev_priv->drm,
+>> +				    "HDCP is enabled (%d downstream devices)\n",
+>> +				    num_downstream);
+>> +			goto out;
+>> +		}
+>>  	}
+>>  
+>> -	drm_dbg_kms(&dev_priv->drm, "HDCP is enabled (%d downstream devices)\n",
+>> -		    num_downstream);
+>> -	ret = 0;
+>> -err:
+>> +	drm_dbg_kms(&dev_priv->drm, "V Prime validation failed.(%d)\n", ret);
+>> +out:
+>>  	kfree(ksv_fifo);
+>>  	return ret;
+>>  }
+> 
 
