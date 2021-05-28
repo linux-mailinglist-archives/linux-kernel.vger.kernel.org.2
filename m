@@ -2,111 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D0472393C12
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 05:48:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AB749393C17
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 05:51:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236328AbhE1Dt6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 May 2021 23:49:58 -0400
-Received: from conuserg-08.nifty.com ([210.131.2.75]:46138 "EHLO
-        conuserg-08.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234250AbhE1Dt5 (ORCPT
+        id S235325AbhE1DxE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 May 2021 23:53:04 -0400
+Received: from conuserg-11.nifty.com ([210.131.2.78]:51084 "EHLO
+        conuserg-11.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234169AbhE1DxC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 May 2021 23:49:57 -0400
+        Thu, 27 May 2021 23:53:02 -0400
 Received: from localhost.localdomain (133-32-232-101.west.xps.vectant.ne.jp [133.32.232.101]) (authenticated)
-        by conuserg-08.nifty.com with ESMTP id 14S3lbQS031425;
-        Fri, 28 May 2021 12:47:38 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conuserg-08.nifty.com 14S3lbQS031425
+        by conuserg-11.nifty.com with ESMTP id 14S3nfb7025846;
+        Fri, 28 May 2021 12:49:42 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conuserg-11.nifty.com 14S3nfb7025846
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1622173658;
-        bh=ouG2b1fE1uCLF7gpYSY3y7RJx5hhaSNbq5IGxW6A6ig=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=FfAuFSXgb76TIHDcybdPDVmr0g+A32vj5PPFxgtEGst/IK5p3PU6/NZODD0k7jUw/
-         EvT3PYf987Z0umL+lbjNToE9pf2xjpobOb4ggtBAm2D30DvZ2GrS/7Rp1icsnwPoQA
-         qRVNU3zQrzopx47CgP2nU8SyZdHzMhyd/WQ5UhGruKtOHCSHTx2KdiwWtNaz7S7lcW
-         yF3gTwwsBmN5H0+FGlmlzeFtqOf3jx/oLLT0AUJxoYLenX5CUImbVAtPxVeimm3mus
-         9ZrNJYnKm29abVnmI2zPi0t9qMUr4zn+KfwD1Vb95pA3SCoHDmHK5KqSjPk6Rv3dhf
-         zJA6SShnKtT7g==
+        s=dec2015msa; t=1622173782;
+        bh=nOwm0twLETAPHRynLa6fcg+8wECFXm1xLxM6UXBaq0c=;
+        h=From:To:Cc:Subject:Date:From;
+        b=eC3OPtc0ytnCD/7/zZXQSeVf/To0a0yY/+wUdhPSvru5cqh75ucrtQgtiOSLwD+r8
+         NCwBp+u7vzMetvgXKOgLFJK9NqYwgFqDPuc2Ig+BKgmlRrM/jITbcArosX/WLEoCEZ
+         f9ftJQDNTlc+BZI+UTSW3jBgHdqNniWaB0oQKAvZ253ErzJJpPbLHXB1/cik/E4EWg
+         5ykkwYnUsMnmj98plCxh2/NOPTXMW/nncZA86GcyD7YHs65TJe77a1/Eqao+JphKTb
+         ic37sVg0yIN5tm9EPQ5u+ju91u5AbI2UhBoxHGA6Hz4GTCMuxw3sBofn+BQw3y6c0L
+         80hKnOFePJVOw==
 X-Nifty-SrcIP: [133.32.232.101]
 From:   Masahiro Yamada <masahiroy@kernel.org>
-To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        linux-mips@vger.kernel.org
+To:     patches@arm.linux.org.uk
 Cc:     linux-kernel@vger.kernel.org,
         Masahiro Yamada <masahiroy@kernel.org>,
-        Alexander Lobakin <alobakin@pm.me>,
-        Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [PATCH 2/2] mips: syscalls: use pattern rules to generate syscall headers
-Date:   Fri, 28 May 2021 12:46:15 +0900
-Message-Id: <20210528034615.2157002-2-masahiroy@kernel.org>
+        Linus Walleij <linus.walleij@linaro.org>,
+        Russell King <linux@armlinux.org.uk>,
+        linux-arm-kernel@lists.infradead.org
+Subject: [PATCH] ARM: simplify the build rule of mach-types.h
+Date:   Fri, 28 May 2021 12:49:13 +0900
+Message-Id: <20210528034913.2157657-1-masahiroy@kernel.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20210528034615.2157002-1-masahiroy@kernel.org>
-References: <20210528034615.2157002-1-masahiroy@kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use pattern rules to unify similar build rules among n32, n64, and o32.
+The directory of mach-types.h is created a couple of lines above:
+
+  _dummy := $(shell [ -d '$(kapi)' ] || mkdir -p '$(kapi)') \
+
+The 'mkdir -p' command is redundant.
+
+scripts/Kbuild.include defines real-prereqs as a shorthand for
+$(filter-out $(PHONY),$^). Let's use it to simplify the code.
 
 Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
 ---
 
- arch/mips/kernel/syscalls/Makefile | 28 ++++------------------------
- 1 file changed, 4 insertions(+), 24 deletions(-)
+ arch/arm/tools/Makefile | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/arch/mips/kernel/syscalls/Makefile b/arch/mips/kernel/syscalls/Makefile
-index 6eee6a3b85df..10bf90dc02c0 100644
---- a/arch/mips/kernel/syscalls/Makefile
-+++ b/arch/mips/kernel/syscalls/Makefile
-@@ -5,9 +5,6 @@ uapi := arch/$(SRCARCH)/include/generated/uapi/asm
- _dummy := $(shell [ -d '$(uapi)' ] || mkdir -p '$(uapi)')	\
- 	  $(shell [ -d '$(kapi)' ] || mkdir -p '$(kapi)')
+diff --git a/arch/arm/tools/Makefile b/arch/arm/tools/Makefile
+index 87de1f63f649..057639019059 100644
+--- a/arch/arm/tools/Makefile
++++ b/arch/arm/tools/Makefile
+@@ -33,8 +33,7 @@ _dummy := $(shell [ -d '$(kapi)' ] || mkdir -p '$(kapi)') \
+           $(shell [ -d '$(uapi)' ] || mkdir -p '$(uapi)')
  
--syscalln32 := $(src)/syscall_n32.tbl
--syscalln64 := $(src)/syscall_n64.tbl
--syscallo32 := $(src)/syscall_o32.tbl
- syshdr := $(srctree)/scripts/syscallhdr.sh
- sysnr := $(srctree)/$(src)/syscallnr.sh
- systbl := $(srctree)/scripts/syscalltbl.sh
-@@ -23,34 +20,17 @@ quiet_cmd_sysnr = SYSNR   $@
- quiet_cmd_systbl = SYSTBL  $@
-       cmd_systbl = $(CONFIG_SHELL) $(systbl) $< $@
+ quiet_cmd_gen_mach = GEN     $@
+-      cmd_gen_mach = mkdir -p $(dir $@) && \
+-		     $(AWK) -f $(filter-out $(PHONY),$^) > $@
++      cmd_gen_mach = $(AWK) -f $(real-prereqs) > $@
  
--$(uapi)/unistd_n32.h: $(syscalln32) $(syshdr) FORCE
--	$(call if_changed,syshdr)
--
--$(uapi)/unistd_n64.h: $(syscalln64) $(syshdr) FORCE
--	$(call if_changed,syshdr)
--
--$(uapi)/unistd_o32.h: $(syscallo32) $(syshdr) FORCE
-+$(uapi)/unistd_%.h: $(src)/syscall_%.tbl $(syshdr) FORCE
- 	$(call if_changed,syshdr)
- 
- sysnr_pfx_unistd_nr_n32 := N32
--$(kapi)/unistd_nr_n32.h: $(syscalln32) $(sysnr) FORCE
--	$(call if_changed,sysnr)
--
- sysnr_pfx_unistd_nr_n64 := 64
--$(kapi)/unistd_nr_n64.h: $(syscalln64) $(sysnr) FORCE
--	$(call if_changed,sysnr)
--
- sysnr_pfx_unistd_nr_o32 := O32
--$(kapi)/unistd_nr_o32.h: $(syscallo32) $(sysnr) FORCE
--	$(call if_changed,sysnr)
--
--$(kapi)/syscall_table_n32.h: $(syscalln32) $(systbl) FORCE
--	$(call if_changed,systbl)
- 
--$(kapi)/syscall_table_n64.h: $(syscalln64) $(systbl) FORCE
--	$(call if_changed,systbl)
-+$(kapi)/unistd_nr_%.h: $(src)/syscall_%.tbl $(sysnr) FORCE
-+	$(call if_changed,sysnr)
- 
--$(kapi)/syscall_table_o32.h: $(syscallo32) $(systbl) FORCE
-+$(kapi)/syscall_table_%.h: $(src)/syscall_%.tbl $(systbl) FORCE
- 	$(call if_changed,systbl)
- 
- uapisyshdr-y		+= unistd_n32.h			\
+ $(kapi)/mach-types.h: $(src)/gen-mach-types $(src)/mach-types FORCE
+ 	$(call if_changed,gen_mach)
 -- 
 2.27.0
 
