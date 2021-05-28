@@ -2,100 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0ADD5393D80
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 09:10:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 366BD393D85
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 09:10:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234961AbhE1HL5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 May 2021 03:11:57 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47346 "EHLO mail.kernel.org"
+        id S235292AbhE1HMP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 May 2021 03:12:15 -0400
+Received: from mx2.suse.de ([195.135.220.15]:44716 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229574AbhE1HLz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 May 2021 03:11:55 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id AA2DF61184;
-        Fri, 28 May 2021 07:10:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1622185821;
-        bh=twOSogob9U7tH3qyhjqMUT0yEHNVGQWQtNnmxz91UXM=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=Sx81GL41SR7HSZiWnd6+pFuwBz/LWK5WI1c8SpKgr8e4I74BpdG8wy4TPSwPPMD6g
-         noh62Cw4H1FZg+NsL98P2brMVOynLLsdhMcm6uut/bplA/2DfLQGc9AbFYJf/Nw+Pw
-         toIsV6sbhT/riBTbeM+f8l+2h+A6kCbWyJGzJuMa2OYNe0h01ktr9kN4XOp20Tdosl
-         GA7QDM+ZfqZPCgubB31xAEaZ3XI8GNt5tHuAdmKAdKgPGInvnABBWGfzsD+akY148R
-         a6LLC0balh5WkKOH50KpTKKJeji0Nga92yeY+s2JoAQPjo9wE1GDBFYtOEqvS9RTPE
-         6fUvuHS76th9Q==
-Date:   Fri, 28 May 2021 16:10:12 +0900
-From:   Masami Hiramatsu <mhiramat@kernel.org>
-To:     menglong8.dong@gmail.com
-Cc:     mcgrof@kernel.org, josh@joshtriplett.org, viro@zeniv.linux.org.uk,
-        keescook@chromium.org, samitolvanen@google.com, ojeda@kernel.org,
-        johan@kernel.org, bhelgaas@google.com, masahiroy@kernel.org,
-        dong.menglong@zte.com.cn, joe@perches.com, axboe@kernel.dk,
-        hare@suse.de, jack@suse.cz, tj@kernel.org,
-        gregkh@linuxfoundation.org, song@kernel.org, neilb@suse.de,
-        akpm@linux-foundation.org, f.fainelli@gmail.com, arnd@arndb.de,
-        linux@rasmusvillemoes.dk, wangkefeng.wang@huawei.com,
-        brho@google.com, mhiramat@kernel.org, rostedt@goodmis.org,
-        vbabka@suse.cz, glider@google.com, pmladek@suse.com,
-        chris@chrisdown.name, ebiederm@xmission.com, jojing64@gmail.com,
-        terrelln@fb.com, geert@linux-m68k.org, mingo@kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        jeyu@kernel.org
-Subject: Re: [PATCH v2 0/3] init/initramfs.c: make initramfs support
- pivot_root
-Message-Id: <20210528161012.c9c8e25db29df3dbc142c62e@kernel.org>
-In-Reply-To: <20210525141524.3995-1-dong.menglong@zte.com.cn>
-References: <20210525141524.3995-1-dong.menglong@zte.com.cn>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S229574AbhE1HMB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 28 May 2021 03:12:01 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1622185826; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=EuWl45fi++D9CsXoPhxBvOEj+IvNMeCoT7T6D+BcKi4=;
+        b=bNZ73iYmKPJY9NYd60tei7i1UPaEzVA2ORbU7n3BxGqpYR4ClZUmpsnJKqlVmeAlfn7oWL
+        6/C9RBVMY6OHbTFNaLB6EPtppNFdyzVcA21zv1mbyfPMeaBmZjvavFgsjJV0Bx4SrifHz+
+        xPSxZ/BkGQDGtmdB9Qq3dOYVy4EM8OQ=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1622185826;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=EuWl45fi++D9CsXoPhxBvOEj+IvNMeCoT7T6D+BcKi4=;
+        b=TBxplDT4JiUUr57LokKv2IhW2a0KH+vHg6zPMgoaasriZnQj1fASctRqzmsfiHxjuaaEF5
+        IxbXZKR5KYqF34Ag==
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id EE237B159;
+        Fri, 28 May 2021 07:10:25 +0000 (UTC)
+From:   Takashi Iwai <tiwai@suse.de>
+To:     Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Cc:     linux-input@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v3 1/2] Input: elants_i2c - Fix NULL dereference at probing
+Date:   Fri, 28 May 2021 09:10:23 +0200
+Message-Id: <20210528071024.26450-1-tiwai@suse.de>
+X-Mailer: git-send-email 2.26.2
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+The recent change in elants_i2c driver to support more chips
+introduced a regression leading to Oops at probing.  The driver reads
+id->driver_data, but the id may be NULL depending on the device type
+the driver gets bound.
 
-On Tue, 25 May 2021 22:15:21 +0800
-menglong8.dong@gmail.com wrote:
+Replace the driver data extraction with the device_get_match_data()
+helper, and define the driver data in OF table, too.
 
-> From: Menglong Dong <dong.menglong@zte.com.cn>
-> 
-> As Luis Chamberlain suggested, I split the patch:
-> [init/initramfs.c: make initramfs support pivot_root]
-> (https://lore.kernel.org/linux-fsdevel/20210520154244.20209-1-dong.menglong@zte.com.cn/)
-> into three.
-> 
-> The goal of the series patches is to make pivot_root() support initramfs.
-> 
-> In the first patch, I introduce the function ramdisk_exec_exist(), which
-> is used to check the exist of 'ramdisk_execute_command' in LOOKUP_DOWN
-> lookup mode.
-> 
-> In the second patch, I create a second mount, which is called
-> 'user root', and make it become the root. Therefore, the root has a
-> parent mount, and it can be umounted or pivot_root.
-> 
-> In the third patch, I fix rootfs_fs_type with ramfs, as it is not used
-> directly any more, and it make no sense to switch it between ramfs and
-> tmpfs, just fix it with ramfs to simplify the code.
+Fixes: 9517b95bdc46 ("Input: elants_i2c - add support for eKTF3624")
+BugLink: https://bugzilla.suse.com/show_bug.cgi?id=1186454
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+---
+v1->v2: Use device_get_match_data()   
+v2->v3: Fix pointer cast
 
+ drivers/input/touchscreen/elants_i2c.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-This idea sounds good to me. I have tested it with MINCS container shell
-script (https://github.com/mhiramat/mincs).
-
-However, I found different issue on init_eaccess() (or symlink lookup)
-with this series.
-
-I'm using a busybox initramfs, and it makes /init as a symlink of "/sbin/init"
-(absolute path)
-
-When CONFIG_INITRAMFS_USER_ROOT=n, it booted. But CONFIG_INITRAMFS_USER_ROOT=y,
-it failed to boot because it failed to find /init. If I made the /init as
-a symlink of "sbin/init" (relative path), it works.
-
-Would you have any idea?
-
-Thank you,
-
+diff --git a/drivers/input/touchscreen/elants_i2c.c b/drivers/input/touchscreen/elants_i2c.c
+index 17540bdb1eaf..0f9e3ec99aae 100644
+--- a/drivers/input/touchscreen/elants_i2c.c
++++ b/drivers/input/touchscreen/elants_i2c.c
+@@ -1396,7 +1396,7 @@ static int elants_i2c_probe(struct i2c_client *client,
+ 	init_completion(&ts->cmd_done);
+ 
+ 	ts->client = client;
+-	ts->chip_id = (enum elants_chip_id)id->driver_data;
++	ts->chip_id = (enum elants_chip_id)(uintptr_t)device_get_match_data(&client->dev);
+ 	i2c_set_clientdata(client, ts);
+ 
+ 	ts->vcc33 = devm_regulator_get(&client->dev, "vcc33");
+@@ -1636,8 +1636,8 @@ MODULE_DEVICE_TABLE(acpi, elants_acpi_id);
+ 
+ #ifdef CONFIG_OF
+ static const struct of_device_id elants_of_match[] = {
+-	{ .compatible = "elan,ekth3500" },
+-	{ .compatible = "elan,ektf3624" },
++	{ .compatible = "elan,ekth3500", .data = (void *)EKTH3500 },
++	{ .compatible = "elan,ektf3624", .data = (void *)EKTF3624 },
+ 	{ /* sentinel */ }
+ };
+ MODULE_DEVICE_TABLE(of, elants_of_match);
 -- 
-Masami Hiramatsu <mhiramat@kernel.org>
+2.26.2
+
