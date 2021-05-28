@@ -2,97 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BEB6039433A
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 15:09:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 623F339433D
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 15:10:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235737AbhE1NKk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 May 2021 09:10:40 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:52266 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234961AbhE1NKi (ORCPT
+        id S234259AbhE1NL3 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 28 May 2021 09:11:29 -0400
+Received: from eu-smtp-delivery-151.mimecast.com ([185.58.85.151]:52627 "EHLO
+        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234961AbhE1NLX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 May 2021 09:10:38 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1622207343;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=EEX/rBmiVlJyVxednzmK+k/yMHjRZkeckV9ZqXD+m/8=;
-        b=MNyGBoh0cL4TzrI1ziwLdoGwdeTCtLUmyO//u3geKMukCjq3XtuXWjW94qI03xcdDfNyQH
-        wUSUSbpvOu4cZseKd0bmML4GvNCf8oF7msmwOdrMI+O1+pJHHvaqhhM6blqv3bZtj8+rkl
-        xJJuJs8fw0Rti303cfnO5/dz9Qrn+54=
-Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
- [209.85.208.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-313-bK8e8y_8PnmrC5-vUI9S6Q-1; Fri, 28 May 2021 09:09:01 -0400
-X-MC-Unique: bK8e8y_8PnmrC5-vUI9S6Q-1
-Received: by mail-ed1-f70.google.com with SMTP id h18-20020a05640250d2b029038cc3938914so2106828edb.17
-        for <linux-kernel@vger.kernel.org>; Fri, 28 May 2021 06:09:01 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:to:cc:references:from:organization:subject
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=EEX/rBmiVlJyVxednzmK+k/yMHjRZkeckV9ZqXD+m/8=;
-        b=rm+o5OgNDkRs6X4SHIe2RElLfD8rLqYyHGnbOKWomEJwUjgBIGQJZ4BzQHPIhT4ekY
-         IuTvW1cUlqADz1Rjh0lZ6oXZL2+y4r2+IwR32kSFtvhqws/wrhF53MuB5sFajwxt6gfl
-         S8JZQkkKqJ8L7lARsZAS+av1WUpxThOrZHJ4xArVxVCaNR9sH+sIutnmkSni2auzMSRl
-         XwVR8ISzFa/FPhEUIBV+flck/LgQPqDvZ/kKlVpd33Kyq5b/kEdLNgYqyz4LuGZKrj+G
-         Pki6/BjVb7OhQuRzij5YERH2ouAtSU8JSNgmpDv/SA+bhNH5B1JCn6czYN02lp+3uzXc
-         BEpw==
-X-Gm-Message-State: AOAM533rHXFZKXOqaMcDKUEOJOSP/ZApaqOgmWntwq38lJCWIaS2Sxmn
-        24vC6/TvrBhYOenfkCFc3RIlAVap3KA4IeuIOVvlzszRrO+FRUCWDRYQZzjGwGq3npaxKm/+eLr
-        cWAJXdGvgYl/deGKiZqBge32F
-X-Received: by 2002:a17:906:bb0e:: with SMTP id jz14mr8813946ejb.285.1622207340275;
-        Fri, 28 May 2021 06:09:00 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyvtx+PlUXKNPCQkb3twdze1odjjLz+/TX1k+GLWLnk8MeS0QSt7e+7UCMbEfcmkCbx2WKBPw==
-X-Received: by 2002:a17:906:bb0e:: with SMTP id jz14mr8813933ejb.285.1622207340099;
-        Fri, 28 May 2021 06:09:00 -0700 (PDT)
-Received: from [192.168.3.132] (p5b0c6870.dip0.t-ipconnect.de. [91.12.104.112])
-        by smtp.gmail.com with ESMTPSA id w14sm2742416edj.6.2021.05.28.06.08.59
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 28 May 2021 06:08:59 -0700 (PDT)
-To:     torvic9@mailbox.org,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "akpm@linux-foundation.org" <akpm@linux-foundation.org>
-Cc:     "linux-mm@kvack.org" <linux-mm@kvack.org>
-References: <1825464932.40588.1622203733380@office.mailbox.org>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat
-Subject: Re: [Question] mm/vmpressure.c: ilog2 calculation in constant
-Message-ID: <7a34c010-9f2a-431b-3c49-8f0d387f1cba@redhat.com>
-Date:   Fri, 28 May 2021 15:08:59 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+        Fri, 28 May 2021 09:11:23 -0400
+Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) (Using
+ TLS) by relay.mimecast.com with ESMTP id
+ uk-mta-94-3k4EBtglPISPPGh0Tot5Ig-1; Fri, 28 May 2021 14:09:45 +0100
+X-MC-Unique: 3k4EBtglPISPPGh0Tot5Ig-1
+Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) by
+ AcuMS.aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) with Microsoft SMTP
+ Server (TLS) id 15.0.1497.2; Fri, 28 May 2021 14:09:43 +0100
+Received: from AcuMS.Aculab.com ([fe80::994c:f5c2:35d6:9b65]) by
+ AcuMS.aculab.com ([fe80::994c:f5c2:35d6:9b65%12]) with mapi id
+ 15.00.1497.015; Fri, 28 May 2021 14:09:43 +0100
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     =?iso-8859-1?Q?=27Michal_Such=E1nek=27?= <msuchanek@suse.de>
+CC:     'Mel Gorman' <mgorman@techsingularity.net>,
+        'Andrii Nakryiko' <andrii.nakryiko@gmail.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        "Andrew Morton" <akpm@linux-foundation.org>,
+        Arnaldo Carvalho de Melo <acme@redhat.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Hritik Vijay <hritikxx8@gmail.com>, bpf <bpf@vger.kernel.org>,
+        Linux-Net <netdev@vger.kernel.org>, Linux-MM <linux-mm@kvack.org>
+Subject: RE: [PATCH] mm/page_alloc: Work around a pahole limitation with
+ zero-sized struct pagesets
+Thread-Topic: [PATCH] mm/page_alloc: Work around a pahole limitation with
+ zero-sized struct pagesets
+Thread-Index: AQHXUwZwxICJrzVIrECdOMP8p5MLKKr4istw////SYCAABppAP//9DIAgABEOWA=
+Date:   Fri, 28 May 2021 13:09:43 +0000
+Message-ID: <5517a591606042d7aeae3c15b8c91d30@AcuMS.aculab.com>
+References: <20210526080741.GW30378@techsingularity.net>
+ <YK9SiLX1E1KAZORb@infradead.org> <20210527090422.GA30378@techsingularity.net>
+ <YK9j3YeMTZ+0I8NA@infradead.org>
+ <CAEf4BzZLy0s+t+Nj9QgUNM66Ma6HN=VkS+ocgT5h9UwanxHaZQ@mail.gmail.com>
+ <CAEf4BzbzPK-3cyLFM8QKE5-o_dL7=UCcvRF+rEqyUcHhyY+FJg@mail.gmail.com>
+ <8fe547e9e87f40aebce82021d76a2d08@AcuMS.aculab.com>
+ <20210528090421.GK30378@techsingularity.net>
+ <2755b39d723146168e875f3b4a851a0d@AcuMS.aculab.com>
+ <20210528095637.GO8544@kitsune.suse.cz>
+In-Reply-To: <20210528095637.GO8544@kitsune.suse.cz>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-In-Reply-To: <1825464932.40588.1622203733380@office.mailbox.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 28.05.21 14:08, torvic9@mailbox.org wrote:
-> Hello,
+From: Michal Suchánek
+> Sent: 28 May 2021 10:57
 > 
-> in mm/vmpressure.c, we have defined this constant:
+> On Fri, May 28, 2021 at 09:49:28AM +0000, David Laight wrote:
+...
+> > I can see there might be similar issues with the version of libelf-devel
+> > (needed by objtool).
+> > If I compile anything with gcc 10 (I'm doing build-root builds)
+> > I get object files that the hosts 2.30 binutils complain about.
+> > I can easily see that updating gcc and binutils might leave a
+> > broken objtool unless the required updated libelf-devel package
+> > can be found.
+> > Statically linking the required parts of libelf into objtool
+> > would save any such problems.
 > 
->    static const unsigned int vmpressure_level_critical_prio = ilog2(100 / 10);
-> 
-> My question is: Why do we calculate ilog2 instead of simply setting the constant to '3'?
+> Static libraries are not always available. Especially for core toolchain
+> libraries the developers often have some ideas about which of the static
+> and dynamic libraris is the 'correct' one that they like to enforce.
 
-My best guess is that it's in place to a) increase readability b) make 
-it easier to adjust. The compiler will optimize it out either way, so we 
-don't really care.
+The issue is that you want a version of libelf that works with objtool
+and the versions of binutils/gcc/clang that the kernel build supports.
+If libelf was part of the binutils package this might be ok.
+But it isn't and it may end up with people scrambling around to find
+a working version to build a kernel (or out of tree module).
 
-Having that said: it doesn't increase readability on my end. But I only 
-took a quick glimpse. Maybe the "100 / 10 == 10" here is the magic bit 
-also mentioned in the comment "when scanning depth is ~10%". So it can 
-be adjusted "more easily" eventually ... at least not by me.
+	David
 
--- 
-Thanks,
-
-David / dhildenb
+-
+Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
+Registration No: 1397386 (Wales)
 
