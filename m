@@ -2,47 +2,47 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A67539422E
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 13:51:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2374E394230
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 13:51:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236091AbhE1Lw7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 May 2021 07:52:59 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:41008 "EHLO
+        id S236141AbhE1LxI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 May 2021 07:53:08 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:41036 "EHLO
         youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235301AbhE1Lwz (ORCPT
+        with ESMTP id S235076AbhE1LxA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 May 2021 07:52:55 -0400
-Received: from mail-ua1-f69.google.com ([209.85.222.69])
+        Fri, 28 May 2021 07:53:00 -0400
+Received: from mail-ua1-f71.google.com ([209.85.222.71])
         by youngberry.canonical.com with esmtps  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
         (Exim 4.93)
         (envelope-from <krzysztof.kozlowski@canonical.com>)
-        id 1lmb1L-0003yz-0X
-        for linux-kernel@vger.kernel.org; Fri, 28 May 2021 11:51:19 +0000
-Received: by mail-ua1-f69.google.com with SMTP id 5-20020ab004850000b029022e612041f6so1792222uaw.9
-        for <linux-kernel@vger.kernel.org>; Fri, 28 May 2021 04:51:18 -0700 (PDT)
+        id 1lmb1R-00041J-C3
+        for linux-kernel@vger.kernel.org; Fri, 28 May 2021 11:51:25 +0000
+Received: by mail-ua1-f71.google.com with SMTP id f2-20020ab006020000b02902124881cdf4so1798613uaf.7
+        for <linux-kernel@vger.kernel.org>; Fri, 28 May 2021 04:51:25 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=wxELusyIBpP+fcpz/UatIhkxqx6ZEHw/DrcqLu/q/aE=;
-        b=H18p4nDoqYDfNUg7sahpRem5GhKuyBlr/jrVfeFqpYaACyURhDraGzAdj6XNcNGN6+
-         qCEa6Bu9gwkcHMCLZAWQKILPyp6Y65S87sbeFQgoWKpog6Lpsk6KiTPXEHVQTEaOkPIz
-         RPAz1zYFUXuYctAE+A2VlMBQJAygANpZEel4CGK6Iol/Jc64cRuMdCpgiKbKVuR0dSGZ
-         b74Yo6U0M/90WUe7vu991PilP5DkxhnOsQosaKBgAALNNLxddKYRYx3pEhdsVu3sybeX
-         SFMw5ndng7He226u7N/nP6YxahzePtc47UfWsw/lgkMHFwlSdtRnqeJf0KB/aFjD3arf
-         VFZA==
-X-Gm-Message-State: AOAM533VkcZi/6wB8aAxEm8qqFOpeu0v6gUBPbOhQJS9sgv3Bjn6AlSc
-        lcqdVf6E8HAwmaXioD2lppYKvSB2rqb2DaXiy4vanA0jfGMy5nI5hCdIl3jszsmLI7QmlKnpZ29
-        PB/vSc+cMelyzpoXPzGnGG0XQTAwO/qeiqRhBVxASpg==
-X-Received: by 2002:a05:6102:31b7:: with SMTP id d23mr6244279vsh.56.1622202678192;
-        Fri, 28 May 2021 04:51:18 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwHV9HC0ax8TsVv9E9U2CrKXRWFKJ3kwO0G5xeZeFJCvWLuvkFRNODMIQwC/X1QAj1earJCHQ==
-X-Received: by 2002:a05:6102:31b7:: with SMTP id d23mr6244268vsh.56.1622202677969;
-        Fri, 28 May 2021 04:51:17 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=+A7NmETeNVsWXQhhgLVcq4I2U3ly5GO/4a+00+Ltec0=;
+        b=ms63Drl9UMhn2vdZBtRMND8JPXeK5fHzH6j1evGWNCBMDnp70AOpCQXkVOkIIIJ6yK
+         JBBNclm+TdGttjwh99w3qnb5KQBkfwS8mVespn/UIHzDVTdcUs0fpxINjzSPvEOb2JPH
+         3h+dXcjjhljCi7bwab3vqDwCxdjINxi/yvP6GjvPmQ+IFd+1FEII90gfRYhE/l0wA7M1
+         G0/6byNE7ozKQMDbRd7w3Z0MTf+YS78bBXEpQzReLTxbmR4u/Jqf6d2qU6hmhoOJ6Y5t
+         ns5HkPMwlT7tLy319t/2zxxc0/Rf+NDqeTLDnb8TC0utk7IcysZrOQ3hBTmJEq9D2LvN
+         sDAQ==
+X-Gm-Message-State: AOAM530V1mwk0hmqtqncq2cxN46/0XsGE0M1SDw05ngHHVY91F7GYuuj
+        U8Lvm9ZPguO0I2RzOKGazRmi3DmCJYlh0PkWwbStBxs2wfo0bEONCCYAxXu+Tc6vxD8gYnMyYJ6
+        Km5Xm+VSTWF74Ugw9KvyA6C+Ob6eme+E1ftCleGMkbw==
+X-Received: by 2002:a67:6a02:: with SMTP id f2mr6264730vsc.49.1622202680526;
+        Fri, 28 May 2021 04:51:20 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJz8wp965ZXdOS/URJI0BlvrioKqZR1rbzc1/KfnNkSONQtzH+C+OVVa8fj46i7Np0GVLTF3wQ==
+X-Received: by 2002:a67:6a02:: with SMTP id f2mr6264723vsc.49.1622202680342;
+        Fri, 28 May 2021 04:51:20 -0700 (PDT)
 Received: from localhost.localdomain ([45.237.48.5])
-        by smtp.gmail.com with ESMTPSA id 189sm669831vkz.51.2021.05.28.04.51.15
+        by smtp.gmail.com with ESMTPSA id 189sm669831vkz.51.2021.05.28.04.51.18
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 28 May 2021 04:51:17 -0700 (PDT)
+        Fri, 28 May 2021 04:51:19 -0700 (PDT)
 From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
 To:     Zhang Rui <rui.zhang@intel.com>,
         Daniel Lezcano <daniel.lezcano@linaro.org>,
@@ -56,12 +56,13 @@ To:     Zhang Rui <rui.zhang@intel.com>,
         Baolin Wang <baolin.wang7@gmail.com>,
         Chunyan Zhang <zhang.lyra@gmail.com>, linux-pm@vger.kernel.org,
         linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Jacky Bai <ping.bai@nxp.com>
-Subject: [RESEND PATCH 1/2] thermal: imx_sc: add missing of_node_put for loop iteration
-Date:   Fri, 28 May 2021 07:50:35 -0400
-Message-Id: <20210528115036.18222-1-krzysztof.kozlowski@canonical.com>
+Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Subject: [RESEND PATCH 2/2] thermal: sprd: add missing of_node_put for loop iteration
+Date:   Fri, 28 May 2021 07:50:36 -0400
+Message-Id: <20210528115036.18222-2-krzysztof.kozlowski@canonical.com>
 X-Mailer: git-send-email 2.27.0
+In-Reply-To: <20210528115036.18222-1-krzysztof.kozlowski@canonical.com>
+References: <20210528115036.18222-1-krzysztof.kozlowski@canonical.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
@@ -71,41 +72,48 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 Early exits from for_each_available_child_of_node() should decrement the
 node reference counter.  Reported by Coccinelle:
 
-  drivers/thermal/imx_sc_thermal.c:93:1-33: WARNING:
-    Function "for_each_available_child_of_node" should have of_node_put() before return around line 97.
+  drivers/thermal/sprd_thermal.c:387:1-23: WARNING:
+    Function "for_each_child_of_node" should have of_node_put() before goto around lines 391.
 
 Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Reviewed-by: Jacky Bai <ping.bai@nxp.com>
+Acked-by: Chunyan Zhang <zhang.lyra@gmail.com>
 ---
- drivers/thermal/imx_sc_thermal.c | 3 +++
- 1 file changed, 3 insertions(+)
+ drivers/thermal/sprd_thermal.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-diff --git a/drivers/thermal/imx_sc_thermal.c b/drivers/thermal/imx_sc_thermal.c
-index b01d28eca7ee..8d76dbfde6a9 100644
---- a/drivers/thermal/imx_sc_thermal.c
-+++ b/drivers/thermal/imx_sc_thermal.c
-@@ -93,6 +93,7 @@ static int imx_sc_thermal_probe(struct platform_device *pdev)
- 	for_each_available_child_of_node(np, child) {
- 		sensor = devm_kzalloc(&pdev->dev, sizeof(*sensor), GFP_KERNEL);
- 		if (!sensor) {
-+			of_node_put(child);
- 			of_node_put(sensor_np);
- 			return -ENOMEM;
- 		}
-@@ -104,6 +105,7 @@ static int imx_sc_thermal_probe(struct platform_device *pdev)
- 			dev_err(&pdev->dev,
- 				"failed to get valid sensor resource id: %d\n",
- 				ret);
-+			of_node_put(child);
- 			break;
+diff --git a/drivers/thermal/sprd_thermal.c b/drivers/thermal/sprd_thermal.c
+index 3682edb2f466..2778971aaf03 100644
+--- a/drivers/thermal/sprd_thermal.c
++++ b/drivers/thermal/sprd_thermal.c
+@@ -388,6 +388,7 @@ static int sprd_thm_probe(struct platform_device *pdev)
+ 		sen = devm_kzalloc(&pdev->dev, sizeof(*sen), GFP_KERNEL);
+ 		if (!sen) {
+ 			ret = -ENOMEM;
++			of_node_put(sen_child);
+ 			goto disable_clk;
  		}
  
-@@ -114,6 +116,7 @@ static int imx_sc_thermal_probe(struct platform_device *pdev)
- 		if (IS_ERR(sensor->tzd)) {
- 			dev_err(&pdev->dev, "failed to register thermal zone\n");
- 			ret = PTR_ERR(sensor->tzd);
-+			of_node_put(child);
- 			break;
+@@ -397,12 +398,14 @@ static int sprd_thm_probe(struct platform_device *pdev)
+ 		ret = of_property_read_u32(sen_child, "reg", &sen->id);
+ 		if (ret) {
+ 			dev_err(&pdev->dev, "get sensor reg failed");
++			of_node_put(sen_child);
+ 			goto disable_clk;
+ 		}
+ 
+ 		ret = sprd_thm_sensor_calibration(sen_child, thm, sen);
+ 		if (ret) {
+ 			dev_err(&pdev->dev, "efuse cal analysis failed");
++			of_node_put(sen_child);
+ 			goto disable_clk;
+ 		}
+ 
+@@ -416,6 +419,7 @@ static int sprd_thm_probe(struct platform_device *pdev)
+ 			dev_err(&pdev->dev, "register thermal zone failed %d\n",
+ 				sen->id);
+ 			ret = PTR_ERR(sen->tzd);
++			of_node_put(sen_child);
+ 			goto disable_clk;
  		}
  
 -- 
