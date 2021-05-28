@@ -2,192 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 883473944B0
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 16:57:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F9B03944B2
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 16:57:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236834AbhE1O64 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 May 2021 10:58:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39444 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236854AbhE1O6e (ORCPT
+        id S236865AbhE1O7J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 May 2021 10:59:09 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:47227 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236890AbhE1O6n (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 May 2021 10:58:34 -0400
-Received: from mail-qk1-x734.google.com (mail-qk1-x734.google.com [IPv6:2607:f8b0:4864:20::734])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8C59C061344;
-        Fri, 28 May 2021 07:56:40 -0700 (PDT)
-Received: by mail-qk1-x734.google.com with SMTP id o27so4324307qkj.9;
-        Fri, 28 May 2021 07:56:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=b9+9w75fRz1FwVKb4mTM82fVuffe3lmGj10rEC8QhT8=;
-        b=Wy76Sv4AtgBSfbImUwDTGffqAAwqD10bpBKMLf65ktN+3VSBS1qJLSCJ24cdKP4hna
-         chrIMw6Ow4g6oMSSj8WzDZU3Y0YhikS+Yow8XOZ6hXLCBF5LyOM3FyseCK9RoQoQy+Ro
-         c9IY1MR8P56kEi+GCuVWrMfi204nNoRZU1oTPabNZ7+jSLII6n6csYXQ9cLHw+XxmDb4
-         vev8TugphrZo0OzuvxsZSH2BSdGeUHkp8nQzIMXCPRB7c7GDIMnyCjb7Qt1nwdx9utVy
-         gdR2uYcw2nJBclZfLlp+6oSpeK3tOEaO2Kbp4BVf1+bmhOm6lN236U7RkD49L0Aos+Fu
-         SmxQ==
+        Fri, 28 May 2021 10:58:43 -0400
+Received: from mail-ua1-f69.google.com ([209.85.222.69])
+        by youngberry.canonical.com with esmtps  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.93)
+        (envelope-from <krzysztof.kozlowski@canonical.com>)
+        id 1lmdv9-0004Kg-FM
+        for linux-kernel@vger.kernel.org; Fri, 28 May 2021 14:57:07 +0000
+Received: by mail-ua1-f69.google.com with SMTP id f15-20020a9f2bcf0000b02901f8fe91b89cso2064838uaj.0
+        for <linux-kernel@vger.kernel.org>; Fri, 28 May 2021 07:57:07 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=b9+9w75fRz1FwVKb4mTM82fVuffe3lmGj10rEC8QhT8=;
-        b=hTNN19uCyD3uTxSOJukKpw/4dvR9ifhWRBXODwdh/fry/d1v9iW39+BAHJJti8xWMQ
-         +BApbZUdwouGkxHN+2Ivy8XTKRJlUdEyUlCFABq2FtXYecAixS6oc2oB4J5dNSS9rt2v
-         N2c+t6xRYxkFBncVtBP8ButOyaNJJ8l0hTRB2IeRXRyHqSnVWHc8dOiTZBPiah/pOVgN
-         QDKIrT6T29xZw6nQTeAbssI60u6yEf6orHGgmMhMzEMw5IdouQZfUIKOdfpzJlhJMOEs
-         jPIvbUxif0lqKx6RQv3AO6k6Hd+ZNhsTE+El2cGdiuf/WxpW+qw6Load5wG8/uIyAmzx
-         cpuA==
-X-Gm-Message-State: AOAM533YYOxCuPlwe37BgNQ6OHc8cYFz+daXl7cGlX04xqHrhCH/PLuN
-        L23/168EimsmQHm2it3s5gQ=
-X-Google-Smtp-Source: ABdhPJzTqTOm7PGIS1rva4SBBmgalq+99orUQlgs2+tNDb3PWcO23e+Xo3Bz89L4eXwCONQ2UyvByQ==
-X-Received: by 2002:a05:620a:22ca:: with SMTP id o10mr4223431qki.258.1622213799977;
-        Fri, 28 May 2021 07:56:39 -0700 (PDT)
-Received: from ?IPv6:2804:14c:125:811b:fbbc:3360:40c4:fb64? ([2804:14c:125:811b:fbbc:3360:40c4:fb64])
-        by smtp.gmail.com with ESMTPSA id v18sm3592086qkv.34.2021.05.28.07.56.37
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 28 May 2021 07:56:39 -0700 (PDT)
-Subject: Re: [PATCH v5] media: em28xx: Fix race condition between open and
- init function
-To:     Hillf Danton <hdanton@sina.com>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>
-Cc:     mchehab@kernel.org, skhan@linuxfoundation.org,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel test robot <lkp@intel.com>,
-        syzbot+b2391895514ed9ef4a8e@syzkaller.appspotmail.com
-References: <20210507193457.14819-1-igormtorrente@gmail.com>
- <20210528075257.2469-1-hdanton@sina.com>
-From:   Igor Torrente <igormtorrente@gmail.com>
-Message-ID: <c8bd80bd-e6d1-2c47-c606-351cba92e04a@gmail.com>
-Date:   Fri, 28 May 2021 11:56:36 -0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.0
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=edJlbbhDO28RmalfYtPxF+agVQnBc9uKOzw55MZRkiU=;
+        b=K5ppLkeecU0OZTHCLV0b00opErKtJtnHBUXV+qC2l4l7Nt68KQhRQkPN4Jehc4v3Zf
+         SU/BDV6euL3KgrQIhpeKFvlDkyvCs9rl7BbAepo/nrLqiljuSGv3VVkYAeWGJnYo30oA
+         EwWSdLpSjHPK29D+SJtJFZs1Kc7dOyZWBG5u2ZQS91hOO5aVTlbUYx+pDhSf2+f+8ej/
+         R1hMNSvld/oZrvsK+NBHPedvhDNTl14AvkkRUEfdeIZStAl3ZFbzyfd5hKWg0xhjfJ8y
+         qctOP5IDUV6hxVcXUUy/yLwa5g34yb7LN3G6BXPCldAtk+k1TqnZ9z+YqZ+w1BkA2BC2
+         yQlQ==
+X-Gm-Message-State: AOAM532PIFVVIDwcBLZ7u6oY+YAyhSZybzfop/oyIa/EQUvQgiSsDe+s
+        7ml9dWeCnDWyTKBr7nEaOnsGhxezlddxcBaEnDzilp+Rd9ukm0pHE3r07TxbPP7Haz2MpLlPxqo
+        XLoEbp40a4DBmDonfFckdtSUlouCfFZ/Q6uNCzfpyGg==
+X-Received: by 2002:ab0:3482:: with SMTP id c2mr3488393uar.122.1622213826610;
+        Fri, 28 May 2021 07:57:06 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJylmdPw48e3WnJvVm8n1XmFKbfo4OOP5M8lb+ZI/nv+T5y9BFhzf21srOlHkwLrsW2LDgEx3w==
+X-Received: by 2002:ab0:3482:: with SMTP id c2mr3488375uar.122.1622213826492;
+        Fri, 28 May 2021 07:57:06 -0700 (PDT)
+Received: from localhost.localdomain ([45.237.48.3])
+        by smtp.gmail.com with ESMTPSA id 64sm330505uay.11.2021.05.28.07.57.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 28 May 2021 07:57:06 -0700 (PDT)
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Jakub Kicinski <kuba@kernel.org>, linux-nfc@lists.01.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: [PATCH 11/11] nfc: st95hf: fix indentation to tabs
+Date:   Fri, 28 May 2021 10:56:51 -0400
+Message-Id: <20210528145651.125648-1-krzysztof.kozlowski@canonical.com>
+X-Mailer: git-send-email 2.27.0
+In-Reply-To: <20210528145330.125055-1-krzysztof.kozlowski@canonical.com>
+References: <20210528145330.125055-1-krzysztof.kozlowski@canonical.com>
 MIME-Version: 1.0
-In-Reply-To: <20210528075257.2469-1-hdanton@sina.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Hillf,
+Use tabs to indent instead of spaces. No functional change.
 
-On 5/28/21 4:52 AM, Hillf Danton wrote:
-> On 07/05/2021 21:34, Igor Matheus Andrade Torrente wrote:
->> Fixes a race condition - for lack of a more precise term - between
->> em28xx_v4l2_open and em28xx_v4l2_init, by detaching the v4l2_dev
->> struct from the em28xx_v4l2, and managing the em28xx_v4l2 and v4l2_dev
->> life-time with the v4l2_dev->release() callback.
-> 
-> This is a bit more complicated than the rare race deserves and IMHO rcu can
-> help detect it.
-> 
-> The diff below 1) frees em28xx_v4l2 through rcu 2) checks race under rcu lock
-> on the open side.
-> 
-> Note it is only for idea and thoughts are welcome if it makes sense to you.
-> 
-
-I didn't know what was the purpose of rcu, so I took some minutes to 
-study it.
-
-If I understood correctly it solves the issue more easily and with way 
-fewer changes in the existing code.
-
-Hans, what do you think?
-
-> 
-> +++ x/drivers/media/usb/em28xx/em28xx-video.c
-> @@ -2113,6 +2113,13 @@ static int radio_s_tuner(struct file *fi
->   	return 0;
->   }
->   
-> +static void em28xx_v4l2_rcufn(struct rcu_head *r)
-> +{
-> +	struct em28xx_v4l2 *v4l2 = container_of(r, struct em28xx_v4l2, rcu);
-> +
-> +	kfree(v4l2);
-> +}
-> +
->   /*
->    * em28xx_free_v4l2() - Free struct em28xx_v4l2
->    *
-> @@ -2125,7 +2132,13 @@ static void em28xx_free_v4l2(struct kref
->   	struct em28xx_v4l2 *v4l2 = container_of(ref, struct em28xx_v4l2, ref);
->   
->   	v4l2->dev->v4l2 = NULL;
-> -	kfree(v4l2);
-> +	call_rcu(&v4l2->rcu, em28xx_v4l2_rcufn);
-> +}
-> +
-> +static void em28xx_put_v4l2(struct em28xx_v4l2 *v4l2)
-> +{
-> +	if (v4l2)
-> +		kref_put(&v4l2->ref, em28xx_free_v4l2);
->   }
->   
->   /*
-> @@ -2136,10 +2149,18 @@ static int em28xx_v4l2_open(struct file
->   {
->   	struct video_device *vdev = video_devdata(filp);
->   	struct em28xx *dev = video_drvdata(filp);
-> -	struct em28xx_v4l2 *v4l2 = dev->v4l2;
-> +	struct em28xx_v4l2 *v4l2;
->   	enum v4l2_buf_type fh_type = 0;
->   	int ret;
->   
-> +	rcu_read_lock();
-> +	v4l2 = dev->v4l2;
-> +	ret = v4l2 && kref_get_unless_zero(&v4l2->ref);
-> +	rcu_read_unlock();
-> +
-> +	if (!ret)
-> +		return -ENODEV;
-> +
->   	switch (vdev->vfl_type) {
->   	case VFL_TYPE_VIDEO:
->   		fh_type = V4L2_BUF_TYPE_VIDEO_CAPTURE;
-> @@ -2150,6 +2171,7 @@ static int em28xx_v4l2_open(struct file
->   	case VFL_TYPE_RADIO:
->   		break;
->   	default:
-> +		em28xx_put_v4l2(v4l2);
->   		return -EINVAL;
->   	}
->   
-> @@ -2157,8 +2179,10 @@ static int em28xx_v4l2_open(struct file
->   			video_device_node_name(vdev), v4l2_type_names[fh_type],
->   			v4l2->users);
->   
-> -	if (mutex_lock_interruptible(&dev->lock))
-> +	if (mutex_lock_interruptible(&dev->lock)) {
-> +		em28xx_put_v4l2(v4l2);
->   		return -ERESTARTSYS;
-> +	}
->   
->   	ret = v4l2_fh_open(filp);
->   	if (ret) {
-> @@ -2166,6 +2190,7 @@ static int em28xx_v4l2_open(struct file
->   			"%s: v4l2_fh_open() returned error %d\n",
->   		       __func__, ret);
->   		mutex_unlock(&dev->lock);
-> +		em28xx_put_v4l2(v4l2);
->   		return ret;
->   	}
->   
-> @@ -2188,7 +2213,6 @@ static int em28xx_v4l2_open(struct file
->   	}
->   
->   	kref_get(&dev->ref);
-> -	kref_get(&v4l2->ref);
->   	v4l2->users++;
->   
->   	mutex_unlock(&dev->lock);
-> 
-
-Thanks,
+Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
 ---
-Igor M. A. Torrente
+ drivers/nfc/st95hf/core.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/nfc/st95hf/core.c b/drivers/nfc/st95hf/core.c
+index 0d99181b6ce3..2dc788c363fd 100644
+--- a/drivers/nfc/st95hf/core.c
++++ b/drivers/nfc/st95hf/core.c
+@@ -1057,8 +1057,8 @@ static const struct spi_device_id st95hf_id[] = {
+ MODULE_DEVICE_TABLE(spi, st95hf_id);
+ 
+ static const struct of_device_id st95hf_spi_of_match[] __maybe_unused = {
+-        { .compatible = "st,st95hf" },
+-        { },
++	{ .compatible = "st,st95hf" },
++	{},
+ };
+ MODULE_DEVICE_TABLE(of, st95hf_spi_of_match);
+ 
+-- 
+2.27.0
+
