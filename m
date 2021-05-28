@@ -2,74 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A241D393A5F
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 02:41:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E8C9393A64
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 02:42:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235255AbhE1AnU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 May 2021 20:43:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45534 "EHLO
+        id S235419AbhE1Ao1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 May 2021 20:44:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45798 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235121AbhE1AnP (ORCPT
+        with ESMTP id S233896AbhE1AoY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 May 2021 20:43:15 -0400
-Received: from mail-lj1-x22a.google.com (mail-lj1-x22a.google.com [IPv6:2a00:1450:4864:20::22a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75D83C061760
-        for <linux-kernel@vger.kernel.org>; Thu, 27 May 2021 17:41:37 -0700 (PDT)
-Received: by mail-lj1-x22a.google.com with SMTP id 131so3159523ljj.3
-        for <linux-kernel@vger.kernel.org>; Thu, 27 May 2021 17:41:37 -0700 (PDT)
+        Thu, 27 May 2021 20:44:24 -0400
+Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com [IPv6:2a00:1450:4864:20::134])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E6CDC061574
+        for <linux-kernel@vger.kernel.org>; Thu, 27 May 2021 17:42:49 -0700 (PDT)
+Received: by mail-lf1-x134.google.com with SMTP id x38so2741657lfa.10
+        for <linux-kernel@vger.kernel.org>; Thu, 27 May 2021 17:42:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=ral1/cr5tv0Oi6I2LPNfpBXJdYcfSjlB+JCdbq1/BvM=;
-        b=yWDoJYcnTkqPm338XA0ly9EDskdwONFyzNUmi63eeGqTBpE09p5kfC4IBE17TT7Mie
-         sJIcMUB+zwnSl/S0g84u6m5Mfv7j4pGXRWlcLLFnl4CILFIzMNZCoNLM7ToOaWgRk5gr
-         jEegtlYnrF4fsO4ZzLzIOFEEGQ1U+2JlR2xwdJylNWG4wHjlJDNMVPZCBWhSCE+rV+q0
-         MEvcsLwUWD2a5f0lhZeyG91E1XJAtdgfCCrz6mZM4Y90J9lviKu/z+M5ld8Wj7PWlQOH
-         38RClyGdftFRKwraOru1q8Q6iEm/3vOlH5mLIaT7Apl3gzG1iSa/1dW/HXLzZWv85KfT
-         pHAw==
+        bh=bqXtv22ZUtS0qgDJidqDDJ8RaXdBnZWAHyKHD4vzru4=;
+        b=QUInkCJmJmKNYvLUhAfzQ9flwayyOiI72mHVqOSAVviq9cvKXCaQhw7YCW2lAzue5a
+         PtwE/YUdtJkMmWERc/tjvvU5g7H/D1KNkTU8PVBdpsBkEjqBDrBFKez0r0ekXSzCRB6R
+         njAsSA7upPfSrTWDTyZo+svjYdmiHwRhAg9bGucEkfz66E+6+mDKQMEnX4wl/fVh480U
+         n0b/oiJwC5jzuxN99JhcUM2wYp2vAq4drbWTA6lJyE+s55NaGsT2CJ+mblUkx+rwi22y
+         vl8fWwFPs5ZutWWT7+NXciWVoG4FPCHHx90yX7+zYywdEjxKdAGFAY/tMy6ZxI595/Tz
+         AVnQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=ral1/cr5tv0Oi6I2LPNfpBXJdYcfSjlB+JCdbq1/BvM=;
-        b=oy+cVL6CUflh/sYbZkEIsd+Jah3gB12j2r8mRRAI9JIYEQLe5FSdL8z7A9hwp6KC3+
-         g3ipgBoUtW1u0fJ+bGVfZngL2aY8yhw1b/tcaqeJ9ieBsSiMum/nSQ/816Hsh9X0NXMn
-         4IZTCtp/+vkx/rtl04m+EOS6Wp+2g1Xd97nkxRQO1NrF+gr5WT6Z2mHL2T2rcNW/N3Ls
-         QRPDF5fBsiZ2jVPgS7z7XdzzjxzP231iBmNrRCm5WLvmNiAFBYpFucmrNmw1a4X8mUDm
-         PJ96sC8nXxKsZAHPgRYBNHX0W2OmLrbDc8rZaNO8TcqwRlb4BqqdDto2Uw3+md5M8h2f
-         frag==
-X-Gm-Message-State: AOAM532+D4pfldhGdFBVoWPp1rkoUru7/hEObLzvnLV7yyrUvmI+NFhE
-        aVPFUqgcajWAmkUk2W4dTf5AmV/I/21UnfxrZ+YEan9xgKE=
-X-Google-Smtp-Source: ABdhPJyyUna/R7wkRXzZvYboqcK5WjDInXT8ALb2Ce7Kmy5x9ZSbXIZKM9P9N8ohFRMpMqTZqRXLFrTf9IJaXBjVWaY=
-X-Received: by 2002:a2e:889a:: with SMTP id k26mr4475795lji.438.1622162495862;
- Thu, 27 May 2021 17:41:35 -0700 (PDT)
+        bh=bqXtv22ZUtS0qgDJidqDDJ8RaXdBnZWAHyKHD4vzru4=;
+        b=JtQNp91oZwwXc9Z7eFWJzAS3beEbcSYbi7tET7n1X879ZxPDUXFNbvU4H+PLm9zeWQ
+         PCR85yTP2Nnd1WszZPhTmVicUlh74eV1xFtwqK7/9yJRX2mNKVUtgqkoE024Pb+XA7Pv
+         NyQQl5XcGVT5Z3r7eh2sLxvlKwwbQxuNsqhfGTLkFibVs+bGCd8DOpsLl7ze7RufZZaQ
+         jIqWA7gN8PUoSjtYWPNsrlvlAuW4EDgIDxqLuphz9+e4Rdmp9ERq1gVVDoESu6QSEhyJ
+         joV7zRV+O3hnzbFbU03EchYREeiZI9vSyKMiuz8SZ+Eam8ay2UjTijI3XvP8JCRKy03P
+         W3Gw==
+X-Gm-Message-State: AOAM531L9NO8uydrKUwgJH9h5zdJvV9J9ng4vXrEfOFSDANNZp62fqfl
+        191jBVL8LUKLzGdLKEX1Omul6OxA3lhCmJUYW1SgdA==
+X-Google-Smtp-Source: ABdhPJy+hfNUexCL8TTlUUJK8I3QzLMF+v0rvL61y44+e9fdv/apiuRrXL1TA5yo2dB7IrX8CBFMLj9cJ2SvZaMdBuA=
+X-Received: by 2002:a05:6512:49b:: with SMTP id v27mr4249864lfq.29.1622162567971;
+ Thu, 27 May 2021 17:42:47 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210525183518.63149-1-andriy.shevchenko@linux.intel.com> <20210525183518.63149-2-andriy.shevchenko@linux.intel.com>
-In-Reply-To: <20210525183518.63149-2-andriy.shevchenko@linux.intel.com>
+References: <1621998464-10918-1-git-send-email-yang.lee@linux.alibaba.com>
+In-Reply-To: <1621998464-10918-1-git-send-email-yang.lee@linux.alibaba.com>
 From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Fri, 28 May 2021 02:41:24 +0200
-Message-ID: <CACRpkdbZ+ndoDe_aPAUSiMX_CS-LsO7K-oLGEmQ_9Dy0NTeyDA@mail.gmail.com>
-Subject: Re: [PATCH v1 2/2] gpiolib: Switch to bitmap_alloc()
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     Kent Gibson <warthog618@gmail.com>,
+Date:   Fri, 28 May 2021 02:42:37 +0200
+Message-ID: <CACRpkdZhVfnUkMqaAi77rV8gLxRdt638S2Kq1XW_6UZCTzHN2Q@mail.gmail.com>
+Subject: Re: [PATCH] pinctrl: Fix kernel-doc
+To:     Yang Li <yang.lee@linux.alibaba.com>
+Cc:     ext Tony Lindgren <tony@atomide.com>,
+        Haojian Zhuang <haojian.zhuang@linaro.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux-OMAP <linux-omap@vger.kernel.org>,
         "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>
+        linux-kernel <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 25, 2021 at 8:35 PM Andy Shevchenko
-<andriy.shevchenko@linux.intel.com> wrote:
+On Wed, May 26, 2021 at 5:07 AM Yang Li <yang.lee@linux.alibaba.com> wrote:
 
-> Switch to bitmap_alloc() to show clearly what we are allocating.
-> Besides that it returns pointer of bitmap type instead of opaque void *.
+> Fix function name in pinctrl-single.c kernel-doc comment
+> to remove a warning found by clang_w1.
 >
-> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> drivers/pinctrl/pinctrl-single.c:1523: warning: expecting prototype for
+> pcs_irq_handle(). Prototype was for pcs_irq_chain_handler() instead.
+>
+> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+> Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
 
-Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+Patch applied.
 
 Yours,
 Linus Walleij
