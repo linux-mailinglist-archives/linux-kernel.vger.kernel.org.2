@@ -2,77 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E891F3947E2
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 22:20:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1558F3947DD
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 22:19:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229636AbhE1UWP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 May 2021 16:22:15 -0400
-Received: from terminus.zytor.com ([198.137.202.136]:40135 "EHLO
-        mail.zytor.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229520AbhE1UWO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 May 2021 16:22:14 -0400
-Received: from [IPv6:2601:646:8602:8be1:98d9:d1bf:53df:75dc] ([IPv6:2601:646:8602:8be1:98d9:d1bf:53df:75dc])
-        (authenticated bits=0)
-        by mail.zytor.com (8.16.1/8.15.2) with ESMTPSA id 14SKKIIW1331793
-        (version=TLSv1.3 cipher=TLS_AES_128_GCM_SHA256 bits=128 verify=NO);
-        Fri, 28 May 2021 13:20:20 -0700
-DKIM-Filter: OpenDKIM Filter v2.11.0 mail.zytor.com 14SKKIIW1331793
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zytor.com;
-        s=2021042801; t=1622233221;
-        bh=X23WMSn9jCLm7Ii1JTp+Z5ckc4p+t9rPT5IcweeBPjg=;
-        h=Date:In-Reply-To:References:Subject:To:CC:From:From;
-        b=c/B4HBiGCLmzseTgNXqgTpHT+IYramm1a+vn1nZmtB4IKjtpoih7IFcoUcuhd6+7d
-         hMZbpw/xW8CBrXsOC92bxxbfCiBp7ws9qpsEgWJ1/dPct9d5FWoJIe3T2BPodiX7SO
-         dcM4wb0NwqMSA9mdMmEX3m8XkpyxgW86QvPR1RnquhJ2A/pvA/c3i4dryzPn8InqKp
-         E+whdZDR4R2Er9oWX+vyfjNdchjEwXqE+NbB51e3CoXeg6AGvQgpMw9gsC4ZsT2m9a
-         kIw2Ftxypa8E+jDmH/DA761S7ys3t9SGfQb3vUma2bqXsVIfFnghYy2uZYssAZXZS7
-         jJb29GpzyVc7w==
-Date:   Fri, 28 May 2021 13:20:08 -0700
-User-Agent: K-9 Mail for Android
-In-Reply-To: <YLEBeJwHgnLxRtYW@zn.tnic>
-References: <20210526081100.12239-1-rppt@kernel.org> <YK4LGUDWXJWOp7IR@zn.tnic> <YK53kWHb4cPeeHsd@kernel.org> <YK6QFLUoPZ7btQfH@zn.tnic> <f7525409-3987-f79d-9f52-71f6c0231491@zytor.com> <YLEBeJwHgnLxRtYW@zn.tnic>
+        id S229589AbhE1UVY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 May 2021 16:21:24 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39864 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229482AbhE1UVX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 28 May 2021 16:21:23 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D767C61176;
+        Fri, 28 May 2021 20:19:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1622233188;
+        bh=Y9voMhMz9B9g7rE3mo56opMWRPzgKY/nkyFObrkrKxo=;
+        h=Date:From:To:Cc:Subject:From;
+        b=KZ2BV87WYsJTtRauCc++r0/aOROQxSs8aVlCe7KzMX1p/whR+2mMXvgH5y+cK/9wJ
+         IcxqNOvbuKZoLSyxaHMGFhXOa4MIlF/IZP9U/63BC/6Dy5CZoJTYX/QDvEt/PSGNAK
+         tUSdZr2L9iME15oBI3LVfTLXXpb2uCwr2skge90TjuiIsd3W1aM2j05VuE9VtIpD85
+         bwWiAAlK/r5MKUHTHLCDrMYE3Wz4wcIXJx3P4hRRk7JD95id1oEHDIFJNr4w1SDi7R
+         OGpcGJBx1mS03YPQu/vzadvK6ylJ582u4nh8MZ0/GCXdUhngLmwOyjGGt+1jE/jbjV
+         e37pRB+xgjrjg==
+Date:   Fri, 28 May 2021 15:20:47 -0500
+From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
+To:     Peter Ujfalusi <peter.ujfalusi@gmail.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
+Cc:     alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        linux-hardening@vger.kernel.org
+Subject: [PATCH][next] ASoC: ti: davinci-mcasp: Fix fall-through warning for
+ Clang
+Message-ID: <20210528202047.GA39602@embeddedor>
 MIME-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-Subject: Re: [PATCH] x86/Kconfig: decrease maximum of X86_RESERVE_LOW to 512K
-To:     Borislav Petkov <bp@alien8.de>
-CC:     Mike Rapoport <rppt@kernel.org>, Ingo Molnar <mingo@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        untaintableangel@hotmail.co.uk, x86@kernel.org,
-        linux-kernel@vger.kernel.org
-From:   "H. Peter Anvin" <hpa@zytor.com>
-Message-ID: <5AFA0407-7F2F-403A-B5BA-7D535993C776@zytor.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Please just do it=2E It is insane to spend more effort on reclaiming at the=
- very most a few hundred kilobytes in this day and age=2E
+In preparation to enable -Wimplicit-fallthrough for Clang, fix a warning
+by explicitly adding a goto statement instead of letting the code fall
+through to the next case.
 
-On May 28, 2021 7:43:04 AM PDT, Borislav Petkov <bp@alien8=2Ede> wrote:
->On Thu, May 27, 2021 at 07:12:51PM -0700, H=2E Peter Anvin wrote:
->> BIOSes have been known to clobber more than 64K=2E They aren't supposed
->to
->> clobber any=2E
->
->Yah, the BIOSes and what they're not supposed to do=2E Like they even
->care=2E
->
->> 640K is the limit because that is the address of the EGA/VGA frame
->> buffer=2E In the words of Bill Gates "640K ought to be enough for
->anyone=2E"
->
->Right=2E
->
->So thoughts on:
->
->https://lkml=2Ekernel=2Eorg/r/YK%2Bgv0vDfLVD7Sqp@kernel=2Eorg
->
->?
->
->Time to do what windoze 7 does?
+Link: https://github.com/KSPP/linux/issues/115
+Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+---
+JFYI: We had thousands of these sorts of warnings and now we are down
+      to just 25 in linux-next. This is one of those last remaining
+      warnings.
 
---=20
-Sent from my Android device with K-9 Mail=2E Please excuse my brevity=2E
+ sound/soc/ti/davinci-mcasp.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/sound/soc/ti/davinci-mcasp.c b/sound/soc/ti/davinci-mcasp.c
+index b94220306d1a..587967720135 100644
+--- a/sound/soc/ti/davinci-mcasp.c
++++ b/sound/soc/ti/davinci-mcasp.c
+@@ -2317,6 +2317,7 @@ static int davinci_mcasp_probe(struct platform_device *pdev)
+ 		break;
+ 	default:
+ 		dev_err(&pdev->dev, "No DMA controller found (%d)\n", ret);
++		goto err;
+ 	case -EPROBE_DEFER:
+ 		goto err;
+ 	}
+-- 
+2.27.0
+
