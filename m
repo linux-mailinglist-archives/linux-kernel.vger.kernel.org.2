@@ -2,279 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C335E3945B5
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 18:16:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B936D3945BA
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 18:18:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236718AbhE1QR4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 May 2021 12:17:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57146 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236673AbhE1QRs (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 May 2021 12:17:48 -0400
-Received: from mail-pg1-x52f.google.com (mail-pg1-x52f.google.com [IPv6:2607:f8b0:4864:20::52f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A4B0C061574
-        for <linux-kernel@vger.kernel.org>; Fri, 28 May 2021 09:16:12 -0700 (PDT)
-Received: by mail-pg1-x52f.google.com with SMTP id l70so2917762pga.1
-        for <linux-kernel@vger.kernel.org>; Fri, 28 May 2021 09:16:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=y/uR6UFjy823T9h1mlTve3racnPLNFNFuE+dPsqOMg0=;
-        b=rLZdoGDa22YFMNbVWyy1ldrXjbW2JYyYk4cZBwQOu1kGE/UxQM1uuewC52PpIaskGh
-         XH+ueTHtVwVHg53MLkzr6N1ekbvnDY3cgGIN/xQrdHepkPF1L444UxwHfhjjtBnWHG2C
-         S7ItZCkTTAopN1RCOTMAqroGu8bghVgOy9XZOhfyQZvAb5303lv3j+T5xyrN2MqMQwWP
-         g4h6tadBZBpYfohNEwqrzENLTnZ8++xfmQqpx3sk1mtgA4zZWALsjlsp4K+JMZO8c/TP
-         pDU/FMbfoxp1FWCS/Xp90rjkQkeF9yXEQYzE8PFBEMz0ZFcSEiOTZd76U28fZl1JJsdE
-         t5Fw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=y/uR6UFjy823T9h1mlTve3racnPLNFNFuE+dPsqOMg0=;
-        b=keMHFMd+RZUmIZBQH7jt7QZwW3K80fDjqVHNQIovHsobtpqw6H0sWjKTjiMLQWEkoK
-         UUMYxKpPKJhG1zvJ0Idg+DWi4FJOd2wAFKqWQkfDo6vxc2iaH6JyWubPRYkLOJaetqnn
-         hz25pSKcZ1F5kxx9g7oxTZBPOz12V/tNpRylgB5kkbsmYfHMYSt8SOEgIu/rqD9Yk7CU
-         8beMvg3/q1TXQCC+VtWfbktNXkV0TOtuyKjrNxrib2dH80VsCHu26VOVjbxAtY2L8wRi
-         GbxPdJ1oCsjCTu4UdFejxp293vrAaB4OAqtAVk1IhPCwIoL1vwaBOlBPnM0sbct61Ayj
-         vOMg==
-X-Gm-Message-State: AOAM533JMDrag0EjPV/iyr84E4Ap6fELsHJDK5JzwzU/tli65AqaRaLI
-        Pw8zpzEChe5VK3Uf8r6sJsbu8Q==
-X-Google-Smtp-Source: ABdhPJxBApn4DIy9lwwZWSS4A3P7mLCvPpxj1osq9Z0K0uNkJ0X+DpKM5inRd7ySKCdXdsiCqRVAxQ==
-X-Received: by 2002:a63:d213:: with SMTP id a19mr9803271pgg.28.1622218571827;
-        Fri, 28 May 2021 09:16:11 -0700 (PDT)
-Received: from localhost ([103.207.71.35])
-        by smtp.gmail.com with ESMTPSA id k20sm4809997pgl.72.2021.05.28.09.16.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 28 May 2021 09:16:11 -0700 (PDT)
-From:   Leo Yan <leo.yan@linaro.org>
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Mike Leach <mike.leach@linaro.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        John Garry <john.garry@huawei.com>,
-        Will Deacon <will@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>, Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Daniel Kiss <daniel.kiss@arm.com>,
-        Denis Nikitin <denik@google.com>, coresight@lists.linaro.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-perf-users@vger.kernel.org
-Cc:     Leo Yan <leo.yan@linaro.org>
-Subject: [PATCH v1 3/3] perf cs-etm: Remove callback cs_etm_find_snapshot()
-Date:   Sat, 29 May 2021 00:15:52 +0800
-Message-Id: <20210528161552.654907-4-leo.yan@linaro.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210528161552.654907-1-leo.yan@linaro.org>
-References: <20210528161552.654907-1-leo.yan@linaro.org>
+        id S236797AbhE1QTl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 May 2021 12:19:41 -0400
+Received: from mga03.intel.com ([134.134.136.65]:26607 "EHLO mga03.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236679AbhE1QTf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 28 May 2021 12:19:35 -0400
+IronPort-SDR: PAFmk1FmUEsK1sGlSYSFzvPkxcrbZmsR3un3CFcVWjjgPZJrVjDo8k2OQk2AneSrvyaa0s8RDh
+ 0b7ptpRCBSOw==
+X-IronPort-AV: E=McAfee;i="6200,9189,9998"; a="203018350"
+X-IronPort-AV: E=Sophos;i="5.83,229,1616482800"; 
+   d="scan'208";a="203018350"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 May 2021 09:17:45 -0700
+IronPort-SDR: Ob+vocMUn0vIVMxr3+HzLdr9KZ1s3a+g+7hQqYg2H+yQ6Pjp47f/h77mkoNSN8L6USENL/3y/a
+ APk+NyX7QZFw==
+X-IronPort-AV: E=Sophos;i="5.83,229,1616482800"; 
+   d="scan'208";a="481098275"
+Received: from yihleong-mobl.amr.corp.intel.com (HELO [10.255.228.69]) ([10.255.228.69])
+  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 May 2021 09:17:44 -0700
+Subject: Re: [PATCH 0/6 v2] Calculate pcp->high based on zone sizes and active
+ CPUs
+To:     Mel Gorman <mgorman@techsingularity.net>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Hillf Danton <hdanton@sina.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Michal Hocko <mhocko@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux-MM <linux-mm@kvack.org>, "Tang, Feng" <feng.tang@intel.com>
+References: <20210525080119.5455-1-mgorman@techsingularity.net>
+ <7177f59b-dc05-daff-7dc6-5815b539a790@intel.com>
+ <20210528085545.GJ30378@techsingularity.net>
+ <893ce8ed-df14-612b-693f-48c9dac0eb19@intel.com>
+ <20210528151834.GR30378@techsingularity.net>
+From:   Dave Hansen <dave.hansen@intel.com>
+Autocrypt: addr=dave.hansen@intel.com; keydata=
+ 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
+ z5cecg==
+Message-ID: <c847e968-670a-ff6b-2f14-7fa4066955dd@intel.com>
+Date:   Fri, 28 May 2021 09:17:41 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210528151834.GR30378@techsingularity.net>
+Content-Type:   text/plain; charset=US-ASCII
+Content-Language: en-US
+Content-Transfer-Encoding: 7BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The callback cs_etm_find_snapshot() is invoked for snapshot mode, its
-main purpose is to find the correct AUX trace data and returns "head"
-and "old" (we can call "old" as "old head") to the caller, the caller
-__auxtrace_mmap__read() uses these two pointers to decide the AUX trace
-data size.
+On 5/28/21 8:18 AM, Mel Gorman wrote:
+>> BTW, to do some of this testing, Feng was doing a plain old kernel
+>> build.  On the one system where this got run, he noted a ~2% regression
+>> in build times.  Nothing major, but you might want to be on the lookout
+>> in case 0day or the other test harnesses find something similar once
+>> this series gets to them.
+>>
+> What type of system was it?
+> 
+> I noticed minor differences for some thread counts on kernel compilations
+> but for CascadeLake at least, it was mostly neutral. Below is an old test
+> result based on a previous revision.
 
-cs_etm_find_snapshot() should be removed with below reasons:
+It's a Cascade Lake as well.  But, I never trust hardware at a hardware
+company.  These could be preproduction CPUs or BIOS or both, or have
+some bonkers configuration knob flipped.
 
-- The first thing in cs_etm_find_snapshot() is to check if the head has
-  wrapped around, if it is not, directly bails out.  The checking is
-  pointless, this is because the "head" and "old" pointers both are
-  monotonical increasing so they never wrap around.
+It's also got a bunch of PMEM plugged and onlined, including the
+_possibility_ of kernel data structures ended up on PMEM.  They *mostly*
+don't end up there, but it does happen on occasion.
 
-- cs_etm_find_snapshot() adjusts the "head" and "old" pointers and
-  assumes the AUX ring buffer is fully filled with the hardware trace
-  data, so it always calculates the difference "mm->len" between "head"
-  and "old".  Let's imagine the snapshot is taken in very short
-  interval, the tracers only fill a small chunk of the trace data into
-  the AUX ring buffer, in this case, it's wrongly to copy the whole the
-  AUX ring buffer to perf file.
-
-- As the "head" and "old" pointers are monotonically increased, the
-  function __auxtrace_mmap__read() handles these two pointers properly.
-  It calculates the reminders for these two pointers, and the size is
-  clamped to be never more than "snapshot_size".  We can simply reply on
-  the function __auxtrace_mmap__read() to calculate the correct result
-  for data copying, it's not necessary to add Arm CoreSight specific
-  callback.
-
-Signed-off-by: Leo Yan <leo.yan@linaro.org>
----
- tools/perf/arch/arm/util/cs-etm.c | 133 ------------------------------
- 1 file changed, 133 deletions(-)
-
-diff --git a/tools/perf/arch/arm/util/cs-etm.c b/tools/perf/arch/arm/util/cs-etm.c
-index d942f118d32c..85168d87b2d7 100644
---- a/tools/perf/arch/arm/util/cs-etm.c
-+++ b/tools/perf/arch/arm/util/cs-etm.c
-@@ -38,8 +38,6 @@ struct cs_etm_recording {
- 	struct auxtrace_record	itr;
- 	struct perf_pmu		*cs_etm_pmu;
- 	struct evlist		*evlist;
--	int			wrapped_cnt;
--	bool			*wrapped;
- 	bool			snapshot_mode;
- 	size_t			snapshot_size;
- };
-@@ -734,135 +732,6 @@ static int cs_etm_info_fill(struct auxtrace_record *itr,
- 	return 0;
- }
- 
--static int cs_etm_alloc_wrapped_array(struct cs_etm_recording *ptr, int idx)
--{
--	bool *wrapped;
--	int cnt = ptr->wrapped_cnt;
--
--	/* Make @ptr->wrapped as big as @idx */
--	while (cnt <= idx)
--		cnt++;
--
--	/*
--	 * Free'ed in cs_etm_recording_free().  Using realloc() to avoid
--	 * cross compilation problems where the host's system supports
--	 * reallocarray() but not the target.
--	 */
--	wrapped = realloc(ptr->wrapped, cnt * sizeof(bool));
--	if (!wrapped)
--		return -ENOMEM;
--
--	wrapped[cnt - 1] = false;
--	ptr->wrapped_cnt = cnt;
--	ptr->wrapped = wrapped;
--
--	return 0;
--}
--
--static bool cs_etm_buffer_has_wrapped(unsigned char *buffer,
--				      size_t buffer_size, u64 head)
--{
--	u64 i, watermark;
--	u64 *buf = (u64 *)buffer;
--	size_t buf_size = buffer_size;
--
--	/*
--	 * We want to look the very last 512 byte (chosen arbitrarily) in
--	 * the ring buffer.
--	 */
--	watermark = buf_size - 512;
--
--	/*
--	 * @head is continuously increasing - if its value is equal or greater
--	 * than the size of the ring buffer, it has wrapped around.
--	 */
--	if (head >= buffer_size)
--		return true;
--
--	/*
--	 * The value of @head is somewhere within the size of the ring buffer.
--	 * This can be that there hasn't been enough data to fill the ring
--	 * buffer yet or the trace time was so long that @head has numerically
--	 * wrapped around.  To find we need to check if we have data at the very
--	 * end of the ring buffer.  We can reliably do this because mmap'ed
--	 * pages are zeroed out and there is a fresh mapping with every new
--	 * session.
--	 */
--
--	/* @head is less than 512 byte from the end of the ring buffer */
--	if (head > watermark)
--		watermark = head;
--
--	/*
--	 * Speed things up by using 64 bit transactions (see "u64 *buf" above)
--	 */
--	watermark >>= 3;
--	buf_size >>= 3;
--
--	/*
--	 * If we find trace data at the end of the ring buffer, @head has
--	 * been there and has numerically wrapped around at least once.
--	 */
--	for (i = watermark; i < buf_size; i++)
--		if (buf[i])
--			return true;
--
--	return false;
--}
--
--static int cs_etm_find_snapshot(struct auxtrace_record *itr,
--				int idx, struct auxtrace_mmap *mm,
--				unsigned char *data,
--				u64 *head, u64 *old)
--{
--	int err;
--	bool wrapped;
--	struct cs_etm_recording *ptr =
--			container_of(itr, struct cs_etm_recording, itr);
--
--	/*
--	 * Allocate memory to keep track of wrapping if this is the first
--	 * time we deal with this *mm.
--	 */
--	if (idx >= ptr->wrapped_cnt) {
--		err = cs_etm_alloc_wrapped_array(ptr, idx);
--		if (err)
--			return err;
--	}
--
--	/*
--	 * Check to see if *head has wrapped around.  If it hasn't only the
--	 * amount of data between *head and *old is snapshot'ed to avoid
--	 * bloating the perf.data file with zeros.  But as soon as *head has
--	 * wrapped around the entire size of the AUX ring buffer it taken.
--	 */
--	wrapped = ptr->wrapped[idx];
--	if (!wrapped && cs_etm_buffer_has_wrapped(data, mm->len, *head)) {
--		wrapped = true;
--		ptr->wrapped[idx] = true;
--	}
--
--	pr_debug3("%s: mmap index %d old head %zu new head %zu size %zu\n",
--		  __func__, idx, (size_t)*old, (size_t)*head, mm->len);
--
--	/* No wrap has occurred, we can just use *head and *old. */
--	if (!wrapped)
--		return 0;
--
--	/*
--	 * *head has wrapped around - adjust *head and *old to pickup the
--	 * entire content of the AUX buffer.
--	 */
--	if (*head >= mm->len) {
--		*old = *head - mm->len;
--	} else {
--		*head += mm->len;
--		*old = *head - mm->len;
--	}
--
--	return 0;
--}
--
- static int cs_etm_snapshot_start(struct auxtrace_record *itr)
- {
- 	struct cs_etm_recording *ptr =
-@@ -900,7 +769,6 @@ static void cs_etm_recording_free(struct auxtrace_record *itr)
- 	struct cs_etm_recording *ptr =
- 			container_of(itr, struct cs_etm_recording, itr);
- 
--	zfree(&ptr->wrapped);
- 	free(ptr);
- }
- 
-@@ -928,7 +796,6 @@ struct auxtrace_record *cs_etm_record_init(int *err)
- 	ptr->itr.recording_options	= cs_etm_recording_options;
- 	ptr->itr.info_priv_size		= cs_etm_info_priv_size;
- 	ptr->itr.info_fill		= cs_etm_info_fill;
--	ptr->itr.find_snapshot		= cs_etm_find_snapshot;
- 	ptr->itr.snapshot_start		= cs_etm_snapshot_start;
- 	ptr->itr.snapshot_finish	= cs_etm_snapshot_finish;
- 	ptr->itr.reference		= cs_etm_reference;
--- 
-2.25.1
-
+Anyway, I'll see if we can do some more runs with your latest version.
+It looks like it's been picked up for -mm so 0day should be pounding on
+it soon enough.
