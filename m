@@ -2,144 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C8A84393A3A
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 02:26:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 820E3393A3D
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 02:28:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233941AbhE1A15 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 May 2021 20:27:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42056 "EHLO
+        id S234461AbhE1A3m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 May 2021 20:29:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42474 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233038AbhE1A1y (ORCPT
+        with ESMTP id S234127AbhE1A3l (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 May 2021 20:27:54 -0400
-Received: from mail-pf1-x42f.google.com (mail-pf1-x42f.google.com [IPv6:2607:f8b0:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ECB38C061760
-        for <linux-kernel@vger.kernel.org>; Thu, 27 May 2021 17:26:18 -0700 (PDT)
-Received: by mail-pf1-x42f.google.com with SMTP id x18so1906987pfi.9
-        for <linux-kernel@vger.kernel.org>; Thu, 27 May 2021 17:26:18 -0700 (PDT)
+        Thu, 27 May 2021 20:29:41 -0400
+Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 357B0C061574
+        for <linux-kernel@vger.kernel.org>; Thu, 27 May 2021 17:28:07 -0700 (PDT)
+Received: by mail-pj1-x1029.google.com with SMTP id lr4-20020a17090b4b84b02901600455effdso2326984pjb.5
+        for <linux-kernel@vger.kernel.org>; Thu, 27 May 2021 17:28:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=jfKJjdbN+4DQtjPEpX3uCd+w5dzOr3n8hSCgp5RxnpE=;
-        b=osymOpvBI+/3/qFdiYrxBqmhbyNl/HSaiueObC3aBEK6k19qyX39F/euezWR30Lv43
-         rnOZqYmtdlawMzR58Bld35H31ZYIyZFhPgTsEeMvijUrXjO4Ls/tBzAcDC/cPbwYZkg1
-         js50Pdxdq+3bvD7TS6zXkAU7IrVGk54YnexJiJzZM7Z9EnBilY+obzqSIqJlcI4H/g1C
-         nebnSiv65PU6f6zQZlL2vpjSAXMFNTYfKsPvzsPWc1psgtS3RkqQZMviy/oKOfqQU+2I
-         OLsJWBJyorJ3b+3vK0c6HTFpnAdLEnVzkCEVGAaEy0WInGefXk1m0pv0VTViUBM3aImz
-         8fBg==
+        bh=HsIFXy6XyY1Kl8elLwbDFy3dqG2MZ/zQxTfXHVcpZt4=;
+        b=sl9k+mP7vVMY/eTSb/yN6svp99RNBde975CQqkqpTMkogQM4QS3s/ruwx6tufcfXCQ
+         dlSbma1leXFhJYF/KkzGP6ETHxXTdQeI9XQjLPgCdc/8XXnS6olpq/jfzlxm/LzW7Y6Y
+         vDJjzKfK/QfEY2ObYHgY3qkhtdeSJ/BWcQSGaKRpAwMb3rOSg8xRD5aFSzteiJ0z/Wfc
+         oy2UPB62PGJPIEgicUaM6QeigB1LMlDN5MY6EzoRSfDwpKxU659pNrEMzUGdZv2flECn
+         q2pOFd0yGooNtwg437Xp6ioceaPDvVz5kJK71J9CRe3LKU/iQ/70ssAeSdCHAo3yKD9a
+         jLEQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=jfKJjdbN+4DQtjPEpX3uCd+w5dzOr3n8hSCgp5RxnpE=;
-        b=Q83O6bLLu7+EfaHQkOoBH/y5fBQJaPcAjThiQimg4P1d0AQRNBQrTob6xdQxSyiKTE
-         Flvax+WeQF1zqDnwLZX97HTiVU7d2/n9JXKrSK2KW/harPwuhOay/8A6h1sZiN36relw
-         5KD9cSiZm9BrHf/UfWLvxJiiM1VJmK4pY7YpPVvKgdXZjFkgIERgL+xWhANVg/kkalnM
-         /N/hEcMQx5wpTlgr/0uF+uFkFNB0tcbovjnUAXfAd/ZMfTSocdKur/UY6dDDO0AwNfmH
-         mNkPve06PLcekjeKphMIZoRMEGurDA1AVvs3r7/ZatbMfgWQ67ekQRrxIjotw5VWLF3D
-         tO9A==
-X-Gm-Message-State: AOAM532/leeQ/dwoRYmOwn7PzpM+9YlyWaLdaR7tQdc2NsFpz2abvZpJ
-        cNjs+LRtjWaG4U5mwFVIsrCrng==
-X-Google-Smtp-Source: ABdhPJxUIZ35EU+VYc9PqZf7JgWm+tdhfnA90/4/EWrKCbXvMEpgbtor5FEgjYZzQIBmVf7MRW7G0A==
-X-Received: by 2002:a63:5243:: with SMTP id s3mr6164029pgl.247.1622161578159;
-        Thu, 27 May 2021 17:26:18 -0700 (PDT)
+        bh=HsIFXy6XyY1Kl8elLwbDFy3dqG2MZ/zQxTfXHVcpZt4=;
+        b=Vjp0bRV5ZpCob8YHexV44HZESMOUWPi8TOpXrReACyjrpCwE2GSk7fNezDHUYcPVbt
+         70WaO3eV2WKY24jNrdJKvmfkwuIk6coteLARkqUQr2vmPHskGE8LkRK0Gjn2UmzN5vNv
+         0x7bCkDg2nzo9AlRHUG95qANp81xkgvCjwNvJjzy4S7AqdVFl/uNWv14Ko2E764Hc6Yd
+         9Ch3BeAN9aS7iGzfDuqp5kNH0DFYmTD4aDLVX14DITzb+NrKOPruQdQaVk0XvctjSD2m
+         C7pD9Ub4Tv1ru4Q3S89PoNoN62OBBJag9zWMMp4UUdWtGkfxjU6WtAXFbzfAL+8WsAj1
+         5Zag==
+X-Gm-Message-State: AOAM532m05UNcxMYuqDUpx9jZLRLH51QaUHAZKpuklNhmcIIHvxoZZjx
+        OIZCWr7x7HhWBe0t7QFjw1meIg==
+X-Google-Smtp-Source: ABdhPJzF5xrTkowyMzuFFwUWiRRe7fknMlencg4R8ZBJmbwejfGkd48/EBxVDost18no4NUcL9APow==
+X-Received: by 2002:a17:90b:1902:: with SMTP id mp2mr1252236pjb.176.1622161686609;
+        Thu, 27 May 2021 17:28:06 -0700 (PDT)
 Received: from google.com (240.111.247.35.bc.googleusercontent.com. [35.247.111.240])
-        by smtp.gmail.com with ESMTPSA id f17sm2829294pgi.26.2021.05.27.17.26.17
+        by smtp.gmail.com with ESMTPSA id m1sm2903200pgd.78.2021.05.27.17.28.05
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 27 May 2021 17:26:17 -0700 (PDT)
-Date:   Fri, 28 May 2021 00:26:13 +0000
+        Thu, 27 May 2021 17:28:05 -0700 (PDT)
+Date:   Fri, 28 May 2021 00:28:02 +0000
 From:   Sean Christopherson <seanjc@google.com>
-To:     Lai Jiangshan <laijs@linux.alibaba.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        linux-kernel@vger.kernel.org,
+To:     Wanpeng Li <kernellwp@gmail.com>
+Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        Paolo Bonzini <pbonzini@redhat.com>,
         Vitaly Kuznetsov <vkuznets@redhat.com>,
         Wanpeng Li <wanpengli@tencent.com>,
         Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        Radim =?utf-8?B?S3LEjW3DocWZ?= <rkrcmar@redhat.com>,
-        kvm@vger.kernel.org, Maxim Levitsky <mlevitsk@redhat.com>
-Subject: Re: [PATCH] KVM: X86: fix tlb_flush_guest()
-Message-ID: <YLA4peMjgeVvKlEn@google.com>
-References: <20210527023922.2017-1-jiangshanlai@gmail.com>
- <78ad9dff-9a20-c17f-cd8f-931090834133@redhat.com>
- <YK/FGYejaIu6EzSn@google.com>
- <d96f8c11-19e6-2c2d-91ff-6a7a51fa1b9c@linux.alibaba.com>
+        Joerg Roedel <joro@8bytes.org>
+Subject: Re: [PATCH v4 1/2] KVM: X86: Fix warning caused by stale emulation
+ context
+Message-ID: <YLA5Egyhy5uKDSxq@google.com>
+References: <1622160097-37633-1-git-send-email-wanpengli@tencent.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <d96f8c11-19e6-2c2d-91ff-6a7a51fa1b9c@linux.alibaba.com>
+In-Reply-To: <1622160097-37633-1-git-send-email-wanpengli@tencent.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 28, 2021, Lai Jiangshan wrote:
+On Thu, May 27, 2021, Wanpeng Li wrote:
+> From: Wanpeng Li <wanpengli@tencent.com>
 > 
-> On 2021/5/28 00:13, Sean Christopherson wrote:
-> > And making a request won't work without revamping the order of request handling
-> > in vcpu_enter_guest(), e.g. KVM_REQ_MMU_RELOAD and KVM_REQ_MMU_SYNC are both
-> > serviced before KVM_REQ_STEAL_UPDATE.
+> Reported by syzkaller:
 > 
-> Yes, it just fixes the said problem in the simplest way.
-> I copied KVM_REQ_MMU_RELOAD from kvm_handle_invpcid(INVPCID_TYPE_ALL_INCL_GLOBAL).
-> (If the guest is not preempted, it will call invpcid_flush_all() and will be handled
-> by this way)
-
-The problem is that record_steal_time() is called after KVM_REQ_MMU_RELOAD
-in vcpu_enter_guest() and so the reload request won't be recognized until the
-next VM-Exit.  It works for kvm_handle_invpcid() because vcpu_enter_guest() is
-guaranteed to run between the invcpid code and VM-Enter.
-
-> The improvement code will go later, and will not be backported.
-
-I would argue that introducing a potential performance regression is in itself a
-bug.  IMO, going straight to kvm_mmu_sync_roots() is not high risk.
-
-> The proper way to flush guest is to use code in
+>   WARNING: CPU: 7 PID: 10526 at linux/arch/x86/kvm//x86.c:7621 x86_emulate_instruction+0x41b/0x510 [kvm]
+>   RIP: 0010:x86_emulate_instruction+0x41b/0x510 [kvm]
+>   Call Trace:
+>    kvm_mmu_page_fault+0x126/0x8f0 [kvm]
+>    vmx_handle_exit+0x11e/0x680 [kvm_intel]
+>    vcpu_enter_guest+0xd95/0x1b40 [kvm]
+>    kvm_arch_vcpu_ioctl_run+0x377/0x6a0 [kvm]
+>    kvm_vcpu_ioctl+0x389/0x630 [kvm]
+>    __x64_sys_ioctl+0x8e/0xd0
+>    do_syscall_64+0x3c/0xb0
+>    entry_SYSCALL_64_after_hwframe+0x44/0xae
 > 
-> https://lore.kernel.org/lkml/20210525213920.3340-1-jiangshanlai@gmail.com/
-> as:
-> +		kvm_mmu_sync_roots(vcpu);
-> +		kvm_make_request(KVM_REQ_TLB_FLUSH_CURRENT, vcpu); //or just call flush_current directly
-> +		for (i = 0; i < KVM_MMU_NUM_PREV_ROOTS; i++)
-> +			vcpu->arch.mmu->prev_roots[i].need_sync = true;
+> Commit 4a1e10d5b5d8 ("KVM: x86: handle hardware breakpoints during emulation())
+> adds hardware breakpoints check before emulation the instruction and parts of 
+> emulation context initialization, actually we don't have the EMULTYPE_NO_DECODE flag 
+> here and the emulation context will not be reused. Commit c8848cee74ff ("KVM: x86:
+> set ctxt->have_exception in x86_decode_insn()) triggers the warning because it 
+> catches the stale emulation context has #UD, however, it is not during instruction 
+> decoding which should result in EMULATION_FAILED. This patch fixes it by moving 
+> the second part emulation context initialization into init_emulate_ctxt() and 
+> before hardware breakpoints check. The ctxt->ud will be dropped by a follow-up 
+> patch.
 > 
-> If need_sync patch is not accepted, we can just use kvm_mmu_sync_roots(vcpu)
-> to keep the current pagetable and use kvm_mmu_free_roots() to free all the other
-> roots in prev_roots.
-
-I like the idea, I just haven't gotten around to reviewing that patch yet.
-
-> > Cleaning up and documenting the MMU related requests is on my todo list, but the
-> > immediate fix should be tiny and I can do my cleanups on top.
-> > 
-> > I believe the minimal fix is:
-> > 
-> > diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-> > index 81ab3b8f22e5..b0072063f9bf 100644
-> > --- a/arch/x86/kvm/x86.c
-> > +++ b/arch/x86/kvm/x86.c
-> > @@ -3072,6 +3072,9 @@ static void kvm_vcpu_flush_tlb_all(struct kvm_vcpu *vcpu)
-> >   static void kvm_vcpu_flush_tlb_guest(struct kvm_vcpu *vcpu)
-> >   {
-> >          ++vcpu->stat.tlb_flush;
-> > +
-> > +       if (!tdp_enabled)
-> > +               kvm_mmu_sync_roots(vcpu);
+> syzkaller source: https://syzkaller.appspot.com/x/repro.c?x=134683fdd00000
 > 
-> it doesn't handle prev_roots which are also needed as
-> shown in kvm_handle_invpcid(INVPCID_TYPE_ALL_INCL_GLOBAL).
+> Reported-by: syzbot+71271244f206d17f6441@syzkaller.appspotmail.com
+> Fixes: 4a1e10d5b5d8 (KVM: x86: handle hardware breakpoints during emulation)
+> Signed-off-by: Wanpeng Li <wanpengli@tencent.com>
+> ---
 
-Ya, I belated realized this :-)
-
-> >          static_call(kvm_x86_tlb_flush_guest)(vcpu);
-> 
-> For tdp_enabled, I think it is better to use kvm_x86_tlb_flush_current()
-> to make it consistent with other shadowpage code.
-> 
-> >   }
-> > 
+Reviewed-by: Sean Christopherson <seanjc@google.com>
