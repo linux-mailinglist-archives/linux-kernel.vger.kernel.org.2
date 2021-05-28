@@ -2,72 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1558F3947DD
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 22:19:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F79E39480C
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 22:43:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229589AbhE1UVY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 May 2021 16:21:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39864 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229482AbhE1UVX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 May 2021 16:21:23 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D767C61176;
-        Fri, 28 May 2021 20:19:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1622233188;
-        bh=Y9voMhMz9B9g7rE3mo56opMWRPzgKY/nkyFObrkrKxo=;
-        h=Date:From:To:Cc:Subject:From;
-        b=KZ2BV87WYsJTtRauCc++r0/aOROQxSs8aVlCe7KzMX1p/whR+2mMXvgH5y+cK/9wJ
-         IcxqNOvbuKZoLSyxaHMGFhXOa4MIlF/IZP9U/63BC/6Dy5CZoJTYX/QDvEt/PSGNAK
-         tUSdZr2L9iME15oBI3LVfTLXXpb2uCwr2skge90TjuiIsd3W1aM2j05VuE9VtIpD85
-         bwWiAAlK/r5MKUHTHLCDrMYE3Wz4wcIXJx3P4hRRk7JD95id1oEHDIFJNr4w1SDi7R
-         OGpcGJBx1mS03YPQu/vzadvK6ylJ582u4nh8MZ0/GCXdUhngLmwOyjGGt+1jE/jbjV
-         e37pRB+xgjrjg==
-Date:   Fri, 28 May 2021 15:20:47 -0500
-From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
-To:     Peter Ujfalusi <peter.ujfalusi@gmail.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
-Cc:     alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        linux-hardening@vger.kernel.org
-Subject: [PATCH][next] ASoC: ti: davinci-mcasp: Fix fall-through warning for
- Clang
-Message-ID: <20210528202047.GA39602@embeddedor>
+        id S229607AbhE1UpU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 May 2021 16:45:20 -0400
+Received: from www62.your-server.de ([213.133.104.62]:37180 "EHLO
+        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229482AbhE1UpT (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 28 May 2021 16:45:19 -0400
+Received: from sslproxy03.your-server.de ([88.198.220.132])
+        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92.3)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1lmizB-000G7u-UB; Fri, 28 May 2021 22:21:38 +0200
+Received: from [85.7.101.30] (helo=linux.home)
+        by sslproxy03.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1lmizB-000WbL-Kt; Fri, 28 May 2021 22:21:37 +0200
+Subject: Re: [PATCH][next] bpf: devmap: remove redundant assignment of
+ variable drops
+To:     Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
+        Colin King <colin.king@canonical.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        KP Singh <kpsingh@kernel.org>, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, kernel-janitors@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20210527143637.795393-1-colin.king@canonical.com>
+ <20210527145549.GA7570@ranger.igk.intel.com>
+From:   Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <70c6e7d3-7faf-c4e7-3ae5-78f9a8e4c2b3@iogearbox.net>
+Date:   Fri, 28 May 2021 22:21:36 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+In-Reply-To: <20210527145549.GA7570@ranger.igk.intel.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.103.2/26184/Fri May 28 13:05:50 2021)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In preparation to enable -Wimplicit-fallthrough for Clang, fix a warning
-by explicitly adding a goto statement instead of letting the code fall
-through to the next case.
+On 5/27/21 4:55 PM, Maciej Fijalkowski wrote:
+> On Thu, May 27, 2021 at 03:36:37PM +0100, Colin King wrote:
+>> From: Colin Ian King <colin.king@canonical.com>
+>>
+>> The variable drops is being assigned a value that is never
+>> read, it is being updated later on. The assignment is redundant and
+>> can be removed.
+> 
+> Acked-by: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
+> 
+> Would help if you would have CCed me given the fact that hour ago I
+> confirmed that it could be removed :p but no big deal.
 
-Link: https://github.com/KSPP/linux/issues/115
-Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
----
-JFYI: We had thousands of these sorts of warnings and now we are down
-      to just 25 in linux-next. This is one of those last remaining
-      warnings.
+Thanks guys, fyi, took in this one for bpf-next [0], since more unneeded
+code removed.
 
- sound/soc/ti/davinci-mcasp.c | 1 +
- 1 file changed, 1 insertion(+)
+   [0] https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git/commit/?id=e8e0f0f484780d7b90a63ea50020ac4bb027178d
 
-diff --git a/sound/soc/ti/davinci-mcasp.c b/sound/soc/ti/davinci-mcasp.c
-index b94220306d1a..587967720135 100644
---- a/sound/soc/ti/davinci-mcasp.c
-+++ b/sound/soc/ti/davinci-mcasp.c
-@@ -2317,6 +2317,7 @@ static int davinci_mcasp_probe(struct platform_device *pdev)
- 		break;
- 	default:
- 		dev_err(&pdev->dev, "No DMA controller found (%d)\n", ret);
-+		goto err;
- 	case -EPROBE_DEFER:
- 		goto err;
- 	}
--- 
-2.27.0
+>> Addresses-Coverity: ("Unused value")
+>> Signed-off-by: Colin Ian King <colin.king@canonical.com>
+>> ---
+>>   kernel/bpf/devmap.c | 2 --
+>>   1 file changed, 2 deletions(-)
+>>
+>> diff --git a/kernel/bpf/devmap.c b/kernel/bpf/devmap.c
+>> index f9148daab0e3..fe3873b5d13d 100644
+>> --- a/kernel/bpf/devmap.c
+>> +++ b/kernel/bpf/devmap.c
+>> @@ -388,8 +388,6 @@ static void bq_xmit_all(struct xdp_dev_bulk_queue *bq, u32 flags)
+>>   		to_send = dev_map_bpf_prog_run(bq->xdp_prog, bq->q, cnt, dev);
+>>   		if (!to_send)
+>>   			goto out;
+>> -
+>> -		drops = cnt - to_send;
+>>   	}
+>>   
+>>   	sent = dev->netdev_ops->ndo_xdp_xmit(dev, to_send, bq->q, flags);
+>> -- 
+>> 2.31.1
+>>
 
