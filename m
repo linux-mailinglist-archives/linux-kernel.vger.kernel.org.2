@@ -2,136 +2,392 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4726A393BA5
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 04:50:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A2FE393BAA
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 04:51:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236229AbhE1Cvu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 May 2021 22:51:50 -0400
-Received: from szxga03-in.huawei.com ([45.249.212.189]:2385 "EHLO
-        szxga03-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235886AbhE1Cvm (ORCPT
+        id S236189AbhE1Cwp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 May 2021 22:52:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46388 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235005AbhE1Cwn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 May 2021 22:51:42 -0400
-Received: from dggeml760-chm.china.huawei.com (unknown [172.30.72.53])
-        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4Frpwg4YlRz66Qp;
-        Fri, 28 May 2021 10:46:27 +0800 (CST)
-Received: from dggpemm500005.china.huawei.com (7.185.36.74) by
- dggeml760-chm.china.huawei.com (10.1.199.160) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2176.2; Fri, 28 May 2021 10:50:06 +0800
-Received: from localhost.localdomain (10.69.192.56) by
- dggpemm500005.china.huawei.com (7.185.36.74) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Fri, 28 May 2021 10:50:06 +0800
-From:   Yunsheng Lin <linyunsheng@huawei.com>
-To:     <davem@davemloft.net>, <kuba@kernel.org>
-CC:     <olteanv@gmail.com>, <ast@kernel.org>, <daniel@iogearbox.net>,
-        <andriin@fb.com>, <edumazet@google.com>, <weiwan@google.com>,
-        <cong.wang@bytedance.com>, <ap420073@gmail.com>,
-        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linuxarm@openeuler.org>, <mkl@pengutronix.de>,
-        <linux-can@vger.kernel.org>, <jhs@mojatatu.com>,
-        <xiyou.wangcong@gmail.com>, <jiri@resnulli.us>,
-        <andrii@kernel.org>, <kafai@fb.com>, <songliubraving@fb.com>,
-        <yhs@fb.com>, <john.fastabend@gmail.com>, <kpsingh@kernel.org>,
-        <bpf@vger.kernel.org>, <jonas.bonn@netrounds.com>,
-        <pabeni@redhat.com>, <mzhivich@akamai.com>, <johunt@akamai.com>,
-        <albcamus@gmail.com>, <kehuan.feng@gmail.com>,
-        <a.fatoum@pengutronix.de>, <atenart@kernel.org>,
-        <alexander.duyck@gmail.com>, <hdanton@sina.com>, <jgross@suse.com>,
-        <JKosina@suse.com>, <mkubecek@suse.cz>, <bjorn@kernel.org>,
-        <alobakin@pm.me>
-Subject: [PATCH net-next 3/3] net: sched: remove qdisc->empty for lockless qdisc
-Date:   Fri, 28 May 2021 10:49:57 +0800
-Message-ID: <1622170197-27370-4-git-send-email-linyunsheng@huawei.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1622170197-27370-1-git-send-email-linyunsheng@huawei.com>
-References: <1622170197-27370-1-git-send-email-linyunsheng@huawei.com>
+        Thu, 27 May 2021 22:52:43 -0400
+Received: from mail-ot1-x334.google.com (mail-ot1-x334.google.com [IPv6:2607:f8b0:4864:20::334])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EABB7C06174A
+        for <linux-kernel@vger.kernel.org>; Thu, 27 May 2021 19:51:09 -0700 (PDT)
+Received: by mail-ot1-x334.google.com with SMTP id t10-20020a05683022eab0290304ed8bc759so2167497otc.12
+        for <linux-kernel@vger.kernel.org>; Thu, 27 May 2021 19:51:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=2KgijiAM4/UXomY9RK9iFgWWGWRQLA4snV9jm2h3EAY=;
+        b=RqAov/uwrzoYCQ9EnajVO5fB2N9Ib5t67JTPpPG405RtomOCUpP0uUFQciXzKYepR6
+         ZSzWKLhJrvqJcleGydNHT3p3yl3lnwWOyVDr0T0YHZporv9YJglWfaJb1KN+RBCwzZgd
+         jfA2vhohVagHbNUuR1h5BrteLMRldldthzRCfi7C/jOo4jOeVCWL6AX6IkOLvheSMXTk
+         4VWkYai/ROhN3AouZcqRAhY0m9mgqI0/MNwpWP3lDBd6snqKBiXOFCSxptoaEbKPZuu5
+         2C57RpWs2GJhWXrWLBXJCjgN1EBCyUq143wcBDwC977SkupikpgMURVUmSoGKaUTip+I
+         vqGg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=2KgijiAM4/UXomY9RK9iFgWWGWRQLA4snV9jm2h3EAY=;
+        b=pOSoBIFD8Wq3pTt42bP6aeZD8zvaLLURxKIaPtmEgwWGW62LeLQgxiwTC81bAjPFhl
+         5psLPGa48mWmr/ByeyW5VZVCVmXZGaxo2s+g57Bnt3GTglivCZevyvG48kLe5VjdwSPk
+         CdQ/tbuWKLgbfpYGaIV9v3WkFucO6UE9KiPEoMiEdg/rJeRpN3lvY8en/jpDKn04ka4C
+         bhZ58OqftDPw2kLjUwnEFBJzPjzVYg7V6u4NOoc1knjrC3W109BASo7Zx3vf+dQhjWlg
+         tJUXesIjJ6qySaQKhKILHWbbsKN0ZUVb0yn5do1F/z+NKc/bPt/VtagEjtzPi3pYWQee
+         xzaA==
+X-Gm-Message-State: AOAM531//qVisfar+8yLXpIglo+MMNH1mpnkDRT4hdgzK8FRUE1O6rTv
+        Nsn4tQvlA0aA6hRzxBkif1aiSQ==
+X-Google-Smtp-Source: ABdhPJzdy30myPhIaNXKS0FErpYOTCM59Ir5+k5oKw9X3fpO9+/n1IzWxBXhhbeQOcIlTpLktCXtbA==
+X-Received: by 2002:a05:6830:14d:: with SMTP id j13mr5158396otp.232.1622170269160;
+        Thu, 27 May 2021 19:51:09 -0700 (PDT)
+Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
+        by smtp.gmail.com with ESMTPSA id c18sm884716otm.1.2021.05.27.19.51.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 27 May 2021 19:51:08 -0700 (PDT)
+Date:   Thu, 27 May 2021 21:51:06 -0500
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Konrad Dybcio <konrad.dybcio@somainline.org>
+Cc:     ~postmarketos/upstreaming@lists.sr.ht, martin.botka@somainline.org,
+        angelogioacchino.delregno@somainline.org,
+        marijn.suijten@somainline.org, jamipkettunen@somainline.org,
+        Loic Poulain <loic.poulain@linaro.org>,
+        Andy Gross <agross@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 2/2] arch: arm64: dts: msm8996: Add CPU opps
+Message-ID: <YLBamtRq1xgcsDRE@builder.lan>
+References: <20210527194455.782108-1-konrad.dybcio@somainline.org>
+ <20210527194455.782108-2-konrad.dybcio@somainline.org>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.69.192.56]
-X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
- dggpemm500005.china.huawei.com (7.185.36.74)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210527194455.782108-2-konrad.dybcio@somainline.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-As MISSED and DRAINING state are used to indicate a non-empty
-qdisc, qdisc->empty is not longer needed, so remove it.
+On Thu 27 May 14:44 CDT 2021, Konrad Dybcio wrote:
 
-Signed-off-by: Yunsheng Lin <linyunsheng@huawei.com>
----
- include/net/sch_generic.h | 13 +++----------
- net/sched/sch_generic.c   |  3 ---
- 2 files changed, 3 insertions(+), 13 deletions(-)
+> From: Loic Poulain <loic.poulain@linaro.org>
+> 
+> Add the operating points capabilities of the kryo CPUs, that can be
+> used for frequency scaling. There are two differents operating point
+> tables, one for the big cluster and one for the LITTLE cluster.
+> 
+> This frequency scaling support can then be used as a passive cooling
+> device (cpufreq cooling device).
+> 
+> Only add nominal fmax for now, since there is no dynamic control of
+> VDD APC (s11..) which is statically set at its nominal value.
+> 
+> Original patch link: https://patchwork.kernel.org/project/linux-arm-msm/patch/1595253740-29466-6-git-send-email-loic.poulain@linaro.org/
+> 
+> Signed-off-by: Loic Poulain <loic.poulain@linaro.org>
+> [konrad: drop the thermals part, rebase and remove spaces within <>]
+> Signed-off-by: Konrad Dybcio <konrad.dybcio@somainline.org>
 
-diff --git a/include/net/sch_generic.h b/include/net/sch_generic.h
-index 177f240..c99ffe9 100644
---- a/include/net/sch_generic.h
-+++ b/include/net/sch_generic.h
-@@ -117,8 +117,6 @@ struct Qdisc {
- 	spinlock_t		busylock ____cacheline_aligned_in_smp;
- 	spinlock_t		seqlock;
- 
--	/* for NOLOCK qdisc, true if there are no enqueued skbs */
--	bool			empty;
- 	struct rcu_head		rcu;
- 
- 	/* private data */
-@@ -165,7 +163,7 @@ static inline bool qdisc_is_percpu_stats(const struct Qdisc *q)
- static inline bool qdisc_is_empty(const struct Qdisc *qdisc)
- {
- 	if (qdisc_is_percpu_stats(qdisc))
--		return READ_ONCE(qdisc->empty);
-+		return nolock_qdisc_is_empty(qdisc);
- 	return !READ_ONCE(qdisc->q.qlen);
- }
- 
-@@ -173,7 +171,7 @@ static inline bool qdisc_run_begin(struct Qdisc *qdisc)
- {
- 	if (qdisc->flags & TCQ_F_NOLOCK) {
- 		if (spin_trylock(&qdisc->seqlock))
--			goto nolock_empty;
-+			return true;
- 
- 		/* If the MISSED flag is set, it means other thread has
- 		 * set the MISSED flag before second spin_trylock(), so
-@@ -195,12 +193,7 @@ static inline bool qdisc_run_begin(struct Qdisc *qdisc)
- 		/* Retry again in case other CPU may not see the new flag
- 		 * after it releases the lock at the end of qdisc_run_end().
- 		 */
--		if (!spin_trylock(&qdisc->seqlock))
--			return false;
--
--nolock_empty:
--		WRITE_ONCE(qdisc->empty, false);
--		return true;
-+		return spin_trylock(&qdisc->seqlock);
- 	} else if (qdisc_is_running(qdisc)) {
- 		return false;
- 	}
-diff --git a/net/sched/sch_generic.c b/net/sched/sch_generic.c
-index 83d7f5f..1abd9c7 100644
---- a/net/sched/sch_generic.c
-+++ b/net/sched/sch_generic.c
-@@ -707,8 +707,6 @@ static struct sk_buff *pfifo_fast_dequeue(struct Qdisc *qdisc)
- 		need_retry = false;
- 
- 		goto retry;
--	} else {
--		WRITE_ONCE(qdisc->empty, true);
- 	}
- 
- 	return skb;
-@@ -909,7 +907,6 @@ struct Qdisc *qdisc_alloc(struct netdev_queue *dev_queue,
- 	sch->enqueue = ops->enqueue;
- 	sch->dequeue = ops->dequeue;
- 	sch->dev_queue = dev_queue;
--	sch->empty = true;
- 	dev_hold(dev);
- 	refcount_set(&sch->refcnt, 1);
- 
--- 
-2.7.4
+As reported to Konrad on IRC, booting this causes a lockup before the
+kernel reaches init, on one of my db820c boards. Booting with powersave
+governor makes this board boot fine and I'm able to switch to
+performance after that and at least according to cpufreq we're at full
+speed on all 4 cores. But I haven't done any proper stress of the
+system to narrow it down further...
 
+PS. This was tested with next-20210527, your 3 patches, defconfig and
+CONFIG_QCOM_CLK_APCC_MSM8996=y
+
+Regards,
+Bjorn
+
+> ---
+>  arch/arm64/boot/dts/qcom/msm8996.dtsi | 234 ++++++++++++++++++++++++++
+>  1 file changed, 234 insertions(+)
+> 
+> diff --git a/arch/arm64/boot/dts/qcom/msm8996.dtsi b/arch/arm64/boot/dts/qcom/msm8996.dtsi
+> index 509d5bfec8ad..10e6fecc9e13 100644
+> --- a/arch/arm64/boot/dts/qcom/msm8996.dtsi
+> +++ b/arch/arm64/boot/dts/qcom/msm8996.dtsi
+> @@ -8,6 +8,7 @@
+>  #include <dt-bindings/clock/qcom,rpmcc.h>
+>  #include <dt-bindings/power/qcom-rpmpd.h>
+>  #include <dt-bindings/soc/qcom,apr.h>
+> +#include <dt-bindings/thermal/thermal.h>
+>  
+>  / {
+>  	interrupt-parent = <&intc>;
+> @@ -44,6 +45,9 @@ CPU0: cpu@0 {
+>  			enable-method = "psci";
+>  			cpu-idle-states = <&CPU_SLEEP_0>;
+>  			capacity-dmips-mhz = <1024>;
+> +			clocks = <&kryocc 0>;
+> +			operating-points-v2 = <&cluster0_opp>;
+> +			#cooling-cells = <2>;
+>  			next-level-cache = <&L2_0>;
+>  			L2_0: l2-cache {
+>  			      compatible = "cache";
+> @@ -58,6 +62,9 @@ CPU1: cpu@1 {
+>  			enable-method = "psci";
+>  			cpu-idle-states = <&CPU_SLEEP_0>;
+>  			capacity-dmips-mhz = <1024>;
+> +			clocks = <&kryocc 0>;
+> +			operating-points-v2 = <&cluster0_opp>;
+> +			#cooling-cells = <2>;
+>  			next-level-cache = <&L2_0>;
+>  		};
+>  
+> @@ -68,6 +75,9 @@ CPU2: cpu@100 {
+>  			enable-method = "psci";
+>  			cpu-idle-states = <&CPU_SLEEP_0>;
+>  			capacity-dmips-mhz = <1024>;
+> +			clocks = <&kryocc 1>;
+> +			operating-points-v2 = <&cluster1_opp>;
+> +			#cooling-cells = <2>;
+>  			next-level-cache = <&L2_1>;
+>  			L2_1: l2-cache {
+>  			      compatible = "cache";
+> @@ -82,6 +92,9 @@ CPU3: cpu@101 {
+>  			enable-method = "psci";
+>  			cpu-idle-states = <&CPU_SLEEP_0>;
+>  			capacity-dmips-mhz = <1024>;
+> +			clocks = <&kryocc 1>;
+> +			operating-points-v2 = <&cluster1_opp>;
+> +			#cooling-cells = <2>;
+>  			next-level-cache = <&L2_1>;
+>  		};
+>  
+> @@ -121,6 +134,227 @@ CPU_SLEEP_0: cpu-sleep-0 {
+>  		};
+>  	};
+>  
+> +	cluster0_opp: opp_table0 {
+> +		compatible = "operating-points-v2-kryo-cpu";
+> +		nvmem-cells = <&speedbin_efuse>;
+> +		opp-shared;
+> +
+> +		/* Nominal fmax for now */
+> +		opp-307200000 {
+> +			opp-hz = /bits/ 64 <307200000>;
+> +			opp-supported-hw = <0x77>;
+> +			clock-latency-ns = <200000>;
+> +		};
+> +		opp-422400000 {
+> +			opp-hz = /bits/ 64 <422400000>;
+> +			opp-supported-hw = <0x77>;
+> +			clock-latency-ns = <200000>;
+> +		};
+> +		opp-480000000 {
+> +			opp-hz = /bits/ 64 <480000000>;
+> +			opp-supported-hw = <0x77>;
+> +			clock-latency-ns = <200000>;
+> +		};
+> +		opp-556800000 {
+> +			opp-hz = /bits/ 64 <556800000>;
+> +			opp-supported-hw = <0x77>;
+> +			clock-latency-ns = <200000>;
+> +		};
+> +		opp-652800000 {
+> +			opp-hz = /bits/ 64 <652800000>;
+> +			opp-supported-hw = <0x77>;
+> +			clock-latency-ns = <200000>;
+> +		};
+> +		opp-729600000 {
+> +			opp-hz = /bits/ 64 <729600000>;
+> +			opp-supported-hw = <0x77>;
+> +			clock-latency-ns = <200000>;
+> +		};
+> +		opp-844800000 {
+> +			opp-hz = /bits/ 64 <844800000>;
+> +			opp-supported-hw = <0x77>;
+> +			clock-latency-ns = <200000>;
+> +		};
+> +		opp-960000000 {
+> +			opp-hz = /bits/ 64 <960000000>;
+> +			opp-supported-hw = <0x77>;
+> +			clock-latency-ns = <200000>;
+> +		};
+> +		opp-1036800000 {
+> +			opp-hz = /bits/ 64 <1036800000>;
+> +			opp-supported-hw = <0x77>;
+> +			clock-latency-ns = <200000>;
+> +		};
+> +		opp-1113600000 {
+> +			opp-hz = /bits/ 64 <1113600000>;
+> +			opp-supported-hw = <0x77>;
+> +			clock-latency-ns = <200000>;
+> +		};
+> +		opp-1190400000 {
+> +			opp-hz = /bits/ 64 <1190400000>;
+> +			opp-supported-hw = <0x77>;
+> +			clock-latency-ns = <200000>;
+> +		};
+> +		opp-1228800000 {
+> +			opp-hz = /bits/ 64 <1228800000>;
+> +			opp-supported-hw = <0x77>;
+> +			clock-latency-ns = <200000>;
+> +		};
+> +		opp-1324800000 {
+> +			opp-hz = /bits/ 64 <1324800000>;
+> +			opp-supported-hw = <0x77>;
+> +			clock-latency-ns = <200000>;
+> +		};
+> +		opp-1401600000 {
+> +			opp-hz = /bits/ 64 <1401600000>;
+> +			opp-supported-hw = <0x77>;
+> +			clock-latency-ns = <200000>;
+> +		};
+> +		opp-1478400000 {
+> +			opp-hz = /bits/ 64 <1478400000>;
+> +			opp-supported-hw = <0x77>;
+> +			clock-latency-ns = <200000>;
+> +		};
+> +		opp-1593600000 {
+> +			opp-hz = /bits/ 64 <1593600000>;
+> +			opp-supported-hw = <0x77>;
+> +			clock-latency-ns = <200000>;
+> +		};
+> +	};
+> +
+> +	cluster1_opp: opp_table1 {
+> +		compatible = "operating-points-v2-kryo-cpu";
+> +		nvmem-cells = <&speedbin_efuse>;
+> +		opp-shared;
+> +
+> +		/* Nominal fmax for now */
+> +		opp-307200000 {
+> +			opp-hz = /bits/ 64 <307200000>;
+> +			opp-supported-hw = <0x77>;
+> +			clock-latency-ns = <200000>;
+> +		};
+> +		opp-403200000 {
+> +			opp-hz = /bits/ 64 <403200000>;
+> +			opp-supported-hw = <0x77>;
+> +			clock-latency-ns = <200000>;
+> +		};
+> +		opp-480000000 {
+> +			opp-hz = /bits/ 64 <480000000>;
+> +			opp-supported-hw = <0x77>;
+> +			clock-latency-ns = <200000>;
+> +		};
+> +		opp-556800000 {
+> +			opp-hz = /bits/ 64 <556800000>;
+> +			opp-supported-hw = <0x77>;
+> +			clock-latency-ns = <200000>;
+> +		};
+> +		opp-652800000 {
+> +			opp-hz = /bits/ 64 <652800000>;
+> +			opp-supported-hw = <0x77>;
+> +			clock-latency-ns = <200000>;
+> +		};
+> +		opp-729600000 {
+> +			opp-hz = /bits/ 64 <729600000>;
+> +			opp-supported-hw = <0x77>;
+> +			clock-latency-ns = <200000>;
+> +		};
+> +		opp-806400000 {
+> +			opp-hz = /bits/ 64 <806400000>;
+> +			opp-supported-hw = <0x77>;
+> +			clock-latency-ns = <200000>;
+> +		};
+> +		opp-883200000 {
+> +			opp-hz = /bits/ 64 <883200000>;
+> +			opp-supported-hw = <0x77>;
+> +			clock-latency-ns = <200000>;
+> +		};
+> +		opp-940800000 {
+> +			opp-hz = /bits/ 64 <940800000>;
+> +			opp-supported-hw = <0x77>;
+> +			clock-latency-ns = <200000>;
+> +		};
+> +		opp-1036800000 {
+> +			opp-hz = /bits/ 64 <1036800000>;
+> +			opp-supported-hw = <0x77>;
+> +			clock-latency-ns = <200000>;
+> +		};
+> +		opp-1113600000 {
+> +			opp-hz = /bits/ 64 <1113600000>;
+> +			opp-supported-hw = <0x77>;
+> +			clock-latency-ns = <200000>;
+> +		};
+> +		opp-1190400000 {
+> +			opp-hz = /bits/ 64 <1190400000>;
+> +			opp-supported-hw = <0x77>;
+> +			clock-latency-ns = <200000>;
+> +		};
+> +		opp-1248000000 {
+> +			opp-hz = /bits/ 64 <1248000000>;
+> +			opp-supported-hw = <0x77>;
+> +			clock-latency-ns = <200000>;
+> +		};
+> +		opp-1324800000 {
+> +			opp-hz = /bits/ 64 <1324800000>;
+> +			opp-supported-hw = <0x77>;
+> +			clock-latency-ns = <200000>;
+> +		};
+> +		opp-1401600000 {
+> +			opp-hz = /bits/ 64 <1401600000>;
+> +			opp-supported-hw = <0x77>;
+> +			clock-latency-ns = <200000>;
+> +		};
+> +		opp-1478400000 {
+> +			opp-hz = /bits/ 64 <1478400000>;
+> +			opp-supported-hw = <0x77>;
+> +			clock-latency-ns = <200000>;
+> +		};
+> +		opp-1555200000 {
+> +			opp-hz = /bits/ 64 <1555200000>;
+> +			opp-supported-hw = <0x77>;
+> +			clock-latency-ns = <200000>;
+> +		};
+> +		opp-1632000000 {
+> +			opp-hz = /bits/ 64 <1632000000>;
+> +			opp-supported-hw = <0x77>;
+> +			clock-latency-ns = <200000>;
+> +		};
+> +		opp-1708800000 {
+> +			opp-hz = /bits/ 64 <1708800000>;
+> +			opp-supported-hw = <0x77>;
+> +			clock-latency-ns = <200000>;
+> +		};
+> +		opp-1785600000 {
+> +			opp-hz = /bits/ 64 <1785600000>;
+> +			opp-supported-hw = <0x77>;
+> +			clock-latency-ns = <200000>;
+> +		};
+> +		opp-1824000000 {
+> +			opp-hz = /bits/ 64 <1824000000>;
+> +			opp-supported-hw = <0x77>;
+> +			clock-latency-ns = <200000>;
+> +		};
+> +		opp-1920000000 {
+> +			opp-hz = /bits/ 64 <1920000000>;
+> +			opp-supported-hw = <0x77>;
+> +			clock-latency-ns = <200000>;
+> +		};
+> +		opp-1996800000 {
+> +			opp-hz = /bits/ 64 <1996800000>;
+> +			opp-supported-hw = <0x77>;
+> +			clock-latency-ns = <200000>;
+> +		};
+> +		opp-2073600000 {
+> +			opp-hz = /bits/ 64 <2073600000>;
+> +			opp-supported-hw = <0x77>;
+> +			clock-latency-ns = <200000>;
+> +		};
+> +		opp-2150400000 {
+> +			opp-hz = /bits/ 64 <2150400000>;
+> +			opp-supported-hw = <0x77>;
+> +			clock-latency-ns = <200000>;
+> +		};
+> +	};
+> +
+>  	firmware {
+>  		scm {
+>  			compatible = "qcom,scm-msm8996";
+> -- 
+> 2.31.1
+> 
