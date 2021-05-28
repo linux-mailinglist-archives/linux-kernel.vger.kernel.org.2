@@ -2,405 +2,235 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B78F394632
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 19:04:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D6F5394638
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 19:10:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236933AbhE1RFy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 May 2021 13:05:54 -0400
-Received: from fllv0015.ext.ti.com ([198.47.19.141]:60502 "EHLO
-        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236936AbhE1RFq (ORCPT
+        id S236704AbhE1RL7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 May 2021 13:11:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40888 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235825AbhE1RLd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 May 2021 13:05:46 -0400
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 14SH477a102424;
-        Fri, 28 May 2021 12:04:07 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1622221447;
-        bh=uzOjkxfEeBF2+iCXgteMhI62c2+c5IdoryuXiE8OlIc=;
-        h=Subject:To:CC:References:From:Date:In-Reply-To;
-        b=QincO4/fy/Zm6WqBiYl5GUOCIVFfJyITnC1ou9OYwlk4Ou+kMuxqaVYgIbZ3YWxbH
-         HsHomkd4PpoIJNKD2TsVbqFqURUWjAlDxtCMqC4Q4dLEbQzmfwxC1938KdiYcpZwR9
-         QyEyvMqo6VntZdLn4QxWd7OraMSsE8Ym9W6QTMNk=
-Received: from DLEE105.ent.ti.com (dlee105.ent.ti.com [157.170.170.35])
-        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 14SH46S8046827
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Fri, 28 May 2021 12:04:06 -0500
-Received: from DLEE113.ent.ti.com (157.170.170.24) by DLEE105.ent.ti.com
- (157.170.170.35) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Fri, 28
- May 2021 12:04:06 -0500
-Received: from lelv0326.itg.ti.com (10.180.67.84) by DLEE113.ent.ti.com
- (157.170.170.24) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
- Frontend Transport; Fri, 28 May 2021 12:04:06 -0500
-Received: from [10.250.35.153] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 14SH45b9084574;
-        Fri, 28 May 2021 12:04:05 -0500
-Subject: Re: [PATCH 6/6] remoteproc: k3-dsp: Add support for IPC-only mode for
- all K3 DSPs
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>
-CC:     Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Lokesh Vutla <lokeshvutla@ti.com>,
-        Tero Kristo <kristo@kernel.org>,
-        <linux-remoteproc@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>
-References: <20210522000309.26134-1-s-anna@ti.com>
- <20210522000309.26134-7-s-anna@ti.com> <YLBzN2UBGbTELETv@builder.lan>
-From:   Suman Anna <s-anna@ti.com>
-Message-ID: <edca6bf2-56e5-6c7f-9f55-1f0954a36e21@ti.com>
-Date:   Fri, 28 May 2021 12:04:00 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Fri, 28 May 2021 13:11:33 -0400
+Received: from mail-pg1-x52f.google.com (mail-pg1-x52f.google.com [IPv6:2607:f8b0:4864:20::52f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9AFC6C061574
+        for <linux-kernel@vger.kernel.org>; Fri, 28 May 2021 10:07:08 -0700 (PDT)
+Received: by mail-pg1-x52f.google.com with SMTP id 6so2992471pgk.5
+        for <linux-kernel@vger.kernel.org>; Fri, 28 May 2021 10:07:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=BGK4uUtY/47ELdZTjRTXwT+LtePr9wzh99tC7Z5sRvA=;
+        b=WHrn8xms18dad5rtvGjozvYLe69er9+pUzUsaXen4aLEuDnY/8uWbNLLT9980klYmx
+         5j2EB7Qz7TlTP62H8lfAij6Hr6b2oerMbBMUASKM17hI/QIWBf7qJSIniJAYhbFVxi4m
+         x6GQNMub41labn+NEj8Hu+XZeEC479Ip2ZsZzsImUXVCDm/C/Sjnq/0E1MUkw8jXpGRY
+         gu9AFJRHC5Zm3YU4E4ZbfzuIImmcNIS8fuUphvqYXxn0pJfj5vOUF7w+43hQgnIR3l+v
+         N8Ybz9hGb7A6J2tlm/dASzxsOTuE2I5DGgTxXUH0h1NJ6BerX2RgANzyBmNXK0H7EEUY
+         TQAQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=BGK4uUtY/47ELdZTjRTXwT+LtePr9wzh99tC7Z5sRvA=;
+        b=oqvRT/H7WooBf7Z/Aw9UhNnBy6dryA0cgQegGTOnj0mcRg8FSrp74cGShvBXk48FmD
+         8LvfJ/HnOt1my29mh+LLfcxUd1DUV9u5v4LYxxeHwD6/2lt6T1DCoppbK5sr1Ym9bnKQ
+         eGQRiFWEtmYhTsQJFt8cCX08VLC29YK22nUcLVI4+0NAJAHA3CQhfwGSp4yLPSSNJKjg
+         Zi+HYiJwPILll7xxEaZhnq21Tg1IO1t2VflXTvuLI5NltXJ5rZkgFc7UcgRKbMnY7d/W
+         bKdtpF1r5yF6i6DPcN9jaAxT94jksckHCfkLZEgusMphVrhm70+aQGWgVMdrnQjfHE5u
+         AGMA==
+X-Gm-Message-State: AOAM530z+lPtOHEiGPGCsXmZiadZrgSnfF4dp99bmTgSiyvK5OPqYz8O
+        W7sw4qlYBrvJXP8k1VuueII=
+X-Google-Smtp-Source: ABdhPJz/JAziGiAdfqsYZltBtOymO6kYNHITPYnCn2zPIBzEejzjFDSRxD4b5QqF8IrIo2WmvsSmUA==
+X-Received: by 2002:a63:f00b:: with SMTP id k11mr10049482pgh.154.1622221627956;
+        Fri, 28 May 2021 10:07:07 -0700 (PDT)
+Received: from [192.168.0.15] (c-73-158-171-241.hsd1.ca.comcast.net. [73.158.171.241])
+        by smtp.gmail.com with ESMTPSA id f7sm4791492pfq.8.2021.05.28.10.07.03
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 28 May 2021 10:07:06 -0700 (PDT)
+Subject: Re: Sealed memfd & no-fault mmap
+To:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Simon Ser <contact@emersion.fr>
+Cc:     Peter Xu <peterx@redhat.com>,
+        "Kirill A. Shutemov" <kirill@shutemov.name>,
+        Matthew Wilcox <willy@infradead.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        Will Deacon <will@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        David Herrmann <dh.herrmann@gmail.com>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        Greg Kroah-Hartman <greg@kroah.com>,
+        "tytso@mit.edu" <tytso@mit.edu>
+References: <vs1Us2sm4qmfvLOqNat0-r16GyfmWzqUzQ4KHbXJwEcjhzeoQ4sBTxx7QXDG9B6zk5AeT7FsNb3CSr94LaKy6Novh1fbbw8D_BBxYsbPLms=@emersion.fr>
+ <CAHk-=wgmGv2EGscKSi8SrQWtEVpEQyk-ZN1Xj4EoAB87Dmx1gA@mail.gmail.com>
+ <20210429154807.hptls4vnmq2svuea@box> <20210429183836.GF8339@xz-x1>
+ <lpi4uT69AFMwtmWtwW_qJAmYm_r0jRikL11G_zI4X7wq--6Jtpiej8kGn8gePfv0Dtn4VmzsOqT2Q5-L3ca2niDi0nlC0nVYphbFBnNJnw0=@emersion.fr>
+ <CAHk-=wiAs7Ky9gmWAeqk5t7Nkueip13XPGtUcmMiZjwf-sX3sQ@mail.gmail.com>
+ <hnL7s1u925fpeUhs90fXUpD3GG_4gmHlpznN8E0885tSM40QYb3VVTFGkwpmxYQ3U8HkRSUtfqw0ZfBKptA4pIw4FZw1MdRhSHC94iQATEE=@emersion.fr>
+ <CAHk-=wiY1BL-UHPMEAbd7nY3vu6w41A1hhvjg1DoBXWuRt9_qw@mail.gmail.com>
+From:   "Lin, Ming" <minggr@gmail.com>
+Message-ID: <7718ec5b-0a9e-ffa6-16f2-bc0b6afbd9ab@gmail.com>
+Date:   Fri, 28 May 2021 10:07:02 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.2
 MIME-Version: 1.0
-In-Reply-To: <YLBzN2UBGbTELETv@builder.lan>
-Content-Type: text/plain; charset="utf-8"
+In-Reply-To: <CAHk-=wiY1BL-UHPMEAbd7nY3vu6w41A1hhvjg1DoBXWuRt9_qw@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Bjorn,
-
-On 5/27/21 11:36 PM, Bjorn Andersson wrote:
-> On Fri 21 May 19:03 CDT 2021, Suman Anna wrote:
-> 
->> Add support to the K3 DSP remoteproc driver to configure all the C66x
->> and C71x cores on J721E SoCs to be either in IPC-only mode or the
->> traditional remoteproc mode. The IPC-only mode expects that the remote
->> processors are already booted by the bootloader, and only perform the
->> minimum steps required to initialize and deinitialize the virtio IPC
->> transports. The remoteproc mode allows the kernel remoteproc driver to
->> do the regular load and boot and other device management operations for
->> a DSP.
+On 5/5/2021 11:42 AM, Linus Torvalds wrote:
+> On Wed, May 5, 2021 at 3:21 AM Simon Ser <contact@emersion.fr> wrote:
+>>>
+>>> Is there some very specific and targeted pattern for that "shared
+>>> mapping" case? For example, if it's always a shared anonymous mapping
+>>> with no filesystem backing, then that would possibly be a simpler case
+>>> than the "random arbitrary shared file descriptor".
 >>
->> The IPC-only mode for a DSP is detected and configured at driver probe
->> time by querying the System Firmware for the DSP power and reset state
->> and/or status and making sure that the DSP is indeed started by the
->> bootloaders, otherwise the device is configured for remoteproc mode.
+>> Yes. I don't know of any Wayland client using buffers with real
+>> filesystem backing. I think the main cases are:
 >>
->> Support for IPC-only mode is achieved through .attach(), .detach() and
->> .get_loaded_rsc_table() callback ops and various other flags in both
->> remoteproc core and the K3 DSP remoteproc driver. The resource table
->> follows a design-by-contract approach and is expected to be at the base
->> of the DDR firmware region reserved for each remoteproc, it is mostly
->> expected to contain only the virtio device and trace resource entries.
+>> - shm_open(3) immediately followed by shm_unlink(3). On Linux, this is
+>>    implemented with /dev/shm which is a tmpfs.
+>> - Abusing /tmp or /run's tmpfs by creating a file there and unlinking
+>>    it immediately afterwards. Kind of similar to the first case.
+>> - memfd_create(2) on Linux.
 >>
->> NOTE:
->> The driver cannot configure a DSP core for remoteproc mode by any
->> means without rebooting the kernel if that R5F core has been started
->> by a bootloader.
->>
->> Signed-off-by: Suman Anna <s-anna@ti.com>
->> ---
->>  drivers/remoteproc/ti_k3_dsp_remoteproc.c | 151 ++++++++++++++++++++--
->>  1 file changed, 138 insertions(+), 13 deletions(-)
->>
->> diff --git a/drivers/remoteproc/ti_k3_dsp_remoteproc.c b/drivers/remoteproc/ti_k3_dsp_remoteproc.c
->> index faf60a274e8d..b154a52f1fa6 100644
->> --- a/drivers/remoteproc/ti_k3_dsp_remoteproc.c
->> +++ b/drivers/remoteproc/ti_k3_dsp_remoteproc.c
->> @@ -76,6 +76,7 @@ struct k3_dsp_dev_data {
->>   * @ti_sci_id: TI-SCI device identifier
->>   * @mbox: mailbox channel handle
->>   * @client: mailbox client to request the mailbox channel
->> + * @ipc_only: flag to indicate IPC-only mode
->>   */
->>  struct k3_dsp_rproc {
->>  	struct device *dev;
->> @@ -91,6 +92,7 @@ struct k3_dsp_rproc {
->>  	u32 ti_sci_id;
->>  	struct mbox_chan *mbox;
->>  	struct mbox_client client;
->> +	bool ipc_only;
->>  };
->>  
->>  /**
->> @@ -268,6 +270,10 @@ static int k3_dsp_rproc_prepare(struct rproc *rproc)
->>  	struct device *dev = kproc->dev;
->>  	int ret;
->>  
->> +	/* IPC-only mode does not require the core to be released from reset */
->> +	if (kproc->ipc_only)
+>> Is this enough to make it work on shared memory mappings? Is it
+>> important that the mapping is anonymous?
 > 
-> Rather than saying "prepare shouldn't do anything", how about not
-> actually providing prepare/unprepare ops when ipc_only?
-
-I could do that but it won't provide scalability for me if I want to enhance
-this to support both options, esp. given that the ops registration is a one-time
-setting right now in probe.
-
+> All of those should be anonymous in the sense that the backing store
+> is all the kernel's notion of anonymous pages, and there is no actual
+> file backing. The mappings may then be shared, of course.
 > 
->> +		return 0;
->> +
->>  	ret = kproc->ti_sci->ops.dev_ops.get_device(kproc->ti_sci,
->>  						    kproc->ti_sci_id);
->>  	if (ret)
->> @@ -292,6 +298,10 @@ static int k3_dsp_rproc_unprepare(struct rproc *rproc)
->>  	struct device *dev = kproc->dev;
->>  	int ret;
->>  
->> +	/* do not put back the cores into reset in IPC-only mode */
->> +	if (kproc->ipc_only)
->> +		return 0;
->> +
->>  	ret = kproc->ti_sci->ops.dev_ops.put_device(kproc->ti_sci,
->>  						    kproc->ti_sci_id);
->>  	if (ret)
->> @@ -314,6 +324,12 @@ static int k3_dsp_rproc_start(struct rproc *rproc)
->>  	u32 boot_addr;
->>  	int ret;
->>  
->> +	if (kproc->ipc_only) {
+> So that does make Peter's idea to have some inode flag for "don't
+> SIGBUS on fault" be more reasonable, because there isn't some random
+> actual filesystem involved, only the core VM layer.
 > 
-> It doesn't seem to make sense to start a remoteproc in ipc_only mode, so
-> how about not registering the start ops?
+> I'm not going to write the patch, though, but maybe you can convince
+> somebody else to try it..
 
-Similar argument as above. This path is only to provide a sanity checking, and
-would be needed if I support both options. I am not sure if changing the ops
-dynamically is a better option than doing this sanity checks.
+Does something like following draft patch on the right track?
 
-> 
->> +		dev_err(dev, "%s cannot be invoked in IPC-only mode\n",
->> +			__func__);
->> +		return -EINVAL;
->> +	}
->> +
->>  	ret = k3_dsp_rproc_request_mbox(rproc);
->>  	if (ret)
->>  		return ret;
->> @@ -351,6 +367,13 @@ static int k3_dsp_rproc_start(struct rproc *rproc)
->>  static int k3_dsp_rproc_stop(struct rproc *rproc)
->>  {
->>  	struct k3_dsp_rproc *kproc = rproc->priv;
->> +	struct device *dev = kproc->dev;
->> +
->> +	if (kproc->ipc_only) {
->> +		dev_err(dev, "%s cannot be invoked in IPC-only mode\n",
->> +			__func__);
->> +		return -EINVAL;
->> +	}
->>  
->>  	mbox_free_channel(kproc->mbox);
->>  
->> @@ -359,6 +382,85 @@ static int k3_dsp_rproc_stop(struct rproc *rproc)
->>  	return 0;
->>  }
->>  
->> +/*
->> + * Attach to a running DSP remote processor (IPC-only mode)
->> + *
->> + * This rproc attach callback only needs to request the mailbox, the remote
->> + * processor is already booted, so there is no need to issue any TI-SCI
->> + * commands to boot the DSP core.
->> + */
->> +static int k3_dsp_rproc_attach(struct rproc *rproc)
->> +{
->> +	struct k3_dsp_rproc *kproc = rproc->priv;
->> +	struct device *dev = kproc->dev;
->> +	int ret;
->> +
->> +	if (!kproc->ipc_only || rproc->state != RPROC_DETACHED) {
-> 
-> As attach only makes sense when ipc_only, how about not specifying the
-> attach ops when !ipc_only?
+1. Application set S_NOFAULT flag on shm mmap fd
 
-This is again used only for sanity-checking, and added for symmetry similar to
-the change in start. Ideally, we should not enter this code path.
+	#define S_NOFAULT       (1 << 17)
+         fd = shm_open(shmpath, O_RDONLY, S_IRUSR | S_IWUSR);
+         ioctl(fd, FS_IOC_GETFLAGS, &flags);
+         flags |= S_NOFAULT;
+         ioctl(fd, FS_IOC_SETFLAGS, &flags)
 
-> 
->> +		dev_err(dev, "DSP is expected to be in IPC-only mode and RPROC_DETACHED state\n");
->> +		return -EINVAL;
->> +	}
->> +
->> +	ret = k3_dsp_rproc_request_mbox(rproc);
->> +	if (ret)
->> +		return ret;
->> +
->> +	dev_err(dev, "DSP initialized in IPC-only mode\n");
->> +	return 0;
->> +}
->> +
->> +/*
->> + * Detach from a running DSP remote processor (IPC-only mode)
->> + *
->> + * This rproc detach callback performs the opposite operation to attach callback
->> + * and only needs to release the mailbox, the DSP core is not stopped and will
->> + * be left to continue to run its booted firmware.
->> + */
->> +static int k3_dsp_rproc_detach(struct rproc *rproc)
->> +{
->> +	struct k3_dsp_rproc *kproc = rproc->priv;
->> +	struct device *dev = kproc->dev;
->> +
->> +	if (!kproc->ipc_only || rproc->state != RPROC_ATTACHED) {
-> 
-> Ditto.
-> 
->> +		dev_err(dev, "DSP is expected to be in IPC-only mode and RPROC_ATTACHED state\n");
->> +		return -EINVAL;
->> +	}
->> +
->> +	mbox_free_channel(kproc->mbox);
->> +	dev_err(dev, "DSP deinitialized in IPC-only mode\n");
->> +	return 0;
->> +}
->> +
->> +/*
->> + * This function implements the .get_loaded_rsc_table() callback and is used
->> + * to provide the resource table for a booted DSP in IPC-only mode. The K3 DSP
->> + * firmwares follow a design-by-contract approach and are expected to have the
->> + * resource table at the base of the DDR region reserved for firmware usage.
->> + * This provides flexibility for the remote processor to be booted by different
->> + * bootloaders that may or may not have the ability to publish the resource table
->> + * address and size through a DT property.
->> + */
->> +static struct resource_table *k3_dsp_get_loaded_rsc_table(struct rproc *rproc,
->> +							  size_t *rsc_table_sz)
->> +{
->> +	struct k3_dsp_rproc *kproc = rproc->priv;
->> +	struct device *dev = kproc->dev;
->> +
->> +	if (!kproc->rmem[0].cpu_addr) {
->> +		dev_err(dev, "memory-region #1 does not exist, loaded rsc table can't be found");
->> +		return ERR_PTR(-ENOMEM);
->> +	}
->> +
->> +	/*
->> +	 * NOTE: The resource table size is currently hard-coded to a maximum
->> +	 * of 256 bytes. The most common resource table usage for K3 firmwares
->> +	 * is to only have the vdev resource entry and an optional trace entry.
->> +	 * The exact size could be computed based on resource table address, but
->> +	 * the hard-coded value suffices to support the IPC-only mode.
->> +	 */
->> +	*rsc_table_sz = 256;
-> 
-> Why can't you use kproc->rmem[0].size here?
+2. Don't SIGBUS on read beyond i_size if S_NOFAULT flag set in inode.
+    Use zero page instead.
 
-That's the whole reserved memory area size, which will also be used for all the
-other firmware segments. ST and IMX are assigning 1K as the size, and I went
-with an even smaller size.
+---
 
-> 
->> +	return (struct resource_table *)kproc->rmem[0].cpu_addr;
->> +}
->> +
->>  /*
->>   * Custom function to translate a DSP device address (internal RAMs only) to a
->>   * kernel virtual address.  The DSPs can access their RAMs at either an internal
->> @@ -421,8 +523,11 @@ static void *k3_dsp_rproc_da_to_va(struct rproc *rproc, u64 da, size_t len, bool
->>  static const struct rproc_ops k3_dsp_rproc_ops = {
-> 
-> So in essence, I suggest that you create a separate k3_dsp_ipc_only_ops.
-> 
+[RFC DRAFT PATCH] shm: no SIGBUS fault on out-of-band mmap read
+---
+  include/linux/fs.h |  2 ++
+  mm/shmem.c         | 44 +++++++++++++++++++++++++++++++++++++++++++-
+  2 files changed, 45 insertions(+), 1 deletion(-)
 
-rproc core does a memdup, so supporting both later on would make it complex
-IMHO. If you insist, I can make the changes, and probably come back to this
-version when I have to support both options (my future change would just be to
-provide a sysfs/configfs knob to change the detach_on_shutdown flag if using
-this code).
-
->>  	.start		= k3_dsp_rproc_start,
->>  	.stop		= k3_dsp_rproc_stop,
->> +	.attach		= k3_dsp_rproc_attach,
->> +	.detach		= k3_dsp_rproc_detach,
->>  	.kick		= k3_dsp_rproc_kick,
->>  	.da_to_va	= k3_dsp_rproc_da_to_va,
->> +	.get_loaded_rsc_table = k3_dsp_get_loaded_rsc_table,
->>  };
->>  
->>  static int k3_dsp_rproc_of_get_memories(struct platform_device *pdev,
->> @@ -605,6 +710,8 @@ static int k3_dsp_rproc_probe(struct platform_device *pdev)
->>  	struct k3_dsp_rproc *kproc;
->>  	struct rproc *rproc;
->>  	const char *fw_name;
->> +	bool r_state = false;
->> +	bool p_state = false;
->>  	int ret = 0;
->>  	int ret1;
->>  
->> @@ -683,19 +790,37 @@ static int k3_dsp_rproc_probe(struct platform_device *pdev)
->>  		goto release_tsp;
->>  	}
->>  
->> -	/*
->> -	 * ensure the DSP local reset is asserted to ensure the DSP doesn't
->> -	 * execute bogus code in .prepare() when the module reset is released.
->> -	 */
->> -	if (data->uses_lreset) {
->> -		ret = reset_control_status(kproc->reset);
->> -		if (ret < 0) {
->> -			dev_err(dev, "failed to get reset status, status = %d\n",
->> -				ret);
->> -			goto release_mem;
->> -		} else if (ret == 0) {
->> -			dev_warn(dev, "local reset is deasserted for device\n");
->> -			k3_dsp_rproc_reset(kproc);
->> +	ret = kproc->ti_sci->ops.dev_ops.is_on(kproc->ti_sci, kproc->ti_sci_id,
->> +					       &r_state, &p_state);
-> 
-> You can pass NULL instead of &r_state, as you don't use it anyways.
-
-Yeah ok. I use it on R5, but not DSP.
-
-> 
->> +	if (ret) {
->> +		dev_err(dev, "failed to get initial state, mode cannot be determined, ret = %d\n",
->> +			ret);
->> +		goto release_mem;
->> +	}
->> +
->> +	/* configure J721E devices for either remoteproc or IPC-only mode */
->> +	if (p_state) {
->> +		dev_err(dev, "configured DSP for IPC-only mode\n");
-> 
-> This sounds like a good thing, so perhaps dev_info() rather than err?
-
-Yeah, will do.
-
-> 
->> +		rproc->state = RPROC_DETACHED;
->> +		rproc->detach_on_shutdown = true;
->> +		kproc->ipc_only = true;
->> +	} else {
->> +		dev_err(dev, "configured DSP for remoteproc mode\n");
-> 
-> Ditto
-
-Will fix.
-
-Thanks for the review. I will refresh the series and make similar changes to R5F
-driver as well once I get some more feedback on the core patches (and hear from
-Mathieu as well).
-
-regards
-Suman
-
-> 
-> Regards,
-> Bjorn
->> +		/*
->> +		 * ensure the DSP local reset is asserted to ensure the DSP
->> +		 * doesn't execute bogus code in .prepare() when the module
->> +		 * reset is released.
->> +		 */
->> +		if (data->uses_lreset) {
->> +			ret = reset_control_status(kproc->reset);
->> +			if (ret < 0) {
->> +				dev_err(dev, "failed to get reset status, status = %d\n",
->> +					ret);
->> +				goto release_mem;
->> +			} else if (ret == 0) {
->> +				dev_warn(dev, "local reset is deasserted for device\n");
->> +				k3_dsp_rproc_reset(kproc);
->> +			}
->>  		}
->>  	}
->>  
->> -- 
->> 2.30.1
->>
-
+diff --git a/include/linux/fs.h b/include/linux/fs.h
+index c3c88fdb9b2a..a9be7cd71b94 100644
+--- a/include/linux/fs.h
++++ b/include/linux/fs.h
+@@ -2202,6 +2202,7 @@ struct super_operations {
+  #define S_ENCRYPTED	(1 << 14) /* Encrypted file (using fs/crypto/) */
+  #define S_CASEFOLD	(1 << 15) /* Casefolded file */
+  #define S_VERITY	(1 << 16) /* Verity file (using fs/verity/) */
++#define S_NOFAULT	(1 << 17) /* No SIGBUS fault on out-of-band mmap read */
+  
+  /*
+   * Note that nosuid etc flags are inode-specific: setting some file-system
+@@ -2244,6 +2245,7 @@ static inline bool sb_rdonly(const struct super_block *sb) { return sb->s_flags
+  #define IS_ENCRYPTED(inode)	((inode)->i_flags & S_ENCRYPTED)
+  #define IS_CASEFOLDED(inode)	((inode)->i_flags & S_CASEFOLD)
+  #define IS_VERITY(inode)	((inode)->i_flags & S_VERITY)
++#define IS_NOFAULT(inode)	((inode)->i_flags & S_NOFAULT)
+  
+  #define IS_WHITEOUT(inode)	(S_ISCHR(inode->i_mode) && \
+  				 (inode)->i_rdev == WHITEOUT_DEV)
+diff --git a/mm/shmem.c b/mm/shmem.c
+index 5d46611cba8d..856d2d8d4cdf 100644
+--- a/mm/shmem.c
++++ b/mm/shmem.c
+@@ -38,8 +38,11 @@
+  #include <linux/hugetlb.h>
+  #include <linux/frontswap.h>
+  #include <linux/fs_parser.h>
++#include <linux/fs.h>
++#include <linux/fileattr.h>
+  
+  #include <asm/tlbflush.h> /* for arch/microblaze update_mmu_cache() */
++#include <asm/pgalloc.h>
+  
+  static struct vfsmount *shm_mnt;
+  
+@@ -1812,7 +1815,27 @@ static int shmem_getpage_gfp(struct inode *inode, pgoff_t index,
+  repeat:
+  	if (sgp <= SGP_CACHE &&
+  	    ((loff_t)index << PAGE_SHIFT) >= i_size_read(inode)) {
+-		return -EINVAL;
++		unsigned long dst_addr = vmf->address;
++		pte_t _dst_pte, *dst_pte;
++		spinlock_t *ptl;
++		int ret;
++
++		if (!IS_NOFAULT(inode))
++			return -EINVAL;
++
++		_dst_pte = pte_mkspecial(pfn_pte(my_zero_pfn(dst_addr),
++					 vma->vm_page_prot));
++		dst_pte = pte_offset_map_lock(vma->vm_mm, vmf->pmd, dst_addr, &ptl);
++		ret = -EEXIST;
++		if (!pte_none(*dst_pte))
++			goto out_unlock;
++		set_pte_at(vma->vm_mm, dst_addr, dst_pte, _dst_pte);
++		update_mmu_cache(vma, dst_addr, dst_pte);
++		*fault_type = VM_FAULT_NOPAGE;
++		ret = 0;
++out_unlock:
++		pte_unmap_unlock(dst_pte, ptl);
++		return ret;
+  	}
+  
+  	sbinfo = SHMEM_SB(inode->i_sb);
+@@ -3819,6 +3842,23 @@ const struct address_space_operations shmem_aops = {
+  };
+  EXPORT_SYMBOL(shmem_aops);
+  
++static int shmem_fileattr_get(struct dentry *dentry, struct fileattr *fa)
++{
++	struct inode *inode = d_inode(dentry);
++
++	fileattr_fill_flags(fa, inode->i_flags);
++
++	return 0;
++}
++
++static int shmem_fileattr_set(struct user_namespace *mnt_userns,
++			      struct dentry *dentry, struct fileattr *fa)
++{
++	struct inode *inode = d_inode(dentry);
++	inode->i_flags = fa->flags;
++	return 0;
++}
++
+  static const struct file_operations shmem_file_operations = {
+  	.mmap		= shmem_mmap,
+  	.get_unmapped_area = shmem_get_unmapped_area,
+@@ -3836,6 +3876,8 @@ static const struct file_operations shmem_file_operations = {
+  static const struct inode_operations shmem_inode_operations = {
+  	.getattr	= shmem_getattr,
+  	.setattr	= shmem_setattr,
++	.fileattr_get	= shmem_fileattr_get,
++	.fileattr_set	= shmem_fileattr_set,
+  #ifdef CONFIG_TMPFS_XATTR
+  	.listxattr	= shmem_listxattr,
+  	.set_acl	= simple_set_acl,
