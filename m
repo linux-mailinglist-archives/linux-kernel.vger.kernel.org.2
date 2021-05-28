@@ -2,66 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E6F839463F
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 19:13:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D97F394640
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 19:14:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235825AbhE1RPa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 May 2021 13:15:30 -0400
-Received: from conuserg-07.nifty.com ([210.131.2.74]:28762 "EHLO
-        conuserg-07.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229641AbhE1RP2 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 May 2021 13:15:28 -0400
-Received: from localhost.localdomain (133-32-232-101.west.xps.vectant.ne.jp [133.32.232.101]) (authenticated)
-        by conuserg-07.nifty.com with ESMTP id 14SHDNo4032433;
-        Sat, 29 May 2021 02:13:23 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conuserg-07.nifty.com 14SHDNo4032433
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1622222004;
-        bh=l4ntX8x0JtCnBD5KvAYnltkw9P8JET4BzHSY0clkT+4=;
-        h=From:To:Cc:Subject:Date:From;
-        b=qG1HF8AMk74YxygPm10dKl4QlVXWPTQEIsJ5NlFRI0L3GsanBtevVbVclrfYo5Fml
-         a+itgFn7yKa/t8Ri+LQgX0K4SEPldBkIYOa7ljsnh+PJHHsiX+ACXdMDIvB0KEKXH9
-         hOyM2plZ+ACmM6qEtqrKagaXOALtuQEhzX2+pceq9jkA0wu0ozhii64qK1K091KLfQ
-         GXMVpFbCBN29JaJbERxF8PKLdvC1WKyVvap53j3fod3X/HVRf6FmG/tr+Y5QLnodNu
-         2Y/xQm47j4BvvEQdtt9cpexsmopIcL8y95dcdncfzeTsdnqumBh8v1cXx5vRf03/cE
-         kpPUllbWxCAMg==
-X-Nifty-SrcIP: [133.32.232.101]
-From:   Masahiro Yamada <masahiroy@kernel.org>
-To:     linux-kbuild@vger.kernel.org
-Cc:     Masahiro Yamada <masahiroy@kernel.org>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] kconfig: constify long_opts
-Date:   Sat, 29 May 2021 02:13:21 +0900
-Message-Id: <20210528171321.158586-1-masahiroy@kernel.org>
-X-Mailer: git-send-email 2.27.0
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        id S236666AbhE1RPf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 May 2021 13:15:35 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35954 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229641AbhE1RPc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 28 May 2021 13:15:32 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 95338613B6;
+        Fri, 28 May 2021 17:13:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1622222037;
+        bh=btu1XKYl/SxptLijDHm9O5VtHEC06LI6a/VkclgT8tE=;
+        h=In-Reply-To:References:Date:From:To:Cc:Subject:From;
+        b=o0O+4tmo1e3pS1ydtGlw+kn/keT9AcWAQQMJE+kzkkp6aXqL6LN9KCGW3u0msJJsr
+         UdXTfQSR737WilcuaFQ5JkMeVw2w8zyGDzFxM6z9SNZiulb2+YlJ0vAs84eoNzmlsI
+         TBHNe574uCR3h7DvAAGTjFlXpioNQ7Xvy+4DO0SiPvNonDoxS/o4NJU5CvBr2IJAWx
+         Tvr2kVWadNIEFHCdA5msCESZ6VishJPDfFMMFWuhbGqiEz7lviMgRO0DSFgQsG4Vd+
+         RSHGjm7+6zjTyo3VjIkYOLOscQ7Gu0cIYBlo1+Tf8CS7J7ogEX2nhJDxFVowDJTcjr
+         /w/fBViEKDw7A==
+Received: from compute2.internal (compute2.nyi.internal [10.202.2.42])
+        by mailauth.nyi.internal (Postfix) with ESMTP id 97B1327C0054;
+        Fri, 28 May 2021 13:13:55 -0400 (EDT)
+Received: from imap21 ([10.202.2.71])
+  by compute2.internal (MEProxy); Fri, 28 May 2021 13:13:55 -0400
+X-ME-Sender: <xms:0SSxYBNhLLEQhbE5DlCdjIGAyc9hsbxC88yUOT8kiJNc-79KkN_ErQ>
+    <xme:0SSxYD-Dlo4OwdnTb9LhWVsB5TmvH6bMtUBT4Nby4DknY5hnYDzWU6Mhd_QogPfd4
+    q3ZwhuLBHfRAMXbgFk>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrvdekjedguddutdcutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
+    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
+    enucfjughrpefofgggkfgjfhffhffvufgtsehttdertderredtnecuhfhrohhmpedftehn
+    ugihucfnuhhtohhmihhrshhkihdfuceolhhuthhosehkvghrnhgvlhdrohhrgheqnecugg
+    ftrfgrthhtvghrnheptdfhheettddvtedvtedugfeuuefhtddugedvleevleefvdetleff
+    gfefvdekgeefnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrh
+    homheprghnugihodhmvghsmhhtphgruhhthhhpvghrshhonhgrlhhithihqdduudeiudek
+    heeifedvqddvieefudeiiedtkedqlhhuthhopeepkhgvrhhnvghlrdhorhhgsehlihhnuh
+    igrdhluhhtohdruhhs
+X-ME-Proxy: <xmx:0SSxYATUdIenlKMLAPrg3ZlMLp6CCWhFef7S9ts1Z1KwHGgGWsVBFQ>
+    <xmx:0SSxYNtJzdNZLuD9AN8onvkX235_vbNUV3WOxikkpBbKHXEt9TlcOw>
+    <xmx:0SSxYJf46tqmrSAugiHt6K14v0Lq-MOLy1gwKJsT4Tfu6x-jl58qkA>
+    <xmx:0ySxYKXebEBWDDxDG6P_oBXOkEF1Hoj-mhn_Suz3FSF2FCO5syMBsvwvicCtyH26>
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+        id 014BB51C0060; Fri, 28 May 2021 13:13:52 -0400 (EDT)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.5.0-alpha0-468-gdb53729b73-fm-20210517.001-gdb53729b
+Mime-Version: 1.0
+Message-Id: <3781d3ec-6d1b-4d04-8bed-19985115153d@www.fastmail.com>
+In-Reply-To: <4c3bfc27-a542-8e91-7ccf-4be8b1e6c844@intel.com>
+References: <20210527235109.B2A9F45F@viggo.jf.intel.com>
+ <87eedq7u2b.ffs@nanos.tec.linutronix.de>
+ <4c3bfc27-a542-8e91-7ccf-4be8b1e6c844@intel.com>
+Date:   Fri, 28 May 2021 10:13:32 -0700
+From:   "Andy Lutomirski" <luto@kernel.org>
+To:     "Dave Hansen" <dave.hansen@intel.com>,
+        "Thomas Gleixner" <tglx@linutronix.de>,
+        "Dave Hansen" <dave.hansen@linux.intel.com>, linux-mm@kvack.org
+Cc:     "Linux Kernel Mailing List" <linux-kernel@vger.kernel.org>,
+        "Ingo Molnar" <mingo@redhat.com>, "Borislav Petkov" <bp@alien8.de>,
+        "the arch/x86 maintainers" <x86@kernel.org>, shuah@kernel.org,
+        "Babu Moger" <babu.moger@amd.com>, dave.kleikamp@oracle.com,
+        linuxram@us.ibm.com, bauerman@linux.ibm.com
+Subject: Re: [PATCH 0/5] x86/pkeys: PKRU manipulation bug fixes and cleanups
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-getopt_long() does not modify the logopts structure.
 
-Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
----
 
- scripts/kconfig/conf.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+On Fri, May 28, 2021, at 9:11 AM, Dave Hansen wrote:
+> On 5/28/21 8:32 AM, Thomas Gleixner wrote:
+> >>
+> >> This series:
+> >>  * Moves the PKRU manipulation to a more appropriate location,
+> >>    away from the page table code
+> >>  * Wraps get_xsave_addr() with more structured, less error-prone
+> >>    interfaces.
+> >>  * Conditionally hides a pkey debugfs file, eliminating the need
+> >>    for new runtime checks to work with the new interface.
+> >>  * Add a selftest to make it more likely to catch bugs like this
+> >>    in the future.  This improved selftest catches this issue on
+> >>    Intel CPUs.  Without the improvement, it only triggers on AMD.
+> > I think all of this is fundamentaly wrong.
+> > 
+> > Contrary to FPU state, PKRU has to be updated at context switch
+> > time. There is absolutely no point in having PKRU XSAVES managed.
+> > 
+> > It's broken in several ways. Anything which clears and loads the FPU
+> > will load the wrong PKRU value. Go figure...
+> > 
+> > So the right thing is to disable PKRU in XCR0 and on sched out simply do
+> > 
+> >    task->thread.pkru = read_pkru();
+> > 
+> > and on sched in
+> > 
+> >    write_pkru(task->thread.pkru);
+> > 
+> > Simple, trivial and not going to be wreckaged by anything which fiddles
+> > with xstates. We all know by now that xstates is a trainwreck and not
+> > having stuff like that in there is making the fixes I'm doing way
+> > simpler.
+> 
+> As for the general sentiment that PKRU is not suitable for management
+> with XSAVE, I'm with you.
+> 
+> I have a few concerns about moving away from XSAVE management, though.
+> I'm not nixing the whole idea, but there are some things we need to resolve.
+> 
+> First is that there _may_ be ABI concerns.  
 
-diff --git a/scripts/kconfig/conf.c b/scripts/kconfig/conf.c
-index bfa1ea8f5f98..5d84b44a2a2a 100644
---- a/scripts/kconfig/conf.c
-+++ b/scripts/kconfig/conf.c
-@@ -678,7 +678,7 @@ static void check_conf(struct menu *menu)
- 		check_conf(child);
- }
- 
--static struct option long_opts[] = {
-+static const struct option long_opts[] = {
- 	{"help",          no_argument,       NULL,            'h'},
- 	{"silent",        no_argument,       NULL,            's'},
- 	{"oldaskconfig",  no_argument,       &input_mode_opt, oldaskconfig},
--- 
-2.27.0
-
+I tend to think that, for -stable, we should fix the bug without an ABI change.
