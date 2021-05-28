@@ -2,50 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C1CFD394373
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 15:38:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B23DE39437F
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 15:42:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235925AbhE1NkA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 May 2021 09:40:00 -0400
-Received: from elvis.franken.de ([193.175.24.41]:53912 "EHLO elvis.franken.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229653AbhE1Nj4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 May 2021 09:39:56 -0400
-Received: from uucp (helo=alpha)
-        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
-        id 1lmcgs-00013T-00; Fri, 28 May 2021 15:38:18 +0200
-Received: by alpha.franken.de (Postfix, from userid 1000)
-        id 750C4C1B28; Fri, 28 May 2021 15:37:50 +0200 (CEST)
-Date:   Fri, 28 May 2021 15:37:50 +0200
-From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To:     Keguang Zhang <keguang.zhang@gmail.com>
-Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH V1 0/4] MIPS: Loongson1B: Add dmaengine and NAND device
-Message-ID: <20210528133750.GA3164@alpha.franken.de>
-References: <20210526133100.436048-1-keguang.zhang@gmail.com>
+        id S235931AbhE1NoF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 May 2021 09:44:05 -0400
+Received: from frasgout.his.huawei.com ([185.176.79.56]:3107 "EHLO
+        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233879AbhE1Nn7 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 28 May 2021 09:43:59 -0400
+Received: from fraeml737-chm.china.huawei.com (unknown [172.18.147.226])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4Fs5CV18f1z6P3GH;
+        Fri, 28 May 2021 21:30:14 +0800 (CST)
+Received: from lhreml724-chm.china.huawei.com (10.201.108.75) by
+ fraeml737-chm.china.huawei.com (10.206.15.218) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Fri, 28 May 2021 15:42:23 +0200
+Received: from localhost.localdomain (10.69.192.58) by
+ lhreml724-chm.china.huawei.com (10.201.108.75) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Fri, 28 May 2021 14:42:20 +0100
+From:   John Garry <john.garry@huawei.com>
+To:     <joro@8bytes.org>, <will@kernel.org>
+CC:     <iommu@lists.linux-foundation.org>, <linux-kernel@vger.kernel.org>,
+        <hch@lst.de>, <robin.murphy@arm.com>,
+        John Garry <john.garry@huawei.com>
+Subject: [PATCH] iommu: Print default strict or lazy mode at init time
+Date:   Fri, 28 May 2021 21:37:54 +0800
+Message-ID: <1622209074-37899-1-git-send-email-john.garry@huawei.com>
+X-Mailer: git-send-email 2.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210526133100.436048-1-keguang.zhang@gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain
+X-Originating-IP: [10.69.192.58]
+X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
+ lhreml724-chm.china.huawei.com (10.201.108.75)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 26, 2021 at 09:30:56PM +0800, Keguang Zhang wrote:
-> From: Kelvin Cheung <keguang.zhang@gmail.com>
-> 
-> This patchset is to add dmaengine and NAND device
-> for Loongson1B.
+As well as the default domain type, it's useful to know whether strict
+or lazy mode is default for DMA domains, so add this info in a separate
+print.
 
-as I saw two more versions of this series, is this something to look at
-and apply ?
+Signed-off-by: John Garry <john.garry@huawei.com>
 
-For future submissions, could you please add a changelog when you update
-a series ? Thanks a lot.
-
-Thomas.
-
+diff --git a/drivers/iommu/iommu.c b/drivers/iommu/iommu.c
+index 808ab70d5df5..f25fae62f077 100644
+--- a/drivers/iommu/iommu.c
++++ b/drivers/iommu/iommu.c
+@@ -138,6 +138,11 @@ static int __init iommu_subsys_init(void)
+ 		(iommu_cmd_line & IOMMU_CMD_LINE_DMA_API) ?
+ 			"(set via kernel command line)" : "");
+ 
++	pr_info("Default DMA domain mode: %s %s\n",
++		iommu_dma_strict ? "strict" : "lazy",
++		(iommu_cmd_line & IOMMU_CMD_LINE_STRICT) ?
++			"(set via kernel command line)" : "");
++
+ 	return 0;
+ }
+ subsys_initcall(iommu_subsys_init);
 -- 
-Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
-good idea.                                                [ RFC1925, 2.3 ]
+2.26.2
+
