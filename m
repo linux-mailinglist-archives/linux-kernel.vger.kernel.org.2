@@ -2,149 +2,284 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 34322393ED8
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 10:35:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 18D87393EDD
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 10:36:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231564AbhE1Ih0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 May 2021 04:37:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38276 "EHLO
+        id S235292AbhE1IiP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 May 2021 04:38:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38466 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235006AbhE1IhZ (ORCPT
+        with ESMTP id S233646AbhE1IiN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 May 2021 04:37:25 -0400
-Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4FC5C06174A
-        for <linux-kernel@vger.kernel.org>; Fri, 28 May 2021 01:35:50 -0700 (PDT)
-Received: by mail-lf1-x12f.google.com with SMTP id q1so4194785lfo.3
-        for <linux-kernel@vger.kernel.org>; Fri, 28 May 2021 01:35:50 -0700 (PDT)
+        Fri, 28 May 2021 04:38:13 -0400
+Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5593C06174A
+        for <linux-kernel@vger.kernel.org>; Fri, 28 May 2021 01:36:38 -0700 (PDT)
+Received: by mail-wr1-x435.google.com with SMTP id m18so2464124wrv.2
+        for <linux-kernel@vger.kernel.org>; Fri, 28 May 2021 01:36:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=qXzQIPasUcthmSDz8eSF+P9ruKadFcmRFPG5VSNQtL8=;
-        b=eKWJz4art9JMWcy6y6iWK9LFwP2pQvAov+Vsbn1np7ccpJfXlVE+B9uDjzPJkkISWg
-         2jHaOl5Oe3gGxfXA6LgeTrMqL3Gcw59pnwKpxvt8qVyoVD3gBZ5kgubk2uIVa3+XtnMV
-         2V92ED5sEIA5YUZIqSGlECauLUkp+VLy0BPS29E5R4b1OW/oEDzMGfRYxzM+31d+6868
-         uf5AXz1khjan90xUAKlOHv+5eb4/32xWzgjOA4a4yMZ67GancPJwneDU6vE1rcZ2041T
-         2ZfGpbwNnxRzyB+Cw/7D8H11DdXHZHN53I7V1Mhgpvu3OZ8ELlLXIA0P4KJczeoWtWpC
-         AsSw==
+        h=subject:to:references:from:message-id:date:user-agent:mime-version
+         :in-reply-to:content-language:content-transfer-encoding;
+        bh=V03u/XyZi3pPuRX5LQlb8QPL3m3IaEUB6/fHYvwS6Eg=;
+        b=IhPoCNOaFrHxImotr9rEePvVlb9Wt/uvzpY2poaWhCt0r8hA6Y0EUpjovO7BH5iPkL
+         EDruzLmZfJcc+Ax2OuQxn5rrAHPE+erAFE2eGQmjRta5x//cPJc9xBPvRGojfScEexB+
+         P1lxEhrFkPn7ZfpLVBo8UQkImc6Lt2Acvc9y2h1xgFFVjESwi7+Qvap2ONNcVm8UArlm
+         HMPD4aIm6IYjgSbHN2h9KS1zRet1LsGNcY+QU+ytBeP/aohjlA/wv19rd8rUY70JJHVI
+         Z8t7NJ2+cM7Y43F9Fw3Rzgr40QvQyrFIpJ1GJhv9UrH9T3D7zcyDC/jCVz0lm6maN8mW
+         ktpQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=qXzQIPasUcthmSDz8eSF+P9ruKadFcmRFPG5VSNQtL8=;
-        b=rndoH9bEDeLoIp10AOsU/wHfzoHU9gT5zUoZSZ3VQxFNiJ3i6mKOhfdMTEkR6X019D
-         2oeOMq2+7j6GfYVWZOpKY5ZBqRfcwwMvwdC5huZUGJTXh2FnsLnkfsqw+Bctz51r80Cr
-         PskoxfY8qR2VJebzMxBXGPZiZeyaxy0EFfHwF3kQwpaJ+faLeI8BpJMnOTpkBHnENkFC
-         4dKu9pz3LdSZpBBd/4JM0nPa+RXNwD1jjwckDMnVZ+8xzw1sKWb8ashNKJIr8A7zkFsq
-         k30KWLku+35uOU2SWi9eiXRTFgzhvxTEWXh9T+MfODQAHbT2T91Rm8USlUgIIiejNAmR
-         WHIw==
-X-Gm-Message-State: AOAM531Mpjqc0w6ug/D6lSM9Ru+bSa53Jac7xVZ8LfutvNpigEAROQAv
-        kBcNL7C8sz6G9ReXTS/aI0azIs2c+nMKBZMEOdGRPg==
-X-Google-Smtp-Source: ABdhPJx7fY2eoo3ewpiwsQcdfnOZOMZDOGzICz8TqAeiPIIG9rFXZg0ycCOFOJyYz6YC0EypW/bfzb3UTuupkbD3PwU=
-X-Received: by 2002:ac2:47e6:: with SMTP id b6mr5005230lfp.649.1622190949032;
- Fri, 28 May 2021 01:35:49 -0700 (PDT)
+        h=x-gm-message-state:subject:to:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=V03u/XyZi3pPuRX5LQlb8QPL3m3IaEUB6/fHYvwS6Eg=;
+        b=Nk46M1l5DiTUIuYew2WtFI0XCZDCXkBY1fhMUz+4nSe640HjzsQBdVSWww92Fuy4xe
+         lEG2AHkyILBTU3+hdCg4cfjBJ6GRzFg9Iom7ZVvu64w7BTXF0Eg4xza+llf6oWjbBchj
+         VjE+RuKTLL05wJyGx7EZwpwWYiPkMhTf6k2v8IfSLDAD0uOwQSCFlti856aCWdFIYZQb
+         7TQ9USTunBjpWPHTXbI8dWUa2Xz82V8DVTlrhT4amDR4DpuQDNb9JaYlnp90O4xKFZ3y
+         3Uxp40pxRM9mX/GgsaQ6zCXxtNtVAB4yNRbskYm2gisGmYY1cViZcXaRBnSe0m2kgSmF
+         XHEQ==
+X-Gm-Message-State: AOAM5318yeR+MmutBiTlXr403qIMaJDik6ihdB0EEHIWRWRDvcGCZabg
+        GDLCWyS5sHwp6BFZKTd8cMbDEw==
+X-Google-Smtp-Source: ABdhPJw6ASwJx8tFWYm7xXzM/CV0saZMtFH4llkM7XlWYPBuT3XmqhTIKbzhkmMQWzeXk0irJ/RScA==
+X-Received: by 2002:a5d:40cd:: with SMTP id b13mr7537375wrq.356.1622190997481;
+        Fri, 28 May 2021 01:36:37 -0700 (PDT)
+Received: from [192.168.86.34] (cpc86377-aztw32-2-0-cust226.18-1.cable.virginm.net. [92.233.226.227])
+        by smtp.googlemail.com with ESMTPSA id s2sm11785217wmc.21.2021.05.28.01.36.36
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Fri, 28 May 2021 01:36:36 -0700 (PDT)
+Subject: Re: [PATCH] Asoc: qcom: Add four speaker support on MI2S secondary
+To:     Srinivasa Rao Mandadapu <srivasam@codeaurora.org>,
+        agross@kernel.org, bjorn.andersson@linaro.org, lgirdwood@gmail.com,
+        broonie@kernel.org, robh+dt@kernel.org, plai@codeaurora.org,
+        bgoswami@codeaurora.org, perex@perex.cz, tiwai@suse.com,
+        rohitkr@codeaurora.org, linux-arm-msm@vger.kernel.org,
+        alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, swboyd@chromium.org,
+        judyhsiao@chromium.org
+References: <20210527073309.28661-1-srivasam@codeaurora.org>
+From:   Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Message-ID: <213e1133-0164-03da-1740-c7ca39f3fd8c@linaro.org>
+Date:   Fri, 28 May 2021 09:36:35 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
-References: <20210527005455.25758-1-steven_lee@aspeedtech.com>
- <20210527005455.25758-2-steven_lee@aspeedtech.com> <CACRpkdZFcFuT9rdrc8BfEBmhy0--9uLMSJWfr=A+nU117_BT8A@mail.gmail.com>
- <20210528040934.GA28403@aspeedtech.com>
-In-Reply-To: <20210528040934.GA28403@aspeedtech.com>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Fri, 28 May 2021 10:35:37 +0200
-Message-ID: <CACRpkdYnvzOW_86QgLAsNpNXWZXpaMiE7g9_jHZ0ZsFyhOjjAg@mail.gmail.com>
-Subject: Re: [PATCH v2 1/4] dt-bindings: aspeed-sgpio: Convert txt bindings to yaml.
-To:     Steven Lee <steven_lee@aspeedtech.com>,
-        Rob Herring <robh+dt@kernel.org>
-Cc:     Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Joel Stanley <joel@jms.id.au>,
-        Andrew Jeffery <andrew@aj.id.au>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        "moderated list:ARM/ASPEED MACHINE SUPPORT" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "moderated list:ARM/ASPEED MACHINE SUPPORT" 
-        <linux-aspeed@lists.ozlabs.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Hongwei Zhang <Hongweiz@ami.com>,
-        Ryan Chen <ryan_chen@aspeedtech.com>,
-        Billy Tsai <billy_tsai@aspeedtech.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210527073309.28661-1-srivasam@codeaurora.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 28, 2021 at 6:10 AM Steven Lee <steven_lee@aspeedtech.com> wrote:
-> The 05/28/2021 07:51, Linus Walleij wrote:
-> > On Thu, May 27, 2021 at 2:55 AM Steven Lee <steven_lee@aspeedtech.com> wrote:
-> >
-> > > +  max-ngpios:
-> > > +    description:
-> > > +      represents the number of actual hardware-supported GPIOs (ie,
-> > > +      slots within the clocked serial GPIO data). Since each HW GPIO is both an
-> > > +      input and an output, we provide max_ngpios * 2 lines on our gpiochip
-> > > +      device. We also use it to define the split between the inputs and
-> > > +      outputs; the inputs start at line 0, the outputs start at max_ngpios.
-> > > +    minimum: 0
-> > > +    maximum: 128
-> >
-> > Why can this not be derived from the compatible value?
-> >
-> > Normally there should be one compatible per hardware variant
-> > of the block. And this should be aligned with that, should it not?
-> >
-> > If this is not the case, maybe more detailed compatible strings
-> > are needed, maybe double compatibles with compatible per
-> > family and SoC?
-> >
->
-> Thanks for your suggestion.
-> I add max-ngpios in dt-bindings as there is ngpios defined in
-> dt-bindings, users can get the both max-ngpios and ngpios information
-> from dtsi without digging sgpio driver.
->
-> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/arch/arm/boot/dts/aspeed-g5.dtsi#n354
->
-> If adding more detailed compatibles is better, I will add them to sgpio driver
-> in V3 patch and remove max-ngpios from dt-bindings.
->
-> Since AST2600 has 2 sgpio controller one with 128 pins and another one with 80 pins.
-> For supporting max-ngpios in compatibles, 2 platform data for each
-> ast2600 sgpio controller as follows are necessary.
->
-> ```
-> static const struct aspeed_sgpio_pdata ast2600_sgpiom1_pdata = {
->         .max_ngpios = 128;
-> };
-> static const struct aspeed_sgpio_pdata ast2600_sgpiom2_pdata = {
->         .max_ngpios = 80;
-> };
->
-> { .compatible = "aspeed,ast2500-sgpio" , .data = &ast2400_sgpio_pdata, },
-> { .compatible = "aspeed,ast2600-sgpiom1", .data = &ast2600_sgpiom1_pdata, },
-> { .compatible = "aspeed,ast2600-sgpiom2", .data = &ast2600_sgpiom2_pdata, },
+Hi Srinivasa,
 
-There is a soft border between two IP blocks being "compatible"
-and parameterized and two IP blocks being different and having
-unique compatibles.
+On 27/05/2021 08:33, Srinivasa Rao Mandadapu wrote:
+> Add four speaker support on MI2S secondary block
+> by using I2S SD1 line on gpio52 pin, and add channel map
+> control support in the lpass-cpu audio driver.
+> 
+> Signed-off-by: Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
+> ---
+>   sound/soc/qcom/lpass-cpu.c    | 106 +++++++++++++++++++++++++++++++++-
+>   sound/soc/qcom/lpass-sc7180.c |   1 +
+>   sound/soc/qcom/lpass.h        |   5 ++
+>   3 files changed, 111 insertions(+), 1 deletion(-)
+> 
 
-For example we know for sure we don't use different compatibles
-because of how interrupt lines or DMA channels are connected.
+This patch looks totally redundant to set_channel_map/get_channel_map 
+implementation. You should probably consider adding that support to the 
+qcom_lpass_cpu_dai_ops. And let the machine driver set the channel map.
 
-So if this is an external thing, outside of the IP itself, I might back
-off on this and say it shall be a parameter.
+--srini
 
-But max-ngpios? It is confusingly similar to ngpios.
-
-So we need to think about this name.
-
-Something like gpio-hardware-slots or something else that
-really describe what this is.
-
-Does this always strictly follow ngpios so that the number
-of gpio slots == ngpios * 2? In that case only put ngpios into
-the device tree and multiply by 2 in the driver, because ngpios
-is exactly for this: parameterizing hardware limitations.
-
-Yours,
-Linus Walleij
+> diff --git a/sound/soc/qcom/lpass-cpu.c b/sound/soc/qcom/lpass-cpu.c
+> index c62d2612e8f5..88a038a107a7 100644
+> --- a/sound/soc/qcom/lpass-cpu.c
+> +++ b/sound/soc/qcom/lpass-cpu.c
+> @@ -28,6 +28,19 @@
+>   #define LPASS_CPU_I2S_SD2_3_MASK	GENMASK(3, 2)
+>   #define LPASS_CPU_I2S_SD0_1_2_MASK	GENMASK(2, 0)
+>   #define LPASS_CPU_I2S_SD0_1_2_3_MASK	GENMASK(3, 0)
+> +#define LPASS_CHMAP_IDX_UNKNOWN		-1
+> +
+> +/*
+> + * Channel maps for multi-channel playbacks on MI2S Secondary, up to 4 n_ch
+> + */
+> +static struct snd_pcm_chmap_elem lpass_chmaps[] = {
+> +	{ .channels = 2,
+> +	  .map = { SNDRV_CHMAP_FL, SNDRV_CHMAP_FR } },
+> +	{ .channels = 4,
+> +	  .map = { SNDRV_CHMAP_FL, SNDRV_CHMAP_FR,
+> +				SNDRV_CHMAP_RL, SNDRV_CHMAP_RR } },
+> +	{ }
+> +};
+>   
+>   static int lpass_cpu_init_i2sctl_bitfields(struct device *dev,
+>   			struct lpaif_i2sctl *i2sctl, struct regmap *map)
+> @@ -86,6 +99,9 @@ static int lpass_cpu_daiops_startup(struct snd_pcm_substream *substream,
+>   		clk_disable_unprepare(drvdata->mi2s_osr_clk[dai->driver->id]);
+>   		return ret;
+>   	}
+> +	if (drvdata->chmap_info && drvdata->chmap_info->max_channels == 4)
+> +		drvdata->chmap_info->chmap = lpass_chmaps;
+> +
+>   	return 0;
+>   }
+>   
+> @@ -96,6 +112,7 @@ static void lpass_cpu_daiops_shutdown(struct snd_pcm_substream *substream,
+>   
+>   	clk_disable_unprepare(drvdata->mi2s_osr_clk[dai->driver->id]);
+>   	clk_unprepare(drvdata->mi2s_bit_clk[dai->driver->id]);
+> +	drvdata->chmap_idx = LPASS_CHMAP_IDX_UNKNOWN;
+>   }
+>   
+>   static int lpass_cpu_daiops_hw_params(struct snd_pcm_substream *substream,
+> @@ -224,9 +241,14 @@ static int lpass_cpu_daiops_hw_params(struct snd_pcm_substream *substream,
+>   				ret);
+>   			return ret;
+>   		}
+> -		if (channels >= 2)
+> +		if (channels >= 2) {
+>   			ret = regmap_fields_write(i2sctl->spkmono, id,
+>   						 LPAIF_I2SCTL_SPKMONO_STEREO);
+> +			if (channels == 4)
+> +				drvdata->chmap_idx = 1;
+> +			else
+> +				drvdata->chmap_idx = 0;
+> +		}
+>   		else
+>   			ret = regmap_fields_write(i2sctl->spkmono, id,
+>   						 LPAIF_I2SCTL_SPKMONO_MONO);
+> @@ -324,6 +346,84 @@ const struct snd_soc_dai_ops asoc_qcom_lpass_cpu_dai_ops = {
+>   };
+>   EXPORT_SYMBOL_GPL(asoc_qcom_lpass_cpu_dai_ops);
+>   
+> +static int lpass_cpu_chmap_ctl_get(struct snd_kcontrol *kcontrol,
+> +				struct snd_ctl_elem_value *ucontrol)
+> +{
+> +	unsigned const char *map;
+> +	unsigned int i;
+> +	struct snd_pcm_chmap *info = snd_kcontrol_chip(kcontrol);
+> +	struct lpass_data *drvdata = info->private_data;
+> +
+> +	if (info->max_channels == 2)
+> +		map = &lpass_chmaps[0].map[0];
+> +	else if (info->max_channels == 4)
+> +		map = &lpass_chmaps[1].map[0];
+> +
+> +	for (i = 0; i < info->max_channels; i++) {
+> +		if (drvdata->chmap_idx == LPASS_CHMAP_IDX_UNKNOWN)
+> +			ucontrol->value.integer.value[i] = 0;
+> +		else
+> +			ucontrol->value.integer.value[i] = map[i];
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+> +static int lpass_cpu_chmap_ctl_set(struct snd_kcontrol *kcontrol,
+> +				struct snd_ctl_elem_value *ucontrol)
+> +{
+> +	unsigned int i;
+> +	struct snd_pcm_chmap *info = snd_kcontrol_chip(kcontrol);
+> +	struct lpass_data *drvdata = info->private_data;
+> +	unsigned char *map;
+> +
+> +	if (info->max_channels == 2)
+> +		map = &lpass_chmaps[0].map[0];
+> +	else if (info->max_channels == 4)
+> +		map = &lpass_chmaps[1].map[0];
+> +
+> +	for (i = 0; i < info->max_channels; i++) {
+> +		if (drvdata->chmap_idx == LPASS_CHMAP_IDX_UNKNOWN)
+> +			map[i] = 0;
+> +		else
+> +			map[i] = ucontrol->value.integer.value[i];
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+> +int lpass_cpu_pcm_new(struct snd_soc_pcm_runtime *rtd,
+> +			      struct snd_soc_dai *dai)
+> +{
+> +	int ret;
+> +
+> +	struct snd_soc_dai_driver *drv = dai->driver;
+> +	struct lpass_data *drvdata = snd_soc_dai_get_drvdata(dai);
+> +
+> +	ret =  snd_pcm_add_chmap_ctls(rtd->pcm, SNDRV_PCM_STREAM_PLAYBACK,
+> +			snd_pcm_alt_chmaps, drv->playback.channels_max, 0,
+> +			&drvdata->chmap_info);
+> +	if (ret < 0)
+> +		return ret;
+> +
+> +
+> +	/*
+> +	 * override handlers
+> +	 */
+> +	drvdata->chmap_info->private_data = drvdata;
+> +	drvdata->chmap_info->kctl->get = lpass_cpu_chmap_ctl_get;
+> +	drvdata->chmap_info->kctl->put = lpass_cpu_chmap_ctl_set;
+> +
+> +	/*
+> +	 * default chmap supported is stereo
+> +	 */
+> +	drvdata->chmap_info->chmap = lpass_chmaps;
+> +	drvdata->chmap_idx = LPASS_CHMAP_IDX_UNKNOWN;
+> +
+> +	return 0;
+> +}
+> +EXPORT_SYMBOL_GPL(lpass_cpu_pcm_new);
+> +
+>   int asoc_qcom_lpass_cpu_dai_probe(struct snd_soc_dai *dai)
+>   {
+>   	struct lpass_data *drvdata = snd_soc_dai_get_drvdata(dai);
+> @@ -856,6 +956,10 @@ int asoc_qcom_lpass_cpu_platform_probe(struct platform_device *pdev)
+>   				PTR_ERR(drvdata->mi2s_bit_clk[dai_id]));
+>   			return PTR_ERR(drvdata->mi2s_bit_clk[dai_id]);
+>   		}
+> +		if (drvdata->mi2s_playback_sd_mode[dai_id] == LPAIF_I2SCTL_MODE_QUAD01) {
+> +			variant->dai_driver[dai_id].playback.channels_min = 4;
+> +			variant->dai_driver[dai_id].playback.channels_max = 4;
+> +		}
+>   	}
+>   
+>   	/* Allocation for i2sctl regmap fields */
+> diff --git a/sound/soc/qcom/lpass-sc7180.c b/sound/soc/qcom/lpass-sc7180.c
+> index 8c168d3c589e..77a556b27cf0 100644
+> --- a/sound/soc/qcom/lpass-sc7180.c
+> +++ b/sound/soc/qcom/lpass-sc7180.c
+> @@ -58,6 +58,7 @@ static struct snd_soc_dai_driver sc7180_lpass_cpu_dai_driver[] = {
+>   		},
+>   		.probe	= &asoc_qcom_lpass_cpu_dai_probe,
+>   		.ops    = &asoc_qcom_lpass_cpu_dai_ops,
+> +		.pcm_new = lpass_cpu_pcm_new,
+>   	}, {
+>   		.id = LPASS_DP_RX,
+>   		.name = "Hdmi",
+> diff --git a/sound/soc/qcom/lpass.h b/sound/soc/qcom/lpass.h
+> index 83b2e08ade06..fb82591d550c 100644
+> --- a/sound/soc/qcom/lpass.h
+> +++ b/sound/soc/qcom/lpass.h
+> @@ -76,6 +76,9 @@ struct lpass_data {
+>   	/* regmap backed by the low-power audio interface (LPAIF) registers */
+>   	struct regmap *lpaif_map;
+>   	struct regmap *hdmiif_map;
+> +	struct snd_pcm_chmap *chmap_info;
+> +
+> +	int chmap_idx;
+>   
+>   	/* interrupts from the low-power audio interface (LPAIF) */
+>   	int lpaif_irq;
+> @@ -259,5 +262,7 @@ void asoc_qcom_lpass_cpu_platform_shutdown(struct platform_device *pdev);
+>   int asoc_qcom_lpass_cpu_platform_probe(struct platform_device *pdev);
+>   int asoc_qcom_lpass_cpu_dai_probe(struct snd_soc_dai *dai);
+>   extern const struct snd_soc_dai_ops asoc_qcom_lpass_cpu_dai_ops;
+> +int lpass_cpu_pcm_new(struct snd_soc_pcm_runtime *rtd,
+> +				struct snd_soc_dai *dai);
+>   
+>   #endif /* __LPASS_H__ */
+> 
