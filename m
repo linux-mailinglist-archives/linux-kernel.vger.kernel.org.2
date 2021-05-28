@@ -2,79 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5068B394651
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 19:19:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D576394652
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 19:19:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236166AbhE1RVS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 May 2021 13:21:18 -0400
-Received: from mga18.intel.com ([134.134.136.126]:37091 "EHLO mga18.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229768AbhE1RVO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 May 2021 13:21:14 -0400
-IronPort-SDR: Vv7eWrKsoqynFyUU0D1dKXpH1FdQxiR3qWo0IMOwY9HtjTi2vk+oyh/KnSyPvdPpPP1X3ZEs7y
- 8Me20bQoWjWQ==
-X-IronPort-AV: E=McAfee;i="6200,9189,9998"; a="190364975"
-X-IronPort-AV: E=Sophos;i="5.83,230,1616482800"; 
-   d="scan'208";a="190364975"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 May 2021 10:19:38 -0700
-IronPort-SDR: Aly2FSp0W4Y6athkKfvJ4iH53BfAe4jCTnYBUZMSvRAvuP5rAfglJQwS6w/rkqTGeVGfdGB/kM
- Qz0LMvs1zlKQ==
-X-IronPort-AV: E=Sophos;i="5.83,230,1616482800"; 
-   d="scan'208";a="415359453"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 May 2021 10:19:36 -0700
-Received: from andy by smile with local (Exim 4.94)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1lmg8z-00FNUV-QO; Fri, 28 May 2021 20:19:33 +0300
-Date:   Fri, 28 May 2021 20:19:33 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Wolfram Sang <wsa@kernel.org>,
-        Lukas Bulwahn <lukas.bulwahn@gmail.com>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Jarkko Nikula <jarkko.nikula@linux.intel.com>,
-        Lee Jones <lee.jones@linaro.org>,
-        linux-i2c <linux-i2c@vger.kernel.org>,
-        Ralf Ramsauer <ralf.ramsauer@oth-regensburg.de>,
-        kernel-janitors <kernel-janitors@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] MAINTAINERS: adjust to removing i2c designware platform
- data
-Message-ID: <YLEmJVbVwQaMk+dq@smile.fi.intel.com>
-References: <20210419061809.15045-1-lukas.bulwahn@gmail.com>
- <CAHp75Vfv0FQGXrmpDveOf-cBahoDK3uSPHjPU2RNh6mhFxN7vQ@mail.gmail.com>
- <YLD/ZQiX5VhpWJg7@smile.fi.intel.com>
- <YLECsC9y8ici47Ln@kunai>
+        id S236355AbhE1RVV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 May 2021 13:21:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43380 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230193AbhE1RVQ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 28 May 2021 13:21:16 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB30AC061574
+        for <linux-kernel@vger.kernel.org>; Fri, 28 May 2021 10:19:40 -0700 (PDT)
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1622222379;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=0OyJWpXtdEE/1aJpzC8z0vyowN1eCXtwmZnV55hFPyA=;
+        b=dOJFTXmN05nywmwcIMWLMCZ5TKIL8l+H4Esw/v3AcAy8LPSHq0/xKJJqoRG46Gby9c3QL+
+        KRKXLNPj8IvEzwwBWdIiutH2l+xnLCb4sRsOihqYUAlkHc+Ve3PR1LCDrKRkhLZKb9cvhd
+        dJDJFMdafa5bSSrElcLPXxpCNcOKumItBzZkzFxU3aukdUWnkO0bP7x508WXdgA6ma4D1C
+        uMhn4gXactqza4Qw3oytaWY+Bc8h8Zd/BKR7JmWMRrzMLvMZ8tokf+aQJVjTiYL5QfoW8b
+        b1DRsqOj6MHaSJTTC6wvxKIS3uxBQuSHxURCTApi5vRP23wuKSlR9sbqsO9Zwg==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1622222379;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=0OyJWpXtdEE/1aJpzC8z0vyowN1eCXtwmZnV55hFPyA=;
+        b=S6yFH7DPFtdpHsQJjAkQFOugeho/YX7wQB7+I7fXDpGFRxFFQdQUsjGN+3MmyY4/gt3low
+        VsoZeRlClygksLAQ==
+To:     Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>, linux-mm@kvack.org
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        the arch/x86 maintainers <x86@kernel.org>, shuah@kernel.org,
+        Babu Moger <babu.moger@amd.com>, dave.kleikamp@oracle.com,
+        linuxram@us.ibm.com, bauerman@linux.ibm.com
+Subject: Re: [PATCH 0/5] x86/pkeys: PKRU manipulation bug fixes and cleanups
+In-Reply-To: <3781d3ec-6d1b-4d04-8bed-19985115153d@www.fastmail.com>
+References: <20210527235109.B2A9F45F@viggo.jf.intel.com> <87eedq7u2b.ffs@nanos.tec.linutronix.de> <4c3bfc27-a542-8e91-7ccf-4be8b1e6c844@intel.com> <3781d3ec-6d1b-4d04-8bed-19985115153d@www.fastmail.com>
+Date:   Fri, 28 May 2021 19:19:38 +0200
+Message-ID: <875yz27p3p.ffs@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YLECsC9y8ici47Ln@kunai>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 28, 2021 at 04:48:16PM +0200, Wolfram Sang wrote:
-> 
-> > > > Remove the file entry to this removed file as well.
-> > > 
-> > > Oops, I was under the impression I grepped all occurrences, but I have not.
-> > > 
-> > > Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
-> > > 
-> > > Thanks for the catch!
-> > 
-> > Wolfram, isn't it forgotten somehow?
-> 
-> I can pick it. I refrained from doing so because Lukas explicitly asked
-> Lee to pick it.
+On Fri, May 28 2021 at 10:13, Andy Lutomirski wrote:
+> On Fri, May 28, 2021, at 9:11 AM, Dave Hansen wrote:
+>> I have a few concerns about moving away from XSAVE management, though.
+>> I'm not nixing the whole idea, but there are some things we need to resolve.
+>> 
+>> First is that there _may_ be ABI concerns.  
+>
+> I tend to think that, for -stable, we should fix the bug without an ABI change.
 
-Ah, I see. AFAIR Lee doesn't update his branch frequently, so it might be that
-he already applied that but it's not visible to Linux Next.
-
-
--- 
-With Best Regards,
-Andy Shevchenko
-
-
+See my other mail. It's trivial enough to do.
