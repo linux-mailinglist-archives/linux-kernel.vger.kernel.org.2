@@ -2,141 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B6BB3948FD
-	for <lists+linux-kernel@lfdr.de>; Sat, 29 May 2021 01:02:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0349B394921
+	for <lists+linux-kernel@lfdr.de>; Sat, 29 May 2021 01:28:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229565AbhE1XDe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 May 2021 19:03:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34274 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229500AbhE1XDd (ORCPT
+        id S229653AbhE1X3x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 May 2021 19:29:53 -0400
+Received: from gateway20.websitewelcome.com ([192.185.65.13]:49072 "EHLO
+        gateway20.websitewelcome.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229631AbhE1X3v (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 May 2021 19:03:33 -0400
-Received: from mail-pg1-x52c.google.com (mail-pg1-x52c.google.com [IPv6:2607:f8b0:4864:20::52c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3A43C061574
-        for <linux-kernel@vger.kernel.org>; Fri, 28 May 2021 16:01:57 -0700 (PDT)
-Received: by mail-pg1-x52c.google.com with SMTP id e22so3609906pgv.10
-        for <linux-kernel@vger.kernel.org>; Fri, 28 May 2021 16:01:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ingics-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=4kSS03/9tUwCrR5zMvZVoCOgRBPUucyXZ21jl4g9sFE=;
-        b=F57V7KhrKsdzMnZh5aymYpbs2+OkJO3iX9brb4TMrG8M1ZykVjWPfDvEZWGYoUc8TC
-         /ioMgEsdaK1EZfr8jLlNFzdoera1fn6oqzP65A6KVlufikHhL5Kc2iwzpgMnTjOJAq2c
-         b+XW+pr9qocQxswqH188fikWhPJ/oxpcLPWw06J9MpzMhQ0mQ9NFKY2G4nGnRcB+i/NK
-         y+AyafQQmp9fz2A+qOpjc9hnrz8HyG1D7KzzfynEPSaIh4CutnOLhFmBdjZtULNziJ71
-         qo092IuCfDnUKihnPk1q3+GPsBtRHUk4lhF9+GbseKG3pNC26qHJTsoQcwJCDI4C+cO0
-         HZZA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=4kSS03/9tUwCrR5zMvZVoCOgRBPUucyXZ21jl4g9sFE=;
-        b=t8sZ4Et8yN8bLXeZd06jw5bjO5iej2fQSXbKAgq3u0s8opLAXyMPq7TCMRx+fY4rin
-         qacAHZlskKr3edYiuJYbRAFl0wkFX5aZeCWXBgF+0/WE6JzEYG09FT7gvjIYm2GYm3ov
-         diZo6ig0R3wQ7x8ryt4YeTOzpMBJ3ADBx0w9hK9sVj48HItkGIoa9tKS2HboYzf9LC3q
-         65sbg9uAZw1j7y1H7LOole/QlVW/2gAgCz8MxkFwIcxYhlfkTK1WklPnpIQTTs2xvzyo
-         ItlyJHZPkqln90/XCQk6wj33MWZD2L1a9MjDGzXFkA8U1Po5NXJQa6S4uxSQQz8T7RNQ
-         qusw==
-X-Gm-Message-State: AOAM5313JY15AXbJJd3VAAUxmQPTSlgHAomHhjXh8mj0xyHNeVmt8Pw+
-        /MGU9ZYhekTVwxn9+fh5+VWJGw==
-X-Google-Smtp-Source: ABdhPJyGzo9Ou+NjfZ4fI9Ui3Mcrxsn47Bo24EvTa0/KWU+cPDxZ5jfKFBvdQHBSRVnqtRsafQvxhg==
-X-Received: by 2002:a62:ee0f:0:b029:2e9:a990:5afb with SMTP id e15-20020a62ee0f0000b02902e9a9905afbmr330670pfi.41.1622242917048;
-        Fri, 28 May 2021 16:01:57 -0700 (PDT)
-Received: from localhost.localdomain (122-117-179-2.HINET-IP.hinet.net. [122.117.179.2])
-        by smtp.gmail.com with ESMTPSA id l20sm4921331pjq.38.2021.05.28.16.01.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 28 May 2021 16:01:56 -0700 (PDT)
-From:   Axel Lin <axel.lin@ingics.com>
-To:     Mark Brown <broonie@kernel.org>
-Cc:     Manivannan Sadhasivam <mani@kernel.org>,
-        Cristian Ciocaltea <cristian.ciocaltea@gmail.com>,
-        linux-actions@lists.infradead.org,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        linux-kernel@vger.kernel.org, Axel Lin <axel.lin@ingics.com>
-Subject: [PATCH v2] regulator: atc260x: Fix n_voltages and min_sel for pickable linear ranges
-Date:   Sat, 29 May 2021 07:01:47 +0800
-Message-Id: <20210528230147.363974-1-axel.lin@ingics.com>
-X-Mailer: git-send-email 2.25.1
+        Fri, 28 May 2021 19:29:51 -0400
+X-Greylist: delayed 1370 seconds by postgrey-1.27 at vger.kernel.org; Fri, 28 May 2021 19:29:51 EDT
+Received: from cm13.websitewelcome.com (cm13.websitewelcome.com [100.42.49.6])
+        by gateway20.websitewelcome.com (Postfix) with ESMTP id 2E8BC400F809E
+        for <linux-kernel@vger.kernel.org>; Fri, 28 May 2021 17:50:58 -0500 (CDT)
+Received: from gator4166.hostgator.com ([108.167.133.22])
+        by cmsmtp with SMTP
+        id mlWFlSTkpAEP6mlWFlyBQy; Fri, 28 May 2021 18:03:55 -0500
+X-Authority-Reason: nr=8
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=embeddedor.com; s=default; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
+        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=l0QiEp4fOc8S5QViRiss/YOyViBh54YK1qbk6itUu3Y=; b=hfHFdB2gtMTdm+yR9F0X8Y8+Q7
+        WWt4ZoW+rct8us9Qm9jDnJ/hIWmWK1vXP/HixYtmhOmu2IRaNSqrVdkfY4WUfY91EwGDuPm7Am6ar
+        sWuhSQ+AUbNrl0HlBVzjAudg3OYKRCRvTEZ+oXJhLAywfG7jkI0U76h8ToOpG/mXHY8N3LQRO1eXc
+        n3MPtDG+iL6meF7nnhJPLzOJJ0M3HeEZaUMSvaiP3BeqtHUBonxZrNxCiUNAKZVEyM/nrFTIGmR2C
+        /0vBA+O7+f2dOkhDJT9asucCecvfegs6WAaBKVeaD0/pM61wTZQyT9VGe0ZLpQQ5402htBSFbsxo7
+        MD+905Vw==;
+Received: from 187-162-31-110.static.axtel.net ([187.162.31.110]:39030 helo=[192.168.15.8])
+        by gator4166.hostgator.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.94.2)
+        (envelope-from <gustavo@embeddedor.com>)
+        id 1lmlWD-002pRA-6Z; Fri, 28 May 2021 18:03:53 -0500
+Subject: Re: [Intel-wired-lan] [PATCH][next] virtchnl: Replace one-element
+ array in struct virtchnl_vsi_queue_config_info
+To:     "Nguyen, Anthony L" <anthony.l.nguyen@intel.com>,
+        "Brandeburg, Jesse" <jesse.brandeburg@intel.com>,
+        "gustavoars@kernel.org" <gustavoars@kernel.org>
+Cc:     "intel-wired-lan@lists.osuosl.org" <intel-wired-lan@lists.osuosl.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-hardening@vger.kernel.org" <linux-hardening@vger.kernel.org>
+References: <20210525231658.GA176466@embeddedor>
+ <f3674339c0390ced22b365101f2d3e3a2bf26845.camel@intel.com>
+From:   "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+Message-ID: <85e62583-5db9-ac5c-fdf9-8e3f6a50f3fa@embeddedor.com>
+Date:   Fri, 28 May 2021 18:04:51 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
+In-Reply-To: <f3674339c0390ced22b365101f2d3e3a2bf26845.camel@intel.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - embeddedor.com
+X-BWhitelist: no
+X-Source-IP: 187.162.31.110
+X-Source-L: No
+X-Exim-ID: 1lmlWD-002pRA-6Z
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
+X-Source-Sender: 187-162-31-110.static.axtel.net ([192.168.15.8]) [187.162.31.110]:39030
+X-Source-Auth: gustavo@embeddedor.com
+X-Email-Count: 6
+X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
+X-Local-Domain: yes
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The .n_voltages was missed for pickable linear ranges, fix it.
-The min_sel for each pickable range should be starting from 0.
-Also fix atc260x_ldo_voltage_range_sel setting (bit 5 - LDO<N>_VOL_SEL
-in datasheet).
 
-Fixes: 3b15ccac161a ("regulator: Add regulator driver for ATC260x PMICs")
-Signed-off-by: Axel Lin <axel.lin@ingics.com>
----
-v2: Fix atc260x_ldo_voltage_range_sel setting (bit 5 - LDO<N>_VOL_SEL
-in datasheet).
- drivers/regulator/atc260x-regulator.c | 19 ++++++++++---------
- 1 file changed, 10 insertions(+), 9 deletions(-)
 
-diff --git a/drivers/regulator/atc260x-regulator.c b/drivers/regulator/atc260x-regulator.c
-index d8b429955d33..05147d2c3842 100644
---- a/drivers/regulator/atc260x-regulator.c
-+++ b/drivers/regulator/atc260x-regulator.c
-@@ -28,16 +28,16 @@ static const struct linear_range atc2609a_dcdc_voltage_ranges[] = {
- 
- static const struct linear_range atc2609a_ldo_voltage_ranges0[] = {
- 	REGULATOR_LINEAR_RANGE(700000, 0, 15, 100000),
--	REGULATOR_LINEAR_RANGE(2100000, 16, 28, 100000),
-+	REGULATOR_LINEAR_RANGE(2100000, 0, 12, 100000),
- };
- 
- static const struct linear_range atc2609a_ldo_voltage_ranges1[] = {
- 	REGULATOR_LINEAR_RANGE(850000, 0, 15, 100000),
--	REGULATOR_LINEAR_RANGE(2100000, 16, 27, 100000),
-+	REGULATOR_LINEAR_RANGE(2100000, 0, 11, 100000),
- };
- 
- static const unsigned int atc260x_ldo_voltage_range_sel[] = {
--	0x0, 0x1,
-+	0x0, 0x20,
- };
- 
- static int atc260x_dcdc_set_voltage_time_sel(struct regulator_dev *rdev,
-@@ -411,7 +411,7 @@ enum atc2609a_reg_ids {
- 	.owner = THIS_MODULE, \
- }
- 
--#define atc2609a_reg_desc_ldo_range_pick(num, n_range) { \
-+#define atc2609a_reg_desc_ldo_range_pick(num, n_range, n_volt) { \
- 	.name = "LDO"#num, \
- 	.supply_name = "ldo"#num, \
- 	.of_match = of_match_ptr("ldo"#num), \
-@@ -421,6 +421,7 @@ enum atc2609a_reg_ids {
- 	.type = REGULATOR_VOLTAGE, \
- 	.linear_ranges = atc2609a_ldo_voltage_ranges##n_range, \
- 	.n_linear_ranges = ARRAY_SIZE(atc2609a_ldo_voltage_ranges##n_range), \
-+	.n_voltages = n_volt, \
- 	.vsel_reg = ATC2609A_PMU_LDO##num##_CTL0, \
- 	.vsel_mask = GENMASK(4, 1), \
- 	.vsel_range_reg = ATC2609A_PMU_LDO##num##_CTL0, \
-@@ -458,12 +459,12 @@ static const struct regulator_desc atc2609a_reg[] = {
- 	atc2609a_reg_desc_ldo_bypass(0),
- 	atc2609a_reg_desc_ldo_bypass(1),
- 	atc2609a_reg_desc_ldo_bypass(2),
--	atc2609a_reg_desc_ldo_range_pick(3, 0),
--	atc2609a_reg_desc_ldo_range_pick(4, 0),
-+	atc2609a_reg_desc_ldo_range_pick(3, 0, 29),
-+	atc2609a_reg_desc_ldo_range_pick(4, 0, 29),
- 	atc2609a_reg_desc_ldo(5),
--	atc2609a_reg_desc_ldo_range_pick(6, 1),
--	atc2609a_reg_desc_ldo_range_pick(7, 0),
--	atc2609a_reg_desc_ldo_range_pick(8, 0),
-+	atc2609a_reg_desc_ldo_range_pick(6, 1, 28),
-+	atc2609a_reg_desc_ldo_range_pick(7, 0, 29),
-+	atc2609a_reg_desc_ldo_range_pick(8, 0, 29),
- 	atc2609a_reg_desc_ldo_fixed(9),
- };
- 
--- 
-2.25.1
+On 5/28/21 16:56, Nguyen, Anthony L wrote:
+> On Tue, 2021-05-25 at 18:16 -0500, Gustavo A. R. Silva wrote:
+>> There is a regular need in the kernel to provide a way to declare
+>> having a
+>> dynamically sized set of trailing elements in a structure. Kernel
+>> code
+>> should always use “flexible array members”[1] for these cases. The
+>> older
+>> style of one-element or zero-length arrays should no longer be
+>> used[2].
+>>
+>> Refactor the code according to the use of a flexible-array member in
+>> struct
+>> virtchnl_vsi_queue_config_info instead of one-element array, and use
+>> the
+>> flex_array_size() helper.
+>>
+>> [1] https://en.wikipedia.org/wiki/Flexible_array_member
+>> [2] 
+>> https://www.kernel.org/doc/html/v5.10/process/deprecated.html#zero-length-and-one-element-arrays
+>>
+>> Link: https://github.com/KSPP/linux/issues/79
+>> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+>> ---
+>>  include/linux/avf/virtchnl.h | 9 ++++-----
+>>  1 file changed, 4 insertions(+), 5 deletions(-)
+>>
+>> diff --git a/include/linux/avf/virtchnl.h
+>> b/include/linux/avf/virtchnl.h
+>> index b554913804bd..ed9c4998f8ac 100644
+>> --- a/include/linux/avf/virtchnl.h
+>> +++ b/include/linux/avf/virtchnl.h
+>> @@ -338,10 +338,10 @@ struct virtchnl_vsi_queue_config_info {
+>>  	u16 vsi_id;
+>>  	u16 num_queue_pairs;
+>>  	u32 pad;
+>> -	struct virtchnl_queue_pair_info qpair[1];
+>> +	struct virtchnl_queue_pair_info qpair[];
+>>  };
+>>  
+>> -VIRTCHNL_CHECK_STRUCT_LEN(72, virtchnl_vsi_queue_config_info);
+>> +VIRTCHNL_CHECK_STRUCT_LEN(8, virtchnl_vsi_queue_config_info);
+>>  
+>>  /* VIRTCHNL_OP_REQUEST_QUEUES
+>>   * VF sends this message to request the PF to allocate additional
+>> queues to
+>> @@ -997,9 +997,8 @@ virtchnl_vc_validate_vf_msg(struct
+>> virtchnl_version_info *ver, u32 v_opcode,
+>>  		if (msglen >= valid_len) {
+>>  			struct virtchnl_vsi_queue_config_info *vqc =
+>>  			    (struct virtchnl_vsi_queue_config_info
+>> *)msg;
+>> -			valid_len += (vqc->num_queue_pairs *
+>> -				      sizeof(struct
+>> -					     virtchnl_queue_pair_info))
+>> ;
+>> +			valid_len += flex_array_size(vqc, qpair,
+>> +						     vqc-
+>>> num_queue_pairs);
+> 
+> The virtchnl file acts as a binary interface between physical and
+> virtual functions. There's no guaruntee that the PF and VF will both
+> have the newest version. Thus changing this will break compatibility.
+> Specifically, the way the size was validated for this op code
+> incorrectly expects an extra queue pair structure. Some other
+> structures have similar length calculation flaws. We agree that fixing
+> this is important, but the fix needs to account that old drivers will
+> send an off by 1 size. 
+> 
+> To properly handle compatibility we need to introduce a feature flag to
+> indicate the new behavior. If the feature flag is not set, we acccept
+> messages with the old format (with the extra size). If both the PF and
+> VF support the feature flag, we'll use the correct size calculations.
+> We're looking to add this and would like to do all the virtchnl
+> structure fixes in one series.
+> 
 
+Oh OK, I see. In this case, I think something like this might work just
+fine:
+
+https://git.kernel.org/linus/c0a744dcaa29e9537e8607ae9c965ad936124a4d
+
+What do you think?
+
+Thanks
+--
+Gustavo
