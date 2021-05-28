@@ -2,139 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 676A8393FD8
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 11:23:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E4F1A393FD2
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 11:23:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236165AbhE1JZU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 May 2021 05:25:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49104 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235589AbhE1JZR (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 May 2021 05:25:17 -0400
-Received: from mail-wm1-x331.google.com (mail-wm1-x331.google.com [IPv6:2a00:1450:4864:20::331])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70927C061574
-        for <linux-kernel@vger.kernel.org>; Fri, 28 May 2021 02:23:42 -0700 (PDT)
-Received: by mail-wm1-x331.google.com with SMTP id f6-20020a1c1f060000b0290175ca89f698so4150931wmf.5
-        for <linux-kernel@vger.kernel.org>; Fri, 28 May 2021 02:23:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=3Oae5cR8MpOvf+7v137WImmltYKo9bkSfnBXxwDp6WY=;
-        b=cGPZK+1qh3qGl5Tkc1sggfO4JBDvIkZA9FXLdvpxqd6TMyWeEEk7/MgeRX+FaYavf8
-         ikTE2FJW+xnrGlsca9t/2JXtFJ5qvE9yqitfWNXYkMoTax3kRVmSx120KZYyTkmi9/Lt
-         SMcVnSR0A4r0zFL3gX2crr4NtAYD6VI/aVN8wSIWqsxrdx8dv6KgpZWQZkSdx8EKMKJi
-         iq1v7D9z+XJJK8lxImZf/Lq4q4uWE8JdGG57gT+ag2q0EgevZW0YlwfoZX1d5w1BAwzi
-         +7uDRlTTwnD5YE49iL0Z5Us96psl75tcxHvXvo7P10DpYLuqy7aiJM3Tp976xJ8cVJd6
-         yEbw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=3Oae5cR8MpOvf+7v137WImmltYKo9bkSfnBXxwDp6WY=;
-        b=oZf/koATzAX45/h+Tjda/HzGSjQYLx4F8dq54bO7Y/ZWNGJqoke9Y9vAxOIFsusjdv
-         IueqdnKJepkp8r5KLAXJXZGq8/B+r14NOHLWcqVBy1x1R3A3LSDNgoPUuCq/TWEyl5Aa
-         C1I5VbBz9Lj4LhDfptcPda2lUl+XQMqFeVDTodMx7ZS4Bw4xHgcUjb/pGyI89XveRHTZ
-         aA0emU28KJteB3T7+RJP4EJcVAMQF1cxaiAEo602c4ibMcTFjHpZP1uV/Ju4PW9Ntxfq
-         liiIMhjS+O008911mJ9boVPy3GzWEaTd6kfmmlVj/7vCdkN7pfSKJTHAoS+e8huNhXtu
-         wXyQ==
-X-Gm-Message-State: AOAM532cDTPHRdlAKFC3WfS9HykAgDWWDSa56En27XPlISB/YEUImBBc
-        8zfw7NcYdll1f9IgtSEzUDs=
-X-Google-Smtp-Source: ABdhPJxzUfuATGCrxC3eGJEucDonBzwEvQVjqq9btPqHB+xwn7yMVwTA25ceEa+muVw/jWKTVpZ7OA==
-X-Received: by 2002:a1c:7f84:: with SMTP id a126mr7028123wmd.96.1622193821059;
-        Fri, 28 May 2021 02:23:41 -0700 (PDT)
-Received: from ruhe.localdomain (89-139-227-208.bb.netvision.net.il. [89.139.227.208])
-        by smtp.gmail.com with ESMTPSA id x13sm6301854wro.31.2021.05.28.02.23.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 28 May 2021 02:23:40 -0700 (PDT)
-From:   eli.billauer@gmail.com
-To:     gregkh@linuxfoundation.org, arnd@arndb.de
-Cc:     linux-kernel@vger.kernel.org, Eli Billauer <eli.billauer@gmail.com>
-Subject: [PATCH 2/2] char: xillybus: Remove unneeded MODULE_VERSION() usage
-Date:   Fri, 28 May 2021 12:22:42 +0300
-Message-Id: <20210528092242.51104-2-eli.billauer@gmail.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210528092242.51104-1-eli.billauer@gmail.com>
-References: <20210528092242.51104-1-eli.billauer@gmail.com>
+        id S235957AbhE1JZA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 May 2021 05:25:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51044 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230205AbhE1JY6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 28 May 2021 05:24:58 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1F0F26127A;
+        Fri, 28 May 2021 09:23:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1622193803;
+        bh=vB6X+2/xMuG/B0/YcLafyqw4LlVbhOdEaGfPoutYQZo=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=M7+n1Ye2ZH0PZ6f5VyvDZqifDNELyuozh/OPXt4V5UEzR5KHqofgQTUKRHxiXqc/f
+         8S2sMVzc5BonAudTRmtRba09SjmnZVm6O83GpMx6r6eOZrFWUJndlOk9OU4XOimw7W
+         57MnEHLxUlletIISKwUaCY4l4MlwKj6n4ua3l+HE=
+Date:   Fri, 28 May 2021 11:23:20 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Phil Elwell <phil@raspberrypi.com>
+Cc:     Minas Harutyunyan <hminas@synopsys.com>,
+        Sasha Levin <sashal@kernel.org>,
+        Artur Petrosyan <Arthur.Petrosyan@synopsys.com>,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] usb: dwc2: Fix build in periphal-only mode
+Message-ID: <YLC2iPPEOCJuElIR@kroah.com>
+References: <20210528091349.2602410-1-phil@raspberrypi.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210528091349.2602410-1-phil@raspberrypi.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Eli Billauer <eli.billauer@gmail.com>
+On Fri, May 28, 2021 at 10:13:50AM +0100, Phil Elwell wrote:
+> The bus_suspended member of struct dwc2_hsotg is only present in builds
+> that support host-mode.
+> 
+> Fixes: 24d209dba5a3 ("usb: dwc2: Fix hibernation between host and device modes.")
+> Signed-off-by: Phil Elwell <phil@raspberrypi.com>
+> ---
+>  drivers/usb/dwc2/core_intr.c | 4 ++++
+>  1 file changed, 4 insertions(+)
+> 
+> v2: Correct commit hash used in the Fixes line.
+> 
+> diff --git a/drivers/usb/dwc2/core_intr.c b/drivers/usb/dwc2/core_intr.c
+> index a5ab03808da6..03d0c034cf57 100644
+> --- a/drivers/usb/dwc2/core_intr.c
+> +++ b/drivers/usb/dwc2/core_intr.c
+> @@ -725,7 +725,11 @@ static inline void dwc_handle_gpwrdn_disc_det(struct dwc2_hsotg *hsotg,
+>  	dwc2_writel(hsotg, gpwrdn_tmp, GPWRDN);
+>  
+>  	hsotg->hibernated = 0;
+> +
+> +#if IS_ENABLED(CONFIG_USB_DWC2_HOST) ||	\
+> +	IS_ENABLED(CONFIG_USB_DWC2_DUAL_ROLE)
+>  	hsotg->bus_suspended = 0;
+> +#endif
+>  
+>  	if (gpwrdn & GPWRDN_IDSTS) {
+>  		hsotg->op_state = OTG_STATE_B_PERIPHERAL;
+> -- 
+> 2.25.1
+> 
 
-MODULE_VERSION is useless for in-kernel drivers, so these are removed from
-files in drivers/char/xillybus/
+I do not understand, the field in the structure is present for all, why
+is this crazy #if needed here?
 
-Reported-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Signed-off-by: Eli Billauer <eli.billauer@gmail.com>
----
- drivers/char/xillybus/xillybus_class.c | 1 -
- drivers/char/xillybus/xillybus_core.c  | 1 -
- drivers/char/xillybus/xillybus_of.c    | 1 -
- drivers/char/xillybus/xillybus_pcie.c  | 1 -
- drivers/char/xillybus/xillyusb.c       | 1 -
- 5 files changed, 5 deletions(-)
+I see that the commit you reference here did add the new line to set
+bus_suspended, which seemed to be the point here.  Why will the #if
+values matter here?
 
-diff --git a/drivers/char/xillybus/xillybus_class.c b/drivers/char/xillybus/xillybus_class.c
-index ea74da84bf19..5046486011c8 100644
---- a/drivers/char/xillybus/xillybus_class.c
-+++ b/drivers/char/xillybus/xillybus_class.c
-@@ -18,7 +18,6 @@
- 
- MODULE_DESCRIPTION("Driver for Xillybus class");
- MODULE_AUTHOR("Eli Billauer, Xillybus Ltd.");
--MODULE_VERSION("1.0");
- MODULE_ALIAS("xillybus_class");
- MODULE_LICENSE("GPL v2");
- 
-diff --git a/drivers/char/xillybus/xillybus_core.c b/drivers/char/xillybus/xillybus_core.c
-index 0efc4fddaa94..931d0bf4cec6 100644
---- a/drivers/char/xillybus/xillybus_core.c
-+++ b/drivers/char/xillybus/xillybus_core.c
-@@ -33,7 +33,6 @@
- 
- MODULE_DESCRIPTION("Xillybus core functions");
- MODULE_AUTHOR("Eli Billauer, Xillybus Ltd.");
--MODULE_VERSION("1.10");
- MODULE_ALIAS("xillybus_core");
- MODULE_LICENSE("GPL v2");
- 
-diff --git a/drivers/char/xillybus/xillybus_of.c b/drivers/char/xillybus/xillybus_of.c
-index 96b6de8a30e5..1a20b286fd1d 100644
---- a/drivers/char/xillybus/xillybus_of.c
-+++ b/drivers/char/xillybus/xillybus_of.c
-@@ -17,7 +17,6 @@
- 
- MODULE_DESCRIPTION("Xillybus driver for Open Firmware");
- MODULE_AUTHOR("Eli Billauer, Xillybus Ltd.");
--MODULE_VERSION("1.06");
- MODULE_ALIAS("xillybus_of");
- MODULE_LICENSE("GPL v2");
- 
-diff --git a/drivers/char/xillybus/xillybus_pcie.c b/drivers/char/xillybus/xillybus_pcie.c
-index 18b0c392bc93..bdf1c366b4fc 100644
---- a/drivers/char/xillybus/xillybus_pcie.c
-+++ b/drivers/char/xillybus/xillybus_pcie.c
-@@ -14,7 +14,6 @@
- 
- MODULE_DESCRIPTION("Xillybus driver for PCIe");
- MODULE_AUTHOR("Eli Billauer, Xillybus Ltd.");
--MODULE_VERSION("1.06");
- MODULE_ALIAS("xillybus_pcie");
- MODULE_LICENSE("GPL v2");
- 
-diff --git a/drivers/char/xillybus/xillyusb.c b/drivers/char/xillybus/xillyusb.c
-index 1e15706af749..1210a4ef97fa 100644
---- a/drivers/char/xillybus/xillyusb.c
-+++ b/drivers/char/xillybus/xillyusb.c
-@@ -33,7 +33,6 @@
- 
- MODULE_DESCRIPTION("Driver for XillyUSB FPGA IP Core");
- MODULE_AUTHOR("Eli Billauer, Xillybus Ltd.");
--MODULE_VERSION("1.1");
- MODULE_ALIAS("xillyusb");
- MODULE_LICENSE("GPL v2");
- 
--- 
-2.17.1
+thanks,
 
+greg k-h
