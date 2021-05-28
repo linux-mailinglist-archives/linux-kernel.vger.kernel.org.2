@@ -2,76 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 84914393AFE
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 03:27:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E40DA393AFF
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 03:27:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235672AbhE1B24 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 May 2021 21:28:56 -0400
-Received: from szxga01-in.huawei.com ([45.249.212.187]:2066 "EHLO
-        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233887AbhE1B2w (ORCPT
+        id S235715AbhE1B3Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 May 2021 21:29:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56330 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233887AbhE1B3W (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 May 2021 21:28:52 -0400
-Received: from dggeml707-chm.china.huawei.com (unknown [172.30.72.55])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4Frn4065XnzWnNy;
-        Fri, 28 May 2021 09:22:40 +0800 (CST)
-Received: from dggpemm500004.china.huawei.com (7.185.36.219) by
- dggeml707-chm.china.huawei.com (10.3.17.137) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2176.2; Fri, 28 May 2021 09:27:16 +0800
-Received: from [10.174.177.91] (10.174.177.91) by
- dggpemm500004.china.huawei.com (7.185.36.219) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Fri, 28 May 2021 09:27:16 +0800
-Subject: Re: [PATCH next] staging: rtl8723bs: HalBtc8723b1Ant.c: Remove unused
- variables
-To:     Greg KH <gregkh@linuxfoundation.org>
-CC:     <dan.carpenter@oracle.com>, <desmondcheongzx@gmail.com>,
-        <marcocesati@gmail.com>, <fabioaiuto83@gmail.com>,
-        <linux-staging@lists.linux.dev>, <linux-kernel@vger.kernel.org>
-References: <20210526074537.46259-1-cuibixuan@huawei.com>
- <YK98CL3+Gg5hGH9g@kroah.com>
-From:   Bixuan Cui <cuibixuan@huawei.com>
-Message-ID: <d8401186-585f-deec-5eea-869b896b0ab1@huawei.com>
-Date:   Fri, 28 May 2021 09:27:15 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.2.2
+        Thu, 27 May 2021 21:29:22 -0400
+Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com [IPv6:2a00:1450:4864:20::134])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6B32C061574
+        for <linux-kernel@vger.kernel.org>; Thu, 27 May 2021 18:27:47 -0700 (PDT)
+Received: by mail-lf1-x134.google.com with SMTP id i9so2852407lfe.13
+        for <linux-kernel@vger.kernel.org>; Thu, 27 May 2021 18:27:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=oiL2+jMjytGTOxMvXGwzwUo5vCZt66vYTiHQDgUEKHE=;
+        b=BttFZy0GPIhhl/djFDRh9gv/Yz2WzqdPIHwZvXr+4BWx1KPOte4Hb1m+Mi1zIdnLrs
+         bip3zV2OG4EdjV0YO/KOAp3nhTw2oJoWHS5y1Nrf0wj034n38qtAnqNjGXirOKcjGiqX
+         y8bGEQFPwKJnxQLA3n+m20YGnQOUUbK+jnmFM=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=oiL2+jMjytGTOxMvXGwzwUo5vCZt66vYTiHQDgUEKHE=;
+        b=U5TJJG0xFOMcNa8aPbtcLf7vtx0RRugpwofC+9Aop4NmuQIiof0TWarjs/ch2p7x1L
+         /IrOLjagD34Lf/z8uSjRWQ68NLrZ/0ZQlrqgztaBpvJs8IQVGpQp+uLuLvjqH7BBZZ2r
+         y37rxWRwfOKc6Yx92r+ya39wEOX/YqisLzv2FYSlIQzl4Fc7pdCSkcBbno3hrYRtxgPu
+         km2xssiQtruYegNJc6MF13FYddE//tDvwVvGYEqzhCdAEZ7M+iuAkcw+eEFWSsGJh5rq
+         KKUGMAJl6q0eehYwp0TFLV/HL9wrveAtw0PKUtanKFogczTxL8PZsjdnMsGAP+dCz6fq
+         shzg==
+X-Gm-Message-State: AOAM532PRyx413a6S8R1HPX3r3jcltTKXDa+x6AfeFJGePprOg8zS1uo
+        TYIKXULFsHhEHTX17flDiLhwe6g1ulmq5kXf
+X-Google-Smtp-Source: ABdhPJyrEC2e5OvnQ7Z5TJgE7LtzfgMmB3SGnk4BFJvnuvKwE2jXz3gqYTSjz0YfzEPhcFM83iLXdw==
+X-Received: by 2002:a05:6512:3990:: with SMTP id j16mr4069548lfu.367.1622165265588;
+        Thu, 27 May 2021 18:27:45 -0700 (PDT)
+Received: from mail-lj1-f176.google.com (mail-lj1-f176.google.com. [209.85.208.176])
+        by smtp.gmail.com with ESMTPSA id f27sm334376lfk.285.2021.05.27.18.27.44
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 27 May 2021 18:27:44 -0700 (PDT)
+Received: by mail-lj1-f176.google.com with SMTP id v5so3200091ljg.12
+        for <linux-kernel@vger.kernel.org>; Thu, 27 May 2021 18:27:44 -0700 (PDT)
+X-Received: by 2002:a05:651c:8f:: with SMTP id 15mr4882494ljq.220.1622165264266;
+ Thu, 27 May 2021 18:27:44 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <YK98CL3+Gg5hGH9g@kroah.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.177.91]
-X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
- dggpemm500004.china.huawei.com (7.185.36.219)
-X-CFilter-Loop: Reflected
+References: <20210527084953.573788-1-ying.huang@intel.com> <YK/OaEAwL4cufITY@cmpxchg.org>
+In-Reply-To: <YK/OaEAwL4cufITY@cmpxchg.org>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Thu, 27 May 2021 15:27:28 -1000
+X-Gmail-Original-Message-ID: <CAHk-=wibch8fg0WpbHitC9aR1v_YMwhM01Ecwas1-L4wg6xsSg@mail.gmail.com>
+Message-ID: <CAHk-=wibch8fg0WpbHitC9aR1v_YMwhM01Ecwas1-L4wg6xsSg@mail.gmail.com>
+Subject: Re: [PATCH -V2] mm: move idle swap cache pages to the tail of LRU
+ after COW
+To:     Johannes Weiner <hannes@cmpxchg.org>
+Cc:     Huang Ying <ying.huang@intel.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Peter Xu <peterx@redhat.com>, Hugh Dickins <hughd@google.com>,
+        Mel Gorman <mgorman@suse.de>, Rik van Riel <riel@surriel.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Michal Hocko <mhocko@kernel.org>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Tim Chen <tim.c.chen@intel.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, May 27, 2021 at 6:53 AM Johannes Weiner <hannes@cmpxchg.org> wrote:
+>
+> OTOH, freeing is a two-liner reusing the swap unmap code:
+>
+>         if (page_copied)
+>                 free_swap_cache(old_page);
+>
+> Linus, what do you think?
 
+I'm ok with that version, the important thing was
 
-On 2021/5/27 19:01, Greg KH wrote:
->>  		halbtc8723b1ant_PsTdma(pBtCoexist, FORCE_EXEC, false, 8);  /* Force antenna setup for no scan result issue */
->> -		u4Tmp = pBtCoexist->fBtcRead4Byte(pBtCoexist, 0x948);
->> -		u1Tmpa = pBtCoexist->fBtcRead1Byte(pBtCoexist, 0x765);
->> -		u1Tmpb = pBtCoexist->fBtcRead1Byte(pBtCoexist, 0x67);
->> +		pBtCoexist->fBtcRead4Byte(pBtCoexist, 0x948);
->> +		pBtCoexist->fBtcRead1Byte(pBtCoexist, 0x765);
->> +		pBtCoexist->fBtcRead1Byte(pBtCoexist, 0x67);
->>  	} else {
->>  		pCoexSta->bWiFiIsHighPriTask = false;
->>  
->> -- 
->> 2.17.1
->>
->>
-> Does not apply to my tree :(
-Hi,
-This warning has been fixed by commit db52e8f48067. Please ignore my patch.
+ (a) avoiding the unconditional page lock we used to have (well, it
+first did "trylock", but if tht failed it would then get a page ref,
+and do the unconditional lock_page())
 
-Thanks
-Bixuan Cui
+ (b) avoid the re-use based on "mapcount" that had problems with
+non-mapped page references (ie GUP)
 
+and
 
-> .
+ (c) that I wanted to see some numbers rather than just blindly
+re-introduce free_swap_cache()
+
+But doing the above two-liner in wp_page_copy() doesn't have the
+(a)/(b) issues, and if we have numbers that it helps, then that takes
+care of (c) too.
+
+Of course, I don't think it's just that two-liner, because you'd
+actually have to export (or move )that "free_swap_cache()" function
+that is now private to swapfile.c.
+
+But no, I'm not adverse to the above at all, I just had the above reservations.
+
+I was worried about non-swap behavior (which the old code had with
+that whole unconditional page locking whether needed or not), but
+free_swap_cache() should be basically free for the non-swap behavior
+since it doesn't even do the trylock until after it has checked that
+it is now an unmapped swap cache page.
+
+              Linus
