@@ -2,135 +2,224 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C9950394240
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 13:59:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C1CFB394249
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 14:04:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236137AbhE1MBO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 May 2021 08:01:14 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:41180 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233262AbhE1MBN (ORCPT
+        id S236292AbhE1MGG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 May 2021 08:06:06 -0400
+Received: from de-smtp-delivery-102.mimecast.com ([194.104.111.102]:35623 "EHLO
+        de-smtp-delivery-102.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230256AbhE1MF6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 May 2021 08:01:13 -0400
-Received: from imap.suse.de (imap-alt.suse-dmz.suse.de [192.168.254.47])
-        (using TLSv1.2 with cipher ECDHE-ECDSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id B95181FD2E;
-        Fri, 28 May 2021 11:59:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1622203177; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Tyj9l9ik9fiIzg7ahnLVcj3TFNtj4jX5IrQ8z2cWPgA=;
-        b=sdVeV8ySnJTQu+Ca7f81XuRHK4s3f4zOZkd7iI2juhIk9CE0wSMoVODxn2zP5huAUkhyDs
-        lWghtWP1rCAZ2VLjJNPEum/30qcBNpgGe3Or9Lj0Y+YNRxd43BbljEREkEdN3mK8ce9uNI
-        ppVP+Q7TTCc+55a/Czu3plq3vwkrNfM=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1622203177;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Tyj9l9ik9fiIzg7ahnLVcj3TFNtj4jX5IrQ8z2cWPgA=;
-        b=6xtxs6wu8gQnc+RhFPNUB1RttB7BEmlJBYfrKl9wxIEnVMnLk5lKDRaXX8KQAd1oWknvVq
-        ImgSg2IQ6sEZm/Cw==
-Received: from imap3-int (imap-alt.suse-dmz.suse.de [192.168.254.47])
-        by imap.suse.de (Postfix) with ESMTP id A0CEE11A98;
-        Fri, 28 May 2021 11:59:37 +0000 (UTC)
-Received: from director2.suse.de ([192.168.254.72])
-        by imap3-int with ESMTPSA
-        id tAS5JinbsGCJGAAALh3uQQ
-        (envelope-from <vbabka@suse.cz>); Fri, 28 May 2021 11:59:37 +0000
-To:     Mel Gorman <mgorman@techsingularity.net>,
-        Andrew Morton <akpm@linux-foundation.org>
-Cc:     Hillf Danton <hdanton@sina.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Michal Hocko <mhocko@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux-MM <linux-mm@kvack.org>
-References: <20210525080119.5455-1-mgorman@techsingularity.net>
- <20210525080119.5455-7-mgorman@techsingularity.net>
-From:   Vlastimil Babka <vbabka@suse.cz>
-Subject: Re: [PATCH 6/6] mm/page_alloc: Introduce
- vm.percpu_pagelist_high_fraction
-Message-ID: <018c4b99-81a5-bc12-03cd-662a938ef05a@suse.cz>
-Date:   Fri, 28 May 2021 13:59:37 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.2
+        Fri, 28 May 2021 08:05:58 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=mimecast20200619;
+        t=1622203462;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=16lo1IsvGVqr9AbvTlh2HpIeWCqy7ImbHeZZu7vMPxM=;
+        b=gH63Yy9XP0t2tJAii2D5n32bSmgq92QZPdlVo+Z3mwaaU49tW9KNSOhBXw/eSn2mWxxyiZ
+        mE5F+pChlwXSp4edRL2kPLuhiJm9UkS+mhbHOPbCVdUMyRk3azxppBkLjalCSDHxHdIsFL
+        5gR0aNHQv6DF7eCHsEHnon5eVqR4jLk=
+Received: from EUR02-HE1-obe.outbound.protection.outlook.com
+ (mail-he1eur02lp2055.outbound.protection.outlook.com [104.47.5.55]) (Using
+ TLS) by relay.mimecast.com with ESMTP id
+ de-mta-14-ML_79f3WN_6rSxnbVLZjUQ-1; Fri, 28 May 2021 14:04:21 +0200
+X-MC-Unique: ML_79f3WN_6rSxnbVLZjUQ-1
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=NCQqbfTxGADRseNB8nBNw9Hedhm/KtySFlFDW6GBNnM4GOrkP+Wed70fVuGWpHl2Bz5T3rbE6L63oljqd0dn3+1jtjNU4r9DtCtGQgXgKPtTW0QwnZ+y/Ep/3ElRWtGWcWypT9TfPmpnC29WzhX2HNNcpFRd8qnclQt8Jr/jdITbGzv+5FZgzOoNMqFxAr18UJhMLotLYROTEhpnT4qfYrsJALbZCpzXUDkUq8+PQoAncBOl2lpOSTne0J6b98lm4WijtPpLVT/BsJEtDL98sCPhNotX3Npz2NKbIleoAmOI5jhhGb9Wng/L6pYzf72TLIlLP6dk9zHj+gONEqJF0g==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=7LefQYld3EmNE7aeof7DIjrxTMyKRMCp9e8rIiVj1bM=;
+ b=BReIo4jVayQ8w/CaeO/nN1J27D0XR4TX/Hddafrmu5wowlRD0jFqR1EaKGKi3RhHFi+KSlcO2djBUJz4rtSXANeZ2dMTQxEkliGkpPqpCh+tvEty6fQgx5ZOV5xB19Xw6STsgF751NMUsisS9fW/WGGBaikvuN2XwIxIgspIA4yrUG7kvSUBD+hNP1wlCODaGzUbTtKXkO7kD0xpvIavvK1atTD7JVL1R3Ftm+z2o0c4nmVx3m7bivT5Qu724L2P5JbpCFJQsYDWB06oeKZgwEFVs/O0W4pGDKC09ARhiaiaUsgojUGVakkPcs9xnQVE9AVB36+agqipUGD8IPOToQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=suse.com; dmarc=pass action=none header.from=suse.com;
+ dkim=pass header.d=suse.com; arc=none
+Authentication-Results: vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=none action=none header.from=suse.com;
+Received: from AM0PR04MB5650.eurprd04.prod.outlook.com (2603:10a6:208:128::18)
+ by AM0PR04MB7059.eurprd04.prod.outlook.com (2603:10a6:208:192::14) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4173.20; Fri, 28 May
+ 2021 12:04:20 +0000
+Received: from AM0PR04MB5650.eurprd04.prod.outlook.com
+ ([fe80::756a:86b8:8283:733d]) by AM0PR04MB5650.eurprd04.prod.outlook.com
+ ([fe80::756a:86b8:8283:733d%6]) with mapi id 15.20.4173.020; Fri, 28 May 2021
+ 12:04:20 +0000
+From:   Varad Gautam <varad.gautam@suse.com>
+To:     linux-kernel@vger.kernel.org
+CC:     varad.gautam@suse.com,
+        linux-rt-users <linux-rt-users@vger.kernel.org>,
+        netdev@vger.kernel.org, stable@vger.kernel.org,
+        Steffen Klassert <steffen.klassert@secunet.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Florian Westphal <fw@strlen.de>
+Subject: [PATCH] xfrm: policy: Read seqcount outside of rcu-read side in xfrm_policy_lookup_bytype
+Date:   Fri, 28 May 2021 14:03:57 +0200
+Message-ID: <20210528120357.29542-1-varad.gautam@suse.com>
+X-Mailer: git-send-email 2.30.2
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain
+X-Originating-IP: [95.90.93.32]
+X-ClientProxiedBy: AM0PR10CA0080.EURPRD10.PROD.OUTLOOK.COM
+ (2603:10a6:208:15::33) To AM0PR04MB5650.eurprd04.prod.outlook.com
+ (2603:10a6:208:128::18)
 MIME-Version: 1.0
-In-Reply-To: <20210525080119.5455-7-mgorman@techsingularity.net>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from xps13.suse.de (95.90.93.32) by AM0PR10CA0080.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:208:15::33) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4173.20 via Frontend Transport; Fri, 28 May 2021 12:04:19 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 87e7b353-9976-47d0-d437-08d921d0b975
+X-MS-TrafficTypeDiagnostic: AM0PR04MB7059:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <AM0PR04MB705976B5D4B6FA2F3C629317E0229@AM0PR04MB7059.eurprd04.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:6430;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 86/RKQczWSw9xCDvCeLm3DA4fzhK5C1JGkPG4hRZrZST98gFh/Ze+erKNF2eCk8tXOQezj3kWsxzjDFB2UnogHB/16G5bieMfwA9Tp2OHJI9HnU+8Oy2MhhqZmuNoY3HU2g0tx/1fZnlacvX5/MNR64dpH4jWmdizJbdx3uCyBuBrFf4X/BQsgrD61kjfTAk2nxNSLi8PZCtzOKffbWeqm2r1oV1PtMdr2J6v2YR3zretO84OPmgW2WrOdU6tSWRPm5glF+1EN3c7EzcOXof20NY8HnLOpbLPboArGm2ejpflIVb2s1BLwlYV93GNHx0rjQC0/eAu1cZVI2BQW3hdS2RBGP4d0E7tGBDYG1YImbkJqPXARgCWNo27OvtYju6kKfgmTiXeo6mJ3+0P06bWAJ8hIWmevMIUZLm0SLIzR+ytZJJgkHjrrO7RLaxqtCtMLlQ+bwVHiKmAkR36xvea2xqPRao1eBxI11JuGcDNTxFfRCEa40peoHFlY1cNnz+DTyDp5amF5BJlbar/FbBh0pFHuDM/1onpY3MsfToDwTjA6B/fiqMqn1PHKV3bF3sNPyUBMgoUfzMX4YG/ooDp/uHoCQxi9GBnbDPk16b9ZP3/MUNLyfVyxyLfJzTqTA0LSPngZQaFpOBytBJxbRwhg==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM0PR04MB5650.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(39860400002)(136003)(366004)(376002)(396003)(346002)(1076003)(478600001)(86362001)(38100700002)(38350700002)(26005)(6512007)(54906003)(36756003)(316002)(5660300002)(6486002)(52116002)(2906002)(956004)(2616005)(44832011)(6666004)(186003)(16526019)(6506007)(8936002)(66556008)(66946007)(66476007)(83380400001)(6916009)(4326008)(8676002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?w6O5X6Q5JVFCoaKLhaf6nqgUV0nfaKgx1xV6TNH5XRs/WQJqiqrSSnX4fc9M?=
+ =?us-ascii?Q?gvUSRcmzCr+Ma3TJKV5MtdGPGHOEZN9EjUS3djoQ9HcRmCk3nngSehNZGnbp?=
+ =?us-ascii?Q?g1S0EvMH3iYxCgBMYk2Z4nw/5bw6rodwjnNvpgaIMS0ZAHRYt/yt6qd9hvJB?=
+ =?us-ascii?Q?AruatLyzsu8EITT2bJYs02omsaymnJ/NSFZPaRrp2nSiZDagmzdXbPjirwtj?=
+ =?us-ascii?Q?Srv2mQqlw8HvtqHWHmRLhxcU+QvKzDWh+SS5ZLqC7JZJ0HyJwyOZu2xfx+w9?=
+ =?us-ascii?Q?fTERXn1rWv1RRXrIO2L6pTxB7YwIEJ5dasxr8MIezFLMuQYOk6agMiNC+qIZ?=
+ =?us-ascii?Q?2eIMtMhdjQgTIf7qhBs6IGxn3eJoeiak8sC0DZnFtK01HI7SrRxy737tv2YC?=
+ =?us-ascii?Q?QIBooHn8UadqlJAdyxxkkVRHTVTeIAmNfvfnAhWhU8XDHtYImwkQa9wd1H9i?=
+ =?us-ascii?Q?OtkzAKuamADl/ipWQnBMhMFFqrS3AARTupm5uieK/kTLgU9Vv/6zAUYvlgBz?=
+ =?us-ascii?Q?JLpy5UkkhDvSv0ZQK/LdQBETHfY3fcEQKuNPl/5VslONnHI321HJtU2lU9v1?=
+ =?us-ascii?Q?rhWb8DzOCapTPFTJnFnwqElYOwEROdFniK7Ic+uYW4iCVCurluO8mhedApv0?=
+ =?us-ascii?Q?yu6TColfnqnlCrFgYztCkiOVriY+umrO+wtZUCvFxmoBA5H7jTQn/uS8Xc5C?=
+ =?us-ascii?Q?5q2BKiMfW2UU2rgxTIiAG3HzXh5SDhwtNz6R9/yMXwkpE2UmX7HC0rcNUZbe?=
+ =?us-ascii?Q?Xq/DlQEgi/1gwiDcfsLGfzi3tcxu23AQNXcfkcf9nYJ3D2Ei6GDqHUaLZZb2?=
+ =?us-ascii?Q?cdhGDb/v5jH4Cs4mXyZ2Q71EqxZrAjo4uZZWg2Qa/fNKkLPO3E5xzyj6gtaW?=
+ =?us-ascii?Q?0NdX/iJWgrFPTvlT3tkAWEnBu6Ms8a8M7fOXdNX1yY91p29PtO+sMpUfZEZq?=
+ =?us-ascii?Q?OeDPZ9Orypl/dDRguLpZ97b0tHOLTpkukzGahriacB18UUPvJ4eGgH0o04Pi?=
+ =?us-ascii?Q?9GhG8QUW1LgQoJNhIjsRyjkx+5eRlLgHO5cUoGgK067gBjX1hJsdaHBCh4HM?=
+ =?us-ascii?Q?rw/DVnmivpm4jszmUgoayo8UGUDBjC615kEL/l8LcMNnSMXuXXlOik+FuyT6?=
+ =?us-ascii?Q?duikWmHFBoWBuqEX6JdYPzRhiGo2jksZIG7IMc4aLSMw5Pb90YveQfY6n1IM?=
+ =?us-ascii?Q?pn+MGqWA284yoCJYb9riubKeRCtg19+G55rUs21kDK0NBV+1chU73E6k0/YN?=
+ =?us-ascii?Q?4pjVGZuClmP/b+Syjb66iTvoIuKhAm1TgrSQ8Wn/uitQ6UuYPV550Yv3NkFe?=
+ =?us-ascii?Q?1p8AINntuBat5WPE5wtG8sMA?=
+X-OriginatorOrg: suse.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 87e7b353-9976-47d0-d437-08d921d0b975
+X-MS-Exchange-CrossTenant-AuthSource: AM0PR04MB5650.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 28 May 2021 12:04:19.9356
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: f7a17af6-1c5c-4a36-aa8b-f5be247aa4ba
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: h9a1xSD+j/KlgHVWHTij673nU8MEGfzK0Lfs5YuTCUQwpBAx9Z/fi93ZHvkUN9P6eZDuW2YmOCjSc0mdZoGLhw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM0PR04MB7059
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5/25/21 10:01 AM, Mel Gorman wrote:
-> This introduces a new sysctl vm.percpu_pagelist_high_fraction. It is
-> similar to the old vm.percpu_pagelist_fraction. The old sysctl increased
-> both pcp->batch and pcp->high with the higher pcp->high potentially
-> reducing zone->lock contention. However, the higher pcp->batch value also
-> potentially increased allocation latency while the PCP was refilled.
-> This sysctl only adjusts pcp->high so that zone->lock contention is
-> potentially reduced but allocation latency during a PCP refill remains
-> the same.
-> 
->   # grep -E "high:|batch" /proc/zoneinfo | tail -2
->               high:  649
->               batch: 63
-> 
->   # sysctl vm.percpu_pagelist_high_fraction=8
->   # grep -E "high:|batch" /proc/zoneinfo | tail -2
->               high:  35071
->               batch: 63
-> 
->   # sysctl vm.percpu_pagelist_high_fraction=64
->               high:  4383
->               batch: 63
-> 
->   # sysctl vm.percpu_pagelist_high_fraction=0
->               high:  649
->               batch: 63
-> 
-> Signed-off-by: Mel Gorman <mgorman@techsingularity.net>
-> Acked-by: Dave Hansen <dave.hansen@linux.intel.com>
+xfrm_policy_lookup_bytype loops on seqcount mutex xfrm_policy_hash_generati=
+on
+within an RCU read side critical section. Although ill advised, this is fin=
+e if
+the loop is bounded.
 
-Acked-by: Vlastimil Babka <vbabka@suse.cz>
+xfrm_policy_hash_generation wraps mutex hash_resize_mutex, which is used to
+serialize writers (xfrm_hash_resize, xfrm_hash_rebuild). This is fine too.
 
-Documentation nit below:
+On PREEMPT_RT=3Dy, the read_seqcount_begin call within xfrm_policy_lookup_b=
+ytype
+emits a mutex lock/unlock for hash_resize_mutex. Mutex locking is fine, sin=
+ce
+RCU read side critical sections are allowed to sleep with PREEMPT_RT.
 
-> @@ -789,6 +790,25 @@ panic_on_oom=2+kdump gives you very strong tool to investigate
->  why oom happens. You can get snapshot.
->  
->  
-> +percpu_pagelist_high_fraction
-> +=============================
-> +
-> +This is the fraction of pages in each zone that are allocated for each
-> +per cpu page list.  The min value for this is 8.  It means that we do
-> +not allow more than 1/8th of pages in each zone to be allocated in any
-> +single per_cpu_pagelist.
+xfrm_hash_resize can, however, block on synchronize_rcu while holding
+hash_resize_mutex.
 
-This, while technically correct (as an upper limit) is somewhat misleading as
-the limit for a single per_cpu_pagelist also considers the number of local cpus.
+This leads to the following situation on PREEMPT_RT, where the writer is
+blocked on RCU grace period expiry, while the reader is blocked on a lock h=
+eld
+by the writer:
 
->  This entry only changes the value of hot per
-> +cpu pagelists. User can specify a number like 100 to allocate 1/100th
-> +of each zone to each per cpu page list.
+Thead 1 (xfrm_hash_resize)	Thread 2 (xfrm_policy_lookup_bytype)
 
-This is worse. Anyone trying to reproduce this example on a system with multiple
-cpus per node and checking the result will be puzzled.
-So I think the part about number of local cpus should be mentioned to avoid
-confusion.
+				rcu_read_lock();
+mutex_lock(&hash_resize_mutex);
+				read_seqcount_begin(&xfrm_policy_hash_generation);
+				mutex_lock(&hash_resize_mutex); // block
+xfrm_bydst_resize();
+synchronize_rcu(); // block
+		<RCU stalls in xfrm_policy_lookup_bytype>
 
-> +The batch value of each per cpu pagelist remains the same regardless of the
-> +value of the high fraction so allocation latencies are unaffected.
-> +
-> +The initial value is zero. Kernel uses this value to set the high pcp->high
-> +mark based on the low watermark for the zone and the number of local
-> +online CPUs.  If the user writes '0' to this sysctl, it will revert to
-> +this default behavior.
-> +
-> +
+Move the read_seqcount_begin call outside of the RCU read side critical sec=
+tion,
+and do an rcu_read_unlock/retry if we got stale data within the critical se=
+ction.
+
+On non-PREEMPT_RT, this shortens the time spent within RCU read side critic=
+al
+section in case the seqcount needs a retry, and avoids unbounded looping.
+
+Fixes: a7c44247f70 ("xfrm: policy: make xfrm_policy_lookup_bytype lockless"=
+)
+Signed-off-by: Varad Gautam <varad.gautam@suse.com>
+Cc: linux-rt-users <linux-rt-users@vger.kernel.org>
+Cc: netdev@vger.kernel.org
+Cc: stable@vger.kernel.org # v4.9
+Cc: Steffen Klassert <steffen.klassert@secunet.com>
+Cc: Herbert Xu <herbert@gondor.apana.org.au>
+Cc: "David S. Miller" <davem@davemloft.net>
+Cc: Jakub Kicinski <kuba@kernel.org>
+Cc: Florian Westphal <fw@strlen.de>
+---
+ net/xfrm/xfrm_policy.c | 21 ++++++++++++++-------
+ 1 file changed, 14 insertions(+), 7 deletions(-)
+
+diff --git a/net/xfrm/xfrm_policy.c b/net/xfrm/xfrm_policy.c
+index ce500f847b99..e9d0df2a2ab1 100644
+--- a/net/xfrm/xfrm_policy.c
++++ b/net/xfrm/xfrm_policy.c
+@@ -2092,12 +2092,15 @@ static struct xfrm_policy *xfrm_policy_lookup_bytyp=
+e(struct net *net, u8 type,
+ 	if (unlikely(!daddr || !saddr))
+ 		return NULL;
+=20
+-	rcu_read_lock();
+  retry:
+-	do {
+-		sequence =3D read_seqcount_begin(&xfrm_policy_hash_generation);
+-		chain =3D policy_hash_direct(net, daddr, saddr, family, dir);
+-	} while (read_seqcount_retry(&xfrm_policy_hash_generation, sequence));
++	sequence =3D read_seqcount_begin(&xfrm_policy_hash_generation);
++	rcu_read_lock();
++
++	chain =3D policy_hash_direct(net, daddr, saddr, family, dir);
++	if (read_seqcount_retry(&xfrm_policy_hash_generation, sequence)) {
++		rcu_read_unlock();
++		goto retry;
++	}
+=20
+ 	ret =3D NULL;
+ 	hlist_for_each_entry_rcu(pol, chain, bydst) {
+@@ -2128,11 +2131,15 @@ static struct xfrm_policy *xfrm_policy_lookup_bytyp=
+e(struct net *net, u8 type,
+ 	}
+=20
+ skip_inexact:
+-	if (read_seqcount_retry(&xfrm_policy_hash_generation, sequence))
++	if (read_seqcount_retry(&xfrm_policy_hash_generation, sequence)) {
++		rcu_read_unlock();
+ 		goto retry;
++	}
+=20
+-	if (ret && !xfrm_pol_hold_rcu(ret))
++	if (ret && !xfrm_pol_hold_rcu(ret)) {
++		rcu_read_unlock();
+ 		goto retry;
++	}
+ fail:
+ 	rcu_read_unlock();
+=20
+--=20
+2.26.2
+
