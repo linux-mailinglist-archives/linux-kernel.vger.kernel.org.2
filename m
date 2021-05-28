@@ -2,108 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6595C393DFF
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 09:35:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DFA2F393E31
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 09:52:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236074AbhE1Hh3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 May 2021 03:37:29 -0400
-Received: from szxga01-in.huawei.com ([45.249.212.187]:5128 "EHLO
-        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234497AbhE1HhA (ORCPT
+        id S234786AbhE1HxZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 May 2021 03:53:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56386 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229608AbhE1HxX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 May 2021 03:37:00 -0400
-Received: from dggeml717-chm.china.huawei.com (unknown [172.30.72.54])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4FrxGx04j3zYmrL;
-        Fri, 28 May 2021 15:32:41 +0800 (CST)
-Received: from dggpemm500001.china.huawei.com (7.185.36.107) by
- dggeml717-chm.china.huawei.com (10.3.17.128) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2176.2; Fri, 28 May 2021 15:35:21 +0800
-Received: from localhost.localdomain.localdomain (10.175.113.25) by
- dggpemm500001.china.huawei.com (7.185.36.107) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Fri, 28 May 2021 15:35:20 +0800
-From:   Kefeng Wang <wangkefeng.wang@huawei.com>
-To:     Russell King <linux@armlinux.org.uk>
-CC:     Nathan Chancellor <nathan@kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>,
-        Kefeng Wang <wangkefeng.wang@huawei.com>
-Subject: [PATCH] Revert "arm: mm: qsd8x50: Fix incorrect permission faults"
-Date:   Fri, 28 May 2021 15:44:44 +0800
-Message-ID: <20210528074444.17291-1-wangkefeng.wang@huawei.com>
-X-Mailer: git-send-email 2.26.2
+        Fri, 28 May 2021 03:53:23 -0400
+Received: from mail-yb1-xb2b.google.com (mail-yb1-xb2b.google.com [IPv6:2607:f8b0:4864:20::b2b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0823FC061574;
+        Fri, 28 May 2021 00:51:48 -0700 (PDT)
+Received: by mail-yb1-xb2b.google.com with SMTP id z38so4335149ybh.5;
+        Fri, 28 May 2021 00:51:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=QjtThE/GvdTTwDHRzO7RqKpnpwomxf3ZkcySrQwdFO8=;
+        b=n96WUpjFckScqSNEnzFn0eCPHUzD52Jb779iKMf6j4qX7rctUuS2QMGfQEka+3Aaao
+         gsVWRAKAqq30ZATI9czY8QsgfLhzH56Vv44Rv9nwBY4fQ+zsM5na1I6P9uOlMjmX8pWy
+         AARR1E7AtcEVgxIKPqvby0Yy4FjOX7dc4HrmyLooeiLESkSX9Klv2Evt/AWUI3PILGCR
+         pRz8FplnRR0nt9A4/+vPlQRg3ApKzzmC7ZwUxysTCwZr65xWYXgQAdYrfEGs9IeRukCB
+         qRYZ8gQBEyrxMAvmyW/vQtP3+KipaH6yWHfTIa8n2wFAmSxss13C0G/HNplcR+ji1j2Q
+         EZMw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=QjtThE/GvdTTwDHRzO7RqKpnpwomxf3ZkcySrQwdFO8=;
+        b=PBTiciQyk3kuxOh7AsZg1lnRircMQDWGyuknajiYNuvM3nz/iI4wLqWCNy0fUuF1Z7
+         fylo8kfZpysU2oA900gS04FMe0i0EyIezMUoi9YnE8eltU1p/s+6BA8hzsy002rsGFUA
+         5GIZMb47038/cJajWULmMFQz8bV3XXjed9gP0BkGHGbbu7fhEkCBcyflAscbZaTEVzdh
+         d02C0IVgT3qwi/FOJGE/dzcin1hm2YLcD0/xAKZDZKpZaE2XlMyM+Po0qfQylCu4BirX
+         N0kUUyJbAfqJaAlvowfUCTXXXtn+guw/htWHdMEET25uBKfR4FUQ8kqsfV7EWr3XUICp
+         gKEQ==
+X-Gm-Message-State: AOAM531Qs3/9eg0NHJ6uLkRkLYMgBqVgQSgLw4bo8RwMNYqOlDrGUfXG
+        EBWCZpLBFfGgWWHYeoT+Xstpev8b7nqRWqAOCWc=
+X-Google-Smtp-Source: ABdhPJwWq5KIWkIdAqgVVIgQeSChmW1pD4dENRG4Yvitazs2XGQp+jjE4SAk+lUsFx4YIMAmVUhb3uFSCgiX1n1lv5U=
+X-Received: by 2002:a25:26c3:: with SMTP id m186mr9924697ybm.47.1622188307294;
+ Fri, 28 May 2021 00:51:47 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.113.25]
-X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
- dggpemm500001.china.huawei.com (7.185.36.107)
-X-CFilter-Loop: Reflected
+References: <20210514192218.13022-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
+ <20210514192218.13022-14-prabhakar.mahadev-lad.rj@bp.renesas.com> <CAMuHMdXd==dM2QJN5gg0ka_7-HDQbeKZK66nmyASFJAnsVsSQA@mail.gmail.com>
+In-Reply-To: <CAMuHMdXd==dM2QJN5gg0ka_7-HDQbeKZK66nmyASFJAnsVsSQA@mail.gmail.com>
+From:   "Lad, Prabhakar" <prabhakar.csengg@gmail.com>
+Date:   Fri, 28 May 2021 08:51:21 +0100
+Message-ID: <CA+V-a8vHQLCL+V0f7bKZOKhtgo9_Rsqy_YjBOa_gCvgZMmBLnA@mail.gmail.com>
+Subject: Re: [PATCH 13/16] clk: renesas: Add CPG core wrapper for RZ/G2L SoC
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Magnus Damm <magnus.damm@gmail.com>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        linux-clk <linux-clk@vger.kernel.org>,
+        "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Biju Das <biju.das.jz@bp.renesas.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This reverts commit e220ba60223a9d63e70217e5b112160df8c21cea.
+Hi Geert,
 
-The VERIFY_PERMISSION_FAULT is introduced since 2009 but no
-one use it, just revert it and clean unused comment.
+On Thu, May 27, 2021 at 1:04 PM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
+>
+> Hi Prabhakar,
+>
+> On Fri, May 14, 2021 at 9:24 PM Lad Prabhakar
+> <prabhakar.mahadev-lad.rj@bp.renesas.com> wrote:
+> > Add CPG core wrapper for RZ/G2L family.
+> >
+> > Based on a patch in the BSP by Binh Nguyen
+> > <binh.nguyen.jz@renesas.com>.
+> >
+> > Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+> > Reviewed-by: Biju Das <biju.das.jz@bp.renesas.com>
+>
+> > --- /dev/null
+> > +++ b/drivers/clk/renesas/renesas-rzg2l-cpg.c
+>
+> > +static int rzg2l_mod_clock_endisable(struct clk_hw *hw, bool enable)
+> > +{
+> > +       struct mstp_clock *clock = to_mod_clock(hw);
+> > +       struct cpg_mssr_priv *priv = clock->priv;
+> > +       unsigned int reg = MSSR_OFF(clock->bit) * 4;
+>
+> The "* 4" here makes it difficult to review the module clock tables.
+>
+> E.g.
+>
+>        DEF_MOD("gic",          R9A07G044_CLK_GIC600,
+>                                R9A07G044_CLK_P1,
+>                                MSSR(5, BIT(0), (BIT(0) | BIT(1)))),
+>
+> The "5" means the CLK_ON_GIC600 register is at offset CLK_ON_R(5 * 4)
+>  = 0x514.  Removing the "* 4" means you could use
+> "MSSR(0x14, BIT(0), (BIT(0) | BIT(1))" instead.
+>
+> Unless it has unpleasant side effects, I'd even consider putting
+> the full CLK_ON offset there, i.e.
+> "MSSR(0x514, BIT(0), (BIT(0) | BIT(1))" and change the macros like:
+>
+>     #define CLK_ON_R(reg)          (reg)
+>     #define CLK_MON_R(reg)         (0x680 - 0x500 + (reg))
+>
+OK will do that.
 
-Signed-off-by: Kefeng Wang <wangkefeng.wang@huawei.com>
----
- arch/arm/mm/Kconfig     |  2 --
- arch/arm/mm/abort-ev7.S | 26 --------------------------
- 2 files changed, 28 deletions(-)
+> > --- /dev/null
+> > +++ b/drivers/clk/renesas/renesas-rzg2l-cpg.h
+>
+> > +#define CLK_ON_R(reg)          (0x500 + reg)
+> > +#define CLK_MON_R(reg)         (0x680 + reg)
+> > +#define CLK_RST_R(reg)         (0x800 + reg)
+> > +#define CLK_MRST_R(reg)                (0x980 + reg)
+>
+> The last three don't seem to be documented?
+>
+I have asked Chris to send the document across.
 
-diff --git a/arch/arm/mm/Kconfig b/arch/arm/mm/Kconfig
-index 35f43d0aa056..8355c3895894 100644
---- a/arch/arm/mm/Kconfig
-+++ b/arch/arm/mm/Kconfig
-@@ -601,8 +601,6 @@ config CPU_TLB_V6
- config CPU_TLB_V7
- 	bool
- 
--config VERIFY_PERMISSION_FAULT
--	bool
- endif
- 
- config CPU_HAS_ASID
-diff --git a/arch/arm/mm/abort-ev7.S b/arch/arm/mm/abort-ev7.S
-index f7cc5d68444b..f81bceacc660 100644
---- a/arch/arm/mm/abort-ev7.S
-+++ b/arch/arm/mm/abort-ev7.S
-@@ -17,31 +17,5 @@ ENTRY(v7_early_abort)
- 	mrc	p15, 0, r1, c5, c0, 0		@ get FSR
- 	mrc	p15, 0, r0, c6, c0, 0		@ get FAR
- 	uaccess_disable ip			@ disable userspace access
--
--	/*
--	 * V6 code adjusts the returned DFSR.
--	 * New designs should not need to patch up faults.
--	 */
--
--#if defined(CONFIG_VERIFY_PERMISSION_FAULT)
--	/*
--	 * Detect erroneous permission failures and fix
--	 */
--	ldr	r3, =0x40d			@ On permission fault
--	and	r3, r1, r3
--	cmp	r3, #0x0d
--	bne	do_DataAbort
--
--	mcr	p15, 0, r0, c7, c8, 0   	@ Retranslate FAR
--	isb
--	mrc	p15, 0, ip, c7, c4, 0   	@ Read the PAR
--	and	r3, ip, #0x7b   		@ On translation fault
--	cmp	r3, #0x0b
--	bne	do_DataAbort
--	bic	r1, r1, #0xf			@ Fix up FSR FS[5:0]
--	and	ip, ip, #0x7e
--	orr	r1, r1, ip, LSR #1
--#endif
--
- 	b	do_DataAbort
- ENDPROC(v7_early_abort)
--- 
-2.26.2
-
+Cheers,
+Prabhakar
