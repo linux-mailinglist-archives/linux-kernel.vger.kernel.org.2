@@ -2,131 +2,240 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B1EEA394909
-	for <lists+linux-kernel@lfdr.de>; Sat, 29 May 2021 01:09:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DAF8C39490B
+	for <lists+linux-kernel@lfdr.de>; Sat, 29 May 2021 01:11:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229642AbhE1XLD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 May 2021 19:11:03 -0400
-Received: from mail-co1nam11on2043.outbound.protection.outlook.com ([40.107.220.43]:56288
-        "EHLO NAM11-CO1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229500AbhE1XLC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 May 2021 19:11:02 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=k/IFUT7CLYjHcb0q8QVWuk4G2B2XKU5W90ptrzQp2zyUV6WMaTQAz0Xxfjv2ulzbA4jfDe1OFMYO7ZowxKRjkCzbLVjgmFLqwXuhTcdgvUSKKiZ8Z77+wvthjjSP5gfaXitcQCFYJc0yysy2tz8PRlchQ7l/Q9BSn/QTW4+eTQhqPMVLZo7K8I8BdFnXNru7wksA6dBWqgEvLH5spFK5MBqPMftArIUYltBM3Bx84i6Wfm8XtLyvR/ABLY2BBgu6lXVPL/vpJVtXFeq7s6Er5QlNNi5cUV3Kff0QQJiofUPcPic8uKzuvnwEmlabvJ4tuYN5jYU4RI8BeIRoaTpd8Q==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Kkhkt7M69U+Dam0iyyKEzvgQsenmQdpKFT34wVK/5Bc=;
- b=oGXLhfEhxuR0pgIgVDxHB2K7A06gO34uvD0raTOwFxKhIgCDzw4T43v0sYh6BlKpcTjl2gbulbICdF898spunpOk83544CEhX1ec5RwpKi+/2beutYBKmOxpeEm+QNTRgGotAIr1VJ/SwZyuF0olR9faJVBxDthgL1XeHny+LIkzs39LpC1XOGjz/l9q6RiG2cu+9JsYAQvRVXoxQwgZK4j255yW6M1Cwut4Ajy7R3YiyJZLXH1B+fl3MRg4qZg5f7yF7lvPfh7wfVHCAtVF+YpwuoM/dDrxtMay8Ut4g2ap9AoIdZqj3tsqW3XBw1fUzC2tFsJaYiejovKHL58IEw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Kkhkt7M69U+Dam0iyyKEzvgQsenmQdpKFT34wVK/5Bc=;
- b=YfPdeBrjd/f0+iJ2disUHmkohUmxgqEEISu50bC79xnsRVfLrLpFKFQ/1tgTQTyDqZZ4+GrL6pyIJcMlsvcxniIMWKkclvrP7wCCrWQW08/UiPOLZFB4gPkZGh+CNTuz71dF+NfrM6QTUNsOxuwTnqZ1GoVLIbCCPj9+mn97N5TBZzh9zZyjUfY4QofRAcvm6hccFRtvdvKNQI5I05TNO1J+/NMBMgXpFlzy/wdD//prCUngQpgcq7JxqvdlU2+OZa0Gb4kPMg6MhrO7fFod/eMCiQYyPg7LfsUqLwr/K7349d4kzcByPPdhZEgjl11RHzAvcICp9R6vCBU7X5/epQ==
-Authentication-Results: kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=none action=none header.from=nvidia.com;
-Received: from BL0PR12MB5506.namprd12.prod.outlook.com (2603:10b6:208:1cb::22)
- by BL1PR12MB5208.namprd12.prod.outlook.com (2603:10b6:208:311::8) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4173.20; Fri, 28 May
- 2021 23:09:24 +0000
-Received: from BL0PR12MB5506.namprd12.prod.outlook.com
- ([fe80::3d51:a3b9:8611:684e]) by BL0PR12MB5506.namprd12.prod.outlook.com
- ([fe80::3d51:a3b9:8611:684e%7]) with mapi id 15.20.4173.023; Fri, 28 May 2021
- 23:09:24 +0000
-Date:   Fri, 28 May 2021 20:09:22 -0300
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Leon Romanovsky <leon@kernel.org>
-Cc:     Doug Ledford <dledford@redhat.com>,
-        Maor Gottlieb <maorg@nvidia.com>, linux-kernel@vger.kernel.org,
-        linux-rdma@vger.kernel.org
-Subject: Re: [PATCH rdma-next] RDMA/mlx5: Take qp type from mlx5_ib_qp
-Message-ID: <20210528230922.GA3846871@nvidia.com>
-References: <b2e16cd65b59cd24fa81c01c7989248da44e58ea.1621413899.git.leonro@nvidia.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <b2e16cd65b59cd24fa81c01c7989248da44e58ea.1621413899.git.leonro@nvidia.com>
-X-Originating-IP: [47.55.113.94]
-X-ClientProxiedBy: MN2PR16CA0018.namprd16.prod.outlook.com
- (2603:10b6:208:134::31) To BL0PR12MB5506.namprd12.prod.outlook.com
- (2603:10b6:208:1cb::22)
+        id S229612AbhE1XMz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 May 2021 19:12:55 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:40080 "EHLO m43-7.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229549AbhE1XMw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 28 May 2021 19:12:52 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1622243477; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=2Z/GeWdCXZgnDFcu3EXmGF11JqV9hJt06Gh0AnJGtBE=;
+ b=MqW0uRXqd6B07woDHgmmLJAY25JYRQMEVNwzm8twiJg8m2JijalwakjvzJ8ikoxEJ0en4m6G
+ rIAqT2onu/6giO/PvHyf7/kw6WJLWVUhGAzCwvwaL16jlNCPIFY4XKlBudPakSKGjWN+Ru9V
+ 7TwHBb3p2enlBAjU3cqXLuYGatA=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n07.prod.us-east-1.postgun.com with SMTP id
+ 60b17894f726fa418856387a (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 28 May 2021 23:11:16
+ GMT
+Sender: abhinavk=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 7072CC43143; Fri, 28 May 2021 23:11:15 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: abhinavk)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 3350EC433D3;
+        Fri, 28 May 2021 23:11:13 +0000 (UTC)
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from mlx.ziepe.ca (47.55.113.94) by MN2PR16CA0018.namprd16.prod.outlook.com (2603:10b6:208:134::31) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4173.20 via Frontend Transport; Fri, 28 May 2021 23:09:23 +0000
-Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1lmlbW-00G8lu-Bx; Fri, 28 May 2021 20:09:22 -0300
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: d2e6c373-2561-4469-ca27-08d9222da226
-X-MS-TrafficTypeDiagnostic: BL1PR12MB5208:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <BL1PR12MB52086A873278B6709FC48C0BC2229@BL1PR12MB5208.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:3383;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: sQBAULGM9zGPVhORlZMRDFztFGq6CDrwlmMNHKiKLndqmndpFrR7TNkUFS+wT/q89rPq0siEUvzq8CtWYzJqDu/iqfRQqBA/7eXbzBO9/LlKOSQAFj24eWVmxA1lmxW+hAiKffRsA1+fhgzWirrJsJxy+DnYFZAx6b+ogotqoRVxHVeXqOTvicb1ISLzkJEG7BXgeRBMbAZeRCWczs4bTpw8vO0g+9K17Herl+CPUn2xsSzxvciwl2it5HFuKBIZ79b2WfrbGeySru5P12gQzZ3gSJqPbZ39Mq3qfVLg4IHsotmPt8bc5ZEESkxEeIcLZLasT9CYYoTTr+A69vvv4syeuPtv1X0TT+VX5Hgj3daDO2rHCXqWN0+piqLMxBqbBc2YK3lm/diA482YaYRbISeefswDvx0IEg3DxuhRKaN0ST+WZce6dj4jc9mLwG5mywL52XTGbk//XOszdyAw232K+C+u6sGqGd1MJfV+QnrxWW8R0nev50QQEz351Y1OmoGrhifdWGrTK/5LuJg3As9tcTeFkdwtpB7V3stn0oNtbnqnNpfI5AZFdSjaMkSJ6mCcYkYYBGcQuroHwUIb8rpcgc8xlYlhcxK+Xlz7kn4E9UaFKlW1mlUu6trVdIt27tgi7x1XR8rtnD1ScZXMi8w9q5+BbrE0ZBJ1aRA2vE4iew7wkEgShh5mrOzheaGF27CJBLyZB9XdFe4hEH9Qpp96psygoDfsIG9tolmgCvY=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL0PR12MB5506.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(39860400002)(396003)(376002)(136003)(346002)(36756003)(316002)(4326008)(83380400001)(2906002)(5660300002)(9746002)(66946007)(54906003)(86362001)(478600001)(8676002)(966005)(66476007)(66556008)(26005)(6916009)(33656002)(8936002)(38100700002)(426003)(9786002)(186003)(2616005)(1076003)(4744005);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?RyOVeMrwFrz5s0FVKOuBi40jWK6Hsekm8S6CERVY8W9p3ANZRv7Ejw0xWiDd?=
- =?us-ascii?Q?RFHauNjFvvEg6ERdIfGv+iNP39+Q5L8dP1YxHqOhkzATwgNrZSptstXjRxjc?=
- =?us-ascii?Q?NSJ0Xcu9gnprB2HBO+qeV/j68Q76EMtXUsX0iW4XlxaeIR1/Hoj+tIjBWYpF?=
- =?us-ascii?Q?NSlCYKwzItymW4u9l7z2FEBwBFEo8eve6lAExbijqjf5k1yif4w9PDFwZAGr?=
- =?us-ascii?Q?Y0LTGBPUSUQq2gwESKapPsl61TwLILVE0nFv7mdYBMQie8jJVHVPadjGkmxL?=
- =?us-ascii?Q?P6ArAORbZwMhc8vXd/T2d8LvnkgUv0NmDt3QidveVUx282cpOvIb5k24NgBr?=
- =?us-ascii?Q?TRE7gpf+8Xp3ClO5QbHBWJ8fj/STRrZvgvjioVmf0xoP6srg1RTZFLEa9j58?=
- =?us-ascii?Q?pOvmKbJJwjtURdarNYpN4/oo0baMCEJMbYBChk5R0QK4t4JU+X6nWTpuNKxz?=
- =?us-ascii?Q?dqXhfb8dUhi7ntEO7QHQEZI6g1NaVdSSzaAniRVESKoLkHlUx/5oyt+/+nZb?=
- =?us-ascii?Q?GHl6SwV8lYenuJxpEU+bqqLesZMemBRxmAjzlcHU6ZveN2LAbbpDy79ywBCa?=
- =?us-ascii?Q?OCOb1aRZPTv63lobCmXFL8ViB7QTClbItfaaj5QGJFZ5hy/+tG91eNFTu7fi?=
- =?us-ascii?Q?iuMh3y6EFxFwiA2UZ5sWKSmPd3Fk6LgZAGDD9Xia+XX9pZvulUJM4QkbgqV0?=
- =?us-ascii?Q?zdtgCJ3oyCFDixVFmQHjLLbgv1KrIafiLfUnU4u7bmaCzSLqmbpi+oETpIY+?=
- =?us-ascii?Q?ukqFoRBDKxtopfXNZS4jS79BARsqt17YPOhfUjNSJG0IYdtrNHz/nLww0oVi?=
- =?us-ascii?Q?Cz2UZZsnTC+Eo8MpaQOTbgn7Y9ndZHji4j2jB7n77tBR+49nAD40cYdoS+Ri?=
- =?us-ascii?Q?EaacQFGMbaoOUtl7KvVf+5RhwiZFtGOFDRRR71x5g27Po93UvxL73zrdM6dh?=
- =?us-ascii?Q?1Q4Vzcc7wKDEU15m9F4TnD18RWh3MajFdJ0WyuOEgCCAMOCAdDh9nI/h8THx?=
- =?us-ascii?Q?rHAjMGctkVX3OJzKyUIi1xkNKDnrZug1ujH6snhDVtYe5i1iMWVU6Ks2+hx5?=
- =?us-ascii?Q?x1LbggYs7jCMsg7F8UCBi5gNC4NQufd6odHRfm9Rcc8jhbW01e0LdHTRF9E/?=
- =?us-ascii?Q?ILrMKlLXd7S7DKqDzf09XXYmvN3SoKEFL4+uThdMhVvbYiVp4rxcZnu9vo3M?=
- =?us-ascii?Q?YMS+C2l2mvUFPHX3MQzNapcp/iKcjwjVu+RFD6j7z6OdG7lQpET4iZQXgQNA?=
- =?us-ascii?Q?mLG61n2EoICveRX8G1DY+WYfn8HZAc0VcYHeWWrUEMg9bktzSQdDoij9UffW?=
- =?us-ascii?Q?WdFXcJvYVxiIpBNHHcRX1a2T?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: d2e6c373-2561-4469-ca27-08d9222da226
-X-MS-Exchange-CrossTenant-AuthSource: BL0PR12MB5506.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 28 May 2021 23:09:24.1289
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: dZvpVwfSI5qMtBnaJn88QvdWq7KWFSbYjiMNFNG0WY4o0Qto7Nw2zAs8DZjROjWI
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL1PR12MB5208
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Fri, 28 May 2021 16:11:13 -0700
+From:   abhinavk@codeaurora.org
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>
+Cc:     Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Stephen Boyd <swboyd@chromium.org>, sbillaka@codeaurora.org,
+        Tanmay Shah <tanmay@codeaurora.org>,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        dri-devel@lists.freedesktop.org,
+        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        freedreno@lists.freedesktop.org,
+        Chandan Uddaraju <chandanu@codeaurora.org>
+Subject: Re: [Freedreno] [PATCH 1/4] drm/msm/dp: Simplify the mvid/nvid
+ calculation
+In-Reply-To: <20210511042043.592802-2-bjorn.andersson@linaro.org>
+References: <20210511042043.592802-1-bjorn.andersson@linaro.org>
+ <20210511042043.592802-2-bjorn.andersson@linaro.org>
+Message-ID: <a761ca2648c290300442f4addb4a0ea2@codeaurora.org>
+X-Sender: abhinavk@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 19, 2021 at 11:47:27AM +0300, Leon Romanovsky wrote:
-> From: Maor Gottlieb <maorg@nvidia.com>
-> 
-> Change all the places in the mlx5_ib driver to take the
-> qp type from the mlx5_ib_qp struct, except the QP initialization
-> flow. It will ensure that we check the right QP type also for vendor
-> specific QPs.
-> 
-> Signed-off-by: Maor Gottlieb <maorg@nvidia.com>
-> Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
-> ---
-> Followup to 
-> https://lore.kernel.org/lkml/6eee15d63f09bb70787488e0cf96216e2957f5aa.1621413654.git.leonro@nvidia.com
-> ---
->  drivers/infiniband/hw/mlx5/cq.c      |  2 +-
->  drivers/infiniband/hw/mlx5/mlx5_ib.h |  1 -
->  drivers/infiniband/hw/mlx5/odp.c     |  2 +-
->  drivers/infiniband/hw/mlx5/qp.c      | 53 +++++++++++++---------------
->  drivers/infiniband/hw/mlx5/wr.c      |  9 +++--
->  5 files changed, 31 insertions(+), 36 deletions(-)
+Hi Bjorn
 
-Applied to for-next
+On 2021-05-10 21:20, Bjorn Andersson wrote:
+> In the search for causes to timing issues seen during implementation of
+> eDP support for SC8180x a fair amount of time was spent concluding why
+> the calculated mvid/nvid values where wrong.
+> 
+> The overall conclusion is that the ratio of MVID/NVID describes, and
+> should match, the ratio between the pixel and link clock.
+> 
+> Downstream this calculation reads the M and N values off the pixel 
+> clock
+> straight from DISP_CC and are then adjusted based on knowledge of how
+> the link and vco_div (parent of the pixel clock) are derrived from the
+> common VCO.
+> 
+> While upstreaming, and then extracting the PHY driver, the resulting
+> function performs the following steps:
+> 
+> 1) Adjust the passed link rate based on the VCO divider used in the PHY
+>    driver, and multiply this by 10 based on the link rate divider.
+> 2) Pick reasonable choices of M and N, by calculating the ratio between
+>    this new clock and the pixel clock.
+> 3) Subtract M from N and flip the bits, to match the encoding of the N
+>    register in DISP_CC.
+> 4) Flip the bits of N and add M, to get the value of N back.
+> 5) Multiply M with 5, per the documentation.
+> 6) Scale the values such that N is close to 0x8000 (or larger)
+> 7) Multply M with 2 or 3 depending on the link rate of HBR2 or HBR3.
+> 
+> Presumably step 3) was added to provide step 4) with expected input, so
+> the two cancel each other out. The factor of 10 from step 1) goes into
+> the denominator and is partially cancelled by the 5 in the numerator in
+> step 5), resulting in step 7) simply cancelling out step 1).
+> 
 
-Jason
+Both the multiplication of M with 5 and N with 2 or 3 is coming because 
+of the
+ratio between the vco clk and the link clk.
+So we could have 2.7, 5.4 or 8.1 Gbps link clks and the factor of 2 or 3
+gets added because hbr2 is 2 * hbr and hbr3 is 3 * hbr.
+
+Your summary is pretty much right otherwise. Let me add some more points 
+here:
+
+1) Originally we removed reading the M_VID and N_VID from the DISPCC 
+regs because
+of previous upstream comments that we can potentially just recalculate 
+whatever the clk driver is programming
+by using rational_best_approximation
+https://gitlab.freedesktop.org/drm/msm/-/blob/msm-next/drivers/clk/qcom/clk-rcg2.c#L1160
+
+Not having to read from DISPCC register is also useful because we dont 
+have to maintain the register offset
+of the M_VID and N_VID which keeps changing across chipsets.
+
+However we discussed this again after viewing this patch. So the clk 
+driver always operates on the vco clk
+and calculates the pixel clk from it and sets the M_VID and N_VID based 
+on that.
+In terms of accuracy, the best way is still to re-use the M_VID and 
+N_VID which the clk driver sets because
+the pixel clock was generated based on that and that is the actual pixel 
+clock we are going to get.
+
+So even before this change we lost some accuracy because the pixel clock 
+we are giving here to recalculate
+the M_VID and N_VID is a theoretical value. Although for most values of 
+pixel clk, theoretical and actual
+should match. There could be corner cases of pixel clock where its a bit 
+different. Hence ideally, re-using the M_VID
+and N_VID which the clk driver set would have been the best but not 
+having to hard-code M_VID and N_VID offsets
+was a good enough reason to not go back to that again.
+
+Now, coming to this change. Here its trying to again re-calculate the 
+M_VID and N_VID by using the same
+API which the clk driver uses but uses link clk and pixel clk as the 
+parameters Vs the clk driver uses
+vco clk and actual pixel clock to calculate this.
+
+So even though this cleanup eliminates the adjustments we need to make 
+to account for the VCO clk to link clk ratio,
+it also could bring additional difference between what was actually set 
+by the clk driver and what we are calculating
+here because clk driver used vco clk as the input vs here we use link 
+clk after this change.
+There might be some pixel clock rates of some resolutions where this 
+difference could be risky.
+
+Hence the overall conclusion here was to keep using vco clk as the input 
+to rational_best_approximation
+and not make more changes to this.
+
+> Left is the code that finds the ratio between the two arguments, scaled
+> to keep the denominator close to or larger than 0x8000. And this is our
+> mvid/nvid pair.
+> 
+> Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+> ---
+>  drivers/gpu/drm/msm/dp/dp_catalog.c | 41 +++++------------------------
+>  1 file changed, 6 insertions(+), 35 deletions(-)
+> 
+> diff --git a/drivers/gpu/drm/msm/dp/dp_catalog.c
+> b/drivers/gpu/drm/msm/dp/dp_catalog.c
+> index b1a9b1b98f5f..2eb37ee48e42 100644
+> --- a/drivers/gpu/drm/msm/dp/dp_catalog.c
+> +++ b/drivers/gpu/drm/msm/dp/dp_catalog.c
+> @@ -415,39 +415,16 @@ void dp_catalog_ctrl_config_msa(struct
+> dp_catalog *dp_catalog,
+>  					u32 rate, u32 stream_rate_khz,
+>  					bool fixed_nvid)
+>  {
+> -	u32 pixel_m, pixel_n;
+> -	u32 mvid, nvid, pixel_div = 0, dispcc_input_rate;
+>  	u32 const nvid_fixed = DP_LINK_CONSTANT_N_VALUE;
+> -	u32 const link_rate_hbr2 = 540000;
+> -	u32 const link_rate_hbr3 = 810000;
+> -	unsigned long den, num;
+> -
+> +	unsigned long mvid, nvid;
+>  	struct dp_catalog_private *catalog = container_of(dp_catalog,
+>  				struct dp_catalog_private, dp_catalog);
+> 
+> -	if (rate == link_rate_hbr3)
+> -		pixel_div = 6;
+> -	else if (rate == 1620000 || rate == 270000)
+> -		pixel_div = 2;
+> -	else if (rate == link_rate_hbr2)
+> -		pixel_div = 4;
+> -	else
+> -		DRM_ERROR("Invalid pixel mux divider\n");
+> -
+> -	dispcc_input_rate = (rate * 10) / pixel_div;
+> -
+> -	rational_best_approximation(dispcc_input_rate, stream_rate_khz,
+> -			(unsigned long)(1 << 16) - 1,
+> -			(unsigned long)(1 << 16) - 1, &den, &num);
+> -
+> -	den = ~(den - num);
+> -	den = den & 0xFFFF;
+> -	pixel_m = num;
+> -	pixel_n = den;
+> -
+> -	mvid = (pixel_m & 0xFFFF) * 5;
+> -	nvid = (0xFFFF & (~pixel_n)) + (pixel_m & 0xFFFF);
+> +	rational_best_approximation(stream_rate_khz, rate,
+> +				    (1 << 16) - 1, (1 << 16) - 1,
+> +				    &mvid, &nvid);
+> 
+> +	/* Adjust values so that nvid is close to DP_LINK_CONSTANT_N_VALUE */
+>  	if (nvid < nvid_fixed) {
+>  		u32 temp;
+> 
+> @@ -456,13 +433,7 @@ void dp_catalog_ctrl_config_msa(struct dp_catalog
+> *dp_catalog,
+>  		nvid = temp;
+>  	}
+> 
+> -	if (link_rate_hbr2 == rate)
+> -		nvid *= 2;
+> -
+> -	if (link_rate_hbr3 == rate)
+> -		nvid *= 3;
+> -
+> -	DRM_DEBUG_DP("mvid=0x%x, nvid=0x%x\n", mvid, nvid);
+> +	DRM_DEBUG_DP("mvid=0x%lx, nvid=0x%lx\n", mvid, nvid);
+>  	dp_write_link(catalog, REG_DP_SOFTWARE_MVID, mvid);
+>  	dp_write_link(catalog, REG_DP_SOFTWARE_NVID, nvid);
+>  	dp_write_p0(catalog, MMSS_DP_DSC_DTO, 0x0);
