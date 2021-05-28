@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 711B2393E79
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 10:13:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0EE7D393E7B
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 10:13:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236024AbhE1IOy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 May 2021 04:14:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33000 "EHLO
+        id S236061AbhE1IO4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 May 2021 04:14:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33030 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235958AbhE1IOt (ORCPT
+        with ESMTP id S236029AbhE1IOy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 May 2021 04:14:49 -0400
-Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35D76C061574;
-        Fri, 28 May 2021 01:13:14 -0700 (PDT)
-Received: by mail-pl1-x62d.google.com with SMTP id v13so1259528ple.9;
-        Fri, 28 May 2021 01:13:14 -0700 (PDT)
+        Fri, 28 May 2021 04:14:54 -0400
+Received: from mail-pg1-x52b.google.com (mail-pg1-x52b.google.com [IPv6:2607:f8b0:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3DA72C061574;
+        Fri, 28 May 2021 01:13:20 -0700 (PDT)
+Received: by mail-pg1-x52b.google.com with SMTP id t193so1965845pgb.4;
+        Fri, 28 May 2021 01:13:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=21xAaUHWeHof2ecP/y/d30huoLiokvMxn5AYQcuGXfg=;
-        b=YuNG0cSnJzP07WQH1cBbi/A+4+mjzR3qehA/1Mv7hmmSGLgeHWMmEu8F7RVgdM7qVx
-         mprinDFWUuLOVsQyAnS74xwQNRJXdIS97S87KcynFgYCSKidRKtt7/JzlH4DYeVJfQMR
-         cfYtRa5bCFUz0lNu3FclM9I9B1ogqM/H8ub9J9hrI7e8N2DN607JOOVLyK+ZaKznQR61
-         ehamUCFqbnOEKprduupYQSKLc/B74TYVdp+UkJzfbffvradmooQlXk2qDxWbefTGEwU5
-         kUm/cLT4uRP6AAsPkL0DWGdXf3Zlay5NsdAzTXJ5iQ775k5IMOJ4Tq5AqPfkvJdYRSCj
-         fJ1g==
+        bh=1JuzSaJeX++ckGWb53wf2z0OIXSlH3HjOOCWZ8LzlB8=;
+        b=uYycyqPXkgt61fbVNu81G9i5MhBxFqUmYRGVyeq/03jZutSsobb5tnCIVg19AQMAEW
+         ACeh+OmaKpjqqG89Ho8Wtg85/Ujf9W5uJiyadZQKTRXVAH9YosiglbPEMMr2MYaqIncv
+         0XDGNfQWGvNQGcVKqFNWpxcSqbqbd3djx9kmDq46UnQSRaQkrWUoGaB6f7py/huBfZzH
+         63p2qCM8dYLfEzPpnYaDFPXglp5s0Sx8PRnCwubn3sueRcLnIVU0Zp3mMjOpDQsu3TzM
+         lwootisMm/ISGiLEGyIq6G+QbFCqWyAyO2UKGxLYs4fBPECDcL3h5DKAmiRGr8mtmSom
+         PpHg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=21xAaUHWeHof2ecP/y/d30huoLiokvMxn5AYQcuGXfg=;
-        b=M52JjSYzvsmnVgx3VtbOw4EJtbtpU1NW40IeBFy0Bg3Il0WT1FONPUb2IKcvR8lI8+
-         gRDS/dlSS0eJvJNQ7WiAIkJAztkZrDYssTFAghlsBn12nPWrBLgl5stGsk4caI/0eKRq
-         5YrHwJnluZMAhB5HEpg/SwlfOtMrzFz46F08V925dWSWZBsoYjCX2reY9mFZSOPu1qu6
-         Iz54tsziD39fxaz1Yz9+DQKek9qm06kcU8wu64pB7tpPNz1n320VWCq+3+SCcpOQ19U7
-         TWR9LT7Mcqtku6Djk6AOPb1EbvtMkHe1HRnQVyiG842bpzgOstHDkI4EuKFynnTZJQB9
-         ZIYw==
-X-Gm-Message-State: AOAM532xTsQI1knq0PphiJZTQZrqWPBttztZadZcSjuu5rAPPnSC3vBy
-        JfvpnrMv2ptS8fF0ds4S3mw=
-X-Google-Smtp-Source: ABdhPJyyvweGFW8Eh8bd+eKcXVC2wzxMqNaQ8UYzWiDHmVDfiTCarncao5MD1si6ap7/KLnwBjFjtg==
-X-Received: by 2002:a17:902:d2c5:b029:f1:c207:b0fd with SMTP id n5-20020a170902d2c5b02900f1c207b0fdmr6965759plc.45.1622189593759;
-        Fri, 28 May 2021 01:13:13 -0700 (PDT)
+        bh=1JuzSaJeX++ckGWb53wf2z0OIXSlH3HjOOCWZ8LzlB8=;
+        b=hyuAsaVmiLJ/qfQ+1iYc9t5TVClclxRIMs3uKve4xK/Cj/1Ze3OWyIERXh8TRi4fSi
+         5T41EfTjdpb/gVrIPBVC49XqqPJ4IMiDiU4wQ8qzpME5JZS3WCnTXO1Fuoob4ti7IcGa
+         70VI5zMYEgvuk8bMXSgI8r57/2uCvgjNvb6aOQE0Bbu7jr71vOqohzsnq5HdJVA0foPe
+         v4+URS/cUPsAVLlH0X0D1thURUC2vP1ck5fVozEUfeCRtCoIIJbyHjpstnDzSSS+oNR2
+         KZst1RFBxfJ7/t0PGzp0RAt1z+4K9GhJJyqn79zYi2RoRaGCH8q+v/51Ryh1Y+ffXwLv
+         RSCg==
+X-Gm-Message-State: AOAM5335UvMfSb722yECpOnLhSU0q5DW/MMCI9xmP5thBs2PKT4A3OWX
+        964guOlshzXhaY79ZBqEPdU=
+X-Google-Smtp-Source: ABdhPJz0lmodWUJUQCZwq7sQh1ltf7tdBdNSpySeirHXUURY9IlOJf+kA6KzHgr6aho3E0Zz8C+yZA==
+X-Received: by 2002:a05:6a00:1992:b029:2df:b93b:49a with SMTP id d18-20020a056a001992b02902dfb93b049amr2749686pfl.11.1622189599844;
+        Fri, 28 May 2021 01:13:19 -0700 (PDT)
 Received: from localhost.localdomain ([2402:7500:46b:3194:b541:419e:4878:8a93])
-        by smtp.gmail.com with ESMTPSA id z18sm3846594pfc.23.2021.05.28.01.13.09
+        by smtp.gmail.com with ESMTPSA id z18sm3846594pfc.23.2021.05.28.01.13.14
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 28 May 2021 01:13:13 -0700 (PDT)
+        Fri, 28 May 2021 01:13:19 -0700 (PDT)
 From:   Gene Chen <gene.chen.richtek@gmail.com>
 To:     sre@kernel.org, matthias.bgg@gmail.com,
         matti.vaittinen@fi.rohmeurope.com
@@ -56,10 +56,11 @@ Cc:     broonie@kernel.org, robh+dt@kernel.org, devicetree@vger.kernel.org,
         linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
         rdunlap@infradead.org, gene_chen@richtek.com,
         Wilma.Wu@mediatek.com, shufan_lee@richtek.com,
-        cy_huang@richtek.com, benjamin.chao@mediatek.com
-Subject: [PATCH v5 1/3] lib: add linear range get selector within
-Date:   Fri, 28 May 2021 16:12:58 +0800
-Message-Id: <20210528081300.64759-2-gene.chen.richtek@gmail.com>
+        cy_huang@richtek.com, benjamin.chao@mediatek.com,
+        Rob Herring <robh@kernel.org>
+Subject: [PATCH v5 2/3] dt-bindings: power: Add bindings document for Charger support on MT6360 PMIC
+Date:   Fri, 28 May 2021 16:12:59 +0800
+Message-Id: <20210528081300.64759-3-gene.chen.richtek@gmail.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210528081300.64759-1-gene.chen.richtek@gmail.com>
 References: <20210528081300.64759-1-gene.chen.richtek@gmail.com>
@@ -71,69 +72,69 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Gene Chen <gene_chen@richtek.com>
 
-Add linear range get selector within for choose closest selector
-between minimum and maximum selector.
+Add bindings document for Charger support on MT6360 PMIC
 
 Signed-off-by: Gene Chen <gene_chen@richtek.com>
+Reviewed-by: Rob Herring <robh@kernel.org>
 ---
- include/linux/linear_range.h |  2 ++
- lib/linear_ranges.c          | 31 +++++++++++++++++++++++++++++++
- 2 files changed, 33 insertions(+)
+ .../bindings/power/supply/mt6360_charger.yaml | 48 +++++++++++++++++++
+ 1 file changed, 48 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/power/supply/mt6360_charger.yaml
 
-diff --git a/include/linux/linear_range.h b/include/linux/linear_range.h
-index 17b5943727d5..fd3d0b358f22 100644
---- a/include/linux/linear_range.h
-+++ b/include/linux/linear_range.h
-@@ -41,6 +41,8 @@ int linear_range_get_selector_low(const struct linear_range *r,
- int linear_range_get_selector_high(const struct linear_range *r,
- 				   unsigned int val, unsigned int *selector,
- 				   bool *found);
-+void linear_range_get_selector_within(const struct linear_range *r,
-+				      unsigned int val, unsigned int *selector);
- int linear_range_get_selector_low_array(const struct linear_range *r,
- 					int ranges, unsigned int val,
- 					unsigned int *selector, bool *found);
-diff --git a/lib/linear_ranges.c b/lib/linear_ranges.c
-index ced5c15d3f04..a1a7dfa881de 100644
---- a/lib/linear_ranges.c
-+++ b/lib/linear_ranges.c
-@@ -241,5 +241,36 @@ int linear_range_get_selector_high(const struct linear_range *r,
- }
- EXPORT_SYMBOL_GPL(linear_range_get_selector_high);
- 
-+/**
-+ * linear_range_get_selector_within - return linear range selector for value
-+ * @r:		pointer to linear range where selector is looked from
-+ * @val:	value for which the selector is searched
-+ * @selector:	address where found selector value is updated
-+ *
-+ * Return selector for which range value is closest match for given
-+ * input value. Value is matching if it is equal or lower than given
-+ * value. But return maximum selector if given value is higher than
-+ * maximum value.
-+ */
-+void linear_range_get_selector_within(const struct linear_range *r,
-+				      unsigned int val, unsigned int *selector)
-+{
-+	if (r->min > val) {
-+		*selector = r->min_sel;
-+		return;
-+	}
+diff --git a/Documentation/devicetree/bindings/power/supply/mt6360_charger.yaml b/Documentation/devicetree/bindings/power/supply/mt6360_charger.yaml
+new file mode 100644
+index 000000000000..b89b15a5bfa4
+--- /dev/null
++++ b/Documentation/devicetree/bindings/power/supply/mt6360_charger.yaml
+@@ -0,0 +1,48 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/power/supply/mt6360_charger.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
 +
-+	if (linear_range_get_max_value(r) < val) {
-+		*selector = r->max_sel;
-+		return;
-+	}
++title: Battery charger driver for MT6360 PMIC from MediaTek Integrated.
 +
-+	if (r->step == 0)
-+		*selector = r->min_sel;
-+	else
-+		*selector = (val - r->min) / r->step + r->min_sel;
-+}
-+EXPORT_SYMBOL_GPL(linear_range_get_selector_within);
++maintainers:
++  - Gene Chen <gene_chen@richtek.com>
 +
- MODULE_DESCRIPTION("linear-ranges helper");
- MODULE_LICENSE("GPL");
++description: |
++  This module is part of the MT6360 MFD device.
++  Provides Battery Charger, Boost for OTG devices and BC1.2 detection.
++
++properties:
++  compatible:
++    const: mediatek,mt6360-chg
++
++  richtek,vinovp-microvolt:
++    description: Maximum CHGIN regulation voltage in uV.
++    enum: [ 5500000, 6500000, 11000000, 14500000 ]
++
++
++  usb-otg-vbus-regulator:
++    type: object
++    description: OTG boost regulator.
++    $ref: /schemas/regulator/regulator.yaml#
++
++required:
++  - compatible
++
++additionalProperties: false
++
++examples:
++  - |
++    mt6360_charger: charger {
++      compatible = "mediatek,mt6360-chg";
++      richtek,vinovp-microvolt = <14500000>;
++
++      otg_vbus_regulator: usb-otg-vbus-regulator {
++        regulator-compatible = "usb-otg-vbus";
++        regulator-name = "usb-otg-vbus";
++        regulator-min-microvolt = <4425000>;
++        regulator-max-microvolt = <5825000>;
++      };
++    };
++...
 -- 
 2.25.1
 
