@@ -2,248 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 63D23394270
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 14:19:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 96EAC394272
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 14:21:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236508AbhE1MU6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 May 2021 08:20:58 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49004 "EHLO mail.kernel.org"
+        id S236522AbhE1MXJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 May 2021 08:23:09 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49864 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236267AbhE1MU4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 May 2021 08:20:56 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5ADFB60FF3;
-        Fri, 28 May 2021 12:19:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1622204350;
-        bh=fR278QD1iF89zk1iRlrF0Qgx6DyVjgzUYr2Q3YdusZ8=;
+        id S229552AbhE1MXF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 28 May 2021 08:23:05 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1BC8F611BD;
+        Fri, 28 May 2021 12:21:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1622204490;
+        bh=rDa5x/cpxroT53ZErrZLm3VPXNPftRcYEHoGFY9QZps=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ZLr2RXKZVoTE6VJxO0RbjLIAW+lIVZhmmS7XsTPELq0eRTq+QuEJ3dwDwRxElwZq3
-         4N8eU6GQlBsi3PDlOd1qo6O9ZppJwkMMiZdn1vC9waaxZq4jxAOuBpDPP09WqhkduF
-         BNYEO9qkCjgeKZ06ZPjOsiWIF/I8fKFPIDuB43ik=
-Date:   Fri, 28 May 2021 14:19:08 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Sebastian Reichel <sebastian.reichel@collabora.com>
-Cc:     Mark Brown <broonie@kernel.org>, Rob Herring <robh+dt@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>, Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>, Ian Ray <ian.ray@ge.com>,
-        linux-kernel@vger.kernel.org, linux-spi@vger.kernel.org,
-        devicetree@vger.kernel.org, kernel@collabora.com
-Subject: Re: [PATCHv3 5/5] misc: gehc-achc: new driver
-Message-ID: <YLDfvD1nLgWqEavS@kroah.com>
-References: <20210528113346.37137-1-sebastian.reichel@collabora.com>
- <20210528113346.37137-6-sebastian.reichel@collabora.com>
+        b=UzcnnXo5uLA0bdWPpQRG12Jdd9LA1NaAJifegj5sVuLbslTq5DOX0YYn1GlJ9484w
+         DcYSpuRpwioX22+7wfm4WXfxNEk3rGfyazE4U7a3lPeUJrFH8LObDZOmwOsyNqnpKS
+         45VU2SZFH7W6vg88HV8TtDAcgc9o5SCj3kmaXb+8XZgqMpDKTi9jL/vq5SsBCw9aWw
+         tob/v+/AT+dYeR0tWHiHzlHPISYblEB179WuXKXIsC1BxQ05Wi4SJef3pW7bLpnC/I
+         u9tb+M6/iRMeFdnvWNgwZ2IEf4RuaTClqT+ZCIM8zOp2JpjuR4yfwoRmnL1LFpNsKZ
+         R9+sArsJ/fWoQ==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id D96544011C; Fri, 28 May 2021 09:21:27 -0300 (-03)
+Date:   Fri, 28 May 2021 09:21:27 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     kajoljain <kjain@linux.ibm.com>
+Cc:     Nageswara Sastry <rnsastry@linux.ibm.com>,
+        "Paul A. Clarke" <pc@us.ibm.com>, maddy@linux.vnet.ibm.com,
+        Athira Rajeev <atrajeev@linux.vnet.ibm.com>,
+        linux-kernel@vger.kernel.org, jolsa@redhat.com, mpe@ellerman.id.au,
+        ravi.bangoria@linux.ibm.com, linux-perf-users@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org
+Subject: Re: [PATCH] perf vendor events: Fix eventcode of power10 json events
+Message-ID: <YLDgRyvhJt+bbmn/@kernel.org>
+References: <20210525063723.1191514-1-kjain@linux.ibm.com>
+ <20210525144215.GA2135213@li-24c3614c-2adc-11b2-a85c-85f334518bdb.ibm.com>
+ <20210525152736.GB2135213@li-24c3614c-2adc-11b2-a85c-85f334518bdb.ibm.com>
+ <5960AF7C-64BD-4E57-BA6D-08AA9932B063@linux.ibm.com>
+ <da7617f8-050e-c597-ec3d-5e803775252c@linux.ibm.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210528113346.37137-6-sebastian.reichel@collabora.com>
+In-Reply-To: <da7617f8-050e-c597-ec3d-5e803775252c@linux.ibm.com>
+X-Url:  http://acmel.wordpress.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 28, 2021 at 01:33:47PM +0200, Sebastian Reichel wrote:
-> General Electric Healthcare's PPD has a secondary processor from
-> NXP's Kinetis K20 series. That device has two SPI chip selects:
+Em Fri, May 28, 2021 at 01:26:50PM +0530, kajoljain escreveu:
 > 
-> The main interface's behaviour depends on the loaded firmware
-> and is exposed to userspace (as before).
 > 
-> The secondary interface can be used to update the firmware using
-> EzPort protocol. This is implemented by this driver using the
-> kernel's firmware API. It's not done during probe time, since
-> the device has non-volatile memory and flashing lasts almost 3
-> minutes.
+> On 5/26/21 11:42 AM, Nageswara Sastry wrote:
+> > 
+> > 
+> >> On 25-May-2021, at 8:57 PM, Paul A. Clarke <pc@us.ibm.com> wrote:
+> >>>
+> >> I lost the original message, but Nageswara Sastry said:
+> >>> 1. Extracted all the 244 events from the patch.
+> >>> 2. Check them in 'perf list' - all 244 events found
+> >>> 3. Ran all the events with 'perf stat -e "event name" sleep 1', all ran fine.
+> >>>    No errors were seen in 'dmesg'
+> >>
+> >> I count 255 events.
+> >>
+> >> PC
+> > 
+> > Seems while extracting I filtered out newly added ones, so I got 244(255-11). 
+> > Now checked with all 255 events. Thanks for pointing out.
+> > 
+> > Thanks!!
+> > R.Nageswara Sastry
+> > 
 > 
-> Signed-off-by: Sebastian Reichel <sebastian.reichel@collabora.com>
-> ---
->  drivers/misc/Kconfig                     |  15 +
->  drivers/misc/Makefile                    |   2 +
->  drivers/misc/gehc-achc.c                 | 160 ++++++++
->  drivers/misc/nxp-ezport.c                | 476 +++++++++++++++++++++++
->  drivers/spi/spidev.c                     |   7 +-
->  include/linux/platform_data/nxp-ezport.h |   9 +
->  include/linux/spi/spi.h                  |   5 +
->  7 files changed, 671 insertions(+), 3 deletions(-)
->  create mode 100644 drivers/misc/gehc-achc.c
->  create mode 100644 drivers/misc/nxp-ezport.c
->  create mode 100644 include/linux/platform_data/nxp-ezport.h
+> Hi Paul/Nageswara,
+>    Yes we currently have 255 power10 json events which is updated in this patch. 
+> Thanks for reviewing the patch.
 > 
-> diff --git a/drivers/misc/Kconfig b/drivers/misc/Kconfig
-> index f4fb5c52b863..f058b551a7b1 100644
-> --- a/drivers/misc/Kconfig
-> +++ b/drivers/misc/Kconfig
-> @@ -208,6 +208,21 @@ config CS5535_CLOCK_EVENT_SRC
->  	  MFGPTs have a better resolution and max interval than the
->  	  generic PIT, and are suitable for use as high-res timers.
->  
-> +config NXP_EZPORT
-> +	tristate
-> +
-> +config GEHC_ACHC
-> +	tristate "GEHC ACHC support"
-> +	depends on SPI && SYSFS && SPI_SPIDEV
-> +	select FW_LOADER
-> +	select NXP_EZPORT
-> +	help
-> +	  Support for GE ACHC microcontroller, that is part of the GE
-> +	  CS One device.
-> +
-> +	  To compile this driver as a module, choose M here: the
-> +	  module will be called gehc-achc.
-> +
->  config HP_ILO
->  	tristate "Channel interface driver for the HP iLO processor"
->  	depends on PCI
-> diff --git a/drivers/misc/Makefile b/drivers/misc/Makefile
-> index e92a56d4442f..b7bad5a16c8f 100644
-> --- a/drivers/misc/Makefile
-> +++ b/drivers/misc/Makefile
-> @@ -24,6 +24,8 @@ obj-$(CONFIG_KGDB_TESTS)	+= kgdbts.o
->  obj-$(CONFIG_SGI_XP)		+= sgi-xp/
->  obj-$(CONFIG_SGI_GRU)		+= sgi-gru/
->  obj-$(CONFIG_CS5535_MFGPT)	+= cs5535-mfgpt.o
-> +obj-$(CONFIG_NXP_EZPORT)	+= nxp-ezport.o
-> +obj-$(CONFIG_GEHC_ACHC)		+= gehc-achc.o
->  obj-$(CONFIG_HP_ILO)		+= hpilo.o
->  obj-$(CONFIG_APDS9802ALS)	+= apds9802als.o
->  obj-$(CONFIG_ISL29003)		+= isl29003.o
-> diff --git a/drivers/misc/gehc-achc.c b/drivers/misc/gehc-achc.c
-> new file mode 100644
-> index 000000000000..7856dd70a80c
-> --- /dev/null
-> +++ b/drivers/misc/gehc-achc.c
-> @@ -0,0 +1,160 @@
-> +// SPDX-License-Identifier: GPL-2.0+
+> Arnaldo can you pull this patch if changes looks fine to you.
 
-Are you _sure_ you mean "+"?  I have to ask :)
+Applied to test/urgent, thanks everybody for the tests and reviews, all
+tags collected.
 
-> +/*
-> + * datasheet: https://www.nxp.com/docs/en/data-sheet/K20P144M120SF3.pdf
-> + *
-> + * Copyright (C) 2018-2021 Collabora
-> + * Copyright (C) 2018-2021 GE Healthcare
-> + */
-> +
-> +#include <linux/kernel.h>
-> +#include <linux/module.h>
-> +#include <linux/spi/spi.h>
-> +#include <linux/of.h>
-> +#include <linux/platform_data/nxp-ezport.h>
-> +
-> +#define ACHC_MAX_FREQ 300000
-> +
-> +struct achc_data {
-> +	struct spi_device *main;
-> +	struct spi_device *ezport;
-> +	struct gpio_desc *reset;
-> +
-> +	struct mutex device_lock; /* avoid concurrent device access */
-> +};
-> +
-> +static ssize_t update_firmware_store(struct device *dev, struct device_attribute *attr,
-> +				     const char *buf, size_t count)
-> +{
-> +	struct achc_data *achc = dev_get_drvdata(dev);
-> +	int ret;
-> +
-> +	if (!count)
-> +		return -EINVAL;
-> +
-> +	mutex_lock(&achc->device_lock);
-> +	ret = ezport_flash(achc->ezport, achc->reset, "achc.bin");
-> +	mutex_unlock(&achc->device_lock);
-> +
-> +	if (ret < 0)
-> +		return ret;
-> +
-> +	return count;
-> +}
-> +static DEVICE_ATTR_WO(update_firmware);
-
-You add new sysfs files, yet forget to document them in
-Documentation/ABI/  Please fix up for your next submission.
-
-> +
-> +static ssize_t reset_store(struct device *dev, struct device_attribute *attr,
-> +			   const char *buf, size_t count)
-> +{
-> +	struct achc_data *achc = dev_get_drvdata(dev);
-> +
-> +	if (!count)
-> +		return -EINVAL;
-> +
-> +	mutex_lock(&achc->device_lock);
-> +	ezport_reset(achc->reset);
-> +	mutex_unlock(&achc->device_lock);
-> +
-> +	return count;
-> +}
-> +static DEVICE_ATTR_WO(reset);
-> +
-> +static struct attribute *gehc_achc_attrs[] = {
-> +	&dev_attr_update_firmware.attr,
-> +	&dev_attr_reset.attr,
-> +	NULL,
-> +};
-> +
-> +static const struct attribute_group gehc_achc_attr_group = {
-> +	.attrs = gehc_achc_attrs,
-> +};
-> +
-> +static void unregister_ezport(void *data)
-> +{
-> +	struct spi_device *ezport = data;
-> +
-> +	spi_unregister_device(ezport);
-> +}
-> +
-> +static int gehc_achc_probe(struct spi_device *spi)
-> +{
-> +	struct achc_data *achc;
-> +	int ezport_reg, ret;
-> +
-> +	spi->max_speed_hz = ACHC_MAX_FREQ;
-> +	spi->bits_per_word = 8;
-> +	spi->mode = SPI_MODE_0;
-> +
-> +	achc = devm_kzalloc(&spi->dev, sizeof(*achc), GFP_KERNEL);
-> +	if (!achc)
-> +		return -ENOMEM;
-> +	achc->main = spi;
-> +
-> +	mutex_init(&achc->device_lock);
-> +
-> +	ret = of_property_read_u32_index(spi->dev.of_node, "reg", 1, &ezport_reg);
-> +	if (ret)
-> +		return dev_err_probe(&spi->dev, ret, "missing second reg entry!\n");
-> +
-> +	achc->ezport = spi_new_ancillary_device(spi, ezport_reg);
-> +	if (IS_ERR(achc->ezport))
-> +		return PTR_ERR(achc->ezport);
-> +
-> +	ret = devm_add_action_or_reset(&spi->dev, unregister_ezport, achc->ezport);
-> +	if (ret)
-> +		return ret;
-> +
-> +	achc->reset = devm_gpiod_get(&spi->dev, "reset", GPIOD_OUT_LOW);
-> +	if (IS_ERR(achc->reset))
-> +		return dev_err_probe(&spi->dev, PTR_ERR(achc->reset), "Could not get reset gpio\n");
-> +
-> +	/*
-> +	 * The sysfs properties are bound to the dummy device, since the main device already
-> +	 * uses drvdata assigned by the spidev driver.
-> +	 */
-> +	spi_set_drvdata(achc->ezport, achc);
-> +	ret = devm_device_add_group(&achc->ezport->dev, &gehc_achc_attr_group);
-
-You just raced and lost.  Please use the default groups attribute for
-your driver instead of this.  Or properly attach it to the device some
-other way, but what you have done here does not work, sorry.
-
-
-And you should probably break this up into at least 2 patches, one for
-each "driver" you are adding.
-
-thanks,
-
-greg k-h
+- Arnaldo
