@@ -2,173 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C6A0394930
-	for <lists+linux-kernel@lfdr.de>; Sat, 29 May 2021 01:40:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6190A394932
+	for <lists+linux-kernel@lfdr.de>; Sat, 29 May 2021 01:42:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229631AbhE1Xm3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 May 2021 19:42:29 -0400
-Received: from so254-9.mailgun.net ([198.61.254.9]:27024 "EHLO
-        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229559AbhE1Xm2 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 May 2021 19:42:28 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1622245253; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=ObCt7FLVUSqowY1LQ9oBhYcHVdMypKRBt0IQ8qdhFjM=;
- b=U/iPCF774cIHBCJOsf5JzLmgbOut7vmVA+FnhpcbNbAoYwlta+Y8ETWKg2in96W7QmCaOncb
- mK5Cxt9w9Vd88kXTfi38VfKiqq9UCRaZoRsDArN0b23Grz4W8MbW2z1+P6hO1Soy77fsDhAH
- JFYxryGgWJKw70LsFJILxRiURYU=
-X-Mailgun-Sending-Ip: 198.61.254.9
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n06.prod.us-west-2.postgun.com with SMTP id
- 60b17f718491191eb319c727 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 28 May 2021 23:40:33
- GMT
-Sender: abhinavk=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 354B7C4360C; Fri, 28 May 2021 23:40:33 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
-        autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: abhinavk)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 45190C4338A;
-        Fri, 28 May 2021 23:40:32 +0000 (UTC)
+        id S229674AbhE1Xni (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 May 2021 19:43:38 -0400
+Received: from mail-dm3nam07on2044.outbound.protection.outlook.com ([40.107.95.44]:19296
+        "EHLO NAM02-DM3-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229559AbhE1Xng (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 28 May 2021 19:43:36 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=J9mHqVJ4yp6OuH0uXeghyMSDt24LHevkjpek8kyBaDmNYSwacx1ODvdFyH1DCOapCbi+Ow9qvJ4+KFZJE5HHsDLwq7+HJu18QxwyByU6DZqgwYG1kh4qJcFmyAwafr5lJtJaRlUggAXAV/u543Zite4iFs6bqqR8ZqeB6se9Gqsxd5EErR5kcIulR8ihJIiiOycuYPFgyxpCHpQfwzcxrRWnhVFkM62B4NKsRB6qV5+9M3oWM4dR41BTBHnHq40YPN0BaXA+lWpa0Fhex768JbWSPzsIQRNl374lQBV0z4iDDi6OMAVcLqsE5qY03/n3Ko57S/zIXmk72xuho6UrtQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Qj0DJzhVjop94eZGwwbXhamODQcG38BQg4e8Pl52yTM=;
+ b=m1L561V6Rov2k/r+zNy+VwsF5pxE6RFJ6QJHkI/45YRBENhW0hWnbRBXSNgoUJd0wscjoK8GThr8uVp2P9RGfK+cgNOWXsEDhUhmZ7kLThjeWeZ6JK/YV4OXXcv/ounQLNMOvEXILTto5X51Fk2d98dOcmeFfkiL0OPObib9SBMXEAJKZ4H2dFmVZhSMB78pjnV+WMveVbUWOiIvhDE0L9RS9jmruzglms2U66LCsC/aNoJqowMcgyzBGWw3YiyYo68PSAVxgU+xqZgFW2wgMpsllS7OdDqLx4ylGJKBncpdvSA0yv7uc0tvXZPa0x2etOpIsYPmW4JvoAaCOOYL/w==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Qj0DJzhVjop94eZGwwbXhamODQcG38BQg4e8Pl52yTM=;
+ b=G+sYLjoER8Bav45AkkZv8Dbh8j+R8Mvcm61sD158m20Wl7wZ29ANPeBgxElXtFuPbN4vylmn5uGaBmVU1G6Lp18uOPxwcRno39YYGxG+83F6QXHekJXiaRH8TOiURnnNXPVFg9qebAWNb0S1SNHYNc9XeYkNxUywOjicYKSE8k/u+V69+/ih9BHY23qMU/R4buT6PNWpIRGA00pphEA/l9619DYGq2CvL0xBXOs6cQnDNZ00RZUag72jgYd8Ov+Y4lkKGwVbJr7jKFnRUWce4NEDOjwONtRVyORJmamjKoSjOKG122hy66UdzjqvNA3iBNiLLPO3gK0F6PsDqi8nMQ==
+Authentication-Results: huawei.com; dkim=none (message not signed)
+ header.d=none;huawei.com; dmarc=none action=none header.from=nvidia.com;
+Received: from BL0PR12MB5506.namprd12.prod.outlook.com (2603:10b6:208:1cb::22)
+ by BL1PR12MB5159.namprd12.prod.outlook.com (2603:10b6:208:318::6) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4173.20; Fri, 28 May
+ 2021 23:41:59 +0000
+Received: from BL0PR12MB5506.namprd12.prod.outlook.com
+ ([fe80::3d51:a3b9:8611:684e]) by BL0PR12MB5506.namprd12.prod.outlook.com
+ ([fe80::3d51:a3b9:8611:684e%7]) with mapi id 15.20.4173.023; Fri, 28 May 2021
+ 23:41:59 +0000
+Date:   Fri, 28 May 2021 20:41:58 -0300
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     YueHaibing <yuehaibing@huawei.com>
+Cc:     dledford@redhat.com, linux-rdma@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH -next] IB/ipoib: use DEVICE_ATTR_*() macro
+Message-ID: <20210528234158.GA3874396@nvidia.com>
+References: <20210526132753.3092-1-yuehaibing@huawei.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210526132753.3092-1-yuehaibing@huawei.com>
+X-Originating-IP: [47.55.113.94]
+X-ClientProxiedBy: MN2PR07CA0006.namprd07.prod.outlook.com
+ (2603:10b6:208:1a0::16) To BL0PR12MB5506.namprd12.prod.outlook.com
+ (2603:10b6:208:1cb::22)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Fri, 28 May 2021 16:40:32 -0700
-From:   abhinavk@codeaurora.org
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc:     Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Stephen Boyd <swboyd@chromium.org>, sbillaka@codeaurora.org,
-        Tanmay Shah <tanmay@codeaurora.org>,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        dri-devel@lists.freedesktop.org,
-        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        freedreno@lists.freedesktop.org,
-        Chandan Uddaraju <chandanu@codeaurora.org>
-Subject: Re: [Freedreno] [PATCH 4/4] drm/msm/dp: Add support for SC8180x eDP
-In-Reply-To: <20210511042043.592802-5-bjorn.andersson@linaro.org>
-References: <20210511042043.592802-1-bjorn.andersson@linaro.org>
- <20210511042043.592802-5-bjorn.andersson@linaro.org>
-Message-ID: <a1a8221a44edc3a509bdc1bb89bb5a97@codeaurora.org>
-X-Sender: abhinavk@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from mlx.ziepe.ca (47.55.113.94) by MN2PR07CA0006.namprd07.prod.outlook.com (2603:10b6:208:1a0::16) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4173.20 via Frontend Transport; Fri, 28 May 2021 23:41:59 +0000
+Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1lmm74-00GFvE-9o; Fri, 28 May 2021 20:41:58 -0300
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 83a756e0-9488-42a0-efc6-08d922322fa5
+X-MS-TrafficTypeDiagnostic: BL1PR12MB5159:
+X-Microsoft-Antispam-PRVS: <BL1PR12MB515904F1FE22108A5F2D4E47C2229@BL1PR12MB5159.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:7219;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: t2bAk/OEuielAXzeRyc2Ph0pqx26Gdi/Heh3C2zOzdWk3gFg6+OyzgEM+HMa/3A4Y3+PKAVAIH0Wzk7MAj0VwcXOJBBVWkxAUtJjAStYZRKDOLC2PdLxzASRA0bpFDosmN1h3EvVdYm8UW8/hfS5QlQMPOqD9quHcMS5ppdsUeUM8ZqfZh7y+9q52pCsKEALo2gbJ1mya5J+T9d+Wyo3TpXb5AYC7J4ac0jUuEVJ5IqMLWdgV6viR/5t9MYnJ2AcCW9UGSFnnY5h6ZFvIsZYfUvFZFbDZ7cUWjHokKquaaedgqbIFjXlJ3SxkOZdm1c44QpEDZ3X8JxV5UgLSKPjPbO6dP0mWqd0CEHI0RvDRwnnTGYWsn2t9oG7kmO42flcxtq3RuyR5ugZnXJlyT70MowjTAkd0xnVMGRdZ2NZuOVe7uuuvthjNvPjbX5UtV/VqlrH+h32DMK/dFhwlsWbgtX+qQWCMw1q6zlUuPIYTHw00ZfqUUKIr0cVOjFkJbqpRmUkM0Oe5a2QQ0WyKsy3J7kpmP8R0coeA4KidB08r7av8UGebUZJHmEE9kwVQhEbE0oHXbJ3bXOl3NLNqb0Yr5drZiyd0L6ji/Qt2SG3uzU=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL0PR12MB5506.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(366004)(136003)(39860400002)(346002)(396003)(86362001)(83380400001)(8676002)(6916009)(316002)(2616005)(186003)(2906002)(426003)(1076003)(66556008)(66476007)(66946007)(26005)(5660300002)(33656002)(38100700002)(9786002)(9746002)(478600001)(4326008)(4744005)(36756003)(8936002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?z+WwiIWTFTpKk91S7+51ThJXsnWzVca3f2evW5yARjLOSu9Hr7q6hjP/ULBR?=
+ =?us-ascii?Q?yt7URfxpXc8PUKL4Qms9FefoRB863vvMF/Mf2Wt2Pa0EiqX0iXYwjcFvZvS3?=
+ =?us-ascii?Q?V0+DC1kh17JjtjWflDHaxp0BnwrZKKJuhSbP22mHIz6vm0V+cQFNdfuxNeKI?=
+ =?us-ascii?Q?aAg53dYSzGiwIlbw5fTiuKuP5SFqMN11SLuKJM/jtlduEzPVEi+O1Snhc1E5?=
+ =?us-ascii?Q?kf1YtCeR4xge4Zoku+v9c0LY0yDFAcDl+WCxCU+4NCXcjNgBQ+24SPGH7eag?=
+ =?us-ascii?Q?p4EYP/WS4/fsW7fWwLRwTmFAG8l1EGCdxpzf1IVIPojnhTHpNNsMKfi2+doe?=
+ =?us-ascii?Q?n+LImGOwAQejftc3QqhRomimKoc0PIbGOmRtsfQih5lS78hWnWIXYBQZ/fi/?=
+ =?us-ascii?Q?oBt3oEON+jSvG+nPUdOhYznhpPXEXYbvdSRKF/IgkM7kPN3qmz52XLulvRTm?=
+ =?us-ascii?Q?IaJvyKqj6gj1VyqtcDiR3Oc/w3FgWDPQ2DjZSqLjyB4Eme3nL+fp7Ho/Ww6K?=
+ =?us-ascii?Q?WBVn8V/2kmglL07LdzspzNt3gZpxopwtp9W6Ym1tfpFiIjIBH+Slkel3g0Mq?=
+ =?us-ascii?Q?X9TCtL/PxtlijH07OH4NivItIn4QvdRdNwtdQB1Gu6NVU2fCCExaxUMjU5yk?=
+ =?us-ascii?Q?qHXGBqLrqqucoYllQcUa5bIB9lS/BTJJN2OPC1ApLEvI14NxSBttSk85CzfP?=
+ =?us-ascii?Q?rDrwgyBN0CJSm+UKZsyrK6u9nKuFP6hE0Vqge9VBTRSmsHhqt3bwx182yIMk?=
+ =?us-ascii?Q?JE7vy4729sgpiWXySlk0XcgLU4htHoAky7UaYK9/1TBOebUgo7CXwT37T4F8?=
+ =?us-ascii?Q?9hv9KBHg7UlmvetbW0BlnOiL6r+yGc02Ywe+Q5G6c/EH41nqE1g2uoTqXAtb?=
+ =?us-ascii?Q?pKNeoOq7mOtRB907ZU9qNHLq0LQbR02I1r478adv5PLVtccupav8qPo9ByWV?=
+ =?us-ascii?Q?DmXYYytm2RM5neffHP/Jauxz9Wdzir3RTg5UTqxvkJtiX9zHKrKChlCzCMuO?=
+ =?us-ascii?Q?W0mLs4dYPM7JKPjjfiKibdtGpZeHdax2g+ZnVJnY3zc57zHTzRVKpmY1Mh1E?=
+ =?us-ascii?Q?Pq2umod8W43/PIr3uUc0XLISP7pVFPPqD2J4dD+KGPNb5fdAeCNzFysiha4L?=
+ =?us-ascii?Q?9yWYZRMzEUtfk1RPDdZwE1zU73jVKp6ACI6ZxwNiZYRZeueN1jUqdcrYzIen?=
+ =?us-ascii?Q?iDCPDaeKVGddEzRNuqLE4J3ZpGzPt628NkYLqDeOazjeBDCoRSIhslQiJIUF?=
+ =?us-ascii?Q?r/XsdiCwxXifxIXUFmWXx8M6q9FK1OCSGOUs5fGxZ9Ztnb+7hONHjPQCrcIz?=
+ =?us-ascii?Q?RsaNNMLiGmPmijluyGj1M+z8?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 83a756e0-9488-42a0-efc6-08d922322fa5
+X-MS-Exchange-CrossTenant-AuthSource: BL0PR12MB5506.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 28 May 2021 23:41:59.4571
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: dpCykqR9JIGnY3R4gq7YJE/Trp1A5GtmbqDU6tl9MU9vPimNUdiSs42cCFJ4p9cx
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL1PR12MB5159
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-05-10 21:20, Bjorn Andersson wrote:
-> The eDP controller found in SC8180x is at large compatible with the
-> current implementation, but has its register blocks at slightly
-> different offsets.
+On Wed, May 26, 2021 at 09:27:53PM +0800, YueHaibing wrote:
+> Use DEVICE_ATTR_*() helper instead of plain DEVICE_ATTR,
+> which makes the code a bit shorter and easier to read.
 > 
-> Add the compatible and the new register layout.
-> 
-I am not able to completely recall the history of why in the DP bindings
-we added DP register base as a big hunk and let catalog handle the 
-submodule
-offsets.
-
-I guess earlier that made sense because DP sub-block offsets were fixed.
-But if we plan to re-use the DP driver for eDP as well like this series, 
-then maybe it might be
-better if this comes from device tree like the earlier version was 
-planning to
-
-https://patchwork.kernel.org/project/dri-devel/patch/0101016ec6ddf446-e87ab1ce-5cbf-40a0-a0bb-cd0151cd577a-000000@us-west-2.amazonses.com/
-
-
-+- reg:                  Base address and length of DP hardware's memory 
-mapped regions.
-+- cell-index:           Specifies the controller instance.
-+- reg-names:            A list of strings that name the list of regs.
-+			"dp_ahb" - DP controller memory region.
-+			"dp_aux" - DP AUX memory region.
-+			"dp_link" - DP link layer memory region.
-+			"dp_p0" - DP pixel clock domain memory region.
-+			"dp_phy" - DP PHY memory region.
-+			"dp_ln_tx0" - USB3 DP PHY combo TX-0 lane memory region.
-+			"dp_ln_tx1" - USB3 DP PHY combo TX-1 lane memory region.
-
-Now there is more reason to separate the sub-module offsets like 
-ahb/aux/link/p0
-> Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+> Signed-off-by: YueHaibing <yuehaibing@huawei.com>
 > ---
->  drivers/gpu/drm/msm/dp/dp_display.c |  1 +
->  drivers/gpu/drm/msm/dp/dp_parser.c  | 28 ++++++++++++++++++++--------
->  2 files changed, 21 insertions(+), 8 deletions(-)
-> 
-> diff --git a/drivers/gpu/drm/msm/dp/dp_display.c
-> b/drivers/gpu/drm/msm/dp/dp_display.c
-> index d1319b58e901..0be03bdc882c 100644
-> --- a/drivers/gpu/drm/msm/dp/dp_display.c
-> +++ b/drivers/gpu/drm/msm/dp/dp_display.c
-> @@ -121,6 +121,7 @@ struct dp_display_private {
-> 
->  static const struct of_device_id dp_dt_match[] = {
->  	{.compatible = "qcom,sc7180-dp"},
-> +	{ .compatible = "qcom,sc8180x-edp" },
->  	{}
->  };
-> 
-> diff --git a/drivers/gpu/drm/msm/dp/dp_parser.c
-> b/drivers/gpu/drm/msm/dp/dp_parser.c
-> index 51ec85b4803b..47cf18bba4b2 100644
-> --- a/drivers/gpu/drm/msm/dp/dp_parser.c
-> +++ b/drivers/gpu/drm/msm/dp/dp_parser.c
-> @@ -251,6 +251,7 @@ static int dp_parser_clock(struct dp_parser 
-> *parser)
->  static int dp_parser_parse(struct dp_parser *parser)
->  {
->  	struct dss_io_data *io = &parser->io.dp_controller;
-> +	struct device *dev = &parser->pdev->dev;
->  	int rc = 0;
-> 
->  	if (!parser) {
-> @@ -276,14 +277,25 @@ static int dp_parser_parse(struct dp_parser 
-> *parser)
->  	 */
->  	parser->regulator_cfg = &sdm845_dp_reg_cfg;
-> 
-> -	io->ahb = io->base + 0x0;
-> -	io->ahb_len = 0x200;
-> -	io->aux = io->base + 0x200;
-> -	io->aux_len = 0x200;
-> -	io->link = io->base + 0x400;
-> -	io->link_len = 0x600;
-> -	io->p0 = io->base + 0x1000;
-> -	io->p0_len = 0x400;
-> +	if (of_device_is_compatible(dev->of_node, "qcom,sc8180x-edp")) {
-> +		io->ahb = io->base + 0x0;
-> +		io->ahb_len = 0x200;
-> +		io->aux = io->base + 0x200;
-> +		io->aux_len = 0x200;
-> +		io->link = io->base + 0x400;
-> +		io->link_len = 0x600;
-> +		io->p0 = io->base + 0xa00;
-> +		io->p0_len = 0x400;
-> +	} else {
-> +		io->ahb = io->base + 0x0;
-> +		io->ahb_len = 0x200;
-> +		io->aux = io->base + 0x200;
-> +		io->aux_len = 0x200;
-> +		io->link = io->base + 0x400;
-> +		io->link_len = 0x600;
-> +		io->p0 = io->base + 0x1000;
-> +		io->p0_len = 0x400;
-> +	}
-> 
->  	return 0;
->  }
+>  drivers/infiniband/ulp/ipoib/ipoib_cm.c   | 10 ++++----
+>  drivers/infiniband/ulp/ipoib/ipoib_main.c | 28 +++++++++++------------
+>  drivers/infiniband/ulp/ipoib/ipoib_vlan.c |  6 ++---
+>  3 files changed, 21 insertions(+), 23 deletions(-)
+
+Applied to for-next. I touched it with clang-format to fix the spacing
+issues.
+
+Thanks,
+Jason
