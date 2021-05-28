@@ -2,201 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B4DF393ED5
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 10:35:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 34322393ED8
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 10:35:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234853AbhE1IhT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 May 2021 04:37:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38236 "EHLO
+        id S231564AbhE1Ih0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 May 2021 04:37:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38276 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231564AbhE1IhS (ORCPT
+        with ESMTP id S235006AbhE1IhZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 May 2021 04:37:18 -0400
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 240D4C061574;
-        Fri, 28 May 2021 01:35:44 -0700 (PDT)
-Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id C43248C7;
-        Fri, 28 May 2021 10:35:41 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1622190942;
-        bh=Cp8gfVSdtQFiVNKvUDCsmV+oJcjACVkQBPPK7pfh+t0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=TLombm4SwKO4Vvlashgtv/U/9mYUjdBUyfah4SKfnnLVBbLuL+ZgZACrQ46kqgP3d
-         pO0mBqzchIYCikxwmU4t7W2JBddIxDIMiEsqEZPVRYC6AQclgNeMwgiHiDQ1Aia5wi
-         w+55Zn5IkeKzEFPM1TcAvNf5yYaMwxvX4nOsYsXo=
-Date:   Fri, 28 May 2021 11:35:35 +0300
-From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To:     Martin Kepplinger <martin.kepplinger@puri.sm>
-Cc:     mchehab@kernel.org, devicetree@vger.kernel.org, kernel@puri.sm,
-        krzysztof.kozlowski@canonical.com, linux-kernel@vger.kernel.org,
-        linux-media@vger.kernel.org, paul.kocialkowski@bootlin.com,
-        robh@kernel.org, shawnx.tu@intel.com
-Subject: Re: [PATCH v2 2/5] dt-bindings: media: document SK Hynix Hi-846 MIPI
- CSI-2 8M pixel sensor
-Message-ID: <YLCrVzzvKoJOZAK3@pendragon.ideasonboard.com>
-References: <20210528081336.3858700-1-martin.kepplinger@puri.sm>
- <20210528081336.3858700-3-martin.kepplinger@puri.sm>
+        Fri, 28 May 2021 04:37:25 -0400
+Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4FC5C06174A
+        for <linux-kernel@vger.kernel.org>; Fri, 28 May 2021 01:35:50 -0700 (PDT)
+Received: by mail-lf1-x12f.google.com with SMTP id q1so4194785lfo.3
+        for <linux-kernel@vger.kernel.org>; Fri, 28 May 2021 01:35:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=qXzQIPasUcthmSDz8eSF+P9ruKadFcmRFPG5VSNQtL8=;
+        b=eKWJz4art9JMWcy6y6iWK9LFwP2pQvAov+Vsbn1np7ccpJfXlVE+B9uDjzPJkkISWg
+         2jHaOl5Oe3gGxfXA6LgeTrMqL3Gcw59pnwKpxvt8qVyoVD3gBZ5kgubk2uIVa3+XtnMV
+         2V92ED5sEIA5YUZIqSGlECauLUkp+VLy0BPS29E5R4b1OW/oEDzMGfRYxzM+31d+6868
+         uf5AXz1khjan90xUAKlOHv+5eb4/32xWzgjOA4a4yMZ67GancPJwneDU6vE1rcZ2041T
+         2ZfGpbwNnxRzyB+Cw/7D8H11DdXHZHN53I7V1Mhgpvu3OZ8ELlLXIA0P4KJczeoWtWpC
+         AsSw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=qXzQIPasUcthmSDz8eSF+P9ruKadFcmRFPG5VSNQtL8=;
+        b=rndoH9bEDeLoIp10AOsU/wHfzoHU9gT5zUoZSZ3VQxFNiJ3i6mKOhfdMTEkR6X019D
+         2oeOMq2+7j6GfYVWZOpKY5ZBqRfcwwMvwdC5huZUGJTXh2FnsLnkfsqw+Bctz51r80Cr
+         PskoxfY8qR2VJebzMxBXGPZiZeyaxy0EFfHwF3kQwpaJ+faLeI8BpJMnOTpkBHnENkFC
+         4dKu9pz3LdSZpBBd/4JM0nPa+RXNwD1jjwckDMnVZ+8xzw1sKWb8ashNKJIr8A7zkFsq
+         k30KWLku+35uOU2SWi9eiXRTFgzhvxTEWXh9T+MfODQAHbT2T91Rm8USlUgIIiejNAmR
+         WHIw==
+X-Gm-Message-State: AOAM531Mpjqc0w6ug/D6lSM9Ru+bSa53Jac7xVZ8LfutvNpigEAROQAv
+        kBcNL7C8sz6G9ReXTS/aI0azIs2c+nMKBZMEOdGRPg==
+X-Google-Smtp-Source: ABdhPJx7fY2eoo3ewpiwsQcdfnOZOMZDOGzICz8TqAeiPIIG9rFXZg0ycCOFOJyYz6YC0EypW/bfzb3UTuupkbD3PwU=
+X-Received: by 2002:ac2:47e6:: with SMTP id b6mr5005230lfp.649.1622190949032;
+ Fri, 28 May 2021 01:35:49 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210528081336.3858700-3-martin.kepplinger@puri.sm>
+References: <20210527005455.25758-1-steven_lee@aspeedtech.com>
+ <20210527005455.25758-2-steven_lee@aspeedtech.com> <CACRpkdZFcFuT9rdrc8BfEBmhy0--9uLMSJWfr=A+nU117_BT8A@mail.gmail.com>
+ <20210528040934.GA28403@aspeedtech.com>
+In-Reply-To: <20210528040934.GA28403@aspeedtech.com>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Fri, 28 May 2021 10:35:37 +0200
+Message-ID: <CACRpkdYnvzOW_86QgLAsNpNXWZXpaMiE7g9_jHZ0ZsFyhOjjAg@mail.gmail.com>
+Subject: Re: [PATCH v2 1/4] dt-bindings: aspeed-sgpio: Convert txt bindings to yaml.
+To:     Steven Lee <steven_lee@aspeedtech.com>,
+        Rob Herring <robh+dt@kernel.org>
+Cc:     Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Joel Stanley <joel@jms.id.au>,
+        Andrew Jeffery <andrew@aj.id.au>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        "moderated list:ARM/ASPEED MACHINE SUPPORT" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "moderated list:ARM/ASPEED MACHINE SUPPORT" 
+        <linux-aspeed@lists.ozlabs.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Hongwei Zhang <Hongweiz@ami.com>,
+        Ryan Chen <ryan_chen@aspeedtech.com>,
+        Billy Tsai <billy_tsai@aspeedtech.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Martin,
+On Fri, May 28, 2021 at 6:10 AM Steven Lee <steven_lee@aspeedtech.com> wrote:
+> The 05/28/2021 07:51, Linus Walleij wrote:
+> > On Thu, May 27, 2021 at 2:55 AM Steven Lee <steven_lee@aspeedtech.com> wrote:
+> >
+> > > +  max-ngpios:
+> > > +    description:
+> > > +      represents the number of actual hardware-supported GPIOs (ie,
+> > > +      slots within the clocked serial GPIO data). Since each HW GPIO is both an
+> > > +      input and an output, we provide max_ngpios * 2 lines on our gpiochip
+> > > +      device. We also use it to define the split between the inputs and
+> > > +      outputs; the inputs start at line 0, the outputs start at max_ngpios.
+> > > +    minimum: 0
+> > > +    maximum: 128
+> >
+> > Why can this not be derived from the compatible value?
+> >
+> > Normally there should be one compatible per hardware variant
+> > of the block. And this should be aligned with that, should it not?
+> >
+> > If this is not the case, maybe more detailed compatible strings
+> > are needed, maybe double compatibles with compatible per
+> > family and SoC?
+> >
+>
+> Thanks for your suggestion.
+> I add max-ngpios in dt-bindings as there is ngpios defined in
+> dt-bindings, users can get the both max-ngpios and ngpios information
+> from dtsi without digging sgpio driver.
+>
+> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/arch/arm/boot/dts/aspeed-g5.dtsi#n354
+>
+> If adding more detailed compatibles is better, I will add them to sgpio driver
+> in V3 patch and remove max-ngpios from dt-bindings.
+>
+> Since AST2600 has 2 sgpio controller one with 128 pins and another one with 80 pins.
+> For supporting max-ngpios in compatibles, 2 platform data for each
+> ast2600 sgpio controller as follows are necessary.
+>
+> ```
+> static const struct aspeed_sgpio_pdata ast2600_sgpiom1_pdata = {
+>         .max_ngpios = 128;
+> };
+> static const struct aspeed_sgpio_pdata ast2600_sgpiom2_pdata = {
+>         .max_ngpios = 80;
+> };
+>
+> { .compatible = "aspeed,ast2500-sgpio" , .data = &ast2400_sgpio_pdata, },
+> { .compatible = "aspeed,ast2600-sgpiom1", .data = &ast2600_sgpiom1_pdata, },
+> { .compatible = "aspeed,ast2600-sgpiom2", .data = &ast2600_sgpiom2_pdata, },
 
-Thank you for the patch.
+There is a soft border between two IP blocks being "compatible"
+and parameterized and two IP blocks being different and having
+unique compatibles.
 
-On Fri, May 28, 2021 at 10:13:33AM +0200, Martin Kepplinger wrote:
-> Document the bindings used for the SK Hynix Hi-846 CMOS camera driver.
-> 
-> Signed-off-by: Martin Kepplinger <martin.kepplinger@puri.sm>
-> ---
->  .../bindings/media/i2c/hynix,hi846.yaml       | 99 +++++++++++++++++++
->  1 file changed, 99 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/media/i2c/hynix,hi846.yaml
-> 
-> diff --git a/Documentation/devicetree/bindings/media/i2c/hynix,hi846.yaml b/Documentation/devicetree/bindings/media/i2c/hynix,hi846.yaml
-> new file mode 100644
-> index 000000000000..2991108e23e5
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/media/i2c/hynix,hi846.yaml
-> @@ -0,0 +1,99 @@
-> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/media/i2c/hynix,hi846.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: SK Hynix Hi-846 1/4" 8M Pixel MIPI CSI-2 sensor
-> +
-> +maintainers:
-> +  - Martin Kepplinger <martin.kepplinger@puri.sm>
-> +
-> +description: |-
-> +  The Hi-846 is a raw image sensor with an MIPI CSI-2 image data
-> +  interface and CCI (I2C compatible) control bus. The output format
-> +  is 10bit Bayer.
-> +
-> +properties:
-> +  compatible:
-> +    const: hynix,hi846
-> +
-> +  reg:
-> +    description: I2C device address.
+For example we know for sure we don't use different compatibles
+because of how interrupt lines or DMA channels are connected.
 
-You can drop the description, it's implicit that reg is the I2C address
-for I2C devices.
+So if this is an external thing, outside of the IP itself, I might back
+off on this and say it shall be a parameter.
 
-> +    maxItems: 1
-> +
-> +  clocks:
-> +    description: Reference to the mclk clock.
-> +    maxItems: 1
+But max-ngpios? It is confusingly similar to ngpios.
 
-You could also write this
+So we need to think about this name.
 
-  clocks:
-    items:
-      - description: Reference to the mclk clock.
+Something like gpio-hardware-slots or something else that
+really describe what this is.
 
-The maxItems will then be implicit. This is the preferred form when
-multiple clocks are used, and given that clocks it meant to contain a
-list of clocks, even if it has a single entry, placing the description
-in a list of items may be a bit better semantically speaking.
+Does this always strictly follow ngpios so that the number
+of gpio slots == ngpios * 2? In that case only put ngpios into
+the device tree and multiply by 2 in the driver, because ngpios
+is exactly for this: parameterizing hardware limitations.
 
-> +
-> +  clock-names:
-> +    const: mclk
-
-Similarly,
-
-  clock-names:
-    items:
-      - const: mclk
-
-Rob, is standardizing this pattern a good idea, or do you prefer the
-shorter form
-
-  clock-names:
-    const: mclk
-
-> +
-> +  rst-gpios:
-
-We try to standardize GPIO names, so let's use reset-gpios.
-
-> +    description: Reference to the GPIO connected to the reset pin. Active low.
-> +    maxItems: 1
-> +
-> +  vdd-supply:
-> +    description: Definition of the regulator used as 1.8V digital power supply.
-> +
-> +  port:
-> +    $ref: /schemas/graph.yaml#/properties/port
-> +    additionalProperties: false
-> +
-> +    properties:
-> +      endpoint:
-> +        $ref: /schemas/media/video-interfaces.yaml#
-> +        unevaluatedProperties: false
-> +
-> +        properties:
-> +          data-lanes:
-> +            oneOf:
-> +              - items:
-> +                  - const: 1
-> +                  - const: 2
-> +                  - const: 3
-> +                  - const: 4
-> +              - items:
-> +                  - const: 1
-> +                  - const: 2
-> +
-> +        required:
-> +          - data-lanes
-> +
-> +required:
-> +  - compatible
-> +  - reg
-> +  - clocks
-> +  - clock-names
-> +  - rst-gpios
-> +  - vdd-supply
-> +  - port
-> +
-> +additionalProperties: false
-> +
-> +examples:
-> +  - |
-> +    #include <dt-bindings/gpio/gpio.h>
-> +
-> +    i2c {
-> +        #address-cells = <1>;
-> +        #size-cells = <0>;
-> +
-> +        hi846: camera@20 {
-> +            compatible = "hynix,hi846";
-> +            reg = <0x20>;
-> +            clocks = <&clk>;
-> +            clock-names = "mclk";
-> +            vdd-supply = <&reg_camera_pwr_en>; /* 1.8v */
-> +            rst-gpios = <&gpio1 25 GPIO_ACTIVE_LOW>;
-> +
-> +            port {
-> +                camera_out: endpoint {
-> +                    remote-endpoint = <&csi1_ep1>;
-> +                    data-lanes = <1 2>;
-> +                };
-> +            };
-> +        };
-> +    };
-> +
-> +...
-
--- 
-Regards,
-
-Laurent Pinchart
+Yours,
+Linus Walleij
