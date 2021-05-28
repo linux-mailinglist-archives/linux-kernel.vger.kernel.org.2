@@ -2,89 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 074E939489C
-	for <lists+linux-kernel@lfdr.de>; Sat, 29 May 2021 00:20:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 85D9639489E
+	for <lists+linux-kernel@lfdr.de>; Sat, 29 May 2021 00:21:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229691AbhE1WVl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 May 2021 18:21:41 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47198 "EHLO mail.kernel.org"
+        id S229708AbhE1WWl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 May 2021 18:22:41 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47536 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229575AbhE1WVk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 May 2021 18:21:40 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id F254A6135C;
-        Fri, 28 May 2021 22:20:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1622240405;
-        bh=zAvNqNKd+HmueNXzQhflCrLEld4y1TB20N5Z13TFwNo=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=ajjPzdnD6zwLsplkDNm2ebIATCEud+G/wcH1JcPHwuGrUBjH8Ndd8JNERBKpL5EjQ
-         HrVRGClV9ati1Lnku1bkWU0ER6Je46Ju/Qt4N/sWYWOtdj1KFC3J4mljzFtMF/dUUW
-         dFCC83iqwFoD75DjoaN1j/REqZpDkD+Uo/Q/aIVDYDOjOM3yeC+68dW516B1n+75xg
-         b3Wjp7o+11VFvlvoRyzN8u8/eiDlCfa/tuVX8cTrTPPSjJOBcbGu4tKurFU2y+v4wk
-         gTPB/Inx+iTDRUJiaz+XCueNRvC0tPdaUkOEEZlfs1+ufmUmqvQ0Klw+FeKsk4VZxE
-         HjhCaUpxnrduA==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id E70B160A39;
-        Fri, 28 May 2021 22:20:04 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        id S229575AbhE1WWl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 28 May 2021 18:22:41 -0400
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id B27E761358;
+        Fri, 28 May 2021 22:21:04 +0000 (UTC)
+Date:   Fri, 28 May 2021 18:21:02 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Palmer Dabbelt <palmer@dabbelt.com>
+Cc:     linux-riscv@lists.infradead.org, mingo@redhat.com,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        aou@eecs.berkeley.edu, mhiramat@kernel.org, zong.li@sifive.com,
+        guoren@linux.alibaba.com, Atish Patra <Atish.Patra@wdc.com>,
+        linux-kernel@vger.kernel.org, kernel-team@android.com,
+        changbin.du@gmail.com
+Subject: Re: [PATCH] RISC-V: Don't check text_mutex during stop_machine
+Message-ID: <20210528182102.19319b1b@gandalf.local.home>
+In-Reply-To: <mhng-edd9e8bd-e585-4b6b-8e40-797215bfdf75@palmerdabbelt-glaptop>
+References: <20210506092550.6c2206b3@gandalf.local.home>
+        <mhng-edd9e8bd-e585-4b6b-8e40-797215bfdf75@palmerdabbelt-glaptop>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH 01/12] nfc: fdp: correct kerneldoc for structure
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <162224040494.21156.3377097979911349255.git-patchwork-notify@kernel.org>
-Date:   Fri, 28 May 2021 22:20:04 +0000
-References: <20210528124200.79655-1-krzysztof.kozlowski@canonical.com>
-In-Reply-To: <20210528124200.79655-1-krzysztof.kozlowski@canonical.com>
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Cc:     davem@davemloft.net, kuba@kernel.org, linux-nfc@lists.01.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello:
+On Sat, 22 May 2021 12:32:05 -0700 (PDT)
+Palmer Dabbelt <palmer@dabbelt.com> wrote:
 
-This series was applied to netdev/net-next.git (refs/heads/master):
+> we can then IPI to all the harts in order to get them on the same page 
+> about that trap, which we can then skip over.  We'll need some way to 
+> differentiate this from accidental executions of unimp, but we can just 
+> build up a table somewhere (it wasn't immediately clear how x86 does 
 
-On Fri, 28 May 2021 08:41:49 -0400 you wrote:
-> Since structure comments are not kerneldoc, remove the double ** to fix
-> W=1 warnings:
-> 
->     warning: This comment starts with '/**', but isn't a kernel-doc comment.
-> 
-> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-> 
-> [...]
+It currently uses the same code as the text_poke does, which does a
+"batching" and keeps track of the locations that were modified. But before
+that change (768ae4406a x86/ftrace: Use text_poke()), it had:
 
-Here is the summary with links:
-  - [01/12] nfc: fdp: correct kerneldoc for structure
-    https://git.kernel.org/netdev/net-next/c/cd4375d621aa
-  - [02/12] nfc: fdp: drop ACPI_PTR from device ID table
-    https://git.kernel.org/netdev/net-next/c/466e1c889c71
-  - [03/12] nfc: port100: correct kerneldoc for structure
-    https://git.kernel.org/netdev/net-next/c/a548bee9ffe8
-  - [04/12] nfc: pn533: drop of_match_ptr from device ID table
-    https://git.kernel.org/netdev/net-next/c/a70bbbe387d0
-  - [05/12] nfc: mrvl: mark OF device ID tables as maybe unused
-    https://git.kernel.org/netdev/net-next/c/26f20ff5e207
-  - [06/12] nfc: mrvl: skip impossible NCI_MAX_PAYLOAD_SIZE check
-    https://git.kernel.org/netdev/net-next/c/41a6bf50ee04
-  - [07/12] nfc: pn533: mark OF device ID tables as maybe unused
-    https://git.kernel.org/netdev/net-next/c/b3a790d43749
-  - [08/12] nfc: s3fwrn5: mark OF device ID tables as maybe unused
-    https://git.kernel.org/netdev/net-next/c/5edc94265e19
-  - [09/12] nfc: pn544: mark ACPI and OF device ID tables as maybe unused
-    https://git.kernel.org/netdev/net-next/c/aa1405772fe1
-  - [10/12] nfc: st-nci: mark ACPI and OF device ID tables as maybe unused
-    https://git.kernel.org/netdev/net-next/c/255fcc7b7166
-  - [11/12] nfc: st21nfca: mark ACPI and OF device ID tables as maybe unused
-    https://git.kernel.org/netdev/net-next/c/806278023492
-  - [12/12] nfc: st95hf: mark ACPI and OF device ID tables as maybe unused
-    https://git.kernel.org/netdev/net-next/c/1ab4fe09977e
+int ftrace_int3_handler(struct pt_regs *regs)
+{
+        unsigned long ip;
 
-You are awesome, thank you!
---
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+        if (WARN_ON_ONCE(!regs))
+                return 0;
 
+        ip = regs->ip - INT3_INSN_SIZE;
+
+        if (ftrace_location(ip)) {
+                int3_emulate_call(regs, (unsigned long)ftrace_regs_caller);
+                return 1;
+        } else if (is_ftrace_caller(ip)) {
+                if (!ftrace_update_func_call) {
+                        int3_emulate_jmp(regs, ip + CALL_INSN_SIZE);
+                        return 1;
+                }
+                int3_emulate_call(regs, ftrace_update_func_call);
+                return 1;
+        }
+
+        return 0;
+}
+
+That "ftrace_location()" is the table you are looking for. It will return
+true if the location is registered with ftrace or not (i.e. the mcount
+call).
+
+The "int3_emulate_jmp()" is needed to handle the case that we switch from
+one trampoline to another trampoline. But that's also an architecture
+specific feature, and RISC-V may not have that yet.
+
+
+-- Steve
+
+
+> this).  Then we have no ordering restrictions on converting the rest of 
+> the stub into what's necessary to trace a function, which should look 
+> the same as what we have now
 
