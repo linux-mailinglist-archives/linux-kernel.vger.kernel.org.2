@@ -2,78 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0DAE6394684
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 19:32:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 80C5A394686
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 19:34:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229574AbhE1Rec (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 May 2021 13:34:32 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43658 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229500AbhE1Rea (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 May 2021 13:34:30 -0400
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6579A613B5;
-        Fri, 28 May 2021 17:32:55 +0000 (UTC)
-Date:   Fri, 28 May 2021 13:32:53 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Nicolas Saenz Julienne <nsaenzju@redhat.com>
-Cc:     linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        mingo@redhat.com, corbet@lwn.net, mtosatti@redhat.com
-Subject: Re: [RFC] trace: Add option for polling ring buffers
-Message-ID: <20210528133253.27c749ab@gandalf.local.home>
-In-Reply-To: <20210519175755.670876-1-nsaenzju@redhat.com>
-References: <20210519175755.670876-1-nsaenzju@redhat.com>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        id S229488AbhE1Rg3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 May 2021 13:36:29 -0400
+Received: from conuserg-09.nifty.com ([210.131.2.76]:38884 "EHLO
+        conuserg-09.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229453AbhE1Rg0 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 28 May 2021 13:36:26 -0400
+Received: from localhost.localdomain (133-32-232-101.west.xps.vectant.ne.jp [133.32.232.101]) (authenticated)
+        by conuserg-09.nifty.com with ESMTP id 14SHY8b6029413;
+        Sat, 29 May 2021 02:34:09 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conuserg-09.nifty.com 14SHY8b6029413
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1622223249;
+        bh=hIQnqzynmLo9hMszJqE19NWWV0NJWCY4QuoiVpZ1eJQ=;
+        h=From:To:Cc:Subject:Date:From;
+        b=rTvRNR605Nhm8D19DfZwz6GfFE76C4FCd/1ubDWnt6MZsvI2Wyrq+Rr8BJvue0Rfb
+         JfUL5AAMPtwaeYlMf4E5a91Y1AgtjDAVYjMRsg6e+KdTMAhX6WWrEAnUYpNlM7939j
+         OvTPZSDksipc/l3ua3lc7MYHBiCggySH7yISut4Feo3kUvaYRFJTBhbheVVvkUFRCW
+         mVPtzYFT2CloOB6dFot9qrgE0lNigaK6iEzRbOz8I3eXM8Yazxp/nQhAvtG72BxRKu
+         LGoSzbKwXriZD3FKqzNDhG/hPwc00dGrKzce0Kp+SEn+u1uD+FbP9Q+So7hvSBNQ66
+         nKJHz61VvJ37A==
+X-Nifty-SrcIP: [133.32.232.101]
+From:   Masahiro Yamada <masahiroy@kernel.org>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Masahiro Yamada <masahiroy@kernel.org>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] firmware_loader: remove unneeded 'comma' macro
+Date:   Sat, 29 May 2021 02:34:03 +0900
+Message-Id: <20210528173404.169764-1-masahiroy@kernel.org>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 19 May 2021 19:57:55 +0200
-Nicolas Saenz Julienne <nsaenzju@redhat.com> wrote:
+Commit 553671b76859 ("firmware_loader: Fix labels with comma for builtin
+firmware") added this line, which was unneeded.
 
-> To minimize trace's effect on isolated CPUs. That is, CPUs were only a
-> handful or a single, process are allowed to run. Introduce a new trace
-> option: 'poll-rb'.
-> 
-> This option changes the heuristic used to wait for data on trace
-> buffers. The default one, based on wait queues, will trigger an IPI[1]
-> on the CPU responsible for new data, which will take care of waking up
-> the trace gathering process (generally trace-cmd). Whereas with
-> 'poll-rb' we will poll (as in busy-wait) the ring buffers from the trace
-> gathering process, releasing the CPUs writing trace data from doing any
-> wakeup work.
-> 
-> This wakeup work, although negligible in the vast majority of workloads,
-> may cause unwarranted latencies on systems running trace on isolated
-> CPUs. This is made worse on PREEMPT_RT kernels, as they defer the IPI
-> handling into a kernel thread, forcing unwarranted context switches on
-> otherwise extremely busy CPUs.
-> 
-> To illustrate this, tracing with PREEMPT_RT=y on an isolated CPU with a
-> single process pinned to it (NO_HZ_FULL=y, and plenty more isolation
-> options enabled). I see:
->   - 50-100us latency spikes with the default trace-cmd options
->   - 14-10us latency spikes with 'poll-rb'
->   - 11-8us latency spikes with no tracing at all
-> 
-> The obvious drawback of 'poll-rb' is putting more pressure on the
-> housekeeping CPUs. Wasting cycles. Hence the notice in the documentation
-> discouraging its use in general.
-> 
-> [1] The IPI, in this case, an irq_work, is needed since trace might run
-> in NMI context. Which is not suitable for wake-ups.
+The macro 'comma' is defined in scripts/Kbuild.include.
 
-Can't this simply be done in user-space?
+Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+---
 
-Set the reading of the trace buffers to O_NONBLOCK and it wont wait for
-buffering to happen, and should prevent it from causing the IPI wake ups.
+ drivers/base/firmware_loader/builtin/Makefile | 1 -
+ 1 file changed, 1 deletion(-)
 
-If you need this for trace-cmd, we can add a --poll option that would do
-this.
+diff --git a/drivers/base/firmware_loader/builtin/Makefile b/drivers/base/firmware_loader/builtin/Makefile
+index 5fa7ce3745a0..101754ad48d9 100644
+--- a/drivers/base/firmware_loader/builtin/Makefile
++++ b/drivers/base/firmware_loader/builtin/Makefile
+@@ -8,7 +8,6 @@ fwdir := $(addprefix $(srctree)/,$(filter-out /%,$(fwdir)))$(filter /%,$(fwdir))
+ obj-y  := $(addsuffix .gen.o, $(subst $(quote),,$(CONFIG_EXTRA_FIRMWARE)))
+ 
+ FWNAME    = $(patsubst $(obj)/%.gen.S,%,$@)
+-comma     := ,
+ FWSTR     = $(subst $(comma),_,$(subst /,_,$(subst .,_,$(subst -,_,$(FWNAME)))))
+ ASM_WORD  = $(if $(CONFIG_64BIT),.quad,.long)
+ ASM_ALIGN = $(if $(CONFIG_64BIT),3,2)
+-- 
+2.27.0
 
--- Steve
