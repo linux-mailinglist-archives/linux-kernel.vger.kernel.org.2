@@ -2,71 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 29C0D393EF7
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 10:48:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 58BFB393EFB
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 10:50:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235305AbhE1Ith (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 May 2021 04:49:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40980 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233054AbhE1Itf (ORCPT
+        id S235437AbhE1Ivr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 May 2021 04:51:47 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:50120 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232832AbhE1Ivq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 May 2021 04:49:35 -0400
-Received: from mail-wm1-x333.google.com (mail-wm1-x333.google.com [IPv6:2a00:1450:4864:20::333])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7EB2CC061760
-        for <linux-kernel@vger.kernel.org>; Fri, 28 May 2021 01:47:59 -0700 (PDT)
-Received: by mail-wm1-x333.google.com with SMTP id f17so239879wmf.2
-        for <linux-kernel@vger.kernel.org>; Fri, 28 May 2021 01:47:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:references:from:message-id:date:user-agent:mime-version
-         :in-reply-to:content-language:content-transfer-encoding;
-        bh=WikFeXUsmrrkxHoqNQkeIN24f6mCbXXF6hqcFhk6uOo=;
-        b=m3WX96qICHaTwGdy1NTiEy0Bor5LJzIqd0AP7gvFdxjoHxm2NxhtUULDF+9lQOSw3Y
-         wm4U2se5OJH6V8mzypZm1OGQngILCHudP6E82dzKt1S1V5RcsTTE/k4kgMZz4caIIhET
-         Ob9PhEEtEAQYiFx7Z/Sq2yj5GedDe7Px/ozVUTDyZkuGMhGy+jxnlhG6ROQMVvdsWSmp
-         IT2kPqeKN14BTJdDze23+I0GigtrfJ2WrDQE3A1wtx8tzMIIY0iH+GEgVUTcjr/YQ6X/
-         YIRmEy2wgLbQT4CNB9MC6NxyRFy6dATRINmmsosVlGlX6L+7d14bBW4AO7nEJXN3giaj
-         RH8w==
+        Fri, 28 May 2021 04:51:46 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1622191811;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=0XZKPsGw6GrAtOCDzNONwgIiPoDYBZOFsZ8oGll8uo0=;
+        b=HV7O3cHlKsBws7Qin351b4VDYB6TfM+a3MisL+5iQMT0Z204bpnrTH5UF+LDryboMuUQ1s
+        Es1gCE2k5HjwKns+5H7JLgERbAHNazZSMLVdJYN0mprhKPheaXaG5d99eW3NItKhf2OSKa
+        Y18D7i50JbWwMZHXhVTzd2N17PY80E4=
+Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
+ [209.85.221.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-352-ZyN5oSMbMB-zHwEd19sPzg-1; Fri, 28 May 2021 04:50:09 -0400
+X-MC-Unique: ZyN5oSMbMB-zHwEd19sPzg-1
+Received: by mail-wr1-f70.google.com with SMTP id j1-20020adff0010000b0290114b7cf4e83so753017wro.15
+        for <linux-kernel@vger.kernel.org>; Fri, 28 May 2021 01:50:09 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=WikFeXUsmrrkxHoqNQkeIN24f6mCbXXF6hqcFhk6uOo=;
-        b=DTLItmO9EIcbWWYINgDKGupAUJlncjJp5tncPA+/YK9mdW0HD3P0mhlBg2b3AvUhZb
-         7h1l5jhcuQeAkL6iyJLy8JxmIKAhbBntg8aDp0GP3y9ND4yQnif9fjxyCwd2xkJ0itNX
-         7uqKQdV8aMlhRMAE2PWOfaFzgBLYH4oP68UuXbPUH+l2CFKk8JhTtVBzNe24i6UjqLrk
-         vHaCzwCZfkkt3t60YavPBZRFvquAoary2ZsSxjSde3ZeofZmNLz/b02ocq3XwoEb9jKv
-         3NCzKcJ1epsyxyzPWy5aD/FAFRIXKgkRYRo3DhJmZ3/n+KNuapXGD4yRIgYzNEViRKFa
-         fn5w==
-X-Gm-Message-State: AOAM532IQKERGAEI+j/Ah1Us1CtsSrA4i74BYUgJqcPq0B74Mj4fJUj8
-        gQEwvkzEB2yeWH0d5z3NTbr4Lw==
-X-Google-Smtp-Source: ABdhPJy2OXUhLfKhJDP5StESemM6f4/xQULoj6x8UA0x3F5G/hfVlS7HFPZ/uPFHeo3V6lLxbvIwbQ==
-X-Received: by 2002:a05:600c:2219:: with SMTP id z25mr7450903wml.78.1622191677970;
-        Fri, 28 May 2021 01:47:57 -0700 (PDT)
-Received: from [192.168.86.34] (cpc86377-aztw32-2-0-cust226.18-1.cable.virginm.net. [92.233.226.227])
-        by smtp.googlemail.com with ESMTPSA id f8sm5547546wmg.43.2021.05.28.01.47.56
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Fri, 28 May 2021 01:47:57 -0700 (PDT)
-Subject: Re: [PATCH v3] ASoC: qcom: lpass-cpu: Fix pop noise during audio
- capture begin
-To:     Srinivasa Rao Mandadapu <srivasam@codeaurora.org>,
-        agross@kernel.org, bjorn.andersson@linaro.org, lgirdwood@gmail.com,
-        broonie@kernel.org, robh+dt@kernel.org, plai@codeaurora.org,
-        bgoswami@codeaurora.org, perex@perex.cz, tiwai@suse.com,
-        rohitkr@codeaurora.org, linux-arm-msm@vger.kernel.org,
-        alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, swboyd@chromium.org,
-        judyhsiao@chromium.org
-References: <20210524142114.18676-1-srivasam@codeaurora.org>
-From:   Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Message-ID: <9a4bbab8-91a2-f195-b77a-5234d46a2c0a@linaro.org>
-Date:   Fri, 28 May 2021 09:47:56 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+        h=x-gm-message-state:subject:to:cc:references:from:organization
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=0XZKPsGw6GrAtOCDzNONwgIiPoDYBZOFsZ8oGll8uo0=;
+        b=IEYhTrqzdcps5HB2XwbJg4Trr29suKDmg06QvYS59+zbbLWg0VDML0q89OeupnVknD
+         oPltb8uRYhN4VuUwVBcja8P1873pCRBfZQOzrqoyQaJz0Y2lbT6EVbGgN6CuJ8kdV+2u
+         kx6+F73PgmDyRxt1qk9yEjMy5AletdCB0026g1e2nTJmVXjX9tJTlAAli0U4qDQqvcwO
+         af9D6aAhbS5k3ls3u6lcwcI4HUqZdMFCk1j8HwBkI6ymwrbOR+Mnf3W0LobZCCTwbSg7
+         NGXasFvW7gj4EMbsMB0s0omJ5u8yv9dIkxh4g0ZkLdCyU0OvL6eXPq8jTctFrhl6GLX2
+         QWSg==
+X-Gm-Message-State: AOAM532heO52hB5AAGiR9B3qLBO8Sc/+GWVWcD+zR+NvvURLalIffqWy
+        eQ0ds9yEEEkKubTPRf48TA2yQ9EXRD/nbIw0ZEn/K7qKeRV57uHfbXt/ToTNf14LpUhhM8YyA0y
+        JnfZZKXh+P9jOq6F8qwwsixRiUpL2FhoZXjNltpDeVznez4tkVguKPAyoqTMtwq/rDG/2+Wc/
+X-Received: by 2002:a05:6000:1b8f:: with SMTP id r15mr7322023wru.119.1622191808414;
+        Fri, 28 May 2021 01:50:08 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwFZL0q+0JcPk4npjBSe+kUXDGPvMOjcmIpNxnzx2+BmPbZA9u8srUPS5pgO8zRey8hxOQ3dg==
+X-Received: by 2002:a05:6000:1b8f:: with SMTP id r15mr7321984wru.119.1622191808061;
+        Fri, 28 May 2021 01:50:08 -0700 (PDT)
+Received: from [192.168.3.132] (p5b0c6870.dip0.t-ipconnect.de. [91.12.104.112])
+        by smtp.gmail.com with ESMTPSA id g6sm6119515wmg.10.2021.05.28.01.50.07
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 28 May 2021 01:50:07 -0700 (PDT)
+Subject: Re: [PATCH RFC] mm,memory_hotplug: Drop unneeded locking
+To:     Oscar Salvador <osalvador@suse.de>,
+        Andrew Morton <akpm@linux-foundation.org>
+Cc:     Michal Hocko <mhocko@kernel.org>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Pavel Tatashin <pasha.tatashin@soleen.com>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+References: <20210528075155.358-1-osalvador@suse.de>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat
+Message-ID: <b2883fb1-2712-9d65-bb1b-fc009f4bde09@redhat.com>
+Date:   Fri, 28 May 2021 10:50:07 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
 MIME-Version: 1.0
-In-Reply-To: <20210524142114.18676-1-srivasam@codeaurora.org>
+In-Reply-To: <20210528075155.358-1-osalvador@suse.de>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -74,139 +76,93 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 24/05/2021 15:21, Srinivasa Rao Mandadapu wrote:
-> This patch fixes PoP noise of around 15ms observed during audio capture begin.
-> Enables BCLK and LRCLK in snd_soc_dai_ops prepare call for introducing some delay
-> before capture start and clock enable.
+On 28.05.21 09:51, Oscar Salvador wrote:
+> Currently, memory-hotplug code takes zone's span_writelock
+> and pgdat's resize_lock when resizing the node/zone's spanned
+> pages via {move_pfn_range_to_zone(),remove_pfn_range_from_zone()}
+> and when resizing node and zone's present pages via
+> adjust_present_page_count().
 > 
-> Co-developed-by: Judy Hsiao <judyhsiao@chromium.org>
-> Signed-off-by: Judy Hsiao <judyhsiao@chromium.org>
-> Signed-off-by: Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
+> These locks are also taken during the initialization of the system
+> at boot time, where it protects parallel struct page initialization,
+> but they should not really be needed in memory-hotplug where all
+> operations are a) synchronized on device level and b) serialized by
+> the mem_hotplug_lock lock.
+> 
+> Signed-off-by: Oscar Salvador <osalvador@suse.de>
 > ---
-> Changes Since V2:
-> 	-- Updated comments as per linux style
-> 	-- Removed unrelated changes.
-> Changes Since V1:
-> 	-- Enableed BCLK and LRCLK in dai ops prepare API instead of startup API
-> 	-- Added comments
+> During the review of [1], it was brought up that we might need to revisit
+> the locking scheme in memory-hotplug code wrt. node and zone locks.
+> Given that memory-hotplug is serialized and synchronized by memory-hotplug lock
+> and the device, I do not think we need to hold zone/node's resize lock anymore.
+> After the system has been brought up, memory-hotplug is the only code allow to
+> touch {spanned,present}_pages, so it cannot really go off when serialized by its
+> own lock. Or am I missing something?
+> The only think I am not really sure is: if the from remove_pfn_range_from_zone,
+> shrink_zone_span, update_pgdat_span and move_pfn_range_to_zone can really go
+> (because those functions are already serialized by the memory-hotplug lock),
+> what about mhp_(de)init_memmap_on_memory that calls those functions?
+> Those are not protected by the lock. I have to confess that when it comes to locking
+> in this code, I always have to scratch my head.
 > 
->   sound/soc/qcom/lpass-cpu.c | 54 +++++++++++++++++++++++++++++++++++++-
->   1 file changed, 53 insertions(+), 1 deletion(-)
+
+Whenever onlining/offlining memory blocks we're holding the device 
+hotplug lock. So memory hot(un)plug code is completely synchronized.
+
+If necessary at some point, we could pull the memory hotplug lock 
+further out. But I doubt it is necessary at this point.
+
+AFAIK, memory hot(un)plug isn't possible while we're still initializing 
+the memmap, so this should be fine.
+
+
+> [1] https://patchwork.kernel.org/project/linux-mm/patch/20210416112411.9826-4-osalvador@suse.de/
 > 
-> diff --git a/sound/soc/qcom/lpass-cpu.c b/sound/soc/qcom/lpass-cpu.c
-> index 28c7497344e3..1855eae22aad 100644
-> --- a/sound/soc/qcom/lpass-cpu.c
-> +++ b/sound/soc/qcom/lpass-cpu.c
-> @@ -93,9 +93,21 @@ static void lpass_cpu_daiops_shutdown(struct snd_pcm_substream *substream,
->   		struct snd_soc_dai *dai)
->   {
->   	struct lpass_data *drvdata = snd_soc_dai_get_drvdata(dai);
-> +	struct lpaif_i2sctl *i2sctl = drvdata->i2sctl;
-> +	unsigned int id = dai->driver->id;
+>   mm/memory_hotplug.c | 10 ----------
+>   1 file changed, 10 deletions(-)
+> 
+> diff --git a/mm/memory_hotplug.c b/mm/memory_hotplug.c
+> index 075b34803fec..6edd7e267cad 100644
+> --- a/mm/memory_hotplug.c
+> +++ b/mm/memory_hotplug.c
+> @@ -329,7 +329,6 @@ static void shrink_zone_span(struct zone *zone, unsigned long start_pfn,
+>   	unsigned long pfn;
+>   	int nid = zone_to_nid(zone);
 >   
->   	clk_disable_unprepare(drvdata->mi2s_osr_clk[dai->driver->id]);
-> -	clk_unprepare(drvdata->mi2s_bit_clk[dai->driver->id]);
-> +	/*
-> +	 * To ensure BCLK/LRCLK disabled even in device node validation
-> +	 * Will not impact if disabled in lpass_cpu_daiops_trigger()
-> +	 * suspend.
-> +	 */
-> +	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
-> +		regmap_fields_write(i2sctl->spken, id, LPAIF_I2SCTL_SPKEN_DISABLE);
-> +	else
-> +		regmap_fields_write(i2sctl->micen, id, LPAIF_I2SCTL_MICEN_DISABLE);
-> +
-> +	clk_disable_unprepare(drvdata->mi2s_bit_clk[dai->driver->id]);
+> -	zone_span_writelock(zone);
+>   	if (zone->zone_start_pfn == start_pfn) {
+>   		/*
+>   		 * If the section is smallest section in the zone, it need
+> @@ -362,7 +361,6 @@ static void shrink_zone_span(struct zone *zone, unsigned long start_pfn,
+>   			zone->spanned_pages = 0;
+>   		}
+>   	}
+> -	zone_span_writeunlock(zone);
 >   }
 >   
->   static int lpass_cpu_daiops_hw_params(struct snd_pcm_substream *substream,
-> @@ -275,6 +287,10 @@ static int lpass_cpu_daiops_trigger(struct snd_pcm_substream *substream,
->   	case SNDRV_PCM_TRIGGER_START:
->   	case SNDRV_PCM_TRIGGER_RESUME:
->   	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
-> +		/*
-> +		 * To ensure lpass BCLK/LRCLK is enabled during
-> +		 * device resume. Will not impact if enabled in lpass_cpu_daiops_prepare().
-> +		 */
-
-prepare should have already ensured that isn't it?
-
-
->   		if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
->   			ret = regmap_fields_write(i2sctl->spken, id,
->   						 LPAIF_I2SCTL_SPKEN_ENABLE);
-> @@ -296,6 +312,10 @@ static int lpass_cpu_daiops_trigger(struct snd_pcm_substream *substream,
->   	case SNDRV_PCM_TRIGGER_STOP:
->   	case SNDRV_PCM_TRIGGER_SUSPEND:
->   	case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
-> +		/*
-> +		 * To ensure lpass BCLK/LRCLK is disabled during
-> +		 * device suspend.
-> +		 */
->   		if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
->   			ret = regmap_fields_write(i2sctl->spken, id,
->   						 LPAIF_I2SCTL_SPKEN_DISABLE);
-> @@ -315,12 +335,44 @@ static int lpass_cpu_daiops_trigger(struct snd_pcm_substream *substream,
->   	return ret;
+>   static void update_pgdat_span(struct pglist_data *pgdat)
+> @@ -424,10 +422,8 @@ void __ref remove_pfn_range_from_zone(struct zone *zone,
+>   
+>   	clear_zone_contiguous(zone);
+>   
+> -	pgdat_resize_lock(zone->zone_pgdat, &flags);
+>   	shrink_zone_span(zone, start_pfn, start_pfn + nr_pages);
+>   	update_pgdat_span(pgdat);
+> -	pgdat_resize_unlock(zone->zone_pgdat, &flags);
+>   
+>   	set_zone_contiguous(zone);
 >   }
+> @@ -639,14 +635,10 @@ void __ref move_pfn_range_to_zone(struct zone *zone, unsigned long start_pfn,
+>   	clear_zone_contiguous(zone);
 >   
+>   	/* TODO Huh pgdat is irqsave while zone is not. It used to be like that before */
 
+I think you can drop this comment now as well.
 
-[Snip ...
-> +static int lpass_cpu_daiops_prepare(struct snd_pcm_substream *substream,
-> +		struct snd_soc_dai *dai)
-> +{
-> +	struct lpass_data *drvdata = snd_soc_dai_get_drvdata(dai);
-> +	struct lpaif_i2sctl *i2sctl = drvdata->i2sctl;
-> +	unsigned int id = dai->driver->id;
-> +	int ret;
-> +	/*
-> +	 * To ensure lpass BCLK/LRCLK is enabled bit before
-> +	 * playback/capture data flow starts.
-> +	 */
-> +	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
-> +		ret = regmap_fields_write(i2sctl->spken, id, LPAIF_I2SCTL_SPKEN_ENABLE);
-> +	else
-> +		ret = regmap_fields_write(i2sctl->micen, id, LPAIF_I2SCTL_MICEN_ENABLE);
-> +
-> +	if (ret) {
-> +		dev_err(dai->dev, "error writing to i2sctl reg: %d\n", ret);
-> +		return ret;
-> +	}
-> +
-> +	ret = clk_enable(drvdata->mi2s_bit_clk[id]);
-> +
-> +	if (ret) {
-> +		dev_err(dai->dev, "error in enabling mi2s bit clk: %d\n", ret);
-> +		clk_disable(drvdata->mi2s_osr_clk[id]);
-> +		return ret;
-> +	}
-> +	return 0;
-> +}
-> +
-----]
+Acked-by: David Hildenbrand <david@redhat.com>
 
-If prepare is enabling the clk and the i2s enable bits, then why do we 
-need to do the same thing in trigger?
+-- 
+Thanks,
 
-Also the clk enable count is going up twice (once in prepare and 
-trigger) and we can never be able to disable the clk as there is is no 
-corresponding disable for this prepare path.
+David / dhildenb
 
-Also note that prepare can be called multiple times.
-
---srini
-
->   const struct snd_soc_dai_ops asoc_qcom_lpass_cpu_dai_ops = {
->   	.set_sysclk	= lpass_cpu_daiops_set_sysclk,
->   	.startup	= lpass_cpu_daiops_startup,
->   	.shutdown	= lpass_cpu_daiops_shutdown,
->   	.hw_params	= lpass_cpu_daiops_hw_params,
->   	.trigger	= lpass_cpu_daiops_trigger,
-> +	.prepare	= lpass_cpu_daiops_prepare,
->   };
->   EXPORT_SYMBOL_GPL(asoc_qcom_lpass_cpu_dai_ops);
->   
-> 
