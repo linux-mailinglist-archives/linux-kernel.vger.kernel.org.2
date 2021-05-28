@@ -2,124 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 15E2B393B87
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 04:43:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 54202393B8E
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 04:46:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235597AbhE1CpE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 May 2021 22:45:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44690 "EHLO
+        id S235967AbhE1CsO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 May 2021 22:48:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45362 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229940AbhE1CpE (ORCPT
+        with ESMTP id S229940AbhE1CsM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 May 2021 22:45:04 -0400
-Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35D10C061574
-        for <linux-kernel@vger.kernel.org>; Thu, 27 May 2021 19:43:29 -0700 (PDT)
-Received: by mail-pj1-x1035.google.com with SMTP id g24so1691492pji.4
-        for <linux-kernel@vger.kernel.org>; Thu, 27 May 2021 19:43:29 -0700 (PDT)
+        Thu, 27 May 2021 22:48:12 -0400
+Received: from mail-qk1-x729.google.com (mail-qk1-x729.google.com [IPv6:2607:f8b0:4864:20::729])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8FAAC061574;
+        Thu, 27 May 2021 19:46:38 -0700 (PDT)
+Received: by mail-qk1-x729.google.com with SMTP id c20so2821728qkm.3;
+        Thu, 27 May 2021 19:46:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=WK7OvhFGEkm9+yUjk0yhj08hvOUVzO8BEh+bcJphobk=;
-        b=YVjm2iFD/iidjeX+pAgz/60ykJQDrsKhPPU2W4DajsYYUtCikdjC++gYgPHMKw+ha2
-         L6jkmHnk/A514N42ePVMmOnSbYqbp7F/nsrqABYE1eU5X1wcty7JvU53CjaDviI4KhVB
-         nuZ0XZpInEU6QqKu2jzbeN7Z9A7XfIDvmbFADQYmQGZ3sBpP816cvILTECCoUhYi0a5h
-         G1MvSYzeYFIes44hCHSba9PrSAlFtbIkSV1hmJ8Y3t3wDB91NkT78AKZCmbGvk52DYMf
-         ATkdNn9tBLkz1kwFIwe1mIKVwP66kQ0EYv+NQqd10pmBKJRXY2jMqvcQI/5VqJWLjSS0
-         DyPg==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=63x/uDQdlSiWdgfjl3Ict0S+sheF4xMnvJJh/SQ9eeM=;
+        b=YkA70FdjJt6hKIfJed9dsDJ3HyVm+emcF1E75Nmo56r70jCEjfJgDoFDLsrpoXG2Yr
+         gn59e+SYW/qk/LjxWoMw9lqtrACoaQx1PJysPza1DaFXA0UHoAiBPTATmhxyp5s/e/mV
+         3umwvn1lRrnV6fyyZk1Bms6Talt5xwBLYblEr+gj9D2FCZF2aQ3Xp5vtvX4QbcOlWRuz
+         BYAzQZbfUMGZfFdjoN7gGYNzYW/Y6Pu7hkqG4Vl6nQtoxZHuqp03TyChgyKmlJW8n6ml
+         wneRaHEoJ02bJfik+MvzrR+B00yDmlGaptwx+g/waaU4Cx5X6iHU22Wke+HivSaurkRM
+         CdpA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=WK7OvhFGEkm9+yUjk0yhj08hvOUVzO8BEh+bcJphobk=;
-        b=bnH34kM5V7mSIKDVbhLaiomCsCXW8py9Y5Amywd2YpileE7vVvLYxMhnynNiNESnIT
-         NxXqDZyvigmlx81ZnFgPcvmEO+Xx5odwW4R+N6RYWt3rqENO90AB7n2o/PQMQJQwX0eH
-         8loxwndbN0gFYBlCl/zmpvlykk95M4kNYWfCmh5OWZPbOpndt9mpy178MBbbmy47+QGC
-         DgUH4nV/UbaWFgGuzsmvk5KcCWMg0AAxvDtM/ET6e9pLmu13ME4OQKeDvkqUYw1ChXbU
-         SjO68GMn3mJGzO3hhYnelZzAHL3yAByPz8LoRD2mPE+8zERwZLSDMnI7cVfayB4xpJo2
-         GRYg==
-X-Gm-Message-State: AOAM531pR+H3hUhXfPGWixNNTKsgOimIME2Kk9a5xnMYYkFvjEEIJLkY
-        BpQ3rCaRsYfkV7ivA2rfjEASfLLCLOqZS+c2yOL46BIhPFCj6Q7S
-X-Google-Smtp-Source: ABdhPJzLyme5Cu7erOyOPnEVb3k7CpFuGVYCuJq2UiCSfbZOQyFIm5M+EW929Cl9bzFGapFhADyFhnKJkSsm6edOS0E=
-X-Received: by 2002:a17:902:d2c8:b029:fe:cd9a:a6bb with SMTP id
- n8-20020a170902d2c8b02900fecd9aa6bbmr5329743plc.34.1622169808671; Thu, 27 May
- 2021 19:43:28 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210527231225.226987-1-mike.kravetz@oracle.com>
-In-Reply-To: <20210527231225.226987-1-mike.kravetz@oracle.com>
-From:   Muchun Song <songmuchun@bytedance.com>
-Date:   Fri, 28 May 2021 10:42:52 +0800
-Message-ID: <CAMZfGtUEuPB8B0Nn3pk-+CRQUrhwOHKhWRjMyFU0AWazT102TA@mail.gmail.com>
-Subject: Re: [External] [PATCH] mm: hugetlb: fix dissolve_free_huge_page use
- of tail/head page
-To:     Mike Kravetz <mike.kravetz@oracle.com>
-Cc:     Linux-MM <linux-mm@kvack.org>, lkml <linux-kernel@vger.kernel.org>,
-        Michal Hocko <mhocko@suse.com>,
-        Oscar Salvador <osalvador@suse.de>,
-        David Hildenbrand <david@redhat.com>,
-        Naoya Horiguchi <naoya.horiguchi@nec.com>,
-        Andrew Morton <akpm@linux-foundation.org>
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=63x/uDQdlSiWdgfjl3Ict0S+sheF4xMnvJJh/SQ9eeM=;
+        b=q4SJJwMx2TnHlNZ4E1b28pnEbGfYsjNPo9SUy2zVeh26xG6wgI6tNC9JjtiWTaz5U6
+         +FwZwERCUtss0VQut1yJ+aL0VLf76Jl1qpfnw0DR3WCXiTGWndE/+M6mJECeLA2wMv6N
+         e9DXnm2sM/ZsxfM9nPiB4jFY9YrhYwmabWKmXNWVrYHuQGN+1RorJPWJ5euY1nWcQmMh
+         3C49GK4dQkbxD+chsv31IdITS5TZxX+EeQ6BS9gCqBmBQXixfUy+EfhbTGsToDvc0toQ
+         zbTt1GTnbdCtmfqNiGyKVFyYktEmD+F0mcLvfTb1y/Psk69AhEcsTwTE+gNcoyM0721D
+         SZGQ==
+X-Gm-Message-State: AOAM532UG6BlbRaxl0cevCQQH2l5Q7VjUMBd18xfB/p/47QwqHOFgQUv
+        QsjxMRwZID2ilB0/ktHW6RQNJqZrKXzFaQ==
+X-Google-Smtp-Source: ABdhPJw8nbDd2icp+LhNJJOM7IWzYJcvRY8qR9/E6Abb7n9Wm5iO6tLWiikMChnmW3qZnsygIuGHfg==
+X-Received: by 2002:a37:e205:: with SMTP id g5mr1722928qki.449.1622169997878;
+        Thu, 27 May 2021 19:46:37 -0700 (PDT)
+Received: from wsfd-netdev-buildsys.ntdv.lab.eng.bos.redhat.com (nat-pool-bos-t.redhat.com. [66.187.233.206])
+        by smtp.gmail.com with ESMTPSA id j15sm2497542qtv.11.2021.05.27.19.46.37
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 27 May 2021 19:46:37 -0700 (PDT)
+From:   Hangbin Liu <liuhangbin@gmail.com>
+To:     bpf@vger.kernel.org
+Cc:     Daniel Borkmann <daniel@iogearbox.net>,
+        =?UTF-8?q?Toke=20H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Hangbin Liu <liuhangbin@gmail.com>
+Subject: [PATCH bpf-next] bpf/devmap: remove drops variable from bq_xmit_all()
+Date:   Thu, 27 May 2021 22:43:56 -0400
+Message-Id: <20210528024356.24333-1-liuhangbin@gmail.com>
+X-Mailer: git-send-email 2.18.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 28, 2021 at 7:12 AM Mike Kravetz <mike.kravetz@oracle.com> wrote:
->
-> The routine dissolve_free_huge_page can be passed the tail page of a
-> hugetlb page.  The tail page is incorrectly passed on to the routines
-> alloc_huge_page_vmemmap and add_hugetlb_page which expect a hugetlb
-> head page.
->
-> Operating on a tail page instead of head page could result in addressing
-> exceptions or vmemmap corruption.
->
-> Signed-off-by: Mike Kravetz <mike.kravetz@oracle.com>
-> ---
-> The code with this issue is only in mmotm (and next).  Specifically
-> mm: hugetlb: alloc the vmemmap pages associated with each HugeTLB page
-> Andrew, I assume you will fix in your tree.
+As Colin pointed out, the first drops assignment after declaration will
+be overwritten by the second drops assignment before using, which makes
+it useless.
 
-Sorry. It's my bad commit. Thanks Mike for fixing this. I suspect this
-should be squashed to "mm: hugetlb: alloc the vmemmap pages
-associated with each HugeTLB page".
+Since the drops variable will be used only once. Just remove it and
+use "cnt - sent" in trace_xdp_devmap_xmit()
 
-Reviewed-by: Muchun Song <songmuchun@bytedance.com>
+Reported-by: Colin Ian King <colin.king@canonical.com>
+Fixes: cb261b594b41 ("bpf: Run devmap xdp_prog on flush instead of bulk enqueue")
+Signed-off-by: Hangbin Liu <liuhangbin@gmail.com>
+---
+ kernel/bpf/devmap.c | 7 ++-----
+ 1 file changed, 2 insertions(+), 5 deletions(-)
 
-Thanks.
+diff --git a/kernel/bpf/devmap.c b/kernel/bpf/devmap.c
+index f9148daab0e3..2a75e6c2d27d 100644
+--- a/kernel/bpf/devmap.c
++++ b/kernel/bpf/devmap.c
+@@ -370,8 +370,8 @@ static int dev_map_bpf_prog_run(struct bpf_prog *xdp_prog,
+ static void bq_xmit_all(struct xdp_dev_bulk_queue *bq, u32 flags)
+ {
+ 	struct net_device *dev = bq->dev;
+-	int sent = 0, drops = 0, err = 0;
+ 	unsigned int cnt = bq->count;
++	int sent = 0, err = 0;
+ 	int to_send = cnt;
+ 	int i;
+ 
+@@ -388,8 +388,6 @@ static void bq_xmit_all(struct xdp_dev_bulk_queue *bq, u32 flags)
+ 		to_send = dev_map_bpf_prog_run(bq->xdp_prog, bq->q, cnt, dev);
+ 		if (!to_send)
+ 			goto out;
+-
+-		drops = cnt - to_send;
+ 	}
+ 
+ 	sent = dev->netdev_ops->ndo_xdp_xmit(dev, to_send, bq->q, flags);
+@@ -408,9 +406,8 @@ static void bq_xmit_all(struct xdp_dev_bulk_queue *bq, u32 flags)
+ 		xdp_return_frame_rx_napi(bq->q[i]);
+ 
+ out:
+-	drops = cnt - sent;
+ 	bq->count = 0;
+-	trace_xdp_devmap_xmit(bq->dev_rx, dev, sent, drops, err);
++	trace_xdp_devmap_xmit(bq->dev_rx, dev, sent, cnt - sent, err);
+ }
+ 
+ /* __dev_flush is called from xdp_do_flush() which _must_ be signaled
+-- 
+2.26.3
 
->
->  mm/hugetlb.c            | 4 ++--
->  scripts/rust-version.sh | 0
->  2 files changed, 2 insertions(+), 2 deletions(-)
->  mode change 100644 => 100755 scripts/rust-version.sh
->
-> diff --git a/mm/hugetlb.c b/mm/hugetlb.c
-> index 69a4b551c157..d2461c1f32dd 100644
-> --- a/mm/hugetlb.c
-> +++ b/mm/hugetlb.c
-> @@ -1954,7 +1954,7 @@ int dissolve_free_huge_page(struct page *page)
->                  * Attempt to allocate vmemmmap here so that we can take
->                  * appropriate action on failure.
->                  */
-> -               rc = alloc_huge_page_vmemmap(h, page);
-> +               rc = alloc_huge_page_vmemmap(h, head);
->                 if (!rc) {
->                         /*
->                          * Move PageHWPoison flag from head page to the raw
-> @@ -1968,7 +1968,7 @@ int dissolve_free_huge_page(struct page *page)
->                         update_and_free_page(h, head, false);
->                 } else {
->                         spin_lock_irq(&hugetlb_lock);
-> -                       add_hugetlb_page(h, page, false);
-> +                       add_hugetlb_page(h, head, false);
->                         h->max_huge_pages++;
->                         spin_unlock_irq(&hugetlb_lock);
->                 }
-> diff --git a/scripts/rust-version.sh b/scripts/rust-version.sh
-> old mode 100644
-> new mode 100755
-> --
-> 2.31.1
->
