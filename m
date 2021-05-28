@@ -2,165 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC7D43948C0
-	for <lists+linux-kernel@lfdr.de>; Sat, 29 May 2021 00:38:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 02BCC3948C5
+	for <lists+linux-kernel@lfdr.de>; Sat, 29 May 2021 00:42:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229755AbhE1Wjw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 May 2021 18:39:52 -0400
-Received: from so254-9.mailgun.net ([198.61.254.9]:15838 "EHLO
-        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229635AbhE1Wjv (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 May 2021 18:39:51 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1622241496; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=jSJ6ouw7sBSntMFtGhcr7YAwQxKznNopiE0ruE/1CnU=;
- b=de5JLEA5LONVwL/KRETniqNtWu5UFyeqAmzDrwrlbbmix6jUteX9HDgAFbw4/Ebeqi+FJ8N2
- sAshdTH4/IYii6VKSlkI70WV7LzcQRgTP20nG2UQxRZWz9Mf7ED6c4cTVrlqoUWGiGDsXCOn
- hIiz19o4IPZHpyT4KmX+tQJCgt0=
-X-Mailgun-Sending-Ip: 198.61.254.9
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n04.prod.us-east-1.postgun.com with SMTP id
- 60b170c8e27c0cc77ff1df22 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 28 May 2021 22:38:00
- GMT
-Sender: abhinavk=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 065A9C4323A; Fri, 28 May 2021 22:38:00 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
-        autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        id S229656AbhE1Wo2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 May 2021 18:44:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52480 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229541AbhE1Wo0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 28 May 2021 18:44:26 -0400
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        (Authenticated sender: abhinavk)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 93241C433F1;
-        Fri, 28 May 2021 22:37:57 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 73D3561378;
+        Fri, 28 May 2021 22:42:50 +0000 (UTC)
+Date:   Fri, 28 May 2021 18:42:48 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Olivier Langlois <olivier@trillion01.com>
+Cc:     Stefan Metzmacher <metze@samba.org>,
+        Pavel Begunkov <asml.silence@gmail.com>,
+        Jens Axboe <axboe@kernel.dk>, Ingo Molnar <mingo@redhat.com>,
+        io-uring@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] io_uring: Add to traces the req pointer when available
+Message-ID: <20210528184248.46926090@gandalf.local.home>
+In-Reply-To: <9505850ae4c203f6b8f056265eddbffaae501806.camel@trillion01.com>
+References: <60ac946e.1c69fb81.5efc2.65deSMTPIN_ADDED_MISSING@mx.google.com>
+        <439a2ab8-765d-9a77-5dfd-dde2bd6884c4@gmail.com>
+        <9a8abcc9-8f7a-8350-cf34-f86e4ac13f5c@samba.org>
+        <9505850ae4c203f6b8f056265eddbffaae501806.camel@trillion01.com>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-Date:   Fri, 28 May 2021 15:37:57 -0700
-From:   abhinavk@codeaurora.org
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc:     Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Stephen Boyd <swboyd@chromium.org>, sbillaka@codeaurora.org,
-        Tanmay Shah <tanmay@codeaurora.org>,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        dri-devel@lists.freedesktop.org,
-        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        freedreno@lists.freedesktop.org,
-        Chandan Uddaraju <chandanu@codeaurora.org>
-Subject: Re: [Freedreno] [PATCH 0/4] drm/msm/dp: Add support for SC8180x eDP
- controller
-In-Reply-To: <20210519145149.GX2484@yoga>
-References: <20210511042043.592802-1-bjorn.andersson@linaro.org>
- <40f6aefd3fa341e2bec2060106389be7@codeaurora.org>
- <20210519145149.GX2484@yoga>
-Message-ID: <d10c43ffbbf90ea7e00c7f0c61602924@codeaurora.org>
-X-Sender: abhinavk@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Bjorn
+On Wed, 26 May 2021 12:18:37 -0400
+Olivier Langlois <olivier@trillion01.com> wrote:
 
-On 2021-05-19 07:51, Bjorn Andersson wrote:
-> On Tue 18 May 22:41 CDT 2021, abhinavk@codeaurora.org wrote:
+> > If that gets changed, could be also include the personality id and
+> > flags here,
+> > and maybe also translated the opcode and flags to human readable
+> > strings?
+> >   
+> If Jens and Pavel agrees that they would like to see this info in the
+> traces, I have no objection adding it.
 > 
->> Hi Bjorn
->> 
->> I had a quick glance on the series and before getting to other things 
->> wanted
->> to know how you are initializing two different connectors for
->> DP & EDP resp.
->> 
->> The connector type for DP should be DRM_MODE_CONNECTOR_DisplayPort and 
->> eDP
->> should be DRM_MODE_CONNECTOR_eDP.
+> Still waiting input from Steven Rostedt which I believe is the trace
+> system maintainer concerning the hash-ptr situation.
 > 
-> As far as I've been able to conclude there is no eDP support in the
-> upstream DPU driver; an encoder of type DRM_MODE_ENCODER_TMDS will only
-> attach to INTF_DP.
-> 
->> We need both to be created so that both EDP and DP can be supported
->> concurrently.
->> 
-> 
-> Further more the DP controller driver has a global variable to track
-> state and the INTF-picker will always pick the interface of index 0 
-> when
-> setting up the DP controller.
-> 
->> Will these changes work for concurrent eDP and DP case?
->> 
-> 
-> The proposed changes are all that I need to get eDP working on my
-> sc8180x laptop. But the DPU code does not currently support more than a
-> single DP interface - and that has to be on the first INTF_DP that the
-> DPU driver knows about.
-> 
-> But this is a limitation we should fix, rather than claiming that you
-> can only have one of each. Further more, afaict the sc7280 DP 
-> controller
-> can do both DP and eDP, so it would make sense not to distinguish the
-> interfaces as eDP or DP - just because the product in mind will use 
-> eDP.
-> 
-> 
-> PS. I've currently disabled the eDP interface on my laptop and am
-> working on trying to get Type-C DP working. Once that's in place I'd
-> need a better INTF/encoder picker - because the current model of just
-> picking INTF_DP 0 (or in a sequential fashion) won't work.
-> 
-> Regards,
-> Bjorn
+> I did receive an auto-respond from him saying that he was in vacation
+> until May 28th...
 
-Yes, we should be able to support eDP + DP concurrently on both sc7280
-and sc8180x. Some of the changes we will be posting in the coming weeks
-should add support for it. Till then, as we spoke on IRC, since your 
-changes
-dont break existing DP functionality, will continue reviewing rest of 
-the changes.
+Yep, I'm back now.
 
-> 
->> Thanks
->> 
->> Abhinav
->> 
->> On 2021-05-10 21:20, Bjorn Andersson wrote:
->> > The first patch in the series is somewhat unrelated to the support, but
->> > simplifies reasoning and debugging of timing related issues.
->> >
->> > The second patch introduces support for dealing with different register
->> > block
->> > layouts, which is used in the forth patch to describe the hardware
->> > blocks found
->> > in the SC8180x eDP block.
->> >
->> > The third patch configures the INTF_CONFIG register, which carries the
->> > configuration for widebus handling. As with the DPU the bootloader
->> > enables
->> > widebus and we need to disable it, or implement support for adjusting
->> > the
->> > timing.
->> >
->> > Bjorn Andersson (4):
->> >   drm/msm/dp: Simplify the mvid/nvid calculation
->> >   drm/msm/dp: Store each subblock in the io region
->> >   drm/msm/dp: Initialize the INTF_CONFIG register
->> >   drm/msm/dp: Add support for SC8180x eDP
->> >
->> >  drivers/gpu/drm/msm/dp/dp_catalog.c | 99 +++++++----------------------
->> >  drivers/gpu/drm/msm/dp/dp_display.c |  1 +
->> >  drivers/gpu/drm/msm/dp/dp_parser.c  | 22 +++++++
->> >  drivers/gpu/drm/msm/dp/dp_parser.h  |  8 +++
->> >  4 files changed, 53 insertions(+), 77 deletions(-)
+Here's how it works using your patch as an example:
+
+>  	TP_fast_assign(
+>  		__entry->ctx		= ctx;
+> +		__entry->req		= req;
+
+The "__entry" is a structure defined by TP_STRUCT__entry() that is located
+on the ring buffer that can be read directly by user space (aka trace-cmd).
+So yes, that value is never hashed, and one of the reasons that tracefs
+requires root privilege to read it.
+
+>  		__entry->opcode		= opcode;
+>  		__entry->user_data	= user_data;
+>  		__entry->force_nonblock	= force_nonblock;
+>  		__entry->sq_thread	= sq_thread;
+>  	),
+>  
+> -	TP_printk("ring %p, op %d, data 0x%llx, non block %d, sq_thread %d",
+> -			  __entry->ctx, __entry->opcode,
+> -			  (unsigned long long) __entry->user_data,
+> -			  __entry->force_nonblock, __entry->sq_thread)
+> +	TP_printk("ring %p, req %p, op %d, data 0x%llx, non block %d, "
+> +		  "sq_thread %d",  __entry->ctx, __entry->req,
+> +		  __entry->opcode, (unsigned long long)__entry->user_data,
+> +		  __entry->force_nonblock, __entry->sq_thread)
+>  );
+
+The TP_printk() macro *is* used when reading the "trace" or "trace_pipe"
+file, and that uses vsnprintf() to process it. Which will hash the values
+for %p (by default, because that's what it always did when vsnprintf()
+started hashing values).
+
+Masami Hiramatsu added the hash-ptr option (which I told him to be the
+default as that was the behavior before that option was created), where the
+use could turn off the hashing.
+
+There's lots of trace events that expose the raw pointers when hash-ptr is
+off or if the ring buffers are read via the trace_pip_raw interface.
+
+What's special about these pointers to hash them before they are recorded?
+
+-- Steve
