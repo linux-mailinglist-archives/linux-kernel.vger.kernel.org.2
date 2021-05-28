@@ -2,73 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 911E1394773
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 21:11:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 21EAE394779
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 21:19:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229565AbhE1TNO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 May 2021 15:13:14 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:39122 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229492AbhE1TNN (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 May 2021 15:13:13 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1622229097;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=/Ld9bryrSXUxnusgU5zvRKQObiYeibTpKJlbut+Dqgg=;
-        b=QOQf8huKr+A6FBB9EEQeA4utv7VN0VU+ThQex0TRjUifabvUk94J8mZz2t7HkaPVxNGSk+
-        DqSh/iS0ulVcGUVaYAdosESXtELHFRfs9x993OsX3VkdoQZRDjbg3E41zJjv6iOXe4CLmm
-        lSn8+rMqMGJ0GdGrtRb2MuDRex4Ye0o=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-247-usi2BBTiPGuneXgvWYGeCA-1; Fri, 28 May 2021 15:11:36 -0400
-X-MC-Unique: usi2BBTiPGuneXgvWYGeCA-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id D55FC180FD6D;
-        Fri, 28 May 2021 19:11:34 +0000 (UTC)
-Received: from virtlab701.virt.lab.eng.bos.redhat.com (virtlab701.virt.lab.eng.bos.redhat.com [10.19.152.228])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 8317F60CD0;
-        Fri, 28 May 2021 19:11:34 +0000 (UTC)
-From:   Paolo Bonzini <pbonzini@redhat.com>
-To:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org
-Cc:     "Maciej S . Szmigiero" <maciej.szmigiero@oracle.com>
-Subject: [PATCH] selftests: kvm: fix overlapping addresses in memslot_perf_test
-Date:   Fri, 28 May 2021 15:11:34 -0400
-Message-Id: <20210528191134.3740950-1-pbonzini@redhat.com>
+        id S229522AbhE1TUv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 May 2021 15:20:51 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34552 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229476AbhE1TUs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 28 May 2021 15:20:48 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0A4C6610CC;
+        Fri, 28 May 2021 19:19:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1622229553;
+        bh=BZkQ/omNVva7HnRyViONIRUb6tia+mnHLlok7Rfi0bU=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=HIBeknZ9WLRmOsCgJdrkh9Lc8ELHEoOq1G/DNPJvdFd/QBbizcgwZWDsiR7QnXE46
+         nT1KyWeLfXJYmQug5sVg2WOREvuAu0G7V/G5ilN8lwwlC/Xg9tgKyK0h+4QE467bOg
+         ym7rnUGJd84lRgg8wg6AXZFs5wLKUAJskqnVTM48ljNZAr4a/XKFqC3sdVH54q5r/y
+         muihllxsjIDtvNr2gioaheRwKaz52Es2kZZAgcy9S5XAaFopitOvxOY5W9NrFHMMaf
+         P29bxl72gVBBl0TgFzZV05yrzSpnoSFxp3sRuvh61u0/CgvANsTk/jzKeUYLZAlF52
+         NkK1LnTyEbOAg==
+Date:   Fri, 28 May 2021 14:19:11 -0500
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Kai-Heng Feng <kai.heng.feng@canonical.com>
+Cc:     bhelgaas@google.com, kernel test robot <lkp@intel.com>,
+        "open list:PCI SUBSYSTEM" <linux-pci@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] PCI: Add const type for comparison function parameter
+Message-ID: <20210528191911.GA1513016@bjorn-Precision-5520>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210528170242.1564038-1-kai.heng.feng@canonical.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The memory that is allocated in vm_create is already mapped close to
-GPA 0, because test_execute passes the requested memory to
-prepare_vm.  This causes overlapping memory regions and the
-test crashes.  For simplicity just move MEM_GPA higher.
+On Sat, May 29, 2021 at 01:02:42AM +0800, Kai-Heng Feng wrote:
+> Commit 4f0f586bf0c8 ("treewide: Change list_sort to use const pointers")
+> added const on parameter "struct list_head *".
+> 
+> So add const to match the type.
+> 
+> Fixes: 276b15de5287 ("PCI: Coalesce host bridge contiguous apertures")
+> Reported-by: kernel test robot <lkp@intel.com>
+> Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
 
-Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
----
- tools/testing/selftests/kvm/memslot_perf_test.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Squashed into "PCI: Coalesce host bridge contiguous apertures",
+thanks!
 
-diff --git a/tools/testing/selftests/kvm/memslot_perf_test.c b/tools/testing/selftests/kvm/memslot_perf_test.c
-index 11239652d805..6d28e920b1e3 100644
---- a/tools/testing/selftests/kvm/memslot_perf_test.c
-+++ b/tools/testing/selftests/kvm/memslot_perf_test.c
-@@ -29,7 +29,7 @@
- 
- #define MEM_SIZE		((512U << 20) + 4096)
- #define MEM_SIZE_PAGES		(MEM_SIZE / 4096)
--#define MEM_GPA		0x10000000UL
-+#define MEM_GPA			(MEM_SIZE + 0x10000000UL)
- #define MEM_AUX_GPA		MEM_GPA
- #define MEM_SYNC_GPA		MEM_AUX_GPA
- #define MEM_TEST_GPA		(MEM_AUX_GPA + 4096)
--- 
-2.27.0
-
+> ---
+>  drivers/pci/probe.c | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/pci/probe.c b/drivers/pci/probe.c
+> index bf58e5dd1d82..bd862b612633 100644
+> --- a/drivers/pci/probe.c
+> +++ b/drivers/pci/probe.c
+> @@ -875,7 +875,8 @@ static void pci_set_bus_msi_domain(struct pci_bus *bus)
+>  	dev_set_msi_domain(&bus->dev, d);
+>  }
+>  
+> -static int res_cmp(void *priv, struct list_head *a, struct list_head *b)
+> +static int res_cmp(void *priv, const struct list_head *a,
+> +		   const struct list_head *b)
+>  {
+>  	struct resource_entry *entry1, *entry2;
+>  
+> -- 
+> 2.31.1
+> 
