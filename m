@@ -2,110 +2,298 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A10F2394579
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 17:55:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7DFA53945A9
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 18:06:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236829AbhE1P5L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 May 2021 11:57:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52582 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235398AbhE1P5H (ORCPT
+        id S236504AbhE1QI3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 May 2021 12:08:29 -0400
+Received: from mx0a-0014ca01.pphosted.com ([208.84.65.235]:7028 "EHLO
+        mx0a-0014ca01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234961AbhE1QI2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 May 2021 11:57:07 -0400
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D10B2C061574;
-        Fri, 28 May 2021 08:55:30 -0700 (PDT)
-Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 3147E145A;
-        Fri, 28 May 2021 17:55:27 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1622217327;
-        bh=PYQUxKB6qr/x39dXUXRBEnFxFW0a82BQUphJx+n6PFY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=thVS00BUTw/GzFkiPI916NBupzLD4gZjAcLuEafGYvfQClaN6vN81nvk7Ns18XAkG
-         +w3+xT+QKa6Hr5RxqUkdZxYmMMifscU/BPwHPFUJQEfqeuI6mgJDKwvzguZP6Y4hoO
-         NtC4aeY96H2bESHDlElLvlRm5jhrgqFrA7aMFQvs=
-Date:   Fri, 28 May 2021 18:55:20 +0300
-From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To:     James Bottomley <James.Bottomley@HansenPartnership.com>
-Cc:     Matthew Wilcox <willy@infradead.org>, Greg KH <greg@kroah.com>,
-        Christoph Lameter <cl@gentwo.de>,
-        Theodore Ts'o <tytso@mit.edu>, Jiri Kosina <jikos@kernel.org>,
-        ksummit@lists.linux.dev, linux-kernel@vger.kernel.org,
-        linux-block@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-mm@kvack.org, netdev@vger.kernel.org,
-        linux-arch@vger.kernel.org, linux-api@vger.kernel.org
-Subject: Re: Maintainers / Kernel Summit 2021 planning kick-off
-Message-ID: <YLESaAP/Bu95ACvU@pendragon.ideasonboard.com>
-References: <YH2hs6EsPTpDAqXc@mit.edu>
- <nycvar.YFH.7.76.2104281228350.18270@cbobk.fhfr.pm>
- <YIx7R6tmcRRCl/az@mit.edu>
- <alpine.DEB.2.22.394.2105271522320.172088@gentwo.de>
- <YK+esqGjKaPb+b/Q@kroah.com>
- <c46dbda64558ab884af060f405e3f067112b9c8a.camel@HansenPartnership.com>
- <YLEIKk7IuWu6W4Sy@casper.infradead.org>
- <a8bbc5dab99a4af6e89a9521a5eb4cb4747d2afe.camel@HansenPartnership.com>
- <YLEM2WE0ezdrfMPt@pendragon.ideasonboard.com>
- <15419fa8e5c0047327395387b28c09d775b35a55.camel@HansenPartnership.com>
+        Fri, 28 May 2021 12:08:28 -0400
+Received: from pps.filterd (m0042385.ppops.net [127.0.0.1])
+        by mx0a-0014ca01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 14SG2j2o005736;
+        Fri, 28 May 2021 09:06:41 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cadence.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-type; s=proofpoint;
+ bh=gHZ9Iu3ccEMmn30HuEQAEKVkFL74/b4lMa4yUG+YYpk=;
+ b=KZSnyRVr9srjCi89eXUKB8z7ZEsc7+s9d9gaZ8sxsRdt9xyxSN7fe2f29JbzxE7m1boh
+ wVi5/2vWIoGwLctjnaf5eJZ/PECAkd/SZRmAhjwSMUksiwJ1wkn4IhCVlxSr9W8OFZI3
+ IwNpPLzIjYu4gUiUB3kXMJm76qWm141m4Je2wOrh7eZky7z+9ci5k5Fwzm1WB+HcwlJs
+ q9PE6PVLim1JnQle3NkZKd37dnqnEjJsMRaugkIrEgyq27nAjJ360/0MMhCM/JXySSSu
+ qSAvc/PTuDcbkm+VaijNmQ97g93cdZwYG9e1FR1GE7SbwYcC5N5lgU6pSv9ZwxDGDESf yA== 
+Received: from nam02-bn1-obe.outbound.protection.outlook.com (mail-bn1nam07lp2042.outbound.protection.outlook.com [104.47.51.42])
+        by mx0a-0014ca01.pphosted.com with ESMTP id 38tvr5s9r3-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 28 May 2021 09:06:41 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=ijmibxsY5QiMMrIBq8dQL99WTrW3i6j+kKXZydva3J9Gbm5+JRlY1azAx/4Tj43Zz/BYoztb/5VoGmaT8EyCs7neI8Afhv6OE4zArNC2bvujxak2xlF4VrgTHupFAL0mIHl5f+4AnO9KCE6sfz5iFdXsLbdFsnlc7hFCOZ8BeN2KYR+A5Y+9Cif9SEOIemMHqMWMfciqp+UOZdug3MhRcouXfKfuEhmwVe4+4Egw8DLi94PDb7B2EqrUNk8psJlsyuxmz8gNvJRfHNEcCKg+aiCqSKKFbVlrpAI/GYp9tS+bd+8vGwszStfvqIfyAejw+jwLzKCqVD27iqaef08wOQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=gHZ9Iu3ccEMmn30HuEQAEKVkFL74/b4lMa4yUG+YYpk=;
+ b=BREs9fzLFE2cjMQevwNmCIveOXuSQ/uobAMo+nI/wxJ/3h43Ygcm27OsVaIKhBsRP/YgtEjbHpPW475GWcpQKK2nu71VWZhPJWmvM+Wyl0mTbL4nSIXEOzNJx15QwzivpEpvZ+ujK64N7Wbt6a769vOea5mVaca1So5Hy2P12yR6cJuE3EwtDZCGvTPcqbDjf7GyhQ0ak40jwLX3EuTNPeHIV/mc+ta4IQ3kF2oBWs6c91sZU0QvjNQEJaZMTdg//WOuhDZJTEBOEMc+9JkbvGu6NjWszrWU4f6Y6TkLVBUCzDpfRy0LJuKy8PC4tD5LvjM5oZk+Jip8BBgJr+76yw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 199.43.4.23) smtp.rcpttodomain=google.com smtp.mailfrom=cadence.com;
+ dmarc=pass (p=none sp=none pct=100) action=none header.from=cadence.com;
+ dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cadence.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=gHZ9Iu3ccEMmn30HuEQAEKVkFL74/b4lMa4yUG+YYpk=;
+ b=2evannYjRz9PGGJy/TPKd2sytfjk1iDDGvvcJsDgS43fDRfUWdxeh41KLa+SF6CrNyRLIqS6kILiDtA+FQ9+r4LOFuhMskjeOcHbuukenugUNnS9SXXBdjjUEHH77lR5TTo8ckOQcyh5sE4ke+XX/CKVX//gwoNLOpMihsO924E=
+Received: from DM6PR08CA0020.namprd08.prod.outlook.com (2603:10b6:5:80::33) by
+ BY5PR07MB7201.namprd07.prod.outlook.com (2603:10b6:a03:205::17) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4173.22; Fri, 28 May
+ 2021 16:06:38 +0000
+Received: from DM6NAM12FT004.eop-nam12.prod.protection.outlook.com
+ (2603:10b6:5:80:cafe::b2) by DM6PR08CA0020.outlook.office365.com
+ (2603:10b6:5:80::33) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4173.20 via Frontend
+ Transport; Fri, 28 May 2021 16:06:38 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 199.43.4.23)
+ smtp.mailfrom=cadence.com; google.com; dkim=none (message not signed)
+ header.d=none;google.com; dmarc=pass action=none header.from=cadence.com;
+Received-SPF: Pass (protection.outlook.com: domain of cadence.com designates
+ 199.43.4.23 as permitted sender) receiver=protection.outlook.com;
+ client-ip=199.43.4.23; helo=rmmaillnx1.cadence.com;
+Received: from rmmaillnx1.cadence.com (199.43.4.23) by
+ DM6NAM12FT004.mail.protection.outlook.com (10.13.178.154) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.4195.10 via Frontend Transport; Fri, 28 May 2021 16:06:38 +0000
+Received: from maileu3.global.cadence.com (maileu3.cadence.com [10.160.88.99])
+        by rmmaillnx1.cadence.com (8.14.4/8.14.4) with ESMTP id 14SG6ZtH024608
+        (version=TLSv1/SSLv3 cipher=AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 28 May 2021 12:06:36 -0400
+X-CrossPremisesHeadersFilteredBySendConnector: maileu3.global.cadence.com
+Received: from maileu3.global.cadence.com (10.160.88.99) by
+ maileu3.global.cadence.com (10.160.88.99) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Fri, 28 May 2021 17:56:33 +0200
+Received: from vleu-orange.cadence.com (10.160.88.83) by
+ maileu3.global.cadence.com (10.160.88.99) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2 via Frontend Transport; Fri, 28 May 2021 17:56:33 +0200
+Received: from vleu-orange.cadence.com (localhost.localdomain [127.0.0.1])
+        by vleu-orange.cadence.com (8.14.4/8.14.4) with ESMTP id 14SFuXhK021841;
+        Fri, 28 May 2021 17:56:33 +0200
+Received: (from nadeem@localhost)
+        by vleu-orange.cadence.com (8.14.4/8.14.4/Submit) id 14SFuXV3021840;
+        Fri, 28 May 2021 17:56:33 +0200
+From:   Nadeem Athani <nadeem@cadence.com>
+To:     <tjoseph@cadence.com>, <lorenzo.pieralisi@arm.com>,
+        <robh@kernel.org>, <bhelgaas@google.com>,
+        <linux-pci@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <kw@linux.com>, <kishon@ti.com>
+CC:     <nadeem@cadence.com>, <mparab@cadence.com>, <sjakhade@cadence.com>,
+        <pthombar@cadence.com>
+Subject: [PATCH] [v2] PCI: cadence: Set LTSSM Detect Quiet state minimum delay as workaround for training defect.
+Date:   Fri, 28 May 2021 17:56:26 +0200
+Message-ID: <20210528155626.21793-1-nadeem@cadence.com>
+X-Mailer: git-send-email 2.15.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <15419fa8e5c0047327395387b28c09d775b35a55.camel@HansenPartnership.com>
+Content-Type: text/plain
+X-OrganizationHeadersPreserved: maileu3.global.cadence.com
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 8fe31b47-4e81-463f-8239-08d921f29301
+X-MS-TrafficTypeDiagnostic: BY5PR07MB7201:
+X-Microsoft-Antispam-PRVS: <BY5PR07MB72010AD6B8045356409F8497D8229@BY5PR07MB7201.namprd07.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:2512;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: i7Qxd6fbQfk8Anlk4VO8FiTRi1rn+jq4dFs6xNpl9RmANth1O+y9ZsbYRbSh23c40+Cu4b5XlvAc+9Sw6baH233LluZZsr6UoQd58BiWUxpoaxPsKmHDk9w1dm1BdzKeXu2uZPKlvZ4LWVrPTrt0KfIt3am+5SPeC18h6rUnJApMoRm/hshHPmSiPNieJj/g8dEBhf4MrDFNGpo/1vLOLvtIifIXNxuo3fGQ4SEeu9Kt39I5c0eBtj+1NkY4HkyIdrnnGPYismTtvRAddF8MKWpZaPyLg3wkttbrQlL4g3RhX4KHiaLdrQxXLGIQRIwo5I3Kr3RtA53DmHaQVW9ue0u4gPLh5BuHhiKM675MdgvT/vrjhPOhuDjzZ5t4d9R1hYAFqC9CyMJA/xw4TdCBTG0mtCLESLHvw/r8jzmgnhEUURxa8alhrB7Zs/lVPLvH3vVSbNau71tHc/1/JViktSNkt24jaQtLFM2cR/3WCCY2EloWmVt5KZ58NrLmJWwl/v6wvWAOF7V3vYgYqb9QVcfGg/MzFeGZ0QkkH+S2sHPMhwkMONdZ8ddeN8I//66Nk4Pm/DLKTn9v/ImCoJ9ziFHr/DWnzfXDhPfU35HZp1NqHDIlyS4+aeA0F+AhWt50Bl2bhm3YD3q/hg6j083XARHyA6ZluIomPaeZcWT3c7S0lcSrh48sLOdje/Bt5S1ii1Uk9WVV9SwV3e3WsPsKkLFCGnkS/5LXZ9GdgUfIPPk=
+X-Forefront-Antispam-Report: CIP:199.43.4.23;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:rmmaillnx1.cadence.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(4636009)(396003)(136003)(39860400002)(346002)(376002)(36092001)(36840700001)(46966006)(54906003)(36860700001)(86362001)(81166007)(110136005)(82310400003)(83380400001)(42186006)(107886003)(8936002)(36906005)(478600001)(6666004)(8676002)(316002)(4326008)(82740400003)(2616005)(336012)(186003)(26005)(47076005)(426003)(2906002)(70206006)(356005)(36756003)(1076003)(5660300002)(70586007)(36900700001)(2101003);DIR:OUT;SFP:1101;
+X-OriginatorOrg: cadence.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 28 May 2021 16:06:38.0978
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 8fe31b47-4e81-463f-8239-08d921f29301
+X-MS-Exchange-CrossTenant-Id: d36035c5-6ce6-4662-a3dc-e762e61ae4c9
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=d36035c5-6ce6-4662-a3dc-e762e61ae4c9;Ip=[199.43.4.23];Helo=[rmmaillnx1.cadence.com]
+X-MS-Exchange-CrossTenant-AuthSource: DM6NAM12FT004.eop-nam12.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR07MB7201
+X-Proofpoint-ORIG-GUID: e2VP9pdL97n3F1KRf40RjjZApdOlerMD
+X-Proofpoint-GUID: e2VP9pdL97n3F1KRf40RjjZApdOlerMD
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
+ definitions=2021-05-28_05:2021-05-27,2021-05-28 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_check_notspam policy=outbound_check score=0
+ priorityscore=1501 mlxscore=0 adultscore=0 clxscore=1011 bulkscore=0
+ impostorscore=0 lowpriorityscore=0 malwarescore=0 suspectscore=0
+ mlxlogscore=999 phishscore=0 spamscore=0 classifier=spam adjust=0
+ reason=mlx scancount=1 engine=8.12.0-2104190000
+ definitions=main-2105280108
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi James,
+PCIe fails to link up if SERDES lanes not used by PCIe are assigned to
+another protocol. For example, link training fails if lanes 2 and 3 are
+assigned to another protocol while lanes 0 and 1 are used for PCIe to
+form a two lane link. This failure is due to an incorrect tie-off on an
+internal status signal indicating electrical idle.
 
-On Fri, May 28, 2021 at 08:44:23AM -0700, James Bottomley wrote:
-> On Fri, 2021-05-28 at 18:31 +0300, Laurent Pinchart wrote:
-> > On Fri, May 28, 2021 at 08:27:44AM -0700, James Bottomley wrote:
-> [...]
-> > > Well, I'm not going to get into a debate over the effectiveness of
-> > > the current vaccines.  I will say that all conferences have to now
-> > > recognize that a sizeable proportion of former attendees will have
-> > > fears about travelling and therefore remote components are going to
-> > > be a fixture of conferences going forward.
-> > > 
-> > > However, while we should accommodate them, we can't let these fears
-> > > override people willing to take the risk and meet in person.
-> > 
-> > The interesting question is how we'll make sure that those people
-> > will not be de facto excluded from the community, or end up as
-> > second-class citizens.
-> 
-> Before the pandemic, there was a small contingent who refused to fly
-> for various reasons.  We did sort of accommodate that by rotating the
-> conference to Europe where more people could come in by train (like
-> they did in Lisbon) but we didn't govern the whole conference by trying
-> to make aerophobes first class citizens.
-> 
-> The bottom line is that as long as enough people are willing to meet in
-> person and in-person delivers more value that remote (even though we'll
-> try to make remote as valuable as possible) we should do it.   We
-> should not handicap the desires of the one group by the fears of the
-> other because that's a false equality ... it's reducing everyone to the
-> level of the lowest common denominator rather than trying to elevate
-> people.
+Status signals going from SERDES to PCIe Controller are tied-off when a
+lane is not assigned to PCIe. Signal indicating electrical idle is
+incorrectly tied-off to a state that indicates non-idle. As a result,
+PCIe sees unused lanes to be out of electrical idle and this causes
+LTSSM to exit Detect.Quiet state without waiting for 12ms timeout to
+occur. If a receiver is not detected on the first receiver detection
+attempt in Detect.Active state, LTSSM goes back to Detect.Quiet and
+again moves forward to Detect.Active state without waiting for 12ms as
+required by PCIe base specification. Since wait time in Detect.Quiet is
+skipped, multiple receiver detect operations are performed back-to-back
+without allowing time for capacitance on the transmit lines to
+discharge. This causes subsequent receiver detection to always fail even
+if a receiver gets connected eventually.
 
-This should take into account the size of each group, and I believe even
-then it won't be a binary decision, there's lots of variation in local
-situations, creating more than just two groups of coward/careless people
-(let's not debate those two words if possible, they're not meant to
-insult anyway, but to emphasize that there are more categories). While I
-believe that in-person meetings will become the norm again in a
-reasonably near future, 2021 seems a bit premature to me.
+Adding a quirk flag "quirk_detect_quiet_flag" to program the minimum
+time that LTSSM waits on entering Detect.Quiet state.
+Setting this to 2ms for specific TI j7200 SOC as a workaround to resolve
+a link training issue in IP.
+In future revisions this setting will not be required.
 
-If we want to brainstorm alternate solutions, an option could be to
-split the monolithic conference location into a small set of
-geographically distributed groups (assuming local travel would be easier
-and generally seen as an accepted solution compared to intercontinental
-travels) and link those through video conferencing. I don't have high
-hopes that this would be feasible in practice given the increase in
-efforts and costs to organize multiple locations in parallel, but maybe
-something interesting could come out of discussing different options.
+As per PCIe specification, all Receivers must meet the Z-RX-DC
+specification for 2.5 GT/s within 1ms of entering Detect.Quiet LTSSM
+substate. The LTSSM must stay in this substate until the ZRXDC
+specification for 2.5 GT/s is met.
 
+00 : 0 minimum wait time in Detect.Quiet state.
+01 : 100us minimum wait time in Detect.Quiet state.
+10 : 1ms minimum wait time in Detect.Quiet state.
+11 : 2ms minimum wait time in Detect.Quiet state.
+
+Changes in v2:
+1. Adding the function cdns_pcie_detect_quiet_min_delay_set in
+pcie-cadence.c and invoking it from host and endpoint driver file.
+
+Signed-off-by: Nadeem Athani <nadeem@cadence.com>
+---
+ drivers/pci/controller/cadence/pcie-cadence-ep.c   |  4 ++++
+ drivers/pci/controller/cadence/pcie-cadence-host.c |  3 +++
+ drivers/pci/controller/cadence/pcie-cadence.c      | 17 +++++++++++++++++
+ drivers/pci/controller/cadence/pcie-cadence.h      | 15 +++++++++++++++
+ 4 files changed, 39 insertions(+)
+
+diff --git a/drivers/pci/controller/cadence/pcie-cadence-ep.c b/drivers/pci/controller/cadence/pcie-cadence-ep.c
+index 897cdde02bd8..dd7df1ac7fda 100644
+--- a/drivers/pci/controller/cadence/pcie-cadence-ep.c
++++ b/drivers/pci/controller/cadence/pcie-cadence-ep.c
+@@ -623,6 +623,10 @@ int cdns_pcie_ep_setup(struct cdns_pcie_ep *ep)
+ 	ep->irq_pci_addr = CDNS_PCIE_EP_IRQ_PCI_ADDR_NONE;
+ 	/* Reserve region 0 for IRQs */
+ 	set_bit(0, &ep->ob_region_map);
++
++	if (ep->quirk_detect_quiet_flag)
++		cdns_pcie_detect_quiet_min_delay_set(&ep->pcie);
++
+ 	spin_lock_init(&ep->lock);
+ 
+ 	return 0;
+diff --git a/drivers/pci/controller/cadence/pcie-cadence-host.c b/drivers/pci/controller/cadence/pcie-cadence-host.c
+index ae1c55503513..fb96d37a135c 100644
+--- a/drivers/pci/controller/cadence/pcie-cadence-host.c
++++ b/drivers/pci/controller/cadence/pcie-cadence-host.c
+@@ -498,6 +498,9 @@ int cdns_pcie_host_setup(struct cdns_pcie_rc *rc)
+ 		return PTR_ERR(rc->cfg_base);
+ 	rc->cfg_res = res;
+ 
++	if (rc->quirk_detect_quiet_flag)
++		cdns_pcie_detect_quiet_min_delay_set(&rc->pcie);
++
+ 	ret = cdns_pcie_start_link(pcie);
+ 	if (ret) {
+ 		dev_err(dev, "Failed to start link\n");
+diff --git a/drivers/pci/controller/cadence/pcie-cadence.c b/drivers/pci/controller/cadence/pcie-cadence.c
+index 3c3646502d05..65b6c8bed0d4 100644
+--- a/drivers/pci/controller/cadence/pcie-cadence.c
++++ b/drivers/pci/controller/cadence/pcie-cadence.c
+@@ -7,6 +7,23 @@
+ 
+ #include "pcie-cadence.h"
+ 
++void cdns_pcie_detect_quiet_min_delay_set(struct cdns_pcie *pcie)
++{
++	u32 delay = 0x3;
++	u32 ltssm_control_cap;
++
++	/*
++	 * Set the LTSSM Detect Quiet state min. delay to 2ms.
++	 */
++
++	ltssm_control_cap = cdns_pcie_readl(pcie, CDNS_PCIE_LTSSM_CONTROL_CAP);
++	ltssm_control_cap = ((ltssm_control_cap &
++			    ~CDNS_PCIE_DETECT_QUIET_MIN_DELAY_MASK) |
++			    CDNS_PCIE_DETECT_QUIET_MIN_DELAY(delay));
++
++	cdns_pcie_writel(pcie, CDNS_PCIE_LTSSM_CONTROL_CAP, ltssm_control_cap);
++}
++
+ void cdns_pcie_set_outbound_region(struct cdns_pcie *pcie, u8 busnr, u8 fn,
+ 				   u32 r, bool is_io,
+ 				   u64 cpu_addr, u64 pci_addr, size_t size)
+diff --git a/drivers/pci/controller/cadence/pcie-cadence.h b/drivers/pci/controller/cadence/pcie-cadence.h
+index 254d2570f8c9..ccdf9cee9dde 100644
+--- a/drivers/pci/controller/cadence/pcie-cadence.h
++++ b/drivers/pci/controller/cadence/pcie-cadence.h
+@@ -189,6 +189,14 @@
+ /* AXI link down register */
+ #define CDNS_PCIE_AT_LINKDOWN (CDNS_PCIE_AT_BASE + 0x0824)
+ 
++/* LTSSM Capabilities register */
++#define CDNS_PCIE_LTSSM_CONTROL_CAP             (CDNS_PCIE_LM_BASE + 0x0054)
++#define  CDNS_PCIE_DETECT_QUIET_MIN_DELAY_MASK  GENMASK(2, 1)
++#define  CDNS_PCIE_DETECT_QUIET_MIN_DELAY_SHIFT 1
++#define  CDNS_PCIE_DETECT_QUIET_MIN_DELAY(delay) \
++	 (((delay) << CDNS_PCIE_DETECT_QUIET_MIN_DELAY_SHIFT) & \
++	 CDNS_PCIE_DETECT_QUIET_MIN_DELAY_MASK)
++
+ enum cdns_pcie_rp_bar {
+ 	RP_BAR_UNDEFINED = -1,
+ 	RP_BAR0,
+@@ -292,6 +300,7 @@ struct cdns_pcie {
+  * @avail_ib_bar: Satus of RP_BAR0, RP_BAR1 and	RP_NO_BAR if it's free or
+  *                available
+  * @quirk_retrain_flag: Retrain link as quirk for PCIe Gen2
++ * @quirk_detect_quiet_flag: LTSSM Detect Quiet min delay set as quirk
+  */
+ struct cdns_pcie_rc {
+ 	struct cdns_pcie	pcie;
+@@ -301,6 +310,7 @@ struct cdns_pcie_rc {
+ 	u32			device_id;
+ 	bool			avail_ib_bar[CDNS_PCIE_RP_MAX_IB];
+ 	bool                    quirk_retrain_flag;
++	bool                    quirk_detect_quiet_flag;
+ };
+ 
+ /**
+@@ -331,6 +341,7 @@ struct cdns_pcie_epf {
+  *        registers fields (RMW) accessible by both remote RC and EP to
+  *        minimize time between read and write
+  * @epf: Structure to hold info about endpoint function
++ * @quirk_detect_quiet_flag: LTSSM Detect Quiet min delay set as quirk
+  */
+ struct cdns_pcie_ep {
+ 	struct cdns_pcie	pcie;
+@@ -345,6 +356,7 @@ struct cdns_pcie_ep {
+ 	/* protect writing to PCI_STATUS while raising legacy interrupts */
+ 	spinlock_t		lock;
+ 	struct cdns_pcie_epf	*epf;
++	bool                    quirk_detect_quiet_flag;
+ };
+ 
+ 
+@@ -505,6 +517,9 @@ static inline int cdns_pcie_ep_setup(struct cdns_pcie_ep *ep)
+ 	return 0;
+ }
+ #endif
++
++void cdns_pcie_detect_quiet_min_delay_set(struct cdns_pcie *pcie);
++
+ void cdns_pcie_set_outbound_region(struct cdns_pcie *pcie, u8 busnr, u8 fn,
+ 				   u32 r, bool is_io,
+ 				   u64 cpu_addr, u64 pci_addr, size_t size);
 -- 
-Regards,
+2.15.0
 
-Laurent Pinchart
