@@ -2,105 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D5CE739451D
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 17:32:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A4C0394529
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 17:35:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236629AbhE1PeH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 May 2021 11:34:07 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:41870 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233270AbhE1PeE (ORCPT
+        id S236598AbhE1Pg6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 May 2021 11:36:58 -0400
+Received: from relay12.mail.gandi.net ([217.70.178.232]:51399 "EHLO
+        relay12.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230201AbhE1Pgy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 May 2021 11:34:04 -0400
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1622215949;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=wfCUOtFr0WygTFDkR5FKbL+FKBHLtouLyX2xmDMXokY=;
-        b=XJHUYo/xVErYy2KSD2fMOaqRQNHK7WQFOUa/rY4p3/O3gHnW3FdxNMVZK5ldM978gRhWvw
-        x/a9THMYnlNxTubGss82N/FovVPP5pi8qDEd/1LXAlhm4xkWrhuWALF7hBqvxIuv1cGigI
-        FbnX2RsDcGVY4Tws6A0zX4XvFzkfyE6AiyeJOBVzE8oekXJQn5qg7miIHtro/y5GSqSM9V
-        zRXIGiR3wgJHEI+rnIOo0xiHQFz44YHTaZ/HaZtKMzz0z85h+CdownR59LPzGxCCWx9TBH
-        9O9GlFDk+k0s439trD4K9ZE7POEOk1VlxnSAq68XA1la3LXdYagwH+tBtlH3AA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1622215949;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=wfCUOtFr0WygTFDkR5FKbL+FKBHLtouLyX2xmDMXokY=;
-        b=Ytn9OwDnX8/ud2+p2S0N5XmEahRWOh7e9ogMSavA2u0i7uq2gVDRiN60Yzkif3BO8hhUDS
-        YN7shPb+VW1CP4Bg==
-To:     Dave Hansen <dave.hansen@linux.intel.com>, linux-mm@kvack.org
-Cc:     linux-kernel@vger.kernel.org,
-        Dave Hansen <dave.hansen@linux.intel.com>, mingo@redhat.com,
-        bp@alien8.de, x86@kernel.org, luto@kernel.org, shuah@kernel.org,
-        babu.moger@amd.com, dave.kleikamp@oracle.com, linuxram@us.ibm.com,
-        bauerman@linux.ibm.com
-Subject: Re: [PATCH 0/5] x86/pkeys: PKRU manipulation bug fixes and cleanups
-In-Reply-To: <20210527235109.B2A9F45F@viggo.jf.intel.com>
-References: <20210527235109.B2A9F45F@viggo.jf.intel.com>
-Date:   Fri, 28 May 2021 17:32:28 +0200
-Message-ID: <87eedq7u2b.ffs@nanos.tec.linutronix.de>
+        Fri, 28 May 2021 11:36:54 -0400
+Received: (Authenticated sender: alexandre.belloni@bootlin.com)
+        by relay12.mail.gandi.net (Postfix) with ESMTPSA id CDA4E200006;
+        Fri, 28 May 2021 15:35:17 +0000 (UTC)
+Date:   Fri, 28 May 2021 17:35:17 +0200
+From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
+To:     Thomas Petazzoni <thomas.petazzoni@bootlin.com>
+Cc:     Bin Liu <b-liu@ti.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Tony Lindgren <tony@atomide.com>, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Subject: Re: [PATCH] usb: musb: fix MUSB_QUIRK_B_DISCONNECT_99 handling
+Message-ID: <YLENtd45ly8ZFJO2@piout.net>
+References: <20210528140446.278076-1-thomas.petazzoni@bootlin.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210528140446.278076-1-thomas.petazzoni@bootlin.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 27 2021 at 16:51, Dave Hansen wrote:
-> Andy Lutomirski recently noted a probable bug in write_pkru(), but
-> it was unclear if it was user-visible.  A recent bug report in
-> related code[1] forced me to take a look.
->
-> Basically, manipulation of XSAVE state is too unstructured.
-> get_xsave_addr() gives callers the impression they can read and
-> write XSAVE state when there are a lot of pitfalls, like updates
-> to xstate.features bits.
->
-> As a result, more than one call site screws up the modification
-> of PKRU in the XSAVE buffer.  This series fixes that problem up
-> and also hopefully carves out a less error-prone path that can
-> be reused for other XSAVE features.
->
-> This series:
->  * Moves the PKRU manipulation to a more appropriate location,
->    away from the page table code
->  * Wraps get_xsave_addr() with more structured, less error-prone
->    interfaces.
->  * Conditionally hides a pkey debugfs file, eliminating the need
->    for new runtime checks to work with the new interface.
->  * Add a selftest to make it more likely to catch bugs like this
->    in the future.  This improved selftest catches this issue on
->    Intel CPUs.  Without the improvement, it only triggers on AMD.
+On 28/05/2021 16:04:46+0200, Thomas Petazzoni wrote:
+> In commit 92af4fc6ec33 ("usb: musb: Fix suspend with devices
+> connected for a64"), the logic to support the
+> MUSB_QUIRK_B_DISCONNECT_99 quirk was modified to only conditionally
+> schedule the musb->irq_work delayed work.
+> 
+> This commit badly breaks ECM Gadget on AM335X. Indeed, with this
+> commit, one can observe massive packet loss:
+> 
+> $ ping 192.168.0.100
+> ...
+> 15 packets transmitted, 3 received, 80% packet loss, time 14316ms
+> 
+> Reverting this commit brings back a properly functioning ECM
+> Gadget. An analysis of the commit seems to indicate that a mistake was
+> made: the previous code was not falling through into the
+> MUSB_QUIRK_B_INVALID_VBUS_91, but now it is, unless the condition is
+> taken.
+> 
+> Changing the logic to be as it was before the problematic commit *and*
+> only conditionally scheduling musb->irq_work resolves the regression:
+> 
+> $ ping 192.168.0.100
+> ...
+> 64 packets transmitted, 64 received, 0% packet loss, time 64475ms
+> 
+> Fixes: 92af4fc6ec33 ("usb: musb: Fix suspend with devices connected for a64")
+> Signed-off-by: Thomas Petazzoni <thomas.petazzoni@bootlin.com>
+Tested-by: Alexandre Belloni <alexandre.belloni@bootlin.com>
 
-I think all of this is fundamentaly wrong.
+> Cc: stable@vger.kernel.org
+> ---
+>  drivers/usb/musb/musb_core.c | 3 +--
+>  1 file changed, 1 insertion(+), 2 deletions(-)
+> 
+> diff --git a/drivers/usb/musb/musb_core.c b/drivers/usb/musb/musb_core.c
+> index 8f09a387b773..4c8f0112481f 100644
+> --- a/drivers/usb/musb/musb_core.c
+> +++ b/drivers/usb/musb/musb_core.c
+> @@ -2009,9 +2009,8 @@ static void musb_pm_runtime_check_session(struct musb *musb)
+>  			schedule_delayed_work(&musb->irq_work,
+>  					      msecs_to_jiffies(1000));
+>  			musb->quirk_retries--;
+> -			break;
+>  		}
+> -		fallthrough;
+> +		break;
+>  	case MUSB_QUIRK_B_INVALID_VBUS_91:
+>  		if (musb->quirk_retries && !musb->flush_irq_work) {
+>  			musb_dbg(musb,
+> -- 
+> 2.31.1
+> 
 
-Contrary to FPU state, PKRU has to be updated at context switch
-time. There is absolutely no point in having PKRU XSAVES managed.
-
-It's broken in several ways. Anything which clears and loads the FPU
-will load the wrong PKRU value. Go figure...
-
-So the right thing is to disable PKRU in XCR0 and on sched out simply do
-
-   task->thread.pkru = read_pkru();
-
-and on sched in
-
-   write_pkru(task->thread.pkru);
-
-Simple, trivial and not going to be wreckaged by anything which fiddles
-with xstates. We all know by now that xstates is a trainwreck and not
-having stuff like that in there is making the fixes I'm doing way
-simpler.
-
-CET will have a similar issue, but we'll discuss that once we have the
-existing horrors sorted.
-
-Thanks,
-
-        tglx
-
-
+-- 
+Alexandre Belloni, co-owner and COO, Bootlin
+Embedded Linux and Kernel engineering
+https://bootlin.com
