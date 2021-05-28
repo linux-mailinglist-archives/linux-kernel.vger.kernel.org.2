@@ -2,107 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 02CC2394656
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 19:21:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 02634394659
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 19:23:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234568AbhE1RXL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 May 2021 13:23:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43800 "EHLO
+        id S234580AbhE1RZB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 May 2021 13:25:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44216 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230193AbhE1RXK (ORCPT
+        with ESMTP id S229599AbhE1RZA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 May 2021 13:23:10 -0400
-Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9A37C061574
-        for <linux-kernel@vger.kernel.org>; Fri, 28 May 2021 10:21:34 -0700 (PDT)
-Received: by mail-wm1-x32d.google.com with SMTP id o127so2517731wmo.4
-        for <linux-kernel@vger.kernel.org>; Fri, 28 May 2021 10:21:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=nexus-software-ie.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=scHG+8hUPjtbaxqAIRrNTESjQXzSH5JKl2wenbFc2w8=;
-        b=eFsE+o2qmtozyY3vcZ5kChHif66Zz7w0LGa+0qR/yny+Eq63joHpR0T9uLI7KYeDwe
-         E/97imlGcQldR/Xs1VjBGkSKYHemWveFoMY1O4VqByLTtJKKSK6tZ31V4nclGy66T01h
-         3kt+osmVafd4clK7SkYS0fM4BhQniaKp5vg+5iOM44Zxdx2VW3oTmd9r2KLRpcQg28QU
-         IMX5ajbh8K8O+uf/aqgjf7IsS5wqUrsoSjtQUbApxNSNZHHm7FTKQ0Hs6uMWGZ7PpiEs
-         LsTQURHghAxQmEg8EaZu/1n+ZzI0d/7fCxWVszp59txlXGMQlipYpQgRHUruRizU2epx
-         9nQA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=scHG+8hUPjtbaxqAIRrNTESjQXzSH5JKl2wenbFc2w8=;
-        b=EQHNkHxMcU1qdw2EML7qjvFkWa4zPgQa1UCaXINYg6JIK+4TK4xBaEBP/IZ7Owko65
-         QO7ZbAMeZ4uIbfFSfumIlM1kdEYNprzSEMKVklscL19AwTXu3Dya0gzp2iSebHUSg8Io
-         k2geNkJ9O//I+MVumkkNWHzEMuiSYBmI/LVC8wUSnU4xWN2e/R92HqeSHhnU0rNr/g5w
-         zdnUCcdDjIZ8K5ZcAmDGfoUMBcML2OQ4K7mCvpwiHZ8jSefoTA/9h1Hxs0WGYOrJPTKb
-         cDj7wP4KNGaNK0pbdghrFvGV+n2anW/wgJNj+YnpMFkXnXvRYNOKLEuwmPALbIaAqo2Z
-         LNgg==
-X-Gm-Message-State: AOAM53043NmYxkhnwoGYIxomWSJ7grBFCuDS96UWgqfIs8scacVbv6Zw
-        ERT8gkVYLfSB20mvEAw3yyj3sA==
-X-Google-Smtp-Source: ABdhPJwDSWZ04EbaFWGZL6KGWkl1fL/jAW11ceb1vkO71Tn+4xdhReJ0jxgiwkSAbkpbB5CyCxToAw==
-X-Received: by 2002:a05:600c:21c3:: with SMTP id x3mr9311858wmj.131.1622222493417;
-        Fri, 28 May 2021 10:21:33 -0700 (PDT)
-Received: from [192.168.0.162] (188-141-3-169.dynamic.upc.ie. [188.141.3.169])
-        by smtp.gmail.com with ESMTPSA id z17sm8767546wrt.81.2021.05.28.10.21.32
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 28 May 2021 10:21:32 -0700 (PDT)
-Subject: Re: [PATCH] venus: helper: do not set constrained format for UBWC
-To:     Mansur Alisha Shaik <mansur@codeaurora.org>,
-        linux-media@vger.kernel.org, stanimir.varbanov@linaro.org
-Cc:     linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        vgarodia@codeaurora.org, dikshita@codeaurora.org
-References: <1622195288-18541-1-git-send-email-mansur@codeaurora.org>
-From:   Bryan O'Donoghue <pure.logic@nexus-software.ie>
-Message-ID: <a66e00f2-af3a-9550-0779-625152cc2719@nexus-software.ie>
-Date:   Fri, 28 May 2021 18:23:16 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        Fri, 28 May 2021 13:25:00 -0400
+Received: from ssl.serverraum.org (ssl.serverraum.org [IPv6:2a01:4f8:151:8464::1:2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 014CFC061574;
+        Fri, 28 May 2021 10:23:25 -0700 (PDT)
+Received: from ssl.serverraum.org (web.serverraum.org [172.16.0.2])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ssl.serverraum.org (Postfix) with ESMTPSA id C0C7222172;
+        Fri, 28 May 2021 19:23:23 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2016061301;
+        t=1622222603;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=IDuWvQqFShHWimnqBlKHNcabbY7RqOavTF/jlqWv7vg=;
+        b=K5ymFjHp5q2y6BgWN9HIr/0HIhOhJvH5h/ZBhRWPlvfq3w9qyETvRf+fG1vmegHdgZC3Wq
+        Pv2VvOxmBNoAX1dYSdbMoWJP2EbDd72bZHItpidXenI2EmxnCL2seVKaIgTPLiGcXlyILf
+        Ko/lKknnCY2Hcu6M1XIKWoMhdLeVovg=
 MIME-Version: 1.0
-In-Reply-To: <1622195288-18541-1-git-send-email-mansur@codeaurora.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
 Content-Transfer-Encoding: 7bit
+Date:   Fri, 28 May 2021 19:23:23 +0200
+From:   Michael Walle <michael@walle.cc>
+To:     "Vaittinen, Matti" <Matti.Vaittinen@fi.rohmeurope.com>
+Cc:     bgolaszewski@baylibre.com, bcm-kernel-feedback-list@broadcom.com,
+        linux-arm-kernel@lists.infradead.org,
+        linux-power <linux-power@fi.rohmeurope.com>,
+        linus.walleij@linaro.org, linux-kernel@vger.kernel.org,
+        linux-gpio@vger.kernel.org, jonas.gorski@gmail.com,
+        noltari@gmail.com, andy.shevchenko@gmail.com, f.fainelli@gmail.com
+Subject: Re: [PATCH v4 0/3] gpio: gpio-regmap: Support few custom operations
+In-Reply-To: <93578f0271fba68429f911c74acc1b7bd5610644.camel@fi.rohmeurope.com>
+References: <cover.1622008846.git.matti.vaittinen@fi.rohmeurope.com>
+ <CACRpkdaSr_CV1pKS44Ru15AEJ0-1429+6E7Lei2sPHdaijr9iw@mail.gmail.com>
+ <0c2a8ffab666ef31f5cee50b8b47767285dfe829.camel@fi.rohmeurope.com>
+ <CACRpkdZ2GdrGr8-XnVvf59O4AVBueBjX0PHYGtOeOdGXi=iE4A@mail.gmail.com>
+ <15d9e565021c115eec268c7fca810799eb503a90.camel@fi.rohmeurope.com>
+ <CAMpxmJVJAX8jPrYg3=jkG4JqEEnUfpexfn+cFKWJQYpdRJaRUA@mail.gmail.com>
+ <93578f0271fba68429f911c74acc1b7bd5610644.camel@fi.rohmeurope.com>
+User-Agent: Roundcube Webmail/1.4.11
+Message-ID: <ee700b25c170047045a65bed2236089d@walle.cc>
+X-Sender: michael@walle.cc
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 28/05/2021 10:48, Mansur Alisha Shaik wrote:
-> Do not set constrained format explicitly for UBWC
+Hi Matti,
+
+Am 2021-05-28 17:42, schrieb Vaittinen, Matti:
+> Hi Bartosz,
 > 
-> Signed-off-by: Mansur Alisha Shaik <mansur@codeaurora.org>
-
-Could you give a little bit more detail on why, what the side effects are ?
-
-Should this be a Fixes: ?
-
-> ---
->   drivers/media/platform/qcom/venus/helpers.c | 4 ++++
->   1 file changed, 4 insertions(+)
+> On Fri, 2021-05-28 at 16:31 +0200, Bartosz Golaszewski wrote:
+>> On Fri, May 28, 2021 at 8:33 AM Vaittinen, Matti
+>> <Matti.Vaittinen@fi.rohmeurope.com> wrote:
+>> 
+>> [snip]
+>> 
+>> > > What makes things easy for me to maintain is active and happy
+>> > > driver maintainers, so it is paramount that the file looks to
+>> > > Michael
+>> > > like something he wants to keep maintaining. This removes work
+>> > > from me and Bartosz.
+>> >
+>> > I agree. When someone takes care of a driver, he should be happy
+>> > with
+>> > it. Period. And thanks to Michael for writing this driver and
+>> > reviewing
+>> > the patches. Reviewing is hard work.
+>> >
+>> > On the other hand, I don't enjoy writing code I am unhappy with
+>> > either.
+>> > And as this particular piece of code is not a paid task for me, I
+>> > do
+>> > this for fun. gpio-regmap is not mandatory for my drivers now. So,
+>> > I'll
+>> > just opt-out from this change. I'll happily use the gpio-regmap
+>> > where
+>> > it fits, when it fits.
+>> >
+>> 
+>> I take it that path 2/3 is still good to go?
 > 
-> diff --git a/drivers/media/platform/qcom/venus/helpers.c b/drivers/media/platform/qcom/venus/helpers.c
-> index b813d6dba..e4b8a2a 100644
-> --- a/drivers/media/platform/qcom/venus/helpers.c
-> +++ b/drivers/media/platform/qcom/venus/helpers.c
-> @@ -1138,8 +1138,12 @@ int venus_helper_set_format_constraints(struct venus_inst *inst)
->   	if (!IS_V6(inst->core))
->   		return 0;
->   
-> +	if (inst->opb_fmt == HFI_COLOR_FORMAT_NV12_UBWC)
-> +		return 0;
-> +
->   	pconstraint.buffer_type = HFI_BUFFER_OUTPUT2;
->   	pconstraint.num_planes = 2;
-> +
+> I don't think it had explicit ack from Michael yet - but I think it was
+> not objected either. I can respin it alone if needed but would help me
+> if you just pick it from this series (assuming it's Ok for others).
 
-Additional newline should be removed.
+Just sent my R-b.
 
->   	pconstraint.plane_format[0].stride_multiples = 128;
->   	pconstraint.plane_format[0].max_stride = 8192;
->   	pconstraint.plane_format[0].min_plane_buffer_height_multiple = 32;
-> 
+I'd pick the removal of the gpio_regmap_set_drvdata(), too. If you're
+fine with it I'd submit a new patch with just that.
 
----
-bod
+-michael
