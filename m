@@ -2,93 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AD5273941B2
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 13:19:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 51BB23941B6
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 13:21:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230299AbhE1LVY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 May 2021 07:21:24 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:40890 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229552AbhE1LVV (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 May 2021 07:21:21 -0400
-Received: from imap.suse.de (imap-alt.suse-dmz.suse.de [192.168.254.47])
-        (using TLSv1.2 with cipher ECDHE-ECDSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 046451FD2F;
-        Fri, 28 May 2021 11:19:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1622200786; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=qLMJxJYpMmRjq971tcymb5HaqU6rvz49VUg3ot6Bqks=;
-        b=N9qH3OC3FNKCfO/Nfg6bKxfB6g3bN/E3Ch0wUEvpvVA3oinwZ9fToEuroP11fYBH2GgpfW
-        yQASqxGvy01ww+hiZCvXIqQZiO6uZ0hblxOkIRLZPCp1X7/+kerWyvI/MCRllPJbPXmhRm
-        rPypG9TbF47r9jZoVPuyyDAedxct1H0=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1622200786;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=qLMJxJYpMmRjq971tcymb5HaqU6rvz49VUg3ot6Bqks=;
-        b=G+ST+qC4G8Zt6f5Gabr30bKDIgzNz6WM0r3ty/wn+S5See96z+Zxo6s4NaUFpA4UrIWLUI
-        IfqMEI8LhWOUkXDA==
-Received: from director2.suse.de (director2.suse-dmz.suse.de [192.168.254.72])
-        by imap.suse.de (Postfix) with ESMTPSA id E603311A98;
-        Fri, 28 May 2021 11:19:45 +0000 (UTC)
-Subject: Re: [PATCH 4/6] mm/page_alloc: Scale the number of pages that are
- batch freed
-To:     Mel Gorman <mgorman@techsingularity.net>,
-        Andrew Morton <akpm@linux-foundation.org>
-Cc:     Hillf Danton <hdanton@sina.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Michal Hocko <mhocko@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux-MM <linux-mm@kvack.org>
-References: <20210525080119.5455-1-mgorman@techsingularity.net>
- <20210525080119.5455-5-mgorman@techsingularity.net>
-From:   Vlastimil Babka <vbabka@suse.cz>
-Message-ID: <c7e5a4e7-43df-0f49-d297-1b4621221ca1@suse.cz>
-Date:   Fri, 28 May 2021 13:19:45 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.2
+        id S232839AbhE1LW5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 May 2021 07:22:57 -0400
+Received: from mga18.intel.com ([134.134.136.126]:10564 "EHLO mga18.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231321AbhE1LWy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 28 May 2021 07:22:54 -0400
+IronPort-SDR: oEpJFh/xL2ynRSulXTbMkh/8omfRfEZiC02XrKvJjPrlu4SMm3D/iVP0+1xkeAoeupN4VLGEn/
+ 7e3P3slQ2Gqg==
+X-IronPort-AV: E=McAfee;i="6200,9189,9997"; a="190309419"
+X-IronPort-AV: E=Sophos;i="5.83,229,1616482800"; 
+   d="scan'208";a="190309419"
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 May 2021 04:21:12 -0700
+IronPort-SDR: GwBp7j8AA09JggSbtLsNAJ8msgeQLY/f7WuKXrA5lHaWsoGmWbdkAOVREhA+mgjX35mdWolj8m
+ DyJ+K5w+csyA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.83,229,1616482800"; 
+   d="scan'208";a="547955919"
+Received: from black.fi.intel.com ([10.237.72.28])
+  by orsmga004.jf.intel.com with ESMTP; 28 May 2021 04:21:11 -0700
+Received: by black.fi.intel.com (Postfix, from userid 1003)
+        id 9E6D33B6; Fri, 28 May 2021 14:21:33 +0300 (EEST)
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v1 1/2] mmc: mmc_spi: Drop duplicate 'mmc_spi' in the debug messages
+Date:   Fri, 28 May 2021 14:21:26 +0300
+Message-Id: <20210528112127.71738-1-andriy.shevchenko@linux.intel.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-In-Reply-To: <20210525080119.5455-5-mgorman@techsingularity.net>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5/25/21 10:01 AM, Mel Gorman wrote:
-> When a task is freeing a large number of order-0 pages, it may acquire
-> the zone->lock multiple times freeing pages in batches. This may
-> unnecessarily contend on the zone lock when freeing very large number
-> of pages. This patch adapts the size of the batch based on the recent
-> pattern to scale the batch size for subsequent frees.
-> 
-> As the machines I used were not large enough to test this are not large
-> enough to illustrate a problem, a debugging patch shows patterns like
-> the following (slightly editted for clarity)
-> 
-> Baseline vanilla kernel
->   time-unmap-14426   [...] free_pcppages_bulk: free   63 count  378 high  378
->   time-unmap-14426   [...] free_pcppages_bulk: free   63 count  378 high  378
->   time-unmap-14426   [...] free_pcppages_bulk: free   63 count  378 high  378
->   time-unmap-14426   [...] free_pcppages_bulk: free   63 count  378 high  378
->   time-unmap-14426   [...] free_pcppages_bulk: free   63 count  378 high  378
-> 
-> With patches
->   time-unmap-7724    [...] free_pcppages_bulk: free  126 count  814 high  814
->   time-unmap-7724    [...] free_pcppages_bulk: free  252 count  814 high  814
->   time-unmap-7724    [...] free_pcppages_bulk: free  504 count  814 high  814
->   time-unmap-7724    [...] free_pcppages_bulk: free  751 count  814 high  814
->   time-unmap-7724    [...] free_pcppages_bulk: free  751 count  814 high  814
-> 
-> Signed-off-by: Mel Gorman <mgorman@techsingularity.net>
-> Acked-by: Dave Hansen <dave.hansen@linux.intel.com>
+dev_dbg() in any case prints the device and driver name, no need
+to repeat this in (some) messages. Drop duplicates for good.
 
-Acked-by: Vlastimil Babka <vbabka@suse.cz>
+Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+---
+ drivers/mmc/host/mmc_spi.c | 12 +++++-------
+ 1 file changed, 5 insertions(+), 7 deletions(-)
+
+diff --git a/drivers/mmc/host/mmc_spi.c b/drivers/mmc/host/mmc_spi.c
+index 9776a03a10f5..65c65bb5737f 100644
+--- a/drivers/mmc/host/mmc_spi.c
++++ b/drivers/mmc/host/mmc_spi.c
+@@ -504,7 +504,7 @@ mmc_spi_command_send(struct mmc_spi_host *host,
+ 		/* else:  R1 (most commands) */
+ 	}
+ 
+-	dev_dbg(&host->spi->dev, "  mmc_spi: CMD%d, resp %s\n",
++	dev_dbg(&host->spi->dev, "  CMD%d, resp %s\n",
+ 		cmd->opcode, maptype(cmd));
+ 
+ 	/* send command, leaving chipselect active */
+@@ -928,8 +928,7 @@ mmc_spi_data_do(struct mmc_spi_host *host, struct mmc_command *cmd,
+ 		while (length) {
+ 			t->len = min(length, blk_size);
+ 
+-			dev_dbg(&host->spi->dev,
+-				"    mmc_spi: %s block, %d bytes\n",
++			dev_dbg(&host->spi->dev, "    %s block, %d bytes\n",
+ 				(direction == DMA_TO_DEVICE) ? "write" : "read",
+ 				t->len);
+ 
+@@ -974,7 +973,7 @@ mmc_spi_data_do(struct mmc_spi_host *host, struct mmc_command *cmd,
+ 		int		tmp;
+ 		const unsigned	statlen = sizeof(scratch->status);
+ 
+-		dev_dbg(&spi->dev, "    mmc_spi: STOP_TRAN\n");
++		dev_dbg(&spi->dev, "    STOP_TRAN\n");
+ 
+ 		/* Tweak the per-block message we set up earlier by morphing
+ 		 * it to hold single buffer with the token followed by some
+@@ -1175,7 +1174,7 @@ static void mmc_spi_set_ios(struct mmc_host *mmc, struct mmc_ios *ios)
+ 
+ 		canpower = host->pdata && host->pdata->setpower;
+ 
+-		dev_dbg(&host->spi->dev, "mmc_spi: power %s (%d)%s\n",
++		dev_dbg(&host->spi->dev, "power %s (%d)%s\n",
+ 				mmc_powerstring(ios->power_mode),
+ 				ios->vdd,
+ 				canpower ? ", can switch" : "");
+@@ -1248,8 +1247,7 @@ static void mmc_spi_set_ios(struct mmc_host *mmc, struct mmc_ios *ios)
+ 
+ 		host->spi->max_speed_hz = ios->clock;
+ 		status = spi_setup(host->spi);
+-		dev_dbg(&host->spi->dev,
+-			"mmc_spi:  clock to %d Hz, %d\n",
++		dev_dbg(&host->spi->dev, "  clock to %d Hz, %d\n",
+ 			host->spi->max_speed_hz, status);
+ 	}
+ }
+-- 
+2.30.2
+
