@@ -2,132 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B07923945C0
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 18:21:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 229AE3945C2
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 18:21:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235870AbhE1QXJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 May 2021 12:23:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58316 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234131AbhE1QXF (ORCPT
+        id S236292AbhE1QXa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 May 2021 12:23:30 -0400
+Received: from mail-oo1-f41.google.com ([209.85.161.41]:43878 "EHLO
+        mail-oo1-f41.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230243AbhE1QX2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 May 2021 12:23:05 -0400
-Received: from mail-pg1-x52a.google.com (mail-pg1-x52a.google.com [IPv6:2607:f8b0:4864:20::52a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1363C061574;
-        Fri, 28 May 2021 09:21:30 -0700 (PDT)
-Received: by mail-pg1-x52a.google.com with SMTP id 29so2886267pgu.11;
-        Fri, 28 May 2021 09:21:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=sMAehbts2FqAsSkzKIWhQHl/CAW20RrXPRH1psEuAmI=;
-        b=fABVgtdifAA9JN+fRaXZZzmr5CXI9nH3mBpqYs/sNc+XEGnqkN6bnt/gulAfSBLnlP
-         8UaOLft2S6PU/f+wbT8awoEzcpXhNtnUdB013upZKUgnTclyWcLo9mlH8DUSVFcpSQIG
-         n71cyaBckowGl/mpqWurv47y533Amoha3OGji0v+Buwv3lTCfM/2yNF0sD5P4x2cpkgn
-         YRi3PZSNxOxMkdP4RIIHqBygxTfQvuL5dSIfgVziCr7tvqk7maM+l+UtnB2/f8GRLoOt
-         LPqHnd5TIRZPvxlDMzh/yxoy3U/4NgbO20XOEZZSJwpJHZwXq6EKL6xkr5czNfwkvrjs
-         TSYw==
+        Fri, 28 May 2021 12:23:28 -0400
+Received: by mail-oo1-f41.google.com with SMTP id e27-20020a056820061bb029020da48eed5cso1055675oow.10;
+        Fri, 28 May 2021 09:21:53 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=sMAehbts2FqAsSkzKIWhQHl/CAW20RrXPRH1psEuAmI=;
-        b=Id8IobRuwkD9a+sRkQJHKBiVKpkSv4KK3qBkVGU4GkNjPKdLWqJRbAGb80+5+GrXWA
-         +wHfps46/nuLV8Ch1PRSYQ3VIQjspHRirf3F0Zk7OeAWyzxvuaE8NWjChWaZ+OZyelmf
-         Gh+4p5DyDBD9usHs1LPysFcmop2/rCB/O/n7btTPCdco/Q6n1TOsfwAORHYm4fUjiYkZ
-         7uKs1YUpmhidFHMCQncuz9YPrstXWQokgBMDtUDwiWsYM9sTZPGWXVaIe80B/+zcSwIB
-         vRvjkKsYQwvQ86zMtROCkE2U8T0YdErPd+nnklD33M0GWgb/TgXfHXfbkJx9wU0T4cAn
-         yFAw==
-X-Gm-Message-State: AOAM530cgpJKHdE30fSMXjnyO+l5ufhZEIc61nnZ3oauf6I9r3JafBDk
-        zYVWVm7OPCgzKl8oYcXuHkE=
-X-Google-Smtp-Source: ABdhPJxkizaGQQ88kBWeWsFDrzis29fCwV4z9mG4nI96RY51fJFoX9yeR5rgqxpClAearxln8yGkTg==
-X-Received: by 2002:a63:e402:: with SMTP id a2mr9791645pgi.181.1622218890265;
-        Fri, 28 May 2021 09:21:30 -0700 (PDT)
-Received: from [10.67.49.104] ([192.19.223.252])
-        by smtp.googlemail.com with ESMTPSA id cu2sm4541858pjb.43.2021.05.28.09.21.28
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 28 May 2021 09:21:29 -0700 (PDT)
-Subject: Re: Kernel Panic in skb_release_data using genet
-To:     Florian Fainelli <f.fainelli@gmail.com>,
-        Maxime Ripard <maxime@cerno.tech>
-Cc:     Doug Berger <opendmb@gmail.com>,
-        bcm-kernel-feedback-list@broadcom.com,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        Nicolas Saenz Julienne <nsaenz@kernel.org>
-References: <20210524130147.7xv6ih2e3apu2zvu@gilmour>
- <a53f6192-3520-d5f8-df4b-786b3e4e8707@gmail.com>
- <20210524151329.5ummh4dfui6syme3@gilmour>
- <1482eff4-c5f4-66d9-237c-55a096ae2eb4@gmail.com>
-From:   Florian Fainelli <f.fainelli@gmail.com>
-Message-ID: <6caa98e7-28ba-520c-f0cc-ee1219305c17@gmail.com>
-Date:   Fri, 28 May 2021 09:21:27 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
-MIME-Version: 1.0
-In-Reply-To: <1482eff4-c5f4-66d9-237c-55a096ae2eb4@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        h=x-gm-message-state:from:to:cc:in-reply-to:references:subject:date
+         :message-id;
+        bh=eOXPQ48/DXVLMOpoDbToX5Y11nDnIWdQtOvWb3iJBV8=;
+        b=Rgdy0Jt6gu/TEJfsnH/L7FB7bryqrAEPICSX9JIYKhUc4W16Alnx1yUitIS4cnwQ/J
+         IvXYe/R6m6BUfuyAAUwnR/pvqOlX3Z1YymO4NlLrU2M4ENKS2qtkfYgxdMcL3uFxI1y3
+         oSoxKAxLYZdRLiTYm0P6pvrHxT2e0ERy4Sh2q9Zy+FdEfX7wLcHVtWGFOoOgTQf2E6M/
+         cI+cy/fB+BvREWGvqH5HZ6KBblFj63XtCpfEFhQBFBwH0hOMF65B6fPatkWxNRYRIuJl
+         zHSwKrgFJRjOlC12SlMIeTfYpW5ikjQ3gy3ElSILefOXpTe9WT0CyD/dZRFowc4WKOx1
+         2bpA==
+X-Gm-Message-State: AOAM531iMe1Ff904frx0KRB/aYPSdGItZx0xeMx5kbhoRDS1AsuuPW6+
+        XR7ewzaMIhMWbiuExeotdA==
+X-Google-Smtp-Source: ABdhPJyPlDwwdt8cwOPHjYqDx51qPFnU39rXzfFZt4NHP1klQ0MpX6ssBEjK1u5zsW02weskmbzdmQ==
+X-Received: by 2002:a4a:b4cd:: with SMTP id g13mr7530007ooo.4.1622218913320;
+        Fri, 28 May 2021 09:21:53 -0700 (PDT)
+Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id l23sm1202791oie.52.2021.05.28.09.21.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 28 May 2021 09:21:51 -0700 (PDT)
+Received: (nullmailer pid 3720613 invoked by uid 1000);
+        Fri, 28 May 2021 16:21:50 -0000
+From:   Rob Herring <robh@kernel.org>
+To:     Heiko Schocher <hs@denx.de>
+Cc:     linux-kernel@vger.kernel.org,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        devicetree@vger.kernel.org, Richard Weinberger <richard@nod.at>,
+        linux-mtd@lists.infradead.org
+In-Reply-To: <20210528072351.1639575-2-hs@denx.de>
+References: <20210528072351.1639575-1-hs@denx.de> <20210528072351.1639575-2-hs@denx.de>
+Subject: Re: [PATCH v1 1/2] mtd: devices: add devicetree documentation for microchip 48l640
+Date:   Fri, 28 May 2021 11:21:50 -0500
+Message-Id: <1622218910.743539.3720612.nullmailer@robh.at.kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5/24/21 8:37 AM, Florian Fainelli wrote:
+On Fri, 28 May 2021 09:23:50 +0200, Heiko Schocher wrote:
+> The Microchip 48l640 is a 8KByte EERAM connected via SPI.
+> Add devicetree bindings documentation.
 > 
+> Signed-off-by: Heiko Schocher <hs@denx.de>
+> ---
+> I must admit that I created the file
 > 
-> On 5/24/2021 8:13 AM, Maxime Ripard wrote:
->> Hi Florian,
->>
->> On Mon, May 24, 2021 at 07:49:25AM -0700, Florian Fainelli wrote:
->>> Hi Maxime,
->>>
->>> On 5/24/2021 6:01 AM, Maxime Ripard wrote:
->>>> Hi Doug, Florian,
->>>>
->>>> I've been running a RaspberryPi4 with a mainline kernel for a while,
->>>> booting from NFS. Every once in a while (I'd say ~20-30% of all boots),
->>>> I'm getting a kernel panic around the time init is started.
->>>>
->>>> I was debugging a kernel based on drm-misc-next-2021-05-17 today with
->>>> KASAN enabled and got this, which looks related:
->>>
->>> Is there a known good version that could be used for bisection or you
->>> just started to do this test and you have no reference point?
->>
->> I've had this issue for over a year and never (I think?) got a good
->> version, so while it might be a regression, it's not a recent one.
+> Documentation/devicetree/bindings/mtd/microchip,mchp48l640.yaml
 > 
-> OK, this helps and does not really help.
+> by hand, looking into other yaml files...
 > 
->>
->>> How stable in terms of clocking is the configuration that you are using?
->>> I could try to fire up a similar test on a Pi4 at home, or use one of
->>> our 72112 systems which is the closest we have to a Pi4 and see if that
->>> happens there as well.
->>
->> I'm not really sure about the clocking. Is there any clock you want to
->> look at in particular?
+> Is there a way to check such a file to its correctness?
 > 
-> ARM, DDR, AXI, anything that could cause some memory corruption to occur
-> essentially. GENET clocks are fairly fixed, you have a 250MHz clock and
-> a 125MHz clock feeding the data path.
+>  .../bindings/mtd/microchip,mchp48l640.yaml    | 40 +++++++++++++++++++
+>  1 file changed, 40 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/mtd/microchip,mchp48l640.yaml
 > 
->>
->> My setup is fairly simple: the firmware and kernel are loaded over TFTP
->> and the rootfs is mounted over NFS, and the crash always occur around
->> init start, so I guess when it actually starts to transmit a decent
->> amount of data?
-> 
-> Do you reproduce this problem with KASAN disabled, do you eventually
-> have a crash pointing back to the same location?
-> 
-> I have a suspicion that this is all Pi4 specific because we regularly
-> run the GENET driver through various kernel versions (4.9, 5.4 and 5.10
-> and mainline) and did not run into that.
 
-I have not had time to get a set-up to reproduce what you are seeing,
-could you share your .config meanwhile? Thanks
---
-Florian
+My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
+on your patch (DT_CHECKER_FLAGS is new in v5.13):
+
+yamllint warnings/errors:
+
+dtschema/dtc warnings/errors:
+Traceback (most recent call last):
+  File "/usr/local/bin/dt-doc-validate", line 67, in <module>
+    ret = check_doc(f)
+  File "/usr/local/bin/dt-doc-validate", line 33, in check_doc
+    for error in sorted(dtschema.DTValidator.iter_schema_errors(testtree), key=lambda e: e.linecol):
+  File "/usr/local/lib/python3.8/dist-packages/dtschema/lib.py", line 723, in iter_schema_errors
+    meta_schema = cls.resolver.resolve_from_url(schema['$schema'])
+KeyError: '$schema'
+make[1]: *** Deleting file 'Documentation/devicetree/bindings/processed-schema-examples.json'
+Traceback (most recent call last):
+  File "/usr/local/bin/dt-mk-schema", line 38, in <module>
+    schemas = dtschema.process_schemas(args.schemas, core_schema=(not args.useronly))
+  File "/usr/local/lib/python3.8/dist-packages/dtschema/lib.py", line 587, in process_schemas
+    sch = process_schema(os.path.abspath(filename))
+  File "/usr/local/lib/python3.8/dist-packages/dtschema/lib.py", line 568, in process_schema
+    DTValidator.check_schema(schema)
+  File "/usr/local/lib/python3.8/dist-packages/dtschema/lib.py", line 738, in check_schema
+    meta_schema = cls.resolver.resolve_from_url(schema['$schema'])
+KeyError: '$schema'
+make[1]: *** [Documentation/devicetree/bindings/Makefile:62: Documentation/devicetree/bindings/processed-schema-examples.json] Error 1
+make: *** [Makefile:1416: dt_binding_check] Error 2
+
+See https://patchwork.ozlabs.org/patch/1485038
+
+This check can fail if there are any dependencies. The base for a patch
+series is generally the most recent rc1.
+
+If you already ran 'make dt_binding_check' and didn't see the above
+error(s), then make sure 'yamllint' is installed and dt-schema is up to
+date:
+
+pip3 install dtschema --upgrade
+
+Please check and re-submit.
+
