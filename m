@@ -2,117 +2,193 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 31196393B21
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 03:44:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 075FE393B24
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 03:45:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234265AbhE1Bpg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 May 2021 21:45:36 -0400
-Received: from szxga01-in.huawei.com ([45.249.212.187]:5119 "EHLO
-        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229835AbhE1Bpf (ORCPT
+        id S234580AbhE1Bqf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 May 2021 21:46:35 -0400
+Received: from twspam01.aspeedtech.com ([211.20.114.71]:32985 "EHLO
+        twspam01.aspeedtech.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229749AbhE1Bqe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 May 2021 21:45:35 -0400
-Received: from dggeml756-chm.china.huawei.com (unknown [172.30.72.53])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4FrnTW2h19zYnQX;
-        Fri, 28 May 2021 09:41:19 +0800 (CST)
-Received: from dggpeml500017.china.huawei.com (7.185.36.243) by
- dggeml756-chm.china.huawei.com (10.1.199.158) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2176.2; Fri, 28 May 2021 09:43:59 +0800
-Received: from [10.174.178.174] (10.174.178.174) by
- dggpeml500017.china.huawei.com (7.185.36.243) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Fri, 28 May 2021 09:43:59 +0800
-Subject: Re: [PATCH -next] i3c: master: svc: drop free_irq of devm_request_irq
- allocated irq
-To:     Miquel Raynal <miquel.raynal@bootlin.com>
-CC:     <linux-kernel@vger.kernel.org>, <linux-i3c@lists.infradead.org>,
-        <alexandre.belloni@bootlin.com>
-References: <20210518131127.1308550-1-yangyingliang@huawei.com>
- <20210527120123.75f2ea09@xps13>
- <7052d19a-54cb-d634-f195-dbd8ef37f1e7@huawei.com>
- <20210527164058.3c9145b2@xps13>
-From:   Yang Yingliang <yangyingliang@huawei.com>
-Message-ID: <7912f44a-39ea-928c-8b51-6b8967588abd@huawei.com>
-Date:   Fri, 28 May 2021 09:43:58 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        Thu, 27 May 2021 21:46:34 -0400
+Received: from mail.aspeedtech.com ([192.168.0.24])
+        by twspam01.aspeedtech.com with ESMTP id 14S1VC2k002352;
+        Fri, 28 May 2021 09:31:12 +0800 (GMT-8)
+        (envelope-from jamin_lin@aspeedtech.com)
+Received: from aspeedtech.com (192.168.100.253) by TWMBX02.aspeed.com
+ (192.168.0.24) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Fri, 28 May
+ 2021 09:44:18 +0800
+Date:   Fri, 28 May 2021 09:44:17 +0800
+From:   Jamin Lin <jamin_lin@aspeedtech.com>
+To:     Andrew Jeffery <andrew@aj.id.au>
+CC:     Rob Herring <robh+dt@kernel.org>, Joel Stanley <joel@jms.id.au>,
+        "Brendan Higgins" <brendanhiggins@google.com>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Rayn Chen <rayn_chen@aspeedtech.com>,
+        "open list:I2C SUBSYSTEM HOST DRIVERS" <linux-i2c@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        "moderated list:ARM/ASPEED MACHINE SUPPORT" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "moderated list:ARM/ASPEED MACHINE SUPPORT" 
+        <linux-aspeed@lists.ozlabs.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        "moderated list:ARM/ASPEED I2C DRIVER" <openbmc@lists.ozlabs.org>,
+        Ryan Chen <ryan_chen@aspeedtech.com>,
+        "Chin-Ting Kuo" <chin-ting_kuo@aspeedtech.com>,
+        Troy Lee <troy_lee@aspeedtech.com>,
+        Steven Lee <steven_lee@aspeedtech.com>
+Subject: Re: [PATCH v2 1/1] dt-bindings: aspeed-i2c: Convert txt to yaml
+ format
+Message-ID: <20210528014416.GA3195@aspeedtech.com>
+References: <20210527102512.20684-1-jamin_lin@aspeedtech.com>
+ <20210527102512.20684-2-jamin_lin@aspeedtech.com>
+ <f7df6bb6-762d-4250-a4bc-076cbfc441eb@www.fastmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20210527164058.3c9145b2@xps13>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-Originating-IP: [10.174.178.174]
-X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
- dggpeml500017.china.huawei.com (7.185.36.243)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset="utf-8"
+Content-Disposition: inline
+In-Reply-To: <f7df6bb6-762d-4250-a4bc-076cbfc441eb@www.fastmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Originating-IP: [192.168.100.253]
+X-ClientProxiedBy: TWMBX02.aspeed.com (192.168.0.24) To TWMBX02.aspeed.com
+ (192.168.0.24)
+X-DNSRBL: 
+X-MAIL: twspam01.aspeedtech.com 14S1VC2k002352
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+The 05/27/2021 23:20, Andrew Jeffery wrote:
+> 
+> 
+> On Thu, 27 May 2021, at 19:55, Jamin Lin wrote:
+> > Convert aspeed i2c to yaml.
+> > 
+> > Signed-off-by: Jamin Lin <jamin_lin@aspeedtech.com>
+> > ---
+> >  .../devicetree/bindings/i2c/aspeed,i2c.yaml   | 86 +++++++++++++++++++
+> >  .../devicetree/bindings/i2c/i2c-aspeed.txt    | 49 -----------
+> >  2 files changed, 86 insertions(+), 49 deletions(-)
+> >  create mode 100644 Documentation/devicetree/bindings/i2c/aspeed,i2c.yaml
+> >  delete mode 100644 Documentation/devicetree/bindings/i2c/i2c-aspeed.txt
+> > 
+> > diff --git a/Documentation/devicetree/bindings/i2c/aspeed,i2c.yaml 
+> > b/Documentation/devicetree/bindings/i2c/aspeed,i2c.yaml
+> > new file mode 100644
+> > index 000000000000..1f7064d77708
+> > --- /dev/null
+> > +++ b/Documentation/devicetree/bindings/i2c/aspeed,i2c.yaml
+> > @@ -0,0 +1,86 @@
+> > +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> > +%YAML 1.2
+> > +---
+> > +$id: http://devicetree.org/schemas/i2c/aspeed,i2c.yaml#
+> > +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> > +
+> > +title: ASPEED I2C on the AST24XX, AST25XX, and AST26XX SoCs Device 
+> > Tree Bindings
+> > +
+> > +maintainers:
+> > +  - Rayn Chen <rayn_chen@aspeedtech.com>
+> > +
+> > +allOf:
+> > +  - $ref: /schemas/i2c/i2c-controller.yaml#
+> > +
+> > +properties:
+> > +  compatible:
+> > +    enum:
+> > +      - aspeed,ast2400-i2c-bus
+> > +      - aspeed,ast2500-i2c-bus
+> > +      - aspeed,ast2600-i2c-bus
+> > +
+> > +  "#size-cells":
+> > +    const: 0
+> > +
+> > +  "#address-cells":
+> > +    const: 1
+> > +
+> > +  reg:
+> > +    minItems: 1
+> > +    maxItems: 2
+> > +    items:
+> > +      - description: address offset and range of bus
+> > +      - description: address offset and range of bus buffer
+> > +
+> > +  interrupts:
+> > +    maxItems: 1
+> > +    description: interrupt number
+> > +
+> > +  clocks:
+> > +    maxItems: 1
+> > +    description:
+> > +      root clock of bus, should reference the APB
+> > +      clock in the second cell
+> > +
+> > +  reset:
+> > +    maxItems: 1
+> > +    description: phandle to reset controller with the reset number in
+> > +      the second cell
+> > +
+> > +  bus-frequency:
+> > +    minimum: 500
+> > +    maximum: 4000000
+> > +    default: 100000
+> > +    description: frequency of the bus clock in Hz defaults to 100 kHz 
+> > when not
+> > +      specified
+> > +
+> > +  multi-master:
+> > +    type: boolean
+> > +    description:
+> > +      states that there is another master active on this bus
+> > +
+> > +required:
+> > +  - reg
+> > +  - compatible
+> > +  - clocks
+> > +  - resets
+> > +
+> > +unevaluatedProperties: false
+> > +
+> > +examples:
+> > +  - |
+> > +    #include <dt-bindings/clock/aspeed-clock.h>
+> > +    i2c0: i2c-bus@40 {
+> > +      #address-cells = <1>;
+> > +      #size-cells = <0>;
+> > +      #interrupt-cells = <1>;
+> > +      reg = <0x40 0x40>;
+> > +      compatible = "aspeed,ast2500-i2c-bus";
+> > +      clocks = <&syscon ASPEED_CLK_APB>;
+> > +      resets = <&syscon ASPEED_RESET_I2C>;
+> > +      bus-frequency = <100000>;
+> > +      interrupts = <0>;
+> > +      interrupt-parent = <&i2c_ic>;
+> > +      status = "disabled";
+> > +      /* Does not need pinctrl properties */
+> 
+> Note this actually isn't right and someone (me?) needs to send a patch 
+> to fix the devicetree(s) - the I2C mux properties for bus 0 and 1 just 
+> don't have a group, and so SCL and SDA need to be muxed individually.
+> 
+> I expect we wound up with this comment by a lack of a match for an 
+> erroneous grep.
+> 
+> Andrew
+Understand. Can I change the example as the following or can you give me
+any suggestion?
 
-On 2021/5/27 22:40, Miquel Raynal wrote:
-> Hi Yang,
->
-> Yang Yingliang <yangyingliang@huawei.com> wrote on Thu, 27 May 2021
-> 21:49:53 +0800:
->
->> Hi,
->>
->> On 2021/5/27 18:01, Miquel Raynal wrote:
->>> Hi Yang,
->>>
->>> Yang Yingliang <yangyingliang@huawei.com> wrote on Tue, 18 May 2021
->>> 21:11:27 +0800:
->>>   
->>>> irq allocated with devm_request_irq should not be freed using
->>>> free_irq, because doing so causes a dangling pointer, and a
->>>> subsequent double free.
->>>>
->>>> Reported-by: Hulk Robot <hulkci@huawei.com>
->>>> Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
->>>> ---
->>>>    drivers/i3c/master/svc-i3c-master.c | 2 +-
->>>>    1 file changed, 1 insertion(+), 1 deletion(-)
->>>>
->>>> diff --git a/drivers/i3c/master/svc-i3c-master.c b/drivers/i3c/master/svc-i3c-master.c
->>>> index 1f6ba4221817..761c9c468357 100644
->>>> --- a/drivers/i3c/master/svc-i3c-master.c
->>>> +++ b/drivers/i3c/master/svc-i3c-master.c
->>>> @@ -1448,7 +1448,7 @@ static int svc_i3c_master_remove(struct platform_device *pdev)
->>>>    	if (ret)
->>>>    		return ret;
->>>>    >> -	free_irq(master->irq, master);
->>>> +	devm_free_irq(&pdev->dev, master->irq, master);
->>> Wouldn't removing this call the right solution? If it's a device
->>> managed resource, it won't probably be needed to free it explicitly in
->>> the remove path.
->> Some drivers would expect to free irq itself,
-> I don't get it. Drivers do not expect anything, they should just comply
-> with the API. If robots complain because a device managed resource is
-> being freed without the device managed helper, this does not mean that
-> the resource should explicitly be freed, it just means that *if* it
-> must be explicitly freed, the wrong helper is being used.
->
->> I am not sure if it's ok to remove the free_irq() in i3c,
-> What is the link with I3C? Sorry I might be missing something but
-> master->irq is a driver variable, I don't get the link with the I3C
-> framework and why it would interfere.
->
->> I just keep the original logic here and avoid double free.
-> I don't think it is sane. Calling devm_free_irq() maybe is the right
-> solution - I don't feel like it is - but your certainly can't hide
-> behind a 'I just want the robots to be happy' justification. Hiding
-> bugs on purpose is not something that I personally appreciate much.
-Freeing irq in ->remove() is earlier than in device manage framework, if
-just remove the free_irq() in svc_i3c_master_remove() and free the irq by
-device manage framework, I am not sure if it breaks the resource free
-sequence in Silvaco I3C master driver. If it's OK, I can resend a patch with
-removing the free_irq().
+i2c0: i2c-bus@40 {
+  #address-cells = <1>;
+  #size-cells = <0>;
+  #interrupt-cells = <1>;
+  reg = <0x40 0x40>;
+  compatible = "aspeed,ast2500-i2c-bus";
+  clocks = <&syscon ASPEED_CLK_APB>;
+  resets = <&syscon ASPEED_RESET_I2C>;
+  bus-frequency = <100000>;
+  interrupts = <0>;
+  interrupt-parent = <&i2c_ic>;
 
-Thanks,
-Yang
->
-> Thanks,
-> Miquèl
-> .
+Thanks-Jamin
