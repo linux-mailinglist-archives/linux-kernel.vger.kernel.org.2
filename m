@@ -2,149 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 591723943CB
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 16:07:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 494F83943CD
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 16:07:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236445AbhE1OJA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 May 2021 10:09:00 -0400
-Received: from mga14.intel.com ([192.55.52.115]:63313 "EHLO mga14.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230056AbhE1OIy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 May 2021 10:08:54 -0400
-IronPort-SDR: shwJZ05gy54oPPa/RDC+Umxu8U3ur0lZ1AGORlDJlBkSqg2pWV2WSHesW3/qW8YKq1DNnXX27y
- qhah0S9HWrGA==
-X-IronPort-AV: E=McAfee;i="6200,9189,9998"; a="202734940"
-X-IronPort-AV: E=Sophos;i="5.83,229,1616482800"; 
-   d="scan'208";a="202734940"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 May 2021 07:07:20 -0700
-IronPort-SDR: vm5T4xDc3MzHgbFCEy2u4eU43/8v1tEBAL4XacOhxXfEqwFu3kg3Ig4zHLzH3udFUUwl5kX69x
- 0DSvH+JCuC7A==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.83,229,1616482800"; 
-   d="scan'208";a="481059699"
-Received: from shbuild999.sh.intel.com ([10.239.147.94])
-  by fmsmga002.fm.intel.com with ESMTP; 28 May 2021 07:07:16 -0700
-From:   Feng Tang <feng.tang@intel.com>
-To:     linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        David Rientjes <rientjes@google.com>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Ben Widawsky <ben.widawsky@intel.com>
-Cc:     linux-kernel@vger.kernel.org,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Andi Kleen <ak@linux.intel.com>,
-        Dan Williams <dan.j.williams@intel.com>, ying.huang@intel.com,
-        Feng Tang <feng.tang@intel.com>
-Subject: [v2 PATCH 3/3] mm/mempolicy: unify the parameter sanity check for mbind and set_mempolicy
-Date:   Fri, 28 May 2021 22:07:03 +0800
-Message-Id: <1622210823-61911-4-git-send-email-feng.tang@intel.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1622210823-61911-1-git-send-email-feng.tang@intel.com>
-References: <1622210823-61911-1-git-send-email-feng.tang@intel.com>
+        id S236439AbhE1OJZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 May 2021 10:09:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56500 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236424AbhE1OJS (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 28 May 2021 10:09:18 -0400
+Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8C95C061574;
+        Fri, 28 May 2021 07:07:42 -0700 (PDT)
+Received: by mail-ed1-x52d.google.com with SMTP id y7so5012916eda.2;
+        Fri, 28 May 2021 07:07:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=gmeSm8o0KnklsZ4e5IrRfjO+jG/+LdBVNPQF2l/4OlA=;
+        b=i0NGwOcoQW/Xe5YSw61VwzlX5fLiNTLQQfXFRqC9saqhlVpRBGI1F/TvMT6xqu74xp
+         v0nZOa6qca4TPgUsSucOi2U35jbKRPyMXUAgHEQcZWokuANdlou6lUtXQpn4gqvpIn2/
+         YVaKD6DP0Z/G5XcIt1ZpinVB88UexKQUcph/+mPmPqmCjxYow1Er9CV5zEgsHqGVsg6o
+         y6PLOMKPOtDQp8IAhBo4MWo6QoKT2PdDsMpPGcYguEhKyw3CZ2XWvAVp+hqDdsLkQ4XU
+         4So1qcnp2rFbg1Xw8mv0vR/jDG2HHa2g2qCjhXqCVszFKaHGOqXwXY8qgt9Fr8uioFAI
+         U9qg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=gmeSm8o0KnklsZ4e5IrRfjO+jG/+LdBVNPQF2l/4OlA=;
+        b=rE4BLHGiRaTe7w8HRi9JTzazb50O1pWYatwBvDWF0H/BEau/F0XJnCgWBxS3IMQ0As
+         rrD7IZtmh6+iXdMdx052Hj4uRkYkLStoPmmT1OlN1C+eNmSnnd93hLbtO9IrsBk3L8P3
+         Ua87kc/l9NL+q10OyxyLWm8g7VjMqe7R45l69Sb7EW299sJCA05q0462516tLfpIU0gA
+         vNEIaOBI2lzQYDWCxn+wW8DYY8Lugi8XfqmOpjRNxzVKM2NCkdy/V6OdGp9MHLFTOwf+
+         u77nJcY1JKaf0EO/59E2AXV+igjG3m7SsUes3PQHjXy1mUNVInNmL5wrtiesgF6ehpAv
+         0s6Q==
+X-Gm-Message-State: AOAM531nN2nYBj9nFzAOFZX8yEsZYzx5SwIP6jsY1+rVxcuVAX4PFW5L
+        YtVje/CiGN/Y99iqSxAH3A==
+X-Google-Smtp-Source: ABdhPJxKPgSY9GkyhdHngZk+RvVE3sVtTWqSwT9kL7gKgmXpjd77U+2R98FBLEQ1l0t6+X8VG8yd9g==
+X-Received: by 2002:a05:6402:14c1:: with SMTP id f1mr9753808edx.334.1622210861554;
+        Fri, 28 May 2021 07:07:41 -0700 (PDT)
+Received: from localhost.localdomain (ip4d17b4b8.dynamic.kabel-deutschland.de. [77.23.180.184])
+        by smtp.googlemail.com with ESMTPSA id bh2sm2389309ejb.80.2021.05.28.07.07.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 28 May 2021 07:07:41 -0700 (PDT)
+From:   Alex Bee <knaerzche@gmail.com>
+To:     Heiko Stuebner <heiko@sntech.de>, linux-clk@vger.kernel.org,
+        linux-rockchip@lists.infradead.org
+Cc:     Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Alex Bee <knaerzche@gmail.com>
+Subject: [PATCH] clk: rockchip: export ACLK_VCODEC for RK3036
+Date:   Fri, 28 May 2021 16:07:36 +0200
+Message-Id: <20210528140736.79686-1-knaerzche@gmail.com>
+X-Mailer: git-send-email 2.27.0
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Currently the kernel_mbind() and kernel_set_mempolicy() do almost
-the same operation for parameter sanity check.
+It is required for the series at [1] to let hantro driver aquire the
+clock and set the rate for RK3036 correctly, but I didn't want to
+add a patch for yet another subsystem to this series.
 
-Add a helper function to unify the code to reduce the redundancy,
-and make it easier for changing the pre-processing code in future.
+[1] https://lore.kernel.org/linux-media/20210525152225.154302-1-knaerzche@gmail.com/
 
-[thanks to David Rientjes for suggesting using helper function
-instead of macro]
-
-Signed-off-by: Feng Tang <feng.tang@intel.com>
+Signed-off-by: Alex Bee <knaerzche@gmail.com>
 ---
- mm/mempolicy.c | 47 +++++++++++++++++++++++++++++------------------
- 1 file changed, 29 insertions(+), 18 deletions(-)
+ drivers/clk/rockchip/clk-rk3036.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/mm/mempolicy.c b/mm/mempolicy.c
-index f9ab05b..e5a3e5e 100644
---- a/mm/mempolicy.c
-+++ b/mm/mempolicy.c
-@@ -1467,26 +1467,37 @@ static int copy_nodes_to_user(unsigned long __user *mask, unsigned long maxnode,
- 	return copy_to_user(mask, nodes_addr(*nodes), copy) ? -EFAULT : 0;
- }
+diff --git a/drivers/clk/rockchip/clk-rk3036.c b/drivers/clk/rockchip/clk-rk3036.c
+index 91d56ad45817..614845cc5b4a 100644
+--- a/drivers/clk/rockchip/clk-rk3036.c
++++ b/drivers/clk/rockchip/clk-rk3036.c
+@@ -259,7 +259,7 @@ static struct rockchip_clk_branch rk3036_clk_branches[] __initdata = {
+ 			RK2928_CLKGATE_CON(1), 13, GFLAGS,
+ 			&rk3036_uart2_fracmux),
  
-+static inline int sanitize_mpol_flags(int *mode, unsigned short *flags)
-+{
-+	*flags = *mode & MPOL_MODE_FLAGS;
-+	*mode &= ~MPOL_MODE_FLAGS;
-+	if ((unsigned int)(*mode) >= MPOL_MAX)
-+		return -EINVAL;
-+	if ((*flags & MPOL_F_STATIC_NODES) && (*flags & MPOL_F_RELATIVE_NODES))
-+		return -EINVAL;
-+
-+	return 0;
-+}
-+
- static long kernel_mbind(unsigned long start, unsigned long len,
- 			 unsigned long mode, const unsigned long __user *nmask,
- 			 unsigned long maxnode, unsigned int flags)
- {
-+	unsigned short mode_flags;
- 	nodemask_t nodes;
-+	int lmode = mode;
- 	int err;
--	unsigned short mode_flags;
- 
- 	start = untagged_addr(start);
--	mode_flags = mode & MPOL_MODE_FLAGS;
--	mode &= ~MPOL_MODE_FLAGS;
--	if (mode >= MPOL_MAX)
--		return -EINVAL;
--	if ((mode_flags & MPOL_F_STATIC_NODES) &&
--	    (mode_flags & MPOL_F_RELATIVE_NODES))
--		return -EINVAL;
-+	err = sanitize_mpol_flags(&lmode, &mode_flags);
-+	if (err)
-+		return err;
-+
- 	err = get_nodes(&nodes, nmask, maxnode);
- 	if (err)
- 		return err;
--	return do_mbind(start, len, mode, mode_flags, &nodes, flags);
-+
-+	return do_mbind(start, len, lmode, mode_flags, &nodes, flags);
- }
- 
- SYSCALL_DEFINE6(mbind, unsigned long, start, unsigned long, len,
-@@ -1500,20 +1511,20 @@ SYSCALL_DEFINE6(mbind, unsigned long, start, unsigned long, len,
- static long kernel_set_mempolicy(int mode, const unsigned long __user *nmask,
- 				 unsigned long maxnode)
- {
--	int err;
-+	unsigned short mode_flags;
- 	nodemask_t nodes;
--	unsigned short flags;
-+	int lmode = mode;
-+	int err;
-+
-+	err = sanitize_mpol_flags(&lmode, &mode_flags);
-+	if (err)
-+		return err;
- 
--	flags = mode & MPOL_MODE_FLAGS;
--	mode &= ~MPOL_MODE_FLAGS;
--	if ((unsigned int)mode >= MPOL_MAX)
--		return -EINVAL;
--	if ((flags & MPOL_F_STATIC_NODES) && (flags & MPOL_F_RELATIVE_NODES))
--		return -EINVAL;
- 	err = get_nodes(&nodes, nmask, maxnode);
- 	if (err)
- 		return err;
--	return do_set_mempolicy(mode, flags, &nodes);
-+
-+	return do_set_mempolicy(lmode, mode_flags, &nodes);
- }
- 
- SYSCALL_DEFINE3(set_mempolicy, int, mode, const unsigned long __user *, nmask,
+-	COMPOSITE(0, "aclk_vcodec", mux_pll_src_3plls_p, 0,
++	COMPOSITE(ACLK_VCODEC, "aclk_vcodec", mux_pll_src_3plls_p, 0,
+ 			RK2928_CLKSEL_CON(32), 14, 2, MFLAGS, 8, 5, DFLAGS,
+ 			RK2928_CLKGATE_CON(3), 11, GFLAGS),
+ 	FACTOR_GATE(HCLK_VCODEC, "hclk_vcodec", "aclk_vcodec", 0, 1, 4,
 -- 
-2.7.4
+2.27.0
 
