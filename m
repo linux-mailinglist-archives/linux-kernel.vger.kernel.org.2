@@ -2,168 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 01214394239
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 13:55:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 10E9239423B
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 13:56:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236068AbhE1L4w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 May 2021 07:56:52 -0400
-Received: from mo4-p02-ob.smtp.rzone.de ([81.169.146.168]:20161 "EHLO
-        mo4-p02-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233262AbhE1L4t (ORCPT
+        id S236137AbhE1L6B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 May 2021 07:58:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55356 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233262AbhE1L56 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 May 2021 07:56:49 -0400
-ARC-Seal: i=1; a=rsa-sha256; t=1622202900; cv=none;
-    d=strato.com; s=strato-dkim-0002;
-    b=aQqcZXWT4XqPeHd8/2ibHiQiD1y0VfjXgM93IQawBsWKOFFaYg7Br3XRXwJLYWOed2
-    5i4CPMnLy8DqoaPZ1rYrLQ08+MvyTdHHd6TAmJgjWcohAQXdyK6JpOTF4hbCXR3yD9TH
-    56edytofCabbK6dkc/IvLSEEHenbmQv9YXApUDfcNxdpO8UplJ+zIDbb4bxT+OfHrs7P
-    L1R4RSd9u7MJ8JNaVN17I/3RZTakBCX7U65NzmWV1ZTKUt3QsU8Qwf0/BB7zQhb4bFZX
-    Nwnxlz4k2HnL3e6kKkIi/mlDHuSJtMjagupA0eYYOBobpKfIgP6/JbJxo7cJ/drKj7Qq
-    fv5A==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1622202900;
-    s=strato-dkim-0002; d=strato.com;
-    h=In-Reply-To:References:Message-ID:Subject:Cc:To:From:Date:Cc:Date:
-    From:Subject:Sender;
-    bh=WeqQN4mQvzS29AH4yAdf/GA2SB8Yu/Jx4YSHLw8KKYE=;
-    b=bqf4cZk8Qnv8wHwLoJN03UmrYfSpdnKV1xjO0lspSs4rthlzJOqbdJnOw9bVQP4kTr
-    U/BH4KXzQhaYPIez72f1hPVRbqTa/35VD5OI6RvcvtmeErJJAlfIghJJDVHYHsw5nNnU
-    CH5lxIYHSbKQei7HrijXF6z0r9HpRuBPNgd03CnAZ780w9pG9aZN4ErBl78CrojgC4e7
-    AkI9hu0h7N3cXvVgFJcWhUIZz+QKKRx71Ic/L4JR422WL0oKn7cho0laveUYHeotDLkY
-    sRAsw7cTg4aERqRwBR1bpJtF7R/stkXVb1ZHNLoT6jsA3R8HHcDwrnPSMVzQQfbHX9Zl
-    iwHQ==
-ARC-Authentication-Results: i=1; strato.com;
-    dkim=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1622202900;
-    s=strato-dkim-0002; d=gerhold.net;
-    h=In-Reply-To:References:Message-ID:Subject:Cc:To:From:Date:Cc:Date:
-    From:Subject:Sender;
-    bh=WeqQN4mQvzS29AH4yAdf/GA2SB8Yu/Jx4YSHLw8KKYE=;
-    b=r7Zylf9UuQSufvtraDgmWTNFpCe14DxFRNNm7J/TwKvYKTw8j0M1lHsl+TTeoTF8K6
-    f2eTgAgDHuPBJIKuec3ey0NYauSLZVgZGxVwXohj1PL0R+iApOUjAGfOBsmQ4nyjGDC4
-    sa5jwB1+O8TZOsGXeZh4n8PgOVORTTSlu1JvCGXevsnsaQ86tzlfeFUHj9TuIs3UeXzQ
-    XusYsM4XcEaiOhSciF7+xYGVMUHk7KlvGI23QdgMm40KTNdoSnXC8rzP/tS5xOO2oR9u
-    6Eptxcf+NrkFWHu8K386VOg0nPhuxsAtWfFaSch+EB9IeuVgjpObdxuwu98dcaovvVzz
-    28BQ==
-Authentication-Results: strato.com;
-    dkim=none
-X-RZG-AUTH: ":P3gBZUipdd93FF5ZZvYFPugejmSTVR2nRPhVOQ/OcYgojyw4j34+u26zEodhPgRDZ8j6IczFY4o="
-X-RZG-CLASS-ID: mo00
-Received: from gerhold.net
-    by smtp.strato.de (RZmta 47.26.3 DYNA|AUTH)
-    with ESMTPSA id U0b2c9x4SBsx662
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
-        (Client did not present a certificate);
-    Fri, 28 May 2021 13:54:59 +0200 (CEST)
-Date:   Fri, 28 May 2021 13:54:58 +0200
-From:   Stephan Gerhold <stephan@gerhold.net>
-To:     Vincent Knecht <vincent.knecht@mailoo.org>
-Cc:     Mark Brown <broonie@kernel.org>, phone-devel@vger.kernel.org,
-        ~postmarketos/upstreaming@lists.sr.ht,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v1 4/4] ASoC: codecs: tfa989x: Add support for optional
- vddd-supply
-Message-ID: <YLDaEnjGmCHrUMiz@gerhold.net>
-References: <20210528105101.508254-1-vincent.knecht@mailoo.org>
- <20210528105101.508254-4-vincent.knecht@mailoo.org>
+        Fri, 28 May 2021 07:57:58 -0400
+Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE03DC061574;
+        Fri, 28 May 2021 04:56:23 -0700 (PDT)
+Received: by mail-lf1-x12f.google.com with SMTP id f30so4972825lfj.1;
+        Fri, 28 May 2021 04:56:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=mPgnXkvgPC2FCM76SzDk31Ok99btV/EjkXWXd50lL6E=;
+        b=W5qszfWOQ8gLPmoTsTGFVujJ1QKlPZ4ZMivIkNKr91Rw3I2anHXWaqVHWrg+r78bi4
+         yMf6WMkeJyhvliZ0UuvqukuYv4mTYrwgph1gs50hqW0MiSNHz4N35q9A3jmZzQmvPuxp
+         bJinolTV12FDEd4+HQ0I0TU3DfmTRW0Nya/ne9JB7jHU5MKvR2pebaQNncFL2jvLDUCH
+         azmsbTCcgnpsie8u8LgGv7efUW9Qb6nLyuP7rTXyB+lkUMSqikOkrVld6QCeSTs3C/kk
+         /sYzBA6T49wAunTLP8IiqCOkpSqwUXitu1KIWHDZmQaOL7YDdaNQyM2p3jxrUCQPkWiq
+         kpAA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=mPgnXkvgPC2FCM76SzDk31Ok99btV/EjkXWXd50lL6E=;
+        b=C1klHb2qKLVPkQ4ZdqthHhD6EHZy1wzeYXr9xjmbbu6hM61H6SK6xpRchFEY7gdmaM
+         B7USLg4GNdQQkeOuwWUcMSDg8/q9lH9LekCYKvKRI2Lx9693BbC8jtFax3j67/GmQx3X
+         jRpMhCogqj5YESHxHW291ZkWNJckzPDX7d9DFzKe/WeszTRKKqvUTQn75HjEuOUt4L6H
+         tIVYhgozrzxGvQYRqT/i7giJmt5jFKvHaRzbxz79bQ+A0lU9qO96MwR6oSCeRCuz6JIO
+         mvunUmBexvHQL7y98UT28W59sswedwG1o8CK24WvoZqI60Im3sTG/o+8Pu4cyx6Ilczx
+         VCmQ==
+X-Gm-Message-State: AOAM530cmlMzA/ERIrCmA0UtlxAoGQdTabPRHzoI4eJn7NdSSdBBJArY
+        MrS7T19SJtCx8uMKjs8nUj6so0cFitz47z1l8Bk=
+X-Google-Smtp-Source: ABdhPJyVZVNO0iCwwkDwK5pW9d3vqq3p+dTMqiT8Bjoltbm7sR2VYchj2th2sAFkzqQa6HkIznAvcILuKZ8hqTjXoNI=
+X-Received: by 2002:ac2:44af:: with SMTP id c15mr5463648lfm.651.1622202982156;
+ Fri, 28 May 2021 04:56:22 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210528105101.508254-4-vincent.knecht@mailoo.org>
+References: <162218354775.34379.5629941272050849549.stgit@web.messagingengine.com>
+ <YLCwIfYxM7jYKQxe@kroah.com>
+In-Reply-To: <YLCwIfYxM7jYKQxe@kroah.com>
+From:   Fox Chen <foxhlchen@gmail.com>
+Date:   Fri, 28 May 2021 19:56:10 +0800
+Message-ID: <CAC2o3D+GH31Q2oxDgBVu8BfEUXuDovUM7uKJq=uHb3Ay+WjhSQ@mail.gmail.com>
+Subject: Re: [REPOST PATCH v4 0/5] kernfs: proposed locking and concurrency improvement
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Ian Kent <raven@themaw.net>, Tejun Heo <tj@kernel.org>,
+        Eric Sandeen <sandeen@sandeen.net>,
+        Brice Goglin <brice.goglin@gmail.com>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Rick Lindsley <ricklind@linux.vnet.ibm.com>,
+        David Howells <dhowells@redhat.com>,
+        Miklos Szeredi <miklos@szeredi.hu>,
+        Marcelo Tosatti <mtosatti@redhat.com>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 28, 2021 at 12:51:01PM +0200, Vincent Knecht wrote:
-> Allow specifying Vddd regulator/supply to be enabled on I2C probing.
-> 
-> Signed-off-by: Vincent Knecht <vincent.knecht@mailoo.org>
+On Fri, May 28, 2021 at 4:56 PM Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+>
+> On Fri, May 28, 2021 at 02:33:42PM +0800, Ian Kent wrote:
+> > There have been a few instances of contention on the kernfs_mutex during
+> > path walks, a case on very large IBM systems seen by myself, a report by
+> > Brice Goglin and followed up by Fox Chen, and I've since seen a couple
+> > of other reports by CoreOS users.
+> >
+> > The common thread is a large number of kernfs path walks leading to
+> > slowness of path walks due to kernfs_mutex contention.
+> >
+> > The problem being that changes to the VFS over some time have increased
+> > it's concurrency capabilities to an extent that kernfs's use of a mutex
+> > is no longer appropriate. There's also an issue of walks for non-existent
+> > paths causing contention if there are quite a few of them which is a less
+> > common problem.
+> >
+> > This patch series is relatively straight forward.
+> >
+> > All it does is add the ability to take advantage of VFS negative dentry
+> > caching to avoid needless dentry alloc/free cycles for lookups of paths
+> > that don't exit and change the kernfs_mutex to a read/write semaphore.
+> >
+> > The patch that tried to stay in VFS rcu-walk mode during path walks has
+> > been dropped for two reasons. First, it doesn't actually give very much
+> > improvement and, second, if there's a place where mistakes could go
+> > unnoticed it would be in that path. This makes the patch series simpler
+> > to review and reduces the likelihood of problems going unnoticed and
+> > popping up later.
+> >
+> > The patch to use a revision to identify if a directory has changed has
+> > also been dropped. If the directory has changed the dentry revision
+> > needs to be updated to avoid subsequent rb tree searches and after
+> > changing to use a read/write semaphore the update also requires a lock.
+> > But the d_lock is the only lock available at this point which might
+> > itself be contended.
+>
+> Fox, can you take some time and test these to verify it all still works
+> properly with your benchmarks?
 
-Reviewed-by: Stephan Gerhold <stephan@gerhold.net>
+Sure, I will take a look.
+Actually, I've tested it before, but I will test it again to confirm it.
 
-> ---
->  sound/soc/codecs/tfa989x.c | 34 ++++++++++++++++++++++++++++++++++
->  1 file changed, 34 insertions(+)
-> 
-> diff --git a/sound/soc/codecs/tfa989x.c b/sound/soc/codecs/tfa989x.c
-> index 6d94865c534b..643b45188b6f 100644
-> --- a/sound/soc/codecs/tfa989x.c
-> +++ b/sound/soc/codecs/tfa989x.c
-> @@ -10,6 +10,7 @@
->  #include <linux/i2c.h>
->  #include <linux/module.h>
->  #include <linux/regmap.h>
-> +#include <linux/regulator/consumer.h>
->  #include <sound/soc.h>
->  
->  #define TFA989X_STATUSREG		0x00
-> @@ -51,6 +52,10 @@ struct tfa989x_rev {
->  	int (*init)(struct regmap *regmap);
->  };
->  
-> +struct tfa989x {
-> +	struct regulator *vddd_supply;
-> +};
-> +
->  static bool tfa989x_writeable_reg(struct device *dev, unsigned int reg)
->  {
->  	return reg > TFA989X_REVISIONNUMBER;
-> @@ -242,10 +247,18 @@ static int tfa989x_dsp_bypass(struct regmap *regmap)
->  				 BIT(TFA989X_SYS_CTRL_AMPC));
->  }
->  
-> +static void tfa989x_regulator_disable(void *data)
-> +{
-> +	struct tfa989x *tfa989x = data;
-> +
-> +	regulator_disable(tfa989x->vddd_supply);
-> +}
-> +
->  static int tfa989x_i2c_probe(struct i2c_client *i2c)
->  {
->  	struct device *dev = &i2c->dev;
->  	const struct tfa989x_rev *rev;
-> +	struct tfa989x *tfa989x;
->  	struct regmap *regmap;
->  	unsigned int val;
->  	int ret;
-> @@ -256,10 +269,31 @@ static int tfa989x_i2c_probe(struct i2c_client *i2c)
->  		return -ENODEV;
->  	}
->  
-> +	tfa989x = devm_kzalloc(dev, sizeof(*tfa989x), GFP_KERNEL);
-> +	if (!tfa989x)
-> +		return -ENOMEM;
-> +
-> +	i2c_set_clientdata(i2c, tfa989x);
-> +
-> +	tfa989x->vddd_supply = devm_regulator_get(dev, "vddd");
-> +	if (IS_ERR(tfa989x->vddd_supply))
-> +		return dev_err_probe(dev, PTR_ERR(tfa989x->vddd_supply),
-> +				     "Failed to get vddd regulator\n");
-> +
->  	regmap = devm_regmap_init_i2c(i2c, &tfa989x_regmap);
->  	if (IS_ERR(regmap))
->  		return PTR_ERR(regmap);
->  
-> +	ret = regulator_enable(tfa989x->vddd_supply);
-> +	if (ret) {
-> +		dev_err(dev, "Failed to enable vddd regulator: %d\n", ret);
-> +		return ret;
-> +	}
-> +
-> +	ret = devm_add_action_or_reset(dev, tfa989x_regulator_disable, tfa989x);
-> +	if (ret)
-> +		return ret;
-> +
->  	/* Bypass regcache for reset and init sequence */
->  	regcache_cache_bypass(regmap, true);
->  
-> -- 
-> 2.31.1
-> 
-> 
-> 
+> thanks,
+>
+> greg k-h
+
+thanks,
+fox
