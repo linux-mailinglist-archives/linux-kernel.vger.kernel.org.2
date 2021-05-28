@@ -2,67 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C70939464D
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 19:19:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5068B394651
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 19:19:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236075AbhE1RUi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 May 2021 13:20:38 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:42392 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229768AbhE1RUh (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 May 2021 13:20:37 -0400
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1622222341;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=7XXMkpQsbehg+qNK7ZVP15wb2+6lgaNxZ16dFAzSN/o=;
-        b=EuPc6Lj5b9dnblHQPS+OwPpQ7zcB8NAYy/kfsmS7bO4+Hx0QEUEPE864ApUB8ZRLpnr+dV
-        hUiPgLtRO3dOJKQuh/64xShuq74ZQCjsfxSyBvZWar2Z2KifbCPmhR3eSTxXCe51oAYL0U
-        0PvaD/UXFh+vnsiMwS8r/ervoWmCCbS9HjbphDKPzhAQOfrMd2FSCXYqGKqvJgo5IfKd3Y
-        00zLxNodFIcWXF7yN2rBZg/84RXs061KXOQsc5fiLFs+9YfPlGI14CATq4IlTY7AfUnJIM
-        uBeSV0DB+ydUr8WoXo7eVeC0MgREjx3vWAHq1X0W5lHkf2GUt2dVYrSCB2kx1w==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1622222341;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=7XXMkpQsbehg+qNK7ZVP15wb2+6lgaNxZ16dFAzSN/o=;
-        b=gUaXmYnowiug3bVJ1B45870TyHL7gfy7S310FEOStjQTVAwFwRfASjTeLpewx7IkJ6VHkq
-        6C60yQ4MUIupmQCw==
-To:     Dave Hansen <dave.hansen@intel.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>, linux-mm@kvack.org
-Cc:     linux-kernel@vger.kernel.org, mingo@redhat.com, bp@alien8.de,
-        x86@kernel.org, luto@kernel.org, shuah@kernel.org,
-        babu.moger@amd.com, dave.kleikamp@oracle.com, linuxram@us.ibm.com,
-        bauerman@linux.ibm.com
-Subject: Re: [PATCH 0/5] x86/pkeys: PKRU manipulation bug fixes and cleanups
-In-Reply-To: <4c3bfc27-a542-8e91-7ccf-4be8b1e6c844@intel.com>
-References: <20210527235109.B2A9F45F@viggo.jf.intel.com> <87eedq7u2b.ffs@nanos.tec.linutronix.de> <4c3bfc27-a542-8e91-7ccf-4be8b1e6c844@intel.com>
-Date:   Fri, 28 May 2021 19:19:00 +0200
-Message-ID: <878s3y7p4r.ffs@nanos.tec.linutronix.de>
+        id S236166AbhE1RVS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 May 2021 13:21:18 -0400
+Received: from mga18.intel.com ([134.134.136.126]:37091 "EHLO mga18.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229768AbhE1RVO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 28 May 2021 13:21:14 -0400
+IronPort-SDR: Vv7eWrKsoqynFyUU0D1dKXpH1FdQxiR3qWo0IMOwY9HtjTi2vk+oyh/KnSyPvdPpPP1X3ZEs7y
+ 8Me20bQoWjWQ==
+X-IronPort-AV: E=McAfee;i="6200,9189,9998"; a="190364975"
+X-IronPort-AV: E=Sophos;i="5.83,230,1616482800"; 
+   d="scan'208";a="190364975"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 May 2021 10:19:38 -0700
+IronPort-SDR: Aly2FSp0W4Y6athkKfvJ4iH53BfAe4jCTnYBUZMSvRAvuP5rAfglJQwS6w/rkqTGeVGfdGB/kM
+ Qz0LMvs1zlKQ==
+X-IronPort-AV: E=Sophos;i="5.83,230,1616482800"; 
+   d="scan'208";a="415359453"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 May 2021 10:19:36 -0700
+Received: from andy by smile with local (Exim 4.94)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1lmg8z-00FNUV-QO; Fri, 28 May 2021 20:19:33 +0300
+Date:   Fri, 28 May 2021 20:19:33 +0300
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Wolfram Sang <wsa@kernel.org>,
+        Lukas Bulwahn <lukas.bulwahn@gmail.com>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Jarkko Nikula <jarkko.nikula@linux.intel.com>,
+        Lee Jones <lee.jones@linaro.org>,
+        linux-i2c <linux-i2c@vger.kernel.org>,
+        Ralf Ramsauer <ralf.ramsauer@oth-regensburg.de>,
+        kernel-janitors <kernel-janitors@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] MAINTAINERS: adjust to removing i2c designware platform
+ data
+Message-ID: <YLEmJVbVwQaMk+dq@smile.fi.intel.com>
+References: <20210419061809.15045-1-lukas.bulwahn@gmail.com>
+ <CAHp75Vfv0FQGXrmpDveOf-cBahoDK3uSPHjPU2RNh6mhFxN7vQ@mail.gmail.com>
+ <YLD/ZQiX5VhpWJg7@smile.fi.intel.com>
+ <YLECsC9y8ici47Ln@kunai>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YLECsC9y8ici47Ln@kunai>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 28 2021 at 09:11, Dave Hansen wrote:
-> On 5/28/21 8:32 AM, Thomas Gleixner wrote:
-> There are also the usual concerns that folks doing user-level context
-> switching or other insanity get PKRU context switching for "free" when
-> it's XSAVE-managed.  Moving away from that could break them.
+On Fri, May 28, 2021 at 04:48:16PM +0200, Wolfram Sang wrote:
+> 
+> > > > Remove the file entry to this removed file as well.
+> > > 
+> > > Oops, I was under the impression I grepped all occurrences, but I have not.
+> > > 
+> > > Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+> > > 
+> > > Thanks for the catch!
+> > 
+> > Wolfram, isn't it forgotten somehow?
+> 
+> I can pick it. I refrained from doing so because Lukas explicitly asked
+> Lee to pick it.
 
-Both issues are trivial to solve.
+Ah, I see. AFAIR Lee doesn't update his branch frequently, so it might be that
+he already applied that but it's not visible to Linux Next.
 
-We can have pkru enabled in xcr0 and just do not restore it when
-returning to user space (clear the mask bit).
 
-When we restore it in sigrestore via xrstor then we read it via rdpkru
-afterwards and update task->thread.pkru.
+-- 
+With Best Regards,
+Andy Shevchenko
 
-Thanks,
 
-        tglx
