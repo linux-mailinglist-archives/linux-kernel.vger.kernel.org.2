@@ -2,72 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3304D39421F
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 13:45:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 959C2394214
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 13:43:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236102AbhE1Lqz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 May 2021 07:46:55 -0400
-Received: from szxga02-in.huawei.com ([45.249.212.188]:2515 "EHLO
-        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235525AbhE1Lqr (ORCPT
+        id S235591AbhE1LpC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 May 2021 07:45:02 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:33008 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230080AbhE1LpB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 May 2021 07:46:47 -0400
-Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.56])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4Fs2qC1ftTzYqGS;
-        Fri, 28 May 2021 19:42:31 +0800 (CST)
-Received: from dggpeml500012.china.huawei.com (7.185.36.15) by
- dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Fri, 28 May 2021 19:45:11 +0800
-Received: from huawei.com (10.67.165.24) by dggpeml500012.china.huawei.com
- (7.185.36.15) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Fri, 28 May
- 2021 19:45:11 +0800
-From:   Kai Ye <yekai13@huawei.com>
-To:     <herbert@gondor.apana.org.au>
-CC:     <linux-crypto@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <wangzhou1@hisilicon.com>, <yekai13@huawei.com>
-Subject: [PATCH 3/3] crypto: hisilicon/sec - fixup 3des minimum key size declaration
-Date:   Fri, 28 May 2021 19:42:06 +0800
-Message-ID: <1622202126-19237-4-git-send-email-yekai13@huawei.com>
-X-Mailer: git-send-email 2.8.1
-In-Reply-To: <1622202126-19237-1-git-send-email-yekai13@huawei.com>
-References: <1622202126-19237-1-git-send-email-yekai13@huawei.com>
+        Fri, 28 May 2021 07:45:01 -0400
+Received: from imap.suse.de (imap-alt.suse-dmz.suse.de [192.168.254.47])
+        (using TLSv1.2 with cipher ECDHE-ECDSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 2DBB6218B3;
+        Fri, 28 May 2021 11:43:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1622202206; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=9s7qI6fPmWwhDVK9qhBrtaB5fZd7wpN4H+FoavsyRvU=;
+        b=XWiSlIDB6KkoR49po06mLRto3/A32EMGCudYyxt10YqwFLf/nNuCI+9vl6XcPRGI6Na2EW
+        93UTaQG4cXtleSCkIkQ8D03/S5792juPugf+d/aXIrlsqCtE9IevyKrcXnymMWQpB3fT4p
+        f5V1Mwzxb5BxSYKDTwbp8DyaYmGrqu0=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1622202206;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=9s7qI6fPmWwhDVK9qhBrtaB5fZd7wpN4H+FoavsyRvU=;
+        b=a8tqcbBTFQ/74aCA0n5xh+ioMuH7uHviKJG4bNNebDFhd2MB0tubODn0lARVsaFUI9bS99
+        trbr9A4Q4z64giBw==
+Received: from imap3-int (imap-alt.suse-dmz.suse.de [192.168.254.47])
+        by imap.suse.de (Postfix) with ESMTP id 167D211A98;
+        Fri, 28 May 2021 11:43:26 +0000 (UTC)
+Received: from director2.suse.de ([192.168.254.72])
+        by imap3-int with ESMTPSA
+        id 20L8BF7XsGAvEAAALh3uQQ
+        (envelope-from <vbabka@suse.cz>); Fri, 28 May 2021 11:43:26 +0000
+Subject: Re: [PATCH 5/6] mm/page_alloc: Limit the number of pages on PCP lists
+ when reclaim is active
+To:     Mel Gorman <mgorman@techsingularity.net>,
+        Andrew Morton <akpm@linux-foundation.org>
+Cc:     Hillf Danton <hdanton@sina.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Michal Hocko <mhocko@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux-MM <linux-mm@kvack.org>
+References: <20210525080119.5455-1-mgorman@techsingularity.net>
+ <20210525080119.5455-6-mgorman@techsingularity.net>
+From:   Vlastimil Babka <vbabka@suse.cz>
+Message-ID: <e839f84f-0cc2-2e6a-70c8-99c0d6b8ddf8@suse.cz>
+Date:   Fri, 28 May 2021 13:43:25 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.2
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.67.165.24]
-X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
- dggpeml500012.china.huawei.com (7.185.36.15)
-X-CFilter-Loop: Reflected
+In-Reply-To: <20210525080119.5455-6-mgorman@techsingularity.net>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fixup the 3des algorithm  minimum key size declaration.
+On 5/25/21 10:01 AM, Mel Gorman wrote:
+> When kswapd is active then direct reclaim is potentially active. In
+> either case, it is possible that a zone would be balanced if pages were
+> not trapped on PCP lists. Instead of draining remote pages, simply limit
+> the size of the PCP lists while kswapd is active.
+> 
+> Signed-off-by: Mel Gorman <mgorman@techsingularity.net>
 
-Signed-off-by: Kai Ye <yekai13@huawei.com>
----
- drivers/crypto/hisilicon/sec2/sec_crypto.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/crypto/hisilicon/sec2/sec_crypto.c b/drivers/crypto/hisilicon/sec2/sec_crypto.c
-index 25da33a..253ba80 100644
---- a/drivers/crypto/hisilicon/sec2/sec_crypto.c
-+++ b/drivers/crypto/hisilicon/sec2/sec_crypto.c
-@@ -1861,11 +1861,11 @@ static struct skcipher_alg sec_skciphers[] = {
- 			 AES_BLOCK_SIZE, AES_BLOCK_SIZE)
- 
- 	SEC_SKCIPHER_ALG("ecb(des3_ede)", sec_setkey_3des_ecb,
--			 SEC_DES3_2KEY_SIZE, SEC_DES3_3KEY_SIZE,
-+			 SEC_DES3_3KEY_SIZE, SEC_DES3_3KEY_SIZE,
- 			 DES3_EDE_BLOCK_SIZE, 0)
- 
- 	SEC_SKCIPHER_ALG("cbc(des3_ede)", sec_setkey_3des_cbc,
--			 SEC_DES3_2KEY_SIZE, SEC_DES3_3KEY_SIZE,
-+			 SEC_DES3_3KEY_SIZE, SEC_DES3_3KEY_SIZE,
- 			 DES3_EDE_BLOCK_SIZE, DES3_EDE_BLOCK_SIZE)
- 
- 	SEC_SKCIPHER_ALG("xts(sm4)", sec_setkey_sm4_xts,
--- 
-2.8.1
-
+Acked-by: Vlastimil Babka <vbabka@suse.cz>
