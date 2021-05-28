@@ -2,73 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8624A3942B4
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 14:38:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 961063942B3
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 14:38:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235854AbhE1Mjp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 May 2021 08:39:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35688 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236855AbhE1MjH (ORCPT
+        id S236708AbhE1Mjh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 May 2021 08:39:37 -0400
+Received: from outbound-smtp63.blacknight.com ([46.22.136.252]:33843 "EHLO
+        outbound-smtp63.blacknight.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235513AbhE1Mi7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 May 2021 08:39:07 -0400
-Received: from mail-yb1-xb36.google.com (mail-yb1-xb36.google.com [IPv6:2607:f8b0:4864:20::b36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0BD9AC06138A;
-        Fri, 28 May 2021 05:36:30 -0700 (PDT)
-Received: by mail-yb1-xb36.google.com with SMTP id r8so5267428ybb.9;
-        Fri, 28 May 2021 05:36:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:from:date:message-id:subject:to:cc;
-        bh=3z2LGAPQrN69UISXkjED3WBRx+qDX0JpGZaWUXIkD3g=;
-        b=i7MsIyHP3ZH9OjOBQYunWyvVT7uzAnE+EDEhyow7/ejuBc0pcVRK2MEWCB3JILsja2
-         +o4vm+Clw56z2ofRP7XlltHNxUftkaapQa9AL03QZ5xp3Ju8s8nL57ZiLaxFExdOfVjH
-         7BAuaxsm/5dNqV3wcb0xHHzoOuIC6GmbTvJYpEfdF9Vqb+qehuNJk8A6EorY/w439OPY
-         fhzLrm9T0xpgCzRPzW01r2FDmXWm8F4WLtyWEuE7JxBo9/d+E6pmfKFMrz26zJycgg9q
-         Ay7k/kxarJTXv9aqZIMbSp8Ilq6bjtJXRRqcKEtVepzr5f0CmkIUe2jJbLOtbcJYX+pu
-         dpJA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
-        bh=3z2LGAPQrN69UISXkjED3WBRx+qDX0JpGZaWUXIkD3g=;
-        b=O2Vg2T6d8FnxceG4fBLsmCvs7B6/u3ih9KBIwVQ8dVhqvsXWAz3fm48Vu76hoBd5Ry
-         kOuROO7lRC0rkcrWV37+IlEYLTt4jvoyNunQSShHLiXoOHzyGclA2b9k+5afD+bfXxTS
-         q4ctCjm7Cr4vKy2S/8WS2B6luRb/UbSZKwXXb35+xW9TPfbSy7AFFRz3KX0jKJQ6wnOq
-         5Gj9re+lMjkKxaA4Dvj6QWLRhmsHaQQ2KcMTZrLZOQd7Cwx/Z6vHhXgoEajwKuU/fBRx
-         wYVEK7hJfoFyDKetoMJMbswZqj8eVhHYVKdB3knmTNrNGXDglwYFEMsCMTsC/IQWi47S
-         9pQw==
-X-Gm-Message-State: AOAM530eYwqIRCU/0IfM5X0H9wEDg3qYUzHGLgezOPBo6sIm2uPkZPFH
-        0daGmJEu5Aipj91IGKQArFQBB8MKEp+K4JwThTo=
-X-Google-Smtp-Source: ABdhPJzoYiBFfgpk5e+stz+oeAIsAI94tkVFcAPTaEfemNmodU29WVhN2WfUzk1F6CKW946D+fleMG5O7f23He6a5vg=
-X-Received: by 2002:a25:1009:: with SMTP id 9mr12051107ybq.386.1622205389298;
- Fri, 28 May 2021 05:36:29 -0700 (PDT)
+        Fri, 28 May 2021 08:38:59 -0400
+Received: from mail.blacknight.com (pemlinmail06.blacknight.ie [81.17.255.152])
+        by outbound-smtp63.blacknight.com (Postfix) with ESMTPS id A7934FA8D1
+        for <linux-kernel@vger.kernel.org>; Fri, 28 May 2021 13:37:23 +0100 (IST)
+Received: (qmail 8040 invoked from network); 28 May 2021 12:37:23 -0000
+Received: from unknown (HELO techsingularity.net) (mgorman@techsingularity.net@[84.203.23.168])
+  by 81.17.254.9 with ESMTPSA (AES256-SHA encrypted, authenticated); 28 May 2021 12:37:23 -0000
+Date:   Fri, 28 May 2021 13:37:22 +0100
+From:   Mel Gorman <mgorman@techsingularity.net>
+To:     Vlastimil Babka <vbabka@suse.cz>
+Cc:     Dave Hansen <dave.hansen@intel.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Hillf Danton <hdanton@sina.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Michal Hocko <mhocko@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux-MM <linux-mm@kvack.org>, "Tang, Feng" <feng.tang@intel.com>
+Subject: Re: [PATCH 0/6 v2] Calculate pcp->high based on zone sizes and
+ active CPUs
+Message-ID: <20210528123721.GO30378@techsingularity.net>
+References: <20210525080119.5455-1-mgorman@techsingularity.net>
+ <7177f59b-dc05-daff-7dc6-5815b539a790@intel.com>
+ <20210528085545.GJ30378@techsingularity.net>
+ <416f39e7-704a-86d0-8261-dc27366336ab@suse.cz>
 MIME-Version: 1.0
-From:   Peter Geis <pgwipeout@gmail.com>
-Date:   Fri, 28 May 2021 08:36:17 -0400
-Message-ID: <CAMdYzYqvT+X9C_YZ+DtspgHLSeb=RVHLeS2-0pEHeotyvb+iXQ@mail.gmail.com>
-Subject: ext4_xattr_ibody_find:2180: inode #2669312: comm systemd-journal:
- corrupted in-inode xattr
-To:     tytso@mit.edu, adilger.kernel@dilger.ca
-Cc:     linux-ext4@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=iso-8859-15
+Content-Disposition: inline
+In-Reply-To: <416f39e7-704a-86d0-8261-dc27366336ab@suse.cz>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Good Morning,
+On Fri, May 28, 2021 at 02:12:09PM +0200, Vlastimil Babka wrote:
+> > mm/page_alloc: Split pcp->high across all online CPUs for cpuless nodes
+> > 
+> > Dave Hansen reported the following about Feng Tang's tests on a machine
+> > with persistent memory onlined as a DRAM-like device.
+> > 
+> >   Feng Tang tossed these on a "Cascade Lake" system with 96 threads and
+> >   ~512G of persistent memory and 128G of DRAM.  The PMEM is in "volatile
+> >   use" mode and being managed via the buddy just like the normal RAM.
+> > 
+> >   The PMEM zones are big ones:
+> > 
+> >         present  65011712 = 248 G
+> >         high       134595 = 525 M
+> > 
+> >   The PMEM nodes, of course, don't have any CPUs in them.
+> > 
+> >   With your series, the pcp->high value per-cpu is 69584 pages or about
+> >   270MB per CPU.  Scaled up by the 96 CPU threads, that's ~26GB of
+> >   worst-case memory in the pcps per zone, or roughly 10% of the size of
+> >   the zone.
+> > 
+> > This should not cause a problem as such although it could trigger reclaim
+> > due to pages being stored on per-cpu lists for CPUs remote to a node. It
+> > is not possible to treat cpuless nodes exactly the same as normal nodes
+> > but the worst-case scenario can be mitigated by splitting pcp->high across
+> > all online CPUs for cpuless memory nodes.
+> > 
+> > Suggested-by: Dave Hansen <dave.hansen@intel.com>
+> > Signed-off-by: Mel Gorman <mgorman@techsingularity.net>
+> 
+> Acked-by: Vlastimil Babka <vbabka@suse.cz>
+> 
 
-I have run into a fun issue where I have the follow error on boot,
-which causes the device to drop to read only mode:
-ext4_xattr_ibody_find:2180: inode #2669312: comm systemd-journal:
-corrupted in-inode xattr
-It marks the file system as unclean, which forces a fsck, but it seems
-that even as of v1.46.2 e2fsprogs does not have the ability to resolve
-this issue.
-Any attempts to touch the corrupted files (I've found two so far)
-leads to the same error, and I cannot find a way to remove or repair
-the affected inodes without wiping the entire file system.
+Thanks.
 
-Any insight you can provide would be much appreciated.
-Thanks,
-Peter Geis
+> Maybe we should even consider distinguishing high limits for local-to-cpu zones
+> vs remote, for example for the local-to-cpu zones we would divide by the number
+> of local cpus, for remote-to-cpu zones we would divide by all cpus.
+> 
+> Because we can expect cpus to allocate mostly from local zones, so leaving more
+> pages on percpu for those zones can be beneficial.
+> 
+
+I did think about whether the ratios should be different but failed to
+conclude that it was necessary or useful so I kept it simple.
+
+> But as the motivation here was to reduce lock contention on freeing, that's less
+> clear. We probably can't expect the cpu to be freeing mostly local pages (in
+> case of e.g. a large process exiting), because no mechanism works towards that,
+> or does it? In case of cpu freeing to remote zone, the lower high limit could hurt.
+> 
+
+This is the major issue. Even if an application was NUMA aware and heavily
+threaded, the process exiting is potentially freeing remote memory and
+there is nothing wrong about that. The remote memory will be partially
+drained by pcp->high being reached and the remaining memory will be
+cleaned up by vmstat. It's a similar problem if a process is truncating
+a large file with page cache allocated on a remote node.
+
+Hence I decided to do nothing fancy with the ratios until a practical
+problem was identified that could be alleviated by adjusting pcp->high
+based on whether the CPU is remote or local to memory.
+
+-- 
+Mel Gorman
+SUSE Labs
