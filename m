@@ -2,86 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F8C23944D1
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 17:11:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 71C433944D7
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 17:11:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236285AbhE1PMe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 May 2021 11:12:34 -0400
-Received: from mga07.intel.com ([134.134.136.100]:63747 "EHLO mga07.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230039AbhE1PMe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 May 2021 11:12:34 -0400
-IronPort-SDR: n0mj7xxzTmAVs/Z210EZDPLJ6GkF4zo9ySUHpi/adTw9B8zKfkG1Nsi9NSDxSGuk0orhhcS5hG
- OG6U7WDNYYSw==
-X-IronPort-AV: E=McAfee;i="6200,9189,9998"; a="266856779"
-X-IronPort-AV: E=Sophos;i="5.83,229,1616482800"; 
-   d="scan'208";a="266856779"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 May 2021 08:10:58 -0700
-IronPort-SDR: Nm2G5GFOzHzqxBNit1dQzutVjWxu269j+yJxxvSj/ZxJrty1mLACwS8V8rVOSMWAnySt3aPW1H
- D8rEbDQ80iQg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.83,229,1616482800"; 
-   d="scan'208";a="615783892"
-Received: from black.fi.intel.com ([10.237.72.28])
-  by orsmga005.jf.intel.com with ESMTP; 28 May 2021 08:10:56 -0700
-Received: by black.fi.intel.com (Postfix, from userid 1003)
-        id 417294F8; Fri, 28 May 2021 18:11:19 +0300 (EEST)
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Oleksij Rempel <linux@rempel-privat.de>,
-        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Eugen Hristev <eugen.hristev@microchip.com>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Subject: [PATCH v2 2/2] Input: resistive-adc-touch - replace OF headers with proper ones
-Date:   Fri, 28 May 2021 18:11:13 +0300
-Message-Id: <20210528151113.85943-2-andriy.shevchenko@linux.intel.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210528151113.85943-1-andriy.shevchenko@linux.intel.com>
-References: <20210528151113.85943-1-andriy.shevchenko@linux.intel.com>
+        id S236384AbhE1PNA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 May 2021 11:13:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42676 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234653AbhE1PMx (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 28 May 2021 11:12:53 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4FC2FC061760;
+        Fri, 28 May 2021 08:11:17 -0700 (PDT)
+Date:   Fri, 28 May 2021 17:11:13 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1622214674;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=NqKOQAfvyt+jzwrzPZmX2cFEmEVtOFvl9de23IZJw44=;
+        b=f4KFXAEnQtZqr8c5FBv+H4z7PxXv1eaZNTVMoqZ/vZmOaK4DdUayREtZcGBePe5QC8RRB/
+        VX/tNpORZIT70kJcHiQJCCXYDIekkuYKhQ1R/f6E1Mry4I17R7pyGNL0iSY+zsKzfTbX08
+        y52vRjeIvC2oRfNmh+dOSD/nNRLboq9SSfLHhc/iFh3rzaog41sJJtejWcKpGBogNkZLIj
+        Rzxxp32TrhDfEdTtizbUtdJwmM4gY5rCFcyJP4qnVIHEgaUXpC660xJFLYT7IKe3ApE6oU
+        4P45InAzqm266K05Gvbr3stiEusf5gLGDWFi2X7UPqctaLwBr7of5UWIVM4MiQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1622214674;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=NqKOQAfvyt+jzwrzPZmX2cFEmEVtOFvl9de23IZJw44=;
+        b=LWxeTJIPdPzpxWiqRWQmP+z+TenWtCY/2/AYuJZelRkd7AAm2XA5czAdJc8m9zBY7Q6LUO
+        es/iMtL3msAltnAg==
+From:   "Ahmed S. Darwish" <a.darwish@linutronix.de>
+To:     Varad Gautam <varad.gautam@suse.com>
+Cc:     linux-kernel@vger.kernel.org,
+        linux-rt-users <linux-rt-users@vger.kernel.org>,
+        netdev@vger.kernel.org, stable@vger.kernel.org,
+        Steffen Klassert <steffen.klassert@secunet.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Florian Westphal <fw@strlen.de>
+Subject: Re: [PATCH] xfrm: policy: Read seqcount outside of rcu-read side in
+ xfrm_policy_lookup_bytype
+Message-ID: <YLEIEa6DLjgd5mu5@lx-t490>
+References: <20210528120357.29542-1-varad.gautam@suse.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210528120357.29542-1-varad.gautam@suse.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The driver is actually OF independent and doesn't need anything from OF (*).
-Replace OF headers with mod_devicetable.h and property.h.
+On Fri, May 28, 2021, Varad Gautam wrote:
+...
+>
+> Thead 1 (xfrm_hash_resize)	Thread 2 (xfrm_policy_lookup_bytype)
+>
+> 				rcu_read_lock();
+> mutex_lock(&hash_resize_mutex);
+> 				read_seqcount_begin(&xfrm_policy_hash_generation);
+> 				mutex_lock(&hash_resize_mutex); // block
+> xfrm_bydst_resize();
+> synchronize_rcu(); // block
+> 		<RCU stalls in xfrm_policy_lookup_bytype>
+>
+...
+> Fixes: a7c44247f70 ("xfrm: policy: make xfrm_policy_lookup_bytype lockless")
 
-*) use of of_match_ptr() is actually wrong here, since it may provoke
-   a compiler to warn about unused variable.
+Minor note: the 'Fixes' commit should be 77cc278f7b20 ("xfrm: policy:
+Use sequence counters with associated lock") instead.
 
-Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
----
- drivers/input/touchscreen/resistive-adc-touch.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+The reason read_seqcount_begin() is emitting a mutex_lock() on
+PREEMPT_RT is because of the s/seqcount_t/seqcount_mutex_t/ change.
 
-diff --git a/drivers/input/touchscreen/resistive-adc-touch.c b/drivers/input/touchscreen/resistive-adc-touch.c
-index 0353400c559a..ea1884fb49a1 100644
---- a/drivers/input/touchscreen/resistive-adc-touch.c
-+++ b/drivers/input/touchscreen/resistive-adc-touch.c
-@@ -13,10 +13,10 @@
- #include <linux/input/touchscreen.h>
- #include <linux/iio/consumer.h>
- #include <linux/iio/iio.h>
-+#include <linux/mod_devicetable.h>
- #include <linux/module.h>
--#include <linux/of.h>
--#include <linux/of_device.h>
- #include <linux/platform_device.h>
-+#include <linux/property.h>
- 
- #define DRIVER_NAME					"resistive-adc-touch"
- #define GRTS_DEFAULT_PRESSURE_MIN			50000
-@@ -307,7 +307,7 @@ static struct platform_driver grts_driver = {
- 	.probe = grts_probe,
- 	.driver = {
- 		.name = DRIVER_NAME,
--		.of_match_table = of_match_ptr(grts_of_match),
-+		.of_match_table = grts_of_match,
- 	},
- };
- 
--- 
-2.30.2
+Kind regards,
 
+--
+Ahmed S. Darwish
+Linutronix GmbH
