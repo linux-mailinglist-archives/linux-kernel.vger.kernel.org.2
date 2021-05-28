@@ -2,127 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B322B394821
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 23:07:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 41576394827
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 23:10:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229616AbhE1VI5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 May 2021 17:08:57 -0400
-Received: from smtp.220.in.ua ([89.184.67.205]:53102 "EHLO smtp.220.in.ua"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229547AbhE1VIy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 May 2021 17:08:54 -0400
-Received: from [192.168.202.100] (unknown [95.67.115.55])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by smtp.220.in.ua (Postfix) with ESMTPSA id EBAD91A205FE;
-        Sat, 29 May 2021 00:02:00 +0300 (EEST)
-Subject: Re: [PATCH v1 06/28] leds: el15203000: Introduce to_el15203000_led()
- helper
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Pavel Machek <pavel@ucw.cz>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Amireddy Mallikarjuna reddy 
-        <mallikarjunax.reddy@linux.intel.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        =?UTF-8?Q?Marek_Beh=c3=ban?= <marek.behun@nic.cz>,
-        Abanoub Sameh <abanoubsameh8@gmail.com>,
-        Dan Murphy <dmurphy@ti.com>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        linux-leds@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210510095045.3299382-1-andy.shevchenko@gmail.com>
- <20210510095045.3299382-7-andy.shevchenko@gmail.com>
-From:   Oleh Kravchenko <oleg@kaa.org.ua>
-Message-ID: <e01c875b-7317-cd00-23c5-d9736f7533ec@kaa.org.ua>
-Date:   Sat, 29 May 2021 00:01:56 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+        id S229618AbhE1VLp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 May 2021 17:11:45 -0400
+Received: from smtprelay0059.hostedemail.com ([216.40.44.59]:47408 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S229481AbhE1VLn (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 28 May 2021 17:11:43 -0400
+Received: from omf01.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay07.hostedemail.com (Postfix) with ESMTP id BA90A181D337B;
+        Fri, 28 May 2021 21:10:07 +0000 (UTC)
+Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by omf01.hostedemail.com (Postfix) with ESMTPA id 74EA217275;
+        Fri, 28 May 2021 21:10:05 +0000 (UTC)
+Message-ID: <fc3afc8e74ee9eda0b4eaff9a4d9ad32f1c461c4.camel@perches.com>
+Subject: Re: [PATCH] iio: si1133: fix format string warnings
+From:   Joe Perches <joe@perches.com>
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     Jonathan Cameron <jic23@kernel.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Arnd Bergmann <arnd@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Maxime =?ISO-8859-1?Q?Roussin-B=E9langer?= 
+        <maxime.roussinbelanger@gmail.com>,
+        Jean-Francois Dagenais <jeff.dagenais@gmail.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Alexandru Ardelean <alexandru.ardelean@analog.com>,
+        "linux-iio@vger.kernel.org" <linux-iio@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "clang-built-linux@googlegroups.com" 
+        <clang-built-linux@googlegroups.com>
+Date:   Fri, 28 May 2021 14:10:04 -0700
+In-Reply-To: <CAHp75Vc72vMbj311P3xnxh6ExxzD1=enoETj6wY8dHn+xBJ4+w@mail.gmail.com>
+References: <20210514135927.2926482-1-arnd@kernel.org>
+         <7afc367b-8103-9d48-1bfe-d505d86553b9@kernel.org>
+         <20210516103628.2cf899a0@jic23-huawei>
+         <644a711e4d2639a23bfc50dffa180ad184a4acb1.camel@perches.com>
+         <CAHp75Vc72vMbj311P3xnxh6ExxzD1=enoETj6wY8dHn+xBJ4+w@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.38.1-1 
 MIME-Version: 1.0
-In-Reply-To: <20210510095045.3299382-7-andy.shevchenko@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: uk-UA
 Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.40
+X-Stat-Signature: 5acgrz7aqqahef7j4xfkx1oihty81c8i
+X-Rspamd-Server: rspamout04
+X-Rspamd-Queue-Id: 74EA217275
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Session-ID: U2FsdGVkX19u0+cg/CvkDoccaPXMZBb1xXuLYIiXf/A=
+X-HE-Tag: 1622236205-755196
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-10.05.21 12:50, Andy Shevchenko пише:
-> Introduce a helper to replace open coded container_of() calls.
-> At the same time move ldev member to be first in the struct el15203000_led,
-> that makes container_of() effectivelly a no-op.
+On Fri, 2021-05-28 at 23:59 +0300, Andy Shevchenko wrote:
+> On Thursday, May 27, 2021, Joe Perches <joe@perches.com> wrote:
+> > On Sun, 2021-05-16 at 10:36 +0100, Jonathan Cameron wrote:
+> > > On Fri, 14 May 2021 10:45:02 -0700
+> > > Nathan Chancellor <nathan@kernel.org> wrote:
+> > > > On 5/14/2021 6:59 AM, Arnd Bergmann wrote:
+> > > > > From: Arnd Bergmann <arnd@arndb.de>
+> > > > > 
+> > > > > clang complains about multiple instances of printing an integer
+> > > > > using the %hhx format string:
+> > > > > 
+> > > > > drivers/iio/light/si1133.c:982:4: error: format specifies type
+> > 'unsigned char' but the argument has type 'unsigned int' [-Werror,-Wformat]
+> > > > >                   part_id, rev_id, mfr_id);
+> > > > >                   ^~~~~~~
+> > > > > 
+> > > > > Print them as a normal integer instead, leaving the "#02"
+> > > > > length modifier.
+> > []
+> > > > > diff --git a/drivers/iio/light/si1133.c b/drivers/iio/light/si1133.c
+> > []
+> > > > > @@ -978,11 +978,11 @@ static int si1133_validate_ids(struct iio_dev
+> > *iio_dev)
+> > > > >                   return err;
+> > > > > 
+> > > > > 
+> > > > >           dev_info(&iio_dev->dev,
+> > > > > -          "Device ID part %#02hhx rev %#02hhx mfr %#02hhx\n",
+> > > > > +          "Device ID part %#02x rev %#02x mfr %#02x\n",
+> > > > >                    part_id, rev_id, mfr_id);
+> > > > >           if (part_id != SI1133_PART_ID) {
+> > > > >                   dev_err(&iio_dev->dev,
+> > > > > -                 "Part ID mismatch got %#02hhx, expected %#02x\n",
+> > > > > +                 "Part ID mismatch got %#02x, expected %#02x\n",
+> > 
+> > which is almost certainly wrong.
+> > the length specification includes the # which is already 2 bytes.
+> > 
+> > Likely these should be 0x%02x
 > 
-> Signed-off-by: Andy Shevchenko <andy.shevchenko@gmail.com>
-> ---
->  drivers/leds/leds-el15203000.c | 20 +++++++-------------
->  1 file changed, 7 insertions(+), 13 deletions(-)
-> 
-> diff --git a/drivers/leds/leds-el15203000.c b/drivers/leds/leds-el15203000.c
-> index fcb90d7cd42f..e81a93d57210 100644
-> --- a/drivers/leds/leds-el15203000.c
-> +++ b/drivers/leds/leds-el15203000.c
-> @@ -69,8 +69,8 @@ enum el15203000_command {
->  };
->  
->  struct el15203000_led {
-> -	struct el15203000	*priv;
->  	struct led_classdev	ldev;
-> +	struct el15203000	*priv;
->  	u32			reg;
->  };
->  
-> @@ -83,6 +83,8 @@ struct el15203000 {
->  	struct el15203000_led	leds[];
->  };
->  
-> +#define to_el15203000_led(d)	container_of(d, struct el15203000_led, ldev)
-> +
->  static int el15203000_cmd(struct el15203000_led *led, u8 brightness)
->  {
->  	int		ret;
-> @@ -124,9 +126,7 @@ static int el15203000_cmd(struct el15203000_led *led, u8 brightness)
->  static int el15203000_set_blocking(struct led_classdev *ldev,
->  				   enum led_brightness brightness)
->  {
-> -	struct el15203000_led *led = container_of(ldev,
-> -						  struct el15203000_led,
-> -						  ldev);
-> +	struct el15203000_led *led = to_el15203000_led(ldev);
->  
->  	return el15203000_cmd(led, brightness == LED_OFF ? EL_OFF : EL_ON);
->  }
-> @@ -135,9 +135,7 @@ static int el15203000_pattern_set_S(struct led_classdev *ldev,
->  				    struct led_pattern *pattern,
->  				    u32 len, int repeat)
->  {
-> -	struct el15203000_led *led = container_of(ldev,
-> -						  struct el15203000_led,
-> -						  ldev);
-> +	struct el15203000_led *led = to_el15203000_led(ldev);
->  
->  	if (repeat > 0 || len != 2 ||
->  	    pattern[0].delta_t != 4000 || pattern[0].brightness != 0 ||
-> @@ -188,10 +186,8 @@ static int el15203000_pattern_set_P(struct led_classdev *ldev,
->  				    struct led_pattern *pattern,
->  				    u32 len, int repeat)
->  {
-> +	struct el15203000_led	*led = to_el15203000_led(ldev);
->  	u8			cmd;
-> -	struct el15203000_led	*led = container_of(ldev,
-> -						    struct el15203000_led,
-> -						    ldev);
->  
->  	if (repeat > 0)
->  		return -EINVAL;
-> @@ -228,9 +224,7 @@ static int el15203000_pattern_set_P(struct led_classdev *ldev,
->  
->  static int el15203000_pattern_clear(struct led_classdev *ldev)
->  {
-> -	struct el15203000_led	*led = container_of(ldev,
-> -						    struct el15203000_led,
-> -						    ldev);
-> +	struct el15203000_led *led = to_el15203000_led(ldev);
->  
->  	return el15203000_cmd(led, EL_OFF);
->  }
-> 
+> What’s the difference (except printing 0)?
 
-Reviewed-by: Oleh Kravchenko <oleg@kaa.org.ua>
+(assuming the argument is unsigned char/u8)
+
+%#02x will always emit more than the specified length (3 or 4 chars)
+values < 16 are 0x<hexdigit>, values >= 16 are 0x<hexdigit><hexdigit>
+
+0x%02x will always emit 4 chars
+
+It's very likely the writer didn't know the difference and assumed
+that the # did not count in the specified width.
+
+
