@@ -2,348 +2,380 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B5B39393A79
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 02:49:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1CE03393A81
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 02:50:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235467AbhE1AvR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 May 2021 20:51:17 -0400
-Received: from mga07.intel.com ([134.134.136.100]:19710 "EHLO mga07.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234684AbhE1AvE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 May 2021 20:51:04 -0400
-IronPort-SDR: nlrQPJlOi38rfbDxQtisj+bw4G+q3JmP2vzOa7C8PM01l8YVhd8wPbduGbWBAGDpgkhInCqVMa
- 9iUuRnmYoOHg==
-X-IronPort-AV: E=McAfee;i="6200,9189,9997"; a="266753505"
-X-IronPort-AV: E=Sophos;i="5.83,228,1616482800"; 
-   d="scan'208";a="266753505"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 May 2021 17:49:28 -0700
-IronPort-SDR: OlbgG+jLLMoYRoxtbvhE5rDTnK5TmgXY0J4Cp0DB2AVID5E/Xa0BjJD2UJ25bLbRtFQW7NkY3V
- Gd1K4QIkw4MA==
-X-IronPort-AV: E=Sophos;i="5.83,228,1616482800"; 
-   d="scan'208";a="443791897"
-Received: from iweiny-desk2.sc.intel.com (HELO localhost) ([10.3.52.147])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 May 2021 17:49:28 -0700
-From:   ira.weiny@intel.com
-To:     Ben Widawsky <ben.widawsky@intel.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Cc:     Ira Weiny <ira.weiny@intel.com>,
-        Vishal Verma <vishal.l.verma@intel.com>,
-        Alison Schofield <alison.schofield@intel.com>,
-        linux-cxl@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH V3 5/5] cxl/pci: Add HDM decoder capabilities
-Date:   Thu, 27 May 2021 17:49:22 -0700
-Message-Id: <20210528004922.3980613-6-ira.weiny@intel.com>
-X-Mailer: git-send-email 2.28.0.rc0.12.gb6a658bd00c9
-In-Reply-To: <20210528004922.3980613-1-ira.weiny@intel.com>
-References: <20210528004922.3980613-1-ira.weiny@intel.com>
+        id S235595AbhE1AwL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 May 2021 20:52:11 -0400
+Received: from mail-mw2nam12on2048.outbound.protection.outlook.com ([40.107.244.48]:41568
+        "EHLO NAM12-MW2-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S234809AbhE1AwC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 27 May 2021 20:52:02 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Ay6DR9d7R5LmuU9AIDGnj273yIZYOqa63GVO9TU5v8X7lxRoHfK3AWLu7wldelAP1NIjpM4UZNTdM4J9wUkN/oviDn9Ku8kfdj6oGEGaiVebmx6WNqBJiOhcMb2z3YkkWrhLi/Y9uJ9XMBSO7JL6ijOa5+9RstaNYKQvcaCPzec+o0bykcF2AT5U3EHBi2xO2qeOhC26d8CPBNXjpfZoAoEu+L0GUk51A7VWq1MJOXiGksQop985PFa3B00l0VsDL8Rbx9dTy6UQmDTa5d21KGtHNq3FvgMPi1FeFWp6bxRPgKBFvjYaD90B2Qpkl/W+uy/43HZtgdNMMxY+GXJxlg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=1pdsGdhESrX699sAzFxXEKP6j19IZ8ILN/8Pfz7h5eo=;
+ b=CUbESulZEcjkGYMgw51mwUhdTT7lhGy7nn0XMo+witUqIv+9Yehmz/TCOT7Dezr3QJKIi3OOq8dkLFblhqb7Uq33eMaDbkyA+hgPEzeRRolm4UpVpapgN70m/R0cnPAs5cvvvB5JHNP0cUvkmpk6Vc7A3sdy8TUQLtDT9KD4DnUa9w5oWSeg5y9L+JlM2tzIIjQ9z3x74aypQ07uI8qP0zbbodIbghxiQ/S/w0hfrDXjilMS5it8rV0h8cviCjsHJlSr1w9492evCCLF0a2YuGbZxQasB+Hx8WmF70IPY7SBp/jEI63265RPbSLCj3w6WcSdKlRcKTbEFI7UNXJ/bw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 149.199.62.198) smtp.rcpttodomain=kernel.org smtp.mailfrom=xilinx.com;
+ dmarc=pass (p=none sp=none pct=100) action=none header.from=xilinx.com;
+ dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=xilinx.onmicrosoft.com; s=selector2-xilinx-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=1pdsGdhESrX699sAzFxXEKP6j19IZ8ILN/8Pfz7h5eo=;
+ b=F9/LiYdB4vTgHur/To1+ymOGHvr3bmc+4AZnoBtVWbX8X5y+FGLcXtWjAEbc4G7i5113Tlr/ODztl6BFTiMnZtzyQ4Ld8sBchAlcT+Hxd9idKImP3M4xAGzXM3pD+HP58PVW1th9m6ekOnVWuTx3nn8Y2yCL7JVypsPQ2Fm286M=
+Received: from BN8PR04CA0032.namprd04.prod.outlook.com (2603:10b6:408:70::45)
+ by DM6PR02MB5290.namprd02.prod.outlook.com (2603:10b6:5:48::27) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4150.27; Fri, 28 May
+ 2021 00:50:25 +0000
+Received: from BN1NAM02FT063.eop-nam02.prod.protection.outlook.com
+ (2603:10b6:408:70:cafe::ed) by BN8PR04CA0032.outlook.office365.com
+ (2603:10b6:408:70::45) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4173.20 via Frontend
+ Transport; Fri, 28 May 2021 00:50:25 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 149.199.62.198)
+ smtp.mailfrom=xilinx.com; kernel.org; dkim=none (message not signed)
+ header.d=none;kernel.org; dmarc=pass action=none header.from=xilinx.com;
+Received-SPF: Pass (protection.outlook.com: domain of xilinx.com designates
+ 149.199.62.198 as permitted sender) receiver=protection.outlook.com;
+ client-ip=149.199.62.198; helo=xsj-pvapexch02.xlnx.xilinx.com;
+Received: from xsj-pvapexch02.xlnx.xilinx.com (149.199.62.198) by
+ BN1NAM02FT063.mail.protection.outlook.com (10.13.2.169) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.20.4150.30 via Frontend Transport; Fri, 28 May 2021 00:50:25 +0000
+Received: from xsj-pvapexch02.xlnx.xilinx.com (172.19.86.41) by
+ xsj-pvapexch02.xlnx.xilinx.com (172.19.86.41) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Thu, 27 May 2021 17:50:06 -0700
+Received: from smtp.xilinx.com (172.19.127.95) by
+ xsj-pvapexch02.xlnx.xilinx.com (172.19.86.41) with Microsoft SMTP Server id
+ 15.1.2176.2 via Frontend Transport; Thu, 27 May 2021 17:50:06 -0700
+Envelope-to: mdf@kernel.org,
+ robh@kernel.org,
+ trix@redhat.com,
+ devicetree@vger.kernel.org,
+ linux-fpga@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+Received: from [172.19.73.109] (port=34004 helo=xsj-xw9400.xilinx.com)
+        by smtp.xilinx.com with esmtp (Exim 4.90)
+        (envelope-from <lizhi.hou@xilinx.com>)
+        id 1lmQhS-0006vd-Qj; Thu, 27 May 2021 17:50:06 -0700
+Received: by xsj-xw9400.xilinx.com (Postfix, from userid 21952)
+        id D16DA600346; Thu, 27 May 2021 17:50:05 -0700 (PDT)
+From:   Lizhi Hou <lizhi.hou@xilinx.com>
+To:     <linux-kernel@vger.kernel.org>
+CC:     Lizhi Hou <lizhi.hou@xilinx.com>, <linux-fpga@vger.kernel.org>,
+        <maxz@xilinx.com>, <sonal.santan@xilinx.com>, <yliu@xilinx.com>,
+        <michal.simek@xilinx.com>, <stefanos@xilinx.com>,
+        <devicetree@vger.kernel.org>, <trix@redhat.com>, <mdf@kernel.org>,
+        <robh@kernel.org>
+Subject: [PATCH V7 XRT Alveo 00/20] XRT Alveo driver overview
+Date:   Thu, 27 May 2021 17:49:39 -0700
+Message-ID: <20210528004959.61354-1-lizhi.hou@xilinx.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 7780f0dc-89d0-4b9f-a4e5-08d9217294af
+X-MS-TrafficTypeDiagnostic: DM6PR02MB5290:
+X-Microsoft-Antispam-PRVS: <DM6PR02MB5290B2D5599F264C5AAEF303A1229@DM6PR02MB5290.namprd02.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: bFDjP4oBXDCg3+P+AH8QN8qx+sV0fm2da0eUyyTyRTCu00456ieGAW5v5ldaqpcJ73yLdL/Ij6MLY0YDIpx5Px0P+G/Q/sD2cZbyu3SUkcVwUabIlZ9zcDZ57Edi3AIALvjb+hzaw2hdxMO4Czr7oITgISS1lIuBSLURp/r/2pj9oC5NlrsxKiM1Xv2yM+E0BYH93r23lEygKbXfQtv7LtBLmBgOwBb+Rn3rGrlljxOGInuo5zQ2QUeAJBkACI0p3ZtLk+Y1SXRqaWUTau/E8298QrCHFzYYEjQ1bouCbWjm0aMt+KYT+664OArsPvrgBQ8fSTdJZ1UoOBr2pv88T/oxuqzkOUYMS58OlbwJYf8/Onlj+3+0f1nFMyuZ3vbK3SUJqrkYOEGBJwb7/5E7FXB2hgOZ8DhwVpiHSkBjBMTMW8oi//J6hKHEhZQ5LAtGOB2S6DoljiL0GNTQ0OwocNYhJMJfmUrVUL+RHG1XIkKOgCgt0s56J0d18ZwsT2OA27mMY+OLYzX80TlxRd1ch7bRoS1X+D3kTt2+dUhC5p6hRDYelCDO8xYWnirWMk5gJhMD1RqmRRbD/MkiRt1mg3Me7Gl1z+4by01YKNjOLSNzcR1LkZhj2m29y2j8YlTYlEe7a0KFfniUDdS0lBDDtqckLqCDy72nE5eaIOp/iGqLRLgQUQpUTnPjph1Q+si/ad5O29Z1snaCmWPcpP61Ebbv8nr9iJizisqQxgp2Nl5ZHhsNOhlZIb3pKTFxKhlNIMyn2+HjRq3PVTc3UxlOaQ==
+X-Forefront-Antispam-Report: CIP:149.199.62.198;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:xsj-pvapexch02.xlnx.xilinx.com;PTR:unknown-62-198.xilinx.com;CAT:NONE;SFS:(4636009)(39850400004)(136003)(346002)(376002)(396003)(36840700001)(46966006)(70586007)(36756003)(8936002)(47076005)(54906003)(82740400003)(36860700001)(70206006)(5660300002)(966005)(186003)(2906002)(82310400003)(356005)(8676002)(44832011)(6666004)(426003)(83380400001)(7636003)(6916009)(336012)(30864003)(1076003)(42186006)(316002)(6266002)(4326008)(2616005)(36906005)(478600001)(26005);DIR:OUT;SFP:1101;
+X-OriginatorOrg: xilinx.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 28 May 2021 00:50:25.2683
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 7780f0dc-89d0-4b9f-a4e5-08d9217294af
+X-MS-Exchange-CrossTenant-Id: 657af505-d5df-48d0-8300-c31994686c5c
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=657af505-d5df-48d0-8300-c31994686c5c;Ip=[149.199.62.198];Helo=[xsj-pvapexch02.xlnx.xilinx.com]
+X-MS-Exchange-CrossTenant-AuthSource: BN1NAM02FT063.eop-nam02.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR02MB5290
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ben Widawsky <ben.widawsky@intel.com>
+Hello,
 
-An HDM decoder is defined in the CXL 2.0 specification as a mechanism
-that allow devices and upstream ports to claim memory address ranges and
-participate in interleave sets. HDM decoder registers are within the
-component register block defined in CXL 2.0 8.2.3 CXL 2.0 Component
-Registers as part of the CXL.cache and CXL.mem subregion.
+This is V7 of patch series which adds management physical function driver
+for Xilinx Alveo PCIe accelerator cards.
+    https://www.xilinx.com/products/boards-and-kits/alveo.html
 
-The Component Register Block is found via the Register Locator DVSEC
-in a similar fashion to how the CXL Device Register Block is found. The
-primary difference is the capability id size of the Component Register
-Block is a single DWORD instead of 4 DWORDS.
+This driver is part of Xilinx Runtime (XRT) open source stack.
 
-It's now possible to configure a CXL type 3 device's HDM decoder. Such
-programming is expected for CXL devices with persistent memory, and hot
-plugged CXL devices that participate in CXL.mem with volatile memory.
+XILINX ALVEO PLATFORM ARCHITECTURE
 
-Add probe and mapping functions for the component register blocks.
+Alveo PCIe FPGA based platforms have a static *shell* partition and a
+partial re-configurable *user* partition. The shell partition is
+automatically loaded from flash when host is booted and PCIe is enumerated
+by BIOS. Shell cannot be changed till the next cold reboot. The shell
+exposes two PCIe physical functions:
 
-Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Co-developed-by: Ira Weiny <ira.weiny@intel.com>
-Signed-off-by: Ira Weiny <ira.weiny@intel.com>
-Co-developed-by: Vishal Verma <vishal.l.verma@intel.com>
-Signed-off-by: Vishal Verma <vishal.l.verma@intel.com>
-Signed-off-by: Ben Widawsky <ben.widawsky@intel.com>
+1. management physical function
+2. user physical function
 
----
-Changes for V3:
-	Johnathan
-		Remove CXL_REGLOC_RBI_MAX
-	Add kernel doc comment for cxl_probe_component_regs()
-	Update to devm_cxl_iomap_block() call.
----
- drivers/cxl/core.c | 92 ++++++++++++++++++++++++++++++++++++++++++++++
- drivers/cxl/cxl.h  | 65 +++++++++++++++++++++++++++++---
- drivers/cxl/pci.c  | 15 ++++++++
- 3 files changed, 166 insertions(+), 6 deletions(-)
+The patch series includes Documentation/xrt.rst which describes Alveo
+platform, XRT driver architecture and deployment model in more detail.
 
-diff --git a/drivers/cxl/core.c b/drivers/cxl/core.c
-index 2b5aac6f76f2..f41a38e87606 100644
---- a/drivers/cxl/core.c
-+++ b/drivers/cxl/core.c
-@@ -13,6 +13,78 @@
-  * point for cross-device interleave coordination through cxl ports.
-  */
- 
-+/**
-+ * cxl_probe_component_regs() - Detect CXL Component register blocks
-+ * @dev: Host device of the @base mapping
-+ * @base: Mapping containing the HDM Decoder Capability Header
-+ * @map: Map object describing the register block information found
-+ *
-+ * See CXL 2.0 8.2.4 Component Register Layout and Definition
-+ * See CXL 2.0 8.2.5.5 CXL Device Register Interface
-+ *
-+ * Probe for component register information and return it in map object.
-+ */
-+void cxl_probe_component_regs(struct device *dev, void __iomem *base,
-+			      struct cxl_component_reg_map *map)
-+{
-+	int cap, cap_count;
-+	u64 cap_array;
-+
-+	*map = (struct cxl_component_reg_map) { 0 };
-+
-+	/*
-+	 * CXL.cache and CXL.mem registers are at offset 0x1000 as defined in
-+	 * CXL 2.0 8.2.4 Table 141.
-+	 */
-+	base += CXL_CM_OFFSET;
-+
-+	cap_array = readq(base + CXL_CM_CAP_HDR_OFFSET);
-+
-+	if (FIELD_GET(CXL_CM_CAP_HDR_ID_MASK, cap_array) != CM_CAP_HDR_CAP_ID) {
-+		dev_err(dev,
-+			"Couldn't locate the CXL.cache and CXL.mem capability array header./n");
-+		return;
-+	}
-+
-+	/* It's assumed that future versions will be backward compatible */
-+	cap_count = FIELD_GET(CXL_CM_CAP_HDR_ARRAY_SIZE_MASK, cap_array);
-+
-+	for (cap = 1; cap <= cap_count; cap++) {
-+		void __iomem *register_block;
-+		u32 hdr;
-+		int decoder_cnt;
-+		u16 cap_id, offset;
-+		u32 length;
-+
-+		hdr = readl(base + cap * 0x4);
-+
-+		cap_id = FIELD_GET(CXL_CM_CAP_HDR_ID_MASK, hdr);
-+		offset = FIELD_GET(CXL_CM_CAP_PTR_MASK, hdr);
-+		register_block = base + offset;
-+
-+		switch (cap_id) {
-+		case CXL_CM_CAP_CAP_ID_HDM:
-+			dev_dbg(dev, "found HDM decoder capability (0x%x)\n",
-+				offset);
-+
-+			hdr = readl(register_block);
-+
-+			decoder_cnt = FIELD_GET(CXL_HDM_DECODER_COUNT_MASK, hdr);
-+			length = 0x20 * decoder_cnt + 0x10;
-+
-+			map->hdm_decoder.valid = true;
-+			map->hdm_decoder.offset = offset;
-+			map->hdm_decoder.size = length;
-+			break;
-+		default:
-+			dev_dbg(dev, "Unknown CM cap ID: %d (0x%x)\n", cap_id,
-+				offset);
-+			break;
-+		}
-+	}
-+}
-+EXPORT_SYMBOL_GPL(cxl_probe_component_regs);
-+
- /**
-  * cxl_probe_device_regs() - Detect CXL Device register blocks
-  * @dev: Host device of the @base mapping
-@@ -105,6 +177,26 @@ static void __iomem *devm_cxl_iomap_block(struct pci_dev *pdev,
- 	return ret_val;
- }
- 
-+int cxl_map_component_regs(struct pci_dev *pdev,
-+			   struct cxl_component_regs *regs,
-+			   struct cxl_register_map *map)
-+{
-+	resource_size_t phys_addr;
-+	resource_size_t length;
-+
-+	phys_addr = pci_resource_start(pdev, map->barno);
-+	phys_addr += map->block_offset;
-+
-+	phys_addr += map->component_map.hdm_decoder.offset;
-+	length = map->component_map.hdm_decoder.size;
-+	regs->hdm_decoder = devm_cxl_iomap_block(pdev, phys_addr, length);
-+	if (!regs->hdm_decoder)
-+		return -ENOMEM;
-+
-+	return 0;
-+}
-+EXPORT_SYMBOL_GPL(cxl_map_component_regs);
-+
- int cxl_map_device_regs(struct pci_dev *pdev,
- 			struct cxl_device_regs *regs,
- 			struct cxl_register_map *map)
-diff --git a/drivers/cxl/cxl.h b/drivers/cxl/cxl.h
-index ae4b4c96c6b5..2c47e9cffd44 100644
---- a/drivers/cxl/cxl.h
-+++ b/drivers/cxl/cxl.h
-@@ -8,6 +8,31 @@
- #include <linux/bitops.h>
- #include <linux/io.h>
- 
-+/* CXL 2.0 8.2.5 CXL.cache and CXL.mem Registers*/
-+#define CXL_CM_OFFSET 0x1000
-+#define CXL_CM_CAP_HDR_OFFSET 0x0
-+#define   CXL_CM_CAP_HDR_ID_MASK GENMASK(15, 0)
-+#define     CM_CAP_HDR_CAP_ID 1
-+#define   CXL_CM_CAP_HDR_VERSION_MASK GENMASK(19, 16)
-+#define     CM_CAP_HDR_CAP_VERSION 1
-+#define   CXL_CM_CAP_HDR_CACHE_MEM_VERSION_MASK GENMASK(23, 20)
-+#define     CM_CAP_HDR_CACHE_MEM_VERSION 1
-+#define   CXL_CM_CAP_HDR_ARRAY_SIZE_MASK GENMASK(31, 24)
-+#define CXL_CM_CAP_PTR_MASK GENMASK(31, 20)
-+
-+#define   CXL_CM_CAP_CAP_ID_HDM 0x5
-+#define   CXL_CM_CAP_CAP_HDM_VERSION 1
-+
-+/* HDM decoders CXL 2.0 8.2.5.12 CXL HDM Decoder Capability Structure */
-+#define CXL_HDM_DECODER_CAP_OFFSET 0x0
-+#define   CXL_HDM_DECODER_COUNT_MASK GENMASK(3, 0)
-+#define   CXL_HDM_DECODER_TARGET_COUNT_MASK GENMASK(7, 4)
-+#define CXL_HDM_DECODER0_BASE_LOW_OFFSET 0x10
-+#define CXL_HDM_DECODER0_BASE_HIGH_OFFSET 0x14
-+#define CXL_HDM_DECODER0_SIZE_LOW_OFFSET 0x18
-+#define CXL_HDM_DECODER0_SIZE_HIGH_OFFSET 0x1c
-+#define CXL_HDM_DECODER0_CTRL_OFFSET 0x20
-+
- /* CXL 2.0 8.2.8.1 Device Capabilities Array Register */
- #define CXLDEV_CAP_ARRAY_OFFSET 0x0
- #define   CXLDEV_CAP_ARRAY_CAP_ID 0
-@@ -34,18 +59,30 @@
- #define CXLDEV_MBOX_BG_CMD_STATUS_OFFSET 0x18
- #define CXLDEV_MBOX_PAYLOAD_OFFSET 0x20
- 
--/*
-- * CXL_DEVICE_REGS - Common set of CXL Device register block base pointers
-- * @status: CXL 2.0 8.2.8.3 Device Status Registers
-- * @mbox: CXL 2.0 8.2.8.4 Mailbox Registers
-- * @memdev: CXL 2.0 8.2.8.5 Memory Device Registers
-- */
-+#define CXL_COMPONENT_REGS() \
-+	void __iomem *hdm_decoder
-+
- #define CXL_DEVICE_REGS() \
- 	void __iomem *status; \
- 	void __iomem *mbox; \
- 	void __iomem *memdev
- 
- /* See note for 'struct cxl_regs' for the rationale of this organization */
-+/*
-+ * CXL_COMPONENT_REGS - Common set of CXL Component register block base pointers
-+ * @hdm_decoder: CXL 2.0 8.2.5.12 CXL HDM Decoder Capability Structure
-+ */
-+struct cxl_component_regs {
-+	CXL_COMPONENT_REGS();
-+};
-+
-+/* See note for 'struct cxl_regs' for the rationale of this organization */
-+/*
-+ * CXL_DEVICE_REGS - Common set of CXL Device register block base pointers
-+ * @status: CXL 2.0 8.2.8.3 Device Status Registers
-+ * @mbox: CXL 2.0 8.2.8.4 Mailbox Registers
-+ * @memdev: CXL 2.0 8.2.8.5 Memory Device Registers
-+ */
- struct cxl_device_regs {
- 	CXL_DEVICE_REGS();
- };
-@@ -56,6 +93,12 @@ struct cxl_device_regs {
-  * agnostic code to include the prefix.
-  */
- struct cxl_regs {
-+	union {
-+		struct {
-+			CXL_COMPONENT_REGS();
-+		};
-+		struct cxl_component_regs component;
-+	};
- 	union {
- 		struct {
- 			CXL_DEVICE_REGS();
-@@ -70,6 +113,10 @@ struct cxl_reg_map {
- 	unsigned long size;
- };
- 
-+struct cxl_component_reg_map {
-+	struct cxl_reg_map hdm_decoder;
-+};
-+
- struct cxl_device_reg_map {
- 	struct cxl_reg_map status;
- 	struct cxl_reg_map mbox;
-@@ -82,12 +129,18 @@ struct cxl_register_map {
- 	u8 reg_type;
- 	u8 barno;
- 	union {
-+		struct cxl_component_reg_map component_map;
- 		struct cxl_device_reg_map device_map;
- 	};
- };
- 
-+void cxl_probe_component_regs(struct device *dev, void __iomem *base,
-+			      struct cxl_component_reg_map *map);
- void cxl_probe_device_regs(struct device *dev, void __iomem *base,
- 			   struct cxl_device_reg_map *map);
-+int cxl_map_component_regs(struct pci_dev *pdev,
-+			   struct cxl_component_regs *regs,
-+			   struct cxl_register_map *map);
- int cxl_map_device_regs(struct pci_dev *pdev,
- 			struct cxl_device_regs *regs,
- 			struct cxl_register_map *map);
-diff --git a/drivers/cxl/pci.c b/drivers/cxl/pci.c
-index e1a2dbc2886b..5a1705b52278 100644
---- a/drivers/cxl/pci.c
-+++ b/drivers/cxl/pci.c
-@@ -982,9 +982,20 @@ static int cxl_probe_regs(struct cxl_mem *cxlm, void __iomem *base,
- {
- 	struct pci_dev *pdev = cxlm->pdev;
- 	struct device *dev = &pdev->dev;
-+	struct cxl_component_reg_map *comp_map;
- 	struct cxl_device_reg_map *dev_map;
- 
- 	switch (map->reg_type) {
-+	case CXL_REGLOC_RBI_COMPONENT:
-+		comp_map = &map->component_map;
-+		cxl_probe_component_regs(dev, base, comp_map);
-+		if (!comp_map->hdm_decoder.valid) {
-+			dev_err(dev, "HDM decoder registers not found\n");
-+			return -ENXIO;
-+		}
-+
-+		dev_dbg(dev, "Set up component registers\n");
-+		break;
- 	case CXL_REGLOC_RBI_MEMDEV:
- 		dev_map = &map->device_map;
- 		cxl_probe_device_regs(dev, base, dev_map);
-@@ -1012,6 +1023,10 @@ static int cxl_map_regs(struct cxl_mem *cxlm, struct cxl_register_map *map)
- 	struct device *dev = &pdev->dev;
- 
- 	switch (map->reg_type) {
-+	case CXL_REGLOC_RBI_COMPONENT:
-+		cxl_map_component_regs(pdev, &cxlm->regs.component, map);
-+		dev_dbg(dev, "Mapping component registers...\n");
-+		break;
- 	case CXL_REGLOC_RBI_MEMDEV:
- 		cxl_map_device_regs(pdev, &cxlm->regs.device_regs, map);
- 		dev_dbg(dev, "Probing device registers...\n");
+Users compile their high level design in C/C++/OpenCL or RTL into FPGA
+image using Vitis tools.
+    https://www.xilinx.com/products/design-tools/vitis/vitis-platform.html
+
+The compiled image is packaged as xclbin which contains partial bitstream
+for the user partition and necessary metadata. Users can dynamically swap
+the image running on the user partition in order to switch between
+different workloads by loading different xclbins.
+
+XRT DRIVERS FOR XILINX ALVEO
+
+XRT Linux kernel driver *xrt-mgmt* binds to management physical function of
+Alveo platform. The modular driver framework is organized into several
+platform drivers which primarily handle the following functionality:
+
+1.  Loading firmware container also called xsabin at driver attach time
+2.  Loading of user compiled xclbin with FPGA Manager integration
+3.  Clock scaling of image running on user partition
+4.  In-band sensors: temp, voltage, power, etc.
+5.  Device reset and rescan
+
+The platform drivers are packaged into *xrt-lib* helper module with well
+defined interfaces. The module provides a pseudo-bus implementation for the
+platform drivers. More details on the driver model can be found in
+Documentation/xrt.rst.
+
+User physical function driver is not included in this patch series.
+
+LIBFDT REQUIREMENT
+
+XRT driver infrastructure uses Device Tree as a metadata format to discover
+HW subsystems in the Alveo PCIe device. The Device Tree schema used by XRT
+is documented in Documentation/xrt.rst.
+
+TESTING AND VALIDATION
+
+xrt-mgmt driver can be tested with full XRT open source stack which
+includes user space libraries, board utilities and (out of tree) first
+generation user physical function driver xocl. XRT open source runtime
+stack is available at https://github.com/Xilinx/XRT
+
+Complete documentation for XRT open source stack including sections on
+Alveo/XRT security and platform architecture can be found here:
+
+https://xilinx.github.io/XRT/master/html/index.html
+https://xilinx.github.io/XRT/master/html/security.html
+https://xilinx.github.io/XRT/master/html/platforms_partitions.html
+
+Changes since v6:
+- Resolved grammatical errors and cleaned up taxonomy in xrt.rst
+  documentation.
+- Fixed clang warnings.
+- Updated code base to include v6 code review comments.
+
+Changes since v5:
+- Revert all changes 'mgnt/MGNT' back to 'mgmt/MGMT'
+- Updated code base to include v5 code review comments.
+   xrt.rst: address grammar and taxonomy
+   subdev_id.h: defines XRT_SUBDEV_INVALID = 0
+   xclbin.c: change shift operation to be_to_cpu
+- Resolved kernel test robot errors.
+
+Changes since v4:
+- Added xrt_bus_type and xrt_device. All sub devices were changed from
+  platform_bus_type/platform_device to xrt_bus_type/xrt_device.
+- Renamed xrt-mgmt driver to xrt-mgnt driver.
+- Replaced 'MGMT' with 'MGNT' and 'mgmt' with 'mgnt' in code and file names
+- Moved pci function calls from infrastructure to xrt-mgnt driver.
+- Renamed files: mgmt/main.c -> mgnt/xmgnt-main.c
+                 mgmt/main-region.c -> mgnt/xmgnt-main-region.c
+                 include/xmgmt-main.h -> include/xmgnt-main.h
+                 mgmt/fmgr-drv.c -> mgnt/xrt-mgr.c
+                 mgmt/fmgr.h -> mgnt/xrt-mgr.h
+- Updated code base to include v4 code review comments.
+
+Changes since v3:
+- Leaf drivers use regmap-mmio to access hardware registers.
+- Renamed driver module: xmgmt.ko -> xrt-mgmt.ko
+- Renamed files: calib.[c|h] -> ddr_calibration.[c|h],
+                 lib/main.[c|h] -> lib/lib-drv.[c|h],
+                 mgmt/main-impl.h - > mgmt/xmgnt.h
+- Updated code base to include v3 code review comments.
+
+Changes since v2:
+- Streamlined the driver framework into *xleaf*, *group* and *xroot*
+- Updated documentation to show the driver model with examples
+- Addressed kernel test robot errors
+- Added a selftest for basic driver framework
+- Documented device tree schema
+- Removed need to export libfdt symbols
+
+Changes since v1:
+- Updated the driver to use fpga_region and fpga_bridge for FPGA
+  programming
+- Dropped platform drivers not related to PR programming to focus on XRT
+  core framework
+- Updated Documentation/fpga/xrt.rst with information on XRT core framework
+- Addressed checkpatch issues
+- Dropped xrt- prefix from some header files
+
+For reference V6 version of patch series can be found here:
+
+https://lore.kernel.org/lkml/20210512015339.5649-1-lizhi.hou@xilinx.com/
+https://lore.kernel.org/lkml/20210512015339.5649-2-lizhi.hou@xilinx.com/
+https://lore.kernel.org/lkml/20210512015339.5649-3-lizhi.hou@xilinx.com/
+https://lore.kernel.org/lkml/20210512015339.5649-4-lizhi.hou@xilinx.com/
+https://lore.kernel.org/lkml/20210512015339.5649-5-lizhi.hou@xilinx.com/
+https://lore.kernel.org/lkml/20210512015339.5649-6-lizhi.hou@xilinx.com/
+https://lore.kernel.org/lkml/20210512015339.5649-7-lizhi.hou@xilinx.com/
+https://lore.kernel.org/lkml/20210512015339.5649-8-lizhi.hou@xilinx.com/
+https://lore.kernel.org/lkml/20210512015339.5649-9-lizhi.hou@xilinx.com/
+https://lore.kernel.org/lkml/20210512015339.5649-10-lizhi.hou@xilinx.com/
+https://lore.kernel.org/lkml/20210512015339.5649-11-lizhi.hou@xilinx.com/
+https://lore.kernel.org/lkml/20210512015339.5649-12-lizhi.hou@xilinx.com/
+https://lore.kernel.org/lkml/20210512015339.5649-13-lizhi.hou@xilinx.com/
+https://lore.kernel.org/lkml/20210512015339.5649-14-lizhi.hou@xilinx.com/
+https://lore.kernel.org/lkml/20210512015339.5649-15-lizhi.hou@xilinx.com/
+https://lore.kernel.org/lkml/20210512015339.5649-16-lizhi.hou@xilinx.com/
+https://lore.kernel.org/lkml/20210512015339.5649-17-lizhi.hou@xilinx.com/
+https://lore.kernel.org/lkml/20210512015339.5649-18-lizhi.hou@xilinx.com/
+https://lore.kernel.org/lkml/20210512015339.5649-19-lizhi.hou@xilinx.com/
+https://lore.kernel.org/lkml/20210512015339.5649-20-lizhi.hou@xilinx.com/
+https://lore.kernel.org/lkml/20210512015339.5649-21-lizhi.hou@xilinx.com/
+
+Lizhi Hou (20):
+  Documentation: fpga: Add a document describing XRT Alveo drivers
+  fpga: xrt: driver metadata helper functions
+  fpga: xrt: xclbin file helper functions
+  fpga: xrt: xrt-lib driver manager
+  fpga: xrt: group driver
+  fpga: xrt: char dev node helper functions
+  fpga: xrt: root driver infrastructure
+  fpga: xrt: driver infrastructure
+  fpga: xrt: management physical function driver (root)
+  fpga: xrt: main driver for management function device
+  fpga: xrt: fpga-mgr and region implementation for xclbin download
+  fpga: xrt: VSEC driver
+  fpga: xrt: User Clock Subsystem driver
+  fpga: xrt: ICAP driver
+  fpga: xrt: devctl xrt driver
+  fpga: xrt: clock driver
+  fpga: xrt: clock frequency counter driver
+  fpga: xrt: DDR calibration driver
+  fpga: xrt: partition isolation driver
+  fpga: xrt: Kconfig and Makefile updates for XRT drivers
+
+ Documentation/fpga/index.rst                  |   1 +
+ Documentation/fpga/xrt.rst                    | 870 ++++++++++++++++++
+ MAINTAINERS                                   |  11 +
+ drivers/Makefile                              |   1 +
+ drivers/fpga/Kconfig                          |   2 +
+ drivers/fpga/Makefile                         |   5 +
+ drivers/fpga/xrt/Kconfig                      |   8 +
+ drivers/fpga/xrt/include/events.h             |  45 +
+ drivers/fpga/xrt/include/group.h              |  25 +
+ drivers/fpga/xrt/include/metadata.h           | 236 +++++
+ drivers/fpga/xrt/include/subdev_id.h          |  39 +
+ drivers/fpga/xrt/include/xclbin-helper.h      |  48 +
+ drivers/fpga/xrt/include/xdevice.h            | 131 +++
+ drivers/fpga/xrt/include/xleaf.h              | 205 +++++
+ drivers/fpga/xrt/include/xleaf/axigate.h      |  23 +
+ drivers/fpga/xrt/include/xleaf/clkfreq.h      |  21 +
+ drivers/fpga/xrt/include/xleaf/clock.h        |  29 +
+ .../fpga/xrt/include/xleaf/ddr_calibration.h  |  28 +
+ drivers/fpga/xrt/include/xleaf/devctl.h       |  40 +
+ drivers/fpga/xrt/include/xleaf/icap.h         |  27 +
+ drivers/fpga/xrt/include/xmgmt-main.h         |  34 +
+ drivers/fpga/xrt/include/xroot.h              | 117 +++
+ drivers/fpga/xrt/lib/Kconfig                  |  17 +
+ drivers/fpga/xrt/lib/Makefile                 |  30 +
+ drivers/fpga/xrt/lib/cdev.c                   | 209 +++++
+ drivers/fpga/xrt/lib/group.c                  | 278 ++++++
+ drivers/fpga/xrt/lib/lib-drv.c                | 328 +++++++
+ drivers/fpga/xrt/lib/lib-drv.h                |  21 +
+ drivers/fpga/xrt/lib/subdev.c                 | 859 +++++++++++++++++
+ drivers/fpga/xrt/lib/subdev_pool.h            |  53 ++
+ drivers/fpga/xrt/lib/xclbin.c                 | 381 ++++++++
+ drivers/fpga/xrt/lib/xleaf/axigate.c          | 325 +++++++
+ drivers/fpga/xrt/lib/xleaf/clkfreq.c          | 223 +++++
+ drivers/fpga/xrt/lib/xleaf/clock.c            | 652 +++++++++++++
+ drivers/fpga/xrt/lib/xleaf/ddr_calibration.c  | 210 +++++
+ drivers/fpga/xrt/lib/xleaf/devctl.c           | 169 ++++
+ drivers/fpga/xrt/lib/xleaf/icap.c             | 328 +++++++
+ drivers/fpga/xrt/lib/xleaf/ucs.c              | 152 +++
+ drivers/fpga/xrt/lib/xleaf/vsec.c             | 372 ++++++++
+ drivers/fpga/xrt/lib/xroot.c                  | 536 +++++++++++
+ drivers/fpga/xrt/metadata/Kconfig             |  12 +
+ drivers/fpga/xrt/metadata/Makefile            |  16 +
+ drivers/fpga/xrt/metadata/metadata.c          | 578 ++++++++++++
+ drivers/fpga/xrt/mgmt/Kconfig                 |  15 +
+ drivers/fpga/xrt/mgmt/Makefile                |  19 +
+ drivers/fpga/xrt/mgmt/root.c                  | 420 +++++++++
+ drivers/fpga/xrt/mgmt/xmgmt-main-region.c     | 483 ++++++++++
+ drivers/fpga/xrt/mgmt/xmgmt-main.c            | 662 +++++++++++++
+ drivers/fpga/xrt/mgmt/xmgmt.h                 |  33 +
+ drivers/fpga/xrt/mgmt/xrt-mgr.c               | 190 ++++
+ drivers/fpga/xrt/mgmt/xrt-mgr.h               |  16 +
+ include/uapi/linux/xrt/xclbin.h               | 409 ++++++++
+ include/uapi/linux/xrt/xmgmt-ioctl.h          |  46 +
+ 53 files changed, 9988 insertions(+)
+ create mode 100644 Documentation/fpga/xrt.rst
+ create mode 100644 drivers/fpga/xrt/Kconfig
+ create mode 100644 drivers/fpga/xrt/include/events.h
+ create mode 100644 drivers/fpga/xrt/include/group.h
+ create mode 100644 drivers/fpga/xrt/include/metadata.h
+ create mode 100644 drivers/fpga/xrt/include/subdev_id.h
+ create mode 100644 drivers/fpga/xrt/include/xclbin-helper.h
+ create mode 100644 drivers/fpga/xrt/include/xdevice.h
+ create mode 100644 drivers/fpga/xrt/include/xleaf.h
+ create mode 100644 drivers/fpga/xrt/include/xleaf/axigate.h
+ create mode 100644 drivers/fpga/xrt/include/xleaf/clkfreq.h
+ create mode 100644 drivers/fpga/xrt/include/xleaf/clock.h
+ create mode 100644 drivers/fpga/xrt/include/xleaf/ddr_calibration.h
+ create mode 100644 drivers/fpga/xrt/include/xleaf/devctl.h
+ create mode 100644 drivers/fpga/xrt/include/xleaf/icap.h
+ create mode 100644 drivers/fpga/xrt/include/xmgmt-main.h
+ create mode 100644 drivers/fpga/xrt/include/xroot.h
+ create mode 100644 drivers/fpga/xrt/lib/Kconfig
+ create mode 100644 drivers/fpga/xrt/lib/Makefile
+ create mode 100644 drivers/fpga/xrt/lib/cdev.c
+ create mode 100644 drivers/fpga/xrt/lib/group.c
+ create mode 100644 drivers/fpga/xrt/lib/lib-drv.c
+ create mode 100644 drivers/fpga/xrt/lib/lib-drv.h
+ create mode 100644 drivers/fpga/xrt/lib/subdev.c
+ create mode 100644 drivers/fpga/xrt/lib/subdev_pool.h
+ create mode 100644 drivers/fpga/xrt/lib/xclbin.c
+ create mode 100644 drivers/fpga/xrt/lib/xleaf/axigate.c
+ create mode 100644 drivers/fpga/xrt/lib/xleaf/clkfreq.c
+ create mode 100644 drivers/fpga/xrt/lib/xleaf/clock.c
+ create mode 100644 drivers/fpga/xrt/lib/xleaf/ddr_calibration.c
+ create mode 100644 drivers/fpga/xrt/lib/xleaf/devctl.c
+ create mode 100644 drivers/fpga/xrt/lib/xleaf/icap.c
+ create mode 100644 drivers/fpga/xrt/lib/xleaf/ucs.c
+ create mode 100644 drivers/fpga/xrt/lib/xleaf/vsec.c
+ create mode 100644 drivers/fpga/xrt/lib/xroot.c
+ create mode 100644 drivers/fpga/xrt/metadata/Kconfig
+ create mode 100644 drivers/fpga/xrt/metadata/Makefile
+ create mode 100644 drivers/fpga/xrt/metadata/metadata.c
+ create mode 100644 drivers/fpga/xrt/mgmt/Kconfig
+ create mode 100644 drivers/fpga/xrt/mgmt/Makefile
+ create mode 100644 drivers/fpga/xrt/mgmt/root.c
+ create mode 100644 drivers/fpga/xrt/mgmt/xmgmt-main-region.c
+ create mode 100644 drivers/fpga/xrt/mgmt/xmgmt-main.c
+ create mode 100644 drivers/fpga/xrt/mgmt/xmgmt.h
+ create mode 100644 drivers/fpga/xrt/mgmt/xrt-mgr.c
+ create mode 100644 drivers/fpga/xrt/mgmt/xrt-mgr.h
+ create mode 100644 include/uapi/linux/xrt/xclbin.h
+ create mode 100644 include/uapi/linux/xrt/xmgmt-ioctl.h
+
 -- 
-2.28.0.rc0.12.gb6a658bd00c9
+2.27.0
 
