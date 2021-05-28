@@ -2,61 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BF787393B4E
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 04:08:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 69B01393B51
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 04:10:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235986AbhE1CJp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 May 2021 22:09:45 -0400
-Received: from szxga01-in.huawei.com ([45.249.212.187]:2068 "EHLO
-        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234834AbhE1CJn (ORCPT
+        id S236026AbhE1CMJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 May 2021 22:12:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37482 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234834AbhE1CMF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 May 2021 22:09:43 -0400
-Received: from dggemx753-chm.china.huawei.com (unknown [172.30.72.53])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4Frnz74bpKzWp7w;
-        Fri, 28 May 2021 10:03:31 +0800 (CST)
-Received: from [10.136.110.154] (10.136.110.154) by
- dggemx753-chm.china.huawei.com (10.0.44.37) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2176.2; Fri, 28 May 2021 10:08:07 +0800
-Subject: Re: [f2fs-dev] [PATCH] f2fs: logging neatening
-To:     Joe Perches <joe@perches.com>, Jaegeuk Kim <jaegeuk@kernel.org>,
-        Chao Yu <chao@kernel.org>
-CC:     LKML <linux-kernel@vger.kernel.org>,
-        <linux-f2fs-devel@lists.sourceforge.net>
-References: <1703a46c87dff3dbfdab008f1d268fe0b24c7db1.camel@perches.com>
-From:   Chao Yu <yuchao0@huawei.com>
-Message-ID: <86100529-fdb6-d06a-b002-454131415975@huawei.com>
-Date:   Fri, 28 May 2021 10:08:06 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
- Thunderbird/52.9.1
+        Thu, 27 May 2021 22:12:05 -0400
+Received: from mail-pg1-x530.google.com (mail-pg1-x530.google.com [IPv6:2607:f8b0:4864:20::530])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42F03C061574
+        for <linux-kernel@vger.kernel.org>; Thu, 27 May 2021 19:10:30 -0700 (PDT)
+Received: by mail-pg1-x530.google.com with SMTP id q15so1372191pgg.12
+        for <linux-kernel@vger.kernel.org>; Thu, 27 May 2021 19:10:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-transfer-encoding;
+        bh=v+SsYqHRR/RJ2vuPiv+eqG29wbplMivXPG8IiOrrLnM=;
+        b=sIbw/QaVCgWRNBJNdHkNrAqeT3Pjq7PWyq5SAhXrEPVzo0yXmysC4kjRVwzApIyJNA
+         xWJ4kS8DWQ3xk4FFLqulePDZ7gqBjqHDYjEeXKehf3PKj47PiCEQRycUK0FwHj+KBEGF
+         TpcfEySwaXHWINwsdTgw4rRtnZsG7qzRS/u3k8QNdcn9cMUxNwyqnWEwLYjyp2y3cHoO
+         jxRsufKBHgwGNPLqnTgA9bal4bY/uL6aBR/rBrX9+MrLVwhkwrSCG+SPb1Z0/4oisNLA
+         noTSOmgrPp/3IvAkYPbA+9ra9kjDfiqZO5a/dKYb/Sx3J5Y7culyEvsso+gkJBy6NTBR
+         Y8EQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding;
+        bh=v+SsYqHRR/RJ2vuPiv+eqG29wbplMivXPG8IiOrrLnM=;
+        b=bFgVoTffRb4sXY1h8Lg21A/Jhl3hCvBQBD9gb3C4sUNfNh3pSZLUg/QXbRF5UAZP7d
+         abPgywG3m2doHFqIFNqdeBI4kqfxDQlm7zxR4hHMr2LZe5TraFKltsVsogVpkkyQ0yzR
+         gBPHcp4gqKpkYvRdpEDqatHNUHp7fkipOo0L5YGxDMcnnLxpmzBvZA530mVSQZrqOeFr
+         RWetHgMcTZrjVbNi6hDrwi3Idp+Lm2H9X+zxOB0TSlvrn1gdis0EbQXxYKVkzh9Vu15c
+         1ZyBo99ilQAZjZ5xiK0/rLMWHkaaTC25ye2PikhEk59aktKT/dJDEWgLNNZFXblf2uqO
+         mU/A==
+X-Gm-Message-State: AOAM531du9BYLH8pF/F2QoiZmZ6pMvTzQYVB6cEhgeJvGOI4WiEylCM9
+        URdEyuAzAXo5KdqRO9z4QMNEPw==
+X-Google-Smtp-Source: ABdhPJxQPhDpq0Ub4uva2R6FuXj7T55eOSlSy33otSXAEV5oqDlsIzviCKGT+I9tdtgTwgix2LBYLg==
+X-Received: by 2002:a62:148c:0:b029:2cf:3c2d:7ba with SMTP id 134-20020a62148c0000b02902cf3c2d07bamr1399070pfu.79.1622167829740;
+        Thu, 27 May 2021 19:10:29 -0700 (PDT)
+Received: from [10.86.119.121] ([139.177.225.240])
+        by smtp.gmail.com with ESMTPSA id l1sm2829449pjt.40.2021.05.27.19.10.25
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 27 May 2021 19:10:29 -0700 (PDT)
+Subject: Re: [External] Re: [PATCH] fs/proc/kcore.c: add mmap interface
+To:     Andrew Morton <akpm@linux-foundation.org>, adobriyan@gmail.com,
+        rppt@kernel.org
+Cc:     linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        songmuchun@bytedance.com, zhouchengming@bytedance.com,
+        chenying.kernel@bytedance.com, zhengqi.arch@bytedance.com
+References: <20210526075142.9740-1-zhoufeng.zf@bytedance.com>
+ <20210526173953.49fb3dc48c0f2a8b3c31fe2b@linux-foundation.org>
+ <d71a4ffa-f21e-62f5-7fa6-83ca14b3f05b@bytedance.com>
+ <20210527153055.aefeee8d8385da8152bdbacc@linux-foundation.org>
+From:   zhoufeng <zhoufeng.zf@bytedance.com>
+Message-ID: <d36b56ca-6405-d7dc-a531-fcbe0acc425d@bytedance.com>
+Date:   Fri, 28 May 2021 10:10:23 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.10.2
 MIME-Version: 1.0
-In-Reply-To: <1703a46c87dff3dbfdab008f1d268fe0b24c7db1.camel@perches.com>
-Content-Type: text/plain; charset="windows-1252"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.136.110.154]
-X-ClientProxiedBy: dggemx703-chm.china.huawei.com (10.1.199.50) To
- dggemx753-chm.china.huawei.com (10.0.44.37)
-X-CFilter-Loop: Reflected
+In-Reply-To: <20210527153055.aefeee8d8385da8152bdbacc@linux-foundation.org>
+Content-Type: text/plain; charset=gbk; format=flowed
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/5/27 4:05, Joe Perches wrote:
-> Update the logging uses that have unnecessary newlines as the f2fs_printk
-> function and so its f2fs_<level> macro callers already adds one.
-> 
-> This allows searching single line logging entries with an easier grep and
-> also avoids unnecessary blank lines in the logging.
-> 
-> Miscellanea:
-> 
-> o Coalesce formats
-> o Align to open parenthesis
-> 
-> Signed-off-by: Joe Perches <joe@perches.com>
 
-Reviewed-by: Chao Yu <yuchao0@huawei.com>
 
-Thanks,
+ÔÚ 2021/5/28 ÉÏÎç6:30, Andrew Morton Ð´µÀ:
+> On Thu, 27 May 2021 14:13:09 +0800 zhoufeng <zhoufeng.zf@bytedance.com> wrote:
+> 
+>>> I'm surprised that it makes this much difference.  Has DRGN been fully
+>>> optimised to minimise the amount of pread()ing which it does?  Why does
+>>> it do so much reading?
+>> DRGN is a tool similar to Crash, but much lighter. It allows users to
+>> obtain kernel data structures from Python scripts. Based on this, we
+>> intend to use DRGN for kernel monitoring. So we used some pressure test
+>> scripts to test the loss of monitoring.
+>> Monitoring is all about getting current real-time data, so every time
+>> DRGN tries to get kernel data, it needs to read /proc/kcore. In my
+>> script, I tried to loop 1000 times to obtain the information of all the
+>> processes in the machine, in order to construct a scene where kernel
+>> data is frequently read. So, the frequency in the default version of
+>> kcore, pread is very high. In view of this situation, our optimization
+>> idea is to reduce the number of context switches as much as possible
+>> under the scenario of frequent kernel data acquisition, to reduce the
+>> performance loss to a minimum, and then move the monitoring system to
+>> the production environment.
+> 
+> Why would a pread() cause a context switch?
+> 
+
+Sorry, my English is poor. I mean trigger the system call.
+
+>> After running for a long time in a
+>> production environment, the number of kernel data reads was added as
+>> time went on, and the pread number also increased. If users use mmap,
+>> it's once for all.
