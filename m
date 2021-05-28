@@ -2,152 +2,50 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A770C3946C4
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 20:09:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BA8023946D2
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 20:10:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229541AbhE1SKo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 May 2021 14:10:44 -0400
-Received: from so254-9.mailgun.net ([198.61.254.9]:62967 "EHLO
-        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229450AbhE1SKm (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 May 2021 14:10:42 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1622225347; h=Message-Id: Date: Subject: Cc: To: From:
- Sender; bh=r1zhZYhMoSYg6a1HMnFXMjdjXy3nkmF+hSZFTbu8j3k=; b=aJgaBHVZi+W+T3BRx+WEvxqNgq2jnDYhHLMVFGOidjf7F2xO6NBc4rf8/OO7/9mzte/b2FXn
- qTayCjeGP3rbs9AjTOFBrwIAtq0gPzMYrh4ju7ZnueCw4g2bgUA/gzZ0Hq38bSYoAE1Q1mCw
- Fz1TtW8ABNaWOHdiYFGLzw47WsA=
-X-Mailgun-Sending-Ip: 198.61.254.9
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n02.prod.us-east-1.postgun.com with SMTP id
- 60b131c0ef99224c246824b2 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 28 May 2021 18:09:04
- GMT
-Sender: khsieh=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 261EEC4338A; Fri, 28 May 2021 18:09:03 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
-        autolearn=no autolearn_force=no version=3.4.0
-Received: from khsieh-linux1.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: khsieh)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 60A5FC433F1;
-        Fri, 28 May 2021 18:09:01 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 60A5FC433F1
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=khsieh@codeaurora.org
-From:   Kuogee Hsieh <khsieh@codeaurora.org>
-To:     robdclark@gmail.com, sean@poorly.run, swboyd@chromium.org,
-        vkoul@kernel.org, agross@kernel.org, bjorn.andersson@linaro.org
-Cc:     abhinavk@codeaurora.org, aravindh@codeaurora.org,
-        khsieh@codeaurora.org, freedreno@lists.freedesktop.org,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v2] drm/msm/dp: power off DP phy bases on phy state at suspend
-Date:   Fri, 28 May 2021 11:08:55 -0700
-Message-Id: <1622225335-9875-1-git-send-email-khsieh@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
+        id S229624AbhE1SLl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 May 2021 14:11:41 -0400
+Received: from gloria.sntech.de ([185.11.138.130]:44724 "EHLO gloria.sntech.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229450AbhE1SLa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 28 May 2021 14:11:30 -0400
+Received: from ip5f5aa64a.dynamic.kabel-deutschland.de ([95.90.166.74] helo=phil.lan)
+        by gloria.sntech.de with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <heiko@sntech.de>)
+        id 1lmgvd-0006Ve-LQ; Fri, 28 May 2021 20:09:49 +0200
+From:   Heiko Stuebner <heiko@sntech.de>
+To:     hjc@rock-chips.com, Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+Cc:     Heiko Stuebner <heiko@sntech.de>, airlied@linux.ie,
+        linux-rockchip@lists.infradead.org,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH] drm/rockchip: remove unused function
+Date:   Fri, 28 May 2021 20:09:41 +0200
+Message-Id: <162222530163.2887132.15884573129584763057.b4-ty@sntech.de>
+X-Mailer: git-send-email 2.29.2
+In-Reply-To: <1618476421-114429-1-git-send-email-jiapeng.chong@linux.alibaba.com>
+References: <1618476421-114429-1-git-send-email-jiapeng.chong@linux.alibaba.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Normal DP suspend operation contains two steps, display off followed
-by dp suspend, to complete system wide suspending cycle if display is
-up at that time. In this case, DP phy will be powered off at display
-off. However there is an exception case that depending on the timing
-of dongle plug in during system wide suspending, sometimes display off
-procedure may be skipped and dp suspend was called directly. In this
-case, dp phy is stay at powered on (phy->power_count = 1) so that at
-next resume dp driver crash at main link clock enable due to phy is
-not physically powered on.  This patch add phy_power_off() at
-dp_ctrl_host_deinit() which is called by dp_pm_suspend() to power off
-phy according to the state of is_phy_on flag.
+On Thu, 15 Apr 2021 16:47:01 +0800, Jiapeng Chong wrote:
+> Fix the following clang warning:
+> 
+> drivers/gpu/drm/rockchip/dw-mipi-dsi-rockchip.c:320:20: warning: unused
+> function 'dsi_set' [-Wunused-function].
 
-Changes in V2:
--- stashed changes into dp_ctrl.c
--- add is_phy_on to monitor phy state
+Applied, thanks!
 
-Fixes: 0114f31a2903 ("drm/msm/dp: handle irq_hpd with sink_count = 0 correctly)
+[1/1] drm/rockchip: remove unused function
+      commit: 7455cedf7c4d4d5d808913e14d859705612c54ce
 
-Sgned-off-by: Kuogee Hsieh <khsieh@codeaurora.org>
----
- drivers/gpu/drm/msm/dp/dp_ctrl.c | 15 +++++++++++++++
- 1 file changed, 15 insertions(+)
-
-diff --git a/drivers/gpu/drm/msm/dp/dp_ctrl.c b/drivers/gpu/drm/msm/dp/dp_ctrl.c
-index dbd8943..3924ac6 100644
---- a/drivers/gpu/drm/msm/dp/dp_ctrl.c
-+++ b/drivers/gpu/drm/msm/dp/dp_ctrl.c
-@@ -77,6 +77,8 @@ struct dp_ctrl_private {
- 	struct dp_parser *parser;
- 	struct dp_catalog *catalog;
- 
-+	bool is_phy_on;
-+
- 	struct opp_table *opp_table;
- 
- 	struct completion idle_comp;
-@@ -1336,6 +1338,7 @@ static int dp_ctrl_enable_mainlink_clocks(struct dp_ctrl_private *ctrl)
- 
- 	phy_configure(phy, &dp_io->phy_opts);
- 	phy_power_on(phy);
-+	ctrl->is_phy_on = true;
- 
- 	ret = dp_power_clk_enable(ctrl->power, DP_CTRL_PM, true);
- 	if (ret)
-@@ -1414,6 +1417,11 @@ void dp_ctrl_host_deinit(struct dp_ctrl *dp_ctrl)
- 	phy = dp_io->phy;
- 
- 	dp_catalog_ctrl_enable_irq(ctrl->catalog, false);
-+	if (ctrl->is_phy_on) {
-+		phy_power_off(phy);
-+		ctrl->is_phy_on = false;
-+	}
-+
- 	phy_exit(phy);
- 
- 	DRM_DEBUG_DP("Host deinitialized successfully\n");
-@@ -1457,6 +1465,8 @@ static int dp_ctrl_reinitialize_mainlink(struct dp_ctrl_private *ctrl)
- 		return ret;
- 	}
- 	phy_power_off(phy);
-+	ctrl->is_phy_on = false;
-+
- 	/* hw recommended delay before re-enabling clocks */
- 	msleep(20);
- 
-@@ -1488,6 +1498,8 @@ static int dp_ctrl_deinitialize_mainlink(struct dp_ctrl_private *ctrl)
- 	}
- 
- 	phy_power_off(phy);
-+	ctrl->is_phy_on = false;
-+
- 	phy_exit(phy);
- 
- 	return 0;
-@@ -1840,6 +1852,7 @@ int dp_ctrl_off_link_stream(struct dp_ctrl *dp_ctrl)
- 	}
- 
- 	phy_power_off(phy);
-+	ctrl->is_phy_on = false;
- 
- 	/* aux channel down, reinit phy */
- 	phy_exit(phy);
-@@ -1894,6 +1907,8 @@ int dp_ctrl_off(struct dp_ctrl *dp_ctrl)
- 	}
- 
- 	phy_power_off(phy);
-+	ctrl->is_phy_on = false;
-+
- 	phy_exit(phy);
- 
- 	DRM_DEBUG_DP("DP off done\n");
+Best regards,
 -- 
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-a Linux Foundation Collaborative Project
-
+Heiko Stuebner <heiko@sntech.de>
