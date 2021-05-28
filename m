@@ -2,138 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B123E393F04
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 10:55:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 60665393F0A
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 10:56:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235781AbhE1I5Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 May 2021 04:57:24 -0400
-Received: from outbound-smtp29.blacknight.com ([81.17.249.32]:36107 "EHLO
-        outbound-smtp29.blacknight.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234366AbhE1I5W (ORCPT
+        id S236018AbhE1I6E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 May 2021 04:58:04 -0400
+Received: from szxga01-in.huawei.com ([45.249.212.187]:5129 "EHLO
+        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235116AbhE1I6C (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 May 2021 04:57:22 -0400
-Received: from mail.blacknight.com (pemlinmail04.blacknight.ie [81.17.254.17])
-        by outbound-smtp29.blacknight.com (Postfix) with ESMTPS id CEA4218E002
-        for <linux-kernel@vger.kernel.org>; Fri, 28 May 2021 09:55:46 +0100 (IST)
-Received: (qmail 5451 invoked from network); 28 May 2021 08:55:46 -0000
-Received: from unknown (HELO techsingularity.net) (mgorman@techsingularity.net@[84.203.23.168])
-  by 81.17.254.9 with ESMTPSA (AES256-SHA encrypted, authenticated); 28 May 2021 08:55:46 -0000
-Date:   Fri, 28 May 2021 09:55:45 +0100
-From:   Mel Gorman <mgorman@techsingularity.net>
-To:     Dave Hansen <dave.hansen@intel.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Hillf Danton <hdanton@sina.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Michal Hocko <mhocko@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux-MM <linux-mm@kvack.org>, "Tang, Feng" <feng.tang@intel.com>
-Subject: Re: [PATCH 0/6 v2] Calculate pcp->high based on zone sizes and
- active CPUs
-Message-ID: <20210528085545.GJ30378@techsingularity.net>
-References: <20210525080119.5455-1-mgorman@techsingularity.net>
- <7177f59b-dc05-daff-7dc6-5815b539a790@intel.com>
+        Fri, 28 May 2021 04:58:02 -0400
+Received: from dggeml717-chm.china.huawei.com (unknown [172.30.72.56])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4Frz4R0RkDzYn0x;
+        Fri, 28 May 2021 16:53:43 +0800 (CST)
+Received: from dggpemm500006.china.huawei.com (7.185.36.236) by
+ dggeml717-chm.china.huawei.com (10.3.17.128) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2176.2; Fri, 28 May 2021 16:56:23 +0800
+Received: from thunder-town.china.huawei.com (10.174.177.72) by
+ dggpemm500006.china.huawei.com (7.185.36.236) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Fri, 28 May 2021 16:56:22 +0800
+From:   Zhen Lei <thunder.leizhen@huawei.com>
+To:     Douglas Miller <dougmill@linux.ibm.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jeff Garzik <jeff@garzik.org>,
+        Jan-Bernd Themann <ossthema@de.ibm.com>,
+        netdev <netdev@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+CC:     Zhen Lei <thunder.leizhen@huawei.com>
+Subject: [PATCH 1/1] ehea: fix error return code in ehea_restart_qps()
+Date:   Fri, 28 May 2021 16:55:55 +0800
+Message-ID: <20210528085555.9390-1-thunder.leizhen@huawei.com>
+X-Mailer: git-send-email 2.26.0.windows.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-15
-Content-Disposition: inline
-In-Reply-To: <7177f59b-dc05-daff-7dc6-5815b539a790@intel.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.174.177.72]
+X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
+ dggpemm500006.china.huawei.com (7.185.36.236)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 27, 2021 at 12:36:21PM -0700, Dave Hansen wrote:
-> Hi Mel,
-> 
-> Feng Tang tossed these on a "Cascade Lake" system with 96 threads and
-> ~512G of persistent memory and 128G of DRAM.  The PMEM is in "volatile
-> use" mode and being managed via the buddy just like the normal RAM.
-> 
-> The PMEM zones are big ones:
-> 
->         present  65011712 = 248 G
->         high       134595 = 525 M
-> 
-> The PMEM nodes, of course, don't have any CPUs in them.
-> 
-> With your series, the pcp->high value per-cpu is 69584 pages or about
-> 270MB per CPU.  Scaled up by the 96 CPU threads, that's ~26GB of
-> worst-case memory in the pcps per zone, or roughly 10% of the size of
-> the zone.
-> 
-> I did see quite a few pcp->counts above 60,000, so it's definitely
-> possible in practice to see the pcps filled up.  This was not observed
-> to cause any actual problems in practice.  But, it's still a bit worrisome.
-> 
+Fix to return -EFAULT from the error handling case instead of 0, as done
+elsewhere in this function.
 
-Ok, it does have the potential to trigger early reclaim as pages are
-stored on remote PCP lists. The problem would be transient because
-vmstat would drain those pages over time but still, how about this patch
-on top of the series?
+By the way, when get_zeroed_page() fails, directly return -ENOMEM to
+simplify code.
 
---8<--
-mm/page_alloc: Split pcp->high across all online CPUs for cpuless nodes
-
-Dave Hansen reported the following about Feng Tang's tests on a machine
-with persistent memory onlined as a DRAM-like device.
-
-  Feng Tang tossed these on a "Cascade Lake" system with 96 threads and
-  ~512G of persistent memory and 128G of DRAM.  The PMEM is in "volatile
-  use" mode and being managed via the buddy just like the normal RAM.
-
-  The PMEM zones are big ones:
-
-        present  65011712 = 248 G
-        high       134595 = 525 M
-
-  The PMEM nodes, of course, don't have any CPUs in them.
-
-  With your series, the pcp->high value per-cpu is 69584 pages or about
-  270MB per CPU.  Scaled up by the 96 CPU threads, that's ~26GB of
-  worst-case memory in the pcps per zone, or roughly 10% of the size of
-  the zone.
-
-This should not cause a problem as such although it could trigger reclaim
-due to pages being stored on per-cpu lists for CPUs remote to a node. It
-is not possible to treat cpuless nodes exactly the same as normal nodes
-but the worst-case scenario can be mitigated by splitting pcp->high across
-all online CPUs for cpuless memory nodes.
-
-Suggested-by: Dave Hansen <dave.hansen@intel.com>
-Signed-off-by: Mel Gorman <mgorman@techsingularity.net>
+Fixes: 2c69448bbced ("ehea: DLPAR memory add fix")
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
 ---
- mm/page_alloc.c | 14 +++++++++-----
- 1 file changed, 9 insertions(+), 5 deletions(-)
+ drivers/net/ethernet/ibm/ehea/ehea_main.c | 9 +++++----
+ 1 file changed, 5 insertions(+), 4 deletions(-)
 
-diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-index d708aa14f4ef..af566e97a0f8 100644
---- a/mm/page_alloc.c
-+++ b/mm/page_alloc.c
-@@ -6687,7 +6687,7 @@ static int zone_highsize(struct zone *zone, int batch, int cpu_online)
- {
- #ifdef CONFIG_MMU
- 	int high;
--	int nr_local_cpus;
-+	int nr_split_cpus;
- 	unsigned long total_pages;
+diff --git a/drivers/net/ethernet/ibm/ehea/ehea_main.c b/drivers/net/ethernet/ibm/ehea/ehea_main.c
+index ea55314b209d..d105bfbc7c1c 100644
+--- a/drivers/net/ethernet/ibm/ehea/ehea_main.c
++++ b/drivers/net/ethernet/ibm/ehea/ehea_main.c
+@@ -2618,10 +2618,8 @@ static int ehea_restart_qps(struct net_device *dev)
+ 	u16 dummy16 = 0;
  
- 	if (!percpu_pagelist_high_fraction) {
-@@ -6710,10 +6710,14 @@ static int zone_highsize(struct zone *zone, int batch, int cpu_online)
- 	 * Split the high value across all online CPUs local to the zone. Note
- 	 * that early in boot that CPUs may not be online yet and that during
- 	 * CPU hotplug that the cpumask is not yet updated when a CPU is being
--	 * onlined.
--	 */
--	nr_local_cpus = max(1U, cpumask_weight(cpumask_of_node(zone_to_nid(zone)))) + cpu_online;
--	high = total_pages / nr_local_cpus;
-+	 * onlined. For memory nodes that have no CPUs, split pcp->high across
-+	 * all online CPUs to mitigate the risk that reclaim is triggered
-+	 * prematurely due to pages stored on pcp lists.
-+	 */
-+	nr_split_cpus = cpumask_weight(cpumask_of_node(zone_to_nid(zone))) + cpu_online;
-+	if (!nr_split_cpus)
-+		nr_split_cpus = num_online_cpus();
-+	high = total_pages / nr_split_cpus;
+ 	cb0 = (void *)get_zeroed_page(GFP_KERNEL);
+-	if (!cb0) {
+-		ret = -ENOMEM;
+-		goto out;
+-	}
++	if (!cb0)
++		return -ENOMEM;
  
- 	/*
- 	 * Ensure high is at least batch*4. The multiple is based on the
+ 	for (i = 0; i < (port->num_def_qps); i++) {
+ 		struct ehea_port_res *pr =  &port->port_res[i];
+@@ -2641,6 +2639,7 @@ static int ehea_restart_qps(struct net_device *dev)
+ 					    cb0);
+ 		if (hret != H_SUCCESS) {
+ 			netdev_err(dev, "query_ehea_qp failed (1)\n");
++			ret = -EFAULT;
+ 			goto out;
+ 		}
+ 
+@@ -2653,6 +2652,7 @@ static int ehea_restart_qps(struct net_device *dev)
+ 					     &dummy64, &dummy16, &dummy16);
+ 		if (hret != H_SUCCESS) {
+ 			netdev_err(dev, "modify_ehea_qp failed (1)\n");
++			ret = -EFAULT;
+ 			goto out;
+ 		}
+ 
+@@ -2661,6 +2661,7 @@ static int ehea_restart_qps(struct net_device *dev)
+ 					    cb0);
+ 		if (hret != H_SUCCESS) {
+ 			netdev_err(dev, "query_ehea_qp failed (2)\n");
++			ret = -EFAULT;
+ 			goto out;
+ 		}
+ 
+-- 
+2.25.1
+
+
