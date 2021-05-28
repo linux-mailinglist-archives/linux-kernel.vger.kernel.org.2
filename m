@@ -2,138 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7586B394096
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 12:03:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 23887394094
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 12:03:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235793AbhE1KFY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 May 2021 06:05:24 -0400
-Received: from ni.piap.pl ([195.187.100.5]:47424 "EHLO ni.piap.pl"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236134AbhE1KEt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 May 2021 06:04:49 -0400
-Received: from t19.piap.pl (OSB1819.piap.pl [10.0.9.19])
-        (using TLSv1.2 with cipher AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ni.piap.pl (Postfix) with ESMTPSA id 4422C44423C;
-        Fri, 28 May 2021 12:02:53 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 ni.piap.pl 4422C44423C
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=piap.pl; s=mail;
-        t=1622196173; bh=rBrr8No9YxW9GxRteQ/5coCNcDbxv/wQgs4N3978vXk=;
-        h=From:To:Cc:Subject:References:Date:In-Reply-To:From;
-        b=eGE0MnbetMS2eEZUzbFmwD29gGEtxpxbnwuSvMjeolTvuLLMFVnp+hInW8hzTHE6p
-         YdQB50+FRr5kEX89uXgyDrd6Mg5QPvhWoYvwleaswpUw6sB8b91SK7sC47OoBYsgtu
-         R/+jsPq0kEwjbKUttSO6MR2NLQJhnyJCsfEcX1zE=
-From:   =?utf-8?Q?Krzysztof_Ha=C5=82asa?= <khalasa@piap.pl>
-To:     "Russell King (Oracle)" <linux@armlinux.org.uk>
-Cc:     linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        lkml <linux-kernel@vger.kernel.org>
-Subject: Re: Data corruption on i.MX6 IPU in arm_copy_from_user()
-References: <m3y2c1uchh.fsf@t19.piap.pl>
-        <20210526100843.GD30436@shell.armlinux.org.uk>
-        <m3r1htu19o.fsf@t19.piap.pl>
-        <20210526131853.GE30436@shell.armlinux.org.uk>
-Sender: khalasa@piap.pl
-Date:   Fri, 28 May 2021 12:02:52 +0200
-In-Reply-To: <20210526131853.GE30436@shell.armlinux.org.uk> (Russell King's
-        message of "Wed, 26 May 2021 14:18:53 +0100")
-Message-ID: <m3h7intbub.fsf@t19.piap.pl>
+        id S236345AbhE1KE6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 May 2021 06:04:58 -0400
+Received: from jabberwock.ucw.cz ([46.255.230.98]:33086 "EHLO
+        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229774AbhE1KEe (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 28 May 2021 06:04:34 -0400
+Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
+        id D454E1C0B76; Fri, 28 May 2021 12:02:54 +0200 (CEST)
+Date:   Fri, 28 May 2021 12:02:54 +0200
+From:   Pavel Machek <pavel@ucw.cz>
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     Amireddy Mallikarjuna reddy <mallikarjunax.reddy@linux.intel.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Marek =?iso-8859-1?Q?Beh=FAn?= <marek.behun@nic.cz>,
+        Abanoub Sameh <abanoubsameh8@gmail.com>,
+        Dan Murphy <dmurphy@ti.com>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        linux-leds@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v1 00/28] leds: cleanups and fwnode refcounting bug fixes
+Message-ID: <20210528100254.GC2209@amd>
+References: <20210510095045.3299382-1-andy.shevchenko@gmail.com>
+ <YKIbgBd3q8c+Tgz0@smile.fi.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-KLMS-Rule-ID: 4
-X-KLMS-Message-Action: skipped
-X-KLMS-AntiSpam-Status: not scanned, whitelist
-X-KLMS-AntiPhishing: not scanned, whitelist
-X-KLMS-AntiVirus: Kaspersky Security for Linux Mail Server, version 8.0.3.30, not scanned, whitelist
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="Fig2xvG2VGoz8o/s"
+Content-Disposition: inline
+In-Reply-To: <YKIbgBd3q8c+Tgz0@smile.fi.intel.com>
+User-Agent: Mutt/1.5.23 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-"Russell King (Oracle)" <linux@armlinux.org.uk> writes:
 
-> In any case, looking at the architecture reference manual, LDM is
-> permitted on device and strongly ordered mappings, and the memory
-> subsystem is required to decompose it into a series of 32-bit accesses.
-> So, it sounds to me like there could be a hardware bug in the buses/IPU
-> causing this.
+--Fig2xvG2VGoz8o/s
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-It seems so.
+On Mon 2021-05-17 10:30:08, Andy Shevchenko wrote:
+> On Mon, May 10, 2021 at 12:50:17PM +0300, Andy Shevchenko wrote:
+> > When analyzing the current state of affairs with fwnode reference count=
+ing
+> > I found that a lot of core doesn't take it right. Here is a bunch of
+> > corresponding fixes against LED drivers.
+> >=20
+> > The series includes some cleanups and a few other fixes grouped by a dr=
+iver.
+> >=20
+> > First two patches are taking care of -ENOTSUPP error code too  prevent =
+its
+> > appearance in the user space.
+>=20
+> Pavel, any comments on this bug fix series?
 
-I modified the kernel IPU module a bit, initialized a bunch of IPU
-registers to known values (1..0xD). Results (from 1 to 13 IPU
-registers) obtained with different instructions:
+I took these:
 
-readl(13 consecutive registers): CSI =3D 1 2 3 4 5 6 7 8 9 A B C D
-1 =3D register #0 and so on - readl() results are obviously correct.
+95138e01275e1af3f1fc2780fe1d9c6138b29c7a leds: pwm: Make error
+handling more robust
+d33e98a1f3ee76f38668304f9ffce49af07da77a leds: lt3593: Make use of
+device properties
+f1e1d532da7e6ef355528a22fb97d9a8fbf76c4e leds: lp50xx: Put fwnode in
+error case during ->probe()
+807553f8bf4afa673750e52905e0f9488179112f leds: lm3697: Don't spam logs
+when probe is deferred
+f55db1c7fadc2a29c9fa4ff3aec98dbb111f2206 leds: lm3692x: Put fwnode in
+any case during ->probe()
+e2e8e4e8187509a77cb6328d876d9c09c07c2e82 leds: lm36274: Correct
+headers (of*.h -> mod_devicetable.h)
+3c5f655c44bb65cb7e3c219d08c130ce5fa45d7f leds: lm36274: Put fwnode in
+error case during ->probe()
+2f39f68cec0a19c0371c1e7cb149159810e87f64 leds: lm3532: Make error
+handling more robust
+99be74f61cb0292b518f5e6d7e5c6611555c2ec7 leds: lm3532: select regmap
+I2C API
+f3e2b3825ffb034b001fbe283d7a32a56e41aca7 leds: lgm-sso: Drop duplicate
+NULL check for GPIO operations
+2cbbe9c50d13b6417e0baf8e8475ed73d4d12c2d leds: lgm-sso: Remove
+unneeded of_match_ptr()
+fba8a6f2263bc54683cf3fd75df4dbd5d041c195 leds: lgm-sso: Fix clock
+handling
+a43a4e588e72bafc81924d61bf1167cd6810ecbb leds: el15203000: Introduce
+to_el15203000_led() helper
+0ac40af86077982a5346dbc9655172d2775d6b08 leds: class: The -ENOTSUPP
+should never be seen by user space
 
-LDM1:  1 (not corrupted)
-LDM2:  1 3
-LDM3:  1 3 4
-LDM4:  2 3 4 4
-LDM5:  1 3 4 5 6
-LDM6:  1 3 4 5 6 7
-LDM7:  1 3 4 5 6 7 8
-LDM8:  2 3 4 5 6 7 8 8
-LDM9:  1 3 4 5 6 7 8 9 A
-LDM10: 1 3 4 5 6 7 8 9 A B
-LDM11: 1 3 4 5 6 7 8 9 A B C
-LDM12: 1 3 4 5 6 7 8 9 A B C D
+For the "remove depends on OF"... I'd preffer not to take those. We
+don't need to ask the user for configurations that never happen.
 
-The last one uses:
-        ldm r4, {r1, r2, r3, r4, r5, r6, r7, r8, r9, sl, fp, ip}.
-
-I haven't tested more than 12 registers in one kernel LDMIA instruction.
-
-The results don't depend on the address offset (adding 4, 8 or 12 to the
-address doesn't change anything).
-
-The arm_copy_from_user() is a specific case of the same corruption. It
-uses a number of PLDs and 8-register LDMIAs (and then possibly LDRs
-which don't fail). Each LDMIA ("LDM8") returns again:
-LMD8:  2 3 4 5 6 7 8 8
-(the same with subsequent LDMIAs: 10 11 12 13 14 15 16 16 and so on).
-
-Summary: it appears all 64-bit and longer LDMIA instructions fail. The
-first or the second 32-bit access is skipped (possibly somewhere between
-AXI and IPU). In case of 4- and 8-register LDMs, the first (#0) value is
-skipped, otherwise, it's the second (#1) value.
-
-
-Now the PLDs ring a bell:
-"ERR003730 ARM: 743623=E2=80=94Bad interaction between a minimum of seven P=
-LDs
-and one Non-Cacheable LDM can lead to a deadlock". Looking at the
-disassembly I can count 6 PLDs (the first two seem to be the same,
-though I don't claim I understand this (source) .s code). Also this
-problem happens with IPU and not other devices, so I think it's not
-related to this erratum after all.
-
-
-size_t arm_copy_from_user(void *to, const void *from, size_t n)
-... for n =3D 32 =3D 8 * 4 bytes:
-2c: subs r2, r2, #4     ; =3D 28
-30: blt  e4             ; NOP
-34: ands ip, r0, #3     ; r0 =3D destination
-38: pld  [r1]
-3c: bne  108            ; NOP
-40: ands ip, r1, #3     ; r1 =3D address in IPU
-44: bne  138            ; NOP
-48: subs r2, r2, #28
-4c: push {r5, r6, r7, r8}
-50: blt  88             ; NOP
-54: pld  [r1]           ; duplicate PLD?
-58: subs r2, r2, #0x60
-5c: pld  [r1, #28]
-60: blt  70
-64: pld  [r1, #0x3c]
-68: pld  [r1, #0x5c]
-6c: pld  [r1, #0x7c]
-70: ldm  r1!, {r3, r4, r5, r6, r7, r8, ip, lr} ; <<<<< fails
-
-I also wonder if STMs may have similar problems - will check.
+Best regards,
+								Pavel
 --=20
-Krzysztof Ha=C5=82asa
+http://www.livejournal.com/~pavelmachek
 
-Sie=C4=87 Badawcza =C5=81ukasiewicz
-Przemys=C5=82owy Instytut Automatyki i Pomiar=C3=B3w PIAP
-Al. Jerozolimskie 202, 02-486 Warszawa
+--Fig2xvG2VGoz8o/s
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1
+
+iEYEARECAAYFAmCwv84ACgkQMOfwapXb+vIN1gCfci7gA7RV1iIhbTujwmU8cIKp
+8yIAnjVPXzCJtaO5ZMMvH8r/I+kKQAny
+=WEAS
+-----END PGP SIGNATURE-----
+
+--Fig2xvG2VGoz8o/s--
