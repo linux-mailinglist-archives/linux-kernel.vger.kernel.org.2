@@ -2,82 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B848F3943BB
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 16:02:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D737C3943BC
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 16:03:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236286AbhE1ODk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 May 2021 10:03:40 -0400
-Received: from www.zeus03.de ([194.117.254.33]:59476 "EHLO mail.zeus03.de"
+        id S236166AbhE1OEf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 May 2021 10:04:35 -0400
+Received: from air.basealt.ru ([194.107.17.39]:42166 "EHLO air.basealt.ru"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234131AbhE1ODZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 May 2021 10:03:25 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple; d=sang-engineering.com; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=k1; bh=mosejSqzfpsohsvt8TG8Cc+GV5Rf
-        j8NU3vRUE9MBWu4=; b=zRu65FuPBkZuHU1NXnv4uvnDOD7VcXFAncyB0pYoD65Y
-        7tFkWbsjKXPiUPgnABoTbfhLFk2AJsuWKCJrdG7W4gr1K7bEv9t+Essbz4/O0ZRp
-        7SjgchpP+yMrzWMV9MwnFaJI7cayCcuTA+rh8kJ3F0iLU2ym28Ade1D2fuOgVYo=
-Received: (qmail 2395082 invoked from network); 28 May 2021 16:01:48 +0200
-Received: by mail.zeus03.de with ESMTPSA (TLS_AES_256_GCM_SHA384 encrypted, authenticated); 28 May 2021 16:01:48 +0200
-X-UD-Smtp-Session: l3s3148p1@kSccUWTDQuEgAwDPXwoXAEGfoBQqamfc
-Date:   Fri, 28 May 2021 16:01:47 +0200
-From:   Wolfram Sang <wsa+renesas@sang-engineering.com>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 1/2] i2c: core: Make debug message even more debuggish
-Message-ID: <YLD3y3rtMI4jAxxu@kunai>
-Mail-Followup-To: Wolfram Sang <wsa+renesas@sang-engineering.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210528091351.70699-1-andriy.shevchenko@linux.intel.com>
+        id S229740AbhE1OEc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 28 May 2021 10:04:32 -0400
+Received: by air.basealt.ru (Postfix, from userid 490)
+        id 0C35C58951C; Fri, 28 May 2021 14:02:55 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.1 (2015-04-28) on
+        sa.local.altlinux.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=5.0 tests=ALL_TRUSTED,BAYES_00
+        autolearn=ham autolearn_force=no version=3.4.1
+Received: from [10.88.144.159] (obninsk.basealt.ru [217.15.195.17])
+        by air.basealt.ru (Postfix) with ESMTPSA id D42A8589517;
+        Fri, 28 May 2021 14:02:53 +0000 (UTC)
+To:     Vojtech Pavlik <vojtech@suse.cz>
+From:   Egor Ignatov <egori@altlinux.org>
+Subject: Problem with i8042 and PS/2 keyboard on HP laptop
+Cc:     linux-kernel@vger.kernel.org
+Message-ID: <f586401d-73af-097f-812c-f033a922bfc2@altlinux.org>
+Date:   Fri, 28 May 2021 17:02:53 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.2
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="WWhmVuFii2NK0j4u"
-Content-Disposition: inline
-In-Reply-To: <20210528091351.70699-1-andriy.shevchenko@linux.intel.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Vojtech,
 
---WWhmVuFii2NK0j4u
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+I have a problem with the PS/2 keyboard on an HP laptop
+(15s-fq2020ur).  The problem is that after booting the
+system, the keyboard does not work.  But it starts working
+about 10 seconds after pressing any key.
 
-On Fri, May 28, 2021 at 12:13:50PM +0300, Andy Shevchenko wrote:
-> One may notice that dev_printk(KERN_DEBUG ...) is *not* an equivalent
-> to dev_dbg(). It will be printed whenever loglevel is high enough.
-> And currently it will be the only message in the I=C2=B2C core in some
-> configurations that got printed under above conditions.
->=20
-> Moving to dev_dbg() will hide it in the configurations where Dynamic Debug
-> is enabled and hence align with all other debug messages in the I=C2=B2C =
-core..
->=20
-> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+I looked at the i8042 log and it seems to me that the
+problem is that the driver does not wait for a response to
+the GETID. It receives ACK and immediately sends the
+0xed command without waiting for ID.
 
-Applied to for-next, thanks!
+[    0.460964] i8042: [1] f2 -> i8042 (kbd-data)
+[    0.471708] i8042: [12] fa <- i8042 (interrupt, 0, 1)
+[    0.977581] i8042: [518] ed -> i8042 (kbd-data)
+[    1.185586] i8042: [726] 60 -> i8042 (command)
+[    1.185686] i8042: [726] 64 -> i8042 (parameter)
+[    1.185842] i8042: [726] 60 -> i8042 (command)
+[    1.185935] i8042: [726] 65 -> i8042 (parameter)
+[    1.185975] i8042: [726] ab <- i8042 (interrupt, 0, 0)
+[    1.189909] i8042: [730] 83 <- i8042 (interrupt, 0, 1)
+[    1.189952] i8042: [730] f2 -> i8042 (kbd-data)
+[    1.200096] i8042: [740] fa <- i8042 (interrupt, 0, 1)
+[    1.204012] i8042: [744] fa <- i8042 (interrupt, 0, 1)
+[    1.204031] i8042: [744] 60 -> i8042 (command)
+[    1.204124] i8042: [744] 64 -> i8042 (parameter)
+[    1.204272] i8042: [744] 60 -> i8042 (command)
+[    1.204364] i8042: [744] 65 -> i8042 (parameter)
 
+At this point it doesn't do anything until you press a key.
+Then the driver starts sending GETID repeatedly until at
+some point it gets the correct answer, after which the
+keyboard starts working. As I sad it takes about 10 secs.
 
---WWhmVuFii2NK0j4u
-Content-Type: application/pgp-signature; name="signature.asc"
+Here is a part of the log after pressing a key:
 
------BEGIN PGP SIGNATURE-----
+[   11.103249] i8042: [10643] 1d <- i8042 (interrupt, 0, 1)
+[   11.103287] i8042: [10643] f2 -> i8042 (kbd-data)
+[   11.113673] i8042: [10654] fa <- i8042 (interrupt, 0, 1)
+[   11.113719] i8042: [10654] ab <- i8042 (interrupt, 0, 1)
+[   11.617485] i8042: [11158] ed -> i8042 (kbd-data)
+[   11.825485] i8042: [11366] 60 -> i8042 (command)
+[   11.825778] i8042: [11366] 64 -> i8042 (parameter)
+[   11.825924] i8042: [11366] 60 -> i8042 (command)
+[   11.826016] i8042: [11366] 65 -> i8042 (parameter)
+[   11.826049] i8042: [11366] 83 <- i8042 (interrupt, 0, 0)
+[   11.830084] i8042: [11370] fa <- i8042 (interrupt, 0, 1)
+[   11.830107] i8042: [11370] f2 -> i8042 (kbd-data)
+[   11.840241] i8042: [11380] fa <- i8042 (interrupt, 0, 1)
+[   11.844063] i8042: [11384] 38 <- i8042 (interrupt, 0, 1)
+[   11.844083] i8042: [11384] 60 -> i8042 (command)
+[   11.844174] i8042: [11384] 64 -> i8042 (parameter)
+[   11.844320] i8042: [11384] 60 -> i8042 (command)
+[   11.844413] i8042: [11384] 65 -> i8042 (parameter)
+[   11.849039] i8042: [11389] 3c <- i8042 (interrupt, 0, 1)
+[   11.849059] i8042: [11389] f2 -> i8042 (kbd-data)
+[   11.859198] i8042: [11399] fa <- i8042 (interrupt, 0, 1)
+[   12.361490] i8042: [11902] ed -> i8042 (kbd-data)
+...
+[   27.516138] i8042: [27455] f2 -> i8042 (kbd-data)
+[   27.526395] i8042: [27466] fa <- i8042 (interrupt, 0, 1)
+[   27.531044] i8042: [27471] fa <- i8042 (interrupt, 0, 1)
+[   27.531080] i8042: [27471] 60 -> i8042 (command)
+[   27.531183] i8042: [27471] 64 -> i8042 (parameter)
+[   27.531336] i8042: [27471] 60 -> i8042 (command)
+[   27.531713] i8042: [27471] 65 -> i8042 (parameter)
+[   27.536215] i8042: [27476] 1d <- i8042 (interrupt, 0, 1)
+**HERE IT FINALLY RECEIVES THE CORRECT RESPONSE**
+[   27.536290] i8042: [27476] f2 -> i8042 (kbd-data)
+[   27.546882] i8042: [27487] fa <- i8042 (interrupt, 0, 1)
+[   27.546940] i8042: [27487] ab <- i8042 (interrupt, 0, 1)
+[   27.546997] i8042: [27487] 83 <- i8042 (interrupt, 0, 1)
+[   27.547018] i8042: [27487] f5 -> i8042 (kbd-data)
+[   27.557566] i8042: [27497] fa <- i8042 (interrupt, 0, 1)
+[   27.557615] i8042: [27497] ed -> i8042 (kbd-data)
+[   27.568242] i8042: [27508] fa <- i8042 (interrupt, 0, 1)
+[   27.568294] i8042: [27508] 00 -> i8042 (kbd-data)
+[   27.578730] i8042: [27518] fa <- i8042 (interrupt, 0, 1)
+[   27.578785] i8042: [27518] f3 -> i8042 (kbd-data)
+[   27.589151] i8042: [27529] fa <- i8042 (interrupt, 0, 1)
+[   27.589206] i8042: [27529] 00 -> i8042 (kbd-data)
+[   27.599602] i8042: [27539] fa <- i8042 (interrupt, 0, 1)
+[   27.599676] i8042: [27539] f4 -> i8042 (kbd-data)
+[   27.609986] i8042: [27550] fa <- i8042 (interrupt, 0, 1)
 
-iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmCw98sACgkQFA3kzBSg
-KbamaA//eNoMbrQMeNh/xy5vPj5eREfsvtuucQ48SVbDdFIT9SE4ZOj55FDiPFoy
-6d/hDukvfJG7WtsBXuueZjdhc/90UFCRU/Yt4e1No+30MHn+j5cak/AyHkB2Id6E
-M5cP2m6ZwmH2CcRqTO5F5JijG03emU5YR5c2zaJaz8+jLeIwkn1hOJmiQgZ7kkzw
-FuITDMwDU1QH3LVdsBmcDk1LUdZ613tp1J84Y8+HpcdSw1Fupn0N9I57hB0S0/jf
-gky7W4OcJ3ZkWHhCrwLOadGoIMORQEsbxlni/1625v3zpOl+zuvBbisptqV+qFlA
-+dV9EzTQhfAbTb9d1PDj9KApnMa/PsiUacr0xMpjCXTGx5zYVkiYGVKV/J1B4QpU
-zYb+mhzs5uI8yjm/YfjC2UZ+dccCBGEPkkRAUCrlHuwpcsBPw4MeJ+v26FNw+ieL
-ZuYSR/yjG8XjU/M1HCVRx3d2F/RoV+y5LSR2CNYnuAKrq9CCifcO1K16HiEgnAX+
-TekHpkLMW/86H0xpKvASX/kFyiVE4uhWIQNfmag9/1NBEHfpQdqrpM9aIfjmtgla
-cG75dEYswbpToPSKvPum/eBuKxEP3/cmPAXp852IQ2TaQetevdnD485FglwcxPUa
-4U5BVE80F7E/yPq1RdRJNtaUEGOYsOwaUWwAMwQjgrwBac0KKBI=
-=x/EN
------END PGP SIGNATURE-----
+Any idea what to do about this?
 
---WWhmVuFii2NK0j4u--
+Best regards,
+Egor
