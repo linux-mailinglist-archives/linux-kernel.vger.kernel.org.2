@@ -2,183 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D78D394264
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 14:15:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 01214394239
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 13:55:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236767AbhE1MQY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 May 2021 08:16:24 -0400
-Received: from www62.your-server.de ([213.133.104.62]:44424 "EHLO
-        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235986AbhE1MPw (ORCPT
+        id S236068AbhE1L4w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 May 2021 07:56:52 -0400
+Received: from mo4-p02-ob.smtp.rzone.de ([81.169.146.168]:20161 "EHLO
+        mo4-p02-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233262AbhE1L4t (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 May 2021 08:15:52 -0400
-Received: from sslproxy02.your-server.de ([78.47.166.47])
-        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92.3)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1lmb4p-000BDI-9H; Fri, 28 May 2021 13:54:55 +0200
-Received: from [85.7.101.30] (helo=linux.home)
-        by sslproxy02.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1lmb4o-000HiG-Tf; Fri, 28 May 2021 13:54:54 +0200
-Subject: Re: [PATCH v2] lockdown,selinux: avoid bogus SELinux lockdown
- permission checks
-To:     Jiri Olsa <jolsa@redhat.com>
-Cc:     Paul Moore <paul@paul-moore.com>,
-        Ondrej Mosnacek <omosnace@redhat.com>,
-        linux-security-module@vger.kernel.org,
-        James Morris <jmorris@namei.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Stephen Smalley <stephen.smalley.work@gmail.com>,
-        selinux@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        linux-fsdevel@vger.kernel.org, bpf@vger.kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Casey Schaufler <casey@schaufler-ca.com>,
-        andrii.nakryiko@gmail.com
-References: <20210517092006.803332-1-omosnace@redhat.com>
- <CAHC9VhTasra0tU=bKwVqAwLRYaC+hYakirRz0Mn5jbVMuDkwrA@mail.gmail.com>
- <01135120-8bf7-df2e-cff0-1d73f1f841c3@iogearbox.net>
- <4fee8c12-194f-3f85-e28b-f7f24ab03c91@iogearbox.net> <YLDYV3ot7vroWW9o@krava>
-From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <e8a118dc-6b10-fefd-a9e1-75367f9b74a5@iogearbox.net>
-Date:   Fri, 28 May 2021 13:54:54 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+        Fri, 28 May 2021 07:56:49 -0400
+ARC-Seal: i=1; a=rsa-sha256; t=1622202900; cv=none;
+    d=strato.com; s=strato-dkim-0002;
+    b=aQqcZXWT4XqPeHd8/2ibHiQiD1y0VfjXgM93IQawBsWKOFFaYg7Br3XRXwJLYWOed2
+    5i4CPMnLy8DqoaPZ1rYrLQ08+MvyTdHHd6TAmJgjWcohAQXdyK6JpOTF4hbCXR3yD9TH
+    56edytofCabbK6dkc/IvLSEEHenbmQv9YXApUDfcNxdpO8UplJ+zIDbb4bxT+OfHrs7P
+    L1R4RSd9u7MJ8JNaVN17I/3RZTakBCX7U65NzmWV1ZTKUt3QsU8Qwf0/BB7zQhb4bFZX
+    Nwnxlz4k2HnL3e6kKkIi/mlDHuSJtMjagupA0eYYOBobpKfIgP6/JbJxo7cJ/drKj7Qq
+    fv5A==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1622202900;
+    s=strato-dkim-0002; d=strato.com;
+    h=In-Reply-To:References:Message-ID:Subject:Cc:To:From:Date:Cc:Date:
+    From:Subject:Sender;
+    bh=WeqQN4mQvzS29AH4yAdf/GA2SB8Yu/Jx4YSHLw8KKYE=;
+    b=bqf4cZk8Qnv8wHwLoJN03UmrYfSpdnKV1xjO0lspSs4rthlzJOqbdJnOw9bVQP4kTr
+    U/BH4KXzQhaYPIez72f1hPVRbqTa/35VD5OI6RvcvtmeErJJAlfIghJJDVHYHsw5nNnU
+    CH5lxIYHSbKQei7HrijXF6z0r9HpRuBPNgd03CnAZ780w9pG9aZN4ErBl78CrojgC4e7
+    AkI9hu0h7N3cXvVgFJcWhUIZz+QKKRx71Ic/L4JR422WL0oKn7cho0laveUYHeotDLkY
+    sRAsw7cTg4aERqRwBR1bpJtF7R/stkXVb1ZHNLoT6jsA3R8HHcDwrnPSMVzQQfbHX9Zl
+    iwHQ==
+ARC-Authentication-Results: i=1; strato.com;
+    dkim=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1622202900;
+    s=strato-dkim-0002; d=gerhold.net;
+    h=In-Reply-To:References:Message-ID:Subject:Cc:To:From:Date:Cc:Date:
+    From:Subject:Sender;
+    bh=WeqQN4mQvzS29AH4yAdf/GA2SB8Yu/Jx4YSHLw8KKYE=;
+    b=r7Zylf9UuQSufvtraDgmWTNFpCe14DxFRNNm7J/TwKvYKTw8j0M1lHsl+TTeoTF8K6
+    f2eTgAgDHuPBJIKuec3ey0NYauSLZVgZGxVwXohj1PL0R+iApOUjAGfOBsmQ4nyjGDC4
+    sa5jwB1+O8TZOsGXeZh4n8PgOVORTTSlu1JvCGXevsnsaQ86tzlfeFUHj9TuIs3UeXzQ
+    XusYsM4XcEaiOhSciF7+xYGVMUHk7KlvGI23QdgMm40KTNdoSnXC8rzP/tS5xOO2oR9u
+    6Eptxcf+NrkFWHu8K386VOg0nPhuxsAtWfFaSch+EB9IeuVgjpObdxuwu98dcaovvVzz
+    28BQ==
+Authentication-Results: strato.com;
+    dkim=none
+X-RZG-AUTH: ":P3gBZUipdd93FF5ZZvYFPugejmSTVR2nRPhVOQ/OcYgojyw4j34+u26zEodhPgRDZ8j6IczFY4o="
+X-RZG-CLASS-ID: mo00
+Received: from gerhold.net
+    by smtp.strato.de (RZmta 47.26.3 DYNA|AUTH)
+    with ESMTPSA id U0b2c9x4SBsx662
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
+        (Client did not present a certificate);
+    Fri, 28 May 2021 13:54:59 +0200 (CEST)
+Date:   Fri, 28 May 2021 13:54:58 +0200
+From:   Stephan Gerhold <stephan@gerhold.net>
+To:     Vincent Knecht <vincent.knecht@mailoo.org>
+Cc:     Mark Brown <broonie@kernel.org>, phone-devel@vger.kernel.org,
+        ~postmarketos/upstreaming@lists.sr.ht,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v1 4/4] ASoC: codecs: tfa989x: Add support for optional
+ vddd-supply
+Message-ID: <YLDaEnjGmCHrUMiz@gerhold.net>
+References: <20210528105101.508254-1-vincent.knecht@mailoo.org>
+ <20210528105101.508254-4-vincent.knecht@mailoo.org>
 MIME-Version: 1.0
-In-Reply-To: <YLDYV3ot7vroWW9o@krava>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.103.2/26183/Thu May 27 13:07:49 2021)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210528105101.508254-4-vincent.knecht@mailoo.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5/28/21 1:47 PM, Jiri Olsa wrote:
-> On Fri, May 28, 2021 at 11:56:02AM +0200, Daniel Borkmann wrote:
+On Fri, May 28, 2021 at 12:51:01PM +0200, Vincent Knecht wrote:
+> Allow specifying Vddd regulator/supply to be enabled on I2C probing.
 > 
->> Ondrej / Paul / Jiri: at least for the BPF tracing case specifically (I haven't looked
->> at the rest but it's also kind of independent), the attached fix should address both
->> reported issues, please take a look & test.
->>
->> Thanks a lot,
->> Daniel
-> 
->>  From 5893ad528dc0a0a68933b8f2a81b18d3f539660d Mon Sep 17 00:00:00 2001
->> From: Daniel Borkmann <daniel@iogearbox.net>
->> Date: Fri, 28 May 2021 09:16:31 +0000
->> Subject: [PATCH bpf] bpf, audit, lockdown: Fix bogus SELinux lockdown permission checks
->>
->> Commit 59438b46471a ("security,lockdown,selinux: implement SELinux lockdown")
->> added an implementation of the locked_down LSM hook to SELinux, with the aim
->> to restrict which domains are allowed to perform operations that would breach
->> lockdown. This is indirectly also getting audit subsystem involved to report
->> events. The latter is problematic, as reported by Ondrej and Serhei, since it
->> can bring down the whole system via audit:
->>
->>    i) The audit events that are triggered due to calls to security_locked_down()
->>       can OOM kill a machine, see below details [0].
->>
->>   ii) It seems to be causing a deadlock via slow_avc_audit() -> audit_log_end()
->>       when presumingly trying to wake up kauditd [1].
->>
->> Fix both at the same time by taking a completely different approach, that is,
->> move the check into the program verification phase where we actually retrieve
->> the func proto. This also reliably gets the task (current) that is trying to
->> install the tracing program, e.g. bpftrace/bcc/perf/systemtap/etc, and it also
->> fixes the OOM since we're moving this out of the BPF helpers which can be called
->> millions of times per second.
->>
->> [0] https://bugzilla.redhat.com/show_bug.cgi?id=1955585, Jakub Hrozek says:
->>
->>    I starting seeing this with F-34. When I run a container that is traced with
->>    BPF to record the syscalls it is doing, auditd is flooded with messages like:
->>
->>    type=AVC msg=audit(1619784520.593:282387): avc:  denied  { confidentiality }
->>      for pid=476 comm="auditd" lockdown_reason="use of bpf to read kernel RAM"
->>        scontext=system_u:system_r:auditd_t:s0 tcontext=system_u:system_r:auditd_t:s0
->>          tclass=lockdown permissive=0
->>
->>    This seems to be leading to auditd running out of space in the backlog buffer
->>    and eventually OOMs the machine.
->>
->>    [...]
->>    auditd running at 99% CPU presumably processing all the messages, eventually I get:
->>    Apr 30 12:20:42 fedora kernel: audit: backlog limit exceeded
->>    Apr 30 12:20:42 fedora kernel: audit: backlog limit exceeded
->>    Apr 30 12:20:42 fedora kernel: audit: audit_backlog=2152579 > audit_backlog_limit=64
->>    Apr 30 12:20:42 fedora kernel: audit: audit_backlog=2152626 > audit_backlog_limit=64
->>    Apr 30 12:20:42 fedora kernel: audit: audit_backlog=2152694 > audit_backlog_limit=64
->>    Apr 30 12:20:42 fedora kernel: audit: audit_lost=6878426 audit_rate_limit=0 audit_backlog_limit=64
->>    Apr 30 12:20:45 fedora kernel: oci-seccomp-bpf invoked oom-killer: gfp_mask=0x100cca(GFP_HIGHUSER_MOVABLE), order=0, oom_score_adj=-1000
->>    Apr 30 12:20:45 fedora kernel: CPU: 0 PID: 13284 Comm: oci-seccomp-bpf Not tainted 5.11.12-300.fc34.x86_64 #1
->>    Apr 30 12:20:45 fedora kernel: Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.13.0-2.fc32 04/01/2014
->>    [...]
->>
->> [1] https://lore.kernel.org/linux-audit/CANYvDQN7H5tVp47fbYcRasv4XF07eUbsDwT_eDCHXJUj43J7jQ@mail.gmail.com/,
->>      Serhei Makarov says:
->>
->>    Upstream kernel 5.11.0-rc7 and later was found to deadlock during a
->>    bpf_probe_read_compat() call within a sched_switch tracepoint. The problem
->>    is reproducible with the reg_alloc3 testcase from SystemTap's BPF backend
->>    testsuite on x86_64 as well as the runqlat,runqslower tools from bcc on
->>    ppc64le. Example stack trace:
->>
->>    [...]
->>    [  730.868702] stack backtrace:
->>    [  730.869590] CPU: 1 PID: 701 Comm: in:imjournal Not tainted, 5.12.0-0.rc2.20210309git144c79ef3353.166.fc35.x86_64 #1
->>    [  730.871605] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.13.0-2.fc32 04/01/2014
->>    [  730.873278] Call Trace:
->>    [  730.873770]  dump_stack+0x7f/0xa1
->>    [  730.874433]  check_noncircular+0xdf/0x100
->>    [  730.875232]  __lock_acquire+0x1202/0x1e10
->>    [  730.876031]  ? __lock_acquire+0xfc0/0x1e10
->>    [  730.876844]  lock_acquire+0xc2/0x3a0
->>    [  730.877551]  ? __wake_up_common_lock+0x52/0x90
->>    [  730.878434]  ? lock_acquire+0xc2/0x3a0
->>    [  730.879186]  ? lock_is_held_type+0xa7/0x120
->>    [  730.880044]  ? skb_queue_tail+0x1b/0x50
->>    [  730.880800]  _raw_spin_lock_irqsave+0x4d/0x90
->>    [  730.881656]  ? __wake_up_common_lock+0x52/0x90
->>    [  730.882532]  __wake_up_common_lock+0x52/0x90
->>    [  730.883375]  audit_log_end+0x5b/0x100
->>    [  730.884104]  slow_avc_audit+0x69/0x90
->>    [  730.884836]  avc_has_perm+0x8b/0xb0
->>    [  730.885532]  selinux_lockdown+0xa5/0xd0
->>    [  730.886297]  security_locked_down+0x20/0x40
->>    [  730.887133]  bpf_probe_read_compat+0x66/0xd0
->>    [  730.887983]  bpf_prog_250599c5469ac7b5+0x10f/0x820
->>    [  730.888917]  trace_call_bpf+0xe9/0x240
->>    [  730.889672]  perf_trace_run_bpf_submit+0x4d/0xc0
->>    [  730.890579]  perf_trace_sched_switch+0x142/0x180
->>    [  730.891485]  ? __schedule+0x6d8/0xb20
->>    [  730.892209]  __schedule+0x6d8/0xb20
->>    [  730.892899]  schedule+0x5b/0xc0
->>    [  730.893522]  exit_to_user_mode_prepare+0x11d/0x240
->>    [  730.894457]  syscall_exit_to_user_mode+0x27/0x70
->>    [  730.895361]  entry_SYSCALL_64_after_hwframe+0x44/0xae
->>    [...]
->>
->> Fixes: 59438b46471a ("security,lockdown,selinux: implement SELinux lockdown")
->> Reported-by: Ondrej Mosnacek <omosnace@redhat.com>
->> Reported-by: Jakub Hrozek <jhrozek@redhat.com>
->> Reported-by: Serhei Makarov <smakarov@redhat.com>
->> Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
->> Cc: Stephen Smalley <sds@tycho.nsa.gov>
->> Cc: Jerome Marchand <jmarchan@redhat.com>
->> Cc: Frank Eigler <fche@redhat.com>
->> Cc: Jiri Olsa <jolsa@redhat.com>
->> Cc: Paul Moore <paul@paul-moore.com>
-> 
-> found the original server and reproduced.. this patch fixes it for me
-> 
-> Tested-by: Jiri Olsa <jolsa@redhat.com>
+> Signed-off-by: Vincent Knecht <vincent.knecht@mailoo.org>
 
-Thanks Jiri! If Paul is fine with this as well, I can later route this fix via
-bpf tree.
+Reviewed-by: Stephan Gerhold <stephan@gerhold.net>
 
-Best,
-Daniel
+> ---
+>  sound/soc/codecs/tfa989x.c | 34 ++++++++++++++++++++++++++++++++++
+>  1 file changed, 34 insertions(+)
+> 
+> diff --git a/sound/soc/codecs/tfa989x.c b/sound/soc/codecs/tfa989x.c
+> index 6d94865c534b..643b45188b6f 100644
+> --- a/sound/soc/codecs/tfa989x.c
+> +++ b/sound/soc/codecs/tfa989x.c
+> @@ -10,6 +10,7 @@
+>  #include <linux/i2c.h>
+>  #include <linux/module.h>
+>  #include <linux/regmap.h>
+> +#include <linux/regulator/consumer.h>
+>  #include <sound/soc.h>
+>  
+>  #define TFA989X_STATUSREG		0x00
+> @@ -51,6 +52,10 @@ struct tfa989x_rev {
+>  	int (*init)(struct regmap *regmap);
+>  };
+>  
+> +struct tfa989x {
+> +	struct regulator *vddd_supply;
+> +};
+> +
+>  static bool tfa989x_writeable_reg(struct device *dev, unsigned int reg)
+>  {
+>  	return reg > TFA989X_REVISIONNUMBER;
+> @@ -242,10 +247,18 @@ static int tfa989x_dsp_bypass(struct regmap *regmap)
+>  				 BIT(TFA989X_SYS_CTRL_AMPC));
+>  }
+>  
+> +static void tfa989x_regulator_disable(void *data)
+> +{
+> +	struct tfa989x *tfa989x = data;
+> +
+> +	regulator_disable(tfa989x->vddd_supply);
+> +}
+> +
+>  static int tfa989x_i2c_probe(struct i2c_client *i2c)
+>  {
+>  	struct device *dev = &i2c->dev;
+>  	const struct tfa989x_rev *rev;
+> +	struct tfa989x *tfa989x;
+>  	struct regmap *regmap;
+>  	unsigned int val;
+>  	int ret;
+> @@ -256,10 +269,31 @@ static int tfa989x_i2c_probe(struct i2c_client *i2c)
+>  		return -ENODEV;
+>  	}
+>  
+> +	tfa989x = devm_kzalloc(dev, sizeof(*tfa989x), GFP_KERNEL);
+> +	if (!tfa989x)
+> +		return -ENOMEM;
+> +
+> +	i2c_set_clientdata(i2c, tfa989x);
+> +
+> +	tfa989x->vddd_supply = devm_regulator_get(dev, "vddd");
+> +	if (IS_ERR(tfa989x->vddd_supply))
+> +		return dev_err_probe(dev, PTR_ERR(tfa989x->vddd_supply),
+> +				     "Failed to get vddd regulator\n");
+> +
+>  	regmap = devm_regmap_init_i2c(i2c, &tfa989x_regmap);
+>  	if (IS_ERR(regmap))
+>  		return PTR_ERR(regmap);
+>  
+> +	ret = regulator_enable(tfa989x->vddd_supply);
+> +	if (ret) {
+> +		dev_err(dev, "Failed to enable vddd regulator: %d\n", ret);
+> +		return ret;
+> +	}
+> +
+> +	ret = devm_add_action_or_reset(dev, tfa989x_regulator_disable, tfa989x);
+> +	if (ret)
+> +		return ret;
+> +
+>  	/* Bypass regcache for reset and init sequence */
+>  	regcache_cache_bypass(regmap, true);
+>  
+> -- 
+> 2.31.1
+> 
+> 
+> 
