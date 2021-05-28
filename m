@@ -2,92 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7069D393E7F
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 10:13:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 102B6393E89
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 10:14:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236104AbhE1IPL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 May 2021 04:15:11 -0400
-Received: from sauhun.de ([88.99.104.3]:39784 "EHLO pokefinder.org"
+        id S236204AbhE1IQC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 May 2021 04:16:02 -0400
+Received: from comms.puri.sm ([159.203.221.185]:41236 "EHLO comms.puri.sm"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236038AbhE1IPJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 May 2021 04:15:09 -0400
-Received: from localhost (p5486cda0.dip0.t-ipconnect.de [84.134.205.160])
-        by pokefinder.org (Postfix) with ESMTPSA id 65EA72C0537;
-        Fri, 28 May 2021 10:13:32 +0200 (CEST)
-Date:   Fri, 28 May 2021 10:13:32 +0200
-From:   Wolfram Sang <wsa@the-dreams.de>
-To:     Qii Wang <qii.wang@mediatek.com>
-Cc:     matthias.bgg@gmail.com, linux-i2c@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-mediatek@lists.infradead.org, srv_heupstream@mediatek.com,
-        leilk.liu@mediatek.com
-Subject: Re: [PATCH] i2c: mediatek: Disable i2c start_en and clear intr_stat
- brfore reset
-Message-ID: <YLCmLNDUqe/AiQ+I@kunai>
-Mail-Followup-To: Wolfram Sang <wsa@the-dreams.de>,
-        Qii Wang <qii.wang@mediatek.com>, matthias.bgg@gmail.com,
-        linux-i2c@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, linux-mediatek@lists.infradead.org,
-        srv_heupstream@mediatek.com, leilk.liu@mediatek.com
-References: <1622117044-7583-1-git-send-email-qii.wang@mediatek.com>
- <YK/9wMhoACc0beN/@kunai>
- <1622165863.15667.3.camel@mhfsdcap03>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="OJPvFYrtr07vTo0J"
-Content-Disposition: inline
-In-Reply-To: <1622165863.15667.3.camel@mhfsdcap03>
+        id S236125AbhE1IQB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 28 May 2021 04:16:01 -0400
+Received: from localhost (localhost [127.0.0.1])
+        by comms.puri.sm (Postfix) with ESMTP id 27927E3C05;
+        Fri, 28 May 2021 01:14:27 -0700 (PDT)
+Received: from comms.puri.sm ([127.0.0.1])
+        by localhost (comms.puri.sm [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id Rly7XxjGdRyM; Fri, 28 May 2021 01:14:22 -0700 (PDT)
+From:   Martin Kepplinger <martin.kepplinger@puri.sm>
+To:     laurent.pinchart@ideasonboard.com, mchehab@kernel.org
+Cc:     devicetree@vger.kernel.org, kernel@puri.sm,
+        krzysztof.kozlowski@canonical.com, linux-kernel@vger.kernel.org,
+        linux-media@vger.kernel.org, paul.kocialkowski@bootlin.com,
+        robh@kernel.org, shawnx.tu@intel.com,
+        Martin Kepplinger <martin.kepplinger@puri.sm>
+Subject: [PATCH v2 2/5] dt-bindings: media: document SK Hynix Hi-846 MIPI CSI-2 8M pixel sensor
+Date:   Fri, 28 May 2021 10:13:33 +0200
+Message-Id: <20210528081336.3858700-3-martin.kepplinger@puri.sm>
+In-Reply-To: <20210528081336.3858700-1-martin.kepplinger@puri.sm>
+References: <20210528081336.3858700-1-martin.kepplinger@puri.sm>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Document the bindings used for the SK Hynix Hi-846 CMOS camera driver.
 
---OJPvFYrtr07vTo0J
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Signed-off-by: Martin Kepplinger <martin.kepplinger@puri.sm>
+---
+ .../bindings/media/i2c/hynix,hi846.yaml       | 99 +++++++++++++++++++
+ 1 file changed, 99 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/media/i2c/hynix,hi846.yaml
 
-On Fri, May 28, 2021 at 09:37:43AM +0800, Qii Wang wrote:
-> On Thu, 2021-05-27 at 22:14 +0200, Wolfram Sang wrote:
-> > On Thu, May 27, 2021 at 08:04:04PM +0800, qii.wang@mediatek.com wrote:
-> > > From: Qii Wang <qii.wang@mediatek.com>
-> > >=20
-> > > The i2c controller driver do dma reset after transfer timeout,
-> > > but sometimes dma reset will trigger an unexpected DMA_ERR irq.
-> > > It will cause the i2c controller to continuously send interrupts
-> > > to the system and cause soft lock-up. So we need to disable i2c
-> > > start_en and clear intr_stat to stop i2c controller before dma
-> > > reset when transfer timeout.
-> > >=20
-> > > Signed-off-by: Qii Wang <qii.wang@mediatek.com>
-> >=20
-> > Is there a suitable Fixes tag for this?
-> >=20
->=20
-> Can you help to add the following tag, thanks
-> Fixes: aafced673c06("i2c: mediatek: move dma reset before i2c reset")
+diff --git a/Documentation/devicetree/bindings/media/i2c/hynix,hi846.yaml b/Documentation/devicetree/bindings/media/i2c/hynix,hi846.yaml
+new file mode 100644
+index 000000000000..2991108e23e5
+--- /dev/null
++++ b/Documentation/devicetree/bindings/media/i2c/hynix,hi846.yaml
+@@ -0,0 +1,99 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/media/i2c/hynix,hi846.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: SK Hynix Hi-846 1/4" 8M Pixel MIPI CSI-2 sensor
++
++maintainers:
++  - Martin Kepplinger <martin.kepplinger@puri.sm>
++
++description: |-
++  The Hi-846 is a raw image sensor with an MIPI CSI-2 image data
++  interface and CCI (I2C compatible) control bus. The output format
++  is 10bit Bayer.
++
++properties:
++  compatible:
++    const: hynix,hi846
++
++  reg:
++    description: I2C device address.
++    maxItems: 1
++
++  clocks:
++    description: Reference to the mclk clock.
++    maxItems: 1
++
++  clock-names:
++    const: mclk
++
++  rst-gpios:
++    description: Reference to the GPIO connected to the reset pin. Active low.
++    maxItems: 1
++
++  vdd-supply:
++    description: Definition of the regulator used as 1.8V digital power supply.
++
++  port:
++    $ref: /schemas/graph.yaml#/properties/port
++    additionalProperties: false
++
++    properties:
++      endpoint:
++        $ref: /schemas/media/video-interfaces.yaml#
++        unevaluatedProperties: false
++
++        properties:
++          data-lanes:
++            oneOf:
++              - items:
++                  - const: 1
++                  - const: 2
++                  - const: 3
++                  - const: 4
++              - items:
++                  - const: 1
++                  - const: 2
++
++        required:
++          - data-lanes
++
++required:
++  - compatible
++  - reg
++  - clocks
++  - clock-names
++  - rst-gpios
++  - vdd-supply
++  - port
++
++additionalProperties: false
++
++examples:
++  - |
++    #include <dt-bindings/gpio/gpio.h>
++
++    i2c {
++        #address-cells = <1>;
++        #size-cells = <0>;
++
++        hi846: camera@20 {
++            compatible = "hynix,hi846";
++            reg = <0x20>;
++            clocks = <&clk>;
++            clock-names = "mclk";
++            vdd-supply = <&reg_camera_pwr_en>; /* 1.8v */
++            rst-gpios = <&gpio1 25 GPIO_ACTIVE_LOW>;
++
++            port {
++                camera_out: endpoint {
++                    remote-endpoint = <&csi1_ep1>;
++                    data-lanes = <1 2>;
++                };
++            };
++        };
++    };
++
++...
+-- 
+2.30.2
 
-Added this tag and applied to for-current, thanks!
-
-
---OJPvFYrtr07vTo0J
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmCwpisACgkQFA3kzBSg
-Kbb03RAApmrkJIj//VaDqHQN7GyWM+5ruaKD22kJSm4fL8ozUu28fCSIk3ni1aK0
-Pn2mXRSzGWzBWXFIaHEPISfaQSYYaeoGD5sgJJMcf/y6weyLlgn4SeIASsY+ijkY
-rIfV1uqyzBUdUjAKXD9MfS/2VpNB5aj/5NXvqBv/wiKbjFRGZfIQ8JDv3oHViSmM
-Fom+2RtQSbrZlO6eRafzIcfRUzDsFNL3umd4bG+35FQ+WVvRUzOKlKVRRECmj8aE
-lpTNsaFTYfkr9L287bZxnOVb2bikxw6PnFQ842U3g9UZnM1IlVCUZws7V1tOVnFm
-LpPvzevBtJ+sD248PRhpq6HT1ZtZC6fD6Ngi36aScsk1KbaGktomG+Av7VvN4fgA
-/k2KiDJ2hH5g1XfeVvtxr6exyiDKVJDuDv4jgDobsDNlZdP1G+gum1mp4R5CjC5V
-N8mr0dvc1YzZWHsSS/JAI6coKMqnO4E16NuVLHuTc10a+sfE4aXsYoKppsSZQHBA
-ptvEQSc/WWCKG9lskmCuwdFd8DSywnk+1HPCZw4WfppDX40USMSSmKsZUCjG5Tz/
-PFz6vy4qYZB0aYDAkuA2fhkZZD4VgwWBy08xbubSSGmePWGwvRsHdYRq0OyClA/R
-6HfLbcT5Ch3IflK03jUJYNEyisJsIPVp4qB1BocG6jmoeXha9Qc=
-=sw0e
------END PGP SIGNATURE-----
-
---OJPvFYrtr07vTo0J--
