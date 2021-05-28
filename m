@@ -2,126 +2,303 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5FDE139490F
-	for <lists+linux-kernel@lfdr.de>; Sat, 29 May 2021 01:11:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 07E8F394915
+	for <lists+linux-kernel@lfdr.de>; Sat, 29 May 2021 01:15:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229666AbhE1XNM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 May 2021 19:13:12 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59104 "EHLO mail.kernel.org"
+        id S229644AbhE1XQo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 May 2021 19:16:44 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:30253 "EHLO m43-7.mailgun.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229631AbhE1XNH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 May 2021 19:13:07 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5FC68613EB;
-        Fri, 28 May 2021 23:11:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1622243492;
-        bh=6R6S4sFCJq92IstxTP9ek22qzcdli0PcwyHoyNTTrkU=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=qsBPeIy9Mj1YUWEX30WNcd5Nlp6nThlJQ/ma7GuKMXqlx0Oh5VQG0myAIWoLfRH3N
-         8LB4P6BLQuYVb8HOuQEBdzxGIKL/BPHxtdvNZdkCheE8hX4IZaHailXDw8q2qpTs4t
-         8cDArsgG+D1BAK6toogvZXTjucPP7+/KUtnAZBVhmV0VhIATiOEIuMxR3YVz/LhcEu
-         YWsMbmQxzlMheFjnxGYodZKPOhtUz37G+pIT+MmZ94snbMJDziSZQWHR+MUzchqi5a
-         /zG5Qjrg59El7yZGywKCf7UaixonmaJQl0ed8cuAMeqhw8Bh8l4WR4kFx5V4EvUFtB
-         45VNy8LsMP0XQ==
-Date:   Fri, 28 May 2021 16:11:31 -0700
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Sharath Chandra Vurukala <sharathv@codeaurora.org>
-Cc:     davem@davemloft.net, elder@kernel.org, cpratapa@codeaurora.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net-next v7 3/3] net: ethernet: rmnet: Add support for
- MAPv5 egress packets
-Message-ID: <20210528161131.5f7b9920@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
-In-Reply-To: <1622105322-2975-4-git-send-email-sharathv@codeaurora.org>
-References: <1622105322-2975-1-git-send-email-sharathv@codeaurora.org>
-        <1622105322-2975-4-git-send-email-sharathv@codeaurora.org>
+        id S229543AbhE1XQl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 28 May 2021 19:16:41 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1622243706; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=azlKBw4uANFk+nlXTFfIkpbn40olsiMC97YLg2B3820=;
+ b=Fog8IT7OOz9ePS7QAZ2iAu7bAtDxATnZOBNyLgyaWg7MNMmC3S4ctFiP5Gy+TDbp3VFKA9cZ
+ Gjfr+iJWglbuXFaXZ47Dzzl4yHH8+tC8VD6IqMCx46Ad7Lzh0+GKc0L8mj8aCU9yBVrqv55a
+ m6eGo9iG2ZgMUZTbhLqprPd6PA4=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n04.prod.us-east-1.postgun.com with SMTP id
+ 60b17975e27c0cc77f094f57 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 28 May 2021 23:15:01
+ GMT
+Sender: abhinavk=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id BCCE1C4323A; Fri, 28 May 2021 23:15:00 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: abhinavk)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 1EB86C433D3;
+        Fri, 28 May 2021 23:14:59 +0000 (UTC)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
 Content-Transfer-Encoding: 7bit
+Date:   Fri, 28 May 2021 16:14:59 -0700
+From:   abhinavk@codeaurora.org
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>
+Cc:     Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Stephen Boyd <swboyd@chromium.org>, sbillaka@codeaurora.org,
+        Tanmay Shah <tanmay@codeaurora.org>,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        dri-devel@lists.freedesktop.org,
+        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        freedreno@lists.freedesktop.org,
+        Chandan Uddaraju <chandanu@codeaurora.org>
+Subject: Re: [Freedreno] [PATCH 2/4] drm/msm/dp: Store each subblock in the io
+ region
+In-Reply-To: <20210511042043.592802-3-bjorn.andersson@linaro.org>
+References: <20210511042043.592802-1-bjorn.andersson@linaro.org>
+ <20210511042043.592802-3-bjorn.andersson@linaro.org>
+Message-ID: <0a2e38497feb4b6904f5e5bc3ed43c62@codeaurora.org>
+X-Sender: abhinavk@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 27 May 2021 14:18:42 +0530 Sharath Chandra Vurukala wrote:
-> Adding support for MAPv5 egress packets.
+On 2021-05-10 21:20, Bjorn Andersson wrote:
+> Not all platforms has DP_P0 at offset 0x1000 from the beginning of the
+> DP block. So move the offsets into dss_io_data, to make it possible in
+> the next patch to specify alternative offsets and sizes of these
+> segments.
 > 
-> This involves adding the MAPv5 header and setting the csum_valid_required
-> in the checksum header to request HW compute the checksum.
+> Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+Reviewed-by: Abhinav Kumar <abhinavk@codeaurora.org>
+> ---
+>  drivers/gpu/drm/msm/dp/dp_catalog.c | 57 ++++++++---------------------
+>  drivers/gpu/drm/msm/dp/dp_parser.c  | 10 +++++
+>  drivers/gpu/drm/msm/dp/dp_parser.h  |  8 ++++
+>  3 files changed, 33 insertions(+), 42 deletions(-)
 > 
-> Corresponding stats are incremented based on whether the checksum is
-> computed in software or HW.
+> diff --git a/drivers/gpu/drm/msm/dp/dp_catalog.c
+> b/drivers/gpu/drm/msm/dp/dp_catalog.c
+> index 2eb37ee48e42..a0449a2867e4 100644
+> --- a/drivers/gpu/drm/msm/dp/dp_catalog.c
+> +++ b/drivers/gpu/drm/msm/dp/dp_catalog.c
+> @@ -24,15 +24,6 @@
+>  #define DP_INTERRUPT_STATUS_ACK_SHIFT	1
+>  #define DP_INTERRUPT_STATUS_MASK_SHIFT	2
 > 
-> New stat has been added which represents the count of packets whose
-> checksum is calculated by the HW.
+> -#define MSM_DP_CONTROLLER_AHB_OFFSET	0x0000
+> -#define MSM_DP_CONTROLLER_AHB_SIZE	0x0200
+> -#define MSM_DP_CONTROLLER_AUX_OFFSET	0x0200
+> -#define MSM_DP_CONTROLLER_AUX_SIZE	0x0200
+> -#define MSM_DP_CONTROLLER_LINK_OFFSET	0x0400
+> -#define MSM_DP_CONTROLLER_LINK_SIZE	0x0C00
+> -#define MSM_DP_CONTROLLER_P0_OFFSET	0x1000
+> -#define MSM_DP_CONTROLLER_P0_SIZE	0x0400
+> -
+>  #define DP_INTERRUPT_STATUS1 \
+>  	(DP_INTR_AUX_I2C_DONE| \
+>  	DP_INTR_WRONG_ADDR | DP_INTR_TIMEOUT | \
+> @@ -64,75 +55,67 @@ struct dp_catalog_private {
 > 
-> Signed-off-by: Sharath Chandra Vurukala <sharathv@codeaurora.org>
-
-> +static void rmnet_map_v5_checksum_uplink_packet(struct sk_buff *skb,
-> +						struct rmnet_port *port,
-> +						struct net_device *orig_dev)
-> +{
-> +	struct rmnet_priv *priv = netdev_priv(orig_dev);
-> +	struct rmnet_map_v5_csum_header *ul_header;
+>  static inline u32 dp_read_aux(struct dp_catalog_private *catalog, u32 
+> offset)
+>  {
+> -	offset += MSM_DP_CONTROLLER_AUX_OFFSET;
+> -	return readl_relaxed(catalog->io->dp_controller.base + offset);
+> +	return readl_relaxed(catalog->io->dp_controller.aux + offset);
+>  }
+> 
+>  static inline void dp_write_aux(struct dp_catalog_private *catalog,
+>  			       u32 offset, u32 data)
+>  {
+> -	offset += MSM_DP_CONTROLLER_AUX_OFFSET;
+>  	/*
+>  	 * To make sure aux reg writes happens before any other operation,
+>  	 * this function uses writel() instread of writel_relaxed()
+>  	 */
+> -	writel(data, catalog->io->dp_controller.base + offset);
+> +	writel(data, catalog->io->dp_controller.aux + offset);
+>  }
+> 
+>  static inline u32 dp_read_ahb(struct dp_catalog_private *catalog, u32 
+> offset)
+>  {
+> -	offset += MSM_DP_CONTROLLER_AHB_OFFSET;
+> -	return readl_relaxed(catalog->io->dp_controller.base + offset);
+> +	return readl_relaxed(catalog->io->dp_controller.ahb + offset);
+>  }
+> 
+>  static inline void dp_write_ahb(struct dp_catalog_private *catalog,
+>  			       u32 offset, u32 data)
+>  {
+> -	offset += MSM_DP_CONTROLLER_AHB_OFFSET;
+>  	/*
+>  	 * To make sure phy reg writes happens before any other operation,
+>  	 * this function uses writel() instread of writel_relaxed()
+>  	 */
+> -	writel(data, catalog->io->dp_controller.base + offset);
+> +	writel(data, catalog->io->dp_controller.ahb + offset);
+>  }
+> 
+>  static inline void dp_write_p0(struct dp_catalog_private *catalog,
+>  			       u32 offset, u32 data)
+>  {
+> -	offset += MSM_DP_CONTROLLER_P0_OFFSET;
+>  	/*
+>  	 * To make sure interface reg writes happens before any other 
+> operation,
+>  	 * this function uses writel() instread of writel_relaxed()
+>  	 */
+> -	writel(data, catalog->io->dp_controller.base + offset);
+> +	writel(data, catalog->io->dp_controller.p0 + offset);
+>  }
+> 
+>  static inline u32 dp_read_p0(struct dp_catalog_private *catalog,
+>  			       u32 offset)
+>  {
+> -	offset += MSM_DP_CONTROLLER_P0_OFFSET;
+>  	/*
+>  	 * To make sure interface reg writes happens before any other 
+> operation,
+>  	 * this function uses writel() instread of writel_relaxed()
+>  	 */
+> -	return readl_relaxed(catalog->io->dp_controller.base + offset);
+> +	return readl_relaxed(catalog->io->dp_controller.p0 + offset);
+>  }
+> 
+>  static inline u32 dp_read_link(struct dp_catalog_private *catalog, u32 
+> offset)
+>  {
+> -	offset += MSM_DP_CONTROLLER_LINK_OFFSET;
+> -	return readl_relaxed(catalog->io->dp_controller.base + offset);
+> +	return readl_relaxed(catalog->io->dp_controller.link + offset);
+>  }
+> 
+>  static inline void dp_write_link(struct dp_catalog_private *catalog,
+>  			       u32 offset, u32 data)
+>  {
+> -	offset += MSM_DP_CONTROLLER_LINK_OFFSET;
+>  	/*
+>  	 * To make sure link reg writes happens before any other operation,
+>  	 * this function uses writel() instread of writel_relaxed()
+>  	 */
+> -	writel(data, catalog->io->dp_controller.base + offset);
+> +	writel(data, catalog->io->dp_controller.link + offset);
+>  }
+> 
+>  /* aux related catalog functions */
+> @@ -267,29 +250,21 @@ static void dump_regs(void __iomem *base, int 
+> len)
+> 
+>  void dp_catalog_dump_regs(struct dp_catalog *dp_catalog)
+>  {
+> -	u32 offset, len;
+>  	struct dp_catalog_private *catalog = container_of(dp_catalog,
+>  		struct dp_catalog_private, dp_catalog);
+> +	struct dss_io_data *io = &catalog->io->dp_controller;
+> 
+>  	pr_info("AHB regs\n");
+> -	offset = MSM_DP_CONTROLLER_AHB_OFFSET;
+> -	len = MSM_DP_CONTROLLER_AHB_SIZE;
+> -	dump_regs(catalog->io->dp_controller.base + offset, len);
+> +	dump_regs(io->ahb, io->ahb_len);
+> 
+>  	pr_info("AUXCLK regs\n");
+> -	offset = MSM_DP_CONTROLLER_AUX_OFFSET;
+> -	len = MSM_DP_CONTROLLER_AUX_SIZE;
+> -	dump_regs(catalog->io->dp_controller.base + offset, len);
+> +	dump_regs(io->aux, io->aux_len);
+> 
+>  	pr_info("LCLK regs\n");
+> -	offset = MSM_DP_CONTROLLER_LINK_OFFSET;
+> -	len = MSM_DP_CONTROLLER_LINK_SIZE;
+> -	dump_regs(catalog->io->dp_controller.base + offset, len);
+> +	dump_regs(io->link, io->link_len);
+> 
+>  	pr_info("P0CLK regs\n");
+> -	offset = MSM_DP_CONTROLLER_P0_OFFSET;
+> -	len = MSM_DP_CONTROLLER_P0_SIZE;
+> -	dump_regs(catalog->io->dp_controller.base + offset, len);
+> +	dump_regs(io->p0, io->p0_len);
+>  }
+> 
+>  int dp_catalog_aux_get_irq(struct dp_catalog *dp_catalog)
+> @@ -454,8 +429,7 @@ int dp_catalog_ctrl_set_pattern(struct dp_catalog
+> *dp_catalog,
+>  	bit = BIT(pattern - 1) << DP_MAINLINK_READY_LINK_TRAINING_SHIFT;
+> 
+>  	/* Poll for mainlink ready status */
+> -	ret = readx_poll_timeout(readl, catalog->io->dp_controller.base +
+> -					MSM_DP_CONTROLLER_LINK_OFFSET +
+> +	ret = readx_poll_timeout(readl, catalog->io->dp_controller.link +
+>  					REG_DP_MAINLINK_READY,
+>  					data, data & bit,
+>  					POLLING_SLEEP_US, POLLING_TIMEOUT_US);
+> @@ -502,8 +476,7 @@ bool dp_catalog_ctrl_mainlink_ready(struct
+> dp_catalog *dp_catalog)
+>  				struct dp_catalog_private, dp_catalog);
+> 
+>  	/* Poll for mainlink ready status */
+> -	ret = readl_poll_timeout(catalog->io->dp_controller.base +
+> -				MSM_DP_CONTROLLER_LINK_OFFSET +
+> +	ret = readl_poll_timeout(catalog->io->dp_controller.link +
+>  				REG_DP_MAINLINK_READY,
+>  				data, data & DP_MAINLINK_READY_FOR_VIDEO,
+>  				POLLING_SLEEP_US, POLLING_TIMEOUT_US);
+> diff --git a/drivers/gpu/drm/msm/dp/dp_parser.c
+> b/drivers/gpu/drm/msm/dp/dp_parser.c
+> index 0519dd3ac3c3..51ec85b4803b 100644
+> --- a/drivers/gpu/drm/msm/dp/dp_parser.c
+> +++ b/drivers/gpu/drm/msm/dp/dp_parser.c
+> @@ -250,6 +250,7 @@ static int dp_parser_clock(struct dp_parser 
+> *parser)
+> 
+>  static int dp_parser_parse(struct dp_parser *parser)
+>  {
+> +	struct dss_io_data *io = &parser->io.dp_controller;
+>  	int rc = 0;
+> 
+>  	if (!parser) {
+> @@ -275,6 +276,15 @@ static int dp_parser_parse(struct dp_parser 
+> *parser)
+>  	 */
+>  	parser->regulator_cfg = &sdm845_dp_reg_cfg;
+> 
+> +	io->ahb = io->base + 0x0;
+> +	io->ahb_len = 0x200;
+> +	io->aux = io->base + 0x200;
+> +	io->aux_len = 0x200;
+> +	io->link = io->base + 0x400;
+> +	io->link_len = 0x600;
+> +	io->p0 = io->base + 0x1000;
+> +	io->p0_len = 0x400;
 > +
-> +	if (!(port->data_format & RMNET_FLAGS_EGRESS_MAP_CKSUMV5))
-> +		return;
-
-how can we get here if this condition is not met? Looks like defensive
-programming.
-
-> +	ul_header = skb_push(skb, sizeof(*ul_header));
-
-Are you making sure you can modify head? I only see a check if there is
-enough headroom but not if head is writable (skb_cow_head()).
-
-> +	memset(ul_header, 0, sizeof(*ul_header));
-> +	ul_header->header_info = u8_encode_bits(RMNET_MAP_HEADER_TYPE_CSUM_OFFLOAD,
-> +						MAPV5_HDRINFO_HDR_TYPE_FMASK);
-
-Is prepending the header required even when packet doesn't need
-checksuming?
-
-> +	if (skb->ip_summed == CHECKSUM_PARTIAL) {
-> +		void *iph = (char *)ul_header + sizeof(*ul_header);
-
-ip_hdr(skb)
-
-> +		__sum16 *check;
-> +		void *trans;
-> +		u8 proto;
-> +
-> +		if (skb->protocol == htons(ETH_P_IP)) {
-> +			u16 ip_len = ((struct iphdr *)iph)->ihl * 4;
-> +
-> +			proto = ((struct iphdr *)iph)->protocol;
-> +			trans = iph + ip_len;
-> +		} else if (skb->protocol == htons(ETH_P_IPV6)) {
-> +#if IS_ENABLED(CONFIG_IPV6)
-> +			u16 ip_len = sizeof(struct ipv6hdr);
-> +
-> +			proto = ((struct ipv6hdr *)iph)->nexthdr;
-> +			trans = iph + ip_len;
-> +#else
-> +			priv->stats.csum_err_invalid_ip_version++;
-> +			goto sw_csum;
-> +#endif /* CONFIG_IPV6 */
-> +		} else {
-> +			priv->stats.csum_err_invalid_ip_version++;
-> +			goto sw_csum;
-> +		}
-> +
-> +		check = rmnet_map_get_csum_field(proto, trans);
-> +		if (check) {
-> +			skb->ip_summed = CHECKSUM_NONE;
-> +			/* Ask for checksum offloading */
-> +			ul_header->csum_info |= MAPV5_CSUMINFO_VALID_FLAG;
-> +			priv->stats.csum_hw++;
-> +			return;
-
-Please try to keep the success path unindented.
-
-> +		}
-> +	}
-> +
-> +sw_csum:
-> +	priv->stats.csum_sw++;
-> +}
+>  	return 0;
+>  }
+> 
+> diff --git a/drivers/gpu/drm/msm/dp/dp_parser.h
+> b/drivers/gpu/drm/msm/dp/dp_parser.h
+> index 34b49628bbaf..ff4774109c63 100644
+> --- a/drivers/gpu/drm/msm/dp/dp_parser.h
+> +++ b/drivers/gpu/drm/msm/dp/dp_parser.h
+> @@ -28,6 +28,14 @@ enum dp_pm_type {
+>  struct dss_io_data {
+>  	u32 len;
+>  	void __iomem *base;
+> +	void __iomem *ahb;
+> +	size_t ahb_len;
+> +	void __iomem *aux;
+> +	size_t aux_len;
+> +	void __iomem *link;
+> +	size_t link_len;
+> +	void __iomem *p0;
+> +	size_t p0_len;
+>  };
+> 
+>  static inline const char *dp_parser_pm_name(enum dp_pm_type module)
