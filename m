@@ -2,71 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 212AA393D8A
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 09:13:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F7B8393D6F
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 09:05:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235332AbhE1HOw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 May 2021 03:14:52 -0400
-Received: from szxga02-in.huawei.com ([45.249.212.188]:2511 "EHLO
-        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234805AbhE1HOq (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 May 2021 03:14:46 -0400
-Received: from dggeml753-chm.china.huawei.com (unknown [172.30.72.53])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4FrwnJ3dS8zYqPY;
-        Fri, 28 May 2021 15:10:28 +0800 (CST)
-Received: from dggpemm500016.china.huawei.com (7.185.36.25) by
- dggeml753-chm.china.huawei.com (10.1.199.152) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2176.2; Fri, 28 May 2021 15:13:08 +0800
-Received: from huawei.com (10.67.174.117) by dggpemm500016.china.huawei.com
- (7.185.36.25) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Fri, 28 May
- 2021 15:13:08 +0800
-From:   Ruiqi Gong <gongruiqi1@huawei.com>
-To:     <gongruiqi1@huawei.com>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-CC:     Wang Weiyang <wangweiyang2@huawei.com>,
-        <linux-mips@vger.kernel.org>, <kernel-janitors@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: [PATCH -next] MIPS: pm-cps: Make '__pcpu_scope_cps_cpu_state' static
-Date:   Fri, 28 May 2021 15:04:37 +0800
-Message-ID: <20210528070437.5780-1-gongruiqi1@huawei.com>
-X-Mailer: git-send-email 2.17.1
+        id S234725AbhE1HHM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 May 2021 03:07:12 -0400
+Received: from helcar.hmeau.com ([216.24.177.18]:49854 "EHLO deadmen.hmeau.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229574AbhE1HHK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 28 May 2021 03:07:10 -0400
+Received: from gondobar.mordor.me.apana.org.au ([192.168.128.4] helo=gondobar)
+        by deadmen.hmeau.com with esmtp (Exim 4.92 #5 (Debian))
+        id 1lmWYc-0003HJ-5Y; Fri, 28 May 2021 15:05:22 +0800
+Received: from herbert by gondobar with local (Exim 4.92)
+        (envelope-from <herbert@gondor.apana.org.au>)
+        id 1lmWYR-0005t1-99; Fri, 28 May 2021 15:05:11 +0800
+Date:   Fri, 28 May 2021 15:05:11 +0800
+From:   Herbert Xu <herbert@gondor.apana.org.au>
+To:     Corentin Labbe <clabbe@baylibre.com>
+Cc:     davem@davemloft.net, linus.walleij@linaro.org,
+        linux@armlinux.org.uk, robh+dt@kernel.org,
+        ulli.kroll@googlemail.com, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-crypto@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 2/5] crypto: Add sl3516 crypto engine
+Message-ID: <20210528070511.GA22601@gondor.apana.org.au>
+References: <20210518151655.125153-1-clabbe@baylibre.com>
+ <20210518151655.125153-3-clabbe@baylibre.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="ISO-8859-1"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.67.174.117]
-X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
- dggpemm500016.china.huawei.com (7.185.36.25)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210518151655.125153-3-clabbe@baylibre.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Mark the per-CPU definition of cps_cpu_state as static to fix the following
-sparse tool complain:
+On Tue, May 18, 2021 at 03:16:52PM +0000, Corentin Labbe wrote:
+>
+> +static int sl3516_ce_cipher_fallback(struct skcipher_request *areq)
+> +{
+> +	struct crypto_skcipher *tfm = crypto_skcipher_reqtfm(areq);
+> +	struct sl3516_ce_cipher_tfm_ctx *op = crypto_skcipher_ctx(tfm);
+> +	struct sl3516_ce_cipher_req_ctx *rctx = skcipher_request_ctx(areq);
+> +	struct skcipher_alg *alg = crypto_skcipher_alg(tfm);
+> +	struct sl3516_ce_alg_template *algt;
+> +	int err;
+> +
+> +	algt = container_of(alg, struct sl3516_ce_alg_template, alg.skcipher);
+> +	algt->stat_fb++;
 
-arch/mips/kernel/pm-cps.c:66:1: warning:
- symbol '__pcpu_scope_cps_cpu_state' was not declared. Should it be static?
+This fails to build if CRYPTO_DEV_SL3516_DEBUG is off.
 
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Ruiqi Gong <gongruiqi1@huawei.com>
----
- arch/mips/kernel/pm-cps.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/arch/mips/kernel/pm-cps.c b/arch/mips/kernel/pm-cps.c
-index 9bf60d7d44d3..32e8f0673e06 100644
---- a/arch/mips/kernel/pm-cps.c
-+++ b/arch/mips/kernel/pm-cps.c
-@@ -63,7 +63,7 @@ static DEFINE_PER_CPU_ALIGNED(cpumask_t, online_coupled);
- static DEFINE_PER_CPU_ALIGNED(atomic_t, pm_barrier);
- 
- /* Saved CPU state across the CPS_PM_POWER_GATED state */
--DEFINE_PER_CPU_ALIGNED(struct mips_static_suspend_state, cps_cpu_state);
-+static DEFINE_PER_CPU_ALIGNED(struct mips_static_suspend_state, cps_cpu_state);
- 
- /* A somewhat arbitrary number of labels & relocs for uasm */
- static struct uasm_label labels[32];
-
+Cheers,
+-- 
+Email: Herbert Xu <herbert@gondor.apana.org.au>
+Home Page: http://gondor.apana.org.au/~herbert/
+PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
