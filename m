@@ -2,77 +2,211 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A977393EF9
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 10:48:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 29C0D393EF7
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 10:48:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235467AbhE1IuX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 May 2021 04:50:23 -0400
-Received: from m12-17.163.com ([220.181.12.17]:33395 "EHLO m12-17.163.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233054AbhE1IuV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 May 2021 04:50:21 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-        s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=NPgfd
-        6MPtzDIXDJfmmg/h4Y5meuB7xT639mAubjg2cw=; b=i+3w3IEVW0rh2qwNakDEA
-        e4CZ2wG+KB7Pv84NBse4y9vcURJ9BUWyL2vCFhrcpovUo7iCUPD4GCSp9GTfjs+G
-        wdW5tYToJ355GUT3nRF92OqjofXQytBzeYVXwbaBJK8VW4rvAfn7lgTw4KPkDOUG
-        gLfsKJPCUMlibrJj0kagf0=
-Received: from localhost.localdomain (unknown [218.17.89.92])
-        by smtp13 (Coremail) with SMTP id EcCowAB3oYVprrBgHcF83w--.15570S2;
-        Fri, 28 May 2021 16:48:42 +0800 (CST)
-From:   lijian_8010a29@163.com
-To:     mchehab@kernel.org
-Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        lijian <lijian@yulong.com>
-Subject: [PATCH] media: via-camera: deleted these redundant semicolons
-Date:   Fri, 28 May 2021 16:47:40 +0800
-Message-Id: <20210528084740.173201-1-lijian_8010a29@163.com>
-X-Mailer: git-send-email 2.25.1
+        id S235305AbhE1Ith (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 May 2021 04:49:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40980 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233054AbhE1Itf (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 28 May 2021 04:49:35 -0400
+Received: from mail-wm1-x333.google.com (mail-wm1-x333.google.com [IPv6:2a00:1450:4864:20::333])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7EB2CC061760
+        for <linux-kernel@vger.kernel.org>; Fri, 28 May 2021 01:47:59 -0700 (PDT)
+Received: by mail-wm1-x333.google.com with SMTP id f17so239879wmf.2
+        for <linux-kernel@vger.kernel.org>; Fri, 28 May 2021 01:47:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=subject:to:references:from:message-id:date:user-agent:mime-version
+         :in-reply-to:content-language:content-transfer-encoding;
+        bh=WikFeXUsmrrkxHoqNQkeIN24f6mCbXXF6hqcFhk6uOo=;
+        b=m3WX96qICHaTwGdy1NTiEy0Bor5LJzIqd0AP7gvFdxjoHxm2NxhtUULDF+9lQOSw3Y
+         wm4U2se5OJH6V8mzypZm1OGQngILCHudP6E82dzKt1S1V5RcsTTE/k4kgMZz4caIIhET
+         Ob9PhEEtEAQYiFx7Z/Sq2yj5GedDe7Px/ozVUTDyZkuGMhGy+jxnlhG6ROQMVvdsWSmp
+         IT2kPqeKN14BTJdDze23+I0GigtrfJ2WrDQE3A1wtx8tzMIIY0iH+GEgVUTcjr/YQ6X/
+         YIRmEy2wgLbQT4CNB9MC6NxyRFy6dATRINmmsosVlGlX6L+7d14bBW4AO7nEJXN3giaj
+         RH8w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=WikFeXUsmrrkxHoqNQkeIN24f6mCbXXF6hqcFhk6uOo=;
+        b=DTLItmO9EIcbWWYINgDKGupAUJlncjJp5tncPA+/YK9mdW0HD3P0mhlBg2b3AvUhZb
+         7h1l5jhcuQeAkL6iyJLy8JxmIKAhbBntg8aDp0GP3y9ND4yQnif9fjxyCwd2xkJ0itNX
+         7uqKQdV8aMlhRMAE2PWOfaFzgBLYH4oP68UuXbPUH+l2CFKk8JhTtVBzNe24i6UjqLrk
+         vHaCzwCZfkkt3t60YavPBZRFvquAoary2ZsSxjSde3ZeofZmNLz/b02ocq3XwoEb9jKv
+         3NCzKcJ1epsyxyzPWy5aD/FAFRIXKgkRYRo3DhJmZ3/n+KNuapXGD4yRIgYzNEViRKFa
+         fn5w==
+X-Gm-Message-State: AOAM532IQKERGAEI+j/Ah1Us1CtsSrA4i74BYUgJqcPq0B74Mj4fJUj8
+        gQEwvkzEB2yeWH0d5z3NTbr4Lw==
+X-Google-Smtp-Source: ABdhPJy2OXUhLfKhJDP5StESemM6f4/xQULoj6x8UA0x3F5G/hfVlS7HFPZ/uPFHeo3V6lLxbvIwbQ==
+X-Received: by 2002:a05:600c:2219:: with SMTP id z25mr7450903wml.78.1622191677970;
+        Fri, 28 May 2021 01:47:57 -0700 (PDT)
+Received: from [192.168.86.34] (cpc86377-aztw32-2-0-cust226.18-1.cable.virginm.net. [92.233.226.227])
+        by smtp.googlemail.com with ESMTPSA id f8sm5547546wmg.43.2021.05.28.01.47.56
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Fri, 28 May 2021 01:47:57 -0700 (PDT)
+Subject: Re: [PATCH v3] ASoC: qcom: lpass-cpu: Fix pop noise during audio
+ capture begin
+To:     Srinivasa Rao Mandadapu <srivasam@codeaurora.org>,
+        agross@kernel.org, bjorn.andersson@linaro.org, lgirdwood@gmail.com,
+        broonie@kernel.org, robh+dt@kernel.org, plai@codeaurora.org,
+        bgoswami@codeaurora.org, perex@perex.cz, tiwai@suse.com,
+        rohitkr@codeaurora.org, linux-arm-msm@vger.kernel.org,
+        alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, swboyd@chromium.org,
+        judyhsiao@chromium.org
+References: <20210524142114.18676-1-srivasam@codeaurora.org>
+From:   Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Message-ID: <9a4bbab8-91a2-f195-b77a-5234d46a2c0a@linaro.org>
+Date:   Fri, 28 May 2021 09:47:56 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: EcCowAB3oYVprrBgHcF83w--.15570S2
-X-Coremail-Antispam: 1Uf129KBjvdXoW7Xry8Zr4xGr1fJF48JryrWFg_yoWktrcEqr
-        nYvFs3X3y8GFZrtFyjkF4rWryFvayYvr48uFnxtFWYyry7t3yUW3WYgry7Xw42va129F98
-        GFn09rn7Cr1SvjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUvcSsGvfC2KfnxnUUI43ZEXa7IU5oxRDUUUUU==
-X-Originating-IP: [218.17.89.92]
-X-CM-SenderInfo: 5olmxttqbyiikqdsmqqrwthudrp/1tbiHRqfUFSIq6n55gABsI
+In-Reply-To: <20210524142114.18676-1-srivasam@codeaurora.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: lijian <lijian@yulong.com>
-
-Macros should not use a trailing semicolon，and it was used
-the semicolon after macro cam_dbg called in viacam_vb2_prepare,
-so deleted these redundant semicolons.
-
-Signed-off-by: lijian <lijian@yulong.com>
----
- drivers/media/platform/via-camera.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
-
-diff --git a/drivers/media/platform/via-camera.c b/drivers/media/platform/via-camera.c
-index ed0ad68c5c48..5a6ace37c157 100644
---- a/drivers/media/platform/via-camera.c
-+++ b/drivers/media/platform/via-camera.c
-@@ -132,11 +132,11 @@ static struct via_camera *via_cam_info;
-  * Debugging and related.
-  */
- #define cam_err(cam, fmt, arg...) \
--	dev_err(&(cam)->platdev->dev, fmt, ##arg);
-+	dev_err(&(cam)->platdev->dev, fmt, ##arg)
- #define cam_warn(cam, fmt, arg...) \
--	dev_warn(&(cam)->platdev->dev, fmt, ##arg);
-+	dev_warn(&(cam)->platdev->dev, fmt, ##arg)
- #define cam_dbg(cam, fmt, arg...) \
--	dev_dbg(&(cam)->platdev->dev, fmt, ##arg);
-+	dev_dbg(&(cam)->platdev->dev, fmt, ##arg)
- 
- /*
-  * Format handling.  This is ripped almost directly from Hans's changes
--- 
-2.25.1
 
 
+On 24/05/2021 15:21, Srinivasa Rao Mandadapu wrote:
+> This patch fixes PoP noise of around 15ms observed during audio capture begin.
+> Enables BCLK and LRCLK in snd_soc_dai_ops prepare call for introducing some delay
+> before capture start and clock enable.
+> 
+> Co-developed-by: Judy Hsiao <judyhsiao@chromium.org>
+> Signed-off-by: Judy Hsiao <judyhsiao@chromium.org>
+> Signed-off-by: Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
+> ---
+> Changes Since V2:
+> 	-- Updated comments as per linux style
+> 	-- Removed unrelated changes.
+> Changes Since V1:
+> 	-- Enableed BCLK and LRCLK in dai ops prepare API instead of startup API
+> 	-- Added comments
+> 
+>   sound/soc/qcom/lpass-cpu.c | 54 +++++++++++++++++++++++++++++++++++++-
+>   1 file changed, 53 insertions(+), 1 deletion(-)
+> 
+> diff --git a/sound/soc/qcom/lpass-cpu.c b/sound/soc/qcom/lpass-cpu.c
+> index 28c7497344e3..1855eae22aad 100644
+> --- a/sound/soc/qcom/lpass-cpu.c
+> +++ b/sound/soc/qcom/lpass-cpu.c
+> @@ -93,9 +93,21 @@ static void lpass_cpu_daiops_shutdown(struct snd_pcm_substream *substream,
+>   		struct snd_soc_dai *dai)
+>   {
+>   	struct lpass_data *drvdata = snd_soc_dai_get_drvdata(dai);
+> +	struct lpaif_i2sctl *i2sctl = drvdata->i2sctl;
+> +	unsigned int id = dai->driver->id;
+>   
+>   	clk_disable_unprepare(drvdata->mi2s_osr_clk[dai->driver->id]);
+> -	clk_unprepare(drvdata->mi2s_bit_clk[dai->driver->id]);
+> +	/*
+> +	 * To ensure BCLK/LRCLK disabled even in device node validation
+> +	 * Will not impact if disabled in lpass_cpu_daiops_trigger()
+> +	 * suspend.
+> +	 */
+> +	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
+> +		regmap_fields_write(i2sctl->spken, id, LPAIF_I2SCTL_SPKEN_DISABLE);
+> +	else
+> +		regmap_fields_write(i2sctl->micen, id, LPAIF_I2SCTL_MICEN_DISABLE);
+> +
+> +	clk_disable_unprepare(drvdata->mi2s_bit_clk[dai->driver->id]);
+>   }
+>   
+>   static int lpass_cpu_daiops_hw_params(struct snd_pcm_substream *substream,
+> @@ -275,6 +287,10 @@ static int lpass_cpu_daiops_trigger(struct snd_pcm_substream *substream,
+>   	case SNDRV_PCM_TRIGGER_START:
+>   	case SNDRV_PCM_TRIGGER_RESUME:
+>   	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
+> +		/*
+> +		 * To ensure lpass BCLK/LRCLK is enabled during
+> +		 * device resume. Will not impact if enabled in lpass_cpu_daiops_prepare().
+> +		 */
+
+prepare should have already ensured that isn't it?
+
+
+>   		if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
+>   			ret = regmap_fields_write(i2sctl->spken, id,
+>   						 LPAIF_I2SCTL_SPKEN_ENABLE);
+> @@ -296,6 +312,10 @@ static int lpass_cpu_daiops_trigger(struct snd_pcm_substream *substream,
+>   	case SNDRV_PCM_TRIGGER_STOP:
+>   	case SNDRV_PCM_TRIGGER_SUSPEND:
+>   	case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
+> +		/*
+> +		 * To ensure lpass BCLK/LRCLK is disabled during
+> +		 * device suspend.
+> +		 */
+>   		if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
+>   			ret = regmap_fields_write(i2sctl->spken, id,
+>   						 LPAIF_I2SCTL_SPKEN_DISABLE);
+> @@ -315,12 +335,44 @@ static int lpass_cpu_daiops_trigger(struct snd_pcm_substream *substream,
+>   	return ret;
+>   }
+>   
+
+
+[Snip ...
+> +static int lpass_cpu_daiops_prepare(struct snd_pcm_substream *substream,
+> +		struct snd_soc_dai *dai)
+> +{
+> +	struct lpass_data *drvdata = snd_soc_dai_get_drvdata(dai);
+> +	struct lpaif_i2sctl *i2sctl = drvdata->i2sctl;
+> +	unsigned int id = dai->driver->id;
+> +	int ret;
+> +	/*
+> +	 * To ensure lpass BCLK/LRCLK is enabled bit before
+> +	 * playback/capture data flow starts.
+> +	 */
+> +	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
+> +		ret = regmap_fields_write(i2sctl->spken, id, LPAIF_I2SCTL_SPKEN_ENABLE);
+> +	else
+> +		ret = regmap_fields_write(i2sctl->micen, id, LPAIF_I2SCTL_MICEN_ENABLE);
+> +
+> +	if (ret) {
+> +		dev_err(dai->dev, "error writing to i2sctl reg: %d\n", ret);
+> +		return ret;
+> +	}
+> +
+> +	ret = clk_enable(drvdata->mi2s_bit_clk[id]);
+> +
+> +	if (ret) {
+> +		dev_err(dai->dev, "error in enabling mi2s bit clk: %d\n", ret);
+> +		clk_disable(drvdata->mi2s_osr_clk[id]);
+> +		return ret;
+> +	}
+> +	return 0;
+> +}
+> +
+----]
+
+If prepare is enabling the clk and the i2s enable bits, then why do we 
+need to do the same thing in trigger?
+
+Also the clk enable count is going up twice (once in prepare and 
+trigger) and we can never be able to disable the clk as there is is no 
+corresponding disable for this prepare path.
+
+Also note that prepare can be called multiple times.
+
+--srini
+
+>   const struct snd_soc_dai_ops asoc_qcom_lpass_cpu_dai_ops = {
+>   	.set_sysclk	= lpass_cpu_daiops_set_sysclk,
+>   	.startup	= lpass_cpu_daiops_startup,
+>   	.shutdown	= lpass_cpu_daiops_shutdown,
+>   	.hw_params	= lpass_cpu_daiops_hw_params,
+>   	.trigger	= lpass_cpu_daiops_trigger,
+> +	.prepare	= lpass_cpu_daiops_prepare,
+>   };
+>   EXPORT_SYMBOL_GPL(asoc_qcom_lpass_cpu_dai_ops);
+>   
+> 
