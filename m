@@ -2,138 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7243E394452
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 16:39:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DA9EB394449
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 16:38:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236415AbhE1OlM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 May 2021 10:41:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35420 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236324AbhE1OlF (ORCPT
+        id S235763AbhE1Ojn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 May 2021 10:39:43 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:34272 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235407AbhE1Ojm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 May 2021 10:41:05 -0400
-Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB539C061574;
-        Fri, 28 May 2021 07:39:29 -0700 (PDT)
-Received: by mail-pj1-x1043.google.com with SMTP id g24so2644574pji.4;
-        Fri, 28 May 2021 07:39:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=SuUtFT7bIVivZR5ps0dFd9PsqAyY9zXdI0c6lNEWZ/Q=;
-        b=AqCOKow8BzXpyBYQA4hALzihVUDWiOfdtUbJquxeuNJYENkj6DwJxuck/KTPsp2X1w
-         16peOoVuoqYC+o2gWx0RISCnFAnNqGJr5dFX988+0uqPNfetuQD4RndSStByvWzyWccP
-         Cq6//WNjymumiMNjm+3kluX/8mc3q9VWMbUByYSjQ6fzV3prHxcSbVvdwmIUs301i+W7
-         6QfZR2iToSqegzgaYxxnWMH4vkgWdbJSg3uMcUktdleaFZLzYJe/oUo2iov3tIA7awAd
-         6XEntAOTefUuHk7C1eb3X7GavDVm9K1naBFy9hiLS1x4bM2zcPdU10uJ5+5iTDthB5VV
-         +4Mw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=SuUtFT7bIVivZR5ps0dFd9PsqAyY9zXdI0c6lNEWZ/Q=;
-        b=hLhMHB/ETQGCu5hfuRl/MPBiz+NLmP7c6bgRe00PGfC81KgDk0A0up5ECU5/5v/d+3
-         zYUvizQ7O2XALTMqyA2RTmtSeu334aE6MaQlXL08JhOOf3/yihwre8ybu2H7qmG8Q8/s
-         APsOO57SVrJXThnHH/axdsK0bmLUycvgVdsvK1k8GuI5CuiSKG0bB/JDpSc3LmvLv/m9
-         4veS0qKWbhVMOMFx9lM9J6n6F7mwkEpnxM2dU4yAxaW4s2D7XlHHsBAvkGjcty6bm1gA
-         Sl7PsyVOdrj11+afL7rPHT7OdJGVhZCluYtueJxywWFbOQ7ihmsypMXh7IyBfWCucxUC
-         eakw==
-X-Gm-Message-State: AOAM532dGZ5gKUwKnk+kjvYuKS2llXFO2/8ghMkgREPMIXB09+VyB7C8
-        07lxnkfz6e9gjWzDHuhKtso=
-X-Google-Smtp-Source: ABdhPJzWoWJHPFMvuHgtoRmHNOGBzNFG8zg4DmL8uNwyIsLlF3X4B9pGHzvPnrrfEe4vZDAhHEW+3A==
-X-Received: by 2002:a17:90a:e501:: with SMTP id t1mr4895794pjy.32.1622212769472;
-        Fri, 28 May 2021 07:39:29 -0700 (PDT)
-Received: from localhost ([178.236.46.205])
-        by smtp.gmail.com with ESMTPSA id p17sm4778164pjg.54.2021.05.28.07.39.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 28 May 2021 07:39:29 -0700 (PDT)
-From:   menglong8.dong@gmail.com
-X-Google-Original-From: dong.menglong@zte.com.cn
-To:     mhiramat@kernel.org, mcgrof@kernel.org, josh@joshtriplett.org
-Cc:     viro@zeniv.linux.org.uk, keescook@chromium.org,
-        samitolvanen@google.com, ojeda@kernel.org, johan@kernel.org,
-        jeyu@kernel.org, masahiroy@kernel.org, dong.menglong@zte.com.cn,
-        joe@perches.com, axboe@kernel.dk, jack@suse.cz, hare@suse.de,
-        tj@kernel.org, gregkh@linuxfoundation.org, song@kernel.org,
-        neilb@suse.de, akpm@linux-foundation.org, f.fainelli@gmail.com,
-        wangkefeng.wang@huawei.com, arnd@arndb.de,
-        linux@rasmusvillemoes.dk, brho@google.com, rostedt@goodmis.org,
-        vbabka@suse.cz, pmladek@suse.com, glider@google.com,
-        chris@chrisdown.name, jojing64@gmail.com, ebiederm@xmission.com,
-        mingo@kernel.org, terrelln@fb.com, geert@linux-m68k.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        bhelgaas@google.com
-Subject: [PATCH v3 3/3] init/do_mounts.c: fix rootfs_fs_type with ramfs
-Date:   Fri, 28 May 2021 22:38:02 +0800
-Message-Id: <20210528143802.78635-4-dong.menglong@zte.com.cn>
-X-Mailer: git-send-email 2.32.0.rc0
-In-Reply-To: <20210528143802.78635-1-dong.menglong@zte.com.cn>
-References: <20210528143802.78635-1-dong.menglong@zte.com.cn>
+        Fri, 28 May 2021 10:39:42 -0400
+Received: from imap.suse.de (imap-alt.suse-dmz.suse.de [192.168.254.47])
+        (using TLSv1.2 with cipher ECDHE-ECDSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 6F3CB218B3;
+        Fri, 28 May 2021 14:38:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1622212686; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=SzREePWPek7xbQooscouTLGKXsYpABXEKB69ilAutZ4=;
+        b=GCYu/8YI40f/UjSWypYlhNAsp6tqcZwSHL2Dyj7PgMJmx7o1hLgJMGWYYMW5tbPeq6P5Dg
+        U6lKizf45Isn8gHkB/HdzVzzQpLYTVU/RH1Mltyjs4Vba3QUtl75kgfbOwWwm3zQpI44aI
+        k2OlhlgfDxvu4kcOzrupUGA99QQUtuE=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1622212686;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=SzREePWPek7xbQooscouTLGKXsYpABXEKB69ilAutZ4=;
+        b=+XkhBEbaAic5hiU6fcz3speKi9SedkZPv/mki141EIMM1Lv4mye9MSvV1oEw0dQkVBP9JB
+        CKN4iRiph2FVAsBQ==
+Received: from imap3-int (imap-alt.suse-dmz.suse.de [192.168.254.47])
+        by imap.suse.de (Postfix) with ESMTP id 58E2C11A98;
+        Fri, 28 May 2021 14:38:06 +0000 (UTC)
+Received: from director2.suse.de ([192.168.254.72])
+        by imap3-int with ESMTPSA
+        id 3CMuFU4AsWBncAAALh3uQQ
+        (envelope-from <vbabka@suse.cz>); Fri, 28 May 2021 14:38:06 +0000
+Subject: Re: [PATCH 6/6] mm/page_alloc: Introduce
+ vm.percpu_pagelist_high_fraction
+To:     Mel Gorman <mgorman@techsingularity.net>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Hillf Danton <hdanton@sina.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Michal Hocko <mhocko@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux-MM <linux-mm@kvack.org>
+References: <20210525080119.5455-1-mgorman@techsingularity.net>
+ <20210525080119.5455-7-mgorman@techsingularity.net>
+ <018c4b99-81a5-bc12-03cd-662a938ef05a@suse.cz>
+ <20210528125334.GP30378@techsingularity.net>
+From:   Vlastimil Babka <vbabka@suse.cz>
+Message-ID: <3a6670d3-63eb-f97a-62a0-ec752d933a13@suse.cz>
+Date:   Fri, 28 May 2021 16:38:04 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.2
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210528125334.GP30378@techsingularity.net>
+Content-Type: text/plain; charset=iso-8859-15
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Menglong Dong <dong.menglong@zte.com.cn>
+On 5/28/21 2:53 PM, Mel Gorman wrote:
+> On Fri, May 28, 2021 at 01:59:37PM +0200, Vlastimil Babka wrote:
+>> On 5/25/21 10:01 AM, Mel Gorman wrote:
+>> > This introduces a new sysctl vm.percpu_pagelist_high_fraction. It is
+>> > similar to the old vm.percpu_pagelist_fraction. The old sysctl increased
+>> > both pcp->batch and pcp->high with the higher pcp->high potentially
+>> > reducing zone->lock contention. However, the higher pcp->batch value also
+>> > potentially increased allocation latency while the PCP was refilled.
+>> > This sysctl only adjusts pcp->high so that zone->lock contention is
+>> > potentially reduced but allocation latency during a PCP refill remains
+>> > the same.
+>> > 
+>> >   # grep -E "high:|batch" /proc/zoneinfo | tail -2
+>> >               high:  649
+>> >               batch: 63
+>> > 
+>> >   # sysctl vm.percpu_pagelist_high_fraction=8
+>> >   # grep -E "high:|batch" /proc/zoneinfo | tail -2
+>> >               high:  35071
+>> >               batch: 63
+>> > 
+>> >   # sysctl vm.percpu_pagelist_high_fraction=64
+>> >               high:  4383
+>> >               batch: 63
+>> > 
+>> >   # sysctl vm.percpu_pagelist_high_fraction=0
+>> >               high:  649
+>> >               batch: 63
+>> > 
+>> > Signed-off-by: Mel Gorman <mgorman@techsingularity.net>
+>> > Acked-by: Dave Hansen <dave.hansen@linux.intel.com>
+>> 
+>> Acked-by: Vlastimil Babka <vbabka@suse.cz>
+>> 
+> 
+> Thanks.
+> 
+>> Documentation nit below:
+>> 
+>> > @@ -789,6 +790,25 @@ panic_on_oom=2+kdump gives you very strong tool to investigate
+>> >  why oom happens. You can get snapshot.
+>> >  
+>> >  
+>> > +percpu_pagelist_high_fraction
+>> > +=============================
+>> > +
+>> > +This is the fraction of pages in each zone that are allocated for each
+>> > +per cpu page list.  The min value for this is 8.  It means that we do
+>> > +not allow more than 1/8th of pages in each zone to be allocated in any
+>> > +single per_cpu_pagelist.
+>> 
+>> This, while technically correct (as an upper limit) is somewhat misleading as
+>> the limit for a single per_cpu_pagelist also considers the number of local cpus.
+>> 
+>> >  This entry only changes the value of hot per
+>> > +cpu pagelists. User can specify a number like 100 to allocate 1/100th
+>> > +of each zone to each per cpu page list.
+>> 
+>> This is worse. Anyone trying to reproduce this example on a system with multiple
+>> cpus per node and checking the result will be puzzled.
+>> So I think the part about number of local cpus should be mentioned to avoid
+>> confusion.
+>> 
+> 
+> Is this any better?
 
-As for the existence of 'user root' which is introduced in previous
-patch, 'rootfs_fs_type', which is used as the root of mount tree,
-is not used directly any more. So it make no sense to make it tmpfs
-while 'INITRAMFS_USER_ROOT' is enabled.
+Ack, thanks
 
-Make 'rootfs_fs_type' ramfs when 'INITRAMFS_USER_ROOT' enabled.
-
-Signed-off-by: Menglong Dong <dong.menglong@zte.com.cn>
----
- include/linux/init.h |  5 +++++
- init/do_mounts.c     | 10 +++++++++-
- 2 files changed, 14 insertions(+), 1 deletion(-)
-
-diff --git a/include/linux/init.h b/include/linux/init.h
-index 045ad1650ed1..d65b12fe438c 100644
---- a/include/linux/init.h
-+++ b/include/linux/init.h
-@@ -148,7 +148,12 @@ extern unsigned int reset_devices;
- /* used by init/main.c */
- void setup_arch(char **);
- void prepare_namespace(void);
-+#ifndef CONFIG_INITRAMFS_USER_ROOT
- void __init init_rootfs(void);
-+#else
-+static inline void __init init_rootfs(void) { }
-+#endif
-+
- extern struct file_system_type rootfs_fs_type;
- 
- #if defined(CONFIG_STRICT_KERNEL_RWX) || defined(CONFIG_STRICT_MODULE_RWX)
-diff --git a/init/do_mounts.c b/init/do_mounts.c
-index 2fd168cca480..74f5b0fc8bdf 100644
---- a/init/do_mounts.c
-+++ b/init/do_mounts.c
-@@ -716,7 +716,14 @@ void __init init_user_rootfs(void)
- 		}
- 	}
- }
--#endif
-+
-+struct file_system_type rootfs_fs_type = {
-+	.name		= "rootfs",
-+	.init_fs_context = ramfs_init_fs_context,
-+	.kill_sb	= kill_litter_super,
-+};
-+
-+#else
- 
- static bool is_tmpfs;
- static int rootfs_init_fs_context(struct fs_context *fc)
-@@ -739,3 +746,4 @@ void __init init_rootfs(void)
- 		(!root_fs_names || strstr(root_fs_names, "tmpfs")))
- 		is_tmpfs = true;
- }
-+#endif
--- 
-2.32.0.rc0
-
+> diff --git a/Documentation/admin-guide/sysctl/vm.rst b/Documentation/admin-guide/sysctl/vm.rst
+> index e85c2f21d209..2da25735a629 100644
+> --- a/Documentation/admin-guide/sysctl/vm.rst
+> +++ b/Documentation/admin-guide/sysctl/vm.rst
+> @@ -793,15 +793,16 @@ why oom happens. You can get snapshot.
+>  percpu_pagelist_high_fraction
+>  =============================
+>  
+> -This is the fraction of pages in each zone that are allocated for each
+> -per cpu page list.  The min value for this is 8.  It means that we do
+> -not allow more than 1/8th of pages in each zone to be allocated in any
+> -single per_cpu_pagelist.  This entry only changes the value of hot per
+> -cpu pagelists. User can specify a number like 100 to allocate 1/100th
+> -of each zone to each per cpu page list.
+> -
+> -The batch value of each per cpu pagelist remains the same regardless of the
+> -value of the high fraction so allocation latencies are unaffected.
+> +This is the fraction of pages in each zone that are can be stored to
+> +per-cpu page lists. It is an upper boundary that is divided depending
+> +on the number of online CPUs. The min value for this is 8 which means
+> +that we do not allow more than 1/8th of pages in each zone to be stored
+> +on per-cpu page lists. This entry only changes the value of hot per-cpu
+> +page lists. A user can specify a number like 100 to allocate 1/100th of
+> +each zone between per-cpu lists.
+> +
+> +The batch value of each per-cpu page list remains the same regardless of
+> +the value of the high fraction so allocation latencies are unaffected.
+>  
+>  The initial value is zero. Kernel uses this value to set the high pcp->high
+>  mark based on the low watermark for the zone and the number of local
+> 
 
