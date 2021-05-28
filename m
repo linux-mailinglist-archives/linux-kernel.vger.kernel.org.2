@@ -2,82 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DCF173946F5
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 20:22:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C83C3946F8
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 20:26:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229560AbhE1SYG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 May 2021 14:24:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57352 "EHLO
+        id S229520AbhE1S15 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 May 2021 14:27:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58196 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229463AbhE1SYC (ORCPT
+        with ESMTP id S229463AbhE1S14 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 May 2021 14:24:02 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6710C061574
-        for <linux-kernel@vger.kernel.org>; Fri, 28 May 2021 11:22:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=gNnTtNhYhsjLZyYSFhpISMIVt3cv2qaTo4HNXcWiEEk=; b=tSJVz2PFgt3iU+MzA4FHLI2H2K
-        V8mLCpYUNOH9K3/3Kipce59E3aKijW984GYpCkjg96TS4wOm942DGDlcPIYfGMDK1tMNjYtvCN21j
-        MSle5FrCI15iMnVMNVLcH88cOmSBWQXXh8qrCJ99e3Enyt6usVtPLjwbXCnouJAG/qXBJkf4HPZrt
-        ZawOO+LctRF4IOkGX33pev+9o2bjMn9SfLUheplgs0b8LcH5jhLyXOTY0PkR/dNgpAxbJzWxqAWGJ
-        dWxfjsc5wIlEWJ3XDD9Epj8ESdVpG747XVHe+6KAczst2+Yh+y7X1JJdL+tvlIiClrCQG8r8TzavZ
-        oVtDGjRw==;
-Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
-        id 1lmh7a-006tAY-7K; Fri, 28 May 2021 18:22:12 +0000
-Date:   Fri, 28 May 2021 19:22:10 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Yang Shi <shy828301@gmail.com>
-Cc:     hughd@google.com, jhubbard@nvidia.com,
-        kirill.shutemov@linux.intel.com, vbabka@suse.cz,
-        akpm@linux-foundation.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [RFC PATCH] mm: dump_page: print total mapcount for compound page
-Message-ID: <YLE00rVi6O3DF3XA@casper.infradead.org>
-References: <20210528175403.4506-1-shy828301@gmail.com>
+        Fri, 28 May 2021 14:27:56 -0400
+Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com [IPv6:2a00:1450:4864:20::42d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8BCDBC061574
+        for <linux-kernel@vger.kernel.org>; Fri, 28 May 2021 11:26:20 -0700 (PDT)
+Received: by mail-wr1-x42d.google.com with SMTP id z17so4167866wrq.7
+        for <linux-kernel@vger.kernel.org>; Fri, 28 May 2021 11:26:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=GB90gywFXxz6C4VQo267CgkB+2UX9a38YgOqAiS33gE=;
+        b=Se6XEw+2WJidqePob89BwGd7MIJwxqyJbrY1ASEOs5LH1t9FqSSaqdfPuiSz5Ch8LC
+         BRUdEaGCM5uzrimuqnG9dAWJuoVYDr98kCvPRuU3OqawlnbSEdmollFndMcVp68byCr3
+         K9CY+Aa7kVZtBlTDUyx3ood2yz/sjpdSVrX/yn6RzbkL4oYEhm+Cg/F2A+KOBs9JMbm1
+         WUuJbpKxI23rbmeSormT6VN3z3JSaHxVuQRGHylGr9ID6jVr2dcfdEpthpjgZE7NFEUD
+         VR7QZYI5iQZdc7NWD+NUNB353NQzPFdUkFWs5oxCVReoHiMLB/vhetMhVGGcITLYUBZY
+         TKBQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=GB90gywFXxz6C4VQo267CgkB+2UX9a38YgOqAiS33gE=;
+        b=ovmnbJh3sbBcDzdqTPTThGYJE3CdlntvGAYePUGJF1rneyu4DIKvwL6BrDWPuWGSQR
+         cpF9GWOSeELRT0oE3Fc41D0NWdEE9Yrtw4EOpJ9DZGBmrQiFdntxG4hlZugW6L1LrgIe
+         6fsncemR/Btvo0HKc/FaCIyX6lzPM5TMeedTYGazpQWSyNDVH96AWFeI4WvEiL39O+ka
+         r54u9J9cMewISXF/b/6baaHdp8C6d/4aVAC4ksVSfj4NR74HFnb9p4gSo8EoUFjkt0jU
+         OsTEAsQT6V6Sq7FmoHMblvYLi0RjzHceEugR6a2o+BELCosJbMq9ku0K1kKuhR+7ldK7
+         CiPw==
+X-Gm-Message-State: AOAM531rz5tR2qEaVRlrRw+d2pZcNP2qzkDK49QqZL1re2+NnPBP8bB4
+        D3WYTqaPxzM0hl8ptmNSvaKweA==
+X-Google-Smtp-Source: ABdhPJwPtOD2198lQyApL0Qva918Tg+Ju/9BKJTcfdW0irv0YwWm+lrrOhzaY6jmtfC50E2y6j7ABQ==
+X-Received: by 2002:adf:9f51:: with SMTP id f17mr9941105wrg.3.1622226379152;
+        Fri, 28 May 2021 11:26:19 -0700 (PDT)
+Received: from dell ([91.110.221.223])
+        by smtp.gmail.com with ESMTPSA id h15sm7263730wmq.1.2021.05.28.11.26.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 28 May 2021 11:26:18 -0700 (PDT)
+Date:   Fri, 28 May 2021 19:26:17 +0100
+From:   Lee Jones <lee.jones@linaro.org>
+To:     Moriis Ku <saumah@gmail.com>
+Cc:     linux-kernel@vger.kernel.org, jason_lee@sunix.com,
+        taian.chen@sunix.com
+Subject: Re: [PATCH] mfd:Add SUNIX mfd & PCIe driver
+Message-ID: <20210528182617.GS543307@dell>
+References: <20210528095845.6991-1-saumah@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20210528175403.4506-1-shy828301@gmail.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210528095845.6991-1-saumah@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 28, 2021 at 10:54:03AM -0700, Yang Shi wrote:
-> So I prepared this patch to show a possible approach to get some
-> feedback.  The same thing could be decoded by the reader of page dump
-> as well by using the same formula used by this patch.  However it sounds
-> more convenient to have kernel do the math.
+On Fri, 28 May 2021, Moriis Ku wrote:
 
-You haven't taken enough things into consideration ...
+> From: Morris Ku <saumah@gmail.com>
+> 
+> Add SUNIX mfd & PCIe driver
+> 
+> Cc: Jason Lee <jason_lee@sunix.com>
+> Cc: Taian Chen <taian.chen@sunix.com>
+> Signed-off-by: Morris Ku <saumah@gmail.com>
+> ---
+>  sdc_mfd.c | 513 ++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-> +	bool is_slab = PageSlab(head);
+To be frank, this is a bit of a mess.
 
-We should probably have a separate dump_slab_page().  Almost nothing
-in __dump_page() is really useful for slab pages (eg, mapping, index,
-mapcount, compound_mapcount, compound_pincount, aops), and the flags
-(such as are used) have different meanings.
+Let's take one step back for a moment.
 
-> +		nr = compound_nr(head);
-> +		if (is_slab)
-> +			total_mapcount = 0;
-> +		else if (PageHuge(head))
-> +			total_mapcount = comp_mapcnt;
-> +		else {
-> +			if (mapping) {
-> +				if (!PageAnon(head))
-> +					nr = nr * (comp_mapcnt + 1) - comp_mapcnt;
-> +			} else
-> +				nr = 0;
-> +			total_mapcount = refcount - pincount - nr;
+Please tell me how this compares to any existing driver currently
+present in drivers/mfd.  I'm 100% sure this H/W is not different to
+anything we've seen before.  Thus, my advice is to base it off of a
+piece of code that has been previously accepted and take it from
+there.
 
-I see what you're trying to do here, but there are so many other things
-which take a refcount on a page.  The LRU, the page cache, private fs
-data, random temporary "gets" (eg, buffered reads, buffered writes,
-get_user_pages(), readahead, truncate, migration).  I think this is
-likely to be so inaccurate as to be confusing.
+>  sdc_mfd.h |  61 +++++++
+>  sdc_pci.c |  92 ++++++++++
+>  3 files changed, 666 insertions(+)
+>  create mode 100644 sdc_mfd.c
+>  create mode 100644 sdc_mfd.h
+>  create mode 100644 sdc_pci.c
 
-I had to think hard about it though.  I like what you're trying to do,
-I just don't think it works ;-(
+
+-- 
+Lee Jones [李琼斯]
+Senior Technical Lead - Developer Services
+Linaro.org │ Open source software for Arm SoCs
+Follow Linaro: Facebook | Twitter | Blog
