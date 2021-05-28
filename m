@@ -2,59 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E55B9393E86
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 10:14:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7069D393E7F
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 10:13:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236164AbhE1IP6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 May 2021 04:15:58 -0400
-Received: from comms.puri.sm ([159.203.221.185]:41206 "EHLO comms.puri.sm"
+        id S236104AbhE1IPL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 May 2021 04:15:11 -0400
+Received: from sauhun.de ([88.99.104.3]:39784 "EHLO pokefinder.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234715AbhE1IP5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 May 2021 04:15:57 -0400
-Received: from localhost (localhost [127.0.0.1])
-        by comms.puri.sm (Postfix) with ESMTP id D081FE3C05;
-        Fri, 28 May 2021 01:14:22 -0700 (PDT)
-Received: from comms.puri.sm ([127.0.0.1])
-        by localhost (comms.puri.sm [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id 9ZXjWQ6XewNJ; Fri, 28 May 2021 01:14:17 -0700 (PDT)
-From:   Martin Kepplinger <martin.kepplinger@puri.sm>
-To:     laurent.pinchart@ideasonboard.com, mchehab@kernel.org
-Cc:     devicetree@vger.kernel.org, kernel@puri.sm,
-        krzysztof.kozlowski@canonical.com, linux-kernel@vger.kernel.org,
-        linux-media@vger.kernel.org, paul.kocialkowski@bootlin.com,
-        robh@kernel.org, shawnx.tu@intel.com,
-        Martin Kepplinger <martin.kepplinger@puri.sm>
-Subject: [PATCH v2 1/5] dt-bindings: vendor-prefixes: Add SK Hynix Inc.
+        id S236038AbhE1IPJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 28 May 2021 04:15:09 -0400
+Received: from localhost (p5486cda0.dip0.t-ipconnect.de [84.134.205.160])
+        by pokefinder.org (Postfix) with ESMTPSA id 65EA72C0537;
+        Fri, 28 May 2021 10:13:32 +0200 (CEST)
 Date:   Fri, 28 May 2021 10:13:32 +0200
-Message-Id: <20210528081336.3858700-2-martin.kepplinger@puri.sm>
-In-Reply-To: <20210528081336.3858700-1-martin.kepplinger@puri.sm>
-References: <20210528081336.3858700-1-martin.kepplinger@puri.sm>
-Content-Transfer-Encoding: 8bit
+From:   Wolfram Sang <wsa@the-dreams.de>
+To:     Qii Wang <qii.wang@mediatek.com>
+Cc:     matthias.bgg@gmail.com, linux-i2c@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-mediatek@lists.infradead.org, srv_heupstream@mediatek.com,
+        leilk.liu@mediatek.com
+Subject: Re: [PATCH] i2c: mediatek: Disable i2c start_en and clear intr_stat
+ brfore reset
+Message-ID: <YLCmLNDUqe/AiQ+I@kunai>
+Mail-Followup-To: Wolfram Sang <wsa@the-dreams.de>,
+        Qii Wang <qii.wang@mediatek.com>, matthias.bgg@gmail.com,
+        linux-i2c@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, linux-mediatek@lists.infradead.org,
+        srv_heupstream@mediatek.com, leilk.liu@mediatek.com
+References: <1622117044-7583-1-git-send-email-qii.wang@mediatek.com>
+ <YK/9wMhoACc0beN/@kunai>
+ <1622165863.15667.3.camel@mhfsdcap03>
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="OJPvFYrtr07vTo0J"
+Content-Disposition: inline
+In-Reply-To: <1622165863.15667.3.camel@mhfsdcap03>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SK Hynix built the already supported hi556 sensor (and probably much
-more). For more information, see https://www.skhynix.com/
 
-Signed-off-by: Martin Kepplinger <martin.kepplinger@puri.sm>
----
- Documentation/devicetree/bindings/vendor-prefixes.yaml | 2 ++
- 1 file changed, 2 insertions(+)
+--OJPvFYrtr07vTo0J
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-diff --git a/Documentation/devicetree/bindings/vendor-prefixes.yaml b/Documentation/devicetree/bindings/vendor-prefixes.yaml
-index b868cefc7c55..a75cd3be50b9 100644
---- a/Documentation/devicetree/bindings/vendor-prefixes.yaml
-+++ b/Documentation/devicetree/bindings/vendor-prefixes.yaml
-@@ -499,6 +499,8 @@ patternProperties:
-     description: Hycon Technology Corp.
-   "^hydis,.*":
-     description: Hydis Technologies
-+  "^hynix,.*":
-+    description: SK Hynix Inc.
-   "^hyundai,.*":
-     description: Hyundai Technology
-   "^i2se,.*":
--- 
-2.30.2
+On Fri, May 28, 2021 at 09:37:43AM +0800, Qii Wang wrote:
+> On Thu, 2021-05-27 at 22:14 +0200, Wolfram Sang wrote:
+> > On Thu, May 27, 2021 at 08:04:04PM +0800, qii.wang@mediatek.com wrote:
+> > > From: Qii Wang <qii.wang@mediatek.com>
+> > >=20
+> > > The i2c controller driver do dma reset after transfer timeout,
+> > > but sometimes dma reset will trigger an unexpected DMA_ERR irq.
+> > > It will cause the i2c controller to continuously send interrupts
+> > > to the system and cause soft lock-up. So we need to disable i2c
+> > > start_en and clear intr_stat to stop i2c controller before dma
+> > > reset when transfer timeout.
+> > >=20
+> > > Signed-off-by: Qii Wang <qii.wang@mediatek.com>
+> >=20
+> > Is there a suitable Fixes tag for this?
+> >=20
+>=20
+> Can you help to add the following tag, thanks
+> Fixes: aafced673c06("i2c: mediatek: move dma reset before i2c reset")
 
+Added this tag and applied to for-current, thanks!
+
+
+--OJPvFYrtr07vTo0J
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmCwpisACgkQFA3kzBSg
+Kbb03RAApmrkJIj//VaDqHQN7GyWM+5ruaKD22kJSm4fL8ozUu28fCSIk3ni1aK0
+Pn2mXRSzGWzBWXFIaHEPISfaQSYYaeoGD5sgJJMcf/y6weyLlgn4SeIASsY+ijkY
+rIfV1uqyzBUdUjAKXD9MfS/2VpNB5aj/5NXvqBv/wiKbjFRGZfIQ8JDv3oHViSmM
+Fom+2RtQSbrZlO6eRafzIcfRUzDsFNL3umd4bG+35FQ+WVvRUzOKlKVRRECmj8aE
+lpTNsaFTYfkr9L287bZxnOVb2bikxw6PnFQ842U3g9UZnM1IlVCUZws7V1tOVnFm
+LpPvzevBtJ+sD248PRhpq6HT1ZtZC6fD6Ngi36aScsk1KbaGktomG+Av7VvN4fgA
+/k2KiDJ2hH5g1XfeVvtxr6exyiDKVJDuDv4jgDobsDNlZdP1G+gum1mp4R5CjC5V
+N8mr0dvc1YzZWHsSS/JAI6coKMqnO4E16NuVLHuTc10a+sfE4aXsYoKppsSZQHBA
+ptvEQSc/WWCKG9lskmCuwdFd8DSywnk+1HPCZw4WfppDX40USMSSmKsZUCjG5Tz/
+PFz6vy4qYZB0aYDAkuA2fhkZZD4VgwWBy08xbubSSGmePWGwvRsHdYRq0OyClA/R
+6HfLbcT5Ch3IflK03jUJYNEyisJsIPVp4qB1BocG6jmoeXha9Qc=
+=sw0e
+-----END PGP SIGNATURE-----
+
+--OJPvFYrtr07vTo0J--
