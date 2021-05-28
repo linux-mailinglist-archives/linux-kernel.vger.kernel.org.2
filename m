@@ -2,207 +2,175 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A3EF39471F
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 20:44:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A1E93394722
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 20:44:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229528AbhE1Spe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 May 2021 14:45:34 -0400
-Received: from aserp2120.oracle.com ([141.146.126.78]:33390 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229488AbhE1Spd (ORCPT
+        id S229570AbhE1SqB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 May 2021 14:46:01 -0400
+Received: from esa3.hgst.iphmx.com ([216.71.153.141]:48386 "EHLO
+        esa3.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229488AbhE1Sp7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 May 2021 14:45:33 -0400
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 14SIhPFt175250;
-        Fri, 28 May 2021 18:43:53 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
- references : from : message-id : date : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=corp-2020-01-29;
- bh=uoLYHwRCdRv6i0NlE7jrI/Yq3b5SI2QxVDAsfKIk97M=;
- b=ENhf3ekws9RBdp33bPQ/HjVBxD39Pibsx/xztIsREgQAGh4I0Tbi3FmVxNiVN/uPQ29U
- 19+esluaJke7wWhQ5GySN1XJCOol8OajF7oQif4uc/nAJnLKpPzIxBq30zEqMP1Vbfnt
- et2beiM8lRAvxj6SJ9GtxQ7N2eF1WYZOCZr62NWUuaF7xFEuXVtjAv8J1iYqU7J39Sdm
- 2lwYrtkFlH5LihtuX+ya14d1QlNJrLjikPnj5U4ezdDr+l7FQ1hexhVxWySsPo6a/wMr
- pHai6s26XbzO618LpfoFksl7pmUGSwU07/U3eITsaTo5PSMrprrQJcLyBdVyYTMIwN2+ mg== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by aserp2120.oracle.com with ESMTP id 38rne4bemc-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 28 May 2021 18:43:53 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 14SIehEx086789;
-        Fri, 28 May 2021 18:43:52 GMT
-Received: from nam11-co1-obe.outbound.protection.outlook.com (mail-co1nam11lp2169.outbound.protection.outlook.com [104.47.56.169])
-        by aserp3020.oracle.com with ESMTP id 38rehmq6p3-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 28 May 2021 18:43:52 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=efEcrWxAHexMjcLj6n26CWNY6lhBLBjg1ZT1rPwRB0+ctBBa5pDSaQ9/nA60A6bwr7xbFWaEGs9jXJa3XdrnM2blS/eA6Qfp+LcFDeExi5iRvbpSae5BmWPIXj5xyl2ohP2iNYpkhd5iCDXfHQXv42PdnDBwALDbSZc/jNrzYPkWZtdimARcuYKj4oMYq8XZOHG28PWrzgjTJcv9IngQ6EsNVcQ3fV3TwO9BqBHyjIdgESYlt+qEqgaTmS1ToFixcDRi2aYFsECF/oG40znQImONqARtx4Ro7XX5srBEbwjiFXxLGE1koOrNXwSTrmA9EL3S8y32Lo99Fq7cF/MVIQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=uoLYHwRCdRv6i0NlE7jrI/Yq3b5SI2QxVDAsfKIk97M=;
- b=cViGUOkLXzQ8nJaZ0GoKGTTJ8F95LnYlrPNjYC4WDrGIik/qW4FrquKnjZAt281G4ACYrC2R+BUie1dKtxlK8ql7NFti3TPzxmrVAUAQRIo16wZ0WqS+xJivEoqYXwCL6Jh38j5NK41eF2XJyK/Af+Dcn/bTQfIljRRvjG4vrI2hrYTB8UDZMKxucrbysk3dl0cyB5TAYo5xcllRwZPq4FQkXpcrCSpocTNElppZVUJm3xnqDoMtZH9tueCYlJ2A3x3KErPES/zAo96f3FRuGlV+jHlMlpKuhe7X9a5t2lO8XQAf0cSMesOOXpXZ/0jYH+fLXszJdo3qAa5+sz0NtA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=uoLYHwRCdRv6i0NlE7jrI/Yq3b5SI2QxVDAsfKIk97M=;
- b=LB+/JwIhBP3oxpxUJBbZdHAIqC4pgbndP/dYgZtE29+KgfPdk11W6Arbnzfcdf9t8yLdP8KvpgM180TZLLDKT1bwcH9ui99cZTw3n4616sekj11wxA6w8QYtHffq11pzW2CORF9z+xemLxNHCQ+IDaGbbWjIT7HIeVv3b0AIe4E=
-Authentication-Results: vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=none action=none header.from=oracle.com;
-Received: from BY5PR10MB4196.namprd10.prod.outlook.com (2603:10b6:a03:20d::23)
- by SJ0PR10MB4528.namprd10.prod.outlook.com (2603:10b6:a03:2d4::14) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4173.22; Fri, 28 May
- 2021 18:43:50 +0000
-Received: from BY5PR10MB4196.namprd10.prod.outlook.com
- ([fe80::4407:2ff6:c0a:5d90]) by BY5PR10MB4196.namprd10.prod.outlook.com
- ([fe80::4407:2ff6:c0a:5d90%8]) with mapi id 15.20.4173.026; Fri, 28 May 2021
- 18:43:50 +0000
-Subject: Re: [PATCH v4] mm, hugetlb: Fix simple resv_huge_pages underflow on
- UFFDIO_COPY
-To:     Mina Almasry <almasrymina@google.com>
-Cc:     Axel Rasmussen <axelrasmussen@google.com>,
-        Peter Xu <peterx@redhat.com>, linux-mm@kvack.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, stable@vger.kernel.org
-References: <20210528004649.85298-1-almasrymina@google.com>
-From:   Mike Kravetz <mike.kravetz@oracle.com>
-Message-ID: <cbd3a3d6-1a4f-d771-1479-4c285ce49145@oracle.com>
-Date:   Fri, 28 May 2021 11:43:48 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.1.1
-In-Reply-To: <20210528004649.85298-1-almasrymina@google.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [50.38.35.18]
-X-ClientProxiedBy: MWHPR10CA0002.namprd10.prod.outlook.com (2603:10b6:301::12)
- To BY5PR10MB4196.namprd10.prod.outlook.com (2603:10b6:a03:20d::23)
+        Fri, 28 May 2021 14:45:59 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1622227464; x=1653763464;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=YRFcB3Ij8slOZSzscA4hGt4gAmSSrJb4B7MzBb4wlnI=;
+  b=dxPZNN7rLlo7CkpsPv43OraTNLGICiFvcVaNCYN4LU5nuRMB2KWqONG1
+   AtkZybjZn7fh1gdU/6MKl1/GqoekYAMBXDzJFD/xoE+grZbbGpk1x19bO
+   6CDDQjCVRWdC+FmGKP4MdiavFQaqWS6GF0G6MnHiH1iD0L+c7xc0Yu/gI
+   cnvyxHB1QNpGCx0iKA6nKbE4odpMil6SCI4W+H+dZNRzqpV1QgqEqgdPc
+   ATvZUPsXNW+IvrpjewxnYPrzyjURMpN3ABCnM1SCho+xPl8WZXX2Kgjgr
+   pvQRQ6lDJDP3r1byCq6FqKR2qCiA9qYZcGFLUN+lOEgIzECSk3WsYIXXA
+   A==;
+IronPort-SDR: AUs4YQZZgsY6JWczDaCqDEGi27UA2JuTXaCvwkfR4/qCWsofCphGN+EyUfnZKxmAMfucZiRAij
+ e36zoMWGkc+PIAQXnAxBoh+1DI9Mx2KWEBFzl1K/VM37dO2XOfVVlDxmRI0WYSFNjg/Uwwl/3h
+ 0ng3wgClslkqZMkjN2aNiGp0x2BFk+b56ZN4eO9ogAgfjQ+SqMbiVLhbSyFTUO3Ij0OteQD3ca
+ NnFBsKjljLAuKlCXiyMxVTgty+YumVxuZvHZFrGSnn90hoYX9OXcl4fx7P6WW/2quZYdM8FqlC
+ FAE=
+X-IronPort-AV: E=Sophos;i="5.83,230,1616428800"; 
+   d="scan'208";a="174577163"
+Received: from uls-op-cesaip01.wdc.com (HELO uls-op-cesaep01.wdc.com) ([199.255.45.14])
+  by ob1.hgst.iphmx.com with ESMTP; 29 May 2021 02:44:24 +0800
+IronPort-SDR: tlvp2iQELHDArBON81tyPcXnqnIsFo+ZxvD5793jOJsRa3q9W5X/4gyhNGdFIihR0Coa0+jYVi
+ S5dP9hMfIUn3nee7sUVXg9fHidvDSI6oki3nviMPX/JEppl3zMuCqoUFJ0NAaOJF/stlo1NouZ
+ sB3QFkwXV5LfpnmDaAiwnn1JWyMj2H18GLFe/n9MZes9S2HLMWKugpoja/Ouw2slRYeRAqs5Gh
+ 992PEHb9YSrqz/f425HMzvm8FzunCMk30WsUS+qiast++Os8r/qRD1mJNyMQawsSiyeJ5haAJX
+ VCFsyLekCDGLqrBEadW8N7si
+Received: from uls-op-cesaip02.wdc.com ([10.248.3.37])
+  by uls-op-cesaep01.wdc.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 May 2021 11:23:47 -0700
+IronPort-SDR: FwKkID0ZyCmK4yldsD9bwlpL7YKTj+dqrsIMrw8blAmx7w/E+zaal8/Z9fwFDVreYWz1Zw5xAj
+ dNv/yCesVUBhLzSeTOIqpaNOfaagRIyl1d63bJBP/ePXQICOeqrBJf5NqenQQ20vVDYw+1Btlv
+ eBHyQ4U5szKVvPpLJy8+F9pXQ3r3vi5tpDdVjPDB2FwEafE5SjXuFJ7f14Q0T5JJAn8KgZfp8W
+ 1+52WvFzs8eWA/5kFc51FOaKND3DPqIroVgnXbGqgHX7Yzz9jJHrdFO5TBamt5k0YdcLtFpU8x
+ pF8=
+WDCIronportException: Internal
+Received: from unknown (HELO jedi-01.wdc.com) ([10.225.163.91])
+  by uls-op-cesaip02.wdc.com with ESMTP; 28 May 2021 11:44:20 -0700
+From:   Atish Patra <atish.patra@wdc.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     Atish Patra <atish.patra@wdc.com>, Anup Patel <anup.patel@wdc.com>,
+        bpf@vger.kernel.org, Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Guo Ren <guoren@linux.alibaba.com>,
+        Heinrich Schuchardt <xypron.glpk@gmx.de>,
+        Kefeng Wang <wangkefeng.wang@huawei.com>,
+        linux-doc@vger.kernel.org, linux-perf-users@vger.kernel.org,
+        linux-riscv@lists.infradead.org,
+        Nick Kossifidis <mick@ics.forth.gr>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Alan Kao <alankao@andestech.com>,
+        Nick Hu <nickhu@andestech.com>,
+        Vincent Chen <vincent.chen@sifive.com>
+Subject: [RFC v2 0/7] Improve RISC-V Perf support using SBI PMU extension
+Date:   Fri, 28 May 2021 11:43:58 -0700
+Message-Id: <20210528184405.1793783-1-atish.patra@wdc.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [192.168.2.112] (50.38.35.18) by MWHPR10CA0002.namprd10.prod.outlook.com (2603:10b6:301::12) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4173.20 via Frontend Transport; Fri, 28 May 2021 18:43:49 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: c0ff0aa7-ad26-49f8-8cf2-08d9220888f0
-X-MS-TrafficTypeDiagnostic: SJ0PR10MB4528:
-X-Microsoft-Antispam-PRVS: <SJ0PR10MB4528A0EF95DE9698F0960DE5E2229@SJ0PR10MB4528.namprd10.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:8882;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: jVQQq9PJ6Q0kb4ZVnbOtuw6tsGZgzjxz+5A7otU5R2Gqn6OUhVedYuBKm4Et3AQ72HZLu33Sp3cGe0nqwYJlwI8suqmaGmrqcBMIKomrrZRrd0rpxc9ABLAvldOwv2to1FY4pRc3m8SNe1CbVRs4p5NgcuCfjzQryC5oWkdnaLFmDxZL5Fa9ghuAqtJdjkJsFwZsz9BpZhxHlvzckooUVsmPP8nLzg9zxFpZCiTHiYsXrfoU7aQdTjNRPyOXYHcg6VeO3ZZui+jeprtd+AXMlU8oFvTaLzF80MG8MGlHW2sFzZ8hxiFjvpyJlP2FJtNBa13JkVVPDihzENSrttQG75WcRPwTatATAZwWmLzoK+OINelezKQtLpy9JiNmk6UDwqn5Xp7o/U731mk6sJZWPKGKw7Wa9WKOfasc3VwcegeavH/x7oalfTV6bLEBUjqKknNToZhi1Nuy7EPkq8xzRkOl/zpZtGg1kM2P7v1DWxyhmasB3CUko61ywfj7pPlnycDWtt1edQepGaI5Kll0RGZjqCcabETQM9DWFn6JxOneel6KpjlhvoiPx66Je9UlDF1Vsrht/9XJXrge/nYvYlPbby/7riMFwlKgRFJZHFgQNPF8Md8aIJklcqKHlVHVJ6DOzIFRdCaiV4L+E2u8yyGD3D9L14pYViwoFI2Q43rOoyiw0656l0Bv9aCcdJnpcxaiCBj9fD2nMDtYwt5fHrCU7lc7NtYDxHBlWUVhvPszQ/6wHjEY0aWtapf0EqQ8
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR10MB4196.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(39860400002)(376002)(346002)(136003)(396003)(52116002)(44832011)(53546011)(38350700002)(26005)(478600001)(66556008)(54906003)(2616005)(956004)(38100700002)(6916009)(316002)(6486002)(83380400001)(66946007)(66476007)(16576012)(8676002)(8936002)(36756003)(5660300002)(31696002)(4326008)(16526019)(2906002)(86362001)(186003)(31686004)(14583001)(43740500002)(45980500001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?V2tqd2E3YklGOWRKcklrSzJibHo4K0hISkZyckU4cnoyZTZ0WnhrUGJmOGdv?=
- =?utf-8?B?MEUvUWZkRjRJQmNYQ0h0QTJUa0kya2hhVTB3b2NVL1VNMjc4Nk5ZVEx0dyt5?=
- =?utf-8?B?ZUtSNGwxRDRUL3ZFWnBReVBEcHNkTmpHVnhFTDVuQVFDS2Zva0FjbU4rWE85?=
- =?utf-8?B?L3hKRHpEdVdJOUhobmkzWU1lM1pnNDBwbGtPRFlLb01lejdUQ21LQUVYZU9T?=
- =?utf-8?B?VE9xb0Q2SHVic2cwOW9TenRsNnVjVDJrU2JMSDZGTXI3OERSMmdpNUxzZlZI?=
- =?utf-8?B?bUFsV0RUVVI2K3ptRnlKNGhWbjlnaGRJaWZWL1FUcUJMV01OZGs1bjBaVytt?=
- =?utf-8?B?WVZWZU1iLzd5ZjMzYzVjUFphQ3NMSW5MTTlFVTQzMUZTOHkycldFdjdrbWxD?=
- =?utf-8?B?WFdXbzB2b2dYeGtFTUVadlhrdXR1YlVBb1h4TVM0TTZJei9TcDdZM0dqT0hk?=
- =?utf-8?B?UUJZc25zVGVhVFdaakkxbG5SdTRCaktpajlscUJDVncvaVZKamExajlzaFFU?=
- =?utf-8?B?RFB3UGpvenJ0MTRhdS9qUXU5djdKTWtOUk9TNzVwM2RMaVhTY0p4bXZaS25z?=
- =?utf-8?B?T2JnTlRzOU9HOFJZRk1iR2RSQVBJK210Mk81ekt4dVRFS0FYS0VBV0VVMit2?=
- =?utf-8?B?Y3AzT2NGUWs4azN5cFlMVUQya0NxRE05TmltY0NHUjJBNTdrdTdUU1ZpR1Fz?=
- =?utf-8?B?ZDdDQStkVzE5NUVjdEJEbTZkSXp0MWQrQk4vMm5yMVR6cy8wVDVMTVJTTGVo?=
- =?utf-8?B?dEZSWFpHMkoxaUxKWmJrOS9tcmJUb2w2eGxZMEVXMGh1NTlLU2JWVE4vTWdW?=
- =?utf-8?B?UG1oekdhQ3cwL2Y3UUhHamZtcUZUakhDNU1vYm1iUUY0RWxoUGlSOTlGU3N3?=
- =?utf-8?B?ZE54K0trTDkxRkNnSVNUT25ERkdLOGVxN250bFhqWGtWSWJSeDlvVkZZNnJr?=
- =?utf-8?B?M1NmaWlnVGJFTFQ2ZnVwYXRMM0QwdC95eHBrNHJ0eWhYc2x5N0VtcFBibTgy?=
- =?utf-8?B?LzYwOHFrbnNBZ0p6UnpIUm9tOGluT0pkVWkxNkNTNjlVWFEwYWd4U2lYMW1H?=
- =?utf-8?B?V1lZNnJOMW11ekNybCttYURseEp4ejMrVG13YTRYS2lPZ3gwK2pIR0JaRi91?=
- =?utf-8?B?cXhqTGlDZDROODNpZDBhV3pKWUlTV2JhOFJZOWM0TzhQbjZiWnVxNTk4VUVD?=
- =?utf-8?B?MzVSNEltQnZXWUFuQjc0eXZ6cHdYbTdNT2U3aXduRFVKd3dKZlBleXZZd1FK?=
- =?utf-8?B?NzgyQkVoOW9pU3daVGVqUVNmd1d6M1V1TUlXYkJiMHdVdWlsWEkrK1oxMFB6?=
- =?utf-8?B?UzQ1dEdnY295OFpDeUFrQ3Q5akRYNHBJN2pqS3JZbGcrT0dZVjJMSGp2cWpo?=
- =?utf-8?B?UTBHU1JFVnpCbjAxOFd1cFVscXNUWFNscGxab2p2RUZ1Nkh4R095TjdTOWF0?=
- =?utf-8?B?SjdhUDhLVlRCYWhyY1AwY2J5WmhFYmkxaVpUU0NYcW1NRkZQc1ZTanhyRzVR?=
- =?utf-8?B?Q2tjUzZUUk5rNTFlYkV1Y1NBTjFGbEEvM0FIeDlJUlFQYUhwK21mekpQOG56?=
- =?utf-8?B?VnFZR05FcmxhSjRieFQxTnBrODFxVVVCQXl2QmdFUDVxam9nb25qUTRGdzlU?=
- =?utf-8?B?bWhRbkk2MjRjVnR1TUhBeFM4ZUlqWGI0bU5LVnNNdlVnbWJDZ0wycGlOSUlk?=
- =?utf-8?B?SE1PZnloQklEZ2FHMW8wKzFsbWRGQmlPQVBUcGVYUi9hdDJtcXVBeGlBWjQz?=
- =?utf-8?Q?U+35tSubLHJhZk+qx8ABQ5QsNeNlqFemgrxICtM?=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: c0ff0aa7-ad26-49f8-8cf2-08d9220888f0
-X-MS-Exchange-CrossTenant-AuthSource: BY5PR10MB4196.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 28 May 2021 18:43:50.3946
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: KEEDvqmVY+/2CTykyw8PP6Sn4EOOSmysjjwqSa7F8zg5iNQ2g1grH4aNFEjLK4ZaF53JX4eOW/LhueDwSujKxA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR10MB4528
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9998 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 spamscore=0 adultscore=0
- mlxscore=0 mlxlogscore=999 malwarescore=0 phishscore=0 bulkscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104190000
- definitions=main-2105280121
-X-Proofpoint-ORIG-GUID: 9QO1YiKAE-VImeMFla2K-ioIFBLCLJ1q
-X-Proofpoint-GUID: 9QO1YiKAE-VImeMFla2K-ioIFBLCLJ1q
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9998 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 bulkscore=0 phishscore=0
- mlxlogscore=999 spamscore=0 mlxscore=0 priorityscore=1501
- lowpriorityscore=0 impostorscore=0 adultscore=0 clxscore=1015
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104190000 definitions=main-2105280121
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5/27/21 5:46 PM, Mina Almasry wrote:
-> The userfaultfd hugetlb tests detect a resv_huge_pages underflow. This
+This series adds improved perf support for RISC-V based system using
+SBI PMU extension[1]. It is based on a platform driver instead of a existing
+arch specific implementation. The new perf implementation has adopted a modular
+approach where most of the generic event handling is done in the core library
+while individual PMUs need to only implement necessary features specific to
+the PMU. This is easily extensible and any future RISC-V PMU implementation
+can leverage this. Currently, SBI PMU driver & legacy PMU driver are implemented
+as a part of this series.
 
-Perhaps say,
-The userfaultfd hugetlb tests cause a resv_huge_pages underflow. This
+The SBI based driver provides more advanced features such as event configure
+start/stop. This version does not implement counter overflow
+& filtering yet. That will implemented in the future on top of this series
+using "Sscofpmf" extension. 
 
-> happens when hugetlb_mcopy_atomic_pte() is called with !is_continue on
-> an index for which we already have a page in the cache. When this
-> happens, we allocate a second page, double consuming the reservation,
-> and then fail to insert the page into the cache and return -EEXIST.
-> 
-> To fix this, we first if there exists a page in the cache which already
+The legacy driver tries to reimplement the existing minimal perf under a new
+config to maintain backward compatibility. This implementation only allows
+monitoring of always running cycle/instruction counters. Moreover, they can
+not be started or stopped. In general, this is very limited and not very useful.
+That's why, I am not very keen to carry the support into the new driver.
+However, I don't want to break perf for any existing hardware platforms.
+If nobody really uses perf currently, I will be happy to drop PATCH 4.
 
-To fix this, we first check if there is a page in the cache which already
+This series has been tested in Qemu on RV64 only. Qemu[2] & OpenSBI [3] patches
+are required to test it. Qemu changes are not backward compatible. That means,
+you can not use perf anymore on older Qemu versions with latest OpenSBI
+and/or Kernel. However, newer kernel will just use legacy pmu driver if
+old OpenSBI is detected or hardware doesn't implement mcountinhibit.
 
-> To fix this, we first if there exists a page in the cache which already
-> consumed the reservation, and return -EEXIST immediately if so.
-> 
-> There is still a rare condition where we fail to copy the page contents
-> AND race with a call for hugetlb_no_page() for this index and again we
-> will underflow resv_huge_pages. That is fixed in a more complicated
-> patch not targeted for -stable.
-> 
-> Test:
-> Hacked the code locally such that resv_huge_pages underflows produce
-> a warning, then:
-> 
-> ./tools/testing/selftests/vm/userfaultfd hugetlb_shared 10
-> 	2 /tmp/kokonut_test/huge/userfaultfd_test && echo test success
-> ./tools/testing/selftests/vm/userfaultfd hugetlb 10
-> 	2 /tmp/kokonut_test/huge/userfaultfd_test && echo test success
-> 
-> Both tests succeed and produce no warnings. After the
-> test runs number of free/resv hugepages is correct.
-> 
-> Signed-off-by: Mina Almasry <almasrymina@google.com>
-> Cc: Axel Rasmussen <axelrasmussen@google.com>
-> Cc: Peter Xu <peterx@redhat.com>
-> Cc: linux-mm@kvack.org
-> Cc: Mike Kravetz <mike.kravetz@oracle.com>
-> Cc: Andrew Morton <akpm@linux-foundation.org>
-> Cc: linux-mm@kvack.org
-> Cc: linux-kernel@vger.kernel.org
-> Cc: stable@vger.kernel.org
-> 
-> ---
->  mm/hugetlb.c | 14 ++++++++++++--
->  1 file changed, 12 insertions(+), 2 deletions(-)
+Here is an output of perf stat while running hackbench.
 
-Code changes are fine.  Thanks,
+[root@fedora-riscv riscv]# perf stat -e r8000000000000007 -e r8000000000000006 \
+-e r0000000000000002 -e r0000000000000004 -e branch-misses -e cache-misses \
+-e cycles -e instructions ./hackbench -pipe 15 process 15
 
-Reviewed-by: Mike Kravetz <mike.kravetz@oracle.com>
+Running with 15*40 (== 600) tasks.
+Time: 1.548
 
--- 
-Mike Kravetz
+ Performance counter stats for './hackbench -pipe 15 process 15':
+
+             7,103      r8000000000000007     (62.56%) --> SBI_PMU_FW_IPI_RECVD
+             7,767      r8000000000000006     (12.19%) --> SBI_PMU_FW_IPI_SENT
+                 0      r0000000000000002     (24.79%) --> a custom raw event described in DT
+     <not counted>      r0000000000000004     (0.00%)  --> non-supported raw event described in DT
+                 0      branch-misses         (12.65%) 
+                 0      cache-misses          (25.36%)
+    27,978,868,702      cycles                (38.12%)
+    27,849,527,556      instructions          # 1.00  insn per cycle  (50.46%)
+
+       2.431195184 seconds time elapsed
+
+       1.553153000 seconds user
+      13.615924000 seconds sys
+
+The patches can also be found in the github[4].
+
+[1] https://lists.riscv.org/g/tech-unixplatformspec/message/950
+[2] https://github.com/atishp04/qemu/tree/riscv_pmu_v1
+[3] https://github.com/atishp04/opensbi/tree/riscv_pmu_v2
+[4] https://github.com/atishp04/linux/tree/riscv_pmu_v2
+
+Changes from v1->v2
+1. Implemented the latest SBI PMU extension specification.
+2. The core platform driver was changed to operate as a library while only
+   sbi based PMU is built as a driver. The legacy one is just a fallback if
+   SBI PMU extension is not available.
+
+Atish Patra (7):
+RISC-V: Remove the current perf implementation
+RISC-V: Add CSR encodings for all HPMCOUNTERS
+RISC-V: Add a perf core library for pmu drivers
+RISC-V: Add a simple platform driver for RISC-V legacy perf
+RISC-V: Add RISC-V SBI PMU extension definitions
+RISC-V: Add perf platform driver based on SBI PMU extension
+Documentation: riscv: Remove the old documentation
+
+Documentation/riscv/pmu.rst         | 255 -------------
+arch/riscv/Kconfig                  |  13 -
+arch/riscv/include/asm/csr.h        |  58 +++
+arch/riscv/include/asm/perf_event.h |  72 ----
+arch/riscv/include/asm/sbi.h        |  94 +++++
+arch/riscv/kernel/Makefile          |   1 -
+arch/riscv/kernel/perf_event.c      | 485 -------------------------
+drivers/perf/Kconfig                |  25 ++
+drivers/perf/Makefile               |   5 +
+drivers/perf/riscv_pmu.c            | 328 +++++++++++++++++
+drivers/perf/riscv_pmu_legacy.c     |  92 +++++
+drivers/perf/riscv_pmu_sbi.c        | 537 ++++++++++++++++++++++++++++
+include/linux/cpuhotplug.h          |   1 +
+include/linux/perf/riscv_pmu.h      |  61 ++++
+14 files changed, 1201 insertions(+), 826 deletions(-)
+delete mode 100644 Documentation/riscv/pmu.rst
+delete mode 100644 arch/riscv/kernel/perf_event.c
+create mode 100644 drivers/perf/riscv_pmu.c
+create mode 100644 drivers/perf/riscv_pmu_legacy.c
+create mode 100644 drivers/perf/riscv_pmu_sbi.c
+create mode 100644 include/linux/perf/riscv_pmu.h
+
+--
+2.25.1
+
