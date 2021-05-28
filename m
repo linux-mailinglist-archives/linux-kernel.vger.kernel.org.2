@@ -2,47 +2,47 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A691539448E
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 16:54:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C2ECF394491
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 16:54:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236474AbhE1O4G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 May 2021 10:56:06 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:47075 "EHLO
+        id S236571AbhE1O4J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 May 2021 10:56:09 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:47080 "EHLO
         youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235763AbhE1Oz5 (ORCPT
+        with ESMTP id S236126AbhE1Oz7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 May 2021 10:55:57 -0400
-Received: from mail-ua1-f69.google.com ([209.85.222.69])
+        Fri, 28 May 2021 10:55:59 -0400
+Received: from mail-vs1-f70.google.com ([209.85.217.70])
         by youngberry.canonical.com with esmtps  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
         (Exim 4.93)
         (envelope-from <krzysztof.kozlowski@canonical.com>)
-        id 1lmdsT-0003zw-Qs
-        for linux-kernel@vger.kernel.org; Fri, 28 May 2021 14:54:21 +0000
-Received: by mail-ua1-f69.google.com with SMTP id y10-20020ab025ca0000b0290221adb2995aso2027900uan.8
-        for <linux-kernel@vger.kernel.org>; Fri, 28 May 2021 07:54:21 -0700 (PDT)
+        id 1lmdsV-00040R-0j
+        for linux-kernel@vger.kernel.org; Fri, 28 May 2021 14:54:23 +0000
+Received: by mail-vs1-f70.google.com with SMTP id y13-20020a67d20d0000b02902354e7b1beaso1083607vsi.5
+        for <linux-kernel@vger.kernel.org>; Fri, 28 May 2021 07:54:22 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=XhZpqiw5yroQ5T5SjmtgyekQkcqwTSamV1tsKU5zvv4=;
-        b=swQFaMVgEhELrY/g0DmBVpZw4NmRhyuwEyD+21BZ0ge3cZaYCVckAVq3/rpRsqsHHc
-         R9Sc0ya2z4e5U+3vDQgyyYMfEd/tH2jto+7IkKdLCYfxQl8NDErBKpm0N9LxHtisXOkV
-         uqT8hAV17FtOHKAuOERuhT34hp3d6tPGubXriM+V4V16lyuY/Ypd6W4pjpZH9T5Ll0pP
-         9S0sE4Cv5Q3VPBXri1GUdzH0oCgRaFttrulW1N3gKaL10c9NBYS/AGv9vsnAWkWyfeAQ
-         8C/5iDbk7CyOjuIoW652NOSNa8KYQ8I6oSz7Tp30lgdV/blygzXKUG4DwZ54Jzf99owB
-         YuFw==
-X-Gm-Message-State: AOAM532sGb//q9TVDmybNNZY7lAVNrMLAt/X5lqKe51G6V/cC7NqY5/B
-        bLqoYb5NNeK14obVbXsdtoGaBTZGRRlJ0N4ZFPI059seWR3bCkiJZnG89JloyWTIK+8Ezkc+fXa
-        6CL9pU8QQdKNwRsr6Uf7F+/hnLx9ymHbGXAIOdXspmw==
-X-Received: by 2002:a05:6102:b06:: with SMTP id b6mr7491292vst.21.1622213660572;
-        Fri, 28 May 2021 07:54:20 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwPMQ3xY66/5n4l/VQaIPoHo7DEPcLTbN8UNm7Bn5EXdgUbFqs6QFW7LZSH6KTqPyxb7SwHGw==
-X-Received: by 2002:a05:6102:b06:: with SMTP id b6mr7491279vst.21.1622213660390;
-        Fri, 28 May 2021 07:54:20 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=aZ/yEEfClIlXQJ5jqul7RvuQr6Fao3s7oVlySYMna4M=;
+        b=ZGBcBR90O/G6Ocu/eSHwvETVKIVEBu4o7/zIZp444zkIkRJFm9+jLsQHWkCm900QGl
+         DeBdkaBDXamsNG+oBSfwNrUWCpWAxzmell6JMJfeHCEzUVZiLqxXysKL3bFGCu3aBWun
+         NuoU4XxlEJTwgNKPTaZpHTWhaG6HHRIJQGQkan3F+EMQ1BqMWntiJ3LoXDfdQeppqjy+
+         HVFT5qXkoHzFgIepWDb+N3OsR2li0J+f4o+x6Az18smhpmW+vSnNqjE71QlaXAw6e87H
+         d2lc/hD+psCanhXNW8+ykzeJGaEJaoqj6CKPEBH9W202YYCJLrpXvc/VtNKJfZbKtShU
+         O31A==
+X-Gm-Message-State: AOAM533XGwWYqGYw8hAUpW4To+PU9b1kTVst1Ax55uptMR2UU02QTj1T
+        gXc7VZDt8wh12mvPomx2AZaSGBGyWyiBTIizch0ZyRtmaMYMB8XAG8DhfT7ZZ+HXqtipvgxfoY0
+        JWKvFwEI5Xp62w4IoGotW8f5Aib81NOfccISehEHiqg==
+X-Received: by 2002:a05:6102:10d1:: with SMTP id t17mr7796935vsr.0.1622213662206;
+        Fri, 28 May 2021 07:54:22 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzkdAq4gRZn+/xWVZNC69A9lFxo0CNOXTTIt/ja4jcZ0FIGsH/Icj4ZQcpxEoounbYrk5FFZg==
+X-Received: by 2002:a05:6102:10d1:: with SMTP id t17mr7796916vsr.0.1622213661990;
+        Fri, 28 May 2021 07:54:21 -0700 (PDT)
 Received: from localhost.localdomain ([45.237.48.3])
-        by smtp.gmail.com with ESMTPSA id v132sm737783vkd.1.2021.05.28.07.54.19
+        by smtp.gmail.com with ESMTPSA id v132sm737783vkd.1.2021.05.28.07.54.20
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 28 May 2021 07:54:19 -0700 (PDT)
+        Fri, 28 May 2021 07:54:21 -0700 (PDT)
 From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
 To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
         "David S. Miller" <davem@davemloft.net>,
@@ -50,10 +50,12 @@ To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
         Jakub Kicinski <kuba@kernel.org>, linux-nfc@lists.01.org,
         netdev@vger.kernel.org, linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: [PATCH 01/11] nfc: fdp: drop ftrace-like debugging messages
-Date:   Fri, 28 May 2021 10:53:20 -0400
-Message-Id: <20210528145330.125055-1-krzysztof.kozlowski@canonical.com>
+Subject: [PATCH 02/11] nfc: mei_phy: drop ftrace-like debugging messages
+Date:   Fri, 28 May 2021 10:53:21 -0400
+Message-Id: <20210528145330.125055-2-krzysztof.kozlowski@canonical.com>
 X-Mailer: git-send-email 2.27.0
+In-Reply-To: <20210528145330.125055-1-krzysztof.kozlowski@canonical.com>
+References: <20210528145330.125055-1-krzysztof.kozlowski@canonical.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
@@ -64,183 +66,51 @@ Now that the kernel has ftrace, any debugging calls that just do "made
 it to this function!" and "leaving this function!" can be removed.
 Better to use standard debugging tools.
 
-This allows also to remove several local variables and entire
-fdp_nci_recv_frame() function (whose purpose was only to log).
-
 Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
 ---
- drivers/nfc/fdp/fdp.c | 31 -------------------------------
- drivers/nfc/fdp/fdp.h |  1 -
- drivers/nfc/fdp/i2c.c | 12 +-----------
- 3 files changed, 1 insertion(+), 43 deletions(-)
+ drivers/nfc/mei_phy.c | 8 --------
+ 1 file changed, 8 deletions(-)
 
-diff --git a/drivers/nfc/fdp/fdp.c b/drivers/nfc/fdp/fdp.c
-index 125d71c27b8b..7863b2536999 100644
---- a/drivers/nfc/fdp/fdp.c
-+++ b/drivers/nfc/fdp/fdp.c
-@@ -237,28 +237,18 @@ static int fdp_nci_send_patch(struct nci_dev *ndev, u8 conn_id, u8 type)
- static int fdp_nci_open(struct nci_dev *ndev)
- {
- 	struct fdp_nci_info *info = nci_get_drvdata(ndev);
--	struct device *dev = &info->phy->i2c_dev->dev;
--
--	dev_dbg(dev, "%s\n", __func__);
+diff --git a/drivers/nfc/mei_phy.c b/drivers/nfc/mei_phy.c
+index 0f43bb389566..e56cea716cd2 100644
+--- a/drivers/nfc/mei_phy.c
++++ b/drivers/nfc/mei_phy.c
+@@ -98,8 +98,6 @@ static int mei_nfc_if_version(struct nfc_mei_phy *phy)
+ 	size_t if_version_length;
+ 	int bytes_recv, r;
  
- 	return info->phy_ops->enable(info->phy);
- }
- 
- static int fdp_nci_close(struct nci_dev *ndev)
- {
--	struct fdp_nci_info *info = nci_get_drvdata(ndev);
--	struct device *dev = &info->phy->i2c_dev->dev;
+-	pr_info("%s\n", __func__);
 -
--	dev_dbg(dev, "%s\n", __func__);
- 	return 0;
- }
+ 	memset(&cmd, 0, sizeof(struct mei_nfc_cmd));
+ 	cmd.hdr.cmd = MEI_NFC_CMD_MAINTENANCE;
+ 	cmd.hdr.data_size = 1;
+@@ -146,8 +144,6 @@ static int mei_nfc_connect(struct nfc_mei_phy *phy)
+ 	size_t connect_length, connect_resp_length;
+ 	int bytes_recv, r;
  
- static int fdp_nci_send(struct nci_dev *ndev, struct sk_buff *skb)
- {
- 	struct fdp_nci_info *info = nci_get_drvdata(ndev);
--	struct device *dev = &info->phy->i2c_dev->dev;
+-	pr_info("%s\n", __func__);
 -
--	dev_dbg(dev, "%s\n", __func__);
+ 	connect_length = sizeof(struct mei_nfc_cmd) +
+ 			sizeof(struct mei_nfc_connect);
  
- 	if (atomic_dec_and_test(&info->data_pkt_counter))
- 		info->data_pkt_counter_cb(ndev);
-@@ -266,16 +256,6 @@ static int fdp_nci_send(struct nci_dev *ndev, struct sk_buff *skb)
- 	return info->phy_ops->write(info->phy, skb);
- }
- 
--int fdp_nci_recv_frame(struct nci_dev *ndev, struct sk_buff *skb)
--{
--	struct fdp_nci_info *info = nci_get_drvdata(ndev);
--	struct device *dev = &info->phy->i2c_dev->dev;
--
--	dev_dbg(dev, "%s\n", __func__);
--	return nci_recv_frame(ndev, skb);
--}
--EXPORT_SYMBOL(fdp_nci_recv_frame);
--
- static int fdp_nci_request_firmware(struct nci_dev *ndev)
- {
- 	struct fdp_nci_info *info = nci_get_drvdata(ndev);
-@@ -476,8 +456,6 @@ static int fdp_nci_setup(struct nci_dev *ndev)
+@@ -320,8 +316,6 @@ static int nfc_mei_phy_enable(void *phy_id)
  	int r;
- 	u8 patched = 0;
+ 	struct nfc_mei_phy *phy = phy_id;
  
--	dev_dbg(dev, "%s\n", __func__);
+-	pr_info("%s\n", __func__);
 -
- 	r = nci_core_init(ndev);
- 	if (r)
- 		goto error;
-@@ -585,9 +563,7 @@ static int fdp_nci_core_reset_ntf_packet(struct nci_dev *ndev,
- 					  struct sk_buff *skb)
+ 	if (phy->powered == 1)
+ 		return 0;
+ 
+@@ -363,8 +357,6 @@ static void nfc_mei_phy_disable(void *phy_id)
  {
- 	struct fdp_nci_info *info = nci_get_drvdata(ndev);
--	struct device *dev = &info->phy->i2c_dev->dev;
+ 	struct nfc_mei_phy *phy = phy_id;
  
--	dev_dbg(dev, "%s\n", __func__);
- 	info->setup_reset_ntf = 1;
- 	wake_up(&info->setup_wq);
- 
-@@ -598,9 +574,7 @@ static int fdp_nci_prop_patch_ntf_packet(struct nci_dev *ndev,
- 					  struct sk_buff *skb)
- {
- 	struct fdp_nci_info *info = nci_get_drvdata(ndev);
--	struct device *dev = &info->phy->i2c_dev->dev;
- 
--	dev_dbg(dev, "%s\n", __func__);
- 	info->setup_patch_ntf = 1;
- 	info->setup_patch_status = skb->data[0];
- 	wake_up(&info->setup_wq);
-@@ -773,11 +747,6 @@ EXPORT_SYMBOL(fdp_nci_probe);
- 
- void fdp_nci_remove(struct nci_dev *ndev)
- {
--	struct fdp_nci_info *info = nci_get_drvdata(ndev);
--	struct device *dev = &info->phy->i2c_dev->dev;
+-	pr_info("%s\n", __func__);
 -
--	dev_dbg(dev, "%s\n", __func__);
--
- 	nci_unregister_device(ndev);
- 	nci_free_device(ndev);
- }
-diff --git a/drivers/nfc/fdp/fdp.h b/drivers/nfc/fdp/fdp.h
-index 9bd1f3f23e2d..ead3b21ccae6 100644
---- a/drivers/nfc/fdp/fdp.h
-+++ b/drivers/nfc/fdp/fdp.h
-@@ -25,6 +25,5 @@ int fdp_nci_probe(struct fdp_i2c_phy *phy, struct nfc_phy_ops *phy_ops,
- 		  struct nci_dev **ndev, int tx_headroom, int tx_tailroom,
- 		  u8 clock_type, u32 clock_freq, u8 *fw_vsc_cfg);
- void fdp_nci_remove(struct nci_dev *ndev);
--int fdp_nci_recv_frame(struct nci_dev *ndev, struct sk_buff *skb);
+ 	mei_cldev_disable(phy->cldev);
  
- #endif /* __LOCAL_FDP_H_ */
-diff --git a/drivers/nfc/fdp/i2c.c b/drivers/nfc/fdp/i2c.c
-index 997e0806821a..c5596e514648 100644
---- a/drivers/nfc/fdp/i2c.c
-+++ b/drivers/nfc/fdp/i2c.c
-@@ -49,7 +49,6 @@ static int fdp_nci_i2c_enable(void *phy_id)
- {
- 	struct fdp_i2c_phy *phy = phy_id;
- 
--	dev_dbg(&phy->i2c_dev->dev, "%s\n", __func__);
- 	fdp_nci_i2c_reset(phy);
- 
- 	return 0;
-@@ -59,7 +58,6 @@ static void fdp_nci_i2c_disable(void *phy_id)
- {
- 	struct fdp_i2c_phy *phy = phy_id;
- 
--	dev_dbg(&phy->i2c_dev->dev, "%s\n", __func__);
- 	fdp_nci_i2c_reset(phy);
- }
- 
-@@ -197,7 +195,6 @@ static int fdp_nci_i2c_read(struct fdp_i2c_phy *phy, struct sk_buff **skb)
- static irqreturn_t fdp_nci_i2c_irq_thread_fn(int irq, void *phy_id)
- {
- 	struct fdp_i2c_phy *phy = phy_id;
--	struct i2c_client *client;
- 	struct sk_buff *skb;
- 	int r;
- 
-@@ -206,9 +203,6 @@ static irqreturn_t fdp_nci_i2c_irq_thread_fn(int irq, void *phy_id)
- 		return IRQ_NONE;
- 	}
- 
--	client = phy->i2c_dev;
--	dev_dbg(&client->dev, "%s\n", __func__);
--
- 	r = fdp_nci_i2c_read(phy, &skb);
- 
- 	if (r == -EREMOTEIO)
-@@ -217,7 +211,7 @@ static irqreturn_t fdp_nci_i2c_irq_thread_fn(int irq, void *phy_id)
- 		return IRQ_HANDLED;
- 
- 	if (skb != NULL)
--		fdp_nci_recv_frame(phy->ndev, skb);
-+		nci_recv_frame(phy->ndev, skb);
- 
- 	return IRQ_HANDLED;
- }
-@@ -288,8 +282,6 @@ static int fdp_nci_i2c_probe(struct i2c_client *client)
- 	u32 clock_freq;
- 	int r = 0;
- 
--	dev_dbg(dev, "%s\n", __func__);
--
- 	if (!i2c_check_functionality(client->adapter, I2C_FUNC_I2C)) {
- 		nfc_err(dev, "No I2C_FUNC_I2C support\n");
- 		return -ENODEV;
-@@ -351,8 +343,6 @@ static int fdp_nci_i2c_remove(struct i2c_client *client)
- {
- 	struct fdp_i2c_phy *phy = i2c_get_clientdata(client);
- 
--	dev_dbg(&client->dev, "%s\n", __func__);
--
- 	fdp_nci_remove(phy->ndev);
- 	fdp_nci_i2c_disable(phy);
- 
+ 	phy->powered = 0;
 -- 
 2.27.0
 
