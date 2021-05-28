@@ -2,109 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E76E393CA6
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 07:09:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 05E94393CA7
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 07:14:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234725AbhE1FLO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 May 2021 01:11:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48626 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234422AbhE1FLN (ORCPT
+        id S234823AbhE1FPg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 May 2021 01:15:36 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:26672 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S234573AbhE1FPd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 May 2021 01:11:13 -0400
-Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5882DC061574
-        for <linux-kernel@vger.kernel.org>; Thu, 27 May 2021 22:09:38 -0700 (PDT)
-Received: by mail-pl1-x632.google.com with SMTP id e15so1088164plh.1
-        for <linux-kernel@vger.kernel.org>; Thu, 27 May 2021 22:09:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=yZopcSkX2Q3KN5uKuj5D0fi40cQECPF2z0euTxDiILU=;
-        b=SfxTGuAjzEBDyY66hS65kd2J9YsRydRNyh5jKrWVqvHuhGvc6uI7bZBfcaAJX6gtdv
-         jZVYWv67anr00Jv8EDbUOuB3bY9sAf8phNTqa3oUvMcY2eVTO4yc+n2peRhvxtYJCeKO
-         9IB0DYT0GKp+HE6opyMtHEnuSC7z/SoI9thDRyiexlBkYQPNIxiDpRWILRtBtZ7tNVgn
-         d3Ra/M7tX02h+3+mTCdOKamfpuLSRRd2TBmT/BGga6Z2+EDGZb1sMbtA4Y6ngo20Gg76
-         tBXI45p2RMmhl5VGF/xyKUoxnypyubole6xHK/Sw+vOEKGyyhegAOJtQ5FUTOSWrgt8Q
-         O1Lg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=yZopcSkX2Q3KN5uKuj5D0fi40cQECPF2z0euTxDiILU=;
-        b=BHp6mSz1YDPXXwGNRichS18Xpfv6qNhw50bo6DSMjMq2X+dltaWh0O9oN3gmGzpsy1
-         IMPM4LzrfOmwSPgtUoL2eafn3hbXJCiCUG7nn5NgMfjrSoTw6AUCy7CLbIcE2IpBMfVn
-         gyboPn+S105LmZrIBOkGko+mKtPzaDijh9kyuh/Eq0mrU/u8B2kcWpv+cWpJLh2lBW6R
-         zBZ1F+TdSX4H0BoMI7490gX4iAW9wN3CToHmKKbVXBbtxk5ZeM9nVEq5NlS64OcMSkzg
-         gPDAk4XunoPvuMQMO7nt5/EBVnUolKW+A0mHn0EozYfoqAn5JNszeXKghMa0OCfnaeyh
-         FQgQ==
-X-Gm-Message-State: AOAM530T0mOmqEShoYPZIFI5E71Ael/6UDLj9+ezvXf3IfQl0aAWmaaF
-        hQGlmRT4OFrFJODsa9H0Hc66Anbg88jjaw==
-X-Google-Smtp-Source: ABdhPJxDNLPlvoZGNfzjZBi4Hg4Je83MrpPodZTYhZ3VQE3ivEWoN5q2BPv4lh/PVQTI/NnG9mSeZg==
-X-Received: by 2002:a17:902:bf46:b029:ee:b949:bd0 with SMTP id u6-20020a170902bf46b02900eeb9490bd0mr6450274pls.14.1622178577194;
-        Thu, 27 May 2021 22:09:37 -0700 (PDT)
-Received: from localhost ([136.185.154.93])
-        by smtp.gmail.com with ESMTPSA id 10sm3382180pgl.39.2021.05.27.22.09.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 27 May 2021 22:09:36 -0700 (PDT)
-Date:   Fri, 28 May 2021 10:39:34 +0530
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Vincent Donnefort <vincent.donnefort@arm.com>, rjw@rjwysocki.net,
-        vincent.guittot@linaro.org, qperret@google.com,
-        linux-kernel@vger.kernel.org, ionela.voinescu@arm.com,
-        lukasz.luba@arm.com, dietmar.eggemann@arm.com
-Subject: Re: [PATCH v2 3/3] PM / EM: Skip inefficient OPPs
-Message-ID: <20210528050934.muji5bv7ed4k4t6j@vireshk-i7>
-References: <1621616064-340235-1-git-send-email-vincent.donnefort@arm.com>
- <1621616064-340235-4-git-send-email-vincent.donnefort@arm.com>
- <YKy516IKPfsZj3cY@hirez.programming.kicks-ass.net>
-MIME-Version: 1.0
+        Fri, 28 May 2021 01:15:33 -0400
+Received: from pps.filterd (m0098414.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 14S52qFd140317;
+        Fri, 28 May 2021 01:13:46 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : references : content-type : in-reply-to :
+ mime-version; s=pp1; bh=UiKekC5zenLEC0oiLXbWNjq2YAV5vKtNk4ruw7i2o/E=;
+ b=ooQumS1ThFz0Tk4i41h0UNMuB0iLSZYz3A769Ej0GS1qlvElmA8vQTDuA0iJ6OfLelso
+ kyomktDQXaagyBDLDRyQtAsHPVdausRjQiRQrEFdPbNC38APg6R8U9Ox/H7/5dnvpsye
+ gTc3VSILgM1aKmzYJ0KTSYxViEXzArffuqeGrls0pmm/5lfPmrufGPEV+3mRSjkKKd3J
+ Bozd4sUufGiUC0dPBkBL69fvgcw3VIF3o+H4kpPUloilcK0gPVmU6e8G+m5dr5913WfM
+ TdXhcOlj93JE1WFIHsa/LzWTLGvueDPmNKTH61DSezg9MfCXWQrATOLYSlCde2NFRUoD XA== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 38ts251e67-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 28 May 2021 01:13:46 -0400
+Received: from m0098414.ppops.net (m0098414.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 14S53UY3143128;
+        Fri, 28 May 2021 01:13:46 -0400
+Received: from ppma04ams.nl.ibm.com (63.31.33a9.ip4.static.sl-reverse.com [169.51.49.99])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 38ts251e5q-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 28 May 2021 01:13:46 -0400
+Received: from pps.filterd (ppma04ams.nl.ibm.com [127.0.0.1])
+        by ppma04ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 14S59iHe003612;
+        Fri, 28 May 2021 05:13:44 GMT
+Received: from b06avi18878370.portsmouth.uk.ibm.com (b06avi18878370.portsmouth.uk.ibm.com [9.149.26.194])
+        by ppma04ams.nl.ibm.com with ESMTP id 38s1r49j1n-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 28 May 2021 05:13:44 +0000
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (b06wcsmtp001.portsmouth.uk.ibm.com [9.149.105.160])
+        by b06avi18878370.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 14S5DC1m36569548
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 28 May 2021 05:13:12 GMT
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 1C059A4054;
+        Fri, 28 May 2021 05:13:42 +0000 (GMT)
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 9E8B1A405B;
+        Fri, 28 May 2021 05:13:40 +0000 (GMT)
+Received: from linux.ibm.com (unknown [9.145.39.77])
+        by b06wcsmtp001.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
+        Fri, 28 May 2021 05:13:40 +0000 (GMT)
+Date:   Fri, 28 May 2021 08:13:38 +0300
+From:   Mike Rapoport <rppt@linux.ibm.com>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Qian Cai <quic_qiancai@quicinc.com>,
+        David Hildenbrand <david@redhat.com>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        Will Deacon <will@kernel.org>, Marc Zyngier <maz@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>
+Subject: Re: Arm64 crash while reading memory sysfs
+Message-ID: <YLB8AvgC2Ov6N6Pt@linux.ibm.com>
+References: <DM5PR0201MB355723819DDAC439273F68848E259@DM5PR0201MB3557.namprd02.prod.outlook.com>
+ <YK3tQ0a0S/CLxyyb@linux.ibm.com>
+ <CY4PR0201MB35539FF5EE729283C4241F5A8E249@CY4PR0201MB3553.namprd02.prod.outlook.com>
+ <YK6EXNZHY1xt7Kjs@linux.ibm.com>
+ <d55f915c-ad01-e729-1e29-b57d78257cbb@quicinc.com>
+ <YK9e0LgDOfCFo6TM@linux.ibm.com>
+ <ce5a5920-3046-21b5-42c0-2237ec1eef13@quicinc.com>
+ <YK/HKMgajBCwpLt8@linux.ibm.com>
+ <20210527175047.GK8661@arm.com>
+ <20210527155644.7792b4eaa16ec56645e1080c@linux-foundation.org>
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YKy516IKPfsZj3cY@hirez.programming.kicks-ass.net>
-User-Agent: NeoMutt/20180716-391-311a52
+In-Reply-To: <20210527155644.7792b4eaa16ec56645e1080c@linux-foundation.org>
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: _CCvDuIOOIv9xCKh0MxlB1QK02SSnVij
+X-Proofpoint-GUID: xKj0ytwkT9eL06qp4cBrTpqhJfi10oKo
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+MIME-Version: 1.0
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
+ definitions=2021-05-28_02:2021-05-27,2021-05-28 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 bulkscore=0
+ mlxlogscore=744 malwarescore=0 spamscore=0 priorityscore=1501 adultscore=0
+ lowpriorityscore=0 clxscore=1015 phishscore=0 impostorscore=0
+ suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104190000 definitions=main-2105280032
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 25-05-21, 10:48, Peter Zijlstra wrote:
-> On Fri, May 21, 2021 at 05:54:24PM +0100, Vincent Donnefort wrote:
-> > diff --git a/kernel/sched/cpufreq_schedutil.c b/kernel/sched/cpufreq_schedutil.c
-> > index 4f09afd..5a91a2b 100644
-> > --- a/kernel/sched/cpufreq_schedutil.c
-> > +++ b/kernel/sched/cpufreq_schedutil.c
-> > @@ -10,6 +10,7 @@
-> >  
-> >  #include "sched.h"
-> >  
-> > +#include <linux/energy_model.h>
-> >  #include <linux/sched/cpufreq.h>
-> >  #include <trace/events/power.h>
-> >  
-> > @@ -153,6 +154,9 @@ static unsigned int get_next_freq(struct sugov_policy *sg_policy,
-> >  
-> >  	freq = map_util_freq(util, freq, max);
-> >  
-> > +	/* Avoid inefficient performance states */
-> > +	freq = em_pd_get_efficient_freq(em_cpu_get(policy->cpu), freq);
-> > +
-> >  	if (freq == sg_policy->cached_raw_freq && !sg_policy->need_freq_update)
-> >  		return sg_policy->next_freq;
-> >  
+On Thu, May 27, 2021 at 03:56:44PM -0700, Andrew Morton wrote:
+> On Thu, 27 May 2021 18:50:48 +0100 Catalin Marinas <catalin.marinas@arm.com> wrote:
 > 
-> This seems somewhat unfortunate, it adds a loop over the OPPs only to
-> then call into cpufreq to do the exact same thing again :/
+> > > Can you please try Anshuman's patch "arm64/mm: Drop HAVE_ARCH_PFN_VALID":
+> > > 
+> > > https://lore.kernel.org/lkml/1621947349-25421-1-git-send-email-anshuman.khandual@arm.com
+> > > 
+> > > It seems to me that the check for memblock_is_memory() in
+> > > arm64::pfn_valid() is what makes init_unavailable_range() to bail out for
+> > > section parts that are not actually populated and then we have
+> > > VM_BUG_ON_PAGE(PagePoisoned(p)) for these pages.
+> > 
+> > I acked Anshuman's patch, I think they all need to go in together.
+> 
+> That's neat.   Specifically which patches are we referring to here?
 
-And that's why I feel it needs to be done at a single place, either disable the
-OPP (which seems like a bad option based on what Lukasz and Vincent said
-earlier), or make changes in the cpufreq core itself to search for the best
-frequency (like adding another API to mark some frequencies as inefficient, and
-take that into account while selecting next freq).
+arm64: drop pfn_valid_within() and simplify pfn_valid():
+https://lore.kernel.org/lkml/20210511100550.28178-5-rppt@kernel.org
 
-There is a potential of ending up selecting the wrong frequency here because
-there are too many decision making bodies here and so corner cases.
+arm64/mm: Drop HAVE_ARCH_PFN_VALID:
+https://lore.kernel.org/lkml/1621947349-25421-1-git-send-email-anshuman.khandual@arm.com
 
 -- 
-viresh
+Sincerely yours,
+Mike.
