@@ -2,362 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E426639485C
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 23:30:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B56B139485D
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 23:34:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229694AbhE1Vb7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 May 2021 17:31:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42332 "EHLO
+        id S229559AbhE1Vfz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 May 2021 17:35:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43226 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229575AbhE1Vbr (ORCPT
+        with ESMTP id S229493AbhE1Vfx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 May 2021 17:31:47 -0400
-Received: from mail.andi.de1.cc (mail.andi.de1.cc [IPv6:2a01:238:4321:8900:456f:ecd6:43e:202c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22E94C061760;
-        Fri, 28 May 2021 14:30:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=kemnade.info; s=20180802; h=Content-Transfer-Encoding:MIME-Version:
-        References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
-        Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From:
-        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
-        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=HWVwP5ooJ1imwSBIdPcFDTfrbTd9vBy5EFvBDkKcBQw=; b=duKg0vM8Irlo2QkUFXuzlEoud4
-        nBUAkLVCrbzPQiEy2CoiQNCn6ZDcDiqajQYD4pVhb1Jx1ggXYQLuorXb4XRaotkAujOzl7DOI9jdA
-        Jddy+Jot46gQHxVBQtnNczbu3mHmOmHPJZBJ5NFuLhEiFcsSUqSmBW8FgYJEcNkp1fl8=;
-Received: from p200300ccff0cdc001a3da2fffebfd33a.dip0.t-ipconnect.de ([2003:cc:ff0c:dc00:1a3d:a2ff:febf:d33a] helo=aktux)
-        by mail.andi.de1.cc with esmtpsa (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.89)
-        (envelope-from <andreas@kemnade.info>)
-        id 1lmk3U-00005o-Jh; Fri, 28 May 2021 23:30:09 +0200
-Received: from andi by aktux with local (Exim 4.92)
-        (envelope-from <andreas@kemnade.info>)
-        id 1lmk3U-0000yb-AI; Fri, 28 May 2021 23:30:08 +0200
-From:   Andreas Kemnade <andreas@kemnade.info>
-To:     sre@kernel.org, linux-pm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, letux-kernel@openphoenux.org
-Cc:     Andreas Kemnade <andreas@kemnade.info>
-Subject: [PATCH 2/2] power: supply: rn5t618: Add input current limit
-Date:   Fri, 28 May 2021 23:30:06 +0200
-Message-Id: <20210528213006.3695-3-andreas@kemnade.info>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20210528213006.3695-1-andreas@kemnade.info>
-References: <20210528213006.3695-1-andreas@kemnade.info>
+        Fri, 28 May 2021 17:35:53 -0400
+Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 355B0C061574
+        for <linux-kernel@vger.kernel.org>; Fri, 28 May 2021 14:34:16 -0700 (PDT)
+Received: by mail-lf1-x129.google.com with SMTP id q1so7289232lfo.3
+        for <linux-kernel@vger.kernel.org>; Fri, 28 May 2021 14:34:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=vW5/ZGR2GdWjiv2lO3A6lPu+CPRyVAA0auOrwAPUigo=;
+        b=hsHNrajX0rHFtCPbcsqG982PeSxsAkizK+1zF5q1wAhBbDzZriYXAGCsb23ZFnrJjV
+         RfYusF5//CgCMfNMVP0l71MG/8YFis1ij8GZSWWLqh99AvznamyoGsEwDaUHctOizVjj
+         izsvHRnTeZtLYyH6zDDDpnSjbHlwZFwHW0Ul5y/YA3knO/uDWJvYB4/6NfY97EPwvGCK
+         z5ISPfg7CiXDTMoobRFI7Rtz0jZ6/iPlZRrzBJ+Xj2F6SeB09J4mfJiFTAHBS4u9gDRZ
+         XqI2UrVqD4j5SjGpeq+c1qSi4CNSCJPz8x0oeEjZdOGkNDlhvlc2Ngqj2E7qoTgL0r8k
+         eLFA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=vW5/ZGR2GdWjiv2lO3A6lPu+CPRyVAA0auOrwAPUigo=;
+        b=WPAVPUTEjnEsweXH5P9LslO1t/XsNcAWQkGLrnMsmk3fK4johLvyGS/wQaoV2YNpm/
+         cuw8Wvj+nbJxIgI2kGpLjk4Q2xtZP45TlZiEbPxmmOBJcz7zN2kYykk5NCXXDKr2ux6S
+         QwlvTALsf/26pERYFuo+beKOxhnk1iWC4NkzgHiYdGp1Mi6ibIejOakMKmjyQgtA6FSp
+         dREFOsU7E+ds96sgGY+27UIXdOgsurMnrdIeIvp6ZqNQwmvL6jfWZbebtE34h5/+Vw/K
+         lg0nMdUIHd+vTLo7XeY3V5kVQK4Zh/+GnAV7EadoZ3WJlMVdtc4xzE9CBT0mmgBCy4Jr
+         MKVw==
+X-Gm-Message-State: AOAM530jfkIdKIOqo7dt8G3DIVuDIKLi9dcs6HuR6GUCs5jrBjmS/vNF
+        Lg1vfiUs2/dLu0SEIwu4PkE=
+X-Google-Smtp-Source: ABdhPJwOuoYXEU1ArodI3A5OAFIaf1sSBgP7PmxxYp/MnjkxUM3Hu3QxIB4O+83L29R5bxfFqrO3yg==
+X-Received: by 2002:ac2:5fae:: with SMTP id s14mr7642063lfe.588.1622237654454;
+        Fri, 28 May 2021 14:34:14 -0700 (PDT)
+Received: from localhost.localdomain (h-98-128-228-193.NA.cust.bahnhof.se. [98.128.228.193])
+        by smtp.gmail.com with ESMTPSA id u26sm616965lfu.50.2021.05.28.14.34.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 28 May 2021 14:34:13 -0700 (PDT)
+From:   Rikard Falkeborn <rikard.falkeborn@gmail.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>
+Cc:     linux-kernel@vger.kernel.org,
+        Rikard Falkeborn <rikard.falkeborn@gmail.com>
+Subject: [PATCH] drivers/base: Constify static attribute_group structs
+Date:   Fri, 28 May 2021 23:34:08 +0200
+Message-Id: <20210528213408.20067-1-rikard.falkeborn@gmail.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Score: -1.0 (-)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Adds properties for setting the maximum current to USB, ADP and Battery
-supplies. USB and ADP limits are reset to OTP values upon replugging.
+These are only used by putting their address in an array of pointers to
+const struct attribute_group (either directly or via the
+__ATTRIBUTE_GROUP macro). Make them const to allow the compiler to place
+them in read-only memory.
 
-Signed-off-by: Andreas Kemnade <andreas@kemnade.info>
+Signed-off-by: Rikard Falkeborn <rikard.falkeborn@gmail.com>
 ---
- drivers/power/supply/rn5t618_power.c | 188 +++++++++++++++++++++++++++
- 1 file changed, 188 insertions(+)
+ drivers/base/cpu.c      | 4 ++--
+ drivers/base/memory.c   | 4 ++--
+ drivers/base/node.c     | 2 +-
+ drivers/base/platform.c | 2 +-
+ 4 files changed, 6 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/power/supply/rn5t618_power.c b/drivers/power/supply/rn5t618_power.c
-index f8f00f67ce4c..819061918b2a 100644
---- a/drivers/power/supply/rn5t618_power.c
-+++ b/drivers/power/supply/rn5t618_power.c
-@@ -44,6 +44,20 @@
- 
- #define FG_ENABLE 1
- 
-+/*
-+ * Formula seems accurate for battery current, but for USB current around 70mA
-+ * per step was seen on Kobo Clara HD but all sources show the same formula
-+ * also fur USB current. To avoid accidentially unwanted high currents we stick
-+ * to that formula
-+ */
-+#define TO_CUR_REG(x) ((x) / 100000 - 1)
-+#define FROM_CUR_REG(x) ((((x) & 0x1f) + 1) * 100000)
-+#define CHG_MIN_CUR 100000
-+#define CHG_MAX_CUR 1800000
-+#define ADP_MAX_CUR 2500000
-+#define USB_MAX_CUR 1400000
-+
-+
- struct rn5t618_power_info {
- 	struct rn5t618 *rn5t618;
- 	struct platform_device *pdev;
-@@ -61,12 +75,16 @@ static enum power_supply_usb_type rn5t618_usb_types[] = {
+diff --git a/drivers/base/cpu.c b/drivers/base/cpu.c
+index 2b9e41377a07..5ef14db97904 100644
+--- a/drivers/base/cpu.c
++++ b/drivers/base/cpu.c
+@@ -175,7 +175,7 @@ static struct attribute *crash_note_cpu_attrs[] = {
+ 	NULL
  };
  
- static enum power_supply_property rn5t618_usb_props[] = {
-+	/* input current limit is not very accurate */
-+	POWER_SUPPLY_PROP_INPUT_CURRENT_LIMIT,
- 	POWER_SUPPLY_PROP_STATUS,
- 	POWER_SUPPLY_PROP_USB_TYPE,
- 	POWER_SUPPLY_PROP_ONLINE,
+-static struct attribute_group crash_note_cpu_attr_group = {
++static const struct attribute_group crash_note_cpu_attr_group = {
+ 	.attrs = crash_note_cpu_attrs,
+ };
+ #endif
+@@ -475,7 +475,7 @@ static struct attribute *cpu_root_attrs[] = {
+ 	NULL
  };
  
- static enum power_supply_property rn5t618_adp_props[] = {
-+	/* input current limit is not very accurate */
-+	POWER_SUPPLY_PROP_INPUT_CURRENT_LIMIT,
- 	POWER_SUPPLY_PROP_STATUS,
- 	POWER_SUPPLY_PROP_ONLINE,
+-static struct attribute_group cpu_root_attr_group = {
++static const struct attribute_group cpu_root_attr_group = {
+ 	.attrs = cpu_root_attrs,
  };
-@@ -82,6 +100,7 @@ static enum power_supply_property rn5t618_battery_props[] = {
- 	POWER_SUPPLY_PROP_TIME_TO_EMPTY_NOW,
- 	POWER_SUPPLY_PROP_TIME_TO_FULL_NOW,
- 	POWER_SUPPLY_PROP_TECHNOLOGY,
-+	POWER_SUPPLY_PROP_CHARGE_CONTROL_LIMIT,
- 	POWER_SUPPLY_PROP_CHARGE_FULL,
- 	POWER_SUPPLY_PROP_CHARGE_NOW,
+ 
+diff --git a/drivers/base/memory.c b/drivers/base/memory.c
+index b31b3af5c490..600ae518c02a 100644
+--- a/drivers/base/memory.c
++++ b/drivers/base/memory.c
+@@ -596,7 +596,7 @@ static struct attribute *memory_memblk_attrs[] = {
+ 	NULL
  };
-@@ -271,6 +290,36 @@ static int rn5t618_battery_ttf(struct rn5t618_power_info *info,
- 	return 0;
+ 
+-static struct attribute_group memory_memblk_attr_group = {
++static const struct attribute_group memory_memblk_attr_group = {
+ 	.attrs = memory_memblk_attrs,
+ };
+ 
+@@ -772,7 +772,7 @@ static struct attribute *memory_root_attrs[] = {
+ 	NULL
+ };
+ 
+-static struct attribute_group memory_root_attr_group = {
++static const struct attribute_group memory_root_attr_group = {
+ 	.attrs = memory_root_attrs,
+ };
+ 
+diff --git a/drivers/base/node.c b/drivers/base/node.c
+index 4cef82c1b079..4a4ae868ad9f 100644
+--- a/drivers/base/node.c
++++ b/drivers/base/node.c
+@@ -1038,7 +1038,7 @@ static struct attribute *node_state_attrs[] = {
+ 	NULL
+ };
+ 
+-static struct attribute_group memory_root_attr_group = {
++static const struct attribute_group memory_root_attr_group = {
+ 	.attrs = node_state_attrs,
+ };
+ 
+diff --git a/drivers/base/platform.c b/drivers/base/platform.c
+index 9cd34def2237..d093ba4371b8 100644
+--- a/drivers/base/platform.c
++++ b/drivers/base/platform.c
+@@ -1355,7 +1355,7 @@ static umode_t platform_dev_attrs_visible(struct kobject *kobj, struct attribute
+ 	return a->mode;
  }
  
-+static int rn5t618_battery_set_current_limit(struct rn5t618_power_info *info,
-+				const union power_supply_propval *val)
-+{
-+	if (val->intval < CHG_MIN_CUR)
-+		return -EINVAL;
-+
-+	if (val->intval >= CHG_MAX_CUR)
-+		return -EINVAL;
-+
-+	return regmap_update_bits(info->rn5t618->regmap,
-+				  RN5T618_CHGISET,
-+				  0x1F, TO_CUR_REG(val->intval));
-+}
-+
-+static int rn5t618_battery_get_current_limit(struct rn5t618_power_info *info,
-+					     union power_supply_propval *val)
-+{
-+	unsigned int regval;
-+	int ret;
-+
-+	ret = regmap_read(info->rn5t618->regmap, RN5T618_CHGISET,
-+			  &regval);
-+	if (ret < 0)
-+		return ret;
-+
-+	val->intval = FROM_CUR_REG(regval);
-+
-+	return 0;
-+}
-+
- static int rn5t618_battery_charge_full(struct rn5t618_power_info *info,
- 				       union power_supply_propval *val)
- {
-@@ -336,6 +385,9 @@ static int rn5t618_battery_get_property(struct power_supply *psy,
- 	case POWER_SUPPLY_PROP_TECHNOLOGY:
- 		val->intval = POWER_SUPPLY_TECHNOLOGY_LION;
- 		break;
-+	case POWER_SUPPLY_PROP_CHARGE_CONTROL_LIMIT:
-+		ret = rn5t618_battery_get_current_limit(info, val);
-+		break;
- 	case POWER_SUPPLY_PROP_CHARGE_FULL:
- 		ret = rn5t618_battery_charge_full(info, val);
- 		break;
-@@ -349,12 +401,38 @@ static int rn5t618_battery_get_property(struct power_supply *psy,
- 	return ret;
- }
- 
-+static int rn5t618_battery_set_property(struct power_supply *psy,
-+					enum power_supply_property psp,
-+					const union power_supply_propval *val)
-+{
-+	struct rn5t618_power_info *info = power_supply_get_drvdata(psy);
-+
-+	switch (psp) {
-+	case POWER_SUPPLY_PROP_CHARGE_CONTROL_LIMIT:
-+		return rn5t618_battery_set_current_limit(info, val);
-+	default:
-+		return -EINVAL;
-+	}
-+}
-+
-+static int rn5t618_battery_property_is_writeable(struct power_supply *psy,
-+						enum power_supply_property psp)
-+{
-+	switch (psp) {
-+	case POWER_SUPPLY_PROP_CHARGE_CONTROL_LIMIT:
-+		return true;
-+	default:
-+		return false;
-+	}
-+}
-+
- static int rn5t618_adp_get_property(struct power_supply *psy,
- 				    enum power_supply_property psp,
- 				    union power_supply_propval *val)
- {
- 	struct rn5t618_power_info *info = power_supply_get_drvdata(psy);
- 	unsigned int chgstate;
-+	unsigned int regval;
- 	bool online;
- 	int ret;
- 
-@@ -377,6 +455,14 @@ static int rn5t618_adp_get_property(struct power_supply *psy,
- 		if (val->intval != POWER_SUPPLY_STATUS_CHARGING)
- 			val->intval = POWER_SUPPLY_STATUS_NOT_CHARGING;
- 
-+		break;
-+	case POWER_SUPPLY_PROP_INPUT_CURRENT_LIMIT:
-+		ret = regmap_read(info->rn5t618->regmap,
-+				  RN5T618_REGISET1, &regval);
-+		if (ret < 0)
-+			return ret;
-+
-+		val->intval = FROM_CUR_REG(regval);
- 		break;
- 	default:
- 		return -EINVAL;
-@@ -385,6 +471,45 @@ static int rn5t618_adp_get_property(struct power_supply *psy,
- 	return 0;
- }
- 
-+static int rn5t618_adp_set_property(struct power_supply *psy,
-+				    enum power_supply_property psp,
-+				    const union power_supply_propval *val)
-+{
-+	struct rn5t618_power_info *info = power_supply_get_drvdata(psy);
-+	int ret;
-+
-+	switch (psp) {
-+	case POWER_SUPPLY_PROP_INPUT_CURRENT_LIMIT:
-+		if (val->intval > ADP_MAX_CUR)
-+			return -EINVAL;
-+
-+		if (val->intval < CHG_MIN_CUR)
-+			return -EINVAL;
-+
-+		ret = regmap_write(info->rn5t618->regmap, RN5T618_REGISET1,
-+				   TO_CUR_REG(val->intval));
-+		if (ret < 0)
-+			return ret;
-+
-+		break;
-+	default:
-+		return -EINVAL;
-+	}
-+
-+	return 0;
-+}
-+
-+static int rn5t618_adp_property_is_writeable(struct power_supply *psy,
-+					     enum power_supply_property psp)
-+{
-+	switch (psp) {
-+	case POWER_SUPPLY_PROP_INPUT_CURRENT_LIMIT:
-+		return true;
-+	default:
-+		return false;
-+	}
-+}
-+
- static int rc5t619_usb_get_type(struct rn5t618_power_info *info,
- 				union power_supply_propval *val)
- {
-@@ -418,6 +543,7 @@ static int rn5t618_usb_get_property(struct power_supply *psy,
- {
- 	struct rn5t618_power_info *info = power_supply_get_drvdata(psy);
- 	unsigned int chgstate;
-+	unsigned int regval;
- 	bool online;
- 	int ret;
- 
-@@ -446,6 +572,23 @@ static int rn5t618_usb_get_property(struct power_supply *psy,
- 			return -ENODATA;
- 
- 		return rc5t619_usb_get_type(info, val);
-+	case POWER_SUPPLY_PROP_INPUT_CURRENT_LIMIT:
-+		ret = regmap_read(info->rn5t618->regmap, RN5T618_CHGCTL1,
-+				  &regval);
-+		if (ret < 0)
-+			return ret;
-+
-+		val->intval = 0;
-+		if (regval & 2) {
-+			ret = regmap_read(info->rn5t618->regmap,
-+					  RN5T618_REGISET2,
-+					  &regval);
-+			if (ret < 0)
-+				return ret;
-+
-+			val->intval = FROM_CUR_REG(regval);
-+		}
-+		break;
- 	default:
- 		return -EINVAL;
- 	}
-@@ -453,12 +596,53 @@ static int rn5t618_usb_get_property(struct power_supply *psy,
- 	return 0;
- }
- 
-+static int rn5t618_usb_set_property(struct power_supply *psy,
-+				    enum power_supply_property psp,
-+				    const union power_supply_propval *val)
-+{
-+	struct rn5t618_power_info *info = power_supply_get_drvdata(psy);
-+	int ret;
-+
-+	switch (psp) {
-+	case POWER_SUPPLY_PROP_INPUT_CURRENT_LIMIT:
-+		if (val->intval > USB_MAX_CUR)
-+			return -EINVAL;
-+
-+		if (val->intval < CHG_MIN_CUR)
-+			return -EINVAL;
-+
-+		ret = regmap_write(info->rn5t618->regmap, RN5T618_REGISET2,
-+				   0xE0 | TO_CUR_REG(val->intval));
-+		if (ret < 0)
-+			return ret;
-+
-+		break;
-+	default:
-+		return -EINVAL;
-+	}
-+
-+	return 0;
-+}
-+
-+static int rn5t618_usb_property_is_writeable(struct power_supply *psy,
-+					     enum power_supply_property psp)
-+{
-+	switch (psp) {
-+	case POWER_SUPPLY_PROP_INPUT_CURRENT_LIMIT:
-+		return true;
-+	default:
-+		return false;
-+	}
-+}
-+
- static const struct power_supply_desc rn5t618_battery_desc = {
- 	.name                   = "rn5t618-battery",
- 	.type                   = POWER_SUPPLY_TYPE_BATTERY,
- 	.properties             = rn5t618_battery_props,
- 	.num_properties         = ARRAY_SIZE(rn5t618_battery_props),
- 	.get_property           = rn5t618_battery_get_property,
-+	.set_property           = rn5t618_battery_set_property,
-+	.property_is_writeable  = rn5t618_battery_property_is_writeable,
+-static struct attribute_group platform_dev_group = {
++static const struct attribute_group platform_dev_group = {
+ 	.attrs = platform_dev_attrs,
+ 	.is_visible = platform_dev_attrs_visible,
  };
- 
- static const struct power_supply_desc rn5t618_adp_desc = {
-@@ -467,6 +651,8 @@ static const struct power_supply_desc rn5t618_adp_desc = {
- 	.properties             = rn5t618_adp_props,
- 	.num_properties         = ARRAY_SIZE(rn5t618_adp_props),
- 	.get_property           = rn5t618_adp_get_property,
-+	.set_property           = rn5t618_adp_set_property,
-+	.property_is_writeable  = rn5t618_adp_property_is_writeable,
- };
- 
- static const struct power_supply_desc rn5t618_usb_desc = {
-@@ -477,6 +663,8 @@ static const struct power_supply_desc rn5t618_usb_desc = {
- 	.properties             = rn5t618_usb_props,
- 	.num_properties         = ARRAY_SIZE(rn5t618_usb_props),
- 	.get_property           = rn5t618_usb_get_property,
-+	.set_property           = rn5t618_usb_set_property,
-+	.property_is_writeable  = rn5t618_usb_property_is_writeable,
- };
- 
- static irqreturn_t rn5t618_charger_irq(int irq, void *data)
 -- 
-2.29.2
+2.31.1
 
