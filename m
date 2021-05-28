@@ -2,142 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C092393BD6
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 05:16:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BDE89393BE3
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 05:23:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236312AbhE1DRj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 May 2021 23:17:39 -0400
-Received: from mga03.intel.com ([134.134.136.65]:17457 "EHLO mga03.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236023AbhE1DRh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 May 2021 23:17:37 -0400
-IronPort-SDR: 1uJ5F7lVWGag/1RLKtoapE8wfXrusWc2xGJPTO79sjWmgXgAWtwfSry9vPJ6YXqu1o66uvRVR4
- dQDXIIY/ZuAg==
-X-IronPort-AV: E=McAfee;i="6200,9189,9997"; a="202919618"
-X-IronPort-AV: E=Sophos;i="5.83,228,1616482800"; 
-   d="scan'208";a="202919618"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 May 2021 20:16:02 -0700
-IronPort-SDR: k6k4oW7BOPAJL29GdrGA0ZY1pJfaCwU0lhxI3HU5CnHbksoAbL/i9IVjxtV7O6vwH9Q1eRDj2N
- p/Rzc6PdANBw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.83,228,1616482800"; 
-   d="scan'208";a="415155080"
-Received: from chenyu-desktop.sh.intel.com ([10.239.158.131])
-  by orsmga002.jf.intel.com with ESMTP; 27 May 2021 20:15:56 -0700
-From:   Chen Yu <yu.c.chen@intel.com>
-To:     linux-pm@vger.kernel.org
-Cc:     "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-        Len Brown <len.brown@intel.com>,
-        Artem Bityutskiy <artem.bityutskiy@linux.intel.com>,
-        Zhang Rui <rui.zhang@intel.com>, linux-kernel@vger.kernel.org,
-        Chen Yu <yu.c.chen@intel.com>
-Subject: [PATCH][v2] intel_idle: Adjust the SKX C6 latency and residency if PC6 is disabled
-Date:   Fri, 28 May 2021 11:20:54 +0800
-Message-Id: <20210528032054.7572-1-yu.c.chen@intel.com>
-X-Mailer: git-send-email 2.25.1
+        id S234614AbhE1DYv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 May 2021 23:24:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53456 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234244AbhE1DYs (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 27 May 2021 23:24:48 -0400
+Received: from mail-ot1-x32e.google.com (mail-ot1-x32e.google.com [IPv6:2607:f8b0:4864:20::32e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4BEBC061574
+        for <linux-kernel@vger.kernel.org>; Thu, 27 May 2021 20:23:12 -0700 (PDT)
+Received: by mail-ot1-x32e.google.com with SMTP id d25-20020a0568300459b02902f886f7dd43so2243102otc.6
+        for <linux-kernel@vger.kernel.org>; Thu, 27 May 2021 20:23:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=iBoABoXGVEa26J6F9F+2JMduVsAPFL5b+xGIvhg/4IE=;
+        b=p4Mj3FtJ5pxI+R00Ltm9+OfNZyxEbsyNr0j+slHqk2xPQydrge/J/fLKquCwEAygxB
+         BMamVP8ukqf4hPUre1PsNQa3/9lMuXN3+2LhYKRhKDsd50nY8za1uYkg6B8Kh8CsnRWZ
+         B6ZI4M06N+/dVQa0t/19rJGaKm3kWLspFHpN9m4irqd4erKdLGd2p9DxlX+JOnDOQkFG
+         nK1TQI3V3IU9XQtjfRkEdz/HKrvfCNJ30bc9xvZvCNQfTO+wRiqmlLykj86Xg6EiTWNF
+         Ki+LMFcwjUq5mosnmgA1MEee9Gb2YjK07MZ0cY6k+wjqlqWdcfMlB6DKiNPDCnHG0zmR
+         +1Aw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=iBoABoXGVEa26J6F9F+2JMduVsAPFL5b+xGIvhg/4IE=;
+        b=iMWMg4uw/lJRfW4ljn823BsTc8c/Uh7sjTO1l4hMUmEXRrXqHSaUaaqBAi9oEhkZZP
+         uC3AqB89uWrm3M5Fii0ZXe9oqIALhXWAt3YJcxgVZ/g9Xs9I5OSiAZH0lDdJ5EUBJi6D
+         YZWFRL0HvQLkl+Ud2No4CRN+dpXJjJhrUNbOsqVfO0HcPGqaCEp9G5QvsY4cdEYdRtLI
+         Xk07f7PHBC0fgqMhKWSl76ecge6yQ+JRwuBbHD8yL0vx0GTOCEQgGU1QGCcDHUfWRRVg
+         cpg8uylOhJMRTNa4mZ3qdAdmE4gQtp6Btc2VmErLDhpUAg6qMkj9mRiQQP2bTgRGYKyv
+         cNgg==
+X-Gm-Message-State: AOAM530OPCT41CPAasyA4n0MBZVY7EKnXWxqcd9lV06TitO3p1x6uSP7
+        H0mERx7Sk3CfeWn4Fkggu5LNUg==
+X-Google-Smtp-Source: ABdhPJwAh6Qd9Zru7S20u3fiNv40kZbjB5VjE+6kH7YUPz5VQcENH7fS7PdezVqyZiK0PMQ6QQwSXw==
+X-Received: by 2002:a05:6830:17cc:: with SMTP id p12mr5235975ota.270.1622172192118;
+        Thu, 27 May 2021 20:23:12 -0700 (PDT)
+Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
+        by smtp.gmail.com with ESMTPSA id 88sm894485ott.51.2021.05.27.20.23.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 27 May 2021 20:23:11 -0700 (PDT)
+Date:   Thu, 27 May 2021 22:23:09 -0500
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Wilken Gottwalt <wilken.gottwalt@posteo.net>
+Cc:     Samuel Holland <samuel@sholland.org>, linux-kernel@vger.kernel.org,
+        Ohad Ben-Cohen <ohad@wizery.com>,
+        Baolin Wang <baolin.wang7@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Maxime Ripard <mripard@kernel.org>,
+        Chen-Yu Tsai <wens@csie.org>,
+        Jernej Skrabec <jernej.skrabec@siol.net>
+Subject: Re: [PATCH v7 0/2] hwspinlock: add sun6i hardware spinlock support
+Message-ID: <YLBiHQaW6H4K7QyO@builder.lan>
+References: <cover.1615713499.git.wilken.gottwalt@posteo.net>
+ <95e93676-cfcf-1aed-1741-d69b72286033@sholland.org>
+ <20210525180744.24187bb1@monster.powergraphx.local>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210525180744.24187bb1@monster.powergraphx.local>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Currently cpuidle assumes worst-case C-state parameters, and so C6
-is described with PC6 parameters, which is worst case for requesting
-CC6. When PC6 is enabled, this is appropriate. But if PC6 is disabled
-in BIOS, the exit latency and target_residency should be adjusted
-accordingly.
+On Tue 25 May 11:07 CDT 2021, Wilken Gottwalt wrote:
 
-Exit latency:
-Previously the C6 exit latency was measured when woken up from CC6/PC6.
-With PC6 disabled, the C6 exit latency should be CC6/PC0.
+> On Mon, 15 Mar 2021 23:33:31 -0500
+> Samuel Holland <samuel@sholland.org> wrote:
+> 
+> > On 3/14/21 4:30 AM, Wilken Gottwalt wrote:
+> > > Wilken Gottwalt (2):
+> > >   dt-bindings: hwlock: add sun6i_hwspinlock
+> > >   hwspinlock: add sun6i hardware spinlock support
+> > > 
+> > >  .../allwinner,sun6i-a31-hwspinlock.yaml       |  45 ++++
+> > >  MAINTAINERS                                   |   6 +
+> > >  drivers/hwspinlock/Kconfig                    |   9 +
+> > >  drivers/hwspinlock/Makefile                   |   1 +
+> > >  drivers/hwspinlock/sun6i_hwspinlock.c         | 210 ++++++++++++++++++
+> > >  5 files changed, 271 insertions(+)
+> > >  create mode 100644 Documentation/devicetree/bindings/hwlock/allwinner,sun6i-a31-hwspinlock.yaml
+> > >  create mode 100644 drivers/hwspinlock/sun6i_hwspinlock.c
+> > > 
+> > 
+> > Thanks for the very thorough testing!
+> 
+> So when will this end up in mainstream? Or do I have to somehing to get this
+> triggered? This is not my first driver and back then it was included into
+> mainline without anything special on my side. I'm a bit confused. Did I miss
+> something?
+> 
 
-Target residency:
-With PC6 disabled, idle duration within [CC6, PC6) would make the
-idle governor choose C1E over C6. This would cause low energy-efficiency.
-We should lower the bar to request C6 when PC6 is disabled.
+Sorry, I wasn't paying enough attention and you didn't Cc
+linux-remoteproc@ (as described in MAINTAINERS) so I lost track of the
+patch.
 
-To fill this gap, check if PC6 is disabled in the BIOS in the
-MSR_PKG_CST_CONFIG_CONTROL(0xe2). If so, use CC6/PC0 parameters as the
-new exit latency. Meanwhile, update target_residency to 3 times of the new
-exit latency. This is consistent with how intel_idle driver uses _CST to
-calculate the target_residency. The consequence is that, the OS would
-be more offen to choose C6 over C1E when PC6 is disabled. This is reasonable
-because if the user is using C6, it implies that the user cares about energy,
-so choosing C6 more frequently is in accordance with user requirement.
+It's now been applied, I'll do some build testing on the way out but it
+should show up in linux-next in the coming days.
 
-The new exit latency of CC6/PC0 92us was from wult[1] result on SKX, which was
-measured via NIC wakeup from 99.99th latency. Besides SKX, the CLX and CPX
-both have the same CPU model number. And since they have similar CC6 exit latency
-to SKX, 96us and 89us respectively, reuse the value of SKX.
-
-There is concern that if we should introduce a more generic solution
-rather than optimizing on each platforms. However consider the
-code complexity and different PC6 bit interpretation on different
-platforms, tune the code per platform seems to be an acceptable trade-off.
-
-[1] https://intel.github.io/wult/
-
-Suggested-by: Len Brown <len.brown@intel.com>
-Signed-off-by: Chen Yu <yu.c.chen@intel.com>
----
-v2: Simplify the commit log to not mention C3/PC3. (Artem)
-    Confirm the exit latency on CLX and CPX.(Artem)
----
- drivers/idle/intel_idle.c | 33 +++++++++++++++++++++++++++++++++
- 1 file changed, 33 insertions(+)
-
-diff --git a/drivers/idle/intel_idle.c b/drivers/idle/intel_idle.c
-index ec1b9d306ba6..e6c543b5ee1d 100644
---- a/drivers/idle/intel_idle.c
-+++ b/drivers/idle/intel_idle.c
-@@ -1484,6 +1484,36 @@ static void __init sklh_idle_state_table_update(void)
- 	skl_cstates[6].flags |= CPUIDLE_FLAG_UNUSABLE;	/* C9-SKL */
- }
- 
-+/**
-+ * skx_idle_state_table_update - Adjust the Sky Lake/Cascade Lake
-+ * idle states table.
-+ */
-+static void __init skx_idle_state_table_update(void)
-+{
-+	unsigned long long msr;
-+
-+	rdmsrl(MSR_PKG_CST_CONFIG_CONTROL, msr);
-+
-+	/*
-+	 * 000b: C0/C1 (no package C-state support)
-+	 * 001b: C2
-+	 * 010b: C6 (non-retention)
-+	 * 011b: C6 (retention)
-+	 * 111b: No Package C state limits.
-+	 */
-+	if ((msr & 0x7) < 2) {
-+		/*
-+		 * Uses the CC6 + PC0 latency and 3 times of
-+		 * latency for target_residency if the PC6
-+		 * is disabled in BIOS. This is consistent
-+		 * with how intel_idle driver uses _CST
-+		 * to set the target_residency.
-+		 */
-+		skx_cstates[2].exit_latency = 92;
-+		skx_cstates[2].target_residency = 276;
-+	}
-+}
-+
- static bool __init intel_idle_verify_cstate(unsigned int mwait_hint)
- {
- 	unsigned int mwait_cstate = MWAIT_HINT2CSTATE(mwait_hint) + 1;
-@@ -1515,6 +1545,9 @@ static void __init intel_idle_init_cstates_icpu(struct cpuidle_driver *drv)
- 	case INTEL_FAM6_SKYLAKE:
- 		sklh_idle_state_table_update();
- 		break;
-+	case INTEL_FAM6_SKYLAKE_X:
-+		skx_idle_state_table_update();
-+		break;
- 	}
- 
- 	for (cstate = 0; cstate < CPUIDLE_STATE_MAX; ++cstate) {
--- 
-2.25.1
-
+Thank you,
+Bjorn
