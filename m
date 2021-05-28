@@ -2,141 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 090AD393A32
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 02:18:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A47F1393A34
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 02:19:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234705AbhE1AUX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 May 2021 20:20:23 -0400
-Received: from out30-56.freemail.mail.aliyun.com ([115.124.30.56]:50120 "EHLO
-        out30-56.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229911AbhE1AUU (ORCPT
+        id S234432AbhE1AVK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 May 2021 20:21:10 -0400
+Received: from mo-csw1114.securemx.jp ([210.130.202.156]:38318 "EHLO
+        mo-csw.securemx.jp" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229911AbhE1AVI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 May 2021 20:20:20 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R161e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e01424;MF=laijs@linux.alibaba.com;NM=1;PH=DS;RN=16;SR=0;TI=SMTPD_---0UaJXb16_1622161123;
-Received: from C02XQCBJJG5H.local(mailfrom:laijs@linux.alibaba.com fp:SMTPD_---0UaJXb16_1622161123)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Fri, 28 May 2021 08:18:44 +0800
-Subject: Re: [PATCH] KVM: X86: fix tlb_flush_guest()
-To:     Sean Christopherson <seanjc@google.com>,
-        Paolo Bonzini <pbonzini@redhat.com>
-Cc:     Lai Jiangshan <jiangshanlai@gmail.com>,
-        linux-kernel@vger.kernel.org,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        =?UTF-8?B?UmFkaW0gS3LEjW3DocWZ?= <rkrcmar@redhat.com>,
-        kvm@vger.kernel.org, Maxim Levitsky <mlevitsk@redhat.com>
-References: <20210527023922.2017-1-jiangshanlai@gmail.com>
- <78ad9dff-9a20-c17f-cd8f-931090834133@redhat.com>
- <YK/FGYejaIu6EzSn@google.com>
-From:   Lai Jiangshan <laijs@linux.alibaba.com>
-Message-ID: <d96f8c11-19e6-2c2d-91ff-6a7a51fa1b9c@linux.alibaba.com>
-Date:   Fri, 28 May 2021 08:18:43 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.7.1
+        Thu, 27 May 2021 20:21:08 -0400
+Received: by mo-csw.securemx.jp (mx-mo-csw1114) id 14S0J9AJ025780; Fri, 28 May 2021 09:19:09 +0900
+X-Iguazu-Qid: 2wGqimLSozX9hKxvxD
+X-Iguazu-QSIG: v=2; s=0; t=1622161149; q=2wGqimLSozX9hKxvxD; m=Pb46Z15qciiqLgO5v7wtl2OcpgmVSghjbHQivoSirVw=
+Received: from imx12-a.toshiba.co.jp (imx12-a.toshiba.co.jp [61.202.160.135])
+        by relay.securemx.jp (mx-mr1112) id 14S0J8hT010418
+        (version=TLSv1.2 cipher=AES128-GCM-SHA256 bits=128 verify=NOT);
+        Fri, 28 May 2021 09:19:08 +0900
+Received: from enc02.toshiba.co.jp (enc02.toshiba.co.jp [61.202.160.51])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by imx12-a.toshiba.co.jp (Postfix) with ESMTPS id 143891000A4;
+        Fri, 28 May 2021 09:19:08 +0900 (JST)
+Received: from hop101.toshiba.co.jp ([133.199.85.107])
+        by enc02.toshiba.co.jp  with ESMTP id 14S0J7TP028838;
+        Fri, 28 May 2021 09:19:07 +0900
+Date:   Fri, 28 May 2021 09:19:05 +0900
+From:   Nobuhiro Iwamatsu <nobuhiro1.iwamatsu@toshiba.co.jp>
+To:     Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>
+Cc:     Bjorn Helgaas <bhelgaas@google.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        linux-pci@vger.kernel.org, punit1.agrawal@toshiba.co.jp,
+        yuji2.ishikawa@toshiba.co.jp, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 2/3] PCI: Visconti: Add Toshiba Visconti PCIe host
+ controller driver
+X-TSB-HOP: ON
+Message-ID: <20210528001905.26fvguz7fk7cxxsj@toshiba.co.jp>
+References: <20210524063004.132043-1-nobuhiro1.iwamatsu@toshiba.co.jp>
+ <20210524063004.132043-3-nobuhiro1.iwamatsu@toshiba.co.jp>
+ <20210524111051.GB244904@rocinante.localdomain>
 MIME-Version: 1.0
-In-Reply-To: <YK/FGYejaIu6EzSn@google.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210524111051.GB244904@rocinante.localdomain>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi, 
 
+Thanks for your review.
 
-On 2021/5/28 00:13, Sean Christopherson wrote:
-> +Maxim - A proper fix for this bug might fix your shadow paging + win10 boot
->           issue, this also affects the KVM_REQ_HV_TLB_FLUSH used for HyperV PV
-> 	 flushing.
+On Mon, May 24, 2021 at 01:10:51PM +0200, Krzysztof Wilczyński wrote:
+> Hi Nobuhiro,
 > 
-> On Thu, May 27, 2021, Paolo Bonzini wrote:
->> On 27/05/21 04:39, Lai Jiangshan wrote:
->>> From: Lai Jiangshan <laijs@linux.alibaba.com>
->>>
->>> For KVM_VCPU_FLUSH_TLB used in kvm_flush_tlb_multi(), the guest expects
->>> the hypervisor do the operation that equals to native_flush_tlb_global()
->>> or invpcid_flush_all() in the specified guest CPU.
->>>
->>> When TDP is enabled, there is no problem to just flush the hardware
->>> TLB of the specified guest CPU.
->>>
->>> But when using shadowpaging, the hypervisor should have to sync the
->>> shadow pagetable at first before flushing the hardware TLB so that
->>> it can truely emulate the operation of invpcid_flush_all() in guest.
->>
->> Can you explain why?
+> Thank you for working on this!
 > 
-> KVM's unsync logic hinges on guest TLB flushes.  For page permission modifications
-> that require a TLB flush to take effect, e.g. making a writable page read-only,
-> KVM waits until the guest explicitly does said flush to propagate the changes to
-> the shadow page tables.  E.g. failure to sync PTEs could result in a read-only 4k
-> page being writable when the guest expects it to be read-only.
+> [...]
+> > +static int visconti_get_resources(struct platform_device *pdev,
+> > +				  struct visconti_pcie *pcie)
+> > +{
+> [...]
+> > +	pcie->refclk = devm_clk_get(dev, "pcie_refclk");
+> > +	if (IS_ERR(pcie->refclk)) {
+> > +		dev_err(dev, "Failed to get refclk clock: %ld\n",
+> > +			PTR_ERR(pcie->refclk));
+> > +		return PTR_ERR(pcie->refclk);
+> > +	}
+> > +
+> > +	pcie->sysclk = devm_clk_get(dev, "sysclk");
+> > +	if (IS_ERR(pcie->sysclk)) {
+> > +		dev_err(dev, "Failed to get sysclk clock: %ld\n",
+> > +			PTR_ERR(pcie->sysclk));
+> > +		return PTR_ERR(pcie->sysclk);
+> > +	}
+> > +
+> > +	pcie->auxclk = devm_clk_get(dev, "auxclk");
+> > +	if (IS_ERR(pcie->auxclk)) {
+> > +		dev_err(dev, "Failed to get auxclk clock: %ld\n",
+> > +			PTR_ERR(pcie->auxclk));
+> > +		return PTR_ERR(pcie->auxclk);
+> > +	}
 > 
->> Also it is simpler to handle this in kvm_vcpu_flush_tlb_guest, using "if
->> (tdp_enabled).  This provides also a single, good place to add a comment
->> with the explanation of what invalid entries KVM_REQ_RELOAD is presenting.
+> Do you think you could use the dev_err_probe() to handle the
+> devm_clk_get() failed?  Where applicable this is becoming a common
+> patter drivers apply, for example:
 > 
-> Ya.
+>   pcie->refclk = devm_clk_get(dev, "pcie_refclk");
+>   if (IS_ERR(pcie->refclk))
+>   	return dev_err_probe(dev, PTR_ERR(pcie->refclk),
+> 			     "failed to get refclk clock\n");
 > 
-> KVM_REQ_MMU_RELOAD is overkill, nuking the shadow page tables will completely
-> offset the performance gains of the paravirtualized flush >
-> And making a request won't work without revamping the order of request handling
-> in vcpu_enter_guest(), e.g. KVM_REQ_MMU_RELOAD and KVM_REQ_MMU_SYNC are both
-> serviced before KVM_REQ_STEAL_UPDATE.
+> [...]
 
-Yes, it just fixes the said problem in the simplest way.
-I copied KVM_REQ_MMU_RELOAD from kvm_handle_invpcid(INVPCID_TYPE_ALL_INCL_GLOBAL).
-(If the guest is not preempted, it will call invpcid_flush_all() and will be handled
-by this way)
+Thanks for your suggestion. I will fix using dev_err_probe().
 
-
-The improvement code will go later, and will not be backported.
-The proper way to flush guest is to use code in
-
-https://lore.kernel.org/lkml/20210525213920.3340-1-jiangshanlai@gmail.com/
-as:
-+		kvm_mmu_sync_roots(vcpu);
-+		kvm_make_request(KVM_REQ_TLB_FLUSH_CURRENT, vcpu); //or just call flush_current directly
-+		for (i = 0; i < KVM_MMU_NUM_PREV_ROOTS; i++)
-+			vcpu->arch.mmu->prev_roots[i].need_sync = true;
-
-If need_sync patch is not accepted, we can just use kvm_mmu_sync_roots(vcpu)
-to keep the current pagetable and use kvm_mmu_free_roots() to free all the other
-roots in prev_roots.
-
-
-
+> > +	pci->link_gen = of_pci_get_max_link_speed(pdev->dev.of_node);
+> > +	if (pci->link_gen < 0 || pci->link_gen > 3) {
+> > +		pci->link_gen = 3;
+> > +		dev_dbg(dev, "Applied default link speed\n");
+> > +	}
+> > +
+> > +	dev_dbg(dev, "Link speed Gen %d", pci->link_gen);
 > 
-> Cleaning up and documenting the MMU related requests is on my todo list, but the
-> immediate fix should be tiny and I can do my cleanups on top.
+> Question about the above debug messages.
 > 
-> I believe the minimal fix is:
-> 
-> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-> index 81ab3b8f22e5..b0072063f9bf 100644
-> --- a/arch/x86/kvm/x86.c
-> +++ b/arch/x86/kvm/x86.c
-> @@ -3072,6 +3072,9 @@ static void kvm_vcpu_flush_tlb_all(struct kvm_vcpu *vcpu)
->   static void kvm_vcpu_flush_tlb_guest(struct kvm_vcpu *vcpu)
->   {
->          ++vcpu->stat.tlb_flush;
-> +
-> +       if (!tdp_enabled)
-> +               kvm_mmu_sync_roots(vcpu);
+> Given that both are at the same level and the link speed will be printed
+> regardless of whether it was set to a default value or not, does it make
+> sense to still print the message about applying the default link speed?
+> Unless this is something that will be indeed useful during debugging and
+> troubleshooting (and in which case just ignore this question).
 
-it doesn't handle prev_roots which are also needed as
-shown in kvm_handle_invpcid(INVPCID_TYPE_ALL_INCL_GLOBAL).
+I guess so, the message about the default value is not important.
+I will remove this, thank you.
 
->          static_call(kvm_x86_tlb_flush_guest)(vcpu);
-
-For tdp_enabled, I think it is better to use kvm_x86_tlb_flush_current()
-to make it consistent with other shadowpage code.
-
->   }
->   
-> 
+Best regards,
+  Nobuhiro
