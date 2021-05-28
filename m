@@ -2,139 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5046A393E5B
+	by mail.lfdr.de (Postfix) with ESMTP id 9A065393E5C
 	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 10:02:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235154AbhE1IES (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 May 2021 04:04:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58416 "EHLO
+        id S236051AbhE1IEO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 May 2021 04:04:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58436 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235157AbhE1ICq (ORCPT
+        with ESMTP id S235154AbhE1ICq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 28 May 2021 04:02:46 -0400
-Received: from mail-qv1-xf4a.google.com (mail-qv1-xf4a.google.com [IPv6:2607:f8b0:4864:20::f4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56A84C0613ED
-        for <linux-kernel@vger.kernel.org>; Fri, 28 May 2021 00:59:43 -0700 (PDT)
-Received: by mail-qv1-xf4a.google.com with SMTP id h11-20020a0ceecb0000b0290211ed54e716so2109376qvs.9
-        for <linux-kernel@vger.kernel.org>; Fri, 28 May 2021 00:59:43 -0700 (PDT)
+Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A645AC06138A
+        for <linux-kernel@vger.kernel.org>; Fri, 28 May 2021 00:59:45 -0700 (PDT)
+Received: by mail-yb1-xb49.google.com with SMTP id d63-20020a254f420000b02904f91ef33453so3519063ybb.12
+        for <linux-kernel@vger.kernel.org>; Fri, 28 May 2021 00:59:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=date:in-reply-to:message-id:mime-version:references:subject:from:to
          :cc;
-        bh=ZVsL0xI+MNjBw01D+JVaz82ZRFgWO1ddYEa/9upJxL4=;
-        b=pgq7gcrZJKRjimn63n10cJk935lNwsJSXduCUcjGzLdJK8H9+9goftJxsImrongwJr
-         shHCXoRf70Q2a+KqOPIzNt0GBackUHPbAIWiQ2+QsfjLwcC1/tjSI/i9ZhAoEXETP3+2
-         YQb57Lk6qrfXgbZWp3PEKBZASasVApVSDYo3NPIRQUssFKz+1YK3njIuZeoTE1m1lppy
-         2mn/5MlqeDpKoB4tltBINzMzolXbGtfXMzWhGOBxqhZFezsZNDuFFhnBAHt4jycNkKsE
-         KWZ0qkfOO0Rg13aldKesdXPYahX5m9OMOymVwXwUONwKwZQGiQ5XwIT+qjWXhgaakcY+
-         rJBg==
+        bh=Nv+J3ke0GgapMp0UwGNPvITZFCUM1uizFSit9ptyMQc=;
+        b=A9wEfeV2t5zjcVvkmopt+OUo5Y7cIiuq7m1TuoNpJzQrlg9gsm8EUl72tZ0ez0V9Kb
+         kl6mhDIxUZjaOT6zQ5ZFVycdhRRrOVSotS48Qn39ZT3JFxT352uVJNif0nErp1cXsPn7
+         IKsmQHZo2Cv1qFL9knyaREXUzsSfEb57mSBFkpJn9rZp2IHs5CncHIBfk7H8XQzSJx4t
+         nEEdpBsj9352d55+nXXMelUzktOVJ6eXBb4WbseKtnb4I7uo75ewLfYgpUzkqenEZWHY
+         U6NxtjsAqmKdBLh5GsIH4XDm7oZIZwa0O+ZTiR+Ml5qWAcL8JZjthCTc5c5YunbDWO3b
+         T+ZQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:in-reply-to:message-id:mime-version
          :references:subject:from:to:cc;
-        bh=ZVsL0xI+MNjBw01D+JVaz82ZRFgWO1ddYEa/9upJxL4=;
-        b=V/TmAwGGACUbMcBp1gchdDjQC8q4qFBtfVMVjkRPPVvudQhr7JK9j4UHzbVHGFk12i
-         9g6GD1k7nfsKnvZocy78sLMwDp2rerR18St/6yzLpwDpHwJuuKEm3XpS/SesUgPZwqjJ
-         jfSNErc2gqqYfwLyyPMavfz9D/JP+YfcldmE7pCSIJjMe95L4Tv5ZbiGg58CKQxN/GGy
-         EhBe99l0lD+FUB/236MWwWpI6x/jvmQhFbOOvOMLb8s70EffyckjgppJnE+omLCFy4pJ
-         7xMrVaOWJHWzmy0SGncdyNu76W0FsMcNuKK55iScQmlLeYPG0wKkTtTvJ2qFW3RhFKSO
-         oDoQ==
-X-Gm-Message-State: AOAM531ClUzBAxTwEiSk0SEvJrT01jPQS48+vF61WWnAhZxp6xsrmCXl
-        K3tx6rSwQk8c28tlwo0H4Og2sSU9NomO4Q==
-X-Google-Smtp-Source: ABdhPJxxiN4v7zKhCwrB7qzBSSMmurQalRTEXeJ8UpduC2whOy52EgasAL/vIHvs/xdTe7xPousgbYg1+Wn8Fw==
+        bh=Nv+J3ke0GgapMp0UwGNPvITZFCUM1uizFSit9ptyMQc=;
+        b=aXcjZnrvYxqBgNA6MYMw3roUWjW5/+oX82FQYbG1DAPaZHnZjBYTbJNrV3ByZlof4B
+         4o3STgfpga609oeRojg7XSu0b7s8stkuiv2QQL+lVcEa9TJ9qKbB//iXi4cq2bNkigdj
+         hlvhw4C6qza7o31XM3CRA9Qb5aUIzVQVlh4skhT8mUC/SZxzK6nTjsQ2KH58BPTqPivT
+         JxIAkpBX031kBIh0lVQpFbr5rcwa4QUYrPQYBwlWmj+xG7E3qjMaPsHcc0tgFZe8nX73
+         zW8zTwG3umX7HpB/dUWXBB1cVUk0ytqmhzh53RPYtQfnP1WhN+GMEgIYVF9dQuRC4bbe
+         VD1A==
+X-Gm-Message-State: AOAM533cWMYG9/bWmp3CN4kE9ttf76NB3bVfvrHHAJb8tfg3Vsncfatm
+        Ql4xC2WuE0+9Z8/FAfzP785aPSJfP1itTg==
+X-Google-Smtp-Source: ABdhPJxNNkb2l9aDeHKTGKTTzls8rE4nlnET5wh8WCWcLieRI70ZHvNzD4OkfPNXZIniPZB50+3I2ZGjOnfq5A==
 X-Received: from spirogrip.svl.corp.google.com ([2620:15c:2cb:201:621b:e8e2:f86a:41f])
- (user=davidgow job=sendgmr) by 2002:a05:6214:902:: with SMTP id
- dj2mr2645213qvb.11.1622188782300; Fri, 28 May 2021 00:59:42 -0700 (PDT)
-Date:   Fri, 28 May 2021 00:59:31 -0700
+ (user=davidgow job=sendgmr) by 2002:a25:d341:: with SMTP id
+ e62mr10161864ybf.197.1622188784739; Fri, 28 May 2021 00:59:44 -0700 (PDT)
+Date:   Fri, 28 May 2021 00:59:32 -0700
 In-Reply-To: <20210528075932.347154-1-davidgow@google.com>
-Message-Id: <20210528075932.347154-3-davidgow@google.com>
+Message-Id: <20210528075932.347154-4-davidgow@google.com>
 Mime-Version: 1.0
 References: <20210528075932.347154-1-davidgow@google.com>
 X-Mailer: git-send-email 2.32.0.rc0.204.g9fa02ecfa5-goog
-Subject: [PATCH v2 3/4] kunit: test: Add example tests which are always skipped
+Subject: [PATCH v2 4/4] kasan: test: make use of kunit_skip()
 From:   David Gow <davidgow@google.com>
 To:     Brendan Higgins <brendanhiggins@google.com>,
         Alan Maguire <alan.maguire@oracle.com>
-Cc:     David Gow <davidgow@google.com>,
+Cc:     Marco Elver <elver@google.com>,
         Daniel Latypov <dlatypov@google.com>,
         Shuah Khan <skhan@linuxfoundation.org>,
-        Marco Elver <elver@google.com>, kunit-dev@googlegroups.com,
-        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
+        kunit-dev@googlegroups.com, kasan-dev@googlegroups.com,
+        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
+        David Gow <davidgow@google.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add two new tests to the example test suite, both of which are always
-skipped. This is used as an example for how to write tests which are
-skipped, and to demonstrate the difference between kunit_skip() and
-kunit_mark_skipped().
+From: Marco Elver <elver@google.com>
 
-Note that these tests are enabled by default, so a default run of KUnit
-will have two skipped tests.
+Make use of the recently added kunit_skip() to skip tests, as it permits
+TAP parsers to recognize if a test was deliberately skipped.
 
+Signed-off-by: Marco Elver <elver@google.com>
 Signed-off-by: David Gow <davidgow@google.com>
-Reviewed-by: Daniel Latypov <dlatypov@google.com>
 ---
+ lib/test_kasan.c | 12 ++++--------
+ 1 file changed, 4 insertions(+), 8 deletions(-)
 
-Changes since v1:
-https://lore.kernel.org/linux-kselftest/20210526081112.3652290-3-davidgow@google.com/
-- These tests are now part of the example test suite.
-- Use kunit_info() instead of kunit_log(KERN_INFO, ...)
-- Use KUNIT_FAIL() to assert the test is not executing for skip_test
-
- lib/kunit/kunit-example-test.c | 31 +++++++++++++++++++++++++++++++
- 1 file changed, 31 insertions(+)
-
-diff --git a/lib/kunit/kunit-example-test.c b/lib/kunit/kunit-example-test.c
-index be1164ecc476..51099b0ca29c 100644
---- a/lib/kunit/kunit-example-test.c
-+++ b/lib/kunit/kunit-example-test.c
-@@ -40,6 +40,35 @@ static int example_test_init(struct kunit *test)
- 	return 0;
- }
+diff --git a/lib/test_kasan.c b/lib/test_kasan.c
+index cacbbbdef768..0a2029d14c91 100644
+--- a/lib/test_kasan.c
++++ b/lib/test_kasan.c
+@@ -111,17 +111,13 @@ static void kasan_test_exit(struct kunit *test)
+ } while (0)
  
-+/*
-+ * This test should always be skipped.
-+ */
-+static void example_skip_test(struct kunit *test)
-+{
-+	/* This line should run */
-+	kunit_info(test, "You should not see a line below.");
-+
-+	/* Skip (and abort) the test */
-+	kunit_skip(test, "this test should be skipped");
-+
-+	/* This line should not execute */
-+	KUNIT_FAIL(test, "You should not see this line.");
-+}
-+
-+/*
-+ * This test should always be marked skipped.
-+ */
-+static void example_mark_skipped_test(struct kunit *test)
-+{
-+	/* This line should run */
-+	kunit_info(test, "You should see a line below.");
-+
-+	/* Skip (but do not abort) the test */
-+	kunit_mark_skipped(test, "this test should be skipped");
-+
-+	/* This line should run */
-+	kunit_info(test, "You should see this line.");
-+}
- /*
-  * Here we make a list of all the test cases we want to add to the test suite
-  * below.
-@@ -52,6 +81,8 @@ static struct kunit_case example_test_cases[] = {
- 	 * test suite.
- 	 */
- 	KUNIT_CASE(example_simple_test),
-+	KUNIT_CASE(example_skip_test),
-+	KUNIT_CASE(example_mark_skipped_test),
- 	{}
- };
+ #define KASAN_TEST_NEEDS_CONFIG_ON(test, config) do {			\
+-	if (!IS_ENABLED(config)) {					\
+-		kunit_info((test), "skipping, " #config " required");	\
+-		return;							\
+-	}								\
++	if (!IS_ENABLED(config))					\
++		kunit_skip((test), "Test requires " #config "=y");	\
+ } while (0)
  
+ #define KASAN_TEST_NEEDS_CONFIG_OFF(test, config) do {			\
+-	if (IS_ENABLED(config)) {					\
+-		kunit_info((test), "skipping, " #config " enabled");	\
+-		return;							\
+-	}								\
++	if (IS_ENABLED(config))						\
++		kunit_skip((test), "Test requires " #config "=n");	\
+ } while (0)
+ 
+ static void kmalloc_oob_right(struct kunit *test)
 -- 
 2.32.0.rc0.204.g9fa02ecfa5-goog
 
