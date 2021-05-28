@@ -2,77 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D99A394459
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 16:43:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 60954394470
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 16:48:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235683AbhE1Oox (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 May 2021 10:44:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36252 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235452AbhE1Oom (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 May 2021 10:44:42 -0400
-Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24334C061574
-        for <linux-kernel@vger.kernel.org>; Fri, 28 May 2021 07:43:07 -0700 (PDT)
-Received: from zn.tnic (p200300ec2f0e8e00d6a866fcf7197725.dip0.t-ipconnect.de [IPv6:2003:ec:2f0e:8e00:d6a8:66fc:f719:7725])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 8B3A71EC056D;
-        Fri, 28 May 2021 16:43:05 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1622212985;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=k424emnjUzEcEougI7OW6CXCCA0P74W2zWVBfp+ccSE=;
-        b=FNVKhXo3AZ25ZW9GPi04yomE/czgGdAUvQKwwlSdnP62QYZKtXb4zv8pSPOfB+3lfDUngW
-        xAGcV2x7GTBnSuSnyUZ6dN+UwUIG0Xy+va8hEU/7tXAwLYQmLmI9o9yO3qM22H97Od9kw5
-        rXgvMIWBHpv53NkOCn0f6LVmJC2HaB8=
-Date:   Fri, 28 May 2021 16:43:04 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     "H. Peter Anvin" <hpa@zytor.com>
-Cc:     Mike Rapoport <rppt@kernel.org>, Ingo Molnar <mingo@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        untaintableangel@hotmail.co.uk, x86@kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] x86/Kconfig: decrease maximum of X86_RESERVE_LOW to 512K
-Message-ID: <YLEBeJwHgnLxRtYW@zn.tnic>
-References: <20210526081100.12239-1-rppt@kernel.org>
- <YK4LGUDWXJWOp7IR@zn.tnic>
- <YK53kWHb4cPeeHsd@kernel.org>
- <YK6QFLUoPZ7btQfH@zn.tnic>
- <f7525409-3987-f79d-9f52-71f6c0231491@zytor.com>
+        id S235714AbhE1Ot5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 May 2021 10:49:57 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34590 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235094AbhE1Oty (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 28 May 2021 10:49:54 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A4D4E61358;
+        Fri, 28 May 2021 14:48:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1622213299;
+        bh=SwJdgNshNRZPwIkxK9rFKXFmAidu4YGKQaA5HIZ4jhw=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=mDlFcysdjUl6jtKNuJYRayL0fV/sxbR6XS1S84DUq0kPkv9yIooHLIrpeTlbw9L95
+         DIlGEUvDrb8Hv2LfGtcgXHj+G1qxA3rwaR41X61qgNLHQ68JV3v47qyItRPfVuJgwd
+         1TwGrcbQ4qD+2wMtLh66v4UEdVrHOyN6yDbs0SijVuitbJ8rnf6mYZ6LGOj3b60yBA
+         Xkt8SCmDEsvtsFvtZwIn/uNmXUF1WhbLeTMbkN+gaBxwS87JBMtEBcqhGnNfUfheSQ
+         ATgyfpN4El9zaE7eGZqr33L6vgLpXpVItqDDiH9DdJB3iWfg3xbNsttsh7489iTXX4
+         owIPgNKMAHlKg==
+Date:   Fri, 28 May 2021 16:48:16 +0200
+From:   Wolfram Sang <wsa@kernel.org>
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     Lukas Bulwahn <lukas.bulwahn@gmail.com>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Jarkko Nikula <jarkko.nikula@linux.intel.com>,
+        Lee Jones <lee.jones@linaro.org>,
+        linux-i2c <linux-i2c@vger.kernel.org>,
+        Ralf Ramsauer <ralf.ramsauer@oth-regensburg.de>,
+        kernel-janitors <kernel-janitors@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] MAINTAINERS: adjust to removing i2c designware platform
+ data
+Message-ID: <YLECsC9y8ici47Ln@kunai>
+Mail-Followup-To: Wolfram Sang <wsa@kernel.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Lukas Bulwahn <lukas.bulwahn@gmail.com>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Jarkko Nikula <jarkko.nikula@linux.intel.com>,
+        Lee Jones <lee.jones@linaro.org>,
+        linux-i2c <linux-i2c@vger.kernel.org>,
+        Ralf Ramsauer <ralf.ramsauer@oth-regensburg.de>,
+        kernel-janitors <kernel-janitors@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <20210419061809.15045-1-lukas.bulwahn@gmail.com>
+ <CAHp75Vfv0FQGXrmpDveOf-cBahoDK3uSPHjPU2RNh6mhFxN7vQ@mail.gmail.com>
+ <YLD/ZQiX5VhpWJg7@smile.fi.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="pDHXYKl0a1W6Q66S"
 Content-Disposition: inline
-In-Reply-To: <f7525409-3987-f79d-9f52-71f6c0231491@zytor.com>
+In-Reply-To: <YLD/ZQiX5VhpWJg7@smile.fi.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 27, 2021 at 07:12:51PM -0700, H. Peter Anvin wrote:
-> BIOSes have been known to clobber more than 64K. They aren't supposed to
-> clobber any.
 
-Yah, the BIOSes and what they're not supposed to do. Like they even care.
+--pDHXYKl0a1W6Q66S
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> 640K is the limit because that is the address of the EGA/VGA frame
-> buffer. In the words of Bill Gates "640K ought to be enough for anyone."
 
-Right.
+> > > Remove the file entry to this removed file as well.
+> >=20
+> > Oops, I was under the impression I grepped all occurrences, but I have =
+not.
+> >=20
+> > Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+> >=20
+> > Thanks for the catch!
+>=20
+> Wolfram, isn't it forgotten somehow?
 
-So thoughts on:
+I can pick it. I refrained from doing so because Lukas explicitly asked
+Lee to pick it.
 
-https://lkml.kernel.org/r/YK%2Bgv0vDfLVD7Sqp@kernel.org
 
-?
+--pDHXYKl0a1W6Q66S
+Content-Type: application/pgp-signature; name="signature.asc"
 
-Time to do what windoze 7 does?
+-----BEGIN PGP SIGNATURE-----
 
--- 
-Regards/Gruss,
-    Boris.
+iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmCxAqsACgkQFA3kzBSg
+Kbaa7RAAmRo/0qxgHI44lfwfEMDBQuKDf26iLB2BBAjE+DWLEOVGlIUfRPjWfvK3
+YeWquhl7nrL+gWbVLWqCs0U9pPOMP0jvEt8RIj9JuxUINSe/Zdk1+x+BZWCroQYi
+00auiTA4qEniT1oG4PNeb99qKM0uLsb9ZtsJQp+n3QNrxuPX2Lsh4pqNFwhW5KY/
+zxumLelM0GziggP734cMWZc1qWfpSeKJpLecC5j4F20FTITogeNQ67CGbSibYSp5
+9tt7jVTQD4Q7AsnuGNZGg9H9lrGAj0dQqtbl0mcBgZDFl4ddnBgVSGH+pgMXS74E
+3jwJ4NzVwBcg1CYXjnUJhLj8NAxfmPBvu6ouYwmhCabf0CRf096Ihg9tCgpvul6l
+ea9LYfiDdX5vYaFl8ANlurlKb03tCUjB6jvZW/onZYXpuLIs+UW9pvPfnPJfW6bz
+sVTMqfCray0AleSmGVjNWwY7LIHDgQyFf9oQO0xQ9jJB9bU0piJFyWdcYOJLBtEi
+OwcymTfrRw3K09j01tZHBlqWA1bdde0sq48OXGUsh3EkFmbmW25jLCGLWk/m87Mp
+IorZxSzPTWkhp7X41pg7HONoq6Qp9k2wm8yZ8GaEcvcDglCTZMtxKbUyS5J8rLNR
+Ekjqu0I521h3mUJaJfHB9IyNdZQDeWzJ9BcfkaZ1bvRxb+mN/cE=
+=q2jn
+-----END PGP SIGNATURE-----
 
-https://people.kernel.org/tglx/notes-about-netiquette
+--pDHXYKl0a1W6Q66S--
