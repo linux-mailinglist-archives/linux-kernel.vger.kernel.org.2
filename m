@@ -2,57 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 763A8393E92
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 10:15:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CCEFE393E94
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 10:16:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236270AbhE1IQp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 May 2021 04:16:45 -0400
-Received: from comms.puri.sm ([159.203.221.185]:41528 "EHLO comms.puri.sm"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235905AbhE1IQm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 May 2021 04:16:42 -0400
-Received: from localhost (localhost [127.0.0.1])
-        by comms.puri.sm (Postfix) with ESMTP id 3E1ACE3C27;
-        Fri, 28 May 2021 01:14:38 -0700 (PDT)
-Received: from comms.puri.sm ([127.0.0.1])
-        by localhost (comms.puri.sm [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id b8lat4nIC3qS; Fri, 28 May 2021 01:14:37 -0700 (PDT)
-From:   Martin Kepplinger <martin.kepplinger@puri.sm>
-To:     laurent.pinchart@ideasonboard.com, mchehab@kernel.org
-Cc:     devicetree@vger.kernel.org, kernel@puri.sm,
-        krzysztof.kozlowski@canonical.com, linux-kernel@vger.kernel.org,
-        linux-media@vger.kernel.org, paul.kocialkowski@bootlin.com,
-        robh@kernel.org, shawnx.tu@intel.com,
-        Martin Kepplinger <martin.kepplinger@puri.sm>
-Subject: [PATCH v2 5/5] Documentation: i2c-cardlist: add the Hynix hi846 sensor
-Date:   Fri, 28 May 2021 10:13:36 +0200
-Message-Id: <20210528081336.3858700-6-martin.kepplinger@puri.sm>
-In-Reply-To: <20210528081336.3858700-1-martin.kepplinger@puri.sm>
-References: <20210528081336.3858700-1-martin.kepplinger@puri.sm>
-Content-Transfer-Encoding: 8bit
+        id S235710AbhE1IRo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 May 2021 04:17:44 -0400
+Received: from [110.188.70.11] ([110.188.70.11]:57234 "EHLO spam1.hygon.cn"
+        rhost-flags-FAIL-FAIL-OK-FAIL) by vger.kernel.org with ESMTP
+        id S234905AbhE1IRn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 28 May 2021 04:17:43 -0400
+Received: from MK-FE.hygon.cn ([172.23.18.61])
+        by spam1.hygon.cn with ESMTP id 14S8F1qJ030977;
+        Fri, 28 May 2021 16:15:01 +0800 (GMT-8)
+        (envelope-from puwen@hygon.cn)
+Received: from cncheex01.Hygon.cn ([172.23.18.10])
+        by MK-FE.hygon.cn with ESMTP id 14S8EwBr007965;
+        Fri, 28 May 2021 16:14:59 +0800 (GMT-8)
+        (envelope-from puwen@hygon.cn)
+Received: from ubuntu1604-2.higon.com (172.23.18.44) by cncheex01.Hygon.cn
+ (172.23.18.10) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1466.3; Fri, 28 May
+ 2021 16:14:59 +0800
+From:   Pu Wen <puwen@hygon.cn>
+To:     <linux-kernel@vger.kernel.org>
+CC:     <rjw@rjwysocki.net>, <rafael@kernel.org>, <len.brown@intel.com>,
+        <pavel@ucw.cz>, <tglx@linutronix.de>, <mingo@redhat.com>,
+        <bp@suse.de>, <hpa@zytor.com>, <puwen@hygon.cn>, <x86@kernel.org>,
+        <linux-pm@vger.kernel.org>
+Subject: [PATCH] x86/cstate: Allow ACPI C1 FFH MWAIT use on Hygon systems
+Date:   Fri, 28 May 2021 16:14:17 +0800
+Message-ID: <20210528081417.31474-1-puwen@hygon.cn>
+X-Mailer: git-send-email 2.23.0
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [172.23.18.44]
+X-ClientProxiedBy: cncheex02.Hygon.cn (172.23.18.12) To cncheex01.Hygon.cn
+ (172.23.18.10)
+X-MAIL: spam1.hygon.cn 14S8F1qJ030977
+X-DNSRBL: 
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add the SK Hynix Hi-846 8M Pixel CMOS image sensor to the i2c-cardlist.
+Hygon systems support the Monitor/Mwait instructions and these can be used
+for ACPI C1 in the same way as on AMD and Intel systems.
 
-Signed-off-by: Martin Kepplinger <martin.kepplinger@puri.sm>
+The BIOS declares a C1 state in _CST to use FFH and CPUID_Fn00000005_EDX
+is non-zero on Hygon systems.
+
+Allow ffh_cstate_init() to succeed on Hygon systems to default using FFH
+MWAIT instead of HALT for ACPI C1.
+
+Tested successfully on Hygon Fam18h systems.
+
+Signed-off-by: Pu Wen <puwen@hygon.cn>
 ---
- Documentation/admin-guide/media/i2c-cardlist.rst | 1 +
- 1 file changed, 1 insertion(+)
+ arch/x86/kernel/acpi/cstate.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/Documentation/admin-guide/media/i2c-cardlist.rst b/Documentation/admin-guide/media/i2c-cardlist.rst
-index e60d459d18a9..185e07a3da43 100644
---- a/Documentation/admin-guide/media/i2c-cardlist.rst
-+++ b/Documentation/admin-guide/media/i2c-cardlist.rst
-@@ -60,6 +60,7 @@ Driver        Name
- ============  ==========================================================
- et8ek8        ET8EK8 camera sensor
- hi556         Hynix Hi-556 sensor
-+hi846         Hynix Hi-846 sensor
- imx214        Sony IMX214 sensor
- imx219        Sony IMX219 sensor
- imx258        Sony IMX258 sensor
+diff --git a/arch/x86/kernel/acpi/cstate.c b/arch/x86/kernel/acpi/cstate.c
+index 49ae4e1ac9cd..7de599eba7f0 100644
+--- a/arch/x86/kernel/acpi/cstate.c
++++ b/arch/x86/kernel/acpi/cstate.c
+@@ -197,7 +197,8 @@ static int __init ffh_cstate_init(void)
+ 	struct cpuinfo_x86 *c = &boot_cpu_data;
+ 
+ 	if (c->x86_vendor != X86_VENDOR_INTEL &&
+-	    c->x86_vendor != X86_VENDOR_AMD)
++	    c->x86_vendor != X86_VENDOR_AMD &&
++	    c->x86_vendor != X86_VENDOR_HYGON)
+ 		return -1;
+ 
+ 	cpu_cstate_entry = alloc_percpu(struct cstate_entry);
 -- 
-2.30.2
+2.23.0
 
