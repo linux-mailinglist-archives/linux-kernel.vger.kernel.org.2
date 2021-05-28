@@ -2,110 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ECF4E3944F7
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 17:23:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A2BFB3944FA
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 17:25:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236610AbhE1PYz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 May 2021 11:24:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45272 "EHLO
+        id S236622AbhE1P0t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 May 2021 11:26:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45730 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229684AbhE1PYk (ORCPT
+        with ESMTP id S229684AbhE1P0q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 May 2021 11:24:40 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52AEAC061574;
-        Fri, 28 May 2021 08:23:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=UM5DN4/cqvUU0xmTLWTsMkmBxsLpKI9DFsTdLupUfM8=; b=rixJj00vbxOG8VpsVpP8RbwTCr
-        7BdeaCq+hpyarwuXl+O3dOf5/mfbsr/do79SCZlf3on6u8YY3NZmQbi6VKZ8WEVqtJtGGU/Q0QI7E
-        7/13hGYvF6K3ei013bzRtVwFVdSGdx+hMe5efukKz3ZVKnOnRqw5ipIDrdLxIBXF6zNNSS2CYn64r
-        jkpPmGKmoUPksIDohqJaF0jo59P0Pfx82bIhjUY9UQECizoXUfdRMsXEPSo3rHMhIEkG02qytSW0/
-        l9fmshRAtie23VjM/0TiggGalzRIWEC+vtQb/ObqtL/vKtzI+k3STDAathHQRnqwoIrkw7vZ+dFfN
-        VUIRZJ2Q==;
-Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
-        id 1lmeJU-006kN3-P6; Fri, 28 May 2021 15:22:20 +0000
-Date:   Fri, 28 May 2021 16:22:16 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Justin He <Justin.He@arm.com>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Petr Mladek <pmladek@suse.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Luca Coelho <luciano.coelho@intel.com>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Johannes Berg <johannes.berg@intel.com>,
-        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-s390@vger.kernel.org" <linux-s390@vger.kernel.org>
-Subject: Re: [PATCH RFCv2 2/3] lib/vsprintf.c: make %pD print full path for
- file
-Message-ID: <YLEKqGkm8bX6LZfP@casper.infradead.org>
-References: <20210528113951.6225-1-justin.he@arm.com>
- <20210528113951.6225-3-justin.he@arm.com>
- <YLDpSnV9XBUJq5RU@casper.infradead.org>
- <AM6PR08MB437691E7314C6B774EFED4BDF7229@AM6PR08MB4376.eurprd08.prod.outlook.com>
- <YLEDwFCPcFx+qeul@casper.infradead.org>
- <AM6PR08MB437615DB6A6DEC33223A3138F7229@AM6PR08MB4376.eurprd08.prod.outlook.com>
+        Fri, 28 May 2021 11:26:46 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1EF93C061574;
+        Fri, 28 May 2021 08:25:12 -0700 (PDT)
+Date:   Fri, 28 May 2021 15:25:09 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1622215510;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=tVD/32lu0e2EW4SPDT8da31LdfxPfv1H02tuNXdHyO0=;
+        b=v8iDPIpbM6OD0A9e+yELm6LRO4yUPt3m9jHJpTXkZPILg7TPwYEOhdwcM+SXRpOjhnVPAq
+        OMqmfNuKQ3jWG0co4/EhyukBNbcL1g9CfBF406AjoCtYnx8idMoRRcxgk6I9AwRm879Dbb
+        i8V5HEXMy3+KrNjgz3GRCg1UKiN4o3ne1di+ZiQjJPuCNYT/CUj7/eBB3XAyzVi6p7KBE0
+        PL/7az6+PuQnPG1vs3fW3NBiGxmMJXsWmlFWufe3pBEaYwAIjRPP6E6+IAHbwdP35limA4
+        Kl9PgxsH9mmNsecRh5TJdPkSZZOwYI/q2vRDNnylIuby2yfHJ2HQwR/KjqJarA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1622215510;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=tVD/32lu0e2EW4SPDT8da31LdfxPfv1H02tuNXdHyO0=;
+        b=56OqdVwQTYEafpcjJJV9OujGdihJyIDtE9squ8DyqOkO/o9zs9a1mA3+qVJ5hv1BBTdYje
+        4GOCdybELGZGYwDA==
+From:   "tip-bot2 for Tony Luck" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: ras/core] x86/mce: Include a MCi_MISC value in faked mce logs
+Cc:     Tony Luck <tony.luck@intel.com>, Borislav Petkov <bp@suse.de>,
+        x86@kernel.org, linux-kernel@vger.kernel.org
+In-Reply-To: <20210527222846.931851-1-tony.luck@intel.com>
+References: <20210527222846.931851-1-tony.luck@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <AM6PR08MB437615DB6A6DEC33223A3138F7229@AM6PR08MB4376.eurprd08.prod.outlook.com>
+Message-ID: <162221550967.29796.6170052716634166865.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 28, 2021 at 03:09:28PM +0000, Justin He wrote:
-> > I'm not sure why it's so complicated.  p->len records how many bytes
-> > are needed for the entire path; can't you just return -p->len ?
-> 
-> prepend_name() will return at the beginning if p->len is <0 in this case,
-> we can't even get the correct full path size if keep __prepend_path unchanged.
-> We need another new helper __prepend_path_size() to get the full path size
-> regardless of the negative value p->len.
+The following commit has been merged into the ras/core branch of tip:
 
-It's a little hard to follow, based on just the patches.  Is there a
-git tree somewhere of Al's patches that you're based on?
+Commit-ID:     40cd0aae5957ec175b73dc17dce6079d33fa74f6
+Gitweb:        https://git.kernel.org/tip/40cd0aae5957ec175b73dc17dce6079d33fa74f6
+Author:        Tony Luck <tony.luck@intel.com>
+AuthorDate:    Thu, 27 May 2021 15:28:46 -07:00
+Committer:     Borislav Petkov <bp@suse.de>
+CommitterDate: Fri, 28 May 2021 16:57:16 +02:00
 
-Seems to me that prepend_name() is just fine because it updates p->len
-before returning false:
+x86/mce: Include a MCi_MISC value in faked mce logs
 
- static bool prepend_name(struct prepend_buffer *p, const struct qstr *name)
- {
- 	const char *dname = smp_load_acquire(&name->name); /* ^^^ */
- 	u32 dlen = READ_ONCE(name->len);
- 	char *s;
+When BIOS reports memory errors to Linux using the ACPI/APEI
+error reporting method Linux creates a "struct mce" to pass
+to the normal reporting code path.
 
- 	p->len -= dlen + 1;
- 	if (unlikely(p->len < 0))
- 		return false;
+The constructed record doesn't include a value for the "misc"
+field of the structure, and so mce_usable_address() says this
+record doesn't include a valid address.
 
-I think the only change you'd need to make for vsnprintf() is in
-prepend_path():
+Net result is that functions like uc_decode_notifier() will
+just ignore this record instead of taking action to offline
+a page.
 
--		if (!prepend_name(&b, &dentry->d_name))
--			break;
-+		prepend_name(&b, &dentry->d_name);
+Signed-off-by: Tony Luck <tony.luck@intel.com>
+Signed-off-by: Borislav Petkov <bp@suse.de>
+Link: https://lkml.kernel.org/r/20210527222846.931851-1-tony.luck@intel.com
+---
+ arch/x86/kernel/cpu/mce/apei.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-Would that hurt anything else?
-
-> More than that, even the 1st vsnprintf could have _end_ > _buf_ in some case:
-> What if printk("%pD", filp) ? The 1st vsnprintf has positive (end-buf).
-
-I don't understand the problem ... if p->len is positive, then you
-succeeded.  if p->len is negative then -p->len is the expected return
-value from vsnprintf().  No?
-
+diff --git a/arch/x86/kernel/cpu/mce/apei.c b/arch/x86/kernel/cpu/mce/apei.c
+index b58b853..0e3ae64 100644
+--- a/arch/x86/kernel/cpu/mce/apei.c
++++ b/arch/x86/kernel/cpu/mce/apei.c
+@@ -36,7 +36,8 @@ void apei_mce_report_mem_error(int severity, struct cper_sec_mem_err *mem_err)
+ 	mce_setup(&m);
+ 	m.bank = -1;
+ 	/* Fake a memory read error with unknown channel */
+-	m.status = MCI_STATUS_VAL | MCI_STATUS_EN | MCI_STATUS_ADDRV | 0x9f;
++	m.status = MCI_STATUS_VAL | MCI_STATUS_EN | MCI_STATUS_ADDRV | MCI_STATUS_MISCV | 0x9f;
++	m.misc = (MCI_MISC_ADDR_PHYS << 6) | PAGE_SHIFT;
+ 
+ 	if (severity >= GHES_SEV_RECOVERABLE)
+ 		m.status |= MCI_STATUS_UC;
