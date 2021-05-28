@@ -2,79 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CCEFE393E94
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 10:16:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BA4E8393E96
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 10:16:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235710AbhE1IRo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 May 2021 04:17:44 -0400
-Received: from [110.188.70.11] ([110.188.70.11]:57234 "EHLO spam1.hygon.cn"
-        rhost-flags-FAIL-FAIL-OK-FAIL) by vger.kernel.org with ESMTP
-        id S234905AbhE1IRn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 May 2021 04:17:43 -0400
-Received: from MK-FE.hygon.cn ([172.23.18.61])
-        by spam1.hygon.cn with ESMTP id 14S8F1qJ030977;
-        Fri, 28 May 2021 16:15:01 +0800 (GMT-8)
-        (envelope-from puwen@hygon.cn)
-Received: from cncheex01.Hygon.cn ([172.23.18.10])
-        by MK-FE.hygon.cn with ESMTP id 14S8EwBr007965;
-        Fri, 28 May 2021 16:14:59 +0800 (GMT-8)
-        (envelope-from puwen@hygon.cn)
-Received: from ubuntu1604-2.higon.com (172.23.18.44) by cncheex01.Hygon.cn
- (172.23.18.10) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1466.3; Fri, 28 May
- 2021 16:14:59 +0800
-From:   Pu Wen <puwen@hygon.cn>
-To:     <linux-kernel@vger.kernel.org>
-CC:     <rjw@rjwysocki.net>, <rafael@kernel.org>, <len.brown@intel.com>,
-        <pavel@ucw.cz>, <tglx@linutronix.de>, <mingo@redhat.com>,
-        <bp@suse.de>, <hpa@zytor.com>, <puwen@hygon.cn>, <x86@kernel.org>,
-        <linux-pm@vger.kernel.org>
-Subject: [PATCH] x86/cstate: Allow ACPI C1 FFH MWAIT use on Hygon systems
-Date:   Fri, 28 May 2021 16:14:17 +0800
-Message-ID: <20210528081417.31474-1-puwen@hygon.cn>
-X-Mailer: git-send-email 2.23.0
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [172.23.18.44]
-X-ClientProxiedBy: cncheex02.Hygon.cn (172.23.18.12) To cncheex01.Hygon.cn
- (172.23.18.10)
-X-MAIL: spam1.hygon.cn 14S8F1qJ030977
-X-DNSRBL: 
+        id S236210AbhE1IR6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 May 2021 04:17:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33808 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235991AbhE1IRz (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 28 May 2021 04:17:55 -0400
+Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09D9BC06174A
+        for <linux-kernel@vger.kernel.org>; Fri, 28 May 2021 01:16:19 -0700 (PDT)
+Received: by mail-yb1-xb4a.google.com with SMTP id u13-20020a25f80d0000b029051d7fee31cfso3538859ybd.22
+        for <linux-kernel@vger.kernel.org>; Fri, 28 May 2021 01:16:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=IGMauNtgVBPGGy8WGv6ECPQxdoO0JVhQLZud2NUEziI=;
+        b=mMBusbY5nzn8Adxs7aCQ7grYRJkTFVN5NBU+4Ps1p0nquDQQkLYt4VfgEzMLCCk+3v
+         8bh/b+JFWPVel0ZGmZeoNz4trYq8FwjquZxrnEYfpVgZFUfQ3ZPVOXdaTihZ3fYGXxgZ
+         kX7FJl8dEqrT2mmUkO4H1FS0hD8pyKMIJ9LyCmOWVUvRZyUw97SWFIFOQBcX/cphcZaC
+         CLXk3S9Oz3eL/Rbtd8IQti2/0e60Y15puIdg8ST/xeKcCr/Kj2cqizXGITiTy9PWBVhe
+         BbD5bKjlkvCQFRkYNeo9niedT95xHYjHthSXtyeuyDU9CXqhR+JKEtwnpIZfvkSNaVJY
+         Wong==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=IGMauNtgVBPGGy8WGv6ECPQxdoO0JVhQLZud2NUEziI=;
+        b=UhLt58RlDMt+gywVQt6FY3fVc4IsuaykVyKBx9MBnZGWRIS6wj3nj1kQ52VL19sgAf
+         EIWj8qhUlbpme3/XwjCCbYq3zV2Bp6yj/MrX2anaX+8ScHYh1RwwZzqNfRE5HlQ6SvbQ
+         /ZZyajbSwCv6iFqAZxqKmECa6Pr76li6uHD2udxRKDNR/fC1fy9a5+DUQeS9FIaSVS5O
+         au3OvGkgiJ18y1OYvAJ1R2kK7qhrkSTPTCiOTuvOaBFk7gCDnkaBmqPUYlCmUWxKz5jn
+         qSZriPT3uls04jLzBZhbzYZuPw9MSjhBck78/6QrGHtuWwGtn/eXmTi8875dIqQaBgNL
+         3DnQ==
+X-Gm-Message-State: AOAM5306jJAVoOLS1ve8oOl7UVbVKWTQD/zREzeE/Fbid2dsaJwTjf+0
+        mBD0ZL97RN/pMRbXHC4qJeSGK3ktfmIj
+X-Google-Smtp-Source: ABdhPJw6LaBbL1OT9vwAUCoPFeawkotBh7NLDV/XmImrysOW7+DjvbuPARfM4t8+vTxFVlue7nf9FvCa9h/y
+X-Received: from kyletso.ntc.corp.google.com ([2401:fa00:fc:202:ce0b:b94c:8a37:2f9])
+ (user=kyletso job=sendgmr) by 2002:a25:11c5:: with SMTP id
+ 188mr10349086ybr.322.1622189778225; Fri, 28 May 2021 01:16:18 -0700 (PDT)
+Date:   Fri, 28 May 2021 16:16:13 +0800
+Message-Id: <20210528081613.730661-1-kyletso@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.32.0.rc0.204.g9fa02ecfa5-goog
+Subject: [PATCH] usb: pd: Set PD_T_SINK_WAIT_CAP to 310ms
+From:   Kyle Tso <kyletso@google.com>
+To:     linux@roeck-us.net, gregkh@linuxfoundation.org
+Cc:     badhri@google.com, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Kyle Tso <kyletso@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hygon systems support the Monitor/Mwait instructions and these can be used
-for ACPI C1 in the same way as on AMD and Intel systems.
+Current timer PD_T_SINK_WAIT_CAP is set to 240ms which will violate the
+SinkWaitCapTimer (tTypeCSinkWaitCap 310 - 620 ms) defined in the PD
+Spec if the port is faster enough when running the state machine. Set it
+to the lower bound 310ms to ensure the timeout is in Spec.
 
-The BIOS declares a C1 state in _CST to use FFH and CPUID_Fn00000005_EDX
-is non-zero on Hygon systems.
-
-Allow ffh_cstate_init() to succeed on Hygon systems to default using FFH
-MWAIT instead of HALT for ACPI C1.
-
-Tested successfully on Hygon Fam18h systems.
-
-Signed-off-by: Pu Wen <puwen@hygon.cn>
+Fixes: f0690a25a140 ("staging: typec: USB Type-C Port Manager (tcpm)")
+Signed-off-by: Kyle Tso <kyletso@google.com>
 ---
- arch/x86/kernel/acpi/cstate.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ include/linux/usb/pd.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/x86/kernel/acpi/cstate.c b/arch/x86/kernel/acpi/cstate.c
-index 49ae4e1ac9cd..7de599eba7f0 100644
---- a/arch/x86/kernel/acpi/cstate.c
-+++ b/arch/x86/kernel/acpi/cstate.c
-@@ -197,7 +197,8 @@ static int __init ffh_cstate_init(void)
- 	struct cpuinfo_x86 *c = &boot_cpu_data;
- 
- 	if (c->x86_vendor != X86_VENDOR_INTEL &&
--	    c->x86_vendor != X86_VENDOR_AMD)
-+	    c->x86_vendor != X86_VENDOR_AMD &&
-+	    c->x86_vendor != X86_VENDOR_HYGON)
- 		return -1;
- 
- 	cpu_cstate_entry = alloc_percpu(struct cstate_entry);
+diff --git a/include/linux/usb/pd.h b/include/linux/usb/pd.h
+index bf00259493e0..96b7ff66f074 100644
+--- a/include/linux/usb/pd.h
++++ b/include/linux/usb/pd.h
+@@ -460,7 +460,7 @@ static inline unsigned int rdo_max_power(u32 rdo)
+ #define PD_T_RECEIVER_RESPONSE	15	/* 15ms max */
+ #define PD_T_SOURCE_ACTIVITY	45
+ #define PD_T_SINK_ACTIVITY	135
+-#define PD_T_SINK_WAIT_CAP	240
++#define PD_T_SINK_WAIT_CAP	310	/* 310 - 620 ms */
+ #define PD_T_PS_TRANSITION	500
+ #define PD_T_SRC_TRANSITION	35
+ #define PD_T_DRP_SNK		40
 -- 
-2.23.0
+2.32.0.rc0.204.g9fa02ecfa5-goog
 
