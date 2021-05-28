@@ -2,79 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9871B3944CD
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 17:10:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 53CB93944D3
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 17:11:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235841AbhE1PLy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 May 2021 11:11:54 -0400
-Received: from outbound-smtp35.blacknight.com ([46.22.139.218]:40635 "EHLO
-        outbound-smtp35.blacknight.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230039AbhE1PLs (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 May 2021 11:11:48 -0400
-Received: from mail.blacknight.com (pemlinmail03.blacknight.ie [81.17.254.16])
-        by outbound-smtp35.blacknight.com (Postfix) with ESMTPS id 083501935
-        for <linux-kernel@vger.kernel.org>; Fri, 28 May 2021 16:10:12 +0100 (IST)
-Received: (qmail 7428 invoked from network); 28 May 2021 15:10:11 -0000
-Received: from unknown (HELO techsingularity.net) (mgorman@techsingularity.net@[84.203.23.168])
-  by 81.17.254.9 with ESMTPSA (AES256-SHA encrypted, authenticated); 28 May 2021 15:10:11 -0000
-Date:   Fri, 28 May 2021 16:10:10 +0100
-From:   Mel Gorman <mgorman@techsingularity.net>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     Vlastimil Babka <vbabka@suse.cz>, Hillf Danton <hdanton@sina.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Michal Hocko <mhocko@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux-MM <linux-mm@kvack.org>
-Subject: [PATCH] mm/page_alloc: Introduce vm.percpu_pagelist_high_fraction
- -fix
-Message-ID: <20210528151010.GQ30378@techsingularity.net>
+        id S236377AbhE1PMg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 May 2021 11:12:36 -0400
+Received: from mga07.intel.com ([134.134.136.100]:63747 "EHLO mga07.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231845AbhE1PMe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 28 May 2021 11:12:34 -0400
+IronPort-SDR: FYjCoiiZswcV8d66JjmYq0dk3hPVjfb+ZeYgqmUkEUT/h4//Y6uaaDMJ6e0xK+wboSf1bsNDte
+ WCs84WNr3QDQ==
+X-IronPort-AV: E=McAfee;i="6200,9189,9998"; a="266856777"
+X-IronPort-AV: E=Sophos;i="5.83,229,1616482800"; 
+   d="scan'208";a="266856777"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 May 2021 08:10:57 -0700
+IronPort-SDR: VHLb01vnaADt6BTuH/Zt1mA5K8mBSrxkhU0bABsh5CNh5WothktFYarZBpEaJdpFxCSS9QUgni
+ zpMjNofwM0Ww==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.83,229,1616482800"; 
+   d="scan'208";a="548614851"
+Received: from black.fi.intel.com ([10.237.72.28])
+  by fmsmga001.fm.intel.com with ESMTP; 28 May 2021 08:10:55 -0700
+Received: by black.fi.intel.com (Postfix, from userid 1003)
+        id 2C0613B6; Fri, 28 May 2021 18:11:18 +0300 (EEST)
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Oleksij Rempel <linux@rempel-privat.de>,
+        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Eugen Hristev <eugen.hristev@microchip.com>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Subject: [PATCH v2 1/2] Input: resistive-adc-touch - describe parameters in kernel doc
+Date:   Fri, 28 May 2021 18:11:12 +0300
+Message-Id: <20210528151113.85943-1-andriy.shevchenko@linux.intel.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-15
-Content-Disposition: inline
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Vlastimil Babka pointed out that the documentation for
-vm.percpu_pagelist_high_fraction is potentially misleading so fix it.
+Validation script is not happy:
 
-This is a fix to the mmotm patch
-mm-page_alloc-introduce-vmpercpu_pagelist_high_fraction.patch
+ resistive-adc-touch.c:53: warning: Function parameter or member 'x_plate_ohms' not described in 'grts_state'
+ resistive-adc-touch.c:53: warning: Function parameter or member 'ch' not described in 'grts_state'
 
-Signed-off-by: Mel Gorman <mgorman@techsingularity.net>
+Describe parameters in kernel doc to make it happy.
+
+Fixes: fb082cd59afa ("Input: resistive-adc-touch - add support for z1 and z2 channels")
+Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 ---
- Documentation/admin-guide/sysctl/vm.rst | 19 ++++++++++---------
- 1 file changed, 10 insertions(+), 9 deletions(-)
+ drivers/input/touchscreen/resistive-adc-touch.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/Documentation/admin-guide/sysctl/vm.rst b/Documentation/admin-guide/sysctl/vm.rst
-index e85c2f21d209..2da25735a629 100644
---- a/Documentation/admin-guide/sysctl/vm.rst
-+++ b/Documentation/admin-guide/sysctl/vm.rst
-@@ -793,15 +793,16 @@ why oom happens. You can get snapshot.
- percpu_pagelist_high_fraction
- =============================
+diff --git a/drivers/input/touchscreen/resistive-adc-touch.c b/drivers/input/touchscreen/resistive-adc-touch.c
+index 0939c0e97efb..0353400c559a 100644
+--- a/drivers/input/touchscreen/resistive-adc-touch.c
++++ b/drivers/input/touchscreen/resistive-adc-touch.c
+@@ -35,16 +35,18 @@ enum grts_ch_type {
  
--This is the fraction of pages in each zone that are allocated for each
--per cpu page list.  The min value for this is 8.  It means that we do
--not allow more than 1/8th of pages in each zone to be allocated in any
--single per_cpu_pagelist.  This entry only changes the value of hot per
--cpu pagelists. User can specify a number like 100 to allocate 1/100th
--of each zone to each per cpu page list.
--
--The batch value of each per cpu pagelist remains the same regardless of the
--value of the high fraction so allocation latencies are unaffected.
-+This is the fraction of pages in each zone that are can be stored to
-+per-cpu page lists. It is an upper boundary that is divided depending
-+on the number of online CPUs. The min value for this is 8 which means
-+that we do not allow more than 1/8th of pages in each zone to be stored
-+on per-cpu page lists. This entry only changes the value of hot per-cpu
-+page lists. A user can specify a number like 100 to allocate 1/100th of
-+each zone between per-cpu lists.
-+
-+The batch value of each per-cpu page list remains the same regardless of
-+the value of the high fraction so allocation latencies are unaffected.
- 
- The initial value is zero. Kernel uses this value to set the high pcp->high
- mark based on the low watermark for the zone and the number of local
+ /**
+  * struct grts_state - generic resistive touch screen information struct
++ * @x_plate_ohms:	resistance of the X plate
+  * @pressure_min:	number representing the minimum for the pressure
+  * @pressure:		are we getting pressure info or not
+  * @iio_chans:		list of channels acquired
+  * @iio_cb:		iio_callback buffer for the data
+  * @input:		the input device structure that we register
+  * @prop:		touchscreen properties struct
++ * @ch:			channels that are defined for the touchscreen
+  */
+ struct grts_state {
+-	u32				pressure_min;
+ 	u32				x_plate_ohms;
++	u32				pressure_min;
+ 	bool				pressure;
+ 	struct iio_channel		*iio_chans;
+ 	struct iio_cb_buffer		*iio_cb;
+-- 
+2.30.2
+
