@@ -2,120 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 244C13948B4
-	for <lists+linux-kernel@lfdr.de>; Sat, 29 May 2021 00:33:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AC7D43948C0
+	for <lists+linux-kernel@lfdr.de>; Sat, 29 May 2021 00:38:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229763AbhE1Wee (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 May 2021 18:34:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56218 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229493AbhE1Wed (ORCPT
+        id S229755AbhE1Wjw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 May 2021 18:39:52 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:15838 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229635AbhE1Wjv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 May 2021 18:34:33 -0400
-Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9FBEC061574;
-        Fri, 28 May 2021 15:32:56 -0700 (PDT)
-Received: by mail-lf1-x135.google.com with SMTP id a5so7522142lfm.0;
-        Fri, 28 May 2021 15:32:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=yKC7wbzMjkUdXdUvQOdmRx8muC6k4+GVXbecAt/sIDI=;
-        b=Rd/SkuiY6LaPNwYcLbNJ1Y0pdoBIAnZcZuTBHL5WDfDFoL3GlNrN+mJfoEyOnmFbQW
-         L0I0Ou19Xg5slw2xnjxNJ4FixUNifgwXfr0cmngDWflRhK7x2yPSAV5hCm4+XwfMAiJJ
-         5BIQ6afNFM3olW15gIc8B1rc2ssEX971EhrA+SmurxYNiscT7rMb5zXx31dy8ywjFeW/
-         to7FJwI2GcoLBU6zseMhOZWzJw4dD0SCntIhaaoOQzsf07YpNELnAJZTFS2iTrzVD4Fz
-         p1RWpCN18E/UmVNzLP6eZClXoASZ4LjntQv4YO+QW0D8yNvc2C3ydWCdnrgA/AlM3HvG
-         wi4Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=yKC7wbzMjkUdXdUvQOdmRx8muC6k4+GVXbecAt/sIDI=;
-        b=EkM3s61x0qa+K35yLc5pcdaven1nLtDVdhexge23OMkr/7L9oYHJq7EF/x2SRvFoA8
-         riPb1czFYvdalV1KR5pkJAXQFNIV34Ul4Rn3sHC1vOqxqDTJtmORKDeukr0YScwjPr49
-         6L+uWjczC9MeQcaWEfaSPh3mFJiVlmByuSJzmcjuQ4FOWOt+R+eJOx+lWcQG3uVB7qOH
-         yZkfHiDD17fka1aTwmv0m16xpDD+2Qi2c9S2wsDd5hO1Jhnw04a2kJsClDajtWFwL506
-         JwL6x7UUgpRe6AnqL02MQ0Fb7iPqmk4pfAdGXkfeddkPb5QZKRZO9xnhRH0QRB6UJOkI
-         jqHQ==
-X-Gm-Message-State: AOAM530y+VwyVRhu/r2njKQuCy5vvOf51uvWp3krCssQFm/0akLBVzWs
-        bjRZ8IF2VYrOE59FwoMImU0=
-X-Google-Smtp-Source: ABdhPJxGpGYMAGOdDQrj4PMP8gtGEmTDS8bBRi5adUIgPHqdrw/jh1XmezPbgEEDGodxS+BIb8fieg==
-X-Received: by 2002:a05:6512:3a81:: with SMTP id q1mr6868948lfu.383.1622241175356;
-        Fri, 28 May 2021 15:32:55 -0700 (PDT)
-Received: from localhost.localdomain (h-98-128-228-193.NA.cust.bahnhof.se. [98.128.228.193])
-        by smtp.gmail.com with ESMTPSA id j26sm682810ljg.76.2021.05.28.15.32.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 28 May 2021 15:32:54 -0700 (PDT)
-From:   Rikard Falkeborn <rikard.falkeborn@gmail.com>
-To:     Jens Axboe <axboe@kernel.dk>
-Cc:     Hannes Reinecke <hare@suse.de>, Jan Kara <jack@suse.cz>,
-        Ming Lei <ming.lei@redhat.com>,
-        Damien Le Moal <damien.lemoal@wdc.com>,
-        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Rikard Falkeborn <rikard.falkeborn@gmail.com>
-Subject: [PATCH] block: Constify static attribute_group structs
-Date:   Sat, 29 May 2021 00:32:52 +0200
-Message-Id: <20210528223252.29343-1-rikard.falkeborn@gmail.com>
-X-Mailer: git-send-email 2.31.1
+        Fri, 28 May 2021 18:39:51 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1622241496; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=jSJ6ouw7sBSntMFtGhcr7YAwQxKznNopiE0ruE/1CnU=;
+ b=de5JLEA5LONVwL/KRETniqNtWu5UFyeqAmzDrwrlbbmix6jUteX9HDgAFbw4/Ebeqi+FJ8N2
+ sAshdTH4/IYii6VKSlkI70WV7LzcQRgTP20nG2UQxRZWz9Mf7ED6c4cTVrlqoUWGiGDsXCOn
+ hIiz19o4IPZHpyT4KmX+tQJCgt0=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n04.prod.us-east-1.postgun.com with SMTP id
+ 60b170c8e27c0cc77ff1df22 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 28 May 2021 22:38:00
+ GMT
+Sender: abhinavk=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 065A9C4323A; Fri, 28 May 2021 22:38:00 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: abhinavk)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 93241C433F1;
+        Fri, 28 May 2021 22:37:57 +0000 (UTC)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Fri, 28 May 2021 15:37:57 -0700
+From:   abhinavk@codeaurora.org
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>
+Cc:     Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Stephen Boyd <swboyd@chromium.org>, sbillaka@codeaurora.org,
+        Tanmay Shah <tanmay@codeaurora.org>,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        dri-devel@lists.freedesktop.org,
+        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        freedreno@lists.freedesktop.org,
+        Chandan Uddaraju <chandanu@codeaurora.org>
+Subject: Re: [Freedreno] [PATCH 0/4] drm/msm/dp: Add support for SC8180x eDP
+ controller
+In-Reply-To: <20210519145149.GX2484@yoga>
+References: <20210511042043.592802-1-bjorn.andersson@linaro.org>
+ <40f6aefd3fa341e2bec2060106389be7@codeaurora.org>
+ <20210519145149.GX2484@yoga>
+Message-ID: <d10c43ffbbf90ea7e00c7f0c61602924@codeaurora.org>
+X-Sender: abhinavk@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Either their address is put in an array of pointers to const attribute
-groups structs, or the address is passed to sysfs_create_group() which
-accepts a pointer to const struct attribute group. Make them const to
-allow the compiler to put them in read-only memory.
+Hi Bjorn
 
-Signed-off-by: Rikard Falkeborn <rikard.falkeborn@gmail.com>
----
- block/blk-sysfs.c       | 2 +-
- block/genhd.c           | 2 +-
- block/partitions/core.c | 2 +-
- 3 files changed, 3 insertions(+), 3 deletions(-)
+On 2021-05-19 07:51, Bjorn Andersson wrote:
+> On Tue 18 May 22:41 CDT 2021, abhinavk@codeaurora.org wrote:
+> 
+>> Hi Bjorn
+>> 
+>> I had a quick glance on the series and before getting to other things 
+>> wanted
+>> to know how you are initializing two different connectors for
+>> DP & EDP resp.
+>> 
+>> The connector type for DP should be DRM_MODE_CONNECTOR_DisplayPort and 
+>> eDP
+>> should be DRM_MODE_CONNECTOR_eDP.
+> 
+> As far as I've been able to conclude there is no eDP support in the
+> upstream DPU driver; an encoder of type DRM_MODE_ENCODER_TMDS will only
+> attach to INTF_DP.
+> 
+>> We need both to be created so that both EDP and DP can be supported
+>> concurrently.
+>> 
+> 
+> Further more the DP controller driver has a global variable to track
+> state and the INTF-picker will always pick the interface of index 0 
+> when
+> setting up the DP controller.
+> 
+>> Will these changes work for concurrent eDP and DP case?
+>> 
+> 
+> The proposed changes are all that I need to get eDP working on my
+> sc8180x laptop. But the DPU code does not currently support more than a
+> single DP interface - and that has to be on the first INTF_DP that the
+> DPU driver knows about.
+> 
+> But this is a limitation we should fix, rather than claiming that you
+> can only have one of each. Further more, afaict the sc7280 DP 
+> controller
+> can do both DP and eDP, so it would make sense not to distinguish the
+> interfaces as eDP or DP - just because the product in mind will use 
+> eDP.
+> 
+> 
+> PS. I've currently disabled the eDP interface on my laptop and am
+> working on trying to get Type-C DP working. Once that's in place I'd
+> need a better INTF/encoder picker - because the current model of just
+> picking INTF_DP 0 (or in a sequential fashion) won't work.
+> 
+> Regards,
+> Bjorn
 
-diff --git a/block/blk-sysfs.c b/block/blk-sysfs.c
-index f89e2fc3963b..5c5d21b7d278 100644
---- a/block/blk-sysfs.c
-+++ b/block/blk-sysfs.c
-@@ -698,7 +698,7 @@ static umode_t queue_attr_visible(struct kobject *kobj, struct attribute *attr,
- 	return attr->mode;
- }
- 
--static struct attribute_group queue_attr_group = {
-+static const struct attribute_group queue_attr_group = {
- 	.attrs = queue_attrs,
- 	.is_visible = queue_attr_visible,
- };
-diff --git a/block/genhd.c b/block/genhd.c
-index 9f8cb7beaad1..0f85687a7c69 100644
---- a/block/genhd.c
-+++ b/block/genhd.c
-@@ -1090,7 +1090,7 @@ static umode_t disk_visible(struct kobject *kobj, struct attribute *a, int n)
- 	return a->mode;
- }
- 
--static struct attribute_group disk_attr_group = {
-+static const struct attribute_group disk_attr_group = {
- 	.attrs = disk_attrs,
- 	.is_visible = disk_visible,
- };
-diff --git a/block/partitions/core.c b/block/partitions/core.c
-index dc60ecf46fe6..8c3237f11261 100644
---- a/block/partitions/core.c
-+++ b/block/partitions/core.c
-@@ -246,7 +246,7 @@ static struct attribute *part_attrs[] = {
- 	NULL
- };
- 
--static struct attribute_group part_attr_group = {
-+static const struct attribute_group part_attr_group = {
- 	.attrs = part_attrs,
- };
- 
--- 
-2.31.1
+Yes, we should be able to support eDP + DP concurrently on both sc7280
+and sc8180x. Some of the changes we will be posting in the coming weeks
+should add support for it. Till then, as we spoke on IRC, since your 
+changes
+dont break existing DP functionality, will continue reviewing rest of 
+the changes.
 
+> 
+>> Thanks
+>> 
+>> Abhinav
+>> 
+>> On 2021-05-10 21:20, Bjorn Andersson wrote:
+>> > The first patch in the series is somewhat unrelated to the support, but
+>> > simplifies reasoning and debugging of timing related issues.
+>> >
+>> > The second patch introduces support for dealing with different register
+>> > block
+>> > layouts, which is used in the forth patch to describe the hardware
+>> > blocks found
+>> > in the SC8180x eDP block.
+>> >
+>> > The third patch configures the INTF_CONFIG register, which carries the
+>> > configuration for widebus handling. As with the DPU the bootloader
+>> > enables
+>> > widebus and we need to disable it, or implement support for adjusting
+>> > the
+>> > timing.
+>> >
+>> > Bjorn Andersson (4):
+>> >   drm/msm/dp: Simplify the mvid/nvid calculation
+>> >   drm/msm/dp: Store each subblock in the io region
+>> >   drm/msm/dp: Initialize the INTF_CONFIG register
+>> >   drm/msm/dp: Add support for SC8180x eDP
+>> >
+>> >  drivers/gpu/drm/msm/dp/dp_catalog.c | 99 +++++++----------------------
+>> >  drivers/gpu/drm/msm/dp/dp_display.c |  1 +
+>> >  drivers/gpu/drm/msm/dp/dp_parser.c  | 22 +++++++
+>> >  drivers/gpu/drm/msm/dp/dp_parser.h  |  8 +++
+>> >  4 files changed, 53 insertions(+), 77 deletions(-)
