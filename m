@@ -2,187 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BCCC7394A8E
-	for <lists+linux-kernel@lfdr.de>; Sat, 29 May 2021 07:16:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F131393C10
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 05:48:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229614AbhE2FSQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 29 May 2021 01:18:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58274 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229456AbhE2FSP (ORCPT
+        id S234124AbhE1Dtu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 May 2021 23:49:50 -0400
+Received: from conuserg-08.nifty.com ([210.131.2.75]:45874 "EHLO
+        conuserg-08.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229846AbhE1Dtt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 29 May 2021 01:18:15 -0400
-Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9EBA1C061574;
-        Fri, 28 May 2021 22:16:39 -0700 (PDT)
-Received: by ozlabs.org (Postfix, from userid 1007)
-        id 4FsVCR54Q7z9sW4; Sat, 29 May 2021 15:16:35 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-        d=gibson.dropbear.id.au; s=201602; t=1622265395;
-        bh=9W7EP2KVmTGbFSdQ+OaCesEwTE5wg3X5f+H11fjjHHo=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=MYRRZR8gDpdM+T1L7qJXrL9NouextTi+KmoUDpHAAGF0+KPNAZYgg03mXRW2AjmrE
-         30RGn01woFa3kTAj9fZ7heLva7SPYgn3ZhO2TBTrJQIGlI2YbDVAmPYqlj+DmgC4Cl
-         wjFgU+SPSxnGN5lAidRsCGRBwejY9ZtJXssa30+w=
-Date:   Fri, 28 May 2021 13:45:35 +1000
-From:   David Gibson <david@gibson.dropbear.id.au>
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     Frank Rowand <frowand.list@gmail.com>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Rob Herring <robh@kernel.org>,
+        Thu, 27 May 2021 23:49:49 -0400
+Received: from localhost.localdomain (133-32-232-101.west.xps.vectant.ne.jp [133.32.232.101]) (authenticated)
+        by conuserg-08.nifty.com with ESMTP id 14S3lbQR031425;
+        Fri, 28 May 2021 12:47:37 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conuserg-08.nifty.com 14S3lbQR031425
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1622173658;
+        bh=BV0Xhzu11ytLpeCNoa7cH4BZNQYYRY20XqustzLMqtw=;
+        h=From:To:Cc:Subject:Date:From;
+        b=UDTQuIN7y8sRPPl4Jpoku4ALmYQznnc2oqzi3Xg80Z2JM3zZE5+zTUbbjESFHL3tX
+         NxFjiPzqv7pxqPwNcB1nCECxtQ1kF2x/4K3d98topILkLSlSGPeMAKGDA2dCksW16L
+         fP1SyXQbsl4PYyiNxQR6GehUwtui0NxAZd4PzjvDaFDxsEu79R3i9Av5UU358quZCI
+         raa4UId+c37NCMbeaEfgQ+5Jd5E0JVYxHzp1fsibGugJEYgzZXeN5Al0sd9sb0ufqy
+         SwHol4hDQHPRj3D32yC+o53DZT86ei/BQXMLnkN6IsT3vwfma//xlRDV8UnF3FWp6j
+         98fbENepqb53Q==
+X-Nifty-SrcIP: [133.32.232.101]
+From:   Masahiro Yamada <masahiroy@kernel.org>
+To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        linux-mips@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org,
         Masahiro Yamada <masahiroy@kernel.org>,
-        Michal Marek <michal.lkml@markovi.net>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Michal Simek <michal.simek@xilinx.com>,
-        Anmar Oueja <anmar.oueja@linaro.org>,
-        Bill Mills <bill.mills@linaro.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        linux-kbuild <linux-kbuild@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 1/1] of: unittest: rename overlay source files from .dts
- to .dtso
-Message-ID: <YLBnX4PeK51YwUJB@yekko>
-References: <20210324223713.1334666-1-frowand.list@gmail.com>
- <20210327174035.GA291160@robh.at.kernel.org>
- <3e6710e7-08ac-7d1b-aa69-bcd36f0d932a@gmail.com>
- <CAMuHMdXpGKMi-xv6hZQmmEw0JO=Q0WuvUzwJ2v0O28Tx5uW+sg@mail.gmail.com>
- <d1aefaae-7b12-b5fb-4b97-7230bd52c1be@gmail.com>
- <20210526061144.yvoaurpz75a3bsjr@vireshk-i7>
- <f651e95b-feef-5c86-edba-d6008bc80b34@gmail.com>
- <YK70Xsl1oXeEQpWZ@yekko>
- <CAMuHMdWdb2s08a=axC+m88gARSA3enOBnczsN59XL2F9yHXXYA@mail.gmail.com>
+        Alexander Lobakin <alobakin@pm.me>,
+        Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: [PATCH 1/2] mips: syscalls: define syscall offsets directly in <asm/unistd.h>
+Date:   Fri, 28 May 2021 12:46:14 +0900
+Message-Id: <20210528034615.2157002-1-masahiroy@kernel.org>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="gmPBfyWAmXOSQLgm"
-Content-Disposition: inline
-In-Reply-To: <CAMuHMdWdb2s08a=axC+m88gARSA3enOBnczsN59XL2F9yHXXYA@mail.gmail.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+There is no good reason to generate the syscall offset macros by
+scripting since they are not derived from the syscall tables.
 
---gmPBfyWAmXOSQLgm
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Define __NR_*_Linux macros directly in arch/mips/include/asm/unistd.h,
+and clean up the Makefile and the shell script.
 
-On Thu, May 27, 2021 at 09:21:05AM +0200, Geert Uytterhoeven wrote:
-65;6401;1c> On Thu, May 27, 2021 at 3:48 AM David Gibson
-> <david@gibson.dropbear.id.au> wrote:
-> > On Wed, May 26, 2021 at 04:21:48PM -0500, Frank Rowand wrote:
-> > > On 5/26/21 1:11 AM, Viresh Kumar wrote:
-> > > > On 22-04-21, 13:54, Frank Rowand wrote:
-> > > >> On 4/22/21 3:44 AM, Geert Uytterhoeven wrote:
-> > > >>> On Mon, Mar 29, 2021 at 9:23 PM Frank Rowand <frowand.list@gmail.=
-com> wrote:
-> > > >>>> On 3/27/21 12:40 PM, Rob Herring wrote:
-> > > >>>>> On Wed, Mar 24, 2021 at 05:37:13PM -0500, frowand.list@gmail.co=
-m wrote:
-> > > >>>>>> From: Frank Rowand <frank.rowand@sony.com>
-> > > >>>>>>
-> > > >>>>>> Add Makefile rule to build .dtbo.o assembly file from overlay =
-=2Edtso
-> > > >>>>>> source file.
-> > > >>>>>>
-> > > >>>>>> Rename unittest .dts overlay source files to use .dtso suffix.
-> > > >>>>>
-> > > >>>>> I'm pretty lukewarm on .dtso...
-> > > >>>>
-> > > >>>> I was originally also, but I'm warming up to it.
-> > > >>>
-> > > >>> What's the status of this?
-> > > >>
-> > > >> I was planning to resend on top of the upcoming -rc1.
-> > > >
-> > > > Ping.
-> > > >
-> > >
-> > > Thanks for the prod...
-> > >
-> > > The .dtso convention was added to the dtc compiler, then a patch was
-> > > accepted to revert one mention of .dtso ,though there still remains
-> > > two location where .dtbo is still recognized (guess_type_by_name() in
-> > > dtc and the help text of the fdtoverlay program).
-> > >
-> > > It seems that the general .dtso and .dtbo were not popular, so I'm
-> > > going to drop this patch instead of continuing to try to get it
-> > > accepted.
-> >
-> > AFAICT .dtbo is moderately well established, and I think it's a good
-> > convention, since it matters whether a blob is an overlay or base
-> > tree, and it's not trivial to tell which is which.
->=20
-> Indeed.
->=20
-> > .dtso is much more recent,
->=20
-> Is it?
+Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+---
 
-Well, I wouldn't bet money on it, I just seem to remember encountering
-=2Edtbo for some time before .dtso was mentioned.
+ arch/mips/include/asm/unistd.h         | 4 ++++
+ arch/mips/kernel/syscalls/Makefile     | 6 +-----
+ arch/mips/kernel/syscalls/syscallnr.sh | 2 --
+ 3 files changed, 5 insertions(+), 7 deletions(-)
 
-> The oldest reference I could find is from May 2015:
-> "[PATCH/RFC] kbuild: Create a rule for building device tree overlay objec=
-ts"
-> https://lore.kernel.org/linux-devicetree/1431431816-24612-1-git-send-emai=
-l-geert+renesas@glider.be/
+diff --git a/arch/mips/include/asm/unistd.h b/arch/mips/include/asm/unistd.h
+index 5d70babfc9ee..c2196b1b6604 100644
+--- a/arch/mips/include/asm/unistd.h
++++ b/arch/mips/include/asm/unistd.h
+@@ -17,6 +17,10 @@
+ #include <asm/unistd_nr_n64.h>
+ #include <asm/unistd_nr_o32.h>
+ 
++#define __NR_N32_Linux	6000
++#define __NR_64_Linux	5000
++#define __NR_O32_Linux	4000
++
+ #ifdef CONFIG_MIPS32_N32
+ #define NR_syscalls  (__NR_N32_Linux + __NR_N32_Linux_syscalls)
+ #elif defined(CONFIG_64BIT)
+diff --git a/arch/mips/kernel/syscalls/Makefile b/arch/mips/kernel/syscalls/Makefile
+index 904452992992..6eee6a3b85df 100644
+--- a/arch/mips/kernel/syscalls/Makefile
++++ b/arch/mips/kernel/syscalls/Makefile
+@@ -18,8 +18,7 @@ quiet_cmd_syshdr = SYSHDR  $@
+ quiet_cmd_sysnr = SYSNR   $@
+       cmd_sysnr = $(CONFIG_SHELL) '$(sysnr)' '$<' '$@'		\
+ 		  '$(sysnr_abis_$(basetarget))'			\
+-		  '$(sysnr_pfx_$(basetarget))'			\
+-		  '$(sysnr_offset_$(basetarget))'
++		  '$(sysnr_pfx_$(basetarget))'
+ 
+ quiet_cmd_systbl = SYSTBL  $@
+       cmd_systbl = $(CONFIG_SHELL) $(systbl) $< $@
+@@ -34,17 +33,14 @@ $(uapi)/unistd_o32.h: $(syscallo32) $(syshdr) FORCE
+ 	$(call if_changed,syshdr)
+ 
+ sysnr_pfx_unistd_nr_n32 := N32
+-sysnr_offset_unistd_nr_n32 := 6000
+ $(kapi)/unistd_nr_n32.h: $(syscalln32) $(sysnr) FORCE
+ 	$(call if_changed,sysnr)
+ 
+ sysnr_pfx_unistd_nr_n64 := 64
+-sysnr_offset_unistd_nr_n64 := 5000
+ $(kapi)/unistd_nr_n64.h: $(syscalln64) $(sysnr) FORCE
+ 	$(call if_changed,sysnr)
+ 
+ sysnr_pfx_unistd_nr_o32 := O32
+-sysnr_offset_unistd_nr_o32 := 4000
+ $(kapi)/unistd_nr_o32.h: $(syscallo32) $(sysnr) FORCE
+ 	$(call if_changed,sysnr)
+ 
+diff --git a/arch/mips/kernel/syscalls/syscallnr.sh b/arch/mips/kernel/syscalls/syscallnr.sh
+index 60bbdb3fe03a..c190bbefbfc2 100644
+--- a/arch/mips/kernel/syscalls/syscallnr.sh
++++ b/arch/mips/kernel/syscalls/syscallnr.sh
+@@ -5,7 +5,6 @@ in="$1"
+ out="$2"
+ my_abis=`echo "($3)" | tr ',' '|'`
+ prefix="$4"
+-offset="$5"
+ 
+ fileguard=_UAPI_ASM_MIPS_`basename "$out" | sed \
+ 	-e 'y/abcdefghijklmnopqrstuvwxyz/ABCDEFGHIJKLMNOPQRSTUVWXYZ/' \
+@@ -20,7 +19,6 @@ grep -E "^[0-9A-Fa-fXx]+[[:space:]]+${my_abis}" "$in" | sort -n | (
+ 		nxt=$((nr+1))
+ 	done
+ 
+-	printf "#define __NR_%s_Linux\t%s\n" "${prefix}" "${offset}"
+ 	printf "#define __NR_%s_Linux_syscalls\t%s\n" "${prefix}" "${nxt}"
+ 	printf "\n"
+ 	printf "#endif /* %s */" "${fileguard}"
+-- 
+2.27.0
 
-Hm, I think .dtbo is even older than that, but again, I wouldn't swear
-to it.
-
-> I have always used dtbo/dtso in my published overlays branches,
-> referred from https://elinux.org/R-Car/DT-Overlays, and used by
-> various people.
->=20
-> > and I think there's much less value to it.
->=20
-> IMHO the same reasoning as for dtb vs. dtbo applies to dts vs. dtso.
-> It matters if the resulting blob will be an overlay or base tree,
-> as the blob will have to be called .dtb or .dtbo.
-> As dtc outputs to stdout by default, the caller has to provide the
-> output filename, and thus needs to know.
-> Even if dtc would name the output file based on the presence of
-> "/plugin/" in the input file, the build system still needs to know
-> for dependency tracking.
-
-Hm, fair point.  I was thinking of the the /plugin/ tag as the
-distinction, whereas dtb is binary and the distinction isn't even
-marked in the header.  But you're right that even readable text labels
-inside the file don't really help make(1).  So, I retract that
-assertion.
-
-> We also do have .dts vs. .dtsi.
->=20
-> Gr{oetje,eeting}s,
->=20
->                         Geert
->=20
-
---=20
-David Gibson			| I'll have my music baroque, and my code
-david AT gibson.dropbear.id.au	| minimalist, thank you.  NOT _the_ _other_
-				| _way_ _around_!
-http://www.ozlabs.org/~dgibson
-
---gmPBfyWAmXOSQLgm
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAEBCAAdFiEEdfRlhq5hpmzETofcbDjKyiDZs5IFAmCwZ10ACgkQbDjKyiDZ
-s5I/sBAA0JKiNiETmfLndzpQT9G9iqQKZ1b5A17zh5AnT4c+615XJR0DjNOyyIE7
-IkVFsq2DyvcNBklAsoocoFDmxXs6pAx15tBn1vmmvJbeFhU2p59hjbdMDIF8Hx47
-ouxt9fnkZTqeQWrUwFXcI7wvQ0xaWn9xySCbzykeql+9NSUbE2czNAiLKWl+NJy3
-Twl7D6fuxpOYIrBRsv4bqAVgTyzYn4LeT21p/EmqDO9MFZUUftjrN8+c27Znz4qt
-+Mq9QlSZkNTD7iGMxG3kjdfS7ExCaR3jZ3Y1oeNyx2n8jqyYw3VIgLOJL1xDGwHJ
-scismnPo/lYJR3muiqOJTyWfuqyCwpqEAUEFU+4NEG31MzhgRSgjKBZfjDi+tmtO
-jP+oBPM8VnSTbnimFee2IIUlkv1QekD1IWoBr2eeOY0PCKsi5Uds0JEAgCTfCuqK
-C87v41BOsNooC+QBaWS5JcAtsX6FDZ4j5YYrEL9+pnOntoOKNnCDlnunolGcgy5q
-HxAM68u+3GixptsgDarFM0pcssXbf8/hglsMlHmLuB1qioCexAMCD7/CXLil+ifZ
-q9fNjRlI7WvUaNy5ldtnHrQatE+Gds9fx8cRPfh0zYAOpIyWp67+MKVHyKWYVmmX
-z+RJdQ1/dF+CNn0nRlFR+QAs4PO4wXWJoIfMci+rKlT/9lANEwk=
-=gl/K
------END PGP SIGNATURE-----
-
---gmPBfyWAmXOSQLgm--
