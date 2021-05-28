@@ -2,239 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5AF3C393D0C
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 08:22:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8427C393D11
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 08:27:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230080AbhE1GYY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 May 2021 02:24:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36430 "EHLO
+        id S230256AbhE1G2G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 May 2021 02:28:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37232 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229561AbhE1GYX (ORCPT
+        with ESMTP id S229753AbhE1G2E (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 May 2021 02:24:23 -0400
-Received: from mail-ej1-x634.google.com (mail-ej1-x634.google.com [IPv6:2a00:1450:4864:20::634])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DBF90C061574
-        for <linux-kernel@vger.kernel.org>; Thu, 27 May 2021 23:22:47 -0700 (PDT)
-Received: by mail-ej1-x634.google.com with SMTP id h20so3711601ejg.1
-        for <linux-kernel@vger.kernel.org>; Thu, 27 May 2021 23:22:47 -0700 (PDT)
+        Fri, 28 May 2021 02:28:04 -0400
+Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3DF1C061574
+        for <linux-kernel@vger.kernel.org>; Thu, 27 May 2021 23:26:27 -0700 (PDT)
+Received: by mail-lf1-x129.google.com with SMTP id e17so3751705lfb.2
+        for <linux-kernel@vger.kernel.org>; Thu, 27 May 2021 23:26:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
+        d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=hZG+K5o9x93608ffGiO2O9Ngv/oiNofV4zjyg74md5k=;
-        b=QzQjFN9gxYe1wOtfY73V1aFqAd/0OGyHo7JPgM4uCoHhui/jHJFbqE0K0F4HiiF5eg
-         I5el5Fv3VFvR/wZOc9gR017FPTNzuzxbGVfvnFDe5G68q7N1Ztccq5sOvudQCAn+eOGA
-         1kCfP85tcSWhbab5FWiLw47XTXa4moF2k0Dkg3UyheQfqq+zRif7VkcxjDpBSXReSyPV
-         IAl2iTd9ETItZwG+wgt24aMrFxfaLEd0QNQ6lqq/3m1k9LogB4CCyVVsnrp+P4Sbju8Y
-         /5qzxuRFUBbjlP+JOpaq3tS815XTvWAajnHLHFgUd16P2qT9PjbR8daeI9/VVMe+fRug
-         8YiA==
+         :cc;
+        bh=pcPeM9wIRz+ZVVtEgOoKIlWK/XJmHprXXczkYzaUkco=;
+        b=fUxZIWK9IAU3hpA+lujI8aNk7uZfF5gR5gI7VA4rTiHpaV2PGzkgayC23C4ywz3PrW
+         0yk5zPClOn7RBF+JbITpQ2fD6wr1VLQCtzFgz9wv+VKAjMw7ErvxN40NnZZtb9vKJPZA
+         omhQGiUR0hEooNGs4451ln4LB1j7lrfGMTJq/9/ExFlz9jqgdNVBwAVWFYX3N3dgfD6q
+         tFY5ssmzENSOKZQV888ZHu900SziTw9zeUDQI4yz/cALHl8b5873WApAnom2ItA5xDiR
+         dLathv50Q+7ghMPotGsyaUB+yEZl+CJphAJblM0uMmIhigog7gG5XS5M6NXfsRLMRr2q
+         8pZg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=hZG+K5o9x93608ffGiO2O9Ngv/oiNofV4zjyg74md5k=;
-        b=XTnmml1hoNyWLfY5Ve2YWbFehIn3zibA3NgHUjvmFcJzmFJEYv/oSkJQtOAP/JtS4I
-         bcgXhGdNgPamfIkivSy4bnWoBdL1p560tm0Hw302PuzJWTGXuGqlm64xkZiFwqeBF1nn
-         SP9/pbm4hw2tjEyyO0M5roPNj+SNM1kf4al3vADkd8ov3CkmbQgENDIpzW0NCa6QKXXY
-         euue7rei8wi7fj3qqHkTFetZsGpwAEQl17WbTloQNYA+Plj2cIJR3TM5JOYIreIYYdEP
-         IHzBSwyuN2za3rKk42APPtJmi6mjMIKTXXsgh7C4yAtilgBFDNuI2mcNq+9VtzeddR3F
-         qeaA==
-X-Gm-Message-State: AOAM533v8d8arFmIC1fzW9uvWSpJW++TfVw+G+NA564/UTcFKWaDvp4L
-        8OPirtBfm8uEeiNwI4GdNQZkuU5oHJX7BSX20ZyaLg==
-X-Google-Smtp-Source: ABdhPJwSRHmAcY0UCICO1Np4fXcde1DpMd+W6fvPIBm31r1yRnjRKQVkc1c3255Db5m+nKHx1gciOgN3/y84TitM/TY=
-X-Received: by 2002:a17:906:c211:: with SMTP id d17mr7572074ejz.247.1622182966154;
- Thu, 27 May 2021 23:22:46 -0700 (PDT)
+         :message-id:subject:to:cc;
+        bh=pcPeM9wIRz+ZVVtEgOoKIlWK/XJmHprXXczkYzaUkco=;
+        b=fuWkg2rIyQUovFrGPKUkjNatADHm5OVJkxWAOh4B694C4gUtBTDjZzdUeP/1llF9ML
+         +ot6Tw9QLxsewC6kUKbXjKfgNfC5MU8NHY/kCZPGvII8A72YaClNeLKT7/p8zkFbPYoz
+         WwsiwfOHfSDSAXdQVnd1XdsMTnLaGnBeTzqPkjZknVOOdHEo9TyWKnXwG+tWjSODXGkt
+         RRRSLFI+AyHQ/fiy6UbJb1wc7Hcp1HpNeGV198Wk5sip3NYPaCQuPt++/pBDCkmhvRUk
+         zashZVkNqwEtFWp3j5wUA1TyjaBfAzShpBkErUlJpjQYj8DsnfrNUlNA/ilrOM/iWDb6
+         JAlQ==
+X-Gm-Message-State: AOAM533Bc4v+ew7jX0E71jj6/7nWRU8dR/K1xBT6G0WoyDnY8AT1ffWM
+        WtfuYMtUObzHX+sMF8YwE3pbGsr2GpXPg3ZYwOc=
+X-Google-Smtp-Source: ABdhPJzANJFTNM+8+vfMjfYS4hL7h4c1JydtKO4kh4wrTtrNs1lqRlpwu3/qNhvZdsPZpNUy67VQ/x+oM5FttsWBImE=
+X-Received: by 2002:a05:6512:3488:: with SMTP id v8mr4691448lfr.622.1622183186208;
+ Thu, 27 May 2021 23:26:26 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210527151139.242182390@linuxfoundation.org>
-In-Reply-To: <20210527151139.242182390@linuxfoundation.org>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Fri, 28 May 2021 11:52:34 +0530
-Message-ID: <CA+G9fYuk3Q0x4_LiFZQv96D8hYWcs3Vdb7bKEgJn6BkmrdnwOQ@mail.gmail.com>
-Subject: Re: [PATCH 5.10 0/9] 5.10.41-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     open list <linux-kernel@vger.kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Shuah Khan <shuah@kernel.org>, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, Pavel Machek <pavel@denx.de>,
-        Jon Hunter <jonathanh@nvidia.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        linux-stable <stable@vger.kernel.org>
+References: <20210514103748.737809-1-dietmar.eggemann@arm.com>
+ <20210519160633.GA230499@e120877-lin.cambridge.arm.com> <cb72557a-6039-df95-7e25-a7f37d3f9cef@arm.com>
+ <CAB8ipk8POOzM2Dut0gcqsgNO0r2585GGv4SG+a1mOmMnrW=Vrw@mail.gmail.com> <a8ab9455-a9be-2349-d23a-676aa89fbf2d@arm.com>
+In-Reply-To: <a8ab9455-a9be-2349-d23a-676aa89fbf2d@arm.com>
+From:   Xuewen Yan <xuewen.yan94@gmail.com>
+Date:   Fri, 28 May 2021 14:25:29 +0800
+Message-ID: <CAB8ipk93Qux6C4X01oHJRUNumYxR7QbZXWx28DCyUZo8KDvi3A@mail.gmail.com>
+Subject: Re: [PATCH] sched/fair: Fix util_est UTIL_AVG_UNCHANGED handling
+To:     Dietmar Eggemann <dietmar.eggemann@arm.com>
+Cc:     Vincent Donnefort <vincent.donnefort@arm.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Patrick Bellasi <patrick.bellasi@matbug.net>,
+        Quentin Perret <qperret@google.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 27 May 2021 at 20:43, Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
+On Fri, May 28, 2021 at 6:38 AM Dietmar Eggemann
+<dietmar.eggemann@arm.com> wrote:
 >
-> This is the start of the stable review cycle for the 5.10.41 release.
-> There are 9 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
+> On 27/05/2021 07:41, Xuewen Yan wrote:
+> > Hi
+> >
+> > On Wed, May 26, 2021 at 10:59 PM Dietmar Eggemann
+> > <dietmar.eggemann@arm.com> wrote:
+> >>
+> >> On 19/05/2021 18:06, Vincent Donnefort wrote:
+> >>> On Fri, May 14, 2021 at 12:37:48PM +0200, Dietmar Eggemann wrote:
 >
-> Responses should be made by Sat, 29 May 2021 15:11:29 +0000.
-> Anything received after that time might be too late.
+> [...]
 >
-> The whole patch series can be found in one patch at:
->         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-=
-5.10.41-rc1.gz
-> or in the git tree and branch at:
->         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
--rc.git linux-5.10.y
-> and the diffstat can be found below.
+> >> diff --git a/include/linux/sched.h b/include/linux/sched.h
+> >> index c7e7d50e2fdc..0a0bca694536 100644
+> >> --- a/include/linux/sched.h
+> >> +++ b/include/linux/sched.h
+> >> @@ -357,6 +357,16 @@ struct util_est {
+> >>  #define UTIL_EST_WEIGHT_SHIFT          2
+> >>  } __attribute__((__aligned__(sizeof(u64))));
+> >>
+> >> +/*
+> >> + * This flag is used to synchronize util_est with util_avg updates.
+> >> + * When a task is dequeued, its util_est should not be updated if its util_avg
+> >> + * has not been updated in the meantime.
+> >> + * This information is mapped into the MSB bit of util_est.enqueued at dequeue
+> >> + * time. Since max value of util_est.enqueued for a task is 1024 (PELT util_avg
+> >> + * for a task) it is safe to use MSB.
+> >> + */
+> >> +#define UTIL_AVG_UNCHANGED 0x80000000
+> >> +
+> >
+> > IMHO, Maybe it would be better to put it in the util_est structure
+> > just like UTIL_EST_WEIGHT_SHIFT?
 >
-> thanks,
+> Yeah, can do.
 >
-> greg k-h
+> I just realized that 'kernel/sched/pelt.h' does not include
+> <linux/sched.h> directly (or indirectly via "sched.h". But I can easily
+> move cfs_se_util_change() (which uses UTIL_AVG_UNCHANGED) from pelt.h to
+> pelt.c, its only consumer anyway.
 
+Since there are so many questions, why not add ( #include "pelt.h" )
+directly into (kernel/sched/debug.c)?
 
-Results from Linaro=E2=80=99s test farm.
-No regressions on arm64, arm, x86_64, and i386.
+diff --git a/kernel/sched/debug.c b/kernel/sched/debug.c
+index 9c882f20803e..dde91171d4ae 100644
+--- a/kernel/sched/debug.c
++++ b/kernel/sched/debug.c
+@@ -7,6 +7,7 @@
+  * Copyright(C) 2007, Red Hat, Inc., Ingo Molnar
+  */
+ #include "sched.h"
++#include "pelt.h"
 
-Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
-
-## Build
-* kernel: 5.10.41-rc1
-* git: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-=
-rc.git
-* git branch: linux-5.10.y
-* git commit: ec1cc3ee7be23032bad8bf00052c9b75fdfe9971
-* git describe: v5.10.40-10-gec1cc3ee7be2
-* test details:
-https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-5.10.y/build/v5.10=
-.40-10-gec1cc3ee7be2
-
-## No regressions (compared to v5.10.40)
-
-## No fixes (compared to v5.10.40)
-
-## Test result summary
- total: 78784, pass: 64361, fail: 2504, skip: 11224, xfail: 695,
-
-## Build Summary
-* arc: 10 total, 10 passed, 0 failed
-* arm: 193 total, 193 passed, 0 failed
-* arm64: 27 total, 27 passed, 0 failed
-* dragonboard-410c: 1 total, 1 passed, 0 failed
-* hi6220-hikey: 1 total, 1 passed, 0 failed
-* i386: 26 total, 26 passed, 0 failed
-* juno-r2: 1 total, 1 passed, 0 failed
-* mips: 45 total, 45 passed, 0 failed
-* parisc: 9 total, 9 passed, 0 failed
-* powerpc: 27 total, 27 passed, 0 failed
-* riscv: 21 total, 21 passed, 0 failed
-* s390: 18 total, 18 passed, 0 failed
-* sh: 18 total, 18 passed, 0 failed
-* sparc: 9 total, 9 passed, 0 failed
-* x15: 1 total, 1 passed, 0 failed
-* x86: 1 total, 1 passed, 0 failed
-* x86_64: 27 total, 27 passed, 0 failed
-
-## Test suites summary
-* fwts
-* igt-gpu-tools
-* install-android-platform-tools-r2600
-* kselftest-
-* kselftest-android
-* kselftest-bpf
-* kselftest-breakpoints
-* kselftest-capabilities
-* kselftest-cgroup
-* kselftest-clone3
-* kselftest-core
-* kselftest-cpu-hotplug
-* kselftest-cpufreq
-* kselftest-drivers
-* kselftest-efivarfs
-* kselftest-filesystems
-* kselftest-firmware
-* kselftest-fpu
-* kselftest-futex
-* kselftest-gpio
-* kselftest-intel_pstate
-* kselftest-ipc
-* kselftest-ir
-* kselftest-kcmp
-* kselftest-kexec
-* kselftest-kvm
-* kselftest-lib
-* kselftest-livepatch
-* kselftest-lkdtm
-* kselftest-membarrier
-* kselftest-memfd
-* kselftest-memory-hotplug
-* kselftest-mincore
-* kselftest-mount
-* kselftest-mqueue
-* kselftest-net
-* kselftest-netfilter
-* kselftest-nsfs
-* kselftest-openat2
-* kselftest-pid_namespace
-* kselftest-pidfd
-* kselftest-proc
-* kselftest-pstore
-* kselftest-ptrace
-* kselftest-rseq
-* kselftest-rtc
-* kselftest-seccomp
-* kselftest-sigaltstack
-* kselftest-size
-* kselftest-splice
-* kselftest-static_keys
-* kselftest-sync
-* kselftest-sysctl
-* kselftest-tc-testing
-* kselftest-timens
-* kselftest-timers
-* kselftest-tmpfs
-* kselftest-tpm2
-* kselftest-user
-* kselftest-vm
-* kselftest-vsyscall-mode-native-
-* kselftest-vsyscall-mode-none-
-* kselftest-x86
-* kselftest-zram
-* kunit
-* kvm-unit-tests
-* libhugetlbfs
-* linux-log-parser
-* ltp-cap_bounds-tests
-* ltp-commands-tests
-* ltp-containers-tests
-* ltp-controllers-tests
-* ltp-cpuhotplug-tests
-* ltp-crypto-tests
-* ltp-cve-tests
-* ltp-dio-tests
-* ltp-fcntl-locktests-tests
-* ltp-filecaps-tests
-* ltp-fs-tests
-* ltp-fs_bind-tests
-* ltp-fs_perms_simple-tests
-* ltp-fsx-tests
-* ltp-hugetlb-tests
-* ltp-io-tests
-* ltp-ipc-tests
-* ltp-math-tests
-* ltp-mm-tests
-* ltp-nptl-tests
-* ltp-open-posix-tests
-* ltp-pty-tests
-* ltp-sched-tests
-* ltp-securebits-tests
-* ltp-syscalls-tests
-* ltp-tracing-tests
-* network-basic-tests
-* packetdrill
-* perf
-* rcutorture
-* ssuite
-* v4l2-compliance
-
---
-Linaro LKFT
-https://lkft.linaro.org
+ /*
+  * This allows printing both to /proc/sched_debug and
