@@ -2,93 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F064394709
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 20:29:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E1D9394705
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 20:29:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229603AbhE1SbY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 May 2021 14:31:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56138 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229463AbhE1SbY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 May 2021 14:31:24 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 43175613B5;
-        Fri, 28 May 2021 18:29:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1622226588;
-        bh=QSRZ6S+Sdf5WKAtAbGtJdidvTJ3wPSV/gRZewGESIdk=;
-        h=From:To:Cc:Subject:Date:From;
-        b=hNQ+OCbF7nGq0MnBf2zAPV0EqKgB5b70lnJOPG/Bwu1By3raVTVvicfYq/ICuuHbd
-         TC4czzsMTLqk/RFcDpjfix5VBAQA34WlMU6mD/3sEKEkGHA1scGO+5EtIlxJb6bb58
-         962RSm5GttFs0CsZ8cXfAJ+eZhpLF/JFoUYqjV/b6uVemz8qtqktlMljUQ5UGd4Azl
-         XD5WWPTootKdW6q8HHwnhvXYLSk+a70AX587QpUItcVK6WevBjXPBPIYj903/XSfic
-         FIdC1ILIpNVc42D925oe+PjwSOgQwuqCkmAe0+hc+y9hJY7LAyK7zRUkUDuMF+CJTg
-         9n7m86SCQtTlQ==
-From:   Nathan Chancellor <nathan@kernel.org>
-To:     Michael Ellerman <mpe@ellerman.id.au>
-Cc:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-        clang-built-linux@googlegroups.com,
-        Nathan Chancellor <nathan@kernel.org>, stable@vger.kernel.org
-Subject: [PATCH] powerpc/barrier: Avoid collision with clang's __lwsync macro
-Date:   Fri, 28 May 2021 11:27:52 -0700
-Message-Id: <20210528182752.1852002-1-nathan@kernel.org>
-X-Mailer: git-send-email 2.32.0.rc0
+        id S229594AbhE1Saj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 May 2021 14:30:39 -0400
+Received: from smtprelay0015.hostedemail.com ([216.40.44.15]:38246 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S229463AbhE1Sah (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 28 May 2021 14:30:37 -0400
+Received: from omf04.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay03.hostedemail.com (Postfix) with ESMTP id 08960837F27E;
+        Fri, 28 May 2021 18:29:02 +0000 (UTC)
+Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by omf04.hostedemail.com (Postfix) with ESMTPA id 6721AD1515;
+        Fri, 28 May 2021 18:29:00 +0000 (UTC)
+Message-ID: <8a64b62949477b85576ab47e4705ca13fb555a9c.camel@perches.com>
+Subject: Re: [PATCH 1/3] scsi: fcoe: Statically initialize flogi_maddr
+From:   Joe Perches <joe@perches.com>
+To:     Kees Cook <keescook@chromium.org>,
+        "Martin K . Petersen" <martin.petersen@oracle.com>
+Cc:     Hannes Reinecke <hare@suse.de>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Bradley Grove <linuxdrivers@attotech.com>,
+        Artur Paszkiewicz <artur.paszkiewicz@intel.com>,
+        linux-kernel@vger.kernel.org, linux-scsi@vger.kernel.org,
+        linux-hardening@vger.kernel.org
+Date:   Fri, 28 May 2021 11:28:59 -0700
+In-Reply-To: <20210528181337.792268-2-keescook@chromium.org>
+References: <20210528181337.792268-1-keescook@chromium.org>
+         <20210528181337.792268-2-keescook@chromium.org>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.38.1-1 
 MIME-Version: 1.0
-X-Patchwork-Bot: notify
 Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=0.10
+X-Rspamd-Server: rspamout05
+X-Rspamd-Queue-Id: 6721AD1515
+X-Stat-Signature: uwk3xpe6uybxkt53prb6c4u4z74zby8t
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Session-ID: U2FsdGVkX18UiZQA79XyUyFUgPVxG5YCbfS14BoxNgY=
+X-HE-Tag: 1622226540-104772
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-A change in clang 13 results in the __lwsync macro being defined as
-__builtin_ppc_lwsync, which emits 'lwsync' or 'msync' depending on what
-the target supports. This breaks the build because of -Werror in
-arch/powerpc, along with thousands of warnings:
+On Fri, 2021-05-28 at 11:13 -0700, Kees Cook wrote:
+> In preparation for FORTIFY_SOURCE performing compile-time and run-time
+> field bounds checking for memcpy() using memcpy() with an inline const
+> buffer and instead just statically initialize the destination array
+> directly.
+[]
+> diff --git a/drivers/scsi/fcoe/fcoe.c b/drivers/scsi/fcoe/fcoe.c
+[]
+> @@ -293,7 +293,7 @@ static int fcoe_interface_setup(struct fcoe_interface *fcoe,
+>  	struct fcoe_ctlr *fip = fcoe_to_ctlr(fcoe);
+>  	struct netdev_hw_addr *ha;
+>  	struct net_device *real_dev;
+> -	u8 flogi_maddr[ETH_ALEN];
+> +	u8 flogi_maddr[ETH_ALEN] = FC_FCOE_FLOGI_MAC;
 
- In file included from arch/powerpc/kernel/pmc.c:12:
- In file included from include/linux/bug.h:5:
- In file included from arch/powerpc/include/asm/bug.h:109:
- In file included from include/asm-generic/bug.h:20:
- In file included from include/linux/kernel.h:12:
- In file included from include/linux/bitops.h:32:
- In file included from arch/powerpc/include/asm/bitops.h:62:
- arch/powerpc/include/asm/barrier.h:49:9: error: '__lwsync' macro redefined [-Werror,-Wmacro-redefined]
- #define __lwsync()      __asm__ __volatile__ (stringify_in_c(LWSYNC) : : :"memory")
-        ^
- <built-in>:308:9: note: previous definition is here
- #define __lwsync __builtin_ppc_lwsync
-        ^
- 1 error generated.
+static const
 
-Undefine this macro so that the runtime patching introduced by
-commit 2d1b2027626d ("powerpc: Fixup lwsync at runtime") continues to
-work properly with clang and the build no longer breaks.
+> @@ -442,7 +441,7 @@ static void fcoe_interface_remove(struct fcoe_interface *fcoe)
+>  {
+>  	struct net_device *netdev = fcoe->netdev;
+>  	struct fcoe_ctlr *fip = fcoe_to_ctlr(fcoe);
+> -	u8 flogi_maddr[ETH_ALEN];
+> +	u8 flogi_maddr[ETH_ALEN] = FC_FCOE_FLOGI_MAC;
 
-Cc: stable@vger.kernel.org
-Link: https://github.com/ClangBuiltLinux/linux/issues/1386
-Link: https://github.com/llvm/llvm-project/commit/62b5df7fe2b3fda1772befeda15598fbef96a614
-Signed-off-by: Nathan Chancellor <nathan@kernel.org>
----
- arch/powerpc/include/asm/barrier.h | 2 ++
- 1 file changed, 2 insertions(+)
+etc...
 
-diff --git a/arch/powerpc/include/asm/barrier.h b/arch/powerpc/include/asm/barrier.h
-index 7ae29cfb06c0..f0e687236484 100644
---- a/arch/powerpc/include/asm/barrier.h
-+++ b/arch/powerpc/include/asm/barrier.h
-@@ -46,6 +46,8 @@
- #    define SMPWMB      eieio
- #endif
- 
-+/* clang defines this macro for a builtin, which will not work with runtime patching */
-+#undef __lwsync
- #define __lwsync()	__asm__ __volatile__ (stringify_in_c(LWSYNC) : : :"memory")
- #define dma_rmb()	__lwsync()
- #define dma_wmb()	__asm__ __volatile__ (stringify_in_c(SMPWMB) : : :"memory")
-
-base-commit: 97e5bf604b7a0d6e1b3e00fe31d5fd4b9bffeaae
--- 
-2.32.0.rc0
 
