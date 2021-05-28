@@ -2,80 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 54150394197
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 13:03:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6DA663941A3
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 13:05:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236666AbhE1LCr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 May 2021 07:02:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42994 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236514AbhE1LCq (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 May 2021 07:02:46 -0400
-Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A895C061574
-        for <linux-kernel@vger.kernel.org>; Fri, 28 May 2021 04:01:10 -0700 (PDT)
-Received: by mail-lf1-x129.google.com with SMTP id j10so4669036lfb.12
-        for <linux-kernel@vger.kernel.org>; Fri, 28 May 2021 04:01:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=shutemov-name.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=5yAFnidpA2BQbeJKH28tAxU0DrXwCRwR23hK0aE+KnA=;
-        b=OIwAvsSDIKcTgIm62bG0YTK00+C14Z/8smaSa4PGz8cMoAEEq7ynnfgEwQgbnrhtOi
-         pRsqEE9yiHvg/YKDPOPTTCeIjAwq0wZKx61TUtzpy461d0xXTB4LfQhaSPUSF5klPYZf
-         0c2e8v+X/89Q1Bv6tfyToupd4GWRe+FYOe7PIhUW72raBUPbhAQjzpvK2jKOqymj5rff
-         I1xMwnn0qtBa5LQDAPk4Xko5UtvHR/H4NfOrC6z3ZvJfr3pC8Ih1GbYCL/Wb2LLX4ixJ
-         6O8PujRDWepQJB1aRlwWkJwwLHSma/OSj7+ah5aH0wuLSXajoEUnz9am2AHNGFRqJW71
-         kO7Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=5yAFnidpA2BQbeJKH28tAxU0DrXwCRwR23hK0aE+KnA=;
-        b=jv+SM7uRE2vXb5HcnZ648GZ94GFqrWJwvifCZ9I73gFmmmClKI7uGH3T+7+BILsUi/
-         e/C1mAAXK0zGBPTMX5YsXcICOEMJqj9nmDeKBlsLrItVNX4G36brIUOfmMWkz3NmLbhL
-         eTiX5/nHqb3A9MXD/eOyOvEWVc42KOMj2zUONOZINlPUjlFVDoAzRaE8zWAIl9EPS2Ej
-         KNDsZ3R5+0Dtewx9s5UFT8WzI54ETzCaYrYQ2VlmxXuWTuWvRJRGU42ZrA94a16JJhdu
-         tENTWVZo3xTbEDz518FS6+BaLeUWE779OePS8+cfM2hCsBitlhskOMGWbyBgfDSEBSIP
-         rQAA==
-X-Gm-Message-State: AOAM531AfP8WZWDb4odFdcMgqh191JpBqqMHQ/8RshQeUTcOAmZ6YSRb
-        +QKf6hJnhWieNRBAcN+s8fE3Eg==
-X-Google-Smtp-Source: ABdhPJwD1KsNz3QaTh4zsnGHrGefbiwV1NmA+hSdcMcc7KydHQVCt94urcDZDnfFxCRQ1Dx5YYcaqg==
-X-Received: by 2002:ac2:4e0a:: with SMTP id e10mr5217205lfr.33.1622199668880;
-        Fri, 28 May 2021 04:01:08 -0700 (PDT)
-Received: from box.localdomain ([86.57.175.117])
-        by smtp.gmail.com with ESMTPSA id t14sm444529lfk.186.2021.05.28.04.01.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 28 May 2021 04:01:08 -0700 (PDT)
-Received: by box.localdomain (Postfix, from userid 1000)
-        id BCDD7102761; Fri, 28 May 2021 14:01:15 +0300 (+03)
-Date:   Fri, 28 May 2021 14:01:15 +0300
-From:   "Kirill A. Shutemov" <kirill@shutemov.name>
-To:     Nanyong Sun <sunnanyong@huawei.com>
-Cc:     shuah@kernel.org, sfr@canb.auug.org.au,
-        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kirill.shutemov@linux.intel.com, yang.shi@linux.alibaba.com,
-        wangkefeng.wang@huawei.com
-Subject: Re: [PATCH -next] khugepaged: selftests: remove debug_cow
-Message-ID: <20210528110115.xxgvr5bn7af43wrj@box.shutemov.name>
-References: <20210430051117.400189-1-sunnanyong@huawei.com>
+        id S236622AbhE1LHT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 May 2021 07:07:19 -0400
+Received: from mga01.intel.com ([192.55.52.88]:54864 "EHLO mga01.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236170AbhE1LHS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 28 May 2021 07:07:18 -0400
+IronPort-SDR: AP1FINOecpGiqcdbysLQnbtpDXfTljrAoixWaacWWDyWFjXRTFauzHB9ycrP31YeeJ5H6g+0Xi
+ hB8VR5TGHaqQ==
+X-IronPort-AV: E=McAfee;i="6200,9189,9997"; a="224168436"
+X-IronPort-AV: E=Sophos;i="5.83,229,1616482800"; 
+   d="scan'208";a="224168436"
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 May 2021 04:05:38 -0700
+IronPort-SDR: 5gUpgFI3ijJhpVhNYyLzYKRGjOJiehWYgVfNXasWTI5Jj0AXbkyROweD2+VTajJhQXIyB3FkTD
+ Prch3rKKsLDg==
+X-IronPort-AV: E=Sophos;i="5.83,229,1616482800"; 
+   d="scan'208";a="547949947"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 May 2021 04:05:36 -0700
+Received: from andy by smile with local (Exim 4.94)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1lmaJ3-00FIT7-2g; Fri, 28 May 2021 14:05:33 +0300
+Date:   Fri, 28 May 2021 14:05:33 +0300
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Pavel Machek <pavel@ucw.cz>
+Cc:     Amireddy Mallikarjuna reddy <mallikarjunax.reddy@linux.intel.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Marek =?iso-8859-1?Q?Beh=FAn?= <marek.behun@nic.cz>,
+        Abanoub Sameh <abanoubsameh8@gmail.com>,
+        Dan Murphy <dmurphy@ti.com>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        linux-leds@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v1 00/28] leds: cleanups and fwnode refcounting bug fixes
+Message-ID: <YLDOfWuis5MvdxfJ@smile.fi.intel.com>
+References: <20210510095045.3299382-1-andy.shevchenko@gmail.com>
+ <YKIbgBd3q8c+Tgz0@smile.fi.intel.com>
+ <20210528100254.GC2209@amd>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210430051117.400189-1-sunnanyong@huawei.com>
+In-Reply-To: <20210528100254.GC2209@amd>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 30, 2021 at 01:11:17PM +0800, Nanyong Sun wrote:
-> The debug_cow attribute had been removed since commit 4958e4d86ecb01
-> ("mm: thp: remove debug_cow switch"), so remove it in selftest code too,
-> otherwise the khugepaged test will fail.
+On Fri, May 28, 2021 at 12:02:54PM +0200, Pavel Machek wrote:
+> On Mon 2021-05-17 10:30:08, Andy Shevchenko wrote:
+> > On Mon, May 10, 2021 at 12:50:17PM +0300, Andy Shevchenko wrote:
+> > > When analyzing the current state of affairs with fwnode reference counting
+> > > I found that a lot of core doesn't take it right. Here is a bunch of
+> > > corresponding fixes against LED drivers.
+> > > 
+> > > The series includes some cleanups and a few other fixes grouped by a driver.
+> > > 
+> > > First two patches are taking care of -ENOTSUPP error code too  prevent its
+> > > appearance in the user space.
+> > 
+> > Pavel, any comments on this bug fix series?
 > 
-> Signed-off-by: Nanyong Sun <sunnanyong@huawei.com>
+> I took these:
 
-Acked-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
+Thanks!
+
+What branch/tree should I rebase the rest on?
+
+> For the "remove depends on OF"... I'd preffer not to take those. We
+> don't need to ask the user for configurations that never happen.
+
+What do you mean by this? ACPI is quite a good configuration to make use
+of it on the corresponding platforms. By default any discrete LED driver
+(in hardware term here) IC should be considered independent from the type
+of the platform description. Do you agree? If so, it means that dropping
+OF dependency is a right thing to do to allow users of those ICs to be happy
+even on ACPI based platforms.
+
+Note, entire IIO subsystem is a good example of this activity. All the sensors
+can be used now in ACPI environment without explicit requirement to have an
+ACPI ID, although it's highly recommended to acquire for the real products
+(not DIY ones).
 
 -- 
- Kirill A. Shutemov
+With Best Regards,
+Andy Shevchenko
+
+
