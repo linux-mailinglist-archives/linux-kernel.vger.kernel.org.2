@@ -2,216 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F25D0393C07
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 05:44:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 787ED393C04
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 05:43:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236330AbhE1Dpr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 May 2021 23:45:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58058 "EHLO
+        id S236250AbhE1DpM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 May 2021 23:45:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57924 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235754AbhE1Dpn (ORCPT
+        with ESMTP id S235332AbhE1DpJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 May 2021 23:45:43 -0400
-Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5DABC061760
-        for <linux-kernel@vger.kernel.org>; Thu, 27 May 2021 20:44:08 -0700 (PDT)
-Received: by mail-pj1-x1030.google.com with SMTP id m8-20020a17090a4148b029015fc5d36343so1754390pjg.1
-        for <linux-kernel@vger.kernel.org>; Thu, 27 May 2021 20:44:08 -0700 (PDT)
+        Thu, 27 May 2021 23:45:09 -0400
+Received: from mail-oi1-x229.google.com (mail-oi1-x229.google.com [IPv6:2607:f8b0:4864:20::229])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82CCCC06174A
+        for <linux-kernel@vger.kernel.org>; Thu, 27 May 2021 20:43:35 -0700 (PDT)
+Received: by mail-oi1-x229.google.com with SMTP id d21so2948851oic.11
+        for <linux-kernel@vger.kernel.org>; Thu, 27 May 2021 20:43:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=lh+EYCLoUcN5j6D/Y+n/b8ai24Cn5mqFXxFcteegjFo=;
-        b=vozsVGeqo0Ckn0+Y2O/TK9Dbw7JR8a9ngc9iFrch/sN3pXDdiz1RJXvthFLjcFcuQi
-         zBas4i1V6UykahH0BLxKklVImiDhHYXKsfSFOTNVYQmzhXbBYtKHBnvMHb/Fjw5QAXWu
-         zH+nhDvQ1EE3mJlbDtCL+Q+Um2Pb3HKG6XKNKgGbBk3TtZnAVjCsJZUjx0RQmmCC0yB2
-         gOrpVaL4wBbOpQ1kt03atdfWrbQa2ebWu2gEQfzxhgxZpdhqJGrUbCQX1AqTMQHVwU+Z
-         OF4Jwrk94JM5/+5AzDpuAS8OR39XhxeAFBFbayLMucDFunIhBkTkm6ZkRcMsZxbpPs7g
-         BdjA==
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=PkrVdJ/RJ079DbdQjbv4G0ln55eLr+Bw1ygQzJzg1t8=;
+        b=FngLEKgaxH/huHl9PkWbmh4N/W582BVkVl/LqHzTyPGSbysn2I9SiXHfrfFeGwgAaN
+         SKVuV5loqchkpS2BJCA5myUIXxvXbXIz4UMVw0U9pC1Bs5ST7gDJD6xq8WgUdhQ/97EH
+         iQhtdGMtkwWNfPmFc+4+TOVHOtHG1dygpBeeYOVPMN49guJt7uEyvmWYWJvxlg4ap5rs
+         oJJiEfGAh40USAsTc0kL6nJxvQv5TeW6pCyjdICFzUSVW1n1YJEYPFkTd1vqoZRuPucu
+         YWzKPYOanuBkEHDK/EZ3+c8nEjueLXA4d3fsZFxWh4pZM/UMCAv1nOLhxIxL+zABuuQo
+         M5kg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=lh+EYCLoUcN5j6D/Y+n/b8ai24Cn5mqFXxFcteegjFo=;
-        b=Y3behIARmaetwsJvv0txVhRUYl3x9QdSFkQk+UWPYGwcd1rX6en0XjNsTAcD694Rbi
-         Bu7+nwcdKbMMnksDiIz0al7CAJP9YHEXhQN8q0/jtKofiVcT2V62XXffvalrK72hbQMF
-         5JC6Qt6rlQFlgO1OhFL/ARIRN5ZT8mm2hv+ah/NzurY355acZGtRoQXRLgWuJ0GWe3Qb
-         W+YpNeUNcK5+My9Mx8M+NLv8CQ7q54z+Vd1T60L8oCkKMkiu3YG5gkcHqmX8LHIy6DOL
-         zqX1ckGJRTnoz4r4f99K/2uxtlcOg+RfM42Qs1+wXpIGnhThNr5C6vjZbsYr/NqHOa9u
-         3idg==
-X-Gm-Message-State: AOAM530Goju1rK2yL9A/QYdlFFpDetJcBc4tnbba+vir7Nc12qQBkJ1q
-        Os9Hj6br5bIiZSsotqHIO9hOdQCopIXAw0cVp4XkVQ==
-X-Google-Smtp-Source: ABdhPJxVg/yaMOcm8kfjg+lyfSkRngQO04M367IWDQJgFRhkfJgKJsl/ryGstDi7um2yVreMtfAldziCbcHmzYltWGM=
-X-Received: by 2002:a17:902:d2c8:b029:fe:cd9a:a6bb with SMTP id
- n8-20020a170902d2c8b02900fecd9aa6bbmr5516453plc.34.1622173448368; Thu, 27 May
- 2021 20:44:08 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=PkrVdJ/RJ079DbdQjbv4G0ln55eLr+Bw1ygQzJzg1t8=;
+        b=g0+n7uSWuuD8oHoyf92bXtXepBpSaeAtHJ54NNUnOW5SdrzfsDEnA2KRZzuANcuyV6
+         i3tzGDrhrnnlt4R3WDguqLTVBKt1NM3nITn6aQt0DoKQ6jeNEYGyE9kYe9RC10X1Re++
+         7uXvgeMwL5Wb+H/C8hbIlxafs1n7eHUA0IIZTJj+1iwGD+jm3j3V2bX9IJxN8/z3mfKm
+         slp5EgjP+I5z7ySRlPH1tNP6FQBMou5KDTq/k79dYtuz+Bdms5vFA+HRO4ggH+8tKORB
+         8UUV3iawGeZhc+LuuumV5uJYg2lQX+Bp9tMBwsCLuIRSuuiyJx+E2hEkIfloqkwXNSUl
+         I0ag==
+X-Gm-Message-State: AOAM530eyI7OQQfeDa+x/ckZkfm554y9zhm+4StRi5m22PJdeomhxT1m
+        bBbU+WHjxgI1my1TKu36Bhc+5w==
+X-Google-Smtp-Source: ABdhPJzJQ/F9P2rDQpOIQZ4BrpRjzeQU7l8TlWMOb1c0njHs+ks9XUerp0awJMe4hJIUnozViN81MQ==
+X-Received: by 2002:a54:4011:: with SMTP id x17mr4655166oie.112.1622173414900;
+        Thu, 27 May 2021 20:43:34 -0700 (PDT)
+Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
+        by smtp.gmail.com with ESMTPSA id a5sm1017714otb.41.2021.05.27.20.43.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 27 May 2021 20:43:34 -0700 (PDT)
+Date:   Thu, 27 May 2021 22:43:32 -0500
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Siddharth Gupta <sidgup@codeaurora.org>
+Cc:     ohad@wizery.com, linux-remoteproc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, psodagud@codeaurora.org,
+        stable@vger.kernel.org
+Subject: Re: [PATCH 1/3] remoteproc: core: Move cdev add before device add
+Message-ID: <YLBm5Bd/iwF7Fi+h@builder.lan>
+References: <1621284349-22752-1-git-send-email-sidgup@codeaurora.org>
+ <1621284349-22752-2-git-send-email-sidgup@codeaurora.org>
 MIME-Version: 1.0
-References: <20210527062148.9361-1-songmuchun@bytedance.com>
- <20210527062148.9361-18-songmuchun@bytedance.com> <YK+LhWvabd+KQWOJ@casper.infradead.org>
-In-Reply-To: <YK+LhWvabd+KQWOJ@casper.infradead.org>
-From:   Muchun Song <songmuchun@bytedance.com>
-Date:   Fri, 28 May 2021 11:43:29 +0800
-Message-ID: <CAMZfGtWUNBaGmSq-WKXc+DJTbTiSi96SzmGVZsnc-SQ=UiL=QQ@mail.gmail.com>
-Subject: Re: [External] Re: [PATCH v2 17/21] mm: list_lru: replace linear
- array with xarray
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Roman Gushchin <guro@fb.com>, Yang Shi <shy828301@gmail.com>,
-        Alex Shi <alexs@kernel.org>,
-        Wei Yang <richard.weiyang@gmail.com>,
-        Dave Chinner <david@fromorbit.com>,
-        trond.myklebust@hammerspace.com, anna.schumaker@netapp.com,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        linux-nfs@vger.kernel.org, zhengqi.arch@bytedance.com,
-        Xiongchun duan <duanxiongchun@bytedance.com>,
-        fam.zheng@bytedance.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1621284349-22752-2-git-send-email-sidgup@codeaurora.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 27, 2021 at 8:08 PM Matthew Wilcox <willy@infradead.org> wrote:
->
-> On Thu, May 27, 2021 at 02:21:44PM +0800, Muchun Song wrote:
-> > If we run 10k containers in the system, the size of the
-> > list_lru_memcg->lrus can be ~96KB per list_lru. When we decrease the
-> > number containers, the size of the array will not be shrinked. It is
-> > not scalable. The xarray is a good choice for this case. We can save
-> > a lot of memory when there are tens of thousands continers in the
-> > system. If we use xarray, we also can remove the logic code of
-> > resizing array, which can simplify the code.
->
-> I am all for this, in concept.  Some thoughts below ...
->
-> > @@ -56,10 +51,8 @@ struct list_lru {
-> >  #ifdef CONFIG_MEMCG_KMEM
-> >       struct list_head        list;
-> >       int                     shrinker_id;
-> > -     /* protects ->memcg_lrus->lrus[i] */
-> > -     spinlock_t              lock;
-> >       /* for cgroup aware lrus points to per cgroup lists, otherwise NULL */
-> > -     struct list_lru_memcg   __rcu *memcg_lrus;
-> > +     struct xarray           *xa;
-> >  #endif
->
-> Normally, we embed an xarray in its containing structure instead of
-> allocating it.  It's only a pointer, int and spinlock, so generally
-> 16 bytes, as opposed to the 8 bytes for the pointer and a 16 byte
-> allocation.  There is a minor wrinkle in that currently 'NULL' is
-> used to indicate "is not cgroup aware".  Maybe there's another way
-> to indicate that?
+On Mon 17 May 15:45 CDT 2021, Siddharth Gupta wrote:
 
-Sure. I can drop patch 8 in this series. In that case, we can use
-->memcg_aware to indicate that.
+> When cdev_add is called after device_add has been called there is no
+> way for the userspace to know about the addition of a cdev as cdev_add
+> itself doesn't trigger a uevent notification, or for the kernel to
+> know about the change to devt. This results in two problems:
+>  - mknod is never called for the cdev and hence no cdev appears on
+>    devtmpfs.
+>  - sysfs links to the new cdev are not established.
+> 
+> The cdev needs to be added and devt assigned before device_add() is
+> called in order for the relevant sysfs and devtmpfs entries to be
+> created and the uevent to be properly populated.
+> 
 
+Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
 
->
-> > @@ -51,22 +51,12 @@ static int lru_shrinker_id(struct list_lru *lru)
-> >  static inline struct list_lru_one *
-> >  list_lru_from_memcg_idx(struct list_lru *lru, int nid, int idx)
-> >  {
-> > -     struct list_lru_memcg *memcg_lrus;
-> > -     struct list_lru_node *nlru = &lru->node[nid];
-> > +     if (list_lru_memcg_aware(lru) && idx >= 0) {
-> > +             struct list_lru_per_memcg *mlru = xa_load(lru->xa, idx);
-> >
-> > -     /*
-> > -      * Either lock or RCU protects the array of per cgroup lists
-> > -      * from relocation (see memcg_update_list_lru).
-> > -      */
-> > -     memcg_lrus = rcu_dereference_check(lru->memcg_lrus,
-> > -                                        lockdep_is_held(&nlru->lock));
-> > -     if (memcg_lrus && idx >= 0) {
-> > -             struct list_lru_per_memcg *mlru;
-> > -
-> > -             mlru = rcu_dereference_check(memcg_lrus->lrus[idx], true);
-> >               return mlru ? &mlru->nodes[nid] : NULL;
-> >       }
-> > -     return &nlru->lru;
-> > +     return &lru->node[nid].lru;
-> >  }
->
-> ... perhaps we move the xarray out from under the #ifdef and use index 0
-> for non-memcg-aware lrus?  The XArray is specially optimised for arrays
-> which only have one entry at 0.
+Regards,
+Bjorn
 
-Sounds like a good idea. I can do a try.
-
->
-> >  int list_lru_memcg_alloc(struct list_lru *lru, struct mem_cgroup *memcg, gfp_t gfp)
-> >  {
-> > +     XA_STATE(xas, lru->xa, 0);
-> >       unsigned long flags;
-> > -     struct list_lru_memcg *memcg_lrus;
-> > -     int i;
-> > +     int i, ret = 0;
-> >
-> >       struct list_lru_memcg_table {
-> >               struct list_lru_per_memcg *mlru;
-> > @@ -601,22 +522,45 @@ int list_lru_memcg_alloc(struct list_lru *lru, struct mem_cgroup *memcg, gfp_t g
-> >               }
-> >       }
-> >
-> > -     spin_lock_irqsave(&lru->lock, flags);
-> > -     memcg_lrus = rcu_dereference_protected(lru->memcg_lrus, true);
-> > +     xas_lock_irqsave(&xas, flags);
-> >       while (i--) {
-> >               int index = memcg_cache_id(table[i].memcg);
-> >               struct list_lru_per_memcg *mlru = table[i].mlru;
-> >
-> > -             if (index < 0 || rcu_dereference_protected(memcg_lrus->lrus[index], true))
-> > +             xas_set(&xas, index);
-> > +retry:
-> > +             if (unlikely(index < 0 || ret || xas_load(&xas))) {
-> >                       kfree(mlru);
-> > -             else
-> > -                     rcu_assign_pointer(memcg_lrus->lrus[index], mlru);
-> > +             } else {
-> > +                     ret = xa_err(xas_store(&xas, mlru));
->
-> This is mixing advanced and normal XArray concepts ... sorry to have
-> confused you.  I think what you meant to do here was:
->
->                         xas_store(&xas, mlru);
->                         ret = xas_error(&xas);
-
-Sure. Thanks for pointing it out. It's my bad usage.
-
->
-> Or you can avoid introducing 'ret' at all, and keep your errors in the
-> xa_state.  You're kind of mirroring the xa_state errors into 'ret'
-> anyway, so that seems easier to understand?
-
-Make sense. I will do this in the next version. Thanks for your
-all suggestions.
-
->
-> > -     memcg_id = memcg_alloc_cache_id();
-> > +     memcg_id = ida_simple_get(&memcg_cache_ida, 0, MEMCG_CACHES_MAX_SIZE,
-> > +                               GFP_KERNEL);
->
->         memcg_id = ida_alloc_max(&memcg_cache_ida,
->                         MEMCG_CACHES_MAX_SIZE - 1, GFP_KERNEL);
->
-> ... although i think there's actually a fencepost error, and this really
-> should be MEMCG_CACHES_MAX_SIZE.
-
-Totally agree. I have fixed this issue in patch 19.
-
->
-> >       objcg = obj_cgroup_alloc();
-> >       if (!objcg) {
-> > -             memcg_free_cache_id(memcg_id);
-> > +             ida_simple_remove(&memcg_cache_ida, memcg_id);
->
->                 ida_free(&memcg_cache_ida, memcg_id);
-
-I Will update to this new API.
-
->
+> Signed-off-by: Siddharth Gupta <sidgup@codeaurora.org>
+> ---
+>  drivers/remoteproc/remoteproc_core.c | 10 +++++-----
+>  1 file changed, 5 insertions(+), 5 deletions(-)
+> 
+> diff --git a/drivers/remoteproc/remoteproc_core.c b/drivers/remoteproc/remoteproc_core.c
+> index 626a6b90f..562355a 100644
+> --- a/drivers/remoteproc/remoteproc_core.c
+> +++ b/drivers/remoteproc/remoteproc_core.c
+> @@ -2316,6 +2316,11 @@ int rproc_add(struct rproc *rproc)
+>  	struct device *dev = &rproc->dev;
+>  	int ret;
+>  
+> +	/* add char device for this remoteproc */
+> +	ret = rproc_char_device_add(rproc);
+> +	if (ret < 0)
+> +		return ret;
+> +
+>  	ret = device_add(dev);
+>  	if (ret < 0)
+>  		return ret;
+> @@ -2329,11 +2334,6 @@ int rproc_add(struct rproc *rproc)
+>  	/* create debugfs entries */
+>  	rproc_create_debug_dir(rproc);
+>  
+> -	/* add char device for this remoteproc */
+> -	ret = rproc_char_device_add(rproc);
+> -	if (ret < 0)
+> -		return ret;
+> -
+>  	/* if rproc is marked always-on, request it to boot */
+>  	if (rproc->auto_boot) {
+>  		ret = rproc_trigger_auto_boot(rproc);
+> -- 
+> Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+> a Linux Foundation Collaborative Project
+> 
