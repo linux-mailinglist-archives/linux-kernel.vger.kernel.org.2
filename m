@@ -2,97 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B999393F23
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 11:03:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C0592393F24
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 11:04:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236262AbhE1JFc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 May 2021 05:05:32 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58098 "EHLO mail.kernel.org"
+        id S236269AbhE1JFu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 May 2021 05:05:50 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58206 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234769AbhE1JFb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 May 2021 05:05:31 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2CE4D61222;
-        Fri, 28 May 2021 09:03:55 +0000 (UTC)
+        id S234769AbhE1JFt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 28 May 2021 05:05:49 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id F240B6124B;
+        Fri, 28 May 2021 09:04:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1622192636;
-        bh=WDJo2X/13nKa4nbTGm3lVorzD0sNu2kPcS/rS1lAivU=;
+        s=korg; t=1622192654;
+        bh=8JR/Us1KQ6sdoQE+D5ip4683taop+0uVGmCfuLN74TY=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=gWSRtwbteWsYBbIL6OeZ4ipidV4E3qtOaduG6WAEgS7CDrd0/nuUl8Oa74F3+Zqu5
-         z9CrL2nlrZTodGH35HXyKY2ZnwbhfHc/0yl5jHGkY/6rMqASVxhTO0u/FeWPGdMxlZ
-         ngwze2ExPDAPxGen4+m5zCnhwquhzVxiVW8UGFJs=
-Date:   Fri, 28 May 2021 11:03:54 +0200
+        b=P2dtVsnlB95hAUsPLj6jALu4jMzHj7YIrUurHrrFPrAap5d56wIXPivE9pvcEy1Ca
+         ENkgdePw5IIU8VIl3vM/rz/+OzD/elZLGmFj4ivojqeh9AyENG5lOuTobx6zt4QiXQ
+         545/xxILg7IsnNQgREt2X8S7H5G2QdDQkTHaXXp4=
+Date:   Fri, 28 May 2021 11:04:11 +0200
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Sebastian Reichel <sebastian.reichel@collabora.com>
-Cc:     linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org,
-        kernel@collabora.com
-Subject: Re: [PATCHv5 0/2] Fix imx53-ppd UART configuration
-Message-ID: <YLCx+jhg/j+JmBox@kroah.com>
-References: <20210430175038.103226-1-sebastian.reichel@collabora.com>
- <YIzxKNV4x6/8GVrB@kroah.com>
- <20210528004952.r2dnoxetqdi655d6@earth.universe>
+To:     Johannes Berg <johannes@sipsolutions.net>
+Cc:     linux-kernel@vger.kernel.org,
+        Johannes Berg <johannes.berg@intel.com>
+Subject: Re: [PATCH] devcoredump: remove contact information
+Message-ID: <YLCyCzsBNvHIpiu7@kroah.com>
+References: <20210528100314.d419f6e8e2d2.Ica8076036c755d6f782becd62d04c41361323130@changeid>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210528004952.r2dnoxetqdi655d6@earth.universe>
+In-Reply-To: <20210528100314.d419f6e8e2d2.Ica8076036c755d6f782becd62d04c41361323130@changeid>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 28, 2021 at 02:49:52AM +0200, Sebastian Reichel wrote:
-> Hi Greg,
+On Fri, May 28, 2021 at 10:03:14AM +0200, Johannes Berg wrote:
+> From: Johannes Berg <johannes.berg@intel.com>
 > 
-> On Sat, May 01, 2021 at 08:11:52AM +0200, Greg Kroah-Hartman wrote:
-> > On Fri, Apr 30, 2021 at 07:50:36PM +0200, Sebastian Reichel wrote:
-> > > IMHO PATCHv4 was better, but in the end I don't have strong feelings
-> > > about this. Btw. I think this patchset is a good demonstration of
-> > > frustrating upstream kernel development can be considering PATCHv5
-> > > is basically the same as PATCHv1. Thanks for making us go in
-> > > circles :(
-> > > 
-> > > Changes since PATCHv4:
-> > >  * https://lore.kernel.org/lkml/20210305115058.92284-1-sebastian.reichel@collabora.com/
-> > >  * use DT property instead of sysfs config option, like the initial patch
-> > >    version did as requested by Greg.
-> > > 
-> > > Changes since PATCHv3:
-> > >  * https://lore.kernel.org/lkml/1539249903-6316-1-git-send-email-fabien.lahoudere@collabora.com/
-> > >  * rewrote commit message to provide a lot more details why this is needed
-> > >  * rebased to torvalds/master (5.12-rc1-dontuse), also applies on top of linux-next
-> > >  * use sysfs_emit() instead of sprintf
-> > > 
-> > > -- Sebastian
-> > > 
-> > > Fabien Lahoudere (2):
-> > >   serial: imx: Add DMA buffer configuration via DT
-> > >   ARM: dts: imx53-ppd: add dma-info nodes
-> > > 
-> > >  .../bindings/serial/fsl-imx-uart.yaml         | 12 +++++++++
-> > >  arch/arm/boot/dts/imx53-ppd.dts               |  2 ++
-> > >  drivers/tty/serial/imx.c                      | 25 +++++++++++++------
-> > >  3 files changed, 32 insertions(+), 7 deletions(-)
-> >
-> > This is the friendly semi-automated patch-bot of Greg Kroah-Hartman.
-> > You have sent him a patch that has triggered this response.
-> > 
-> > Right now, the development tree you have sent a patch for is "closed"
-> > due to the timing of the merge window.  Don't worry, the patch(es) you
-> > have sent are not lost, and will be looked at after the merge window is
-> > over (after the -rc1 kernel is released by Linus).
-> > 
-> > So thank you for your patience and your patches will be reviewed at this
-> > later time, you do not have to do anything further, this is just a short
-> > note to let you know the patch status and so you don't worry they didn't
-> > make it through.
-> > 
-> > thanks,
-> > 
-> > greg k-h's patch email bot
+> That email address hasn't existed for a long time, and the
+> mailing address is pretty useless; remove all of this.
 > 
-> Any update on this? :)
+> Signed-off-by: Johannes Berg <johannes.berg@intel.com>
+> ---
+> Greg, can you take this through some of your trees, since
+> it's drivers/base/?
 
-I'm waiting for the DT maintainers to review the new changes before I
-can take the driver changes.
-
-thanks,
+Sure, will do so later today, thanks.
 
 greg k-h
