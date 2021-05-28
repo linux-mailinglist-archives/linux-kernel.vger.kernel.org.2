@@ -2,185 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BE7F6394594
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 18:04:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E5B5539459F
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 18:05:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236202AbhE1QGC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 May 2021 12:06:02 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:42868 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232832AbhE1QGA (ORCPT
+        id S236835AbhE1QGp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 May 2021 12:06:45 -0400
+Received: from heliosphere.sirena.org.uk ([172.104.155.198]:59360 "EHLO
+        heliosphere.sirena.org.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236829AbhE1QGa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 May 2021 12:06:00 -0400
-Received: from imap.suse.de (imap-alt.suse-dmz.suse.de [192.168.254.47])
-        (using TLSv1.2 with cipher ECDHE-ECDSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 0703D1FD2E;
-        Fri, 28 May 2021 16:04:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1622217863; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=ryxgbzMlqoiV5wx2RetTsFDMMq3afsJoUJpplYegSOI=;
-        b=QzVqmaTdvG8sY+sW6kDpyamAAxq9KXvIYsOztS8hos4Qa5PSJSrRBTwCEFcKkO2KPw9Gaf
-        eyqfiuoQv4QTs6+fZ0AlhUxn2xf/EoUzI1CsBzbe56jAkx8exPt2FQq/a3PiA9iL9tR1O9
-        j7ZhosNKBHIDDXmfmpy0kEgBOwjRfhQ=
-Received: from imap3-int (imap-alt.suse-dmz.suse.de [192.168.254.47])
-        by imap.suse.de (Postfix) with ESMTP id 67DF0118DD;
-        Fri, 28 May 2021 16:04:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1622217861; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=ryxgbzMlqoiV5wx2RetTsFDMMq3afsJoUJpplYegSOI=;
-        b=j7icTdjfsJkM58Fv9lglAUF+xTGHtZlo/a73j4E/I04DMiD8fFixjr17ikhPLaSjv/pdfj
-        k8LoHW1jTShwk/7QhMfAlAqBJn/zq/uWc122JK38YbR5mcMKz9ruvd9EMIRzXa4ZAjp4li
-        3uul8IAuNyvvfp/7EXe3A40UCCmTWA0=
-Received: from director2.suse.de ([192.168.254.72])
-        by imap3-int with ESMTPSA
-        id 3sDlFoUUsWBTJwAALh3uQQ
-        (envelope-from <varad.gautam@suse.com>); Fri, 28 May 2021 16:04:21 +0000
-From:   Varad Gautam <varad.gautam@suse.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     varad.gautam@suse.com,
-        linux-rt-users <linux-rt-users@vger.kernel.org>,
-        netdev@vger.kernel.org, stable@vger.kernel.org,
-        Steffen Klassert <steffen.klassert@secunet.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Florian Westphal <fw@strlen.de>,
-        "Ahmed S. Darwish" <a.darwish@linutronix.de>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>
-Subject: [PATCH v2] xfrm: policy: Read seqcount outside of rcu-read side in xfrm_policy_lookup_bytype
-Date:   Fri, 28 May 2021 18:04:06 +0200
-Message-Id: <20210528160407.32127-1-varad.gautam@suse.com>
+        Fri, 28 May 2021 12:06:30 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=sirena.org.uk; s=20170815-heliosphere; h=Content-Transfer-Encoding:
+        Content-Type:MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:
+        To:From:Sender:Reply-To:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=KzzFPtff8C3fnoTl9yAoy/DCOeliRPzlP12hZcFeAbY=; b=mPigJKvXnGHtR76JofQqxFL8R5
+        R+HpY9AzYQ55Ksszd1fhY4jHoKY3snnHjI85ATJYtpfB0+sojgv8O0zFVI/n2tJfNDW3KrEN9X1ct
+        +YU1aTJhGJcf8u4+I0IRzf7t7JR+9OQ0a81oElo4o7oTz6wbeEUaPcz/y4zHlQW02XWk=;
+Received: from cpc102334-sgyl38-2-0-cust884.18-2.cable.virginm.net ([92.233.91.117] helo=fitzroy.sirena.org.uk)
+        by heliosphere.sirena.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <broonie@sirena.org.uk>)
+        id 1lmeyE-006czZ-0k; Fri, 28 May 2021 16:04:22 +0000
+Received: by fitzroy.sirena.org.uk (Postfix, from userid 1000)
+        id 59E2CD07903; Fri, 28 May 2021 17:04:21 +0100 (BST)
+From:   Mark Brown <broonie@kernel.org>
+To:     shawnguo@kernel.org, tiwai@suse.com, lgirdwood@gmail.com,
+        kernel@pengutronix.de, perex@perex.cz, nicoleotsuka@gmail.com,
+        Zou Wei <zou_wei@huawei.com>, shengjiu.wang@gmail.com,
+        Xiubo.Lee@gmail.com, s.hauer@pengutronix.de, linux-imx@nxp.com,
+        timur@kernel.org, festevam@gmail.com
+Cc:     Mark@sirena.org.uk, Brown@sirena.org.uk, broonie@kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH -next] ASoC: imx-rpmsg: fix platform_no_drv_owner.cocci warnings
+Date:   Fri, 28 May 2021 17:04:19 +0100
+Message-Id: <162221783191.3504698.10167150315447743271.b4-ty@kernel.org>
 X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210528120357.29542-1-varad.gautam@suse.com>
-References: <20210528120357.29542-1-varad.gautam@suse.com>
+In-Reply-To: <1622113652-56646-1-git-send-email-zou_wei@huawei.com>
+References: <1622113652-56646-1-git-send-email-zou_wei@huawei.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Authentication-Results: imap.suse.de;
-        none
-X-Spam-Level: *****
-X-Spam-Score: 5.00
-X-Spamd-Result: default: False [5.00 / 100.00];
-         ARC_NA(0.00)[];
-         RCVD_VIA_SMTP_AUTH(0.00)[];
-         FROM_HAS_DN(0.00)[];
-         TO_DN_SOME(0.00)[];
-         TO_MATCH_ENVRCPT_ALL(0.00)[];
-         R_MISSING_CHARSET(2.50)[];
-         MIME_GOOD(-0.10)[text/plain];
-         BROKEN_CONTENT_TYPE(1.50)[];
-         DKIM_SIGNED(0.00)[suse.com:s=susede1];
-         RCPT_COUNT_TWELVE(0.00)[12];
-         MID_CONTAINS_FROM(1.00)[];
-         RCVD_NO_TLS_LAST(0.10)[];
-         FROM_EQ_ENVFROM(0.00)[];
-         MIME_TRACE(0.00)[0:+];
-         RCVD_COUNT_TWO(0.00)[2]
-X-Spam-Flag: NO
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-xfrm_policy_lookup_bytype loops on seqcount mutex xfrm_policy_hash_generation
-within an RCU read side critical section. Although ill advised, this is fine if
-the loop is bounded.
+From: Mark Brown,,, <broonie@kernel.org>
 
-xfrm_policy_hash_generation wraps mutex hash_resize_mutex, which is used to
-serialize writers (xfrm_hash_resize, xfrm_hash_rebuild). This is fine too.
+On Thu, 27 May 2021 19:07:32 +0800, Zou Wei wrote:
+> ./sound/soc/fsl/imx-rpmsg.c:140:3-8: No need to set .owner here. The core will do it.
+> 
+>  Remove .owner field if calls are used which set it automatically
+> 
+> Generated by: scripts/coccinelle/api/platform_no_drv_owner.cocci
 
-On PREEMPT_RT=y, the read_seqcount_begin call within xfrm_policy_lookup_bytype
-emits a mutex lock/unlock for hash_resize_mutex. Mutex locking is fine, since
-RCU read side critical sections are allowed to sleep with PREEMPT_RT.
+Applied, thanks!
 
-xfrm_hash_resize can, however, block on synchronize_rcu while holding
-hash_resize_mutex.
+[1/1] ASoC: imx-rpmsg: fix platform_no_drv_owner.cocci warnings
+      commit: 47c0d825b926856d86685a48c82f693f56ca3f6f
 
-This leads to the following situation on PREEMPT_RT, where the writer is
-blocked on RCU grace period expiry, while the reader is blocked on a lock held
-by the writer:
-
-Thead 1 (xfrm_hash_resize)	Thread 2 (xfrm_policy_lookup_bytype)
-
-				rcu_read_lock();
-mutex_lock(&hash_resize_mutex);
-				read_seqcount_begin(&xfrm_policy_hash_generation);
-				mutex_lock(&hash_resize_mutex); // block
-xfrm_bydst_resize();
-synchronize_rcu(); // block
-		<RCU stalls in xfrm_policy_lookup_bytype>
-
-Move the read_seqcount_begin call outside of the RCU read side critical section,
-and do an rcu_read_unlock/retry if we got stale data within the critical section.
-
-On non-PREEMPT_RT, this shortens the time spent within RCU read side critical
-section in case the seqcount needs a retry, and avoids unbounded looping.
-
-Fixes: 77cc278f7b20 ("xfrm: policy: Use sequence counters with associated lock")
-Signed-off-by: Varad Gautam <varad.gautam@suse.com>
-Cc: linux-rt-users <linux-rt-users@vger.kernel.org>
-Cc: netdev@vger.kernel.org
-Cc: stable@vger.kernel.org # v4.9
-Cc: Steffen Klassert <steffen.klassert@secunet.com>
-Cc: Herbert Xu <herbert@gondor.apana.org.au>
-Cc: "David S. Miller" <davem@davemloft.net>
-Cc: Jakub Kicinski <kuba@kernel.org>
-Cc: Florian Westphal <fw@strlen.de>
-Cc: "Ahmed S. Darwish" <a.darwish@linutronix.de>
----
-v2: Correct 'Fixes:' to the right commit.
-
- net/xfrm/xfrm_policy.c | 21 ++++++++++++++-------
- 1 file changed, 14 insertions(+), 7 deletions(-)
-
-diff --git a/net/xfrm/xfrm_policy.c b/net/xfrm/xfrm_policy.c
-index ce500f847b99..e9d0df2a2ab1 100644
---- a/net/xfrm/xfrm_policy.c
-+++ b/net/xfrm/xfrm_policy.c
-@@ -2092,12 +2092,15 @@ static struct xfrm_policy *xfrm_policy_lookup_bytype(struct net *net, u8 type,
- 	if (unlikely(!daddr || !saddr))
- 		return NULL;
- 
--	rcu_read_lock();
-  retry:
--	do {
--		sequence = read_seqcount_begin(&xfrm_policy_hash_generation);
--		chain = policy_hash_direct(net, daddr, saddr, family, dir);
--	} while (read_seqcount_retry(&xfrm_policy_hash_generation, sequence));
-+	sequence = read_seqcount_begin(&xfrm_policy_hash_generation);
-+	rcu_read_lock();
-+
-+	chain = policy_hash_direct(net, daddr, saddr, family, dir);
-+	if (read_seqcount_retry(&xfrm_policy_hash_generation, sequence)) {
-+		rcu_read_unlock();
-+		goto retry;
-+	}
- 
- 	ret = NULL;
- 	hlist_for_each_entry_rcu(pol, chain, bydst) {
-@@ -2128,11 +2131,15 @@ static struct xfrm_policy *xfrm_policy_lookup_bytype(struct net *net, u8 type,
- 	}
- 
- skip_inexact:
--	if (read_seqcount_retry(&xfrm_policy_hash_generation, sequence))
-+	if (read_seqcount_retry(&xfrm_policy_hash_generation, sequence)) {
-+		rcu_read_unlock();
- 		goto retry;
-+	}
- 
--	if (ret && !xfrm_pol_hold_rcu(ret))
-+	if (ret && !xfrm_pol_hold_rcu(ret)) {
-+		rcu_read_unlock();
- 		goto retry;
-+	}
- fail:
- 	rcu_read_unlock();
- 
+Best regards,
 -- 
-2.26.2
-
+Mark Brown,,, <broonie@kernel.org>
