@@ -2,119 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B30E3944E8
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 17:17:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E2C843944EC
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 17:18:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235589AbhE1PSv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 May 2021 11:18:51 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:50186 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229684AbhE1PSs (ORCPT
+        id S235786AbhE1PUW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 May 2021 11:20:22 -0400
+Received: from outbound-smtp37.blacknight.com ([46.22.139.220]:55263 "EHLO
+        outbound-smtp37.blacknight.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229684AbhE1PUM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 May 2021 11:18:48 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1622215032;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=PeVjxSGQBiim5YfC7ahaYUGzUsgYFEGwePuVxjiCW3M=;
-        b=OeMqW6/kaWDaBLBXEh3mG7HdML8dinwjc+uYZfXpYGE5ODLbPDcfehYcU/lefeBlX6c2DU
-        oAOPb0f2GodJ02BZJPMurMDsswhh0JaNkkgRKdpN9TI5N0fmlm/A98IPDL4aEKnOQzGqfh
-        7w9DOCdWXILAzYwqCnuIavaR4a7/R9A=
-Received: from mail-oi1-f199.google.com (mail-oi1-f199.google.com
- [209.85.167.199]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-155-FAKodLvROxKdsURJ1eJvZw-1; Fri, 28 May 2021 11:17:11 -0400
-X-MC-Unique: FAKodLvROxKdsURJ1eJvZw-1
-Received: by mail-oi1-f199.google.com with SMTP id x10-20020a54400a0000b02901e9af7e39cbso1847607oie.22
-        for <linux-kernel@vger.kernel.org>; Fri, 28 May 2021 08:17:11 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=PeVjxSGQBiim5YfC7ahaYUGzUsgYFEGwePuVxjiCW3M=;
-        b=YZcH/CBYePsWIickhtGJUQQtRs5E1goPQxs8camsHa1jLQPlp1CLYG0GLiP6zIKtNq
-         0iP+pqpLWRUWBhP298FbUexalxgobrieEwxsaQXIZA6CnlYV0niXliGEMxcrxJ/txPqI
-         xB5R38G5W0HEOCbh3xQ+qcfRNVB5O5eJARXkpUqvFb39d2U4szHHfAyMwxNAB/YO1v0n
-         61Po/FcFIMFOYKAFfaAH0ErRXcNG8sPIYcOFkCrsDO9XrBzpWMaW0rhz4U1gHdUIgcGi
-         pIdH50iaAp22PN8cAEIdure/jKb+wVlUjKkxqj3RbSBERXHJnQxYv84eBrfd+EN8KqQk
-         Owig==
-X-Gm-Message-State: AOAM5302uzq13/LtfdYhBy0QI6BAVU5wSwVgm+wnvVQiEfetlks9Khci
-        QzkpD6UV44pnVNdK5EFWjZ+Y8txcql+bdRAtdPE9DavNSaevaZKS+nPT4vvl4Fh/wXilKuVyKws
-        RAIeYw1vKCn7j4WwiVeYg+nRM
-X-Received: by 2002:aca:4954:: with SMTP id w81mr9392037oia.59.1622215030580;
-        Fri, 28 May 2021 08:17:10 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyofwf0lzJsiefQ+3w/OwwhVo+2cUUNr9ztQGmZVQIcm8BzGc7vgSU/MiyGQE7WieVWrWK62A==
-X-Received: by 2002:aca:4954:: with SMTP id w81mr9392027oia.59.1622215030443;
-        Fri, 28 May 2021 08:17:10 -0700 (PDT)
-Received: from localhost.localdomain (075-142-250-213.res.spectrum.com. [75.142.250.213])
-        by smtp.gmail.com with ESMTPSA id n11sm1164944oom.1.2021.05.28.08.17.09
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 28 May 2021 08:17:09 -0700 (PDT)
-Subject: Re: [PATCH] fpga: fpga-bridge: removed repeated word
-To:     Navin Sankar Velliangiri <navin@linumiz.com>,
-        linux-fpga@vger.kernel.org, linux-kernel@vger.kernel.org,
-        "mdf@kernel.org" <mdf@kernel.org>
-References: <20210528150557.22970-1-navin@linumiz.com>
-From:   Tom Rix <trix@redhat.com>
-Message-ID: <6f1cda18-ce61-ea6c-423f-263612d748e8@redhat.com>
-Date:   Fri, 28 May 2021 08:17:08 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        Fri, 28 May 2021 11:20:12 -0400
+Received: from mail.blacknight.com (pemlinmail06.blacknight.ie [81.17.255.152])
+        by outbound-smtp37.blacknight.com (Postfix) with ESMTPS id DE78618E2
+        for <linux-kernel@vger.kernel.org>; Fri, 28 May 2021 16:18:35 +0100 (IST)
+Received: (qmail 17224 invoked from network); 28 May 2021 15:18:35 -0000
+Received: from unknown (HELO techsingularity.net) (mgorman@techsingularity.net@[84.203.23.168])
+  by 81.17.254.9 with ESMTPSA (AES256-SHA encrypted, authenticated); 28 May 2021 15:18:35 -0000
+Date:   Fri, 28 May 2021 16:18:34 +0100
+From:   Mel Gorman <mgorman@techsingularity.net>
+To:     Dave Hansen <dave.hansen@intel.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Hillf Danton <hdanton@sina.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Michal Hocko <mhocko@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux-MM <linux-mm@kvack.org>, "Tang, Feng" <feng.tang@intel.com>
+Subject: Re: [PATCH 0/6 v2] Calculate pcp->high based on zone sizes and
+ active CPUs
+Message-ID: <20210528151834.GR30378@techsingularity.net>
+References: <20210525080119.5455-1-mgorman@techsingularity.net>
+ <7177f59b-dc05-daff-7dc6-5815b539a790@intel.com>
+ <20210528085545.GJ30378@techsingularity.net>
+ <893ce8ed-df14-612b-693f-48c9dac0eb19@intel.com>
 MIME-Version: 1.0
-In-Reply-To: <20210528150557.22970-1-navin@linumiz.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+Content-Type: text/plain; charset=iso-8859-15
+Content-Disposition: inline
+In-Reply-To: <893ce8ed-df14-612b-693f-48c9dac0eb19@intel.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, May 28, 2021 at 07:39:29AM -0700, Dave Hansen wrote:
+> On 5/28/21 1:55 AM, Mel Gorman wrote:
+> > -	 * onlined.
+> > -	 */
+> > -	nr_local_cpus = max(1U, cpumask_weight(cpumask_of_node(zone_to_nid(zone)))) + cpu_online;
+> > -	high = total_pages / nr_local_cpus;
+> > +	 * onlined. For memory nodes that have no CPUs, split pcp->high across
+> > +	 * all online CPUs to mitigate the risk that reclaim is triggered
+> > +	 * prematurely due to pages stored on pcp lists.
+> > +	 */
+> > +	nr_split_cpus = cpumask_weight(cpumask_of_node(zone_to_nid(zone))) + cpu_online;
+> > +	if (!nr_split_cpus)
+> > +		nr_split_cpus = num_online_cpus();
+> > +	high = total_pages / nr_split_cpus;
+> 
+> Updated version looks fine to me, thanks!
+> 
+> BTW, to do some of this testing, Feng was doing a plain old kernel
+> build.  On the one system where this got run, he noted a ~2% regression
+> in build times.  Nothing major, but you might want to be on the lookout
+> in case 0day or the other test harnesses find something similar once
+> this series gets to them.
+> 
 
-On 5/28/21 8:05 AM, Navin Sankar Velliangiri wrote:
-> Removed repeated word and.
-> Reported by checkpatch.
->
-> Signed-off-by: Navin Sankar Velliangiri <navin@linumiz.com>
-> ---
->   drivers/fpga/fpga-bridge.c | 4 ++--
->   1 file changed, 2 insertions(+), 2 deletions(-)
->
-> diff --git a/drivers/fpga/fpga-bridge.c b/drivers/fpga/fpga-bridge.c
-> index e9266b2a357f..9ada1126faf7 100644
-> --- a/drivers/fpga/fpga-bridge.c
-> +++ b/drivers/fpga/fpga-bridge.c
-> @@ -228,7 +228,7 @@ EXPORT_SYMBOL_GPL(fpga_bridges_put);
->    * @info: fpga image specific information
->    * @bridge_list: list of FPGA bridges
->    *
-> - * Get an exclusive reference to the bridge and and it to the list.
-> + * Get an exclusive reference to the bridge and it to the list.
->    *
->    * Return 0 for success, error code from of_fpga_bridge_get() othewise.
->    */
-> @@ -258,7 +258,7 @@ EXPORT_SYMBOL_GPL(of_fpga_bridge_get_to_list);
->    * @info: fpga image specific information
->    * @bridge_list: list of FPGA bridges
->    *
-> - * Get an exclusive reference to the bridge and and it to the list.
-> + * Get an exclusive reference to the bridge and it to the list.
+What type of system was it?
 
-Looks good.
+I noticed minor differences for some thread counts on kernel compilations
+but for CascadeLake at least, it was mostly neutral. Below is an old test
+result based on a previous revision.
 
-Reviewed-by: Tom Rix <trix@redhat.com>
+kernbench
+                               5.13.0-rc2             5.13.0-rc2
+                                  vanilla       mm-pcpburst-v2r3
+Amean     elsp-2        469.22 (   0.00%)      470.03 *  -0.17%*
+Amean     elsp-4        251.03 (   0.00%)      250.83 (   0.08%)
+Amean     elsp-8        131.39 (   0.00%)      130.89 (   0.38%)
+Amean     elsp-16        74.37 (   0.00%)       75.11 (  -0.99%)
+Amean     elsp-32        42.10 (   0.00%)       42.20 (  -0.24%)
+Amean     elsp-64        32.21 (   0.00%)       32.14 (   0.23%)
+Amean     elsp-128       31.59 (   0.00%)       31.68 (  -0.27%)
+Amean     elsp-160       31.76 (   0.00%)       31.69 (   0.21%)
 
-Moritz,
+A Haswell machine showed the worst results for kernbench
 
-This patch and my spelling cleanup are low risk, can we get these into 
-fpga-next ?
+Amean     elsp-2        459.99 (   0.00%)      465.27 *  -1.15%*
+Amean     elsp-4        250.76 (   0.00%)      253.17 *  -0.96%*
+Amean     elsp-8        141.28 (   0.00%)      141.78 (  -0.36%)
+Amean     elsp-16        77.71 (   0.00%)       77.88 (  -0.22%)
+Amean     elsp-32        44.09 (   0.00%)       44.40 (  -0.69%)
+Amean     elsp-64        33.79 (   0.00%)       33.46 (   0.96%)
+Amean     elsp-128       33.14 (   0.00%)       33.26 (  -0.37%)
+Amean     elsp-160       33.26 (   0.00%)       33.36 *  -0.30%*
 
-https://lore.kernel.org/linux-fpga/20210527200900.GA875457@mail.gmail.com/
+The series with review feedback and dealing with cpuless nodes is queued
+and should complete over the weekend.
 
-Tom
+> Acked-by: Dave Hansen <dave.hansen@intel.com>
 
->    *
->    * Return 0 for success, error code from fpga_bridge_get() othewise.
->    */
+Thanks!
 
+-- 
+Mel Gorman
+SUSE Labs
