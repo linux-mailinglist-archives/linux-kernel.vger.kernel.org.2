@@ -2,79 +2,220 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7BC48393C19
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 05:53:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A013393C1E
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 05:55:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236351AbhE1Dz2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 May 2021 23:55:28 -0400
-Received: from conuserg-07.nifty.com ([210.131.2.74]:42472 "EHLO
-        conuserg-07.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233759AbhE1Dz1 (ORCPT
+        id S236386AbhE1D4e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 May 2021 23:56:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60478 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236364AbhE1D43 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 May 2021 23:55:27 -0400
-Received: from localhost.localdomain (133-32-232-101.west.xps.vectant.ne.jp [133.32.232.101]) (authenticated)
-        by conuserg-07.nifty.com with ESMTP id 14S3qBFA024800;
-        Fri, 28 May 2021 12:52:11 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conuserg-07.nifty.com 14S3qBFA024800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1622173932;
-        bh=6KU0Trdq4K/2P2XIJXTR2lASBtxZgHuNXe5Ass8LYl0=;
-        h=From:To:Cc:Subject:Date:From;
-        b=JAJHkxp//xw4Wqbhb/9kqDKs2tLxQZ73tURX5+OKK3V53N63Bv03Ou3tEqihb1kTl
-         WE4EpdMmWKXiOUvn5JP5w/xZEHXVcHAyZYKwMIvauG+jE9nHC6fzsuSRfAhc1oWngo
-         zgQxvGIGngx5g2+buY/3JxtCp7FuLoIeksQNLG/B1zOb9S7+JE6JKtttIi4knbwwKA
-         km1d/L0yR0sv+HZOrcFrbV0MTrj5vvZ64GucpuKqJWb6o4GwTPI+beUFDTma9SsngR
-         QHbnFkXasYuqWqwgOGGYMvj0UaQqMAfcYWLMB6+z9k6sW/evR662edScTa0SpzbAPA
-         J1bpONW2UPkfg==
-X-Nifty-SrcIP: [133.32.232.101]
-From:   Masahiro Yamada <masahiroy@kernel.org>
-To:     patches@arm.linux.org.uk
-Cc:     linux-kernel@vger.kernel.org,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Russell King <linux@armlinux.org.uk>,
-        linux-arm-kernel@lists.infradead.org
-Subject: [PATCH] ARM: simplify the build rule of mach-types.h
-Date:   Fri, 28 May 2021 12:52:09 +0900
-Message-Id: <20210528035209.2157823-1-masahiroy@kernel.org>
-X-Mailer: git-send-email 2.27.0
+        Thu, 27 May 2021 23:56:29 -0400
+Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com [IPv6:2a00:1450:4864:20::62f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B941C061761
+        for <linux-kernel@vger.kernel.org>; Thu, 27 May 2021 20:54:54 -0700 (PDT)
+Received: by mail-ej1-x62f.google.com with SMTP id s22so3220476ejv.12
+        for <linux-kernel@vger.kernel.org>; Thu, 27 May 2021 20:54:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=2ZLRemtbPVIGxGdr14fJ4jpBPRhMcvlWcSDK9Lq8+cA=;
+        b=UFv0CeSDqvB7H4mkMIIZWvzf4ZRd39QgluC5dBflrM0VjpNZjb4IxVcqKSaFjQwfoU
+         rWgDGpgWI0xme5OQoPqmq8AD4Bg47GUZ3YvvnYsyOqUgiOAVd+/QgHxhOseSV4531t1Y
+         q98vrZOP0RiW2TNaGpGtHw15oZuuCxpO73Asd1j4SQ6gy0lkm58WXtdB/hN4BqYh6FU9
+         yEPJgHuNA8Ks60yGNmeOlV3X8KsoFvpP05Rqnp8tYwo8GUgycM88TNuz9mDhgbSWS0TP
+         NxrAo+V30nyDjMdF8BGfXOf5ZfkePuBez8giFvm6iDMPI8AxgjdRKhgpEh9WCjnfb+4Q
+         JHEQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=2ZLRemtbPVIGxGdr14fJ4jpBPRhMcvlWcSDK9Lq8+cA=;
+        b=YxhbTmWgabZEWfvFOlT2kszv8Ot+60JH1ccKrkJiAeDgnwzX/x6Dseym7QKM48OEE5
+         8nRTunp430bM0cKknyuxLtOdYHZN6t+4EH2jUo0GroH6luJZrw0fv2iKpCfI8BBdSKfo
+         GzwBTgMydZ9e8NqO0vjo/oCKcvNQMhWvoA/kX5fcHH0QvQoGWeXIRcCOpvXAV4hkUEff
+         adVnFJAqhdXPoyNop/b1wIh8ExXR6PVcLqLP0o3HpKqT1+JP/msXwyv34P+jEXXszFt9
+         ENAyS8UnlCrjWl7glLQlmUGgWg4rslotOQSfbLxoC2H0jvoFa3PxaLTgZM7lsLd7FJQr
+         K35g==
+X-Gm-Message-State: AOAM532B6d2Hrwpy0o1P45J0JfieO6poYrGbmvBY3Ns3uhbqaF/vHTkT
+        SsAIp8SEkFTWwgRuK014jXsEXGn2p4vCyyBZnEA0
+X-Google-Smtp-Source: ABdhPJxDXENlmXrhp9PJ7iDubTy3e2MiMZjJiP/T1ExNiyEHROjd2EqD6OIxlhrl7NlegeNQLvRVHcx+LTeAeQsIVcE=
+X-Received: by 2002:a17:906:edaf:: with SMTP id sa15mr7021823ejb.174.1622174093482;
+ Thu, 27 May 2021 20:54:53 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210517095513.850-1-xieyongji@bytedance.com> <20210517095513.850-12-xieyongji@bytedance.com>
+ <3740c7eb-e457-07f3-5048-917c8606275d@redhat.com> <CACycT3uAqa6azso_8MGreh+quj-JXO1piuGnrV8k2kTfc34N2g@mail.gmail.com>
+ <5a68bb7c-fd05-ce02-cd61-8a601055c604@redhat.com> <CACycT3ve7YvKF+F+AnTQoJZMPua+jDvGMs_ox8GQe_=SGdeCMA@mail.gmail.com>
+ <ee00efca-b26d-c1be-68d2-f9e34a735515@redhat.com> <CACycT3ufok97cKpk47NjUBTc0QAyfauFUyuFvhWKmuqCGJ7zZw@mail.gmail.com>
+ <00ded99f-91b6-ba92-5d92-2366b163f129@redhat.com> <3cc7407d-9637-227e-9afa-402b6894d8ac@redhat.com>
+ <CACycT3s6SkER09KL_Ns9d03quYSKOuZwd3=HJ_s1SL7eH7y5gA@mail.gmail.com> <baf0016a-7930-2ae2-399f-c28259f415c1@redhat.com>
+In-Reply-To: <baf0016a-7930-2ae2-399f-c28259f415c1@redhat.com>
+From:   Yongji Xie <xieyongji@bytedance.com>
+Date:   Fri, 28 May 2021 11:54:42 +0800
+Message-ID: <CACycT3vKZ3y0gga8PrSVtssZfNV0Y-A8=iYZSi9sbpHRNkVf-A@mail.gmail.com>
+Subject: Re: Re: [PATCH v7 11/12] vduse: Introduce VDUSE - vDPA Device in Userspace
+To:     Jason Wang <jasowang@redhat.com>
+Cc:     "Michael S. Tsirkin" <mst@redhat.com>,
+        Stefan Hajnoczi <stefanha@redhat.com>,
+        Stefano Garzarella <sgarzare@redhat.com>,
+        Parav Pandit <parav@nvidia.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        Christian Brauner <christian.brauner@canonical.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Jens Axboe <axboe@kernel.dk>, bcrl@kvack.org,
+        Jonathan Corbet <corbet@lwn.net>,
+        =?UTF-8?Q?Mika_Penttil=C3=A4?= <mika.penttila@nextfour.com>,
+        Dan Carpenter <dan.carpenter@oracle.com>, joro@8bytes.org,
+        virtualization <virtualization@lists.linux-foundation.org>,
+        netdev@vger.kernel.org, kvm <kvm@vger.kernel.org>,
+        linux-fsdevel@vger.kernel.org, iommu@lists.linux-foundation.org,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The directory of mach-types.h is created a couple of lines above:
+On Fri, May 28, 2021 at 9:33 AM Jason Wang <jasowang@redhat.com> wrote:
+>
+>
+> =E5=9C=A8 2021/5/27 =E4=B8=8B=E5=8D=886:14, Yongji Xie =E5=86=99=E9=81=93=
+:
+> > On Thu, May 27, 2021 at 4:43 PM Jason Wang <jasowang@redhat.com> wrote:
+> >>
+> >> =E5=9C=A8 2021/5/27 =E4=B8=8B=E5=8D=884:41, Jason Wang =E5=86=99=E9=81=
+=93:
+> >>> =E5=9C=A8 2021/5/27 =E4=B8=8B=E5=8D=883:34, Yongji Xie =E5=86=99=E9=
+=81=93:
+> >>>> On Thu, May 27, 2021 at 1:40 PM Jason Wang <jasowang@redhat.com> wro=
+te:
+> >>>>> =E5=9C=A8 2021/5/27 =E4=B8=8B=E5=8D=881:08, Yongji Xie =E5=86=99=E9=
+=81=93:
+> >>>>>> On Thu, May 27, 2021 at 1:00 PM Jason Wang <jasowang@redhat.com>
+> >>>>>> wrote:
+> >>>>>>> =E5=9C=A8 2021/5/27 =E4=B8=8B=E5=8D=8812:57, Yongji Xie =E5=86=99=
+=E9=81=93:
+> >>>>>>>> On Thu, May 27, 2021 at 12:13 PM Jason Wang <jasowang@redhat.com=
+>
+> >>>>>>>> wrote:
+> >>>>>>>>> =E5=9C=A8 2021/5/17 =E4=B8=8B=E5=8D=885:55, Xie Yongji =E5=86=
+=99=E9=81=93:
+> >>>>>>>>>> +
+> >>>>>>>>>> +static int vduse_dev_msg_sync(struct vduse_dev *dev,
+> >>>>>>>>>> +                           struct vduse_dev_msg *msg)
+> >>>>>>>>>> +{
+> >>>>>>>>>> +     init_waitqueue_head(&msg->waitq);
+> >>>>>>>>>> +     spin_lock(&dev->msg_lock);
+> >>>>>>>>>> +     vduse_enqueue_msg(&dev->send_list, msg);
+> >>>>>>>>>> +     wake_up(&dev->waitq);
+> >>>>>>>>>> +     spin_unlock(&dev->msg_lock);
+> >>>>>>>>>> +     wait_event_killable(msg->waitq, msg->completed);
+> >>>>>>>>> What happens if the userspace(malicous) doesn't give a response
+> >>>>>>>>> forever?
+> >>>>>>>>>
+> >>>>>>>>> It looks like a DOS. If yes, we need to consider a way to fix t=
+hat.
+> >>>>>>>>>
+> >>>>>>>> How about using wait_event_killable_timeout() instead?
+> >>>>>>> Probably, and then we need choose a suitable timeout and more
+> >>>>>>> important,
+> >>>>>>> need to report the failure to virtio.
+> >>>>>>>
+> >>>>>> Makes sense to me. But it looks like some
+> >>>>>> vdpa_config_ops/virtio_config_ops such as set_status() didn't have=
+ a
+> >>>>>> return value.  Now I add a WARN_ON() for the failure. Do you mean =
+we
+> >>>>>> need to add some change for virtio core to handle the failure?
+> >>>>> Maybe, but I'm not sure how hard we can do that.
+> >>>>>
+> >>>> We need to change all virtio device drivers in this way.
+> >>>
+> >>> Probably.
+> >>>
+> >>>
+> >>>>> We had NEEDS_RESET but it looks we don't implement it.
+> >>>>>
+> >>>> Could it handle the failure of get_feature() and get/set_config()?
+> >>>
+> >>> Looks not:
+> >>>
+> >>> "
+> >>>
+> >>> The device SHOULD set DEVICE_NEEDS_RESET when it enters an error stat=
+e
+> >>> that a reset is needed. If DRIVER_OK is set, after it sets
+> >>> DEVICE_NEEDS_RESET, the device MUST send a device configuration chang=
+e
+> >>> notification to the driver.
+> >>>
+> >>> "
+> >>>
+> >>> This looks implies that NEEDS_RESET may only work after device is
+> >>> probed. But in the current design, even the reset() is not reliable.
+> >>>
+> >>>
+> >>>>> Or a rough idea is that maybe need some relaxing to be coupled loos=
+ely
+> >>>>> with userspace. E.g the device (control path) is implemented in the
+> >>>>> kernel but the datapath is implemented in the userspace like TUN/TA=
+P.
+> >>>>>
+> >>>> I think it can work for most cases. One problem is that the set_conf=
+ig
+> >>>> might change the behavior of the data path at runtime, e.g.
+> >>>> virtnet_set_mac_address() in the virtio-net driver and
+> >>>> cache_type_store() in the virtio-blk driver. Not sure if this path i=
+s
+> >>>> able to return before the datapath is aware of this change.
+> >>>
+> >>> Good point.
+> >>>
+> >>> But set_config() should be rare:
+> >>>
+> >>> E.g in the case of virtio-net with VERSION_1, config space is read
+> >>> only, and it was set via control vq.
+> >>>
+> >>> For block, we can
+> >>>
+> >>> 1) start from without WCE or
+> >>> 2) we add a config change notification to userspace or
+> >>> 3) extend the spec to use vq instead of config space
+> >>>
+> >>> Thanks
+> >>
+> >> Another thing if we want to go this way:
+> >>
+> >> We need find a way to terminate the data path from the kernel side, to
+> >> implement to reset semantic.
+> >>
+> > Do you mean terminate the data path in vdpa_reset().
+>
+>
+> Yes.
+>
+>
+> >   Is it ok to just
+> > notify userspace to stop data path asynchronously?
+>
+>
+> For well-behaved userspace, yes but no for buggy or malicious ones.
+>
 
-  _dummy := $(shell [ -d '$(kapi)' ] || mkdir -p '$(kapi)') \
+But the buggy or malicious daemons can't do anything if my
+understanding is correct.
 
-The 'mkdir -p' command is redundant.
+> I had an idea, how about terminate IOTLB in this case? Then we're in
+> fact turn datapath off.
+>
 
-scripts/Kbuild.include defines real-prereqs as a shorthand for
-$(filter-out $(PHONY),$^). Let's use it to simplify the code.
+Sorry, I didn't get your point here. What do you mean by terminating
+IOTLB? Remove iotlb mapping? But userspace can still access the mapped
+region.
 
-Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
----
-
-KernelVersion: v5.13-rc1
-
- arch/arm/tools/Makefile | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
-
-diff --git a/arch/arm/tools/Makefile b/arch/arm/tools/Makefile
-index 87de1f63f649..057639019059 100644
---- a/arch/arm/tools/Makefile
-+++ b/arch/arm/tools/Makefile
-@@ -33,8 +33,7 @@ _dummy := $(shell [ -d '$(kapi)' ] || mkdir -p '$(kapi)') \
-           $(shell [ -d '$(uapi)' ] || mkdir -p '$(uapi)')
- 
- quiet_cmd_gen_mach = GEN     $@
--      cmd_gen_mach = mkdir -p $(dir $@) && \
--		     $(AWK) -f $(filter-out $(PHONY),$^) > $@
-+      cmd_gen_mach = $(AWK) -f $(real-prereqs) > $@
- 
- $(kapi)/mach-types.h: $(src)/gen-mach-types $(src)/mach-types FORCE
- 	$(call if_changed,gen_mach)
--- 
-2.27.0
-
+Thanks,
+Yongji
