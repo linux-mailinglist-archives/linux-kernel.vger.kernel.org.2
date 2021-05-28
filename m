@@ -2,332 +2,288 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C1C75393AC2
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 02:54:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 89B66393A82
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 02:50:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236097AbhE1A4F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 May 2021 20:56:05 -0400
-Received: from mail-bn8nam12on2076.outbound.protection.outlook.com ([40.107.237.76]:50913
-        "EHLO NAM12-BN8-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S233878AbhE1Az7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 May 2021 20:55:59 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=IS9QMph3QOFtLh56T+uNK2HAKUWcWefmZ5svaBE8+vhAKI/4A55ZzKQ438R8Ni1YrrMg4D98vJZgwGZrkb49G5Ub4op1YuU2CPX2YEgFMMI9qwbVBF6/+QZtAtUv+LyPVTbSggGh7TOUOYM2Tt+fW+83p1c7BL8RVcWlua2sRl+3xHH7hY6hnshhrVpRhYohhC190Jzj6TFpCtK4WoXiNPhn4rTSuh/LHAKytzPnnuS2Sz3A7gN3SZmkakFrGGpdnkQJylS2p0+AAs/6R1J8TWIymu8n7GWn30/+91inipqEwaSuk8xrjn4IQw5wnXPNvQVPwOhZg4Mpl1YpepXx/g==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=OE/NR7+2MC0FI9oGGESMUwObnLdpbmsONUEn8sAUUMc=;
- b=hJ9pvYVz1HDUTYYpSHsB1K7VJ+r+vi2iRupLny37OO9Df+k5qFcwtpplKEEMjSxNzgNQQIxro+IMA9HZT0cArt626KgwH6/HbGVmRzqwYiWjJHYB0xJmzL1JJBAq7kkugHDdUD8irLpQH29rFiZwHiooRK8PGBtDi6cHD5MbonRTKHARbhlQNubPqzIJL3T4/lnR9FcHKwlF6ExG8XIbWaPsBwbfTJMPK7JArL0AtOusejK99XXn4FC8jXaMX1ZH4f64xa/6v/tIMNMgx7vf+WwEu7OZPxOMsvNTeDndqAdh1F6urZOzWDQeDkfqrcDIMyKvspfJgOXLqO/d/IjjCw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 149.199.62.198) smtp.rcpttodomain=kernel.org smtp.mailfrom=xilinx.com;
- dmarc=pass (p=none sp=none pct=100) action=none header.from=xilinx.com;
- dkim=none (message not signed); arc=none
+        id S235648AbhE1AwP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 May 2021 20:52:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47580 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235119AbhE1AwG (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 27 May 2021 20:52:06 -0400
+Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C0E2C061574
+        for <linux-kernel@vger.kernel.org>; Thu, 27 May 2021 17:50:32 -0700 (PDT)
+Received: by mail-yb1-xb49.google.com with SMTP id k128-20020a25c6860000b029052fd5ee8a17so2434467ybf.15
+        for <linux-kernel@vger.kernel.org>; Thu, 27 May 2021 17:50:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=xilinx.onmicrosoft.com; s=selector2-xilinx-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=OE/NR7+2MC0FI9oGGESMUwObnLdpbmsONUEn8sAUUMc=;
- b=QQAtGVMWWOnOuMx/eagNp3LvlJYVYgHCGSAlQqFYbaB7z9MdmkEr55gbo1hJFXxAK0+cQH63NGHJS4sz1VwDqNkWF1DsxiIpmFqnFwQqEBsgZTLB0NaUXC68/1ny9wZ2uhaLFCqtYLkyBa4XIWLOnEfvH4rANEQb00oAaZmo1x8=
-Received: from SN6PR04CA0084.namprd04.prod.outlook.com (2603:10b6:805:f2::25)
- by DM6PR02MB7065.namprd02.prod.outlook.com (2603:10b6:5:25a::18) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4173.22; Fri, 28 May
- 2021 00:54:23 +0000
-Received: from SN1NAM02FT0051.eop-nam02.prod.protection.outlook.com
- (2603:10b6:805:f2:cafe::dd) by SN6PR04CA0084.outlook.office365.com
- (2603:10b6:805:f2::25) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4173.21 via Frontend
- Transport; Fri, 28 May 2021 00:54:23 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 149.199.62.198)
- smtp.mailfrom=xilinx.com; kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=pass action=none header.from=xilinx.com;
-Received-SPF: Pass (protection.outlook.com: domain of xilinx.com designates
- 149.199.62.198 as permitted sender) receiver=protection.outlook.com;
- client-ip=149.199.62.198; helo=xsj-pvapexch01.xlnx.xilinx.com;
-Received: from xsj-pvapexch01.xlnx.xilinx.com (149.199.62.198) by
- SN1NAM02FT0051.mail.protection.outlook.com (10.97.5.34) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.4150.30 via Frontend Transport; Fri, 28 May 2021 00:54:23 +0000
-Received: from xsj-pvapexch02.xlnx.xilinx.com (172.19.86.41) by
- xsj-pvapexch01.xlnx.xilinx.com (172.19.86.40) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Thu, 27 May 2021 17:54:08 -0700
-Received: from smtp.xilinx.com (172.19.127.96) by
- xsj-pvapexch02.xlnx.xilinx.com (172.19.86.41) with Microsoft SMTP Server id
- 15.1.2176.2 via Frontend Transport; Thu, 27 May 2021 17:54:08 -0700
-Envelope-to: mdf@kernel.org,
- robh@kernel.org,
- trix@redhat.com,
- devicetree@vger.kernel.org,
- linux-fpga@vger.kernel.org,
- linux-kernel@vger.kernel.org
-Received: from [172.19.73.109] (port=34046 helo=xsj-xw9400.xilinx.com)
-        by smtp.xilinx.com with esmtp (Exim 4.90)
-        (envelope-from <lizhi.hou@xilinx.com>)
-        id 1lmQlM-0003iG-Cl; Thu, 27 May 2021 17:54:08 -0700
-Received: by xsj-xw9400.xilinx.com (Postfix, from userid 21952)
-        id 8945A6032B5; Thu, 27 May 2021 17:50:07 -0700 (PDT)
-From:   Lizhi Hou <lizhi.hou@xilinx.com>
-To:     <linux-kernel@vger.kernel.org>
-CC:     Lizhi Hou <lizhi.hou@xilinx.com>, <linux-fpga@vger.kernel.org>,
-        <maxz@xilinx.com>, <sonal.santan@xilinx.com>, <yliu@xilinx.com>,
-        <michal.simek@xilinx.com>, <stefanos@xilinx.com>,
-        <devicetree@vger.kernel.org>, <trix@redhat.com>, <mdf@kernel.org>,
-        <robh@kernel.org>, Max Zhen <max.zhen@xilinx.com>
-Subject: [PATCH V7 XRT Alveo 20/20] fpga: xrt: Kconfig and Makefile updates for XRT drivers
-Date:   Thu, 27 May 2021 17:49:59 -0700
-Message-ID: <20210528004959.61354-21-lizhi.hou@xilinx.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210528004959.61354-1-lizhi.hou@xilinx.com>
-References: <20210528004959.61354-1-lizhi.hou@xilinx.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 85b11c6c-0ba8-4f74-6c80-08d9217322cc
-X-MS-TrafficTypeDiagnostic: DM6PR02MB7065:
-X-Microsoft-Antispam-PRVS: <DM6PR02MB706525A9414612EB66D67686A1229@DM6PR02MB7065.namprd02.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:4941;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: K7isT1vNETSoddnpKa0pKe2UNFTZyCXqNR0GCx4d9gq1n2iDFTx+IMznK4E2NRI3mp+bm6WVFviXgXCjakqN9fQ9uqKonD4GkAVEsA/GWZHCDFUiEfCpIiTh4erNoXSlSdW1HYAyPqixnZKJV+cZgC+8Qml5Vm11ckJ+A/Z8N9oumswhEXJPFOXtiG0xdK1QT4dEtIyQBKdrKbDqUj9+V5ozEwolUzFgHzwmJx4xt+5oOOH7rxaYSufHPNvn7O7OXoU550Eux+kgjTMGLFzOV9234JrbqBuUFIjV9Z07pNBmWgIpDBdiaHIZ84QYONilOPCKUHLpTMXB0q8jqVc/saOad4td6YCi9dazfDq/1ladjJisdDlwLf+mJoOcgFq28pwz0TskhbuFgPjb8Zm91JxcCLOFEZBUEoIImhomlFhA1WCnaMbY/kUdgxsY5owFeq0AyJTZ3okmveE4Ymf5PsZr4yOU2Y9XQOik75jfd6KiQ04SZFOBPt9y3eI+OHcmHekCFR5Kw7+maygM0QFLSO+opFSJQ6IG1I4UhKKUHXb3sqiXaEeYYbl8SRJXoJcAaViRBASH0IRbGSdtyV7unfiO1/puadWbGItI0f8dV70rZ+THDCSkLOm3RsBPCrpr6qcB3ZZt2o3acXpMHoTtoD5PafkJpshMXNVEtVPwa80=
-X-Forefront-Antispam-Report: CIP:149.199.62.198;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:xsj-pvapexch01.xlnx.xilinx.com;PTR:unknown-62-198.xilinx.com;CAT:NONE;SFS:(4636009)(346002)(396003)(376002)(136003)(39850400004)(46966006)(36840700001)(36756003)(5660300002)(82310400003)(478600001)(54906003)(6266002)(316002)(36906005)(8936002)(2906002)(26005)(186003)(6916009)(15650500001)(42186006)(8676002)(107886003)(336012)(2616005)(426003)(6666004)(1076003)(4326008)(44832011)(47076005)(70586007)(70206006)(82740400003)(7636003)(36860700001)(356005)(83380400001);DIR:OUT;SFP:1101;
-X-OriginatorOrg: xilinx.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 28 May 2021 00:54:23.7614
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 85b11c6c-0ba8-4f74-6c80-08d9217322cc
-X-MS-Exchange-CrossTenant-Id: 657af505-d5df-48d0-8300-c31994686c5c
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=657af505-d5df-48d0-8300-c31994686c5c;Ip=[149.199.62.198];Helo=[xsj-pvapexch01.xlnx.xilinx.com]
-X-MS-Exchange-CrossTenant-AuthSource: SN1NAM02FT0051.eop-nam02.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR02MB7065
+        d=google.com; s=20161025;
+        h=date:message-id:mime-version:subject:from:cc;
+        bh=IxmGmY7n5KWBKt5FosIwPuRpVYTAXeIP+zmHpHVCHdk=;
+        b=DohjESoP/dFt/2ZPtV2i7cUhEPE6LzZ381mXb86OWnZImSWL9ctrRVgf3qcYJvZjGf
+         h8P+MmBanZuPLs7WQNs8wFZJKe8qBhkFgPFiYinMYp3SA63A4357FHeEyAqlhh3pxVSD
+         tDVmbkOLTaPdQRsHHXYb4fcvxbXysIC2JSgEd5KkfUalQ+Pq4sgBjI4gJqJXQiZPUsmF
+         6Oh9NyHvjiOMIop3+kJUKjc6iX6qdE+iDnWCcZVuQfIk5ndSOwc9Jf1rtEACh6oKNfxD
+         BoDGr2tiDPQmhy0ctLm/QF0Wmow4P5WhotB6PWaRv8h6DNZzwWpc2oP8C8N9N27SXBDx
+         gHDA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:cc;
+        bh=IxmGmY7n5KWBKt5FosIwPuRpVYTAXeIP+zmHpHVCHdk=;
+        b=HdvZ6lq41ionaSgcKYLMYLnDtwmA7ET0tL48h0TfuIngA9BSfUkGp3Q7UCgE28HF/C
+         ZKXpKg2tgU7QdC2d/5hS69kfJ+S9ezVhfENCu+3HoYsQ2US+f8weU3XqUWS5gQ7nRvvm
+         hb2eFB/ZrO9nx0vMd2Mdacoi0gjcCM8K1xXBPIxqIyWi8XcaR7+gCxGMgHtUjOo0Eexf
+         Sfuhw+FY4lCgaZXZjJrNPj4ywMzWXJo46yBZGMr0ZjVhFM7zxnEnZmWUiaOhX21jus7O
+         UHhJtTqmpAWTbllJ9zNPPb3AXZ+4ANO82Zr03aStlF8qjymbqEnC14sXnMSW32KHbS/O
+         /XQg==
+X-Gm-Message-State: AOAM531ZLbszg9k8kwqgrID1f3CjJp1jLDP3J5jwNn4fP2S/6Gm4Jbiz
+        8I2fCZPKqpMw+O4NsZy6pdqwcUCA6M25Lazf2w==
+X-Google-Smtp-Source: ABdhPJxSNpWMjGmtXQc7/7c+BN5g4mcCDdtgX5Qdjko26lrpUplmm0xvqZ2DgvAtTbdJNyCZKm1luVIrrJv7nuraSg==
+X-Received: from almasrymina.svl.corp.google.com ([2620:15c:2cd:202:b35:38bd:7e0f:3b1d])
+ (user=almasrymina job=sendgmr) by 2002:a25:80d4:: with SMTP id
+ c20mr8667284ybm.345.1622163031545; Thu, 27 May 2021 17:50:31 -0700 (PDT)
+Date:   Thu, 27 May 2021 17:50:29 -0700
+Message-Id: <20210528005029.88088-1-almasrymina@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.32.0.rc0.204.g9fa02ecfa5-goog
+Subject: [PATCH v4] mm, hugetlb: fix racy resv_huge_pages underflow on UFFDIO_COPY
+From:   Mina Almasry <almasrymina@google.com>
+Cc:     Mina Almasry <almasrymina@google.com>,
+        Axel Rasmussen <axelrasmussen@google.com>,
+        Peter Xu <peterx@redhat.com>, linux-mm@kvack.org,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Update fpga Kconfig/Makefile and add Kconfig/Makefile for new drivers.
+On UFFDIO_COPY, if we fail to copy the page contents while holding the
+hugetlb_fault_mutex, we will drop the mutex and return to the caller
+after allocating a page that consumed a reservation. In this case there
+may be a fault that double consumes the reservation. To handle this, we
+free the allocated page, fix the reservations, and allocate a temporary
+hugetlb page and return that to the caller. When the caller does the
+copy outside of the lock, we again check the cache, and allocate a page
+consuming the reservation, and copy over the contents.
 
-Signed-off-by: Sonal Santan <sonal.santan@xilinx.com>
-Signed-off-by: Max Zhen <max.zhen@xilinx.com>
-Signed-off-by: Lizhi Hou <lizhi.hou@xilinx.com>
-Reviewed-by: Tom Rix <trix@redhat.com>
+Test:
+Hacked the code locally such that resv_huge_pages underflows produce
+a warning and the copy_huge_page_from_user() always fails, then:
+
+./tools/testing/selftests/vm/userfaultfd hugetlb_shared 10
+        2 /tmp/kokonut_test/huge/userfaultfd_test && echo test success
+./tools/testing/selftests/vm/userfaultfd hugetlb 10
+	2 /tmp/kokonut_test/huge/userfaultfd_test && echo test success
+
+Both tests succeed and produce no warnings. After the
+test runs number of free/resv hugepages is correct.
+
+Signed-off-by: Mina Almasry <almasrymina@google.com>
+Cc: Axel Rasmussen <axelrasmussen@google.com>
+Cc: Peter Xu <peterx@redhat.com>
+Cc: linux-mm@kvack.org
+Cc: Mike Kravetz <mike.kravetz@oracle.com>
+Cc: Andrew Morton <akpm@linux-foundation.org>
+Cc: linux-mm@kvack.org
+Cc: linux-kernel@vger.kernel.org
 ---
- drivers/Makefile                   |  1 +
- drivers/fpga/Kconfig               |  2 ++
- drivers/fpga/Makefile              |  5 +++++
- drivers/fpga/xrt/Kconfig           |  8 ++++++++
- drivers/fpga/xrt/lib/Kconfig       | 17 +++++++++++++++++
- drivers/fpga/xrt/lib/Makefile      | 30 ++++++++++++++++++++++++++++++
- drivers/fpga/xrt/metadata/Kconfig  | 12 ++++++++++++
- drivers/fpga/xrt/metadata/Makefile | 16 ++++++++++++++++
- drivers/fpga/xrt/mgmt/Kconfig      | 15 +++++++++++++++
- drivers/fpga/xrt/mgmt/Makefile     | 19 +++++++++++++++++++
- 10 files changed, 125 insertions(+)
- create mode 100644 drivers/fpga/xrt/Kconfig
- create mode 100644 drivers/fpga/xrt/lib/Kconfig
- create mode 100644 drivers/fpga/xrt/lib/Makefile
- create mode 100644 drivers/fpga/xrt/metadata/Kconfig
- create mode 100644 drivers/fpga/xrt/metadata/Makefile
- create mode 100644 drivers/fpga/xrt/mgmt/Kconfig
- create mode 100644 drivers/fpga/xrt/mgmt/Makefile
+ include/linux/migrate.h |  4 ++++
+ mm/hugetlb.c            | 48 +++++++++++++++++++++++++++++++++--------
+ mm/migrate.c            |  4 ++--
+ mm/userfaultfd.c        | 48 +----------------------------------------
+ 4 files changed, 46 insertions(+), 58 deletions(-)
 
-diff --git a/drivers/Makefile b/drivers/Makefile
-index 5a6d613e868d..e5d64c971463 100644
---- a/drivers/Makefile
-+++ b/drivers/Makefile
-@@ -181,6 +181,7 @@ obj-$(CONFIG_STM)		+= hwtracing/stm/
- obj-$(CONFIG_ANDROID)		+= android/
- obj-$(CONFIG_NVMEM)		+= nvmem/
- obj-$(CONFIG_FPGA)		+= fpga/
-+obj-$(CONFIG_FPGA_XRT_METADATA) += fpga/
- obj-$(CONFIG_FSI)		+= fsi/
- obj-$(CONFIG_TEE)		+= tee/
- obj-$(CONFIG_MULTIPLEXER)	+= mux/
-diff --git a/drivers/fpga/Kconfig b/drivers/fpga/Kconfig
-index 33e15058d0dc..9b5fa43f3b8f 100644
---- a/drivers/fpga/Kconfig
-+++ b/drivers/fpga/Kconfig
-@@ -234,4 +234,6 @@ config FPGA_MGR_ZYNQMP_FPGA
- 	  to configure the programmable logic(PL) through PS
- 	  on ZynqMP SoC.
- 
-+source "drivers/fpga/xrt/Kconfig"
-+
- endif # FPGA
-diff --git a/drivers/fpga/Makefile b/drivers/fpga/Makefile
-index 18dc9885883a..4b887bf95cb3 100644
---- a/drivers/fpga/Makefile
-+++ b/drivers/fpga/Makefile
-@@ -48,3 +48,8 @@ obj-$(CONFIG_FPGA_DFL_NIOS_INTEL_PAC_N3000)	+= dfl-n3000-nios.o
- 
- # Drivers for FPGAs which implement DFL
- obj-$(CONFIG_FPGA_DFL_PCI)		+= dfl-pci.o
-+
-+# XRT drivers for Alveo
-+obj-$(CONFIG_FPGA_XRT_METADATA)		+= xrt/metadata/
-+obj-$(CONFIG_FPGA_XRT_LIB)		+= xrt/lib/
-+obj-$(CONFIG_FPGA_XRT_XMGMT)		+= xrt/mgmt/
-diff --git a/drivers/fpga/xrt/Kconfig b/drivers/fpga/xrt/Kconfig
-new file mode 100644
-index 000000000000..0e2c59589ddd
---- /dev/null
-+++ b/drivers/fpga/xrt/Kconfig
-@@ -0,0 +1,8 @@
-+# SPDX-License-Identifier: GPL-2.0-only
-+#
-+# Xilinx Alveo FPGA device configuration
-+#
-+
-+source "drivers/fpga/xrt/metadata/Kconfig"
-+source "drivers/fpga/xrt/lib/Kconfig"
-+source "drivers/fpga/xrt/mgmt/Kconfig"
-diff --git a/drivers/fpga/xrt/lib/Kconfig b/drivers/fpga/xrt/lib/Kconfig
-new file mode 100644
-index 000000000000..935369fad570
---- /dev/null
-+++ b/drivers/fpga/xrt/lib/Kconfig
-@@ -0,0 +1,17 @@
-+# SPDX-License-Identifier: GPL-2.0-only
-+#
-+# XRT Alveo FPGA device configuration
-+#
-+
-+config FPGA_XRT_LIB
-+	tristate "XRT Alveo Driver Library"
-+	depends on HWMON && PCI && HAS_IOMEM
-+	select FPGA_XRT_METADATA
-+	select REGMAP_MMIO
-+	help
-+	  Select this option to enable Xilinx XRT Alveo driver library. This
-+	  library is core infrastructure of XRT Alveo FPGA drivers which
-+	  provides functions for working with device nodes, iteration and
-+	  lookup of platform devices, common interfaces for platform devices,
-+	  plumbing of function call and ioctls between platform devices and
-+	  parent partitions.
-diff --git a/drivers/fpga/xrt/lib/Makefile b/drivers/fpga/xrt/lib/Makefile
-new file mode 100644
-index 000000000000..58563416efbf
---- /dev/null
-+++ b/drivers/fpga/xrt/lib/Makefile
-@@ -0,0 +1,30 @@
-+# SPDX-License-Identifier: GPL-2.0
-+#
-+# Copyright (C) 2020-2021 Xilinx, Inc. All rights reserved.
-+#
-+# Authors: Sonal.Santan@xilinx.com
-+#
-+
-+FULL_XRT_PATH=$(srctree)/$(src)/..
-+FULL_DTC_PATH=$(srctree)/scripts/dtc/libfdt
-+
-+obj-$(CONFIG_FPGA_XRT_LIB) += xrt-lib.o
-+
-+xrt-lib-objs :=			\
-+	lib-drv.o		\
-+	xroot.o			\
-+	xclbin.o		\
-+	subdev.o		\
-+	cdev.o			\
-+	group.o			\
-+	xleaf/vsec.o		\
-+	xleaf/axigate.o		\
-+	xleaf/devctl.o		\
-+	xleaf/icap.o		\
-+	xleaf/clock.o		\
-+	xleaf/clkfreq.o		\
-+	xleaf/ucs.o		\
-+	xleaf/ddr_calibration.o
-+
-+ccflags-y := -I$(FULL_XRT_PATH)/include	 \
-+	-I$(FULL_DTC_PATH)
-diff --git a/drivers/fpga/xrt/metadata/Kconfig b/drivers/fpga/xrt/metadata/Kconfig
-new file mode 100644
-index 000000000000..129adda47e94
---- /dev/null
-+++ b/drivers/fpga/xrt/metadata/Kconfig
-@@ -0,0 +1,12 @@
-+# SPDX-License-Identifier: GPL-2.0-only
-+#
-+# XRT Alveo FPGA device configuration
-+#
-+
-+config FPGA_XRT_METADATA
-+	bool "XRT Alveo Driver Metadata Parser"
-+	select LIBFDT
-+	help
-+	  This option provides helper functions to parse Xilinx Alveo FPGA
-+	  firmware metadata. The metadata is in device tree format and the
-+	  XRT driver uses it to discover the HW subsystems behind PCIe BAR.
-diff --git a/drivers/fpga/xrt/metadata/Makefile b/drivers/fpga/xrt/metadata/Makefile
-new file mode 100644
-index 000000000000..14f65ef1595c
---- /dev/null
-+++ b/drivers/fpga/xrt/metadata/Makefile
-@@ -0,0 +1,16 @@
-+# SPDX-License-Identifier: GPL-2.0
-+#
-+# Copyright (C) 2020-2021 Xilinx, Inc. All rights reserved.
-+#
-+# Authors: Sonal.Santan@xilinx.com
-+#
-+
-+FULL_XRT_PATH=$(srctree)/$(src)/..
-+FULL_DTC_PATH=$(srctree)/scripts/dtc/libfdt
-+
-+obj-$(CONFIG_FPGA_XRT_METADATA) += xrt-md.o
-+
-+xrt-md-objs := metadata.o
-+
-+ccflags-y := -I$(FULL_XRT_PATH)/include	\
-+	-I$(FULL_DTC_PATH)
-diff --git a/drivers/fpga/xrt/mgmt/Kconfig b/drivers/fpga/xrt/mgmt/Kconfig
-new file mode 100644
-index 000000000000..31e9e19fffb8
---- /dev/null
-+++ b/drivers/fpga/xrt/mgmt/Kconfig
-@@ -0,0 +1,15 @@
-+# SPDX-License-Identifier: GPL-2.0-only
-+#
-+# Xilinx XRT FPGA device configuration
-+#
-+
-+config FPGA_XRT_XMGMT
-+	tristate "Xilinx Alveo Management Driver"
-+	depends on FPGA_XRT_LIB
-+	select FPGA_XRT_METADATA
-+	select FPGA_BRIDGE
-+	select FPGA_REGION
-+	help
-+	  Select this option to enable XRT PCIe driver for Xilinx Alveo FPGA.
-+	  This driver provides interfaces for userspace application to access
-+	  Alveo FPGA device.
-diff --git a/drivers/fpga/xrt/mgmt/Makefile b/drivers/fpga/xrt/mgmt/Makefile
-new file mode 100644
-index 000000000000..16644571b673
---- /dev/null
-+++ b/drivers/fpga/xrt/mgmt/Makefile
-@@ -0,0 +1,19 @@
-+# SPDX-License-Identifier: GPL-2.0
-+#
-+# Copyright (C) 2020-2021 Xilinx, Inc. All rights reserved.
-+#
-+# Authors: Sonal.Santan@xilinx.com
-+#
-+
-+FULL_XRT_PATH=$(srctree)/$(src)/..
-+FULL_DTC_PATH=$(srctree)/scripts/dtc/libfdt
-+
-+obj-$(CONFIG_FPGA_XRT_XMGMT)	+= xrt-mgmt.o
-+
-+xrt-mgmt-objs := root.o		\
-+	   xmgmt-main.o		\
-+	   xrt-mgr.o		\
-+	   xmgmt-main-region.o
-+
-+ccflags-y := -I$(FULL_XRT_PATH)/include		\
-+	-I$(FULL_DTC_PATH)
--- 
-2.27.0
+diff --git a/include/linux/migrate.h b/include/linux/migrate.h
+index 4bb4e519e3f5..4164c9ddd86e 100644
+--- a/include/linux/migrate.h
++++ b/include/linux/migrate.h
+@@ -51,6 +51,7 @@ extern int migrate_huge_page_move_mapping(struct address_space *mapping,
+ 				  struct page *newpage, struct page *page);
+ extern int migrate_page_move_mapping(struct address_space *mapping,
+ 		struct page *newpage, struct page *page, int extra_count);
++extern void migrate_copy_huge_page(struct page *dst, struct page *src);
+ #else
 
+ static inline void putback_movable_pages(struct list_head *l) {}
+@@ -77,6 +78,9 @@ static inline int migrate_huge_page_move_mapping(struct address_space *mapping,
+ 	return -ENOSYS;
+ }
+
++static inline void migrate_copy_huge_page(struct page *dst, struct page *src)
++{
++}
+ #endif /* CONFIG_MIGRATION */
+
+ #ifdef CONFIG_COMPACTION
+diff --git a/mm/hugetlb.c b/mm/hugetlb.c
+index 76e2a6efc165..6072c9f82794 100644
+--- a/mm/hugetlb.c
++++ b/mm/hugetlb.c
+@@ -30,6 +30,7 @@
+ #include <linux/numa.h>
+ #include <linux/llist.h>
+ #include <linux/cma.h>
++#include <linux/migrate.h>
+
+ #include <asm/page.h>
+ #include <asm/pgalloc.h>
+@@ -4905,20 +4906,17 @@ int hugetlb_mcopy_atomic_pte(struct mm_struct *dst_mm,
+ 			    struct page **pagep)
+ {
+ 	bool is_continue = (mode == MCOPY_ATOMIC_CONTINUE);
+-	struct address_space *mapping;
+-	pgoff_t idx;
++	struct hstate *h = hstate_vma(dst_vma);
++	struct address_space *mapping = dst_vma->vm_file->f_mapping;
++	pgoff_t idx = vma_hugecache_offset(h, dst_vma, dst_addr);
+ 	unsigned long size;
+ 	int vm_shared = dst_vma->vm_flags & VM_SHARED;
+-	struct hstate *h = hstate_vma(dst_vma);
+ 	pte_t _dst_pte;
+ 	spinlock_t *ptl;
+-	int ret;
++	int ret = -ENOMEM;
+ 	struct page *page;
+ 	int writable;
+
+-	mapping = dst_vma->vm_file->f_mapping;
+-	idx = vma_hugecache_offset(h, dst_vma, dst_addr);
+-
+ 	if (is_continue) {
+ 		ret = -EFAULT;
+ 		page = find_lock_page(mapping, idx);
+@@ -4947,12 +4945,44 @@ int hugetlb_mcopy_atomic_pte(struct mm_struct *dst_mm,
+ 		/* fallback to copy_from_user outside mmap_lock */
+ 		if (unlikely(ret)) {
+ 			ret = -ENOENT;
++			/* Free the allocated page which may have
++			 * consumed a reservation.
++			 */
++			restore_reserve_on_error(h, dst_vma, dst_addr, page);
++			put_page(page);
++
++			/* Allocate a temporary page to hold the copied
++			 * contents.
++			 */
++			page = alloc_huge_page_vma(h, dst_vma, dst_addr);
++			if (IS_ERR(page)) {
++				ret = -ENOMEM;
++				goto out;
++			}
+ 			*pagep = page;
+-			/* don't free the page */
++			/* Set the outparam pagep and return to the caller to
++			 * copy the contents outside the lock. Don't free the
++			 * page.
++			 */
+ 			goto out;
+ 		}
+ 	} else {
+-		page = *pagep;
++		if (vm_shared &&
++		    hugetlbfs_pagecache_present(h, dst_vma, dst_addr)) {
++			put_page(*pagep);
++			ret = -EEXIST;
++			*pagep = NULL;
++			goto out;
++		}
++
++		page = alloc_huge_page(dst_vma, dst_addr, 0);
++		if (IS_ERR(page)) {
++			ret = -ENOMEM;
++			*pagep = NULL;
++			goto out;
++		}
++		migrate_copy_huge_page(page, *pagep);
++		put_page(*pagep);
+ 		*pagep = NULL;
+ 	}
+
+diff --git a/mm/migrate.c b/mm/migrate.c
+index b234c3f3acb7..3bfe1f7d127d 100644
+--- a/mm/migrate.c
++++ b/mm/migrate.c
+@@ -550,7 +550,7 @@ static void __copy_gigantic_page(struct page *dst, struct page *src,
+ 	}
+ }
+
+-static void copy_huge_page(struct page *dst, struct page *src)
++void migrate_copy_huge_page(struct page *dst, struct page *src)
+ {
+ 	int i;
+ 	int nr_pages;
+@@ -652,7 +652,7 @@ EXPORT_SYMBOL(migrate_page_states);
+ void migrate_page_copy(struct page *newpage, struct page *page)
+ {
+ 	if (PageHuge(page) || PageTransHuge(page))
+-		copy_huge_page(newpage, page);
++		migrate_copy_huge_page(newpage, page);
+ 	else
+ 		copy_highpage(newpage, page);
+
+diff --git a/mm/userfaultfd.c b/mm/userfaultfd.c
+index 2d6a3a36f6ce..e13a0492b7ba 100644
+--- a/mm/userfaultfd.c
++++ b/mm/userfaultfd.c
+@@ -346,54 +346,8 @@ static __always_inline ssize_t __mcopy_atomic_hugetlb(struct mm_struct *dst_mm,
+ out_unlock:
+ 	mmap_read_unlock(dst_mm);
+ out:
+-	if (page) {
+-		/*
+-		 * We encountered an error and are about to free a newly
+-		 * allocated huge page.
+-		 *
+-		 * Reservation handling is very subtle, and is different for
+-		 * private and shared mappings.  See the routine
+-		 * restore_reserve_on_error for details.  Unfortunately, we
+-		 * can not call restore_reserve_on_error now as it would
+-		 * require holding mmap_lock.
+-		 *
+-		 * If a reservation for the page existed in the reservation
+-		 * map of a private mapping, the map was modified to indicate
+-		 * the reservation was consumed when the page was allocated.
+-		 * We clear the HPageRestoreRsvCnt flag now so that the global
+-		 * reserve count will not be incremented in free_huge_page.
+-		 * The reservation map will still indicate the reservation
+-		 * was consumed and possibly prevent later page allocation.
+-		 * This is better than leaking a global reservation.  If no
+-		 * reservation existed, it is still safe to clear
+-		 * HPageRestoreRsvCnt as no adjustments to reservation counts
+-		 * were made during allocation.
+-		 *
+-		 * The reservation map for shared mappings indicates which
+-		 * pages have reservations.  When a huge page is allocated
+-		 * for an address with a reservation, no change is made to
+-		 * the reserve map.  In this case HPageRestoreRsvCnt will be
+-		 * set to indicate that the global reservation count should be
+-		 * incremented when the page is freed.  This is the desired
+-		 * behavior.  However, when a huge page is allocated for an
+-		 * address without a reservation a reservation entry is added
+-		 * to the reservation map, and HPageRestoreRsvCnt will not be
+-		 * set. When the page is freed, the global reserve count will
+-		 * NOT be incremented and it will appear as though we have
+-		 * leaked reserved page.  In this case, set HPageRestoreRsvCnt
+-		 * so that the global reserve count will be incremented to
+-		 * match the reservation map entry which was created.
+-		 *
+-		 * Note that vm_alloc_shared is based on the flags of the vma
+-		 * for which the page was originally allocated.  dst_vma could
+-		 * be different or NULL on error.
+-		 */
+-		if (vm_alloc_shared)
+-			SetHPageRestoreRsvCnt(page);
+-		else
+-			ClearHPageRestoreRsvCnt(page);
++	if (page)
+ 		put_page(page);
+-	}
+ 	BUG_ON(copied < 0);
+ 	BUG_ON(err > 0);
+ 	BUG_ON(!copied && !err);
+--
+2.32.0.rc0.204.g9fa02ecfa5-goog
