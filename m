@@ -2,123 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 77780393EEB
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 10:44:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 45592393EF4
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 10:45:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234369AbhE1Ip7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 May 2021 04:45:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40150 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229950AbhE1Ip4 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 May 2021 04:45:56 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9322EC061574
-        for <linux-kernel@vger.kernel.org>; Fri, 28 May 2021 01:44:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=Qocte5ZDDxyg+nBx07Z66plFtADe+KJYZN5F/bbZXMg=; b=qcScMB+S66DxYRxXKRflJuDWII
-        /scoQsPaBPBYUP9hX5FVw2+QIfUSWKNFVXsQ0ctUzmluMv30a+VWPZe6TUv9ibOvqcO49yz/Xj2t9
-        2LRlM2WxFAGvyIaXtDhRk0ehH2Ma93w+EqrjmtO+rj+QXPm14ftbVVVduZPcRptzFrAPxib3+bTvy
-        CVrIW+7m4OiLUB0Vb6+P0BJubDOZZN2R7v0x84d0yWLXvht0lCKodxL0XVGI57mfcLp/h1CNlBWX4
-        AoacQoh/lgDm2UxXpiJezQE25KJZFhhtpTP95JI6VgfYXW6Pj+DJzvjrlsUc2AAa/LPjdagbDVD/u
-        059JRtmQ==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1lmY5b-006OiA-4d; Fri, 28 May 2021 08:43:38 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 8A580300221;
-        Fri, 28 May 2021 10:43:23 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 50B76201DEF05; Fri, 28 May 2021 10:43:23 +0200 (CEST)
-Date:   Fri, 28 May 2021 10:43:23 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Srikar Dronamraju <srikar@linux.vnet.ibm.com>
-Cc:     Valentin Schneider <valentin.schneider@arm.com>,
-        Ingo Molnar <mingo@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Rik van Riel <riel@surriel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        linuxppc-dev@lists.ozlabs.org,
-        Nathan Lynch <nathanl@linux.ibm.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Scott Cheloha <cheloha@linux.ibm.com>,
-        Gautham R Shenoy <ego@linux.vnet.ibm.com>,
-        Geetika Moolchandani <Geetika.Moolchandani1@ibm.com>
-Subject: Re: [PATCH 1/3] sched/topology: Allow archs to populate distance map
-Message-ID: <YLCtKziUgPTvPh1j@hirez.programming.kicks-ass.net>
-References: <20210520154427.1041031-1-srikar@linux.vnet.ibm.com>
- <20210520154427.1041031-2-srikar@linux.vnet.ibm.com>
- <YKaw33d71FpHjGnR@hirez.programming.kicks-ass.net>
- <20210521023802.GE2633526@linux.vnet.ibm.com>
- <YKdr0g6+eIHncqej@hirez.programming.kicks-ass.net>
- <20210521092830.GF2633526@linux.vnet.ibm.com>
- <87k0no6wuu.mognet@arm.com>
- <20210524161829.GL2633526@linux.vnet.ibm.com>
+        id S235298AbhE1IrG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 May 2021 04:47:06 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52390 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229950AbhE1Iqp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 28 May 2021 04:46:45 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5AB1F611C9;
+        Fri, 28 May 2021 08:45:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1622191511;
+        bh=fYFdn5ho2n99MVPxiMhhhKy0DgjzCUHcDvcXXBsKMAo=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=rD90WhtIzLQqd8GvZeAoEFShBhZWR8gc7anxDpfCHaM0DHHNfbcMtSp/flwUD9VGA
+         hQ9kWYK+CX321+68amQtPF7Titq7z233XZ/FAKonkoZMtJwfCEJ7xRPl5GEyNC5C0K
+         InPfD96jr2eL4AUZz7yYVQo7nQhDvZvfvALc9GKhta/N2qfxgNTgWomqjJokPVg9er
+         nOVTn46db5Z1XAKhwMTvK3LzxqZMVJG4CEmVXvOQ63gW8q5GsLFdPFF0IDFY94/ZEn
+         Y/uVBwj43l1Lct4IVX+nEGp49d+hsjKrx+VtKAZxHyV3GGyELKUAWJhKFNUeeFBn0k
+         011NFAS0eu7JQ==
+Date:   Fri, 28 May 2021 10:45:08 +0200
+From:   Wolfram Sang <wsa@kernel.org>
+To:     Rob Herring <robh@kernel.org>
+Cc:     devicetree@vger.kernel.org, Peter Rosin <peda@axentia.se>,
+        linux-kernel@vger.kernel.org,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Jacopo Mondi <jacopo+renesas@jmondi.org>,
+        Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        Lee Jones <lee.jones@linaro.org>,
+        Niklas =?utf-8?Q?S=C3=B6derlund?= 
+        <niklas.soderlund+renesas@ragnatech.se>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        linux-i2c@vger.kernel.org
+Subject: Re: [PATCH v2 0/6] dt-bindings: Convert mux bindings to schema
+Message-ID: <YLCtlG7covuCWbC4@kunai>
+Mail-Followup-To: Wolfram Sang <wsa@kernel.org>,
+        Rob Herring <robh@kernel.org>, devicetree@vger.kernel.org,
+        Peter Rosin <peda@axentia.se>, linux-kernel@vger.kernel.org,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Jacopo Mondi <jacopo+renesas@jmondi.org>,
+        Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        Lee Jones <lee.jones@linaro.org>,
+        Niklas =?utf-8?Q?S=C3=B6derlund?= <niklas.soderlund+renesas@ragnatech.se>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        linux-i2c@vger.kernel.org
+References: <20210526184839.2937899-1-robh@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="YXYTR02+Qna+X+fE"
 Content-Disposition: inline
-In-Reply-To: <20210524161829.GL2633526@linux.vnet.ibm.com>
+In-Reply-To: <20210526184839.2937899-1-robh@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 24, 2021 at 09:48:29PM +0530, Srikar Dronamraju wrote:
-> * Valentin Schneider <valentin.schneider@arm.com> [2021-05-24 15:16:09]:
 
-> > I suppose one way to avoid the hook would be to write some "fake" distance
-> > values into your distance_lookup_table[] for offline nodes using your
-> > distance_ref_point_depth thing, i.e. ensure an iteration of
-> > node_distance(a, b) covers all distance values [1]. You can then keep patch
-> > 3 around, and that should roughly be it.
-> > 
-> 
-> Yes, this would suffice but to me its not very clean.
-> static int found[distance_ref_point_depth];
-> 
-> for_each_node(node){
-> 	int i, nd, distance = LOCAL_DISTANCE;
-> 		goto out;
-> 
-> 	nd = node_distance(node, first_online_node)
-> 	for (i=0; i < distance_ref_point_depth; i++, distance *= 2) {
-> 		if (node_online) {
-> 			if (distance != nd)
-> 				continue;
-> 			found[i] ++;
-> 			break;
-> 		}
-> 		if (found[i])
-> 			continue;
-> 		distance_lookup_table[node][i] = distance_lookup_table[first_online_node][i];
-> 		found[i] ++;
-> 		break;
-> 	}
-> }
-> 
-> But do note: We are setting a precedent for node distance between two nodes
-> to change.
+--YXYTR02+Qna+X+fE
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Not really; or rather not more than already is the case AFAICT. Because
-currently your distance table will have *something* in it
-(LOCAL_DISTANCE afaict) for nodes that have never been online, which is
-what triggered the whole problem to begin with.
+On Wed, May 26, 2021 at 01:48:33PM -0500, Rob Herring wrote:
+> This series converts the mux-controller and some i2c mux bindings to DT
+> schema. This was a rabbit hole of trying to fix undocumented (by schema)
+> compatibles (enabled by setting DT_CHECKER_FLAGS=-m). So this is mux
+> bindings, and then a few others that are used in the mux binding
+> examples.
 
-Only after the node has come online for the first time, will it contain
-the right value.
+So, I assume this should all go via your tree? That would be fine with
+me. Maybe Peter has some more comments, but for the procedure, here is
+my ack for the I2C parts of this series:
 
-So both before and after this proposal the actual distance value changes
-after the first time a node goes online.
-
-Yes that's unfortunate, but I don't see a problem with pre-filling it
-with something useful in order to avoid aditional arch hooks.
+Acked-by: Wolfram Sang <wsa@kernel.org>
 
 
+--YXYTR02+Qna+X+fE
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmCwrZMACgkQFA3kzBSg
+KbYt8g//Sw66JcxkYVCJKtd/5gih0ig5lS13n8KG59L2DTU0FBQkGRUM4j+FmgFD
+FtVbRsL3DI2Wh67F0488tfz8l0osF4CxtAwgS7oBmqrIR4dUkG2iwghRyKRb7ONF
+AMuPU84GKO32fBLjb1Vq2R+I/VgXfFeu/SIPsbzX7lOyYsGlSQU2f8TajxTa37xd
+HUx9dwfvPnrSqQSEMVLB3BLNzrBRimGcJDmul6bcYhCDh0of2uK1z6z7XHkGBqw/
+T/W62//sm9MAfmj60mGaDkFOMfJPzuanwzD9TKTJYBDQ/ZQZse5tnzqAPSFEO8KN
+6YJgkhimHg1KhXAydjEFld7FrUqr/upYzUSPv1EloMQp30ZtwOsXQLpNrApGg7R2
+JxJx+nrX6S6Vo7wxHYCeL7JE3zadFZXX5BV3ypguP9SEAW+nwe2VjU7GOqPCmiF0
+HvJCGrfwwUsgoxP5L2vVBS7SdkOtAtV1duhCNC63J9zjcpD2GzaCYkpQrnrIrsHs
+apDb5LwNmOjy2B4wbnM490CgMdnrivEPebkKjHn8G62UGtqZZt1PBxrBG3AQkmnZ
+ALMrB0S4sSzgvDBrmHBv+5KLdjMSL3ucS66oyG6R1+iPz6ITT/kefMWcYViL5Kms
+NIGG3AgLlGC97ZgdBOCaboFMbt3JRAZm+pj7Ipob6qVb6o2AI9M=
+=8rsM
+-----END PGP SIGNATURE-----
+
+--YXYTR02+Qna+X+fE--
