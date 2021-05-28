@@ -2,116 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C8147394511
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 17:28:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9FC4739450E
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 17:27:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236691AbhE1P3x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 May 2021 11:29:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46470 "EHLO
+        id S236669AbhE1P3X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 May 2021 11:29:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46342 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234998AbhE1P3w (ORCPT
+        with ESMTP id S234998AbhE1P3V (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 May 2021 11:29:52 -0400
-Received: from mail-lj1-x22d.google.com (mail-lj1-x22d.google.com [IPv6:2a00:1450:4864:20::22d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E95FC061574
-        for <linux-kernel@vger.kernel.org>; Fri, 28 May 2021 08:28:17 -0700 (PDT)
-Received: by mail-lj1-x22d.google.com with SMTP id o8so5841831ljp.0
-        for <linux-kernel@vger.kernel.org>; Fri, 28 May 2021 08:28:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kinvolk.io; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=O8+KLwgLoww+TmbrLVoD0p0vfc5UfRumQ9Rk3w9z9h8=;
-        b=YfV3IKdCsLwZauDK47dXQKw8qQev721rxkMQ2amyhwwlp2+vg29NFNkVQ0CI96DIL/
-         VlKAcimBaX4mE7C4SpTPqKEZd+z9/CqtSaA/9rKJedEurN1v6ASAp3oW8icBk4OADbHU
-         un+717GDRcPZgm0R6NVTP/11PI2Irq1W48EUI=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=O8+KLwgLoww+TmbrLVoD0p0vfc5UfRumQ9Rk3w9z9h8=;
-        b=L4knE60yp3jsK+MeiVWoe/5Ycb15LjT/NafWld1BQPLYWi7wf6pDF9ZGxegwGSWqbX
-         9a3qBjJg6lMvA57QE4Wx0TIlGUdOMrG8BnD+4iEEeXtusy/0ebfndFnjoaiacsLAuBk7
-         UthTY08+GIDcGYjLmWd5igqCw35vKKDk2COp5dPCVIahFsfVaPRnUTrdnlNWvXuW9tn/
-         flnWLpez4raQPOpjv1vBfHp/G7FTm3oDvDElgM7mxUvXkd6BET9CVWjfxY2YX1dHl9Np
-         iMS7ZTlB7RX3f3LbHAfyZoLIddlRo5DCT4vaxtp68DHBGwT+1jwbYikpIvXjJbZO3PFA
-         MW6g==
-X-Gm-Message-State: AOAM532M2TLql6dk7K2u/nv3OQqe1erqNf3g5gRxymijjFDvdQ0gPO0k
-        wb7cpZSnbl20YL6kPXXlNSoRtfPd80pVP9UxrHnmew==
-X-Google-Smtp-Source: ABdhPJwnj+xo62zd1H1eayR77ymUvylc6snJlV4WoIE1RLjcfXeq9Sd+xHPaqkosXu42TIDk93sc22FOsZL6FIvyA/E=
-X-Received: by 2002:a2e:9787:: with SMTP id y7mr6946175lji.65.1622215695592;
- Fri, 28 May 2021 08:28:15 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210517193908.3113-1-sargun@sargun.me> <20210517193908.3113-3-sargun@sargun.me>
- <CACaBj2YUiowSKzvh02OjpQNqQViA8N0eyRMimkK=90NagRF40w@mail.gmail.com> <202105271137.C491991621@keescook>
-In-Reply-To: <202105271137.C491991621@keescook>
-From:   Rodrigo Campos <rodrigo@kinvolk.io>
-Date:   Fri, 28 May 2021 17:27:39 +0200
-Message-ID: <CACaBj2aaDkJwDM8ugR5LxWEOho3nZuHjYLLsth3XYjf39tpaQQ@mail.gmail.com>
-Subject: Re: [PATCH v2 2/4] seccomp: Refactor notification handler to prepare
- for new semantics
-To:     Kees Cook <keescook@chromium.org>
-Cc:     Sargun Dhillon <sargun@sargun.me>,
-        LKML <linux-kernel@vger.kernel.org>, containers@lists.linux.dev,
-        Tycho Andersen <tycho@tycho.pizza>,
-        Andy Lutomirski <luto@kernel.org>,
-        =?UTF-8?Q?Mauricio_V=C3=A1squez_Bernal?= <mauricio@kinvolk.io>,
-        Giuseppe Scrivano <gscrivan@redhat.com>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        =?UTF-8?B?TWlja2HDq2wgU2FsYcO8bg==?= <mic@linux.microsoft.com>
+        Fri, 28 May 2021 11:29:21 -0400
+Received: from bedivere.hansenpartnership.com (bedivere.hansenpartnership.com [IPv6:2607:fcd0:100:8a00::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08A12C061574;
+        Fri, 28 May 2021 08:27:47 -0700 (PDT)
+Received: from localhost (localhost [127.0.0.1])
+        by bedivere.hansenpartnership.com (Postfix) with ESMTP id 6EF09128071E;
+        Fri, 28 May 2021 08:27:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+        d=hansenpartnership.com; s=20151216; t=1622215665;
+        bh=osCrxTvDh4I+PoJ7BKkBl97R93DA/+e7bAH6MdgTeSI=;
+        h=Message-ID:Subject:From:To:Date:In-Reply-To:References:From;
+        b=KGzcweLRpZJiNtjicmP7GawbNpp2wt/qkigwf7AsUJufRuvAoEXDVHONLV1t8YF4J
+         4Eyvf/ij6oWOzPz5wCkNeFrBGGJIUCJiYKP/0q0nyNrnVoe4Fvtab5jsxid9ABimQU
+         o7g/oKObcSQE+NgzTamNsHBWc4aBYAvuL3tleewg=
+Received: from bedivere.hansenpartnership.com ([127.0.0.1])
+        by localhost (bedivere.hansenpartnership.com [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id 8bSamE-ryG6k; Fri, 28 May 2021 08:27:45 -0700 (PDT)
+Received: from jarvis.int.hansenpartnership.com (unknown [IPv6:2601:600:8280:66d1::527])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by bedivere.hansenpartnership.com (Postfix) with ESMTPSA id B1282128071C;
+        Fri, 28 May 2021 08:27:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+        d=hansenpartnership.com; s=20151216; t=1622215665;
+        bh=osCrxTvDh4I+PoJ7BKkBl97R93DA/+e7bAH6MdgTeSI=;
+        h=Message-ID:Subject:From:To:Date:In-Reply-To:References:From;
+        b=KGzcweLRpZJiNtjicmP7GawbNpp2wt/qkigwf7AsUJufRuvAoEXDVHONLV1t8YF4J
+         4Eyvf/ij6oWOzPz5wCkNeFrBGGJIUCJiYKP/0q0nyNrnVoe4Fvtab5jsxid9ABimQU
+         o7g/oKObcSQE+NgzTamNsHBWc4aBYAvuL3tleewg=
+Message-ID: <a8bbc5dab99a4af6e89a9521a5eb4cb4747d2afe.camel@HansenPartnership.com>
+Subject: Re: Maintainers / Kernel Summit 2021 planning kick-off
+From:   James Bottomley <James.Bottomley@HansenPartnership.com>
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     Greg KH <greg@kroah.com>, Christoph Lameter <cl@gentwo.de>,
+        Theodore Ts'o <tytso@mit.edu>, Jiri Kosina <jikos@kernel.org>,
+        ksummit@lists.linux.dev, linux-kernel@vger.kernel.org,
+        linux-block@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-mm@kvack.org, netdev@vger.kernel.org,
+        linux-arch@vger.kernel.org, linux-api@vger.kernel.org
+Date:   Fri, 28 May 2021 08:27:44 -0700
+In-Reply-To: <YLEIKk7IuWu6W4Sy@casper.infradead.org>
+References: <YH2hs6EsPTpDAqXc@mit.edu>
+         <nycvar.YFH.7.76.2104281228350.18270@cbobk.fhfr.pm>
+         <YIx7R6tmcRRCl/az@mit.edu>
+         <alpine.DEB.2.22.394.2105271522320.172088@gentwo.de>
+         <YK+esqGjKaPb+b/Q@kroah.com>
+         <c46dbda64558ab884af060f405e3f067112b9c8a.camel@HansenPartnership.com>
+         <YLEIKk7IuWu6W4Sy@casper.infradead.org>
 Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.34.4 
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 27, 2021 at 8:42 PM Kees Cook <keescook@chromium.org> wrote:
->
-> On Thu, May 27, 2021 at 01:51:13PM +0200, Rodrigo Campos wrote:
-> >
-> > Kees, as I mentioned in the linked thread, this issue is present in
-> > 5.9+ kernels. Should we add the cc to stable for this patch? Or should
-> > we cc to stable the one linked, that just fixes the issue without
-> > semantic changes to userspace?
->
-> It sounds like the problem is with Go, using addfd, on 5.9-5.13 kernels,
-> yes?
+On Fri, 2021-05-28 at 16:11 +0100, Matthew Wilcox wrote:
+> On Fri, May 28, 2021 at 07:58:10AM -0700, James Bottomley wrote:
+> > On Thu, 2021-05-27 at 15:29 +0200, Greg KH wrote:
+> > > On Thu, May 27, 2021 at 03:23:03PM +0200, Christoph Lameter
+> > > wrote:
+> > > > On Fri, 30 Apr 2021, Theodore Ts'o wrote:
+> > > > 
+> > > > > I know we're all really hungry for some in-person meetups and
+> > > > > discussions, but at least for LPC, Kernel Summit, and
+> > > > > Maintainer's Summit, we're going to have to wait for another
+> > > > > year,
+> > > > 
+> > > > Well now that we are vaccinated: Can we still change it?
+> > > > 
+> > > 
+> > > Speak for yourself, remember that Europe and other parts of the
+> > > world are not as "flush" with vaccines as the US currently is :(
+> > 
+> > The rollout is accelerating in Europe.  At least in Germany, I know
+> > people younger than me are already vaccinated.  I think by the end
+> > of September the situation will be better ... especially if the EU
+> > and US agree on this air bridge (and the US actually agrees to let
+> > EU people in).
+> > 
+> > One of the things Plumbers is thinking of is having a meetup at
+> > what was OSS EU but which is now in Seattle.  The Maintainer's
+> > summit could do the same thing.  We couldn't actually hold Plumbers
+> > in Seattle because the hotels still had masks and distancing
+> > requirements for events that effectively precluded the
+> > collaborative aspects of microconferences, but evening events will
+> > be governed by local protocols, rather than the Hotel, which are
+> > already more relaxed.
+> 
+> Umm.  Let's remember that the vaccines are 33-93% effective [1],
+> which means that there's approximately a 100% certainty that at least
+> one person arriving at the event from a trans-atlantic flight has
+> been exposed to someone who has the virus.  I'm not convinced that
+> holding a "more relaxed protocol" event is a great idea.
 
-Yes.
+Well, I'm not going to get into a debate over the effectiveness of the
+current vaccines.  I will say that all conferences have to now
+recognize that a sizeable proportion of former attendees will have
+fears about travelling and therefore remote components are going to be
+a fixture of conferences going forward.
 
-> Would the semantic change be a problem there? (i.e. it sounds like
-> the semantic change was fine for the 5.14+ kernels, so I'm assuming it's
-> fine for earlier ones too.)
+However, while we should accommodate them, we can't let these fears
+override people willing to take the risk and meet in person.
 
-No, I don't think it will cause any problem.
-
-> > Just to be clear, the other patch that fixes the problem without
-> > userspace visible changes is this:
-> > https://lore.kernel.org/lkml/20210413160151.3301-1-rodrigo@kinvolk.io/
->
-> I'd prefer to use the now-in-next fix if we can. Is it possible to build
-> a test case that triggers the race so we can have some certainty that
-> any fix in -stable covers it appropriately?
-
-I've verified that Sargun's patch also solves the problem in mainline.
-I have now also verified that it applies cleany and fixes the issue
-for linux-stable/5.10.y and linux-stable/5.12.y too (without the patch
-I see the problem, with the patch I don't see it).  5.11 is already
-EOL, so I didn't try it (probably will work as well).
-
-The test case that I have is quite a complicated one, though. I'm
-using the PR we opened to runc to add support for seccomp notify[1]
-and a seccomp agent slightly modified from the example in the PR with
-some cgo to use addfd, and need to run it for several thousand
-iterations, as the kernel needs to be interrupted in a specific line
-and some kernel locks to be acquired in a specific order for this to
-trigger. If you think it is important, I can try to cleanup the code
-and share it, but the issue is basically what I explained here:
-https://lore.kernel.org/lkml/20210413160151.3301-2-rodrigo@kinvolk.io/
-
-Can we cc this patch to stable, then? :)
+James
 
 
-Best,
-Rodrigo
-
-[1]: https://github.com/opencontainers/runc/pull/2682
