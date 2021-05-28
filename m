@@ -2,171 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C4A963948A0
-	for <lists+linux-kernel@lfdr.de>; Sat, 29 May 2021 00:22:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E019A3948A5
+	for <lists+linux-kernel@lfdr.de>; Sat, 29 May 2021 00:23:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229712AbhE1WYW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 May 2021 18:24:22 -0400
-Received: from relay12.mail.gandi.net ([217.70.178.232]:40559 "EHLO
-        relay12.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229575AbhE1WYV (ORCPT
+        id S229721AbhE1WZ2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 May 2021 18:25:28 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:21324 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229589AbhE1WZ0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 May 2021 18:24:21 -0400
-Received: (Authenticated sender: alexandre.belloni@bootlin.com)
-        by relay12.mail.gandi.net (Postfix) with ESMTPSA id BBAE1200002;
-        Fri, 28 May 2021 22:22:44 +0000 (UTC)
-Date:   Sat, 29 May 2021 00:22:44 +0200
-From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
-To:     Dan Carpenter <dan.carpenter@oracle.com>
-Cc:     kbuild@lists.01.org, lkp@intel.com, kbuild-all@lists.01.org,
-        linux-kernel@vger.kernel.org, Fabio Estevam <festevam@gmail.com>
-Subject: Re: drivers/rtc/rtc-mxc_v2.c:361 mxc_rtc_probe() warn: 'pdata->clk'
- not released on lines: 341,354,361.
-Message-ID: <YLFtNLS+6qVqgCgg@piout.net>
-References: <202105252102.h5r94CF9-lkp@intel.com>
+        Fri, 28 May 2021 18:25:26 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1622240631; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=18Esb175aaSr5AM8zLM9xU1/NrzIFnqkbq2Zo/3L8H0=;
+ b=nR2QILVNUIQeqRKuuuNCNQTPEo0OcuEhZ3wWGytWQ7YMeBnNOgVg3XMKTOn/0bYt401r4+NU
+ Jmzw2aVbqTLI/TZtpH7O+tUQoxZmck2DlU3lQG/OPYtKvY6jxCx5P9auPwtC4TQKllk0IBNP
+ WA7uA8JdgJWO58QfuW/1ONNQgJ8=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n06.prod.us-east-1.postgun.com with SMTP id
+ 60b16d5551f29e6bae8e85f8 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 28 May 2021 22:23:17
+ GMT
+Sender: abhinavk=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 94E2BC4323A; Fri, 28 May 2021 22:23:16 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: abhinavk)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id D5DCAC433F1;
+        Fri, 28 May 2021 22:23:13 +0000 (UTC)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <202105252102.h5r94CF9-lkp@intel.com>
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Fri, 28 May 2021 15:23:13 -0700
+From:   abhinavk@codeaurora.org
+To:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Cc:     Vinod Koul <vkoul@kernel.org>, Rob Clark <robdclark@gmail.com>,
+        linux-arm-msm@vger.kernel.org,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Jonathan Marek <jonathan@marek.ca>,
+        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        freedreno@lists.freedesktop.org
+Subject: Re: [RFC PATCH 11/13] drm/msm/disp/dpu1: Add support for DSC in
+ topology
+In-Reply-To: <06ffdec5-8b12-c077-0c51-6ea9100b96a4@linaro.org>
+References: <20210521124946.3617862-1-vkoul@kernel.org>
+ <20210521124946.3617862-16-vkoul@kernel.org>
+ <06ffdec5-8b12-c077-0c51-6ea9100b96a4@linaro.org>
+Message-ID: <57a4c00413dcaba38cebf3aa145b4d64@codeaurora.org>
+X-Sender: abhinavk@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On 2021-05-28 03:39, Dmitry Baryshkov wrote:
+> On 21/05/2021 15:49, Vinod Koul wrote:
+>> For DSC to work we typically need a 2,2,1 configuration. This should
+>> suffice for resolutions upto 4k. For more resolutions like 8k this 
+>> won't
+>> work.
+>> 
+>> Furthermore, we can use 1 DSC encoder in lesser resulutions, but that 
+>> is
+>> not power efficient according to Abhinav, so it is recommended to 
+>> always
+>> use 2 encoders.
+> 
+> Not power efficient because the second DSC would also be powered on or
+> because single DSC enc would consume more power than two DSCs?
 
-On 25/05/2021 16:16:15+0300, Dan Carpenter wrote:
-> Hi Alexandre,
-> 
-> First bad commit (maybe != root cause):
-> 
-> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-> head:   a050a6d2b7e80ca52b2f4141eaf3420d201b72b3
-> commit: 0020868f2a7037e87d6b3b196526de2fb885830d rtc: mxc{,_v2}: enable COMPILE_TEST
-> config: microblaze-randconfig-m031-20210525 (attached as .config)
-> compiler: microblaze-linux-gcc (GCC) 9.3.0
-> 
-> If you fix the issue, kindly add following tag as appropriate
-> Reported-by: kernel test robot <lkp@intel.com>
-> Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
-> 
-> smatch warnings:
-> drivers/rtc/rtc-mxc_v2.c:361 mxc_rtc_probe() warn: 'pdata->clk' not released on lines: 341,354,361.
-> 
-> vim +361 drivers/rtc/rtc-mxc_v2.c
-> 
-> 83c880f79e88cc Patrick Bruenn      2017-12-18  279  static int mxc_rtc_probe(struct platform_device *pdev)
-> 83c880f79e88cc Patrick Bruenn      2017-12-18  280  {
-> 83c880f79e88cc Patrick Bruenn      2017-12-18  281  	struct mxc_rtc_data *pdata;
-> 83c880f79e88cc Patrick Bruenn      2017-12-18  282  	void __iomem *ioaddr;
-> 83c880f79e88cc Patrick Bruenn      2017-12-18  283  	int ret = 0;
-> 83c880f79e88cc Patrick Bruenn      2017-12-18  284  
-> 83c880f79e88cc Patrick Bruenn      2017-12-18  285  	pdata = devm_kzalloc(&pdev->dev, sizeof(*pdata), GFP_KERNEL);
-> 83c880f79e88cc Patrick Bruenn      2017-12-18  286  	if (!pdata)
-> 83c880f79e88cc Patrick Bruenn      2017-12-18  287  		return -ENOMEM;
-> 83c880f79e88cc Patrick Bruenn      2017-12-18  288  
-> 874532cdeefefa Anson Huang         2019-07-17  289  	pdata->ioaddr = devm_platform_ioremap_resource(pdev, 0);
-> 83c880f79e88cc Patrick Bruenn      2017-12-18  290  	if (IS_ERR(pdata->ioaddr))
-> 83c880f79e88cc Patrick Bruenn      2017-12-18  291  		return PTR_ERR(pdata->ioaddr);
-> 83c880f79e88cc Patrick Bruenn      2017-12-18  292  
-> 83c880f79e88cc Patrick Bruenn      2017-12-18  293  	ioaddr = pdata->ioaddr;
-> 83c880f79e88cc Patrick Bruenn      2017-12-18  294  
-> 83c880f79e88cc Patrick Bruenn      2017-12-18  295  	pdata->clk = devm_clk_get(&pdev->dev, NULL);
-> 83c880f79e88cc Patrick Bruenn      2017-12-18  296  	if (IS_ERR(pdata->clk)) {
-> 83c880f79e88cc Patrick Bruenn      2017-12-18  297  		dev_err(&pdev->dev, "unable to get rtc clock!\n");
-> 83c880f79e88cc Patrick Bruenn      2017-12-18  298  		return PTR_ERR(pdata->clk);
-> 83c880f79e88cc Patrick Bruenn      2017-12-18  299  	}
-> 83c880f79e88cc Patrick Bruenn      2017-12-18  300  
-> 83c880f79e88cc Patrick Bruenn      2017-12-18  301  	spin_lock_init(&pdata->lock);
-> 83c880f79e88cc Patrick Bruenn      2017-12-18  302  	pdata->irq = platform_get_irq(pdev, 0);
-> 83c880f79e88cc Patrick Bruenn      2017-12-18  303  	if (pdata->irq < 0)
-> 83c880f79e88cc Patrick Bruenn      2017-12-18  304  		return pdata->irq;
-> 83c880f79e88cc Patrick Bruenn      2017-12-18  305  
-> 83c880f79e88cc Patrick Bruenn      2017-12-18  306  	device_init_wakeup(&pdev->dev, 1);
-> fbc5ee9a6955e6 Anson Huang         2019-04-11  307  	ret = dev_pm_set_wake_irq(&pdev->dev, pdata->irq);
-> fbc5ee9a6955e6 Anson Huang         2019-04-11  308  	if (ret)
-> fbc5ee9a6955e6 Anson Huang         2019-04-11  309  		dev_err(&pdev->dev, "failed to enable irq wake\n");
-> 83c880f79e88cc Patrick Bruenn      2017-12-18  310  
-> 83c880f79e88cc Patrick Bruenn      2017-12-18  311  	ret = clk_prepare_enable(pdata->clk);
-> 83c880f79e88cc Patrick Bruenn      2017-12-18  312  	if (ret)
-> 83c880f79e88cc Patrick Bruenn      2017-12-18  313  		return ret;
-> 83c880f79e88cc Patrick Bruenn      2017-12-18  314  	/* initialize glitch detect */
-> 83c880f79e88cc Patrick Bruenn      2017-12-18  315  	writel(SRTC_LPPDR_INIT, ioaddr + SRTC_LPPDR);
-> 83c880f79e88cc Patrick Bruenn      2017-12-18  316  
-> 83c880f79e88cc Patrick Bruenn      2017-12-18  317  	/* clear lp interrupt status */
-> 83c880f79e88cc Patrick Bruenn      2017-12-18  318  	writel(0xFFFFFFFF, ioaddr + SRTC_LPSR);
-> 83c880f79e88cc Patrick Bruenn      2017-12-18  319  
-> 83c880f79e88cc Patrick Bruenn      2017-12-18  320  	/* move out of init state */
-> 83c880f79e88cc Patrick Bruenn      2017-12-18  321  	writel((SRTC_LPCR_IE | SRTC_LPCR_NSA), ioaddr + SRTC_LPCR);
-> 83c880f79e88cc Patrick Bruenn      2017-12-18  322  	ret = mxc_rtc_wait_for_flag(ioaddr + SRTC_LPSR, SRTC_LPSR_IES);
-> 83c880f79e88cc Patrick Bruenn      2017-12-18  323  	if (ret) {
-> 83c880f79e88cc Patrick Bruenn      2017-12-18  324  		dev_err(&pdev->dev, "Timeout waiting for SRTC_LPSR_IES\n");
-> 83c880f79e88cc Patrick Bruenn      2017-12-18  325  		clk_disable_unprepare(pdata->clk);
-> 83c880f79e88cc Patrick Bruenn      2017-12-18  326  		return ret;
-> 83c880f79e88cc Patrick Bruenn      2017-12-18  327  	}
-> 83c880f79e88cc Patrick Bruenn      2017-12-18  328  
-> 83c880f79e88cc Patrick Bruenn      2017-12-18  329  	/* move out of non-valid state */
-> 83c880f79e88cc Patrick Bruenn      2017-12-18  330  	writel((SRTC_LPCR_IE | SRTC_LPCR_NVE | SRTC_LPCR_NSA |
-> 83c880f79e88cc Patrick Bruenn      2017-12-18  331  		SRTC_LPCR_EN_LP), ioaddr + SRTC_LPCR);
-> 83c880f79e88cc Patrick Bruenn      2017-12-18  332  	ret = mxc_rtc_wait_for_flag(ioaddr + SRTC_LPSR, SRTC_LPSR_NVES);
-> 83c880f79e88cc Patrick Bruenn      2017-12-18  333  	if (ret) {
-> 83c880f79e88cc Patrick Bruenn      2017-12-18  334  		dev_err(&pdev->dev, "Timeout waiting for SRTC_LPSR_NVES\n");
-> 83c880f79e88cc Patrick Bruenn      2017-12-18  335  		clk_disable_unprepare(pdata->clk);
->                                                                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-> 
-> 83c880f79e88cc Patrick Bruenn      2017-12-18  336  		return ret;
-> 83c880f79e88cc Patrick Bruenn      2017-12-18  337  	}
-> 83c880f79e88cc Patrick Bruenn      2017-12-18  338  
-> 5490a1e018a4b4 Alexandre Belloni   2018-05-19  339  	pdata->rtc = devm_rtc_allocate_device(&pdev->dev);
-> 5490a1e018a4b4 Alexandre Belloni   2018-05-19  340  	if (IS_ERR(pdata->rtc))
-> 5490a1e018a4b4 Alexandre Belloni   2018-05-19  341  		return PTR_ERR(pdata->rtc);
-> 
-> clk_disable_unprepare(pdata->clk);
+I havent got through the series yet but just thought of answering this,
 
-That one needs to be fixed.
+So before coming to the power aspects of this, hard-coding was done for 
+the foll reasons:
 
-> 
-> 5490a1e018a4b4 Alexandre Belloni   2018-05-19  342  
-> 5490a1e018a4b4 Alexandre Belloni   2018-05-19  343  	pdata->rtc->ops = &mxc_rtc_ops;
-> 95fbfa14b431d4 Alexandre Belloni   2018-05-19  344  	pdata->rtc->range_max = U32_MAX;
-> 5490a1e018a4b4 Alexandre Belloni   2018-05-19  345  
-> 83c880f79e88cc Patrick Bruenn      2017-12-18  346  	clk_disable(pdata->clk);
-> 83c880f79e88cc Patrick Bruenn      2017-12-18  347  	platform_set_drvdata(pdev, pdata);
-> 83c880f79e88cc Patrick Bruenn      2017-12-18  348  	ret =
-> 83c880f79e88cc Patrick Bruenn      2017-12-18  349  	    devm_request_irq(&pdev->dev, pdata->irq, mxc_rtc_interrupt, 0,
-> 83c880f79e88cc Patrick Bruenn      2017-12-18  350  			     pdev->name, &pdev->dev);
-> 83c880f79e88cc Patrick Bruenn      2017-12-18  351  	if (ret < 0) {
-> 83c880f79e88cc Patrick Bruenn      2017-12-18  352  		dev_err(&pdev->dev, "interrupt not available.\n");
-> 83c880f79e88cc Patrick Bruenn      2017-12-18  353  		clk_unprepare(pdata->clk);
-> 
-> Should these be clk_disable_unprepare()?  I don't know.  Please tell
-> me the rules on this if the warning is wrong.  I also haven't looked up
-> exactly why this warning is displayed, I would have expected
-> clk_unprepare() to silence it.
+-> We do not have a topology DTSI property in upstream and will probably 
+not have as well till
+other features are added which support all the topologies
+-> The DSC panel which is being upstreamed as part of this series is 
+working with this 2,2,1 topology
+downstream ( dual lm, dual DSC encoders, single DSI ). Other topologies 
+have not been tried on it yet
+-> There needs to be a better approach to handle all topologies once we 
+have added support for them.
+It can be either a DTSI property if others agree OR some helper API 
+which will determine the best topology
+based on various factors. Till then, since this will be the only DSC 
+panel we are adding support for
+I thought we can start with a fixed topology for now.
 
-clk_unprepare here is right because there is an unconditional
-clk_disable on line 346. I guess smatch needs to learn that clk_disable
-followed by clk_unprepare is the same as clk_disable_unprepare and I
-guess also for clk_prepare_enable/clk_prepare/clk_enable
+Coming to the power aspect, I only recommended 2-2-1 here because using 
+two mixers is better power wise
+as it will split the width/2. We can also do 2-1-1 by enabling 3D mux 
+but this panel has not been validated
+with a single DSC. So to keep things simple with what has been 
+validated, I thought we can go ahead with
+2-2-1 for now.
 
-> 
-> 83c880f79e88cc Patrick Bruenn      2017-12-18  354  		return ret;
-> 83c880f79e88cc Patrick Bruenn      2017-12-18  355  	}
-> 83c880f79e88cc Patrick Bruenn      2017-12-18  356  
-> fdcfd854333be5 Bartosz Golaszewski 2020-11-09  357  	ret = devm_rtc_register_device(pdata->rtc);
-> 5490a1e018a4b4 Alexandre Belloni   2018-05-19  358  	if (ret < 0)
-> 83c880f79e88cc Patrick Bruenn      2017-12-18  359  		clk_unprepare(pdata->clk);
-> 
-> Same.
-> 
+So rather than giving too much importance to the power aspect of it, the 
+other reasons should also
+be highlighted here as the main reason and the commit text should give 
+these details as well.
 
-Ditto
-
-> 83c880f79e88cc Patrick Bruenn      2017-12-18  360  
-> 5490a1e018a4b4 Alexandre Belloni   2018-05-19 @361  	return ret;
-> 83c880f79e88cc Patrick Bruenn      2017-12-18  362  }
-> 
-
--- 
-Alexandre Belloni, co-owner and COO, Bootlin
-Embedded Linux and Kernel engineering
-https://bootlin.com
+>> 
+>> So for now we blindly create 2,2,1 topology when DSC is enabled
+>> 
+>> Co-developed-by: Abhinav Kumar <abhinavk@codeaurora.org>
+>> Signed-off-by: Abhinav Kumar <abhinavk@codeaurora.org>
+>> Signed-off-by: Vinod Koul <vkoul@kernel.org>
+>> ---
+>>   drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c | 14 ++++++++++++++
+>>   1 file changed, 14 insertions(+)
+>> 
+>> diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c 
+>> b/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c
+>> index 18cb1274a8bb..bffb40085c67 100644
+>> --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c
+>> +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c
+>> @@ -609,8 +609,22 @@ static struct msm_display_topology 
+>> dpu_encoder_get_topology(
+>>   	topology.num_enc = 0;
+>>   	topology.num_intf = intf_count;
+>>   +	drm_enc = &dpu_enc->base;
+>> +	priv = drm_enc->dev->dev_private;
+>> +	if (priv && priv->dsc) {
+>> +		/* In case of Display Stream Compression DSC, we would use
+>> +		 * 2 encoders, 2 line mixers and 1 interface
+>> +		 * this is power optimal and can drive upto (including) 4k
+>> +		 * screens
+>> +		 */
+>> +		topology.num_enc = 2;
+>> +		topology.num_intf = 1;
+>> +		topology.num_lm = 2;
+>> +	}
+>> +
+>>   	return topology;
+>>   }
+>> +
+>>   static int dpu_encoder_virt_atomic_check(
+>>   		struct drm_encoder *drm_enc,
+>>   		struct drm_crtc_state *crtc_state,
+>> 
