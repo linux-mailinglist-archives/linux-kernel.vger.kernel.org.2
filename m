@@ -2,107 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 52E0D39465A
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 19:23:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E427394661
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 19:29:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235049AbhE1RZQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 May 2021 13:25:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44274 "EHLO
+        id S229461AbhE1RbB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 May 2021 13:31:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45526 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229599AbhE1RZP (ORCPT
+        with ESMTP id S229599AbhE1RbA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 May 2021 13:25:15 -0400
-Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7E0DC06174A
-        for <linux-kernel@vger.kernel.org>; Fri, 28 May 2021 10:23:39 -0700 (PDT)
-Received: by mail-pj1-x102c.google.com with SMTP id ne24-20020a17090b3758b029015f2dafecb0so2904156pjb.4
-        for <linux-kernel@vger.kernel.org>; Fri, 28 May 2021 10:23:39 -0700 (PDT)
+        Fri, 28 May 2021 13:31:00 -0400
+Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F441C061574;
+        Fri, 28 May 2021 10:29:25 -0700 (PDT)
+Received: by mail-lf1-x133.google.com with SMTP id f30so6439836lfj.1;
+        Fri, 28 May 2021 10:29:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
-        bh=U7LDjVeilIpww/IL0BjmlQ/cmmfSwZFyRdCgaKSOKMw=;
-        b=Lq0DAQDfDOyVep2CPYmZ/qwZjTN4VLXw3PW+oG15SC49lWJ61TkuDQWDdDxWhFXMVx
-         l4yNi+YI2OwzxtJu3lJVQkOPAOOdF3A14QfBl8b/QGLKbYrcot5yv1LjsbSMipN8MCtJ
-         f5vVNrMMc4FnY4gL/LBpGnYD8yo0aQxLqyPGw=
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=nQGU6xrvasRzJ9/W6i4GybOWCRndIumcGWBV2DwZRaE=;
+        b=oLuOlBudc2FiZ4E3p8UrouhdUzva8p07ec+k5PXp+TUrp80hZpOAn4KO4GxO5NcOno
+         sq8GpwLc8BzVKI4TxJyoL6MR6rp1FpJTysHAqH/KYG8OsVdZdmiNRpLAbvPpKvpY9YoF
+         8HvPHwi9VTDBHoxThJWl+sMEMgcDlsCCUdq48c6uxkOCXZ0ypyq0O1nPbDhS2ojdCngu
+         C2NGaF/Fn+/elN+NSdiU5L4TPaPO8Ehz6c317aHP1A89MPUcK69I+pbIHg4+pkk60OtN
+         ouJd3CwAs0aP6wMiIPxrsbek9jWe/GhndC8qjSTTx8j5m2Dmq1nUQyn/aCJGvhrobQfS
+         /QUA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition;
-        bh=U7LDjVeilIpww/IL0BjmlQ/cmmfSwZFyRdCgaKSOKMw=;
-        b=lxhIn7gdSkJcZaPUI32ZvzQnwok1rQxBXd69JQAEaZcQh2ugxlIRR/jPFjvUEXGfqv
-         ML9B4EtqOqzfBjGIBvx80/xHl4ti5+xrJ4V/5HwzDSCor+ONx8yfADPVMJvEDiAROSrI
-         BULXzQlhyVHNmYzLBgyZ0Wls+1Vj5m08yg8JLrAzFKtQAYqVUPG8mERz/hpPT1k6/6Zn
-         WiVwOJjDq4dGYEHPfyiUPE2/ZlRQLA4NpU9vzA4Z9ycFi4xZ4ErUXzny61RcSBUhybcJ
-         m61F3IOJszxK39u/KHVgmx1GWqh8FxwMVNufg4s3CZrlc1qVNEEfqKZeMg9xlU6zxZ74
-         9zIg==
-X-Gm-Message-State: AOAM532OT4gPTSr5zYR+ikJLGvci45jRMSd5aX3k07sVJo61TkdzMunG
-        m2q/BzxOvoLlOWgYHigYEwJ/6A==
-X-Google-Smtp-Source: ABdhPJwQBLmdMXQKCbmme7kUxpxg02YFyCKpLARhhKq3QVla0USU2LVc4byyh8D/EtMAWUx8u4xPLQ==
-X-Received: by 2002:a17:90a:4205:: with SMTP id o5mr5560769pjg.140.1622222619378;
-        Fri, 28 May 2021 10:23:39 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id d15sm1225049pgu.84.2021.05.28.10.23.38
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=nQGU6xrvasRzJ9/W6i4GybOWCRndIumcGWBV2DwZRaE=;
+        b=S+yDtp2pyVOwU5V3j7tKvQ+SSGh097eaH+MIvgUqUndam/kX11qlq49gmxfXpkA3aV
+         Xx6KFK/dWBGAKMKQYus9JRJ1zwk6UtHil1IdWba5XeHRKMj73+5yJqZ+VqXmN7gPTBbq
+         pEUDwAODmJ6y1OpmbxCVG0aYg6uldD3YV5uhJ95zcv/u5ldmjcgivHMajr+19na2n26w
+         w/KKownro2wP/jCWoz8LytU4gqD1Wm7aSG2hiT1u+cT0eTpPiY7WKqywCzNBHEMt20zg
+         Lzal3+TPlJhZGjjCUGsB28W8NQlvMa/6rZXQ8/te+J3wYnkTqWevFeZDafc6mSaO9Gte
+         nDQg==
+X-Gm-Message-State: AOAM532+Tn032+2/T7Ag2JzMpwcDbCbOIKRBzpORCJbAOJ3hNIsdrg32
+        A4RBy0tw9rmardrUDn6GqgU=
+X-Google-Smtp-Source: ABdhPJzYLXcjkSoV50SJyxTWXbXGdzlaPQ4nCCyFIMp3Wbb81hshFzgZ+uWem4bbOtWwwABvfichZQ==
+X-Received: by 2002:ac2:4281:: with SMTP id m1mr6250316lfh.164.1622222963252;
+        Fri, 28 May 2021 10:29:23 -0700 (PDT)
+Received: from localhost.localdomain (46-138-12-55.dynamic.spd-mgts.ru. [46.138.12.55])
+        by smtp.gmail.com with ESMTPSA id x207sm518282lff.234.2021.05.28.10.29.22
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 28 May 2021 10:23:38 -0700 (PDT)
-Date:   Fri, 28 May 2021 10:23:37 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     linux-kernel@vger.kernel.org, Candle Sun <candlesea@gmail.com>,
-        Fangrui Song <maskray@google.com>,
-        Kees Cook <keescook@chromium.org>,
-        Marco Elver <elver@google.com>,
-        Miguel Ojeda <ojeda@kernel.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Sami Tolvanen <samitolvanen@google.com>
-Subject: [GIT PULL] Clang feature fixes for v5.13-rc4
-Message-ID: <202105281022.40F5443A@keescook>
+        Fri, 28 May 2021 10:29:22 -0700 (PDT)
+From:   Dmitry Osipenko <digetx@gmail.com>
+To:     Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.com>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Ion Agorria <ion@agorria.com>,
+        Svyatoslav Ryhel <clamor95@gmail.com>,
+        Liam Girdwood <lgirdwood@gmail.com>
+Cc:     alsa-devel@alsa-project.org, linux-tegra@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v5 0/3] Unify NVIDIA Tegra ASoC machine drivers
+Date:   Fri, 28 May 2021 20:28:30 +0300
+Message-Id: <20210528172833.21622-1-digetx@gmail.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+This series squashes all the ASoC machine drivers into a single one,
+this change was suggested by Jon Hunter. It also sets driver_name and
+components string of each card, allowing userspace alsa-lib to find
+UCMs at predictable path.
 
-Please pull these Clang feature fixes for v5.13-rc4. One small fix each
-for LTO and CFI.
+Changelog:
 
-Thanks!
+v5: - The v4 removed the customization of components string for Nexus 7,
+      but I missed to remove the "components" hook which is unused now,
+      it's removed in v5 for consistency.
 
--Kees
+    - Slightly improved naming of the common 12MHz MCLK rate function
+      to make it more consistent with the rest of the driver functions.
 
-The following changes since commit d07f6ca923ea0927a1024dfccafc5b53b61cfecc:
+v4: - Moved out mclk_rate callback that is currently used only by WM8903
+      machine driver from the common driver. This was suggested by Jon Hunter.
 
-  Linux 5.13-rc2 (2021-05-16 15:27:44 -0700)
+    - Dropped patch which was setting custom components string for Nexus 7.
+      Jaroslav Kysela wants it to be specified in a device-tree, but the
+      components string doesn't have a firm specification for today. It's
+      better to drop this change for now since it's optional anyways.
 
-are available in the Git repository at:
+    - Fixed compilation error that was reported by kernel robot for v3.
 
-  https://git.kernel.org/pub/scm/linux/kernel/git/kees/linux.git tags/clang-features-v5.13-rc4
+    - Jaroslav Kysela merged alsa-ucm-conf PR [1] which added UCMs for
+      Nexus 7 and Acer A500. The UCMs are fully working using a combination
+      of updated kernel + alsa-ucm-conf master + alsa-lib master, meaning
+      that they will work with the next releases of kernel and ALSA userspace
+      upstream packages.
 
-for you to fetch changes up to 24845dcb170e16b3100bd49743687648c71387ae:
+    - Added ack from Jaroslav Kysela to the "Specify components string for
+      each card" patch that he gave to v3.
 
-  Makefile: LTO: have linker check -Wframe-larger-than (2021-05-24 15:24:34 -0700)
+v3: - Added components string as was suggested by Jaroslav Kysela to v2.
 
-----------------------------------------------------------------
-Clang feature fixes for v5.13-rc4
+    - Renamed MCLK rate function that is used by max98090 and other codecs
+      to make it look more generic. Added option for specifying CLK ID per
+      device. This all was suggested by Jon Hunter to v2.
 
-- Correctly pass stack frame size checking under LTO (Nick Desaulniers)
+v2: - Dropped use of of_device_compatible_match(), like it was suggested
+      by Rob Herring in a review comment to v1.
 
-- Avoid CFI mismatches by checking initcall_t types (Marco Elver)
+    - Added patch that sets card's driver_name of as Tegra ASoC drivers.
+      In a comment to v1 Jaroslav Kysela suggested that the Tegra drivers
+      don't set the card name properly and he was right.
 
-----------------------------------------------------------------
-Marco Elver (1):
-      init: verify that function is initcall_t at compile-time
+      I opened pull request with the new Tegra UCMs and updated lookup paths
+      for older UCMs [1].
 
-Nick Desaulniers (1):
-      Makefile: LTO: have linker check -Wframe-larger-than
+      [1] https://github.com/alsa-project/alsa-ucm-conf/pull/92
 
- Makefile             | 5 +++++
- include/linux/init.h | 3 ++-
- 2 files changed, 7 insertions(+), 1 deletion(-)
+Dmitry Osipenko (3):
+  ASoC: tegra: Set driver_name=tegra for all machine drivers
+  ASoC: tegra: Unify ASoC machine drivers
+  ASoC: tegra: Specify components string for each card
+
+ sound/soc/tegra/Kconfig              |  12 +
+ sound/soc/tegra/Makefile             |  18 +-
+ sound/soc/tegra/tegra_alc5632.c      | 259 ----------
+ sound/soc/tegra/tegra_asoc_machine.c | 712 +++++++++++++++++++++++++++
+ sound/soc/tegra/tegra_asoc_machine.h |  45 ++
+ sound/soc/tegra/tegra_max98090.c     | 276 -----------
+ sound/soc/tegra/tegra_rt5640.c       | 222 ---------
+ sound/soc/tegra/tegra_rt5677.c       | 324 ------------
+ sound/soc/tegra/tegra_sgtl5000.c     | 211 --------
+ sound/soc/tegra/tegra_wm8753.c       | 185 -------
+ sound/soc/tegra/tegra_wm8903.c       | 351 +++----------
+ sound/soc/tegra/tegra_wm9712.c       | 166 -------
+ sound/soc/tegra/trimslice.c          | 172 -------
+ 13 files changed, 850 insertions(+), 2103 deletions(-)
+ delete mode 100644 sound/soc/tegra/tegra_alc5632.c
+ create mode 100644 sound/soc/tegra/tegra_asoc_machine.c
+ create mode 100644 sound/soc/tegra/tegra_asoc_machine.h
+ delete mode 100644 sound/soc/tegra/tegra_max98090.c
+ delete mode 100644 sound/soc/tegra/tegra_rt5640.c
+ delete mode 100644 sound/soc/tegra/tegra_rt5677.c
+ delete mode 100644 sound/soc/tegra/tegra_sgtl5000.c
+ delete mode 100644 sound/soc/tegra/tegra_wm8753.c
+ delete mode 100644 sound/soc/tegra/tegra_wm9712.c
+ delete mode 100644 sound/soc/tegra/trimslice.c
 
 -- 
-Kees Cook
+2.30.2
+
