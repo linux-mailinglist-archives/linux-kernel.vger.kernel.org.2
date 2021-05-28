@@ -2,121 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B936D3945BA
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 18:18:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F0B7E3945B9
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 18:17:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236797AbhE1QTl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 May 2021 12:19:41 -0400
-Received: from mga03.intel.com ([134.134.136.65]:26607 "EHLO mga03.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236679AbhE1QTf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 May 2021 12:19:35 -0400
-IronPort-SDR: PAFmk1FmUEsK1sGlSYSFzvPkxcrbZmsR3un3CFcVWjjgPZJrVjDo8k2OQk2AneSrvyaa0s8RDh
- 0b7ptpRCBSOw==
-X-IronPort-AV: E=McAfee;i="6200,9189,9998"; a="203018350"
-X-IronPort-AV: E=Sophos;i="5.83,229,1616482800"; 
-   d="scan'208";a="203018350"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 May 2021 09:17:45 -0700
-IronPort-SDR: Ob+vocMUn0vIVMxr3+HzLdr9KZ1s3a+g+7hQqYg2H+yQ6Pjp47f/h77mkoNSN8L6USENL/3y/a
- APk+NyX7QZFw==
-X-IronPort-AV: E=Sophos;i="5.83,229,1616482800"; 
-   d="scan'208";a="481098275"
-Received: from yihleong-mobl.amr.corp.intel.com (HELO [10.255.228.69]) ([10.255.228.69])
-  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 May 2021 09:17:44 -0700
-Subject: Re: [PATCH 0/6 v2] Calculate pcp->high based on zone sizes and active
- CPUs
-To:     Mel Gorman <mgorman@techsingularity.net>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Hillf Danton <hdanton@sina.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Michal Hocko <mhocko@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux-MM <linux-mm@kvack.org>, "Tang, Feng" <feng.tang@intel.com>
-References: <20210525080119.5455-1-mgorman@techsingularity.net>
- <7177f59b-dc05-daff-7dc6-5815b539a790@intel.com>
- <20210528085545.GJ30378@techsingularity.net>
- <893ce8ed-df14-612b-693f-48c9dac0eb19@intel.com>
- <20210528151834.GR30378@techsingularity.net>
-From:   Dave Hansen <dave.hansen@intel.com>
-Autocrypt: addr=dave.hansen@intel.com; keydata=
- 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
- z5cecg==
-Message-ID: <c847e968-670a-ff6b-2f14-7fa4066955dd@intel.com>
-Date:   Fri, 28 May 2021 09:17:41 -0700
+        id S236480AbhE1QT0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 May 2021 12:19:26 -0400
+Received: from fllv0015.ext.ti.com ([198.47.19.141]:51434 "EHLO
+        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234443AbhE1QTY (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 28 May 2021 12:19:24 -0400
+Received: from fllv0034.itg.ti.com ([10.64.40.246])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 14SGHhSC086409;
+        Fri, 28 May 2021 11:17:43 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1622218663;
+        bh=D58FdqqYgrlOaSZQ555UBixMEXaRM61PLwIyCkqZMx4=;
+        h=Subject:To:CC:References:From:Date:In-Reply-To;
+        b=PTm974/aIC3BkvWxw4p4/fM1W6sPiY79wrR9NlTtH5J2eb8ITd2KVull9eAKOMZN/
+         i0XWvNK/6P8K1wU0uHA6FGsenagShHN5KFf7TElcMGdnaXxF2T0vARRF+AyZ0okUNF
+         iK2PThvJOvVsThOD84k+bYbW30k4bV2OpQ+7L5Fg=
+Received: from DLEE105.ent.ti.com (dlee105.ent.ti.com [157.170.170.35])
+        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 14SGHhq6084066
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Fri, 28 May 2021 11:17:43 -0500
+Received: from DLEE112.ent.ti.com (157.170.170.23) by DLEE105.ent.ti.com
+ (157.170.170.35) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Fri, 28
+ May 2021 11:17:43 -0500
+Received: from fllv0039.itg.ti.com (10.64.41.19) by DLEE112.ent.ti.com
+ (157.170.170.23) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
+ Frontend Transport; Fri, 28 May 2021 11:17:43 -0500
+Received: from [10.250.35.153] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 14SGHgP2026203;
+        Fri, 28 May 2021 11:17:42 -0500
+Subject: Re: [PATCH 1/6] remoteproc: Introduce rproc_detach_device() wrapper
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>
+CC:     Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Lokesh Vutla <lokeshvutla@ti.com>,
+        Tero Kristo <kristo@kernel.org>,
+        <linux-remoteproc@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>
+References: <20210522000309.26134-1-s-anna@ti.com>
+ <20210522000309.26134-2-s-anna@ti.com> <YLBu9Wr1vNiwsfWT@builder.lan>
+From:   Suman Anna <s-anna@ti.com>
+Message-ID: <7b5556d8-e92c-f633-e58a-cdd71c25df29@ti.com>
+Date:   Fri, 28 May 2021 11:17:42 -0500
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <20210528151834.GR30378@techsingularity.net>
-Content-Type:   text/plain; charset=US-ASCII
+In-Reply-To: <YLBu9Wr1vNiwsfWT@builder.lan>
+Content-Type: text/plain; charset="utf-8"
 Content-Language: en-US
-Content-Transfer-Encoding: 7BIT
+Content-Transfer-Encoding: 7bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5/28/21 8:18 AM, Mel Gorman wrote:
->> BTW, to do some of this testing, Feng was doing a plain old kernel
->> build.  On the one system where this got run, he noted a ~2% regression
->> in build times.  Nothing major, but you might want to be on the lookout
->> in case 0day or the other test harnesses find something similar once
->> this series gets to them.
->>
-> What type of system was it?
+On 5/27/21 11:17 PM, Bjorn Andersson wrote:
+> On Fri 21 May 19:03 CDT 2021, Suman Anna wrote:
 > 
-> I noticed minor differences for some thread counts on kernel compilations
-> but for CascadeLake at least, it was mostly neutral. Below is an old test
-> result based on a previous revision.
+>> The .attach() rproc ops is invoked through the helper
+>> rproc_attach_device(), but the .detach() ops is invoked
+>> directly at present. Introduce a similar wrapper function
+>> rproc_detach_device() for .detach() ops so that the code
+>> is symmetric.
+>>
+>> Signed-off-by: Suman Anna <s-anna@ti.com>
+>> ---
+>>  drivers/remoteproc/remoteproc_core.c     | 2 +-
+>>  drivers/remoteproc/remoteproc_internal.h | 8 ++++++++
+>>  2 files changed, 9 insertions(+), 1 deletion(-)
+>>
+>> diff --git a/drivers/remoteproc/remoteproc_core.c b/drivers/remoteproc/remoteproc_core.c
+>> index 6348aaa42bbb..6019f46001c8 100644
+>> --- a/drivers/remoteproc/remoteproc_core.c
+>> +++ b/drivers/remoteproc/remoteproc_core.c
+>> @@ -1869,7 +1869,7 @@ static int __rproc_detach(struct rproc *rproc)
+>>  	}
+>>  
+>>  	/* Tell the remote processor the core isn't available anymore */
+>> -	ret = rproc->ops->detach(rproc);
+>> +	ret = rproc_detach_device(rproc);
+>>  	if (ret) {
+>>  		dev_err(dev, "can't detach from rproc: %d\n", ret);
+>>  		return ret;
+>> diff --git a/drivers/remoteproc/remoteproc_internal.h b/drivers/remoteproc/remoteproc_internal.h
+>> index a328e634b1de..931d50b6a0d1 100644
+>> --- a/drivers/remoteproc/remoteproc_internal.h
+>> +++ b/drivers/remoteproc/remoteproc_internal.h
+>> @@ -121,6 +121,14 @@ static inline int rproc_attach_device(struct rproc *rproc)
+>>  	return 0;
+>>  }
+>>  
+>> +static inline int rproc_detach_device(struct rproc *rproc)
+>> +{
+>> +	if (rproc->ops->detach)
+>> +		return rproc->ops->detach(rproc);
+>> +
+>> +	return 0;
+> 
+> I was going to complain that this will silently succeed to detach a
+> remoteproc when the driver doesn't implement detach, but then I realized
+> that in the current code path we just failed if it wasn't set.
+> 
+> So this only becomes a problem if we're out of sync between the wish to
+> detach and the implementation of detach, in the later patch.
+> 
+> But based on this, why do we allow rproc_attach_device() to succeed even
+> though a driver doesn't implement attach? Could we achieve the symmetry
+> by going the other way?
 
-It's a Cascade Lake as well.  But, I never trust hardware at a hardware
-company.  These could be preproduction CPUs or BIOS or both, or have
-some bonkers configuration knob flipped.
+We don't, it does throw an error. See rproc_validate(). The error-checking is
+somewhat asymmetric. Any remoteproc requiring attach behavior is supposed to be
+setting the rproc state as RPROC_DETACHED. The remoteproc core state-machine is
+dictated by that value between start and attach. rproc_validate() does check the
+required ops between RPROC_OFFLINE and RPROC_DETACHED states.
 
-It's also got a bunch of PMEM plugged and onlined, including the
-_possibility_ of kernel data structures ended up on PMEM.  They *mostly*
-don't end up there, but it does happen on occasion.
+Do you mean use return -EINVAL by default in both the wrappers? Atm, you will
+never exercise this particular code paths in either of these wrapper functions,
+because there are checks enforced even before these wrappers are invoked.
 
-Anyway, I'll see if we can do some more runs with your latest version.
-It looks like it's been picked up for -mm so 0day should be pounding on
-it soon enough.
+regards
+Suman
+
+> 
+> Regards,
+> Bjorn
+> 
+>> +}
+>> +
+>>  static inline
+>>  int rproc_fw_sanity_check(struct rproc *rproc, const struct firmware *fw)
+>>  {
+>> -- 
+>> 2.30.1
+>>
+
