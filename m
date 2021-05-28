@@ -2,103 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 45592393EF4
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 10:45:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A977393EF9
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 10:48:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235298AbhE1IrG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 May 2021 04:47:06 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52390 "EHLO mail.kernel.org"
+        id S235467AbhE1IuX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 May 2021 04:50:23 -0400
+Received: from m12-17.163.com ([220.181.12.17]:33395 "EHLO m12-17.163.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229950AbhE1Iqp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 May 2021 04:46:45 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5AB1F611C9;
-        Fri, 28 May 2021 08:45:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1622191511;
-        bh=fYFdn5ho2n99MVPxiMhhhKy0DgjzCUHcDvcXXBsKMAo=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=rD90WhtIzLQqd8GvZeAoEFShBhZWR8gc7anxDpfCHaM0DHHNfbcMtSp/flwUD9VGA
-         hQ9kWYK+CX321+68amQtPF7Titq7z233XZ/FAKonkoZMtJwfCEJ7xRPl5GEyNC5C0K
-         InPfD96jr2eL4AUZz7yYVQo7nQhDvZvfvALc9GKhta/N2qfxgNTgWomqjJokPVg9er
-         nOVTn46db5Z1XAKhwMTvK3LzxqZMVJG4CEmVXvOQ63gW8q5GsLFdPFF0IDFY94/ZEn
-         Y/uVBwj43l1Lct4IVX+nEGp49d+hsjKrx+VtKAZxHyV3GGyELKUAWJhKFNUeeFBn0k
-         011NFAS0eu7JQ==
-Date:   Fri, 28 May 2021 10:45:08 +0200
-From:   Wolfram Sang <wsa@kernel.org>
-To:     Rob Herring <robh@kernel.org>
-Cc:     devicetree@vger.kernel.org, Peter Rosin <peda@axentia.se>,
-        linux-kernel@vger.kernel.org,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Jacopo Mondi <jacopo+renesas@jmondi.org>,
-        Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Lee Jones <lee.jones@linaro.org>,
-        Niklas =?utf-8?Q?S=C3=B6derlund?= 
-        <niklas.soderlund+renesas@ragnatech.se>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        linux-i2c@vger.kernel.org
-Subject: Re: [PATCH v2 0/6] dt-bindings: Convert mux bindings to schema
-Message-ID: <YLCtlG7covuCWbC4@kunai>
-Mail-Followup-To: Wolfram Sang <wsa@kernel.org>,
-        Rob Herring <robh@kernel.org>, devicetree@vger.kernel.org,
-        Peter Rosin <peda@axentia.se>, linux-kernel@vger.kernel.org,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Jacopo Mondi <jacopo+renesas@jmondi.org>,
-        Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Lee Jones <lee.jones@linaro.org>,
-        Niklas =?utf-8?Q?S=C3=B6derlund?= <niklas.soderlund+renesas@ragnatech.se>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        linux-i2c@vger.kernel.org
-References: <20210526184839.2937899-1-robh@kernel.org>
+        id S233054AbhE1IuV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 28 May 2021 04:50:21 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+        s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=NPgfd
+        6MPtzDIXDJfmmg/h4Y5meuB7xT639mAubjg2cw=; b=i+3w3IEVW0rh2qwNakDEA
+        e4CZ2wG+KB7Pv84NBse4y9vcURJ9BUWyL2vCFhrcpovUo7iCUPD4GCSp9GTfjs+G
+        wdW5tYToJ355GUT3nRF92OqjofXQytBzeYVXwbaBJK8VW4rvAfn7lgTw4KPkDOUG
+        gLfsKJPCUMlibrJj0kagf0=
+Received: from localhost.localdomain (unknown [218.17.89.92])
+        by smtp13 (Coremail) with SMTP id EcCowAB3oYVprrBgHcF83w--.15570S2;
+        Fri, 28 May 2021 16:48:42 +0800 (CST)
+From:   lijian_8010a29@163.com
+To:     mchehab@kernel.org
+Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        lijian <lijian@yulong.com>
+Subject: [PATCH] media: via-camera: deleted these redundant semicolons
+Date:   Fri, 28 May 2021 16:47:40 +0800
+Message-Id: <20210528084740.173201-1-lijian_8010a29@163.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="YXYTR02+Qna+X+fE"
-Content-Disposition: inline
-In-Reply-To: <20210526184839.2937899-1-robh@kernel.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: EcCowAB3oYVprrBgHcF83w--.15570S2
+X-Coremail-Antispam: 1Uf129KBjvdXoW7Xry8Zr4xGr1fJF48JryrWFg_yoWktrcEqr
+        nYvFs3X3y8GFZrtFyjkF4rWryFvayYvr48uFnxtFWYyry7t3yUW3WYgry7Xw42va129F98
+        GFn09rn7Cr1SvjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUvcSsGvfC2KfnxnUUI43ZEXa7IU5oxRDUUUUU==
+X-Originating-IP: [218.17.89.92]
+X-CM-SenderInfo: 5olmxttqbyiikqdsmqqrwthudrp/1tbiHRqfUFSIq6n55gABsI
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: lijian <lijian@yulong.com>
 
---YXYTR02+Qna+X+fE
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Macros should not use a trailing semicolon，and it was used
+the semicolon after macro cam_dbg called in viacam_vb2_prepare,
+so deleted these redundant semicolons.
 
-On Wed, May 26, 2021 at 01:48:33PM -0500, Rob Herring wrote:
-> This series converts the mux-controller and some i2c mux bindings to DT
-> schema. This was a rabbit hole of trying to fix undocumented (by schema)
-> compatibles (enabled by setting DT_CHECKER_FLAGS=-m). So this is mux
-> bindings, and then a few others that are used in the mux binding
-> examples.
+Signed-off-by: lijian <lijian@yulong.com>
+---
+ drivers/media/platform/via-camera.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-So, I assume this should all go via your tree? That would be fine with
-me. Maybe Peter has some more comments, but for the procedure, here is
-my ack for the I2C parts of this series:
+diff --git a/drivers/media/platform/via-camera.c b/drivers/media/platform/via-camera.c
+index ed0ad68c5c48..5a6ace37c157 100644
+--- a/drivers/media/platform/via-camera.c
++++ b/drivers/media/platform/via-camera.c
+@@ -132,11 +132,11 @@ static struct via_camera *via_cam_info;
+  * Debugging and related.
+  */
+ #define cam_err(cam, fmt, arg...) \
+-	dev_err(&(cam)->platdev->dev, fmt, ##arg);
++	dev_err(&(cam)->platdev->dev, fmt, ##arg)
+ #define cam_warn(cam, fmt, arg...) \
+-	dev_warn(&(cam)->platdev->dev, fmt, ##arg);
++	dev_warn(&(cam)->platdev->dev, fmt, ##arg)
+ #define cam_dbg(cam, fmt, arg...) \
+-	dev_dbg(&(cam)->platdev->dev, fmt, ##arg);
++	dev_dbg(&(cam)->platdev->dev, fmt, ##arg)
+ 
+ /*
+  * Format handling.  This is ripped almost directly from Hans's changes
+-- 
+2.25.1
 
-Acked-by: Wolfram Sang <wsa@kernel.org>
 
-
---YXYTR02+Qna+X+fE
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmCwrZMACgkQFA3kzBSg
-KbYt8g//Sw66JcxkYVCJKtd/5gih0ig5lS13n8KG59L2DTU0FBQkGRUM4j+FmgFD
-FtVbRsL3DI2Wh67F0488tfz8l0osF4CxtAwgS7oBmqrIR4dUkG2iwghRyKRb7ONF
-AMuPU84GKO32fBLjb1Vq2R+I/VgXfFeu/SIPsbzX7lOyYsGlSQU2f8TajxTa37xd
-HUx9dwfvPnrSqQSEMVLB3BLNzrBRimGcJDmul6bcYhCDh0of2uK1z6z7XHkGBqw/
-T/W62//sm9MAfmj60mGaDkFOMfJPzuanwzD9TKTJYBDQ/ZQZse5tnzqAPSFEO8KN
-6YJgkhimHg1KhXAydjEFld7FrUqr/upYzUSPv1EloMQp30ZtwOsXQLpNrApGg7R2
-JxJx+nrX6S6Vo7wxHYCeL7JE3zadFZXX5BV3ypguP9SEAW+nwe2VjU7GOqPCmiF0
-HvJCGrfwwUsgoxP5L2vVBS7SdkOtAtV1duhCNC63J9zjcpD2GzaCYkpQrnrIrsHs
-apDb5LwNmOjy2B4wbnM490CgMdnrivEPebkKjHn8G62UGtqZZt1PBxrBG3AQkmnZ
-ALMrB0S4sSzgvDBrmHBv+5KLdjMSL3ucS66oyG6R1+iPz6ITT/kefMWcYViL5Kms
-NIGG3AgLlGC97ZgdBOCaboFMbt3JRAZm+pj7Ipob6qVb6o2AI9M=
-=8rsM
------END PGP SIGNATURE-----
-
---YXYTR02+Qna+X+fE--
