@@ -2,235 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C6B2F393EB4
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 10:24:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EFAC7393EB7
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 10:25:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236334AbhE1I0W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 May 2021 04:26:22 -0400
-Received: from relay4-d.mail.gandi.net ([217.70.183.196]:57295 "EHLO
-        relay4-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235827AbhE1I0V (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 May 2021 04:26:21 -0400
-Received: (Authenticated sender: alex@ghiti.fr)
-        by relay4-d.mail.gandi.net (Postfix) with ESMTPSA id 9834BE000F;
-        Fri, 28 May 2021 08:24:43 +0000 (UTC)
-Subject: Re: [PATCH v2] riscv: Map the kernel with correct permissions the
- first time
-To:     Christoph Hellwig <hch@infradead.org>
-Cc:     Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Jisheng Zhang <jszhang@kernel.org>,
-        Zong Li <zong.li@sifive.com>, Anup Patel <anup@brainfault.org>,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
-References: <20210526134110.217073-1-alex@ghiti.fr>
- <YK89yVQirCLdodxG@infradead.org>
-From:   Alex Ghiti <alex@ghiti.fr>
-Message-ID: <fe6fe4ba-00df-4695-c31e-7078bd77be50@ghiti.fr>
-Date:   Fri, 28 May 2021 10:24:43 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.2
+        id S236356AbhE1I0v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 May 2021 04:26:51 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47636 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236190AbhE1I0r (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 28 May 2021 04:26:47 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9955F613E3;
+        Fri, 28 May 2021 08:25:11 +0000 (UTC)
+Date:   Fri, 28 May 2021 10:25:08 +0200
+From:   Christian Brauner <christian.brauner@ubuntu.com>
+To:     Roberto Sassu <roberto.sassu@huawei.com>
+Cc:     zohar@linux.ibm.com, mjg59@srcf.ucam.org,
+        linux-integrity@vger.kernel.org,
+        linux-security-module@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 2/7] ima: Define new template fields iuid and igid
+Message-ID: <20210528082508.lqolb3r2oepf3god@wittgenstein>
+References: <20210528073812.407936-1-roberto.sassu@huawei.com>
+ <20210528073812.407936-3-roberto.sassu@huawei.com>
 MIME-Version: 1.0
-In-Reply-To: <YK89yVQirCLdodxG@infradead.org>
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Language: fr
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20210528073812.407936-3-roberto.sassu@huawei.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Christoph,
+On Fri, May 28, 2021 at 09:38:07AM +0200, Roberto Sassu wrote:
+> This patch defines the new template fields iuid and igid, which include
+> respectively the inode UID and GID. For idmapped mounts, still the original
+> UID and GID are provided.
+> 
+> These fields can be used to verify the EVM portable signature, if it was
+> included with the template fields sig or evmsig.
+> 
+> Cc: Christian Brauner <christian.brauner@ubuntu.com>
+> Signed-off-by: Roberto Sassu <roberto.sassu@huawei.com>
+> ---
 
-Le 27/05/2021 à 08:35, Christoph Hellwig a écrit :
-> On Wed, May 26, 2021 at 03:41:10PM +0200, Alexandre Ghiti wrote:
->>   #ifdef CONFIG_64BIT
->> +#define is_kernel_mapping(x)	((x) >= kernel_virt_addr && (x) < (kernel_virt_addr + load_sz))
->> +#define is_linear_mapping(x)	((x) >= PAGE_OFFSET && (x) < kernel_virt_addr)
->> +
-> 
-> Overly long lines.  Independ of that complex macros are generally much
-> more readable if they are written more function-like, that is the name
-> and paramtes are kept on a line of their own:
-> 
-> #define is_kernel_mapping(x) \
-> 	((x) >= kernel_virt_addr && (x) < (kernel_virt_addr + load_sz))
-> 
-> But what is the reason to not make them type-safe inline functions
-> anyway?
+That's fine with me. Thanks, Robert!
+Acked-by: Christian Brauner <christian.brauner@ubuntu.com>
 
-No reason. I will then make those macros inline functions and send 
-another patchset to make the below macro an inline function too.
-
+>  Documentation/security/IMA-templates.rst  |  2 +
+>  security/integrity/ima/ima_template.c     |  4 ++
+>  security/integrity/ima/ima_template_lib.c | 45 +++++++++++++++++++++++
+>  security/integrity/ima/ima_template_lib.h |  4 ++
+>  4 files changed, 55 insertions(+)
 > 
->>   #define __va_to_pa_nodebug(x)	({						\
->>   	unsigned long _x = x;							\
->> -	(_x < kernel_virt_addr) ?						\
->> +	is_linear_mapping(_x) ?							\
->>   		linear_mapping_va_to_pa(_x) : kernel_mapping_va_to_pa(_x);	\
->>   	})
-> 
-> ... especially for something complex like this.
-> 
->> +static inline bool is_va_kernel_lm_alias_text(uintptr_t va)
->> +{
->> +	return (va >= (uintptr_t)lm_alias(_start) && va < (uintptr_t)lm_alias(__init_text_begin));
-> 
-> Overly long line as well.  And useless braces.
-
-Ok.
-
-> 
->> +static inline bool is_va_kernel_init_text(uintptr_t va)
->> +{
->> +	return (va >= (uintptr_t)__init_text_begin && va < (uintptr_t)__init_data_begin);
->> +}
-> 
-> Same here.
-
-checkpatch does not complain about those lines which are under 100 
-characters, what's the point in breaking them on multiple lines?
-
-> 
->> +#ifdef CONFIG_STRICT_KERNEL_RWX
->> +static __init pgprot_t pgprot_from_va(uintptr_t va)
->> +{
->> +#ifdef CONFIG_64BIT
->> +	if (is_va_kernel_text(va) || is_va_kernel_init_text(va))
->> +		return PAGE_KERNEL_READ_EXEC;
->> +
->> +	/*
->> +	 * We must mark only text as read-only as init text will get freed later
->> +	 * and rodata section is marked readonly in mark_rodata_ro.
->> +	 */
->> +	if (is_va_kernel_lm_alias_text(va))
->> +		return PAGE_KERNEL_READ;
->> +
->> +	return PAGE_KERNEL;
->> +#else
->> +	if (is_va_kernel_text(va))
->> +		return PAGE_KERNEL_READ_EXEC;
->> +
->> +	if (is_va_kernel_init_text(va))
->> +		return PAGE_KERNEL_EXEC;
->> +
->> +	return PAGE_KERNEL;
->> +#endif /* CONFIG_64BIT */
->> +}
-> 
-> If the entire function is different for config symbols please just
-> split it into two separate functions.  But to make the difference more
-> clear IS_ENABLED might fit better here:
-> 
-> static __init pgprot_t pgprot_from_va(uintptr_t va)
-> {
-> 	if (is_va_kernel_text(va))
-> 		return PAGE_KERNEL_READ_EXEC;
-> 	if (is_va_kernel_init_text(va))
-> 		return IS_ENABLED(CONFIG_64BIT) ?
-> 			PAGE_KERNEL_READ_EXEC : PAGE_KERNEL_EXEC;
-> 	if (IS_ENABLED(CONFIG_64BIT) && is_va_kernel_lm_alias_text(va))
-> 		return PAGE_KERNEL_READ;
-> 	return PAGE_KERNEL;
-> }
-> 
-> Preferable with comments explaining the 32-bit vs 64-bit difference.
-
-Ok this is more compact, I'll do that with the comment.
-
-> 
->> +void mark_rodata_ro(void)
->> +{
->> +	unsigned long rodata_start = (unsigned long)__start_rodata;
->> +	unsigned long data_start = (unsigned long)_data;
->> +	unsigned long __maybe_unused lm_rodata_start = (unsigned long)lm_alias(__start_rodata);
->> +	unsigned long __maybe_unused lm_data_start = (unsigned long)lm_alias(_data);
->> +
->> +	set_memory_ro(rodata_start, (data_start - rodata_start) >> PAGE_SHIFT);
->> +#ifdef CONFIG_64BIT
->> +	set_memory_ro(lm_rodata_start, (lm_data_start - lm_rodata_start) >> PAGE_SHIFT);
->> +#endif
-> 
-> Lots of unreadable overly lone lines.  Why not add a helper and do
-> something like:
-> 
-> static void set_kernel_memory_ro(char *startp, char *endp)
-> {
->          unsigned long start = (unsigned long)startp;
-> 	unsigned long end = (unsigned long)endp;
-> 
-> 	set_memory_ro(start, (start - end) >> PAGE_SHIFT);
-> }
-> 
->          set_kernel_memory_ro(_start_rodata, _data);
-> 	if (IS_ENABLED(CONFIG_64BIT))
-> 		set_kernel_memory_ro(lm_alias(__start_rodata), lm_alias(_data));
-> 
-> 
-
-Ok, that's better indeed. I will do something like that instead, to 
-avoid multiple versions of this helper:
-
-int set_kernel_memory(char *startp, char *endp, 
-
-                       int (*set_memory)(unsigned long start, int 
-num_pages))
-
->> +static __init pgprot_t pgprot_from_va(uintptr_t va)
->> +{
->> +#ifdef CONFIG_64BIT
->> +	if (is_kernel_mapping(va))
->> +		return PAGE_KERNEL_EXEC;
->> +
->> +	if (is_linear_mapping(va))
->> +		return PAGE_KERNEL;
->> +
->> +	return PAGE_KERNEL;
->> +#else
->> +	return PAGE_KERNEL_EXEC;
->> +#endif /* CONFIG_64BIT */
->> +}
->> +#endif /* CONFIG_STRICT_KERNEL_RWX */
->> +
-> 
-> Same comment as for the other version.  This could become:
-> 
-> static __init pgprot_t pgprot_from_va(uintptr_t va)
-> {
-> 	if (IS_ENABLED(CONFIG_64BIT) && !is_kernel_mapping(va))
-> 		return PAGE_KERNEL;
-> 	return PAGE_KERNEL_EXEC;
-> }
-
-Ok I'll do that.
-
-> 
->> -static void __init create_kernel_page_table(pgd_t *pgdir, uintptr_t map_size)
->> +static void __init create_kernel_page_table(pgd_t *pgdir, uintptr_t map_size, bool early)
-> 
-> Overly long line.
-> 
->>   	for (va = kernel_virt_addr; va < end_va; va += map_size)
->>   		create_pgd_mapping(pgdir, va,
->>   				   load_pa + (va - kernel_virt_addr),
->> -				   map_size, PAGE_KERNEL_EXEC);
->> +				   map_size, early ? PAGE_KERNEL_EXEC : pgprot_from_va(va));
-> 
-> Same here.  But why not pass in a "pgprot_t ram_pgprot" instead of the
-> bool, which would be self-documenting.
-
-This function is used to map the kernel mapping, the pgprot_t is then 
-different in create_kernel_page_table depending on the virtual address 
-so I can't pass a single pgprot_t for that or I would need a dummy 
-pgprot_t to test anyway.
-
-Thank you for your review,
-
-Alex
-
-> 
-> _______________________________________________
-> linux-riscv mailing list
-> linux-riscv@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-riscv
+> diff --git a/Documentation/security/IMA-templates.rst b/Documentation/security/IMA-templates.rst
+> index 9f3e86ab028a..bf8ce4cf5878 100644
+> --- a/Documentation/security/IMA-templates.rst
+> +++ b/Documentation/security/IMA-templates.rst
+> @@ -75,6 +75,8 @@ descriptors by adding their identifier to the format string
+>   - 'modsig' the appended file signature;
+>   - 'buf': the buffer data that was used to generate the hash without size limitations;
+>   - 'evmsig': the EVM portable signature;
+> + - 'iuid': the inode UID;
+> + - 'igid': the inode GID;
+>  
+>  
+>  Below, there is the list of defined template descriptors:
+> diff --git a/security/integrity/ima/ima_template.c b/security/integrity/ima/ima_template.c
+> index 7a60848c04a5..a5ecd9e2581b 100644
+> --- a/security/integrity/ima/ima_template.c
+> +++ b/security/integrity/ima/ima_template.c
+> @@ -47,6 +47,10 @@ static const struct ima_template_field supported_fields[] = {
+>  	 .field_show = ima_show_template_sig},
+>  	{.field_id = "evmsig", .field_init = ima_eventevmsig_init,
+>  	 .field_show = ima_show_template_sig},
+> +	{.field_id = "iuid", .field_init = ima_eventinodeuid_init,
+> +	 .field_show = ima_show_template_uint},
+> +	{.field_id = "igid", .field_init = ima_eventinodegid_init,
+> +	 .field_show = ima_show_template_uint},
+>  };
+>  
+>  /*
+> diff --git a/security/integrity/ima/ima_template_lib.c b/security/integrity/ima/ima_template_lib.c
+> index f23296c33da1..87b40f391739 100644
+> --- a/security/integrity/ima/ima_template_lib.c
+> +++ b/security/integrity/ima/ima_template_lib.c
+> @@ -551,3 +551,48 @@ int ima_eventevmsig_init(struct ima_event_data *event_data,
+>  	kfree(xattr_data);
+>  	return rc;
+>  }
+> +
+> +static int ima_eventinodedac_init_common(struct ima_event_data *event_data,
+> +					 struct ima_field_data *field_data,
+> +					 bool get_uid)
+> +{
+> +	unsigned int id;
+> +
+> +	if (!event_data->file)
+> +		return 0;
+> +
+> +	if (get_uid)
+> +		id = i_uid_read(file_inode(event_data->file));
+> +	else
+> +		id = i_gid_read(file_inode(event_data->file));
+> +
+> +	if (ima_canonical_fmt) {
+> +		if (sizeof(id) == sizeof(u16))
+> +			id = cpu_to_le16(id);
+> +		else
+> +			id = cpu_to_le32(id);
+> +	}
+> +
+> +	return ima_write_template_field_data((void *)&id, sizeof(id),
+> +					     DATA_FMT_UINT, field_data);
+> +}
+> +
+> +/*
+> + *  ima_eventinodeuid_init - include the inode UID as part of the template
+> + *  data
+> + */
+> +int ima_eventinodeuid_init(struct ima_event_data *event_data,
+> +			   struct ima_field_data *field_data)
+> +{
+> +	return ima_eventinodedac_init_common(event_data, field_data, true);
+> +}
+> +
+> +/*
+> + *  ima_eventinodegid_init - include the inode GID as part of the template
+> + *  data
+> + */
+> +int ima_eventinodegid_init(struct ima_event_data *event_data,
+> +			   struct ima_field_data *field_data)
+> +{
+> +	return ima_eventinodedac_init_common(event_data, field_data, false);
+> +}
+> diff --git a/security/integrity/ima/ima_template_lib.h b/security/integrity/ima/ima_template_lib.h
+> index 54b67c80b315..b0aaf109f386 100644
+> --- a/security/integrity/ima/ima_template_lib.h
+> +++ b/security/integrity/ima/ima_template_lib.h
+> @@ -50,4 +50,8 @@ int ima_eventmodsig_init(struct ima_event_data *event_data,
+>  			 struct ima_field_data *field_data);
+>  int ima_eventevmsig_init(struct ima_event_data *event_data,
+>  			 struct ima_field_data *field_data);
+> +int ima_eventinodeuid_init(struct ima_event_data *event_data,
+> +			   struct ima_field_data *field_data);
+> +int ima_eventinodegid_init(struct ima_event_data *event_data,
+> +			   struct ima_field_data *field_data);
+>  #endif /* __LINUX_IMA_TEMPLATE_LIB_H */
+> -- 
+> 2.25.1
 > 
