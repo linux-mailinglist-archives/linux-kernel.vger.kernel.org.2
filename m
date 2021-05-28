@@ -2,357 +2,174 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C88283946E2
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 20:14:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 56AAE3946E8
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 May 2021 20:17:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229579AbhE1SQI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 May 2021 14:16:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55586 "EHLO
+        id S229502AbhE1ST3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 May 2021 14:19:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56324 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229492AbhE1SQC (ORCPT
+        with ESMTP id S229463AbhE1ST1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 May 2021 14:16:02 -0400
-Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A605C061574;
-        Fri, 28 May 2021 11:14:25 -0700 (PDT)
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: krisman)
-        with ESMTPSA id 1E24B1F44270
-From:   Gabriel Krisman Bertazi <krisman@collabora.com>
-To:     shuah@kernel.org
-Cc:     peterz@infradead.org, luto@kernel.org,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        Gabriel Krisman Bertazi <krisman@collabora.com>,
-        kernel@collabora.com, Will Deacon <will@kernel.org>
-Subject: [PATCH] selftest: Add test for Soft-Dirty PTE bit
-Date:   Fri, 28 May 2021 14:14:13 -0400
-Message-Id: <20210528181413.2795332-1-krisman@collabora.com>
-X-Mailer: git-send-email 2.31.0
+        Fri, 28 May 2021 14:19:27 -0400
+Received: from mail-yb1-xb35.google.com (mail-yb1-xb35.google.com [IPv6:2607:f8b0:4864:20::b35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3B5BC061574
+        for <linux-kernel@vger.kernel.org>; Fri, 28 May 2021 11:17:51 -0700 (PDT)
+Received: by mail-yb1-xb35.google.com with SMTP id s107so2963940ybi.3
+        for <linux-kernel@vger.kernel.org>; Fri, 28 May 2021 11:17:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=6VUpcsJYQunF974Aj1XZZE3wjgNZfsPNkx9dPrFc48Y=;
+        b=irL8GpdAHshCqnegX5n/Dw9wTvNdi/84WCTNyD2NkcPda2Z9jUp3v1JN5q3GcuIflt
+         X2Wy6aM+xH1QaHl6QB3u3gVvuEawQHE3NtLMaiSUN+joT+6Vf3j8UOwbLdQtX+djiGN+
+         ux9rMYsnGBHnah5wsgYjjHGAVGWh9Vz0pdklzf02ikgTR7HMVFrUT8WFA3QtLWeuXUMU
+         Osg767zvux/0OS3ZE+x/8M1Pc9BGDYkO2TbTN0Dz1eusiUuJz5b1zgP1Jh+EhZSsfOl/
+         jpj2i2eE/OH4UZaYLWETRWuxYuNGBF9FTs80dYuKyGNkeOA3bkNSGtUIpAIZzf/IsyYv
+         1QHQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=6VUpcsJYQunF974Aj1XZZE3wjgNZfsPNkx9dPrFc48Y=;
+        b=euPlBl3s4+DMkf1y+OVOiTIkC8kY/A3nLwYgSYijVQ9Mbd5udMHb9JsIDp9q1k3Qfw
+         tgxJK75l3xVKfhQKjeFcGgtrskjmfzTeHNIbrEHVKuscSqL3rqZfLDiuUo0hW1am4KKq
+         myrtv3uzBoZorsKeRaiTsH1+tYmRJqUQoYV/DuSvay7DK8iLpfGY3mFlogRs0l6w1EDg
+         1CSTWbvYGfU/xFmqsiFSHvIMTjjO3UBJwvVxW465m85VyW4oR24vt+nY+GS/D/91abZC
+         byb2TIV6CMkwcOQBqPMk1g+ryqGO1hyPnNdaSjwoweb4BMyXfJQMiHD/wNjrUdQLNaGS
+         NUGg==
+X-Gm-Message-State: AOAM532kiygTlnjNXwq4KAbCZJqvjC5s8zPwTs6yaVgj3GMrY1Mx7rbB
+        JiCHRlOLkoRqWM7+m4FEsrrDIXQpef9ojkgJKFw4Yg==
+X-Google-Smtp-Source: ABdhPJwrSc0j8lMEdAviEZz5R+4gnA9Lp4/Wcn3/OvlELPwo5ckbD0uG5+geAro2UEA11QICA4reOqQL/66rFL0Sua0=
+X-Received: by 2002:a25:7ec4:: with SMTP id z187mr13330087ybc.136.1622225870685;
+ Fri, 28 May 2021 11:17:50 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210428153542.2814175-1-Liam.Howlett@Oracle.com> <20210428153542.2814175-25-Liam.Howlett@Oracle.com>
+In-Reply-To: <20210428153542.2814175-25-Liam.Howlett@Oracle.com>
+From:   Suren Baghdasaryan <surenb@google.com>
+Date:   Fri, 28 May 2021 11:17:39 -0700
+Message-ID: <CAJuCfpEq3xVPrk0d_UNbgNOLQ7wN5rm4wx+CK2krc-bkmGpq1Q@mail.gmail.com>
+Subject: Re: [PATCH 24/94] radix tree test suite: Add keme_cache_alloc_bulk() support
+To:     Liam Howlett <liam.howlett@oracle.com>
+Cc:     "maple-tree@lists.infradead.org" <maple-tree@lists.infradead.org>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Song Liu <songliubraving@fb.com>,
+        Davidlohr Bueso <dave@stgolabs.net>,
+        "Paul E . McKenney" <paulmck@kernel.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Laurent Dufour <ldufour@linux.ibm.com>,
+        David Rientjes <rientjes@google.com>,
+        Axel Rasmussen <axelrasmussen@google.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Rik van Riel <riel@surriel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Michel Lespinasse <walken.cr@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This introduces three tests:
+On Wed, Apr 28, 2021 at 8:36 AM Liam Howlett <liam.howlett@oracle.com> wrote:
+>
+> Signed-off-by: Liam R. Howlett <Liam.Howlett@Oracle.com>
+> ---
+>  tools/testing/radix-tree/linux.c      | 51 +++++++++++++++++++++++++++
+>  tools/testing/radix-tree/linux/slab.h |  1 +
+>  2 files changed, 52 insertions(+)
+>
+> diff --git a/tools/testing/radix-tree/linux.c b/tools/testing/radix-tree/linux.c
+> index 380bbc0a48d6..fb19a40ebb46 100644
+> --- a/tools/testing/radix-tree/linux.c
+> +++ b/tools/testing/radix-tree/linux.c
+> @@ -99,6 +99,57 @@ void kmem_cache_free_bulk(struct kmem_cache *cachep, size_t size, void **list)
+>         for (int i = 0; i < size; i++)
+>                 kmem_cache_free(cachep, list[i]);
+>  }
+> +int kmem_cache_alloc_bulk(struct kmem_cache *cachep, gfp_t gfp, size_t size,
+> +                         void **p)
+> +{
+> +       size_t i;
+> +
+> +       if (kmalloc_verbose)
+> +               printk("Bulk alloc %lu\n", size);
+> +
+> +       if (!(gfp & __GFP_DIRECT_RECLAIM) && cachep->non_kernel < size)
+> +               return 0;
+> +
+> +       if (!(gfp & __GFP_DIRECT_RECLAIM))
+> +               cachep->non_kernel -= size;
+> +
+> +       pthread_mutex_lock(&cachep->lock);
+> +       if (cachep->nr_objs >= size) {
+> +               struct radix_tree_node *node = cachep->objs;
+> +
 
-1) Sanity check soft dirty basic semantics: allocate area, clean, dirty,
-check if the SD bit flipped.
+I don't think the loop below is correct because "node" is not being
+changed on each iteration:
 
-2) Check VMA reuse: validate the VM_SOFTDIRTY usage
+> +               for (i = 0; i < size; i++) {
+> +                       cachep->nr_objs--;
+> +                       cachep->objs = node->parent;
 
-3) Check soft-dirty on huge pages
+In the above assignment cachep->objs will be assigned the same value
+on all iterations.
 
-This was motivated by Will Deacon's fix commit 912efa17e512 ("mm: proc:
-Invalidate TLB after clearing soft-dirty page state"). I was tracking the
-same issue that he fixed, and this test would have caught it.
+> +                       p[i] = cachep->objs;
 
-Cc: Will Deacon <will@kernel.org>
-Signed-off-by: Gabriel Krisman Bertazi <krisman@collabora.com>
----
- tools/testing/selftests/Makefile              |   1 +
- tools/testing/selftests/soft-dirty/.gitignore |   1 +
- tools/testing/selftests/soft-dirty/Makefile   |   9 +
- .../testing/selftests/soft-dirty/soft-dirty.c | 254 ++++++++++++++++++
- 4 files changed, 265 insertions(+)
- create mode 100644 tools/testing/selftests/soft-dirty/.gitignore
- create mode 100644 tools/testing/selftests/soft-dirty/Makefile
- create mode 100644 tools/testing/selftests/soft-dirty/soft-dirty.c
+p[0] should point to the node, however here it would point to the node->parent.
 
-diff --git a/tools/testing/selftests/Makefile b/tools/testing/selftests/Makefile
-index bc3299a20338..c8dcd7defd33 100644
---- a/tools/testing/selftests/Makefile
-+++ b/tools/testing/selftests/Makefile
-@@ -55,6 +55,7 @@ TARGETS += seccomp
- TARGETS += sgx
- TARGETS += sigaltstack
- TARGETS += size
-+TARGETS += soft-dirty
- TARGETS += sparc64
- TARGETS += splice
- TARGETS += static_keys
-diff --git a/tools/testing/selftests/soft-dirty/.gitignore b/tools/testing/selftests/soft-dirty/.gitignore
-new file mode 100644
-index 000000000000..cfb0cfda9bdf
---- /dev/null
-+++ b/tools/testing/selftests/soft-dirty/.gitignore
-@@ -0,0 +1 @@
-+soft-dirty
-diff --git a/tools/testing/selftests/soft-dirty/Makefile b/tools/testing/selftests/soft-dirty/Makefile
-new file mode 100644
-index 000000000000..d76ad8e0f10d
---- /dev/null
-+++ b/tools/testing/selftests/soft-dirty/Makefile
-@@ -0,0 +1,9 @@
-+# SPDX-License-Identifier: GPL-2.0
-+top_srcdir = ../../../..
-+INSTALL_HDR_PATH = $(top_srcdir)/usr
-+LINUX_HDR_PATH = $(INSTALL_HDR_PATH)/include/
-+
-+CFLAGS += -Wall -I$(LINUX_HDR_PATH) -O0 -g3
-+
-+TEST_GEN_PROGS := soft-dirty
-+include ../lib.mk
-diff --git a/tools/testing/selftests/soft-dirty/soft-dirty.c b/tools/testing/selftests/soft-dirty/soft-dirty.c
-new file mode 100644
-index 000000000000..47af76f9df50
---- /dev/null
-+++ b/tools/testing/selftests/soft-dirty/soft-dirty.c
-@@ -0,0 +1,254 @@
-+// SPDX-License-Identifier: GPL-2.0
-+#include <sys/types.h>
-+#include <sys/stat.h>
-+#include <fcntl.h>
-+#include <stdint.h>
-+#include <unistd.h>
-+#include <stdio.h>
-+#include <unistd.h>
-+#include <syscall.h>
-+#include <errno.h>
-+#include <stdlib.h>
-+#include <sys/mman.h>
-+#include <err.h>
-+#include <string.h>
-+#include <stdbool.h>
-+#include <malloc.h>
-+
-+#define PAGEMAP_PATH "/proc/self/pagemap"
-+#define CLEAR_REFS_PATH "/proc/self/clear_refs"
-+#define SMAP_PATH "/proc/self/smaps"
-+#define MAX_LINE_LENGTH 512
-+
-+#define TEST_ITERATIONS 10000
-+
-+#define PMD_SIZE_PATH "/sys/kernel/mm/transparent_hugepage/hpage_pmd_size"
-+
-+int clear_refs;
-+int pagemap;
-+
-+int pagesize;
-+int mmap_size;	/* Size of test region */
-+
-+static void clear_all_refs(void)
-+{
-+	if (write(clear_refs, "4\n", 2) != 2)
-+		printf("%s: failed to clear references\n", __func__);
-+}
-+
-+static void touch_page(char *map, int n)
-+{
-+	map[(page_size * n) + 1]++;
-+}
-+
-+static int check_page(char *map, uint64_t n, int clear)
-+{
-+	uint64_t off;
-+	uint64_t buf = 0;
-+
-+	off = (n + ((uint64_t)map >> 12)) << 3;
-+
-+	if (lseek(pagemap, off, SEEK_SET) == (off_t) -1)
-+		errx(EXIT_FAILURE, "pagemap llseek failed");
-+
-+	if (read(pagemap, &buf, 8) != 8)
-+		errx(EXIT_FAILURE, "pagemap read failed");
-+
-+	if (clear)
-+		clear_all_refs();
-+
-+	return ((buf >> 55) & 1);
-+}
-+
-+static void test_simple(void)
-+{
-+	int i;
-+	char *map;
-+
-+	printf("- Test %s:\n", __func__);
-+
-+	map = aligned_alloc(page_size, mmap_size);
-+	if (!map)
-+		errx(EXIT_FAILURE, "mmap");
-+
-+	clear_all_refs();
-+
-+	for (i = 0 ; i < TEST_ITERATIONS; i++) {
-+		if (check_page(map, 2, 1) == 1) {
-+			errx(EXIT_FAILURE, "dirty bit was 1, but should be 0 (i=%d)", i);
-+			break;
-+		}
-+
-+		touch_page(map, 2);
-+
-+		if (check_page(map, 2, 1) == 0) {
-+			errx(EXIT_FAILURE, "dirty bit was 0, but should be 1 (i=%d)", i);
-+			break;
-+		}
-+
-+	}
-+	free(map);
-+
-+	printf("success\n");
-+}
-+
-+static void test_vma_reuse(void)
-+{
-+	char *map, *map2;
-+
-+	printf("- Test %s:\n", __func__);
-+
-+	map = (char *) 0x900000000000;
-+	map = mmap(map, mmap_size, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANON, -1, 0);
-+	if (map == MAP_FAILED)
-+		errx(EXIT_FAILURE, "mmap");
-+
-+	clear_all_refs();
-+	touch_page(map, 2);
-+
-+	munmap(map, mmap_size);
-+	map2 = mmap(map, mmap_size, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANON, -1, 0);
-+	if (map2 == MAP_FAILED)
-+		errx(EXIT_FAILURE, "mmap2");
-+
-+	if (map != map2)
-+		errx(EXIT_FAILURE, "map != map2");
-+
-+	if (check_page(map, 2, 1) == 0)
-+		errx(-1, "map/unmap lost dirty");
-+
-+	munmap(map2, mmap_size);
-+
-+	printf("success\n");
-+}
-+
-+/*
-+ * read_pmd_pagesize(), check_for_pattern() and check_huge() adapted
-+ * from 'tools/testing/selftest/vm/split_huge_page_test.c'
-+ */
-+static uint64_t read_pmd_pagesize(void)
-+{
-+	int fd;
-+	char buf[20];
-+	ssize_t num_read;
-+
-+	fd = open(PMD_SIZE_PATH, O_RDONLY);
-+	if (fd == -1)
-+		errx(EXIT_FAILURE, "Open hpage_pmd_size failed");
-+
-+	num_read = read(fd, buf, 19);
-+	if (num_read < 1) {
-+		close(fd);
-+		errx(EXIT_FAILURE, "Read hpage_pmd_size failed");
-+	}
-+	buf[num_read] = '\0';
-+	close(fd);
-+
-+	return strtoul(buf, NULL, 10);
-+}
-+
-+static bool check_for_pattern(FILE *fp, const char *pattern, char *buf)
-+{
-+	while (fgets(buf, MAX_LINE_LENGTH, fp) != NULL) {
-+		if (!strncmp(buf, pattern, strlen(pattern)))
-+			return true;
-+	}
-+	return false;
-+}
-+
-+static uint64_t check_huge(void *addr)
-+{
-+	uint64_t thp = 0;
-+	int ret;
-+	FILE *fp;
-+	char buffer[MAX_LINE_LENGTH];
-+	char addr_pattern[MAX_LINE_LENGTH];
-+
-+	ret = snprintf(addr_pattern, MAX_LINE_LENGTH, "%08lx-",
-+		       (unsigned long) addr);
-+	if (ret >= MAX_LINE_LENGTH)
-+		errx(EXIT_FAILURE, "%s: Pattern is too long\n", __func__);
-+
-+	fp = fopen(SMAP_PATH, "r");
-+	if (!fp)
-+		errx(EXIT_FAILURE, "%s: Failed to open file %s\n", __func__, SMAP_PATH);
-+
-+	if (!check_for_pattern(fp, addr_pattern, buffer))
-+		goto err_out;
-+
-+	/*
-+	 * Fetch the AnonHugePages: in the same block and check the number of
-+	 * hugepages.
-+	 */
-+	if (!check_for_pattern(fp, "AnonHugePages:", buffer))
-+		goto err_out;
-+
-+	if (sscanf(buffer, "AnonHugePages:%10ld kB", &thp) != 1)
-+		errx(EXIT_FAILURE, "Reading smap error\n");
-+
-+err_out:
-+	fclose(fp);
-+
-+	return thp;
-+}
-+
-+static void test_hugepage(void)
-+{
-+	char *map;
-+	int i, ret;
-+	size_t hpage_len = read_pmd_pagesize();
-+
-+	printf("- Test %s:\n", __func__);
-+
-+	map = memalign(hpage_len, hpage_len);
-+	if (!map)
-+		errx(EXIT_FAILURE, "memalign");
-+
-+	ret = madvise(map, hpage_len, MADV_HUGEPAGE);
-+	if (ret)
-+		errx(EXIT_FAILURE, "madvise %d", ret);
-+
-+	for (i = 0; i < hpage_len; i++)
-+		map[i] = (char)i;
-+
-+	if (!check_huge(map))
-+		errx(EXIT_FAILURE, "failed to allocate THP");
-+
-+	clear_all_refs();
-+	for (i = 0 ; i < TEST_ITERATIONS ; i++) {
-+		if (check_page(map, 2, 1) == 1) {
-+			errx(EXIT_FAILURE, "dirty bit was 1, but should be 0 (i=%d)", i);
-+			break;
-+		}
-+
-+		touch_page(map, 2);
-+
-+		if (check_page(map, 2, 1) == 0) {
-+			errx(EXIT_FAILURE, "dirty bit was 0, but should be 1 (i=%d)", i);
-+			break;
-+		}
-+	}
-+	munmap(map, mmap_size);
-+
-+	printf("success\n");
-+}
-+
-+int main(int argc, char **argv)
-+{
-+	pagemap = open(PAGEMAP_PATH, O_RDONLY, 0);
-+	if (pagemap < 0)
-+		errx(EXIT_FAILURE, "Failed to open %s", PAGEMAP_PATH);
-+
-+	clear_refs = open(CLEAR_REFS_PATH, O_WRONLY, 0);
-+	if (clear_refs < 0)
-+		errx(EXIT_FAILURE, "Failed to open %s", CLEAR_REFS_PATH);
-+
-+	pagesize = getpagesize();
-+	mmap_size = 10 * pagesize();
-+
-+	test_simple();
-+	test_vma_reuse();
-+	test_hugepage();
-+
-+	return 0;
-+}
--- 
-2.31.0
+> +               }
+> +               pthread_mutex_unlock(&cachep->lock);
+> +               node->parent = NULL;
 
+here you terminated the original cachep->objs which is not even inside
+the "p" list at this point (it was skipped).
+
+> +       } else {
+> +               pthread_mutex_unlock(&cachep->lock);
+> +               for (i = 0; i < size; i++) {
+> +                       if (cachep->align) {
+> +                               posix_memalign(&p[i], cachep->align,
+> +                                              cachep->size * size);
+> +                       } else {
+> +                               p[i] = malloc(cachep->size * size);
+> +                       }
+> +                       if (cachep->ctor)
+> +                               cachep->ctor(p[i]);
+> +                       else if (gfp & __GFP_ZERO)
+> +                               memset(p[i], 0, cachep->size);
+> +               }
+> +       }
+> +
+> +       for (i = 0; i < size; i++) {
+> +               uatomic_inc(&nr_allocated);
+> +               uatomic_inc(&nr_tallocated);
+
+I don't see nr_tallocated even in linux-next branch. Was it introduced
+in one of the previous patches and I missed it?
+
+> +               if (kmalloc_verbose)
+> +                       printf("Allocating %p from slab\n", p[i]);
+> +       }
+> +
+> +       return size;
+> +}
+> +
+>
+>  void *kmalloc(size_t size, gfp_t gfp)
+>  {
+> diff --git a/tools/testing/radix-tree/linux/slab.h b/tools/testing/radix-tree/linux/slab.h
+> index 53b79c15b3a2..ba42b8cc11d0 100644
+> --- a/tools/testing/radix-tree/linux/slab.h
+> +++ b/tools/testing/radix-tree/linux/slab.h
+> @@ -25,4 +25,5 @@ struct kmem_cache *kmem_cache_create(const char *name, unsigned int size,
+>                         void (*ctor)(void *));
+>
+>  void kmem_cache_free_bulk(struct kmem_cache *cachep, size_t, void **);
+> +int kmem_cache_alloc_bulk(struct kmem_cache *cachep, gfp_t, size_t, void **);
+>  #endif         /* SLAB_H */
+> --
+> 2.30.2
