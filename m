@@ -2,164 +2,268 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D2200394E21
-	for <lists+linux-kernel@lfdr.de>; Sat, 29 May 2021 22:16:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 397E1394E2C
+	for <lists+linux-kernel@lfdr.de>; Sat, 29 May 2021 22:38:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229796AbhE2URj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 29 May 2021 16:17:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54964 "EHLO
+        id S229842AbhE2Ujs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 29 May 2021 16:39:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59762 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229718AbhE2URi (ORCPT
+        with ESMTP id S229718AbhE2Ujr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 29 May 2021 16:17:38 -0400
-Received: from mail-ot1-x32f.google.com (mail-ot1-x32f.google.com [IPv6:2607:f8b0:4864:20::32f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6C2CC061574
-        for <linux-kernel@vger.kernel.org>; Sat, 29 May 2021 13:16:00 -0700 (PDT)
-Received: by mail-ot1-x32f.google.com with SMTP id d25-20020a0568300459b02902f886f7dd43so6994236otc.6
-        for <linux-kernel@vger.kernel.org>; Sat, 29 May 2021 13:16:00 -0700 (PDT)
+        Sat, 29 May 2021 16:39:47 -0400
+Received: from mail-pg1-x52a.google.com (mail-pg1-x52a.google.com [IPv6:2607:f8b0:4864:20::52a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68324C061574
+        for <linux-kernel@vger.kernel.org>; Sat, 29 May 2021 13:38:10 -0700 (PDT)
+Received: by mail-pg1-x52a.google.com with SMTP id f22so5243538pgb.9
+        for <linux-kernel@vger.kernel.org>; Sat, 29 May 2021 13:38:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:in-reply-to:message-id:references
-         :user-agent:mime-version;
-        bh=BPVIrimcUkfawrwhxQJhVkAGWp3nHZ+YOSsJJY8v6L4=;
-        b=iQuuVP1mw7xS0oVBuoDB1d2rU7OlpTlPqQ0IaVF0yHf2MpVMWfXkFC10qrv82uK2U5
-         SaHZuldF3r+r9sN2vf5poLCMNhCiw4T8OEEPsPGO2inlx4AVYBfiPjqYWQc57fm9xoIa
-         ejdT9ZuCdr9nMc8TrFAl9+Ev6zQ7ln+rF4i9BC2opwJbJNv69xOAoIlEWPJQXRJYRXi+
-         ajbKAIHElv4gkPByhQwih2Q/ZBU4ROJ9j4hVaNlMeLq6baigRAKk9P//pAyrnb2ekZ4D
-         FMTGvqkCcv5vyvxVHB+ZBzLNos7mM7KanS1freHJ0lyGJ9wf1pZbTAw4mI8Ugvzymf0m
-         aTeQ==
+        d=dabbelt-com.20150623.gappssmtp.com; s=20150623;
+        h=date:subject:in-reply-to:cc:from:to:message-id:mime-version
+         :content-transfer-encoding;
+        bh=FaKAKWgTGAF75nlDcT+nxeoW3pPMI6Wa1hWEXx7JRJ8=;
+        b=KXbwErhInDJmgxHoBTPjt5gjPSnwxW/kBZkRBej1XQMnaCtmbDhJRo0arQU5oisUhn
+         i1n/WsF3V61hp2fEjB3OJ3BRYReI2yeacvqwhLBZ1bRIKrwopmtLE5Ip8WsBqDAkfDM0
+         FyII2aoYRtjhlHrjnRdJBqQqo+eDwQr5qmxYJNp3hAnILtTCkcjG60J3zj6+X1fwssyJ
+         XWnVQUozzo5fI+NuJgx68Z9czl+MxxgNzEe1MjgwOwABntF2M6FWx+mmyqLxbl7tteCp
+         CkfvA7tERJveQgFXUk6lWnxTKdkCC1wIJT8I0zy9vX7SW42NftuG2hJZp8rdjeX54T95
+         zv3g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
-         :references:user-agent:mime-version;
-        bh=BPVIrimcUkfawrwhxQJhVkAGWp3nHZ+YOSsJJY8v6L4=;
-        b=CmT7bg9gxpgu/D9ZUjygeLFmg7yXr6c5UaFNOitm/F/BsVdM4tJI7soAJABfsYDygm
-         2t2N+x1APIqaHXUK6fXhELp+TqyNlke76HXTsCa2ZGibXSpW0k28DbikVVWPwTovPYCs
-         saPi2rcg1KTZhXm54GHIZBcAFrCeW0hl7i4XlO7V/YH43EI/LTOG/WPfwxrubA7vCmRz
-         2nybAZrzKU4oErSh2sVrkt+eLW6r/c8SUrz+QwnbOjUwCzJiO0K8etgPDr0Iw5ZDDiC6
-         /XPDDm+RbrYuhsdIPAuAxG/FfFW4znJ5u3Ibb9UJ9SbCQXUvBwpaWioeIhWxyshTAKOd
-         u48Q==
-X-Gm-Message-State: AOAM531gBVPwfGfSZdjWdwU8TA5GRO3OYBDVeDovv5JwRfqLMy6+jPIH
-        vyPvoSznShOo1V0WRn8ipTNonA==
-X-Google-Smtp-Source: ABdhPJyogzismKVV0E3uH+Va7htgK3+100Crb5uZ5iQLOJ94MJxXUtOjoTQEOG1L0pIBZB5Ej+gMHQ==
-X-Received: by 2002:a9d:7315:: with SMTP id e21mr12058931otk.288.1622319359862;
-        Sat, 29 May 2021 13:15:59 -0700 (PDT)
-Received: from eggly.attlocal.net (172-10-233-147.lightspeed.sntcca.sbcglobal.net. [172.10.233.147])
-        by smtp.gmail.com with ESMTPSA id r2sm1972883otq.28.2021.05.29.13.15.58
-        (version=TLS1 cipher=ECDHE-ECDSA-AES128-SHA bits=128/128);
-        Sat, 29 May 2021 13:15:59 -0700 (PDT)
-Date:   Sat, 29 May 2021 13:15:43 -0700 (PDT)
-From:   Hugh Dickins <hughd@google.com>
-X-X-Sender: hugh@eggly.anvils
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-cc:     "Lin, Ming" <minggr@gmail.com>, Hugh Dickins <hughd@google.com>,
-        Simon Ser <contact@emersion.fr>, Peter Xu <peterx@redhat.com>,
-        "Kirill A. Shutemov" <kirill@shutemov.name>,
-        Matthew Wilcox <willy@infradead.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Will Deacon <will@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        David Herrmann <dh.herrmann@gmail.com>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        Greg Kroah-Hartman <greg@kroah.com>,
-        "tytso@mit.edu" <tytso@mit.edu>
-Subject: Re: Sealed memfd & no-fault mmap
-In-Reply-To: <CAHk-=whSGS=R8PtrfNcDTkCKOengEqygqeWjOZa2b8QkuOueDg@mail.gmail.com>
-Message-ID: <alpine.LSU.2.11.2105291315330.25425@eggly.anvils>
-References: <vs1Us2sm4qmfvLOqNat0-r16GyfmWzqUzQ4KHbXJwEcjhzeoQ4sBTxx7QXDG9B6zk5AeT7FsNb3CSr94LaKy6Novh1fbbw8D_BBxYsbPLms=@emersion.fr> <CAHk-=wgmGv2EGscKSi8SrQWtEVpEQyk-ZN1Xj4EoAB87Dmx1gA@mail.gmail.com> <20210429154807.hptls4vnmq2svuea@box>
- <20210429183836.GF8339@xz-x1> <lpi4uT69AFMwtmWtwW_qJAmYm_r0jRikL11G_zI4X7wq--6Jtpiej8kGn8gePfv0Dtn4VmzsOqT2Q5-L3ca2niDi0nlC0nVYphbFBnNJnw0=@emersion.fr> <CAHk-=wiAs7Ky9gmWAeqk5t7Nkueip13XPGtUcmMiZjwf-sX3sQ@mail.gmail.com>
- <hnL7s1u925fpeUhs90fXUpD3GG_4gmHlpznN8E0885tSM40QYb3VVTFGkwpmxYQ3U8HkRSUtfqw0ZfBKptA4pIw4FZw1MdRhSHC94iQATEE=@emersion.fr> <CAHk-=wiY1BL-UHPMEAbd7nY3vu6w41A1hhvjg1DoBXWuRt9_qw@mail.gmail.com> <7718ec5b-0a9e-ffa6-16f2-bc0b6afbd9ab@gmail.com>
- <CAHk-=wjv3-eP7mSDJbuvaB+CbyyKc4g_nEzhQLcueOd0_YuiBg@mail.gmail.com> <80c87e6b-6050-bf23-2185-ded408df4d0f@gmail.com> <CAHk-=whSGS=R8PtrfNcDTkCKOengEqygqeWjOZa2b8QkuOueDg@mail.gmail.com>
-User-Agent: Alpine 2.11 (LSU 23 2013-08-11)
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+        h=x-gm-message-state:date:subject:in-reply-to:cc:from:to:message-id
+         :mime-version:content-transfer-encoding;
+        bh=FaKAKWgTGAF75nlDcT+nxeoW3pPMI6Wa1hWEXx7JRJ8=;
+        b=SWCJU0RPR+kKKYGXR/v8Srq6+5rbh6dNrrkblYYLLjxSP3wgxfKD/RW6gdWAMCG0mO
+         Mlc8tVwjch3tI/eb5jPEWlwaWv1e371JTBBXKTKhGM5RT5sJu0nXRIpW+SemWLPxYic9
+         G/wc4GP+QM1wXa+2t0oDywqvSPCdMLnRDcenh1CsU+bZ5hpZMYZ7VBqmAqmBquWJ7y5V
+         LON19zhTDwDIgxoiW1PLQx+NQ/jPtDZWh2rAPObIUV0CVOhuCiFFMcB2MUdQQYQT9obb
+         pF4UMJrmeJsnOlRL/X4tSBAMKAxY98KU+732zvrGsGhrCjfR06pTcDX3Q+5IexY66fAZ
+         wx5Q==
+X-Gm-Message-State: AOAM533KuB3T+au69f3pj3PiUn5KeLD8q3FGe4ssVjGt6V2JlIIz9MKx
+        qu494NQ7kLDsSA8YO/8LY7Tsdw==
+X-Google-Smtp-Source: ABdhPJxYikI3/E8XUsCFa1Je+83ieoXbfxo1EPLo2zpTY2HKbPRWYOimxaJlg0ZHL3KOfFy1R8OTAg==
+X-Received: by 2002:a63:d30e:: with SMTP id b14mr15331161pgg.237.1622320689748;
+        Sat, 29 May 2021 13:38:09 -0700 (PDT)
+Received: from localhost (76-210-143-223.lightspeed.sntcca.sbcglobal.net. [76.210.143.223])
+        by smtp.gmail.com with ESMTPSA id o7sm7740814pgs.45.2021.05.29.13.38.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 29 May 2021 13:38:09 -0700 (PDT)
+Date:   Sat, 29 May 2021 13:38:09 -0700 (PDT)
+X-Google-Original-Date: Sat, 29 May 2021 13:37:27 PDT (-0700)
+Subject:     Re: [PATCH v2] riscv: Map the kernel with correct permissions the first time
+In-Reply-To: <fe6fe4ba-00df-4695-c31e-7078bd77be50@ghiti.fr>
+CC:     Christoph Hellwig <hch@infradead.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        aou@eecs.berkeley.edu, jszhang@kernel.org, zong.li@sifive.com,
+        anup@brainfault.org, linux-riscv@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+From:   Palmer Dabbelt <palmer@dabbelt.com>
+To:     alex@ghiti.fr
+Message-ID: <mhng-7da55144-a2f6-458b-9e47-235391855832@palmerdabbelt-glaptop>
+Mime-Version: 1.0 (MHng)
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 29 May 2021, Linus Torvalds wrote:
-> On Fri, May 28, 2021 at 9:31 PM Lin, Ming <minggr@gmail.com> wrote:
-> >
-> > I should check the vma is not writable.
-> >
-> > -               if (!IS_NOFAULT(inode))
-> > +               if (!IS_NOFAULT(inode) || (vma->vm_flags & VM_WRITE))
-> >                          return -EINVAL;
-> 
-> That might be enough, yes.
-> 
-> But if this is sufficient for the compositor needs, and the rule is
-> that this only works for read-only mappings, then I think the flag in
-> the inode becomes the wrong thing to do.
-> 
-> Because if it's a read-only mapping, and we only ever care about
-> inserting zero pages into the page tables - and they never become part
-> of the shared memory region itself, then it really is purely about
-> that mmap, not about the shm inode.
-> 
-> So then it really does become purely about one particular mmap, and it
-> really should be a "madvise()" issue, not a "mark inode as no-fault".
+On Fri, 28 May 2021 01:24:43 PDT (-0700), alex@ghiti.fr wrote:
+> Hi Christoph,
+>
+> Le 27/05/2021 à 08:35, Christoph Hellwig a écrit :
+>> On Wed, May 26, 2021 at 03:41:10PM +0200, Alexandre Ghiti wrote:
+>>>   #ifdef CONFIG_64BIT
+>>> +#define is_kernel_mapping(x)	((x) >= kernel_virt_addr && (x) < (kernel_virt_addr + load_sz))
+>>> +#define is_linear_mapping(x)	((x) >= PAGE_OFFSET && (x) < kernel_virt_addr)
+>>> +
+>>
+>> Overly long lines.  Independ of that complex macros are generally much
+>> more readable if they are written more function-like, that is the name
+>> and paramtes are kept on a line of their own:
+>>
+>> #define is_kernel_mapping(x) \
+>> 	((x) >= kernel_virt_addr && (x) < (kernel_virt_addr + load_sz))
+>>
+>> But what is the reason to not make them type-safe inline functions
+>> anyway?
+>
+> No reason. I will then make those macros inline functions and send
+> another patchset to make the below macro an inline function too.
+>
+>>
+>>>   #define __va_to_pa_nodebug(x)	({						\
+>>>   	unsigned long _x = x;							\
+>>> -	(_x < kernel_virt_addr) ?						\
+>>> +	is_linear_mapping(_x) ?							\
+>>>   		linear_mapping_va_to_pa(_x) : kernel_mapping_va_to_pa(_x);	\
+>>>   	})
+>>
+>> ... especially for something complex like this.
+>>
+>>> +static inline bool is_va_kernel_lm_alias_text(uintptr_t va)
+>>> +{
+>>> +	return (va >= (uintptr_t)lm_alias(_start) && va < (uintptr_t)lm_alias(__init_text_begin));
+>>
+>> Overly long line as well.  And useless braces.
+>
+> Ok.
+>
+>>
+>>> +static inline bool is_va_kernel_init_text(uintptr_t va)
+>>> +{
+>>> +	return (va >= (uintptr_t)__init_text_begin && va < (uintptr_t)__init_data_begin);
+>>> +}
+>>
+>> Same here.
+>
+> checkpatch does not complain about those lines which are under 100
+> characters, what's the point in breaking them on multiple lines?
+>
+>>
+>>> +#ifdef CONFIG_STRICT_KERNEL_RWX
+>>> +static __init pgprot_t pgprot_from_va(uintptr_t va)
+>>> +{
+>>> +#ifdef CONFIG_64BIT
+>>> +	if (is_va_kernel_text(va) || is_va_kernel_init_text(va))
+>>> +		return PAGE_KERNEL_READ_EXEC;
+>>> +
+>>> +	/*
+>>> +	 * We must mark only text as read-only as init text will get freed later
+>>> +	 * and rodata section is marked readonly in mark_rodata_ro.
+>>> +	 */
+>>> +	if (is_va_kernel_lm_alias_text(va))
+>>> +		return PAGE_KERNEL_READ;
+>>> +
+>>> +	return PAGE_KERNEL;
+>>> +#else
+>>> +	if (is_va_kernel_text(va))
+>>> +		return PAGE_KERNEL_READ_EXEC;
+>>> +
+>>> +	if (is_va_kernel_init_text(va))
+>>> +		return PAGE_KERNEL_EXEC;
+>>> +
+>>> +	return PAGE_KERNEL;
+>>> +#endif /* CONFIG_64BIT */
+>>> +}
+>>
+>> If the entire function is different for config symbols please just
+>> split it into two separate functions.  But to make the difference more
+>> clear IS_ENABLED might fit better here:
+>>
+>> static __init pgprot_t pgprot_from_va(uintptr_t va)
+>> {
+>> 	if (is_va_kernel_text(va))
+>> 		return PAGE_KERNEL_READ_EXEC;
+>> 	if (is_va_kernel_init_text(va))
+>> 		return IS_ENABLED(CONFIG_64BIT) ?
+>> 			PAGE_KERNEL_READ_EXEC : PAGE_KERNEL_EXEC;
+>> 	if (IS_ENABLED(CONFIG_64BIT) && is_va_kernel_lm_alias_text(va))
+>> 		return PAGE_KERNEL_READ;
+>> 	return PAGE_KERNEL;
+>> }
+>>
+>> Preferable with comments explaining the 32-bit vs 64-bit difference.
+>
+> Ok this is more compact, I'll do that with the comment.
+>
+>>
+>>> +void mark_rodata_ro(void)
+>>> +{
+>>> +	unsigned long rodata_start = (unsigned long)__start_rodata;
+>>> +	unsigned long data_start = (unsigned long)_data;
+>>> +	unsigned long __maybe_unused lm_rodata_start = (unsigned long)lm_alias(__start_rodata);
+>>> +	unsigned long __maybe_unused lm_data_start = (unsigned long)lm_alias(_data);
+>>> +
+>>> +	set_memory_ro(rodata_start, (data_start - rodata_start) >> PAGE_SHIFT);
+>>> +#ifdef CONFIG_64BIT
+>>> +	set_memory_ro(lm_rodata_start, (lm_data_start - lm_rodata_start) >> PAGE_SHIFT);
+>>> +#endif
+>>
+>> Lots of unreadable overly lone lines.  Why not add a helper and do
+>> something like:
+>>
+>> static void set_kernel_memory_ro(char *startp, char *endp)
+>> {
+>>          unsigned long start = (unsigned long)startp;
+>> 	unsigned long end = (unsigned long)endp;
+>>
+>> 	set_memory_ro(start, (start - end) >> PAGE_SHIFT);
+>> }
+>>
+>>          set_kernel_memory_ro(_start_rodata, _data);
+>> 	if (IS_ENABLED(CONFIG_64BIT))
+>> 		set_kernel_memory_ro(lm_alias(__start_rodata), lm_alias(_data));
+>>
+>>
+>
+> Ok, that's better indeed. I will do something like that instead, to
+> avoid multiple versions of this helper:
+>
+> int set_kernel_memory(char *startp, char *endp,
+>
+>                        int (*set_memory)(unsigned long start, int
+> num_pages))
+>
+>>> +static __init pgprot_t pgprot_from_va(uintptr_t va)
+>>> +{
+>>> +#ifdef CONFIG_64BIT
+>>> +	if (is_kernel_mapping(va))
+>>> +		return PAGE_KERNEL_EXEC;
+>>> +
+>>> +	if (is_linear_mapping(va))
+>>> +		return PAGE_KERNEL;
+>>> +
+>>> +	return PAGE_KERNEL;
+>>> +#else
+>>> +	return PAGE_KERNEL_EXEC;
+>>> +#endif /* CONFIG_64BIT */
+>>> +}
+>>> +#endif /* CONFIG_STRICT_KERNEL_RWX */
+>>> +
+>>
+>> Same comment as for the other version.  This could become:
+>>
+>> static __init pgprot_t pgprot_from_va(uintptr_t va)
+>> {
+>> 	if (IS_ENABLED(CONFIG_64BIT) && !is_kernel_mapping(va))
+>> 		return PAGE_KERNEL;
+>> 	return PAGE_KERNEL_EXEC;
+>> }
+>
+> Ok I'll do that.
+>
+>>
+>>> -static void __init create_kernel_page_table(pgd_t *pgdir, uintptr_t map_size)
+>>> +static void __init create_kernel_page_table(pgd_t *pgdir, uintptr_t map_size, bool early)
+>>
+>> Overly long line.
+>>
+>>>   	for (va = kernel_virt_addr; va < end_va; va += map_size)
+>>>   		create_pgd_mapping(pgdir, va,
+>>>   				   load_pa + (va - kernel_virt_addr),
+>>> -				   map_size, PAGE_KERNEL_EXEC);
+>>> +				   map_size, early ? PAGE_KERNEL_EXEC : pgprot_from_va(va));
+>>
+>> Same here.  But why not pass in a "pgprot_t ram_pgprot" instead of the
+>> bool, which would be self-documenting.
+>
+> This function is used to map the kernel mapping, the pgprot_t is then
+> different in create_kernel_page_table depending on the virtual address
+> so I can't pass a single pgprot_t for that or I would need a dummy
+> pgprot_t to test anyway.
 
-Yes, madvise or mmap flag: the recipient of this fd ought not to be
-(even capable of) interfering with other maps of the shared object.
+Thanks.  I've got a riscv-wx-mappings branch with the fix on it, I'll 
+take this on there when we have something ready to go and then merge 
+both into for-next so we can avoid merge conflicts.
 
-And IIUC it would have to be the recipient (Wayland compositor) doing
-the NOFAULT business, because (going back to the original mail) we are
-only considering this so that Wayland might satisfy clients who predate
-or refuse Linux-only APIs.  So, an ioctl (or fcntl, as sealing chose)
-at the client end cannot be expected; and could not be relied on anyway.
-
-> 
-> I'd almost be inclined to just add a new "flags" field to the vma.
-> We've been running out of vma flags for a long time, to the point that
-> some of them are only available on 64-bit architectures.
-> 
-> I get the feeling that we should just bite the bullet and make
-> "vm_flags" be an u64. Or possibly make it two explicitly 32-bit
-> entities (vm_flags and vm_extra). Get rid of the silly 64-bit-only
-> "high" flags, and get rid of our artificial "we don't have enough
-> bits".
-
-u64 saves messing around in the vma_merge() area, which has to
-consider whether adjacent vm_flags are identical.
-
-> 
-> Because we already in practice *do* have enough bits, we've just
-> artificially limited ourselves to "on 32-bit architectures we only
-> have 32 bits in that field".
-
-Yes, that artificial limitation to 32-bit has been silly all along.
-
-> 
-> But all of this is very much dependent on that "this NOFAULT case
-> really only works for reads, not for writes".
-> 
-> (Alternatively, we could allow the *mapping* itself to be writable,
-> but always fault on writes, and only insert a read-only zero page)
-
-NOFAULT? Does BSD use "fault" differently, and in Linux terms we
-would say NOSIGBUS to mean the same?
-
-Can someone point to a specification of BSD's __MAP_NOFAULT?
-Searching just found me references to bugs.
-
-What mainly worries me about the suggestion is: what happens to the
-zero page inserted into NOFAULT mappings, when later a page for that
-offset is created and added to page cache?
-
-Treating it as an opaque blob of zeroes, that stays there ever after,
-hiding the subsequent data: easy to implement, but a hack that we would
-probably regret.  (And I notice that even the quote from David Herrmann
-in the original post allows for the possibility that client may want to
-expand the object.)
-
-I believe the correct behaviour would be to unmap the nofault page
-then, allowing the proper page to be faulted in after.  That is
-certainly doable (the old mm/filemap_xip.c used to do so), but might
-get into some awkward race territory, with filesystem dependence
-(reminiscent of hole punch, in reverse).  shmem could operate that
-way, and be the better for it: but I wouldn't want to add that,
-without also cleaning away all the shmem_recalc_inode() stuff.
-
-Hugh
+>
+> Thank you for your review,
+>
+> Alex
+>
+>>
+>> _______________________________________________
+>> linux-riscv mailing list
+>> linux-riscv@lists.infradead.org
+>> http://lists.infradead.org/mailman/listinfo/linux-riscv
+>>
