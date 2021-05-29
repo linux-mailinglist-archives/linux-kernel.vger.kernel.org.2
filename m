@@ -2,128 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D2EA4394CF9
-	for <lists+linux-kernel@lfdr.de>; Sat, 29 May 2021 17:44:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E408394CFC
+	for <lists+linux-kernel@lfdr.de>; Sat, 29 May 2021 17:47:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229737AbhE2PqA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 29 May 2021 11:46:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52164 "EHLO
+        id S229778AbhE2Pso (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 29 May 2021 11:48:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52754 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229693AbhE2Pp6 (ORCPT
+        with ESMTP id S229693AbhE2Psm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 29 May 2021 11:45:58 -0400
-Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60BA6C061574
-        for <linux-kernel@vger.kernel.org>; Sat, 29 May 2021 08:44:20 -0700 (PDT)
-Received: by mail-lf1-x129.google.com with SMTP id r5so9872763lfr.5
-        for <linux-kernel@vger.kernel.org>; Sat, 29 May 2021 08:44:20 -0700 (PDT)
+        Sat, 29 May 2021 11:48:42 -0400
+Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8E9AC061574;
+        Sat, 29 May 2021 08:47:04 -0700 (PDT)
+Received: by mail-lf1-x12e.google.com with SMTP id b18so5764991lfv.11;
+        Sat, 29 May 2021 08:47:04 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Px0k6uGG2CnOum+p/ZWgGxzncHuTfKCARvtckW6PHDs=;
-        b=hYJ5sA/+8PZo8Zuy8hAFVJE7Dugd0xm/7egwKn8DEQsakaaek0tGdIJ+irzSataFeA
-         TVuOaz1OeyI1ughj61bKh9aQLN+ZpNpZdmrVcIh/Y9u9khLamSF8Jj2rYRAXKP+YUodN
-         RbdvVhrO2rlWpvC9GSSIBZDfaT1cxxMKYNAz8=
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=69jY18dEEmfg/ZmZabTRCrIvuDBUDZXyA3JOYkZkeGw=;
+        b=mRcFb2P0k5/vGofL5Z6ifIaPh1MLPeh+A8QKTudtugZOONYgG0jOYoQk/KzxhvhLfu
+         KQDDGsTNC3s8khsw5BXO5qgZGwIO5JOhSVNbW+6P2t+EueqiaQ52nNAuZMtaBBi0qNI/
+         e4/gvZtyvEjG3GDM0M5mJdhsqdRtzwFCojSM1uige15JzQLkmP5hhQkBQ5rYNglfZI2G
+         4BB56E95lEbYFkYDkzscfLeGKPT6axij8yPU4iub9LtKNwWi8th/kROMJ9eaVnOwxHd2
+         FcdezkdjweOLL4fvYsq2EVkXlzbUtMdJGumNsWVfsxucbJZd0QDvpO/M2fHbcC0JHyzL
+         lk5Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Px0k6uGG2CnOum+p/ZWgGxzncHuTfKCARvtckW6PHDs=;
-        b=QI8cwoXf8QzOqtScipAoMYMwDI+lmnvFtMlmLi5CbzCi/w7UYnoExMGDrWco7HVsQN
-         hoOguRgVp1aJLu1XYwR4O1/3GbPponsv4VrpxzyMJjgcfa+VGYcBZ1IF74k+yzVeTlUJ
-         zhROUQeeFBk22qFIbvRyRXiGx2ETm/02s/IC1la+yJiytJPiCWVgTbBhVHeRE8/m7cNh
-         6tN8j59KnMdVg5685Cw658AjTZ2sn57pU5G+UiLAV3YNWo127yIyC5fsFpZubuKSf3Gb
-         8E0tdCvlXrGgWTGhDSeWYKS0shD3GLDrEL9L9WbPgZC5Sc7KNWorVTlsN7zl0yh5f0oU
-         8x0w==
-X-Gm-Message-State: AOAM530apbRhoivE7XOkZGFmYqJXYUuW1rYQ5Tbg9IU12m4LyY6+5zFX
-        kKkTW4COQS2DwoKfnARatQQVAXPNigPqBqRsF/c=
-X-Google-Smtp-Source: ABdhPJxk4A56gQUduK77/CxLevIfvVfbUKKJuInovyyeewpfFL/6LKoOW5kywMUMWMtFg5JKNbCAWA==
-X-Received: by 2002:ac2:4e91:: with SMTP id o17mr9419323lfr.417.1622303058324;
-        Sat, 29 May 2021 08:44:18 -0700 (PDT)
-Received: from mail-lf1-f44.google.com (mail-lf1-f44.google.com. [209.85.167.44])
-        by smtp.gmail.com with ESMTPSA id n13sm768507lfi.14.2021.05.29.08.44.17
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 29 May 2021 08:44:17 -0700 (PDT)
-Received: by mail-lf1-f44.google.com with SMTP id q1so9881912lfo.3
-        for <linux-kernel@vger.kernel.org>; Sat, 29 May 2021 08:44:17 -0700 (PDT)
-X-Received: by 2002:a05:6512:36c5:: with SMTP id e5mr9308841lfs.41.1622303056980;
- Sat, 29 May 2021 08:44:16 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=69jY18dEEmfg/ZmZabTRCrIvuDBUDZXyA3JOYkZkeGw=;
+        b=FVsKAqyyjTM28B5xvfAz9BwrSGZtZ0Xy3aFAc0QyV+Rqb8o0O+nYnVI5e9c1INF36+
+         pX/gQRe44R1D0oMiDUWBF8PM7YTNG84F8TryDithrxsyepFCtwZirV+MUapqA1xDVqZK
+         mIflUq2UC2uVjUSUubc1V2iS88Ui5bValEI2riHHvAW2jmY7tmiKIoCvSxzIvhPSqzLc
+         zT+VI15kBEd1jLKhRFw2NZZcrsn78ELMOioPBEcL65G/LnbZojmxTQdlt5V0PvVLnSx2
+         alEPjAO5lC7quajUSXIVfLtJwgmyyXOrLLwk7jfpVW/fvuoKFeiTN+EyjEveOBNDCNcV
+         mNLw==
+X-Gm-Message-State: AOAM530CkqxZRQm7RWVyQDjrnYxtPfYwycFkj7CUG+vcieXzRaB/1of8
+        pAnkV97tMs6jbRXgxBvGGyE=
+X-Google-Smtp-Source: ABdhPJxub4O4ti3YHUpNH7X94BqtbHhnVYCK73BCXVrvgQWeio/I30cjJEEadISmn+0wxgOW1GLbgQ==
+X-Received: by 2002:a05:6512:a95:: with SMTP id m21mr9319762lfu.272.1622303223164;
+        Sat, 29 May 2021 08:47:03 -0700 (PDT)
+Received: from localhost.localdomain (46-138-84-89.dynamic.spd-mgts.ru. [46.138.84.89])
+        by smtp.gmail.com with ESMTPSA id y24sm764005lfg.232.2021.05.29.08.47.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 29 May 2021 08:47:02 -0700 (PDT)
+From:   Dmitry Osipenko <digetx@gmail.com>
+To:     Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.com>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Ion Agorria <ion@agorria.com>,
+        Svyatoslav Ryhel <clamor95@gmail.com>,
+        Liam Girdwood <lgirdwood@gmail.com>
+Cc:     alsa-devel@alsa-project.org, linux-tegra@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v6 0/4] Unify NVIDIA Tegra ASoC machine drivers
+Date:   Sat, 29 May 2021 18:46:45 +0300
+Message-Id: <20210529154649.25936-1-digetx@gmail.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-References: <vs1Us2sm4qmfvLOqNat0-r16GyfmWzqUzQ4KHbXJwEcjhzeoQ4sBTxx7QXDG9B6zk5AeT7FsNb3CSr94LaKy6Novh1fbbw8D_BBxYsbPLms=@emersion.fr>
- <CAHk-=wgmGv2EGscKSi8SrQWtEVpEQyk-ZN1Xj4EoAB87Dmx1gA@mail.gmail.com>
- <20210429154807.hptls4vnmq2svuea@box> <20210429183836.GF8339@xz-x1>
- <lpi4uT69AFMwtmWtwW_qJAmYm_r0jRikL11G_zI4X7wq--6Jtpiej8kGn8gePfv0Dtn4VmzsOqT2Q5-L3ca2niDi0nlC0nVYphbFBnNJnw0=@emersion.fr>
- <CAHk-=wiAs7Ky9gmWAeqk5t7Nkueip13XPGtUcmMiZjwf-sX3sQ@mail.gmail.com>
- <hnL7s1u925fpeUhs90fXUpD3GG_4gmHlpznN8E0885tSM40QYb3VVTFGkwpmxYQ3U8HkRSUtfqw0ZfBKptA4pIw4FZw1MdRhSHC94iQATEE=@emersion.fr>
- <CAHk-=wiY1BL-UHPMEAbd7nY3vu6w41A1hhvjg1DoBXWuRt9_qw@mail.gmail.com>
- <7718ec5b-0a9e-ffa6-16f2-bc0b6afbd9ab@gmail.com> <CAHk-=wjv3-eP7mSDJbuvaB+CbyyKc4g_nEzhQLcueOd0_YuiBg@mail.gmail.com>
- <80c87e6b-6050-bf23-2185-ded408df4d0f@gmail.com>
-In-Reply-To: <80c87e6b-6050-bf23-2185-ded408df4d0f@gmail.com>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Sat, 29 May 2021 05:44:01 -1000
-X-Gmail-Original-Message-ID: <CAHk-=whSGS=R8PtrfNcDTkCKOengEqygqeWjOZa2b8QkuOueDg@mail.gmail.com>
-Message-ID: <CAHk-=whSGS=R8PtrfNcDTkCKOengEqygqeWjOZa2b8QkuOueDg@mail.gmail.com>
-Subject: Re: Sealed memfd & no-fault mmap
-To:     "Lin, Ming" <minggr@gmail.com>
-Cc:     Hugh Dickins <hughd@google.com>, Simon Ser <contact@emersion.fr>,
-        Peter Xu <peterx@redhat.com>,
-        "Kirill A. Shutemov" <kirill@shutemov.name>,
-        Matthew Wilcox <willy@infradead.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Will Deacon <will@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        David Herrmann <dh.herrmann@gmail.com>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        Greg Kroah-Hartman <greg@kroah.com>,
-        "tytso@mit.edu" <tytso@mit.edu>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 28, 2021 at 9:31 PM Lin, Ming <minggr@gmail.com> wrote:
->
-> I should check the vma is not writable.
->
-> -               if (!IS_NOFAULT(inode))
-> +               if (!IS_NOFAULT(inode) || (vma->vm_flags & VM_WRITE))
->                          return -EINVAL;
+This series squashes all the ASoC machine drivers into a single one,
+this change was suggested by Jon Hunter. It also sets driver_name and
+components string of each card, allowing userspace alsa-lib to find
+UCMs at predictable path.
 
-That might be enough, yes.
+Changelog:
 
-But if this is sufficient for the compositor needs, and the rule is
-that this only works for read-only mappings, then I think the flag in
-the inode becomes the wrong thing to do.
+v6: - Fixed missed configuration of AC97 clock rate for the WM9712 codec
+      in the unified driver.
 
-Because if it's a read-only mapping, and we only ever care about
-inserting zero pages into the page tables - and they never become part
-of the shared memory region itself, then it really is purely about
-that mmap, not about the shm inode.
+    - Added new patch that removes now obsolete "utils" helpers and moves
+      code into the unified driver.
 
-So then it really does become purely about one particular mmap, and it
-really should be a "madvise()" issue, not a "mark inode as no-fault".
+        ASoC: tegra: Squash utils into common machine driver
 
-I'd almost be inclined to just add a new "flags" field to the vma.
-We've been running out of vma flags for a long time, to the point that
-some of them are only available on 64-bit architectures.
+v5: - The v4 removed the customization of components string for Nexus 7,
+      but I missed to remove the "components" hook which is unused now,
+      it's removed in v5 for consistency.
 
-I get the feeling that we should just bite the bullet and make
-"vm_flags" be an u64. Or possibly make it two explicitly 32-bit
-entities (vm_flags and vm_extra). Get rid of the silly 64-bit-only
-"high" flags, and get rid of our artificial "we don't have enough
-bits".
+    - Slightly improved naming of the common 12MHz MCLK rate function
+      to make it more consistent with the rest of the driver functions.
 
-Because we already in practice *do* have enough bits, we've just
-artificially limited ourselves to "on 32-bit architectures we only
-have 32 bits in that field".
+v4: - Moved out mclk_rate callback that is currently used only by WM8903
+      machine driver from the common driver. This was suggested by Jon Hunter.
 
-But all of this is very much dependent on that "this NOFAULT case
-really only works for reads, not for writes".
+    - Dropped patch which was setting custom components string for Nexus 7.
+      Jaroslav Kysela wants it to be specified in a device-tree, but the
+      components string doesn't have a firm specification for today. It's
+      better to drop this change for now since it's optional anyways.
 
-(Alternatively, we could allow the *mapping* itself to be writable,
-but always fault on writes, and only insert a read-only zero page)
+    - Fixed compilation error that was reported by kernel robot for v3.
 
-              Linus
+    - Jaroslav Kysela merged alsa-ucm-conf PR [1] which added UCMs for
+      Nexus 7 and Acer A500. The UCMs are fully working using a combination
+      of updated kernel + alsa-ucm-conf master + alsa-lib master, meaning
+      that they will work with the next releases of kernel and ALSA userspace
+      upstream packages.
+
+    - Added ack from Jaroslav Kysela to the "Specify components string for
+      each card" patch that he gave to v3.
+
+v3: - Added components string as was suggested by Jaroslav Kysela to v2.
+
+    - Renamed MCLK rate function that is used by max98090 and other codecs
+      to make it look more generic. Added option for specifying CLK ID per
+      device. This all was suggested by Jon Hunter to v2.
+
+v2: - Dropped use of of_device_compatible_match(), like it was suggested
+      by Rob Herring in a review comment to v1.
+
+    - Added patch that sets card's driver_name of as Tegra ASoC drivers.
+      In a comment to v1 Jaroslav Kysela suggested that the Tegra drivers
+      don't set the card name properly and he was right.
+
+      I opened pull request with the new Tegra UCMs and updated lookup paths
+      for older UCMs [1].
+
+      [1] https://github.com/alsa-project/alsa-ucm-conf/pull/92
+
+Dmitry Osipenko (4):
+  ASoC: tegra: Set driver_name=tegra for all machine drivers
+  ASoC: tegra: Unify ASoC machine drivers
+  ASoC: tegra: Specify components string for each card
+  ASoC: tegra: Squash utils into common machine driver
+
+ sound/soc/tegra/Kconfig              |  12 +
+ sound/soc/tegra/Makefile             |  19 +-
+ sound/soc/tegra/tegra_alc5632.c      | 259 --------
+ sound/soc/tegra/tegra_asoc_machine.c | 854 +++++++++++++++++++++++++++
+ sound/soc/tegra/tegra_asoc_machine.h |  49 ++
+ sound/soc/tegra/tegra_asoc_utils.c   | 225 -------
+ sound/soc/tegra/tegra_asoc_utils.h   |  38 --
+ sound/soc/tegra/tegra_max98090.c     | 276 ---------
+ sound/soc/tegra/tegra_rt5640.c       | 222 -------
+ sound/soc/tegra/tegra_rt5677.c       | 324 ----------
+ sound/soc/tegra/tegra_sgtl5000.c     | 211 -------
+ sound/soc/tegra/tegra_wm8753.c       | 185 ------
+ sound/soc/tegra/tegra_wm8903.c       | 351 +++--------
+ sound/soc/tegra/tegra_wm9712.c       | 166 ------
+ sound/soc/tegra/trimslice.c          | 172 ------
+ 15 files changed, 996 insertions(+), 2367 deletions(-)
+ delete mode 100644 sound/soc/tegra/tegra_alc5632.c
+ create mode 100644 sound/soc/tegra/tegra_asoc_machine.c
+ create mode 100644 sound/soc/tegra/tegra_asoc_machine.h
+ delete mode 100644 sound/soc/tegra/tegra_asoc_utils.c
+ delete mode 100644 sound/soc/tegra/tegra_asoc_utils.h
+ delete mode 100644 sound/soc/tegra/tegra_max98090.c
+ delete mode 100644 sound/soc/tegra/tegra_rt5640.c
+ delete mode 100644 sound/soc/tegra/tegra_rt5677.c
+ delete mode 100644 sound/soc/tegra/tegra_sgtl5000.c
+ delete mode 100644 sound/soc/tegra/tegra_wm8753.c
+ delete mode 100644 sound/soc/tegra/tegra_wm9712.c
+ delete mode 100644 sound/soc/tegra/trimslice.c
+
+-- 
+2.30.2
+
