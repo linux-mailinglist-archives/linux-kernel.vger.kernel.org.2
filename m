@@ -2,71 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A6E53949EF
-	for <lists+linux-kernel@lfdr.de>; Sat, 29 May 2021 04:23:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 679AE3949F1
+	for <lists+linux-kernel@lfdr.de>; Sat, 29 May 2021 04:26:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229612AbhE2CYg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 May 2021 22:24:36 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54868 "EHLO mail.kernel.org"
+        id S229636AbhE2C2Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 May 2021 22:28:25 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55726 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229543AbhE2CYf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 May 2021 22:24:35 -0400
-Received: from oasis.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 9267E613F5;
-        Sat, 29 May 2021 02:22:59 +0000 (UTC)
-Date:   Fri, 28 May 2021 22:22:57 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Hyeonggon Yoo <42.hyeyoo@gmail.com>
-Cc:     Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org,
-        Tom Zanussi <zanussi@kernel.org>
-Subject: Re: [PATCH] tracing: Remove redundant variable ret
-Message-ID: <20210528222257.7c5cb8b9@oasis.local.home>
-In-Reply-To: <20210527171449.GA145584@hyeyoo>
-References: <20210527171449.GA145584@hyeyoo>
-X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
-MIME-Version: 1.0
+        id S229528AbhE2C2Y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 28 May 2021 22:28:24 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2F2A361090;
+        Sat, 29 May 2021 02:26:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1622255209;
+        bh=aEwQ7gtW8SBWhXtpPyxd8abH3bVt9Pdwm73a/Rj59xU=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=EoouXyVE/uSO4rw0qMk4O9Vj9DsO74HDrd8wD3yoSnWI8RT5MBB2H3/OZTDekq4M9
+         YaDYwBQC4nu4SB4gY6egVmcA0YZy8nn4E9X5gAqYpeVS0PqGv9AghovRWKzPhXcJhg
+         8DDXeMvsnTFxVHQ1Gwj9WeVefMVT6vXqsuLfMVLFNztapYmEL4hSrWgxy5by/eHV8J
+         cKm/mjXVtA71arJnrtjy6pvv3U8zY7k3bZu9SmtaH3ZVWpXki8WJ5lj9dQADlX1cBR
+         JtJoLs+LnRCC0vn3OLERJMFax7ovPGr90249HSeK7eY3Ll8nnVlHJ69DhHGWlXvCCi
+         SfUlxbMWZSyvA==
+Date:   Sat, 29 May 2021 11:26:38 +0900
+From:   Masami Hiramatsu <mhiramat@kernel.org>
+To:     menglong8.dong@gmail.com
+Cc:     mcgrof@kernel.org, josh@joshtriplett.org, viro@zeniv.linux.org.uk,
+        keescook@chromium.org, samitolvanen@google.com, ojeda@kernel.org,
+        johan@kernel.org, jeyu@kernel.org, masahiroy@kernel.org,
+        dong.menglong@zte.com.cn, joe@perches.com, axboe@kernel.dk,
+        jack@suse.cz, hare@suse.de, tj@kernel.org,
+        gregkh@linuxfoundation.org, song@kernel.org, neilb@suse.de,
+        akpm@linux-foundation.org, f.fainelli@gmail.com,
+        wangkefeng.wang@huawei.com, arnd@arndb.de,
+        linux@rasmusvillemoes.dk, brho@google.com, rostedt@goodmis.org,
+        vbabka@suse.cz, pmladek@suse.com, glider@google.com,
+        chris@chrisdown.name, jojing64@gmail.com, ebiederm@xmission.com,
+        mingo@kernel.org, terrelln@fb.com, geert@linux-m68k.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        bhelgaas@google.com
+Subject: Re: [PATCH v3 0/3] init/initramfs.c: make initramfs support
+ pivot_root
+Message-Id: <20210529112638.b3a9ec5475ca8e4f51648ff0@kernel.org>
+In-Reply-To: <20210528143802.78635-1-dong.menglong@zte.com.cn>
+References: <20210528143802.78635-1-dong.menglong@zte.com.cn>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 28 May 2021 02:14:49 +0900
-Hyeonggon Yoo <42.hyeyoo@gmail.com> wrote:
+Hi Menglong,
 
-> This variable saves return value of event_hist_trigger_func,
-> but it's never read. So it's redundant.
+On Fri, 28 May 2021 22:37:59 +0800
+menglong8.dong@gmail.com wrote:
+
+> From: Menglong Dong <dong.menglong@zte.com.cn>
 > 
-> Signed-off-by: Hyeonggon Yoo <42.hyeyoo@gmail.com>
-> ---
->  kernel/trace/trace_events_hist.c | 3 +--
->  1 file changed, 1 insertion(+), 2 deletions(-)
+> As Luis Chamberlain suggested, I split the patch:
+> [init/initramfs.c: make initramfs support pivot_root]
+> (https://lore.kernel.org/linux-fsdevel/20210520154244.20209-1-dong.menglong@zte.com.cn/)
+> into three.
 > 
-> diff --git a/kernel/trace/trace_events_hist.c b/kernel/trace/trace_events_hist.c
-> index c1abd63f1d6c..414f2727d7a7 100644
-> --- a/kernel/trace/trace_events_hist.c
-> +++ b/kernel/trace/trace_events_hist.c
-> @@ -5225,12 +5225,11 @@ static void unregister_field_var_hists(struct hist_trigger_data *hist_data)
->  	struct trace_event_file *file;
->  	unsigned int i;
->  	char *cmd;
-> -	int ret;
->  
->  	for (i = 0; i < hist_data->n_field_var_hists; i++) {
->  		file = hist_data->field_var_hists[i]->hist_data->event_file;
->  		cmd = hist_data->field_var_hists[i]->cmd;
-> -		ret = event_hist_trigger_func(&trigger_hist_cmd, file,
-> +		event_hist_trigger_func(&trigger_hist_cmd, file,
->  					      "!hist", "hist", cmd);
+> The goal of the series patches is to make pivot_root() support initramfs.
+> 
+> In the first patch, I introduce the function ramdisk_exec_exist(), which
+> is used to check the exist of 'ramdisk_execute_command' in LOOKUP_DOWN
+> lookup mode.
+> 
+> In the second patch, I create a second mount, which is called
+> 'user root', and make it become the root. Therefore, the root has a
+> parent mount, and it can be umounted or pivot_root.
+> 
+> In the third patch, I fix rootfs_fs_type with ramfs, as it is not used
+> directly any more, and it make no sense to switch it between ramfs and
+> tmpfs, just fix it with ramfs to simplify the code.
+> 
+> 
+> Changes since V2:
+> 
+> In the first patch, I use vfs_path_lookup() in init_eaccess() to make the
+> path lookup follow the mount on '/'. After this, the problem reported by
+> Masami Hiramatsu is solved. Thanks for your report :/
 
-I wonder if instead we should add:
+Thank you for the fix, I confirmed that the issue has been solved with this.
 
-		WARN_ON_ONCE(ret < 0);
+Tested-by: Masami Hiramatsu <mhiramat@kernel.org>
 
--- Steve
+for this series.
 
->  	}
->  }
+Regards,
 
+
+> 
+> 
+> Changes since V1:
+> 
+> In the first patch, I add the flag LOOKUP_DOWN to init_eaccess(), to make
+> it support the check of filesystem mounted on '/'.
+> 
+> In the second patch, I control 'user root' with kconfig option
+> 'CONFIG_INITRAMFS_USER_ROOT', and add some comments, as Luis Chamberlain
+> suggested.
+> 
+> In the third patch, I make 'rootfs_fs_type' in control of
+> 'CONFIG_INITRAMFS_USER_ROOT'.
+> 
+> 
+> 
+> Menglong Dong (3):
+>   init/main.c: introduce function ramdisk_exec_exist()
+>   init/do_cmounts.c: introduce 'user_root' for initramfs
+>   init/do_mounts.c: fix rootfs_fs_type with ramfs
+> 
+>  fs/init.c            |  11 ++++-
+>  include/linux/init.h |   5 ++
+>  init/do_mounts.c     | 109 +++++++++++++++++++++++++++++++++++++++++++
+>  init/do_mounts.h     |  18 ++++++-
+>  init/initramfs.c     |  10 ++++
+>  init/main.c          |   7 ++-
+>  usr/Kconfig          |  10 ++++
+>  7 files changed, 166 insertions(+), 4 deletions(-)
+> 
+> -- 
+> 2.32.0.rc0
+> 
+
+
+-- 
+Masami Hiramatsu <mhiramat@kernel.org>
