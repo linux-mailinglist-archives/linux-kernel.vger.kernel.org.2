@@ -2,505 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6DE56394BAC
-	for <lists+linux-kernel@lfdr.de>; Sat, 29 May 2021 12:28:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 509F4394BAE
+	for <lists+linux-kernel@lfdr.de>; Sat, 29 May 2021 12:31:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229734AbhE2K3u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 29 May 2021 06:29:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40386 "EHLO
+        id S229693AbhE2Kce (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 29 May 2021 06:32:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40982 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229714AbhE2K3s (ORCPT
+        with ESMTP id S229597AbhE2Kcc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 29 May 2021 06:29:48 -0400
-Received: from phobos.denx.de (phobos.denx.de [IPv6:2a01:238:438b:c500:173d:9f52:ddab:ee01])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CFA7FC061574;
-        Sat, 29 May 2021 03:28:11 -0700 (PDT)
-Received: from mail-internal.denx.de (p578adb1c.dip0.t-ipconnect.de [87.138.219.28])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: noc@denx.de)
-        by phobos.denx.de (Postfix) with ESMTPSA id 9181981DB3;
-        Sat, 29 May 2021 12:28:10 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=denx.de;
-        s=phobos-20191101; t=1622284090;
-        bh=PuWaOSveq6RYerZtZEYCu6HMpgcnXftRHzJbdH3BUwo=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ZhcPUHp6d7API0Zf+6rQB/CJNpW8IG3FZ81Qpd8084rAoE54XOWJPoOVdUeTrUkrh
-         xmXo8OB/KjMsBHvd4gEdyvDeyTti4nsnYWFY684uMVXtC5/o1dOHXxjoBH72X0hZMh
-         iMorKz12KzGfVFAIJH4mSeSY3bkzMquowdw0rXQGs7FqvCDQkRbFs2qTQ0bU3mc1bE
-         Dkn6+kaQw0HwF+ZnI/qe+twlsqTE+HQCYMf7fjeGLLGRWFIv3Igo1xEPSXkNVXo/s1
-         YOVdAzrg/hFAqUEDxAasLsNf+moMnAOuU3GBI9Gpv1wfePlBUoT7C2Iblbohje2Zec
-         ErNDZExELC+wQ==
-Received: from pollux.denx.de (pollux [192.168.1.1])
-        by mail-internal.denx.de (Postfix) with ESMTP id 9E407182BA7;
-        Sat, 29 May 2021 12:27:48 +0200 (CEST)
-Received: by pollux.denx.de (Postfix, from userid 515)
-        id B649C1A8BC4; Sat, 29 May 2021 12:27:46 +0200 (CEST)
-From:   Heiko Schocher <hs@denx.de>
-To:     linux-mtd@lists.infradead.org
-Cc:     Heiko Schocher <hs@denx.de>, Fabio Estevam <festevam@denx.de>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v2 2/2] mtd: devices: add support for microchip 48l640 EERAM
-Date:   Sat, 29 May 2021 12:27:44 +0200
-Message-Id: <20210529102744.1251220-3-hs@denx.de>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210529102744.1251220-1-hs@denx.de>
-References: <20210529102744.1251220-1-hs@denx.de>
+        Sat, 29 May 2021 06:32:32 -0400
+Received: from mail-lj1-x22a.google.com (mail-lj1-x22a.google.com [IPv6:2a00:1450:4864:20::22a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0A88C061574;
+        Sat, 29 May 2021 03:30:53 -0700 (PDT)
+Received: by mail-lj1-x22a.google.com with SMTP id e11so8363111ljn.13;
+        Sat, 29 May 2021 03:30:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=50hwPVvRZ3142s7Xo8DfIlXJUFvV9AlvxnGrY96Cr2g=;
+        b=owQMaGcxk2frHqPxfCvSG5bOWEfnar1ZD3zGDO7vdOyYW4J2SSyMI7KdYqtI4idK2N
+         IM/aZJRrSmE4faYljK/hYiX52c/X+uqcX836B+ichUPyGKsbkEQPHlFpxQSsWOb1HV+s
+         nNvQuO4gsXMEyt5/Txiz9YOHgOZagbXsTRR/CUMmtwNVJcJF18dVJCQZMLyR+ipErcM5
+         cwK6wrwD+A7Fc3ZUdK9ryrYnr7Or8fFB0lnMLoMSzrs+LJ410y85rPR2wq4jo/UbHNTl
+         6VweI/nMHYhkpTIWHwlPBLGd9+JBZpZvc0vVIuAn77SrEC6gXfCRA50rtg5jMsZDVcSX
+         Adgg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=50hwPVvRZ3142s7Xo8DfIlXJUFvV9AlvxnGrY96Cr2g=;
+        b=o5KpWhkOu4uqTYAUXhL9cS5o5Fw6wfYohq9zDtNnhCkX6WqcbPWj44K9hMAodL1mUa
+         TLDzCpA3pxm7dOVKjghCGlfiwNu1cPUVff+8nYu84XOqQ7tXOgxQX5aVKDCC8+tntAXr
+         Oxc4+rGQNbkOf0eLH11a2GKObQcuoVlfyZ2LY03QKYVhZ/k4SjKLCszMEafGkV7seBeV
+         ps0CP4sdUTzxryNYbbofyf480rE68PBAxUKEyGWEri/Eu03CVKN2Nws1aehRXX1PL3Jl
+         KefIrZI4h5fGYALa3WpIqDVyTLo0Hg4yBSH1NyllJ0Owd2bhkrHwurjfUjC5ZiEy18kK
+         KFlw==
+X-Gm-Message-State: AOAM532u6Xop71AR92UCcNuEIx+ilM/q3kzj4ofterYJzWOoabScZpB5
+        YYq+t0vrRC5DG9ECZOgLpzU=
+X-Google-Smtp-Source: ABdhPJwyN9w7uEgX9RLKeGig3ruPxN2SztK+BS13skwiGkwj7WYdhcOh2BmL31BxHfD6slaovl7+hA==
+X-Received: by 2002:a2e:9844:: with SMTP id e4mr9644371ljj.500.1622284252170;
+        Sat, 29 May 2021 03:30:52 -0700 (PDT)
+Received: from localhost.localdomain (h-98-128-228-193.NA.cust.bahnhof.se. [98.128.228.193])
+        by smtp.gmail.com with ESMTPSA id q9sm702146lfo.269.2021.05.29.03.30.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 29 May 2021 03:30:51 -0700 (PDT)
+From:   Rikard Falkeborn <rikard.falkeborn@gmail.com>
+To:     Song Liu <song@kernel.org>
+Cc:     linux-raid@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Rikard Falkeborn <rikard.falkeborn@gmail.com>
+Subject: [PATCH] md: Constify attribute_group structs
+Date:   Sat, 29 May 2021 12:30:49 +0200
+Message-Id: <20210529103049.5022-1-rikard.falkeborn@gmail.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Virus-Scanned: clamav-milter 0.102.4 at phobos.denx.de
-X-Virus-Status: Clean
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The Microchip 48l640 is a 8KByte EERAM connected via SPI.
+The attribute_group structs are never modified, they're only passed to
+sysfs_create_group() and sysfs_remove_group(). Make them const to allow
+the compiler to put them in read-only memory.
 
-Signed-off-by: Heiko Schocher <hs@denx.de>
-Tested-by: Fabio Estevam <festevam@denx.de>
+Signed-off-by: Rikard Falkeborn <rikard.falkeborn@gmail.com>
 ---
-I tried to use drivers/mtd/devices/mchp23k256.c but this
-driver does not use any status register and there seems
-slight differences in registers (no write enable register
-for example), so I decided to make a new driver.
+ drivers/md/md-bitmap.c | 2 +-
+ drivers/md/md.c        | 6 +++---
+ drivers/md/md.h        | 4 ++--
+ drivers/md/raid5.c     | 2 +-
+ 4 files changed, 7 insertions(+), 7 deletions(-)
 
-This driver sets the continuous mode bit in Status register,
-which states you can write continuous ... but after writting
-32 bytes the chip goes into an undefined state, so driver now
-writes data in 32 byte chunks.
-
-I also tried to use regmap, but it leads in a lot of more code,
-and as this chip has only spi interface it makes no sense, or?
-
-Tested  this driver on board imx8mp-phyboard-pollux-rdk
-board, which is already in mainline.
-
-Made some tbot tests, which write at random offset random
-length bytes with dd and and random content. Reread the data
-after a reboot and compare with the written data. Works fine.
-
-Changes in v2:
-- fix build warnings
-- add Fabios Tested-by
-
- drivers/mtd/devices/Kconfig      |   6 +
- drivers/mtd/devices/Makefile     |   1 +
- drivers/mtd/devices/mchp48l640.c | 374 +++++++++++++++++++++++++++++++
- 3 files changed, 381 insertions(+)
- create mode 100644 drivers/mtd/devices/mchp48l640.c
-
-diff --git a/drivers/mtd/devices/Kconfig b/drivers/mtd/devices/Kconfig
-index 0f4c2d823de84..79cb981ececc9 100644
---- a/drivers/mtd/devices/Kconfig
-+++ b/drivers/mtd/devices/Kconfig
-@@ -89,6 +89,12 @@ config MTD_MCHP23K256
- 	  platform data, or a device tree description if you want to
- 	  specify device partitioning
+diff --git a/drivers/md/md-bitmap.c b/drivers/md/md-bitmap.c
+index ea3130e11680..e29c6298ef5c 100644
+--- a/drivers/md/md-bitmap.c
++++ b/drivers/md/md-bitmap.c
+@@ -2616,7 +2616,7 @@ static struct attribute *md_bitmap_attrs[] = {
+ 	&max_backlog_used.attr,
+ 	NULL
+ };
+-struct attribute_group md_bitmap_group = {
++const struct attribute_group md_bitmap_group = {
+ 	.name = "bitmap",
+ 	.attrs = md_bitmap_attrs,
+ };
+diff --git a/drivers/md/md.c b/drivers/md/md.c
+index 49f897fbb89b..0e40bb5618a1 100644
+--- a/drivers/md/md.c
++++ b/drivers/md/md.c
+@@ -824,7 +824,7 @@ static struct mddev *mddev_alloc(dev_t unit)
+ 	return ERR_PTR(error);
+ }
  
-+config MTD_MCHP48L640
-+	tristate "Microchip 48L640 EERAM"
-+	depends on SPI_MASTER
-+	help
-+	  This enables access to Microchip 48L640 EERAM chips, using SPI.
-+
- config MTD_SPEAR_SMI
- 	tristate "SPEAR MTD NOR Support through SMI controller"
- 	depends on PLAT_SPEAR || COMPILE_TEST
-diff --git a/drivers/mtd/devices/Makefile b/drivers/mtd/devices/Makefile
-index 991c8d12c0160..0362cf6bdc67f 100644
---- a/drivers/mtd/devices/Makefile
-+++ b/drivers/mtd/devices/Makefile
-@@ -13,6 +13,7 @@ obj-$(CONFIG_MTD_LART)		+= lart.o
- obj-$(CONFIG_MTD_BLOCK2MTD)	+= block2mtd.o
- obj-$(CONFIG_MTD_DATAFLASH)	+= mtd_dataflash.o
- obj-$(CONFIG_MTD_MCHP23K256)	+= mchp23k256.o
-+obj-$(CONFIG_MTD_MCHP48L640)	+= mchp48l640.o
- obj-$(CONFIG_MTD_SPEAR_SMI)	+= spear_smi.o
- obj-$(CONFIG_MTD_SST25L)	+= sst25l.o
- obj-$(CONFIG_MTD_BCM47XXSFLASH)	+= bcm47xxsflash.o
-diff --git a/drivers/mtd/devices/mchp48l640.c b/drivers/mtd/devices/mchp48l640.c
-new file mode 100644
-index 0000000000000..7b29b8c4e6fb2
---- /dev/null
-+++ b/drivers/mtd/devices/mchp48l640.c
-@@ -0,0 +1,374 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * Driver for Microchip 48L640 64 Kb SPI Serial EERAM
-+ *
-+ * Copyright Heiko Schocher <hs@denx.de>
-+ *
-+ * datasheet: http://ww1.microchip.com/downloads/en/DeviceDoc/20006055B.pdf
-+ *
-+ * we set continuous mode but reading/writing more bytes than
-+ * pagesize seems to bring chip into state where readden values
-+ * are wrong ... no idea why.
-+ *
-+ */
-+#include <linux/delay.h>
-+#include <linux/device.h>
-+#include <linux/jiffies.h>
-+#include <linux/module.h>
-+#include <linux/mtd/mtd.h>
-+#include <linux/mtd/partitions.h>
-+#include <linux/mutex.h>
-+#include <linux/sched.h>
-+#include <linux/sizes.h>
-+#include <linux/spi/flash.h>
-+#include <linux/spi/spi.h>
-+#include <linux/of_device.h>
-+
-+struct mchp48_caps {
-+	unsigned int size;
-+	unsigned int page_size;
-+};
-+
-+struct mchp48l640_flash {
-+	struct spi_device	*spi;
-+	struct mutex		lock;
-+	struct mtd_info		mtd;
-+	const struct mchp48_caps	*caps;
-+};
-+
-+#define MCHP48L640_CMD_WREN		0x06
-+#define MCHP48L640_CMD_WRDI		0x04
-+#define MCHP48L640_CMD_WRITE		0x02
-+#define MCHP48L640_CMD_READ		0x03
-+#define MCHP48L640_CMD_WRSR		0x01
-+#define MCHP48L640_CMD_RDSR		0x05
-+
-+#define MCHP48L640_STATUS_RDY		0x01
-+#define MCHP48L640_STATUS_WEL		0x02
-+#define MCHP48L640_STATUS_BP0		0x04
-+#define MCHP48L640_STATUS_BP1		0x08
-+#define MCHP48L640_STATUS_SWM		0x10
-+#define MCHP48L640_STATUS_PRO		0x20
-+#define MCHP48L640_STATUS_ASE		0x40
-+
-+#define MCHP48L640_TIMEOUT		100
-+
-+#define MAX_CMD_SIZE			0x10
-+
-+#define to_mchp48l640_flash(x) container_of(x, struct mchp48l640_flash, mtd)
-+
-+static int mchp48l640_mkcmd(struct mchp48l640_flash *flash, u8 cmd, loff_t addr, char *buf)
-+{
-+	buf[0] = cmd;
-+	buf[1] = addr >> 8;
-+	buf[2] = addr;
-+
-+	return 3;
-+}
-+
-+static int mchp48l640_read_status(struct mchp48l640_flash *flash, int *status)
-+{
-+	unsigned char cmd[2];
-+	int ret;
-+
-+	cmd[0] = MCHP48L640_CMD_RDSR;
-+	cmd[1] = 0x00;
-+	mutex_lock(&flash->lock);
-+	ret = spi_write_then_read(flash->spi, &cmd[0], 1, &cmd[1], 1);
-+	mutex_unlock(&flash->lock);
-+	if (!ret)
-+		*status = cmd[1];
-+	dev_dbg(&flash->spi->dev, "read status ret: %d status: %x", ret, *status);
-+
-+	return ret;
-+}
-+
-+static int mchp48l640_waitforbit(struct mchp48l640_flash *flash, int bit, bool set)
-+{
-+	int ret, status;
-+	unsigned long deadline;
-+
-+	deadline = jiffies + msecs_to_jiffies(MCHP48L640_TIMEOUT);
-+	do {
-+		ret = mchp48l640_read_status(flash, &status);
-+		dev_dbg(&flash->spi->dev, "read status ret: %d bit: %x %sset status: %x",
-+			ret, bit, (set ? "" : "not"), status);
-+		if (ret)
-+			return ret;
-+
-+		if (set) {
-+			if ((status & bit) == bit)
-+				return 0;
-+		} else {
-+			if ((status & bit) == 0)
-+				return 0;
-+		}
-+
-+		usleep_range(1000, 2000);
-+	} while (!time_after_eq(jiffies, deadline));
-+
-+	dev_err(&flash->spi->dev, "Timeout waiting for bit %x %s set in status register.",
-+		bit, (set ? "" : "not"));
-+	return -ETIMEDOUT;
-+}
-+
-+static int mchp48l640_write_prepare(struct mchp48l640_flash *flash, bool enable)
-+{
-+	unsigned char cmd[2];
-+	int ret;
-+
-+	if (enable)
-+		cmd[0] = MCHP48L640_CMD_WREN;
-+	else
-+		cmd[0] = MCHP48L640_CMD_WRDI;
-+
-+	mutex_lock(&flash->lock);
-+	ret = spi_write(flash->spi, cmd, 1);
-+	mutex_unlock(&flash->lock);
-+
-+	if (ret)
-+		dev_err(&flash->spi->dev, "write %sable failed ret: %d",
-+			(enable ? "en" : "dis"), ret);
-+
-+	dev_dbg(&flash->spi->dev, "write %sable success ret: %d",
-+		(enable ? "en" : "dis"), ret);
-+	if (enable)
-+		return mchp48l640_waitforbit(flash, MCHP48L640_STATUS_WEL, true);
-+
-+	return ret;
-+}
-+
-+static int mchp48l640_set_mode(struct mchp48l640_flash *flash)
-+{
-+	unsigned char cmd[2];
-+	int ret;
-+
-+	ret = mchp48l640_write_prepare(flash, true);
-+	if (ret)
-+		return ret;
-+
-+	cmd[0] = MCHP48L640_CMD_WRSR;
-+	cmd[1] = MCHP48L640_STATUS_PRO;
-+
-+	mutex_lock(&flash->lock);
-+	ret = spi_write(flash->spi, cmd, 2);
-+	mutex_unlock(&flash->lock);
-+	if (ret)
-+		dev_err(&flash->spi->dev, "Could not set continuous mode ret: %d", ret);
-+
-+	return mchp48l640_waitforbit(flash, MCHP48L640_STATUS_PRO, true);
-+}
-+
-+static int mchp48l640_wait_rdy(struct mchp48l640_flash *flash)
-+{
-+	return mchp48l640_waitforbit(flash, MCHP48L640_STATUS_RDY, false);
-+};
-+
-+static int mchp48l640_write_page(struct mtd_info *mtd, loff_t to, size_t len,
-+			    size_t *retlen, const unsigned char *buf)
-+{
-+	struct mchp48l640_flash *flash = to_mchp48l640_flash(mtd);
-+	unsigned char *cmd;
-+	int ret;
-+	int cmdlen;
-+
-+	cmd = kmalloc((3 + len), GFP_KERNEL | GFP_DMA);
-+	if (!cmd)
-+		return -ENOMEM;
-+
-+	ret = mchp48l640_wait_rdy(flash);
-+	if (ret)
-+		goto fail;
-+
-+	ret = mchp48l640_write_prepare(flash, true);
-+	if (ret)
-+		goto fail;
-+
-+	mutex_lock(&flash->lock);
-+	cmdlen = mchp48l640_mkcmd(flash, MCHP48L640_CMD_WRITE, to, cmd);
-+	memcpy(&cmd[cmdlen], buf, len);
-+	ret = spi_write(flash->spi, cmd, cmdlen + len);
-+	mutex_unlock(&flash->lock);
-+	if (!ret)
-+		*retlen += len;
-+	else
-+		goto fail;
-+
-+	ret = mchp48l640_waitforbit(flash, MCHP48L640_STATUS_WEL, false);
-+	if (ret)
-+		goto fail;
-+
-+	kfree(cmd);
-+	return 0;
-+fail:
-+	kfree(cmd);
-+	dev_err(&flash->spi->dev, "write fail with: %d", ret);
-+	return ret;
-+};
-+
-+static int mchp48l640_write(struct mtd_info *mtd, loff_t to, size_t len,
-+			    size_t *retlen, const unsigned char *buf)
-+{
-+	struct mchp48l640_flash *flash = to_mchp48l640_flash(mtd);
-+	int ret;
-+	size_t wlen = 0;
-+	loff_t woff = to;
-+	size_t ws;
-+	size_t page_sz = flash->caps->page_size;
-+
-+	/*
-+	 * we set PRO bit (page rollover), but writing length > page size
-+	 * does result in total chaos, so write in 32 byte chunks.
-+	 */
-+	while (wlen < len) {
-+		ws = min((len - wlen), page_sz);
-+		ret = mchp48l640_write_page(mtd, woff, ws, retlen, &buf[wlen]);
-+		if (ret)
-+			return ret;
-+		wlen += ws;
-+		woff += ws;
-+	}
-+
-+	return ret;
-+}
-+
-+static int mchp48l640_read_page(struct mtd_info *mtd, loff_t from, size_t len,
-+			   size_t *retlen, unsigned char *buf)
-+{
-+	struct mchp48l640_flash *flash = to_mchp48l640_flash(mtd);
-+	unsigned char *cmd;
-+	int ret;
-+	int cmdlen;
-+
-+	cmd = kmalloc((3 + len), GFP_KERNEL | GFP_DMA);
-+	if (!cmd)
-+		return -ENOMEM;
-+
-+	ret = mchp48l640_wait_rdy(flash);
-+	if (ret)
-+		goto fail;
-+
-+	mutex_lock(&flash->lock);
-+	cmdlen = mchp48l640_mkcmd(flash, MCHP48L640_CMD_READ, from, cmd);
-+	ret = spi_write_then_read(flash->spi, cmd, cmdlen, buf, len);
-+	mutex_unlock(&flash->lock);
-+	if (!ret)
-+		*retlen += len;
-+
-+	return ret;
-+
-+fail:
-+	kfree(cmd);
-+	dev_err(&flash->spi->dev, "read fail with: %d", ret);
-+	return ret;
-+}
-+
-+static int mchp48l640_read(struct mtd_info *mtd, loff_t from, size_t len,
-+			   size_t *retlen, unsigned char *buf)
-+{
-+	struct mchp48l640_flash *flash = to_mchp48l640_flash(mtd);
-+	int ret;
-+	size_t wlen = 0;
-+	loff_t woff = from;
-+	size_t ws;
-+	size_t page_sz = flash->caps->page_size;
-+
-+	/*
-+	 * we set PRO bit (page rollover), but if read length > page size
-+	 * does result in total chaos in result ...
-+	 */
-+	dev_dbg(&flash->spi->dev, "read len: %ld from: %llx", len, from);
-+	while (wlen < len) {
-+		ws = min((len - wlen), page_sz);
-+		ret = mchp48l640_read_page(mtd, woff, ws, retlen, &buf[wlen]);
-+		if (ret)
-+			return ret;
-+		wlen += ws;
-+		woff += ws;
-+	}
-+
-+	return ret;
-+};
-+
-+static const struct mchp48_caps mchp48l640_caps = {
-+	.size = SZ_8K,
-+	.page_size = 32,
-+};
-+
-+static int mchp48l640_probe(struct spi_device *spi)
-+{
-+	struct mchp48l640_flash *flash;
-+	struct flash_platform_data *data;
-+	int err;
-+	int status;
-+
-+	flash = devm_kzalloc(&spi->dev, sizeof(*flash), GFP_KERNEL);
-+	if (!flash)
-+		return -ENOMEM;
-+
-+	flash->spi = spi;
-+	mutex_init(&flash->lock);
-+	spi_set_drvdata(spi, flash);
-+
-+	err = mchp48l640_read_status(flash, &status);
-+	if (err)
-+		return err;
-+
-+	err = mchp48l640_set_mode(flash);
-+	if (err)
-+		return err;
-+
-+	data = dev_get_platdata(&spi->dev);
-+
-+	flash->caps = of_device_get_match_data(&spi->dev);
-+	if (!flash->caps)
-+		flash->caps = &mchp48l640_caps;
-+
-+	mtd_set_of_node(&flash->mtd, spi->dev.of_node);
-+	flash->mtd.dev.parent	= &spi->dev;
-+	flash->mtd.type		= MTD_RAM;
-+	flash->mtd.flags	= MTD_CAP_RAM;
-+	flash->mtd.writesize	= flash->caps->page_size;
-+	flash->mtd.size		= flash->caps->size;
-+	flash->mtd._read	= mchp48l640_read;
-+	flash->mtd._write	= mchp48l640_write;
-+
-+	err = mtd_device_register(&flash->mtd, data ? data->parts : NULL,
-+				  data ? data->nr_parts : 0);
-+	if (err)
-+		return err;
-+
-+	return 0;
-+}
-+
-+static int mchp48l640_remove(struct spi_device *spi)
-+{
-+	struct mchp48l640_flash *flash = spi_get_drvdata(spi);
-+
-+	return mtd_device_unregister(&flash->mtd);
-+}
-+
-+static const struct of_device_id mchp48l640_of_table[] = {
-+	{
-+		.compatible = "microchip,48l640",
-+		.data = &mchp48l640_caps,
-+	},
-+	{}
-+};
-+MODULE_DEVICE_TABLE(of, mchp48l640_of_table);
-+
-+static struct spi_driver mchp48l640_driver = {
-+	.driver = {
-+		.name	= "mchp48l640",
-+		.of_match_table = of_match_ptr(mchp48l640_of_table),
-+	},
-+	.probe		= mchp48l640_probe,
-+	.remove		= mchp48l640_remove,
-+};
-+
-+module_spi_driver(mchp48l640_driver);
-+
-+MODULE_DESCRIPTION("MTD SPI driver for Microchip 48l640 EERAM chips");
-+MODULE_AUTHOR("Heiko Schocher <hs@denx.de>");
-+MODULE_LICENSE("GPL v2");
-+MODULE_ALIAS("spi:mchp48l640");
+-static struct attribute_group md_redundancy_group;
++static const struct attribute_group md_redundancy_group;
+ 
+ void mddev_unlock(struct mddev *mddev)
+ {
+@@ -841,7 +841,7 @@ void mddev_unlock(struct mddev *mddev)
+ 		 * test it under the same mutex to ensure its correct value
+ 		 * is seen.
+ 		 */
+-		struct attribute_group *to_remove = mddev->to_remove;
++		const struct attribute_group *to_remove = mddev->to_remove;
+ 		mddev->to_remove = NULL;
+ 		mddev->sysfs_active = 1;
+ 		mutex_unlock(&mddev->reconfig_mutex);
+@@ -5538,7 +5538,7 @@ static struct attribute *md_redundancy_attrs[] = {
+ 	&md_degraded.attr,
+ 	NULL,
+ };
+-static struct attribute_group md_redundancy_group = {
++static const struct attribute_group md_redundancy_group = {
+ 	.name = NULL,
+ 	.attrs = md_redundancy_attrs,
+ };
+diff --git a/drivers/md/md.h b/drivers/md/md.h
+index fb7eab58cfd5..31e743e2ecae 100644
+--- a/drivers/md/md.h
++++ b/drivers/md/md.h
+@@ -481,7 +481,7 @@ struct mddev {
+ 	atomic_t			max_corr_read_errors; /* max read retries */
+ 	struct list_head		all_mddevs;
+ 
+-	struct attribute_group		*to_remove;
++	const struct attribute_group	*to_remove;
+ 
+ 	struct bio_set			bio_set;
+ 	struct bio_set			sync_set; /* for sync operations like
+@@ -613,7 +613,7 @@ struct md_sysfs_entry {
+ 	ssize_t (*show)(struct mddev *, char *);
+ 	ssize_t (*store)(struct mddev *, const char *, size_t);
+ };
+-extern struct attribute_group md_bitmap_group;
++extern const struct attribute_group md_bitmap_group;
+ 
+ static inline struct kernfs_node *sysfs_get_dirent_safe(struct kernfs_node *sd, char *name)
+ {
+diff --git a/drivers/md/raid5.c b/drivers/md/raid5.c
+index 841e1c1aa5e6..b0a3050aa0a4 100644
+--- a/drivers/md/raid5.c
++++ b/drivers/md/raid5.c
+@@ -6930,7 +6930,7 @@ static struct attribute *raid5_attrs[] =  {
+ 	&ppl_write_hint.attr,
+ 	NULL,
+ };
+-static struct attribute_group raid5_attrs_group = {
++static const struct attribute_group raid5_attrs_group = {
+ 	.name = NULL,
+ 	.attrs = raid5_attrs,
+ };
 -- 
-2.30.2
+2.31.1
 
