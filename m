@@ -2,133 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 545FD394ADE
-	for <lists+linux-kernel@lfdr.de>; Sat, 29 May 2021 09:03:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A1F08394AE1
+	for <lists+linux-kernel@lfdr.de>; Sat, 29 May 2021 09:17:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229666AbhE2HEw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 29 May 2021 03:04:52 -0400
-Received: from szxga03-in.huawei.com ([45.249.212.189]:2403 "EHLO
-        szxga03-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229559AbhE2HEu (ORCPT
+        id S229713AbhE2HRF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 29 May 2021 03:17:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55424 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229559AbhE2HRE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 29 May 2021 03:04:50 -0400
-Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.56])
-        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4FsXVC420qz66Rp;
-        Sat, 29 May 2021 14:59:31 +0800 (CST)
-Received: from dggpemm500005.china.huawei.com (7.185.36.74) by
- dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Sat, 29 May 2021 15:03:11 +0800
-Received: from [127.0.0.1] (10.69.30.204) by dggpemm500005.china.huawei.com
- (7.185.36.74) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.1.2176.2; Sat, 29 May
- 2021 15:03:10 +0800
-Subject: Re: [PATCH net-next 2/3] net: sched: implement TCQ_F_CAN_BYPASS for
- lockless qdisc
-To:     Jakub Kicinski <kuba@kernel.org>
-CC:     <davem@davemloft.net>, <olteanv@gmail.com>, <ast@kernel.org>,
-        <daniel@iogearbox.net>, <andriin@fb.com>, <edumazet@google.com>,
-        <weiwan@google.com>, <cong.wang@bytedance.com>,
-        <ap420073@gmail.com>, <netdev@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <linuxarm@openeuler.org>,
-        <mkl@pengutronix.de>, <linux-can@vger.kernel.org>,
-        <jhs@mojatatu.com>, <xiyou.wangcong@gmail.com>, <jiri@resnulli.us>,
-        <andrii@kernel.org>, <kafai@fb.com>, <songliubraving@fb.com>,
-        <yhs@fb.com>, <john.fastabend@gmail.com>, <kpsingh@kernel.org>,
-        <bpf@vger.kernel.org>, <jonas.bonn@netrounds.com>,
-        <pabeni@redhat.com>, <mzhivich@akamai.com>, <johunt@akamai.com>,
-        <albcamus@gmail.com>, <kehuan.feng@gmail.com>,
-        <a.fatoum@pengutronix.de>, <atenart@kernel.org>,
-        <alexander.duyck@gmail.com>, <hdanton@sina.com>, <jgross@suse.com>,
-        <JKosina@suse.com>, <mkubecek@suse.cz>, <bjorn@kernel.org>,
-        <alobakin@pm.me>
-References: <1622170197-27370-1-git-send-email-linyunsheng@huawei.com>
- <1622170197-27370-3-git-send-email-linyunsheng@huawei.com>
- <20210528180012.676797d6@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
- <a6a965ee-7368-d37b-9c70-bba50c67eec9@huawei.com>
- <20210528213218.2b90864c@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
-From:   Yunsheng Lin <linyunsheng@huawei.com>
-Message-ID: <ee1a62da-9758-70db-abd3-c5ca2e8e0ce0@huawei.com>
-Date:   Sat, 29 May 2021 15:03:09 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
- Thunderbird/52.2.0
+        Sat, 29 May 2021 03:17:04 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A17AC061574;
+        Sat, 29 May 2021 00:15:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+        MIME-Version:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:
+        Content-ID:Content-Description:In-Reply-To:References;
+        bh=lP+gOPGEdSQsYs+wpEUstBEX/Os02KFbsZt+jZwnsa0=; b=1Y/LARd2iZo4Kv/GWpXjRCe8X/
+        a/3DdMYZWAX24uWhZ5IeC4FRD6u6qot+sHl3IK39NNiH1O0XOVQ8WpoWI/euBadZd4sX4pTmaB8aw
+        Z4i/BVLtKGZoYfwaJtZjTJuibNWonIFAzKw0s8qlDcXH1eoMIJJB2NULXf57OBkUea3tC3beC3aqD
+        y2TofShFu5Bi79e+/b6VYdeatiDhcxFqRPadMWxIiulkVfHMNxbYxBtB9PGE3YTqJsS8FhVZVfsEA
+        x4AEc75+vZWVx9NspwEAkPaZEZFyXzN0xGxjyGZg23xP5R6tRbwlfq52lRsTfytQFdjD4VFyrF5sz
+        mAstOwaQ==;
+Received: from [2601:1c0:6280:3f0::ce7d] (helo=bombadil.infradead.org)
+        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1lmtBt-003jea-N7; Sat, 29 May 2021 07:15:25 +0000
+From:   Randy Dunlap <rdunlap@infradead.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Randy Dunlap <rdunlap@infradead.org>,
+        kernel test robot <lkp@intel.com>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        Christian Lamparter <chunkeey@googlemail.com>,
+        linux-wireless@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>
+Subject: [PATCH] wireless: carl9170: fix LEDS build errors & warnings
+Date:   Sat, 29 May 2021 00:15:23 -0700
+Message-Id: <20210529071523.2044-1-rdunlap@infradead.org>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-In-Reply-To: <20210528213218.2b90864c@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.69.30.204]
-X-ClientProxiedBy: dggeme719-chm.china.huawei.com (10.1.199.115) To
- dggpemm500005.china.huawei.com (7.185.36.74)
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/5/29 12:32, Jakub Kicinski wrote:
-> On Sat, 29 May 2021 09:44:57 +0800 Yunsheng Lin wrote:
->>>> @@ -3852,10 +3852,32 @@ static inline int __dev_xmit_skb(struct sk_buff *skb, struct Qdisc *q,
->>>>  	qdisc_calculate_pkt_len(skb, q);
->>>>  
->>>>  	if (q->flags & TCQ_F_NOLOCK) {
->>>> +		if (q->flags & TCQ_F_CAN_BYPASS && nolock_qdisc_is_empty(q) &&
->>>> +		    qdisc_run_begin(q)) {
->>>> +			/* Retest nolock_qdisc_is_empty() within the protection
->>>> +			 * of q->seqlock to ensure qdisc is indeed empty.
->>>> +			 */
->>>> +			if (unlikely(!nolock_qdisc_is_empty(q))) {  
->>>
->>> This is just for the DRAINING case right? 
->>>
->>> MISSED can be set at any moment, testing MISSED seems confusing.  
->>
->> MISSED is only set when there is lock contention, which means it
->> is better not to do the qdisc bypass to avoid out of order packet
->> problem, 
-> 
-> Avoid as in make less likely? Nothing guarantees other thread is not
-> interrupted after ->enqueue and before qdisc_run_begin().
-> 
-> TBH I'm not sure what out-of-order situation you're referring to,
-> there is no ordering guarantee between separate threads trying to
-> transmit AFAIU.
-A thread need to do the bypass checking before doing enqueuing, so
-it means MISSED is set or the trylock fails for the bypass transmiting(
-which will set the MISSED after the first trylock), so the MISSED will
-always be set before a thread doing a enqueuing, and we ensure MISSED
-only be cleared during the protection of q->seqlock, after clearing
-MISSED, we do anther round of dequeuing within the protection of
-q->seqlock.
+kernel test robot reports over 200 build errors and warnings
+that are due to this Kconfig problem when CARL9170=m,
+MAC80211=y, and LEDS_CLASS=m.
 
-So if a thread has taken the q->seqlock and the MISSED is not set yet,
-it is allowed to send the packet directly without going through the
-qdisc enqueuing and dequeuing process.
+WARNING: unmet direct dependencies detected for MAC80211_LEDS
+  Depends on [n]: NET [=y] && WIRELESS [=y] && MAC80211 [=y] && (LEDS_CLASS [=m]=y || LEDS_CLASS [=m]=MAC80211 [=y])
+  Selected by [m]:
+  - CARL9170_LEDS [=y] && NETDEVICES [=y] && WLAN [=y] && WLAN_VENDOR_ATH [=y] && CARL9170 [=m]
 
+CARL9170_LEDS selects MAC80211_LEDS even though its kconfig
+dependencies are not met. This happens because 'select' does not follow
+any Kconfig dependency chains.
 
-> 
-> IOW this check is not required for correctness, right?
+Fix this by making the select depend on LEDS_CLASS=y or
+LEDS_CLASS=MAC80211, just as this is done for ath9k.
 
-if a thread has taken the q->seqlock and the MISSED is not set, it means
-other thread has not set MISSED after the first trylock and before the
-second trylock, which means the enqueuing is not done yet.
-So I assume the this check is required for correctness if I understand
-your question correctly.
+Fixes: 1d7e1e6b1b8ed ("carl9170: Makefile, Kconfig files and MAINTAINERS")
+Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+Reported-by: kernel test robot <lkp@intel.com>
+Cc: Kalle Valo <kvalo@codeaurora.org>
+Cc: Christian Lamparter <chunkeey@googlemail.com>
+Cc: linux-wireless@vger.kernel.org
+Cc: Arnd Bergmann <arnd@arndb.de>
+---
+ drivers/net/wireless/ath/carl9170/Kconfig |    4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
 
-> 
->> another good thing is that we could also do the batch
->> dequeuing and transmiting of packets when there is lock contention.
-> 
-> No doubt, but did you see the flag get set significantly often here 
-> to warrant the double-checking?
-
-No, that is just my guess:)
-
-> 
->>> Is it really worth the extra code?  
->>
->> Currently DRAINING is only set for the netdev queue stopped.
->> We could only use DRAINING to indicate the non-empty of a qdisc,
->> then we need to set the DRAINING evrywhere MISSED is set, that is
->> why I use both DRAINING and MISSED to indicate a non-empty qdisc.
-
-
+--- linux-next-20210528.orig/drivers/net/wireless/ath/carl9170/Kconfig
++++ linux-next-20210528/drivers/net/wireless/ath/carl9170/Kconfig
+@@ -17,9 +17,7 @@ config CARL9170
+ config CARL9170_LEDS
+ 	bool "SoftLED Support"
+ 	depends on CARL9170
+-	select MAC80211_LEDS
+-	select LEDS_CLASS
+-	select NEW_LEDS
++	select MAC80211_LEDS if LEDS_CLASS=y || LEDS_CLASS=MAC80211
+ 	default y
+ 	help
+ 	  This option is necessary, if you want your device' LEDs to blink
