@@ -2,86 +2,181 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A1F08394AE1
+	by mail.lfdr.de (Postfix) with ESMTP id A5F3B394AE2
 	for <lists+linux-kernel@lfdr.de>; Sat, 29 May 2021 09:17:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229713AbhE2HRF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 29 May 2021 03:17:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55424 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229559AbhE2HRE (ORCPT
+        id S229714AbhE2HTO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 29 May 2021 03:19:14 -0400
+Received: from gproxy6-pub.mail.unifiedlayer.com ([67.222.39.168]:54160 "EHLO
+        gproxy6-pub.mail.unifiedlayer.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229559AbhE2HTN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 29 May 2021 03:17:04 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A17AC061574;
-        Sat, 29 May 2021 00:15:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-        MIME-Version:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:
-        Content-ID:Content-Description:In-Reply-To:References;
-        bh=lP+gOPGEdSQsYs+wpEUstBEX/Os02KFbsZt+jZwnsa0=; b=1Y/LARd2iZo4Kv/GWpXjRCe8X/
-        a/3DdMYZWAX24uWhZ5IeC4FRD6u6qot+sHl3IK39NNiH1O0XOVQ8WpoWI/euBadZd4sX4pTmaB8aw
-        Z4i/BVLtKGZoYfwaJtZjTJuibNWonIFAzKw0s8qlDcXH1eoMIJJB2NULXf57OBkUea3tC3beC3aqD
-        y2TofShFu5Bi79e+/b6VYdeatiDhcxFqRPadMWxIiulkVfHMNxbYxBtB9PGE3YTqJsS8FhVZVfsEA
-        x4AEc75+vZWVx9NspwEAkPaZEZFyXzN0xGxjyGZg23xP5R6tRbwlfq52lRsTfytQFdjD4VFyrF5sz
-        mAstOwaQ==;
-Received: from [2601:1c0:6280:3f0::ce7d] (helo=bombadil.infradead.org)
-        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1lmtBt-003jea-N7; Sat, 29 May 2021 07:15:25 +0000
-From:   Randy Dunlap <rdunlap@infradead.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Randy Dunlap <rdunlap@infradead.org>,
-        kernel test robot <lkp@intel.com>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        Christian Lamparter <chunkeey@googlemail.com>,
-        linux-wireless@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>
-Subject: [PATCH] wireless: carl9170: fix LEDS build errors & warnings
-Date:   Sat, 29 May 2021 00:15:23 -0700
-Message-Id: <20210529071523.2044-1-rdunlap@infradead.org>
-X-Mailer: git-send-email 2.26.2
+        Sat, 29 May 2021 03:19:13 -0400
+Received: from cmgw10.mail.unifiedlayer.com (unknown [10.0.90.125])
+        by gproxy6.mail.unifiedlayer.com (Postfix) with ESMTP id 040DC802A110
+        for <linux-kernel@vger.kernel.org>; Sat, 29 May 2021 07:17:37 +0000 (UTC)
+Received: from md-in-79.webhostbox.net ([43.225.55.182])
+        by cmsmtp with ESMTP
+        id mtDylbOOwFplVmtE0lIZFd; Sat, 29 May 2021 07:17:36 +0000
+X-Authority-Reason: nr=8
+X-Authority-Analysis: v=2.4 cv=HeXR8gI8 c=1 sm=1 tr=0 ts=60b1ea91
+ a=LfuyaZh/8e9VOkaVZk0aRw==:117 a=LfuyaZh/8e9VOkaVZk0aRw==:17
+ a=dLZJa+xiwSxG16/P+YVxDGlgEgI=:19 a=5FLXtPjwQuUA:10:nop_rcvd_month_year
+ a=oz0wMknONp8A:10:endurance_base64_authed_username_1 a=vU9dKmh3AAAA:8
+ a=ghuwRo_2Bo-mHjyg8MkA:9 a=rsP06fVo5MYu2ilr0aT5:22
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=linumiz.com
+        ; s=default; h=Content-Transfer-Encoding:MIME-Version:Message-Id:Date:Subject
+        :Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:Content-Description:
+        Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+        In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
+        List-Post:List-Owner:List-Archive;
+        bh=CXVyLQdQAMht2B5jP0T4rfKfHtH8BCLXihuCEBPUS9o=; b=i/6zNYDFwAKzI2I8eloCVTXx2M
+        0vUzgcUY0ulHSWFyDrktGdfXAoR0IUvn30DPMHXs+b1XBHpACcnuvI9sLVqWZUYs+xRfCagMtM3Yu
+        /kgMCGvpW6xuSNWebQSnUZjN3YhjPSzMg6Vu4/ZTEcE4yRa74UGO4ayoBkbxLpomeQWbajTWnxUIu
+        H7Rujh3+PC1DOsLJkz4psciF8DI2sPLM5G2k9PkK0v0VI8Nxq+AORZsHqUcPzEWlDqkrPqa4ce/3A
+        yh0AgPeGJw1zuD+myqzPkSy8Tp/Dl5+vwMMpJOn+g24cccQfr9u0ddzmwrHvnInCtmOHsBbXdsgCv
+        Y4N7y+Mw==;
+Received: from [117.202.186.207] (port=34954 helo=localhost.localdomain)
+        by md-in-79.webhostbox.net with esmtps  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <navin@linumiz.com>)
+        id 1lmtDy-000zTM-65; Sat, 29 May 2021 07:17:34 +0000
+From:   Navin Sankar Velliangiri <navin@linumiz.com>
+To:     linux-input@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     jikos@kernel.org, benjamin.tissoires@redhat.com, navin@linumiz.com
+Subject: [PATCH] hid: hid-chicony: fix switch case indentation
+Date:   Sat, 29 May 2021 12:48:08 +0530
+Message-Id: <20210529071808.5268-1-navin@linumiz.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - md-in-79.webhostbox.net
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - linumiz.com
+X-BWhitelist: no
+X-Source-IP: 117.202.186.207
+X-Source-L: No
+X-Exim-ID: 1lmtDy-000zTM-65
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
+X-Source-Sender: (localhost.localdomain) [117.202.186.207]:34954
+X-Source-Auth: linumcmc
+X-Email-Count: 4
+X-Source-Cap: bGludW1jbWM7aG9zdGdhdG9yO21kLWluLTc5LndlYmhvc3Rib3gubmV0
+X-Local-Domain: yes
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-kernel test robot reports over 200 build errors and warnings
-that are due to this Kconfig problem when CARL9170=m,
-MAC80211=y, and LEDS_CLASS=m.
+fixed switch case indentation.
+Block comments should not use a trailing */ on a separate line.
+Reported by checkpatch.
 
-WARNING: unmet direct dependencies detected for MAC80211_LEDS
-  Depends on [n]: NET [=y] && WIRELESS [=y] && MAC80211 [=y] && (LEDS_CLASS [=m]=y || LEDS_CLASS [=m]=MAC80211 [=y])
-  Selected by [m]:
-  - CARL9170_LEDS [=y] && NETDEVICES [=y] && WLAN [=y] && WLAN_VENDOR_ATH [=y] && CARL9170 [=m]
-
-CARL9170_LEDS selects MAC80211_LEDS even though its kconfig
-dependencies are not met. This happens because 'select' does not follow
-any Kconfig dependency chains.
-
-Fix this by making the select depend on LEDS_CLASS=y or
-LEDS_CLASS=MAC80211, just as this is done for ath9k.
-
-Fixes: 1d7e1e6b1b8ed ("carl9170: Makefile, Kconfig files and MAINTAINERS")
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Reported-by: kernel test robot <lkp@intel.com>
-Cc: Kalle Valo <kvalo@codeaurora.org>
-Cc: Christian Lamparter <chunkeey@googlemail.com>
-Cc: linux-wireless@vger.kernel.org
-Cc: Arnd Bergmann <arnd@arndb.de>
+Signed-off-by: Navin Sankar Velliangiri <navin@linumiz.com>
 ---
- drivers/net/wireless/ath/carl9170/Kconfig |    4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
+ drivers/hid/hid-chicony.c | 74 +++++++++++++++++++++++++++++----------
+ 1 file changed, 55 insertions(+), 19 deletions(-)
 
---- linux-next-20210528.orig/drivers/net/wireless/ath/carl9170/Kconfig
-+++ linux-next-20210528/drivers/net/wireless/ath/carl9170/Kconfig
-@@ -17,9 +17,7 @@ config CARL9170
- config CARL9170_LEDS
- 	bool "SoftLED Support"
- 	depends on CARL9170
--	select MAC80211_LEDS
--	select LEDS_CLASS
--	select NEW_LEDS
-+	select MAC80211_LEDS if LEDS_CLASS=y || LEDS_CLASS=MAC80211
- 	default y
- 	help
- 	  This option is necessary, if you want your device' LEDs to blink
+diff --git a/drivers/hid/hid-chicony.c b/drivers/hid/hid-chicony.c
+index ca556d39da2a..7dd4cfd256d9 100644
+--- a/drivers/hid/hid-chicony.c
++++ b/drivers/hid/hid-chicony.c
+@@ -65,26 +65,61 @@ static int ch_input_mapping(struct hid_device *hdev, struct hid_input *hi,
+ 
+ 	set_bit(EV_REP, hi->input->evbit);
+ 	switch (usage->hid & HID_USAGE) {
+-	case 0xff01: ch_map_key_clear(BTN_1);	break;
+-	case 0xff02: ch_map_key_clear(BTN_2);	break;
+-	case 0xff03: ch_map_key_clear(BTN_3);	break;
+-	case 0xff04: ch_map_key_clear(BTN_4);	break;
+-	case 0xff05: ch_map_key_clear(BTN_5);	break;
+-	case 0xff06: ch_map_key_clear(BTN_6);	break;
+-	case 0xff07: ch_map_key_clear(BTN_7);	break;
+-	case 0xff08: ch_map_key_clear(BTN_8);	break;
+-	case 0xff09: ch_map_key_clear(BTN_9);	break;
+-	case 0xff0a: ch_map_key_clear(BTN_A);	break;
+-	case 0xff0b: ch_map_key_clear(BTN_B);	break;
+-	case 0x00f1: ch_map_key_clear(KEY_WLAN);	break;
+-	case 0x00f2: ch_map_key_clear(KEY_BRIGHTNESSDOWN);	break;
+-	case 0x00f3: ch_map_key_clear(KEY_BRIGHTNESSUP);	break;
+-	case 0x00f4: ch_map_key_clear(KEY_DISPLAY_OFF);	break;
+-	case 0x00f7: ch_map_key_clear(KEY_CAMERA);	break;
+-	case 0x00f8: ch_map_key_clear(KEY_PROG1);	break;
++	case 0xff01:
++		ch_map_key_clear(BTN_1);
++		break;
++	case 0xff02:
++		ch_map_key_clear(BTN_2);
++		break;
++	case 0xff03:
++		ch_map_key_clear(BTN_3);
++		break;
++	case 0xff04:
++		ch_map_key_clear(BTN_4);
++		break;
++	case 0xff05:
++		ch_map_key_clear(BTN_5);
++		break;
++	case 0xff06:
++		ch_map_key_clear(BTN_6);
++		break;
++	case 0xff07:
++		ch_map_key_clear(BTN_7);
++		break;
++	case 0xff08:
++		ch_map_key_clear(BTN_8);
++		break;
++	case 0xff09:
++		ch_map_key_clear(BTN_9);
++		break;
++	case 0xff0a:
++		ch_map_key_clear(BTN_A);
++		break;
++	case 0xff0b:
++		ch_map_key_clear(BTN_B);
++		break;
++	case 0x00f1:
++		ch_map_key_clear(KEY_WLAN);
++		break;
++	case 0x00f2:
++		ch_map_key_clear(KEY_BRIGHTNESSDOWN);
++		break;
++	case 0x00f3:
++		ch_map_key_clear(KEY_BRIGHTNESSUP);
++		break;
++	case 0x00f4:
++		ch_map_key_clear(KEY_DISPLAY_OFF);
++		break;
++	case 0x00f7:
++		ch_map_key_clear(KEY_CAMERA);
++		break;
++	case 0x00f8:
++		ch_map_key_clear(KEY_PROG1);
++		break;
+ 	default:
+ 		return 0;
+ 	}
++
+ 	return 1;
+ }
+ 
+@@ -92,10 +127,11 @@ static __u8 *ch_switch12_report_fixup(struct hid_device *hdev, __u8 *rdesc,
+ 		unsigned int *rsize)
+ {
+ 	struct usb_interface *intf = to_usb_interface(hdev->dev.parent);
+-	
++
+ 	if (intf->cur_altsetting->desc.bInterfaceNumber == 1) {
+ 		/* Change usage maximum and logical maximum from 0x7fff to
+-		 * 0x2fff, so they don't exceed HID_MAX_USAGES */
++		 * 0x2fff, so they don't exceed HID_MAX_USAGES
++		 */
+ 		switch (hdev->product) {
+ 		case USB_DEVICE_ID_CHICONY_ACER_SWITCH12:
+ 			if (*rsize >= 128 && rdesc[64] == 0xff && rdesc[65] == 0x7f
+-- 
+2.31.1
+
