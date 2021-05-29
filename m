@@ -2,45 +2,45 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 94D20394B2D
-	for <lists+linux-kernel@lfdr.de>; Sat, 29 May 2021 11:06:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E6A76394B30
+	for <lists+linux-kernel@lfdr.de>; Sat, 29 May 2021 11:10:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229714AbhE2JIR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 29 May 2021 05:08:17 -0400
-Received: from szxga02-in.huawei.com ([45.249.212.188]:2462 "EHLO
-        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229559AbhE2JIP (ORCPT
+        id S229704AbhE2JMR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 29 May 2021 05:12:17 -0400
+Received: from szxga03-in.huawei.com ([45.249.212.189]:2404 "EHLO
+        szxga03-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229559AbhE2JMP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 29 May 2021 05:08:15 -0400
-Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.56])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4FsbFV6r19z67c2;
-        Sat, 29 May 2021 17:03:42 +0800 (CST)
+        Sat, 29 May 2021 05:12:15 -0400
+Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.54])
+        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4FsbKD48Gmz65XN;
+        Sat, 29 May 2021 17:06:56 +0800 (CST)
 Received: from dggema762-chm.china.huawei.com (10.1.198.204) by
- dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
+ dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
- 15.1.2176.2; Sat, 29 May 2021 17:06:33 +0800
+ 15.1.2176.2; Sat, 29 May 2021 17:10:36 +0800
 Received: from [10.174.179.129] (10.174.179.129) by
  dggema762-chm.china.huawei.com (10.1.198.204) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2176.2; Sat, 29 May 2021 17:06:32 +0800
-Subject: Re: [PATCH] clk: socfpga: remove set but not used variable 'rc'
-To:     Dinh Nguyen <dinguyen@kernel.org>, <mturquette@baylibre.com>,
-        <sboyd@kernel.org>, <s.trumtrar@pengutronix.de>
-CC:     <linux-clk@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+ 15.1.2176.2; Sat, 29 May 2021 17:10:35 +0800
+Subject: Re: [PATCH] perf stat: Fix error return code in bperf__load()
+To:     <peterz@infradead.org>, <mingo@redhat.com>, <acme@kernel.org>,
+        <ast@kernel.org>, <daniel@iogearbox.net>, <andrii@kernel.org>
+CC:     <linux-perf-users@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <netdev@vger.kernel.org>, <bpf@vger.kernel.org>,
         <yi.zhang@huawei.com>
-References: <20210514062234.3534615-1-yukuai3@huawei.com>
- <786d67c5-1470-098b-79cd-801b06a72bf3@kernel.org>
+References: <20210517081254.1561564-1-yukuai3@huawei.com>
 From:   "yukuai (C)" <yukuai3@huawei.com>
-Message-ID: <f6f902a0-575e-f73d-adcc-9f60c37bd22e@huawei.com>
-Date:   Sat, 29 May 2021 17:06:32 +0800
+Message-ID: <2b377d87-1356-7422-326d-4d1b4132e75c@huawei.com>
+Date:   Sat, 29 May 2021 17:10:35 +0800
 User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
  Thunderbird/60.8.0
 MIME-Version: 1.0
-In-Reply-To: <786d67c5-1470-098b-79cd-801b06a72bf3@kernel.org>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210517081254.1561564-1-yukuai3@huawei.com>
+Content-Type: text/plain; charset="gbk"; format=flowed
+Content-Transfer-Encoding: 7bit
 X-Originating-IP: [10.174.179.129]
-X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
+X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
  dggema762-chm.china.huawei.com (10.1.198.204)
 X-CFilter-Loop: Reflected
 Precedence: bulk
@@ -49,48 +49,34 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 ping ...
 
-On 2021/05/14 23:11, Dinh Nguyen wrote:
+On 2021/05/17 16:12, Yu Kuai wrote:
+> Fix to return a negative error code from the error handling
+> case instead of 0, as done elsewhere in this function.
 > 
+> Reported-by: Hulk Robot <hulkci@huawei.com>
+> Signed-off-by: Yu Kuai <yukuai3@huawei.com>
+> ---
+>   tools/perf/util/bpf_counter.c | 2 ++
+>   1 file changed, 2 insertions(+)
 > 
-> On 5/14/21 1:22 AM, Yu Kuai wrote:
->> Fixes gcc '-Wunused-but-set-variable' warning:
->>
->> drivers/clk/socfpga/clk-pll.c:83:6: warning: variable ‘rc’ set but
->> not used [-Wunused-but-set-variable]
->>
->> The returned value of of_clk_add_provider() is never used, and so
->> can be removed.
->>
->> Fixes: 97259e99bdc9 ("clk: socfpga: split clk code")
->> Signed-off-by: Yu Kuai <yukuai3@huawei.com>
->> ---
->>   drivers/clk/socfpga/clk-pll.c | 3 +--
->>   1 file changed, 1 insertion(+), 2 deletions(-)
->>
->> diff --git a/drivers/clk/socfpga/clk-pll.c 
->> b/drivers/clk/socfpga/clk-pll.c
->> index dcb573d44034..127cc849c5ee 100644
->> --- a/drivers/clk/socfpga/clk-pll.c
->> +++ b/drivers/clk/socfpga/clk-pll.c
->> @@ -80,7 +80,6 @@ static __init struct clk_hw 
->> *__socfpga_pll_init(struct device_node *node,
->>       const char *parent_name[SOCFPGA_MAX_PARENTS];
->>       struct clk_init_data init;
->>       struct device_node *clkmgr_np;
->> -    int rc;
->>       int err;
->>       of_property_read_u32(node, "reg", &reg);
->> @@ -114,7 +113,7 @@ static __init struct clk_hw 
->> *__socfpga_pll_init(struct device_node *node,
->>           kfree(pll_clk);
->>           return ERR_PTR(err);
->>       }
->> -    rc = of_clk_add_provider(node, of_clk_src_simple_get, hw_clk);
->> +    of_clk_add_provider(node, of_clk_src_simple_get, hw_clk);
->>       return hw_clk;
->>   }
->>
-> 
-> Acked-by: Dinh Nguyen <dinguyen@kernel.org>
-> .
+> diff --git a/tools/perf/util/bpf_counter.c b/tools/perf/util/bpf_counter.c
+> index ddb52f748c8e..843b20aa6688 100644
+> --- a/tools/perf/util/bpf_counter.c
+> +++ b/tools/perf/util/bpf_counter.c
+> @@ -522,6 +522,7 @@ static int bperf__load(struct evsel *evsel, struct target *target)
+>   	evsel->bperf_leader_link_fd = bpf_link_get_fd_by_id(entry.link_id);
+>   	if (evsel->bperf_leader_link_fd < 0 &&
+>   	    bperf_reload_leader_program(evsel, attr_map_fd, &entry))
+> +		err = -1;
+>   		goto out;
+>   
+>   	/*
+> @@ -550,6 +551,7 @@ static int bperf__load(struct evsel *evsel, struct target *target)
+>   	/* Step 2: load the follower skeleton */
+>   	evsel->follower_skel = bperf_follower_bpf__open();
+>   	if (!evsel->follower_skel) {
+> +		err = -1;
+>   		pr_err("Failed to open follower skeleton\n");
+>   		goto out;
+>   	}
 > 
