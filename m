@@ -2,111 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CC367394B9A
-	for <lists+linux-kernel@lfdr.de>; Sat, 29 May 2021 12:20:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B211C394B93
+	for <lists+linux-kernel@lfdr.de>; Sat, 29 May 2021 12:17:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229729AbhE2KWD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 29 May 2021 06:22:03 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:59607 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229597AbhE2KV6 (ORCPT
+        id S229652AbhE2KQu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 29 May 2021 06:16:50 -0400
+Received: from szxga01-in.huawei.com ([45.249.212.187]:5142 "EHLO
+        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229575AbhE2KQt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 29 May 2021 06:21:58 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1622283621;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=rAj07ZCK5KDIXiVxu56SXtmyW8X/Uzs85mSHd9xMkE0=;
-        b=VtMAfg2b+ltj1w1r9C9LxIVzKfZI8PVKpqswKF1ajeKXvvDmyUWNj0GyQveI7xpDM4ZYvg
-        ysCteFrXma0aN5hWmZA4nanBHR9NZ+cKjIOyy+voJ0Zu+AKnRhBHKuT0kU1dWBIpGUgms8
-        lJiwZcKEuzdDJ0kOL8QyBNwtuySR7GE=
-Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
- [209.85.221.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-245-p7sxfgcTN6S8nAUrLhOsPA-1; Sat, 29 May 2021 06:20:19 -0400
-X-MC-Unique: p7sxfgcTN6S8nAUrLhOsPA-1
-Received: by mail-wr1-f69.google.com with SMTP id s8-20020adff8080000b0290114e1eeb8c6so55303wrp.23
-        for <linux-kernel@vger.kernel.org>; Sat, 29 May 2021 03:20:19 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:to:cc:references:from:subject:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=rAj07ZCK5KDIXiVxu56SXtmyW8X/Uzs85mSHd9xMkE0=;
-        b=kjxnDSboyLeb6pPljJKCnxxQPrhg1KLmfvJsI6X31KLFd7ox5OoW6SE2EgJ5Perde1
-         Ck2QlpVhH6fjDSSS6z55qQ+cGXuRVTfxjDR9uLkcZRPBo/axzD5JCY70WdIr6J/jSx4P
-         JB0kQioYJdYt4x/xU+x2ZYCqI6ushyBdeo4yzSJbPUrnIL/6WmJI3R4Lz8yGnDaVpRql
-         UfLSNLFg1GxHu0TDEBiGIM+FSU36BCEN75/3y29Y/dUSVEf2r45qwRLeAwNjO4rPcJDO
-         DX2Bwr/PHBAFUEDZE76LAeZBrpIoq9/N9yb7h3sm00VMYcseschu9UIvd3nArqQxjlnV
-         P7lQ==
-X-Gm-Message-State: AOAM531vHL/ddWQsCPfOMNEVZdzr3+vJM/K7XseSl05wYzV8NqN1houL
-        cHD3I1l91r0+xaIa5sgFrCEyqJd7P8WOB7xcAqegqV7yBEin5BiDL+BYM2A7JIxWCf5EOsEViZY
-        wuKcz3jh/z49E09Yc4N40Vv5c
-X-Received: by 2002:a1c:4e0b:: with SMTP id g11mr12374214wmh.3.1622283617819;
-        Sat, 29 May 2021 03:20:17 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwKTruQR1WsSRzgozbspnFpcPccqWYRWEgR4ui7XPhdvKvdRXAA+HovZdppQC/XVpJjPue7WQ==
-X-Received: by 2002:a1c:4e0b:: with SMTP id g11mr12374199wmh.3.1622283617636;
-        Sat, 29 May 2021 03:20:17 -0700 (PDT)
-Received: from ?IPv6:2001:b07:6468:f312:5e2c:eb9a:a8b6:fd3e? ([2001:b07:6468:f312:5e2c:eb9a:a8b6:fd3e])
-        by smtp.gmail.com with ESMTPSA id 92sm7981736wrp.88.2021.05.29.03.20.16
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 29 May 2021 03:20:17 -0700 (PDT)
-To:     "Maciej S. Szmigiero" <maciej.szmigiero@oracle.com>
-Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org
-References: <20210528191134.3740950-1-pbonzini@redhat.com>
- <285623f6-52e4-7f8d-fab6-0476a00af68b@oracle.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Subject: Re: [PATCH] selftests: kvm: fix overlapping addresses in
- memslot_perf_test
-Message-ID: <fc41bfc4-949f-03c5-3b20-2c1563ad7f62@redhat.com>
-Date:   Sat, 29 May 2021 12:20:16 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+        Sat, 29 May 2021 06:16:49 -0400
+Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.54])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4Fscms1h04zYmyg;
+        Sat, 29 May 2021 18:12:29 +0800 (CST)
+Received: from dggema762-chm.china.huawei.com (10.1.198.204) by
+ dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
+ 15.1.2176.2; Sat, 29 May 2021 18:15:10 +0800
+Received: from huawei.com (10.175.127.227) by dggema762-chm.china.huawei.com
+ (10.1.198.204) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Sat, 29
+ May 2021 18:15:09 +0800
+From:   Yu Kuai <yukuai3@huawei.com>
+To:     <gregkh@linuxfoundation.org>, <fabioaiuto83@gmail.com>
+CC:     <linux-staging@lists.linux.dev>, <linux-kernel@vger.kernel.org>,
+        <yukuai3@huawei.com>, <yi.zhang@huawei.com>
+Subject: [PATCH V2] staging: rtl8723bs: core: rtw_mlme_ext.c: remove deadcode
+Date:   Sat, 29 May 2021 18:24:31 +0800
+Message-ID: <20210529102431.3173753-1-yukuai3@huawei.com>
+X-Mailer: git-send-email 2.25.4
+In-Reply-To: <20210529100137.GA1416@agape.jhs>
+References: <20210529100137.GA1416@agape.jhs>
 MIME-Version: 1.0
-In-Reply-To: <285623f6-52e4-7f8d-fab6-0476a00af68b@oracle.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.127.227]
+X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
+ dggema762-chm.china.huawei.com (10.1.198.204)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 28/05/21 21:51, Maciej S. Szmigiero wrote:
-> On 28.05.2021 21:11, Paolo Bonzini wrote:
->> The memory that is allocated in vm_create is already mapped close to
->> GPA 0, because test_execute passes the requested memory to
->> prepare_vm.  This causes overlapping memory regions and the
->> test crashes.  For simplicity just move MEM_GPA higher.
->>
->> Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
-> 
-> I am not sure that I understand the issue correctly, is vm_create_default()
-> already reserving low GPAs (around 0x10000000) on some arches or run
-> environments?
+'CHECK_EVENT_SEQ' is not defined anywhere, remove the deadcode.
 
-It maps the number of pages you pass in the second argument, see
-vm_create.
+Signed-off-by: Yu Kuai <yukuai3@huawei.com>
+---
+ drivers/staging/rtl8723bs/core/rtw_mlme_ext.c | 13 +------------
+ 1 file changed, 1 insertion(+), 12 deletions(-)
 
-   if (phy_pages != 0)
-     vm_userspace_mem_region_add(vm, VM_MEM_SRC_ANONYMOUS,
-                                 0, 0, phy_pages, 0);
-
-In this case:
-
-   data->vm = vm_create_default(VCPU_ID, mempages, guest_code);
-
-called here:
-
-   if (!prepare_vm(data, nslots, maxslots, tdata->guest_code,
-                   mem_size, slot_runtime)) {
-
-where mempages is mem_size, which is declared as:
-
-         uint64_t mem_size = tdata->mem_size ? : MEM_SIZE_PAGES;
-
-but actually a better fix is just to pass a small fixed value (e.g. 
-1024) to vm_create_default, since all other regions are added by hand.
-
-Paolo
+diff --git a/drivers/staging/rtl8723bs/core/rtw_mlme_ext.c b/drivers/staging/rtl8723bs/core/rtw_mlme_ext.c
+index 97b3c2965770..2b95a49ab469 100644
+--- a/drivers/staging/rtl8723bs/core/rtw_mlme_ext.c
++++ b/drivers/staging/rtl8723bs/core/rtw_mlme_ext.c
+@@ -6006,7 +6006,7 @@ static struct fwevent wlanevents[] = {
+ 
+ u8 mlme_evt_hdl(struct adapter *padapter, unsigned char *pbuf)
+ {
+-	u8 evt_code, evt_seq;
++	u8 evt_code;
+ 	u16 evt_sz;
+ 	uint	*peventbuf;
+ 	void (*event_callback)(struct adapter *dev, u8 *pbuf);
+@@ -6017,19 +6017,8 @@ u8 mlme_evt_hdl(struct adapter *padapter, unsigned char *pbuf)
+ 
+ 	peventbuf = (uint *)pbuf;
+ 	evt_sz = (u16)(*peventbuf&0xffff);
+-	evt_seq = (u8)((*peventbuf>>24)&0x7f);
+ 	evt_code = (u8)((*peventbuf>>16)&0xff);
+ 
+-
+-	#ifdef CHECK_EVENT_SEQ
+-	/*  checking event sequence... */
+-	if (evt_seq != (atomic_read(&pevt_priv->event_seq) & 0x7f)) {
+-		pevt_priv->event_seq = (evt_seq+1)&0x7f;
+-
+-		goto _abort_event_;
+-	}
+-	#endif
+-
+ 	/*  checking if event code is valid */
+ 	if (evt_code >= MAX_C2HEVT)
+ 		goto _abort_event_;
+-- 
+2.25.4
 
