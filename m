@@ -2,90 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 48614394A08
-	for <lists+linux-kernel@lfdr.de>; Sat, 29 May 2021 05:14:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B80F394A0E
+	for <lists+linux-kernel@lfdr.de>; Sat, 29 May 2021 05:15:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229718AbhE2DBw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 May 2021 23:01:52 -0400
-Received: from szxga01-in.huawei.com ([45.249.212.187]:2084 "EHLO
-        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229674AbhE2DBs (ORCPT
+        id S229640AbhE2DRG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 May 2021 23:17:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60404 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229547AbhE2DRF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 May 2021 23:01:48 -0400
-Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.54])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4FsR4j5fsYzWjdW;
-        Sat, 29 May 2021 10:55:33 +0800 (CST)
-Received: from dggpeml500017.china.huawei.com (7.185.36.243) by
- dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Sat, 29 May 2021 11:00:11 +0800
-Received: from huawei.com (10.175.103.91) by dggpeml500017.china.huawei.com
- (7.185.36.243) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Sat, 29 May
- 2021 11:00:08 +0800
-From:   Yang Yingliang <yangyingliang@huawei.com>
-To:     <linux-kernel@vger.kernel.org>, <netdev@vger.kernel.org>
-CC:     <andrew@lunn.ch>, <vivien.didelot@gmail.com>,
-        <davem@davemloft.net>, <kuba@kernel.org>
-Subject: [PATCH net-next v2 2/2] net: dsa: qca8k: add missing check return value in qca8k_phylink_mac_config()
-Date:   Sat, 29 May 2021 11:04:39 +0800
-Message-ID: <20210529030439.1723306-3-yangyingliang@huawei.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210529030439.1723306-1-yangyingliang@huawei.com>
-References: <20210529030439.1723306-1-yangyingliang@huawei.com>
+        Fri, 28 May 2021 23:17:05 -0400
+Received: from mail-pg1-x52a.google.com (mail-pg1-x52a.google.com [IPv6:2607:f8b0:4864:20::52a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63E6EC061574;
+        Fri, 28 May 2021 20:15:29 -0700 (PDT)
+Received: by mail-pg1-x52a.google.com with SMTP id v14so3957116pgi.6;
+        Fri, 28 May 2021 20:15:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=jp5nKXTIBtXqgIz/1SOQD4aLhfftEztbDVVZdGOZUAw=;
+        b=mc0hrr6GivTHWWrV1D5Uca0yz36xmMdqsIo4B8dxUH/ZljLdWyehRIKYUp/7YmhSon
+         hBWQhUDn3d+FTTsR4H+R/+29zWiTlDRkRqgmuyyXolTyTflaupADzotCessAxjNQvDiT
+         JX598UlpmEMYefy++qZPEQS7ZxkSn6+pyK9s1N6F4/Pf2Oq0xmRg7+ke9WcLWeJ5XHZD
+         0UW87l+ysrAsSegKxHPgEKjtStQLnRY3XN7B46PIjScT90AoN3F042nrdgttxREaUnFY
+         rkqdI3XWZio4alr8ScHihZENGxNQByGUPAZ4dtmLiHfCc8xtlkPRLBaz8ZEAEUKl/P0h
+         EdSg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=jp5nKXTIBtXqgIz/1SOQD4aLhfftEztbDVVZdGOZUAw=;
+        b=ouennrqi95iEXTLmDGTSqDxIc6yIE1aBThy/Fme1c9wwSBoEjdviBFGBAdtFBQ94Bu
+         65okCVJNnDA7FEq7ex4eBdVs1/5BcnKWvMrHqSZkWPaxkRBkgc94py0+A9Ny7y7dcXs+
+         urId+YEhaNyD4kP5uHZ/BptUVUo7plzgZHsru8CqwFgQCbvnp+hLkVz3y/Nohkzv7FmL
+         rzXQXOUbdfXtjxHm04D858YCsCAlEu4Qsiwo//M57hn29UJPUEyocHUgISuQShUWTXal
+         AqH5ctH2gBph1onYd745viDOrq0YZGgCD2PGK27Q/vD4EfQaQJN1nC/1x+vaM2Ycf9yM
+         Cs8Q==
+X-Gm-Message-State: AOAM533Dx0oNXmBzIGxWm/nIOg87U+yox6VrU+dD3VfY7uA9j+B9rdQB
+        3xsfDhp7WSFxQF+CTaZLWU8XBBIX8No=
+X-Google-Smtp-Source: ABdhPJwWiRXcljUpa+9dWzGuAKoSRgDgp8du/q+kZJ/DYW6Rrh46TsBIkBmeiA16iEDj1sE+J4L7og==
+X-Received: by 2002:a63:5a19:: with SMTP id o25mr11885214pgb.122.1622258128416;
+        Fri, 28 May 2021 20:15:28 -0700 (PDT)
+Received: from [172.30.1.14] ([14.32.163.5])
+        by smtp.gmail.com with ESMTPSA id k13sm5363988pfg.31.2021.05.28.20.15.24
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 28 May 2021 20:15:27 -0700 (PDT)
+Subject: Re: [PATCH -next] PM / devfreq: governor: use DEVICE_ATTR_RW macro
+To:     YueHaibing <yuehaibing@huawei.com>, myungjoo.ham@samsung.com,
+        kyungmin.park@samsung.com, cw00.choi@samsung.com
+Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210524021158.21236-1-yuehaibing@huawei.com>
+From:   Chanwoo Choi <cwchoi00@gmail.com>
+Message-ID: <d607250d-e01f-367a-8739-a093fe0e88e7@gmail.com>
+Date:   Sat, 29 May 2021 12:15:23 +0900
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.103.91]
-X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
- dggpeml500017.china.huawei.com (7.185.36.243)
-X-CFilter-Loop: Reflected
+In-Reply-To: <20210524021158.21236-1-yuehaibing@huawei.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Now we can check qca8k_read() return value correctly, so if
-it fails, we need return directly.
+On 21. 5. 24. 오전 11:11, YueHaibing wrote:
+> Use DEVICE_ATTR_RW helper instead of plain DEVICE_ATTR,
+> which makes the code a bit shorter and easier to read.
+> 
+> Signed-off-by: YueHaibing <yuehaibing@huawei.com>
+> ---
+>   drivers/devfreq/governor_userspace.c | 10 +++++-----
+>   1 file changed, 5 insertions(+), 5 deletions(-)
+> 
+> diff --git a/drivers/devfreq/governor_userspace.c b/drivers/devfreq/governor_userspace.c
+> index 0fd6c4851071..ab9db7adb3ad 100644
+> --- a/drivers/devfreq/governor_userspace.c
+> +++ b/drivers/devfreq/governor_userspace.c
+> @@ -31,8 +31,8 @@ static int devfreq_userspace_func(struct devfreq *df, unsigned long *freq)
+>   	return 0;
+>   }
+>   
+> -static ssize_t store_freq(struct device *dev, struct device_attribute *attr,
+> -			  const char *buf, size_t count)
+> +static ssize_t set_freq_store(struct device *dev, struct device_attribute *attr,
+> +			      const char *buf, size_t count)
+>   {
+>   	struct devfreq *devfreq = to_devfreq(dev);
+>   	struct userspace_data *data;
+> @@ -52,8 +52,8 @@ static ssize_t store_freq(struct device *dev, struct device_attribute *attr,
+>   	return err;
+>   }
+>   
+> -static ssize_t show_freq(struct device *dev, struct device_attribute *attr,
+> -			 char *buf)
+> +static ssize_t set_freq_show(struct device *dev,
+> +			     struct device_attribute *attr, char *buf)
+>   {
+>   	struct devfreq *devfreq = to_devfreq(dev);
+>   	struct userspace_data *data;
+> @@ -70,7 +70,7 @@ static ssize_t show_freq(struct device *dev, struct device_attribute *attr,
+>   	return err;
+>   }
+>   
+> -static DEVICE_ATTR(set_freq, 0644, show_freq, store_freq);
+> +static DEVICE_ATTR_RW(set_freq);
+>   static struct attribute *dev_entries[] = {
+>   	&dev_attr_set_freq.attr,
+>   	NULL,
+> 
 
-Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
----
- drivers/net/dsa/qca8k.c | 9 +++++++--
- 1 file changed, 7 insertions(+), 2 deletions(-)
+Applied it. Thanks.
 
-diff --git a/drivers/net/dsa/qca8k.c b/drivers/net/dsa/qca8k.c
-index d761c5947222..6fe963ba23e8 100644
---- a/drivers/net/dsa/qca8k.c
-+++ b/drivers/net/dsa/qca8k.c
-@@ -1128,6 +1128,7 @@ qca8k_phylink_mac_config(struct dsa_switch *ds, int port, unsigned int mode,
- {
- 	struct qca8k_priv *priv = ds->priv;
- 	u32 reg, val;
-+	int ret;
- 
- 	switch (port) {
- 	case 0: /* 1st CPU port */
-@@ -1198,7 +1199,9 @@ qca8k_phylink_mac_config(struct dsa_switch *ds, int port, unsigned int mode,
- 		qca8k_write(priv, reg, QCA8K_PORT_PAD_SGMII_EN);
- 
- 		/* Enable/disable SerDes auto-negotiation as necessary */
--		qca8k_read(priv, QCA8K_REG_PWS, &val);
-+		ret = qca8k_read(priv, QCA8K_REG_PWS, &val);
-+		if (ret)
-+			return;
- 		if (phylink_autoneg_inband(mode))
- 			val &= ~QCA8K_PWS_SERDES_AEN_DIS;
- 		else
-@@ -1206,7 +1209,9 @@ qca8k_phylink_mac_config(struct dsa_switch *ds, int port, unsigned int mode,
- 		qca8k_write(priv, QCA8K_REG_PWS, val);
- 
- 		/* Configure the SGMII parameters */
--		qca8k_read(priv, QCA8K_REG_SGMII_CTRL, &val);
-+		ret = qca8k_read(priv, QCA8K_REG_SGMII_CTRL, &val);
-+		if (ret)
-+			return;
- 
- 		val |= QCA8K_SGMII_EN_PLL | QCA8K_SGMII_EN_RX |
- 			QCA8K_SGMII_EN_TX | QCA8K_SGMII_EN_SD;
 -- 
-2.25.1
-
+Best Regards,
+Samsung Electronics
+Chanwoo Choi
