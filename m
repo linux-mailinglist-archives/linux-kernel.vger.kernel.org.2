@@ -2,126 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B54E394E78
-	for <lists+linux-kernel@lfdr.de>; Sun, 30 May 2021 01:08:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 37E9D394E79
+	for <lists+linux-kernel@lfdr.de>; Sun, 30 May 2021 01:13:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229617AbhE2XJ4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 29 May 2021 19:09:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35950 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229550AbhE2XJz (ORCPT
+        id S229581AbhE2XPW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 29 May 2021 19:15:22 -0400
+Received: from userp2130.oracle.com ([156.151.31.86]:52726 "EHLO
+        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229483AbhE2XPV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 29 May 2021 19:09:55 -0400
-Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54CF0C06174A
-        for <linux-kernel@vger.kernel.org>; Sat, 29 May 2021 16:08:18 -0700 (PDT)
-Received: by mail-pl1-x62d.google.com with SMTP id t21so3367078plo.2
-        for <linux-kernel@vger.kernel.org>; Sat, 29 May 2021 16:08:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:subject:in-reply-to:cc:from:to:message-id:mime-version
-         :content-transfer-encoding;
-        bh=qss0x+5sHCW7H4avOnfrc4/iwaDvuVYHTQ7IXox97jI=;
-        b=FwnxWJLhicCZPG6FDqH6ssQblDovkkGj63nfCN2c9eZ0cVUk2N4D5mIYhjEPJKjVfW
-         NqXBY8uuErmw/KEKK+/+bx/UGMmhonkcTlT5+Hd4fBSjtzzhyAyIS/cK3f0Ctm0A04mI
-         vuMman8k2T1QvcXXZGM3wsXAPEPmTwnPaC/7OIyBzY4TXCsR00+sbQkTrVKDFCunq64x
-         AcQe2B4lrAaQhCj0L8xaG7DVGaoqKGw9DXaYRNARQxlwbNXMBO1wgDyKqjixfwzU3eQf
-         PsytkA6CSCuDrWeWYkhaUtPnNJK1PJ4iozQ7a1nm1OPL6+zHY/URtWXfDmAaJPDsA3ld
-         cavQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:subject:in-reply-to:cc:from:to:message-id
-         :mime-version:content-transfer-encoding;
-        bh=qss0x+5sHCW7H4avOnfrc4/iwaDvuVYHTQ7IXox97jI=;
-        b=MlpDAybJXixCbCaUqQAFBdcZqOQ9c9eHRgb7xuQsWamQSVsGpj8s4eQ4KWngeEvEVS
-         MP3dlIJoYNXEldHraaAUrYgNF1+BeFvHmzvHjlBAFaBJ9ihBrE6lxVvGmwaHnOF+e4E9
-         p/gGWM6iqgaFG0kgFtOTYdaPPtx8qhbQiGOUXS3c+oQzALdyTJyr5cFt2NaxOrmdIdUa
-         OsDN6qD1FYOLk7aERamYJqOamKxrxZR5E4Epd7/VUAbyqUt1Vwt9Wcx4jltG8+TH6eDq
-         nPYLfpWIorfejuqL+nZ3dL/rLbZ+8EsljqTC5X3cLMSY1EWEfse3hVMWxS0CUuv13jZA
-         63ow==
-X-Gm-Message-State: AOAM5329Cp0q0wBqH/o4dhLVAttz21e/E9KS4aGUu+8nZy1oP3fkN3Yr
-        lq1g/yBCE5AjueNindXuUQD8dQ==
-X-Google-Smtp-Source: ABdhPJzrWRNEm5ifiRm0JTVwjK2OCpXjOulal+R0YAqOyyJ2AkYsuIY448mYbv2VRTVX+ccVnODgsA==
-X-Received: by 2002:a17:902:ab95:b029:ee:f899:6fe8 with SMTP id f21-20020a170902ab95b02900eef8996fe8mr13937488plr.81.1622329697639;
-        Sat, 29 May 2021 16:08:17 -0700 (PDT)
-Received: from localhost (76-210-143-223.lightspeed.sntcca.sbcglobal.net. [76.210.143.223])
-        by smtp.gmail.com with ESMTPSA id i16sm7281143pji.30.2021.05.29.16.08.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 29 May 2021 16:08:17 -0700 (PDT)
-Date:   Sat, 29 May 2021 16:08:17 -0700 (PDT)
-X-Google-Original-Date: Sat, 29 May 2021 16:07:41 PDT (-0700)
-Subject:     Re: [PATCH] arch: Cleanup unused functions
-In-Reply-To: <1621945234-37878-1-git-send-email-guoren@kernel.org>
-CC:     guoren@kernel.org, Anup Patel <Anup.Patel@wdc.com>,
-        Arnd Bergmann <arnd@arndb.de>, Christoph Hellwig <hch@lst.de>,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-arch@vger.kernel.org, linux-sunxi@lists.linux.dev,
-        guoren@linux.alibaba.com, monstr@monstr.eu
-From:   Palmer Dabbelt <palmerdabbelt@google.com>
-To:     guoren@kernel.org
-Message-ID: <mhng-93a12abf-0283-4ec3-a521-89b8d882654f@palmerdabbelt-glaptop>
-Mime-Version: 1.0 (MHng)
+        Sat, 29 May 2021 19:15:21 -0400
+Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
+        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 14TNDgMZ154108;
+        Sat, 29 May 2021 23:13:42 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : subject : to :
+ cc : references : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=corp-2020-01-29;
+ bh=RkmhCSidUT0y0Ul7NvKR7BmL68rnNC9iDQla8Xzwtko=;
+ b=F16IkdRqRhnxqasl0c+0eGwbL1Ht0Meu8uSkXkQooYMJHFTs5mfX5/ME6mr2IUjas6Rv
+ AQ9Gz5Jv9s/L14o0mxkVHLACJ4AgC0q8TfZDMa7tadpnOOiGHjyfLVPEoRzU91OOH5tF
+ YfEDHpM34jIlmA/fCvkVFoFnbBNQ8doGBcPJLW0Z/SaPWsQVJhVTVtOHfEis4xZpKFLM
+ 9Thi9vEh5gCh3hBw9aqft6oIF9xDjIf6z5Bmd1GT1wuNsI74BJf9rT0uUu3jwExd5idu
+ WL890XX/jfOjQ73EwajOG96n9pdk8B/1iuMKiDWrEIdMlkw/dThjnUmY5xdXzrH7YfIH uA== 
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
+        by userp2130.oracle.com with ESMTP id 38ud1s8vny-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Sat, 29 May 2021 23:13:42 +0000
+Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
+        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 14TN6Hfq138762;
+        Sat, 29 May 2021 23:13:41 GMT
+Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
+        by aserp3030.oracle.com with ESMTP id 38ubnbh5tk-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Sat, 29 May 2021 23:13:41 +0000
+Received: from abhmp0002.oracle.com (abhmp0002.oracle.com [141.146.116.8])
+        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 14TNDebL014173;
+        Sat, 29 May 2021 23:13:41 GMT
+Received: from [10.175.203.186] (/10.175.203.186)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Sat, 29 May 2021 23:13:40 +0000
+From:   "Maciej S. Szmigiero" <maciej.szmigiero@oracle.com>
+Subject: Re: [PATCH] selftests: kvm: fix overlapping addresses in
+ memslot_perf_test
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org
+References: <20210528191134.3740950-1-pbonzini@redhat.com>
+ <285623f6-52e4-7f8d-fab6-0476a00af68b@oracle.com>
+ <fc41bfc4-949f-03c5-3b20-2c1563ad7f62@redhat.com>
+Message-ID: <73511f2e-7b5d-0d29-b8dc-9cb16675afb3@oracle.com>
+Date:   Sun, 30 May 2021 01:13:36 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.0
+MIME-Version: 1.0
+In-Reply-To: <fc41bfc4-949f-03c5-3b20-2c1563ad7f62@redhat.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9999 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 bulkscore=0 phishscore=0
+ spamscore=0 malwarescore=0 mlxscore=0 mlxlogscore=999 suspectscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104190000
+ definitions=main-2105290174
+X-Proofpoint-ORIG-GUID: oYZTb328FqYgOXyhTf9894XnCAmX6die
+X-Proofpoint-GUID: oYZTb328FqYgOXyhTf9894XnCAmX6die
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9999 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 priorityscore=1501
+ suspectscore=0 phishscore=0 lowpriorityscore=0 mlxlogscore=999
+ malwarescore=0 clxscore=1015 spamscore=0 impostorscore=0 adultscore=0
+ bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104190000 definitions=main-2105290175
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 25 May 2021 05:20:34 PDT (-0700), guoren@kernel.org wrote:
-> From: Guo Ren <guoren@linux.alibaba.com>
->
-> These functions haven't been used, so just remove them. The patch
-> has been tested with riscv, but I only use grep to check the
-> microblaze's.
->
-> Signed-off-by: Guo Ren <guoren@linux.alibaba.com>
-> Cc: Arnd Bergmann <arnd@arndb.de>
-> Cc: Michal Simek <monstr@monstr.eu>
-> Cc: Christoph Hellwig <hch@lst.de>
-> ---
->  arch/microblaze/include/asm/page.h |  3 ---
->  arch/riscv/include/asm/page.h      | 10 ----------
->  2 files changed, 13 deletions(-)
->
-> diff --git a/arch/microblaze/include/asm/page.h b/arch/microblaze/include/asm/page.h
-> index bf681f2..ce55097 100644
-> --- a/arch/microblaze/include/asm/page.h
-> +++ b/arch/microblaze/include/asm/page.h
-> @@ -35,9 +35,6 @@
->
->  #define ARCH_SLAB_MINALIGN	L1_CACHE_BYTES
->
-> -#define PAGE_UP(addr)	(((addr)+((PAGE_SIZE)-1))&(~((PAGE_SIZE)-1)))
-> -#define PAGE_DOWN(addr)	((addr)&(~((PAGE_SIZE)-1)))
-> -
->  /*
->   * PAGE_OFFSET -- the first address of the first page of memory. With MMU
->   * it is set to the kernel start address (aligned on a page boundary).
-> diff --git a/arch/riscv/include/asm/page.h b/arch/riscv/include/asm/page.h
-> index 6a7761c..a1b888f 100644
-> --- a/arch/riscv/include/asm/page.h
-> +++ b/arch/riscv/include/asm/page.h
-> @@ -37,16 +37,6 @@
->
->  #ifndef __ASSEMBLY__
->
-> -#define PAGE_UP(addr)	(((addr)+((PAGE_SIZE)-1))&(~((PAGE_SIZE)-1)))
-> -#define PAGE_DOWN(addr)	((addr)&(~((PAGE_SIZE)-1)))
-> -
-> -/* align addr on a size boundary - adjust address up/down if needed */
-> -#define _ALIGN_UP(addr, size)	(((addr)+((size)-1))&(~((size)-1)))
-> -#define _ALIGN_DOWN(addr, size)	((addr)&(~((size)-1)))
-> -
-> -/* align addr on a size boundary - adjust address up if needed */
-> -#define _ALIGN(addr, size)	_ALIGN_UP(addr, size)
-> -
->  #define clear_page(pgaddr)			memset((pgaddr), 0, PAGE_SIZE)
->  #define copy_page(to, from)			memcpy((to), (from), PAGE_SIZE)
+On 29.05.2021 12:20, Paolo Bonzini wrote:
+> On 28/05/21 21:51, Maciej S. Szmigiero wrote:
+>> On 28.05.2021 21:11, Paolo Bonzini wrote:
+>>> The memory that is allocated in vm_create is already mapped close to
+>>> GPA 0, because test_execute passes the requested memory to
+>>> prepare_vm.  This causes overlapping memory regions and the
+>>> test crashes.  For simplicity just move MEM_GPA higher.
+>>>
+>>> Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
+>>
+>> I am not sure that I understand the issue correctly, is vm_create_default()
+>> already reserving low GPAs (around 0x10000000) on some arches or run
+>> environments?
+> 
+> It maps the number of pages you pass in the second argument, see
+> vm_create.
+> 
+>    if (phy_pages != 0)
+>      vm_userspace_mem_region_add(vm, VM_MEM_SRC_ANONYMOUS,
+>                                  0, 0, phy_pages, 0);
+> 
+> In this case:
+> 
+>    data->vm = vm_create_default(VCPU_ID, mempages, guest_code);
+> 
+> called here:
+> 
+>    if (!prepare_vm(data, nslots, maxslots, tdata->guest_code,
+>                    mem_size, slot_runtime)) {
+> 
+> where mempages is mem_size, which is declared as:
+> 
+>          uint64_t mem_size = tdata->mem_size ? : MEM_SIZE_PAGES;
+> 
+> but actually a better fix is just to pass a small fixed value (e.g. 1024) to vm_create_default,
+> since all other regions are added by hand
 
-Reviewed-by: Palmer Dabbelt <palmerdabbelt@google.com>
-Acked-by: Palmer Dabbelt <palmerdabbelt@google.com>
+Yes, but the argument that is passed to vm_create_default() (mem_size
+in the case of the test) is not passed as phy_pages to vm_create().
+Rather, vm_create_with_vcpus() calculates some upper bound of extra
+memory that is needed to cover that much guest memory (including for
+its page tables).
 
-It's generally easier if you split this sort of stuff up, as it'll be 
-easier to merge if we don't have to coordinate between the trees.  I'm 
-happy to take this, but I'd prefer an Ack from one of the microblaze 
-folks first.
+The biggest possible mem_size from memslot_perf_test is 512 MiB + 1 page,
+according to my calculations this results in phy_pages of 1029 (~4 MiB)
+in the x86-64 case and around 1540 (~6 MiB) in the s390x case (here I am
+not sure about the exact number, since s390x has some additional alignment
+requirements).
+
+Both values are well below 256 MiB (0x10000000UL), so I was wondering
+what kind of circumstances can make these allocations collide
+(maybe I am missing something in my analysis).
+
+> 
+> Paolo
+> 
+
+Thanks,
+Maciej
