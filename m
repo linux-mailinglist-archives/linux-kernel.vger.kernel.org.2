@@ -2,148 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 893EE39496E
-	for <lists+linux-kernel@lfdr.de>; Sat, 29 May 2021 02:12:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 42D44394977
+	for <lists+linux-kernel@lfdr.de>; Sat, 29 May 2021 02:19:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229636AbhE2ANr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 May 2021 20:13:47 -0400
-Received: from so254-9.mailgun.net ([198.61.254.9]:12719 "EHLO
-        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229528AbhE2ANq (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 May 2021 20:13:46 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1622247131; h=Content-Transfer-Encoding: Content-Type:
- In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
- Subject: Sender; bh=uA1faYC+OFMBrwWX6UJIZ7G7z3bJUu+EjVNftvOSgcA=; b=VVMYEM5uZL9xdgfM8bfKN2hH/4B1OA1L5AHfQL0+oOhw4sDFFCB0WjWmNOcxQblX3TSdVDLi
- X+MS1zyo5SEP/bAUqIN+FO1FfCSZyMBiF/Xnm1c9ZRspGcwzBr1CGOkBOG6NZjmdGoME9mJN
- oXAiBcXyFPsD+jDdo3KxpnJ8hIM=
-X-Mailgun-Sending-Ip: 198.61.254.9
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n02.prod.us-west-2.postgun.com with SMTP id
- 60b186daea2aacd7297cc952 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Sat, 29 May 2021 00:12:10
- GMT
-Sender: sidgup=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id DD13DC4338A; Sat, 29 May 2021 00:12:09 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        NICE_REPLY_A,SPF_FAIL,URIBL_BLOCKED autolearn=no autolearn_force=no
-        version=3.4.0
-Received: from [192.168.1.10] (cpe-75-83-25-192.socal.res.rr.com [75.83.25.192])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: sidgup)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 051A1C433D3;
-        Sat, 29 May 2021 00:12:08 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 051A1C433D3
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=sidgup@codeaurora.org
-Subject: Re: [PATCH 1/1] remoteproc: use freezable workqueue for crash
- notifications
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Alex Elder <elder@linaro.org>
-Cc:     ohad@wizery.com, mathieu.poirier@linaro.org,
-        linux-remoteproc@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210519234418.1196387-1-elder@linaro.org>
- <20210519234418.1196387-2-elder@linaro.org> <YLBpmdZoGDXNz64y@builder.lan>
-From:   Siddharth Gupta <sidgup@codeaurora.org>
-Message-ID: <be4ea351-7144-8b53-6fd7-6a2204e0040d@codeaurora.org>
-Date:   Fri, 28 May 2021 17:12:08 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.2
-MIME-Version: 1.0
-In-Reply-To: <YLBpmdZoGDXNz64y@builder.lan>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
+        id S229642AbhE2AV1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 May 2021 20:21:27 -0400
+Received: from mga06.intel.com ([134.134.136.31]:17523 "EHLO mga06.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229528AbhE2AV0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 28 May 2021 20:21:26 -0400
+IronPort-SDR: 7JhskEnZJKoxV0kEWuLKlFPj4G0AMxrL6lKv2EwBisd3MGsOxK5IdKOykCm8tp2uOGboHH2DeG
+ ueiMJ8dIHNjA==
+X-IronPort-AV: E=McAfee;i="6200,9189,9998"; a="264253000"
+X-IronPort-AV: E=Sophos;i="5.83,231,1616482800"; 
+   d="scan'208";a="264253000"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 May 2021 17:19:50 -0700
+IronPort-SDR: yM4H1kiYcL4vsoGcvN1O1vn6FSaCmwIKWaQ56/mT7dkSk/YL/eF6+dJAgVQKTg55RVlyleKpMC
+ 5hITojADKrOQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.83,231,1616482800"; 
+   d="scan'208";a="466070463"
+Received: from orsmsx603.amr.corp.intel.com ([10.22.229.16])
+  by fmsmga004.fm.intel.com with ESMTP; 28 May 2021 17:19:50 -0700
+Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
+ ORSMSX603.amr.corp.intel.com (10.22.229.16) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2242.4; Fri, 28 May 2021 17:19:49 -0700
+Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
+ ORSMSX610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2242.4; Fri, 28 May 2021 17:19:48 -0700
+Received: from orsmsx610.amr.corp.intel.com ([10.22.229.23]) by
+ ORSMSX610.amr.corp.intel.com ([10.22.229.23]) with mapi id 15.01.2242.008;
+ Fri, 28 May 2021 17:19:48 -0700
+From:   "Keller, Jacob E" <jacob.e.keller@intel.com>
+To:     "Gustavo A. R. Silva" <gustavo@embeddedor.com>,
+        "Nguyen, Anthony L" <anthony.l.nguyen@intel.com>,
+        "Brandeburg, Jesse" <jesse.brandeburg@intel.com>,
+        "gustavoars@kernel.org" <gustavoars@kernel.org>
+CC:     "intel-wired-lan@lists.osuosl.org" <intel-wired-lan@lists.osuosl.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-hardening@vger.kernel.org" <linux-hardening@vger.kernel.org>
+Subject: RE: [Intel-wired-lan] [PATCH][next] virtchnl: Replace one-element
+ array in struct virtchnl_vsi_queue_config_info
+Thread-Topic: [Intel-wired-lan] [PATCH][next] virtchnl: Replace one-element
+ array in struct virtchnl_vsi_queue_config_info
+Thread-Index: AQHXVAxTTpyIawm9JEKlnQyWjKRps6r5+PqA//+d+mA=
+Date:   Sat, 29 May 2021 00:19:48 +0000
+Message-ID: <7273a541a4864fcfb1a7ba2e105885d3@intel.com>
+References: <20210525231658.GA176466@embeddedor>
+ <f3674339c0390ced22b365101f2d3e3a2bf26845.camel@intel.com>
+ <85e62583-5db9-ac5c-fdf9-8e3f6a50f3fa@embeddedor.com>
+In-Reply-To: <85e62583-5db9-ac5c-fdf9-8e3f6a50f3fa@embeddedor.com>
+Accept-Language: en-US
 Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+dlp-product: dlpe-windows
+dlp-reaction: no-action
+dlp-version: 11.5.1.3
+x-originating-ip: [10.22.254.132]
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-On 5/27/2021 8:55 PM, Bjorn Andersson wrote:
-> On Wed 19 May 18:44 CDT 2021, Alex Elder wrote:
->
->> When a remoteproc has crashed, rproc_report_crash() is called to
->> handle whatever recovery is desired.  This can happen at almost any
->> time, often triggered by an interrupt, though it can also be
->> initiated by a write to debugfs file remoteproc/remoteproc*/crash.
->>
->> When a crash is reported, the crash handler worker is scheduled to
->> run (rproc_crash_handler_work()).  One thing that worker does is
->> call rproc_trigger_recovery(), which calls rproc_stop().  That calls
->> the ->stop method for any remoteproc subdevices before making the
->> remote processor go offline.
->>
->> The Q6V5 modem remoteproc driver implements an SSR subdevice that
->> notifies registered drivers when the modem changes operational state
->> (prepare, started, stop/crash, unprepared).  The IPA driver
->> registers to receive these notifications.
->>
->> With that as context, I'll now describe the problem.
->>
->> There was a situation in which buggy modem firmware led to a modem
->> crash very soon after system (AP) resume had begun.  The crash caused
->> a remoteproc SSR crash notification to be sent to the IPA driver.
->> The problem was that, although system resume had begun, it had not
->> yet completed, and the IPA driver was still in a suspended state.
->>
->> This scenario could happen to any driver that registers for these
->> SSR notifications, because they are delivered without knowledge of
->> the (suspend) state of registered recipient drivers.
->>
->> This patch offers a simple fix for this, by having the crash
->> handling worker function run on the system freezable workqueue.
->> This workqueue does not operate if user space is frozen (for
->> suspend).  As a result, the SSR subdevice only delivers its
->> crash notification when the system is fully operational (i.e.,
->> neither suspended nor in suspend/resume transition).
->>
-> This makes sense to me; both that it ensures that we spend our resources
-> on the actual system resume and that it avoids surprises from this
-> happening while the system still is in a funky state...
->
-> Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
->
-> But it would be nice to get some input from other users of the
-> framework.
-This patch sounds like a good idea for cases where the
-request_firmware() APIs fallback to userspace firmware loading.
-
-Will test out this patch and report back.
-
-Thanks,
-Sid
->
-> Regards,
-> Bjorn
->
->> Signed-off-by: Alex Elder <elder@linaro.org>
->> ---
->>   drivers/remoteproc/remoteproc_core.c | 4 ++--
->>   1 file changed, 2 insertions(+), 2 deletions(-)
->>
->> diff --git a/drivers/remoteproc/remoteproc_core.c b/drivers/remoteproc/remoteproc_core.c
->> index 39cf44cb08035..6bedf2d2af239 100644
->> --- a/drivers/remoteproc/remoteproc_core.c
->> +++ b/drivers/remoteproc/remoteproc_core.c
->> @@ -2724,8 +2724,8 @@ void rproc_report_crash(struct rproc *rproc, enum rproc_crash_type type)
->>   	dev_err(&rproc->dev, "crash detected in %s: type %s\n",
->>   		rproc->name, rproc_crash_to_string(type));
->>   
->> -	/* create a new task to handle the error */
->> -	schedule_work(&rproc->crash_handler);
->> +	/* Have a worker handle the error; ensure system is not suspended */
->> +	queue_work(system_freezable_wq, &rproc->crash_handler);
->>   }
->>   EXPORT_SYMBOL(rproc_report_crash);
->>   
->> -- 
->> 2.27.0
->>
+DQoNCj4gLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCj4gRnJvbTogSW50ZWwtd2lyZWQtbGFu
+IDxpbnRlbC13aXJlZC1sYW4tYm91bmNlc0Bvc3Vvc2wub3JnPiBPbiBCZWhhbGYgT2YNCj4gR3Vz
+dGF2byBBLiBSLiBTaWx2YQ0KPiBTZW50OiBGcmlkYXksIE1heSAyOCwgMjAyMSA0OjA1IFBNDQo+
+IFRvOiBOZ3V5ZW4sIEFudGhvbnkgTCA8YW50aG9ueS5sLm5ndXllbkBpbnRlbC5jb20+OyBCcmFu
+ZGVidXJnLCBKZXNzZQ0KPiA8amVzc2UuYnJhbmRlYnVyZ0BpbnRlbC5jb20+OyBndXN0YXZvYXJz
+QGtlcm5lbC5vcmcNCj4gQ2M6IGludGVsLXdpcmVkLWxhbkBsaXN0cy5vc3Vvc2wub3JnOyBsaW51
+eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnOyBsaW51eC0NCj4gaGFyZGVuaW5nQHZnZXIua2VybmVs
+Lm9yZw0KPiBTdWJqZWN0OiBSZTogW0ludGVsLXdpcmVkLWxhbl0gW1BBVENIXVtuZXh0XSB2aXJ0
+Y2hubDogUmVwbGFjZSBvbmUtZWxlbWVudCBhcnJheQ0KPiBpbiBzdHJ1Y3QgdmlydGNobmxfdnNp
+X3F1ZXVlX2NvbmZpZ19pbmZvDQo+IA0KPiANCj4gDQo+IE9uIDUvMjgvMjEgMTY6NTYsIE5ndXll
+biwgQW50aG9ueSBMIHdyb3RlOg0KPiA+IE9uIFR1ZSwgMjAyMS0wNS0yNSBhdCAxODoxNiAtMDUw
+MCwgR3VzdGF2byBBLiBSLiBTaWx2YSB3cm90ZToNCj4gPj4gVGhlcmUgaXMgYSByZWd1bGFyIG5l
+ZWQgaW4gdGhlIGtlcm5lbCB0byBwcm92aWRlIGEgd2F5IHRvIGRlY2xhcmUNCj4gPj4gaGF2aW5n
+IGENCj4gPj4gZHluYW1pY2FsbHkgc2l6ZWQgc2V0IG9mIHRyYWlsaW5nIGVsZW1lbnRzIGluIGEg
+c3RydWN0dXJlLiBLZXJuZWwNCj4gPj4gY29kZQ0KPiA+PiBzaG91bGQgYWx3YXlzIHVzZSDigJxm
+bGV4aWJsZSBhcnJheSBtZW1iZXJz4oCdWzFdIGZvciB0aGVzZSBjYXNlcy4gVGhlDQo+ID4+IG9s
+ZGVyDQo+ID4+IHN0eWxlIG9mIG9uZS1lbGVtZW50IG9yIHplcm8tbGVuZ3RoIGFycmF5cyBzaG91
+bGQgbm8gbG9uZ2VyIGJlDQo+ID4+IHVzZWRbMl0uDQo+ID4+DQo+ID4+IFJlZmFjdG9yIHRoZSBj
+b2RlIGFjY29yZGluZyB0byB0aGUgdXNlIG9mIGEgZmxleGlibGUtYXJyYXkgbWVtYmVyIGluDQo+
+ID4+IHN0cnVjdA0KPiA+PiB2aXJ0Y2hubF92c2lfcXVldWVfY29uZmlnX2luZm8gaW5zdGVhZCBv
+ZiBvbmUtZWxlbWVudCBhcnJheSwgYW5kIHVzZQ0KPiA+PiB0aGUNCj4gPj4gZmxleF9hcnJheV9z
+aXplKCkgaGVscGVyLg0KPiA+Pg0KPiA+PiBbMV0gaHR0cHM6Ly9lbi53aWtpcGVkaWEub3JnL3dp
+a2kvRmxleGlibGVfYXJyYXlfbWVtYmVyDQo+ID4+IFsyXQ0KPiA+PiBodHRwczovL3d3dy5rZXJu
+ZWwub3JnL2RvYy9odG1sL3Y1LjEwL3Byb2Nlc3MvZGVwcmVjYXRlZC5odG1sI3plcm8tDQo+IGxl
+bmd0aC1hbmQtb25lLWVsZW1lbnQtYXJyYXlzDQo+ID4+DQo+ID4+IExpbms6IGh0dHBzOi8vZ2l0
+aHViLmNvbS9LU1BQL2xpbnV4L2lzc3Vlcy83OQ0KPiA+PiBTaWduZWQtb2ZmLWJ5OiBHdXN0YXZv
+IEEuIFIuIFNpbHZhIDxndXN0YXZvYXJzQGtlcm5lbC5vcmc+DQo+ID4+IC0tLQ0KPiA+PiAgaW5j
+bHVkZS9saW51eC9hdmYvdmlydGNobmwuaCB8IDkgKysrKy0tLS0tDQo+ID4+ICAxIGZpbGUgY2hh
+bmdlZCwgNCBpbnNlcnRpb25zKCspLCA1IGRlbGV0aW9ucygtKQ0KPiA+Pg0KPiA+PiBkaWZmIC0t
+Z2l0IGEvaW5jbHVkZS9saW51eC9hdmYvdmlydGNobmwuaA0KPiA+PiBiL2luY2x1ZGUvbGludXgv
+YXZmL3ZpcnRjaG5sLmgNCj4gPj4gaW5kZXggYjU1NDkxMzgwNGJkLi5lZDljNDk5OGY4YWMgMTAw
+NjQ0DQo+ID4+IC0tLSBhL2luY2x1ZGUvbGludXgvYXZmL3ZpcnRjaG5sLmgNCj4gPj4gKysrIGIv
+aW5jbHVkZS9saW51eC9hdmYvdmlydGNobmwuaA0KPiA+PiBAQCAtMzM4LDEwICszMzgsMTAgQEAg
+c3RydWN0IHZpcnRjaG5sX3ZzaV9xdWV1ZV9jb25maWdfaW5mbyB7DQo+ID4+ICAJdTE2IHZzaV9p
+ZDsNCj4gPj4gIAl1MTYgbnVtX3F1ZXVlX3BhaXJzOw0KPiA+PiAgCXUzMiBwYWQ7DQo+ID4+IC0J
+c3RydWN0IHZpcnRjaG5sX3F1ZXVlX3BhaXJfaW5mbyBxcGFpclsxXTsNCj4gPj4gKwlzdHJ1Y3Qg
+dmlydGNobmxfcXVldWVfcGFpcl9pbmZvIHFwYWlyW107DQo+ID4+ICB9Ow0KPiA+Pg0KPiA+PiAt
+VklSVENITkxfQ0hFQ0tfU1RSVUNUX0xFTig3MiwgdmlydGNobmxfdnNpX3F1ZXVlX2NvbmZpZ19p
+bmZvKTsNCj4gPj4gK1ZJUlRDSE5MX0NIRUNLX1NUUlVDVF9MRU4oOCwgdmlydGNobmxfdnNpX3F1
+ZXVlX2NvbmZpZ19pbmZvKTsNCj4gPj4NCj4gPj4gIC8qIFZJUlRDSE5MX09QX1JFUVVFU1RfUVVF
+VUVTDQo+ID4+ICAgKiBWRiBzZW5kcyB0aGlzIG1lc3NhZ2UgdG8gcmVxdWVzdCB0aGUgUEYgdG8g
+YWxsb2NhdGUgYWRkaXRpb25hbA0KPiA+PiBxdWV1ZXMgdG8NCj4gPj4gQEAgLTk5Nyw5ICs5OTcs
+OCBAQCB2aXJ0Y2hubF92Y192YWxpZGF0ZV92Zl9tc2coc3RydWN0DQo+ID4+IHZpcnRjaG5sX3Zl
+cnNpb25faW5mbyAqdmVyLCB1MzIgdl9vcGNvZGUsDQo+ID4+ICAJCWlmIChtc2dsZW4gPj0gdmFs
+aWRfbGVuKSB7DQo+ID4+ICAJCQlzdHJ1Y3QgdmlydGNobmxfdnNpX3F1ZXVlX2NvbmZpZ19pbmZv
+ICp2cWMgPQ0KPiA+PiAgCQkJICAgIChzdHJ1Y3QgdmlydGNobmxfdnNpX3F1ZXVlX2NvbmZpZ19p
+bmZvDQo+ID4+ICopbXNnOw0KPiA+PiAtCQkJdmFsaWRfbGVuICs9ICh2cWMtPm51bV9xdWV1ZV9w
+YWlycyAqDQo+ID4+IC0JCQkJICAgICAgc2l6ZW9mKHN0cnVjdA0KPiA+PiAtCQkJCQkgICAgIHZp
+cnRjaG5sX3F1ZXVlX3BhaXJfaW5mbykpDQo+ID4+IDsNCj4gPj4gKwkJCXZhbGlkX2xlbiArPSBm
+bGV4X2FycmF5X3NpemUodnFjLCBxcGFpciwNCj4gPj4gKwkJCQkJCSAgICAgdnFjLQ0KPiA+Pj4g
+bnVtX3F1ZXVlX3BhaXJzKTsNCj4gPg0KPiA+IFRoZSB2aXJ0Y2hubCBmaWxlIGFjdHMgYXMgYSBi
+aW5hcnkgaW50ZXJmYWNlIGJldHdlZW4gcGh5c2ljYWwgYW5kDQo+ID4gdmlydHVhbCBmdW5jdGlv
+bnMuIFRoZXJlJ3Mgbm8gZ3VhcnVudGVlIHRoYXQgdGhlIFBGIGFuZCBWRiB3aWxsIGJvdGgNCj4g
+PiBoYXZlIHRoZSBuZXdlc3QgdmVyc2lvbi4gVGh1cyBjaGFuZ2luZyB0aGlzIHdpbGwgYnJlYWsg
+Y29tcGF0aWJpbGl0eS4NCj4gPiBTcGVjaWZpY2FsbHksIHRoZSB3YXkgdGhlIHNpemUgd2FzIHZh
+bGlkYXRlZCBmb3IgdGhpcyBvcCBjb2RlDQo+ID4gaW5jb3JyZWN0bHkgZXhwZWN0cyBhbiBleHRy
+YSBxdWV1ZSBwYWlyIHN0cnVjdHVyZS4gU29tZSBvdGhlcg0KPiA+IHN0cnVjdHVyZXMgaGF2ZSBz
+aW1pbGFyIGxlbmd0aCBjYWxjdWxhdGlvbiBmbGF3cy4gV2UgYWdyZWUgdGhhdCBmaXhpbmcNCj4g
+PiB0aGlzIGlzIGltcG9ydGFudCwgYnV0IHRoZSBmaXggbmVlZHMgdG8gYWNjb3VudCB0aGF0IG9s
+ZCBkcml2ZXJzIHdpbGwNCj4gPiBzZW5kIGFuIG9mZiBieSAxIHNpemUuDQo+ID4NCj4gPiBUbyBw
+cm9wZXJseSBoYW5kbGUgY29tcGF0aWJpbGl0eSB3ZSBuZWVkIHRvIGludHJvZHVjZSBhIGZlYXR1
+cmUgZmxhZyB0bw0KPiA+IGluZGljYXRlIHRoZSBuZXcgYmVoYXZpb3IuIElmIHRoZSBmZWF0dXJl
+IGZsYWcgaXMgbm90IHNldCwgd2UgYWNjY2VwdA0KPiA+IG1lc3NhZ2VzIHdpdGggdGhlIG9sZCBm
+b3JtYXQgKHdpdGggdGhlIGV4dHJhIHNpemUpLiBJZiBib3RoIHRoZSBQRiBhbmQNCj4gPiBWRiBz
+dXBwb3J0IHRoZSBmZWF0dXJlIGZsYWcsIHdlJ2xsIHVzZSB0aGUgY29ycmVjdCBzaXplIGNhbGN1
+bGF0aW9ucy4NCj4gPiBXZSdyZSBsb29raW5nIHRvIGFkZCB0aGlzIGFuZCB3b3VsZCBsaWtlIHRv
+IGRvIGFsbCB0aGUgdmlydGNobmwNCj4gPiBzdHJ1Y3R1cmUgZml4ZXMgaW4gb25lIHNlcmllcy4N
+Cj4gPg0KPiANCj4gT2ggT0ssIEkgc2VlLiBJbiB0aGlzIGNhc2UsIEkgdGhpbmsgc29tZXRoaW5n
+IGxpa2UgdGhpcyBtaWdodCB3b3JrIGp1c3QNCj4gZmluZToNCj4gDQo+IGh0dHBzOi8vZ2l0Lmtl
+cm5lbC5vcmcvbGludXMvYzBhNzQ0ZGNhYTI5ZTk1MzdlODYwN2FlOWM5NjVhZDkzNjEyNGE0ZA0K
+PiANCj4gV2hhdCBkbyB5b3UgdGhpbms/DQo+IA0KDQpBYm91dCBoYWxmIG91ciB2aXJ0Y2hubCBz
+dHJ1Y3R1cmVzIGNvcnJlY3RseSB2YWxpZGF0ZSB0aGUgbGVuZ3RoIChpLmUuIGVuZm9yY2luZyB0
+aGF0IHRoZSBudW1iZXIgb2YgbWVtYmVycyBpbmNsdWRpbmcgdGhlIGltcGxpY2l0IG9uZSBhcmUg
+Y29ycmVjdCkuIFRoZXJlIGFyZSBtYXliZSAzLTQgd2hpY2ggZG9uJ3QgZG8gdGhhdCBhbmQgYWNj
+aWRlbnRhbGx5IGFsbG93IHNpemVzIHRoYXQgYXJlIG9mZiBieSAxIG1lbWJlci4NCg0KV2UgYmVs
+aWV2ZSB0aGUgY29ycmVjdCBmaXggaXMgdG8gZml4IHRoZSBzdHJ1Y3R1cmUgZGVmaW5pdGlvbnMg
+dG8gdXNlIFtdIGFuZCB0aGVuIGludHJvZHVjZSBhIFZBTElEQVRFX01TR19WMiBmZWF0dXJlIGZs
+YWcgd2hpY2ggaXMgbmVnb3RpYXRlZCBieSB0aGUgVkYgaW5kaWNhdGluZyB3aGV0aGVyIGl0IHN1
+cHBvcnRzIHRoaXMgYmVoYXZpb3IsIGFuZCB0aGUgUEYgcmVwbHlpbmcgdG8gVkYgaWYgaXQgc3Vw
+cG9ydHMuDQoNCkluIHRoZSBjYXNlIHdoZXJlIHRoZSBWRiBkb2Vzbid0IHN1cHBvcnQgdGhpcywg
+dGhlIFBGIHdpbGwgbm90aWNlIHRoaXMgYW5kIG1vZGlmeSBpdHMgbGVuZ3RoIGNhbGN1bGF0aW9u
+cyBmb3IgdGhlIGhhbmRmdWwgb2YgY3VycmVudGx5IGJyb2tlbiBjaGVja3MgdG8gaW5jbHVkZSBv
+bmUgZXh0cmEgbWVtYmVyLiBJbiB0aGUgY2FzZSB3aGVyZSB0aGUgVkYgc3VwcG9ydHMgdGhpcyBi
+dXQgdGhlIFBGIGRvZXMgbm90LCB0aGUgVkYgbXVzdCBhbGxvY2F0ZSBleHRyYSBtZW1vcnkgYW5k
+IGVuc3VyZSBpdCBwYXNzZXMgdGhlIGxhcmdlciBtZXNzYWdlIGxlbmd0aC4gSW4gdGhlIGNhc2Ug
+d2hlcmUgYm90aCBQRiBhbmQgVkYgc3VwcG9ydCB0aGUgbmV3ICJmZWF0dXJlIiB3ZSdsbCBjb3Jy
+ZWN0bHkgc3dpdGNoIHRvIHVzaW5nIDAgbGVuZ3RoIGZsZXhpYmxlIGFycmF5cy4NCg0KSXQncyBh
+Y3R1YWxseSBldmVuIHNsaWdodGx5IG1vcmUgY29udm9sdXRlZCBiZWNhdXNlIGFub3RoZXIgMy00
+IG9wcyBvbmx5IG1pcy12YWxpZGF0ZSB0aGUgc2l6ZSB3aGVuIHRoZSBsZW5ndGggb2YgdGhlIGZs
+ZXhpYmxlIGFycmF5IGlzIDAuIEluIHRoYXQgY2FzZSwgdGhleSByZXF1aXJlIHRoZSBmdWxsIHNp
+emUgb2YgdGhlIHN0cnVjdHVyZSwgYnV0IGluIHRoZSBjYXNlIHdoZXJlIGl0J3MgMSBvciBtb3Jl
+LCB0aGV5IHJlcXVpcmUgdGhlIHNpemUgdG8gbWF0Y2ggYXMgeW91IHdvdWxkIGV4cGVjdCB3aXRo
+IGEgMC1zaXplZCBhcnJheS4NCg0KSSdtIG5vdCBzdXJlIHRoZSB1bmlvbiBhcHByb2FjaCBpcyBz
+dWl0YWJsZSBmb3IgdGhhdD8gV2UgYmVsaWV2ZSB0aGUgdXNlIG9mIGEgbmV3IGNhcGFiaWxpdHkg
+Yml0IGlzIHRoZSBiZXN0IG1lY2hhbmlzbTogd2UgY2FuIGZpeCB0aGUgY29kZSB0byB1c2UgZmxl
+eGlibGUgYXJyYXkgZGVmaW5pdGlvbnMgZXZlcnl3aGVyZSBhbmQgc2ltcGx5IGVuc3VyZSB0aGF0
+IHdoZW4gY29tbXVuaWNhdGluZyB3aXRoIG9sZCBQRiBvciBWRiwgd2UgYWRkIGFkZGl0aW9uYWwg
+cGFkZGluZyBhcyBuZWNlc3NhcnkgdG8gdGhlIG1lc3NhZ2UuDQoNClRoYW5rcywNCkpha2UNCiAN
+Cg==
