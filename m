@@ -2,201 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 86FBA394CCB
-	for <lists+linux-kernel@lfdr.de>; Sat, 29 May 2021 17:18:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2ED91394CD6
+	for <lists+linux-kernel@lfdr.de>; Sat, 29 May 2021 17:19:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229842AbhE2PTy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 29 May 2021 11:19:54 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55946 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229693AbhE2PTt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 29 May 2021 11:19:49 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E1759611ED;
-        Sat, 29 May 2021 15:18:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1622301493;
-        bh=8FZAeBSWYNo1uOPripW3vsWibTqtzIx9nusBwNbW5qk=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Y4jsFM52uPatr2qbrBGe7FELUMHXEyrMQS7O1g5kyhd9IDj1PkFF98rDUMZM/iQJY
-         yerwdeJWmqm7nbRzrfkI4kDQTHvqHqntwbNbJ51/P2wq0j1uPJmzPk6AENIqoclwRK
-         sJ+99l2ahBos2ghPFa9sPHXzSF1WeJCE0BebymdZKi44hVKEDwhnhm5wp0ZUnwE3wr
-         c2ZroN2VRUcfqqXBNT4sFYZTU0JRTT1KK6j2LJbpPsDXiWZQO1gtW/j+wuGHA80vpp
-         yw0sIkFKpakhYh6P/ZQv/vpJ8cJ/vGUVpJcdFFPN0DXVJzmIP5e0jNBz/yRqpoe7gP
-         kNeuxeHaGyjmA==
-Received: by pali.im (Postfix)
-        id 52F23DEA; Sat, 29 May 2021 17:18:10 +0200 (CEST)
-Date:   Sat, 29 May 2021 17:18:10 +0200
-From:   Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>
-To:     Bjorn Helgaas <helgaas@kernel.org>
-Cc:     Bharat Kumar Gogada <bharat.kumar.gogada@xilinx.com>,
-        "robh+dt@kernel.org" <robh+dt@kernel.org>,
-        "pawel.moll@arm.com" <pawel.moll@arm.com>,
-        "mark.rutland@arm.com" <mark.rutland@arm.com>,
-        "ijc+devicetree@hellion.org.uk" <ijc+devicetree@hellion.org.uk>,
-        "galak@codeaurora.org" <galak@codeaurora.org>,
-        Michal Simek <michals@xilinx.com>,
-        Soren Brinkmann <sorenb@xilinx.com>,
-        "bhelgaas@google.com" <bhelgaas@google.com>,
-        "arnd@arndb.de" <arnd@arndb.de>,
-        "tinamdar@apm.com" <tinamdar@apm.com>,
-        "treding@nvidia.com" <treding@nvidia.com>,
-        "rjui@broadcom.com" <rjui@broadcom.com>,
-        "Minghuan.Lian@freescale.com" <Minghuan.Lian@freescale.com>,
-        "m-karicheri2@ti.com" <m-karicheri2@ti.com>,
-        "hauke@hauke-m.de" <hauke@hauke-m.de>,
-        "marc.zyngier@arm.com" <marc.zyngier@arm.com>,
-        "dhdang@apm.com" <dhdang@apm.com>,
-        "sbranden@broadcom.com" <sbranden@broadcom.com>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
-        Ravikiran Gummaluri <rgummal@xilinx.com>,
-        Marek =?utf-8?B?QmVow7pu?= <kabel@kernel.org>
-Subject: Re: [PATCH v12] [PATCH] PCI: Xilinx-NWL-PCIe: Adding support for
- Xilinx NWL PCIe Host Controller
-Message-ID: <20210529151810.lloziy67bq35phdx@pali>
-References: <1457281934-32068-1-git-send-email-bharatku@xilinx.com>
- <20160311215819.GB16257@localhost>
- <8520D5D51A55D047800579B09414719825889095@XAP-PVEXMBX01.xlnx.xilinx.com>
- <20160314170437.GA16729@localhost>
+        id S229774AbhE2PU5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 29 May 2021 11:20:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46846 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229754AbhE2PU4 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 29 May 2021 11:20:56 -0400
+Received: from mail-pf1-x436.google.com (mail-pf1-x436.google.com [IPv6:2607:f8b0:4864:20::436])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7FB5C061574;
+        Sat, 29 May 2021 08:19:18 -0700 (PDT)
+Received: by mail-pf1-x436.google.com with SMTP id g18so5550509pfr.2;
+        Sat, 29 May 2021 08:19:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=to:cc:from:subject:message-id:date:user-agent:mime-version
+         :content-language:content-transfer-encoding;
+        bh=Vnafq7RVp7VAT1/+Lx872/XLk4/H3v8bYUHr0j7OeBM=;
+        b=I2X5qQq6ZF0GMTTHJ9NIicNH9snA7WkUEKAe+Gmc7b9b8jZ2TSSRTWqtBceuAX4TRz
+         yb8QcT3+opS2X7XiTT5Qdd+fe8Bzp+I55KhSN9tWIN7N+s5SkPYVzi72G87tip+jmlSs
+         qsh5dsANxKVzvqOfdNKv5Fxsb4YQzgx920pO+/aJjg7OkEYOr3cyoKdSA+k2Y/SqSBpi
+         QHwqoI4fgbkJiHXfOOqWJw2EcbzBIjf+MJWP/DaRDkQCfTGazsUa9P9is/Y26dTvbfFW
+         SZxLhdhanKFfpBHw2DbKbtfYChx1kdoYklfT0O9HGFAhP/LeTbIW2NToXMwj653B2DsS
+         mcag==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:to:cc:from:subject:message-id:date:user-agent
+         :mime-version:content-language:content-transfer-encoding;
+        bh=Vnafq7RVp7VAT1/+Lx872/XLk4/H3v8bYUHr0j7OeBM=;
+        b=QVSzdin55pcJaaAAaguVLbAo0+kbuEvsEhVCh/fqETCi/rS1LHtdCmDBOkyNSmxIt5
+         AOdOOotEHDZVB2qCekVDjY50XGtiNub6SM50CbcOoGdqC68I0K+pOS9x3Hv/i12yZzzq
+         vpK+xGgovEZ+2fn1xAdDCgx3K8olha4FDaOuWfXn6rVwefkmRnR42h5naUast8JTfLRN
+         RDEnLXezhf+pT8qtpE4Uh3hZnbFvvvcoJZvd0Mhy5C0ctVNT3Yhn4RO2QemAac2cRAvJ
+         p12gUkeHPBp83jyJkxZGIcwkINppWdzjwThjq8WZqgmlJEN9uYVYJ/hjks+SunCDXUY8
+         qyXg==
+X-Gm-Message-State: AOAM531kdreyds0hk88tRBWCSHazG59LjPVxamIBqNmkkv/YDqU3DVF5
+        BgxJCFlItPdPGCn5TCVY+lk=
+X-Google-Smtp-Source: ABdhPJwf4cRahCCSx4nCN0kvbiC/RKLwNf/orvToNafmKvot7msn84yMsZVyKwIruesf5bHGUG27DQ==
+X-Received: by 2002:aa7:8809:0:b029:2de:3b94:487e with SMTP id c9-20020aa788090000b02902de3b94487emr9031300pfo.33.1622301558399;
+        Sat, 29 May 2021 08:19:18 -0700 (PDT)
+Received: from [192.168.11.2] (KD106167171201.ppp-bb.dion.ne.jp. [106.167.171.201])
+        by smtp.gmail.com with ESMTPSA id h26sm7096180pfk.19.2021.05.29.08.19.16
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 29 May 2021 08:19:18 -0700 (PDT)
+To:     Jonathan Corbet <corbet@lwn.net>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>
+Cc:     "Wu X.C." <bobwxc@email.cn>, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Akira Yokosawa <akiyks@gmail.com>
+From:   Akira Yokosawa <akiyks@gmail.com>
+Subject: [PATCH] docs: pdfdocs: Prevent column squeezing by tabulary
+Message-ID: <277d68fa-c96a-0ccb-6ce0-4d314851d9fe@gmail.com>
+Date:   Sun, 30 May 2021 00:19:14 +0900
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20160314170437.GA16729@localhost>
-User-Agent: NeoMutt/20180716
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Monday 14 March 2016 12:04:37 Bjorn Helgaas wrote:
-> On Mon, Mar 14, 2016 at 03:51:01PM +0000, Bharat Kumar Gogada wrote:
-> > > On Sun, Mar 06, 2016 at 10:02:14PM +0530, Bharat Kumar Gogada wrote:
-> > > > Adding PCIe Root Port driver for Xilinx PCIe NWL bridge IP.
-> > > 
-> > > > +static bool nwl_pcie_valid_device(struct pci_bus *bus, unsigned int
-> > > > +devfn) {
-> > > > +	struct nwl_pcie *pcie = bus->sysdata;
-> > > > +
-> > > > +	/* Check link,before accessing downstream ports */
-> > > > +	if (bus->number != pcie->root_busno) {
-> > > > +		if (!nwl_pcie_link_up(pcie))
-> > > > +			return false;
-> > > > +	}
-> > > 
-> > > This seems racy.  What if we check, and the link is up, but the
-> > > link goes down before we actually complete the config access?
-> > > 
-> > > I'm suggesting that this check for the link being up might be
-> > > superfluous.
-> 
-> > Without the above check and also if there is no EP then we are getting kernel stack as follows,
+Setting a reasonable width to \tymin prevents column squeezing
+by tabulary.
+Width of 20em works well in almost all the tables still in the
+ascii-art format.
 
-Hello! Now I found this old thread... And I would like to ask, have you
-solved this issue somehow? Because very similar problem I observe with
-pci-aardvark.c, just it cause Synchronous External Abort on CPU.
+Excerpt from tabulary package documentation at [1]:
 
-> > [    2.654105] PCI host bridge /amba/pcie@fd0e0000 ranges:
-> > [    2.659268]   No bus range found for /amba/pcie@fd0e0000, using [bus 00-ff]
-> > [    2.666195]   MEM 0xe1000000..0xefffffff -> 0xe1000000
-> > [    2.671410] nwl-pcie fd0e0000.pcie: PCI host bridge to bus 0000:00
-> > [    2.677436] pci_bus 0000:00: root bus resource [bus 00-ff]
-> > [    2.682883] pci_bus 0000:00: root bus resource [mem 0xe1000000-0xefffffff]
-> > [    2.690031] Unhandled fault: synchronous external abort (0x96000210) at 0xffffff8000200000
-> > [    2.690036] nwl-pcie fd0e0000.pcie: Slave error
-> > [    2.702582] Internal error: : 96000210 [#1] SMP
-> > [    2.707078] Modules linked in:
-> > [    2.710108] CPU: 3 PID: 1 Comm: swapper/0 Not tainted 4.5.0-rc6+ #5
-> > [    2.716332] Hardware name: ZynqMP (DT)
-> > [    2.720659] task: ffffffc0798bed00 ti: ffffffc0798c0000 task.ti: ffffffc0798c0000
-> > [    2.728102] PC is at pci_generic_config_read+0x38/0x9c
-> > [    2.733202] LR is at pci_generic_config_read+0x1c/0x9c
-> > .......
-> > [    3.322701] [<ffffffc000498b1c>] pci_generic_config_read+0x38/0x9c
-> > [    3.328842] [<ffffffc000498f54>] pci_bus_read_config_dword+0x80/0xb0
-> > [    3.335156] [<ffffffc00049abd4>] pci_bus_read_dev_vendor_id+0x30/0x104
-> > [    3.341643] [<ffffffc00049c5b0>] pci_scan_single_device+0x50/0xc4
-> > [    3.347698] [<ffffffc00049c674>] pci_scan_slot+0x50/0xe8
-> > [    3.352974] [<ffffffc00049d530>] pci_scan_child_bus+0x30/0xd8
-> > [    3.358683] [<ffffffc00049d210>] pci_scan_bridge+0x1fc/0x4ec
-> > [    3.364306] [<ffffffc00049d58c>] pci_scan_child_bus+0x8c/0xd8
-> > [    3.370016] [<ffffffc0004b2d9c>] nwl_pcie_probe+0x6c4/0x8e0
-> > .....
-> > 
-> > > The hardware should do something reasonable with the config access if it
-> > > can't send it down the link.
-> >
-> > When Link is down and H/W gets a ECAM access request for downstream
-> > ports, hardware responds by DECERR (decode error) status on AXI
-> > Interface.
-> 
-> DECERR isn't a PCIe concept, so I assume it's something specific to
-> Xilinx.  In the general case of a PCIe switch, a config access that
-> targets a device where the link is down should cause an Unsupported
-> Request completion (see PCIe spec r3.0, section 2.9.1, quoted below).
-> Possibly your Root Complex turns Unsupported Request completions into
-> DECERR.
+    To stop very narrow columns being too 'squeezed' by this process
+    any columns that are narrower than \tymin are set to their natural
+    width.
 
-This looks like same design as with pci aardvark hw. PCIe Unsupported
-Request or Completion Abort is converted to AXI DECERR (or SLVERR)
-which is then reported to CPU. In my case AXI DECERR/SLVERR cause
-Synchronous External Abort on CPU.
+[1]: https://mirrors.ctan.org/macros/latex/contrib/tabulary/tabulary.pdf
 
->   2.9 Link Status Dependencies
->   2.9.1 Transaction Layer Behavior in DL_Down Status
-> 
->   DL_Down status indicates that there is no connection with another
->   component on the Link, or that the connection with the other
->   component has been lost and is not recoverable by the Physical or
->   Data Link Layers.
-> 
->   For a Downstream Port, DL_Down status is handled by:
->   
->    for Non-Posted Requests, forming completions for any Requests
->    submitted by the device core for Transmission, returning
->    Unsupported Request Completion Status, then discarding the Requests
-> 
-> Linux expects reads with Unsupported Request completion status to
-> return all 1's data to the CPU as in section 2.3.2:
-> 
->   2.3.2 Completion Handling Rules
-> 
->   Read Data Values with UR Completion Status
-> 
->   Some system configuration software depends on reading a data value
->   of all 1’s when a Configuration Read Request is terminated as an
->   Unsupported Request, particularly when probing to determine the
->   existence of a device in the system.  A Root Complex intended for
->   use with software that depends on a read-data value of all 1’s must
->   synthesize this value when UR Completion Status is returned for a
->   Configuration Read Request.
-> 
-> > So without any EP and without this condition, Linux kernel cannot
-> > determine above response from H/W. So the above condition is useful
-> > only when no EP is connected.
-> > 
-> > Now even if the link is up initially, but the link goes down before
-> > we actually complete the config access, then H/W responds by DECERR,
-> > then Linux kernel might throw similar stack. (We haven't observed
-> > this condition yet)
-> 
-> It'd be hard to hit this race unless you added delay in
-> nwl_pcie_map_bus() after nwl_pcie_valid_device(), then removed the
-> device during that delay.
-> 
-> > It looks like we need a different type of hardware response to get
-> > rid of this situation, but it's not easy way.  Have you come across
-> > this/similar kind of problem anywhere else?  Can you suggest if
-> > there is any other way to handle this.
-> 
-> I'm not a hardware designer, so I don't know what to suggest here.
-> The current design does seem like a robustness issue: surprise removal
-> of a device may cause this external abort in rare cases.
+Note: Sphinx has its own default value of \tymin set in
+sphinxlatextables.sty (Sphinx 4.0.2) and sphinxmulticell.sty
+(Sphinx 2.4.4) as follows:
 
-With pci aardvark I'm able to reproduce this issue with surprise removal
-of device.
+    \setlength{\tymin}{3\fontcharwd\font`0 }
 
-Bharat, have you somehow resolved this issue? Seems that this kind of HW
-design is not rare.
+, which is not sufficient for kernel-doc.
+
+Tested against Sphinx versions 2.4.4 and 4.0.2.
+
+Signed-off-by: Akira Yokosawa <akiyks@gmail.com>
+---
+Hi all,
+
+This is another attempt to improve pdfdocs output.
+As far as I see, I don't see any obvious regression by
+this change.
+
+The effect of this change can be seen in (not limited to)
+the MODULE_LICENSE section in process.pdf (pages 10 and 11).
+
+I'd like to know this change looks reasonable to you.
+
+Any feedback is welcome!
+
+        Thanks, Akira
+
+--
+ Documentation/conf.py | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/Documentation/conf.py b/Documentation/conf.py
+index 25aa00c707b0..a05225056e08 100644
+--- a/Documentation/conf.py
++++ b/Documentation/conf.py
+@@ -353,6 +353,8 @@ latex_elements = {
+ 
+     # Additional stuff for the LaTeX preamble.
+     'preamble': '''
++	% Prevent column squeezing of tabulary.
++	\\setlength{\\tymin}{20em}
+         % Use some font with UTF-8 support with XeLaTeX
+         \\usepackage{fontspec}
+         \\setsansfont{DejaVu Sans}
+-- 
+2.17.1
+
