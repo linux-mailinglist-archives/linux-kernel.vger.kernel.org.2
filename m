@@ -2,208 +2,187 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C94F394B38
-	for <lists+linux-kernel@lfdr.de>; Sat, 29 May 2021 11:13:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3369D394B3B
+	for <lists+linux-kernel@lfdr.de>; Sat, 29 May 2021 11:14:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229762AbhE2JPc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 29 May 2021 05:15:32 -0400
-Received: from smtprelay0032.hostedemail.com ([216.40.44.32]:56922 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S229620AbhE2JPb (ORCPT
+        id S229734AbhE2JQb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 29 May 2021 05:16:31 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:37170 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229597AbhE2JQa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 29 May 2021 05:15:31 -0400
-Received: from omf20.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay01.hostedemail.com (Postfix) with ESMTP id CCB57100E7B42;
-        Sat, 29 May 2021 09:13:54 +0000 (UTC)
-Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by omf20.hostedemail.com (Postfix) with ESMTPA id E675D18A604;
-        Sat, 29 May 2021 09:13:53 +0000 (UTC)
-Message-ID: <60eedce497137eb34448c0c77e01ec9d9c972ad7.camel@perches.com>
-Subject: [PATCH] hwmon: sht4x: Fix sht4x_read_values return value
-From:   Joe Perches <joe@perches.com>
-To:     Jean Delvare <jdelvare@suse.com>,
-        Guenter Roeck <linux@roeck-us.net>
-Cc:     Navin Sankar Velliangiri <navin@linumiz.com>,
-        linux-hwmon@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>
-Date:   Sat, 29 May 2021 02:13:52 -0700
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.38.1-1 
+        Sat, 29 May 2021 05:16:30 -0400
+Received: from pps.filterd (m0098396.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 14T9Cn4L147985;
+        Sat, 29 May 2021 05:14:53 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : content-type : mime-version; s=pp1;
+ bh=BXl3gP/J6zeqy0oCp5OcjpMM7MF0KDhdFjodYFP7JHM=;
+ b=pg7ucbqM9OQhN9832jq0FM+kiE0foIYgvTJPF8GRF2fMwkeSZLfFIgmMS7PG7ElvZrVj
+ 830it1+d7AOX/FfRrTGQap58nzwg26yEjY5tThokGEDX/dCsByLfvqvYLzoSVLsRRrwT
+ CTRL7osR4Qt/eo17Fx7vSpyXtONKJRZMfi7rakyPaOv/VZBRW9nyJqAZ2w7SDBuF0gao
+ HmUPmGGY76R2FXAeRINTlpRs+vjw1t3U+k4UF6cc5t/+CGpEFP0rkQ0SsKMQHkXSmr+F
+ 5/Ym8Lhx7N4XZn+Mm2L7vpS4wcyqdifQEqXIhNbesUT5/Ov0CWTec1/rBBImVhg3ypCO 9g== 
+Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 38uhxf0phq-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Sat, 29 May 2021 05:14:53 -0400
+Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
+        by ppma06ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 14T9CVrP030123;
+        Sat, 29 May 2021 09:14:50 GMT
+Received: from b06cxnps4075.portsmouth.uk.ibm.com (d06relay12.portsmouth.uk.ibm.com [9.149.109.197])
+        by ppma06ams.nl.ibm.com with ESMTP id 38ucvh8353-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Sat, 29 May 2021 09:14:50 +0000
+Received: from d06av25.portsmouth.uk.ibm.com (d06av25.portsmouth.uk.ibm.com [9.149.105.61])
+        by b06cxnps4075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 14T9Eg5o24248756
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Sat, 29 May 2021 09:14:42 GMT
+Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 8120411C04C;
+        Sat, 29 May 2021 09:14:42 +0000 (GMT)
+Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 35F3F11C04A;
+        Sat, 29 May 2021 09:14:42 +0000 (GMT)
+Received: from localhost (unknown [9.171.82.234])
+        by d06av25.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
+        Sat, 29 May 2021 09:14:42 +0000 (GMT)
+Date:   Sat, 29 May 2021 11:14:40 +0200
+From:   Vasily Gorbik <gor@linux.ibm.com>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Heiko Carstens <heiko.carstens@de.ibm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        linux-kernel@vger.kernel.org, linux-s390@vger.kernel.org
+Subject: [GIT PULL] s390 updates for 5.13-rc4
+Message-ID: <your-ad-here.call-01622279680-ext-7982@work.hours>
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: nqGmWQLNA4rVn72UBBQvUu62KOb3-13I
+X-Proofpoint-GUID: nqGmWQLNA4rVn72UBBQvUu62KOb3-13I
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.66
-X-Stat-Signature: 4wbf4s4ypcwrmhag7pj75ocoyqzuy1bu
-X-Rspamd-Server: rspamout02
-X-Rspamd-Queue-Id: E675D18A604
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Session-ID: U2FsdGVkX19kNQLzypCLG+19PoCGAAPXoLICf6Y7Sxo=
-X-HE-Tag: 1622279633-450579
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
+ definitions=2021-05-29_05:2021-05-27,2021-05-29 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=999 spamscore=0
+ priorityscore=1501 lowpriorityscore=0 mlxscore=0 clxscore=1011
+ impostorscore=0 malwarescore=0 adultscore=0 bulkscore=0 suspectscore=0
+ phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104190000 definitions=main-2105290070
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Kernel doc for sht4x_read_values() shows 0 on success, 1 on failure but
-the return value on success is actually always positive as it is set to
-SHT4X_RESPONSE_LENGTH by a successful call to i2c_master_recv().
+Hello Linus,
 
-Miscellanea:
+please pull s390 changes for 5.13-rc4.
 
-o Update the kernel doc for sht4x_read_values to 0 for success or -ERRNO
-o Remove incorrectly used kernel doc /** header for other _read functions
-o Typo fix succesfull->successful
-o Reverse a test to unindent a block and use goto unlock
-o Declare cmd[SHT4X_CMD_LEN] rather than cmd[]
+Thank you,
+Vasily
 
-At least for gcc 10.2, object size is reduced a tiny bit.
+The following changes since commit 6efb943b8616ec53a5e444193dccf1af9ad627b5:
 
-$ size drivers/hwmon/sht4x.o*
-   text	   data	    bss	    dec	    hex	filename
-   1752	    404	    256	   2412	    96c	drivers/hwmon/sht4x.o.new
-   1825	    404	    256	   2485	    9b5	drivers/hwmon/sht4x.o.old
+  Linux 5.13-rc1 (2021-05-09 14:17:44 -0700)
 
-Signed-off-by: Joe Perches <joe@perches.com>
----
+are available in the Git repository at:
 
-compiled, untested, no hardware
+  git://git.kernel.org/pub/scm/linux/kernel/git/s390/linux.git tags/s390-5.13-3
 
- drivers/hwmon/sht4x.c | 95 ++++++++++++++++++++++++---------------------------
- 1 file changed, 45 insertions(+), 50 deletions(-)
+for you to fetch changes up to ffa99c436aa70c0c0980866523a6ae1023c96768:
 
-diff --git a/drivers/hwmon/sht4x.c b/drivers/hwmon/sht4x.c
-index 1dc51ee2a72ba..09c2a0b064444 100644
---- a/drivers/hwmon/sht4x.c
-+++ b/drivers/hwmon/sht4x.c
-@@ -67,7 +67,7 @@ struct sht4x_data {
- /**
-  * sht4x_read_values() - read and parse the raw data from the SHT4X
-  * @sht4x_data: the struct sht4x_data to use for the lock
-- * Return: 0 if succesfull, 1 if not
-+ * Return: 0 if successful, -ERRNO if not
-  */
- static int sht4x_read_values(struct sht4x_data *data)
- {
-@@ -75,51 +75,53 @@ static int sht4x_read_values(struct sht4x_data *data)
- 	u16 t_ticks, rh_ticks;
- 	unsigned long next_update;
- 	struct i2c_client *client = data->client;
--	u8 crc, raw_data[SHT4X_RESPONSE_LENGTH],
--	cmd[] = {SHT4X_CMD_MEASURE_HPM};
-+	u8 crc;
-+	u8 cmd[SHT4X_CMD_LEN] = {SHT4X_CMD_MEASURE_HPM};
-+	u8 raw_data[SHT4X_RESPONSE_LENGTH];
+  Merge tag 'vfio-ccw-20210520' of https://git.kernel.org/pub/scm/linux/kernel/git/kvms390/vfio-ccw into fixes (2021-05-26 23:46:34 +0200)
+
+----------------------------------------------------------------
+- Fix races in vfio-ccw request handling.
+
+----------------------------------------------------------------
+Eric Farman (3):
+      vfio-ccw: Check initialized flag in cp_init()
+      vfio-ccw: Reset FSM state to IDLE inside FSM
+      vfio-ccw: Serialize FSM IDLE state with I/O completion
+
+Vasily Gorbik (1):
+      Merge tag 'vfio-ccw-20210520' of https://git.kernel.org/pub/scm/linux/kernel/git/kvms390/vfio-ccw into fixes
+
+ drivers/s390/cio/vfio_ccw_cp.c  |  4 ++++
+ drivers/s390/cio/vfio_ccw_drv.c | 12 ++++++++++--
+ drivers/s390/cio/vfio_ccw_fsm.c |  1 +
+ drivers/s390/cio/vfio_ccw_ops.c |  2 --
+ 4 files changed, 15 insertions(+), 4 deletions(-)
+
+diff --git a/drivers/s390/cio/vfio_ccw_cp.c b/drivers/s390/cio/vfio_ccw_cp.c
+index b9febc581b1f..8d1b2771c1aa 100644
+--- a/drivers/s390/cio/vfio_ccw_cp.c
++++ b/drivers/s390/cio/vfio_ccw_cp.c
+@@ -638,6 +638,10 @@ int cp_init(struct channel_program *cp, struct device *mdev, union orb *orb)
+ 	static DEFINE_RATELIMIT_STATE(ratelimit_state, 5 * HZ, 1);
+ 	int ret;
  
- 	mutex_lock(&data->lock);
- 	next_update = data->last_updated +
- 		      msecs_to_jiffies(data->update_interval);
--	if (!data->valid || time_after(jiffies, next_update)) {
--		ret = i2c_master_send(client, cmd, SHT4X_CMD_LEN);
--		if (ret < 0)
--			goto unlock;
--
--		usleep_range(SHT4X_MEAS_DELAY,
--			     SHT4X_MEAS_DELAY + SHT4X_DELAY_EXTRA);
--
--		ret = i2c_master_recv(client, raw_data, SHT4X_RESPONSE_LENGTH);
--		if (ret != SHT4X_RESPONSE_LENGTH) {
--			if (ret >= 0)
--				ret = -ENODATA;
--
--			goto unlock;
--		}
--
--		t_ticks = raw_data[0] << 8 | raw_data[1];
--		rh_ticks = raw_data[3] << 8 | raw_data[4];
--
--		crc = crc8(sht4x_crc8_table, &raw_data[0], SHT4X_WORD_LEN, CRC8_INIT_VALUE);
--		if (crc != raw_data[2]) {
--			dev_err(&client->dev, "data integrity check failed\n");
--			ret = -EIO;
--			goto unlock;
--		}
--
--		crc = crc8(sht4x_crc8_table, &raw_data[3], SHT4X_WORD_LEN, CRC8_INIT_VALUE);
--		if (crc != raw_data[5]) {
--			dev_err(&client->dev, "data integrity check failed\n");
--			ret = -EIO;
--			goto unlock;
--		}
--
--		data->temperature = ((21875 * (int32_t)t_ticks) >> 13) - 45000;
--		data->humidity = ((15625 * (int32_t)rh_ticks) >> 13) - 6000;
--		data->last_updated = jiffies;
--		data->valid = true;
++	/* this is an error in the caller */
++	if (cp->initialized)
++		return -EBUSY;
 +
-+	if (data->valid && time_before_eq(jiffies, next_update))
-+		goto unlock;
-+
-+	ret = i2c_master_send(client, cmd, SHT4X_CMD_LEN);
-+	if (ret < 0)
-+		goto unlock;
-+
-+	usleep_range(SHT4X_MEAS_DELAY, SHT4X_MEAS_DELAY + SHT4X_DELAY_EXTRA);
-+
-+	ret = i2c_master_recv(client, raw_data, SHT4X_RESPONSE_LENGTH);
-+	if (ret != SHT4X_RESPONSE_LENGTH) {
-+		if (ret >= 0)
-+			ret = -ENODATA;
-+		goto unlock;
-+	}
-+
-+	t_ticks = raw_data[0] << 8 | raw_data[1];
-+	rh_ticks = raw_data[3] << 8 | raw_data[4];
-+
-+	crc = crc8(sht4x_crc8_table, &raw_data[0], SHT4X_WORD_LEN, CRC8_INIT_VALUE);
-+	if (crc != raw_data[2]) {
-+		dev_err(&client->dev, "data integrity check failed\n");
-+		ret = -EIO;
-+		goto unlock;
+ 	/*
+ 	 * We only support prefetching the channel program. We assume all channel
+ 	 * programs executed by supported guests likewise support prefetching.
+diff --git a/drivers/s390/cio/vfio_ccw_drv.c b/drivers/s390/cio/vfio_ccw_drv.c
+index 8c625b530035..9b61e9b131ad 100644
+--- a/drivers/s390/cio/vfio_ccw_drv.c
++++ b/drivers/s390/cio/vfio_ccw_drv.c
+@@ -86,6 +86,7 @@ static void vfio_ccw_sch_io_todo(struct work_struct *work)
+ 	struct vfio_ccw_private *private;
+ 	struct irb *irb;
+ 	bool is_final;
++	bool cp_is_finished = false;
+ 
+ 	private = container_of(work, struct vfio_ccw_private, io_work);
+ 	irb = &private->irb;
+@@ -94,14 +95,21 @@ static void vfio_ccw_sch_io_todo(struct work_struct *work)
+ 		     (SCSW_ACTL_DEVACT | SCSW_ACTL_SCHACT));
+ 	if (scsw_is_solicited(&irb->scsw)) {
+ 		cp_update_scsw(&private->cp, &irb->scsw);
+-		if (is_final && private->state == VFIO_CCW_STATE_CP_PENDING)
++		if (is_final && private->state == VFIO_CCW_STATE_CP_PENDING) {
+ 			cp_free(&private->cp);
++			cp_is_finished = true;
++		}
+ 	}
+ 	mutex_lock(&private->io_mutex);
+ 	memcpy(private->io_region->irb_area, irb, sizeof(*irb));
+ 	mutex_unlock(&private->io_mutex);
+ 
+-	if (private->mdev && is_final)
++	/*
++	 * Reset to IDLE only if processing of a channel program
++	 * has finished. Do not overwrite a possible processing
++	 * state if the final interrupt was for HSCH or CSCH.
++	 */
++	if (private->mdev && cp_is_finished)
+ 		private->state = VFIO_CCW_STATE_IDLE;
+ 
+ 	if (private->io_trigger)
+diff --git a/drivers/s390/cio/vfio_ccw_fsm.c b/drivers/s390/cio/vfio_ccw_fsm.c
+index 23e61aa638e4..e435a9cd92da 100644
+--- a/drivers/s390/cio/vfio_ccw_fsm.c
++++ b/drivers/s390/cio/vfio_ccw_fsm.c
+@@ -318,6 +318,7 @@ static void fsm_io_request(struct vfio_ccw_private *private,
  	}
  
-+	crc = crc8(sht4x_crc8_table, &raw_data[3], SHT4X_WORD_LEN, CRC8_INIT_VALUE);
-+	if (crc != raw_data[5]) {
-+		dev_err(&client->dev, "data integrity check failed\n");
-+		ret = -EIO;
-+		goto unlock;
-+	}
-+
-+	data->temperature = ((21875 * (int32_t)t_ticks) >> 13) - 45000;
-+	data->humidity = ((15625 * (int32_t)rh_ticks) >> 13) - 6000;
-+	data->last_updated = jiffies;
-+	data->valid = true;
-+	ret = 0;
-+
- unlock:
- 	mutex_unlock(&data->lock);
- 	return ret;
-@@ -132,19 +134,14 @@ static ssize_t sht4x_interval_write(struct sht4x_data *data, long val)
- 	return 0;
+ err_out:
++	private->state = VFIO_CCW_STATE_IDLE;
+ 	trace_vfio_ccw_fsm_io_request(scsw->cmd.fctl, schid,
+ 				      io_region->ret_code, errstr);
  }
+diff --git a/drivers/s390/cio/vfio_ccw_ops.c b/drivers/s390/cio/vfio_ccw_ops.c
+index 491a64c61fff..c57d2a7f0919 100644
+--- a/drivers/s390/cio/vfio_ccw_ops.c
++++ b/drivers/s390/cio/vfio_ccw_ops.c
+@@ -279,8 +279,6 @@ static ssize_t vfio_ccw_mdev_write_io_region(struct vfio_ccw_private *private,
+ 	}
  
--/**
-- * sht4x_interval_read() - read the minimum poll interval
-- *			   in milliseconds
-- */
-+/* sht4x_interval_read() - read the minimum poll interval in milliseconds */
- static size_t sht4x_interval_read(struct sht4x_data *data, long *val)
- {
- 	*val = data->update_interval;
- 	return 0;
- }
+ 	vfio_ccw_fsm_event(private, VFIO_CCW_EVENT_IO_REQ);
+-	if (region->ret_code != 0)
+-		private->state = VFIO_CCW_STATE_IDLE;
+ 	ret = (region->ret_code != 0) ? region->ret_code : count;
  
--/**
-- * sht4x_temperature1_read() - read the temperature in millidegrees
-- */
-+/* sht4x_temperature1_read() - read the temperature in millidegrees */
- static int sht4x_temperature1_read(struct sht4x_data *data, long *val)
- {
- 	int ret;
-@@ -158,9 +155,7 @@ static int sht4x_temperature1_read(struct sht4x_data *data, long *val)
- 	return 0;
- }
- 
--/**
-- * sht4x_humidity1_read() - read a relative humidity in millipercent
-- */
-+/* sht4x_humidity1_read() - read a relative humidity in millipercent */
- static int sht4x_humidity1_read(struct sht4x_data *data, long *val)
- {
- 	int ret;
-
+ out_unlock:
