@@ -2,64 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 63318394ABF
-	for <lists+linux-kernel@lfdr.de>; Sat, 29 May 2021 08:21:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4BFAB394AC4
+	for <lists+linux-kernel@lfdr.de>; Sat, 29 May 2021 08:32:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229616AbhE2GXG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 29 May 2021 02:23:06 -0400
-Received: from szxga01-in.huawei.com ([45.249.212.187]:2087 "EHLO
-        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229547AbhE2GXF (ORCPT
+        id S229673AbhE2GeD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 29 May 2021 02:34:03 -0400
+Received: from szxga02-in.huawei.com ([45.249.212.188]:2523 "EHLO
+        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229559AbhE2GeA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 29 May 2021 02:23:05 -0400
-Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.55])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4FsWXy2tp8zWnyy;
-        Sat, 29 May 2021 14:16:50 +0800 (CST)
+        Sat, 29 May 2021 02:34:00 -0400
+Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.53])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4FsWqm1H3bzYr5j;
+        Sat, 29 May 2021 14:29:40 +0800 (CST)
 Received: from dggpemm500004.china.huawei.com (7.185.36.219) by
  dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Sat, 29 May 2021 14:21:27 +0800
-Received: from [10.174.177.91] (10.174.177.91) by
- dggpemm500004.china.huawei.com (7.185.36.219) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Sat, 29 May 2021 14:21:27 +0800
-Subject: Re: [PATCH -next] module: fix build error when CONFIG_SMP is disabled
-To:     "Sunnanyong (Nanyong Sun, Intelligent Computing Solution Development
-        Dep)" <sunnanyong@huawei.com>, <paul.walmsley@sifive.com>,
-        <palmer@dabbelt.com>, <aou@eecs.berkeley.edu>
-CC:     <vincent.chen@sifive.com>, <linux-riscv@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>
-References: <20210529020328.36863-1-cuibixuan@huawei.com>
- <4798a93f-f0a5-60f6-5b02-7d507fe60d4f@huawei.com>
+ 15.1.2176.2; Sat, 29 May 2021 14:32:21 +0800
+Received: from huawei.com (10.174.28.241) by dggpemm500004.china.huawei.com
+ (7.185.36.219) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Sat, 29 May
+ 2021 14:32:20 +0800
 From:   Bixuan Cui <cuibixuan@huawei.com>
-Message-ID: <f3011e4e-9d7c-39c0-e159-31c6df137875@huawei.com>
-Date:   Sat, 29 May 2021 14:21:26 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.2.2
+To:     <paul.walmsley@sifive.com>, <palmer@dabbelt.com>,
+        <aou@eecs.berkeley.edu>
+CC:     <vincent.chen@sifive.com>, <sunnanyong@huawei.com>,
+        <linux-riscv@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
+        Bixuan Cui <cuibixuan@huawei.com>
+Subject: [PATCH -next v2] riscv: fix build error when CONFIG_SMP is disabled
+Date:   Sat, 29 May 2021 14:31:22 +0800
+Message-ID: <20210529063122.5258-1-cuibixuan@huawei.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-In-Reply-To: <4798a93f-f0a5-60f6-5b02-7d507fe60d4f@huawei.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.177.91]
-X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
+Content-Type: text/plain
+X-Originating-IP: [10.174.28.241]
+X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
  dggpemm500004.china.huawei.com (7.185.36.219)
 X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Fix build error when disable CONFIG_SMP:
+mm/pgtable-generic.o: In function `.L19':
+pgtable-generic.c:(.text+0x42): undefined reference to `flush_pmd_tlb_range'
+mm/pgtable-generic.o: In function `pmdp_huge_clear_flush':
+pgtable-generic.c:(.text+0x6c): undefined reference to `flush_pmd_tlb_range'
+mm/pgtable-generic.o: In function `pmdp_invalidate':
+pgtable-generic.c:(.text+0x162): undefined reference to `flush_pmd_tlb_range'
 
+Fixes: e88b333142e4 ("riscv: mm: add THP support on 64-bit")
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Bixuan Cui <cuibixuan@huawei.com>
+---
+Changes from v2:
+Move the declaration of flush_pmd_tlb_rang to tlbflush.h
 
-On 2021/5/29 12:43, Sunnanyong (Nanyong Sun, Intelligent Computing Solution Development Dep) wrote:
-> Move the prototype of flush_pmd_tlb_range from pgtable.h to tlbflush.h
-> 
-> can also fix this problem, and it seems that declare flush_pmd_tlb_range in tlbflush.h
-> 
-> is better.
-> 
-> We could
-Agree with you.
+ arch/riscv/include/asm/pgtable.h  |  5 -----
+ arch/riscv/include/asm/tlbflush.h | 11 +++++++++++
+ 2 files changed, 11 insertions(+), 5 deletions(-)
 
-Thanks
-Bixuan Cui
+diff --git a/arch/riscv/include/asm/pgtable.h b/arch/riscv/include/asm/pgtable.h
+index 29e2c836848d..eda31002c4b1 100644
+--- a/arch/riscv/include/asm/pgtable.h
++++ b/arch/riscv/include/asm/pgtable.h
+@@ -622,11 +622,6 @@ static inline pmd_t pmdp_establish(struct vm_area_struct *vma,
+ {
+ 	return __pmd(atomic_long_xchg((atomic_long_t *)pmdp, pmd_val(pmd)));
+ }
+-
+-#define __HAVE_ARCH_FLUSH_PMD_TLB_RANGE
+-void flush_pmd_tlb_range(struct vm_area_struct *vma, unsigned long start,
+-			unsigned long end);
+-
+ #endif /* CONFIG_TRANSPARENT_HUGEPAGE */
+ 
+ /*
+diff --git a/arch/riscv/include/asm/tlbflush.h b/arch/riscv/include/asm/tlbflush.h
+index c84218ad7afc..6f78ac4601c9 100644
+--- a/arch/riscv/include/asm/tlbflush.h
++++ b/arch/riscv/include/asm/tlbflush.h
+@@ -33,6 +33,11 @@ void flush_tlb_mm(struct mm_struct *mm);
+ void flush_tlb_page(struct vm_area_struct *vma, unsigned long addr);
+ void flush_tlb_range(struct vm_area_struct *vma, unsigned long start,
+ 		     unsigned long end);
++#ifdef CONFIG_TRANSPARENT_HUGEPAGE
++#define __HAVE_ARCH_FLUSH_PMD_TLB_RANGE
++void flush_pmd_tlb_range(struct vm_area_struct *vma, unsigned long start,
++			unsigned long end);
++#endif
+ #else /* CONFIG_SMP && CONFIG_MMU */
+ 
+ #define flush_tlb_all() local_flush_tlb_all()
+@@ -44,6 +49,12 @@ static inline void flush_tlb_range(struct vm_area_struct *vma,
+ 	local_flush_tlb_all();
+ }
+ 
++static inline void flush_pmd_tlb_range(struct vm_area_struct *vma,
++		unsigned long start, unsigned long end)
++{
++	local_flush_tlb_all();
++}
++
+ #define flush_tlb_mm(mm) flush_tlb_all()
+ #endif /* !CONFIG_SMP || !CONFIG_MMU */
+ 
+-- 
+2.17.1
+
