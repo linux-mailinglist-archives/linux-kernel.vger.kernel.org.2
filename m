@@ -2,107 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BC1D0394969
-	for <lists+linux-kernel@lfdr.de>; Sat, 29 May 2021 02:01:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 893EE39496E
+	for <lists+linux-kernel@lfdr.de>; Sat, 29 May 2021 02:12:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229616AbhE2ADb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 May 2021 20:03:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47204 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229528AbhE2ADa (ORCPT
+        id S229636AbhE2ANr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 May 2021 20:13:47 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:12719 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229528AbhE2ANq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 May 2021 20:03:30 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68574C061574;
-        Fri, 28 May 2021 17:01:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-        Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:
-        Subject:Sender:Reply-To:Content-ID:Content-Description;
-        bh=wClK8t5OqOKAJXZRdJ7lK3nU0nLrVWRCjDxwfQ1YPMI=; b=oQEOU/XvSEfv8fMGMn0Ibiyl1G
-        LKUmNpGddt8Mx4Rzc2n1OXVQygVaS1Hp3LuerB4w21NGojS/f0EQXiAzFBr1Wx0TXBk0i5ANHtKRJ
-        tORl/HV+bZzjqJv3n8eqlqX5CJLFkASF/ji4lMdaKwVqP53Tjac61kBHeZKEj+N4Pu23FcC5xOn+V
-        VKRsUwZNciWxbginuPe10cDX1Zs6DbxYi+3erBw1ms7nDb0Venf7+yUudFgO3hPOUQaaubHAgAW5O
-        dVL+8ZZzNYUOxpoxQryTugtaikRc03ghdTOD+GqHfFjpcWM5edHLX/2Noj7eqktgzaSJcYUghauEZ
-        mvXFD1JQ==;
-Received: from [2601:1c0:6280:3f0::ce7d]
-        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1lmmQF-001zoQ-B8; Sat, 29 May 2021 00:01:47 +0000
-Subject: Re: [PATCH 03/19] drivers/hv: minimal mshv module (/dev/mshv/)
-To:     Nuno Das Neves <nunodasneves@linux.microsoft.com>,
-        linux-hyperv@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     virtualization@lists.linux-foundation.org, mikelley@microsoft.com,
-        viremana@linux.microsoft.com, sunilmut@microsoft.com,
-        wei.liu@kernel.org, vkuznets@redhat.com, ligrassi@microsoft.com,
-        kys@microsoft.com
-References: <1622241819-21155-1-git-send-email-nunodasneves@linux.microsoft.com>
- <1622241819-21155-4-git-send-email-nunodasneves@linux.microsoft.com>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <e161e8cc-4d08-8bfd-ab1e-363ed5a39503@infradead.org>
-Date:   Fri, 28 May 2021 17:01:46 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.0
+        Fri, 28 May 2021 20:13:46 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1622247131; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
+ Subject: Sender; bh=uA1faYC+OFMBrwWX6UJIZ7G7z3bJUu+EjVNftvOSgcA=; b=VVMYEM5uZL9xdgfM8bfKN2hH/4B1OA1L5AHfQL0+oOhw4sDFFCB0WjWmNOcxQblX3TSdVDLi
+ X+MS1zyo5SEP/bAUqIN+FO1FfCSZyMBiF/Xnm1c9ZRspGcwzBr1CGOkBOG6NZjmdGoME9mJN
+ oXAiBcXyFPsD+jDdo3KxpnJ8hIM=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n02.prod.us-west-2.postgun.com with SMTP id
+ 60b186daea2aacd7297cc952 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Sat, 29 May 2021 00:12:10
+ GMT
+Sender: sidgup=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id DD13DC4338A; Sat, 29 May 2021 00:12:09 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        NICE_REPLY_A,SPF_FAIL,URIBL_BLOCKED autolearn=no autolearn_force=no
+        version=3.4.0
+Received: from [192.168.1.10] (cpe-75-83-25-192.socal.res.rr.com [75.83.25.192])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: sidgup)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 051A1C433D3;
+        Sat, 29 May 2021 00:12:08 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 051A1C433D3
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=sidgup@codeaurora.org
+Subject: Re: [PATCH 1/1] remoteproc: use freezable workqueue for crash
+ notifications
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Alex Elder <elder@linaro.org>
+Cc:     ohad@wizery.com, mathieu.poirier@linaro.org,
+        linux-remoteproc@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210519234418.1196387-1-elder@linaro.org>
+ <20210519234418.1196387-2-elder@linaro.org> <YLBpmdZoGDXNz64y@builder.lan>
+From:   Siddharth Gupta <sidgup@codeaurora.org>
+Message-ID: <be4ea351-7144-8b53-6fd7-6a2204e0040d@codeaurora.org>
+Date:   Fri, 28 May 2021 17:12:08 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.2
 MIME-Version: 1.0
-In-Reply-To: <1622241819-21155-4-git-send-email-nunodasneves@linux.microsoft.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+In-Reply-To: <YLBpmdZoGDXNz64y@builder.lan>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5/28/21 3:43 PM, Nuno Das Neves wrote:
-> Introduce a barebones module file for the mshv API.
-> Introduce CONFIG_HYPERV_ROOT_API for controlling compilation of mshv.
-> 
-> Co-developed-by: Lillian Grassin-Drake <ligrassi@microsoft.com>
-> Signed-off-by: Lillian Grassin-Drake <ligrassi@microsoft.com>
-> Signed-off-by: Nuno Das Neves <nunodasneves@linux.microsoft.com>
-> ---
 
-Hi,
+On 5/27/2021 8:55 PM, Bjorn Andersson wrote:
+> On Wed 19 May 18:44 CDT 2021, Alex Elder wrote:
+>
+>> When a remoteproc has crashed, rproc_report_crash() is called to
+>> handle whatever recovery is desired.  This can happen at almost any
+>> time, often triggered by an interrupt, though it can also be
+>> initiated by a write to debugfs file remoteproc/remoteproc*/crash.
+>>
+>> When a crash is reported, the crash handler worker is scheduled to
+>> run (rproc_crash_handler_work()).  One thing that worker does is
+>> call rproc_trigger_recovery(), which calls rproc_stop().  That calls
+>> the ->stop method for any remoteproc subdevices before making the
+>> remote processor go offline.
+>>
+>> The Q6V5 modem remoteproc driver implements an SSR subdevice that
+>> notifies registered drivers when the modem changes operational state
+>> (prepare, started, stop/crash, unprepared).  The IPA driver
+>> registers to receive these notifications.
+>>
+>> With that as context, I'll now describe the problem.
+>>
+>> There was a situation in which buggy modem firmware led to a modem
+>> crash very soon after system (AP) resume had begun.  The crash caused
+>> a remoteproc SSR crash notification to be sent to the IPA driver.
+>> The problem was that, although system resume had begun, it had not
+>> yet completed, and the IPA driver was still in a suspended state.
+>>
+>> This scenario could happen to any driver that registers for these
+>> SSR notifications, because they are delivered without knowledge of
+>> the (suspend) state of registered recipient drivers.
+>>
+>> This patch offers a simple fix for this, by having the crash
+>> handling worker function run on the system freezable workqueue.
+>> This workqueue does not operate if user space is frozen (for
+>> suspend).  As a result, the SSR subdevice only delivers its
+>> crash notification when the system is fully operational (i.e.,
+>> neither suspended nor in suspend/resume transition).
+>>
+> This makes sense to me; both that it ensures that we spend our resources
+> on the actual system resume and that it avoids surprises from this
+> happening while the system still is in a funky state...
+>
+> Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+>
+> But it would be nice to get some input from other users of the
+> framework.
+This patch sounds like a good idea for cases where the
+request_firmware() APIs fallback to userspace firmware loading.
 
-> diff --git a/drivers/hv/Kconfig b/drivers/hv/Kconfig
-> index 66c794d92391..d618b1fab2bb 100644
-> --- a/drivers/hv/Kconfig
-> +++ b/drivers/hv/Kconfig
-> @@ -27,4 +27,22 @@ config HYPERV_BALLOON
->  	help
->  	  Select this option to enable Hyper-V Balloon driver.
->  
-> +config HYPERV_ROOT_API
-> +	tristate "Microsoft Hypervisor root partition interfaces: /dev/mshv"
-> +	depends on HYPERV
-> +	help
-> +	  Provides access to interfaces for managing guest virtual machines
-> +	  running under the Microsoft Hypervisor.
-> +
-> +	  These interfaces will only work when Linux is running as root
-> +	  partition on the Microsoft Hypervisor.
-> +
-> +	  The interfaces are provided via a device named /dev/mshv.
-> +
-> +	  To compile this as a module, choose M here.
-> +          The module is named mshv.
+Will test out this patch and report back.
 
-^^^^^^^^^^^^^
-
-Please follow coding-style for Kconfig files:
-
-(from Documentation/process/coding-style.rst, section 10):
-
-For all of the Kconfig* configuration files throughout the source tree,
-the indentation is somewhat different.  Lines under a ``config`` definition
-are indented with one tab, while help text is indented an additional two
-spaces.
-
-> +
-> +	  If unsure, say N.
-> +
-> +
->  endmenu
-
-thanks.
--- 
-~Randy
-
+Thanks,
+Sid
+>
+> Regards,
+> Bjorn
+>
+>> Signed-off-by: Alex Elder <elder@linaro.org>
+>> ---
+>>   drivers/remoteproc/remoteproc_core.c | 4 ++--
+>>   1 file changed, 2 insertions(+), 2 deletions(-)
+>>
+>> diff --git a/drivers/remoteproc/remoteproc_core.c b/drivers/remoteproc/remoteproc_core.c
+>> index 39cf44cb08035..6bedf2d2af239 100644
+>> --- a/drivers/remoteproc/remoteproc_core.c
+>> +++ b/drivers/remoteproc/remoteproc_core.c
+>> @@ -2724,8 +2724,8 @@ void rproc_report_crash(struct rproc *rproc, enum rproc_crash_type type)
+>>   	dev_err(&rproc->dev, "crash detected in %s: type %s\n",
+>>   		rproc->name, rproc_crash_to_string(type));
+>>   
+>> -	/* create a new task to handle the error */
+>> -	schedule_work(&rproc->crash_handler);
+>> +	/* Have a worker handle the error; ensure system is not suspended */
+>> +	queue_work(system_freezable_wq, &rproc->crash_handler);
+>>   }
+>>   EXPORT_SYMBOL(rproc_report_crash);
+>>   
+>> -- 
+>> 2.27.0
+>>
