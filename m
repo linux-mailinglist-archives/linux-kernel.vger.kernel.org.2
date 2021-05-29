@@ -2,94 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ECBC0394AAD
-	for <lists+linux-kernel@lfdr.de>; Sat, 29 May 2021 08:01:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E10D394AB2
+	for <lists+linux-kernel@lfdr.de>; Sat, 29 May 2021 08:05:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229614AbhE2GCd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 29 May 2021 02:02:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39458 "EHLO
+        id S229674AbhE2GHL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 29 May 2021 02:07:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40440 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229547AbhE2GCc (ORCPT
+        with ESMTP id S229547AbhE2GHK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 29 May 2021 02:02:32 -0400
-Received: from mail-pg1-x532.google.com (mail-pg1-x532.google.com [IPv6:2607:f8b0:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 043C1C061574
-        for <linux-kernel@vger.kernel.org>; Fri, 28 May 2021 23:00:56 -0700 (PDT)
-Received: by mail-pg1-x532.google.com with SMTP id m190so4164339pga.2
-        for <linux-kernel@vger.kernel.org>; Fri, 28 May 2021 23:00:55 -0700 (PDT)
+        Sat, 29 May 2021 02:07:10 -0400
+Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82EAFC061574;
+        Fri, 28 May 2021 23:05:33 -0700 (PDT)
+Received: by mail-pj1-x102b.google.com with SMTP id pi6-20020a17090b1e46b029015cec51d7cdso3694249pjb.5;
+        Fri, 28 May 2021 23:05:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=InZqYx/06vcOEw+/d6hR89mWaCoTX4xtWcUygF4loTs=;
-        b=npIyJuDU8bGRJ6ThHEVZPfBwamQ3V1JesTMZ9lx/kMVTX3/H8VMGuZUh1j1m2YASpg
-         By0FgmzqqpnXf2lcKVxEu6fARoxUdlEsv9VvNjO7prALEwe9h5I09o6zgZnP1FihX9bO
-         TkbOi0Xn9hzMlAB0xufDtzpGRFsb7bnBa6uLjUYQC4H82B1/KnfyO8dF8XrAmky2hS9/
-         /ZlTkxdA8+Pqgs/CzC4gF+Ms33fU+IDWsRDuecP8vvEbiO2d+9300PqtE+5JtF+zb1kw
-         z1ScogSXUg40XxtOsedn2ZfCSeofLiYHb1o5qT5GKkZwVRGgY5ch/scqrO1hEUyVl1q6
-         nNAw==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=dj+sVpS2uayKHiIJ1N88jZYGI1O1BdFKfgWRCDtgcRw=;
+        b=oBmxC+MnK9tUUJJeZJufxG9NHq6kIQQY6R/LuZVLQ1FItodhfhciBM8szGm+onRt+V
+         sJuT9r/hTu+8FGSjHRwM4W23A/aKAPgxuEnjWPC9Ys4gpC8ZjJfKVcowoY0qkiFXiqwe
+         YHtdljdCNhQAllPwxV5IvA8r/4QYgzFFJ7X9Wm+XC5cMQtQgKRnOUXCv4JfmRTCMVpSj
+         qaddp1VvIN9DKDGkuzDb18YknshlgbUS5EykGhN11mQ/Gh+XK/Weoz2ESOl7bhzLJ2Kn
+         kVsglDU/IcTpy8YPCxwOfZIlmvkjKMyOs37r0ILDIIMYBd2n2vuy0Va40IcmbZZJaIX1
+         oJkA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=InZqYx/06vcOEw+/d6hR89mWaCoTX4xtWcUygF4loTs=;
-        b=b/0N6oDZo/0gL+Tt6Pra5GxQuXY7F9OmYIPcFA8ItQIVI4FHQaAvKg9rKgaH2nNSSQ
-         61Ex76SbygCKuHZLlkrOa2RGDvjIib1ng6x5Us/OKpM7iVa4A5yiT34T21BqnXkdATJ/
-         wbVC9lsuerCoK/0o1w6yLDaknitEE3dgFwXQ43xGerlRdefm+TyczAr+JB4kPHpdBz95
-         /fDByNTaOwAMZD/UUeYWTKDFH5eHSGoAxk4uXr/5VSIY8nrZMI6fw9QD+IkESBYEimNP
-         MfZ6UPYgIO5a+vhplyH8yK2W0zHDJckNfZL1j7kAkItiWKvyjxOBnsWR2BchskgN3+Ko
-         XKBQ==
-X-Gm-Message-State: AOAM531ruTG2Nw1fW5yKESVLF9cz1XvWhdIOcYiP7wohYSm5GnJ0mgYe
-        ag4fDh/6jWFd6l+0uqrcoD0=
-X-Google-Smtp-Source: ABdhPJwX3WrAHqQnP4GTWkM0BPIiEVT8yYAXTXATmGO9MrVQVppQtR5hPzdpiXCyabA5keMJI4kGKA==
-X-Received: by 2002:a63:a70e:: with SMTP id d14mr12413500pgf.43.1622268054655;
-        Fri, 28 May 2021 23:00:54 -0700 (PDT)
-Received: from hyeyoo ([183.99.11.150])
-        by smtp.gmail.com with ESMTPSA id 4sm5422363pji.14.2021.05.28.23.00.53
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=dj+sVpS2uayKHiIJ1N88jZYGI1O1BdFKfgWRCDtgcRw=;
+        b=H2BajBvPSc2we4zKO69pzUc7BfgLV13Zl5eMWsoyGZeharnJR+qF7O9ov3LNUZ4ryt
+         uvdZ8rqmDsoBWnM1U/6bKVMKGLGh2MP4QO5jcBM4FWwsiWsJH07XJhSoRYIGqLqNPViy
+         M8PdHrs8Y2fmWwn5A/LhAWvxlTnhaakuK+8K89AClgccxjauloIjlhOhp1nz12cHhN2p
+         paT1bBi0R8WadlflWiz1+b2Vd6qT+8fYdUW+D+zpg+J9LH3IapCElskzIOA04XVm6+Xt
+         86+AKzq2YuJ5HTGwkVhkk377IsLF6nE8PuNrt4ca8MFeVTzjUFvcTzicagbflMDZIV4U
+         WBjQ==
+X-Gm-Message-State: AOAM530VrVzsRUvq9SOg/xdwklCf2YxQVAEC4Mclv7WzNUD32U+zndwt
+        FCAYMYA2utaum23XO0jD0UA=
+X-Google-Smtp-Source: ABdhPJzJk51CMG+RbBrsd/wxt+xHRmOmoRQjW/Qa/nDEtITWWRgyGAkJkaAnPaWE3UlY/yzLqkCysg==
+X-Received: by 2002:a17:90a:d482:: with SMTP id s2mr8407870pju.230.1622268332834;
+        Fri, 28 May 2021 23:05:32 -0700 (PDT)
+Received: from vultr.guest ([141.164.41.4])
+        by smtp.gmail.com with ESMTPSA id u4sm5841520pgl.43.2021.05.28.23.05.30
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 28 May 2021 23:00:54 -0700 (PDT)
-Date:   Sat, 29 May 2021 15:00:49 +0900
-From:   Hyeonggon Yoo <42.hyeyoo@gmail.com>
-To:     Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@redhat.com>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [PATCH v2] tracing: Add WARN_ON_ONCE when returned value is negative
-Message-ID: <20210529060049.GB99161@hyeyoo>
-References: <20210527171449.GA145584@hyeyoo>
+        Fri, 28 May 2021 23:05:32 -0700 (PDT)
+From:   Changbin Du <changbin.du@gmail.com>
+To:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kici nski <kuba@kernel.org>
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Changbin Du <changbin.du@gmail.com>, stable@vger.kernel.org
+Subject: [PATCH] net: fix oops in socket ioctl cmd SIOCGSKNS when NET_NS is disabled
+Date:   Sat, 29 May 2021 14:05:26 +0800
+Message-Id: <20210529060526.422987-1-changbin.du@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210527171449.GA145584@hyeyoo>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From af7124e2bd00f739010eb283c9ab07e07da52224 Mon Sep 17 00:00:00 2001
-From: Hyeonggon Yoo <42.hyeyoo@gmail.com>
-Date: Sat, 29 May 2021 14:51:05 +0900
-Subject: [PATCH v2] tracing: Add WARN_ON_ONCE when returned value is negative
+When NET_NS is not enabled, socket ioctl cmd SIOCGSKNS should do nothing
+but acknowledge userspace it is not supported. Otherwise, kernel would
+panic wherever nsfs trys to access ns->ops since the proc_ns_operations
+is not implemented in this case.
 
-ret is assigned return value of event_hist_trigger_func, but the value
-is unused. It is better to warn when returned value is negative,
-rather than just ignoring it.
+[7.670023] Unable to handle kernel NULL pointer dereference at virtual address 00000010
+[7.670268] pgd = 32b54000
+[7.670544] [00000010] *pgd=00000000
+[7.671861] Internal error: Oops: 5 [#1] SMP ARM
+[7.672315] Modules linked in:
+[7.672918] CPU: 0 PID: 1 Comm: systemd Not tainted 5.13.0-rc3-00375-g6799d4f2da49 #16
+[7.673309] Hardware name: Generic DT based system
+[7.673642] PC is at nsfs_evict+0x24/0x30
+[7.674486] LR is at clear_inode+0x20/0x9c
 
-Signed-off-by: Hyeonggon Yoo <42.hyeyoo@gmail.com>
+Signed-off-by: Changbin Du <changbin.du@gmail.com>
+Cc: <stable@vger.kernel.org> # v4.9
 ---
- kernel/trace/trace_events_hist.c | 1 +
- 1 file changed, 1 insertion(+)
+ net/socket.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-diff --git a/kernel/trace/trace_events_hist.c b/kernel/trace/trace_events_hist.c
-index c1abd63f1d6c..d169946ea4e9 100644
---- a/kernel/trace/trace_events_hist.c
-+++ b/kernel/trace/trace_events_hist.c
-@@ -5232,6 +5232,7 @@ static void unregister_field_var_hists(struct hist_trigger_data *hist_data)
- 		cmd = hist_data->field_var_hists[i]->cmd;
- 		ret = event_hist_trigger_func(&trigger_hist_cmd, file,
- 					      "!hist", "hist", cmd);
-+		WARN_ON_ONCE(ret < 0);
- 	}
- }
+diff --git a/net/socket.c b/net/socket.c
+index 27e3e7d53f8e..644b46112d35 100644
+--- a/net/socket.c
++++ b/net/socket.c
+@@ -1149,11 +1149,15 @@ static long sock_ioctl(struct file *file, unsigned cmd, unsigned long arg)
+ 			mutex_unlock(&vlan_ioctl_mutex);
+ 			break;
+ 		case SIOCGSKNS:
++#ifdef CONFIG_NET_NS
+ 			err = -EPERM;
+ 			if (!ns_capable(net->user_ns, CAP_NET_ADMIN))
+ 				break;
  
+ 			err = open_related_ns(&net->ns, get_net_ns);
++#else
++			err = -ENOTSUPP;
++#endif
+ 			break;
+ 		case SIOCGSTAMP_OLD:
+ 		case SIOCGSTAMPNS_OLD:
 -- 
-2.25.1
+2.27.0
 
