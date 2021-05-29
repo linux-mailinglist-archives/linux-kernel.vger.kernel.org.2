@@ -2,113 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 39BF0394DD9
-	for <lists+linux-kernel@lfdr.de>; Sat, 29 May 2021 21:24:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E64B5394DDC
+	for <lists+linux-kernel@lfdr.de>; Sat, 29 May 2021 21:25:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229826AbhE2T0X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 29 May 2021 15:26:23 -0400
-Received: from so254-9.mailgun.net ([198.61.254.9]:25601 "EHLO
-        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229792AbhE2T0W (ORCPT
+        id S229841AbhE2T1O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 29 May 2021 15:27:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43892 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229795AbhE2T1M (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 29 May 2021 15:26:22 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1622316285; h=In-Reply-To: Content-Type: MIME-Version:
- References: Message-ID: Subject: Cc: To: From: Date: Sender;
- bh=YMDXTcEcKFyLHXnnDZTwwkxpT9FLywcjBpEH0RdgkCY=; b=lgaCL+3oS09udEiT1ygSCmDoAkxrcCYGEbBfdNYI2/K8auuHrrttyGxuvMvruz7zcqZbEExY
- INoOZFU7Kf9ulDLjYiVm5ErplOTdYhXBY5MMKXGcEqv8SpxaiXeG2nHB7kgAFKXK4rklTlic
- dHv58qL9aemKzGzAZ6pRNvPA2S0=
-X-Mailgun-Sending-Ip: 198.61.254.9
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n06.prod.us-east-1.postgun.com with SMTP id
- 60b294ebe27c0cc77f208b3d (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Sat, 29 May 2021 19:24:27
- GMT
-Sender: jackp=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id F2BF8C4338A; Sat, 29 May 2021 19:24:26 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
-Received: from jackp-linux.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: jackp)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id A3833C433F1;
-        Sat, 29 May 2021 19:24:25 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org A3833C433F1
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=jackp@codeaurora.org
-Date:   Sat, 29 May 2021 12:24:21 -0700
-From:   Jack Pham <jackp@codeaurora.org>
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc:     Wesley Cheng <wcheng@codeaurora.org>, balbi@kernel.org,
-        gregkh@linuxfoundation.org, agross@kernel.org, robh+dt@kernel.org,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        Thinh.Nguyen@synopsys.com
-Subject: Re: [PATCH v8 5/5] arm64: boot: dts: qcom: sm8150: Enable dynamic TX
- FIFO resize logic
-Message-ID: <20210529192420.GA11263@jackp-linux.qualcomm.com>
-References: <1621410238-31395-1-git-send-email-wcheng@codeaurora.org>
- <1621410238-31395-6-git-send-email-wcheng@codeaurora.org>
- <YLJ000lIVhZM5WEV@builder.lan>
+        Sat, 29 May 2021 15:27:12 -0400
+Received: from mail-pg1-x534.google.com (mail-pg1-x534.google.com [IPv6:2607:f8b0:4864:20::534])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C53F3C061574;
+        Sat, 29 May 2021 12:25:35 -0700 (PDT)
+Received: by mail-pg1-x534.google.com with SMTP id j12so5164401pgh.7;
+        Sat, 29 May 2021 12:25:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=7+Pi6aUWQk8YnBWt2s1qh+0Rx8QcWNf32gFFaODjRD0=;
+        b=q9jtcPS7F5rGOd6ROvnbCLLYwjKf1XLja+Wzi1NP+CwtbYldfDojtQv/Mptp/0IV96
+         FxhFctcxHSHyjrBBkdhZY9JWknZvBVqVevdeO/hUS4zxDDJlrNaS8YF+otD9dezIYIbh
+         icSWDLEzg+0BKjEwyejVusvbDu9B1YCryJISLymq0zb0+gSyc5vzsYVivnqo3wOVLeHd
+         j+IUaz/WYNi1b1ypzXP9vSxVAL7AgFYSxVYSPbJ5wSt1rOAMsWSzOU2shV2OAjj1vPEc
+         VzsA0TFlujmiRQliqmoxSvBn527YliCblCmoXi3rFLmp7ClBYnxac3+ILn0hvMNpQgTr
+         C8zQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=7+Pi6aUWQk8YnBWt2s1qh+0Rx8QcWNf32gFFaODjRD0=;
+        b=KkS8FZdTF2O8hhOe0QRNWolVWlSks/DLjQlH6+99Xts2Qsr6HkCHrfjH9hkh3n7yCJ
+         fKJmmz/VSu/WK+lsgmTBzzz4QSGMFJnejH810oORfxdzDnXKlXfDurxJ9RR59o5/m8MP
+         3vipfsyOST/svSPEN4vjybzS+sMWpsXch5DWX3IKvRL9Mjjk3EA3QA7/w4FMn065Jdgz
+         c/hXHn7q0Y3kTPlXSB1v7I6veYwF1WYdmEaLkrzHXWZaa8tMTtc7IJMjcy58moiOTI6/
+         KPCJS7ho4h8flmDMWSUMeAadjGwIfiAZD8yuQ68dBmxe6cBuGZCRGDIz9R310GoEwfka
+         jVzw==
+X-Gm-Message-State: AOAM531zRVdYYf2NWB8ivvC3hdQIEFxcNiuXP7kJX2ZOp42uNh7ElLI8
+        Df7JzLi2AOJ5MRwgWQTOIWY=
+X-Google-Smtp-Source: ABdhPJy/WN+mRTiIeGVtE0FhcGgReHVHYYbdQnLBYSlFqWNd8YwDqFGLHKKek17vmtF9WRRyzyn3Yg==
+X-Received: by 2002:a63:2254:: with SMTP id t20mr4888580pgm.322.1622316335299;
+        Sat, 29 May 2021 12:25:35 -0700 (PDT)
+Received: from localhost.localdomain ([103.248.31.172])
+        by smtp.googlemail.com with ESMTPSA id ge5sm7286754pjb.45.2021.05.29.12.25.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 29 May 2021 12:25:34 -0700 (PDT)
+From:   Amey Narkhede <ameynarkhede03@gmail.com>
+To:     Bjorn Helgaas <bhelgaas@google.com>
+Cc:     alex.williamson@redhat.com,
+        Raphael Norwitz <raphael.norwitz@nutanix.com>,
+        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kw@linux.com, Shanker Donthineni <sdonthineni@nvidia.com>,
+        Sinan Kaya <okaya@kernel.org>,
+        Amey Narkhede <ameynarkhede03@gmail.com>
+Subject: [PATCH v5 0/7] Expose and manage PCI device reset
+Date:   Sun, 30 May 2021 00:55:20 +0530
+Message-Id: <20210529192527.2708-1-ameynarkhede03@gmail.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YLJ000lIVhZM5WEV@builder.lan>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Bjorn,
+PCI and PCIe devices may support a number of possible reset mechanisms
+for example Function Level Reset (FLR) provided via Advanced Feature or
+PCIe capabilities, Power Management reset, bus reset, or device specific reset.
+Currently the PCI subsystem creates a policy prioritizing these reset methods
+which provides neither visibility nor control to userspace.
 
-On Sat, May 29, 2021 at 12:07:31PM -0500, Bjorn Andersson wrote:
-> On Wed 19 May 02:43 CDT 2021, Wesley Cheng wrote:
-> 
-> > Enable the flexible TX FIFO resize logic on SM8150.  Using a larger TX FIFO
-> > SZ can help account for situations when system latency is greater than the
-> > USB bus transmission latency.
-> > 
-> > Reviewed-by: Rob Herring <robh@kernel.org>
-> > Signed-off-by: Wesley Cheng <wcheng@codeaurora.org>
-> 
-> Based on my previous request of always adding this for the Qualcomm
-> platforms that supports it, which is implemented in patch 4, I don't see
-> a need for this patch.
-> 
-> Am I missing something?
+Expose the reset methods available per device to userspace, via sysfs
+and allow an administrative user or device owner to have ability to
+manage per device reset method priorities or exclusions.
+This feature aims to allow greater control of a device for use cases
+as device assignment, where specific device or platform issues may
+interact poorly with a given reset method, and for which device specific
+quirks have not been developed.
 
-Looks like Wesley had quickly sent a V9 of the series right after V8,
-and the DTSI change is dropped.
+Changes in v5:
+	- Rebase the series over pci/reset branch of
+	  Bjorn's pci tree to avoid merge conflicts
+	  caused by recent changes in existing reset
+	  sysfs attribute
 
-https://lore.kernel.org/linux-usb/1621410561-32762-1-git-send-email-wcheng@codeaurora.org/T/#t
+Changes in v4:
+	- Change the order or strlen and strim in reset_method_store
+	  function to avoid extra strlen call.
+	- Use consistent terminology in new
+	  pci_reset_mode enum and rename the probe argument
+	  of reset functions.
 
-Thanks,
-Jack
+Changes in v3:
+	- Dropped "PCI: merge slot and bus reset implementations" which was
+	  already accepted separately
+	- Grammar fixes
+	- Added Shanker's patches which were rebased on v2 of this series
+	- Added "PCI: Change the type of probe argument in reset functions"
+	  and additional user input sanitization code in reset_method_store
+	  function per review feedback from Krzysztof
 
-> > ---
-> >  arch/arm64/boot/dts/qcom/sm8150.dtsi | 1 +
-> >  1 file changed, 1 insertion(+)
-> > 
-> > diff --git a/arch/arm64/boot/dts/qcom/sm8150.dtsi b/arch/arm64/boot/dts/qcom/sm8150.dtsi
-> > index 51235a9..8f532cb 100644
-> > --- a/arch/arm64/boot/dts/qcom/sm8150.dtsi
-> > +++ b/arch/arm64/boot/dts/qcom/sm8150.dtsi
-> > @@ -2275,6 +2275,7 @@
-> >  				iommus = <&apps_smmu 0x140 0>;
-> >  				snps,dis_u2_susphy_quirk;
-> >  				snps,dis_enblslpm_quirk;
-> > +				tx-fifo-resize;
-> >  				phys = <&usb_1_hsphy>, <&usb_1_ssphy>;
-> >  				phy-names = "usb2-phy", "usb3-phy";
-> >  			};
+Changes in v2:
+	- Use byte array instead of bitmap to keep track of
+	  ordering of reset methods
+	- Fix incorrect use of reset_fn field in octeon driver
+	- Allow writing comma separated list of names of supported reset
+	  methods to reset_method sysfs attribute
+	- Writing empty string instead of "none" to reset_method attribute
+	  disables ability of reset the device
 
--- 
-The Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum,
-a Linux Foundation Collaborative Project
+Amey Narkhede (5):
+  PCI: Add pcie_reset_flr to follow calling convention of other reset
+    methods
+  PCI: Add new array for keeping track of ordering of reset methods
+  PCI: Remove reset_fn field from pci_dev
+  PCI/sysfs: Allow userspace to query and set device reset mechanism
+  PCI: Change the type of probe argument in reset functions
+
+Shanker Donthineni (2):
+  PCI: Add support for a function level reset based on _RST method
+  PCI: Enable NO_BUS_RESET quirk for Nvidia GPUs
+
+ Documentation/ABI/testing/sysfs-bus-pci       |  16 ++
+ drivers/crypto/cavium/nitrox/nitrox_main.c    |   4 +-
+ .../ethernet/cavium/liquidio/lio_vf_main.c    |   2 +-
+ drivers/pci/hotplug/pciehp.h                  |   2 +-
+ drivers/pci/hotplug/pciehp_hpc.c              |   4 +-
+ drivers/pci/pci-sysfs.c                       | 128 ++++++++-
+ drivers/pci/pci.c                             | 269 +++++++++++-------
+ drivers/pci/pci.h                             |  14 +-
+ drivers/pci/pcie/aer.c                        |  12 +-
+ drivers/pci/probe.c                           |   4 +-
+ drivers/pci/quirks.c                          |  54 ++--
+ drivers/pci/remove.c                          |   1 -
+ include/linux/pci.h                           |  16 +-
+ include/linux/pci_hotplug.h                   |   2 +-
+ 14 files changed, 385 insertions(+), 143 deletions(-)
+
+--
+2.31.1
