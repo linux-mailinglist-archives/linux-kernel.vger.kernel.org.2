@@ -2,119 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D99B394D17
-	for <lists+linux-kernel@lfdr.de>; Sat, 29 May 2021 18:12:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E2AA394D14
+	for <lists+linux-kernel@lfdr.de>; Sat, 29 May 2021 18:12:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229798AbhE2QOb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 29 May 2021 12:14:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58406 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229693AbhE2QO3 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 29 May 2021 12:14:29 -0400
-Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com [IPv6:2a00:1450:4864:20::334])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D21FFC061574
-        for <linux-kernel@vger.kernel.org>; Sat, 29 May 2021 09:12:51 -0700 (PDT)
-Received: by mail-wm1-x334.google.com with SMTP id z19-20020a7bc7d30000b029017521c1fb75so6235500wmk.0
-        for <linux-kernel@vger.kernel.org>; Sat, 29 May 2021 09:12:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=to:cc:from:subject:message-id:date:user-agent:mime-version
-         :content-language:content-transfer-encoding;
-        bh=RyyPRmWqdqxj1XLPKovb+x32n1V33tuLsF4DhaqWo+4=;
-        b=hXG/oW1XjF71NLQlfm9Wkg/w4fOHBF2iCADaa3hoOGxGVd9yx1HDgIMzm+utJivAXD
-         h5AiUj7VniPeNvYz14j+AfDqJHWpJ6bxztP/hoEL7HYJAdQYdB6nmZ6AEM+zcJ7LbS8H
-         tCGdFTCttBiHTBdzRL23fsQqfJ4bT2sXqn3g10nETCkrgr+TUnjv7PALcd/PhVxWuWYG
-         cdHbChZK+083Jzkjd/6hImVMKVbcqi193Ldymoz24DJqm5v0GRUcb0GfcJ6zM1J7/b4f
-         XumzjpyunF9Ghmc3uKJWFN223YDnv2Dsp8GOGwVBElERLtb/N5n+JH5Xo8OU0AfVdhgo
-         kTfA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:to:cc:from:subject:message-id:date:user-agent
-         :mime-version:content-language:content-transfer-encoding;
-        bh=RyyPRmWqdqxj1XLPKovb+x32n1V33tuLsF4DhaqWo+4=;
-        b=OsimnAIsW6te3ju80gePcaM4Alf+fwpDJhJTLUGJ5sghoGoqBkNHAfnhnGpnO6UO9l
-         T0iTzkzITVr+RuucPC+odo1YkGXNZwjUN7A0actf8qE+B4gaP8AfzJEW3RI7rR0dD2Xx
-         B/edrWlRts5tLz2waQNa693HIsz55TQjvH4drAvydrEr9Q5F8myWFOOFRO/3DDPqMyQq
-         NbELQhRq/YtR97cKnX5pFeh/Uh1joyUljiV6yHHh0LhIYCuEfjDQh9RC+S/fjxyz8JIO
-         l7XVlxbi5wFfQ6CKiN1SEI2PECiKjx4D4ES9k9P2YFsLdCw5v0rzSlgR4CyYPSjBOPIA
-         KrSQ==
-X-Gm-Message-State: AOAM5337N44TvZSz/W7gzqGJKMViJqQokURRj4gSdmfRkNvyy9OQNeQk
-        dBKF/Va0YskC+1SbdvY+bDyM6Q==
-X-Google-Smtp-Source: ABdhPJyI4xz2x0bt2dx6/2dwdVDNAaL7pHar0nJhxb47irbL9f0vE4JwzEPb+zBdTwsS1GUXgRgokA==
-X-Received: by 2002:a1c:6004:: with SMTP id u4mr10505518wmb.110.1622304770225;
-        Sat, 29 May 2021 09:12:50 -0700 (PDT)
-Received: from ?IPv6:2a01:e34:ed2f:f020:1d23:2234:5254:8179? ([2a01:e34:ed2f:f020:1d23:2234:5254:8179])
-        by smtp.googlemail.com with ESMTPSA id v127sm12963629wmb.46.2021.05.29.09.12.49
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 29 May 2021 09:12:49 -0700 (PDT)
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Linux PM mailing list <linux-pm@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Yangtao Li <tiny.windzz@gmail.com>,
-        Yang Yingliang <yangyingliang@huawei.com>,
-        Zhang Rui <rui.zhang@intel.com>
-From:   Daniel Lezcano <daniel.lezcano@linaro.org>
-Subject: [GIT PULL] thermal fixes for v5.13-rc4
-Message-ID: <3afbc05e-437b-91e5-fdeb-9682d33adcb9@linaro.org>
-Date:   Sat, 29 May 2021 18:12:48 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        id S229756AbhE2QNk convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Sat, 29 May 2021 12:13:40 -0400
+Received: from pegase1.c-s.fr ([93.17.236.30]:19813 "EHLO pegase1.c-s.fr"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229693AbhE2QNj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 29 May 2021 12:13:39 -0400
+Received: from localhost (mailhub3.si.c-s.fr [192.168.12.233])
+        by localhost (Postfix) with ESMTP id 4Fsmlk146wzBCPP;
+        Sat, 29 May 2021 18:12:02 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from pegase1.c-s.fr ([192.168.12.234])
+        by localhost (pegase1.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id 9sZhn_teJbZ1; Sat, 29 May 2021 18:12:02 +0200 (CEST)
+Received: from vm-hermes.si.c-s.fr (vm-hermes.si.c-s.fr [192.168.25.253])
+        by pegase1.c-s.fr (Postfix) with ESMTP id 4Fsmlk099zzBCNt;
+        Sat, 29 May 2021 18:12:02 +0200 (CEST)
+Received: by vm-hermes.si.c-s.fr (Postfix, from userid 33)
+        id B06C317A; Sat, 29 May 2021 18:16:30 +0200 (CEST)
+Received: from 37.167.209.238 ([37.167.209.238]) by messagerie.c-s.fr (Horde
+ Framework) with HTTP; Sat, 29 May 2021 18:16:30 +0200
+Date:   Sat, 29 May 2021 18:16:30 +0200
+Message-ID: <20210529181630.Horde.rvXKyt8t9f8DiqTVTuSKUw3@messagerie.c-s.fr>
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+To:     Kefeng Wang <wangkefeng.wang@huawei.com>
+Cc:     linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>
+Subject: Re: [PATCH 11/15] powerpc: convert to setup_initial_init_mm()
+References: <20210529105504.180544-1-wangkefeng.wang@huawei.com>
+ <20210529105504.180544-12-wangkefeng.wang@huawei.com>
+In-Reply-To: <20210529105504.180544-12-wangkefeng.wang@huawei.com>
+User-Agent: Internet Messaging Program (IMP) H5 (6.2.3)
+Content-Type: text/plain; charset=UTF-8; format=flowed; DelSp=Yes
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Disposition: inline
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Kefeng Wang <wangkefeng.wang@huawei.com> a écrit :
 
-Hi Linus,
+> Use setup_initial_init_mm() helper to simplify code.
+>
+> Cc: Michael Ellerman <mpe@ellerman.id.au>
+> Cc: Benjamin Herrenschmidt <benh@kernel.crashing.org>
+> Cc: linuxppc-dev@lists.ozlabs.org
+> Signed-off-by: Kefeng Wang <wangkefeng.wang@huawei.com>
+> ---
+>  arch/powerpc/kernel/setup-common.c | 5 +----
+>  1 file changed, 1 insertion(+), 4 deletions(-)
+>
+> diff --git a/arch/powerpc/kernel/setup-common.c  
+> b/arch/powerpc/kernel/setup-common.c
+> index 046fe21b5c3b..c046d99efd18 100644
+> --- a/arch/powerpc/kernel/setup-common.c
+> +++ b/arch/powerpc/kernel/setup-common.c
+> @@ -928,10 +928,7 @@ void __init setup_arch(char **cmdline_p)
+>
+>  	klp_init_thread_info(&init_task);
+>
+> -	init_mm.start_code = (unsigned long)_stext;
+> -	init_mm.end_code = (unsigned long) _etext;
+> -	init_mm.end_data = (unsigned long) _edata;
+> -	init_mm.brk = klimit;
+> +	setup_initial_init_mm(_stext, _etext, _edata, _end);
+
+This looks wrong, should be klimit instead of _end IIUC
+
+>
+>  	mm_iommu_init(&init_mm);
+>  	irqstack_early_init();
+> --
+> 2.26.2
 
 
-The following changes since commit 6efb943b8616ec53a5e444193dccf1af9ad627b5:
-
-  Linux 5.13-rc1 (2021-05-09 14:17:44 -0700)
-
-are available in the Git repository at:
-
-
-ssh://git@gitolite.kernel.org/pub/scm/linux/kernel/git/thermal/linux.git
-tags/thermal-v5.13-rc4
-
-for you to fetch changes up to 5d8db38ad7660e4d78f4e2a63f14336f31f07a63:
-
-  thermal/drivers/qcom: Fix error code in adc_tm5_get_dt_channel_data()
-(2021-05-27 11:38:34 +0200)
-
-----------------------------------------------------------------
-- Fix uninitialized error code value for the SPMI adc driver (Yang
-  Yingliang)
-
-- Fix kernel doc warning (Yang Li)
-
-- Fix wrong read-write thermal trip point initialization (Srinivas
-  Pandruvada)
-
-----------------------------------------------------------------
-Srinivas Pandruvada (1):
-      thermal/drivers/intel: Initialize RW trip to THERMAL_TEMP_INVALID
-
-Yang Li (1):
-      thermal/ti-soc-thermal: Fix kernel-doc
-
-Yang Yingliang (1):
-      thermal/drivers/qcom: Fix error code in adc_tm5_get_dt_channel_data()
-
- drivers/thermal/intel/int340x_thermal/int340x_thermal_zone.c | 4 ++++
- drivers/thermal/intel/x86_pkg_temp_thermal.c                 | 2 +-
- drivers/thermal/qcom/qcom-spmi-adc-tm5.c                     | 2 +-
- drivers/thermal/ti-soc-thermal/ti-bandgap.c                  | 2 +-
- 4 files changed, 7 insertions(+), 3 deletions(-)
-
--- 
-<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
-
-Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
-<http://twitter.com/#!/linaroorg> Twitter |
-<http://www.linaro.org/linaro-blog/> Blog
