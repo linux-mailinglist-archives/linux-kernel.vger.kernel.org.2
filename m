@@ -2,99 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C2F4394D82
-	for <lists+linux-kernel@lfdr.de>; Sat, 29 May 2021 19:12:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5CF0C394D84
+	for <lists+linux-kernel@lfdr.de>; Sat, 29 May 2021 19:23:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229834AbhE2RNu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 29 May 2021 13:13:50 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54606 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229734AbhE2RNt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 29 May 2021 13:13:49 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6B52961107;
-        Sat, 29 May 2021 17:12:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1622308332;
-        bh=ylmSLyCL6LF00Vk0pDrjmwZ52LFnCSdobf7HKQl8Tec=;
-        h=Date:From:To:Cc:Subject:From;
-        b=gxV8/pypK+O5GF1dp+CgEtLlb7hZt1TBSe56NumWNM3VD23SSXbS4L1wQfYZK8gqL
-         m6UAz6i7qceUkiVQXphvLdDqdAN3NcSp0Scv4imSC/IHfOPzLoOitZjK9SvqduQTvQ
-         8pIs47hHvUTobfk5W3xUffEQx1Jadn/FtAWj+NDg1aPtohqE4Lr1q9T7h9n4FvI1Ib
-         Fx8kWb0nrNn5AWVd8S7VNaEztthHUDzwJm6cyVLoNfmt8cz4eyDYY7U6bYhZ/cRCaP
-         y0RK5ZckZgUyZEd+WDyluHScDxi9GfxIqu+5+VaqKcvpcxUa6gaFK72zuJVRYs5fpv
-         am4tLWbbGWlmw==
-Date:   Sat, 29 May 2021 10:12:12 -0700
-From:   "Darrick J. Wong" <djwong@kernel.org>
+        id S229754AbhE2RX7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 29 May 2021 13:23:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45370 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229704AbhE2RXy (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 29 May 2021 13:23:54 -0400
+Received: from mail-pg1-x52f.google.com (mail-pg1-x52f.google.com [IPv6:2607:f8b0:4864:20::52f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C928FC061574
+        for <linux-kernel@vger.kernel.org>; Sat, 29 May 2021 10:22:17 -0700 (PDT)
+Received: by mail-pg1-x52f.google.com with SMTP id m190so5034261pga.2
+        for <linux-kernel@vger.kernel.org>; Sat, 29 May 2021 10:22:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=dabbelt-com.20150623.gappssmtp.com; s=20150623;
+        h=date:subject:cc:from:to:message-id;
+        bh=q7CQNv9swkDWDrp6f04EPlU0B7np7rtJnJeA30IsokY=;
+        b=q9ks+3gK/79CxIQZkGEG1LdX/QZTFKQv6gJ/NxUGtvJ3/pEfw1+jEFA6xjq0sGY3vV
+         zDCAwdQPY1/oM23fx++24Rtd0PCcThCSsKdYj29kLsuwmA/7s/X4MOPskzBhzCtse2Xj
+         knuGj/MoTvdrqC5lQzH+iujg9wQskBFOoLGnyCELdiDDCkiZujb0h/vLN3IQbmYlh5QA
+         5m0ImddDDPDNkBkmbJhq3uobU26COhakeowL06bfyDoiv8W1VBqT/2i432b+KFf0+Aum
+         /EghMK2FTlh2NmYNlsdijdJKt2KXgAHs6WTjlPKyn4HtOTskop7qdEm4Znh3na/T8JhY
+         ZkUw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:subject:cc:from:to:message-id;
+        bh=q7CQNv9swkDWDrp6f04EPlU0B7np7rtJnJeA30IsokY=;
+        b=s9PbqpPXQkP4uamghq13YcxjD3wd/4GeeXiHe3sjm9eZI/WY9Q8t4SyuOr2zrDGwL6
+         meEilRMzY1qzqFHtxXDQ0GcCzehi0ojfJSdnk3Urji+EvPAmWxAwxiuCzDdyXbvvAc15
+         doNS5o4phoTWWvh1OJBC57Um7VxQtaUIfkhVtU09n208jWMcTFoGL6WUITWoLzqXavw9
+         hwbMWi223shO/dQZcclL3oK247zZhfC4bmsqtZgW/wOLzgBbJNyQ9zyZHNGuXWpwMQve
+         r+fEq2HxIcc0CUq8a1tGXkEQZUrwzkgcTIlUO7AigQcP/5KVtNLzt3jGco/NCpMaWFgY
+         eYAA==
+X-Gm-Message-State: AOAM533hQmTSAcw1WdPfjSap0mmJBbjvXWWdSYVq2jKbFpCUH7H0vSiV
+        ArCJUGngIDDicXRwrj0k0mKCxt2dL/sMWw==
+X-Google-Smtp-Source: ABdhPJx3GspxyNsmPK29EQJJUBo6PPEaUQO+Az3IKbXmlReqj00gD62kDcuYmQzeVh9JBSYYmn7XZg==
+X-Received: by 2002:a63:1906:: with SMTP id z6mr14538726pgl.173.1622308936937;
+        Sat, 29 May 2021 10:22:16 -0700 (PDT)
+Received: from localhost (76-210-143-223.lightspeed.sntcca.sbcglobal.net. [76.210.143.223])
+        by smtp.gmail.com with ESMTPSA id e188sm2174595pfe.23.2021.05.29.10.22.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 29 May 2021 10:22:16 -0700 (PDT)
+Date:   Sat, 29 May 2021 10:22:16 -0700 (PDT)
+X-Google-Original-Date: Sat, 29 May 2021 10:22:13 PDT (-0700)
+Subject: [GIT PULL] RISC-V Fixes for 5.13-rc4
+CC:         linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
+From:   Palmer Dabbelt <palmer@dabbelt.com>
 To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     linux-fsdevel@vger.kernel.org, linux-xfs@vger.kernel.org,
-        david@fromorbit.com, linux-kernel@vger.kernel.org,
-        sandeen@sandeen.net, hch@lst.de
-Subject: [GIT PULL] xfs: fixes for 5.13-rc4
-Message-ID: <20210529171212.GQ2402049@locust>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Message-ID: <mhng-5051d261-3f3c-405c-a9a0-68fb70aa7c71@palmerdabbelt-glaptop>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+The following changes since commit 6efb943b8616ec53a5e444193dccf1af9ad627b5:
 
-Please pull this branch containing bug fixes for 5.13-rc4.  This week's
-pile mitigates some decades-old problems in how extent size hints
-interact with realtime volumes, fixes some failures in online shrink,
-and fixes a problem where directory and symlink shrinking on extremely
-fragmented filesystems could fail.
-
-The most user-notable change here is to point users at our (new) IRC
-channel on OFTC.  Freedom isn't free, it costs folks like you and me;
-and if you don't kowtow, they'll expel everyone and take over your
-channel.  (Ok, ok, that didn't fit the song lyrics...)
-
-The branch merges cleanly against upstream as of a few minutes ago.
-Please let me know if anything else strange happens during the merge
-process.
-
---D
-
-The following changes since commit e3c2b047475b52739bcf178a9e95176c42bbcf8f:
-
-  xfs: restore old ioctl definitions (2021-05-20 08:31:22 -0700)
+  Linux 5.13-rc1 (2021-05-09 14:17:44 -0700)
 
 are available in the Git repository at:
 
-  git://git.kernel.org/pub/scm/fs/xfs/xfs-linux.git tags/xfs-5.13-fixes-3
+  git://git.kernel.org/pub/scm/linux/kernel/git/riscv/linux.git tags/riscv-for-linus-5.13-rc4
 
-for you to fetch changes up to 0fe0bbe00a6fb77adf75085b7d06b71a830dd6f2:
+for you to fetch changes up to bab0d47c0ebb50ae0bcfa4e84986a60113bf7d6b:
 
-  xfs: bunmapi has unnecessary AG lock ordering issues (2021-05-27 08:11:24 -0700)
-
-----------------------------------------------------------------
-Fixes for 5.13-rc4:
-- Fix a bug where unmapping operations end earlier than expected, which
-  can cause chaos on multi-block directory and symlink shrink
-  operations.
-- Fix an erroneous assert that can trigger if we try to transition a
-  bmap structure from btree format to extents format with zero extents.
-  This was exposed by xfs/538.
+  riscv: kexec: Fix W=1 build warnings (2021-05-22 22:05:30 -0700)
 
 ----------------------------------------------------------------
-Darrick J. Wong (4):
-      xfs: check free AG space when making per-AG reservations
-      xfs: standardize extent size hint validation
-      xfs: validate extsz hints against rt extent size when rtinherit is set
-      xfs: add new IRC channel to MAINTAINERS
+RISC-V Fixes for 5.13-rc4
 
-Dave Chinner (2):
-      xfs: btree format inode forks can have zero extents
-      xfs: bunmapi has unnecessary AG lock ordering issues
+I have a handful of RISC-V related fixes:
 
- MAINTAINERS                     |   1 +
- fs/xfs/libxfs/xfs_ag_resv.c     |  18 +++++--
- fs/xfs/libxfs/xfs_bmap.c        |  12 -----
- fs/xfs/libxfs/xfs_inode_buf.c   |  46 ++++++++++++++++--
- fs/xfs/libxfs/xfs_trans_inode.c |  17 +++++++
- fs/xfs/xfs_inode.c              |  29 ++++++++++++
- fs/xfs/xfs_ioctl.c              | 101 ++++++++++++++--------------------------
- fs/xfs/xfs_message.h            |   2 +
- 8 files changed, 140 insertions(+), 86 deletions(-)
+* A fix to avoid errors when the stack tracing code is tracing itself.
+* A fix to resurrect the memtest= kernel command line argument on
+  RISC-V, which was briefly enabled during the merge window before a
+  refactoring disabled it.
+* A build fix and some warning cleanups.
+
+----------------------------------------------------------------
+Chen Huang (1):
+      riscv: stacktrace: fix the riscv stacktrace when CONFIG_FRAME_POINTER enabled
+
+Jisheng Zhang (2):
+      riscv: kprobes: Fix build error when MMU=n
+      riscv: kexec: Fix W=1 build warnings
+
+Kefeng Wang (1):
+      riscv: Select ARCH_USE_MEMTEST
+
+ arch/riscv/Kconfig                 |  1 +
+ arch/riscv/include/asm/kexec.h     |  4 ++--
+ arch/riscv/kernel/machine_kexec.c  | 11 ++++++-----
+ arch/riscv/kernel/probes/kprobes.c |  2 ++
+ arch/riscv/kernel/stacktrace.c     | 14 +++++++-------
+ 5 files changed, 18 insertions(+), 14 deletions(-)
