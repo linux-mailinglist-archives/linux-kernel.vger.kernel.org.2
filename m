@@ -2,102 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D1A4E394B51
-	for <lists+linux-kernel@lfdr.de>; Sat, 29 May 2021 11:28:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B5370394B49
+	for <lists+linux-kernel@lfdr.de>; Sat, 29 May 2021 11:20:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229718AbhE2Jac (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 29 May 2021 05:30:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55880 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229559AbhE2Jab (ORCPT
+        id S229716AbhE2JWE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 29 May 2021 05:22:04 -0400
+Received: from szxga01-in.huawei.com ([45.249.212.187]:2094 "EHLO
+        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229559AbhE2JWE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 29 May 2021 05:30:31 -0400
-Received: from mail-pg1-x52e.google.com (mail-pg1-x52e.google.com [IPv6:2607:f8b0:4864:20::52e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D8A7C061574;
-        Sat, 29 May 2021 02:28:54 -0700 (PDT)
-Received: by mail-pg1-x52e.google.com with SMTP id n12so1157778pgs.13;
-        Sat, 29 May 2021 02:28:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=2lh2HqwAQGOj5kWpf6oWmfpwSzHRW5V1cnXqnsFFVhw=;
-        b=UW7DXCenIWgyhTBJTmbY9iHt6VZpLaHzVKAr+CJysz1yQLgM7vV6erlKebG37lVFaE
-         zdiervS6dJMY01zInCCEg3YxYdHIHwgcyVH57asBGTuH16bmdy2xuYpOU+NSbgW6AkdU
-         n1b8aI/0zX7ryIsmC3/PdlFqy7je/pYEQQjaV3cG2rhopB8hgUABCa7+pPmEt6LgVqc+
-         iLBe9XLaW1sLsh+qa9k+Iz/eUymPhqQr+Yh1hpM5ar3QPloNl3rU2aiTAs26X5UundBc
-         WFBQhmaX7Wmj0caVQHdyVTiFtwP34t70lzxU4KzGnxIUGdRwnhPxSqoMKzjdlnlw4DaL
-         NNNA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=2lh2HqwAQGOj5kWpf6oWmfpwSzHRW5V1cnXqnsFFVhw=;
-        b=r0v05GA4AkM5f8CaP9qu5WDsZz+uQ3MxtH209sgV3GpnVkod8qmOqkrh3xSgFM5GJQ
-         AReKkZ/KTzvJNdQaW2lLLjN0GNX1Hyo/C6S3RVGDYsGYCzCBQq0jZB8tAZcsUxqiEc15
-         idE46tTS59bPmcmXRTBN1cHiJBMvmCs1lRlA7ETox707H8KgCn1pPmI2/bMlRHaRu7nO
-         Zhw2Nivv5+VQzTlhNbwPityd1lEL980pWtsmjgk4jH5Jj4V5p1aD35VcrWpFJGsNH2O3
-         TkRkcu7CgPKfP5GIRT6FaSHdxBfPPDQ5wpP1uF9kwxx2lUqEJzIiVmWxFhl5ByHDrdZw
-         hDHw==
-X-Gm-Message-State: AOAM531K5R96sgg61XgzD1a972P8uYFXRIl9ulRHhwFg6pcTffNbt8FT
-        v+iMgXwegPziruTD3eXZXEnqu2VL6aYqCTqCE6M=
-X-Google-Smtp-Source: ABdhPJzHprQj9PsnVBPoT2RDMYotOj5blsH2uy1cG3LzpwKLuueVJYmpRodfDzcb/Xa9ZzkR7x1u3xUbeIf7C7B40rg=
-X-Received: by 2002:a05:6a00:a1e:b029:2e2:89d8:5c87 with SMTP id
- p30-20020a056a000a1eb02902e289d85c87mr7936284pfh.73.1622280533583; Sat, 29
- May 2021 02:28:53 -0700 (PDT)
+        Sat, 29 May 2021 05:22:04 -0400
+Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.53])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4FsbWS6d96zWpSZ;
+        Sat, 29 May 2021 17:15:48 +0800 (CST)
+Received: from dggema762-chm.china.huawei.com (10.1.198.204) by
+ dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
+ 15.1.2176.2; Sat, 29 May 2021 17:20:26 +0800
+Received: from huawei.com (10.175.127.227) by dggema762-chm.china.huawei.com
+ (10.1.198.204) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Sat, 29
+ May 2021 17:20:26 +0800
+From:   Yu Kuai <yukuai3@huawei.com>
+To:     <gregkh@linuxfoundation.org>
+CC:     <linux-staging@lists.linux.dev>, <linux-kernel@vger.kernel.org>,
+        <yukuai3@huawei.com>, <yi.zhang@huawei.com>
+Subject: [PATCH] staging: rtl8723bs: core: rtw_mlme_ext.c: move the declaration and initialization of 'evt_seq' inside ifdef macro
+Date:   Sat, 29 May 2021 17:29:48 +0800
+Message-ID: <20210529092948.3134775-1-yukuai3@huawei.com>
+X-Mailer: git-send-email 2.25.4
 MIME-Version: 1.0
-References: <20210510095045.3299382-1-andy.shevchenko@gmail.com>
- <20210510095045.3299382-9-andy.shevchenko@gmail.com> <20210528100800.GF2209@amd>
-In-Reply-To: <20210528100800.GF2209@amd>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Sat, 29 May 2021 12:28:37 +0300
-Message-ID: <CAHp75VdYDk21OpHyxou8GQ5RtyjA0Dxppj=DZaHg4yqszcdYPQ@mail.gmail.com>
-Subject: Re: [PATCH v1 08/28] leds: lgm-sso: Put fwnode in any case during ->probe()
-To:     Pavel Machek <pavel@ucw.cz>
-Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Amireddy Mallikarjuna reddy 
-        <mallikarjunax.reddy@linux.intel.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        =?UTF-8?B?TWFyZWsgQmVow7pu?= <marek.behun@nic.cz>,
-        Abanoub Sameh <abanoubsameh8@gmail.com>,
-        Dan Murphy <dmurphy@ti.com>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        linux-leds@vger.kernel.org, linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.175.127.227]
+X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
+ dggema762-chm.china.huawei.com (10.1.198.204)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 28, 2021 at 1:08 PM Pavel Machek <pavel@ucw.cz> wrote:
+'evt_seq' is only used if 'CHECK_ENENT_SEQ' is defined, however,
+it's declared and initialized even if 'CHECK_ENENT_SEQ' is not
+defined. Thus gcc will report following warning if
+'CHECK_ENENT_SEQ' is not defined:
 
-> > @@ -734,10 +736,15 @@ static int sso_led_dt_parse(struct sso_led_priv *priv)
-> >       if (fw_ssoled) {
-> >               ret = __sso_led_dt_parse(priv, fw_ssoled);
-> >               if (ret)
-> > -                     return ret;
-> > +                     goto err_child_out;
-> >       }
-> >
-> > +     fwnode_handle_put(fw_ssoled);
-> >       return 0;
-> > +
-> > +err_child_out:
-> > +     fwnode_handle_put(fw_ssoled);
-> > +     return ret;
-> >  }
->
-> Just delete the return and you get the same effect, no? No need to
-> have two exits here.
+drivers/staging/rtl8723bs/core/rtw_mlme_ext.c:6009:15: warning:
+ variable ‘evt_seq’ set but not used [-Wunused-but-set-variable]
+ 6009 |  u8 evt_code, evt_seq;
 
-Okay, I have tried and neither result is better:
-option 1. Add ret = 0, but keep the label
-option 2. Assign 0 to ret at the definition stage and replace return
-with break and remove return 0 (I don't like that ret assigned to 0 in
-the definition block. It usually may lead to subtle errors)
-option 3+. Something I missed which you see can be done?
+Thus move the declaration and initialization of 'evt_seq' inside
+ifdef macro to fix it.
 
-Which one do you prefer?
+Signed-off-by: Yu Kuai <yukuai3@huawei.com>
+---
+ drivers/staging/rtl8723bs/core/rtw_mlme_ext.c | 12 +++++++-----
+ 1 file changed, 7 insertions(+), 5 deletions(-)
 
+diff --git a/drivers/staging/rtl8723bs/core/rtw_mlme_ext.c b/drivers/staging/rtl8723bs/core/rtw_mlme_ext.c
+index 97b3c2965770..e883371cc96d 100644
+--- a/drivers/staging/rtl8723bs/core/rtw_mlme_ext.c
++++ b/drivers/staging/rtl8723bs/core/rtw_mlme_ext.c
+@@ -6006,7 +6006,10 @@ static struct fwevent wlanevents[] = {
+ 
+ u8 mlme_evt_hdl(struct adapter *padapter, unsigned char *pbuf)
+ {
+-	u8 evt_code, evt_seq;
++#ifdef CHECK_EVENT_SEQ
++	u8 evt_seq;
++#endif
++	u8 evt_code;
+ 	u16 evt_sz;
+ 	uint	*peventbuf;
+ 	void (*event_callback)(struct adapter *dev, u8 *pbuf);
+@@ -6017,18 +6020,17 @@ u8 mlme_evt_hdl(struct adapter *padapter, unsigned char *pbuf)
+ 
+ 	peventbuf = (uint *)pbuf;
+ 	evt_sz = (u16)(*peventbuf&0xffff);
+-	evt_seq = (u8)((*peventbuf>>24)&0x7f);
+ 	evt_code = (u8)((*peventbuf>>16)&0xff);
+ 
+-
+-	#ifdef CHECK_EVENT_SEQ
++#ifdef CHECK_EVENT_SEQ
+ 	/*  checking event sequence... */
++	evt_seq = (u8)((*peventbuf>>24)&0x7f);
+ 	if (evt_seq != (atomic_read(&pevt_priv->event_seq) & 0x7f)) {
+ 		pevt_priv->event_seq = (evt_seq+1)&0x7f;
+ 
+ 		goto _abort_event_;
+ 	}
+-	#endif
++#endif
+ 
+ 	/*  checking if event code is valid */
+ 	if (evt_code >= MAX_C2HEVT)
 -- 
-With Best Regards,
-Andy Shevchenko
+2.25.4
+
