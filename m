@@ -2,33 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F485394C7D
-	for <lists+linux-kernel@lfdr.de>; Sat, 29 May 2021 16:26:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3EA90394C7E
+	for <lists+linux-kernel@lfdr.de>; Sat, 29 May 2021 16:27:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229820AbhE2O2a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 29 May 2021 10:28:30 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48712 "EHLO mail.kernel.org"
+        id S229832AbhE2O2s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 29 May 2021 10:28:48 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48804 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229686AbhE2O23 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 29 May 2021 10:28:29 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8BC3F610CB;
-        Sat, 29 May 2021 14:26:52 +0000 (UTC)
+        id S229686AbhE2O2r (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 29 May 2021 10:28:47 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 543B061157;
+        Sat, 29 May 2021 14:27:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1622298413;
-        bh=LSmQ2LDJn8ITh7Jv+KxyGNejWDI4h0ZJP+HULqoon2Y=;
+        s=korg; t=1622298430;
+        bh=oFtbwDI1AyvLbbJIuZMSthbSfn24iCR/EAVxWaL1CIo=;
         h=Date:From:To:Cc:Subject:From;
-        b=avz1N1Cr94dBzNn0b4gaFlStzU5TWL2aySVbQTAPJaWa+7bHjV695KRJ2KDvwL3wt
-         ALqVULs//+OHYPl9rmRJ58uVtuqesS8ugiu9HevOM/Y0v4/cmOUxLjPnm8Sjf6BNXL
-         uk8rVMLFChN4tLZeTSf93vz0aHxC+go9IoWmLhAY=
-Date:   Sat, 29 May 2021 16:26:50 +0200
+        b=ZLHa+XpkNXyW63cp8JSL8L156p1Uk8zeAcJ3SB/tOAUJBu3Ar5jhyyRS3740SQfy+
+         D4VzeEHoZRqzC7UTCzdMwoXmDpBvIqYKfaxsyVmbQX8bqKlKgihYLjJtxf731VNmel
+         T1gl1AelgwVNXaWuzvEYMtDOK1F89Z4LOPQNJIjU=
+Date:   Sat, 29 May 2021 16:27:08 +0200
 From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Jiri Slaby <jslaby@suse.cz>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
+To:     Linus Torvalds <torvalds@linux-foundation.org>,
         Andrew Morton <akpm@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org
-Subject: [GIT PULL] TTY/Serial driver fixes for 5.13-rc4
-Message-ID: <YLJPKme41JEplEPQ@kroah.com>
+        Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     devel@linuxdriverproject.org, linux-kernel@vger.kernel.org,
+        linux-staging@lists.linux.dev
+Subject: [GIT PULL] Staging/IIO driver fixes for 5.13-rc4
+Message-ID: <YLJPPF9wg6b1Cssj@kroah.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
@@ -36,78 +36,67 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following changes since commit 6efb943b8616ec53a5e444193dccf1af9ad627b5:
+The following changes since commit d07f6ca923ea0927a1024dfccafc5b53b61cfecc:
 
-  Linux 5.13-rc1 (2021-05-09 14:17:44 -0700)
+  Linux 5.13-rc2 (2021-05-16 15:27:44 -0700)
 
 are available in the Git repository at:
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/gregkh/tty.git tags/tty-5.13-rc4
+  git://git.kernel.org/pub/scm/linux/kernel/git/gregkh/staging.git tags/staging-5.13-rc4
 
-for you to fetch changes up to 56dde68f85be0a20935bb4ed996db7a7f68b3202:
+for you to fetch changes up to 54732a5322ff1fe0f42f2527fa6f5901a4de5111:
 
-  Revert "serial: 8250: 8250_omap: Fix possible interrupt storm" (2021-05-28 10:58:49 +0200)
+  Merge tag 'iio-fixes-5.13b-take2' of https://git.kernel.org/pub/scm/linux/kernel/git/jic23/iio into staging-linus (2021-05-22 09:49:59 +0200)
 
 ----------------------------------------------------------------
-TTY / Serial driver fixes for 5.13-rc4
+Staging / IIO driver fixes for 5.13-rc4
 
-Here are some small fixes for reported problems for tty and serial
-drivers for 5.13-rc4.
+Here are some small IIO and staging driver fixes for reported issues for
+5.13-rc4.
 
-They consist of:
-	- 8250 bugfixes and new device support
-	- lockdown security mode fixup
-	- syzbot found problems fixed
-	- 8250_omap fix for interrupt storm
-	- revert of 8250_omap driver fix as it caused worse problem than
-	  the original issue
+Nothing major here, tiny changes for reported problems, full details are
+in the shortlog if people are curious.
 
-All but the last patch have been in linux-next for a while, the last one
-is a revert of a problem found in linux-next with the 8250_omap driver
-change.
+All have been in linux-next for a while with no reported problems.
 
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ----------------------------------------------------------------
-Andrew Jeffery (2):
-      serial: 8250: Add UART_BUG_TXRACE workaround for Aspeed VUART
-      serial: 8250: Use BIT(x) for UART_{CAP,BUG}_*
+Alexandru Ardelean (1):
+      iio: adc: ad7192: handle regulator voltage error first
 
-Christian Gmeiner (1):
-      serial: 8250_pci: handle FL_NOIRQ board flag
+Andy Shevchenko (1):
+      iio: dac: ad5770r: Put fwnode in error case during ->probe()
 
-Colin Ian King (1):
-      serial: tegra: Fix a mask operation that is always true
-
-Geert Uytterhoeven (1):
-      serial: sh-sci: Fix off-by-one error in FIFO threshold register setting
+Dan Carpenter (1):
+      staging: emxx_udc: fix loop in _nbu2ss_nuke()
 
 Greg Kroah-Hartman (1):
-      Revert "serial: 8250: 8250_omap: Fix possible interrupt storm"
+      Merge tag 'iio-fixes-5.13b-take2' of https://git.kernel.org/pub/scm/linux/kernel/git/jic23/iio into staging-linus
 
-Maximilian Luz (1):
-      serial: 8250_dw: Add device HID for new AMD UART controller
+Jonathan Cameron (5):
+      iio: adc: ad7124: Fix missbalanced regulator enable / disable on error.
+      iio: adc: ad7124: Fix potential overflow due to non sequential channel numbers
+      iio: adc: ad7192: Avoid disabling a clock that was never enabled.
+      iio: adc: ad7768-1: Fix too small buffer passed to iio_push_to_buffers_with_timestamp()
+      iio: adc: ad7923: Fix undersized rx buffer.
 
-Ondrej Mosnacek (1):
-      serial: core: fix suspicious security_locked_down() call
+Lucas Stankus (1):
+      staging: iio: cdc: ad7746: avoid overwrite of num_channels
 
-Randy Wright (1):
-      serial: 8250_pci: Add support for new HPE serial device
+Rui Miguel Silva (1):
+      iio: gyro: fxas21002c: balance runtime power in error path
 
-Vignesh Raghavendra (1):
-      serial: 8250: 8250_omap: Fix possible interrupt storm
+YueHaibing (1):
+      iio: adc: ad7793: Add missing error code in ad7793_setup()
 
-Zheyu Ma (1):
-      serial: rp2: use 'request_firmware' instead of 'request_firmware_nowait'
-
- drivers/acpi/acpi_apd.c                     |  1 +
- drivers/tty/serial/8250/8250.h              | 32 +++++++++---------
- drivers/tty/serial/8250/8250_aspeed_vuart.c |  1 +
- drivers/tty/serial/8250/8250_dw.c           |  1 +
- drivers/tty/serial/8250/8250_pci.c          | 47 +++++++++++++++++++-------
- drivers/tty/serial/8250/8250_port.c         | 12 +++++++
- drivers/tty/serial/rp2.c                    | 52 ++++++++++-------------------
- drivers/tty/serial/serial-tegra.c           |  2 +-
- drivers/tty/serial/serial_core.c            |  8 +++--
- drivers/tty/serial/sh-sci.c                 |  4 +--
- 10 files changed, 92 insertions(+), 68 deletions(-)
+ drivers/iio/adc/ad7124.c            | 36 ++++++++++++++++++++----------------
+ drivers/iio/adc/ad7192.c            | 19 ++++++++++---------
+ drivers/iio/adc/ad7768-1.c          |  8 ++++++--
+ drivers/iio/adc/ad7793.c            |  1 +
+ drivers/iio/adc/ad7923.c            |  4 +++-
+ drivers/iio/dac/ad5770r.c           | 16 +++++++++++-----
+ drivers/iio/gyro/fxas21002c_core.c  |  2 ++
+ drivers/staging/emxx_udc/emxx_udc.c |  4 ++--
+ drivers/staging/iio/cdc/ad7746.c    |  1 -
+ 9 files changed, 55 insertions(+), 36 deletions(-)
