@@ -2,38 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E166F394BCA
-	for <lists+linux-kernel@lfdr.de>; Sat, 29 May 2021 12:47:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 36B59394BC8
+	for <lists+linux-kernel@lfdr.de>; Sat, 29 May 2021 12:46:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229833AbhE2Ksf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 29 May 2021 06:48:35 -0400
-Received: from szxga01-in.huawei.com ([45.249.212.187]:2098 "EHLO
-        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229746AbhE2Krn (ORCPT
+        id S229652AbhE2Ks3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 29 May 2021 06:48:29 -0400
+Received: from szxga03-in.huawei.com ([45.249.212.189]:2408 "EHLO
+        szxga03-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229754AbhE2Kro (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 29 May 2021 06:47:43 -0400
-Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.53])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4FsdQJ2ZhzzWpwN;
-        Sat, 29 May 2021 18:41:28 +0800 (CST)
+        Sat, 29 May 2021 06:47:44 -0400
+Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.55])
+        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4FsdRQ2Q5Cz66cm;
+        Sat, 29 May 2021 18:42:26 +0800 (CST)
 Received: from dggpemm500001.china.huawei.com (7.185.36.107) by
- dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
+ dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
  15.1.2176.2; Sat, 29 May 2021 18:46:06 +0800
 Received: from localhost.localdomain.localdomain (10.175.113.25) by
  dggpemm500001.china.huawei.com (7.185.36.107) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Sat, 29 May 2021 18:46:05 +0800
+ 15.1.2176.2; Sat, 29 May 2021 18:46:06 +0800
 From:   Kefeng Wang <wangkefeng.wang@huawei.com>
 To:     Andrew Morton <akpm@linux-foundation.org>,
         <linux-kernel@vger.kernel.org>
 CC:     Kefeng Wang <wangkefeng.wang@huawei.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        <linux-s390@vger.kernel.org>
-Subject: [PATCH 13/15] s390: convert to setup_initial_init_mm()
-Date:   Sat, 29 May 2021 18:55:02 +0800
-Message-ID: <20210529105504.180544-14-wangkefeng.wang@huawei.com>
+        Yoshinori Sato <ysato@users.sourceforge.jp>,
+        Rich Felker <dalias@libc.org>, <linux-sh@vger.kernel.org>
+Subject: [PATCH 14/15] sh: convert to setup_initial_init_mm()
+Date:   Sat, 29 May 2021 18:55:03 +0800
+Message-ID: <20210529105504.180544-15-wangkefeng.wang@huawei.com>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20210529105504.180544-1-wangkefeng.wang@huawei.com>
 References: <20210529105504.180544-1-wangkefeng.wang@huawei.com>
@@ -50,31 +48,30 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 Use setup_initial_init_mm() helper to simplify code.
 
-Cc: Heiko Carstens <hca@linux.ibm.com>
-Cc: Vasily Gorbik <gor@linux.ibm.com>
-Cc: Christian Borntraeger <borntraeger@de.ibm.com>
-Cc: linux-s390@vger.kernel.org
+Cc: Yoshinori Sato <ysato@users.sourceforge.jp>
+Cc: Rich Felker <dalias@libc.org>
+Cc: linux-sh@vger.kernel.org
 Signed-off-by: Kefeng Wang <wangkefeng.wang@huawei.com>
 ---
- arch/s390/kernel/setup.c | 5 +----
+ arch/sh/kernel/setup.c | 5 +----
  1 file changed, 1 insertion(+), 4 deletions(-)
 
-diff --git a/arch/s390/kernel/setup.c b/arch/s390/kernel/setup.c
-index 146d01700a55..3feb9c5972eb 100644
---- a/arch/s390/kernel/setup.c
-+++ b/arch/s390/kernel/setup.c
-@@ -1096,10 +1096,7 @@ void __init setup_arch(char **cmdline_p)
+diff --git a/arch/sh/kernel/setup.c b/arch/sh/kernel/setup.c
+index 4144be650d41..1fcb6659822a 100644
+--- a/arch/sh/kernel/setup.c
++++ b/arch/sh/kernel/setup.c
+@@ -294,10 +294,7 @@ void __init setup_arch(char **cmdline_p)
  
-         ROOT_DEV = Root_RAM0;
- 
+ 	if (!MOUNT_ROOT_RDONLY)
+ 		root_mountflags &= ~MS_RDONLY;
 -	init_mm.start_code = (unsigned long) _text;
 -	init_mm.end_code = (unsigned long) _etext;
 -	init_mm.end_data = (unsigned long) _edata;
 -	init_mm.brk = (unsigned long) _end;
 +	setup_initial_init_mm(_text, _etext, _edata, _end);
  
- 	if (IS_ENABLED(CONFIG_EXPOLINE_AUTO))
- 		nospec_auto_detect();
+ 	code_resource.start = virt_to_phys(_text);
+ 	code_resource.end = virt_to_phys(_etext)-1;
 -- 
 2.26.2
 
