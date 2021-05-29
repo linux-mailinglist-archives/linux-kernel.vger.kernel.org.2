@@ -2,169 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B0D6394B28
-	for <lists+linux-kernel@lfdr.de>; Sat, 29 May 2021 11:02:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C2969394B2B
+	for <lists+linux-kernel@lfdr.de>; Sat, 29 May 2021 11:05:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229731AbhE2JDk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 29 May 2021 05:03:40 -0400
-Received: from szxga02-in.huawei.com ([45.249.212.188]:2530 "EHLO
+        id S229686AbhE2JHZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 29 May 2021 05:07:25 -0400
+Received: from szxga02-in.huawei.com ([45.249.212.188]:2461 "EHLO
         szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229559AbhE2JDj (ORCPT
+        with ESMTP id S229559AbhE2JHY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 29 May 2021 05:03:39 -0400
-Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.55])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4Fsb8R6F04zYpPF;
-        Sat, 29 May 2021 16:59:19 +0800 (CST)
-Received: from dggemi760-chm.china.huawei.com (10.1.198.146) by
+        Sat, 29 May 2021 05:07:24 -0400
+Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.53])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4FsbDY0Grlz66yk;
+        Sat, 29 May 2021 17:02:53 +0800 (CST)
+Received: from dggema762-chm.china.huawei.com (10.1.198.204) by
  dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
- 15.1.2176.2; Sat, 29 May 2021 17:02:01 +0800
-Received: from localhost.localdomain (10.67.165.24) by
- dggemi760-chm.china.huawei.com (10.1.198.146) with Microsoft SMTP Server
+ 15.1.2176.2; Sat, 29 May 2021 17:05:39 +0800
+Received: from [10.174.179.129] (10.174.179.129) by
+ dggema762-chm.china.huawei.com (10.1.198.204) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2176.2; Sat, 29 May 2021 17:02:00 +0800
-From:   Hui Tang <tanghui20@huawei.com>
-To:     <herbert@gondor.apana.org.au>, <davem@davemloft.net>
-CC:     <linux-crypto@vger.kernel.org>, <xuzaibo@huawei.com>,
-        <wangzhou1@hisilicon.com>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH] crypto: hisilicon/hpre - register ecdh NIST P384
-Date:   Sat, 29 May 2021 16:58:47 +0800
-Message-ID: <1622278727-22349-1-git-send-email-tanghui20@huawei.com>
-X-Mailer: git-send-email 2.8.1
+ 15.1.2176.2; Sat, 29 May 2021 17:05:39 +0800
+Subject: Re: [PATCH] agp: remove set but not used variable 'current_size'
+To:     <airlied@linux.ie>
+CC:     <linux-kernel@vger.kernel.org>, <yi.zhang@huawei.com>
+References: <20210514062210.3534108-1-yukuai3@huawei.com>
+From:   "yukuai (C)" <yukuai3@huawei.com>
+Message-ID: <e44124e2-fc8b-e726-8bb2-d39095155d0d@huawei.com>
+Date:   Sat, 29 May 2021 17:05:38 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.67.165.24]
-X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
- dggemi760-chm.china.huawei.com (10.1.198.146)
+In-Reply-To: <20210514062210.3534108-1-yukuai3@huawei.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.174.179.129]
+X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
+ dggema762-chm.china.huawei.com (10.1.198.204)
 X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Register ecdh NIST P384 curve and add the tfm initialization.
+ping...
 
-Signed-off-by: Hui Tang <tanghui20@huawei.com>
----
- drivers/crypto/hisilicon/hpre/hpre_crypto.c | 56 ++++++++++++++++++++++++++---
- 1 file changed, 52 insertions(+), 4 deletions(-)
-
-diff --git a/drivers/crypto/hisilicon/hpre/hpre_crypto.c b/drivers/crypto/hisilicon/hpre/hpre_crypto.c
-index 323418b..a032c19 100644
---- a/drivers/crypto/hisilicon/hpre/hpre_crypto.c
-+++ b/drivers/crypto/hisilicon/hpre/hpre_crypto.c
-@@ -45,9 +45,11 @@ struct hpre_ctx;
- /* size in bytes of the n prime */
- #define HPRE_ECC_NIST_P192_N_SIZE	24
- #define HPRE_ECC_NIST_P256_N_SIZE	32
-+#define HPRE_ECC_NIST_P384_N_SIZE	48
- 
- /* size in bytes */
- #define HPRE_ECC_HW256_KSZ_B	32
-+#define HPRE_ECC_HW384_KSZ_B	48
- 
- typedef void (*hpre_cb)(struct hpre_ctx *ctx, void *sqe);
- 
-@@ -1211,12 +1213,21 @@ static void hpre_ecc_clear_ctx(struct hpre_ctx *ctx, bool is_clear_all,
- 	hpre_ctx_clear(ctx, is_clear_all);
- }
- 
-+/*
-+ * The bits of 192/224/256/384/521 are supported by HPRE,
-+ * and convert the bits like:
-+ * bits<=256, bits=256; 256<bits<=384, bits=384; 384<bits<=576, bits=576;
-+ * If the parameter bit width is insufficient, then we fill in the
-+ * high-order zeros by soft, so TASK_LENGTH1 is 0x3/0x5/0x8;
-+ */
- static unsigned int hpre_ecdh_supported_curve(unsigned short id)
- {
- 	switch (id) {
- 	case ECC_CURVE_NIST_P192:
- 	case ECC_CURVE_NIST_P256:
- 		return HPRE_ECC_HW256_KSZ_B;
-+	case ECC_CURVE_NIST_P384:
-+		return HPRE_ECC_HW384_KSZ_B;
- 	default:
- 		break;
- 	}
-@@ -1281,6 +1292,8 @@ static unsigned int hpre_ecdh_get_curvesz(unsigned short id)
- 		return HPRE_ECC_NIST_P192_N_SIZE;
- 	case ECC_CURVE_NIST_P256:
- 		return HPRE_ECC_NIST_P256_N_SIZE;
-+	case ECC_CURVE_NIST_P384:
-+		return HPRE_ECC_NIST_P384_N_SIZE;
- 	default:
- 		break;
- 	}
-@@ -1613,6 +1626,15 @@ static int hpre_ecdh_nist_p256_init_tfm(struct crypto_kpp *tfm)
- 	return hpre_ctx_init(ctx, HPRE_V3_ECC_ALG_TYPE);
- }
- 
-+static int hpre_ecdh_nist_p384_init_tfm(struct crypto_kpp *tfm)
-+{
-+	struct hpre_ctx *ctx = kpp_tfm_ctx(tfm);
-+
-+	ctx->curve_id = ECC_CURVE_NIST_P384;
-+
-+	return hpre_ctx_init(ctx, HPRE_V3_ECC_ALG_TYPE);
-+}
-+
- static void hpre_ecdh_exit_tfm(struct crypto_kpp *tfm)
- {
- 	struct hpre_ctx *ctx = kpp_tfm_ctx(tfm);
-@@ -2017,6 +2039,23 @@ static struct kpp_alg ecdh_nist_p256 = {
- 	},
- };
- 
-+static struct kpp_alg ecdh_nist_p384 = {
-+	.set_secret = hpre_ecdh_set_secret,
-+	.generate_public_key = hpre_ecdh_compute_value,
-+	.compute_shared_secret = hpre_ecdh_compute_value,
-+	.max_size = hpre_ecdh_max_size,
-+	.init = hpre_ecdh_nist_p384_init_tfm,
-+	.exit = hpre_ecdh_exit_tfm,
-+	.reqsize = sizeof(struct hpre_asym_request) + HPRE_ALIGN_SZ,
-+	.base = {
-+		.cra_ctxsize = sizeof(struct hpre_ctx),
-+		.cra_priority = HPRE_CRYPTO_ALG_PRI,
-+		.cra_name = "ecdh-nist-p384",
-+		.cra_driver_name = "hpre-ecdh-nist-p384",
-+		.cra_module = THIS_MODULE,
-+	},
-+};
-+
- static struct kpp_alg curve25519_alg = {
- 	.set_secret = hpre_curve25519_set_secret,
- 	.generate_public_key = hpre_curve25519_compute_value,
-@@ -2044,16 +2083,25 @@ static int hpre_register_ecdh(void)
- 		return ret;
- 
- 	ret = crypto_register_kpp(&ecdh_nist_p256);
--	if (ret) {
--		crypto_unregister_kpp(&ecdh_nist_p192);
--		return ret;
--	}
-+	if (ret)
-+		goto unregister_ecdh_p192;
-+
-+	ret = crypto_register_kpp(&ecdh_nist_p384);
-+	if (ret)
-+		goto unregister_ecdh_p256;
- 
- 	return 0;
-+
-+unregister_ecdh_p256:
-+	crypto_unregister_kpp(&ecdh_nist_p256);
-+unregister_ecdh_p192:
-+	crypto_unregister_kpp(&ecdh_nist_p192);
-+	return ret;
- }
- 
- static void hpre_unregister_ecdh(void)
- {
-+	crypto_unregister_kpp(&ecdh_nist_p384);
- 	crypto_unregister_kpp(&ecdh_nist_p256);
- 	crypto_unregister_kpp(&ecdh_nist_p192);
- }
--- 
-2.8.1
-
+On 2021/05/14 14:22, Yu Kuai wrote:
+> Fixes gcc '-Wunused-but-set-variable' warning:
+> 
+> drivers/char/agp/via-agp.c:131:28: warning: variable ‘current_size’
+> set but not used [-Wunused-but-set-variable]
+> 
+> It is never used, and so can be removed.
+> 
+> Signed-off-by: Yu Kuai <yukuai3@huawei.com>
+> ---
+>   drivers/char/agp/via-agp.c | 3 ---
+>   1 file changed, 3 deletions(-)
+> 
+> diff --git a/drivers/char/agp/via-agp.c b/drivers/char/agp/via-agp.c
+> index 87a92a044570..dc594f4eca38 100644
+> --- a/drivers/char/agp/via-agp.c
+> +++ b/drivers/char/agp/via-agp.c
+> @@ -128,9 +128,6 @@ static int via_fetch_size_agp3(void)
+>   static int via_configure_agp3(void)
+>   {
+>   	u32 temp;
+> -	struct aper_size_info_16 *current_size;
+> -
+> -	current_size = A_SIZE_16(agp_bridge->current_size);
+>   
+>   	/* address to map to */
+>   	agp_bridge->gart_bus_addr = pci_bus_address(agp_bridge->dev,
+> 
