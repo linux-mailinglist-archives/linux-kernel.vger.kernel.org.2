@@ -2,112 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CFD44394C07
-	for <lists+linux-kernel@lfdr.de>; Sat, 29 May 2021 13:26:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1BCF8394C0A
+	for <lists+linux-kernel@lfdr.de>; Sat, 29 May 2021 13:27:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229709AbhE2L16 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 29 May 2021 07:27:58 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49032 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229602AbhE2L15 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 29 May 2021 07:27:57 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 58A1E61284;
-        Sat, 29 May 2021 11:26:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1622287580;
-        bh=kmI/gnz+w3lRX666nc7l7KP6GPGuXS6lcDeSQh1DVuc=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=sHFvYT83qlx0kVABFOgEvb7SSD5lJU8ejEL2+goR7iaHzxaZ888ZGOVF91CgI/R5Z
-         zdGmvJGLFj0EWQnbqZMyiT4vrCVS8NxoZgRBJ6vAjQ9yhg35xYN4zjxxTJgHrMsWJ8
-         ky8inNSbo6vUBxGReXxyd/jVuNa/Iac1IcZdsRko=
-Date:   Sat, 29 May 2021 13:26:17 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Yu Kuai <yukuai3@huawei.com>
-Cc:     fabioaiuto83@gmail.com, linux-staging@lists.linux.dev,
-        linux-kernel@vger.kernel.org, yi.zhang@huawei.com
-Subject: Re: [PATCH V2] staging: rtl8723bs: core: rtw_mlme_ext.c: remove
- deadcode
-Message-ID: <YLIk2aE3vE3Vr1E8@kroah.com>
-References: <20210529100137.GA1416@agape.jhs>
- <20210529102431.3173753-1-yukuai3@huawei.com>
+        id S229726AbhE2L2m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 29 May 2021 07:28:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53160 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229602AbhE2L2l (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 29 May 2021 07:28:41 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD87DC061574;
+        Sat, 29 May 2021 04:27:04 -0700 (PDT)
+Date:   Sat, 29 May 2021 11:27:01 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1622287622;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=wllJsNcibiIvAJWRjtmQE4qKSzwtR0YphipOcEnQVVU=;
+        b=sy7dCbmJMq4uZCGBTegkwtgM6tQduWwfU77ptvLe3u9abNosiHMihwbghFiWQ+MC80kW/f
+        Xxd+zD16jVey5GFbNHZ4DJF5ZxrY1CjDCnWtPgtL4GJqrtmAPi3aKN+5yrxuntSfrr9689
+        vMSNjENKynOCxXRCLZPqZPwnEj8Kya0nyF2bspGNR2M92NGLjzuSHxStkUAQvvSfUnW856
+        gV+N6nI2fYPSpuxPP3J618BhQVirBUKLtKEmJRUfhrRaG3tXh+9E2NY/fequ0cbqehepgQ
+        FRKRGIlGCwo86TCBFJHrX49tmi9VEopCQ7Cc4LfE/8OqXSr9xUR9HY5HWO4tHQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1622287622;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=wllJsNcibiIvAJWRjtmQE4qKSzwtR0YphipOcEnQVVU=;
+        b=aNKGUi+h+JZmDcEr5YM5NtkAtQUbkHlcPd6vWwG8YPyLwh6g7vV9rx5FlZbosEIgjT/677
+        vY2yrXdTp78LVaDA==
+From:   "tip-bot2 for Thomas Gleixner" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: x86/urgent] x86/apic: Mark _all_ legacy interrupts when IO/APIC
+ is missing
+Cc:     Imran Khan <imran.f.khan@oracle.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Borislav Petkov <bp@suse.de>, stable@vger.kernel.org,
+        x86@kernel.org, linux-kernel@vger.kernel.org
+In-Reply-To: <20210519233928.2157496-1-imran.f.khan@oracle.com>
+References: <20210519233928.2157496-1-imran.f.khan@oracle.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210529102431.3173753-1-yukuai3@huawei.com>
+Message-ID: <162228762181.29796.12251794167483746232.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, May 29, 2021 at 06:24:31PM +0800, Yu Kuai wrote:
-> 'CHECK_EVENT_SEQ' is not defined anywhere, remove the deadcode.
-> 
-> Signed-off-by: Yu Kuai <yukuai3@huawei.com>
-> ---
->  drivers/staging/rtl8723bs/core/rtw_mlme_ext.c | 13 +------------
->  1 file changed, 1 insertion(+), 12 deletions(-)
-> 
-> diff --git a/drivers/staging/rtl8723bs/core/rtw_mlme_ext.c b/drivers/staging/rtl8723bs/core/rtw_mlme_ext.c
-> index 97b3c2965770..2b95a49ab469 100644
-> --- a/drivers/staging/rtl8723bs/core/rtw_mlme_ext.c
-> +++ b/drivers/staging/rtl8723bs/core/rtw_mlme_ext.c
-> @@ -6006,7 +6006,7 @@ static struct fwevent wlanevents[] = {
->  
->  u8 mlme_evt_hdl(struct adapter *padapter, unsigned char *pbuf)
->  {
-> -	u8 evt_code, evt_seq;
-> +	u8 evt_code;
->  	u16 evt_sz;
->  	uint	*peventbuf;
->  	void (*event_callback)(struct adapter *dev, u8 *pbuf);
-> @@ -6017,19 +6017,8 @@ u8 mlme_evt_hdl(struct adapter *padapter, unsigned char *pbuf)
->  
->  	peventbuf = (uint *)pbuf;
->  	evt_sz = (u16)(*peventbuf&0xffff);
-> -	evt_seq = (u8)((*peventbuf>>24)&0x7f);
->  	evt_code = (u8)((*peventbuf>>16)&0xff);
->  
-> -
-> -	#ifdef CHECK_EVENT_SEQ
-> -	/*  checking event sequence... */
-> -	if (evt_seq != (atomic_read(&pevt_priv->event_seq) & 0x7f)) {
-> -		pevt_priv->event_seq = (evt_seq+1)&0x7f;
-> -
-> -		goto _abort_event_;
-> -	}
-> -	#endif
-> -
->  	/*  checking if event code is valid */
->  	if (evt_code >= MAX_C2HEVT)
->  		goto _abort_event_;
-> -- 
-> 2.25.4
-> 
-> 
+The following commit has been merged into the x86/urgent branch of tip:
 
-Hi,
+Commit-ID:     7d65f9e80646c595e8c853640a9d0768a33e204c
+Gitweb:        https://git.kernel.org/tip/7d65f9e80646c595e8c853640a9d0768a33e204c
+Author:        Thomas Gleixner <tglx@linutronix.de>
+AuthorDate:    Tue, 25 May 2021 13:08:41 +02:00
+Committer:     Borislav Petkov <bp@suse.de>
+CommitterDate: Sat, 29 May 2021 11:41:14 +02:00
 
-This is the friendly patch-bot of Greg Kroah-Hartman.  You have sent him
-a patch that has triggered this response.  He used to manually respond
-to these common problems, but in order to save his sanity (he kept
-writing the same thing over and over, yet to different people), I was
-created.  Hopefully you will not take offence and will fix the problem
-in your patch and resubmit it so that it can be accepted into the Linux
-kernel tree.
+x86/apic: Mark _all_ legacy interrupts when IO/APIC is missing
 
-You are receiving this message because of the following common error(s)
-as indicated below:
+PIC interrupts do not support affinity setting and they can end up on
+any online CPU. Therefore, it's required to mark the associated vectors
+as system-wide reserved. Otherwise, the corresponding irq descriptors
+are copied to the secondary CPUs but the vectors are not marked as
+assigned or reserved. This works correctly for the IO/APIC case.
 
-- This looks like a new version of a previously submitted patch, but you
-  did not list below the --- line any changes from the previous version.
-  Please read the section entitled "The canonical patch format" in the
-  kernel file, Documentation/SubmittingPatches for what needs to be done
-  here to properly describe this.
+When the IO/APIC is disabled via config, kernel command line or lack of
+enumeration then all legacy interrupts are routed through the PIC, but
+nothing marks them as system-wide reserved vectors.
 
-If you wish to discuss this problem further, or you have questions about
-how to resolve this issue, please feel free to respond to this email and
-Greg will reply once he has dug out from the pending patches received
-from other developers.
+As a consequence, a subsequent allocation on a secondary CPU can result in
+allocating one of these vectors, which triggers the BUG() in
+apic_update_vector() because the interrupt descriptor slot is not empty.
 
-thanks,
+Imran tried to work around that by marking those interrupts as allocated
+when a CPU comes online. But that's wrong in case that the IO/APIC is
+available and one of the legacy interrupts, e.g. IRQ0, has been switched to
+PIC mode because then marking them as allocated will fail as they are
+already marked as system vectors.
 
-greg k-h's patch email bot
+Stay consistent and update the legacy vectors after attempting IO/APIC
+initialization and mark them as system vectors in case that no IO/APIC is
+available.
+
+Fixes: 69cde0004a4b ("x86/vector: Use matrix allocator for vector assignment")
+Reported-by: Imran Khan <imran.f.khan@oracle.com>
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Signed-off-by: Borislav Petkov <bp@suse.de>
+Cc: stable@vger.kernel.org
+Link: https://lkml.kernel.org/r/20210519233928.2157496-1-imran.f.khan@oracle.com
+---
+ arch/x86/include/asm/apic.h   |  1 +
+ arch/x86/kernel/apic/apic.c   |  1 +
+ arch/x86/kernel/apic/vector.c | 20 ++++++++++++++++++++
+ 3 files changed, 22 insertions(+)
+
+diff --git a/arch/x86/include/asm/apic.h b/arch/x86/include/asm/apic.h
+index 412b51e..48067af 100644
+--- a/arch/x86/include/asm/apic.h
++++ b/arch/x86/include/asm/apic.h
+@@ -174,6 +174,7 @@ static inline int apic_is_clustered_box(void)
+ extern int setup_APIC_eilvt(u8 lvt_off, u8 vector, u8 msg_type, u8 mask);
+ extern void lapic_assign_system_vectors(void);
+ extern void lapic_assign_legacy_vector(unsigned int isairq, bool replace);
++extern void lapic_update_legacy_vectors(void);
+ extern void lapic_online(void);
+ extern void lapic_offline(void);
+ extern bool apic_needs_pit(void);
+diff --git a/arch/x86/kernel/apic/apic.c b/arch/x86/kernel/apic/apic.c
+index 4a39fb4..d262811 100644
+--- a/arch/x86/kernel/apic/apic.c
++++ b/arch/x86/kernel/apic/apic.c
+@@ -2604,6 +2604,7 @@ static void __init apic_bsp_setup(bool upmode)
+ 	end_local_APIC_setup();
+ 	irq_remap_enable_fault_handling();
+ 	setup_IO_APIC();
++	lapic_update_legacy_vectors();
+ }
+ 
+ #ifdef CONFIG_UP_LATE_INIT
+diff --git a/arch/x86/kernel/apic/vector.c b/arch/x86/kernel/apic/vector.c
+index 6dbdc7c..fb67ed5 100644
+--- a/arch/x86/kernel/apic/vector.c
++++ b/arch/x86/kernel/apic/vector.c
+@@ -738,6 +738,26 @@ void lapic_assign_legacy_vector(unsigned int irq, bool replace)
+ 	irq_matrix_assign_system(vector_matrix, ISA_IRQ_VECTOR(irq), replace);
+ }
+ 
++void __init lapic_update_legacy_vectors(void)
++{
++	unsigned int i;
++
++	if (IS_ENABLED(CONFIG_X86_IO_APIC) && nr_ioapics > 0)
++		return;
++
++	/*
++	 * If the IO/APIC is disabled via config, kernel command line or
++	 * lack of enumeration then all legacy interrupts are routed
++	 * through the PIC. Make sure that they are marked as legacy
++	 * vectors. PIC_CASCADE_IRQ has already been marked in
++	 * lapic_assign_system_vectors().
++	 */
++	for (i = 0; i < nr_legacy_irqs(); i++) {
++		if (i != PIC_CASCADE_IR)
++			lapic_assign_legacy_vector(i, true);
++	}
++}
++
+ void __init lapic_assign_system_vectors(void)
+ {
+ 	unsigned int i, vector = 0;
