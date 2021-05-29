@@ -2,34 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 78984394C11
-	for <lists+linux-kernel@lfdr.de>; Sat, 29 May 2021 13:46:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E4EB4394C13
+	for <lists+linux-kernel@lfdr.de>; Sat, 29 May 2021 13:49:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229746AbhE2Lro (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 29 May 2021 07:47:44 -0400
-Received: from szxga02-in.huawei.com ([45.249.212.188]:2538 "EHLO
-        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229602AbhE2Lrn (ORCPT
+        id S229762AbhE2Lub (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 29 May 2021 07:50:31 -0400
+Received: from szxga08-in.huawei.com ([45.249.212.255]:2355 "EHLO
+        szxga08-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229602AbhE2Lu3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 29 May 2021 07:47:43 -0400
-Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.54])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4Fsfnj4Nq1zYrfs;
-        Sat, 29 May 2021 19:43:21 +0800 (CST)
+        Sat, 29 May 2021 07:50:29 -0400
+Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.57])
+        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4Fsfpj4Z22z1BFXH;
+        Sat, 29 May 2021 19:44:13 +0800 (CST)
 Received: from dggema769-chm.china.huawei.com (10.1.198.211) by
- dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
+ dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
- 15.1.2176.2; Sat, 29 May 2021 19:46:03 +0800
+ 15.1.2176.2; Sat, 29 May 2021 19:48:51 +0800
 Received: from localhost (10.174.179.215) by dggema769-chm.china.huawei.com
  (10.1.198.211) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Sat, 29
- May 2021 19:46:02 +0800
+ May 2021 19:48:50 +0800
 From:   YueHaibing <yuehaibing@huawei.com>
-To:     <davem@davemloft.net>, <kuba@kernel.org>
-CC:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        YueHaibing <yuehaibing@huawei.com>
-Subject: [PATCH net-next] pktgen: Use BIT(x) macro
-Date:   Sat, 29 May 2021 19:45:59 +0800
-Message-ID: <20210529114559.24604-1-yuehaibing@huawei.com>
+To:     <sfrench@samba.org>
+CC:     <linux-cifs@vger.kernel.org>, <samba-technical@lists.samba.org>,
+        <linux-kernel@vger.kernel.org>, YueHaibing <yuehaibing@huawei.com>
+Subject: [PATCH -next] cifs: Remove unused inline function is_sysvol_or_netlogon()
+Date:   Sat, 29 May 2021 19:48:48 +0800
+Message-ID: <20210529114848.19608-1-yuehaibing@huawei.com>
 X-Mailer: git-send-email 2.10.2.windows.1
 MIME-Version: 1.0
 Content-Type: text/plain
@@ -41,32 +41,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-BIT(x) improves readability and safety with respect to shifts.
+is_sysvol_or_netlogon() is never used, so can remove it.
 
 Signed-off-by: YueHaibing <yuehaibing@huawei.com>
 ---
- net/core/pktgen.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ fs/cifs/dfs_cache.c | 11 -----------
+ 1 file changed, 11 deletions(-)
 
-diff --git a/net/core/pktgen.c b/net/core/pktgen.c
-index 3fba429f1f57..2915153458aa 100644
---- a/net/core/pktgen.c
-+++ b/net/core/pktgen.c
-@@ -218,10 +218,10 @@ static char *pkt_flag_names[] = {
- #define NR_PKT_FLAGS		ARRAY_SIZE(pkt_flag_names)
+diff --git a/fs/cifs/dfs_cache.c b/fs/cifs/dfs_cache.c
+index b1fa30fefe1f..03c81c39a507 100644
+--- a/fs/cifs/dfs_cache.c
++++ b/fs/cifs/dfs_cache.c
+@@ -319,17 +319,6 @@ static inline unsigned int cache_entry_hash(const void *data, int size)
+ 	return h & (CACHE_HTABLE_SIZE - 1);
+ }
  
- /* Thread control flag bits */
--#define T_STOP        (1<<0)	/* Stop run */
--#define T_RUN         (1<<1)	/* Start run */
--#define T_REMDEVALL   (1<<2)	/* Remove all devs */
--#define T_REMDEV      (1<<3)	/* Remove one dev */
-+#define T_STOP        BIT(0)	/* Stop run */
-+#define T_RUN         BIT(1)	/* Start run */
-+#define T_REMDEVALL   BIT(2)	/* Remove all devs */
-+#define T_REMDEV      BIT(3)	/* Remove one dev */
- 
- /* Xmit modes */
- #define M_START_XMIT		0	/* Default normal TX */
+-/* Check whether second path component of @path is SYSVOL or NETLOGON */
+-static inline bool is_sysvol_or_netlogon(const char *path)
+-{
+-	const char *s;
+-	char sep = path[0];
+-
+-	s = strchr(path + 1, sep) + 1;
+-	return !strncasecmp(s, "sysvol", strlen("sysvol")) ||
+-		!strncasecmp(s, "netlogon", strlen("netlogon"));
+-}
+-
+ /* Return target hint of a DFS cache entry */
+ static inline char *get_tgt_name(const struct cache_entry *ce)
+ {
 -- 
 2.17.1
 
