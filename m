@@ -2,88 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B211C394B93
-	for <lists+linux-kernel@lfdr.de>; Sat, 29 May 2021 12:17:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EAB01394BA8
+	for <lists+linux-kernel@lfdr.de>; Sat, 29 May 2021 12:27:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229652AbhE2KQu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 29 May 2021 06:16:50 -0400
-Received: from szxga01-in.huawei.com ([45.249.212.187]:5142 "EHLO
-        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229575AbhE2KQt (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 29 May 2021 06:16:49 -0400
-Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.54])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4Fscms1h04zYmyg;
-        Sat, 29 May 2021 18:12:29 +0800 (CST)
-Received: from dggema762-chm.china.huawei.com (10.1.198.204) by
- dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
- 15.1.2176.2; Sat, 29 May 2021 18:15:10 +0800
-Received: from huawei.com (10.175.127.227) by dggema762-chm.china.huawei.com
- (10.1.198.204) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Sat, 29
- May 2021 18:15:09 +0800
-From:   Yu Kuai <yukuai3@huawei.com>
-To:     <gregkh@linuxfoundation.org>, <fabioaiuto83@gmail.com>
-CC:     <linux-staging@lists.linux.dev>, <linux-kernel@vger.kernel.org>,
-        <yukuai3@huawei.com>, <yi.zhang@huawei.com>
-Subject: [PATCH V2] staging: rtl8723bs: core: rtw_mlme_ext.c: remove deadcode
-Date:   Sat, 29 May 2021 18:24:31 +0800
-Message-ID: <20210529102431.3173753-1-yukuai3@huawei.com>
-X-Mailer: git-send-email 2.25.4
-In-Reply-To: <20210529100137.GA1416@agape.jhs>
-References: <20210529100137.GA1416@agape.jhs>
+        id S229674AbhE2K3c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 29 May 2021 06:29:32 -0400
+Received: from phobos.denx.de ([85.214.62.61]:59562 "EHLO phobos.denx.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229575AbhE2K3b (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 29 May 2021 06:29:31 -0400
+Received: from mail-internal.denx.de (p578adb1c.dip0.t-ipconnect.de [87.138.219.28])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: noc@denx.de)
+        by phobos.denx.de (Postfix) with ESMTPSA id E801881ECA
+        for <linux-kernel@vger.kernel.org>; Sat, 29 May 2021 12:27:53 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=denx.de;
+        s=phobos-20191101; t=1622284073;
+        bh=0K5fa1pym+uYrWwUk5lMIEsPkX2k9QBt+qQSNfxfW38=;
+        h=From:To:Cc:Subject:Date:From;
+        b=DAA2sQ/oPk60qUa600SZlWYTjfJ/5wIWZQBlMIKeCSraXqk00lsKSYVTMdKkFOVN9
+         Fc11JB7ZrnReBDE8JmRDTyYi6AllspFOuHyXs4DY7aGbxrzGL+gQ/Bf2XN8NR8SDqz
+         qXDkJMeVKtqNOo7lqQlb3EsB4LYimxdAhV8fByxGbeAaT+jfOwRL9EwCnroo1sm181
+         MTKTH7Hm+Esp2jchFBjzSQ3mlAsfYyp1BTU7M5qY/HbuHeEJZIGBR/jjZzj1v+idNE
+         S7XfgI06+NQzNp4BKviPA1POhYBBvTl6UB0+sreQ7u+LvoamOSr5VdfdwP0r+bvIC7
+         PmdjQXmePDgzw==
+Received: from pollux.denx.de (pollux [192.168.1.1])
+        by mail-internal.denx.de (Postfix) with ESMTP id 91283182BA2;
+        Sat, 29 May 2021 12:27:46 +0200 (CEST)
+Received: by pollux.denx.de (Postfix, from userid 515)
+        id 6B0D31A8BC4; Sat, 29 May 2021 12:27:46 +0200 (CEST)
+From:   Heiko Schocher <hs@denx.de>
+To:     linux-mtd@lists.infradead.org
+Cc:     Heiko Schocher <hs@denx.de>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Richard Weinberger <richard@nod.at>,
+        Rob Herring <robh+dt@kernel.org>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v2 0/2] mtd: devices: add support for microchip 48l640 EERAM
+Date:   Sat, 29 May 2021 12:27:42 +0200
+Message-Id: <20210529102744.1251220-1-hs@denx.de>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.127.227]
-X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
- dggema762-chm.china.huawei.com (10.1.198.204)
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 8bit
+X-Virus-Scanned: clamav-milter 0.102.4 at phobos.denx.de
+X-Virus-Status: Clean
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-'CHECK_EVENT_SEQ' is not defined anywhere, remove the deadcode.
 
-Signed-off-by: Yu Kuai <yukuai3@huawei.com>
----
- drivers/staging/rtl8723bs/core/rtw_mlme_ext.c | 13 +------------
- 1 file changed, 1 insertion(+), 12 deletions(-)
+add support for microchip 48l640 eeram connected via
+SPI. Patch 1 introduces devicetree documentation
+and patch 2 the driver.
 
-diff --git a/drivers/staging/rtl8723bs/core/rtw_mlme_ext.c b/drivers/staging/rtl8723bs/core/rtw_mlme_ext.c
-index 97b3c2965770..2b95a49ab469 100644
---- a/drivers/staging/rtl8723bs/core/rtw_mlme_ext.c
-+++ b/drivers/staging/rtl8723bs/core/rtw_mlme_ext.c
-@@ -6006,7 +6006,7 @@ static struct fwevent wlanevents[] = {
- 
- u8 mlme_evt_hdl(struct adapter *padapter, unsigned char *pbuf)
- {
--	u8 evt_code, evt_seq;
-+	u8 evt_code;
- 	u16 evt_sz;
- 	uint	*peventbuf;
- 	void (*event_callback)(struct adapter *dev, u8 *pbuf);
-@@ -6017,19 +6017,8 @@ u8 mlme_evt_hdl(struct adapter *padapter, unsigned char *pbuf)
- 
- 	peventbuf = (uint *)pbuf;
- 	evt_sz = (u16)(*peventbuf&0xffff);
--	evt_seq = (u8)((*peventbuf>>24)&0x7f);
- 	evt_code = (u8)((*peventbuf>>16)&0xff);
- 
--
--	#ifdef CHECK_EVENT_SEQ
--	/*  checking event sequence... */
--	if (evt_seq != (atomic_read(&pevt_priv->event_seq) & 0x7f)) {
--		pevt_priv->event_seq = (evt_seq+1)&0x7f;
--
--		goto _abort_event_;
--	}
--	#endif
--
- 	/*  checking if event code is valid */
- 	if (evt_code >= MAX_C2HEVT)
- 		goto _abort_event_;
+
+Changes in v2:
+as Rob helped, fix warnings from running command
+'make DT_CHECKER_FLAGS=-m dt_binding_check'
+- fix build warnings
+- add Fabios Tested-by
+
+Heiko Schocher (2):
+  mtd: devices: add devicetree documentation for microchip 48l640
+  mtd: devices: add support for microchip 48l640 EERAM
+
+ .../bindings/mtd/microchip,mchp48l640.yaml    |  45 +++
+ drivers/mtd/devices/Kconfig                   |   6 +
+ drivers/mtd/devices/Makefile                  |   1 +
+ drivers/mtd/devices/mchp48l640.c              | 374 ++++++++++++++++++
+ 4 files changed, 426 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/mtd/microchip,mchp48l640.yaml
+ create mode 100644 drivers/mtd/devices/mchp48l640.c
+
 -- 
-2.25.4
+2.30.2
 
