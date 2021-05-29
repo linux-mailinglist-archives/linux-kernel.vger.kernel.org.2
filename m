@@ -2,160 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D856394AC6
-	for <lists+linux-kernel@lfdr.de>; Sat, 29 May 2021 08:33:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E442A394AC8
+	for <lists+linux-kernel@lfdr.de>; Sat, 29 May 2021 08:36:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229698AbhE2Gez (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 29 May 2021 02:34:55 -0400
-Received: from mail-il1-f197.google.com ([209.85.166.197]:47747 "EHLO
-        mail-il1-f197.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229614AbhE2Gev (ORCPT
+        id S229652AbhE2Gid (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 29 May 2021 02:38:33 -0400
+Received: from mail-lj1-f182.google.com ([209.85.208.182]:33763 "EHLO
+        mail-lj1-f182.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229547AbhE2Gic (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 29 May 2021 02:34:51 -0400
-Received: by mail-il1-f197.google.com with SMTP id c2-20020a92d3c20000b02901d9fda18626so489259ilh.14
-        for <linux-kernel@vger.kernel.org>; Fri, 28 May 2021 23:33:16 -0700 (PDT)
+        Sat, 29 May 2021 02:38:32 -0400
+Received: by mail-lj1-f182.google.com with SMTP id o8so8049234ljp.0;
+        Fri, 28 May 2021 23:36:55 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=WVZJnUAlwP86+Nc2TtM74BnEHSWsh0nAvTld31Kj4iY=;
-        b=lAizSCmpn+V5JpYJT6GRmo9bG4Qkq3kUuRg3AE6B7u9RvUNYbpCsMo2gfdr1dYsnw2
-         V9ERmsYf75UUpTBvK12CgYgzlXq/mVb0pdECNuUefTgd1yR8BK8PLx7sY8eD4XJRo5uc
-         sAPHPbCWz3WmYG31OLSHimBw/2+4EoYctHEFjmH1ZiKI2lEU6TysGtLakIzi9tUO/kNm
-         5Vq7LoxOmN30eH7yq+rOclZwQN884aXAChKFBjtAnSMDuFm9uQrRRaUI68p5TpLEUShr
-         8zp3Emwe4sUTppz6GHOWf9791UuB6SStSwbVVz6bcjANvC5RIhybqBmSSLiqoUmdhK/t
-         jbuA==
-X-Gm-Message-State: AOAM531jDDpz6Q9zzeeDrbAJQj+F/eZNzMzc8eyQVzRs76rEuYNoTFma
-        xZuJh2B/6qpgFPRZXnO7CDKG2n0GMZ29co1OHyBeqIS+Vbz/
-X-Google-Smtp-Source: ABdhPJw++tRyQiRWMdyRmN9o4KBOqsTN6FIaKBk1ra3mhsuocGLdBPThKTuJzUNtPyXwqwW4EGJx3vsq/wWzW5K9kHvA/7Jxm233
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=tA8bN2YzNQKfw1BCEp767KuRQbdDjks5njClJ7GzgoE=;
+        b=L53Entvy7d+f4S5YKcEc2PyN4tx8sfimPUSBWSN1VZHLUkB+ZdhIduWAkXciCOndIN
+         Vi8ijLQhY5dI0ztDjISaGD0KbCP/SvA01Tc840JYFymItsC09AnYxBj+zcf2loC0b0QP
+         gphd734sgkrhMt1VOh8C4viAFsc5ad63rgFAxJzJyQzDrqDJzBwXdI76ondK9wScwKj6
+         rtlZxbpwIKYzqngK5PEwilghgW7k5elSXkgw0JGIQskpKoJeeE4ww82RWe0keMb+p8PZ
+         5FKNWGkWy8BfchL4P/KrQFjpMaV8aweO0W8gMQr0HJjdyjqD6fJFRZXo16X8VoYta+0t
+         MX+A==
+X-Gm-Message-State: AOAM531cdFBE3QybSP7344GynCOtFAfonoAnqltT+3fAYavHlwGHE13p
+        HsK++px4hVOdqEtUzkGErWOresIHArg=
+X-Google-Smtp-Source: ABdhPJy2msKRIPpG5RG0X2hDv0JePHQpL7qN4mDo6L5U8y7eTL2BiOPqM7vB/5cfs+7FOT5olRjfUw==
+X-Received: by 2002:a2e:a54d:: with SMTP id e13mr9026970ljn.266.1622270214132;
+        Fri, 28 May 2021 23:36:54 -0700 (PDT)
+Received: from [10.68.32.147] (broadband-188-32-236-56.ip.moscow.rt.ru. [188.32.236.56])
+        by smtp.gmail.com with ESMTPSA id z132sm652646lfa.66.2021.05.28.23.36.53
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 28 May 2021 23:36:53 -0700 (PDT)
+Subject: Re: [PATCH v2][next] floppy: Fix fall-through warning for Clang
+To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Jens Axboe <axboe@kernel.dk>
+Cc:     linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-hardening@vger.kernel.org
+References: <20210528200335.GA39252@embeddedor>
+From:   Denis Efremov <efremov@linux.com>
+Message-ID: <07887f9c-c33d-9398-4939-2f23ebb1d094@linux.com>
+Date:   Sat, 29 May 2021 09:37:49 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.2
 MIME-Version: 1.0
-X-Received: by 2002:a05:6638:1650:: with SMTP id a16mr11802842jat.23.1622269995698;
- Fri, 28 May 2021 23:33:15 -0700 (PDT)
-Date:   Fri, 28 May 2021 23:33:15 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000d2cdff05c3722a6c@google.com>
-Subject: [syzbot] memory leak in io_submit_sqes (3)
-From:   syzbot <syzbot+189b24ff132397acb8fd@syzkaller.appspotmail.com>
-To:     asml.silence@gmail.com, axboe@kernel.dk, io-uring@vger.kernel.org,
-        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210528200335.GA39252@embeddedor>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+Hi,
 
-syzbot found the following issue on:
+On 5/28/21 11:03 PM, Gustavo A. R. Silva wrote:
+> In preparation to enable -Wimplicit-fallthrough for Clang, fix a warning
+> by explicitly adding a break statement instead of letting the code fall
+> through to the next case.
+> 
+> Link: https://github.com/KSPP/linux/issues/115
+> Link: https://lore.kernel.org/linux-hardening/47bcd36a-6524-348b-e802-0691d1b3c429@kernel.dk/
+> Suggested-by: Jens Axboe <axboe@kernel.dk>
+> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
 
-HEAD commit:    97e5bf60 Merge branch 'for-5.13-fixes' of git://git.kernel..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=17a782d3d00000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=b8c23f7848d1c696
-dashboard link: https://syzkaller.appspot.com/bug?extid=189b24ff132397acb8fd
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=122ff517d00000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=12cf7cb7d00000
+Applied, thanks!
+https://github.com/evdenis/linux-floppy/commit/6eaddb2a2aa3acd0660537f9f6a12785be0ae830
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+189b24ff132397acb8fd@syzkaller.appspotmail.com
+I will send it to Jens with other floppy patches.
+It will be in 5.14
 
-executing program
-BUG: memory leak
-unreferenced object 0xffff888117747500 (size 232):
-  comm "syz-executor793", pid 8437, jiffies 4294941760 (age 14.380s)
-  hex dump (first 32 bytes):
-    00 a2 11 02 81 88 ff ff 18 4e 6f 16 81 88 ff ff  .........No.....
-    38 20 00 40 00 00 00 00 00 00 00 00 00 00 00 00  8 .@............
-  backtrace:
-    [<ffffffff81613299>] io_alloc_req fs/io_uring.c:1707 [inline]
-    [<ffffffff81613299>] io_submit_sqes+0x6c9/0x23b0 fs/io_uring.c:6721
-    [<ffffffff81615798>] __do_sys_io_uring_enter+0x818/0xf50 fs/io_uring.c:9319
-    [<ffffffff8435309a>] do_syscall_64+0x3a/0xb0 arch/x86/entry/common.c:47
-    [<ffffffff84400068>] entry_SYSCALL_64_after_hwframe+0x44/0xae
+Regards,
+Denis
 
-BUG: memory leak
-unreferenced object 0xffff888117747400 (size 232):
-  comm "syz-executor793", pid 8437, jiffies 4294941760 (age 14.380s)
-  hex dump (first 32 bytes):
-    00 a2 11 02 81 88 ff ff 18 4e 6f 16 81 88 ff ff  .........No.....
-    38 20 00 40 00 00 00 00 00 00 00 00 00 00 00 00  8 .@............
-  backtrace:
-    [<ffffffff81613299>] io_alloc_req fs/io_uring.c:1707 [inline]
-    [<ffffffff81613299>] io_submit_sqes+0x6c9/0x23b0 fs/io_uring.c:6721
-    [<ffffffff81615798>] __do_sys_io_uring_enter+0x818/0xf50 fs/io_uring.c:9319
-    [<ffffffff8435309a>] do_syscall_64+0x3a/0xb0 arch/x86/entry/common.c:47
-    [<ffffffff84400068>] entry_SYSCALL_64_after_hwframe+0x44/0xae
-
-BUG: memory leak
-unreferenced object 0xffff888117747300 (size 232):
-  comm "syz-executor793", pid 8437, jiffies 4294941760 (age 14.380s)
-  hex dump (first 32 bytes):
-    00 a2 11 02 81 88 ff ff 18 4e 6f 16 81 88 ff ff  .........No.....
-    38 20 00 40 00 00 00 00 00 00 00 00 00 00 00 00  8 .@............
-  backtrace:
-    [<ffffffff81613299>] io_alloc_req fs/io_uring.c:1707 [inline]
-    [<ffffffff81613299>] io_submit_sqes+0x6c9/0x23b0 fs/io_uring.c:6721
-    [<ffffffff81615798>] __do_sys_io_uring_enter+0x818/0xf50 fs/io_uring.c:9319
-    [<ffffffff8435309a>] do_syscall_64+0x3a/0xb0 arch/x86/entry/common.c:47
-    [<ffffffff84400068>] entry_SYSCALL_64_after_hwframe+0x44/0xae
-
-BUG: memory leak
-unreferenced object 0xffff888117747200 (size 232):
-  comm "syz-executor793", pid 8437, jiffies 4294941760 (age 14.380s)
-  hex dump (first 32 bytes):
-    00 a2 11 02 81 88 ff ff 18 4e 6f 16 81 88 ff ff  .........No.....
-    38 20 00 40 00 00 00 00 00 00 00 00 00 00 00 00  8 .@............
-  backtrace:
-    [<ffffffff81613299>] io_alloc_req fs/io_uring.c:1707 [inline]
-    [<ffffffff81613299>] io_submit_sqes+0x6c9/0x23b0 fs/io_uring.c:6721
-    [<ffffffff81615798>] __do_sys_io_uring_enter+0x818/0xf50 fs/io_uring.c:9319
-    [<ffffffff8435309a>] do_syscall_64+0x3a/0xb0 arch/x86/entry/common.c:47
-    [<ffffffff84400068>] entry_SYSCALL_64_after_hwframe+0x44/0xae
-
-BUG: memory leak
-unreferenced object 0xffff888117747100 (size 232):
-  comm "syz-executor793", pid 8437, jiffies 4294941760 (age 14.380s)
-  hex dump (first 32 bytes):
-    00 a2 11 02 81 88 ff ff 18 4e 6f 16 81 88 ff ff  .........No.....
-    38 20 00 40 00 00 00 00 00 00 00 00 00 00 00 00  8 .@............
-  backtrace:
-    [<ffffffff81613299>] io_alloc_req fs/io_uring.c:1707 [inline]
-    [<ffffffff81613299>] io_submit_sqes+0x6c9/0x23b0 fs/io_uring.c:6721
-    [<ffffffff81615798>] __do_sys_io_uring_enter+0x818/0xf50 fs/io_uring.c:9319
-    [<ffffffff8435309a>] do_syscall_64+0x3a/0xb0 arch/x86/entry/common.c:47
-    [<ffffffff84400068>] entry_SYSCALL_64_after_hwframe+0x44/0xae
-
-BUG: memory leak
-unreferenced object 0xffff88811774acc0 (size 64):
-  comm "syz-executor793", pid 8437, jiffies 4294941760 (age 14.380s)
-  hex dump (first 32 bytes):
-    00 00 00 00 00 00 00 00 00 4e 6f 16 81 88 ff ff  .........No.....
-    38 20 00 40 00 00 00 00 00 00 00 00 00 00 00 00  8 .@............
-  backtrace:
-    [<ffffffff81607a9a>] kmalloc include/linux/slab.h:556 [inline]
-    [<ffffffff81607a9a>] __io_queue_proc+0x10a/0x1b0 fs/io_uring.c:5027
-    [<ffffffff824b8aa6>] poll_wait include/linux/poll.h:51 [inline]
-    [<ffffffff824b8aa6>] n_tty_poll+0x76/0x3a0 drivers/tty/n_tty.c:2429
-    [<ffffffff824b3319>] tty_poll+0x89/0xc0 drivers/tty/tty_io.c:2231
-    [<ffffffff81600e79>] vfs_poll include/linux/poll.h:90 [inline]
-    [<ffffffff81600e79>] __io_arm_poll_handler+0xb9/0x2b0 fs/io_uring.c:5118
-    [<ffffffff81607137>] io_poll_add.constprop.0+0x47/0x180 fs/io_uring.c:5402
-    [<ffffffff8160f6cf>] io_issue_sqe+0x19f/0x2880 fs/io_uring.c:6126
-    [<ffffffff81611e4a>] __io_queue_sqe+0x9a/0x620 fs/io_uring.c:6414
-    [<ffffffff81612a65>] io_queue_sqe+0x275/0x3e0 fs/io_uring.c:6463
-    [<ffffffff81614bf8>] io_submit_sqe fs/io_uring.c:6626 [inline]
-    [<ffffffff81614bf8>] io_submit_sqes+0x2028/0x23b0 fs/io_uring.c:6734
-    [<ffffffff81615798>] __do_sys_io_uring_enter+0x818/0xf50 fs/io_uring.c:9319
-    [<ffffffff8435309a>] do_syscall_64+0x3a/0xb0 arch/x86/entry/common.c:47
-    [<ffffffff84400068>] entry_SYSCALL_64_after_hwframe+0x44/0xae
-
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-syzbot can test patches for this issue, for details see:
-https://goo.gl/tpsmEJ#testing-patches
+> ---
+> Changes in v2:
+>   - Add a break statement instead of fallthrough;
+> 
+>   drivers/block/floppy.c | 1 +
+>   1 file changed, 1 insertion(+)
+> 
+> diff --git a/drivers/block/floppy.c b/drivers/block/floppy.c
+> index 8a9d22207c59..803af2a72520 100644
+> --- a/drivers/block/floppy.c
+> +++ b/drivers/block/floppy.c
+> @@ -2123,6 +2123,7 @@ static void format_interrupt(void)
+>   	switch (interpret_errors()) {
+>   	case 1:
+>   		cont->error();
+> +		break;
+>   	case 2:
+>   		break;
+>   	case 0:
+> 
