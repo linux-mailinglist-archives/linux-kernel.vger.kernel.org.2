@@ -2,211 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE252394DAF
-	for <lists+linux-kernel@lfdr.de>; Sat, 29 May 2021 20:42:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 677F7394DC1
+	for <lists+linux-kernel@lfdr.de>; Sat, 29 May 2021 20:48:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229827AbhE2SmQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 29 May 2021 14:42:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34114 "EHLO
+        id S229887AbhE2SuZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 29 May 2021 14:50:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35896 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229726AbhE2SmP (ORCPT
+        with ESMTP id S229822AbhE2SuW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 29 May 2021 14:42:15 -0400
-Received: from mail-pf1-x429.google.com (mail-pf1-x429.google.com [IPv6:2607:f8b0:4864:20::429])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1044C061574
-        for <linux-kernel@vger.kernel.org>; Sat, 29 May 2021 11:40:38 -0700 (PDT)
-Received: by mail-pf1-x429.google.com with SMTP id z26so1805764pfj.5
-        for <linux-kernel@vger.kernel.org>; Sat, 29 May 2021 11:40:38 -0700 (PDT)
+        Sat, 29 May 2021 14:50:22 -0400
+Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C668EC0613CE
+        for <linux-kernel@vger.kernel.org>; Sat, 29 May 2021 11:48:45 -0700 (PDT)
+Received: by mail-ed1-x52f.google.com with SMTP id df21so8635814edb.3
+        for <linux-kernel@vger.kernel.org>; Sat, 29 May 2021 11:48:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=dabbelt-com.20150623.gappssmtp.com; s=20150623;
-        h=date:subject:in-reply-to:cc:from:to:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Y5eeuuk+L/opcH1pywf9XaZz1CvayeU6mj335HgHfKQ=;
-        b=ICvFaD3jWrVFqzIKbhlTkKMyMhVw8JNUOBos7wMlnhofEwbn86h/BC77sKLPjNsPgP
-         HiddcDkdZjwCdGm5EJgM+5X7eX/0HGui8ZCraI7n7sqBhUleV4OL9CONlK5yRe33TyxU
-         rBncFJS2sOHEpWBcLqhqV6C16Ljd3l2I2Wf8BQu606roIDWx/UEP6Wfo8+WPR74TryVF
-         pknTxXPFYEI0UR5rIfdG47/or7IrzYZbwZ5V51Mr1q6rjn2dliovcvYksMbzksyPoyhM
-         fPugpjLMDYoIqkamDWrGVKZfkp4F1kjErN+/9HI79jFhbq1Mi2hhYWBTSZU6+VjZf7ZZ
-         Wo5g==
+        d=paul-moore-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=PxkN5674Gdo7C/DvFwdmRlPrHnz0qD2VW7zEeao9HA0=;
+        b=egZtDVPv+pEmzpQcYmGqbrNNZyRf7Aqgebz64H8qjXLqaTKcUwlR3bcfeOXQVoQ0/I
+         7zwI+0FvRjoKaxZUkV7/qMK527UOii8JwIHXsmWt3289bVTzi9jLS7DrylJywuRK85RH
+         XBY1R3AHPL69XeC7SFpUqb6jYFOv1/r8nNtp8fKORkkIuxQaK7l7pwk6KrKXFhlZQCGE
+         EcOZJePRxsnnGa9NxCm+Hg9bBxdVgKUxA06srzViIJ8xJs6i38G7NVkfnqvzrPg5uWam
+         tPUgQZGd1V/osaT50MNDtOL3E3SbY3nnfIen9INxBSbFY2ZNJ5UWnlfEyLDqOf4fSzeX
+         BIxQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:subject:in-reply-to:cc:from:to:message-id
-         :mime-version:content-transfer-encoding;
-        bh=Y5eeuuk+L/opcH1pywf9XaZz1CvayeU6mj335HgHfKQ=;
-        b=qWZDXDwiUIuSD0HZsGb5addzQpHM6dgelJdZPKx7z8HSYYELCCjkgacStrFazbKrKK
-         wAt1oI+Nk3DgmxiDqlWmhKR6g7KG15i2bQtRTOCthmQwLQuVkNWo0HMkZR9hIaxd/biv
-         XnE7siQy2ds2IVg68I1osNHT5n+DMR6zj0uvYZKuPux9bDAD9+KMFlGMNRGaIFjv08/F
-         b/YgDCxiaJNEVYEnK38eTbrwUvLhaQsdPgX/yj2umwWquE8goUrDln7JTj0la/nzTaP1
-         WmrWdFzVfsTsYXWqO6ijRpVKk4wn97s/1cmZ2SsexEdKVHYGVCNkxELbohYPVwx0F8FX
-         p79Q==
-X-Gm-Message-State: AOAM531gdUCQgnTTrq+K9tApD29y1hGf++E6Z5omxUl/IoY9ewWGw0cR
-        wOF21wBsfVjQJHNo748bJUaazw==
-X-Google-Smtp-Source: ABdhPJzc9dWVDPV7LCQvfbx+/+RbqsGuI3x8/CE9rDTRAvtwI5+otwsABJqdCAPxFQip/idPDNa3cg==
-X-Received: by 2002:a63:f74b:: with SMTP id f11mr14943415pgk.327.1622313638156;
-        Sat, 29 May 2021 11:40:38 -0700 (PDT)
-Received: from localhost (76-210-143-223.lightspeed.sntcca.sbcglobal.net. [76.210.143.223])
-        by smtp.gmail.com with ESMTPSA id v11sm6925372pgs.6.2021.05.29.11.40.37
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 29 May 2021 11:40:37 -0700 (PDT)
-Date:   Sat, 29 May 2021 11:40:37 -0700 (PDT)
-X-Google-Original-Date: Sat, 29 May 2021 11:34:23 PDT (-0700)
-Subject:     Re: [PATCH] riscv: kprobes: Remove redundant kprobe_step_ctx
-In-Reply-To: <20210512225819.6756c0b0@xhacker>
-CC:     Paul Walmsley <paul.walmsley@sifive.com>, aou@eecs.berkeley.edu,
-        mhiramat@kernel.org, linux-riscv@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-From:   Palmer Dabbelt <palmer@dabbelt.com>
-To:     jszhang3@mail.ustc.edu.cn
-Message-ID: <mhng-458b641d-fe97-4d92-8a6a-e43240aeb0c3@palmerdabbelt-glaptop>
-Mime-Version: 1.0 (MHng)
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=PxkN5674Gdo7C/DvFwdmRlPrHnz0qD2VW7zEeao9HA0=;
+        b=o0ual7G7BVlVOvDo1qmQPl2/4CdyUIrwwLb15GkRqj6Jr9miwibFQ2e3xrWe/Mj0za
+         2wbOYfzITFliEzydJh58yVKLZQlU+/5SOfqRnUZ+5qc0npyjZ232kdsXBeAI4/XYI4Au
+         XsPNMedRVAuqGypuCZalqHItnUisOmJKL6vFcHIeXQbrMyQ8ZFj10G+5zMajgMrq9xXT
+         s1PcY759dWszLq6uan7XHfyVDyl6TRoRG1B9QNzjlUqWrDUtDMJilKcMglLciQcybCHF
+         V37Iya4hDF2Em4xgEygGa/+rJ0Ibo8My9wwQ76H1v5PdLOkPKSJFzMofxNtU4ypPK6Ea
+         zhQg==
+X-Gm-Message-State: AOAM531EAyaXyw/Kt98Ywz2ufQwezadqYdIZ+1VT7c8DF4ZWlBgxr89p
+        IzdCuo6CoJDUiLxR4Z6lGb7bH9NapnbwvXGgFo5E
+X-Google-Smtp-Source: ABdhPJyUKpixSoshzQJyPJqEx0bgxxFA8s58ydUH/2LXx1S03FTwjdX+rXFI9WK5gl/+d4oHpjX3EfrlNm+PVmnhJgQ=
+X-Received: by 2002:a05:6402:430b:: with SMTP id m11mr16690557edc.31.1622314124071;
+ Sat, 29 May 2021 11:48:44 -0700 (PDT)
+MIME-Version: 1.0
+References: <20210517092006.803332-1-omosnace@redhat.com> <CAHC9VhTasra0tU=bKwVqAwLRYaC+hYakirRz0Mn5jbVMuDkwrA@mail.gmail.com>
+ <01135120-8bf7-df2e-cff0-1d73f1f841c3@iogearbox.net> <CAHC9VhR-kYmMA8gsqkiL5=poN9FoL-uCyx1YOLCoG2hRiUBYug@mail.gmail.com>
+ <c7c2d7e1-e253-dce0-d35c-392192e4926e@iogearbox.net>
+In-Reply-To: <c7c2d7e1-e253-dce0-d35c-392192e4926e@iogearbox.net>
+From:   Paul Moore <paul@paul-moore.com>
+Date:   Sat, 29 May 2021 14:48:33 -0400
+Message-ID: <CAHC9VhS1XRZjKcTFgH1+n5uA-CeT+9BeSP5jvT2+RE5ougLpUg@mail.gmail.com>
+Subject: Re: [PATCH v2] lockdown,selinux: avoid bogus SELinux lockdown
+ permission checks
+To:     Daniel Borkmann <daniel@iogearbox.net>
+Cc:     Ondrej Mosnacek <omosnace@redhat.com>,
+        linux-security-module@vger.kernel.org,
+        James Morris <jmorris@namei.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Stephen Smalley <stephen.smalley.work@gmail.com>,
+        selinux@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        linux-fsdevel@vger.kernel.org, bpf@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Casey Schaufler <casey@schaufler-ca.com>, jolsa@redhat.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 12 May 2021 07:58:19 PDT (-0700), jszhang3@mail.ustc.edu.cn wrote:
-> On Mon, 19 Apr 2021 00:29:19 +0800
-> Jisheng Zhang <jszhang3@mail.ustc.edu.cn> wrote:
+On Fri, May 28, 2021 at 2:28 PM Daniel Borkmann <daniel@iogearbox.net> wrote:
+> In the case of tracing, it's different. You install small programs that are
+> triggered when certain events fire. Random example from bpftrace's README [0],
+> you want to generate a histogram of syscall counts by program. One-liner is:
 >
->> From: Jisheng Zhang <jszhang@kernel.org>
->>
->> Inspired by commit ba090f9cafd5 ("arm64: kprobes: Remove redundant
->> kprobe_step_ctx"), the ss_pending and match_addr of kprobe_step_ctx
->> are redundant because those can be replaced by KPROBE_HIT_SS and
->> &cur_kprobe->ainsn.api.insn[0] + GET_INSN_LENGTH(cur->opcode)
->> respectively.
->>
->> Remove the kprobe_step_ctx to simplify the code.
+>    bpftrace -e 'tracepoint:raw_syscalls:sys_enter { @[comm] = count(); }'
 >
-> Hi all,
->
-> This patch can still be applied to 5.13-rc1, could you please review? Let me
-> know if a rebase on 5.13-rc1 is needed.
+> bpftrace then goes and generates a BPF prog from this internally. One way of
+> doing it could be to call bpf_get_current_task() helper and then access
+> current->comm via one of bpf_probe_read_kernel{,_str}() helpers ...
 
-Sorry, I missed this one.  This is on for-next.
+I think we can all agree that the BPF tracing is a bit chaotic in the
+sense that the tracing programs can be executed in various
+places/contexts and that presents some challenges with respect to
+access control and auditing.  If you are following the io_uring stuff
+that is going on now you can see a little of what is required to make
+audit work properly in the various io_uring contexts and that is
+relatively small compared to what is possible with BPF tracing.  Of
+course this assumes I've managed to understand bpf tracing properly
+this morning, and I very well may still be missing points and/or
+confused about some of the important details.  Corrections are
+welcome.
 
->
-> Thanks
->
->>
->> Signed-off-by: Jisheng Zhang <jszhang@kernel.org>
->> ---
->>  arch/riscv/include/asm/kprobes.h   |  7 ------
->>  arch/riscv/kernel/probes/kprobes.c | 40 +++++++-----------------------
->>  2 files changed, 9 insertions(+), 38 deletions(-)
->>
->> diff --git a/arch/riscv/include/asm/kprobes.h b/arch/riscv/include/asm/kprobes.h
->> index 4647d38018f6..9ea9b5ec3113 100644
->> --- a/arch/riscv/include/asm/kprobes.h
->> +++ b/arch/riscv/include/asm/kprobes.h
->> @@ -29,18 +29,11 @@ struct prev_kprobe {
->>  	unsigned int status;
->>  };
->>
->> -/* Single step context for kprobe */
->> -struct kprobe_step_ctx {
->> -	unsigned long ss_pending;
->> -	unsigned long match_addr;
->> -};
->> -
->>  /* per-cpu kprobe control block */
->>  struct kprobe_ctlblk {
->>  	unsigned int kprobe_status;
->>  	unsigned long saved_status;
->>  	struct prev_kprobe prev_kprobe;
->> -	struct kprobe_step_ctx ss_ctx;
->>  };
->>
->>  void arch_remove_kprobe(struct kprobe *p);
->> diff --git a/arch/riscv/kernel/probes/kprobes.c b/arch/riscv/kernel/probes/kprobes.c
->> index 8c1f7a30aeed..4c1ad5536748 100644
->> --- a/arch/riscv/kernel/probes/kprobes.c
->> +++ b/arch/riscv/kernel/probes/kprobes.c
->> @@ -17,7 +17,7 @@ DEFINE_PER_CPU(struct kprobe *, current_kprobe) = NULL;
->>  DEFINE_PER_CPU(struct kprobe_ctlblk, kprobe_ctlblk);
->>
->>  static void __kprobes
->> -post_kprobe_handler(struct kprobe_ctlblk *, struct pt_regs *);
->> +post_kprobe_handler(struct kprobe *, struct kprobe_ctlblk *, struct pt_regs *);
->>
->>  static void __kprobes arch_prepare_ss_slot(struct kprobe *p)
->>  {
->> @@ -43,7 +43,7 @@ static void __kprobes arch_simulate_insn(struct kprobe *p, struct pt_regs *regs)
->>  		p->ainsn.api.handler((u32)p->opcode,
->>  					(unsigned long)p->addr, regs);
->>
->> -	post_kprobe_handler(kcb, regs);
->> +	post_kprobe_handler(p, kcb, regs);
->>  }
->>
->>  int __kprobes arch_prepare_kprobe(struct kprobe *p)
->> @@ -149,21 +149,6 @@ static void __kprobes kprobes_restore_local_irqflag(struct kprobe_ctlblk *kcb,
->>  	regs->status = kcb->saved_status;
->>  }
->>
->> -static void __kprobes
->> -set_ss_context(struct kprobe_ctlblk *kcb, unsigned long addr, struct kprobe *p)
->> -{
->> -	unsigned long offset = GET_INSN_LENGTH(p->opcode);
->> -
->> -	kcb->ss_ctx.ss_pending = true;
->> -	kcb->ss_ctx.match_addr = addr + offset;
->> -}
->> -
->> -static void __kprobes clear_ss_context(struct kprobe_ctlblk *kcb)
->> -{
->> -	kcb->ss_ctx.ss_pending = false;
->> -	kcb->ss_ctx.match_addr = 0;
->> -}
->> -
->>  static void __kprobes setup_singlestep(struct kprobe *p,
->>  				       struct pt_regs *regs,
->>  				       struct kprobe_ctlblk *kcb, int reenter)
->> @@ -182,8 +167,6 @@ static void __kprobes setup_singlestep(struct kprobe *p,
->>  		/* prepare for single stepping */
->>  		slot = (unsigned long)p->ainsn.api.insn;
->>
->> -		set_ss_context(kcb, slot, p);	/* mark pending ss */
->> -
->>  		/* IRQs and single stepping do not mix well. */
->>  		kprobes_save_local_irqflag(kcb, regs);
->>
->> @@ -219,13 +202,8 @@ static int __kprobes reenter_kprobe(struct kprobe *p,
->>  }
->>
->>  static void __kprobes
->> -post_kprobe_handler(struct kprobe_ctlblk *kcb, struct pt_regs *regs)
->> +post_kprobe_handler(struct kprobe *cur, struct kprobe_ctlblk *kcb, struct pt_regs *regs)
->>  {
->> -	struct kprobe *cur = kprobe_running();
->> -
->> -	if (!cur)
->> -		return;
->> -
->>  	/* return addr restore if non-branching insn */
->>  	if (cur->ainsn.api.restore != 0)
->>  		regs->epc = cur->ainsn.api.restore;
->> @@ -355,16 +333,16 @@ bool __kprobes
->>  kprobe_single_step_handler(struct pt_regs *regs)
->>  {
->>  	struct kprobe_ctlblk *kcb = get_kprobe_ctlblk();
->> +	unsigned long addr = instruction_pointer(regs);
->> +	struct kprobe *cur = kprobe_running();
->>
->> -	if ((kcb->ss_ctx.ss_pending)
->> -	    && (kcb->ss_ctx.match_addr == instruction_pointer(regs))) {
->> -		clear_ss_context(kcb);	/* clear pending ss */
->> -
->> +	if (cur && (kcb->kprobe_status & (KPROBE_HIT_SS | KPROBE_REENTER)) &&
->> +	    ((unsigned long)&cur->ainsn.api.insn[0] + GET_INSN_LENGTH(cur->opcode) == addr)) {
->>  		kprobes_restore_local_irqflag(kcb, regs);
->> -
->> -		post_kprobe_handler(kcb, regs);
->> +		post_kprobe_handler(cur, kcb, regs);
->>  		return true;
->>  	}
->> +	/* not ours, kprobes should ignore it */
->>  	return false;
->>  }
->>
+Daniel's patch side steps that worry by just doing the lockdown
+permission check when the BPF program is loaded, but that isn't a
+great solution if the policy changes afterward.  I was hoping there
+might be some way to perform the permission check as needed, but the
+more I look the more that appears to be difficult, if not impossible
+(once again, corrections are welcome).
+
+I'm now wondering if the right solution here is to make use of the LSM
+notifier mechanism.  I'm not yet entirely sure if this would work from
+a BPF perspective, but I could envision the BPF subsystem registering
+a LSM notification callback via register_blocking_lsm_notifier(), see
+if Infiniband code as an example, and then when the LSM(s) policy
+changes the BPF subsystem would get a notification and it could
+revalidate the existing BPF programs and take block/remove/whatever
+the offending BPF programs.  This obviously requires a few things
+which I'm not sure are easily done, or even possible:
+
+1. Somehow the BPF programs would need to be "marked" at
+load/verification time with respect to their lockdown requirements so
+that decisions can be made later.  Perhaps a flag in bpf_prog_aux?
+
+2. While it looks like it should be possible to iterate over all of
+the loaded BPF programs in the LSM notifier callback via
+idr_for_each(prog_idr, ...), it is not clear to me if it is possible
+to safely remove, or somehow disable, BPF programs once they have been
+loaded.  Hopefully the BPF folks can help answer that question.
+
+3. Disabling of BPF programs might be preferable to removing them
+entirely on LSM policy changes as it would be possible to make the
+lockdown state less restrictive at a future point in time, allowing
+for the BPF program to be executed again.  Once again, not sure if
+this is even possible.
+
+Related, the lockdown LSM should probably also grow LSM notifier
+support similar to selinux_lsm_notifier_avc_callback(), for example
+either lock_kernel_down() or lockdown_write() might want to do a
+call_blocking_lsm_notifier(LSM_POLICY_CHANGE, NULL) call.
+
+-- 
+paul moore
+www.paul-moore.com
