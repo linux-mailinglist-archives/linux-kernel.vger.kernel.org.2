@@ -2,92 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E6A6394D27
-	for <lists+linux-kernel@lfdr.de>; Sat, 29 May 2021 18:42:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 16473394D2E
+	for <lists+linux-kernel@lfdr.de>; Sat, 29 May 2021 18:49:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229774AbhE2QoG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 29 May 2021 12:44:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36586 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229693AbhE2QoE (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 29 May 2021 12:44:04 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28EACC061574;
-        Sat, 29 May 2021 09:42:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-        Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:
-        Subject:Sender:Reply-To:Content-ID:Content-Description;
-        bh=GUgNXBxqYWqu9GY6i+HqQcaAimI5I1IommHJDJJi9ik=; b=gUtj7G1QyVNTYyWCNV+eKAKepk
-        EQjm0sDjdRCC3rex68Mdp2XrcN7kYKYYZQPbWbmdhPxxHaEo7X4xPPRXSWR/I2dA3vXiL6xjV1Ln0
-        nE1IdpaG8/5p8biTlMNBnfvthr2mywcThDmJvCW33SrX9XitglzQi3OzHbSISDk7zmVGv9bdkAoN5
-        O/dAewf9onDjaWoK04bS+fL/EXRjrmS0PoVVGvCPz/MlE6Vb4NyLl6tdfe18gGeOKE99DgTGHrAAh
-        ta8MreMtTzx1/MIYyik5URiQ9FDSrEQY4UaC3VPb301btVLbcxbM2R5kcLvlT439p7EWOue+vYxCN
-        GHAW99Qg==;
-Received: from [2601:1c0:6280:3f0::ce7d]
-        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1ln22b-007ZLU-D9; Sat, 29 May 2021 16:42:25 +0000
-Subject: Re: [PATCH] wireless: carl9170: fix LEDS build errors & warnings
-To:     Arnd Bergmann <arnd@arndb.de>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        kernel test robot <lkp@intel.com>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        Christian Lamparter <chunkeey@googlemail.com>,
-        linux-wireless <linux-wireless@vger.kernel.org>
-References: <20210529071523.2044-1-rdunlap@infradead.org>
- <CAK8P3a2mmQvsK+geQCGAOjZ4r2S9E4AUkWaT2coKW2AL8ZOAYg@mail.gmail.com>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <197640e7-ee32-a26e-fc2f-791d13555a4d@infradead.org>
-Date:   Sat, 29 May 2021 09:42:23 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.0
-MIME-Version: 1.0
-In-Reply-To: <CAK8P3a2mmQvsK+geQCGAOjZ4r2S9E4AUkWaT2coKW2AL8ZOAYg@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        id S229814AbhE2Qul (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 29 May 2021 12:50:41 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44306 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229709AbhE2Quj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 29 May 2021 12:50:39 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id CDF966105A;
+        Sat, 29 May 2021 16:49:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1622306941;
+        bh=eKGCjGlrM/fX7Vcnu/Wba51hAY7iOG6CV1ahDTOBbdk=;
+        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+        b=L0i6Tw/u2yCssULeUDRr4Ml2N94WFZTKWo19jWVMCThqd3jbOvDoJGB02iOombyMi
+         il+0bijX5a3o7YqMBcVh9YBcP5ulxyR65vx1yQ2In3UG/QH/LO0sDyrLRFroYnF+yX
+         uzrhchuI44ubyGluE2uoAIntKv6VG9wjbJoUOeHlsm5PjAcUe1QXHZ1a7VsSMYAIro
+         sEKrcLHoy4zC+sV9jul7kBlR03YYdASCnWl0vgUInUR1ruWnrk4pADCfLEYEBYWV29
+         PbaLBxlq2XihEHVH8yNzc9zro0moW39AJK2FN3M+ELDYTh4zZFFp0pj2cebLsedJMD
+         NHlNOwUCcBgwQ==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id BB02460A39;
+        Sat, 29 May 2021 16:49:01 +0000 (UTC)
+Subject: Re: [GIT PULL] KVM changes and new selftests for Linux 5.14-rc4
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <20210529103206.3853545-1-pbonzini@redhat.com>
+References: <20210529103206.3853545-1-pbonzini@redhat.com>
+X-PR-Tracked-List-Id: <kvm.vger.kernel.org>
+X-PR-Tracked-Message-Id: <20210529103206.3853545-1-pbonzini@redhat.com>
+X-PR-Tracked-Remote: https://git.kernel.org/pub/scm/virt/kvm/kvm.git tags/for-linus
+X-PR-Tracked-Commit-Id: 000ac42953395a4f0a63d5db640c5e4c88a548c5
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: 224478289ca0e7abf06a3bc63b06c42a2bf84c69
+Message-Id: <162230694170.3322.8197885978080864045.pr-tracker-bot@kernel.org>
+Date:   Sat, 29 May 2021 16:49:01 +0000
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     torvalds@linux-foundation.org, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5/29/21 5:10 AM, Arnd Bergmann wrote:
-> On Sat, May 29, 2021 at 9:16 AM Randy Dunlap <rdunlap@infradead.org> wrote:
->>
->> kernel test robot reports over 200 build errors and warnings
->> that are due to this Kconfig problem when CARL9170=m,
->> MAC80211=y, and LEDS_CLASS=m.
-> 
-> I think this avoids the build problems, but it's not really logical:
-> 
->> --- linux-next-20210528.orig/drivers/net/wireless/ath/carl9170/Kconfig
->> +++ linux-next-20210528/drivers/net/wireless/ath/carl9170/Kconfig
->> @@ -17,9 +17,7 @@ config CARL9170
->>  config CARL9170_LEDS
->>         bool "SoftLED Support"
->>         depends on CARL9170
->> -       select MAC80211_LEDS
->> -       select LEDS_CLASS
->> -       select NEW_LEDS
->> +       select MAC80211_LEDS if LEDS_CLASS=y || LEDS_CLASS=MAC80211
->>         default y
->>         help
->>           This option is necessary, if you want your device' LEDs to blink
-> 
-> The point of the option is to enable LED support, but now it doesn't do that
-> when LEDS_CLASS is a loadable module and MAC80211 is built-in.
-> 
-> I think a more sensible solution would be to follow the example of
-> 
-> config MT76_LEDS
->         bool
->         depends on MT76_CORE
->         depends on LEDS_CLASS=y || MT76_CORE=LEDS_CLASS
->         default y
+The pull request you sent on Sat, 29 May 2021 06:32:06 -0400:
 
-Looks good. I'll send a v2.
+> https://git.kernel.org/pub/scm/virt/kvm/kvm.git tags/for-linus
 
-thanks.
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/224478289ca0e7abf06a3bc63b06c42a2bf84c69
+
+Thank you!
 
 -- 
-~Randy
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
