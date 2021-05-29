@@ -2,161 +2,181 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 73CF2394B06
-	for <lists+linux-kernel@lfdr.de>; Sat, 29 May 2021 09:57:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B7C1F394AE9
+	for <lists+linux-kernel@lfdr.de>; Sat, 29 May 2021 09:31:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229673AbhE2H7F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 29 May 2021 03:59:05 -0400
-Received: from smtprelay0207.hostedemail.com ([216.40.44.207]:57892 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S229559AbhE2H7C (ORCPT
+        id S229616AbhE2Hcv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 29 May 2021 03:32:51 -0400
+Received: from szxga01-in.huawei.com ([45.249.212.187]:5139 "EHLO
+        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229549AbhE2Hcu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 29 May 2021 03:59:02 -0400
-Received: from omf16.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay05.hostedemail.com (Postfix) with ESMTP id 1A80B180357EC;
-        Sat, 29 May 2021 07:57:26 +0000 (UTC)
-Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by omf16.hostedemail.com (Postfix) with ESMTPA id 215DE2550F1;
-        Sat, 29 May 2021 07:57:25 +0000 (UTC)
-Message-ID: <2e9eef2f524d08a9d4be9cf375733f8a5b81d6a7.camel@perches.com>
-Subject: Re: [PATCH] hid: hid-chicony: fix switch case indentation
-From:   Joe Perches <joe@perches.com>
-To:     Navin Sankar Velliangiri <navin@linumiz.com>,
-        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     jikos@kernel.org, benjamin.tissoires@redhat.com
-Date:   Sat, 29 May 2021 00:57:23 -0700
-In-Reply-To: <20210529071808.5268-1-navin@linumiz.com>
-References: <20210529071808.5268-1-navin@linumiz.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.38.1-1 
+        Sat, 29 May 2021 03:32:50 -0400
+Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.56])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4FsY7g50KqzYnXs;
+        Sat, 29 May 2021 15:28:31 +0800 (CST)
+Received: from dggpemm500009.china.huawei.com (7.185.36.225) by
+ dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Sat, 29 May 2021 15:31:12 +0800
+Received: from huawei.com (10.175.113.32) by dggpemm500009.china.huawei.com
+ (7.185.36.225) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Sat, 29 May
+ 2021 15:31:12 +0800
+From:   Liu Shixin <liushixin2@huawei.com>
+To:     Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Alexander Potapenko <glider@google.com>,
+        Marco Elver <elver@google.com>,
+        Dmitry Vyukov <dvyukov@google.com>
+CC:     <linux-riscv@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
+        <kasan-dev@googlegroups.com>, Liu Shixin <liushixin2@huawei.com>
+Subject: [PATCH -next] riscv: Enable KFENCE for riscv64
+Date:   Sat, 29 May 2021 16:03:40 +0800
+Message-ID: <20210529080340.2987212-1-liushixin2@huawei.com>
+X-Mailer: git-send-email 2.18.0.huawei.25
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.90
-X-Stat-Signature: nmxco75fry4468ct7yiq8u931tt3g4qf
-X-Rspamd-Server: rspamout02
-X-Rspamd-Queue-Id: 215DE2550F1
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Session-ID: U2FsdGVkX1+RuzOmBNOOuX+5cg1hjxEhvXoXi/TJgB8=
-X-HE-Tag: 1622275045-679994
+Content-Type: text/plain
+X-Originating-IP: [10.175.113.32]
+X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
+ dggpemm500009.china.huawei.com (7.185.36.225)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 2021-05-29 at 12:48 +0530, Navin Sankar Velliangiri wrote:
-> fixed switch case indentation.
+Add architecture specific implementation details for KFENCE and enable
+KFENCE for the riscv64 architecture. In particular, this implements the
+required interface in <asm/kfence.h>.
 
-Please try not to merely fix checkpatch warnings.
-Instead try to improve the code.
+KFENCE requires that attributes for pages from its memory pool can
+individually be set. Therefore, force the kfence pool to be mapped at
+page granularity.
 
-And there's nothing _really_ wrong with the existing code but:
+Testing this patch using the testcases in kfence_test.c and all passed.
 
-> diff --git a/drivers/hid/hid-chicony.c b/drivers/hid/hid-chicony.c
-[]
-> @@ -65,26 +65,61 @@ static int ch_input_mapping(struct hid_device *hdev, struct hid_input *hi,
->  
-> 
->  	set_bit(EV_REP, hi->input->evbit);
->  	switch (usage->hid & HID_USAGE) {
-> -	case 0xff01: ch_map_key_clear(BTN_1);	break;
-> -	case 0xff02: ch_map_key_clear(BTN_2);	break;
-[...]
-> +	case 0xff01:
-> +		ch_map_key_clear(BTN_1);
-> +		break;
-> +	case 0xff02:
-> +		ch_map_key_clear(BTN_2);
-> +		break;
-[...]
->  	default:
->  		return 0;
->  	}
-> +
->  	return 1;
-
-IMO:
-
-This might be (umm) clearer with a separate function.
-A lot smaller code too.
-
-$ size drivers/hid/hid-chicony.o*
-   text	   data	    bss	    dec	    hex	filename
-   1886	    392	      0	   2278	    8e6	drivers/hid/hid-chicony.o.new
-   3329	    392	      0	   3721	    e89	drivers/hid/hid-chicony.o.old
-
-Something like:
+Signed-off-by: Liu Shixin <liushixin2@huawei.com>
 ---
- drivers/hid/hid-chicony.c | 52 +++++++++++++++++++++++++++--------------------
- 1 file changed, 30 insertions(+), 22 deletions(-)
+1. Add helper function split_pmd_page() which is used to split a pmd to ptes. 
+2. Add the judgment on the result of pte_alloc_one_kernel().
 
-diff --git a/drivers/hid/hid-chicony.c b/drivers/hid/hid-chicony.c
-index ca556d39da2ae..03e9a1d943d96 100644
---- a/drivers/hid/hid-chicony.c
-+++ b/drivers/hid/hid-chicony.c
-@@ -54,37 +54,45 @@ static int ch_raw_event(struct hid_device *hdev,
- 	return 0;
- }
- 
--#define ch_map_key_clear(c)	hid_map_usage_clear(hi, usage, bit, max, \
--					EV_KEY, (c))
-+static int map_use_to_btn(int use)
+ arch/riscv/Kconfig              |  1 +
+ arch/riscv/include/asm/kfence.h | 63 +++++++++++++++++++++++++++++++++
+ arch/riscv/mm/fault.c           | 11 +++++-
+ 3 files changed, 74 insertions(+), 1 deletion(-)
+ create mode 100644 arch/riscv/include/asm/kfence.h
+
+diff --git a/arch/riscv/Kconfig b/arch/riscv/Kconfig
+index 4982130064ef..2f4903a7730f 100644
+--- a/arch/riscv/Kconfig
++++ b/arch/riscv/Kconfig
+@@ -65,6 +65,7 @@ config RISCV
+ 	select HAVE_ARCH_JUMP_LABEL_RELATIVE
+ 	select HAVE_ARCH_KASAN if MMU && 64BIT
+ 	select HAVE_ARCH_KASAN_VMALLOC if MMU && 64BIT
++	select HAVE_ARCH_KFENCE if MMU && 64BIT
+ 	select HAVE_ARCH_KGDB
+ 	select HAVE_ARCH_KGDB_QXFER_PKT
+ 	select HAVE_ARCH_MMAP_RND_BITS if MMU
+diff --git a/arch/riscv/include/asm/kfence.h b/arch/riscv/include/asm/kfence.h
+new file mode 100644
+index 000000000000..d887a54042aa
+--- /dev/null
++++ b/arch/riscv/include/asm/kfence.h
+@@ -0,0 +1,63 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++
++#ifndef _ASM_RISCV_KFENCE_H
++#define _ASM_RISCV_KFENCE_H
++
++#include <linux/kfence.h>
++#include <linux/pfn.h>
++#include <asm-generic/pgalloc.h>
++#include <asm/pgtable.h>
++
++static inline int split_pmd_page(unsigned long addr)
 +{
-+	switch (use) {
-+	case 0xff01: return BTN_1;
-+	case 0xff02: return BTN_2;
-+	case 0xff03: return BTN_3;
-+	case 0xff04: return BTN_4;
-+	case 0xff05: return BTN_5;
-+	case 0xff06: return BTN_6;
-+	case 0xff07: return BTN_7;
-+	case 0xff08: return BTN_8;
-+	case 0xff09: return BTN_9;
-+	case 0xff0a: return BTN_A;
-+	case 0xff0b: return BTN_B;
-+	case 0x00f1: return KEY_WLAN;
-+	case 0x00f2: return KEY_BRIGHTNESSDOWN;
-+	case 0x00f3: return KEY_BRIGHTNESSUP;
-+	case 0x00f4: return KEY_DISPLAY_OFF;
-+	case 0x00f7: return KEY_CAMERA;
-+	case 0x00f8: return KEY_PROG1;
-+	}
++	int i;
++	unsigned long pfn = PFN_DOWN(__pa((addr & PMD_MASK)));
++	pmd_t *pmd = pmd_off_k(addr);
++	pte_t *pte = pte_alloc_one_kernel(&init_mm);
++
++	if (!pte)
++		return -ENOMEM;
++
++	for (i = 0; i < PTRS_PER_PTE; i++)
++		set_pte(pte + i, pfn_pte(pfn + i, PAGE_KERNEL));
++	set_pmd(pmd, pfn_pmd(PFN_DOWN(__pa(pte)), PAGE_TABLE));
++
++	flush_tlb_kernel_range(addr, addr + PMD_SIZE);
 +	return 0;
 +}
 +
- static int ch_input_mapping(struct hid_device *hdev, struct hid_input *hi,
- 		struct hid_field *field, struct hid_usage *usage,
- 		unsigned long **bit, int *max)
- {
-+	int btn;
++static inline bool arch_kfence_init_pool(void)
++{
++	int ret;
++	unsigned long addr;
++	pmd_t *pmd;
 +
- 	if ((usage->hid & HID_USAGE_PAGE) != HID_UP_MSVENDOR)
- 		return 0;
++	for (addr = (unsigned long)__kfence_pool; is_kfence_address((void *)addr);
++	     addr += PAGE_SIZE) {
++		pmd = pmd_off_k(addr);
++
++		if (pmd_leaf(*pmd)) {
++			ret = split_pmd_page(addr);
++			if (ret)
++				return false;
++		}
++	}
++
++	return true;
++}
++
++static inline bool kfence_protect_page(unsigned long addr, bool protect)
++{
++	pte_t *pte = virt_to_kpte(addr);
++
++	if (protect)
++		set_pte(pte, __pte(pte_val(*pte) & ~_PAGE_PRESENT));
++	else
++		set_pte(pte, __pte(pte_val(*pte) | _PAGE_PRESENT));
++
++	flush_tlb_kernel_range(addr, addr + PAGE_SIZE);
++
++	return true;
++}
++
++#endif /* _ASM_RISCV_KFENCE_H */
+diff --git a/arch/riscv/mm/fault.c b/arch/riscv/mm/fault.c
+index 096463cc6fff..aa08dd2f8fae 100644
+--- a/arch/riscv/mm/fault.c
++++ b/arch/riscv/mm/fault.c
+@@ -14,6 +14,7 @@
+ #include <linux/signal.h>
+ #include <linux/uaccess.h>
+ #include <linux/kprobes.h>
++#include <linux/kfence.h>
  
- 	set_bit(EV_REP, hi->input->evbit);
--	switch (usage->hid & HID_USAGE) {
--	case 0xff01: ch_map_key_clear(BTN_1);	break;
--	case 0xff02: ch_map_key_clear(BTN_2);	break;
--	case 0xff03: ch_map_key_clear(BTN_3);	break;
--	case 0xff04: ch_map_key_clear(BTN_4);	break;
--	case 0xff05: ch_map_key_clear(BTN_5);	break;
--	case 0xff06: ch_map_key_clear(BTN_6);	break;
--	case 0xff07: ch_map_key_clear(BTN_7);	break;
--	case 0xff08: ch_map_key_clear(BTN_8);	break;
--	case 0xff09: ch_map_key_clear(BTN_9);	break;
--	case 0xff0a: ch_map_key_clear(BTN_A);	break;
--	case 0xff0b: ch_map_key_clear(BTN_B);	break;
--	case 0x00f1: ch_map_key_clear(KEY_WLAN);	break;
--	case 0x00f2: ch_map_key_clear(KEY_BRIGHTNESSDOWN);	break;
--	case 0x00f3: ch_map_key_clear(KEY_BRIGHTNESSUP);	break;
--	case 0x00f4: ch_map_key_clear(KEY_DISPLAY_OFF);	break;
--	case 0x00f7: ch_map_key_clear(KEY_CAMERA);	break;
--	case 0x00f8: ch_map_key_clear(KEY_PROG1);	break;
--	default:
-+	btn = map_use_to_btn(usage->hid & HID_USAGE);
-+	if (!btn)
- 		return 0;
--	}
+ #include <asm/ptrace.h>
+ #include <asm/tlbflush.h>
+@@ -45,7 +46,15 @@ static inline void no_context(struct pt_regs *regs, unsigned long addr)
+ 	 * Oops. The kernel tried to access some bad page. We'll have to
+ 	 * terminate things with extreme prejudice.
+ 	 */
+-	msg = (addr < PAGE_SIZE) ? "NULL pointer dereference" : "paging request";
++	if (addr < PAGE_SIZE)
++		msg = "NULL pointer dereference";
++	else {
++		if (kfence_handle_page_fault(addr, regs->cause == EXC_STORE_PAGE_FAULT, regs))
++			return;
 +
-+	hid_map_usage_clear(hi, usage, bit, max, EV_KEY, btn);
- 	return 1;
++		msg = "paging request";
++	}
++
+ 	die_kernel_fault(msg, addr, regs);
  }
  
+-- 
+2.18.0.huawei.25
 
