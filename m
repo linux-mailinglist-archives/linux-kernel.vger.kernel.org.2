@@ -2,184 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 61E2D394D5E
-	for <lists+linux-kernel@lfdr.de>; Sat, 29 May 2021 19:10:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 59B0C394D7F
+	for <lists+linux-kernel@lfdr.de>; Sat, 29 May 2021 19:11:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229774AbhE2RLf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 29 May 2021 13:11:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42652 "EHLO
+        id S229974AbhE2RMf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 29 May 2021 13:12:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42858 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229704AbhE2RLe (ORCPT
+        with ESMTP id S229851AbhE2RMX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 29 May 2021 13:11:34 -0400
-Received: from mail-ot1-x32d.google.com (mail-ot1-x32d.google.com [IPv6:2607:f8b0:4864:20::32d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0BDF1C061574
-        for <linux-kernel@vger.kernel.org>; Sat, 29 May 2021 10:09:57 -0700 (PDT)
-Received: by mail-ot1-x32d.google.com with SMTP id n3-20020a9d74030000b029035e65d0a0b8so6648988otk.9
-        for <linux-kernel@vger.kernel.org>; Sat, 29 May 2021 10:09:57 -0700 (PDT)
+        Sat, 29 May 2021 13:12:23 -0400
+Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C33FC061574;
+        Sat, 29 May 2021 10:10:45 -0700 (PDT)
+Received: by mail-lf1-x136.google.com with SMTP id f30so10130287lfj.1;
+        Sat, 29 May 2021 10:10:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=7bkqiEyd8a086aPYUR6burYJWQhu6f4gu/LbVHZNwfc=;
-        b=C9VvtCnGiiOfz68z7IKruRS5sWRRuWsoEtCw0Lj/ixm059lRUVLiuKzLsSXzkAAMRe
-         uJ4eaXZ5ZqCIUZMubTp1qf/rZb5tpIkjxmsnS7tLfO59Fn8o/94r1fyb0WJtEqQsjCxT
-         1x5mVlcx0c/wo4Er+O3GECknABerGiMOSPaC2Ss2cz6QWQsFW9ctGtN73p/7e7rW8CIM
-         a6Wp7sbZvVM//6YYSZ2E27qGU/Sb6X4c6SdHLxk8OrzAmJ6/8C6PAaQv44KqEDwMuGCc
-         7waL7JHrqvRhB4EoVETXwMB52MOROf/ivAGpO1LZwgGGbTVsgmIhKrjzYueuwgTAh/6G
-         kCPg==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=uG0wF9x5J31B5QovgpxzHE3VxGkFw0gZRlBKzlTkO48=;
+        b=YNpD36hsPQ45qUtw8B28Q9nG9ZzBBjoeBj5/0zS6S9J+LiA4+6Qdh4dYVss7GfIGkt
+         74iJBtqxqzgCIGq1/7riA7MkLShiUGI8hBsQLGeQp6L3uauf8TtdGgLGsP1twXQf2sac
+         TMu9OW4wm7onG4Zfo0HJmXRZl+cFRX0dIYxxmcIVk9M/N+lQDVuASZ+Wn61G81McwJGc
+         LnjilsCskV4NofFzaKPblkcdNDuIfAjesRYaeaN/Lb4SUm9ZAU7+feUK19WDBA6ix0Vi
+         MIotrfcDPW3GiF3oIkPLn7pnxt78mG7ZEnDicDFlKjvklpZsNRVdL8k8YH8tSsTfk90F
+         Fz/g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=7bkqiEyd8a086aPYUR6burYJWQhu6f4gu/LbVHZNwfc=;
-        b=WCMCbF6SexutfjcWtDOhzEDoKZDICWa4lef+3CjndBNXgWdAs3IJjhfF0Oc6hNI+v9
-         eRHRE3JBtYUGyJjSb9raa3tXj3KPswN8CQ1gRRYogDTdkDoiX8fNOo8F6xISP69fLiRs
-         hpUZCxfz8aJlwpApmN/Mo/80ebf0Cpdawd8ULe+uhFl7iiFZ2O/ydp250UHLzm0JX1MR
-         oyjYIkpQVqx2ymrCgwSlswJ46/E6tpd2oE0lJ7mHBV+PtanVRVes617yvobAE/VQuBab
-         FPOAgO6G5aPI+JnatKPpreeSDNC8gNQ9KAn2/zEKwOjphbcYQ5aPJjGwXiG80eU4w06y
-         BLeA==
-X-Gm-Message-State: AOAM533qx3TrFXb/hbvC7IgE3XU13yAUgy3A1rEIJFD6RSmjHHp9izd3
-        HsQQA+azseSVbF3P6nDr4hvk+w==
-X-Google-Smtp-Source: ABdhPJyhejKZ8P84aJ+O1OEB2O4xbRPp6DSwQ4nUr0TDzKzViEyqc3s1wCsWqp4HT4SiJmSGzahxbQ==
-X-Received: by 2002:a9d:6645:: with SMTP id q5mr11181131otm.80.1622308196402;
-        Sat, 29 May 2021 10:09:56 -0700 (PDT)
-Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id d19sm1827454oop.26.2021.05.29.10.09.55
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=uG0wF9x5J31B5QovgpxzHE3VxGkFw0gZRlBKzlTkO48=;
+        b=Xqmv/o9ovlPgLwD0KEImh+D0ZST+0AE2+vghc/v97xE2WdB/ydM6Otmqz6qJ12eU1N
+         hWlTRHkGL3JZDKmsZhplva9PmoT/AxHiH2kF3JGrD4IEcT0G3MG3VE2tHlSWaCSuP9Vz
+         l7PLUDm6FPU+7j0UeNbc0z42fFNEOfAhtgqIEh11rL98EHuVk+Z64cUnh4hEktx21Em+
+         Cnlbb44UqLXgIH/guPP+Ks30VFQSP9ueUPUJGB0MsYaT1Zaz/lOm+c0kJ7GNwpttxcXO
+         UzG1i4VHZ61GZSliT+ZbROGc8kAVjojK6ciSRYTMqAdzvdlv5Y3nw40pulT1nv91gqrr
+         dNAQ==
+X-Gm-Message-State: AOAM532CwEsPVuoXOHNxeiAjt30dOJqctj8LHOSNSIejCRUUW0R5/SiX
+        V/9ZnSdq+T4jeQEsP6BkYRDyvMpn5yc=
+X-Google-Smtp-Source: ABdhPJy6gHfOnZuQmJd7NMeqZJaT8AyHCBdb2KRGRIy4gpCNNP1NevOiAgYPasZ3Bf7LwFV8OmgJ+Q==
+X-Received: by 2002:a05:6512:308a:: with SMTP id z10mr9363913lfd.601.1622308244024;
+        Sat, 29 May 2021 10:10:44 -0700 (PDT)
+Received: from localhost.localdomain (46-138-84-89.dynamic.spd-mgts.ru. [46.138.84.89])
+        by smtp.gmail.com with ESMTPSA id h12sm901715ljh.130.2021.05.29.10.10.43
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 29 May 2021 10:09:55 -0700 (PDT)
-Date:   Sat, 29 May 2021 12:09:53 -0500
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     abhinavk@codeaurora.org
-Cc:     Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Stephen Boyd <swboyd@chromium.org>, sbillaka@codeaurora.org,
-        Tanmay Shah <tanmay@codeaurora.org>,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        dri-devel@lists.freedesktop.org,
-        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        freedreno@lists.freedesktop.org,
-        Chandan Uddaraju <chandanu@codeaurora.org>
-Subject: Re: [Freedreno] [PATCH 4/4] drm/msm/dp: Add support for SC8180x eDP
-Message-ID: <YLJ1Yfg8jlrxILTE@builder.lan>
-References: <20210511042043.592802-1-bjorn.andersson@linaro.org>
- <20210511042043.592802-5-bjorn.andersson@linaro.org>
- <a1a8221a44edc3a509bdc1bb89bb5a97@codeaurora.org>
+        Sat, 29 May 2021 10:10:43 -0700 (PDT)
+From:   Dmitry Osipenko <digetx@gmail.com>
+To:     Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Zhang Rui <rui.zhang@intel.com>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Amit Kucheria <amitk@kernel.org>,
+        Andreas Westman Dorcsak <hedmoo@yahoo.com>,
+        Maxim Schwalm <maxim.schwalm@gmail.com>,
+        Svyatoslav Ryhel <clamor95@gmail.com>,
+        Ihor Didenko <tailormoon@rambler.ru>,
+        Ion Agorria <ion@agorria.com>,
+        Matt Merhar <mattmerhar@protonmail.com>,
+        Peter Geis <pgwipeout@gmail.com>
+Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-tegra@vger.kernel.org, linux-pm@vger.kernel.org
+Subject: [PATCH v3 6/7] ARM: multi_v7_defconfig: Enable CONFIG_TEGRA30_TSENSOR
+Date:   Sat, 29 May 2021 20:09:54 +0300
+Message-Id: <20210529170955.32574-7-digetx@gmail.com>
+X-Mailer: git-send-email 2.30.2
+In-Reply-To: <20210529170955.32574-1-digetx@gmail.com>
+References: <20210529170955.32574-1-digetx@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <a1a8221a44edc3a509bdc1bb89bb5a97@codeaurora.org>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri 28 May 18:40 CDT 2021, abhinavk@codeaurora.org wrote:
+Enable NVIDIA Tegra30 SoC thermal sensor driver in multi_v7_defconfig.
 
-> On 2021-05-10 21:20, Bjorn Andersson wrote:
-> > The eDP controller found in SC8180x is at large compatible with the
-> > current implementation, but has its register blocks at slightly
-> > different offsets.
-> > 
-> > Add the compatible and the new register layout.
-> > 
-> I am not able to completely recall the history of why in the DP bindings
-> we added DP register base as a big hunk and let catalog handle the submodule
-> offsets.
-> 
-> I guess earlier that made sense because DP sub-block offsets were fixed.
-> But if we plan to re-use the DP driver for eDP as well like this series,
-> then maybe it might be
-> better if this comes from device tree like the earlier version was planning
-> to
-> 
-> https://patchwork.kernel.org/project/dri-devel/patch/0101016ec6ddf446-e87ab1ce-5cbf-40a0-a0bb-cd0151cd577a-000000@us-west-2.amazonses.com/
-> 
-> 
-> +- reg:                  Base address and length of DP hardware's memory
-> mapped regions.
-> +- cell-index:           Specifies the controller instance.
-> +- reg-names:            A list of strings that name the list of regs.
-> +			"dp_ahb" - DP controller memory region.
-> +			"dp_aux" - DP AUX memory region.
-> +			"dp_link" - DP link layer memory region.
-> +			"dp_p0" - DP pixel clock domain memory region.
-> +			"dp_phy" - DP PHY memory region.
-> +			"dp_ln_tx0" - USB3 DP PHY combo TX-0 lane memory region.
-> +			"dp_ln_tx1" - USB3 DP PHY combo TX-1 lane memory region.
-> 
-> Now there is more reason to separate the sub-module offsets like
-> ahb/aux/link/p0
+Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+---
+ arch/arm/configs/multi_v7_defconfig | 1 +
+ 1 file changed, 1 insertion(+)
 
-I like it, will rewrite the patch accordingly.
+diff --git a/arch/arm/configs/multi_v7_defconfig b/arch/arm/configs/multi_v7_defconfig
+index 52a0400fdd92..fc346f87d7f9 100644
+--- a/arch/arm/configs/multi_v7_defconfig
++++ b/arch/arm/configs/multi_v7_defconfig
+@@ -523,6 +523,7 @@ CONFIG_BRCMSTB_THERMAL=m
+ CONFIG_GENERIC_ADC_THERMAL=m
+ CONFIG_ST_THERMAL_MEMMAP=y
+ CONFIG_TEGRA_SOCTHERM=m
++CONFIG_TEGRA30_TSENSOR=m
+ CONFIG_UNIPHIER_THERMAL=y
+ CONFIG_DA9063_WATCHDOG=m
+ CONFIG_XILINX_WATCHDOG=y
+-- 
+2.30.2
 
-Regards,
-Bjorn
-
-> > Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
-> > ---
-> >  drivers/gpu/drm/msm/dp/dp_display.c |  1 +
-> >  drivers/gpu/drm/msm/dp/dp_parser.c  | 28 ++++++++++++++++++++--------
-> >  2 files changed, 21 insertions(+), 8 deletions(-)
-> > 
-> > diff --git a/drivers/gpu/drm/msm/dp/dp_display.c
-> > b/drivers/gpu/drm/msm/dp/dp_display.c
-> > index d1319b58e901..0be03bdc882c 100644
-> > --- a/drivers/gpu/drm/msm/dp/dp_display.c
-> > +++ b/drivers/gpu/drm/msm/dp/dp_display.c
-> > @@ -121,6 +121,7 @@ struct dp_display_private {
-> > 
-> >  static const struct of_device_id dp_dt_match[] = {
-> >  	{.compatible = "qcom,sc7180-dp"},
-> > +	{ .compatible = "qcom,sc8180x-edp" },
-> >  	{}
-> >  };
-> > 
-> > diff --git a/drivers/gpu/drm/msm/dp/dp_parser.c
-> > b/drivers/gpu/drm/msm/dp/dp_parser.c
-> > index 51ec85b4803b..47cf18bba4b2 100644
-> > --- a/drivers/gpu/drm/msm/dp/dp_parser.c
-> > +++ b/drivers/gpu/drm/msm/dp/dp_parser.c
-> > @@ -251,6 +251,7 @@ static int dp_parser_clock(struct dp_parser *parser)
-> >  static int dp_parser_parse(struct dp_parser *parser)
-> >  {
-> >  	struct dss_io_data *io = &parser->io.dp_controller;
-> > +	struct device *dev = &parser->pdev->dev;
-> >  	int rc = 0;
-> > 
-> >  	if (!parser) {
-> > @@ -276,14 +277,25 @@ static int dp_parser_parse(struct dp_parser
-> > *parser)
-> >  	 */
-> >  	parser->regulator_cfg = &sdm845_dp_reg_cfg;
-> > 
-> > -	io->ahb = io->base + 0x0;
-> > -	io->ahb_len = 0x200;
-> > -	io->aux = io->base + 0x200;
-> > -	io->aux_len = 0x200;
-> > -	io->link = io->base + 0x400;
-> > -	io->link_len = 0x600;
-> > -	io->p0 = io->base + 0x1000;
-> > -	io->p0_len = 0x400;
-> > +	if (of_device_is_compatible(dev->of_node, "qcom,sc8180x-edp")) {
-> > +		io->ahb = io->base + 0x0;
-> > +		io->ahb_len = 0x200;
-> > +		io->aux = io->base + 0x200;
-> > +		io->aux_len = 0x200;
-> > +		io->link = io->base + 0x400;
-> > +		io->link_len = 0x600;
-> > +		io->p0 = io->base + 0xa00;
-> > +		io->p0_len = 0x400;
-> > +	} else {
-> > +		io->ahb = io->base + 0x0;
-> > +		io->ahb_len = 0x200;
-> > +		io->aux = io->base + 0x200;
-> > +		io->aux_len = 0x200;
-> > +		io->link = io->base + 0x400;
-> > +		io->link_len = 0x600;
-> > +		io->p0 = io->base + 0x1000;
-> > +		io->p0_len = 0x400;
-> > +	}
-> > 
-> >  	return 0;
-> >  }
