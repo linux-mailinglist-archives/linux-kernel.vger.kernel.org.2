@@ -2,127 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 33679394B4D
-	for <lists+linux-kernel@lfdr.de>; Sat, 29 May 2021 11:22:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 96FC1394B45
+	for <lists+linux-kernel@lfdr.de>; Sat, 29 May 2021 11:19:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229741AbhE2JXp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 29 May 2021 05:23:45 -0400
-Received: from szxga08-in.huawei.com ([45.249.212.255]:2348 "EHLO
-        szxga08-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229560AbhE2JXo (ORCPT
+        id S229699AbhE2JUe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 29 May 2021 05:20:34 -0400
+Received: from szxga01-in.huawei.com ([45.249.212.187]:2093 "EHLO
+        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229559AbhE2JUd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 29 May 2021 05:23:44 -0400
-Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.53])
-        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4FsbYM5cKkz1BFmf;
-        Sat, 29 May 2021 17:17:27 +0800 (CST)
-Received: from dggpeml500012.china.huawei.com (7.185.36.15) by
- dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Sat, 29 May 2021 17:22:04 +0800
-Received: from [10.67.103.212] (10.67.103.212) by
- dggpeml500012.china.huawei.com (7.185.36.15) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Sat, 29 May 2021 17:22:04 +0800
-Subject: Re: [PATCH 2/3] crypto: hisilicon/sec - add fallback tfm supporting
- for XTS mode
-To:     kernel test robot <lkp@intel.com>, <herbert@gondor.apana.org.au>
-References: <1622202126-19237-3-git-send-email-yekai13@huawei.com>
- <202105282256.hUBoOJ3Z-lkp@intel.com>
-CC:     <kbuild-all@lists.01.org>, <linux-crypto@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <wangzhou1@hisilicon.com>
-From:   "yekai(A)" <yekai13@huawei.com>
-Message-ID: <c265adb3-4cba-a6f7-6ba5-9a065fe5aeca@huawei.com>
-Date:   Sat, 29 May 2021 17:22:03 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:45.0) Gecko/20100101
- Thunderbird/45.7.1
+        Sat, 29 May 2021 05:20:33 -0400
+Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.56])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4FsbTk17yKzWp8R;
+        Sat, 29 May 2021 17:14:18 +0800 (CST)
+Received: from dggema762-chm.china.huawei.com (10.1.198.204) by
+ dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
+ 15.1.2176.2; Sat, 29 May 2021 17:18:55 +0800
+Received: from huawei.com (10.175.127.227) by dggema762-chm.china.huawei.com
+ (10.1.198.204) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Sat, 29
+ May 2021 17:18:55 +0800
+From:   Yu Kuai <yukuai3@huawei.com>
+To:     <harry.wentland@amd.com>, <sunpeng.li@amd.com>,
+        <alexander.deucher@amd.com>, <christian.koenig@amd.com>,
+        <Xinhui.Pan@amd.com>, <airlied@linux.ie>, <daniel@ffwll.ch>,
+        <maarten.lankhorst@linux.intel.com>, <mripard@kernel.org>,
+        <tzimmermann@suse.de>
+CC:     <amd-gfx@lists.freedesktop.org>, <dri-devel@lists.freedesktop.org>,
+        <linux-kernel@vger.kernel.org>, <yukuai3@huawei.com>,
+        <yi.zhang@huawei.com>
+Subject: [PATCH] drm/amd/display: fix gcc set but not used warning of variable 'old_plane_state'
+Date:   Sat, 29 May 2021 17:28:16 +0800
+Message-ID: <20210529092816.3133745-1-yukuai3@huawei.com>
+X-Mailer: git-send-email 2.25.4
 MIME-Version: 1.0
-In-Reply-To: <202105282256.hUBoOJ3Z-lkp@intel.com>
-Content-Type: text/plain; charset="windows-1252"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.67.103.212]
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.175.127.227]
 X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
- dggpeml500012.china.huawei.com (7.185.36.15)
+ dggema762-chm.china.huawei.com (10.1.198.204)
 X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+define a new macro for_each_new_plane_in_state_reverse to replace
+for_each_oldnew_plane_in_state_reverse, so that the unused variable
+'old_plane_state' can be removed.
 
+Fix gcc warning:
+drivers/gpu/drm/amd/amdgpu/../display/amdgpu_dm/amdgpu_dm.c:10066:26: warning:
+ variable ‘old_plane_state’ set but not used [-Wunused-but-set-variable]
 
-On 2021/5/28 22:13, kernel test robot wrote:
-> Hi Kai,
->
-> Thank you for the patch! Yet something to improve:
->
-> [auto build test ERROR on cryptodev/master]
-> [also build test ERROR on crypto/master linux/master linus/master v5.13-rc3 next-20210528]
-> [If your patch is applied to the wrong git tree, kindly drop us a note.
-> And when submitting patch, we suggest to use '--base' as documented in
-> https://git-scm.com/docs/git-format-patch]
->
-> url:    https://github.com/0day-ci/linux/commits/Kai-Ye/crypto-hisilicon-supports-new-skciphers-for-new-hardware/20210528-194644
-> base:   https://git.kernel.org/pub/scm/linux/kernel/git/herbert/cryptodev-2.6.git master
-> config: ia64-allmodconfig (attached as .config)
-> compiler: ia64-linux-gcc (GCC) 9.3.0
-> reproduce (this is a W=1 build):
->         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
->         chmod +x ~/bin/make.cross
->         # https://github.com/0day-ci/linux/commit/60bae5ed49c53ea90c82125a8295fb72833a3b68
->         git remote add linux-review https://github.com/0day-ci/linux
->         git fetch --no-tags linux-review Kai-Ye/crypto-hisilicon-supports-new-skciphers-for-new-hardware/20210528-194644
->         git checkout 60bae5ed49c53ea90c82125a8295fb72833a3b68
->         # save the attached .config to linux build tree
->         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-9.3.0 make.cross ARCH=ia64
->
-> If you fix the issue, kindly add following tag as appropriate
-> Reported-by: kernel test robot <lkp@intel.com>
->
-> All errors (new ones prefixed by >>):
->
->    drivers/crypto/hisilicon/sec2/sec_crypto.c: In function 'sec_aead_crypto':
->>> drivers/crypto/hisilicon/sec2/sec_crypto.c:1751:40: error: 'sk_req' undeclared (first use in this function); did you mean 'a_req'?
->     1751 |   return sec_skcipher_soft_crypto(ctx, sk_req, encrypt);
->          |                                        ^~~~~~
->          |                                        a_req
->    drivers/crypto/hisilicon/sec2/sec_crypto.c:1751:40: note: each undeclared identifier is reported only once for each function it appears in
->
->
-> vim +1751 drivers/crypto/hisilicon/sec2/sec_crypto.c
->
->   1733	
->   1734	static int sec_aead_crypto(struct aead_request *a_req, bool encrypt)
->   1735	{
->   1736		struct crypto_aead *tfm = crypto_aead_reqtfm(a_req);
->   1737		struct sec_req *req = aead_request_ctx(a_req);
->   1738		struct sec_ctx *ctx = crypto_aead_ctx(tfm);
->   1739		int ret;
->   1740	
->   1741		req->flag = a_req->base.flags;
->   1742		req->aead_req.aead_req = a_req;
->   1743		req->c_req.encrypt = encrypt;
->   1744		req->ctx = ctx;
->   1745	
->   1746		ret = sec_aead_param_check(ctx, req);
->   1747		if (unlikely(ret))
->   1748			return -EINVAL;
->   1749	
->   1750		if (unlikely(ctx->c_ctx.fallback))
->> 1751			return sec_skcipher_soft_crypto(ctx, sk_req, encrypt);
->   1752	
->   1753		return ctx->req_op->process(ctx, req);
->   1754	}
->   1755	
->
-> ---
-> 0-DAY CI Kernel Test Service, Intel Corporation
-> https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
->
+Signed-off-by: Yu Kuai <yukuai3@huawei.com>
+---
+ drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c |  4 ++--
+ include/drm/drm_atomic.h                          | 12 ++++++++++++
+ 2 files changed, 14 insertions(+), 2 deletions(-)
 
+diff --git a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
+index f7a5e5b48ea6..9f4b334bc071 100644
+--- a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
++++ b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
+@@ -10063,11 +10063,11 @@ static int validate_overlay(struct drm_atomic_state *state)
+ {
+ 	int i;
+ 	struct drm_plane *plane;
+-	struct drm_plane_state *old_plane_state, *new_plane_state;
++	struct drm_plane_state *new_plane_state;
+ 	struct drm_plane_state *primary_state, *cursor_state, *overlay_state = NULL;
+ 
+ 	/* Check if primary plane is contained inside overlay */
+-	for_each_oldnew_plane_in_state_reverse(state, plane, old_plane_state, new_plane_state, i) {
++	for_each_new_plane_in_state_reverse(state, plane, new_plane_state, i) {
+ 		if (plane->type == DRM_PLANE_TYPE_OVERLAY) {
+ 			if (drm_atomic_plane_disabling(plane->state, new_plane_state))
+ 				return 0;
+diff --git a/include/drm/drm_atomic.h b/include/drm/drm_atomic.h
+index ac5a28eff2c8..8f1350e599eb 100644
+--- a/include/drm/drm_atomic.h
++++ b/include/drm/drm_atomic.h
+@@ -895,6 +895,18 @@ void drm_state_dump(struct drm_device *dev, struct drm_printer *p);
+ 			      (old_plane_state) = (__state)->planes[__i].old_state,\
+ 			      (new_plane_state) = (__state)->planes[__i].new_state, 1))
+ 
++/**
++ * for_each_new_plane_in_state_reverse - other than only tracking new state,
++ * it's the same as for_each_oldnew_plane_in_state_reverse
++ */
++#define for_each_new_plane_in_state_reverse(__state, plane, new_plane_state, __i) \
++	for ((__i) = ((__state)->dev->mode_config.num_total_plane - 1);	\
++	     (__i) >= 0;						\
++	     (__i)--)							\
++		for_each_if ((__state)->planes[__i].ptr &&		\
++			     ((plane) = (__state)->planes[__i].ptr,	\
++			      (new_plane_state) = (__state)->planes[__i].new_state, 1))
++
+ /**
+  * for_each_old_plane_in_state - iterate over all planes in an atomic update
+  * @__state: &struct drm_atomic_state pointer
+-- 
+2.25.4
 
-You shouldn't git am this patchset directly, because this patchset 
-depends on previous patchset.
-the series is "crypto: hisilicon - add new type of sqe for Kunpeng930",
-the patchwork is 
-https://patchwork.kernel.org/project/linux-crypto/list/?series=490143,
-thank you
-Kai
