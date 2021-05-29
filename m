@@ -2,79 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A16F394E49
-	for <lists+linux-kernel@lfdr.de>; Sat, 29 May 2021 23:30:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8877E394E52
+	for <lists+linux-kernel@lfdr.de>; Sat, 29 May 2021 23:55:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229571AbhE2Vbn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 29 May 2021 17:31:43 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47264 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229476AbhE2Vbk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 29 May 2021 17:31:40 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id E7BA16112F;
-        Sat, 29 May 2021 21:30:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1622323803;
-        bh=aAK71qrGwVBqqbDiYf/mmlzUjQxhfFD9zImgOgXNoYQ=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=cIHmSwlyZIkPZ94Fn9NrwOssze+1UzvZznhBBBq+se36B5Ih1sLS25/rnGTmUmKlP
-         olZngE/SOqMuYI6BeOfvr3kJjZkwssr6RLHYsyLQuL/p/rTmLnJeyBuCZLA1+hehaI
-         /Byhde97f2lVrOPV1yGE3ZgY2lBYZcbdMxqwFdkOCrT6sNs9twG76DlPYET9XnHYwf
-         aoCQX4ON14OdP/wq2RsuHxNQLUpzOuuBbViCg++5ul+loJJ/VLKK/NmraZF5OekzDe
-         ZFpJeXVAvOrIbWen1l2iLGLXZUA3I/vAUa/bvw+XlTHYK3pJsvR+zlq3GObiBFsJvg
-         jmDN/TpHcfPVw==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id DB4A9609EA;
-        Sat, 29 May 2021 21:30:03 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        id S229569AbhE2V5a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 29 May 2021 17:57:30 -0400
+Received: from mail-wm1-f53.google.com ([209.85.128.53]:38556 "EHLO
+        mail-wm1-f53.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229514AbhE2V53 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 29 May 2021 17:57:29 -0400
+Received: by mail-wm1-f53.google.com with SMTP id u4-20020a05600c00c4b02901774b80945cso6502267wmm.3;
+        Sat, 29 May 2021 14:55:50 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=rkbfnMFIBjJ28sV3lmcDjwO88P3Jvg5MRuBy7DpTbY4=;
+        b=ubpK27qmeUEcEYikODq08aeKKys+1feGJefPL2xYTxmjFRGGCU6bStVy5wOd9nepNx
+         7IpbaLoR86TP+ege/WwOIWmAIC0gK6ycKIoYdc36xm4FtHzY7P6+kd8TtHpmABh9Gq3Y
+         rPRyG0EiOKy7SUwU8G+t0ra9yYZ/lPVooIbnVG1ffNl02jNiUJGZM/sSUAo3ZmBD9ZcJ
+         VDNH1rL2AF+fmepy9F6DrQ66WeZ+t2OeowtH/DFSemAbbsM5iKT2bkBy9Ay1rEp1X+Zy
+         RKRVilO9J7N2N+k9T1AZHOx1Z0/mxu7s6ZrRiUbDRhJev2gqB5shojTaUf1HBg1XrGUu
+         Mafw==
+X-Gm-Message-State: AOAM533aUSY6fRtxHyHRTNWSIGyd1z5KW6R6pGzIdIobANMXplobLv8F
+        FSWfSflAuEHm3cmIEtuXkwY=
+X-Google-Smtp-Source: ABdhPJwFnxiQWJqP4OIAzJU9YeAxMunrAusQp1OBLGeZ96nRU9guTlqlRW3DeNf4xLLcWrHD6xKfAw==
+X-Received: by 2002:a05:600c:4f8b:: with SMTP id n11mr14453897wmq.11.1622325350394;
+        Sat, 29 May 2021 14:55:50 -0700 (PDT)
+Received: from liuwe-devbox-debian-v2 ([51.145.34.42])
+        by smtp.gmail.com with ESMTPSA id b135sm9518073wmb.5.2021.05.29.14.55.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 29 May 2021 14:55:49 -0700 (PDT)
+Date:   Sat, 29 May 2021 21:55:48 +0000
+From:   Wei Liu <wei.liu@kernel.org>
+To:     Nuno Das Neves <nunodasneves@linux.microsoft.com>
+Cc:     linux-hyperv@vger.kernel.org, linux-kernel@vger.kernel.org,
+        virtualization@lists.linux-foundation.org, mikelley@microsoft.com,
+        viremana@linux.microsoft.com, sunilmut@microsoft.com,
+        wei.liu@kernel.org, vkuznets@redhat.com, ligrassi@microsoft.com,
+        kys@microsoft.com
+Subject: Re: [PATCH 12/19] drivers/hv: run vp ioctl and isr
+Message-ID: <20210529215548.okh67gtegsa4fd7r@liuwe-devbox-debian-v2>
+References: <1622241819-21155-1-git-send-email-nunodasneves@linux.microsoft.com>
+ <1622241819-21155-13-git-send-email-nunodasneves@linux.microsoft.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [net-next PATCHv3 0/5] NPC KPU updates
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <162232380389.20597.3426693408177564545.git-patchwork-notify@kernel.org>
-Date:   Sat, 29 May 2021 21:30:03 +0000
-References: <20210527094439.1910013-1-george.cherian@marvell.com>
-In-Reply-To: <20210527094439.1910013-1-george.cherian@marvell.com>
-To:     George Cherian <george.cherian@marvell.com>
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kuba@kernel.org, davem@davemloft.net, gcherian@marvell.com,
-        sgoutham@marvell.com
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1622241819-21155-13-git-send-email-nunodasneves@linux.microsoft.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello:
+On Fri, May 28, 2021 at 03:43:32PM -0700, Nuno Das Neves wrote:
+[...]
+>  int mshv_synic_init(unsigned int cpu)
+>  {
+>  	union hv_synic_simp simp;
+> @@ -30,7 +126,7 @@ int mshv_synic_init(unsigned int cpu)
+>  	*msg_page = memremap(simp.base_simp_gpa << HV_HYP_PAGE_SHIFT,
+>  			     HV_HYP_PAGE_SIZE,
+>                               MEMREMAP_WB);
+> -	if (!msg_page) {
+> +	if (!(*msg_page)) {
 
-This series was applied to netdev/net-next.git (refs/heads/master):
+This hunk belongs to the previous patch in which you introduced this
+function, not this one.
 
-On Thu, 27 May 2021 15:14:34 +0530 you wrote:
-> Add support for
->  - Loading Custom KPU profile entries
->  - Add NPC profile Load from System Firmware DB
->  - Add Support fo Coalescing KPU profiles
->  - General Updates/Fixes to default KPU profile
-> 
-> Changelog:
->  v2->v3
->  	Fix compilation warnings.
-> 
-> [...]
-
-Here is the summary with links:
-  - [net-next,PATCHv3,1/5] octeontx2-af: add support for custom KPU entries
-    https://git.kernel.org/netdev/net-next/c/3a7244152f9c
-  - [net-next,PATCHv3,2/5] octeontx2-af: load NPC profile via firmware database
-    https://git.kernel.org/netdev/net-next/c/5d16250b6059
-  - [net-next,PATCHv3,3/5] octeontx2-af: adding new lt def registers support
-    https://git.kernel.org/netdev/net-next/c/c87e6b139579
-  - [net-next,PATCHv3,4/5] octeontx2-af: support for coalescing KPU profiles
-    https://git.kernel.org/netdev/net-next/c/11c730bfbf5b
-  - [net-next,PATCHv3,5/5] octeontx2-af: Update the default KPU profile and fixes
-    https://git.kernel.org/netdev/net-next/c/f9c49be90c05
-
-You are awesome, thank you!
---
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
-
+Wei.
