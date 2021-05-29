@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EA8EB394D95
-	for <lists+linux-kernel@lfdr.de>; Sat, 29 May 2021 19:56:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 658D6394DA0
+	for <lists+linux-kernel@lfdr.de>; Sat, 29 May 2021 20:17:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229796AbhE2R5i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 29 May 2021 13:57:38 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37250 "EHLO mail.kernel.org"
+        id S229817AbhE2SK0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 29 May 2021 14:10:26 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44768 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229716AbhE2R5h (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 29 May 2021 13:57:37 -0400
-Received: from oasis.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E3D7C61059;
-        Sat, 29 May 2021 17:55:59 +0000 (UTC)
-Date:   Sat, 29 May 2021 13:55:58 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Pavel Begunkov <asml.silence@gmail.com>
-Cc:     Olivier Langlois <olivier@trillion01.com>,
-        Stefan Metzmacher <metze@samba.org>,
-        Jens Axboe <axboe@kernel.dk>, Ingo Molnar <mingo@redhat.com>,
-        io-uring@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] io_uring: Add to traces the req pointer when available
-Message-ID: <20210529135558.7ec54cb7@oasis.local.home>
-In-Reply-To: <6fd74635-d3a8-7319-bcc6-c2c1de9c87ee@gmail.com>
-References: <60ac946e.1c69fb81.5efc2.65deSMTPIN_ADDED_MISSING@mx.google.com>
-        <439a2ab8-765d-9a77-5dfd-dde2bd6884c4@gmail.com>
-        <9a8abcc9-8f7a-8350-cf34-f86e4ac13f5c@samba.org>
-        <9505850ae4c203f6b8f056265eddbffaae501806.camel@trillion01.com>
-        <20210528184248.46926090@gandalf.local.home>
-        <6fd74635-d3a8-7319-bcc6-c2c1de9c87ee@gmail.com>
-X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        id S229726AbhE2SKZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 29 May 2021 14:10:25 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7B2B361153;
+        Sat, 29 May 2021 18:08:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1622311728;
+        bh=5Qdz461gMcaT09Lh5nRC5Tb/An/G/cXNZMLamFs1vJ8=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=aGvwISJwdQSEUTZ1W21Ne/p0qVOT1HSliRX1SJiUdEHhYZ1LLC9P+z/Xcqq88+jsy
+         xVtlgnndaeVtwwNCnWVc6XCy8bDz17gMgNwruR+9BmJZFKDt1PJxnDcyON3dWZlsC1
+         wSsmtdF3+PUpvmntQxliCDnmIYDUDXffAALr6nI6Kr2vclgEzKIdm4E+pd78+58EPF
+         xT1ZYcbBwqbw1VABRj6Gt49JGuhKlwd62Clp+Xana6hw8q379k6NxLRqYv1w5QtZtL
+         OfROJ7fGf1Pa0kvFdbOCAXP+pB4wtXZXVWdwQHg+yIV5UU/m9iVpR3lRI+RIcIax2E
+         InTnOJevhKr9w==
+Date:   Sat, 29 May 2021 11:08:47 -0700
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     YueHaibing <yuehaibing@huawei.com>
+Cc:     <davem@davemloft.net>, <netdev@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH net-next] pktgen: Use BIT(x) macro
+Message-ID: <20210529110847.53473ab0@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
+In-Reply-To: <20210529114559.24604-1-yuehaibing@huawei.com>
+References: <20210529114559.24604-1-yuehaibing@huawei.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -40,17 +39,7 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 29 May 2021 13:30:31 +0100
-Pavel Begunkov <asml.silence@gmail.com> wrote:
+On Sat, 29 May 2021 19:45:59 +0800 YueHaibing wrote:
+> BIT(x) improves readability and safety with respect to shifts.
 
-> io_uring offers all different operations and has internal request/memory
-> recycling, so it may be an easy vector of attack in case of some
-> vulnerabilities found, but nothing special. As that's the status quo,
-> I wouldn't care, let's put aside my concerns and print them raw.
-
-There's a lot of information that the tracing subsystem gives that would
-help several vectors of attack without the need for pointers. That's
-why there's a lockdown method to disable all tracing. But the tracing
-system is also good at finding out if your system has been compromised ;-)
-
--- Steve
+Some developers prefer not to use BIT(). I'm not applying these.
