@@ -2,354 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 28BD9394C18
-	for <lists+linux-kernel@lfdr.de>; Sat, 29 May 2021 13:52:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 74B42394C1A
+	for <lists+linux-kernel@lfdr.de>; Sat, 29 May 2021 13:59:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229756AbhE2Lyb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 29 May 2021 07:54:31 -0400
-Received: from szxga02-in.huawei.com ([45.249.212.188]:2539 "EHLO
-        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229602AbhE2Lya (ORCPT
+        id S229704AbhE2MBN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 29 May 2021 08:01:13 -0400
+Received: from mail-ua1-f54.google.com ([209.85.222.54]:39808 "EHLO
+        mail-ua1-f54.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229602AbhE2MBM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 29 May 2021 07:54:30 -0400
-Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.56])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4Fsfxb2mHVzYrgq;
-        Sat, 29 May 2021 19:50:11 +0800 (CST)
-Received: from dggema769-chm.china.huawei.com (10.1.198.211) by
- dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
- 15.1.2176.2; Sat, 29 May 2021 19:52:52 +0800
-Received: from localhost (10.174.179.215) by dggema769-chm.china.huawei.com
- (10.1.198.211) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Sat, 29
- May 2021 19:52:52 +0800
-From:   YueHaibing <yuehaibing@huawei.com>
-To:     <lgirdwood@gmail.com>, <broonie@kernel.org>
-CC:     <linux-kernel@vger.kernel.org>, YueHaibing <yuehaibing@huawei.com>
-Subject: [PATCH -next] regulator: core: Use DEVICE_ATTR_RO macro
-Date:   Sat, 29 May 2021 19:52:26 +0800
-Message-ID: <20210529115226.25376-1-yuehaibing@huawei.com>
-X-Mailer: git-send-email 2.10.2.windows.1
+        Sat, 29 May 2021 08:01:12 -0400
+Received: by mail-ua1-f54.google.com with SMTP id f20so3668706uax.6
+        for <linux-kernel@vger.kernel.org>; Sat, 29 May 2021 04:59:35 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=sBqDKANDuYIv1fmJy0kOtLnPqcHSsIvvwpPjjPB2kis=;
+        b=eolhCgwN8bTUOWJPf5uoqmWRG0Z7LBkiY3PQQZuSqKSbnNfNHHvHuWZm+tHMh40x+j
+         Ij3m67oKo2L0P+4XI4GXWUvLuh1+etDaYz4vUSD7a5ec7I8UCsMnQYQw4CY69C+0aT1J
+         zUFvOFOOKmKNMkdfqoTdU/M7mlrXddxf69gzQ8ACdg/mjZ0+aAGvhNwW/nTcgF6U4fth
+         gxGAQtRR8S8K7By6EmGhufKvWhsjPgB/dsetsbrIdgZdLNFfzTRdismAIDlnBxuEB78y
+         SYCcDbuikV4WOgZI0yNIxHXe/Rjl88cJ9nktRiU6/SGLErSfJJT8AITcP8be7iGtiYJS
+         Ampg==
+X-Gm-Message-State: AOAM530bzAmNS2GCR50z1mure8BWu3T6FlNkQ/TDloz4+/8PB1PM9n9z
+        IrLyo1B+9EHGP+D1Cc8my4zKrXR3DrgMRcQqhWnBXsNYITM=
+X-Google-Smtp-Source: ABdhPJwPEu7DR9pauy++8Ai97mNxeKCkKBxjL2XsakIMfVrQrx7zQmQj7xd06djOtKPLA30afe5FVTrTsWB+sX6w7tk=
+X-Received: by 2002:a05:6122:692:: with SMTP id n18mr4783503vkq.1.1622289575421;
+ Sat, 29 May 2021 04:59:35 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.174.179.215]
-X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
- dggema769-chm.china.huawei.com (10.1.198.211)
-X-CFilter-Loop: Reflected
+References: <202105290646.Ov4yx6Pr-lkp@intel.com>
+In-Reply-To: <202105290646.Ov4yx6Pr-lkp@intel.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Sat, 29 May 2021 13:59:23 +0200
+Message-ID: <CAMuHMdXZumxTDSG5yx0K8c1SfgodDPm6xCtb+Tb8B5U3HUyT5w@mail.gmail.com>
+Subject: Re: include/linux/avf/virtchnl.h:852:33: error: enumerator value for
+ 'virtchnl_static_assert_virtchnl_rss_cfg' is not an integer constant
+To:     kernel test robot <lkp@intel.com>
+Cc:     Qi Zhang <qi.z.zhang@intel.com>, kbuild-all@lists.01.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Tony Nguyen <anthony.l.nguyen@intel.com>,
+        Jia Guo <jia.guo@intel.com>,
+        Haiyue Wang <haiyue.wang@intel.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use DEVICE_ATTR_RO() helper instead of plain DEVICE_ATTR(),
-which makes the code a bit shorter and easier to read.
+On Sat, May 29, 2021 at 12:26 AM kernel test robot <lkp@intel.com> wrote:
+> FYI, the error/warning still remains.
 
-Signed-off-by: YueHaibing <yuehaibing@huawei.com>
----
- drivers/regulator/core.c | 130 ++++++++++++++++++---------------------
- 1 file changed, 60 insertions(+), 70 deletions(-)
+Fix available for 10 days:
+https://lore.kernel.org/lkml/20210519194350.1854798-1-geert@linux-m68k.org/
 
-diff --git a/drivers/regulator/core.c b/drivers/regulator/core.c
-index e20e77e4c159..f00eee655ad1 100644
---- a/drivers/regulator/core.c
-+++ b/drivers/regulator/core.c
-@@ -591,8 +591,8 @@ regulator_get_suspend_state_check(struct regulator_dev *rdev, suspend_state_t st
- 	return rstate;
- }
- 
--static ssize_t regulator_uV_show(struct device *dev,
--				struct device_attribute *attr, char *buf)
-+static ssize_t microvolts_show(struct device *dev,
-+			       struct device_attribute *attr, char *buf)
- {
- 	struct regulator_dev *rdev = dev_get_drvdata(dev);
- 	int uV;
-@@ -605,16 +605,16 @@ static ssize_t regulator_uV_show(struct device *dev,
- 		return uV;
- 	return sprintf(buf, "%d\n", uV);
- }
--static DEVICE_ATTR(microvolts, 0444, regulator_uV_show, NULL);
-+static DEVICE_ATTR_RO(microvolts);
- 
--static ssize_t regulator_uA_show(struct device *dev,
--				struct device_attribute *attr, char *buf)
-+static ssize_t microamps_show(struct device *dev,
-+			      struct device_attribute *attr, char *buf)
- {
- 	struct regulator_dev *rdev = dev_get_drvdata(dev);
- 
- 	return sprintf(buf, "%d\n", _regulator_get_current_limit(rdev));
- }
--static DEVICE_ATTR(microamps, 0444, regulator_uA_show, NULL);
-+static DEVICE_ATTR_RO(microamps);
- 
- static ssize_t name_show(struct device *dev, struct device_attribute *attr,
- 			 char *buf)
-@@ -645,14 +645,14 @@ static ssize_t regulator_print_opmode(char *buf, int mode)
- 	return sprintf(buf, "%s\n", regulator_opmode_to_str(mode));
- }
- 
--static ssize_t regulator_opmode_show(struct device *dev,
--				    struct device_attribute *attr, char *buf)
-+static ssize_t opmode_show(struct device *dev,
-+			   struct device_attribute *attr, char *buf)
- {
- 	struct regulator_dev *rdev = dev_get_drvdata(dev);
- 
- 	return regulator_print_opmode(buf, _regulator_get_mode(rdev));
- }
--static DEVICE_ATTR(opmode, 0444, regulator_opmode_show, NULL);
-+static DEVICE_ATTR_RO(opmode);
- 
- static ssize_t regulator_print_state(char *buf, int state)
- {
-@@ -664,8 +664,8 @@ static ssize_t regulator_print_state(char *buf, int state)
- 		return sprintf(buf, "unknown\n");
- }
- 
--static ssize_t regulator_state_show(struct device *dev,
--				   struct device_attribute *attr, char *buf)
-+static ssize_t state_show(struct device *dev,
-+			  struct device_attribute *attr, char *buf)
- {
- 	struct regulator_dev *rdev = dev_get_drvdata(dev);
- 	ssize_t ret;
-@@ -676,10 +676,10 @@ static ssize_t regulator_state_show(struct device *dev,
- 
- 	return ret;
- }
--static DEVICE_ATTR(state, 0444, regulator_state_show, NULL);
-+static DEVICE_ATTR_RO(state);
- 
--static ssize_t regulator_status_show(struct device *dev,
--				   struct device_attribute *attr, char *buf)
-+static ssize_t status_show(struct device *dev,
-+			   struct device_attribute *attr, char *buf)
- {
- 	struct regulator_dev *rdev = dev_get_drvdata(dev);
- 	int status;
-@@ -723,10 +723,10 @@ static ssize_t regulator_status_show(struct device *dev,
- 
- 	return sprintf(buf, "%s\n", label);
- }
--static DEVICE_ATTR(status, 0444, regulator_status_show, NULL);
-+static DEVICE_ATTR_RO(status);
- 
--static ssize_t regulator_min_uA_show(struct device *dev,
--				    struct device_attribute *attr, char *buf)
-+static ssize_t min_microamps_show(struct device *dev,
-+				  struct device_attribute *attr, char *buf)
- {
- 	struct regulator_dev *rdev = dev_get_drvdata(dev);
- 
-@@ -735,10 +735,10 @@ static ssize_t regulator_min_uA_show(struct device *dev,
- 
- 	return sprintf(buf, "%d\n", rdev->constraints->min_uA);
- }
--static DEVICE_ATTR(min_microamps, 0444, regulator_min_uA_show, NULL);
-+static DEVICE_ATTR_RO(min_microamps);
- 
--static ssize_t regulator_max_uA_show(struct device *dev,
--				    struct device_attribute *attr, char *buf)
-+static ssize_t max_microamps_show(struct device *dev,
-+				  struct device_attribute *attr, char *buf)
- {
- 	struct regulator_dev *rdev = dev_get_drvdata(dev);
- 
-@@ -747,10 +747,10 @@ static ssize_t regulator_max_uA_show(struct device *dev,
- 
- 	return sprintf(buf, "%d\n", rdev->constraints->max_uA);
- }
--static DEVICE_ATTR(max_microamps, 0444, regulator_max_uA_show, NULL);
-+static DEVICE_ATTR_RO(max_microamps);
- 
--static ssize_t regulator_min_uV_show(struct device *dev,
--				    struct device_attribute *attr, char *buf)
-+static ssize_t min_microvolts_show(struct device *dev,
-+				   struct device_attribute *attr, char *buf)
- {
- 	struct regulator_dev *rdev = dev_get_drvdata(dev);
- 
-@@ -759,10 +759,10 @@ static ssize_t regulator_min_uV_show(struct device *dev,
- 
- 	return sprintf(buf, "%d\n", rdev->constraints->min_uV);
- }
--static DEVICE_ATTR(min_microvolts, 0444, regulator_min_uV_show, NULL);
-+static DEVICE_ATTR_RO(min_microvolts);
- 
--static ssize_t regulator_max_uV_show(struct device *dev,
--				    struct device_attribute *attr, char *buf)
-+static ssize_t max_microvolts_show(struct device *dev,
-+				   struct device_attribute *attr, char *buf)
- {
- 	struct regulator_dev *rdev = dev_get_drvdata(dev);
- 
-@@ -771,10 +771,10 @@ static ssize_t regulator_max_uV_show(struct device *dev,
- 
- 	return sprintf(buf, "%d\n", rdev->constraints->max_uV);
- }
--static DEVICE_ATTR(max_microvolts, 0444, regulator_max_uV_show, NULL);
-+static DEVICE_ATTR_RO(max_microvolts);
- 
--static ssize_t regulator_total_uA_show(struct device *dev,
--				      struct device_attribute *attr, char *buf)
-+static ssize_t requested_microamps_show(struct device *dev,
-+					struct device_attribute *attr, char *buf)
- {
- 	struct regulator_dev *rdev = dev_get_drvdata(dev);
- 	struct regulator *regulator;
-@@ -788,7 +788,7 @@ static ssize_t regulator_total_uA_show(struct device *dev,
- 	regulator_unlock(rdev);
- 	return sprintf(buf, "%d\n", uA);
- }
--static DEVICE_ATTR(requested_microamps, 0444, regulator_total_uA_show, NULL);
-+static DEVICE_ATTR_RO(requested_microamps);
- 
- static ssize_t num_users_show(struct device *dev, struct device_attribute *attr,
- 			      char *buf)
-@@ -813,104 +813,95 @@ static ssize_t type_show(struct device *dev, struct device_attribute *attr,
- }
- static DEVICE_ATTR_RO(type);
- 
--static ssize_t regulator_suspend_mem_uV_show(struct device *dev,
--				struct device_attribute *attr, char *buf)
-+static ssize_t suspend_mem_microvolts_show(struct device *dev,
-+					   struct device_attribute *attr, char *buf)
- {
- 	struct regulator_dev *rdev = dev_get_drvdata(dev);
- 
- 	return sprintf(buf, "%d\n", rdev->constraints->state_mem.uV);
- }
--static DEVICE_ATTR(suspend_mem_microvolts, 0444,
--		regulator_suspend_mem_uV_show, NULL);
-+static DEVICE_ATTR_RO(suspend_mem_microvolts);
- 
--static ssize_t regulator_suspend_disk_uV_show(struct device *dev,
--				struct device_attribute *attr, char *buf)
-+static ssize_t suspend_disk_microvolts_show(struct device *dev,
-+					    struct device_attribute *attr, char *buf)
- {
- 	struct regulator_dev *rdev = dev_get_drvdata(dev);
- 
- 	return sprintf(buf, "%d\n", rdev->constraints->state_disk.uV);
- }
--static DEVICE_ATTR(suspend_disk_microvolts, 0444,
--		regulator_suspend_disk_uV_show, NULL);
-+static DEVICE_ATTR_RO(suspend_disk_microvolts);
- 
--static ssize_t regulator_suspend_standby_uV_show(struct device *dev,
--				struct device_attribute *attr, char *buf)
-+static ssize_t suspend_standby_microvolts_show(struct device *dev,
-+					       struct device_attribute *attr, char *buf)
- {
- 	struct regulator_dev *rdev = dev_get_drvdata(dev);
- 
- 	return sprintf(buf, "%d\n", rdev->constraints->state_standby.uV);
- }
--static DEVICE_ATTR(suspend_standby_microvolts, 0444,
--		regulator_suspend_standby_uV_show, NULL);
-+static DEVICE_ATTR_RO(suspend_standby_microvolts);
- 
--static ssize_t regulator_suspend_mem_mode_show(struct device *dev,
--				struct device_attribute *attr, char *buf)
-+static ssize_t suspend_mem_mode_show(struct device *dev,
-+				     struct device_attribute *attr, char *buf)
- {
- 	struct regulator_dev *rdev = dev_get_drvdata(dev);
- 
- 	return regulator_print_opmode(buf,
- 		rdev->constraints->state_mem.mode);
- }
--static DEVICE_ATTR(suspend_mem_mode, 0444,
--		regulator_suspend_mem_mode_show, NULL);
-+static DEVICE_ATTR_RO(suspend_mem_mode);
- 
--static ssize_t regulator_suspend_disk_mode_show(struct device *dev,
--				struct device_attribute *attr, char *buf)
-+static ssize_t suspend_disk_mode_show(struct device *dev,
-+				      struct device_attribute *attr, char *buf)
- {
- 	struct regulator_dev *rdev = dev_get_drvdata(dev);
- 
- 	return regulator_print_opmode(buf,
- 		rdev->constraints->state_disk.mode);
- }
--static DEVICE_ATTR(suspend_disk_mode, 0444,
--		regulator_suspend_disk_mode_show, NULL);
-+static DEVICE_ATTR_RO(suspend_disk_mode);
- 
--static ssize_t regulator_suspend_standby_mode_show(struct device *dev,
--				struct device_attribute *attr, char *buf)
-+static ssize_t suspend_standby_mode_show(struct device *dev,
-+					 struct device_attribute *attr, char *buf)
- {
- 	struct regulator_dev *rdev = dev_get_drvdata(dev);
- 
- 	return regulator_print_opmode(buf,
- 		rdev->constraints->state_standby.mode);
- }
--static DEVICE_ATTR(suspend_standby_mode, 0444,
--		regulator_suspend_standby_mode_show, NULL);
-+static DEVICE_ATTR_RO(suspend_standby_mode);
- 
--static ssize_t regulator_suspend_mem_state_show(struct device *dev,
--				   struct device_attribute *attr, char *buf)
-+static ssize_t suspend_mem_state_show(struct device *dev,
-+				      struct device_attribute *attr, char *buf)
- {
- 	struct regulator_dev *rdev = dev_get_drvdata(dev);
- 
- 	return regulator_print_state(buf,
- 			rdev->constraints->state_mem.enabled);
- }
--static DEVICE_ATTR(suspend_mem_state, 0444,
--		regulator_suspend_mem_state_show, NULL);
-+static DEVICE_ATTR_RO(suspend_mem_state);
- 
--static ssize_t regulator_suspend_disk_state_show(struct device *dev,
--				   struct device_attribute *attr, char *buf)
-+static ssize_t suspend_disk_state_show(struct device *dev,
-+				       struct device_attribute *attr, char *buf)
- {
- 	struct regulator_dev *rdev = dev_get_drvdata(dev);
- 
- 	return regulator_print_state(buf,
- 			rdev->constraints->state_disk.enabled);
- }
--static DEVICE_ATTR(suspend_disk_state, 0444,
--		regulator_suspend_disk_state_show, NULL);
-+static DEVICE_ATTR_RO(suspend_disk_state);
- 
--static ssize_t regulator_suspend_standby_state_show(struct device *dev,
--				   struct device_attribute *attr, char *buf)
-+static ssize_t suspend_standby_state_show(struct device *dev,
-+					  struct device_attribute *attr, char *buf)
- {
- 	struct regulator_dev *rdev = dev_get_drvdata(dev);
- 
- 	return regulator_print_state(buf,
- 			rdev->constraints->state_standby.enabled);
- }
--static DEVICE_ATTR(suspend_standby_state, 0444,
--		regulator_suspend_standby_state_show, NULL);
-+static DEVICE_ATTR_RO(suspend_standby_state);
- 
--static ssize_t regulator_bypass_show(struct device *dev,
--				     struct device_attribute *attr, char *buf)
-+static ssize_t bypass_show(struct device *dev,
-+			   struct device_attribute *attr, char *buf)
- {
- 	struct regulator_dev *rdev = dev_get_drvdata(dev);
- 	const char *report;
-@@ -928,8 +919,7 @@ static ssize_t regulator_bypass_show(struct device *dev,
- 
- 	return sprintf(buf, "%s\n", report);
- }
--static DEVICE_ATTR(bypass, 0444,
--		   regulator_bypass_show, NULL);
-+static DEVICE_ATTR_RO(bypass);
- 
- /* Calculate the new optimum regulator operating mode based on the new total
-  * consumer load. All locks held by caller
+> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+> head:   5ff2756afde08b266fbb673849899fec694f39f1
+> commit: 222a8ab01698148c00c271cda82d96f4e6e7b0a8 ice: Enable RSS configure for AVF
+> date:   5 weeks ago
+> config: m68k-randconfig-s031-20210528 (attached as .config)
+> compiler: m68k-linux-gcc (GCC) 9.3.0
+> reproduce:
+>         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+>         chmod +x ~/bin/make.cross
+>         # apt-get install sparse
+>         # sparse version: v0.6.3-341-g8af24329-dirty
+>         # https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=222a8ab01698148c00c271cda82d96f4e6e7b0a8
+>         git remote add linus https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
+>         git fetch --no-tags linus master
+>         git checkout 222a8ab01698148c00c271cda82d96f4e6e7b0a8
+>         # save the attached .config to linux build tree
+>         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-9.3.0 make.cross C=1 CF='-fdiagnostic-prefix -D__CHECK_ENDIAN__' W=1 ARCH=m68k
+>
+> If you fix the issue, kindly add following tag as appropriate
+> Reported-by: kernel test robot <lkp@intel.com>
+>
+> All errors (new ones prefixed by >>):
+>
+>    In file included from drivers/net/ethernet/intel/i40e/i40e_prototype.h:9,
+>                     from drivers/net/ethernet/intel/i40e/i40e.h:41,
+>                     from drivers/net/ethernet/intel/i40e/i40e_main.c:11:
+>    include/linux/avf/virtchnl.h:153:36: warning: division by zero [-Wdiv-by-zero]
+>      153 |  { virtchnl_static_assert_##X = (n)/((sizeof(struct X) == (n)) ? 1 : 0) }
+>          |                                    ^
+>    include/linux/avf/virtchnl.h:844:1: note: in expansion of macro 'VIRTCHNL_CHECK_STRUCT_LEN'
+>      844 | VIRTCHNL_CHECK_STRUCT_LEN(2312, virtchnl_proto_hdrs);
+>          | ^~~~~~~~~~~~~~~~~~~~~~~~~
+>    include/linux/avf/virtchnl.h:844:33: error: enumerator value for 'virtchnl_static_assert_virtchnl_proto_hdrs' is not an integer constant
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
 -- 
-2.17.1
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
