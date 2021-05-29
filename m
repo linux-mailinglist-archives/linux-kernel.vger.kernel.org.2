@@ -2,32 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B5EF93949E9
-	for <lists+linux-kernel@lfdr.de>; Sat, 29 May 2021 04:11:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3FFA03949EB
+	for <lists+linux-kernel@lfdr.de>; Sat, 29 May 2021 04:16:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229528AbhE2CMw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 May 2021 22:12:52 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52200 "EHLO mail.kernel.org"
+        id S229653AbhE2CSO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 May 2021 22:18:14 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53468 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229547AbhE2CMv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 May 2021 22:12:51 -0400
+        id S229543AbhE2CSM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 28 May 2021 22:18:12 -0400
 Received: from oasis.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 434B461358;
-        Sat, 29 May 2021 02:11:15 +0000 (UTC)
-Date:   Fri, 28 May 2021 22:11:13 -0400
+        by mail.kernel.org (Postfix) with ESMTPSA id 1440F61175;
+        Sat, 29 May 2021 02:16:35 +0000 (UTC)
+Date:   Fri, 28 May 2021 22:16:33 -0400
 From:   Steven Rostedt <rostedt@goodmis.org>
-To:     "Leizhen (ThunderTown)" <thunder.leizhen@huawei.com>
-Cc:     Ingo Molnar <mingo@redhat.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 1/1] tracing: fix spelling mistakes
-Message-ID: <20210528221113.4f66aaea@oasis.local.home>
-In-Reply-To: <93006372-8482-84af-52c0-1d6e7f66e187@huawei.com>
-References: <20210525062047.8951-1-thunder.leizhen@huawei.com>
-        <20210525062047.8951-2-thunder.leizhen@huawei.com>
-        <20210528211314.5dba632a@oasis.local.home>
-        <93006372-8482-84af-52c0-1d6e7f66e187@huawei.com>
+To:     Juri Lelli <juri.lelli@redhat.com>
+Cc:     Daniel Bristot de Oliveira <bristot@redhat.com>,
+        linux-kernel@vger.kernel.org, Phil Auld <pauld@redhat.com>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Kate Carcia <kcarcia@redhat.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Alexandre Chartre <alexandre.chartre@oracle.com>,
+        Clark Willaims <williams@redhat.com>,
+        John Kacur <jkacur@redhat.com>, linux-doc@vger.kernel.org
+Subject: Re: [PATCH V3 0/9] hwlat improvements and osnoise/timerlat tracers
+Message-ID: <20210528221633.4d87dde5@oasis.local.home>
+In-Reply-To: <YK+LiSdWQngXjior@localhost.localdomain>
+References: <cover.1621024265.git.bristot@redhat.com>
+        <YK+LiSdWQngXjior@localhost.localdomain>
 X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
@@ -36,27 +43,23 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 29 May 2021 10:01:31 +0800
-"Leizhen (ThunderTown)" <thunder.leizhen@huawei.com> wrote:
+On Thu, 27 May 2021 14:07:37 +0200
+Juri Lelli <juri.lelli@redhat.com> wrote:
 
-> On 2021/5/29 9:13, Steven Rostedt wrote:
-> > On Tue, 25 May 2021 14:20:47 +0800
-> > Zhen Lei <thunder.leizhen@huawei.com> wrote:
-> >   
-> >> Fix some spelling mistakes in comments:
-> >> wont ==> won't  
-> > 
-> > I prefer not to fix that spelling. I sometimes purposely leave off
-> > single quotes. It's no that big of a deal, and doesn't deserve the
-> > churn.  
+> FWIW, I've been using the new tracers extensively downstream for a while
+> now and I find them very useful and quite more precise to detect
+> problems than what we currently have available.
 > 
-> Yes, all people can get it right by their wits. "Wont" doesn't affect
-> their reading speed. But most people might think it's best to add the
-> missing single quote.
+> The fact that one can do almost everything needed to spot latency issues
+> from entirely inside the kernel with a simple interface is a big plus to me
+> as well.
 > 
-> The minority obeys the majority?
+> I wouldn't mind if this gets accepted very soon! :)
 
-I really don't care. In my opinion, it's unnecessary churn, that just
-adds noise to the git logs.
+Neither would I ;-)  But because of my extended vacation and other
+immediate responsibilities I need to take care of, it may be a couple
+of weeks before I can thoroughly look at this ;-)
+
+Anyway, thanks for the vote of confidence.
 
 -- Steve
