@@ -2,61 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA3DF394E37
+	by mail.lfdr.de (Postfix) with ESMTP id F2E96394E38
 	for <lists+linux-kernel@lfdr.de>; Sat, 29 May 2021 23:16:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229835AbhE2VLE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 29 May 2021 17:11:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38298 "EHLO
+        id S229846AbhE2VLG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 29 May 2021 17:11:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38296 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229823AbhE2VLD (ORCPT
+        with ESMTP id S229838AbhE2VLE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 29 May 2021 17:11:03 -0400
-Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85320C06174A
+        Sat, 29 May 2021 17:11:04 -0400
+Received: from mail-pf1-x433.google.com (mail-pf1-x433.google.com [IPv6:2607:f8b0:4864:20::433])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 780C1C061574
         for <linux-kernel@vger.kernel.org>; Sat, 29 May 2021 14:09:26 -0700 (PDT)
-Received: by mail-pj1-x1029.google.com with SMTP id k22-20020a17090aef16b0290163512accedso195126pjz.0
+Received: by mail-pf1-x433.google.com with SMTP id g18so5979079pfr.2
         for <linux-kernel@vger.kernel.org>; Sat, 29 May 2021 14:09:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=dabbelt-com.20150623.gappssmtp.com; s=20150623;
         h=date:subject:in-reply-to:cc:from:to:message-id:mime-version
          :content-transfer-encoding;
-        bh=rnn+IDCEsDQ25SwgXB0vROKvgVGkyNLlJmZoTTAxvuo=;
-        b=ibRtK9S0207hZoE19mkys3fz/PjntSlAuyWW77pHju6/AM7gC2u32QvV0SA0D2Om+j
-         U0FgEsLX/WesFWD87GV7I5o9IBS50BFVZDmW62WSTtjTxxh9QZbmoL7OgEJFS4bjYoWw
-         2hOaQX5EuGbvmfHy62iT9eAPVkeOWz+NxGNUwQbN8jN0LfY6oC0pJOV4F336w3tOIkcA
-         rv3gVjeEJQVEP+8rANcn3wEL5q6iGBTykiAgoYOKxivxBU2Ic7sd3tgM19QOB5ZQnaba
-         t5nGgxSsJ48lOjCajmcuJZEGuEw8RFRrLoBkd8LQd18k9O2FXWakwqxEzGsBbste6QHo
-         Avrw==
+        bh=8r50WTYijVxw13w+Cbl0B/a8grECRXS0efGfJBQBVbo=;
+        b=PBNynF5n2iXQe/+sssTBzt+gMIs+NXmjTog4xShBRczk86R+NMYtPGbqrvT1uGgFvi
+         y8xKRP38wrBGyf2e7wWlP0eeLc0rsArRKi1vFVBLa6lbKTRRKsgkx+tPBDvNbigotovP
+         8PSspNUgOVnqazvOGVUXmFzu8DZ5yqhYZ54hQnm04cH/zReTEdwSoTTRz2DTjafV42Pk
+         0YG2nFsdsVR1BspmBgODXxuqC2VBsm9VFx2gy6MNui+3hcaoFxsllYcxmPpAFl8Qi7zs
+         PCRlCWxcLB21/9hTjxhiPGvs7yMCmrhbVpueQ/jO/+f+CV066JcJ9AGrqf553ZIq4y3g
+         ZP+w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:subject:in-reply-to:cc:from:to:message-id
          :mime-version:content-transfer-encoding;
-        bh=rnn+IDCEsDQ25SwgXB0vROKvgVGkyNLlJmZoTTAxvuo=;
-        b=KpTW7zJajHt7i343kJKPRJzJBh2BRGecKnwTKA/cfuikaj9Lb7AYghYuUB8Ou2VuQS
-         UzlcySyRO5i6mofM3CQdz9CSgXF6vTqN4qu77eOWWcecKb7JkTk+HtXp4o9yf81/ukds
-         3fU0OIZbF4MCnRRv7wciO0lV90+ChkGc0KrV5YtnoCTRLEk5MhZmSuehXwDU6fE8hf5D
-         GntnOG0YttpPJuirXC2Oj7Ohy8jRZDhjDRCRmEhipTa215bl/5O4SmH8Kv6s4rsXX4/1
-         /4ac671aJ9UEzxAtSYX2FDgFVT6I8XMqcYaIMDKpI6cJbp5s53CUXJSqe12AT/HqgCZV
-         0xcw==
-X-Gm-Message-State: AOAM533CdAp4nX66vOBxShTJcWGvn9sDeICJzqX0PMMH0a6kuo/duqGy
-        B14gh+HshRApMD6jXKTjRVBA7g==
-X-Google-Smtp-Source: ABdhPJxuQEeCxsOobD1eRLVatbSbAdA4RG2xlwkhznzOxBL+vK6qltN/wCGjH0HAK1aRRDn+N4wcyg==
-X-Received: by 2002:a17:902:bcc7:b029:ed:6f73:ffc4 with SMTP id o7-20020a170902bcc7b02900ed6f73ffc4mr13672583pls.1.1622322564565;
-        Sat, 29 May 2021 14:09:24 -0700 (PDT)
+        bh=8r50WTYijVxw13w+Cbl0B/a8grECRXS0efGfJBQBVbo=;
+        b=hrqDRIbcUN4c9bkomaZTQO5y8Fm/CI7oAfrc7jKCfdxCigI3Fhhv7+dh80fvk4/RYO
+         tSqIVcVfH8bl3xKvHY4YqWaGfv/RF7Zs4C2M18Os8sLHpG03DD1Th7gFq6sUA+KlDaY9
+         4fx8QC5qrOSgdI888FfXuOsYgVGzXhxIl98GyJsutVfLKLBfBPqXWxSgbb/Wt0RBKA9R
+         Li5K/RM1Y56z7bz4tqmdINzpLy7jHJqP7z1eZjdGN+Kvysg7EIl8eYhKoA3g5+gaJ1qZ
+         vDwGpzGqPYLJUVW6H7/SzwSA2YCT3kS0hXA4VtucXMdmlA1kPTdL+UILKN60xu/3+rag
+         iyQA==
+X-Gm-Message-State: AOAM532GCEk7s4dPczunFvf3MLsJYNhMUjkjGmW/rgj0AeBy91x8VRCw
+        2aQBO/iWJeexhZ40cuiH7Muf6A==
+X-Google-Smtp-Source: ABdhPJwPn0+uGvchgpImUmRLtYMKtuL//7Wv0+g7ZeOxfdVONPvEborW1k4FjfBCMS6GGHxB0hG5tA==
+X-Received: by 2002:a63:1443:: with SMTP id 3mr15524590pgu.69.1622322565931;
+        Sat, 29 May 2021 14:09:25 -0700 (PDT)
 Received: from localhost (76-210-143-223.lightspeed.sntcca.sbcglobal.net. [76.210.143.223])
-        by smtp.gmail.com with ESMTPSA id h1sm7191398pfh.72.2021.05.29.14.09.23
+        by smtp.gmail.com with ESMTPSA id c17sm7686313pgm.3.2021.05.29.14.09.25
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 29 May 2021 14:09:23 -0700 (PDT)
-Date:   Sat, 29 May 2021 14:09:23 -0700 (PDT)
-X-Google-Original-Date: Sat, 29 May 2021 13:39:41 PDT (-0700)
-Subject:     Re: [PATCH] riscv: Add __init section marker to some functions again
-In-Reply-To: <20210516205942.4671f4e6@xhacker>
-CC:     Paul Walmsley <paul.walmsley@sifive.com>, aou@eecs.berkeley.edu,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
+        Sat, 29 May 2021 14:09:25 -0700 (PDT)
+Date:   Sat, 29 May 2021 14:09:25 -0700 (PDT)
+X-Google-Original-Date: Sat, 29 May 2021 13:56:03 PDT (-0700)
+Subject:     Re: [PATCH] riscv: mm: init: Consolidate vars, functions
+In-Reply-To: <20210517224001.42424097@xhacker>
+CC:     alex@ghiti.fr, Paul Walmsley <paul.walmsley@sifive.com>,
+        aou@eecs.berkeley.edu, linux-riscv@lists.infradead.org,
+        linux-kernel@vger.kernel.org
 From:   Palmer Dabbelt <palmer@dabbelt.com>
 To:     jszhang3@mail.ustc.edu.cn
-Message-ID: <mhng-ed3b99bd-e31b-4fa1-b147-26cce86942aa@palmerdabbelt-glaptop>
+Message-ID: <mhng-42fdf6d2-5e43-4e39-abae-971f47e6ff69@palmerdabbelt-glaptop>
 Mime-Version: 1.0 (MHng)
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 8bit
@@ -64,42 +65,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 16 May 2021 05:59:42 PDT (-0700), jszhang3@mail.ustc.edu.cn wrote:
-> From: Jisheng Zhang <jszhang@kernel.org>
+On Mon, 17 May 2021 07:40:01 PDT (-0700), jszhang3@mail.ustc.edu.cn wrote:
+> On Sun, 16 May 2021 21:10:48 +0200
+> Alex Ghiti <alex@ghiti.fr> wrote:
 >
-> These functions are not needed after booting, so mark them as __init
-> to move them to the __init section.
+>> Hi Jisheng,
+>>
+>> On 16/05/2021 15:19, Jisheng Zhang wrote:
+>> > On Sun, 16 May 2021 21:15:56 +0800 Jisheng Zhang  wrote:
+>> >
+>> >> From: Jisheng Zhang <jszhang@kernel.org>
+>> >>
+>> >> Consolidate the following items in init.c
+>> >>
+>> >> Staticize global vars as much as possible;
+>> >> Add __initdata mark if the global var isn't needed after init
+>> >> Add __init mark if the func isn't needed after init
+>> >> Add __ro_after_init if the global var is read only after init
+>> >
+>> > Hi Alexandre,
+>> >
+>> > I think kernel_virt_addr can be removed, users can directly use
+>> > the KERNEL_LINK_ADDR MACRO. Maybe I miss the reason of intrducing
+>> > it in commit 2bfc6cd81bd17e43 ("riscv: Move kernel mapping outside of
+>> > linear mapping"), could you please comment?
+>> >
+>> > Thanks in advance
+>>
+>> kernel_virt_addr will be used when I push my relocatable series since
+>> then, the kernel virtual address will be different from
+>> KERNEL_LINK_ADDR. I agree this was not needed in 2bfc6cd81bd17e43
+>> ("riscv: Move kernel mapping outside of linear mapping"), I'm a bit late
+>> in pushing the relocatable series.
+>>
 >
-> Signed-off-by: Jisheng Zhang <jszhang@kernel.org>
-> ---
->  arch/riscv/kernel/cpufeature.c | 2 +-
->  arch/riscv/mm/context.c        | 2 +-
->  2 files changed, 2 insertions(+), 2 deletions(-)
->
-> diff --git a/arch/riscv/kernel/cpufeature.c b/arch/riscv/kernel/cpufeature.c
-> index a2848dc36927..d959d207a40d 100644
-> --- a/arch/riscv/kernel/cpufeature.c
-> +++ b/arch/riscv/kernel/cpufeature.c
-> @@ -59,7 +59,7 @@ bool __riscv_isa_extension_available(const unsigned long *isa_bitmap, int bit)
->  }
->  EXPORT_SYMBOL_GPL(__riscv_isa_extension_available);
->
-> -void riscv_fill_hwcap(void)
-> +void __init riscv_fill_hwcap(void)
->  {
->  	struct device_node *node;
->  	const char *isa;
-> diff --git a/arch/riscv/mm/context.c b/arch/riscv/mm/context.c
-> index 6d445f2888ec..63dc0b9bd8aa 100644
-> --- a/arch/riscv/mm/context.c
-> +++ b/arch/riscv/mm/context.c
-> @@ -213,7 +213,7 @@ static inline void set_mm(struct mm_struct *mm, unsigned int cpu)
->  		set_mm_noasid(mm);
->  }
->
-> -static int asids_init(void)
-> +static int __init asids_init(void)
->  {
->  	unsigned long old;
+> Thanks for your information. I think kernel_virt_addr could be __ro_after_init
+> But I will keep it unchanged until your relocatable series.
 
 Thanks, this is on for-next.
