@@ -2,118 +2,188 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 703AF394AEA
-	for <lists+linux-kernel@lfdr.de>; Sat, 29 May 2021 09:31:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EC729394AF1
+	for <lists+linux-kernel@lfdr.de>; Sat, 29 May 2021 09:39:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229674AbhE2HdZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 29 May 2021 03:33:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58906 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229549AbhE2HdW (ORCPT
+        id S229642AbhE2Hk5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 29 May 2021 03:40:57 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:49392 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229559AbhE2Hkz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 29 May 2021 03:33:22 -0400
-Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3F9AC061574
-        for <linux-kernel@vger.kernel.org>; Sat, 29 May 2021 00:31:45 -0700 (PDT)
-Received: by mail-pj1-x1035.google.com with SMTP id o17-20020a17090a9f91b029015cef5b3c50so5795802pjp.4
-        for <linux-kernel@vger.kernel.org>; Sat, 29 May 2021 00:31:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=S8hnKQslTlCFAXMU0SU12N+3wAln8HGC0k1kgerLe04=;
-        b=g07la02VDigfQGfYXusUErVBXEqW/nfiNlA6+fhu+MDLl8T9bRG86a5I52sQrawM5f
-         p8EKm0gxCqX8GVdxztfGa0CPWuTyVDV2FNHQj2kx/2rNeOSam+uVeGF2GtkbGL/DEzWg
-         YKVS4/T4mNmc1g/yF5LIIqMsrNDNT8V1B6V9VlXG2VwjOxlZdPhj2slDSphOR9UpXNrH
-         82OLTi+9oS3QDig9OO5wI5Ywo9UlDk2mIChqUjMjNph8OwbdBJHhPDyJa3jv1od9/LAA
-         yNK9Vsv+jEk2fFMJlL2DL2z/Q7e08an9YPBfjjCEYTku17T9Z3hAlKk9WNhaQXMELqW2
-         T8YA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=S8hnKQslTlCFAXMU0SU12N+3wAln8HGC0k1kgerLe04=;
-        b=DgePXavN2TLHd2DXePv2EN4MONjZoKF381zMW1I6ZxUMf/KHIX9oWHwQKwKthekfGq
-         sWcbQnlzQ0GrTozG4arrRkVyOddGePJYwKQ9yhc53zaQcxDim3kwb/1XkPsP4TnqbJOb
-         u6Cy1AjSOyoEtrvRW/WA3YJ+m8BXy/V2lFasGQ5nPSjigAh+rueez3clEcGLd4/mPmWs
-         3B2WfBhPZUBdweUgqCLW54hkivVcnbBZvZOV8IBvwL+LQBs+8mloeE2dDIRGAUKD1gVH
-         h9D3c3ytIS76tWszvjZ2fKBJGhrgom/ycY8y64Xki7ak6XlutN6BK9jcTDHC/CVi6DIR
-         1QkA==
-X-Gm-Message-State: AOAM530y/ZL1ZoA++MJKgYfR/WohYVwqzul5uM/bY6Haq1rLa+haHEx3
-        YQuAyrT9qGUWaG/kSq7sNHi17JwFaIsPqgo6
-X-Google-Smtp-Source: ABdhPJyHPKpRPYh5wUru7rxax096s0xqCtdJqCrV+4qziNZ2p4kKskRoQDXXz5nPktrgw5Hmb0iSCA==
-X-Received: by 2002:a17:90a:5995:: with SMTP id l21mr8404304pji.79.1622273505234;
-        Sat, 29 May 2021 00:31:45 -0700 (PDT)
-Received: from ?IPv6:2601:647:5380:8c0:858e:9ae5:3ea5:20eb? ([2601:647:5380:8c0:858e:9ae5:3ea5:20eb])
-        by smtp.gmail.com with ESMTPSA id t19sm6195113pfg.70.2021.05.29.00.31.40
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 29 May 2021 00:31:44 -0700 (PDT)
-Subject: Re: Sealed memfd & no-fault mmap
-To:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Hugh Dickins <hughd@google.com>
-Cc:     Simon Ser <contact@emersion.fr>, Peter Xu <peterx@redhat.com>,
-        "Kirill A. Shutemov" <kirill@shutemov.name>,
-        Matthew Wilcox <willy@infradead.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Will Deacon <will@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        David Herrmann <dh.herrmann@gmail.com>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        Greg Kroah-Hartman <greg@kroah.com>,
-        "tytso@mit.edu" <tytso@mit.edu>
-References: <vs1Us2sm4qmfvLOqNat0-r16GyfmWzqUzQ4KHbXJwEcjhzeoQ4sBTxx7QXDG9B6zk5AeT7FsNb3CSr94LaKy6Novh1fbbw8D_BBxYsbPLms=@emersion.fr>
- <CAHk-=wgmGv2EGscKSi8SrQWtEVpEQyk-ZN1Xj4EoAB87Dmx1gA@mail.gmail.com>
- <20210429154807.hptls4vnmq2svuea@box> <20210429183836.GF8339@xz-x1>
- <lpi4uT69AFMwtmWtwW_qJAmYm_r0jRikL11G_zI4X7wq--6Jtpiej8kGn8gePfv0Dtn4VmzsOqT2Q5-L3ca2niDi0nlC0nVYphbFBnNJnw0=@emersion.fr>
- <CAHk-=wiAs7Ky9gmWAeqk5t7Nkueip13XPGtUcmMiZjwf-sX3sQ@mail.gmail.com>
- <hnL7s1u925fpeUhs90fXUpD3GG_4gmHlpznN8E0885tSM40QYb3VVTFGkwpmxYQ3U8HkRSUtfqw0ZfBKptA4pIw4FZw1MdRhSHC94iQATEE=@emersion.fr>
- <CAHk-=wiY1BL-UHPMEAbd7nY3vu6w41A1hhvjg1DoBXWuRt9_qw@mail.gmail.com>
- <7718ec5b-0a9e-ffa6-16f2-bc0b6afbd9ab@gmail.com>
- <CAHk-=wjv3-eP7mSDJbuvaB+CbyyKc4g_nEzhQLcueOd0_YuiBg@mail.gmail.com>
-From:   "Lin, Ming" <minggr@gmail.com>
-Message-ID: <80c87e6b-6050-bf23-2185-ded408df4d0f@gmail.com>
-Date:   Sat, 29 May 2021 00:31:39 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.2
+        Sat, 29 May 2021 03:40:55 -0400
+Received: from pps.filterd (m0098396.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 14T7YJaj094030;
+        Sat, 29 May 2021 03:38:47 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : date : message-id : content-transfer-encoding : mime-version; s=pp1;
+ bh=2o7APW8N6DQPkuu0oD0lip8VTh/iwsYXhaQ+RglXHEY=;
+ b=AiH8AyW7fCJ6q2mDOoce/AsTfHDRfhyFpK/62wWGmVXRJd1XDILBqTIS9RWMwnO+CeeF
+ KOzkkL3irtFTihJxlolAHhNRI5uXeGIvitKlAVpjYw89Yk7vQ4mNg6RmvYOhOrZygoJn
+ wzLDb7WNm6HUQ8zQ3cI6jm2+/AYCZrClSeldwPUsVz77OZzT5CsOfI4t6ucDEeTW4rvD
+ nYA2NVfnSce/dBuYROrTliGl0Aic5kAVWS+xTLGAx+TVrjHv7YOGTxICdASo+LDiaNo4
+ ygBhgVEPWbOnRhmzwCS8JDwDnQKtPAQL9lsOVuZakV3S1BCIavIns4wK1zW8lzafGIGM JA== 
+Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 38uh27ga7k-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Sat, 29 May 2021 03:38:47 -0400
+Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
+        by ppma06ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 14T7cjs1021093;
+        Sat, 29 May 2021 07:38:45 GMT
+Received: from b06cxnps4075.portsmouth.uk.ibm.com (d06relay12.portsmouth.uk.ibm.com [9.149.109.197])
+        by ppma06ams.nl.ibm.com with ESMTP id 38ucvh82bf-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Sat, 29 May 2021 07:38:45 +0000
+Received: from d06av22.portsmouth.uk.ibm.com (d06av22.portsmouth.uk.ibm.com [9.149.105.58])
+        by b06cxnps4075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 14T7cguu24641968
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Sat, 29 May 2021 07:38:42 GMT
+Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 27FA54C046;
+        Sat, 29 May 2021 07:38:42 +0000 (GMT)
+Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 8595D4C040;
+        Sat, 29 May 2021 07:38:38 +0000 (GMT)
+Received: from localhost.localdomain.com (unknown [9.199.45.117])
+        by d06av22.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Sat, 29 May 2021 07:38:38 +0000 (GMT)
+From:   Kajol Jain <kjain@linux.ibm.com>
+To:     mpe@ellerman.id.au, linuxppc-dev@lists.ozlabs.org,
+        nvdimm@lists.linux.dev, linux-kernel@vger.kernel.org,
+        peterz@infradead.org
+Cc:     maddy@linux.vnet.ibm.com, santosh@fossix.org,
+        aneesh.kumar@linux.ibm.com, vaibhav@linux.ibm.com,
+        dan.j.williams@intel.com, ira.weiny@intel.com,
+        atrajeev@linux.vnet.ibm.com, tglx@linutronix.de,
+        kjain@linux.ibm.com, rnsastry@linux.ibm.com
+Subject: [RFC v3 0/4] Add perf interface to expose nvdimm
+Date:   Sat, 29 May 2021 13:08:24 +0530
+Message-Id: <20210529073828.1542292-1-kjain@linux.ibm.com>
+X-Mailer: git-send-email 2.26.3
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: oiZgkLBlznYsKZQESKwFSNNh6gvOlrcH
+X-Proofpoint-ORIG-GUID: oiZgkLBlznYsKZQESKwFSNNh6gvOlrcH
+Content-Transfer-Encoding: 8bit
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
 MIME-Version: 1.0
-In-Reply-To: <CAHk-=wjv3-eP7mSDJbuvaB+CbyyKc4g_nEzhQLcueOd0_YuiBg@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
+ definitions=2021-05-29_03:2021-05-27,2021-05-29 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0
+ priorityscore=1501 spamscore=0 impostorscore=0 clxscore=1011 mlxscore=0
+ mlxlogscore=999 suspectscore=0 adultscore=0 phishscore=0
+ lowpriorityscore=0 bulkscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2104190000 definitions=main-2105290058
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5/28/2021 6:03 PM, Linus Torvalds wrote:
-> On Fri, May 28, 2021 at 7:07 AM Lin, Ming <minggr@gmail.com> wrote:
->>
->> Does something like following draft patch on the right track?
-> 
-> No, I don't think this can work:
-> 
->> +               _dst_pte = pte_mkspecial(pfn_pte(my_zero_pfn(dst_addr),
->> +                                        vma->vm_page_prot));
-> 
-> You can't just blindly insert the zero pfn - for a shared write
-> mapping, that would actually allow writes to the zeropage. That would
-> be horrible.
+Patchset adds performance stats reporting support for nvdimm.
+Added interface includes support for pmu register/unregister
+functions. A structure is added called nvdimm_pmu to be used for
+adding arch/platform specific data such as supported events and pmu
+event functions like event_init/add/read/del.
+User could use the standard perf tool to access perf
+events exposed via pmu.
 
-I should check the vma is not writable.
+Added implementation to expose IBM pseries platform nmem*
+device performance stats using this interface.
 
-diff --git a/mm/shmem.c b/mm/shmem.c
-index 856d2d8d4cdf..fa23e38bc692 100644
---- a/mm/shmem.c
-+++ b/mm/shmem.c
-@@ -1820,7 +1820,7 @@ static int shmem_getpage_gfp(struct inode *inode, pgoff_t index,
-                 spinlock_t *ptl;
-                 int ret;
-  
--               if (!IS_NOFAULT(inode))
-+               if (!IS_NOFAULT(inode) || (vma->vm_flags & VM_WRITE))
-                         return -EINVAL;
-  
-                 _dst_pte = pte_mkspecial(pfn_pte(my_zero_pfn(dst_addr)
+Result from power9 pseries lpar with 2 nvdimm device:
+command:# perf list nmem
+  nmem0/cchrhcnt/                                    [Kernel PMU event]
+  nmem0/cchwhcnt/                                    [Kernel PMU event]
+  nmem0/critrscu/                                    [Kernel PMU event]
+  nmem0/ctlresct/                                    [Kernel PMU event]
+  nmem0/ctlrestm/                                    [Kernel PMU event]
+  nmem0/fastwcnt/                                    [Kernel PMU event]
+  nmem0/hostlcnt/                                    [Kernel PMU event]
+  nmem0/hostldur/                                    [Kernel PMU event]
+  nmem0/hostscnt/                                    [Kernel PMU event]
+  nmem0/hostsdur/                                    [Kernel PMU event]
+  nmem0/medrcnt/                                     [Kernel PMU event]
+  nmem0/medrdur/                                     [Kernel PMU event]
+  nmem0/medwcnt/                                     [Kernel PMU event]
+  nmem0/medwdur/                                     [Kernel PMU event]
+  nmem0/memlife/                                     [Kernel PMU event]
+  nmem0/noopstat/                                    [Kernel PMU event]
+  nmem0/ponsecs/                                     [Kernel PMU event]
+  nmem1/cchrhcnt/                                    [Kernel PMU event]
+  nmem1/cchwhcnt/                                    [Kernel PMU event]
+  nmem1/critrscu/                                    [Kernel PMU event]
+  ...
+  nmem1/noopstat/                                    [Kernel PMU event]
+  nmem1/ponsecs/                                     [Kernel PMU event]
 
+Patch1:
+        Introduces the nvdimm_pmu structure
+Patch2:
+	Adds common interface to add arch/platform specific data
+	includes supported events, pmu event functions. It also
+	adds code for cpu hotplug support.
+Patch3:
+        Add code in arch/powerpc/platform/pseries/papr_scm.c to expose
+        nmem* pmu. It fills in the nvdimm_pmu structure with event attrs
+        and event functions and then registers the pmu by adding
+        callbacks to register_nvdimm_pmu.
+Patch4:
+        Sysfs documentation patch
+
+Changelog
+---
+v2 -> v3
+- Link to the RFC v2 patchset : https://lkml.org/lkml/2021/5/25/591
+
+- Moved hotplug code changes from papr_scm code to generic interface
+  with required functionality as suggested by Peter Zijlstra
+
+- Changed function parameter of unregister_nvdimm_pmu function from
+  struct pmu to struct nvdimm_pmu.
+
+- Now cpumask will get updated based on numa node of corresponding nvdimm
+  device as suggested by Peter Zijlstra.
+
+- Some optimizations/fixes from previous RFC code
+
+v1 -> v2
+- Link to the RFC v1 patchset : https://lkml.org/lkml/2021/5/12/2747
+
+- Removed intermediate functions nvdimm_pmu_read/nvdimm_pmu_add/
+  nvdimm_pmu_del/nvdimm_pmu_event_init and directly assigned
+  platfrom specific routines. Also add check for any NULL functions.
+  Suggested by: Peter Zijlstra
+
+- Add macros for event attribute array index which can be used to
+  assign dynamically allocated attr_groups.
+
+- New function 'nvdimm_pmu_mem_free' is added to free dynamic
+  memory allocated for attr_groups in papr_scm.c
+
+- PMU register call moved from papr_scm_nvdimm_init() to papr_scm_probe()
+
+- Move addition of cpu/node/cpuhp_state attributes in struct nvdimm_pmu
+  to patch 4 where cpu hotplug code added
+
+- Removed device attribute from the attribute list of
+  add/del/read/event_init functions in nvdimm_pmu structure
+  as we need to assign them directly to pmu structure.
+
+---
+
+Kajol Jain (4):
+  drivers/nvdimm: Add nvdimm pmu structure
+  drivers/nvdimm: Add perf interface to expose nvdimm performance stats
+  powerpc/papr_scm: Add perf interface support
+  powerpc/papr_scm: Document papr_scm sysfs event format entries
+
+ Documentation/ABI/testing/sysfs-bus-papr-pmem |  31 ++
+ arch/powerpc/include/asm/device.h             |   5 +
+ arch/powerpc/platforms/pseries/papr_scm.c     | 358 ++++++++++++++++++
+ drivers/nvdimm/Makefile                       |   1 +
+ drivers/nvdimm/nd_perf.c                      | 195 ++++++++++
+ include/linux/nd.h                            |  42 ++
+ 6 files changed, 632 insertions(+)
+ create mode 100644 drivers/nvdimm/nd_perf.c
+
+-- 
+2.27.0
 
