@@ -2,79 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A7293949E8
-	for <lists+linux-kernel@lfdr.de>; Sat, 29 May 2021 04:06:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B5EF93949E9
+	for <lists+linux-kernel@lfdr.de>; Sat, 29 May 2021 04:11:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229602AbhE2CGH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 May 2021 22:06:07 -0400
-Received: from szxga03-in.huawei.com ([45.249.212.189]:2400 "EHLO
-        szxga03-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229528AbhE2CGG (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 May 2021 22:06:06 -0400
-Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.54])
-        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4FsPsX6bGRz66Gh;
-        Sat, 29 May 2021 10:00:48 +0800 (CST)
-Received: from dggpemm500004.china.huawei.com (7.185.36.219) by
- dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Sat, 29 May 2021 10:04:27 +0800
-Received: from huawei.com (10.174.28.241) by dggpemm500004.china.huawei.com
- (7.185.36.219) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Sat, 29 May
- 2021 10:04:27 +0800
-From:   Bixuan Cui <cuibixuan@huawei.com>
-To:     <paul.walmsley@sifive.com>, <palmer@dabbelt.com>,
-        <aou@eecs.berkeley.edu>
-CC:     <vincent.chen@sifive.com>, <sunnanyong@huawei.com>,
-        <linux-riscv@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
-        Bixuan Cui <cuibixuan@huawei.com>
-Subject: [PATCH -next] module: fix build error when CONFIG_SMP is disabled
-Date:   Sat, 29 May 2021 10:03:28 +0800
-Message-ID: <20210529020328.36863-1-cuibixuan@huawei.com>
-X-Mailer: git-send-email 2.17.1
+        id S229528AbhE2CMw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 May 2021 22:12:52 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52200 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229547AbhE2CMv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 28 May 2021 22:12:51 -0400
+Received: from oasis.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 434B461358;
+        Sat, 29 May 2021 02:11:15 +0000 (UTC)
+Date:   Fri, 28 May 2021 22:11:13 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     "Leizhen (ThunderTown)" <thunder.leizhen@huawei.com>
+Cc:     Ingo Molnar <mingo@redhat.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 1/1] tracing: fix spelling mistakes
+Message-ID: <20210528221113.4f66aaea@oasis.local.home>
+In-Reply-To: <93006372-8482-84af-52c0-1d6e7f66e187@huawei.com>
+References: <20210525062047.8951-1-thunder.leizhen@huawei.com>
+        <20210525062047.8951-2-thunder.leizhen@huawei.com>
+        <20210528211314.5dba632a@oasis.local.home>
+        <93006372-8482-84af-52c0-1d6e7f66e187@huawei.com>
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.174.28.241]
-X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
- dggpemm500004.china.huawei.com (7.185.36.219)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix build error when disable CONFIG_SMP:
-mm/pgtable-generic.o: In function `.L19':
-pgtable-generic.c:(.text+0x42): undefined reference to `flush_pmd_tlb_range'
-mm/pgtable-generic.o: In function `pmdp_huge_clear_flush':
-pgtable-generic.c:(.text+0x6c): undefined reference to `flush_pmd_tlb_range'
-mm/pgtable-generic.o: In function `pmdp_invalidate':
-pgtable-generic.c:(.text+0x162): undefined reference to `flush_pmd_tlb_range'
+On Sat, 29 May 2021 10:01:31 +0800
+"Leizhen (ThunderTown)" <thunder.leizhen@huawei.com> wrote:
 
-Fixes: e88b333142e4 ("riscv: mm: add THP support on 64-bit")
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Bixuan Cui <cuibixuan@huawei.com>
----
- arch/riscv/include/asm/tlbflush.h | 6 ++++++
- 1 file changed, 6 insertions(+)
+> On 2021/5/29 9:13, Steven Rostedt wrote:
+> > On Tue, 25 May 2021 14:20:47 +0800
+> > Zhen Lei <thunder.leizhen@huawei.com> wrote:
+> >   
+> >> Fix some spelling mistakes in comments:
+> >> wont ==> won't  
+> > 
+> > I prefer not to fix that spelling. I sometimes purposely leave off
+> > single quotes. It's no that big of a deal, and doesn't deserve the
+> > churn.  
+> 
+> Yes, all people can get it right by their wits. "Wont" doesn't affect
+> their reading speed. But most people might think it's best to add the
+> missing single quote.
+> 
+> The minority obeys the majority?
 
-diff --git a/arch/riscv/include/asm/tlbflush.h b/arch/riscv/include/asm/tlbflush.h
-index c84218ad7afc..9d5801f6e2c3 100644
---- a/arch/riscv/include/asm/tlbflush.h
-+++ b/arch/riscv/include/asm/tlbflush.h
-@@ -44,6 +44,12 @@ static inline void flush_tlb_range(struct vm_area_struct *vma,
- 	local_flush_tlb_all();
- }
- 
-+static inline void flush_pmd_tlb_range(struct vm_area_struct *vma,
-+		unsigned long start, unsigned long end)
-+{
-+	local_flush_tlb_all();
-+}
-+
- #define flush_tlb_mm(mm) flush_tlb_all()
- #endif /* !CONFIG_SMP || !CONFIG_MMU */
- 
--- 
-2.17.1
+I really don't care. In my opinion, it's unnecessary churn, that just
+adds noise to the git logs.
 
+-- Steve
