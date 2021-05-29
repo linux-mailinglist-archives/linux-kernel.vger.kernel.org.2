@@ -2,112 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B477394B04
-	for <lists+linux-kernel@lfdr.de>; Sat, 29 May 2021 09:53:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 73CF2394B06
+	for <lists+linux-kernel@lfdr.de>; Sat, 29 May 2021 09:57:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229708AbhE2Hyi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 29 May 2021 03:54:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35288 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229559AbhE2Hyh (ORCPT
+        id S229673AbhE2H7F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 29 May 2021 03:59:05 -0400
+Received: from smtprelay0207.hostedemail.com ([216.40.44.207]:57892 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S229559AbhE2H7C (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 29 May 2021 03:54:37 -0400
-Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22DC9C061574;
-        Sat, 29 May 2021 00:53:01 -0700 (PDT)
-Received: by mail-pj1-x102f.google.com with SMTP id k5so3826115pjj.1;
-        Sat, 29 May 2021 00:53:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=9VngEDZWf8zqYQ8lObuf/Fz5NYel1p8aArrZZ5hl1co=;
-        b=kKyfrbsCjXmMvkkTj1y8OxbSUz/jJL8eJXDeK/KTwHIAfKsOGmEAIQsEMbP9ccMgEy
-         Huz9GtJPwsCcRS61+n0uLjV1hJOZ/Lf10zvPIDdhVHHd6GI3rrCPAXpeXo9g/mYt808Z
-         j7vmq3NV5t9vKmXf20ooTndRt74qvE6wSrhw8U1Rt7CLf2C7dLSGwHAiHYIDS/8z1Tet
-         g1OqRjsEorHWrByvt7kcOCBhS2BwfIB7qrsyAuRStOuJmbp9JvCKVsclCJkR2MgR4yHX
-         2AMFqghfq/xOaVd897tGnVcaL3wFnSoPlj8cthaBAOHIfGR/9rzR0WEBoma+frhQSFas
-         RTXw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=9VngEDZWf8zqYQ8lObuf/Fz5NYel1p8aArrZZ5hl1co=;
-        b=JxZDE6nzxLO8fGoYd3vDStT6s3S4pC85/zJJ9t4utG6SX1IASF6wU3CcabFKEBFy7r
-         foZZuQMXKq+4fMWgOocRnoEMN/JfaIs+kghYEV0hb2KYgCcLw6XVwM40Ol8Ni3taE72I
-         cBeMFP7I7NVdKt3rRw7cCDlh4EEEAISEFy5kREeAzFtCdKJEwGFck6qmz6xw178sLFGO
-         OvJChQeab4/aFgbNVTGamx9KSI840JuJoYN1nwJzg8einF7JvU+EVniRnm1HVLHG57z8
-         cCmVT+6P+IkxdE4wDnlQdazmEGg3SwwI21m5+irr3pPDMDhusi8zTDProUUwxS7CzD6A
-         ohXw==
-X-Gm-Message-State: AOAM5330XfndrqO1mJAYC+gxhJMa/lQTILKQXB/KDNPKTXz0Js+e4TeF
-        ZySz4XupwUPwzOVlP+ViZu5TcGzlFJPMaS/LY1E=
-X-Google-Smtp-Source: ABdhPJzXmdeDYG4OtxsFfC0Ztq98QovLwN8iUDmk4Te06JdlaLlMCmxkuN+eKpG6c6P9e093nkkIjO7SMwFv+ztTUbg=
-X-Received: by 2002:a17:902:8c82:b029:fc:e4ed:4958 with SMTP id
- t2-20020a1709028c82b02900fce4ed4958mr11595619plo.0.1622274780671; Sat, 29 May
- 2021 00:53:00 -0700 (PDT)
+        Sat, 29 May 2021 03:59:02 -0400
+Received: from omf16.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay05.hostedemail.com (Postfix) with ESMTP id 1A80B180357EC;
+        Sat, 29 May 2021 07:57:26 +0000 (UTC)
+Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by omf16.hostedemail.com (Postfix) with ESMTPA id 215DE2550F1;
+        Sat, 29 May 2021 07:57:25 +0000 (UTC)
+Message-ID: <2e9eef2f524d08a9d4be9cf375733f8a5b81d6a7.camel@perches.com>
+Subject: Re: [PATCH] hid: hid-chicony: fix switch case indentation
+From:   Joe Perches <joe@perches.com>
+To:     Navin Sankar Velliangiri <navin@linumiz.com>,
+        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     jikos@kernel.org, benjamin.tissoires@redhat.com
+Date:   Sat, 29 May 2021 00:57:23 -0700
+In-Reply-To: <20210529071808.5268-1-navin@linumiz.com>
+References: <20210529071808.5268-1-navin@linumiz.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.38.1-1 
 MIME-Version: 1.0
-References: <20210514135927.2926482-1-arnd@kernel.org> <7afc367b-8103-9d48-1bfe-d505d86553b9@kernel.org>
- <20210516103628.2cf899a0@jic23-huawei> <644a711e4d2639a23bfc50dffa180ad184a4acb1.camel@perches.com>
- <CAHp75Vc72vMbj311P3xnxh6ExxzD1=enoETj6wY8dHn+xBJ4+w@mail.gmail.com>
- <fc3afc8e74ee9eda0b4eaff9a4d9ad32f1c461c4.camel@perches.com>
- <CAHp75VeQdFoJrPhXU2fYdrhLUwvM4NEoPn=Z4WBPkhOa4xK+ig@mail.gmail.com> <cfdbe504c7ed3964bef22c551f0c78c048ce3d2d.camel@perches.com>
-In-Reply-To: <cfdbe504c7ed3964bef22c551f0c78c048ce3d2d.camel@perches.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Sat, 29 May 2021 10:52:44 +0300
-Message-ID: <CAHp75Vf2ZO-5XEQtzdN2ABLLC3KLDmQxGps2uD1z06Rs7L2z=w@mail.gmail.com>
-Subject: Re: [PATCH] iio: si1133: fix format string warnings
-To:     Joe Perches <joe@perches.com>
-Cc:     Jonathan Cameron <jic23@kernel.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Arnd Bergmann <arnd@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        =?UTF-8?Q?Maxime_Roussin=2DB=C3=A9langer?= 
-        <maxime.roussinbelanger@gmail.com>,
-        Jean-Francois Dagenais <jeff.dagenais@gmail.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Alexandru Ardelean <alexandru.ardelean@analog.com>,
-        "linux-iio@vger.kernel.org" <linux-iio@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "clang-built-linux@googlegroups.com" 
-        <clang-built-linux@googlegroups.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.90
+X-Stat-Signature: nmxco75fry4468ct7yiq8u931tt3g4qf
+X-Rspamd-Server: rspamout02
+X-Rspamd-Queue-Id: 215DE2550F1
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Session-ID: U2FsdGVkX1+RuzOmBNOOuX+5cg1hjxEhvXoXi/TJgB8=
+X-HE-Tag: 1622275045-679994
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, May 29, 2021 at 12:35 AM Joe Perches <joe@perches.com> wrote:
-> On Sat, 2021-05-29 at 00:16 +0300, Andy Shevchenko wrote:
-> > On Saturday, May 29, 2021, Joe Perches <joe@perches.com> wrote:
+On Sat, 2021-05-29 at 12:48 +0530, Navin Sankar Velliangiri wrote:
+> fixed switch case indentation.
 
-...
+Please try not to merely fix checkpatch warnings.
+Instead try to improve the code.
 
-> > > > > Likely these should be 0x%02x
-> > > >
-> > > > What=E2=80=99s the difference (except printing 0)?
-> > >
-> > > (assuming the argument is unsigned char/u8)
-> > >
-> > > %#02x will always emit more than the specified length (3 or 4 chars)
-> > > values < 16 are 0x<hexdigit>, values >=3D 16 are 0x<hexdigit><hexdigi=
-t>
-> >
-> > 0 will be 0, btw.
->
-> Hey Andy.  Right.
->
-> > > 0x%02x will always emit 4 chars
-> >
-> > *Minimum* or at least 4 characters. There is an upper limit of sizeof(i=
-nt)
-> > * 2 + 2.
->
-> I did write assuming the argument is unsigned char/u8.
-> For the general unsigned int arg case, you are of course correct.
+And there's nothing _really_ wrong with the existing code but:
 
-Signed char also.  Basically for all signed types and unsigned int cases.
+> diff --git a/drivers/hid/hid-chicony.c b/drivers/hid/hid-chicony.c
+[]
+> @@ -65,26 +65,61 @@ static int ch_input_mapping(struct hid_device *hdev, struct hid_input *hi,
+>  
+> 
+>  	set_bit(EV_REP, hi->input->evbit);
+>  	switch (usage->hid & HID_USAGE) {
+> -	case 0xff01: ch_map_key_clear(BTN_1);	break;
+> -	case 0xff02: ch_map_key_clear(BTN_2);	break;
+[...]
+> +	case 0xff01:
+> +		ch_map_key_clear(BTN_1);
+> +		break;
+> +	case 0xff02:
+> +		ch_map_key_clear(BTN_2);
+> +		break;
+[...]
+>  	default:
+>  		return 0;
+>  	}
+> +
+>  	return 1;
 
---=20
-With Best Regards,
-Andy Shevchenko
+IMO:
+
+This might be (umm) clearer with a separate function.
+A lot smaller code too.
+
+$ size drivers/hid/hid-chicony.o*
+   text	   data	    bss	    dec	    hex	filename
+   1886	    392	      0	   2278	    8e6	drivers/hid/hid-chicony.o.new
+   3329	    392	      0	   3721	    e89	drivers/hid/hid-chicony.o.old
+
+Something like:
+---
+ drivers/hid/hid-chicony.c | 52 +++++++++++++++++++++++++++--------------------
+ 1 file changed, 30 insertions(+), 22 deletions(-)
+
+diff --git a/drivers/hid/hid-chicony.c b/drivers/hid/hid-chicony.c
+index ca556d39da2ae..03e9a1d943d96 100644
+--- a/drivers/hid/hid-chicony.c
++++ b/drivers/hid/hid-chicony.c
+@@ -54,37 +54,45 @@ static int ch_raw_event(struct hid_device *hdev,
+ 	return 0;
+ }
+ 
+-#define ch_map_key_clear(c)	hid_map_usage_clear(hi, usage, bit, max, \
+-					EV_KEY, (c))
++static int map_use_to_btn(int use)
++{
++	switch (use) {
++	case 0xff01: return BTN_1;
++	case 0xff02: return BTN_2;
++	case 0xff03: return BTN_3;
++	case 0xff04: return BTN_4;
++	case 0xff05: return BTN_5;
++	case 0xff06: return BTN_6;
++	case 0xff07: return BTN_7;
++	case 0xff08: return BTN_8;
++	case 0xff09: return BTN_9;
++	case 0xff0a: return BTN_A;
++	case 0xff0b: return BTN_B;
++	case 0x00f1: return KEY_WLAN;
++	case 0x00f2: return KEY_BRIGHTNESSDOWN;
++	case 0x00f3: return KEY_BRIGHTNESSUP;
++	case 0x00f4: return KEY_DISPLAY_OFF;
++	case 0x00f7: return KEY_CAMERA;
++	case 0x00f8: return KEY_PROG1;
++	}
++	return 0;
++}
++
+ static int ch_input_mapping(struct hid_device *hdev, struct hid_input *hi,
+ 		struct hid_field *field, struct hid_usage *usage,
+ 		unsigned long **bit, int *max)
+ {
++	int btn;
++
+ 	if ((usage->hid & HID_USAGE_PAGE) != HID_UP_MSVENDOR)
+ 		return 0;
+ 
+ 	set_bit(EV_REP, hi->input->evbit);
+-	switch (usage->hid & HID_USAGE) {
+-	case 0xff01: ch_map_key_clear(BTN_1);	break;
+-	case 0xff02: ch_map_key_clear(BTN_2);	break;
+-	case 0xff03: ch_map_key_clear(BTN_3);	break;
+-	case 0xff04: ch_map_key_clear(BTN_4);	break;
+-	case 0xff05: ch_map_key_clear(BTN_5);	break;
+-	case 0xff06: ch_map_key_clear(BTN_6);	break;
+-	case 0xff07: ch_map_key_clear(BTN_7);	break;
+-	case 0xff08: ch_map_key_clear(BTN_8);	break;
+-	case 0xff09: ch_map_key_clear(BTN_9);	break;
+-	case 0xff0a: ch_map_key_clear(BTN_A);	break;
+-	case 0xff0b: ch_map_key_clear(BTN_B);	break;
+-	case 0x00f1: ch_map_key_clear(KEY_WLAN);	break;
+-	case 0x00f2: ch_map_key_clear(KEY_BRIGHTNESSDOWN);	break;
+-	case 0x00f3: ch_map_key_clear(KEY_BRIGHTNESSUP);	break;
+-	case 0x00f4: ch_map_key_clear(KEY_DISPLAY_OFF);	break;
+-	case 0x00f7: ch_map_key_clear(KEY_CAMERA);	break;
+-	case 0x00f8: ch_map_key_clear(KEY_PROG1);	break;
+-	default:
++	btn = map_use_to_btn(usage->hid & HID_USAGE);
++	if (!btn)
+ 		return 0;
+-	}
++
++	hid_map_usage_clear(hi, usage, bit, max, EV_KEY, btn);
+ 	return 1;
+ }
+ 
+
