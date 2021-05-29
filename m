@@ -2,73 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E4EB4394C13
-	for <lists+linux-kernel@lfdr.de>; Sat, 29 May 2021 13:49:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 48378394C16
+	for <lists+linux-kernel@lfdr.de>; Sat, 29 May 2021 13:51:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229762AbhE2Lub (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 29 May 2021 07:50:31 -0400
-Received: from szxga08-in.huawei.com ([45.249.212.255]:2355 "EHLO
-        szxga08-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229602AbhE2Lu3 (ORCPT
+        id S229774AbhE2LxY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 29 May 2021 07:53:24 -0400
+Received: from szxga01-in.huawei.com ([45.249.212.187]:5146 "EHLO
+        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229602AbhE2LxX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 29 May 2021 07:50:29 -0400
-Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.57])
-        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4Fsfpj4Z22z1BFXH;
-        Sat, 29 May 2021 19:44:13 +0800 (CST)
+        Sat, 29 May 2021 07:53:23 -0400
+Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.57])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4FsfwH4BJ7zYpF7;
+        Sat, 29 May 2021 19:49:03 +0800 (CST)
 Received: from dggema769-chm.china.huawei.com (10.1.198.211) by
- dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
+ dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
- 15.1.2176.2; Sat, 29 May 2021 19:48:51 +0800
+ 15.1.2176.2; Sat, 29 May 2021 19:51:44 +0800
 Received: from localhost (10.174.179.215) by dggema769-chm.china.huawei.com
  (10.1.198.211) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Sat, 29
- May 2021 19:48:50 +0800
+ May 2021 19:51:44 +0800
 From:   YueHaibing <yuehaibing@huawei.com>
-To:     <sfrench@samba.org>
-CC:     <linux-cifs@vger.kernel.org>, <samba-technical@lists.samba.org>,
-        <linux-kernel@vger.kernel.org>, YueHaibing <yuehaibing@huawei.com>
-Subject: [PATCH -next] cifs: Remove unused inline function is_sysvol_or_netlogon()
-Date:   Sat, 29 May 2021 19:48:48 +0800
-Message-ID: <20210529114848.19608-1-yuehaibing@huawei.com>
+To:     <Larry.Finger@lwfinger.net>, <kvalo@codeaurora.org>,
+        <davem@davemloft.net>, <kuba@kernel.org>, <gustavoars@kernel.org>,
+        <yuehaibing@huawei.com>
+CC:     <linux-wireless@vger.kernel.org>, <b43-dev@lists.infradead.org>,
+        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: [PATCH] b43legacy: Remove unused inline function txring_to_priority()
+Date:   Sat, 29 May 2021 19:51:31 +0800
+Message-ID: <20210529115131.6028-1-yuehaibing@huawei.com>
 X-Mailer: git-send-email 2.10.2.windows.1
 MIME-Version: 1.0
 Content-Type: text/plain
 X-Originating-IP: [10.174.179.215]
-X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
+X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
  dggema769-chm.china.huawei.com (10.1.198.211)
 X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-is_sysvol_or_netlogon() is never used, so can remove it.
+commit 5d07a3d62f63 ("b43legacy: Avoid packet losses in the dma worker code")
+left behind this.
 
 Signed-off-by: YueHaibing <yuehaibing@huawei.com>
 ---
- fs/cifs/dfs_cache.c | 11 -----------
- 1 file changed, 11 deletions(-)
+ drivers/net/wireless/broadcom/b43legacy/dma.c | 13 -------------
+ 1 file changed, 13 deletions(-)
 
-diff --git a/fs/cifs/dfs_cache.c b/fs/cifs/dfs_cache.c
-index b1fa30fefe1f..03c81c39a507 100644
---- a/fs/cifs/dfs_cache.c
-+++ b/fs/cifs/dfs_cache.c
-@@ -319,17 +319,6 @@ static inline unsigned int cache_entry_hash(const void *data, int size)
- 	return h & (CACHE_HTABLE_SIZE - 1);
+diff --git a/drivers/net/wireless/broadcom/b43legacy/dma.c b/drivers/net/wireless/broadcom/b43legacy/dma.c
+index 7e2f70c4207c..6869f2bf1bae 100644
+--- a/drivers/net/wireless/broadcom/b43legacy/dma.c
++++ b/drivers/net/wireless/broadcom/b43legacy/dma.c
+@@ -213,19 +213,6 @@ return dev->dma.tx_ring1;
+ 	return ring;
  }
  
--/* Check whether second path component of @path is SYSVOL or NETLOGON */
--static inline bool is_sysvol_or_netlogon(const char *path)
+-/* Bcm4301-ring to mac80211-queue mapping */
+-static inline int txring_to_priority(struct b43legacy_dmaring *ring)
 -{
--	const char *s;
--	char sep = path[0];
+-	static const u8 idx_to_prio[] =
+-		{ 3, 2, 1, 0, 4, 5, };
 -
--	s = strchr(path + 1, sep) + 1;
--	return !strncasecmp(s, "sysvol", strlen("sysvol")) ||
--		!strncasecmp(s, "netlogon", strlen("netlogon"));
+-/*FIXME: have only one queue, for now */
+-return 0;
+-
+-	return idx_to_prio[ring->index];
 -}
 -
- /* Return target hint of a DFS cache entry */
- static inline char *get_tgt_name(const struct cache_entry *ce)
+-
+ static u16 b43legacy_dmacontroller_base(enum b43legacy_dmatype type,
+ 					int controller_idx)
  {
 -- 
 2.17.1
