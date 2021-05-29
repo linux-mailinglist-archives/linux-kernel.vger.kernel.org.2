@@ -2,59 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 35009394E08
-	for <lists+linux-kernel@lfdr.de>; Sat, 29 May 2021 22:02:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C26F9394E09
+	for <lists+linux-kernel@lfdr.de>; Sat, 29 May 2021 22:02:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230080AbhE2UEY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 29 May 2021 16:04:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51990 "EHLO
+        id S230097AbhE2UE1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 29 May 2021 16:04:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52000 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229866AbhE2UED (ORCPT
+        with ESMTP id S229894AbhE2UEG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 29 May 2021 16:04:03 -0400
-Received: from mail-ot1-x32f.google.com (mail-ot1-x32f.google.com [IPv6:2607:f8b0:4864:20::32f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EBC8BC061574
-        for <linux-kernel@vger.kernel.org>; Sat, 29 May 2021 13:02:26 -0700 (PDT)
-Received: by mail-ot1-x32f.google.com with SMTP id t10-20020a05683022eab0290304ed8bc759so6949926otc.12
-        for <linux-kernel@vger.kernel.org>; Sat, 29 May 2021 13:02:26 -0700 (PDT)
+        Sat, 29 May 2021 16:04:06 -0400
+Received: from mail-ot1-x334.google.com (mail-ot1-x334.google.com [IPv6:2607:f8b0:4864:20::334])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 729EBC061574
+        for <linux-kernel@vger.kernel.org>; Sat, 29 May 2021 13:02:28 -0700 (PDT)
+Received: by mail-ot1-x334.google.com with SMTP id 66-20020a9d02c80000b02903615edf7c1aso6941831otl.13
+        for <linux-kernel@vger.kernel.org>; Sat, 29 May 2021 13:02:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=ATBwXD0kFwoJv/VdiHBEZd3i3+fpJe73CIUjNU9psDQ=;
-        b=PcmxOa55p1nQvi9wfEV7lp5O+4daHcpB2XaQ/e4edhltW8xdU2YEQm4XuKtWA6nBIu
-         J8KZX0EGtt2HCqCTPPZCR47dh9TWGpPB8tYRAjf6OD3GudoIOFmkYyfE57tYA0YKGBw3
-         AXMY0VxAqvGBPlgOqjqUgJSgcnTdL8idOuSVXEuOY+eTrraF6E8EoOJz3sJ0Mp30Y2E0
-         GRzZMT3j7RvXntIAGuWNMNDUWi27VWXBRgTdQA2pBFw+NdqgJZZlBsl6f29HHRzdGzTQ
-         MSUSbqx4rbI0uHbSt58XgGFi9rtqzrqMvsBIPUgmWYuxFUmOcEUvXeoUxDZ2xl+sU/aH
-         OtuQ==
+        bh=y62ORwckIayPFlg0wcO0nZkUvVrH3KCOg2Z+/d7jCxA=;
+        b=iitpARtoFTQH2fTgLE0xfQS0LOc1HvClvVTDOHOGsGz2tPY8lWV0zdaBJZL2gAlOOU
+         kStXWiWoXcKCCMKOu0uwU8UR1Avr03f1p6oO8IaxrtB1BJ4UBhJSlqoKqez1bUAfDLRk
+         ZKRczBTrwNLOKB940s8Hff7Ktl+ymQc+VnUmn200598dstjRqqQ6LQAYPKUVM4f0KSSS
+         gu7Bi30Vm9MQYF7vCPilwl/8tHO6tjXazIQ0Qz9M0rxvDWLqZATwRYfd6gq7dqHe3C3f
+         ecOCY+mBfB6LKPN6WMWylw6pMiXvkgNZvZ9NA79rIZ0cGBO+jglHj9TqVyQw3h6V9Y8y
+         wj/A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=ATBwXD0kFwoJv/VdiHBEZd3i3+fpJe73CIUjNU9psDQ=;
-        b=iFULGA71z1FUJtSCdFaTdTZgu7reEPKKWCJj/kG7wSe1Lt/f/+vwe18BbKmFcbpFOz
-         B0SPn+mf5PLROqOozkWyIKkxS5O300A0K2+eRFtXJ/1VNbli1n9mkji828smU37r8/5a
-         sL08QJbW0HK8GrcAR69+e9aXS7fht5YxVMage9yOMkPU4adwY2lIs5JxHEnuf+RERqho
-         3ekjVALLGysMsAeMGrAqBJXbt60BqLQ/hF90Vo+y0G1dQcQbXwqxGybUagJUl4hP0CRf
-         WfIjseFiQeQsZCT563lwBwPR7ZIsQJcMriUhXc13OsiwTJWwSfWbcGVcVD1mr3A3Rujj
-         Q/BQ==
-X-Gm-Message-State: AOAM530utfN+ntgcp8dZ4OmFK9QRqdhwcClw/iLF5O9EnWdw2c9Ry16A
-        dCS9DE3oYRNxyZ43Vf81UIM=
-X-Google-Smtp-Source: ABdhPJxg64OhfNeg3SPkwFspjvNng3EPBytAYddY+HeaipVqK58+wIjn5nlnxkGt0t0+BFGwstD64g==
-X-Received: by 2002:a05:6830:2684:: with SMTP id l4mr12166648otu.294.1622318546325;
-        Sat, 29 May 2021 13:02:26 -0700 (PDT)
+        bh=y62ORwckIayPFlg0wcO0nZkUvVrH3KCOg2Z+/d7jCxA=;
+        b=j6h9PYP1MKSo7DcE0R7zTS615VFJDXorn1mr3k6Wy/rOEPDerXrNp8Ga1r+OCZ600q
+         SPsFAEEwmEbyp0y4wI+Ozn0On1IQJJsmOPGsLnpHdteCp227UqgyWiBnU8T9wBn55+67
+         CICMSUcr4vqUk1BIwFE+MkC9iu1KThdY/Ey5DK1ArXC6ABvU/PD4SHM0WWHbiCKu3WBG
+         h1ac/JJsqfqn5IdXfK6u+BhZY1DZeoKjDMav9OLJv+A86ju8CDXLzU8jbDjdjlFQD03h
+         dM2dfzCN4fObSmy+wfCCyJBRcX6L7ypdLSBywXmSNx7qi0lBuTH+li8apKmWPNk0EZng
+         Ks9g==
+X-Gm-Message-State: AOAM532MIsyzjOkU4ki761h48OSIY3nX1CslTbjIheNTTGobhwwPwAR2
+        z+10MpjR6S0P01pJw+AMiNg=
+X-Google-Smtp-Source: ABdhPJyXGo5bFUcnGA/XSzR+vrjEGErUUx35rDNvtOdIWeqMnDJOQft1K8jSpscIJb7ddKdfYetwkQ==
+X-Received: by 2002:a9d:74c7:: with SMTP id a7mr12188597otl.42.1622318547849;
+        Sat, 29 May 2021 13:02:27 -0700 (PDT)
 Received: from frodo.. (c-24-9-77-57.hsd1.co.comcast.net. [24.9.77.57])
-        by smtp.googlemail.com with ESMTPSA id t39sm1868064ooi.42.2021.05.29.13.02.25
+        by smtp.googlemail.com with ESMTPSA id t39sm1868064ooi.42.2021.05.29.13.02.26
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 29 May 2021 13:02:25 -0700 (PDT)
+        Sat, 29 May 2021 13:02:26 -0700 (PDT)
 From:   Jim Cromie <jim.cromie@gmail.com>
 To:     jbaron@akamai.com, gregkh@linuxfoundation.org,
         linux-kernel@vger.kernel.org
 Cc:     Jim Cromie <jim.cromie@gmail.com>
-Subject: [RFC PATCH v6 13/34] dyndbg: refactor ddebug_alter_site out of ddebug_change
-Date:   Sat, 29 May 2021 14:00:08 -0600
-Message-Id: <20210529200029.205306-14-jim.cromie@gmail.com>
+Subject: [RFC PATCH v6 14/34] dyndbg: allow deleting site info via control interface
+Date:   Sat, 29 May 2021 14:00:09 -0600
+Message-Id: <20210529200029.205306-15-jim.cromie@gmail.com>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210529200029.205306-1-jim.cromie@gmail.com>
 References: <20210529200029.205306-1-jim.cromie@gmail.com>
@@ -64,55 +64,117 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Move the JUMP_LABEL/static-key code to a separate function.
+Allow users & subsystems to selectively delete callsite info for
+pr-debug callsites.  Hopefully, this can lead to actual recovery of
+memory.
 
-no functional changes.
+DRM is a potential user which would drop the sites:
+
+- has distinct categories for logging, and can map them over to a
+  format prefix, like: "drm:core:", "drm:kms:", etc.
+
+- are happy with group control of all the callsites in a class/cateory.
+  individual control is still possible using queries including line numbers
+
+- don't need dynamic "module:function:line:" prefixes in log messages
+
+- don't care about loss of context in /proc/dynamic_debug/control
+
+before:
+
+init/initramfs.c:485 [initramfs]unpack_to_rootfs =_ "Detected %s compressed data\012"
+init/main.c:1337 [main]run_init_process =pm "    %s\012"
+init/main.c:1335 [main]run_init_process =pm "  with environment:\012"
+init/main.c:1334 [main]run_init_process =pm "    %s\012"
+init/main.c:1332 [main]run_init_process =pm "  with arguments:\012"
+init/main.c:1121 [main]initcall_blacklisted =pm "initcall %s blacklisted\012"
+init/main.c:1082 [main]initcall_blacklist =pm "blacklisting initcall %s\012"
+
+then:
+  bash-5.0# echo file init/main.c +D > /proc/dynamic_debug/control
+
+after:
+
+init/initramfs.c:485 [initramfs]unpack_to_rootfs =_ "Detected %s compressed data\012"
+[main]:1337 =pmD "    %s\012"
+[main]:1335 =pmD "  with environment:\012"
+[main]:1334 =pmD "    %s\012"
+[main]:1332 =pmD "  with arguments:\012"
+[main]:1121 =pmD "initcall %s blacklisted\012"
+[main]:1082 =pmD "blacklisting initcall %s\012"
+
+Notes:
+
+If Drm adopted dyndbg, i915 + drm* would add ~1600 prdebugs, amdgpu +
+drm* would add ~3200 callsites, so the additional memory costs are
+substantial.  In trade, drm and drivers would avoid lots of calls to
+drm_debug_enabled().  This patch should reduce the costs.
+
+Using this interface, drm could drop site info for all categories /
+prefixes controlled by bits in drm.debug, while preserving site info
+and individual selectivity for any uncategorized prdebugs, and for all
+other modules.
+
+Lastly, because lineno field was not moved into _ddebug_callsite, it
+can be used to modify a single[*] callsite even if drm has dropped all
+the callsite data:
+
+  echo module $mod format ^$prefix line $line +p >control
+
+Dropping site info is a one-way, information losing operation, so
+minor misuse is possible.  Worst case is maybe (depending upon
+previous settings) some loss of logging context/decorations.
+
+  echo +D > /proc/dynamic_debug/control
+
+[*] amdgpu has some macros invoking clusters of pr_debugs; each use of
+them creates a cluster of pr-debugs with the same line number.
 
 Signed-off-by: Jim Cromie <jim.cromie@gmail.com>
 ---
- lib/dynamic_debug.c | 22 +++++++++++++++-------
- 1 file changed, 15 insertions(+), 7 deletions(-)
+ include/linux/dynamic_debug.h | 1 +
+ lib/dynamic_debug.c           | 9 +++++++++
+ 2 files changed, 10 insertions(+)
 
+diff --git a/include/linux/dynamic_debug.h b/include/linux/dynamic_debug.h
+index 40ea086853ff..f789608ab935 100644
+--- a/include/linux/dynamic_debug.h
++++ b/include/linux/dynamic_debug.h
+@@ -40,6 +40,7 @@ struct _ddebug {
+ #define _DPRINTK_FLAGS_INCL_FUNCNAME	(1<<2)
+ #define _DPRINTK_FLAGS_INCL_LINENO	(1<<3)
+ #define _DPRINTK_FLAGS_INCL_TID		(1<<4)
++#define _DPRINTK_FLAGS_DELETE_SITE	(1<<7) /* drop site info to save ram */
+ 
+ #define _DPRINTK_FLAGS_INCL_ANY		\
+ 	(_DPRINTK_FLAGS_INCL_MODNAME | _DPRINTK_FLAGS_INCL_FUNCNAME |\
 diff --git a/lib/dynamic_debug.c b/lib/dynamic_debug.c
-index 592aaaf79fd7..ad7cda840733 100644
+index ad7cda840733..a4cb048357fb 100644
 --- a/lib/dynamic_debug.c
 +++ b/lib/dynamic_debug.c
-@@ -192,6 +192,18 @@ static int ddebug_match_site(const struct ddebug_query *query,
- 	return true;
+@@ -93,6 +93,7 @@ static struct { unsigned flag:8; char opt_char; } opt_array[] = {
+ 	{ _DPRINTK_FLAGS_INCL_LINENO, 'l' },
+ 	{ _DPRINTK_FLAGS_INCL_TID, 't' },
+ 	{ _DPRINTK_FLAGS_NONE, '_' },
++	{ _DPRINTK_FLAGS_DELETE_SITE, 'D' },
+ };
+ 
+ struct flagsbuf { char buf[ARRAY_SIZE(opt_array)+1]; };
+@@ -202,6 +203,14 @@ static void ddebug_alter_site(struct _ddebug *dp,
+ 	} else if (modifiers->flags & _DPRINTK_FLAGS_PRINT)
+ 		static_branch_enable(&dp->key.dd_key_true);
+ #endif
++	/* delete site info for this callsite */
++	if (modifiers->flags & _DPRINTK_FLAGS_DELETE_SITE) {
++		if (dp->site) {
++			vpr_info("dropping site info %s.%s.%d\n", dp->site->filename,
++				dp->site->function, dp->lineno);
++			dp->site = NULL;
++		}
++	}
  }
  
-+static void ddebug_alter_site(struct _ddebug *dp,
-+			      struct flag_settings *modifiers)
-+{
-+#ifdef CONFIG_JUMP_LABEL
-+	if (dp->flags & _DPRINTK_FLAGS_PRINT) {
-+		if (!(modifiers->flags & _DPRINTK_FLAGS_PRINT))
-+			static_branch_disable(&dp->key.dd_key_true);
-+	} else if (modifiers->flags & _DPRINTK_FLAGS_PRINT)
-+		static_branch_enable(&dp->key.dd_key_true);
-+#endif
-+}
-+
  /*
-  * Search the tables for _ddebug's which match the given `query' and
-  * apply the `flags' and `mask' to them.  Returns number of matching
-@@ -228,13 +240,9 @@ static int ddebug_change(const struct ddebug_query *query,
- 			newflags = (dp->flags & modifiers->mask) | modifiers->flags;
- 			if (newflags == dp->flags)
- 				continue;
--#ifdef CONFIG_JUMP_LABEL
--			if (dp->flags & _DPRINTK_FLAGS_PRINT) {
--				if (!(modifiers->flags & _DPRINTK_FLAGS_PRINT))
--					static_branch_disable(&dp->key.dd_key_true);
--			} else if (modifiers->flags & _DPRINTK_FLAGS_PRINT)
--				static_branch_enable(&dp->key.dd_key_true);
--#endif
-+
-+			ddebug_alter_site(dp, modifiers);
-+
- 			dp->flags = newflags;
- 
- 			if (dc)
 -- 
 2.31.1
 
