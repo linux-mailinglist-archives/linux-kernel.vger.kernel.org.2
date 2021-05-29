@@ -2,71 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4335E394C1C
-	for <lists+linux-kernel@lfdr.de>; Sat, 29 May 2021 14:05:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 26A9C394C23
+	for <lists+linux-kernel@lfdr.de>; Sat, 29 May 2021 14:12:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229714AbhE2MHC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 29 May 2021 08:07:02 -0400
-Received: from szxga02-in.huawei.com ([45.249.212.188]:2470 "EHLO
-        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229602AbhE2MHA (ORCPT
+        id S229768AbhE2MNn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 29 May 2021 08:13:43 -0400
+Received: from mout.kundenserver.de ([217.72.192.75]:39667 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229614AbhE2MNj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 29 May 2021 08:07:00 -0400
-Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.55])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4FsgCl6qnYz689v;
-        Sat, 29 May 2021 20:02:27 +0800 (CST)
-Received: from dggema769-chm.china.huawei.com (10.1.198.211) by
- dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
- 15.1.2176.2; Sat, 29 May 2021 20:05:18 +0800
-Received: from localhost (10.174.179.215) by dggema769-chm.china.huawei.com
- (10.1.198.211) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Sat, 29
- May 2021 20:05:18 +0800
-From:   YueHaibing <yuehaibing@huawei.com>
-To:     <balbi@kernel.org>, <gregkh@linuxfoundation.org>
-CC:     <linux-usb@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        YueHaibing <yuehaibing@huawei.com>
-Subject: [PATCH -next] USB: gadget: f_fs: Remove unneed cast in ffs_prepare_buffer()
-Date:   Sat, 29 May 2021 20:04:08 +0800
-Message-ID: <20210529120408.23456-1-yuehaibing@huawei.com>
-X-Mailer: git-send-email 2.10.2.windows.1
+        Sat, 29 May 2021 08:13:39 -0400
+Received: from mail-wr1-f48.google.com ([209.85.221.48]) by
+ mrelayeu.kundenserver.de (mreue106 [213.165.67.113]) with ESMTPSA (Nemesis)
+ id 1MXH7g-1lu9Ne3R4o-00Yf3k; Sat, 29 May 2021 14:12:00 +0200
+Received: by mail-wr1-f48.google.com with SMTP id f11so5890940wrq.1;
+        Sat, 29 May 2021 05:12:00 -0700 (PDT)
+X-Gm-Message-State: AOAM531V7mB4y/tTXAEpqh7y55HkzmQC/UYHSA3NQAQSFHT9wRdoNVJ5
+        jyR8K1ZkqYB+4mUJ5ij/5h4ULXMyiNOMoqdzHCY=
+X-Google-Smtp-Source: ABdhPJwj4ddQH/kkWrToqiXjuuZw4oFvsfNtI2oNoNLEHzsy+IDZup8Sh5Bs8Mc6+7rFuKBo95mR+TPvDL/Kd5fyNU0=
+X-Received: by 2002:adf:a28c:: with SMTP id s12mr14087456wra.105.1622290320379;
+ Sat, 29 May 2021 05:12:00 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.174.179.215]
-X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
- dggema769-chm.china.huawei.com (10.1.198.211)
-X-CFilter-Loop: Reflected
+References: <20210529071523.2044-1-rdunlap@infradead.org>
+In-Reply-To: <20210529071523.2044-1-rdunlap@infradead.org>
+From:   Arnd Bergmann <arnd@arndb.de>
+Date:   Sat, 29 May 2021 14:10:28 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a2mmQvsK+geQCGAOjZ4r2S9E4AUkWaT2coKW2AL8ZOAYg@mail.gmail.com>
+Message-ID: <CAK8P3a2mmQvsK+geQCGAOjZ4r2S9E4AUkWaT2coKW2AL8ZOAYg@mail.gmail.com>
+Subject: Re: [PATCH] wireless: carl9170: fix LEDS build errors & warnings
+To:     Randy Dunlap <rdunlap@infradead.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        kernel test robot <lkp@intel.com>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        Christian Lamparter <chunkeey@googlemail.com>,
+        linux-wireless <linux-wireless@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Provags-ID: V03:K1:WOe+E8GiYoi1YJ4uKMT6YmB+XjCet8Kfi/iSai+QXjAeBQVST3U
+ HLbbfFzz5iijFRLdiOyu9yDC/0pCn7rIiSC6Lbq2oCDBrzbNXldrBaE/bbzCwlxnHj0fUQ2
+ qQCXNUcpWRczeBK+CB/0JkfjBeRmTOGkMhVlzvxQtT2xU2wN5EmS5kQTXbiyW5hz0AAcWdL
+ vnOb5HI/b1zuW2Wj+rl8Q==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:A7YDe+6hyxU=:qxG3mZ7FPJrAcI1aKPsHBJ
+ ztulVK2c4LMbKD4msf12x4DUG5BCM8U3bFy1Koj/6glM2ELnr6SVjfUi9A2W5LNPxkfymNpbE
+ kLrY9XyqvESglKMGop5xpqvivt+tWD9kJxz4I2XkRlaIKnTQC/avYoaxFzcHaZ0FVfI5kflpC
+ 1aUvBO9yHLPvRFkovdjpdOtnPUdH6xpc5hRtDmEkNl/BlZKTEL/62PR620EGVZv7Hr5590Dxf
+ DkV4OflCylmV0pnffbe+3+QKujvP0OdXiVkpQkZOYVVfgbvk4x5btOoq9Kp0CenZ6BTMbbMRi
+ dX3r1TeWfiHGWpBL2BCDRi0E/s+uW7mdI9uDgjl055aAQ4vyzeN0tkGLy7tvMHZwKSuo98ZX0
+ 4ENXYESMabNnWP6ywxRSCZvZ/yZh6+l9ipMc9YkfK95ZgDmSTBWRZwJpVE15hxE9NmLsVlE/F
+ TEBF9yb0fuuHDqOBvFRaCLvqHbQc3eyOZea41PCvg+hlg7ievlyqdtl2O0WPPH2QN5oX5cGEM
+ mEkmsK5+BH8DYtFobZ8daU=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-A coccicheck run provided information like the following.
+On Sat, May 29, 2021 at 9:16 AM Randy Dunlap <rdunlap@infradead.org> wrote:
+>
+> kernel test robot reports over 200 build errors and warnings
+> that are due to this Kconfig problem when CARL9170=m,
+> MAC80211=y, and LEDS_CLASS=m.
 
-./drivers/usb/gadget/function/f_fs.c:3832:9-16:
- WARNING: ERR_CAST can be used with data
+I think this avoids the build problems, but it's not really logical:
 
-ffs_prepare_buffer() should return an ERR_PTR() encoded error
-code on failure.
+> --- linux-next-20210528.orig/drivers/net/wireless/ath/carl9170/Kconfig
+> +++ linux-next-20210528/drivers/net/wireless/ath/carl9170/Kconfig
+> @@ -17,9 +17,7 @@ config CARL9170
+>  config CARL9170_LEDS
+>         bool "SoftLED Support"
+>         depends on CARL9170
+> -       select MAC80211_LEDS
+> -       select LEDS_CLASS
+> -       select NEW_LEDS
+> +       select MAC80211_LEDS if LEDS_CLASS=y || LEDS_CLASS=MAC80211
+>         default y
+>         help
+>           This option is necessary, if you want your device' LEDs to blink
 
-Signed-off-by: YueHaibing <yuehaibing@huawei.com>
----
- drivers/usb/gadget/function/f_fs.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+The point of the option is to enable LED support, but now it doesn't do that
+when LEDS_CLASS is a loadable module and MAC80211 is built-in.
 
-diff --git a/drivers/usb/gadget/function/f_fs.c b/drivers/usb/gadget/function/f_fs.c
-index bf109191659a..cb419bbd089c 100644
---- a/drivers/usb/gadget/function/f_fs.c
-+++ b/drivers/usb/gadget/function/f_fs.c
-@@ -3829,7 +3829,7 @@ static char *ffs_prepare_buffer(const char __user *buf, size_t len)
- 
- 	data = memdup_user(buf, len);
- 	if (IS_ERR(data))
--		return ERR_PTR(PTR_ERR(data));
-+		return data;
- 
- 	pr_vdebug("Buffer from user space:\n");
- 	ffs_dump_mem("", data, len);
--- 
-2.17.1
+I think a more sensible solution would be to follow the example of
 
+config MT76_LEDS
+        bool
+        depends on MT76_CORE
+        depends on LEDS_CLASS=y || MT76_CORE=LEDS_CLASS
+        default y
+
+    Arnd
