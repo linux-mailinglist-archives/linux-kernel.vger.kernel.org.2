@@ -2,130 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BCD0D394AF3
-	for <lists+linux-kernel@lfdr.de>; Sat, 29 May 2021 09:39:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C3412394B00
+	for <lists+linux-kernel@lfdr.de>; Sat, 29 May 2021 09:50:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229709AbhE2HlE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 29 May 2021 03:41:04 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:18916 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229560AbhE2Hkz (ORCPT
+        id S229681AbhE2Hvs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 29 May 2021 03:51:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34680 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229559AbhE2Hvr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 29 May 2021 03:40:55 -0400
-Received: from pps.filterd (m0098409.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 14T7YM79085792;
-        Sat, 29 May 2021 03:39:04 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding; s=pp1;
- bh=LMk7SrRrXQ/vzbySKtIU8w16pKX+vZ9d3leb2ZMVw6w=;
- b=VmGvIDzD9Pv1XgMjffdR7kWG8uPVjQ6+PLR8nwzaDGevHFaBILSngWp52A1p/y3TDpJx
- ux7dC0wtKR6dalzYolJN4md/+IJGeA+/CWPlnIXNXzKNjxmCL5d1Wl8C4ZIZURnvjh9m
- pVjMx1bkqze7pwO4NkMPQPnzbnezDCdNZOz/CcsAsWIGwTf+CbnVXbqxEwR9fsOrGC9A
- duwiRr0ZHVMK8DJ7xAfyk2vLJGI+97Ten4sAAooBy0MzgnsVG8HEj9314Rv2liNWwJOQ
- IX/Y4AHdtviiYJxywN7reh+s4hqa8ws2I0s1/nSHmvZ3zCKyPjPGj8/39hqdr7Eng+SJ Bw== 
-Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 38ugwpgfce-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Sat, 29 May 2021 03:39:03 -0400
-Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
-        by ppma06ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 14T7d1Yw021139;
-        Sat, 29 May 2021 07:39:01 GMT
-Received: from b06avi18878370.portsmouth.uk.ibm.com (b06avi18878370.portsmouth.uk.ibm.com [9.149.26.194])
-        by ppma06ams.nl.ibm.com with ESMTP id 38ucvh82bh-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Sat, 29 May 2021 07:39:01 +0000
-Received: from d06av22.portsmouth.uk.ibm.com (d06av22.portsmouth.uk.ibm.com [9.149.105.58])
-        by b06avi18878370.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 14T7cSqj33161590
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Sat, 29 May 2021 07:38:28 GMT
-Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 76D1C4C04A;
-        Sat, 29 May 2021 07:38:58 +0000 (GMT)
-Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id E87A74C040;
-        Sat, 29 May 2021 07:38:54 +0000 (GMT)
-Received: from localhost.localdomain.com (unknown [9.199.45.117])
-        by d06av22.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Sat, 29 May 2021 07:38:54 +0000 (GMT)
-From:   Kajol Jain <kjain@linux.ibm.com>
-To:     mpe@ellerman.id.au, linuxppc-dev@lists.ozlabs.org,
-        nvdimm@lists.linux.dev, linux-kernel@vger.kernel.org,
-        peterz@infradead.org
-Cc:     maddy@linux.vnet.ibm.com, santosh@fossix.org,
-        aneesh.kumar@linux.ibm.com, vaibhav@linux.ibm.com,
-        dan.j.williams@intel.com, ira.weiny@intel.com,
-        atrajeev@linux.vnet.ibm.com, tglx@linutronix.de,
-        kjain@linux.ibm.com, rnsastry@linux.ibm.com
-Subject: [RFC v3 4/4] powerpc/papr_scm: Document papr_scm sysfs event format entries
-Date:   Sat, 29 May 2021 13:08:28 +0530
-Message-Id: <20210529073828.1542292-5-kjain@linux.ibm.com>
-X-Mailer: git-send-email 2.26.3
-In-Reply-To: <20210529073828.1542292-1-kjain@linux.ibm.com>
-References: <20210529073828.1542292-1-kjain@linux.ibm.com>
+        Sat, 29 May 2021 03:51:47 -0400
+Received: from mail-pf1-x430.google.com (mail-pf1-x430.google.com [IPv6:2607:f8b0:4864:20::430])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A37FC061574;
+        Sat, 29 May 2021 00:50:11 -0700 (PDT)
+Received: by mail-pf1-x430.google.com with SMTP id d78so4983798pfd.10;
+        Sat, 29 May 2021 00:50:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=/4SUnmRsEvEoCQbynPnIZ3E8JwoH+A1ueWYI0Pbiw9w=;
+        b=Bx8aiW5rNAKwEkjR6SKvyEIJS+3ogOsQgjgj5HhuviojVf4zBkN8SX0VCChsDIMFzJ
+         4zdsG/FTki/lsUulBvOrAKiG0KvApU5AY7Uhz3rWbsd/PnJWvd2rd1g1mb8rODPfXUJA
+         JL/IPywG198E0YSDix9nYgnsRG13Rz2rpzvKO4c18jXFl0jIU4ekGgZCKNLhYYvcleXb
+         F66vTtk/zXrf0j//zwfW4Q91nIdzDtap7ooTJHfiodeX7iCxiXZ5MEBoQj0IGIVqAVjy
+         WxXWorabWE0Z4mHIel+lNu8sgk6Ugu9BaY/b3ly94U+l/AxPuJqjGCsg84MLKc/8EAp+
+         UyEQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=/4SUnmRsEvEoCQbynPnIZ3E8JwoH+A1ueWYI0Pbiw9w=;
+        b=OXLRBcPViVlbPm6jUYyrG5h0BDCPAVr+1f2gDuiHaIJ9ZJq1C9g/I23re7zA7pt/QP
+         5iT2hwFpLDVr1EGx3FWdvxwPy5ItGjbCfuK776ath8YxsAcEW048sJiQGIEPTlFflVoX
+         Gs8QR7N58MBwz8lvpqk8J7IGi03sKVF9XvK9JbizjtJsoWkb2xPXxre9PJ8trSHHYJOY
+         RfsfZnR06YIU4mcCaqPLdjY9EwtJ+M/4gZarilquK3CY+7ayKC5B1VX7VZXPOsGIDfrG
+         uj0TxQwznxetJgQDsbZ+iRtLT6rr0ewKwf8YhjWtfobxMJxZwAbUCWnH9ytf5oyqGBtQ
+         ee+g==
+X-Gm-Message-State: AOAM531+LtXeUcmdDX9i/wjAtPVvP6EkRvGBH13gRXvXrOePP96TQu3+
+        kX/LmmAa//bh493ODOxjKm5JPBXtWGq6W4yuwSE=
+X-Google-Smtp-Source: ABdhPJyioiFRUFcnBijlM3oOsk3K1syg/1g997AAdbEmOsAdGRsW49ZQe0KKqQafR6H1BR4vIqJgB+00gcIa1h19Bco=
+X-Received: by 2002:a63:b507:: with SMTP id y7mr12836118pge.74.1622274610413;
+ Sat, 29 May 2021 00:50:10 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: sNh9OA4sr30Qm-Df3YfWwKuZHq56W_Ft
-X-Proofpoint-GUID: sNh9OA4sr30Qm-Df3YfWwKuZHq56W_Ft
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
- definitions=2021-05-29_03:2021-05-27,2021-05-29 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 adultscore=0
- bulkscore=0 priorityscore=1501 phishscore=0 clxscore=1015 mlxlogscore=999
- lowpriorityscore=0 spamscore=0 impostorscore=0 suspectscore=0
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104190000 definitions=main-2105290058
+References: <20210419061809.15045-1-lukas.bulwahn@gmail.com>
+ <CAHp75Vfv0FQGXrmpDveOf-cBahoDK3uSPHjPU2RNh6mhFxN7vQ@mail.gmail.com>
+ <YLD/ZQiX5VhpWJg7@smile.fi.intel.com> <YLECsC9y8ici47Ln@kunai>
+ <YLEmJVbVwQaMk+dq@smile.fi.intel.com> <20210528181943.GR543307@dell>
+In-Reply-To: <20210528181943.GR543307@dell>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Sat, 29 May 2021 10:49:54 +0300
+Message-ID: <CAHp75VcGMH53xDSQt257f-rfCMZidHfrVQuHd8T8A0zs9fzN5g@mail.gmail.com>
+Subject: Re: [PATCH] MAINTAINERS: adjust to removing i2c designware platform data
+To:     Lee Jones <lee.jones@linaro.org>
+Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Wolfram Sang <wsa@kernel.org>,
+        Lukas Bulwahn <lukas.bulwahn@gmail.com>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Jarkko Nikula <jarkko.nikula@linux.intel.com>,
+        linux-i2c <linux-i2c@vger.kernel.org>,
+        Ralf Ramsauer <ralf.ramsauer@oth-regensburg.de>,
+        kernel-janitors <kernel-janitors@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Details is added for the event, cpumask and format attributes
-in the ABI documentation.
+On Fri, May 28, 2021 at 9:20 PM Lee Jones <lee.jones@linaro.org> wrote:
+> On Fri, 28 May 2021, Andy Shevchenko wrote:
+> > On Fri, May 28, 2021 at 04:48:16PM +0200, Wolfram Sang wrote:
 
-Signed-off-by: Kajol Jain <kjain@linux.ibm.com>
----
- Documentation/ABI/testing/sysfs-bus-papr-pmem | 31 +++++++++++++++++++
- 1 file changed, 31 insertions(+)
+...
 
-diff --git a/Documentation/ABI/testing/sysfs-bus-papr-pmem b/Documentation/ABI/testing/sysfs-bus-papr-pmem
-index 92e2db0e2d3d..2de9c8d2168f 100644
---- a/Documentation/ABI/testing/sysfs-bus-papr-pmem
-+++ b/Documentation/ABI/testing/sysfs-bus-papr-pmem
-@@ -59,3 +59,34 @@ Description:
- 		* "CchRHCnt" : Cache Read Hit Count
- 		* "CchWHCnt" : Cache Write Hit Count
- 		* "FastWCnt" : Fast Write Count
-+
-+What:		/sys/devices/nmemX/format
-+Date:		May 2021
-+Contact:	linuxppc-dev <linuxppc-dev@lists.ozlabs.org>, linux-nvdimm@lists.01.org,
-+Description:	(RO) Attribute group to describe the magic bits
-+                that go into perf_event_attr.config for a particular pmu.
-+                (See ABI/testing/sysfs-bus-event_source-devices-format).
-+
-+                Each attribute under this group defines a bit range of the
-+                perf_event_attr.config. Supported attribute is listed
-+                below::
-+
-+		    event  = "config:0-4"  - event ID
-+
-+		For example::
-+		    noopstat = "event=0x1"
-+
-+What:		/sys/devices/nmemX/events
-+Date:		May 2021
-+Contact:	linuxppc-dev <linuxppc-dev@lists.ozlabs.org>, linux-nvdimm@lists.01.org,
-+Description:    (RO) Attribute group to describe performance monitoring
-+                events specific to papr-scm. Each attribute in this group describes
-+                a single performance monitoring event supported by this nvdimm pmu.
-+                The name of the file is the name of the event.
-+                (See ABI/testing/sysfs-bus-event_source-devices-events).
-+
-+What:		/sys/devices/nmemX/cpumask
-+Date:		May 2021
-+Contact:	linuxppc-dev <linuxppc-dev@lists.ozlabs.org>, linux-nvdimm@lists.01.org,
-+Description:	(RO) This sysfs file exposes the cpumask which is designated to make
-+                HCALLs to retrieve nvdimm pmu event counter data.
+> > Ah, I see. AFAIR Lee doesn't update his branch frequently, so it might be that
+> > he already applied that but it's not visible to Linux Next.
+>
+> I'm not sure whether to find this funny or be offended.
+
+Definitely not about offending anyone. Let's go with funny!
+
 -- 
-2.27.0
-
+With Best Regards,
+Andy Shevchenko
