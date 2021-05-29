@@ -2,59 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4CEF2394E19
+	by mail.lfdr.de (Postfix) with ESMTP id 979F2394E1A
 	for <lists+linux-kernel@lfdr.de>; Sat, 29 May 2021 22:04:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229878AbhE2UFW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 29 May 2021 16:05:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52096 "EHLO
+        id S229845AbhE2UFY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 29 May 2021 16:05:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52106 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230057AbhE2UEW (ORCPT
+        with ESMTP id S230062AbhE2UEX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 29 May 2021 16:04:22 -0400
-Received: from mail-ot1-x331.google.com (mail-ot1-x331.google.com [IPv6:2607:f8b0:4864:20::331])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08D90C06138D
-        for <linux-kernel@vger.kernel.org>; Sat, 29 May 2021 13:02:45 -0700 (PDT)
-Received: by mail-ot1-x331.google.com with SMTP id c31-20020a056830349fb02903a5bfa6138bso49856otu.7
-        for <linux-kernel@vger.kernel.org>; Sat, 29 May 2021 13:02:45 -0700 (PDT)
+        Sat, 29 May 2021 16:04:23 -0400
+Received: from mail-oi1-x236.google.com (mail-oi1-x236.google.com [IPv6:2607:f8b0:4864:20::236])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 194CAC061348
+        for <linux-kernel@vger.kernel.org>; Sat, 29 May 2021 13:02:46 -0700 (PDT)
+Received: by mail-oi1-x236.google.com with SMTP id v22so7972213oic.2
+        for <linux-kernel@vger.kernel.org>; Sat, 29 May 2021 13:02:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=sK/P+4H0sYY14z3pIJRgwy4xGuY7WGwxwaq9XeGY66I=;
-        b=ryvc0voSh9tbmE8HYLdq4XnqpptC4rfl+7ItUgzFHFQE//YP54pubBhoSRCUHW7htP
-         Y4SqZokidIOjHwAkIYoVPu7T/YzKiV+jw/mC658fDEWksVxfnlB6aVHMEOMTz5AAn1Qn
-         kps80V/BuOr/1uFf8c2tQzwqjSbYuxkBObxDO/oVMaq68/3/fp5BLCaBGdKiyWn7NKSV
-         KAhPwV64g8tGXXTFYj3ZKczYrLtFrWf85rtwM72YLxImErU8pZY5jd0w+1InwXaRzfPu
-         /l3BYkFofkRecY1bPh+scPb/L5tffi6MyaCcuCupGB5an+1+bHjQBhC0Z6gVR6M3YS9U
-         mf4Q==
+        bh=zM9vLA05BUCYqav0NtZSubdO0OXNsYrh7MVHcByF0nc=;
+        b=VXWM8kUtsMvmUTbdf1E/BZt/8BKDP03rh4ER4VXmTkiXWpew6WMoZoWUd+HdF5M2aD
+         1nLD+4Pkx5IXa3nEbvPAJSE5ZodE+srWkMXQAuaZ1tuhrtrCQkjW4HapNnpPE/HaFdgM
+         APZNPwAAIDSkNpXCV1AXjYmRboOEOmE+dn4C1L/+V7+ABn6YURJ6KUAQ9ocLErhjkZfE
+         mrfhoT5PjVBNEuHKB2znE1FiM+LBR8W22oOgwmVm0zjoNF679FBrRFUASKZrhRz1Yb/P
+         rTkqBM9xctorDWw00jc/kAxcAies/ypeZW3kCkgH+/FnOJyZCbHoRgyBKUqWK3kE22bI
+         d1ag==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=sK/P+4H0sYY14z3pIJRgwy4xGuY7WGwxwaq9XeGY66I=;
-        b=XqLqVUyXDadBcccN2nF1rEU2FuZIHgYNoMlaWn7S5lk/Qud0wMh4Bg4b1EbA/P75RV
-         /C7pxwzBcaQGK4tIteD0j5xPVPgCuJRoquHmsjI4SrPBQYjd8pb57Se7otc8v7RuSshO
-         Lno6uOvkxsIfAQO1uUM0n3fM2vNXLxJempqGLXjMYHe/K1aKHc5yOtMxncrHqs3otm4C
-         100eUC+NE/lGJ7YrIWlzBLp5/8hE56ciVz//PPUr7VzCUVT7wmMO+PQiMe8KhKilHekH
-         RzIhjItyJ6eeB4uiPDOdTWiQQNqUJ+W9/NdDFh591P/tWfvnRQJbw+fLkBI8csEDcTPD
-         6F+Q==
-X-Gm-Message-State: AOAM5325gMbTPwG94lQEEUHUW+J565qRG1ZtJ49URL1Sklsnq3UFmw6A
-        mBC4SC1Tj8ALZpUjT52RJqA=
-X-Google-Smtp-Source: ABdhPJwL89IT5cH4ECsCFNccOLoWTSVjV4WxW0HnS/dke9vQz1ArSszonUM6zUyEzq4KLoPYXfyu2g==
-X-Received: by 2002:a05:6830:2707:: with SMTP id j7mr1156180otu.171.1622318564385;
-        Sat, 29 May 2021 13:02:44 -0700 (PDT)
+        bh=zM9vLA05BUCYqav0NtZSubdO0OXNsYrh7MVHcByF0nc=;
+        b=B2IZP8wfRKjUCg0mPlB3aGaDLM9ndg7zvW3ERlfYsDuC22d9i3j/LlLqdyWodrBfrO
+         qcK2DoNZtg30fdKWkC5f84QY2Jhg9puTBajCxk9v0Q2csGcixGi1kBKs0J96RMNfCZ0l
+         c/LOH6Nrj2ccW4YySUUU6XHgFVQYe8mEqTRuh5jXB+ZECD9uvsplUurjNJyr0/ybb+Rq
+         mNrrCoD22/V5+c678TvcXPL31ux+cQFCTbgQwE5uJA9LQzcpOiNOdA3U8Dn9SIQZP2bA
+         l9kLWBeSxacSGfBgQy03Gl2iYqTkhT8y+yT/zN9fsQgilnFSWiM7B3nGaDSbPWnLrSJo
+         Rhhg==
+X-Gm-Message-State: AOAM530pSbRp1Q0IQeOh9Ar70vcXrrr9svcHAMBahEHuLVWvh8xVJA9O
+        au3sT5fUZTP7sVv1Q9+QaKo=
+X-Google-Smtp-Source: ABdhPJxQTInSQ3743E2EZTjTmHxuPF7kJ6VtIfdlNfycOTivbykpRMhPVGV344FRVfhU98ery9Zt5Q==
+X-Received: by 2002:a05:6808:14ce:: with SMTP id f14mr10310328oiw.140.1622318565489;
+        Sat, 29 May 2021 13:02:45 -0700 (PDT)
 Received: from frodo.. (c-24-9-77-57.hsd1.co.comcast.net. [24.9.77.57])
-        by smtp.googlemail.com with ESMTPSA id t39sm1868064ooi.42.2021.05.29.13.02.43
+        by smtp.googlemail.com with ESMTPSA id t39sm1868064ooi.42.2021.05.29.13.02.44
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 29 May 2021 13:02:44 -0700 (PDT)
+        Sat, 29 May 2021 13:02:45 -0700 (PDT)
 From:   Jim Cromie <jim.cromie@gmail.com>
 To:     jbaron@akamai.com, gregkh@linuxfoundation.org,
         linux-kernel@vger.kernel.org
 Cc:     Jim Cromie <jim.cromie@gmail.com>
-Subject: [RFC PATCH v6 30/34] dyndbg: split/copy ._index into 2 new fields: ._back, ._map
-Date:   Sat, 29 May 2021 14:00:25 -0600
-Message-Id: <20210529200029.205306-31-jim.cromie@gmail.com>
+Subject: [RFC PATCH v6 31/34] dyndbg: detect repeated site recs in add_module
+Date:   Sat, 29 May 2021 14:00:26 -0600
+Message-Id: <20210529200029.205306-32-jim.cromie@gmail.com>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210529200029.205306-1-jim.cromie@gmail.com>
 References: <20210529200029.205306-1-jim.cromie@gmail.com>
@@ -64,130 +64,126 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In order to do:
-  __dyndbgs[-N].site->__dyndbg_sites[N]
+Since the 1st patch in this series, which partitioned into structs
+_ddebug & _ddebug_site while leaving lineno in _ddebug, we have had
+chunks of repeating site records; every pr_debug in a function
+has identical site data.
 
-._index had 2 jobs:
-  provide index back to __dyndbgs[0]
-  provide index out to __dyndbg_sites[N]
+To avoid reliance on the redundant data, we need:
+0. ._map field (added HEAD~1)
+1. detection of repeating sites.
 
-So rename ._index to ._back & ._map, adjust ddebug_add_module()
-to init both fields identically, and replace other ._index's
-with the "correct" replacement.
+In ddebug_add_module(), alter the index initialization loop to recognize
+the 1st record in each block of repeats, remember it in "j", and use it
+to ._map all the pr_debugs in that block.  To find the block starts,
+we can just look for a new .function in each row.
 
-NOTES:
+This gives us, for each function; 1st used row, 2nd-Nth unused rows.
+To actually reclaim useful memory chunks, we will have to pack the
+site records up towards the header.
 
-._map is a better name better than ._out.  Since ._map is a
-separate field, it can map arbitrarily.  It now maps ddebugs->sites
-1->1, but it can/will-soon map N->1; all a function's pr_debugs
-will share a single _ddebug_site, and we can reclaim redundant rows.
+Heres what booting with dynamic_debug.verbose=3 will show:
 
-The "correct" choice of ._map/._back cannot be tested properly now,
-since ._map == ._back.  Once N->1 is done, we can re-define SITE_CHK
-and validate (or correct) the ._map/._back choices made here.
+1st 3 builtin modules:
+- cols 3,4 row 1 - shows +1 due to previous head64
+- cols 2,4 - shows repeat detection working
 
-No functional changes.
+rcu: Hierarchical SRCU implementation.
+dyndbg: add-module: head64.1 sites
+dyndbg:  skip header head64
+dyndbg: add-module: main.6 sites
+Callback from call_rcu_tasks_trace() invoked.
+dyndbg:  0 0 1 1 main.run_init_process.1358
+dyndbg:  1 0 2 1 main.run_init_process.1356
+dyndbg:  2 0 3 1 main.run_init_process.1355
+dyndbg:  3 0 4 1 main.run_init_process.1353
+dyndbg:  4 4 5 5 main.initcall_blacklisted.1142
+dyndbg:  5 5 6 6 main.initcall_blacklist.1103
+dyndbg:   6 debug prints in module main (in 3 functions)
+dyndbg: add-module: initramfs.1 sites
+dyndbg:  0 0 7 7 initramfs.unpack_to_rootfs.496
+dyndbg:   1 debug prints in module initramfs (in 1 functions)
+dyndbg: add-module: ibs.3 sites
+dyndbg:  0 0 8 8 ibs.force_ibs_eilvt_setup.926
+dyndbg:  1 1 9 9 ibs.setup_ibs_ctl.897
+dyndbg:  2 1 10 9 ibs.setup_ibs_ctl.890
+dyndbg:   3 debug prints in module ibs (in 2 functions)
 
+for a loaded module:
+- row 0000 - is the header (function==module) - lineno is garbage
+- cols 2,4 - show repeat detect
+- 9 functions - over by 1, due to counting the header
+
+dyndbg: add-module: intel_rapl_common.13 sites
+dyndbg:  0 0 0 0 intel_rapl_common.intel_rapl_common.16928
+dyndbg:  1 1 1 1 intel_rapl_common.rapl_remove_package.1279
+dyndbg:  2 2 2 2 intel_rapl_common.rapl_detect_domains.1245
+dyndbg:  3 2 3 2 intel_rapl_common.rapl_detect_domains.1242
+dyndbg:  4 4 4 4 intel_rapl_common.rapl_package_register_powercap.1159
+dyndbg:  5 4 5 4 intel_rapl_common.rapl_package_register_powercap.1145
+dyndbg:  6 4 6 4 intel_rapl_common.rapl_package_register_powercap.1114
+dyndbg:  7 4 7 4 intel_rapl_common.rapl_package_register_powercap.1108
+dyndbg:  8 8 8 8 intel_rapl_common.rapl_update_domain_data.1083
+dyndbg:  9 9 9 9 intel_rapl_common.rapl_check_unit_atom.824
+dyndbg:  10 10 10 10 intel_rapl_common.rapl_check_unit_core.796
+dyndbg:  11 11 11 11 intel_rapl_common.rapl_read_data_raw.722
+dyndbg:  12 12 12 12 intel_rapl_common.contraint_to_pl.303
+dyndbg:  13 debug prints in module intel_rapl_common (in 9 functions)
 Signed-off-by: Jim Cromie <jim.cromie@gmail.com>
 ---
- include/linux/dynamic_debug.h |  6 ++++--
- lib/dynamic_debug.c           | 35 ++++++++++++++++++-----------------
- 2 files changed, 22 insertions(+), 19 deletions(-)
+ lib/dynamic_debug.c | 26 ++++++++++++++++++++------
+ 1 file changed, 20 insertions(+), 6 deletions(-)
 
-diff --git a/include/linux/dynamic_debug.h b/include/linux/dynamic_debug.h
-index b2189ff94fda..fe70dda704d2 100644
---- a/include/linux/dynamic_debug.h
-+++ b/include/linux/dynamic_debug.h
-@@ -51,7 +51,8 @@ struct _ddebug {
- 	/* format is always needed, lineno shares word with flags */
- 	const char *format;
- 	const unsigned lineno:18;
--	unsigned _index:14;
-+	unsigned _back:14;
-+	unsigned _map:14;
- 	/*
- 	 * The flags field controls the behaviour at the callsite.
- 	 * The bits here are changed dynamically when the user
-@@ -95,7 +96,8 @@ union _ddebug_header {
- 		union _ddebug_site_header *site;
- 		const char *format;
- 		const unsigned lineno:18;
--		unsigned _index:14;
-+		unsigned _back:14;
-+		unsigned _map:14;
- 		unsigned int flags:8;
- 	};
- };
 diff --git a/lib/dynamic_debug.c b/lib/dynamic_debug.c
-index 0e2e082b487b..524303a04462 100644
+index 524303a04462..e12538640b51 100644
 --- a/lib/dynamic_debug.c
 +++ b/lib/dynamic_debug.c
-@@ -148,39 +148,39 @@ static void vpr_info_dq(const struct ddebug_query *query, const char *msg)
- 
- static struct _ddebug_site *ddebug_site_get(struct _ddebug *dp)
+@@ -1073,7 +1073,7 @@ static int __ddebug_add_module(struct _ddebug *tab, struct _ddebug_site *sites,
  {
--	union _ddebug_header *dh = (union _ddebug_header *) (dp - dp->_index);
-+	union _ddebug_header *dh = (union _ddebug_header *) (dp - dp->_back);
+ 	struct ddebug_table *dt;
+ 	union _ddebug_header *dh = (union _ddebug_header *) &tab[0];
+-	int i;
++	int i, j, ct;
  
- 	if (!is_dyndbg_header_pair(dh, dh->site))
--		v3pr_info("get: header fail on %d-%d\n", dp->_index, dp->lineno);
-+		v3pr_info("get: header fail on %d-%d\n", dp->_back, dp->lineno);
+ 	v3pr_info("add-module: %s.%d sites\n", modname, numdbgs);
  
- #ifdef SITE_CHK
- 	if (dp >= __start___dyndbg && dp < __stop___dyndbg) {
- 
- 		v5pr_info("get: %s is builtin: %d %s:%s:%d\n",
--			  dh->site[dp->_index].modname, dp->_index,
--			  dh->site[dp->_index].filename,
--			  dh->site[dp->_index].function, dp->lineno);
-+			  dh->site[dp->_map].modname, dp->_back,
-+			  dh->site[dp->_map].filename,
-+			  dh->site[dp->_map].function, dp->lineno);
- 
--		BUG_ON(dp != &__start___dyndbg[dp->_index]);
-+		BUG_ON(dp != &__start___dyndbg[dp->_back]);
- 
--		BUG_ON(!(dp->_index == (dp - dh) &&
--			 dp->_index == (dp - __start___dyndbg) &&
--			 dp->_index == (&__start___dyndbg_sites[dp->_index]
-+		BUG_ON(!(dp->_back == (dp - dh) &&
-+			 dp->_back == (dp - __start___dyndbg) &&
-+			 dp->_back == (&__start___dyndbg_sites[dp->_back]
- 					- &__start___dyndbg_sites[0])));
- 		if (dp->site)
--			BUG_ON(&__start___dyndbg_sites[dp->_index] != dp->site);
-+			BUG_ON(&__start___dyndbg_sites[dp->_map] != dp->site);
- 	} else {
- 		v4pr_info("get: %s is loaded: %d %s:%s:%d\n",
--			  dh->site[dp->_index].modname, dp->_index,
--			  dh->site[dp->_index].filename,
--			  dh->site[dp->_index].function, dp->lineno);
-+			  dh->site[dp->_map].modname, dp->_back,
-+			  dh->site[dp->_map].filename,
-+			  dh->site[dp->_map].function, dp->lineno);
- 	}
- 	if (dp->site)
--		BUG_ON(&dh->site[dp->_index] != dp->site);
-+		BUG_ON(&dh->site[dp->_map] != dp->site);
- 
- 	return dp->site;
- #else
--	return (struct _ddebug_site *) &dh->site[dp->_index];
-+	return (struct _ddebug_site *) &dh->site[dp->_map];
- #endif
- }
- static inline void ddebug_site_put(struct _ddebug *dp)
-@@ -1108,8 +1108,9 @@ static int __ddebug_add_module(struct _ddebug *tab, struct _ddebug_site *sites,
+@@ -1107,10 +1107,22 @@ static int __ddebug_add_module(struct _ddebug *tab, struct _ddebug_site *sites,
+ 	dt->ddebugs = tab;
  	dt->sites = sites;
  
- 	for (i = 0; i < numdbgs; i++) {
--		tab[i]._index = base + i;
--		v3pr_info(" %d %d %s.%s.%d\n", i, tab[i]._index,
-+		tab[i]._back = base + i;
-+		tab[i]._map = base + i;
-+		v3pr_info(" %d %d %d %s.%s.%d\n", i, tab[i]._back, tab[i]._map,
+-	for (i = 0; i < numdbgs; i++) {
+-		tab[i]._back = base + i;
+-		tab[i]._map = base + i;
+-		v3pr_info(" %d %d %d %s.%s.%d\n", i, tab[i]._back, tab[i]._map,
++	/*
++	 * Since sites don't have lineno (thats in struct _ddebug),
++	 * all pr_debugs in a function have identical site data.  So
++	 * we watch for repeats on site.function, and reuse the index
++	 * of the 1st site record in a repeating block.
++	 */
++	for (ct = i = j = 0; i < numdbgs; i++) {
++		tab[i]._back = base + i; /* index back to header */
++
++		if (sites[i].function != sites[j].function) {
++			j = i; /* remember 1st row with new fn */
++			ct++;
++		}
++		tab[i]._map = base + j;
++
++		v3pr_info(" %d %d %d %d %s.%s.%d\n", i, j, tab[i]._back, tab[i]._map,
  			  modname, sites[i].function, tab[i].lineno);
  	}
+ 
+@@ -1118,7 +1130,9 @@ static int __ddebug_add_module(struct _ddebug *tab, struct _ddebug_site *sites,
+ 	list_add(&dt->link, &ddebug_tables);
+ 	mutex_unlock(&ddebug_lock);
+ 
+-	v2pr_info("%3u debug prints in module %s\n", numdbgs, modname);
++	v2pr_info("%3u debug prints in module %s (in %d functions)\n",
++		  numdbgs, modname, ++ct);
++
+ 	return 0;
+ }
  
 -- 
 2.31.1
