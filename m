@@ -2,107 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 695BA394BCB
-	for <lists+linux-kernel@lfdr.de>; Sat, 29 May 2021 12:47:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AECA8394BB5
+	for <lists+linux-kernel@lfdr.de>; Sat, 29 May 2021 12:46:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229911AbhE2Ksi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 29 May 2021 06:48:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44310 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229681AbhE2KsB (ORCPT
+        id S229731AbhE2Krm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 29 May 2021 06:47:42 -0400
+Received: from szxga03-in.huawei.com ([45.249.212.189]:2406 "EHLO
+        szxga03-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229575AbhE2Kri (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 29 May 2021 06:48:01 -0400
-Received: from mail-pg1-x52a.google.com (mail-pg1-x52a.google.com [IPv6:2607:f8b0:4864:20::52a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07714C061760;
-        Sat, 29 May 2021 03:46:25 -0700 (PDT)
-Received: by mail-pg1-x52a.google.com with SMTP id e22so4468482pgv.10;
-        Sat, 29 May 2021 03:46:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=nh9/ZWlSwITR3jAdaVe3Wq51dfqcTRkUElzVjibwV70=;
-        b=m3gqS9dIdGo598z7IbKAAaBFFe4NZxYR3WdUH20/bmDBVoSzaNLfBJQDzZ4ro93lvn
-         IoXxfFusWGS1NNEncKLC3jhCWThdNq4r8rrmXhJlyz9vWHttxe2B66KYfqcP/ghIUnsp
-         vsca6NJghBXhj/d8P+JvOZLZUEqNg/1mJm4QFewvNqDRPtn1TWOF2Kg9HEn346Jgyf2m
-         MlpOaiht2g/T5vqzHRVeVh8Ocn1/XGnpEB1fTCFfOkwkOPcxS4PDSuGwrlnwAcK5Lcg2
-         n6eogCcETWy4mmHUo+E3FWewjq8x9uH+LpfSAzA5EgoUObsRHv2XYGJInzHt1QtfOCsu
-         BF1g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=nh9/ZWlSwITR3jAdaVe3Wq51dfqcTRkUElzVjibwV70=;
-        b=IzZ0xDuYdIKDxqhn8C2lLI58olzfjAF6U3UOT2dP1lkCDSIGhbIcLBqcKCXlNR4984
-         Imu2fdWDan6HpyE5k47j3GXhzfJjtFvUvh+uWSKVbH0I94UEtp08zPKVEpnBl5g2QYFb
-         Rw/dluAMvNNdkJklNv9QUzvhhtGUdSeCkCv8AjAtSPKRmmZrIsH56H2EevG2brkmCCxn
-         3yyYTyRzR7+G1Ae/AgfgidiJXwHQi81EBBQVa5s9VxkF0gaR2eZV/yjw7DThhNqqe+og
-         rN0J+qaOPHcLayVqcxBJEu0im8yDeEXf15c/9HN6vOCf36PMwt8jTRyvBDXFaa9ciDWP
-         8Y4g==
-X-Gm-Message-State: AOAM530qEGjqpg0r4Xj0Cb50CJYx9+bmdK5FOdFKqPBMzmZDqDz9ZrDr
-        qaYykjBNy+mmZt3ZCg0IVxn6zwZzXKSjHGWlQfI=
-X-Google-Smtp-Source: ABdhPJzViolrkMg1tSCI79b8cwCkd2GY/ICw2C73TqHBl4RzJmMULM9dcxtGnAaQ29yQlnXY919eXVOQmHtmYgvvAMY=
-X-Received: by 2002:a05:6a00:1591:b029:2d9:369a:b846 with SMTP id
- u17-20020a056a001591b02902d9369ab846mr8269573pfk.40.1622285184511; Sat, 29
- May 2021 03:46:24 -0700 (PDT)
+        Sat, 29 May 2021 06:47:38 -0400
+Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.55])
+        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4FsdRJ3vvJz66cm;
+        Sat, 29 May 2021 18:42:20 +0800 (CST)
+Received: from dggpemm500001.china.huawei.com (7.185.36.107) by
+ dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Sat, 29 May 2021 18:46:00 +0800
+Received: from localhost.localdomain.localdomain (10.175.113.25) by
+ dggpemm500001.china.huawei.com (7.185.36.107) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Sat, 29 May 2021 18:46:00 +0800
+From:   Kefeng Wang <wangkefeng.wang@huawei.com>
+To:     Andrew Morton <akpm@linux-foundation.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     Kefeng Wang <wangkefeng.wang@huawei.com>
+Subject: [PATCH 00/15] init_mm: setup init_mm text/data/brk by new setup_initial_init_mm() helper
+Date:   Sat, 29 May 2021 18:54:49 +0800
+Message-ID: <20210529105504.180544-1-wangkefeng.wang@huawei.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-References: <20210510095045.3299382-1-andy.shevchenko@gmail.com>
- <20210510095045.3299382-9-andy.shevchenko@gmail.com> <20210528100800.GF2209@amd>
- <CAHp75VdYDk21OpHyxou8GQ5RtyjA0Dxppj=DZaHg4yqszcdYPQ@mail.gmail.com>
-In-Reply-To: <CAHp75VdYDk21OpHyxou8GQ5RtyjA0Dxppj=DZaHg4yqszcdYPQ@mail.gmail.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Sat, 29 May 2021 13:46:08 +0300
-Message-ID: <CAHp75Vd4K1KG5VRsfDCMWftKmdB=1M9+UoGVtacaOtcWES9wrA@mail.gmail.com>
-Subject: Re: [PATCH v1 08/28] leds: lgm-sso: Put fwnode in any case during ->probe()
-To:     Pavel Machek <pavel@ucw.cz>
-Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Amireddy Mallikarjuna reddy 
-        <mallikarjunax.reddy@linux.intel.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        =?UTF-8?B?TWFyZWsgQmVow7pu?= <marek.behun@nic.cz>,
-        Abanoub Sameh <abanoubsameh8@gmail.com>,
-        Dan Murphy <dmurphy@ti.com>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        linux-leds@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.113.25]
+X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
+ dggpemm500001.china.huawei.com (7.185.36.107)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, May 29, 2021 at 12:28 PM Andy Shevchenko
-<andy.shevchenko@gmail.com> wrote:
-> On Fri, May 28, 2021 at 1:08 PM Pavel Machek <pavel@ucw.cz> wrote:
+Add setup_initial_init_mm() helper and use it to cleanup the text,
+data and brk setup code.
 
-> > > @@ -734,10 +736,15 @@ static int sso_led_dt_parse(struct sso_led_priv *priv)
-> > >       if (fw_ssoled) {
-> > >               ret = __sso_led_dt_parse(priv, fw_ssoled);
-> > >               if (ret)
-> > > -                     return ret;
-> > > +                     goto err_child_out;
-> > >       }
-> > >
-> > > +     fwnode_handle_put(fw_ssoled);
-> > >       return 0;
-> > > +
-> > > +err_child_out:
-> > > +     fwnode_handle_put(fw_ssoled);
-> > > +     return ret;
-> > >  }
-> >
-> > Just delete the return and you get the same effect, no? No need to
-> > have two exits here.
->
-> Okay, I have tried and neither result is better:
-> option 1. Add ret = 0, but keep the label
-> option 2. Assign 0 to ret at the definition stage and replace return
-> with break and remove return 0 (I don't like that ret assigned to 0 in
-> the definition block. It usually may lead to subtle errors)
-> option 3+. Something I missed which you see can be done?
->
-> Which one do you prefer?
+Kefeng Wang (15):
+  mm: add setup_initial_init_mm() helper
+  arc: convert to setup_initial_init_mm()
+  arm: convert to setup_initial_init_mm()
+  arm64: convert to setup_initial_init_mm()
+  csky: convert to setup_initial_init_mm()
+  h8300: convert to setup_initial_init_mm()
+  m68k: convert to setup_initial_init_mm()
+  nds32: convert to setup_initial_init_mm()
+  nios2: convert to setup_initial_init_mm()
+  openrisc: convert to setup_initial_init_mm()
+  powerpc: convert to setup_initial_init_mm()
+  riscv: convert to setup_initial_init_mm()
+  s390: convert to setup_initial_init_mm()
+  sh: convert to setup_initial_init_mm()
+  x86: convert to setup_initial_init_mm()
 
-I found option 3 which is better and follows your suggestion (I suppose).
+ arch/arc/mm/init.c                 |  5 +----
+ arch/arm/kernel/setup.c            |  5 +----
+ arch/arm64/kernel/setup.c          |  5 +----
+ arch/csky/kernel/setup.c           |  5 +----
+ arch/h8300/kernel/setup.c          |  5 +----
+ arch/m68k/kernel/setup_mm.c        |  5 +----
+ arch/m68k/kernel/setup_no.c        |  5 +----
+ arch/nds32/kernel/setup.c          |  5 +----
+ arch/nios2/kernel/setup.c          |  5 +----
+ arch/openrisc/kernel/setup.c       |  5 +----
+ arch/powerpc/kernel/setup-common.c |  5 +----
+ arch/riscv/kernel/setup.c          |  5 +----
+ arch/s390/kernel/setup.c           |  5 +----
+ arch/sh/kernel/setup.c             |  5 +----
+ arch/x86/kernel/setup.c            |  5 +----
+ include/linux/mm_types.h           | 10 ++++++++++
+ 16 files changed, 25 insertions(+), 60 deletions(-)
 
 -- 
-With Best Regards,
-Andy Shevchenko
+2.26.2
+
