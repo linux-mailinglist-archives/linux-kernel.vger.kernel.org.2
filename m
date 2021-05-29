@@ -2,107 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 781B3394B7B
-	for <lists+linux-kernel@lfdr.de>; Sat, 29 May 2021 11:58:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8FDFA394B80
+	for <lists+linux-kernel@lfdr.de>; Sat, 29 May 2021 12:01:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229754AbhE2J77 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 29 May 2021 05:59:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33972 "EHLO
+        id S229709AbhE2KDU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 29 May 2021 06:03:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34698 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229559AbhE2J76 (ORCPT
+        with ESMTP id S229559AbhE2KDT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 29 May 2021 05:59:58 -0400
-Received: from mail-pg1-x530.google.com (mail-pg1-x530.google.com [IPv6:2607:f8b0:4864:20::530])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68AAAC061574;
-        Sat, 29 May 2021 02:58:21 -0700 (PDT)
-Received: by mail-pg1-x530.google.com with SMTP id n12so1190430pgs.13;
-        Sat, 29 May 2021 02:58:21 -0700 (PDT)
+        Sat, 29 May 2021 06:03:19 -0400
+Received: from mail-wm1-x333.google.com (mail-wm1-x333.google.com [IPv6:2a00:1450:4864:20::333])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED6F8C061574
+        for <linux-kernel@vger.kernel.org>; Sat, 29 May 2021 03:01:42 -0700 (PDT)
+Received: by mail-wm1-x333.google.com with SMTP id h3so3393013wmq.3
+        for <linux-kernel@vger.kernel.org>; Sat, 29 May 2021 03:01:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=pwGMQEJEW6MxLu1LN/2x++8DmewQkyXXXLNPzwcxJEw=;
-        b=FKr/C9cDWw1OHWVr619eLcYio96r70TAFaTshp7hND28feIjlB6yF0+ahiDY1TPOij
-         FOeE1D+hBeE31eYvG2ztiv2NqNbt8DppPxD9Os0iY7hf+FvVm4JNRt9Yj9ZzJGLFtJ/W
-         9khfEnVIcXlNSRNx83yowSDjNqA2xRPb0y6X3+ysB2Uip1E/qqljlj/qT04Hl9Ur4oGF
-         Qdbl8zXQrWY84LZSo4uy1Ap+1adDEmaNr3u06p60nuT0UKaE1H48PGJSo72mT6HyO1mz
-         J7EW9m9vyCqQXpbb4Lil4uZGMYTjWFfXqTeXDLsIG88Sn9pWduZ1wR9xfx29EreM8f80
-         5HjQ==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to
+         :user-agent;
+        bh=3x8KD9tiZBovAACWYlPdJwi9QZYQFi+hgtkneaG2VEY=;
+        b=aYSYjg5w1ecI5eyL+x11ihUXzitD0LYtRFFYf1s4ZBJIFxeHnD311zSKjYaQdUEwsd
+         LDiWAC86B9rG0L/H7oHseEslqlzJa6Z/ci0YOlLRzU5XAZCDsn77OuIBLq4GZJskt67n
+         wYT+s7qtVylQa4jDQE1dTAMcWd9gYydKP+SRHJGW8qOXCY0AsJFQvsseUOITUZIEfnVH
+         nIGGVTeq1gfxlmC9d/ePjF9XgV9zMPC7e9r8ieVKl+Ccs1XfVolZzgutUx9WVSI2Lpct
+         ieUv9ICNVHrU2TQWfv27Z8+lhjXCIuGq1nYft5BELPxsNMKSbKABOEnEGHOIuBpTxEC5
+         Aryw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=pwGMQEJEW6MxLu1LN/2x++8DmewQkyXXXLNPzwcxJEw=;
-        b=gQ5F9JhBt33wzUrosOMGEkKS1TK/l6oorpAodWwly5RBZPdG2iIdZiJUhFuwz/49SW
-         DZ9CfRIfuXnt394a3xRL2is+vsc9uvkByPcuHtwmvgxWn5jtTT58kJLYiVYA7x9Jbw89
-         Utt0bNZfMPZCh4QIocf73ujNqmmT41adZIMf2c/7Q5GpVygAIBjWRq27GHJhXFHdwJR4
-         20mN4SXFjJtGp6yO3tRRTN0dkcp7phdR/alzxOTbuV58ge1w9gG2C/KltH9RCOsGCQhH
-         NaFH3aLU8cZlKI6ol/IbYDyeAz4ydGy4l89naJQgtl7lhZX6Del3Xt/s2iQ1P0M8wuFk
-         POQg==
-X-Gm-Message-State: AOAM531bOeRj2UH7wPh/k821u94J0SV0OBFCVLUxIHYZ9QHeaREYn9CN
-        QLbZAV2b5oi3aEcnaYowlVnJ4T6eeWW7C5t9Os4=
-X-Google-Smtp-Source: ABdhPJy8L+Xi8dHxLNkXEHloOwxyzR4myIpauEtgthgYMTMTMfz7U+Lx6xwR4l566fmSPrRxpmy5pO8MChNfLIL3i+k=
-X-Received: by 2002:a63:79c3:: with SMTP id u186mr13351976pgc.203.1622282300872;
- Sat, 29 May 2021 02:58:20 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to:user-agent;
+        bh=3x8KD9tiZBovAACWYlPdJwi9QZYQFi+hgtkneaG2VEY=;
+        b=NlU/qfEBTCFOw3jak4nsicm0BY+pw4K/vu4vCFHs0SGzRx+KS6saShJ4a3G8HdSDbN
+         JUS6I+o4PqcxDh0ZCo0VolaFzSXmSykElfKzHES5AKI5XbfhPemFMe1WTyN/kBlt2uOd
+         H9AEOAw1PFT7LtndU1b/TDojSMnc3RUhdkVG1ZrEB4zOpWPnUauqFlMqmvHxo1arDOKt
+         0LmkUv4i7UETMEZZwcxQJ2lgkD9AkbI2MK7obgng1Ifo6R9+JvUDggvVTJOJhQ0UJ8w3
+         moWe/5NBaJFxOz44dmII2jPcXchWEFY8skvkczDBv1iVcrGz6ncf6fDAL6EC9p75CX3/
+         RDQQ==
+X-Gm-Message-State: AOAM532TMZyTVK0LzxMuZ0LrYU0Jb0IPINB9NnWZuWPCMu+ELYcQgxsf
+        Hc0mCb/N6qOskaAVoZh7ZhQ=
+X-Google-Smtp-Source: ABdhPJwXPNNG9pNKDznnlhxNfRpU7nSxIgO22yTeMud4uMo12pMM8cdVgTiDhULaSyBaPJ7Qq0mogw==
+X-Received: by 2002:a1c:6004:: with SMTP id u4mr9382148wmb.110.1622282501441;
+        Sat, 29 May 2021 03:01:41 -0700 (PDT)
+Received: from agape.jhs ([5.171.80.148])
+        by smtp.gmail.com with ESMTPSA id p6sm9207035wma.4.2021.05.29.03.01.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 29 May 2021 03:01:41 -0700 (PDT)
+Date:   Sat, 29 May 2021 12:01:38 +0200
+From:   Fabio Aiuto <fabioaiuto83@gmail.com>
+To:     Yu Kuai <yukuai3@huawei.com>
+Cc:     gregkh@linuxfoundation.org, linux-staging@lists.linux.dev,
+        linux-kernel@vger.kernel.org, yi.zhang@huawei.com
+Subject: Re: [PATCH] staging: rtl8723bs: core: rtw_mlme_ext.c: move the
+ declaration and initialization of 'evt_seq' inside ifdef macro
+Message-ID: <20210529100137.GA1416@agape.jhs>
+References: <20210529092948.3134775-1-yukuai3@huawei.com>
 MIME-Version: 1.0
-References: <20210510095045.3299382-1-andy.shevchenko@gmail.com>
- <20210510095045.3299382-29-andy.shevchenko@gmail.com> <20210528101454.GJ2209@amd>
- <YLDNKekDfNQPorRG@smile.fi.intel.com>
-In-Reply-To: <YLDNKekDfNQPorRG@smile.fi.intel.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Sat, 29 May 2021 12:58:04 +0300
-Message-ID: <CAHp75VemPYaGY_icsuCa4AKi1tucpEuKFKhDPo4cS_a0cLDa2w@mail.gmail.com>
-Subject: Re: [PATCH v1 28/28] leds: sgm3140: Put fwnode in any case during ->probe()
-To:     Pavel Machek <pavel@ucw.cz>
-Cc:     Amireddy Mallikarjuna reddy <mallikarjunax.reddy@linux.intel.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        =?UTF-8?B?TWFyZWsgQmVow7pu?= <marek.behun@nic.cz>,
-        Abanoub Sameh <abanoubsameh8@gmail.com>,
-        Dan Murphy <dmurphy@ti.com>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        linux-leds@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Luca Weiss <luca@z3ntu.xyz>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210529092948.3134775-1-yukuai3@huawei.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 28, 2021 at 2:01 PM Andy Shevchenko
-<andy.shevchenko@gmail.com> wrote:
->
-> On Fri, May 28, 2021 at 12:14:54PM +0200, Pavel Machek wrote:
-> > Hi!
-> >
-> > > fwnode_get_next_child_node() bumps a reference counting of a returned variable.
-> > > We have to balance it whenever we return to the caller.
-> >
-> > This (and similar) -- in half of the drivers we hold the handle from
-> > successful probe. Is it a problem and why is it problem only for some
-> > drivers?
->
-> Hmm... I'm not sure I have understood the question correctly. Any examples of
-> the driver that you think needs some attention?
->
-> In general the idea is that these kind of for-loops or getting next fwnode
-> should be balanced.
->
-> In case of for-loops the error or any other breakage means that reference count
-> is bumped, for the get_next API it's always the case.
->
-> I have checked between drivers and only considered above cases. Wherever there
-> is a for-loop which isn't broken, we are fine. Wherever we have explicit
-> reference counter drop for get_next cases, we are fine. If (any) framework
-> requires the resource to be present that framework should bump and drop
-> reference count on the resource by itself (so I split LED framework out from
-> the consideration and consider that it does the right things)
->
-> > Thanks for series, btw, I pushed out current version of the tree.
->
-> Should I rebase the new version on something I can find in your Git tree?
+Hi Yu,
 
-I found the above is good justification, so I leave those patches
-unchanged in v2.
+On Sat, May 29, 2021 at 05:29:48PM +0800, Yu Kuai wrote:
+> 'evt_seq' is only used if 'CHECK_ENENT_SEQ' is defined, however,
+> it's declared and initialized even if 'CHECK_ENENT_SEQ' is not
+> defined. Thus gcc will report following warning if
+> 'CHECK_ENENT_SEQ' is not defined:
 
--- 
-With Best Regards,
-Andy Shevchenko
+the macro is mispelled in the commit description
+
+> 
+> drivers/staging/rtl8723bs/core/rtw_mlme_ext.c:6009:15: warning:
+>  variable ‘evt_seq’ set but not used [-Wunused-but-set-variable]
+>  6009 |  u8 evt_code, evt_seq;
+> 
+> Thus move the declaration and initialization of 'evt_seq' inside
+> ifdef macro to fix it.
+> 
+> Signed-off-by: Yu Kuai <yukuai3@huawei.com>
+> ---
+>  drivers/staging/rtl8723bs/core/rtw_mlme_ext.c | 12 +++++++-----
+>  1 file changed, 7 insertions(+), 5 deletions(-)
+> 
+> diff --git a/drivers/staging/rtl8723bs/core/rtw_mlme_ext.c b/drivers/staging/rtl8723bs/core/rtw_mlme_ext.c
+> index 97b3c2965770..e883371cc96d 100644
+> --- a/drivers/staging/rtl8723bs/core/rtw_mlme_ext.c
+> +++ b/drivers/staging/rtl8723bs/core/rtw_mlme_ext.c
+> @@ -6006,7 +6006,10 @@ static struct fwevent wlanevents[] = {
+>  
+>  u8 mlme_evt_hdl(struct adapter *padapter, unsigned char *pbuf)
+>  {
+> -	u8 evt_code, evt_seq;
+> +#ifdef CHECK_EVENT_SEQ
+> +	u8 evt_seq;
+> +#endif
+> +	u8 evt_code;
+>  	u16 evt_sz;
+>  	uint	*peventbuf;
+>  	void (*event_callback)(struct adapter *dev, u8 *pbuf);
+> @@ -6017,18 +6020,17 @@ u8 mlme_evt_hdl(struct adapter *padapter, unsigned char *pbuf)
+>  
+>  	peventbuf = (uint *)pbuf;
+>  	evt_sz = (u16)(*peventbuf&0xffff);
+> -	evt_seq = (u8)((*peventbuf>>24)&0x7f);
+>  	evt_code = (u8)((*peventbuf>>16)&0xff);
+>  
+> -
+> -	#ifdef CHECK_EVENT_SEQ
+> +#ifdef CHECK_EVENT_SEQ
+>  	/*  checking event sequence... */
+> +	evt_seq = (u8)((*peventbuf>>24)&0x7f);
+>  	if (evt_seq != (atomic_read(&pevt_priv->event_seq) & 0x7f)) {
+>  		pevt_priv->event_seq = (evt_seq+1)&0x7f;
+>  
+>  		goto _abort_event_;
+>  	}
+> -	#endif
+> +#endif
+>  
+>  	/*  checking if event code is valid */
+>  	if (evt_code >= MAX_C2HEVT)
+> -- 
+> 2.25.4
+> 
+> 
+
+this conditional block seems to be dead code, for
+the symbolic constant CHECK_EVENT_SEQ is defined nowhere in
+the code.
+
+/staging$ grep -r CHECK_EVENT_SEQ .
+./staging/rtl8723bs/core/rtw_mlme_ext.c:	#ifdef CHECK_EVENT_SEQ
+
+so the variable can be safely removed together with
+the dead code block.
+
+thank you,
+
+fabio
