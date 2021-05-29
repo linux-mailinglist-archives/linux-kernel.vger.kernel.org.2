@@ -2,68 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CF9AE394DCC
-	for <lists+linux-kernel@lfdr.de>; Sat, 29 May 2021 21:10:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C57D394DD1
+	for <lists+linux-kernel@lfdr.de>; Sat, 29 May 2021 21:15:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229774AbhE2TLX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 29 May 2021 15:11:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40440 "EHLO
+        id S229817AbhE2TQq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 29 May 2021 15:16:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41622 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229718AbhE2TLW (ORCPT
+        with ESMTP id S229718AbhE2TQq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 29 May 2021 15:11:22 -0400
-Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com [IPv6:2a00:1450:4864:20::433])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F2E8C061574
-        for <linux-kernel@vger.kernel.org>; Sat, 29 May 2021 12:09:45 -0700 (PDT)
-Received: by mail-wr1-x433.google.com with SMTP id n2so6623919wrm.0
-        for <linux-kernel@vger.kernel.org>; Sat, 29 May 2021 12:09:45 -0700 (PDT)
+        Sat, 29 May 2021 15:16:46 -0400
+Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 775C4C061574;
+        Sat, 29 May 2021 12:15:08 -0700 (PDT)
+Received: by mail-pl1-x629.google.com with SMTP id e7so1138061plj.7;
+        Sat, 29 May 2021 12:15:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=message-id:from:mime-version:content-transfer-encoding
-         :content-description:subject:to:date:reply-to;
-        bh=V+ZL6IBlYhDhqaW2K8qSQL0I2+furW7I5Lbh2PK3hX0=;
-        b=vOu5vvSArQSVfjpU35GFfT0nqI+M6iQODw3x/LXXJoXMdYMDcI+2m5QIqq1CdPpTLA
-         NPDPBHe2A/I6stZ8uYY6qGcN1snBfLOYi/zqyy1MwhQfFJK7RPPyb7Yr7EocGwZ+PY+t
-         2PfVK1FNBy3wAquJp0xGXOFyhfuXUGpo4eG0tbqdYKJoglKZ3rvi5D5/l+lHP/nRaFGA
-         44O99NvjG69ZBTwLapbHsGr4Q4un0JGWoas6cP5Y1WARh3CbWDRLIgWt2vNnRI50PQpY
-         YHDnZScm/xDkX7TOfnK1iQs87Bp9fwwk7CVd+NvBimqJNuCtIR3mJECcgH2wCrEJwX5u
-         WD5A==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=4JV2W29y26pepLG4gekNYXoV2EP+6kk949X/NrDMyWs=;
+        b=JKM1zRuRupca+dp8XU2VFl9BlSLzntOr8wWJXSKnJ7SEsz6L1y449tyXvkd3DPM8fh
+         U2N0aw1FuVz/4bmhhwI8X8OczdScQVWANE2H2CVUN/XFxIXzvpRIMEarGAgWNLxOlUZc
+         YWup5xUXUqp/Y/DYP8FtmQUf5QJOMCmP3DJ3zwo9VqWDIXSgnJimp9LcPjQsZ8AdeETm
+         5yaktuR6h4bkQ/srUPVXZXxkkfE/vznIvlrAJ9FNjhimyvF6Lzv2PqRmKVG97tN+ZSYR
+         sCuBoxG9RInyMdHy1zAt7pXr6I+mRHILoeXiSVyqlgavuBItyhiURNJLpt0p8D5sKNdo
+         LGfg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:from:mime-version
-         :content-transfer-encoding:content-description:subject:to:date
-         :reply-to;
-        bh=V+ZL6IBlYhDhqaW2K8qSQL0I2+furW7I5Lbh2PK3hX0=;
-        b=PbIEWKI0Sv/XKJEkwotAj1EL5H9jtx/N00Bgy8z0g6bOqpm6Hx4eT8IV+KZOcz1jrP
-         JPNEIsCUHjxk6CQRFWtMD1OSzbdKYwNarb/YEKkpsNKE8iJBaBCfYkozWyj90kArnIXa
-         Iwi70IzVgXvDA88PiAiJ4najeB5TqWRKNIsHL1tGlZXsNQX6AMA0cPYnHMvZjc/9h37k
-         LmI7bLWt/la1AlR9yGpYzGwoTaejkSFq8WqWppq5toeYmWhTBlaSTOuKX4zSjzmZj0Hp
-         IDFRZGWVl2BI+Y4eotg6cvaCMbCHX4PpAU4wX70Bs8eQMSpISdlbA8IQLbJi84D9uas2
-         en6Q==
-X-Gm-Message-State: AOAM530ROsFMsw1S90FUlfwID3snHgVy3jWMgIHg4ZjWkqTPAxxeqERJ
-        WbCPKFv2N/Hu/HJtPsm5Ui+zH4TeSW8=
-X-Google-Smtp-Source: ABdhPJwbCws0Z/WNKTRiBChpksY1HsGbLyvEC0fJl7Bq1Ou35R9CY8r+0aanQJlnJtC6c3ctqsG4ww==
-X-Received: by 2002:a5d:5388:: with SMTP id d8mr14276236wrv.423.1622315383131;
-        Sat, 29 May 2021 12:09:43 -0700 (PDT)
-Received: from [192.168.1.152] ([102.64.221.114])
-        by smtp.gmail.com with ESMTPSA id b188sm6334254wmh.18.2021.05.29.12.09.38
-        (version=TLS1 cipher=AES128-SHA bits=128/128);
-        Sat, 29 May 2021 12:09:42 -0700 (PDT)
-Message-ID: <60b29176.1c69fb81.2016b.8cc8@mx.google.com>
-From:   Vanina curth <sanderlow01@gmail.com>
-X-Google-Original-From: Vanina curth
-Content-Type: text/plain; charset="iso-8859-1"
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=4JV2W29y26pepLG4gekNYXoV2EP+6kk949X/NrDMyWs=;
+        b=S3b/118uPfim1djAeLtbC7/OhvCZ3igU82fMHGgoD1yRDt6QJgqqyzdEvxeR7XNEU0
+         ypdEsrCPd2WiIarv86We3/t6+plC7q2U2xQmAs/9D7CVxbjaoIbDojv5cOMwm1k0LlBq
+         f4QYBH9U5bkQ5H7g0GxznoFi7l8A10rJyW4rmPeShp3pqqEwfCs1QbxqWo3FCQSQqz0V
+         Y3fL3Ipe8HUeiQ/4K/HKDX1ayI+dBqo9Dr2AoPe0MePASNpKPvuuzLylwr5JTjCZBGa1
+         dJ5mqQyL77BuMYTr5Q3X8nDc6btYzMmo9yDH6QH3n6U5p5/cZPrOeAOvRHdKAdkD9PsK
+         B80w==
+X-Gm-Message-State: AOAM531puBUZtDN0Vgnn8yg1+KOEoijRi1C/0wxGU3EfZhBjhhXfB+Qx
+        gndZ88w9/i3Af1Xy7JGKq338hEudKC+xPWdA0xA=
+X-Google-Smtp-Source: ABdhPJzuKeaiPjj6k1A6fPPa/Rxqnjv0guMS59rNdf5owM9nzddwR3th00IWeJyI6huQfyQgIi/nGmPcuRrisUFtmGY=
+X-Received: by 2002:a17:90a:1141:: with SMTP id d1mr10987300pje.56.1622315707909;
+ Sat, 29 May 2021 12:15:07 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Description: Mail message body
-Subject: Hi,,
-To:     Recipients <Vanina@vger.kernel.org>
-Date:   Sat, 29 May 2021 19:09:31 +0000
-Reply-To: curtisvani9008@gmail.com
+References: <20210529060526.422987-1-changbin.du@gmail.com>
+In-Reply-To: <20210529060526.422987-1-changbin.du@gmail.com>
+From:   Cong Wang <xiyou.wangcong@gmail.com>
+Date:   Sat, 29 May 2021 12:14:57 -0700
+Message-ID: <CAM_iQpWwApLVg39rUkyXxnhsiP0SZf=0ft6vsq=VxFtJ2SumAQ@mail.gmail.com>
+Subject: Re: [PATCH] net: fix oops in socket ioctl cmd SIOCGSKNS when NET_NS
+ is disabled
+To:     Changbin Du <changbin.du@gmail.com>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kici nski <kuba@kernel.org>,
+        Linux Kernel Network Developers <netdev@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        stable <stable@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-How are you? I'm Vanina. I picked interest in you and I would like to know =
-more about you and establish relationship with you. i will wait for your re=
-sponse. thank you.
+On Fri, May 28, 2021 at 11:08 PM Changbin Du <changbin.du@gmail.com> wrote:
+> diff --git a/net/socket.c b/net/socket.c
+> index 27e3e7d53f8e..644b46112d35 100644
+> --- a/net/socket.c
+> +++ b/net/socket.c
+> @@ -1149,11 +1149,15 @@ static long sock_ioctl(struct file *file, unsigned cmd, unsigned long arg)
+>                         mutex_unlock(&vlan_ioctl_mutex);
+>                         break;
+>                 case SIOCGSKNS:
+> +#ifdef CONFIG_NET_NS
+>                         err = -EPERM;
+>                         if (!ns_capable(net->user_ns, CAP_NET_ADMIN))
+>                                 break;
+>
+>                         err = open_related_ns(&net->ns, get_net_ns);
+> +#else
+> +                       err = -ENOTSUPP;
+> +#endif
+
+I wonder if it is easier if we just reject ns->ops==NULL case
+in open_related_ns(). For 1) we can save an ugly #ifdef here;
+2) drivers/net/tun.c has the same bugs.
+
+Something like this:
+
+diff --git a/fs/nsfs.c b/fs/nsfs.c
+index 800c1d0eb0d0..d63414604e99 100644
+--- a/fs/nsfs.c
++++ b/fs/nsfs.c
+@@ -152,6 +152,9 @@ int open_related_ns(struct ns_common *ns,
+        int err;
+        int fd;
+
++       if (!ns->ops)
++               return -EOPNOTSUPP;
++
+        fd = get_unused_fd_flags(O_CLOEXEC);
+        if (fd < 0)
+                return fd;
