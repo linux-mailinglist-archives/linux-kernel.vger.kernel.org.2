@@ -2,106 +2,221 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B79FA394D1D
-	for <lists+linux-kernel@lfdr.de>; Sat, 29 May 2021 18:25:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3DB1D394D23
+	for <lists+linux-kernel@lfdr.de>; Sat, 29 May 2021 18:30:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229801AbhE2Q0t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 29 May 2021 12:26:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32828 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229693AbhE2Q0t (ORCPT
+        id S229758AbhE2Qba (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 29 May 2021 12:31:30 -0400
+Received: from smtprelay0132.hostedemail.com ([216.40.44.132]:46406 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S229704AbhE2Qb2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 29 May 2021 12:26:49 -0400
-Received: from mail-oi1-x229.google.com (mail-oi1-x229.google.com [IPv6:2607:f8b0:4864:20::229])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83A84C061574
-        for <linux-kernel@vger.kernel.org>; Sat, 29 May 2021 09:25:12 -0700 (PDT)
-Received: by mail-oi1-x229.google.com with SMTP id y76so7562741oia.6
-        for <linux-kernel@vger.kernel.org>; Sat, 29 May 2021 09:25:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=jFAfU25Qj+cRqC0XFUI+YM1/RbEp8mIA/HiLs0SBEww=;
-        b=g9Yqyl1WpDSv/0jO/8xVebd6wKxwc1+dm5MG4cr1gcfh4MVIFuW2eIp16PL+ioaq6b
-         5L5ImayrkmN0Piha2bK33MCQU3H32blsZiLieEi1ooIigoVz+L6cfTU1HGSLnvcxtrHv
-         v08QobuUW7y4BwxG3lspItWjIKotSoSKQQyQAOqiJ/4/y0PAXxzBosA0FMd3d6T6Dg1U
-         Q0JeBHx1LmMoXg//RBbtD375VoYoI5ABs73doALxcRvCAFKoXvWLD/gsfON7XmFt52F1
-         R1wxRFB5cLaFR8fnh9e+VBZYKGjaFuzlgwE6AX8eMdU1BLkzT+Hn0O574yFETWeYl7VQ
-         x1eA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=jFAfU25Qj+cRqC0XFUI+YM1/RbEp8mIA/HiLs0SBEww=;
-        b=txx9OHMWpPtIiPhRKCbWJm6Q5Uf03pMZk0lB2hFzFccsvlhepeX5CtlZy01V2xuNPq
-         DDD+vw/PXqR5wolFL2vS1BcyyoF48CAfNC48ufb82xCAsgRBnPSw8pbA03xrY+SCjmMi
-         x+hKokzHJruP8MMXP0VzgzEgmJCk8y0JpeZkI/3lV31CDbMCQkkt0dkYiB0vwaE+0T6B
-         q3+mcs2JS7hW+hi2JsXAAqwKgn0hVKXog8sFh8CrY6jiz6TdEavShm/pxsiVQ6GwnhU5
-         Vamlyloimlsbp/NSeB94cfhEiKHPG8iq9gaboVVkbeAaP0eK/8qJnDQxFOSY/vtyVG7y
-         MsTQ==
-X-Gm-Message-State: AOAM530eaORHbFAzigk1V8Huz5o15AjnqvaToEnL+dLl1nJBdFJ5jOBS
-        MGZ/wr5iKhqyeBWxxZGkw24O5A==
-X-Google-Smtp-Source: ABdhPJzBeIa8BbBikxQvxrQptxn7sm9GORyImFhfYm4PvpYKjjqs0wQnZEDwWHVXmVQL8iJtsNq8vw==
-X-Received: by 2002:aca:488f:: with SMTP id v137mr9350654oia.173.1622305511911;
-        Sat, 29 May 2021 09:25:11 -0700 (PDT)
-Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id e21sm1750706oii.23.2021.05.29.09.25.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 29 May 2021 09:25:11 -0700 (PDT)
-Date:   Sat, 29 May 2021 11:25:09 -0500
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Cc:     vkoul@kernel.org, kishon@ti.com, robh+dt@kernel.org,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org
-Subject: Re: [PATCH 1/3] dt-bindings: phy: qcom,qmp: Add binding for SDX55
- PCIe PHY
-Message-ID: <YLJq5R4uMYRDppmv@builder.lan>
-References: <20210427065400.18958-1-manivannan.sadhasivam@linaro.org>
- <20210427065400.18958-2-manivannan.sadhasivam@linaro.org>
+        Sat, 29 May 2021 12:31:28 -0400
+Received: from omf12.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay05.hostedemail.com (Postfix) with ESMTP id 0F28A18028E85;
+        Sat, 29 May 2021 16:29:51 +0000 (UTC)
+Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by omf12.hostedemail.com (Postfix) with ESMTPA id 49BDD240236;
+        Sat, 29 May 2021 16:29:50 +0000 (UTC)
+Message-ID: <56767df55117cc5834b0021ba2c056272e686804.camel@perches.com>
+Subject: [PATCH] HID: asus: Reduce object size by consolidating calls
+From:   Joe Perches <joe@perches.com>
+To:     Jiri Kosina <jikos@kernel.org>,
+        Benjamin Tissoires <benjamin.tissoires@redhat.com>
+Cc:     linux-input <linux-input@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Date:   Sat, 29 May 2021 09:29:48 -0700
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.38.1-1 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210427065400.18958-2-manivannan.sadhasivam@linaro.org>
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.89
+X-Stat-Signature: 5ua3pak1316wh7njudnygas7mc65fnxd
+X-Rspamd-Server: rspamout04
+X-Rspamd-Queue-Id: 49BDD240236
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Session-ID: U2FsdGVkX1+DcKysZUCHqlPe7g/GHmLDopwkRmJ3TDc=
+X-HE-Tag: 1622305790-299222
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue 27 Apr 01:53 CDT 2021, Manivannan Sadhasivam wrote:
+Add intermediating lookup functions to avoid repetitive calls.
 
-> Add devicetree binding for PCIe PHY found in Qcom SDX55 platform.
-> 
+Reduces object size ~4kb (x86-64 defconfig w/ hid-asus)
 
-Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+$ size drivers/hid/hid-asus.o*
+   text	   data	    bss	    dec	    hex	filename
+  10442	    468	      0	  10910	   2a9e	drivers/hid/hid-asus.o.bew
+  14523	    468	      0	  14991	   3a8f	drivers/hid/hid-asus.o.old
 
-Regards,
-Bjorn
+Miscellanea:
 
-> Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-> ---
->  Documentation/devicetree/bindings/phy/qcom,qmp-phy.yaml | 2 ++
->  1 file changed, 2 insertions(+)
-> 
-> diff --git a/Documentation/devicetree/bindings/phy/qcom,qmp-phy.yaml b/Documentation/devicetree/bindings/phy/qcom,qmp-phy.yaml
-> index 626447fee092..d5162d58a479 100644
-> --- a/Documentation/devicetree/bindings/phy/qcom,qmp-phy.yaml
-> +++ b/Documentation/devicetree/bindings/phy/qcom,qmp-phy.yaml
-> @@ -43,6 +43,7 @@ properties:
->        - qcom,sm8350-qmp-ufs-phy
->        - qcom,sm8350-qmp-usb3-phy
->        - qcom,sm8350-qmp-usb3-uni-phy
-> +      - qcom,sdx55-qmp-pcie-phy
->        - qcom,sdx55-qmp-usb3-uni-phy
->  
->    reg:
-> @@ -301,6 +302,7 @@ allOf:
->              enum:
->                - qcom,sdm845-qhp-pcie-phy
->                - qcom,sdm845-qmp-pcie-phy
-> +              - qcom,sdx55-qmp-pcie-phy
->                - qcom,sm8250-qmp-gen3x1-pcie-phy
->                - qcom,sm8250-qmp-gen3x2-pcie-phy
->                - qcom,sm8250-qmp-modem-pcie-phy
-> -- 
-> 2.25.1
-> 
+o Remove now unused asus_map_kay_clear macro
+
+Signed-off-by: Joe Perches <joe@perches.com>
+---
+
+untested, no hardware
+
+ drivers/hid/hid-asus.c | 128 ++++++++++++++++++++++++-------------------------
+ 1 file changed, 64 insertions(+), 64 deletions(-)
+
+diff --git a/drivers/hid/hid-asus.c b/drivers/hid/hid-asus.c
+index fca8fc78a78a3..5b78e6c3bb5d9 100644
+--- a/drivers/hid/hid-asus.c
++++ b/drivers/hid/hid-asus.c
+@@ -811,8 +811,58 @@ static int asus_input_configured(struct hid_device *hdev, struct hid_input *hi)
+ 	return 0;
+ }
+ 
+-#define asus_map_key_clear(c)	hid_map_usage_clear(hi, usage, bit, \
+-						    max, EV_KEY, (c))
++static int asus_map_use_to_btn(int use)
++{
++	switch (use) {
++	case 0x10: return KEY_BRIGHTNESSDOWN;
++	case 0x20: return KEY_BRIGHTNESSUP;
++	case 0x35: return KEY_DISPLAY_OFF;
++	case 0x6c: return KEY_SLEEP;
++	case 0x7c: return KEY_MICMUTE;
++	case 0x82: return KEY_CAMERA;
++	case 0x88: return KEY_RFKILL;
++	case 0xb5: return KEY_CALC;
++	case 0xc4: return KEY_KBDILLUMUP;
++	case 0xc5: return KEY_KBDILLUMDOWN;
++	case 0x6b: return KEY_F21;	/* ASUS touchpad toggle */
++	case 0x38: return KEY_PROG1;	/* ROG key */
++	case 0xba: return KEY_PROG2;	/* Fn+C ASUS Splendid */
++	case 0x5c: return KEY_PROG3;	/* Fn+Space Power4Gear Hybrid */
++	case 0x99: return KEY_PROG4;	/* Fn+F5 "fan" symbol on FX503VD */
++	/* for N-Key keyboard */
++	case 0xae: return KEY_PROG4;	/* Fn+F5 "fan" symbol */
++	case 0x92: return KEY_CALC;	/* Fn+Ret "Calc" symbol */
++	case 0xb2: return KEY_PROG2;	/* Fn+Left Aura mode previous */
++	case 0xb3: return KEY_PROG3;	/* Fn+Right Aura mode next */
++	}
++
++	return 0;
++}
++
++static int ms_map_use_to_btn(int use)
++{
++	switch (use) {
++	case 0xff01: return BTN_1;
++	case 0xff02: return BTN_2;
++	case 0xff03: return BTN_3;
++	case 0xff04: return BTN_4;
++	case 0xff05: return BTN_5;
++	case 0xff06: return BTN_6;
++	case 0xff07: return BTN_7;
++	case 0xff08: return BTN_8;
++	case 0xff09: return BTN_9;
++	case 0xff0a: return BTN_A;
++	case 0xff0b: return BTN_B;
++	case 0x00f1: return KEY_WLAN;
++	case 0x00f2: return KEY_BRIGHTNESSDOWN;
++	case 0x00f3: return KEY_BRIGHTNESSUP;
++	case 0x00f4: return KEY_DISPLAY_OFF;
++	case 0x00f7: return KEY_CAMERA;
++	case 0x00f8: return KEY_PROG1;
++	}
++
++	return 0;
++}
+ static int asus_input_mapping(struct hid_device *hdev,
+ 		struct hid_input *hi, struct hid_field *field,
+ 		struct hid_usage *usage, unsigned long **bit,
+@@ -842,50 +892,16 @@ static int asus_input_mapping(struct hid_device *hdev,
+ 
+ 	/* ASUS-specific keyboard hotkeys and led backlight */
+ 	if ((usage->hid & HID_USAGE_PAGE) == HID_UP_ASUSVENDOR) {
+-		switch (usage->hid & HID_USAGE) {
+-		case 0x10: asus_map_key_clear(KEY_BRIGHTNESSDOWN);	break;
+-		case 0x20: asus_map_key_clear(KEY_BRIGHTNESSUP);		break;
+-		case 0x35: asus_map_key_clear(KEY_DISPLAY_OFF);		break;
+-		case 0x6c: asus_map_key_clear(KEY_SLEEP);		break;
+-		case 0x7c: asus_map_key_clear(KEY_MICMUTE);		break;
+-		case 0x82: asus_map_key_clear(KEY_CAMERA);		break;
+-		case 0x88: asus_map_key_clear(KEY_RFKILL);			break;
+-		case 0xb5: asus_map_key_clear(KEY_CALC);			break;
+-		case 0xc4: asus_map_key_clear(KEY_KBDILLUMUP);		break;
+-		case 0xc5: asus_map_key_clear(KEY_KBDILLUMDOWN);		break;
+-
+-		/* ASUS touchpad toggle */
+-		case 0x6b: asus_map_key_clear(KEY_F21);			break;
+-
+-		/* ROG key */
+-		case 0x38: asus_map_key_clear(KEY_PROG1);		break;
+-
+-		/* Fn+C ASUS Splendid */
+-		case 0xba: asus_map_key_clear(KEY_PROG2);		break;
++		int btn = asus_map_use_to_btn(usage->hid & HID_USAGE);
+ 
+-		/* Fn+Space Power4Gear Hybrid */
+-		case 0x5c: asus_map_key_clear(KEY_PROG3);		break;
+-
+-		/* Fn+F5 "fan" symbol on FX503VD */
+-		case 0x99: asus_map_key_clear(KEY_PROG4);		break;
+-
+-		/* Fn+F5 "fan" symbol on N-Key keyboard */
+-		case 0xae: asus_map_key_clear(KEY_PROG4);		break;
+-
+-		/* Fn+Ret "Calc" symbol on N-Key keyboard */
+-		case 0x92: asus_map_key_clear(KEY_CALC);		break;
+-
+-		/* Fn+Left Aura mode previous on N-Key keyboard */
+-		case 0xb2: asus_map_key_clear(KEY_PROG2);		break;
+-
+-		/* Fn+Right Aura mode next on N-Key keyboard */
+-		case 0xb3: asus_map_key_clear(KEY_PROG3);		break;
+-
+-		default:
+-			/* ASUS lazily declares 256 usages, ignore the rest,
+-			 * as some make the keyboard appear as a pointer device. */
++		/*
++		 * ASUS lazily declares 256 usages, ignore the rest,
++		 * as some make the keyboard appear as a pointer device.
++		 */
++		if (!btn)
+ 			return -1;
+-		}
++
++		hid_map_usage_clear(hi, usage, bit, max, EV_KEY, btn);
+ 
+ 		/*
+ 		 * Check and enable backlight only on devices with UsagePage ==
+@@ -901,28 +917,12 @@ static int asus_input_mapping(struct hid_device *hdev,
+ 	}
+ 
+ 	if ((usage->hid & HID_USAGE_PAGE) == HID_UP_MSVENDOR) {
+-		switch (usage->hid & HID_USAGE) {
+-		case 0xff01: asus_map_key_clear(BTN_1);	break;
+-		case 0xff02: asus_map_key_clear(BTN_2);	break;
+-		case 0xff03: asus_map_key_clear(BTN_3);	break;
+-		case 0xff04: asus_map_key_clear(BTN_4);	break;
+-		case 0xff05: asus_map_key_clear(BTN_5);	break;
+-		case 0xff06: asus_map_key_clear(BTN_6);	break;
+-		case 0xff07: asus_map_key_clear(BTN_7);	break;
+-		case 0xff08: asus_map_key_clear(BTN_8);	break;
+-		case 0xff09: asus_map_key_clear(BTN_9);	break;
+-		case 0xff0a: asus_map_key_clear(BTN_A);	break;
+-		case 0xff0b: asus_map_key_clear(BTN_B);	break;
+-		case 0x00f1: asus_map_key_clear(KEY_WLAN);	break;
+-		case 0x00f2: asus_map_key_clear(KEY_BRIGHTNESSDOWN);	break;
+-		case 0x00f3: asus_map_key_clear(KEY_BRIGHTNESSUP);	break;
+-		case 0x00f4: asus_map_key_clear(KEY_DISPLAY_OFF);	break;
+-		case 0x00f7: asus_map_key_clear(KEY_CAMERA);	break;
+-		case 0x00f8: asus_map_key_clear(KEY_PROG1);	break;
+-		default:
++		int btn = ms_map_use_to_btn(usage->hid & HID_USAGE);
++
++		if (!btn)
+ 			return 0;
+-		}
+ 
++		hid_map_usage_clear(hi, usage, bit, max, EV_KEY, btn);
+ 		set_bit(EV_REP, hi->input->evbit);
+ 		return 1;
+ 	}
+
+
