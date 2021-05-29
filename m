@@ -2,69 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D0E8394C2E
-	for <lists+linux-kernel@lfdr.de>; Sat, 29 May 2021 14:18:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 131DE394C33
+	for <lists+linux-kernel@lfdr.de>; Sat, 29 May 2021 14:30:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229726AbhE2MUd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 29 May 2021 08:20:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36298 "EHLO
+        id S229704AbhE2McV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 29 May 2021 08:32:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38788 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229602AbhE2MUc (ORCPT
+        with ESMTP id S229602AbhE2McU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 29 May 2021 08:20:32 -0400
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86D0BC061574
-        for <linux-kernel@vger.kernel.org>; Sat, 29 May 2021 05:18:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-         bh=S53zc6j3xQp7Y0M3lUKk/E9CGWHQewIosEX7fP5r7/g=; b=tzQNKz3csnSbMclRoZtcpuSEz
-        hz3BxU8yFkWn2IyITweBEY0BOJBhN86+s6cTQH8QfeNIUentCryZiJhBOFZG48FDCkiicx7upAD83
-        2Fwuz9RVJev4pCzXN1TaCSaQseM9UZ4IOdu4YjPUy34DczT/4oNrX5oSseEtPYxlR3IMJwVNE3RpR
-        pIfMNzKLkX70U98oHhtualdSNhF1lxUkzFkDVlJDW7ULVT9DM0XdUIM5RQpemsQMlZCxMlDh8/83D
-        YGglSoAQP7FucsZMrfEVRuMhMqqrkkxHGbjQcSmnW+uHMfY8dVUb++FphYgZLlpjx1hdvHRc3O4N0
-        ycC0byOYg==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:44470)
-        by pandora.armlinux.org.uk with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <linux@armlinux.org.uk>)
-        id 1lmxvX-0000sd-I2; Sat, 29 May 2021 13:18:51 +0100
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
-        (envelope-from <linux@shell.armlinux.org.uk>)
-        id 1lmxvT-0005f9-7m; Sat, 29 May 2021 13:18:47 +0100
-Date:   Sat, 29 May 2021 13:18:47 +0100
-From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
-To:     Kefeng Wang <wangkefeng.wang@huawei.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH 03/15] arm: convert to setup_initial_init_mm()
-Message-ID: <20210529121847.GR30436@shell.armlinux.org.uk>
-References: <20210529105504.180544-1-wangkefeng.wang@huawei.com>
- <20210529105504.180544-4-wangkefeng.wang@huawei.com>
+        Sat, 29 May 2021 08:32:20 -0400
+Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com [IPv6:2a00:1450:4864:20::42d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26859C061574;
+        Sat, 29 May 2021 05:30:42 -0700 (PDT)
+Received: by mail-wr1-x42d.google.com with SMTP id r10so5839849wrj.11;
+        Sat, 29 May 2021 05:30:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=to:cc:references:from:subject:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=pMPRFMOuX1S89zAsds2EsZdaJitjmQv9CpOdt5WE62Q=;
+        b=n5EQefLhrZ+Afr1G8DiDRslG95cp1VRPNpzYUtFeiqbDnB7IhwbF4lwma3r3Zlt1Zo
+         FWoxv619QG0WL6AapGcTmvzzd72cObU/uB45Do7pTDuBrII+W5ZMCqY+6/14e7wGgpwA
+         fbZlzK42R48S4ElVTFrSSSyseumPvzhcroHHYsVJvqs3Hkt5A3d+gmJGAGcfYYH6KtuJ
+         srwRVIejWO2b9tdU4U4I4/8VLcAh1/Phkq0GwymNqlnpUoCKw+gkSgHhzwoFL2We1975
+         BY2XIIlbua2zv0LlOQKeLNxfP/6i+wnO4rvL9OZpyydRvM4+V0RcS6hGlMBU547r0NnN
+         rkxw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:to:cc:references:from:subject:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=pMPRFMOuX1S89zAsds2EsZdaJitjmQv9CpOdt5WE62Q=;
+        b=Mt0uyPkBAKk+8ipJ64CNDBL+6S1xeI53vZK8lXK+NGg7VKVXqJjS6jJQV2Efhpc0o7
+         Szt4zA6pie1k9Eym87ZaiBmQI8VIqG2SOL7+27kBLm/hv2/NsiPj4SVyiD15o1LPypIt
+         Gs08QO5KIU3w5H6nR1cV6xDUl51myaF3Ip43wWCzEL6u3YMzuzmug3nqbGh1boXIVEAx
+         n3e4rVp3mV+qP3hO0YwF9lWfCa04uaeBLgQALFVCL8c2QvwwdJtemL/O0gHW0WCl1r/y
+         VC7ZRdgbkGvRlq0lRnLu8lJXdvsRx+ZeZOGAfsHyHL0YjzBxEmcOyGhfzQHX6me0i1uz
+         pH2g==
+X-Gm-Message-State: AOAM5334/2MWK4A1hmTCIBqSbNiqpS8HAuzTB9pRuOCBO4LXi6g1CrRd
+        zEsUwdznB4lAiXCngyHrm+Zd9VWmOr0=
+X-Google-Smtp-Source: ABdhPJzFZ6M5kbZK8tQnnbUxl/+dzM74vM1rwcwyHQrVECYZLUxGxvzdOBCeHsNoc3FbT0fytMsd2Q==
+X-Received: by 2002:adf:fa46:: with SMTP id y6mr5098661wrr.194.1622291440090;
+        Sat, 29 May 2021 05:30:40 -0700 (PDT)
+Received: from [192.168.8.197] ([148.252.129.19])
+        by smtp.gmail.com with ESMTPSA id z135sm3929333wmc.26.2021.05.29.05.30.39
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 29 May 2021 05:30:39 -0700 (PDT)
+To:     Steven Rostedt <rostedt@goodmis.org>,
+        Olivier Langlois <olivier@trillion01.com>
+Cc:     Stefan Metzmacher <metze@samba.org>, Jens Axboe <axboe@kernel.dk>,
+        Ingo Molnar <mingo@redhat.com>, io-uring@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <60ac946e.1c69fb81.5efc2.65deSMTPIN_ADDED_MISSING@mx.google.com>
+ <439a2ab8-765d-9a77-5dfd-dde2bd6884c4@gmail.com>
+ <9a8abcc9-8f7a-8350-cf34-f86e4ac13f5c@samba.org>
+ <9505850ae4c203f6b8f056265eddbffaae501806.camel@trillion01.com>
+ <20210528184248.46926090@gandalf.local.home>
+From:   Pavel Begunkov <asml.silence@gmail.com>
+Subject: Re: [PATCH] io_uring: Add to traces the req pointer when available
+Message-ID: <6fd74635-d3a8-7319-bcc6-c2c1de9c87ee@gmail.com>
+Date:   Sat, 29 May 2021 13:30:31 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210529105504.180544-4-wangkefeng.wang@huawei.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-Sender: Russell King (Oracle) <linux@armlinux.org.uk>
+In-Reply-To: <20210528184248.46926090@gandalf.local.home>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, May 29, 2021 at 06:54:52PM +0800, Kefeng Wang wrote:
-> Use setup_initial_init_mm() helper to simplify code.
+On 5/28/21 11:42 PM, Steven Rostedt wrote:
+> On Wed, 26 May 2021 12:18:37 -0400
+> Olivier Langlois <olivier@trillion01.com> wrote:
 > 
-> Cc: Russell King <linux@armlinux.org.uk>
-> Cc: linux-arm-kernel@lists.infradead.org
-> Signed-off-by: Kefeng Wang <wangkefeng.wang@huawei.com>
+>>> If that gets changed, could be also include the personality id and
+>>> flags here,
+>>> and maybe also translated the opcode and flags to human readable
+>>> strings?
+>>>   
+>> If Jens and Pavel agrees that they would like to see this info in the
+>> traces, I have no objection adding it.
+>>
+>> Still waiting input from Steven Rostedt which I believe is the trace
+>> system maintainer concerning the hash-ptr situation.
+>>
+>> I did receive an auto-respond from him saying that he was in vacation
+>> until May 28th...
+> 
+> Yep, I'm back now.
+> 
+> Here's how it works using your patch as an example:
+> 
+>>  	TP_fast_assign(
+>>  		__entry->ctx		= ctx;
+>> +		__entry->req		= req;
+> 
+> The "__entry" is a structure defined by TP_STRUCT__entry() that is located
+> on the ring buffer that can be read directly by user space (aka trace-cmd).
+> So yes, that value is never hashed, and one of the reasons that tracefs
+> requires root privilege to read it.
+> 
+>>  		__entry->opcode		= opcode;
+>>  		__entry->user_data	= user_data;
+>>  		__entry->force_nonblock	= force_nonblock;
+>>  		__entry->sq_thread	= sq_thread;
+>>  	),
+>>  
+>> -	TP_printk("ring %p, op %d, data 0x%llx, non block %d, sq_thread %d",
+>> -			  __entry->ctx, __entry->opcode,
+>> -			  (unsigned long long) __entry->user_data,
+>> -			  __entry->force_nonblock, __entry->sq_thread)
+>> +	TP_printk("ring %p, req %p, op %d, data 0x%llx, non block %d, "
+>> +		  "sq_thread %d",  __entry->ctx, __entry->req,
+>> +		  __entry->opcode, (unsigned long long)__entry->user_data,
+>> +		  __entry->force_nonblock, __entry->sq_thread)
+>>  );
+> 
+> The TP_printk() macro *is* used when reading the "trace" or "trace_pipe"
+> file, and that uses vsnprintf() to process it. Which will hash the values
+> for %p (by default, because that's what it always did when vsnprintf()
+> started hashing values).
+> 
+> Masami Hiramatsu added the hash-ptr option (which I told him to be the
+> default as that was the behavior before that option was created), where the
+> use could turn off the hashing.
+> 
+> There's lots of trace events that expose the raw pointers when hash-ptr is
+> off or if the ring buffers are read via the trace_pip_raw interface.
+> 
+> What's special about these pointers to hash them before they are recorded?
 
-Obviously, without having visibility of the contents of
-setup_initial_init_mm(), it's impossible to say whether this change is
-correct or not, so I won't be providing any acks/reviewed-bys for it.
+io_uring offers all different operations and has internal request/memory
+recycling, so it may be an easy vector of attack in case of some
+vulnerabilities found, but nothing special. As that's the status quo,
+I wouldn't care, let's put aside my concerns and print them raw.
 
 -- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
+Pavel Begunkov
