@@ -2,104 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B33D394A0B
-	for <lists+linux-kernel@lfdr.de>; Sat, 29 May 2021 05:14:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 87A55394A06
+	for <lists+linux-kernel@lfdr.de>; Sat, 29 May 2021 05:14:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229719AbhE2DFb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 May 2021 23:05:31 -0400
-Received: from szxga08-in.huawei.com ([45.249.212.255]:2342 "EHLO
-        szxga08-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229547AbhE2DFa (ORCPT
+        id S229667AbhE2DBq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 May 2021 23:01:46 -0400
+Received: from szxga02-in.huawei.com ([45.249.212.188]:2456 "EHLO
+        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229543AbhE2DBp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 May 2021 23:05:30 -0400
-Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.55])
-        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4FsR8z6X7Gz19SZ2;
-        Sat, 29 May 2021 10:59:15 +0800 (CST)
-Received: from dggpemm500006.china.huawei.com (7.185.36.236) by
- dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
+        Fri, 28 May 2021 23:01:45 -0400
+Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.57])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4FsR6d3Z3wz66ST;
+        Sat, 29 May 2021 10:57:13 +0800 (CST)
+Received: from dggpeml500017.china.huawei.com (7.185.36.243) by
+ dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Sat, 29 May 2021 11:03:52 +0800
-Received: from [127.0.0.1] (10.174.177.72) by dggpemm500006.china.huawei.com
- (7.185.36.236) with Microsoft SMTP Server (version=TLS1_2,
+ 15.1.2176.2; Sat, 29 May 2021 11:00:07 +0800
+Received: from huawei.com (10.175.103.91) by dggpeml500017.china.huawei.com
+ (7.185.36.243) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Sat, 29 May
- 2021 11:03:52 +0800
-Subject: Re: [PATCH 1/1] tracing: fix spelling mistakes
-From:   "Leizhen (ThunderTown)" <thunder.leizhen@huawei.com>
-To:     Steven Rostedt <rostedt@goodmis.org>
-CC:     Ingo Molnar <mingo@redhat.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-References: <20210525062047.8951-1-thunder.leizhen@huawei.com>
- <20210525062047.8951-2-thunder.leizhen@huawei.com>
- <20210528211314.5dba632a@oasis.local.home>
- <93006372-8482-84af-52c0-1d6e7f66e187@huawei.com>
- <20210528221113.4f66aaea@oasis.local.home>
- <f2004397-4b3f-2f94-dc12-09b95930db1c@huawei.com>
-Message-ID: <5ce217e6-c768-f86a-44f1-3b924d838b45@huawei.com>
-Date:   Sat, 29 May 2021 11:03:51 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.0
+ 2021 11:00:07 +0800
+From:   Yang Yingliang <yangyingliang@huawei.com>
+To:     <linux-kernel@vger.kernel.org>, <netdev@vger.kernel.org>
+CC:     <andrew@lunn.ch>, <vivien.didelot@gmail.com>,
+        <davem@davemloft.net>, <kuba@kernel.org>
+Subject: [PATCH -next 0/2] net: dsa: qca8k: check return value of read  functions correctly
+Date:   Sat, 29 May 2021 11:04:37 +0800
+Message-ID: <20210529030439.1723306-1-yangyingliang@huawei.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <f2004397-4b3f-2f94-dc12-09b95930db1c@huawei.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.177.72]
-X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
- dggpemm500006.china.huawei.com (7.185.36.236)
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.103.91]
+X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
+ dggpeml500017.china.huawei.com (7.185.36.243)
 X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+patch #1 - Change return type and add output parameter to make check
+return value of read  functions correctly.
 
+patch #2 - Add missing check return value in qca8k_phylink_mac_config().
 
-On 2021/5/29 10:40, Leizhen (ThunderTown) wrote:
-> 
-> 
-> On 2021/5/29 10:11, Steven Rostedt wrote:
->> On Sat, 29 May 2021 10:01:31 +0800
->> "Leizhen (ThunderTown)" <thunder.leizhen@huawei.com> wrote:
->>
->>> On 2021/5/29 9:13, Steven Rostedt wrote:
->>>> On Tue, 25 May 2021 14:20:47 +0800
->>>> Zhen Lei <thunder.leizhen@huawei.com> wrote:
->>>>   
->>>>> Fix some spelling mistakes in comments:
->>>>> wont ==> won't  
->>>>
->>>> I prefer not to fix that spelling. I sometimes purposely leave off
->>>> single quotes. It's no that big of a deal, and doesn't deserve the
->>>> churn.  
->>>
->>> Yes, all people can get it right by their wits. "Wont" doesn't affect
->>> their reading speed. But most people might think it's best to add the
->>> missing single quote.
->>>
->>> The minority obeys the majority?
->>
->> I really don't care. 
+v2:
+  move 'int ret' to patch #2.
 
-Thanks.
+Yang Yingliang (2):
+  net: dsa: qca8k: check return value of read functions correctly
+  net: dsa: qca8k: add missing check return value in
+    qca8k_phylink_mac_config()
 
->> In my opinion, it's unnecessary churn, that just
->> adds noise to the git logs.
-> 
-> git grep -wn wont | wc -l
-> 83
-> 
-> OK, I just did a search for "wont", and there are currently 83 places in
-> use. Language is not mathematics, there is no absolute right or wrong. If
-> a lot of people are using it incorrectly or specifically, then the new one
-> is also right.
-> 
-> Wow, should I send v2 to remove "wont ==> won't"?
+ drivers/net/dsa/qca8k.c | 135 +++++++++++++++++++---------------------
+ 1 file changed, 65 insertions(+), 70 deletions(-)
 
-Actually, I'd prefer to change it to "won't".
-
-> 
->>
->> -- Steve
->>
->> .
->>
+-- 
+2.25.1
 
