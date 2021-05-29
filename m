@@ -2,115 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1EADB3949C3
-	for <lists+linux-kernel@lfdr.de>; Sat, 29 May 2021 03:04:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 918D73949C6
+	for <lists+linux-kernel@lfdr.de>; Sat, 29 May 2021 03:10:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229644AbhE2BF4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 May 2021 21:05:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60640 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229541AbhE2BFz (ORCPT
+        id S229713AbhE2BMG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 May 2021 21:12:06 -0400
+Received: from mail-0201.mail-europe.com ([51.77.79.158]:52232 "EHLO
+        mail-02.mail-europe.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S229597AbhE2BMF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 May 2021 21:05:55 -0400
-Received: from mail-lj1-x22d.google.com (mail-lj1-x22d.google.com [IPv6:2a00:1450:4864:20::22d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 990A9C061574
-        for <linux-kernel@vger.kernel.org>; Fri, 28 May 2021 18:04:18 -0700 (PDT)
-Received: by mail-lj1-x22d.google.com with SMTP id a4so7433746ljd.5
-        for <linux-kernel@vger.kernel.org>; Fri, 28 May 2021 18:04:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=7TLJbSas3WgGftLzXCIE9XnAPM6dN/gE8iir4vdPP+w=;
-        b=cT4KvaZvwGtBiIbawe3+jc+1fkoXYslUfHrH0H1cWQVUQtZ8xjL4of9SedIBqdqfgE
-         v5DjrX/q6IKN6mpuDaSMMJX0vLxRm068wOWlW92ubPAZ+GCoYUGjQnWb+haOFa5jGnsR
-         +pBMWH3gJ6rquFqZoRFYr0mL6CA+Nn24/gQzM=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=7TLJbSas3WgGftLzXCIE9XnAPM6dN/gE8iir4vdPP+w=;
-        b=nbO0dpVLvz8B3suqOGCnho5bFLV7xSGLoLgcJpXNjMiKlUtjhw/T778k3jy8AI/zaL
-         lAZ34MLwkN2YD843mL23o3XivGGEEH8wCxrEQtF5f03Et7irmLvdV/jZT3kNB1QZcZyl
-         I3nM5JMwK8ykX1BySdLUgqWdQLcSWxSjGpf1YejpX12NN/PKokkBdNOzNGBVR/L2uGdl
-         98PaYG8ToauacF0UcsQqIDtph6WhY7vZczuuD9TZqfdjdVZsnMLV0oRocnxDvYnehOMi
-         dUIki+IGnXJ0tokPPqrGJ6pjmM/lPJNshVEZlNLtTgC5LdPg9hXIZltrSoPg3IkHSLdf
-         OO0Q==
-X-Gm-Message-State: AOAM53323pbkQSx9oqyGE0C4/BBmjo74EQ1Uf2Mmd6+lPEbe4qhqcLQq
-        /sjazOqT4jUV8GYgUAABhCRmSYen3Rp0iFIH
-X-Google-Smtp-Source: ABdhPJybJU0+TkoilmoBMdrZJpeSw6CtxKwb0CG0dAzU52Y3yi0bxtdgutMPYogDQt94teZvlcS7Ug==
-X-Received: by 2002:a2e:7319:: with SMTP id o25mr192406ljc.38.1622250256551;
-        Fri, 28 May 2021 18:04:16 -0700 (PDT)
-Received: from mail-lf1-f49.google.com (mail-lf1-f49.google.com. [209.85.167.49])
-        by smtp.gmail.com with ESMTPSA id n7sm683666ljj.109.2021.05.28.18.04.14
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 28 May 2021 18:04:15 -0700 (PDT)
-Received: by mail-lf1-f49.google.com with SMTP id q7so7842777lfr.6
-        for <linux-kernel@vger.kernel.org>; Fri, 28 May 2021 18:04:14 -0700 (PDT)
-X-Received: by 2002:a05:6512:1095:: with SMTP id j21mr7376406lfg.40.1622250254392;
- Fri, 28 May 2021 18:04:14 -0700 (PDT)
+        Fri, 28 May 2021 21:12:05 -0400
+Date:   Sat, 29 May 2021 01:10:12 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=protonmail.com;
+        s=protonmail; t=1622250625;
+        bh=+w5DrFGtQT7qGSjGuDnH/5/WNWgRUzVCn8cxpkKg+UU=;
+        h=Date:To:From:Cc:Reply-To:Subject:From;
+        b=R9WETm0fyZJzkJ3UkIhI88VJVw2PneoVEsKtpATIg/MSMvGzx9WW/J/YwW0XLLhju
+         w586zYWrm7sLSPr6V9af+jdYDQUAI4r9sbtk+FZbUx2wn62l/Htz2dz0mtbBEWy3tp
+         ylZwW0a2r55zLl7TcHcxCkwy4RyfOxjDlc+NTflY=
+To:     "namjae.jeon@samsung.com" <namjae.jeon@samsung.com>,
+        "sj1557.seo@samsung.com" <sj1557.seo@samsung.com>
+From:   Aidan MacDonald <amachronic@protonmail.com>
+Cc:     "stable@vger.kernel.org" <stable@vger.kernel.org>,
+        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Reply-To: Aidan MacDonald <amachronic@protonmail.com>
+Subject: exFAT unexpected handling of filenames ending with dots
+Message-ID: <WCLW4rMlL5bsun3xz4lbVpKFcjJnaWwoKKvl-QPTF1YEaDtDX5uS3Pj472UxXuxgBnDbznfc0MpYj5fsCzLuhnbStgEN7jHv8Q_Ynxy3kFk=@protonmail.com>
 MIME-Version: 1.0
-References: <vs1Us2sm4qmfvLOqNat0-r16GyfmWzqUzQ4KHbXJwEcjhzeoQ4sBTxx7QXDG9B6zk5AeT7FsNb3CSr94LaKy6Novh1fbbw8D_BBxYsbPLms=@emersion.fr>
- <CAHk-=wgmGv2EGscKSi8SrQWtEVpEQyk-ZN1Xj4EoAB87Dmx1gA@mail.gmail.com>
- <20210429154807.hptls4vnmq2svuea@box> <20210429183836.GF8339@xz-x1>
- <lpi4uT69AFMwtmWtwW_qJAmYm_r0jRikL11G_zI4X7wq--6Jtpiej8kGn8gePfv0Dtn4VmzsOqT2Q5-L3ca2niDi0nlC0nVYphbFBnNJnw0=@emersion.fr>
- <CAHk-=wiAs7Ky9gmWAeqk5t7Nkueip13XPGtUcmMiZjwf-sX3sQ@mail.gmail.com>
- <hnL7s1u925fpeUhs90fXUpD3GG_4gmHlpznN8E0885tSM40QYb3VVTFGkwpmxYQ3U8HkRSUtfqw0ZfBKptA4pIw4FZw1MdRhSHC94iQATEE=@emersion.fr>
- <CAHk-=wiY1BL-UHPMEAbd7nY3vu6w41A1hhvjg1DoBXWuRt9_qw@mail.gmail.com> <7718ec5b-0a9e-ffa6-16f2-bc0b6afbd9ab@gmail.com>
-In-Reply-To: <7718ec5b-0a9e-ffa6-16f2-bc0b6afbd9ab@gmail.com>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Fri, 28 May 2021 15:03:58 -1000
-X-Gmail-Original-Message-ID: <CAHk-=wjv3-eP7mSDJbuvaB+CbyyKc4g_nEzhQLcueOd0_YuiBg@mail.gmail.com>
-Message-ID: <CAHk-=wjv3-eP7mSDJbuvaB+CbyyKc4g_nEzhQLcueOd0_YuiBg@mail.gmail.com>
-Subject: Re: Sealed memfd & no-fault mmap
-To:     "Lin, Ming" <minggr@gmail.com>, Hugh Dickins <hughd@google.com>
-Cc:     Simon Ser <contact@emersion.fr>, Peter Xu <peterx@redhat.com>,
-        "Kirill A. Shutemov" <kirill@shutemov.name>,
-        Matthew Wilcox <willy@infradead.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Will Deacon <will@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        David Herrmann <dh.herrmann@gmail.com>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        Greg Kroah-Hartman <greg@kroah.com>,
-        "tytso@mit.edu" <tytso@mit.edu>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM shortcircuit=no
+        autolearn=disabled version=3.4.4
+X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
+        mailout.protonmail.ch
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 28, 2021 at 7:07 AM Lin, Ming <minggr@gmail.com> wrote:
->
-> Does something like following draft patch on the right track?
+Hi, Namjae and Sungjong,
 
-No, I don't think this can work:
+Recently, I was made aware of a problem with how the exFAT driver handles f=
+ilenames ending with dots.
 
-> +               _dst_pte = pte_mkspecial(pfn_pte(my_zero_pfn(dst_addr),
-> +                                        vma->vm_page_prot));
+Original bug report was against an audio player supported by Rockbox:
+https://www.rockbox.org/tracker/task/13293
 
-You can't just blindly insert the zero pfn - for a shared write
-mapping, that would actually allow writes to the zeropage. That would
-be horrible.
+Upon further investigation it turned out to be a Linux kernel issue. Note t=
+he audio player referenced there runs Linux 3.10 or so and uses some versio=
+n of the Samsung exFAT driver -- so I guess this has been an issue for a _l=
+ong_ time. I was able to reproduce it on my laptop running v5.10.39!
 
-So it would have to do all the same things that it does for a page
-that is inside the inode size.
+It appears that any number of trailing dots are stripped from the end of th=
+e filename, causing some interesting bugs.
 
-I do also dislike how it's a per-inode flag - so it would affect other
-mappings of the same shared memory segment too. But considering that
-the page would have to be part of the page cache for that shmem inode,
-that may be inevitable. But it sure does smell a bit.
+The behaviour I am observing is this:
 
-Oh, and if we make this kind of magic shmem extension, Hugh Dickins
-should be part of the conversation  too. Hugh, you probably saw the
-original on linux-mm, but I'm adding you explicitly to the
-participants here.
+1. If creating a file, the name is stripped of all trailing dots and the st=
+ripped name is used to create the file (original name is silently discarded=
+).
 
-.. and if you didn't see the background, here it is
+2. If accessing a file within a directory, the stripped filename is used to=
+ conduct the search, ie. if you enter 'A...' the driver will actually searc=
+h using the name 'A'.
 
-  https://lore.kernel.org/linux-mm/vs1Us2sm4qmfvLOqNat0-r16GyfmWzqUzQ4KHbXJwEcjhzeoQ4sBTxx7QXDG9B6zk5AeT7FsNb3CSr94LaKy6Novh1fbbw8D_BBxYsbPLms=@emersion.fr/
+It is this second part which causes problems. If you have a file named "A."=
+ on an exFAT filesystem, it will show up in directory listings but if you t=
+ry to access it, you get 'file not found'. That is because the driver is ac=
+tually looking for "A" even though you think you are looking for "A." -- an=
+d even worse, if "A" does exist, the driver will silently access "A" instea=
+d!
 
-for your edification..
+Clearly due to the first part, you cannot get into this situation without u=
+sing another driver -- like the exFAT FUSE driver -- to create the problema=
+tic filenames. (That's how the Rockbox bug reporter managed to run into thi=
+s.)
 
-           Linus
+Now, a function called exfat_striptail_len() in fs/exfat/namei.c is respons=
+ible for the filename stripping, it simply removes all the trailing dots fr=
+om a name and I guess it is the cause of this problem. So this 'feature' wa=
+s intentionally added in.
+
+I've only skimmed the exFAT spec but I can find nothing in it about strippi=
+ng dots from the end of a filename. The FUSE-based exFAT driver appears to =
+treat dots as significant too.
+
+It seems Windows suffers the same trailing dots bug, silently accessing the=
+ wrong files despite listing all names correctly. But I obviously can't say=
+ whether that is due to filesystem drivers or issues higher up the stack.
+
+To be honest I have no idea what the purpose of this 'dot stripping' is... =
+even if it was for the sake of "Windows compatibility" -- ie. mimicking Win=
+dows bugs -- there are names that Windows normally rejects which the in-ker=
+nel exFAT driver will accept, such as names with trailing spaces.
+
+Personally, I don't see any issue with how the FUSE driver behaves. It also=
+ seems to be correct with respect to Microsoft's official spec. I don't see=
+ why Linux should deviate from the spec, especially in a way that makes it =
+_less_ robust.
+
+I did search for any other reports of this issue, but it seems to be such a=
+ corner case that nobody's mentioned it anywhere. Nor can I find any discus=
+sion or rationale for the dot stripping behaviour.
+
+Kind regards,
+Aidan
