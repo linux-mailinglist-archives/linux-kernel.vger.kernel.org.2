@@ -2,56 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 16473394D2E
-	for <lists+linux-kernel@lfdr.de>; Sat, 29 May 2021 18:49:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 51788394D31
+	for <lists+linux-kernel@lfdr.de>; Sat, 29 May 2021 18:49:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229814AbhE2Qul (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 29 May 2021 12:50:41 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44306 "EHLO mail.kernel.org"
+        id S229834AbhE2Qun (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 29 May 2021 12:50:43 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44328 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229709AbhE2Quj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S229716AbhE2Quj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Sat, 29 May 2021 12:50:39 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id CDF966105A;
-        Sat, 29 May 2021 16:49:01 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPS id A0AD0610CC;
+        Sat, 29 May 2021 16:49:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1622306941;
-        bh=eKGCjGlrM/fX7Vcnu/Wba51hAY7iOG6CV1ahDTOBbdk=;
+        s=k20201202; t=1622306942;
+        bh=w6aelTtD9hoNXtjEieLpm0Lezw9O9VOpyI44rlBpTvg=;
         h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=L0i6Tw/u2yCssULeUDRr4Ml2N94WFZTKWo19jWVMCThqd3jbOvDoJGB02iOombyMi
-         il+0bijX5a3o7YqMBcVh9YBcP5ulxyR65vx1yQ2In3UG/QH/LO0sDyrLRFroYnF+yX
-         uzrhchuI44ubyGluE2uoAIntKv6VG9wjbJoUOeHlsm5PjAcUe1QXHZ1a7VsSMYAIro
-         sEKrcLHoy4zC+sV9jul7kBlR03YYdASCnWl0vgUInUR1ruWnrk4pADCfLEYEBYWV29
-         PbaLBxlq2XihEHVH8yNzc9zro0moW39AJK2FN3M+ELDYTh4zZFFp0pj2cebLsedJMD
-         NHlNOwUCcBgwQ==
+        b=RXwndY8GXajVLiMXL3fu0kQrue0Ya0+8nshlwD99BldZxvJH2LzvDhzpvQ2IKDc/z
+         LuvTgWcz+pLUeOXYwHxj2GZU2PxlysgKP2+KA4UPQQ/tl2TeihwgHh5DmqvhvZQ0c5
+         MJF1nmq3NGPHT/BvJM6w9/iw7xkBR8OIE+itoJBY+HkTVP+sOWoXkNUmR/fWiUmK/l
+         HnITump7XfC6P2HTQ2Rzyfy/aq1qpOMDG8bDW6beKxOf3SQ0NRy6I24d0EdJbMJeeY
+         0n70UYUGgSLD/Z7jsaYdi+foGoRq8KexvJF9YoJnw7ImqE/m4gkb+ds+Zadfj+h0J0
+         zBUL47iiXyAig==
 Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id BB02460A39;
-        Sat, 29 May 2021 16:49:01 +0000 (UTC)
-Subject: Re: [GIT PULL] KVM changes and new selftests for Linux 5.14-rc4
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 9A57360987;
+        Sat, 29 May 2021 16:49:02 +0000 (UTC)
+Subject: Re: [GIT PULL] TTY/Serial driver fixes for 5.13-rc4
 From:   pr-tracker-bot@kernel.org
-In-Reply-To: <20210529103206.3853545-1-pbonzini@redhat.com>
-References: <20210529103206.3853545-1-pbonzini@redhat.com>
-X-PR-Tracked-List-Id: <kvm.vger.kernel.org>
-X-PR-Tracked-Message-Id: <20210529103206.3853545-1-pbonzini@redhat.com>
-X-PR-Tracked-Remote: https://git.kernel.org/pub/scm/virt/kvm/kvm.git tags/for-linus
-X-PR-Tracked-Commit-Id: 000ac42953395a4f0a63d5db640c5e4c88a548c5
+In-Reply-To: <YLJPKme41JEplEPQ@kroah.com>
+References: <YLJPKme41JEplEPQ@kroah.com>
+X-PR-Tracked-List-Id: <linux-serial.vger.kernel.org>
+X-PR-Tracked-Message-Id: <YLJPKme41JEplEPQ@kroah.com>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/gregkh/tty.git tags/tty-5.13-rc4
+X-PR-Tracked-Commit-Id: 56dde68f85be0a20935bb4ed996db7a7f68b3202
 X-PR-Merge-Tree: torvalds/linux.git
 X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 224478289ca0e7abf06a3bc63b06c42a2bf84c69
-Message-Id: <162230694170.3322.8197885978080864045.pr-tracker-bot@kernel.org>
-Date:   Sat, 29 May 2021 16:49:01 +0000
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     torvalds@linux-foundation.org, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org
+X-PR-Merge-Commit-Id: 3837f9a08bdab2c9fabe6e52dcfb6cfbfa8be7d6
+Message-Id: <162230694262.3322.17750446640994561353.pr-tracker-bot@kernel.org>
+Date:   Sat, 29 May 2021 16:49:02 +0000
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Jiri Slaby <jslaby@suse.cz>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Sat, 29 May 2021 06:32:06 -0400:
+The pull request you sent on Sat, 29 May 2021 16:26:50 +0200:
 
-> https://git.kernel.org/pub/scm/virt/kvm/kvm.git tags/for-linus
+> git://git.kernel.org/pub/scm/linux/kernel/git/gregkh/tty.git tags/tty-5.13-rc4
 
 has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/224478289ca0e7abf06a3bc63b06c42a2bf84c69
+https://git.kernel.org/torvalds/c/3837f9a08bdab2c9fabe6e52dcfb6cfbfa8be7d6
 
 Thank you!
 
