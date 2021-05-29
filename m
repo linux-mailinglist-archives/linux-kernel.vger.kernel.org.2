@@ -2,221 +2,359 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3DB1D394D23
-	for <lists+linux-kernel@lfdr.de>; Sat, 29 May 2021 18:30:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D86D394D25
+	for <lists+linux-kernel@lfdr.de>; Sat, 29 May 2021 18:36:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229758AbhE2Qba (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 29 May 2021 12:31:30 -0400
-Received: from smtprelay0132.hostedemail.com ([216.40.44.132]:46406 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S229704AbhE2Qb2 (ORCPT
+        id S229754AbhE2Qhg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 29 May 2021 12:37:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35188 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229693AbhE2Qhf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 29 May 2021 12:31:28 -0400
-Received: from omf12.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay05.hostedemail.com (Postfix) with ESMTP id 0F28A18028E85;
-        Sat, 29 May 2021 16:29:51 +0000 (UTC)
-Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by omf12.hostedemail.com (Postfix) with ESMTPA id 49BDD240236;
-        Sat, 29 May 2021 16:29:50 +0000 (UTC)
-Message-ID: <56767df55117cc5834b0021ba2c056272e686804.camel@perches.com>
-Subject: [PATCH] HID: asus: Reduce object size by consolidating calls
-From:   Joe Perches <joe@perches.com>
-To:     Jiri Kosina <jikos@kernel.org>,
-        Benjamin Tissoires <benjamin.tissoires@redhat.com>
-Cc:     linux-input <linux-input@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Date:   Sat, 29 May 2021 09:29:48 -0700
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.38.1-1 
+        Sat, 29 May 2021 12:37:35 -0400
+Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8DBB4C061574;
+        Sat, 29 May 2021 09:35:58 -0700 (PDT)
+Received: by mail-wr1-x432.google.com with SMTP id j14so6299685wrq.5;
+        Sat, 29 May 2021 09:35:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=fgFq96QwcHNfL3eHhjKBSuXbl0w1cz+lLcdnfPY91v8=;
+        b=FIIHb1b1NrizNpPX/0ly5dtG/dfnObvf8Y3KQE3mCCM9DUoxEzC/mEMZL7s6cNpkhG
+         /Eu4c7inR1uQ6Gpgeh8fywMukj3fNPQhYlDHcZOVvXU8PKZRVuCjvMbbJ0hSERJXAipI
+         fDEZEASapxFVoD5l1pSvy/PuI2+iEFg9BqD4XS5xrh3zAApPbTudazih6Tgd85KZjXSu
+         mNlEUHL9uFGxq/sGwwJ6Ygw8q3oZ5RBTZzyJBbk0tcFCMDiy1+6wyD3SAygNxGktYgp/
+         Ar6k+8bhWUvKmkS9OHeeBrMZM8aPULGPbiz9XvTGZAL1mJq+AxHVQ1p7aEZz52dc94Zk
+         aO+g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=fgFq96QwcHNfL3eHhjKBSuXbl0w1cz+lLcdnfPY91v8=;
+        b=aK5xkfwOTKTacyoBu9Et9vqfrhHoj0MTOz6EBhWuX1XW6hl5hCU8UFneszERx3J8VX
+         fBfwYpFvlrm0zPOwztshFEC+tVo5vSBsxsLMLF9hnOFXbu5MfJ7JAwiF1PvvBb0R7s1A
+         w1qYdA+xkKudgHtWdiEQ//dIglRPX6uoJsumCQtddxL1Rfb/2CW0gEtW4qz47zn3iYcv
+         9dSHFmomsRJ2Dy06TGIYkFeI0XGQCBPYNIuWobVkYAuD1e+tO83eNjoewJic0LQawH92
+         UpS9sf906/Ot8hcBAYX88QP/rQfQar7jalxqaM2wCGhgEgEIhy64tuttOWBG551zDoPC
+         Rbrg==
+X-Gm-Message-State: AOAM531EnfFGhaTaezj1C1f1U6+j584IKRg46D61ueFWxxB2nY2hwTyg
+        3DJM4dC/SMWVanAeCNJq+YxdFX6buyjT2Q==
+X-Google-Smtp-Source: ABdhPJxgq+1ELIHH0WJQ/IZHfZy4Vzkhkp18H487UHygKHcSFXovaw2w1SMvnN2uQRWsnFkv9A9+uw==
+X-Received: by 2002:adf:b34a:: with SMTP id k10mr8184676wrd.333.1622306156906;
+        Sat, 29 May 2021 09:35:56 -0700 (PDT)
+Received: from othello.cust.communityfibre.co.uk ([2a02:6b64:80a9:0:1be:22d4:3c1d:bcad])
+        by smtp.gmail.com with ESMTPSA id p10sm10124852wrr.58.2021.05.29.09.35.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 29 May 2021 09:35:56 -0700 (PDT)
+From:   Cassio Neri <cassio.neri@gmail.com>
+To:     a.zummo@towertech.it, alexandre.belloni@bootlin.com
+Cc:     linux-rtc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Cassio Neri <cassio.neri@gmail.com>
+Subject: [PATCH] rtc: Improve performance of rtc_time64_to_tm. Add tests.
+Date:   Sat, 29 May 2021 17:35:48 +0100
+Message-Id: <20210529163548.281938-1-cassio.neri@gmail.com>
+X-Mailer: git-send-email 2.31.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.89
-X-Stat-Signature: 5ua3pak1316wh7njudnygas7mc65fnxd
-X-Rspamd-Server: rspamout04
-X-Rspamd-Queue-Id: 49BDD240236
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Session-ID: U2FsdGVkX1+DcKysZUCHqlPe7g/GHmLDopwkRmJ3TDc=
-X-HE-Tag: 1622305790-299222
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add intermediating lookup functions to avoid repetitive calls.
+From: Cassio Neri <cassio.neri@gmail.com>
 
-Reduces object size ~4kb (x86-64 defconfig w/ hid-asus)
+The current implementation of rtc_time64_to_tm contains unnecessary loops,
+branches and look-up tables. The new one uses an arithmetic-based algorithm
+appeared in [1] and is ~3.3 times faster.
 
-$ size drivers/hid/hid-asus.o*
-   text	   data	    bss	    dec	    hex	filename
-  10442	    468	      0	  10910	   2a9e	drivers/hid/hid-asus.o.bew
-  14523	    468	      0	  14991	   3a8f	drivers/hid/hid-asus.o.old
+The drawback is that the new code isn't intuitive and contains many 'magic
+numbers' (not unusual for this type of algorithm). However, [1] justifies
+all those numbers and, given this function's history, I reckon the code is
+unlikely to need much maintenance, if any at all.
 
-Miscellanea:
+Added file drivers/rtc/lib_test.c containing a KUnit test case that checks
+every day in a 160,000 years interval starting on 1970-01-01 against the
+expected result. A new config RTC_LIB_KUNIT_TEST symbol was introduced to
+give the option to run this test suite.
 
-o Remove now unused asus_map_kay_clear macro
+[1] Neri, Schneider, "Euclidean Affine Functions and Applications to
+Calendar Algorithms". https://arxiv.org/abs/2102.06959
 
-Signed-off-by: Joe Perches <joe@perches.com>
+Signed-off-by: Cassio Neri <cassio.neri@gmail.com>
+
 ---
 
-untested, no hardware
+* Disclaimer: I'm an author of [1] and, surely, I have an interest in
+seeing my algorithm made into the kernel. If not by this patch, I'm
+willing to work closely with maintainers, if they wish, in order to write
+an appropriate implementation.
 
- drivers/hid/hid-asus.c | 128 ++++++++++++++++++++++++-------------------------
- 1 file changed, 64 insertions(+), 64 deletions(-)
+* Benchmarks: It measures the time taken by each implementation to process
+65,536 numbers. These numbers are pseudo-random under the uniform
+distribution on the interval corresponding to dates spanning 800 years
+starting at 1970-01-01.
 
-diff --git a/drivers/hid/hid-asus.c b/drivers/hid/hid-asus.c
-index fca8fc78a78a3..5b78e6c3bb5d9 100644
---- a/drivers/hid/hid-asus.c
-+++ b/drivers/hid/hid-asus.c
-@@ -811,8 +811,58 @@ static int asus_input_configured(struct hid_device *hdev, struct hid_input *hi)
- 	return 0;
+    https://quick-bench.com/q/ikF-97xNTtGvJlUbG2jLUuCl4e8
+
+(Apologies that the benchmark is in C++ but results in C should be close.)
+
+Disasembly: Shows, in particular, reduction in code size.
+
+    https://godbolt.org/z/dvj9G5vef
+
+---
+ drivers/rtc/Kconfig    | 10 ++++++
+ drivers/rtc/Makefile   |  1 +
+ drivers/rtc/lib.c      | 79 ++++++++++++++++++++++++++++--------------
+ drivers/rtc/lib_test.c | 75 +++++++++++++++++++++++++++++++++++++++
+ include/linux/rtc.h    |  6 +++-
+ 5 files changed, 144 insertions(+), 27 deletions(-)
+ create mode 100644 drivers/rtc/lib_test.c
+
+diff --git a/drivers/rtc/Kconfig b/drivers/rtc/Kconfig
+index 914497abeef9..af65f5007f78 100644
+--- a/drivers/rtc/Kconfig
++++ b/drivers/rtc/Kconfig
+@@ -10,6 +10,16 @@ config RTC_MC146818_LIB
+ 	bool
+ 	select RTC_LIB
+ 
++config RTC_LIB_KUNIT_TEST
++	tristate "KUnit test for RTC lib functions" if !KUNIT_ALL_TESTS
++	depends on KUNIT
++	default KUNIT_ALL_TESTS
++	select RTC_LIB
++	help
++	  Enable this option to test RTC library functions.
++
++	  If unsure, say N.
++
+ menuconfig RTC_CLASS
+ 	bool "Real Time Clock"
+ 	default n
+diff --git a/drivers/rtc/Makefile b/drivers/rtc/Makefile
+index 2dd0dd956b0e..763d3628c603 100644
+--- a/drivers/rtc/Makefile
++++ b/drivers/rtc/Makefile
+@@ -178,3 +178,4 @@ obj-$(CONFIG_RTC_DRV_WM8350)	+= rtc-wm8350.o
+ obj-$(CONFIG_RTC_DRV_X1205)	+= rtc-x1205.o
+ obj-$(CONFIG_RTC_DRV_XGENE)	+= rtc-xgene.o
+ obj-$(CONFIG_RTC_DRV_ZYNQMP)	+= rtc-zynqmp.o
++obj-$(CONFIG_RTC_LIB_KUNIT_TEST)	+= lib_test.o
+diff --git a/drivers/rtc/lib.c b/drivers/rtc/lib.c
+index 23284580df97..72f049b10751 100644
+--- a/drivers/rtc/lib.c
++++ b/drivers/rtc/lib.c
+@@ -6,6 +6,8 @@
+  * Author: Alessandro Zummo <a.zummo@towertech.it>
+  *
+  * based on arch/arm/common/rtctime.c and other bits
++ *
++ * Author: Cassio Neri <cassio.neri@gmail.com> (rtc_time64_to_tm)
+  */
+ 
+ #include <linux/export.h>
+@@ -22,8 +24,6 @@ static const unsigned short rtc_ydays[2][13] = {
+ 	{ 0, 31, 60, 91, 121, 152, 182, 213, 244, 274, 305, 335, 366 }
+ };
+ 
+-#define LEAPS_THRU_END_OF(y) ((y) / 4 - (y) / 100 + (y) / 400)
+-
+ /*
+  * The number of days in the month.
+  */
+@@ -43,41 +43,68 @@ int rtc_year_days(unsigned int day, unsigned int month, unsigned int year)
+ EXPORT_SYMBOL(rtc_year_days);
+ 
+ /*
+- * rtc_time64_to_tm - Converts time64_t to rtc_time.
+- * Convert seconds since 01-01-1970 00:00:00 to Gregorian date.
++ * This function converts time64_t to rtc_time.
++ *
++ * @param[in]  time   The number of seconds since 01-01-1970 00:00:00.
++ *                    (Must be positive.)
++ * @param[out] tm     Pointer to the struct rtc_time.
+  */
+ void rtc_time64_to_tm(time64_t time, struct rtc_time *tm)
+ {
+-	unsigned int month, year, secs;
++	unsigned int secs;
+ 	int days;
+ 
++	u32 r0, n1, q1;
++	u32 r1, n2, q2, r2;
++	u64 u2;
++	u32 n3, q3, r3;
++
++	u32 j;
++	u32 y;
++	u32 m, d;
++
+ 	/* time must be positive */
+ 	days = div_s64_rem(time, 86400, &secs);
+ 
+ 	/* day of the week, 1970-01-01 was a Thursday */
+ 	tm->tm_wday = (days + 4) % 7;
+ 
+-	year = 1970 + days / 365;
+-	days -= (year - 1970) * 365
+-		+ LEAPS_THRU_END_OF(year - 1)
+-		- LEAPS_THRU_END_OF(1970 - 1);
+-	while (days < 0) {
+-		year -= 1;
+-		days += 365 + is_leap_year(year);
+-	}
+-	tm->tm_year = year - 1900;
+-	tm->tm_yday = days + 1;
+-
+-	for (month = 0; month < 11; month++) {
+-		int newdays;
+-
+-		newdays = days - rtc_month_days(month, year);
+-		if (newdays < 0)
+-			break;
+-		days = newdays;
+-	}
+-	tm->tm_mon = month;
+-	tm->tm_mday = days + 1;
++	/*
++	 * The following algorithm is Proposition 6.3 of Neri and Schneider,
++	 * "Euclidean Affine Functions and Applications to Calendar Algorithms".
++	 * https://arxiv.org/abs/2102.06959
++	 */
++
++	r0 = days + 719468;
++
++	n1 = 4 * r0 + 3;
++	q1 = n1 / 146097;
++	r1 = n1 % 146097 / 4;
++
++	n2 = 4 * r1 + 3;
++	u2 = ((u64) 2939745) * n2;
++	q2 = u2 >> 32;
++	r2 = ((u32) u2) / 2939745 / 4;
++
++	n3 = 2141 * r2 + 197913;
++	q3 = n3 >> 16;
++	r3 = ((u16) n3) / 2141;
++
++	j = r2 >= 306;
++	y = 100 * q1 + q2 + j;
++	m = j ? q3 - 12 : q3;
++	d = r3 + 1;
++
++	tm->tm_year = y - 1900;
++	tm->tm_mon  = m - 1;
++	tm->tm_mday = d;
++
++	/*
++	 * r2 contains the number of days since previous Mar 1st and j == true
++	 * if and only if month is Jan or Feb. The bellow is then a correction
++	 * to get the numbers of days since previous Jan 1st.
++	 */
++	tm->tm_yday = j ? r2 - 305 : r2 + 60 + is_leap_year(y);
+ 
+ 	tm->tm_hour = secs / 3600;
+ 	secs -= tm->tm_hour * 3600;
+diff --git a/drivers/rtc/lib_test.c b/drivers/rtc/lib_test.c
+new file mode 100644
+index 000000000000..0060e3a72b50
+--- /dev/null
++++ b/drivers/rtc/lib_test.c
+@@ -0,0 +1,75 @@
++// SPDX-License-Identifier: LGPL-2.1+
++
++#include <kunit/test.h>
++#include <linux/rtc.h>
++
++/*
++ * Advance a date by one day.
++ */
++static void advance_date(int *year, int *month, int *mday, int *yday)
++{
++	if (*mday != rtc_month_days(*month - 1, *year)) {
++		++*mday;
++		++*yday;
++		return;
++	}
++
++	*mday = 1;
++	if (*month != 12) {
++		++*month;
++		++*yday;
++		return;
++	}
++
++	*month = 1;
++	*yday  = 1;
++	++*year;
++}
++
++/*
++ * Checks every day in a 160000 years interval starting on 1970-01-01
++ * against the expected result.
++ */
++static void rtc_time64_to_tm_test_date_range(struct kunit *test)
++{
++	/*
++	 * 160000 years = (160000 / 400) * 400 years
++	 *              = (160000 / 400) * 146097 days
++	 *              = (160000 / 400) * 146097 * 86400 seconds
++	 */
++	time64_t total_secs = ((time64_t) 160000) / 400 * 146097 * 86400;
++	int      year       = 1970;
++	int      month      = 1;
++	int      mday       = 1;
++	int      yday       = 1;
++
++	struct rtc_time result;
++	time64_t secs;
++
++	for (secs = 0; secs <= total_secs; secs += 86400) {
++
++		rtc_time64_to_tm(secs, &result);
++
++		#define FAIL_MSG "%d/%02d/%02d (%2d) : %ld", \
++			year, month, mday, yday, secs/86400
++
++		KUNIT_ASSERT_EQ_MSG(test, year - 1900, result.tm_year, FAIL_MSG);
++		KUNIT_ASSERT_EQ_MSG(test, month - 1, result.tm_mon, FAIL_MSG);
++		KUNIT_ASSERT_EQ_MSG(test, mday, result.tm_mday, FAIL_MSG);
++		KUNIT_ASSERT_EQ_MSG(test, yday, result.tm_yday, FAIL_MSG);
++
++		advance_date(&year, &month, &mday, &yday);
++	}
++}
++
++static struct kunit_case rtc_lib_test_cases[] = {
++	KUNIT_CASE(rtc_time64_to_tm_test_date_range),
++	{}
++};
++
++static struct kunit_suite rtc_lib_test_suite = {
++	.name = "rtc_lib_test_cases",
++	.test_cases = rtc_lib_test_cases,
++};
++
++kunit_test_suite(rtc_lib_test_suite);
+diff --git a/include/linux/rtc.h b/include/linux/rtc.h
+index bd611e26291d..a788cdb488b5 100644
+--- a/include/linux/rtc.h
++++ b/include/linux/rtc.h
+@@ -220,7 +220,11 @@ void rtc_timer_do_work(struct work_struct *work);
+ 
+ static inline bool is_leap_year(unsigned int year)
+ {
+-	return (!(year % 4) && (year % 100)) || !(year % 400);
++	/* This implementation is more branch-predictor friendly than the
++	 * traditional:
++	 *   return year % 4 == 0 && (year % 100 != 0 || year % 400 == 0);
++	 */
++	return year % 100 != 0 ? year % 4 == 0 : year % 400 == 0;
  }
  
--#define asus_map_key_clear(c)	hid_map_usage_clear(hi, usage, bit, \
--						    max, EV_KEY, (c))
-+static int asus_map_use_to_btn(int use)
-+{
-+	switch (use) {
-+	case 0x10: return KEY_BRIGHTNESSDOWN;
-+	case 0x20: return KEY_BRIGHTNESSUP;
-+	case 0x35: return KEY_DISPLAY_OFF;
-+	case 0x6c: return KEY_SLEEP;
-+	case 0x7c: return KEY_MICMUTE;
-+	case 0x82: return KEY_CAMERA;
-+	case 0x88: return KEY_RFKILL;
-+	case 0xb5: return KEY_CALC;
-+	case 0xc4: return KEY_KBDILLUMUP;
-+	case 0xc5: return KEY_KBDILLUMDOWN;
-+	case 0x6b: return KEY_F21;	/* ASUS touchpad toggle */
-+	case 0x38: return KEY_PROG1;	/* ROG key */
-+	case 0xba: return KEY_PROG2;	/* Fn+C ASUS Splendid */
-+	case 0x5c: return KEY_PROG3;	/* Fn+Space Power4Gear Hybrid */
-+	case 0x99: return KEY_PROG4;	/* Fn+F5 "fan" symbol on FX503VD */
-+	/* for N-Key keyboard */
-+	case 0xae: return KEY_PROG4;	/* Fn+F5 "fan" symbol */
-+	case 0x92: return KEY_CALC;	/* Fn+Ret "Calc" symbol */
-+	case 0xb2: return KEY_PROG2;	/* Fn+Left Aura mode previous */
-+	case 0xb3: return KEY_PROG3;	/* Fn+Right Aura mode next */
-+	}
-+
-+	return 0;
-+}
-+
-+static int ms_map_use_to_btn(int use)
-+{
-+	switch (use) {
-+	case 0xff01: return BTN_1;
-+	case 0xff02: return BTN_2;
-+	case 0xff03: return BTN_3;
-+	case 0xff04: return BTN_4;
-+	case 0xff05: return BTN_5;
-+	case 0xff06: return BTN_6;
-+	case 0xff07: return BTN_7;
-+	case 0xff08: return BTN_8;
-+	case 0xff09: return BTN_9;
-+	case 0xff0a: return BTN_A;
-+	case 0xff0b: return BTN_B;
-+	case 0x00f1: return KEY_WLAN;
-+	case 0x00f2: return KEY_BRIGHTNESSDOWN;
-+	case 0x00f3: return KEY_BRIGHTNESSUP;
-+	case 0x00f4: return KEY_DISPLAY_OFF;
-+	case 0x00f7: return KEY_CAMERA;
-+	case 0x00f8: return KEY_PROG1;
-+	}
-+
-+	return 0;
-+}
- static int asus_input_mapping(struct hid_device *hdev,
- 		struct hid_input *hi, struct hid_field *field,
- 		struct hid_usage *usage, unsigned long **bit,
-@@ -842,50 +892,16 @@ static int asus_input_mapping(struct hid_device *hdev,
- 
- 	/* ASUS-specific keyboard hotkeys and led backlight */
- 	if ((usage->hid & HID_USAGE_PAGE) == HID_UP_ASUSVENDOR) {
--		switch (usage->hid & HID_USAGE) {
--		case 0x10: asus_map_key_clear(KEY_BRIGHTNESSDOWN);	break;
--		case 0x20: asus_map_key_clear(KEY_BRIGHTNESSUP);		break;
--		case 0x35: asus_map_key_clear(KEY_DISPLAY_OFF);		break;
--		case 0x6c: asus_map_key_clear(KEY_SLEEP);		break;
--		case 0x7c: asus_map_key_clear(KEY_MICMUTE);		break;
--		case 0x82: asus_map_key_clear(KEY_CAMERA);		break;
--		case 0x88: asus_map_key_clear(KEY_RFKILL);			break;
--		case 0xb5: asus_map_key_clear(KEY_CALC);			break;
--		case 0xc4: asus_map_key_clear(KEY_KBDILLUMUP);		break;
--		case 0xc5: asus_map_key_clear(KEY_KBDILLUMDOWN);		break;
--
--		/* ASUS touchpad toggle */
--		case 0x6b: asus_map_key_clear(KEY_F21);			break;
--
--		/* ROG key */
--		case 0x38: asus_map_key_clear(KEY_PROG1);		break;
--
--		/* Fn+C ASUS Splendid */
--		case 0xba: asus_map_key_clear(KEY_PROG2);		break;
-+		int btn = asus_map_use_to_btn(usage->hid & HID_USAGE);
- 
--		/* Fn+Space Power4Gear Hybrid */
--		case 0x5c: asus_map_key_clear(KEY_PROG3);		break;
--
--		/* Fn+F5 "fan" symbol on FX503VD */
--		case 0x99: asus_map_key_clear(KEY_PROG4);		break;
--
--		/* Fn+F5 "fan" symbol on N-Key keyboard */
--		case 0xae: asus_map_key_clear(KEY_PROG4);		break;
--
--		/* Fn+Ret "Calc" symbol on N-Key keyboard */
--		case 0x92: asus_map_key_clear(KEY_CALC);		break;
--
--		/* Fn+Left Aura mode previous on N-Key keyboard */
--		case 0xb2: asus_map_key_clear(KEY_PROG2);		break;
--
--		/* Fn+Right Aura mode next on N-Key keyboard */
--		case 0xb3: asus_map_key_clear(KEY_PROG3);		break;
--
--		default:
--			/* ASUS lazily declares 256 usages, ignore the rest,
--			 * as some make the keyboard appear as a pointer device. */
-+		/*
-+		 * ASUS lazily declares 256 usages, ignore the rest,
-+		 * as some make the keyboard appear as a pointer device.
-+		 */
-+		if (!btn)
- 			return -1;
--		}
-+
-+		hid_map_usage_clear(hi, usage, bit, max, EV_KEY, btn);
- 
- 		/*
- 		 * Check and enable backlight only on devices with UsagePage ==
-@@ -901,28 +917,12 @@ static int asus_input_mapping(struct hid_device *hdev,
- 	}
- 
- 	if ((usage->hid & HID_USAGE_PAGE) == HID_UP_MSVENDOR) {
--		switch (usage->hid & HID_USAGE) {
--		case 0xff01: asus_map_key_clear(BTN_1);	break;
--		case 0xff02: asus_map_key_clear(BTN_2);	break;
--		case 0xff03: asus_map_key_clear(BTN_3);	break;
--		case 0xff04: asus_map_key_clear(BTN_4);	break;
--		case 0xff05: asus_map_key_clear(BTN_5);	break;
--		case 0xff06: asus_map_key_clear(BTN_6);	break;
--		case 0xff07: asus_map_key_clear(BTN_7);	break;
--		case 0xff08: asus_map_key_clear(BTN_8);	break;
--		case 0xff09: asus_map_key_clear(BTN_9);	break;
--		case 0xff0a: asus_map_key_clear(BTN_A);	break;
--		case 0xff0b: asus_map_key_clear(BTN_B);	break;
--		case 0x00f1: asus_map_key_clear(KEY_WLAN);	break;
--		case 0x00f2: asus_map_key_clear(KEY_BRIGHTNESSDOWN);	break;
--		case 0x00f3: asus_map_key_clear(KEY_BRIGHTNESSUP);	break;
--		case 0x00f4: asus_map_key_clear(KEY_DISPLAY_OFF);	break;
--		case 0x00f7: asus_map_key_clear(KEY_CAMERA);	break;
--		case 0x00f8: asus_map_key_clear(KEY_PROG1);	break;
--		default:
-+		int btn = ms_map_use_to_btn(usage->hid & HID_USAGE);
-+
-+		if (!btn)
- 			return 0;
--		}
- 
-+		hid_map_usage_clear(hi, usage, bit, max, EV_KEY, btn);
- 		set_bit(EV_REP, hi->input->evbit);
- 		return 1;
- 	}
-
+ #define devm_rtc_register_device(device) \
+-- 
+2.31.0
 
