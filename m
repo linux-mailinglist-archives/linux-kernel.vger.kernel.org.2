@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D3D213952B3
-	for <lists+linux-kernel@lfdr.de>; Sun, 30 May 2021 21:23:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ED9783952B4
+	for <lists+linux-kernel@lfdr.de>; Sun, 30 May 2021 21:23:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230026AbhE3TZP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 30 May 2021 15:25:15 -0400
-Received: from mga02.intel.com ([134.134.136.20]:21286 "EHLO mga02.intel.com"
+        id S230049AbhE3TZT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 30 May 2021 15:25:19 -0400
+Received: from mga02.intel.com ([134.134.136.20]:21290 "EHLO mga02.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230016AbhE3TYv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 30 May 2021 15:24:51 -0400
-IronPort-SDR: xzNgrbtk5e/uKLHJ6JliG/1PkggV2tVhspDcmWP5pOOmiA4SI9nGKzwsVmvu5oqhVtYqOFpBUO
- s5CYU+7gX9Pg==
-X-IronPort-AV: E=McAfee;i="6200,9189,10000"; a="190362470"
+        id S230030AbhE3TYw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 30 May 2021 15:24:52 -0400
+IronPort-SDR: ex/SGkYiWF2iFAlgW54oB+kslbRNq3qAFSOSioIjp0SifSnqOmMmVjYLlwnIyEbb4F12e6A9pj
+ aGY9QUMfWLNw==
+X-IronPort-AV: E=McAfee;i="6200,9189,10000"; a="190362472"
 X-IronPort-AV: E=Sophos;i="5.83,234,1616482800"; 
-   d="scan'208";a="190362470"
+   d="scan'208";a="190362472"
 Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 May 2021 12:23:10 -0700
-IronPort-SDR: 3zf/RCa2OPfMfeec1xBr+BcoCZXoIPOyt53CmoYz+0A8SwpRx10WJVUs9LSw7JHUem/pWoFM8m
- 2R1w713DltHA==
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 May 2021 12:23:12 -0700
+IronPort-SDR: CcAb877m53YihV6/4tH75J6GqDnGXW+0ZmFLYumXeynB5nrPgeo/LK114ZTNcmDwgOKRQcBR9E
+ ogTIhIC/0y/w==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.83,234,1616482800"; 
-   d="scan'208";a="415926329"
+   d="scan'208";a="415926339"
 Received: from ahunter-desktop.fi.intel.com ([10.237.72.174])
-  by orsmga002.jf.intel.com with ESMTP; 30 May 2021 12:23:09 -0700
+  by orsmga002.jf.intel.com with ESMTP; 30 May 2021 12:23:11 -0700
 From:   Adrian Hunter <adrian.hunter@intel.com>
 To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
         Jiri Olsa <jolsa@redhat.com>, Andi Kleen <ak@linux.intel.com>
 Cc:     linux-kernel@vger.kernel.org
-Subject: [PATCH 12/13] perf scripting python: exported-sql-viewer.py: Factor out libxed.py
-Date:   Sun, 30 May 2021 22:23:07 +0300
-Message-Id: <20210530192308.7382-13-adrian.hunter@intel.com>
+Subject: [PATCH 13/13] perf scripting python: intel-pt-events.py: Add --insn-trace and --src-trace
+Date:   Sun, 30 May 2021 22:23:08 +0300
+Message-Id: <20210530192308.7382-14-adrian.hunter@intel.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20210530192308.7382-1-adrian.hunter@intel.com>
 References: <20210530192308.7382-1-adrian.hunter@intel.com>
@@ -40,235 +40,291 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Factor out libxed.py so it can be reused.
+Add an instruction trace and a source trace to the intel-pt-events.py
+script.
 
 Signed-off-by: Adrian Hunter <adrian.hunter@intel.com>
 ---
- .../scripts/python/exported-sql-viewer.py     |  89 +--------------
- tools/perf/scripts/python/libxed.py           | 107 ++++++++++++++++++
- 2 files changed, 108 insertions(+), 88 deletions(-)
- create mode 100644 tools/perf/scripts/python/libxed.py
+ tools/perf/Documentation/perf-intel-pt.txt   |   6 +-
+ tools/perf/scripts/python/intel-pt-events.py | 176 +++++++++++++++++--
+ 2 files changed, 163 insertions(+), 19 deletions(-)
 
-diff --git a/tools/perf/scripts/python/exported-sql-viewer.py b/tools/perf/scripts/python/exported-sql-viewer.py
-index 711d4f9f5645..13f2d8a81610 100755
---- a/tools/perf/scripts/python/exported-sql-viewer.py
-+++ b/tools/perf/scripts/python/exported-sql-viewer.py
-@@ -113,6 +113,7 @@ import os
- import random
- import copy
- import math
+diff --git a/tools/perf/Documentation/perf-intel-pt.txt b/tools/perf/Documentation/perf-intel-pt.txt
+index e382dbd4ff0a..184ba62420f0 100644
+--- a/tools/perf/Documentation/perf-intel-pt.txt
++++ b/tools/perf/Documentation/perf-intel-pt.txt
+@@ -174,7 +174,11 @@ Refer to script export-to-sqlite.py or export-to-postgresql.py for more details,
+ and to script exported-sql-viewer.py for an example of using the database.
+ 
+ There is also script intel-pt-events.py which provides an example of how to
+-unpack the raw data for power events and PTWRITE.
++unpack the raw data for power events and PTWRITE. The script also displays
++branches, and supports 2 additional modes selected by option:
++
++ --insn-trace - instruction trace
++ --src-trace - source trace
+ 
+ As mentioned above, it is easy to capture too much data.  One way to limit the
+ data captured is to use 'snapshot' mode which is explained further below.
+diff --git a/tools/perf/scripts/python/intel-pt-events.py b/tools/perf/scripts/python/intel-pt-events.py
+index fcfae1de731b..1d3a189a9a54 100644
+--- a/tools/perf/scripts/python/intel-pt-events.py
++++ b/tools/perf/scripts/python/intel-pt-events.py
+@@ -16,21 +16,30 @@ from __future__ import print_function
+ import os
+ import sys
+ import struct
++import argparse
++
 +from libxed import LibXED
++from ctypes import create_string_buffer, addressof
  
- pyside_version_1 = True
- if not "--pyside-version-1" in sys.argv:
-@@ -4747,94 +4748,6 @@ class MainWindow(QMainWindow):
- 		dialog = AboutDialog(self.glb, self)
- 		dialog.exec_()
+ sys.path.append(os.environ['PERF_EXEC_PATH'] + \
+ 	'/scripts/python/Perf-Trace-Util/lib/Perf/Trace')
  
--# XED Disassembler
+-# These perf imports are not used at present
+-#from perf_trace_context import *
+-#from Core import *
++from perf_trace_context import perf_set_itrace_options, \
++	perf_sample_insn, perf_sample_srccode
+ 
+ try:
+ 	broken_pipe_exception = BrokenPipeError
+ except:
+ 	broken_pipe_exception = IOError
+ 
+-glb_switch_str = None
+-glb_switch_printed = True
++glb_switch_str		= None
++glb_switch_printed	= True
++glb_insn		= False
++glb_disassembler	= None
++glb_src			= False
++glb_source_file_name	= None
++glb_line_number		= None
++glb_dso			= None
+ 
+ def get_optional_null(perf_dict, field):
+ 	if field in perf_dict:
+@@ -42,6 +51,11 @@ def get_optional_zero(perf_dict, field):
+ 		return perf_dict[field]
+ 	return 0
+ 
++def get_optional_bytes(perf_dict, field):
++	if field in perf_dict:
++		return perf_dict[field]
++	return bytes()
++
+ def get_optional(perf_dict, field):
+ 	if field in perf_dict:
+ 		return perf_dict[field]
+@@ -53,7 +67,31 @@ def get_offset(perf_dict, field):
+ 	return ""
+ 
+ def trace_begin():
+-	print("Intel PT Branch Trace, Power Events and PTWRITE")
++	ap = argparse.ArgumentParser(usage = "", add_help = False)
++	ap.add_argument("--insn-trace", action='store_true')
++	ap.add_argument("--src-trace", action='store_true')
++	global glb_args
++	global glb_insn
++	global glb_src
++	glb_args = ap.parse_args()
++	if glb_args.insn_trace:
++		print("Intel PT Instruction Trace")
++		itrace = "i0nsepwx"
++		glb_insn = True
++	elif glb_args.src_trace:
++		print("Intel PT Source Trace")
++		itrace = "i0nsepwx"
++		glb_insn = True
++		glb_src = True
++	else:
++		print("Intel PT Branch Trace, Power Events and PTWRITE")
++		itrace = "bepwx"
++	global glb_disassembler
++	try:
++		glb_disassembler = LibXED()
++	except:
++		glb_disassembler = None
++	perf_set_itrace_options(perf_script_context, itrace)
+ 
+ def trace_end():
+ 	print("End")
+@@ -111,11 +149,14 @@ def print_psb(raw_buf):
+ 	offset = data[1]
+ 	print("offset: %#x" % (offset), end=' ')
+ 
+-def print_common_start(comm, sample, name):
++def common_start_str(comm, sample):
+ 	ts = sample["time"]
+ 	cpu = sample["cpu"]
+ 	pid = sample["pid"]
+ 	tid = sample["tid"]
++	return "%16s %5u/%-5u [%03u] %9u.%09u  " % (comm, pid, tid, cpu, ts / 1000000000, ts %1000000000)
++
++def print_common_start(comm, sample, name):
+ 	flags_disp = get_optional_null(sample, "flags_disp")
+ 	# Unused fields:
+ 	# period      = sample["period"]
+@@ -123,22 +164,96 @@ def print_common_start(comm, sample, name):
+ 	# weight      = sample["weight"]
+ 	# transaction = sample["transaction"]
+ 	# cpumode     = get_optional_zero(sample, "cpumode")
+-	print("%16s %5u/%-5u [%03u] %9u.%09u  %7s  %19s" %
+-		(comm, pid, tid, cpu, ts / 1000000000, ts %1000000000, name, flags_disp),
+-		end=' ')
++	print(common_start_str(comm, sample) + "%7s  %19s" % (name, flags_disp), end=' ')
++
++def print_instructions_start(comm, sample):
++	if "x" in get_optional_null(sample, "flags"):
++		print(common_start_str(comm, sample) + "x", end=' ')
++	else:
++		print(common_start_str(comm, sample), end='  ')
++
++def disassem(insn, ip):
++	inst = glb_disassembler.Instruction()
++	glb_disassembler.SetMode(inst, 0) # Assume 64-bit
++	buf = create_string_buffer(64)
++	buf.value = insn
++	return glb_disassembler.DisassembleOne(inst, addressof(buf), len(insn), ip)
+ 
+ def print_common_ip(param_dict, sample, symbol, dso):
+ 	ip   = sample["ip"]
+ 	offs = get_offset(param_dict, "symoff")
+-	print("%16x %s%s (%s)" % (ip, symbol, offs, dso), end=' ')
++	if "cyc_cnt" in sample:
++		cyc_cnt = sample["cyc_cnt"]
++		insn_cnt = get_optional_zero(sample, "insn_cnt")
++		ipc_str = "  IPC: %#.2f (%u/%u)" % (insn_cnt / cyc_cnt, insn_cnt, cyc_cnt)
++	else:
++		ipc_str = ""
++	if glb_insn and glb_disassembler is not None:
++		insn = perf_sample_insn(perf_script_context)
++		if insn and len(insn):
++			cnt, text = disassem(insn, ip)
++			byte_str = ("%x" % ip).rjust(16)
++			if sys.version_info.major >= 3:
++				for k in range(cnt):
++					byte_str += " %02x" % insn[k]
++			else:
++				for k in xrange(cnt):
++					byte_str += " %02x" % ord(insn[k])
++			print("%-40s  %-30s" % (byte_str, text), end=' ')
++		print("%s%s (%s)" % (symbol, offs, dso), end=' ')
++	else:
++		print("%16x %s%s (%s)" % (ip, symbol, offs, dso), end=' ')
+ 	if "addr_correlates_sym" in sample:
+ 		addr   = sample["addr"]
+ 		dso    = get_optional(sample, "addr_dso")
+ 		symbol = get_optional(sample, "addr_symbol")
+ 		offs   = get_offset(sample, "addr_symoff")
+-		print("=> %x %s%s (%s)" % (addr, symbol, offs, dso))
++		print("=> %x %s%s (%s)%s" % (addr, symbol, offs, dso, ipc_str))
++	else:
++		print(ipc_str)
++
++def print_srccode(comm, param_dict, sample, symbol, dso, with_insn):
++	ip = sample["ip"]
++	if symbol == "[unknown]":
++		start_str = common_start_str(comm, sample) + ("%x" % ip).rjust(16).ljust(40)
+ 	else:
+-		print()
++		offs = get_offset(param_dict, "symoff")
++		start_str = common_start_str(comm, sample) + (symbol + offs).ljust(40)
++
++	if with_insn and glb_insn and glb_disassembler is not None:
++		insn = perf_sample_insn(perf_script_context)
++		if insn and len(insn):
++			cnt, text = disassem(insn, ip)
++		start_str += text.ljust(30)
++
++	global glb_source_file_name
++	global glb_line_number
++	global glb_dso
++
++	source_file_name, line_number, source_line = perf_sample_srccode(perf_script_context)
++	if source_file_name:
++		if glb_line_number == line_number and glb_source_file_name == source_file_name:
++			src_str = ""
++		else:
++			if len(source_file_name) > 40:
++				src_file = ("..." + source_file_name[-37:]) + " "
++			else:
++				src_file = source_file_name.ljust(41)
++			if source_line is None:
++				src_str = src_file + str(line_number).rjust(4) + " <source not found>"
++			else:
++				src_str = src_file + str(line_number).rjust(4) + " " + source_line
++		glb_dso = None
++	elif dso == glb_dso:
++		src_str = ""
++	else:
++		src_str = dso
++		glb_dso = dso
++
++	glb_line_number = line_number
++	glb_source_file_name = source_file_name
++
++	print(start_str, src_str)
+ 
+ def do_process_event(param_dict):
+ 	global glb_switch_printed
+@@ -159,24 +274,49 @@ def do_process_event(param_dict):
+ 	dso    = get_optional(param_dict, "dso")
+ 	symbol = get_optional(param_dict, "symbol")
+ 
+-	print_common_start(comm, sample, name)
 -
--class xed_state_t(Structure):
+-	if name == "ptwrite":
++	if name[0:12] == "instructions":
++		if glb_src:
++			print_srccode(comm, param_dict, sample, symbol, dso, True)
++		else:
++			print_instructions_start(comm, sample)
++			print_common_ip(param_dict, sample, symbol, dso)
++	elif name[0:8] == "branches":
++		if glb_src:
++			print_srccode(comm, param_dict, sample, symbol, dso, False)
++		else:
++			print_common_start(comm, sample, name)
++			print_common_ip(param_dict, sample, symbol, dso)
++	elif name == "ptwrite":
++		print_common_start(comm, sample, name)
+ 		print_ptwrite(raw_buf)
++		print_common_ip(param_dict, sample, symbol, dso)
+ 	elif name == "cbr":
++		print_common_start(comm, sample, name)
+ 		print_cbr(raw_buf)
++		print_common_ip(param_dict, sample, symbol, dso)
+ 	elif name == "mwait":
++		print_common_start(comm, sample, name)
+ 		print_mwait(raw_buf)
++		print_common_ip(param_dict, sample, symbol, dso)
+ 	elif name == "pwre":
++		print_common_start(comm, sample, name)
+ 		print_pwre(raw_buf)
++		print_common_ip(param_dict, sample, symbol, dso)
+ 	elif name == "exstop":
++		print_common_start(comm, sample, name)
+ 		print_exstop(raw_buf)
++		print_common_ip(param_dict, sample, symbol, dso)
+ 	elif name == "pwrx":
++		print_common_start(comm, sample, name)
+ 		print_pwrx(raw_buf)
++		print_common_ip(param_dict, sample, symbol, dso)
+ 	elif name == "psb":
++		print_common_start(comm, sample, name)
+ 		print_psb(raw_buf)
 -
--	_fields_ = [
--		("mode", c_int),
--		("width", c_int)
--	]
--
--class XEDInstruction():
--
--	def __init__(self, libxed):
--		# Current xed_decoded_inst_t structure is 192 bytes. Use 512 to allow for future expansion
--		xedd_t = c_byte * 512
--		self.xedd = xedd_t()
--		self.xedp = addressof(self.xedd)
--		libxed.xed_decoded_inst_zero(self.xedp)
--		self.state = xed_state_t()
--		self.statep = addressof(self.state)
--		# Buffer for disassembled instruction text
--		self.buffer = create_string_buffer(256)
--		self.bufferp = addressof(self.buffer)
--
--class LibXED():
--
--	def __init__(self):
--		try:
--			self.libxed = CDLL("libxed.so")
--		except:
--			self.libxed = None
--		if not self.libxed:
--			self.libxed = CDLL("/usr/local/lib/libxed.so")
--
--		self.xed_tables_init = self.libxed.xed_tables_init
--		self.xed_tables_init.restype = None
--		self.xed_tables_init.argtypes = []
--
--		self.xed_decoded_inst_zero = self.libxed.xed_decoded_inst_zero
--		self.xed_decoded_inst_zero.restype = None
--		self.xed_decoded_inst_zero.argtypes = [ c_void_p ]
--
--		self.xed_operand_values_set_mode = self.libxed.xed_operand_values_set_mode
--		self.xed_operand_values_set_mode.restype = None
--		self.xed_operand_values_set_mode.argtypes = [ c_void_p, c_void_p ]
--
--		self.xed_decoded_inst_zero_keep_mode = self.libxed.xed_decoded_inst_zero_keep_mode
--		self.xed_decoded_inst_zero_keep_mode.restype = None
--		self.xed_decoded_inst_zero_keep_mode.argtypes = [ c_void_p ]
--
--		self.xed_decode = self.libxed.xed_decode
--		self.xed_decode.restype = c_int
--		self.xed_decode.argtypes = [ c_void_p, c_void_p, c_uint ]
--
--		self.xed_format_context = self.libxed.xed_format_context
--		self.xed_format_context.restype = c_uint
--		self.xed_format_context.argtypes = [ c_int, c_void_p, c_void_p, c_int, c_ulonglong, c_void_p, c_void_p ]
--
--		self.xed_tables_init()
--
--	def Instruction(self):
--		return XEDInstruction(self)
--
--	def SetMode(self, inst, mode):
--		if mode:
--			inst.state.mode = 4 # 32-bit
--			inst.state.width = 4 # 4 bytes
--		else:
--			inst.state.mode = 1 # 64-bit
--			inst.state.width = 8 # 8 bytes
--		self.xed_operand_values_set_mode(inst.xedp, inst.statep)
--
--	def DisassembleOne(self, inst, bytes_ptr, bytes_cnt, ip):
--		self.xed_decoded_inst_zero_keep_mode(inst.xedp)
--		err = self.xed_decode(inst.xedp, bytes_ptr, bytes_cnt)
--		if err:
--			return 0, ""
--		# Use AT&T mode (2), alternative is Intel (3)
--		ok = self.xed_format_context(2, inst.xedp, inst.bufferp, sizeof(inst.buffer), ip, 0, 0)
--		if not ok:
--			return 0, ""
--		if sys.version_info[0] == 2:
--			result = inst.buffer.value
--		else:
--			result = inst.buffer.value.decode()
--		# Return instruction length and the disassembled instruction text
--		# For now, assume the length is in byte 166
--		return inst.xedd[166], result
--
- def TryOpen(file_name):
+-	print_common_ip(param_dict, sample, symbol, dso)
++		print_common_ip(param_dict, sample, symbol, dso)
++	else:
++		print_common_start(comm, sample, name)
++		print_common_ip(param_dict, sample, symbol, dso)
+ 
+ def process_event(param_dict):
  	try:
- 		return open(file_name, "rb")
-diff --git a/tools/perf/scripts/python/libxed.py b/tools/perf/scripts/python/libxed.py
-new file mode 100644
-index 000000000000..2c70a5a7eb9c
---- /dev/null
-+++ b/tools/perf/scripts/python/libxed.py
-@@ -0,0 +1,107 @@
-+#!/usr/bin/env python
-+# SPDX-License-Identifier: GPL-2.0
-+# libxed.py: Python wrapper for libxed.so
-+# Copyright (c) 2014-2021, Intel Corporation.
-+
-+# To use Intel XED, libxed.so must be present. To build and install
-+# libxed.so:
-+#            git clone https://github.com/intelxed/mbuild.git mbuild
-+#            git clone https://github.com/intelxed/xed
-+#            cd xed
-+#            ./mfile.py --share
-+#            sudo ./mfile.py --prefix=/usr/local install
-+#            sudo ldconfig
-+#
-+
-+import sys
-+
-+from ctypes import CDLL, Structure, create_string_buffer, addressof, sizeof, \
-+		   c_void_p, c_bool, c_byte, c_char, c_int, c_uint, c_longlong, c_ulonglong
-+
-+# XED Disassembler
-+
-+class xed_state_t(Structure):
-+
-+	_fields_ = [
-+		("mode", c_int),
-+		("width", c_int)
-+	]
-+
-+class XEDInstruction():
-+
-+	def __init__(self, libxed):
-+		# Current xed_decoded_inst_t structure is 192 bytes. Use 512 to allow for future expansion
-+		xedd_t = c_byte * 512
-+		self.xedd = xedd_t()
-+		self.xedp = addressof(self.xedd)
-+		libxed.xed_decoded_inst_zero(self.xedp)
-+		self.state = xed_state_t()
-+		self.statep = addressof(self.state)
-+		# Buffer for disassembled instruction text
-+		self.buffer = create_string_buffer(256)
-+		self.bufferp = addressof(self.buffer)
-+
-+class LibXED():
-+
-+	def __init__(self):
-+		try:
-+			self.libxed = CDLL("libxed.so")
-+		except:
-+			self.libxed = None
-+		if not self.libxed:
-+			self.libxed = CDLL("/usr/local/lib/libxed.so")
-+
-+		self.xed_tables_init = self.libxed.xed_tables_init
-+		self.xed_tables_init.restype = None
-+		self.xed_tables_init.argtypes = []
-+
-+		self.xed_decoded_inst_zero = self.libxed.xed_decoded_inst_zero
-+		self.xed_decoded_inst_zero.restype = None
-+		self.xed_decoded_inst_zero.argtypes = [ c_void_p ]
-+
-+		self.xed_operand_values_set_mode = self.libxed.xed_operand_values_set_mode
-+		self.xed_operand_values_set_mode.restype = None
-+		self.xed_operand_values_set_mode.argtypes = [ c_void_p, c_void_p ]
-+
-+		self.xed_decoded_inst_zero_keep_mode = self.libxed.xed_decoded_inst_zero_keep_mode
-+		self.xed_decoded_inst_zero_keep_mode.restype = None
-+		self.xed_decoded_inst_zero_keep_mode.argtypes = [ c_void_p ]
-+
-+		self.xed_decode = self.libxed.xed_decode
-+		self.xed_decode.restype = c_int
-+		self.xed_decode.argtypes = [ c_void_p, c_void_p, c_uint ]
-+
-+		self.xed_format_context = self.libxed.xed_format_context
-+		self.xed_format_context.restype = c_uint
-+		self.xed_format_context.argtypes = [ c_int, c_void_p, c_void_p, c_int, c_ulonglong, c_void_p, c_void_p ]
-+
-+		self.xed_tables_init()
-+
-+	def Instruction(self):
-+		return XEDInstruction(self)
-+
-+	def SetMode(self, inst, mode):
-+		if mode:
-+			inst.state.mode = 4 # 32-bit
-+			inst.state.width = 4 # 4 bytes
-+		else:
-+			inst.state.mode = 1 # 64-bit
-+			inst.state.width = 8 # 8 bytes
-+		self.xed_operand_values_set_mode(inst.xedp, inst.statep)
-+
-+	def DisassembleOne(self, inst, bytes_ptr, bytes_cnt, ip):
-+		self.xed_decoded_inst_zero_keep_mode(inst.xedp)
-+		err = self.xed_decode(inst.xedp, bytes_ptr, bytes_cnt)
-+		if err:
-+			return 0, ""
-+		# Use AT&T mode (2), alternative is Intel (3)
-+		ok = self.xed_format_context(2, inst.xedp, inst.bufferp, sizeof(inst.buffer), ip, 0, 0)
-+		if not ok:
-+			return 0, ""
-+		if sys.version_info[0] == 2:
-+			result = inst.buffer.value
-+		else:
-+			result = inst.buffer.value.decode()
-+		# Return instruction length and the disassembled instruction text
-+		# For now, assume the length is in byte 166
-+		return inst.xedd[166], result
 -- 
 2.17.1
 
