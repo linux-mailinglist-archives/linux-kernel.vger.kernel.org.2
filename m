@@ -2,155 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 08ACE39514C
-	for <lists+linux-kernel@lfdr.de>; Sun, 30 May 2021 16:30:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 65AE6395154
+	for <lists+linux-kernel@lfdr.de>; Sun, 30 May 2021 16:37:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229754AbhE3Obq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 30 May 2021 10:31:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37608 "EHLO
+        id S229769AbhE3OjO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 30 May 2021 10:39:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39264 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229580AbhE3Obp (ORCPT
+        with ESMTP id S229580AbhE3OjN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 30 May 2021 10:31:45 -0400
-Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com [IPv6:2a00:1450:4864:20::42e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3AE22C061574;
-        Sun, 30 May 2021 07:30:07 -0700 (PDT)
-Received: by mail-wr1-x42e.google.com with SMTP id n4so8161789wrw.3;
-        Sun, 30 May 2021 07:30:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=6t3J8+C30P/KwAn8557WaaRrcOqXcNIb28Eid5rS1Ss=;
-        b=uDiPnuGhAkjMt19s6NVzVAetw8pr0xYSnhO63poVhU4hCJOekF0HGoE4aMDYoqR33N
-         HRnpfTNujtuSGbWd9ANiJ/MF2XYmKGk+xiSv859C/IgmNHliyXuCdL1CwK4PIlbM0DVS
-         SQo21M/DhdMadVTLrl8mKwQvsI6fv/Y4LkRS7cg4LEyQh7xjHJlaJSFvqnJUQ8cx9C5L
-         BQWIo4ueeTzmuvrnd6Mk4KB+Oqg9OjemlXdXCJkG7PU3ChMLYMqy/5PcbsYsWiV5xtVA
-         wxsYZ+Ju/LbkKSTGgfya9Dho3Kq8auLYeaBWuoyu9EdTPGKwLg5wIcg7SCpaDiikQ9WH
-         ptfQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=6t3J8+C30P/KwAn8557WaaRrcOqXcNIb28Eid5rS1Ss=;
-        b=VZ9SCVMM61F8/PhWWf4Iaoy95zmqGIzIohMKXMhy6yyYlZ3Sr7JWaDoiW1XxTlGV8s
-         JZP339SYRqlWLKhlOgSJsMU3xrbNuDaRcIde2/ILknibCfRm/TzxfsfOTj8cNjtXG//l
-         fXe4P/VY4RQqaAhRh+g2am6Ni2/aSZFBVpDTYsWeAVeHrWWaCDtEuqyB05LaGN35TmXC
-         QcRjPYKaQD38SshRjQLvSb8cTHZmK63EaIK5ueW+WQFrPAZzfJ4QymOo6iolRA7iCsog
-         kRU6cyNd2AplJLfXIVIrx684d7OUUcO7nsnCBTUOsYsuAeuLs0kabd5uyzifTvp2WBxe
-         7E9g==
-X-Gm-Message-State: AOAM533WaQpD+bB6RIbNhCs9mXRBh1FbIiFzOKM2WjZl/5kjCATO8Aqn
-        i7qgdjxdZH3nRQjuImvqwDhZgzCosT0OT/YAwSc=
-X-Google-Smtp-Source: ABdhPJyDbitDVrmcDxOcHq0QHKT9fgqlgjU/u0BkC/alWsIcIKmfMJVN5yDHNrVFHPZFfjLaelLOvJ4wRSV8TgEQBok=
-X-Received: by 2002:adf:ec10:: with SMTP id x16mr9704649wrn.83.1622385005776;
- Sun, 30 May 2021 07:30:05 -0700 (PDT)
+        Sun, 30 May 2021 10:39:13 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96BC4C061574
+        for <linux-kernel@vger.kernel.org>; Sun, 30 May 2021 07:37:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+        Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:
+        Subject:Sender:Reply-To:Content-ID:Content-Description;
+        bh=sE++xAt9mQbKzLlM4uqfYQKbCz2pbWA6dqC/0cXV17k=; b=tZKXqLWq4pIj8bhWgWAGKuTEc4
+        9P1Cgn5w28PBHNbQV6lu5JS0AUhWdZK7DeG8aqegJXgUkP0No2nzv58ag7AjbJHKS9a5YUl8pCd6y
+        8NddidznZ9Jb3+9YsjTzK8NzQNxkgKK+kO16JrEjjKtPl+cZ5OKe2lZMTF1DqWup7/0lL4/YfSyVf
+        xdRV3G++/hZ1a7veaQ25ueJSYKQHXoninpQDbrV3BEsp74MQFptUpAExNykyvLSDOSzgl5SSFPhUk
+        ebTlxkOV0pDcOjUCzeO7x37YkcI6zYD7iLmwX3eWG9KmVb604TKB0KGyND+yg+rnDF39WBFTDbEYe
+        zXGNYYIg==;
+Received: from [2601:1c0:6280:3f0::ce7d]
+        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1lnMZJ-009l38-IO; Sun, 30 May 2021 14:37:33 +0000
+Subject: Re: arch/ia64/include/uapi/asm/siginfo.h:15:27: error: expected ':',
+ ',', ';', '}' or '__attribute__' before '.' token
+To:     kernel test robot <lkp@intel.com>, Christoph Hellwig <hch@lst.de>
+Cc:     kbuild-all@lists.01.org, linux-kernel@vger.kernel.org,
+        Jens Axboe <axboe@kernel.dk>, Hannes Reinecke <hare@suse.de>
+References: <202105301826.MwSrFnm9-lkp@intel.com>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <ddd58e03-2f30-101a-d4b1-3304cc9212e6@infradead.org>
+Date:   Sun, 30 May 2021 07:37:32 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.0
 MIME-Version: 1.0
-References: <20210519183855.1523927-1-robdclark@gmail.com> <20210519183855.1523927-3-robdclark@gmail.com>
- <YKaOY3AWgHh5kplS@phenom.ffwll.local>
-In-Reply-To: <YKaOY3AWgHh5kplS@phenom.ffwll.local>
-From:   Rob Clark <robdclark@gmail.com>
-Date:   Sun, 30 May 2021 07:33:57 -0700
-Message-ID: <CAF6AEGv470U7fujLrJOE8fJh1o-BW3=mOpKJ45FFz=Xb8Q0D6A@mail.gmail.com>
-Subject: Re: [RFC 2/3] drm/atomic: Call dma_fence_boost() when we've missed a vblank
-To:     Rob Clark <robdclark@gmail.com>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        freedreno <freedreno@lists.freedesktop.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        Rob Clark <robdclark@chromium.org>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        David Airlie <airlied@linux.ie>,
-        open list <linux-kernel@vger.kernel.org>,
-        Matthew Brost <matthew.brost@intel.com>
-Cc:     Daniel Vetter <daniel@ffwll.ch>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <202105301826.MwSrFnm9-lkp@intel.com>
+Content-Type: text/plain; charset=windows-1252
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 20, 2021 at 9:29 AM Daniel Vetter <daniel@ffwll.ch> wrote:
->
-> On Wed, May 19, 2021 at 11:38:53AM -0700, Rob Clark wrote:
-> > From: Rob Clark <robdclark@chromium.org>
-> >
-> > Signed-off-by: Rob Clark <robdclark@chromium.org>
-> > ---
-> >  drivers/gpu/drm/drm_atomic_helper.c | 11 +++++++++++
-> >  1 file changed, 11 insertions(+)
-> >
-> > diff --git a/drivers/gpu/drm/drm_atomic_helper.c b/drivers/gpu/drm/drm_atomic_helper.c
-> > index 560aaecba31b..fe10fc2e7f86 100644
-> > --- a/drivers/gpu/drm/drm_atomic_helper.c
-> > +++ b/drivers/gpu/drm/drm_atomic_helper.c
-> > @@ -1435,11 +1435,15 @@ int drm_atomic_helper_wait_for_fences(struct drm_device *dev,
-> >       int i, ret;
-> >
-> >       for_each_new_plane_in_state(state, plane, new_plane_state, i) {
-> > +             u64 vblank_count;
-> > +
-> >               if (!new_plane_state->fence)
-> >                       continue;
-> >
-> >               WARN_ON(!new_plane_state->fb);
-> >
-> > +             vblank_count = drm_crtc_vblank_count(new_plane_state->crtc);
-> > +
-> >               /*
-> >                * If waiting for fences pre-swap (ie: nonblock), userspace can
-> >                * still interrupt the operation. Instead of blocking until the
-> > @@ -1449,6 +1453,13 @@ int drm_atomic_helper_wait_for_fences(struct drm_device *dev,
-> >               if (ret)
-> >                       return ret;
-> >
-> > +             /*
-> > +              * Check if we've missed a vblank while waiting, and if we have
-> > +              * signal the fence that it's signaler should be boosted
-> > +              */
-> > +             if (vblank_count != drm_crtc_vblank_count(new_plane_state->crtc))
-> > +                     dma_fence_boost(new_plane_state->fence);
->
-> I think we should do a lot better here:
-> - maybe only bother doing this for single-crtc updates, and only if
->   modeset isn't set. No one else cares about latency.
->
-> - We should boost _right_ when we've missed the frame, so I think we
->   should have a _timeout wait here that guesstimates when the vblank is
->   over (might need to throw in a vblank wait if we missed) and then boost
->   immediately. Not wait a bunch of frames (worst case) until we finally
->   decide to boost.
+On 5/30/21 3:07 AM, kernel test robot wrote:
+> Hi Christoph,
+> 
+> FYI, the error/warning still remains.
+> 
+> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+> head:   b90e90f40b4ff23c753126008bf4713a42353af6
+> commit: 8cad3b66bff4ee7c7d52b9a663cb6a2c5f66a7f7 Buslogic: remove ISA support
+> date:   8 weeks ago
+> config: ia64-allyesconfig (attached as .config)
+> compiler: ia64-linux-gcc (GCC) 9.3.0
+> reproduce (this is a W=1 build):
+>         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+>         chmod +x ~/bin/make.cross
+>         # https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=8cad3b66bff4ee7c7d52b9a663cb6a2c5f66a7f7
+>         git remote add linus https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
+>         git fetch --no-tags linus master
+>         git checkout 8cad3b66bff4ee7c7d52b9a663cb6a2c5f66a7f7
+>         # save the attached .config to linux build tree
+>         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-9.3.0 make.cross ARCH=ia64 
+> 
+> If you fix the issue, kindly add following tag as appropriate
+> Reported-by: kernel test robot <lkp@intel.com>
+> 
+> All errors (new ones prefixed by >>):
+> 
+>    In file included from include/uapi/linux/signal.h:6,
+>                     from include/linux/signal_types.h:10,
+>                     from include/linux/sched.h:30,
+>                     from arch/ia64/include/asm/hw_irq.h:11,
+>                     from include/linux/irq.h:589,
+>                     from arch/ia64/include/asm/hardirq.h:19,
+>                     from include/linux/hardirq.h:10,
+>                     from include/linux/interrupt.h:11,
+>                     from drivers/scsi/BusLogic.c:27:
+>>> arch/ia64/include/uapi/asm/siginfo.h:15:27: error: expected ':', ',', ';', '}' or '__attribute__' before '.' token
+>       15 | #define si_flags _sifields._sigfault._flags
+>          |                           ^
+>    drivers/scsi/FlashPoint.c:43:6: note: in expansion of macro 'si_flags'
+>       43 |  u16 si_flags;
+>          |      ^~~~~~~~
 
-I was thinking about this a bit more.. How about rather than calling
-some fence->op->boost() type thing when we are about to miss a vblank
-(IMO that is also already too late), we do something more like
-fence->ops->set_deadline() before we even wait?
-
-It's probably a bit impossible for a gpu driver to really predict how
-long some rendering will take, but other cases like video decoder are
-somewhat more predictable.. the fence provider could predict given the
-remaining time until the deadline what clk rates are required to get
-you there.
-
-BR,
--R
+> vim +15 arch/ia64/include/uapi/asm/siginfo.h
+> 
+> 43e40f25d2c0903 David Howells 2012-10-09  13  
+> 43e40f25d2c0903 David Howells 2012-10-09  14  #define si_imm		_sifields._sigfault._imm	/* as per UNIX SysV ABI spec */
+> 43e40f25d2c0903 David Howells 2012-10-09 @15  #define si_flags	_sifields._sigfault._flags
+> 43e40f25d2c0903 David Howells 2012-10-09  16  /*
+> 43e40f25d2c0903 David Howells 2012-10-09  17   * si_isr is valid for SIGILL, SIGFPE, SIGSEGV, SIGBUS, and SIGTRAP provided that
+> 43e40f25d2c0903 David Howells 2012-10-09  18   * si_code is non-zero and __ISR_VALID is set in si_flags.
+> 43e40f25d2c0903 David Howells 2012-10-09  19   */
+> 43e40f25d2c0903 David Howells 2012-10-09  20  #define si_isr		_sifields._sigfault._isr
+> 43e40f25d2c0903 David Howells 2012-10-09  21  
+> 
+> :::::: The code at line 15 was first introduced by commit
+> :::::: 43e40f25d2c090392fc36cb900b42972e88cc2e2 UAPI: (Scripted) Disintegrate arch/ia64/include/asm
+> 
+> :::::: TO: David Howells <dhowells@redhat.com>
+> :::::: CC: David Howells <dhowells@redhat.com>
 
 
->
-> Otherwise I really like this, I think it's about the only real reason i915
-> isn't using atomic helpers.
->
-> Also adding Matt B for this topic.
-> -Daniel
->
-> > +
-> >               dma_fence_put(new_plane_state->fence);
-> >               new_plane_state->fence = NULL;
-> >       }
-> > --
-> > 2.30.2
-> >
->
-> --
-> Daniel Vetter
-> Software Engineer, Intel Corporation
-> http://blog.ffwll.ch
+Patch is here:
+  https://lore.kernel.org/linux-scsi/b631c661-44fa-57f5-6540-1721f3df61e8@suse.de/T/#ma8097b011095a7b4cc73381f45312eb634166187
+
+
+-- 
+~Randy
+https://people.kernel.org/tglx/notes-about-netiquette
