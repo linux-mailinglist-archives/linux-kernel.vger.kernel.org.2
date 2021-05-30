@@ -2,155 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E57B394EDB
-	for <lists+linux-kernel@lfdr.de>; Sun, 30 May 2021 02:59:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F39D394EE3
+	for <lists+linux-kernel@lfdr.de>; Sun, 30 May 2021 03:17:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229812AbhE3BBe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 29 May 2021 21:01:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60106 "EHLO
+        id S229632AbhE3BTR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 29 May 2021 21:19:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35790 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229711AbhE3BBS (ORCPT
+        with ESMTP id S229550AbhE3BTQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 29 May 2021 21:01:18 -0400
-Received: from mail-qt1-x836.google.com (mail-qt1-x836.google.com [IPv6:2607:f8b0:4864:20::836])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4D1FC061349;
-        Sat, 29 May 2021 17:59:39 -0700 (PDT)
-Received: by mail-qt1-x836.google.com with SMTP id c15so5551032qte.6;
-        Sat, 29 May 2021 17:59:39 -0700 (PDT)
+        Sat, 29 May 2021 21:19:16 -0400
+Received: from mail-yb1-xb31.google.com (mail-yb1-xb31.google.com [IPv6:2607:f8b0:4864:20::b31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47879C061574;
+        Sat, 29 May 2021 18:17:38 -0700 (PDT)
+Received: by mail-yb1-xb31.google.com with SMTP id e10so11176922ybb.7;
+        Sat, 29 May 2021 18:17:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=tKiBv8SqRWswr8z7Bsl/7/WuL9D2vpQOGyxVKImo6UE=;
-        b=YD4MojyU5VsvDpuAE927XF5te4GbhcoFFrPKaT7XLIQ+jgV2pu5Stn4oRNMs9Folpl
-         D8Ci35CJBYSGwj5Z3FUxzlEfQe0jKAG7+3fLsZiD4xoUvjY+gi4mZfh8DSwKx+C04WlH
-         ZhGcRMJkOpGQ55O48xFaLJbaP0BciQ1xDAMufHWJLmdarKq2j+dKSx+QWjs5Dtd1X+li
-         wkdEMjveCtrk2X6OXbjcBQHzYqI3mRNQNtzLkn4WhHfc/6DSJHYUelmOiI4DtpyOjsuH
-         kw4uXOwP+fgmc6kpw+Put3FYqO6VryQPD5syJY82QBsuyBcqxx/dpzTtI6G9iMmqamQf
-         cdDA==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=EShTowP+tcGQc64UEUm7RFR1I6QAAde0tBd7WGQUDHU=;
+        b=bERr68h3M1lPtCuT5MqAaBxQYaj08o9pQFt4J8fsdTic10ZQzbEILATI1iDVmWaeMF
+         XlvkfDNQmyVgKZEJd9JWTmswBHhJaM20+uziII9fA7B0RQIK8zhI0nieFZeHuLPHPfiP
+         Fbs5l8E898go62Ldlb+nkOqzXrR/vU0oInsEnpPTsje/NJ6HQIxNHBt56n2UCHh1zqqZ
+         m/512POl1kzr2xXPX1xNCPI4lWNaGecXFhEJPWT9ebYW3tAFmnFmk6T/USK7hs+CEXvc
+         cxwWSI6nDjjHjfqMDXRwm6SoLlria2Yxps7vTNAcmVQ5u1JXee5h99LVl9Ai4WDNaWzS
+         UHzA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=tKiBv8SqRWswr8z7Bsl/7/WuL9D2vpQOGyxVKImo6UE=;
-        b=qqdiLqkWj1GznetlnMT8bAtN0XtxkNnYsMxsS+FNJlj99WfXuxSYJXF0b+Ok9pbS/9
-         Xhj2A1X3GNXEbg10ip6zDiaPyvdwYwhLtTvGHaNDa3FjsM4rAuSKcO730TkuXdjnqLjM
-         Sw72OUqD+L2Ow4qf/7WEYQG/qsMsMhZ03mZNEFcTT6XyqhqPk3Nageq0uQU7eQ9xfxMC
-         zKMixj8lJqWRfE1QOSaL6lGKOjbi2SuAT+zt+13+p8S7542P3yy4PYrAfKCZiqYFbCBH
-         T1upaE2tN0T9PzvC3WwRWVGyWB3MDXDEHRDswMPODjVleTcnwMjJgoiVNQCS/ExoAvZX
-         A1iw==
-X-Gm-Message-State: AOAM533vnyOx7ZdryQbFgJV5meincBuBj9vbLRq2/bhQDPDeTLJhy2sL
-        +f+6PqVQoKsZeKoiygJv0zY=
-X-Google-Smtp-Source: ABdhPJyoKDTAs8PrRuRQCDpoLPMkOr3GOLt6qxRAAEx6R4vsnAgOv91qMLEcUhoiNFxqgBu8vmrj4A==
-X-Received: by 2002:ac8:6699:: with SMTP id d25mr9502077qtp.326.1622336378921;
-        Sat, 29 May 2021 17:59:38 -0700 (PDT)
-Received: from shaak.xiphos.ca (198-48-202-89.cpe.pppoe.ca. [198.48.202.89])
-        by smtp.gmail.com with ESMTPSA id z1sm6382601qki.47.2021.05.29.17.59.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 29 May 2021 17:59:38 -0700 (PDT)
-From:   Liam Beguin <liambeguin@gmail.com>
-To:     liambeguin@gmail.com, peda@axentia.se, jic23@kernel.org,
-        lars@metafoo.de, pmeerw@pmeerw.net
-Cc:     linux-kernel@vger.kernel.org, linux-iio@vger.kernel.org,
-        devicetree@vger.kernel.org, robh+dt@kernel.org
-Subject: [PATCH v1 9/9] dt-bindings: iio: afe: add binding for temperature-sense-amplifier
-Date:   Sat, 29 May 2021 20:59:17 -0400
-Message-Id: <20210530005917.20953-10-liambeguin@gmail.com>
-X-Mailer: git-send-email 2.30.1.489.g328c10930387
-In-Reply-To: <20210530005917.20953-1-liambeguin@gmail.com>
-References: <20210530005917.20953-1-liambeguin@gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=EShTowP+tcGQc64UEUm7RFR1I6QAAde0tBd7WGQUDHU=;
+        b=TyYCMJZn1UTfyiLyaVRzI2ilE1Om0Ohm+I+5BVnEmp1vYa5kdgoWXrTsHJpMq0ueH0
+         ulIY2+5Qqz7R/eyh7rUIJnGYch2a1TLi/9rTJJ25YdR9hd21/v6oWO9I3Q2s1WtZ1anK
+         iO797nywPGYnkk/4Yy5h1t0K8nFMTZ9IVrMW9CNj5VCyD3Ki3zTnhpamHdWKZakvBU6+
+         KT2ZOVRiGrEoTj2/j4trigD9H9VAb3tNQwKa+HL3K/TbArhkKsRKJvWploYgaI875Ewu
+         7HjqWQR4G0basLNJQC84BiglQAjChPY4ffnQ+LS6N+1WZFfShmUx+ZNizWeNWZXRSO8O
+         0uig==
+X-Gm-Message-State: AOAM532ttnm8EgsyUGRB+aPrKojLVin+VovXz8C84InKgqsMcUeJVvzc
+        iJhxzX2yIrYGkr6/Q80/8zQKuplJdXvqvv64cm8=
+X-Google-Smtp-Source: ABdhPJz7LUkHy4FEZNdVEOCtnk0LyPJGfsAED/HCNLROdksSFhXNdOZDcZx6N01UvvA24Wiy0I18ddTmThYtT8c0N70=
+X-Received: by 2002:a25:ba06:: with SMTP id t6mr20910655ybg.459.1622337457232;
+ Sat, 29 May 2021 18:17:37 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210528090758.1108464-1-yukuai3@huawei.com> <c5a37d91-dd20-55e3-a78b-272a00b940d5@iogearbox.net>
+ <b22eac4a-aad5-917d-5f26-7955b798779b@huawei.com>
+In-Reply-To: <b22eac4a-aad5-917d-5f26-7955b798779b@huawei.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Sat, 29 May 2021 18:17:26 -0700
+Message-ID: <CAEf4BzZN_r_7AVrBwEW5qxiCr4ej1AkyY=4gWX3LufdhyL7Sgw@mail.gmail.com>
+Subject: Re: [PATCH] selftests/bpf: Fix return value check in attach_bpf()
+To:     "yukuai (C)" <yukuai3@huawei.com>
+Cc:     Daniel Borkmann <daniel@iogearbox.net>,
+        Shuah Khan <shuah@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>, yi.zhang@huawei.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Liam Beguin <lvb@xiphos.com>
+On Fri, May 28, 2021 at 6:25 PM yukuai (C) <yukuai3@huawei.com> wrote:
+>
+> On 2021/05/29 4:46, Daniel Borkmann wrote:
+> > On 5/28/21 11:07 AM, Yu Kuai wrote:
+> >> use libbpf_get_error() to check the return value of
+> >> bpf_program__attach().
+> >>
+> >> Reported-by: Hulk Robot <hulkci@huawei.com>
+> >> Signed-off-by: Yu Kuai <yukuai3@huawei.com>
+> >> ---
+> >>   tools/testing/selftests/bpf/benchs/bench_rename.c | 2 +-
+> >>   1 file changed, 1 insertion(+), 1 deletion(-)
+> >>
+> >> diff --git a/tools/testing/selftests/bpf/benchs/bench_rename.c
+> >> b/tools/testing/selftests/bpf/benchs/bench_rename.c
+> >> index c7ec114eca56..b7d4a1d74fca 100644
+> >> --- a/tools/testing/selftests/bpf/benchs/bench_rename.c
+> >> +++ b/tools/testing/selftests/bpf/benchs/bench_rename.c
+> >> @@ -65,7 +65,7 @@ static void attach_bpf(struct bpf_program *prog)
+> >>       struct bpf_link *link;
+> >>       link = bpf_program__attach(prog);
+> >> -    if (!link) {
+> >> +    if (libbpf_get_error(link)) {
+> >>           fprintf(stderr, "failed to attach program!\n");
+> >>           exit(1);
+> >>       }
+> >
+> > Could you explain the rationale of this patch? bad2e478af3b
+> > ("selftests/bpf: Turn
+> > on libbpf 1.0 mode and fix all IS_ERR checks") explains: 'Fix all the
+> > explicit
+> > IS_ERR checks that now will be broken because libbpf returns NULL on
+> > error (and
+> > sets errno).' So the !link check looks totally reasonable to me.
+> > Converting to
+> > libbpf_get_error() is not wrong in itself, but given you don't make any
+> > use of
+> > the err code, there is also no point in this diff here.
+> Hi,
+>
+> I was thinking that bpf_program__attach() can return error code
+> theoretically(for example -ESRCH), and such case need to be handled.
+>
 
-An ADC is often used to measure other quantities indirectly. This
-binding describe one cases, the measurement of a temperature through a
-voltage sense amplifier such as the LTC2997.
+I explicitly changed to NULL check + libbpf 1.0 error reporting mode
+because I don't care about specific error in benchmarks. So as Daniel
+and John pointed out, existing code is correct and doesn't need
+adjustment.
 
-Signed-off-by: Liam Beguin <lvb@xiphos.com>
----
- .../iio/afe/temperature-sense-amplifier.yaml  | 55 +++++++++++++++++++
- MAINTAINERS                                   |  1 +
- 2 files changed, 56 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/iio/afe/temperature-sense-amplifier.yaml
+You are right, though, that error code is indeed returned, but you can
+check errno directly (but need to enable libbpf 1.0 mode) or use
+libbpf_get_error() (which will get deprecated some time before libbpf
+1.0) if you don't know which mode your code will be run in.
 
-diff --git a/Documentation/devicetree/bindings/iio/afe/temperature-sense-amplifier.yaml b/Documentation/devicetree/bindings/iio/afe/temperature-sense-amplifier.yaml
-new file mode 100644
-index 000000000000..015413cbffbc
---- /dev/null
-+++ b/Documentation/devicetree/bindings/iio/afe/temperature-sense-amplifier.yaml
-@@ -0,0 +1,55 @@
-+# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/iio/afe/temperature-sense-amplifier.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: Temperature Sense Amplifier
-+
-+maintainers:
-+  - Liam Beguin <lvb@xiphos.com>
-+
-+description: |
-+  When an io-channel measures the output voltage of a temperature IC such as
-+  the LTC2997, the interesting measurement is almost always the corresponding
-+  temperature, not the voltage output. This binding describes such a circuit.
-+
-+properties:
-+  compatible:
-+    const: temperature-sense-amplifier
-+
-+  io-channels:
-+    maxItems: 1
-+    description: |
-+      Channel node of a voltage io-channel.
-+
-+  '#io-channel-cells':
-+    const: 1
-+
-+  alpha-micro-volts-per-degree:
-+    description: |
-+      Output voltage gain of the temperature IC.
-+
-+  use-kelvin-scale:
-+    type: boolean
-+    description: |
-+      Boolean indicating if alpha uses Kelvin degrees instead of Celsius.
-+
-+additionalProperties: false
-+required:
-+  - compatible
-+  - io-channels
-+  - alpha-micro-volts-per-degree
-+
-+examples:
-+  - |
-+    znq_temp: iio-rescale0 {
-+        compatible = "temperature-sense-amplifier";
-+        #io-channel-cells = <1>;
-+        io-channels = <&temp_adc 3>;
-+
-+        use-kelvin-scale;
-+        alpha-micro-volts-per-degree = <4000>;
-+    };
-+
-+...
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 0eb7fcd94b66..f224bd8e6125 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -8721,6 +8721,7 @@ L:	linux-iio@vger.kernel.org
- S:	Maintained
- F:	Documentation/devicetree/bindings/iio/afe/current-sense-amplifier.yaml
- F:	Documentation/devicetree/bindings/iio/afe/current-sense-shunt.yaml
-+F:	Documentation/devicetree/bindings/iio/afe/temperature-sense-amplifier.yaml
- F:	Documentation/devicetree/bindings/iio/afe/temperature-sense-current.yaml
- F:	Documentation/devicetree/bindings/iio/afe/temperature-sense-rtd.yaml
- F:	Documentation/devicetree/bindings/iio/afe/voltage-divider.yaml
--- 
-2.30.1.489.g328c10930387
 
+> Thanks,
+> Yu Kuai
+> >
+> > Thanks,
+> > Daniel
+> > .
+> >
