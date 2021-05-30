@@ -2,98 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6AB1C3952C5
-	for <lists+linux-kernel@lfdr.de>; Sun, 30 May 2021 21:38:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B23C73952D7
+	for <lists+linux-kernel@lfdr.de>; Sun, 30 May 2021 22:21:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229834AbhE3Tk3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 30 May 2021 15:40:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48444 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229712AbhE3Tk0 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 30 May 2021 15:40:26 -0400
-Received: from mail-pg1-x532.google.com (mail-pg1-x532.google.com [IPv6:2607:f8b0:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D63BAC061574;
-        Sun, 30 May 2021 12:38:46 -0700 (PDT)
-Received: by mail-pg1-x532.google.com with SMTP id l70so6769577pga.1;
-        Sun, 30 May 2021 12:38:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=MOo3PCdGau+6BhSk6QO1iiKc4UzJc1ZGoKIkwPCZjo8=;
-        b=h5+LTebQtPM50NAtq2y3Vl2gGVyr8sNMwFzTTOd7oApeEpMy5+r0W5y81ZhVkbuaIU
-         UCM27IpwO041ucZVATVmJUc4rMr5f59dDPDxBtSLZzJr03UQ4xcBMlT78p5vuU0wigwr
-         N5NBuH1Sst8TCNSXVu8S5Ll35GStd1Q7ZjP/kaQa6Kr43FUpuY8/qfLY7qpH8vwFP8pF
-         BQhw5r6xuxBJKfPAyMMqwe/8dFsnEpuQmQ8xTD0IEDYEO5wygC7GD124bUPDm6bgQqo/
-         iyKrrW9DX3w2XXO6rbvLIBMHpo/lQcUBkrspYVYf74XO8sOx6FvFDA/iSxY+WsV2lYDk
-         CWqQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=MOo3PCdGau+6BhSk6QO1iiKc4UzJc1ZGoKIkwPCZjo8=;
-        b=Olw9ieEXnCATP9qz1IqCWOupy7nbah2gETJZsfPZUpocNOVCq6kovbVXUUgwKnXZNm
-         C/sV26970EVMiMhtmYOPJIl/hDLBKW7Z4cQ3vDpnLzbUKRU3MitZOxVkAHmNd7PrRRJT
-         5/+o57cz3jOYj3QBPKimFtnGXrnNk0vbrz7V43p4YMQaD/46Vdvura4+hPnYE9Qgyupm
-         8f3lWQ2AZ8qMJUTMrAqaKocA2MATXsU1WkIyUjSXJOt55ikmDNM/PzL6Ivh2zzJuCnvh
-         8/Csjp5TUc6qOlGb4mPxUs2qzc0Rpm6uqIZ9SJJTUFCKgLaA/2tWbFc6J+4uQXMkakq8
-         6vWA==
-X-Gm-Message-State: AOAM533RFk0N+JgQ0udsvGdY0J0tc8ugQoP0OZ9TCFZgNgxgCtg7lAVO
-        UAQPvoGK060rvrXD8A3x1iFNgXdRtVuYANoKDKQ=
-X-Google-Smtp-Source: ABdhPJytIf5lb+iszxa2pz2EFI31QC8ptMW9iKmWLBloHyTPoWhpTZywJAnJHuuHKhD0vOFLXvS7H9qv7RirfcyT1lc=
-X-Received: by 2002:a05:6a00:a1e:b029:2e2:89d8:5c87 with SMTP id
- p30-20020a056a000a1eb02902e289d85c87mr13805796pfh.73.1622403526238; Sun, 30
- May 2021 12:38:46 -0700 (PDT)
+        id S229872AbhE3UW4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 30 May 2021 16:22:56 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60662 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229756AbhE3UWw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 30 May 2021 16:22:52 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 861BB60FEF;
+        Sun, 30 May 2021 20:21:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1622406073;
+        bh=a5s0B4kTibJT87biby4WJ9zqPOAuKMT+j3OvPglsW/4=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=ACU+a5n63+X+nCHb+gW3k1DBDtb5IT4z8C+Ui8bKAmCbxMh3/8q5xpNOM9t4aLGEO
+         c7IVgdzpoXuZHJp1Pn+gAtl5ekkeMxwBB4fcU4hjPguAqSA8XgbdeR5W0UBZARjNaL
+         UJTMc2D610vYK91fidA2i99kKLyVvhHSt22LLo8NFW15/kauWvEYbQFGyqZXrLnvh/
+         se5nxY96MR/clIH+31NhA9QT0zmrPT8Sw2rfoNyTgHLKJHJeHOhm6GUseLqv3CaltZ
+         LDedHbbZVQoL/n5fBg+seK7iZs43VRH75nSTtfM7odofWqES0VlZLB3rdfbvLtUNaL
+         O6Gmi1YIUjsWA==
+Date:   Sun, 30 May 2021 13:21:11 -0700
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Yunsheng Lin <yunshenglin0825@gmail.com>
+Cc:     Yunsheng Lin <linyunsheng@huawei.com>, davem@davemloft.net,
+        olteanv@gmail.com, ast@kernel.org, daniel@iogearbox.net,
+        andriin@fb.com, edumazet@google.com, weiwan@google.com,
+        cong.wang@bytedance.com, ap420073@gmail.com,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linuxarm@openeuler.org, mkl@pengutronix.de,
+        linux-can@vger.kernel.org, jhs@mojatatu.com,
+        xiyou.wangcong@gmail.com, jiri@resnulli.us, andrii@kernel.org,
+        kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
+        john.fastabend@gmail.com, kpsingh@kernel.org, bpf@vger.kernel.org,
+        jonas.bonn@netrounds.com, pabeni@redhat.com, mzhivich@akamai.com,
+        johunt@akamai.com, albcamus@gmail.com, kehuan.feng@gmail.com,
+        a.fatoum@pengutronix.de, atenart@kernel.org,
+        alexander.duyck@gmail.com, hdanton@sina.com, jgross@suse.com,
+        JKosina@suse.com, mkubecek@suse.cz, bjorn@kernel.org,
+        alobakin@pm.me
+Subject: Re: [PATCH net-next 2/3] net: sched: implement TCQ_F_CAN_BYPASS for
+ lockless qdisc
+Message-ID: <20210530132111.3a974275@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
+In-Reply-To: <9cc9f513-7655-07df-3c74-5abe07ae8321@gmail.com>
+References: <1622170197-27370-1-git-send-email-linyunsheng@huawei.com>
+        <1622170197-27370-3-git-send-email-linyunsheng@huawei.com>
+        <20210528180012.676797d6@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
+        <a6a965ee-7368-d37b-9c70-bba50c67eec9@huawei.com>
+        <20210528213218.2b90864c@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
+        <ee1a62da-9758-70db-abd3-c5ca2e8e0ce0@huawei.com>
+        <20210529114919.4f8b1980@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
+        <9cc9f513-7655-07df-3c74-5abe07ae8321@gmail.com>
 MIME-Version: 1.0
-References: <20210325122832.119147-1-sandberg@mailfence.com>
- <20210530161333.3996-1-maukka@ext.kapsi.fi> <20210530161333.3996-3-maukka@ext.kapsi.fi>
- <CAHp75Vffj=8WKBO23iRxxFmva+SU5u58eBkZfMRyY6GG-6maXg@mail.gmail.com> <0307426d-83a3-8c45-e1a6-ffc422780cbb@ext.kapsi.fi>
-In-Reply-To: <0307426d-83a3-8c45-e1a6-ffc422780cbb@ext.kapsi.fi>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Sun, 30 May 2021 22:38:29 +0300
-Message-ID: <CAHp75VfkyV+2p50c=iK5n4uiv6ptypsqc-GkWi7ZJHTs7Qmr3g@mail.gmail.com>
-Subject: Re: [PATCH v4 2/2] gpio: gpio-mux-input: add generic gpio input multiplexer
-To:     Mauri Sandberg <maukka@ext.kapsi.fi>
-Cc:     sandberg@mailfence.com, bgolaszewski@baylibre.com,
-        geert+renesas@glider.be, linus.walleij@linaro.org,
-        linux-gpio@vger.kernel.org, robh+dt@kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        drew@beagleboard.org, kernel test robot <lkp@intel.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, May 30, 2021 at 10:02 PM Mauri Sandberg <maukka@ext.kapsi.fi> wrote:
-> On 30.5.2021 21.09, Andy Shevchenko wrote:
-> > On Sun, May 30, 2021 at 7:16 PM Mauri Sandberg <maukka@ext.kapsi.fi> wrote:
+On Sun, 30 May 2021 09:37:09 +0800 Yunsheng Lin wrote:
+> On 2021/5/30 2:49, Jakub Kicinski wrote:
+> > The fact that MISSED is only cleared under q->seqlock does not matter,
+> > because setting it and ->enqueue() are not under any lock. If the thread
+> > gets interrupted between:
+> > 
+> > 	if (q->flags & TCQ_F_CAN_BYPASS && nolock_qdisc_is_empty(q) &&
+> > 	    qdisc_run_begin(q)) {
+> > 
+> > and ->enqueue() we can't guarantee that something else won't come in,
+> > take q->seqlock and clear MISSED.
+> > 
+> > thread1                thread2             thread3
+> > # holds seqlock
+> >                        qdisc_run_begin(q)
+> >                        set(MISSED)
+> > pfifo_fast_dequeue
+> >   clear(MISSED)
+> >   # recheck the queue
+> > qdisc_run_end()  
+> >                        ->enqueue()  
+> >                                             q->flags & TCQ_F_CAN_BYPASS..
+> >                                             qdisc_run_begin() # true
+> >                                             sch_direct_xmit()
+> >                        qdisc_run_begin()
+> >                        set(MISSED)
+> > 
+> > Or am I missing something?
+> > 
+> > Re-checking nolock_qdisc_is_empty() may or may not help.
+> > But it doesn't really matter because there is no ordering
+> > requirement between thread2 and thread3 here.  
+> 
+> I were more focued on explaining that using MISSED is reliable
+> as sch_may_need_requeuing() checking in RFCv3 [1] to indicate a
+> empty qdisc, and forgot to mention the data race described in
+> RFCv3, which is kind of like the one described above:
+> 
+> "There is a data race as below:
+> 
+>       CPU1                                   CPU2
+> qdisc_run_begin(q)                            .
+>         .                                q->enqueue()
+> sch_may_need_requeuing()                      .
+>     return true                               .
+>         .                                     .
+>         .                                     .
+>     q->enqueue()                              .
+> 
+> When above happen, the skb enqueued by CPU1 is dequeued after the
+> skb enqueued by CPU2 because sch_may_need_requeuing() return true.
+> If there is not qdisc bypass, the CPU1 has better chance to queue
+> the skb quicker than CPU2.
+> 
+> This patch does not take care of the above data race, because I
+> view this as similar as below:
+> 
+> Even at the same time CPU1 and CPU2 write the skb to two socket
+> which both heading to the same qdisc, there is no guarantee that
+> which skb will hit the qdisc first, becuase there is a lot of
+> factor like interrupt/softirq/cache miss/scheduling afffecting
+> that."
+> 
+> Does above make sense? Or any idea to avoid it?
+> 
+> 1. https://patchwork.kernel.org/project/netdevbpf/patch/1616404156-11772-1-git-send-email-linyunsheng@huawei.com/
 
-> >> Reported-by: kernel test robot <lkp@intel.com>
-> > Is it a fix? Shall we add the Fixes tag?
->
-> In the v1 a build bot complained about .owner along these lines:
->
-> --- snip ----
-> If you fix the issue, kindly add following tag as appropriate
-> Reported-by: kernel test robot <lkp@intel.com>
->
->
-> cocci warnings: (new ones prefixed by >>)
->  >> drivers/gpio/gpio-mux-input.c:138:3-8: No need to set .owner here.
-> The core will do it.
->
-> Please review and possibly fold the followup patch.
-> --- snip ---
->
-> I removed the .owner attribute in v2 as requested but wasn't really sure
-> whether it was "appropriate"
-> to add the tag so I put it there anyhow. Technically, this does not fix
-> any previous commit.
+We agree on this one.
 
-For this kind of thing you may attribute the reporter(s) by mentioning
-them in the comment lines / cover letter.
+Could you draw a sequence diagram of different CPUs (like the one
+above) for the case where removing re-checking nolock_qdisc_is_empty()
+under q->seqlock leads to incorrect behavior? 
 
--- 
-With Best Regards,
-Andy Shevchenko
+If there is no such case would you be willing to repeat the benchmark
+with and without this test?
+
+Sorry for dragging the review out..
