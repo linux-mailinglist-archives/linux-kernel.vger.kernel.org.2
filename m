@@ -2,141 +2,237 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 440AF395347
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 00:44:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 34ADD39534B
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 00:57:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230020AbhE3WqS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 30 May 2021 18:46:18 -0400
-Received: from lb2-smtp-cloud8.xs4all.net ([194.109.24.25]:44195 "EHLO
-        lb2-smtp-cloud8.xs4all.net" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230006AbhE3WqQ (ORCPT
+        id S229961AbhE3W6u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 30 May 2021 18:58:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34962 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229887AbhE3W6t (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 30 May 2021 18:46:16 -0400
-Received: from copland.sibelius.xs4all.nl ([83.163.83.176])
-        by smtp-cloud8.xs4all.net with ESMTP
-        id nUANlDkLZIpGynUAelJsIg; Mon, 31 May 2021 00:44:36 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=xs4all.nl; s=s2;
-        t=1622414676; bh=xS8tcoAoXQ7rfnmN3vR74RBJgyU9e6+aspNVHKO9ktk=;
-        h=From:To:Subject:Date:Message-Id:MIME-Version:From:Subject;
-        b=TkcQU1dgiVvL2un05BM81xNwIiivCiP49ex4xsuUJ5ydyerksfvuUKrqQ7iyrU/gY
-         +8WPNjHukPKXHeArf2BMLE9VPt6lhfrsjmwjhLW8HLIZMHjcwiVL1FPBS/IGnh+1W5
-         Pg5BaTmQ3WKjplSinW0xd4Hd31mZKO/6w7JipzW/3P2tKJy44zxq7sJBkmAgu7QwWp
-         +pIvqXBadTDmUSKGVooJ1+u9jJSLQDDABuHLc46V03uI4yRlk0z2GPDnXfE5OsHFMg
-         xWCg1kDLfpVMl35TwrB0064zX3Jv7GK3PdnGiDAeEnMH6qzyNRD0z6QELy/GuYaCfl
-         xT/kCI523gvgA==
-From:   Mark Kettenis <mark.kettenis@xs4all.nl>
-To:     devicetree@vger.kernel.org
-Cc:     maz@kernel.org, robin.murphy@arm.com,
-        Mark Kettenis <kettenis@openbsd.org>,
-        Hector Martin <marcan@marcan.st>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, linux-pci@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v2 2/2] arm64: apple: Add PCIe node
-Date:   Mon, 31 May 2021 00:44:01 +0200
-Message-Id: <20210530224404.95917-3-mark.kettenis@xs4all.nl>
+        Sun, 30 May 2021 18:58:49 -0400
+Received: from gate2.alliedtelesis.co.nz (gate2.alliedtelesis.co.nz [IPv6:2001:df5:b000:5::4])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41902C06174A
+        for <linux-kernel@vger.kernel.org>; Sun, 30 May 2021 15:57:08 -0700 (PDT)
+Received: from svr-chch-seg1.atlnz.lc (mmarshal3.atlnz.lc [10.32.18.43])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by gate2.alliedtelesis.co.nz (Postfix) with ESMTPS id 257348364F;
+        Mon, 31 May 2021 10:57:03 +1200 (NZST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alliedtelesis.co.nz;
+        s=mail181024; t=1622415423;
+        bh=r1PeCdtDfQf/3d2GiJhstp2bICjzI0nnfAcIwqjbXZ4=;
+        h=From:To:Cc:Subject:Date;
+        b=lOXuLy/60scgTUC2Bu9b4Mb4n4eas1m020Az7oK+E8nZ4IzvYSFnShj8cEkRmMNen
+         dCvIJZfAA3vjwOoekMBbVzQbjz1qeLYBvWQKaZo+/LleN6KZDLsoW9sJ+48xQhsTqu
+         uPMn40ebp9NNg2/G2jyk8VMADGlhrSlm2gyYy/JpM6q0mhKGBjl043pYBBWgLZquLX
+         jfTIDmxKDg+aAKD3NfVeWMTt2zDbeEcOffXCyDNgIVFVN9YPh7HR4h/ZF0wYn6ltF8
+         vtpMeT+3RJevKtKv9qxIS/N1c8f0alA0/xFVxW1avejPR4sd5SPYlJW/fWHwGN3p71
+         hv5nVHGDwcJxA==
+Received: from pat.atlnz.lc (Not Verified[10.32.16.33]) by svr-chch-seg1.atlnz.lc with Trustwave SEG (v8,2,6,11305)
+        id <B60b4183f0000>; Mon, 31 May 2021 10:57:03 +1200
+Received: from chrisp-dl.ws.atlnz.lc (chrisp-dl.ws.atlnz.lc [10.33.22.20])
+        by pat.atlnz.lc (Postfix) with ESMTP id 04F3413EEA1;
+        Mon, 31 May 2021 10:57:03 +1200 (NZST)
+Received: by chrisp-dl.ws.atlnz.lc (Postfix, from userid 1030)
+        id F2E75283A4E; Mon, 31 May 2021 10:57:02 +1200 (NZST)
+From:   Chris Packham <chris.packham@alliedtelesis.co.nz>
+To:     wsa@kernel.org, rjui@broadcom.com, sbranden@broadcom.com,
+        bcm-kernel-feedback-list@broadcom.com
+Cc:     linux-i2c@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org,
+        Richard Laing <richard.laing@alliedtelesis.co.nz>,
+        Chris Packham <chris.packham@alliedtelesis.co.nz>
+Subject: [PATCH] i2c: bcm-iproc: Add i2c recovery support
+Date:   Mon, 31 May 2021 10:56:59 +1200
+Message-Id: <20210530225659.17138-1-chris.packham@alliedtelesis.co.nz>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210530224404.95917-1-mark.kettenis@xs4all.nl>
-References: <20210530224404.95917-1-mark.kettenis@xs4all.nl>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CMAE-Envelope: MS4xfFmRtx2o8H/8LE3fQg/QQ+gZGAzebIaMe26DrRP04W43Y068UWcZ2PrSxggRBr+OEdBE1iV3d/UB4XZeG0jT+hsZGcDh29DMIWYL2dqYLkYDbJk3yxgV
- ouFFmRzUCJOtLCSPU6CTF91KLyrtJhPQhM1YDqspf5hHOOritGH6vZ0w0YQfQj06pveeKxYrvA/pGBvVJldazPMUOskmv56/O0o2cim/Bw48KgYKpX4hQVd/
- YMoqvCnmesvA7epQoaxptg4i4sKalbH80jRWxaf6nxWkrtg4zCbM3SkCKQhTVs6chock156q5/HuzJ+7Ny1sHJpjI4o6LiQVimswAiN5PTgB1c0Pcw3bjhAS
- JYEgfmnkV4PIQDkAcCKIZ/LmLQnSabQA+CMc+ytquKue56WResWUUlzY758to6V9O3Kxm3hU+BtjTMJkQzkfEp+Ydd6Bm/oTgDadDngWcm8hqcpK4vNbXzrx
- TcjtDfz1bd17hBteeYLNWL7xUVQE+6dIJZvwhtKxkOZzNNZav03sVBCwmGo=
+Content-Transfer-Encoding: quoted-printable
+X-SEG-SpamProfiler-Analysis: v=2.3 cv=WOcBoUkR c=1 sm=1 tr=0 a=KLBiSEs5mFS1a/PbTCJxuA==:117 a=5FLXtPjwQuUA:10 a=Jg9UQ0_FWdfR-ABCIGgA:9
+X-SEG-SpamProfiler-Score: 0
+x-atlnz-ls: pat
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mark Kettenis <kettenis@openbsd.org>
+From: Richard Laing <richard.laing@alliedtelesis.co.nz>
 
-Add node corresponding to the apcie,t8103 node in the
-Apple device tree for the Mac mini (M1, 2020).
+The bcm-iproc controller can put the SDA/SCL lines into bit-bang mode,
+make use of this to support i2c bus recovery.
 
-Clock references and DART (IOMMU) references are left out at the
-moment and will be added once the appropriate bindings have been
-settled upon.
-
-Signed-off-by: Mark Kettenis <kettenis@openbsd.org>
+Signed-off-by: Richard Laing <richard.laing@alliedtelesis.co.nz>
+Signed-off-by: Chris Packham <chris.packham@alliedtelesis.co.nz>
 ---
- arch/arm64/boot/dts/apple/t8103.dtsi | 63 ++++++++++++++++++++++++++++
- 1 file changed, 63 insertions(+)
 
-diff --git a/arch/arm64/boot/dts/apple/t8103.dtsi b/arch/arm64/boot/dts/apple/t8103.dtsi
-index 503a76fc30e6..cd3ebb940e86 100644
---- a/arch/arm64/boot/dts/apple/t8103.dtsi
-+++ b/arch/arm64/boot/dts/apple/t8103.dtsi
-@@ -214,5 +214,68 @@ pinctrl_smc: pinctrl@23e820000 {
- 				     <AIC_IRQ 396 IRQ_TYPE_LEVEL_HIGH>,
- 				     <AIC_IRQ 397 IRQ_TYPE_LEVEL_HIGH>;
- 		};
+Notes:
+    Richard did most of the work on this. I'm just cleaning it up to get =
+it
+    upstream.
+
+ drivers/i2c/busses/i2c-bcm-iproc.c | 115 +++++++++++++++++++++++++++++
+ 1 file changed, 115 insertions(+)
+
+diff --git a/drivers/i2c/busses/i2c-bcm-iproc.c b/drivers/i2c/busses/i2c-=
+bcm-iproc.c
+index cceaf69279a9..d63a286c1660 100644
+--- a/drivers/i2c/busses/i2c-bcm-iproc.c
++++ b/drivers/i2c/busses/i2c-bcm-iproc.c
+@@ -26,6 +26,7 @@
+ #define CFG_RESET_SHIFT              31
+ #define CFG_EN_SHIFT                 30
+ #define CFG_SLAVE_ADDR_0_SHIFT       28
++#define CFG_BIT_BANG_SHIFT           29
+ #define CFG_M_RETRY_CNT_SHIFT        16
+ #define CFG_M_RETRY_CNT_MASK         0x0f
+=20
+@@ -66,6 +67,12 @@
+ #define S_FIFO_RX_THLD_SHIFT         8
+ #define S_FIFO_RX_THLD_MASK          0x3f
+=20
++#define M_BB_CTRL_OFFSET             0x14
++#define M_BB_SMBCLK_IN               31
++#define M_BB_SMBCLK_OUT_EN           30
++#define M_BB_SMBDAT_IN               29
++#define M_BB_SMBDAT_OUT_EN           28
 +
-+		pcie0: pcie@690000000 {
-+			compatible = "apple,t8103-pcie", "apple,pcie";
-+			device_type = "pci";
+ #define M_CMD_OFFSET                 0x30
+ #define M_CMD_START_BUSY_SHIFT       31
+ #define M_CMD_STATUS_SHIFT           25
+@@ -713,6 +720,112 @@ static void bcm_iproc_i2c_enable_disable(struct bcm=
+_iproc_i2c_dev *iproc_i2c,
+ 	iproc_i2c_wr_reg(iproc_i2c, CFG_OFFSET, val);
+ }
+=20
++static void bcm_iproc_i2c_reset(struct bcm_iproc_i2c_dev *iproc_i2c)
++{
++	u32 tmp;
 +
-+			reg = <0x6 0x90000000 0x0 0x1000000>,
-+			      <0x6 0x80000000 0x0 0x4000>,
-+			      <0x6 0x81000000 0x0 0x8000>,
-+			      <0x6 0x82000000 0x0 0x8000>,
-+			      <0x6 0x83000000 0x0 0x8000>;
-+			reg-names = "config", "rc", "port0", "port1", "port2";
++	tmp =3D readl(iproc_i2c->base + CFG_OFFSET);
++	tmp |=3D BIT(CFG_RESET_SHIFT);
++	writel(tmp, iproc_i2c->base + CFG_OFFSET);
++	udelay(100);
 +
-+			interrupt-parent = <&aic>;
-+			interrupts = <AIC_IRQ 695 IRQ_TYPE_LEVEL_HIGH>,
-+				     <AIC_IRQ 698 IRQ_TYPE_LEVEL_HIGH>,
-+				     <AIC_IRQ 701 IRQ_TYPE_LEVEL_HIGH>;
++}
 +
-+			msi-controller;
-+			msi-parent = <&pcie0>;
-+			msi-ranges = <704 32>;
++static void bcm_iproc_i2c_prepare_recovery(struct i2c_adapter *adap)
++{
++	struct bcm_iproc_i2c_dev *iproc_i2c =3D i2c_get_adapdata(adap);
++	u32 tmp;
 +
-+			bus-range = <0 3>;
-+			#address-cells = <3>;
-+			#size-cells = <2>;
-+			ranges = <0x43000000 0x6 0xa0000000 0x6 0xa0000000 0x0 0x20000000>,
-+				 <0x02000000 0x0 0xc0000000 0x6 0xc0000000 0x0 0x40000000>;
++	dev_dbg(iproc_i2c->device, "Prepare recovery\n");
 +
-+			pinctrl-0 = <&pcie_pins>;
-+			pinctrl-names = "default";
++	/* Disable interrupts */
++	writel(0, iproc_i2c->base + IE_OFFSET);
++	readl(iproc_i2c->base + IE_OFFSET);
++	synchronize_irq(iproc_i2c->irq);
 +
-+			pci@0,0 {
-+				device_type = "pci";
-+				reg = <0x0 0x0 0x0 0x0 0x0>;
-+				reset-gpios = <&pinctrl_ap 152 0>;
-+				max-link-speed = <2>;
++	bcm_iproc_i2c_reset(iproc_i2c);
 +
-+				#address-cells = <3>;
-+				#size-cells = <2>;
-+				ranges;
-+			};
++	/* Switch to bit-bang mode */
++	tmp =3D readl(iproc_i2c->base + CFG_OFFSET);
++	tmp |=3D BIT(CFG_BIT_BANG_SHIFT);
++	writel(tmp, iproc_i2c->base + CFG_OFFSET);
++}
 +
-+			pci@1,0 {
-+				device_type = "pci";
-+				reg = <0x800 0x0 0x0 0x0 0x0>;
-+				reset-gpios = <&pinctrl_ap 153 0>;
-+				max-link-speed = <2>;
++static void bcm_iproc_i2c_unprepare_recovery(struct i2c_adapter *adap)
++{
++	struct bcm_iproc_i2c_dev *iproc_i2c =3D i2c_get_adapdata(adap);
++	u32 tmp;
 +
-+				#address-cells = <3>;
-+				#size-cells = <2>;
-+				ranges;
-+			};
++	/* Switch to normal mode */
++	tmp =3D readl(iproc_i2c->base + CFG_OFFSET);
++	tmp &=3D ~BIT(CFG_BIT_BANG_SHIFT);
++	writel(tmp, iproc_i2c->base + CFG_OFFSET);
++	udelay(100);
 +
-+			pci@2,0 {
-+				device_type = "pci";
-+				reg = <0x1000 0x0 0x0 0x0 0x0>;
-+				reset-gpios = <&pinctrl_ap 33 0>;
-+				max-link-speed = <1>;
++	bcm_iproc_i2c_init(iproc_i2c);
++	bcm_iproc_i2c_enable_disable(iproc_i2c, true);
 +
-+				#address-cells = <3>;
-+				#size-cells = <2>;
-+				ranges;
-+			};
-+		};
- 	};
- };
--- 
++	dev_dbg(iproc_i2c->device, "Recovery complete\n");
++}
++
++static int bcm_iproc_i2c_get_scl(struct i2c_adapter *adap)
++{
++	struct bcm_iproc_i2c_dev *iproc_i2c =3D i2c_get_adapdata(adap);
++	u32 tmp;
++
++	tmp =3D readl(iproc_i2c->base + M_BB_CTRL_OFFSET);
++
++	return !!(tmp & BIT(M_BB_SMBCLK_IN));
++}
++
++static void bcm_iproc_i2c_set_scl(struct i2c_adapter *adap, int val)
++{
++	struct bcm_iproc_i2c_dev *iproc_i2c =3D i2c_get_adapdata(adap);
++	u32 tmp;
++
++	tmp =3D readl(iproc_i2c->base + M_BB_CTRL_OFFSET);
++	if (val)
++		tmp |=3D BIT(M_BB_SMBCLK_OUT_EN);
++	else
++		tmp &=3D ~BIT(M_BB_SMBCLK_OUT_EN);
++
++	writel(tmp, iproc_i2c->base + M_BB_CTRL_OFFSET);
++}
++
++static void bcm_iproc_i2c_set_sda(struct i2c_adapter *adap, int val)
++{
++	struct bcm_iproc_i2c_dev *iproc_i2c =3D i2c_get_adapdata(adap);
++	u32 tmp;
++
++	tmp =3D readl(iproc_i2c->base + M_BB_CTRL_OFFSET);
++	if (val)
++		tmp |=3D BIT(M_BB_SMBDAT_OUT_EN);
++	else
++		tmp &=3D ~BIT(M_BB_SMBDAT_OUT_EN);
++
++	writel(tmp, iproc_i2c->base + M_BB_CTRL_OFFSET);
++}
++
++static int bcm_iproc_i2c_get_sda(struct i2c_adapter *adap)
++{
++	struct bcm_iproc_i2c_dev *iproc_i2c =3D i2c_get_adapdata(adap);
++	u32 tmp;
++
++	tmp =3D readl(iproc_i2c->base + M_BB_CTRL_OFFSET);
++
++	return !!(tmp & BIT(M_BB_SMBDAT_IN));
++}
++
++static struct i2c_bus_recovery_info bcm_iproc_recovery_info =3D {
++	.recover_bus =3D i2c_generic_scl_recovery,
++	.prepare_recovery =3D bcm_iproc_i2c_prepare_recovery,
++	.unprepare_recovery =3D bcm_iproc_i2c_unprepare_recovery,
++	.set_scl =3D bcm_iproc_i2c_set_scl,
++	.get_scl =3D bcm_iproc_i2c_get_scl,
++	.set_sda =3D bcm_iproc_i2c_set_sda,
++	.get_sda =3D bcm_iproc_i2c_get_sda,
++};
++
+ static int bcm_iproc_i2c_check_status(struct bcm_iproc_i2c_dev *iproc_i2=
+c,
+ 				      struct i2c_msg *msg)
+ {
+@@ -839,6 +952,7 @@ static int bcm_iproc_i2c_xfer_internal(struct bcm_ipr=
+oc_i2c_dev *iproc_i2c,
+ 	if (!!(iproc_i2c_rd_reg(iproc_i2c,
+ 				M_CMD_OFFSET) & BIT(M_CMD_START_BUSY_SHIFT))) {
+ 		dev_warn(iproc_i2c->device, "bus is busy\n");
++		i2c_recover_bus(&iproc_i2c->adapter);
+ 		return -EBUSY;
+ 	}
+=20
+@@ -1111,6 +1225,7 @@ static int bcm_iproc_i2c_probe(struct platform_devi=
+ce *pdev)
+ 		of_node_full_name(iproc_i2c->device->of_node));
+ 	adap->algo =3D &bcm_iproc_algo;
+ 	adap->quirks =3D &bcm_iproc_i2c_quirks;
++	adap->bus_recovery_info =3D &bcm_iproc_recovery_info;
+ 	adap->dev.parent =3D &pdev->dev;
+ 	adap->dev.of_node =3D pdev->dev.of_node;
+=20
+--=20
 2.31.1
 
