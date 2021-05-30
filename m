@@ -2,70 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A68F13952EF
-	for <lists+linux-kernel@lfdr.de>; Sun, 30 May 2021 23:04:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 282803952F6
+	for <lists+linux-kernel@lfdr.de>; Sun, 30 May 2021 23:14:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229872AbhE3VGM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 30 May 2021 17:06:12 -0400
-Received: from jabberwock.ucw.cz ([46.255.230.98]:57502 "EHLO
-        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229805AbhE3VGL (ORCPT
+        id S229897AbhE3VQS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 30 May 2021 17:16:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40988 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229805AbhE3VQP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 30 May 2021 17:06:11 -0400
-Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
-        id 3DF591C0B7F; Sun, 30 May 2021 23:04:31 +0200 (CEST)
-Date:   Sun, 30 May 2021 23:04:30 +0200
-From:   Pavel Machek <pavel@ucw.cz>
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     Marek =?iso-8859-1?Q?Beh=FAn?= <marek.behun@nic.cz>,
-        linux-leds@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel test robot <lkp@intel.com>
-Subject: Re: [PATCH v1 1/1] leds: lm36274: Add missed property.h
-Message-ID: <20210530210430.GA13716@duo.ucw.cz>
-References: <20210530203228.3958241-1-andy.shevchenko@gmail.com>
+        Sun, 30 May 2021 17:16:15 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ADDE5C061574;
+        Sun, 30 May 2021 14:14:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=yW68hQEkpPiNL7uFDxA39zvaW5WfzJ0CVb//k2zxdsE=; b=SvD1BTau2uhxHeBp7pn7JMUXfw
+        08wnL7Y1tXf9cpMlwCv5fEUriKCRdaRXANNmc+4lPHvrdbvhJ5GRsWYFfqV/myItaPLvSEyqBdchZ
+        6YkKnb560Zk4AGx5nfjel1cWtxU5EEBuRHQrmMoYeaJdfsDNKDpamtsROTId1ZH1KKkHDT+6hBgyU
+        +clUPI2COgBZSDGLDYRaW15YSbK3OoeBjICDjc5J1nBvRZWaql0tuDdB0m0cekw13zxgtdo0UW9eb
+        TAc0qGlgR1cjgkXYcCzDqE2DDKJLSoylZhoD3fgtglvLEEEzBPax465sN9mpqRZVA0izr6+yi4l+h
+        roYFS5/w==;
+Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
+        id 1lnSlK-008Pdd-7c; Sun, 30 May 2021 21:14:25 +0000
+Date:   Sun, 30 May 2021 22:14:22 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Nathan Chancellor <nathan@kernel.org>
+Cc:     dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org,
+        William Kucharski <william.kucharski@oracle.com>,
+        Jani Nikula <jani.nikula@intel.com>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        Ian Campbell <ijc@hellion.org.uk>,
+        linux-fsdevel@vger.kernel.org,
+        Jaya Kumar <jayakumar.lkml@gmail.com>,
+        Christoph Hellwig <hch@lst.de>
+Subject: Re: [PATCH v2] fb_defio: Remove custom address_space_operations
+Message-ID: <YLQALv2YENIDh77N@casper.infradead.org>
+References: <20210310185530.1053320-1-willy@infradead.org>
+ <YLPjwUUmHDRjyPpR@Ryzen-9-3900X.localdomain>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="2fHTh5uZTiUOsy+g"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210530203228.3958241-1-andy.shevchenko@gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <YLPjwUUmHDRjyPpR@Ryzen-9-3900X.localdomain>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Sun, May 30, 2021 at 12:13:05PM -0700, Nathan Chancellor wrote:
+> Hi Matthew,
+> 
+> On Wed, Mar 10, 2021 at 06:55:30PM +0000, Matthew Wilcox (Oracle) wrote:
+> > There's no need to give the page an address_space.  Leaving the
+> > page->mapping as NULL will cause the VM to handle set_page_dirty()
+> > the same way that it's handled now, and that was the only reason to
+> > set the address_space in the first place.
+> > 
+> > Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+> > Reviewed-by: Christoph Hellwig <hch@lst.de>
+> > Reviewed-by: William Kucharski <william.kucharski@oracle.com>
+> 
+> This patch in mainline as commit ccf953d8f3d6 ("fb_defio: Remove custom
+> address_space_operations") causes my Hyper-V based VM to no longer make
+> it to a graphical environment.
 
---2fHTh5uZTiUOsy+g
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Hi Nathan,
 
-Hi!
-
-> It appears that property.h has been included in some configurations impli=
-citly,
-> but in some it's not and hence build may fail. Add missed property.h expl=
-icitly.
->=20
-> Fixes: e2e8e4e81875 ("leds: lm36274: Correct headers (of*.h -> mod_device=
-table.h)")
-> Reported-by: kernel test robot <lkp@intel.com>
-> Signed-off-by: Andy Shevchenko <andy.shevchenko@gmail.com>
-
-Thank you, applied.
-
-Best regards,
-								Pavel
---=20
-http://www.livejournal.com/~pavelmachek
-
---2fHTh5uZTiUOsy+g
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCYLP93gAKCRAw5/Bqldv6
-8rffAJ9LFVJ3At3v6NKagM9aK+2RzfpQSQCgpgxrAIMjIrxkw7WoENzI1s197Hc=
-=dyrp
------END PGP SIGNATURE-----
-
---2fHTh5uZTiUOsy+g--
+Thanks for the report.  I sent Daniel a revert patch with a full
+explanation last week, which I assume he'll queue up for a pull soon.
+You can just git revert ccf953d8f3d6 for yourself until that shows up.
+Sorry for the inconvenience.
