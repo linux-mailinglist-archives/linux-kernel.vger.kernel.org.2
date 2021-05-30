@@ -2,129 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F39D394EE3
-	for <lists+linux-kernel@lfdr.de>; Sun, 30 May 2021 03:17:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 098D5394EE5
+	for <lists+linux-kernel@lfdr.de>; Sun, 30 May 2021 03:22:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229632AbhE3BTR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 29 May 2021 21:19:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35790 "EHLO
+        id S229653AbhE3BXc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 29 May 2021 21:23:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36714 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229550AbhE3BTQ (ORCPT
+        with ESMTP id S229550AbhE3BXb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 29 May 2021 21:19:16 -0400
-Received: from mail-yb1-xb31.google.com (mail-yb1-xb31.google.com [IPv6:2607:f8b0:4864:20::b31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47879C061574;
-        Sat, 29 May 2021 18:17:38 -0700 (PDT)
-Received: by mail-yb1-xb31.google.com with SMTP id e10so11176922ybb.7;
-        Sat, 29 May 2021 18:17:38 -0700 (PDT)
+        Sat, 29 May 2021 21:23:31 -0400
+Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com [IPv6:2607:f8b0:4864:20::62f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58F53C061574
+        for <linux-kernel@vger.kernel.org>; Sat, 29 May 2021 18:21:54 -0700 (PDT)
+Received: by mail-pl1-x62f.google.com with SMTP id v13so3423051ple.9
+        for <linux-kernel@vger.kernel.org>; Sat, 29 May 2021 18:21:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=EShTowP+tcGQc64UEUm7RFR1I6QAAde0tBd7WGQUDHU=;
-        b=bERr68h3M1lPtCuT5MqAaBxQYaj08o9pQFt4J8fsdTic10ZQzbEILATI1iDVmWaeMF
-         XlvkfDNQmyVgKZEJd9JWTmswBHhJaM20+uziII9fA7B0RQIK8zhI0nieFZeHuLPHPfiP
-         Fbs5l8E898go62Ldlb+nkOqzXrR/vU0oInsEnpPTsje/NJ6HQIxNHBt56n2UCHh1zqqZ
-         m/512POl1kzr2xXPX1xNCPI4lWNaGecXFhEJPWT9ebYW3tAFmnFmk6T/USK7hs+CEXvc
-         cxwWSI6nDjjHjfqMDXRwm6SoLlria2Yxps7vTNAcmVQ5u1JXee5h99LVl9Ai4WDNaWzS
-         UHzA==
+        d=dabbelt-com.20150623.gappssmtp.com; s=20150623;
+        h=date:subject:in-reply-to:cc:from:to:message-id:mime-version
+         :content-transfer-encoding;
+        bh=xEi6BXoNnqtihXfBBcx4dPYE6EijHD5pKsgqYkE4P1o=;
+        b=njwqfZE8koNsvOck2/ofN7d+VeB9/E7agwkbIWPFN8S37AyMerjqqKz0V8hWHejz/W
+         KKgX7L/+HAb4y3usDPcNGrcSU/QAX0Iagyogl0FZzt3oFCPljEk/heMiCdJ1LIg9ymCQ
+         v+xeboWgbaWpQug7Dk/UsI1nW3gstZ0zL80egM1CBOvR94CAw9zv4DnjaDBiYA7A+4Xr
+         AvWuyjzo1QfuqIWC3ChrCOJetq+8z2s4gTbq3flNl0ifg6Bwypds4FmRaajKGM4hNPiW
+         4Pe3h9UKu7COlOyWOdD/Dn1Ro+iIOIFFzVIl0rFNIWkMlPXjEX6lAk5l8AS03Jk5kaW7
+         cZ3g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=EShTowP+tcGQc64UEUm7RFR1I6QAAde0tBd7WGQUDHU=;
-        b=TyYCMJZn1UTfyiLyaVRzI2ilE1Om0Ohm+I+5BVnEmp1vYa5kdgoWXrTsHJpMq0ueH0
-         ulIY2+5Qqz7R/eyh7rUIJnGYch2a1TLi/9rTJJ25YdR9hd21/v6oWO9I3Q2s1WtZ1anK
-         iO797nywPGYnkk/4Yy5h1t0K8nFMTZ9IVrMW9CNj5VCyD3Ki3zTnhpamHdWKZakvBU6+
-         KT2ZOVRiGrEoTj2/j4trigD9H9VAb3tNQwKa+HL3K/TbArhkKsRKJvWploYgaI875Ewu
-         7HjqWQR4G0basLNJQC84BiglQAjChPY4ffnQ+LS6N+1WZFfShmUx+ZNizWeNWZXRSO8O
-         0uig==
-X-Gm-Message-State: AOAM532ttnm8EgsyUGRB+aPrKojLVin+VovXz8C84InKgqsMcUeJVvzc
-        iJhxzX2yIrYGkr6/Q80/8zQKuplJdXvqvv64cm8=
-X-Google-Smtp-Source: ABdhPJz7LUkHy4FEZNdVEOCtnk0LyPJGfsAED/HCNLROdksSFhXNdOZDcZx6N01UvvA24Wiy0I18ddTmThYtT8c0N70=
-X-Received: by 2002:a25:ba06:: with SMTP id t6mr20910655ybg.459.1622337457232;
- Sat, 29 May 2021 18:17:37 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210528090758.1108464-1-yukuai3@huawei.com> <c5a37d91-dd20-55e3-a78b-272a00b940d5@iogearbox.net>
- <b22eac4a-aad5-917d-5f26-7955b798779b@huawei.com>
-In-Reply-To: <b22eac4a-aad5-917d-5f26-7955b798779b@huawei.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Sat, 29 May 2021 18:17:26 -0700
-Message-ID: <CAEf4BzZN_r_7AVrBwEW5qxiCr4ej1AkyY=4gWX3LufdhyL7Sgw@mail.gmail.com>
-Subject: Re: [PATCH] selftests/bpf: Fix return value check in attach_bpf()
-To:     "yukuai (C)" <yukuai3@huawei.com>
-Cc:     Daniel Borkmann <daniel@iogearbox.net>,
-        Shuah Khan <shuah@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>, yi.zhang@huawei.com
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:date:subject:in-reply-to:cc:from:to:message-id
+         :mime-version:content-transfer-encoding;
+        bh=xEi6BXoNnqtihXfBBcx4dPYE6EijHD5pKsgqYkE4P1o=;
+        b=WVrlYGFT1Q4ODsFyB7fEX9ThAVMNPmGbxMjm/jIXofgKKg+7JMNlLedylMjl9LBEh0
+         BPng/X7V+f6jL35971orI/Dk5iYTCW49JtmtLyG1GbDkBA00TNTPV58sSczfdiOIq4cM
+         jVQIXlaNEMMtSzpre2rTaxdO+6M/Ou50/kh0RQNj9poQCU8yW91RkcRflFYcG4IZJVUG
+         pbXxN1ZLewmKkPj7/jL2cLEfVLaVKiczKaGkhagVUN5QrHOOa7LH42YFyj6G3nxZkhz8
+         OBo5d8ZacSMTv70HQkg7rSjKluQoaC6ZTDzmZP9PkdY49eRYzFyPKv9yCeSLFUXrrkNu
+         3oZA==
+X-Gm-Message-State: AOAM533OQ0W2B4x9ABqylB+jtglkbNkG/wOUChzEtDe9qJyyrxzkDQoT
+        rggIKE+qLpilBL4aCeqalwA8EA==
+X-Google-Smtp-Source: ABdhPJwXmSyqUABdXDz0ldneJ5UzS6/oEHX7G+UGEOWDVAMNntp8O5RLzJ4SG1+zJ7w5qYdkAwo2Bw==
+X-Received: by 2002:a17:90a:de09:: with SMTP id m9mr11649295pjv.41.1622337713693;
+        Sat, 29 May 2021 18:21:53 -0700 (PDT)
+Received: from localhost (76-210-143-223.lightspeed.sntcca.sbcglobal.net. [76.210.143.223])
+        by smtp.gmail.com with ESMTPSA id e17sm7340341pfi.131.2021.05.29.18.21.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 29 May 2021 18:21:53 -0700 (PDT)
+Date:   Sat, 29 May 2021 18:21:53 -0700 (PDT)
+X-Google-Original-Date: Sat, 29 May 2021 18:21:51 PDT (-0700)
+Subject:     Re: [PATCH -next] riscv: mm: fix build errors caused by mk_pmd()
+In-Reply-To: <mhng-4fb5ea1f-084a-4010-b4a6-d19423511720@palmerdabbelt-glaptop>
+CC:     Paul Walmsley <paul.walmsley@sifive.com>, aou@eecs.berkeley.edu,
+        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Atish Patra <Atish.Patra@wdc.com>, wangkefeng.wang@huawei.com,
+        sunnanyong@huawei.com
+From:   Palmer Dabbelt <palmer@dabbelt.com>
+To:     sunnanyong@huawei.com
+Message-ID: <mhng-5dc6487a-bafb-471f-ac5c-f6ec93cd311c@palmerdabbelt-glaptop>
+Mime-Version: 1.0 (MHng)
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 28, 2021 at 6:25 PM yukuai (C) <yukuai3@huawei.com> wrote:
+On Sat, 29 May 2021 15:45:04 PDT (-0700), Palmer Dabbelt wrote:
+> On Mon, 24 May 2021 00:02:20 PDT (-0700), sunnanyong@huawei.com wrote:
+>> With "riscv: mm: add THP support on 64-bit", mk_pmd() function
+>> introduce build errors,
+>> 1.build with CONFIG_ARCH_RV32I=y:
+>> arch/riscv/include/asm/pgtable.h: In function 'mk_pmd':
+>> arch/riscv/include/asm/pgtable.h:513:9: error: implicit declaration of function 'pfn_pmd';
+>>  did you mean 'pfn_pgd'? [-Werror=implicit-function-declaration]
+>>
+>> 2.build with CONFIG_SPARSEMEM=y && CONFIG_SPARSEMEM_VMEMMAP=n
+>> arch/riscv/include/asm/pgtable.h: In function 'mk_pmd':
+>> include/asm-generic/memory_model.h:64:14: error: implicit declaration of function 'page_to_section';
+>>  did you mean 'present_section'? [-Werror=implicit-function-declaration]
+>>
+>> Use macro definition instead of inline function for mk_pmd
+>> to fix the above problems.It is similar to the mk_pte macro.
+>>
+>> Reported-by: kernel test robot <lkp@intel.com>
+>> Signed-off-by: Nanyong Sun <sunnanyong@huawei.com>
+>> ---
+>>  arch/riscv/include/asm/pgtable.h | 5 +----
+>>  1 file changed, 1 insertion(+), 4 deletions(-)
+>>
+>> diff --git a/arch/riscv/include/asm/pgtable.h b/arch/riscv/include/asm/pgtable.h
+>> index 4b708ae08910..f35d9c90d4cb 100644
+>> --- a/arch/riscv/include/asm/pgtable.h
+>> +++ b/arch/riscv/include/asm/pgtable.h
+>> @@ -508,10 +508,7 @@ static inline unsigned long pmd_pfn(pmd_t pmd)
+>>  	return ((__pmd_to_phys(pmd) & PMD_MASK) >> PAGE_SHIFT);
+>>  }
+>>
+>> -static inline pmd_t mk_pmd(struct page *page, pgprot_t prot)
+>> -{
+>> -	return pfn_pmd(page_to_pfn(page), prot);
+>> -}
+>> +#define mk_pmd(page, prot)    pfn_pmd(page_to_pfn(page), prot)
+>>
+>>  static inline pmd_t pmd_modify(pmd_t pmd, pgprot_t newprot)
+>>  {
 >
-> On 2021/05/29 4:46, Daniel Borkmann wrote:
-> > On 5/28/21 11:07 AM, Yu Kuai wrote:
-> >> use libbpf_get_error() to check the return value of
-> >> bpf_program__attach().
-> >>
-> >> Reported-by: Hulk Robot <hulkci@huawei.com>
-> >> Signed-off-by: Yu Kuai <yukuai3@huawei.com>
-> >> ---
-> >>   tools/testing/selftests/bpf/benchs/bench_rename.c | 2 +-
-> >>   1 file changed, 1 insertion(+), 1 deletion(-)
-> >>
-> >> diff --git a/tools/testing/selftests/bpf/benchs/bench_rename.c
-> >> b/tools/testing/selftests/bpf/benchs/bench_rename.c
-> >> index c7ec114eca56..b7d4a1d74fca 100644
-> >> --- a/tools/testing/selftests/bpf/benchs/bench_rename.c
-> >> +++ b/tools/testing/selftests/bpf/benchs/bench_rename.c
-> >> @@ -65,7 +65,7 @@ static void attach_bpf(struct bpf_program *prog)
-> >>       struct bpf_link *link;
-> >>       link = bpf_program__attach(prog);
-> >> -    if (!link) {
-> >> +    if (libbpf_get_error(link)) {
-> >>           fprintf(stderr, "failed to attach program!\n");
-> >>           exit(1);
-> >>       }
-> >
-> > Could you explain the rationale of this patch? bad2e478af3b
-> > ("selftests/bpf: Turn
-> > on libbpf 1.0 mode and fix all IS_ERR checks") explains: 'Fix all the
-> > explicit
-> > IS_ERR checks that now will be broken because libbpf returns NULL on
-> > error (and
-> > sets errno).' So the !link check looks totally reasonable to me.
-> > Converting to
-> > libbpf_get_error() is not wrong in itself, but given you don't make any
-> > use of
-> > the err code, there is also no point in this diff here.
-> Hi,
->
-> I was thinking that bpf_program__attach() can return error code
-> theoretically(for example -ESRCH), and such case need to be handled.
->
+> Thanks, this is on for-next.
 
-I explicitly changed to NULL check + libbpf 1.0 error reporting mode
-because I don't care about specific error in benchmarks. So as Daniel
-and John pointed out, existing code is correct and doesn't need
-adjustment.
-
-You are right, though, that error code is indeed returned, but you can
-check errno directly (but need to enable libbpf 1.0 mode) or use
-libbpf_get_error() (which will get deprecated some time before libbpf
-1.0) if you don't know which mode your code will be run in.
-
-
-> Thanks,
-> Yu Kuai
-> >
-> > Thanks,
-> > Daniel
-> > .
-> >
+Sorry, I wasn't looking closely enough.  I think the actual problem here 
+is that mk_pmd() should be in pgtable-64.h.
