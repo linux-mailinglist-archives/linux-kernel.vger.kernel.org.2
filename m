@@ -2,270 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F194394EAD
-	for <lists+linux-kernel@lfdr.de>; Sun, 30 May 2021 02:39:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 74F6E394EB7
+	for <lists+linux-kernel@lfdr.de>; Sun, 30 May 2021 02:47:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229617AbhE3AlS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 29 May 2021 20:41:18 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56752 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229546AbhE3AlR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 29 May 2021 20:41:17 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1CCB461107;
-        Sun, 30 May 2021 00:39:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1622335180;
-        bh=zz/QLlDkmcV46YG1G4nPrmU4gw/ajU0Q456WlxmIpsQ=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=FRnl9qol1Fl9+NcwJZNvYDe2LmPLX7eLccJIZMFhkcEm7MS7oD2VefYxb7UQuR+mp
-         Fa8VbWtq1A22AyDDg8zNO/rkGAQWYJd8/rICl5FYAd6upnjoxZSV/YStnyHtApbulj
-         MegekhUaQgrrh33W9SQjJT9RchLHEakj6GBqTDVH9anfIOYJL3IlXEI8i8eTR/jCfl
-         00NjTn2Az+z5rX614BkgdHDu7NuNRvNwDMDI20MjhzzgmDiZsHm+PtQWZZT2Hfspv2
-         G2cXU6u7gHtQSO70rekzF7BWSiO774hKRDTfUfU87UbJiFuWDQaCVzHZhe1SlKveA0
-         Y+yYQX2HN7w9Q==
-Received: by mail-lj1-f182.google.com with SMTP id f12so10111348ljp.2;
-        Sat, 29 May 2021 17:39:40 -0700 (PDT)
-X-Gm-Message-State: AOAM530tbWh06JgB9EmMrYsVP6pxg0BuCQ+Y8FZlXgkvtBSk/YSHaR5z
-        9QCfXPzXvyCqvP5zkHdXGVnTvdTURr8B/OWliKg=
-X-Google-Smtp-Source: ABdhPJza3/ltlanrLtzL4ty58q8ry4OB11PrKcmfQSEjJ+wlhiaMJ/v7AqzRPrzMJY97GcBxSjLWfA9zOGpPxXvrAcs=
-X-Received: by 2002:a05:651c:2d0:: with SMTP id f16mr3881029ljo.18.1622335178437;
- Sat, 29 May 2021 17:39:38 -0700 (PDT)
+        id S229631AbhE3Aso (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 29 May 2021 20:48:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57350 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229546AbhE3Asn (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 29 May 2021 20:48:43 -0400
+Received: from mail-yb1-xb33.google.com (mail-yb1-xb33.google.com [IPv6:2607:f8b0:4864:20::b33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11418C061574;
+        Sat, 29 May 2021 17:47:06 -0700 (PDT)
+Received: by mail-yb1-xb33.google.com with SMTP id f84so11184162ybg.0;
+        Sat, 29 May 2021 17:47:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=wHVx+VBhplvwzx2toCSsFH2zHsatsW41FO7wcaTFWzA=;
+        b=gJN7A3ulotTcEQc2Wa/lHhxAVfgLkvK3/aFtXAZrmwQauqXYPLfU49tN9cKmqp3Cgt
+         y/MIgJ9krRME6CKdOFngV5d9Mk6yQK1DO59Bu8sMbAmQTiylPNbeIredhPLhb/zYceYR
+         6SGIW5ciEZK5Zwriyetu0FvabLdtod8DO55qHoG1Rrbk9n4aqszLigI1tXnNZ7ONOIrL
+         py97cqhYGjAKzpM1jxANBb1CxlhV8MpaR107zMeWICa7f4t6bh35fi5QfWlHiO1lLUq6
+         vyYPMkbOW4JIkqwRc0TAQCAdIlbKvKEfz3eISBrM4Lmbnm2uVJkvt0u60sU9ejPapkH2
+         mpNA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=wHVx+VBhplvwzx2toCSsFH2zHsatsW41FO7wcaTFWzA=;
+        b=tSIBDNzADAqNtcqvdF6Q23gAA+5sjm1PIDp1YQVlXm6gJbHvhtuSe2HzxC6RSIJSZM
+         GUkJC8oMFUZBd0+5oT6Td4luQQkK8S94GP5e/ddLlfJ57U0bcy57NX4ZXrSMI93o5kAV
+         1z3sc3LFgIqb9VnS0v5U8rLR1cOvlJZoDyoUXhulIMxdl+rhNu+lK7Wsfbzs+qOMUUGT
+         XgR66fGjQfO+knHCxR2Cp/iXfNJTJ4S5YEzwqBy9anNcj/uw3k6Fz/ZzSKYtFjwODQdJ
+         /DNDr4mWDNk6A6n0lTwM99UUEq4LWXs8JWe7a/FWbFe+2FkJSk0pSn9c4XB1JOntVV7o
+         uXgg==
+X-Gm-Message-State: AOAM5321eFdan4m4mTocTYfrQCaN39KLKKZ+IVqIsfxDy70AXbFf4Ax9
+        w9BpgXXKjbHhdnWuCJaxWroNzOI2RVWkx6n1uCtHeRqK
+X-Google-Smtp-Source: ABdhPJyVCSvo7YuE7iTDPdR6ItpzciTvgUe4BzC9/eZuXPloN32lpJW0F6uHoswRlFR4/UW802WB0tRxgMNNbLbqd5g=
+X-Received: by 2002:a25:ba06:: with SMTP id t6mr20800026ybg.459.1622335625288;
+ Sat, 29 May 2021 17:47:05 -0700 (PDT)
 MIME-Version: 1.0
-References: <1622008161-41451-1-git-send-email-guoren@kernel.org>
- <1622008161-41451-3-git-send-email-guoren@kernel.org> <20210527070903.GA32653@lst.de>
-In-Reply-To: <20210527070903.GA32653@lst.de>
-From:   Guo Ren <guoren@kernel.org>
-Date:   Sun, 30 May 2021 08:39:27 +0800
-X-Gmail-Original-Message-ID: <CAJF2gTQpDYtEdw6ZrTVZUYqxGdhLPs25RjuUiQtz=xN2oKs2fw@mail.gmail.com>
-Message-ID: <CAJF2gTQpDYtEdw6ZrTVZUYqxGdhLPs25RjuUiQtz=xN2oKs2fw@mail.gmail.com>
-Subject: Re: [PATCH V4 2/2] riscv: Use use_asid_allocator flush TLB
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     Anup Patel <anup.patel@wdc.com>,
-        Palmer Dabbelt <palmerdabbelt@google.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        linux-sunxi@lists.linux.dev, Guo Ren <guoren@linux.alibaba.com>
+References: <20210526080741.GW30378@techsingularity.net> <YK9SiLX1E1KAZORb@infradead.org>
+ <20210527090422.GA30378@techsingularity.net> <YK9j3YeMTZ+0I8NA@infradead.org>
+ <CAEf4BzZLy0s+t+Nj9QgUNM66Ma6HN=VkS+ocgT5h9UwanxHaZQ@mail.gmail.com>
+ <CAEf4BzbzPK-3cyLFM8QKE5-o_dL7=UCcvRF+rEqyUcHhyY+FJg@mail.gmail.com> <8fe547e9e87f40aebce82021d76a2d08@AcuMS.aculab.com>
+In-Reply-To: <8fe547e9e87f40aebce82021d76a2d08@AcuMS.aculab.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Sat, 29 May 2021 17:46:54 -0700
+Message-ID: <CAEf4Bza_yDe7=0jNuPcFnJOTiHPTWD43cHyQqqa10i228P_OVw@mail.gmail.com>
+Subject: Re: [PATCH] mm/page_alloc: Work around a pahole limitation with
+ zero-sized struct pagesets
+To:     David Laight <David.Laight@aculab.com>
+Cc:     Christoph Hellwig <hch@infradead.org>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Arnaldo Carvalho de Melo <acme@redhat.com>,
+        Michal Suchanek <msuchanek@suse.de>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Hritik Vijay <hritikxx8@gmail.com>, bpf <bpf@vger.kernel.org>,
+        Linux-Net <netdev@vger.kernel.org>, Linux-MM <linux-mm@kvack.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 27, 2021 at 3:09 PM Christoph Hellwig <hch@lst.de> wrote:
+On Fri, May 28, 2021 at 1:09 AM David Laight <David.Laight@aculab.com> wrote:
 >
-> On Wed, May 26, 2021 at 05:49:21AM +0000, guoren@kernel.org wrote:
-> > From: Guo Ren <guoren@linux.alibaba.com>
-> >
-> > Use static_branch_unlikely(&use_asid_allocator) to keep the origin
-> > tlb flush style, so it's no effect on the existing machine. Here
-> > are the optimized functions:
-> >  - flush_tlb_mm
-> >  - flush_tlb_page
-> >  - flush_tlb_range
-> >
-> > All above are based on the below new implement functions:
-> >  - __sbi_tlb_flush_range_asid
-> >  - local_flush_tlb_range_asid
-> >
-> > These functions are based on ASID instead of previous non-ASID
-> > tlb_flush implementation which invalidates more useful tlb
-> > entries.
+> From: Andrii Nakryiko
+> > Sent: 27 May 2021 15:42
+> ...
+> > I agree that empty structs are useful, but here we are talking about
+> > per-CPU variables only, which is the first use case so far, as far as
+> > I can see. If we had pahole 1.22 released and widely packaged it could
+> > have been a viable option to force it on everyone.
+> ...
 >
-> I still think the commit message is incomplete and rather misleading.
-> Here is what I'd come up with from reading the patch:
+> Would it be feasible to put the sources for pahole into the
+> kernel repository and build it at the same time as objtool?
 >
-> ---------
-> Subject: add ASID-based tlbflushing methods
->
-> Implement optimized version of the tlb flushing routines for systems
-> using ASIDs.  These are behind the use_asid_allocator static branch to
-> not affect existing systems not using ASIDs.
-> ---------
->
->
-> > +static inline void local_flush_tlb_range_asid(unsigned long start,
-> > +                             unsigned long size, unsigned long asid)
-> > +{
-> > +     unsigned long tmp, end = ALIGN(start + size, PAGE_SIZE);
-> > +
-> > +     for (tmp = start & PAGE_MASK; tmp < end; tmp += PAGE_SIZE) {
-> > +             __asm__ __volatile__ ("sfence.vma %0, %1"
-> > +                             :
-> > +                             : "r" (tmp), "r" (asid)
-> > +                             : "memory");
-> > +             tmp += PAGE_SIZE;
-> > +     }
->
-> This double increments tmp.
-Yes, It's a bug for PATCH V4. Thx for point it out.
+> That would remove any issues about the latest version
+> not being available.
+
+That would be great for the kernel build, but pahole is more than just
+a DWARF-to-BTF converter and it has a substantial amount of logic for
+loading and processing DWARF before it gets converted to BTF. All
+BTF-related pieces are provided by libbpf, which is already part of
+kernel sources, so that's not a problem. DWARF processing is a problem
+and would add a new dependency on libdw-devel, at least.
 
 >
-> Also the non-ASID code switches to a global flush once flushing more
-> than a single page.  It might be worth documenting the tradeoff in the
-> code.
+>         David
 >
-> > +static void __sbi_tlb_flush_range_asid(struct cpumask *cmask,
-> > +                                    unsigned long start,
-> > +                                    unsigned long size,
-> > +                                    unsigned long asid)
-> > +{
->
-> I don't think the calling conventions here are optimal.  I'd pass
-> the mm_struct as the first argument, as we can derive both the cpumask
-> and asid from it instead of doing that in the callers.
->
-> But more importantly I think the static branch check can be moved deeper
-> into the code to avoid a lot of duplication.  What do you think of this
-> version?
-Good idea, but I think "Modifying infrastructure and Adding ASID TLB
-flush" should be separated.
-
-I'll try in the next PATCH version.
-
->
-> diff --git a/arch/riscv/include/asm/mmu_context.h b/arch/riscv/include/asm/mmu_context.h
-> index b0659413a080..7030837adc1a 100644
-> --- a/arch/riscv/include/asm/mmu_context.h
-> +++ b/arch/riscv/include/asm/mmu_context.h
-> @@ -33,6 +33,8 @@ static inline int init_new_context(struct task_struct *tsk,
->         return 0;
->  }
->
-> +DECLARE_STATIC_KEY_FALSE(use_asid_allocator);
-> +
->  #include <asm-generic/mmu_context.h>
->
->  #endif /* _ASM_RISCV_MMU_CONTEXT_H */
-> diff --git a/arch/riscv/mm/context.c b/arch/riscv/mm/context.c
-> index 68aa312fc352..45c1b04b105d 100644
-> --- a/arch/riscv/mm/context.c
-> +++ b/arch/riscv/mm/context.c
-> @@ -18,7 +18,7 @@
->
->  #ifdef CONFIG_MMU
->
-> -static DEFINE_STATIC_KEY_FALSE(use_asid_allocator);
-> +DEFINE_STATIC_KEY_FALSE(use_asid_allocator);
->
->  static unsigned long asid_bits;
->  static unsigned long num_asids;
-> diff --git a/arch/riscv/mm/tlbflush.c b/arch/riscv/mm/tlbflush.c
-> index 720b443c4528..d8afbb1269d5 100644
-> --- a/arch/riscv/mm/tlbflush.c
-> +++ b/arch/riscv/mm/tlbflush.c
-> @@ -4,6 +4,33 @@
->  #include <linux/smp.h>
->  #include <linux/sched.h>
->  #include <asm/sbi.h>
-> +#include <asm/mmu_context.h>
-> +
-> +static inline void local_flush_tlb_all_asid(unsigned long asid)
-> +{
-> +       __asm__ __volatile__ ("sfence.vma x0, %0"
-> +                       :
-> +                       : "r" (asid)
-> +                       : "memory");
-> +}
-> +
-> +static inline void local_flush_tlb_page_asid(unsigned long addr,
-> +               unsigned long asid)
-> +{
-> +       __asm__ __volatile__ ("sfence.vma %0, %1"
-> +                       :
-> +                       : "r" (addr), "r" (asid)
-> +                       : "memory");
-> +}
-> +
-> +static inline void local_flush_tlb_range_asid(unsigned long start,
-> +                               unsigned long size, unsigned long asid)
-> +{
-> +       unsigned long addr, end = ALIGN(start + size, PAGE_SIZE);
-> +
-> +       for (addr = start & PAGE_MASK; addr < end; addr += PAGE_SIZE)
-> +               local_flush_tlb_page_asid(addr, asid);
-> +}
->
->  void flush_tlb_all(void)
->  {
-> @@ -12,28 +39,43 @@ void flush_tlb_all(void)
->
->  /*
->   * This function must not be called with cmask being null.
-> - * Kernel may panic if cmask is NULL.
->   */
-> -static void __sbi_tlb_flush_range(struct cpumask *cmask, unsigned long start,
-> +static void __sbi_tlb_flush_range(struct mm_struct *mm, unsigned long start,
->                                   unsigned long size)
->  {
-> +       struct cpumask *cmask = mm_cpumask(mm);
->         struct cpumask hmask;
->         unsigned int cpuid;
-> +       bool broadcast;
->
->         if (cpumask_empty(cmask))
->                 return;
->
->         cpuid = get_cpu();
-> +       /* check if the tlbflush needs to be sent to other CPUs */
-> +       broadcast = cpumask_any_but(cmask, cpuid) < nr_cpu_ids;
-> +       if (static_branch_unlikely(&use_asid_allocator)) {
-> +               unsigned long asid = atomic_long_read(&mm->context.id);
->
-> -       if (cpumask_any_but(cmask, cpuid) >= nr_cpu_ids) {
-> -               /* local cpu is the only cpu present in cpumask */
-> -               if (size <= PAGE_SIZE)
-> +               if (broadcast) {
-> +                       riscv_cpuid_to_hartid_mask(cmask, &hmask);
-> +                       sbi_remote_sfence_vma_asid(cpumask_bits(&hmask),
-> +                                                  start, size, asid);
-> +               } else if (size != -1) {
-> +                       local_flush_tlb_range_asid(start, size, asid);
-> +               } else {
-> +                       local_flush_tlb_all_asid(asid);
-> +               }
-> +       } else {
-> +               if (broadcast) {
-> +                       riscv_cpuid_to_hartid_mask(cmask, &hmask);
-> +                       sbi_remote_sfence_vma(cpumask_bits(&hmask),
-> +                                             start, size);
-> +               } else if (size <= PAGE_SIZE) {
->                         local_flush_tlb_page(start);
-> -               else
-> +               } else {
->                         local_flush_tlb_all();
-> -       } else {
-> -               riscv_cpuid_to_hartid_mask(cmask, &hmask);
-> -               sbi_remote_sfence_vma(cpumask_bits(&hmask), start, size);
-> +               }
->         }
->
->         put_cpu();
-> @@ -41,16 +83,16 @@ static void __sbi_tlb_flush_range(struct cpumask *cmask, unsigned long start,
->
->  void flush_tlb_mm(struct mm_struct *mm)
->  {
-> -       __sbi_tlb_flush_range(mm_cpumask(mm), 0, -1);
-> +       __sbi_tlb_flush_range(mm, 0, -1);
->  }
->
->  void flush_tlb_page(struct vm_area_struct *vma, unsigned long addr)
->  {
-> -       __sbi_tlb_flush_range(mm_cpumask(vma->vm_mm), addr, PAGE_SIZE);
-> +       __sbi_tlb_flush_range(vma->vm_mm, addr, PAGE_SIZE);
->  }
->
->  void flush_tlb_range(struct vm_area_struct *vma, unsigned long start,
->                      unsigned long end)
->  {
-> -       __sbi_tlb_flush_range(mm_cpumask(vma->vm_mm), start, end - start);
-> +       __sbi_tlb_flush_range(vma->vm_mm, start, end - start);
->  }
-
-
-
--- 
-Best Regards
- Guo Ren
-
-ML: https://lore.kernel.org/linux-csky/
+> -
+> Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
+> Registration No: 1397386 (Wales)
