@@ -2,121 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 342C039502C
-	for <lists+linux-kernel@lfdr.de>; Sun, 30 May 2021 11:01:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B7D039502F
+	for <lists+linux-kernel@lfdr.de>; Sun, 30 May 2021 11:01:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229774AbhE3I7o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 30 May 2021 04:59:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50622 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229500AbhE3I7n (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 30 May 2021 04:59:43 -0400
-Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com [IPv6:2a00:1450:4864:20::335])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3FF2DC061574
-        for <linux-kernel@vger.kernel.org>; Sun, 30 May 2021 01:58:05 -0700 (PDT)
-Received: by mail-wm1-x335.google.com with SMTP id o127so4464008wmo.4
-        for <linux-kernel@vger.kernel.org>; Sun, 30 May 2021 01:58:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=philpotter-co-uk.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=yKEi1zA6SJzK2vVefRdodwsA/ycK3zpNYbHpAPn85pY=;
-        b=ZOEeFI3HzXnz2FtZGwnqYOmbwVCRf5vu2GrQSM0qjOQilVSoiVrIEYupwdwkCD3YSV
-         f/2E2HLE66XRyBHQuXuYiM+78KeZYPMC02nxnKshkVVbIZjnWh/vlWezXxl2k1Xb3lp2
-         +gBiTEixAFiMIrGtRK7YYfXbTtsl727wH1dwaNCZcukhZCir7lHZxMxCPk66RfUKEw/s
-         aA4qLr+iVP8aKeX3vuopiIkAf0VannNUxzJcHovPLoVBh3bc8S8cEcybFw1IYYjxgJrH
-         6y52z8qOsVTtfU3YbX6QAGx0i/NXNnNwnpPkrMAx8kbDuv0FB7c0xmyKUMyq8MpDdczF
-         jZ7Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=yKEi1zA6SJzK2vVefRdodwsA/ycK3zpNYbHpAPn85pY=;
-        b=RIYFeq/umCZx9gz/olgZpUbQn/0O5IuxzdKPOqHCvndUMPe7/xwl3CtN6UlzTmJSd4
-         XdtxL3KoR0878/hHtapWbbtoi5sObSIX1DPpcpDm8ngxgfURqhldtKTzD6k6wpJafMmf
-         CHIIrnomK9s4cmCrlz0X19cWDKnJDWOYZC2CT5BvHCyLUpai/lRWd/kflI56BRJycrU1
-         SdbqUiZi1s1CoCo0xcvYT411A4Rx7Jsf+Z2ujgqVspJuHS4OT46xnyhfUg3OKGiEGvKH
-         1J7HKpWTsfNN9To8IAJa+6w7wS/l/B03q186qGvaqUGZgy34JZOHBxysue6RJCbDwQza
-         GwkA==
-X-Gm-Message-State: AOAM531exoxTmNHTFFOP1+VowczjmiFKytdd7llJCkj5M5XVycmNVsTf
-        rEHa3GkSRxLq6HMdGu1VJ9JAhg==
-X-Google-Smtp-Source: ABdhPJyEuSYEMKnhN1Smbc8JCbYNkl6Msw6xGpiZRsL0YU3bqaBRLzwYea0764nWbJBrUdtvsq9EOw==
-X-Received: by 2002:a1c:cc12:: with SMTP id h18mr15909381wmb.141.1622365083660;
-        Sun, 30 May 2021 01:58:03 -0700 (PDT)
-Received: from equinox (2.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.a.1.e.e.d.f.d.0.b.8.0.1.0.0.2.ip6.arpa. [2001:8b0:dfde:e1a0::2])
-        by smtp.gmail.com with ESMTPSA id e17sm1236255wre.79.2021.05.30.01.58.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 30 May 2021 01:58:03 -0700 (PDT)
-Date:   Sun, 30 May 2021 09:58:01 +0100
-From:   Phillip Potter <phil@philpotter.co.uk>
-To:     Mark Brown <broonie@kernel.org>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 55/69] ASoC: rt5645: add error checking to rt5645_probe
- function
-Message-ID: <YLNTmRvIoJWv6lgG@equinox>
-References: <20210503115736.2104747-1-gregkh@linuxfoundation.org>
- <20210503115736.2104747-56-gregkh@linuxfoundation.org>
- <YK1uZdtgffiCnUVQ@sirena.org.uk>
- <YK1z6AlOAMxYCh75@equinox>
- <YK/JfeMt9j9z+40Q@sirena.org.uk>
+        id S229789AbhE3JCr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 30 May 2021 05:02:47 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:18242 "EHLO m43-7.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229500AbhE3JCo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 30 May 2021 05:02:44 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1622365266; h=Content-Type: MIME-Version: Message-ID:
+ In-Reply-To: Date: References: Subject: Cc: To: From: Sender;
+ bh=m6gbfF2M8WEGMtZm9Ch5HQfluH/QE2I8j/C41+TlWbM=; b=ZIythUawtpBDSbsYQx+SIFGdGymdXK+1WI6b9N/o4N4h/LSIhfamIYulW/t/eUQf1H94lt6w
+ OmWo8G9oxIpc8j0C8uD6c5a2GEYTPg4l5D0o85r6j5BaznQn96xolaOqqMAfcTcuuH3ZU5Vv
+ MSDEIAQQ/Z8dTVTvV5m5bMw+pGs=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n01.prod.us-east-1.postgun.com with SMTP id
+ 60b3544b51f29e6bae4b4ea2 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Sun, 30 May 2021 09:00:59
+ GMT
+Sender: kvalo=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 600C2C433F1; Sun, 30 May 2021 09:00:58 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
+        autolearn=no autolearn_force=no version=3.4.0
+Received: from tykki (88-114-240-156.elisa-laajakaista.fi [88.114.240.156])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: kvalo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 7DB0FC433D3;
+        Sun, 30 May 2021 09:00:55 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 7DB0FC433D3
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=kvalo@codeaurora.org
+From:   Kalle Valo <kvalo@codeaurora.org>
+To:     Phillip Potter <phil@philpotter.co.uk>
+Cc:     davem@davemloft.net, kuba@kernel.org,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, ath9k-devel@qca.qualcomm.com,
+        fw@strlen.de
+Subject: Re: [PATCH v2] ath9k: ath9k_htc_rx_msg: return when sk_buff is too small
+References: <20210502212611.1818-1-phil@philpotter.co.uk>
+Date:   Sun, 30 May 2021 12:00:53 +0300
+In-Reply-To: <20210502212611.1818-1-phil@philpotter.co.uk> (Phillip Potter's
+        message of "Sun, 2 May 2021 22:26:11 +0100")
+Message-ID: <87fsy4ppdm.fsf@codeaurora.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YK/JfeMt9j9z+40Q@sirena.org.uk>
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 27, 2021 at 05:31:57PM +0100, Mark Brown wrote:
-> On Tue, May 25, 2021 at 11:02:16PM +0100, Phillip Potter wrote:
-> > On Tue, May 25, 2021 at 10:38:45PM +0100, Mark Brown wrote:
-> 
-> > > Phillip, please follow the standard patch submission process,
-> > > this is documented in submitting-paches.rst in the kernel tree.
-> > > In particular please make sure that you copy the relevant
-> 
-> > This patch was submitted to a closed mentoring group as part of the
-> > University of Minnesota reversion/checking process. I was not
-> > responsible for the final send out to the public mailing lists etc. as
-> > the patches were collated first and sent out together en masse.
-> 
-> OK, this is really unfortunate.
-> 
-> > > This comment is not accurate, rt5645_remove() just resets the
-> > > hardware - it's not going to clean up anything to do with any of
-> > > the branches to error you've got above.  The core *will* clean up
-> 
-> > My comment was adjusted after submission for brevity's sake. This was
-> > what I originally wrote:
-> >  /*
-> >   * All of the above is cleaned up when we return an error here, as
-> >   * the caller will notice the error and invoke rt5645_remove and
-> >   * other cleanup routines, as it does for the snd_soc_dapm_* calls
-> >   * above as well.
-> >   */
-> > Happy to resubmit/rewrite as needed? Based on what you've written
-> > though it may be better to drop the patch?
-> 
-> That is a lot better yes, it accurately reflects what was going
-> on - the review definitely wasn't helping here.
-> 
-> > > Also I'm guessing this was done purely through inspection rather
-> > > than the code having been tested?  If there was a problem seen at
-> > > runtime this isn't fixing it, TBH I'm more than a little dubious
-> 
-> > Yes, that's correct - I did not test this directly other than making
-> > sure it builds, as I don't have this hardware to test with. 
-> 
-> OK, in that case it's going to be safer to just drop the change,
-> it's probably not going to cause any actual problems but it's
-> certainly not something that should go in as a hurried fix.
+Phillip Potter <phil@philpotter.co.uk> writes:
 
-Dear Mark,
+> At the start of ath9k_htc_rx_msg, we check to see if the skb pointer is
+> valid, but what we don't do is check if it is large enough to contain a
+> valid struct htc_frame_hdr. We should check for this and return if not,
+> as the buffer is invalid in this case. Fixes a KMSAN-found uninit-value bug
+> reported by syzbot at:
+> https://syzkaller.appspot.com/bug?id=7dccb7d9ad4251df1c49f370607a49e1f09644ee
+>
+> Reported-by: syzbot+e4534e8c1c382508312c@syzkaller.appspotmail.com
+> Signed-off-by: Phillip Potter <phil@philpotter.co.uk>
+> ---
+>
+> V2:
+> * Free skb properly when this problem is detected, as pointed out by
+>   Florian Westphal.
+>
+> ---
+>  drivers/net/wireless/ath/ath9k/htc_hst.c | 5 +++++
+>  1 file changed, 5 insertions(+)
+>
+> diff --git a/drivers/net/wireless/ath/ath9k/htc_hst.c b/drivers/net/wireless/ath/ath9k/htc_hst.c
+> index 510e61e97dbc..1fe89b068ac4 100644
+> --- a/drivers/net/wireless/ath/ath9k/htc_hst.c
+> +++ b/drivers/net/wireless/ath/ath9k/htc_hst.c
+> @@ -406,6 +406,11 @@ void ath9k_htc_rx_msg(struct htc_target *htc_handle,
+>  	if (!htc_handle || !skb)
+>  		return;
+>  
+> +	if (!pskb_may_pull(skb, sizeof(struct htc_frame_hdr))) {
+> +		kfree_skb(skb);
+> +		return;
+> +	}
 
-Thank you, I will not resubmit with the new comment in that case. Have a
-great weekend.
+This does not look complete to me, I think the function is missing
+proper length checks. For example, with ENDPOINT0 it reads two byte
+msg_id after the htc header and it's not verified that skb really has
+that. I did not check if ep_callbacks.rx handlers have proper length
+handling, I recommend verifying that also while fixing this.
 
-Regards,
-Phil
+Also I want to point out that the skb is freed differently based on
+endpoint, I did not check why and don't know if it causes:
+
+	if (epid < 0 || epid >= ENDPOINT_MAX) {
+		if (pipe_id != USB_REG_IN_PIPE)
+			dev_kfree_skb_any(skb);
+		else
+			kfree_skb(skb);
+		return;
+	}
+
+-- 
+https://patchwork.kernel.org/project/linux-wireless/list/
+
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
