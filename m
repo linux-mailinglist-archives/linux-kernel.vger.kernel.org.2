@@ -2,62 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E1C43952BE
-	for <lists+linux-kernel@lfdr.de>; Sun, 30 May 2021 21:30:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E6753952BF
+	for <lists+linux-kernel@lfdr.de>; Sun, 30 May 2021 21:30:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229714AbhE3Tbc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 30 May 2021 15:31:32 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:41790 "EHLO
+        id S229873AbhE3Tc1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 30 May 2021 15:32:27 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:56285 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229712AbhE3Tba (ORCPT
+        by vger.kernel.org with ESMTP id S229712AbhE3TcY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 30 May 2021 15:31:30 -0400
+        Sun, 30 May 2021 15:32:24 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1622402991;
+        s=mimecast20190719; t=1622403045;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding;
-        bh=/SflTKgXOGAWsY4kx68BKvwmaKX+dkhH/SEUq3r5MAM=;
-        b=DSxzLdJq/JSq236FBvuHSVPOwlFV1CvuC6mYrkV277N5xzMPkSTe1p9UVWKm6SgjqNh2JN
-        0xHRPkKGSQ1e6CUgF8NTyPyjZK4KvtrM1KKfmlKFIM/rptN5bpTQMCjat/+J2swnOCFRqX
-        D+oCWll23DJ+9PlAzjtN2pRTtgn+oGE=
+        bh=Inh1PHt5dbAJobqxzcE50u+vc7DrQ4HYKLzWRGMOmVg=;
+        b=SmVRbDIR9y12SMWwFELCePcum1bMAgXrHDJuCOfG6rCI0x3GIS90Cyppg4RzRl7oqreM+h
+        Vmkxakkvjt2fV8LpOv6FGCQRhsdgpM6NP3aVpHEpHWwxjex9Igma3rsNM/cbO24gLmhcgu
+        LiiYiEf89pk2xHFGfTstw6KiPUbA2Qo=
 Received: from mail-ot1-f69.google.com (mail-ot1-f69.google.com
  [209.85.210.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-356-MO1PXp0oO0eOB0QGdgcq9Q-1; Sun, 30 May 2021 15:29:50 -0400
-X-MC-Unique: MO1PXp0oO0eOB0QGdgcq9Q-1
-Received: by mail-ot1-f69.google.com with SMTP id x2-20020a9d62820000b02902e4ff743c4cso5528051otk.8
-        for <linux-kernel@vger.kernel.org>; Sun, 30 May 2021 12:29:50 -0700 (PDT)
+ us-mta-585-D1iY4jUZPSek7aGSEcfg7A-1; Sun, 30 May 2021 15:30:43 -0400
+X-MC-Unique: D1iY4jUZPSek7aGSEcfg7A-1
+Received: by mail-ot1-f69.google.com with SMTP id i25-20020a9d4a990000b0290304f00e3e3aso5530728otf.15
+        for <linux-kernel@vger.kernel.org>; Sun, 30 May 2021 12:30:43 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=/SflTKgXOGAWsY4kx68BKvwmaKX+dkhH/SEUq3r5MAM=;
-        b=HrGPBcdEyBXLp6Lpo0zQzp5mM/0dJmsqDKoHIO0ljt2WQDUK2VXZsnBwWd515ovppg
-         IoL/60jDS5J52oca1XQVr5rhIxcvemfZBAwds8YC4sSpwfcCDnV/0BQyIGCQAdiGVmGu
-         FHAsN1ejVvNTHFV3ut5vvmzMR8EaFxC02Wl1QgQ0nnAN84UQb2SSej4YugWkh7yym76B
-         SrTlGZoghZWx61frblO4uHehsZarWNgJCgJL+/iafgHLGMwSNFv+U32diTzaOSZ9EFJk
-         oIVqP1CLYZ3NT1I3AVkjx9HcVwe8eA5JXkSqz8CP8zYgnug/E3egbPOxtFldV+sQ904J
-         vUwg==
-X-Gm-Message-State: AOAM5304C7whQ0W/FlPkTPkkNVWRcJT/nIAPXnFQJznR0aeYfbO6lYxi
-        6jlKNXBMq7SqGUa+wBwr49gm8sV9wnQ7KCWiojt4DsAzHfxNb9exjUwlLTBFccQhE60QYxoBhh8
-        xDD2awGO2dMztqTVoMJ4MHegR
-X-Received: by 2002:a9d:304:: with SMTP id 4mr230400otv.215.1622402989361;
-        Sun, 30 May 2021 12:29:49 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzpGaUKkkTmKhAMteghku4Iz8/Lm8fEjqHiop5DN72MqZ1A8uYv2cDgxuxEXNieK4F9/QuJkw==
-X-Received: by 2002:a9d:304:: with SMTP id 4mr230393otv.215.1622402989209;
-        Sun, 30 May 2021 12:29:49 -0700 (PDT)
+        bh=Inh1PHt5dbAJobqxzcE50u+vc7DrQ4HYKLzWRGMOmVg=;
+        b=COuNJ0F8cDRtiZp6GaVCNTe60DlZuHA+VCUylaGe6Naa4xyL10mES19caZ7L0G/EDd
+         +dT/CeyXa+i7Yk3wNkzDwDluSpo1AapkxALUQwUljnXuRy6x2CbCIooSpvS6JayhGOKr
+         L+Dw8g6Ru6JmVg0lVfzyB3wKzfiMKkWp2E4t35XcsliTBLywRQ5JqUTgqCkVCBZdrkMl
+         K9HgOo5mtfTLlmP4Wg20LzHVshtcDSD9y6V4E2nNoc3/uZQuGw48KZlhqyyi9yZ30sBG
+         faThm8rBLHI0uDFX++Xhxbu6ruzuz16R18LIE0CzFemA8RKj8J+x5ARAnFLWKfs6epbo
+         +UKA==
+X-Gm-Message-State: AOAM533HS51J65Y/3brTLCW/vvP/chb3c4yTq1F/f3Yu9Yd6myY3p/Zv
+        3kYmiSmIJzNB+3RoPpOa80xheaP0zD13X6dM994QuwQ9VPIyiQTQer0fOGSAhQQUptcV29Jb0ad
+        Tn1CmKykk5kUcclTGqT6Qviz9
+X-Received: by 2002:aca:3644:: with SMTP id d65mr14752372oia.122.1622403043251;
+        Sun, 30 May 2021 12:30:43 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxaj7wrzzarPpLxINr8zkTybNbVcEKx8OicqDyLmSERfbyOYxwb8oVl9tNLDX4YJb44GilUVQ==
+X-Received: by 2002:aca:3644:: with SMTP id d65mr14752369oia.122.1622403043145;
+        Sun, 30 May 2021 12:30:43 -0700 (PDT)
 Received: from localhost.localdomain.com (075-142-250-213.res.spectrum.com. [75.142.250.213])
-        by smtp.gmail.com with ESMTPSA id n186sm2363916oia.1.2021.05.30.12.29.47
+        by smtp.gmail.com with ESMTPSA id x9sm2581732oto.79.2021.05.30.12.30.41
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 30 May 2021 12:29:48 -0700 (PDT)
+        Sun, 30 May 2021 12:30:42 -0700 (PDT)
 From:   trix@redhat.com
-To:     pgwipeout@gmail.com, andrew@lunn.ch, hkallweit1@gmail.com,
-        linux@armlinux.org.uk, davem@davemloft.net, kuba@kernel.org
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Tom Rix <trix@redhat.com>
-Subject: [PATCH] net: phy: initialize ge and fe variables
-Date:   Sun, 30 May 2021 12:29:43 -0700
-Message-Id: <20210530192943.2556076-1-trix@redhat.com>
+To:     mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com,
+        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
+        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
+        bristot@redhat.com
+Cc:     linux-kernel@vger.kernel.org, Tom Rix <trix@redhat.com>
+Subject: [PATCH] sched/fair: cleanup master/slave usage in wake_wide()
+Date:   Sun, 30 May 2021 12:30:39 -0700
+Message-Id: <20210530193039.2556526-1-trix@redhat.com>
 X-Mailer: git-send-email 2.26.3
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -67,45 +68,41 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Tom Rix <trix@redhat.com>
 
-Static analysis reports this issue
-/motorcomm.c:83:2: warning: variable 'ge' is used uninitialized
-  whenever switch default is taken [-Wsometimes-uninitialized]
-        default: /* leave everything alone in other modes */
-        ^~~~~~~
-drivers/net/phy/motorcomm.c:87:85: note: uninitialized use
-  occurs here
-        ret = __phy_modify(phydev, YT8511_PAGE,
-	  (YT8511_DELAY_RX | YT8511_DELAY_GE_TX_EN), ge);
-                                                     ^~
+From Documentation/process/coding-style section for
+inclusive terminology, make these variable name changes in
+wake_wide()
 
-__phy_modify() calls __mdiobus_modify_changed(.., mask, set)
-
-	new = (ret & ~mask) | set;
-	if (new == ret)
-		return 0;
-
-	ret = __mdiobus_write(bus, addr, regnum, new);
-
-Since 'ge/set' is or-ed in, it is safe to initialize it to 0
+master -> primary
+slave -> secondary
 
 Signed-off-by: Tom Rix <trix@redhat.com>
 ---
- drivers/net/phy/motorcomm.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ kernel/sched/fair.c | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/net/phy/motorcomm.c b/drivers/net/phy/motorcomm.c
-index 796b68f4b499..53b2906c54ef 100644
---- a/drivers/net/phy/motorcomm.c
-+++ b/drivers/net/phy/motorcomm.c
-@@ -50,7 +50,7 @@ static int yt8511_write_page(struct phy_device *phydev, int page)
- 
- static int yt8511_config_init(struct phy_device *phydev)
+diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+index 161b92aa1c79..ade9f065c690 100644
+--- a/kernel/sched/fair.c
++++ b/kernel/sched/fair.c
+@@ -5754,13 +5754,13 @@ static void record_wakee(struct task_struct *p)
+  */
+ static int wake_wide(struct task_struct *p)
  {
--	unsigned int ge, fe;
-+	unsigned int ge = 0, fe = 0;
- 	int ret, oldpage;
+-	unsigned int master = current->wakee_flips;
+-	unsigned int slave = p->wakee_flips;
++	unsigned int primary = current->wakee_flips;
++	unsigned int secondary = p->wakee_flips;
+ 	int factor = __this_cpu_read(sd_llc_size);
  
- 	/* set clock mode to 125mhz */
+-	if (master < slave)
+-		swap(master, slave);
+-	if (slave < factor || master < slave * factor)
++	if (primary < secondary)
++		swap(primary, secondary);
++	if (secondary < factor || primary < secondary * factor)
+ 		return 0;
+ 	return 1;
+ }
 -- 
 2.26.3
 
