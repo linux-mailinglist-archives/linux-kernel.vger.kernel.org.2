@@ -2,66 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 62AEC395356
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 01:01:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 610ED395361
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 01:45:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229986AbhE3XD0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 30 May 2021 19:03:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36020 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229887AbhE3XDY (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 30 May 2021 19:03:24 -0400
-Received: from mail-vs1-xe43.google.com (mail-vs1-xe43.google.com [IPv6:2607:f8b0:4864:20::e43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10D98C061574
-        for <linux-kernel@vger.kernel.org>; Sun, 30 May 2021 16:01:45 -0700 (PDT)
-Received: by mail-vs1-xe43.google.com with SMTP id s14so2489679vsk.1
-        for <linux-kernel@vger.kernel.org>; Sun, 30 May 2021 16:01:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=NnRfr4IGvSRuG4cp/dSBDmk8cSWOxWDb3fq7feFIUOc=;
-        b=Eor9/2RFViN9uLpN2etnhglbnc5ckeS/6wJpe/L6a6BPq+/268BTRcE5u3Dx7IGens
-         AgG/bQE079uXrlGUb28ZAnwoqAfUBwdrNmHZfSBKXMCYd99EAvDV7hBfJa8K1xczFyp6
-         YhhHqazbWepiW1zj13xujr60zW5itdWLADIwlVP7n9tKxp7nDP1Ve8GvfnfJq6BA99lm
-         0+N5Y7lMptFPvUxwK2PRkVCadyuNzOeK1s+zdVjup4yp1J7RqxNTO6tzn6jWEb6d7cfz
-         /DxLaRWTX+xrQOHDwIzeCp8adDoLMXXJ9uCiCcu0arROUd0y38CnV+YcoS4DnfT2uVFR
-         svUg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=NnRfr4IGvSRuG4cp/dSBDmk8cSWOxWDb3fq7feFIUOc=;
-        b=k4mwWose1E92CgxQsUhzVcfu0w+Auz9Q8FL1ALnKCRUTjfyKT6xifssP7W6mkQO25A
-         KsHkH9kUCSEZvh0d3wsfzKHxMvONZol/zdy/y3V19XlMpZttxnUuwUIridScrXCIk0by
-         0ls9x7hAMcNqOk9OnXieDLmjfjBP563BUY3CtaZgr756OXRuJtuju84mkT3q5L3LxAAb
-         oy1hJRiMouvzSR0nhyaqe2fUaljgKnq7uCPINdAJIOQs90KE5n7sIj/0CN7wCOUEZ7sf
-         Tp5USyOWZwwFjpYFjL93QAo1Q3ybYhRUMh//J3jPcuU96dT9KVLMQStKnuhT+T9DZAAF
-         j0GA==
-X-Gm-Message-State: AOAM532ymnA4Xfer6abcdMBBVxJiueFaW2f+D6Sq19xurMKpp5mkUkfV
-        6vqBDVtqNoh1Ga/D3wdj5TztuAT1ku/aasg6dNA=
-X-Google-Smtp-Source: ABdhPJw+DoBj9kY7wzB1Hi1Gkyjpph0rHepLQdSahk4bNyqhQV0i5iI9Xlj6DEwGXgbkZIvNcOmD/Qovudo87HdSw+M=
-X-Received: by 2002:a05:6102:10d1:: with SMTP id t17mr12932240vsr.0.1622415704237;
- Sun, 30 May 2021 16:01:44 -0700 (PDT)
+        id S229940AbhE3Xql (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 30 May 2021 19:46:41 -0400
+Received: from mga07.intel.com ([134.134.136.100]:61928 "EHLO mga07.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229677AbhE3Xqj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 30 May 2021 19:46:39 -0400
+IronPort-SDR: qmWiOSraS62W78YcQMhthFMrf53kb4lyv7JRI0HA4TDQs6hJ0X0VZL9BDkM7rQfymWAeJUmsHH
+ /LHltnG0EXRQ==
+X-IronPort-AV: E=McAfee;i="6200,9189,10000"; a="267147211"
+X-IronPort-AV: E=Sophos;i="5.83,236,1616482800"; 
+   d="scan'208";a="267147211"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 May 2021 16:44:59 -0700
+IronPort-SDR: W9hABTtk3AxExNUhyopqea5WkqD+xyCduLWbH8YQzk8a4NwTUwPbbtcLTD4ZDC+rrBHh6o1Yfz
+ P/I6VizRLxMA==
+X-IronPort-AV: E=Sophos;i="5.83,236,1616482800"; 
+   d="scan'208";a="478680705"
+Received: from yhuang6-desk2.sh.intel.com (HELO yhuang6-desk2.ccr.corp.intel.com) ([10.239.159.119])
+  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 May 2021 16:44:56 -0700
+From:   "Huang, Ying" <ying.huang@intel.com>
+To:     Johannes Weiner <hannes@cmpxchg.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, Matthew Wilcox <willy@infradead.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Peter Xu <peterx@redhat.com>, Hugh Dickins <hughd@google.com>,
+        Mel Gorman <mgorman@suse.de>, Rik van Riel <riel@surriel.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Michal Hocko <mhocko@kernel.org>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Tim Chen <tim.c.chen@intel.com>
+Subject: Re: [PATCH -V2] mm: move idle swap cache pages to the tail of LRU
+ after COW
+References: <20210527084953.573788-1-ying.huang@intel.com>
+        <YK/OaEAwL4cufITY@cmpxchg.org>
+Date:   Mon, 31 May 2021 07:44:54 +0800
+In-Reply-To: <YK/OaEAwL4cufITY@cmpxchg.org> (Johannes Weiner's message of
+        "Thu, 27 May 2021 12:52:56 -0400")
+Message-ID: <871r9nbxc9.fsf@yhuang6-desk2.ccr.corp.intel.com>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.1 (gnu/linux)
 MIME-Version: 1.0
-Received: by 2002:a67:6105:0:0:0:0:0 with HTTP; Sun, 30 May 2021 16:01:43
- -0700 (PDT)
-Reply-To: bill.chantallawrence@gmail.com
-From:   "Mrs. Bill Chantal Lawrence" <sophiathomasabc@gmail.com>
-Date:   Sun, 30 May 2021 11:01:43 -1200
-Message-ID: <CAMv6n6TtZhZ-BM1g1HgpJbBVtvnRjFEXJE7yF2Xko=0qhLo5Zw@mail.gmail.com>
-Subject: You have been compensated
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=ascii
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-You have been compensated with the sum of 3.9 million dollars in this
-united nation the payment will be issue into atm visa card and send to you
-from the santander bank we need your address and your Whatsapp number
-+1 971 24 581 39  this my email.ID ( bill.chantallawrence@gmail.com ) contact me
+Johannes Weiner <hannes@cmpxchg.org> writes:
 
-Thanks
+> On Thu, May 27, 2021 at 04:49:53PM +0800, Huang Ying wrote:
+>> With commit 09854ba94c6a ("mm: do_wp_page() simplification"), after
+>> COW, the idle swap cache (neither the page nor the corresponding swap
+>> entry is mapped by any process) will be left at the original position
+>> in the LRU list.  While it may be in the active list or the head of
+>> the inactive list, so that vmscan may take more overhead or time to
+>> reclaim these actually unused pages.
+>> 
+>> To help the page reclaiming, in this patch, after COW, the idle swap
+>> cache will be tried to be moved to the tail of the inactive LRU list.
+>> To avoid to introduce much overhead to the hot COW code path, all
+>> locks are acquired with try locking.
+>> 
+>> To test the patch, we used pmbench memory accessing benchmark with
+>> working-set larger than available memory on a 2-socket Intel server
+>> with a NVMe SSD as swap device.  Test results shows that the pmbench
+>> score increases up to 21.8% with the decreased size of swap cache and
+>> swapin throughput.
+>> 
+>> Signed-off-by: "Huang, Ying" <ying.huang@intel.com>
+>> Suggested-by: Matthew Wilcox <willy@infradead.org>
+>> Cc: Linus Torvalds <torvalds@linux-foundation.org>
+>> Cc: Peter Xu <peterx@redhat.com>
+>> Cc: Hugh Dickins <hughd@google.com>
+>> Cc: Johannes Weiner <hannes@cmpxchg.org>
+>> Cc: Mel Gorman <mgorman@suse.de>
+>> Cc: Rik van Riel <riel@surriel.com>
+>> Cc: Andrea Arcangeli <aarcange@redhat.com>
+>> Cc: Michal Hocko <mhocko@kernel.org>
+>> Cc: Dave Hansen <dave.hansen@intel.com>
+>> Cc: Tim Chen <tim.c.chen@intel.com>
+>> 
+>> V2:
+>> 
+>> - Move trylock_page() to try_to_free_idle_swapcache() per Rik and
+>>   Linus' comments.
+>> - Fix PageLRU() checking.
+>> - Fix THP processing.
+>> - Rename the function.
+>> ---
+>>  include/linux/memcontrol.h | 10 ++++++++++
+>>  include/linux/swap.h       |  3 +++
+>>  mm/memcontrol.c            | 12 ++++++++++++
+>>  mm/memory.c                |  2 ++
+>>  mm/swapfile.c              | 39 ++++++++++++++++++++++++++++++++++++++
+>>  5 files changed, 66 insertions(+)
+>
+> Sorry the discussion fizzled out on the last patch.
+>
+> Let me try to recap this series: on your first submission you directly
+> freed the old page if we copied. Linus was worried about overhead in
+> the COW path that wouldn't pay off in a real workload. Before getting
+> numbers, it was then suggested to move the pages to the tail of the
+> LRU and leaving them to reclaim - which was also met with skepticism.
+>
+> V2 presented the LRU moving version with pmbench numbers that indeed
+> show it pays off. However, much simpler direct freeing produces even
+> better numbers in the same benchmark. We don't have numbers showing if
+> the LRU shuffling would significantly fare better in other workloads.
+>
+> Purely looking at the code: whether we defer or free, we need to lock
+> the page, take the LRU spinlock for this page, and touch the LRU
+> linkage. If we free, we add the swapcache deletion and the page
+> allocator, but it's most likely the percpu-cached fastpath. If we
+> defer, reclaim needs to re-establish information about the page that
+> we already had in the COW context, do another LRU operation, do the
+> swapcache deletion and go through the allocator, but on cold caches.
+>
+> Personally, I'm a bit skeptical the extra code complexity and reclaim
+> overhead in paging workloads will definitely pay off in intermittently
+> paging loads (non-paging wouldn't have swap pages). As far as code
+> goes, the point of 09854ba94c6a (+17, -42) was simplification, and
+> this adds more lines back in another place. In particular it adds
+> another lifetime variant to swap pages which are already somewhat
+> unwieldy. OTOH, freeing is a two-liner reusing the swap unmap code:
+>
+> 	if (page_copied)
+> 		free_swap_cache(old_page);
 
-Mrs. Bill Chantal
+Yes.  This looks better than my previous version, which duplicated the
+code of free_swap_cache().  Thanks for pointing this out.
+
+Best Regards,
+Huang, Ying
