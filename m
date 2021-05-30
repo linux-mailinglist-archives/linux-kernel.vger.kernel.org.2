@@ -2,103 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A9EB93950A9
-	for <lists+linux-kernel@lfdr.de>; Sun, 30 May 2021 13:28:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D1133950B7
+	for <lists+linux-kernel@lfdr.de>; Sun, 30 May 2021 13:52:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229798AbhE3LaC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 30 May 2021 07:30:02 -0400
-Received: from gecko.sbs.de ([194.138.37.40]:36461 "EHLO gecko.sbs.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229500AbhE3LaB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 30 May 2021 07:30:01 -0400
-Received: from mail2.sbs.de (mail2.sbs.de [192.129.41.66])
-        by gecko.sbs.de (8.15.2/8.15.2) with ESMTPS id 14UBS5jM012746
-        (version=TLSv1.2 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Sun, 30 May 2021 13:28:05 +0200
-Received: from [139.22.32.8] ([139.22.32.8])
-        by mail2.sbs.de (8.15.2/8.15.2) with ESMTP id 14UBONLG031032;
-        Sun, 30 May 2021 13:24:23 +0200
-From:   Jan Kiszka <jan.kiszka@siemens.com>
-Subject: [PATCH v2] watchdog: iTCO_wdt: Account for rebooting on second
- timeout
-To:     Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Guenter Roeck <linux@roeck-us.net>
-Cc:     linux-watchdog@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Christian Storm <christian.storm@siemens.com>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>
-Message-ID: <0b8bb307-d08b-41b5-696c-305cdac6789c@siemens.com>
-Date:   Sun, 30 May 2021 13:24:23 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.0
+        id S229712AbhE3Lxd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 30 May 2021 07:53:33 -0400
+Received: from mailgw01.mediatek.com ([210.61.82.183]:54793 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S229500AbhE3Lxd (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 30 May 2021 07:53:33 -0400
+X-UUID: 66d3ffed4aec4f699251acbe410c59a7-20210530
+X-UUID: 66d3ffed4aec4f699251acbe410c59a7-20210530
+Received: from mtkexhb02.mediatek.inc [(172.21.101.103)] by mailgw01.mediatek.com
+        (envelope-from <rocco.yue@mediatek.com>)
+        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 253908738; Sun, 30 May 2021 19:51:51 +0800
+Received: from mtkcas11.mediatek.inc (172.21.101.40) by
+ mtkmbs01n1.mediatek.inc (172.21.101.68) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Sun, 30 May 2021 19:51:49 +0800
+Received: from localhost.localdomain (10.15.20.246) by mtkcas11.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Sun, 30 May 2021 19:51:48 +0800
+From:   Rocco Yue <rocco.yue@mediatek.com>
+To:     "David S . Miller" <davem@davemloft.net>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        David Ahern <dsahern@kernel.org>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>
+CC:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-mediatek@lists.infradead.org>, <wsd_upstream@mediatek.com>,
+        <Rocco.Yue@gmail.com>, Rocco Yue <rocco.yue@mediatek.com>
+Subject: [PATCH] ipv6: align code with context
+Date:   Sun, 30 May 2021 19:38:11 +0800
+Message-ID: <20210530113811.8817-1-rocco.yue@mediatek.com>
+X-Mailer: git-send-email 2.18.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
+X-MTK:  N
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jan Kiszka <jan.kiszka@siemens.com>
+The Tab key is used three times, causing the code block to
+be out of alignment with the context.
 
-This was already attempted to fix via 1fccb73011ea: If the BIOS did not
-enable TCO SMIs, the timer definitely needs to trigger twice in order to
-cause a reboot. If TCO SMIs are on, as well as SMIs in general, we can
-continue to assume that the BIOS will perform a reboot on the first
-timeout.
-
-QEMU with its ICH9 and related BIOS falls into the former category,
-currently taking twice the configured timeout in order to reboot the
-machine. For iTCO version that fall under turn_SMI_watchdog_clear_off,
-this is also true and was currently only addressed for v1, irrespective
-of the turn_SMI_watchdog_clear_off value.
-
-Signed-off-by: Jan Kiszka <jan.kiszka@siemens.com>
+Signed-off-by: Rocco Yue <rocco.yue@mediatek.com>
 ---
+ net/ipv6/addrconf.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-Changes in v2:
- - consider GBL_SMI_EN as well
-
- drivers/watchdog/iTCO_wdt.c | 12 +++++++++---
- 1 file changed, 9 insertions(+), 3 deletions(-)
-
-diff --git a/drivers/watchdog/iTCO_wdt.c b/drivers/watchdog/iTCO_wdt.c
-index bf31d7b67a69..3f1324871cfd 100644
---- a/drivers/watchdog/iTCO_wdt.c
-+++ b/drivers/watchdog/iTCO_wdt.c
-@@ -71,6 +71,8 @@
- #define TCOBASE(p)	((p)->tco_res->start)
- /* SMI Control and Enable Register */
- #define SMI_EN(p)	((p)->smi_res->start)
-+#define TCO_EN		(1 << 13)
-+#define GBL_SMI_EN	(1 << 0)
- 
- #define TCO_RLD(p)	(TCOBASE(p) + 0x00) /* TCO Timer Reload/Curr. Value */
- #define TCOv1_TMR(p)	(TCOBASE(p) + 0x01) /* TCOv1 Timer Initial Value*/
-@@ -355,8 +357,12 @@ static int iTCO_wdt_set_timeout(struct watchdog_device *wd_dev, unsigned int t)
- 
- 	tmrval = seconds_to_ticks(p, t);
- 
--	/* For TCO v1 the timer counts down twice before rebooting */
--	if (p->iTCO_version == 1)
-+	/*
-+	 * If TCO SMIs are off, the timer counts down twice before rebooting.
-+	 * Otherwise, the BIOS generally reboots when the SMI triggers.
-+	 */
-+	if (p->smi_res &&
-+	    (SMI_EN(p) & (TCO_EN | GBL_SMI_EN)) != (TCO_EN | GBL_SMI_EN))
- 		tmrval /= 2;
- 
- 	/* from the specs: */
-@@ -521,7 +527,7 @@ static int iTCO_wdt_probe(struct platform_device *pdev)
- 		 * Disables TCO logic generating an SMI#
- 		 */
- 		val32 = inl(SMI_EN(p));
--		val32 &= 0xffffdfff;	/* Turn off SMI clearing watchdog */
-+		val32 &= ~TCO_EN;	/* Turn off SMI clearing watchdog */
- 		outl(val32, SMI_EN(p));
- 	}
- 
+diff --git a/net/ipv6/addrconf.c b/net/ipv6/addrconf.c
+index b0ef65eb9bd2..048570900fdf 100644
+--- a/net/ipv6/addrconf.c
++++ b/net/ipv6/addrconf.c
+@@ -6903,10 +6903,10 @@ static const struct ctl_table addrconf_sysctl[] = {
+ 		.proc_handler   = proc_dointvec,
+ 	},
+ 	{
+-		.procname		= "addr_gen_mode",
+-		.data			= &ipv6_devconf.addr_gen_mode,
+-		.maxlen			= sizeof(int),
+-		.mode			= 0644,
++		.procname	= "addr_gen_mode",
++		.data		= &ipv6_devconf.addr_gen_mode,
++		.maxlen		= sizeof(int),
++		.mode		= 0644,
+ 		.proc_handler	= addrconf_sysctl_addr_gen_mode,
+ 	},
+ 	{
 -- 
-2.26.2
+2.18.0
+
