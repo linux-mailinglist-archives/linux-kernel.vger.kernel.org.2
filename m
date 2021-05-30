@@ -2,221 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C98F39522D
-	for <lists+linux-kernel@lfdr.de>; Sun, 30 May 2021 18:51:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A2EA8395239
+	for <lists+linux-kernel@lfdr.de>; Sun, 30 May 2021 19:18:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229901AbhE3QxF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 30 May 2021 12:53:05 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:31408 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229823AbhE3QxD (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 30 May 2021 12:53:03 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1622393485;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=g4DresjxbvYoLZHzt/csc15CCgwHH4raEtpTQ0nPVeg=;
-        b=Fcu1h/lnLIzizDPmfEaPG1iWOusN2/zxNxHGdk3DYD5EUQbLCUer/qAoRYrqRSruwHKjs9
-        nGq0DJl9ezp2Fc2NyQFsyVoNZK/xoTFmYCKPWCcZdjqXFYkHU741Id7u4qHVdW6EG5laYl
-        HJFmuu/W0thUbbclOT0wD/w97r85k0g=
-Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
- [209.85.208.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-438-2C-2D6XBMviitTOTSxoY6g-1; Sun, 30 May 2021 12:51:23 -0400
-X-MC-Unique: 2C-2D6XBMviitTOTSxoY6g-1
-Received: by mail-ed1-f71.google.com with SMTP id q7-20020aa7cc070000b029038f59dab1c5so5075624edt.23
-        for <linux-kernel@vger.kernel.org>; Sun, 30 May 2021 09:51:23 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=g4DresjxbvYoLZHzt/csc15CCgwHH4raEtpTQ0nPVeg=;
-        b=kq6yJdk7euogELxjZMtIV42vqKenCOwSDzb6SKMoGpwFRl2Kq2dMniuSaHIVAnstKZ
-         RJ+SzgUFiTVhfo5MrUzAfdeNsoTWuasJ1cOwjjGk54Mg4mx3xW7N5kqAvmyhfaxdFWfo
-         3ubOurq1T+0iKRnjoxUjTW32Sc3fXobWtbiMdbCzPrGRJVwqMtxIrbHCwtTV1HeghkfL
-         meTTwMTj2rlzU2DntsOgOQndptXvyx1Zor5SXE3eivtWJDZf4FlLJNMpd6ydnRiBrhim
-         V6mprQo3GFeAzO2o0p1ZEZB3CmD8jXUE1MmwZ+vQy00x8PUgXvDom6awtbuOWGkHwF6H
-         64BA==
-X-Gm-Message-State: AOAM530G5z1JSj5/SJYteYM0dKqDXLibaqj2GHyA2M2X/9IZfIFtjoGN
-        MKYzEcK+bXgT3DOmw8hXoJ7vvA/rPUdELJUbpfaa1Knno0KptLu6sl3CpbWvT8+suEPO0EvujqP
-        Ev4F+2kBlHkG4GARY0rr6GwC9d6KNWbg/df0vybNsvrwAn+bRzYInDOgjvrwrVOdEs2culJMGah
-        sm
-X-Received: by 2002:a17:907:1b06:: with SMTP id mp6mr18971702ejc.292.1622393482178;
-        Sun, 30 May 2021 09:51:22 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwv4NXBGWEOUlsCBK8dv4d5a9MPJ7elGrzUox4+WgpDpgPxKMZzzPtUpEpX5BfjGTpigSbKpg==
-X-Received: by 2002:a17:907:1b06:: with SMTP id mp6mr18971650ejc.292.1622393481352;
-        Sun, 30 May 2021 09:51:21 -0700 (PDT)
-Received: from x1.localdomain (2001-1c00-0c1e-bf00-1054-9d19-e0f0-8214.cable.dynamic.v6.ziggo.nl. [2001:1c00:c1e:bf00:1054:9d19:e0f0:8214])
-        by smtp.gmail.com with ESMTPSA id p11sm5737751edt.22.2021.05.30.09.51.20
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 30 May 2021 09:51:20 -0700 (PDT)
-Subject: Re: [PATCH v3 0/6] RTL8231 GPIO expander support
-To:     Sander Vanheule <sander@svanheule.net>,
-        Michael Walle <michael@walle.cc>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     Andrew Lunn <andrew@lunn.ch>, Pavel Machek <pavel@ucw.cz>,
-        Rob Herring <robh+dt@kernel.org>,
-        Lee Jones <lee.jones@linaro.org>,
-        Mark Brown <broonie@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J . Wysocki" <rafael@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Linux LED Subsystem <linux-leds@vger.kernel.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-References: <cover.1620735871.git.sander@svanheule.net>
- <cover.1621809029.git.sander@svanheule.net> <YKr9G3EfrM34gCsL@lunn.ch>
- <CAHp75VewCw8ES_9S48qmeCtSXMkGWt0s4iub0Fu4ZuwWANHpaQ@mail.gmail.com>
- <02bbf73ea8a14119247f07a677993aad2f45b088.camel@svanheule.net>
- <f03d5cdc958110fc7d95cfc4258dac4e@walle.cc>
- <84352c93f27d7c8b7afea54f3932020e9cd97d02.camel@svanheule.net>
-From:   Hans de Goede <hdegoede@redhat.com>
-Message-ID: <a644b8fa-c90a-eab6-9cca-08344abec532@redhat.com>
-Date:   Sun, 30 May 2021 18:51:20 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+        id S229823AbhE3RT4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 30 May 2021 13:19:56 -0400
+Received: from aposti.net ([89.234.176.197]:37646 "EHLO aposti.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229671AbhE3RTz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 30 May 2021 13:19:55 -0400
+From:   Paul Cercueil <paul@crapouillou.net>
+To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        =?UTF-8?q?=E5=91=A8=E7=90=B0=E6=9D=B0?= <zhouyanjie@wanyeetech.com>,
+        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, list@opendingux.net,
+        Paul Cercueil <paul@crapouillou.net>
+Subject: [PATCH 0/8] Misc Ingenic patches
+Date:   Sun, 30 May 2021 18:17:54 +0100
+Message-Id: <20210530171802.23649-1-paul@crapouillou.net>
 MIME-Version: 1.0
-In-Reply-To: <84352c93f27d7c8b7afea54f3932020e9cd97d02.camel@svanheule.net>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Hi Thomas,
 
-On 5/30/21 6:19 PM, Sander Vanheule wrote:
-> Hi Michael, Andy,
-> 
-> On Fri, 2021-05-28 at 08:37 +0200, Michael Walle wrote:
->> Am 2021-05-24 13:41, schrieb Sander Vanheule:
->>> Hi Andy, Andrew,
->>>
->>> On Mon, 2021-05-24 at 10:53 +0300, Andy Shevchenko wrote:
->>>> On Mon, May 24, 2021 at 4:11 AM Andrew Lunn <andrew@lunn.ch> wrote:
->>>>>
->>>>>> Changes since v2:
->>>>>>   - MDIO regmap support was merged, so patch is dropped here
->>>>>
->>>>> Do you have any idea how this will get merged. It sounds like one of
->>>>> the Maintainers will need a stable branch of regmap.
->>>>
->>>> This is not a problem if Mark provides an immutable branch to pull 
->>>> from.
->>>
->>> Mark has a tag (regmap-mdio) for this patch:
->>> https://git.kernel.org/pub/scm/linux/kernel/git/broonie/regmap.git/tag/?h=regmap-mdio
->>>
->>>>
->>>>>>   - Introduce GPIO regmap quirks to set output direction first
->>>>>
->>>>> I thought you had determined it was possible to set output before
->>>>> direction?
->>>>
->>>> Same thoughts when I saw an updated version of that patch. My
->>>> anticipation was to not see it at all.
->>>
->>> The two devices I've been trying to test the behaviour on are:
->>>  * Netgear GS110TPP: has an RTL8231 with three LEDs, each driven via a 
->>> pin
->>>    configured as (active-low) GPIO. The LEDs are easy for a quick 
->>> visual check.
->>>  * Zyxel GS1900-8: RTL8231 used for the front panel button, and an 
->>> active-low
->>>    GPIO used to hard reset the main SoC (an RTL8380). I've modified 
->>> this board
->>>    to change some of the strapping pin values, but testing with the 
->>> jumpers and
->>>    pull-up/down resistors is a bit more tedious.
->>>
->>> On the Netgear, I tested the following with and without the quirk:
->>>
->>>    # Set as OUT-LOW twice, to avoid the quirk. Always turns the LED on
->>>    gpioset 1 32=0; gpioset 1 32=0
->>>    # Get value to change to input, turns the LED off (high impedance)
->>>    # Will return 1 due to (weak) internal pull-up
->>>    gpioget 1 32
->>>    # Set as OUT-HIGH, should result in LED off
->>>    # When the quirk is disabled, the LED turns on (i.e. old OUT-LOW 
->>> value)
->>>    # When the quirk is enabled, the LED remains off (i.e. correct
->>> OUT-HIGH value)
->>>    gpioset 1 32=1
->>>
->>> Now, what's confusing (to me) is that the inverse doesn't depend on the 
->>> quirk:
->>>
->>>    # Set as OUT-HIGH twice
->>>    gpioset 1 32=1; gpioset 1 32=1
->>>    # Change to high-Z
->>>    gpioget 1 32
->>>    # Set to OUT-LOW, always results in LED on, with or without quirk
->>>    gpioset 1 32=0
->>>
->>> Any idea why this would be (or appear) broken on the former case, but 
->>> not on the
->>> latter?
->>
->> Before reading this, I'd have guessed that they switch the internal 
->> register
->> depending on the GPIO direction; I mean there is only one register 
->> address
->> for both the input and the output register. Hm.
->>
->> Did you try playing around with raw register accesses and see if the 
->> value
->> of the GPIO data register is changing when you switch GPIOs to 
->> input/output.
->>
->> Eg. you could try https://github.com/kontron/miitool to access the 
->> registers
->> from userspace (your ethernet controller has to have support for the 
->> ioctl's
->> though, see commit a613bafec516 ("enetc: add ioctl() support for 
->> PHY-related
->> ops") for an example).
-> 
-> I think I found a solution!
-> 
-> As Michael suggested, I tried raw register reads and writes, to eliminate any
-> side effects of the intermediate code. I didn't use the ioctls (this isn't a
-> netdev), but I found regmap's debugfs write functionality, which allowed me to
-> do the same.
-> 
-> I was trying to reproduce the behaviour I reported earlier, but couldn't. The
-> output levels were always the intended ones. At some point I realised that the
-> regmap_update_bits function does a read-modify-write, which might shadow the
-> actual current output value.
-> For example:
->  * Set output low: current out is low
->  * Change to input with pull-up: current out is still low, but DATAx reads high
->  * Set output high: RMW reads a high value (the input), so assumes a write is
->    not necessary, leaving the old output value (low).
-> 
-> Currently, I see two options:
->  * Use regmap_update_bits_base to avoid the lazy RMW behaviour
->  * Add a cache for the output data values to the driver, and only use these
->    values to write to the output registers. This would allow keeping lazy RMW
->    behaviour, which may be a benefit on slow busses.
-> 
-> With either of these implemented, if I set the output value before the
-> direction, everything works! :-)
-> 
-> Would you like this to be added to regmap-gpio, or should I revert back to a
-> device-specific implementation?
+Here is a set of misc patches that don't really have any relation
+between themselves. I just thought you'd prefer one patchset than eight
+individual patches :)
 
-Regmap allows you to mark certain ranges as volatile, so that they will not
-be cached, these GPIO registers containing the current pin value seems like
-a good candidate for this. This is also necessary to make reading the GPIO
-work without getting back a stale, cached value.
+Cheers,
+-Paul
 
-Regards,
+Paul Cercueil (8):
+  MIPS: mm: XBurst CPU requires sync after DMA
+  MIPS: boot: Support specifying UART port on Ingenic SoCs
+  MIPS: cpu-probe: Fix FPU detection on Ingenic JZ4760(B)
+  MIPS: Kconfig: ingenic: Ensure MACH_INGENIC_GENERIC selects all SoCs
+  MIPS: ingenic: Select CPU_SUPPORTS_CPUFREQ && MIPS_EXTERNAL_TIMER
+  MIPS: ingenic: jz4780: Fix I2C nodes to match DT doc
+  MIPS: ingenic: gcw0: Set codec to cap-less mode for FM radio
+  MIPS: ingenic: rs90: Add dedicated VRAM memory region
 
-Hans
+ arch/mips/Kconfig                      |  3 +++
+ arch/mips/Kconfig.debug                |  8 ++++++++
+ arch/mips/boot/compressed/uart-16550.c |  4 ++--
+ arch/mips/boot/dts/ingenic/gcw0.dts    |  5 ++---
+ arch/mips/boot/dts/ingenic/jz4780.dtsi | 10 +++++-----
+ arch/mips/boot/dts/ingenic/rs90.dts    | 14 ++++++++++++++
+ arch/mips/ingenic/Kconfig              |  2 ++
+ arch/mips/kernel/cpu-probe.c           |  5 +++++
+ arch/mips/mm/dma-noncoherent.c         |  1 +
+ 9 files changed, 42 insertions(+), 10 deletions(-)
+
+-- 
+2.30.2
 
