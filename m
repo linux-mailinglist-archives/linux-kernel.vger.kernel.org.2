@@ -2,58 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 51AA1394F59
-	for <lists+linux-kernel@lfdr.de>; Sun, 30 May 2021 06:30:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F8B1394F5A
+	for <lists+linux-kernel@lfdr.de>; Sun, 30 May 2021 06:30:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229643AbhE3Ebr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 30 May 2021 00:31:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50318 "EHLO mail.kernel.org"
+        id S229685AbhE3Eby (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 30 May 2021 00:31:54 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50332 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229447AbhE3Ebl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S229515AbhE3Ebl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Sun, 30 May 2021 00:31:41 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id 0B8F0611AC;
+Received: by mail.kernel.org (Postfix) with ESMTPS id 54FCE611BD;
         Sun, 30 May 2021 04:30:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1622349004;
-        bh=v8/SrcQ9MFrmKVWSdci+2ca/mJjtR1Q5oQx5EPLqVY4=;
+        bh=rpxVla88WVhf02GRKeclOnXI97fBdoOIco0e3nhhjEU=;
         h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=BiUZCkj+YJCC3QaCgFSsCAsUXReMrZqPW31rvP7OhcSmNSwvhJnMq+0svEKxeui5U
-         LQe+2hS0bxW7wLXVzLCzSFHYv90X3lg/CQL3UQ8SdklSAW06kjYIQW4DOhQQfHzRPP
-         rKX/HiG2JMMHKV64UGmgnqflqDooZ6YSBvHuAcrT8seG7G8PYTkmusPol+53wXz1SA
-         fKJJPH2gxO978YqXlTfVq8e6/kW5Jp2ZTQ5hvIyIoUP1lB0qRUfIv9pA5OFEUoDslK
-         qAbi6dml70cXiA5BdiNWClwQMOhPewmoGvBtptnqaOrI4P/MCsdfyJePXS3YcRnQey
-         L9tk7QAUdjoRA==
+        b=VxFnbaLVykoMs3OcPd13Xj8pKMUsSsA/O9FsnPzAKnz5FFExdBhFkZpwhtb/DqQfd
+         zIINTLmzuIcLDPM1vnDBcS5TFkbZFx5mxXAk0N2G6pAi9xFaiTEjso7xqDTRSy4XM7
+         1KpRKYDg9+Fh3ez/hl+y265jlVM9BKa1rN8lLVlgXrVTg5kMyevLgLDsJRfSnf0T2y
+         CWyEZNPuq+alvMT/eT7qlNc2+XQ0BzLKNpVeQBrOlIyEWdSVZSrxS/6HVc7yhCtrlU
+         kMR9sYxfWGv1flfTS6e3LnGeXSV8cdjxpzTZBjrHlKhjtF4GYoIoovaqTpQlgnIZdt
+         0KNjLZIO5NvuQ==
 Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id E97B86095A;
-        Sun, 30 May 2021 04:30:03 +0000 (UTC)
-Subject: Re: [PULL REQUEST] i2c for v5.13-rc4
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 4E0C4609D9;
+        Sun, 30 May 2021 04:30:04 +0000 (UTC)
+Subject: Re: [GIT PULL] xfs: fixes for 5.13-rc4
 From:   pr-tracker-bot@kernel.org
-In-Reply-To: <YLKvCNTvXTpPabHq@kunai>
-References: <YLKvCNTvXTpPabHq@kunai>
-X-PR-Tracked-List-Id: <linux-i2c.vger.kernel.org>
-X-PR-Tracked-Message-Id: <YLKvCNTvXTpPabHq@kunai>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/wsa/linux.git i2c/for-current
-X-PR-Tracked-Commit-Id: 8aa0ae439966364da86fc6437375e32f2890c4c3
+In-Reply-To: <20210529171212.GQ2402049@locust>
+References: <20210529171212.GQ2402049@locust>
+X-PR-Tracked-List-Id: <linux-xfs.vger.kernel.org>
+X-PR-Tracked-Message-Id: <20210529171212.GQ2402049@locust>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/fs/xfs/xfs-linux.git tags/xfs-5.13-fixes-3
+X-PR-Tracked-Commit-Id: 0fe0bbe00a6fb77adf75085b7d06b71a830dd6f2
 X-PR-Merge-Tree: torvalds/linux.git
 X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: b90e90f40b4ff23c753126008bf4713a42353af6
-Message-Id: <162234900389.23697.5977152232605719404.pr-tracker-bot@kernel.org>
-Date:   Sun, 30 May 2021 04:30:03 +0000
-To:     Wolfram Sang <wsa@kernel.org>
+X-PR-Merge-Commit-Id: 75b9c727afcccff7cbcf1fd14e5e967dd69bab75
+Message-Id: <162234900431.23697.17510919033109580334.pr-tracker-bot@kernel.org>
+Date:   Sun, 30 May 2021 04:30:04 +0000
+To:     "Darrick J. Wong" <djwong@kernel.org>
 Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Peter Rosin <peda@axentia.se>,
-        Bartosz Golaszewski <brgl@bgdev.pl>
+        linux-fsdevel@vger.kernel.org, linux-xfs@vger.kernel.org,
+        david@fromorbit.com, linux-kernel@vger.kernel.org,
+        sandeen@sandeen.net, hch@lst.de
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Sat, 29 May 2021 23:15:52 +0200:
+The pull request you sent on Sat, 29 May 2021 10:12:12 -0700:
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/wsa/linux.git i2c/for-current
+> git://git.kernel.org/pub/scm/fs/xfs/xfs-linux.git tags/xfs-5.13-fixes-3
 
 has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/b90e90f40b4ff23c753126008bf4713a42353af6
+https://git.kernel.org/torvalds/c/75b9c727afcccff7cbcf1fd14e5e967dd69bab75
 
 Thank you!
 
