@@ -2,58 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 27D7D3952DD
-	for <lists+linux-kernel@lfdr.de>; Sun, 30 May 2021 22:34:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E0C063952DF
+	for <lists+linux-kernel@lfdr.de>; Sun, 30 May 2021 22:43:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229933AbhE3UgP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 30 May 2021 16:36:15 -0400
-Received: from fgw20-7.mail.saunalahti.fi ([62.142.5.81]:48608 "EHLO
-        fgw20-7.mail.saunalahti.fi" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229915AbhE3UgO (ORCPT
+        id S229915AbhE3UpK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 30 May 2021 16:45:10 -0400
+Received: from lilium.sigma-star.at ([109.75.188.150]:46196 "EHLO
+        lilium.sigma-star.at" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229805AbhE3UpJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 30 May 2021 16:36:14 -0400
-Received: from localhost (88-115-248-186.elisa-laajakaista.fi [88.115.248.186])
-        by fgw20.mail.saunalahti.fi (Halon) with ESMTP
-        id 70ecd793-c186-11eb-ba24-005056bd6ce9;
-        Sun, 30 May 2021 23:34:33 +0300 (EEST)
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-To:     Pavel Machek <pavel@ucw.cz>,
-        =?UTF-8?q?Marek=20Beh=C3=BAn?= <marek.behun@nic.cz>,
-        linux-leds@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Andy Shevchenko <andy.shevchenko@gmail.com>,
-        kernel test robot <lkp@intel.com>
-Subject: [PATCH v1 1/1] leds: lm36274: Add missed property.h
-Date:   Sun, 30 May 2021 23:32:28 +0300
-Message-Id: <20210530203228.3958241-1-andy.shevchenko@gmail.com>
-X-Mailer: git-send-email 2.31.1
+        Sun, 30 May 2021 16:45:09 -0400
+X-Greylist: delayed 507 seconds by postgrey-1.27 at vger.kernel.org; Sun, 30 May 2021 16:45:09 EDT
+Received: from localhost (localhost [127.0.0.1])
+        by lilium.sigma-star.at (Postfix) with ESMTP id B3CFA1817A0CB;
+        Sun, 30 May 2021 22:35:01 +0200 (CEST)
+Received: from lilium.sigma-star.at ([127.0.0.1])
+        by localhost (lilium.sigma-star.at [127.0.0.1]) (amavisd-new, port 10032)
+        with ESMTP id 55jQULQnARog; Sun, 30 May 2021 22:35:01 +0200 (CEST)
+Received: from lilium.sigma-star.at ([127.0.0.1])
+        by localhost (lilium.sigma-star.at [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id lB1rIV5dxa9A; Sun, 30 May 2021 22:35:01 +0200 (CEST)
+From:   Richard Weinberger <richard@nod.at>
+To:     alsa-devel@alsa-project.org
+Cc:     linux-kernel@vger.kernel.org, grandmaster@al2klimov.de,
+        robh@kernel.org, dmurphy@ti.com, tiwai@suse.com, perex@perex.cz,
+        broonie@kernel.org, lgirdwood@gmail.com,
+        Richard Weinberger <richard@nod.at>
+Subject: [PATCH] ASoC: tas2562: Fix TDM_CFG0_SAMPRATE values
+Date:   Sun, 30 May 2021 22:34:46 +0200
+Message-Id: <20210530203446.19022-1-richard@nod.at>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-It appears that property.h has been included in some configurations implicitly,
-but in some it's not and hence build may fail. Add missed property.h explicitly.
+TAS2562_TDM_CFG0_SAMPRATE_MASK starts at bit 1, not 0.
+So all values need to be left shifted by 1.
 
-Fixes: e2e8e4e81875 ("leds: lm36274: Correct headers (of*.h -> mod_devicetable.h)")
-Reported-by: kernel test robot <lkp@intel.com>
-Signed-off-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+Signed-off-by: Richard Weinberger <richard@nod.at>
 ---
- drivers/leds/leds-lm36274.c | 1 +
- 1 file changed, 1 insertion(+)
+ sound/soc/codecs/tas2562.h | 14 +++++++-------
+ 1 file changed, 7 insertions(+), 7 deletions(-)
 
-diff --git a/drivers/leds/leds-lm36274.c b/drivers/leds/leds-lm36274.c
-index 90dc5cbebed4..e009b6d17915 100644
---- a/drivers/leds/leds-lm36274.c
-+++ b/drivers/leds/leds-lm36274.c
-@@ -10,6 +10,7 @@
- #include <linux/mod_devicetable.h>
- #include <linux/module.h>
- #include <linux/platform_device.h>
-+#include <linux/property.h>
- 
- #include <linux/mfd/ti-lmu.h>
- #include <linux/mfd/ti-lmu-register.h>
--- 
-2.31.1
+diff --git a/sound/soc/codecs/tas2562.h b/sound/soc/codecs/tas2562.h
+index 81866aeb3fbf..55b2a1f52ca3 100644
+--- a/sound/soc/codecs/tas2562.h
++++ b/sound/soc/codecs/tas2562.h
+@@ -57,13 +57,13 @@
+ #define TAS2562_TDM_CFG0_RAMPRATE_MASK		BIT(5)
+ #define TAS2562_TDM_CFG0_RAMPRATE_44_1		BIT(5)
+ #define TAS2562_TDM_CFG0_SAMPRATE_MASK		GENMASK(3, 1)
+-#define TAS2562_TDM_CFG0_SAMPRATE_7305_8KHZ	0x0
+-#define TAS2562_TDM_CFG0_SAMPRATE_14_7_16KHZ	0x1
+-#define TAS2562_TDM_CFG0_SAMPRATE_22_05_24KHZ	0x2
+-#define TAS2562_TDM_CFG0_SAMPRATE_29_4_32KHZ	0x3
+-#define TAS2562_TDM_CFG0_SAMPRATE_44_1_48KHZ	0x4
+-#define TAS2562_TDM_CFG0_SAMPRATE_88_2_96KHZ	0x5
+-#define TAS2562_TDM_CFG0_SAMPRATE_176_4_192KHZ	0x6
++#define TAS2562_TDM_CFG0_SAMPRATE_7305_8KHZ	(0x0 << 1)
++#define TAS2562_TDM_CFG0_SAMPRATE_14_7_16KHZ	(0x1 << 1)
++#define TAS2562_TDM_CFG0_SAMPRATE_22_05_24KHZ	(0x2 << 1)
++#define TAS2562_TDM_CFG0_SAMPRATE_29_4_32KHZ	(0x3 << 1)
++#define TAS2562_TDM_CFG0_SAMPRATE_44_1_48KHZ	(0x4 << 1)
++#define TAS2562_TDM_CFG0_SAMPRATE_88_2_96KHZ	(0x5 << 1)
++#define TAS2562_TDM_CFG0_SAMPRATE_176_4_192KHZ	(0x6 << 1)
+=20
+ #define TAS2562_TDM_CFG2_RIGHT_JUSTIFY	BIT(6)
+=20
+--=20
+2.26.2
 
