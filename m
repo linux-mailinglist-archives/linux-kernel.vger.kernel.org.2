@@ -2,122 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F2F65395151
-	for <lists+linux-kernel@lfdr.de>; Sun, 30 May 2021 16:32:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 08ACE39514C
+	for <lists+linux-kernel@lfdr.de>; Sun, 30 May 2021 16:30:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229798AbhE3Odv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 30 May 2021 10:33:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38076 "EHLO
+        id S229754AbhE3Obq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 30 May 2021 10:31:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37608 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229580AbhE3Odu (ORCPT
+        with ESMTP id S229580AbhE3Obp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 30 May 2021 10:33:50 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A889C061574;
-        Sun, 30 May 2021 07:32:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-        Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:
-        Subject:Sender:Reply-To:Content-ID:Content-Description;
-        bh=YPRb01aMhesQxdqGA6MBTiCuI6fX275v8ray7uBqpWY=; b=VhhzXpB9WnPXTvaTHWaN57FAmj
-        3Ue04bB05yPgOqU1EsVg0NIDa4UjMl6b5X1LUaM3ibtaSXvst1yTaAtkE0JuxdD5//qVsOT6tle1V
-        tYcVS3yQwBI3lY1FqfldIPm3dzTla284Vbyu3c5H9TloiYjqoi26C354PuIWh6jj29WPlF2N4VotK
-        gRnJit/k1fj6MgGlLZL0OqXgNM1QBDwiHfT+nZY/YoMt8CtyQSUfEfElnTq+hOwXQ7bC0K4lTvWgF
-        Po6uJKyukr5DfjA2GiJ9SS3zrIChHRihFe7rY2boWGEVn2qyGMqDGc03v8XH6Jxs4ZA6769cJmAry
-        Xn2kxGuw==;
-Received: from [2601:1c0:6280:3f0::ce7d]
-        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1lnMU5-009ktt-Ua; Sun, 30 May 2021 14:32:10 +0000
-Subject: Re: [PATCH v3] wireless: carl9170: fix LEDS build errors & warnings
-To:     Christian Lamparter <chunkeey@gmail.com>,
-        linux-kernel@vger.kernel.org
-Cc:     kernel test robot <lkp@intel.com>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        linux-wireless@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>
-References: <20210530031134.23274-1-rdunlap@infradead.org>
- <8043ff50-d592-7666-f001-7505efa0d4c2@gmail.com>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <c49c07d5-1d6e-5b99-30b4-bc8f48b0fde3@infradead.org>
-Date:   Sun, 30 May 2021 07:32:07 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.0
+        Sun, 30 May 2021 10:31:45 -0400
+Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com [IPv6:2a00:1450:4864:20::42e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3AE22C061574;
+        Sun, 30 May 2021 07:30:07 -0700 (PDT)
+Received: by mail-wr1-x42e.google.com with SMTP id n4so8161789wrw.3;
+        Sun, 30 May 2021 07:30:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=6t3J8+C30P/KwAn8557WaaRrcOqXcNIb28Eid5rS1Ss=;
+        b=uDiPnuGhAkjMt19s6NVzVAetw8pr0xYSnhO63poVhU4hCJOekF0HGoE4aMDYoqR33N
+         HRnpfTNujtuSGbWd9ANiJ/MF2XYmKGk+xiSv859C/IgmNHliyXuCdL1CwK4PIlbM0DVS
+         SQo21M/DhdMadVTLrl8mKwQvsI6fv/Y4LkRS7cg4LEyQh7xjHJlaJSFvqnJUQ8cx9C5L
+         BQWIo4ueeTzmuvrnd6Mk4KB+Oqg9OjemlXdXCJkG7PU3ChMLYMqy/5PcbsYsWiV5xtVA
+         wxsYZ+Ju/LbkKSTGgfya9Dho3Kq8auLYeaBWuoyu9EdTPGKwLg5wIcg7SCpaDiikQ9WH
+         ptfQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=6t3J8+C30P/KwAn8557WaaRrcOqXcNIb28Eid5rS1Ss=;
+        b=VZ9SCVMM61F8/PhWWf4Iaoy95zmqGIzIohMKXMhy6yyYlZ3Sr7JWaDoiW1XxTlGV8s
+         JZP339SYRqlWLKhlOgSJsMU3xrbNuDaRcIde2/ILknibCfRm/TzxfsfOTj8cNjtXG//l
+         fXe4P/VY4RQqaAhRh+g2am6Ni2/aSZFBVpDTYsWeAVeHrWWaCDtEuqyB05LaGN35TmXC
+         QcRjPYKaQD38SshRjQLvSb8cTHZmK63EaIK5ueW+WQFrPAZzfJ4QymOo6iolRA7iCsog
+         kRU6cyNd2AplJLfXIVIrx684d7OUUcO7nsnCBTUOsYsuAeuLs0kabd5uyzifTvp2WBxe
+         7E9g==
+X-Gm-Message-State: AOAM533WaQpD+bB6RIbNhCs9mXRBh1FbIiFzOKM2WjZl/5kjCATO8Aqn
+        i7qgdjxdZH3nRQjuImvqwDhZgzCosT0OT/YAwSc=
+X-Google-Smtp-Source: ABdhPJyDbitDVrmcDxOcHq0QHKT9fgqlgjU/u0BkC/alWsIcIKmfMJVN5yDHNrVFHPZFfjLaelLOvJ4wRSV8TgEQBok=
+X-Received: by 2002:adf:ec10:: with SMTP id x16mr9704649wrn.83.1622385005776;
+ Sun, 30 May 2021 07:30:05 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <8043ff50-d592-7666-f001-7505efa0d4c2@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <20210519183855.1523927-1-robdclark@gmail.com> <20210519183855.1523927-3-robdclark@gmail.com>
+ <YKaOY3AWgHh5kplS@phenom.ffwll.local>
+In-Reply-To: <YKaOY3AWgHh5kplS@phenom.ffwll.local>
+From:   Rob Clark <robdclark@gmail.com>
+Date:   Sun, 30 May 2021 07:33:57 -0700
+Message-ID: <CAF6AEGv470U7fujLrJOE8fJh1o-BW3=mOpKJ45FFz=Xb8Q0D6A@mail.gmail.com>
+Subject: Re: [RFC 2/3] drm/atomic: Call dma_fence_boost() when we've missed a vblank
+To:     Rob Clark <robdclark@gmail.com>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        freedreno <freedreno@lists.freedesktop.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        Rob Clark <robdclark@chromium.org>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        David Airlie <airlied@linux.ie>,
+        open list <linux-kernel@vger.kernel.org>,
+        Matthew Brost <matthew.brost@intel.com>
+Cc:     Daniel Vetter <daniel@ffwll.ch>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5/30/21 2:31 AM, Christian Lamparter wrote:
-> On 30/05/2021 05:11, Randy Dunlap wrote:
->> kernel test robot reports over 200 build errors and warnings
->> that are due to this Kconfig problem when CARL9170=m,
->> MAC80211=y, and LEDS_CLASS=m.
->>
->> WARNING: unmet direct dependencies detected for MAC80211_LEDS
->>    Depends on [n]: NET [=y] && WIRELESS [=y] && MAC80211 [=y] && (LEDS_CLASS [=m]=y || LEDS_CLASS [=m]=MAC80211 [=y])
->>    Selected by [m]:
->>    - CARL9170_LEDS [=y] && NETDEVICES [=y] && WLAN [=y] && WLAN_VENDOR_ATH [=y] && CARL9170 [=m]
->>
->> CARL9170_LEDS selects MAC80211_LEDS even though its kconfig
->> dependencies are not met. This happens because 'select' does not follow
->> any Kconfig dependency chains.
->>
->> Fix this by making CARL9170_LEDS depend on MAC80211_LEDS, where
->> the latter supplies any needed dependencies on LEDS_CLASS.
-> 
-> Ok, this is not what I was expecting... I though you would just
-> add a "depends on / imply MAC80211_LEDS" on your v2. (this was
-> based on the assumption of what mac80211,  ath9k/_htc and mt76
-> solutions of the same problem looked like).
+On Thu, May 20, 2021 at 9:29 AM Daniel Vetter <daniel@ffwll.ch> wrote:
+>
+> On Wed, May 19, 2021 at 11:38:53AM -0700, Rob Clark wrote:
+> > From: Rob Clark <robdclark@chromium.org>
+> >
+> > Signed-off-by: Rob Clark <robdclark@chromium.org>
+> > ---
+> >  drivers/gpu/drm/drm_atomic_helper.c | 11 +++++++++++
+> >  1 file changed, 11 insertions(+)
+> >
+> > diff --git a/drivers/gpu/drm/drm_atomic_helper.c b/drivers/gpu/drm/drm_atomic_helper.c
+> > index 560aaecba31b..fe10fc2e7f86 100644
+> > --- a/drivers/gpu/drm/drm_atomic_helper.c
+> > +++ b/drivers/gpu/drm/drm_atomic_helper.c
+> > @@ -1435,11 +1435,15 @@ int drm_atomic_helper_wait_for_fences(struct drm_device *dev,
+> >       int i, ret;
+> >
+> >       for_each_new_plane_in_state(state, plane, new_plane_state, i) {
+> > +             u64 vblank_count;
+> > +
+> >               if (!new_plane_state->fence)
+> >                       continue;
+> >
+> >               WARN_ON(!new_plane_state->fb);
+> >
+> > +             vblank_count = drm_crtc_vblank_count(new_plane_state->crtc);
+> > +
+> >               /*
+> >                * If waiting for fences pre-swap (ie: nonblock), userspace can
+> >                * still interrupt the operation. Instead of blocking until the
+> > @@ -1449,6 +1453,13 @@ int drm_atomic_helper_wait_for_fences(struct drm_device *dev,
+> >               if (ret)
+> >                       return ret;
+> >
+> > +             /*
+> > +              * Check if we've missed a vblank while waiting, and if we have
+> > +              * signal the fence that it's signaler should be boosted
+> > +              */
+> > +             if (vblank_count != drm_crtc_vblank_count(new_plane_state->crtc))
+> > +                     dma_fence_boost(new_plane_state->fence);
+>
+> I think we should do a lot better here:
+> - maybe only bother doing this for single-crtc updates, and only if
+>   modeset isn't set. No one else cares about latency.
+>
+> - We should boost _right_ when we've missed the frame, so I think we
+>   should have a _timeout wait here that guesstimates when the vblank is
+>   over (might need to throw in a vblank wait if we missed) and then boost
+>   immediately. Not wait a bunch of frames (worst case) until we finally
+>   decide to boost.
 
-Do you want the user choice/prompt removed, like MT76 is?
+I was thinking about this a bit more.. How about rather than calling
+some fence->op->boost() type thing when we are about to miss a vblank
+(IMO that is also already too late), we do something more like
+fence->ops->set_deadline() before we even wait?
 
-> But since (I assuming here) this patch passed the build-bots
-> testing with flying colors in the different config permutations.
+It's probably a bit impossible for a gpu driver to really predict how
+long some rendering will take, but other cases like video decoder are
+somewhat more predictable.. the fence provider could predict given the
+remaining time until the deadline what clk rates are required to get
+you there.
 
-It hasn't passed any build-bots testing that I know of.
-I did 8 combinations of kconfigs (well, 2 of them were invalid),
-but they all passed my own build testing.
+BR,
+-R
 
-> Acked-by: Christian Lamparter <chunkeey@gmail.com>
-> 
->> Fixes: 1d7e1e6b1b8ed ("carl9170: Makefile, Kconfig files and MAINTAINERS")
->> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
->> Reported-by: kernel test robot <lkp@intel.com>
->> Cc: Kalle Valo <kvalo@codeaurora.org>
->> Cc: Christian Lamparter <chunkeey@gmail.com>
->> Cc: linux-wireless@vger.kernel.org
->> Cc: Arnd Bergmann <arnd@arndb.de>
->> Suggested-by: Christian Lamparter <chunkeey@gmail.com>
->> ---
->> v2: modify as suggesed by Arnd
->> v3: modify as suggested by Christian
->>
->>   drivers/net/wireless/ath/carl9170/Kconfig |    8 +++-----
->>   1 file changed, 3 insertions(+), 5 deletions(-)
->>
->> --- linux-next-20210528.orig/drivers/net/wireless/ath/carl9170/Kconfig
->> +++ linux-next-20210528/drivers/net/wireless/ath/carl9170/Kconfig
->> @@ -16,13 +16,11 @@ config CARL9170
->>     config CARL9170_LEDS
->>       bool "SoftLED Support"
->> -    depends on CARL9170
->> -    select MAC80211_LEDS
->> -    select LEDS_CLASS
->> -    select NEW_LEDS
->>       default y
->> +    depends on CARL9170
->> +    depends on MAC80211_LEDS
->>       help
->> -      This option is necessary, if you want your device' LEDs to blink
->> +      This option is necessary, if you want your device's LEDs to blink.
->>           Say Y, unless you need the LEDs for firmware debugging.
-> 
 
-thanks.
--- 
-~Randy
-
+>
+> Otherwise I really like this, I think it's about the only real reason i915
+> isn't using atomic helpers.
+>
+> Also adding Matt B for this topic.
+> -Daniel
+>
+> > +
+> >               dma_fence_put(new_plane_state->fence);
+> >               new_plane_state->fence = NULL;
+> >       }
+> > --
+> > 2.30.2
+> >
+>
+> --
+> Daniel Vetter
+> Software Engineer, Intel Corporation
+> http://blog.ffwll.ch
