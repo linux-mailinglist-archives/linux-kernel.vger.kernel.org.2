@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 887453952B1
-	for <lists+linux-kernel@lfdr.de>; Sun, 30 May 2021 21:23:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 87E303952B2
+	for <lists+linux-kernel@lfdr.de>; Sun, 30 May 2021 21:23:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230057AbhE3TY7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 30 May 2021 15:24:59 -0400
-Received: from mga02.intel.com ([134.134.136.20]:21290 "EHLO mga02.intel.com"
+        id S230099AbhE3TZH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 30 May 2021 15:25:07 -0400
+Received: from mga02.intel.com ([134.134.136.20]:21268 "EHLO mga02.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229995AbhE3TYt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 30 May 2021 15:24:49 -0400
-IronPort-SDR: FDkwBQ54ZCC4PMtO5s18SIlCv/WD0uWuf9YzAkP/IvQsU30xZqQY+eClIcxGPntaXDttC+9stV
- 3A+DQAHdh3Ug==
-X-IronPort-AV: E=McAfee;i="6200,9189,10000"; a="190362467"
+        id S230004AbhE3TYu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 30 May 2021 15:24:50 -0400
+IronPort-SDR: MEqpTDm/JXYaURsnSAFhipO6amwG04SFVTnScJK5ur9CA5m+pj1ATrF4LSl8s0r/90ebLGtKqW
+ P/wAr8sDLJ2g==
+X-IronPort-AV: E=McAfee;i="6200,9189,10000"; a="190362468"
 X-IronPort-AV: E=Sophos;i="5.83,234,1616482800"; 
-   d="scan'208";a="190362467"
+   d="scan'208";a="190362468"
 Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 May 2021 12:23:07 -0700
-IronPort-SDR: 9E0IYUC5AxmHLr0UXpDrPfdAlpRAuhukgSIvKJHe/8UYF88QssyUfmGFZn0ntg1B55fTyB0cTq
- K/7cIP0pRK4A==
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 May 2021 12:23:09 -0700
+IronPort-SDR: BXGUvhlRJucQAjnekVrCjEHvEGdP15c4ijvFZPVh7XfMDrS7cBtf+9u6AuXJsK/ZtKhJMzhhN6
+ woo+YhgwD/bA==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.83,234,1616482800"; 
-   d="scan'208";a="415926313"
+   d="scan'208";a="415926322"
 Received: from ahunter-desktop.fi.intel.com ([10.237.72.174])
-  by orsmga002.jf.intel.com with ESMTP; 30 May 2021 12:23:05 -0700
+  by orsmga002.jf.intel.com with ESMTP; 30 May 2021 12:23:07 -0700
 From:   Adrian Hunter <adrian.hunter@intel.com>
 To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
         Jiri Olsa <jolsa@redhat.com>, Andi Kleen <ak@linux.intel.com>
 Cc:     linux-kernel@vger.kernel.org
-Subject: [PATCH 10/13] perf scripting python: Add perf_sample_srcline() and perf_sample_srccode()
-Date:   Sun, 30 May 2021 22:23:05 +0300
-Message-Id: <20210530192308.7382-11-adrian.hunter@intel.com>
+Subject: [PATCH 11/13] perf scripting python: Update documentation for srcline etc
+Date:   Sun, 30 May 2021 22:23:06 +0300
+Message-Id: <20210530192308.7382-12-adrian.hunter@intel.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20210530192308.7382-1-adrian.hunter@intel.com>
 References: <20210530192308.7382-1-adrian.hunter@intel.com>
@@ -40,103 +40,88 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add perf_sample_srcline() and perf_sample_srccode() to the
-perf_trace_context module so that a script can get the srcline or srccode
-information.
+Add new fields and functions to the perf-script-python documentation.
 
 Signed-off-by: Adrian Hunter <adrian.hunter@intel.com>
 ---
- .../scripts/python/Perf-Trace-Util/Context.c  | 56 +++++++++++++++++++
- 1 file changed, 56 insertions(+)
+ .../perf/Documentation/perf-script-python.txt | 46 +++++++++++++++++--
+ 1 file changed, 42 insertions(+), 4 deletions(-)
 
-diff --git a/tools/perf/scripts/python/Perf-Trace-Util/Context.c b/tools/perf/scripts/python/Perf-Trace-Util/Context.c
-index 3c9bc12a1332..895f5fc23965 100644
---- a/tools/perf/scripts/python/Perf-Trace-Util/Context.c
-+++ b/tools/perf/scripts/python/Perf-Trace-Util/Context.c
-@@ -5,14 +5,23 @@
-  * Copyright (C) 2010 Tom Zanussi <tzanussi@gmail.com>
-  */
+diff --git a/tools/perf/Documentation/perf-script-python.txt b/tools/perf/Documentation/perf-script-python.txt
+index 0fb9eda3cbca..5e43cfa5ea1e 100644
+--- a/tools/perf/Documentation/perf-script-python.txt
++++ b/tools/perf/Documentation/perf-script-python.txt
+@@ -550,6 +550,27 @@ def trace_unhandled(event_name, context, event_fields_dict):
+     pass
+ ----
  
-+/*
-+ * Use Py_ssize_t for '#' formats to avoid DeprecationWarning: PY_SSIZE_T_CLEAN
-+ * will be required for '#' formats.
-+ */
-+#define PY_SSIZE_T_CLEAN
++*process_event*, if defined, is called for any non-tracepoint event
 +
- #include <Python.h>
- #include "../../../util/trace-event.h"
- #include "../../../util/event.h"
- #include "../../../util/symbol.h"
- #include "../../../util/thread.h"
-+#include "../../../util/map.h"
- #include "../../../util/maps.h"
- #include "../../../util/auxtrace.h"
- #include "../../../util/session.h"
-+#include "../../../util/srcline.h"
-+#include "../../../util/srccode.h"
++----
++def process_event(param_dict):
++    pass
++----
++
++*context_switch*, if defined, is called for any context switch
++
++----
++def context_switch(ts, cpu, pid, tid, np_pid, np_tid, machine_pid, out, out_preempt, *x):
++    pass
++----
++
++*auxtrace_error*, if defined, is called for any AUX area tracing error
++
++----
++def auxtrace_error(typ, code, cpu, pid, tid, ip, ts, msg, cpumode, *x):
++    pass
++----
++
+ The remaining sections provide descriptions of each of the available
+ built-in perf script Python modules and their associated functions.
  
- #if PY_MAJOR_VERSION < 3
- #define _PyCapsule_GetPointer(arg1, arg2) \
-@@ -125,6 +134,49 @@ static PyObject *perf_set_itrace_options(PyObject *obj, PyObject *args)
- 	return Py_BuildValue("i", retval);
- }
+@@ -592,12 +613,18 @@ common, but need to be made accessible to user scripts nonetheless.
+ perf_trace_context defines a set of functions that can be used to
+ access this data in the context of the current event.  Each of these
+ functions expects a context variable, which is the same as the
+-context variable passed into every event handler as the second
+-argument.
++context variable passed into every tracepoint event handler as the second
++argument. For non-tracepoint events, the context variable is also present
++as perf_trace_context.perf_script_context .
  
-+static PyObject *perf_sample_src(PyObject *obj, PyObject *args, bool get_srccode)
-+{
-+	struct scripting_context *c = get_scripting_context(args);
-+	unsigned int line = 0;
-+	char *srcfile = NULL;
-+	char *srccode = NULL;
-+	PyObject *result;
-+	struct map *map;
-+	int len = 0;
-+	u64 addr;
+  common_pc(context) - returns common_preempt count for the current event
+  common_flags(context) - returns common_flags for the current event
+  common_lock_depth(context) - returns common_lock_depth for the current event
++ perf_sample_insn(context) - returns the machine code instruction
++ perf_set_itrace_options(context, itrace_options) - set --itrace options if they have not been set already
++ perf_sample_srcline(context) - returns source_file_name, line_number
++ perf_sample_srccode(context) - returns source_file_name, line_number, source_line
 +
-+	if (!c)
-+		return NULL;
+ 
+ Util.py Module
+ ~~~~~~~~~~~~~~
+@@ -616,9 +643,20 @@ SUPPORTED FIELDS
+ Currently supported fields:
+ 
+ ev_name, comm, pid, tid, cpu, ip, time, period, phys_addr, addr,
+-symbol, dso, time_enabled, time_running, values, callchain,
++symbol, symoff, dso, time_enabled, time_running, values, callchain,
+ brstack, brstacksym, datasrc, datasrc_decode, iregs, uregs,
+-weight, transaction, raw_buf, attr.
++weight, transaction, raw_buf, attr, cpumode.
 +
-+	map = c->al->map;
-+	addr = c->al->addr;
++Fields that may also be present:
 +
-+	if (map && map->dso)
-+		srcfile = get_srcline_split(map->dso, map__rip_2objdump(map, addr), &line);
-+
-+	if (get_srccode) {
-+		if (srcfile)
-+			srccode = find_sourceline(srcfile, line, &len);
-+		result = Py_BuildValue("(sIs#)", srcfile, line, srccode, (Py_ssize_t)len);
-+	} else {
-+		result = Py_BuildValue("(sI)", srcfile, line);
-+	}
-+
-+	free(srcfile);
-+
-+	return result;
-+}
-+
-+static PyObject *perf_sample_srcline(PyObject *obj, PyObject *args)
-+{
-+	return perf_sample_src(obj, args, false);
-+}
-+
-+static PyObject *perf_sample_srccode(PyObject *obj, PyObject *args)
-+{
-+	return perf_sample_src(obj, args, true);
-+}
-+
- static PyMethodDef ContextMethods[] = {
- 	{ "common_pc", perf_trace_context_common_pc, METH_VARARGS,
- 	  "Get the common preempt count event field value."},
-@@ -136,6 +188,10 @@ static PyMethodDef ContextMethods[] = {
- 	  METH_VARARGS,	"Get the machine code instruction."},
- 	{ "perf_set_itrace_options", perf_set_itrace_options,
- 	  METH_VARARGS,	"Set --itrace options."},
-+	{ "perf_sample_srcline", perf_sample_srcline,
-+	  METH_VARARGS,	"Get source file name and line number."},
-+	{ "perf_sample_srccode", perf_sample_srccode,
-+	  METH_VARARGS,	"Get source file name, line number and line."},
- 	{ NULL, NULL, 0, NULL}
- };
++ flags - sample flags
++ flags_disp - sample flags display
++ insn_cnt - instruction count for determining instructions-per-cycle (IPC)
++ cyc_cnt - cycle count for determining IPC
++ addr_correlates_sym - addr can correlate to a symbol
++ addr_dso - addr dso
++ addr_symbol - addr symbol
++ addr_symoff - addr symbol offset
+ 
+ Some fields have sub items:
  
 -- 
 2.17.1
