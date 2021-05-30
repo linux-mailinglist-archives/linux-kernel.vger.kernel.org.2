@@ -2,81 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DC3A1395085
-	for <lists+linux-kernel@lfdr.de>; Sun, 30 May 2021 12:55:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C1254395087
+	for <lists+linux-kernel@lfdr.de>; Sun, 30 May 2021 13:01:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229754AbhE3K5f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 30 May 2021 06:57:35 -0400
-Received: from mail-40136.protonmail.ch ([185.70.40.136]:46794 "EHLO
-        mail-40136.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229599AbhE3K5e (ORCPT
+        id S229735AbhE3LDU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 30 May 2021 07:03:20 -0400
+Received: from bmailout2.hostsharing.net ([83.223.78.240]:40955 "EHLO
+        bmailout2.hostsharing.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229500AbhE3LDT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 30 May 2021 06:57:34 -0400
-Date:   Sun, 30 May 2021 10:55:44 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=protonmail.com;
-        s=protonmail; t=1622372154;
-        bh=6jm+6wTigi9ldKgrzP69sM9k3h3qwi0SM/gGptN1yXQ=;
-        h=Date:To:From:Cc:Reply-To:Subject:From;
-        b=Ttvy3DRcXk5WuLcar8xdavKs8oekI0mhTqfqYItRHLIZH+PBpE+GZJZVyMrCo9T40
-         TsgFGHP+d4hF2697Nnr7OmIanTPWWGnVFnKpauV/hayidoDEtyxwJbS4pMWWXtxDPF
-         nqiCzEdthmSCh0EujtoabMpyQ7wsiBvksABsBHtI=
-To:     Krzysztof Kozlowski <krzk@kernel.org>
-From:   Timon Baetz <timon.baetz@protonmail.com>
-Cc:     Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        ~postmarketos/upstreaming@lists.sr.ht,
-        Timon Baetz <timon.baetz@protonmail.com>
-Reply-To: Timon Baetz <timon.baetz@protonmail.com>
-Subject: [PATCH] ARM: dts: exynos: Disable unused camera input for I9100
-Message-ID: <20210530105535.4165-1-timon.baetz@protonmail.com>
+        Sun, 30 May 2021 07:03:19 -0400
+Received: from h08.hostsharing.net (h08.hostsharing.net [IPv6:2a01:37:1000::53df:5f1c:0])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client CN "*.hostsharing.net", Issuer "RapidSSL TLS DV RSA Mixed SHA256 2020 CA-1" (verified OK))
+        by bmailout2.hostsharing.net (Postfix) with ESMTPS id E84782800B3CA;
+        Sun, 30 May 2021 13:01:39 +0200 (CEST)
+Received: by h08.hostsharing.net (Postfix, from userid 100393)
+        id DB36B197A; Sun, 30 May 2021 13:01:39 +0200 (CEST)
+Date:   Sun, 30 May 2021 13:01:39 +0200
+From:   Lukas Wunner <lukas@wunner.de>
+To:     Alyssa Rosenzweig <alyssa@rosenzweig.io>
+Cc:     dri-devel@lists.freedesktop.org, David Airlie <airlied@linux.ie>,
+        linux-kernel@vger.kernel.org, Hector Martin <marcan@marcan.st>
+Subject: Re: [PATCH 2/2] maintainers: Update freedesktop.org IRC channels
+Message-ID: <20210530110139.GA2678@wunner.de>
+References: <20210529141638.5921-1-alyssa@rosenzweig.io>
+ <20210529141638.5921-2-alyssa@rosenzweig.io>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM shortcircuit=no
-        autolearn=disabled version=3.4.4
-X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
-        mailout.protonmail.ch
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210529141638.5921-2-alyssa@rosenzweig.io>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-As the back camera is not implemented disable the second pair of fimc
-child nodes as they are not functional. This prevents creating the
-associated /dev/videoX devices.
+On Sat, May 29, 2021 at 10:16:38AM -0400, Alyssa Rosenzweig wrote:
+> Like many free software projects, freedesktop.org issued a non-binding
+> recommendation for projects to migrate from OFTC to Freenode [1]. As
+> such, freedesktop.org entries in the MAINTAINERS file are out-of-date as
+> the respective channels have moved. Update the file to point to the
+> right network.
+> 
+> [1] https://lists.freedesktop.org/archives/dri-devel/2021-May/307605.html
+[...]
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -1651,7 +1651,7 @@ L:	linux-arm-kernel@lists.infradead.org (moderated for non-subscribers)
+>  S:	Maintained
+>  W:	https://asahilinux.org
+>  B:	https://github.com/AsahiLinux/linux/issues
+> -C:	irc://chat.freenode.net/asahi-dev
+> +C:	irc://irc.oftc.net/asahi-dev
+>  T:	git https://github.com/AsahiLinux/linux.git
+>  F:	Documentation/devicetree/bindings/arm/apple.yaml
+>  F:	Documentation/devicetree/bindings/interrupt-controller/apple,aic.yaml
 
-Signed-off-by: Timon Baetz <timon.baetz@protonmail.com>
----
- arch/arm/boot/dts/exynos4210-i9100.dts | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+This isn't a freedesktop.org project, so either needs to be dropped
+from the patch or the patch needs an ack from Hector Martin (+cc).
 
-diff --git a/arch/arm/boot/dts/exynos4210-i9100.dts b/arch/arm/boot/dts/exy=
-nos4210-i9100.dts
-index dec223bbf4eb..4a669abf4842 100644
---- a/arch/arm/boot/dts/exynos4210-i9100.dts
-+++ b/arch/arm/boot/dts/exynos4210-i9100.dts
-@@ -296,7 +296,8 @@ &fimc_0 {
- };
+Thanks,
 
- &fimc_1 {
--=09status =3D "okay";
-+=09/* Back camera not implemented */
-+=09status =3D "disabled";
-
- =09assigned-clocks =3D <&clock CLK_MOUT_FIMC1>, <&clock CLK_SCLK_FIMC1>;
- =09assigned-clock-parents =3D <&clock CLK_SCLK_MPLL>;
-@@ -312,7 +313,8 @@ &fimc_2 {
- };
-
- &fimc_3 {
--=09status =3D "okay";
-+=09/* Back camera not implemented */
-+=09status =3D "disabled";
-
- =09assigned-clocks =3D <&clock CLK_MOUT_FIMC3>, <&clock CLK_SCLK_FIMC3>;
- =09assigned-clock-parents =3D <&clock CLK_SCLK_MPLL>;
---
-2.25.1
-
-
+Lukas
