@@ -2,196 +2,221 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E38D8395225
-	for <lists+linux-kernel@lfdr.de>; Sun, 30 May 2021 18:50:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C98F39522D
+	for <lists+linux-kernel@lfdr.de>; Sun, 30 May 2021 18:51:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230083AbhE3QwN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 30 May 2021 12:52:13 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38016 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229986AbhE3Qv6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 30 May 2021 12:51:58 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9459D61027;
-        Sun, 30 May 2021 16:50:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1622393420;
-        bh=7QeWtBcpmgX2h1U9CSCvY1o63rcwMf7sxdiWDnALUwM=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=qJoAYQlWEwdM35MRPZa8cvx3sFeawkf+1sbNxYZ5uetxWas7b4pr3b4EHhsdFEBbZ
-         Vqn67zpyeTosp8e/ajzAQvCcnihdg3LaxejLHP4pLn/Nmvyo0VAGCqKanWdYZZtPDc
-         219NJL9B2Gi9WXvDENZ4ZknONDSGW7uXNOrHhUbqsNQZ8AuHkaqTNyGGd0XTzokZ/S
-         WawAns5UQiJf+gJhoAjNeSXjIbLX1XN2FQeI5de6cyDP/EwvzI/KNZRFG9KoyHjD+g
-         biE9rbnoiGfZjs3XTau61B7hhhrlNyL0HJvYkmeApwRLl3HnWVI/7d5su34RBhZVjJ
-         RxqWgQTiUgxpg==
-From:   guoren@kernel.org
-To:     guoren@kernel.org, anup.patel@wdc.com, palmerdabbelt@google.com,
-        arnd@arndb.de, hch@lst.de
-Cc:     linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-arch@vger.kernel.org, Guo Ren <guoren@linux.alibaba.com>,
-        Atish Patra <atish.patra@wdc.com>
-Subject: [PATCH V5 3/3] riscv: tlbflush: Optimize coding convention
-Date:   Sun, 30 May 2021 16:49:26 +0000
-Message-Id: <1622393366-46079-4-git-send-email-guoren@kernel.org>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1622393366-46079-1-git-send-email-guoren@kernel.org>
-References: <1622393366-46079-1-git-send-email-guoren@kernel.org>
+        id S229901AbhE3QxF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 30 May 2021 12:53:05 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:31408 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229823AbhE3QxD (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 30 May 2021 12:53:03 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1622393485;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=g4DresjxbvYoLZHzt/csc15CCgwHH4raEtpTQ0nPVeg=;
+        b=Fcu1h/lnLIzizDPmfEaPG1iWOusN2/zxNxHGdk3DYD5EUQbLCUer/qAoRYrqRSruwHKjs9
+        nGq0DJl9ezp2Fc2NyQFsyVoNZK/xoTFmYCKPWCcZdjqXFYkHU741Id7u4qHVdW6EG5laYl
+        HJFmuu/W0thUbbclOT0wD/w97r85k0g=
+Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
+ [209.85.208.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-438-2C-2D6XBMviitTOTSxoY6g-1; Sun, 30 May 2021 12:51:23 -0400
+X-MC-Unique: 2C-2D6XBMviitTOTSxoY6g-1
+Received: by mail-ed1-f71.google.com with SMTP id q7-20020aa7cc070000b029038f59dab1c5so5075624edt.23
+        for <linux-kernel@vger.kernel.org>; Sun, 30 May 2021 09:51:23 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=g4DresjxbvYoLZHzt/csc15CCgwHH4raEtpTQ0nPVeg=;
+        b=kq6yJdk7euogELxjZMtIV42vqKenCOwSDzb6SKMoGpwFRl2Kq2dMniuSaHIVAnstKZ
+         RJ+SzgUFiTVhfo5MrUzAfdeNsoTWuasJ1cOwjjGk54Mg4mx3xW7N5kqAvmyhfaxdFWfo
+         3ubOurq1T+0iKRnjoxUjTW32Sc3fXobWtbiMdbCzPrGRJVwqMtxIrbHCwtTV1HeghkfL
+         meTTwMTj2rlzU2DntsOgOQndptXvyx1Zor5SXE3eivtWJDZf4FlLJNMpd6ydnRiBrhim
+         V6mprQo3GFeAzO2o0p1ZEZB3CmD8jXUE1MmwZ+vQy00x8PUgXvDom6awtbuOWGkHwF6H
+         64BA==
+X-Gm-Message-State: AOAM530G5z1JSj5/SJYteYM0dKqDXLibaqj2GHyA2M2X/9IZfIFtjoGN
+        MKYzEcK+bXgT3DOmw8hXoJ7vvA/rPUdELJUbpfaa1Knno0KptLu6sl3CpbWvT8+suEPO0EvujqP
+        Ev4F+2kBlHkG4GARY0rr6GwC9d6KNWbg/df0vybNsvrwAn+bRzYInDOgjvrwrVOdEs2culJMGah
+        sm
+X-Received: by 2002:a17:907:1b06:: with SMTP id mp6mr18971702ejc.292.1622393482178;
+        Sun, 30 May 2021 09:51:22 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwv4NXBGWEOUlsCBK8dv4d5a9MPJ7elGrzUox4+WgpDpgPxKMZzzPtUpEpX5BfjGTpigSbKpg==
+X-Received: by 2002:a17:907:1b06:: with SMTP id mp6mr18971650ejc.292.1622393481352;
+        Sun, 30 May 2021 09:51:21 -0700 (PDT)
+Received: from x1.localdomain (2001-1c00-0c1e-bf00-1054-9d19-e0f0-8214.cable.dynamic.v6.ziggo.nl. [2001:1c00:c1e:bf00:1054:9d19:e0f0:8214])
+        by smtp.gmail.com with ESMTPSA id p11sm5737751edt.22.2021.05.30.09.51.20
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 30 May 2021 09:51:20 -0700 (PDT)
+Subject: Re: [PATCH v3 0/6] RTL8231 GPIO expander support
+To:     Sander Vanheule <sander@svanheule.net>,
+        Michael Walle <michael@walle.cc>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     Andrew Lunn <andrew@lunn.ch>, Pavel Machek <pavel@ucw.cz>,
+        Rob Herring <robh+dt@kernel.org>,
+        Lee Jones <lee.jones@linaro.org>,
+        Mark Brown <broonie@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J . Wysocki" <rafael@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Linux LED Subsystem <linux-leds@vger.kernel.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <cover.1620735871.git.sander@svanheule.net>
+ <cover.1621809029.git.sander@svanheule.net> <YKr9G3EfrM34gCsL@lunn.ch>
+ <CAHp75VewCw8ES_9S48qmeCtSXMkGWt0s4iub0Fu4ZuwWANHpaQ@mail.gmail.com>
+ <02bbf73ea8a14119247f07a677993aad2f45b088.camel@svanheule.net>
+ <f03d5cdc958110fc7d95cfc4258dac4e@walle.cc>
+ <84352c93f27d7c8b7afea54f3932020e9cd97d02.camel@svanheule.net>
+From:   Hans de Goede <hdegoede@redhat.com>
+Message-ID: <a644b8fa-c90a-eab6-9cca-08344abec532@redhat.com>
+Date:   Sun, 30 May 2021 18:51:20 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
+MIME-Version: 1.0
+In-Reply-To: <84352c93f27d7c8b7afea54f3932020e9cd97d02.camel@svanheule.net>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Guo Ren <guoren@linux.alibaba.com>
+Hi,
 
-Passing the mm_struct as the first argument, as we can derive both
-the cpumask and asid from it instead of doing that in the callers.
+On 5/30/21 6:19 PM, Sander Vanheule wrote:
+> Hi Michael, Andy,
+> 
+> On Fri, 2021-05-28 at 08:37 +0200, Michael Walle wrote:
+>> Am 2021-05-24 13:41, schrieb Sander Vanheule:
+>>> Hi Andy, Andrew,
+>>>
+>>> On Mon, 2021-05-24 at 10:53 +0300, Andy Shevchenko wrote:
+>>>> On Mon, May 24, 2021 at 4:11 AM Andrew Lunn <andrew@lunn.ch> wrote:
+>>>>>
+>>>>>> Changes since v2:
+>>>>>>   - MDIO regmap support was merged, so patch is dropped here
+>>>>>
+>>>>> Do you have any idea how this will get merged. It sounds like one of
+>>>>> the Maintainers will need a stable branch of regmap.
+>>>>
+>>>> This is not a problem if Mark provides an immutable branch to pull 
+>>>> from.
+>>>
+>>> Mark has a tag (regmap-mdio) for this patch:
+>>> https://git.kernel.org/pub/scm/linux/kernel/git/broonie/regmap.git/tag/?h=regmap-mdio
+>>>
+>>>>
+>>>>>>   - Introduce GPIO regmap quirks to set output direction first
+>>>>>
+>>>>> I thought you had determined it was possible to set output before
+>>>>> direction?
+>>>>
+>>>> Same thoughts when I saw an updated version of that patch. My
+>>>> anticipation was to not see it at all.
+>>>
+>>> The two devices I've been trying to test the behaviour on are:
+>>>  * Netgear GS110TPP: has an RTL8231 with three LEDs, each driven via a 
+>>> pin
+>>>    configured as (active-low) GPIO. The LEDs are easy for a quick 
+>>> visual check.
+>>>  * Zyxel GS1900-8: RTL8231 used for the front panel button, and an 
+>>> active-low
+>>>    GPIO used to hard reset the main SoC (an RTL8380). I've modified 
+>>> this board
+>>>    to change some of the strapping pin values, but testing with the 
+>>> jumpers and
+>>>    pull-up/down resistors is a bit more tedious.
+>>>
+>>> On the Netgear, I tested the following with and without the quirk:
+>>>
+>>>    # Set as OUT-LOW twice, to avoid the quirk. Always turns the LED on
+>>>    gpioset 1 32=0; gpioset 1 32=0
+>>>    # Get value to change to input, turns the LED off (high impedance)
+>>>    # Will return 1 due to (weak) internal pull-up
+>>>    gpioget 1 32
+>>>    # Set as OUT-HIGH, should result in LED off
+>>>    # When the quirk is disabled, the LED turns on (i.e. old OUT-LOW 
+>>> value)
+>>>    # When the quirk is enabled, the LED remains off (i.e. correct
+>>> OUT-HIGH value)
+>>>    gpioset 1 32=1
+>>>
+>>> Now, what's confusing (to me) is that the inverse doesn't depend on the 
+>>> quirk:
+>>>
+>>>    # Set as OUT-HIGH twice
+>>>    gpioset 1 32=1; gpioset 1 32=1
+>>>    # Change to high-Z
+>>>    gpioget 1 32
+>>>    # Set to OUT-LOW, always results in LED on, with or without quirk
+>>>    gpioset 1 32=0
+>>>
+>>> Any idea why this would be (or appear) broken on the former case, but 
+>>> not on the
+>>> latter?
+>>
+>> Before reading this, I'd have guessed that they switch the internal 
+>> register
+>> depending on the GPIO direction; I mean there is only one register 
+>> address
+>> for both the input and the output register. Hm.
+>>
+>> Did you try playing around with raw register accesses and see if the 
+>> value
+>> of the GPIO data register is changing when you switch GPIOs to 
+>> input/output.
+>>
+>> Eg. you could try https://github.com/kontron/miitool to access the 
+>> registers
+>> from userspace (your ethernet controller has to have support for the 
+>> ioctl's
+>> though, see commit a613bafec516 ("enetc: add ioctl() support for 
+>> PHY-related
+>> ops") for an example).
+> 
+> I think I found a solution!
+> 
+> As Michael suggested, I tried raw register reads and writes, to eliminate any
+> side effects of the intermediate code. I didn't use the ioctls (this isn't a
+> netdev), but I found regmap's debugfs write functionality, which allowed me to
+> do the same.
+> 
+> I was trying to reproduce the behaviour I reported earlier, but couldn't. The
+> output levels were always the intended ones. At some point I realised that the
+> regmap_update_bits function does a read-modify-write, which might shadow the
+> actual current output value.
+> For example:
+>  * Set output low: current out is low
+>  * Change to input with pull-up: current out is still low, but DATAx reads high
+>  * Set output high: RMW reads a high value (the input), so assumes a write is
+>    not necessary, leaving the old output value (low).
+> 
+> Currently, I see two options:
+>  * Use regmap_update_bits_base to avoid the lazy RMW behaviour
+>  * Add a cache for the output data values to the driver, and only use these
+>    values to write to the output registers. This would allow keeping lazy RMW
+>    behaviour, which may be a benefit on slow busses.
+> 
+> With either of these implemented, if I set the output value before the
+> direction, everything works! :-)
+> 
+> Would you like this to be added to regmap-gpio, or should I revert back to a
+> device-specific implementation?
 
-But more importantly, the static branch check can be moved deeper
-into the code to avoid a lot of duplication.
+Regmap allows you to mark certain ranges as volatile, so that they will not
+be cached, these GPIO registers containing the current pin value seems like
+a good candidate for this. This is also necessary to make reading the GPIO
+work without getting back a stale, cached value.
 
-Also add FIXME comment on the non-ASID code switches to a global
-flush once flushing more than a single page.
+Regards,
 
-Link: https://lore.kernel.org/linux-riscv/CAJF2gTQpDYtEdw6ZrTVZUYqxGdhLPs25RjuUiQtz=xN2oKs2fw@mail.gmail.com/T/#m30f7e8d02361f21f709bc3357b9f6ead1d47ed43
-Signed-off-by: Guo Ren <guoren@linux.alibaba.com>
-Co-Developed-by: Christoph Hellwig <hch@lst.de>
-Cc: Christoph Hellwig <hch@lst.de>
-Cc: Palmer Dabbelt <palmerdabbelt@google.com>
-Cc: Anup Patel <anup.patel@wdc.com>
-Cc: Atish Patra <atish.patra@wdc.com>
----
- arch/riscv/mm/tlbflush.c | 91 ++++++++++++++++++++++--------------------------
- 1 file changed, 41 insertions(+), 50 deletions(-)
-
-diff --git a/arch/riscv/mm/tlbflush.c b/arch/riscv/mm/tlbflush.c
-index 87b4e52..facca6e 100644
---- a/arch/riscv/mm/tlbflush.c
-+++ b/arch/riscv/mm/tlbflush.c
-@@ -12,56 +12,59 @@ void flush_tlb_all(void)
- }
- 
- /*
-- * This function must not be called with cmask being null.
-+ * This function must not be called with mm_cpumask(mm) being null.
-  * Kernel may panic if cmask is NULL.
-  */
--static void __sbi_tlb_flush_range(struct cpumask *cmask, unsigned long start,
-+static void __sbi_tlb_flush_range(struct mm_struct *mm,
-+				  unsigned long start,
- 				  unsigned long size)
- {
-+	struct cpumask *cmask = mm_cpumask(mm);
- 	struct cpumask hmask;
- 	unsigned int cpuid;
-+	bool local;
- 
- 	if (cpumask_empty(cmask))
- 		return;
- 
- 	cpuid = get_cpu();
- 
--	if (cpumask_any_but(cmask, cpuid) >= nr_cpu_ids) {
--		/* local cpu is the only cpu present in cpumask */
--		if (size <= PAGE_SIZE)
--			local_flush_tlb_page(start);
--		else
--			local_flush_tlb_all();
--	} else {
--		riscv_cpuid_to_hartid_mask(cmask, &hmask);
--		sbi_remote_sfence_vma(cpumask_bits(&hmask), start, size);
--	}
-+	/*
-+	 * check if the tlbflush needs to be sent to other CPUs, local
-+	 * cpu is the only cpu present in cpumask.
-+	 */
-+	local = !(cpumask_any_but(cmask, cpuid) < nr_cpu_ids);
- 
--	put_cpu();
--}
--
--static void __sbi_tlb_flush_range_asid(struct cpumask *cmask,
--				       unsigned long start,
--				       unsigned long size,
--				       unsigned long asid)
--{
--	struct cpumask hmask;
--	unsigned int cpuid;
--
--	if (cpumask_empty(cmask))
--		return;
--
--	cpuid = get_cpu();
-+	if (static_branch_likely(&use_asid_allocator)) {
-+		unsigned long asid = atomic_long_read(&mm->context.id);
- 
--	if (cpumask_any_but(cmask, cpuid) >= nr_cpu_ids) {
--		if (size == -1)
--			local_flush_tlb_all_asid(asid);
--		else
--			local_flush_tlb_range_asid(start, size, asid);
-+		if (likely(local)) {
-+			if (size == -1)
-+				local_flush_tlb_all_asid(asid);
-+			else
-+				local_flush_tlb_range_asid(start, size, asid);
-+		} else {
-+			riscv_cpuid_to_hartid_mask(cmask, &hmask);
-+			sbi_remote_sfence_vma_asid(cpumask_bits(&hmask),
-+						   start, size, asid);
-+		}
- 	} else {
--		riscv_cpuid_to_hartid_mask(cmask, &hmask);
--		sbi_remote_sfence_vma_asid(cpumask_bits(&hmask),
--					   start, size, asid);
-+		if (likely(local)) {
-+			/*
-+			 * FIXME: The non-ASID code switches to a global flush
-+			 * once flushing more than a single page. It's made by
-+			 * commit 6efb16b1d551 (RISC-V: Issue a tlb page flush
-+			 * if possible).
-+			 */
-+			if (size <= PAGE_SIZE)
-+				local_flush_tlb_page(start);
-+			else
-+				local_flush_tlb_all();
-+		} else {
-+			riscv_cpuid_to_hartid_mask(cmask, &hmask);
-+			sbi_remote_sfence_vma(cpumask_bits(&hmask),
-+					      start, size);
-+		}
- 	}
- 
- 	put_cpu();
-@@ -69,28 +72,16 @@ static void __sbi_tlb_flush_range_asid(struct cpumask *cmask,
- 
- void flush_tlb_mm(struct mm_struct *mm)
- {
--	if (static_branch_unlikely(&use_asid_allocator))
--		__sbi_tlb_flush_range_asid(mm_cpumask(mm), 0, -1,
--					   atomic_long_read(&mm->context.id));
--	else
--		__sbi_tlb_flush_range(mm_cpumask(mm), 0, -1);
-+	__sbi_tlb_flush_range(mm, 0, -1);
- }
- 
- void flush_tlb_page(struct vm_area_struct *vma, unsigned long addr)
- {
--	if (static_branch_unlikely(&use_asid_allocator))
--		__sbi_tlb_flush_range_asid(mm_cpumask(vma->vm_mm), addr, PAGE_SIZE,
--					   atomic_long_read(&vma->vm_mm->context.id));
--	else
--		__sbi_tlb_flush_range(mm_cpumask(vma->vm_mm), addr, PAGE_SIZE);
-+	__sbi_tlb_flush_range(vma->vm_mm, addr, PAGE_SIZE);
- }
- 
- void flush_tlb_range(struct vm_area_struct *vma, unsigned long start,
- 		     unsigned long end)
- {
--	if (static_branch_unlikely(&use_asid_allocator))
--		__sbi_tlb_flush_range_asid(mm_cpumask(vma->vm_mm), start, end - start,
--					   atomic_long_read(&vma->vm_mm->context.id));
--	else
--		__sbi_tlb_flush_range(mm_cpumask(vma->vm_mm), start, end - start);
-+	__sbi_tlb_flush_range(vma->vm_mm, start, end - start);
- }
--- 
-2.7.4
+Hans
 
