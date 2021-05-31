@@ -2,34 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 47E8A395BB3
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 15:22:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AA2C83963AC
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 17:29:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231775AbhEaNXu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 09:23:50 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53846 "EHLO mail.kernel.org"
+        id S234387AbhEaPag (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 11:30:36 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43308 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232027AbhEaNTi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 09:19:38 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 342126136D;
-        Mon, 31 May 2021 13:17:58 +0000 (UTC)
+        id S233033AbhEaORl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 10:17:41 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 13363619AF;
+        Mon, 31 May 2021 13:43:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1622467078;
-        bh=MXGIiJJLIK2C3dDDxIjREMy62nUD8pk2ZeVamRVj5gc=;
+        s=korg; t=1622468626;
+        bh=Tw1m8lGwCOODsUpAjhAhIZd9AtVXP8hkFAvRZXBJgo0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=XMkQk1WnksI4VsIFGc0tW9KiyRmdJgyEV6rP4a5yPzNVOB+p4aYfRDGIMkarOMcj6
-         ok3T665jk/OIDToGQbFRAkZ3cPPp2kQ6NARXLCwqYgxB21Wfkg3M3edgW1N95BY66P
-         Rz+cbzYHWdGzFrGTaDxuSaG3dzgHkgMLwAEGZRm8=
+        b=M16pAr8KmSRnDQCZAq6NvoZ0JQmFbPBpHANHg0bwQVS1i4mYIdS9NnDx6NQjNy1t6
+         XOBBx5suwYOPaDR4YM1mIVyBzDSz6hEEueleinZHIUraW1BOo/RPLm4yMUdQ1Wrwme
+         +Y98PvblLQVnGR8cYD1CM29up/POU3MJIDUOr8/0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Zheyu Ma <zheyuma97@gmail.com>
-Subject: [PATCH 4.4 15/54] serial: rp2: use request_firmware instead of request_firmware_nowait
+        stable@vger.kernel.org, Lukas Wunner <lukas@wunner.de>,
+        Rajendra Nayak <rnayak@codeaurora.org>,
+        Girish Mahadevan <girishm@codeaurora.org>,
+        Mark Brown <broonie@kernel.org>
+Subject: [PATCH 5.4 064/177] spi: spi-geni-qcom: Fix use-after-free on unbind
 Date:   Mon, 31 May 2021 15:13:41 +0200
-Message-Id: <20210531130635.567024152@linuxfoundation.org>
+Message-Id: <20210531130650.118413088@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210531130635.070310929@linuxfoundation.org>
-References: <20210531130635.070310929@linuxfoundation.org>
+In-Reply-To: <20210531130647.887605866@linuxfoundation.org>
+References: <20210531130647.887605866@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -38,266 +41,55 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zheyu Ma <zheyuma97@gmail.com>
+From: Lukas Wunner <lukas@wunner.de>
 
-commit 016002848c82eeb5d460489ce392d91fe18c475c upstream.
+commit 8f96c434dfbc85ffa755d6634c8c1cb2233fcf24 upstream.
 
-In 'rp2_probe', the driver registers 'rp2_uart_interrupt' then calls
-'rp2_fw_cb' through 'request_firmware_nowait'. In 'rp2_fw_cb', if the
-firmware don't exists, function just return without initializing ports
-of 'rp2_card'. But now the interrupt handler function has been
-registered, and when an interrupt comes, 'rp2_uart_interrupt' may access
-those ports then causing NULL pointer dereference or other bugs.
+spi_geni_remove() accesses the driver's private data after calling
+spi_unregister_master() even though that function releases the last
+reference on the spi_master and thereby frees the private data.
 
-Because the driver does some initialization work in 'rp2_fw_cb', in
-order to make the driver ready to handle interrupts, 'request_firmware'
-should be used instead of asynchronous 'request_firmware_nowait'.
+Moreover, since commit 1a9e489e6128 ("spi: spi-geni-qcom: Use OPP API to
+set clk/perf state"), spi_geni_probe() leaks the spi_master allocation
+if the calls to dev_pm_opp_set_clkname() or dev_pm_opp_of_add_table()
+fail.
 
-This report reveals it:
+Fix by switching over to the new devm_spi_alloc_master() helper which
+keeps the private data accessible until the driver has unbound and also
+avoids the spi_master leak on probe.
 
-INFO: trying to register non-static key.
-the code is fine but needs lockdep annotation.
-turning off the locking correctness validator.
-CPU: 2 PID: 0 Comm: swapper/2 Not tainted 4.19.177-gdba4159c14ef-dirty #45
-Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS rel-1.12.0-59-
-gc9ba5276e321-prebuilt.qemu.org 04/01/2014
-Call Trace:
- <IRQ>
- __dump_stack lib/dump_stack.c:77 [inline]
- dump_stack+0xec/0x156 lib/dump_stack.c:118
- assign_lock_key kernel/locking/lockdep.c:727 [inline]
- register_lock_class+0x14e5/0x1ba0 kernel/locking/lockdep.c:753
- __lock_acquire+0x187/0x3750 kernel/locking/lockdep.c:3303
- lock_acquire+0x124/0x340 kernel/locking/lockdep.c:3907
- __raw_spin_lock include/linux/spinlock_api_smp.h:142 [inline]
- _raw_spin_lock+0x32/0x50 kernel/locking/spinlock.c:144
- spin_lock include/linux/spinlock.h:329 [inline]
- rp2_ch_interrupt drivers/tty/serial/rp2.c:466 [inline]
- rp2_asic_interrupt.isra.9+0x15d/0x990 drivers/tty/serial/rp2.c:493
- rp2_uart_interrupt+0x49/0xe0 drivers/tty/serial/rp2.c:504
- __handle_irq_event_percpu+0xfb/0x770 kernel/irq/handle.c:149
- handle_irq_event_percpu+0x79/0x150 kernel/irq/handle.c:189
- handle_irq_event+0xac/0x140 kernel/irq/handle.c:206
- handle_fasteoi_irq+0x232/0x5c0 kernel/irq/chip.c:725
- generic_handle_irq_desc include/linux/irqdesc.h:155 [inline]
- handle_irq+0x230/0x3a0 arch/x86/kernel/irq_64.c:87
- do_IRQ+0xa7/0x1e0 arch/x86/kernel/irq.c:247
- common_interrupt+0xf/0xf arch/x86/entry/entry_64.S:670
- </IRQ>
-RIP: 0010:native_safe_halt+0x28/0x30 arch/x86/include/asm/irqflags.h:61
-Code: 00 00 55 be 04 00 00 00 48 c7 c7 00 c2 2f 8c 48 89 e5 e8 fb 31 e7 f8
-8b 05 75 af 8d 03 85 c0 7e 07 0f 00 2d 8a 61 65 00 fb f4 <5d> c3 90 90 90
-90 90 90 0f 1f 44 00 00 55 48 89 e5 41 57 41 56 41
-RSP: 0018:ffff88806b71fcc8 EFLAGS: 00000246 ORIG_RAX: ffffffffffffffde
-RAX: 0000000000000000 RBX: ffffffff8bde7e48 RCX: ffffffff88a21285
-RDX: 0000000000000000 RSI: 0000000000000004 RDI: ffffffff8c2fc200
-RBP: ffff88806b71fcc8 R08: fffffbfff185f840 R09: fffffbfff185f840
-R10: 0000000000000001 R11: fffffbfff185f840 R12: 0000000000000002
-R13: ffffffff8bea18a0 R14: 0000000000000000 R15: 0000000000000000
- arch_safe_halt arch/x86/include/asm/paravirt.h:94 [inline]
- default_idle+0x6f/0x360 arch/x86/kernel/process.c:557
- arch_cpu_idle+0xf/0x20 arch/x86/kernel/process.c:548
- default_idle_call+0x3b/0x60 kernel/sched/idle.c:93
- cpuidle_idle_call kernel/sched/idle.c:153 [inline]
- do_idle+0x2ab/0x3c0 kernel/sched/idle.c:263
- cpu_startup_entry+0xcb/0xe0 kernel/sched/idle.c:369
- start_secondary+0x3b8/0x4e0 arch/x86/kernel/smpboot.c:271
- secondary_startup_64+0xa4/0xb0 arch/x86/kernel/head_64.S:243
-BUG: unable to handle kernel NULL pointer dereference at 0000000000000010
-PGD 8000000056d27067 P4D 8000000056d27067 PUD 56d28067 PMD 0
-Oops: 0000 [#1] PREEMPT SMP KASAN PTI
-CPU: 2 PID: 0 Comm: swapper/2 Not tainted 4.19.177-gdba4159c14ef-dirty #45
-Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS rel-1.12.0-59-
-gc9ba5276e321-prebuilt.qemu.org 04/01/2014
-RIP: 0010:readl arch/x86/include/asm/io.h:59 [inline]
-RIP: 0010:rp2_ch_interrupt drivers/tty/serial/rp2.c:472 [inline]
-RIP: 0010:rp2_asic_interrupt.isra.9+0x181/0x990 drivers/tty/serial/rp2.c:
-493
-Code: df e8 43 5d c2 05 48 8d 83 e8 01 00 00 48 89 85 60 ff ff ff 48 c1 e8
-03 42 80 3c 30 00 0f 85 aa 07 00 00 48 8b 83 e8 01 00 00 <8b> 40 10 89 c1
-89 85 68 ff ff ff 48 8b 83 e8 01 00 00 89 48 10 83
-RSP: 0018:ffff88806c287cd0 EFLAGS: 00010046
-RAX: 0000000000000000 RBX: ffff88806ade6820 RCX: ffffffff814300b1
-RDX: 1ffff1100d5bcd06 RSI: 0000000000000004 RDI: ffff88806ade6820
-RBP: ffff88806c287db8 R08: ffffed100d5bcd05 R09: ffffed100d5bcd05
-R10: 0000000000000001 R11: ffffed100d5bcd04 R12: ffffc90001e00000
-R13: ffff888069654e10 R14: dffffc0000000000 R15: ffff888069654df0
-FS:  0000000000000000(0000) GS:ffff88806c280000(0000) knlGS:
-0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 0000000000000010 CR3: 000000006892c000 CR4: 00000000000006e0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- <IRQ>
- rp2_uart_interrupt+0x49/0xe0 drivers/tty/serial/rp2.c:504
- __handle_irq_event_percpu+0xfb/0x770 kernel/irq/handle.c:149
- handle_irq_event_percpu+0x79/0x150 kernel/irq/handle.c:189
- handle_irq_event+0xac/0x140 kernel/irq/handle.c:206
- handle_fasteoi_irq+0x232/0x5c0 kernel/irq/chip.c:725
- generic_handle_irq_desc include/linux/irqdesc.h:155 [inline]
- handle_irq+0x230/0x3a0 arch/x86/kernel/irq_64.c:87
- do_IRQ+0xa7/0x1e0 arch/x86/kernel/irq.c:247
- common_interrupt+0xf/0xf arch/x86/entry/entry_64.S:670
- </IRQ>
-RIP: 0010:native_safe_halt+0x28/0x30 arch/x86/include/asm/irqflags.h:61
-Code: 00 00 55 be 04 00 00 00 48 c7 c7 00 c2 2f 8c 48 89 e5 e8 fb 31 e7
-f8 8b 05 75 af 8d 03 85 c0 7e 07 0f 00 2d 8a 61 65 00 fb f4 <5d> c3 90
-90 90 90 90 90 0f 1f 44 00 00 55 48 89 e5 41 57 41 56 41
-RSP: 0018:ffff88806b71fcc8 EFLAGS: 00000246 ORIG_RAX: ffffffffffffffde
-RAX: 0000000000000000 RBX: ffffffff8bde7e48 RCX: ffffffff88a21285
-RDX: 0000000000000000 RSI: 0000000000000004 RDI: ffffffff8c2fc200
-RBP: ffff88806b71fcc8 R08: fffffbfff185f840 R09: fffffbfff185f840
-R10: 0000000000000001 R11: fffffbfff185f840 R12: 0000000000000002
-R13: ffffffff8bea18a0 R14: 0000000000000000 R15: 0000000000000000
- arch_safe_halt arch/x86/include/asm/paravirt.h:94 [inline]
- default_idle+0x6f/0x360 arch/x86/kernel/process.c:557
- arch_cpu_idle+0xf/0x20 arch/x86/kernel/process.c:548
- default_idle_call+0x3b/0x60 kernel/sched/idle.c:93
- cpuidle_idle_call kernel/sched/idle.c:153 [inline]
- do_idle+0x2ab/0x3c0 kernel/sched/idle.c:263
- cpu_startup_entry+0xcb/0xe0 kernel/sched/idle.c:369
- start_secondary+0x3b8/0x4e0 arch/x86/kernel/smpboot.c:271
- secondary_startup_64+0xa4/0xb0 arch/x86/kernel/head_64.S:243
-Modules linked in:
-Dumping ftrace buffer:
-   (ftrace buffer empty)
-CR2: 0000000000000010
----[ end trace 11804dbb55cb1a64 ]---
-RIP: 0010:readl arch/x86/include/asm/io.h:59 [inline]
-RIP: 0010:rp2_ch_interrupt drivers/tty/serial/rp2.c:472 [inline]
-RIP: 0010:rp2_asic_interrupt.isra.9+0x181/0x990 drivers/tty/serial/rp2.c:
-493
-Code: df e8 43 5d c2 05 48 8d 83 e8 01 00 00 48 89 85 60 ff ff ff 48 c1
-e8 03 42 80 3c 30 00 0f 85 aa 07 00 00 48 8b 83 e8 01 00 00 <8b> 40 10 89
-c1 89 85 68 ff ff ff 48 8b 83 e8 01 00 00 89 48 10 83
-RSP: 0018:ffff88806c287cd0 EFLAGS: 00010046
-RAX: 0000000000000000 RBX: ffff88806ade6820 RCX: ffffffff814300b1
-RDX: 1ffff1100d5bcd06 RSI: 0000000000000004 RDI: ffff88806ade6820
-RBP: ffff88806c287db8 R08: ffffed100d5bcd05 R09: ffffed100d5bcd05
-R10: 0000000000000001 R11: ffffed100d5bcd04 R12: ffffc90001e00000
-R13: ffff888069654e10 R14: dffffc0000000000 R15: ffff888069654df0
-FS:  0000000000000000(0000) GS:ffff88806c280000(0000) knlGS:
-0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 0000000000000010 CR3: 000000006892c000 CR4: 00000000000006e0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-
-Reported-by: Zheyu Ma <zheyuma97@gmail.com>
-Signed-off-by: Zheyu Ma <zheyuma97@gmail.com>
-Link: https://lore.kernel.org/r/1621577323-1541-1-git-send-email-zheyuma97@gmail.com
-Cc: stable <stable@vger.kernel.org>
+Fixes: 561de45f72bd ("spi: spi-geni-qcom: Add SPI driver support for GENI based QUP")
+Signed-off-by: Lukas Wunner <lukas@wunner.de>
+Cc: <stable@vger.kernel.org> # v4.20+: 5e844cc37a5c: spi: Introduce device-managed SPI controller allocation
+Cc: <stable@vger.kernel.org> # v4.20+
+Cc: Rajendra Nayak <rnayak@codeaurora.org>
+Cc: Girish Mahadevan <girishm@codeaurora.org>
+Link: https://lore.kernel.org/r/dfa1d8c41b8acdfad87ec8654cd124e6e3cb3f31.1607286887.git.lukas@wunner.de
+Signed-off-by: Mark Brown <broonie@kernel.org>
+[lukas: backport to v5.4.123]
+Signed-off-by: Lukas Wunner <lukas@wunner.de>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/tty/serial/rp2.c |   52 +++++++++++++++--------------------------------
- 1 file changed, 17 insertions(+), 35 deletions(-)
+ drivers/spi/spi-geni-qcom.c |    3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
---- a/drivers/tty/serial/rp2.c
-+++ b/drivers/tty/serial/rp2.c
-@@ -198,7 +198,6 @@ struct rp2_card {
- 	void __iomem			*bar0;
- 	void __iomem			*bar1;
- 	spinlock_t			card_lock;
--	struct completion		fw_loaded;
- };
- 
- #define RP_ID(prod) PCI_VDEVICE(RP, (prod))
-@@ -667,17 +666,10 @@ static void rp2_remove_ports(struct rp2_
- 	card->initialized_ports = 0;
- }
- 
--static void rp2_fw_cb(const struct firmware *fw, void *context)
-+static int rp2_load_firmware(struct rp2_card *card, const struct firmware *fw)
- {
--	struct rp2_card *card = context;
- 	resource_size_t phys_base;
--	int i, rc = -ENOENT;
--
--	if (!fw) {
--		dev_err(&card->pdev->dev, "cannot find '%s' firmware image\n",
--			RP2_FW_NAME);
--		goto no_fw;
--	}
-+	int i, rc = 0;
- 
- 	phys_base = pci_resource_start(card->pdev, 1);
- 
-@@ -723,23 +715,13 @@ static void rp2_fw_cb(const struct firmw
- 		card->initialized_ports++;
+--- a/drivers/spi/spi-geni-qcom.c
++++ b/drivers/spi/spi-geni-qcom.c
+@@ -552,7 +552,7 @@ static int spi_geni_probe(struct platfor
+ 		return PTR_ERR(clk);
  	}
  
--	release_firmware(fw);
--no_fw:
--	/*
--	 * rp2_fw_cb() is called from a workqueue long after rp2_probe()
--	 * has already returned success.  So if something failed here,
--	 * we'll just leave the now-dormant device in place until somebody
--	 * unbinds it.
--	 */
--	if (rc)
--		dev_warn(&card->pdev->dev, "driver initialization failed\n");
--
--	complete(&card->fw_loaded);
-+	return rc;
- }
- 
- static int rp2_probe(struct pci_dev *pdev,
- 				   const struct pci_device_id *id)
- {
-+	const struct firmware *fw;
- 	struct rp2_card *card;
- 	struct rp2_uart_port *ports;
- 	void __iomem * const *bars;
-@@ -750,7 +732,6 @@ static int rp2_probe(struct pci_dev *pde
+-	spi = spi_alloc_master(&pdev->dev, sizeof(*mas));
++	spi = devm_spi_alloc_master(&pdev->dev, sizeof(*mas));
+ 	if (!spi)
  		return -ENOMEM;
- 	pci_set_drvdata(pdev, card);
- 	spin_lock_init(&card->card_lock);
--	init_completion(&card->fw_loaded);
  
- 	rc = pcim_enable_device(pdev);
- 	if (rc)
-@@ -783,21 +764,23 @@ static int rp2_probe(struct pci_dev *pde
- 		return -ENOMEM;
- 	card->ports = ports;
- 
--	rc = devm_request_irq(&pdev->dev, pdev->irq, rp2_uart_interrupt,
--			      IRQF_SHARED, DRV_NAME, card);
--	if (rc)
-+	rc = request_firmware(&fw, RP2_FW_NAME, &pdev->dev);
-+	if (rc < 0) {
-+		dev_err(&pdev->dev, "cannot find '%s' firmware image\n",
-+			RP2_FW_NAME);
- 		return rc;
-+	}
- 
--	/*
--	 * Only catastrophic errors (e.g. ENOMEM) are reported here.
--	 * If the FW image is missing, we'll find out in rp2_fw_cb()
--	 * and print an error message.
--	 */
--	rc = request_firmware_nowait(THIS_MODULE, 1, RP2_FW_NAME, &pdev->dev,
--				     GFP_KERNEL, card, rp2_fw_cb);
-+	rc = rp2_load_firmware(card, fw);
-+
-+	release_firmware(fw);
-+	if (rc < 0)
-+		return rc;
-+
-+	rc = devm_request_irq(&pdev->dev, pdev->irq, rp2_uart_interrupt,
-+			      IRQF_SHARED, DRV_NAME, card);
- 	if (rc)
- 		return rc;
--	dev_dbg(&pdev->dev, "waiting for firmware blob...\n");
- 
- 	return 0;
- }
-@@ -806,7 +789,6 @@ static void rp2_remove(struct pci_dev *p
- {
- 	struct rp2_card *card = pci_get_drvdata(pdev);
- 
--	wait_for_completion(&card->fw_loaded);
- 	rp2_remove_ports(card);
+@@ -599,7 +599,6 @@ spi_geni_probe_free_irq:
+ 	free_irq(mas->irq, spi);
+ spi_geni_probe_runtime_disable:
+ 	pm_runtime_disable(&pdev->dev);
+-	spi_master_put(spi);
+ 	return ret;
  }
  
 
