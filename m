@@ -2,127 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AFF5039663F
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 19:00:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C8F5A3966C7
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 19:19:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233046AbhEaRBy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 13:01:54 -0400
-Received: from polaris.svanheule.net ([84.16.241.116]:46258 "EHLO
-        polaris.svanheule.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234340AbhEaPfX (ORCPT
+        id S232080AbhEaRVa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 13:21:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51992 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233271AbhEaRUk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 11:35:23 -0400
-Received: from [IPv6:2a02:a03f:eafb:ee01:86ad:a53c:2e83:dd76] (unknown [IPv6:2a02:a03f:eafb:ee01:86ad:a53c:2e83:dd76])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: sander@svanheule.net)
-        by polaris.svanheule.net (Postfix) with ESMTPSA id A9BDE206B6B;
-        Mon, 31 May 2021 17:33:29 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=svanheule.net;
-        s=mail1707; t=1622475210;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=xiXZatVAB++3a5E7nWSQIMIqvM2fRrnQrEqg5glz/i0=;
-        b=ZIOw1e17uTXiLULKbQJOqFzrCYPbNaJnIwUMlVNBaZ1D7RKUE7EcW92eVBDgxZoO0OL+Gy
-        2+LQe/2laJYBVX2JuBSWrZWEX/UIcWx9mv1myqK5w3ZLN/OY7HyaepuAB0Mjxid+PTyIa9
-        hh4u0W1pFk7EUkyEFLRfLR1qI2JrNDwWc0Z8C5H7G8sMj/Z4lPihomUC4sGhGnUx7xUgEq
-        dVY1aEcQyp+BY4HRBdexLehJcBJ2IGudwvWZfgrm0nirPXvAPo/lA7egj7grZHIz3I3681
-        1baa/NkSeQz84/GSJUu+x8HeDNI+E8rwqSNFIfQX3ODZiauhBvU1313T2xI2kw==
-Message-ID: <272ac6af4a5ba5df4bb085617c9267e5ece61c19.camel@svanheule.net>
-Subject: Re: [PATCH 0/5] RTL8231 GPIO expander support
-From:   Sander Vanheule <sander@svanheule.net>
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Michael Walle <michael@walle.cc>
-Cc:     Hans de Goede <hdegoede@redhat.com>, Andrew Lunn <andrew@lunn.ch>,
-        Pavel Machek <pavel@ucw.cz>, Rob Herring <robh+dt@kernel.org>,
-        Lee Jones <lee.jones@linaro.org>,
-        Mark Brown <broonie@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J . Wysocki" <rafael@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Linux LED Subsystem <linux-leds@vger.kernel.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Date:   Mon, 31 May 2021 17:33:27 +0200
-In-Reply-To: <CAHp75VfOrUBRQH1vrXEwHN4ZPojQfQju-_wp_3djZeozEaatug@mail.gmail.com>
-References: <cover.1620735871.git.sander@svanheule.net>
-         <cover.1621809029.git.sander@svanheule.net> <YKr9G3EfrM34gCsL@lunn.ch>
-         <CAHp75VewCw8ES_9S48qmeCtSXMkGWt0s4iub0Fu4ZuwWANHpaQ@mail.gmail.com>
-         <02bbf73ea8a14119247f07a677993aad2f45b088.camel@svanheule.net>
-         <f03d5cdc958110fc7d95cfc4258dac4e@walle.cc>
-         <84352c93f27d7c8b7afea54f3932020e9cd97d02.camel@svanheule.net>
-         <a644b8fa-c90a-eab6-9cca-08344abec532@redhat.com>
-         <CAHp75VcFmU4rJ6jL204xGFM=s2LV=KQmsV8E75BpuSAZMXBn0w@mail.gmail.com>
-         <c7239e0cbbc9748925410937a914bd8a@walle.cc>
-         <7a9978881e9ec5d4b811fa6e5d355fb6bce6f6d8.camel@svanheule.net>
-         <0047200eecbd7ee480258cc904d6b7ee@walle.cc>
-         <CAHp75VfOrUBRQH1vrXEwHN4ZPojQfQju-_wp_3djZeozEaatug@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.38.4 (3.38.4-1.fc33) 
+        Mon, 31 May 2021 13:20:40 -0400
+Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40996C0431FC;
+        Mon, 31 May 2021 08:34:35 -0700 (PDT)
+Received: by mail-pj1-x1034.google.com with SMTP id b15-20020a17090a550fb029015dad75163dso195798pji.0;
+        Mon, 31 May 2021 08:34:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=YIxlSk91TuUABFkgr/k5Yi3OXLq37Uwi7gnEsi3Btt4=;
+        b=qA1l1Pe1DWi2hEyakId/vhm80G9PN4zkftLWig/60q0ofmynv4I1G8aZ4XXV8vQXbj
+         WVB3kXNm6E9OQqjJHiGyxRZ4c1O7V6o3ncjQi0a93RiGYfFi0E8e13d2PiXvRRCrvXeo
+         PxyrN926RykD739bnPk8dOe43GPF0cRbDyF+0JY/9LeFfP/QNriKZ1VCACRAz+ZLWGpS
+         ebwNvVgr1Hm4u180TAnKmKaDiv3MKIAflhjnlBVeS/Jox/Qzzz1CtYBWk8lY9KeIvlCw
+         079N4B+ZGg1KzzZQBPpXNkkBwkWpqlhD5eooQ/TctDSzGJQMcJDEIgewQN8d9v1Dn0Uy
+         qJOQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=YIxlSk91TuUABFkgr/k5Yi3OXLq37Uwi7gnEsi3Btt4=;
+        b=MEo2pALqI07o9n8WYQfD+2n6uBfxVJm7eeVVMDauOC8qev/JLSXYqDMmw15PBYbP4A
+         /FhYvxf4aielTZwkGzHl/q8FOPWaJXFs9FQt6kT1q5HaZa8nhAErrFuGCGcyvNd5kKqK
+         speVMhhtVcpVU+NKuOP7dgxAPyoEVBg8S+epmjDig1njCXz/vUoMe2c+ZpnZ0P5RfUcL
+         WGU2inTeT9ZrRH3gbfKswOUce+0KezyAuaPByNtJBOEOGaLU5X/h27QZgM4mTiOl13qC
+         M4hKMjHyUV6IgYz6tfvWq3w7U56QmmNqWtvvN8OEcqorkXb3Ed5XGeUcEQ3TL4idGqh1
+         xlYQ==
+X-Gm-Message-State: AOAM5307BxTkcIe/IAMqMYxsqHAI2TKIZnaoOuQTXKe/qqbjV8MLODr5
+        TTrBuL+9QJQ3BpjA1g68Inh3XGZ5ylqw9Q==
+X-Google-Smtp-Source: ABdhPJxBeDoQ03UvPdZrXyEDANCwqA6KpN9Fw8xlBY8PZqLQZjNg5gycu4uQgC25e5/u1f8AccrWlg==
+X-Received: by 2002:a17:90a:aa12:: with SMTP id k18mr19852008pjq.232.1622475274796;
+        Mon, 31 May 2021 08:34:34 -0700 (PDT)
+Received: from WRT-WX9.. ([141.164.41.4])
+        by smtp.gmail.com with ESMTPSA id q91sm4369382pja.50.2021.05.31.08.34.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 31 May 2021 08:34:34 -0700 (PDT)
+From:   Changbin Du <changbin.du@gmail.com>
+To:     Alexander Viro <viro@zeniv.linux.org.uk>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kici nski <kuba@kernel.org>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        Changbin Du <changbin.du@gmail.com>, stable@vger.kernel.org,
+        Cong Wang <xiyou.wangcong@gmail.com>,
+        David Laight <David.Laight@ACULAB.COM>
+Subject: [PATCH] nsfs: fix oops when ns->ops is not provided
+Date:   Mon, 31 May 2021 23:34:10 +0800
+Message-Id: <20210531153410.93150-1-changbin.du@gmail.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2021-05-31 at 14:16 +0300, Andy Shevchenko wrote:
-> 
-> 
-> On Monday, May 31, 2021, Michael Walle <michael@walle.cc> wrote:
-> > Am 2021-05-31 10:36, schrieb Sander Vanheule:
+We should not create inode for disabled namespace. A disabled namespace
+sets its ns->ops to NULL. Kernel could panic if we try to create a inode
+for such namespace.
 
-...
+Here is an example oops in socket ioctl cmd SIOCGSKNS when NET_NS is
+disabled. Kernel panicked wherever nsfs trys to access ns->ops since the
+proc_ns_operations is not implemented in this case.
 
-> > > The data register rather appears to be implemented as a read-only (pin
-> > > inputs)
-> > > register and a write-only (pin outputs) register, aliased on the same
-> > > register
-> > > address.
-> > > 
-> > 
-> > Ahh so this makes more sense. If the data register is really write only
-> > regardless of the direction mode, then RMW doesn't make any sense at all.
-> > Please note, that even if regmap caches values, it might be marked as dirty
-> > and it will re-read the values from hardware. So I don't know if that will
-> > help you.
-> > 
-> > So a possible quirk could be
-> >  GPIO_REGMAP_WRITE_ONLY_DATA_REG (or something like that)
-> > 
-> > 
-> 
-> Isn’t regmap property to do a such? I don’t think any quirks are needed since hw
-> works as expected.
+[7.670023] Unable to handle kernel NULL pointer dereference at virtual address 00000010
+[7.670268] pgd = 32b54000
+[7.670544] [00000010] *pgd=00000000
+[7.671861] Internal error: Oops: 5 [#1] SMP ARM
+[7.672315] Modules linked in:
+[7.672918] CPU: 0 PID: 1 Comm: systemd Not tainted 5.13.0-rc3-00375-g6799d4f2da49 #16
+[7.673309] Hardware name: Generic DT based system
+[7.673642] PC is at nsfs_evict+0x24/0x30
+[7.674486] LR is at clear_inode+0x20/0x9c
 
-The HW works as expected, but it is regmap-gpio's assumption that values read
-from reg_set_base reflect the current output value that fails.
+So let's reject such request for disabled namespace.
 
-I looked a bit more at the provided interface, to see if this can be done with
-existing regmap functionality.
+Signed-off-by: Changbin Du <changbin.du@gmail.com>
+Cc: <stable@vger.kernel.org>
+Cc: Cong Wang <xiyou.wangcong@gmail.com>
+Cc: Jakub Kicinski <kuba@kernel.org>
+Cc: David Laight <David.Laight@ACULAB.COM>
+---
+ fs/nsfs.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-The data registers must not be marked volatile, to ensure cached reads. The pin
-set function can wrap the RMW in regcache_cache_only + regcache_sync, but this
-causes visible glitching on my device.
-
-The pin input values can be read by wrapping the regmap_read in
-regcache_cache_bypass guards.
-
-If only the regmap's internal lock is used, the RMW cycle is no longer atomic.
-Inside the cache_only guards you can't read the input data, and inside the
-cache_bypass guards other register writes cannot be performed, or the cache may
-get out of sync. regcache_sync_region could be used, but maybe we would then
-miss other registers that were updated in the meantime.
-
-Am I missing something here? It seems to me like the regmap interface can't
-really accommodate what's required, unless maybe the rtl8231 regmap users
-perform some manual locking. This all seems terribly complicated compared to
-using an internal output-value cache inside regmap-gpio.
-
-
-Best,
-Sander
+diff --git a/fs/nsfs.c b/fs/nsfs.c
+index 800c1d0eb0d0..6c055eb7757b 100644
+--- a/fs/nsfs.c
++++ b/fs/nsfs.c
+@@ -62,6 +62,10 @@ static int __ns_get_path(struct path *path, struct ns_common *ns)
+ 	struct inode *inode;
+ 	unsigned long d;
+ 
++	/* In case the namespace is not actually enabled. */
++	if (!ns->ops)
++		return -EOPNOTSUPP;
++
+ 	rcu_read_lock();
+ 	d = atomic_long_read(&ns->stashed);
+ 	if (!d)
+-- 
+2.30.2
 
