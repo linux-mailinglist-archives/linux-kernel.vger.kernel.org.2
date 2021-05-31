@@ -2,35 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C8603396539
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 18:26:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 566E03961A7
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 16:43:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232675AbhEaQ1p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 12:27:45 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40312 "EHLO mail.kernel.org"
+        id S234165AbhEaOoz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 10:44:55 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59856 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234227AbhEaOpJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 10:45:09 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 25FEE61C84;
-        Mon, 31 May 2021 13:55:01 +0000 (UTC)
+        id S233048AbhEaN7U (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 09:59:20 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id EFB7561933;
+        Mon, 31 May 2021 13:35:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1622469302;
-        bh=U7ubMBqioOt7j6nprRGfQT/T68oUMEcDQugGFGj0zs0=;
+        s=korg; t=1622468160;
+        bh=3Dbt6QMFQJ+5uUFwcM6yTQ8Yvxyht9pncCIVnfvtdLI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=BUvLyviiAyROsAR7tkIt0b9WVyiJbzIf9hgikaVt9ZdJZHUOpxfUoQqN5FWCPQuOL
-         3DHr8ibRVPsrEDJNdU0N90ZqnobwmdNvnaROLDKpfk+GjEjtMBAMUl6YPdY6GnORGV
-         qdL4bk4lDumtrr6WHbEhZgj5Hk/3ctBKKy8zgET8=
+        b=LOVW51t1lletf4/uvL0M6+Lar+Piw40i1UWb2bLKJ9YP+xwmDHO5sbtCMszHgdAaI
+         O0D3spOHB6vmaWGhZnFwmVmYoVBxTybGYRhWRb3ECocafpq09M/5caMHbb7pNPXD+A
+         fKQIhaN26wRt0hFYizDAJ6rZk4x26ZmHEHv+CcTA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Vladimir Oltean <vladimir.oltean@nxp.com>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 5.12 147/296] net: dsa: sja1105: call dsa_unregister_switch when allocating memory fails
-Date:   Mon, 31 May 2021 15:13:22 +0200
-Message-Id: <20210531130708.811823022@linuxfoundation.org>
+        stable@vger.kernel.org, "David S. Miller" <davem@davemloft.net>,
+        Dominik Brodowski <linux@dominikbrodowski.net>,
+        Anirudh Rayabharam <mail@anirudhrb.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.10 138/252] net: fujitsu: fix potential null-ptr-deref
+Date:   Mon, 31 May 2021 15:13:23 +0200
+Message-Id: <20210531130702.703959552@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210531130703.762129381@linuxfoundation.org>
-References: <20210531130703.762129381@linuxfoundation.org>
+In-Reply-To: <20210531130657.971257589@linuxfoundation.org>
+References: <20210531130657.971257589@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,68 +41,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Vladimir Oltean <vladimir.oltean@nxp.com>
+From: Anirudh Rayabharam <mail@anirudhrb.com>
 
-commit dc596e3fe63f88e3d1e509f64e7f761cd4135538 upstream.
+[ Upstream commit 52202be1cd996cde6e8969a128dc27ee45a7cb5e ]
 
-Unlike other drivers which pretty much end their .probe() execution with
-dsa_register_switch(), the sja1105 does some extra stuff. When that
-fails with -ENOMEM, the driver is quick to return that, forgetting to
-call dsa_unregister_switch(). Not critical, but a bug nonetheless.
+In fmvj18x_get_hwinfo(), if ioremap fails there will be NULL pointer
+deref. To fix this, check the return value of ioremap and return -1
+to the caller in case of failure.
 
-Fixes: 4d7525085a9b ("net: dsa: sja1105: offload the Credit-Based Shaper qdisc")
-Fixes: a68578c20a96 ("net: dsa: Make deferred_xmit private to sja1105")
-Signed-off-by: Vladimir Oltean <vladimir.oltean@nxp.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Cc: "David S. Miller" <davem@davemloft.net>
+Acked-by: Dominik Brodowski <linux@dominikbrodowski.net>
+Signed-off-by: Anirudh Rayabharam <mail@anirudhrb.com>
+Link: https://lore.kernel.org/r/20210503115736.2104747-16-gregkh@linuxfoundation.org
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/dsa/sja1105/sja1105_main.c |   15 +++++++++++----
- 1 file changed, 11 insertions(+), 4 deletions(-)
+ drivers/net/ethernet/fujitsu/fmvj18x_cs.c | 5 +++++
+ 1 file changed, 5 insertions(+)
 
---- a/drivers/net/dsa/sja1105/sja1105_main.c
-+++ b/drivers/net/dsa/sja1105/sja1105_main.c
-@@ -3683,8 +3683,10 @@ static int sja1105_probe(struct spi_devi
- 		priv->cbs = devm_kcalloc(dev, priv->info->num_cbs_shapers,
- 					 sizeof(struct sja1105_cbs_entry),
- 					 GFP_KERNEL);
--		if (!priv->cbs)
--			return -ENOMEM;
-+		if (!priv->cbs) {
-+			rc = -ENOMEM;
-+			goto out_unregister_switch;
-+		}
- 	}
+diff --git a/drivers/net/ethernet/fujitsu/fmvj18x_cs.c b/drivers/net/ethernet/fujitsu/fmvj18x_cs.c
+index dc90c61fc827..b0c0504950d8 100644
+--- a/drivers/net/ethernet/fujitsu/fmvj18x_cs.c
++++ b/drivers/net/ethernet/fujitsu/fmvj18x_cs.c
+@@ -547,6 +547,11 @@ static int fmvj18x_get_hwinfo(struct pcmcia_device *link, u_char *node_id)
+ 	return -1;
  
- 	/* Connections between dsa_port and sja1105_port */
-@@ -3709,7 +3711,7 @@ static int sja1105_probe(struct spi_devi
- 			dev_err(ds->dev,
- 				"failed to create deferred xmit thread: %d\n",
- 				rc);
--			goto out;
-+			goto out_destroy_workers;
- 		}
- 		skb_queue_head_init(&sp->xmit_queue);
- 		sp->xmit_tpid = ETH_P_SJA1105;
-@@ -3719,7 +3721,8 @@ static int sja1105_probe(struct spi_devi
- 	}
- 
- 	return 0;
--out:
+     base = ioremap(link->resource[2]->start, resource_size(link->resource[2]));
++    if (!base) {
++	pcmcia_release_window(link, link->resource[2]);
++	return -1;
++    }
 +
-+out_destroy_workers:
- 	while (port-- > 0) {
- 		struct sja1105_port *sp = &priv->ports[port];
+     pcmcia_map_mem_page(link, link->resource[2], 0);
  
-@@ -3728,6 +3731,10 @@ out:
- 
- 		kthread_destroy_worker(sp->xmit_worker);
- 	}
-+
-+out_unregister_switch:
-+	dsa_unregister_switch(ds);
-+
- 	return rc;
- }
- 
+     /*
+-- 
+2.30.2
+
 
 
