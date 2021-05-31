@@ -2,202 +2,214 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D40A3954B0
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 06:37:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 48E593954B7
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 06:39:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230078AbhEaEjF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 00:39:05 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34308 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229803AbhEaEjD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 00:39:03 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BF76C61009;
-        Mon, 31 May 2021 04:37:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1622435844;
-        bh=zFz3lrX1eHBSPQ2WKO0P9L2TWqh3+jvi2kELdtRui6c=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=kP1K5IpxuyvI9AukrALH7dj1ErK7EYA4d1MGxVg926Y5x+37mIF94sNFIsoSuV5zu
-         ZUrdgSULsYj7oOpmpztDTiGTFOM2Nkzdu6DuYkLSkXnlnwGXghock8/DO3dbFBtoXt
-         ZYqBO1Heggl9mIE1jfE4/j3O3cosXjSczHzYjqWwtU9hFdl8EURRULj6IQpXVxAg/R
-         HaazjHQPPybPh0QNpVeEnCjrFcoFNFeVOSkTfexrSteSuOlR5TPTQewS3Ecf4SMGWF
-         cy1GK4ONZYd8GQ6CF0u0OCpBmZ/Ll+dcr1Ic4h92bJDlCbP3x5MNldBuWR763Ee0gc
-         qF3W3UxZaRnbg==
-Date:   Mon, 31 May 2021 10:07:21 +0530
-From:   Vinod Koul <vkoul@kernel.org>
-To:     Guanhua Gao <guanhua.gao@nxp.com>
-Cc:     Yi Zhao <yi.zhao@nxp.com>, dmaengine@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 3/3] dmaengine: fsl-dpaa2-qdma: Remove the macro of
- DPDMAI_MAX_QUEUE_NUM
-Message-ID: <YLRoAamgPzLJeUk1@vkoul-mobl.Dlink>
-References: <20210422084448.962-1-guanhua.gao@nxp.com>
+        id S230130AbhEaEko (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 00:40:44 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:34869 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229877AbhEaEkl (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 00:40:41 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1622435942;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=0iOJFSk4M5fATpsyHla9pHiyIsvAdGUk+2E+QqouBgM=;
+        b=VRcISGgZ1Y86TqoaS4YBDQbwr1LQKPFV5Nm+yyBiTCWvFwAD00U43zdEQ1XXK4iL5bBvdk
+        PB+hsZqfjBl4UeT6IXOgldByqJAWSErXEN2mo8m/GB/bjwdhMGNqy2AQUrKsy8HiywJbEc
+        715l4TbLPN+t1dQOKYAqYzFResRNeOQ=
+Received: from mail-pl1-f199.google.com (mail-pl1-f199.google.com
+ [209.85.214.199]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-300-BaRmMKQTP8uX1a5sNEoX_Q-1; Mon, 31 May 2021 00:39:00 -0400
+X-MC-Unique: BaRmMKQTP8uX1a5sNEoX_Q-1
+Received: by mail-pl1-f199.google.com with SMTP id t10-20020a1709027fcab02900fd1eb0b2e8so2539316plb.22
+        for <linux-kernel@vger.kernel.org>; Sun, 30 May 2021 21:39:00 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=0iOJFSk4M5fATpsyHla9pHiyIsvAdGUk+2E+QqouBgM=;
+        b=ljysH/JcSxT74jYVubueqbYIIh05zRpQ5x6+7obAgUDDPkyTUU9f1ATol8N0pPj3W5
+         f3XidwavVTMVzc/jK/RPTmlv8B3hQ80/05CDZTdDlzN0VkZDSBQ8htexGaK4HzGSQ6He
+         oO6wLAbrFgmwe9BCi/rOy7rd5d86rwa7I0gTs3vOkI4uPb2DgIX5ORqQJvKDJfoABsmP
+         MC0L/lZyN31Rj41NJPKAVZ1J/KjaJDuzMKd36vSdHAtlZMbGDdY6WXdeIQth7hAPpPcJ
+         aIycAJCPQ6dHgZ38EoaYxc1RSbnrtCnbyNWHd8hcCPC4dO3k3fBWzKBjTe2lCpWoNZsa
+         hr0Q==
+X-Gm-Message-State: AOAM531NUsiE6oUvGq4UDojKcuaQy6BvxmTK+c0gZnKxtYviKjOnD1yT
+        KhM54bbLdI4cfWGugTXu3Ny9SnDAM3YL3d5GWOc+ho02llVxj7vXisjH5FkRq484jlYZBBI2wth
+        MopV34oATIuIdrCCdZ2mKu/GgHrSCgikWuOmY35+wadRfucN/sqaUM6E5B6yFg5U+7fIWlXs5qo
+        iv
+X-Received: by 2002:a17:90b:1489:: with SMTP id js9mr8106355pjb.227.1622435939227;
+        Sun, 30 May 2021 21:38:59 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwECaFWqzow6NdzjEA/SPKPwRYy8BftnnINSbmAd0S9WQ6jOL+NhYjoGxK0mOczJ8jEV1I9Vg==
+X-Received: by 2002:a17:90b:1489:: with SMTP id js9mr8106314pjb.227.1622435938816;
+        Sun, 30 May 2021 21:38:58 -0700 (PDT)
+Received: from wangxiaodeMacBook-Air.local ([209.132.188.80])
+        by smtp.gmail.com with ESMTPSA id b20sm1398269pgm.30.2021.05.30.21.38.52
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 30 May 2021 21:38:58 -0700 (PDT)
+Subject: Re: [PATCH v7 11/12] vduse: Introduce VDUSE - vDPA Device in
+ Userspace
+To:     Yongji Xie <xieyongji@bytedance.com>
+Cc:     "Michael S. Tsirkin" <mst@redhat.com>,
+        Stefan Hajnoczi <stefanha@redhat.com>,
+        Stefano Garzarella <sgarzare@redhat.com>,
+        Parav Pandit <parav@nvidia.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        Christian Brauner <christian.brauner@canonical.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Jens Axboe <axboe@kernel.dk>, bcrl@kvack.org,
+        Jonathan Corbet <corbet@lwn.net>,
+        =?UTF-8?Q?Mika_Penttil=c3=a4?= <mika.penttila@nextfour.com>,
+        Dan Carpenter <dan.carpenter@oracle.com>, joro@8bytes.org,
+        virtualization <virtualization@lists.linux-foundation.org>,
+        netdev@vger.kernel.org, kvm <kvm@vger.kernel.org>,
+        linux-fsdevel@vger.kernel.org, iommu@lists.linux-foundation.org,
+        linux-kernel <linux-kernel@vger.kernel.org>
+References: <20210517095513.850-1-xieyongji@bytedance.com>
+ <20210517095513.850-12-xieyongji@bytedance.com>
+ <3740c7eb-e457-07f3-5048-917c8606275d@redhat.com>
+ <CACycT3uAqa6azso_8MGreh+quj-JXO1piuGnrV8k2kTfc34N2g@mail.gmail.com>
+ <5a68bb7c-fd05-ce02-cd61-8a601055c604@redhat.com>
+ <CACycT3ve7YvKF+F+AnTQoJZMPua+jDvGMs_ox8GQe_=SGdeCMA@mail.gmail.com>
+ <ee00efca-b26d-c1be-68d2-f9e34a735515@redhat.com>
+ <CACycT3ufok97cKpk47NjUBTc0QAyfauFUyuFvhWKmuqCGJ7zZw@mail.gmail.com>
+ <00ded99f-91b6-ba92-5d92-2366b163f129@redhat.com>
+ <CACycT3uK_Fuade-b8FVYkGCKZnne_UGGbYRFwv7WOH2oKCsXSg@mail.gmail.com>
+ <f20edd55-20cb-c016-b347-dd71c5406ed8@redhat.com>
+ <CACycT3tLj6a7-tbqO9SzCLStwYrOALdkfnt1jxQBv3s0VzD6AQ@mail.gmail.com>
+From:   Jason Wang <jasowang@redhat.com>
+Message-ID: <ea9fd2d2-870f-c4e2-d7a5-af759985c462@redhat.com>
+Date:   Mon, 31 May 2021 12:38:47 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.10.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210422084448.962-1-guanhua.gao@nxp.com>
+In-Reply-To: <CACycT3tLj6a7-tbqO9SzCLStwYrOALdkfnt1jxQBv3s0VzD6AQ@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 22-04-21, 16:44, Guanhua Gao wrote:
-> The max number of queue supported by DPAA2 qdma is determined
-> by the number of CPUs. Due to the number of CPUs are different
-> in different LS2 platforms, we remove the macro of
-> DPDMAI_MAX_QUEUE_NUM which is defined 8.
-> 
-> Signed-off-by: Guanhua Gao <guanhua.gao@nxp.com>
-> ---
-> Change in v2:
->  - Add new patch.
-> 
->  drivers/dma/fsl-dpaa2-qdma/dpaa2-qdma.c | 43 +++++++++++++++++++++----
->  drivers/dma/fsl-dpaa2-qdma/dpaa2-qdma.h |  4 +--
->  drivers/dma/fsl-dpaa2-qdma/dpdmai.h     |  5 ---
->  3 files changed, 39 insertions(+), 13 deletions(-)
-> 
-> diff --git a/drivers/dma/fsl-dpaa2-qdma/dpaa2-qdma.c b/drivers/dma/fsl-dpaa2-qdma/dpaa2-qdma.c
-> index 86c7ec5dc74e..3875fbb9fac3 100644
-> --- a/drivers/dma/fsl-dpaa2-qdma/dpaa2-qdma.c
-> +++ b/drivers/dma/fsl-dpaa2-qdma/dpaa2-qdma.c
-> @@ -314,6 +314,8 @@ static int __cold dpaa2_qdma_setup(struct fsl_mc_device *ls_dev)
->  	struct dpaa2_qdma_priv_per_prio *ppriv;
->  	struct device *dev = &ls_dev->dev;
->  	struct dpaa2_qdma_priv *priv;
-> +	struct dpdmai_rx_queue_attr *rx_queue_attr;
-> +	struct dpdmai_tx_queue_attr *tx_queue_attr;
->  	int err = -EINVAL;
->  	int i;
->  
-> @@ -335,33 +337,51 @@ static int __cold dpaa2_qdma_setup(struct fsl_mc_device *ls_dev)
->  				    &priv->dpdmai_attr);
->  	if (err) {
->  		dev_err(dev, "dpdmai_get_attributes() failed\n");
-> -		goto exit;
-> +		goto err_get_attr;
->  	}
->  
->  	priv->num_pairs = priv->dpdmai_attr.num_of_queues;
-> +	rx_queue_attr = kcalloc(priv->num_pairs, sizeof(*rx_queue_attr),
-> +				GFP_KERNEL);
-> +	if (!rx_queue_attr) {
-> +		err = -ENOMEM;
-> +		goto err_get_attr;
-> +	}
-> +	priv->rx_queue_attr = rx_queue_attr;
-> +
-> +	tx_queue_attr = kcalloc(priv->num_pairs, sizeof(*tx_queue_attr),
-> +				GFP_KERNEL);
-> +	if (!tx_queue_attr) {
-> +		err = -ENOMEM;
-> +		goto err_tx_queue;
-> +	}
-> +	priv->tx_queue_attr = tx_queue_attr;
 
-Pointer is set here
+在 2021/5/31 下午12:27, Yongji Xie 写道:
+> On Fri, May 28, 2021 at 10:31 AM Jason Wang <jasowang@redhat.com> wrote:
+>>
+>> 在 2021/5/27 下午9:17, Yongji Xie 写道:
+>>> On Thu, May 27, 2021 at 4:41 PM Jason Wang <jasowang@redhat.com> wrote:
+>>>> 在 2021/5/27 下午3:34, Yongji Xie 写道:
+>>>>> On Thu, May 27, 2021 at 1:40 PM Jason Wang <jasowang@redhat.com> wrote:
+>>>>>> 在 2021/5/27 下午1:08, Yongji Xie 写道:
+>>>>>>> On Thu, May 27, 2021 at 1:00 PM Jason Wang <jasowang@redhat.com> wrote:
+>>>>>>>> 在 2021/5/27 下午12:57, Yongji Xie 写道:
+>>>>>>>>> On Thu, May 27, 2021 at 12:13 PM Jason Wang <jasowang@redhat.com> wrote:
+>>>>>>>>>> 在 2021/5/17 下午5:55, Xie Yongji 写道:
+>>>>>>>>>>> +
+>>>>>>>>>>> +static int vduse_dev_msg_sync(struct vduse_dev *dev,
+>>>>>>>>>>> +                           struct vduse_dev_msg *msg)
+>>>>>>>>>>> +{
+>>>>>>>>>>> +     init_waitqueue_head(&msg->waitq);
+>>>>>>>>>>> +     spin_lock(&dev->msg_lock);
+>>>>>>>>>>> +     vduse_enqueue_msg(&dev->send_list, msg);
+>>>>>>>>>>> +     wake_up(&dev->waitq);
+>>>>>>>>>>> +     spin_unlock(&dev->msg_lock);
+>>>>>>>>>>> +     wait_event_killable(msg->waitq, msg->completed);
+>>>>>>>>>> What happens if the userspace(malicous) doesn't give a response forever?
+>>>>>>>>>>
+>>>>>>>>>> It looks like a DOS. If yes, we need to consider a way to fix that.
+>>>>>>>>>>
+>>>>>>>>> How about using wait_event_killable_timeout() instead?
+>>>>>>>> Probably, and then we need choose a suitable timeout and more important,
+>>>>>>>> need to report the failure to virtio.
+>>>>>>>>
+>>>>>>> Makes sense to me. But it looks like some
+>>>>>>> vdpa_config_ops/virtio_config_ops such as set_status() didn't have a
+>>>>>>> return value.  Now I add a WARN_ON() for the failure. Do you mean we
+>>>>>>> need to add some change for virtio core to handle the failure?
+>>>>>> Maybe, but I'm not sure how hard we can do that.
+>>>>>>
+>>>>> We need to change all virtio device drivers in this way.
+>>>> Probably.
+>>>>
+>>>>
+>>>>>> We had NEEDS_RESET but it looks we don't implement it.
+>>>>>>
+>>>>> Could it handle the failure of get_feature() and get/set_config()?
+>>>> Looks not:
+>>>>
+>>>> "
+>>>>
+>>>> The device SHOULD set DEVICE_NEEDS_RESET when it enters an error state
+>>>> that a reset is needed. If DRIVER_OK is set, after it sets
+>>>> DEVICE_NEEDS_RESET, the device MUST send a device configuration change
+>>>> notification to the driver.
+>>>>
+>>>> "
+>>>>
+>>>> This looks implies that NEEDS_RESET may only work after device is
+>>>> probed. But in the current design, even the reset() is not reliable.
+>>>>
+>>>>
+>>>>>> Or a rough idea is that maybe need some relaxing to be coupled loosely
+>>>>>> with userspace. E.g the device (control path) is implemented in the
+>>>>>> kernel but the datapath is implemented in the userspace like TUN/TAP.
+>>>>>>
+>>>>> I think it can work for most cases. One problem is that the set_config
+>>>>> might change the behavior of the data path at runtime, e.g.
+>>>>> virtnet_set_mac_address() in the virtio-net driver and
+>>>>> cache_type_store() in the virtio-blk driver. Not sure if this path is
+>>>>> able to return before the datapath is aware of this change.
+>>>> Good point.
+>>>>
+>>>> But set_config() should be rare:
+>>>>
+>>>> E.g in the case of virtio-net with VERSION_1, config space is read only,
+>>>> and it was set via control vq.
+>>>>
+>>>> For block, we can
+>>>>
+>>>> 1) start from without WCE or
+>>>> 2) we add a config change notification to userspace or
+>>> I prefer this way. And I think we also need to do similar things for
+>>> set/get_vq_state().
+>>
+>> Yes, I agree.
+>>
+> Hi Jason,
+>
+> Now I'm working on this. But I found the config change notification
+> must be synchronous in the virtio-blk case, which means the kernel
+> still needs to wait for the response from userspace in set_config().
+> Otherwise, some I/Os might still run the old way after we change the
+> cache_type in sysfs.
+>
+> The simple ways to solve this problem are:
+>
+> 1. Only support read-only config space, disable WCE as you suggested
+> 2. Add a return value to set_config() and handle the failure only in
+> virtio-blk driver
+> 3. Print some warnings after timeout since it only affects the
+> dataplane which is under userspace's control
+>
+> Any suggestions?
 
-> +
->  	ppriv = kcalloc(priv->num_pairs, sizeof(*ppriv), GFP_KERNEL);
->  	if (!ppriv) {
->  		err = -ENOMEM;
-> -		goto exit;
-> +		goto err_ppriv;
->  	}
->  	priv->ppriv = ppriv;
->  
->  	for (i = 0; i < priv->num_pairs; i++) {
->  		err = dpdmai_get_rx_queue(priv->mc_io, 0, ls_dev->mc_handle,
-> -					  i, 0, &priv->rx_queue_attr[i]);
-> +					  i, 0, priv->rx_queue_attr + i);
->  		if (err) {
->  			dev_err(dev, "dpdmai_get_rx_queue() failed\n");
->  			goto exit;
->  		}
-> -		ppriv->rsp_fqid = priv->rx_queue_attr[i].fqid;
-> +		ppriv->rsp_fqid = ((struct dpdmai_rx_queue_attr *)
-> +				   (priv->rx_queue_attr + i))->fqid;
->  
->  		err = dpdmai_get_tx_queue(priv->mc_io, 0, ls_dev->mc_handle,
-> -					  i, 0, &priv->tx_queue_attr[i]);
-> +					  i, 0, priv->tx_queue_attr + i);
->  		if (err) {
->  			dev_err(dev, "dpdmai_get_tx_queue() failed\n");
->  			goto exit;
->  		}
-> -		ppriv->req_fqid = priv->tx_queue_attr[i].fqid;
-> +		ppriv->req_fqid = ((struct dpdmai_tx_queue_attr *)
-> +				   (priv->tx_queue_attr + i))->fqid;
->  		ppriv->prio = DPAA2_QDMA_DEFAULT_PRIORITY;
->  		ppriv->priv = priv;
->  		ppriv->chan_id = i;
-> @@ -370,6 +390,12 @@ static int __cold dpaa2_qdma_setup(struct fsl_mc_device *ls_dev)
->  
->  	return 0;
->  exit:
-> +	kfree(ppriv);
-> +err_ppriv:
-> +	kfree(priv->tx_queue_attr);
-> +err_tx_queue:
-> +	kfree(priv->rx_queue_attr);
 
-Freed on error but you still have dangling reference held
+Let's go without WCE first and make VDUSE work first. We can then think 
+of a solution for WCE on top.
 
-> +err_get_attr:
->  	dpdmai_close(priv->mc_io, 0, ls_dev->mc_handle);
->  	return err;
->  }
-> @@ -733,6 +759,8 @@ static int dpaa2_qdma_probe(struct fsl_mc_device *dpdmai_dev)
->  	dpaa2_dpmai_store_free(priv);
->  	dpaa2_dpdmai_dpio_free(priv);
->  err_dpio_setup:
-> +	kfree(priv->rx_queue_attr);
-> +	kfree(priv->tx_queue_attr);
->  	kfree(priv->ppriv);
->  	dpdmai_close(priv->mc_io, 0, dpdmai_dev->mc_handle);
->  err_dpdmai_setup:
-> @@ -763,6 +791,9 @@ static int dpaa2_qdma_remove(struct fsl_mc_device *ls_dev)
->  	dpaa2_dpdmai_free_channels(dpaa2_qdma);
->  
->  	dma_async_device_unregister(&dpaa2_qdma->dma_dev);
-> +	kfree(priv->rx_queue_attr);
-> +	kfree(priv->tx_queue_attr);
-> +	kfree(priv->ppriv);
->  	kfree(priv);
->  	kfree(dpaa2_qdma);
->  
-> diff --git a/drivers/dma/fsl-dpaa2-qdma/dpaa2-qdma.h b/drivers/dma/fsl-dpaa2-qdma/dpaa2-qdma.h
-> index 0a405fb13452..38aed372214e 100644
-> --- a/drivers/dma/fsl-dpaa2-qdma/dpaa2-qdma.h
-> +++ b/drivers/dma/fsl-dpaa2-qdma/dpaa2-qdma.h
-> @@ -123,8 +123,8 @@ struct dpaa2_qdma_priv {
->  	struct dpaa2_qdma_engine	*dpaa2_qdma;
->  	struct dpaa2_qdma_priv_per_prio	*ppriv;
->  
-> -	struct dpdmai_rx_queue_attr rx_queue_attr[DPDMAI_MAX_QUEUE_NUM];
-> -	struct dpdmai_tx_queue_attr tx_queue_attr[DPDMAI_MAX_QUEUE_NUM];
-> +	struct dpdmai_rx_queue_attr *rx_queue_attr;
-> +	struct dpdmai_tx_queue_attr *tx_queue_attr;
->  };
->  
->  struct dpaa2_qdma_priv_per_prio {
-> diff --git a/drivers/dma/fsl-dpaa2-qdma/dpdmai.h b/drivers/dma/fsl-dpaa2-qdma/dpdmai.h
-> index 0a87d37f7a92..f3a3eac97400 100644
-> --- a/drivers/dma/fsl-dpaa2-qdma/dpdmai.h
-> +++ b/drivers/dma/fsl-dpaa2-qdma/dpdmai.h
-> @@ -51,11 +51,6 @@
->   * Contains initialization APIs and runtime control APIs for DPDMAI
->   */
->  
-> -/*
-> - * Maximum number of Tx/Rx queues per DPDMAI object
-> - */
-> -#define DPDMAI_MAX_QUEUE_NUM	8
-> -
->  /**
->   * Maximum number of Tx/Rx priorities per DPDMAI object
->   */
-> -- 
-> 2.25.1
+Thanks
 
--- 
-~Vinod
+
+>
+> Thanks,
+> Yongji
+>
+
