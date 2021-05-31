@@ -2,79 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3EE13396658
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 19:03:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E4CF43966F3
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 19:24:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234813AbhEaREX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 13:04:23 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:42792 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233336AbhEaP4B (ORCPT
+        id S231483AbhEaRZl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 13:25:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53430 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232591AbhEaRZ1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 11:56:01 -0400
-Received: from mail-wr1-f72.google.com ([209.85.221.72])
-        by youngberry.canonical.com with esmtps  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.93)
-        (envelope-from <krzysztof.kozlowski@canonical.com>)
-        id 1lnkF8-0001Fz-H6
-        for linux-kernel@vger.kernel.org; Mon, 31 May 2021 15:54:18 +0000
-Received: by mail-wr1-f72.google.com with SMTP id f22-20020a5d58f60000b029011634e39889so952374wrd.7
-        for <linux-kernel@vger.kernel.org>; Mon, 31 May 2021 08:54:18 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=sBsy4F7jKH3SpIbmGFnwxwge6ODZS5L/G/FMfomXAiA=;
-        b=WPPV/cR5V6wVW2vmIj1kZQPptkX5rx8y5UJaGe9fo6LRO4dx1xYIApojKb4IYspD25
-         d5WJtPln0H7q0LYkraHOdjSXP4wsI3MI3u0G9+OODUwneaCiKYdFwmMd6tBa+GOweMcl
-         RaD0GDa/WLXpG5XS3KxGkCnismaSB19oSLdeJ/AJuCt4EnWYQZs/1DzqYv8LW2NtIOdE
-         5VDll/Lxe9gA5UWfUZ7klo7K0qItSK7+KDt2GKMXqGbT1nPwjFCQl0gh91a0oTg43mnT
-         C09p7ha8gT2FF4E8JQas/iPjALa8O8rBk6KWThgy2rcta0bvlr1rCtbIJ8kPaPPxhnsr
-         D2eA==
-X-Gm-Message-State: AOAM533/yjgpBeaJliRyeEnhqQNn0LrxgAzShWidq/TflIz4meQkWbRm
-        UO2UL6zZahyURZ6ni23cADePurDs8pmrHHVb3t/IA8F50xfWGipec2MplKVNU/sXwzMsqrIVBjK
-        PKyzcBN/AuWg1hk/iG4lnT1l1MlaHe1b+s3vPhMkQeQ==
-X-Received: by 2002:a5d:6e04:: with SMTP id h4mr22526591wrz.256.1622476458294;
-        Mon, 31 May 2021 08:54:18 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxc5/XqtsAvzunerv9scOT0vi0T+fqQgLaptB/fTaUryshQ2AateJkvN0M3O1eK/oaFSwSLqg==
-X-Received: by 2002:a5d:6e04:: with SMTP id h4mr22526580wrz.256.1622476458147;
-        Mon, 31 May 2021 08:54:18 -0700 (PDT)
-Received: from localhost.localdomain (xdsl-188-155-185-9.adslplus.ch. [188.155.185.9])
-        by smtp.gmail.com with ESMTPSA id u18sm15309089wmj.15.2021.05.31.08.54.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 31 May 2021 08:54:17 -0700 (PDT)
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-To:     Krzysztof Kozlowski <krzk@kernel.org>,
-        Timon Baetz <timon.baetz@protonmail.com>
-Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        linux-kernel@vger.kernel.org,
-        ~postmarketos/upstreaming@lists.sr.ht,
-        Rob Herring <robh+dt@kernel.org>,
-        linux-samsung-soc@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH] ARM: dts: exynos: Disable unused camera input for I9100
-Date:   Mon, 31 May 2021 17:54:13 +0200
-Message-Id: <162247639430.59481.5717460828748837476.b4-ty@canonical.com>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20210530105535.4165-1-timon.baetz@protonmail.com>
-References: <20210530105535.4165-1-timon.baetz@protonmail.com>
+        Mon, 31 May 2021 13:25:27 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 469BFC0610EC;
+        Mon, 31 May 2021 08:56:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=fLx9o42NgDmYQ9T0R4vm13NnGiIWmnmmUmKH29M1lgE=; b=uQUmUueCLEMAe52ML3MgGtPMvJ
+        MtUD3E2fFFeyXxBtpEMB3qZI2giE9fVtPHprgVt6AP7OfJ6efWrE0xP0BGqbEsKVEKruNpkILZ8+I
+        ozj/EnPtdEVXoQoKFiadDs0TPrRNzXacDMsYwyQJTWFRQSnsJ5ma23GkePYUucrkbELWpa06zle40
+        5LhbrMMAnPy/X3dDnaa/w1TX/kWe7bbSmal27sMrJxiloJt9iuFkFkuxUL6xjBvdG1GYMuvMJRGQc
+        KjYbLZ98ptBsEqgVI0O5OX09x4ZnUcBigfqCI8ZCCJZ2190k94XWgJOnsVeLg33T0HI3EkBQnoVlT
+        y+p32p8A==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1lnkGD-009Ak1-Tn; Mon, 31 May 2021 15:55:31 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 57396300223;
+        Mon, 31 May 2021 17:55:25 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 18A392011CA24; Mon, 31 May 2021 17:55:25 +0200 (CEST)
+Date:   Mon, 31 May 2021 17:55:25 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Leo Yan <leo.yan@linaro.org>
+Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Andi Kleen <ak@linux.intel.com>,
+        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v1 2/2] perf auxtrace: Optimize barriers with
+ load-acquire and store-release
+Message-ID: <YLUG7f3D4deX0/BF@hirez.programming.kicks-ass.net>
+References: <20210519140319.1673043-1-leo.yan@linaro.org>
+ <20210519140319.1673043-2-leo.yan@linaro.org>
+ <20210531151049.GE9324@leoy-ThinkPad-X240s>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210531151049.GE9324@leoy-ThinkPad-X240s>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 30 May 2021 10:55:44 +0000, Timon Baetz wrote:
-> As the back camera is not implemented disable the second pair of fimc
-> child nodes as they are not functional. This prevents creating the
-> associated /dev/videoX devices.
+On Mon, May 31, 2021 at 11:10:49PM +0800, Leo Yan wrote:
+> Hi Peter, Adrian,
+> 
+> On Wed, May 19, 2021 at 10:03:19PM +0800, Leo Yan wrote:
+> > Load-acquire and store-release are one-way permeable barriers, which can
+> > be used to guarantee the memory ordering between accessing the buffer
+> > data and the buffer's head / tail.
+> > 
+> > This patch optimizes the memory ordering with the load-acquire and
+> > store-release barriers.
+> 
+> Is this patch okay for you?
 
-Applied, thanks!
+Not without actual numbers; that's some terrible ifdef soup.
 
-[1/1] ARM: dts: exynos: Disable unused camera input for I9100
-      commit: 135adbbee4c66f89b57519633cbf8c3c35b6c4da
+> Besides this patch, I have an extra question.  You could see for
+> accessing the AUX buffer's head and tail, it also support to use
+> compiler build-in functions for atomicity accessing:
+> 
+>   __sync_val_compare_and_swap()
+>   __sync_bool_compare_and_swap()
+> 
+> Since now we have READ_ONCE()/WRITE_ONCE(), do you think we still need
+> to support __sync_xxx_compare_and_swap() atomicity?
+> 
+> I checked the code for updating head and tail for the perf ring buffer
+> (see ring_buffer_read_head() and ring_buffer_write_tail() in the file
+> tools/include/linux/ring_buffer.h), which doesn't support
+> __sync_xxx_compare_and_swap() anymore.  This is why I wander if should
+> drop __sync_xxx_compare_and_swap() atomicity for AUX ring buffer as
+> well.
 
-Best regards,
--- 
-Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+I'm not sure wth that code is even trying to do, that's some seriously
+dodgy code.
+
+
