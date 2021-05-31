@@ -2,37 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D60973965CC
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 18:48:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 19788396349
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 17:10:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233486AbhEaQtO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 12:49:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48418 "EHLO mail.kernel.org"
+        id S233523AbhEaPMT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 11:12:19 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40026 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234138AbhEaOzo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 10:55:44 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 92B1C6144A;
-        Mon, 31 May 2021 13:59:52 +0000 (UTC)
+        id S232964AbhEaOK5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 10:10:57 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 06E976197E;
+        Mon, 31 May 2021 13:40:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1622469593;
-        bh=R0vlZ6sQS4fAcvQpJozlxvCjEPSH13cje2YqNOsS4AA=;
+        s=korg; t=1622468454;
+        bh=ho8wNsWodGV8XUdzJfKNfzNnuCbo3ugXe/yK1a6pLyU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=x/rV5ZGDlZVEecvL5Pm/V1vUi/FtiDBtoIYAbCbKLyRlMqt8McLj0Lrtb0ywLe4T8
-         eNKVJ7ZjWEZsq6wNtt7T699AhdqUcR6Z03znHgMi0L/gi2d3bMfZWZnymDkirq5Dde
-         FNhwYGoNol2kotiWZs9W8uUQ25eIW2CheXuTbd30=
+        b=Mfmmq4YQ8SAMsTofxShQ5oCo4jNG5SwECSTx+L9ufax4qGjLkuGh5SlTsSatlOvU2
+         t98ZYxAFzhEtq40DHAplX5pFjHKd5f6LRu7EcbdL54MM9zhbg8B2GbbCTZV0Q/fqEl
+         W6GWmMrj+hkg3srGDl8tEELHOnWnlgtjpX/Spqrs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jiaran Zhang <zhangjiaran@huawei.com>,
-        Huazhong Tan <tanhuazhong@huawei.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.12 258/296] net: hns3: fix incorrect resp_msg issue
+        stable@vger.kernel.org, Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH 5.10 248/252] Revert "Revert "ALSA: usx2y: Fix potential NULL pointer dereference""
 Date:   Mon, 31 May 2021 15:15:13 +0200
-Message-Id: <20210531130712.430374088@linuxfoundation.org>
+Message-Id: <20210531130706.422623619@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210531130703.762129381@linuxfoundation.org>
-References: <20210531130703.762129381@linuxfoundation.org>
+In-Reply-To: <20210531130657.971257589@linuxfoundation.org>
+References: <20210531130657.971257589@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,51 +38,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jiaran Zhang <zhangjiaran@huawei.com>
+From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-[ Upstream commit a710b9ffbebaf713f7dbd4dbd9524907e5d66f33 ]
+commit 27b57bb76a897be80494ee11ee4e85326d19383d upstream.
 
-In hclge_mbx_handler(), if there are two consecutive mailbox
-messages that requires resp_msg, the resp_msg is not cleared
-after processing the first message, which will cause the resp_msg
-data of second message incorrect.
+This reverts commit 4667a6fc1777ce071504bab570d3599107f4790f.
 
-Fix it by clearing the resp_msg before processing every mailbox
-message.
+Takashi writes:
+	I have already started working on the bigger cleanup of this driver
+	code based on 5.13-rc1, so could you drop this revert?
 
-Fixes: bb5790b71bad ("net: hns3: refactor mailbox response scheme between PF and VF")
-Signed-off-by: Jiaran Zhang <zhangjiaran@huawei.com>
-Signed-off-by: Huazhong Tan <tanhuazhong@huawei.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+I missed our previous discussion about this, my fault for applying it.
+
+Reported-by: Takashi Iwai <tiwai@suse.de>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_mbx.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ sound/usb/usx2y/usb_stream.c |    5 +++++
+ 1 file changed, 5 insertions(+)
 
-diff --git a/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_mbx.c b/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_mbx.c
-index c3bb16b1f060..9265a00de18e 100644
---- a/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_mbx.c
-+++ b/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_mbx.c
-@@ -694,7 +694,6 @@ void hclge_mbx_handler(struct hclge_dev *hdev)
- 	unsigned int flag;
- 	int ret = 0;
+--- a/sound/usb/usx2y/usb_stream.c
++++ b/sound/usb/usx2y/usb_stream.c
+@@ -91,7 +91,12 @@ static int init_urbs(struct usb_stream_k
  
--	memset(&resp_msg, 0, sizeof(resp_msg));
- 	/* handle all the mailbox requests in the queue */
- 	while (!hclge_cmd_crq_empty(&hdev->hw)) {
- 		if (test_bit(HCLGE_STATE_CMD_DISABLE, &hdev->state)) {
-@@ -722,6 +721,9 @@ void hclge_mbx_handler(struct hclge_dev *hdev)
- 
- 		trace_hclge_pf_mbx_get(hdev, req);
- 
-+		/* clear the resp_msg before processing every mailbox message */
-+		memset(&resp_msg, 0, sizeof(resp_msg));
+ 	for (u = 0; u < USB_STREAM_NURBS; ++u) {
+ 		sk->inurb[u] = usb_alloc_urb(sk->n_o_ps, GFP_KERNEL);
++		if (!sk->inurb[u])
++			return -ENOMEM;
 +
- 		switch (req->msg.code) {
- 		case HCLGE_MBX_MAP_RING_TO_VECTOR:
- 			ret = hclge_map_unmap_ring_to_vf_vector(vport, true,
--- 
-2.30.2
-
+ 		sk->outurb[u] = usb_alloc_urb(sk->n_o_ps, GFP_KERNEL);
++		if (!sk->outurb[u])
++			return -ENOMEM;
+ 	}
+ 
+ 	if (init_pipe_urbs(sk, use_packsize, sk->inurb, indata, dev, in_pipe) ||
 
 
