@@ -2,83 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D59E9395F63
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 16:09:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 910133963A9
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 17:29:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233277AbhEaOKr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 10:10:47 -0400
-Received: from szxga08-in.huawei.com ([45.249.212.255]:3306 "EHLO
-        szxga08-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233032AbhEaNob (ORCPT
+        id S234924AbhEaPaM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 11:30:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40622 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233297AbhEaOTC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 09:44:31 -0400
-Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.55])
-        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4FtxFF3VqMz1BG6n;
-        Mon, 31 May 2021 21:38:09 +0800 (CST)
-Received: from dggpemm500001.china.huawei.com (7.185.36.107) by
- dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Mon, 31 May 2021 21:42:49 +0800
-Received: from [10.174.177.243] (10.174.177.243) by
- dggpemm500001.china.huawei.com (7.185.36.107) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Mon, 31 May 2021 21:42:49 +0800
-Subject: Re: [PATCH 01/15] mm: add setup_initial_init_mm() helper
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-CC:     Andrew Morton <akpm@linux-foundation.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-References: <20210529105504.180544-1-wangkefeng.wang@huawei.com>
- <20210529105504.180544-2-wangkefeng.wang@huawei.com>
- <CAMuHMdVHCFiwVUq9jBobw0adwe9-x3AUB8cSxrf6gHnQTfUMTA@mail.gmail.com>
-From:   Kefeng Wang <wangkefeng.wang@huawei.com>
-Message-ID: <2d20b6c4-532a-282c-5184-4c0151eb30ce@huawei.com>
-Date:   Mon, 31 May 2021 21:42:48 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.0
+        Mon, 31 May 2021 10:19:02 -0400
+Received: from mail-ot1-x336.google.com (mail-ot1-x336.google.com [IPv6:2607:f8b0:4864:20::336])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5508EC034626
+        for <linux-kernel@vger.kernel.org>; Mon, 31 May 2021 06:43:19 -0700 (PDT)
+Received: by mail-ot1-x336.google.com with SMTP id 36-20020a9d0ba70000b02902e0a0a8fe36so11120896oth.8
+        for <linux-kernel@vger.kernel.org>; Mon, 31 May 2021 06:43:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=XXzoVPMxU0Dg+I4mi2yMJNYMtRnIznFSnSfUhrfEtaA=;
+        b=RmKRqBU5QEGwPkHU1CXjVN7czGD5CikI0UtadULp3R4AvDy/fFlIy9zznCr+1wgAB2
+         V0ar8ibgV0I8lbJUg+6txB4uyRib5aW605f11d4wBVVi81gDW48pBMJIgPvjuQKkg+Fq
+         OouwSIjGoF3GW43Sqtoo4L1JS0KDloU8TBfOAbQFufrGHrh74NRzPmM/RgM3l1zod1cG
+         gMl7C1qATRu3RFdJPGEkytk4/SgOEpnjsHFD5GCyqKSDUgUxkl1s2GVklt2JAFFFt9+j
+         q6y0/gJnDgddbmp8fFwxWL+Rua8w6PWAmh57+RYO3LoLM7kTBpBAQIRSPcPsMTmZK3ja
+         UgdQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=XXzoVPMxU0Dg+I4mi2yMJNYMtRnIznFSnSfUhrfEtaA=;
+        b=ZUxixVeCpwU7lYbAomiKqoAtYkJWVLd5ya8DwoXNZdyUI1GSUKKvdKZYD2SUhp+OlH
+         0oYSBANr12UcJyg+NZRI7iDQySHt8NUH+/NUABpRUHOeDT3N9WM2S3Fv1IxCQJulIY3h
+         LZxLDRLFqKC0dbAC+mQJYN7ldFCRXbF1Za5JG8GJc9b1PNzYFF8RUC6Xnz3dK7UzPl8i
+         9RngTOTKH5RZj2L/TxxXiHHvFV1mU04PLrZM7/o0A+n5KSi+i3ii8w9+W6B72SaXe2q3
+         zIt+BKW64L+SUP3DdGdRf8GCnWXFjN7x8xE1AWABR7N/WFrGIEk+jweo1oFfmlt7NOf+
+         QcoQ==
+X-Gm-Message-State: AOAM532GleeR/OlO9lXxFcr3f+FEpSbNMQ+hBRcx967eTQPBzIobkNYO
+        hA9NA1D0IMC5YiJheFpc7XsBjfdvpWaC3YUAfzs=
+X-Google-Smtp-Source: ABdhPJznqNxMEWZ5Rr9aYCn/wEp1aXm1C4HFD4Hxi2Wx8jrv3ArtONAU+N5v632MszmcZrETUC13vO6/yo40bazEUQo=
+X-Received: by 2002:a9d:405:: with SMTP id 5mr17922584otc.9.1622468598700;
+ Mon, 31 May 2021 06:43:18 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <CAMuHMdVHCFiwVUq9jBobw0adwe9-x3AUB8cSxrf6gHnQTfUMTA@mail.gmail.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-Originating-IP: [10.174.177.243]
-X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
- dggpemm500001.china.huawei.com (7.185.36.107)
-X-CFilter-Loop: Reflected
+Received: by 2002:a4a:d81:0:0:0:0:0 with HTTP; Mon, 31 May 2021 06:43:18 -0700 (PDT)
+Reply-To: Wunionoffice101@mail.com
+From:   "Mrs.Ruth Kipkalya" <davidsongoba011@gmail.com>
+Date:   Mon, 31 May 2021 06:43:18 -0700
+Message-ID: <CAPOHJS5whLfo_ftxCbMUo3te1TLAe0VWJ5rEm6thnD3DorjYuQ@mail.gmail.com>
+Subject: Mrs.Ruth Kipkalya
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+My Dear!!
+Date:31/05/2021
 
-On 2021/5/31 15:45, Geert Uytterhoeven wrote:
-> Hi Kefeng,
->
-> On Sat, May 29, 2021 at 12:47 PM Kefeng Wang <wangkefeng.wang@huawei.com> wrote:
->> Add setup_initial_init_mm() helper to setup kernel text,
->> data and brk.
->>
->> Signed-off-by: Kefeng Wang <wangkefeng.wang@huawei.com>
-> Thanks for your patch!
->
->> --- a/include/linux/mm_types.h
->> +++ b/include/linux/mm_types.h
->> @@ -564,6 +564,16 @@ struct mm_struct {
->>   };
->>
->>   extern struct mm_struct init_mm;
->> +static inline void setup_initial_init_mm(char *start_code,
->> +                                        char *end_code,
->> +                                        char *end_data,
->> +                                        char *brk)
-> "void *" (for all four)?
-The original users are all "char*",  so same here ;)
->
->> +{
->> +       init_mm.start_code = (unsigned long)start_code;
->> +       init_mm.end_code = (unsigned long)end_code;
->> +       init_mm.end_data = (unsigned long)end_data;
->> +       init_mm.brk = (unsigned long)brk;
->> +}
-> Gr{oetje,eeting}s,
->
->                          Geert
->
+Your Payment Compensation funds value the sum of USD $500.000.00 was
+forward to the western union money transfer for immediate transfer it
+to you as soon as you meet up with the Director of the Board
+Remittance Authority.
+
+Contact Foreign Operation Manger Western Union Office.
+
+Ms Aisha Abdle Fattah
+
+
+Email:( Wunionoffice101@mail.com )
+
+Note that, you should furnished Ms Aisha Abdle Fattah
+
+with your correct contact information to avoid wrong fund transferring.
+
+(1) Your Full Name:
+(2) Your Country & mailing Address:
+(3) Phone, Fax and Mobile Number:
+(4) A copy of your international id:
+Your,
+
+Mrs.Ruth Kipkalya
