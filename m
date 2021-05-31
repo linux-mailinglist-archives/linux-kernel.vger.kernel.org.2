@@ -2,171 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9719A396676
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 19:06:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D481396721
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 19:32:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232043AbhEaRHy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 13:07:54 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:55514 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233721AbhEaQc2 (ORCPT
+        id S233715AbhEaReI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 13:34:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55584 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232174AbhEaRdt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 12:32:28 -0400
-From:   John Ogness <john.ogness@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1622478644;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=cefR/DtEcUyRZ8qc11g2NcI+aJPhU+kuvC8iQhInVMA=;
-        b=Mk/taBgxowuo4I3RBEs+YxImg4/sI6Zr4+03Zx+d/LpWbdEMBYUa2TQF5IPIEnWqD8K4sR
-        rmwewO+kYXUdcfT0fDRR83TP+yPI33o8yq/3r2Ud6S3eHEtLpMHDPbrMA0OyGBZyfc28as
-        ai983E+pkcci1wPmFcIWtdC1QM8XFOluLt1kFDjBMS1+726dCSdb/bHe3DKqVP8dOJJR3v
-        YaSUqyeq036LwYOJSsQidq1Sw4m4KZnc0KByZSTRW81VU/dT05rRdQRwwPBeMcTAcVWkMb
-        ztNn2yNHfxVnV8aCj1NgTKKcTn+3wHagtNRYBaYCwz1UNCBS3VGXXgdclIjQKA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1622478644;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=cefR/DtEcUyRZ8qc11g2NcI+aJPhU+kuvC8iQhInVMA=;
-        b=SZh3BUGPPABae9lerayRXuLT/DGm3svJi1sw8XUyfOFIRBxKnZdsCuGOlvpMse4wn7jSEP
-        odIoz9/KJ5SpFrAA==
-To:     Petr Mladek <pmladek@suse.com>
-Cc:     Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        linux-kernel@vger.kernel.org,
-        Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Dmitry Safonov <0x7f454c46@gmail.com>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Stephen Boyd <swboyd@chromium.org>,
-        Alexander Potapenko <glider@google.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>
-Subject: Re: [PATCH next v1 1/2] dump_stack: move cpu lock to printk.c
-In-Reply-To: <20210531162051.2325-2-john.ogness@linutronix.de>
-References: <20210531162051.2325-1-john.ogness@linutronix.de> <20210531162051.2325-2-john.ogness@linutronix.de>
-Date:   Mon, 31 May 2021 18:30:43 +0200
-Message-ID: <87mtsayifg.fsf@jogness.linutronix.de>
+        Mon, 31 May 2021 13:33:49 -0400
+Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29CDBC05025F;
+        Mon, 31 May 2021 09:31:33 -0700 (PDT)
+Received: by mail-ed1-x533.google.com with SMTP id cb9so2204179edb.1;
+        Mon, 31 May 2021 09:31:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=6bW33yA6ZdV60A7GQBn0eZ2jngsXo5olQoHO89x826M=;
+        b=avsz0mW4pXQ6RMrwjVGZlNe1jgkl9lYrmU6V0HNvhZ9DUWWrjJ5IjDeAp9KYWKxUJL
+         npBre1epEzfYFh6VH7hF3FIJzRLkIJ5asXWemyf0gaE7pdkAvYM/MvArYTwS1pVYVOAm
+         0o51S09vp8DSHq4ifKRtsfrRgYnc3a5/WhT1Ssgv9b549/8BLZc9tpu3yKHgSpb2J7pX
+         DtAuyEr6psW7XBTxOPXk6+56wmVudeyViFkhVKPk58G7gHJBY4rz1VF4Uomnvy2c94Qs
+         hdTdbGwr2z6IZyXXDO+IitAyg7UDVEM/bnFLjWRqMaI10hXvtFoQNr4q3x4uJ9ZYH1zp
+         yI/w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=6bW33yA6ZdV60A7GQBn0eZ2jngsXo5olQoHO89x826M=;
+        b=RnzePHEkUmFYZJeSKz1UIkqguksdEDNpLxL9fUch6k/Gjf0ErGlTUIRs1gFTQgk3sa
+         xToL8pZBtImdfyRC+puNXOUVt6rW479Kr0E+CAuzv6zIpRhzk8b1vvCIalPllrc1dNb8
+         mi3V7P5ZzL/+K8aT0+F06hYJYBhcAjKEFXGasvI7QeTwmLbB8vwk1o1R1RK7Lsi2krlx
+         wtbMUmQdnvUw6/cuY7ZGKveUyRrYaQsx1+pM37FCz5tbgrV5cDcM4R8nOtLcPUPvS7aR
+         SzD1vrlMNk9Umdi9L45kZHmWzLqkUvWFAnS0lCyOeM07jlx9OKQXv79ytVUWKx4NSkn7
+         RKEg==
+X-Gm-Message-State: AOAM531kjRMOxRq7GyedgpSUsD9k2NW6QBbRIrBxWwIuFldf1hIY5JAW
+        5J8bkM5NkQPbk+zYwI6vK80=
+X-Google-Smtp-Source: ABdhPJztJIopAo+FXeQ4QllggctbrcdvfKojYwCmN4ke1ysjCSrKv645uU6XXB2nTteTgLIbJXijyg==
+X-Received: by 2002:aa7:c349:: with SMTP id j9mr18502942edr.48.1622478691845;
+        Mon, 31 May 2021 09:31:31 -0700 (PDT)
+Received: from localhost.localdomain (ip5f5bec5d.dynamic.kabel-deutschland.de. [95.91.236.93])
+        by smtp.gmail.com with ESMTPSA id n8sm6042180ejl.0.2021.05.31.09.31.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 31 May 2021 09:31:31 -0700 (PDT)
+From:   Bean Huo <huobean@gmail.com>
+To:     alim.akhtar@samsung.com, avri.altman@wdc.com, jejb@linux.ibm.com,
+        martin.petersen@oracle.com, beanhuo@micron.com, bvanassche@acm.org,
+        tomas.winkler@intel.com, cang@codeaurora.org
+Cc:     linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] scsi: ufs: Fix a kernel-doc related formatting issue
+Date:   Mon, 31 May 2021 18:31:22 +0200
+Message-Id: <20210531163122.451375-1-huobean@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-05-31, John Ogness <john.ogness@linutronix.de> wrote:
-> diff --git a/kernel/printk/printk.c b/kernel/printk/printk.c
-> index 114e9963f903..98feead621ff 100644
-> --- a/kernel/printk/printk.c
-> +++ b/kernel/printk/printk.c
-> @@ -3531,4 +3531,96 @@ void kmsg_dump_rewind(struct kmsg_dump_iter *iter)
->  }
->  EXPORT_SYMBOL_GPL(kmsg_dump_rewind);
->  
-> +#ifdef CONFIG_SMP
-> +static atomic_t printk_cpulock_owner = ATOMIC_INIT(-1);
-> +
-> +/*
-> + * printk_cpu_lock: Acquire the printk cpu-reentrant spinning lock.
-> + * @cpu_store: A buffer to store lock state.
-> + * @flags: A buffer to store irq state.
-> + *
-> + * If no processor has the lock, the calling processor takes the lock and
-> + * becomes the owner. If the calling processor is already the owner of the
-> + * lock, this function succeeds immediately. If the lock is locked by another
-> + * processor, that function spins until the calling processor becomes the
-> + * owner.
-> + *
-> + * It is safe to call this function from any context and state.
-> + */
-> +void printk_cpu_lock(unsigned int *cpu_store, unsigned long *flags)
-> +{
-> +	unsigned int cpu;
-> +
-> +	for (;;) {
-> +		cpu = get_cpu();
-> +
-> +		*cpu_store = atomic_read(&printk_cpulock_owner);
-> +
-> +		if (*cpu_store == -1) {
-> +			local_irq_save(*flags);
-> +
-> +			/*
-> +			 * Guarantee loads an stores from the previous lock
-> +			 * owner are visible to this CPU once it is the lock
-> +			 * owner. This pairs with cpu_lock:A.
+From: Bean Huo <beanhuo@micron.com>
 
-The above paragraph is totally broken. It should read:
+Fix the following W=1 kernel build warning:
 
-  +			 * Guarantee loads and stores from the previous lock
-  +			 * owner are visible to this CPU once it is the lock
-  +			 * owner. This pairs with cpu_unlock:B.
+drivers/scsi/ufs/ufshcd.c:9773: warning: This comment starts with '/**', but isn't a kernel-doc comment. Refer Documentation/doc-guide/kernel-doc.rst
 
-John Ogness
+Signed-off-by: Bean Huo <beanhuo@micron.com>
+---
+ drivers/scsi/ufs/ufshcd.c | 5 +----
+ 1 file changed, 1 insertion(+), 4 deletions(-)
 
-> +			 *
-> +			 * Memory barrier involvement:
-> +			 *
-> +			 * If cpu_lock:A reads from cpu_unlock:B, then
-> +			 * cpu_lock:B reads from cpu_unlock:A.
-> +			 *
-> +			 * Relies on:
-> +			 *
-> +			 * RELEASE from cpu_unlock:A to cpu_unlock:B
-> +			 *    matching
-> +			 * ACQUIRE from cpu_lock:A to cpu_lock:B
-> +			 */
-> +			if (atomic_try_cmpxchg_acquire(&printk_cpulock_owner,
-> +						       cpu_store, cpu)) { /* LMM(cpu_lock:A) */
-> +
-> +				/* This CPU begins loading/storing data: LMM(cpu_lock:B) */
-> +				break;
-> +			}
-> +
-> +			local_irq_restore(*flags);
-> +
-> +		} else if (*cpu_store == cpu) {
-> +			break;
-> +		}
-> +
-> +		put_cpu();
-> +		cpu_relax();
-> +	}
-> +}
-> +EXPORT_SYMBOL(printk_cpu_lock);
-> +
-> +/*
-> + * printk_cpu_unlock: Release the printk cpu-reentrant spinning lock.
-> + * @cpu_store: The current lock state.
-> + * @flags: The current irq state.
-> + *
-> + * Release the lock. The calling processor must be the owner of the lock.
-> + *
-> + * It is safe to call this function from any context and state.
-> + */
-> +void printk_cpu_unlock(unsigned int cpu_store, unsigned long flags)
-> +{
-> +	if (cpu_store == -1) {
-> +		/* This CPU is finished loading/storing data: LMM(cpu_unlock:A) */
-> +
-> +		/*
-> +		 * Guarantee loads an stores from this CPU when it is the lock
-> +		 * owner are visible to the next lock owner. This pairs with
-> +		 * cpu_lock:A.
-> +		 */
-> +		atomic_set_release(&printk_cpulock_owner, cpu_store); /* LMM(cpu_unlock:B) */
-> +
-> +		local_irq_restore(flags);
-> +	}
-> +
-> +	put_cpu();
-> +}
-> +EXPORT_SYMBOL(printk_cpu_unlock);
-> +#endif /* CONFIG_SMP */
-> +
->  #endif
+diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
+index 02267b090729..2cdd1f6da670 100644
+--- a/drivers/scsi/ufs/ufshcd.c
++++ b/drivers/scsi/ufs/ufshcd.c
+@@ -9769,10 +9769,7 @@ static const struct dev_pm_ops ufs_rpmb_pm_ops = {
+ 	SET_SYSTEM_SLEEP_PM_OPS(NULL, ufshcd_rpmb_resume)
+ };
+ 
+-/**
+- * Describes the ufs rpmb wlun.
+- * Used only to send uac.
+- */
++/* ufs_rpmb_wlun_template - Describes UFS rpmb wlun. Used only to send uac. */
+ static struct scsi_driver ufs_rpmb_wlun_template = {
+ 	.gendrv = {
+ 		.name = "ufs_rpmb_wlun",
+-- 
+2.25.1
+
