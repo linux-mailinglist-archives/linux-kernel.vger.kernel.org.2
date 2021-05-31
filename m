@@ -2,104 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 967A639580F
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 11:25:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A0AF395814
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 11:27:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230527AbhEaJ1X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 05:27:23 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:18970 "EHLO m43-7.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230479AbhEaJ1V (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 05:27:21 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1622453142; h=Content-Transfer-Encoding: Content-Type:
- In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
- Subject: Sender; bh=rfrUNiJtJb8dbghF/3gQm7fw8uC4HOEDbtXTJPnqFZ4=; b=I/9JClEDIH6AAXzInSfkBwpGIo5m7YeGqGm3jbAyFPoyWWbaq5D2TO6P0gi5+fqAbnnULbmy
- gULvgaU5kvmwzoggFBxEOFGS/PvFFrlEnDN6C8NayJZi6NUgCrCVJozGjNByyZ+1KuzXYxXp
- opGzgO1QxPPjtIuyxn/3vd0qOIY=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n07.prod.us-east-1.postgun.com with SMTP id
- 60b4ab945e7926f57b6a9b58 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 31 May 2021 09:25:40
- GMT
-Sender: akhilpo=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id A3086C43217; Mon, 31 May 2021 09:25:39 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-3.5 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        NICE_REPLY_A,SPF_FAIL,URIBL_BLOCKED autolearn=no autolearn_force=no
-        version=3.4.0
-Received: from [192.168.1.105] (unknown [117.210.184.158])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        id S231172AbhEaJ2v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 05:28:51 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:40390 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230501AbhEaJ2t (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 05:28:49 -0400
+Received: from imap.suse.de (imap-alt.suse-dmz.suse.de [192.168.254.47])
+        (using TLSv1.2 with cipher ECDHE-ECDSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        (Authenticated sender: akhilpo)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 55813C433D3;
-        Mon, 31 May 2021 09:25:34 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 55813C433D3
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=akhilpo@codeaurora.org
-Subject: Re: [PATCH v2 5/8] drm/msm/a6xx: avoid shadow NULL reference in
- failure path
-To:     Jonathan Marek <jonathan@marek.ca>, freedreno@lists.freedesktop.org
-Cc:     Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Jordan Crouse <jordan@cosmicpenguin.net>,
-        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
-        Eric Anholt <eric@anholt.net>,
-        Sharat Masetty <smasetty@codeaurora.org>,
-        Douglas Anderson <dianders@chromium.org>,
-        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
-        <linux-arm-msm@vger.kernel.org>,
-        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
-        <dri-devel@lists.freedesktop.org>,
-        open list <linux-kernel@vger.kernel.org>
-References: <20210513171431.18632-1-jonathan@marek.ca>
- <20210513171431.18632-6-jonathan@marek.ca>
-From:   Akhil P Oommen <akhilpo@codeaurora.org>
-Message-ID: <3695f4d0-aa6f-4c85-bf4e-c3b59506ec34@codeaurora.org>
-Date:   Mon, 31 May 2021 14:55:31 +0530
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.2
+        by smtp-out1.suse.de (Postfix) with ESMTPS id AD8D52191F;
+        Mon, 31 May 2021 09:27:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1622453228; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=W4z0meOW6IUCU2rQCfaqM2HBPpAFPAp/Ax2mmtHbSu8=;
+        b=m7E9GVMntQg0Rqn2gC9P8zIWgPvjxIeM7kQXaqRmATFQQdBxuHLm0vDmmc+n5rghg0pMXZ
+        ZlTwi+1eC07fSIrbHwn54bhptSOKoRgpfCS337nAA0YEa4s/Ce4pHHtijzM48fdvDoKP6Q
+        StqmgtrGwHyPscgvUzNJ3dcUyBV4rVk=
+Received: from imap3-int (imap-alt.suse-dmz.suse.de [192.168.254.47])
+        by imap.suse.de (Postfix) with ESMTP id 35873118DD;
+        Mon, 31 May 2021 09:27:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1622453226; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=W4z0meOW6IUCU2rQCfaqM2HBPpAFPAp/Ax2mmtHbSu8=;
+        b=AG9SIgwXHsb2cQNSyV10/toWzH4RzhVfZ4Dpz4azl2VR7gRzjs8Ygyx8Bvi+4cFZyhwqGN
+        fjXrWEKDpA/LnykCPIQx6JPXnYzoY84XJR3meiPLwyiTf5JJtklyDiFaxEHI/1eg3yzjYi
+        raDIpK6km7Uij/76VoksOynNd+S2FYM=
+Received: from director2.suse.de ([192.168.254.72])
+        by imap3-int with ESMTPSA
+        id RsipCuqrtGDpVwAALh3uQQ
+        (envelope-from <nborisov@suse.com>); Mon, 31 May 2021 09:27:06 +0000
+Subject: Re: [syzbot] kernel BUG in assertfail
+To:     Dmitry Vyukov <dvyukov@google.com>
+Cc:     syzbot <syzbot+a6bf271c02e4fe66b4e4@syzkaller.appspotmail.com>,
+        Chris Mason <clm@fb.com>, dsterba@suse.com,
+        Josef Bacik <josef@toxicpanda.com>,
+        linux-btrfs@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>
+References: <000000000000f9136f05c39b84e4@google.com>
+ <21666193-5ad7-2656-c50f-33637fabb082@suse.com>
+ <CACT4Y+bqevMT3cD5sXjSv9QYM_7CwjYmN_Ne5LSj=3-REZ+oTw@mail.gmail.com>
+ <224f1e6a-76fa-6356-fe11-af480cee5cf2@suse.com>
+ <CACT4Y+ZJ7Oi9ChXJNuF_+e4FRnN1rJBde4tsjiTtkOV+MM-hgA@mail.gmail.com>
+From:   Nikolay Borisov <nborisov@suse.com>
+Message-ID: <fcf25b03-e48e-8cda-3c87-25c2c3332719@suse.com>
+Date:   Mon, 31 May 2021 12:27:05 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-In-Reply-To: <20210513171431.18632-6-jonathan@marek.ca>
-Content-Type: text/plain; charset=utf-8; format=flowed
+In-Reply-To: <CACT4Y+ZJ7Oi9ChXJNuF_+e4FRnN1rJBde4tsjiTtkOV+MM-hgA@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+Authentication-Results: imap.suse.de;
+        none
+X-Spam-Level: **
+X-Spam-Score: 2.50
+X-Spamd-Result: default: False [2.50 / 100.00];
+         ARC_NA(0.00)[];
+         RCVD_VIA_SMTP_AUTH(0.00)[];
+         FROM_HAS_DN(0.00)[];
+         TO_DN_SOME(0.00)[];
+         TO_MATCH_ENVRCPT_ALL(0.00)[];
+         URI_HIDDEN_PATH(1.00)[https://syzkaller.appspot.com/x/.config?x=9f3da44a01882e99];
+         TAGGED_RCPT(0.00)[a6bf271c02e4fe66b4e4];
+         MIME_GOOD(-0.10)[text/plain];
+         SURBL_MULTI_FAIL(0.00)[googlegroups.com:server fail];
+         DKIM_SIGNED(0.00)[suse.com:s=susede1];
+         RCPT_COUNT_SEVEN(0.00)[8];
+         RCVD_NO_TLS_LAST(0.10)[];
+         FROM_EQ_ENVFROM(0.00)[];
+         MIME_TRACE(0.00)[0:+];
+         RCVD_COUNT_TWO(0.00)[2];
+         MID_RHS_MATCH_FROM(0.00)[];
+         SUSPICIOUS_RECIPS(1.50)[]
+X-Spam-Flag: NO
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5/13/2021 10:44 PM, Jonathan Marek wrote:
-> If a6xx_hw_init() fails before creating the shadow_bo, the a6xx_pm_suspend
-> code referencing it will crash. Change the condition to one that avoids
-> this problem (note: creation of shadow_bo is behind this same condition)
-> 
-> Fixes: e8b0b994c3a5 ("drm/msm/a6xx: Clear shadow on suspend")
-> Signed-off-by: Jonathan Marek <jonathan@marek.ca>
-> ---
->   drivers/gpu/drm/msm/adreno/a6xx_gpu.c | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/gpu/drm/msm/adreno/a6xx_gpu.c b/drivers/gpu/drm/msm/adreno/a6xx_gpu.c
-> index 909e3ff08f89..ff3c328604f8 100644
-> --- a/drivers/gpu/drm/msm/adreno/a6xx_gpu.c
-> +++ b/drivers/gpu/drm/msm/adreno/a6xx_gpu.c
-> @@ -1284,7 +1284,7 @@ static int a6xx_pm_suspend(struct msm_gpu *gpu)
->   	if (ret)
->   		return ret;
->   
-> -	if (adreno_gpu->base.hw_apriv || a6xx_gpu->has_whereami)
-> +	if (a6xx_gpu->shadow_bo)
->   		for (i = 0; i < gpu->nr_rings; i++)
->   			a6xx_gpu->shadow[i] = 0;
->   
-> 
-Reviewed-by: Akhil P Oommen <akhilpo@codeaurora.org>
 
--Akhil
+
+On 31.05.21 г. 12:09, Dmitry Vyukov wrote:
+> On Mon, May 31, 2021 at 10:57 AM Nikolay Borisov <nborisov@suse.com> wrote:
+>> On 31.05.21 г. 11:55, Dmitry Vyukov wrote:
+>>> On Mon, May 31, 2021 at 10:44 AM 'Nikolay Borisov' via syzkaller-bugs
+>>> <syzkaller-bugs@googlegroups.com> wrote:
+>>>> On 31.05.21 г. 10:53, syzbot wrote:
+>>>>> Hello,
+>>>>>
+>>>>> syzbot found the following issue on:
+>>>>>
+>>>>> HEAD commit:    1434a312 Merge branch 'for-5.13-fixes' of git://git.kernel..
+>>>>> git tree:       upstream
+>>>>> console output: https://syzkaller.appspot.com/x/log.txt?x=162843f3d00000
+>>>>> kernel config:  https://syzkaller.appspot.com/x/.config?x=9f3da44a01882e99
+>>>>> dashboard link: https://syzkaller.appspot.com/bug?extid=a6bf271c02e4fe66b4e4
+>>>>>
+>>>>> Unfortunately, I don't have any reproducer for this issue yet.
+>>>>>
+>>>>> IMPORTANT: if you fix the issue, please add the following tag to the commit:
+>>>>> Reported-by: syzbot+a6bf271c02e4fe66b4e4@syzkaller.appspotmail.com
+>>>>>
+>>>>> assertion failed: !memcmp(fs_info->fs_devices->fsid, fs_info->super_copy->fsid, BTRFS_FSID_SIZE), in fs/btrfs/disk-io.c:3282
+>>>>
+>>>> This means a device contains a btrfs filesystem which has a different
+>>>> FSID in its superblock than the fsid which all devices part of the same
+>>>> fs_devices should have. This can happen in 2 ways - memory corruption
+>>>> where either of the ->fsid member are corrupted or if there was a crash
+>>>> while a filesystem's fsid was being changed. We need more context about
+>>>> what the test did?
+>>>
+>>> Hi Nikolay,
+>>>
+>>> From a semantic point of view we can consider that it just mounts /dev/random.
+>>> If syzbot comes up with a reproducer it will post it, but you seem to
+>>> already figure out what happened, so I assume you can write a unit
+>>> test for this.
+>>>
+>>
+>> Well no, under normal circumstances this shouldn't trigger. So if syzbot
+>> is doing something stupid as mounting /dev/random then I don't see a
+>> problem here. The assert is there to catch inconsistencies during normal
+>> operation which doesn't seem to be the case here.
+> 
+> 
+> Does this mean that CONFIG_BTRFS_ASSERT needs to be disabled in any testing?
+> What is it intended for? Or it can only be enabled when mounting known
+> good images? But then I assume even btrfs unit tests mount some
+> invalid images, so it would mean it can't be used even  during unit
+> testing?
+> 
+> Looking at the output of "grep ASSERT fs/btrfs/*.c" it looks like most
+> of these actually check for something that "must never happen". E.g.
+> some lists/pointers are empty/non-empty in particular states. And
+> "must never happen" checks are for testing scenarios...
+> 
+> Taking this particular FSID mismatch assert, should such corrupted
+> images be mounted for end users? Should users be notified? Currently
+> they are mounted and users are not notified, what is the purpose of
+> this assertion?
+> 
+> Perhaps CONFIG_BTRFS_ASSERT needs to be split into "must never happen"
+> checks that are enabled during testing and normal if's with pr_err for
+> user notifications?
+> 
+
+After going through the code you've convinced me. I just sent a patch
+turning the 2 debugging asserts into full-fledged checks in
+validate_super. So now the correct behavior is to prevent mounting of
+such images.  How can I force syzbot to retest with the given patch applied?
