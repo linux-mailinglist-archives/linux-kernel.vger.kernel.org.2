@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DDD7D39634A
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 17:10:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 37F63396430
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 17:48:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233437AbhEaPMV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 11:12:21 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40994 "EHLO mail.kernel.org"
+        id S234400AbhEaPtu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 11:49:50 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56304 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233306AbhEaOLB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 10:11:01 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B36ED61008;
-        Mon, 31 May 2021 13:40:56 +0000 (UTC)
+        id S233871AbhEaO1g (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 10:27:36 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D428561C1C;
+        Mon, 31 May 2021 13:47:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1622468457;
-        bh=YkqUDYWS6J6RK4cCwoTYGe+hTHoCWzpzNwFSw0XN9SA=;
+        s=korg; t=1622468866;
+        bh=uQ8FLyP5OfWHafxbDqXKDbOP/fJNh3eauwXWfEMHAd0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=dOk8hYLWqr3fcZrC02l7rNlcf77IsGwtj+jpNHmM+d5n+5d6w6osOE/dAGsKH7ZHQ
-         26fKfyoZCiSAOqNK7e45dmpBWkivOzgAp7imM+tdIrUKqyw1vN7vTKYRb+GlVYoPvP
-         +RVHnOYJeBsokYETSZnQ4weMEIcxIUuDMKWsEOfQ=
+        b=BJPmd4MJGYs5ISIL2snMolE1IcpLnPeBo6zK/cqbjL0r/2P2U9/Mi9nELVuj3WXHe
+         IURt2nBb/RnW5UhIEDtkUkpJnej8fTEjzRtPJ1NSA0DvwLi3rG5Nbdhw9rBOzztbUF
+         w4N8g6tlKR+R+/azCSkeg7xyT2gDDBfJtxAX615Y=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Johan Hovold <johan@kernel.org>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 5.10 249/252] net: hso: bail out on interrupt URB allocation failure
+        stable@vger.kernel.org, Raju Rangoju <rajur@chelsio.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 157/177] cxgb4: avoid accessing registers when clearing filters
 Date:   Mon, 31 May 2021 15:15:14 +0200
-Message-Id: <20210531130706.452230115@linuxfoundation.org>
+Message-Id: <20210531130653.346722522@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210531130657.971257589@linuxfoundation.org>
-References: <20210531130657.971257589@linuxfoundation.org>
+In-Reply-To: <20210531130647.887605866@linuxfoundation.org>
+References: <20210531130647.887605866@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,49 +40,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Johan Hovold <johan@kernel.org>
+From: Raju Rangoju <rajur@chelsio.com>
 
-commit 4d52ebc7ace491d58f96d1f4a1cb9070c506b2e7 upstream.
+[ Upstream commit 88c380df84fbd03f9b137c2b9d0a44b9f2f553b0 ]
 
-Commit 31db0dbd7244 ("net: hso: check for allocation failure in
-hso_create_bulk_serial_device()") recently started returning an error
-when the driver fails to allocate resources for the interrupt endpoint
-and tiocmget functionality.
+Hardware register having the server TID base can contain
+invalid values when adapter is in bad state (for example,
+due to AER fatal error). Reading these invalid values in the
+register can lead to out-of-bound memory access. So, fix
+by using the saved server TID base when clearing filters.
 
-For consistency let's bail out from probe also if the URB allocation
-fails.
-
-Signed-off-by: Johan Hovold <johan@kernel.org>
-Reviewed-by: Dan Carpenter <dan.carpenter@oracle.com>
+Fixes: b1a79360ee86 ("cxgb4: Delete all hash and TCAM filters before resource cleanup")
+Signed-off-by: Raju Rangoju <rajur@chelsio.com>
 Signed-off-by: David S. Miller <davem@davemloft.net>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/usb/hso.c |   14 +++++++-------
- 1 file changed, 7 insertions(+), 7 deletions(-)
+ drivers/net/ethernet/chelsio/cxgb4/cxgb4_filter.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/net/usb/hso.c
-+++ b/drivers/net/usb/hso.c
-@@ -2635,14 +2635,14 @@ static struct hso_device *hso_create_bul
+diff --git a/drivers/net/ethernet/chelsio/cxgb4/cxgb4_filter.c b/drivers/net/ethernet/chelsio/cxgb4/cxgb4_filter.c
+index 64a2453e06ba..ccb28182f745 100644
+--- a/drivers/net/ethernet/chelsio/cxgb4/cxgb4_filter.c
++++ b/drivers/net/ethernet/chelsio/cxgb4/cxgb4_filter.c
+@@ -778,7 +778,7 @@ void clear_all_filters(struct adapter *adapter)
+ 				cxgb4_del_filter(dev, i, &f->fs);
  		}
  
- 		tiocmget->urb = usb_alloc_urb(0, GFP_KERNEL);
--		if (tiocmget->urb) {
--			mutex_init(&tiocmget->mutex);
--			init_waitqueue_head(&tiocmget->waitq);
--		} else
--			hso_free_tiomget(serial);
--	}
--	else
-+		if (!tiocmget->urb)
-+			goto exit;
-+
-+		mutex_init(&tiocmget->mutex);
-+		init_waitqueue_head(&tiocmget->waitq);
-+	} else {
- 		num_urbs = 1;
-+	}
+-		sb = t4_read_reg(adapter, LE_DB_SRVR_START_INDEX_A);
++		sb = adapter->tids.stid_base;
+ 		for (i = 0; i < sb; i++) {
+ 			f = (struct filter_entry *)adapter->tids.tid_tab[i];
  
- 	if (hso_serial_common_create(serial, num_urbs, BULK_URB_RX_SIZE,
- 				     BULK_URB_TX_SIZE))
+-- 
+2.30.2
+
 
 
