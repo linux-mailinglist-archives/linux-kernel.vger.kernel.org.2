@@ -2,107 +2,191 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F20D839603A
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 16:22:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 12FB0396048
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 16:22:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233682AbhEaOXg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 10:23:36 -0400
-Received: from szxga03-in.huawei.com ([45.249.212.189]:3353 "EHLO
-        szxga03-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233067AbhEaNtw (ORCPT
+        id S233811AbhEaOXu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 10:23:50 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:54528 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233195AbhEaNuT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 09:49:52 -0400
-Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.53])
-        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4FtxNV6pjnz67Rs;
-        Mon, 31 May 2021 21:44:26 +0800 (CST)
-Received: from dggema762-chm.china.huawei.com (10.1.198.204) by
- dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
- 15.1.2176.2; Mon, 31 May 2021 21:48:06 +0800
-Received: from [10.174.179.129] (10.174.179.129) by
- dggema762-chm.china.huawei.com (10.1.198.204) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2176.2; Mon, 31 May 2021 21:48:05 +0800
-Subject: Re: [PATCH V2] drm: bridge: cdns-mhdp8546: Fix PM reference leak in
- cdns_mhdp_probe()
-To:     Robert Foss <robert.foss@linaro.org>
-CC:     Andrzej Hajda <a.hajda@samsung.com>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        <yi.zhang@huawei.com>
-References: <20210517081601.1563193-1-yukuai3@huawei.com>
- <20210529095554.3150362-1-yukuai3@huawei.com>
- <CAG3jFyt53-MhwgGGcmMVSap3xCE_cQOmN26Rj3TvHtWFeVLZWg@mail.gmail.com>
-From:   "yukuai (C)" <yukuai3@huawei.com>
-Message-ID: <36cef11c-6b33-57ff-f1b1-32c074efa8ac@huawei.com>
-Date:   Mon, 31 May 2021 21:48:05 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+        Mon, 31 May 2021 09:50:19 -0400
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1622468916;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=vUGnwmNIvLYO/jZ5MAEgJ5Gavah59hCALFrOBiJoZqI=;
+        b=Z9KFwG7pRRZTRDn0/yTIkCk9q+AizJzq2LyjzGLBFpSyLxKBZuuhN2M73ceeyXTPlJWzeQ
+        lSfO6N+k0zcBuVgJ1gNI6K8t2HPwka5ESixWVIgQzyuNZ1fbe21Z8tSIyyNqqCYgMdvW+a
+        7MmclI3U4Id1O3kG7+na7hv7ZOMZfOHkr4i+DbSkpSrRa08W3Gbfasvvg+g88jbt5zP0ov
+        Zjuc6HnwJZEj58hcv+cDIU99tqlh4ygJnq38wlsvbayXDazUNEs2OD6sQcZTtvBBzvvqih
+        i5xhMdu/0UR2cJ3NWKtdpR8IAO5B9MiIwhv3KleTOBlJAsrZLtNTnuQuhwjl8w==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1622468916;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=vUGnwmNIvLYO/jZ5MAEgJ5Gavah59hCALFrOBiJoZqI=;
+        b=fgBGrA82NlpiLod1V6elErM0dmOfr/lrDI4kEcD/i/R1ygN4NRQgHy2v0vh2DtzGY5+WTM
+        0It9FDPY2Rf+WTBw==
+To:     Dave Jiang <dave.jiang@intel.com>, alex.williamson@redhat.com,
+        kwankhede@nvidia.com, vkoul@kernel.org, jgg@mellanox.com
+Cc:     Jason Gunthorpe <jgg@nvidia.com>, megha.dey@intel.com,
+        jacob.jun.pan@intel.com, ashok.raj@intel.com, yi.l.liu@intel.com,
+        baolu.lu@intel.com, kevin.tian@intel.com, sanjay.k.kumar@intel.com,
+        tony.luck@intel.com, dan.j.williams@intel.com,
+        eric.auger@redhat.com, pbonzini@redhat.com,
+        dmaengine@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org
+Subject: Re: [PATCH v6 05/20] vfio: mdev: common lib code for setting up Interrupt Message Store
+In-Reply-To: <162164277624.261970.7989190254803052804.stgit@djiang5-desk3.ch.intel.com>
+References: <162164243591.261970.3439987543338120797.stgit@djiang5-desk3.ch.intel.com> <162164277624.261970.7989190254803052804.stgit@djiang5-desk3.ch.intel.com>
+Date:   Mon, 31 May 2021 15:48:35 +0200
+Message-ID: <87pmx73tfw.ffs@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-In-Reply-To: <CAG3jFyt53-MhwgGGcmMVSap3xCE_cQOmN26Rj3TvHtWFeVLZWg@mail.gmail.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.179.129]
-X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
- dggema762-chm.china.huawei.com (10.1.198.204)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/05/31 18:54, Robert Foss wrote:
-> Hey Yu,
-> 
-> I'm not finding your this patch with the correct tags. I'd expect the subject:
-> [PATCH v2] drm: bridge: cdns-mhdp8546: Fix PM reference leak in
-> cdns_mhdp_probe()
-> 
-> Can you please resubmit using this title, just to be sure I merge the
-> right version of this code.
-> 
-Hi,
+On Fri, May 21 2021 at 17:19, Dave Jiang wrote:
+> Add common helper code to setup IMS once the MSI domain has been
+> setup by the device driver. The main helper function is
+> mdev_ims_set_msix_trigger() that is called by the VFIO ioctl
+> VFIO_DEVICE_SET_IRQS. The function deals with the setup and
+> teardown of emulated and IMS backed eventfd that gets exported
+> to the guest kernel via VFIO as MSIX vectors.
 
-I just resubmit v2 patch.
+So this talks about IMS, but the functionality is all named mdev_msix*
+and mdev_irqs*. Confused.
 
-Thanks
-Yu Kuai
-> On Sat, 29 May 2021 at 11:46, Yu Kuai <yukuai3@huawei.com> wrote:
->>
->> pm_runtime_get_sync will increment pm usage counter even it failed.
->> Forgetting to putting operation will result in reference leak here.
->> Fix it by replacing it with pm_runtime_resume_and_get to keep usage
->> counter balanced.
->>
->> Reported-by: Hulk Robot <hulkci@huawei.com>
->> Signed-off-by: Yu Kuai <yukuai3@huawei.com>
->> ---
->> changes in V2:
->>   - change error message.
->>
->>   drivers/gpu/drm/bridge/cadence/cdns-mhdp8546-core.c | 4 ++--
->>   1 file changed, 2 insertions(+), 2 deletions(-)
->>
->> diff --git a/drivers/gpu/drm/bridge/cadence/cdns-mhdp8546-core.c b/drivers/gpu/drm/bridge/cadence/cdns-mhdp8546-core.c
->> index 0cd8f40fb690..eab959a59214 100644
->> --- a/drivers/gpu/drm/bridge/cadence/cdns-mhdp8546-core.c
->> +++ b/drivers/gpu/drm/bridge/cadence/cdns-mhdp8546-core.c
->> @@ -2478,9 +2478,9 @@ static int cdns_mhdp_probe(struct platform_device *pdev)
->>          clk_prepare_enable(clk);
->>
->>          pm_runtime_enable(dev);
->> -       ret = pm_runtime_get_sync(dev);
->> +       ret = pm_runtime_resume_and_get(dev);
->>          if (ret < 0) {
->> -               dev_err(dev, "pm_runtime_get_sync failed\n");
->> +               dev_err(dev, "pm_runtime_resume_and_get failed\n");
->>                  pm_runtime_disable(dev);
->>                  goto clk_disable;
->>          }
->> --
->> 2.25.4
->>
-> .
-> 
+> +/*
+> + * Mediate device IMS library code
+
+Mediated?
+
+> +static int mdev_msix_set_vector_signal(struct mdev_irq *mdev_irq, int vector, int fd)
+> +{
+> +	int rc, irq;
+> +	struct mdev_device *mdev = irq_to_mdev(mdev_irq);
+> +	struct mdev_irq_entry *entry;
+> +	struct device *dev = &mdev->dev;
+> +	struct eventfd_ctx *trigger;
+> +	char *name;
+> +	bool pasid_en;
+> +	u32 auxval;
+> +
+> +	if (vector < 0 || vector >= mdev_irq->num)
+> +		return -EINVAL;
+> +
+> +	entry = &mdev_irq->irq_entries[vector];
+> +
+> +	if (entry->ims)
+> +		irq = dev_msi_irq_vector(dev, entry->ims_id);
+> +	else
+> +		irq = 0;
+
+I have no idea what this does. Comments are overrated...
+
+Aside of that dev_msi_irq_vector() seems to be a gross misnomer. AFAICT
+it retrieves the Linux interrupt number and not some vector.
+
+> +	pasid_en = mdev_irq->pasid != INVALID_IOASID ? true : false;
+> +
+> +	/* IMS and invalid pasid is not a valid configuration */
+> +	if (entry->ims && !pasid_en)
+> +		return -EINVAL;
+
+Why is this not validated already?
+
+> +	if (entry->trigger) {
+> +		if (irq) {
+> +			irq_bypass_unregister_producer(&entry->producer);
+> +			free_irq(irq, entry->trigger);
+> +			if (pasid_en) {
+> +				auxval = ims_ctrl_pasid_aux(0, false);
+> +				irq_set_auxdata(irq, IMS_AUXDATA_CONTROL_WORD, auxval);
+
+Why can't this be done in the irq chip when the interrupt is torn down?
+Just because the irq chip driver, which is thankfully not merged yet,
+has been implemented that way?
+
+I did this aux dance because someone explained to me that this has to be
+handled seperately and has to be changed independent of all the
+interrupt setup and whatever. But looking at the actual usage now that's
+clearly not the case.
+
+What's the exact order of all this? I assume so:
+
+    1) mdev_irqs_init()
+    2) mdev_irqs_set_pasid()
+    3) mdev_set_msix_trigger()
+
+Right? See below.
+
+> +}
+> +EXPORT_SYMBOL_GPL(mdev_irqs_set_pasid);
+
+> +	if (fd < 0)
+> +		return 0;
+> +
+> +	name = kasprintf(GFP_KERNEL, "vfio-mdev-irq[%d](%s)", vector, dev_name(dev));
+> +	if (!name)
+> +		return -ENOMEM;
+> +
+> +	trigger = eventfd_ctx_fdget(fd);
+> +	if (IS_ERR(trigger)) {
+> +		kfree(name);
+> +		return PTR_ERR(trigger);
+> +	}
+> +
+> +	entry->name = name;
+> +	entry->trigger = trigger;
+> +
+> +	if (!irq)
+> +		return 0;
+
+These exit conditions are completely confusing.
+
+> +	if (pasid_en) {
+> +		auxval = ims_ctrl_pasid_aux(mdev_irq->pasid, true);
+> +		rc = irq_set_auxdata(irq, IMS_AUXDATA_CONTROL_WORD, auxval);
+> +		if (rc < 0)
+> +			goto err;
+
+Again. This can be handled in the interrupt chip when the interrupt is
+set up through request_irq().
+
+> +static int mdev_msix_enable(struct mdev_irq *mdev_irq, int nvec)
+> +{
+> +	struct mdev_device *mdev = irq_to_mdev(mdev_irq);
+> +	struct device *dev;
+> +	int rc;
+> +
+> +	if (nvec != mdev_irq->num)
+> +		return -EINVAL;
+> +
+> +	if (mdev_irq->ims_num) {
+> +		dev = &mdev->dev;
+> +		rc = msi_domain_alloc_irqs(dev_get_msi_domain(dev), dev, mdev_irq->ims_num);
+
+The allocation of the interrupts happens _after_ PASID has been
+set and PASID is per device, right?
+
+So the obvious place to store PASID is in struct device because the
+device pointer is for one stored in the msi entry descriptor and it is
+also handed down to the irq domain allocation function. So this can be
+checked at allocation time already.
+
+What's unclear to me is under which circumstances does the IMS interrupt
+require a PASID.
+
+   1) Always
+   2) Use case dependent
+
+Thanks,
+
+        tglx
