@@ -2,100 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 27BD0395955
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 12:58:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 85888395956
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 12:59:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231164AbhEaK7j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 06:59:39 -0400
-Received: from mail-wr1-f42.google.com ([209.85.221.42]:45709 "EHLO
-        mail-wr1-f42.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231245AbhEaK7R (ORCPT
+        id S231278AbhEaLBd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 07:01:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53508 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230521AbhEaLBa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 06:59:17 -0400
-Received: by mail-wr1-f42.google.com with SMTP id z8so5351396wrp.12;
-        Mon, 31 May 2021 03:57:35 -0700 (PDT)
+        Mon, 31 May 2021 07:01:30 -0400
+Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9BCEFC061574
+        for <linux-kernel@vger.kernel.org>; Mon, 31 May 2021 03:59:46 -0700 (PDT)
+Received: by mail-ed1-x529.google.com with SMTP id cb9so1101800edb.1
+        for <linux-kernel@vger.kernel.org>; Mon, 31 May 2021 03:59:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=HP3WcUIToXbjBzYIVWAC3coIFADZFvRroLmM7ZEJD08=;
+        b=OK30sQzcv7pOlKyf/wTJbiuM9Y3pJy8KSrHmIJveIlwbmMVAu+SEutZlB9W9OlNAii
+         hxFVX1GQ5CFwKfYD+SpKm8jGiW51KypPo5ksWidt1m7oiQfrhJdtDTdZjJZl3eZ6Lire
+         ghJsV6ODsZsCjUOxOBAQhGVxBEU2UDEg1xUVMZZIhUZOI/pVSFf4kxZkSfa1wAWFwkxj
+         ZfvqtAjfuG4JDUq1USZYNcQGGdh6hbBuA/qrVUAXd9eqwwDUnRg0uLi0VHNzNLNsKb1Q
+         24vBLGWOL5mGWH7D4/aSUA+WhgE5vJFHTtgLCEi7oEoO+1Odp+6m4euccHa4zsiwY8Lc
+         svKw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=lUL1ckOtYUUu49NTJDbLWfsk5Pbl8htShAqQr1AxFVU=;
-        b=se1jO6U3+XxHwJmhipgf1NsC8CcnF+RzJVQM/Wf/ETOqyWY7WzeuUGMqC3T9SwBwlT
-         pRfFBL2Y5TJCcXM2dCwmO7UUgmn/8JZpVcLMMXqHZVB3ik86WL5LVj89OtpgsPiJtGwD
-         9ivOsIp9rwyL3lB9tqlr09hgcdzuPK30+k049KCNindgwc9/1XPZ2Ngq6nvN5XwAyiOz
-         KgwvTXS9IRG0ngyBD71+jfT0VEpkNFJ5KzYgwvFV5o4jOTKs3gcO5E67RIdKfx+Oyi5A
-         29+DTO7XGdTZOtKB/U29EMfjJXU8/HWZYjCrOHyLYMMgWbi0cOsBinmw2dkbOfVqN2hZ
-         6Dgg==
-X-Gm-Message-State: AOAM5305UAZoXSLS28rY9f5Puqz0svON1aFl3YAmuerzUJbf7YZReYgV
-        NNhhQcfCcI79+2o8ve4n070p+fMEouE=
-X-Google-Smtp-Source: ABdhPJzSIDi+OxRdbvKGBc+oXnUYRs5+jaanTyK4UCoEgKtb1jbNbur7+jUpkDYhAi7419ADAmKgdw==
-X-Received: by 2002:a05:6000:cb:: with SMTP id q11mr21382633wrx.13.1622458655090;
-        Mon, 31 May 2021 03:57:35 -0700 (PDT)
-Received: from liuwe-devbox-debian-v2 ([51.145.34.42])
-        by smtp.gmail.com with ESMTPSA id q20sm16250953wrf.45.2021.05.31.03.57.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 31 May 2021 03:57:34 -0700 (PDT)
-Date:   Mon, 31 May 2021 10:57:32 +0000
-From:   Wei Liu <wei.liu@kernel.org>
-To:     Praveen Kumar <kumarpraveen@linux.microsoft.com>
-Cc:     linux-hyperv@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kys@microsoft.com, haiyangz@microsoft.com, sthemmin@microsoft.com,
-        wei.liu@kernel.org, decui@microsoft.com, tglx@linutronix.de,
-        mingo@redhat.com, bp@alien8.de, nunodasneves@linux.microsoft.com,
-        viremana@linux.microsoft.com, sunilmut@microsoft.com,
-        Michael Kelley <mikelley@microsoft.com>
-Subject: Re: [PATCH] x86/hyperv: LP creation with lp_index on same CPU-id
-Message-ID: <20210531105732.muzbpk4yksttsfwz@liuwe-devbox-debian-v2>
-References: <20210531074046.113452-1-kumarpraveen@linux.microsoft.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=HP3WcUIToXbjBzYIVWAC3coIFADZFvRroLmM7ZEJD08=;
+        b=ElJiNPSOf8Z+XJcu3CBYF5fUTEuCxMZQi7+zLPSWmI/0RBGhUv9tbJgv+sf7FmX3Ul
+         R8jmjH04QUUXcGad0q1OYcsOYdulXE2LMpner4+ETn/wns4OTPoZZU7V1uYptJGFZVO1
+         /sficvJpLDDAPH+aGEl3Blz+BSXN7tv0kO7aZYG4pUNcmmCH9pxXjjTg5gZrLoexggxB
+         amurmfOwUgdVXeC3PG4Kbs7cTEXExtoAhYcIBGZTfcBDdlswtDJO0Y4YGY++8Agd2Hxm
+         AuQzxBgAlBw0cHa0kY+gyF3WyueZvNMgUhiwqkbFCQPj8IyWUl9MIPFH369Ou1nebRb+
+         plAA==
+X-Gm-Message-State: AOAM530bXrdJkcjmdHIP4EMaXI4a5P0tZGv6MS3ea2AZIbhOPkKP6iEY
+        tL+QX2aT97n8joh4M8T+saSSYnuBf1N0xGzXn3w=
+X-Google-Smtp-Source: ABdhPJw7wMDeOrH18o7Kh7wDlmDSk58NKBskCqUTNl8wB3HMaLUJjk1vxKZXE8eeAs/qvf8qnpr5V61G5gkN3DKW2Io=
+X-Received: by 2002:a05:6402:22f9:: with SMTP id dn25mr176682edb.241.1622458785176;
+ Mon, 31 May 2021 03:59:45 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210531074046.113452-1-kumarpraveen@linux.microsoft.com>
+References: <CAD-N9QVjhDDJxRnNrDzwt05BNijr1o11nE8xjvq8GrakEJ8EuQ@mail.gmail.com>
+ <20210531044022.GU24442@kadam> <CAD-N9QWBBP6_Wwi4z3e4yJM-tS54=1=CcvAA+2__Qj8NsTLq9g@mail.gmail.com>
+ <20210531070337.GV24442@kadam> <CAD-N9QU-uqFr=b1hMi1h1ytq2Uf2XKL44f9OHBRhM70zhkiO7w@mail.gmail.com>
+ <CAD-N9QW5C2ssA7H_U+eiM=SbsPj29Ooo6Sk=r4d1qELbZQjuPA@mail.gmail.com>
+ <20210531084613.GX24442@kadam> <CAD-N9QVAdaitDcM6BGfwvNR=gMf7G6DK00n0Ev6ucXc6xNFFpw@mail.gmail.com>
+ <20210531093817.GY24442@kadam> <CAD-N9QUTZ49CvrhW76pTUDOp8y=29JXxR45Z_W53qVz0PJHVLw@mail.gmail.com>
+ <20210531104355.GZ24442@kadam>
+In-Reply-To: <20210531104355.GZ24442@kadam>
+From:   Dongliang Mu <mudongliangabcd@gmail.com>
+Date:   Mon, 31 May 2021 18:59:18 +0800
+Message-ID: <CAD-N9QXAq73E5DrzkK6gULaBAQ4FrO5_OCndWZpOmSgPTAiqrw@mail.gmail.com>
+Subject: Re: [PATCH] ALSA: control led: fix memory leak in snd_ctl_led_register
+To:     Dan Carpenter <dan.carpenter@oracle.com>
+Cc:     perex@perex.cz, tiwai@suse.com, alsa-devel@alsa-project.org,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        syzbot+08a7d8b51ea048a74ffb@syzkaller.appspotmail.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 31, 2021 at 01:10:46PM +0530, Praveen Kumar wrote:
-> The hypervisor expects the lp_index to be same as cpu-id during LP creation
-> This fix correct the same, as cpu_physical_id can give different cpu-id.
+On Mon, May 31, 2021 at 6:44 PM Dan Carpenter <dan.carpenter@oracle.com> wrote:
+>
+> On Mon, May 31, 2021 at 06:35:33PM +0800, Dongliang Mu wrote:
+> > On Mon, May 31, 2021 at 5:38 PM Dan Carpenter <dan.carpenter@oracle.com> wrote:
+> > >
+> > > On Mon, May 31, 2021 at 05:10:49PM +0800, Dongliang Mu wrote:
+> > > > Hi Dan,
+> > > >
+> > > > I wonder if we shall split the current patch into two patches, one
+> > > > patch for each memory leak. It is better to satisfy the rule - "one
+> > > > patch only fixes one issue".
+> > > >
+> > > > We should absolutely fix all these memory leaks. But one patch for two
+> > > > different bugs with different objects and different paths is not very
+> > > > suitable.
+> > > >
+> > >
+> > > I would just send one patch, because I only see it as one bug.  But you
+> > > do what you think is best.
+> >
+> > If you think they are the same bug, that's great. Just send and apply
+> > only one patch as it is. I will not send version v2.
+>
+> Sorry for the miscommunication.  That's not what I meant at all.
+>
+> Your patch only introduces one put_device().  We need all five to fix
+> the bug, and we'll have to change the kfree(link_whatever).  Use
+> device_unregister() instead put_device().  Include a Reported-by with
+> the correct syzkaller information.
+>
+> >
+> > BTW, could you please show me the syzbot link for the bug you tried to
+> > resolve? If it is not from syzbot dashboard, can you please show the
+> > bug report?
+>
+> What are you talking about?  I'm not trying to fix a syzkaller bug.  I'm
+> just reviewing your patch.
 
-Code looks fine to me, but the commit message can be made clearer.
+It seems we truly have some miscommunication. Your message makes me
+think you are fixing another bug report that shares the same root
+cause with this bug.
 
-"""
-The hypervisor expects the logical processor index to be the same as
-CPU's id during logical processor creation. Using cpu_physical_id
-confuses Microsoft Hypervisor's scheduler. That causes the root
-partition not boot when core scheduler is used.
+Now let's sync and get on the same page.
 
-This patch removes the call to cpu_physical_id and uses the CPU index
-directly for bringing up logical processor. This scheme works for both
-classic scheduler and core scheduler.
+You are trying to give me some suggestions to fix this bug. I need to
+listen to your advice and send another version v2 to you developers.
+Right?
 
-Fixes: 333abaf5abb3 (x86/hyperv: implement and use hv_smp_prepare_cpus)
-"""
-
-No action is required from you. If you are fine with this commit message
-I can incorporate it and update the subject line when committing this
-patch.
-
-> 
-> Signed-off-by: Praveen Kumar <kumarpraveen@linux.microsoft.com>
-> ---
->  arch/x86/kernel/cpu/mshyperv.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/arch/x86/kernel/cpu/mshyperv.c b/arch/x86/kernel/cpu/mshyperv.c
-> index 22f13343b5da..4fa0a4280895 100644
-> --- a/arch/x86/kernel/cpu/mshyperv.c
-> +++ b/arch/x86/kernel/cpu/mshyperv.c
-> @@ -236,7 +236,7 @@ static void __init hv_smp_prepare_cpus(unsigned int max_cpus)
->  	for_each_present_cpu(i) {
->  		if (i == 0)
->  			continue;
-> -		ret = hv_call_add_logical_proc(numa_cpu_node(i), i, cpu_physical_id(i));
-> +		ret = hv_call_add_logical_proc(numa_cpu_node(i), i, i);
->  		BUG_ON(ret);
->  	}
->  
-> -- 
-> 2.25.1
-> 
+>
+> regards,
+> dan carpenter
