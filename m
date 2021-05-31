@@ -2,109 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A2E5396602
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 18:53:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 26AE0396369
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 17:14:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234558AbhEaQzD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 12:55:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49188 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234358AbhEaO7U (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 10:59:20 -0400
-Received: from mail-qt1-x829.google.com (mail-qt1-x829.google.com [IPv6:2607:f8b0:4864:20::829])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A4B9C061236;
-        Mon, 31 May 2021 07:03:26 -0700 (PDT)
-Received: by mail-qt1-x829.google.com with SMTP id d12so2372172qtq.4;
-        Mon, 31 May 2021 07:03:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:content-transfer-encoding:date:message-id:to:cc
-         :subject:from:references:in-reply-to;
-        bh=y2MDXnI/OIKxWHEtIFBSOW9PzSGP8Ug1F4tSdphQJdg=;
-        b=GvykXANtw8VwODfnhDd6eSNqTgmVMHdl2GChtd7P16iokl17GMuiHXlIXL5Zn5lZ6P
-         pnXeemIIAHCuI7bxM8HQeoVQ5e+oikH+1ezUR7DSewH4BnqPDrshCeADClbB/xdtT373
-         xQIoOmgNQClnWxioQq2EzG+wp27jqt8NqaJzY4gbGatDlSmScYVs9hcgG66TG0h1phE4
-         Lc7cRjnx40NYIFCn6I1sakLsjsJt7N6EF+Wb82T1hTU3Ge6QBp/QJLCl+rDyrt+z3GGf
-         yyzgQl4brupNSv306IoKOWVybk54BQ/fLwWsWj7WI/r0ZURxx8B6EaP3OaZ1zYAwLONH
-         iCIg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:content-transfer-encoding:date
-         :message-id:to:cc:subject:from:references:in-reply-to;
-        bh=y2MDXnI/OIKxWHEtIFBSOW9PzSGP8Ug1F4tSdphQJdg=;
-        b=WhFgR3lvokpUH8l9sSIXpqX3axEnZ6h3OeVXLq2clyfz8LZcF9VW0Y8z1LmuMF+gyb
-         D6Vt3gcH7haDPj6OiaRP57ol8attJ3ApFU++3FX6xj/KiOcZhelTBJgG1oXPlO3FW8Jf
-         Oq+nBEQ6QHvjti5fr/ThaoCZGOJVw6Mlp9mWvIKM+IWisFvEbPdxU1BSeU1lxuMfmPKv
-         c1ykvMuOKLVOVOQhvVE+jB3NtDE3U/NVl2o8B4cPgdsQXmknA7CVhvNPZadytttfZoZW
-         YUfZzpSVbi8icFGe7e1MfRdcemGUBnuu9lB3JsDVQHniTsD/ctf8I9D6M879MUgGCyn2
-         TklQ==
-X-Gm-Message-State: AOAM531vMD9k8Dhsx2dxM3KXDeWy4PTBkKAV0kUORXvANfbSgu/nFeRh
-        8RYACg3AFrpes643ERv0Z9g=
-X-Google-Smtp-Source: ABdhPJyimULmdTkrROg5WHI4lKMoCvfT1Ruqp4XVScUneBYoC1x3sQxiHKGLicO9OVy0EtaMiZTKWA==
-X-Received: by 2002:ac8:1483:: with SMTP id l3mr14900526qtj.142.1622469805558;
-        Mon, 31 May 2021 07:03:25 -0700 (PDT)
-Received: from localhost (198-48-202-89.cpe.pppoe.ca. [198.48.202.89])
-        by smtp.gmail.com with ESMTPSA id 7sm9086249qtu.38.2021.05.31.07.03.24
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 31 May 2021 07:03:24 -0700 (PDT)
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset=UTF-8
-Date:   Mon, 31 May 2021 10:03:23 -0400
-Message-Id: <CBRHJM8ANOSE.2Q5C1FVQS5QOA@shaak>
-To:     "Peter Rosin" <peda@axentia.se>, <jic23@kernel.org>,
-        <lars@metafoo.de>, <pmeerw@pmeerw.net>
-Cc:     <linux-kernel@vger.kernel.org>, <linux-iio@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <robh+dt@kernel.org>
-Subject: Re: [PATCH v1 9/9] dt-bindings: iio: afe: add binding for
- temperature-sense-amplifier
-From:   "Liam Beguin" <liambeguin@gmail.com>
-References: <20210530005917.20953-1-liambeguin@gmail.com>
- <20210530005917.20953-10-liambeguin@gmail.com>
- <0286de71-1b04-0956-be4e-f38573c6fea2@axentia.se>
-In-Reply-To: <0286de71-1b04-0956-be4e-f38573c6fea2@axentia.se>
+        id S233504AbhEaPPx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 11:15:53 -0400
+Received: from mga02.intel.com ([134.134.136.20]:26413 "EHLO mga02.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232572AbhEaONP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 10:13:15 -0400
+IronPort-SDR: +QpxXK08MbAICEjEbkATdskr9QgpgiC8V//vXTpMfUwgf0cbPIj72lgh4dTpFMpgLS7xK+U48M
+ DLVQ/woT/D8A==
+X-IronPort-AV: E=McAfee;i="6200,9189,10001"; a="190480268"
+X-IronPort-AV: E=Sophos;i="5.83,237,1616482800"; 
+   d="scan'208";a="190480268"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 May 2021 07:06:01 -0700
+IronPort-SDR: NHUREmHJrH1ocE5RXQrL2Rv7u4eFVGV8V9nk2J1ugzOH7vNlGCDxyUpZk81C3Cd559puFiFxIz
+ crfec8bgX0Zw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.83,237,1616482800"; 
+   d="scan'208";a="444991513"
+Received: from shbuild999.sh.intel.com ([10.239.147.94])
+  by orsmga008.jf.intel.com with ESMTP; 31 May 2021 07:05:57 -0700
+From:   Feng Tang <feng.tang@intel.com>
+To:     linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        David Rientjes <rientjes@google.com>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Ben Widawsky <ben.widawsky@intel.com>
+Cc:     linux-kernel@vger.kernel.org,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Andi Kleen <ak@linux.intel.com>,
+        Dan Williams <dan.j.williams@intel.com>, ying.huang@intel.com,
+        Feng Tang <feng.tang@intel.com>
+Subject: [v3 PATCH 0/3] mm/mempolicy: some fix and semantics cleanup 
+Date:   Mon, 31 May 2021 22:05:53 +0800
+Message-Id: <1622469956-82897-1-git-send-email-feng.tang@intel.com>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Peter,
+Hi All,
 
-On Mon May 31, 2021 at 3:32 AM EDT, Peter Rosin wrote:
-> Hi!
->
-> On 2021-05-30 02:59, Liam Beguin wrote:
-> > From: Liam Beguin <lvb@xiphos.com>
-> >=20
-> > An ADC is often used to measure other quantities indirectly. This
-> > binding describe one cases, the measurement of a temperature through a
-> > voltage sense amplifier such as the LTC2997.
-> >=20
-> > Signed-off-by: Liam Beguin <lvb@xiphos.com>
->
-> What's the significant difference between this and the RTD binding? Does
-> not both simply scale/offset a voltage to a temperature?
->
+We've posted v4 patchset introducing a new "perfer-many" memory policy
+https://lore.kernel.org/lkml/1615952410-36895-1-git-send-email-feng.tang@intel.com/ ,
+for which Michal Hocko gave many comments while pointing out some
+problems, and we also found some semantics confusion about 'prefer'
+and 'local' policy, as well as some duplicated code. This patchset
+tries to address them. Please help to review, thanks!
 
-The way I looked at it was one binding per sensor type (resistance
-driven, current driven, and voltage driven).
+The patchset has been run with some sanity test like 'stress-ng'
+and 'ltp', and no problem found.
 
-Thinking about it more, these three bindings could be factorized into
-one if the user is required to enter parameters "by hand".
+Thanks,
+Feng
 
-These could become something like:
-- sense-gain-mult
-- sense-gain-div
-- sense-offset
+Changelogs:
+    v3:
+      * fix logic of mpol_rebind_preferred() (Michal Hocko)
 
-I like the idea of having the "datasheet parameters" in the devicetree,
-but this would be a lot more versatile.
+    v2:
+      * rename mempolicy_nodemask_intersects() to
+        mempolicy_in_oom_domain() and correct commit log (Michal Hocko)
+      * change the mpol syscall param sanity check (Michal Hocko) 
+      * combine the 3/4 and 4/4 in v1 into one patch,
+        and further clean the logic (Michal Hocko)
 
-What do you think?
+    v1:
+      * use helper func instead of macro for patch 2/4 (David Rientjes)
+      * fix a possible null pointer case in patch 3/4 		
+      * update commit log for 1/4
+      
+    RFC v2:
+      * add for oom check fix patch 1/4
+      * add the unification patch for mpol preprocess 2/4
 
-Cheers,
-Liam
+Feng Tang (3):
+  mm/mempolicy: cleanup nodemask intersection check for oom
+  mm/mempolicy: don't handle MPOL_LOCAL like a fake MPOL_PREFERRED
+    policy
+  mm/mempolicy: unify the parameter sanity check for mbind and
+    set_mempolicy
 
-> Cheers,
-> Peter
+ include/linux/mempolicy.h      |   2 +-
+ include/uapi/linux/mempolicy.h |   1 -
+ mm/mempolicy.c                 | 212 ++++++++++++++++++-----------------------
+ mm/oom_kill.c                  |   2 +-
+ 4 files changed, 95 insertions(+), 122 deletions(-)
+
+-- 
+2.7.4
 
