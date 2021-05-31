@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 59ABE396053
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 16:23:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D08043964C1
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 18:08:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232994AbhEaOY7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 10:24:59 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55012 "EHLO mail.kernel.org"
+        id S234475AbhEaQKP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 12:10:15 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60988 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231690AbhEaNvF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 09:51:05 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 52EE5616E8;
-        Mon, 31 May 2021 13:32:12 +0000 (UTC)
+        id S233216AbhEaOhT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 10:37:19 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CF86E616EC;
+        Mon, 31 May 2021 13:51:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1622467932;
-        bh=5rWazp2KbDTuhosSQAbGfwCpBU+7vJPGsRmvfiWq918=;
+        s=korg; t=1622469089;
+        bh=Bzk3q18Rykvj7pc36KDsfBnTnyDHicERbODMBtkjrJI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Bym2JF+7Lvc63E+ljl5Bd26HQTdXOJ5tSymDq3dR9srukSM4oZiOadGN7w+AJ6478
-         Jzk0KMbNA+nIh9xr1MDXMybC3FJ/fADoToBAAfXpXNTtHSpf/ua0bCSeo+wK8p9pYK
-         H+GXNN34Tc9ADVjfPBxke2bb8ZID/Ra8IIa0880g=
+        b=RJZ2a8vG5V1T9kgAuDKcrb6oRefP/mEWLxXo6TiSAIHfkuhTViOo4SIlJSk0U62Np
+         WFpCSCs9Z1bdZT5DAe5rUH7u79FiDO4B7QyYE4OBTzS7u3CrtmfYmAKriTLaL3xxtc
+         aO4ah7Q0SVbjB1B5d9Bz8EVaXYdM4u3iNfETATI0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Mathias Nyman <mathias.nyman@linux.intel.com>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>
-Subject: [PATCH 5.10 055/252] thunderbolt: usb4: Fix NVM read buffer bounds and offset issue
-Date:   Mon, 31 May 2021 15:12:00 +0200
-Message-Id: <20210531130659.850188831@linuxfoundation.org>
+        stable@vger.kernel.org, Kees Cook <keescook@chromium.org>,
+        Ondrej Mosnacek <omosnace@redhat.com>
+Subject: [PATCH 5.12 066/296] serial: core: fix suspicious security_locked_down() call
+Date:   Mon, 31 May 2021 15:12:01 +0200
+Message-Id: <20210531130706.052916816@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210531130657.971257589@linuxfoundation.org>
-References: <20210531130657.971257589@linuxfoundation.org>
+In-Reply-To: <20210531130703.762129381@linuxfoundation.org>
+References: <20210531130703.762129381@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,62 +39,60 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mathias Nyman <mathias.nyman@linux.intel.com>
+From: Ondrej Mosnacek <omosnace@redhat.com>
 
-commit 22c7a18ed5f007faccb7527bc890463763214081 upstream.
+commit 5e722b217ad3cf41f5504db80a68062df82b5242 upstream.
 
-Up to 64 bytes of data can be read from NVM in one go.
-Read address must be dword aligned. Data is read into a local buffer.
+The commit that added this check did so in a very strange way - first
+security_locked_down() is called, its value stored into retval, and if
+it's nonzero, then an additional check is made for (change_irq ||
+change_port), and if this is true, the function returns. However, if
+the goto exit branch is not taken, the code keeps the retval value and
+continues executing the function. Then, depending on whether
+uport->ops->verify_port is set, the retval value may or may not be reset
+to zero and eventually the error value from security_locked_down() may
+abort the function a few lines below.
 
-If caller asks to read data starting at an unaligned address then full
-dword is anyway read from NVM into a local buffer. Data is then copied
-from the local buffer starting at the unaligned offset to the caller
-buffer.
+I will go out on a limb and assume that this isn't the intended behavior
+and that an error value from security_locked_down() was supposed to
+abort the function only in case (change_irq || change_port) is true.
 
-In cases where asked data length + unaligned offset is over 64 bytes
-we need to make sure we don't read past the 64 bytes in the local
-buffer when copying to caller buffer, and make sure that we don't
-skip copying unaligned offset bytes from local buffer anymore after
-the first round of 64 byte NVM data read.
+Note that security_locked_down() should be called last in any series of
+checks, since the SELinux implementation of this hook will do a check
+against the policy and generate an audit record in case of denial. If
+the operation was to carry on after calling security_locked_down(), then
+the SELinux denial record would be bogus.
 
-Fixes: b04079837b20 ("thunderbolt: Add initial support for USB4")
-Cc: stable@vger.kernel.org
-Signed-off-by: Mathias Nyman <mathias.nyman@linux.intel.com>
-Signed-off-by: Mika Westerberg <mika.westerberg@linux.intel.com>
+See commit 59438b46471a ("security,lockdown,selinux: implement SELinux
+lockdown") for how SELinux implements this hook.
+
+Fixes: 794edf30ee6c ("lockdown: Lock down TIOCSSERIAL")
+Acked-by: Kees Cook <keescook@chromium.org>
+Signed-off-by: Ondrej Mosnacek <omosnace@redhat.com>
+Cc: stable <stable@vger.kernel.org>
+Link: https://lore.kernel.org/r/20210507115719.140799-1-omosnace@redhat.com
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/thunderbolt/usb4.c |    9 +++++----
- 1 file changed, 5 insertions(+), 4 deletions(-)
+ drivers/tty/serial/serial_core.c |    8 +++++---
+ 1 file changed, 5 insertions(+), 3 deletions(-)
 
---- a/drivers/thunderbolt/usb4.c
-+++ b/drivers/thunderbolt/usb4.c
-@@ -108,15 +108,15 @@ static int usb4_do_read_data(u16 address
- 	unsigned int retries = USB4_DATA_RETRIES;
- 	unsigned int offset;
+--- a/drivers/tty/serial/serial_core.c
++++ b/drivers/tty/serial/serial_core.c
+@@ -865,9 +865,11 @@ static int uart_set_info(struct tty_stru
+ 		goto check_and_exit;
+ 	}
  
--	offset = address & 3;
--	address = address & ~3;
--
- 	do {
--		size_t nbytes = min_t(size_t, size, USB4_DATA_DWORDS * 4);
- 		unsigned int dwaddress, dwords;
- 		u8 data[USB4_DATA_DWORDS * 4];
-+		size_t nbytes;
- 		int ret;
+-	retval = security_locked_down(LOCKDOWN_TIOCSSERIAL);
+-	if (retval && (change_irq || change_port))
+-		goto exit;
++	if (change_irq || change_port) {
++		retval = security_locked_down(LOCKDOWN_TIOCSSERIAL);
++		if (retval)
++			goto exit;
++	}
  
-+		offset = address & 3;
-+		nbytes = min_t(size_t, size + offset, USB4_DATA_DWORDS * 4);
-+
- 		dwaddress = address / 4;
- 		dwords = ALIGN(nbytes, 4) / 4;
- 
-@@ -127,6 +127,7 @@ static int usb4_do_read_data(u16 address
- 			return ret;
- 		}
- 
-+		nbytes -= offset;
- 		memcpy(buf, data + offset, nbytes);
- 
- 		size -= nbytes;
+ 	/*
+ 	 * Ask the low level driver to verify the settings.
 
 
