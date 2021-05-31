@@ -2,34 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A8F0D39636A
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 17:14:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D7DC8396502
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 18:18:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231783AbhEaPP6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 11:15:58 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43166 "EHLO mail.kernel.org"
+        id S234792AbhEaQTy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 12:19:54 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37024 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232648AbhEaON3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 10:13:29 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 30E5C619A5;
-        Mon, 31 May 2021 13:41:57 +0000 (UTC)
+        id S232106AbhEaOmK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 10:42:10 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1751E61C71;
+        Mon, 31 May 2021 13:53:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1622468517;
-        bh=7iCJiHDNrA8MBJ+K6dL/sbizJIJktohVytlNUMosXPQ=;
+        s=korg; t=1622469240;
+        bh=oP517+rIBNt+5HX5RsjOP/NTxSLiEzw8RyYNpIdx35M=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=oLRirgP2RfJkGPsSkjLDm8hnmLFl/oXkjueKGCu7Ca8JhvfizjhtoAOxCOlHmnAE4
-         OkqQfFNBO5bmQmu93hKNBJlDHLXR0fBb12MtM+wTm0Ockdz/xQSSAdg/NiOfpOzyBT
-         jpxl5d5VYKF+INKR5zKM2qTB8iWfzk76rXS8yyYI=
+        b=uTwkp2Ko84sa7m8bXZaQEpAAd7K5R+/lrhMOFm0R3udf9JuWt55LFEdy8me0v9djM
+         5v+c83rRoU72T13JiQBpn4O/1vY7jGUx0hluEBs7bfe7df6nCBP7ZVOvulcv5Y2jFS
+         rvBr/2QE9AQ4BxoE8AWLZelG55LHlgag5OGrLvTE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Johannes Berg <johannes.berg@intel.com>
-Subject: [PATCH 5.4 020/177] mac80211: check defrag PN against current frame
+        stable@vger.kernel.org, Dima Chumak <dchumak@nvidia.com>,
+        Vlad Buslov <vladbu@nvidia.com>,
+        Saeed Mahameed <saeedm@nvidia.com>
+Subject: [PATCH 5.12 122/296] net/mlx5e: Fix nullptr in mlx5e_tc_add_fdb_flow()
 Date:   Mon, 31 May 2021 15:12:57 +0200
-Message-Id: <20210531130648.613512994@linuxfoundation.org>
+Message-Id: <20210531130708.010566858@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210531130647.887605866@linuxfoundation.org>
-References: <20210531130647.887605866@linuxfoundation.org>
+In-Reply-To: <20210531130703.762129381@linuxfoundation.org>
+References: <20210531130703.762129381@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -38,120 +40,73 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Johannes Berg <johannes.berg@intel.com>
+From: Dima Chumak <dchumak@nvidia.com>
 
-commit bf30ca922a0c0176007e074b0acc77ed345e9990 upstream.
+commit fe7738eb3ca3631a75844e790f6cb576c0fe7b00 upstream.
 
-As pointed out by Mathy Vanhoef, we implement the RX PN check
-on fragmented frames incorrectly - we check against the last
-received PN prior to the new frame, rather than to the one in
-this frame itself.
+The result of __dev_get_by_index() is not checked for NULL, which then
+passed to mlx5e_attach_encap() and gets dereferenced.
 
-Prior patches addressed the security issue here, but in order
-to be able to reason better about the code, fix it to really
-compare against the current frame's PN, not the last stored
-one.
+Also, in case of a successful lookup, the net_device reference count is
+not incremented, which may result in net_device pointer becoming invalid
+at any time during mlx5e_attach_encap() execution.
 
-Cc: stable@vger.kernel.org
-Link: https://lore.kernel.org/r/20210511200110.bfbc340ff071.Id0b690e581da7d03d76df90bb0e3fd55930bc8a0@changeid
-Signed-off-by: Johannes Berg <johannes.berg@intel.com>
+Fix by using dev_get_by_index(), which does proper reference counting on
+the net_device pointer. Also, handle nullptr return value when mirred
+device is not found.
+
+It's safe to call dev_put() on the mirred net_device pointer, right
+after mlx5e_attach_encap() call, because it's not being saved/copied
+down the call chain.
+
+Fixes: 3c37745ec614 ("net/mlx5e: Properly deal with encap flows add/del under neigh update")
+Addresses-Coverity: ("Dereference null return value")
+Signed-off-by: Dima Chumak <dchumak@nvidia.com>
+Reviewed-by: Vlad Buslov <vladbu@nvidia.com>
+Signed-off-by: Saeed Mahameed <saeedm@nvidia.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- net/mac80211/ieee80211_i.h |   11 +++++++++--
- net/mac80211/rx.c          |    5 ++---
- net/mac80211/wpa.c         |   13 +++++++++----
- 3 files changed, 20 insertions(+), 9 deletions(-)
+ drivers/net/ethernet/mellanox/mlx5/core/en_tc.c |   12 +++++++++---
+ 1 file changed, 9 insertions(+), 3 deletions(-)
 
---- a/net/mac80211/ieee80211_i.h
-+++ b/net/mac80211/ieee80211_i.h
-@@ -222,8 +222,15 @@ struct ieee80211_rx_data {
- 	 */
- 	int security_idx;
+--- a/drivers/net/ethernet/mellanox/mlx5/core/en_tc.c
++++ b/drivers/net/ethernet/mellanox/mlx5/core/en_tc.c
+@@ -1276,10 +1276,10 @@ mlx5e_tc_add_fdb_flow(struct mlx5e_priv
+ 		      struct netlink_ext_ack *extack)
+ {
+ 	struct mlx5_eswitch *esw = priv->mdev->priv.eswitch;
+-	struct net_device *out_dev, *encap_dev = NULL;
+ 	struct mlx5e_tc_flow_parse_attr *parse_attr;
+ 	struct mlx5_flow_attr *attr = flow->attr;
+ 	bool vf_tun = false, encap_valid = true;
++	struct net_device *encap_dev = NULL;
+ 	struct mlx5_esw_flow_attr *esw_attr;
+ 	struct mlx5_fc *counter = NULL;
+ 	struct mlx5e_rep_priv *rpriv;
+@@ -1325,16 +1325,22 @@ mlx5e_tc_add_fdb_flow(struct mlx5e_priv
+ 	esw_attr = attr->esw_attr;
  
--	u32 tkip_iv32;
--	u16 tkip_iv16;
-+	union {
-+		struct {
-+			u32 iv32;
-+			u16 iv16;
-+		} tkip;
-+		struct {
-+			u8 pn[IEEE80211_CCMP_PN_LEN];
-+		} ccm_gcm;
-+	};
- };
+ 	for (out_index = 0; out_index < MLX5_MAX_FLOW_FWD_VPORTS; out_index++) {
++		struct net_device *out_dev;
+ 		int mirred_ifindex;
  
- struct ieee80211_csa_settings {
---- a/net/mac80211/rx.c
-+++ b/net/mac80211/rx.c
-@@ -2268,7 +2268,6 @@ ieee80211_rx_h_defragment(struct ieee802
- 	if (entry->check_sequential_pn) {
- 		int i;
- 		u8 pn[IEEE80211_CCMP_PN_LEN], *rpn;
--		int queue;
+ 		if (!(esw_attr->dests[out_index].flags & MLX5_ESW_DEST_ENCAP))
+ 			continue;
  
- 		if (!requires_sequential_pn(rx, fc))
- 			return RX_DROP_UNUSABLE;
-@@ -2283,8 +2282,8 @@ ieee80211_rx_h_defragment(struct ieee802
- 			if (pn[i])
- 				break;
- 		}
--		queue = rx->security_idx;
--		rpn = rx->key->u.ccmp.rx_pn[queue];
-+
-+		rpn = rx->ccm_gcm.pn;
- 		if (memcmp(pn, rpn, IEEE80211_CCMP_PN_LEN))
- 			return RX_DROP_UNUSABLE;
- 		memcpy(entry->last_pn, pn, IEEE80211_CCMP_PN_LEN);
---- a/net/mac80211/wpa.c
-+++ b/net/mac80211/wpa.c
-@@ -3,6 +3,7 @@
-  * Copyright 2002-2004, Instant802 Networks, Inc.
-  * Copyright 2008, Jouni Malinen <j@w1.fi>
-  * Copyright (C) 2016-2017 Intel Deutschland GmbH
-+ * Copyright (C) 2020-2021 Intel Corporation
-  */
+ 		mirred_ifindex = parse_attr->mirred_ifindex[out_index];
+-		out_dev = __dev_get_by_index(dev_net(priv->netdev),
+-					     mirred_ifindex);
++		out_dev = dev_get_by_index(dev_net(priv->netdev), mirred_ifindex);
++		if (!out_dev) {
++			NL_SET_ERR_MSG_MOD(extack, "Requested mirred device not found");
++			err = -ENODEV;
++			goto err_out;
++		}
+ 		err = mlx5e_attach_encap(priv, flow, out_dev, out_index,
+ 					 extack, &encap_dev, &encap_valid);
++		dev_put(out_dev);
+ 		if (err)
+ 			goto err_out;
  
- #include <linux/netdevice.h>
-@@ -167,8 +168,8 @@ ieee80211_rx_h_michael_mic_verify(struct
- 
- update_iv:
- 	/* update IV in key information to be able to detect replays */
--	rx->key->u.tkip.rx[rx->security_idx].iv32 = rx->tkip_iv32;
--	rx->key->u.tkip.rx[rx->security_idx].iv16 = rx->tkip_iv16;
-+	rx->key->u.tkip.rx[rx->security_idx].iv32 = rx->tkip.iv32;
-+	rx->key->u.tkip.rx[rx->security_idx].iv16 = rx->tkip.iv16;
- 
- 	return RX_CONTINUE;
- 
-@@ -294,8 +295,8 @@ ieee80211_crypto_tkip_decrypt(struct iee
- 					  key, skb->data + hdrlen,
- 					  skb->len - hdrlen, rx->sta->sta.addr,
- 					  hdr->addr1, hwaccel, rx->security_idx,
--					  &rx->tkip_iv32,
--					  &rx->tkip_iv16);
-+					  &rx->tkip.iv32,
-+					  &rx->tkip.iv16);
- 	if (res != TKIP_DECRYPT_OK)
- 		return RX_DROP_UNUSABLE;
- 
-@@ -553,6 +554,8 @@ ieee80211_crypto_ccmp_decrypt(struct iee
- 		}
- 
- 		memcpy(key->u.ccmp.rx_pn[queue], pn, IEEE80211_CCMP_PN_LEN);
-+		if (unlikely(ieee80211_is_frag(hdr)))
-+			memcpy(rx->ccm_gcm.pn, pn, IEEE80211_CCMP_PN_LEN);
- 	}
- 
- 	/* Remove CCMP header and MIC */
-@@ -781,6 +784,8 @@ ieee80211_crypto_gcmp_decrypt(struct iee
- 		}
- 
- 		memcpy(key->u.gcmp.rx_pn[queue], pn, IEEE80211_GCMP_PN_LEN);
-+		if (unlikely(ieee80211_is_frag(hdr)))
-+			memcpy(rx->ccm_gcm.pn, pn, IEEE80211_CCMP_PN_LEN);
- 	}
- 
- 	/* Remove GCMP header and MIC */
 
 
