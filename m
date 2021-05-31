@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CE09739638C
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 17:18:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B49CA39652F
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 18:24:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232240AbhEaPUd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 11:20:33 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43228 "EHLO mail.kernel.org"
+        id S233971AbhEaQ0S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 12:26:18 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38038 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233763AbhEaOPf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 10:15:35 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 70FC6619A3;
-        Mon, 31 May 2021 13:42:48 +0000 (UTC)
+        id S233400AbhEaOnl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 10:43:41 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8EBC061C7B;
+        Mon, 31 May 2021 13:54:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1622468569;
-        bh=GK9mZAHadxSgipiVX8nZwVm6mN0rxfxek95PioM9FE0=;
+        s=korg; t=1622469287;
+        bh=HiOvjCQCv3zPlI3AUKE8DHyP5utmuZ4ksqp3ezGvYmE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=S1A/5vImeNVeWOSkn9ECnaZoP5eL7cbxLw18DqotVQxSup3bb8QRT+uhW3sYgAjV2
-         D2Lz8vZraOC7BfX0vT6mnQdp/MKn53cOIhCqrcprBmWhFFLtGOa1HXJIfupLqWU48I
-         MOpDsWTU8vcI5Ysm3AaHgMlDUmgYyxPWZMNMqXqQ=
+        b=pGW1jfWcaWu/NcU53EAKUfnWNFi/OAfPjekc9vRt36wkiJDmih+4cgvx/veT642JB
+         QxSMjVyvNr+pX9DKmkQJJJ9qOqrFFtfFZ9o+s1O1EsaMZNE6ag6VMtpn+M4b9mppyV
+         P3tsdNuuCJ8WCYo+MrdB5mLjMvs45uYXyTU0pQcU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Kees Cook <keescook@chromium.org>,
-        Ondrej Mosnacek <omosnace@redhat.com>
-Subject: [PATCH 5.4 039/177] serial: core: fix suspicious security_locked_down() call
+        stable@vger.kernel.org, Florian Fainelli <f.fainelli@gmail.com>,
+        =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <rafal@milecki.pl>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: [PATCH 5.12 141/296] net: dsa: bcm_sf2: Fix bcm_sf2_reg_rgmii_cntrl() call for non-RGMII port
 Date:   Mon, 31 May 2021 15:13:16 +0200
-Message-Id: <20210531130649.281904156@linuxfoundation.org>
+Message-Id: <20210531130708.617807416@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210531130647.887605866@linuxfoundation.org>
-References: <20210531130647.887605866@linuxfoundation.org>
+In-Reply-To: <20210531130703.762129381@linuxfoundation.org>
+References: <20210531130703.762129381@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,60 +40,47 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ondrej Mosnacek <omosnace@redhat.com>
+From: Florian Fainelli <f.fainelli@gmail.com>
 
-commit 5e722b217ad3cf41f5504db80a68062df82b5242 upstream.
+commit fc516d3a6aa2c6ffe27d0da8818d13839e023e7e upstream.
 
-The commit that added this check did so in a very strange way - first
-security_locked_down() is called, its value stored into retval, and if
-it's nonzero, then an additional check is made for (change_irq ||
-change_port), and if this is true, the function returns. However, if
-the goto exit branch is not taken, the code keeps the retval value and
-continues executing the function. Then, depending on whether
-uport->ops->verify_port is set, the retval value may or may not be reset
-to zero and eventually the error value from security_locked_down() may
-abort the function a few lines below.
+We cannot call bcm_sf2_reg_rgmii_cntrl() for a port that is not RGMII,
+yet we do that in bcm_sf2_sw_mac_link_up() irrespective of the port's
+interface. Move that read until we have properly qualified the PHY
+interface mode. This avoids triggering a warning on 7278 platforms that
+have GMII ports.
 
-I will go out on a limb and assume that this isn't the intended behavior
-and that an error value from security_locked_down() was supposed to
-abort the function only in case (change_irq || change_port) is true.
-
-Note that security_locked_down() should be called last in any series of
-checks, since the SELinux implementation of this hook will do a check
-against the policy and generate an audit record in case of denial. If
-the operation was to carry on after calling security_locked_down(), then
-the SELinux denial record would be bogus.
-
-See commit 59438b46471a ("security,lockdown,selinux: implement SELinux
-lockdown") for how SELinux implements this hook.
-
-Fixes: 794edf30ee6c ("lockdown: Lock down TIOCSSERIAL")
-Acked-by: Kees Cook <keescook@chromium.org>
-Signed-off-by: Ondrej Mosnacek <omosnace@redhat.com>
-Cc: stable <stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/20210507115719.140799-1-omosnace@redhat.com
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Fixes: 55cfeb396965 ("net: dsa: bcm_sf2: add function finding RGMII register")
+Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
+Acked-by: Rafał Miłecki <rafal@milecki.pl>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/tty/serial/serial_core.c |    8 +++++---
- 1 file changed, 5 insertions(+), 3 deletions(-)
+ drivers/net/dsa/bcm_sf2.c |    5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
 
---- a/drivers/tty/serial/serial_core.c
-+++ b/drivers/tty/serial/serial_core.c
-@@ -863,9 +863,11 @@ static int uart_set_info(struct tty_stru
- 		goto check_and_exit;
- 	}
+--- a/drivers/net/dsa/bcm_sf2.c
++++ b/drivers/net/dsa/bcm_sf2.c
+@@ -775,11 +775,9 @@ static void bcm_sf2_sw_mac_link_up(struc
+ 	bcm_sf2_sw_mac_link_set(ds, port, interface, true);
  
--	retval = security_locked_down(LOCKDOWN_TIOCSSERIAL);
--	if (retval && (change_irq || change_port))
--		goto exit;
-+	if (change_irq || change_port) {
-+		retval = security_locked_down(LOCKDOWN_TIOCSSERIAL);
-+		if (retval)
-+			goto exit;
-+	}
+ 	if (port != core_readl(priv, CORE_IMP0_PRT_ID)) {
+-		u32 reg_rgmii_ctrl;
++		u32 reg_rgmii_ctrl = 0;
+ 		u32 reg, offset;
  
- 	/*
- 	 * Ask the low level driver to verify the settings.
+-		reg_rgmii_ctrl = bcm_sf2_reg_rgmii_cntrl(priv, port);
+-
+ 		if (priv->type == BCM4908_DEVICE_ID ||
+ 		    priv->type == BCM7445_DEVICE_ID)
+ 			offset = CORE_STS_OVERRIDE_GMIIP_PORT(port);
+@@ -790,6 +788,7 @@ static void bcm_sf2_sw_mac_link_up(struc
+ 		    interface == PHY_INTERFACE_MODE_RGMII_TXID ||
+ 		    interface == PHY_INTERFACE_MODE_MII ||
+ 		    interface == PHY_INTERFACE_MODE_REVMII) {
++			reg_rgmii_ctrl = bcm_sf2_reg_rgmii_cntrl(priv, port);
+ 			reg = reg_readl(priv, reg_rgmii_ctrl);
+ 			reg &= ~(RX_PAUSE_EN | TX_PAUSE_EN);
+ 
 
 
