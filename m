@@ -2,139 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 678AF3956E3
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 10:24:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EB2C33956EB
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 10:24:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230451AbhEaI0I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 04:26:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46456 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230422AbhEaIZu (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 04:25:50 -0400
-Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 348AFC061761
-        for <linux-kernel@vger.kernel.org>; Mon, 31 May 2021 01:24:11 -0700 (PDT)
-Received: by mail-ej1-x635.google.com with SMTP id gb17so15426226ejc.8
-        for <linux-kernel@vger.kernel.org>; Mon, 31 May 2021 01:24:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=AMGF9A8NxX5xFp88g1oq61PA7j73RZ9YA7ACwFU1V+Y=;
-        b=t/b9iXIrxu/JhKkcetsLcVbf2g4krNVZWx3+IVeEMFw0sT4uEsCq2s1mb1rXSouKd5
-         8vGX9l9EoyWU23XlOf6fbpTGEKT244+RAxx0pkIALHCSijxRIfLq+I/0vorhbC4LzH7c
-         bsCW4UE+tho2K+PD0vu71vAeCOJOAIuPKtxqhH7g46apcPDd81Te5nAJVySLXax9PSzu
-         B1GbsPIFOeR8m0t506LH1nMU04VAF4SQ4/9BJdTlq+rcNOjZlFo0imU8nBfv6LVe5W2i
-         ZiIkppTZCx+QLvL+HmbmWN8taFPbZoND8j5ze+Zc+pAaxBSseBUdjkgiM4177f/51gNZ
-         mZ0Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=AMGF9A8NxX5xFp88g1oq61PA7j73RZ9YA7ACwFU1V+Y=;
-        b=s40B3bH0D+2ZXNBKrdciSIWuHC8N1DL+70Gj+Yux4KZfjIpqr/ILsFNjBHIeEug1M8
-         WlfWLGZKIqdC8syaUMkT089Dpyd89Z9avFQ5UrGnTiHG0apLTQhr+UDUDuceDmSvX5Ya
-         0vNQ8RyiHv/uThzmmm3oNIYZqiRi62b8PkCWY7M7QK+mHMfBOQiby4rmPGYHVl9bpd5f
-         1u2liQ8ZB28F/DC9ArP+7vSmz1lcY27GcrS4TjAllUuIzhncwQdBvG6SqybtQ9VfSaXM
-         gOKEUZsWbkGlvqIBE9HvLLtitOK+yp+FqUEXbeH+6LythU9f+I2X8jHF/jL8Hsw2H/J7
-         6Qeg==
-X-Gm-Message-State: AOAM530WUMQvLzY3Mgw7wxnkKQBe6WNHC6FDa7qKqXUlYSsQOuY0NrJZ
-        h4bg8tOYHrBSw+HMcrojEzxs4eMC/sFI2TzMcEwj
-X-Google-Smtp-Source: ABdhPJyLXTMInE0lOUyC+YYVTDrsstRUXgMnU1e7dlRtQMym/NrAjnWfJ0HslXQMiem1oFI8/USmGvJadwSNN/fSxw4=
-X-Received: by 2002:a17:906:318b:: with SMTP id 11mr21157495ejy.395.1622449449822;
- Mon, 31 May 2021 01:24:09 -0700 (PDT)
+        id S230454AbhEaI0P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 04:26:15 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46660 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230425AbhEaIZw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 04:25:52 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2FEAD610C9;
+        Mon, 31 May 2021 08:24:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1622449453;
+        bh=8P7d3B/GlN7hz8aqxDwhACR/qaphXcmTzOMcKPMMbjs=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=l6iom4iXr1g//E31Q4JTOMJNEIBl9AI1ytDZrSoXQbtQz5ns0OU6NDWcq6PbPibct
+         aqfYzQGL80zLYrFt81XnCToJRhdcqsavxJkuHnew2dK5H6apCu7lvSe32LOQLTAGUA
+         vw9GkdLQ3JCfDGabQQQhxYQP8VzE0ThilvJYO3qDnhsnewALCytaa4chbv4R+2rnes
+         5Q02x8NwWXxSbflMmduvllf3QDsjcpxNS0mdB8mP8RH0yFNY60p+9dNoYiii9Uuii9
+         GjYgSLF3JnnimiW5QBxR0PNQqB7GnatDWb6q5ZKwW/MTeCvrAi4HYPKf9VjvQ+Xp6a
+         HQvpaeRvxKehw==
+Date:   Mon, 31 May 2021 13:54:09 +0530
+From:   Vinod Koul <vkoul@kernel.org>
+To:     Tobias Schramm <t.schramm@manjaro.org>
+Cc:     linux-usb@vger.kernel.org, linux-rockchip@lists.infradead.org,
+        linux-phy@lists.infradead.org, devicetree@vger.kernel.org,
+        Johan Jonker <jbx6244@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Heiko Stuebner <heiko@sntech.de>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 2/5] phy: phy-rockchip-inno-usb2: add support for
+ RK3308 USB phy
+Message-ID: <YLSdKcOJcwzB8IeW@vkoul-mobl.Dlink>
+References: <20210514150044.2099298-1-t.schramm@manjaro.org>
+ <20210514150044.2099298-3-t.schramm@manjaro.org>
 MIME-Version: 1.0
-References: <20210528121157.105-1-xieyongji@bytedance.com> <49ab3d41-c5d8-a49d-3ff4-28ebfdba0181@redhat.com>
- <CACycT3uo-J3MYdEo0TscENewp3Xnjce8yFLtt6JkK8uZrvsMjg@mail.gmail.com> <4ff90e78-0c7a-def6-ef84-367bcce4cea5@redhat.com>
-In-Reply-To: <4ff90e78-0c7a-def6-ef84-367bcce4cea5@redhat.com>
-From:   Yongji Xie <xieyongji@bytedance.com>
-Date:   Mon, 31 May 2021 16:23:59 +0800
-Message-ID: <CACycT3vrngdkrocvegMGMyp8AGq9HRBx7mXD7o49m6TUDfh_BQ@mail.gmail.com>
-Subject: Re: Re: [PATCH v3] virtio-net: Add validation for used length
-To:     Jason Wang <jasowang@redhat.com>
-Cc:     "Michael S. Tsirkin" <mst@redhat.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        virtualization <virtualization@lists.linux-foundation.org>,
-        netdev@vger.kernel.org, linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210514150044.2099298-3-t.schramm@manjaro.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 31, 2021 at 3:51 PM Jason Wang <jasowang@redhat.com> wrote:
->
->
-> =E5=9C=A8 2021/5/31 =E4=B8=8B=E5=8D=883:19, Yongji Xie =E5=86=99=E9=81=93=
-:
-> > On Mon, May 31, 2021 at 2:49 PM Jason Wang <jasowang@redhat.com> wrote:
-> >>
-> >> =E5=9C=A8 2021/5/28 =E4=B8=8B=E5=8D=888:11, Xie Yongji =E5=86=99=E9=81=
-=93:
-> >>> This adds validation for used length (might come
-> >>> from an untrusted device) to avoid data corruption
-> >>> or loss.
-> >>>
-> >>> Signed-off-by: Xie Yongji <xieyongji@bytedance.com>
-> >>> ---
-> >>>    drivers/net/virtio_net.c | 28 +++++++++++++++++++++-------
-> >>>    1 file changed, 21 insertions(+), 7 deletions(-)
-> >>>
-> >>> diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
-> >>> index 073fec4c0df1..01f15b65824c 100644
-> >>> --- a/drivers/net/virtio_net.c
-> >>> +++ b/drivers/net/virtio_net.c
-> >>> @@ -732,6 +732,17 @@ static struct sk_buff *receive_small(struct net_=
-device *dev,
-> >>>
-> >>>        rcu_read_lock();
-> >>>        xdp_prog =3D rcu_dereference(rq->xdp_prog);
-> >>> +     if (unlikely(len > GOOD_PACKET_LEN)) {
-> >>> +             pr_debug("%s: rx error: len %u exceeds max size %d\n",
-> >>> +                      dev->name, len, GOOD_PACKET_LEN);
-> >>> +             dev->stats.rx_length_errors++;
-> >>> +             if (xdp_prog)
-> >>> +                     goto err_xdp;
-> >>> +
-> >>> +             rcu_read_unlock();
-> >>> +             put_page(page);
-> >>> +             return NULL;
-> >>> +     }
-> >>>        if (xdp_prog) {
-> >>>                struct virtio_net_hdr_mrg_rxbuf *hdr =3D buf + header_=
-offset;
-> >>>                struct xdp_frame *xdpf;
-> >>> @@ -888,6 +899,16 @@ static struct sk_buff *receive_mergeable(struct =
-net_device *dev,
-> >>>
-> >>>        rcu_read_lock();
-> >>>        xdp_prog =3D rcu_dereference(rq->xdp_prog);
-> >>> +     if (unlikely(len > truesize)) {
-> >>> +             pr_debug("%s: rx error: len %u exceeds truesize %lu\n",
-> >>> +                      dev->name, len, (unsigned long)ctx);
-> >>> +             dev->stats.rx_length_errors++;
-> >>> +             if (xdp_prog)
-> >>> +                     goto err_xdp;
-> >>> +
-> >>> +             rcu_read_unlock();
-> >>> +             goto err_skb;
-> >>> +     }
-> >>
-> >> Patch looks correct but I'd rather not bother XDP here. It would be
-> >> better if we just do the check before rcu_read_lock() and use err_skb
-> >> directly() to avoid RCU/XDP stuffs.
-> >>
-> > If so, we will miss the statistics of xdp_drops. Is it OK?
->
->
-> It should be ok, we still had drops and it was dropped before dealing
-> with XDP.
->
-> The motivation is to have simple codes.
->
+On 14-05-21, 17:00, Tobias Schramm wrote:
+> The RK3308 SoC uses a slightly different USB phy than other Rockchip
+> parts.
+> This commit adds support for that phy.
 
-OK, will send v4 soon.
+Applied, thanks
 
-Thanks,
-Yongji
+-- 
+~Vinod
