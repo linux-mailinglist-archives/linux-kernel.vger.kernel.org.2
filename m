@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 085AF395CCD
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 15:36:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 39A16395ED1
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 16:02:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231938AbhEaNiH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 09:38:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34110 "EHLO mail.kernel.org"
+        id S232346AbhEaOD7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 10:03:59 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43908 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232332AbhEaN0Z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 09:26:25 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5CADE61408;
-        Mon, 31 May 2021 13:21:15 +0000 (UTC)
+        id S232271AbhEaNk7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 09:40:59 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5AB41613D1;
+        Mon, 31 May 2021 13:27:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1622467275;
-        bh=RoB6vYWZYdd+NFdYaGdOcUCdT3LohU7v+XM3Bfae6t4=;
+        s=korg; t=1622467669;
+        bh=MSDdwLgqXfSX0xnV9EaZQyWnNiZCGjU8vudd2Vy++EI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=rk/uJ8TqZFvBjM6bt39RX2zx6wD4yKdBjUiXk6jdE62NBOBOdMe/r7MMdmhH4Rtgu
-         50meuk7Hp04gni1qaGgmBWhmkyGj+hqXYVOSGDR+a2XTrgMJVzDQjQs8XlIsZsdzYZ
-         LDFeS8FVibQz2WTDk8RPhkZwoW8NfW5fQuPl832M=
+        b=Uw9tM0kSuau7nNaIzb1f3yP3PRiGwDCEwRiBM/WvinduHq6FXs3tFN4+KSnToeoHY
+         R6Jac0AkMw1LLd50O8z4ThmlgDXjKAReRlm4nL7xmJM191e+5bex8ZRGv+lp1Ob9/n
+         kUTVR+Pipa6+5sR7IDsoQl7diyNeTWteknGeRNFY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Kalle Valo <kvalo@codeaurora.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 46/66] libertas: register sysfs groups properly
+        stable@vger.kernel.org,
+        Thadeu Lima de Souza Cascardo <cascardo@canonical.com>,
+        Marcel Holtmann <marcel@holtmann.org>
+Subject: [PATCH 4.14 34/79] Bluetooth: cmtp: fix file refcount when cmtp_attach_device fails
 Date:   Mon, 31 May 2021 15:14:19 +0200
-Message-Id: <20210531130637.709465215@linuxfoundation.org>
+Message-Id: <20210531130637.105718148@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210531130636.254683895@linuxfoundation.org>
-References: <20210531130636.254683895@linuxfoundation.org>
+In-Reply-To: <20210531130636.002722319@linuxfoundation.org>
+References: <20210531130636.002722319@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,94 +40,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+From: Thadeu Lima de Souza Cascardo <cascardo@canonical.com>
 
-[ Upstream commit 7e79b38fe9a403b065ac5915465f620a8fb3de84 ]
+commit 8da3a0b87f4f1c3a3bbc4bfb78cf68476e97d183 upstream.
 
-The libertas driver was trying to register sysfs groups "by hand" which
-causes them to be created _after_ the device is initialized and
-announced to userspace, which causes races and can prevent userspace
-tools from seeing the sysfs files correctly.
+When cmtp_attach_device fails, cmtp_add_connection returns the error value
+which leads to the caller to doing fput through sockfd_put. But
+cmtp_session kthread, which is stopped in this path will also call fput,
+leading to a potential refcount underflow or a use-after-free.
 
-Fix this up by using the built-in sysfs_groups pointers in struct
-net_device which were created for this very reason, fixing the race
-condition, and properly allowing for any error that might have occured
-to be handled properly.
+Add a refcount before we signal the kthread to stop. The kthread will try
+to grab the cmtp_session_sem mutex before doing the fput, which is held
+when get_file is called, so there should be no races there.
 
-Cc: Kalle Valo <kvalo@codeaurora.org>
-Link: https://lore.kernel.org/r/20210503115736.2104747-54-gregkh@linuxfoundation.org
+Reported-by: Ryota Shiga
+Signed-off-by: Thadeu Lima de Souza Cascardo <cascardo@canonical.com>
+Signed-off-by: Marcel Holtmann <marcel@holtmann.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/wireless/marvell/libertas/mesh.c | 28 +++-----------------
- 1 file changed, 4 insertions(+), 24 deletions(-)
+ net/bluetooth/cmtp/core.c |    5 +++++
+ 1 file changed, 5 insertions(+)
 
-diff --git a/drivers/net/wireless/marvell/libertas/mesh.c b/drivers/net/wireless/marvell/libertas/mesh.c
-index d0c881dd5846..f1e9cbcfdc16 100644
---- a/drivers/net/wireless/marvell/libertas/mesh.c
-+++ b/drivers/net/wireless/marvell/libertas/mesh.c
-@@ -797,19 +797,6 @@ static const struct attribute_group mesh_ie_group = {
- 	.attrs = mesh_ie_attrs,
- };
- 
--static void lbs_persist_config_init(struct net_device *dev)
--{
--	int ret;
--	ret = sysfs_create_group(&(dev->dev.kobj), &boot_opts_group);
--	ret = sysfs_create_group(&(dev->dev.kobj), &mesh_ie_group);
--}
--
--static void lbs_persist_config_remove(struct net_device *dev)
--{
--	sysfs_remove_group(&(dev->dev.kobj), &boot_opts_group);
--	sysfs_remove_group(&(dev->dev.kobj), &mesh_ie_group);
--}
--
- 
- /***************************************************************************
-  * Initializing and starting, stopping mesh
-@@ -1021,6 +1008,10 @@ static int lbs_add_mesh(struct lbs_private *priv)
- 	SET_NETDEV_DEV(priv->mesh_dev, priv->dev->dev.parent);
- 
- 	mesh_dev->flags |= IFF_BROADCAST | IFF_MULTICAST;
-+	mesh_dev->sysfs_groups[0] = &lbs_mesh_attr_group;
-+	mesh_dev->sysfs_groups[1] = &boot_opts_group;
-+	mesh_dev->sysfs_groups[2] = &mesh_ie_group;
+--- a/net/bluetooth/cmtp/core.c
++++ b/net/bluetooth/cmtp/core.c
+@@ -391,6 +391,11 @@ int cmtp_add_connection(struct cmtp_conn
+ 	if (!(session->flags & BIT(CMTP_LOOPBACK))) {
+ 		err = cmtp_attach_device(session);
+ 		if (err < 0) {
++			/* Caller will call fput in case of failure, and so
++			 * will cmtp_session kthread.
++			 */
++			get_file(session->sock->file);
 +
- 	/* Register virtual mesh interface */
- 	ret = register_netdev(mesh_dev);
- 	if (ret) {
-@@ -1028,19 +1019,10 @@ static int lbs_add_mesh(struct lbs_private *priv)
- 		goto err_free_netdev;
- 	}
- 
--	ret = sysfs_create_group(&(mesh_dev->dev.kobj), &lbs_mesh_attr_group);
--	if (ret)
--		goto err_unregister;
--
--	lbs_persist_config_init(mesh_dev);
--
- 	/* Everything successful */
- 	ret = 0;
- 	goto done;
- 
--err_unregister:
--	unregister_netdev(mesh_dev);
--
- err_free_netdev:
- 	free_netdev(mesh_dev);
- 
-@@ -1063,8 +1045,6 @@ void lbs_remove_mesh(struct lbs_private *priv)
- 	lbs_deb_enter(LBS_DEB_MESH);
- 	netif_stop_queue(mesh_dev);
- 	netif_carrier_off(mesh_dev);
--	sysfs_remove_group(&(mesh_dev->dev.kobj), &lbs_mesh_attr_group);
--	lbs_persist_config_remove(mesh_dev);
- 	unregister_netdev(mesh_dev);
- 	priv->mesh_dev = NULL;
- 	kfree(mesh_dev->ieee80211_ptr);
--- 
-2.30.2
-
+ 			atomic_inc(&session->terminate);
+ 			wake_up_interruptible(sk_sleep(session->sock->sk));
+ 			up_write(&cmtp_session_sem);
 
 
