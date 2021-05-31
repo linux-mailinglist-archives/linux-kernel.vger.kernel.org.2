@@ -2,36 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 967D5395E93
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 15:59:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E21D23965A1
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 18:41:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233236AbhEaN7n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 09:59:43 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44430 "EHLO mail.kernel.org"
+        id S234163AbhEaQmu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 12:42:50 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47898 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232594AbhEaNhv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 09:37:51 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6560E613FE;
-        Mon, 31 May 2021 13:26:21 +0000 (UTC)
+        id S234060AbhEaOxS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 10:53:18 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7C83D613F5;
+        Mon, 31 May 2021 13:58:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1622467581;
-        bh=r7+BGY4yXVD4RjCbNhNTLNlU5ICE+l7v3vpdgVXSfmI=;
+        s=korg; t=1622469529;
+        bh=Q6mA6D0soW/kCeWiI5cvmV+dDk1a114klHTObJLnEXo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=zZwaoLiusiScbmdxjLY2bPHAXPUs6+aT8Y1I/oRXxhV9ucFKOwKHoHqFvqoy34++c
-         cJXDBIBQVqmT1q0MePNxLij8Ntuo/4JnwuiehEeAkSGOZ7Qsqz+8GHGRPq0cWOR9dI
-         q/dozdUDGaaWLkeHs9gMyIQ+6N1ohpZP9JzseZf0=
+        b=mdontsgZPH6QX/gfeZfEABrWK9I6XMA12YsJf6Qvy1cv97WU1n9eeKZHQ7N0u/R5E
+         fofEYv9Gk2wPhO7lMjBU085ZbrutK3cFvPJu2G6669vL2Vqd1ccD8uTvU+0oxPREM1
+         8Zeap6/lVmS3W4RLhlf9KjZYFXEj2uuyGtJrNPNk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Taehee Yoo <ap420073@gmail.com>,
+        stable@vger.kernel.org, Daniel Borkmann <daniel@iogearbox.net>,
+        Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
+        Richard Sanger <rsanger@wand.net.nz>,
         "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 110/116] sch_dsmark: fix a NULL deref in qdisc_reset()
-Date:   Mon, 31 May 2021 15:14:46 +0200
-Message-Id: <20210531130643.842088101@linuxfoundation.org>
+Subject: [PATCH 5.12 232/296] net: packetmmap: fix only tx timestamp on request
+Date:   Mon, 31 May 2021 15:14:47 +0200
+Message-Id: <20210531130711.608742062@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210531130640.131924542@linuxfoundation.org>
-References: <20210531130640.131924542@linuxfoundation.org>
+In-Reply-To: <20210531130703.762129381@linuxfoundation.org>
+References: <20210531130703.762129381@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,74 +42,54 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Taehee Yoo <ap420073@gmail.com>
+From: Richard Sanger <rsanger@wand.net.nz>
 
-[ Upstream commit 9b76eade16423ef06829cccfe3e100cfce31afcd ]
+[ Upstream commit 171c3b151118a2fe0fc1e2a9d1b5a1570cfe82d2 ]
 
-If Qdisc_ops->init() is failed, Qdisc_ops->reset() would be called.
-When dsmark_init(Qdisc_ops->init()) is failed, it possibly doesn't
-initialize dsmark_qdisc_data->q. But dsmark_reset(Qdisc_ops->reset())
-uses dsmark_qdisc_data->q pointer wihtout any null checking.
-So, panic would occur.
+The packetmmap tx ring should only return timestamps if requested via
+setsockopt PACKET_TIMESTAMP, as documented. This allows compatibility
+with non-timestamp aware user-space code which checks
+tp_status == TP_STATUS_AVAILABLE; not expecting additional timestamp
+flags to be set in tp_status.
 
-Test commands:
-    sysctl net.core.default_qdisc=dsmark -w
-    ip link add dummy0 type dummy
-    ip link add vw0 link dummy0 type virt_wifi
-    ip link set vw0 up
-
-Splat looks like:
-KASAN: null-ptr-deref in range [0x0000000000000018-0x000000000000001f]
-CPU: 3 PID: 684 Comm: ip Not tainted 5.12.0+ #910
-RIP: 0010:qdisc_reset+0x2b/0x680
-Code: 1f 44 00 00 48 b8 00 00 00 00 00 fc ff df 41 57 41 56 41 55 41 54
-55 48 89 fd 48 83 c7 18 53 48 89 fa 48 c1 ea 03 48 83 ec 20 <80> 3c 02
-00 0f 85 09 06 00 00 4c 8b 65 18 0f 1f 44 00 00 65 8b 1d
-RSP: 0018:ffff88800fda6bf8 EFLAGS: 00010282
-RAX: dffffc0000000000 RBX: ffff8880050ed800 RCX: 0000000000000000
-RDX: 0000000000000003 RSI: ffffffff99e34100 RDI: 0000000000000018
-RBP: 0000000000000000 R08: fffffbfff346b553 R09: fffffbfff346b553
-R10: 0000000000000001 R11: fffffbfff346b552 R12: ffffffffc0824940
-R13: ffff888109e83800 R14: 00000000ffffffff R15: ffffffffc08249e0
-FS:  00007f5042287680(0000) GS:ffff888119800000(0000)
-knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 000055ae1f4dbd90 CR3: 0000000006760002 CR4: 00000000003706e0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- ? rcu_read_lock_bh_held+0xa0/0xa0
- dsmark_reset+0x3d/0xf0 [sch_dsmark]
- qdisc_reset+0xa9/0x680
- qdisc_destroy+0x84/0x370
- qdisc_create_dflt+0x1fe/0x380
- attach_one_default_qdisc.constprop.41+0xa4/0x180
- dev_activate+0x4d5/0x8c0
- ? __dev_open+0x268/0x390
- __dev_open+0x270/0x390
-
-Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
-Signed-off-by: Taehee Yoo <ap420073@gmail.com>
+Fixes: b9c32fb27170 ("packet: if hw/sw ts enabled in rx/tx ring, report which ts we got")
+Cc: Daniel Borkmann <daniel@iogearbox.net>
+Cc: Willem de Bruijn <willemdebruijn.kernel@gmail.com>
+Signed-off-by: Richard Sanger <rsanger@wand.net.nz>
 Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/sched/sch_dsmark.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ net/packet/af_packet.c | 10 ++++++++--
+ 1 file changed, 8 insertions(+), 2 deletions(-)
 
-diff --git a/net/sched/sch_dsmark.c b/net/sched/sch_dsmark.c
-index 1c2fce8c45b2..fe030af9272c 100644
---- a/net/sched/sch_dsmark.c
-+++ b/net/sched/sch_dsmark.c
-@@ -402,7 +402,8 @@ static void dsmark_reset(struct Qdisc *sch)
- 	struct dsmark_qdisc_data *p = qdisc_priv(sch);
+diff --git a/net/packet/af_packet.c b/net/packet/af_packet.c
+index 9611e41c7b8b..c52557ec7fb3 100644
+--- a/net/packet/af_packet.c
++++ b/net/packet/af_packet.c
+@@ -422,7 +422,8 @@ static __u32 tpacket_get_timestamp(struct sk_buff *skb, struct timespec64 *ts,
+ 	    ktime_to_timespec64_cond(shhwtstamps->hwtstamp, ts))
+ 		return TP_STATUS_TS_RAW_HARDWARE;
  
- 	pr_debug("%s(sch %p,[qdisc %p])\n", __func__, sch, p);
--	qdisc_reset(p->q);
-+	if (p->q)
-+		qdisc_reset(p->q);
- 	sch->qstats.backlog = 0;
- 	sch->q.qlen = 0;
- }
+-	if (ktime_to_timespec64_cond(skb->tstamp, ts))
++	if ((flags & SOF_TIMESTAMPING_SOFTWARE) &&
++	    ktime_to_timespec64_cond(skb->tstamp, ts))
+ 		return TP_STATUS_TS_SOFTWARE;
+ 
+ 	return 0;
+@@ -2340,7 +2341,12 @@ static int tpacket_rcv(struct sk_buff *skb, struct net_device *dev,
+ 
+ 	skb_copy_bits(skb, 0, h.raw + macoff, snaplen);
+ 
+-	if (!(ts_status = tpacket_get_timestamp(skb, &ts, po->tp_tstamp)))
++	/* Always timestamp; prefer an existing software timestamp taken
++	 * closer to the time of capture.
++	 */
++	ts_status = tpacket_get_timestamp(skb, &ts,
++					  po->tp_tstamp | SOF_TIMESTAMPING_SOFTWARE);
++	if (!ts_status)
+ 		ktime_get_real_ts64(&ts);
+ 
+ 	status |= ts_status;
 -- 
 2.30.2
 
