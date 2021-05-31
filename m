@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A72063962B5
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 16:59:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EBA5D3965B9
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 18:44:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233529AbhEaPAj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 11:00:39 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37362 "EHLO mail.kernel.org"
+        id S231673AbhEaQqH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 12:46:07 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50182 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232810AbhEaOF4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 10:05:56 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 17E666195C;
-        Mon, 31 May 2021 13:38:42 +0000 (UTC)
+        id S233109AbhEaOzT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 10:55:19 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DE74161442;
+        Mon, 31 May 2021 13:59:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1622468323;
-        bh=3Shp8sSKKLxkGkhTI0C21kKKh1LOq5TbLqI58tEXAGI=;
+        s=korg; t=1622469565;
+        bh=v0qR1BplzjLxMS5bvo0jgaXHv5BR02BjMacAK3xckCA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=hJCEXhvyScR5Kpdqjq8qrDptw6n12vpFCNMTbciHA5OgQGwqm/EIZmaAIOTEzTlo5
-         Gn8oVQOuv1v9dcY0fAho6W5sfXT2j0TJzI1IcJgmVVUQpwqtscRzWWtSYmJ0JZeLa9
-         QpOAyUVyX1yh96ojvuDMD/wvTbtLWBUgNsh3ohWY=
+        b=yItmfoIWIVhXHnshYbQ4rfBh65C9uY1EdS/XFEbnTJjcOJW15KHerN5M08nhYL6ko
+         20m1R6G52YE0oZ8mNwT45/Jj0dlPybBb3ouga73+x7G0IMnU9+6UYiRMpWGpY1j9vA
+         vqzqjGWqmxkeewmHpM0yjwH9jMpnI3jvhKIOjWRI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
-        "David S. Miller" <davem@davemloft.net>,
+        stable@vger.kernel.org, Steve French <stfrench@microsoft.com>,
+        Stefan Metzmacher <metze@samba.org>,
+        Shyam Prasad N <sprasad@microsoft.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 201/252] chelsio/chtls: unlock on error in chtls_pt_recvmsg()
+Subject: [PATCH 5.12 211/296] SMB3: incorrect file id in requests compounded with open
 Date:   Mon, 31 May 2021 15:14:26 +0200
-Message-Id: <20210531130704.845407722@linuxfoundation.org>
+Message-Id: <20210531130710.951904835@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210531130657.971257589@linuxfoundation.org>
-References: <20210531130657.971257589@linuxfoundation.org>
+In-Reply-To: <20210531130703.762129381@linuxfoundation.org>
+References: <20210531130703.762129381@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,38 +41,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dan Carpenter <dan.carpenter@oracle.com>
+From: Steve French <stfrench@microsoft.com>
 
-[ Upstream commit 832ce924b1a14e139e184a6da9f5a69a5e47b256 ]
+[ Upstream commit c0d46717b95735b0eacfddbcca9df37a49de9c7a ]
 
-This error path needs to release some memory and call release_sock(sk);
-before returning.
+See MS-SMB2 3.2.4.1.4, file ids in compounded requests should be set to
+0xFFFFFFFFFFFFFFFF (we were treating it as u32 not u64 and setting
+it incorrectly).
 
-Fixes: 6919a8264a32 ("Crypto/chtls: add/delete TLS header in driver")
-Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Steve French <stfrench@microsoft.com>
+Reported-by: Stefan Metzmacher <metze@samba.org>
+Reviewed-by: Shyam Prasad N <sprasad@microsoft.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/chelsio/inline_crypto/chtls/chtls_io.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+ fs/cifs/smb2pdu.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/net/ethernet/chelsio/inline_crypto/chtls/chtls_io.c b/drivers/net/ethernet/chelsio/inline_crypto/chtls/chtls_io.c
-index 188d871f6b8c..c320cc8ca68d 100644
---- a/drivers/net/ethernet/chelsio/inline_crypto/chtls/chtls_io.c
-+++ b/drivers/net/ethernet/chelsio/inline_crypto/chtls/chtls_io.c
-@@ -1564,8 +1564,10 @@ found_ok_skb:
- 			cerr = put_cmsg(msg, SOL_TLS, TLS_GET_RECORD_TYPE,
- 					sizeof(thdr->type), &thdr->type);
- 
--			if (cerr && thdr->type != TLS_RECORD_TYPE_DATA)
--				return -EIO;
-+			if (cerr && thdr->type != TLS_RECORD_TYPE_DATA) {
-+				copied = -EIO;
-+				break;
-+			}
- 			/*  don't send tls header, skip copy */
- 			goto skip_copy;
+diff --git a/fs/cifs/smb2pdu.c b/fs/cifs/smb2pdu.c
+index 20b353429e69..7606ce344de5 100644
+--- a/fs/cifs/smb2pdu.c
++++ b/fs/cifs/smb2pdu.c
+@@ -3907,10 +3907,10 @@ smb2_new_read_req(void **buf, unsigned int *total_len,
+ 			 * Related requests use info from previous read request
+ 			 * in chain.
+ 			 */
+-			shdr->SessionId = 0xFFFFFFFF;
++			shdr->SessionId = 0xFFFFFFFFFFFFFFFF;
+ 			shdr->TreeId = 0xFFFFFFFF;
+-			req->PersistentFileId = 0xFFFFFFFF;
+-			req->VolatileFileId = 0xFFFFFFFF;
++			req->PersistentFileId = 0xFFFFFFFFFFFFFFFF;
++			req->VolatileFileId = 0xFFFFFFFFFFFFFFFF;
  		}
+ 	}
+ 	if (remaining_bytes > io_parms->length)
 -- 
 2.30.2
 
