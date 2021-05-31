@@ -2,41 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A0502396542
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 18:28:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 556713961CE
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 16:45:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234597AbhEaQ36 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 12:29:58 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40720 "EHLO mail.kernel.org"
+        id S231899AbhEaOqr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 10:46:47 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60414 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233174AbhEaOpi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 10:45:38 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0A4336143B;
-        Mon, 31 May 2021 13:55:22 +0000 (UTC)
+        id S232505AbhEaN76 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 09:59:58 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7CC7961441;
+        Mon, 31 May 2021 13:36:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1622469323;
-        bh=bWyJKvQVU+kJ1ALVoVaPXvozJvDT8Gaa9rBeUHRNj8w=;
+        s=korg; t=1622468178;
+        bh=H3RWPZJkjVUorJnG3KIjbbaqmQVKkbapPblliMH5WxE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=PghvIIgnqHWwDf//khDF/KwnizMjx003ONf/9UqTjf13nlOjsxhhgcCeg3H2WTL/A
-         qiFHzKkWrv2kLqAGdGs8U7sVcXOjmm0CJQx8YSHRbJk5tmS7HLIfu0n1DMJPi8Grk2
-         nkmMgpAT4mUcn+j7UdCPbTPXsfPtfDlHVBbHRD38=
+        b=PBUI6ilMNXZKbNi4ihJrZye8MJ231VUgoTJG8jDCD9DJVrIHWxpTn1oMe4Mt9u7db
+         VLC28OnGz2gU/W2QntVtuwUBhAJRQovaNT4Lj0zKTS8PnknalgwA+yC2LMwEWxv79O
+         iQyz9aAb3ITKHXe4Se5soAIO7wuJ0v9OczRsSm70=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Ian Rogers <irogers@google.com>,
-        Arnaldo Carvalho de Melo <acme@redhat.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Stephane Eranian <eranian@google.com>
-Subject: [PATCH 5.12 154/296] perf debug: Move debug initialization earlier
+        stable@vger.kernel.org, Tom Seewald <tseewald@gmail.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.10 144/252] char: hpet: add checks after calling ioremap
 Date:   Mon, 31 May 2021 15:13:29 +0200
-Message-Id: <20210531130709.039488460@linuxfoundation.org>
+Message-Id: <20210531130702.910000177@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210531130703.762129381@linuxfoundation.org>
-References: <20210531130703.762129381@linuxfoundation.org>
+In-Reply-To: <20210531130657.971257589@linuxfoundation.org>
+References: <20210531130657.971257589@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,48 +39,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ian Rogers <irogers@google.com>
+From: Tom Seewald <tseewald@gmail.com>
 
-commit c59870e2110e1229a6e4b2457aece6ffe8d68d99 upstream.
+[ Upstream commit b11701c933112d49b808dee01cb7ff854ba6a77a ]
 
-This avoids segfaults during option handlers that use pr_err. For
-example, "perf --debug nopager list" segfaults before this change.
+The function hpet_resources() calls ioremap() two times, but in both
+cases it does not check if ioremap() returned a null pointer. Fix this
+by adding null pointer checks and returning an appropriate error.
 
-Fixes: 8abceacff87d (perf debug: Add debug_set_file function)
-Signed-off-by: Ian Rogers <irogers@google.com>
-Tested-by: Arnaldo Carvalho de Melo <acme@redhat.com>
-Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com>
-Cc: Jiri Olsa <jolsa@redhat.com>
-Cc: Mark Rutland <mark.rutland@arm.com>
-Cc: Namhyung Kim <namhyung@kernel.org>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Cc: Stephane Eranian <eranian@google.com>
-Link: http://lore.kernel.org/lkml/20210519164447.2672030-1-irogers@google.com
-Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
+Signed-off-by: Tom Seewald <tseewald@gmail.com>
+Link: https://lore.kernel.org/r/20210503115736.2104747-30-gregkh@linuxfoundation.org
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- tools/perf/perf.c |    4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/char/hpet.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
---- a/tools/perf/perf.c
-+++ b/tools/perf/perf.c
-@@ -443,6 +443,8 @@ int main(int argc, const char **argv)
- 	const char *cmd;
- 	char sbuf[STRERR_BUFSIZE];
+diff --git a/drivers/char/hpet.c b/drivers/char/hpet.c
+index 6f13def6c172..8b55085650ad 100644
+--- a/drivers/char/hpet.c
++++ b/drivers/char/hpet.c
+@@ -969,6 +969,8 @@ static acpi_status hpet_resources(struct acpi_resource *res, void *data)
+ 	if (ACPI_SUCCESS(status)) {
+ 		hdp->hd_phys_address = addr.address.minimum;
+ 		hdp->hd_address = ioremap(addr.address.minimum, addr.address.address_length);
++		if (!hdp->hd_address)
++			return AE_ERROR;
  
-+	perf_debug_setup();
-+
- 	/* libsubcmd init */
- 	exec_cmd_init("perf", PREFIX, PERF_EXEC_PATH, EXEC_PATH_ENVIRONMENT);
- 	pager_init(PERF_PAGER_ENVIRONMENT);
-@@ -531,8 +533,6 @@ int main(int argc, const char **argv)
- 	 */
- 	pthread__block_sigwinch();
+ 		if (hpet_is_known(hdp)) {
+ 			iounmap(hdp->hd_address);
+@@ -982,6 +984,8 @@ static acpi_status hpet_resources(struct acpi_resource *res, void *data)
+ 		hdp->hd_phys_address = fixmem32->address;
+ 		hdp->hd_address = ioremap(fixmem32->address,
+ 						HPET_RANGE_SIZE);
++		if (!hdp->hd_address)
++			return AE_ERROR;
  
--	perf_debug_setup();
--
- 	while (1) {
- 		static int done_help;
- 
+ 		if (hpet_is_known(hdp)) {
+ 			iounmap(hdp->hd_address);
+-- 
+2.30.2
+
 
 
