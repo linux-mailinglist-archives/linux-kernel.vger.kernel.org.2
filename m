@@ -2,35 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B944239638E
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 17:19:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DD5DF396394
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 17:19:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233454AbhEaPUm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 11:20:42 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43312 "EHLO mail.kernel.org"
+        id S232959AbhEaPVa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 11:21:30 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43520 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233795AbhEaOPk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 10:15:40 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8D1E561482;
-        Mon, 31 May 2021 13:43:00 +0000 (UTC)
+        id S233832AbhEaOPu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 10:15:50 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4BCD16199E;
+        Mon, 31 May 2021 13:43:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1622468581;
-        bh=WYKlr1WpWyge+aGeXdCxj0ZJSnge1bGb/5m24pQGkeM=;
+        s=korg; t=1622468583;
+        bh=piYdyNL1WQOyltnBpIV83mNDkIEQloyOxsth3vJvFG8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=IycZef0mqPCKgZGLij7kJlzdYkt1kSExgf2jNXl0PeR6HRC8pm9iLI4liP1ePjRbs
-         f8hTqmR4old3cUKu/rquEWm5nNoCGK6lW0bB5w7iqqietknlXaYzV/AjvayNNYn1vp
-         P/vFv3C6msYYEgfWz6Rd9/Imm5d06+GFjkzWzjDw=
+        b=WSODk3LqPvQh1V4jbyAsqqVdc27eDN2ScWzhGh8dT58h24wx1LNPAfKR5cI0NN/AT
+         kDIyWKa6rY1x2JYheCWywFTD6SsTIXBYlEwhL8L2Wep2RMHQ/rdVkvysRpurrEbyrt
+         RSt6HZRzWuwOkCrg/Ab2hAy9UsqxcSLxzdElr+hQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Rui Miguel Silva <rui.silva@linaro.org>,
-        Stable@vger.kernel.org,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Subject: [PATCH 5.4 044/177] iio: gyro: fxas21002c: balance runtime power in error path
-Date:   Mon, 31 May 2021 15:13:21 +0200
-Message-Id: <20210531130649.436435309@linuxfoundation.org>
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Stable@vger.kernel.org
+Subject: [PATCH 5.4 045/177] iio: adc: ad7768-1: Fix too small buffer passed to iio_push_to_buffers_with_timestamp()
+Date:   Mon, 31 May 2021 15:13:22 +0200
+Message-Id: <20210531130649.469463176@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210531130647.887605866@linuxfoundation.org>
 References: <20210531130647.887605866@linuxfoundation.org>
@@ -42,43 +41,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Rui Miguel Silva <rui.silva@linaro.org>
+From: Jonathan Cameron <Jonathan.Cameron@huawei.com>
 
-commit 2a54c8c9ebc2006bf72554afc84ffc67768979a0 upstream.
+commit a1caeebab07e9d72eec534489f47964782b93ba9 upstream.
 
-If we fail to read temperature or axis we need to decrement the
-runtime pm reference count to trigger autosuspend.
+Add space for the timestamp to be inserted.  Also ensure correct
+alignment for passing to iio_push_to_buffers_with_timestamp()
 
-Add the call to pm_put to do that in case of error.
-
-Fixes: a0701b6263ae ("iio: gyro: add core driver for fxas21002c")
-Suggested-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Signed-off-by: Rui Miguel Silva <rui.silva@linaro.org>
-Link: https://lore.kernel.org/linux-iio/CBBZA9T1OY9C.2611WSV49DV2G@arch-thunder/
-Cc: <Stable@vger.kernel.org>
+Fixes: a5f8c7da3dbe ("iio: adc: Add AD7768-1 ADC basic support")
 Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+Link: https://lore.kernel.org/r/20210501165314.511954-2-jic23@kernel.org
+Cc: <Stable@vger.kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/iio/gyro/fxas21002c_core.c |    2 ++
- 1 file changed, 2 insertions(+)
+ drivers/iio/adc/ad7768-1.c |    8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
 
---- a/drivers/iio/gyro/fxas21002c_core.c
-+++ b/drivers/iio/gyro/fxas21002c_core.c
-@@ -333,6 +333,7 @@ static int fxas21002c_temp_get(struct fx
- 	ret = regmap_field_read(data->regmap_fields[F_TEMP], &temp);
- 	if (ret < 0) {
- 		dev_err(dev, "failed to read temp: %d\n", ret);
-+		fxas21002c_pm_put(data);
- 		goto data_unlock;
- 	}
+--- a/drivers/iio/adc/ad7768-1.c
++++ b/drivers/iio/adc/ad7768-1.c
+@@ -166,6 +166,10 @@ struct ad7768_state {
+ 	 * transfer buffers to live in their own cache lines.
+ 	 */
+ 	union {
++		struct {
++			__be32 chan;
++			s64 timestamp;
++		} scan;
+ 		__be32 d32;
+ 		u8 d8[2];
+ 	} data ____cacheline_aligned;
+@@ -459,11 +463,11 @@ static irqreturn_t ad7768_trigger_handle
  
-@@ -366,6 +367,7 @@ static int fxas21002c_axis_get(struct fx
- 			       &axis_be, sizeof(axis_be));
- 	if (ret < 0) {
- 		dev_err(dev, "failed to read axis: %d: %d\n", index, ret);
-+		fxas21002c_pm_put(data);
- 		goto data_unlock;
- 	}
+ 	mutex_lock(&st->lock);
  
+-	ret = spi_read(st->spi, &st->data.d32, 3);
++	ret = spi_read(st->spi, &st->data.scan.chan, 3);
+ 	if (ret < 0)
+ 		goto err_unlock;
+ 
+-	iio_push_to_buffers_with_timestamp(indio_dev, &st->data.d32,
++	iio_push_to_buffers_with_timestamp(indio_dev, &st->data.scan,
+ 					   iio_get_time_ns(indio_dev));
+ 
+ 	iio_trigger_notify_done(indio_dev->trig);
 
 
