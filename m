@@ -2,183 +2,398 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A290396767
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 19:48:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F33A39676A
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 19:48:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230519AbhEaRtq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 13:49:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59076 "EHLO
+        id S232528AbhEaRuM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 13:50:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58596 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232540AbhEaRtY (ORCPT
+        with ESMTP id S232163AbhEaRtg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 13:49:24 -0400
-Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1EBAC074B03
-        for <linux-kernel@vger.kernel.org>; Mon, 31 May 2021 10:28:55 -0700 (PDT)
-Received: by mail-pl1-x630.google.com with SMTP id e15so5543845plh.1
-        for <linux-kernel@vger.kernel.org>; Mon, 31 May 2021 10:28:55 -0700 (PDT)
+        Mon, 31 May 2021 13:49:36 -0400
+Received: from mail-ot1-x331.google.com (mail-ot1-x331.google.com [IPv6:2607:f8b0:4864:20::331])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6566C061264
+        for <linux-kernel@vger.kernel.org>; Mon, 31 May 2021 10:30:16 -0700 (PDT)
+Received: by mail-ot1-x331.google.com with SMTP id i23-20020a9d68d70000b02902dc19ed4c15so11750900oto.0
+        for <linux-kernel@vger.kernel.org>; Mon, 31 May 2021 10:30:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=beagleboard-org.20150623.gappssmtp.com; s=20150623;
+        d=linaro.org; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=ultZWLSJXHjD/NDoDi7dRR5xSSmHzfIKA0oXYNi9NUE=;
-        b=zokO7hme+4avv5q6TaA4Luwpm6oKkm7dtD0IdrdHEG+5VOxtO7H4SINbiPiNmfqrn3
-         YVrhPwG4obBtb9OT3JfaA3DyTu93m5UDC3BfzVETWZDH5oK2HmKxtkEoEXbzAQFFsF1x
-         ODEXS5HVGdUVACAeTZ/qmObhT1+fCRnQHwKnHj18Ovb7lvtKYSBVkIhrP1saxOIUlC7J
-         OUBQdpkWAD0ltZa4Er0iTvzs4pTuozbVVHJshVGhxz8BGBOtdAxi3iA5M+Mhihqtb/Fu
-         FVPpIEu2Fu1msS7CBUJfkHO+1HCglRnZI7R0XI2F5w+5fx3Zu+Ez4Pos1f+dtsxEdGfc
-         2UYQ==
+        bh=8KsEmSoTxPR5lAcpNylV7WiHyog3+QbUtiWAOzs2J6o=;
+        b=XANaeynU2bWgS6Bu3afvpp8n5XWi6zIObbzxo9zOyFTEMTmt9dPljDe2u36fWqOL0V
+         PZqXtyWY4o6xHQ04EbfADNAeBKm2mC2brgwcbm1Drox5fkTM2HAPyVNsEklIunHmBACR
+         lR10DWYLGrlxTPW1mPonp9EOs1KAXJrXaUqGV5SI4au7Y21U7QHcf++RBh6CaIUhkhew
+         BYX8aiV7HvOrrEJPnt7mTddU/XZJ9Oy49MMJCiAC3x+fQhF0b7E/vlh0ihN0w/jtSFjS
+         Ei/U6sVk0KPVQK/XXjiMAwB8kAPhhQH8uLVyo+jlmeUNen/M7GtOSZFeA+33WYImkkIA
+         2ABw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=ultZWLSJXHjD/NDoDi7dRR5xSSmHzfIKA0oXYNi9NUE=;
-        b=fEukeyuRTfIHPEJAnFmolgLJFVvCzfsTktDrR9WzX/xLUwBnbypIVZ30BpH/aeRCwS
-         TThHFUn1TnvXwHIgYSn+MA/OktsYBOU6SgJXn7rbcc0wpDwsLjU9AKhnNclY2NdOgIf6
-         iX6TOMzg5j4ugfkZAZs3CT9vYNv2WPKC18CrDyB/Ib70t3oydjKpj/E4iV3MUFG5nnGK
-         JScLg4aE22AvbREv1wYGQWDu5HA7rNqp5OA8BKBWGt+xp86fGC81GvnyMT1pLjze2eDa
-         m2yj3TaWVBb6SmXqidUbBx247S5UNqJUtLa8B2TdTMNfyldCKWUiPw20hdlXY6WRDp++
-         7Xuw==
-X-Gm-Message-State: AOAM532x0jqxLWyHX0v43mGSR+OfcnZOLedyUM+FaPm4Y02dbSfpcPzf
-        hCODQ7DZ1WDGLP4N9fkF6cwlrA==
-X-Google-Smtp-Source: ABdhPJx5m1UTqxTXcCJiV4/XDgn7iAKF8n00hou0oP4urgg3LcoNupGXr4tTVIPst6zP3b+rs9k+EA==
-X-Received: by 2002:a17:90a:b28d:: with SMTP id c13mr202477pjr.80.1622482135140;
-        Mon, 31 May 2021 10:28:55 -0700 (PDT)
-Received: from x1 ([2601:1c0:4701:ae70:a449:bb:b7e3:9c7c])
-        by smtp.gmail.com with ESMTPSA id g2sm3896526pfv.106.2021.05.31.10.28.53
+        bh=8KsEmSoTxPR5lAcpNylV7WiHyog3+QbUtiWAOzs2J6o=;
+        b=eOL3WlOC0CTSEusSG+N/cqOvXpkQDp64IsPcDUbUaz93ErysoU8hiiMFD/bZlMLGcR
+         zlJuVNmruGAYq6HhDlArDFkO+yO/9RDVKMsltVTcChtkHr7Im9TkizpInmQlnYCwxsfQ
+         ABzN/KzbrX/pP0TeC6QNd+9qQcYXW9Sy90Bogh9xbGtItZ7MGBSs5wo11RJG+ddVXYNZ
+         pNqfVRilYQr7Ag/7edc4DxERDk2nHtSHZ1EvPoA0IPhcDzriob6xsjQBoUjRSNsInlRw
+         B72Wox82MxyedPzYklkTyB0tSnEgpgQqLq4Brbyk7wM1DrBOvt7vA0tG6lRwhDD0p8Up
+         s7JA==
+X-Gm-Message-State: AOAM530+RJjaRrhGEWtd2o90ly5D6MwTwO3Kjbof+PA0Q5AsRIBdfdmc
+        ARljhVc91SOLC/Bm3zG4locMPw==
+X-Google-Smtp-Source: ABdhPJwI2TDsBCYqb8h2Vc4Hvufn0919dXCSkdzOMmaxnHFaz3UTwc0rqrDHsDGdQiceFxRvuvoijg==
+X-Received: by 2002:a9d:6c81:: with SMTP id c1mr2757412otr.316.1622482216074;
+        Mon, 31 May 2021 10:30:16 -0700 (PDT)
+Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
+        by smtp.gmail.com with ESMTPSA id t26sm3242405otc.23.2021.05.31.10.30.15
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 31 May 2021 10:28:54 -0700 (PDT)
-Date:   Mon, 31 May 2021 10:28:52 -0700
-From:   Drew Fustini <drew@beagleboard.org>
-To:     Thomas Petazzoni <thomas.petazzoni@bootlin.com>
-Cc:     Bin Liu <b-liu@ti.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Tony Lindgren <tony@atomide.com>, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org, alexandre.belloni@bootlin.com,
-        stable@vger.kernel.org
-Subject: Re: [PATCH] usb: musb: fix MUSB_QUIRK_B_DISCONNECT_99 handling
-Message-ID: <20210531172852.GA706339@x1>
-References: <20210528140446.278076-1-thomas.petazzoni@bootlin.com>
+        Mon, 31 May 2021 10:30:15 -0700 (PDT)
+Date:   Mon, 31 May 2021 12:30:13 -0500
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Maulik Shah <mkshah@codeaurora.org>
+Cc:     swboyd@chromium.org, mka@chromium.org, evgreen@chromium.org,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        agross@kernel.org, dianders@chromium.org, linux@roeck-us.net,
+        rnayak@codeaurora.org, lsrao@codeaurora.org,
+        Mahesh Sivasubramanian <msivasub@codeaurora.org>,
+        Lina Iyer <ilina@codeaurora.org>
+Subject: Re: [PATCH v8 2/5] soc: qcom: Add SoC sleep stats driver
+Message-ID: <YLUdJa4jawdBjPRy@builder.lan>
+References: <1621596371-26482-1-git-send-email-mkshah@codeaurora.org>
+ <1621596371-26482-3-git-send-email-mkshah@codeaurora.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210528140446.278076-1-thomas.petazzoni@bootlin.com>
+In-Reply-To: <1621596371-26482-3-git-send-email-mkshah@codeaurora.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 28, 2021 at 04:04:46PM +0200, Thomas Petazzoni wrote:
-> In commit 92af4fc6ec33 ("usb: musb: Fix suspend with devices
-> connected for a64"), the logic to support the
-> MUSB_QUIRK_B_DISCONNECT_99 quirk was modified to only conditionally
-> schedule the musb->irq_work delayed work.
+On Fri 21 May 06:26 CDT 2021, Maulik Shah wrote:
+
+> From: Mahesh Sivasubramanian <msivasub@codeaurora.org>
 > 
-> This commit badly breaks ECM Gadget on AM335X. Indeed, with this
-> commit, one can observe massive packet loss:
+> Let's add a driver to read the stats from remote processor and
+> export to debugfs.
 > 
-> $ ping 192.168.0.100
-> ...
-> 15 packets transmitted, 3 received, 80% packet loss, time 14316ms
+> The driver creates "qcom_sleep_stats" directory in debugfs and
+> adds files for various low power mode available. Below is sample
+> output with command
 > 
-> Reverting this commit brings back a properly functioning ECM
-> Gadget. An analysis of the commit seems to indicate that a mistake was
-> made: the previous code was not falling through into the
-> MUSB_QUIRK_B_INVALID_VBUS_91, but now it is, unless the condition is
-> taken.
+> cat /sys/kernel/debug/qcom_sleep_stats/ddr
+> count = 0
+> Last Entered At = 0
+> Last Exited At = 0
+> Accumulated Duration = 0
 > 
-> Changing the logic to be as it was before the problematic commit *and*
-> only conditionally scheduling musb->irq_work resolves the regression:
-> 
-> $ ping 192.168.0.100
-> ...
-> 64 packets transmitted, 64 received, 0% packet loss, time 64475ms
-> 
-> Fixes: 92af4fc6ec33 ("usb: musb: Fix suspend with devices connected for a64")
-> Signed-off-by: Thomas Petazzoni <thomas.petazzoni@bootlin.com>
-> Cc: stable@vger.kernel.org
+> Signed-off-by: Mahesh Sivasubramanian <msivasub@codeaurora.org>
+> Signed-off-by: Lina Iyer <ilina@codeaurora.org>
+> [mkshah: add subsystem sleep stats, create one file for each stat]
+> Signed-off-by: Maulik Shah <mkshah@codeaurora.org>
 > ---
->  drivers/usb/musb/musb_core.c | 3 +--
->  1 file changed, 1 insertion(+), 2 deletions(-)
+>  drivers/soc/qcom/Kconfig           |  10 ++
+>  drivers/soc/qcom/Makefile          |   1 +
+>  drivers/soc/qcom/soc_sleep_stats.c | 255 +++++++++++++++++++++++++++++++++++++
+>  3 files changed, 266 insertions(+)
+>  create mode 100644 drivers/soc/qcom/soc_sleep_stats.c
 > 
-> diff --git a/drivers/usb/musb/musb_core.c b/drivers/usb/musb/musb_core.c
-> index 8f09a387b773..4c8f0112481f 100644
-> --- a/drivers/usb/musb/musb_core.c
-> +++ b/drivers/usb/musb/musb_core.c
-> @@ -2009,9 +2009,8 @@ static void musb_pm_runtime_check_session(struct musb *musb)
->  			schedule_delayed_work(&musb->irq_work,
->  					      msecs_to_jiffies(1000));
->  			musb->quirk_retries--;
-> -			break;
->  		}
-> -		fallthrough;
-> +		break;
->  	case MUSB_QUIRK_B_INVALID_VBUS_91:
->  		if (musb->quirk_retries && !musb->flush_irq_work) {
->  			musb_dbg(musb,
-> -- 
-> 2.31.1
+> diff --git a/drivers/soc/qcom/Kconfig b/drivers/soc/qcom/Kconfig
+> index 79b568f..e80b63a 100644
+> --- a/drivers/soc/qcom/Kconfig
+> +++ b/drivers/soc/qcom/Kconfig
+> @@ -190,6 +190,16 @@ config QCOM_SOCINFO
+>  	 Say yes here to support the Qualcomm socinfo driver, providing
+>  	 information about the SoC to user space.
+>  
+> +config QCOM_SOC_SLEEP_STATS
+> +	tristate "Qualcomm Technologies, Inc. (QTI) SoC sleep stats driver"
+> +	depends on ARCH_QCOM && DEBUG_FS || COMPILE_TEST
+> +	depends on QCOM_SMEM
+> +	help
+> +	  Qualcomm Technologies, Inc. (QTI) SoC sleep stats driver to read
+> +	  the shared memory exported by the remote processor related to
+> +	  various SoC level low power modes statistics and export to debugfs
+> +	  interface.
+> +
+>  config QCOM_WCNSS_CTRL
+>  	tristate "Qualcomm WCNSS control driver"
+>  	depends on ARCH_QCOM || COMPILE_TEST
+> diff --git a/drivers/soc/qcom/Makefile b/drivers/soc/qcom/Makefile
+> index ad675a6..5f30d74 100644
+> --- a/drivers/soc/qcom/Makefile
+> +++ b/drivers/soc/qcom/Makefile
+> @@ -20,6 +20,7 @@ obj-$(CONFIG_QCOM_SMEM_STATE) += smem_state.o
+>  obj-$(CONFIG_QCOM_SMP2P)	+= smp2p.o
+>  obj-$(CONFIG_QCOM_SMSM)	+= smsm.o
+>  obj-$(CONFIG_QCOM_SOCINFO)	+= socinfo.o
+> +obj-$(CONFIG_QCOM_SOC_SLEEP_STATS)	+= soc_sleep_stats.o
+>  obj-$(CONFIG_QCOM_WCNSS_CTRL) += wcnss_ctrl.o
+>  obj-$(CONFIG_QCOM_APR) += apr.o
+>  obj-$(CONFIG_QCOM_LLCC) += llcc-qcom.o
+> diff --git a/drivers/soc/qcom/soc_sleep_stats.c b/drivers/soc/qcom/soc_sleep_stats.c
+> new file mode 100644
+> index 0000000..a8396f9
+> --- /dev/null
+> +++ b/drivers/soc/qcom/soc_sleep_stats.c
+> @@ -0,0 +1,255 @@
+> +// SPDX-License-Identifier: GPL-2.0-only
+> +/*
+> + * Copyright (c) 2011-2021, The Linux Foundation. All rights reserved.
+> + */
+> +
+> +#include <linux/debugfs.h>
+> +#include <linux/device.h>
+> +#include <linux/io.h>
+> +#include <linux/module.h>
+> +#include <linux/of.h>
+> +#include <linux/platform_device.h>
+> +#include <linux/seq_file.h>
+> +
+> +#include <linux/soc/qcom/smem.h>
+> +#include <clocksource/arm_arch_timer.h>
+> +
+> +#define STAT_TYPE_OFFSET	0x0
+> +#define COUNT_OFFSET		0x4
+> +#define LAST_ENTERED_AT_OFFSET	0x8
+> +#define LAST_EXITED_AT_OFFSET	0x10
+> +#define ACCUMULATED_OFFSET	0x18
+> +#define CLIENT_VOTES_OFFSET	0x1c
+> +
+> +struct subsystem_data {
+> +	const char *name;
+> +	u32 smem_item;
+> +	u32 pid;
+> +};
+> +
+> +static const struct subsystem_data subsystems[] = {
+> +	{ "modem", 605, 1 },
+> +	{ "wpss", 605, 13 },
+> +	{ "adsp", 606, 2 },
+> +	{ "cdsp", 607, 5 },
+> +	{ "slpi", 608, 3 },
+> +	{ "gpu", 609, 0 },
+> +	{ "display", 610, 0 },
+> +	{ "adsp_island", 613, 2 },
+> +	{ "slpi_island", 613, 3 },
+> +};
+> +
+> +struct stats_config {
+> +	size_t offset_addr;
+> +	size_t num_records;
+> +	bool appended_stats_avail;
+> +};
+> +
+> +struct stats_data {
+> +	bool appended_stats_avail;
+> +	void __iomem *base;
+> +};
+> +
+> +struct sleep_stats {
+> +	u32 stat_type;
+> +	u32 count;
+> +	u64 last_entered_at;
+> +	u64 last_exited_at;
+> +	u64 accumulated;
+> +};
+> +
+> +struct appended_stats {
+> +	u32 client_votes;
+> +	u32 reserved[3];
+> +};
+> +
+> +static void qcom_print_stats(struct seq_file *s, const struct sleep_stats *stat)
+> +{
+> +	u64 accumulated = stat->accumulated;
+> +	/*
+> +	 * If a subsystem is in sleep when reading the sleep stats adjust
+> +	 * the accumulated sleep duration to show actual sleep time.
+> +	 */
+> +	if (stat->last_entered_at > stat->last_exited_at)
+> +		accumulated += arch_timer_read_counter() - stat->last_entered_at;
+> +
+> +	seq_printf(s, "Count: %u\n", stat->count);
+> +	seq_printf(s, "Last Entered At: %llu\n", stat->last_entered_at);
+> +	seq_printf(s, "Last Exited At: %llu\n", stat->last_exited_at);
+> +	seq_printf(s, "Accumulated Duration: %llu\n", accumulated);
+> +}
+> +
+> +static int qcom_subsystem_sleep_stats_show(struct seq_file *s, void *unused)
+> +{
+> +	struct subsystem_data *subsystem = s->private;
+> +	struct sleep_stats *stat;
+> +
+> +	/* Items are allocated lazily, so lookup pointer each time */
+> +	stat = qcom_smem_get(subsystem->pid, subsystem->smem_item, NULL);
+> +	if (IS_ERR(stat))
+> +		return PTR_ERR(stat);
+> +
+> +	qcom_print_stats(s, stat);
+> +
+> +	return 0;
+> +}
+> +
+> +static int qcom_soc_sleep_stats_show(struct seq_file *s, void *unused)
+> +{
+> +	struct stats_data *d = s->private;
+> +	void __iomem *reg = d->base;
+> +	struct sleep_stats stat;
+> +
+> +	memcpy_fromio(&stat, reg, sizeof(stat));
+> +	qcom_print_stats(s, &stat);
+> +
+> +	if (d->appended_stats_avail) {
+> +		struct appended_stats votes;
+> +
+> +		memcpy_fromio(&votes, reg + CLIENT_VOTES_OFFSET, sizeof(votes));
+> +		seq_printf(s, "Client Votes: %#x\n", votes.client_votes);
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+> +DEFINE_SHOW_ATTRIBUTE(qcom_soc_sleep_stats);
+> +DEFINE_SHOW_ATTRIBUTE(qcom_subsystem_sleep_stats);
+> +
+> +static void qcom_create_soc_sleep_stat_files(struct dentry *root, void __iomem *reg,
+> +					     struct stats_data *d, u32 num_records)
+> +{
+> +	char stat_type[sizeof(u32) + 1] = {0};
+> +	u32 offset = 0, type;
+> +	int i, j;
+> +
+> +	for (i = 0; i < num_records; i++) {
+> +		d[i].base = reg + offset;
+> +
+> +		/*
+> +		 * Read the low power mode name and create debugfs file for it.
+> +		 * The names read could be of below,
+> +		 * (may change depending on low power mode supported).
+> +		 * For rpmh-sleep-stats: "aosd", "cxsd" and "ddr".
+> +		 * For rpm-sleep-stats: "vmin" and "vlow".
+> +		 */
+> +		type = readl(d[i].base);
+> +		for (j = 0; j < sizeof(u32); j++) {
+> +			stat_type[j] = type & 0xff;
+> +			type = type >> 8;
+> +		}
+> +		strim(stat_type);
+> +		debugfs_create_file(stat_type, 0400, root, &d[i],
+> +				    &qcom_soc_sleep_stats_fops);
+> +
+> +		offset += sizeof(struct sleep_stats);
+> +		if (d[i].appended_stats_avail)
+> +			offset += sizeof(struct appended_stats);
+> +	}
+> +}
+> +
+> +static void qcom_create_subsystem_stat_files(struct dentry *root)
+> +{
+> +	struct sleep_stats *stat;
+> +	int i;
+> +
+> +	for (i = 0; i < ARRAY_SIZE(subsystems); i++) {
+> +		stat = qcom_smem_get(subsystems[i].pid, subsystems[i].smem_item, NULL);
+> +		if (IS_ERR(stat))
+> +			continue;
+> +
+> +		debugfs_create_file(subsystems[i].name, 0400, root, (void *)&subsystems[i],
+> +				    &qcom_subsystem_sleep_stats_fops);
+> +	}
+> +}
+> +
+> +static int qcom_soc_sleep_stats_probe(struct platform_device *pdev)
+> +{
+> +	struct resource *res;
+> +	void __iomem *reg;
+> +	void __iomem *offset_addr;
+> +	phys_addr_t stats_base;
+> +	resource_size_t stats_size;
+> +	struct dentry *root;
+> +	const struct stats_config *config;
+> +	struct stats_data *d;
+> +	int i;
+> +
+> +	config = device_get_match_data(&pdev->dev);
+> +	if (!config)
+> +		return -ENODEV;
+> +
+> +	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+> +	if (!res)
+> +		return PTR_ERR(res);
+> +
+> +	offset_addr = ioremap(res->start + config->offset_addr, sizeof(u32));
+> +	if (IS_ERR(offset_addr))
+> +		return PTR_ERR(offset_addr);
+> +
+> +	stats_base = res->start | readl_relaxed(offset_addr);
+> +	stats_size = resource_size(res);
+> +	iounmap(offset_addr);
+> +
+> +	reg = devm_ioremap(&pdev->dev, stats_base, stats_size);
+> +	if (!reg)
+> +		return -ENOMEM;
+> +
+> +	d = devm_kcalloc(&pdev->dev, config->num_records,
+> +			 sizeof(*d), GFP_KERNEL);
+> +	if (!d)
+> +		return -ENOMEM;
+> +
+> +	for (i = 0; i < config->num_records; i++)
+> +		d[i].appended_stats_avail = config->appended_stats_avail;
+> +
+> +	root = debugfs_create_dir("qcom_sleep_stats", NULL);
+> +
+> +	qcom_create_subsystem_stat_files(root);
+> +	qcom_create_soc_sleep_stat_files(root, reg, d, config->num_records);
+> +
+> +	platform_set_drvdata(pdev, root);
+> +
+> +	return 0;
+> +}
+> +
+> +static int qcom_soc_sleep_stats_remove(struct platform_device *pdev)
+> +{
+> +	struct dentry *root = platform_get_drvdata(pdev);
+> +
+> +	debugfs_remove_recursive(root);
+> +
+> +	return 0;
+> +}
+> +
+> +static const struct stats_config rpm_data = {
+> +	.offset_addr = 0x14,
+> +	.num_records = 2,
+> +	.appended_stats_avail = true,
+> +};
+> +
+> +static const struct stats_config rpmh_data = {
+> +	.offset_addr = 0x4,
+> +	.num_records = 3,
+> +	.appended_stats_avail = false,
+> +};
+> +
+> +static const struct of_device_id qcom_soc_sleep_stats_table[] = {
+> +	{ .compatible = "qcom,rpm-sleep-stats", .data = &rpm_data },
+> +	{ .compatible = "qcom,rpmh-sleep-stats", .data = &rpmh_data },
+> +	{ }
+> +};
+> +
+> +static struct platform_driver soc_sleep_stats_driver = {
+> +	.probe = qcom_soc_sleep_stats_probe,
+> +	.remove = qcom_soc_sleep_stats_remove,
+> +	.driver = {
+> +		.name = "soc_sleep_stats",
+> +		.of_match_table = qcom_soc_sleep_stats_table,
+> +	},
+> +};
+> +module_platform_driver(soc_sleep_stats_driver);
+> +
+> +MODULE_DESCRIPTION("Qualcomm Technologies, Inc. (QTI) SoC Sleep Stats driver");
+> +MODULE_LICENSE("GPL v2");
+> +MODULE_SOFTDEP("pre: smem");
 
-Tested-by: Drew Fustini <drew@beagleboard.org>
+I still think the qcom_smem_* function calls results in a harder
+dependency than this softdep.
 
-This patches fixes the problem on the BeagleBone Black (AM3358) where
-the USB gadget interfaces would frequently reset. For example:
-
-  configfs-gadget gadget: init rndis
-  configfs-gadget gadget: RNDIS RX/TX early activation ...
-  usb0: qlen 10
-  configfs-gadget gadget: rndis_open
-  rndis_set_param_medium: 0 4259840
-  usb0: eth_start
-  rndis_set_param_dev:
-  configfs-gadget gadget: set_config: interface 2 (Mass Storage Function) requested delayed status
-  configfs-gadget gadget: delayed_status count 1
-  configfs-gadget gadget: reset ncm control 3
-  configfs-gadget gadget: init ncm ctrl 3
-  configfs-gadget gadget: notify speed 425984000
-  configfs-gadget gadget: reset acm ttyGS0
-  configfs-gadget gadget: activate acm ttyGS0
-  configfs-gadget gadget: acm ttyGS0 serial state 0000
-  configfs-gadget gadget: usb_composite_setup_continue
-  configfs-gadget gadget: usb_composite_setup_continue: Completing delayed status
-  configfs-gadget gadget: rndis req21.00 v0000 i0000 l24
-  rndis_msg_parser: RNDIS_MSG_INIT
-  configfs-gadget gadget: rndis reqa1.01 v0000 i0000 l1025
-  configfs-gadget gadget: rndis req21.00 v0000 i0000 l32
-  gen_ndis_query_resp: RNDIS_OID_GEN_PHYSICAL_MEDIUM
-  configfs-gadget gadget: rndis reqa1.01 v0000 i0000 l1025
-  configfs-gadget gadget: rndis req21.00 v0000 i0000 l76
-  gen_ndis_query_resp: RNDIS_OID_802_3_PERMANENT_ADDRESS
-  configfs-gadget gadget: rndis reqa1.01 v0000 i0000 l1025
-  configfs-gadget gadget: rndis req21.00 v0000 i0000 l32
-  gen_ndis_set_resp: RNDIS_OID_GEN_CURRENT_PACKET_FILTER 0000002d
-  configfs-gadget gadget: rndis reqa1.01 v0000 i0000 l1025
-  configfs-gadget gadget: init ncm
-  configfs-gadget gadget: activate ncm
-  usb1: qlen 10
-  configfs-gadget gadget: ncm_open
-  usb1: eth_start
-  configfs-gadget gadget: reset ncm
-  usb1: gether_disconnect
-  configfs-gadget gadget: ncm reqa1.80 v0000 i0003 l28
-  configfs-gadget gadget: non-CRC mode selected
-  configfs-gadget gadget: ncm req21.8a v0000 i0003 l0
-  configfs-gadget gadget: NCM16 selected
-  configfs-gadget gadget: ncm req21.84 v0000 i0003 l0
-  configfs-gadget gadget: init ncm
-  configfs-gadget gadget: activate ncm
-  usb1: qlen 10
-  configfs-gadget gadget: ncm_open
-  usb1: eth_start
-  configfs-gadget gadget: acm ttyGS0 req21.20 v0000 i0005 l7
-  configfs-gadget gadget: notify speed 425984000
-  configfs-gadget gadget: notify connect true
-
-I have posted dmesg log without the patch [1] where this happens often
-and the dmesg log with the patch [2] where it does happen at all.
-
-Thank you for fixing this!
-Drew
-
-[1] https://gist.github.com/pdp7/bd61e5f78545de182605992254d3eeee
-[2] https://gist.github.com/pdp7/95b0f34fa1d423d4764984b400c562cf
-
+Regards,
+Bjorn
