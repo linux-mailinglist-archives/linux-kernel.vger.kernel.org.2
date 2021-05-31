@@ -2,37 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A553A3961A9
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 16:43:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D0D0B39653D
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 18:26:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234236AbhEaOpK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 10:45:10 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59926 "EHLO mail.kernel.org"
+        id S233110AbhEaQ2e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 12:28:34 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40318 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233064AbhEaN7X (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 09:59:23 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9C7DA61935;
-        Mon, 31 May 2021 13:36:02 +0000 (UTC)
+        id S234242AbhEaOpL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 10:45:11 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CAC2461C87;
+        Mon, 31 May 2021 13:55:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1622468163;
-        bh=mcsPY8Xc2q/p/Dt2uGk6HUl2ZNEAW7uSXSay5z7Nj0Y=;
+        s=korg; t=1622469310;
+        bh=+BsTtVc6PdfMc7tMiicVr3+MQ3VK3Pq81j3/C0zPQWI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=e86MvXAdR3z4uKp2pIVolRyQO8SM1wgcFt3GPbk8SHLNeAIKjfD+KWVBT12evK+no
-         Sr4gVX+FJvO+HL8E16Ca903RcpiNii2/8M9YYXvlAesty0TohMWZz733QRaAMXwYLq
-         na3eKV+qvkzaFG/80xFNcjSkw8Z7fGZZH0ra1SBc=
+        b=e2zVucd2rezemB6EMbecYjbT2RSFXFjeCj0tsMfy6dLdW/hXM4V93CVcWU2g2THKJ
+         1OOnfguBDw8XoYY+Lsd2pOLkmmnQwsfjGd4DMvfxrn7atyQ0RT+gilpwgFDgJwnWQE
+         Zupzi7PuF+XfvkTMG5VKH3MUJGEtBekFB4bJES7c=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Kangjie Lu <kjlu@umn.edu>,
-        Ursula Braun <ubraun@linux.ibm.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 139/252] Revert "net/smc: fix a NULL pointer dereference"
-Date:   Mon, 31 May 2021 15:13:24 +0200
-Message-Id: <20210531130702.742848350@linuxfoundation.org>
+        stable@vger.kernel.org, Qii Wang <qii.wang@mediatek.com>,
+        Wolfram Sang <wsa@kernel.org>
+Subject: [PATCH 5.12 150/296] i2c: mediatek: Disable i2c start_en and clear intr_stat brfore reset
+Date:   Mon, 31 May 2021 15:13:25 +0200
+Message-Id: <20210531130708.915162917@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210531130657.971257589@linuxfoundation.org>
-References: <20210531130657.971257589@linuxfoundation.org>
+In-Reply-To: <20210531130703.762129381@linuxfoundation.org>
+References: <20210531130703.762129381@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,52 +39,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+From: Qii Wang <qii.wang@mediatek.com>
 
-[ Upstream commit 5369ead83f5aff223b6418c99cb1fe9a8f007363 ]
+commit fed1bd51a504eb96caa38b4f13ab138fc169ea75 upstream.
 
-This reverts commit e183d4e414b64711baf7a04e214b61969ca08dfa.
+The i2c controller driver do dma reset after transfer timeout,
+but sometimes dma reset will trigger an unexpected DMA_ERR irq.
+It will cause the i2c controller to continuously send interrupts
+to the system and cause soft lock-up. So we need to disable i2c
+start_en and clear intr_stat to stop i2c controller before dma
+reset when transfer timeout.
 
-Because of recent interactions with developers from @umn.edu, all
-commits from them have been recently re-reviewed to ensure if they were
-correct or not.
-
-Upon review, this commit was found to be incorrect for the reasons
-below, so it must be reverted.  It will be fixed up "correctly" in a
-later kernel change.
-
-The original commit causes a memory leak and does not properly fix the
-issue it claims to fix.  I will send a follow-on patch to resolve this
-properly.
-
-Cc: Kangjie Lu <kjlu@umn.edu>
-Cc: Ursula Braun <ubraun@linux.ibm.com>
-Cc: David S. Miller <davem@davemloft.net>
-Link: https://lore.kernel.org/r/20210503115736.2104747-17-gregkh@linuxfoundation.org
+Fixes: aafced673c06("i2c: mediatek: move dma reset before i2c reset")
+Signed-off-by: Qii Wang <qii.wang@mediatek.com>
+Signed-off-by: Wolfram Sang <wsa@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/smc/smc_ism.c | 5 -----
- 1 file changed, 5 deletions(-)
+ drivers/i2c/busses/i2c-mt65xx.c |    5 +++++
+ 1 file changed, 5 insertions(+)
 
-diff --git a/net/smc/smc_ism.c b/net/smc/smc_ism.c
-index 6abbdd09a580..b4a9fe452470 100644
---- a/net/smc/smc_ism.c
-+++ b/net/smc/smc_ism.c
-@@ -319,11 +319,6 @@ struct smcd_dev *smcd_alloc_dev(struct device *parent, const char *name,
- 	init_waitqueue_head(&smcd->lgrs_deleted);
- 	smcd->event_wq = alloc_ordered_workqueue("ism_evt_wq-%s)",
- 						 WQ_MEM_RECLAIM, name);
--	if (!smcd->event_wq) {
--		kfree(smcd->conn);
--		kfree(smcd);
--		return NULL;
--	}
- 	return smcd;
- }
- EXPORT_SYMBOL_GPL(smcd_alloc_dev);
--- 
-2.30.2
-
+--- a/drivers/i2c/busses/i2c-mt65xx.c
++++ b/drivers/i2c/busses/i2c-mt65xx.c
+@@ -478,6 +478,11 @@ static void mtk_i2c_clock_disable(struct
+ static void mtk_i2c_init_hw(struct mtk_i2c *i2c)
+ {
+ 	u16 control_reg;
++	u16 intr_stat_reg;
++
++	mtk_i2c_writew(i2c, I2C_CHN_CLR_FLAG, OFFSET_START);
++	intr_stat_reg = mtk_i2c_readw(i2c, OFFSET_INTR_STAT);
++	mtk_i2c_writew(i2c, intr_stat_reg, OFFSET_INTR_STAT);
+ 
+ 	if (i2c->dev_comp->apdma_sync) {
+ 		writel(I2C_DMA_WARM_RST, i2c->pdmabase + OFFSET_RST);
 
 
