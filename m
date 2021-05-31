@@ -2,118 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 08C19395623
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 09:32:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 54523395626
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 09:32:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230206AbhEaHeC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 03:34:02 -0400
-Received: from mail-vs1-f41.google.com ([209.85.217.41]:34723 "EHLO
-        mail-vs1-f41.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230070AbhEaHd6 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 03:33:58 -0400
-Received: by mail-vs1-f41.google.com with SMTP id s14so2922197vsk.1
-        for <linux-kernel@vger.kernel.org>; Mon, 31 May 2021 00:32:16 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Vw8gRdMWqEScODmWDhmLz0KMICvruvNN+TV0RfkghRU=;
-        b=gJOCysK+HnwdCKf0LECgjaJd0Ow5WAsEfrBhZO/70toiJsrRagx+A5h0Ts7wyI8kbE
-         RTKnymVfGf46sFn7A6T3SjU5nxsa8Mm/gpP9zStMug8dmQ3QgMy27pTmViMB05KlKNlt
-         UkdOObRwDCnOgQMUu4xXE2ZbWHbQt1GNfaogpJAmufxG8sPLDRjcagDQJQ0CQbPgIxHM
-         gNvLwsH0wV0nT/wbKvH312AXiAIuTjwQyYXpp9wtb98dMiUjegb9/7lsmrsIR+kXRfR3
-         EJp2IO/WGmcLUAitPZDZiPWT9+poB3XgkqymRPITvGUBSMVu4ao7hAnoaccC+haqKw4u
-         i9kg==
-X-Gm-Message-State: AOAM530RA+nLpAk+fVzZgB6XiP9TXcWuOc0x7xeWHip9kpX1/MjGVLhj
-        JUc+Tq6tQ5qrO5FTfoMCCrvfivgRq77/J3WbT77TsUBW
-X-Google-Smtp-Source: ABdhPJw4bZWG6si/ZpImB29Hgk+5M0KHOqOqGonxrwcXmB/RqHvNkZRVYxFhsD/8q1VeoldvuDdCBh/1m8AN36GH8qw=
-X-Received: by 2002:a67:3c2:: with SMTP id 185mr12694871vsd.42.1622446335813;
- Mon, 31 May 2021 00:32:15 -0700 (PDT)
+        id S230257AbhEaHed (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 03:34:33 -0400
+Received: from mail-am6eur05on2124.outbound.protection.outlook.com ([40.107.22.124]:17505
+        "EHLO EUR05-AM6-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S230070AbhEaHeb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 03:34:31 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=ipEszhDFtIo+5GmMHk+Wg6qF/ZAw2zh13k9ZM6oP45iq7lKTnEWYhQYBMKSXZJ4z3lcu1gsDDGU3KiUg3dWaHTdGyTqYmEqtPC0N0qmdFgnbN5IhnJCUlMfPQJIbUZhKwr31gC2FbCumWmJHC7FNmia2O6hQQz8m8lHIQuAKZ/4qzUl15He+utSzDxleGlwfe+eIVLLcofebF2qii7s/ozr4fYAblJBOIGKh487goE2v+HTPiF1pKk30dHVDuRZPCm/JTOsQdVhvaU9CSScyFf91oTYY6vZoTeGdk8XwiodJY3M2IXcCG1YurLLlwe3D7IdyYYvPQV2RWhoBmhTxPQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=KvMR1IE9HKMJzYHipn28pzDrJBrjpPWYeUFLCjeF3i4=;
+ b=HA9KqaeAE5NDk0bdQ69Pxj7iYhLmufyRaiPpRbYtuD6n4J9oIPCfsgC8l2CkdfAArAfmxIXMJmFsJ/bH8VMdMl5AF3Bq2AVejDR1YOE6Qjc4Yj5Y+52s/sZrxSEcAhdBZOzP/fcF7HWoWeW1cjIl5SinHywuqeYOOZAcBx4uf9xISBi4kV4YeQNz0p04j+7QsOq1vO78/6F5aDCeF8+TRt1fGpWre1YfX8u9qKBhnqrOcl8XwuBwFCxff2XTFqKgNwyasaYdW/KO3YC+eOc+HQJ21NGEjFcT6Nwdu3ro/taPipsR1ejk9C80+MzEX85lmcHD9h2wfGcPTbRvvsBa2g==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=axentia.se; dmarc=pass action=none header.from=axentia.se;
+ dkim=pass header.d=axentia.se; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=axentia.se;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=KvMR1IE9HKMJzYHipn28pzDrJBrjpPWYeUFLCjeF3i4=;
+ b=XHwInROg3Y6Q40Wd3zDfmRKGuTEhrUBsa2ARmSd6YMqXLMXljvvv/2Xw5Qe1YDQorX16frz1fGgLNt+1CldmRaEZMnhdqyLZGUx8fk/umUrRovLWL5DfDP4NZ+zWWdf27QUyAxo85Tsw5QMXwAYqiNBpQs/JysLyWrjEac9aVqg=
+Authentication-Results: kernel.org; dkim=none (message not signed)
+ header.d=none;kernel.org; dmarc=none action=none header.from=axentia.se;
+Received: from DB8PR02MB5482.eurprd02.prod.outlook.com (2603:10a6:10:eb::29)
+ by DB3PR0202MB3420.eurprd02.prod.outlook.com (2603:10a6:8:7::12) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4173.27; Mon, 31 May
+ 2021 07:32:50 +0000
+Received: from DB8PR02MB5482.eurprd02.prod.outlook.com
+ ([fe80::d47d:ca8c:4fe6:3908]) by DB8PR02MB5482.eurprd02.prod.outlook.com
+ ([fe80::d47d:ca8c:4fe6:3908%3]) with mapi id 15.20.4173.030; Mon, 31 May 2021
+ 07:32:50 +0000
+Subject: Re: [PATCH v1 9/9] dt-bindings: iio: afe: add binding for
+ temperature-sense-amplifier
+To:     Liam Beguin <liambeguin@gmail.com>, jic23@kernel.org,
+        lars@metafoo.de, pmeerw@pmeerw.net
+Cc:     linux-kernel@vger.kernel.org, linux-iio@vger.kernel.org,
+        devicetree@vger.kernel.org, robh+dt@kernel.org
+References: <20210530005917.20953-1-liambeguin@gmail.com>
+ <20210530005917.20953-10-liambeguin@gmail.com>
+From:   Peter Rosin <peda@axentia.se>
+Organization: Axentia Technologies AB
+Message-ID: <0286de71-1b04-0956-be4e-f38573c6fea2@axentia.se>
+Date:   Mon, 31 May 2021 09:32:46 +0200
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
+In-Reply-To: <20210530005917.20953-10-liambeguin@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: sv-SE
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [85.229.94.233]
+X-ClientProxiedBy: HE1PR0402CA0050.eurprd04.prod.outlook.com
+ (2603:10a6:7:7c::39) To DB8PR02MB5482.eurprd02.prod.outlook.com
+ (2603:10a6:10:eb::29)
 MIME-Version: 1.0
-References: <202105300736.7wVLvXHr-lkp@intel.com> <a0edf640-ec05-524e-9125-44decba27bbb@infradead.org>
- <CAMuHMdUrG5AWRQ-ypU0NdjFTEttyguMWSCLyvGE0pikdLij2Dw@mail.gmail.com>
-In-Reply-To: <CAMuHMdUrG5AWRQ-ypU0NdjFTEttyguMWSCLyvGE0pikdLij2Dw@mail.gmail.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Mon, 31 May 2021 09:32:04 +0200
-Message-ID: <CAMuHMdW+e8qvKsf4Ub1zNnBgBX6TKGmUKHSDK0jy05H5gmrh+g@mail.gmail.com>
-Subject: Re: ERROR: modpost: "__delay" [drivers/net/mdio/mdio-cavium.ko] undefined!
-To:     Randy Dunlap <rdunlap@infradead.org>,
-        David Daney <david.daney@cavium.com>
-Cc:     kernel test robot <lkp@intel.com>, Andrew Lunn <andrew@lunn.ch>,
-        kbuild-all@lists.01.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Rich Felker <dalias@libc.org>
-Content-Type: text/plain; charset="UTF-8"
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [192.168.13.3] (85.229.94.233) by HE1PR0402CA0050.eurprd04.prod.outlook.com (2603:10a6:7:7c::39) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4173.20 via Frontend Transport; Mon, 31 May 2021 07:32:49 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 922aaa0e-0b86-4371-b841-08d924064b1e
+X-MS-TrafficTypeDiagnostic: DB3PR0202MB3420:
+X-Microsoft-Antispam-PRVS: <DB3PR0202MB342049F79D566910F7075D0BBC3F9@DB3PR0202MB3420.eurprd02.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:2733;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: YMJby1bQAMl9K/wbKFWSkaYgJEgQTjp1rtYkHYbK7Hsak+OZp0SA/JiKMI48d9G7zrgfbjSvq+n1atLbgNNRMODS/cGSmJ0qI8FXunPWtNQEeNmhWpdvKI/UrAV7T2ImlTEouUFFYfuQDgFJnHT3+P6t2HoneRHDerWx7mz5EFA7zYIRUxP8NhN8w8E5dEZWlHAp1cqscat+YFoSGtT/spNH6s2VnP9L95Q7tDaB6RKVfM1G3/a8BTL8wk+kio1AZqCq7HVvVFjcDvU4dvI0/HqAjJLlFGJpYha5gtF6xoyH17NkGRW2tPJqdc7e8V+TTtrJyIUwwCvF8N1gmAcPoVotfdzjYj2rilWlrryGrZy1afdxp3rU7af86IC2o4YyCyx2+aaj8KC4Hq332Yo5G+Vo8UQJsSZQX07KFikvhHZh+Zgw5r5NXIwLjO1WfcaYaPqaNedN3OdVLN0wbOACIO9P/fn4zvbPjfzb+5B8zkIcMtU/8daEJnigQ14xGWzgqiBbzKb5hvUEljyZUAUmLbb4xNPsnZ2Es7slH1b1g0nC3lFiXNKDtzpoHDKUV7WICKCrIuNtwBvnx4G7oCIVVa9lQOUbHKNbDC/8WhZTiyswA96Nx2x0dVemjddVU6FSByao+CQER+vV52ax9ysaOKOiMvVHC6YefMJqVFF/oWEWF75tnwN7H3wIui0/tp/K
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB8PR02MB5482.eurprd02.prod.outlook.com;PTR:;CAT:NONE;SFS:(396003)(39830400003)(136003)(376002)(346002)(366004)(6486002)(16526019)(478600001)(86362001)(36756003)(5660300002)(66556008)(38100700002)(2616005)(956004)(31696002)(2906002)(4744005)(4326008)(6666004)(186003)(31686004)(8676002)(66476007)(16576012)(316002)(8936002)(53546011)(36916002)(66946007)(26005)(45980500001)(43740500002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 2
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?THRkYk11NFhqcEJReUd5Y0RRSWxlRDc0OGNLMWw2Ui8vU213SEVndjlzVW5B?=
+ =?utf-8?B?YjdveFNwRFdIWUFVckErbnRDRU1IZ1dxYTJFUmVlbWV2eG83ZVd4eXloZFR2?=
+ =?utf-8?B?Z2FXZlBoSlg3WlpEUm00clpiK0NHTmZ0TzNGT0dwSlhsdmxyOTh3dFJ4S2pp?=
+ =?utf-8?B?T04zcGp2eDFhT0tQZ1BkeE9rNmxRNE1YWWZmNHM2bnhHOHlIVkV2WGM0TE5r?=
+ =?utf-8?B?VFpwQS8rZ2tMREVxa3g5ZGsvVENnNEwvdHY5OTJhdThUMHNMTVhmNkV6V0lr?=
+ =?utf-8?B?RFpydWdoWTgxOU0rSjZJcE5HQ09vcUw5ZURld012SFdQWHkwSkhDRUNHZnQz?=
+ =?utf-8?B?aER1enJKM2tkaU1QODRUZ0FpTTlkRE95SVhvcEdaUllremd0d2p2d0hkVTVl?=
+ =?utf-8?B?UnhRazB4Y2FlUlJoMWFodVcwdkVYVDhmTm9NV3NscHhYZEczOUNuTThlOVd1?=
+ =?utf-8?B?WEN3bDFFbCtrd3dlS25GM0M4M1BnOFNaZmJmcUcrMjc4UWRuZGJJYzNuZ2dN?=
+ =?utf-8?B?M3Jua202M3p2cTJaTjMrUCtuZVNlZnRSbDVnejlyM1NIWS9Oc3dkbTRzejF4?=
+ =?utf-8?B?OGd3MHVVQ2paRThhUVZyT3o5NmhnellraFNVSVA5cHNLZTZNUEpNN2lzU04y?=
+ =?utf-8?B?SXVSNjZZK1EvYmVCOXI5cTRDcEY5SldkTGZ2RDFrTW8yZ3JGWGRlS0JVL2FG?=
+ =?utf-8?B?Rkw5YVRlM3BLdHl6MUFid0hTVXpRS1kycmR3a0VOSHg2NTFzWHM5eXhKdW9Z?=
+ =?utf-8?B?ZGhIS2hIbFRwZlFzRTVGa1ZmcENEK1E1ZU1hK3pvUisyQ2FtN2c1YkNBNWVQ?=
+ =?utf-8?B?c1A1SlMwSVZTbFJLcGptSDd4OTZSRUxNU0M4Q3dDcG1nUHJ6bmFPendzRFh1?=
+ =?utf-8?B?TzFjclVKVWtMemhiTVRoLzYwM20rclYxNUZjOFQvU090eFpBR2FJc0NqNkxJ?=
+ =?utf-8?B?RDhvL1FMMjhOd1NtSnNGNGFUUGlyNDg3dzE1MldzcUs4OURvN3pzVzQ1bmJL?=
+ =?utf-8?B?TXlQZEhqcWFCd0d4aFYxNmdhdlg3Njh4TXZhbUdZeWdoUE9MeTN4SXd3SFJB?=
+ =?utf-8?B?UzN6RllJc1MvdFJXQ0owaEFvQmR2WE9SMDFLOHlXVUR2ZmhmYnhGUUc5NlBO?=
+ =?utf-8?B?TnZoUnhxVlZtTTEyRTNEbEJWeXBCNkhwaUM5RFZKUGxBVXpvTEdLRk1RbjFZ?=
+ =?utf-8?B?YmVoK2tpV3VyckVQZ0dHWmFmNG91eDJDZENML2c2ZElHbXdDazA2bkV3MkJH?=
+ =?utf-8?B?dEd0OEJQZ0RTNTF5ZlN6anVFWEFxMStjUm5EeHpFWGZmZStiNkhtTTFFeUs3?=
+ =?utf-8?Q?8CW+4jVwxE?=
+X-MS-Exchange-AntiSpam-MessageData-1: kFogqJGIG7VvDhsGtsr4W+JUy26o2bDhBnrZUYvMJfhuez5uN7t4M5vtEURqtIDrDegEd2YbPDOL/0Ld+IQGp6N93cvA/AbsqO8BZOqnEJbzeFyD9m/QPaz0BdakIhiT4Vj4lb65kzzzmZaqoiX2rO2Jh6q2Yb5vnG4tpm6oukNWqTabMG/xTE8xWolnrHopkbDbjV8scxOgo5qYYOWp8mXvwGS44qK0w2f2RQby7FuGmMOhUXaiv6zxOZdJTWSm/MPgpeMO0EOmg9CnXmO1J6QaIPg09BzuLpGucNeMwCVZQqIA0ua0lz3M5hJvTEcBPrxT64E6xJEKGZ0GgonFg7rh
+X-OriginatorOrg: axentia.se
+X-MS-Exchange-CrossTenant-Network-Message-Id: 922aaa0e-0b86-4371-b841-08d924064b1e
+X-MS-Exchange-CrossTenant-AuthSource: DB8PR02MB5482.eurprd02.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 31 May 2021 07:32:49.9533
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4ee68585-03e1-4785-942a-df9c1871a234
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: QGZKJyVR1a+oPzIhzpEAMLlu5CdZ6/aczWbfvn/Z4fPjlmJbDRqGvUNY4iK2qgoI
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB3PR0202MB3420
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-CC David (original author, asked by driver location change)
+Hi!
 
-On Mon, May 31, 2021 at 9:29 AM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
->
-> On Mon, May 31, 2021 at 2:05 AM Randy Dunlap <rdunlap@infradead.org> wrote:
-> > On 5/29/21 4:25 PM, kernel test robot wrote:
-> > > First bad commit (maybe != root cause):
-> > >
-> > > tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-> > > head:   df8c66c4cfb91f2372d138b9b714f6df6f506966
-> > > commit: a9770eac511ad82390b9f4a3c1728e078c387ac7 net: mdio: Move MDIO drivers into a new subdirectory
-> > > date:   9 months ago
-> > > config: sh-allmodconfig (attached as .config)
-> > > compiler: sh4-linux-gcc (GCC) 9.3.0
-> > > reproduce (this is a W=1 build):
-> > >         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
-> > >         chmod +x ~/bin/make.cross
-> > >         # https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=a9770eac511ad82390b9f4a3c1728e078c387ac7
-> > >         git remote add linus https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
-> > >         git fetch --no-tags linus master
-> > >         git checkout a9770eac511ad82390b9f4a3c1728e078c387ac7
-> > >         # save the attached .config to linux build tree
-> > >         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-9.3.0 make.cross ARCH=sh
-> > >
-> > > If you fix the issue, kindly add following tag as appropriate
-> > > Reported-by: kernel test robot <lkp@intel.com>
-> > >
-> > > All errors (new ones prefixed by >>, old ones prefixed by <<):
-> > >
-> > >>> ERROR: modpost: "__delay" [drivers/net/mdio/mdio-cavium.ko] undefined!
-> >
-> > Just a comment here.  kernel test robot has reported this issue
-> > 5 times in 2021 that I know of -- and I could have missed some.
-> >
-> > I see that Geert recently (June 2020) reverted the
-> > EXPORT_SYMBOL(__delay) in arch/sh/lib/delay.c, with this comment:
-> >
-> >     __delay() is an internal implementation detail on several architectures.
-> >     Drivers should not call __delay() directly, as it has non-standardized
-> >     semantics, or may not even exist.
-> >     Hence there is no need to export __delay() to modules.
-> >
-> >     See also include/asm-generic/delay.h:
-> >
-> >         /* Undefined functions to get compile-time errors */
-> >         ...
-> >         extern void __delay(unsigned long loops);
-> >
-> > However, s/several architectures/all but one architecture: SH/.
-> > All architectures except for SH provide either an exported function,
-> > an inline function, or a macro for __delay(). Yeah, they probably
-> > don't all do the same delay.
->
-> Hence it must not be used by drivers, as it might give the false assumption
-> of working everywhere.  While drivers/net/mdio/mdio-cavium is
-> platform-specific, code might be copied in a new driver, less restricted
-> to a specific platform.
+On 2021-05-30 02:59, Liam Beguin wrote:
+> From: Liam Beguin <lvb@xiphos.com>
+> 
+> An ADC is often used to measure other quantities indirectly. This
+> binding describe one cases, the measurement of a temperature through a
+> voltage sense amplifier such as the LTC2997.
+> 
+> Signed-off-by: Liam Beguin <lvb@xiphos.com>
 
-Gr{oetje,eeting}s,
+What's the significant difference between this and the RTD binding? Does
+not both simply scale/offset a voltage to a temperature?
 
-                        Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+Cheers,
+Peter
