@@ -2,51 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B7B713962E6
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 17:01:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E42A396303
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 17:01:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234031AbhEaPC1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 11:02:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38446 "EHLO
+        id S231837AbhEaPDG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 11:03:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38464 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231778AbhEaOGd (ORCPT
+        with ESMTP id S233226AbhEaOGh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 10:06:33 -0400
-Received: from mail-qv1-xf29.google.com (mail-qv1-xf29.google.com [IPv6:2607:f8b0:4864:20::f29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BEB74C0612F0;
-        Mon, 31 May 2021 06:38:44 -0700 (PDT)
-Received: by mail-qv1-xf29.google.com with SMTP id ez19so5514580qvb.3;
-        Mon, 31 May 2021 06:38:44 -0700 (PDT)
+        Mon, 31 May 2021 10:06:37 -0400
+Received: from mail-qv1-xf2d.google.com (mail-qv1-xf2d.google.com [IPv6:2607:f8b0:4864:20::f2d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9CB5CC06123B;
+        Mon, 31 May 2021 06:38:46 -0700 (PDT)
+Received: by mail-qv1-xf2d.google.com with SMTP id ez19so5514618qvb.3;
+        Mon, 31 May 2021 06:38:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=exn5/9MVsYyepOBbFagm+4+x6JfQKNCd23hgVVQiw28=;
-        b=LoL5jRQElHsWm8LP8+SICgLUszyYP4O8t1uqdvQmeQsZECaPPZY/kWOcm07z1B7UQo
-         jTF1C5D4Hg0l8j09qydZPydD4kMxveKATIGUD6q1C7S085WoKCIDArlPHvvUq2qi/mgw
-         0iGFshXRXAngdNliONNtzB/uGMW8WN2HH1b/Mzoa0rt61TZRNE7t2SXLnikZqc3YgM3J
-         oQM2xWcNp+/dZs54de9GmKcZcXRlT9djcS4QzqWjV+Z1OUJg1k0eHvfTeSqSPxRyZqm9
-         LDQeKcm8JCwILy9vUAjhg6qhLnU5dgY/HcagizHT89CWGcq27S9iIvCYLH896+O/5dwp
-         c9Aw==
+        bh=D58QvjfAEUuFa2sQo4m4/NULizMsxON2k/Lqjog3pKs=;
+        b=Sb5wlROKyGa7ebc1TSnHZiiEM0GmUVztuPXQFadnTpfDreOGmYiXxd7GPuD8whOaqs
+         BTHrkCniBbgJlycI/rvrdQgouNSSKtFcYriG6eptQ24PfIWugVPPPu5f6BPfApv6RyHK
+         AC5wnh6h6fGtk9Ml51vRhpDggZ8cTyCFTQyszpkp0uwygCDJEYsQbLEEImOEtGXHcCyp
+         pi2QECksebCF7lJTiCKS7VyIkEd6yuAd06i1+d+QfFbY2dfw3GhlBmtHUkMXl6C0Dayx
+         vVWL2YhicDgRXzNXMbdegWLokr6K7xGrpYRxyZdi4eAQKiWBekWSD9ha2GMuWTPrxMDK
+         Oraw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references;
-        bh=exn5/9MVsYyepOBbFagm+4+x6JfQKNCd23hgVVQiw28=;
-        b=buEpS4I+Xg8tFak4qwfMVy6wNoTVeHf5/U7lFonrntdR0zaHoJTTdg7rwVNPzQwjk5
-         6x59PhLjmfv+aeXjVp5n0re8CO56M/b2k40bFEtvq2RVzQUdgzYS1hjZCQ/OQMosY/Y/
-         VtdU58pZ1cy3krAQ5q2VuEg6II6GR5TdLnPJLNXpBqdT6lrVhONyz0HXFhH2JImg5RTh
-         E5Pi0Ewt/oFcM3AEniPnfnQYIilzJ4QPRUv5TOVMw87A9b0o7hShicIuGnSO2smz/sqb
-         eLyCTFlef7b3svVi+AARBJIF09j/JizKdn4EVpR8TCt+qm3kKll/qDozRgG+IhorI6Gz
-         BhVA==
-X-Gm-Message-State: AOAM533/AbLnQ7ZvbgsK0VUO0LaBmtFl8mY27sUw5CZ7fOZajtGS9N8n
-        rwbWKzM1PQfnnlcq/M4dO4JU/AJ7vOtLeLuB
-X-Google-Smtp-Source: ABdhPJzaecqIbH5Aze6LUtz/O51SmCe+Lju51wAkX5nYBg4pbUR9YbFLliNHty1gW03wN5sUd9/1pQ==
-X-Received: by 2002:a0c:ea31:: with SMTP id t17mr5765216qvp.47.1622468324012;
-        Mon, 31 May 2021 06:38:44 -0700 (PDT)
+        bh=D58QvjfAEUuFa2sQo4m4/NULizMsxON2k/Lqjog3pKs=;
+        b=ht5zWlaBrO07eLoyW51iEZmFQHjZUURxWzpDo7OYYAZtYxZYSoY9gA2IJflPwkvKdR
+         cAWBIs1GCp8u/pjXYJ9KLdKHm4+Dlr2DBH+GzUCgQAZ2U2EM7YM8CPchG1iSTggiqJNV
+         2Alv4bC7XvwyyaMVsMUiTSNnKhKF8Cf3eRpEdDoceiCkM5FSwW6KMUr0syB3Go32ag6J
+         CNQgszYe0/yEplzzYg1DEjWvc6kswCell0HzUX8MKJmW5Sht7wP449Uzl0ISrpPgGgi0
+         CcffCloaipLVkXYF76qBA9zu4QiPErB0fMmyAi2S0bJHrI4IyXi1V88OufFa6HA46YD2
+         Lqgg==
+X-Gm-Message-State: AOAM531Je/FxgJb6zIUwvwQLZZmV6dg/CVW1AFS5GJ2066V0EqmqSa0t
+        SqSG2dL8oGFXMGzgYk1WFDU=
+X-Google-Smtp-Source: ABdhPJzYr1lC/HnAn/6hbJ1bN8omhDutmVuLbZzqnsrWuI/uBGV6yhXg3p/7ntVvun0ZPb9g0IONQw==
+X-Received: by 2002:a0c:9e50:: with SMTP id z16mr14961287qve.31.1622468325835;
+        Mon, 31 May 2021 06:38:45 -0700 (PDT)
 Received: from localhost.localdomain (ec2-35-169-212-159.compute-1.amazonaws.com. [35.169.212.159])
-        by smtp.gmail.com with ESMTPSA id h8sm8293085qtp.46.2021.05.31.06.38.42
+        by smtp.gmail.com with ESMTPSA id h8sm8293085qtp.46.2021.05.31.06.38.44
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 31 May 2021 06:38:43 -0700 (PDT)
+        Mon, 31 May 2021 06:38:45 -0700 (PDT)
 From:   sj38.park@gmail.com
 To:     akpm@linux-foundation.org
 Cc:     SeongJae Park <sjpark@amazon.de>, Jonathan.Cameron@Huawei.com,
@@ -63,9 +63,9 @@ Cc:     SeongJae Park <sjpark@amazon.de>, Jonathan.Cameron@Huawei.com,
         vdavydov.dev@gmail.com, zgf574564920@gmail.com,
         linux-damon@amazon.com, linux-mm@kvack.org,
         linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [RFC PATCH 08/13] mm/damon/dbgfs: Support prioritization weights
-Date:   Mon, 31 May 2021 13:38:11 +0000
-Message-Id: <20210531133816.12689-9-sj38.park@gmail.com>
+Subject: [RFC PATCH 09/13] tools/selftests/damon: Update for regions prioritization of schemes
+Date:   Mon, 31 May 2021 13:38:12 +0000
+Message-Id: <20210531133816.12689-10-sj38.park@gmail.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20210531133816.12689-1-sj38.park@gmail.com>
 References: <20210531133816.12689-1-sj38.park@gmail.com>
@@ -75,61 +75,36 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: SeongJae Park <sjpark@amazon.de>
 
-This commit allows DAMON debugfs interface users set the prioritization
-weights by putting three more numbers to the 'schemes' file.
+This commit updates the DAMON selftests for 'schemes' debugfs file, as
+the file format is updated.
 
 Signed-off-by: SeongJae Park <sjpark@amazon.de>
 ---
- mm/damon/dbgfs.c | 16 +++++++++++-----
- 1 file changed, 11 insertions(+), 5 deletions(-)
+ tools/testing/selftests/damon/debugfs_attrs.sh | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/mm/damon/dbgfs.c b/mm/damon/dbgfs.c
-index ea6d4fdb57fa..b90287b1e576 100644
---- a/mm/damon/dbgfs.c
-+++ b/mm/damon/dbgfs.c
-@@ -227,11 +227,14 @@ static ssize_t sprint_schemes(struct damon_ctx *c, char *buf, ssize_t len)
+diff --git a/tools/testing/selftests/damon/debugfs_attrs.sh b/tools/testing/selftests/damon/debugfs_attrs.sh
+index 012b0c1fdbd3..262034d8efa5 100755
+--- a/tools/testing/selftests/damon/debugfs_attrs.sh
++++ b/tools/testing/selftests/damon/debugfs_attrs.sh
+@@ -101,7 +101,7 @@ echo $ORIG_CONTENT > $file
+ file="$DBGFS/schemes"
  
- 	damon_for_each_scheme(s, c) {
- 		rc = scnprintf(&buf[written], len - written,
--				"%lu %lu %u %u %u %u %d %lu %lu %lu %lu\n",
-+				"%lu %lu %u %u %u %u %d %lu %lu %u %u %u %lu %lu\n",
- 				s->min_sz_region, s->max_sz_region,
- 				s->min_nr_accesses, s->max_nr_accesses,
- 				s->min_age_region, s->max_age_region,
- 				s->action, s->limit.sz, s->limit.ms,
-+				s->limit.weight_sz,
-+				s->limit.weight_nr_accesses,
-+				s->limit.weight_age,
- 				s->stat_count, s->stat_sz);
- 		if (!rc)
- 			return -ENOMEM;
-@@ -313,11 +316,14 @@ static struct damos **str_to_schemes(const char *str, ssize_t len,
- 	while (pos < len && *nr_schemes < max_nr_schemes) {
- 		struct damos_speed_limit limit = {};
+ ORIG_CONTENT=$(cat $file)
+-echo "1 2 3 4 5 6 3 0 0" > $file
++echo "1 2 3 4 5 6 3 0 0 1 2 3" > $file
+ if [ $? -ne 0 ]
+ then
+ 	echo "$file write fail"
+@@ -110,7 +110,7 @@ then
+ fi
  
--		ret = sscanf(&str[pos], "%lu %lu %u %u %u %u %u %lu %lu%n",
-+		ret = sscanf(&str[pos],
-+				"%lu %lu %u %u %u %u %u %lu %lu %u %u %u%n",
- 				&min_sz, &max_sz, &min_nr_a, &max_nr_a,
- 				&min_age, &max_age, &action, &limit.sz,
--				&limit.ms, &parsed);
--		if (ret != 9)
-+				&limit.ms, &limit.weight_sz,
-+				&limit.weight_nr_accesses, &limit.weight_age,
-+				&parsed);
-+		if (ret != 12)
- 			break;
- 		if (!damos_action_valid(action)) {
- 			pr_err("wrong action %d\n", action);
-@@ -1141,7 +1147,7 @@ static ssize_t dbgfs_monitor_on_write(struct file *file,
- static ssize_t dbgfs_version_read(struct file *file,
- 		char __user *buf, size_t count, loff_t *ppos)
- {
--	return simple_read_from_buffer(buf, count, ppos, "1\n", 2);
-+	return simple_read_from_buffer(buf, count, ppos, "2\n", 2);
- }
- 
- static const struct file_operations mk_contexts_fops = {
+ echo "1 2
+-3 4 5 6 3 0 0" > $file
++3 4 5 6 3 0 0 1 2 3" > $file
+ if [ $? -eq 0 ]
+ then
+ 	echo "$file multi line write success (expected fail)"
 -- 
 2.17.1
 
