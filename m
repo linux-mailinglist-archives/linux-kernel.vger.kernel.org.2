@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 141A5395BA8
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 15:21:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 965BE395D51
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 15:42:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232093AbhEaNX3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 09:23:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55510 "EHLO mail.kernel.org"
+        id S232556AbhEaNoA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 09:44:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34114 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232013AbhEaNTe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 09:19:34 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7E1E06139A;
-        Mon, 31 May 2021 13:17:53 +0000 (UTC)
+        id S232207AbhEaNa2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 09:30:28 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 19E7661420;
+        Mon, 31 May 2021 13:22:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1622467073;
-        bh=fXVmRXjEYXzSiN1Fw+5ymuglW2HubZD3PlHAZd4Xgv4=;
+        s=korg; t=1622467379;
+        bh=gGrd305Iu6Iz8nAJAZDFuVio0yWyIPhWLrF6uC5ORu4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=WqkuwDJwWiUtVW37FxUK/srSqilTDCLyLED5kJb8UyT3sDBFGGOou4d3mNImZObf0
-         R6ToQrOtXM6LC3RLy13ujkpCDEsrMEFkGCOvVd4GREioccuer3tMfQVPaykfDCjBwx
-         hYiRWJOCSWcc4g94qmoQcbL6zAir3gf1fL5fj/yk=
+        b=vjrdt5lIjrWWAwJuzRPeBQpJFtFuvax5+6/txIrIfi5k3w/tnmxurTjhxnLsscrQn
+         3fhld49/e1HeaHoccTyzrQpVY0TSMT6vsCVMvTkltd0GAP5Jb1SJedO73IjXWNc14L
+         A4hr0TjqjodfjFZTICqxEtLVdXqVqy49ljlrWuh4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, YueHaibing <yuehaibing@huawei.com>,
-        Stable@vger.kernel.org,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Subject: [PATCH 4.4 13/54] iio: adc: ad7793: Add missing error code in ad7793_setup()
-Date:   Mon, 31 May 2021 15:13:39 +0200
-Message-Id: <20210531130635.507121797@linuxfoundation.org>
+        Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andriin@fb.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Ovidiu Panait <ovidiu.panait@windriver.com>
+Subject: [PATCH 4.19 044/116] bpf: extend is_branch_taken to registers
+Date:   Mon, 31 May 2021 15:13:40 +0200
+Message-Id: <20210531130641.652305969@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210531130635.070310929@linuxfoundation.org>
-References: <20210531130635.070310929@linuxfoundation.org>
+In-Reply-To: <20210531130640.131924542@linuxfoundation.org>
+References: <20210531130640.131924542@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,30 +41,84 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: YueHaibing <yuehaibing@huawei.com>
+From: Alexei Starovoitov <ast@kernel.org>
 
-commit 4ed243b1da169bcbc1ec5507867e56250c5f1ff9 upstream.
+commit fb8d251ee2a6bf4d7f4af5548e9c8f4fb5f90402 upstream
 
-Set error code while device ID query failed.
+This patch extends is_branch_taken() logic from JMP+K instructions
+to JMP+X instructions.
+Conditional branches are often done when src and dst registers
+contain known scalars. In such case the verifier can follow
+the branch that is going to be taken when program executes.
+That speeds up the verification and is essential feature to support
+bounded loops.
 
-Fixes: 88bc30548aae ("IIO: ADC: New driver for AD7792/AD7793 3 Channel SPI ADC")
-Signed-off-by: YueHaibing <yuehaibing@huawei.com>
-Cc: <Stable@vger.kernel.org>
-Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Signed-off-by: Alexei Starovoitov <ast@kernel.org>
+Acked-by: Andrii Nakryiko <andriin@fb.com>
+Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
+[OP: drop is_jmp32 parameter from is_branch_taken() calls and
+     adjust context]
+Signed-off-by: Ovidiu Panait <ovidiu.panait@windriver.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/iio/adc/ad7793.c |    1 +
- 1 file changed, 1 insertion(+)
+ kernel/bpf/verifier.c |   32 ++++++++++++++++++--------------
+ 1 file changed, 18 insertions(+), 14 deletions(-)
 
---- a/drivers/iio/adc/ad7793.c
-+++ b/drivers/iio/adc/ad7793.c
-@@ -279,6 +279,7 @@ static int ad7793_setup(struct iio_dev *
- 	id &= AD7793_ID_MASK;
+--- a/kernel/bpf/verifier.c
++++ b/kernel/bpf/verifier.c
+@@ -4127,8 +4127,9 @@ static int check_cond_jmp_op(struct bpf_
+ 	struct bpf_verifier_state *this_branch = env->cur_state;
+ 	struct bpf_verifier_state *other_branch;
+ 	struct bpf_reg_state *regs = this_branch->frame[this_branch->curframe]->regs;
+-	struct bpf_reg_state *dst_reg, *other_branch_regs;
++	struct bpf_reg_state *dst_reg, *other_branch_regs, *src_reg = NULL;
+ 	u8 opcode = BPF_OP(insn->code);
++	int pred = -1;
+ 	int err;
  
- 	if (id != st->chip_info->id) {
-+		ret = -ENODEV;
- 		dev_err(&st->sd.spi->dev, "device ID query failed\n");
- 		goto out;
+ 	if (opcode > BPF_JSLE) {
+@@ -4152,6 +4153,7 @@ static int check_cond_jmp_op(struct bpf_
+ 				insn->src_reg);
+ 			return -EACCES;
+ 		}
++		src_reg = &regs[insn->src_reg];
+ 	} else {
+ 		if (insn->src_reg != BPF_REG_0) {
+ 			verbose(env, "BPF_JMP uses reserved fields\n");
+@@ -4166,19 +4168,21 @@ static int check_cond_jmp_op(struct bpf_
+ 
+ 	dst_reg = &regs[insn->dst_reg];
+ 
+-	if (BPF_SRC(insn->code) == BPF_K) {
+-		int pred = is_branch_taken(dst_reg, insn->imm, opcode);
+-
+-		if (pred == 1) {
+-			 /* only follow the goto, ignore fall-through */
+-			*insn_idx += insn->off;
+-			return 0;
+-		} else if (pred == 0) {
+-			/* only follow fall-through branch, since
+-			 * that's where the program will go
+-			 */
+-			return 0;
+-		}
++	if (BPF_SRC(insn->code) == BPF_K)
++		pred = is_branch_taken(dst_reg, insn->imm, opcode);
++	else if (src_reg->type == SCALAR_VALUE &&
++		 tnum_is_const(src_reg->var_off))
++		pred = is_branch_taken(dst_reg, src_reg->var_off.value,
++				       opcode);
++	if (pred == 1) {
++		/* only follow the goto, ignore fall-through */
++		*insn_idx += insn->off;
++		return 0;
++	} else if (pred == 0) {
++		/* only follow fall-through branch, since
++		 * that's where the program will go
++		 */
++		return 0;
  	}
+ 
+ 	other_branch = push_stack(env, *insn_idx + insn->off + 1, *insn_idx,
 
 
