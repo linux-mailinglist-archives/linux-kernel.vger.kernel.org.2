@@ -2,36 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 981D4396358
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 17:12:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C9543965C2
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 18:46:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232045AbhEaPOF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 11:14:05 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40254 "EHLO mail.kernel.org"
+        id S233101AbhEaQrn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 12:47:43 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47904 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233354AbhEaOLh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 10:11:37 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6B8FC61988;
-        Mon, 31 May 2021 13:41:18 +0000 (UTC)
+        id S232698AbhEaOzT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 10:55:19 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2D9D461937;
+        Mon, 31 May 2021 13:59:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1622468479;
-        bh=UNlO1fM6zCSxN2GOwmtuEV0qOlY3BkYmF6gkGidp3oE=;
+        s=korg; t=1622469562;
+        bh=gMZdpXY3e//Gz3MSLYv2aoQmL2PRPjsjE/Xh9B09tbc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=S0x+eGVraK+yyrNqfIyOY2nn7sAigZCl2n7mUsOYtOake30dIOApk5hvdWYshQ7Kf
-         khWUC7s3tC5FQXi9gUds3siiG4YdZIUdNrdf8INmpLD2A2rzfRa/yr080TVgLdi8/5
-         mHqtqLg0cM2dJxYcFlMeW9eQn8jpr4Or6QYOkCpQ=
+        b=0zdqMewohK3FEl8aOLpUd44rartpQkeeyBhsj8Pyhq6z5AMvUa8xGh3WL6jS8pAnB
+         uhDHFpv0fBENPG1/F2Cc3YPtrGfIHhO3mK/yZHhwBQ5O3WPxup0ykaVWGirPoGpLvb
+         NAHYSK/l4dIBGJJcWqljr4ZoZeD0TFu+s0ST8xm8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Francesco Ruggeri <fruggeri@arista.com>,
+        stable@vger.kernel.org, Michal Kubecek <mkubecek@suse.cz>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Yunsheng Lin <linyunsheng@huawei.com>,
         "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 234/252] ipv6: record frag_max_size in atomic fragments in input path
+Subject: [PATCH 5.12 244/296] net: sched: fix tx action reschedule issue with stopped queue
 Date:   Mon, 31 May 2021 15:14:59 +0200
-Message-Id: <20210531130705.953755666@linuxfoundation.org>
+Message-Id: <20210531130711.988279214@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210531130657.971257589@linuxfoundation.org>
-References: <20210531130657.971257589@linuxfoundation.org>
+In-Reply-To: <20210531130703.762129381@linuxfoundation.org>
+References: <20210531130703.762129381@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,44 +42,118 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Francesco Ruggeri <fruggeri@arista.com>
+From: Yunsheng Lin <linyunsheng@huawei.com>
 
-[ Upstream commit e29f011e8fc04b2cdc742a2b9bbfa1b62518381a ]
+[ Upstream commit dcad9ee9e0663d74a89b25b987f9c7be86432812 ]
 
-Commit dbd1759e6a9c ("ipv6: on reassembly, record frag_max_size")
-filled the frag_max_size field in IP6CB in the input path.
-The field should also be filled in case of atomic fragments.
+The netdev qeueue might be stopped when byte queue limit has
+reached or tx hw ring is full, net_tx_action() may still be
+rescheduled if STATE_MISSED is set, which consumes unnecessary
+cpu without dequeuing and transmiting any skb because the
+netdev queue is stopped, see qdisc_run_end().
 
-Fixes: dbd1759e6a9c ('ipv6: on reassembly, record frag_max_size')
-Signed-off-by: Francesco Ruggeri <fruggeri@arista.com>
+This patch fixes it by checking the netdev queue state before
+calling qdisc_run() and clearing STATE_MISSED if netdev queue is
+stopped during qdisc_run(), the net_tx_action() is rescheduled
+again when netdev qeueue is restarted, see netif_tx_wake_queue().
+
+As there is time window between netif_xmit_frozen_or_stopped()
+checking and STATE_MISSED clearing, between which STATE_MISSED
+may set by net_tx_action() scheduled by netif_tx_wake_queue(),
+so set the STATE_MISSED again if netdev queue is restarted.
+
+Fixes: 6b3ba9146fe6 ("net: sched: allow qdiscs to handle locking")
+Reported-by: Michal Kubecek <mkubecek@suse.cz>
+Acked-by: Jakub Kicinski <kuba@kernel.org>
+Signed-off-by: Yunsheng Lin <linyunsheng@huawei.com>
 Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/ipv6/reassembly.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ net/core/dev.c          |  3 ++-
+ net/sched/sch_generic.c | 27 ++++++++++++++++++++++++++-
+ 2 files changed, 28 insertions(+), 2 deletions(-)
 
-diff --git a/net/ipv6/reassembly.c b/net/ipv6/reassembly.c
-index 47a0dc46cbdb..28e44782c94d 100644
---- a/net/ipv6/reassembly.c
-+++ b/net/ipv6/reassembly.c
-@@ -343,7 +343,7 @@ static int ipv6_frag_rcv(struct sk_buff *skb)
- 	hdr = ipv6_hdr(skb);
- 	fhdr = (struct frag_hdr *)skb_transport_header(skb);
+diff --git a/net/core/dev.c b/net/core/dev.c
+index 30c911357582..963194474058 100644
+--- a/net/core/dev.c
++++ b/net/core/dev.c
+@@ -3804,7 +3804,8 @@ static inline int __dev_xmit_skb(struct sk_buff *skb, struct Qdisc *q,
  
--	if (!(fhdr->frag_off & htons(0xFFF9))) {
-+	if (!(fhdr->frag_off & htons(IP6_OFFSET | IP6_MF))) {
- 		/* It is not a fragmented frame */
- 		skb->transport_header += sizeof(struct frag_hdr);
- 		__IP6_INC_STATS(net,
-@@ -351,6 +351,8 @@ static int ipv6_frag_rcv(struct sk_buff *skb)
+ 	if (q->flags & TCQ_F_NOLOCK) {
+ 		rc = q->enqueue(skb, q, &to_free) & NET_XMIT_MASK;
+-		qdisc_run(q);
++		if (likely(!netif_xmit_frozen_or_stopped(txq)))
++			qdisc_run(q);
  
- 		IP6CB(skb)->nhoff = (u8 *)fhdr - skb_network_header(skb);
- 		IP6CB(skb)->flags |= IP6SKB_FRAGMENTED;
-+		IP6CB(skb)->frag_max_size = ntohs(hdr->payload_len) +
-+					    sizeof(struct ipv6hdr);
- 		return 1;
+ 		if (unlikely(to_free))
+ 			kfree_skb_list(to_free);
+diff --git a/net/sched/sch_generic.c b/net/sched/sch_generic.c
+index e6844d3567ca..854d2b38db85 100644
+--- a/net/sched/sch_generic.c
++++ b/net/sched/sch_generic.c
+@@ -35,6 +35,25 @@
+ const struct Qdisc_ops *default_qdisc_ops = &pfifo_fast_ops;
+ EXPORT_SYMBOL(default_qdisc_ops);
+ 
++static void qdisc_maybe_clear_missed(struct Qdisc *q,
++				     const struct netdev_queue *txq)
++{
++	clear_bit(__QDISC_STATE_MISSED, &q->state);
++
++	/* Make sure the below netif_xmit_frozen_or_stopped()
++	 * checking happens after clearing STATE_MISSED.
++	 */
++	smp_mb__after_atomic();
++
++	/* Checking netif_xmit_frozen_or_stopped() again to
++	 * make sure STATE_MISSED is set if the STATE_MISSED
++	 * set by netif_tx_wake_queue()'s rescheduling of
++	 * net_tx_action() is cleared by the above clear_bit().
++	 */
++	if (!netif_xmit_frozen_or_stopped(txq))
++		set_bit(__QDISC_STATE_MISSED, &q->state);
++}
++
+ /* Main transmission queue. */
+ 
+ /* Modifications to data participating in scheduling must be protected with
+@@ -74,6 +93,7 @@ static inline struct sk_buff *__skb_dequeue_bad_txq(struct Qdisc *q)
+ 			}
+ 		} else {
+ 			skb = SKB_XOFF_MAGIC;
++			qdisc_maybe_clear_missed(q, txq);
+ 		}
  	}
  
+@@ -242,6 +262,7 @@ static struct sk_buff *dequeue_skb(struct Qdisc *q, bool *validate,
+ 			}
+ 		} else {
+ 			skb = NULL;
++			qdisc_maybe_clear_missed(q, txq);
+ 		}
+ 		if (lock)
+ 			spin_unlock(lock);
+@@ -251,8 +272,10 @@ validate:
+ 	*validate = true;
+ 
+ 	if ((q->flags & TCQ_F_ONETXQUEUE) &&
+-	    netif_xmit_frozen_or_stopped(txq))
++	    netif_xmit_frozen_or_stopped(txq)) {
++		qdisc_maybe_clear_missed(q, txq);
+ 		return skb;
++	}
+ 
+ 	skb = qdisc_dequeue_skb_bad_txq(q);
+ 	if (unlikely(skb)) {
+@@ -311,6 +334,8 @@ bool sch_direct_xmit(struct sk_buff *skb, struct Qdisc *q,
+ 		HARD_TX_LOCK(dev, txq, smp_processor_id());
+ 		if (!netif_xmit_frozen_or_stopped(txq))
+ 			skb = dev_hard_start_xmit(skb, dev, txq, &ret);
++		else
++			qdisc_maybe_clear_missed(q, txq);
+ 
+ 		HARD_TX_UNLOCK(dev, txq);
+ 	} else {
 -- 
 2.30.2
 
