@@ -2,136 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C5DB395A97
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 14:31:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 49C24395AA2
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 14:32:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231542AbhEaMdQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 08:33:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45780 "EHLO
+        id S231548AbhEaMdm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 08:33:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45884 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231553AbhEaMdA (ORCPT
+        with ESMTP id S231644AbhEaMdX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 08:33:00 -0400
-Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9025EC061763
-        for <linux-kernel@vger.kernel.org>; Mon, 31 May 2021 05:31:18 -0700 (PDT)
-Received: by mail-ed1-x533.google.com with SMTP id t3so13273448edc.7
-        for <linux-kernel@vger.kernel.org>; Mon, 31 May 2021 05:31:18 -0700 (PDT)
+        Mon, 31 May 2021 08:33:23 -0400
+Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56FEDC06138B
+        for <linux-kernel@vger.kernel.org>; Mon, 31 May 2021 05:31:43 -0700 (PDT)
+Received: by mail-ej1-x635.google.com with SMTP id jt22so16462878ejb.7
+        for <linux-kernel@vger.kernel.org>; Mon, 31 May 2021 05:31:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=monstr-eu.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=aKbt/25Lpr+qYLajJWVfyCTo+4CRErqlZFkE0uYt2vs=;
-        b=W37ulNIOItQXCidIGXdbU3wrpoV1xoJfJMx/IzU6SUrICrKtkjj/5lbckpJgbBl+v0
-         YNAoZ5zlOiJSpxiaDL5BQQn6oNxa19uqC2JaZUpVWTyp31WAWE5qXbk/8+GTY4HO1Z6h
-         BD468mfNCDN2mDOWRhhHOFg4PSmtqSGh84y3f4hKCzi3zOOtF1ARwr7qC0dTDEhxpgUO
-         TSsw2f1CMINyoB3IGaljO/kmcVvkkYoaOf+tZgELN+IIuOiaWul4EFjqxTSrhC40T4Os
-         30RqXfmXpvAqyrkjOwUfcm5byTrnVbrkEu1rNwOnbyTH14aOWRVo7ZrLNPsXZQ7/zrMp
-         mI2Q==
+        d=ionos.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=WXQLdS59fbL30bBnmeToTKfV0UTTgBIP/vkt1KK2HWU=;
+        b=eecje7j2KEpcaIgG+PC2ha1DEA/syXdWn5fKjqb/S2z6kQbYmj2NELTU0hHAAkNxMi
+         5cKKgWdR59wozkmUUyN/0m9qEwtIF7Nv6v202rgLqAtCQ9HKX2ifUwRsatWBz1O/z+oH
+         SzwX5nt4tGumea+VBRhzEG3BOG9Kfns7rOReNbsNWw7d6LAGMJV/tJVLuXmTR6OmaDNa
+         7Yd8+RvfRoXcDNj9NR4ZTf6UP8PUrYFnIFLEsAo3QMzfDKTdmKTGRlQGtOxSRPS8xkUM
+         gZyebpW9Ejgtt9byTv0jup2ppPAxw+HG9o/NqecuNtYvJ02maumNvmQ5yulVfU+x9MRX
+         z9Og==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=aKbt/25Lpr+qYLajJWVfyCTo+4CRErqlZFkE0uYt2vs=;
-        b=IqCrp0k6F5EKr/IRRL9os8TFzu8JKDYtJ3m12zCfIcTnDn1YurNa9Nx3I6+mgpctdV
-         Gf32I2cqe5cSnbl0haL/mwsX36mKYMkUffz/ZnzoxMIzLV75J6ot1hlbTzxxYwfu1dEv
-         4sHdLKu09LBwtoixpOBFd60fhTeYrVfqK64b8ZB5gZCFN6LTupuxqsZXG1ceFSTfe/c9
-         m2XMruNXj5S8ywBDsHF/bpEvT1bA5bCxTG/HVEnvoj31jSjDkBTgoEQPV3Uvux9kOivC
-         mfVh9xe9Zo6eiu1PSz1XAD1L0sMQL2Mz25qRCRbtMXEvHfT7IlyyY7GP57fiTxcXTT4P
-         Q7Wg==
-X-Gm-Message-State: AOAM530yxvlZz0wuNO5Lc2EJOo4UfcuaQMcoeBrXOS1IISeIP7T9J8Pu
-        ztiYu9z6B1fRZ1LYJxqAGnpEeQ==
-X-Google-Smtp-Source: ABdhPJw3apIrasvW7VHL6gyFcLUmXzlBPwG/C8F5gqcd/uz77RvwTgPhhDbf6cF/kiAyjcVaZFqY0g==
-X-Received: by 2002:aa7:d7cf:: with SMTP id e15mr15643125eds.114.1622464277227;
-        Mon, 31 May 2021 05:31:17 -0700 (PDT)
-Received: from ?IPv6:2a02:768:2307:40d6::45a? ([2a02:768:2307:40d6::45a])
-        by smtp.gmail.com with ESMTPSA id fe20sm5526644ejc.108.2021.05.31.05.31.15
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 31 May 2021 05:31:16 -0700 (PDT)
-Subject: Re: [PATCH v2 21/33] locking/atomic: microblaze: move to ARCH_ATOMIC
-To:     Mark Rutland <mark.rutland@arm.com>, linux-kernel@vger.kernel.org,
-        will@kernel.org, boqun.feng@gmail.com, peterz@infradead.org
-Cc:     aou@eecs.berkeley.edu, arnd@arndb.de, bcain@codeaurora.org,
-        benh@kernel.crashing.org, chris@zankel.net, dalias@libc.org,
-        davem@davemloft.net, deanbo422@gmail.com, deller@gmx.de,
-        geert@linux-m68k.org, gerg@linux-m68k.org, green.hu@gmail.com,
-        guoren@kernel.org, ink@jurassic.park.msu.ru,
-        James.Bottomley@HansenPartnership.com, jcmvbkbc@gmail.com,
-        jonas@southpole.se, ley.foon.tan@intel.com, linux@armlinux.org.uk,
-        mattst88@gmail.com, mpe@ellerman.id.au, nickhu@andestech.com,
-        palmerdabbelt@google.com, paulus@samba.org,
-        paul.walmsley@sifive.com, rth@twiddle.net, shorne@gmail.com,
-        stefan.kristiansson@saunalahti.fi, tsbogend@alpha.franken.de,
-        vgupta@synopsys.com, ysato@users.sourceforge.jp
-References: <20210525140232.53872-1-mark.rutland@arm.com>
- <20210525140232.53872-22-mark.rutland@arm.com>
-From:   Michal Simek <monstr@monstr.eu>
-Message-ID: <8ba825a4-5213-b355-ba3a-ef9e67e1ce78@monstr.eu>
-Date:   Mon, 31 May 2021 14:31:15 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.2
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=WXQLdS59fbL30bBnmeToTKfV0UTTgBIP/vkt1KK2HWU=;
+        b=JGf81IoLhT5WREY8RUbaXxnVfrO8BLSyjbzg1CggzGPvgZJfKoTPsnMdtRj0m4Z8Pg
+         jxZcnSnR0Rav7LVM0MdmOhFFD6ZePv/qH9i1+HBDLaIELLtiSKYewBRRIEVraPu44Acg
+         x+wYpO6xVrRSOV6Iei4SC7MppNvQHiyRKIffvMgIDAsE+zwRWB8xPMxQIVxsRUU41sNY
+         Sex7n96UTENHpsEt9o+5F+RPVebrimgXvwRIZqhGPXCWHwcnMC7H672zqoDP/ljbBtAY
+         n3fuMavwpFVtrli3c8wehHfuYwvUb8+kreOmigk2MTphr6YiM804H28PF4zbNYza5s7P
+         SgBg==
+X-Gm-Message-State: AOAM531aZX/wD/WMXJUiArEBPF4AleeGFPw/ZiE/8QSH5KHgoWEADp1l
+        Om2AFjrfOvhSwB+qudMFWNSkSBUd31gDbJLRm2X7ZA==
+X-Google-Smtp-Source: ABdhPJzPbGT4vXgPK/rMHikumyH/h0cvDwDVbvng5Ylt7L2/uY+5yxtdCFykHjeUH2a9KX7GblQvHOmrsHPgBBETsog=
+X-Received: by 2002:a17:906:b794:: with SMTP id dt20mr22443077ejb.521.1622464301861;
+ Mon, 31 May 2021 05:31:41 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210525140232.53872-22-mark.rutland@arm.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <635def71048cbffe76e2dd324cf420d8a465ee9d.1622460676.git.leonro@nvidia.com>
+In-Reply-To: <635def71048cbffe76e2dd324cf420d8a465ee9d.1622460676.git.leonro@nvidia.com>
+From:   Jinpu Wang <jinpu.wang@ionos.com>
+Date:   Mon, 31 May 2021 14:31:31 +0200
+Message-ID: <CAMGffEkNKcpKz_YL6CCrGfRpOh8m9G8ir6p=AkY_UgBd-5Bbpw@mail.gmail.com>
+Subject: Re: [PATCH rdma-next] RDMA: Fix kernel-doc warnings about wrong comment
+To:     Leon Romanovsky <leon@kernel.org>
+Cc:     Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@nvidia.com>,
+        Leon Romanovsky <leonro@nvidia.com>,
+        Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
+        Faisal Latif <faisal.latif@intel.com>,
+        open list <linux-kernel@vger.kernel.org>,
+        RDMA mailing list <linux-rdma@vger.kernel.org>,
+        Max Gurtovoy <mgurtovoy@nvidia.com>,
+        "Md. Haris Iqbal" <haris.iqbal@ionos.com>,
+        Mike Marciniszyn <mike.marciniszyn@cornelisnetworks.com>,
+        Sagi Grimberg <sagi@grimberg.me>,
+        Shiraz Saleem <shiraz.saleem@intel.com>,
+        target-devel <target-devel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 5/25/21 4:02 PM, Mark Rutland wrote:
-> We'd like all architectures to convert to ARCH_ATOMIC, as once all
-> architectures are converted it will be possible to make significant
-> cleanups to the atomics headers, and this will make it much easier to
-> generically enable atomic functionality (e.g. debug logic in the
-> instrumented wrappers).
-> 
-> As a step towards that, this patch migrates microblaze to ARCH_ATOMIC,
-> using the asm-generic implementations.
-> 
-> Signed-off-by: Mark Rutland <mark.rutland@arm.com>
-> Cc: Boqun Feng <boqun.feng@gmail.com>
-> Cc: Michal Simek <monstr@monstr.eu>
-> Cc: Peter Zijlstra <peterz@infradead.org>
-> Cc: Will Deacon <will@kernel.org>
+On Mon, May 31, 2021 at 2:03 PM Leon Romanovsky <leon@kernel.org> wrote:
+>
+> From: Leon Romanovsky <leonro@nvidia.com>
+>
+> Compilation with W=1 produces warnings similar to the below.
+>
+>   drivers/infiniband/ulp/ipoib/ipoib_main.c:320: warning: This comment
+>         starts with '/**', but isn't a kernel-doc comment. Refer
+>         Documentation/doc-guide/kernel-doc.rst
+>
+> All such occurrences were found with the following one line
+>  git grep -A 1 "\/\*\*" drivers/infiniband/
+>
+> Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
 > ---
->  arch/microblaze/Kconfig | 1 +
->  1 file changed, 1 insertion(+)
-> 
-> diff --git a/arch/microblaze/Kconfig b/arch/microblaze/Kconfig
-> index 0660f47012bc..5a52922dc225 100644
-> --- a/arch/microblaze/Kconfig
-> +++ b/arch/microblaze/Kconfig
-> @@ -2,6 +2,7 @@
->  config MICROBLAZE
->  	def_bool y
->  	select ARCH_32BIT_OFF_T
-> +	select ARCH_ATOMIC
->  	select ARCH_NO_SWAP
->  	select ARCH_HAS_DMA_PREP_COHERENT
->  	select ARCH_HAS_GCOV_PROFILE_ALL
-> 
-
-Acked-by: Michal Simek <michal.simek@xilinx.com>
-
-Thanks,
-Michal
-
--- 
-Michal Simek, Ing. (M.Eng), OpenPGP -> KeyID: FE3D1F91
-w: www.monstr.eu p: +42-0-721842854
-Maintainer of Linux kernel - Xilinx Microblaze
-Maintainer of Linux kernel - Xilinx Zynq ARM and ZynqMP ARM64 SoCs
-U-Boot custodian - Xilinx Microblaze/Zynq/ZynqMP/Versal SoCs
-
-
--- 
-Michal Simek, Ing. (M.Eng), OpenPGP -> KeyID: FE3D1F91
-w: www.monstr.eu p: +42-0-721842854
-Maintainer of Linux kernel - Xilinx Microblaze
-Maintainer of Linux kernel - Xilinx Zynq ARM and ZynqMP ARM64 SoCs
-U-Boot custodian - Xilinx Microblaze/Zynq/ZynqMP/Versal SoCs
-
+>  * Straightforward change to make our CI happy.
+> ---
+>  drivers/infiniband/core/iwpm_util.h       |  2 +-
+>  drivers/infiniband/core/roce_gid_mgmt.c   |  5 +++--
+>  drivers/infiniband/hw/hfi1/chip.c         |  4 ++--
+>  drivers/infiniband/hw/hfi1/file_ops.c     |  6 +++---
+>  drivers/infiniband/hw/hfi1/hfi.h          |  2 +-
+>  drivers/infiniband/hw/hfi1/init.c         |  4 ++--
+>  drivers/infiniband/hw/hfi1/pio.c          |  2 +-
+>  drivers/infiniband/hw/i40iw/i40iw.h       |  3 ---
+>  drivers/infiniband/hw/i40iw/i40iw_cm.c    | 10 +++++-----
+>  drivers/infiniband/hw/i40iw/i40iw_hmc.c   |  2 +-
+>  drivers/infiniband/hw/i40iw/i40iw_utils.c |  2 +-
+>  drivers/infiniband/sw/rdmavt/mr.c         |  4 ++--
+>  drivers/infiniband/sw/rdmavt/qp.c         |  3 ++-
+>  drivers/infiniband/sw/rdmavt/vt.c         |  4 ++--
+>  drivers/infiniband/ulp/ipoib/ipoib_main.c |  7 ++++---
+>  drivers/infiniband/ulp/iser/iser_verbs.c  |  2 +-
+>  drivers/infiniband/ulp/isert/ib_isert.c   |  4 ++--
+>  drivers/infiniband/ulp/rtrs/rtrs-clt.c    |  4 ++--
+>  drivers/infiniband/ulp/rtrs/rtrs-srv.c    |  2 +-
+for rtrs, looks good to me, thx!
+Reviewed-by: Jack Wang <jinpu.wang@ionos.com>
