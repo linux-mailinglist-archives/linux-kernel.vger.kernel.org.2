@@ -2,65 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 553B6396569
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 18:34:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E77A3396606
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 18:53:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234722AbhEaQex (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 12:34:53 -0400
-Received: from vps0.lunn.ch ([185.16.172.187]:37308 "EHLO vps0.lunn.ch"
+        id S232663AbhEaQzN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 12:55:13 -0400
+Received: from mx.cjr.nz ([51.158.111.142]:39168 "EHLO mx.cjr.nz"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232633AbhEaOsN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 10:48:13 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
-        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
-        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
-        bh=XAT0o2UkIEm8i9ELaLVy9P23UNLzmSAUypWuOFFHxrw=; b=e39GbPDk5a6QfggflL2syvWB4o
-        aSwOStt6VWu6esHekyvSumVz2c4EWjJOJKHlbCzGGTZ9TmfzvQdaQ4rokYS9jveFQxFHOvAVBK5di
-        OgM5Y15U1g/CMDV/Mpi/SyZMbNJIEhwyKAWVht5lFOTvgi+uc92c4QDmkqXVm3k2bP8U=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-        (envelope-from <andrew@lunn.ch>)
-        id 1lnjBM-0079dk-72; Mon, 31 May 2021 16:46:20 +0200
-Date:   Mon, 31 May 2021 16:46:20 +0200
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Randy Dunlap <rdunlap@infradead.org>
-Cc:     Geert Uytterhoeven <geert@linux-m68k.org>,
-        kernel test robot <lkp@intel.com>, kbuild-all@lists.01.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Rich Felker <dalias@libc.org>,
-        David Daney <david.daney@cavium.com>
-Subject: Re: ERROR: modpost: "__delay" [drivers/net/mdio/mdio-cavium.ko]
- undefined!
-Message-ID: <YLT2vB0GwC1sJesL@lunn.ch>
-References: <202105300736.7wVLvXHr-lkp@intel.com>
- <a0edf640-ec05-524e-9125-44decba27bbb@infradead.org>
- <d4c47108-f4d2-4850-14fd-b4c4bd0e0591@infradead.org>
- <CAMuHMdW1xZ-vJe2eOehNSKCP3T=-eq7ji4MBo3D6oGJyPNXGDw@mail.gmail.com>
- <0717b3a5-d838-e1ed-a4ac-80cf14f3a6aa@infradead.org>
+        id S232006AbhEaPAS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 11:00:18 -0400
+X-Greylist: delayed 659 seconds by postgrey-1.27 at vger.kernel.org; Mon, 31 May 2021 11:00:17 EDT
+Received: from authenticated-user (mx.cjr.nz [51.158.111.142])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: pc)
+        by mx.cjr.nz (Postfix) with ESMTPSA id 9400C7FC02;
+        Mon, 31 May 2021 14:47:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cjr.nz; s=dkim;
+        t=1622472453;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=qJuMoqwILVb+N2IGSWtT1m1P73SBKtjiUw0oUcTLrHM=;
+        b=dEs7vZf7HWzb5ZSRlZ8wdjQCIG+TzB3r7OS87X9o42eKSfROG5UrXIf4oh+/ljFnNUSZUY
+        PdUD+A04WM0AXhqqslrGmF0bgvoWWlHBMhOoDbI7JdnIeoRyBWkp7VlanY84aLE87TQ84G
+        8NvLZYqi3uGhTfQwEBcNS+mHCQIv+wtYOyDA/5LQDsJGaF/CJHE4S+aHNI7mcXxZkU/4lP
+        +W2ugYU6AMfkzzA3fgB7bbb+EuyTn79IK/eXlGEtTcv5WoP5JzwF0vnJQVrDXylSe16MsI
+        ELUOJRgk6p0dXSG5Sdme7ZrrgjEun8FEvW8GD00tjyizjBdRIwoTqdzoAn9ENA==
+From:   Paulo Alcantara <pc@cjr.nz>
+To:     YueHaibing <yuehaibing@huawei.com>, sfrench@samba.org
+Cc:     linux-cifs@vger.kernel.org, samba-technical@lists.samba.org,
+        linux-kernel@vger.kernel.org, YueHaibing <yuehaibing@huawei.com>
+Subject: Re: [PATCH -next] cifs: Remove unused inline function
+ is_sysvol_or_netlogon()
+In-Reply-To: <20210529114848.19608-1-yuehaibing@huawei.com>
+References: <20210529114848.19608-1-yuehaibing@huawei.com>
+Date:   Mon, 31 May 2021 11:47:27 -0300
+Message-ID: <87eednot8g.fsf@cjr.nz>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <0717b3a5-d838-e1ed-a4ac-80cf14f3a6aa@infradead.org>
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> > No, we should just fix the driver instead.
-> > 
-> > +               /* Wait 1000 clocks so we don't saturate the RSL bus
-> > +                * doing reads.
-> > +                */
-> > +               __delay(1000);
-> > 
-> > As this is used only on Cavium Octeon and Thunder SoCs, running
-> > at 400-600 MHz resp. 1800-2000 Mhz, what about replacing the __delay()
-> > call by a call to udelay(1) or udelay(2)?
-> 
-> Yeah, I was planning to look into that change this week,
-> but it would probably be better for David to do it.
+YueHaibing <yuehaibing@huawei.com> writes:
 
-If you look at the bigger picture, using linux/iopoll.h would be a
-better solution.
+> is_sysvol_or_netlogon() is never used, so can remove it.
+>
+> Signed-off-by: YueHaibing <yuehaibing@huawei.com>
+> ---
+>  fs/cifs/dfs_cache.c | 11 -----------
+>  1 file changed, 11 deletions(-)
 
-       Andrew
+Reviewed-by: Paulo Alcantara (SUSE) <pc@cjr.nz>
