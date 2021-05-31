@@ -2,108 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AD06B39594F
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 12:56:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C7A839594D
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 12:56:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231330AbhEaK6W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 06:58:22 -0400
-Received: from so254-9.mailgun.net ([198.61.254.9]:34309 "EHLO
-        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231357AbhEaK56 (ORCPT
+        id S231376AbhEaK6L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 06:58:11 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:32387 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231344AbhEaK55 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 06:57:58 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1622458578; h=References: In-Reply-To: References:
- In-Reply-To: Message-Id: Date: Subject: Cc: To: From: Sender;
- bh=QlYc3u3TuNAPivVce1iIXZSsOE1D8aMMOWtQav1jEe4=; b=c836FfeY1vXG0yR7XvLEA/11ez9oWjjAA/TGoqG1BJ2TbENzOUKt0QCzTts3ThIDs79/VeCc
- +SWpBruCwHovXoH1MPLonWNAHhrnVETT7Prs73+00VG8kk/miMPc/QwBQ1/sv/l2T3ayEDEk
- AWvMANiHRPz7BatYkE7SLrQzTGc=
-X-Mailgun-Sending-Ip: 198.61.254.9
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n05.prod.us-east-1.postgun.com with SMTP id
- 60b4c0d2f726fa41881b499e (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 31 May 2021 10:56:18
- GMT
-Sender: charante=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id EFC0AC43147; Mon, 31 May 2021 10:56:17 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
-Received: from hu-charante-hyd.qualcomm.com (unknown [202.46.22.19])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        Mon, 31 May 2021 06:57:57 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1622458577;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=XDhdJyYu9mTXSWKFBQ6lTq2vD2wtLvH820x3t8G/m0E=;
+        b=B1RA0+xCQPQlv4CszrU7ziCTvUbyuJUyt/R/gEio6fu7elxOeqn94EYrKla0xE4KIMDQjE
+        lwfsLI5e6Qz23qfqXyTJseZTq4TC4AagKuk8I1MezxuBdwM17PfM1fO0Gg31mY41UGbY6R
+        G6grOsZmLKXB62ZYFBqSJKo9ctU1BJQ=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-113-OVikhWS9PAayEpJWJj5JTQ-1; Mon, 31 May 2021 06:56:13 -0400
+X-MC-Unique: OVikhWS9PAayEpJWJj5JTQ-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        (Authenticated sender: charante)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 75601C4338A;
-        Mon, 31 May 2021 10:56:10 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 75601C4338A
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=charante@codeaurora.org
-From:   Charan Teja Reddy <charante@codeaurora.org>
-To:     akpm@linux-foundation.org, vbabka@suse.cz, nigupta@nvidia.com,
-        hannes@cmpxchg.org, corbet@lwn.net, mcgrof@kernel.org,
-        keescook@chromium.org, yzaikin@google.com, aarcange@redhat.com,
-        cl@linux.com, xi.fengfei@h3c.com, mchehab+huawei@kernel.org,
-        andrew.a.klychkov@gmail.com, dave.hansen@linux.intel.com,
-        bhe@redhat.com, iamjoonsoo.kim@lge.com, mateusznosek0@gmail.com,
-        sh_def@163.com, vinmenon@codeaurora.org
-Cc:     linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
-        Charan Teja Reddy <charante@codeaurora.org>
-Subject: [PATCH v3 2/2] mm: compaction: fix wakeup logic of proactive compaction
-Date:   Mon, 31 May 2021 16:24:52 +0530
-Message-Id: <ad2600f3d8d7c0d44b35d9fad0031d82c5a3c285.1622454385.git.charante@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <cover.1622454385.git.charante@codeaurora.org>
-References: <cover.1622454385.git.charante@codeaurora.org>
-In-Reply-To: <cover.1622454385.git.charante@codeaurora.org>
-References: <cover.1622454385.git.charante@codeaurora.org>
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id AAD6A107ACF5;
+        Mon, 31 May 2021 10:56:12 +0000 (UTC)
+Received: from max.com (unknown [10.40.192.80])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 9551860C0F;
+        Mon, 31 May 2021 10:56:08 +0000 (UTC)
+From:   Andreas Gruenbacher <agruenba@redhat.com>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Andreas Gruenbacher <agruenba@redhat.com>,
+        cluster-devel@redhat.com, linux-kernel@vger.kernel.org
+Subject: [GIT PULL] gfs2 fixes for v5.13-rc5
+Date:   Mon, 31 May 2021 12:56:06 +0200
+Message-Id: <20210531105606.228314-1-agruenba@redhat.com>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Currently, proactive compaction tries to get triggered for every
-HPAGE_FRAG_CHECK_INTERVAL_MSEC(=500msec) even when proactive compaction
-is disabled with sysctl.compaction_proactiveness = 0. This results in
-kcompactd thread wakes up and goes to sleep for every 500msec with out
-the need of doing proactive compaction. Though this doesn't have any
-overhead, few cpu cycles can be saved by avoid of waking up kcompactd
-thread for proactive compaction when it is disabled.
+Hi Linus,
 
-Signed-off-by: Charan Teja Reddy <charante@codeaurora.org>
----
+please consider pulling the following gfs2 fixes for v5.13-rc5.
 
- - This patch is newly raised in V3, thus no changes exist in V1 and V2 
+(I'll follow up with another set of fixes that may require additional
+discussion later today.)
 
- mm/compaction.c | 7 +++++--
- 1 file changed, 5 insertions(+), 2 deletions(-)
+Thanks,
+Andreas
 
-diff --git a/mm/compaction.c b/mm/compaction.c
-index 197e203..0edcd0f 100644
---- a/mm/compaction.c
-+++ b/mm/compaction.c
-@@ -2926,11 +2926,14 @@ static int kcompactd(void *p)
- 
- 	while (!kthread_should_stop()) {
- 		unsigned long pflags;
-+		long timeout;
- 
-+		timeout = sysctl_compaction_proactiveness ?
-+			msecs_to_jiffies(HPAGE_FRAG_CHECK_INTERVAL_MSEC) :
-+			MAX_SCHEDULE_TIMEOUT;
- 		trace_mm_compaction_kcompactd_sleep(pgdat->node_id);
- 		if (wait_event_freezable_timeout(pgdat->kcompactd_wait,
--			kcompactd_work_requested(pgdat),
--			msecs_to_jiffies(HPAGE_FRAG_CHECK_INTERVAL_MSEC)) &&
-+			kcompactd_work_requested(pgdat), timeout) &&
- 			!pgdat->proactive_compact_trigger) {
- 
- 			psi_memstall_enter(&pflags);
--- 
-QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a
-member of the Code Aurora Forum, hosted by The Linux Foundation
+The following changes since commit d07f6ca923ea0927a1024dfccafc5b53b61cfecc:
+
+  Linux 5.13-rc2 (2021-05-16 15:27:44 -0700)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/gfs2/linux-gfs2.git tags/gfs2-v5.13-rc2-fixes
+
+for you to fetch changes up to 1ab19c5de4c537ec0d9b21020395a5b5a6c059b2:
+
+  gfs2: Fix use-after-free in gfs2_glock_shrink_scan (2021-05-31 12:03:28 +0200)
+
+----------------------------------------------------------------
+Various gfs2 fixes
+
+----------------------------------------------------------------
+Andreas Gruenbacher (2):
+      gfs2: Prevent direct-I/O write fallback errors from getting lost
+      gfs2: Fix mmap locking for write faults
+
+Bob Peterson (4):
+      gfs2: Fix I_NEW check in gfs2_dinode_in
+      gfs2: fix scheduling while atomic bug in glocks
+      gfs2: fix a deadlock on withdraw-during-mount
+      gfs2: Clean up revokes on normal withdraws
+
+Hillf Danton (1):
+      gfs2: Fix use-after-free in gfs2_glock_shrink_scan
+
+ fs/gfs2/file.c  |  9 +++++++--
+ fs/gfs2/glock.c | 28 ++++++++++++++++++++++++----
+ fs/gfs2/glops.c |  2 +-
+ fs/gfs2/log.c   |  6 +++---
+ fs/gfs2/log.h   |  1 +
+ fs/gfs2/lops.c  |  7 ++++++-
+ fs/gfs2/lops.h  |  1 +
+ fs/gfs2/util.c  |  1 +
+ 8 files changed, 44 insertions(+), 11 deletions(-)
 
