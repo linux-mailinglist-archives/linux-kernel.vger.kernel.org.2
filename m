@@ -2,135 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AD61C3958B3
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 12:03:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B12643958BB
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 12:06:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231292AbhEaKFY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 06:05:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40846 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231283AbhEaKFP (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 06:05:15 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 030BBC061760
-        for <linux-kernel@vger.kernel.org>; Mon, 31 May 2021 03:03:34 -0700 (PDT)
-Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <mkl@pengutronix.de>)
-        id 1lnelR-0004st-Tc; Mon, 31 May 2021 12:03:17 +0200
-Received: from pengutronix.de (unknown [IPv6:2a03:f580:87bc:d400:eb0a:85ec:ae31:4631])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        (Authenticated sender: mkl-all@blackshift.org)
-        by smtp.blackshift.org (Postfix) with ESMTPSA id 8766762FC76;
-        Mon, 31 May 2021 10:03:15 +0000 (UTC)
-Date:   Mon, 31 May 2021 12:03:14 +0200
-From:   Marc Kleine-Budde <mkl@pengutronix.de>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     linux-can@vger.kernel.org, netdev@vger.kernel.org,
+        id S231211AbhEaKIU convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 31 May 2021 06:08:20 -0400
+Received: from mga06.intel.com ([134.134.136.31]:3713 "EHLO mga06.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230521AbhEaKHQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 06:07:16 -0400
+IronPort-SDR: ETwz2zJfRC58yyaNv8vEmhKLK5GorxVMZgXJij27B0C7ympMDbrFevSyvuiVsLZwIfUtTzTAkW
+ 5o6jxcOkEh/Q==
+X-IronPort-AV: E=McAfee;i="6200,9189,10000"; a="264523884"
+X-IronPort-AV: E=Sophos;i="5.83,236,1616482800"; 
+   d="scan'208";a="264523884"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 May 2021 03:05:36 -0700
+IronPort-SDR: aiEekzZjHSD7NbXYCaWUaCjaPWTrU5fbNnwzeXalSbsjlVmoyla3MzplSTYaxNjeXYNX37Rg25
+ ebkyyQn5meYA==
+X-IronPort-AV: E=Sophos;i="5.83,236,1616482800"; 
+   d="scan'208";a="478858881"
+Received: from masayag-mobl1.ger.corp.intel.com (HELO localhost) ([10.252.52.77])
+  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 May 2021 03:05:32 -0700
+From:   Jani Nikula <jani.nikula@linux.intel.com>
+To:     Alyssa Rosenzweig <alyssa@rosenzweig.io>,
+        dri-devel@lists.freedesktop.org
+Cc:     David Airlie <airlied@linux.ie>, Hector Martin <marcan@marcan.st>,
+        Jonathan =?utf-8?Q?Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>,
         linux-kernel@vger.kernel.org,
-        Manivannan Sadhasivam <mani@kernel.org>,
-        Thomas Kopp <thomas.kopp@microchip.com>,
-        Wolfgang Grandegger <wg@grandegger.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>
-Subject: Re: [PATCH v2 1/2] can: mcp251xfd: Try to get crystal clock rate
- from property
-Message-ID: <20210531100314.w4ydd3ozhbb7k6sv@pengutronix.de>
-References: <20210526193327.70468-1-andriy.shevchenko@linux.intel.com>
- <20210531084720.6xql2r4uhp6ruzl6@pengutronix.de>
- <YLSzRdpp9EWsLeFy@smile.fi.intel.com>
+        Alyssa Rosenzweig <alyssa@rosenzweig.io>
+Subject: Re: [PATCH v2 2/2] maintainers: Update freedesktop.org IRC channels
+In-Reply-To: <20210531031029.4642-2-alyssa@rosenzweig.io>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+References: <20210531031029.4642-1-alyssa@rosenzweig.io> <20210531031029.4642-2-alyssa@rosenzweig.io>
+Date:   Mon, 31 May 2021 13:05:29 +0300
+Message-ID: <87zgwbqkuu.fsf@intel.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="empwam5wixyaduli"
-Content-Disposition: inline
-In-Reply-To: <YLSzRdpp9EWsLeFy@smile.fi.intel.com>
-X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
-X-SA-Exim-Mail-From: mkl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Sun, 30 May 2021, Alyssa Rosenzweig <alyssa@rosenzweig.io> wrote:
+> Like many free software projects, freedesktop.org issued a non-binding
+> recommendation for projects to migrate from Freenode to OFTC [1]. As
+> such, freedesktop.org entries in the MAINTAINERS file are out-of-date as
+> the respective channels have moved. Update the file to point to the
+> right network.
+>
+> v2: Correct typo in commit message pointed out by Lukas and Jonathan.
+> Add Hector's ack.
+>
+> [1] https://lists.freedesktop.org/archives/dri-devel/2021-May/307605.html
+>
+> Signed-off-by: Alyssa Rosenzweig <alyssa@rosenzweig.io>
+> Acked-By: Hector Martin <marcan@marcan.st>
+> Cc: David Airlie <airlied@linux.ie>
+> Cc: Daniel Vetter <daniel@ffwll.ch>
+> Cc: Lukas Wunner <lukas@wunner.de>
+> Cc: Jonathan Neuschäfer <j.neuschaefer@gmx.net>
+> Cc: linux-kernel@vger.kernel.org
 
---empwam5wixyaduli
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Acked-by: Jani Nikula <jani.nikula@intel.com>
 
-On 31.05.2021 12:58:29, Andy Shevchenko wrote:
-> On Mon, May 31, 2021 at 10:47:20AM +0200, Marc Kleine-Budde wrote:
-> > On 26.05.2021 22:33:26, Andy Shevchenko wrote:
-> > > In some configurations, mainly ACPI-based, the clock frequency of the=
- device
-> > > is supplied by very well established 'clock-frequency' property. Henc=
-e, try
-> > > to get it from the property at last if no other providers are availab=
-le.
->=20
-> > >  		return dev_err_probe(&spi->dev, PTR_ERR(reg_xceiver),
-> > >  				     "Failed to get Transceiver regulator!\n");
-> > > =20
-> > > -	clk =3D devm_clk_get(&spi->dev, NULL);
-> > > +	/* Always ask for fixed clock rate from a property. */
-> > > +	device_property_read_u32(&spi->dev, "clock-frequency", &rate);
-> >=20
-> > what about error handling....?
->=20
-> Not needed, but rate should be assigned to 0, which is missed.
->=20
-> > > +	clk =3D devm_clk_get_optional(&spi->dev, NULL);
-> > >  	if (IS_ERR(clk))
-> > >  		return dev_err_probe(&spi->dev, PTR_ERR(clk),
-> > >  				     "Failed to get Oscillator (clock)!\n");
-> > >  	freq =3D clk_get_rate(clk);
-> > > +	if (freq =3D=3D 0)
-> > > +		freq =3D rate;
-> >=20
-> > ... this means we don't fail if there is neither a clk nor a
-> > clock-frequency property.
->=20
-> The following will check for it (which is already in the code)
->=20
->   if (freq <=3D MCP251XFD_SYSCLOCK_HZ_MAX / MCP251XFD_OSC_PLL_MULTIPLIER)=
- {
+> ---
+>  MAINTAINERS | 6 +++---
+>  1 file changed, 3 insertions(+), 3 deletions(-)
+>
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index 49091fbfa..7f992125a 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -1651,7 +1651,7 @@ L:	linux-arm-kernel@lists.infradead.org (moderated for non-subscribers)
+>  S:	Maintained
+>  W:	https://asahilinux.org
+>  B:	https://github.com/AsahiLinux/linux/issues
+> -C:	irc://chat.freenode.net/asahi-dev
+> +C:	irc://irc.oftc.net/asahi-dev
+>  T:	git https://github.com/AsahiLinux/linux.git
+>  F:	Documentation/devicetree/bindings/arm/apple.yaml
+>  F:	Documentation/devicetree/bindings/interrupt-controller/apple,aic.yaml
+> @@ -5969,7 +5969,7 @@ M:	Daniel Vetter <daniel@ffwll.ch>
+>  L:	dri-devel@lists.freedesktop.org
+>  S:	Maintained
+>  B:	https://gitlab.freedesktop.org/drm
+> -C:	irc://chat.freenode.net/dri-devel
+> +C:	irc://irc.oftc.net/dri-devel
+>  T:	git git://anongit.freedesktop.org/drm/drm
+>  F:	Documentation/devicetree/bindings/display/
+>  F:	Documentation/devicetree/bindings/gpu/
+> @@ -9116,7 +9116,7 @@ S:	Supported
+>  W:	https://01.org/linuxgraphics/
+>  Q:	http://patchwork.freedesktop.org/project/intel-gfx/
+>  B:	https://gitlab.freedesktop.org/drm/intel/-/wikis/How-to-file-i915-bugs
+> -C:	irc://chat.freenode.net/intel-gfx
+> +C:	irc://irc.oftc.net/intel-gfx
+>  T:	git git://anongit.freedesktop.org/drm-intel
+>  F:	Documentation/gpu/i915.rst
+>  F:	drivers/gpu/drm/i915/
 
-Good point.
-
-> > I've send a v3 to fix this.
->=20
-> You mean I have to send v3?
-> Sure!
-
-I have send a v3, see:
-
-https://lore.kernel.org/r/20210531084444.1785397-1-mkl@pengutronix.de
-
-Marc
-
---=20
-Pengutronix e.K.                 | Marc Kleine-Budde           |
-Embedded Linux                   | https://www.pengutronix.de  |
-Vertretung West/Dortmund         | Phone: +49-231-2826-924     |
-Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-5555 |
-
---empwam5wixyaduli
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEK3kIWJt9yTYMP3ehqclaivrt76kFAmC0tGAACgkQqclaivrt
-76nmjAf9HvS70rVRdi2fcQ81qkc6xLuLuF8T2LbFeMvO9fXnU78jcz1leWRjFJNB
-wkLzxUR93ZJ2OPvULVY4nzQ2wl10253zU2XFX49KcMZv7fsxCFaxmknf07mTmIRt
-/Zz0PkQWF38HT1csD1qzoDfPJq/TDnL8f7sIUOCzeQ3E+uT84JMJg+3x3Hndw9U2
-fb+E+r2FhF6vj+Qp8Hzux/PdxowFtn8KGGD3c6VfUdUjw4VTw2RPshQoktlVhkAA
-2mrFotq2f8zyUvKEMZSaAZivjV09SGq1cLpj1kOH9a1LHp5dVTO4Z7PVXqqgxVJa
-O6d81jNFSk2EpNGauXVC9ZAVLvfPOg==
-=Ctl7
------END PGP SIGNATURE-----
-
---empwam5wixyaduli--
+-- 
+Jani Nikula, Intel Open Source Graphics Center
