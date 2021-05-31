@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D9CF9395B6D
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 15:19:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B534D395E7D
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 15:58:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232166AbhEaNUZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 09:20:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53662 "EHLO mail.kernel.org"
+        id S231418AbhEaN7q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 09:59:46 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43832 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231881AbhEaNSz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 09:18:55 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 50DA561377;
-        Mon, 31 May 2021 13:17:15 +0000 (UTC)
+        id S232363AbhEaNjF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 09:39:05 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id AC2ED61408;
+        Mon, 31 May 2021 13:26:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1622467035;
-        bh=AkeUFwF6WPQBnzhsbWzH49A8ilmrlY6UJS1l6fLaMEc=;
+        s=korg; t=1622467611;
+        bh=gerKS9RKs58vxAFlg4+VQiIAmxVzLNiW/vg2IF1A3Sg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=NqmY4YvAFsiVG8bkd6kNkRLkoz8ZnkXQkmbiYLZY5QO8p8DuGeZvUrW1r/Noijjaq
-         JqzrITknOuMQ/YrlGAVHKkHShhOyKptqyMav9R1oGPoc22nWkZf7GkI/g2HGtHr0YO
-         v91XnvppqWYwXKKsv10tHInaSG4jNFBfLHnER8Ck=
+        b=Xq8wO9NZaqtCpuWMQu/Gz2BoKIz4WvIu76xE1/lYYn5Y5mA3EM+qqqcJqMPK2uN5p
+         C7aKhuR4odoLZftCsY3BEC5fLDdki6wd3Szg8P9CxVKKCrswNYeEjtE9ZFVhjdeDhd
+         yKTlrOFmxnZF6z0T4rKmrGO0MDALZ6o+iW/ZrHZA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, "David S. Miller" <davem@davemloft.net>,
-        Du Cheng <ducheng2@gmail.com>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.4 33/54] net: caif: remove BUG_ON(dev == NULL) in caif_xmit
+        stable@vger.kernel.org, Mathy Vanhoef <Mathy.Vanhoef@kuleuven.be>,
+        Johannes Berg <johannes.berg@intel.com>
+Subject: [PATCH 4.14 14/79] mac80211: prevent mixed key and fragment cache attacks
 Date:   Mon, 31 May 2021 15:13:59 +0200
-Message-Id: <20210531130636.119893130@linuxfoundation.org>
+Message-Id: <20210531130636.463978144@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210531130635.070310929@linuxfoundation.org>
-References: <20210531130635.070310929@linuxfoundation.org>
+In-Reply-To: <20210531130636.002722319@linuxfoundation.org>
+References: <20210531130636.002722319@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,80 +39,99 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Du Cheng <ducheng2@gmail.com>
+From: Mathy Vanhoef <Mathy.Vanhoef@kuleuven.be>
 
-[ Upstream commit 65a67792e3416f7c5d7daa47d99334cbb19a7449 ]
+commit 94034c40ab4a3fcf581fbc7f8fdf4e29943c4a24 upstream.
 
-The condition of dev == NULL is impossible in caif_xmit(), hence it is
-for the removal.
+Simultaneously prevent mixed key attacks (CVE-2020-24587) and fragment
+cache attacks (CVE-2020-24586). This is accomplished by assigning a
+unique color to every key (per interface) and using this to track which
+key was used to decrypt a fragment. When reassembling frames, it is
+now checked whether all fragments were decrypted using the same key.
 
-Explanation:
-The static caif_xmit() is only called upon via a function pointer
-`ndo_start_xmit` defined in include/linux/netdevice.h:
-```
-struct net_device_ops {
-    ...
-    netdev_tx_t     (*ndo_start_xmit)(struct sk_buff *skb, struct net_device *dev);
-    ...
-}
-```
+To assure that fragment cache attacks are also prevented, the ID that is
+assigned to keys is unique even over (re)associations and (re)connects.
+This means fragments separated by a (re)association or (re)connect will
+not be reassembled. Because mac80211 now also prevents the reassembly of
+mixed encrypted and plaintext fragments, all cache attacks are prevented.
 
-The exhausive list of call points are:
-```
-drivers/net/ethernet/qualcomm/rmnet/rmnet_map_command.c
-    dev->netdev_ops->ndo_start_xmit(skb, dev);
-    ^                                    ^
-
-drivers/infiniband/ulp/opa_vnic/opa_vnic_netdev.c
-    struct opa_vnic_adapter *adapter = opa_vnic_priv(netdev);
-			     ^                       ^
-    return adapter->rn_ops->ndo_start_xmit(skb, netdev); // adapter would crash first
-	   ^                                    ^
-
-drivers/usb/gadget/function/f_ncm.c
-    ncm->netdev->netdev_ops->ndo_start_xmit(NULL, ncm->netdev);
-	      ^                                   ^
-
-include/linux/netdevice.h
-static inline netdev_tx_t __netdev_start_xmit(...
-{
-    return ops->ndo_start_xmit(skb, dev);
-				    ^
-}
-
-    const struct net_device_ops *ops = dev->netdev_ops;
-				       ^
-    rc = __netdev_start_xmit(ops, skb, dev, more);
-				       ^
-```
-
-In each of the enumerated scenarios, it is impossible for the NULL-valued dev to
-reach the caif_xmit() without crashing the kernel earlier, therefore `BUG_ON(dev ==
-NULL)` is rather useless, hence the removal.
-
-Cc: David S. Miller <davem@davemloft.net>
-Signed-off-by: Du Cheng <ducheng2@gmail.com>
-Link: https://lore.kernel.org/r/20210503115736.2104747-20-gregkh@linuxfoundation.org
+Cc: stable@vger.kernel.org
+Signed-off-by: Mathy Vanhoef <Mathy.Vanhoef@kuleuven.be>
+Link: https://lore.kernel.org/r/20210511200110.3f8290e59823.I622a67769ed39257327a362cfc09c812320eb979@changeid
+Signed-off-by: Johannes Berg <johannes.berg@intel.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/caif/caif_serial.c | 1 -
- 1 file changed, 1 deletion(-)
+ net/mac80211/ieee80211_i.h |    1 +
+ net/mac80211/key.c         |    7 +++++++
+ net/mac80211/key.h         |    2 ++
+ net/mac80211/rx.c          |    6 ++++++
+ 4 files changed, 16 insertions(+)
 
-diff --git a/drivers/net/caif/caif_serial.c b/drivers/net/caif/caif_serial.c
-index c2dea4916e5d..32834dad0b83 100644
---- a/drivers/net/caif/caif_serial.c
-+++ b/drivers/net/caif/caif_serial.c
-@@ -281,7 +281,6 @@ static int caif_xmit(struct sk_buff *skb, struct net_device *dev)
+--- a/net/mac80211/ieee80211_i.h
++++ b/net/mac80211/ieee80211_i.h
+@@ -99,6 +99,7 @@ struct ieee80211_fragment_entry {
+ 	u8 rx_queue;
+ 	bool check_sequential_pn; /* needed for CCMP/GCMP */
+ 	u8 last_pn[6]; /* PN of the last fragment if CCMP was used */
++	unsigned int key_color;
+ };
+ 
+ 
+--- a/net/mac80211/key.c
++++ b/net/mac80211/key.c
+@@ -647,6 +647,7 @@ int ieee80211_key_link(struct ieee80211_
+ 		       struct ieee80211_sub_if_data *sdata,
+ 		       struct sta_info *sta)
  {
- 	struct ser_device *ser;
++	static atomic_t key_color = ATOMIC_INIT(0);
+ 	struct ieee80211_local *local = sdata->local;
+ 	struct ieee80211_key *old_key;
+ 	int idx = key->conf.keyidx;
+@@ -682,6 +683,12 @@ int ieee80211_key_link(struct ieee80211_
+ 	key->sdata = sdata;
+ 	key->sta = sta;
  
--	BUG_ON(dev == NULL);
- 	ser = netdev_priv(dev);
++	/*
++	 * Assign a unique ID to every key so we can easily prevent mixed
++	 * key and fragment cache attacks.
++	 */
++	key->color = atomic_inc_return(&key_color);
++
+ 	increment_tailroom_need_count(sdata);
  
- 	/* Send flow off once, on high water mark */
--- 
-2.30.2
-
+ 	ieee80211_key_replace(sdata, sta, pairwise, old_key, key);
+--- a/net/mac80211/key.h
++++ b/net/mac80211/key.h
+@@ -127,6 +127,8 @@ struct ieee80211_key {
+ 	} debugfs;
+ #endif
+ 
++	unsigned int color;
++
+ 	/*
+ 	 * key config, must be last because it contains key
+ 	 * material as variable length member
+--- a/net/mac80211/rx.c
++++ b/net/mac80211/rx.c
+@@ -2029,6 +2029,7 @@ ieee80211_rx_h_defragment(struct ieee802
+ 			 * next fragment has a sequential PN value.
+ 			 */
+ 			entry->check_sequential_pn = true;
++			entry->key_color = rx->key->color;
+ 			memcpy(entry->last_pn,
+ 			       rx->key->u.ccmp.rx_pn[queue],
+ 			       IEEE80211_CCMP_PN_LEN);
+@@ -2066,6 +2067,11 @@ ieee80211_rx_h_defragment(struct ieee802
+ 
+ 		if (!requires_sequential_pn(rx, fc))
+ 			return RX_DROP_UNUSABLE;
++
++		/* Prevent mixed key and fragment cache attacks */
++		if (entry->key_color != rx->key->color)
++			return RX_DROP_UNUSABLE;
++
+ 		memcpy(pn, entry->last_pn, IEEE80211_CCMP_PN_LEN);
+ 		for (i = IEEE80211_CCMP_PN_LEN - 1; i >= 0; i--) {
+ 			pn[i]++;
 
 
