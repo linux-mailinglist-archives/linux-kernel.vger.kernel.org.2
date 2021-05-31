@@ -2,167 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E74E0395744
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 10:43:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E0AD395746
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 10:43:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230419AbhEaIoo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 04:44:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50782 "EHLO
+        id S230288AbhEaIo7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 04:44:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50848 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230165AbhEaIog (ORCPT
+        with ESMTP id S230388AbhEaIos (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 04:44:36 -0400
-Received: from mail-io1-xd32.google.com (mail-io1-xd32.google.com [IPv6:2607:f8b0:4864:20::d32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2210EC06174A
-        for <linux-kernel@vger.kernel.org>; Mon, 31 May 2021 01:42:56 -0700 (PDT)
-Received: by mail-io1-xd32.google.com with SMTP id b25so11195458iot.5
-        for <linux-kernel@vger.kernel.org>; Mon, 31 May 2021 01:42:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=sartura-hr.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=9Mi3Wc4wHLv8tIa+hLjhTLDdoH9+eOQcDbBHus3jcwY=;
-        b=hmCoSp24fBHkpCJ28/A6H2mG7drh7iE2gbHVnUjd1F1/a3qgfa8Zg5buYb8D+kPRKA
-         vFIN03NL5UJpHITGd5GvRt2B0XSEAd4ecFyCDFA7WEOA0mhkiJdQDdF829F9kuTzdweg
-         AnTkvd2kPIDZJjnUlirre/MzXhHQ1Wjf/n5S4lBrOhMGBjUGBs5hENrV6jnpcdMO3mzM
-         uFwS7sT4URADbSCEQ3RfqHu3QeVJ3+Qbcgq1B6BEAmYglRBWh/QzhYWzSbQHDftubtsn
-         Kkzls7I1UsFqwsYL74ajif2EmBraY2OzRKm77LradLFjvKjm5TF9i1rJAC86RKTIATRn
-         p+cA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=9Mi3Wc4wHLv8tIa+hLjhTLDdoH9+eOQcDbBHus3jcwY=;
-        b=sTf8fHPE6UkWfDYemUf+c67jfl+O0AyaBvDr25tvK7Z14vMZUyT7105dbGAOJuRXmD
-         4n9ICwQpv+ZOn2GjVf3nqwv/DYs2SRSuuHto/SGaz9Pu2eCKN0bBoRchDG9VBj3ojT9z
-         JLHx9/79CwNGWd5G5H5TW0TEl51GCh8J38EUBTHIajAHY2QCnIh5f1UgNRuMikUk80Oz
-         zTe1zqRwmt+AVWVlc4CrenqiovY8Qf/mBvWxA4ImXhccA5TzjwBLaz5WnLhlsstyhB/c
-         rudBe4tq1GCnwgU7ozG+cDlZQX6fhfQ4O/PLg5qPdoGV54A53kEOfxrqTrV072V9tCH+
-         C1nQ==
-X-Gm-Message-State: AOAM531du5OZZq22eahMztipr8ig8FhN7tZeHOHOmxgFXQ6ZMrdxDIBN
-        uoYpyvh2bDAZ0Ry8/WZDxT1isZuLfb3EKgd14D9GEQ==
-X-Google-Smtp-Source: ABdhPJyEWiPmm+WC4L8StZTlomC4jIjIdzDIxQp1eeRM1WySUE3xGQ8LMbo3OEoapR/arPt9GZt+Javtp/uLoK2sWmE=
-X-Received: by 2002:a05:6602:189:: with SMTP id m9mr16236035ioo.88.1622450575393;
- Mon, 31 May 2021 01:42:55 -0700 (PDT)
+        Mon, 31 May 2021 04:44:48 -0400
+Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27A02C061574
+        for <linux-kernel@vger.kernel.org>; Mon, 31 May 2021 01:43:08 -0700 (PDT)
+Received: from zn.tnic (p200300ec2f080f006c0d0ceb240e6208.dip0.t-ipconnect.de [IPv6:2003:ec:2f08:f00:6c0d:ceb:240e:6208])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 68B531EC04E4;
+        Mon, 31 May 2021 10:43:06 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1622450586;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=Msp6/mOzC+reDvbox8TBHENLxJVuN3KTGhQXfGNqILQ=;
+        b=FZF0oT4e1GlPmzBdC0e7FNh+013Gmgv1blbMPHdTuIvHp0TwDqPr5GpE+1K8SLm2yfTzri
+        wu0Um0wg5IP8ceCy86/NY2IQfCTYL2OYBAq5GF+wLSHiQC62Ue4SaUJ5yk4M87W9L/31hZ
+        oOMLqeQbUvHLw18N/Nc0VniOlhFBRFM=
+Date:   Mon, 31 May 2021 10:43:04 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     Fenghua Yu <fenghua.yu@intel.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        x86 <x86@kernel.org>, iommu@lists.linux-foundation.org,
+        Ingo Molnar <mingo@redhat.com>, H Peter Anvin <hpa@zytor.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        Christoph Hellwig <hch@infradead.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        David Woodhouse <dwmw2@infradead.org>,
+        Lu Baolu <baolu.lu@linux.intel.com>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Ashok Raj <ashok.raj@intel.com>,
+        Jacob Jun Pan <jacob.jun.pan@intel.com>,
+        Dave Jiang <dave.jiang@intel.com>,
+        Sohil Mehta <sohil.mehta@intel.com>,
+        Ravi V Shankar <ravi.v.shankar@intel.com>
+Subject: Re: [PATCH] x86/cpufeatures: Force disable X86_FEATURE_ENQCMD and
+ remove update_pasid()
+Message-ID: <YLShmFEzddfm7WQs@zn.tnic>
+References: <1600187413-163670-1-git-send-email-fenghua.yu@intel.com>
+ <1600187413-163670-10-git-send-email-fenghua.yu@intel.com>
+ <87mtsd6gr9.ffs@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-References: <20210524120539.3267145-1-robert.marko@sartura.hr>
- <20210524120539.3267145-3-robert.marko@sartura.hr> <20210524230940.GA1350504@robh.at.kernel.org>
- <20210525074649.GC4005783@dell> <CA+HBbNFxCKbitVctbUisuZXJWxaZp0cswNNNTgD0UxQZ1smJbg@mail.gmail.com>
- <20210526075255.GG4005783@dell>
-In-Reply-To: <20210526075255.GG4005783@dell>
-From:   Robert Marko <robert.marko@sartura.hr>
-Date:   Mon, 31 May 2021 10:42:44 +0200
-Message-ID: <CA+HBbNGSH9AvRo0Hwa5pWea94u0LwJt=Kj7gWjSAV9fS5VFr0A@mail.gmail.com>
-Subject: Re: [PATCH v2 3/4] dt-bindings: mfd: Add Delta TN48M CPLD drivers bindings
-To:     Lee Jones <lee.jones@linaro.org>
-Cc:     Rob Herring <robh@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        bgolaszewski@baylibre.com, linux-gpio@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Luka Perkov <luka.perkov@sartura.hr>, jmp@epiphyte.org,
-        Paul Menzel <pmenzel@molgen.mpg.de>,
-        Donald Buczek <buczek@molgen.mpg.de>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <87mtsd6gr9.ffs@nanos.tec.linutronix.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 26, 2021 at 9:52 AM Lee Jones <lee.jones@linaro.org> wrote:
->
-> On Tue, 25 May 2021, Robert Marko wrote:
->
-> > On Tue, May 25, 2021 at 9:46 AM Lee Jones <lee.jones@linaro.org> wrote:
-> > >
-> > > On Mon, 24 May 2021, Rob Herring wrote:
-> > >
-> > > > On Mon, May 24, 2021 at 02:05:38PM +0200, Robert Marko wrote:
-> > > > > Add binding documents for the Delta TN48M CPLD drivers.
-> > > > >
-> > > > > Signed-off-by: Robert Marko <robert.marko@sartura.hr>
-> > > > > ---
-> > > > > Changes in v2:
-> > > > > * Implement MFD as a simple I2C MFD
-> > > > > * Add GPIO bindings as separate
-> > > >
-> > > > I don't understand why this changed. This doesn't look like an MFD =
-to
-> > > > me. Make your binding complete if there are missing functions.
-> > > > Otherwise, stick with what I already ok'ed.
-> > >
-> > > Right.  What else, besides GPIO, does this do?
-> >
-> > It currently does not do anything else as hwmon driver was essentially
-> > NACK-ed for not exposing standard attributes.
->
-> Once this provides more than GPIO capabilities i.e. becomes a proper
-> Multi-Function Device, then it can use the MFD framework.  Until then,
-> it's a GPIO device I'm afraid.
->
-> Are you going to re-author the HWMON driver to conform?
-hwmon cannot be reathored as it has no standard hwmon attributes.
+On Sat, May 29, 2021 at 11:17:30AM +0200, Thomas Gleixner wrote:
+> While digesting the XSAVE related horrors, which got introduced with the
+> supervisor/user split, the recent addition of ENQCMD related functionality
+> got on the radar and turned out to be similarly broken.
+> 
+> update_pasid(), which is only required when X86_FEATURE_ENQCMD is
+> available, is invoked from two places:
+> 
+>  1) From switch_to() for the incoming task
+> 
+>  2) Via a SMP function call from the IOMMU/SMV code
+> 
+> #1 is half-ways correct as it hacks around the brokenness of get_xsave_addr()
+>    by enforcing the state to be 'present', but all the conditionals in that
+>    code are completely pointless for that.
+> 
+>    Also the invocation is just useless overhead because at that point
+>    it's guaranteed that TIF_NEED_FPU_LOAD is set on the incoming task
+>    and all of this can be handled at return to user space.
+> 
+> #2 is broken beyond repair. The comment in the code claims that it is safe
+>    to invoke this in an IPI, but that's just wishful thinking.
+> 
+>    FPU state of a running task is protected by fregs_lock() which is
+>    nothing else than a local_bh_disable(). As BH disabled regions run
+>    usually with interrupts enabled the IPI can hit a code section which
+>    modifies FPU state and there is absolutely no guarantee that any of the
+>    assumptions which are made for the IPI case is true.
 
->
-> > The CPLD itself has PSU status-related information, bootstrap related
-> > information,
-> > various resets for the CPU-s, OOB ethernet PHY, information on the exac=
-t board
-> > model it's running etc.
-> >
-> > PSU and model-related info stuff is gonna be exposed via a misc driver
-> > in debugfs as
-> > we have user-space SW depending on that.
-> > I thought we agreed on that as v1 MFD driver was exposing those directl=
-y and
-> > not doing anything else.
->
-> Yes, we agreed that creating an MFD driver just to expose chip
-> attributes was not an acceptable solution.
->
-> > So I moved to use the simple I2C MFD driver, this is all modeled on the=
- sl28cpld
-> > which currently uses the same driver and then GPIO regmap as I do.
-> >
-> > Other stuff like the resets is probably gonna get exposed later when
-> > it's required
-> > to control it directly.
->
-> In order for this driver to tick the MFD box, it's going to need more
-> than one function.
+... so on a PASID system, your trivial reproducer would theoretically
+fire the same way and corrupt FPU state just as well.
 
-Understood, would a debug driver count or I can expose the resets via
-a reset driver
-as we have a future use for them?
+Hohumm, I'd say we need all those reproducers turned into proper self
+tests and run on everything new that touches xstate. *At* *least*.
 
-Regards,
-Robert
->
-> > > > >  .../bindings/gpio/delta,tn48m-gpio.yaml       | 42 ++++++++++
-> > > > >  .../bindings/mfd/delta,tn48m-cpld.yaml        | 81 +++++++++++++=
-++++++
-> > > > >  2 files changed, 123 insertions(+)
-> > > > >  create mode 100644 Documentation/devicetree/bindings/gpio/delta,=
-tn48m-gpio.yaml
-> > > > >  create mode 100644 Documentation/devicetree/bindings/mfd/delta,t=
-n48m-cpld.yaml
-> > >
-> >
-> >
-> >
->
-> --
-> Lee Jones [=E6=9D=8E=E7=90=BC=E6=96=AF]
-> Senior Technical Lead - Developer Services
-> Linaro.org =E2=94=82 Open source software for Arm SoCs
-> Follow Linaro: Facebook | Twitter | Blog
+-- 
+Regards/Gruss,
+    Boris.
 
-
-
---=20
-Robert Marko
-Staff Embedded Linux Engineer
-Sartura Ltd.
-Lendavska ulica 16a
-10000 Zagreb, Croatia
-Email: robert.marko@sartura.hr
-Web: www.sartura.hr
+https://people.kernel.org/tglx/notes-about-netiquette
