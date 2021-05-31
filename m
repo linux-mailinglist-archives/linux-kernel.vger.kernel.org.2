@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7AE97396388
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 17:18:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D7F21396124
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 16:34:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234578AbhEaPUO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 11:20:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43030 "EHLO mail.kernel.org"
+        id S233514AbhEaOgI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 10:36:08 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60392 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233720AbhEaOPQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 10:15:16 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9C79661996;
-        Mon, 31 May 2021 13:42:43 +0000 (UTC)
+        id S232458AbhEaNzw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 09:55:52 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 51CC56191E;
+        Mon, 31 May 2021 13:34:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1622468564;
-        bh=MdXx8nvefx0CsVv8KljOMYZO5YFzTnvk+ckz98B0Rd4=;
+        s=korg; t=1622468064;
+        bh=x1pPOSprWzG+lSx5h3f4jjsqv/cvvuQH/fxPSt6chCc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=BZjOjd2qDR56SpGxhyo/DAFS6HvChxHvYrmJFb56+bjOiy2pPleeLnMizPPY7Zxbu
-         My1/4T+hg9ctRkvxGPmiZ6lVtdZuV0hNFvc3JXY8yypR38qVt5LccuydOmFQPz0QxD
-         MjNUW09Rxjcr85vL2Aacj9T4xbSksyxhPeuSQx2c=
+        b=MEZtSnNFOBbuhS8ZycmCRSNR3aX/DIH9PrpOJfZ5b8e8zKuuc4Y6UW0ECJSZCm+zJ
+         i6SLsGge8Wv/6vrt/54H68qAzGYFPwBLlijAGFjBhba3FXyFqUk4s8S0pKCvTiQ9tS
+         G11cgPgPxK53P9SKMWooSWTmpGg7ai6zmTLJgDac=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Adrian Hunter <adrian.hunter@intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@redhat.com>
-Subject: [PATCH 5.4 011/177] perf scripts python: exported-sql-viewer.py: Fix warning display
+        stable@vger.kernel.org, Roi Dayan <roid@nvidia.com>,
+        Maor Dickman <maord@nvidia.com>,
+        Saeed Mahameed <saeedm@nvidia.com>
+Subject: [PATCH 5.10 103/252] net/mlx5e: Fix null deref accessing lag dev
 Date:   Mon, 31 May 2021 15:12:48 +0200
-Message-Id: <20210531130648.291666995@linuxfoundation.org>
+Message-Id: <20210531130701.496636325@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210531130647.887605866@linuxfoundation.org>
-References: <20210531130647.887605866@linuxfoundation.org>
+In-Reply-To: <20210531130657.971257589@linuxfoundation.org>
+References: <20210531130657.971257589@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,46 +40,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Adrian Hunter <adrian.hunter@intel.com>
+From: Roi Dayan <roid@nvidia.com>
 
-commit f56299a9c998e0bfbd4ab07cafe9eb8444512448 upstream.
+commit 83026d83186bc48bb41ee4872f339b83f31dfc55 upstream.
 
-Deprecation warnings are useful only for the developer, not an end user.
-Display warnings only when requested using the python -W option. This
-stops the display of warnings like:
+It could be the lag dev is null so stop processing the event.
+In bond_enslave() the active/backup slave being set before setting the
+upper dev so first event is without an upper dev.
+After setting the upper dev with bond_master_upper_dev_link() there is
+a second event and in that event we have an upper dev.
 
- tools/perf/scripts/python/exported-sql-viewer.py:5102: DeprecationWarning:
-         an integer is required (got type PySide2.QtCore.Qt.AlignmentFlag).
-         Implicit conversion to integers using __int__ is deprecated, and
-         may be removed in a future version of Python.
-    err = app.exec_()
-
-Since the warning can be fixed only in PySide2, we must wait for it to
-be finally fixed there.
-
-Signed-off-by: Adrian Hunter <adrian.hunter@intel.com>
-Cc: Jiri Olsa <jolsa@redhat.com>
-Cc: stable@vger.kernel.org      # v5.3+
-Link: http://lore.kernel.org/lkml/20210521092053.25683-4-adrian.hunter@intel.com
-Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
+Fixes: 7e51891a237f ("net/mlx5e: Use netdev events to set/del egress acl forward-to-vport rule")
+Signed-off-by: Roi Dayan <roid@nvidia.com>
+Reviewed-by: Maor Dickman <maord@nvidia.com>
+Signed-off-by: Saeed Mahameed <saeedm@nvidia.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- tools/perf/scripts/python/exported-sql-viewer.py |    5 +++++
- 1 file changed, 5 insertions(+)
+ drivers/net/ethernet/mellanox/mlx5/core/en/rep/bond.c |    2 ++
+ 1 file changed, 2 insertions(+)
 
---- a/tools/perf/scripts/python/exported-sql-viewer.py
-+++ b/tools/perf/scripts/python/exported-sql-viewer.py
-@@ -91,6 +91,11 @@
- from __future__ import print_function
+--- a/drivers/net/ethernet/mellanox/mlx5/core/en/rep/bond.c
++++ b/drivers/net/ethernet/mellanox/mlx5/core/en/rep/bond.c
+@@ -223,6 +223,8 @@ static void mlx5e_rep_changelowerstate_e
+ 	rpriv = priv->ppriv;
+ 	fwd_vport_num = rpriv->rep->vport;
+ 	lag_dev = netdev_master_upper_dev_get(netdev);
++	if (!lag_dev)
++		return;
  
- import sys
-+# Only change warnings if the python -W option was not used
-+if not sys.warnoptions:
-+	import warnings
-+	# PySide2 causes deprecation warnings, ignore them.
-+	warnings.filterwarnings("ignore", category=DeprecationWarning)
- import argparse
- import weakref
- import threading
+ 	netdev_dbg(netdev, "lag_dev(%s)'s slave vport(%d) is txable(%d)\n",
+ 		   lag_dev->name, fwd_vport_num, net_lag_port_dev_txable(netdev));
 
 
