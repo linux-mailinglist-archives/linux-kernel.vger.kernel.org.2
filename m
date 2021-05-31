@@ -2,96 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2BD5D3957F7
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 11:19:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B11E7395806
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 11:23:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230471AbhEaJVA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 05:21:00 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51738 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230400AbhEaJU6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 05:20:58 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C689060FF1;
-        Mon, 31 May 2021 09:19:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1622452755;
-        bh=nozaX3CwRzwSzPSuRttrxZ/WShcDLg1Y3tv/nTEUHVo=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=El69CPY9uAwbdQlQZguYmB6351yG/qF7xl6IhDhY86PUY/q2NWIQZ9kH3x7ydsU1p
-         9PG24K3H+LkckdrJZUXa/2Cef0BKK86OgldwlrEadvoThxSUDP7XJEOqzRsK378Z0k
-         YkIjgxqkMxx8sXwKeqcEuNLtG5iZdWz7y/RjkHvYh82pBKwIeqIaWDBpVeZz/m0d+M
-         yd4AaXTRVC6M6kV3c6UpROceAilwCblLodK5gY+OyfUrEcBZnkkchqyouc5vFuao1J
-         bXuem+oVRLDsH75T59zSCx4s1k4qP42XFdqkDWANS3IuH0djlN7EMRFosFRnKb1QF3
-         IQD0CvSLoHMzg==
-Received: from johan by xi.lan with local (Exim 4.94.2)
-        (envelope-from <johan@kernel.org>)
-        id 1lne4l-00027o-0Y; Mon, 31 May 2021 11:19:11 +0200
-Date:   Mon, 31 May 2021 11:19:11 +0200
-From:   Johan Hovold <johan@kernel.org>
-To:     Vinod Koul <vkoul@kernel.org>
-Cc:     "yukuai (C)" <yukuai3@huawei.com>, mcoquelin.stm32@gmail.com,
-        alexandre.torgue@foss.st.com, michal.simek@xilinx.com,
-        dmaengine@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org, yi.zhang@huawei.com
-Subject: Re: [PATCH 2/3] dmaengine: usb-dmac: Fix PM reference leak in
- usb_dmac_probe()
-Message-ID: <YLSqD+9nZIWJpn+r@hovoldconsulting.com>
-References: <20210517081826.1564698-1-yukuai3@huawei.com>
- <20210517081826.1564698-3-yukuai3@huawei.com>
- <YLRfZfnuxc0+n/LN@vkoul-mobl.Dlink>
- <b6c340de-b0b5-6aad-94c0-03f062575b63@huawei.com>
- <YLSk/i6GmYWGEa9E@vkoul-mobl.Dlink>
+        id S230423AbhEaJYq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 05:24:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59948 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229550AbhEaJYm (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 05:24:42 -0400
+Received: from mail-oo1-xc29.google.com (mail-oo1-xc29.google.com [IPv6:2607:f8b0:4864:20::c29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3CAFC061574
+        for <linux-kernel@vger.kernel.org>; Mon, 31 May 2021 02:23:01 -0700 (PDT)
+Received: by mail-oo1-xc29.google.com with SMTP id m15-20020a4ae3cf0000b029024598c3e273so627826oov.13
+        for <linux-kernel@vger.kernel.org>; Mon, 31 May 2021 02:23:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=jY9BuK9FNLMjbPTJtB8IDmbrG3t6+tuv/+gLi9Ppjao=;
+        b=srDlNUPWE+qZTl9DnNgSplvRBy+lMllJN9jvZUo8wu6+fXy1o8QVoCdZ9Bzjdw3RtP
+         sYG7+z4CdNRzG6esqaZ9KededzACmzQGmkz/1KAcKpaCmkEqKYiMNA34dbzHdPDAhwnV
+         SMpqCaitIPYFnyllogzeOZtuTFGcCynkf15AC5uuOlISQNvZUIPwRq2vP1DujF21RICR
+         DBqzjZlP0AJHP+B1ipPRZZUf5Ld0CZxsuIy+Q89PpfTmxjsDcvGWme/POK7x93vqXR4k
+         AR/nY0sP+lroh8F2TX/GoedgEeNahMizurg8mipwioS6m0kFDfu/n2rTnQqd8wad8UuK
+         WfHg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=jY9BuK9FNLMjbPTJtB8IDmbrG3t6+tuv/+gLi9Ppjao=;
+        b=Zzh8vWQHnmHGHokUbRjuwZstLst1NRCt9gQOsL2AqoRx4nJMGFhzgZa5e+mpiCzXUF
+         x/43ZcXuZW5okcUE+3BYeQVTGZlcvJsJmD3hIi6+o6z913EEodE+OGbc1NDt9+TBJy33
+         KTt6N5v7vgRl6uJp4e/UUfDCoGcChowkm4ta7SVolVAMPXvQZ7U8n9iK/iRa5eIdWX29
+         seUare05q8NUUo8Pj47ILYspfq2uje1wZZ6iGU2ABgfQdjfxqVhT6Ruh5+vUWyb4kU6h
+         +Mh9BYDSvBiWnI6A8DI2cgRM6IVeg5q2k1aFDVXxeZX8g9jglJzCOYoD4qUC7Ap4WZAV
+         m/9g==
+X-Gm-Message-State: AOAM530TtxFlGW32frkoMt5hIwG0vvK+K8l6D/yweFvVvtqBROSnUEmi
+        nnAlpoBELxlat7y3MlooYY2KX2JwxE4avYGmTzQ=
+X-Google-Smtp-Source: ABdhPJycrk2SDlZgHzTDhg9lJXQwtQoDox9LR72Vg7tmBV/z0zsiYPUgLgQghhPKoDT8OrM+dj0sNsg0LB9NomYB4k4=
+X-Received: by 2002:a4a:d89a:: with SMTP id b26mr15783705oov.11.1622452981041;
+ Mon, 31 May 2021 02:23:01 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YLSk/i6GmYWGEa9E@vkoul-mobl.Dlink>
+References: <20210518112857.1198415-1-aisheng.dong@nxp.com>
+In-Reply-To: <20210518112857.1198415-1-aisheng.dong@nxp.com>
+From:   Dong Aisheng <dongas86@gmail.com>
+Date:   Mon, 31 May 2021 17:21:51 +0800
+Message-ID: <CAA+hA=SSeRrnBRGeqVxJ71Cv0uxydidWoKmG6b0bYzoEdcgqOQ@mail.gmail.com>
+Subject: Re: [PATCH 1/1] dma-contiguous: return early for dt case in dma_contiguous_reserve
+To:     Dong Aisheng <aisheng.dong@nxp.com>
+Cc:     iommu@lists.linux-foundation.org,
+        open list <linux-kernel@vger.kernel.org>,
+        Christoph Hellwig <hch@lst.de>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Robin Murphy <robin.murphy@arm.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 31, 2021 at 02:27:34PM +0530, Vinod Koul wrote:
-> On 31-05-21, 14:11, yukuai (C) wrote:
-> > On 2021/05/31 12:00, Vinod Koul wrote:
-> > > On 17-05-21, 16:18, Yu Kuai wrote:
-> > > > pm_runtime_get_sync will increment pm usage counter even it failed.
-> > > > Forgetting to putting operation will result in reference leak here.
-> > > > Fix it by replacing it with pm_runtime_resume_and_get to keep usage
-> > > > counter balanced.
-> > > > 
-> > > > Reported-by: Hulk Robot <hulkci@huawei.com>
-> > > > Signed-off-by: Yu Kuai <yukuai3@huawei.com>
-> > > > ---
-> > > >   drivers/dma/sh/usb-dmac.c | 2 +-
-> > > >   1 file changed, 1 insertion(+), 1 deletion(-)
-> > > > 
-> > > > diff --git a/drivers/dma/sh/usb-dmac.c b/drivers/dma/sh/usb-dmac.c
-> > > > index 8f7ceb698226..2a6c8fd8854e 100644
-> > > > --- a/drivers/dma/sh/usb-dmac.c
-> > > > +++ b/drivers/dma/sh/usb-dmac.c
-> > > > @@ -796,7 +796,7 @@ static int usb_dmac_probe(struct platform_device *pdev)
-> > > >   	/* Enable runtime PM and initialize the device. */
-> > > >   	pm_runtime_enable(&pdev->dev);
-> > > > -	ret = pm_runtime_get_sync(&pdev->dev);
-> > > > +	ret = pm_runtime_resume_and_get(&pdev->dev);
-> > > 
-> > > This does not seem to fix anything.. the below goto goes and disables
-> > > the runtime_pm for this device and thus there wont be any leak
-> > Hi,
-> > 
-> > If pm_runtime_get_sync() fails and increments the pm.usage_count
-> > variable, pm_runtime_disable() does not reset the counter, and
-> > we still need to decrement the usage count when pm_runtime_get_sync()
-> > fails. Do I miss anthing?
-> 
-> Yes the rumtime_pm is disabled on failure here and the count would have
-> no consequence...
+On Tue, May 18, 2021 at 7:29 PM Dong Aisheng <aisheng.dong@nxp.com> wrote:
+>
+> dma_contiguous_reserve() aims to support cmdline case for CMA memory
+> reserve. But if users define reserved memory in DT,
+> 'dma_contiguous_default_area' will not be 0, then it's meaningless
+> to continue to run dma_contiguous_reserve(). So we return early
+> if detect 'dma_contiguous_default_area' is unzero.
+>
+> Cc: Christoph Hellwig <hch@lst.de>
+> Cc: Marek Szyprowski <m.szyprowski@samsung.com>
+> Cc: Robin Murphy <robin.murphy@arm.com>
+> Signed-off-by: Dong Aisheng <aisheng.dong@nxp.com>
 
-You should still balance the PM usage counter as it isn't reset for
-example when reloading the driver.
+Gently ping
 
-Using pm_runtime_resume_and_get() is one way of handling this, but
-alternatively you could also move the error_pm label above the
-pm_runtime_put() in the error path.
+Regards
+Aisheng
 
-Johan
+> ---
+>  kernel/dma/contiguous.c | 5 ++++-
+>  1 file changed, 4 insertions(+), 1 deletion(-)
+>
+> diff --git a/kernel/dma/contiguous.c b/kernel/dma/contiguous.c
+> index 3d63d91cba5c..ebade9f43eff 100644
+> --- a/kernel/dma/contiguous.c
+> +++ b/kernel/dma/contiguous.c
+> @@ -171,6 +171,9 @@ void __init dma_contiguous_reserve(phys_addr_t limit)
+>         phys_addr_t selected_limit = limit;
+>         bool fixed = false;
+>
+> +       if (dma_contiguous_default_area)
+> +               return;
+> +
+>         pr_debug("%s(limit %08lx)\n", __func__, (unsigned long)limit);
+>
+>         if (size_cmdline != -1) {
+> @@ -191,7 +194,7 @@ void __init dma_contiguous_reserve(phys_addr_t limit)
+>  #endif
+>         }
+>
+> -       if (selected_size && !dma_contiguous_default_area) {
+> +       if (selected_size) {
+>                 pr_debug("%s: reserving %ld MiB for global area\n", __func__,
+>                          (unsigned long)selected_size / SZ_1M);
+>
+> --
+> 2.25.1
+>
