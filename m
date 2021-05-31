@@ -2,37 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8AA6A395D52
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 15:43:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6009E3963AB
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 17:29:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232729AbhEaNoJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 09:44:09 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34110 "EHLO mail.kernel.org"
+        id S233490AbhEaPad (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 11:30:33 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43520 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232013AbhEaNa2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 09:30:28 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2667361422;
-        Mon, 31 May 2021 13:23:06 +0000 (UTC)
+        id S233096AbhEaORv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 10:17:51 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 741BB619AD;
+        Mon, 31 May 2021 13:43:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1622467387;
-        bh=k1n//b9NoCnxLLJFe9fBuuLnf/8Pd66mdXzGhcpdb8U=;
+        s=korg; t=1622468634;
+        bh=z9tkXdkGHZYW3L/hJSHJ85y13emu4R6Xi41u2+p9kAE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=j5p6OF+x0XZc/n7twuGc7d/sTueg2ulYjJN0VIB2ie2MAearuHwnmAnKMVXt/SaJR
-         fQw18Hujyt2rgieU6OJb9kLVb0tBKuWEIUih+zRYyrbMC3QhYo0mknEnPdHbP2D243
-         GlfnVeWxslw1npMVVzH72SQJhBqKftcCo4MqxGpc=
+        b=pqtkN9yGl4S797GczttlG1O+Ik8X0kwcIUs3UiGTHTGpt0WNx+cy13pK8Dyf1cUEg
+         vCzIwYrqlHI8Cl57jroY9x5gLL0hUOqbI+rP1V2Ix6cvouGXt/MBmdMtgutj4a+O0E
+         STPjupna0S/UU3kS51tFRn3ZrAqHzJ34N1vtFPmU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Ovidiu Panait <ovidiu.panait@windriver.com>
-Subject: [PATCH 4.19 047/116] bpf: Move off_reg into sanitize_ptr_alu
+        stable@vger.kernel.org, zhouchuangao <zhouchuangao@vivo.com>,
+        Trond Myklebust <trond.myklebust@hammerspace.com>
+Subject: [PATCH 5.4 066/177] fs/nfs: Use fatal_signal_pending instead of signal_pending
 Date:   Mon, 31 May 2021 15:13:43 +0200
-Message-Id: <20210531130641.773004732@linuxfoundation.org>
+Message-Id: <20210531130650.179734331@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210531130640.131924542@linuxfoundation.org>
-References: <20210531130640.131924542@linuxfoundation.org>
+In-Reply-To: <20210531130647.887605866@linuxfoundation.org>
+References: <20210531130647.887605866@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,57 +39,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Daniel Borkmann <daniel@iogearbox.net>
+From: zhouchuangao <zhouchuangao@vivo.com>
 
-commit 6f55b2f2a1178856c19bbce2f71449926e731914 upstream.
+commit bb002388901151fe35b6697ab116f6ed0721a9ed upstream.
 
-Small refactor to drag off_reg into sanitize_ptr_alu(), so we later on can
-use off_reg for generalizing some of the checks for all pointer types.
+We set the state of the current process to TASK_KILLABLE via
+prepare_to_wait(). Should we use fatal_signal_pending() to detect
+the signal here?
 
-Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
-Reviewed-by: John Fastabend <john.fastabend@gmail.com>
-Acked-by: Alexei Starovoitov <ast@kernel.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Signed-off-by: Ovidiu Panait <ovidiu.panait@windriver.com>
+Fixes: b4868b44c562 ("NFSv4: Wait for stateid updates after CLOSE/OPEN_DOWNGRADE")
+Signed-off-by: zhouchuangao <zhouchuangao@vivo.com>
+Signed-off-by: Trond Myklebust <trond.myklebust@hammerspace.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- kernel/bpf/verifier.c |    9 +++++----
- 1 file changed, 5 insertions(+), 4 deletions(-)
+ fs/nfs/nfs4proc.c |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
---- a/kernel/bpf/verifier.c
-+++ b/kernel/bpf/verifier.c
-@@ -2799,11 +2799,12 @@ static int sanitize_val_alu(struct bpf_v
- static int sanitize_ptr_alu(struct bpf_verifier_env *env,
- 			    struct bpf_insn *insn,
- 			    const struct bpf_reg_state *ptr_reg,
--			    struct bpf_reg_state *dst_reg,
--			    bool off_is_neg)
-+			    const struct bpf_reg_state *off_reg,
-+			    struct bpf_reg_state *dst_reg)
- {
- 	struct bpf_verifier_state *vstate = env->cur_state;
- 	struct bpf_insn_aux_data *aux = cur_aux(env);
-+	bool off_is_neg = off_reg->smin_value < 0;
- 	bool ptr_is_dst_reg = ptr_reg == dst_reg;
- 	u8 opcode = BPF_OP(insn->code);
- 	u32 alu_state, alu_limit;
-@@ -2927,7 +2928,7 @@ static int adjust_ptr_min_max_vals(struc
+--- a/fs/nfs/nfs4proc.c
++++ b/fs/nfs/nfs4proc.c
+@@ -1647,7 +1647,7 @@ static void nfs_set_open_stateid_locked(
+ 		rcu_read_unlock();
+ 		trace_nfs4_open_stateid_update_wait(state->inode, stateid, 0);
  
- 	switch (opcode) {
- 	case BPF_ADD:
--		ret = sanitize_ptr_alu(env, insn, ptr_reg, dst_reg, smin_val < 0);
-+		ret = sanitize_ptr_alu(env, insn, ptr_reg, off_reg, dst_reg);
- 		if (ret < 0) {
- 			verbose(env, "R%d tried to add from different maps, paths, or prohibited types\n", dst);
- 			return ret;
-@@ -2982,7 +2983,7 @@ static int adjust_ptr_min_max_vals(struc
- 		}
- 		break;
- 	case BPF_SUB:
--		ret = sanitize_ptr_alu(env, insn, ptr_reg, dst_reg, smin_val < 0);
-+		ret = sanitize_ptr_alu(env, insn, ptr_reg, off_reg, dst_reg);
- 		if (ret < 0) {
- 			verbose(env, "R%d tried to sub from different maps, paths, or prohibited types\n", dst);
- 			return ret;
+-		if (!signal_pending(current)) {
++		if (!fatal_signal_pending(current)) {
+ 			if (schedule_timeout(5*HZ) == 0)
+ 				status = -EAGAIN;
+ 			else
+@@ -3416,7 +3416,7 @@ static bool nfs4_refresh_open_old_statei
+ 		write_sequnlock(&state->seqlock);
+ 		trace_nfs4_close_stateid_update_wait(state->inode, dst, 0);
+ 
+-		if (signal_pending(current))
++		if (fatal_signal_pending(current))
+ 			status = -EINTR;
+ 		else
+ 			if (schedule_timeout(5*HZ) != 0)
 
 
