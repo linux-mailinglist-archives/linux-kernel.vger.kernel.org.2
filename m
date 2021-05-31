@@ -2,35 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 298AA395CDC
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 15:38:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E3869396561
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 18:31:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232689AbhEaNjX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 09:39:23 -0400
-Received: from mail.kernel.org ([198.145.29.99]:32882 "EHLO mail.kernel.org"
+        id S232382AbhEaQdW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 12:33:22 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40790 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231907AbhEaN1E (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 09:27:04 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9E05161370;
-        Mon, 31 May 2021 13:21:28 +0000 (UTC)
+        id S233821AbhEaOrj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 10:47:39 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id AA86E60FE8;
+        Mon, 31 May 2021 13:56:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1622467289;
-        bh=Lzrkg51/zdkICsxNGmS7m40Lh5JxWAu4KtGcjtG+1lo=;
+        s=korg; t=1622469381;
+        bh=+2DSCjZV3TyGT9kJq28+bHORX3ytUeD85NtTPmhdBK4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=MLHPIAHXBLjJVteKMMy4RdZ7DkeQQWSKpTef1WQLOXfzVr7csXQIONnJSxmiQ1mp8
-         P5i93ugHHa8+RDkKLaxncSpZKcc0dRd+9jgCY+cvHR1O4XQJ5cwEUw8JYy55Gu/wP4
-         9G4OOVAWTMeWdLHozHaASvKG75Kh08AQUSc8pOBg=
+        b=rUFKNSeWxVyZvgQOx2omXZhmowha1sanDG9SY6j5+nrM2lb0uuMekE3nxBeNa1rkz
+         11ORWNgyu/H6W7vGbcT40oOFXvlldLrjqWSoQVUM5SQToKEL4WojzU5lV7vur8wMa2
+         48TCs7Kf2oNPzXDwtjotVPIJ3DKWAlw7P39oJftk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Johan Hovold <johan@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 4.19 010/116] net: hso: fix control-request directions
+        stable@vger.kernel.org,
+        Venkatesh Srinivas <venkateshs@chromium.org>,
+        David Matlack <dmatlack@google.com>,
+        Andrew Jones <drjones@redhat.com>,
+        Peter Xu <peterx@redhat.com>,
+        Paolo Bonzini <pbonzini@redhat.com>
+Subject: [PATCH 5.12 131/296] KVM: selftests: Fix 32-bit truncation of vm_get_max_gfn()
 Date:   Mon, 31 May 2021 15:13:06 +0200
-Message-Id: <20210531130640.493040506@linuxfoundation.org>
+Message-Id: <20210531130708.302150806@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210531130640.131924542@linuxfoundation.org>
-References: <20210531130640.131924542@linuxfoundation.org>
+In-Reply-To: <20210531130703.762129381@linuxfoundation.org>
+References: <20210531130703.762129381@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,45 +43,118 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Johan Hovold <johan@kernel.org>
+From: David Matlack <dmatlack@google.com>
 
-commit 1a6e9a9c68c1f183872e4bcc947382111c2e04eb upstream.
+commit ef4c9f4f654622fa15b7a94a9bd1f19e76bb7feb upstream.
 
-The direction of the pipe argument must match the request-type direction
-bit or control requests may fail depending on the host-controller-driver
-implementation.
+vm_get_max_gfn() casts vm->max_gfn from a uint64_t to an unsigned int,
+which causes the upper 32-bits of the max_gfn to get truncated.
 
-Fix the tiocmset and rfkill requests which erroneously used
-usb_rcvctrlpipe().
+Nobody noticed until now likely because vm_get_max_gfn() is only used
+as a mechanism to create a memslot in an unused region of the guest
+physical address space (the top), and the top of the 32-bit physical
+address space was always good enough.
 
-Fixes: 72dc1c096c70 ("HSO: add option hso driver")
-Cc: stable@vger.kernel.org      # 2.6.27
-Signed-off-by: Johan Hovold <johan@kernel.org>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+This fix reveals a bug in memslot_modification_stress_test which was
+trying to create a dummy memslot past the end of guest physical memory.
+Fix that by moving the dummy memslot lower.
+
+Fixes: 52200d0d944e ("KVM: selftests: Remove duplicate guest mode handling")
+Reviewed-by: Venkatesh Srinivas <venkateshs@chromium.org>
+Signed-off-by: David Matlack <dmatlack@google.com>
+Message-Id: <20210521173828.1180619-1-dmatlack@google.com>
+Reviewed-by: Andrew Jones <drjones@redhat.com>
+Reviewed-by: Peter Xu <peterx@redhat.com>
+Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/usb/hso.c |    4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ tools/testing/selftests/kvm/include/kvm_util.h                 |    2 -
+ tools/testing/selftests/kvm/lib/kvm_util.c                     |    2 -
+ tools/testing/selftests/kvm/lib/perf_test_util.c               |    4 +-
+ tools/testing/selftests/kvm/memslot_modification_stress_test.c |   18 ++++++----
+ 4 files changed, 16 insertions(+), 10 deletions(-)
 
---- a/drivers/net/usb/hso.c
-+++ b/drivers/net/usb/hso.c
-@@ -1703,7 +1703,7 @@ static int hso_serial_tiocmset(struct tt
- 	spin_unlock_irqrestore(&serial->serial_lock, flags);
+--- a/tools/testing/selftests/kvm/include/kvm_util.h
++++ b/tools/testing/selftests/kvm/include/kvm_util.h
+@@ -295,7 +295,7 @@ bool vm_is_unrestricted_guest(struct kvm
  
- 	return usb_control_msg(serial->parent->usb,
--			       usb_rcvctrlpipe(serial->parent->usb, 0), 0x22,
-+			       usb_sndctrlpipe(serial->parent->usb, 0), 0x22,
- 			       0x21, val, if_num, NULL, 0,
- 			       USB_CTRL_SET_TIMEOUT);
+ unsigned int vm_get_page_size(struct kvm_vm *vm);
+ unsigned int vm_get_page_shift(struct kvm_vm *vm);
+-unsigned int vm_get_max_gfn(struct kvm_vm *vm);
++uint64_t vm_get_max_gfn(struct kvm_vm *vm);
+ int vm_get_fd(struct kvm_vm *vm);
+ 
+ unsigned int vm_calc_num_guest_pages(enum vm_guest_mode mode, size_t size);
+--- a/tools/testing/selftests/kvm/lib/kvm_util.c
++++ b/tools/testing/selftests/kvm/lib/kvm_util.c
+@@ -1969,7 +1969,7 @@ unsigned int vm_get_page_shift(struct kv
+ 	return vm->page_shift;
  }
-@@ -2450,7 +2450,7 @@ static int hso_rfkill_set_block(void *da
- 	if (hso_dev->usb_gone)
- 		rv = 0;
- 	else
--		rv = usb_control_msg(hso_dev->usb, usb_rcvctrlpipe(hso_dev->usb, 0),
-+		rv = usb_control_msg(hso_dev->usb, usb_sndctrlpipe(hso_dev->usb, 0),
- 				       enabled ? 0x82 : 0x81, 0x40, 0, 0, NULL, 0,
- 				       USB_CTRL_SET_TIMEOUT);
- 	mutex_unlock(&hso_dev->mutex);
+ 
+-unsigned int vm_get_max_gfn(struct kvm_vm *vm)
++uint64_t vm_get_max_gfn(struct kvm_vm *vm)
+ {
+ 	return vm->max_gfn;
+ }
+--- a/tools/testing/selftests/kvm/lib/perf_test_util.c
++++ b/tools/testing/selftests/kvm/lib/perf_test_util.c
+@@ -2,6 +2,7 @@
+ /*
+  * Copyright (C) 2020, Google LLC.
+  */
++#include <inttypes.h>
+ 
+ #include "kvm_util.h"
+ #include "perf_test_util.h"
+@@ -80,7 +81,8 @@ struct kvm_vm *perf_test_create_vm(enum
+ 	 */
+ 	TEST_ASSERT(guest_num_pages < vm_get_max_gfn(vm),
+ 		    "Requested more guest memory than address space allows.\n"
+-		    "    guest pages: %lx max gfn: %x vcpus: %d wss: %lx]\n",
++		    "    guest pages: %" PRIx64 " max gfn: %" PRIx64
++		    " vcpus: %d wss: %" PRIx64 "]\n",
+ 		    guest_num_pages, vm_get_max_gfn(vm), vcpus,
+ 		    vcpu_memory_bytes);
+ 
+--- a/tools/testing/selftests/kvm/memslot_modification_stress_test.c
++++ b/tools/testing/selftests/kvm/memslot_modification_stress_test.c
+@@ -71,14 +71,22 @@ struct memslot_antagonist_args {
+ };
+ 
+ static void add_remove_memslot(struct kvm_vm *vm, useconds_t delay,
+-			      uint64_t nr_modifications, uint64_t gpa)
++			       uint64_t nr_modifications)
+ {
++	const uint64_t pages = 1;
++	uint64_t gpa;
+ 	int i;
+ 
++	/*
++	 * Add the dummy memslot just below the perf_test_util memslot, which is
++	 * at the top of the guest physical address space.
++	 */
++	gpa = guest_test_phys_mem - pages * vm_get_page_size(vm);
++
+ 	for (i = 0; i < nr_modifications; i++) {
+ 		usleep(delay);
+ 		vm_userspace_mem_region_add(vm, VM_MEM_SRC_ANONYMOUS, gpa,
+-					    DUMMY_MEMSLOT_INDEX, 1, 0);
++					    DUMMY_MEMSLOT_INDEX, pages, 0);
+ 
+ 		vm_mem_region_delete(vm, DUMMY_MEMSLOT_INDEX);
+ 	}
+@@ -120,11 +128,7 @@ static void run_test(enum vm_guest_mode
+ 	pr_info("Started all vCPUs\n");
+ 
+ 	add_remove_memslot(vm, p->memslot_modification_delay,
+-			   p->nr_memslot_modifications,
+-			   guest_test_phys_mem +
+-			   (guest_percpu_mem_size * nr_vcpus) +
+-			   perf_test_args.host_page_size +
+-			   perf_test_args.guest_page_size);
++			   p->nr_memslot_modifications);
+ 
+ 	run_vcpus = false;
+ 
 
 
