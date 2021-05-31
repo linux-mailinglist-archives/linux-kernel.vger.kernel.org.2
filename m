@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5018C396573
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 18:35:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A547395B8E
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 15:20:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233797AbhEaQgx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 12:36:53 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45320 "EHLO mail.kernel.org"
+        id S232228AbhEaNVr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 09:21:47 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55182 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234014AbhEaOtP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 10:49:15 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4871C61C8F;
-        Mon, 31 May 2021 13:57:03 +0000 (UTC)
+        id S231847AbhEaNTT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 09:19:19 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2DF4B6138C;
+        Mon, 31 May 2021 13:17:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1622469423;
-        bh=yGMZrSeD5ldYQ8amepKy7fmPBbO/88Lgz8D1NmVxsVU=;
+        s=korg; t=1622467058;
+        bh=eThF42QgHM2ceyuUbfHXSeQsf1W1pocY7rix57lF/sE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=MZ7YwZUZTkDgrUJGDomQWXxXdTz9A0PuthaNDpLCuMeOXmqWVaxN8jwKSiKzltl8N
-         95uPCQ1PCapaoJs5re2Q37RnNl4gRh09vBXUddelPdMTon6kJdQaXph1e8C0wsM1Yz
-         IxwV4n5H/MCmJTrEQJfm9wdLqSj66OEVHKLo1Q78=
+        b=mwIqGzGhVATUw/wiPz+FBElZ24DQiCzN16RyQpFB8t21G3RXT+8OO3cXKpz0MHBb3
+         bUBg5S3ACOanmkv6rt5UDUloEfTcLqi009renLw1LFiX2pd0LMsEqfpM6jQt4VT55B
+         /vS8jHjmPnuObFgNtKHWquUK8Ao+9ZuQdHqQaSY8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Aditya Pakki <pakki001@umn.edu>,
-        Mauro Carvalho Chehab <mchehab+samsung@kernel.org>,
+        stable@vger.kernel.org, Peter Zijlstra <peterz@infradead.org>,
+        Stafford Horne <shorne@gmail.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.12 192/296] Revert "media: gspca: mt9m111: Check write_bridge for timeout"
+Subject: [PATCH 4.4 41/54] openrisc: Define memory barrier mb
 Date:   Mon, 31 May 2021 15:14:07 +0200
-Message-Id: <20210531130710.333877325@linuxfoundation.org>
+Message-Id: <20210531130636.363318707@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210531130703.762129381@linuxfoundation.org>
-References: <20210531130703.762129381@linuxfoundation.org>
+In-Reply-To: <20210531130635.070310929@linuxfoundation.org>
+References: <20210531130635.070310929@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,66 +40,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+From: Peter Zijlstra <peterz@infradead.org>
 
-[ Upstream commit d8c3be2fb2079d0cb4cd29d6aba58dbe54771e42 ]
+[ Upstream commit 8b549c18ae81dbc36fb11e4aa08b8378c599ca95 ]
 
-This reverts commit 656025850074f5c1ba2e05be37bda57ba2b8d491.
+This came up in the discussion of the requirements of qspinlock on an
+architecture.  OpenRISC uses qspinlock, but it was noticed that the
+memmory barrier was not defined.
 
-Because of recent interactions with developers from @umn.edu, all
-commits from them have been recently re-reviewed to ensure if they were
-correct or not.
+Peter defined it in the mail thread writing:
 
-Upon review, this commit was found to be incorrect for the reasons
-below, so it must be reverted.  It will be fixed up "correctly" in a
-later kernel change.
+    As near as I can tell this should do. The arch spec only lists
+    this one instruction and the text makes it sound like a completion
+    barrier.
 
-Different error values should never be "OR" together and expect anything
-sane to come out of the result.
+This is correct so applying this patch.
 
-Cc: Aditya Pakki <pakki001@umn.edu>
-Cc: Mauro Carvalho Chehab <mchehab+samsung@kernel.org>
-Link: https://lore.kernel.org/r/20210503115736.2104747-61-gregkh@linuxfoundation.org
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Peter Zijlstra <peterz@infradead.org>
+[shorne@gmail.com:Turned the mail into a patch]
+Signed-off-by: Stafford Horne <shorne@gmail.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/media/usb/gspca/m5602/m5602_mt9m111.c | 8 +++-----
- 1 file changed, 3 insertions(+), 5 deletions(-)
+ arch/openrisc/include/asm/barrier.h | 9 +++++++++
+ 1 file changed, 9 insertions(+)
+ create mode 100644 arch/openrisc/include/asm/barrier.h
 
-diff --git a/drivers/media/usb/gspca/m5602/m5602_mt9m111.c b/drivers/media/usb/gspca/m5602/m5602_mt9m111.c
-index bfa3b381d8a2..50481dc928d0 100644
---- a/drivers/media/usb/gspca/m5602/m5602_mt9m111.c
-+++ b/drivers/media/usb/gspca/m5602/m5602_mt9m111.c
-@@ -195,7 +195,7 @@ static const struct v4l2_ctrl_config mt9m111_greenbal_cfg = {
- int mt9m111_probe(struct sd *sd)
- {
- 	u8 data[2] = {0x00, 0x00};
--	int i, rc = 0;
-+	int i;
- 	struct gspca_dev *gspca_dev = (struct gspca_dev *)sd;
- 
- 	if (force_sensor) {
-@@ -213,18 +213,16 @@ int mt9m111_probe(struct sd *sd)
- 	/* Do the preinit */
- 	for (i = 0; i < ARRAY_SIZE(preinit_mt9m111); i++) {
- 		if (preinit_mt9m111[i][0] == BRIDGE) {
--			rc |= m5602_write_bridge(sd,
-+			m5602_write_bridge(sd,
- 				preinit_mt9m111[i][1],
- 				preinit_mt9m111[i][2]);
- 		} else {
- 			data[0] = preinit_mt9m111[i][2];
- 			data[1] = preinit_mt9m111[i][3];
--			rc |= m5602_write_sensor(sd,
-+			m5602_write_sensor(sd,
- 				preinit_mt9m111[i][1], data, 2);
- 		}
- 	}
--	if (rc < 0)
--		return rc;
- 
- 	if (m5602_read_sensor(sd, MT9M111_SC_CHIPVER, data, 2))
- 		return -ENODEV;
+diff --git a/arch/openrisc/include/asm/barrier.h b/arch/openrisc/include/asm/barrier.h
+new file mode 100644
+index 000000000000..7538294721be
+--- /dev/null
++++ b/arch/openrisc/include/asm/barrier.h
+@@ -0,0 +1,9 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++#ifndef __ASM_BARRIER_H
++#define __ASM_BARRIER_H
++
++#define mb() asm volatile ("l.msync" ::: "memory")
++
++#include <asm-generic/barrier.h>
++
++#endif /* __ASM_BARRIER_H */
 -- 
 2.30.2
 
