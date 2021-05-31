@@ -2,100 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 012A5396671
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 19:05:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3679839671B
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 19:30:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234251AbhEaRHa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 13:07:30 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51452 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234704AbhEaQYZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 12:24:25 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id F3DC361027;
-        Mon, 31 May 2021 16:22:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1622478165;
-        bh=eUlDMEvG5nOx5DXWhjFkdrIrGzVK6Ta/bfHobWAG7O0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=MaDdjSfvJJbu/3DebyqUnY1cW95RdR7VyjV1H9nrdMzn1BWI2yhTluzJe4c0SpMji
-         4uToYSbpytLkAYl4vpgZLbqcW/MnajfawgkieyZ8nyJax4PKVPC4/LBFBfW9rC8vyj
-         bK63zLVIK1GLTM/B0yWhDtBTGJn2nMA+lUykE3TqZJHYwdNhtIeTyiDM/ZWZEyNjCO
-         Qk+TmkdZpoRs6moyB+U+H1dArWcL5dO318Jtyj00C51f55IeQBch2xDrCH6WYRKltW
-         uOrlkA4+gxFEtF4tagj0eXar79RyPOfaVZmW/g3cCBR5/Tm47MHYuwa4M7VdqsOdkP
-         CgLV3C86ugAtQ==
-Received: by pali.im (Postfix)
-        id 9DFE0B84; Mon, 31 May 2021 18:22:42 +0200 (CEST)
-Date:   Mon, 31 May 2021 18:22:42 +0200
-From:   Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>
-To:     Kishon Vijay Abraham I <kishon@ti.com>
-Cc:     Luca Ceresoli <luca@lucaceresoli.net>, linux-pci@vger.kernel.org,
-        linux-omap@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Rob Herring <robh@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>
-Subject: Re: [PATCH v2] PCI: dra7xx: Fix reset behaviour
-Message-ID: <20210531162242.jm73yzntzmilsvbg@pali>
-References: <20210531090540.2663171-1-luca@lucaceresoli.net>
- <20210531133211.llyiq3jcfy25tmz4@pali>
- <8ff1c54f-bb29-1e40-8342-905e34361e1c@lucaceresoli.net>
- <9fdbada4-4902-cec1-f283-0d12e1d4ac64@ti.com>
+        id S233746AbhEaRcX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 13:32:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54602 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233807AbhEaRbj (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 13:31:39 -0400
+Received: from mail-wm1-x331.google.com (mail-wm1-x331.google.com [IPv6:2a00:1450:4864:20::331])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26619C022582;
+        Mon, 31 May 2021 09:23:51 -0700 (PDT)
+Received: by mail-wm1-x331.google.com with SMTP id o2-20020a05600c4fc2b029019a0a8f959dso285506wmq.1;
+        Mon, 31 May 2021 09:23:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Pf9JOeuGnWxTtpGd/Tm8paJ7v83AlOEMeE+3fXLdQ/w=;
+        b=kGRIshQ0J2HFgrUGH2HM+jIRiRC2yJ7Gryf3Kkr8tr1CKGUYphIrs9ugJrxm0KnFKy
+         D3Kvhq3gCRa9HDpAaUhmVEESlIbiicifSHvY20Kfm5XAnGERKFECVBfCNZVmElXErTRp
+         3z2yZKarnFhRKmnghNb9HolGtqp43VKVqFGN/9/NQPreLukUmZqxTsEkKv56YQobdBwQ
+         uFTObV5Qjz9LmbJtR6Jsg2hiO6mi3La6AAsVf9zRbc9wyJ4/SKHCzWgF9AztkADi7HD+
+         V8BjUdpy9GoACtHave43pM5mRLVvRNFrX+vC55qNIDr3o1yUj2yraMXvUjFoWHdO7IXb
+         308g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Pf9JOeuGnWxTtpGd/Tm8paJ7v83AlOEMeE+3fXLdQ/w=;
+        b=kJD6eXB2KwZvfBvw4B/6GYy8GqmL7mGVMYP0wYD/juwBemDr+ZJoPlzri/IZ9h5ono
+         u6TmwH5kl0tnau5v4eaWtLFiZbqNAUwNXD4wrfUqWlM6bv5EvfKvCreMD/uKzOjAelmt
+         hW5+6AnAG7M1ZREbfAAhJtzHuTnuJDl0AGc7/RMfBmB4uTvEKxBLlgjdCRhld68fsR23
+         FT9JI2fdJuRx44hy3trcPeOSZedQk0rCoNEZfmaZqAUejCByRcUk9bcos0TzY+TnkgQR
+         UjirsIZaJOjzuE/xlQH0yGr2Jy+ZiRwa91qj5XXO0shX3Cx7yfTtzHS8WUMjAqyFOvZK
+         24NQ==
+X-Gm-Message-State: AOAM530z0YYWF2UNCWhtDQjyCBiId01ktNxpA4WaLvTRJB0G/i32l88P
+        2ZZgv6vgnA44KSXTm//GdkmPgVn6k3rTt6nRVrs=
+X-Google-Smtp-Source: ABdhPJxe3CDBegSvNgnvY+CUpeT0x4bUhMtrUTp7VL/Hg4T2C0qI0r1yJNSCIMCSx4P41EialqiUjRSOgQ7/FM2mo2U=
+X-Received: by 2002:a1c:7402:: with SMTP id p2mr26614461wmc.88.1622478229806;
+ Mon, 31 May 2021 09:23:49 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <9fdbada4-4902-cec1-f283-0d12e1d4ac64@ti.com>
-User-Agent: NeoMutt/20180716
+References: <20210531020110.2920255-1-zhengyongjun3@huawei.com>
+In-Reply-To: <20210531020110.2920255-1-zhengyongjun3@huawei.com>
+From:   Xin Long <lucien.xin@gmail.com>
+Date:   Mon, 31 May 2021 12:23:39 -0400
+Message-ID: <CADvbK_eCmDbAZ6_tppe=q3aW76OAnfZd3TXoAafDTk0h=JaTAg@mail.gmail.com>
+Subject: Re: [PATCH net-next] sctp: sm_statefuns: Fix spelling mistakes
+To:     Zheng Yongjun <zhengyongjun3@huawei.com>
+Cc:     Vlad Yasevich <vyasevich@gmail.com>,
+        Neil Horman <nhorman@tuxdriver.com>,
+        Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>,
+        davem <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>,
+        "linux-sctp @ vger . kernel . org" <linux-sctp@vger.kernel.org>,
+        network dev <netdev@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Kishon!
+On Sun, May 30, 2021 at 9:48 PM Zheng Yongjun <zhengyongjun3@huawei.com> wrote:
+>
+> Fix some spelling mistakes in comments:
+> genereate ==> generate
+> correclty ==> correctly
+> boundries ==> boundaries
+> failes ==> fails
 
-On Monday 31 May 2021 21:30:30 Kishon Vijay Abraham I wrote:
-> I had given the timing mentioned in the specification here
-> https://lore.kernel.org/r/023c9b59-70bb-ed8d-a4c0-76eae726b574@ti.com
-> 
-> The PCI EXPRESS CARD ELECTROMECHANICAL SPECIFICATION defines the Power
-> Sequencing and Reset Signal Timings in Table 2-4. Please also refer Figure
-> 2-10: Power Up of the CEM.
-> 
-> ╔═════════════╤══════════════════════════════════════╤═════╤═════╤═══════╗
-> ║ Symbol      │ Parameter                            │ Min │ Max │ Units ║
-> ╠═════════════╪══════════════════════════════════════╪═════╪═════╪═══════╣
-> ║ T PVPERL    │ Power stable to PERST# inactive      │ 100 │     │ ms    ║
-> ╟─────────────┼──────────────────────────────────────┼─────┼─────┼───────╢
-> ║ T PERST-CLK │ REFCLK stable before PERST# inactive │ 100 │     │ μs    ║
-> ╟─────────────┼──────────────────────────────────────┼─────┼─────┼───────╢
-> ║ T PERST     │ PERST# active time                   │ 100 │     │ μs    ║
-> ╟─────────────┼──────────────────────────────────────┼─────┼─────┼───────╢
-> ║ T FAIL      │ Power level invalid to PERST# active │     │ 500 │ ns    ║
-> ╟─────────────┼──────────────────────────────────────┼─────┼─────┼───────╢
-> ║ T WKRF      │ WAKE# rise – fall time               │     │ 100 │ ns    ║
-> ╚═════════════╧══════════════════════════════════════╧═════╧═════╧═══════╝
-> 
-> The de-assertion of #PERST is w.r.t both power stable and refclk stable.
+I believe more mistakes below in this file could hitchhike this patch
+to get fixed. :-)
 
-I think this does not fully answer this problematic question. One thing
-is initial power on and second thing is warm reset (when both power and
-clock is stable).
+isses -> issues
+assocition -> association
+signe -> sign
+assocaition -> association
+managemement-> management
+restransmissions->retransmission
+sideffect -> sideeffect
+bomming -> booming
+chukns-> chunks
+SHUDOWN -> SHUTDOWN
+violationg->violating
+explcitly-> explicitly
+CHunk-> Chunk
 
-On more ARM boards, power is not SW controllable and is automatically
-enabled when powering board on. So Tₚᵥₚₑᵣₗ is calculated since
-bootloader and therefore not needed to take into account in kernel.
+Thanks.
 
-Tₚₑᵣₛₜ₋cₗₖ is only 100 µs and experiments proved that 100 µs not enough
-for toggling PERST# GPIO. At least one 1 ms is needed and for some cards
-at least 10 ms. Otherwise cards are not detected.
-
-So when you have both power and clock stable and you want to reset card
-via PERST# signal, above table does not say how long it is needed to
-have PERST# in reset state.
-
-> I'm yet to validate this patch, but IIRC devm_gpiod_get_optional(dev,
-> NULL, GPIOD_OUT_HIGH) will already de-assert the PERST line. Please note
-> the board here can have various combinations of NOT gate before the gpio
-> line is actually connected to the connector.
-> 
-> Thanks
-> Kishon
+>
+> Signed-off-by: Zheng Yongjun <zhengyongjun3@huawei.com>
+> ---
+>  net/sctp/sm_statefuns.c | 8 ++++----
+>  1 file changed, 4 insertions(+), 4 deletions(-)
+>
+> diff --git a/net/sctp/sm_statefuns.c b/net/sctp/sm_statefuns.c
+> index fd1e319eda00..68e7d14c3799 100644
+> --- a/net/sctp/sm_statefuns.c
+> +++ b/net/sctp/sm_statefuns.c
+> @@ -608,7 +608,7 @@ enum sctp_disposition sctp_sf_do_5_1C_ack(struct net *net,
+>         sctp_add_cmd_sf(commands, SCTP_CMD_NEW_STATE,
+>                         SCTP_STATE(SCTP_STATE_COOKIE_ECHOED));
+>
+> -       /* SCTP-AUTH: genereate the assocition shared keys so that
+> +       /* SCTP-AUTH: generate the assocition shared keys so that
+>          * we can potentially signe the COOKIE-ECHO.
+>          */
+>         sctp_add_cmd_sf(commands, SCTP_CMD_ASSOC_SHKEY, SCTP_NULL());
+> @@ -838,7 +838,7 @@ enum sctp_disposition sctp_sf_do_5_1D_ce(struct net *net,
+>
+>         /* Add all the state machine commands now since we've created
+>          * everything.  This way we don't introduce memory corruptions
+> -        * during side-effect processing and correclty count established
+> +        * during side-effect processing and correctly count established
+>          * associations.
+>          */
+>         sctp_add_cmd_sf(commands, SCTP_CMD_NEW_ASOC, SCTP_ASOC(new_asoc));
+> @@ -2950,7 +2950,7 @@ enum sctp_disposition sctp_sf_do_9_2_reshutack(
+>                                                   commands);
+>
+>         /* Since we are not going to really process this INIT, there
+> -        * is no point in verifying chunk boundries.  Just generate
+> +        * is no point in verifying chunk boundaries.  Just generate
+>          * the SHUTDOWN ACK.
+>          */
+>         reply = sctp_make_shutdown_ack(asoc, chunk);
+> @@ -3560,7 +3560,7 @@ enum sctp_disposition sctp_sf_do_9_2_final(struct net *net,
+>                 goto nomem_chunk;
+>
+>         /* Do all the commands now (after allocation), so that we
+> -        * have consistent state if memory allocation failes
+> +        * have consistent state if memory allocation fails
+>          */
+>         sctp_add_cmd_sf(commands, SCTP_CMD_EVENT_ULP, SCTP_ULPEVENT(ev));
+>
+> --
+> 2.25.1
+>
