@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7EDCD3964AA
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 18:04:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 117BF395FB5
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 16:14:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233524AbhEaQG0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 12:06:26 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33264 "EHLO mail.kernel.org"
+        id S233818AbhEaOPr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 10:15:47 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49500 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232666AbhEaOfh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 10:35:37 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id EECB961434;
-        Mon, 31 May 2021 13:51:12 +0000 (UTC)
+        id S232394AbhEaNrC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 09:47:02 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 30F3761606;
+        Mon, 31 May 2021 13:30:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1622469073;
-        bh=uZ8RMiPR5Nz4q5T/km5vQvdU10060VwQaBgXOWVR9tc=;
+        s=korg; t=1622467824;
+        bh=XSgpYZSS1A43AEYXwsuaBxUBHSVjgtsQgACDshoxKDc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=cTqJ3M1kTGy6nW6RM+nJ6Kj1aqnvnltrE7mqatl1hhKyRO33DenuWEYzWmk+wlNcE
-         5oFZuYUAjVHJRnnxfVlpVgVgz7uPXbvygwWK9T3OHyk5Gj7OP1WglKVcY5qrv7OkPf
-         Kpf9D/OJDiCou+qljSdzauX8+Yy6J/ifuo3uPmjg=
+        b=s9JiQWxFmeEN0z0ASnmCvmjAnesjAckBCiXVvneIBwsyuw2ekEm42f/VR/mw2yqJq
+         9HoC/kizINVbmew5YdC/6k0STL5tEc51FDGYcYLsstexltkkNGhJXJUGbX3ODlzzcw
+         yECuz7qojT5nFXXK2ybz7lmr7aQA9Ft+0D0/UTTI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jan Hoeppner <hoeppner@linux.ibm.com>,
-        Stefan Haberland <sth@linux.ibm.com>,
-        Cornelia Huck <cohuck@redhat.com>, Jens Axboe <axboe@kernel.dk>
-Subject: [PATCH 5.12 024/296] s390/dasd: add missing discipline function
-Date:   Mon, 31 May 2021 15:11:19 +0200
-Message-Id: <20210531130704.589841236@linuxfoundation.org>
+        stable@vger.kernel.org, Adrian Hunter <adrian.hunter@intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@redhat.com>
+Subject: [PATCH 5.10 015/252] perf scripts python: exported-sql-viewer.py: Fix copy to clipboard from Top Calls by elapsed Time report
+Date:   Mon, 31 May 2021 15:11:20 +0200
+Message-Id: <20210531130658.496894732@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210531130703.762129381@linuxfoundation.org>
-References: <20210531130703.762129381@linuxfoundation.org>
+In-Reply-To: <20210531130657.971257589@linuxfoundation.org>
+References: <20210531130657.971257589@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,86 +40,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Stefan Haberland <sth@linux.ibm.com>
+From: Adrian Hunter <adrian.hunter@intel.com>
 
-commit c0c8a8397fa8a74d04915f4d3d28cb4a5d401427 upstream.
+commit a6172059758ba1b496ae024cece7d5bdc8d017db upstream.
 
-Fix crash with illegal operation exception in dasd_device_tasklet.
-Commit b72949328869 ("s390/dasd: Prepare for additional path event handling")
-renamed the verify_path function for ECKD but not for FBA and DIAG.
-This leads to a panic when the path verification function is called for a
-FBA or DIAG device.
+Provide missing argument to prevent following error when copying a
+selection to the clipboard:
 
-Fix by defining a wrapper function for dasd_generic_verify_path().
+Traceback (most recent call last):
+  File "tools/perf/scripts/python/exported-sql-viewer.py", line 4041, in <lambda>
+    menu.addAction(CreateAction("&Copy selection", "Copy to clipboard", lambda: CopyCellsToClipboardHdr(self.view), self.view))
+  File "tools/perf/scripts/python/exported-sql-viewer.py", line 4021, in CopyCellsToClipboardHdr
+    CopyCellsToClipboard(view, False, True)
+  File "tools/perf/scripts/python/exported-sql-viewer.py", line 4018, in CopyCellsToClipboard
+    view.CopyCellsToClipboard(view, as_csv, with_hdr)
+  File "tools/perf/scripts/python/exported-sql-viewer.py", line 3871, in CopyTableCellsToClipboard
+    val = model.headerData(col, Qt.Horizontal)
+TypeError: headerData() missing 1 required positional argument: 'role'
 
-Fixes: b72949328869 ("s390/dasd: Prepare for additional path event handling")
-Cc: <stable@vger.kernel.org> #5.11
-Reviewed-by: Jan Hoeppner <hoeppner@linux.ibm.com>
-Signed-off-by: Stefan Haberland <sth@linux.ibm.com>
-Reviewed-by: Cornelia Huck <cohuck@redhat.com>
-Link: https://lore.kernel.org/r/20210525125006.157531-2-sth@linux.ibm.com
-Signed-off-by: Jens Axboe <axboe@kernel.dk>
+Fixes: 96c43b9a7ab3b ("perf scripts python: exported-sql-viewer.py: Add copy to clipboard")
+Signed-off-by: Adrian Hunter <adrian.hunter@intel.com>
+Cc: Jiri Olsa <jolsa@redhat.com>
+Cc: stable@vger.kernel.org
+Link: http://lore.kernel.org/lkml/20210521092053.25683-2-adrian.hunter@intel.com
+Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/s390/block/dasd_diag.c |    8 +++++++-
- drivers/s390/block/dasd_fba.c  |    8 +++++++-
- drivers/s390/block/dasd_int.h  |    1 -
- 3 files changed, 14 insertions(+), 3 deletions(-)
+ tools/perf/scripts/python/exported-sql-viewer.py |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/s390/block/dasd_diag.c
-+++ b/drivers/s390/block/dasd_diag.c
-@@ -642,12 +642,18 @@ static void dasd_diag_setup_blk_queue(st
- 	blk_queue_segment_boundary(q, PAGE_SIZE - 1);
- }
- 
-+static int dasd_diag_pe_handler(struct dasd_device *device,
-+				__u8 tbvpm, __u8 fcsecpm)
-+{
-+	return dasd_generic_verify_path(device, tbvpm);
-+}
-+
- static struct dasd_discipline dasd_diag_discipline = {
- 	.owner = THIS_MODULE,
- 	.name = "DIAG",
- 	.ebcname = "DIAG",
- 	.check_device = dasd_diag_check_device,
--	.verify_path = dasd_generic_verify_path,
-+	.pe_handler = dasd_diag_pe_handler,
- 	.fill_geometry = dasd_diag_fill_geometry,
- 	.setup_blk_queue = dasd_diag_setup_blk_queue,
- 	.start_IO = dasd_start_diag,
---- a/drivers/s390/block/dasd_fba.c
-+++ b/drivers/s390/block/dasd_fba.c
-@@ -800,13 +800,19 @@ static void dasd_fba_setup_blk_queue(str
- 	blk_queue_flag_set(QUEUE_FLAG_DISCARD, q);
- }
- 
-+static int dasd_fba_pe_handler(struct dasd_device *device,
-+			       __u8 tbvpm, __u8 fcsecpm)
-+{
-+	return dasd_generic_verify_path(device, tbvpm);
-+}
-+
- static struct dasd_discipline dasd_fba_discipline = {
- 	.owner = THIS_MODULE,
- 	.name = "FBA ",
- 	.ebcname = "FBA ",
- 	.check_device = dasd_fba_check_characteristics,
- 	.do_analysis = dasd_fba_do_analysis,
--	.verify_path = dasd_generic_verify_path,
-+	.pe_handler = dasd_fba_pe_handler,
- 	.setup_blk_queue = dasd_fba_setup_blk_queue,
- 	.fill_geometry = dasd_fba_fill_geometry,
- 	.start_IO = dasd_start_IO,
---- a/drivers/s390/block/dasd_int.h
-+++ b/drivers/s390/block/dasd_int.h
-@@ -297,7 +297,6 @@ struct dasd_discipline {
- 	 * e.g. verify that new path is compatible with the current
- 	 * configuration.
- 	 */
--	int (*verify_path)(struct dasd_device *, __u8);
- 	int (*pe_handler)(struct dasd_device *, __u8, __u8);
- 
- 	/*
+--- a/tools/perf/scripts/python/exported-sql-viewer.py
++++ b/tools/perf/scripts/python/exported-sql-viewer.py
+@@ -3868,7 +3868,7 @@ def CopyTableCellsToClipboard(view, as_c
+ 	if with_hdr:
+ 		model = indexes[0].model()
+ 		for col in range(min_col, max_col + 1):
+-			val = model.headerData(col, Qt.Horizontal)
++			val = model.headerData(col, Qt.Horizontal, Qt.DisplayRole)
+ 			if as_csv:
+ 				text += sep + ToCSValue(val)
+ 				sep = ","
 
 
