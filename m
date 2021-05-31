@@ -2,38 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 94717395D54
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 15:43:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F05F2395BE8
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 15:24:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232996AbhEaNoW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 09:44:22 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34272 "EHLO mail.kernel.org"
+        id S232291AbhEaNZw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 09:25:52 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55358 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232089AbhEaNae (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 09:30:34 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B0CF86142D;
-        Mon, 31 May 2021 13:23:09 +0000 (UTC)
+        id S232163AbhEaNUY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 09:20:24 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id AF6966138C;
+        Mon, 31 May 2021 13:18:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1622467390;
-        bh=2mYgn0+xEy3LA8PX8utkbUKq+W5HQvza1lQI7eUtytQ=;
+        s=korg; t=1622467117;
+        bh=EISD/zBZ3lO6zdRqdgHn7/U/qjj2NvGunw7ZBINjZ54=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=pc5pqr28NKbpeKgRzfW81SZagaMX2bSV6Lvtzlh3fwFsTzDzMwzW1c3Wsz5GSgsJR
-         2YUBfxZFQth4LjwMI3J/YIQ+Comk9licVbbqZ/sRHevaLbFnB1aqufWxfLLfq10o3G
-         YcI0q+MV5WU9Kwe/tVsHojdygNXOuX2+0+UqLROA=
+        b=G8p+xgCAqpeX4BhJ59vNog1hprxF3TpDKYmkw/kkyRvp+W7r+PZfm1bANYPbK6hSA
+         CzsdH8EzPvkUyD99FJD+nCmrCwreJUquS7gKbID5/dSTFkwRg/6X9HNFNyCcqL99eZ
+         7ZGorp4w2EjZCxAGNjstljh4hadzkQeeEwh2Y2GM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Frank van der Linden <fllinden@amazon.com>,
-        Ovidiu Panait <ovidiu.panait@windriver.com>
-Subject: [PATCH 4.19 048/116] bpf: Ensure off_reg has no mixed signed bounds for all types
+        stable@vger.kernel.org, Mathy Vanhoef <Mathy.Vanhoef@kuleuven.be>,
+        Johannes Berg <johannes.berg@intel.com>
+Subject: [PATCH 4.9 11/66] cfg80211: mitigate A-MSDU aggregation attacks
 Date:   Mon, 31 May 2021 15:13:44 +0200
-Message-Id: <20210531130641.806645614@linuxfoundation.org>
+Message-Id: <20210531130636.621943688@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210531130640.131924542@linuxfoundation.org>
-References: <20210531130640.131924542@linuxfoundation.org>
+In-Reply-To: <20210531130636.254683895@linuxfoundation.org>
+References: <20210531130636.254683895@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,86 +39,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Daniel Borkmann <daniel@iogearbox.net>
+From: Mathy Vanhoef <Mathy.Vanhoef@kuleuven.be>
 
-commit 24c109bb1537c12c02aeed2d51a347b4d6a9b76e upstream.
+commit 2b8a1fee3488c602aca8bea004a087e60806a5cf upstream.
 
-The mixed signed bounds check really belongs into retrieve_ptr_limit()
-instead of outside of it in adjust_ptr_min_max_vals(). The reason is
-that this check is not tied to PTR_TO_MAP_VALUE only, but to all pointer
-types that we handle in retrieve_ptr_limit() and given errors from the latter
-propagate back to adjust_ptr_min_max_vals() and lead to rejection of the
-program, it's a better place to reside to avoid anything slipping through
-for future types. The reason why we must reject such off_reg is that we
-otherwise would not be able to derive a mask, see details in 9d7eceede769
-("bpf: restrict unknown scalars of mixed signed bounds for unprivileged").
+Mitigate A-MSDU injection attacks (CVE-2020-24588) by detecting if the
+destination address of a subframe equals an RFC1042 (i.e., LLC/SNAP)
+header, and if so dropping the complete A-MSDU frame. This mitigates
+known attacks, although new (unknown) aggregation-based attacks may
+remain possible.
 
-Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
-Reviewed-by: John Fastabend <john.fastabend@gmail.com>
-Acked-by: Alexei Starovoitov <ast@kernel.org>
-[fllinden@amazon.com: backport to 5.4]
-Signed-off-by: Frank van der Linden <fllinden@amazon.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-[OP: backport to 4.19]
-Signed-off-by: Ovidiu Panait <ovidiu.panait@windriver.com>
+This defense works because in A-MSDU aggregation injection attacks, a
+normal encrypted Wi-Fi frame is turned into an A-MSDU frame. This means
+the first 6 bytes of the first A-MSDU subframe correspond to an RFC1042
+header. In other words, the destination MAC address of the first A-MSDU
+subframe contains the start of an RFC1042 header during an aggregation
+attack. We can detect this and thereby prevent this specific attack.
+For details, see Section 7.2 of "Fragment and Forge: Breaking Wi-Fi
+Through Frame Aggregation and Fragmentation".
+
+Note that for kernel 4.9 and above this patch depends on "mac80211:
+properly handle A-MSDUs that start with a rfc1042 header". Otherwise
+this patch has no impact and attacks will remain possible.
+
+Cc: stable@vger.kernel.org
+Signed-off-by: Mathy Vanhoef <Mathy.Vanhoef@kuleuven.be>
+Link: https://lore.kernel.org/r/20210511200110.25d93176ddaf.I9e265b597f2cd23eb44573f35b625947b386a9de@changeid
+Signed-off-by: Johannes Berg <johannes.berg@intel.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- kernel/bpf/verifier.c |   18 +++++++++---------
- 1 file changed, 9 insertions(+), 9 deletions(-)
+ net/wireless/util.c |    3 +++
+ 1 file changed, 3 insertions(+)
 
---- a/kernel/bpf/verifier.c
-+++ b/kernel/bpf/verifier.c
-@@ -2730,12 +2730,18 @@ static struct bpf_insn_aux_data *cur_aux
- }
+--- a/net/wireless/util.c
++++ b/net/wireless/util.c
+@@ -768,6 +768,9 @@ void ieee80211_amsdu_to_8023s(struct sk_
+ 		remaining = skb->len - offset;
+ 		if (subframe_len > remaining)
+ 			goto purge;
++		/* mitigate A-MSDU aggregation injection attacks */
++		if (ether_addr_equal(eth.h_dest, rfc1042_header))
++			goto purge;
  
- static int retrieve_ptr_limit(const struct bpf_reg_state *ptr_reg,
--			      u32 *ptr_limit, u8 opcode, bool off_is_neg)
-+			      const struct bpf_reg_state *off_reg,
-+			      u32 *ptr_limit, u8 opcode)
- {
-+	bool off_is_neg = off_reg->smin_value < 0;
- 	bool mask_to_left = (opcode == BPF_ADD &&  off_is_neg) ||
- 			    (opcode == BPF_SUB && !off_is_neg);
- 	u32 off, max;
- 
-+	if (!tnum_is_const(off_reg->var_off) &&
-+	    (off_reg->smin_value < 0) != (off_reg->smax_value < 0))
-+		return -EACCES;
-+
- 	switch (ptr_reg->type) {
- 	case PTR_TO_STACK:
- 		/* Offset 0 is out-of-bounds, but acceptable start for the
-@@ -2826,7 +2832,7 @@ static int sanitize_ptr_alu(struct bpf_v
- 	alu_state |= ptr_is_dst_reg ?
- 		     BPF_ALU_SANITIZE_SRC : BPF_ALU_SANITIZE_DST;
- 
--	err = retrieve_ptr_limit(ptr_reg, &alu_limit, opcode, off_is_neg);
-+	err = retrieve_ptr_limit(ptr_reg, off_reg, &alu_limit, opcode);
- 	if (err < 0)
- 		return err;
- 
-@@ -2871,8 +2877,8 @@ static int adjust_ptr_min_max_vals(struc
- 	    smin_ptr = ptr_reg->smin_value, smax_ptr = ptr_reg->smax_value;
- 	u64 umin_val = off_reg->umin_value, umax_val = off_reg->umax_value,
- 	    umin_ptr = ptr_reg->umin_value, umax_ptr = ptr_reg->umax_value;
--	u32 dst = insn->dst_reg, src = insn->src_reg;
- 	u8 opcode = BPF_OP(insn->code);
-+	u32 dst = insn->dst_reg;
- 	int ret;
- 
- 	dst_reg = &regs[dst];
-@@ -2909,12 +2915,6 @@ static int adjust_ptr_min_max_vals(struc
- 			dst);
- 		return -EACCES;
- 	}
--	if (ptr_reg->type == PTR_TO_MAP_VALUE &&
--	    !env->allow_ptr_leaks && !known && (smin_val < 0) != (smax_val < 0)) {
--		verbose(env, "R%d has unknown scalar with mixed signed bounds, pointer arithmetic with it prohibited for !root\n",
--			off_reg == dst_reg ? dst : src);
--		return -EACCES;
--	}
- 
- 	/* In case of 'scalar += pointer', dst_reg inherits pointer type and id.
- 	 * The id may be overwritten later if we create a new variable offset.
+ 		offset += sizeof(struct ethhdr);
+ 		last = remaining <= subframe_len + padding;
 
 
