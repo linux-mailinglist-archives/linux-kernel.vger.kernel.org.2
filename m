@@ -2,37 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F94C396501
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 18:18:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D7A53960B7
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 16:29:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234719AbhEaQTo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 12:19:44 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38020 "EHLO mail.kernel.org"
+        id S232957AbhEaObC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 10:31:02 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58840 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233642AbhEaOlg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 10:41:36 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A100761C6B;
-        Mon, 31 May 2021 13:53:36 +0000 (UTC)
+        id S232183AbhEaNyB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 09:54:01 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 03F8C6191D;
+        Mon, 31 May 2021 13:33:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1622469217;
-        bh=PwlgtTkGS+1C9BvwQKkTVlLQQhHTBS25/lKjRtxMhC4=;
+        s=korg; t=1622468019;
+        bh=IGnyTuQjYOOw4G6t0SNltBrM51l310tTmm7+guOXb0o=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=FtmkBumtQCTZDYtVmX3No5V+5dhhb2kIlgTmA+x/MsWpTZv3Hw/Cq07F8Mcbv5g9o
-         vM0WnXDWzG6smJMihO9xN+q2bZtzXkj4s1X49x1bN+z4QFsNZChIGTp2zttvHXlKMQ
-         uzbkngCzGI7b5C0XGkgi+xpJdaV6yM2IeymPFfhs=
+        b=cZj1dmWV4xcLnHJ3KPLAeybinXjWyIc9y5wXmng34EsoLRAmPL6TrrEhhyg35eqcO
+         eoAgVsKOdSBbtyHJqAc6IaKzMy6jHiU8UTExcTENlc7elUsy3Z99VujEOSeq/f+vxC
+         TOTPiTLn9pj5PzFgmh4Ap0pY4ssMMLYOpnqj8N3M=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Linh Phung <linh.phung.jy@renesas.com>,
-        Wolfram Sang <wsa+renesas@sang-engineering.com>,
-        Ulrich Hecht <uli+renesas@fpond.eu>,
-        Geert Uytterhoeven <geert+renesas@glider.be>
-Subject: [PATCH 5.12 096/296] serial: sh-sci: Fix off-by-one error in FIFO threshold register setting
-Date:   Mon, 31 May 2021 15:12:31 +0200
-Message-Id: <20210531130707.148993613@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>
+Subject: [PATCH 5.10 087/252] usb: gadget: udc: renesas_usb3: Fix a race in usb3_start_pipen()
+Date:   Mon, 31 May 2021 15:12:32 +0200
+Message-Id: <20210531130700.936886724@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210531130703.762129381@linuxfoundation.org>
-References: <20210531130703.762129381@linuxfoundation.org>
+In-Reply-To: <20210531130657.971257589@linuxfoundation.org>
+References: <20210531130657.971257589@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,49 +39,63 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Geert Uytterhoeven <geert+renesas@glider.be>
+From: Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>
 
-commit 2ea2e019c190ee3973ef7bcaf829d8762e56e635 upstream.
+commit e752dbc59e1241b13b8c4f7b6eb582862e7668fe upstream.
 
-The Receive FIFO Data Count Trigger field (RTRG[6:0]) in the Receive
-FIFO Data Count Trigger Register (HSRTRGR) of HSCIF can only hold values
-ranging from 0-127.  As the FIFO size is equal to 128 on HSCIF, the user
-can write an out-of-range value, touching reserved bits.
+The usb3_start_pipen() is called by renesas_usb3_ep_queue() and
+usb3_request_done_pipen() so that usb3_start_pipen() is possible
+to cause a race when getting usb3_first_req like below:
 
-Fix this by limiting the trigger value to the FIFO size minus one.
-Reverse the order of the checks, to avoid rx_trig becoming zero if the
-FIFO size is one.
+renesas_usb3_ep_queue()
+ spin_lock_irqsave()
+ list_add_tail()
+ spin_unlock_irqrestore()
+ usb3_start_pipen()
+  usb3_first_req = usb3_get_request() --- [1]
+ --- interrupt ---
+ usb3_irq_dma_int()
+ usb3_request_done_pipen()
+  usb3_get_request()
+  usb3_start_pipen()
+  usb3_first_req = usb3_get_request()
+  ...
+  (the req is possible to be finished in the interrupt)
 
-Note that this change has no impact on other SCIF variants, as their
-maximum supported trigger value is lower than the FIFO size anyway, and
-the code below takes care of enforcing these limits.
+The usb3_first_req [1] above may have been finished after the interrupt
+ended so that this driver caused to start a transfer wrongly. To fix this
+issue, getting/checking the usb3_first_req are under spin_lock_irqsave()
+in the same section.
 
-Fixes: a380ed461f66d1b8 ("serial: sh-sci: implement FIFO threshold register setting")
-Reported-by: Linh Phung <linh.phung.jy@renesas.com>
-Reviewed-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
-Reviewed-by: Ulrich Hecht <uli+renesas@fpond.eu>
-Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+Fixes: 746bfe63bba3 ("usb: gadget: renesas_usb3: add support for Renesas USB3.0 peripheral controller")
 Cc: stable <stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/5eff320aef92ffb33d00e57979fd3603bbb4a70f.1620648218.git.geert+renesas@glider.be
+Signed-off-by: Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>
+Link: https://lore.kernel.org/r/20210524060155.1178724-1-yoshihiro.shimoda.uh@renesas.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/tty/serial/sh-sci.c |    4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/usb/gadget/udc/renesas_usb3.c |    5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
---- a/drivers/tty/serial/sh-sci.c
-+++ b/drivers/tty/serial/sh-sci.c
-@@ -1023,10 +1023,10 @@ static int scif_set_rtrg(struct uart_por
+--- a/drivers/usb/gadget/udc/renesas_usb3.c
++++ b/drivers/usb/gadget/udc/renesas_usb3.c
+@@ -1488,7 +1488,7 @@ static void usb3_start_pipen(struct rene
+ 			     struct renesas_usb3_request *usb3_req)
  {
- 	unsigned int bits;
+ 	struct renesas_usb3 *usb3 = usb3_ep_to_usb3(usb3_ep);
+-	struct renesas_usb3_request *usb3_req_first = usb3_get_request(usb3_ep);
++	struct renesas_usb3_request *usb3_req_first;
+ 	unsigned long flags;
+ 	int ret = -EAGAIN;
+ 	u32 enable_bits = 0;
+@@ -1496,7 +1496,8 @@ static void usb3_start_pipen(struct rene
+ 	spin_lock_irqsave(&usb3->lock, flags);
+ 	if (usb3_ep->halt || usb3_ep->started)
+ 		goto out;
+-	if (usb3_req != usb3_req_first)
++	usb3_req_first = __usb3_get_request(usb3_ep);
++	if (!usb3_req_first || usb3_req != usb3_req_first)
+ 		goto out;
  
-+	if (rx_trig >= port->fifosize)
-+		rx_trig = port->fifosize - 1;
- 	if (rx_trig < 1)
- 		rx_trig = 1;
--	if (rx_trig >= port->fifosize)
--		rx_trig = port->fifosize;
- 
- 	/* HSCIF can be set to an arbitrary level. */
- 	if (sci_getreg(port, HSRTRGR)->size) {
+ 	if (usb3_pn_change(usb3, usb3_ep->num) < 0)
 
 
