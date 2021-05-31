@@ -2,34 +2,31 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E458739652A
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 18:24:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 568D839650E
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 18:20:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233670AbhEaQZo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 12:25:44 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38022 "EHLO mail.kernel.org"
+        id S233873AbhEaQVh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 12:21:37 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37206 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233319AbhEaOni (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 10:43:38 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 446A161C75;
-        Mon, 31 May 2021 13:54:41 +0000 (UTC)
+        id S232635AbhEaOka (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 10:40:30 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8973361C67;
+        Mon, 31 May 2021 13:53:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1622469281;
-        bh=HCi1AXBOtmxa8GKjBhYrMrWk+dDUVRBScLcK/48cENE=;
+        s=korg; t=1622469188;
+        bh=bgz08rN2DCK3WLYABRd5v1il0Xy381Xes4KMJi4AMRw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=XJcChXDSH6nLBqOA6LUjV0f85I/g5bsXhuxCTVmZEOKeYxDH60SMrZ92wI3bzUJE0
-         oISU58ZCK7gfr6+EDt9kVAAIGDdcOmO6TrAsMN0P0eY75u5DSyB5jDvb0x96LM0Fq5
-         Z6y5QzgUmdtxaqAv/oDeyTw4p28VRX3dD3NpvfOk=
+        b=lZPA04555eVSdj+wh6Usj4gDi4xBeY1TisOGpOlBNlSiuyJMGCtJ+9J2xP9WGkX2p
+         ZNNSbSN+ILDbFGV+JxSUb9Nz7P9kIOkTIrZM5ilKZNZpFE0ENlwQFrF8hssN3jostk
+         QG0AeHsOFjLPOizUGaXNPN51il/fydqxvve1V4X4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        "chenxiang (M)" <chenxiang66@hisilicon.com>,
-        Saravana Kannan <saravanak@google.com>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>
-Subject: [PATCH 5.12 094/296] drivers: base: Fix device link removal
-Date:   Mon, 31 May 2021 15:12:29 +0200
-Message-Id: <20210531130707.072584005@linuxfoundation.org>
+        stable@vger.kernel.org, Colin Ian King <colin.king@canonical.com>
+Subject: [PATCH 5.12 095/296] serial: tegra: Fix a mask operation that is always true
+Date:   Mon, 31 May 2021 15:12:30 +0200
+Message-Id: <20210531130707.111432594@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210531130703.762129381@linuxfoundation.org>
 References: <20210531130703.762129381@linuxfoundation.org>
@@ -41,133 +38,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+From: Colin Ian King <colin.king@canonical.com>
 
-commit 80dd33cf72d1ab4f0af303f1fa242c6d6c8d328f upstream.
+commit 3ddb4ce1e6e3bd112778ab93bbd9092f23a878ec upstream.
 
-When device_link_free() drops references to the supplier and
-consumer devices of the device link going away and the reference
-being dropped turns out to be the last one for any of those
-device objects, its ->release callback will be invoked and it
-may sleep which goes against the SRCU callback execution
-requirements.
+Currently the expression lsr | UART_LSR_TEMT is always true and
+this seems suspect. I believe the intent was to mask lsr with UART_LSR_TEMT
+to check that bit, so the expression should be using the & operator
+instead. Fix this.
 
-To address this issue, make the device link removal code carry out
-the device_link_free() actions preceded by SRCU synchronization from
-a separate work item (the "long" workqueue is used for that, because
-it does not matter when the device link memory is released and it may
-take time to get to that point) instead of using SRCU callbacks.
-
-While at it, make the code work analogously when SRCU is not enabled
-to reduce the differences between the SRCU and non-SRCU cases.
-
-Fixes: 843e600b8a2b ("driver core: Fix sleeping in invalid context during device link deletion")
+Fixes: b9c2470fb150 ("serial: tegra: flush the RX fifo on frame error")
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
 Cc: stable <stable@vger.kernel.org>
-Reported-by: chenxiang (M) <chenxiang66@hisilicon.com>
-Tested-by: chenxiang (M) <chenxiang66@hisilicon.com>
-Reviewed-by: Saravana Kannan <saravanak@google.com>
-Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-Link: https://lore.kernel.org/r/5722787.lOV4Wx5bFT@kreacher
+Link: https://lore.kernel.org/r/20210426105514.23268-1-colin.king@canonical.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/base/core.c    |   37 +++++++++++++++++++++++--------------
- include/linux/device.h |    6 ++----
- 2 files changed, 25 insertions(+), 18 deletions(-)
+ drivers/tty/serial/serial-tegra.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/base/core.c
-+++ b/drivers/base/core.c
-@@ -192,6 +192,11 @@ int device_links_read_lock_held(void)
- {
- 	return srcu_read_lock_held(&device_links_srcu);
- }
-+
-+static void device_link_synchronize_removal(void)
-+{
-+	synchronize_srcu(&device_links_srcu);
-+}
- #else /* !CONFIG_SRCU */
- static DECLARE_RWSEM(device_links_lock);
+--- a/drivers/tty/serial/serial-tegra.c
++++ b/drivers/tty/serial/serial-tegra.c
+@@ -338,7 +338,7 @@ static void tegra_uart_fifo_reset(struct
  
-@@ -222,6 +227,10 @@ int device_links_read_lock_held(void)
- 	return lockdep_is_held(&device_links_lock);
- }
- #endif
-+
-+static inline void device_link_synchronize_removal(void)
-+{
-+}
- #endif /* !CONFIG_SRCU */
- 
- static bool device_is_ancestor(struct device *dev, struct device *target)
-@@ -443,8 +452,13 @@ static struct attribute *devlink_attrs[]
- };
- ATTRIBUTE_GROUPS(devlink);
- 
--static void device_link_free(struct device_link *link)
-+static void device_link_release_fn(struct work_struct *work)
- {
-+	struct device_link *link = container_of(work, struct device_link, rm_work);
-+
-+	/* Ensure that all references to the link object have been dropped. */
-+	device_link_synchronize_removal();
-+
- 	while (refcount_dec_not_one(&link->rpm_active))
- 		pm_runtime_put(link->supplier);
- 
-@@ -453,24 +467,19 @@ static void device_link_free(struct devi
- 	kfree(link);
- }
- 
--#ifdef CONFIG_SRCU
--static void __device_link_free_srcu(struct rcu_head *rhead)
--{
--	device_link_free(container_of(rhead, struct device_link, rcu_head));
--}
--
- static void devlink_dev_release(struct device *dev)
- {
- 	struct device_link *link = to_devlink(dev);
- 
--	call_srcu(&device_links_srcu, &link->rcu_head, __device_link_free_srcu);
--}
--#else
--static void devlink_dev_release(struct device *dev)
--{
--	device_link_free(to_devlink(dev));
-+	INIT_WORK(&link->rm_work, device_link_release_fn);
-+	/*
-+	 * It may take a while to complete this work because of the SRCU
-+	 * synchronization in device_link_release_fn() and if the consumer or
-+	 * supplier devices get deleted when it runs, so put it into the "long"
-+	 * workqueue.
-+	 */
-+	queue_work(system_long_wq, &link->rm_work);
- }
--#endif
- 
- static struct class devlink_class = {
- 	.name = "devlink",
---- a/include/linux/device.h
-+++ b/include/linux/device.h
-@@ -566,7 +566,7 @@ struct device {
-  * @flags: Link flags.
-  * @rpm_active: Whether or not the consumer device is runtime-PM-active.
-  * @kref: Count repeated addition of the same link.
-- * @rcu_head: An RCU head to use for deferred execution of SRCU callbacks.
-+ * @rm_work: Work structure used for removing the link.
-  * @supplier_preactivated: Supplier has been made active before consumer probe.
-  */
- struct device_link {
-@@ -579,9 +579,7 @@ struct device_link {
- 	u32 flags;
- 	refcount_t rpm_active;
- 	struct kref kref;
--#ifdef CONFIG_SRCU
--	struct rcu_head rcu_head;
--#endif
-+	struct work_struct rm_work;
- 	bool supplier_preactivated; /* Owned by consumer probe. */
- };
- 
+ 	do {
+ 		lsr = tegra_uart_read(tup, UART_LSR);
+-		if ((lsr | UART_LSR_TEMT) && !(lsr & UART_LSR_DR))
++		if ((lsr & UART_LSR_TEMT) && !(lsr & UART_LSR_DR))
+ 			break;
+ 		udelay(1);
+ 	} while (--tmout);
 
 
