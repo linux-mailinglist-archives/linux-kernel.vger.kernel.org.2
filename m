@@ -2,35 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6BBB53961D0
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 16:46:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 63582396544
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 18:28:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232575AbhEaOrF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 10:47:05 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60416 "EHLO mail.kernel.org"
+        id S234721AbhEaQaL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 12:30:11 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39882 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232438AbhEaOAA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 10:00:00 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0EE59613AB;
-        Mon, 31 May 2021 13:36:20 +0000 (UTC)
+        id S232057AbhEaOpj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 10:45:39 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 31E2061C7C;
+        Mon, 31 May 2021 13:55:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1622468181;
-        bh=T73aE6qjderFT5AXqvF+eWkmvZ0i4FnAsV5zIEkKxBo=;
+        s=korg; t=1622469325;
+        bh=I5a+M1mq2tbIyq1O9E0WWCz4d2J/neNykuabz8sEmh4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=PPck3eCvtP877mIPkbU+5zBhGo6iuH6kgBAfsNEvl2MS+p29mvkVSNmlExDkrBBZO
-         W2pPyCKBcUNbczGtyiHVlqZMJvFu/AObubqRhg9jw5HhBaSsMGCHPn6I95Ma8QzTsm
-         Pnp73gA5bGYUIc162o9tVqDRkDq9+oABpiEospdw=
+        b=WT+0Y5iHZLWx1NzRd+AFGoaZbN45Z6kyKSgmR+I6WF4LBreDysVBytwxC57+t4OKu
+         9je27jvalKchi7we0g4qW2MqJDHRKLQKPF9l2fPIvgf3Vo6+Bh0BGp0FnaNVwbFABz
+         IwWV8qhOJqnbiE7pdY0A2IvNUnzdtBxQMOkypdxM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Kangjie Lu <kjlu@umn.edu>,
-        Takashi Iwai <tiwai@suse.de>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 145/252] Revert "ALSA: gus: add a check of the status of snd_ctl_add"
+        stable@vger.kernel.org, Felix Fietkau <nbd@nbd.name>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Andi Kleen <ak@linux.intel.com>, Jiri Olsa <jolsa@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Sukadev Bhattiprolu <sukadev@linux.vnet.ibm.com>,
+        Arnaldo Carvalho de Melo <acme@redhat.com>
+Subject: [PATCH 5.12 155/296] perf jevents: Fix getting maximum number of fds
 Date:   Mon, 31 May 2021 15:13:30 +0200
-Message-Id: <20210531130702.946071480@linuxfoundation.org>
+Message-Id: <20210531130709.076907449@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210531130657.971257589@linuxfoundation.org>
-References: <20210531130657.971257589@linuxfoundation.org>
+In-Reply-To: <20210531130703.762129381@linuxfoundation.org>
+References: <20210531130703.762129381@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,59 +45,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+From: Felix Fietkau <nbd@nbd.name>
 
-[ Upstream commit 1dacca7fa1ebea47d38d20cd2df37094805d2649 ]
+commit 75ea44e356b5de8c817f821c9dd68ae329e82add upstream.
 
-This reverts commit 0f25e000cb4398081748e54f62a902098aa79ec1.
+On some hosts, rlim.rlim_max can be returned as RLIM_INFINITY.
+By casting it to int, it is interpreted as -1, which will cause get_maxfds
+to return 0, causing "Invalid argument" errors in nftw() calls.
+Fix this by casting the second argument of min() to rlim_t instead.
 
-Because of recent interactions with developers from @umn.edu, all
-commits from them have been recently re-reviewed to ensure if they were
-correct or not.
-
-Upon review, this commit was found to be incorrect for the reasons
-below, so it must be reverted.  It will be fixed up "correctly" in a
-later kernel change.
-
-The original commit did nothing if there was an error, except to print
-out a message, which is pointless.  So remove the commit as it gives a
-"false sense of doing something".
-
-Cc: Kangjie Lu <kjlu@umn.edu>
-Reviewed-by: Takashi Iwai <tiwai@suse.de>
-Link: https://lore.kernel.org/r/20210503115736.2104747-33-gregkh@linuxfoundation.org
+Fixes: 80eeb67fe577 ("perf jevents: Program to convert JSON file")
+Signed-off-by: Felix Fietkau <nbd@nbd.name>
+Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com>
+Cc: Andi Kleen <ak@linux.intel.com>
+Cc: Jiri Olsa <jolsa@redhat.com>
+Cc: Mark Rutland <mark.rutland@arm.com>
+Cc: Namhyung Kim <namhyung@kernel.org>
+Cc: Peter Zijlstra <peterz@infradead.org>
+Cc: Sukadev Bhattiprolu <sukadev@linux.vnet.ibm.com>
+Link: http://lore.kernel.org/lkml/20210525160758.97829-1-nbd@nbd.name
+Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/isa/gus/gus_main.c | 13 ++-----------
- 1 file changed, 2 insertions(+), 11 deletions(-)
+ tools/perf/pmu-events/jevents.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/isa/gus/gus_main.c b/sound/isa/gus/gus_main.c
-index afc088f0377c..b7518122a10d 100644
---- a/sound/isa/gus/gus_main.c
-+++ b/sound/isa/gus/gus_main.c
-@@ -77,17 +77,8 @@ static const struct snd_kcontrol_new snd_gus_joystick_control = {
+--- a/tools/perf/pmu-events/jevents.c
++++ b/tools/perf/pmu-events/jevents.c
+@@ -958,7 +958,7 @@ static int get_maxfds(void)
+ 	struct rlimit rlim;
  
- static void snd_gus_init_control(struct snd_gus_card *gus)
- {
--	int ret;
--
--	if (!gus->ace_flag) {
--		ret =
--			snd_ctl_add(gus->card,
--					snd_ctl_new1(&snd_gus_joystick_control,
--						gus));
--		if (ret)
--			snd_printk(KERN_ERR "gus: snd_ctl_add failed: %d\n",
--					ret);
--	}
-+	if (!gus->ace_flag)
-+		snd_ctl_add(gus->card, snd_ctl_new1(&snd_gus_joystick_control, gus));
+ 	if (getrlimit(RLIMIT_NOFILE, &rlim) == 0)
+-		return min((int)rlim.rlim_max / 2, 512);
++		return min(rlim.rlim_max / 2, (rlim_t)512);
+ 
+ 	return 512;
  }
- 
- /*
--- 
-2.30.2
-
 
 
