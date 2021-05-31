@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F2FF39635D
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 17:13:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A47539660A
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 18:53:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234541AbhEaPOe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 11:14:34 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40580 "EHLO mail.kernel.org"
+        id S234207AbhEaQzb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 12:55:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51180 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233272AbhEaOMF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 10:12:05 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 891C96135B;
-        Mon, 31 May 2021 13:41:34 +0000 (UTC)
+        id S234136AbhEaPAj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 11:00:39 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B3CC761370;
+        Mon, 31 May 2021 14:14:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1622468495;
-        bh=wNJyw0FCT7Y4inlBDgPX/MjrZeL/hdFpG2Lu13ra0QE=;
+        s=korg; t=1622470477;
+        bh=zC4OPIc9eEpXm+Ok5oEw0HDZKkn58dj2vDLqSK7D6A0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=lm3z72+UIpx8U7sIsA0tLgZzhhewMIK08hzgJQSGMI+SIzYNYizzd8VBPOJCEiVWm
-         czzgi6NpELoMcvdhszVYs2Jp4bjVhmtsjNLu0k5lL9M/6+ws14wxkQ2/5gZWzEgZoh
-         IWjCtEZledISmFlpyFWqdPdq3075tnwiHDrpkCuk=
+        b=x5w1Ug6aKcKrApNqHSucvC15vCsc/7mftxVrnlTdSfjzpDWgBNA4KWLgeTJvk2Eie
+         9GdjpVpb4N7Hw74VRKPXSX1/s6pR4ahvKWlActoFCNL3G2gNhUHxJxQmmPGX7/qHa3
+         L63FU1F7cMmqrPsuOmqEx7npI/ysJCKRVAxVuIgE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, "Geoffrey D. Bennett" <g@b4.vu>,
-        Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 5.4 003/177] ALSA: usb-audio: scarlett2: Improve driver startup messages
+        stable@vger.kernel.org, Zhang Xiaoxu <zhangxiaoxu5@huawei.com>,
+        Trond Myklebust <trond.myklebust@hammerspace.com>
+Subject: [PATCH 5.10 095/252] NFSv4: Fix v4.0/v4.1 SEEK_DATA return -ENOTSUPP when set NFS_V4_2 config
 Date:   Mon, 31 May 2021 15:12:40 +0200
-Message-Id: <20210531130648.008684585@linuxfoundation.org>
+Message-Id: <20210531130701.202663576@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210531130647.887605866@linuxfoundation.org>
-References: <20210531130647.887605866@linuxfoundation.org>
+In-Reply-To: <20210531130657.971257589@linuxfoundation.org>
+References: <20210531130657.971257589@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,145 +39,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Geoffrey D. Bennett <g@b4.vu>
+From: Zhang Xiaoxu <zhangxiaoxu5@huawei.com>
 
-commit 265d1a90e4fb6d3264d8122fbd10760e5e733be6 upstream.
+commit e67afa7ee4a59584d7253e45d7f63b9528819a13 upstream.
 
-Add separate init function to call the existing controls_create
-function so a custom error can be displayed if initialisation fails.
+Since commit bdcc2cd14e4e ("NFSv4.2: handle NFS-specific llseek errors"),
+nfs42_proc_llseek would return -EOPNOTSUPP rather than -ENOTSUPP when
+SEEK_DATA on NFSv4.0/v4.1.
 
-Use info level instead of error for notifications.
+This will lead xfstests generic/285 not run on NFSv4.0/v4.1 when set the
+CONFIG_NFS_V4_2, rather than run failed.
 
-Display the VID/PID so device_setup is targeted to the right device.
-
-Display "enabled" message to easily confirm that the driver is loaded.
-
-Signed-off-by: Geoffrey D. Bennett <g@b4.vu>
-Cc: <stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/b5d140c65f640faf2427e085fbbc0297b32e5fce.1621584566.git.g@b4.vu
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Fixes: bdcc2cd14e4e ("NFSv4.2: handle NFS-specific llseek errors")
+Cc: <stable.vger.kernel.org> # 4.2
+Signed-off-by: Zhang Xiaoxu <zhangxiaoxu5@huawei.com>
+Signed-off-by: Trond Myklebust <trond.myklebust@hammerspace.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- sound/usb/mixer_quirks.c        |    2 -
- sound/usb/mixer_scarlett_gen2.c |   79 +++++++++++++++++++++++++---------------
- sound/usb/mixer_scarlett_gen2.h |    2 -
- 3 files changed, 52 insertions(+), 31 deletions(-)
+ fs/nfs/nfs4file.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/sound/usb/mixer_quirks.c
-+++ b/sound/usb/mixer_quirks.c
-@@ -2268,7 +2268,7 @@ int snd_usb_mixer_apply_create_quirk(str
- 	case USB_ID(0x1235, 0x8203): /* Focusrite Scarlett 6i6 2nd Gen */
- 	case USB_ID(0x1235, 0x8204): /* Focusrite Scarlett 18i8 2nd Gen */
- 	case USB_ID(0x1235, 0x8201): /* Focusrite Scarlett 18i20 2nd Gen */
--		err = snd_scarlett_gen2_controls_create(mixer);
-+		err = snd_scarlett_gen2_init(mixer);
- 		break;
- 
- 	case USB_ID(0x041e, 0x323b): /* Creative Sound Blaster E1 */
---- a/sound/usb/mixer_scarlett_gen2.c
-+++ b/sound/usb/mixer_scarlett_gen2.c
-@@ -1997,38 +1997,11 @@ static int scarlett2_mixer_status_create
- 	return usb_submit_urb(mixer->urb, GFP_KERNEL);
- }
- 
--/* Entry point */
--int snd_scarlett_gen2_controls_create(struct usb_mixer_interface *mixer)
-+int snd_scarlett_gen2_controls_create(struct usb_mixer_interface *mixer,
-+				      const struct scarlett2_device_info *info)
- {
--	const struct scarlett2_device_info *info;
- 	int err;
- 
--	/* only use UAC_VERSION_2 */
--	if (!mixer->protocol)
--		return 0;
--
--	switch (mixer->chip->usb_id) {
--	case USB_ID(0x1235, 0x8203):
--		info = &s6i6_gen2_info;
--		break;
--	case USB_ID(0x1235, 0x8204):
--		info = &s18i8_gen2_info;
--		break;
--	case USB_ID(0x1235, 0x8201):
--		info = &s18i20_gen2_info;
--		break;
--	default: /* device not (yet) supported */
--		return -EINVAL;
--	}
--
--	if (!(mixer->chip->setup & SCARLETT2_ENABLE)) {
--		usb_audio_err(mixer->chip,
--			"Focusrite Scarlett Gen 2 Mixer Driver disabled; "
--			"use options snd_usb_audio device_setup=1 "
--			"to enable and report any issues to g@b4.vu");
--		return 0;
--	}
--
- 	/* Initialise private data, routing, sequence number */
- 	err = scarlett2_init_private(mixer, info);
- 	if (err < 0)
-@@ -2073,3 +2046,51 @@ int snd_scarlett_gen2_controls_create(st
- 
- 	return 0;
- }
-+
-+int snd_scarlett_gen2_init(struct usb_mixer_interface *mixer)
-+{
-+	struct snd_usb_audio *chip = mixer->chip;
-+	const struct scarlett2_device_info *info;
-+	int err;
-+
-+	/* only use UAC_VERSION_2 */
-+	if (!mixer->protocol)
-+		return 0;
-+
-+	switch (chip->usb_id) {
-+	case USB_ID(0x1235, 0x8203):
-+		info = &s6i6_gen2_info;
-+		break;
-+	case USB_ID(0x1235, 0x8204):
-+		info = &s18i8_gen2_info;
-+		break;
-+	case USB_ID(0x1235, 0x8201):
-+		info = &s18i20_gen2_info;
-+		break;
-+	default: /* device not (yet) supported */
-+		return -EINVAL;
-+	}
-+
-+	if (!(chip->setup & SCARLETT2_ENABLE)) {
-+		usb_audio_info(chip,
-+			"Focusrite Scarlett Gen 2 Mixer Driver disabled; "
-+			"use options snd_usb_audio vid=0x%04x pid=0x%04x "
-+			"device_setup=1 to enable and report any issues "
-+			"to g@b4.vu",
-+			USB_ID_VENDOR(chip->usb_id),
-+			USB_ID_PRODUCT(chip->usb_id));
-+		return 0;
-+	}
-+
-+	usb_audio_info(chip,
-+		"Focusrite Scarlett Gen 2 Mixer Driver enabled pid=0x%04x",
-+		USB_ID_PRODUCT(chip->usb_id));
-+
-+	err = snd_scarlett_gen2_controls_create(mixer, info);
-+	if (err < 0)
-+		usb_audio_err(mixer->chip,
-+			      "Error initialising Scarlett Mixer Driver: %d",
-+			      err);
-+
-+	return err;
-+}
---- a/sound/usb/mixer_scarlett_gen2.h
-+++ b/sound/usb/mixer_scarlett_gen2.h
-@@ -2,6 +2,6 @@
- #ifndef __USB_MIXER_SCARLETT_GEN2_H
- #define __USB_MIXER_SCARLETT_GEN2_H
- 
--int snd_scarlett_gen2_controls_create(struct usb_mixer_interface *mixer);
-+int snd_scarlett_gen2_init(struct usb_mixer_interface *mixer);
- 
- #endif /* __USB_MIXER_SCARLETT_GEN2_H */
+--- a/fs/nfs/nfs4file.c
++++ b/fs/nfs/nfs4file.c
+@@ -211,7 +211,7 @@ static loff_t nfs4_file_llseek(struct fi
+ 	case SEEK_HOLE:
+ 	case SEEK_DATA:
+ 		ret = nfs42_proc_llseek(filep, offset, whence);
+-		if (ret != -ENOTSUPP)
++		if (ret != -EOPNOTSUPP)
+ 			return ret;
+ 		fallthrough;
+ 	default:
 
 
