@@ -2,123 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D1C2439591F
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 12:41:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5578D395923
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 12:41:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231270AbhEaKnQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 06:43:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49256 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231382AbhEaKme (ORCPT
+        id S231460AbhEaKnd convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 31 May 2021 06:43:33 -0400
+Received: from eu-smtp-delivery-151.mimecast.com ([185.58.86.151]:27700 "EHLO
+        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231530AbhEaKnF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 06:42:34 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B35F8C061763;
-        Mon, 31 May 2021 03:40:54 -0700 (PDT)
-Date:   Mon, 31 May 2021 10:40:52 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1622457653;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=QeKNhkFqs7gIDgIuAoaYCM8/QPnhQFc6kqiCDgLyVJI=;
-        b=SMB9wsI7FtYHC7RV0+bR5rRrRV/o8Sg/MOzDndF6pYd5dbFxCC9hnItLnpOAnwxMlJMlXa
-        Pjf4bbOkJZ23pwgYGhk929fB++9ABhGHkT3GE3xVkIdomGXrq+9RsPJBHTtbZhTNixaJcy
-        Mspojrw3/5YFB9933Vl8idICE7EyyztG1qf+Mvg5p+2mYf4C6LFNtkdm5IremxDRfrqDbo
-        YZbUUvGkV2fzaREnquF+29vw0k7SgVAciXkdEoCyw4aVdq5SlWm2xXygkbQvjcw+QEBU7/
-        yu4y5mqrkj4zdRY0l1jZY1QH4/srVSAdCUeepRYsVEGh9MmoDCRpMF0Ivci6uA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1622457653;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=QeKNhkFqs7gIDgIuAoaYCM8/QPnhQFc6kqiCDgLyVJI=;
-        b=/RtxiQmKb0Qc/yCij6n/hKyDA7DjIID72zy8x0Y5XZfNHGYFn0Ds14pakoDrI30jZtlp3/
-        VHLSaXPtwIKWpIAQ==
-From:   "tip-bot2 for Vincent Guittot" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: sched/urgent] sched/fair: Keep load_avg and load_sum synced
-Cc:     Odin Ugedal <odin@uged.al>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>, x86@kernel.org,
-        linux-kernel@vger.kernel.org
-In-Reply-To: <20210527122916.27683-2-vincent.guittot@linaro.org>
-References: <20210527122916.27683-2-vincent.guittot@linaro.org>
+        Mon, 31 May 2021 06:43:05 -0400
+Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) (Using
+ TLS) by relay.mimecast.com with ESMTP id
+ uk-mta-181-0wYY4wymNmmsRwAcyPod2Q-1; Mon, 31 May 2021 11:41:21 +0100
+X-MC-Unique: 0wYY4wymNmmsRwAcyPod2Q-1
+Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) by
+ AcuMS.aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) with Microsoft SMTP
+ Server (TLS) id 15.0.1497.2; Mon, 31 May 2021 11:41:18 +0100
+Received: from AcuMS.Aculab.com ([fe80::994c:f5c2:35d6:9b65]) by
+ AcuMS.aculab.com ([fe80::994c:f5c2:35d6:9b65%12]) with mapi id
+ 15.00.1497.015; Mon, 31 May 2021 11:41:18 +0100
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'Willy Tarreau' <w@1wt.eu>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+CC:     David Miller <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        Amit Klein <aksecurity@gmail.com>,
+        Eric Dumazet <edumazet@google.com>
+Subject: RE: [PATCH net-next] ipv6: use prandom_u32() for ID generation
+Thread-Topic: [PATCH net-next] ipv6: use prandom_u32() for ID generation
+Thread-Index: AQHXVHsAigx754KkQkSlq/l9+mKws6r9Zzgg
+Date:   Mon, 31 May 2021 10:41:18 +0000
+Message-ID: <e4cc31c1fead46b3aa1132937a720da2@AcuMS.aculab.com>
+References: <20210529110746.6796-1-w@1wt.eu>
+In-Reply-To: <20210529110746.6796-1-w@1wt.eu>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-Message-ID: <162245765252.29796.17149761327843184245.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the sched/urgent branch of tip:
+From: Willy Tarreau
+> Sent: 29 May 2021 12:08
+> 
+> This is a complement to commit aa6dd211e4b1 ("inet: use bigger hash
+> table for IP ID generation"), but focusing on some specific aspects
+> of IPv6.
+> 
+> Contary to IPv4, IPv6 only uses packet IDs with fragments, and with a
+> minimum MTU of 1280, it's much less easy to force a remote peer to
+> produce many fragments to explore its ID sequence. In addition packet
+> IDs are 32-bit in IPv6, which further complicates their analysis. On
+> the other hand, it is often easier to choose among plenty of possible
+> source addresses and partially work around the bigger hash table the
+> commit above permits, which leaves IPv6 partially exposed to some
+> possibilities of remote analysis at the risk of weakening some
+> protocols like DNS if some IDs can be predicted with a good enough
+> probability.
+> 
+> Given the wide range of permitted IDs, the risk of collision is extremely
+> low so there's no need to rely on the positive increment algorithm that
+> is shared with the IPv4 code via ip_idents_reserve(). We have a fast
+> PRNG, so let's simply call prandom_u32() and be done with it.
+> 
+> Performance measurements at 10 Gbps couldn't show any difference with
+> the previous code, even when using a single core, because due to the
+> large fragments, we're limited to only ~930 kpps at 10 Gbps and the cost
+> of the random generation is completely offset by other operations and by
+> the network transfer time. In addition, this change removes the need to
+> update a shared entry in the idents table so it may even end up being
+> slightly faster on large scale systems where this matters.
+> 
+> The risk of at least one collision here is about 1/80 million among
+> 10 IDs, 1/850k among 100 IDs, and still only 1/8.5k among 1000 IDs,
+> which remains very low compared to IPv4 where all IDs are reused
+> every 4 to 80ms on a 10 Gbps flow depending on packet sizes.
 
-Commit-ID:     7c7ad626d9a0ff0a36c1e2a3cfbbc6a13828d5eb
-Gitweb:        https://git.kernel.org/tip/7c7ad626d9a0ff0a36c1e2a3cfbbc6a13828d5eb
-Author:        Vincent Guittot <vincent.guittot@linaro.org>
-AuthorDate:    Thu, 27 May 2021 14:29:15 +02:00
-Committer:     Peter Zijlstra <peterz@infradead.org>
-CommitterDate: Mon, 31 May 2021 10:14:48 +02:00
+The problem is that, on average, 1 in 2^32 packets will use
+the same id as the previous one.
+If a fragment of such a pair gets lost horrid things are
+likely to happen.
+Note that this is different from an ID being reused after a
+count of packets or after a time delay.
 
-sched/fair: Keep load_avg and load_sum synced
+So you still need something to ensure IDs aren't reused immediately.
 
-when removing a cfs_rq from the list we only check _sum value so we must
-ensure that _avg and _sum stay synced so load_sum can't be null whereas
-load_avg is not after propagating load in the cgroup hierarchy.
+	David
 
-Use load_avg to compute load_sum similarly to what is done for util_sum
-and runnable_sum.
+-
+Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
+Registration No: 1397386 (Wales)
 
-Fixes: 0e2d2aaaae52 ("sched/fair: Rewrite PELT migration propagation")
-Reported-by: Odin Ugedal <odin@uged.al>
-Signed-off-by: Vincent Guittot <vincent.guittot@linaro.org>
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Reviewed-by: Odin Ugedal <odin@uged.al>
-Link: https://lkml.kernel.org/r/20210527122916.27683-2-vincent.guittot@linaro.org
----
- kernel/sched/fair.c | 11 +++++------
- 1 file changed, 5 insertions(+), 6 deletions(-)
-
-diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-index 3248e24..f4795b8 100644
---- a/kernel/sched/fair.c
-+++ b/kernel/sched/fair.c
-@@ -3499,10 +3499,9 @@ update_tg_cfs_runnable(struct cfs_rq *cfs_rq, struct sched_entity *se, struct cf
- static inline void
- update_tg_cfs_load(struct cfs_rq *cfs_rq, struct sched_entity *se, struct cfs_rq *gcfs_rq)
- {
--	long delta_avg, running_sum, runnable_sum = gcfs_rq->prop_runnable_sum;
-+	long delta, running_sum, runnable_sum = gcfs_rq->prop_runnable_sum;
- 	unsigned long load_avg;
- 	u64 load_sum = 0;
--	s64 delta_sum;
- 	u32 divider;
- 
- 	if (!runnable_sum)
-@@ -3549,13 +3548,13 @@ update_tg_cfs_load(struct cfs_rq *cfs_rq, struct sched_entity *se, struct cfs_rq
- 	load_sum = (s64)se_weight(se) * runnable_sum;
- 	load_avg = div_s64(load_sum, divider);
- 
--	delta_sum = load_sum - (s64)se_weight(se) * se->avg.load_sum;
--	delta_avg = load_avg - se->avg.load_avg;
-+	delta = load_avg - se->avg.load_avg;
- 
- 	se->avg.load_sum = runnable_sum;
- 	se->avg.load_avg = load_avg;
--	add_positive(&cfs_rq->avg.load_avg, delta_avg);
--	add_positive(&cfs_rq->avg.load_sum, delta_sum);
-+
-+	add_positive(&cfs_rq->avg.load_avg, delta);
-+	cfs_rq->avg.load_sum = cfs_rq->avg.load_avg * divider;
- }
- 
- static inline void add_tg_cfs_propagate(struct cfs_rq *cfs_rq, long runnable_sum)
