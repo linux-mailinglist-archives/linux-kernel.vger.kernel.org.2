@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A7D79395BC1
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 15:22:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 426B2395EBA
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 16:01:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232064AbhEaNYa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 09:24:30 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54726 "EHLO mail.kernel.org"
+        id S232986AbhEaOCw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 10:02:52 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44890 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231912AbhEaNTz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 09:19:55 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 99277613B6;
-        Mon, 31 May 2021 13:18:11 +0000 (UTC)
+        id S232409AbhEaNkf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 09:40:35 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 691EA61459;
+        Mon, 31 May 2021 13:27:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1622467092;
-        bh=fVYbJMQCn4HAcYMTlfDvXeqYlVaOgHdwoyVWluBkH8M=;
+        s=korg; t=1622467651;
+        bh=lt7IgVqniB7ZiD/JA5DsU0X9tS2/T41Pz6ywahkI++M=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=rVVxMM8ZjtipV5PuIOBXHebA6D558zsay7jLuYpVhUMN80acpgRLojAAwlxuAdckh
-         n5Kq4lAegObWniZbTotaYAUcAFk3A0kJL+qHSLKqVlmEy1szjnglMpZ2DfS+O8KZJJ
-         7SiM4Io1vkYWVzbo+arKS485OwFEw3j01u2zLaJQ=
+        b=IxKMw4zkULx4CAIebjWJSZPKa8fVmPEa47Ius4/OeqOs1UXVbYpt3eDCy7z7Xk8NT
+         LOJ5+33lZM44Jo6a6/qs/ocdlpHaAmhObEFPpgvv63Ra9Ja0QQHfhqumb+OBgyAyLh
+         ZIaJVspS/JFEeTRom3/FtWItztGj+LtXjb65/xSA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.4 47/54] staging: emxx_udc: fix loop in _nbu2ss_nuke()
+        stable@vger.kernel.org, Sean MacLennan <seanm@seanm.ca>,
+        Johan Hovold <johan@kernel.org>
+Subject: [PATCH 4.14 28/79] USB: serial: ti_usb_3410_5052: add startech.com device id
 Date:   Mon, 31 May 2021 15:14:13 +0200
-Message-Id: <20210531130636.544502089@linuxfoundation.org>
+Message-Id: <20210531130636.907374949@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210531130635.070310929@linuxfoundation.org>
-References: <20210531130635.070310929@linuxfoundation.org>
+In-Reply-To: <20210531130636.002722319@linuxfoundation.org>
+References: <20210531130636.002722319@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,49 +39,47 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dan Carpenter <dan.carpenter@oracle.com>
+From: Sean MacLennan <seanm@seanm.ca>
 
-[ Upstream commit e0112a7c9e847ada15a631b88e279d547e8f26a7 ]
+commit 89b1a3d811e6f8065d6ae8a25e7682329b4a31e2 upstream.
 
-The _nbu2ss_ep_done() function calls:
+This adds support for the Startech.com generic serial to USB converter.
+It seems to be a bone stock TI_3410. I have been using this patch for
+years.
 
-	list_del_init(&req->queue);
-
-which means that the loop will never exit.
-
-Fixes: ca3d253eb967 ("Staging: emxx_udc: Iterate list using list_for_each_entry")
-Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
-Link: https://lore.kernel.org/r/YKUd0sDyjm/lkJfJ@mwanda
+Signed-off-by: Sean MacLennan <seanm@seanm.ca>
+Cc: stable@vger.kernel.org
+Signed-off-by: Johan Hovold <johan@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/staging/emxx_udc/emxx_udc.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/usb/serial/ti_usb_3410_5052.c |    3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/drivers/staging/emxx_udc/emxx_udc.c b/drivers/staging/emxx_udc/emxx_udc.c
-index 91ff8fb0cc3a..102eee7d2e4f 100644
---- a/drivers/staging/emxx_udc/emxx_udc.c
-+++ b/drivers/staging/emxx_udc/emxx_udc.c
-@@ -2193,7 +2193,7 @@ static int _nbu2ss_nuke(struct nbu2ss_udc *udc,
- 			struct nbu2ss_ep *ep,
- 			int status)
- {
--	struct nbu2ss_req *req;
-+	struct nbu2ss_req *req, *n;
+--- a/drivers/usb/serial/ti_usb_3410_5052.c
++++ b/drivers/usb/serial/ti_usb_3410_5052.c
+@@ -41,6 +41,7 @@
+ /* Vendor and product ids */
+ #define TI_VENDOR_ID			0x0451
+ #define IBM_VENDOR_ID			0x04b3
++#define STARTECH_VENDOR_ID		0x14b0
+ #define TI_3410_PRODUCT_ID		0x3410
+ #define IBM_4543_PRODUCT_ID		0x4543
+ #define IBM_454B_PRODUCT_ID		0x454b
+@@ -378,6 +379,7 @@ static const struct usb_device_id ti_id_
+ 	{ USB_DEVICE(MXU1_VENDOR_ID, MXU1_1131_PRODUCT_ID) },
+ 	{ USB_DEVICE(MXU1_VENDOR_ID, MXU1_1150_PRODUCT_ID) },
+ 	{ USB_DEVICE(MXU1_VENDOR_ID, MXU1_1151_PRODUCT_ID) },
++	{ USB_DEVICE(STARTECH_VENDOR_ID, TI_3410_PRODUCT_ID) },
+ 	{ }	/* terminator */
+ };
  
- 	/* Endpoint Disable */
- 	_nbu2ss_epn_exit(udc, ep);
-@@ -2205,7 +2205,7 @@ static int _nbu2ss_nuke(struct nbu2ss_udc *udc,
- 		return 0;
+@@ -416,6 +418,7 @@ static const struct usb_device_id ti_id_
+ 	{ USB_DEVICE(MXU1_VENDOR_ID, MXU1_1131_PRODUCT_ID) },
+ 	{ USB_DEVICE(MXU1_VENDOR_ID, MXU1_1150_PRODUCT_ID) },
+ 	{ USB_DEVICE(MXU1_VENDOR_ID, MXU1_1151_PRODUCT_ID) },
++	{ USB_DEVICE(STARTECH_VENDOR_ID, TI_3410_PRODUCT_ID) },
+ 	{ }	/* terminator */
+ };
  
- 	/* called with irqs blocked */
--	list_for_each_entry(req, &ep->queue, queue) {
-+	list_for_each_entry_safe(req, n, &ep->queue, queue) {
- 		_nbu2ss_ep_done(ep, req, status);
- 	}
- 
--- 
-2.30.2
-
 
 
