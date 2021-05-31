@@ -2,104 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6899B39667C
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 19:07:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 38ABB396625
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 18:59:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234337AbhEaRIq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 13:08:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44768 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232850AbhEaQrX (ORCPT
+        id S234299AbhEaQ7P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 12:59:15 -0400
+Received: from mail-ua1-f46.google.com ([209.85.222.46]:33610 "EHLO
+        mail-ua1-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232720AbhEaPLP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 12:47:23 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62291C06123B;
-        Mon, 31 May 2021 08:07:02 -0700 (PDT)
-Date:   Mon, 31 May 2021 15:07:00 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1622473620;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=yQCKwJoMMrc6hkFo0GdS/W5ziBDmv2vt8lNxFLCanGg=;
-        b=4Ne1oH713V0IFIcWa0SDCyzBr4GFYpEWIK3HkRJxf0vv+XJGH7YE0VS6R9cOhmyK9+CKMN
-        O7VqW1sdij35tPjCtZdEh54+caJ5FsSZosrAqolUNJsaoEDQdsfUhx6iUit5cezGgNmrZK
-        SGeqhCsb4prFuI8qDaQJ45ASb+llYIkcXlDz/Xsd+3YZm50e8J3wvSHRmk0bTYc51cJjxQ
-        Jv5Ny0et/4ndqoZo5YgQNGvCnB5jfeow77PbKBPQuhJlJ6lMnM7UHffB8AWEHfPeaf/GJV
-        V8sNje4zOEbCMMSV4IpXhL/D0wuB5umTt2KemO8fxNXP/Qdp/u+JgCnK5KJ9tA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1622473620;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=yQCKwJoMMrc6hkFo0GdS/W5ziBDmv2vt8lNxFLCanGg=;
-        b=FjuGBMTeJ6eY+09/qPk12vBMcnS7u5SDzpQ/LS7hMTaTRluiuVVjkT3GzV8MC0nVoIWaNf
-        50heDnPP7oaQDiCw==
-From:   "tip-bot2 for Will Deacon" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: timers/core] tick/broadcast: Drop unneeded
- CONFIG_GENERIC_CLOCKEVENTS_BROADCAST guard
-Cc:     Will Deacon <will@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>, x86@kernel.org,
-        linux-kernel@vger.kernel.org
-In-Reply-To: <20210524221818.15850-2-will@kernel.org>
-References: <20210524221818.15850-2-will@kernel.org>
+        Mon, 31 May 2021 11:11:15 -0400
+Received: by mail-ua1-f46.google.com with SMTP id l12so1082647uai.0
+        for <linux-kernel@vger.kernel.org>; Mon, 31 May 2021 08:09:34 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=yDHmcyistBdxzTCj/rQXFMQ+e1348tVECqgbMcOh0lI=;
+        b=FtGFqVUCajIOQuVo65fnwQE+HXKK+MVRjOkM6wBjHEW1UhdQkyh0DeRMY5ypbGoI1z
+         vwjQF5/ttNTPhtsqyn+clxcJsu/xBLycYm0Wa+wSp8ydFUbD1L+C1QeONd1+q8t6kj7O
+         Tp2ka8ETz5ijEsBlYCDbpGG2JwV4yEzGDQs/pdSu2BhJVyKRSyZw9gJAA46Ag0iaWEBR
+         ALWT7lqkC1MkbC/S2ILIj6ov9ZHqlxh1gw6uI8ij1NwdLrrevgXZ9dofC4YyIsFBPpfw
+         lAupET0+KSU7C7tEb0q93qQ1IvuFNir0oOfVt0cW3ADjRZRZcwB68owebc+HE0Si6mE1
+         IAFA==
+X-Gm-Message-State: AOAM5301U7u+BkZF2DxE5iZY1WBkJGn2WtmhC2ys08wJ/TaCe7M6PJyi
+        iqQwih+apCAx9VAQOTSQBP0Lk2Wp2/KsLoU0bLvxaDz0
+X-Google-Smtp-Source: ABdhPJwsiZr034Ntauqo8b7p9u3b5V/1+t1FlO73bHXRWtHbsV3vz9OuH/SI+S7AMAImYR+tnAK58hjNIzhhXf8iL7A=
+X-Received: by 2002:ab0:708c:: with SMTP id m12mr1422550ual.4.1622473773562;
+ Mon, 31 May 2021 08:09:33 -0700 (PDT)
 MIME-Version: 1.0
-Message-ID: <162247362024.29796.4665276490727895520.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+References: <202105300736.7wVLvXHr-lkp@intel.com> <a0edf640-ec05-524e-9125-44decba27bbb@infradead.org>
+ <d4c47108-f4d2-4850-14fd-b4c4bd0e0591@infradead.org> <CAMuHMdW1xZ-vJe2eOehNSKCP3T=-eq7ji4MBo3D6oGJyPNXGDw@mail.gmail.com>
+ <0717b3a5-d838-e1ed-a4ac-80cf14f3a6aa@infradead.org> <YLT2vB0GwC1sJesL@lunn.ch>
+In-Reply-To: <YLT2vB0GwC1sJesL@lunn.ch>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Mon, 31 May 2021 17:09:22 +0200
+Message-ID: <CAMuHMdVVGVdtzbnZUNTe1qGCb8nq+6jvNNWw8U3_A=KcXmO3mA@mail.gmail.com>
+Subject: Re: ERROR: modpost: "__delay" [drivers/net/mdio/mdio-cavium.ko] undefined!
+To:     Andrew Lunn <andrew@lunn.ch>
+Cc:     Randy Dunlap <rdunlap@infradead.org>,
+        kernel test robot <lkp@intel.com>, kbuild-all@lists.01.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Rich Felker <dalias@libc.org>,
+        David Daney <david.daney@cavium.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the timers/core branch of tip:
+Hi Andrew,
 
-Commit-ID:     c2d4fee3f6d170dee5ee7c337a0ba5e92fad7a64
-Gitweb:        https://git.kernel.org/tip/c2d4fee3f6d170dee5ee7c337a0ba5e92fad7a64
-Author:        Will Deacon <will@kernel.org>
-AuthorDate:    Mon, 24 May 2021 23:18:14 +01:00
-Committer:     Thomas Gleixner <tglx@linutronix.de>
-CommitterDate: Mon, 31 May 2021 17:04:44 +02:00
+On Mon, May 31, 2021 at 4:46 PM Andrew Lunn <andrew@lunn.ch> wrote:
+> > > No, we should just fix the driver instead.
+> > >
+> > > +               /* Wait 1000 clocks so we don't saturate the RSL bus
+> > > +                * doing reads.
+> > > +                */
+> > > +               __delay(1000);
+> > >
+> > > As this is used only on Cavium Octeon and Thunder SoCs, running
+> > > at 400-600 MHz resp. 1800-2000 Mhz, what about replacing the __delay()
+> > > call by a call to udelay(1) or udelay(2)?
+> >
+> > Yeah, I was planning to look into that change this week,
+> > but it would probably be better for David to do it.
+>
+> If you look at the bigger picture, using linux/iopoll.h would be a
+> better solution.
 
-tick/broadcast: Drop unneeded CONFIG_GENERIC_CLOCKEVENTS_BROADCAST guard
+Sure, but doing that conversion[*] needs even more involvement from
+the original author (who has been quiet w.r.t. to this issue ever
+since the first time it was reported ca. 18 months ago), or someone
+with access to the hardware.
 
-tick-broadcast.o is only built if CONFIG_GENERIC_CLOCKEVENTS_BROADCAST=y
-so remove the redundant #ifdef guards around the definition of
-tick_receive_broadcast().
+[*] The driver doesn't use plain readq(), but a custom
+    oct_mdio_readq().  Hence it cannot be used with readq_*poll*()
+   as-is.
 
-Signed-off-by: Will Deacon <will@kernel.org>
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Link: https://lore.kernel.org/r/20210524221818.15850-2-will@kernel.org
 
----
- kernel/time/tick-broadcast.c | 2 --
- 1 file changed, 2 deletions(-)
 
-diff --git a/kernel/time/tick-broadcast.c b/kernel/time/tick-broadcast.c
-index a440552..fb794ff 100644
---- a/kernel/time/tick-broadcast.c
-+++ b/kernel/time/tick-broadcast.c
-@@ -253,7 +253,6 @@ int tick_device_uses_broadcast(struct clock_event_device *dev, int cpu)
- 	return ret;
- }
- 
--#ifdef CONFIG_GENERIC_CLOCKEVENTS_BROADCAST
- int tick_receive_broadcast(void)
- {
- 	struct tick_device *td = this_cpu_ptr(&tick_cpu_device);
-@@ -268,7 +267,6 @@ int tick_receive_broadcast(void)
- 	evt->event_handler(evt);
- 	return 0;
- }
--#endif
- 
- /*
-  * Broadcast the event to the cpus, which are set in the mask (mangled).
+Gr{oetje,eeting}s,
+
+                        Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
