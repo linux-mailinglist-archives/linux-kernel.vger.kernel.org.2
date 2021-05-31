@@ -2,36 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F0413964EE
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 18:16:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 97154396051
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 16:23:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233921AbhEaQRj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 12:17:39 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38022 "EHLO mail.kernel.org"
+        id S233376AbhEaOYm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 10:24:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56074 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234191AbhEaOjh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 10:39:37 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 45D996108D;
-        Mon, 31 May 2021 13:52:50 +0000 (UTC)
+        id S231799AbhEaNur (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 09:50:47 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BBA8061434;
+        Mon, 31 May 2021 13:32:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1622469171;
-        bh=wfHtREpFmlGBcwyHVdlPE0JPPJA1LE83SdAOS4fMfQk=;
+        s=korg; t=1622467925;
+        bh=8sBlBF3aZ7IQ3aX/sNN68lKWcwkvZUQSjfXUGH8riqo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=tH1jQu9Djsn/zg3mQSyfe80pIOqTpdF3SxTDvqrKKr/0GwYLN4jOFwQSbDMa5RkAB
-         Xb5lXNuMsxmQcIi8GIy4pzlnGWq7BObbtB4kaqmNOSNe9XGc/LDNiURYVk9Q8WedHA
-         xSH1ZUVqZUZahbIFz6XmRXSQBGWT3slACUYaIMws=
+        b=Sd/jz7YCxyqOQG/USjUKJZQZB+DQ83me+C+ro8+ldIBbYbSv/hAzpUUkid6ZLB54K
+         TmnEQEkfFNdRefP0I7qkFnpTAXsspH1Ws/ie8UGC1N6030i9uq+AjXDVduisXQOb55
+         deKEe4c97A5BqPcUR1s62MNGadA1fEvX2SbzSjw8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
-        Daniel Thompson <daniel.thompson@linaro.org>,
-        Jason Wessel <jason.wessel@windriver.com>
-Subject: [PATCH 5.12 061/296] kgdb: fix gcc-11 warnings harder
-Date:   Mon, 31 May 2021 15:11:56 +0200
-Message-Id: <20210531130705.888507236@linuxfoundation.org>
+        stable@vger.kernel.org, Sargun Dhillon <sargun@sargun.me>,
+        Tycho Andersen <tycho@tycho.pizza>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Kees Cook <keescook@chromium.org>,
+        Rodrigo Campos <rodrigo@kinvolk.io>
+Subject: [PATCH 5.10 052/252] seccomp: Refactor notification handler to prepare for new semantics
+Date:   Mon, 31 May 2021 15:11:57 +0200
+Message-Id: <20210531130659.748784740@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210531130703.762129381@linuxfoundation.org>
-References: <20210531130703.762129381@linuxfoundation.org>
+In-Reply-To: <20210531130657.971257589@linuxfoundation.org>
+References: <20210531130657.971257589@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,40 +42,81 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+From: Sargun Dhillon <sargun@sargun.me>
 
-commit bda7d3ab06f19c02dcef61fefcb9dd954dfd5e4f upstream.
+commit ddc473916955f7710d1eb17c1273d91c8622a9fe upstream.
 
-40cc3a80bb42 ("kgdb: fix gcc-11 warning on indentation") tried to fix up
-the gcc-11 complaints in this file by just reformatting the #defines.
-That worked for gcc 11.1.0, but in gcc 11.1.1 as shipped by Fedora 34,
-the warning came back for one of the #defines.
+This refactors the user notification code to have a do / while loop around
+the completion condition. This has a small change in semantic, in that
+previously we ignored addfd calls upon wakeup if the notification had been
+responded to, but instead with the new change we check for an outstanding
+addfd calls prior to returning to userspace.
 
-Fix this up again by putting { } around the if statement, now it is
-quiet again.
+Rodrigo Campos also identified a bug that can result in addfd causing
+an early return, when the supervisor didn't actually handle the
+syscall [1].
 
-Fixes: 40cc3a80bb42 ("kgdb: fix gcc-11 warning on indentation")
-Cc: Arnd Bergmann <arnd@arndb.de>
-Cc: Daniel Thompson <daniel.thompson@linaro.org>
-Cc: Jason Wessel <jason.wessel@windriver.com>
-Link: https://lore.kernel.org/r/20210520130839.51987-1-gregkh@linuxfoundation.org
+[1]: https://lore.kernel.org/lkml/20210413160151.3301-1-rodrigo@kinvolk.io/
+
+Fixes: 7cf97b125455 ("seccomp: Introduce addfd ioctl to seccomp user notifier")
+Signed-off-by: Sargun Dhillon <sargun@sargun.me>
+Acked-by: Tycho Andersen <tycho@tycho.pizza>
+Acked-by: Christian Brauner <christian.brauner@ubuntu.com>
+Signed-off-by: Kees Cook <keescook@chromium.org>
+Tested-by: Rodrigo Campos <rodrigo@kinvolk.io>
+Cc: stable@vger.kernel.org
+Link: https://lore.kernel.org/r/20210517193908.3113-3-sargun@sargun.me
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/misc/kgdbts.c |    3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ kernel/seccomp.c |   30 ++++++++++++++++--------------
+ 1 file changed, 16 insertions(+), 14 deletions(-)
 
---- a/drivers/misc/kgdbts.c
-+++ b/drivers/misc/kgdbts.c
-@@ -100,8 +100,9 @@
- 		printk(KERN_INFO a);	\
- } while (0)
- #define v2printk(a...) do {		\
--	if (verbose > 1)		\
-+	if (verbose > 1) {		\
- 		printk(KERN_INFO a);	\
-+	}				\
- 	touch_nmi_watchdog();		\
- } while (0)
- #define eprintk(a...) do {		\
+--- a/kernel/seccomp.c
++++ b/kernel/seccomp.c
+@@ -864,28 +864,30 @@ static int seccomp_do_user_notification(
+ 
+ 	up(&match->notif->request);
+ 	wake_up_poll(&match->wqh, EPOLLIN | EPOLLRDNORM);
+-	mutex_unlock(&match->notify_lock);
+ 
+ 	/*
+ 	 * This is where we wait for a reply from userspace.
+ 	 */
+-wait:
+-	err = wait_for_completion_interruptible(&n.ready);
+-	mutex_lock(&match->notify_lock);
+-	if (err == 0) {
+-		/* Check if we were woken up by a addfd message */
++	do {
++		mutex_unlock(&match->notify_lock);
++		err = wait_for_completion_interruptible(&n.ready);
++		mutex_lock(&match->notify_lock);
++		if (err != 0)
++			goto interrupted;
++
+ 		addfd = list_first_entry_or_null(&n.addfd,
+ 						 struct seccomp_kaddfd, list);
+-		if (addfd && n.state != SECCOMP_NOTIFY_REPLIED) {
++		/* Check if we were woken up by a addfd message */
++		if (addfd)
+ 			seccomp_handle_addfd(addfd);
+-			mutex_unlock(&match->notify_lock);
+-			goto wait;
+-		}
+-		ret = n.val;
+-		err = n.error;
+-		flags = n.flags;
+-	}
+ 
++	}  while (n.state != SECCOMP_NOTIFY_REPLIED);
++
++	ret = n.val;
++	err = n.error;
++	flags = n.flags;
++
++interrupted:
+ 	/* If there were any pending addfd calls, clear them out */
+ 	list_for_each_entry_safe(addfd, tmp, &n.addfd, list) {
+ 		/* The process went away before we got a chance to handle it */
 
 
