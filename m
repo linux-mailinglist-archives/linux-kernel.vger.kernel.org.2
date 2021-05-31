@@ -2,95 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 03D763957D6
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 11:06:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D6C9B3957D8
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 11:07:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230449AbhEaJIF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 05:08:05 -0400
-Received: from hostingweb31-40.netsons.net ([89.40.174.40]:41694 "EHLO
-        hostingweb31-40.netsons.net" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229945AbhEaJHk (ORCPT
+        id S229523AbhEaJIe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 05:08:34 -0400
+Received: from mx0b-0016f401.pphosted.com ([67.231.156.173]:25578 "EHLO
+        mx0b-0016f401.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230337AbhEaJIP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 05:07:40 -0400
-Received: from [77.244.183.192] (port=63384 helo=melee.fritz.box)
-        by hostingweb31.netsons.net with esmtpa (Exim 4.94.2)
-        (envelope-from <luca@lucaceresoli.net>)
-        id 1lndrr-0009Gk-0d; Mon, 31 May 2021 11:05:51 +0200
-From:   Luca Ceresoli <luca@lucaceresoli.net>
-To:     linux-pci@vger.kernel.org
-Cc:     Luca Ceresoli <luca@lucaceresoli.net>, linux-omap@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Rob Herring <robh@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>
-Subject: [PATCH v2] PCI: dra7xx: Fix reset behaviour
-Date:   Mon, 31 May 2021 11:05:40 +0200
-Message-Id: <20210531090540.2663171-1-luca@lucaceresoli.net>
-X-Mailer: git-send-email 2.25.1
+        Mon, 31 May 2021 05:08:15 -0400
+Received: from pps.filterd (m0045851.ppops.net [127.0.0.1])
+        by mx0b-0016f401.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 14V96NSM014845;
+        Mon, 31 May 2021 02:06:28 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=date : from : to :
+ cc : subject : in-reply-to : message-id : references : mime-version :
+ content-type; s=pfpt0220; bh=vJD3FC7L7Iq4KIkXJn86baeDLcjGa8hZW/EM6OIxen4=;
+ b=freR52Z/V6uNlyR3JwDFIkQsYL1R5LW9QH0toDBPu1bfvPQcju1gHQdhyxU+5m9VJhTZ
+ Jhsmfc/sg65zO1XG+tVpakQByYEyDbsXKNAGBzqPNQ/OcVYfDvsMEWvAHeUan+HLx0Ca
+ fnaZFAtMQOhkN6e6oYgxQuPxLpVhIIZGHFE66WoNr6Yy4HvmVqJtlq42l2kyV/eUvoZ4
+ kiU5jKYenb2RkmkEqQgDPKAt8SZ0RpcZFS/cIqkniQk1kSdQPCb/aj9kyyErtrcVs0wX
+ akXZdj6gvDVSNgXaemIU5sGIFG9Py6puapNVojPPajZIfH8y92pOZs2AnKkJMtoUJfvT gA== 
+Received: from dc5-exch01.marvell.com ([199.233.59.181])
+        by mx0b-0016f401.pphosted.com with ESMTP id 38vtnj8cyu-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
+        Mon, 31 May 2021 02:06:27 -0700
+Received: from DC5-EXCH02.marvell.com (10.69.176.39) by DC5-EXCH01.marvell.com
+ (10.69.176.38) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Mon, 31 May
+ 2021 02:06:25 -0700
+Received: from maili.marvell.com (10.69.176.80) by DC5-EXCH02.marvell.com
+ (10.69.176.39) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Mon, 31 May 2021 02:06:26 -0700
+Received: from irv1user01.caveonetworks.com (unknown [10.104.116.179])
+        by maili.marvell.com (Postfix) with ESMTP id B577D3F703F;
+        Mon, 31 May 2021 02:06:25 -0700 (PDT)
+Received: from localhost (aeasi@localhost)
+        by irv1user01.caveonetworks.com (8.14.4/8.14.4/Submit) with ESMTP id 14V96O82001639;
+        Mon, 31 May 2021 02:06:25 -0700
+X-Authentication-Warning: irv1user01.caveonetworks.com: aeasi owned process doing -bs
+Date:   Mon, 31 May 2021 02:06:24 -0700
+From:   Arun Easi <aeasi@marvell.com>
+X-X-Sender: aeasi@irv1user01.caveonetworks.com
+To:     Daniel Wagner <dwagner@suse.de>
+CC:     <linux-scsi@vger.kernel.org>,
+        <GR-QLogic-Storage-Upstream@marvell.com>,
+        <linux-kernel@vger.kernel.org>, Nilesh Javali <njavali@marvell.com>
+Subject: Re: [EXT] [RFC 0/2] Serialize timeout handling and done callback.
+In-Reply-To: <20210507123103.10265-1-dwagner@suse.de>
+Message-ID: <alpine.LRH.2.21.9999.2105310148300.17918@irv1user01.caveonetworks.com>
+References: <20210507123103.10265-1-dwagner@suse.de>
+User-Agent: Alpine 2.21.9999 (LRH 334 2019-03-29)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - hostingweb31.netsons.net
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - lucaceresoli.net
-X-Get-Message-Sender-Via: hostingweb31.netsons.net: authenticated_id: luca+lucaceresoli.net/only user confirmed/virtual account not confirmed
-X-Authenticated-Sender: hostingweb31.netsons.net: luca@lucaceresoli.net
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
+Content-Type: text/plain; charset="US-ASCII"
+X-Proofpoint-GUID: UXdAua8R7xiGaB5RyXsu5-vHqQymrCUx
+X-Proofpoint-ORIG-GUID: UXdAua8R7xiGaB5RyXsu5-vHqQymrCUx
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
+ definitions=2021-05-31_07:2021-05-31,2021-05-31 signatures=0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The PCIe PERSTn reset pin is active low and should be asserted, then
-deasserted.
+On Fri, 7 May 2021, 5:31am, Daniel Wagner wrote:
 
-The current implementation only drives the pin once in "HIGH" position,
-thus presumably it was intended to deassert the pin. This has two problems:
+> External Email
+> 
+> ----------------------------------------------------------------------
+> Hi,
+> 
+> We got a customer report where qla2xxx was crashing only if the kernel
+> was booting and ql2xextended_error_logging was set. Loading the module
+> with the log option didn't trigger the crash.
+> 
+> After starring for a long time at the crash report I figured the
+> problem might be a race between the timeout handler and done callback.
+> I've come up with these patches here but unfortunatly, our customer is
+> not able to reproduce the problem in the lab anymore (it was caused by
+> a hardware issue which got fixed). So for these patches I don't have
+> any feedback.
 
-  1) it assumes the pin was asserted by other means before loading the
-     driver
-  2) it has the wrong polarity, since "HIGH" means "active", and the pin is
-     presumably configured as active low coherently with the PCIe
-     convention, thus it is driven physically to 0, keeping the device
-     under reset unless the pin is configured as active high.
+Thanks Daniel for the report and your effort here. Agree, this needs to be 
+fixed.
 
-Fix both problems by:
+> 
+> Maybe they make sense to add the driver even if I don't have prove it
+> really address the mentioned bug hence this is marked as RFC.
 
-  1) keeping devm_gpiod_get_optional(dev, NULL, GPIOD_OUT_HIGH) as is, but
-     assuming the pin is correctly configured as "active low" this now
-     becomes a reset assertion
-  2) adding gpiod_set_value(reset, 0) after a delay to deassert reset
+If you do not mind, can I take this from here? This touches quite a 
+number of paths, and I would like to have this go through a full 
+regression cycle before this is merged.
 
-Fixes: 78bdcad05ea1 ("PCI: dra7xx: Add support to make GPIO drive PERST# line")
-Signed-off-by: Luca Ceresoli <luca@lucaceresoli.net>
+That said, I had some general comments:
 
----
+1. I see sp->lock was introduced, but could not locate where it was used.
+2. I did not see a release of lock after a successful kref_put_lock, maybe 
+   that piece was missed out.
+3. The sp->done should be invoked only once, and I do not see if this is
+   taken care of.
+4. sp->cmd_sp could be a SCSI IO too, where sp is not allocated 
+   separately, so qla2x00_sp_release shall not be called for it.
 
-Changes v1 -> v2:
- - No changes to the patch
- - Reword commit message according to suggestions from Bjorn Helgaas (from
-   another patchset)
- - Add Fixes: tag
----
- drivers/pci/controller/dwc/pci-dra7xx.c | 2 ++
- 1 file changed, 2 insertions(+)
+Regards,
+-Arun
 
-diff --git a/drivers/pci/controller/dwc/pci-dra7xx.c b/drivers/pci/controller/dwc/pci-dra7xx.c
-index cb5d4c245ff6..11f392b7a9a2 100644
---- a/drivers/pci/controller/dwc/pci-dra7xx.c
-+++ b/drivers/pci/controller/dwc/pci-dra7xx.c
-@@ -801,6 +801,8 @@ static int dra7xx_pcie_probe(struct platform_device *pdev)
- 		dev_err(&pdev->dev, "gpio request failed, ret %d\n", ret);
- 		goto err_gpio;
- 	}
-+	usleep_range(1000, 2000);
-+	gpiod_set_value(reset, 0);
- 
- 	reg = dra7xx_pcie_readl(dra7xx, PCIECTRL_DRA7XX_CONF_DEVICE_CMD);
- 	reg &= ~LTSSM_EN;
--- 
-2.25.1
-
+> 
+> Thanks,
+> Daniel
+> 
+> Daniel Wagner (2):
+>   qla2xxx: Refactor asynchronous command initialization
+>   qla2xxx: Do not free resource to early in qla24xx_async_gpsc_sp_done()
+> 
+>  drivers/scsi/qla2xxx/qla_def.h    |  5 ++
+>  drivers/scsi/qla2xxx/qla_gbl.h    |  4 +-
+>  drivers/scsi/qla2xxx/qla_gs.c     | 86 ++++++++++-------------------
+>  drivers/scsi/qla2xxx/qla_init.c   | 91 +++++++++++++------------------
+>  drivers/scsi/qla2xxx/qla_iocb.c   | 54 +++++++++++++-----
+>  drivers/scsi/qla2xxx/qla_mbx.c    | 11 ++--
+>  drivers/scsi/qla2xxx/qla_mid.c    |  5 +-
+>  drivers/scsi/qla2xxx/qla_mr.c     |  7 +--
+>  drivers/scsi/qla2xxx/qla_target.c |  6 +-
+>  9 files changed, 127 insertions(+), 142 deletions(-)
+> 
+> 
