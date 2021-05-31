@@ -2,180 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D3C939662F
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 18:59:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E9B18396698
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 19:10:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234932AbhEaRAT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 13:00:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57866 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232163AbhEaPRs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 11:17:48 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7659A6128A
-        for <linux-kernel@vger.kernel.org>; Mon, 31 May 2021 15:14:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1622474055;
-        bh=bwHF6IjEwRv6psfejvU1PBJoUhfi+Swof04BKI4LSaE=;
-        h=From:To:Subject:Date:In-Reply-To:References:From;
-        b=j9HsVmlz7iV8U0DInAkAc1m6T3nkkj1FE/p9XmrXyOJWpC1jD/o5dOMZLAwA0714R
-         u+svHa/CNvNsv/cuGEzS+idNzN+xPsDsuYfMJz56lqS4bdembPjRHN1srPechye0l8
-         ZhcjmIXDyFOhh1SoEQc3BEctLg8B6/DBxvpTrR+zZTNVeko6AkkXQ4/bcSnIaZfcdW
-         tUNLjsx46k2cOZu/PAVNMH5TTPQZMVZ9+udMkHNcTRafOrHvQvUU/M6TRMSVhhHH+s
-         iyYco6W05+Xq5SsNNp+In7KSBTmoMLyQc98zuRtgWJeZz7jqTMF01DF6ic+8EZed3R
-         Yfs9qKm56rA6g==
-From:   Oded Gabbay <ogabbay@kernel.org>
-To:     linux-kernel@vger.kernel.org
-Subject: [PATCH 6/6] habanalabs/gaudi: update to latest f/w specs
-Date:   Mon, 31 May 2021 18:14:03 +0300
-Message-Id: <20210531151403.12494-6-ogabbay@kernel.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210531151403.12494-1-ogabbay@kernel.org>
-References: <20210531151403.12494-1-ogabbay@kernel.org>
+        id S234175AbhEaRM1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 13:12:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49192 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233232AbhEaRFK (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 13:05:10 -0400
+Received: from mail-ot1-x332.google.com (mail-ot1-x332.google.com [IPv6:2607:f8b0:4864:20::332])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CCBA9C035429
+        for <linux-kernel@vger.kernel.org>; Mon, 31 May 2021 08:16:50 -0700 (PDT)
+Received: by mail-ot1-x332.google.com with SMTP id c31-20020a056830349fb02903a5bfa6138bso4445985otu.7
+        for <linux-kernel@vger.kernel.org>; Mon, 31 May 2021 08:16:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=eJ+dYMSuiwP1+9nN6hX9bLUsV2tE3Lu68y9sPFybEHo=;
+        b=FBuH9Rsn1jK9JXcGAjt4pQtwU4I8YQY1NQlarypgBpZtskjQDIOvheGUUY6AFQsqVZ
+         H1fpSHlDDPruTNjvMzwXMiioYIus/QZerzEoAqMjRZ3Lb5ymU1rGZTLhjxsHaiakboXJ
+         6rtoohTQyZPnU0tD4PZOId/v/V396D46+mYtQ3sW7TubAsL6fCftGrzilcCpAz904BEO
+         vvYbTazYT6oBjoxNjKPAo7lPV7HgEtqlaeih0R+BJlTIHwROqVT4PxKLkUNW1DEMbg42
+         ARbtq/TP9RHm1YY6hF0YfE1k1Od+TOJDgwQKVLih74QziiSPp0G8v43a7DSy1zAlKNhY
+         k8Yw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=eJ+dYMSuiwP1+9nN6hX9bLUsV2tE3Lu68y9sPFybEHo=;
+        b=dSh4kKv6xhW5yIiZi41G/Y5vgPsncdHijq/VVNC9MOncv+5jnVAvfa0kAzmrysKZ+K
+         irJguOEbwRoM5yJfUICqX1FCYxW1jMp8ux1agq6jQv1+XmD7d8LM6W0wc9b7v6WqeSip
+         97dhImqeYX1FQJ2O3PqYM7XtNUdLb8TrNmpHn59IqwWKBNdIEGCdUFyNlwDdAfiyJVkK
+         F3zIfDdaIls3hrS73MMFzry1T1aPB+fmGCCO34XOQnudnVLNBGZ6O4MbSAD40f9Zp/Fa
+         Jap9jR8JH/sIEZ+0Vymz89oWfG/7LVVvebntqmYqZG/FspCye5d4xpdrGkaqvYLSg1zc
+         6nuQ==
+X-Gm-Message-State: AOAM530o4HA4LVTNlxPHpHvjm16+VmcNeXGvC5AcAUoV02e5XUfWbv1O
+        BjXTFnPWQFdAPPWNqjt48oJB1w==
+X-Google-Smtp-Source: ABdhPJyGASUipnV6yOcgG/ZyPcO2IslIfjpRJlBl8OAgkcD4GJf/OyADC3dnUHK1WQyRdz/HaCTQ4A==
+X-Received: by 2002:a9d:6ace:: with SMTP id m14mr17167910otq.207.1622474210171;
+        Mon, 31 May 2021 08:16:50 -0700 (PDT)
+Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
+        by smtp.gmail.com with ESMTPSA id k20sm3169469otb.15.2021.05.31.08.16.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 31 May 2021 08:16:49 -0700 (PDT)
+Date:   Mon, 31 May 2021 10:16:47 -0500
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Konrad Dybcio <konrad.dybcio@somainline.org>
+Cc:     ~postmarketos/upstreaming@lists.sr.ht, martin.botka@somainline.org,
+        angelogioacchino.delregno@somainline.org,
+        marijn.suijten@somainline.org, jamipkettunen@somainline.org,
+        Andy Gross <agross@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Kees Cook <keescook@chromium.org>,
+        Anton Vorontsov <anton@enomsg.org>,
+        Colin Cross <ccross@android.com>,
+        Tony Luck <tony.luck@intel.com>
+Subject: Re: [PATCH v2 3/3] arm64: dts: qcom: Add support for SONY Xperia X
+ Performance/XZ/XZs
+Message-ID: <YLT934Geo4KOY7XU@builder.lan>
+References: <20210527170409.667255-1-konrad.dybcio@somainline.org>
+ <20210527170409.667255-3-konrad.dybcio@somainline.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210527170409.667255-3-konrad.dybcio@somainline.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Update the firmware interface files to their latest version.
+On Thu 27 May 12:04 CDT 2021, Konrad Dybcio wrote:
+> diff --git a/arch/arm64/boot/dts/qcom/msm8996-sony-xperia-tone.dtsi b/arch/arm64/boot/dts/qcom/msm8996-sony-xperia-tone.dtsi
+[..]
+> +&pm8994_gpios {
+> +	pinctrl-names = "default";
+> +	pinctrl-0 = <&pm8994_gpios_defaults>;
+> +	gpio-line-names =
+> +		"NC",
+> +		"VOL_DOWN_N",
+> +		"VOL_UP_N",
+> +		"SNAPSHOT_N",
+> +		"FOCUS_N",
+> +		"NC",
+> +		"NFC_VEN",
+> +		"NC",
+> +		"NC",
+> +		"NC",
+> +		"NC",
+> +		"NC",
+> +		"EAR_EN",
+> +		"NC",
+> +		"PM_DIVCLK1",
+> +		"PMI_CLK",
+> +		"NC",
+> +		"WL_SLEEP_CLK",
+> +		"NC",
+> +		"PMIC_SPON",
+> +		"UIM_BATT_ALARM",
+> +		"PMK_SLEEP_CLK";
+> +
+> +	/*
+> +	 * We don't yet know for sure which GPIOs are of our interest, but what
+> +	 * we do know is that if a vendor sets the pins to a non-default state, there's
+> +	 * probably a reason for it, and just to be on the safe side, we follow suit.
+> +	 */
+> +	pm8994_gpios_defaults: pm8994-gpios-default-state {
+> +		pm8994_gpio1_n: pm8994-gpio1-nc {
 
-Signed-off-by: Oded Gabbay <ogabbay@kernel.org>
----
- .../habanalabs/include/common/hl_boot_if.h    | 36 +++++++++++++------
- .../habanalabs/include/gaudi/gaudi_fw_if.h    |  7 ++++
- 2 files changed, 33 insertions(+), 10 deletions(-)
+Is there a reason for keeping pm8994_gpios_defaults? I presume you won't
+be able to select it, because the associated pins are already busy?
 
-diff --git a/drivers/misc/habanalabs/include/common/hl_boot_if.h b/drivers/misc/habanalabs/include/common/hl_boot_if.h
-index 89ac8020f821..fa8a5ad2d438 100644
---- a/drivers/misc/habanalabs/include/common/hl_boot_if.h
-+++ b/drivers/misc/habanalabs/include/common/hl_boot_if.h
-@@ -333,24 +333,41 @@ struct cpu_dyn_regs {
- #define HL_COMMS_DESC_VER	1
- 
- /* HCMv - Habana Communications Message + header version */
--#define HL_COMMS_MSG_MAGIC_VER(ver)	(0x48434D00 | ((ver) & 0xff))
-+#define HL_COMMS_MSG_MAGIC_VALUE	0x48434D00
-+#define HL_COMMS_MSG_MAGIC_MASK		0xFFFFFF00
-+#define HL_COMMS_MSG_MAGIC_VER_MASK	0xFF
-+
-+#define HL_COMMS_MSG_MAGIC_VER(ver)	(HL_COMMS_MSG_MAGIC_VALUE |	\
-+					((ver) & HL_COMMS_MSG_MAGIC_VER_MASK))
- #define HL_COMMS_MSG_MAGIC_V0		HL_COMMS_DESC_MAGIC
- #define HL_COMMS_MSG_MAGIC_V1		HL_COMMS_MSG_MAGIC_VER(1)
- 
- #define HL_COMMS_MSG_MAGIC		HL_COMMS_MSG_MAGIC_V1
- 
-+#define HL_COMMS_MSG_MAGIC_VALIDATE_MAGIC(magic)			\
-+		(((magic) & HL_COMMS_MSG_MAGIC_MASK) ==			\
-+		HL_COMMS_MSG_MAGIC_VALUE)
-+
-+#define HL_COMMS_MSG_MAGIC_VALIDATE_VERSION(magic, ver)			\
-+		(((magic) & HL_COMMS_MSG_MAGIC_VER_MASK) >=		\
-+		((ver) & HL_COMMS_MSG_MAGIC_VER_MASK))
-+
-+#define HL_COMMS_MSG_MAGIC_VALIDATE(magic, ver)				\
-+		(HL_COMMS_MSG_MAGIC_VALIDATE_MAGIC((magic)) &&		\
-+		HL_COMMS_MSG_MAGIC_VALIDATE_VERSION((magic), (ver)))
-+
- enum comms_msg_type {
- 	HL_COMMS_DESC_TYPE = 0,
- 	HL_COMMS_RESET_CAUSE_TYPE = 1,
- };
- 
--/* TODO: remove this struct after the code is updated to use comms_msg_header */
-+/* TODO: remove this struct after the code is updated to use message */
- /* this is the comms descriptor header - meta data */
- struct comms_desc_header {
- 	__le32 magic;		/* magic for validation */
- 	__le32 crc32;		/* CRC32 of the descriptor w/o header */
- 	__le16 size;		/* size of the descriptor w/o header */
--	__u8 version;		/* descriptor version */
-+	__u8 version;	/* descriptor version */
- 	__u8 reserved[5];	/* pad to 64 bit */
- };
- 
-@@ -359,7 +376,7 @@ struct comms_msg_header {
- 	__le32 magic;		/* magic for validation */
- 	__le32 crc32;		/* CRC32 of the message w/o header */
- 	__le16 size;		/* size of the message w/o header */
--	__u8 version;		/* message payload version */
-+	__u8 version;	/* message payload version */
- 	__u8 type;		/* message type */
- 	__u8 reserved[4];	/* pad to 64 bit */
- };
-@@ -372,8 +389,7 @@ struct lkd_fw_comms_desc {
- 	char cur_fw_ver[VERSION_MAX_LEN];
- 	/* can be used for 1 more version w/o ABI change */
- 	char reserved0[VERSION_MAX_LEN];
--	/* address for next FW component load */
--	__le64 img_addr;
-+	__le64 img_addr;	/* address for next FW component load */
- };
- 
- enum comms_reset_cause {
-@@ -382,10 +398,11 @@ enum comms_reset_cause {
- 	HL_RESET_CAUSE_TDR = 2,
- };
- 
--#define RESET_CAUSE_PADDING	7
-+/* TODO: remove define after struct name is aligned on all projects */
-+#define lkd_msg_comms lkd_fw_comms_msg
- 
- /* this is the comms message descriptor */
--struct lkd_msg_comms {
-+struct lkd_fw_comms_msg {
- 	struct comms_msg_header header;
- 	/* union for future expantions of new messages */
- 	union {
-@@ -400,7 +417,6 @@ struct lkd_msg_comms {
- 		};
- 		struct {
- 			__u8 reset_cause;
--			__u8 reserved[RESET_CAUSE_PADDING]; /* 64 bit pad */
- 		};
- 	};
- };
-@@ -474,7 +490,7 @@ enum comms_cmd {
- struct comms_command {
- 	union {		/* bit fields are only for FW use */
- 		struct {
--			u32 size :25;			/* 32MB max. */
-+			u32 size :25;		/* 32MB max. */
- 			u32 reserved :2;
- 			enum comms_cmd cmd :5;		/* 32 commands */
- 		};
-diff --git a/drivers/misc/habanalabs/include/gaudi/gaudi_fw_if.h b/drivers/misc/habanalabs/include/gaudi/gaudi_fw_if.h
-index a4afb984d0ae..34ca4fe50d91 100644
---- a/drivers/misc/habanalabs/include/gaudi/gaudi_fw_if.h
-+++ b/drivers/misc/habanalabs/include/gaudi/gaudi_fw_if.h
-@@ -20,6 +20,9 @@
- #define UBOOT_FW_OFFSET			0x100000	/* 1MB in SRAM */
- #define LINUX_FW_OFFSET			0x800000	/* 8MB in HBM */
- 
-+/* HBM thermal delta in [Deg] added to composite (CTemp) */
-+#define HBM_TEMP_ADJUST_COEFF		6
-+
- enum gaudi_nic_axi_error {
- 	RXB,
- 	RXE,
-@@ -56,6 +59,8 @@ struct eq_nic_sei_event {
-  * @pcs_link: has PCS link.
-  * @phy_ready: is PHY ready.
-  * @auto_neg: is Autoneg enabled.
-+ * @timeout_retransmission_cnt: timeout retransmission events
-+ * @high_ber_cnt: high ber events
-  */
- struct gaudi_nic_status {
- 	__u32 port;
-@@ -69,6 +74,8 @@ struct gaudi_nic_status {
- 	__u8 pcs_link;
- 	__u8 phy_ready;
- 	__u8 auto_neg;
-+	__u32 timeout_retransmission_cnt;
-+	__u32 high_ber_cnt;
- };
- 
- struct gaudi_flops_2_data {
--- 
-2.25.1
+> +			pins = "gpio1";
+> +			function = PMIC_GPIO_FUNC_NORMAL;
+> +			drive-push-pull;
+> +			bias-high-impedance;
+> +		};
+> +
+[..]
+> +&pmi8994_gpios {
+> +	pinctrl-names = "default";
+> +	pinctrl-0 = <&pmi8994_gpios_defaults>;
+> +
+> +	gpio-line-names =
+> +		"VIB_LDO_EN",
+> +		"NC",
+> +		"NC",
+> +		"NC",
+> +		"NC",
+> +		"NC",
+> +		"NC",
+> +		"NC",
+> +		"USB_SWITCH_SEL",
+> +		"NC";
+> +
+> +	pmi8994_gpios_defaults: pmi8994-gpios-default-state {
+> +		pmi8994_vib_ldo_en: vib-ldo-en-gpio {
 
+Ditto.
+
+> +			pins = "gpio1";
+> +			function = PMIC_GPIO_FUNC_NORMAL;
+> +			drive-push-pull;
+> +			output-low;
+> +			bias-disable;
+> +			power-source = <PM8994_GPIO_S4>;
+> +		};
+
+Regards,
+Bjorn
