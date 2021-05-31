@@ -2,35 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C6A2395FF1
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 16:20:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E1D80396471
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 17:58:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232711AbhEaORb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 10:17:31 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50910 "EHLO mail.kernel.org"
+        id S234184AbhEaP7T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 11:59:19 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55976 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232744AbhEaNs3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 09:48:29 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1BBF761585;
-        Mon, 31 May 2021 13:31:07 +0000 (UTC)
+        id S233381AbhEaOb3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 10:31:29 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 423E461629;
+        Mon, 31 May 2021 13:49:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1622467868;
-        bh=xQZQnayoY0QkyBHof+0CyFve+QrPtd1aqLzGswQfiK0=;
+        s=korg; t=1622468953;
+        bh=6XlGExWuaiqzJEloSrf2Ut/W76vJdtpipp50LEhiXN4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=JR7y5/5reuEBSNiYaMYsiYgLJzP6UhzXOpLAs4uQHQ222c+56MnWE7ZYLIObzRWCD
-         7iQaRx8m/Q+U9kDanNwMyGFIinj+OpCNXwxggV8yuoEVzW7S9XdovFLFshu4qV89nC
-         ErNaJ6bDYikv8PfDP4EIxWuWbAb2N79i1FwOwmr8=
+        b=qqVFDU2D5wVYm2RddC/VVKfc+nKzoFcXt8LF1RTpqLAXxECCVbRIasvtg38j8wPIF
+         sBAUtPdTbi7BaRe1gfbiLprlPcWhXHumx4UA+/NUKNUEorUtH9jTbTGeMz9Sp5I3CR
+         STnsr7mWt0z5gEiNQ1ljoaxWJA4DtCd7JWcATFQ0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Takashi Iwai <tiwai@suse.de>,
-        Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
-Subject: [PATCH 5.10 003/252] ALSA: hda/realtek: Chain in pop reduction fixup for ThinkStation P340
-Date:   Mon, 31 May 2021 15:11:08 +0200
-Message-Id: <20210531130658.089168723@linuxfoundation.org>
+        stable@vger.kernel.org, Miquel Raynal <miquel.raynal@bootlin.com>
+Subject: [PATCH 5.12 014/296] mtd: rawnand: txx9ndfmc: Fix external use of SW Hamming ECC helper
+Date:   Mon, 31 May 2021 15:11:09 +0200
+Message-Id: <20210531130704.242852585@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210531130657.971257589@linuxfoundation.org>
-References: <20210531130657.971257589@linuxfoundation.org>
+In-Reply-To: <20210531130703.762129381@linuxfoundation.org>
+References: <20210531130703.762129381@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,66 +38,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
+From: Miquel Raynal <miquel.raynal@bootlin.com>
 
-commit 29c8f40b54a45dd23971e2bc395697731bcffbe1 upstream.
+commit 3d227a0b0ce319edbff6fd0d8af4d66689e477cc upstream.
 
-Lenovo ThinkStation P340 uses ALC623 codec (SSID 17aa:1048) and it produces
-bug plock/pop noise over line out (green jack on the back) which can be
-fixed by applying ALC269_FIXUP_NO_SHUTUP tot he machine.
+Since the Hamming software ECC engine has been updated to become a
+proper and independent ECC engine, it is now mandatory to either
+initialize the engine before using any one of his functions or use one
+of the bare helpers which only perform the calculations. As there is no
+actual need for a proper ECC initialization, let's just use the bare
+helper instead of the rawnand one.
 
-Convert the existing entry for the same SSID to chain to apply this fixup
-as well.
-
-Suggested-by: Takashi Iwai <tiwai@suse.de>
-Signed-off-by: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
-Cc: <stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/20210524203726.2278-1-peter.ujfalusi@linux.intel.com
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Fixes: 90ccf0a0192f ("mtd: nand: ecc-hamming: Rename the exported functions")
+Cc: stable@vger.kernel.org
+Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
+Link: https://lore.kernel.org/linux-mtd/20210413161840.345208-8-miquel.raynal@bootlin.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- sound/pci/hda/patch_realtek.c |   10 +++++++++-
- 1 file changed, 9 insertions(+), 1 deletion(-)
+ drivers/mtd/nand/raw/txx9ndfmc.c |    5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
---- a/sound/pci/hda/patch_realtek.c
-+++ b/sound/pci/hda/patch_realtek.c
-@@ -6559,6 +6559,7 @@ enum {
- 	ALC295_FIXUP_HP_OMEN,
- 	ALC285_FIXUP_HP_SPECTRE_X360,
- 	ALC287_FIXUP_IDEAPAD_BASS_SPK_AMP,
-+	ALC623_FIXUP_LENOVO_THINKSTATION_P340,
- };
+--- a/drivers/mtd/nand/raw/txx9ndfmc.c
++++ b/drivers/mtd/nand/raw/txx9ndfmc.c
+@@ -13,6 +13,7 @@
+ #include <linux/platform_device.h>
+ #include <linux/delay.h>
+ #include <linux/mtd/mtd.h>
++#include <linux/mtd/nand-ecc-sw-hamming.h>
+ #include <linux/mtd/rawnand.h>
+ #include <linux/mtd/partitions.h>
+ #include <linux/io.h>
+@@ -193,8 +194,8 @@ static int txx9ndfmc_correct_data(struct
+ 	int stat;
  
- static const struct hda_fixup alc269_fixups[] = {
-@@ -8125,6 +8126,12 @@ static const struct hda_fixup alc269_fix
- 		.chained = true,
- 		.chain_id = ALC285_FIXUP_THINKPAD_HEADSET_JACK,
- 	},
-+	[ALC623_FIXUP_LENOVO_THINKSTATION_P340] = {
-+		.type = HDA_FIXUP_FUNC,
-+		.v.func = alc_fixup_no_shutup,
-+		.chained = true,
-+		.chain_id = ALC283_FIXUP_HEADSET_MIC,
-+	},
- };
- 
- static const struct snd_pci_quirk alc269_fixup_tbl[] = {
-@@ -8442,7 +8449,7 @@ static const struct snd_pci_quirk alc269
- 	SND_PCI_QUIRK(0x1558, 0xc019, "Clevo NH77D[BE]Q", ALC293_FIXUP_SYSTEM76_MIC_NO_PRESENCE),
- 	SND_PCI_QUIRK(0x1558, 0xc022, "Clevo NH77[DC][QW]", ALC293_FIXUP_SYSTEM76_MIC_NO_PRESENCE),
- 	SND_PCI_QUIRK(0x17aa, 0x1036, "Lenovo P520", ALC233_FIXUP_LENOVO_MULTI_CODECS),
--	SND_PCI_QUIRK(0x17aa, 0x1048, "ThinkCentre Station", ALC283_FIXUP_HEADSET_MIC),
-+	SND_PCI_QUIRK(0x17aa, 0x1048, "ThinkCentre Station", ALC623_FIXUP_LENOVO_THINKSTATION_P340),
- 	SND_PCI_QUIRK(0x17aa, 0x20f2, "Thinkpad SL410/510", ALC269_FIXUP_SKU_IGNORE),
- 	SND_PCI_QUIRK(0x17aa, 0x215e, "Thinkpad L512", ALC269_FIXUP_SKU_IGNORE),
- 	SND_PCI_QUIRK(0x17aa, 0x21b8, "Thinkpad Edge 14", ALC269_FIXUP_SKU_IGNORE),
-@@ -8709,6 +8716,7 @@ static const struct hda_model_fixup alc2
- 	{.id = ALC295_FIXUP_HP_OMEN, .name = "alc295-hp-omen"},
- 	{.id = ALC285_FIXUP_HP_SPECTRE_X360, .name = "alc285-hp-spectre-x360"},
- 	{.id = ALC287_FIXUP_IDEAPAD_BASS_SPK_AMP, .name = "alc287-ideapad-bass-spk-amp"},
-+	{.id = ALC623_FIXUP_LENOVO_THINKSTATION_P340, .name = "alc623-lenovo-thinkstation-p340"},
- 	{}
- };
- #define ALC225_STANDARD_PINS \
+ 	for (eccsize = chip->ecc.size; eccsize > 0; eccsize -= 256) {
+-		stat = rawnand_sw_hamming_correct(chip, buf, read_ecc,
+-						  calc_ecc);
++		stat = ecc_sw_hamming_correct(buf, read_ecc, calc_ecc,
++					      chip->ecc.size, false);
+ 		if (stat < 0)
+ 			return stat;
+ 		corrected += stat;
 
 
