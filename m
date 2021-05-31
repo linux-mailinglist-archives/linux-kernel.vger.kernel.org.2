@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 466573960E4
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 16:31:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C73539651F
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 18:23:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233929AbhEaOdB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 10:33:01 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56076 "EHLO mail.kernel.org"
+        id S234677AbhEaQYL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 12:24:11 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37860 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233194AbhEaNyt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 09:54:49 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 36EAD613F8;
-        Mon, 31 May 2021 13:33:55 +0000 (UTC)
+        id S233178AbhEaOlX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 10:41:23 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1ED3E61435;
+        Mon, 31 May 2021 13:53:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1622468035;
-        bh=HvEV8rv5k3A5x5JzTug7RpZ58CxkXYwa9Jnzi+dxA0A=;
+        s=korg; t=1622469190;
+        bh=IGnyTuQjYOOw4G6t0SNltBrM51l310tTmm7+guOXb0o=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=zrTaPjfzDJKEylXDf25NYPZMS4aE65zUV1LOXNL+pqW3qPGCeCfTaFfChEFe6iNfF
-         9LGTo/CblDbTsZSUfLv2Eltdy+FyvALdzniboGue6I9jZifcXPGK7h4oKRXXvLyoDq
-         P7PAYMRnVKMF9YVChtFh+YDDErxZ20/YHAnI+t44=
+        b=RPchp5ercswbNHupRAZwfxSlWRzVKpGvlTrjpYN6b59xnLRw4+XLZ3uvLLh6PScRT
+         sLJS2EmFvkZyNRc08Syo7tP5fIj/U+OCXNPrHnPwp4TiPCbjN+SC/P8Afqf1b8IC5r
+         sMaNbMKADvMEnGx5QM+K1QBbnH1XPftLyYGbv4wo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Trond Myklebust <trond.myklebust@hammerspace.com>
-Subject: [PATCH 5.10 093/252] NFS: Fix an Oopsable condition in __nfs_pageio_add_request()
-Date:   Mon, 31 May 2021 15:12:38 +0200
-Message-Id: <20210531130701.125103728@linuxfoundation.org>
+        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>
+Subject: [PATCH 5.12 104/296] usb: gadget: udc: renesas_usb3: Fix a race in usb3_start_pipen()
+Date:   Mon, 31 May 2021 15:12:39 +0200
+Message-Id: <20210531130707.430694783@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210531130657.971257589@linuxfoundation.org>
-References: <20210531130657.971257589@linuxfoundation.org>
+In-Reply-To: <20210531130703.762129381@linuxfoundation.org>
+References: <20210531130703.762129381@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,45 +39,63 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Trond Myklebust <trond.myklebust@hammerspace.com>
+From: Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>
 
-commit 56517ab958b7c11030e626250c00b9b1a24b41eb upstream.
+commit e752dbc59e1241b13b8c4f7b6eb582862e7668fe upstream.
 
-Ensure that nfs_pageio_error_cleanup() resets the mirror array contents,
-so that the structure reflects the fact that it is now empty.
-Also change the test in nfs_pageio_do_add_request() to be more robust by
-checking whether or not the list is empty rather than relying on the
-value of pg_count.
+The usb3_start_pipen() is called by renesas_usb3_ep_queue() and
+usb3_request_done_pipen() so that usb3_start_pipen() is possible
+to cause a race when getting usb3_first_req like below:
 
-Fixes: a7d42ddb3099 ("nfs: add mirroring support to pgio layer")
-Signed-off-by: Trond Myklebust <trond.myklebust@hammerspace.com>
+renesas_usb3_ep_queue()
+ spin_lock_irqsave()
+ list_add_tail()
+ spin_unlock_irqrestore()
+ usb3_start_pipen()
+  usb3_first_req = usb3_get_request() --- [1]
+ --- interrupt ---
+ usb3_irq_dma_int()
+ usb3_request_done_pipen()
+  usb3_get_request()
+  usb3_start_pipen()
+  usb3_first_req = usb3_get_request()
+  ...
+  (the req is possible to be finished in the interrupt)
+
+The usb3_first_req [1] above may have been finished after the interrupt
+ended so that this driver caused to start a transfer wrongly. To fix this
+issue, getting/checking the usb3_first_req are under spin_lock_irqsave()
+in the same section.
+
+Fixes: 746bfe63bba3 ("usb: gadget: renesas_usb3: add support for Renesas USB3.0 peripheral controller")
+Cc: stable <stable@vger.kernel.org>
+Signed-off-by: Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>
+Link: https://lore.kernel.org/r/20210524060155.1178724-1-yoshihiro.shimoda.uh@renesas.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- fs/nfs/pagelist.c |    9 +++++----
- 1 file changed, 5 insertions(+), 4 deletions(-)
+ drivers/usb/gadget/udc/renesas_usb3.c |    5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
---- a/fs/nfs/pagelist.c
-+++ b/fs/nfs/pagelist.c
-@@ -1094,15 +1094,16 @@ nfs_pageio_do_add_request(struct nfs_pag
- 	struct nfs_page *prev = NULL;
- 	unsigned int size;
+--- a/drivers/usb/gadget/udc/renesas_usb3.c
++++ b/drivers/usb/gadget/udc/renesas_usb3.c
+@@ -1488,7 +1488,7 @@ static void usb3_start_pipen(struct rene
+ 			     struct renesas_usb3_request *usb3_req)
+ {
+ 	struct renesas_usb3 *usb3 = usb3_ep_to_usb3(usb3_ep);
+-	struct renesas_usb3_request *usb3_req_first = usb3_get_request(usb3_ep);
++	struct renesas_usb3_request *usb3_req_first;
+ 	unsigned long flags;
+ 	int ret = -EAGAIN;
+ 	u32 enable_bits = 0;
+@@ -1496,7 +1496,8 @@ static void usb3_start_pipen(struct rene
+ 	spin_lock_irqsave(&usb3->lock, flags);
+ 	if (usb3_ep->halt || usb3_ep->started)
+ 		goto out;
+-	if (usb3_req != usb3_req_first)
++	usb3_req_first = __usb3_get_request(usb3_ep);
++	if (!usb3_req_first || usb3_req != usb3_req_first)
+ 		goto out;
  
--	if (mirror->pg_count != 0) {
--		prev = nfs_list_entry(mirror->pg_list.prev);
--	} else {
-+	if (list_empty(&mirror->pg_list)) {
- 		if (desc->pg_ops->pg_init)
- 			desc->pg_ops->pg_init(desc, req);
- 		if (desc->pg_error < 0)
- 			return 0;
- 		mirror->pg_base = req->wb_pgbase;
--	}
-+		mirror->pg_count = 0;
-+		mirror->pg_recoalesce = 0;
-+	} else
-+		prev = nfs_list_entry(mirror->pg_list.prev);
- 
- 	if (desc->pg_maxretrans && req->wb_nio > desc->pg_maxretrans) {
- 		if (NFS_SERVER(desc->pg_inode)->flags & NFS_MOUNT_SOFTERR)
+ 	if (usb3_pn_change(usb3, usb3_ep->num) < 0)
 
 
