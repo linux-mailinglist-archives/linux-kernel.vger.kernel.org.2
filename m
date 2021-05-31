@@ -2,40 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D994B39635B
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 17:13:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A83443965C4
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 18:46:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234467AbhEaPO2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 11:14:28 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40496 "EHLO mail.kernel.org"
+        id S232437AbhEaQsO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 12:48:14 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48180 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233168AbhEaOL6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 10:11:58 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id ED48D61985;
-        Mon, 31 May 2021 13:41:23 +0000 (UTC)
+        id S232741AbhEaOza (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 10:55:30 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A631B61933;
+        Mon, 31 May 2021 13:59:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1622468484;
-        bh=zkE60TVyF8TD/d63LT2aAfEAG3QtuMXrPKBIo+T1I+w=;
+        s=korg; t=1622469583;
+        bh=DQknK+guMV8EB2YI3n8n9bEN8CPrQG+Hf0znxpFfcVk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=e5qtn2B1JOLWJZtp4LMoN3vLY34vIc0RQYZQsdRYpPtJ7ex8iSG6C8XUhhZpfpdtZ
-         ZMzkZVaC+v0kuZh/NG7CtdhJ3iyKbcbtti+YpFA+52QBh/yuBUIlfeWaPYOrptrg2u
-         YDfMKumcpf2sLhc6cYVK1UlL1sOfn9qIr+Af9810=
+        b=L7011UfQa0gT6HJHpW76D3+gGKaQNDYX4iBIeledKGo97sFJUJGkZ7cVhxp3zLied
+         yQvnjkWyEd+81h6ax2hIVvogKY55Ucy+HrBLgfSwgyBl5FH82Ms6PKTDHA5/1qSY54
+         Q9rVxBEdsfuto7IJR0lMukavdWteUboBzFnSH0O0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Stefan Roese <sr@denx.de>,
-        Felix Fietkau <nbd@nbd.name>, John Crispin <john@phrozen.org>,
-        Ilya Lipnitskiy <ilya.lipnitskiy@gmail.com>,
-        Reto Schneider <code@reto-schneider.ch>,
-        Reto Schneider <reto.schneider@husqvarnagroup.com>,
+        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
+        Zhen Lei <thunder.leizhen@huawei.com>,
+        Michael Chan <michael.chan@broadcom.com>,
         "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 236/252] net: ethernet: mtk_eth_soc: Fix packet statistics support for MT7628/88
+Subject: [PATCH 5.12 246/296] net: bnx2: Fix error return code in bnx2_init_board()
 Date:   Mon, 31 May 2021 15:15:01 +0200
-Message-Id: <20210531130706.016987844@linuxfoundation.org>
+Message-Id: <20210531130712.050769987@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210531130657.971257589@linuxfoundation.org>
-References: <20210531130657.971257589@linuxfoundation.org>
+In-Reply-To: <20210531130703.762129381@linuxfoundation.org>
+References: <20210531130703.762129381@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,157 +42,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Stefan Roese <sr@denx.de>
+From: Zhen Lei <thunder.leizhen@huawei.com>
 
-[ Upstream commit ad79fd2c42f7626bdf6935cd72134c2a5a59ff2d ]
+[ Upstream commit 28c66b6da4087b8cfe81c2ec0a46eb6116dafda9 ]
 
-The MT7628/88 SoC(s) have other (limited) packet counter registers than
-currently supported in the mtk_eth_soc driver. This patch adds support
-for reading these registers, so that the packet statistics are correctly
-updated.
+Fix to return -EPERM from the error handling case instead of 0, as done
+elsewhere in this function.
 
-Additionally the defines for the non-MT7628 variant packet counter
-registers are added and used in this patch instead of using hard coded
-values.
-
-Signed-off-by: Stefan Roese <sr@denx.de>
-Fixes: 296c9120752b ("net: ethernet: mediatek: Add MT7628/88 SoC support")
-Cc: Felix Fietkau <nbd@nbd.name>
-Cc: John Crispin <john@phrozen.org>
-Cc: Ilya Lipnitskiy <ilya.lipnitskiy@gmail.com>
-Cc: Reto Schneider <code@reto-schneider.ch>
-Cc: Reto Schneider <reto.schneider@husqvarnagroup.com>
-Cc: David S. Miller <davem@davemloft.net>
+Fixes: b6016b767397 ("[BNX2]: New Broadcom gigabit network driver.")
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
+Reviewed-by: Michael Chan <michael.chan@broadcom.com>
 Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/mediatek/mtk_eth_soc.c | 67 ++++++++++++++-------
- drivers/net/ethernet/mediatek/mtk_eth_soc.h | 24 +++++++-
- 2 files changed, 66 insertions(+), 25 deletions(-)
+ drivers/net/ethernet/broadcom/bnx2.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/net/ethernet/mediatek/mtk_eth_soc.c b/drivers/net/ethernet/mediatek/mtk_eth_soc.c
-index d930fcda9c3b..a2d3f04a9ff2 100644
---- a/drivers/net/ethernet/mediatek/mtk_eth_soc.c
-+++ b/drivers/net/ethernet/mediatek/mtk_eth_soc.c
-@@ -679,32 +679,53 @@ static int mtk_set_mac_address(struct net_device *dev, void *p)
- void mtk_stats_update_mac(struct mtk_mac *mac)
- {
- 	struct mtk_hw_stats *hw_stats = mac->hw_stats;
--	unsigned int base = MTK_GDM1_TX_GBCNT;
--	u64 stats;
+diff --git a/drivers/net/ethernet/broadcom/bnx2.c b/drivers/net/ethernet/broadcom/bnx2.c
+index 3e8a179f39db..633b10389653 100644
+--- a/drivers/net/ethernet/broadcom/bnx2.c
++++ b/drivers/net/ethernet/broadcom/bnx2.c
+@@ -8247,9 +8247,9 @@ bnx2_init_board(struct pci_dev *pdev, struct net_device *dev)
+ 		BNX2_WR(bp, PCI_COMMAND, reg);
+ 	} else if ((BNX2_CHIP_ID(bp) == BNX2_CHIP_ID_5706_A1) &&
+ 		!(bp->flags & BNX2_FLAG_PCIX)) {
 -
--	base += hw_stats->reg_offset;
-+	struct mtk_eth *eth = mac->hw;
+ 		dev_err(&pdev->dev,
+ 			"5706 A1 can only be used in a PCIX bus, aborting\n");
++		rc = -EPERM;
+ 		goto err_out_unmap;
+ 	}
  
- 	u64_stats_update_begin(&hw_stats->syncp);
- 
--	hw_stats->rx_bytes += mtk_r32(mac->hw, base);
--	stats =  mtk_r32(mac->hw, base + 0x04);
--	if (stats)
--		hw_stats->rx_bytes += (stats << 32);
--	hw_stats->rx_packets += mtk_r32(mac->hw, base + 0x08);
--	hw_stats->rx_overflow += mtk_r32(mac->hw, base + 0x10);
--	hw_stats->rx_fcs_errors += mtk_r32(mac->hw, base + 0x14);
--	hw_stats->rx_short_errors += mtk_r32(mac->hw, base + 0x18);
--	hw_stats->rx_long_errors += mtk_r32(mac->hw, base + 0x1c);
--	hw_stats->rx_checksum_errors += mtk_r32(mac->hw, base + 0x20);
--	hw_stats->rx_flow_control_packets +=
--					mtk_r32(mac->hw, base + 0x24);
--	hw_stats->tx_skip += mtk_r32(mac->hw, base + 0x28);
--	hw_stats->tx_collisions += mtk_r32(mac->hw, base + 0x2c);
--	hw_stats->tx_bytes += mtk_r32(mac->hw, base + 0x30);
--	stats =  mtk_r32(mac->hw, base + 0x34);
--	if (stats)
--		hw_stats->tx_bytes += (stats << 32);
--	hw_stats->tx_packets += mtk_r32(mac->hw, base + 0x38);
-+	if (MTK_HAS_CAPS(eth->soc->caps, MTK_SOC_MT7628)) {
-+		hw_stats->tx_packets += mtk_r32(mac->hw, MT7628_SDM_TPCNT);
-+		hw_stats->tx_bytes += mtk_r32(mac->hw, MT7628_SDM_TBCNT);
-+		hw_stats->rx_packets += mtk_r32(mac->hw, MT7628_SDM_RPCNT);
-+		hw_stats->rx_bytes += mtk_r32(mac->hw, MT7628_SDM_RBCNT);
-+		hw_stats->rx_checksum_errors +=
-+			mtk_r32(mac->hw, MT7628_SDM_CS_ERR);
-+	} else {
-+		unsigned int offs = hw_stats->reg_offset;
-+		u64 stats;
-+
-+		hw_stats->rx_bytes += mtk_r32(mac->hw,
-+					      MTK_GDM1_RX_GBCNT_L + offs);
-+		stats = mtk_r32(mac->hw, MTK_GDM1_RX_GBCNT_H + offs);
-+		if (stats)
-+			hw_stats->rx_bytes += (stats << 32);
-+		hw_stats->rx_packets +=
-+			mtk_r32(mac->hw, MTK_GDM1_RX_GPCNT + offs);
-+		hw_stats->rx_overflow +=
-+			mtk_r32(mac->hw, MTK_GDM1_RX_OERCNT + offs);
-+		hw_stats->rx_fcs_errors +=
-+			mtk_r32(mac->hw, MTK_GDM1_RX_FERCNT + offs);
-+		hw_stats->rx_short_errors +=
-+			mtk_r32(mac->hw, MTK_GDM1_RX_SERCNT + offs);
-+		hw_stats->rx_long_errors +=
-+			mtk_r32(mac->hw, MTK_GDM1_RX_LENCNT + offs);
-+		hw_stats->rx_checksum_errors +=
-+			mtk_r32(mac->hw, MTK_GDM1_RX_CERCNT + offs);
-+		hw_stats->rx_flow_control_packets +=
-+			mtk_r32(mac->hw, MTK_GDM1_RX_FCCNT + offs);
-+		hw_stats->tx_skip +=
-+			mtk_r32(mac->hw, MTK_GDM1_TX_SKIPCNT + offs);
-+		hw_stats->tx_collisions +=
-+			mtk_r32(mac->hw, MTK_GDM1_TX_COLCNT + offs);
-+		hw_stats->tx_bytes +=
-+			mtk_r32(mac->hw, MTK_GDM1_TX_GBCNT_L + offs);
-+		stats =  mtk_r32(mac->hw, MTK_GDM1_TX_GBCNT_H + offs);
-+		if (stats)
-+			hw_stats->tx_bytes += (stats << 32);
-+		hw_stats->tx_packets +=
-+			mtk_r32(mac->hw, MTK_GDM1_TX_GPCNT + offs);
-+	}
-+
- 	u64_stats_update_end(&hw_stats->syncp);
- }
- 
-diff --git a/drivers/net/ethernet/mediatek/mtk_eth_soc.h b/drivers/net/ethernet/mediatek/mtk_eth_soc.h
-index 73ce1f0f307a..54a7cd93cc0f 100644
---- a/drivers/net/ethernet/mediatek/mtk_eth_soc.h
-+++ b/drivers/net/ethernet/mediatek/mtk_eth_soc.h
-@@ -266,8 +266,21 @@
- /* QDMA FQ Free Page Buffer Length Register */
- #define MTK_QDMA_FQ_BLEN	0x1B2C
- 
--/* GMA1 Received Good Byte Count Register */
--#define MTK_GDM1_TX_GBCNT	0x2400
-+/* GMA1 counter / statics register */
-+#define MTK_GDM1_RX_GBCNT_L	0x2400
-+#define MTK_GDM1_RX_GBCNT_H	0x2404
-+#define MTK_GDM1_RX_GPCNT	0x2408
-+#define MTK_GDM1_RX_OERCNT	0x2410
-+#define MTK_GDM1_RX_FERCNT	0x2414
-+#define MTK_GDM1_RX_SERCNT	0x2418
-+#define MTK_GDM1_RX_LENCNT	0x241c
-+#define MTK_GDM1_RX_CERCNT	0x2420
-+#define MTK_GDM1_RX_FCCNT	0x2424
-+#define MTK_GDM1_TX_SKIPCNT	0x2428
-+#define MTK_GDM1_TX_COLCNT	0x242c
-+#define MTK_GDM1_TX_GBCNT_L	0x2430
-+#define MTK_GDM1_TX_GBCNT_H	0x2434
-+#define MTK_GDM1_TX_GPCNT	0x2438
- #define MTK_STAT_OFFSET		0x40
- 
- /* QDMA descriptor txd4 */
-@@ -478,6 +491,13 @@
- #define MT7628_SDM_MAC_ADRL	(MT7628_SDM_OFFSET + 0x0c)
- #define MT7628_SDM_MAC_ADRH	(MT7628_SDM_OFFSET + 0x10)
- 
-+/* Counter / stat register */
-+#define MT7628_SDM_TPCNT	(MT7628_SDM_OFFSET + 0x100)
-+#define MT7628_SDM_TBCNT	(MT7628_SDM_OFFSET + 0x104)
-+#define MT7628_SDM_RPCNT	(MT7628_SDM_OFFSET + 0x108)
-+#define MT7628_SDM_RBCNT	(MT7628_SDM_OFFSET + 0x10c)
-+#define MT7628_SDM_CS_ERR	(MT7628_SDM_OFFSET + 0x110)
-+
- struct mtk_rx_dma {
- 	unsigned int rxd1;
- 	unsigned int rxd2;
 -- 
 2.30.2
 
