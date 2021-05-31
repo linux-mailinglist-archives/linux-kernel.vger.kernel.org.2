@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 88C90395B78
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 15:19:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 57F7E395E95
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 15:59:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232035AbhEaNU5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 09:20:57 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54898 "EHLO mail.kernel.org"
+        id S231908AbhEaOAq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 10:00:46 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44078 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231834AbhEaNTH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 09:19:07 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 978046135D;
-        Mon, 31 May 2021 13:17:27 +0000 (UTC)
+        id S232719AbhEaNjZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 09:39:25 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6DFB76140A;
+        Mon, 31 May 2021 13:27:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1622467048;
-        bh=Q4jNrlVbkxKBFuZfG5hlrOND6dyo+WOQlu/GAgl3Uec=;
+        s=korg; t=1622467622;
+        bh=ZEGf2reNL4H1XF6cGdD9sjD/2MfA2uYjRz9dQzAea9E=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=xOt5iWzSVDCoEyfqd4UIiVv7MXRsTiUtEfKo71BGSPaaLMnp7+QO7o9EjCcQkgwSo
-         mn1lDZDTWtRa80s5TrJOk280L1QOsWEnr5JaafGIye6wXQX/HcxwnUgpryWn/38N3q
-         lWjNhO6r9PCr+IpulWSwXLURtwdIKO7xtzTJ/lZw=
+        b=xjxl/P4yEJhbOR5McIS2QBdvY00Rl/sSb6fqTPbGhg52NRXofv24ipb+ZqQ+Gz8Dw
+         PXbNmZLbr/J+riN2PJJkAy5q/Ix7Qtx7JAfGtsCQm/nm75rS3QL589NLZCy3+x+e85
+         SDcgOY+UUSDTQfnuSbSmGBq4fSywcRkhkDUkS9p8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Kalle Valo <kvalo@codeaurora.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.4 37/54] libertas: register sysfs groups properly
+        stable@vger.kernel.org, Mikulas Patocka <mpatocka@redhat.com>,
+        Mike Snitzer <snitzer@redhat.com>
+Subject: [PATCH 4.14 18/79] dm snapshot: properly fix a crash when an origin has no snapshots
 Date:   Mon, 31 May 2021 15:14:03 +0200
-Message-Id: <20210531130636.239220653@linuxfoundation.org>
+Message-Id: <20210531130636.589649095@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210531130635.070310929@linuxfoundation.org>
-References: <20210531130635.070310929@linuxfoundation.org>
+In-Reply-To: <20210531130636.002722319@linuxfoundation.org>
+References: <20210531130636.002722319@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,94 +39,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+From: Mikulas Patocka <mpatocka@redhat.com>
 
-[ Upstream commit 7e79b38fe9a403b065ac5915465f620a8fb3de84 ]
+commit 7e768532b2396bcb7fbf6f82384b85c0f1d2f197 upstream.
 
-The libertas driver was trying to register sysfs groups "by hand" which
-causes them to be created _after_ the device is initialized and
-announced to userspace, which causes races and can prevent userspace
-tools from seeing the sysfs files correctly.
+If an origin target has no snapshots, o->split_boundary is set to 0.
+This causes BUG_ON(sectors <= 0) in block/bio.c:bio_split().
 
-Fix this up by using the built-in sysfs_groups pointers in struct
-net_device which were created for this very reason, fixing the race
-condition, and properly allowing for any error that might have occured
-to be handled properly.
+Fix this by initializing chunk_size, and in turn split_boundary, to
+rounddown_pow_of_two(UINT_MAX) -- the largest power of two that fits
+into "unsigned" type.
 
-Cc: Kalle Valo <kvalo@codeaurora.org>
-Link: https://lore.kernel.org/r/20210503115736.2104747-54-gregkh@linuxfoundation.org
+Signed-off-by: Mikulas Patocka <mpatocka@redhat.com>
+Cc: stable@vger.kernel.org
+Signed-off-by: Mike Snitzer <snitzer@redhat.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/wireless/libertas/mesh.c | 28 ++++------------------------
- 1 file changed, 4 insertions(+), 24 deletions(-)
+ drivers/md/dm-snap.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/net/wireless/libertas/mesh.c b/drivers/net/wireless/libertas/mesh.c
-index d0c881dd5846..f1e9cbcfdc16 100644
---- a/drivers/net/wireless/libertas/mesh.c
-+++ b/drivers/net/wireless/libertas/mesh.c
-@@ -797,19 +797,6 @@ static const struct attribute_group mesh_ie_group = {
- 	.attrs = mesh_ie_attrs,
- };
+--- a/drivers/md/dm-snap.c
++++ b/drivers/md/dm-snap.c
+@@ -793,7 +793,7 @@ static int dm_add_exception(void *contex
+ static uint32_t __minimum_chunk_size(struct origin *o)
+ {
+ 	struct dm_snapshot *snap;
+-	unsigned chunk_size = 0;
++	unsigned chunk_size = rounddown_pow_of_two(UINT_MAX);
  
--static void lbs_persist_config_init(struct net_device *dev)
--{
--	int ret;
--	ret = sysfs_create_group(&(dev->dev.kobj), &boot_opts_group);
--	ret = sysfs_create_group(&(dev->dev.kobj), &mesh_ie_group);
--}
--
--static void lbs_persist_config_remove(struct net_device *dev)
--{
--	sysfs_remove_group(&(dev->dev.kobj), &boot_opts_group);
--	sysfs_remove_group(&(dev->dev.kobj), &mesh_ie_group);
--}
--
- 
- /***************************************************************************
-  * Initializing and starting, stopping mesh
-@@ -1021,6 +1008,10 @@ static int lbs_add_mesh(struct lbs_private *priv)
- 	SET_NETDEV_DEV(priv->mesh_dev, priv->dev->dev.parent);
- 
- 	mesh_dev->flags |= IFF_BROADCAST | IFF_MULTICAST;
-+	mesh_dev->sysfs_groups[0] = &lbs_mesh_attr_group;
-+	mesh_dev->sysfs_groups[1] = &boot_opts_group;
-+	mesh_dev->sysfs_groups[2] = &mesh_ie_group;
-+
- 	/* Register virtual mesh interface */
- 	ret = register_netdev(mesh_dev);
- 	if (ret) {
-@@ -1028,19 +1019,10 @@ static int lbs_add_mesh(struct lbs_private *priv)
- 		goto err_free_netdev;
- 	}
- 
--	ret = sysfs_create_group(&(mesh_dev->dev.kobj), &lbs_mesh_attr_group);
--	if (ret)
--		goto err_unregister;
--
--	lbs_persist_config_init(mesh_dev);
--
- 	/* Everything successful */
- 	ret = 0;
- 	goto done;
- 
--err_unregister:
--	unregister_netdev(mesh_dev);
--
- err_free_netdev:
- 	free_netdev(mesh_dev);
- 
-@@ -1063,8 +1045,6 @@ void lbs_remove_mesh(struct lbs_private *priv)
- 	lbs_deb_enter(LBS_DEB_MESH);
- 	netif_stop_queue(mesh_dev);
- 	netif_carrier_off(mesh_dev);
--	sysfs_remove_group(&(mesh_dev->dev.kobj), &lbs_mesh_attr_group);
--	lbs_persist_config_remove(mesh_dev);
- 	unregister_netdev(mesh_dev);
- 	priv->mesh_dev = NULL;
- 	kfree(mesh_dev->ieee80211_ptr);
--- 
-2.30.2
-
+ 	if (o)
+ 		list_for_each_entry(snap, &o->snapshots, list)
 
 
