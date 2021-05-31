@@ -2,36 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B5F183963F5
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 17:40:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BBB7E395F7F
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 16:10:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233243AbhEaPlv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 11:41:51 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46050 "EHLO mail.kernel.org"
+        id S233199AbhEaOME (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 10:12:04 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49706 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233408AbhEaOX0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 10:23:26 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A73A0613F2;
-        Mon, 31 May 2021 13:45:44 +0000 (UTC)
+        id S230308AbhEaNpK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 09:45:10 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3F87A6141E;
+        Mon, 31 May 2021 13:29:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1622468745;
-        bh=RQhlUaPK0txnvTpB8EbPl0THdMYPjTwx7mfDkn3q924=;
+        s=korg; t=1622467784;
+        bh=KHU6nK91ps5fgJ0M+8gUgacb8bal347koAIiWci8V5k=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=AT0LtAN3gOqVaUxrSb6Ku69evSyr2h9bh2Z9INbEhgKQv/Pn6n5hEFFAF8lPJ31lN
-         V2Dc6Vq8qkUwV1aPZu5iPJtj2dfVtaCVg2zYZvJOMaxMWOWJBP0wvYWh2KnyL9ZKgS
-         +cSAY6KPfLUPD6upprXBn/7NmWbygZ/CYSmT4O5o=
+        b=gP6WAQrANAtfMi3zQZeBByLmUbCPhp0ElpfUH1p3fnaCsKp8J/iD0OA+mKW2DJGtj
+         4iLHt2JG2RlW2sJlTHNqSQQ+Yh2DOE7zBdAGSbWFOU0vtEq82wgYJzgfIt/Q58JL49
+         KaMea4XAqE5PmVM3S5Alqa/VXRQ8NljnEeFUMStw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Kangjie Lu <kjlu@umn.edu>,
-        Mark Brown <broonie@kernel.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 111/177] Revert "ASoC: cs43130: fix a NULL pointer dereference"
+        stable@vger.kernel.org,
+        syzbot+b4d3fd1dfd53e90afd79@syzkaller.appspotmail.com,
+        Jean Delvare <jdelvare@suse.de>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Jarkko Nikula <jarkko.nikula@linux.intel.com>,
+        Wolfram Sang <wsa@kernel.org>
+Subject: [PATCH 4.14 43/79] i2c: i801: Dont generate an interrupt on bus reset
 Date:   Mon, 31 May 2021 15:14:28 +0200
-Message-Id: <20210531130651.752580694@linuxfoundation.org>
+Message-Id: <20210531130637.392721855@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210531130647.887605866@linuxfoundation.org>
-References: <20210531130647.887605866@linuxfoundation.org>
+In-Reply-To: <20210531130636.002722319@linuxfoundation.org>
+References: <20210531130636.002722319@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,47 +43,56 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+From: Jean Delvare <jdelvare@suse.de>
 
-[ Upstream commit fdda0dd2686ecd1f2e616c9e0366ea71b40c485d ]
+commit e4d8716c3dcec47f1557024add24e1f3c09eb24b upstream.
 
-This reverts commit a2be42f18d409213bb7e7a736e3ef6ba005115bb.
+Now that the i2c-i801 driver supports interrupts, setting the KILL bit
+in a attempt to recover from a timed out transaction triggers an
+interrupt. Unfortunately, the interrupt handler (i801_isr) is not
+prepared for this situation and will try to process the interrupt as
+if it was signaling the end of a successful transaction. In the case
+of a block transaction, this can result in an out-of-range memory
+access.
 
-Because of recent interactions with developers from @umn.edu, all
-commits from them have been recently re-reviewed to ensure if they were
-correct or not.
+This condition was reproduced several times by syzbot:
+https://syzkaller.appspot.com/bug?extid=ed71512d469895b5b34e
+https://syzkaller.appspot.com/bug?extid=8c8dedc0ba9e03f6c79e
+https://syzkaller.appspot.com/bug?extid=c8ff0b6d6c73d81b610e
+https://syzkaller.appspot.com/bug?extid=33f6c360821c399d69eb
+https://syzkaller.appspot.com/bug?extid=be15dc0b1933f04b043a
+https://syzkaller.appspot.com/bug?extid=b4d3fd1dfd53e90afd79
 
-Upon review, this commit was found to be incorrect for the reasons
-below, so it must be reverted.  It will be fixed up "correctly" in a
-later kernel change.
+So disable interrupts while trying to reset the bus. Interrupts will
+be enabled again for the following transaction.
 
-The original patch here is not correct, sysfs files that were created
-are not unwound.
-
-Cc: Kangjie Lu <kjlu@umn.edu>
-Cc: Mark Brown <broonie@kernel.org>
-Link: https://lore.kernel.org/r/20210503115736.2104747-57-gregkh@linuxfoundation.org
+Fixes: 636752bcb517 ("i2c-i801: Enable IRQ for SMBus transactions")
+Reported-by: syzbot+b4d3fd1dfd53e90afd79@syzkaller.appspotmail.com
+Signed-off-by: Jean Delvare <jdelvare@suse.de>
+Acked-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc: Jarkko Nikula <jarkko.nikula@linux.intel.com>
+Tested-by: Jarkko Nikula <jarkko.nikula@linux.intel.com>
+Signed-off-by: Wolfram Sang <wsa@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/codecs/cs43130.c | 2 --
- 1 file changed, 2 deletions(-)
+ drivers/i2c/busses/i2c-i801.c |    6 ++----
+ 1 file changed, 2 insertions(+), 4 deletions(-)
 
-diff --git a/sound/soc/codecs/cs43130.c b/sound/soc/codecs/cs43130.c
-index 7fb34422a2a4..bb46e993c353 100644
---- a/sound/soc/codecs/cs43130.c
-+++ b/sound/soc/codecs/cs43130.c
-@@ -2319,8 +2319,6 @@ static int cs43130_probe(struct snd_soc_component *component)
- 			return ret;
+--- a/drivers/i2c/busses/i2c-i801.c
++++ b/drivers/i2c/busses/i2c-i801.c
+@@ -379,11 +379,9 @@ static int i801_check_post(struct i801_p
+ 		dev_err(&priv->pci_dev->dev, "Transaction timeout\n");
+ 		/* try to stop the current command */
+ 		dev_dbg(&priv->pci_dev->dev, "Terminating the current operation\n");
+-		outb_p(inb_p(SMBHSTCNT(priv)) | SMBHSTCNT_KILL,
+-		       SMBHSTCNT(priv));
++		outb_p(SMBHSTCNT_KILL, SMBHSTCNT(priv));
+ 		usleep_range(1000, 2000);
+-		outb_p(inb_p(SMBHSTCNT(priv)) & (~SMBHSTCNT_KILL),
+-		       SMBHSTCNT(priv));
++		outb_p(0, SMBHSTCNT(priv));
  
- 		cs43130->wq = create_singlethread_workqueue("cs43130_hp");
--		if (!cs43130->wq)
--			return -ENOMEM;
- 		INIT_WORK(&cs43130->work, cs43130_imp_meas);
- 	}
- 
--- 
-2.30.2
-
+ 		/* Check if it worked */
+ 		status = inb_p(SMBHSTSTS(priv));
 
 
