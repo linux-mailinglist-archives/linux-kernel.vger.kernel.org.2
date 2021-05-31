@@ -2,113 +2,225 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F6AD3955CE
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 09:13:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 648993955D4
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 09:13:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230231AbhEaHOr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 03:14:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58530 "EHLO
+        id S230248AbhEaHPV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 03:15:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58638 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230070AbhEaHOn (ORCPT
+        with ESMTP id S230247AbhEaHPK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 03:14:43 -0400
-Received: from mail-qt1-x836.google.com (mail-qt1-x836.google.com [IPv6:2607:f8b0:4864:20::836])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40246C061574
-        for <linux-kernel@vger.kernel.org>; Mon, 31 May 2021 00:13:04 -0700 (PDT)
-Received: by mail-qt1-x836.google.com with SMTP id h24so7318739qtm.12
-        for <linux-kernel@vger.kernel.org>; Mon, 31 May 2021 00:13:04 -0700 (PDT)
+        Mon, 31 May 2021 03:15:10 -0400
+Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD7FCC061760
+        for <linux-kernel@vger.kernel.org>; Mon, 31 May 2021 00:13:30 -0700 (PDT)
+Received: by mail-ed1-x52b.google.com with SMTP id b11so5499046edy.4
+        for <linux-kernel@vger.kernel.org>; Mon, 31 May 2021 00:13:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
+        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=yPnIo42plkwFrQDyxV2qx/s2cknNkAGZDVtx3wbOgvs=;
-        b=Tp9Af5PZOT1pgH/udgKZCP5uYa6IETW7cLxSNlICLKoZBpazH6eoBaMbErfh4PiY69
-         ZoKenJXw/hfXSNe3QTHHJUOulDCKS4mckM2v7xUz0AOKJN1X9z60aWCOU0dQq64zOmPb
-         0OpX/Ls4vxYX6evECby6KGRXXXDYsg+Xr9cRcYcNtFWyxrBv2DUM7dToHqzcGahi2O1d
-         mBWjAiXxxToWo7fkbaCA9oZRU/qc0/TATOekuO6BMXH+cKvTks/F+m3jJvi06JOFV2A3
-         y1r3BKbP6+Ws0j3BfJkL/fwFd2tT8q48cSXfLZOh9/s4RQkhqPwK01T/4grlfIVPRV8C
-         0T+w==
+        bh=HsUiQi3ntUxHPOgfLtJZfOJE0YtMnjg4ItjU9q5zMjE=;
+        b=pjl+eyiZ3SVuMuplEw97FDWO0PFqcd17F4vwf+if4jHNgPbn1w1mQjgqab4EuyqMH4
+         i2yCpgZbMQHteb4eEJfalzc4jiHuoaRyUEnLGscOViLDFU+FaIzY9+FgYY/vzLGLhGwa
+         Cl2uBYhAWAGrrML81PUus32wzX3oLmigWxiVFrw0QBv51HciWo8blYjKOHMBj9iDIhBq
+         OA8nYaQ7Aw+DzdfB6Pms1I5qeAWNW6gF1ew/EkpajY0jHoLlTYi9BzhksrzBNJSWC4xg
+         fhqGEFYXOVa6N6fS6yzpW9wpuwbybGX9qNarvRbYOiESGPy1kA70dU0szyW+EGJSqMkW
+         Qvwg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=yPnIo42plkwFrQDyxV2qx/s2cknNkAGZDVtx3wbOgvs=;
-        b=SuHYeV2hXShkG0gK0+m6Pkhbu55yT6C+YYGcJT70nzJ8N+Q/fNGCn9S8gDPNKzJ63l
-         3dOaxRufdNl6sAyaRp83NbhKbjDC4LP+4UpvXX4tTrehyjxALTvCjFhnNNfAL+BaC1wk
-         N0BBmNb05vjqd3HX/AwLVLKwC57RVmxpLiU6wARuiImkHmVR4G/XOkHTW9dEHtIf/884
-         TaFAKmXxWOshsXl9Aq2mD3vejMwLXDXJaN6ztCKfdTdq7mZlAPYYK/E8Bbu54AJK0sYD
-         WmyjzbNkcevqjRKRK7rg+1yEdzIFFIQYU8Raap3cdbPuIhgCSijFauXqUnW569C7gdJX
-         2WWg==
-X-Gm-Message-State: AOAM530P9le95qmlIvWJ5cogPUhn1mhnBLk6+E6s1YqpeJD+vny37ujP
-        KDTnaUuBwCmZSsIKXPTr6C1k3OA+fxLftw2kpnQ=
-X-Google-Smtp-Source: ABdhPJwqutod0yLild77qYJkxAUuP6UWl9+wI+5CsvXM3euJPYCcMm5SprLhD6u2aBWc3gjpwazA7aQ94EnX1pITFQc=
-X-Received: by 2002:ac8:5197:: with SMTP id c23mr13620903qtn.292.1622445183449;
- Mon, 31 May 2021 00:13:03 -0700 (PDT)
+        bh=HsUiQi3ntUxHPOgfLtJZfOJE0YtMnjg4ItjU9q5zMjE=;
+        b=DH4BMbQMEfz/bHYEpg3OxLBJY5fIHhGC66IU/9EndIbktGwL2eQlI/6B0keT0ikAYD
+         jnoyPnMtsvR/VchENZGh3daO/bkHPmIbWlR/anyvDJLMDSiwXhb2fr+1HPqibPRSNo+f
+         Obt/H86vp6LVcaSgVyYu89PYXXwp7s6QDFBgg3Zih4NlMrXZONjoeTFNRa0uXAS8EEKF
+         KnXhhiJMYm9XQyrKpha5Fs1A8I/0cnXvY6wnWO/cxVqdBzAYTxN71ww856u5wxpmm0gS
+         5hnmZ/w2dHHASMUmpFep8TbxdyXn2y6EMTO9JpRWcw5bPC9IJXEs9C9t2naE38qjqvOW
+         xydw==
+X-Gm-Message-State: AOAM533KNriMNbbhsALM3ynAlWq6G0b79vV6T6E1DaRY8HoGzLmTXhWC
+        thVES0UkejS9+rcDarDLh4ItO0nFopW/jShPcWmv
+X-Google-Smtp-Source: ABdhPJxz6zmra41o6Y5jQKsKyQQGK6vr2Kk7000vKI5r+AMsAhkzn/ieUzE/Q93Iok6mSGB/HstZcEDQcLUJcTjE5oM=
+X-Received: by 2002:a50:9e8e:: with SMTP id a14mr2295520edf.5.1622445209532;
+ Mon, 31 May 2021 00:13:29 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210527163409.22049-1-nicolas.cavallari@green-communications.fr>
-In-Reply-To: <20210527163409.22049-1-nicolas.cavallari@green-communications.fr>
-From:   Shengjiu Wang <shengjiu.wang@gmail.com>
-Date:   Mon, 31 May 2021 15:12:52 +0800
-Message-ID: <CAA+D8APeigNMB4gTNTTVE4-vj0J9y5DEh+3P7p9iTZq1KdGuPg@mail.gmail.com>
-Subject: Re: [PATCH] ASoC: fsl-asoc-card: Set .owner attribute when
- registering card.
-To:     Nicolas Cavallari <nicolas.cavallari@green-communications.fr>
-Cc:     Timur Tabi <timur@kernel.org>,
-        Nicolin Chen <nicoleotsuka@gmail.com>,
-        Xiubo Li <Xiubo.Lee@gmail.com>,
-        Fabio Estevam <festevam@gmail.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+References: <20210517095513.850-1-xieyongji@bytedance.com> <20210517095513.850-12-xieyongji@bytedance.com>
+ <YLRsehBRAiCJEDl0@kroah.com> <CACycT3vRHPfOGxmy1Uv=8_dqqq8iG4YTZHUizo+y8EYKGS5g8g@mail.gmail.com>
+ <YLSC6AthAl+VeQsv@kroah.com>
+In-Reply-To: <YLSC6AthAl+VeQsv@kroah.com>
+From:   Yongji Xie <xieyongji@bytedance.com>
+Date:   Mon, 31 May 2021 15:13:18 +0800
+Message-ID: <CACycT3t4OABUoXGjx4Fyf1iMm--OTC8Vdp8rN1ppCs0W15V6iA@mail.gmail.com>
+Subject: Re: Re: Re: [PATCH v7 11/12] vduse: Introduce VDUSE - vDPA Device in Userspace
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Stefan Hajnoczi <stefanha@redhat.com>,
+        Stefano Garzarella <sgarzare@redhat.com>,
+        Parav Pandit <parav@nvidia.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        Christian Brauner <christian.brauner@canonical.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Jens Axboe <axboe@kernel.dk>, bcrl@kvack.org,
+        Jonathan Corbet <corbet@lwn.net>,
+        =?UTF-8?Q?Mika_Penttil=C3=A4?= <mika.penttila@nextfour.com>,
+        Dan Carpenter <dan.carpenter@oracle.com>, joro@8bytes.org,
+        virtualization <virtualization@lists.linux-foundation.org>,
+        netdev@vger.kernel.org, kvm <kvm@vger.kernel.org>,
+        linux-fsdevel@vger.kernel.org, iommu@lists.linux-foundation.org,
         linux-kernel <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 28, 2021 at 12:35 AM Nicolas Cavallari
-<nicolas.cavallari@green-communications.fr> wrote:
+On Mon, May 31, 2021 at 2:32 PM Greg KH <gregkh@linuxfoundation.org> wrote:
 >
-> Otherwise, when compiled as module, a WARN_ON is triggered:
+> On Mon, May 31, 2021 at 02:19:37PM +0800, Yongji Xie wrote:
+> > Hi Greg,
+> >
+> > Thanks a lot for the review!
+> >
+> > On Mon, May 31, 2021 at 12:56 PM Greg KH <gregkh@linuxfoundation.org> wrote:
+> > >
+> > > On Mon, May 17, 2021 at 05:55:12PM +0800, Xie Yongji wrote:
+> > > > +struct vduse_dev {
+> > > > +     struct vduse_vdpa *vdev;
+> > > > +     struct device dev;
+> > > > +     struct cdev cdev;
+> > >
+> > > You now have 2 reference counted devices controling the lifespace of a
+> > > single structure.  A mess that is guaranteed to go wrong.  Please never
+> > > do this.
+> > >
+> >
+> > These two are both used by cdev_device_add(). Looks like I didn't find
+> > any problem. Any suggestions?
 >
-> WARNING: CPU: 0 PID: 5 at sound/core/init.c:208 snd_card_new+0x310/0x39c [snd]
-> [...]
-> CPU: 0 PID: 5 Comm: kworker/0:0 Not tainted 5.10.39 #1
-> Hardware name: Freescale i.MX6 Quad/DualLite (Device Tree)
-> Workqueue: events deferred_probe_work_func
-> [<c0111988>] (unwind_backtrace) from [<c010c8ac>] (show_stack+0x10/0x14)
-> [<c010c8ac>] (show_stack) from [<c092784c>] (dump_stack+0xdc/0x104)
-> [<c092784c>] (dump_stack) from [<c0129710>] (__warn+0xd8/0x114)
-> [<c0129710>] (__warn) from [<c0922a48>] (warn_slowpath_fmt+0x5c/0xc4)
-> [<c0922a48>] (warn_slowpath_fmt) from [<bf0496f8>] (snd_card_new+0x310/0x39c [snd])
-> [<bf0496f8>] (snd_card_new [snd]) from [<bf1d7df8>] (snd_soc_bind_card+0x334/0x9c4 [snd_soc_core])
-> [<bf1d7df8>] (snd_soc_bind_card [snd_soc_core]) from [<bf1e9cd8>] (devm_snd_soc_register_card+0x30/0x6c [snd_soc_core])
-> [<bf1e9cd8>] (devm_snd_soc_register_card [snd_soc_core]) from [<bf22d964>] (fsl_asoc_card_probe+0x550/0xcc8 [snd_soc_fsl_asoc_card])
-> [<bf22d964>] (fsl_asoc_card_probe [snd_soc_fsl_asoc_card]) from [<c060c930>] (platform_drv_probe+0x48/0x98)
-> [...]
+> Make one of these dynamic and do not have them both control the lifespan
+> of the structure.
 >
-> Signed-off-by: Nicolas Cavallari <nicolas.cavallari@green-communications.fr>
 
-Acked-by: Shengjiu Wang <shengjiu.wang@gmail.com>
+I see some comments in cdev_device_add():
 
-> ---
->  sound/soc/fsl/fsl-asoc-card.c | 1 +
->  1 file changed, 1 insertion(+)
+"This function should be used whenever the struct cdev and the struct
+device are members of the same structure whose lifetime is managed by
+the struct device."
+
+So it seems to be ok here?
+
+> > > > +     struct vduse_virtqueue *vqs;
+> > > > +     struct vduse_iova_domain *domain;
+> > > > +     char *name;
+> > > > +     struct mutex lock;
+> > > > +     spinlock_t msg_lock;
+> > > > +     atomic64_t msg_unique;
+> > >
+> > > Why do you need an atomic and a lock?
+> > >
+> >
+> > You are right. We don't need an atomic here.
+> >
+> > > > +     wait_queue_head_t waitq;
+> > > > +     struct list_head send_list;
+> > > > +     struct list_head recv_list;
+> > > > +     struct list_head list;
+> > > > +     struct vdpa_callback config_cb;
+> > > > +     struct work_struct inject;
+> > > > +     spinlock_t irq_lock;
+> > > > +     unsigned long api_version;
+> > > > +     bool connected;
+> > > > +     int minor;
+> > > > +     u16 vq_size_max;
+> > > > +     u32 vq_num;
+> > > > +     u32 vq_align;
+> > > > +     u32 config_size;
+> > > > +     u32 device_id;
+> > > > +     u32 vendor_id;
+> > > > +};
+> > > > +
+> > > > +struct vduse_dev_msg {
+> > > > +     struct vduse_dev_request req;
+> > > > +     struct vduse_dev_response resp;
+> > > > +     struct list_head list;
+> > > > +     wait_queue_head_t waitq;
+> > > > +     bool completed;
+> > > > +};
+> > > > +
+> > > > +struct vduse_control {
+> > > > +     unsigned long api_version;
+> > >
+> > > u64?
+> > >
+> >
+> > OK.
+> >
+> > > > +};
+> > > > +
+> > > > +static unsigned long max_bounce_size = (64 * 1024 * 1024);
+> > > > +module_param(max_bounce_size, ulong, 0444);
+> > > > +MODULE_PARM_DESC(max_bounce_size, "Maximum bounce buffer size. (default: 64M)");
+> > > > +
+> > > > +static unsigned long max_iova_size = (128 * 1024 * 1024);
+> > > > +module_param(max_iova_size, ulong, 0444);
+> > > > +MODULE_PARM_DESC(max_iova_size, "Maximum iova space size (default: 128M)");
+> > > > +
+> > > > +static bool allow_unsafe_device_emulation;
+> > > > +module_param(allow_unsafe_device_emulation, bool, 0444);
+> > > > +MODULE_PARM_DESC(allow_unsafe_device_emulation, "Allow emulating unsafe device."
+> > > > +     " We must make sure the userspace device emulation process is trusted."
+> > > > +     " Otherwise, don't enable this option. (default: false)");
+> > > > +
+> > >
+> > > This is not the 1990's anymore, please never use module parameters, make
+> > > these per-device attributes if you really need them.
+> > >
+> >
+> > These parameters will be used before the device is created. Or do you
+> > mean add some attributes to the control device?
 >
-> diff --git a/sound/soc/fsl/fsl-asoc-card.c b/sound/soc/fsl/fsl-asoc-card.c
-> index c62bfd1c3ac7..4f55b316cf0f 100644
-> --- a/sound/soc/fsl/fsl-asoc-card.c
-> +++ b/sound/soc/fsl/fsl-asoc-card.c
-> @@ -744,6 +744,7 @@ static int fsl_asoc_card_probe(struct platform_device *pdev)
->         /* Initialize sound card */
->         priv->pdev = pdev;
->         priv->card.dev = &pdev->dev;
-> +       priv->card.owner = THIS_MODULE;
->         ret = snd_soc_of_parse_card_name(&priv->card, "model");
->         if (ret) {
->                 snprintf(priv->name, sizeof(priv->name), "%s-audio",
-> --
-> 2.32.0.rc0
+> You need to do something, as no one can mess with a module parameter
+> easily.  Why do you need them at all, shouldn't it "just work" properly
+> with no need for userspace interaction?
 >
+
+OK, I get you. It works fine with the default value. So I think it
+should be ok to remove these parameters before we find a situation
+that really needs them.
+
+> > > > +static int vduse_init(void)
+> > > > +{
+> > > > +     int ret;
+> > > > +
+> > > > +     if (max_bounce_size >= max_iova_size)
+> > > > +             return -EINVAL;
+> > > > +
+> > > > +     ret = misc_register(&vduse_misc);
+> > > > +     if (ret)
+> > > > +             return ret;
+> > > > +
+> > > > +     vduse_class = class_create(THIS_MODULE, "vduse");
+> > >
+> > > If you have a misc device, you do not need to create a class at the same
+> > > time.  Why are you doing both here?  Just stick with the misc device, no
+> > > need for anything else.
+> > >
+> >
+> > The misc device is the control device represented by
+> > /dev/vduse/control. Then a VDUSE device represented by
+> > /dev/vduse/$NAME can be created by the ioctl(VDUSE_CREATE_DEV) on this
+> > control device.
+>
+> Ah.  Then how about using the same MAJOR for all of these, and just have
+> the first minor (0) be your control?  That happens for other device
+> types (raw, loop, etc.).  Or just document this really well please, as
+> it was not obvious what you were doing here.
+>
+
+OK, I will reserve the first minor (0) for the control device instead.
+
+Thanks,
+Yongji
