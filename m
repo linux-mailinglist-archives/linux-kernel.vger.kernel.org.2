@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D14039657F
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 18:36:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2531D395C70
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 15:31:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234350AbhEaQiG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 12:38:06 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40792 "EHLO mail.kernel.org"
+        id S232587AbhEaNdK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 09:33:10 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56434 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231637AbhEaOtl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 10:49:41 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0E91E61400;
-        Mon, 31 May 2021 13:57:18 +0000 (UTC)
+        id S231644AbhEaNX5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 09:23:57 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BC38B613B9;
+        Mon, 31 May 2021 13:20:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1622469439;
-        bh=4q0YyHM0SbsFNSLazTrvIfuRC/KdV8PwvZYubE5KCAw=;
+        s=korg; t=1622467213;
+        bh=V0QDUYX5OnRqA3JrdUeP+0VbvLODVnGZUntGH/PKvOY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=0q2vFTCwMemZ420iq3TxxpuoedyOGV+Fh3TC2L1WY9u+EMn8o7Lhh2mcMM+kph8cq
-         pXxu58mCI2ACyF03AwJpyV94vyyVx2o17NB1c6hoPmgw7+zulftUoqiNYlR9Vko856
-         iJ07urG272A20Rn8FMBrNhon+eiU5xR1c2dHkDvk=
+        b=jeelXll5K1+LYH/NXWRUTc7TPBKrT2W381tjoCHTri+Nake0KdnY82lSix/yzAmEZ
+         CQDSqmaUf67EltnKadttdbUtbruGeZzCZ6+6QT/00qEP3ZR7SDJAB/wou8u5bwvNWF
+         hJcjatgP2Y6DcmQCA3/2CTb1mnpQn07ffWsutxAM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Kangjie Lu <kjlu@umn.edu>,
-        Kalle Valo <kvalo@codeaurora.org>,
+        stable@vger.kernel.org, "David S. Miller" <davem@davemloft.net>,
+        Dominik Brodowski <linux@dominikbrodowski.net>,
+        Anirudh Rayabharam <mail@anirudhrb.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.12 198/296] Revert "brcmfmac: add a check for the status of usb_register"
+Subject: [PATCH 4.9 40/66] net: fujitsu: fix potential null-ptr-deref
 Date:   Mon, 31 May 2021 15:14:13 +0200
-Message-Id: <20210531130710.536328981@linuxfoundation.org>
+Message-Id: <20210531130637.526222221@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210531130703.762129381@linuxfoundation.org>
-References: <20210531130703.762129381@linuxfoundation.org>
+In-Reply-To: <20210531130636.254683895@linuxfoundation.org>
+References: <20210531130636.254683895@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,49 +41,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+From: Anirudh Rayabharam <mail@anirudhrb.com>
 
-[ Upstream commit 30a350947692f794796f563029d29764497f2887 ]
+[ Upstream commit 52202be1cd996cde6e8969a128dc27ee45a7cb5e ]
 
-This reverts commit 42daad3343be4a4e1ee03e30a5f5cc731dadfef5.
+In fmvj18x_get_hwinfo(), if ioremap fails there will be NULL pointer
+deref. To fix this, check the return value of ioremap and return -1
+to the caller in case of failure.
 
-Because of recent interactions with developers from @umn.edu, all
-commits from them have been recently re-reviewed to ensure if they were
-correct or not.
-
-Upon review, this commit was found to be incorrect for the reasons
-below, so it must be reverted.  It will be fixed up "correctly" in a
-later kernel change.
-
-The original commit here did nothing to actually help if usb_register()
-failed, so it gives a "false sense of security" when there is none.  The
-correct solution is to correctly unwind from this error.
-
-Cc: Kangjie Lu <kjlu@umn.edu>
-Cc: Kalle Valo <kvalo@codeaurora.org>
-Link: https://lore.kernel.org/r/20210503115736.2104747-69-gregkh@linuxfoundation.org
+Cc: "David S. Miller" <davem@davemloft.net>
+Acked-by: Dominik Brodowski <linux@dominikbrodowski.net>
+Signed-off-by: Anirudh Rayabharam <mail@anirudhrb.com>
+Link: https://lore.kernel.org/r/20210503115736.2104747-16-gregkh@linuxfoundation.org
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/wireless/broadcom/brcm80211/brcmfmac/usb.c | 6 +-----
- 1 file changed, 1 insertion(+), 5 deletions(-)
+ drivers/net/ethernet/fujitsu/fmvj18x_cs.c | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-diff --git a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/usb.c b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/usb.c
-index 586f4dfc638b..d2a803fc8ac6 100644
---- a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/usb.c
-+++ b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/usb.c
-@@ -1586,10 +1586,6 @@ void brcmf_usb_exit(void)
+diff --git a/drivers/net/ethernet/fujitsu/fmvj18x_cs.c b/drivers/net/ethernet/fujitsu/fmvj18x_cs.c
+index 399cfd217288..cfda55bfa811 100644
+--- a/drivers/net/ethernet/fujitsu/fmvj18x_cs.c
++++ b/drivers/net/ethernet/fujitsu/fmvj18x_cs.c
+@@ -548,6 +548,11 @@ static int fmvj18x_get_hwinfo(struct pcmcia_device *link, u_char *node_id)
+ 	return -1;
  
- void brcmf_usb_register(void)
- {
--	int ret;
--
- 	brcmf_dbg(USB, "Enter\n");
--	ret = usb_register(&brcmf_usbdrvr);
--	if (ret)
--		brcmf_err("usb_register failed %d\n", ret);
-+	usb_register(&brcmf_usbdrvr);
- }
+     base = ioremap(link->resource[2]->start, resource_size(link->resource[2]));
++    if (!base) {
++	pcmcia_release_window(link, link->resource[2]);
++	return -1;
++    }
++
+     pcmcia_map_mem_page(link, link->resource[2], 0);
+ 
+     /*
 -- 
 2.30.2
 
