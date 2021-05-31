@@ -2,85 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5ED6439560B
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 09:25:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 63BBE395611
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 09:26:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230243AbhEaH1F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 03:27:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33132 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230206AbhEaH1B (ORCPT
+        id S230258AbhEaH2R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 03:28:17 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:24325 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230111AbhEaH2O (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 03:27:01 -0400
-Received: from mail-yb1-xb30.google.com (mail-yb1-xb30.google.com [IPv6:2607:f8b0:4864:20::b30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1DD59C061574
-        for <linux-kernel@vger.kernel.org>; Mon, 31 May 2021 00:25:21 -0700 (PDT)
-Received: by mail-yb1-xb30.google.com with SMTP id y2so15274491ybq.13
-        for <linux-kernel@vger.kernel.org>; Mon, 31 May 2021 00:25:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=7BHnZIGW8dlfXz29SYi4Txt2W/u/uTvUIzT8Fl03vi4=;
-        b=qg7s9p4d8oAYIvK8vQlIe5pB3OADZbEcHuASyXCVSwoyOsOZXuYOhMbrAD/CpWl5dL
-         ctl2bynl4Ns8RgSs9FU2OK61z+lOrI1rl55ZcwmZDg0pXhqU2jaCjGskZ1Yn2+60ctP4
-         ULF+xM0ZzJuOYLjZJYoYba7igcY1FVaFpsPpd5Xel/+TILWj0UvT5uJT9aSEjSyE2BMg
-         A2m/+oZVPPLtCBPWOWhIIfZIe7643jFe4i6oll+DnwVZ10uACOv03JNG2m3feYyk545F
-         67f/MNR+fQDCQuR5m9QgWihJokEZ4HatboLAEy7cfu2mq19iLQxdO43wttertsVBFdYI
-         KuGQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=7BHnZIGW8dlfXz29SYi4Txt2W/u/uTvUIzT8Fl03vi4=;
-        b=lmq9hT2AIOVVtf7CS9KTYaxrO7Rux1LuqXed9NWj9uz9PXMCUE2NnOxV+ZL/WJnjoJ
-         zzvSMFUNcnJSedCHnuR2A5MfMX5f72iMQtApmrRroCpnPCqZm2Pf/er6CqBpOiwanY+l
-         ozUd0P21Pt3aorKO7DO70lAmRk0kj7mbABpnURqly+C6MMTUdiuYr/3IBriN2s/e+/IC
-         bFlMzj+bd+pZ6OOZUw/q+vtEMa81licOqP5oaZnGiSGICIzAtoQvidH7Ko7ln5JQ+wG5
-         ULuEpb3SWFraeM4isXq1PEzrDJvkUC6z4Hv2PzUMn1h8SbCy9yqgLzglCOw6HXszm7Tf
-         I2Sw==
-X-Gm-Message-State: AOAM5331CqxBtBg434R37CfFktw2EDqSJenPLXRNU3XCpRq2ggJjQrSq
-        3cElEAXUZN2nlF91G1eX3fzwxeiPwQpR4fMxKIGd5Q==
-X-Google-Smtp-Source: ABdhPJwgpwJ30Eu6qeDlGXWgZ0BQupK700HoL7AwsmZ6px0iYtASUH8pCuuNNu8HM+R4kX2wy0xooczc3cbX8G+l2e0=
-X-Received: by 2002:a05:6902:1026:: with SMTP id x6mr27757748ybt.23.1622445920359;
- Mon, 31 May 2021 00:25:20 -0700 (PDT)
+        Mon, 31 May 2021 03:28:14 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1622445995; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
+ Subject: Sender; bh=pnbzo/18XLoyGQ7x1yCND/XM9avCMREiTkYsYEr7m9A=; b=J0doeeng6hU9uhhsuIAt57T+z7lMLflSpGurvvTi+A5uEjsZrSZ6cGduN99zWAwpHLkdIIty
+ DbP/luASmlxKcBQSL4eeV2OPXsfRE/VRzPq41bYTXZVUomceD2LsZwR631vaBC6nA2Alzqx0
+ xjSwoBO5vnBe3f2rqKHn6ioml6A=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n02.prod.us-east-1.postgun.com with SMTP id
+ 60b48f95265e7370f74ca930 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 31 May 2021 07:26:13
+ GMT
+Sender: akhilpo=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 74175C4360C; Mon, 31 May 2021 07:26:12 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-3.5 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        NICE_REPLY_A,SPF_FAIL,URIBL_BLOCKED autolearn=no autolearn_force=no
+        version=3.4.0
+Received: from [192.168.1.105] (unknown [117.210.184.158])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: akhilpo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 8BF0DC433D3;
+        Mon, 31 May 2021 07:26:07 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 8BF0DC433D3
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=akhilpo@codeaurora.org
+Subject: Re: [PATCH v2 1/8] drm/msm: remove unused icc_path/ocmem_icc_path
+To:     Jonathan Marek <jonathan@marek.ca>, freedreno@lists.freedesktop.org
+Cc:     Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Jordan Crouse <jordan@cosmicpenguin.net>,
+        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
+        Dave Airlie <airlied@redhat.com>,
+        Sharat Masetty <smasetty@codeaurora.org>,
+        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
+        <linux-arm-msm@vger.kernel.org>,
+        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
+        <dri-devel@lists.freedesktop.org>,
+        open list <linux-kernel@vger.kernel.org>
+References: <20210513171431.18632-1-jonathan@marek.ca>
+ <20210513171431.18632-2-jonathan@marek.ca>
+From:   Akhil P Oommen <akhilpo@codeaurora.org>
+Message-ID: <b00306ad-e9fa-0fb3-1901-61bdf94cc887@codeaurora.org>
+Date:   Mon, 31 May 2021 12:56:05 +0530
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.2
 MIME-Version: 1.0
-References: <cover.1621809029.git.sander@svanheule.net> <be5ffefa007ee4ebd7d4cec88f5f2fb7cd5b689e.1621809029.git.sander@svanheule.net>
-In-Reply-To: <be5ffefa007ee4ebd7d4cec88f5f2fb7cd5b689e.1621809029.git.sander@svanheule.net>
-From:   Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Date:   Mon, 31 May 2021 09:25:09 +0200
-Message-ID: <CAMpxmJX8gw_A36YAg4hTx3bT4-7NGk_KCoEHrKfeVXnJ-01Vsw@mail.gmail.com>
-Subject: Re: [PATCH v3 1/6] gpio: regmap: Add quirk for output data register
-To:     Sander Vanheule <sander@svanheule.net>
-Cc:     Pavel Machek <pavel@ucw.cz>, Rob Herring <robh+dt@kernel.org>,
-        Lee Jones <lee.jones@linaro.org>,
-        Mark Brown <broonie@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J . Wysocki" <rafael@kernel.org>,
-        Michael Walle <michael@walle.cc>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Linux LED Subsystem <linux-leds@vger.kernel.org>,
-        linux-devicetree <devicetree@vger.kernel.org>,
-        linux-gpio <linux-gpio@vger.kernel.org>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210513171431.18632-2-jonathan@marek.ca>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 24, 2021 at 12:34 AM Sander Vanheule <sander@svanheule.net> wrote:
->
-> GPIO chips may not support setting the output value when a pin is
-> configured as an input, although the current implementation assumes this
-> is always possible.
->
-> Add support for setting pin direction before value. The order defaults
-> to setting the value first, but this can be reversed by setting the
-> GPIO_REGMAP_QUIRK_SET_DIRECTION_FIRST flag in regmap_config.quirks.
->
-> Signed-off-by: Sander Vanheule <sander@svanheule.net>
+On 5/13/2021 10:43 PM, Jonathan Marek wrote:
+> These aren't used by anything anymore.
+> 
+> Signed-off-by: Jonathan Marek <jonathan@marek.ca>
 > ---
+>   drivers/gpu/drm/msm/adreno/adreno_gpu.c | 3 ---
+>   drivers/gpu/drm/msm/msm_gpu.h           | 9 ---------
+>   2 files changed, 12 deletions(-)
+> 
+> diff --git a/drivers/gpu/drm/msm/adreno/adreno_gpu.c b/drivers/gpu/drm/msm/adreno/adreno_gpu.c
+> index 8fd0777f2dc9..009f4c560f16 100644
+> --- a/drivers/gpu/drm/msm/adreno/adreno_gpu.c
+> +++ b/drivers/gpu/drm/msm/adreno/adreno_gpu.c
+> @@ -946,7 +946,4 @@ void adreno_gpu_cleanup(struct adreno_gpu *adreno_gpu)
+>   	pm_runtime_disable(&priv->gpu_pdev->dev);
+>   
+>   	msm_gpu_cleanup(&adreno_gpu->base);
+> -
+> -	icc_put(gpu->icc_path);
+> -	icc_put(gpu->ocmem_icc_path);
+>   }
+> diff --git a/drivers/gpu/drm/msm/msm_gpu.h b/drivers/gpu/drm/msm/msm_gpu.h
+> index 18baf935e143..c302ab7ffb06 100644
+> --- a/drivers/gpu/drm/msm/msm_gpu.h
+> +++ b/drivers/gpu/drm/msm/msm_gpu.h
+> @@ -118,15 +118,6 @@ struct msm_gpu {
+>   	struct clk *ebi1_clk, *core_clk, *rbbmtimer_clk;
+>   	uint32_t fast_rate;
+>   
+> -	/* The gfx-mem interconnect path that's used by all GPU types. */
+> -	struct icc_path *icc_path;
+> -
+> -	/*
+> -	 * Second interconnect path for some A3xx and all A4xx GPUs to the
+> -	 * On Chip MEMory (OCMEM).
+> -	 */
+> -	struct icc_path *ocmem_icc_path;
+> -
+>   	/* Hang and Inactivity Detection:
+>   	 */
+>   #define DRM_MSM_INACTIVE_PERIOD   66 /* in ms (roughly four frames) */
+> 
+Reviewed-by: Akhil P Oommen <akhilpo@codeaurora.org>
 
-Acked-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
+-Akhil.
