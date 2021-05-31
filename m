@@ -2,38 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D28D6396311
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 17:03:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F33E5395F24
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 16:06:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234530AbhEaPEh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 11:04:37 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40232 "EHLO mail.kernel.org"
+        id S232419AbhEaOIT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 10:08:19 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49500 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233298AbhEaOHf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 10:07:35 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7DD586195D;
-        Mon, 31 May 2021 13:39:26 +0000 (UTC)
+        id S231566AbhEaNm7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 09:42:59 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9DC7461492;
+        Mon, 31 May 2021 13:28:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1622468367;
-        bh=lVmYbOfXRPQDI0BHM560+nSRPOfXdZPEgZZTm6SwwjE=;
+        s=korg; t=1622467724;
+        bh=pon5fKdHLxi+NILGNc50lSkTJKYRyySy5hnikaHr58Q=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=VbC0wxhSc6amVD9ZSPXr5CKqHlDY6DX4vsfDnGarwT8EFYtU3Ur94ufSz42hiFhOG
-         ONXcfV4S1wm/7B98v1KPDk3SG6r123PVeMgwJJwO1YFsnq+KezfgxrLzzClEXPH9dr
-         2FqY77Ym6YCsyTWVYp9pLkF1Q4ueXKhYRR0tKYwo=
+        b=EC00M8L/RF9bCJJ0sUVerRQ70CEugK8JEHtKnhFUV6JKZ3+vwKU+tbtI2bkIWCDsZ
+         B/bceATXE0Cvw/OvXsmU0wNHx4SJidSsJJnqNLPIw4fkB30zfx5mVFpqAAUiD/SjdR
+         mU5K5ysjp0TYRZSZEQgv/GfASIgIDOOM8WDnTmBQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Catherine Sullivan <csully@google.com>,
-        David Awogbemila <awogbemila@google.com>,
-        Willem de Bruijn <willemb@google.com>,
-        "David S. Miller" <davem@davemloft.net>,
+        stable@vger.kernel.org, Khalid Aziz <khalid@gonehiking.org>,
+        Matt Wang <wwentao@vmware.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 216/252] gve: Check TX QPL was actually assigned
+Subject: [PATCH 4.14 56/79] scsi: BusLogic: Fix 64-bit system enumeration error for Buslogic
 Date:   Mon, 31 May 2021 15:14:41 +0200
-Message-Id: <20210531130705.357113930@linuxfoundation.org>
+Message-Id: <20210531130637.797724145@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210531130657.971257589@linuxfoundation.org>
-References: <20210531130657.971257589@linuxfoundation.org>
+In-Reply-To: <20210531130636.002722319@linuxfoundation.org>
+References: <20210531130636.002722319@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,50 +41,63 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Catherine Sullivan <csully@google.com>
+From: Matt Wang <wwentao@vmware.com>
 
-[ Upstream commit 5aec55b46c6238506cdf0c60cd0e42ab77a1e5e0 ]
+[ Upstream commit 56f396146af278135c0ff958c79b5ee1bd22453d ]
 
-Correctly check the TX QPL was assigned and unassigned if
-other steps in the allocation fail.
+Commit 391e2f25601e ("[SCSI] BusLogic: Port driver to 64-bit")
+introduced a serious issue for 64-bit systems.  With this commit,
+64-bit kernel will enumerate 8*15 non-existing disks.  This is caused
+by the broken CCB structure.  The change from u32 data to void *data
+increased CCB length on 64-bit system, which introduced an extra 4
+byte offset of the CDB.  This leads to incorrect response to INQUIRY
+commands during enumeration.
 
-Fixes: f5cedc84a30d (gve: Add transmit and receive support)
-Signed-off-by: Catherine Sullivan <csully@google.com>
-Signed-off-by: David Awogbemila <awogbemila@google.com>
-Acked-by: Willem de Bruijn <willemb@google.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Fix disk enumeration failure by reverting the portion of the commit
+above which switched the data pointer from u32 to void.
+
+Link: https://lore.kernel.org/r/C325637F-1166-4340-8F0F-3BCCD59D4D54@vmware.com
+Acked-by: Khalid Aziz <khalid@gonehiking.org>
+Signed-off-by: Matt Wang <wwentao@vmware.com>
+Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/google/gve/gve_tx.c | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
+ drivers/scsi/BusLogic.c | 6 +++---
+ drivers/scsi/BusLogic.h | 2 +-
+ 2 files changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/net/ethernet/google/gve/gve_tx.c b/drivers/net/ethernet/google/gve/gve_tx.c
-index d0244feb0301..30532ee28dd3 100644
---- a/drivers/net/ethernet/google/gve/gve_tx.c
-+++ b/drivers/net/ethernet/google/gve/gve_tx.c
-@@ -207,10 +207,12 @@ static int gve_tx_alloc_ring(struct gve_priv *priv, int idx)
- 		goto abort_with_info;
+diff --git a/drivers/scsi/BusLogic.c b/drivers/scsi/BusLogic.c
+index 35380a58d3f0..48c1b590415d 100644
+--- a/drivers/scsi/BusLogic.c
++++ b/drivers/scsi/BusLogic.c
+@@ -3081,11 +3081,11 @@ static int blogic_qcmd_lck(struct scsi_cmnd *command,
+ 		ccb->opcode = BLOGIC_INITIATOR_CCB_SG;
+ 		ccb->datalen = count * sizeof(struct blogic_sg_seg);
+ 		if (blogic_multimaster_type(adapter))
+-			ccb->data = (void *)((unsigned int) ccb->dma_handle +
++			ccb->data = (unsigned int) ccb->dma_handle +
+ 					((unsigned long) &ccb->sglist -
+-					(unsigned long) ccb));
++					(unsigned long) ccb);
+ 		else
+-			ccb->data = ccb->sglist;
++			ccb->data = virt_to_32bit_virt(ccb->sglist);
  
- 	tx->tx_fifo.qpl = gve_assign_tx_qpl(priv);
-+	if (!tx->tx_fifo.qpl)
-+		goto abort_with_desc;
- 
- 	/* map Tx FIFO */
- 	if (gve_tx_fifo_init(priv, &tx->tx_fifo))
--		goto abort_with_desc;
-+		goto abort_with_qpl;
- 
- 	tx->q_resources =
- 		dma_alloc_coherent(hdev,
-@@ -229,6 +231,8 @@ static int gve_tx_alloc_ring(struct gve_priv *priv, int idx)
- 
- abort_with_fifo:
- 	gve_tx_fifo_release(priv, &tx->tx_fifo);
-+abort_with_qpl:
-+	gve_unassign_qpl(priv, tx->tx_fifo.qpl->id);
- abort_with_desc:
- 	dma_free_coherent(hdev, bytes, tx->desc, tx->bus);
- 	tx->desc = NULL;
+ 		scsi_for_each_sg(command, sg, count, i) {
+ 			ccb->sglist[i].segbytes = sg_dma_len(sg);
+diff --git a/drivers/scsi/BusLogic.h b/drivers/scsi/BusLogic.h
+index 8d47e2c88d24..1a33a4b28d45 100644
+--- a/drivers/scsi/BusLogic.h
++++ b/drivers/scsi/BusLogic.h
+@@ -821,7 +821,7 @@ struct blogic_ccb {
+ 	unsigned char cdblen;				/* Byte 2 */
+ 	unsigned char sense_datalen;			/* Byte 3 */
+ 	u32 datalen;					/* Bytes 4-7 */
+-	void *data;					/* Bytes 8-11 */
++	u32 data;					/* Bytes 8-11 */
+ 	unsigned char:8;				/* Byte 12 */
+ 	unsigned char:8;				/* Byte 13 */
+ 	enum blogic_adapter_status adapter_status;	/* Byte 14 */
 -- 
 2.30.2
 
