@@ -2,106 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CCBD83964D9
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 18:11:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D54239611A
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 16:34:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231144AbhEaQNa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 12:13:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44500 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232398AbhEaOiM (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 10:38:12 -0400
-Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F638C061B3E
-        for <linux-kernel@vger.kernel.org>; Mon, 31 May 2021 06:52:51 -0700 (PDT)
-Received: by mail-pj1-x102b.google.com with SMTP id k7so1769895pjf.5
-        for <linux-kernel@vger.kernel.org>; Mon, 31 May 2021 06:52:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=IF1aTpQct9sJ+gq1IJA/M4omf+v9Ka1E7+gOZVm10aM=;
-        b=e+6fWrmznbU4d7VPIa7bEUQ88+n0IjOWNHrTpuBM/+1AK7iKt500h0t5mVJRSfjXQX
-         Hchvbamg/rjKsbf5vaIy2z9A4odpvQ1+RyxpYvcYZK2sKTDBKN1To9KIJdPtHszWtAGC
-         pUFuN8tSY0VWh53ZcD/DkOwjNS5fy4+x/PCP/B2O02NYHSV5g7edwJKMVgidF3zCedmI
-         4TYTKUuJuFSY+KlhzNJHGbAXV6HcbkrlqMovDugqwot5g6DhvuHFbAkWLUxP8T650vfA
-         gX26OGQXgVeB6XilX29VyHWIpNkIOVSlKpcT5wlNDncxDLptcC0yB+GniIFfmM5B1aeW
-         xtIQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=IF1aTpQct9sJ+gq1IJA/M4omf+v9Ka1E7+gOZVm10aM=;
-        b=nX0OI1Zk0Nn2O22FiCvj9pZJHcoI0gxgaJAcKtzX0qADCKd0fBcD7rsJ9rvNu4PlRM
-         8cjdlqas3eGqhxHjD58GQRMfQTXKxUjBQW1rqP0yTSSoreh98SF2xXG7tM6igu3Y/01D
-         CAO9ttZhHi5UivFdg19qQ8NjSkop/cYT3RxKmWiIvhv7TImG/ABGIt96SCi+CvZ0SqSh
-         8FjlQhwmhk3JtLeRU9fkOMxWwXFG4AaXg4KszGv7ro9GOZp1d5h6ELzGkIpotjrl7j+v
-         Rj7lK/L8Hv0iDTpUqgaewHReDRoTXQiCgH0xyp5QPt0X83EKZPZXqYIkPdXRYSfoVYFa
-         Uuqw==
-X-Gm-Message-State: AOAM533jWu6iR1XEq2au8kZHeLpWnW8X2sXdTOyQzxQQaz6DjxNg3kKY
-        MXA48BbIlKt3TcQkOTxZPTBcTjcnwu2hYkfFm8Rz5w==
-X-Google-Smtp-Source: ABdhPJzL5nrqH2nouf+M4B7+QBQmpfIZlVABN9xXH8wmvc/7J63WraTekrOucN8N6yiNpFtbhFQEnWakPlzhGGG4Cck=
-X-Received: by 2002:a17:90a:43a6:: with SMTP id r35mr11166114pjg.222.1622469170762;
- Mon, 31 May 2021 06:52:50 -0700 (PDT)
+        id S232975AbhEaOfl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 10:35:41 -0400
+Received: from air.basealt.ru ([194.107.17.39]:58850 "EHLO air.basealt.ru"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232365AbhEaNzm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 09:55:42 -0400
+Received: by air.basealt.ru (Postfix, from userid 490)
+        id 1B1F458951E; Mon, 31 May 2021 13:54:00 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.1 (2015-04-28) on
+        sa.local.altlinux.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=5.0 tests=ALL_TRUSTED,BAYES_00
+        autolearn=ham autolearn_force=no version=3.4.1
+Received: from [10.88.144.159] (obninsk.basealt.ru [217.15.195.17])
+        by air.basealt.ru (Postfix) with ESMTPSA id 82531589517;
+        Mon, 31 May 2021 13:53:58 +0000 (UTC)
+Subject: Re: Problem with i8042 and PS/2 keyboard on HP laptop
+To:     Vojtech Pavlik <vojtech@suse.com>
+Cc:     linux-kernel@vger.kernel.org
+References: <f586401d-73af-097f-812c-f033a922bfc2@altlinux.org>
+ <20210528154339.GA9116@suse.com>
+From:   Egor Ignatov <egori@altlinux.org>
+Message-ID: <ea8f1d77-99d9-8585-1d44-8a20e6af12a0@altlinux.org>
+Date:   Mon, 31 May 2021 16:53:58 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.2
 MIME-Version: 1.0
-References: <20210531135622.3348252-1-yukuai3@huawei.com>
-In-Reply-To: <20210531135622.3348252-1-yukuai3@huawei.com>
-From:   Robert Foss <robert.foss@linaro.org>
-Date:   Mon, 31 May 2021 15:52:39 +0200
-Message-ID: <CAG3jFyuSheggFGh-6+H7EypHbb7pO=XcsiAYtS5DxB2HdBwt=g@mail.gmail.com>
-Subject: Re: [PATCH v2] drm: bridge: cdns-mhdp8546: Fix PM reference leak in
-To:     Yu Kuai <yukuai3@huawei.com>
-Cc:     Andrzej Hajda <a.hajda@samsung.com>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>, yi.zhang@huawei.com
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210528154339.GA9116@suse.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Added r-b tag and merged to drm-misc next.
+Thank you so much for such a large and detailed answer, it clarified a
+lot about how the driver works.
 
-https://cgit.freedesktop.org/drm/drm-misc/log/?h=drm-misc-next
+I tried different combinations of options that you suggested and the
+only one after which the keyboard immediately starts working is
+'dumbkbd'. So I added a quirk and will send a patch soon.
 
-Thanks for the submission, and sorry about making you jump through all
-those hoops.
+-- 
 
-On Mon, 31 May 2021 at 15:47, Yu Kuai <yukuai3@huawei.com> wrote:
->
-> pm_runtime_get_sync will increment pm usage counter even it failed.
-> Forgetting to putting operation will result in reference leak here.
-> Fix it by replacing it with pm_runtime_resume_and_get to keep usage
-> counter balanced.
->
-> Reported-by: Hulk Robot <hulkci@huawei.com>
-> Signed-off-by: Yu Kuai <yukuai3@huawei.com>
-> ---
-> changes in V2:
->  - change error message.
->
->  drivers/gpu/drm/bridge/cadence/cdns-mhdp8546-core.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
->
-> diff --git a/drivers/gpu/drm/bridge/cadence/cdns-mhdp8546-core.c b/drivers/gpu/drm/bridge/cadence/cdns-mhdp8546-core.c
-> index 0cd8f40fb690..eab959a59214 100644
-> --- a/drivers/gpu/drm/bridge/cadence/cdns-mhdp8546-core.c
-> +++ b/drivers/gpu/drm/bridge/cadence/cdns-mhdp8546-core.c
-> @@ -2478,9 +2478,9 @@ static int cdns_mhdp_probe(struct platform_device *pdev)
->         clk_prepare_enable(clk);
->
->         pm_runtime_enable(dev);
-> -       ret = pm_runtime_get_sync(dev);
-> +       ret = pm_runtime_resume_and_get(dev);
->         if (ret < 0) {
-> -               dev_err(dev, "pm_runtime_get_sync failed\n");
-> +               dev_err(dev, "pm_runtime_resume_and_get failed\n");
->                 pm_runtime_disable(dev);
->                 goto clk_disable;
->         }
-> --
-> 2.31.1
->
+Egor
+
