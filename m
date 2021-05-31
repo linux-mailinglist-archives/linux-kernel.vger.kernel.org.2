@@ -2,314 +2,183 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D120B39670A
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 19:27:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A290396767
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 19:48:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232823AbhEaR3e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 13:29:34 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:50650 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233807AbhEaR3T (ORCPT
+        id S230519AbhEaRtq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 13:49:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59076 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232540AbhEaRtY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 13:29:19 -0400
-Received: from imap.suse.de (imap-alt.suse-dmz.suse.de [192.168.254.47])
-        (using TLSv1.2 with cipher ECDHE-ECDSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id A1B861FD2D;
-        Mon, 31 May 2021 17:27:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1622482054; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=9r+HYlHoDmXgDEx/An+i51OIXR93+B0KpGhVQdrq2ug=;
-        b=Ioq8YZwwWG+c/LG8OkwMX8dnz44ErBxS0wdLi1yq1IueF6vSHbjX269GM9tiMZ3wks7aZi
-        BiluPS4Tc2lJ1ZpBjmi617tc4pO2YnKzLQs+Sm6pjaWg5hC2Am6OW5fuaJ2reOHb60gf9K
-        VfObev3hM7B95hVjU9dPDjFX3wH3hps=
-Received: from imap3-int (imap-alt.suse-dmz.suse.de [192.168.254.47])
-        by imap.suse.de (Postfix) with ESMTP id F13C4118DD;
-        Mon, 31 May 2021 17:27:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1622482054; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=9r+HYlHoDmXgDEx/An+i51OIXR93+B0KpGhVQdrq2ug=;
-        b=Ioq8YZwwWG+c/LG8OkwMX8dnz44ErBxS0wdLi1yq1IueF6vSHbjX269GM9tiMZ3wks7aZi
-        BiluPS4Tc2lJ1ZpBjmi617tc4pO2YnKzLQs+Sm6pjaWg5hC2Am6OW5fuaJ2reOHb60gf9K
-        VfObev3hM7B95hVjU9dPDjFX3wH3hps=
-Received: from director2.suse.de ([192.168.254.72])
-        by imap3-int with ESMTPSA
-        id LYHcOIUctWAXWgAALh3uQQ
-        (envelope-from <varad.gautam@suse.com>); Mon, 31 May 2021 17:27:33 +0000
-From:   Varad Gautam <varad.gautam@suse.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     Varad Gautam <varad.gautam@suse.com>, kvm@vger.kernel.org,
-        x86@kernel.org, Borislav Petkov <bp@alien8.de>,
-        Joerg Roedel <jroedel@suse.de>,
-        Tom Lendacky <thomas.lendacky@amd.com>
-Subject: [PATCH v2] x86: Add a test for AMD SEV-ES #VC handling
-Date:   Mon, 31 May 2021 19:27:07 +0200
-Message-Id: <20210531172707.7909-1-varad.gautam@suse.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210531125035.21105-1-varad.gautam@suse.com>
-References: <20210531125035.21105-1-varad.gautam@suse.com>
+        Mon, 31 May 2021 13:49:24 -0400
+Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1EBAC074B03
+        for <linux-kernel@vger.kernel.org>; Mon, 31 May 2021 10:28:55 -0700 (PDT)
+Received: by mail-pl1-x630.google.com with SMTP id e15so5543845plh.1
+        for <linux-kernel@vger.kernel.org>; Mon, 31 May 2021 10:28:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=beagleboard-org.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=ultZWLSJXHjD/NDoDi7dRR5xSSmHzfIKA0oXYNi9NUE=;
+        b=zokO7hme+4avv5q6TaA4Luwpm6oKkm7dtD0IdrdHEG+5VOxtO7H4SINbiPiNmfqrn3
+         YVrhPwG4obBtb9OT3JfaA3DyTu93m5UDC3BfzVETWZDH5oK2HmKxtkEoEXbzAQFFsF1x
+         ODEXS5HVGdUVACAeTZ/qmObhT1+fCRnQHwKnHj18Ovb7lvtKYSBVkIhrP1saxOIUlC7J
+         OUBQdpkWAD0ltZa4Er0iTvzs4pTuozbVVHJshVGhxz8BGBOtdAxi3iA5M+Mhihqtb/Fu
+         FVPpIEu2Fu1msS7CBUJfkHO+1HCglRnZI7R0XI2F5w+5fx3Zu+Ez4Pos1f+dtsxEdGfc
+         2UYQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=ultZWLSJXHjD/NDoDi7dRR5xSSmHzfIKA0oXYNi9NUE=;
+        b=fEukeyuRTfIHPEJAnFmolgLJFVvCzfsTktDrR9WzX/xLUwBnbypIVZ30BpH/aeRCwS
+         TThHFUn1TnvXwHIgYSn+MA/OktsYBOU6SgJXn7rbcc0wpDwsLjU9AKhnNclY2NdOgIf6
+         iX6TOMzg5j4ugfkZAZs3CT9vYNv2WPKC18CrDyB/Ib70t3oydjKpj/E4iV3MUFG5nnGK
+         JScLg4aE22AvbREv1wYGQWDu5HA7rNqp5OA8BKBWGt+xp86fGC81GvnyMT1pLjze2eDa
+         m2yj3TaWVBb6SmXqidUbBx247S5UNqJUtLa8B2TdTMNfyldCKWUiPw20hdlXY6WRDp++
+         7Xuw==
+X-Gm-Message-State: AOAM532x0jqxLWyHX0v43mGSR+OfcnZOLedyUM+FaPm4Y02dbSfpcPzf
+        hCODQ7DZ1WDGLP4N9fkF6cwlrA==
+X-Google-Smtp-Source: ABdhPJx5m1UTqxTXcCJiV4/XDgn7iAKF8n00hou0oP4urgg3LcoNupGXr4tTVIPst6zP3b+rs9k+EA==
+X-Received: by 2002:a17:90a:b28d:: with SMTP id c13mr202477pjr.80.1622482135140;
+        Mon, 31 May 2021 10:28:55 -0700 (PDT)
+Received: from x1 ([2601:1c0:4701:ae70:a449:bb:b7e3:9c7c])
+        by smtp.gmail.com with ESMTPSA id g2sm3896526pfv.106.2021.05.31.10.28.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 31 May 2021 10:28:54 -0700 (PDT)
+Date:   Mon, 31 May 2021 10:28:52 -0700
+From:   Drew Fustini <drew@beagleboard.org>
+To:     Thomas Petazzoni <thomas.petazzoni@bootlin.com>
+Cc:     Bin Liu <b-liu@ti.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Tony Lindgren <tony@atomide.com>, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org, alexandre.belloni@bootlin.com,
+        stable@vger.kernel.org
+Subject: Re: [PATCH] usb: musb: fix MUSB_QUIRK_B_DISCONNECT_99 handling
+Message-ID: <20210531172852.GA706339@x1>
+References: <20210528140446.278076-1-thomas.petazzoni@bootlin.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Authentication-Results: imap.suse.de;
-        none
-X-Spam-Level: 
-X-Spam-Score: 0.00
-X-Spamd-Result: default: False [0.00 / 100.00];
-         ARC_NA(0.00)[];
-         RCVD_VIA_SMTP_AUTH(0.00)[];
-         FROM_HAS_DN(0.00)[];
-         TO_DN_SOME(0.00)[];
-         TO_MATCH_ENVRCPT_ALL(0.00)[];
-         R_MISSING_CHARSET(2.50)[];
-         MIME_GOOD(-0.10)[text/plain];
-         REPLY(-4.00)[];
-         BROKEN_CONTENT_TYPE(1.50)[];
-         DKIM_SIGNED(0.00)[suse.com:s=susede1];
-         NEURAL_HAM_SHORT(-1.00)[-1.000];
-         RCPT_COUNT_SEVEN(0.00)[7];
-         MID_CONTAINS_FROM(1.00)[];
-         RCVD_NO_TLS_LAST(0.10)[];
-         FROM_EQ_ENVFROM(0.00)[];
-         MIME_TRACE(0.00)[0:+];
-         RCVD_COUNT_TWO(0.00)[2]
-X-Spam-Flag: NO
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210528140446.278076-1-thomas.petazzoni@bootlin.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Some vmexits on a SEV-ES guest need special handling within the guest
-before exiting to the hypervisor. This must happen within the guest's
-\#VC exception handler, triggered on every non automatic exit.
+On Fri, May 28, 2021 at 04:04:46PM +0200, Thomas Petazzoni wrote:
+> In commit 92af4fc6ec33 ("usb: musb: Fix suspend with devices
+> connected for a64"), the logic to support the
+> MUSB_QUIRK_B_DISCONNECT_99 quirk was modified to only conditionally
+> schedule the musb->irq_work delayed work.
+> 
+> This commit badly breaks ECM Gadget on AM335X. Indeed, with this
+> commit, one can observe massive packet loss:
+> 
+> $ ping 192.168.0.100
+> ...
+> 15 packets transmitted, 3 received, 80% packet loss, time 14316ms
+> 
+> Reverting this commit brings back a properly functioning ECM
+> Gadget. An analysis of the commit seems to indicate that a mistake was
+> made: the previous code was not falling through into the
+> MUSB_QUIRK_B_INVALID_VBUS_91, but now it is, unless the condition is
+> taken.
+> 
+> Changing the logic to be as it was before the problematic commit *and*
+> only conditionally scheduling musb->irq_work resolves the regression:
+> 
+> $ ping 192.168.0.100
+> ...
+> 64 packets transmitted, 64 received, 0% packet loss, time 64475ms
+> 
+> Fixes: 92af4fc6ec33 ("usb: musb: Fix suspend with devices connected for a64")
+> Signed-off-by: Thomas Petazzoni <thomas.petazzoni@bootlin.com>
+> Cc: stable@vger.kernel.org
+> ---
+>  drivers/usb/musb/musb_core.c | 3 +--
+>  1 file changed, 1 insertion(+), 2 deletions(-)
+> 
+> diff --git a/drivers/usb/musb/musb_core.c b/drivers/usb/musb/musb_core.c
+> index 8f09a387b773..4c8f0112481f 100644
+> --- a/drivers/usb/musb/musb_core.c
+> +++ b/drivers/usb/musb/musb_core.c
+> @@ -2009,9 +2009,8 @@ static void musb_pm_runtime_check_session(struct musb *musb)
+>  			schedule_delayed_work(&musb->irq_work,
+>  					      msecs_to_jiffies(1000));
+>  			musb->quirk_retries--;
+> -			break;
+>  		}
+> -		fallthrough;
+> +		break;
+>  	case MUSB_QUIRK_B_INVALID_VBUS_91:
+>  		if (musb->quirk_retries && !musb->flush_irq_work) {
+>  			musb_dbg(musb,
+> -- 
+> 2.31.1
 
-Add a KUnit based test to validate Linux's VC handling. The test:
-1. installs a kretprobe on the #VC handler (sev_es_ghcb_hv_call, to
-   access GHCB before/after the resulting VMGEXIT).
-2. tiggers an NAE.
-3. checks that the kretprobe was hit with the right exit_code available
-   in GHCB.
+Tested-by: Drew Fustini <drew@beagleboard.org>
 
-Since relying on kprobes, the test does not cover NMI contexts.
+This patches fixes the problem on the BeagleBone Black (AM3358) where
+the USB gadget interfaces would frequently reset. For example:
 
-Signed-off-by: Varad Gautam <varad.gautam@suse.com>
----
-v2: Add a testcase for MMIO read/write.
+  configfs-gadget gadget: init rndis
+  configfs-gadget gadget: RNDIS RX/TX early activation ...
+  usb0: qlen 10
+  configfs-gadget gadget: rndis_open
+  rndis_set_param_medium: 0 4259840
+  usb0: eth_start
+  rndis_set_param_dev:
+  configfs-gadget gadget: set_config: interface 2 (Mass Storage Function) requested delayed status
+  configfs-gadget gadget: delayed_status count 1
+  configfs-gadget gadget: reset ncm control 3
+  configfs-gadget gadget: init ncm ctrl 3
+  configfs-gadget gadget: notify speed 425984000
+  configfs-gadget gadget: reset acm ttyGS0
+  configfs-gadget gadget: activate acm ttyGS0
+  configfs-gadget gadget: acm ttyGS0 serial state 0000
+  configfs-gadget gadget: usb_composite_setup_continue
+  configfs-gadget gadget: usb_composite_setup_continue: Completing delayed status
+  configfs-gadget gadget: rndis req21.00 v0000 i0000 l24
+  rndis_msg_parser: RNDIS_MSG_INIT
+  configfs-gadget gadget: rndis reqa1.01 v0000 i0000 l1025
+  configfs-gadget gadget: rndis req21.00 v0000 i0000 l32
+  gen_ndis_query_resp: RNDIS_OID_GEN_PHYSICAL_MEDIUM
+  configfs-gadget gadget: rndis reqa1.01 v0000 i0000 l1025
+  configfs-gadget gadget: rndis req21.00 v0000 i0000 l76
+  gen_ndis_query_resp: RNDIS_OID_802_3_PERMANENT_ADDRESS
+  configfs-gadget gadget: rndis reqa1.01 v0000 i0000 l1025
+  configfs-gadget gadget: rndis req21.00 v0000 i0000 l32
+  gen_ndis_set_resp: RNDIS_OID_GEN_CURRENT_PACKET_FILTER 0000002d
+  configfs-gadget gadget: rndis reqa1.01 v0000 i0000 l1025
+  configfs-gadget gadget: init ncm
+  configfs-gadget gadget: activate ncm
+  usb1: qlen 10
+  configfs-gadget gadget: ncm_open
+  usb1: eth_start
+  configfs-gadget gadget: reset ncm
+  usb1: gether_disconnect
+  configfs-gadget gadget: ncm reqa1.80 v0000 i0003 l28
+  configfs-gadget gadget: non-CRC mode selected
+  configfs-gadget gadget: ncm req21.8a v0000 i0003 l0
+  configfs-gadget gadget: NCM16 selected
+  configfs-gadget gadget: ncm req21.84 v0000 i0003 l0
+  configfs-gadget gadget: init ncm
+  configfs-gadget gadget: activate ncm
+  usb1: qlen 10
+  configfs-gadget gadget: ncm_open
+  usb1: eth_start
+  configfs-gadget gadget: acm ttyGS0 req21.20 v0000 i0005 l7
+  configfs-gadget gadget: notify speed 425984000
+  configfs-gadget gadget: notify connect true
 
- arch/x86/Kconfig              |   9 ++
- arch/x86/kernel/Makefile      |   5 ++
- arch/x86/kernel/sev-test-vc.c | 155 ++++++++++++++++++++++++++++++++++
- 3 files changed, 169 insertions(+)
- create mode 100644 arch/x86/kernel/sev-test-vc.c
+I have posted dmesg log without the patch [1] where this happens often
+and the dmesg log with the patch [2] where it does happen at all.
 
-diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
-index 0045e1b441902..0a3c3f31813f1 100644
---- a/arch/x86/Kconfig
-+++ b/arch/x86/Kconfig
-@@ -1543,6 +1543,15 @@ config AMD_MEM_ENCRYPT_ACTIVE_BY_DEFAULT
- 	  If set to N, then the encryption of system memory can be
- 	  activated with the mem_encrypt=on command line option.
- 
-+config AMD_MEM_ENCRYPT_TEST_VC
-+	bool "Test for AMD Secure Memory Encryption (SME) support"
-+	depends on AMD_MEM_ENCRYPT
-+	select KUNIT
-+	select FUNCTION_TRACER
-+	help
-+	  Enable KUnit-based testing for the encryption of system memory
-+	  using AMD SEV-ES. Currently only tests #VC handling.
-+
- # Common NUMA Features
- config NUMA
- 	bool "NUMA Memory Allocation and Scheduler Support"
-diff --git a/arch/x86/kernel/Makefile b/arch/x86/kernel/Makefile
-index 0f66682ac02a6..360c5d33580ca 100644
---- a/arch/x86/kernel/Makefile
-+++ b/arch/x86/kernel/Makefile
-@@ -23,6 +23,10 @@ CFLAGS_REMOVE_head64.o = -pg
- CFLAGS_REMOVE_sev.o = -pg
- endif
- 
-+ifdef CONFIG_AMD_MEM_ENCRYPT_TEST_VC
-+CFLAGS_sev.o	+= -fno-ipa-sra
-+endif
-+
- KASAN_SANITIZE_head$(BITS).o				:= n
- KASAN_SANITIZE_dumpstack.o				:= n
- KASAN_SANITIZE_dumpstack_$(BITS).o			:= n
-@@ -149,6 +153,7 @@ obj-$(CONFIG_UNWINDER_FRAME_POINTER)	+= unwind_frame.o
- obj-$(CONFIG_UNWINDER_GUESS)		+= unwind_guess.o
- 
- obj-$(CONFIG_AMD_MEM_ENCRYPT)		+= sev.o
-+obj-$(CONFIG_AMD_MEM_ENCRYPT_TEST_VC)	+= sev-test-vc.o
- ###
- # 64 bit specific files
- ifeq ($(CONFIG_X86_64),y)
-diff --git a/arch/x86/kernel/sev-test-vc.c b/arch/x86/kernel/sev-test-vc.c
-new file mode 100644
-index 0000000000000..2475270b844e8
---- /dev/null
-+++ b/arch/x86/kernel/sev-test-vc.c
-@@ -0,0 +1,155 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+/*
-+ * Copyright (C) 2021 SUSE
-+ *
-+ * Author: Varad Gautam <varad.gautam@suse.com>
-+ */
-+
-+#include <asm/cpufeature.h>
-+#include <asm/debugreg.h>
-+#include <asm/io.h>
-+#include <asm/sev-common.h>
-+#include <asm/svm.h>
-+#include <kunit/test.h>
-+#include <linux/kprobes.h>
-+
-+static struct kretprobe hv_call_krp;
-+
-+static int hv_call_krp_entry(struct kretprobe_instance *krpi,
-+				    struct pt_regs *regs)
-+{
-+	unsigned long ghcb_vaddr = regs_get_kernel_argument(regs, 0);
-+	*((unsigned long *) krpi->data) = ghcb_vaddr;
-+
-+	return 0;
-+}
-+
-+static int hv_call_krp_ret(struct kretprobe_instance *krpi,
-+				    struct pt_regs *regs)
-+{
-+	unsigned long ghcb_vaddr = *((unsigned long *) krpi->data);
-+	struct ghcb *ghcb = (struct ghcb *) ghcb_vaddr;
-+	struct kunit *test = current->kunit_test;
-+
-+	if (test && strstr(test->name, "sev_es_") && test->priv)
-+		cmpxchg((unsigned long *) test->priv, ghcb->save.sw_exit_code, 1);
-+
-+	return 0;
-+}
-+
-+int sev_test_vc_init(struct kunit *test)
-+{
-+	int ret;
-+
-+	if (!sev_es_active()) {
-+		pr_err("Not a SEV-ES guest. Skipping.");
-+		ret = -EINVAL;
-+		goto out;
-+	}
-+
-+	memset(&hv_call_krp, 0, sizeof(hv_call_krp));
-+	hv_call_krp.entry_handler = hv_call_krp_entry;
-+	hv_call_krp.handler = hv_call_krp_ret;
-+	hv_call_krp.maxactive = 100;
-+	hv_call_krp.data_size = sizeof(unsigned long);
-+	hv_call_krp.kp.symbol_name = "sev_es_ghcb_hv_call";
-+	hv_call_krp.kp.addr = 0;
-+
-+	ret = register_kretprobe(&hv_call_krp);
-+	if (ret < 0) {
-+		pr_err("Could not register kretprobe. Skipping.");
-+		goto out;
-+	}
-+
-+	test->priv = kunit_kzalloc(test, sizeof(unsigned long), GFP_KERNEL);
-+	if (!test->priv) {
-+		ret = -ENOMEM;
-+		pr_err("Could not allocate. Skipping.");
-+		goto out;
-+	}
-+
-+out:
-+	return ret;
-+}
-+
-+void sev_test_vc_exit(struct kunit *test)
-+{
-+	if (test->priv)
-+		kunit_kfree(test, test->priv);
-+
-+	if (hv_call_krp.kp.addr)
-+		unregister_kretprobe(&hv_call_krp);
-+}
-+
-+#define guarded_op(kt, ec, op)				\
-+do {							\
-+	struct kunit *t = (struct kunit *) kt;		\
-+	smp_store_release((typeof(ec) *) t->priv, ec);	\
-+	op;						\
-+	KUNIT_EXPECT_EQ(t, (typeof(ec)) 1, 		\
-+		(typeof(ec)) smp_load_acquire((typeof(ec) *) t->priv));	\
-+} while(0)
-+
-+static void sev_es_nae_cpuid(struct kunit *test)
-+{
-+	unsigned int cpuid_fn = 0x8000001f;
-+
-+	guarded_op(test, SVM_EXIT_CPUID, native_cpuid_eax(cpuid_fn));
-+}
-+
-+static void sev_es_nae_wbinvd(struct kunit *test)
-+{
-+	guarded_op(test, SVM_EXIT_WBINVD, wbinvd());
-+}
-+
-+static void sev_es_nae_msr(struct kunit *test)
-+{
-+	guarded_op(test, SVM_EXIT_MSR, __rdmsr(MSR_IA32_TSC));
-+}
-+
-+static void sev_es_nae_dr7_rw(struct kunit *test)
-+{
-+	guarded_op(test, SVM_EXIT_WRITE_DR7,
-+		   native_set_debugreg(7, native_get_debugreg(7)));
-+}
-+
-+static void sev_es_nae_ioio(struct kunit *test)
-+{
-+	unsigned long port = 0x80;
-+	char val = 0;
-+
-+	guarded_op(test, SVM_EXIT_IOIO, val = inb(port));
-+	guarded_op(test, SVM_EXIT_IOIO, outb(val, port));
-+	guarded_op(test, SVM_EXIT_IOIO, insb(port, &val, sizeof(val)));
-+	guarded_op(test, SVM_EXIT_IOIO, outsb(port, &val, sizeof(val)));
-+}
-+
-+static void sev_es_nae_mmio(struct kunit *test)
-+{
-+	unsigned long lapic_ver_pa = 0xfee00030; /* APIC_DEFAULT_PHYS_BASE + APIC_LVR */
-+	unsigned __iomem *lapic = ioremap(lapic_ver_pa, 0x4);
-+	unsigned lapic_version = 0;
-+
-+	guarded_op(test, SVM_VMGEXIT_MMIO_READ, lapic_version = *lapic);
-+	guarded_op(test, SVM_VMGEXIT_MMIO_WRITE, *lapic = lapic_version);
-+
-+	iounmap(lapic);
-+}
-+
-+static struct kunit_case sev_test_vc_testcases[] = {
-+	KUNIT_CASE(sev_es_nae_cpuid),
-+	KUNIT_CASE(sev_es_nae_wbinvd),
-+	KUNIT_CASE(sev_es_nae_msr),
-+	KUNIT_CASE(sev_es_nae_dr7_rw),
-+	KUNIT_CASE(sev_es_nae_ioio),
-+	KUNIT_CASE(sev_es_nae_mmio),
-+	{}
-+};
-+
-+static struct kunit_suite sev_vc_test_suite = {
-+	.name = "sev_test_vc",
-+	.init = sev_test_vc_init,
-+	.exit = sev_test_vc_exit,
-+	.test_cases = sev_test_vc_testcases,
-+};
-+kunit_test_suite(sev_vc_test_suite);
--- 
-2.30.2
+Thank you for fixing this!
+Drew
+
+[1] https://gist.github.com/pdp7/bd61e5f78545de182605992254d3eeee
+[2] https://gist.github.com/pdp7/95b0f34fa1d423d4764984b400c562cf
 
