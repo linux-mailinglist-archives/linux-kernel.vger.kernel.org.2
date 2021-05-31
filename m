@@ -2,33 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D6E003963EC
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 17:39:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F260F3963F1
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 17:39:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234948AbhEaPke (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 11:40:34 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47632 "EHLO mail.kernel.org"
+        id S233027AbhEaPlG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 11:41:06 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47636 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233561AbhEaOXC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S232997AbhEaOXC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 31 May 2021 10:23:02 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 07B9261554;
-        Mon, 31 May 2021 13:45:27 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 45818619CD;
+        Mon, 31 May 2021 13:45:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1622468728;
-        bh=VB4Y1FojBfYAa5ucDtj+uTAZT4JTj8xqxuUainiCfUA=;
+        s=korg; t=1622468730;
+        bh=V+Ak+bq9QckCL6JpOKpd2weyQMBPabw2Ue2S46kTYZ0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=JsvWAmaxBj/qtc3gzpoJMoPdFAg6ykTn+8Ie7xdg0Z8YSj73kriqyhRz0qpwYOdbZ
-         GTP5rhzY/BL9hvDVZlLlSxF0rCFNLWN0WMy45/kyasW0KiFiLuFx9rJhSs6j2AvfE8
-         ByoASPjImwY+aeMJHPdwgfzqSwT14Da23y1CNTOQ=
+        b=tO1KIbYjtXXCOKsSqkXLRh3CStrmdBZkh+WSHrDntyporMBc3Em8TMuP8skdSB7Ml
+         hDiUX5CW5l9IGQUqFpk3cnGcN6TGlR6rhW4xyZMe8ov6Qtmh0yfkXAcQSXwtMbqMVd
+         5bx8vfef+YnEaHPMWzmGrSMDNkP2e4eyILhbalqk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Anirudh Rayabharam <mail@anirudhrb.com>,
-        Kalle Valo <kvalo@codeaurora.org>,
+        stable@vger.kernel.org, Aditya Pakki <pakki001@umn.edu>,
+        "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 104/177] ath6kl: return error code in ath6kl_wmi_set_roam_lrssi_cmd()
-Date:   Mon, 31 May 2021 15:14:21 +0200
-Message-Id: <20210531130651.501755649@linuxfoundation.org>
+Subject: [PATCH 5.4 105/177] Revert "isdn: mISDN: Fix potential NULL pointer dereference of kzalloc"
+Date:   Mon, 31 May 2021 15:14:22 +0200
+Message-Id: <20210531130651.539613736@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210531130647.887605866@linuxfoundation.org>
 References: <20210531130647.887605866@linuxfoundation.org>
@@ -40,62 +40,47 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Anirudh Rayabharam <mail@anirudhrb.com>
+From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-[ Upstream commit 54433367840b46a1555c8ed36c4c0cfc5dbf1358 ]
+[ Upstream commit 36a2c87f7ed9e305d05b9a5c044cc6c494771504 ]
 
-Propagate error code from failure of ath6kl_wmi_cmd_send() to the
-caller.
+This reverts commit 38d22659803a033b1b66cd2624c33570c0dde77d.
 
-Signed-off-by: Anirudh Rayabharam <mail@anirudhrb.com>
-Cc: Kalle Valo <kvalo@codeaurora.org>
-Link: https://lore.kernel.org/r/20210503115736.2104747-44-gregkh@linuxfoundation.org
+Because of recent interactions with developers from @umn.edu, all
+commits from them have been recently re-reviewed to ensure if they were
+correct or not.
+
+Upon review, this commit was found to be incorrect for the reasons
+below, so it must be reverted.  It will be fixed up "correctly" in a
+later kernel change.
+
+While it looks like the original change is correct, it is not, as none
+of the setup actually happens, and the error value is not propagated
+upwards.
+
+Cc: Aditya Pakki <pakki001@umn.edu>
+Cc: David S. Miller <davem@davemloft.net>
+Link: https://lore.kernel.org/r/20210503115736.2104747-47-gregkh@linuxfoundation.org
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/wireless/ath/ath6kl/debug.c | 5 ++++-
- drivers/net/wireless/ath/ath6kl/wmi.c   | 4 +---
- 2 files changed, 5 insertions(+), 4 deletions(-)
+ drivers/isdn/hardware/mISDN/hfcsusb.c | 3 ---
+ 1 file changed, 3 deletions(-)
 
-diff --git a/drivers/net/wireless/ath/ath6kl/debug.c b/drivers/net/wireless/ath/ath6kl/debug.c
-index 54337d60f288..085a134069f7 100644
---- a/drivers/net/wireless/ath/ath6kl/debug.c
-+++ b/drivers/net/wireless/ath/ath6kl/debug.c
-@@ -1027,14 +1027,17 @@ static ssize_t ath6kl_lrssi_roam_write(struct file *file,
- {
- 	struct ath6kl *ar = file->private_data;
- 	unsigned long lrssi_roam_threshold;
-+	int ret;
+diff --git a/drivers/isdn/hardware/mISDN/hfcsusb.c b/drivers/isdn/hardware/mISDN/hfcsusb.c
+index 008a74a1ed44..7a051435c406 100644
+--- a/drivers/isdn/hardware/mISDN/hfcsusb.c
++++ b/drivers/isdn/hardware/mISDN/hfcsusb.c
+@@ -249,9 +249,6 @@ hfcsusb_ph_info(struct hfcsusb *hw)
+ 	int i;
  
- 	if (kstrtoul_from_user(user_buf, count, 0, &lrssi_roam_threshold))
- 		return -EINVAL;
- 
- 	ar->lrssi_roam_threshold = lrssi_roam_threshold;
- 
--	ath6kl_wmi_set_roam_lrssi_cmd(ar->wmi, ar->lrssi_roam_threshold);
-+	ret = ath6kl_wmi_set_roam_lrssi_cmd(ar->wmi, ar->lrssi_roam_threshold);
- 
-+	if (ret)
-+		return ret;
- 	return count;
- }
- 
-diff --git a/drivers/net/wireless/ath/ath6kl/wmi.c b/drivers/net/wireless/ath/ath6kl/wmi.c
-index d27b4088b874..c610fe21c85c 100644
---- a/drivers/net/wireless/ath/ath6kl/wmi.c
-+++ b/drivers/net/wireless/ath/ath6kl/wmi.c
-@@ -776,10 +776,8 @@ int ath6kl_wmi_set_roam_lrssi_cmd(struct wmi *wmi, u8 lrssi)
- 	cmd->info.params.roam_rssi_floor = DEF_LRSSI_ROAM_FLOOR;
- 	cmd->roam_ctrl = WMI_SET_LRSSI_SCAN_PARAMS;
- 
--	ath6kl_wmi_cmd_send(wmi, 0, skb, WMI_SET_ROAM_CTRL_CMDID,
-+	return ath6kl_wmi_cmd_send(wmi, 0, skb, WMI_SET_ROAM_CTRL_CMDID,
- 			    NO_SYNC_WMIFLAG);
+ 	phi = kzalloc(struct_size(phi, bch, dch->dev.nrbchan), GFP_ATOMIC);
+-	if (!phi)
+-		return;
 -
--	return 0;
- }
- 
- int ath6kl_wmi_force_roam_cmd(struct wmi *wmi, const u8 *bssid)
+ 	phi->dch.ch.protocol = hw->protocol;
+ 	phi->dch.ch.Flags = dch->Flags;
+ 	phi->dch.state = dch->state;
 -- 
 2.30.2
 
