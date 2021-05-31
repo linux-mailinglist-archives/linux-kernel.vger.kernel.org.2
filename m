@@ -2,89 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 518533966C9
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 19:20:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E59C396651
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 19:02:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231177AbhEaRWN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 13:22:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52798 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230228AbhEaRVv (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 13:21:51 -0400
-Received: from mail-pg1-x533.google.com (mail-pg1-x533.google.com [IPv6:2607:f8b0:4864:20::533])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21AB8C06135D;
-        Mon, 31 May 2021 08:37:38 -0700 (PDT)
-Received: by mail-pg1-x533.google.com with SMTP id 6so8579766pgk.5;
-        Mon, 31 May 2021 08:37:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=YWggVXdnRquifL9/XQ7A1rwSATVVaZDpBuuzR8KgOIA=;
-        b=bG6ubn342OMxLyaPeuwmfF2u/OMxTcoT+sYJlLLQ79jezBNF5CMewJYAC8sBwWAA4g
-         DFFze21FT1dZkEWAplVBoKUNtIkC5atjr4Fl8DbbBbCmWTXnHkosOdgzxe3Zp6fABsZ+
-         n+WlrHyUaG+fALdc2YPc3lFSrLwwJVQY7KzqaaddNu6UrZhzwhYvlsxWMAsak33Jvh49
-         WGDaj/STupZCr+XAJUnm4H8RM3My8l0imC36ZrX20Yvwab1XwxonoIJF76/Bw8t9mIPI
-         CcOAVxy/i4voDVDUOVD/d3alORmVQuBJC3mjA3ITLu7TzcYC7JhHiXrd12r72KDIKr3f
-         zNxw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=YWggVXdnRquifL9/XQ7A1rwSATVVaZDpBuuzR8KgOIA=;
-        b=Afe20AG69YBgtVmvot5UTc3/nSmJ9u+S8BluW130OmXFIEBKzwMOymliw5JOKFbhqB
-         GadGnUnH05zgtOFP+WTMlTv07/TkXO+88VXdXPaGxggK849HfiLGy53zOapoQe0RjNiH
-         o8Azv8GLs9JbiXesa+5rjbkGfKY1hx7w2408HePR56bxU23JDqinz0xuAEHGvs4v5a9t
-         vcZC4bhruRa+pwMNTVIPBGletl+RPhhpJoHLIv0z6Wmd/mqKChvLrPoFhXFfLcFqBHyG
-         q3Or3OGuhowyaeiF6Z5exInLtIGrCP+4/QAueQyLqf2aQZ8/RwPW4CJIlwDqQtwAzZpM
-         bIbQ==
-X-Gm-Message-State: AOAM531sXEotu+X+AfN49LHVlXko44+HHWx3ZyV7knoGAxoQjnFjqVeC
-        TOQNHVYJ7hB1qr6im/BZCXJ0Of1dmFt3l4Kl
-X-Google-Smtp-Source: ABdhPJwqQaHzxp9hDoy5UejzPtg3Au1UT6XsGczk63F+ShYa7WGhmA64LAzduQsBj+cGi+CIpMSZiA==
-X-Received: by 2002:a63:3c0c:: with SMTP id j12mr7299517pga.377.1622475457423;
-        Mon, 31 May 2021 08:37:37 -0700 (PDT)
-Received: from localhost.localdomain (host-219-71-67-82.dynamic.kbtelecom.net. [219.71.67.82])
-        by smtp.gmail.com with ESMTPSA id q23sm12252748pgj.61.2021.05.31.08.37.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 31 May 2021 08:37:37 -0700 (PDT)
-From:   Wei Ming Chen <jj251510319013@gmail.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     linux-scsi@vger.kernel.org, jejb@linux.ibm.com,
-        martin.petersen@oracle.com,
-        Wei Ming Chen <jj251510319013@gmail.com>
-Subject: [PATCH] scsi: libsas: Use fallthrough pseudo-keyword
-Date:   Mon, 31 May 2021 23:37:24 +0800
-Message-Id: <20210531153724.3149-1-jj251510319013@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        id S233227AbhEaRDa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 13:03:30 -0400
+Received: from mga01.intel.com ([192.55.52.88]:52281 "EHLO mga01.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232093AbhEaPvc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 11:51:32 -0400
+IronPort-SDR: p26e1Z5f3/ELd9EJxyt+5dYTsqAU3hJoIMs0g3iVMR5h2WYyN34l8N/2ky3TBE1WrQz6gSG+Ls
+ NreJ9VpaeGQA==
+X-IronPort-AV: E=McAfee;i="6200,9189,10001"; a="224646671"
+X-IronPort-AV: E=Sophos;i="5.83,237,1616482800"; 
+   d="scan'208";a="224646671"
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 May 2021 08:43:45 -0700
+IronPort-SDR: bUacGGLAouai1owasPOOdITRHZvnpmAWCdt0EG9QdG3Pxa5gRgBAyu2awMYUX+yPHWJZhg5l8x
+ v35RkekfrXYQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.83,237,1616482800"; 
+   d="scan'208";a="632598639"
+Received: from black.fi.intel.com ([10.237.72.28])
+  by fmsmga006.fm.intel.com with ESMTP; 31 May 2021 08:43:43 -0700
+Received: by black.fi.intel.com (Postfix, from userid 1003)
+        id 1D45AC5; Mon, 31 May 2021 18:44:05 +0300 (EEST)
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Flavio Suligoi <f.suligoi@asem.it>,
+        =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-pwm@vger.kernel.org
+Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Len Brown <lenb@kernel.org>, Lee Jones <lee.jones@linaro.org>
+Subject: [PATCH v1 1/5] docs: firmware-guide: ACPI: Add a PWM example
+Date:   Mon, 31 May 2021 18:43:47 +0300
+Message-Id: <20210531154351.53614-1-andriy.shevchenko@linux.intel.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Replace /* Fall through */ comment with pseudo-keyword macro fallthrough[1]
+When PWM support for ACPI has been added into the kernel, it missed
+the documentation update. Hence update documentation here.
 
-[1] https://www.kernel.org/doc/html/latest/process/deprecated.html?highlight=fallthrough#implicit-switch-case-fall-through
-
-Signed-off-by: Wei Ming Chen <jj251510319013@gmail.com>
+Fixes: 4a6ef8e37c4d ("pwm: Add support referencing PWMs from ACPI")
+Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 ---
- drivers/scsi/libsas/sas_discover.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ .../firmware-guide/acpi/enumeration.rst       | 32 +++++++++++++++++++
+ 1 file changed, 32 insertions(+)
 
-diff --git a/drivers/scsi/libsas/sas_discover.c b/drivers/scsi/libsas/sas_discover.c
-index 9f5068f3bcfb..dd205414e505 100644
---- a/drivers/scsi/libsas/sas_discover.c
-+++ b/drivers/scsi/libsas/sas_discover.c
-@@ -461,7 +461,7 @@ static void sas_discover_domain(struct work_struct *work)
- 		break;
- #else
- 		pr_notice("ATA device seen but CONFIG_SCSI_SAS_ATA=N so cannot attach\n");
--		/* Fall through */
-+		fallthrough;
- #endif
- 		/* Fall through - only for the #else condition above. */
- 	default:
+diff --git a/Documentation/firmware-guide/acpi/enumeration.rst b/Documentation/firmware-guide/acpi/enumeration.rst
+index 9f0d5c854fa4..0813508b45b0 100644
+--- a/Documentation/firmware-guide/acpi/enumeration.rst
++++ b/Documentation/firmware-guide/acpi/enumeration.rst
+@@ -258,6 +258,38 @@ input driver::
+ 		.id_table	= mpu3050_ids,
+ 	};
+ 
++Reference to PWM device
++=======================
++
++Sometimes a device can be a consumer of PWM channel. Obviously OS would like
++to know which one. To provide this mapping the special property has been
++introduced, i.e.::
++
++    Device (DEV)
++    {
++        Name (_DSD, Package ()
++        {
++            ToUUID("daffd814-6eba-4d8c-8a91-bc9bbf4aa301"),
++            Package () {
++                Package () { "compatible", Package () { "pwm-leds" } },
++                Package () { "label", "alarm-led" },
++                Package () { "pwms",
++                    Package () {
++                        "\\_SB.PCI0.PWM",  // <PWM device reference>
++                        0,                 // <PWM index>
++                        600000,            // <PWM period>
++                        0,                 // <PWM flags>
++                    }
++                }
++            }
++
++        })
++        ...
++
++In the above example the PWM-based LED driver references to the PWM channel 0
++of \_SB.PCI0.PWM device with initial period setting equal to 600 us (note that
++value is given in nanoseconds).
++
+ GPIO support
+ ============
+ 
 -- 
-2.25.1
+2.30.2
 
