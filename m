@@ -2,34 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 65F86395BAE
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 15:22:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E8C24396298
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 16:56:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231585AbhEaNXj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 09:23:39 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55564 "EHLO mail.kernel.org"
+        id S232399AbhEaO6b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 10:58:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38074 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232019AbhEaNTg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 09:19:36 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C119761376;
-        Mon, 31 May 2021 13:17:55 +0000 (UTC)
+        id S233444AbhEaOE4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 10:04:56 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B801561451;
+        Mon, 31 May 2021 13:38:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1622467076;
-        bh=pgZ2CMmgdSfi7hwcQaR3X6G3luSLViZGApZz7TBRRgI=;
+        s=korg; t=1622468296;
+        bh=FjffVfX7ZHBpMoEV5UGia/iEkAw5C7P7xXuBqUhqT+g=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ICtKRvxOYtc2DpmWcnKPy6zMKu1amgyoWU3WlSml/LW83hj5NYj9N1CfErPOoMrpI
-         lSYWjwgX8Olw/WLeyQZHtnR5Bnp1qfTQdrvoP8z34pDapslcKFG1/+86pQFQ8CAMIb
-         fVvxkq4TSEdflP8JevNQZlhMLA5kh7C8SrM9K0as=
+        b=VURsmjU66kViCnDMJXAmo5FUajxsYLarQ0aLtXSA75hsNE343ExCCkBvG7+e+HLHJ
+         XVfseScrGn9ddIhVZJkhStAfntDuQ2GULEumH3ya4ndSji72y6By9HCgU2erPyld9j
+         5VqYR41DMdkok/nX55w38admAE5HB473xhTgpuIs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Johan Hovold <johan@kernel.org>
-Subject: [PATCH 4.4 14/54] USB: trancevibrator: fix control-request direction
+        stable@vger.kernel.org, Vinod Koul <vkoul@kernel.org>,
+        Sinan Kaya <okaya@kernel.org>,
+        Phillip Potter <phil@philpotter.co.uk>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.10 155/252] dmaengine: qcom_hidma: comment platform_driver_register call
 Date:   Mon, 31 May 2021 15:13:40 +0200
-Message-Id: <20210531130635.537159539@linuxfoundation.org>
+Message-Id: <20210531130703.273282204@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210531130635.070310929@linuxfoundation.org>
-References: <20210531130635.070310929@linuxfoundation.org>
+In-Reply-To: <20210531130657.971257589@linuxfoundation.org>
+References: <20210531130657.971257589@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -38,39 +41,52 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Johan Hovold <johan@kernel.org>
+From: Phillip Potter <phil@philpotter.co.uk>
 
-commit 746e4acf87bcacf1406e05ef24a0b7139147c63e upstream.
+[ Upstream commit 4df2a8b0ad634d98a67e540a4e18a60f943e7d9f ]
 
-The direction of the pipe argument must match the request-type direction
-bit or control requests may fail depending on the host-controller-driver
-implementation.
+Place a comment in hidma_mgmt_init explaining why success must
+currently be assumed, due to the cleanup issue that would need to
+be considered were this module ever to be unloadable or were this
+platform_driver_register call ever to fail.
 
-Fix the set-speed request which erroneously used USB_DIR_IN and update
-the default timeout argument to match (same value).
-
-Fixes: 5638e4d92e77 ("USB: add PlayStation 2 Trance Vibrator driver")
-Cc: stable@vger.kernel.org      # 2.6.19
-Signed-off-by: Johan Hovold <johan@kernel.org>
-Link: https://lore.kernel.org/r/20210521133109.17396-1-johan@kernel.org
+Acked-By: Vinod Koul <vkoul@kernel.org>
+Acked-By: Sinan Kaya <okaya@kernel.org>
+Signed-off-by: Phillip Potter <phil@philpotter.co.uk>
+Link: https://lore.kernel.org/r/20210503115736.2104747-52-gregkh@linuxfoundation.org
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/usb/misc/trancevibrator.c |    4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/dma/qcom/hidma_mgmt.c | 14 ++++++++++++++
+ 1 file changed, 14 insertions(+)
 
---- a/drivers/usb/misc/trancevibrator.c
-+++ b/drivers/usb/misc/trancevibrator.c
-@@ -74,9 +74,9 @@ static ssize_t set_speed(struct device *
- 	/* Set speed */
- 	retval = usb_control_msg(tv->udev, usb_sndctrlpipe(tv->udev, 0),
- 				 0x01, /* vendor request: set speed */
--				 USB_DIR_IN | USB_TYPE_VENDOR | USB_RECIP_OTHER,
-+				 USB_DIR_OUT | USB_TYPE_VENDOR | USB_RECIP_OTHER,
- 				 tv->speed, /* speed value */
--				 0, NULL, 0, USB_CTRL_GET_TIMEOUT);
-+				 0, NULL, 0, USB_CTRL_SET_TIMEOUT);
- 	if (retval) {
- 		tv->speed = old;
- 		dev_dbg(&tv->udev->dev, "retval = %d\n", retval);
+diff --git a/drivers/dma/qcom/hidma_mgmt.c b/drivers/dma/qcom/hidma_mgmt.c
+index fe87b01f7a4e..62026607f3f8 100644
+--- a/drivers/dma/qcom/hidma_mgmt.c
++++ b/drivers/dma/qcom/hidma_mgmt.c
+@@ -418,6 +418,20 @@ static int __init hidma_mgmt_init(void)
+ 		hidma_mgmt_of_populate_channels(child);
+ 	}
+ #endif
++	/*
++	 * We do not check for return value here, as it is assumed that
++	 * platform_driver_register must not fail. The reason for this is that
++	 * the (potential) hidma_mgmt_of_populate_channels calls above are not
++	 * cleaned up if it does fail, and to do this work is quite
++	 * complicated. In particular, various calls of of_address_to_resource,
++	 * of_irq_to_resource, platform_device_register_full, of_dma_configure,
++	 * and of_msi_configure which then call other functions and so on, must
++	 * be cleaned up - this is not a trivial exercise.
++	 *
++	 * Currently, this module is not intended to be unloaded, and there is
++	 * no module_exit function defined which does the needed cleanup. For
++	 * this reason, we have to assume success here.
++	 */
+ 	platform_driver_register(&hidma_mgmt_driver);
+ 
+ 	return 0;
+-- 
+2.30.2
+
 
 
