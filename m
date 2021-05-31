@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 809BC3963FA
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 17:40:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 38DBA395C8E
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 15:33:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234030AbhEaPmd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 11:42:33 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48848 "EHLO mail.kernel.org"
+        id S232850AbhEaNex (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 09:34:53 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33248 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233677AbhEaOXd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 10:23:33 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id F16C66141D;
-        Mon, 31 May 2021 13:46:01 +0000 (UTC)
+        id S232267AbhEaNZ3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 09:25:29 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7DC1B61404;
+        Mon, 31 May 2021 13:20:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1622468762;
-        bh=DKm/4LqZEMd3LR14FJ9YG0VfrPqVTXlodDeLd28VrlU=;
+        s=korg; t=1622467250;
+        bh=o1Vg1+Yrw0GnXAW2r/u+OLWNaxvLVS4WPTHwmj0OT+E=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=vtYIp+tk70mHEeN+CGdyD11ymTe2aKqTHGUsd2NbyqyW/WPkH6p296fIEs5mkkEh8
-         2YSLNzKujU7SIIbiIyz1FB3C+o+i0pSuvwh7zeScTGLvhUbXj5qR0bkdvbkn1gnbde
-         +edZui/Fac1HyIfClwlAGLP+PgA1scELTfilJ3Ec=
+        b=dC9lpN1dGXrfDPCJbTTq5r4Sfyyb7VDpshASnqy3hBWeezK+LV7DxGpBinv8c4Z08
+         IL2kWiCt/yQ1e4SdXgjVFvjKV3+fOZEenE7v/0947NpNSfJUp2pedzlimUZfTC0WIS
+         J3gm6mMEh9K4VxQmrO5v+bwLKevmXlRXAxAfkePA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Aditya Pakki <pakki001@umn.edu>,
-        Mauro Carvalho Chehab <mchehab+samsung@kernel.org>,
+        stable@vger.kernel.org, John Garry <john.garry@huawei.com>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 117/177] Revert "media: gspca: Check the return value of write_bridge for timeout"
+Subject: [PATCH 4.9 61/66] scsi: libsas: Use _safe() loop in sas_resume_port()
 Date:   Mon, 31 May 2021 15:14:34 +0200
-Message-Id: <20210531130651.958562011@linuxfoundation.org>
+Message-Id: <20210531130638.186124063@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210531130647.887605866@linuxfoundation.org>
-References: <20210531130647.887605866@linuxfoundation.org>
+In-Reply-To: <20210531130636.254683895@linuxfoundation.org>
+References: <20210531130636.254683895@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,61 +41,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+From: Dan Carpenter <dan.carpenter@oracle.com>
 
-[ Upstream commit 8e23e83c752b54e98102627a1cc09281ad71a299 ]
+[ Upstream commit 8c7e7b8486cda21269d393245883c5e4737d5ee7 ]
 
-This reverts commit a21a0eb56b4e8fe4a330243af8030f890cde2283.
+If sas_notify_lldd_dev_found() fails then this code calls:
 
-Because of recent interactions with developers from @umn.edu, all
-commits from them have been recently re-reviewed to ensure if they were
-correct or not.
+	sas_unregister_dev(port, dev);
 
-Upon review, this commit was found to be incorrect for the reasons
-below, so it must be reverted.  It will be fixed up "correctly" in a
-later kernel change.
+which removes "dev", our list iterator, from the list.  This could lead to
+an endless loop.  We need to use list_for_each_entry_safe().
 
-Different error values should never be "OR" together and expect anything
-sane to come out of the result.
-
-Cc: Aditya Pakki <pakki001@umn.edu>
-Cc: Mauro Carvalho Chehab <mchehab+samsung@kernel.org>
-Link: https://lore.kernel.org/r/20210503115736.2104747-63-gregkh@linuxfoundation.org
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Link: https://lore.kernel.org/r/YKUeq6gwfGcvvhty@mwanda
+Fixes: 303694eeee5e ("[SCSI] libsas: suspend / resume support")
+Reviewed-by: John Garry <john.garry@huawei.com>
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/media/usb/gspca/m5602/m5602_po1030.c | 8 ++------
- 1 file changed, 2 insertions(+), 6 deletions(-)
+ drivers/scsi/libsas/sas_port.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/media/usb/gspca/m5602/m5602_po1030.c b/drivers/media/usb/gspca/m5602/m5602_po1030.c
-index d680b777f097..7bdbb8065146 100644
---- a/drivers/media/usb/gspca/m5602/m5602_po1030.c
-+++ b/drivers/media/usb/gspca/m5602/m5602_po1030.c
-@@ -154,7 +154,6 @@ static const struct v4l2_ctrl_config po1030_greenbal_cfg = {
+diff --git a/drivers/scsi/libsas/sas_port.c b/drivers/scsi/libsas/sas_port.c
+index d3c5297c6c89..30e0730f613e 100644
+--- a/drivers/scsi/libsas/sas_port.c
++++ b/drivers/scsi/libsas/sas_port.c
+@@ -41,7 +41,7 @@ static bool phy_is_wideport_member(struct asd_sas_port *port, struct asd_sas_phy
  
- int po1030_probe(struct sd *sd)
+ static void sas_resume_port(struct asd_sas_phy *phy)
  {
--	int rc = 0;
- 	u8 dev_id_h = 0, i;
- 	struct gspca_dev *gspca_dev = (struct gspca_dev *)sd;
+-	struct domain_device *dev;
++	struct domain_device *dev, *n;
+ 	struct asd_sas_port *port = phy->port;
+ 	struct sas_ha_struct *sas_ha = phy->ha;
+ 	struct sas_internal *si = to_sas_internal(sas_ha->core.shost->transportt);
+@@ -60,7 +60,7 @@ static void sas_resume_port(struct asd_sas_phy *phy)
+ 	 * 1/ presume every device came back
+ 	 * 2/ force the next revalidation to check all expander phys
+ 	 */
+-	list_for_each_entry(dev, &port->dev_list, dev_list_node) {
++	list_for_each_entry_safe(dev, n, &port->dev_list, dev_list_node) {
+ 		int i, rc;
  
-@@ -174,14 +173,11 @@ int po1030_probe(struct sd *sd)
- 	for (i = 0; i < ARRAY_SIZE(preinit_po1030); i++) {
- 		u8 data = preinit_po1030[i][2];
- 		if (preinit_po1030[i][0] == SENSOR)
--			rc |= m5602_write_sensor(sd,
-+			m5602_write_sensor(sd,
- 				preinit_po1030[i][1], &data, 1);
- 		else
--			rc |= m5602_write_bridge(sd, preinit_po1030[i][1],
--						data);
-+			m5602_write_bridge(sd, preinit_po1030[i][1], data);
- 	}
--	if (rc < 0)
--		return rc;
- 
- 	if (m5602_read_sensor(sd, PO1030_DEVID_H, &dev_id_h, 1))
- 		return -ENODEV;
+ 		rc = sas_notify_lldd_dev_found(dev);
 -- 
 2.30.2
 
