@@ -2,34 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA2C83963AC
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 17:29:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D58B3963B0
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 17:29:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234387AbhEaPag (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 11:30:36 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43308 "EHLO mail.kernel.org"
+        id S233157AbhEaPb2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 11:31:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43310 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233033AbhEaORl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 10:17:41 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 13363619AF;
-        Mon, 31 May 2021 13:43:45 +0000 (UTC)
+        id S232712AbhEaORn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 10:17:43 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 58E2B619B3;
+        Mon, 31 May 2021 13:43:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1622468626;
-        bh=Tw1m8lGwCOODsUpAjhAhIZd9AtVXP8hkFAvRZXBJgo0=;
+        s=korg; t=1622468628;
+        bh=IQ7IhCWeAmbY4PS5fgPbkHkaNBhyHOKfgSAxpYDpQB0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=M16pAr8KmSRnDQCZAq6NvoZ0JQmFbPBpHANHg0bwQVS1i4mYIdS9NnDx6NQjNy1t6
-         XOBBx5suwYOPaDR4YM1mIVyBzDSz6hEEueleinZHIUraW1BOo/RPLm4yMUdQ1Wrwme
-         +Y98PvblLQVnGR8cYD1CM29up/POU3MJIDUOr8/0=
+        b=BH6YM1lp/3bPNPY36tQU5M3VR6AmE/vOPTlfWJE5ZdIurgn4BYsVObxrnIZKZcVwJ
+         NZ2ZHhCvdIDZYdcA33ljxyXK/KUYOSxdORLgTqxZzjQDPC1KAHkXRhnO+rlApdkBVm
+         rkVE7cGWcakM+rrtgaYtpWZF6wuTHgvZUPZXmDGA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Lukas Wunner <lukas@wunner.de>,
-        Rajendra Nayak <rnayak@codeaurora.org>,
-        Girish Mahadevan <girishm@codeaurora.org>,
-        Mark Brown <broonie@kernel.org>
-Subject: [PATCH 5.4 064/177] spi: spi-geni-qcom: Fix use-after-free on unbind
-Date:   Mon, 31 May 2021 15:13:41 +0200
-Message-Id: <20210531130650.118413088@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Thadeu Lima de Souza Cascardo <cascardo@canonical.com>,
+        Marcel Holtmann <marcel@holtmann.org>
+Subject: [PATCH 5.4 065/177] Bluetooth: cmtp: fix file refcount when cmtp_attach_device fails
+Date:   Mon, 31 May 2021 15:13:42 +0200
+Message-Id: <20210531130650.150859991@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210531130647.887605866@linuxfoundation.org>
 References: <20210531130647.887605866@linuxfoundation.org>
@@ -41,56 +40,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Lukas Wunner <lukas@wunner.de>
+From: Thadeu Lima de Souza Cascardo <cascardo@canonical.com>
 
-commit 8f96c434dfbc85ffa755d6634c8c1cb2233fcf24 upstream.
+commit 8da3a0b87f4f1c3a3bbc4bfb78cf68476e97d183 upstream.
 
-spi_geni_remove() accesses the driver's private data after calling
-spi_unregister_master() even though that function releases the last
-reference on the spi_master and thereby frees the private data.
+When cmtp_attach_device fails, cmtp_add_connection returns the error value
+which leads to the caller to doing fput through sockfd_put. But
+cmtp_session kthread, which is stopped in this path will also call fput,
+leading to a potential refcount underflow or a use-after-free.
 
-Moreover, since commit 1a9e489e6128 ("spi: spi-geni-qcom: Use OPP API to
-set clk/perf state"), spi_geni_probe() leaks the spi_master allocation
-if the calls to dev_pm_opp_set_clkname() or dev_pm_opp_of_add_table()
-fail.
+Add a refcount before we signal the kthread to stop. The kthread will try
+to grab the cmtp_session_sem mutex before doing the fput, which is held
+when get_file is called, so there should be no races there.
 
-Fix by switching over to the new devm_spi_alloc_master() helper which
-keeps the private data accessible until the driver has unbound and also
-avoids the spi_master leak on probe.
-
-Fixes: 561de45f72bd ("spi: spi-geni-qcom: Add SPI driver support for GENI based QUP")
-Signed-off-by: Lukas Wunner <lukas@wunner.de>
-Cc: <stable@vger.kernel.org> # v4.20+: 5e844cc37a5c: spi: Introduce device-managed SPI controller allocation
-Cc: <stable@vger.kernel.org> # v4.20+
-Cc: Rajendra Nayak <rnayak@codeaurora.org>
-Cc: Girish Mahadevan <girishm@codeaurora.org>
-Link: https://lore.kernel.org/r/dfa1d8c41b8acdfad87ec8654cd124e6e3cb3f31.1607286887.git.lukas@wunner.de
-Signed-off-by: Mark Brown <broonie@kernel.org>
-[lukas: backport to v5.4.123]
-Signed-off-by: Lukas Wunner <lukas@wunner.de>
+Reported-by: Ryota Shiga
+Signed-off-by: Thadeu Lima de Souza Cascardo <cascardo@canonical.com>
+Signed-off-by: Marcel Holtmann <marcel@holtmann.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/spi/spi-geni-qcom.c |    3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ net/bluetooth/cmtp/core.c |    5 +++++
+ 1 file changed, 5 insertions(+)
 
---- a/drivers/spi/spi-geni-qcom.c
-+++ b/drivers/spi/spi-geni-qcom.c
-@@ -552,7 +552,7 @@ static int spi_geni_probe(struct platfor
- 		return PTR_ERR(clk);
- 	}
- 
--	spi = spi_alloc_master(&pdev->dev, sizeof(*mas));
-+	spi = devm_spi_alloc_master(&pdev->dev, sizeof(*mas));
- 	if (!spi)
- 		return -ENOMEM;
- 
-@@ -599,7 +599,6 @@ spi_geni_probe_free_irq:
- 	free_irq(mas->irq, spi);
- spi_geni_probe_runtime_disable:
- 	pm_runtime_disable(&pdev->dev);
--	spi_master_put(spi);
- 	return ret;
- }
- 
+--- a/net/bluetooth/cmtp/core.c
++++ b/net/bluetooth/cmtp/core.c
+@@ -392,6 +392,11 @@ int cmtp_add_connection(struct cmtp_conn
+ 	if (!(session->flags & BIT(CMTP_LOOPBACK))) {
+ 		err = cmtp_attach_device(session);
+ 		if (err < 0) {
++			/* Caller will call fput in case of failure, and so
++			 * will cmtp_session kthread.
++			 */
++			get_file(session->sock->file);
++
+ 			atomic_inc(&session->terminate);
+ 			wake_up_interruptible(sk_sleep(session->sock->sk));
+ 			up_write(&cmtp_session_sem);
 
 
