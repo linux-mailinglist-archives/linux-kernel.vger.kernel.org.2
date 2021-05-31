@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CACC4396313
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 17:03:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8030F395E4D
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 15:55:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234586AbhEaPEs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 11:04:48 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40228 "EHLO mail.kernel.org"
+        id S232787AbhEaN44 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 09:56:56 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40220 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231995AbhEaOHf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 10:07:35 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id F30C561407;
-        Mon, 31 May 2021 13:39:20 +0000 (UTC)
+        id S232210AbhEaNgY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 09:36:24 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DD3B86144B;
+        Mon, 31 May 2021 13:25:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1622468361;
-        bh=5yKAetD6fBSFYX8g+Wb/K3Pxi1ZrMI3kph2aD+o7LMo=;
+        s=korg; t=1622467542;
+        bh=SVa65oar+1TQ+dsRovc9z8yAxWBvz650wbTqrDGm6YM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=F3GPl+0mbfhOyodiGximl6im61AweW3aU83dAP0d8X9eT+Jo4BSTS/B5HRzsUkypj
-         WzuPCwh7IxbeX6LdBfuG0bQSqxlkFpIk6QbQCIlJ2XVUnAlp/o6dPd3ElWD+bWFFcK
-         0OXnDIgSUxBGxwj9blKghAi8TcmYj5cxVvJ3ElBQ=
+        b=WnaliIzrM9ZfcTFYqLI5nAkHQiwuaKzXBHtlFF682/Nwk+RsA/+Uu7kmi+2DywrZ2
+         OJE3ryxY+1nTgtq47fb9W9gG4HZaMf+Wbjf7ajPMxTdGRdTfYezQyvx0/iCpNTww2R
+         7KCPD/Ea87CzsWpE43lwpZYP7NMpA7/Y5ClBxwtw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org, Taehee Yoo <ap420073@gmail.com>,
         "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 214/252] mld: fix panic in mld_newpack()
+Subject: [PATCH 4.19 103/116] mld: fix panic in mld_newpack()
 Date:   Mon, 31 May 2021 15:14:39 +0200
-Message-Id: <20210531130705.287398057@linuxfoundation.org>
+Message-Id: <20210531130643.616437607@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210531130657.971257589@linuxfoundation.org>
-References: <20210531130657.971257589@linuxfoundation.org>
+In-Reply-To: <20210531130640.131924542@linuxfoundation.org>
+References: <20210531130640.131924542@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -130,10 +130,10 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 3 deletions(-)
 
 diff --git a/net/ipv6/mcast.c b/net/ipv6/mcast.c
-index 8cd2782a31e4..9fb5077f8e9a 100644
+index f2f8551416c3..3d048401141f 100644
 --- a/net/ipv6/mcast.c
 +++ b/net/ipv6/mcast.c
-@@ -1601,10 +1601,7 @@ static struct sk_buff *mld_newpack(struct inet6_dev *idev, unsigned int mtu)
+@@ -1606,10 +1606,7 @@ static struct sk_buff *mld_newpack(struct inet6_dev *idev, unsigned int mtu)
  		     IPV6_TLV_PADN, 0 };
  
  	/* we assume size > sizeof(ra) here */
