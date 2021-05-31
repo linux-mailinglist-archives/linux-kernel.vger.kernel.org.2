@@ -2,166 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 860F8396770
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 19:50:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EB1A7396750
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 19:43:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232172AbhEaRvu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 13:51:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59672 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232319AbhEaRvc (ORCPT
+        id S233407AbhEaRpP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 13:45:15 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:50742 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233828AbhEaRov (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 13:51:32 -0400
-Received: from mail-qk1-x733.google.com (mail-qk1-x733.google.com [IPv6:2607:f8b0:4864:20::733])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2AD7AC068EF8;
-        Mon, 31 May 2021 10:42:11 -0700 (PDT)
-Received: by mail-qk1-x733.google.com with SMTP id v8so11860087qkv.1;
-        Mon, 31 May 2021 10:42:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:content-transfer-encoding:date:message-id:cc:subject
-         :from:to:references:in-reply-to;
-        bh=1DXVQRpeGSXh+WGF/b+ku0W0v/EoLnt0HIACBq7fscs=;
-        b=D5TvIJgVHWXIOZl6WJKyyX6nNI5Sn0nhSukA/2sZSG1HilepNiKnHQeU8cgzER0kX4
-         wKKsbN408yvDNeXdO18RZpO6hNADDiGd12iG7u6VhjT1Lkb7/U0AzDs5F99qKoJkRYE5
-         WZnBecAbOQHEIpmv5ERI5xyZ7gEFX81B0aA/B8wQdQ1pnof+QoEzJRRhuPl/4vlChtDI
-         EhQP1MLJr7hYeMohSp94qaspFSsXL/ItXS6TOB8eZ1Te2cbyGYo8dINY0WBmvtKk9IOr
-         QKLyK6oaqertQul02H7f34o2YtESVXmFvQQ8AjOF9PMu2/lVKt0BrRtk75I6XXCU0QMe
-         0SJg==
+        Mon, 31 May 2021 13:44:51 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1622482989;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=K8nNOkX4zuqczQHURLREmFQOVbuEo/yfo6wOnioYIqU=;
+        b=fxAcZbIDy/OkLv8bIW6zR9yRm6KQovgsmUVCP9TIJhZpNEBNTAlkJPayDn3FpRA2bJHXfn
+        1yb8hKGMIUYMOJplBzFMzME7yr7TnpUnpfppKU+OC8QWatWR8S6Z4pWLSOdZGwN+SBAGex
+        A8i6taOfCSEVL92XBUStIt0sRiNMp70=
+Received: from mail-ot1-f70.google.com (mail-ot1-f70.google.com
+ [209.85.210.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-374-cnewyOg8NhCIqnBDTC_FjQ-1; Mon, 31 May 2021 13:43:06 -0400
+X-MC-Unique: cnewyOg8NhCIqnBDTC_FjQ-1
+Received: by mail-ot1-f70.google.com with SMTP id 59-20020a9d0dc10000b02902a57e382ca1so7202682ots.7
+        for <linux-kernel@vger.kernel.org>; Mon, 31 May 2021 10:43:06 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:content-transfer-encoding:date
-         :message-id:cc:subject:from:to:references:in-reply-to;
-        bh=1DXVQRpeGSXh+WGF/b+ku0W0v/EoLnt0HIACBq7fscs=;
-        b=atIwgdKTSy1LwWjKExQ6xmbRsB4UO3RsorBd6YLjMl9pOMcY1YHsx+tpmI2r7xf+L7
-         gCTb9MAkctfO1d0z5mByfyg4dK/xxsYCblfCHnyEBCAGjm2AbbRFQkWRh43WDDButhTK
-         bVVCW9bRBrgY5aj1eTLLq1KWs+pZf/LiYTUduWhGZIp5Jqasuvw9psZO/YXw6ZC6MEDx
-         wOcvlB8TPVMJ/67jqt0vji82WJOhm8fGlS+/1Gwq6GXel7e6lWkaOU+2ROVCQ3Lycn1h
-         tMTs3B8NXh7uy2xJzaE5zf09HaRJzG+7BYcCkOGLOGnTq023BzJfRKIHONLoH5IWh+Gg
-         8eTA==
-X-Gm-Message-State: AOAM530bOo86r3nelFwepJPaKNEPaGI84iTIKos1FbSR1yIPC9Y5FKcm
-        HZ26Tvxh+MQGpuM+wseIJJI=
-X-Google-Smtp-Source: ABdhPJwTpraklzFcf6oltpQmXYZQnVbfsba8rcjX5W9O3d5hYEeNJQnZ34CzazfdM7MRjPqITWyDhg==
-X-Received: by 2002:a05:620a:12c6:: with SMTP id e6mr16964196qkl.59.1622482930329;
-        Mon, 31 May 2021 10:42:10 -0700 (PDT)
-Received: from localhost (198-48-202-89.cpe.pppoe.ca. [198.48.202.89])
-        by smtp.gmail.com with ESMTPSA id e12sm8055078qtj.48.2021.05.31.10.42.09
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 31 May 2021 10:42:09 -0700 (PDT)
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset=UTF-8
-Date:   Mon, 31 May 2021 13:42:09 -0400
-Message-Id: <CBRM73TM4R3Z.12A8GEYTETFNG@shaak>
-Cc:     <linux-kernel@vger.kernel.org>, <linux-iio@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <robh+dt@kernel.org>
-Subject: Re: [PATCH v1 4/9] iio: afe: rescale: add offset support
-From:   "Liam Beguin" <liambeguin@gmail.com>
-To:     "Peter Rosin" <peda@axentia.se>, <jic23@kernel.org>,
-        <lars@metafoo.de>, <pmeerw@pmeerw.net>
-References: <20210530005917.20953-1-liambeguin@gmail.com>
- <20210530005917.20953-5-liambeguin@gmail.com>
- <0769aaae-8925-d943-e57d-c787d560a8dc@axentia.se>
- <CBRGZCQWCG6S.676W3VCPMMUH@shaak>
- <01f8d320-05ae-1178-151a-d0d11a23bb55@axentia.se>
- <CBRIK3PI2AMD.3KUD7EI7NJ2EB@shaak>
- <ca30e3d2-7d9a-1c9d-9ae5-beefa2cd6492@axentia.se>
-In-Reply-To: <ca30e3d2-7d9a-1c9d-9ae5-beefa2cd6492@axentia.se>
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=K8nNOkX4zuqczQHURLREmFQOVbuEo/yfo6wOnioYIqU=;
+        b=Z79/Jz7kTuW7lVLLH5b77biB2Jih9aqp2kHQ4IE6nVTUdIDqlDbGUQvqzWSTj5qc+V
+         vz8Q/sVMoBdkLt+Q3qwZNrlJobhJVqIAsp6U2iy/9oIbG+xEOED3e3P71py4rcVi3z7T
+         C9wqPfZ6iFet94sD33NZEEfbAKXJQ/M7nfF1ejGD074Zvm92ftzhR1KUSH5AFi2cZz7M
+         m4Bzjaea5XE+xjY3WL7OQqqX0iK52s31tscTC/mf4dBLJqWCRcSRB3A+UVbMhx7t67tK
+         47iSa9pwngAvnesbC/M5J8k4geWGp/EjBjdCkuh8yrd46myA8XGx28+UIe8GVu3NsjHS
+         fFbA==
+X-Gm-Message-State: AOAM530if2lLii1juOFpKQC/glXCufGxulJYh0B4CUgbaLUtySpzoFq6
+        WK1Tdwg+95iW8hKLvRZ0Yeg3mPWGZmstsYJ4iUm5EZl/YFfCjlIx24UzhDIHGDKaV053v3UwcSw
+        VpBsxoH7+w6xYd6R3+mK3UEdh
+X-Received: by 2002:a05:6830:1d64:: with SMTP id l4mr17260140oti.95.1622482985552;
+        Mon, 31 May 2021 10:43:05 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJylhACZOWlRSSP56Xe+/shqCqK0nGlc+aQdIrngGYo9DVADhn8bqhxQrwJTGkiF1rvA1tn1sA==
+X-Received: by 2002:a05:6830:1d64:: with SMTP id l4mr17260135oti.95.1622482985395;
+        Mon, 31 May 2021 10:43:05 -0700 (PDT)
+Received: from localhost.localdomain.com (075-142-250-213.res.spectrum.com. [75.142.250.213])
+        by smtp.gmail.com with ESMTPSA id i4sm2943902oih.13.2021.05.31.10.43.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 31 May 2021 10:43:05 -0700 (PDT)
+From:   trix@redhat.com
+To:     rmfrfs@gmail.com, laurent.pinchart@ideasonboard.com,
+        slongerbeam@gmail.com, p.zabel@pengutronix.de, mchehab@kernel.org,
+        gregkh@linuxfoundation.org, shawnguo@kernel.org,
+        s.hauer@pengutronix.de, kernel@pengutronix.de, festevam@gmail.com,
+        linux-imx@nxp.com
+Cc:     linux-media@vger.kernel.org, linux-staging@lists.linux.dev,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Tom Rix <trix@redhat.com>
+Subject: [PATCH] media: imx: imx7_mipi_csis: convert some switch cases to the default
+Date:   Mon, 31 May 2021 10:43:00 -0700
+Message-Id: <20210531174300.2594109-1-trix@redhat.com>
+X-Mailer: git-send-email 2.26.3
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon May 31, 2021 at 12:25 PM EDT, Peter Rosin wrote:
-> On 2021-05-31 16:51, Liam Beguin wrote:
-> > On Mon May 31, 2021 at 10:08 AM EDT, Peter Rosin wrote:
-> >> On 2021-05-31 15:36, Liam Beguin wrote:
-> >>> Hi Peter,
-> >>>
-> >>> On Mon May 31, 2021 at 4:52 AM EDT, Peter Rosin wrote:
-> >>>> Hi!
-> >>>>
-> >>>> Thanks for the patch!
-> >>>>
-> >>>> On 2021-05-30 02:59, Liam Beguin wrote:
-> >>>>> From: Liam Beguin <lvb@xiphos.com>
-> >>>>>
-> >>>>> This is a preparatory change required for the addition of temperatu=
-re
-> >>>>> sensing front ends.
-> >>>>
-> >>>> I think this is too simplistic. I think that if the upstream iio-dev=
- has
-> >>>> an offset, it should be dealt with (i.e. be rescaled). The rescale
-> >>>> driver
-> >>>> cannot ignore such an upstream offset and then throw in some other
-> >>>> unrelated offset of its own. That would be thoroughly confusing.
-> >>>
-> >>> I'm not sure I fully understand. The upstream offset should be dealt
-> >>> with when calling iio_read_channel_processed().  That was my main
-> >>> motivation behind using the IIO core to get a processed value.
-> >>
-> >> You can rescale a channel with an offset, but without using processed
-> >> values. I.e. the upstream channel provides raw values, a scale and an
-> >> offset. The current rescale code ignores the upstream offset. I did no=
-t
-> >> need that when I created the driver, and at a glace it felt "difficult=
-".
-> >> So I punted.
-> >=20
-> > I understand what you meant now.
-> >=20
-> > At first, I tried to apply the upstream offset from inside the rescaler=
-.
-> > As you said it felt difficult and it felt like this must've been
-> > implemented somewhere else before.
-> >=20
-> > After looking around, I noticed that the code to do that was already
-> > part of inkern.c and exposed through iio_read_channel_processed().
-> > If the upstream channel doesn't provide a processed value, the upstream
-> > offset and scale are automatically applied.
-> >=20
-> > So with the changes in [3/9] the rescaler's raw value becomes the
-> > upstream channel's processed value.
-> >=20
-> > This seems like an easier and probably cleaner way of adding offset
-> > support in the rescaler.
-> >=20
-> > Does that make sense?
->
-> Yes, it does. Doing generic calculations like this efficiently with
-> integer math without losing precision is ... difficult.
+From: Tom Rix <trix@redhat.com>
 
-You're right, I realized it's more complicated that it seems working on
-this.
+Static analysis reports this false positive
+imx7-mipi-csis.c:1027:2: warning: 4th function call argument is
+  an uninitialized value
 
->
-> I think that perhaps IF the upstream channel has an offset, the
-> rescaler could revert to always use the upstream processed channel in
-> preference of the raw channel. That would fix the missing support for
-> upstream offset and still not penalize the sweet case of no upstream
-> offset. Because the processed channel costs processing for each and
-> every sample and I think it should be avoided as much as possible.
->
-> Does that make sense?
+The variable 'align' is falsely reported as uninitialized.
+Even though all the cases are covered in the
+	switch (csis_fmt->width % 8) {
 
-Totally, I see what you're saying and will give it a try.
+Because there is no default case, it is reported as uninialized.
 
-I still believe it would make sense to get the upstream scaling factor
-the same way, to avoid duplicating that code.
+Improve the switch by converting the most numerous set of cases
+to the default and silence the false positive.
 
-Also it might be confusing to have the raw value be the upstream raw
-value in some cases and the upstream processed value in others.
+Signed-off-by: Tom Rix <trix@redhat.com>
+---
+ drivers/staging/media/imx/imx7-mipi-csis.c | 6 ++----
+ 1 file changed, 2 insertions(+), 4 deletions(-)
 
->
-> Or are a bunch of drivers adding an explicit zero offset "just because"?
-> That would be a nuisance.
-
-A quick search seems to indicate that this isn't the case.
-
-Thanks for your time,
-Liam
-
->
-> Cheers,
-> Peter
+diff --git a/drivers/staging/media/imx/imx7-mipi-csis.c b/drivers/staging/media/imx/imx7-mipi-csis.c
+index d573f3475d28..330f283030ec 100644
+--- a/drivers/staging/media/imx/imx7-mipi-csis.c
++++ b/drivers/staging/media/imx/imx7-mipi-csis.c
+@@ -1016,10 +1016,8 @@ static int mipi_csis_set_fmt(struct v4l2_subdev *sd,
+ 	case 6:
+ 		align = 2;
+ 		break;
+-	case 1:
+-	case 3:
+-	case 5:
+-	case 7:
++	default:
++		/* 1, 3, 5, 7 */
+ 		align = 3;
+ 		break;
+ 	}
+-- 
+2.26.3
 
