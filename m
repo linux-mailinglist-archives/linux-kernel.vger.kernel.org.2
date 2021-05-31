@@ -2,37 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E74AA395B35
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 15:16:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A0502396542
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 18:28:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231678AbhEaNSV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 09:18:21 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53064 "EHLO mail.kernel.org"
+        id S234597AbhEaQ36 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 12:29:58 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40720 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231370AbhEaNSD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 09:18:03 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2231960FE8;
-        Mon, 31 May 2021 13:16:21 +0000 (UTC)
+        id S233174AbhEaOpi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 10:45:38 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0A4336143B;
+        Mon, 31 May 2021 13:55:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1622466982;
-        bh=kme6q4zv+U3QITOnFZDU90hVd4mfIb3z1exUdsxjoF8=;
+        s=korg; t=1622469323;
+        bh=bWyJKvQVU+kJ1ALVoVaPXvozJvDT8Gaa9rBeUHRNj8w=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=WqquW7G7y3xf5koScYOC7XWHe0MEvXWr5iDKBGD3GVJ1RCVAIftJRe1UUR9rcCRja
-         yDeFe+1XZQ61b/fQLJJ583a0XkSIPYSXj41fdJeIlh17JyHFlYyGdC4yqlgCSZsBVk
-         dlDDWpQj4Dc91AzkjutyXEfK6+jxxHjPQrcQlijs=
+        b=PghvIIgnqHWwDf//khDF/KwnizMjx003ONf/9UqTjf13nlOjsxhhgcCeg3H2WTL/A
+         qiFHzKkWrv2kLqAGdGs8U7sVcXOjmm0CJQx8YSHRbJk5tmS7HLIfu0n1DMJPi8Grk2
+         nkmMgpAT4mUcn+j7UdCPbTPXsfPtfDlHVBbHRD38=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        syzbot+19bcfc64a8df1318d1c3@syzkaller.appspotmail.com,
-        Dongliang Mu <mudongliangabcd@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 4.4 03/54] NFC: nci: fix memory leak in nci_allocate_device
+        stable@vger.kernel.org, Ian Rogers <irogers@google.com>,
+        Arnaldo Carvalho de Melo <acme@redhat.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Stephane Eranian <eranian@google.com>
+Subject: [PATCH 5.12 154/296] perf debug: Move debug initialization earlier
 Date:   Mon, 31 May 2021 15:13:29 +0200
-Message-Id: <20210531130635.183575653@linuxfoundation.org>
+Message-Id: <20210531130709.039488460@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210531130635.070310929@linuxfoundation.org>
-References: <20210531130635.070310929@linuxfoundation.org>
+In-Reply-To: <20210531130703.762129381@linuxfoundation.org>
+References: <20210531130703.762129381@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,81 +45,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dongliang Mu <mudongliangabcd@gmail.com>
+From: Ian Rogers <irogers@google.com>
 
-commit e0652f8bb44d6294eeeac06d703185357f25d50b upstream.
+commit c59870e2110e1229a6e4b2457aece6ffe8d68d99 upstream.
 
-nfcmrvl_disconnect fails to free the hci_dev field in struct nci_dev.
-Fix this by freeing hci_dev in nci_free_device.
+This avoids segfaults during option handlers that use pr_err. For
+example, "perf --debug nopager list" segfaults before this change.
 
-BUG: memory leak
-unreferenced object 0xffff888111ea6800 (size 1024):
-  comm "kworker/1:0", pid 19, jiffies 4294942308 (age 13.580s)
-  hex dump (first 32 bytes):
-    00 00 00 00 00 00 00 00 00 60 fd 0c 81 88 ff ff  .........`......
-    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
-  backtrace:
-    [<000000004bc25d43>] kmalloc include/linux/slab.h:552 [inline]
-    [<000000004bc25d43>] kzalloc include/linux/slab.h:682 [inline]
-    [<000000004bc25d43>] nci_hci_allocate+0x21/0xd0 net/nfc/nci/hci.c:784
-    [<00000000c59cff92>] nci_allocate_device net/nfc/nci/core.c:1170 [inline]
-    [<00000000c59cff92>] nci_allocate_device+0x10b/0x160 net/nfc/nci/core.c:1132
-    [<00000000006e0a8e>] nfcmrvl_nci_register_dev+0x10a/0x1c0 drivers/nfc/nfcmrvl/main.c:153
-    [<000000004da1b57e>] nfcmrvl_probe+0x223/0x290 drivers/nfc/nfcmrvl/usb.c:345
-    [<00000000d506aed9>] usb_probe_interface+0x177/0x370 drivers/usb/core/driver.c:396
-    [<00000000bc632c92>] really_probe+0x159/0x4a0 drivers/base/dd.c:554
-    [<00000000f5009125>] driver_probe_device+0x84/0x100 drivers/base/dd.c:740
-    [<000000000ce658ca>] __device_attach_driver+0xee/0x110 drivers/base/dd.c:846
-    [<000000007067d05f>] bus_for_each_drv+0xb7/0x100 drivers/base/bus.c:431
-    [<00000000f8e13372>] __device_attach+0x122/0x250 drivers/base/dd.c:914
-    [<000000009cf68860>] bus_probe_device+0xc6/0xe0 drivers/base/bus.c:491
-    [<00000000359c965a>] device_add+0x5be/0xc30 drivers/base/core.c:3109
-    [<00000000086e4bd3>] usb_set_configuration+0x9d9/0xb90 drivers/usb/core/message.c:2164
-    [<00000000ca036872>] usb_generic_driver_probe+0x8c/0xc0 drivers/usb/core/generic.c:238
-    [<00000000d40d36f6>] usb_probe_device+0x5c/0x140 drivers/usb/core/driver.c:293
-    [<00000000bc632c92>] really_probe+0x159/0x4a0 drivers/base/dd.c:554
-
-Reported-by: syzbot+19bcfc64a8df1318d1c3@syzkaller.appspotmail.com
-Fixes: 11f54f228643 ("NFC: nci: Add HCI over NCI protocol support")
-Signed-off-by: Dongliang Mu <mudongliangabcd@gmail.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Fixes: 8abceacff87d (perf debug: Add debug_set_file function)
+Signed-off-by: Ian Rogers <irogers@google.com>
+Tested-by: Arnaldo Carvalho de Melo <acme@redhat.com>
+Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com>
+Cc: Jiri Olsa <jolsa@redhat.com>
+Cc: Mark Rutland <mark.rutland@arm.com>
+Cc: Namhyung Kim <namhyung@kernel.org>
+Cc: Peter Zijlstra <peterz@infradead.org>
+Cc: Stephane Eranian <eranian@google.com>
+Link: http://lore.kernel.org/lkml/20210519164447.2672030-1-irogers@google.com
+Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- include/net/nfc/nci_core.h |    1 +
- net/nfc/nci/core.c         |    1 +
- net/nfc/nci/hci.c          |    5 +++++
- 3 files changed, 7 insertions(+)
+ tools/perf/perf.c |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
---- a/include/net/nfc/nci_core.h
-+++ b/include/net/nfc/nci_core.h
-@@ -300,6 +300,7 @@ int nci_core_conn_create(struct nci_dev
- int nci_core_conn_close(struct nci_dev *ndev, u8 conn_id);
+--- a/tools/perf/perf.c
++++ b/tools/perf/perf.c
+@@ -443,6 +443,8 @@ int main(int argc, const char **argv)
+ 	const char *cmd;
+ 	char sbuf[STRERR_BUFSIZE];
  
- struct nci_hci_dev *nci_hci_allocate(struct nci_dev *ndev);
-+void nci_hci_deallocate(struct nci_dev *ndev);
- int nci_hci_send_event(struct nci_dev *ndev, u8 gate, u8 event,
- 		       const u8 *param, size_t param_len);
- int nci_hci_send_cmd(struct nci_dev *ndev, u8 gate,
---- a/net/nfc/nci/core.c
-+++ b/net/nfc/nci/core.c
-@@ -1099,6 +1099,7 @@ EXPORT_SYMBOL(nci_allocate_device);
- void nci_free_device(struct nci_dev *ndev)
- {
- 	nfc_free_device(ndev->nfc_dev);
-+	nci_hci_deallocate(ndev);
- 	kfree(ndev);
- }
- EXPORT_SYMBOL(nci_free_device);
---- a/net/nfc/nci/hci.c
-+++ b/net/nfc/nci/hci.c
-@@ -798,3 +798,8 @@ struct nci_hci_dev *nci_hci_allocate(str
- 
- 	return hdev;
- }
++	perf_debug_setup();
 +
-+void nci_hci_deallocate(struct nci_dev *ndev)
-+{
-+	kfree(ndev->hci_dev);
-+}
+ 	/* libsubcmd init */
+ 	exec_cmd_init("perf", PREFIX, PERF_EXEC_PATH, EXEC_PATH_ENVIRONMENT);
+ 	pager_init(PERF_PAGER_ENVIRONMENT);
+@@ -531,8 +533,6 @@ int main(int argc, const char **argv)
+ 	 */
+ 	pthread__block_sigwinch();
+ 
+-	perf_debug_setup();
+-
+ 	while (1) {
+ 		static int done_help;
+ 
 
 
