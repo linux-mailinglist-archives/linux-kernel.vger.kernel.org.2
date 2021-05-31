@@ -2,153 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A048039537F
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 02:52:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CA234395382
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 02:54:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229963AbhEaAy3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 30 May 2021 20:54:29 -0400
-Received: from mga18.intel.com ([134.134.136.126]:16281 "EHLO mga18.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229887AbhEaAy1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 30 May 2021 20:54:27 -0400
-IronPort-SDR: Ob4lgGooz+d4tR2E4OR3u2fQPZxlVlfKCyFhQBKSy6w0Ff7AFnm1cGHawOVe/TJ7T6Y/dDlcrj
- 0t+amLsnxqFA==
-X-IronPort-AV: E=McAfee;i="6200,9189,10000"; a="190632004"
-X-IronPort-AV: E=Sophos;i="5.83,236,1616482800"; 
-   d="scan'208";a="190632004"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 May 2021 17:52:48 -0700
-IronPort-SDR: LNN+Vit3cFlunU+54UbsQAk0XE1QQZyir78WkRN4Ni9nHHsVeoni8fX+VX/ZOTz0iUvk9NmhvE
- dIS7D/H6SkDg==
-X-IronPort-AV: E=Sophos;i="5.83,236,1616482800"; 
-   d="scan'208";a="444785294"
-Received: from shao2-debian.sh.intel.com (HELO [10.239.13.11]) ([10.239.13.11])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 May 2021 17:52:46 -0700
-Subject: Re: [kbuild-all] Re: [PATCH 2/3] crypto: hisilicon/sec - add fallback
- tfm supporting for XTS mode
-To:     "yekai(A)" <yekai13@huawei.com>, kernel test robot <lkp@intel.com>,
-        herbert@gondor.apana.org.au
-Cc:     kbuild-all@lists.01.org, linux-crypto@vger.kernel.org,
-        linux-kernel@vger.kernel.org, wangzhou1@hisilicon.com
-References: <1622202126-19237-3-git-send-email-yekai13@huawei.com>
- <202105282256.hUBoOJ3Z-lkp@intel.com>
- <c265adb3-4cba-a6f7-6ba5-9a065fe5aeca@huawei.com>
-From:   Rong Chen <rong.a.chen@intel.com>
-Message-ID: <7c435436-cf38-7c09-9141-8410a8c18cc8@intel.com>
-Date:   Mon, 31 May 2021 08:51:30 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.6.1
+        id S230002AbhEaAzH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 30 May 2021 20:55:07 -0400
+Received: from mail-il1-f197.google.com ([209.85.166.197]:41717 "EHLO
+        mail-il1-f197.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229887AbhEaAzE (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 30 May 2021 20:55:04 -0400
+Received: by mail-il1-f197.google.com with SMTP id r6-20020a9276060000b02901d941f0ce72so3897946ilc.8
+        for <linux-kernel@vger.kernel.org>; Sun, 30 May 2021 17:53:24 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=hUhrULEmAcG3BBaVRE+yadHfnjAYcnaKo1TDVQBUraE=;
+        b=kxwtHV7uxnYVk9jGucMt/VDbvrp6ztRkkTHamSUQBZSDKp9LdI8LC0YMvtP1I9ab59
+         6nktwQM3LGlg58iGgx+3Vm2FMgLMMmA9Ua4QuUiWdv8St2aiaTcmJaxYP4Ryan1EHSqo
+         WMq7tQMN4otpArHcjxfcskHg207GB5fxKYChz50f0q6k1smB7KLUPtSYRFtQDCWUBNqQ
+         cuAiS8TlKQHOv8M7vweZPD5tVk/335GFwJTGixpETuTjmnVcz5bivEG5CE8Svd1ZOYrv
+         m5QngtUajExYb5Vp91GZHCX3ZZBxasdMS60zXo47/E9TLrjEaOFXJYG547y4h2dnO7nx
+         pQMg==
+X-Gm-Message-State: AOAM530KFjMcVLWnIBYTWjr/81eKg2uED5kzzDLv27cOpQzGYT9uNngl
+        dDfY1ih+7UYBOzAMbNe/3u7zzpS0NAZmHmogWqJzY5hjzffy
+X-Google-Smtp-Source: ABdhPJxiThmvWnHoMqbyTTVYKrKoJrSzbVMiuKZaNvTfsn0clWaUWbsniMa3DLjwSHHKlouUZ+FGxLdhgMuPRhUKK9hovzcxfTiU
 MIME-Version: 1.0
-In-Reply-To: <c265adb3-4cba-a6f7-6ba5-9a065fe5aeca@huawei.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+X-Received: by 2002:a92:608:: with SMTP id x8mr233711ilg.217.1622422404435;
+ Sun, 30 May 2021 17:53:24 -0700 (PDT)
+Date:   Sun, 30 May 2021 17:53:24 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000017977605c395a751@google.com>
+Subject: [syzbot] kernel BUG in __page_mapcount
+From:   syzbot <syzbot+1f52b3a18d5633fa7f82@syzkaller.appspotmail.com>
+To:     akpm@linux-foundation.org, chinwen.chang@mediatek.com,
+        jannh@google.com, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com,
+        vbabka@suse.cz, walken@google.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hello,
+
+syzbot found the following issue on:
+
+HEAD commit:    7ac3a1c1 Merge tag 'mtd/fixes-for-5.13-rc4' of git://git.k..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=14559d5bd00000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=f9f3fc7daa178986
+dashboard link: https://syzkaller.appspot.com/bug?extid=1f52b3a18d5633fa7f82
+compiler:       Debian clang version 11.0.1-2
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=11132d5bd00000
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+1f52b3a18d5633fa7f82@syzkaller.appspotmail.com
+
+ __mmput+0x111/0x370 kernel/fork.c:1096
+ exit_mm+0x67e/0x7d0 kernel/exit.c:502
+ do_exit+0x6b9/0x23d0 kernel/exit.c:813
+ do_group_exit+0x168/0x2d0 kernel/exit.c:923
+ get_signal+0x1770/0x2180 kernel/signal.c:2835
+ arch_do_signal_or_restart+0x8e/0x6c0 arch/x86/kernel/signal.c:789
+ handle_signal_work kernel/entry/common.c:147 [inline]
+ exit_to_user_mode_loop kernel/entry/common.c:171 [inline]
+ exit_to_user_mode_prepare+0xac/0x200 kernel/entry/common.c:208
+ __syscall_exit_to_user_mode_work kernel/entry/common.c:290 [inline]
+ syscall_exit_to_user_mode+0x26/0x70 kernel/entry/common.c:301
+------------[ cut here ]------------
+kernel BUG at include/linux/page-flags.h:686!
+invalid opcode: 0000 [#1] PREEMPT SMP KASAN
+CPU: 1 PID: 10694 Comm: syz-executor.0 Not tainted 5.13.0-rc3-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+RIP: 0010:PageDoubleMap include/linux/page-flags.h:686 [inline]
+RIP: 0010:__page_mapcount+0x2b3/0x2d0 mm/util.c:728
+Code: e8 72 25 cf ff 4c 89 ff 48 c7 c6 40 fb 39 8a e8 03 4c 04 00 0f 0b e8 5c 25 cf ff 4c 89 ff 48 c7 c6 40 fc 39 8a e8 ed 4b 04 00 <0f> 0b e8 46 25 cf ff 4c 89 ff 48 c7 c6 80 fc 39 8a e8 d7 4b 04 00
+RSP: 0018:ffffc90001ff7460 EFLAGS: 00010246
+RAX: e8070b6faabf8b00 RBX: 00fff0000008001d RCX: ffff888047280000
+RDX: 0000000000000000 RSI: 000000000000ffff RDI: 000000000000ffff
+RBP: 0000000000000000 R08: ffffffff81ce2584 R09: ffffed1017363f24
+R10: ffffed1017363f24 R11: 0000000000000000 R12: 1ffffd4000265001
+R13: 00000000ffffffff R14: dffffc0000000000 R15: ffffea0001328000
+FS:  00007f6e83636700(0000) GS:ffff8880b9b00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000000000568000 CR3: 000000002b559000 CR4: 00000000001506e0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ page_mapcount include/linux/mm.h:873 [inline]
+ smaps_account+0x79d/0x980 fs/proc/task_mmu.c:467
+ smaps_pte_entry fs/proc/task_mmu.c:533 [inline]
+ smaps_pte_range+0x6ed/0xfc0 fs/proc/task_mmu.c:596
+ walk_pmd_range mm/pagewalk.c:89 [inline]
+ walk_pud_range mm/pagewalk.c:160 [inline]
+ walk_p4d_range mm/pagewalk.c:193 [inline]
+ walk_pgd_range mm/pagewalk.c:229 [inline]
+ __walk_page_range+0xd64/0x1ad0 mm/pagewalk.c:331
+ walk_page_vma+0x3c2/0x500 mm/pagewalk.c:482
+ smap_gather_stats fs/proc/task_mmu.c:769 [inline]
+ show_smaps_rollup+0x49d/0xc20 fs/proc/task_mmu.c:872
+ seq_read_iter+0x43a/0xcf0 fs/seq_file.c:227
+ seq_read+0x445/0x5c0 fs/seq_file.c:159
+ do_loop_readv_writev fs/read_write.c:761 [inline]
+ do_iter_read+0x464/0x660 fs/read_write.c:803
+ vfs_readv fs/read_write.c:921 [inline]
+ do_preadv+0x1f7/0x340 fs/read_write.c:1013
+ do_syscall_64+0x3f/0xb0 arch/x86/entry/common.c:47
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+RIP: 0033:0x4665d9
+Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 bc ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007f6e83636188 EFLAGS: 00000246 ORIG_RAX: 0000000000000127
+RAX: ffffffffffffffda RBX: 000000000056bf80 RCX: 00000000004665d9
+RDX: 0000000000000001 RSI: 0000000020000780 RDI: 0000000000000004
+RBP: 00000000004bfcb9 R08: 0000000000000003 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 000000000056bf80
+R13: 00007ffeb607b5df R14: 00007f6e83636300 R15: 0000000000022000
+Modules linked in:
+---[ end trace e65a33e7d2bffb07 ]---
+RIP: 0010:PageDoubleMap include/linux/page-flags.h:686 [inline]
+RIP: 0010:__page_mapcount+0x2b3/0x2d0 mm/util.c:728
+Code: e8 72 25 cf ff 4c 89 ff 48 c7 c6 40 fb 39 8a e8 03 4c 04 00 0f 0b e8 5c 25 cf ff 4c 89 ff 48 c7 c6 40 fc 39 8a e8 ed 4b 04 00 <0f> 0b e8 46 25 cf ff 4c 89 ff 48 c7 c6 80 fc 39 8a e8 d7 4b 04 00
+RSP: 0018:ffffc90001ff7460 EFLAGS: 00010246
+RAX: e8070b6faabf8b00 RBX: 00fff0000008001d RCX: ffff888047280000
+RDX: 0000000000000000 RSI: 000000000000ffff RDI: 000000000000ffff
+RBP: 0000000000000000 R08: ffffffff81ce2584 R09: ffffed1017363f24
+R10: ffffed1017363f24 R11: 0000000000000000 R12: 1ffffd4000265001
+R13: 00000000ffffffff R14: dffffc0000000000 R15: ffffea0001328000
+FS:  00007f6e83636700(0000) GS:ffff8880b9b00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000000000568000 CR3: 000000002b559000 CR4: 00000000001506e0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
 
 
-On 5/29/21 5:22 PM, yekai(A) wrote:
->
->
-> On 2021/5/28 22:13, kernel test robot wrote:
->> Hi Kai,
->>
->> Thank you for the patch! Yet something to improve:
->>
->> [auto build test ERROR on cryptodev/master]
->> [also build test ERROR on crypto/master linux/master linus/master 
->> v5.13-rc3 next-20210528]
->> [If your patch is applied to the wrong git tree, kindly drop us a note.
->> And when submitting patch, we suggest to use '--base' as documented in
->> https://git-scm.com/docs/git-format-patch]
->>
->> url: 
->> https://github.com/0day-ci/linux/commits/Kai-Ye/crypto-hisilicon-supports-new-skciphers-for-new-hardware/20210528-194644
->> base: 
->> https://git.kernel.org/pub/scm/linux/kernel/git/herbert/cryptodev-2.6.git 
->> master
->> config: ia64-allmodconfig (attached as .config)
->> compiler: ia64-linux-gcc (GCC) 9.3.0
->> reproduce (this is a W=1 build):
->>         wget 
->> https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross 
->> -O ~/bin/make.cross
->>         chmod +x ~/bin/make.cross
->>         # 
->> https://github.com/0day-ci/linux/commit/60bae5ed49c53ea90c82125a8295fb72833a3b68
->>         git remote add linux-review https://github.com/0day-ci/linux
->>         git fetch --no-tags linux-review 
->> Kai-Ye/crypto-hisilicon-supports-new-skciphers-for-new-hardware/20210528-194644
->>         git checkout 60bae5ed49c53ea90c82125a8295fb72833a3b68
->>         # save the attached .config to linux build tree
->>         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-9.3.0 
->> make.cross ARCH=ia64
->>
->> If you fix the issue, kindly add following tag as appropriate
->> Reported-by: kernel test robot <lkp@intel.com>
->>
->> All errors (new ones prefixed by >>):
->>
->>    drivers/crypto/hisilicon/sec2/sec_crypto.c: In function 
->> 'sec_aead_crypto':
->>>> drivers/crypto/hisilicon/sec2/sec_crypto.c:1751:40: error: 'sk_req' 
->>>> undeclared (first use in this function); did you mean 'a_req'?
->>     1751 |   return sec_skcipher_soft_crypto(ctx, sk_req, encrypt);
->>          |                                        ^~~~~~
->>          |                                        a_req
->>    drivers/crypto/hisilicon/sec2/sec_crypto.c:1751:40: note: each 
->> undeclared identifier is reported only once for each function it 
->> appears in
->>
->>
->> vim +1751 drivers/crypto/hisilicon/sec2/sec_crypto.c
->>
->>   1733
->>   1734    static int sec_aead_crypto(struct aead_request *a_req, bool 
->> encrypt)
->>   1735    {
->>   1736        struct crypto_aead *tfm = crypto_aead_reqtfm(a_req);
->>   1737        struct sec_req *req = aead_request_ctx(a_req);
->>   1738        struct sec_ctx *ctx = crypto_aead_ctx(tfm);
->>   1739        int ret;
->>   1740
->>   1741        req->flag = a_req->base.flags;
->>   1742        req->aead_req.aead_req = a_req;
->>   1743        req->c_req.encrypt = encrypt;
->>   1744        req->ctx = ctx;
->>   1745
->>   1746        ret = sec_aead_param_check(ctx, req);
->>   1747        if (unlikely(ret))
->>   1748            return -EINVAL;
->>   1749
->>   1750        if (unlikely(ctx->c_ctx.fallback))
->>> 1751            return sec_skcipher_soft_crypto(ctx, sk_req, encrypt);
->>   1752
->>   1753        return ctx->req_op->process(ctx, req);
->>   1754    }
->>   1755
->>
->> ---
->> 0-DAY CI Kernel Test Service, Intel Corporation
->> https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
->>
->
->
-> You shouldn't git am this patchset directly, because this patchset 
-> depends on previous patchset.
-> the series is "crypto: hisilicon - add new type of sqe for Kunpeng930",
-> the patchwork is 
-> https://patchwork.kernel.org/project/linux-crypto/list/?series=490143,
-> thank you
-> Kai
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-Hi Kai,
-
-Thanks for the clarification, it could be very helpful for us if 
-'--base' for git format-patch used or
-there is a patchwork link in cover letter file.
-
-Best Regards,
-Rong Chen
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+syzbot can test patches for this issue, for details see:
+https://goo.gl/tpsmEJ#testing-patches
