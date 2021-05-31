@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 75E0B3961F6
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 16:48:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 26A1A39637F
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 17:17:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234017AbhEaOtP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 10:49:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36882 "EHLO mail.kernel.org"
+        id S233873AbhEaPSu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 11:18:50 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42684 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231377AbhEaOBX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 10:01:23 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C898E610A0;
-        Mon, 31 May 2021 13:36:48 +0000 (UTC)
+        id S233626AbhEaOOc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 10:14:32 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7ED026199C;
+        Mon, 31 May 2021 13:42:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1622468209;
-        bh=LaB3UTQvPX++WABDJkqPhH0V1OsEQ6q1tF4fYa/kK94=;
+        s=korg; t=1622468547;
+        bh=68svN8qALJMVamZXMkW6w5NBf89LKW/Z7/CfJcreCr0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=FHI/2fffMnyR9Dhchsfx6SvvH/OmyhE7y325OwjtO+UlE3YuanCE3hFoTNO+dFR3l
-         Dq/VEG8hHmvd25BSN5T8SjBRlkWNvFCiBndmAy3owvsn9Fc5RsnO1k80+BKEjNJeiq
-         gAZ3VUsOr1Jg8Pgy83i+YtFOWlxoS2KBnKHLP+gY=
+        b=eRbZmuRx+YrcJt16g9jnvKdcgPdPGMNkuXFMXKMs+U1VF6pGlXdJM0tDcgnCtUEep
+         8PzrOUvsgBxQBG0Con1bJhWWVJ3W2Bjst5BoQPTYq6jcmWFxXTKUoTOEQOsFiEC6VP
+         7DnDMw0xQqdpePrJXhncwKtrYuxeqd50UdL7FmBk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Fabrizio Castro <fabrizio.castro.jz@renesas.com>,
-        Wolfram Sang <wsa@kernel.org>
-Subject: [PATCH 5.10 123/252] i2c: sh_mobile: Use new clock calculation formulas for RZ/G2E
+        stable@vger.kernel.org, James Zhu <James.Zhu@amd.com>,
+        Leo Liu <leo.liu@amd.com>,
+        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
+        Alex Deucher <alexander.deucher@amd.com>
+Subject: [PATCH 5.4 031/177] drm/amdgpu/vcn1: add cancel_delayed_work_sync before power gate
 Date:   Mon, 31 May 2021 15:13:08 +0200
-Message-Id: <20210531130702.180257192@linuxfoundation.org>
+Message-Id: <20210531130649.002914653@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210531130657.971257589@linuxfoundation.org>
-References: <20210531130657.971257589@linuxfoundation.org>
+In-Reply-To: <20210531130647.887605866@linuxfoundation.org>
+References: <20210531130647.887605866@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,33 +41,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Geert Uytterhoeven <geert+renesas@glider.be>
+From: James Zhu <James.Zhu@amd.com>
 
-commit c4740e293c93c747e65d53d9aacc2ba8521d1489 upstream.
+commit b95f045ea35673572ef46d6483ad8bd6d353d63c upstream.
 
-When switching the Gen3 SoCs to the new clock calculation formulas, the
-match entry for RZ/G2E added in commit 51243b73455f2d12 ("i2c:
-sh_mobile: Add support for r8a774c0 (RZ/G2E)") was forgotten.
+Add cancel_delayed_work_sync before set power gating state
+to avoid race condition issue when power gating.
 
-Fixes: e8a27567509b2439 ("i2c: sh_mobile: use new clock calculation formulas for Gen3")
-Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
-Reviewed-by: Fabrizio Castro <fabrizio.castro.jz@renesas.com>
-Signed-off-by: Wolfram Sang <wsa@kernel.org>
+Signed-off-by: James Zhu <James.Zhu@amd.com>
+Reviewed-by: Leo Liu <leo.liu@amd.com>
+Acked-by: Christian König <christian.koenig@amd.com>
+Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
+Cc: stable@vger.kernel.org
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/i2c/busses/i2c-sh_mobile.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/gpu/drm/amd/amdgpu/vcn_v1_0.c |    6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
 
---- a/drivers/i2c/busses/i2c-sh_mobile.c
-+++ b/drivers/i2c/busses/i2c-sh_mobile.c
-@@ -807,7 +807,7 @@ static const struct sh_mobile_dt_config
- static const struct of_device_id sh_mobile_i2c_dt_ids[] = {
- 	{ .compatible = "renesas,iic-r8a73a4", .data = &fast_clock_dt_config },
- 	{ .compatible = "renesas,iic-r8a7740", .data = &r8a7740_dt_config },
--	{ .compatible = "renesas,iic-r8a774c0", .data = &fast_clock_dt_config },
-+	{ .compatible = "renesas,iic-r8a774c0", .data = &v2_freq_calc_dt_config },
- 	{ .compatible = "renesas,iic-r8a7790", .data = &v2_freq_calc_dt_config },
- 	{ .compatible = "renesas,iic-r8a7791", .data = &v2_freq_calc_dt_config },
- 	{ .compatible = "renesas,iic-r8a7792", .data = &v2_freq_calc_dt_config },
+--- a/drivers/gpu/drm/amd/amdgpu/vcn_v1_0.c
++++ b/drivers/gpu/drm/amd/amdgpu/vcn_v1_0.c
+@@ -233,9 +233,13 @@ static int vcn_v1_0_hw_fini(void *handle
+ 	struct amdgpu_device *adev = (struct amdgpu_device *)handle;
+ 	struct amdgpu_ring *ring = &adev->vcn.inst->ring_dec;
+ 
++	cancel_delayed_work_sync(&adev->vcn.idle_work);
++
+ 	if ((adev->pg_flags & AMD_PG_SUPPORT_VCN_DPG) ||
+-		RREG32_SOC15(VCN, 0, mmUVD_STATUS))
++		(adev->vcn.cur_state != AMD_PG_STATE_GATE &&
++		 RREG32_SOC15(VCN, 0, mmUVD_STATUS))) {
+ 		vcn_v1_0_set_powergating_state(adev, AMD_PG_STATE_GATE);
++	}
+ 
+ 	ring->sched.ready = false;
+ 
 
 
