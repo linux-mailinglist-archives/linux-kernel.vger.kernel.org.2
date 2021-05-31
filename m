@@ -2,108 +2,202 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EC5F73954B1
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 06:37:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D40A3954B0
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 06:37:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230122AbhEaEjS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 00:39:18 -0400
-Received: from mx0b-00069f02.pphosted.com ([205.220.177.32]:15882 "EHLO
-        mx0b-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230118AbhEaEjJ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 00:39:09 -0400
-Received: from pps.filterd (m0246632.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 14V4a6qN021685;
-        Mon, 31 May 2021 04:36:43 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- content-transfer-encoding : in-reply-to; s=corp-2020-01-29;
- bh=sCqnewwt/DX8w8J3kiZ2oxDa1Mc5rzPvqsknjikinPk=;
- b=AbVh2tgi6Qde3n9QyrTdZZhC8KEhjp4IvzFRVM5/qiUtydofRhvEOPYjREDXf1OrbBP6
- gqlxex9jvzcI5yDtTT76t8Zz4c5voP5dZlxbAbcuPQj29VBEdLjqnE0jz1/WxnqrBKrs
- i2PODgNTMNZYkr8f8P9WVj2B8lwQcDm+C6gE+luBf4iFeLgCj+5C89xAbzzqznX7FsX8
- RDszVNr4Ji6ICr/Nk8pJew21lTsDlRaa2gF7WlXyqHPLuB9T4I+a+3GQWY6pRuaZb4D+
- 70+K7SnQVCx3jC0P10tV/9WKIz3xsaMuLTwnoUhASGeC5y2reQY2IfBb82HjQf7LxH0h zg== 
-Received: from oracle.com (userp3020.oracle.com [156.151.31.79])
-        by mx0b-00069f02.pphosted.com with ESMTP id 38vmrgr1w5-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 31 May 2021 04:36:42 +0000
-Received: from userp3020.oracle.com (userp3020.oracle.com [127.0.0.1])
-        by pps.podrdrct (8.16.0.36/8.16.0.36) with SMTP id 14V4ag0N189374;
-        Mon, 31 May 2021 04:36:42 GMT
-Received: from pps.reinject (localhost [127.0.0.1])
-        by userp3020.oracle.com with ESMTP id 38uycq28yy-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 31 May 2021 04:36:41 +0000
-Received: from userp3020.oracle.com (userp3020.oracle.com [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 14V4afNT189362;
-        Mon, 31 May 2021 04:36:41 GMT
-Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
-        by userp3020.oracle.com with ESMTP id 38uycq28yr-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 31 May 2021 04:36:41 +0000
-Received: from abhmp0014.oracle.com (abhmp0014.oracle.com [141.146.116.20])
-        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 14V4aZco001554;
-        Mon, 31 May 2021 04:36:37 GMT
-Received: from kadam (/41.212.42.34)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Sun, 30 May 2021 21:36:35 -0700
-Date:   Mon, 31 May 2021 07:36:19 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     =?utf-8?B?5oWV5Yas5Lqu?= <mudongliangabcd@gmail.com>
-Cc:     perex@perex.cz, tiwai@suse.com, alsa-devel@alsa-project.org,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        syzbot+08a7d8b51ea048a74ffb@syzkaller.appspotmail.com
-Subject: Re: [PATCH] ALSA: control led: fix memory leak in
- snd_ctl_led_register
-Message-ID: <20210531043619.GT24442@kadam>
-References: <20210528131757.2269989-1-mudongliangabcd@gmail.com>
- <20210528133309.GR24442@kadam>
- <CAD-N9QVWcEJjoziA6HVoQiUueVaKqAJS5Et60zvCvuUE7e6=gg@mail.gmail.com>
- <20210528140500.GS24442@kadam>
- <A622EB84-DC4A-47A4-A828-CE6D25DC92EB@gmail.com>
+        id S230078AbhEaEjF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 00:39:05 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34308 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229803AbhEaEjD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 00:39:03 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BF76C61009;
+        Mon, 31 May 2021 04:37:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1622435844;
+        bh=zFz3lrX1eHBSPQ2WKO0P9L2TWqh3+jvi2kELdtRui6c=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=kP1K5IpxuyvI9AukrALH7dj1ErK7EYA4d1MGxVg926Y5x+37mIF94sNFIsoSuV5zu
+         ZUrdgSULsYj7oOpmpztDTiGTFOM2Nkzdu6DuYkLSkXnlnwGXghock8/DO3dbFBtoXt
+         ZYqBO1Heggl9mIE1jfE4/j3O3cosXjSczHzYjqWwtU9hFdl8EURRULj6IQpXVxAg/R
+         HaazjHQPPybPh0QNpVeEnCjrFcoFNFeVOSkTfexrSteSuOlR5TPTQewS3Ecf4SMGWF
+         cy1GK4ONZYd8GQ6CF0u0OCpBmZ/Ll+dcr1Ic4h92bJDlCbP3x5MNldBuWR763Ee0gc
+         qF3W3UxZaRnbg==
+Date:   Mon, 31 May 2021 10:07:21 +0530
+From:   Vinod Koul <vkoul@kernel.org>
+To:     Guanhua Gao <guanhua.gao@nxp.com>
+Cc:     Yi Zhao <yi.zhao@nxp.com>, dmaengine@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 3/3] dmaengine: fsl-dpaa2-qdma: Remove the macro of
+ DPDMAI_MAX_QUEUE_NUM
+Message-ID: <YLRoAamgPzLJeUk1@vkoul-mobl.Dlink>
+References: <20210422084448.962-1-guanhua.gao@nxp.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <A622EB84-DC4A-47A4-A828-CE6D25DC92EB@gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Proofpoint-GUID: 9D0pHIc77iIltRKv_2B-a4zmGEoR2hwM
-X-Proofpoint-ORIG-GUID: 9D0pHIc77iIltRKv_2B-a4zmGEoR2hwM
+In-Reply-To: <20210422084448.962-1-guanhua.gao@nxp.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, May 29, 2021 at 05:35:22AM +0800, 慕冬亮 wrote:
-> > diff --git a/sound/core/control_led.c b/sound/core/control_led.c
-> > index 25f57c14f294..dd357abc1b58 100644
-> > --- a/sound/core/control_led.c
-> > +++ b/sound/core/control_led.c
-> > @@ -740,6 +740,7 @@ static int __init snd_ctl_led_init(void)
-> > 			for (; group > 0; group--) {
-> > 				led = &snd_ctl_leds[group - 1];
-> > 				device_del(&led->dev);
-> > +				device_put(&led->dev);
-> > 			}
-> > 			device_del(&snd_ctl_led_dev);
-> > 			return -ENOMEM;
-> > @@ -768,6 +769,7 @@ static void __exit snd_ctl_led_exit(void)
-> > 	for (group = 0; group < MAX_LED; group++) {
-> > 		led = &snd_ctl_leds[group];
-> > 		device_del(&led->dev);
-> > +		device_put(&led->dev);
-> > 	}
-> > 	device_del(&snd_ctl_led_dev);
-> > 	snd_ctl_led_clean(NULL);
+On 22-04-21, 16:44, Guanhua Gao wrote:
+> The max number of queue supported by DPAA2 qdma is determined
+> by the number of CPUs. Due to the number of CPUs are different
+> in different LS2 platforms, we remove the macro of
+> DPDMAI_MAX_QUEUE_NUM which is defined 8.
 > 
-> Does this patch mean I should add device_put in the init and exit
-> function other than snd_ctl_led_sysfs_remove? This will cause
-> device_release bypass the release method checking?
+> Signed-off-by: Guanhua Gao <guanhua.gao@nxp.com>
+> ---
+> Change in v2:
+>  - Add new patch.
+> 
+>  drivers/dma/fsl-dpaa2-qdma/dpaa2-qdma.c | 43 +++++++++++++++++++++----
+>  drivers/dma/fsl-dpaa2-qdma/dpaa2-qdma.h |  4 +--
+>  drivers/dma/fsl-dpaa2-qdma/dpdmai.h     |  5 ---
+>  3 files changed, 39 insertions(+), 13 deletions(-)
+> 
+> diff --git a/drivers/dma/fsl-dpaa2-qdma/dpaa2-qdma.c b/drivers/dma/fsl-dpaa2-qdma/dpaa2-qdma.c
+> index 86c7ec5dc74e..3875fbb9fac3 100644
+> --- a/drivers/dma/fsl-dpaa2-qdma/dpaa2-qdma.c
+> +++ b/drivers/dma/fsl-dpaa2-qdma/dpaa2-qdma.c
+> @@ -314,6 +314,8 @@ static int __cold dpaa2_qdma_setup(struct fsl_mc_device *ls_dev)
+>  	struct dpaa2_qdma_priv_per_prio *ppriv;
+>  	struct device *dev = &ls_dev->dev;
+>  	struct dpaa2_qdma_priv *priv;
+> +	struct dpdmai_rx_queue_attr *rx_queue_attr;
+> +	struct dpdmai_tx_queue_attr *tx_queue_attr;
+>  	int err = -EINVAL;
+>  	int i;
+>  
+> @@ -335,33 +337,51 @@ static int __cold dpaa2_qdma_setup(struct fsl_mc_device *ls_dev)
+>  				    &priv->dpdmai_attr);
+>  	if (err) {
+>  		dev_err(dev, "dpdmai_get_attributes() failed\n");
+> -		goto exit;
+> +		goto err_get_attr;
+>  	}
+>  
+>  	priv->num_pairs = priv->dpdmai_attr.num_of_queues;
+> +	rx_queue_attr = kcalloc(priv->num_pairs, sizeof(*rx_queue_attr),
+> +				GFP_KERNEL);
+> +	if (!rx_queue_attr) {
+> +		err = -ENOMEM;
+> +		goto err_get_attr;
+> +	}
+> +	priv->rx_queue_attr = rx_queue_attr;
+> +
+> +	tx_queue_attr = kcalloc(priv->num_pairs, sizeof(*tx_queue_attr),
+> +				GFP_KERNEL);
+> +	if (!tx_queue_attr) {
+> +		err = -ENOMEM;
+> +		goto err_tx_queue;
+> +	}
+> +	priv->tx_queue_attr = tx_queue_attr;
 
-Please fix your email client to line wrap your emails.
+Pointer is set here
 
-I'm not sure what release method checking you're refering to.
+> +
+>  	ppriv = kcalloc(priv->num_pairs, sizeof(*ppriv), GFP_KERNEL);
+>  	if (!ppriv) {
+>  		err = -ENOMEM;
+> -		goto exit;
+> +		goto err_ppriv;
+>  	}
+>  	priv->ppriv = ppriv;
+>  
+>  	for (i = 0; i < priv->num_pairs; i++) {
+>  		err = dpdmai_get_rx_queue(priv->mc_io, 0, ls_dev->mc_handle,
+> -					  i, 0, &priv->rx_queue_attr[i]);
+> +					  i, 0, priv->rx_queue_attr + i);
+>  		if (err) {
+>  			dev_err(dev, "dpdmai_get_rx_queue() failed\n");
+>  			goto exit;
+>  		}
+> -		ppriv->rsp_fqid = priv->rx_queue_attr[i].fqid;
+> +		ppriv->rsp_fqid = ((struct dpdmai_rx_queue_attr *)
+> +				   (priv->rx_queue_attr + i))->fqid;
+>  
+>  		err = dpdmai_get_tx_queue(priv->mc_io, 0, ls_dev->mc_handle,
+> -					  i, 0, &priv->tx_queue_attr[i]);
+> +					  i, 0, priv->tx_queue_attr + i);
+>  		if (err) {
+>  			dev_err(dev, "dpdmai_get_tx_queue() failed\n");
+>  			goto exit;
+>  		}
+> -		ppriv->req_fqid = priv->tx_queue_attr[i].fqid;
+> +		ppriv->req_fqid = ((struct dpdmai_tx_queue_attr *)
+> +				   (priv->tx_queue_attr + i))->fqid;
+>  		ppriv->prio = DPAA2_QDMA_DEFAULT_PRIORITY;
+>  		ppriv->priv = priv;
+>  		ppriv->chan_id = i;
+> @@ -370,6 +390,12 @@ static int __cold dpaa2_qdma_setup(struct fsl_mc_device *ls_dev)
+>  
+>  	return 0;
+>  exit:
+> +	kfree(ppriv);
+> +err_ppriv:
+> +	kfree(priv->tx_queue_attr);
+> +err_tx_queue:
+> +	kfree(priv->rx_queue_attr);
 
-regards,
-dan carpenter
+Freed on error but you still have dangling reference held
 
+> +err_get_attr:
+>  	dpdmai_close(priv->mc_io, 0, ls_dev->mc_handle);
+>  	return err;
+>  }
+> @@ -733,6 +759,8 @@ static int dpaa2_qdma_probe(struct fsl_mc_device *dpdmai_dev)
+>  	dpaa2_dpmai_store_free(priv);
+>  	dpaa2_dpdmai_dpio_free(priv);
+>  err_dpio_setup:
+> +	kfree(priv->rx_queue_attr);
+> +	kfree(priv->tx_queue_attr);
+>  	kfree(priv->ppriv);
+>  	dpdmai_close(priv->mc_io, 0, dpdmai_dev->mc_handle);
+>  err_dpdmai_setup:
+> @@ -763,6 +791,9 @@ static int dpaa2_qdma_remove(struct fsl_mc_device *ls_dev)
+>  	dpaa2_dpdmai_free_channels(dpaa2_qdma);
+>  
+>  	dma_async_device_unregister(&dpaa2_qdma->dma_dev);
+> +	kfree(priv->rx_queue_attr);
+> +	kfree(priv->tx_queue_attr);
+> +	kfree(priv->ppriv);
+>  	kfree(priv);
+>  	kfree(dpaa2_qdma);
+>  
+> diff --git a/drivers/dma/fsl-dpaa2-qdma/dpaa2-qdma.h b/drivers/dma/fsl-dpaa2-qdma/dpaa2-qdma.h
+> index 0a405fb13452..38aed372214e 100644
+> --- a/drivers/dma/fsl-dpaa2-qdma/dpaa2-qdma.h
+> +++ b/drivers/dma/fsl-dpaa2-qdma/dpaa2-qdma.h
+> @@ -123,8 +123,8 @@ struct dpaa2_qdma_priv {
+>  	struct dpaa2_qdma_engine	*dpaa2_qdma;
+>  	struct dpaa2_qdma_priv_per_prio	*ppriv;
+>  
+> -	struct dpdmai_rx_queue_attr rx_queue_attr[DPDMAI_MAX_QUEUE_NUM];
+> -	struct dpdmai_tx_queue_attr tx_queue_attr[DPDMAI_MAX_QUEUE_NUM];
+> +	struct dpdmai_rx_queue_attr *rx_queue_attr;
+> +	struct dpdmai_tx_queue_attr *tx_queue_attr;
+>  };
+>  
+>  struct dpaa2_qdma_priv_per_prio {
+> diff --git a/drivers/dma/fsl-dpaa2-qdma/dpdmai.h b/drivers/dma/fsl-dpaa2-qdma/dpdmai.h
+> index 0a87d37f7a92..f3a3eac97400 100644
+> --- a/drivers/dma/fsl-dpaa2-qdma/dpdmai.h
+> +++ b/drivers/dma/fsl-dpaa2-qdma/dpdmai.h
+> @@ -51,11 +51,6 @@
+>   * Contains initialization APIs and runtime control APIs for DPDMAI
+>   */
+>  
+> -/*
+> - * Maximum number of Tx/Rx queues per DPDMAI object
+> - */
+> -#define DPDMAI_MAX_QUEUE_NUM	8
+> -
+>  /**
+>   * Maximum number of Tx/Rx priorities per DPDMAI object
+>   */
+> -- 
+> 2.25.1
+
+-- 
+~Vinod
