@@ -2,36 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 47E18396344
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 17:10:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B618C39641D
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 17:45:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232992AbhEaPLl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 11:11:41 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40810 "EHLO mail.kernel.org"
+        id S233465AbhEaPqx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 11:46:53 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48838 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233072AbhEaOKk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 10:10:40 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6AEB761983;
-        Mon, 31 May 2021 13:40:48 +0000 (UTC)
+        id S233803AbhEaOZe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 10:25:34 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A108C610C9;
+        Mon, 31 May 2021 13:46:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1622468449;
-        bh=o+7OYa81zDbczAlkQhFxTddeTkO76m7DGereB6yYl1g=;
+        s=korg; t=1622468808;
+        bh=NgqBK5O0c8z+xdSceHuA/JFflWomRRH/0/Ht41mjRBA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=XhY0l4wSfrkyGARrEHmLKEolr2M3h2CimQvPcm1ML+BL31400Tztt3+gk7EkYCds2
-         h9Fxh0GkcqkyveAUsDruGpWuD8+FntXCSxmbhYH3O70JMfgs1MYu5wuKOeiEdRHkgN
-         78rP4ShVZmpklBXC8sHrHJ+ycENotXr3B/0/0mzI=
+        b=hedgdZjTAJMOa7rNQac4Do5w11NNmfp2QKEtU66jC7gwiZ3SBYfdFZ8J085jP9gxe
+         B11BfV1Zegsb+LTU976XYR3ldEdCu6OcVvfdHdTWPZho729TQ2WF9i3cuJaGZEDYNA
+         YnjIC0smCdbRANXumyURvhCbWr+n0ahb1tB39j7o=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jussi Maki <joamaki@gmail.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
+        stable@vger.kernel.org,
+        Richard Fitzgerald <rf@opensource.cirrus.com>,
+        Charles Keepax <ckeepax@opensource.cirrus.com>,
+        Mark Brown <broonie@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 229/252] bpf: Set mac_len in bpf_skb_change_head
+Subject: [PATCH 5.4 137/177] ASoC: cs42l42: Regmap must use_single_read/write
 Date:   Mon, 31 May 2021 15:14:54 +0200
-Message-Id: <20210531130705.777951900@linuxfoundation.org>
+Message-Id: <20210531130652.667575878@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210531130657.971257589@linuxfoundation.org>
-References: <20210531130657.971257589@linuxfoundation.org>
+In-Reply-To: <20210531130647.887605866@linuxfoundation.org>
+References: <20210531130647.887605866@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,38 +42,47 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jussi Maki <joamaki@gmail.com>
+From: Richard Fitzgerald <rf@opensource.cirrus.com>
 
-[ Upstream commit 84316ca4e100d8cbfccd9f774e23817cb2059868 ]
+[ Upstream commit 0fad605fb0bdc00d8ad78696300ff2fbdee6e048 ]
 
-The skb_change_head() helper did not set "skb->mac_len", which is
-problematic when it's used in combination with skb_redirect_peer().
-Without it, redirecting a packet from a L3 device such as wireguard to
-the veth peer device will cause skb->data to point to the middle of the
-IP header on entry to tcp_v4_rcv() since the L2 header is not pulled
-correctly due to mac_len=0.
+cs42l42 does not support standard burst transfers so the use_single_read
+and use_single_write flags must be set in the regmap config.
 
-Fixes: 3a0af8fd61f9 ("bpf: BPF for lightweight tunnel infrastructure")
-Signed-off-by: Jussi Maki <joamaki@gmail.com>
-Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
-Link: https://lore.kernel.org/bpf/20210519154743.2554771-2-joamaki@gmail.com
+Because of this bug, the patch:
+
+commit 0a0eb567e1d4 ("ASoC: cs42l42: Minor error paths fixups")
+
+broke cs42l42 probe() because without the use_single_* flags it causes
+regmap to issue a burst read.
+
+However, the missing use_single_* could cause problems anyway because the
+regmap cache can attempt burst transfers if these flags are not set.
+
+Fixes: 2c394ca79604 ("ASoC: Add support for CS42L42 codec")
+Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
+Acked-by: Charles Keepax <ckeepax@opensource.cirrus.com>
+Link: https://lore.kernel.org/r/20210511132855.27159-1-rf@opensource.cirrus.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/core/filter.c | 1 +
- 1 file changed, 1 insertion(+)
+ sound/soc/codecs/cs42l42.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/net/core/filter.c b/net/core/filter.c
-index 9358bc4a3711..ef6bdbb63ecb 100644
---- a/net/core/filter.c
-+++ b/net/core/filter.c
-@@ -3782,6 +3782,7 @@ static inline int __bpf_skb_change_head(struct sk_buff *skb, u32 head_room,
- 		__skb_push(skb, head_room);
- 		memset(skb->data, 0, head_room);
- 		skb_reset_mac_header(skb);
-+		skb_reset_mac_len(skb);
- 	}
+diff --git a/sound/soc/codecs/cs42l42.c b/sound/soc/codecs/cs42l42.c
+index dcd2acb2c3ce..5faf8877137a 100644
+--- a/sound/soc/codecs/cs42l42.c
++++ b/sound/soc/codecs/cs42l42.c
+@@ -398,6 +398,9 @@ static const struct regmap_config cs42l42_regmap = {
+ 	.reg_defaults = cs42l42_reg_defaults,
+ 	.num_reg_defaults = ARRAY_SIZE(cs42l42_reg_defaults),
+ 	.cache_type = REGCACHE_RBTREE,
++
++	.use_single_read = true,
++	.use_single_write = true,
+ };
  
- 	return ret;
+ static DECLARE_TLV_DB_SCALE(adc_tlv, -9600, 100, false);
 -- 
 2.30.2
 
