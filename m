@@ -2,40 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8AABD395F98
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 16:11:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 03F8F396421
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 17:46:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231582AbhEaONR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 10:13:17 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48556 "EHLO mail.kernel.org"
+        id S232515AbhEaPri (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 11:47:38 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55734 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231686AbhEaNqD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 09:46:03 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6E55B615FF;
-        Mon, 31 May 2021 13:30:05 +0000 (UTC)
+        id S231859AbhEaO1E (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 10:27:04 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E46CA613AF;
+        Mon, 31 May 2021 13:47:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1622467806;
-        bh=VNoJb72BASLscbJ76MB5QsneL7jW1r5so6opZSHcc3Y=;
+        s=korg; t=1622468826;
+        bh=G84Ilfjf86aJZc/ARrBpFe4Wleqp3UBU2qrlegj8OwU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=SNC4JK2zmQYR3wZTsMd/d9YwToNOw9BtIy834RB9EJB4L9lw6yUo4fzYLJYYj1f1L
-         Jl0xBzK0nJqZxXqaIAEOEiiaHI8XqWaM53xH47QhMnk2MiGZ4AUVxmScw+klqik7o0
-         gU3if//l+/RihOtKPyUt1d62pNAeIbRhD+AbrSsw=
+        b=p7Jwrz9oY411JI7Asn1yJGsv3+xSnIy5f1PcU0igpHO+PKY6MOSrOWYyPoLLlObBM
+         kCrijo0m4wiBFkBBtdpvRE3yRuJGAR7hxhQCFFDFj+nDnq7wCPL+KtXYlvxzChxweC
+         jR+gF+LlEgOy+bDVZlLE0xq0oFGoLcEJ7vC735d4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Randy Dunlap <rdunlap@infradead.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        linux-mips@vger.kernel.org,
-        Manuel Lauss <manuel.lauss@googlemail.com>,
-        Ralf Baechle <ralf@linux-mips.org>,
-        Manuel Lauss <manuel.lauss@gmail.com>,
+        stable@vger.kernel.org, Tao Liu <thomas.liu@ucloud.cn>,
+        Ilya Maximets <i.maximets@ovn.org>,
+        "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 75/79] MIPS: alchemy: xxs1500: add gpio-au1000.h header file
+Subject: [PATCH 5.4 143/177] openvswitch: meter: fix race when getting now_ms.
 Date:   Mon, 31 May 2021 15:15:00 +0200
-Message-Id: <20210531130638.392292508@linuxfoundation.org>
+Message-Id: <20210531130652.877940509@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210531130636.002722319@linuxfoundation.org>
-References: <20210531130636.002722319@linuxfoundation.org>
+In-Reply-To: <20210531130647.887605866@linuxfoundation.org>
+References: <20210531130647.887605866@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,44 +41,55 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Randy Dunlap <rdunlap@infradead.org>
+From: Tao Liu <thomas.liu@ucloud.cn>
 
-[ Upstream commit ff4cff962a7eedc73e54b5096693da7f86c61346 ]
+[ Upstream commit e4df1b0c24350a0f00229ff895a91f1072bd850d ]
 
-board-xxs1500.c references 2 functions without declaring them, so add
-the header file to placate the build.
+We have observed meters working unexpected if traffic is 3+Gbit/s
+with multiple connections.
 
-../arch/mips/alchemy/board-xxs1500.c: In function 'board_setup':
-../arch/mips/alchemy/board-xxs1500.c:56:2: error: implicit declaration of function 'alchemy_gpio1_input_enable' [-Werror=implicit-function-declaration]
-   56 |  alchemy_gpio1_input_enable();
-../arch/mips/alchemy/board-xxs1500.c:57:2: error: implicit declaration of function 'alchemy_gpio2_enable'; did you mean 'alchemy_uart_enable'? [-Werror=implicit-function-declaration]
-   57 |  alchemy_gpio2_enable();
+now_ms is not pretected by meter->lock, we may get a negative
+long_delta_ms when another cpu updated meter->used, then:
+    delta_ms = (u32)long_delta_ms;
+which will be a large value.
 
-Fixes: 8e026910fcd4 ("MIPS: Alchemy: merge GPR/MTX-1/XXS1500 board code into single files")
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Cc: linux-mips@vger.kernel.org
-Cc: Manuel Lauss <manuel.lauss@googlemail.com>
-Cc: Ralf Baechle <ralf@linux-mips.org>
-Acked-by: Manuel Lauss <manuel.lauss@gmail.com>
-Signed-off-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+    band->bucket += delta_ms * band->rate;
+then we get a wrong band->bucket.
+
+OpenVswitch userspace datapath has fixed the same issue[1] some
+time ago, and we port the implementation to kernel datapath.
+
+[1] https://patchwork.ozlabs.org/project/openvswitch/patch/20191025114436.9746-1-i.maximets@ovn.org/
+
+Fixes: 96fbc13d7e77 ("openvswitch: Add meter infrastructure")
+Signed-off-by: Tao Liu <thomas.liu@ucloud.cn>
+Suggested-by: Ilya Maximets <i.maximets@ovn.org>
+Reviewed-by: Ilya Maximets <i.maximets@ovn.org>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/mips/alchemy/board-xxs1500.c | 1 +
- 1 file changed, 1 insertion(+)
+ net/openvswitch/meter.c | 8 ++++++++
+ 1 file changed, 8 insertions(+)
 
-diff --git a/arch/mips/alchemy/board-xxs1500.c b/arch/mips/alchemy/board-xxs1500.c
-index 0fc53e08a894..c05f7376148a 100644
---- a/arch/mips/alchemy/board-xxs1500.c
-+++ b/arch/mips/alchemy/board-xxs1500.c
-@@ -30,6 +30,7 @@
- #include <asm/bootinfo.h>
- #include <asm/reboot.h>
- #include <asm/mach-au1x00/au1000.h>
-+#include <asm/mach-au1x00/gpio-au1000.h>
- #include <prom.h>
+diff --git a/net/openvswitch/meter.c b/net/openvswitch/meter.c
+index 541eea74ef7a..c37e09223cbb 100644
+--- a/net/openvswitch/meter.c
++++ b/net/openvswitch/meter.c
+@@ -460,6 +460,14 @@ bool ovs_meter_execute(struct datapath *dp, struct sk_buff *skb,
+ 	spin_lock(&meter->lock);
  
- const char *get_system_type(void)
+ 	long_delta_ms = (now_ms - meter->used); /* ms */
++	if (long_delta_ms < 0) {
++		/* This condition means that we have several threads fighting
++		 * for a meter lock, and the one who received the packets a
++		 * bit later wins. Assuming that all racing threads received
++		 * packets at the same time to avoid overflow.
++		 */
++		long_delta_ms = 0;
++	}
+ 
+ 	/* Make sure delta_ms will not be too large, so that bucket will not
+ 	 * wrap around below.
 -- 
 2.30.2
 
