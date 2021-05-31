@@ -2,37 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E50C395E4F
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 15:55:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A816396318
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 17:04:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232675AbhEaN46 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 09:56:58 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44098 "EHLO mail.kernel.org"
+        id S233298AbhEaPGF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 11:06:05 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40544 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231560AbhEaNh1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 09:37:27 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2354D6145E;
-        Mon, 31 May 2021 13:26:16 +0000 (UTC)
+        id S232726AbhEaOIB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 10:08:01 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A39F361455;
+        Mon, 31 May 2021 13:39:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1622467576;
-        bh=PCg0zHwCKIdVTKf5I8vRIK0jC9BXhIWMSDVCnQXMyWo=;
+        s=korg; t=1622468378;
+        bh=0rEjWKAlmJ30eRK65Wdy8KGlQ9zvTgZ9ZHF61gnUEJs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=NLtOa76N9fUFi0yRnljBBh9y9MAAI8yGlADTERo75zrffRoJKs43B6wQDC10ast9C
-         n6sIC03cZt4B6T55zN7hx2AHDIt1+U6JaD/eGTrolwFvdtIGhwLoYIK16cIDzQpFxs
-         USzQNAHo3HmFZ6mCkfjqU77fscFuRxUzlYfC0THg=
+        b=Xi4nFtiNe5opFVM2hF0OmEiCT7T0m8HCYdD0Qa1H4BnnfBkgg0jmov7EnnNDLfNVW
+         NXAyCyaMmr3ZNjeiEHmhLVDHDWsVsLx0tiDbSdaMfwRMsyfDdVBHHWeJHkXaCYj0D6
+         GR4kj5Y+JJv8kcUxF0Xuq0PcOr6ntxKF/QUVTH54=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, John Garry <john.garry@huawei.com>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        stable@vger.kernel.org, Catherine Sullivan <csully@google.com>,
+        David Awogbemila <awogbemila@google.com>,
+        Willem de Brujin <willemb@google.com>,
+        "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 108/116] scsi: libsas: Use _safe() loop in sas_resume_port()
+Subject: [PATCH 5.10 219/252] gve: Upgrade memory barrier in poll routine
 Date:   Mon, 31 May 2021 15:14:44 +0200
-Message-Id: <20210531130643.781611211@linuxfoundation.org>
+Message-Id: <20210531130705.448694163@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210531130640.131924542@linuxfoundation.org>
-References: <20210531130640.131924542@linuxfoundation.org>
+In-Reply-To: <20210531130657.971257589@linuxfoundation.org>
+References: <20210531130657.971257589@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,49 +42,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dan Carpenter <dan.carpenter@oracle.com>
+From: Catherine Sullivan <csully@google.com>
 
-[ Upstream commit 8c7e7b8486cda21269d393245883c5e4737d5ee7 ]
+[ Upstream commit f81781835f0adfae8d701545386030d223efcd6f ]
 
-If sas_notify_lldd_dev_found() fails then this code calls:
+As currently written, if the driver checks for more work (via
+gve_tx_poll or gve_rx_poll) before the device posts work and the
+irq doorbell is not unmasked
+(via iowrite32be(GVE_IRQ_ACK | GVE_IRQ_EVENT, ...)) before the device
+attempts to raise an interrupt, an interrupt is lost and this could
+potentially lead to the traffic being completely halted. For
+example, if a tx queue has already been stopped, the driver won't get
+the chance to complete work and egress will be halted.
 
-	sas_unregister_dev(port, dev);
+We need a full memory barrier in the poll
+routine to ensure that the irq doorbell is unmasked before the driver
+checks for more work.
 
-which removes "dev", our list iterator, from the list.  This could lead to
-an endless loop.  We need to use list_for_each_entry_safe().
-
-Link: https://lore.kernel.org/r/YKUeq6gwfGcvvhty@mwanda
-Fixes: 303694eeee5e ("[SCSI] libsas: suspend / resume support")
-Reviewed-by: John Garry <john.garry@huawei.com>
-Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
-Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
+Fixes: f5cedc84a30d ("gve: Add transmit and receive support")
+Signed-off-by: Catherine Sullivan <csully@google.com>
+Signed-off-by: David Awogbemila <awogbemila@google.com>
+Acked-by: Willem de Brujin <willemb@google.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/scsi/libsas/sas_port.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/net/ethernet/google/gve/gve_main.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/scsi/libsas/sas_port.c b/drivers/scsi/libsas/sas_port.c
-index fad23dd39114..1a0b2ce398f7 100644
---- a/drivers/scsi/libsas/sas_port.c
-+++ b/drivers/scsi/libsas/sas_port.c
-@@ -41,7 +41,7 @@ static bool phy_is_wideport_member(struct asd_sas_port *port, struct asd_sas_phy
- 
- static void sas_resume_port(struct asd_sas_phy *phy)
- {
--	struct domain_device *dev;
-+	struct domain_device *dev, *n;
- 	struct asd_sas_port *port = phy->port;
- 	struct sas_ha_struct *sas_ha = phy->ha;
- 	struct sas_internal *si = to_sas_internal(sas_ha->core.shost->transportt);
-@@ -60,7 +60,7 @@ static void sas_resume_port(struct asd_sas_phy *phy)
- 	 * 1/ presume every device came back
- 	 * 2/ force the next revalidation to check all expander phys
+diff --git a/drivers/net/ethernet/google/gve/gve_main.c b/drivers/net/ethernet/google/gve/gve_main.c
+index 839102ea6aa1..d6e35421d8f7 100644
+--- a/drivers/net/ethernet/google/gve/gve_main.c
++++ b/drivers/net/ethernet/google/gve/gve_main.c
+@@ -180,7 +180,7 @@ static int gve_napi_poll(struct napi_struct *napi, int budget)
+ 	/* Double check we have no extra work.
+ 	 * Ensure unmask synchronizes with checking for work.
  	 */
--	list_for_each_entry(dev, &port->dev_list, dev_list_node) {
-+	list_for_each_entry_safe(dev, n, &port->dev_list, dev_list_node) {
- 		int i, rc;
- 
- 		rc = sas_notify_lldd_dev_found(dev);
+-	dma_rmb();
++	mb();
+ 	if (block->tx)
+ 		reschedule |= gve_tx_poll(block, -1);
+ 	if (block->rx)
 -- 
 2.30.2
 
