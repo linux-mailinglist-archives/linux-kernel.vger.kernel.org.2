@@ -2,82 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 61B193953D2
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 04:00:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CACD73953C8
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 03:56:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230084AbhEaCCa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 30 May 2021 22:02:30 -0400
-Received: from mail-m17639.qiye.163.com ([59.111.176.39]:50858 "EHLO
-        mail-m17639.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229963AbhEaCCT (ORCPT
+        id S230024AbhEaB6O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 30 May 2021 21:58:14 -0400
+Received: from szxga08-in.huawei.com ([45.249.212.255]:3293 "EHLO
+        szxga08-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229912AbhEaB6J (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 30 May 2021 22:02:19 -0400
-Received: from vivo-HP-ProDesk-680-G4-PCI-MT.vivo.xyz (unknown [58.251.74.232])
-        by mail-m17639.qiye.163.com (Hmail) with ESMTPA id 26F743801A0;
-        Mon, 31 May 2021 09:51:44 +0800 (CST)
-From:   Wang Qing <wangqing@vivo.com>
-To:     Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Rob Herring <robh+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        linux-watchdog@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org
-Cc:     Wang Qing <wangqing@vivo.com>
-Subject: [PATCH V9,RESEND,2/2] doc: mtk-wdt: support pre-timeout when the bark irq is available
-Date:   Mon, 31 May 2021 09:51:35 +0800
-Message-Id: <1622425895-32111-3-git-send-email-wangqing@vivo.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1622425895-32111-1-git-send-email-wangqing@vivo.com>
-References: <1622425895-32111-1-git-send-email-wangqing@vivo.com>
-X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZS1VLWVdZKFlBSE83V1ktWUFJV1kPCR
-        oVCBIfWUFZGkoZGlYaQ08aGEoeGh4dSElVEwETFhoSFyQUDg9ZV1kWGg8SFR0UWUFZT0tIVUpKS0
-        hKTFVLWQY+
-X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6NCo6Nyo5Kj8VERMdPAgXPygI
-        CSEaCwFVSlVKTUlJT0lOQktPQ09JVTMWGhIXVQwaFRwKEhUcOw0SDRRVGBQWRVlXWRILWUFZTkNV
-        SU5KVUxPVUlISVlXWQgBWUFJTElJNwY+
-X-HM-Tid: 0a79c01ea570d994kuws26f743801a0
+        Sun, 30 May 2021 21:58:09 -0400
+Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.53])
+        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4FtdZD6zdZz1BGmJ;
+        Mon, 31 May 2021 09:51:48 +0800 (CST)
+Received: from dggpemm500004.china.huawei.com (7.185.36.219) by
+ dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Mon, 31 May 2021 09:56:28 +0800
+Received: from huawei.com (10.174.28.241) by dggpemm500004.china.huawei.com
+ (7.185.36.219) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Mon, 31 May
+ 2021 09:56:28 +0800
+From:   Bixuan Cui <cuibixuan@huawei.com>
+To:     <akpm@linux-foundation.org>
+CC:     <linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>,
+        Bixuan Cui <cuibixuan@huawei.com>
+Subject: [PATCH -next] mm/mmap_lock: fix warning when CONFIG_TRACING is not defined
+Date:   Mon, 31 May 2021 09:55:27 +0800
+Message-ID: <20210531015527.49785-1-cuibixuan@huawei.com>
+X-Mailer: git-send-email 2.17.1
+MIME-Version: 1.0
+Content-Type: text/plain; charset="y"
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.174.28.241]
+X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
+ dggpemm500004.china.huawei.com (7.185.36.219)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add description of pre-timeout in mtk-wdt.
+Fix the warning: [-Wunused-function]
+mm/mmap_lock.c:157:20: warning: ‘get_mm_memcg_path’ defined but not used
+ static const char *get_mm_memcg_path(struct mm_struct *mm)
+                    ^~~~~~~~~~~~~~~~~
 
-Acked-by: Rob Herring <robh@kernel.org>
-Signed-off-by: Wang Qing <wangqing@vivo.com>
+Signed-off-by: Bixuan Cui <cuibixuan@huawei.com>
 ---
- Documentation/devicetree/bindings/watchdog/mtk-wdt.txt | 5 +++++
- 1 file changed, 5 insertions(+)
+ mm/mmap_lock.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/Documentation/devicetree/bindings/watchdog/mtk-wdt.txt b/Documentation/devicetree/bindings/watchdog/mtk-wdt.txt
-index e36ba60..8e27777
---- a/Documentation/devicetree/bindings/watchdog/mtk-wdt.txt
-+++ b/Documentation/devicetree/bindings/watchdog/mtk-wdt.txt
-@@ -1,5 +1,8 @@
- Mediatek SoCs Watchdog timer
- 
-+The watchdog supports a pre-timeout interrupt that fires timeout-sec/2
-+before the expiry.
-+
- Required properties:
- 
- - compatible should contain:
-@@ -17,6 +20,7 @@ Required properties:
- - reg : Specifies base physical address and size of the registers.
- 
- Optional properties:
-+- interrupts: Watchdog pre-timeout (bark) interrupt.
- - timeout-sec: contains the watchdog timeout in seconds.
- - #reset-cells: Should be 1.
- 
-@@ -26,6 +30,7 @@ watchdog: watchdog@10007000 {
- 	compatible = "mediatek,mt8183-wdt",
- 		     "mediatek,mt6589-wdt";
- 	reg = <0 0x10007000 0 0x100>;
-+	interrupts = <GIC_SPI 139 IRQ_TYPE_NONE>;
- 	timeout-sec = <10>;
- 	#reset-cells = <1>;
- };
+diff --git a/mm/mmap_lock.c b/mm/mmap_lock.c
+index 03ee85c696ef..ec7899b08690 100644
+--- a/mm/mmap_lock.c
++++ b/mm/mmap_lock.c
+@@ -154,7 +154,7 @@ static inline void put_memcg_path_buf(void)
+  * The caller must call put_memcg_path_buf() once the buffer is no longer
+  * needed. This must be done while preemption is still disabled.
+  */
+-static const char *get_mm_memcg_path(struct mm_struct *mm)
++static const char __maybe_unused *get_mm_memcg_path(struct mm_struct *mm)
+ {
+ 	char *buf = NULL;
+ 	struct mem_cgroup *memcg = get_mem_cgroup_from_mm(mm);
 -- 
-2.7.4
+2.17.1
 
