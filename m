@@ -2,112 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F334395A77
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 14:22:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F2F4395A7D
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 14:25:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231475AbhEaMYf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 08:24:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43922 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231377AbhEaMYd (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 08:24:33 -0400
-Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ADE5FC06174A
-        for <linux-kernel@vger.kernel.org>; Mon, 31 May 2021 05:22:53 -0700 (PDT)
-Received: by mail-ed1-x529.google.com with SMTP id b17so13333366ede.0
-        for <linux-kernel@vger.kernel.org>; Mon, 31 May 2021 05:22:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=monstr-eu.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=LNYYJ0npItOg2aTRTp7BxB+oXnJtRa8V64w9pv94XTA=;
-        b=BHx2yJ09rgOe6v6dVSNygRU9t2d6Vu6d+uRhC65wPtYXAx5Da+lU/j2IBvKBmohbdt
-         lFd2NWJhb4KwAr27ENIyyhL2ctK6MaYZThu7MJ6BPKgfXfHEisqnD/GEB8pO/sAMWPTZ
-         0KqxhzCajwS2POmzmRZgCDfRqs4oe/FUt3pQMiX6tlfn8+sBmH0N1lRqtXetInkFu0+m
-         /ADt1l/3RZI4qVbU4dsm60EllA5JGoDr3IE5BX7HTWbyE7gJWCnyxwfSLd5BH9qTfeAn
-         uolbOwdJyezVYWtpdV+37vpEUoNQahsz0ADnkuOroyE4dMLtV2Uwjx5uM5dJNgUHzho5
-         87ag==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=LNYYJ0npItOg2aTRTp7BxB+oXnJtRa8V64w9pv94XTA=;
-        b=YJlGCqIy+8h2AtfW4DDRRlL3TNK7AyRLLW/7/MdcFE2ooYcXFB/rmCvyWJImGjZYzT
-         SH1K9aDsmaCbFTsq2ZAEqXYLOf2+dJ5jevhl74uQJ7w6sY/b8ngW+Yf9YdLVwHK7Jki7
-         C6qN/mIjp/CcWhzu1JOk/12YdMZRl/X7LZ48cZg9+u7mmI1eu+29N7G6fBODFaytxRK/
-         Fp2z2eH8H33413Hcndf3TdcSt8XhC0igLtF2RNaRVHXux0e6+b5GSsnfLaRFfaISQ4sQ
-         zyEkNGNdxDzKEtoE6h2paC0NnxffTV7Dp16t9RtqfRTvUZ5ZOLayo3iPAbJdQYFw1WNj
-         vFrA==
-X-Gm-Message-State: AOAM533P/BVMmRScY9NET5JpnN6mdHOEvH1IiKylVGE52ZJzDSEusLZt
-        od3p3jXOKn+xinVaH1/omFQV1Q==
-X-Google-Smtp-Source: ABdhPJxMGAvE/AgLesq42O2yn1hoVTHsf6fV2XFs7RBODpYAuyE4hnridU5RIU2SJj1z36K2K6NYIg==
-X-Received: by 2002:aa7:d786:: with SMTP id s6mr24668971edq.239.1622463772286;
-        Mon, 31 May 2021 05:22:52 -0700 (PDT)
-Received: from ?IPv6:2a02:768:2307:40d6::45a? ([2a02:768:2307:40d6::45a])
-        by smtp.gmail.com with ESMTPSA id lb23sm4000220ejb.73.2021.05.31.05.22.51
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 31 May 2021 05:22:51 -0700 (PDT)
-Subject: Re: [PATCH] microblaze: Remove unused functions
-To:     guoren@kernel.org, arnd@arndb.de
-Cc:     linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org,
-        Guo Ren <guoren@linux.alibaba.com>
-References: <1621701994-27650-1-git-send-email-guoren@kernel.org>
-From:   Michal Simek <monstr@monstr.eu>
-Message-ID: <75cc31aa-6fe8-f3d7-94a8-4f43d95f1255@monstr.eu>
-Date:   Mon, 31 May 2021 14:22:51 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.2
+        id S231520AbhEaM0i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 08:26:38 -0400
+Received: from mx2.suse.de ([195.135.220.15]:37242 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231470AbhEaM0a (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 08:26:30 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1622463889; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=Fv21S2Zk60md3u9UlHZ+Etq+/A/gbvSCbi0VXTqWPMA=;
+        b=UNLdCbFKQLMYTGzqRKHFzPungHFHE4lxDKNEKRndYR9fDVL9aZmr/M4QHvovWAfdy+kRd2
+        P5wFW6JUPSGEHm1e/BDyyb+MqcLpzU6PejJB0M4FXM4R1wdVe00iYzb16kr7Ui8XKRqnTb
+        +wf8vdqR9C6CgZGUbJv9jwTBdt7RCwk=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1622463889;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=Fv21S2Zk60md3u9UlHZ+Etq+/A/gbvSCbi0VXTqWPMA=;
+        b=dPMHLgwm2nna5cgaXOgG1PRovmgXAoWsFoY6b1QE989hHkaphIXiaVB6UxVYaNyestm8Ma
+        hcOyOIU94LeOLDCA==
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id BEBE5AE72;
+        Mon, 31 May 2021 12:24:49 +0000 (UTC)
+From:   Daniel Wagner <dwagner@suse.de>
+To:     linux-scsi@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org,
+        GR-QLogic-Storage-Upstream@marvell.com,
+        Nilesh Javali <njavali@marvell.com>,
+        Daniel Wagner <dwagner@suse.de>
+Subject: [PATCH] qla2xxx: Log PCI address in qla_nvme_unregister_remote_port()
+Date:   Mon, 31 May 2021 14:24:44 +0200
+Message-Id: <20210531122444.116655-1-dwagner@suse.de>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-In-Reply-To: <1621701994-27650-1-git-send-email-guoren@kernel.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Pass in fcport->vha to ql_log() in order to add the PCI address to the
+log.
 
+Currently NULL is passed in which gives this confusing log entry:
 
-On 5/22/21 6:46 PM, guoren@kernel.org wrote:
-> From: Guo Ren <guoren@linux.alibaba.com>
-> 
-> PAGE_UP/DOWN are never used in linux, then the patch remove them
-> in asm/page.h.
-> 
-> Signed-off-by: Guo Ren <guoren@linux.alibaba.com>
-> Cc: Arnd Bergmann <arnd@arndb.de>
-> Cc: Michal Simek <monstr@monstr.eu>
-> ---
->  arch/microblaze/include/asm/page.h | 3 ---
->  1 file changed, 3 deletions(-)
-> 
-> diff --git a/arch/microblaze/include/asm/page.h b/arch/microblaze/include/asm/page.h
-> index bf681f2..ce55097 100644
-> --- a/arch/microblaze/include/asm/page.h
-> +++ b/arch/microblaze/include/asm/page.h
-> @@ -35,9 +35,6 @@
->  
->  #define ARCH_SLAB_MINALIGN	L1_CACHE_BYTES
->  
-> -#define PAGE_UP(addr)	(((addr)+((PAGE_SIZE)-1))&(~((PAGE_SIZE)-1)))
-> -#define PAGE_DOWN(addr)	((addr)&(~((PAGE_SIZE)-1)))
-> -
->  /*
->   * PAGE_OFFSET -- the first address of the first page of memory. With MMU
->   * it is set to the kernel start address (aligned on a page boundary).
-> 
+> qla2xxx [0000:00:00.0]-2112: : qla_nvme_unregister_remote_port: unregister remoteport on 0000000009d6a2e9 50000973981648c7
 
-Applied.
+Signed-off-by: Daniel Wagner <dwagner@suse.de>
+---
+ drivers/scsi/qla2xxx/qla_nvme.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Thanks,
-Michal
-
+diff --git a/drivers/scsi/qla2xxx/qla_nvme.c b/drivers/scsi/qla2xxx/qla_nvme.c
+index 0cacb667a88b..e119f8b24e33 100644
+--- a/drivers/scsi/qla2xxx/qla_nvme.c
++++ b/drivers/scsi/qla2xxx/qla_nvme.c
+@@ -671,7 +671,7 @@ void qla_nvme_unregister_remote_port(struct fc_port *fcport)
+ 	if (!IS_ENABLED(CONFIG_NVME_FC))
+ 		return;
+ 
+-	ql_log(ql_log_warn, NULL, 0x2112,
++	ql_log(ql_log_warn, fcport->vha, 0x2112,
+ 	    "%s: unregister remoteport on %p %8phN\n",
+ 	    __func__, fcport, fcport->port_name);
+ 
 -- 
-Michal Simek, Ing. (M.Eng), OpenPGP -> KeyID: FE3D1F91
-w: www.monstr.eu p: +42-0-721842854
-Maintainer of Linux kernel - Xilinx Microblaze
-Maintainer of Linux kernel - Xilinx Zynq ARM and ZynqMP ARM64 SoCs
-U-Boot custodian - Xilinx Microblaze/Zynq/ZynqMP/Versal SoCs
+2.29.2
 
