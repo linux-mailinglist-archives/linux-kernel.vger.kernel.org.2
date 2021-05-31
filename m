@@ -2,34 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A0FF39648D
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 18:02:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F1603964A2
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 18:04:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234061AbhEaQEC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 12:04:02 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33230 "EHLO mail.kernel.org"
+        id S231717AbhEaQGL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 12:06:11 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33126 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232923AbhEaOdf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 10:33:35 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CD43361C3E;
-        Mon, 31 May 2021 13:50:15 +0000 (UTC)
+        id S230162AbhEaOf3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 10:35:29 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7C48061C48;
+        Mon, 31 May 2021 13:50:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1622469016;
-        bh=5wWAXwDd1+8lNt75Apd3en7MY6KsLBnr9VlAI1gWSdA=;
+        s=korg; t=1622469045;
+        bh=ZZn6gAXd2LtIgYDetsil5HNXegsJcOEU4gvJpdG9hJA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ybTIFwuLjd6Vl6bhhyiNTIr8c/y97IelknsDkpkWj5cfXHj0wcrIMYKAHoCmWWafT
-         malohKgCDZup6/c99+fFyw6zA3Az1m81XIePvZxv2hgCMmezE2kLH1VdQAsEHhvhpg
-         gr4GJahGXWE6YmHm7OiA7QcUXtdCSa+8g6EdfGuk=
+        b=w39LXnAsSzqjCl6a4FmEl4FT+SEYbScX875gyMqudZ2O1sAjLWefWZ/7QvHfLOm92
+         EWvVCnrcRS9QoVuTQVbNOFRKIp3GI9OEG9Xv1NyKL88Or+AFDtfSOjbHUZw2cGxosG
+         5Fta5mVHqCkX5pvIDeDoC74IJsmGImau5QziNzAI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Norbert Slusarek <nslusarek@gmx.net>,
-        Thadeu Lima de Souza Cascardo <cascardo@canonical.com>,
-        Oliver Hartkopp <socketcan@hartkopp.net>,
-        Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH 5.12 020/296] can: isotp: prevent race between isotp_bind() and isotp_setsockopt()
-Date:   Mon, 31 May 2021 15:11:15 +0200
-Message-Id: <20210531130704.442908261@linuxfoundation.org>
+        stable@vger.kernel.org, Anna Schumaker <Anna.Schumaker@Netapp.com>,
+        Trond Myklebust <trond.myklebust@hammerspace.com>
+Subject: [PATCH 5.12 021/296] NFSv4: Fix a NULL pointer dereference in pnfs_mark_matching_lsegs_return()
+Date:   Mon, 31 May 2021 15:11:16 +0200
+Message-Id: <20210531130704.481153525@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210531130703.762129381@linuxfoundation.org>
 References: <20210531130703.762129381@linuxfoundation.org>
@@ -41,116 +39,60 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Norbert Slusarek <nslusarek@gmx.net>
+From: Anna Schumaker <Anna.Schumaker@Netapp.com>
 
-commit 2b17c400aeb44daf041627722581ade527bb3c1d upstream.
+commit a421d218603ffa822a0b8045055c03eae394a7eb upstream.
 
-A race condition was found in isotp_setsockopt() which allows to
-change socket options after the socket was bound.
-For the specific case of SF_BROADCAST support, this might lead to possible
-use-after-free because can_rx_unregister() is not called.
+Commit de144ff4234f changes _pnfs_return_layout() to call
+pnfs_mark_matching_lsegs_return() passing NULL as the struct
+pnfs_layout_range argument. Unfortunately,
+pnfs_mark_matching_lsegs_return() doesn't check if we have a value here
+before dereferencing it, causing an oops.
 
-Checking for the flag under the socket lock in isotp_bind() and taking
-the lock in isotp_setsockopt() fixes the issue.
+I'm able to hit this crash consistently when running connectathon basic
+tests on NFS v4.1/v4.2 against Ontap.
 
-Fixes: 921ca574cd38 ("can: isotp: add SF_BROADCAST support for functional addressing")
-Link: https://lore.kernel.org/r/trinity-e6ae9efa-9afb-4326-84c0-f3609b9b8168-1620773528307@3c-app-gmx-bs06
-Reported-by: Norbert Slusarek <nslusarek@gmx.net>
-Signed-off-by: Thadeu Lima de Souza Cascardo <cascardo@canonical.com>
-Signed-off-by: Norbert Slusarek <nslusarek@gmx.net>
-Acked-by: Oliver Hartkopp <socketcan@hartkopp.net>
-Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
+Fixes: de144ff4234f ("NFSv4: Don't discard segments marked for return in _pnfs_return_layout()")
+Cc: stable@vger.kernel.org
+Signed-off-by: Anna Schumaker <Anna.Schumaker@Netapp.com>
+Signed-off-by: Trond Myklebust <trond.myklebust@hammerspace.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- net/can/isotp.c |   49 +++++++++++++++++++++++++++++++++----------------
- 1 file changed, 33 insertions(+), 16 deletions(-)
+ fs/nfs/pnfs.c |   15 +++++++--------
+ 1 file changed, 7 insertions(+), 8 deletions(-)
 
---- a/net/can/isotp.c
-+++ b/net/can/isotp.c
-@@ -1062,27 +1062,31 @@ static int isotp_bind(struct socket *soc
- 	if (len < ISOTP_MIN_NAMELEN)
- 		return -EINVAL;
- 
-+	if (addr->can_addr.tp.tx_id & (CAN_ERR_FLAG | CAN_RTR_FLAG))
-+		return -EADDRNOTAVAIL;
-+
-+	if (!addr->can_ifindex)
-+		return -ENODEV;
-+
-+	lock_sock(sk);
-+
- 	/* do not register frame reception for functional addressing */
- 	if (so->opt.flags & CAN_ISOTP_SF_BROADCAST)
- 		do_rx_reg = 0;
- 
- 	/* do not validate rx address for functional addressing */
- 	if (do_rx_reg) {
--		if (addr->can_addr.tp.rx_id == addr->can_addr.tp.tx_id)
--			return -EADDRNOTAVAIL;
-+		if (addr->can_addr.tp.rx_id == addr->can_addr.tp.tx_id) {
-+			err = -EADDRNOTAVAIL;
-+			goto out;
-+		}
- 
--		if (addr->can_addr.tp.rx_id & (CAN_ERR_FLAG | CAN_RTR_FLAG))
--			return -EADDRNOTAVAIL;
-+		if (addr->can_addr.tp.rx_id & (CAN_ERR_FLAG | CAN_RTR_FLAG)) {
-+			err = -EADDRNOTAVAIL;
-+			goto out;
-+		}
+--- a/fs/nfs/pnfs.c
++++ b/fs/nfs/pnfs.c
+@@ -1317,6 +1317,11 @@ _pnfs_return_layout(struct inode *ino)
+ {
+ 	struct pnfs_layout_hdr *lo = NULL;
+ 	struct nfs_inode *nfsi = NFS_I(ino);
++	struct pnfs_layout_range range = {
++		.iomode		= IOMODE_ANY,
++		.offset		= 0,
++		.length		= NFS4_MAX_UINT64,
++	};
+ 	LIST_HEAD(tmp_list);
+ 	const struct cred *cred;
+ 	nfs4_stateid stateid;
+@@ -1344,16 +1349,10 @@ _pnfs_return_layout(struct inode *ino)
  	}
+ 	valid_layout = pnfs_layout_is_valid(lo);
+ 	pnfs_clear_layoutcommit(ino, &tmp_list);
+-	pnfs_mark_matching_lsegs_return(lo, &tmp_list, NULL, 0);
++	pnfs_mark_matching_lsegs_return(lo, &tmp_list, &range, 0);
  
--	if (addr->can_addr.tp.tx_id & (CAN_ERR_FLAG | CAN_RTR_FLAG))
--		return -EADDRNOTAVAIL;
--
--	if (!addr->can_ifindex)
--		return -ENODEV;
--
--	lock_sock(sk);
--
- 	if (so->bound && addr->can_ifindex == so->ifindex &&
- 	    addr->can_addr.tp.rx_id == so->rxid &&
- 	    addr->can_addr.tp.tx_id == so->txid)
-@@ -1164,16 +1168,13 @@ static int isotp_getname(struct socket *
- 	return ISOTP_MIN_NAMELEN;
- }
+-	if (NFS_SERVER(ino)->pnfs_curr_ld->return_range) {
+-		struct pnfs_layout_range range = {
+-			.iomode		= IOMODE_ANY,
+-			.offset		= 0,
+-			.length		= NFS4_MAX_UINT64,
+-		};
++	if (NFS_SERVER(ino)->pnfs_curr_ld->return_range)
+ 		NFS_SERVER(ino)->pnfs_curr_ld->return_range(lo, &range);
+-	}
  
--static int isotp_setsockopt(struct socket *sock, int level, int optname,
-+static int isotp_setsockopt_locked(struct socket *sock, int level, int optname,
- 			    sockptr_t optval, unsigned int optlen)
- {
- 	struct sock *sk = sock->sk;
- 	struct isotp_sock *so = isotp_sk(sk);
- 	int ret = 0;
- 
--	if (level != SOL_CAN_ISOTP)
--		return -EINVAL;
--
- 	if (so->bound)
- 		return -EISCONN;
- 
-@@ -1248,6 +1249,22 @@ static int isotp_setsockopt(struct socke
- 	return ret;
- }
- 
-+static int isotp_setsockopt(struct socket *sock, int level, int optname,
-+			    sockptr_t optval, unsigned int optlen)
-+
-+{
-+	struct sock *sk = sock->sk;
-+	int ret;
-+
-+	if (level != SOL_CAN_ISOTP)
-+		return -EINVAL;
-+
-+	lock_sock(sk);
-+	ret = isotp_setsockopt_locked(sock, level, optname, optval, optlen);
-+	release_sock(sk);
-+	return ret;
-+}
-+
- static int isotp_getsockopt(struct socket *sock, int level, int optname,
- 			    char __user *optval, int __user *optlen)
- {
+ 	/* Don't send a LAYOUTRETURN if list was initially empty */
+ 	if (!test_bit(NFS_LAYOUT_RETURN_REQUESTED, &lo->plh_flags) ||
 
 
