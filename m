@@ -2,35 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 35C31395FB0
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 16:14:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2101439646F
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 17:57:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233641AbhEaOOe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 10:14:34 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49708 "EHLO mail.kernel.org"
+        id S233658AbhEaP6z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 11:58:55 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56128 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231189AbhEaNrN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 09:47:13 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 52DED6161E;
-        Mon, 31 May 2021 13:30:38 +0000 (UTC)
+        id S233374AbhEaOb3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 10:31:29 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B7A1961624;
+        Mon, 31 May 2021 13:49:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1622467838;
-        bh=UbouWuxlqpIAkHFWgTCNLGylEkKn+iKEJyn0zhV8JPc=;
+        s=korg; t=1622468951;
+        bh=57mus0dGnXJhnois5zRxOYyJ+59inXy3QF90V2hIR3E=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=U4tUk7LJcJ1d1VImEGQqEpNrOMoa+o2WrVvHR3UxVPXM7el/6gDhjSRB9WWrGJ3D+
-         F35wEW5rkIxg9fgjVZ8adBy5jqT5u0z6xFwcSMpB5CkEUoQUScmF7476fK8yIK7k6C
-         yJX4Lmo4sB9nccV7GqvUmrwAXHFR72qi7ozRGOVw=
+        b=LcmF6MYckd6o9Q8T27mJZA3/fkkd/PtxlPEN+NdqxlH/SmFLxhuvZdyYntnQLjGlH
+         i5iy54ZuBqmGNcrkDrcF2LMKk1U3JpsH4Erji5xCg4j4r+moVG4jBpwmjZjEbwfLvY
+         T2JnEjh7FvsXb8ViMY4LI+vmdP7pG6qrz12WA2ww=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hui Wang <hui.wang@canonical.com>,
-        Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 5.10 002/252] ALSA: hda/realtek: Headphone volume is controlled by Front mixer
-Date:   Mon, 31 May 2021 15:11:07 +0200
-Message-Id: <20210531130658.051213688@linuxfoundation.org>
+        stable@vger.kernel.org, Miquel Raynal <miquel.raynal@bootlin.com>
+Subject: [PATCH 5.12 013/296] mtd: rawnand: cs553x: Fix external use of SW Hamming ECC helper
+Date:   Mon, 31 May 2021 15:11:08 +0200
+Message-Id: <20210531130704.213640507@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210531130657.971257589@linuxfoundation.org>
-References: <20210531130657.971257589@linuxfoundation.org>
+In-Reply-To: <20210531130703.762129381@linuxfoundation.org>
+References: <20210531130703.762129381@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,70 +38,60 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Hui Wang <hui.wang@canonical.com>
+From: Miquel Raynal <miquel.raynal@bootlin.com>
 
-commit 119b75c150773425a89033215eab4d15d4198f8b upstream.
+commit 56a8d3fd1f342d10ee7b27e9ac0f4d00b5fbb91c upstream.
 
-On some ASUS and MSI machines, the audio codec is alc1220 and the
-Headphone is connected to audio mixer 0xf and DAC 0x5, in theory
-the Headphone volume is controlled by DAC 0x5 (Heapdhone Playback
-Volume), but somehow it is controlled by DAC 0x2 (Front Playback
-Volume), maybe this is a defect on the codec alc1220.
+Since the Hamming software ECC engine has been updated to become a
+proper and independent ECC engine, it is now mandatory to either
+initialize the engine before using any one of his functions or use one
+of the bare helpers which only perform the calculations. As there is no
+actual need for a proper ECC initialization, let's just use the bare
+helper instead of the rawnand one.
 
-Because of this issue, the PA couldn't switch the headphone and
-Lineout correctly, If we apply the quirk CLEVO_P950 to those machines,
-the Lineout and Headphone will share the audio mixer 0xc and DAC 0x2,
-and generate Headphone+LO mixer, then PA could handle them when
-switching between them.
-
-BugLink: https://gitlab.freedesktop.org/pipewire/pipewire/-/issues/1206
-Cc: <stable@vger.kernel.org>
-Signed-off-by: Hui Wang <hui.wang@canonical.com>
-Link: https://lore.kernel.org/r/20210522034741.13415-1-hui.wang@canonical.com
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Fixes: 90ccf0a0192f ("mtd: nand: ecc-hamming: Rename the exported functions")
+Cc: stable@vger.kernel.org
+Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
+Link: https://lore.kernel.org/linux-mtd/20210413161840.345208-2-miquel.raynal@bootlin.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- sound/pci/hda/patch_realtek.c |   23 +++++++++++++++++++++++
- 1 file changed, 23 insertions(+)
+ drivers/mtd/nand/raw/cs553x_nand.c |   12 +++++++++++-
+ 1 file changed, 11 insertions(+), 1 deletion(-)
 
---- a/sound/pci/hda/patch_realtek.c
-+++ b/sound/pci/hda/patch_realtek.c
-@@ -2603,6 +2603,28 @@ static const struct hda_model_fixup alc8
- 	{}
- };
+--- a/drivers/mtd/nand/raw/cs553x_nand.c
++++ b/drivers/mtd/nand/raw/cs553x_nand.c
+@@ -18,6 +18,7 @@
+ #include <linux/module.h>
+ #include <linux/delay.h>
+ #include <linux/mtd/mtd.h>
++#include <linux/mtd/nand-ecc-sw-hamming.h>
+ #include <linux/mtd/rawnand.h>
+ #include <linux/mtd/partitions.h>
+ #include <linux/iopoll.h>
+@@ -240,6 +241,15 @@ static int cs_calculate_ecc(struct nand_
+ 	return 0;
+ }
  
-+static const struct snd_hda_pin_quirk alc882_pin_fixup_tbl[] = {
-+	SND_HDA_PIN_QUIRK(0x10ec1220, 0x1043, "ASUS", ALC1220_FIXUP_CLEVO_P950,
-+		{0x14, 0x01014010},
-+		{0x15, 0x01011012},
-+		{0x16, 0x01016011},
-+		{0x18, 0x01a19040},
-+		{0x19, 0x02a19050},
-+		{0x1a, 0x0181304f},
-+		{0x1b, 0x0221401f},
-+		{0x1e, 0x01456130}),
-+	SND_HDA_PIN_QUIRK(0x10ec1220, 0x1462, "MS-7C35", ALC1220_FIXUP_CLEVO_P950,
-+		{0x14, 0x01015010},
-+		{0x15, 0x01011012},
-+		{0x16, 0x01011011},
-+		{0x18, 0x01a11040},
-+		{0x19, 0x02a19050},
-+		{0x1a, 0x0181104f},
-+		{0x1b, 0x0221401f},
-+		{0x1e, 0x01451130}),
-+	{}
-+};
++static int cs553x_ecc_correct(struct nand_chip *chip,
++			      unsigned char *buf,
++			      unsigned char *read_ecc,
++			      unsigned char *calc_ecc)
++{
++	return ecc_sw_hamming_correct(buf, read_ecc, calc_ecc,
++				      chip->ecc.size, false);
++}
 +
- /*
-  * BIOS auto configuration
-  */
-@@ -2644,6 +2666,7 @@ static int patch_alc882(struct hda_codec
+ static struct cs553x_nand_controller *controllers[4];
  
- 	snd_hda_pick_fixup(codec, alc882_fixup_models, alc882_fixup_tbl,
- 		       alc882_fixups);
-+	snd_hda_pick_pin_fixup(codec, alc882_pin_fixup_tbl, alc882_fixups, true);
- 	snd_hda_apply_fixup(codec, HDA_FIXUP_ACT_PRE_PROBE);
+ static int cs553x_attach_chip(struct nand_chip *chip)
+@@ -251,7 +261,7 @@ static int cs553x_attach_chip(struct nan
+ 	chip->ecc.bytes = 3;
+ 	chip->ecc.hwctl  = cs_enable_hwecc;
+ 	chip->ecc.calculate = cs_calculate_ecc;
+-	chip->ecc.correct  = rawnand_sw_hamming_correct;
++	chip->ecc.correct  = cs553x_ecc_correct;
+ 	chip->ecc.strength = 1;
  
- 	alc_auto_parse_customize_define(codec);
+ 	return 0;
 
 
