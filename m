@@ -2,112 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 94695395749
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 10:44:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 361B239574C
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 10:44:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230400AbhEaIp7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 04:45:59 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:40044 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230104AbhEaIp4 (ORCPT
+        id S230458AbhEaIqW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 04:46:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51182 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230428AbhEaIqS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 04:45:56 -0400
-Received: from imap.suse.de (imap-alt.suse-dmz.suse.de [192.168.254.47])
-        (using TLSv1.2 with cipher ECDHE-ECDSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id AA8CD2191F;
-        Mon, 31 May 2021 08:44:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1622450655; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=lpqD11VwesnaooS9bUD7mS99zEZv3FlhamNQHMGYvQI=;
-        b=mLYlwA1rehtmtebSlslOtmInELrnvOGW3O5Mq6WCJRk/3t0kGCHV1ErUN2W6b7tpLtfBST
-        A+JgbTrWACnrCFWuKCB3+C52Ldbo49vz/DBKbd/gBUr7xvu8HPIXTXqGAUQwGzsq29QJG/
-        0p+vrV2dopwNAMVEBgRlVOgRmLUpCoU=
-Received: from imap3-int (imap-alt.suse-dmz.suse.de [192.168.254.47])
-        by imap.suse.de (Postfix) with ESMTP id A078D118DD;
-        Mon, 31 May 2021 08:44:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1622450653; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=lpqD11VwesnaooS9bUD7mS99zEZv3FlhamNQHMGYvQI=;
-        b=a0ECcmvE9ydE/OV9EcLul4CdIAVzDdOSyEAbwHRlXO/SRirG6s9uCnu8nWVikjprNl+ZjZ
-        /dX41I44BCBBFT5/NTsnQt9zPx+hTWDTJ8PjBWHP+6uUqYglpc63LUBUxkaKFqdRlXw1x2
-        FDaquQEtJCAlx9Msq/aWp0e3ZjJL0Eo=
-Received: from director2.suse.de ([192.168.254.72])
-        by imap3-int with ESMTPSA
-        id NFXXJNyhtGCKPgAALh3uQQ
-        (envelope-from <nborisov@suse.com>); Mon, 31 May 2021 08:44:12 +0000
-Subject: Re: [syzbot] kernel BUG in assertfail
-To:     syzbot <syzbot+a6bf271c02e4fe66b4e4@syzkaller.appspotmail.com>,
-        clm@fb.com, dsterba@suse.com, josef@toxicpanda.com,
-        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com
-References: <000000000000f9136f05c39b84e4@google.com>
-From:   Nikolay Borisov <nborisov@suse.com>
-Message-ID: <21666193-5ad7-2656-c50f-33637fabb082@suse.com>
-Date:   Mon, 31 May 2021 11:44:12 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        Mon, 31 May 2021 04:46:18 -0400
+Received: from mail-lj1-x22f.google.com (mail-lj1-x22f.google.com [IPv6:2a00:1450:4864:20::22f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0D4EC061574
+        for <linux-kernel@vger.kernel.org>; Mon, 31 May 2021 01:44:37 -0700 (PDT)
+Received: by mail-lj1-x22f.google.com with SMTP id f12so14055682ljp.2
+        for <linux-kernel@vger.kernel.org>; Mon, 31 May 2021 01:44:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=qSiHm2x0VYis9oHGnKO3wH7svcL5++yEAOjW2BWiBYU=;
+        b=lUxQ/k0n1JapZZYTm69WFnp1eyRdyBv9rIpg5Qh78uGFcJwW9zj0JcGANNe5jNTAFG
+         ozbtZ19Nc+BI3pdHuSh+/AHWTjfLNx+jpgL2KiYFpm5juWP8Q+fXbywiRAarGYsAFa66
+         n5Lmmdf6u0AfEvUhf/zjjSwkd4PUgWkBeSrNEGIKth9VCi0zGtBuhxe4oAhERKzc18wf
+         IIi4BH9yYkES5wS/298ydjGJp8UFleI9hGUBoL9WweIR1jYeZDqGgHYcl/D6UNXQyOR8
+         MNiFxe6hNyYGtsi2S9uF7/N7aDogN7+HMo7wS1+aCdcMz53ZnOoS5VHUytvp03Gppzzc
+         XM2Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=qSiHm2x0VYis9oHGnKO3wH7svcL5++yEAOjW2BWiBYU=;
+        b=PcKxKPlLMhtduCEogu656kPiyIOekmndstDr0rxXdBNkdNpdH9HFNwe+NapeNr3Rxh
+         OMxY5oZQ0v6+o3kxLCbtDtmi5zLb8fSa1AwP/gjzrzC3DKZBaDbDv3BfWDFxO0g8iWXt
+         ZOAcJte91f+DOZohXXDwOOCNAko9/Lfa8olnd46HIBTh5wUFlfox77B41augYng3UhJm
+         JDg4tC2zo774kUGMHtD13yTMnba7Np9SJ7lWSbgBu9cLKxNhWUwmfxojBbmpQXTF9DQq
+         cEs6a90EBqAxP8RoHDXy5dLfy3P9KBMCn0G6i1gm5tuacZdKqZ9j/PwUHuCzDLYooj4/
+         FAOw==
+X-Gm-Message-State: AOAM531dL0mOer3E5j4uANjAxlmr3V1fd53QWcwVfPhCiuzCABVM5J7w
+        tujYmTCpMmgMxgARtK3YxFu/kQeO/001lnsfWwdMxQ==
+X-Google-Smtp-Source: ABdhPJx9Ta1DFU72yZxzmXeXZOHH/mxW2HUJNM4rOxP7dcdz3+l3k6YcFpfBLmsFpnqUgnCpq0TZ4Q5SQiQ1fLRuA1Q=
+X-Received: by 2002:a2e:154a:: with SMTP id 10mr15435817ljv.133.1622450676013;
+ Mon, 31 May 2021 01:44:36 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <000000000000f9136f05c39b84e4@google.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-Authentication-Results: imap.suse.de;
-        none
-X-Spam-Level: **
-X-Spam-Score: 2.50
-X-Spamd-Result: default: False [2.50 / 100.00];
-         ARC_NA(0.00)[];
-         RCVD_VIA_SMTP_AUTH(0.00)[];
-         FROM_HAS_DN(0.00)[];
-         TO_DN_SOME(0.00)[];
-         TO_MATCH_ENVRCPT_ALL(0.00)[];
-         URI_HIDDEN_PATH(1.00)[https://syzkaller.appspot.com/x/.config?x=9f3da44a01882e99];
-         TAGGED_RCPT(0.00)[a6bf271c02e4fe66b4e4];
-         MIME_GOOD(-0.10)[text/plain];
-         SURBL_MULTI_FAIL(0.00)[syzkaller.appspot.com:server fail];
-         DKIM_SIGNED(0.00)[suse.com:s=susede1];
-         RCPT_COUNT_SEVEN(0.00)[7];
-         RCVD_NO_TLS_LAST(0.10)[];
-         FROM_EQ_ENVFROM(0.00)[];
-         MIME_TRACE(0.00)[0:+];
-         RCVD_COUNT_TWO(0.00)[2];
-         MID_RHS_MATCH_FROM(0.00)[];
-         SUSPICIOUS_RECIPS(1.50)[]
-X-Spam-Flag: NO
+References: <20210525102941.3958649-1-apusaka@google.com> <20210525182900.6.Id35872ce1572f18e0792e6f4d70721132e97a480@changeid>
+ <42C641C9-2EAC-4A47-9FF7-8A079DF278E0@holtmann.org>
+In-Reply-To: <42C641C9-2EAC-4A47-9FF7-8A079DF278E0@holtmann.org>
+From:   Archie Pusaka <apusaka@google.com>
+Date:   Mon, 31 May 2021 16:44:25 +0800
+Message-ID: <CAJQfnxHf1FEe-TWgSj7rJ=h4+_=LXm0QPXHoJUn3tpWnm6mvtw@mail.gmail.com>
+Subject: Re: [PATCH 06/12] Bluetooth: use inclusive language in RFCOMM
+To:     Marcel Holtmann <marcel@holtmann.org>
+Cc:     linux-bluetooth <linux-bluetooth@vger.kernel.org>,
+        CrosBT Upstreaming <chromeos-bluetooth-upstreaming@chromium.org>,
+        Archie Pusaka <apusaka@chromium.org>,
+        Miao-chen Chou <mcchou@chromium.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Johan Hedberg <johan.hedberg@gmail.com>,
+        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
+        Matthieu Baerts <matthieu.baerts@tessares.net>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Stefan Schmidt <stefan@datenfreihafen.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "open list:NETWORKING [GENERAL]" <netdev@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Marcel,
+
+Thanks for the reply. I have sent v2 which omits this patch. Please take a look.
+
+I am not familiar with the libbluetooth API. Could you tell me more about it?
+Beside this and the L2CAP change, are there any other terms
+replacement which can't be accepted due to the libbluetooth API?
+
+Cheers,
+Archie
 
 
-On 31.05.21 г. 10:53, syzbot wrote:
-> Hello,
-> 
-> syzbot found the following issue on:
-> 
-> HEAD commit:    1434a312 Merge branch 'for-5.13-fixes' of git://git.kernel..
-> git tree:       upstream
-> console output: https://syzkaller.appspot.com/x/log.txt?x=162843f3d00000
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=9f3da44a01882e99
-> dashboard link: https://syzkaller.appspot.com/bug?extid=a6bf271c02e4fe66b4e4
-> 
-> Unfortunately, I don't have any reproducer for this issue yet.
-> 
-> IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> Reported-by: syzbot+a6bf271c02e4fe66b4e4@syzkaller.appspotmail.com
-> 
-> assertion failed: !memcmp(fs_info->fs_devices->fsid, fs_info->super_copy->fsid, BTRFS_FSID_SIZE), in fs/btrfs/disk-io.c:3282
-
-This means a device contains a btrfs filesystem which has a different
-FSID in its superblock than the fsid which all devices part of the same
-fs_devices should have. This can happen in 2 ways - memory corruption
-where either of the ->fsid member are corrupted or if there was a crash
-while a filesystem's fsid was being changed. We need more context about
-what the test did?
+On Wed, 26 May 2021 at 23:07, Marcel Holtmann <marcel@holtmann.org> wrote:
+>
+> Hi Archie,
+>
+> > Use "central" and "peripheral".
+> >
+> > Signed-off-by: Archie Pusaka <apusaka@chromium.org>
+> > Reviewed-by: Miao-chen Chou <mcchou@chromium.org>
+> >
+> > ---
+> >
+> > include/net/bluetooth/rfcomm.h | 2 +-
+> > net/bluetooth/rfcomm/sock.c    | 4 ++--
+> > 2 files changed, 3 insertions(+), 3 deletions(-)
+> >
+> > diff --git a/include/net/bluetooth/rfcomm.h b/include/net/bluetooth/rfcomm.h
+> > index 99d26879b02a..6472ec0053b9 100644
+> > --- a/include/net/bluetooth/rfcomm.h
+> > +++ b/include/net/bluetooth/rfcomm.h
+> > @@ -290,7 +290,7 @@ struct rfcomm_conninfo {
+> > };
+> >
+> > #define RFCOMM_LM     0x03
+> > -#define RFCOMM_LM_MASTER     0x0001
+> > +#define RFCOMM_LM_CENTRAL    0x0001
+> > #define RFCOMM_LM_AUTH                0x0002
+> > #define RFCOMM_LM_ENCRYPT     0x0004
+> > #define RFCOMM_LM_TRUSTED     0x0008
+>
+> I am not planning to accept this change any time soon since this is also in the libbluetooth API.
+>
+> Regards
+>
+> Marcel
+>
