@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DA3253963F3
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 17:39:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 82E7E395ED7
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 16:03:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232683AbhEaPl1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 11:41:27 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47640 "EHLO mail.kernel.org"
+        id S233283AbhEaOEU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 10:04:20 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44036 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231717AbhEaOXB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 10:23:01 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 32792613AE;
-        Mon, 31 May 2021 13:45:23 +0000 (UTC)
+        id S232138AbhEaNlE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 09:41:04 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 090CB61412;
+        Mon, 31 May 2021 13:27:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1622468723;
-        bh=CaRJbwEvVyUIgOBqZyWjNDLt31TvcBOvLoCPxtKykGU=;
+        s=korg; t=1622467672;
+        bh=2uHQSuBtQrpPAeM3h7B7iaCFgz3x0WTe7FSIOTqt+Us=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=YLugF+eypoI3y2CtqsRVmN+XFhNYb4AOitExJ543EO4tQukPV1PD6AobHWImscjcx
-         9ji2/peHeOelmmmzFywDI8NN6tAxaXy/s7zWCi6SlEdrwQuNK4OrUACfX22WPpOq+Y
-         ZTaRwenwzNjngEeLBK/sPN4ElRt/Knit82M7DO+E=
+        b=ytiuAipwHdMUgM6pw8nzWZFbnFadH0GsKcmt/dOTjeJ2jVE6+Uwp0W0epKU1IclJn
+         /wct8E/slw7ns+n2xPUfK+bLTUmNQnfz36A+elPUqwo1BaA2MOkJAN/ELQp7mo1aVY
+         pMbw8UehaARVvg6SWe+E7cve8GRE2FNT2mH6iq9g=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Kangjie Lu <kjlu@umn.edu>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 103/177] Revert "ath6kl: return error code in ath6kl_wmi_set_roam_lrssi_cmd()"
+        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
+        Trond Myklebust <trond.myklebust@hammerspace.com>
+Subject: [PATCH 4.14 35/79] NFS: fix an incorrect limit in filelayout_decode_layout()
 Date:   Mon, 31 May 2021 15:14:20 +0200
-Message-Id: <20210531130651.462074727@linuxfoundation.org>
+Message-Id: <20210531130637.136064557@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210531130647.887605866@linuxfoundation.org>
-References: <20210531130647.887605866@linuxfoundation.org>
+In-Reply-To: <20210531130636.002722319@linuxfoundation.org>
+References: <20210531130636.002722319@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,52 +39,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+From: Dan Carpenter <dan.carpenter@oracle.com>
 
-[ Upstream commit efba106f89fc6848726716c101f4c84e88720a9c ]
+commit 769b01ea68b6c49dc3cde6adf7e53927dacbd3a8 upstream.
 
-This reverts commit fc6a6521556c8250e356ddc6a3f2391aa62dc976.
+The "sizeof(struct nfs_fh)" is two bytes too large and could lead to
+memory corruption.  It should be NFS_MAXFHSIZE because that's the size
+of the ->data[] buffer.
 
-Because of recent interactions with developers from @umn.edu, all
-commits from them have been recently re-reviewed to ensure if they were
-correct or not.
+I reversed the size of the arguments to put the variable on the left.
 
-Upon review, this commit was found to be incorrect for the reasons
-below, so it must be reverted.  It will be fixed up "correctly" in a
-later kernel change.
-
-The change being reverted does NOTHING as the caller to this function
-does not even look at the return value of the call.  So the "claim" that
-this fixed an an issue is not true.  It will be fixed up properly in a
-future patch by propagating the error up the stack correctly.
-
-Cc: Kangjie Lu <kjlu@umn.edu>
-Cc: Kalle Valo <kvalo@codeaurora.org>
-Link: https://lore.kernel.org/r/20210503115736.2104747-43-gregkh@linuxfoundation.org
+Fixes: 16b374ca439f ("NFSv4.1: pnfs: filelayout: add driver's LAYOUTGET and GETDEVICEINFO infrastructure")
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+Signed-off-by: Trond Myklebust <trond.myklebust@hammerspace.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/wireless/ath/ath6kl/wmi.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ fs/nfs/filelayout/filelayout.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/net/wireless/ath/ath6kl/wmi.c b/drivers/net/wireless/ath/ath6kl/wmi.c
-index c610fe21c85c..d27b4088b874 100644
---- a/drivers/net/wireless/ath/ath6kl/wmi.c
-+++ b/drivers/net/wireless/ath/ath6kl/wmi.c
-@@ -776,8 +776,10 @@ int ath6kl_wmi_set_roam_lrssi_cmd(struct wmi *wmi, u8 lrssi)
- 	cmd->info.params.roam_rssi_floor = DEF_LRSSI_ROAM_FLOOR;
- 	cmd->roam_ctrl = WMI_SET_LRSSI_SCAN_PARAMS;
- 
--	return ath6kl_wmi_cmd_send(wmi, 0, skb, WMI_SET_ROAM_CTRL_CMDID,
-+	ath6kl_wmi_cmd_send(wmi, 0, skb, WMI_SET_ROAM_CTRL_CMDID,
- 			    NO_SYNC_WMIFLAG);
-+
-+	return 0;
- }
- 
- int ath6kl_wmi_force_roam_cmd(struct wmi *wmi, const u8 *bssid)
--- 
-2.30.2
-
+--- a/fs/nfs/filelayout/filelayout.c
++++ b/fs/nfs/filelayout/filelayout.c
+@@ -717,7 +717,7 @@ filelayout_decode_layout(struct pnfs_lay
+ 		if (unlikely(!p))
+ 			goto out_err;
+ 		fl->fh_array[i]->size = be32_to_cpup(p++);
+-		if (sizeof(struct nfs_fh) < fl->fh_array[i]->size) {
++		if (fl->fh_array[i]->size > NFS_MAXFHSIZE) {
+ 			printk(KERN_ERR "NFS: Too big fh %d received %d\n",
+ 			       i, fl->fh_array[i]->size);
+ 			goto out_err;
 
 
