@@ -2,33 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1074B396091
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 16:26:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F86939609D
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 16:29:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233544AbhEaO21 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 10:28:27 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55706 "EHLO mail.kernel.org"
+        id S234131AbhEaOab (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 10:30:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55126 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232616AbhEaNw3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 09:52:29 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 108FA613DD;
-        Mon, 31 May 2021 13:32:49 +0000 (UTC)
+        id S230381AbhEaNxT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 09:53:19 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8CC9F61919;
+        Mon, 31 May 2021 13:33:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1622467970;
-        bh=WIx+AEv0ty7LhI3bH1MGrWlfecbNRbfmPT4AVaqFIWA=;
+        s=korg; t=1622467995;
+        bh=TZ+BvSzQSQQ6Wj2maDP4Z+N3numtIi8t8pOOLudM5YA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Etd1/0qq7X9PzyWSaRtPUZQEe/9rWdNozr5X513EIx1+uYJn/72vbeMOtvw34KY7b
-         EHD9yTzljtt9kS1ZRlBr4xtlkOKYhdNExZdgcuMPDLnkCFCCNI2SioQQFysuL3R7Ma
-         I+Ik9YKqKOsx6xQ/6Km4icNqanvyIf0M3TPVkd0g=
+        b=m+a2z28hq8ZCfxU8VIo31WFplbZPBHESpwbk7axoqUU3H6zcLaMFaeMcmoAPLEoS8
+         TkqRjJS+yM8AeD7B+SbSDeGx2r3jxGmxsJLK6tFK8vcSXkt4FsZ6Xz/n2ju8ljmOt2
+         OqAGKARr7mZEwvprMa+ipt2qj/KzUvf3rRejRk3w=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Evan Quan <evan.quan@amd.com>,
-        Kenneth Feng <kenneth.feng@amd.com>,
+        stable@vger.kernel.org, James Zhu <James.Zhu@amd.com>,
+        Leo Liu <leo.liu@amd.com>,
+        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
         Alex Deucher <alexander.deucher@amd.com>
-Subject: [PATCH 5.10 041/252] drm/amd/pm: correct MGpuFanBoost setting
-Date:   Mon, 31 May 2021 15:11:46 +0200
-Message-Id: <20210531130659.383607619@linuxfoundation.org>
+Subject: [PATCH 5.10 042/252] drm/amdgpu/vcn1: add cancel_delayed_work_sync before power gate
+Date:   Mon, 31 May 2021 15:11:47 +0200
+Message-Id: <20210531130659.421154909@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210531130657.971257589@linuxfoundation.org>
 References: <20210531130657.971257589@linuxfoundation.org>
@@ -40,69 +41,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Evan Quan <evan.quan@amd.com>
+From: James Zhu <James.Zhu@amd.com>
 
-commit 1a0b713c73688c6bafbe6faf8c90390b11b26fc6 upstream.
+commit b95f045ea35673572ef46d6483ad8bd6d353d63c upstream.
 
-No MGpuFanBoost setting for those ASICs which do not support it.
-Otherwise, it may breaks their fan control feature.
+Add cancel_delayed_work_sync before set power gating state
+to avoid race condition issue when power gating.
 
-Bug: https://gitlab.freedesktop.org/drm/amd/-/issues/1580
-
-Signed-off-by: Evan Quan <evan.quan@amd.com>
-Reviewed-by: Kenneth Feng <kenneth.feng@amd.com>
-Reviewed-by: Alex Deucher <alexander.deucher@amd.com>
+Signed-off-by: James Zhu <James.Zhu@amd.com>
+Reviewed-by: Leo Liu <leo.liu@amd.com>
+Acked-by: Christian König <christian.koenig@amd.com>
 Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
 Cc: stable@vger.kernel.org
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/gpu/drm/amd/pm/swsmu/smu11/navi10_ppt.c         |    9 +++++++++
- drivers/gpu/drm/amd/pm/swsmu/smu11/sienna_cichlid_ppt.c |   10 ++++++++++
- 2 files changed, 19 insertions(+)
+ drivers/gpu/drm/amd/amdgpu/vcn_v1_0.c |    6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
 
---- a/drivers/gpu/drm/amd/pm/swsmu/smu11/navi10_ppt.c
-+++ b/drivers/gpu/drm/amd/pm/swsmu/smu11/navi10_ppt.c
-@@ -2606,6 +2606,8 @@ static ssize_t navi10_get_gpu_metrics(st
- 
- static int navi10_enable_mgpu_fan_boost(struct smu_context *smu)
+--- a/drivers/gpu/drm/amd/amdgpu/vcn_v1_0.c
++++ b/drivers/gpu/drm/amd/amdgpu/vcn_v1_0.c
+@@ -232,9 +232,13 @@ static int vcn_v1_0_hw_fini(void *handle
  {
-+	struct smu_table_context *table_context = &smu->smu_table;
-+	PPTable_t *smc_pptable = table_context->driver_pptable;
- 	struct amdgpu_device *adev = smu->adev;
- 	uint32_t param = 0;
+ 	struct amdgpu_device *adev = (struct amdgpu_device *)handle;
  
-@@ -2613,6 +2615,13 @@ static int navi10_enable_mgpu_fan_boost(
- 	if (adev->asic_type == CHIP_NAVI12)
- 		return 0;
++	cancel_delayed_work_sync(&adev->vcn.idle_work);
++
+ 	if ((adev->pg_flags & AMD_PG_SUPPORT_VCN_DPG) ||
+-		RREG32_SOC15(VCN, 0, mmUVD_STATUS))
++		(adev->vcn.cur_state != AMD_PG_STATE_GATE &&
++		 RREG32_SOC15(VCN, 0, mmUVD_STATUS))) {
+ 		vcn_v1_0_set_powergating_state(adev, AMD_PG_STATE_GATE);
++	}
  
-+	/*
-+	 * Skip the MGpuFanBoost setting for those ASICs
-+	 * which do not support it
-+	 */
-+	if (!smc_pptable->MGpuFanBoostLimitRpm)
-+		return 0;
-+
- 	/* Workaround for WS SKU */
- 	if (adev->pdev->device == 0x7312 &&
- 	    adev->pdev->revision == 0)
---- a/drivers/gpu/drm/amd/pm/swsmu/smu11/sienna_cichlid_ppt.c
-+++ b/drivers/gpu/drm/amd/pm/swsmu/smu11/sienna_cichlid_ppt.c
-@@ -2715,6 +2715,16 @@ static ssize_t sienna_cichlid_get_gpu_me
- 
- static int sienna_cichlid_enable_mgpu_fan_boost(struct smu_context *smu)
- {
-+	struct smu_table_context *table_context = &smu->smu_table;
-+	PPTable_t *smc_pptable = table_context->driver_pptable;
-+
-+	/*
-+	 * Skip the MGpuFanBoost setting for those ASICs
-+	 * which do not support it
-+	 */
-+	if (!smc_pptable->MGpuFanBoostLimitRpm)
-+		return 0;
-+
- 	return smu_cmn_send_smc_msg_with_param(smu,
- 					       SMU_MSG_SetMGpuFanBoostLimitRpm,
- 					       0,
+ 	return 0;
+ }
 
 
