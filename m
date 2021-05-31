@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 87B343965A9
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 18:43:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D50939631F
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 17:05:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234266AbhEaQoW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 12:44:22 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48194 "EHLO mail.kernel.org"
+        id S233906AbhEaPGx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 11:06:53 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40810 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232601AbhEaOxd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 10:53:33 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DD1FD61440;
-        Mon, 31 May 2021 13:58:54 +0000 (UTC)
+        id S232952AbhEaOIk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 10:08:40 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 16F316196E;
+        Mon, 31 May 2021 13:39:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1622469535;
-        bh=DfZKl/NzFi7lgZuQmVDSRGUm2tklNb+SYAcydYSVrD8=;
+        s=korg; t=1622468391;
+        bh=Ou48hjh+SQEI9T9F+iUAIa0saih4lHf3vBU+IbLh2Xs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Wyhn2UapMRXRiXTHZr2L1X3oyr9p1LlWx8uX8COseAsT/eufqMEdCSttonry2hvMa
-         jo3WVCk4QZ9avTpAR3LRB6/B4UC50jnK0bJgYilsBOHgWRlI2bj8a6WlYg74461V3N
-         9bkWrVWgwxGXFxhG/z3VH6D8mmhBU3SnMRYOz2Y8=
+        b=gPvzuZ2Wybg3kocFisaGkGpmjWHaxwe/h3C6M8OmKpZ057hDgnhiVw5UYpeZYtfCK
+         C4FBCfPR3z9OOX+GLDSdKg0sxV6OWk1Ub4zM2K4XRaUS+SToeIG6P46yHO+1PSzeDW
+         BC1lfa5LGoeR7FTdg/9R81490NCz05IdeyW8/W0U=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
-        Sunil Goutham <sgoutham@marvell.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.12 234/296] octeontx2-pf: fix a buffer overflow in otx2_set_rxfh_context()
+        stable@vger.kernel.org, Jacob Pan <jacob.jun.pan@linux.intel.com>,
+        Lu Baolu <baolu.lu@linux.intel.com>,
+        Joerg Roedel <jroedel@suse.de>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.10 224/252] iommu/vt-d: Use user privilege for RID2PASID translation
 Date:   Mon, 31 May 2021 15:14:49 +0200
-Message-Id: <20210531130711.670263034@linuxfoundation.org>
+Message-Id: <20210531130705.608331573@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210531130703.762129381@linuxfoundation.org>
-References: <20210531130703.762129381@linuxfoundation.org>
+In-Reply-To: <20210531130657.971257589@linuxfoundation.org>
+References: <20210531130657.971257589@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,38 +40,70 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dan Carpenter <dan.carpenter@oracle.com>
+From: Lu Baolu <baolu.lu@linux.intel.com>
 
-[ Upstream commit e5cc361e21648b75f935f9571d4003aaee480214 ]
+[ Upstream commit 54c80d907400189b09548039be8f3b6e297e8ae3 ]
 
-This function is called from ethtool_set_rxfh() and "*rss_context"
-comes from the user.  Add some bounds checking to prevent memory
-corruption.
+When first-level page tables are used for IOVA translation, we use user
+privilege by setting U/S bit in the page table entry. This is to make it
+consistent with the second level translation, where the U/S enforcement
+is not available. Clear the SRE (Supervisor Request Enable) field in the
+pasid table entry of RID2PASID so that requests requesting the supervisor
+privilege are blocked and treated as DMA remapping faults.
 
-Fixes: 81a4362016e7 ("octeontx2-pf: Add RSS multi group support")
-Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
-Acked-by: Sunil Goutham <sgoutham@marvell.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Fixes: b802d070a52a1 ("iommu/vt-d: Use iova over first level")
+Suggested-by: Jacob Pan <jacob.jun.pan@linux.intel.com>
+Signed-off-by: Lu Baolu <baolu.lu@linux.intel.com>
+Link: https://lore.kernel.org/r/20210512064426.3440915-1-baolu.lu@linux.intel.com
+Link: https://lore.kernel.org/r/20210519015027.108468-3-baolu.lu@linux.intel.com
+Signed-off-by: Joerg Roedel <jroedel@suse.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/marvell/octeontx2/nic/otx2_ethtool.c | 4 ++++
- 1 file changed, 4 insertions(+)
+ drivers/iommu/intel/iommu.c | 7 +++++--
+ drivers/iommu/intel/pasid.c | 3 ++-
+ 2 files changed, 7 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_ethtool.c b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_ethtool.c
-index f4962a97a075..9d9a2e438acf 100644
---- a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_ethtool.c
-+++ b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_ethtool.c
-@@ -786,6 +786,10 @@ static int otx2_set_rxfh_context(struct net_device *dev, const u32 *indir,
- 	if (hfunc != ETH_RSS_HASH_NO_CHANGE && hfunc != ETH_RSS_HASH_TOP)
- 		return -EOPNOTSUPP;
+diff --git a/drivers/iommu/intel/iommu.c b/drivers/iommu/intel/iommu.c
+index eececdeaa40f..b21c8224b1c8 100644
+--- a/drivers/iommu/intel/iommu.c
++++ b/drivers/iommu/intel/iommu.c
+@@ -2606,9 +2606,9 @@ static int domain_setup_first_level(struct intel_iommu *iommu,
+ 				    struct device *dev,
+ 				    u32 pasid)
+ {
+-	int flags = PASID_FLAG_SUPERVISOR_MODE;
+ 	struct dma_pte *pgd = domain->pgd;
+ 	int agaw, level;
++	int flags = 0;
  
-+	if (*rss_context != ETH_RXFH_CONTEXT_ALLOC &&
-+	    *rss_context >= MAX_RSS_GROUPS)
-+		return -EINVAL;
-+
- 	rss = &pfvf->hw.rss_info;
+ 	/*
+ 	 * Skip top levels of page tables for iommu which has
+@@ -2624,7 +2624,10 @@ static int domain_setup_first_level(struct intel_iommu *iommu,
+ 	if (level != 4 && level != 5)
+ 		return -EINVAL;
  
- 	if (!rss->enable) {
+-	flags |= (level == 5) ? PASID_FLAG_FL5LP : 0;
++	if (pasid != PASID_RID2PASID)
++		flags |= PASID_FLAG_SUPERVISOR_MODE;
++	if (level == 5)
++		flags |= PASID_FLAG_FL5LP;
+ 
+ 	if (domain->domain.type == IOMMU_DOMAIN_UNMANAGED)
+ 		flags |= PASID_FLAG_PAGE_SNOOP;
+diff --git a/drivers/iommu/intel/pasid.c b/drivers/iommu/intel/pasid.c
+index ce4ef2d245e3..1e7c17989084 100644
+--- a/drivers/iommu/intel/pasid.c
++++ b/drivers/iommu/intel/pasid.c
+@@ -677,7 +677,8 @@ int intel_pasid_setup_second_level(struct intel_iommu *iommu,
+ 	 * Since it is a second level only translation setup, we should
+ 	 * set SRE bit as well (addresses are expected to be GPAs).
+ 	 */
+-	pasid_set_sre(pte);
++	if (pasid != PASID_RID2PASID)
++		pasid_set_sre(pte);
+ 	pasid_set_present(pte);
+ 	pasid_flush_caches(iommu, pte, pasid, did);
+ 
 -- 
 2.30.2
 
