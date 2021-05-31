@@ -2,35 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 176FA395C9F
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 15:34:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 52C513965A0
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 18:41:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232082AbhEaNf6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 09:35:58 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33502 "EHLO mail.kernel.org"
+        id S232578AbhEaQmk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 12:42:40 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47164 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231778AbhEaNZp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 09:25:45 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 37C6E613CD;
-        Mon, 31 May 2021 13:21:02 +0000 (UTC)
+        id S233770AbhEaOwl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 10:52:41 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 65A6961934;
+        Mon, 31 May 2021 13:58:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1622467262;
-        bh=gX9fkF68UPNOyurxx7ugEYnJ8bb41xHeA4OZQgPhuJY=;
+        s=korg; t=1622469506;
+        bh=TPhC4X7LHDYNfwFynm+l7isf1+cHxuReC14F/T3U5yg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=DWxxXNWxf/MQ2uSo5BoDk1G6ow6L3FD6ndXbDvx79QJSq+tXaCNwdFZPSp2gmMici
-         IAfk8pJOm85xiacxsAOd8INhUISYWqTz3bu5/HWSO5qbR+USj/k2N3RRF7cR3LGt3l
-         q2m6ApmFBAS0mHHB/BP3BzmjmM10DfKCnn1drKo0=
+        b=yu+RGX4SA4Lc9ZRtrTNEXY3gqnkUETKbtmRZnhXHjFxIOL8Zz/K3HecbaBqCwna0E
+         +rhY7h8kXTlyNSOJaobcqiG7gTnikQLzdxra6VeOWqLD1xDPsPF8SdNnutTrEBxhB+
+         JWIGUwZNf/B2UjkS80zw5SUcNPHx7MdQ+z4puNqg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Alan Stern <stern@rowland.harvard.edu>,
-        Chunfeng Yun <chunfeng.yun@mediatek.com>
-Subject: [PATCH 4.9 66/66] usb: core: reduce power-on-good delay time of root hub
+        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
+        Zou Wei <zou_wei@huawei.com>,
+        Georgi Djakov <djakov@kernel.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.12 224/296] interconnect: qcom: Add missing MODULE_DEVICE_TABLE
 Date:   Mon, 31 May 2021 15:14:39 +0200
-Message-Id: <20210531130638.339303847@linuxfoundation.org>
+Message-Id: <20210531130711.357241673@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210531130636.254683895@linuxfoundation.org>
-References: <20210531130636.254683895@linuxfoundation.org>
+In-Reply-To: <20210531130703.762129381@linuxfoundation.org>
+References: <20210531130703.762129381@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,39 +41,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Chunfeng Yun <chunfeng.yun@mediatek.com>
+From: Zou Wei <zou_wei@huawei.com>
 
-commit 90d28fb53d4a51299ff324dede015d5cb11b88a2 upstream.
+[ Upstream commit 1fd86e280d8b21762901e43d42d66dbfe8b8e0d3 ]
 
-Return the exactly delay time given by root hub descriptor,
-this helps to reduce resume time etc.
+This patch adds missing MODULE_DEVICE_TABLE definition which generates
+correct modalias for automatic loading of this driver when it is built
+as an external module.
 
-Due to the root hub descriptor is usually provided by the host
-controller driver, if there is compatibility for a root hub,
-we can fix it easily without affect other root hub
-
-Acked-by: Alan Stern <stern@rowland.harvard.edu>
-Signed-off-by: Chunfeng Yun <chunfeng.yun@mediatek.com>
-Link: https://lore.kernel.org/r/1618017645-12259-1-git-send-email-chunfeng.yun@mediatek.com
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Zou Wei <zou_wei@huawei.com>
+Link: https://lore.kernel.org/r/1620704673-104205-1-git-send-email-zou_wei@huawei.com
+Fixes: 976daac4a1c5 ("interconnect: qcom: Consolidate interconnect RPMh support")
+Signed-off-by: Georgi Djakov <djakov@kernel.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/usb/core/hub.h |    6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+ drivers/interconnect/qcom/bcm-voter.c | 1 +
+ 1 file changed, 1 insertion(+)
 
---- a/drivers/usb/core/hub.h
-+++ b/drivers/usb/core/hub.h
-@@ -151,8 +151,10 @@ static inline unsigned hub_power_on_good
- {
- 	unsigned delay = hub->descriptor->bPwrOn2PwrGood * 2;
+diff --git a/drivers/interconnect/qcom/bcm-voter.c b/drivers/interconnect/qcom/bcm-voter.c
+index dd18cd8474f8..1da6cea8ecbc 100644
+--- a/drivers/interconnect/qcom/bcm-voter.c
++++ b/drivers/interconnect/qcom/bcm-voter.c
+@@ -363,6 +363,7 @@ static const struct of_device_id bcm_voter_of_match[] = {
+ 	{ .compatible = "qcom,bcm-voter" },
+ 	{ }
+ };
++MODULE_DEVICE_TABLE(of, bcm_voter_of_match);
  
--	/* Wait at least 100 msec for power to become stable */
--	return max(delay, 100U);
-+	if (!hub->hdev->parent)	/* root hub */
-+		return delay;
-+	else /* Wait at least 100 msec for power to become stable */
-+		return max(delay, 100U);
- }
- 
- static inline int hub_port_debounce_be_connected(struct usb_hub *hub,
+ static struct platform_driver qcom_icc_bcm_voter_driver = {
+ 	.probe = qcom_icc_bcm_voter_probe,
+-- 
+2.30.2
+
 
 
