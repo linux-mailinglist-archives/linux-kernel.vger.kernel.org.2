@@ -2,385 +2,251 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CC95E3959D8
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 13:44:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D944F3959DE
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 13:45:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231409AbhEaLpk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 07:45:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35222 "EHLO
+        id S231432AbhEaLra (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 07:47:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35640 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231367AbhEaLpg (ORCPT
+        with ESMTP id S231245AbhEaLr1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 07:45:36 -0400
-Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com [IPv6:2a00:1450:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A9B9C061760
-        for <linux-kernel@vger.kernel.org>; Mon, 31 May 2021 04:43:55 -0700 (PDT)
-Received: by mail-wr1-x42b.google.com with SMTP id v23so8277048wrd.10
-        for <linux-kernel@vger.kernel.org>; Mon, 31 May 2021 04:43:55 -0700 (PDT)
+        Mon, 31 May 2021 07:47:27 -0400
+Received: from mail-oi1-x234.google.com (mail-oi1-x234.google.com [IPv6:2607:f8b0:4864:20::234])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2DD21C061574;
+        Mon, 31 May 2021 04:45:47 -0700 (PDT)
+Received: by mail-oi1-x234.google.com with SMTP id w127so11995423oig.12;
+        Mon, 31 May 2021 04:45:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:subject:to:cc:references:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=/hiUu+Skw0ykyK3yMg9SV6xOJePFSkEY+L4mrKx8bEk=;
-        b=HuYVQSU4RtV3qM8BziorYrqAsrt6RDs3LyS4VSqYJUAVzYDsVTou/NkzXCC9rUQUbr
-         KqU3iBdv6Ao4BBJdSB1jlduhQB/RvMrIzvB7AD/iqgWMr76VdgQY8l7nE9Z1A59i2Ld7
-         dC98IGWTWar2W0gboC8B0n1gevOezpQV31Ab4VXqUFCDkAgFfep7dC5hheEq6ExYmsfo
-         0Df4Cx50VrGx3fLVEJkBS0w4c44pe7A0tt8fWPs1ehpCnLVNnGzfX9Wiydai9hszZA3V
-         B4VG9g3Xn1iIp71+0bJ3iYKmIAClNWbPAavCzYns2oHmwRLM7hnC7EtMfaQr7+aQq/Qq
-         vw1g==
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Mu+M1rCTrS0Vw3xkdvu1xXRgTWVrW2YWgKqFOsFE7JQ=;
+        b=IetQb5cimgviLt6JnjBqTpAm8Y52f/FJ1QdmJEKsTmRUV57gSc29P1T4xhcWdT7JPM
+         LwEkulGxmSvqAqmm9C/okW0F9WdpH7tkgo2rHofwaNZjhTwol+RptWuqrlRqHxtu0mKi
+         +RxeFhHxmY1x8k3ImwhtgeL9Flocq4yVrQozIvTCgag4rSKjVPGFLpta4h4MIPIWBMAD
+         EsC5eoDyjJ+a6HDCfeBhdI3QOdd7ucfOUknhXRZwEJy0xUDDmyq1vafoaMDgnEKLsDQO
+         GrqNNug+eoUNwpzxJcP2aqOFq9/p/dM0Ir7F03SPtfyJ+K7Cgf0e9f/gWWWHoc+PCV2e
+         4MCg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:subject:to:cc:references:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=/hiUu+Skw0ykyK3yMg9SV6xOJePFSkEY+L4mrKx8bEk=;
-        b=dTo8rDW+Zc9+r4zL/LSH1CPsIZvkhtb6OhGeXT3+osRPaRvs6LpnKWtBkt0Dy5LV0t
-         Op8NU4A06eu3kZLXctfncwyQ6A/NsHrmir6GVSWcOLEx4qOA/te2MtJj9INa/IWTR5QM
-         R2Ga6kp5BOfNCOYJ+8RUqYh0CKMydBFAJEjkwcrSKfSMvJjpT/pGq86iGDjHsgtglR5b
-         MVvqSeqptKYceLkaFgf2GAaiLHAmQLi51NeLkkcLFCoDCy+g6bVDwwlrJYmyua27nboP
-         TM6WVo9fcA7tyyHsBWUTi3bWLlAtqANu1B+lsWvOILNnabALL3NaZIt7ISp3WUThlwzA
-         hZng==
-X-Gm-Message-State: AOAM530gvey4rRdkwssQXjBp4TxDR9xPiZ7iFVZUzj8jZWbvx8oiiwVk
-        us0u6bto5bkQ7WlzM6zzpQGlkg==
-X-Google-Smtp-Source: ABdhPJzBTUKmS50n/MaPFhrF2ZX3BGlz+etTXruYHKWaOn29vCO/oSl/gs9FXxvb55mvP4xStoVODg==
-X-Received: by 2002:a5d:504d:: with SMTP id h13mr15564167wrt.133.1622461433799;
-        Mon, 31 May 2021 04:43:53 -0700 (PDT)
-Received: from [192.168.1.28] (hst-221-48.medicom.bg. [84.238.221.48])
-        by smtp.googlemail.com with ESMTPSA id c7sm16932232wrs.23.2021.05.31.04.43.53
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 31 May 2021 04:43:53 -0700 (PDT)
-From:   Stanimir Varbanov <stanimir.varbanov@linaro.org>
-Subject: Re: [PATCH 1/5] venus: venc: Use pmruntime autosuspend
-To:     Doug Anderson <dianders@chromium.org>
-Cc:     Linux Media Mailing List <linux-media@vger.kernel.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Vikash Garodia <vgarodia@codeaurora.org>,
-        Mansur Alisha Shaik <mansur@codeaurora.org>
-References: <20210518154509.602137-1-stanimir.varbanov@linaro.org>
- <20210518154509.602137-2-stanimir.varbanov@linaro.org>
- <CAD=FV=WJZ3=YMcqFLeoXnYh6=fPDzAe_4yAxehSafLGOC31ogQ@mail.gmail.com>
-Message-ID: <ad5b75e2-89e9-8ed3-c092-3ccf924f2178@linaro.org>
-Date:   Mon, 31 May 2021 14:43:52 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Mu+M1rCTrS0Vw3xkdvu1xXRgTWVrW2YWgKqFOsFE7JQ=;
+        b=VGbczrRJCf72MDqAfb8UkMfJXKn5VuhVnft8AqASo07Axtn6MB1KAR9p8fhxe84cue
+         oWJgbb/J/HOIvf/VjsT/jOYc5LAKkDZ1mPRsPGfvdcUtdA9QgHqEzJarIAzKTufelutx
+         ioMZar9nGGrSLWdBi8Z5B21alD8e24I2jxn2HI3fbQP1eP5PIndRAiWfSFVkwMH/Gkra
+         1KM+HQAKhs6CPeG8l0rJOhNt2qJz5KkTehlbCi9cpYFvYC4ArDsnsSTrfWDEqybYDkWO
+         Hn/2m6xJo15zNFAlLI48j+zEiUIBlwMAHDKv7pUrxDfjXxy2B1qB52RHDkJRlAtH3wJi
+         oUFA==
+X-Gm-Message-State: AOAM531S5q1WOfhP3HDEqfpYDgq1mOv+UAKOXViKhDx8k6kKNdM0xenF
+        Z0d80xQQ5E1Vm5RqgzNXxM2hB7DbW2RMr0K6Y8lI6631mM4=
+X-Google-Smtp-Source: ABdhPJyGHpJU/KnCRhU16Xda19FTK3v2cYq3sMbV5c9Pinif9g6xAWSp9NKHnxX4DothjfIIrDc6tdwmTSrwjQb40O4=
+X-Received: by 2002:a54:400a:: with SMTP id x10mr17779739oie.158.1622461546407;
+ Mon, 31 May 2021 04:45:46 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <CAD=FV=WJZ3=YMcqFLeoXnYh6=fPDzAe_4yAxehSafLGOC31ogQ@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210515124055.22225-1-sergio.paracuellos@gmail.com> <20210515124055.22225-2-sergio.paracuellos@gmail.com>
+In-Reply-To: <20210515124055.22225-2-sergio.paracuellos@gmail.com>
+From:   Sergio Paracuellos <sergio.paracuellos@gmail.com>
+Date:   Mon, 31 May 2021 13:45:35 +0200
+Message-ID: <CAMhs-H82NwOnVYJ71Gh6jVyDo37cA3KavJw1OJRU5oH74YxUJQ@mail.gmail.com>
+Subject: Re: [PATCH 1/4] dt-bindings: mt7621-pci: PCIe binding documentation
+ for MT7621 SoCs
+To:     "open list:MIPS" <linux-mips@vger.kernel.org>
+Cc:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        John Crispin <john@phrozen.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        linux-staging@lists.linux.dev,
+        Greg KH <gregkh@linuxfoundation.org>,
+        NeilBrown <neil@brown.name>,
+        Ilya Lipnitskiy <ilya.lipnitskiy@gmail.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        linux-pci@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Doug,
+Hi Rob,
 
-Thanks for the comments!
+On Sat, May 15, 2021 at 2:40 PM Sergio Paracuellos
+<sergio.paracuellos@gmail.com> wrote:
+>
+> Add device tree binding documentation for PCIe in MT7621 SoCs.
+>
+> Signed-off-by: Sergio Paracuellos <sergio.paracuellos@gmail.com>
+> ---
+>  .../bindings/pci/mediatek,mt7621-pci.yaml     | 149 ++++++++++++++++++
+>  1 file changed, 149 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/pci/mediatek,mt7621-pci.yaml
+>
+> diff --git a/Documentation/devicetree/bindings/pci/mediatek,mt7621-pci.yaml b/Documentation/devicetree/bindings/pci/mediatek,mt7621-pci.yaml
+> new file mode 100644
+> index 000000000000..7f5f9d583032
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/pci/mediatek,mt7621-pci.yaml
+> @@ -0,0 +1,149 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/pci/mediatek,mt7621-pci.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: MediaTek MT7621 PCIe controller
+> +
+> +maintainers:
+> +  - Sergio Paracuellos <sergio.paracuellos@gmail.com>
+> +
+> +description: |+
+> +  MediaTek MT7621 PCIe subsys supports single Root complex (RC)
+> +  with 3 Root Ports. Each Root Ports supports a Gen1 1-lane Link
+> +
+> +allOf:
+> +  - $ref: /schemas/pci/pci-bus.yaml#
+> +
+> +properties:
+> +  compatible:
+> +    const: mediatek,mt7621-pci
+> +
+> +  reg:
+> +    items:
+> +      - description: host-pci bridge registers
+> +      - description: pcie port 0 RC control registers
+> +      - description: pcie port 1 RC control registers
+> +      - description: pcie port 2 RC control registers
+> +
+> +  ranges:
+> +    maxItems: 2
+> +
+> +  resets:
+> +    items:
+> +      - description: pcie port 0 reset.
+> +      - description: pcie port 1 reset.
+> +      - description: pcie port 2 reset.
+> +
+> +  reset-names:
+> +    items:
+> +      - const: pcie0
+> +      - const: pcie1
+> +      - const: pcie2
+> +
+> +  clocks:
+> +    items:
+> +      - description: pcie port 0 clock.
+> +      - description: pcie port 1 clock.
+> +      - description: pcie port 2 clock.
+> +
+> +  clock-names:
+> +    items:
+> +      - const: pcie0
+> +      - const: pcie1
+> +      - const: pcie2
+> +
+> +  phys:
+> +    items:
+> +      - description: Dual-ported phy for pcie port 0 and 1.
+> +      - description: Phy for pcie port 2.
+> +
+> +  phy-names:
+> +    items:
+> +      - const: pcie-phy0
+> +      - const: pcie-phy2
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +  - ranges
+> +  - "#interrupt-cells"
+> +  - interrupt-map-mask
+> +  - interrupt-map
+> +  - resets
+> +  - reset-names
+> +  - clocks
+> +  - clock-names
+> +  - phys
+> +  - phy-names
+> +  - reset-gpios
+> +
+> +unevaluatedProperties: false
+> +
+> +examples:
+> +  - |
+> +    #include <dt-bindings/gpio/gpio.h>
+> +    #include <dt-bindings/interrupt-controller/mips-gic.h>
+> +
+> +    pcie: pcie@1e140000 {
+> +        compatible = "mediatek,mt7621-pci";
+> +        reg = <0x1e140000 0x100>,
+> +              <0x1e142000 0x100>,
+> +              <0x1e143000 0x100>,
+> +              <0x1e144000 0x100>;
+> +
+> +        #address-cells = <3>;
+> +        #size-cells = <2>;
+> +        pinctrl-names = "default";
+> +        pinctrl-0 = <&pcie_pins>;
+> +        device_type = "pci";
+> +        ranges = <0x02000000 0 0x00000000 0x60000000 0 0x10000000>,  /* pci memory */
+> +                 <0x01000000 0 0x00000000 0x1e160000 0 0x00010000>;  /* io space */
+> +        #interrupt-cells = <1>;
+> +        interrupt-map-mask = <0xF800 0 0 0>;
+> +        interrupt-map = <0x0000 0 0 0 &gic GIC_SHARED 4 IRQ_TYPE_LEVEL_HIGH>,
+> +                        <0x0800 0 0 0 &gic GIC_SHARED 24 IRQ_TYPE_LEVEL_HIGH>,
+> +                        <0x1000 0 0 0 &gic GIC_SHARED 25 IRQ_TYPE_LEVEL_HIGH>;
+> +        resets = <&rstctrl 24>, <&rstctrl 25>, <&rstctrl 26>;
+> +        reset-names = "pcie0", "pcie1", "pcie2";
+> +        clocks = <&clkctrl 24>, <&clkctrl 25>, <&clkctrl 26>;
+> +        clock-names = "pcie0", "pcie1", "pcie2";
+> +        phys = <&pcie0_phy 1>, <&pcie2_phy 0>;
+> +        phy-names = "pcie-phy0", "pcie-phy2";
+> +        reset-gpios = <&gpio 19 GPIO_ACTIVE_LOW>;
+> +
+> +        pcie@0,0 {
+> +            reg = <0x0000 0 0 0 0>;
+> +            #address-cells = <3>;
+> +            #size-cells = <2>;
+> +            device_type = "pci";
+> +            #interrupt-cells = <1>;
+> +            interrupt-map-mask = <0 0 0 0>;
+> +            interrupt-map = <0 0 0 0 &gic GIC_SHARED 4 IRQ_TYPE_LEVEL_HIGH>;
+> +            ranges;
+> +        };
+> +
+> +        pcie@1,0 {
+> +            reg = <0x0800 0 0 0 0>;
+> +            #address-cells = <3>;
+> +            #size-cells = <2>;
+> +            device_type = "pci";
+> +            #interrupt-cells = <1>;
+> +            interrupt-map-mask = <0 0 0 0>;
+> +            interrupt-map = <0 0 0 0 &gic GIC_SHARED 24 IRQ_TYPE_LEVEL_HIGH>;
+> +            ranges;
+> +        };
+> +
+> +        pcie@2,0 {
+> +            reg = <0x1000 0 0 0 0>;
+> +            #address-cells = <3>;
+> +            #size-cells = <2>;
+> +            device_type = "pci";
+> +            #interrupt-cells = <1>;
+> +            interrupt-map-mask = <0 0 0 0>;
+> +            interrupt-map = <0 0 0 0 &gic GIC_SHARED 25 IRQ_TYPE_LEVEL_HIGH>;
+> +            ranges;
+> +        };
+> +    };
+> +...
+> --
+> 2.25.1
+>
 
-On 5/19/21 7:51 PM, Doug Anderson wrote:
-> Hi,
-> 
-> On Tue, May 18, 2021 at 8:46 AM Stanimir Varbanov
-> <stanimir.varbanov@linaro.org> wrote:
->>
->> Migrate encoder to use pm-runtime autosuspend APIs.
->>
->> Signed-off-by: Stanimir Varbanov <stanimir.varbanov@linaro.org>
->> ---
->>  drivers/media/platform/qcom/venus/venc.c | 104 +++++++++++++++++++++--
->>  1 file changed, 96 insertions(+), 8 deletions(-)
-> 
-> Not a full review but I happened to skim by this patch and it caught
-> my attention...
-> 
+Any comments on this binding? It's been a while in devicetree
+patchwork review list without comments.
 
-Thanks!
+Thanks in advance for your time.
 
-> 
->> diff --git a/drivers/media/platform/qcom/venus/venc.c b/drivers/media/platform/qcom/venus/venc.c
->> index 4a7291f934b6..a7a858f03ba3 100644
->> --- a/drivers/media/platform/qcom/venus/venc.c
->> +++ b/drivers/media/platform/qcom/venus/venc.c
->> @@ -536,6 +536,64 @@ static const struct v4l2_ioctl_ops venc_ioctl_ops = {
->>         .vidioc_unsubscribe_event = v4l2_event_unsubscribe,
->>  };
->>
->> +static int venc_pm_get(struct venus_inst *inst)
->> +{
->> +       struct venus_core *core = inst->core;
->> +       struct device *dev = core->dev_enc;
->> +       int ret;
->> +
->> +       mutex_lock(&core->pm_lock);
->> +       ret = pm_runtime_get_sync(dev);
->> +       mutex_unlock(&core->pm_lock);
-> 
-> Why do you need a mutex around this?
-
-
-> 
->> +
->> +       return ret < 0 ? ret : 0;
-> 
-> Odd but true: if pm_runtime_get_sync() returns an error you still need
-> to put. If your code below isn't going to do this then you should
-> handle it here?
-
-I have v2 where I use pm_runtime_resume_and_get().
-
-> 
->> +}
->> +
->> +static int venc_pm_put(struct venus_inst *inst, bool autosuspend)
->> +{
->> +       struct venus_core *core = inst->core;
->> +       struct device *dev = core->dev_enc;
->> +       int ret;
->> +
->> +       mutex_lock(&core->pm_lock);
->> +
->> +       if (autosuspend)
->> +               ret = pm_runtime_put_autosuspend(dev);
->> +       else
->> +               ret = pm_runtime_put_sync(dev);
->> +
->> +       mutex_unlock(&core->pm_lock);
->> +
->> +       return ret < 0 ? ret : 0;
->> +}
->> +
->> +static int venc_pm_get_put(struct venus_inst *inst)
->> +{
->> +       struct venus_core *core = inst->core;
->> +       struct device *dev = core->dev_enc;
->> +       int ret = 0;
->> +
->> +       mutex_lock(&core->pm_lock);
->> +
->> +       if (pm_runtime_suspended(dev)) {
->> +               ret = pm_runtime_get_sync(dev);
->> +               if (ret < 0)
->> +                       goto error;
-> 
-> If pm_runtime_get_sync() returns an error you still need to put.
-
-In v2 I replaced with pm_runtime_resume_and_get().
-
-> 
-> 
->> +
->> +               ret = pm_runtime_put_autosuspend(dev);
->> +       }
->> +
->> +error:
->> +       mutex_unlock(&core->pm_lock);
->> +
->> +       return ret < 0 ? ret : 0;
->> +}
-> 
-> What is the purpose of "get_put"? It feels like using it would be racy to me.
-
-See below ...
-
-> 
-> 
->> +
->> +static void venc_pm_touch(struct venus_inst *inst)
->> +{
->> +       pm_runtime_mark_last_busy(inst->core->dev_enc);
->> +}
->> +
->>  static int venc_set_properties(struct venus_inst *inst)
->>  {
->>         struct venc_controls *ctr = &inst->controls.enc;
->> @@ -891,10 +949,18 @@ static int venc_queue_setup(struct vb2_queue *q,
->>                 return 0;
->>         }
->>
->> +       ret = venc_pm_get(inst);
->> +       if (ret)
->> +               return ret;
->> +
->>         mutex_lock(&inst->lock);
->>         ret = venc_init_session(inst);
->>         mutex_unlock(&inst->lock);
->>
->> +       if (ret)
->> +               goto put_power;
->> +
->> +       ret = venc_pm_put(inst, false);
->>         if (ret)
->>                 return ret;
->>
->> @@ -930,6 +996,9 @@ static int venc_queue_setup(struct vb2_queue *q,
->>                 break;
->>         }
->>
->> +       return ret;
->> +put_power:
->> +       venc_pm_put(inst, false);
->>         return ret;
->>  }
->>
->> @@ -946,6 +1015,8 @@ static void venc_release_session(struct venus_inst *inst)
->>  {
->>         int ret;
->>
->> +       venc_pm_get(inst);
->> +
->>         mutex_lock(&inst->lock);
->>
->>         ret = hfi_session_deinit(inst);
->> @@ -957,6 +1028,8 @@ static void venc_release_session(struct venus_inst *inst)
->>         venus_pm_load_scale(inst);
->>         INIT_LIST_HEAD(&inst->registeredbufs);
->>         venus_pm_release_core(inst);
->> +
->> +       venc_pm_put(inst, false);
->>  }
->>
->>  static void venc_buf_cleanup(struct vb2_buffer *vb)
->> @@ -1026,7 +1099,15 @@ static int venc_start_streaming(struct vb2_queue *q, unsigned int count)
->>         inst->sequence_cap = 0;
->>         inst->sequence_out = 0;
->>
->> +       ret = venc_pm_get(inst);
->> +       if (ret)
->> +               goto error;
->> +
->>         ret = venus_pm_acquire_core(inst);
->> +       if (ret)
->> +               goto put_power;
->> +
->> +       ret = venc_pm_put(inst, true);
->>         if (ret)
->>                 goto error;
->>
->> @@ -1051,6 +1132,8 @@ static int venc_start_streaming(struct vb2_queue *q, unsigned int count)
->>
->>         return 0;
->>
->> +put_power:
->> +       venc_pm_put(inst, false);
->>  error:
->>         venus_helper_buffers_done(inst, q->type, VB2_BUF_STATE_QUEUED);
->>         if (q->type == V4L2_BUF_TYPE_VIDEO_OUTPUT_MPLANE)
->> @@ -1065,6 +1148,8 @@ static void venc_vb2_buf_queue(struct vb2_buffer *vb)
->>  {
->>         struct venus_inst *inst = vb2_get_drv_priv(vb->vb2_queue);
->>
->> +       venc_pm_get_put(inst);
->> +
-> 
-> I don't know this code at all, but I don't understand the point of the
-> "get_put". Couldn't the task running this code get scheduled out for 2
-> seconds right after your call to venc_pm_get_put() and then it would
-> be just like you didn't call it?
-> 
-> ...or maybe the device wasn't suspended but it was 10 us away from
-> being suspended so your "get_put" decided it didn't need to do
-> anything. Then you get scheduled out for 10 us and it powers off.
-> 
-> Maybe there's a good reason for get_put() to exist and a good reason
-> why it's race-free but it feels like the kind of thing that needs a
-> comment.
-> 
-> 
-
-This technique was used in decoder for some time now without any issues,
-so I guess it is fine in respect to races.
-
-The idea of venc|vdec_pm_get_put was to resume pmruntime in case that 2s
-elapsed and the driver does not receive any buffer (through
-vb2_buf_queue()) during that time period. In this case (and there is no
-other activity) the power and clocks will be turned off and we have to
-power them up on next vb2_buf_queue.
-
->>         mutex_lock(&inst->lock);
->>         venus_helper_vb2_buf_queue(vb);
->>         mutex_unlock(&inst->lock);
->> @@ -1088,6 +1173,8 @@ static void venc_buf_done(struct venus_inst *inst, unsigned int buf_type,
->>         struct vb2_buffer *vb;
->>         unsigned int type;
->>
->> +       venc_pm_touch(inst);
->> +
->>         if (buf_type == HFI_BUFFER_INPUT)
->>                 type = V4L2_BUF_TYPE_VIDEO_OUTPUT_MPLANE;
->>         else
->> @@ -1117,6 +1204,8 @@ static void venc_event_notify(struct venus_inst *inst, u32 event,
->>  {
->>         struct device *dev = inst->core->dev_enc;
->>
->> +       venc_pm_touch(inst);
->> +
->>         if (event == EVT_SESSION_ERROR) {
->>                 inst->session_error = true;
->>                 dev_err(dev, "enc: event session error %x\n", inst->error);
->> @@ -1205,13 +1294,9 @@ static int venc_open(struct file *file)
->>
->>         venus_helper_init_instance(inst);
->>
->> -       ret = pm_runtime_get_sync(core->dev_enc);
->> -       if (ret < 0)
->> -               goto err_put_sync;
->> -
->>         ret = venc_ctrl_init(inst);
->>         if (ret)
->> -               goto err_put_sync;
->> +               goto err_free;
->>
->>         ret = hfi_session_create(inst, &venc_hfi_ops);
->>         if (ret)
->> @@ -1250,8 +1335,7 @@ static int venc_open(struct file *file)
->>         hfi_session_destroy(inst);
->>  err_ctrl_deinit:
->>         venc_ctrl_deinit(inst);
->> -err_put_sync:
->> -       pm_runtime_put_sync(core->dev_enc);
->> +err_free:
->>         kfree(inst);
->>         return ret;
->>  }
->> @@ -1260,6 +1344,8 @@ static int venc_close(struct file *file)
->>  {
->>         struct venus_inst *inst = to_inst(file);
->>
->> +       venc_pm_get(inst);
->> +
->>         v4l2_m2m_ctx_release(inst->m2m_ctx);
->>         v4l2_m2m_release(inst->m2m_dev);
->>         venc_ctrl_deinit(inst);
->> @@ -1268,7 +1354,7 @@ static int venc_close(struct file *file)
->>         v4l2_fh_del(&inst->fh);
->>         v4l2_fh_exit(&inst->fh);
->>
->> -       pm_runtime_put_sync(inst->core->dev_enc);
->> +       venc_pm_put(inst, false);
->>
->>         kfree(inst);
->>         return 0;
->> @@ -1325,6 +1411,8 @@ static int venc_probe(struct platform_device *pdev)
->>         core->dev_enc = dev;
->>
->>         video_set_drvdata(vdev, core);
->> +       pm_runtime_set_autosuspend_delay(dev, 2000);
->> +       pm_runtime_use_autosuspend(dev);
->>         pm_runtime_enable(dev);
-> 
-> You have the same bug that I just made in another module! :-P
-> Specifically, the pm_runtime docs say:
-> 
->> Drivers in ->remove() callback should undo the runtime PM changes done
->> in ->probe(). Usually this means calling pm_runtime_disable(),
->> pm_runtime_dont_use_autosuspend() etc.
-> 
-
-Sure I will correct this in v2. Thanks!
-
-> -Doug
-> 
-
--- 
-regards,
-Stan
+Best regards,
+     Sergio Paracuellos
