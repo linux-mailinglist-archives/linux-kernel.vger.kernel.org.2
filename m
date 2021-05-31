@@ -2,143 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 171BE3955C2
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 09:08:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A1F43955C8
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 09:09:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230165AbhEaHKa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 03:10:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57556 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230070AbhEaHKZ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 03:10:25 -0400
-Received: from mail-ua1-x92e.google.com (mail-ua1-x92e.google.com [IPv6:2607:f8b0:4864:20::92e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20DB9C06174A
-        for <linux-kernel@vger.kernel.org>; Mon, 31 May 2021 00:08:46 -0700 (PDT)
-Received: by mail-ua1-x92e.google.com with SMTP id l12so409416uai.0
-        for <linux-kernel@vger.kernel.org>; Mon, 31 May 2021 00:08:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=1vUcOLOLJFvqTx0Q1+alN5ka8ZC+o11y2paCA+C3hD8=;
-        b=S2UNFqxEhgyn5voEcAQ5yYLEXfKVM2XwBNQgOUuhiwcTjPFzIfdtCZ4Yvj7mDRJSeG
-         GDGUB0fLTUyYVPw25QdBjMlLftuN8zV0eLOH+bRziHVmayRjeAwUy9YTYl+QBGJ0taUg
-         VMerwRBPrcWxjU2kKN2y2litigUU+LidXGKJfcGdTHpU7bal0AR64t8iq17b8g1KHJkE
-         GAMQU1+BnASUYJbx317ew5z8+0Hd/DU2+g+0UczzK4+AssS9z1mOzBw0zwT0ADvKazdg
-         W6uFCvdLj5ZywyQ+nPT2cDTjKM7XLcZjF2B0uDxzeNQHqbT3KGFoCJcCT1d9IfyUZQrR
-         y5ew==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=1vUcOLOLJFvqTx0Q1+alN5ka8ZC+o11y2paCA+C3hD8=;
-        b=ehwsOTPDXQibVgAJp0L4dmpOkYtS+LSYDOOsaKqj1H/puxgpGbOWSi1E7ExuklGc/g
-         TnkmA5pYZJt0OGAgZfX2WJJVB1BmkwlueZYpfwk7FjlAKeTntxU73Hp5y8hGkd+SqvOB
-         qpguC5/G5XwtPyxzhBHjnRAKfbbcVV+Gz4AvDRwlP2frEsag1DFSYGXssrEXd6aewlnq
-         ZSsnz1hgXvdMzdM7fEaPrmewsEQnMMdQ6AlOIgGo+NAA57Xqscbcvinv/tiZ0gHNEyMI
-         qJARe0TVhPOViMEbdf3l3Hlb64bg2FTjVA0OkVBlL62ASJ06d/4T/gq4xcRD9v3ZrsqT
-         V4Pw==
-X-Gm-Message-State: AOAM532Osp7V7IEgw4QPKNFA3b9Z38C3O6NbfzVakmhCe7lbKN3MQ/8l
-        zTIoDPQCUrgfRgvnsNTi0N/GhQYQNMoK93sBlyhafQ==
-X-Google-Smtp-Source: ABdhPJzdcPknYIKY/HoFuBEvjeUrSBKGHjI3+ZdgXz4b7AY9qOCV+Wcz1GkCQofBeEC/XrGOEZA5hdhnC18QdgQMdNw=
-X-Received: by 2002:ab0:100f:: with SMTP id f15mr9827076uab.100.1622444924930;
- Mon, 31 May 2021 00:08:44 -0700 (PDT)
+        id S230224AbhEaHLe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 03:11:34 -0400
+Received: from mail-eopbgr80115.outbound.protection.outlook.com ([40.107.8.115]:36489
+        "EHLO EUR04-VI1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S230070AbhEaHL3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 03:11:29 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=DL/fUX5BYhwXAHMlHAUlJZTttwQ+7c480npp0CeQJBcgY+BEz+cXoYkvLks03TLbESLVStDfRO5jAGHNFd00SKKeJQ10Vf7P0IfT2CFnvd4GLi1SxA261zTofg2AXy4YGEYXwBYF8OC2iG8WFIpjlZ+5NBdAFerL5Od/8+fwjjenhZMOBH0QyHwDpoNNuJSu5uIKttacNbwVRTvG7j6NNmQy2pmu+kOlGmeTY28jset8m+qo8nlGKkFxpBItp3a/M4x2Ubrd99mD/TTxcaxyhR5hd1QPYmzKIYwi2c0fD1DWufqfZwike7ntyromXOnt8WXcIBgyTKxijS7vmdVqKw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=ts48+qMqODVn6fwSrkdb8gR7YCE8yWea0y783V3fUWc=;
+ b=Kr/MczDjDxuj8zjc0qil2BH60Bs1iNyue2C7MfYjHDMqnHqra8Q9pzt8lx5JGNuyUjBCJMUn73dxDQk6RfklqiJfllbH61tgntdBY+dgHvbc68CxsGgP1GlXI2gfZHvatjMJHwtF+VGXHwb90TgVmPsF7n+hj3vJDgVmVACYvXhU2y0qCqAeY3qacbNdusE2BJ8w0vG9ingvR6g5GaDcBFmGTuhyzRkvKAeFkQSXRhfdkkCqEffj1Kv5Xbw5hFEE94FbQsKdNrOxFEik7mX+V9BZip5h7Oc0+b+RUtIbF0jBWZw+Lw/EVw4dCDrjC3X7FTnZzMvJPLUJgL/q46CJ3w==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=axentia.se; dmarc=pass action=none header.from=axentia.se;
+ dkim=pass header.d=axentia.se; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=axentia.se;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=ts48+qMqODVn6fwSrkdb8gR7YCE8yWea0y783V3fUWc=;
+ b=nt0tbaYIK+/7xSghi93X0x9c5x7k4xwls0kTrPNHJ6QprV5i9ujUi5T4pxwwe/CNi9N0TtaQeS6KMafhMx1Shj75qbSYT/IeokFwm+eA72IJUx8b8qci8oC2zNOALPN2Cr1yZSqs6oBy6Zv9GgrSP/ScxTPsIvpL9BWxrJvaQkk=
+Authentication-Results: kernel.org; dkim=none (message not signed)
+ header.d=none;kernel.org; dmarc=none action=none header.from=axentia.se;
+Received: from DB8PR02MB5482.eurprd02.prod.outlook.com (2603:10a6:10:eb::29)
+ by DBAPR02MB6421.eurprd02.prod.outlook.com (2603:10a6:10:195::18) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4173.20; Mon, 31 May
+ 2021 07:09:47 +0000
+Received: from DB8PR02MB5482.eurprd02.prod.outlook.com
+ ([fe80::d47d:ca8c:4fe6:3908]) by DB8PR02MB5482.eurprd02.prod.outlook.com
+ ([fe80::d47d:ca8c:4fe6:3908%3]) with mapi id 15.20.4173.030; Mon, 31 May 2021
+ 07:09:47 +0000
+Subject: Re: [PATCH v1 3/9] iio: afe: rescale: use core to get processed value
+To:     Liam Beguin <liambeguin@gmail.com>, jic23@kernel.org,
+        lars@metafoo.de, pmeerw@pmeerw.net
+Cc:     linux-kernel@vger.kernel.org, linux-iio@vger.kernel.org,
+        devicetree@vger.kernel.org, robh+dt@kernel.org
+References: <20210530005917.20953-1-liambeguin@gmail.com>
+ <20210530005917.20953-4-liambeguin@gmail.com>
+From:   Peter Rosin <peda@axentia.se>
+Organization: Axentia Technologies AB
+Message-ID: <fb9bde38-6980-4241-6efe-fbad36dd8a2e@axentia.se>
+Date:   Mon, 31 May 2021 09:09:44 +0200
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
+In-Reply-To: <20210530005917.20953-4-liambeguin@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: sv-SE
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [85.229.94.233]
+X-ClientProxiedBy: HE1P189CA0030.EURP189.PROD.OUTLOOK.COM (2603:10a6:7:53::43)
+ To DB8PR02MB5482.eurprd02.prod.outlook.com (2603:10a6:10:eb::29)
 MIME-Version: 1.0
-References: <20210528091202.11603-1-ulf.hansson@linaro.org> <20210528152719.GA1473569@rowland.harvard.edu>
-In-Reply-To: <20210528152719.GA1473569@rowland.harvard.edu>
-From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Mon, 31 May 2021 09:08:08 +0200
-Message-ID: <CAPDyKFp14pnSsaV3bnbW2FVTbtqTb5z39nZ0+NQM0YRv00W4JQ@mail.gmail.com>
-Subject: Re: [PATCH 2/2] PM: runtime: Allow unassigned ->runtime_suspend|resume
- callbacks
-To:     Alan Stern <stern@rowland.harvard.edu>
-Cc:     "Rafael J . Wysocki" <rjw@rjwysocki.net>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Saravana Kannan <saravanak@google.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Tony Lindgren <tony@atomide.com>,
-        Kevin Hilman <khilman@kernel.org>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [192.168.13.3] (85.229.94.233) by HE1P189CA0030.EURP189.PROD.OUTLOOK.COM (2603:10a6:7:53::43) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4173.20 via Frontend Transport; Mon, 31 May 2021 07:09:46 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: dd2741f7-c44e-46b2-8b99-08d9240312d8
+X-MS-TrafficTypeDiagnostic: DBAPR02MB6421:
+X-Microsoft-Antispam-PRVS: <DBAPR02MB6421D573ACE190057A140508BC3F9@DBAPR02MB6421.eurprd02.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:8273;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 0L6HjMfKUKy5/ObBbJX3/hcFcUBrEjx1U26F6kbCyFwkqK6u5RtbOF6J0Ow6DQCfAhAfyPIRTLSlIHDrM9lVgUBq2eqZLF/wZiDZuyNiKiAgnLII69rKIjXznvPgFhJrfhFGAc9hm1mSwKdnil0IlxVI9dVH7XTwoOH5vzNB2mAe8ud/jEgHCw1TwWWK3GvmUpSxdHful8ZT7QCd3FyPOnm2Y1pYfmtm0MDHcfSi5OLmVsQHvBJsYpDRmRamwRgy7NEjurQb0waJkrElCa9jJkZj0GaR5/JM+NUl81taGZFtbohK3bL4+eZUehUms1+hZY84DtFRo1ZJ+kDGDmC4jbksfh6TY7pD/3UjOhZwVsNMxl4/DsaJNmKxIjPB1Q7Vv/VAdHVZAFkw9T4p4Ojd79kBdkcCrnDYkws41dwGn/+gvhmEVFTVb8N2dYotVEkwmim+pP9WGhR1NkhfIk5Wn1S+XObHtOpUlUMU7gQ6JCxRmlrMWmItI7yKTSAr0OPh8DVKjYNrcTDh/SDvT4xslciw+RRzJ5kZ+2Q0LeL4oPIO3riLJtlNPUEhpmCIqbmxtXGV/kMSVkGCU2d5bYvNzy43KakEsFlmFX67k6FJ0oEEBnApzIGOQPdp7AW4EBcWphip9JdmXi3pDCnTWi4yiaowL+GRDje+JQb1WKlxBZcgZOHs43BKPCxHfFInLBkXCa1acOOMDgwNuHQWFZkoIcOdi9NKTHc6x6CppGtZvCqE1fRcZEZvj4gBEbc7LkcpwQlSjaTsi30iedI4i/tq3Z1dFjxeJMTJ8b4Y83eANMo=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB8PR02MB5482.eurprd02.prod.outlook.com;PTR:;CAT:NONE;SFS:(136003)(39830400003)(346002)(396003)(376002)(366004)(6486002)(956004)(2616005)(31686004)(36916002)(26005)(5660300002)(53546011)(36756003)(4744005)(478600001)(66946007)(66476007)(31696002)(38100700002)(966005)(66556008)(4326008)(8676002)(2906002)(86362001)(83380400001)(186003)(316002)(16526019)(16576012)(8936002)(43740500002)(45980500001);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 2
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?cElCeUM2QkRlT2Jlb1VlWW9JZXRicklwamE4UytrTXdEY2VTYmd5NXlvdFNR?=
+ =?utf-8?B?K3pOYUsreTVMcEhENVJWOUpHNUUvcGRZUHAvMFlLeE1aMWtxWGwrSkdpMFBh?=
+ =?utf-8?B?VFN3UDdKdVJOQmlYSEhEdStyb2FWcEgxQmE0TTk4ZCtac2syQWFZOFBUWGxI?=
+ =?utf-8?B?Yi8yRzRHbzNaT1VQMmZ3cjBPY3A2aFFlcW1qbGNyaXdwcmhoMm1vSG5Sd1dH?=
+ =?utf-8?B?dWVDMHcxdTNGYmZNUzdhQVl4WTcwRHZZUUd2aklBbjFxUUpNUnZFNW51cG1X?=
+ =?utf-8?B?YzFzdzFiNlMvQjZNV3FTUEZ2OVVCQUZCQ3hEREYxY2ZRTzZuVWNwamJpMW1z?=
+ =?utf-8?B?dzRVa2MrQzgybUxyeWhINmZQQUptbjhVYzR5OER0cHlsejhMRXd0c1ZZcXJI?=
+ =?utf-8?B?QXREMnFrZFYxUUxtRDFQZ1A5MXlwR0s3MlNiajIreDVWZ2lWV1R4Q2xPTXkz?=
+ =?utf-8?B?aitlMzNDS1hJMkRlU0U0TmlkemRVMmxJYW9EODRvS2tCeXhtZTBOQndWNjA5?=
+ =?utf-8?B?YmVRTDhFTmdCQ0k2YWU0T0JEZGR5a2lwZitFa0VWcHVzcTdrYmZzSzJSR2pW?=
+ =?utf-8?B?UlNucjZUMkIzZTBTeVcya3B6QUxsdGxRWE5JZmhSM2k1Z1dLakZLVnNqM0pk?=
+ =?utf-8?B?U1hJYTZvM25IQXdUNjQ3S0JMREd6blFFQVB4cUx0OVJUYVJJN1JDcDlDSEow?=
+ =?utf-8?B?UjEvamdjR3BEemp4dFk4RzhiK1ZtdGVUaGNWM004eGo2dHl6VU5mQWZJYzQ1?=
+ =?utf-8?B?cjc3RDNBMnBidUR5ZTVwQk9YdjJvQlFuYjVNNVdWeWpRVjU3ZUNuNnFIeWlu?=
+ =?utf-8?B?WFVnbnpaZ2F5R0lxM0w4aThmdnpQREoxYUt1ak5MR1dsaHBGdG12VWJSZU54?=
+ =?utf-8?B?YlB6U0FrK2RzYWUrcGRTZXROWXRrWlFmQ0pDVVE1cmtBWlRaZWExYUwrUlFC?=
+ =?utf-8?B?WDNhSmRyelZNMFpZQWVuVklGK0NPTlZ2am95Nng3UkJzN0ZwRll4TnRmekdy?=
+ =?utf-8?B?eVlPSFdyQUFhQ1UyRlB3eGVEQk1Zckh2S1J0ejlyYzdBeHdOa0JPTWZGUVZG?=
+ =?utf-8?B?NmVBK0M2QmFNb09ydUJLa1JyRVhKdnJ3cVlSbGJ5a1pLaC9xYnZJVEJzVkY3?=
+ =?utf-8?B?ODNkNi92SHkyZFN4WHlRQXUwY2JmSFFZMjFmYkFIeW1XNXdwckNoQ2wvTWs1?=
+ =?utf-8?B?c3BRZlFEc3BuSUV2eWxjZnN5N0FrY2VWczRHTFF5OEQyTTVaWEdPZUM2Q0xJ?=
+ =?utf-8?B?MEl5Slljb3NuV3d3MlhSNTN6WjJNcjlZaDRvRnRLd0ZDdG53VTZDWE5qcnJo?=
+ =?utf-8?Q?tzred5Ior8?=
+X-MS-Exchange-AntiSpam-MessageData-1: DBs/EcQjEtMzG6ROQS41ezkSaVC1LCfDedZR+R63VHFQm28loSiBg/5EqnRw3UY0DzM8O1ICMtgbXE+zaYjzHBGr6kbwr1HwHZS1ZBiDkW7yZO+310O5BYWIJYTs9B4yHTxepPLKiM9E6+QqFBlIsB5ukolLbXzMdbmbQruYgKksy2qc/00a1nEI1D6m9FeWBYN6SsY+J7D3urZT8k5qZmLCQuX3Sf7ooVYPzxhLdkeTc8adhb9SiGCcuN7BucUyZj3XJpywpHjUVXFUAzF1Leeyqir5znb0846a0A5xJXap3kpacl8x65X+HxuxuX2g729RJTfTjj9x79Mbo2RlJH5h
+X-OriginatorOrg: axentia.se
+X-MS-Exchange-CrossTenant-Network-Message-Id: dd2741f7-c44e-46b2-8b99-08d9240312d8
+X-MS-Exchange-CrossTenant-AuthSource: DB8PR02MB5482.eurprd02.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 31 May 2021 07:09:47.2147
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4ee68585-03e1-4785-942a-df9c1871a234
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: UFFUdknF6A6MhyHhLDVWNKGRZ6Ug59BQjlAlbcmvJWDTYjXJeQP36TVA0HhySc25
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DBAPR02MB6421
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 28 May 2021 at 17:27, Alan Stern <stern@rowland.harvard.edu> wrote:
->
-> On Fri, May 28, 2021 at 11:12:02AM +0200, Ulf Hansson wrote:
-> > We are currently allowing ->rpm_idle() callbacks to be unassigned without
-> > returning an error code from rpm_idle(). This has been useful to avoid
-> > boilerplate code in drivers. Let's take this approach a step further, by
-> > allowing unassigned ->runtime_suspend|resume() callbacks as well.
-> >
-> > In this way, a consumer/supplier device link can be used to let a consumer
-> > device be power managed through its supplier device, without requiring
-> > assigned ->runtime_suspend|resume() callbacks for the consumer device, for
-> > example.
-> >
-> > Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
-> > ---
-> >  drivers/base/power/runtime.c | 8 +++-----
-> >  1 file changed, 3 insertions(+), 5 deletions(-)
-> >
-> > diff --git a/drivers/base/power/runtime.c b/drivers/base/power/runtime.c
-> > index 68bebbf81347..8a66eaf731e4 100644
-> > --- a/drivers/base/power/runtime.c
-> > +++ b/drivers/base/power/runtime.c
-> > @@ -345,7 +345,7 @@ static void rpm_suspend_suppliers(struct device *dev)
-> >  static int __rpm_callback(int (*cb)(struct device *), struct device *dev)
-> >       __releases(&dev->power.lock) __acquires(&dev->power.lock)
-> >  {
-> > -     int retval, idx;
-> > +     int retval = 0, idx;
-> >       bool use_links = dev->power.links_count > 0;
-> >
-> >       if (dev->power.irq_safe) {
-> > @@ -373,7 +373,8 @@ static int __rpm_callback(int (*cb)(struct device *), struct device *dev)
-> >               }
-> >       }
-> >
-> > -     retval = cb(dev);
-> > +     if (cb)
-> > +             retval = cb(dev);
-> >
-> >       if (dev->power.irq_safe) {
-> >               spin_lock(&dev->power.lock);
-> > @@ -484,9 +485,6 @@ static int rpm_callback(int (*cb)(struct device *), struct device *dev)
-> >  {
-> >       int retval;
-> >
-> > -     if (!cb)
-> > -             return -ENOSYS;
->
-> This is a change in behavior, right?  What about drivers or subsystems
-> that don't support runtime PM and consequently don't have any RPM
-> callbacks assigned?
+Hi!
 
-Yes, you are right.
+Thanks for the patches. However, things have recently changed under your feet.
+Can you please adjust to
 
-However, drivers/subsystems that support runtime PM should also call
-pm_runtime_enable() and if they don't, the rpm_callback() should not
-get called for them.
+https://patchwork.kernel.org/project/linux-iio/list/?series=484153
+https://lore.kernel.org/linux-iio/20210518190201.26657c49@jic23-huawei/T/#m0de421cc9f6bc10bfa2622d65be750aaced3810c
 
-Then, at least to me, I think it would be quite odd that a
-subsystem/driver that calls pm_runtime_enable(), would be checking
-return values from pm_runtime_get|put_*() for -ENOSYS? I mean, why
-bother calling pm_runtime_enable() in the first place?
+and resend?
 
->
-> Also, assuming Rafael accepts this change, don't you also need to update
-> the runtime-PM documentation?
+On 2021-05-30 02:59, Liam Beguin wrote:
+> From: Liam Beguin <lvb@xiphos.com>
+> 
+> Make use of the IIO core to compute the source channel's processed
+> value. This reduces duplication and will facilitate the addition of
+> offsets in the iio-rescale driver.
 
-Good point, thanks! Let me add a patch updating the docs.
-
->
-> Alan Stern
->
-
-Kind regards
-Uffe
+Cheers,
+Peter
