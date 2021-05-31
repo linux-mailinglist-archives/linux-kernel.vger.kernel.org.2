@@ -2,119 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E464D3955D1
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 09:13:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 902B03955D7
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 09:14:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230070AbhEaHPO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 03:15:14 -0400
-Received: from mail-io1-f69.google.com ([209.85.166.69]:34507 "EHLO
-        mail-io1-f69.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230150AbhEaHPC (ORCPT
+        id S230269AbhEaHQO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 03:16:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58872 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230135AbhEaHQH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 03:15:02 -0400
-Received: by mail-io1-f69.google.com with SMTP id i13-20020a5d9e4d0000b0290497b9f55318so967181ioi.1
-        for <linux-kernel@vger.kernel.org>; Mon, 31 May 2021 00:13:22 -0700 (PDT)
+        Mon, 31 May 2021 03:16:07 -0400
+Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3143DC061574;
+        Mon, 31 May 2021 00:14:28 -0700 (PDT)
+Received: by mail-ed1-x533.google.com with SMTP id j10so12277885edw.8;
+        Mon, 31 May 2021 00:14:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=message-id:subject:from:to:cc:date:in-reply-to:references
+         :user-agent:mime-version:content-transfer-encoding;
+        bh=4alPr4aCYdFYOJLKUzVCw2klrG4dXqnW+51h2XwmbBo=;
+        b=GTSdOCEAwZD/eEtGeREenY8E/QdMdMkE/USpAiE5DpzC6cktk+CaczsBknNhztswGh
+         ylVcN5KPv4UWKU0c/7y7gcKqtg7a5gaKq8QglXFnlqEmbggH3SaDxHymydy78UecYCDb
+         ON7/Vx8NGRFJEjZXxuL99WtpSfcxOug4BKTrAGAWP09emsMQUEEbqw/oNL5FA6IchSmR
+         yO+xFSVzVYLjQ5pwoqwvzN5sQJuQkeEmwDdnlAW4WJ0d9aM5+Wj6gKVtK/pP83Snd+L6
+         cr+h4FCLckjgCxmC0vb+GBkvcBHSIJIRiP49IB5l682FV0kPoIv1ffdXpG7O/gg/2I6P
+         cHEg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=atZnnwuSSB/aNkrcLst1qeZwbrR7f9UeO1phz8QNpwE=;
-        b=VbAuNquCkBJTdAvsgbM2hp3jOpmN3j9v8ufOL3GIOqbGEPzCnqylZsPiMCNzi2mEmS
-         K5zwdWY1vizMwvpuRugBPMf/xOFzntL4E0yxgbURyucxoiaHhAlSYrosxkCcktQiIzuW
-         lhKLhS7gVX0Bfenb4ETqLx7SHSJ5Kvq+80eRM/lXiy+VqjodNYwZt4pinrkVr8oEjEkx
-         BRCFKz8hlBWywhEiUa8J2vKdl3uL38TbN/bz3n5tPUYFCQsWhj9lRCJIHlqjqAp9dO2F
-         3mqhUOC6JRCQ6dKE4fYrmZ+z5JhcAVim2Msjq36dzqXGcjGdJDS6pFdYhAcim11ldTY6
-         7BsA==
-X-Gm-Message-State: AOAM532CIx4YLfOhIhZOUcMJsubqOZzBvTm071TvFAPrz03rnbTJSVyi
-        lga6EWlsk099b6GXin+oA9AQbEy3ItBqfAB9MG1NAhU6GQ+E
-X-Google-Smtp-Source: ABdhPJwNLgs/nZ7rcu3+6n3VkwPfpmac5r8gjOCJKck2wK9dal6zMltI8wLooodq4Bb3nN3UXD0J0/3gFtVzwbiUz+toCqkrJYzW
-MIME-Version: 1.0
-X-Received: by 2002:a6b:3b4c:: with SMTP id i73mr15943275ioa.149.1622445202582;
- Mon, 31 May 2021 00:13:22 -0700 (PDT)
-Date:   Mon, 31 May 2021 00:13:22 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000f7b23005c39af5c1@google.com>
-Subject: [syzbot] BUG: unable to handle kernel paging request in
- drm_fb_helper_damage_work (2)
-From:   syzbot <syzbot+545dc60af42828d1e70b@syzkaller.appspotmail.com>
-To:     bp@alien8.de, hpa@zytor.com, linux-kernel@vger.kernel.org,
-        mingo@redhat.com, syzkaller-bugs@googlegroups.com,
-        tglx@linutronix.de, x86@kernel.org
+        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
+         :references:user-agent:mime-version:content-transfer-encoding;
+        bh=4alPr4aCYdFYOJLKUzVCw2klrG4dXqnW+51h2XwmbBo=;
+        b=Lh8RjbaSBbpD09I7N4vKuJBx0Tx60/NGRTM6YFTxwWm6Q8BAnLbuk8GE7zyYDWIrEh
+         EqOK1WFzZ50YCozosFJCWgKtjeJQ7S2j48FJRPolV6z+iVx2jJZLX3hubMC0r1azFSFw
+         2N6W22JIbpJWe7gwzxTfKcaaXRznDDUMGkcdh0Ta8MRFP21wxTlKNnAlM9vlrg/+d/TS
+         xCpkjAXG8erl+vd9Dpv8or0KKmJNsYSW8vcaEx2Po03h7hcFNqFYT+a0AX9auK5+XSzw
+         h+allMHSjgeBxyrFJr/jt3M3zMn/7kxb091GhhJo+eGc0eVNJAo6s9zfSGeO+6tpVt+N
+         AQoQ==
+X-Gm-Message-State: AOAM5317CPQi6siodgcK/p0S/eWevKfefotpfkhHm88ggp+Ji4moOdLW
+        JWyGDX34KNvOkJab3G4nvK8=
+X-Google-Smtp-Source: ABdhPJy+XQYjbO6F2NZGzw4FxMGef2/V+VXJ+gT+G04SVk6UPcikixpZv45ut3Wz8nk4Ra4HFRigZw==
+X-Received: by 2002:aa7:d6cc:: with SMTP id x12mr107265edr.55.1622445266838;
+        Mon, 31 May 2021 00:14:26 -0700 (PDT)
+Received: from ubuntu-laptop (ip5f5bec5d.dynamic.kabel-deutschland.de. [95.91.236.93])
+        by smtp.googlemail.com with ESMTPSA id n15sm2161065ejz.36.2021.05.31.00.14.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 31 May 2021 00:14:26 -0700 (PDT)
+Message-ID: <b0307fa0b5a0f27149a7b7e480088f1a5c67719e.camel@gmail.com>
+Subject: Re: [PATCH v1 1/3] scsi: ufs: Remove a redundant command completion
+ logic in error handler
+From:   Bean Huo <huobean@gmail.com>
+To:     Can Guo <cang@codeaurora.org>, asutoshd@codeaurora.org,
+        nguyenb@codeaurora.org, hongwus@codeaurora.org,
+        linux-scsi@vger.kernel.org, kernel-team@android.com
+Cc:     Alim Akhtar <alim.akhtar@samsung.com>,
+        Avri Altman <avri.altman@wdc.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Stanley Chu <stanley.chu@mediatek.com>,
+        Bean Huo <beanhuo@micron.com>,
+        Jaegeuk Kim <jaegeuk@kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+Date:   Mon, 31 May 2021 09:14:25 +0200
+In-Reply-To: <1621845419-14194-2-git-send-email-cang@codeaurora.org>
+References: <1621845419-14194-1-git-send-email-cang@codeaurora.org>
+         <1621845419-14194-2-git-send-email-cang@codeaurora.org>
 Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.4-0ubuntu1 
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On Mon, 2021-05-24 at 01:36 -0700, Can Guo wrote:
+> ufshcd_host_reset_and_restore() anyways completes all pending
+> requests
+> 
+> before starts re-probing, so there is no need to complete the command
+> on
+> 
+> the highest bit in tr_doorbell in advance.
+> 
+> 
+> 
+> Signed-off-by: Can Guo <cang@codeaurora.org>
 
-syzbot found the following issue on:
+Looks good to me.
 
-HEAD commit:    7ac3a1c1 Merge tag 'mtd/fixes-for-5.13-rc4' of git://git.k..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=1619b4b5d00000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=266cda122a0b56c
-dashboard link: https://syzkaller.appspot.com/bug?extid=545dc60af42828d1e70b
-userspace arch: i386
+Reviewed-by: Bean Huo <beanhuo@micron.com>
 
-Unfortunately, I don't have any reproducer for this issue yet.
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+545dc60af42828d1e70b@syzkaller.appspotmail.com
-
-BUG: unable to handle page fault for address: ffffc9000dc68008
-#PF: supervisor write access in kernel mode
-#PF: error_code(0x0002) - not-present page
-PGD 11000067 P4D 11000067 PUD 111b3067 PMD 1ba2c067 PTE 0
-Oops: 0002 [#1] PREEMPT SMP KASAN
-CPU: 2 PID: 16890 Comm: kworker/2:36 Not tainted 5.13.0-rc3-syzkaller #0
-Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.14.0-2 04/01/2014
-Workqueue: events drm_fb_helper_damage_work
-RIP: 0010:rep_movs arch/x86/lib/iomem.c:12 [inline]
-RIP: 0010:memcpy_toio+0x83/0xe0 arch/x86/lib/iomem.c:57
-Code: 8c fd 49 89 dd 31 ff 41 83 e5 02 4c 89 ee e8 c4 c2 8c fd 4d 85 ed 75 2e e8 9a ba 8c fd 48 89 e9 48 89 df 4c 89 e6 48 c1 e9 02 <f3> a5 40 f6 c5 02 74 02 66 a5 40 f6 c5 01 74 01 a4 5b 5d 41 5c 41
-RSP: 0018:ffffc9000e73fbc8 EFLAGS: 00010202
-RAX: 0000000000000000 RBX: ffffc9000dc68008 RCX: 00000000000000fe
-RDX: ffff888015340000 RSI: ffffc9000bdd9008 RDI: ffffc9000dc68008
-RBP: 00000000000003f8 R08: 0000000000000000 R09: 0000000000000001
-R10: ffffffff83e81e1c R11: 0000000000000000 R12: ffffc9000bdd9008
-R13: 0000000000000000 R14: ffffc9000bdd9008 R15: 0000000000000001
-FS:  0000000000000000(0000) GS:ffff88802cc00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: ffffc9000dc68008 CR3: 000000006c062000 CR4: 0000000000152ee0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- dma_buf_map_memcpy_to include/linux/dma-buf-map.h:245 [inline]
- drm_fb_helper_damage_blit_real drivers/gpu/drm/drm_fb_helper.c:388 [inline]
- drm_fb_helper_damage_blit drivers/gpu/drm/drm_fb_helper.c:419 [inline]
- drm_fb_helper_damage_work+0x733/0xac0 drivers/gpu/drm/drm_fb_helper.c:450
- process_one_work+0x98d/0x1600 kernel/workqueue.c:2276
- worker_thread+0x64c/0x1120 kernel/workqueue.c:2422
- kthread+0x3b1/0x4a0 kernel/kthread.c:313
- ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:294
-Modules linked in:
-CR2: ffffc9000dc68008
----[ end trace 7f8625a9b15be223 ]---
-RIP: 0010:rep_movs arch/x86/lib/iomem.c:12 [inline]
-RIP: 0010:memcpy_toio+0x83/0xe0 arch/x86/lib/iomem.c:57
-Code: 8c fd 49 89 dd 31 ff 41 83 e5 02 4c 89 ee e8 c4 c2 8c fd 4d 85 ed 75 2e e8 9a ba 8c fd 48 89 e9 48 89 df 4c 89 e6 48 c1 e9 02 <f3> a5 40 f6 c5 02 74 02 66 a5 40 f6 c5 01 74 01 a4 5b 5d 41 5c 41
-RSP: 0018:ffffc9000e73fbc8 EFLAGS: 00010202
-RAX: 0000000000000000 RBX: ffffc9000dc68008 RCX: 00000000000000fe
-RDX: ffff888015340000 RSI: ffffc9000bdd9008 RDI: ffffc9000dc68008
-RBP: 00000000000003f8 R08: 0000000000000000 R09: 0000000000000001
-R10: ffffffff83e81e1c R11: 0000000000000000 R12: ffffc9000bdd9008
-R13: 0000000000000000 R14: ffffc9000bdd9008 R15: 0000000000000001
-FS:  0000000000000000(0000) GS:ffff88802cc00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: ffffc9000dc68008 CR3: 000000006c062000 CR4: 0000000000152ee0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
