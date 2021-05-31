@@ -2,40 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 95E87395BCE
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 15:23:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7EDED396305
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 17:01:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231548AbhEaNYr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 09:24:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54898 "EHLO mail.kernel.org"
+        id S232185AbhEaPDW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 11:03:22 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40026 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232097AbhEaNT6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 09:19:58 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 67AC66108D;
-        Mon, 31 May 2021 13:18:18 +0000 (UTC)
+        id S233318AbhEaOGy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 10:06:54 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2A7D361375;
+        Mon, 31 May 2021 13:39:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1622467099;
-        bh=VNoJb72BASLscbJ76MB5QsneL7jW1r5so6opZSHcc3Y=;
+        s=korg; t=1622468345;
+        bh=iq19nwbXo475XeFET3mRSIMavLdAwk3iHyWapCMHCAU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=rdSB961yUMRLy42j2NJ0ngTg0j2IUFG3dXgxeLfJ6N3gYaHV1/ZgPrg7SXfA2HVtU
-         C22gun9F40BX9ZXOwr9AaiGIwQi6JkEwROeq2oovAp4laknWjbnhLczDN3YCPUalwn
-         K544dQkS9ino0EZrXCq6kBkSfM8eI9AgNYlBiVfs=
+        b=2ObxucgIyMmcMGA7u77g3/zbVMYhw7KJY8QXKT5mj5l8v65z87XgDqsKVtloKJQBN
+         e25ijtQXzgpX+IP3UXY8t5VEWYa3mExiPl0e5SuZULMBW0+2eoXMKMABCCslxsXiEO
+         IQmehi5ySItsXHDnUrAdUHsm1CyVDlWV7P3cgTWw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Randy Dunlap <rdunlap@infradead.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        linux-mips@vger.kernel.org,
-        Manuel Lauss <manuel.lauss@googlemail.com>,
-        Ralf Baechle <ralf@linux-mips.org>,
-        Manuel Lauss <manuel.lauss@gmail.com>,
+        stable@vger.kernel.org,
+        Subbaraman Narayanamurthy <subbaram@codeaurora.org>,
+        Matthias Kaehlcke <mka@chromium.org>,
+        Georgi Djakov <djakov@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.4 50/54] MIPS: alchemy: xxs1500: add gpio-au1000.h header file
+Subject: [PATCH 5.10 191/252] interconnect: qcom: bcm-voter: add a missing of_node_put()
 Date:   Mon, 31 May 2021 15:14:16 +0200
-Message-Id: <20210531130636.635680915@linuxfoundation.org>
+Message-Id: <20210531130704.497208212@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210531130635.070310929@linuxfoundation.org>
-References: <20210531130635.070310929@linuxfoundation.org>
+In-Reply-To: <20210531130657.971257589@linuxfoundation.org>
+References: <20210531130657.971257589@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,44 +42,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Randy Dunlap <rdunlap@infradead.org>
+From: Subbaraman Narayanamurthy <subbaram@codeaurora.org>
 
-[ Upstream commit ff4cff962a7eedc73e54b5096693da7f86c61346 ]
+[ Upstream commit a00593737f8bac2c9e97b696e7ff84a4446653e8 ]
 
-board-xxs1500.c references 2 functions without declaring them, so add
-the header file to placate the build.
+Add a missing of_node_put() in of_bcm_voter_get() to avoid the
+reference leak.
 
-../arch/mips/alchemy/board-xxs1500.c: In function 'board_setup':
-../arch/mips/alchemy/board-xxs1500.c:56:2: error: implicit declaration of function 'alchemy_gpio1_input_enable' [-Werror=implicit-function-declaration]
-   56 |  alchemy_gpio1_input_enable();
-../arch/mips/alchemy/board-xxs1500.c:57:2: error: implicit declaration of function 'alchemy_gpio2_enable'; did you mean 'alchemy_uart_enable'? [-Werror=implicit-function-declaration]
-   57 |  alchemy_gpio2_enable();
-
-Fixes: 8e026910fcd4 ("MIPS: Alchemy: merge GPR/MTX-1/XXS1500 board code into single files")
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Cc: linux-mips@vger.kernel.org
-Cc: Manuel Lauss <manuel.lauss@googlemail.com>
-Cc: Ralf Baechle <ralf@linux-mips.org>
-Acked-by: Manuel Lauss <manuel.lauss@gmail.com>
-Signed-off-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Signed-off-by: Subbaraman Narayanamurthy <subbaram@codeaurora.org>
+Reviewed-by: Matthias Kaehlcke <mka@chromium.org>
+Link: https://lore.kernel.org/r/1619116570-13308-1-git-send-email-subbaram@codeaurora.org
+Fixes: 976daac4a1c5 ("interconnect: qcom: Consolidate interconnect RPMh support")
+Signed-off-by: Georgi Djakov <djakov@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/mips/alchemy/board-xxs1500.c | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/interconnect/qcom/bcm-voter.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/arch/mips/alchemy/board-xxs1500.c b/arch/mips/alchemy/board-xxs1500.c
-index 0fc53e08a894..c05f7376148a 100644
---- a/arch/mips/alchemy/board-xxs1500.c
-+++ b/arch/mips/alchemy/board-xxs1500.c
-@@ -30,6 +30,7 @@
- #include <asm/bootinfo.h>
- #include <asm/reboot.h>
- #include <asm/mach-au1x00/au1000.h>
-+#include <asm/mach-au1x00/gpio-au1000.h>
- #include <prom.h>
+diff --git a/drivers/interconnect/qcom/bcm-voter.c b/drivers/interconnect/qcom/bcm-voter.c
+index 887d13721e52..7c3ef817e99c 100644
+--- a/drivers/interconnect/qcom/bcm-voter.c
++++ b/drivers/interconnect/qcom/bcm-voter.c
+@@ -1,6 +1,6 @@
+ // SPDX-License-Identifier: GPL-2.0
+ /*
+- * Copyright (c) 2020, The Linux Foundation. All rights reserved.
++ * Copyright (c) 2020-2021, The Linux Foundation. All rights reserved.
+  */
  
- const char *get_system_type(void)
+ #include <asm/div64.h>
+@@ -212,6 +212,7 @@ struct bcm_voter *of_bcm_voter_get(struct device *dev, const char *name)
+ 	}
+ 	mutex_unlock(&bcm_voter_lock);
+ 
++	of_node_put(node);
+ 	return voter;
+ }
+ EXPORT_SYMBOL_GPL(of_bcm_voter_get);
 -- 
 2.30.2
 
