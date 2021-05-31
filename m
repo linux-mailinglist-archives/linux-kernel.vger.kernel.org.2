@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 73FF4395DB7
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 15:49:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 698253965BA
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 18:44:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233039AbhEaNtt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 09:49:49 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40220 "EHLO mail.kernel.org"
+        id S232345AbhEaQqW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 12:46:22 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47902 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232709AbhEaNeV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 09:34:21 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4974161445;
-        Mon, 31 May 2021 13:24:51 +0000 (UTC)
+        id S233222AbhEaOzU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 10:55:20 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0FDE261CBD;
+        Mon, 31 May 2021 13:59:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1622467491;
-        bh=6ojWN7MjokRzrhXaTS7naqgOE5nUzbyfaJtwki3P4lE=;
+        s=korg; t=1622469580;
+        bh=J/bY1BDA2WepYFUzY74lWoOzigSPgpgyi+ZouIRDfug=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=iUwVJk+Ilbp3hBADR0/iILKrMuj/tteW0YsW45WsiEGsul2VIoj+yMe9F11vZ922G
-         wVeXit7PvsqW/Qzo1LrspkT4ujjUCgt5C4+q9vlZtIMyIY/Ik5Xl2oQc5KW0MswOJ5
-         QQEkOIhzQFX0XsZIJebFPB+0PRJVco3LPHdideF4=
+        b=nTkYPlbCcKiGq8GuoUxwM6iOMjWoxhgiGLU/eZ2+Izv76VX+NtVYgnqVrG80PDP2f
+         pzHmtd2L+mxdcuQ2u1iOUlcVojDag2XY3C6vC/MRHB0K06cU28179xz656mL4wGB46
+         3GIJBVu9DEq+tKMozs9ALOGs0IGRdu/ZUK7ZEcdk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Mauro Carvalho Chehab <mchehab+samsung@kernel.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 086/116] media: gspca: properly check for errors in po1030_probe()
+        stable@vger.kernel.org, Takashi Sakamoto <o-takashi@sakamocchi.jp>,
+        Takashi Iwai <tiwai@suse.de>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.12 207/296] ALSA: dice: disable double_pcm_frames mode for M-Audio Profire 610, 2626 and Avid M-Box 3 Pro
 Date:   Mon, 31 May 2021 15:14:22 +0200
-Message-Id: <20210531130643.067018381@linuxfoundation.org>
+Message-Id: <20210531130710.830211600@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210531130640.131924542@linuxfoundation.org>
-References: <20210531130640.131924542@linuxfoundation.org>
+In-Reply-To: <20210531130703.762129381@linuxfoundation.org>
+References: <20210531130703.762129381@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,50 +39,134 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 
-[ Upstream commit dacb408ca6f0e34df22b40d8dd5fae7f8e777d84 ]
+[ Upstream commit 9f079c1bdc9087842dc5ac9d81b1d7f2578e81ce ]
 
-If m5602_write_sensor() or m5602_write_bridge() fail, do not continue to
-initialize the device but return the error to the calling funtion.
+ALSA dice driver detects jumbo payload at high sampling transfer frequency
+for below models:
 
-Cc: Mauro Carvalho Chehab <mchehab+samsung@kernel.org>
-Link: https://lore.kernel.org/r/20210503115736.2104747-64-gregkh@linuxfoundation.org
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+ * Avid M-Box 3 Pro
+ * M-Audio Profire 610
+ * M-Audio Profire 2626
+
+Although many DICE-based devices have a quirk at high sampling transfer
+frequency to multiplex double number of PCM frames into data block than
+the number in IEC 61883-1/6, the above devices are just compliant to
+IEC 61883-1/6.
+
+This commit disables the mode of double_pcm_frames for the models.
+
+Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Link: https://lore.kernel.org/r/20210518012510.37126-1-o-takashi@sakamocchi.jp
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/media/usb/gspca/m5602/m5602_po1030.c | 10 +++++++---
- 1 file changed, 7 insertions(+), 3 deletions(-)
+ sound/firewire/dice/dice-pcm.c    |  4 ++--
+ sound/firewire/dice/dice-stream.c |  2 +-
+ sound/firewire/dice/dice.c        | 24 ++++++++++++++++++++++++
+ sound/firewire/dice/dice.h        |  3 ++-
+ 4 files changed, 29 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/media/usb/gspca/m5602/m5602_po1030.c b/drivers/media/usb/gspca/m5602/m5602_po1030.c
-index 37d2891e5f5b..81d8eb72ac41 100644
---- a/drivers/media/usb/gspca/m5602/m5602_po1030.c
-+++ b/drivers/media/usb/gspca/m5602/m5602_po1030.c
-@@ -159,6 +159,7 @@ static const struct v4l2_ctrl_config po1030_greenbal_cfg = {
- int po1030_probe(struct sd *sd)
- {
- 	u8 dev_id_h = 0, i;
-+	int err;
- 	struct gspca_dev *gspca_dev = (struct gspca_dev *)sd;
+diff --git a/sound/firewire/dice/dice-pcm.c b/sound/firewire/dice/dice-pcm.c
+index af8a90ee40f3..a69ca1111b03 100644
+--- a/sound/firewire/dice/dice-pcm.c
++++ b/sound/firewire/dice/dice-pcm.c
+@@ -218,7 +218,7 @@ static int pcm_open(struct snd_pcm_substream *substream)
  
- 	if (force_sensor) {
-@@ -177,10 +178,13 @@ int po1030_probe(struct sd *sd)
- 	for (i = 0; i < ARRAY_SIZE(preinit_po1030); i++) {
- 		u8 data = preinit_po1030[i][2];
- 		if (preinit_po1030[i][0] == SENSOR)
--			m5602_write_sensor(sd,
--				preinit_po1030[i][1], &data, 1);
-+			err = m5602_write_sensor(sd, preinit_po1030[i][1],
-+						 &data, 1);
- 		else
--			m5602_write_bridge(sd, preinit_po1030[i][1], data);
-+			err = m5602_write_bridge(sd, preinit_po1030[i][1],
-+						 data);
-+		if (err < 0)
-+			return err;
+ 		if (frames_per_period > 0) {
+ 			// For double_pcm_frame quirk.
+-			if (rate > 96000) {
++			if (rate > 96000 && !dice->disable_double_pcm_frames) {
+ 				frames_per_period *= 2;
+ 				frames_per_buffer *= 2;
+ 			}
+@@ -273,7 +273,7 @@ static int pcm_hw_params(struct snd_pcm_substream *substream,
+ 
+ 		mutex_lock(&dice->mutex);
+ 		// For double_pcm_frame quirk.
+-		if (rate > 96000) {
++		if (rate > 96000 && !dice->disable_double_pcm_frames) {
+ 			events_per_period /= 2;
+ 			events_per_buffer /= 2;
+ 		}
+diff --git a/sound/firewire/dice/dice-stream.c b/sound/firewire/dice/dice-stream.c
+index 1a14c083e8ce..c4dfe76500c2 100644
+--- a/sound/firewire/dice/dice-stream.c
++++ b/sound/firewire/dice/dice-stream.c
+@@ -181,7 +181,7 @@ static int keep_resources(struct snd_dice *dice, struct amdtp_stream *stream,
+ 	// as 'Dual Wire'.
+ 	// For this quirk, blocking mode is required and PCM buffer size should
+ 	// be aligned to SYT_INTERVAL.
+-	double_pcm_frames = rate > 96000;
++	double_pcm_frames = (rate > 96000 && !dice->disable_double_pcm_frames);
+ 	if (double_pcm_frames) {
+ 		rate /= 2;
+ 		pcm_chs *= 2;
+diff --git a/sound/firewire/dice/dice.c b/sound/firewire/dice/dice.c
+index 107a81691f0e..239d164b0eea 100644
+--- a/sound/firewire/dice/dice.c
++++ b/sound/firewire/dice/dice.c
+@@ -21,6 +21,7 @@ MODULE_LICENSE("GPL v2");
+ #define OUI_SSL			0x0050c2	// Actually ID reserved by IEEE.
+ #define OUI_PRESONUS		0x000a92
+ #define OUI_HARMAN		0x000fd7
++#define OUI_AVID		0x00a07e
+ 
+ #define DICE_CATEGORY_ID	0x04
+ #define WEISS_CATEGORY_ID	0x00
+@@ -222,6 +223,14 @@ static int dice_probe(struct fw_unit *unit,
+ 				(snd_dice_detect_formats_t)entry->driver_data;
  	}
  
- 	if (m5602_read_sensor(sd, PO1030_DEVID_H, &dev_id_h, 1))
++	// Below models are compliant to IEC 61883-1/6 and have no quirk at high sampling transfer
++	// frequency.
++	// * Avid M-Box 3 Pro
++	// * M-Audio Profire 610
++	// * M-Audio Profire 2626
++	if (entry->vendor_id == OUI_MAUDIO || entry->vendor_id == OUI_AVID)
++		dice->disable_double_pcm_frames = true;
++
+ 	spin_lock_init(&dice->lock);
+ 	mutex_init(&dice->mutex);
+ 	init_completion(&dice->clock_accepted);
+@@ -278,7 +287,22 @@ static void dice_bus_reset(struct fw_unit *unit)
+ 
+ #define DICE_INTERFACE	0x000001
+ 
++#define DICE_DEV_ENTRY_TYPICAL(vendor, model, data) \
++	{ \
++		.match_flags	= IEEE1394_MATCH_VENDOR_ID | \
++				  IEEE1394_MATCH_MODEL_ID | \
++				  IEEE1394_MATCH_SPECIFIER_ID | \
++				  IEEE1394_MATCH_VERSION, \
++		.vendor_id	= (vendor), \
++		.model_id	= (model), \
++		.specifier_id	= (vendor), \
++		.version	= DICE_INTERFACE, \
++		.driver_data = (kernel_ulong_t)(data), \
++	}
++
+ static const struct ieee1394_device_id dice_id_table[] = {
++	// Avid M-Box 3 Pro. To match in probe function.
++	DICE_DEV_ENTRY_TYPICAL(OUI_AVID, 0x000004, snd_dice_detect_extension_formats),
+ 	/* M-Audio Profire 2626 has a different value in version field. */
+ 	{
+ 		.match_flags	= IEEE1394_MATCH_VENDOR_ID |
+diff --git a/sound/firewire/dice/dice.h b/sound/firewire/dice/dice.h
+index adc6f7c84460..3c967d1b3605 100644
+--- a/sound/firewire/dice/dice.h
++++ b/sound/firewire/dice/dice.h
+@@ -109,7 +109,8 @@ struct snd_dice {
+ 	struct fw_iso_resources rx_resources[MAX_STREAMS];
+ 	struct amdtp_stream tx_stream[MAX_STREAMS];
+ 	struct amdtp_stream rx_stream[MAX_STREAMS];
+-	bool global_enabled;
++	bool global_enabled:1;
++	bool disable_double_pcm_frames:1;
+ 	struct completion clock_accepted;
+ 	unsigned int substreams_counter;
+ 
 -- 
 2.30.2
 
