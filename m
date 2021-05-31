@@ -2,35 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 475F6395E49
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 15:55:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BADC4396420
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 17:45:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232604AbhEaN4r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 09:56:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40214 "EHLO mail.kernel.org"
+        id S233654AbhEaPrb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 11:47:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55188 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232221AbhEaNgY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 09:36:24 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9F7286144D;
-        Mon, 31 May 2021 13:25:44 +0000 (UTC)
+        id S232752AbhEaO0F (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 10:26:05 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 88B2061C1B;
+        Mon, 31 May 2021 13:47:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1622467545;
-        bh=0ehsmwxMcJ5M3eodCYeo9WXhDYbu9W5dnK3tTJEgvjw=;
+        s=korg; t=1622468821;
+        bh=qpeWGXYbfBBTCp7GnN16Kw1/b0uQPW98VaTjozobj54=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=HD/Mfgm4VtEok4YAe+9rcMkqv0hsyrH87zUHkk2gGCwKBb0N5pecXdJ8KVGrbRrzU
-         dnIWHWSYzUAKY2X8Ydj41sWzxcfHUgCmg0o2f3mhzm+3hWNhCLjCp2s2bS2wytNvA2
-         bayuiByO5miwKEIZrlxbgwftGRPaQGJs5Vqhexf0=
+        b=QS19l/KuK2T1wrCp5NIjZQwmZq8t9F3HUOGZPEJ3lYp8XcAg56OmpD484IpWczunL
+         qkcl/zYwL6psdjiIwVHhq9FDpSKnPl/VTu6OxbXyCHZBb5YkFFgKPT4zTgCJ3IjgP4
+         IikNTPH2dsZBf3xht1V4EV65gJd5t7tjAU4Ruu3w=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
+        stable@vger.kernel.org, Khalid Aziz <khalid@gonehiking.org>,
+        Matt Wang <wwentao@vmware.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 104/116] staging: emxx_udc: fix loop in _nbu2ss_nuke()
-Date:   Mon, 31 May 2021 15:14:40 +0200
-Message-Id: <20210531130643.655092357@linuxfoundation.org>
+Subject: [PATCH 5.4 124/177] scsi: BusLogic: Fix 64-bit system enumeration error for Buslogic
+Date:   Mon, 31 May 2021 15:14:41 +0200
+Message-Id: <20210531130652.207518522@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210531130640.131924542@linuxfoundation.org>
-References: <20210531130640.131924542@linuxfoundation.org>
+In-Reply-To: <20210531130647.887605866@linuxfoundation.org>
+References: <20210531130647.887605866@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,47 +41,63 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dan Carpenter <dan.carpenter@oracle.com>
+From: Matt Wang <wwentao@vmware.com>
 
-[ Upstream commit e0112a7c9e847ada15a631b88e279d547e8f26a7 ]
+[ Upstream commit 56f396146af278135c0ff958c79b5ee1bd22453d ]
 
-The _nbu2ss_ep_done() function calls:
+Commit 391e2f25601e ("[SCSI] BusLogic: Port driver to 64-bit")
+introduced a serious issue for 64-bit systems.  With this commit,
+64-bit kernel will enumerate 8*15 non-existing disks.  This is caused
+by the broken CCB structure.  The change from u32 data to void *data
+increased CCB length on 64-bit system, which introduced an extra 4
+byte offset of the CDB.  This leads to incorrect response to INQUIRY
+commands during enumeration.
 
-	list_del_init(&req->queue);
+Fix disk enumeration failure by reverting the portion of the commit
+above which switched the data pointer from u32 to void.
 
-which means that the loop will never exit.
-
-Fixes: ca3d253eb967 ("Staging: emxx_udc: Iterate list using list_for_each_entry")
-Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
-Link: https://lore.kernel.org/r/YKUd0sDyjm/lkJfJ@mwanda
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Link: https://lore.kernel.org/r/C325637F-1166-4340-8F0F-3BCCD59D4D54@vmware.com
+Acked-by: Khalid Aziz <khalid@gonehiking.org>
+Signed-off-by: Matt Wang <wwentao@vmware.com>
+Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/staging/emxx_udc/emxx_udc.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/scsi/BusLogic.c | 6 +++---
+ drivers/scsi/BusLogic.h | 2 +-
+ 2 files changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/staging/emxx_udc/emxx_udc.c b/drivers/staging/emxx_udc/emxx_udc.c
-index 3e51476a7045..d2cb2bd6d913 100644
---- a/drivers/staging/emxx_udc/emxx_udc.c
-+++ b/drivers/staging/emxx_udc/emxx_udc.c
-@@ -2148,7 +2148,7 @@ static int _nbu2ss_nuke(struct nbu2ss_udc *udc,
- 			struct nbu2ss_ep *ep,
- 			int status)
- {
--	struct nbu2ss_req *req;
-+	struct nbu2ss_req *req, *n;
+diff --git a/drivers/scsi/BusLogic.c b/drivers/scsi/BusLogic.c
+index c25e8a54e869..6e988233fb81 100644
+--- a/drivers/scsi/BusLogic.c
++++ b/drivers/scsi/BusLogic.c
+@@ -3077,11 +3077,11 @@ static int blogic_qcmd_lck(struct scsi_cmnd *command,
+ 		ccb->opcode = BLOGIC_INITIATOR_CCB_SG;
+ 		ccb->datalen = count * sizeof(struct blogic_sg_seg);
+ 		if (blogic_multimaster_type(adapter))
+-			ccb->data = (void *)((unsigned int) ccb->dma_handle +
++			ccb->data = (unsigned int) ccb->dma_handle +
+ 					((unsigned long) &ccb->sglist -
+-					(unsigned long) ccb));
++					(unsigned long) ccb);
+ 		else
+-			ccb->data = ccb->sglist;
++			ccb->data = virt_to_32bit_virt(ccb->sglist);
  
- 	/* Endpoint Disable */
- 	_nbu2ss_epn_exit(udc, ep);
-@@ -2160,7 +2160,7 @@ static int _nbu2ss_nuke(struct nbu2ss_udc *udc,
- 		return 0;
- 
- 	/* called with irqs blocked */
--	list_for_each_entry(req, &ep->queue, queue) {
-+	list_for_each_entry_safe(req, n, &ep->queue, queue) {
- 		_nbu2ss_ep_done(ep, req, status);
- 	}
- 
+ 		scsi_for_each_sg(command, sg, count, i) {
+ 			ccb->sglist[i].segbytes = sg_dma_len(sg);
+diff --git a/drivers/scsi/BusLogic.h b/drivers/scsi/BusLogic.h
+index 6182cc8a0344..e081ad47d1cf 100644
+--- a/drivers/scsi/BusLogic.h
++++ b/drivers/scsi/BusLogic.h
+@@ -814,7 +814,7 @@ struct blogic_ccb {
+ 	unsigned char cdblen;				/* Byte 2 */
+ 	unsigned char sense_datalen;			/* Byte 3 */
+ 	u32 datalen;					/* Bytes 4-7 */
+-	void *data;					/* Bytes 8-11 */
++	u32 data;					/* Bytes 8-11 */
+ 	unsigned char:8;				/* Byte 12 */
+ 	unsigned char:8;				/* Byte 13 */
+ 	enum blogic_adapter_status adapter_status;	/* Byte 14 */
 -- 
 2.30.2
 
