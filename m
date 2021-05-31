@@ -2,784 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C4F7395A0A
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 14:04:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A6409395A25
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 14:09:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231469AbhEaMGZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 08:06:25 -0400
-Received: from mga02.intel.com ([134.134.136.20]:39201 "EHLO mga02.intel.com"
+        id S231673AbhEaMLE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 08:11:04 -0400
+Received: from comms.puri.sm ([159.203.221.185]:33624 "EHLO comms.puri.sm"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231490AbhEaMGW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 08:06:22 -0400
-IronPort-SDR: 4sqyLBMNkL5pN2iB6J4uOoHZiyj7aHnPJdrNep4cuTe73sZf4ljtbOkEVhUzTxBbLn0vkXyMKJ
- cyMvslb1C11A==
-X-IronPort-AV: E=McAfee;i="6200,9189,10000"; a="190461054"
-X-IronPort-AV: E=Sophos;i="5.83,237,1616482800"; 
-   d="scan'208";a="190461054"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 May 2021 05:04:40 -0700
-IronPort-SDR: 2I3d+paUZy3BmZasCrLPFWyUx06OFpN6avFmNxnFlc5WDRVsHNLThupfMm+LxvemW1XI2eeEkE
- R1ISGqMZxo0g==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.83,237,1616482800"; 
-   d="scan'208";a="616516865"
-Received: from sumeshkkn (HELO localhost.localdomain) ([10.223.97.2])
-  by orsmga005.jf.intel.com with ESMTP; 31 May 2021 05:04:37 -0700
-From:   sumesh.k.naduvalath@intel.com
-To:     hdegoede@redhat.com, mgross@linux.intel.com,
-        srinivas.pandruvada@linux.intel.com
-Cc:     srinivas.pandruvada@intel.com, platform-driver-x86@vger.kernel.org,
-        linux-kernel@vger.kernel.org, ganapathi.chinnu@intel.com,
-        nachiketa.kumar@intel.com, sumesh.k.naduvalath@intel.com
-Subject: [PATCH 1/1] ishtp: Add support for Intel ishtp eclite driver
-Date:   Mon, 31 May 2021 17:34:15 +0530
-Message-Id: <20210531120415.14480-1-sumesh.k.naduvalath@intel.com>
-X-Mailer: git-send-email 2.31.1
-MIME-Version: 1.0
+        id S231578AbhEaMKI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 08:10:08 -0400
+Received: from localhost (localhost [127.0.0.1])
+        by comms.puri.sm (Postfix) with ESMTP id 55D33E2131;
+        Mon, 31 May 2021 05:07:57 -0700 (PDT)
+Received: from comms.puri.sm ([127.0.0.1])
+        by localhost (comms.puri.sm [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id elENs-rrkNFz; Mon, 31 May 2021 05:07:56 -0700 (PDT)
+From:   Martin Kepplinger <martin.kepplinger@puri.sm>
+To:     pavel@ucw.cz, krzysztof.kozlowski@canonical.com,
+        laurent.pinchart@ideasonboard.com, mchehab@kernel.org,
+        paul.kocialkowski@bootlin.com, robh@kernel.org, shawnx.tu@intel.com
+Cc:     devicetree@vger.kernel.org, kernel@puri.sm,
+        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
+        martin.kepplinger@puri.sm, phone-devel@vger.kernel.org
+Subject: [PATCH v3 0/5] Add support for the Hynix Hi-846 camera
+Date:   Mon, 31 May 2021 14:07:32 +0200
+Message-Id: <20210531120737.168496-1-martin.kepplinger@puri.sm>
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: "K Naduvalath, Sumesh" <sumesh.k.naduvalath@intel.com>
+hi,
 
-This driver is for accessing the PSE(Programmable Service Engine), an
-Embedded Controller like IP, using ISHTP(Integratd Sensor Hub Transport
-Protocol) to get battery, thermal and UCSI(USB Type-C Connector System
-Software Interface) related data from the platform.
+This patchset adds support for the SK Hynix Hi-846 CMOS images sensor.
+It includes dt-bindings and the driver.
 
-Signed-off-by: K Naduvalath, Sumesh <sumesh.k.naduvalath@intel.com>
-Reviewed-by: Mark Gross <mgross@linux.inel.com>
----
- MAINTAINERS                               |   6 +
- drivers/platform/x86/Kconfig              |  13 +
- drivers/platform/x86/Makefile             |   1 +
- drivers/platform/x86/intel_ishtp_eclite.c | 664 ++++++++++++++++++++++
- 4 files changed, 684 insertions(+)
+Patches 4 and 5 are basically optional: if i2c-cardlist is deprecated,
+ignore it and act on it appropriately, and the arm64 defconfig is just
+convenience for now.
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 503fd21901f1..cf32033cb754 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -9242,6 +9242,12 @@ F:	Documentation/admin-guide/media/ipu3_rcb.svg
- F:	Documentation/userspace-api/media/v4l/pixfmt-meta-intel-ipu3.rst
- F:	drivers/staging/media/ipu3/
- 
-+INTEL ISHTP ECLITE DRIVER
-+M:	Sumesh K Naduvalath <sumesh.k.naduvalath@intel.com>
-+L:	platform-driver-x86@vger.kernel.org
-+S:	Supported
-+F:	drivers/platform/x86/intel_ishtp_eclite.c
-+
- INTEL IXP4XX QMGR, NPE, ETHERNET and HSS SUPPORT
- M:	Krzysztof Halasa <khalasa@piap.pl>
- S:	Maintained
-diff --git a/drivers/platform/x86/Kconfig b/drivers/platform/x86/Kconfig
-index 60592fb88e7a..cfa2cb150909 100644
---- a/drivers/platform/x86/Kconfig
-+++ b/drivers/platform/x86/Kconfig
-@@ -1180,6 +1180,19 @@ config INTEL_CHTDC_TI_PWRBTN
- 	  To compile this driver as a module, choose M here: the module
- 	  will be called intel_chtdc_ti_pwrbtn.
- 
-+config INTEL_ISHTP_ECLITE
-+	tristate "Intel ISHTP eclite controller"
-+	depends on INTEL_ISH_HID
-+	depends on ACPI
-+	help
-+	  This driver is for accessing the PSE(Programmable Service Engine),
-+	  an Embedded Controller like IP, using ISHTP(Integratd Sensor Hub
-+	  Transport Protocol) to get battery, thermal and UCSI (USB Type-C
-+          Connector System Software Interface) related data from the platform.
-+
-+	  To compile this driver as a module, choose M here: the module
-+	  will be called intel_ishtp_eclite
-+
- config INTEL_MRFLD_PWRBTN
- 	tristate "Intel Merrifield Basin Cove power button driver"
- 	depends on INTEL_SOC_PMIC_MRFLD
-diff --git a/drivers/platform/x86/Makefile b/drivers/platform/x86/Makefile
-index dcc8cdb95b4d..72ef4761b762 100644
---- a/drivers/platform/x86/Makefile
-+++ b/drivers/platform/x86/Makefile
-@@ -77,6 +77,7 @@ obj-$(CONFIG_INTEL_INT0002_VGPIO)	+= intel_int0002_vgpio.o
- obj-$(CONFIG_INTEL_MENLOW)		+= intel_menlow.o
- obj-$(CONFIG_INTEL_OAKTRAIL)		+= intel_oaktrail.o
- obj-$(CONFIG_INTEL_VBTN)		+= intel-vbtn.o
-+obj-$(CONFIG_INTEL_ISHTP_ECLITE)	+= intel_ishtp_eclite.o
- 
- # MSI
- obj-$(CONFIG_MSI_LAPTOP)	+= msi-laptop.o
-diff --git a/drivers/platform/x86/intel_ishtp_eclite.c b/drivers/platform/x86/intel_ishtp_eclite.c
-new file mode 100644
-index 000000000000..2956d678a420
---- /dev/null
-+++ b/drivers/platform/x86/intel_ishtp_eclite.c
-@@ -0,0 +1,664 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+/*
-+ * Intel ECLite opregion driver for talking to ECLite firmware running on
-+ * Intel Integrated Sensor Hub (ISH) using ISH Transport Protocol (ISHTP)
-+ *
-+ * Copyright (c) 2021, Intel Corporation.
-+ */
-+
-+#include <linux/acpi.h>
-+#include <linux/bitops.h>
-+#include <linux/device.h>
-+#include <linux/errno.h>
-+#include <linux/intel-ish-client-if.h>
-+#include <linux/kernel.h>
-+#include <linux/module.h>
-+#include <linux/slab.h>
-+#include <linux/suspend.h>
-+#include <linux/types.h>
-+#include <linux/uuid.h>
-+#include <linux/uaccess.h>
-+
-+#define ECLITE_DATA_OPREGION_ID	0x9E
-+#define ECLITE_CMD_OPREGION_ID	0x9F
-+
-+#define ECL_MSG_DATA	0x1
-+#define ECL_MSG_EVENT	0x2
-+
-+#define ECL_ISH_READ	0x1
-+#define ECL_ISH_WRITE	0x2
-+#define ECL_ISH_HEADER_VERSION	0
-+
-+#define ECL_CL_RX_RING_SIZE	16
-+#define ECL_CL_TX_RING_SIZE	8
-+
-+#define ECL_DATA_OPR_BUFLEN	384
-+#define ECL_EVENTS_NOTIFY	333
-+
-+#define cmd_opr_offsetof(element)	offsetof(struct opregion_cmd, element)
-+#define cl_data_to_dev(opr_dev)	ishtp_device((opr_dev)->cl_device)
-+
-+#ifndef BITS_TO_BYTES
-+#define BITS_TO_BYTES(x) ((x) / 8)
-+#endif
-+
-+struct opregion_cmd {
-+	unsigned int command;
-+	unsigned int offset;
-+	unsigned int length;
-+	unsigned int event_id;
-+};
-+
-+struct opregion_data {
-+	char data[ECL_DATA_OPR_BUFLEN];
-+};
-+
-+struct opregion_context {
-+	struct opregion_cmd cmd_area;
-+	struct opregion_data data_area;
-+};
-+
-+struct ecl_message_header {
-+	unsigned int version:2;
-+	unsigned int data_type:2;
-+	unsigned int request_type:2;
-+	unsigned int offset:9;
-+	unsigned int data_len:9;
-+	unsigned int event:8;
-+};
-+
-+struct ecl_message {
-+	struct ecl_message_header header;
-+	char payload[ECL_DATA_OPR_BUFLEN];
-+};
-+
-+struct ishtp_opregion_dev {
-+	struct opregion_context opr_context;
-+	struct ishtp_cl *ecl_ishtp_cl;
-+	struct ishtp_cl_device *cl_device;
-+	struct ishtp_fw_client *fw_client;
-+	struct ishtp_cl_rb *rb;
-+	struct acpi_handle *acpi_handle;
-+	unsigned int dsm_event_id;
-+	unsigned int ish_link_ready;
-+	unsigned int ish_read_done;
-+	unsigned int acpi_init_done;
-+	wait_queue_head_t read_wait;
-+	struct work_struct event_work;
-+	struct work_struct reset_work;
-+};
-+
-+/* eclite ishtp client UUID: 6a19cc4b-d760-4de3-b14d-f25ebd0fbcd9 */
-+static const guid_t ecl_ishtp_guid =
-+	GUID_INIT(0x6a19cc4b, 0xd760, 0x4de3,
-+		  0xb1, 0x4d, 0xf2, 0x5e, 0xbd, 0xf, 0xbc, 0xd9);
-+
-+/* ACPI DSM UUID: 91d936a7-1f01-49c6-a6b4-72f00ad8d8a5 */
-+static const guid_t ecl_acpi_guid =
-+	GUID_INIT(0x91d936a7, 0x1f01, 0x49c6, 0xa6,
-+		  0xb4, 0x72, 0xf0, 0x0a, 0xd8, 0xd8, 0xa5);
-+
-+/**
-+ * ecl_ish_cl_read() - Read data from eclite FW
-+ *
-+ * @opr_dev:  pointer to opregion device
-+ *
-+ * This function issues a read request to eclite FW and waits until it
-+ * receives a response. When response is received the read data is copied to
-+ * opregion buffer.
-+ */
-+static int ecl_ish_cl_read(struct ishtp_opregion_dev *opr_dev)
-+{
-+	struct ecl_message_header header;
-+	int len, rv;
-+
-+	if (!opr_dev->ish_link_ready)
-+		return -EIO;
-+
-+	header.version = ECL_ISH_HEADER_VERSION;
-+	header.data_type = ECL_MSG_DATA;
-+	header.request_type = ECL_ISH_READ;
-+	header.offset = opr_dev->opr_context.cmd_area.offset;
-+	header.data_len = opr_dev->opr_context.cmd_area.length;
-+	header.event = opr_dev->opr_context.cmd_area.event_id;
-+	len = sizeof(header);
-+
-+	opr_dev->ish_read_done = false;
-+	rv = ishtp_cl_send(opr_dev->ecl_ishtp_cl, (uint8_t *)&header, len);
-+	if (rv) {
-+		dev_err(cl_data_to_dev(opr_dev), "ish-read : send failed\n");
-+		return -EIO;
-+	}
-+
-+	dev_dbg(cl_data_to_dev(opr_dev),
-+		"[ish_rd] Req: off : %x, len : %x\n",
-+		header.offset,
-+		header.data_len);
-+
-+	rv = wait_event_interruptible_timeout(opr_dev->read_wait,
-+					      opr_dev->ish_read_done,
-+					      2 * HZ);
-+	if (!rv) {
-+		dev_err(cl_data_to_dev(opr_dev),
-+			"[ish_rd] No response from firmware\n");
-+		return -EIO;
-+	}
-+
-+	return 0;
-+}
-+
-+/**
-+ * ecl_ish_cl_write() - This function writes data to eclite FW.
-+ *
-+ * @opr_dev:  pointer to opregion device
-+ *
-+ * This function writes data to eclite FW.
-+ */
-+static int ecl_ish_cl_write(struct ishtp_opregion_dev *opr_dev)
-+{
-+	struct ecl_message message;
-+	int len;
-+
-+	if (!opr_dev->ish_link_ready)
-+		return -EIO;
-+
-+	message.header.version = ECL_ISH_HEADER_VERSION;
-+	message.header.data_type = ECL_MSG_DATA;
-+	message.header.request_type = ECL_ISH_WRITE;
-+	message.header.offset = opr_dev->opr_context.cmd_area.offset;
-+	message.header.data_len = opr_dev->opr_context.cmd_area.length;
-+	message.header.event = opr_dev->opr_context.cmd_area.event_id;
-+	len = sizeof(struct ecl_message_header) + message.header.data_len;
-+
-+	memcpy(message.payload,
-+	       opr_dev->opr_context.data_area.data + message.header.offset,
-+	       message.header.data_len);
-+
-+	dev_dbg(cl_data_to_dev(opr_dev),
-+		"[ish_wr] off : %x, len : %x\n",
-+		message.header.offset,
-+		message.header.data_len);
-+
-+	return ishtp_cl_send(opr_dev->ecl_ishtp_cl, (uint8_t *)&message, len);
-+}
-+
-+static acpi_status
-+ecl_opregion_cmd_handler(u32 function, acpi_physical_address address,
-+			 u32 bits, u64 *value64,
-+			 void *handler_context, void *region_context)
-+{
-+	struct ishtp_opregion_dev *opr_dev;
-+	struct opregion_cmd *cmd;
-+
-+	if (!region_context || !value64)
-+		return AE_BAD_PARAMETER;
-+
-+	if (function == ACPI_READ)
-+		return AE_ERROR;
-+
-+	opr_dev = (struct ishtp_opregion_dev *)region_context;
-+	cmd = &opr_dev->opr_context.cmd_area;
-+
-+	switch (address) {
-+	case cmd_opr_offsetof(command):
-+		cmd->command = (u32)*value64;
-+
-+		if (cmd->command == ECL_ISH_READ)
-+			return ecl_ish_cl_read(opr_dev);
-+		else if (cmd->command == ECL_ISH_WRITE)
-+			return ecl_ish_cl_write(opr_dev);
-+
-+		return AE_ERROR;
-+
-+	case cmd_opr_offsetof(offset):
-+		cmd->offset = (u32)*value64;
-+		break;
-+	case cmd_opr_offsetof(length):
-+		cmd->length = (u32)*value64;
-+		break;
-+	case cmd_opr_offsetof(event_id):
-+		cmd->event_id = (u32)*value64;
-+		break;
-+	default:
-+		return AE_ERROR;
-+	}
-+
-+	return AE_OK;
-+}
-+
-+static acpi_status
-+ecl_opregion_data_handler(u32 function, acpi_physical_address address,
-+			  u32 bits, u64 *value64,
-+			  void *handler_context, void *region_context)
-+{
-+	struct ishtp_opregion_dev *opr_dev;
-+	unsigned int bytes = BITS_TO_BYTES(bits);
-+	void *data_addr;
-+
-+	if (!region_context || !value64)
-+		return AE_BAD_PARAMETER;
-+
-+	if (address + bytes > ECL_DATA_OPR_BUFLEN)
-+		return AE_BAD_PARAMETER;
-+
-+	opr_dev = (struct ishtp_opregion_dev *)region_context;
-+	data_addr = &opr_dev->opr_context.data_area.data[address];
-+
-+	if (function == ACPI_READ)
-+		memcpy(value64, data_addr, bytes);
-+	else if (function == ACPI_WRITE)
-+		memcpy(data_addr, value64, bytes);
-+	else
-+		return AE_BAD_PARAMETER;
-+
-+	return AE_OK;
-+}
-+
-+static int acpi_opregion_init(struct ishtp_opregion_dev *opr_dev)
-+{
-+	acpi_status status;
-+	struct acpi_device *adev;
-+
-+	/* Find ECLite device and install opregion handlers */
-+	adev = acpi_dev_get_first_match_dev("INTC1035", NULL, -1);
-+	if (!adev) {
-+		dev_err(cl_data_to_dev(opr_dev), "eclite ACPI device not found\n");
-+		return -ENODEV;
-+	}
-+
-+	opr_dev->acpi_handle = adev->handle;
-+	acpi_dev_put(adev);
-+
-+	status = acpi_install_address_space_handler(opr_dev->acpi_handle,
-+						    ECLITE_CMD_OPREGION_ID,
-+						    ecl_opregion_cmd_handler,
-+						    NULL, opr_dev);
-+	if (ACPI_FAILURE(status)) {
-+		dev_err(cl_data_to_dev(opr_dev),
-+			"cmd space handler install failed\n");
-+		return -ENODEV;
-+	}
-+
-+	status = acpi_install_address_space_handler(opr_dev->acpi_handle,
-+						    ECLITE_DATA_OPREGION_ID,
-+						    ecl_opregion_data_handler,
-+						    NULL, opr_dev);
-+	if (ACPI_FAILURE(status)) {
-+		dev_err(cl_data_to_dev(opr_dev),
-+			"data space handler install failed\n");
-+
-+		acpi_remove_address_space_handler(opr_dev->acpi_handle,
-+						  ECLITE_CMD_OPREGION_ID,
-+						  ecl_opregion_cmd_handler);
-+		return -ENODEV;
-+	}
-+	opr_dev->acpi_init_done = true;
-+
-+	dev_dbg(cl_data_to_dev(opr_dev), "Opregion handlers are installed\n");
-+
-+	return 0;
-+}
-+
-+static void acpi_opregion_deinit(struct ishtp_opregion_dev *opr_dev)
-+{
-+	acpi_remove_address_space_handler(opr_dev->acpi_handle,
-+					  ECLITE_CMD_OPREGION_ID,
-+					  ecl_opregion_cmd_handler);
-+
-+	acpi_remove_address_space_handler(opr_dev->acpi_handle,
-+					  ECLITE_DATA_OPREGION_ID,
-+					  ecl_opregion_data_handler);
-+	opr_dev->acpi_init_done = false;
-+}
-+
-+static void ecl_acpi_invoke_dsm(struct work_struct *work)
-+{
-+	struct ishtp_opregion_dev *opr_dev;
-+	union acpi_object *obj;
-+
-+	opr_dev = container_of(work, struct ishtp_opregion_dev, event_work);
-+	if (!opr_dev->acpi_init_done)
-+		return;
-+
-+	obj = acpi_evaluate_dsm(opr_dev->acpi_handle, &ecl_acpi_guid, 0,
-+				opr_dev->dsm_event_id, NULL);
-+	if (!obj) {
-+		dev_warn(cl_data_to_dev(opr_dev), "_DSM fn call failed\n");
-+		return;
-+	}
-+
-+	dev_dbg(cl_data_to_dev(opr_dev), "Exec DSM function code: %d success\n",
-+		opr_dev->dsm_event_id);
-+
-+	ACPI_FREE(obj);
-+}
-+
-+static void ecl_ish_process_rx_data(struct ishtp_opregion_dev *opr_dev)
-+{
-+	struct ecl_message *message =
-+		(struct ecl_message *)opr_dev->rb->buffer.data;
-+
-+	dev_dbg(cl_data_to_dev(opr_dev),
-+		"[ish_rd] Resp: off : %x, len : %x\n",
-+		message->header.offset,
-+		message->header.data_len);
-+
-+	memcpy(opr_dev->opr_context.data_area.data + message->header.offset,
-+	       message->payload, message->header.data_len);
-+
-+	opr_dev->ish_read_done = true;
-+	wake_up_interruptible(&opr_dev->read_wait);
-+}
-+
-+static void ecl_ish_process_rx_event(struct ishtp_opregion_dev *opr_dev)
-+{
-+	struct ecl_message_header *header =
-+		(struct ecl_message_header *)opr_dev->rb->buffer.data;
-+
-+	dev_dbg(cl_data_to_dev(opr_dev),
-+		"[ish_ev] Evt received: %8x\n", header->event);
-+
-+	opr_dev->dsm_event_id = header->event;
-+	schedule_work(&opr_dev->event_work);
-+}
-+
-+static int ecl_ish_cl_enable_events(struct ishtp_opregion_dev *opr_dev,
-+				    bool config_enable)
-+{
-+	struct ecl_message message;
-+	int len;
-+
-+	message.header.version = ECL_ISH_HEADER_VERSION;
-+	message.header.data_type = ECL_MSG_DATA;
-+	message.header.request_type = ECL_ISH_WRITE;
-+	message.header.offset = ECL_EVENTS_NOTIFY;
-+	message.header.data_len = 1;
-+	message.payload[0] = config_enable;
-+
-+	len = sizeof(struct ecl_message_header) + message.header.data_len;
-+
-+	return ishtp_cl_send(opr_dev->ecl_ishtp_cl, (uint8_t *)&message, len);
-+}
-+
-+static void ecl_ishtp_cl_event_cb(struct ishtp_cl_device *cl_device)
-+{
-+	struct ishtp_cl *ecl_ishtp_cl = ishtp_get_drvdata(cl_device);
-+	struct ishtp_opregion_dev *opr_dev;
-+	struct ecl_message_header *header;
-+	struct ishtp_cl_rb *rb;
-+
-+	opr_dev = ishtp_get_client_data(ecl_ishtp_cl);
-+	while ((rb = ishtp_cl_rx_get_rb(opr_dev->ecl_ishtp_cl)) != NULL) {
-+		opr_dev->rb = rb;
-+		header = (struct ecl_message_header *)rb->buffer.data;
-+
-+		if (header->data_type == ECL_MSG_DATA)
-+			ecl_ish_process_rx_data(opr_dev);
-+		else if (header->data_type == ECL_MSG_EVENT)
-+			ecl_ish_process_rx_event(opr_dev);
-+		else
-+			/* got an event with wrong data_type, ignore it */
-+			dev_err(cl_data_to_dev(opr_dev),
-+				"[ish_cb] Received wrong data_type\n");
-+
-+		ishtp_cl_io_rb_recycle(rb);
-+	}
-+}
-+
-+static int ecl_ishtp_cl_init(struct ishtp_cl *ecl_ishtp_cl)
-+{
-+	struct ishtp_opregion_dev *opr_dev =
-+		ishtp_get_client_data(ecl_ishtp_cl);
-+	struct ishtp_fw_client *fw_client;
-+	struct ishtp_device *dev;
-+	int rv;
-+
-+	rv = ishtp_cl_link(ecl_ishtp_cl);
-+	if (rv) {
-+		dev_err(cl_data_to_dev(opr_dev), "ishtp_cl_link failed\n");
-+		return	rv;
-+	}
-+
-+	dev = ishtp_get_ishtp_device(ecl_ishtp_cl);
-+
-+	/* Connect to FW client */
-+	ishtp_set_tx_ring_size(ecl_ishtp_cl, ECL_CL_TX_RING_SIZE);
-+	ishtp_set_rx_ring_size(ecl_ishtp_cl, ECL_CL_RX_RING_SIZE);
-+
-+	fw_client = ishtp_fw_cl_get_client(dev, &ecl_ishtp_guid);
-+	if (!fw_client) {
-+		dev_err(cl_data_to_dev(opr_dev), "fw client not found\n");
-+		return -ENOENT;
-+	}
-+
-+	ishtp_cl_set_fw_client_id(ecl_ishtp_cl,
-+				  ishtp_get_fw_client_id(fw_client));
-+
-+	ishtp_set_connection_state(ecl_ishtp_cl, ISHTP_CL_CONNECTING);
-+
-+	rv = ishtp_cl_connect(ecl_ishtp_cl);
-+	if (rv) {
-+		dev_err(cl_data_to_dev(opr_dev), "client connect failed\n");
-+
-+		ishtp_cl_unlink(ecl_ishtp_cl);
-+		return rv;
-+	}
-+
-+	dev_dbg(cl_data_to_dev(opr_dev), "Host connected to fw client\n");
-+
-+	return 0;
-+}
-+
-+static void ecl_ishtp_cl_deinit(struct ishtp_cl *ecl_ishtp_cl)
-+{
-+	ishtp_cl_unlink(ecl_ishtp_cl);
-+	ishtp_cl_flush_queues(ecl_ishtp_cl);
-+	ishtp_cl_free(ecl_ishtp_cl);
-+}
-+
-+static void ecl_ishtp_cl_reset_handler(struct work_struct *work)
-+{
-+	struct ishtp_opregion_dev *opr_dev;
-+	struct ishtp_cl_device *cl_device;
-+	struct ishtp_cl *ecl_ishtp_cl;
-+	int rv;
-+	int retry;
-+
-+	opr_dev = container_of(work, struct ishtp_opregion_dev, reset_work);
-+
-+	opr_dev->ish_link_ready = false;
-+
-+	cl_device = opr_dev->cl_device;
-+	ecl_ishtp_cl = opr_dev->ecl_ishtp_cl;
-+
-+	ecl_ishtp_cl_deinit(ecl_ishtp_cl);
-+
-+	ecl_ishtp_cl = ishtp_cl_allocate(cl_device);
-+	if (!ecl_ishtp_cl)
-+		return;
-+
-+	ishtp_set_drvdata(cl_device, ecl_ishtp_cl);
-+	ishtp_set_client_data(ecl_ishtp_cl, opr_dev);
-+
-+	opr_dev->ecl_ishtp_cl = ecl_ishtp_cl;
-+
-+	for (retry = 0; retry < 3; ++retry) {
-+		rv = ecl_ishtp_cl_init(ecl_ishtp_cl);
-+		if (!rv)
-+			break;
-+	}
-+	if (rv) {
-+		ishtp_cl_free(ecl_ishtp_cl);
-+		opr_dev->ecl_ishtp_cl = NULL;
-+		dev_err(cl_data_to_dev(opr_dev),
-+			"[ish_rst] Reset failed. Link not ready.\n");
-+		return;
-+	}
-+
-+	ishtp_register_event_cb(cl_device, ecl_ishtp_cl_event_cb);
-+	dev_info(cl_data_to_dev(opr_dev),
-+		 "[ish_rst] Reset Success. Link ready.\n");
-+
-+	opr_dev->ish_link_ready = true;
-+
-+	if (opr_dev->acpi_init_done)
-+		return;
-+
-+	rv = acpi_opregion_init(opr_dev);
-+	if (rv) {
-+		dev_err(cl_data_to_dev(opr_dev),
-+			"ACPI opregion init failed\n");
-+	}
-+}
-+
-+static int ecl_ishtp_cl_probe(struct ishtp_cl_device *cl_device)
-+{
-+	struct ishtp_cl *ecl_ishtp_cl;
-+	struct ishtp_opregion_dev *opr_dev;
-+	int rv;
-+
-+	opr_dev = devm_kzalloc(ishtp_device(cl_device), sizeof(*opr_dev),
-+			       GFP_KERNEL);
-+	if (!opr_dev)
-+		return -ENOMEM;
-+
-+	ecl_ishtp_cl = ishtp_cl_allocate(cl_device);
-+	if (!ecl_ishtp_cl)
-+		return -ENOMEM;
-+
-+	ishtp_set_drvdata(cl_device, ecl_ishtp_cl);
-+	ishtp_set_client_data(ecl_ishtp_cl, opr_dev);
-+	opr_dev->ecl_ishtp_cl = ecl_ishtp_cl;
-+	opr_dev->cl_device = cl_device;
-+
-+	init_waitqueue_head(&opr_dev->read_wait);
-+	INIT_WORK(&opr_dev->event_work, ecl_acpi_invoke_dsm);
-+	INIT_WORK(&opr_dev->reset_work, ecl_ishtp_cl_reset_handler);
-+
-+	/* Initialize ish client device */
-+	rv = ecl_ishtp_cl_init(ecl_ishtp_cl);
-+	if (rv) {
-+		dev_err(cl_data_to_dev(opr_dev), "Client init failed\n");
-+		goto err_exit;
-+	}
-+
-+	dev_dbg(cl_data_to_dev(opr_dev), "eclite-ishtp client initialised\n");
-+
-+	/* Register a handler for eclite fw events */
-+	ishtp_register_event_cb(cl_device, ecl_ishtp_cl_event_cb);
-+
-+	ishtp_get_device(cl_device);
-+
-+	opr_dev->ish_link_ready = true;
-+
-+	/* Now find ACPI device and init opregion handlers */
-+	rv = acpi_opregion_init(opr_dev);
-+	if (rv) {
-+		dev_err(cl_data_to_dev(opr_dev), "ACPI opregion init failed\n");
-+
-+		goto err_exit;
-+	}
-+
-+	/* Reprobe devices depending on ECLite - battery, fan, etc. */
-+	acpi_walk_dep_device_list(opr_dev->acpi_handle);
-+
-+	return 0;
-+err_exit:
-+	ishtp_set_connection_state(ecl_ishtp_cl, ISHTP_CL_DISCONNECTING);
-+	ishtp_cl_disconnect(ecl_ishtp_cl);
-+	ecl_ishtp_cl_deinit(ecl_ishtp_cl);
-+
-+	ishtp_put_device(cl_device);
-+
-+	return rv;
-+}
-+
-+static int ecl_ishtp_cl_remove(struct ishtp_cl_device *cl_device)
-+{
-+	struct ishtp_cl *ecl_ishtp_cl = ishtp_get_drvdata(cl_device);
-+	struct ishtp_opregion_dev *opr_dev =
-+		ishtp_get_client_data(ecl_ishtp_cl);
-+
-+	if (opr_dev->acpi_init_done)
-+		acpi_opregion_deinit(opr_dev);
-+
-+	cancel_work_sync(&opr_dev->reset_work);
-+	cancel_work_sync(&opr_dev->event_work);
-+
-+	ishtp_set_connection_state(ecl_ishtp_cl, ISHTP_CL_DISCONNECTING);
-+	ishtp_cl_disconnect(ecl_ishtp_cl);
-+	ecl_ishtp_cl_deinit(ecl_ishtp_cl);
-+
-+	ishtp_put_device(cl_device);
-+
-+	return 0;
-+}
-+
-+static int ecl_ishtp_cl_reset(struct ishtp_cl_device *cl_device)
-+{
-+	struct ishtp_cl *ecl_ishtp_cl = ishtp_get_drvdata(cl_device);
-+	struct ishtp_opregion_dev *opr_dev =
-+		ishtp_get_client_data(ecl_ishtp_cl);
-+
-+	schedule_work(&opr_dev->reset_work);
-+
-+	return 0;
-+}
-+
-+static int ecl_ishtp_cl_suspend(struct device *device)
-+{
-+	struct ishtp_cl_device *cl_device = ishtp_dev_to_cl_device(device);
-+	struct ishtp_cl *ecl_ishtp_cl = ishtp_get_drvdata(cl_device);
-+	struct ishtp_opregion_dev *opr_dev =
-+		ishtp_get_client_data(ecl_ishtp_cl);
-+
-+	if (acpi_target_system_state() == ACPI_STATE_S0)
-+		return 0;
-+
-+	acpi_opregion_deinit(opr_dev);
-+	ecl_ish_cl_enable_events(opr_dev, false);
-+
-+	return 0;
-+}
-+
-+static int ecl_ishtp_cl_resume(struct device *device)
-+{
-+	/* A reset is expected to call after an Sx. At this point
-+	 * we are not sure if the link is up or not to restore anything,
-+	 * so do nothing in resume path
-+	 */
-+	return 0;
-+}
-+
-+static const struct dev_pm_ops ecl_ishtp_pm_ops = {
-+	.suspend = ecl_ishtp_cl_suspend,
-+	.resume = ecl_ishtp_cl_resume,
-+};
-+
-+static struct ishtp_cl_driver ecl_ishtp_cl_driver = {
-+	.name = "ishtp-eclite",
-+	.guid = &ecl_ishtp_guid,
-+	.probe = ecl_ishtp_cl_probe,
-+	.remove = ecl_ishtp_cl_remove,
-+	.reset = ecl_ishtp_cl_reset,
-+	.driver.pm = &ecl_ishtp_pm_ops,
-+};
-+
-+static int __init ecl_ishtp_init(void)
-+{
-+	return ishtp_cl_driver_register(&ecl_ishtp_cl_driver, THIS_MODULE);
-+}
-+
-+static void __exit ecl_ishtp_exit(void)
-+{
-+	return ishtp_cl_driver_unregister(&ecl_ishtp_cl_driver);
-+}
-+
-+late_initcall(ecl_ishtp_init);
-+module_exit(ecl_ishtp_exit);
-+
-+MODULE_DESCRIPTION("ISH ISHTP eclite client opregion driver");
-+MODULE_AUTHOR("K Naduvalath, Sumesh <sumesh.k.naduvalath@intel.com>");
-+
-+MODULE_LICENSE("GPL v2");
-+MODULE_ALIAS("ishtp:*");
+(I again send v3 a bit early because the Intel kernel test robot still found
+an error in v2)
+
+best wishes,
+
+                              martin
+
+revision history
+----------------
+v3: (thank you, Laurent)
+* use do_div() for divisions
+* reset-gpios DT property name instead of rst-gpios
+* improve the dt-bindings
+* add the phone-devel list
+
+v2:
+sent a bit early due to stupid mistakes
+fix build issues
+fix dtschema issues
+add enable for arm64 defconfig
+https://lore.kernel.org/linux-media/20210530212337.GA15366@duo.ucw.cz/T/#t
+
+v1:
+https://lore.kernel.org/linux-media/20210527091221.3335998-1-martin.kepplinger@puri.sm/
+
+
+Martin Kepplinger (5):
+  dt-bindings: vendor-prefixes: Add SK Hynix Inc.
+  dt-bindings: media: document SK Hynix Hi-846 MIPI CSI-2 8M pixel
+    sensor
+  media: i2c: add driver for the SK Hynix Hi-846 8M pixel camera
+  arm64: defconfig: enable VIDEO_HI846
+  Documentation: i2c-cardlist: add the Hynix hi846 sensor
+
+ .../admin-guide/media/i2c-cardlist.rst        |    1 +
+ .../bindings/media/i2c/hynix,hi846.yaml       |   99 +
+ .../devicetree/bindings/vendor-prefixes.yaml  |    2 +
+ MAINTAINERS                                   |    6 +
+ arch/arm64/configs/defconfig                  |    1 +
+ drivers/media/i2c/Kconfig                     |   13 +
+ drivers/media/i2c/Makefile                    |    1 +
+ drivers/media/i2c/hi846.c                     | 2138 +++++++++++++++++
+ 8 files changed, 2261 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/media/i2c/hynix,hi846.yaml
+ create mode 100644 drivers/media/i2c/hi846.c
+
 -- 
-2.31.1
+2.30.2
 
