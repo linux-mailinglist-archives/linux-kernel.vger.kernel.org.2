@@ -2,39 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F129396357
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 17:12:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A10523965B0
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 18:43:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232700AbhEaPNv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 11:13:51 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40228 "EHLO mail.kernel.org"
+        id S233291AbhEaQpA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 12:45:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46632 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232831AbhEaOLf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 10:11:35 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5720961987;
-        Mon, 31 May 2021 13:41:10 +0000 (UTC)
+        id S232626AbhEaOyC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 10:54:02 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0F4DD61CAC;
+        Mon, 31 May 2021 13:59:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1622468470;
-        bh=hZV1gnC7BpWPt/IkJZ2M8CHTD2US7I/A0w8cizfLY2I=;
+        s=korg; t=1622469555;
+        bh=kEqZaRDMA6nbc5KtPc99Zqt3YTBcosbI8H0fk5s158A=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=1MYb02oH+9xYu2o7qVkhANk1CY0hw94EKkoUho1NNOqvEc3arQZA9YH8SfgWBHEye
-         URt260KS6/qddxFFX4D+R7C5tQRo18lw1/NBW2eSy53PPvZi+rTuGTkuhhNJI/aXxS
-         g7XSXpJgbctBjzV1d4C19RB2PAl7pR9WMh5+QWZ8=
+        b=pOETWC48/LX2zlr2AI88OPcyood/tdLfr504mzM7YVx1TXQnwIjY1wbqO5bqJ4g/V
+         HHHrX0kEHMoP4xKnV19ckIyeb4znqPaFBRWq5qlHcThZ/bCdLRmnpOpO2znrMX9aqG
+         4PyI2z2M9kwN9mCZgSC+zHOjssuvhw5z/vJy8Jnc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-        Banajit Goswami <bgoswami@codeaurora.org>,
-        Stephen Boyd <swboyd@chromium.org>,
-        Mark Brown <broonie@kernel.org>,
+        stable@vger.kernel.org, Jim Ma <majinjing3@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 231/252] ASoC: qcom: lpass-cpu: Use optional clk APIs
+Subject: [PATCH 5.12 241/296] tls splice: check SPLICE_F_NONBLOCK instead of MSG_DONTWAIT
 Date:   Mon, 31 May 2021 15:14:56 +0200
-Message-Id: <20210531130705.846878031@linuxfoundation.org>
+Message-Id: <20210531130711.896742931@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210531130657.971257589@linuxfoundation.org>
-References: <20210531130657.971257589@linuxfoundation.org>
+In-Reply-To: <20210531130703.762129381@linuxfoundation.org>
+References: <20210531130703.762129381@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,53 +40,73 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Stephen Boyd <swboyd@chromium.org>
+From: Jim Ma <majinjing3@gmail.com>
 
-[ Upstream commit af2702549d68519ac78228e915d9b2c199056787 ]
+[ Upstream commit 974271e5ed45cfe4daddbeb16224a2156918530e ]
 
-This driver spits out a warning for me at boot:
+In tls_sw_splice_read, checkout MSG_* is inappropriate, should use
+SPLICE_*, update tls_wait_data to accept nonblock arguments instead
+of flags for recvmsg and splice.
 
- sc7180-lpass-cpu 62f00000.lpass: asoc_qcom_lpass_cpu_platform_probe() error getting optional null: -2
-
-but it looks like it is all an optional clk. Use the optional clk APIs
-here so that we don't see this message and everything else is the same.
-
-Cc: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Cc: Banajit Goswami <bgoswami@codeaurora.org>
-Fixes: 3e53ac8230c1 ("ASoC: qcom: make osr clock optional")
-Signed-off-by: Stephen Boyd <swboyd@chromium.org>
-Reviewed-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Link: https://lore.kernel.org/r/20210520014807.3749797-1-swboyd@chromium.org
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Fixes: c46234ebb4d1 ("tls: RX path for ktls")
+Signed-off-by: Jim Ma <majinjing3@gmail.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/qcom/lpass-cpu.c | 12 +-----------
- 1 file changed, 1 insertion(+), 11 deletions(-)
+ net/tls/tls_sw.c | 11 ++++++-----
+ 1 file changed, 6 insertions(+), 5 deletions(-)
 
-diff --git a/sound/soc/qcom/lpass-cpu.c b/sound/soc/qcom/lpass-cpu.c
-index 4fb2ec7c8867..7a30a12519a7 100644
---- a/sound/soc/qcom/lpass-cpu.c
-+++ b/sound/soc/qcom/lpass-cpu.c
-@@ -839,18 +839,8 @@ int asoc_qcom_lpass_cpu_platform_probe(struct platform_device *pdev)
- 		if (dai_id == LPASS_DP_RX)
- 			continue;
+diff --git a/net/tls/tls_sw.c b/net/tls/tls_sw.c
+index 01d933ae5f16..6086cf4f10a7 100644
+--- a/net/tls/tls_sw.c
++++ b/net/tls/tls_sw.c
+@@ -37,6 +37,7 @@
  
--		drvdata->mi2s_osr_clk[dai_id] = devm_clk_get(dev,
-+		drvdata->mi2s_osr_clk[dai_id] = devm_clk_get_optional(dev,
- 					     variant->dai_osr_clk_names[i]);
--		if (IS_ERR(drvdata->mi2s_osr_clk[dai_id])) {
--			dev_warn(dev,
--				"%s() error getting optional %s: %ld\n",
--				__func__,
--				variant->dai_osr_clk_names[i],
--				PTR_ERR(drvdata->mi2s_osr_clk[dai_id]));
--
--			drvdata->mi2s_osr_clk[dai_id] = NULL;
--		}
--
- 		drvdata->mi2s_bit_clk[dai_id] = devm_clk_get(dev,
- 						variant->dai_bit_clk_names[i]);
- 		if (IS_ERR(drvdata->mi2s_bit_clk[dai_id])) {
+ #include <linux/sched/signal.h>
+ #include <linux/module.h>
++#include <linux/splice.h>
+ #include <crypto/aead.h>
+ 
+ #include <net/strparser.h>
+@@ -1281,7 +1282,7 @@ int tls_sw_sendpage(struct sock *sk, struct page *page,
+ }
+ 
+ static struct sk_buff *tls_wait_data(struct sock *sk, struct sk_psock *psock,
+-				     int flags, long timeo, int *err)
++				     bool nonblock, long timeo, int *err)
+ {
+ 	struct tls_context *tls_ctx = tls_get_ctx(sk);
+ 	struct tls_sw_context_rx *ctx = tls_sw_ctx_rx(tls_ctx);
+@@ -1306,7 +1307,7 @@ static struct sk_buff *tls_wait_data(struct sock *sk, struct sk_psock *psock,
+ 		if (sock_flag(sk, SOCK_DONE))
+ 			return NULL;
+ 
+-		if ((flags & MSG_DONTWAIT) || !timeo) {
++		if (nonblock || !timeo) {
+ 			*err = -EAGAIN;
+ 			return NULL;
+ 		}
+@@ -1786,7 +1787,7 @@ int tls_sw_recvmsg(struct sock *sk,
+ 		bool async_capable;
+ 		bool async = false;
+ 
+-		skb = tls_wait_data(sk, psock, flags, timeo, &err);
++		skb = tls_wait_data(sk, psock, flags & MSG_DONTWAIT, timeo, &err);
+ 		if (!skb) {
+ 			if (psock) {
+ 				int ret = __tcp_bpf_recvmsg(sk, psock,
+@@ -1990,9 +1991,9 @@ ssize_t tls_sw_splice_read(struct socket *sock,  loff_t *ppos,
+ 
+ 	lock_sock(sk);
+ 
+-	timeo = sock_rcvtimeo(sk, flags & MSG_DONTWAIT);
++	timeo = sock_rcvtimeo(sk, flags & SPLICE_F_NONBLOCK);
+ 
+-	skb = tls_wait_data(sk, NULL, flags, timeo, &err);
++	skb = tls_wait_data(sk, NULL, flags & SPLICE_F_NONBLOCK, timeo, &err);
+ 	if (!skb)
+ 		goto splice_read_end;
+ 
 -- 
 2.30.2
 
