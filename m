@@ -2,109 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DBCBD395750
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 10:45:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D2F9E39573A
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 10:41:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230408AbhEaIr0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 04:47:26 -0400
-Received: from mail.plaes.org ([188.166.43.21]:54192 "EHLO mail.plaes.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230070AbhEaIrW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 04:47:22 -0400
-X-Greylist: delayed 449 seconds by postgrey-1.27 at vger.kernel.org; Mon, 31 May 2021 04:47:22 EDT
-Received: from plaes.org (localhost [127.0.0.1])
-        by mail.plaes.org (Postfix) with ESMTPSA id 53C7E401EF;
-        Mon, 31 May 2021 08:38:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=plaes.org; s=mail;
-        t=1622450293; bh=8DR2WfBPfi71xrr6iJvbxQwopR/vHO08E+E1+cSvGdM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=HSO1lZ+iejhV4unycQcLpqUOPJKm5/6P/2fasHoSBD1WCYobj6e4/BZIn2895DmPy
-         YRnjkgwYp+ploJNhpb/HhDzavwpzf0h+3riVo1eTOviaoNtKNbE/coHQmCwpcCU+uB
-         NyMbXdwjxCCvKNYBGiSWRLUDp3jrWdihNe5UD/Aqbxse8IFUSYefYrGwFzJNG2bxKg
-         FHgNnDQ6QEcHHkN0VkpGc71+JlIGe/iLvXORVl4o7vJmtWK7MXV1e4w8nzXyH9l+8p
-         Fh0obQrVpns0/fDBnm5ZW+E6HsZ2MIGEIJYkZSgcaQ5z3zZUTgnFO8GHp6rWy1nZeE
-         YcNAarBAnk6iQ==
-Date:   Mon, 31 May 2021 08:38:12 +0000
-From:   Priit Laes <plaes@plaes.org>
-To:     Roman Stratiienko <r.stratiienko@gmail.com>
-Cc:     linux-kernel@vger.kernel.org, mripard@kernel.org, wens@csie.org,
-        jernej.skrabec@siol.net, megous@megous.com,
-        linux-sunxi@googlegroups.com, dri-devel@lists.freedesktop.org
-Subject: Re: [linux-sunxi] [PATCH v4 1/2] drm/sun4i: Add mode_set callback to
- the engine
-Message-ID: <20210531083812.GB7041@plaes.org>
-References: <20210528203036.17999-1-r.stratiienko@gmail.com>
- <20210528203036.17999-2-r.stratiienko@gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210528203036.17999-2-r.stratiienko@gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+        id S231144AbhEaImd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 04:42:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49984 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231210AbhEaIla (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 04:41:30 -0400
+Received: from mail-pg1-x52c.google.com (mail-pg1-x52c.google.com [IPv6:2607:f8b0:4864:20::52c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C835C06138E;
+        Mon, 31 May 2021 01:39:22 -0700 (PDT)
+Received: by mail-pg1-x52c.google.com with SMTP id 6so7839910pgk.5;
+        Mon, 31 May 2021 01:39:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=NWTb3kdPmLr7sKD07yJCp0knjPnFCFA8bPac8FRxIIo=;
+        b=ZgnzSik+GAg7uwOGtlvNMUrPxzaB7suopIvaKUcZ6OtnKGqbC/mMayE6Q66Qwsd56Y
+         CknbOav50+lgWGdpB2qRMH/AiSEdmLmkjG3VsQ/ksyyTwu64bOWbhCLtChdejMPDwJib
+         iYm4YuCSTPotyaGpntimckRB2oHkOQVxjLVSl8ICpxXY55O9It7wAsA6g8uOGnERixcF
+         Hq/ZsIccx+k9V4I37yzrTAkmqktPA7F8wIP2b1QJ5qhIJ6pXQNuZPsxFyxQOaCXlsd6z
+         Aq7rI9Ayd44z4aIpfVzqvY6RZERfIpqBnC/EEoJIvDYPso7GbDPs10tRKqhNKhbjhCi0
+         X1mw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=NWTb3kdPmLr7sKD07yJCp0knjPnFCFA8bPac8FRxIIo=;
+        b=aZk8L9Xh7BEaDZKzmH9batdlHCUtO2Dei97XpvcouXCSQurpbG279MltF8cx4mPuvq
+         7xODiQFJsn8iiOl0PaxBfr+njSGeY/AYIBbh1/a29PUdeBYGqBRTxkuazU2E1F8penT1
+         Q8Qq5PJD2SkWpTA8UhvnjW980vqlt16F5VfZHrq3aHaREqml/Cuqx9GxB9yo0cJI+NNQ
+         j2oEM4xRxeTR290KyGj1IVtIOX7EIj7JjbHVtxEJIx3C3Ndm8TK3V5a4XM2cMPvJFchS
+         yr5AWJY8mWlDE8INiLM5LLFSbOarKDNIzDsK2KaYN7ovO2gVSNpDQCGGM3dyJMObvJue
+         0TQw==
+X-Gm-Message-State: AOAM53324tEUSk/t57FJFv3bRFV0c0nkW9nhyDmPku1V6JKDuKbpLRoM
+        NlLyQnJcNd9wNy3VILjux+I=
+X-Google-Smtp-Source: ABdhPJwdSU9/49M7sN2ICGJpw5f47aVDT+mFztS6yR4cHu4lBZyC86u7crKmIFwIDVs3RE/0GMrpLQ==
+X-Received: by 2002:a63:d218:: with SMTP id a24mr21588081pgg.345.1622450361785;
+        Mon, 31 May 2021 01:39:21 -0700 (PDT)
+Received: from localhost.localdomain ([203.205.141.39])
+        by smtp.gmail.com with ESMTPSA id u12sm10183681pfm.2.2021.05.31.01.39.19
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 31 May 2021 01:39:20 -0700 (PDT)
+From:   Haocheng Xie <xiehaocheng.cn@gmail.com>
+To:     rostedt@goodmis.org, mingo@redhat.com, corbet@lwn.net
+Cc:     linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Haocheng Xie <xiehaocheng.cn@gmail.com>
+Subject: [PATCH] docs: Fix typos in Documentation/trace/ftrace.rst
+Date:   Mon, 31 May 2021 16:39:05 +0800
+Message-Id: <20210531083905.25763-1-xiehaocheng.cn@gmail.com>
+X-Mailer: git-send-email 2.9.5
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 28, 2021 at 11:30:35PM +0300, Roman Stratiienko wrote:
-> Create callback to allow updating engine's registers on mode change.
-> 
-> Signed-off-by: Roman Stratiienko <r.stratiienko@gmail.com>
-> Reviewed-by: Jernej Skrabec <jernej.skrabec@siol.net>
-> ---
->  drivers/gpu/drm/sun4i/sun4i_crtc.c   |  3 +++
->  drivers/gpu/drm/sun4i/sunxi_engine.h | 12 ++++++++++++
->  2 files changed, 15 insertions(+)
-> 
-> diff --git a/drivers/gpu/drm/sun4i/sun4i_crtc.c b/drivers/gpu/drm/sun4i/sun4i_crtc.c
-> index 45d9eb552d86..8f01a6b2bbef 100644
-> --- a/drivers/gpu/drm/sun4i/sun4i_crtc.c
-> +++ b/drivers/gpu/drm/sun4i/sun4i_crtc.c
-> @@ -146,6 +146,9 @@ static void sun4i_crtc_mode_set_nofb(struct drm_crtc *crtc)
->  	struct sun4i_crtc *scrtc = drm_crtc_to_sun4i_crtc(crtc);
->  
->  	sun4i_tcon_mode_set(scrtc->tcon, encoder, mode);
-> +
-> +	if (scrtc->engine->ops->mode_set)
-> +		scrtc->engine->ops->mode_set(scrtc->engine, mode);
->  }
->  
->  static const struct drm_crtc_helper_funcs sun4i_crtc_helper_funcs = {
-> diff --git a/drivers/gpu/drm/sun4i/sunxi_engine.h b/drivers/gpu/drm/sun4i/sunxi_engine.h
-> index 548710a936d5..7faa844646ff 100644
-> --- a/drivers/gpu/drm/sun4i/sunxi_engine.h
-> +++ b/drivers/gpu/drm/sun4i/sunxi_engine.h
-> @@ -9,6 +9,7 @@
->  struct drm_plane;
->  struct drm_device;
->  struct drm_crtc_state;
-> +struct drm_display_mode;
->  
->  struct sunxi_engine;
->  
-> @@ -108,6 +109,17 @@ struct sunxi_engine_ops {
->  	 * This function is optional.
->  	 */
->  	void (*vblank_quirk)(struct sunxi_engine *engine);
-> +
-> +	/**
-> +	 * @mode_set:
-> +	 *
-> +	 * This callback is used to update engine registers that
-> +	 * responsible for display frame size and other mode attributes.
+Fix the usage of "a/the" and improve the readability.
 
-This sentence needs a little grammatical fixup.
+Signed-off-by: Haocheng Xie <xiehaocheng.cn@gmail.com>
+---
+ Documentation/trace/ftrace.rst | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-> +	 *
-> +	 * This function is optional.
-> +	 */
-> +	void (*mode_set)(struct sunxi_engine *engine,
-> +			 struct drm_display_mode *mode);
->  };
->  
->  /**
-> -- 
-> 2.30.2
-> 
-> -- 
-> You received this message because you are subscribed to the Google Groups "linux-sunxi" group.
-> To unsubscribe from this group and stop receiving emails from it, send an email to linux-sunxi+unsubscribe@googlegroups.com.
-> To view this discussion on the web, visit https://groups.google.com/d/msgid/linux-sunxi/20210528203036.17999-2-r.stratiienko%40gmail.com.
+diff --git a/Documentation/trace/ftrace.rst b/Documentation/trace/ftrace.rst
+index 62c98e9..11cc1c2 100644
+--- a/Documentation/trace/ftrace.rst
++++ b/Documentation/trace/ftrace.rst
+@@ -354,8 +354,8 @@ of ftrace. Here is a list of some of the key files:
+ 	is being directly called by the function. If the count is greater
+ 	than 1 it most likely will be ftrace_ops_list_func().
+ 
+-	If the callback of the function jumps to a trampoline that is
+-	specific to a the callback and not the standard trampoline,
++	If the callback of a function jumps to a trampoline which is
++	specific to the callback and which is not the standard trampoline,
+ 	its address will be printed as well as the function that the
+ 	trampoline calls.
+ 
+-- 
+2.9.5
+
