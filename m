@@ -2,60 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F32A39553E
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 08:08:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E5924395540
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 08:10:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230178AbhEaGKN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 02:10:13 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51318 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230163AbhEaGKG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 02:10:06 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 01727610A6;
-        Mon, 31 May 2021 06:08:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1622441304;
-        bh=bJXekiCxbd47kWEfxPBA00RuulD8cPNLlN7HutDEhMo=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=aW4OsesDb9MyzcqB5y5T35wXfnhl7BCmrPVfKIguBswNnOK2BYzl1/L1q5QFiBSU7
-         MjQKMQ2yo7hP/cdMuaEAsZgPJ1WStYa9Kr911oFOsZTgjzqGgfE6xw5/SLe1uHL2ej
-         eEli8/sQe4WZZSo8fl+Onr4K17JMx+fjRT51cexnxhZjIwJLbsJtE4YCyBfV96UQzi
-         Q8RxkOtNQsVVmGNJ1gS5C9cA6PMaA6yml1huxKGccxbgBdDkRhiZu0Zf+uLsdOpv+M
-         kIciViy7lDD9AtGIMkbpiMHBB7qzwIy5v+P9AhezuPJyZysowWcOwKx/JskZJbnaWz
-         jKNR8G1LTj6Yg==
-Date:   Mon, 31 May 2021 11:38:21 +0530
-From:   Vinod Koul <vkoul@kernel.org>
-To:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Cc:     kishon@ti.com, robh+dt@kernel.org, bjorn.andersson@linaro.org,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org
-Subject: Re: [PATCH 0/3] Add support for PCIe PHY in SDX55
-Message-ID: <YLR9Vd80yA8+/K9O@vkoul-mobl.Dlink>
-References: <20210427065400.18958-1-manivannan.sadhasivam@linaro.org>
+        id S230192AbhEaGLh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 02:11:37 -0400
+Received: from szxga08-in.huawei.com ([45.249.212.255]:3298 "EHLO
+        szxga08-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230006AbhEaGL0 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 02:11:26 -0400
+Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.56])
+        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4FtlBS3Rggz1BGpV;
+        Mon, 31 May 2021 14:05:04 +0800 (CST)
+Received: from dggpeml500017.china.huawei.com (7.185.36.243) by
+ dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Mon, 31 May 2021 14:09:41 +0800
+Received: from [10.174.178.174] (10.174.178.174) by
+ dggpeml500017.china.huawei.com (7.185.36.243) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Mon, 31 May 2021 14:09:40 +0800
+Subject: Re: [PATCH -next v2] cifsd: check return value of
+ ksmbd_vfs_getcasexattr() correctly
+To:     Hyunchul Lee <hyc.lee@gmail.com>
+CC:     LKML <linux-kernel@vger.kernel.org>,
+        linux-cifsd-devel <linux-cifsd-devel@lists.sourceforge.net>,
+        linux-cifs <linux-cifs@vger.kernel.org>,
+        Namjae Jeon <namjae.jeon@samsung.com>,
+        "Sergey Senozhatsky" <sergey.senozhatsky@gmail.com>,
+        Steve French <sfrench@samba.org>
+References: <20210531030550.1708816-1-yangyingliang@huawei.com>
+ <CANFS6bbZysgZ2Wv7_FqmeBC0e34h5uiBLFdeiDvOxHFd2XGTSg@mail.gmail.com>
+From:   Yang Yingliang <yangyingliang@huawei.com>
+Message-ID: <0d4edde6-f8e8-5100-5c06-54ff2e0a7378@huawei.com>
+Date:   Mon, 31 May 2021 14:09:40 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210427065400.18958-1-manivannan.sadhasivam@linaro.org>
+In-Reply-To: <CANFS6bbZysgZ2Wv7_FqmeBC0e34h5uiBLFdeiDvOxHFd2XGTSg@mail.gmail.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-Originating-IP: [10.174.178.174]
+X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
+ dggpeml500017.china.huawei.com (7.185.36.243)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 27-04-21, 12:23, Manivannan Sadhasivam wrote:
-> Hi,
-> 
-> This series adds support for PCIe PHY found in Qualcomm SDX55 platform.
-> The PHY version is v4.20 which has different register offsets compared with
-> previous v4.0x versions. So separate defines are introducted to handle the
-> differences.
-> 
-> This series has been tested on Telit FN980 EVB with an out of tree PCIe Endpoint
-> driver.
 
-Applied, thanks
+On 2021/5/31 13:38, Hyunchul Lee wrote:
+> 2021년 5월 31일 (월) 오후 12:01, Yang Yingliang <yangyingliang@huawei.com>님이 작성:
+>> If ksmbd_vfs_getcasexattr() returns -ENOMEM, stream_buf is NULL,
+>> it will cause null-ptr-deref when using it to copy memory. So we
+>> need check the return value of ksmbd_vfs_getcasexattr() by comparing
+>> with 0.
+>>
+>> Fixes: f44158485826 ("cifsd: add file operations")
+>> Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
+>> ---
+>> v2:
+>>    Handle the case ksmbd_vfs_getcasexattr() returns 0.
+>> ---
+>>   fs/cifsd/vfs.c | 10 ++++------
+>>   1 file changed, 4 insertions(+), 6 deletions(-)
+>>
+>> diff --git a/fs/cifsd/vfs.c b/fs/cifsd/vfs.c
+>> index 97d5584ec870..2a9cc0bc7726 100644
+>> --- a/fs/cifsd/vfs.c
+>> +++ b/fs/cifsd/vfs.c
+>> @@ -274,7 +274,6 @@ static int ksmbd_vfs_stream_read(struct ksmbd_file *fp, char *buf, loff_t *pos,
+>>   {
+>>          ssize_t v_len;
+>>          char *stream_buf = NULL;
+>> -       int err;
+>>
+>>          ksmbd_debug(VFS, "read stream data pos : %llu, count : %zd\n",
+>>                      *pos, count);
+>> @@ -283,10 +282,9 @@ static int ksmbd_vfs_stream_read(struct ksmbd_file *fp, char *buf, loff_t *pos,
+>>                                         fp->stream.name,
+>>                                         fp->stream.size,
+>>                                         &stream_buf);
+>> -       if (v_len == -ENOENT) {
+>> +       if ((int)v_len <= 0) {
+>>                  ksmbd_err("not found stream in xattr : %zd\n", v_len);
+>> -               err = -ENOENT;
+>> -               return err;
+>> +               return v_len == 0 ? -ENOENT : (int)v_len;
+> How about making ksmbd_vfs_getcasexattr return -ENONENT instead of
+> returning 0 to
+> remove duplicate error handling code?
+Yes, I think it's ok, I will send a v3 later.
 
-I got a conflict on last patch as Dimitry has already added some defines
-in the header.. Pls check everything was applied cleanly
-
-Thanks
--- 
-~Vinod
+Thanks,
+Yang
+>
+> Thanks,
+> Hyunchul
+>
+>>          }
+>>
+>>          memcpy(buf, &stream_buf[*pos], count);
+>> @@ -415,9 +413,9 @@ static int ksmbd_vfs_stream_write(struct ksmbd_file *fp, char *buf, loff_t *pos,
+>>                                         fp->stream.name,
+>>                                         fp->stream.size,
+>>                                         &stream_buf);
+>> -       if (v_len == -ENOENT) {
+>> +       if ((int)v_len <= 0) {
+>>                  ksmbd_err("not found stream in xattr : %zd\n", v_len);
+>> -               err = -ENOENT;
+>> +               err = v_len == 0 ? -ENOENT : (int)v_len;
+>>                  goto out;
+>>          }
+>>
+>> --
+>> 2.25.1
+>>
+> .
