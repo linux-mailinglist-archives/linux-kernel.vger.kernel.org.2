@@ -2,34 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 914B739646E
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 17:57:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E057396026
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 16:21:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232474AbhEaP6p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 11:58:45 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59468 "EHLO mail.kernel.org"
+        id S233516AbhEaOXG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 10:23:06 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55338 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233384AbhEaOb3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 10:31:29 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4016161C38;
-        Mon, 31 May 2021 13:49:21 +0000 (UTC)
+        id S232907AbhEaNtm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 09:49:42 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DB3F5613B4;
+        Mon, 31 May 2021 13:31:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1622468961;
-        bh=tvafvb7+2Q5yybgZ3eQeBxkYb0KkBT+4icIDmulfXZ8=;
+        s=korg; t=1622467903;
+        bh=vWzu84KDPR4m9KQqki4TpwcoGMXj2QMHBkh1UmR+CQE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=2YF89jVjQFe18LT6EGOFC109Jx9WmJhXi9NP8DQhky+0gxMffmM7ZV3yYFmVsS0sd
-         6CvuTnndkNxJzX3+qxsVOO/zJ59zfZebajFJIvebcehxcE/kte920g1zaVkWxmKA59
-         fsRnhXqzocQrwCVpaq8G4JBLQC/tEVsbpjz0FJ+4=
+        b=KxIvX+e3pTN+YEjYw7N25Cm1uhLYRK1C2jl0Ik6iLX1dmZpkrbLeyJ+GNHSoR/nUU
+         h39e125CLR2MUHE9B6kvbZQoyL3B7nuWo0oKbsOh6917mGZmyGZF87UM8k8c32XRCg
+         YOgZrJYKWvlKHT301TEA5T8ZSwBgQ5eOpoia/sLQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Miquel Raynal <miquel.raynal@bootlin.com>
-Subject: [PATCH 5.12 017/296] mtd: rawnand: ndfc: Fix external use of SW Hamming ECC helper
-Date:   Mon, 31 May 2021 15:11:12 +0200
-Message-Id: <20210531130704.346901405@linuxfoundation.org>
+        stable@vger.kernel.org, "Geoffrey D. Bennett" <g@b4.vu>,
+        Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH 5.10 008/252] ALSA: usb-audio: scarlett2: Fix device hang with ehci-pci
+Date:   Mon, 31 May 2021 15:11:13 +0200
+Message-Id: <20210531130658.263869279@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210531130703.762129381@linuxfoundation.org>
-References: <20210531130703.762129381@linuxfoundation.org>
+In-Reply-To: <20210531130657.971257589@linuxfoundation.org>
+References: <20210531130657.971257589@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -38,60 +39,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Miquel Raynal <miquel.raynal@bootlin.com>
+From: Geoffrey D. Bennett <g@b4.vu>
 
-commit 3e09c0252501829b14b10f14e1982aaab77d0b80 upstream.
+commit 764fa6e686e0107c0357a988d193de04cf047583 upstream.
 
-Since the Hamming software ECC engine has been updated to become a
-proper and independent ECC engine, it is now mandatory to either
-initialize the engine before using any one of his functions or use one
-of the bare helpers which only perform the calculations. As there is no
-actual need for a proper ECC initialization, let's just use the bare
-helper instead of the rawnand one.
+Use usb_rcvctrlpipe() not usb_sndctrlpipe() for USB control input in
+the Scarlett Gen 2 mixer driver. This fixes the device hang during
+initialisation when used with the ehci-pci host driver.
 
-Fixes: 90ccf0a0192f ("mtd: nand: ecc-hamming: Rename the exported functions")
-Cc: stable@vger.kernel.org
-Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
-Link: https://lore.kernel.org/linux-mtd/20210413161840.345208-5-miquel.raynal@bootlin.com
+Fixes: 9e4d5c1be21f ("ALSA: usb-audio: Scarlett Gen 2 mixer interface")
+Signed-off-by: Geoffrey D. Bennett <g@b4.vu>
+Cc: <stable@vger.kernel.org>
+Link: https://lore.kernel.org/r/66a3d05dac325d5b53e4930578e143cef1f50dbe.1621584566.git.g@b4.vu
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/mtd/nand/raw/ndfc.c |   12 +++++++++++-
- 1 file changed, 11 insertions(+), 1 deletion(-)
+ sound/usb/mixer_scarlett_gen2.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/mtd/nand/raw/ndfc.c
-+++ b/drivers/mtd/nand/raw/ndfc.c
-@@ -22,6 +22,7 @@
- #include <linux/mtd/ndfc.h>
- #include <linux/slab.h>
- #include <linux/mtd/mtd.h>
-+#include <linux/mtd/nand-ecc-sw-hamming.h>
- #include <linux/of_address.h>
- #include <linux/of_platform.h>
- #include <asm/io.h>
-@@ -100,6 +101,15 @@ static int ndfc_calculate_ecc(struct nan
- 	return 0;
- }
+--- a/sound/usb/mixer_scarlett_gen2.c
++++ b/sound/usb/mixer_scarlett_gen2.c
+@@ -635,7 +635,7 @@ static int scarlett2_usb(
+ 	/* send a second message to get the response */
  
-+static int ndfc_correct_ecc(struct nand_chip *chip,
-+			    unsigned char *buf,
-+			    unsigned char *read_ecc,
-+			    unsigned char *calc_ecc)
-+{
-+	return ecc_sw_hamming_correct(buf, read_ecc, calc_ecc,
-+				      chip->ecc.size, false);
-+}
-+
- /*
-  * Speedups for buffer read/write/verify
-  *
-@@ -145,7 +155,7 @@ static int ndfc_chip_init(struct ndfc_co
- 	chip->controller = &ndfc->ndfc_control;
- 	chip->legacy.read_buf = ndfc_read_buf;
- 	chip->legacy.write_buf = ndfc_write_buf;
--	chip->ecc.correct = rawnand_sw_hamming_correct;
-+	chip->ecc.correct = ndfc_correct_ecc;
- 	chip->ecc.hwctl = ndfc_enable_hwecc;
- 	chip->ecc.calculate = ndfc_calculate_ecc;
- 	chip->ecc.engine_type = NAND_ECC_ENGINE_TYPE_ON_HOST;
+ 	err = snd_usb_ctl_msg(mixer->chip->dev,
+-			usb_sndctrlpipe(mixer->chip->dev, 0),
++			usb_rcvctrlpipe(mixer->chip->dev, 0),
+ 			SCARLETT2_USB_VENDOR_SPECIFIC_CMD_RESP,
+ 			USB_RECIP_INTERFACE | USB_TYPE_CLASS | USB_DIR_IN,
+ 			0,
 
 
