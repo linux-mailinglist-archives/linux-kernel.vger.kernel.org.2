@@ -2,37 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 45F103963A8
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 17:29:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C3FE6395D7B
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 15:45:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234880AbhEaPaJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 11:30:09 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46126 "EHLO mail.kernel.org"
+        id S230523AbhEaNqd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 09:46:33 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39364 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233490AbhEaOTI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 10:19:08 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1F3B96141B;
-        Mon, 31 May 2021 13:44:25 +0000 (UTC)
+        id S232378AbhEaNbb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 09:31:31 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 104F3613C8;
+        Mon, 31 May 2021 13:23:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1622468666;
-        bh=iKyYyDpShslT+5GNriDpMu/Gpkxx0at5Xw/695kRCUA=;
+        s=korg; t=1622467424;
+        bh=+w22d5Lh5qfl2TsfF9L41caHmM9xpcYax38cT+6efQY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=CDefkMS3ffRpEioOv5I01dlfvQxrkhm8IpuhfatBsRczWIFboACT68xYupFPhi9+v
-         cz4hQ+Ha+va6M1itPY2jcGZXRBGjY36tuIEHThGSY/DiWvmIISvV4U13hxcQQJxQnC
-         6S/RSCpH8naV7QNLLoU7dr0L/Yrw7mJRVTqJSwqg=
+        b=rTlE0oo3D6C5t/ykWNWrAJ7XH+bppPjU2WsUBZh8AilwnkNnNeXu6L0hWbiLsFOZS
+         YqGhQ+kGa8PDNQh3qOMvki1LhIl7OuXyQ16UsVw8am1QwqF4EYJOGmIo3o5EJ9upsd
+         Ol0OL0iES+k5EQPFKDIHyoajaoGkKja2herfqcw4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        Vladimir Oltean <olteanv@gmail.com>,
+        stable@vger.kernel.org, Lukas Wunner <lukas@wunner.de>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Navid Emamdoost <navid.emamdoost@gmail.com>,
+        Andrey Smirnov <andrew.smirnov@gmail.com>,
         Mark Brown <broonie@kernel.org>
-Subject: [PATCH 5.4 078/177] spi: spi-fsl-dspi: Fix a resource leak in an error handling path
+Subject: [PATCH 4.19 059/116] spi: gpio: Dont leak SPI master in probe error path
 Date:   Mon, 31 May 2021 15:13:55 +0200
-Message-Id: <20210531130650.595202706@linuxfoundation.org>
+Message-Id: <20210531130642.176191748@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210531130647.887605866@linuxfoundation.org>
-References: <20210531130647.887605866@linuxfoundation.org>
+In-Reply-To: <20210531130640.131924542@linuxfoundation.org>
+References: <20210531130640.131924542@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,40 +42,78 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+From: Lukas Wunner <lukas@wunner.de>
 
-commit 680ec0549a055eb464dce6ffb4bfb736ef87236e upstream.
+commit 7174dc655ef0578877b0b4598e69619d2be28b4d upstream.
 
-'dspi_request_dma()' should be undone by a 'dspi_release_dma()' call in the
-error handling path of the probe function, as already done in the remove
-function
+If the call to devm_spi_register_master() fails on probe of the GPIO SPI
+driver, the spi_master struct is erroneously not freed:
 
-Fixes: 90ba37033cb9 ("spi: spi-fsl-dspi: Add DMA support for Vybrid")
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Reviewed-by: Vladimir Oltean <olteanv@gmail.com>
-Link: https://lore.kernel.org/r/d51caaac747277a1099ba8dea07acd85435b857e.1620587472.git.christophe.jaillet@wanadoo.fr
+After allocating the spi_master, its reference count is 1.  The driver
+unconditionally decrements the reference count on unbind using a devm
+action.  Before calling devm_spi_register_master(), the driver
+unconditionally increments the reference count because on success,
+that function will decrement the reference count on unbind.  However on
+failure, devm_spi_register_master() does *not* decrement the reference
+count, so the spi_master is leaked.
+
+The issue was introduced by commits 8b797490b4db ("spi: gpio: Make sure
+spi_master_put() is called in every error path") and 79567c1a321e ("spi:
+gpio: Use devm_spi_register_master()"), which sought to plug leaks
+introduced by 9b00bc7b901f ("spi: spi-gpio: Rewrite to use GPIO
+descriptors") but missed this remaining leak.
+
+The situation was later aggravated by commit d3b0ffa1d75d ("spi: gpio:
+prevent memory leak in spi_gpio_probe"), which introduced a
+use-after-free because it releases a reference on the spi_master if
+devm_add_action_or_reset() fails even though the function already
+does that.
+
+Fix by switching over to the new devm_spi_alloc_master() helper.
+
+Fixes: 9b00bc7b901f ("spi: spi-gpio: Rewrite to use GPIO descriptors")
+Signed-off-by: Lukas Wunner <lukas@wunner.de>
+Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+Cc: <stable@vger.kernel.org> # v4.17+: 5e844cc37a5c: spi: Introduce device-managed SPI controller allocation
+Cc: <stable@vger.kernel.org> # v5.1-: 8b797490b4db: spi: gpio: Make sure spi_master_put() is called in every error path
+Cc: <stable@vger.kernel.org> # v5.1-: 45beec351998: spi: bitbang: Introduce spi_bitbang_init()
+Cc: <stable@vger.kernel.org> # v5.1-: 79567c1a321e: spi: gpio: Use devm_spi_register_master()
+Cc: <stable@vger.kernel.org> # v5.4-: d3b0ffa1d75d: spi: gpio: prevent memory leak in spi_gpio_probe
+Cc: <stable@vger.kernel.org> # v4.17+
+Cc: Navid Emamdoost <navid.emamdoost@gmail.com>
+Cc: Andrey Smirnov <andrew.smirnov@gmail.com>
+Link: https://lore.kernel.org/r/86eaed27431c3d709e3748eb76ceecbfc790dd37.1607286887.git.lukas@wunner.de
 Signed-off-by: Mark Brown <broonie@kernel.org>
+[lukas: backport to v4.19.192]
+Signed-off-by: Lukas Wunner <lukas@wunner.de>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/spi/spi-fsl-dspi.c |    4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ drivers/spi/spi-gpio.c |    8 ++------
+ 1 file changed, 2 insertions(+), 6 deletions(-)
 
---- a/drivers/spi/spi-fsl-dspi.c
-+++ b/drivers/spi/spi-fsl-dspi.c
-@@ -1142,11 +1142,13 @@ poll_mode:
- 	ret = spi_register_controller(ctlr);
- 	if (ret != 0) {
- 		dev_err(&pdev->dev, "Problem registering DSPI ctlr\n");
--		goto out_free_irq;
-+		goto out_release_dma;
+--- a/drivers/spi/spi-gpio.c
++++ b/drivers/spi/spi-gpio.c
+@@ -382,7 +382,7 @@ static int spi_gpio_probe(struct platfor
+ 		return -ENODEV;
+ #endif
+ 
+-	master = spi_alloc_master(&pdev->dev, sizeof(*spi_gpio));
++	master = devm_spi_alloc_master(&pdev->dev, sizeof(*spi_gpio));
+ 	if (!master)
+ 		return -ENOMEM;
+ 
+@@ -438,11 +438,7 @@ static int spi_gpio_probe(struct platfor
  	}
+ 	spi_gpio->bitbang.setup_transfer = spi_bitbang_setup_transfer;
  
- 	return ret;
+-	status = spi_bitbang_start(&spi_gpio->bitbang);
+-	if (status)
+-		spi_master_put(master);
+-
+-	return status;
++	return spi_bitbang_start(&spi_gpio->bitbang);
+ }
  
-+out_release_dma:
-+	dspi_release_dma(dspi);
- out_free_irq:
- 	if (dspi->irq)
- 		free_irq(dspi->irq, dspi);
+ static int spi_gpio_remove(struct platform_device *pdev)
 
 
