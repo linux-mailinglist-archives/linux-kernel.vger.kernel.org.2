@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F334D39647A
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 17:59:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7DA37395FB6
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 16:14:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232116AbhEaQAl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 12:00:41 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60988 "EHLO mail.kernel.org"
+        id S233613AbhEaOO2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 10:14:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49706 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234076AbhEaOdH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 10:33:07 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6CCE061C35;
-        Mon, 31 May 2021 13:49:49 +0000 (UTC)
+        id S232591AbhEaNrM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 09:47:12 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 72E5B615A0;
+        Mon, 31 May 2021 13:30:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1622468989;
-        bh=dixYiv4IqcDTYMXQxCyKzf3bhVXKR4o+mefvnnvINyA=;
+        s=korg; t=1622467836;
+        bh=yJaSPk+SA3ZD/Iq4qFmrm8UN3AxhOPuQ3d7rZwmtAN4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=aK1gyqZfMOUg5VAVTX6bw13d5Z6HC2bgUuSFh8KO5+UwGuBgV4LE07Uj1VKo1ZC2X
-         HH7/a8sBPd4WwZ9BM5nL3lruIXaOqZLi8VEEHj8i+tFMwgdkxwl6tUIVwrkW8Ub422
-         VdGTNuAtku0oUxdVFqQggOzUdPHf0RxPdeK4ujwA=
+        b=DWn8ddvQKoopIKrQBdBmaG2ZK3anCtDaJJXIaTyWwNp3cFGR2fyg69PWJpZX2iBWm
+         4Ot6e+b3CJVMk0lcga68+68Ih2+91kx6an+G8S5bn/gx4sCRXpteKxym4pjIzeVNYC
+         GSycxX8cblzOstPDwY2b0cSLxCxHARaTMNSjk0/c=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Adrian Hunter <adrian.hunter@intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@redhat.com>
-Subject: [PATCH 5.12 028/296] perf scripts python: exported-sql-viewer.py: Fix Array TypeError
-Date:   Mon, 31 May 2021 15:11:23 +0200
-Message-Id: <20210531130704.735883288@linuxfoundation.org>
+        stable@vger.kernel.org, Johan Hovold <johan@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: [PATCH 5.10 019/252] net: hso: fix control-request directions
+Date:   Mon, 31 May 2021 15:11:24 +0200
+Message-Id: <20210531130658.634814832@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210531130703.762129381@linuxfoundation.org>
-References: <20210531130703.762129381@linuxfoundation.org>
+In-Reply-To: <20210531130657.971257589@linuxfoundation.org>
+References: <20210531130657.971257589@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,58 +39,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Adrian Hunter <adrian.hunter@intel.com>
+From: Johan Hovold <johan@kernel.org>
 
-commit fd931b2e234a7cc451a7bbb1965d6ce623189158 upstream.
+commit 1a6e9a9c68c1f183872e4bcc947382111c2e04eb upstream.
 
-The 'Array' class is present in more than one python standard library.
-In some versions of Python 3, the following error occurs:
+The direction of the pipe argument must match the request-type direction
+bit or control requests may fail depending on the host-controller-driver
+implementation.
 
-Traceback (most recent call last):
-  File "tools/perf/scripts/python/exported-sql-viewer.py", line 4702, in <lambda>
-    reports_menu.addAction(CreateAction(label, "Create a new window displaying branch events", lambda a=None,x=dbid: self.NewBranchView(x), self))
-  File "tools/perf/scripts/python/exported-sql-viewer.py", line 4727, in NewBranchView
-    BranchWindow(self.glb, event_id, ReportVars(), self)
-  File "tools/perf/scripts/python/exported-sql-viewer.py", line 3208, in __init__
-    self.model = LookupCreateModel(model_name, lambda: BranchModel(glb, event_id, report_vars.where_clause))
-  File "tools/perf/scripts/python/exported-sql-viewer.py", line 343, in LookupCreateModel
-    model = create_fn()
-  File "tools/perf/scripts/python/exported-sql-viewer.py", line 3208, in <lambda>
-    self.model = LookupCreateModel(model_name, lambda: BranchModel(glb, event_id, report_vars.where_clause))
-  File "tools/perf/scripts/python/exported-sql-viewer.py", line 3124, in __init__
-    self.fetcher = SQLFetcher(glb, sql, prep, self.AddSample)
-  File "tools/perf/scripts/python/exported-sql-viewer.py", line 2658, in __init__
-    self.buffer = Array(c_char, self.buffer_size, lock=False)
-TypeError: abstract class
+Fix the tiocmset and rfkill requests which erroneously used
+usb_rcvctrlpipe().
 
-This apparently happens because Python can be inconsistent about which
-class of the name 'Array' gets imported. Fix by importing explicitly by
-name so that only the desired 'Array' gets imported.
-
-Fixes: 8392b74b575c3 ("perf scripts python: exported-sql-viewer.py: Add ability to display all the database tables")
-Signed-off-by: Adrian Hunter <adrian.hunter@intel.com>
-Cc: Jiri Olsa <jolsa@redhat.com>
-Cc: stable@vger.kernel.org
-Link: http://lore.kernel.org/lkml/20210521092053.25683-3-adrian.hunter@intel.com
-Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
+Fixes: 72dc1c096c70 ("HSO: add option hso driver")
+Cc: stable@vger.kernel.org      # 2.6.27
+Signed-off-by: Johan Hovold <johan@kernel.org>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- tools/perf/scripts/python/exported-sql-viewer.py |    5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+ drivers/net/usb/hso.c |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
---- a/tools/perf/scripts/python/exported-sql-viewer.py
-+++ b/tools/perf/scripts/python/exported-sql-viewer.py
-@@ -125,8 +125,9 @@ if pyside_version_1:
- 	from PySide.QtGui import *
- 	from PySide.QtSql import *
+--- a/drivers/net/usb/hso.c
++++ b/drivers/net/usb/hso.c
+@@ -1689,7 +1689,7 @@ static int hso_serial_tiocmset(struct tt
+ 	spin_unlock_irqrestore(&serial->serial_lock, flags);
  
--from decimal import *
--from ctypes import *
-+from decimal import Decimal, ROUND_HALF_UP
-+from ctypes import CDLL, Structure, create_string_buffer, addressof, sizeof, \
-+		   c_void_p, c_bool, c_byte, c_char, c_int, c_uint, c_longlong, c_ulonglong
- from multiprocessing import Process, Array, Value, Event
- 
- # xrange is range in Python3
+ 	return usb_control_msg(serial->parent->usb,
+-			       usb_rcvctrlpipe(serial->parent->usb, 0), 0x22,
++			       usb_sndctrlpipe(serial->parent->usb, 0), 0x22,
+ 			       0x21, val, if_num, NULL, 0,
+ 			       USB_CTRL_SET_TIMEOUT);
+ }
+@@ -2436,7 +2436,7 @@ static int hso_rfkill_set_block(void *da
+ 	if (hso_dev->usb_gone)
+ 		rv = 0;
+ 	else
+-		rv = usb_control_msg(hso_dev->usb, usb_rcvctrlpipe(hso_dev->usb, 0),
++		rv = usb_control_msg(hso_dev->usb, usb_sndctrlpipe(hso_dev->usb, 0),
+ 				       enabled ? 0x82 : 0x81, 0x40, 0, 0, NULL, 0,
+ 				       USB_CTRL_SET_TIMEOUT);
+ 	mutex_unlock(&hso_dev->mutex);
 
 
