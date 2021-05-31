@@ -2,35 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D18BC395E76
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 15:57:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A138395B6B
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 15:18:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232245AbhEaN66 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 09:58:58 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43270 "EHLO mail.kernel.org"
+        id S232156AbhEaNUW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 09:20:22 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53846 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232521AbhEaNil (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 09:38:41 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D4A2161375;
-        Mon, 31 May 2021 13:26:47 +0000 (UTC)
+        id S231876AbhEaNSx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 09:18:53 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 08B926136D;
+        Mon, 31 May 2021 13:17:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1622467608;
-        bh=6MIX/v40CaAp+ioMxCboYjyyp5oZh/fWPW+g9t3b5JY=;
+        s=korg; t=1622467033;
+        bh=L48UWyvFxi6jji9zke4DDDKrz3Dztp562eUL8ZzzxpE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=srdTjszmJkjH7IKfIeg/d1USn07c/3l4poTjcfcJ014sf6xF3kv3N3CFBBadzBin3
-         xzEcZkMzoQFO61Xl/ZZ8g5QfirM6pAgKBs7SVsxhWPGVV6bZCKgWijDZHuzztHQuZD
-         tCuhy4P0V61s4fn0CLIkrLEOVtmToun55X6XzLUs=
+        b=qcGqr947Xd3eVrqG7VH2nnYJOnqXh045bvSJz6YvMtNbiAirE0bsiXzy/urjRPbxh
+         sGI62r3abZ4ocPm3Yh9bBNl0lPQ7DLh46DSJnaAbTGsyIRiZZVf9wxeoYpg53AvkJF
+         DuOsnbCUFHofU2Fy67oz8l8JegyHrVI7G8D6Dpo0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Mathy Vanhoef <Mathy.Vanhoef@kuleuven.be>,
-        Johannes Berg <johannes.berg@intel.com>
-Subject: [PATCH 4.14 13/79] mac80211: assure all fragments are encrypted
+        stable@vger.kernel.org, "David S. Miller" <davem@davemloft.net>,
+        Dominik Brodowski <linux@dominikbrodowski.net>,
+        Anirudh Rayabharam <mail@anirudhrb.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.4 32/54] net: fujitsu: fix potential null-ptr-deref
 Date:   Mon, 31 May 2021 15:13:58 +0200
-Message-Id: <20210531130636.433791915@linuxfoundation.org>
+Message-Id: <20210531130636.090356225@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210531130636.002722319@linuxfoundation.org>
-References: <20210531130636.002722319@linuxfoundation.org>
+In-Reply-To: <20210531130635.070310929@linuxfoundation.org>
+References: <20210531130635.070310929@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,78 +41,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mathy Vanhoef <Mathy.Vanhoef@kuleuven.be>
+From: Anirudh Rayabharam <mail@anirudhrb.com>
 
-commit 965a7d72e798eb7af0aa67210e37cf7ecd1c9cad upstream.
+[ Upstream commit 52202be1cd996cde6e8969a128dc27ee45a7cb5e ]
 
-Do not mix plaintext and encrypted fragments in protected Wi-Fi
-networks. This fixes CVE-2020-26147.
+In fmvj18x_get_hwinfo(), if ioremap fails there will be NULL pointer
+deref. To fix this, check the return value of ioremap and return -1
+to the caller in case of failure.
 
-Previously, an attacker was able to first forward a legitimate encrypted
-fragment towards a victim, followed by a plaintext fragment. The
-encrypted and plaintext fragment would then be reassembled. For further
-details see Section 6.3 and Appendix D in the paper "Fragment and Forge:
-Breaking Wi-Fi Through Frame Aggregation and Fragmentation".
-
-Because of this change there are now two equivalent conditions in the
-code to determine if a received fragment requires sequential PNs, so we
-also move this test to a separate function to make the code easier to
-maintain.
-
-Cc: stable@vger.kernel.org
-Signed-off-by: Mathy Vanhoef <Mathy.Vanhoef@kuleuven.be>
-Link: https://lore.kernel.org/r/20210511200110.30c4394bb835.I5acfdb552cc1d20c339c262315950b3eac491397@changeid
-Signed-off-by: Johannes Berg <johannes.berg@intel.com>
+Cc: "David S. Miller" <davem@davemloft.net>
+Acked-by: Dominik Brodowski <linux@dominikbrodowski.net>
+Signed-off-by: Anirudh Rayabharam <mail@anirudhrb.com>
+Link: https://lore.kernel.org/r/20210503115736.2104747-16-gregkh@linuxfoundation.org
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/mac80211/rx.c |   23 ++++++++++++-----------
- 1 file changed, 12 insertions(+), 11 deletions(-)
+ drivers/net/ethernet/fujitsu/fmvj18x_cs.c | 5 +++++
+ 1 file changed, 5 insertions(+)
 
---- a/net/mac80211/rx.c
-+++ b/net/mac80211/rx.c
-@@ -1968,6 +1968,16 @@ ieee80211_reassemble_find(struct ieee802
- 	return NULL;
- }
+diff --git a/drivers/net/ethernet/fujitsu/fmvj18x_cs.c b/drivers/net/ethernet/fujitsu/fmvj18x_cs.c
+index a7139f588ad2..fb1a9bd24660 100644
+--- a/drivers/net/ethernet/fujitsu/fmvj18x_cs.c
++++ b/drivers/net/ethernet/fujitsu/fmvj18x_cs.c
+@@ -548,6 +548,11 @@ static int fmvj18x_get_hwinfo(struct pcmcia_device *link, u_char *node_id)
+ 	return -1;
  
-+static bool requires_sequential_pn(struct ieee80211_rx_data *rx, __le16 fc)
-+{
-+	return rx->key &&
-+		(rx->key->conf.cipher == WLAN_CIPHER_SUITE_CCMP ||
-+		 rx->key->conf.cipher == WLAN_CIPHER_SUITE_CCMP_256 ||
-+		 rx->key->conf.cipher == WLAN_CIPHER_SUITE_GCMP ||
-+		 rx->key->conf.cipher == WLAN_CIPHER_SUITE_GCMP_256) &&
-+		ieee80211_has_protected(fc);
-+}
+     base = ioremap(link->resource[2]->start, resource_size(link->resource[2]));
++    if (!base) {
++	pcmcia_release_window(link, link->resource[2]);
++	return -1;
++    }
 +
- static ieee80211_rx_result debug_noinline
- ieee80211_rx_h_defragment(struct ieee80211_rx_data *rx)
- {
-@@ -2012,12 +2022,7 @@ ieee80211_rx_h_defragment(struct ieee802
- 		/* This is the first fragment of a new frame. */
- 		entry = ieee80211_reassemble_add(rx->sdata, frag, seq,
- 						 rx->seqno_idx, &(rx->skb));
--		if (rx->key &&
--		    (rx->key->conf.cipher == WLAN_CIPHER_SUITE_CCMP ||
--		     rx->key->conf.cipher == WLAN_CIPHER_SUITE_CCMP_256 ||
--		     rx->key->conf.cipher == WLAN_CIPHER_SUITE_GCMP ||
--		     rx->key->conf.cipher == WLAN_CIPHER_SUITE_GCMP_256) &&
--		    ieee80211_has_protected(fc)) {
-+		if (requires_sequential_pn(rx, fc)) {
- 			int queue = rx->security_idx;
+     pcmcia_map_mem_page(link, link->resource[2], 0);
  
- 			/* Store CCMP/GCMP PN so that we can verify that the
-@@ -2059,11 +2064,7 @@ ieee80211_rx_h_defragment(struct ieee802
- 		u8 pn[IEEE80211_CCMP_PN_LEN], *rpn;
- 		int queue;
- 
--		if (!rx->key ||
--		    (rx->key->conf.cipher != WLAN_CIPHER_SUITE_CCMP &&
--		     rx->key->conf.cipher != WLAN_CIPHER_SUITE_CCMP_256 &&
--		     rx->key->conf.cipher != WLAN_CIPHER_SUITE_GCMP &&
--		     rx->key->conf.cipher != WLAN_CIPHER_SUITE_GCMP_256))
-+		if (!requires_sequential_pn(rx, fc))
- 			return RX_DROP_UNUSABLE;
- 		memcpy(pn, entry->last_pn, IEEE80211_CCMP_PN_LEN);
- 		for (i = IEEE80211_CCMP_PN_LEN - 1; i >= 0; i--) {
+     /*
+-- 
+2.30.2
+
 
 
