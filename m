@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D0A91395EAB
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 16:00:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 196EA396409
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 17:43:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232026AbhEaOBg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 10:01:36 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44426 "EHLO mail.kernel.org"
+        id S233885AbhEaPof (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 11:44:35 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48846 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232903AbhEaNjs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 09:39:48 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A52716145F;
-        Mon, 31 May 2021 13:27:19 +0000 (UTC)
+        id S232215AbhEaOZU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 10:25:20 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B21B761A25;
+        Mon, 31 May 2021 13:46:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1622467640;
-        bh=fXVmRXjEYXzSiN1Fw+5ymuglW2HubZD3PlHAZd4Xgv4=;
+        s=korg; t=1622468785;
+        bh=7CyjD0+tXZc9T+bQRN7EJUiSweorbaa3ZXX2/OMMEw4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Q/9R/bfCmVHd8RC1z8zwnO/jeCvQ3PwgEA6IzYiBAuUEOZFU9hcbd/+8nTTfZTlRB
-         YNyA1mBv4oX288YjjdBuLNs1meIJHAbKgrz/v1OrOsFcaNhdb610gyGUSPUPk1HtrJ
-         WU0tAaMz9iy/C8e1ed6e+WuDbMHyQYKABvteooQE=
+        b=uikx62fGqqxDb/T/Y/ocNbm5PiHhYGhLELebX+KCCQm9bDRxTGOMgo+57CcIhtMm4
+         lhFDbp9mqfb5d8cNNL7jZM0Yjs/CsIYiOFWnBtzCjdar2nTypCJM+SbdyoHiw9StyH
+         w7pAEpJOuCKyXJfI5J2yALmEjPACX4NJw/Ww/51o=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, YueHaibing <yuehaibing@huawei.com>,
-        Stable@vger.kernel.org,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Subject: [PATCH 4.14 24/79] iio: adc: ad7793: Add missing error code in ad7793_setup()
+        stable@vger.kernel.org, Kangjie Lu <kjlu@umn.edu>,
+        "David S. Miller" <davem@davemloft.net>,
+        Dominik Brodowski <linux@dominikbrodowski.net>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 092/177] Revert "net: fujitsu: fix a potential NULL pointer dereference"
 Date:   Mon, 31 May 2021 15:14:09 +0200
-Message-Id: <20210531130636.777474012@linuxfoundation.org>
+Message-Id: <20210531130651.072491758@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210531130636.002722319@linuxfoundation.org>
-References: <20210531130636.002722319@linuxfoundation.org>
+In-Reply-To: <20210531130647.887605866@linuxfoundation.org>
+References: <20210531130647.887605866@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,30 +41,53 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: YueHaibing <yuehaibing@huawei.com>
+From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-commit 4ed243b1da169bcbc1ec5507867e56250c5f1ff9 upstream.
+[ Upstream commit 5f94eaa4ee23e80841fa359a372f84cfe25daee1 ]
 
-Set error code while device ID query failed.
+This reverts commit 9f4d6358e11bbc7b839f9419636188e4151fb6e4.
 
-Fixes: 88bc30548aae ("IIO: ADC: New driver for AD7792/AD7793 3 Channel SPI ADC")
-Signed-off-by: YueHaibing <yuehaibing@huawei.com>
-Cc: <Stable@vger.kernel.org>
-Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Because of recent interactions with developers from @umn.edu, all
+commits from them have been recently re-reviewed to ensure if they were
+correct or not.
+
+Upon review, this commit was found to be incorrect for the reasons
+below, so it must be reverted.  It will be fixed up "correctly" in a
+later kernel change.
+
+The original change does not change any behavior as the caller of this
+function onlyu checks for "== -1" as an error condition so this error is
+not handled properly.  Remove this change and it will be fixed up
+properly in a later commit.
+
+Cc: Kangjie Lu <kjlu@umn.edu>
+Cc: David S. Miller <davem@davemloft.net>
+Reviewed-by: Dominik Brodowski <linux@dominikbrodowski.net>
+Link: https://lore.kernel.org/r/20210503115736.2104747-15-gregkh@linuxfoundation.org
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/iio/adc/ad7793.c |    1 +
- 1 file changed, 1 insertion(+)
+ drivers/net/ethernet/fujitsu/fmvj18x_cs.c | 5 -----
+ 1 file changed, 5 deletions(-)
 
---- a/drivers/iio/adc/ad7793.c
-+++ b/drivers/iio/adc/ad7793.c
-@@ -279,6 +279,7 @@ static int ad7793_setup(struct iio_dev *
- 	id &= AD7793_ID_MASK;
+diff --git a/drivers/net/ethernet/fujitsu/fmvj18x_cs.c b/drivers/net/ethernet/fujitsu/fmvj18x_cs.c
+index 1eca0fdb9933..a69cd19a55ae 100644
+--- a/drivers/net/ethernet/fujitsu/fmvj18x_cs.c
++++ b/drivers/net/ethernet/fujitsu/fmvj18x_cs.c
+@@ -547,11 +547,6 @@ static int fmvj18x_get_hwinfo(struct pcmcia_device *link, u_char *node_id)
+ 	return -1;
  
- 	if (id != st->chip_info->id) {
-+		ret = -ENODEV;
- 		dev_err(&st->sd.spi->dev, "device ID query failed\n");
- 		goto out;
- 	}
+     base = ioremap(link->resource[2]->start, resource_size(link->resource[2]));
+-    if (!base) {
+-	    pcmcia_release_window(link, link->resource[2]);
+-	    return -ENOMEM;
+-    }
+-
+     pcmcia_map_mem_page(link, link->resource[2], 0);
+ 
+     /*
+-- 
+2.30.2
+
 
 
