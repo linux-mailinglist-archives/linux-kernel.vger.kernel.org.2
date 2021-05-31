@@ -2,116 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A97CE39582A
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 11:35:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CDCFF395838
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 11:39:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231199AbhEaJhX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 05:37:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34488 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230479AbhEaJhT (ORCPT
+        id S231177AbhEaJky (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 05:40:54 -0400
+Received: from mx0a-00069f02.pphosted.com ([205.220.165.32]:57902 "EHLO
+        mx0a-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230423AbhEaJkx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 05:37:19 -0400
-Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com [IPv6:2a00:1450:4864:20::42e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 817A4C061574;
-        Mon, 31 May 2021 02:35:38 -0700 (PDT)
-Received: by mail-wr1-x42e.google.com with SMTP id m18so10234266wrv.2;
-        Mon, 31 May 2021 02:35:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=Ly9AaPG/TnBSSS83zSBvw+Xqtn1byWzWgSJ6l5C6p6A=;
-        b=hovhcxUoR6QIZLVIAGVXGKz8VmDUl5l3ritQTkstU0pQdInjKXsrIewv2xPLbyRG8z
-         BULU9IVsDlQMGSOSkNlPbJPOMvTZ7rCstu/LeYXmgaNjVA2o0KpZ/2VnrgUQl1Z5Xaub
-         tM9QeDdo4FhSLg/42ndS3OYUWfkbvF5p2ZYWh6CHVBCyW5/6IellWWekj4hzH+iFGbm1
-         6CSpQeU3Rd4QcDhCiZwtCU66PKWFgmNumgSFfdHbHCEef4rH3yxlrVBexG+Ze9y2rvyk
-         C4PN7ti6BeaKJjZOkR5ZkK0d/q/3kMCG+dOhIm46GwYWmddsVgiMc6vPEzl02klMgBRA
-         PA8g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=Ly9AaPG/TnBSSS83zSBvw+Xqtn1byWzWgSJ6l5C6p6A=;
-        b=nPwHnshli8W5OXEQOIXNsIPAlkqhNbJNQCKH1jntWnmkoPnMe7QII4J/gjcqLVF6Qd
-         qc89gr5bMvfPYthfpsEQrnV+/tDvvGy+pcgQeIMj/0WlDI1Iex1/7W8ftyJ09NN4RUGd
-         6vt4kQazz85khTkoQQA/iOoJ4DW3bI1oEDqMHaztTDOYxAwiEUPwgNak37KOGAf65K7g
-         tw8Mvcu5Z8cAM8eVC6cLwjok+zJC2kPXT9qOpuLPdH3eKcCk0K+BicJUW04r4Sp9T9Ho
-         URwdBSXK185W5sjRPSIB/aj4Utb5r/wRGPxE7/wYrO5iVTemjeOIbviClt0Qz41LHKl+
-         bU6A==
-X-Gm-Message-State: AOAM533DPYAotbvQa2RgvJthr05yrYlSK1gDy+eeh3b46QBE6Vrb+yQp
-        eCepaM51maJKQ8K8mf6PKpQ=
-X-Google-Smtp-Source: ABdhPJyubuNWTifdWAO/rrX20fMehgJwWHia9jY2FBQBJCn5XRbQsZNh63lv/UwumRwcEhfgfP4iaQ==
-X-Received: by 2002:adf:dd8a:: with SMTP id x10mr1687554wrl.225.1622453737185;
-        Mon, 31 May 2021 02:35:37 -0700 (PDT)
-Received: from localhost ([62.96.65.119])
-        by smtp.gmail.com with ESMTPSA id a123sm23132507wmd.2.2021.05.31.02.35.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 31 May 2021 02:35:36 -0700 (PDT)
-Date:   Mon, 31 May 2021 11:37:10 +0200
-From:   Thierry Reding <thierry.reding@gmail.com>
-To:     Dmitry Osipenko <digetx@gmail.com>
-Cc:     Jonathan Hunter <jonathanh@nvidia.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        MyungJoo Ham <myungjoo.ham@samsung.com>,
-        Kyungmin Park <kyungmin.park@samsung.com>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Peter Geis <pgwipeout@gmail.com>,
-        Matt Merhar <mattmerhar@protonmail.com>,
-        linux-tegra@vger.kernel.org, linux-pm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
-Subject: Re: [PATCH v1 4/7] dt-bindings: devfreq: tegra30-actmon: Add
- cooling-cells
-Message-ID: <YLSuRjuuRIlrkXIQ@orome.fritz.box>
-References: <20210510211008.30300-1-digetx@gmail.com>
- <20210510211008.30300-5-digetx@gmail.com>
+        Mon, 31 May 2021 05:40:53 -0400
+Received: from pps.filterd (m0246629.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 14V9atMN002531;
+        Mon, 31 May 2021 09:38:29 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=corp-2020-01-29;
+ bh=I25HnzG1ls/ymOqV+uapF3ZRxaUxv6ftkIkApeUNKmw=;
+ b=jJGUfjjpUAgRP5G4GQjFNKvKMFpiLIrPpSpgEWmPPvvcl8f+N/kN/cKtYH7UoHCwH/p6
+ dRo/GF2LKnMmKG/PBBlcv60YD5+FW/BUXgGZsUH9AwVsaYbxAWAERlToL5OWSMmh4g/F
+ 29YekBYJ/eMmbDZTKCEYK8KFqHn1GHmvG0bKgwhkTt/tq1KscBNOFpGREhVCs3/enlA6
+ E9hi7/SYKtL8o/wyOlKDP2wXHEBJg91G/C6u5TafTbIdUimfR1DKt/G5Fp19g10bwRT0
+ aLH6lROOkQekyOAsDizQkXamPOFnE4yM8cSqJCC6WSnhRmaLq9mDp6dDcio8eu6jS+1E gw== 
+Received: from oracle.com (userp3020.oracle.com [156.151.31.79])
+        by mx0b-00069f02.pphosted.com with ESMTP id 38vng404qq-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 31 May 2021 09:38:28 +0000
+Received: from userp3020.oracle.com (userp3020.oracle.com [127.0.0.1])
+        by pps.podrdrct (8.16.0.36/8.16.0.36) with SMTP id 14V9cRvT174687;
+        Mon, 31 May 2021 09:38:27 GMT
+Received: from pps.reinject (localhost [127.0.0.1])
+        by userp3020.oracle.com with ESMTP id 38uycq8h95-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 31 May 2021 09:38:27 +0000
+Received: from userp3020.oracle.com (userp3020.oracle.com [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 14V9cRDC174676;
+        Mon, 31 May 2021 09:38:27 GMT
+Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
+        by userp3020.oracle.com with ESMTP id 38uycq8h8q-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 31 May 2021 09:38:27 +0000
+Received: from abhmp0006.oracle.com (abhmp0006.oracle.com [141.146.116.12])
+        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 14V9cP1f006251;
+        Mon, 31 May 2021 09:38:25 GMT
+Received: from kadam (/41.212.42.34)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Mon, 31 May 2021 02:38:24 -0700
+Date:   Mon, 31 May 2021 12:38:17 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     Dongliang Mu <mudongliangabcd@gmail.com>
+Cc:     perex@perex.cz, tiwai@suse.com, alsa-devel@alsa-project.org,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        syzbot+08a7d8b51ea048a74ffb@syzkaller.appspotmail.com
+Subject: Re: [PATCH] ALSA: control led: fix memory leak in
+ snd_ctl_led_register
+Message-ID: <20210531093817.GY24442@kadam>
+References: <20210528140500.GS24442@kadam>
+ <A622EB84-DC4A-47A4-A828-CE6D25DC92EB@gmail.com>
+ <CAD-N9QVjhDDJxRnNrDzwt05BNijr1o11nE8xjvq8GrakEJ8EuQ@mail.gmail.com>
+ <20210531044022.GU24442@kadam>
+ <CAD-N9QWBBP6_Wwi4z3e4yJM-tS54=1=CcvAA+2__Qj8NsTLq9g@mail.gmail.com>
+ <20210531070337.GV24442@kadam>
+ <CAD-N9QU-uqFr=b1hMi1h1ytq2Uf2XKL44f9OHBRhM70zhkiO7w@mail.gmail.com>
+ <CAD-N9QW5C2ssA7H_U+eiM=SbsPj29Ooo6Sk=r4d1qELbZQjuPA@mail.gmail.com>
+ <20210531084613.GX24442@kadam>
+ <CAD-N9QVAdaitDcM6BGfwvNR=gMf7G6DK00n0Ev6ucXc6xNFFpw@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="DTIhLsHFmQdoYjnN"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210510211008.30300-5-digetx@gmail.com>
-User-Agent: Mutt/2.0.6 (98f8cb83) (2021-03-06)
+In-Reply-To: <CAD-N9QVAdaitDcM6BGfwvNR=gMf7G6DK00n0Ev6ucXc6xNFFpw@mail.gmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Proofpoint-ORIG-GUID: 4LX8YaSfZEV5qL5xelSpwLTF4oM-N9LQ
+X-Proofpoint-GUID: 4LX8YaSfZEV5qL5xelSpwLTF4oM-N9LQ
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, May 31, 2021 at 05:10:49PM +0800, Dongliang Mu wrote:
+> Hi Dan,
+> 
+> I wonder if we shall split the current patch into two patches, one
+> patch for each memory leak. It is better to satisfy the rule - "one
+> patch only fixes one issue".
+> 
+> We should absolutely fix all these memory leaks. But one patch for two
+> different bugs with different objects and different paths is not very
+> suitable.
+> 
 
---DTIhLsHFmQdoYjnN
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+I would just send one patch, because I only see it as one bug.  But you
+do what you think is best.
 
-On Tue, May 11, 2021 at 12:10:05AM +0300, Dmitry Osipenko wrote:
-> The ACTMON watches activity of memory clients. Decisions about a minimum
-> required frequency are made based on the info from ACTMON. We can use
-> ACTMON as a thermal cooling device by limiting the required frequency.
-> Document new cooling-cells property of NVIDIA Tegra ACTMON hardware unit.
->=20
-> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
-> ---
->  .../devicetree/bindings/devfreq/nvidia,tegra30-actmon.yaml   | 5 +++++
->  1 file changed, 5 insertions(+)
+regards,
+dan carpenter
 
-Acked-by: Thierry Reding <treding@nvidia.com>
 
---DTIhLsHFmQdoYjnN
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAmC0rkYACgkQ3SOs138+
-s6FE0xAAvgUW7mPsf5QAiJG5JWXM/AV3Woi8uZGSz67Eoi1gyRuOzr81wVGZW7nE
-3BZS9lfV7Sk/zbN7BKYpkOry/onZhmSTh0NXF8CUwHa1KwYIKxPR6YobscKEh9o9
-893hMUE7/Up0fvofNRUJc4pAYq4rJ5mn3o5g1LiFPzFUVyM+HDonrmSQ3yMegTKv
-F4OgsKoqqmmUtD1xG5MfFjbKdYkmtEu/YILZbKFMwzu5KgpvSh6O/hfSAB0EXESO
-ZF6dB7GDvFYzLypO/7uD8KTxV6D6B2fkVoskqmPfgMXd+o1GWAZPAeQA1I6PhAl9
-B9FibJ2t4ibqRwINpLxduDC7iVCQ0eKta0gLjpLq9Lq6i///7VQrkxrjWkkNbO61
-eODr3dIeqEX5cnpmLf3KW4uCOE9b7PdWdWv+j9xKhw2HtKE5H0XYITJR1vvWm4tz
-btuwcKIgWTU+fOnF0fY0ef4OGyVauPQDChmSu5QbW1j1voU6ONQ0VNp84m52hCGU
-yuc3N+h4ZjuewY0d3TGiRSYEL+grbYfePwyNG9yiWQcDWo4/+eJ6h5JGDS1/VFAY
-t8HNllK98joJPBGbaPaYGTbb2SRTWPNE9HDHSmI9uVq2pvVd+8Y+qhOR3/nCAuNW
-JRKhUX3nNL0HiSfRfXZ/zhDg/AWOMK7peVzR8ukmZ1aWoESd8tw=
-=FWYi
------END PGP SIGNATURE-----
-
---DTIhLsHFmQdoYjnN--
