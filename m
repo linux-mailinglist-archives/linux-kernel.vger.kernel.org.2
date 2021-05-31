@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C39E396256
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 16:53:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 80F39396406
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 17:43:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233048AbhEaOzT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 10:55:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37384 "EHLO mail.kernel.org"
+        id S233188AbhEaPn4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 11:43:56 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47632 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231219AbhEaOD5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 10:03:57 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 49E7A6194C;
-        Mon, 31 May 2021 13:37:56 +0000 (UTC)
+        id S233614AbhEaOZD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 10:25:03 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DE39B61A19;
+        Mon, 31 May 2021 13:46:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1622468276;
-        bh=xGou3xu3WMhEItva0gKR7+VwTCk+xQj8PAChKyy1Mxo=;
+        s=korg; t=1622468780;
+        bh=1NEL+GcIiRtjPVEvr2hIegNN3AwAHmDg7Vo8080uR6A=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=T0pMrtWW2Wzk067mPlRt9k1t/Qw4GRwPahB8YntQ3Jb6T7sJ6z/JxgxWZYeGj0EbE
-         kAusZ/RyQXI9f5bJfPCUFo6fYsmjVOt6gPTQn3oqxfTV/3CFbyBmdln6MDU/izxdFn
-         r+/P+mPHWgrvp3p0VMi+JpqI/RKzcf/A+VFzS+14=
+        b=uvkD1gbE9vQgOPn6bG8/gJS86QK67ybzyQBHpFZXE0N0NGa/mOmQ+kQy/t0cfFNUO
+         wNJ4ZZ/180sG+ADCcq+EURHxCtveBiRaTo0UnrtSzdu9Na77+HcDhieBzUGiVudYb2
+         NVfERGucd7C0LyBvt5OyejRFTelORWXfm9CuwBQI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jingwen Chen <Jingwen.Chen2@amd.com>,
-        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
+        stable@vger.kernel.org, Kangjie Lu <kjlu@umn.edu>,
+        Jiri Slaby <jirislaby@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 182/252] drm/amd/amdgpu: fix refcount leak
+Subject: [PATCH 5.4 090/177] Revert "serial: max310x: pass return value of spi_register_driver"
 Date:   Mon, 31 May 2021 15:14:07 +0200
-Message-Id: <20210531130704.193621612@linuxfoundation.org>
+Message-Id: <20210531130651.007865053@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210531130657.971257589@linuxfoundation.org>
-References: <20210531130657.971257589@linuxfoundation.org>
+In-Reply-To: <20210531130647.887605866@linuxfoundation.org>
+References: <20210531130647.887605866@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,44 +40,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jingwen Chen <Jingwen.Chen2@amd.com>
+From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-[ Upstream commit fa7e6abc75f3d491bc561734312d065dc9dc2a77 ]
+[ Upstream commit b0a85abbe92e1a6f3e8580a4590fa7245de7090b ]
 
-[Why]
-the gem object rfb->base.obj[0] is get according to num_planes
-in amdgpufb_create, but is not put according to num_planes
+This reverts commit 51f689cc11333944c7a457f25ec75fcb41e99410.
 
-[How]
-put rfb->base.obj[0] in amdgpu_fbdev_destroy according to num_planes
+Because of recent interactions with developers from @umn.edu, all
+commits from them have been recently re-reviewed to ensure if they were
+correct or not.
 
-Signed-off-by: Jingwen Chen <Jingwen.Chen2@amd.com>
-Acked-by: Christian König <christian.koenig@amd.com>
-Reviewed-by: Alex Deucher <alexander.deucher@amd.com>
-Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
+Upon review, this commit was found to be incorrect for the reasons
+below, so it must be reverted.  It will be fixed up "correctly" in a
+later kernel change.
+
+This change did not properly unwind from the error condition, so it was
+not correct.
+
+Cc: Kangjie Lu <kjlu@umn.edu>
+Acked-by: Jiri Slaby <jirislaby@kernel.org>
+Link: https://lore.kernel.org/r/20210503115736.2104747-11-gregkh@linuxfoundation.org
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/amd/amdgpu/amdgpu_fb.c | 3 +++
- 1 file changed, 3 insertions(+)
+ drivers/tty/serial/max310x.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_fb.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_fb.c
-index 1ea8af48ae2f..43f29ee0e3b0 100644
---- a/drivers/gpu/drm/amd/amdgpu/amdgpu_fb.c
-+++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_fb.c
-@@ -289,10 +289,13 @@ out:
- static int amdgpu_fbdev_destroy(struct drm_device *dev, struct amdgpu_fbdev *rfbdev)
- {
- 	struct amdgpu_framebuffer *rfb = &rfbdev->rfb;
-+	int i;
+diff --git a/drivers/tty/serial/max310x.c b/drivers/tty/serial/max310x.c
+index 8434bd5a8ec7..f60b7b86d099 100644
+--- a/drivers/tty/serial/max310x.c
++++ b/drivers/tty/serial/max310x.c
+@@ -1527,10 +1527,10 @@ static int __init max310x_uart_init(void)
+ 		return ret;
  
- 	drm_fb_helper_unregister_fbi(&rfbdev->helper);
+ #ifdef CONFIG_SPI_MASTER
+-	ret = spi_register_driver(&max310x_spi_driver);
++	spi_register_driver(&max310x_spi_driver);
+ #endif
  
- 	if (rfb->base.obj[0]) {
-+		for (i = 0; i < rfb->base.format->num_planes; i++)
-+			drm_gem_object_put(rfb->base.obj[0]);
- 		amdgpufb_destroy_pinned_object(rfb->base.obj[0]);
- 		rfb->base.obj[0] = NULL;
- 		drm_framebuffer_unregister_private(&rfb->base);
+-	return ret;
++	return 0;
+ }
+ module_init(max310x_uart_init);
+ 
 -- 
 2.30.2
 
