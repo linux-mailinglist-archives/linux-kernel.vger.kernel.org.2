@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 753CF395EBE
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 16:01:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 190BF395BFC
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 15:25:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232348AbhEaODA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 10:03:00 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44910 "EHLO mail.kernel.org"
+        id S231485AbhEaN07 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 09:26:59 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55676 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232398AbhEaNkf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 09:40:35 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B7B7661466;
-        Mon, 31 May 2021 13:27:35 +0000 (UTC)
+        id S232042AbhEaNVB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 09:21:01 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id ED3BC6124C;
+        Mon, 31 May 2021 13:18:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1622467656;
-        bh=aLK+Wgwo7nLp7z0y8czxP1P/GZz5hTsKxMM0gzmJJP0=;
+        s=korg; t=1622467130;
+        bh=qV6TjxRzFkTszZxjTSxMjoDNCeRNFJ1aKFDu2S8CsF8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=JZUfPNOJmfD4yormfduAPvg2NKfDdCFJLaH++wHjfWVV0107V66ZIZ+geXPDJyOXo
-         fv2ZY+h/M9NSS/OZNqPJb1krlcvl7S3i3hGGS0IadLXYbmRdD0v6L+I+TeE6G8Qbqw
-         4P1ye0As+j26TcanAOW4wiQQ/cAf/lyZdJCYEqvo=
+        b=vKC3iQwnEZ4dL7664+Bc/31b3JQ3T5p82r3nVwBzgyqxRV763VXYU0Vy+TfuO76xj
+         yVd/f2EJXFGnQXRWFRHiWK7n2blHUXAUddKBpQwRsWZ1DCJbk1MqzcbAviHcZNz1tG
+         a+PFwuZzi61DIws4FL1Ua7N5EOGXX10kkyV9qQxE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Nicolas Schier <nicolas@fjasle.eu>
-Subject: [PATCH 4.14 03/79] scripts: switch explicitly to Python 3
-Date:   Mon, 31 May 2021 15:13:48 +0200
-Message-Id: <20210531130636.111383070@linuxfoundation.org>
+        syzbot+636c58f40a86b4a879e7@syzkaller.appspotmail.com,
+        Dongliang Mu <mudongliangabcd@gmail.com>
+Subject: [PATCH 4.9 16/66] misc/uss720: fix memory leak in uss720_probe
+Date:   Mon, 31 May 2021 15:13:49 +0200
+Message-Id: <20210531130636.775142341@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210531130636.002722319@linuxfoundation.org>
-References: <20210531130636.002722319@linuxfoundation.org>
+In-Reply-To: <20210531130636.254683895@linuxfoundation.org>
+References: <20210531130636.254683895@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,38 +40,52 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+From: Dongliang Mu <mudongliangabcd@gmail.com>
 
-commit 51839e29cb5954470ea4db7236ef8c3d77a6e0bb upstream.
+commit dcb4b8ad6a448532d8b681b5d1a7036210b622de upstream.
 
-Some distributions are about to switch to Python 3 support only.
-This means that /usr/bin/python, which is Python 2, is not available
-anymore. Hence, switch scripts to use Python 3 explicitly.
+uss720_probe forgets to decrease the refcount of usbdev in uss720_probe.
+Fix this by decreasing the refcount of usbdev by usb_put_dev.
 
-Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
-Signed-off-by: Nicolas Schier <nicolas@fjasle.eu>
+BUG: memory leak
+unreferenced object 0xffff888101113800 (size 2048):
+  comm "kworker/0:1", pid 7, jiffies 4294956777 (age 28.870s)
+  hex dump (first 32 bytes):
+    ff ff ff ff 31 00 00 00 00 00 00 00 00 00 00 00  ....1...........
+    00 00 00 00 00 00 00 00 00 00 00 00 03 00 00 00  ................
+  backtrace:
+    [<ffffffff82b8e822>] kmalloc include/linux/slab.h:554 [inline]
+    [<ffffffff82b8e822>] kzalloc include/linux/slab.h:684 [inline]
+    [<ffffffff82b8e822>] usb_alloc_dev+0x32/0x450 drivers/usb/core/usb.c:582
+    [<ffffffff82b98441>] hub_port_connect drivers/usb/core/hub.c:5129 [inline]
+    [<ffffffff82b98441>] hub_port_connect_change drivers/usb/core/hub.c:5363 [inline]
+    [<ffffffff82b98441>] port_event drivers/usb/core/hub.c:5509 [inline]
+    [<ffffffff82b98441>] hub_event+0x1171/0x20c0 drivers/usb/core/hub.c:5591
+    [<ffffffff81259229>] process_one_work+0x2c9/0x600 kernel/workqueue.c:2275
+    [<ffffffff81259b19>] worker_thread+0x59/0x5d0 kernel/workqueue.c:2421
+    [<ffffffff81261228>] kthread+0x178/0x1b0 kernel/kthread.c:292
+    [<ffffffff8100227f>] ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:294
+
+Fixes: 0f36163d3abe ("[PATCH] usb: fix uss720 schedule with interrupts off")
+Cc: stable <stable@vger.kernel.org>
+Reported-by: syzbot+636c58f40a86b4a879e7@syzkaller.appspotmail.com
+Signed-off-by: Dongliang Mu <mudongliangabcd@gmail.com>
+Link: https://lore.kernel.org/r/20210514124348.6587-1-mudongliangabcd@gmail.com
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- scripts/bloat-o-meter |    2 +-
- scripts/diffconfig    |    2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+ drivers/usb/misc/uss720.c |    1 +
+ 1 file changed, 1 insertion(+)
 
---- a/scripts/bloat-o-meter
-+++ b/scripts/bloat-o-meter
-@@ -1,4 +1,4 @@
--#!/usr/bin/env python
-+#!/usr/bin/env python3
- #
- # Copyright 2004 Matt Mackall <mpm@selenic.com>
- #
---- a/scripts/diffconfig
-+++ b/scripts/diffconfig
-@@ -1,4 +1,4 @@
--#!/usr/bin/env python
-+#!/usr/bin/env python3
- # SPDX-License-Identifier: GPL-2.0
- #
- # diffconfig - a tool to compare .config files.
+--- a/drivers/usb/misc/uss720.c
++++ b/drivers/usb/misc/uss720.c
+@@ -750,6 +750,7 @@ static int uss720_probe(struct usb_inter
+ 	parport_announce_port(pp);
+ 
+ 	usb_set_intfdata(intf, pp);
++	usb_put_dev(usbdev);
+ 	return 0;
+ 
+ probe_abort:
 
 
