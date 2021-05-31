@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F196C3962A2
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 16:58:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F4A4395C10
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 15:27:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234073AbhEaO7J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 10:59:09 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36882 "EHLO mail.kernel.org"
+        id S232253AbhEaN1p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 09:27:45 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54768 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232292AbhEaOFX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 10:05:23 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0AB1C61956;
-        Mon, 31 May 2021 13:38:31 +0000 (UTC)
+        id S232077AbhEaNVZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 09:21:25 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 85AC3613D5;
+        Mon, 31 May 2021 13:19:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1622468312;
-        bh=0Gs3QaBX5NpBiFEW+dVVgdX5Zdxzj0UaiT1XmKN/qHk=;
+        s=korg; t=1622467144;
+        bh=TKq5CCJ0eDoPwAoBeEAeQs1hYcnkJdOuA34DxS8ZYHw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=fhVf3xSv1wansAAlqm8rfAEcFlp6vLEg3EEKp2aZbbfF+e3SfXWSatKQUEuX5C2dQ
-         pzwZOgNlL1BT20lCSUUJWtHNfPgyGQxvyk9XGnAhPmFn/cjFfPJ+EdqSZA0txQ7EZj
-         KPbjiDqXBJvbteP4Bq/T3ifqTFNpc8RRFkAmywL0=
+        b=unX5r1zmH/0eqfZfHe1jqrIcaNdIH5qzs/vMtlZ38cpL0vyHb3ABMETV9xrRlCzxM
+         UuC+iC4rkhmVN5QH+/W4vY7W0hnJqhefvwTqv0I3BWU+lXkHaPevP++HuT9+nQL8KX
+         NA/XQ2r3FihSMMDDA32xJjDCOP/k3bHPmOTxuSYM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Anirudh Rayabharam <mail@anirudhrb.com>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 151/252] ath6kl: return error code in ath6kl_wmi_set_roam_lrssi_cmd()
+        stable@vger.kernel.org,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Nicolas Schier <nicolas@fjasle.eu>
+Subject: [PATCH 4.9 03/66] scripts: switch explicitly to Python 3
 Date:   Mon, 31 May 2021 15:13:36 +0200
-Message-Id: <20210531130703.136037228@linuxfoundation.org>
+Message-Id: <20210531130636.378813099@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210531130657.971257589@linuxfoundation.org>
-References: <20210531130657.971257589@linuxfoundation.org>
+In-Reply-To: <20210531130636.254683895@linuxfoundation.org>
+References: <20210531130636.254683895@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,64 +41,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Anirudh Rayabharam <mail@anirudhrb.com>
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 
-[ Upstream commit 54433367840b46a1555c8ed36c4c0cfc5dbf1358 ]
+commit 51839e29cb5954470ea4db7236ef8c3d77a6e0bb upstream.
 
-Propagate error code from failure of ath6kl_wmi_cmd_send() to the
-caller.
+Some distributions are about to switch to Python 3 support only.
+This means that /usr/bin/python, which is Python 2, is not available
+anymore. Hence, switch scripts to use Python 3 explicitly.
 
-Signed-off-by: Anirudh Rayabharam <mail@anirudhrb.com>
-Cc: Kalle Valo <kvalo@codeaurora.org>
-Link: https://lore.kernel.org/r/20210503115736.2104747-44-gregkh@linuxfoundation.org
+Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+[nicolas@fjasle.eu: update context for v4.9]
+Signed-off-by: Nicolas Schier <nicolas@fjasle.eu>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/wireless/ath/ath6kl/debug.c | 5 ++++-
- drivers/net/wireless/ath/ath6kl/wmi.c   | 4 +---
- 2 files changed, 5 insertions(+), 4 deletions(-)
+ scripts/bloat-o-meter |    2 +-
+ scripts/diffconfig    |    2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/net/wireless/ath/ath6kl/debug.c b/drivers/net/wireless/ath/ath6kl/debug.c
-index 7506cea46f58..433a047f3747 100644
---- a/drivers/net/wireless/ath/ath6kl/debug.c
-+++ b/drivers/net/wireless/ath/ath6kl/debug.c
-@@ -1027,14 +1027,17 @@ static ssize_t ath6kl_lrssi_roam_write(struct file *file,
- {
- 	struct ath6kl *ar = file->private_data;
- 	unsigned long lrssi_roam_threshold;
-+	int ret;
- 
- 	if (kstrtoul_from_user(user_buf, count, 0, &lrssi_roam_threshold))
- 		return -EINVAL;
- 
- 	ar->lrssi_roam_threshold = lrssi_roam_threshold;
- 
--	ath6kl_wmi_set_roam_lrssi_cmd(ar->wmi, ar->lrssi_roam_threshold);
-+	ret = ath6kl_wmi_set_roam_lrssi_cmd(ar->wmi, ar->lrssi_roam_threshold);
- 
-+	if (ret)
-+		return ret;
- 	return count;
- }
- 
-diff --git a/drivers/net/wireless/ath/ath6kl/wmi.c b/drivers/net/wireless/ath/ath6kl/wmi.c
-index 99be0d20f9a5..dbc47702a268 100644
---- a/drivers/net/wireless/ath/ath6kl/wmi.c
-+++ b/drivers/net/wireless/ath/ath6kl/wmi.c
-@@ -776,10 +776,8 @@ int ath6kl_wmi_set_roam_lrssi_cmd(struct wmi *wmi, u8 lrssi)
- 	cmd->info.params.roam_rssi_floor = DEF_LRSSI_ROAM_FLOOR;
- 	cmd->roam_ctrl = WMI_SET_LRSSI_SCAN_PARAMS;
- 
--	ath6kl_wmi_cmd_send(wmi, 0, skb, WMI_SET_ROAM_CTRL_CMDID,
-+	return ath6kl_wmi_cmd_send(wmi, 0, skb, WMI_SET_ROAM_CTRL_CMDID,
- 			    NO_SYNC_WMIFLAG);
--
--	return 0;
- }
- 
- int ath6kl_wmi_force_roam_cmd(struct wmi *wmi, const u8 *bssid)
--- 
-2.30.2
-
+--- a/scripts/bloat-o-meter
++++ b/scripts/bloat-o-meter
+@@ -1,4 +1,4 @@
+-#!/usr/bin/env python
++#!/usr/bin/env python3
+ #
+ # Copyright 2004 Matt Mackall <mpm@selenic.com>
+ #
+--- a/scripts/diffconfig
++++ b/scripts/diffconfig
+@@ -1,4 +1,4 @@
+-#!/usr/bin/env python
++#!/usr/bin/env python3
+ #
+ # diffconfig - a tool to compare .config files.
+ #
 
 
