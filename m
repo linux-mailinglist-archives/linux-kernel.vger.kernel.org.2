@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 42B5D3963CA
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 17:33:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 962F13964FC
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 18:17:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234582AbhEaPfa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 11:35:30 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43712 "EHLO mail.kernel.org"
+        id S233604AbhEaQS4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 12:18:56 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38034 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232153AbhEaOQB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 10:16:01 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5BDE3619A4;
-        Mon, 31 May 2021 13:43:10 +0000 (UTC)
+        id S233823AbhEaOlh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 10:41:37 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D88806190A;
+        Mon, 31 May 2021 13:53:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1622468590;
-        bh=81HEX3wfGTS5qyC4+VS4SZfAh54TQnf3Kpe1DR6KXDs=;
+        s=korg; t=1622469227;
+        bh=evehsWDgrtvFFAaGhdrJiBjBwlzESMfUFXRcxpCubt0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=0fwN9pJpvIXgLuefprmgCay18Uh8vaqNBr31F7bHS4MHotE8fxK4ptjfRDmPqt4A2
-         TKYOv0cuHq4ujasF2d937bILIjp8B5EoQlTO3eHCec/dz8AxeLg3qz3RAUOSjVLAXl
-         xBjuLHjUH6d/bcBx/dwgDzHMfjz7/dBGS5j5YJ8k=
+        b=HqY3C63oLoVvodTJYEt8QNSdHCL5E6XPGEoDjkOCDOy03aGHRQcI0W39OS9gXi+xV
+         gEJOCZOuUr/xLCI5+8xITFGL6T5zWA+aw28/OL/Abs/yT6HxF+FhdzxDCSZHoHbYne
+         teaWbZszDenD8FZBAJNX2vVLBXavvyPsUrw9SRxU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Mathy Vanhoef <Mathy.Vanhoef@kuleuven.be>,
-        Johannes Berg <johannes.berg@intel.com>
-Subject: [PATCH 5.4 014/177] mac80211: assure all fragments are encrypted
-Date:   Mon, 31 May 2021 15:12:51 +0200
-Message-Id: <20210531130648.400682153@linuxfoundation.org>
+        stable@vger.kernel.org, Stefan Agner <stefan@agner.ch>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+Subject: [PATCH 5.12 117/296] drm/meson: fix shutdown crash when component not probed
+Date:   Mon, 31 May 2021 15:12:52 +0200
+Message-Id: <20210531130707.853596116@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210531130647.887605866@linuxfoundation.org>
-References: <20210531130647.887605866@linuxfoundation.org>
+In-Reply-To: <20210531130703.762129381@linuxfoundation.org>
+References: <20210531130703.762129381@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,78 +40,59 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mathy Vanhoef <Mathy.Vanhoef@kuleuven.be>
+From: Neil Armstrong <narmstrong@baylibre.com>
 
-commit 965a7d72e798eb7af0aa67210e37cf7ecd1c9cad upstream.
+commit 7cfc4ea78fc103ea51ecbacd9236abb5b1c490d2 upstream.
 
-Do not mix plaintext and encrypted fragments in protected Wi-Fi
-networks. This fixes CVE-2020-26147.
+When main component is not probed, by example when the dw-hdmi module is
+not loaded yet or in probe defer, the following crash appears on shutdown:
 
-Previously, an attacker was able to first forward a legitimate encrypted
-fragment towards a victim, followed by a plaintext fragment. The
-encrypted and plaintext fragment would then be reassembled. For further
-details see Section 6.3 and Appendix D in the paper "Fragment and Forge:
-Breaking Wi-Fi Through Frame Aggregation and Fragmentation".
+Unable to handle kernel NULL pointer dereference at virtual address 0000000000000038
+...
+pc : meson_drv_shutdown+0x24/0x50
+lr : platform_drv_shutdown+0x20/0x30
+...
+Call trace:
+meson_drv_shutdown+0x24/0x50
+platform_drv_shutdown+0x20/0x30
+device_shutdown+0x158/0x360
+kernel_restart_prepare+0x38/0x48
+kernel_restart+0x18/0x68
+__do_sys_reboot+0x224/0x250
+__arm64_sys_reboot+0x24/0x30
+...
 
-Because of this change there are now two equivalent conditions in the
-code to determine if a received fragment requires sequential PNs, so we
-also move this test to a separate function to make the code easier to
-maintain.
+Simply check if the priv struct has been allocated before using it.
 
-Cc: stable@vger.kernel.org
-Signed-off-by: Mathy Vanhoef <Mathy.Vanhoef@kuleuven.be>
-Link: https://lore.kernel.org/r/20210511200110.30c4394bb835.I5acfdb552cc1d20c339c262315950b3eac491397@changeid
-Signed-off-by: Johannes Berg <johannes.berg@intel.com>
+Fixes: fa0c16caf3d7 ("drm: meson_drv add shutdown function")
+Reported-by: Stefan Agner <stefan@agner.ch>
+Signed-off-by: Neil Armstrong <narmstrong@baylibre.com>
+Tested-by: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+Reviewed-by: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+Link: https://patchwork.freedesktop.org/patch/msgid/20210430082744.3638743-1-narmstrong@baylibre.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- net/mac80211/rx.c |   23 ++++++++++++-----------
- 1 file changed, 12 insertions(+), 11 deletions(-)
+ drivers/gpu/drm/meson/meson_drv.c |    9 +++++----
+ 1 file changed, 5 insertions(+), 4 deletions(-)
 
---- a/net/mac80211/rx.c
-+++ b/net/mac80211/rx.c
-@@ -2154,6 +2154,16 @@ ieee80211_reassemble_find(struct ieee802
- 	return NULL;
+--- a/drivers/gpu/drm/meson/meson_drv.c
++++ b/drivers/gpu/drm/meson/meson_drv.c
+@@ -485,11 +485,12 @@ static int meson_probe_remote(struct pla
+ static void meson_drv_shutdown(struct platform_device *pdev)
+ {
+ 	struct meson_drm *priv = dev_get_drvdata(&pdev->dev);
+-	struct drm_device *drm = priv->drm;
+ 
+-	DRM_DEBUG_DRIVER("\n");
+-	drm_kms_helper_poll_fini(drm);
+-	drm_atomic_helper_shutdown(drm);
++	if (!priv)
++		return;
++
++	drm_kms_helper_poll_fini(priv->drm);
++	drm_atomic_helper_shutdown(priv->drm);
  }
  
-+static bool requires_sequential_pn(struct ieee80211_rx_data *rx, __le16 fc)
-+{
-+	return rx->key &&
-+		(rx->key->conf.cipher == WLAN_CIPHER_SUITE_CCMP ||
-+		 rx->key->conf.cipher == WLAN_CIPHER_SUITE_CCMP_256 ||
-+		 rx->key->conf.cipher == WLAN_CIPHER_SUITE_GCMP ||
-+		 rx->key->conf.cipher == WLAN_CIPHER_SUITE_GCMP_256) &&
-+		ieee80211_has_protected(fc);
-+}
-+
- static ieee80211_rx_result debug_noinline
- ieee80211_rx_h_defragment(struct ieee80211_rx_data *rx)
- {
-@@ -2198,12 +2208,7 @@ ieee80211_rx_h_defragment(struct ieee802
- 		/* This is the first fragment of a new frame. */
- 		entry = ieee80211_reassemble_add(rx->sdata, frag, seq,
- 						 rx->seqno_idx, &(rx->skb));
--		if (rx->key &&
--		    (rx->key->conf.cipher == WLAN_CIPHER_SUITE_CCMP ||
--		     rx->key->conf.cipher == WLAN_CIPHER_SUITE_CCMP_256 ||
--		     rx->key->conf.cipher == WLAN_CIPHER_SUITE_GCMP ||
--		     rx->key->conf.cipher == WLAN_CIPHER_SUITE_GCMP_256) &&
--		    ieee80211_has_protected(fc)) {
-+		if (requires_sequential_pn(rx, fc)) {
- 			int queue = rx->security_idx;
- 
- 			/* Store CCMP/GCMP PN so that we can verify that the
-@@ -2245,11 +2250,7 @@ ieee80211_rx_h_defragment(struct ieee802
- 		u8 pn[IEEE80211_CCMP_PN_LEN], *rpn;
- 		int queue;
- 
--		if (!rx->key ||
--		    (rx->key->conf.cipher != WLAN_CIPHER_SUITE_CCMP &&
--		     rx->key->conf.cipher != WLAN_CIPHER_SUITE_CCMP_256 &&
--		     rx->key->conf.cipher != WLAN_CIPHER_SUITE_GCMP &&
--		     rx->key->conf.cipher != WLAN_CIPHER_SUITE_GCMP_256))
-+		if (!requires_sequential_pn(rx, fc))
- 			return RX_DROP_UNUSABLE;
- 		memcpy(pn, entry->last_pn, IEEE80211_CCMP_PN_LEN);
- 		for (i = IEEE80211_CCMP_PN_LEN - 1; i >= 0; i--) {
+ static int meson_drv_probe(struct platform_device *pdev)
 
 
