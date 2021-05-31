@@ -2,87 +2,228 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 624B8396848
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 21:14:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CD92239684F
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 21:21:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231409AbhEaTQe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 15:16:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50376 "EHLO
+        id S231585AbhEaTXb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 15:23:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51864 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230405AbhEaTQd (ORCPT
+        with ESMTP id S230308AbhEaTXY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 15:16:33 -0400
-Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11C7CC061574
-        for <linux-kernel@vger.kernel.org>; Mon, 31 May 2021 12:14:53 -0700 (PDT)
-Received: from zn.tnic (p200300ec2f080f00caafab4a831a2d08.dip0.t-ipconnect.de [IPv6:2003:ec:2f08:f00:caaf:ab4a:831a:2d08])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 814481EC0570;
-        Mon, 31 May 2021 21:14:51 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1622488491;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=tzOm/G5qfBYV1P1hRsvP4m2wExoTfbnjW+M/2R/uxaM=;
-        b=FWSJ2LNsRYwnvOTJbHXhOVfNDRR1506QAP7UysJLaeVjadc7DLZgICluyPUbaUcOLQcQJO
-        K5YUEdtMy8KxcNuwXj+az0r/L6G2pqkHU8MyasRLtJbSnQrQndn0k7JBr/o5DQ4+aRWvXS
-        KJ7nQc3q2B1Eax4/ZyLt37VB8g3YPiI=
-Date:   Mon, 31 May 2021 21:14:45 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     "Kuppuswamy, Sathyanarayanan" 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>
-Cc:     Tom Lendacky <thomas.lendacky@amd.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
-        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
-        Raj Ashok <ashok.raj@intel.com>, linux-kernel@vger.kernel.org,
-        Brijesh Singh <brijesh.singh@amd.com>
-Subject: Re: [RFC v2 28/32] x86/tdx: Make pages shared in ioremap()
-Message-ID: <YLU1peNu/744jR/R@zn.tnic>
-References: <0e233779-9c10-11df-b527-ef61e003ea35@linux.intel.com>
- <YKfPLlulaqwypNkO@zn.tnic>
- <f5e64c61-7f3c-3936-1b8e-7874ec81d83e@amd.com>
- <YKgA1od/SqycWWds@zn.tnic>
- <86b4d995-9619-81fa-5ef4-86f48ab01e96@amd.com>
- <a94e1fb8-50bf-ef69-6553-237937029c5d@linux.intel.com>
- <YLT9AGodkvct8YTO@zn.tnic>
- <96a63ddf-98f9-7095-f7bb-100bf56a4d10@linux.intel.com>
- <YLUjCqdPu/8eWuB+@zn.tnic>
- <280669ec-d43a-83af-55ba-ad03411538b5@linux.intel.com>
+        Mon, 31 May 2021 15:23:24 -0400
+Received: from mail-lj1-x230.google.com (mail-lj1-x230.google.com [IPv6:2a00:1450:4864:20::230])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57A73C061574;
+        Mon, 31 May 2021 12:21:43 -0700 (PDT)
+Received: by mail-lj1-x230.google.com with SMTP id e11so16151372ljn.13;
+        Mon, 31 May 2021 12:21:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=11twWy/ybOBSLZU1GcEMi3/TJsry3p9YUZOb/UBo0SU=;
+        b=FimFuoyvHklH+idplyPIxFbedZS0CGARUdeUAptgg6W+bBA3domtm+elGksLYcJnA7
+         +QGSeKeTyrcx7HaO4vFOLplb2k/8+HDBO1KnTx4I9et9hdwqVEUkv+5MzYJIaKOz+/DG
+         84AR4KRupVSGTonPGKeJ7+Dzs558CZ6HLWqzt5aVoRAIcGh7F0pmcVduA8RKirguS6yz
+         Ios+T0OXt7GNT0SluEWNiQZjBYWd/Y8IEy/PMMcJcdxw+9yyEEw6iNuuYRxctDg6vC0k
+         lloasmwsi8Z1XCQnxggGgYLw+jL7yKBBW8a2l29CitWECtEBiKV2RIN7s1e32qe5Elzx
+         aHGQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=11twWy/ybOBSLZU1GcEMi3/TJsry3p9YUZOb/UBo0SU=;
+        b=PaOf7VvDyauTMCq6IcVAL2Rb4nhh4bF8Q93C5444H02cJ0H7lU3DOnC4L9/1fH4vuy
+         cV2yvFJBdnVxQBl1bXQYoa5nAvYd9JTXJ6zWzvWj3i2+CweA0v04+PtPs4bu04umv1np
+         hPCwrXPN7dfeV5cq5oEImwYNNm20CC/4+m1dzk+LWYTL4pnLd2iNtKa6nn8Oawg2zSnt
+         KTY3MFYbOU07Kq5HDX51nXVesBWHtcLQUoDCT3pXlNmk3dxOjjcoMkaVM2/fW1NCRwNj
+         jff5JzuL7azogPJSiZRhJDC4UCBfqFV4VBWbvXGH8vy8xaAb2xlH7OGAFz64NQyKxUUC
+         22ug==
+X-Gm-Message-State: AOAM532wVwTt1KvlgnEwUVp5IzT3PNrtLQO96XleUMWm/IDWQPBI9rY4
+        ePgdEOIpa4LMumgVqwI6bc+zhgRWiHk=
+X-Google-Smtp-Source: ABdhPJx/kRxSCpofr/cAMAeaupRusSxI0/KdU/jxoRKesHzPj5YkZKWvP41jSRq/xL5vRFLSWEwM2Q==
+X-Received: by 2002:a2e:9c4a:: with SMTP id t10mr18329864ljj.307.1622488901523;
+        Mon, 31 May 2021 12:21:41 -0700 (PDT)
+Received: from [192.168.2.145] (79-139-170-222.dynamic.spd-mgts.ru. [79.139.170.222])
+        by smtp.googlemail.com with ESMTPSA id j4sm58945lfm.217.2021.05.31.12.21.40
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 31 May 2021 12:21:41 -0700 (PDT)
+Subject: Re: [PATCH v1 3/7] dt-bindings: devfreq: tegra30-actmon: Convert to
+ schema
+To:     Thierry Reding <thierry.reding@gmail.com>
+Cc:     Jonathan Hunter <jonathanh@nvidia.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        MyungJoo Ham <myungjoo.ham@samsung.com>,
+        Kyungmin Park <kyungmin.park@samsung.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Peter Geis <pgwipeout@gmail.com>,
+        Matt Merhar <mattmerhar@protonmail.com>,
+        linux-tegra@vger.kernel.org, linux-pm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
+References: <20210510211008.30300-1-digetx@gmail.com>
+ <20210510211008.30300-4-digetx@gmail.com> <YLSuHejkyPg+DJ0Y@orome.fritz.box>
+From:   Dmitry Osipenko <digetx@gmail.com>
+Message-ID: <0a447f47-4e8b-120b-8fc5-22764740eb8d@gmail.com>
+Date:   Mon, 31 May 2021 22:21:40 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
+In-Reply-To: <YLSuHejkyPg+DJ0Y@orome.fritz.box>
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <280669ec-d43a-83af-55ba-ad03411538b5@linux.intel.com>
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 31, 2021 at 11:45:38AM -0700, Kuppuswamy, Sathyanarayanan wrote:
-> We can also use protected_guest_has(VM_VIRTIO_SECURE_FIX) or something
-> similar for this purpose. Andi, any comments?
+31.05.2021 12:36, Thierry Reding пишет:
+> On Tue, May 11, 2021 at 12:10:04AM +0300, Dmitry Osipenko wrote:
+>> Convert NVIDIA Tegra ACTMON binding to schema.
+>>
+>> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+>> ---
+>>  .../arm/tegra/nvidia,tegra30-actmon.txt       |  57 ---------
+>>  .../devfreq/nvidia,tegra30-actmon.yaml        | 121 ++++++++++++++++++
+>>  2 files changed, 121 insertions(+), 57 deletions(-)
+>>  delete mode 100644 Documentation/devicetree/bindings/arm/tegra/nvidia,tegra30-actmon.txt
+>>  create mode 100644 Documentation/devicetree/bindings/devfreq/nvidia,tegra30-actmon.yaml
+>>
+>> diff --git a/Documentation/devicetree/bindings/arm/tegra/nvidia,tegra30-actmon.txt b/Documentation/devicetree/bindings/arm/tegra/nvidia,tegra30-actmon.txt
+>> deleted file mode 100644
+>> index 897eedfa2bc8..000000000000
+>> --- a/Documentation/devicetree/bindings/arm/tegra/nvidia,tegra30-actmon.txt
+>> +++ /dev/null
+>> @@ -1,57 +0,0 @@
+>> -NVIDIA Tegra Activity Monitor
+>> -
+>> -The activity monitor block collects statistics about the behaviour of other
+>> -components in the system. This information can be used to derive the rate at
+>> -which the external memory needs to be clocked in order to serve all requests
+>> -from the monitored clients.
+>> -
+>> -Required properties:
+>> -- compatible: should be "nvidia,tegra<chip>-actmon"
+>> -- reg: offset and length of the register set for the device
+>> -- interrupts: standard interrupt property
+>> -- clocks: Must contain a phandle and clock specifier pair for each entry in
+>> -clock-names. See ../../clock/clock-bindings.txt for details.
+>> -- clock-names: Must include the following entries:
+>> -  - actmon
+>> -  - emc
+>> -- resets: Must contain an entry for each entry in reset-names. See
+>> -../../reset/reset.txt for details.
+>> -- reset-names: Must include the following entries:
+>> -  - actmon
+>> -- operating-points-v2: See ../bindings/opp/opp.txt for details.
+>> -- interconnects: Should contain entries for memory clients sitting on
+>> -                 MC->EMC memory interconnect path.
+>> -- interconnect-names: Should include name of the interconnect path for each
+>> -                      interconnect entry. Consult TRM documentation for
+>> -                      information about available memory clients, see MEMORY
+>> -                      CONTROLLER section.
+>> -
+>> -For each opp entry in 'operating-points-v2' table:
+>> -- opp-supported-hw: bitfield indicating SoC speedo ID mask
+>> -- opp-peak-kBps: peak bandwidth of the memory channel
+>> -
+>> -Example:
+>> -	dfs_opp_table: opp-table {
+>> -		compatible = "operating-points-v2";
+>> -
+>> -		opp@12750000 {
+>> -			opp-hz = /bits/ 64 <12750000>;
+>> -			opp-supported-hw = <0x000F>;
+>> -			opp-peak-kBps = <51000>;
+>> -		};
+>> -		...
+>> -	};
+>> -
+>> -	actmon@6000c800 {
+>> -		compatible = "nvidia,tegra124-actmon";
+>> -		reg = <0x0 0x6000c800 0x0 0x400>;
+>> -		interrupts = <GIC_SPI 45 IRQ_TYPE_LEVEL_HIGH>;
+>> -		clocks = <&tegra_car TEGRA124_CLK_ACTMON>,
+>> -			 <&tegra_car TEGRA124_CLK_EMC>;
+>> -		clock-names = "actmon", "emc";
+>> -		resets = <&tegra_car 119>;
+>> -		reset-names = "actmon";
+>> -		operating-points-v2 = <&dfs_opp_table>;
+>> -		interconnects = <&mc TEGRA124_MC_MPCORER &emc>;
+>> -		interconnect-names = "cpu";
+>> -	};
+>> diff --git a/Documentation/devicetree/bindings/devfreq/nvidia,tegra30-actmon.yaml b/Documentation/devicetree/bindings/devfreq/nvidia,tegra30-actmon.yaml
+>> new file mode 100644
+>> index 000000000000..2a940d5d7ab4
+>> --- /dev/null
+>> +++ b/Documentation/devicetree/bindings/devfreq/nvidia,tegra30-actmon.yaml
+>> @@ -0,0 +1,121 @@
+>> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+>> +%YAML 1.2
+>> +---
+>> +$id: http://devicetree.org/schemas/devfreq/nvidia,tegra30-actmon.yaml#
+>> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+>> +
+>> +title: NVIDIA Tegra30 Activity Monitor
+>> +
+>> +maintainers:
+>> +  - Dmitry Osipenko <digetx@gmail.com>
+>> +  - Jon Hunter <jonathanh@nvidia.com>
+>> +  - Thierry Reding <thierry.reding@gmail.com>
+>> +
+>> +description: |
+>> +  The activity monitor block collects statistics about the behaviour of other
+>> +  components in the system. This information can be used to derive the rate at
+>> +  which the external memory needs to be clocked in order to serve all requests
+>> +  from the monitored clients.
+>> +
+>> +properties:
+>> +  compatible:
+>> +    enum:
+>> +      - nvidia,tegra30-actmon
+>> +      - nvidia,tegra114-actmon
+>> +      - nvidia,tegra124-actmon
+>> +      - nvidia,tegra210-actmon
+>> +
+>> +  reg:
+>> +    maxItems: 1
+>> +
+>> +  clocks:
+>> +    maxItems: 2
+>> +
+>> +  clock-names:
+>> +    items:
+>> +      - const: actmon
+>> +      - const: emc
+>> +
+>> +  resets:
+>> +    maxItems: 1
+>> +
+>> +  reset-names:
+>> +    items:
+>> +      - const: actmon
+>> +
+>> +  interrupts:
+>> +    maxItems: 1
+>> +
+>> +  interconnects:
+>> +    minItems: 1
+>> +    maxItems: 12
+>> +
+>> +  interconnect-names:
+>> +    minItems: 1
+>> +    maxItems: 12
+>> +    description:
+>> +      Should include name of the interconnect path for each interconnect
+>> +      entry. Consult TRM documentation for information about available
+>> +      memory clients, see ACTIVITY MONITOR section.
+> 
+> This used to be "see MEMORY CONTROLLER section", so I looked at the TRM
+> to see if this was perhaps a fix for an earlier typo, but looking at the
+> TRM (v3) I can't find a section named "ACTIVITY MONITOR".
+> 
+> Should this be changed back to "MEMORY CONTROLLER"?
 
-protected_guest_has() is enough for that - no need for two functions.
-
-> IMHO, its better to use above generic config option in common header
-> file (linux/protected_guest.h). Any architecture that implements
-> protected guest feature can enable it. This will help is hide arch
-> specific config options in arch specific header file.
-
-You define empty function stubs for when the arch config option is not
-enabled. Everything else is unnecessary. When another architecture needs
-this, then another architecture will generalize it like it is usually
-done.
-
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+The "ACTIVITY MONITOR" is documented only in the T124/210 TRMs, the h/w
+modules supported by ACTMON are enumerated there. Both "ACTIVITY
+MONITOR" and "MEMORY CONTROLLER" could be mentioned for completeness.
