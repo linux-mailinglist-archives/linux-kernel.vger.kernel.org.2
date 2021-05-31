@@ -2,121 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F6033957E6
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 11:13:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F8E73957EB
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 11:16:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230165AbhEaJPB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 05:15:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57744 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229522AbhEaJO6 (ORCPT
+        id S230296AbhEaJRk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 05:17:40 -0400
+Received: from szxga01-in.huawei.com ([45.249.212.187]:2798 "EHLO
+        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229522AbhEaJRh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 05:14:58 -0400
-Received: from mail-wm1-x333.google.com (mail-wm1-x333.google.com [IPv6:2a00:1450:4864:20::333])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3207C061574;
-        Mon, 31 May 2021 02:13:17 -0700 (PDT)
-Received: by mail-wm1-x333.google.com with SMTP id l18-20020a1c79120000b0290181c444b2d0so6115446wme.5;
-        Mon, 31 May 2021 02:13:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=P/FcU8jcIInu3/5vyfw3rzhek7vS2tOiNJ/TNmS0lXw=;
-        b=FT0tyPYFz4FIEIqixuK7tvzKqWYGEQ+zOsagYUpiWBmbWLFd6g02W8O2XfB/CvGAib
-         5BEKi7vOmJKooyNjlrp/xvAML7HfZ6aM73wutFv5cDyGgwGjpos+3ZiX8tpzsioMHviK
-         TxWGXp+6bN3DcMduNk074aEy9ByZSw91S6sBck5wS1r3CItcOie08VIf0opk9ApPTk1z
-         5MEECvvsz/3dnA0oKMOn7P3TdZmHZxrW20koCD4W6MhmIOXjTxJaEIC3tStgAHTn6e3l
-         0AC75kSH5pgYizJ7Bd+mShpDM9mfNR02474qdWjhQsU3PlreIf3epq7sr9tRnhuw47J3
-         canQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=P/FcU8jcIInu3/5vyfw3rzhek7vS2tOiNJ/TNmS0lXw=;
-        b=lZxtwPUp4G0dZPS/54f0G44Ns9Yqf64Sbj7xGWqDKic4a5y4EoEYfGGxTKgUkq8/TO
-         83jtHrqtIs8B4JfS3j2EXX9sf+Js3+A2PGl0l/wR/7Qpqe43ytoyTLjNq6yvQ3LBC8Cf
-         T36XYbN/sfJnznMZuy2C2plkQuD/LvO0+oKTDEhp42dhhI4mpmA/lBL6CHJeSwv2ulUv
-         p8bnVmgLObJjwFPyL4AIIYKCZFZI+K8SSGGFjM7kzN8hPQc+7qEv5UvzVy6aOzT/dSXB
-         TgBQ67F2nylSeg19UKieblSiAKS2n0Jl//0uW7kPt918Kz9ZwfexXzyPUhYECLrEUEw0
-         gcTg==
-X-Gm-Message-State: AOAM5309m2VQByd50FY9GREStmXo5MPVO8uyZdNPI23c1H8C9JHBVh/3
-        HCJ+lf5ZwEHEkIqysrFqF64=
-X-Google-Smtp-Source: ABdhPJxJixZR0XbEI5GzHNOVJBRoLPUNamNgtzvVVgFcBSP0rCZj+dHOu6MfBWAAVcyiJPRrrkvEIw==
-X-Received: by 2002:a05:600c:3542:: with SMTP id i2mr19736597wmq.124.1622452396494;
-        Mon, 31 May 2021 02:13:16 -0700 (PDT)
-Received: from localhost ([62.96.65.119])
-        by smtp.gmail.com with ESMTPSA id x16sm16196569wrp.6.2021.05.31.02.13.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 31 May 2021 02:13:15 -0700 (PDT)
-Date:   Mon, 31 May 2021 11:14:49 +0200
-From:   Thierry Reding <thierry.reding@gmail.com>
-To:     Dmitry Osipenko <digetx@gmail.com>
-Cc:     Jonathan Hunter <jonathanh@nvidia.com>,
-        Agneli <poczt@protonmail.ch>, Paul Fertser <fercerpav@gmail.com>,
-        Svyatoslav Ryhel <clamor95@gmail.com>,
-        linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v1 04/10] ARM: tegra: Add reg property to Tegra20 EMC
- table device-tree nodes
-Message-ID: <YLSpCXNtut3z8U9a@orome.fritz.box>
-References: <20210510202600.12156-1-digetx@gmail.com>
- <20210510202600.12156-5-digetx@gmail.com>
+        Mon, 31 May 2021 05:17:37 -0400
+Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.54])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4FtqKJ0XYDzWq51;
+        Mon, 31 May 2021 17:11:16 +0800 (CST)
+Received: from dggpemm500006.china.huawei.com (7.185.36.236) by
+ dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Mon, 31 May 2021 17:15:56 +0800
+Received: from [127.0.0.1] (10.174.177.72) by dggpemm500006.china.huawei.com
+ (7.185.36.236) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Mon, 31 May
+ 2021 17:15:55 +0800
+Subject: Re: [PATCH 1/1] EDAC, mpc85xx: Fix error return code in two functions
+To:     Borislav Petkov <bp@alien8.de>
+CC:     Johannes Thumshirn <morbidrsa@gmail.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Tony Luck <tony.luck@intel.com>,
+        James Morse <james.morse@arm.com>,
+        Robert Richter <rric@kernel.org>,
+        Doug Thompson <dougthompson@xmission.com>,
+        Dave Jiang <djiang@mvista.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-edac <linux-edac@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+References: <20210528032637.9231-1-thunder.leizhen@huawei.com>
+ <YLSg/8REPQoX8HL7@zn.tnic>
+From:   "Leizhen (ThunderTown)" <thunder.leizhen@huawei.com>
+Message-ID: <daec460d-754c-d904-f81c-91bdfaccefad@huawei.com>
+Date:   Mon, 31 May 2021 17:15:54 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="3GTNXXpnqAELcLjv"
-Content-Disposition: inline
-In-Reply-To: <20210510202600.12156-5-digetx@gmail.com>
-User-Agent: Mutt/2.0.6 (98f8cb83) (2021-03-06)
+In-Reply-To: <YLSg/8REPQoX8HL7@zn.tnic>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.177.72]
+X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
+ dggpemm500006.china.huawei.com (7.185.36.236)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
---3GTNXXpnqAELcLjv
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Mon, May 10, 2021 at 11:25:54PM +0300, Dmitry Osipenko wrote:
-> The reg property is now specified for the emc-tables nodes in the Tegra20
-> device-tree binding. Add reg property to the EMC table device-tree nodes
-> of Tegra20 board device-trees in order to silence dt_binding_check warning
-> about the missing property.
->=20
-> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
-> ---
->  arch/arm/boot/dts/tegra20-acer-a500-picasso.dts | 4 ++++
->  arch/arm/boot/dts/tegra20-paz00.dts             | 1 +
->  2 files changed, 5 insertions(+)
+On 2021/5/31 16:40, Borislav Petkov wrote:
+> On Fri, May 28, 2021 at 11:26:37AM +0800, Zhen Lei wrote:
+>> Fix to return -EFAULT from the error handling case instead of 0, as done
+>> elsewhere in its function.
+>>
+>> Fixes: a9a753d53204 ("drivers-edac: add freescale mpc85xx driver")
+>> Reported-by: Hulk Robot <hulkci@huawei.com>
+>> Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
+>> ---
+>>  drivers/edac/mpc85xx_edac.c | 2 ++
+>>  1 file changed, 2 insertions(+)
+>>
+>> diff --git a/drivers/edac/mpc85xx_edac.c b/drivers/edac/mpc85xx_edac.c
+>> index 67f7bc3fe5b3..b2eaa62c9412 100644
+>> --- a/drivers/edac/mpc85xx_edac.c
+>> +++ b/drivers/edac/mpc85xx_edac.c
+>> @@ -248,6 +248,7 @@ static int mpc85xx_pci_err_probe(struct platform_device *op)
+>>  
+>>  	if (edac_pci_add_device(pci, pdata->edac_idx) > 0) {
+>>  		edac_dbg(3, "failed edac_pci_add_device()\n");
+>> +		res = -EFAULT;
+> 
+>>  		goto err;
+>>  	}
+>>  
+>> @@ -552,6 +553,7 @@ static int mpc85xx_l2_err_probe(struct platform_device *op)
+>>  
+>>  	if (edac_device_add_device(edac_dev) > 0) {
+>>  		edac_dbg(3, "failed edac_device_add_device()\n");
+>> +		res = -EFAULT;
+>>  		goto err;
+>>  	}
+>>  
+>> -- 
+> 
+> EFAULT means
+> 
+> #define EFAULT          14      /* Bad address */
+> 
+> Does it make sense to you when the probe function returns a "bad
+> address" upon failure to add a device?
+> 
+> hint 1: you might wanna audit how the other drivers are calling this for
+> better ideas.
 
-In retrospect we should've just used "reg" in the first place rather
-than adding the custom "nvidia,ram-code". It's a bit redundant to have
-both of them with the same value. I wonder if we should deprecate the
-use of "nvidia,ram-code" and at least make the code look at the "reg"
-property first and only fall back to "nvidia,ram-code" if "reg" does
-not exist. We probably won't ever be able to get rid of the fallback
-for backwards-compatibility reasons, but at least that would make the
-intent a bit clearer.
+So how about change to -ENODEV?
 
-Thierry
+> 
+> hint 2: while doing hint 1, you might find some more broken cases which
+> you could fix too.
 
---3GTNXXpnqAELcLjv
-Content-Type: application/pgp-signature; name="signature.asc"
+OK, I will find and fix all of them. Thanks for your hint.
 
------BEGIN PGP SIGNATURE-----
+> 
+> Thx.
+> 
 
-iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAmC0qQcACgkQ3SOs138+
-s6E4ZA/+L3pXjr7LDZIYSuiOI6J1hx43F7MT2JrtA5uvDEqqAYepFuL1NdtKDE4F
-cWat3iTYKZkTteOQZ5KMRjO30V/81aCXWeqIQxiIiqYiER1XiuBVqFT7xE29AvEU
-jSRuRkY1Co5Pubew1BfvxrsrB/1x7Dtpl7VL5TNoFUttlE4dJRjjnCfdPM8LtNFm
-53fZBmqqhG5NLK7lgqCMXmqVnJKXbOGavxbfK1o+sUbujTTrMqzKO9ZgOZFIfWFA
-EgRZOICPkAnM+eJLCUKaiXXIMXPlhf21V87VV783p2Ka/Gc7TyEv3bzeetBHaDjP
-0tLVKYYB8764N9rNUnvx7xzuQA8Y8UP2Sf8KqJouziK1X7ioHv+IAJXBAeImpNYh
-+X+pFqCqY6OZhP0naOGB2jvLX/hV0hXuy262+BMowY2xl/S8AooAjC6BBDN4QKTL
-V5lPZwAGrjpoTSAk7WybTP6mDOzW0Gdkg1QZwgCRKcbBPfnxm4Nfd3+stXT5EcH7
-FDsDgOlKyYKEor9zbia2igKEJIbfTroWF5HzhH8FQ19zIixIhNXCkTmAUNWw0+/c
-HNwSxp1lhh/0lGeY590/VFyyqzlrOKW2yxap/yJ0qHp/wbYEJaI3+D/UugT6WMvr
-8fiNS/tYDmYsmZSepjG5c07kQuQHyirGrYEWO5I/mmYYd8S7qhA=
-=AVK1
------END PGP SIGNATURE-----
-
---3GTNXXpnqAELcLjv--
