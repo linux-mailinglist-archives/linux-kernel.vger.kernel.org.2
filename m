@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D033F396368
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 17:14:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 86DF73964F7
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 18:16:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231873AbhEaPPn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 11:15:43 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40994 "EHLO mail.kernel.org"
+        id S233122AbhEaQSS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 12:18:18 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37968 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233462AbhEaONC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 10:13:02 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7F35C6198D;
-        Mon, 31 May 2021 13:41:49 +0000 (UTC)
+        id S233606AbhEaOlc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 10:41:32 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 99DD961C73;
+        Mon, 31 May 2021 13:53:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1622468510;
-        bh=n2WdW7r21UCrBvhtuq3j/yxgqLpH7jwPH/+d7X8f1Wk=;
+        s=korg; t=1622469212;
+        bh=NmajkwAUErgh7ORHx1VP5JA7EmeSO4Cym94XZ5/sbXk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=aVklNwa8xpSGeMkyddSvYh1FxlLgopQiEG6iyUdzUcZrDt8ces40Lxsa/10hTO9dX
-         TGB+kYuBtmKC3aYcmQr2ANTetks4rmJZn5XHSIEHRG9fW1v3G8Sbpx44rLHfu9BnKT
-         oprVxkEfiWVO4EVz28nurswPFiaIp44pk6Hiq8P0=
+        b=sELenWbBdJvtwEq/yBb4hLjiagsvVwnLp6Rg/lqho/HSnRc2PkDz9u1SRQikhOxlY
+         QgA3FIbJ7ZcT6kP5uicU9+10Zo1NJu9G8tm9U3/ATAoZQnR05znSTUFN/blvqUOonB
+         jcyRhEslKeqqXx213Wc1j+ufxAYEy+BfkkX6pP38=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Adrian Hunter <adrian.hunter@intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@redhat.com>
-Subject: [PATCH 5.4 009/177] perf scripts python: exported-sql-viewer.py: Fix copy to clipboard from Top Calls by elapsed Time report
-Date:   Mon, 31 May 2021 15:12:46 +0200
-Message-Id: <20210531130648.224138093@linuxfoundation.org>
+        stable@vger.kernel.org, zhouchuangao <zhouchuangao@vivo.com>,
+        Trond Myklebust <trond.myklebust@hammerspace.com>
+Subject: [PATCH 5.12 112/296] fs/nfs: Use fatal_signal_pending instead of signal_pending
+Date:   Mon, 31 May 2021 15:12:47 +0200
+Message-Id: <20210531130707.696742094@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210531130647.887605866@linuxfoundation.org>
-References: <20210531130647.887605866@linuxfoundation.org>
+In-Reply-To: <20210531130703.762129381@linuxfoundation.org>
+References: <20210531130703.762129381@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,45 +39,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Adrian Hunter <adrian.hunter@intel.com>
+From: zhouchuangao <zhouchuangao@vivo.com>
 
-commit a6172059758ba1b496ae024cece7d5bdc8d017db upstream.
+commit bb002388901151fe35b6697ab116f6ed0721a9ed upstream.
 
-Provide missing argument to prevent following error when copying a
-selection to the clipboard:
+We set the state of the current process to TASK_KILLABLE via
+prepare_to_wait(). Should we use fatal_signal_pending() to detect
+the signal here?
 
-Traceback (most recent call last):
-  File "tools/perf/scripts/python/exported-sql-viewer.py", line 4041, in <lambda>
-    menu.addAction(CreateAction("&Copy selection", "Copy to clipboard", lambda: CopyCellsToClipboardHdr(self.view), self.view))
-  File "tools/perf/scripts/python/exported-sql-viewer.py", line 4021, in CopyCellsToClipboardHdr
-    CopyCellsToClipboard(view, False, True)
-  File "tools/perf/scripts/python/exported-sql-viewer.py", line 4018, in CopyCellsToClipboard
-    view.CopyCellsToClipboard(view, as_csv, with_hdr)
-  File "tools/perf/scripts/python/exported-sql-viewer.py", line 3871, in CopyTableCellsToClipboard
-    val = model.headerData(col, Qt.Horizontal)
-TypeError: headerData() missing 1 required positional argument: 'role'
-
-Fixes: 96c43b9a7ab3b ("perf scripts python: exported-sql-viewer.py: Add copy to clipboard")
-Signed-off-by: Adrian Hunter <adrian.hunter@intel.com>
-Cc: Jiri Olsa <jolsa@redhat.com>
-Cc: stable@vger.kernel.org
-Link: http://lore.kernel.org/lkml/20210521092053.25683-2-adrian.hunter@intel.com
-Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
+Fixes: b4868b44c562 ("NFSv4: Wait for stateid updates after CLOSE/OPEN_DOWNGRADE")
+Signed-off-by: zhouchuangao <zhouchuangao@vivo.com>
+Signed-off-by: Trond Myklebust <trond.myklebust@hammerspace.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- tools/perf/scripts/python/exported-sql-viewer.py |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ fs/nfs/nfs4proc.c |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
---- a/tools/perf/scripts/python/exported-sql-viewer.py
-+++ b/tools/perf/scripts/python/exported-sql-viewer.py
-@@ -2495,7 +2495,7 @@ def CopyTableCellsToClipboard(view, as_c
- 	if with_hdr:
- 		model = indexes[0].model()
- 		for col in range(min_col, max_col + 1):
--			val = model.headerData(col, Qt.Horizontal)
-+			val = model.headerData(col, Qt.Horizontal, Qt.DisplayRole)
- 			if as_csv:
- 				text += sep + ToCSValue(val)
- 				sep = ","
+--- a/fs/nfs/nfs4proc.c
++++ b/fs/nfs/nfs4proc.c
+@@ -1682,7 +1682,7 @@ static void nfs_set_open_stateid_locked(
+ 		rcu_read_unlock();
+ 		trace_nfs4_open_stateid_update_wait(state->inode, stateid, 0);
+ 
+-		if (!signal_pending(current)) {
++		if (!fatal_signal_pending(current)) {
+ 			if (schedule_timeout(5*HZ) == 0)
+ 				status = -EAGAIN;
+ 			else
+@@ -3458,7 +3458,7 @@ static bool nfs4_refresh_open_old_statei
+ 		write_sequnlock(&state->seqlock);
+ 		trace_nfs4_close_stateid_update_wait(state->inode, dst, 0);
+ 
+-		if (signal_pending(current))
++		if (fatal_signal_pending(current))
+ 			status = -EINTR;
+ 		else
+ 			if (schedule_timeout(5*HZ) != 0)
 
 
