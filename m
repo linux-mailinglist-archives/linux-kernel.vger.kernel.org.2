@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9AB21396578
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 18:35:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E9D23396614
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 18:55:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233889AbhEaQhb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 12:37:31 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40320 "EHLO mail.kernel.org"
+        id S233281AbhEaQ4w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 12:56:52 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51350 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233984AbhEaOtN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 10:49:13 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id EA5226140C;
-        Mon, 31 May 2021 13:56:44 +0000 (UTC)
+        id S233875AbhEaPAg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 11:00:36 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id EBE4C6124B;
+        Mon, 31 May 2021 14:13:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1622469405;
-        bh=oDyXkmvx+gQobzupFPp7+JRAht8mlIefsNOkh3GbdPw=;
+        s=korg; t=1622470412;
+        bh=CkBX6dDb2qCvTwr5HBZitee88T2Xacmboqzj1RmD66k=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=mkmECldBmB+UjkJLzixyU55BCcWx21t9hf/yW8nJBAFAHct5vFzGE7ReRIWJdEzDg
-         VFnhlLSWy1SDK+ixZ8Aon6Z/Mv3TapWE1s0CqjZu5OEBBCzkFu8fCy9IsrrUeP1AMZ
-         RVn7T9mzTQ4ul7V7+JGleyEDQ5SGOHws6/SQG3Ig=
+        b=tWOXzZ2PJ6RRUCHx9FCwOCaYghg5NMeOGUrCnZ3rGc3RXb9zH7oXaxKY0govqRd1J
+         SPtiqU+XHzT8Jj137UjnLeSZBN4wrH7Q13543qtrIXkru2v3+ofl1dK0b5hfXxviUg
+         IsaWvbOyoGEhjFhOI1JASPSi9IAFAZ96xA7Adsso=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Kangjie Lu <kjlu@umn.edu>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.12 186/296] Revert "libertas: add checks for the return value of sysfs_create_group"
+        stable@vger.kernel.org, Zhang Xiaoxu <zhangxiaoxu5@huawei.com>,
+        Trond Myklebust <trond.myklebust@hammerspace.com>
+Subject: [PATCH 4.19 065/116] NFSv4: Fix v4.0/v4.1 SEEK_DATA return -ENOTSUPP when set NFS_V4_2 config
 Date:   Mon, 31 May 2021 15:14:01 +0200
-Message-Id: <20210531130710.125514808@linuxfoundation.org>
+Message-Id: <20210531130642.364230432@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210531130703.762129381@linuxfoundation.org>
-References: <20210531130703.762129381@linuxfoundation.org>
+In-Reply-To: <20210531130640.131924542@linuxfoundation.org>
+References: <20210531130640.131924542@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,54 +39,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+From: Zhang Xiaoxu <zhangxiaoxu5@huawei.com>
 
-[ Upstream commit 46651077765c80a0d6f87f3469129a72e49ce91b ]
+commit e67afa7ee4a59584d7253e45d7f63b9528819a13 upstream.
 
-This reverts commit 434256833d8eb988cb7f3b8a41699e2fe48d9332.
+Since commit bdcc2cd14e4e ("NFSv4.2: handle NFS-specific llseek errors"),
+nfs42_proc_llseek would return -EOPNOTSUPP rather than -ENOTSUPP when
+SEEK_DATA on NFSv4.0/v4.1.
 
-Because of recent interactions with developers from @umn.edu, all
-commits from them have been recently re-reviewed to ensure if they were
-correct or not.
+This will lead xfstests generic/285 not run on NFSv4.0/v4.1 when set the
+CONFIG_NFS_V4_2, rather than run failed.
 
-Upon review, this commit was found to be incorrect for the reasons
-below, so it must be reverted.  It will be fixed up "correctly" in a
-later kernel change.
-
-The original commit was incorrect, the error needs to be propagated back
-to the caller AND if the second group call fails, the first needs to be
-removed.  There are much better ways to solve this, the driver should
-NOT be calling sysfs_create_group() on its own as it is racing userspace
-and loosing.
-
-Cc: Kangjie Lu <kjlu@umn.edu>
-Cc: Kalle Valo <kvalo@codeaurora.org>
-Link: https://lore.kernel.org/r/20210503115736.2104747-53-gregkh@linuxfoundation.org
+Fixes: bdcc2cd14e4e ("NFSv4.2: handle NFS-specific llseek errors")
+Cc: <stable.vger.kernel.org> # 4.2
+Signed-off-by: Zhang Xiaoxu <zhangxiaoxu5@huawei.com>
+Signed-off-by: Trond Myklebust <trond.myklebust@hammerspace.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/wireless/marvell/libertas/mesh.c | 5 -----
- 1 file changed, 5 deletions(-)
+ fs/nfs/nfs4file.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/net/wireless/marvell/libertas/mesh.c b/drivers/net/wireless/marvell/libertas/mesh.c
-index f5b78257d551..c611e6668b21 100644
---- a/drivers/net/wireless/marvell/libertas/mesh.c
-+++ b/drivers/net/wireless/marvell/libertas/mesh.c
-@@ -805,12 +805,7 @@ static void lbs_persist_config_init(struct net_device *dev)
- {
- 	int ret;
- 	ret = sysfs_create_group(&(dev->dev.kobj), &boot_opts_group);
--	if (ret)
--		pr_err("failed to create boot_opts_group.\n");
--
- 	ret = sysfs_create_group(&(dev->dev.kobj), &mesh_ie_group);
--	if (ret)
--		pr_err("failed to create mesh_ie_group.\n");
- }
- 
- static void lbs_persist_config_remove(struct net_device *dev)
--- 
-2.30.2
-
+--- a/fs/nfs/nfs4file.c
++++ b/fs/nfs/nfs4file.c
+@@ -148,7 +148,7 @@ static loff_t nfs4_file_llseek(struct fi
+ 	case SEEK_HOLE:
+ 	case SEEK_DATA:
+ 		ret = nfs42_proc_llseek(filep, offset, whence);
+-		if (ret != -ENOTSUPP)
++		if (ret != -EOPNOTSUPP)
+ 			return ret;
+ 		/* Fall through */
+ 	default:
 
 
