@@ -2,41 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EC3FA395E36
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 15:53:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BF16A395BB7
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 15:22:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231592AbhEaNza (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 09:55:30 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43270 "EHLO mail.kernel.org"
+        id S231717AbhEaNYH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 09:24:07 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55746 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232438AbhEaNgd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 09:36:33 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 48F916144E;
-        Mon, 31 May 2021 13:25:55 +0000 (UTC)
+        id S232064AbhEaNTo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 09:19:44 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 36F3161377;
+        Mon, 31 May 2021 13:18:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1622467555;
-        bh=wT0KiccDgL3YqGubO7STzSzHp7Ml/7GG+9c2IcX3nXc=;
+        s=korg; t=1622467083;
+        bh=FMNDbHJyR1yFhBZFdBkbQHuDm1VO8zhRtpuMLJBB2Jw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=rIQR+c1J2HcxKoq4lJEUndn7xVZoW9m/iB/8ImPsNApMlpch9Sr0CCFckqGiZ8ztz
-         HEj/55SR3VEvLmz0s/w15D5kBGquQDr2NmlPBL2oLJKqVFwe3uIKAYcqKy2SHTh3wa
-         xUPSoObHPu3FCgQDqWdfQhDWcPHOUQ/NnuoeQjhA=
+        b=TVPkMMVC+wmF810aZr2bmryvqXByTl07QtA3pzg7ig++EM3vXrLmeRwMxd8NfKm1h
+         uZbSWKAc/Kc7q0vDZlz03drWHRUlJci7x2AeMmIW2QklACJof+2zv3lZj0xn/SK1SW
+         UHSgYC7+B6/ydhD/jZVg3srIs8vMzbyYceeHW2rc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Felix Fietkau <nbd@nbd.name>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Andi Kleen <ak@linux.intel.com>, Jiri Olsa <jolsa@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Sukadev Bhattiprolu <sukadev@linux.vnet.ibm.com>,
-        Arnaldo Carvalho de Melo <acme@redhat.com>
-Subject: [PATCH 4.19 074/116] perf jevents: Fix getting maximum number of fds
-Date:   Mon, 31 May 2021 15:14:10 +0200
-Message-Id: <20210531130642.661939901@linuxfoundation.org>
+        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
+        Zhen Lei <thunder.leizhen@huawei.com>,
+        Michael Chan <michael.chan@broadcom.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.4 45/54] net: bnx2: Fix error return code in bnx2_init_board()
+Date:   Mon, 31 May 2021 15:14:11 +0200
+Message-Id: <20210531130636.484118158@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210531130640.131924542@linuxfoundation.org>
-References: <20210531130640.131924542@linuxfoundation.org>
+In-Reply-To: <20210531130635.070310929@linuxfoundation.org>
+References: <20210531130635.070310929@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,41 +42,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Felix Fietkau <nbd@nbd.name>
+From: Zhen Lei <thunder.leizhen@huawei.com>
 
-commit 75ea44e356b5de8c817f821c9dd68ae329e82add upstream.
+[ Upstream commit 28c66b6da4087b8cfe81c2ec0a46eb6116dafda9 ]
 
-On some hosts, rlim.rlim_max can be returned as RLIM_INFINITY.
-By casting it to int, it is interpreted as -1, which will cause get_maxfds
-to return 0, causing "Invalid argument" errors in nftw() calls.
-Fix this by casting the second argument of min() to rlim_t instead.
+Fix to return -EPERM from the error handling case instead of 0, as done
+elsewhere in this function.
 
-Fixes: 80eeb67fe577 ("perf jevents: Program to convert JSON file")
-Signed-off-by: Felix Fietkau <nbd@nbd.name>
-Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com>
-Cc: Andi Kleen <ak@linux.intel.com>
-Cc: Jiri Olsa <jolsa@redhat.com>
-Cc: Mark Rutland <mark.rutland@arm.com>
-Cc: Namhyung Kim <namhyung@kernel.org>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Cc: Sukadev Bhattiprolu <sukadev@linux.vnet.ibm.com>
-Link: http://lore.kernel.org/lkml/20210525160758.97829-1-nbd@nbd.name
-Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Fixes: b6016b767397 ("[BNX2]: New Broadcom gigabit network driver.")
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
+Reviewed-by: Michael Chan <michael.chan@broadcom.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- tools/perf/pmu-events/jevents.c |    2 +-
+ drivers/net/ethernet/broadcom/bnx2.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/tools/perf/pmu-events/jevents.c
-+++ b/tools/perf/pmu-events/jevents.c
-@@ -858,7 +858,7 @@ static int get_maxfds(void)
- 	struct rlimit rlim;
+diff --git a/drivers/net/ethernet/broadcom/bnx2.c b/drivers/net/ethernet/broadcom/bnx2.c
+index 8fc3f3c137f8..1616647719ba 100644
+--- a/drivers/net/ethernet/broadcom/bnx2.c
++++ b/drivers/net/ethernet/broadcom/bnx2.c
+@@ -8234,9 +8234,9 @@ bnx2_init_board(struct pci_dev *pdev, struct net_device *dev)
+ 		BNX2_WR(bp, PCI_COMMAND, reg);
+ 	} else if ((BNX2_CHIP_ID(bp) == BNX2_CHIP_ID_5706_A1) &&
+ 		!(bp->flags & BNX2_FLAG_PCIX)) {
+-
+ 		dev_err(&pdev->dev,
+ 			"5706 A1 can only be used in a PCIX bus, aborting\n");
++		rc = -EPERM;
+ 		goto err_out_unmap;
+ 	}
  
- 	if (getrlimit(RLIMIT_NOFILE, &rlim) == 0)
--		return min((int)rlim.rlim_max / 2, 512);
-+		return min(rlim.rlim_max / 2, (rlim_t)512);
- 
- 	return 512;
- }
+-- 
+2.30.2
+
 
 
