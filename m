@@ -2,67 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C4283395994
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 13:20:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4DC5C39599C
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 13:21:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231397AbhEaLVz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 07:21:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58088 "EHLO
+        id S231377AbhEaLXa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 07:23:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58496 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231371AbhEaLVr (ORCPT
+        with ESMTP id S231292AbhEaLX0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 07:21:47 -0400
-Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DDC25C061763
-        for <linux-kernel@vger.kernel.org>; Mon, 31 May 2021 04:19:56 -0700 (PDT)
-Received: by mail-wr1-x432.google.com with SMTP id x8so10522883wrq.9
-        for <linux-kernel@vger.kernel.org>; Mon, 31 May 2021 04:19:56 -0700 (PDT)
+        Mon, 31 May 2021 07:23:26 -0400
+Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B750DC06174A
+        for <linux-kernel@vger.kernel.org>; Mon, 31 May 2021 04:21:46 -0700 (PDT)
+Received: by mail-ed1-x529.google.com with SMTP id b17so13136374ede.0
+        for <linux-kernel@vger.kernel.org>; Mon, 31 May 2021 04:21:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=subject:to:cc:references:from:message-id:date:user-agent
          :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=oUs1Ch1W6XuZQWHxuWCfWzh2D1v+wPWvtS2pC3Cph6A=;
-        b=BKpTdykIchu0BdLJbPIdTBG6OPJWQ2NWxJJ2DgJrdAckZRlbfrgLtz/6OMc85nIjvp
-         AF4mYrsSkzmCfALsXQP8dXGV+qP5M+l5PfiroKiH2S3p0g8POSXvnd7gn7Gx6rMpmFnQ
-         G/GRUb1xk628c7JS5WTxh5Eec8eGO2IE9anVEiCI/TtT+JnRvx7hv39c+qsnvTWOb6f3
-         3NI5Hw7oItV7eNbZ8w4QbvdCDXHwmHFTf3WkE/xKWTTOSyXhpVw63bwBPkPHeHUm2b72
-         tcnLGyJ4P5YCigsik3A6O1BIsZMSyvBwO1/dxCco3c9U6uG0W+Dv1jUioYOwlFD7p+M7
-         qtsg==
+        bh=FdUWrypFboll3s6XGR9/NH8Gi70rzyMBTmGkIlVn5fQ=;
+        b=nN1/gv2aRK2Ka4CUIRbUDq9drpxmUdjaRVH6FquQHWKZvgADex2vktzLgxtsGS6jRd
+         teh/1yI+GhGPDTFshNTMOCKHGwnHoiOGljQHuewaUXo18F3l1EHZ4YfrOfmnuWmwQx8A
+         GHp7kpSkSJAKvc98aWO1MeptFtovu2dXIFCvcVIVEQBxkNH2eedm0TLGXeD5Xeck02Pf
+         UTmeCdTnLNMaNQc4yGpYMRy59v42YEv8qMMj5RfZMAyS8tKeoQbkP4PtsW3oFlYUxKUV
+         UE9bBET/TqpxoC4b3abv1Ut7dmZwszopG5IF2KLSUIXl1j/FfA5/a9frn0V4hhZp6pYl
+         SJiw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:subject:to:cc:references:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=oUs1Ch1W6XuZQWHxuWCfWzh2D1v+wPWvtS2pC3Cph6A=;
-        b=t9819G+7c2ZxVue89ry9YNro9mj6fXbvg5vREr82zOHoE5tr7aOGiMAWdb49s5W6AI
-         8TtLZ25hCAQwBKDP1AqlRCnU7yI143H9lwcwHk9IaOyKpRnCKhUdZFrRApLen1TWTLGj
-         ZFoNStfU2AvYF9bU34yWQqv8FyMIMX49+irvLivtco7mPbM5iUK1Ua2LhJ8rqW5D6qPs
-         xnq3vpG/HRHBYQZF2AnL6QSZZMHrhFYyh7d2LKpKIrx1L90P7+OEQY7VaeePdDMbvuNG
-         CXkS9qdPwbu7GCjf0+NnzMFdWfte2UgSiRrIYtIQR5ufAnmdU+M+5C2iQinJKAInI2Ij
-         hdCA==
-X-Gm-Message-State: AOAM532nIxfukabcV2Xx83XD9/cWTX0UjBeDgd+FfW57GzW0x8KgtGQn
-        nTdJZb/f6ais0xOBj37SeHExPA==
-X-Google-Smtp-Source: ABdhPJxAcE+HR6VWeHGocdXFdWS/JOouoXaV3UQ+Jkgsf/qphTpZhEYdJ9smPocSSlZVzrwnF7CpcA==
-X-Received: by 2002:a5d:64eb:: with SMTP id g11mr22103935wri.260.1622459995349;
-        Mon, 31 May 2021 04:19:55 -0700 (PDT)
+        bh=FdUWrypFboll3s6XGR9/NH8Gi70rzyMBTmGkIlVn5fQ=;
+        b=VQktvfCnVwtoTY29F6TsC2H0UTm52dmZJ1NEiaqGgHRil/x3xzxZiIzVoFi9/Vr4p9
+         dZ9F1D1Xp/L1phVXhi34EgsfDSfxYziCUGnmI+T0VSSK3/Sz3QyxDuXqY85edFTM+79b
+         Tcl4ZGlg72PkE7VJ2VtYI6UxNeGKW0WzvSSU89eyds9elyL7PLe78/TTc5Pbak0tXxVe
+         eRYvAQR7c54MutewfXeSV3pl/f4glWNIH0Cw26ULj4F86+X9nUTD/GRKDET5ohojMzYN
+         +ASeA7IwC9Ltfz+OUkWypGd016yiy/m0TEaA/S2QFEd9Bwlvo+ihAmWjNOUf/JxBF3xl
+         Oo1w==
+X-Gm-Message-State: AOAM530emO2jyqbqJuWK2/NOVECLMYhYmKYEnOjdc2jzbfVfbZipFY7z
+        F806WS2ANER8wRtjXJdfcIpKWg==
+X-Google-Smtp-Source: ABdhPJyG78ZSnq+sMy7XuSdIclAryG5dz6kh+Bs8p3TayYSSqPI9EiNLzpIst0vR5tFpeW13Bue7zw==
+X-Received: by 2002:aa7:c450:: with SMTP id n16mr516801edr.386.1622460105389;
+        Mon, 31 May 2021 04:21:45 -0700 (PDT)
 Received: from [192.168.1.28] (hst-221-6.medicom.bg. [84.238.221.6])
-        by smtp.googlemail.com with ESMTPSA id d9sm16708458wrx.11.2021.05.31.04.19.54
+        by smtp.googlemail.com with ESMTPSA id dh21sm6784486edb.28.2021.05.31.04.21.44
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 31 May 2021 04:19:55 -0700 (PDT)
-Subject: Re: [PATCH 4/7] media: venus: hfi: Skip AON register programming for
- V6 1pipe
+        Mon, 31 May 2021 04:21:45 -0700 (PDT)
+Subject: Re: [PATCH 6/7] media: venus: helpers: update NUM_MBS macro
+ calculation
 To:     Dikshita Agarwal <dikshita@codeaurora.org>,
         linux-media@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, vgarodia@codeaurora.org
 References: <1621417008-6117-1-git-send-email-dikshita@codeaurora.org>
- <1621417008-6117-5-git-send-email-dikshita@codeaurora.org>
+ <1621417008-6117-7-git-send-email-dikshita@codeaurora.org>
 From:   Stanimir Varbanov <stanimir.varbanov@linaro.org>
-Message-ID: <48d9044c-aa5f-db63-ebf8-df05714cb2bc@linaro.org>
-Date:   Mon, 31 May 2021 14:19:54 +0300
+Message-ID: <c285b442-f031-3d0e-08b2-281a53df1121@linaro.org>
+Date:   Mon, 31 May 2021 14:21:44 +0300
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.8.1
 MIME-Version: 1.0
-In-Reply-To: <1621417008-6117-5-git-send-email-dikshita@codeaurora.org>
+In-Reply-To: <1621417008-6117-7-git-send-email-dikshita@codeaurora.org>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -73,20 +73,65 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 
 On 5/19/21 12:36 PM, Dikshita Agarwal wrote:
-> AON register programming is used to set NOC to low
-> power mode during V6 power off sequence. However
-> AON register memory map is not applicable to 1pipe,
-> hence skipping AON register programming.
+> Consider alignment while calculating NUM_MBS.
 > 
 > Co-developed-by: Mansur Alisha Shaik <mansur@codeaurora.org>
-> Co-developed-by: Vikash Garodia <vgarodia@codeaurora.org>
 > Signed-off-by: Dikshita Agarwal <dikshita@codeaurora.org>
 > ---
->  drivers/media/platform/qcom/venus/hfi_venus.c | 4 ++++
->  1 file changed, 4 insertions(+)
+>  drivers/media/platform/qcom/venus/helpers.c | 28 +++++++++++++++-------------
+>  1 file changed, 15 insertions(+), 13 deletions(-)
 > 
+> diff --git a/drivers/media/platform/qcom/venus/helpers.c b/drivers/media/platform/qcom/venus/helpers.c
+> index 2223f55..cbe653f 100644
+> --- a/drivers/media/platform/qcom/venus/helpers.c
+> +++ b/drivers/media/platform/qcom/venus/helpers.c
+> @@ -18,8 +18,8 @@
+>  #include "hfi_platform.h"
+>  #include "hfi_parser.h"
+>  
+> -#define NUM_MBS_720P	(((1280 + 15) >> 4) * ((720 + 15) >> 4))
+> -#define NUM_MBS_4K	(((4096 + 15) >> 4) * ((2304 + 15) >> 4))
+> +#define NUM_MBS_720P	(((ALIGN(1280, 16)) >> 4) * ((ALIGN(736, 16)) >> 4))
+> +#define NUM_MBS_4K	(((ALIGN(4096, 16)) >> 4) * ((ALIGN(2304, 16)) >> 4))
+>  
+>  struct intbuf {
+>  	struct list_head list;
+> @@ -1099,17 +1099,19 @@ static u32 venus_helper_get_work_mode(struct venus_inst *inst)
+>  	u32 num_mbs;
+>  
+>  	mode = VIDC_WORK_MODE_2;
+> -	if (inst->session_type == VIDC_SESSION_TYPE_DEC) {
+> -		num_mbs = (ALIGN(inst->height, 16) * ALIGN(inst->width, 16)) / 256;
+> -		if (inst->hfi_codec == HFI_VIDEO_CODEC_MPEG2 ||
+> -		    inst->pic_struct != HFI_INTERLACE_FRAME_PROGRESSIVE ||
+> -		    num_mbs <= NUM_MBS_720P)
+> -			mode = VIDC_WORK_MODE_1;
+> -	} else {
+> -		num_mbs = (ALIGN(inst->out_height, 16) * ALIGN(inst->out_width, 16)) / 256;
+> -		if (inst->hfi_codec == HFI_VIDEO_CODEC_VP8 &&
+> -		    num_mbs <= NUM_MBS_4K)
+> -			mode = VIDC_WORK_MODE_1;
+> +	if (IS_V6(inst->core)) {
 
-Acked-by: Stanimir Varbanov <stanimir.varbanov@linaro.org>
+IS_V6() is not needed - we already have this check in
+venus_helper_set_work_mode()
+
+> +		if (inst->session_type == VIDC_SESSION_TYPE_DEC) {
+> +			num_mbs = ((ALIGN(inst->height, 16))/16 * (ALIGN(inst->width, 16)))/16;
+> +			if (inst->hfi_codec == HFI_VIDEO_CODEC_MPEG2 ||
+> +			    inst->pic_struct != HFI_INTERLACE_FRAME_PROGRESSIVE ||
+> +			    num_mbs <= NUM_MBS_720P)
+> +				mode = VIDC_WORK_MODE_1;
+> +		} else {
+> +			num_mbs = (ALIGN(inst->out_height, 16) * ALIGN(inst->out_width, 16)) / 256;
+> +			if (inst->hfi_codec == HFI_VIDEO_CODEC_VP8 &&
+> +			    num_mbs <= NUM_MBS_4K)
+> +				mode = VIDC_WORK_MODE_1;
+> +		}
+>  	}
+>  
+>  	return mode;
+> 
 
 -- 
 regards,
