@@ -2,115 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 70A9D396956
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 23:39:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D4115396957
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 23:41:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232064AbhEaVl3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 17:41:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53862 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231377AbhEaVl2 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 17:41:28 -0400
-Received: from mail-ot1-x32e.google.com (mail-ot1-x32e.google.com [IPv6:2607:f8b0:4864:20::32e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33922C061574
-        for <linux-kernel@vger.kernel.org>; Mon, 31 May 2021 14:39:48 -0700 (PDT)
-Received: by mail-ot1-x32e.google.com with SMTP id c31-20020a056830349fb02903a5bfa6138bso5331731otu.7
-        for <linux-kernel@vger.kernel.org>; Mon, 31 May 2021 14:39:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=UBAqPc0844PoWS3M7cf9GbxSOhoga0pQoriulkgqEfI=;
-        b=VUhxW2pyepgF1UbJULY3i80Z7aTZ03X4+C9wxowTbK/qTQIQxtmmbv+6XpGF39gU8X
-         SOJk8buqMEKMC0eiPr16TX7/g9SStnxfNL4m5MMTm95wa6cyDkvvXgx7P7DPjuwH+wyj
-         6y+Afd4I5e96U3c19zRoSQmPaOuBEcjqfGIUZhbiWrT30DjRTUosV7J8Fq3sny0zilbe
-         RQtX97qrgZ9okAs+v7ZSmepehw4RuilIzG5rA7uLUj42inWsaC2fXZIKFyzG7xIkAQCM
-         O8BDOpr4mXJXNVLROiwbITssFmAeFOqK54Cr89PAsiwP5Ml3vbEj48LM0RNGxPNNDrXU
-         hldw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=UBAqPc0844PoWS3M7cf9GbxSOhoga0pQoriulkgqEfI=;
-        b=nbXP8taecz1MKAsdxcJGECYjT1muZEHpzjEy2q6iyG7g79KK5Qd2XvbvJhObTgwJxc
-         NwCvlQcFAk7RThejUEtPX/s5bllW1RLo0uu63UggOtXN7511ugbX7Td6xDOU2ln0qyvm
-         yiaoWGbWZ/3SAN3/Q5pEmUCF+Nb9f+j7Vd2e3G+NJws4Q2zNX52rXvNsTxB90YLwKlQ7
-         X22YIxJD5KmzM6EP2TqOB9xK9qu1rbB/SBrcgLniO3R1gdxIXcUDvPiJ8UkSo2MHp5ps
-         7yLL8Uq2TqhxPPhsmJZlh0zNVKYrRLsL9pf5vISPhix63vVv104vehdpK4dZvs1YLuKc
-         xdpQ==
-X-Gm-Message-State: AOAM532dJO8v4WwiwDDf5OvylTfYfHYA+O8zMI81cw2mUGqdihfJzVI2
-        26VFGcynpKcD1ZXw3EHwCD6QIfjHwKOfR7KmvTE=
-X-Google-Smtp-Source: ABdhPJyjzicDYy8DtErVQRQGm+5j16c6SZMMwzcmDJRbeRntyIHK9Eht8sVCld0S38tB3hX9pMWfM4d+dX3FsATtJHY=
-X-Received: by 2002:a9d:7a9:: with SMTP id 38mr9579203oto.362.1622497187649;
- Mon, 31 May 2021 14:39:47 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210531043502.2702645-1-hsinyi@chromium.org> <20210531043502.2702645-3-hsinyi@chromium.org>
-In-Reply-To: <20210531043502.2702645-3-hsinyi@chromium.org>
-From:   Enric Balletbo Serra <eballetbo@gmail.com>
-Date:   Mon, 31 May 2021 23:39:35 +0200
-Message-ID: <CAFqH_53DWQVRVHVr8EVSR6A2oVqC4_4VjkE6n77g5kfBaa2+4A@mail.gmail.com>
-Subject: Re: [PATCH 3/3] arm64: dts: mt8183: remove syscon from smi_common node
-To:     Hsin-Yi Wang <hsinyi@chromium.org>
-Cc:     Matthias Brugger <matthias.bgg@gmail.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
-        chun-jie.chen@mediatek.corp-partner.google.com,
-        Yong Wu <yong.wu@mediatek.com>
-Content-Type: text/plain; charset="UTF-8"
+        id S232130AbhEaVnM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 17:43:12 -0400
+Received: from mail.kernel.org ([198.145.29.99]:32826 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231377AbhEaVnK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 17:43:10 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4F7F761005;
+        Mon, 31 May 2021 21:41:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
+        s=korg; t=1622497289;
+        bh=H2WLMsKJwsJTdkHL+YrGxee/qD2u+/tQaEtbrsoPLmc=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=0zenZpS8clh6zjSsj3W3sDHD397nXxO4EI4+r60fm4T23eznAe0wgGWqqoF8lN2By
+         CTXgCJdhkrIQvxIu3ViDsJSmY/csqYeUTuBDx0OLQDkiO5OQQfaGmFmEna2hnbm09g
+         4C37AeWwJMB+iBpSo1AStoa2Htx/1/AWzs4xFfSU=
+Date:   Mon, 31 May 2021 14:41:28 -0700
+From:   Andrew Morton <akpm@linux-foundation.org>
+To:     Feng Tang <feng.tang@intel.com>
+Cc:     linux-mm@kvack.org, Michal Hocko <mhocko@kernel.org>,
+        David Rientjes <rientjes@google.com>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Ben Widawsky <ben.widawsky@intel.com>,
+        linux-kernel@vger.kernel.org,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Andi Kleen <ak@linux.intel.com>,
+        Dan Williams <dan.j.williams@intel.com>, ying.huang@intel.com
+Subject: Re: [v3 PATCH 0/3] mm/mempolicy: some fix and semantics cleanup
+Message-Id: <20210531144128.e69aaf2904e83ae170f00f06@linux-foundation.org>
+In-Reply-To: <1622469956-82897-1-git-send-email-feng.tang@intel.com>
+References: <1622469956-82897-1-git-send-email-feng.tang@intel.com>
+X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.31; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Hsin-Yi,
+On Mon, 31 May 2021 22:05:53 +0800 Feng Tang <feng.tang@intel.com> wrote:
 
-(again without html, sorry for the noise)
+> We've posted v4 patchset introducing a new "perfer-many" memory policy
+> https://lore.kernel.org/lkml/1615952410-36895-1-git-send-email-feng.tang@intel.com/ ,
+> for which Michal Hocko gave many comments while pointing out some
+> problems, and we also found some semantics confusion about 'prefer'
+> and 'local' policy, as well as some duplicated code. This patchset
+> tries to address them. Please help to review, thanks!
+> 
+> The patchset has been run with some sanity test like 'stress-ng'
+> and 'ltp', and no problem found.
 
-Thank you for the patch.
+None of the above is suitable for the [0/n] overall description.  I
+copied-n-pasted the v1 cover letter from the above link.  Please check
+that it is all still correct and up to date.  If not, please send along
+replacement text, thanks.
 
-Missatge de Hsin-Yi Wang <hsinyi@chromium.org> del dia dl., 31 de maig
-2021 a les 6:36:
->
-> We don't need to register smi_common as syscon. Also add required
-> property power-domains for this node.
->
-> Signed-off-by: Hsin-Yi Wang <hsinyi@chromium.org>
-
-Reviewed-by: Enric Balletbo i Serra <enric.balletbo@collabora.com>
-
-> ---
->  arch/arm64/boot/dts/mediatek/mt8183.dtsi | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
->
-> diff --git a/arch/arm64/boot/dts/mediatek/mt8183.dtsi b/arch/arm64/boot/dts/mediatek/mt8183.dtsi
-> index c5e822b6b77a..e074c0d402ff 100644
-> --- a/arch/arm64/boot/dts/mediatek/mt8183.dtsi
-> +++ b/arch/arm64/boot/dts/mediatek/mt8183.dtsi
-> @@ -1263,13 +1263,14 @@ larb0: larb@14017000 {
->                 };
->
->                 smi_common: smi@14019000 {
-> -                       compatible = "mediatek,mt8183-smi-common", "syscon";
-> +                       compatible = "mediatek,mt8183-smi-common";
->                         reg = <0 0x14019000 0 0x1000>;
->                         clocks = <&mmsys CLK_MM_SMI_COMMON>,
->                                  <&mmsys CLK_MM_SMI_COMMON>,
->                                  <&mmsys CLK_MM_GALS_COMM0>,
->                                  <&mmsys CLK_MM_GALS_COMM1>;
->                         clock-names = "apb", "smi", "gals0", "gals1";
-> +                       power-domains = <&spm MT8183_POWER_DOMAIN_DISP>;
->                 };
->
->                 imgsys: syscon@15020000 {
-> --
-> 2.32.0.rc0.204.g9fa02ecfa5-goog
->
->
-> _______________________________________________
-> Linux-mediatek mailing list
-> Linux-mediatek@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-mediatek
