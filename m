@@ -2,33 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC56B396189
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 16:40:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 408A0396181
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 16:40:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233981AbhEaOlu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 10:41:50 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60806 "EHLO mail.kernel.org"
+        id S233618AbhEaOle (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 10:41:34 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60840 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232977AbhEaN62 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 09:58:28 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 96598613F5;
-        Mon, 31 May 2021 13:35:31 +0000 (UTC)
+        id S230339AbhEaN6b (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 09:58:31 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7548261440;
+        Mon, 31 May 2021 13:35:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1622468132;
-        bh=3aIgDmPsqoOhDLuQaV1yi37v5raac+mgycOPE1w4/+0=;
+        s=korg; t=1622468135;
+        bh=Pv3bP2PMj6YOQykP7mK1HxW1+69TEd2XZ+M7eh5YLp0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=WuZd6YcOfiJxxkOMQ6b1xupRXzoeX605EtuI5yXAGMZ96/xlld1+2nulymWmQXnwz
-         zbkmQ9skrabMEIW9c4TLDTAJ3am6lzHAaBNx/MH9gbydZ1l6GyopGpaViwCSg1xC3p
-         arwDNds0pLlFWxAWjqrEuHw2LiMXBFHNsnIKcc38=
+        b=JiD9VlMh/wMM7ktt2+fhN9M71biNbpS1gAOb3fhy6b/C+qtGpD+0YpEvnE/ZGz3B0
+         rvD253ucD3a2cMivr907xT0VJvBemwb+18q378bsNREsQ5LJ2cE6MWpDlhTwzxgeBM
+         z5lkSt4A2gSwm6CDdPnaZq5/fTCNBLqhnfWaFM0A=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Paolo Abeni <pabeni@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Maxim Galaganov <max@internet.ru>
-Subject: [PATCH 5.10 129/252] mptcp: fix data stream corruption
-Date:   Mon, 31 May 2021 15:13:14 +0200
-Message-Id: <20210531130702.399802167@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Kai-Heng Feng <kai.heng.feng@canonical.com>,
+        =?UTF-8?q?=C3=89ric=20Piel?= <eric.piel@trempplin-utc.net>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.10 130/252] platform/x86: hp_accel: Avoid invoking _INI to speed up resume
+Date:   Mon, 31 May 2021 15:13:15 +0200
+Message-Id: <20210531130702.430082836@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210531130657.971257589@linuxfoundation.org>
 References: <20210531130657.971257589@linuxfoundation.org>
@@ -40,55 +42,92 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Paolo Abeni <pabeni@redhat.com>
+From: Kai-Heng Feng <kai.heng.feng@canonical.com>
 
-commit 29249eac5225429b898f278230a6ca2baa1ae154 upstream.
+[ Upstream commit 79d341e26ebcdbc622348aaaab6f8f89b6fdb25f ]
 
-Maxim reported several issues when forcing a TCP transparent proxy
-to use the MPTCP protocol for the inbound connections. He also
-provided a clean reproducer.
+hp_accel can take almost two seconds to resume on some HP laptops.
 
-The problem boils down to 'mptcp_frag_can_collapse_to()' assuming
-that only MPTCP will use the given page_frag.
+The bottleneck is on evaluating _INI, which is only needed to run once.
 
-If others - e.g. the plain TCP protocol - allocate page fragments,
-we can end-up re-using already allocated memory for mptcp_data_frag.
+Resolve the issue by only invoking _INI when it's necessary. Namely, on
+probe and on hibernation restore.
 
-Fix the issue ensuring that the to-be-expanded data fragment is
-located at the current page frag end.
-
-v1 -> v2:
- - added missing fixes tag (Mat)
-
-Closes: https://github.com/multipath-tcp/mptcp_net-next/issues/178
-Reported-and-tested-by: Maxim Galaganov <max@internet.ru>
-Fixes: 18b683bff89d ("mptcp: queue data for mptcp level retransmission")
-Signed-off-by: Paolo Abeni <pabeni@redhat.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
+Acked-by: Éric Piel <eric.piel@trempplin-utc.net>
+Link: https://lore.kernel.org/r/20210430060736.590321-1-kai.heng.feng@canonical.com
+Signed-off-by: Hans de Goede <hdegoede@redhat.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/mptcp/protocol.c |    6 ++++++
- 1 file changed, 6 insertions(+)
+ drivers/misc/lis3lv02d/lis3lv02d.h |  1 +
+ drivers/platform/x86/hp_accel.c    | 22 +++++++++++++++++++++-
+ 2 files changed, 22 insertions(+), 1 deletion(-)
 
---- a/net/mptcp/protocol.c
-+++ b/net/mptcp/protocol.c
-@@ -758,11 +758,17 @@ static bool mptcp_skb_can_collapse_to(u6
- 	return mpext && mpext->data_seq + mpext->data_len == write_seq;
- }
- 
-+/* we can append data to the given data frag if:
-+ * - there is space available in the backing page_frag
-+ * - the data frag tail matches the current page_frag free offset
-+ * - the data frag end sequence number matches the current write seq
-+ */
- static bool mptcp_frag_can_collapse_to(const struct mptcp_sock *msk,
- 				       const struct page_frag *pfrag,
- 				       const struct mptcp_data_frag *df)
+diff --git a/drivers/misc/lis3lv02d/lis3lv02d.h b/drivers/misc/lis3lv02d/lis3lv02d.h
+index c394c0b08519..7ac788fae1b8 100644
+--- a/drivers/misc/lis3lv02d/lis3lv02d.h
++++ b/drivers/misc/lis3lv02d/lis3lv02d.h
+@@ -271,6 +271,7 @@ struct lis3lv02d {
+ 	int			regs_size;
+ 	u8                      *reg_cache;
+ 	bool			regs_stored;
++	bool			init_required;
+ 	u8                      odr_mask;  /* ODR bit mask */
+ 	u8			whoami;    /* indicates measurement precision */
+ 	s16 (*read_data) (struct lis3lv02d *lis3, int reg);
+diff --git a/drivers/platform/x86/hp_accel.c b/drivers/platform/x86/hp_accel.c
+index 799cbe2ffcf3..8c0867bda828 100644
+--- a/drivers/platform/x86/hp_accel.c
++++ b/drivers/platform/x86/hp_accel.c
+@@ -88,6 +88,9 @@ MODULE_DEVICE_TABLE(acpi, lis3lv02d_device_ids);
+ static int lis3lv02d_acpi_init(struct lis3lv02d *lis3)
  {
- 	return df && pfrag->page == df->page &&
-+		pfrag->offset == (df->offset + df->data_len) &&
- 		df->data_seq + df->data_len == msk->write_seq;
+ 	struct acpi_device *dev = lis3->bus_priv;
++	if (!lis3->init_required)
++		return 0;
++
+ 	if (acpi_evaluate_object(dev->handle, METHOD_NAME__INI,
+ 				 NULL, NULL) != AE_OK)
+ 		return -EINVAL;
+@@ -356,6 +359,7 @@ static int lis3lv02d_add(struct acpi_device *device)
+ 	}
+ 
+ 	/* call the core layer do its init */
++	lis3_dev.init_required = true;
+ 	ret = lis3lv02d_init_device(&lis3_dev);
+ 	if (ret)
+ 		return ret;
+@@ -403,11 +407,27 @@ static int lis3lv02d_suspend(struct device *dev)
+ 
+ static int lis3lv02d_resume(struct device *dev)
+ {
++	lis3_dev.init_required = false;
++	lis3lv02d_poweron(&lis3_dev);
++	return 0;
++}
++
++static int lis3lv02d_restore(struct device *dev)
++{
++	lis3_dev.init_required = true;
+ 	lis3lv02d_poweron(&lis3_dev);
+ 	return 0;
  }
  
+-static SIMPLE_DEV_PM_OPS(hp_accel_pm, lis3lv02d_suspend, lis3lv02d_resume);
++static const struct dev_pm_ops hp_accel_pm = {
++	.suspend = lis3lv02d_suspend,
++	.resume = lis3lv02d_resume,
++	.freeze = lis3lv02d_suspend,
++	.thaw = lis3lv02d_resume,
++	.poweroff = lis3lv02d_suspend,
++	.restore = lis3lv02d_restore,
++};
++
+ #define HP_ACCEL_PM (&hp_accel_pm)
+ #else
+ #define HP_ACCEL_PM NULL
+-- 
+2.30.2
+
 
 
