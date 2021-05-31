@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 406E3395D6D
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 15:44:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E9F59395B5A
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 15:18:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232821AbhEaNpj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 09:45:39 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39134 "EHLO mail.kernel.org"
+        id S232083AbhEaNTw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 09:19:52 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54130 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232310AbhEaNbX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 09:31:23 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5B13361434;
-        Mon, 31 May 2021 13:23:33 +0000 (UTC)
+        id S231585AbhEaNSj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 09:18:39 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7D5436135D;
+        Mon, 31 May 2021 13:16:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1622467413;
-        bh=2BVZ6E4O9fQ3wfq7+PomQvFxLlwY9udVOZj5I4Y7hMs=;
+        s=korg; t=1622467019;
+        bh=XntJUmCQNVkL9KpdkGWTUBrJf5ZXOanf4b/a8zaRpZc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ilxTzVbLFK+pPGMPLSw86l972rzM9m6pJHl25UjUbTzhLVq/Dw2fnMOX2VSg3tZh8
-         3PfqUgk8oprqgvuHvaD6E2extQjdvJ7FLF5NDGcc+EqkxZWELAJBNxSlOLAVO3oBGI
-         Wb49eofaKLsH6LiIv+apRmfkgSY1QfWRPsD+9pQA=
+        b=0aafhbO3nWKxJJesJfbWg/LBoxQCqZngW9ZevY9jMSNoNYKzz2+sfgcaJBJy90FWq
+         HKLiJjVK7+SYs7ZJmq2MH+53CRJTdo6UtDGHkx8OL4h2sCNVdB98P8f09pui+KwyK6
+         tzK3K+pu56ZvJUL3Y5fQ1SqxShCho+ZiqK3C8G5w=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Piotr Krysiuk <piotras@gmail.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Ovidiu Panait <ovidiu.panait@windriver.com>
-Subject: [PATCH 4.19 056/116] bpf: Wrap aux data inside bpf_sanitize_info container
+        stable@vger.kernel.org, Vladyslav Tarasiuk <vladyslavt@nvidia.com>,
+        Tariq Toukan <tariqt@nvidia.com>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: [PATCH 4.4 26/54] net/mlx4: Fix EEPROM dump support
 Date:   Mon, 31 May 2021 15:13:52 +0200
-Message-Id: <20210531130642.072928971@linuxfoundation.org>
+Message-Id: <20210531130635.908432119@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210531130640.131924542@linuxfoundation.org>
-References: <20210531130640.131924542@linuxfoundation.org>
+In-Reply-To: <20210531130635.070310929@linuxfoundation.org>
+References: <20210531130635.070310929@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,85 +40,198 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Daniel Borkmann <daniel@iogearbox.net>
+From: Vladyslav Tarasiuk <vladyslavt@nvidia.com>
 
-commit 3d0220f6861d713213b015b582e9f21e5b28d2e0 upstream
+commit db825feefc6868896fed5e361787ba3bee2fd906 upstream.
 
-Add a container structure struct bpf_sanitize_info which holds
-the current aux info, and update call-sites to sanitize_ptr_alu()
-to pass it in. This is needed for passing in additional state
-later on.
+Fix SFP and QSFP* EEPROM queries by setting i2c_address, offset and page
+number correctly. For SFP set the following params:
+- I2C address for offsets 0-255 is 0x50. For 256-511 - 0x51.
+- Page number is zero.
+- Offset is 0-255.
 
-Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
-Reviewed-by: Piotr Krysiuk <piotras@gmail.com>
-Acked-by: Alexei Starovoitov <ast@kernel.org>
-Signed-off-by: Ovidiu Panait <ovidiu.panait@windriver.com>
+At the same time, QSFP* parameters are different:
+- I2C address is always 0x50.
+- Page number is not limited to zero.
+- Offset is 0-255 for page zero and 128-255 for others.
+
+To set parameters accordingly to cable used, implement function to query
+module ID and implement respective helper functions to set parameters
+correctly.
+
+Fixes: 135dd9594f12 ("net/mlx4_en: ethtool, Remove unsupported SFP EEPROM high pages query")
+Signed-off-by: Vladyslav Tarasiuk <vladyslavt@nvidia.com>
+Signed-off-by: Tariq Toukan <tariqt@nvidia.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- kernel/bpf/verifier.c |   18 +++++++++++-------
- 1 file changed, 11 insertions(+), 7 deletions(-)
+ drivers/net/ethernet/mellanox/mlx4/en_ethtool.c |    4 
+ drivers/net/ethernet/mellanox/mlx4/port.c       |  107 +++++++++++++++++++++++-
+ 2 files changed, 104 insertions(+), 7 deletions(-)
 
---- a/kernel/bpf/verifier.c
-+++ b/kernel/bpf/verifier.c
-@@ -2815,15 +2815,19 @@ static bool sanitize_needed(u8 opcode)
- 	return opcode == BPF_ADD || opcode == BPF_SUB;
+--- a/drivers/net/ethernet/mellanox/mlx4/en_ethtool.c
++++ b/drivers/net/ethernet/mellanox/mlx4/en_ethtool.c
+@@ -1907,8 +1907,6 @@ static int mlx4_en_set_tunable(struct ne
+ 	return ret;
  }
  
-+struct bpf_sanitize_info {
-+	struct bpf_insn_aux_data aux;
-+};
-+
- static int sanitize_ptr_alu(struct bpf_verifier_env *env,
- 			    struct bpf_insn *insn,
- 			    const struct bpf_reg_state *ptr_reg,
- 			    const struct bpf_reg_state *off_reg,
- 			    struct bpf_reg_state *dst_reg,
--			    struct bpf_insn_aux_data *tmp_aux,
-+			    struct bpf_sanitize_info *info,
- 			    const bool commit_window)
+-#define MLX4_EEPROM_PAGE_LEN 256
+-
+ static int mlx4_en_get_module_info(struct net_device *dev,
+ 				   struct ethtool_modinfo *modinfo)
  {
--	struct bpf_insn_aux_data *aux = commit_window ? cur_aux(env) : tmp_aux;
-+	struct bpf_insn_aux_data *aux = commit_window ? cur_aux(env) : &info->aux;
- 	struct bpf_verifier_state *vstate = env->cur_state;
- 	bool off_is_imm = tnum_is_const(off_reg->var_off);
- 	bool off_is_neg = off_reg->smin_value < 0;
-@@ -2852,8 +2856,8 @@ static int sanitize_ptr_alu(struct bpf_v
- 		/* In commit phase we narrow the masking window based on
- 		 * the observed pointer move after the simulated operation.
- 		 */
--		alu_state = tmp_aux->alu_state;
--		alu_limit = abs(tmp_aux->alu_limit - alu_limit);
-+		alu_state = info->aux.alu_state;
-+		alu_limit = abs(info->aux.alu_limit - alu_limit);
- 	} else {
- 		alu_state  = off_is_neg ? BPF_ALU_NEG_VALUE : 0;
- 		alu_state |= off_is_imm ? BPF_ALU_IMMEDIATE : 0;
-@@ -2983,7 +2987,7 @@ static int adjust_ptr_min_max_vals(struc
- 	    smin_ptr = ptr_reg->smin_value, smax_ptr = ptr_reg->smax_value;
- 	u64 umin_val = off_reg->umin_value, umax_val = off_reg->umax_value,
- 	    umin_ptr = ptr_reg->umin_value, umax_ptr = ptr_reg->umax_value;
--	struct bpf_insn_aux_data tmp_aux = {};
-+	struct bpf_sanitize_info info = {};
- 	u8 opcode = BPF_OP(insn->code);
- 	u32 dst = insn->dst_reg;
- 	int ret;
-@@ -3035,7 +3039,7 @@ static int adjust_ptr_min_max_vals(struc
+@@ -1943,7 +1941,7 @@ static int mlx4_en_get_module_info(struc
+ 		break;
+ 	case MLX4_MODULE_ID_SFP:
+ 		modinfo->type = ETH_MODULE_SFF_8472;
+-		modinfo->eeprom_len = MLX4_EEPROM_PAGE_LEN;
++		modinfo->eeprom_len = ETH_MODULE_SFF_8472_LEN;
+ 		break;
+ 	default:
+ 		return -ENOSYS;
+--- a/drivers/net/ethernet/mellanox/mlx4/port.c
++++ b/drivers/net/ethernet/mellanox/mlx4/port.c
+@@ -1283,6 +1283,7 @@ EXPORT_SYMBOL(mlx4_get_roce_gid_from_sla
+ #define I2C_ADDR_LOW  0x50
+ #define I2C_ADDR_HIGH 0x51
+ #define I2C_PAGE_SIZE 256
++#define I2C_HIGH_PAGE_SIZE 128
  
- 	if (sanitize_needed(opcode)) {
- 		ret = sanitize_ptr_alu(env, insn, ptr_reg, off_reg, dst_reg,
--				       &tmp_aux, false);
-+				       &info, false);
- 		if (ret < 0)
- 			return sanitize_err(env, insn, ret, off_reg, dst_reg);
- 	}
-@@ -3176,7 +3180,7 @@ static int adjust_ptr_min_max_vals(struc
- 		return -EACCES;
- 	if (sanitize_needed(opcode)) {
- 		ret = sanitize_ptr_alu(env, insn, dst_reg, off_reg, dst_reg,
--				       &tmp_aux, true);
-+				       &info, true);
- 		if (ret < 0)
- 			return sanitize_err(env, insn, ret, off_reg, dst_reg);
- 	}
+ /* Module Info Data */
+ struct mlx4_cable_info {
+@@ -1336,6 +1337,88 @@ static inline const char *cable_info_mad
+ 	return "Unknown Error";
+ }
+ 
++static int mlx4_get_module_id(struct mlx4_dev *dev, u8 port, u8 *module_id)
++{
++	struct mlx4_cmd_mailbox *inbox, *outbox;
++	struct mlx4_mad_ifc *inmad, *outmad;
++	struct mlx4_cable_info *cable_info;
++	int ret;
++
++	inbox = mlx4_alloc_cmd_mailbox(dev);
++	if (IS_ERR(inbox))
++		return PTR_ERR(inbox);
++
++	outbox = mlx4_alloc_cmd_mailbox(dev);
++	if (IS_ERR(outbox)) {
++		mlx4_free_cmd_mailbox(dev, inbox);
++		return PTR_ERR(outbox);
++	}
++
++	inmad = (struct mlx4_mad_ifc *)(inbox->buf);
++	outmad = (struct mlx4_mad_ifc *)(outbox->buf);
++
++	inmad->method = 0x1; /* Get */
++	inmad->class_version = 0x1;
++	inmad->mgmt_class = 0x1;
++	inmad->base_version = 0x1;
++	inmad->attr_id = cpu_to_be16(0xFF60); /* Module Info */
++
++	cable_info = (struct mlx4_cable_info *)inmad->data;
++	cable_info->dev_mem_address = 0;
++	cable_info->page_num = 0;
++	cable_info->i2c_addr = I2C_ADDR_LOW;
++	cable_info->size = cpu_to_be16(1);
++
++	ret = mlx4_cmd_box(dev, inbox->dma, outbox->dma, port, 3,
++			   MLX4_CMD_MAD_IFC, MLX4_CMD_TIME_CLASS_C,
++			   MLX4_CMD_NATIVE);
++	if (ret)
++		goto out;
++
++	if (be16_to_cpu(outmad->status)) {
++		/* Mad returned with bad status */
++		ret = be16_to_cpu(outmad->status);
++		mlx4_warn(dev,
++			  "MLX4_CMD_MAD_IFC Get Module ID attr(%x) port(%d) i2c_addr(%x) offset(%d) size(%d): Response Mad Status(%x) - %s\n",
++			  0xFF60, port, I2C_ADDR_LOW, 0, 1, ret,
++			  cable_info_mad_err_str(ret));
++		ret = -ret;
++		goto out;
++	}
++	cable_info = (struct mlx4_cable_info *)outmad->data;
++	*module_id = cable_info->data[0];
++out:
++	mlx4_free_cmd_mailbox(dev, inbox);
++	mlx4_free_cmd_mailbox(dev, outbox);
++	return ret;
++}
++
++static void mlx4_sfp_eeprom_params_set(u8 *i2c_addr, u8 *page_num, u16 *offset)
++{
++	*i2c_addr = I2C_ADDR_LOW;
++	*page_num = 0;
++
++	if (*offset < I2C_PAGE_SIZE)
++		return;
++
++	*i2c_addr = I2C_ADDR_HIGH;
++	*offset -= I2C_PAGE_SIZE;
++}
++
++static void mlx4_qsfp_eeprom_params_set(u8 *i2c_addr, u8 *page_num, u16 *offset)
++{
++	/* Offsets 0-255 belong to page 0.
++	 * Offsets 256-639 belong to pages 01, 02, 03.
++	 * For example, offset 400 is page 02: 1 + (400 - 256) / 128 = 2
++	 */
++	if (*offset < I2C_PAGE_SIZE)
++		*page_num = 0;
++	else
++		*page_num = 1 + (*offset - I2C_PAGE_SIZE) / I2C_HIGH_PAGE_SIZE;
++	*i2c_addr = I2C_ADDR_LOW;
++	*offset -= *page_num * I2C_HIGH_PAGE_SIZE;
++}
++
+ /**
+  * mlx4_get_module_info - Read cable module eeprom data
+  * @dev: mlx4_dev.
+@@ -1355,12 +1438,30 @@ int mlx4_get_module_info(struct mlx4_dev
+ 	struct mlx4_cmd_mailbox *inbox, *outbox;
+ 	struct mlx4_mad_ifc *inmad, *outmad;
+ 	struct mlx4_cable_info *cable_info;
+-	u16 i2c_addr;
++	u8 module_id, i2c_addr, page_num;
+ 	int ret;
+ 
+ 	if (size > MODULE_INFO_MAX_READ)
+ 		size = MODULE_INFO_MAX_READ;
+ 
++	ret = mlx4_get_module_id(dev, port, &module_id);
++	if (ret)
++		return ret;
++
++	switch (module_id) {
++	case MLX4_MODULE_ID_SFP:
++		mlx4_sfp_eeprom_params_set(&i2c_addr, &page_num, &offset);
++		break;
++	case MLX4_MODULE_ID_QSFP:
++	case MLX4_MODULE_ID_QSFP_PLUS:
++	case MLX4_MODULE_ID_QSFP28:
++		mlx4_qsfp_eeprom_params_set(&i2c_addr, &page_num, &offset);
++		break;
++	default:
++		mlx4_err(dev, "Module ID not recognized: %#x\n", module_id);
++		return -EINVAL;
++	}
++
+ 	inbox = mlx4_alloc_cmd_mailbox(dev);
+ 	if (IS_ERR(inbox))
+ 		return PTR_ERR(inbox);
+@@ -1386,11 +1487,9 @@ int mlx4_get_module_info(struct mlx4_dev
+ 		 */
+ 		size -= offset + size - I2C_PAGE_SIZE;
+ 
+-	i2c_addr = I2C_ADDR_LOW;
+-
+ 	cable_info = (struct mlx4_cable_info *)inmad->data;
+ 	cable_info->dev_mem_address = cpu_to_be16(offset);
+-	cable_info->page_num = 0;
++	cable_info->page_num = page_num;
+ 	cable_info->i2c_addr = i2c_addr;
+ 	cable_info->size = cpu_to_be16(size);
+ 
 
 
