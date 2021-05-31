@@ -2,86 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 22D4A3956F8
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 10:29:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0BD473956FC
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 10:30:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230423AbhEaIbW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 04:31:22 -0400
-Received: from mga03.intel.com ([134.134.136.65]:11115 "EHLO mga03.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230315AbhEaIbG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 04:31:06 -0400
-IronPort-SDR: tj+Fm39yMCfh1XnQOAKdRbS0xr5KP7QBAKf8Ag7sINyTH8zeOD/fqynnCM+A3M/FsBvB4R9J18
- xUjbEFe+f1IQ==
-X-IronPort-AV: E=McAfee;i="6200,9189,10000"; a="203354743"
-X-IronPort-AV: E=Sophos;i="5.83,236,1616482800"; 
-   d="scan'208";a="203354743"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 May 2021 01:29:26 -0700
-IronPort-SDR: J3u/Qqen6sxUPjq8sd43cC547nnxbLlmxikRCPESXSwM1P9yqZP/hWDk59rn+k8uRwZ+AMnF8N
- btzp3cVx9oBQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.83,236,1616482800"; 
-   d="scan'208";a="446528877"
-Received: from shbuild999.sh.intel.com (HELO localhost) ([10.239.147.94])
-  by fmsmga008.fm.intel.com with ESMTP; 31 May 2021 01:29:21 -0700
-Date:   Mon, 31 May 2021 16:29:22 +0800
-From:   Feng Tang <feng.tang@intel.com>
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
-        David Rientjes <rientjes@google.com>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Ben Widawsky <ben.widawsky@intel.com>,
-        linux-kernel@vger.kernel.org,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Andi Kleen <ak@linux.intel.com>,
-        Dan Williams <dan.j.williams@intel.com>, ying.huang@intel.com
-Subject: Re: [PATCH v1 4/4] mm/mempolicy: kill MPOL_F_LOCAL bit
-Message-ID: <20210531082922.GD56979@shbuild999.sh.intel.com>
-References: <1622005302-23027-5-git-send-email-feng.tang@intel.com>
- <YK9WOKBRsaFESPfR@dhcp22.suse.cz>
- <20210527121041.GA7743@shbuild999.sh.intel.com>
- <YK+P8GDH2kn4FDsA@dhcp22.suse.cz>
- <20210527133436.GD7743@shbuild999.sh.intel.com>
- <YK+8IAphFzbCweHI@dhcp22.suse.cz>
- <20210528043954.GA32292@shbuild999.sh.intel.com>
- <YLSJiV0tLPvCTnjG@dhcp22.suse.cz>
- <20210531073252.GC56979@shbuild999.sh.intel.com>
- <YLSc2zzr1g+CTiAY@dhcp22.suse.cz>
+        id S230299AbhEaIbt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 04:31:49 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:35147 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230361AbhEaIbg (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 04:31:36 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1622449795;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=inr+zuiQM4jK2t4kQOlK3qn2dW0FR37ENWGawz0lq4U=;
+        b=Vs8VqNEC5ciKUA67yic/MzAdy+KLXdbY/Har0NMXYzavw8q2WR5QaD3+SPmglIkSv83rmo
+        MTRI9M5zOvC8tZL1kB4GjFv1PKFn/gtItIqEVKg5Hb4ZKk/fVzOAMzlTVnlRVgYXzdiT6y
+        Qy5ZLO3V2RbLv2QO+/2jjsfoyHpiwT4=
+Received: from mail-pg1-f200.google.com (mail-pg1-f200.google.com
+ [209.85.215.200]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-292-ju0DPZ7eN-WzYnf5BVOH6g-1; Mon, 31 May 2021 04:29:52 -0400
+X-MC-Unique: ju0DPZ7eN-WzYnf5BVOH6g-1
+Received: by mail-pg1-f200.google.com with SMTP id 15-20020a630c4f0000b029021a6da9af28so6815718pgm.22
+        for <linux-kernel@vger.kernel.org>; Mon, 31 May 2021 01:29:52 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=inr+zuiQM4jK2t4kQOlK3qn2dW0FR37ENWGawz0lq4U=;
+        b=Q/Ylg8O0Fu4G08qFu2exXhe6uNQNZ2q9DqT+8/Eu2KyAtw6Y4w2PqSzcYXZvP4cdg1
+         twoAUzm0eXBES/MLGYoJNzByTGX069W2O7y+8VPf+Z2M8ckqtblaQ56PmjJrKB+yI3l0
+         Td5iuZxnUahSGAH6IYGrJaIHKHXnQ8HamK/EWSJ8WEYQqnHyshYaXh0NL9nv5ar2WtnX
+         SOk2PC3LCYZVWzJuOB7OS2rGLGjlwWcCvAgP6hmu8fqWUcJVgThahTTaVWPCnwWaKQHw
+         DbleYi+hWvUbNAY0eU/sSxYfSnsemjfzGZklENefGJRmNQhYyRAL/i1DMpnD5l6uuQpK
+         MVIg==
+X-Gm-Message-State: AOAM532BagQ+xvuoEeULOlyllycEJW5cRT/mAp0NslMIPuLiN/zIpk7Q
+        ytpu1zNFRsvYIW3QFjVnhU3UKhgme7/AYfgqJYR9cuSIkB5+NN9Z1NvZ3fWLECF7jFp4yom0wEJ
+        cmrDjzOZw8cN1mP7oEgIX2yiuy+/2rIj4vUnjYVgZHyPQnVM8swWx862uqLjO8Rva3zgvfN5MBq
+        5o
+X-Received: by 2002:a62:c541:0:b029:2e8:c7c7:d96e with SMTP id j62-20020a62c5410000b02902e8c7c7d96emr15691279pfg.26.1622449790705;
+        Mon, 31 May 2021 01:29:50 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyvMO2iCf1DBX0Bz84EkdLoS9QITer2XbpKjMQiElMdzUPSCzek7QWcLvYxad6JYHkCnpiRPg==
+X-Received: by 2002:a62:c541:0:b029:2e8:c7c7:d96e with SMTP id j62-20020a62c5410000b02902e8c7c7d96emr15691247pfg.26.1622449790317;
+        Mon, 31 May 2021 01:29:50 -0700 (PDT)
+Received: from wangxiaodeMacBook-Air.local ([209.132.188.80])
+        by smtp.gmail.com with ESMTPSA id a21sm10305056pfk.152.2021.05.31.01.29.48
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 31 May 2021 01:29:49 -0700 (PDT)
+Subject: Re: [PATCH v1] vdpa/mlx5: Fix possible failure in umem size
+ calculation
+To:     Eli Cohen <elic@nvidia.com>, mst@redhat.com,
+        virtualization@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org
+References: <20210530090349.8360-1-elic@nvidia.com>
+From:   Jason Wang <jasowang@redhat.com>
+Message-ID: <ecf0afb2-14cc-2350-894c-017ebffcdf35@redhat.com>
+Date:   Mon, 31 May 2021 16:29:45 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.10.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YLSc2zzr1g+CTiAY@dhcp22.suse.cz>
-User-Agent: Mutt/1.5.24 (2015-08-30)
+In-Reply-To: <20210530090349.8360-1-elic@nvidia.com>
+Content-Type: text/plain; charset=gbk; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 31, 2021 at 10:22:51AM +0200, Michal Hocko wrote:
-> On Mon 31-05-21 15:32:52, Feng Tang wrote:
-> > On Mon, May 31, 2021 at 09:00:25AM +0200, Michal Hocko wrote:
-> [...]
-> > > I can see you have posted a newer version which I haven't seen yet but
-> > > this is really better to get resolved before building up more on top.
-> > > And let me be explicit. I do believe that rebinding preferred policy is
-> > > just bogus and it should be dropped altogether on the ground that a 
-> > > preference is a mere hint from userspace where to start the allocation. 
-> > 
-> > Yes, the current mpol_rebind_preferred()'s logic is confusing. Let me
-> > try to understand it correctly, are you suggesting to do nothing for
-> > 'prefer's rebinding regarding MPOL_F_STATIC_NODES and MPOL_F_RELATIVE_NODES,
-> > while just setting 'pol->w.cpuset_mems_allowed' to the new nodemask?
-> 
-> yes this is exactly what I've had in mind.
- 
-Thanks for confirming. Will spin another version.
 
-- Feng
+ÔÚ 2021/5/30 ÏÂÎç5:03, Eli Cohen Ð´µÀ:
+> umem size is a 32 bit unsigned value so assigning it to an int could
+> cause false failures. Set the calculated value inside the function and
+> modify function name to reflect the fact it updates the size.
+>
+> This bug was found during code review but never had real impact to this
+> date.
+>
+> Fixes: 1a86b377aa21 ("vdpa/mlx5: Add VDPA driver for supported mlx5 devices")
+> Signed-off-by: Eli Cohen <elic@nvidia.com>
 
-> -- 
-> Michal Hocko
-> SUSE Labs
+
+Acked-by: Jason Wang <jasowang@redhat.com>
+
+
+> ---
+> V0 --> V1:
+>    Add more info in changelog
+>
+>   drivers/vdpa/mlx5/net/mlx5_vnet.c | 15 +++++----------
+>   1 file changed, 5 insertions(+), 10 deletions(-)
+>
+> diff --git a/drivers/vdpa/mlx5/net/mlx5_vnet.c b/drivers/vdpa/mlx5/net/mlx5_vnet.c
+> index 53312f0460ad..fdf3e74bffbd 100644
+> --- a/drivers/vdpa/mlx5/net/mlx5_vnet.c
+> +++ b/drivers/vdpa/mlx5/net/mlx5_vnet.c
+> @@ -610,8 +610,8 @@ static void cq_destroy(struct mlx5_vdpa_net *ndev, u16 idx)
+>   	mlx5_db_free(ndev->mvdev.mdev, &vcq->db);
+>   }
+>   
+> -static int umem_size(struct mlx5_vdpa_net *ndev, struct mlx5_vdpa_virtqueue *mvq, int num,
+> -		     struct mlx5_vdpa_umem **umemp)
+> +static void set_umem_size(struct mlx5_vdpa_net *ndev, struct mlx5_vdpa_virtqueue *mvq, int num,
+> +			  struct mlx5_vdpa_umem **umemp)
+>   {
+>   	struct mlx5_core_dev *mdev = ndev->mvdev.mdev;
+>   	int p_a;
+> @@ -634,7 +634,7 @@ static int umem_size(struct mlx5_vdpa_net *ndev, struct mlx5_vdpa_virtqueue *mvq
+>   		*umemp = &mvq->umem3;
+>   		break;
+>   	}
+> -	return p_a * mvq->num_ent + p_b;
+> +	(*umemp)->size = p_a * mvq->num_ent + p_b;
+>   }
+>   
+>   static void umem_frag_buf_free(struct mlx5_vdpa_net *ndev, struct mlx5_vdpa_umem *umem)
+> @@ -650,15 +650,10 @@ static int create_umem(struct mlx5_vdpa_net *ndev, struct mlx5_vdpa_virtqueue *m
+>   	void *in;
+>   	int err;
+>   	__be64 *pas;
+> -	int size;
+>   	struct mlx5_vdpa_umem *umem;
+>   
+> -	size = umem_size(ndev, mvq, num, &umem);
+> -	if (size < 0)
+> -		return size;
+> -
+> -	umem->size = size;
+> -	err = umem_frag_buf_alloc(ndev, umem, size);
+> +	set_umem_size(ndev, mvq, num, &umem);
+> +	err = umem_frag_buf_alloc(ndev, umem, umem->size);
+>   	if (err)
+>   		return err;
+>   
+
