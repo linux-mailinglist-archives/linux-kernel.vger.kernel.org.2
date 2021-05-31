@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 50037395B3B
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 15:16:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A05153961DD
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 16:46:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231765AbhEaNSa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 09:18:30 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53148 "EHLO mail.kernel.org"
+        id S233769AbhEaOrS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 10:47:18 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35734 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231539AbhEaNSI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 09:18:08 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E952F6136D;
-        Mon, 31 May 2021 13:16:26 +0000 (UTC)
+        id S232573AbhEaOAL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 10:00:11 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 995A161448;
+        Mon, 31 May 2021 13:36:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1622466987;
-        bh=nSPxMGueoan15cqTgN2FSxdGVBhwNcyfBM02WQWe3pc=;
+        s=korg; t=1622468184;
+        bh=4ozrvRKhSBrWO0tggrN1VXdEGw7IK6RcQBaEEf1bDNg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=PRx0e9AkB10A7BFlpLV+kYuPqkIIuRmErw6hdeLdxq3GTtGFeOn1EltLaoP1G1vb6
-         IUWQcxQ7P2QGF1R/it00wySxsglPSoSHbJb36SDk/8FeDKfHdYgveqq1kI/ACzCaMS
-         HHuvpBPyQ2NMSR7IZxSxhw4h5Y3bzkmnm5Zs3bqY=
+        b=yJ8+3ZroFgcvNe/ZB0NtP4kIWX5+5tyDJJHYrlkatbr9W+tk2t43k4qOiMbTQsLzD
+         UNVKbICNiTZWF+hKMmwr1f+gmcfvmjuP8Him1YBvjij1vRM9xAFUyMwovaJy4S46OS
+         9KPUcm555O+sG5hS8NmzPNglxWo+tISt2WtqfG54=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Johan Hovold <johan@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 4.4 05/54] net: hso: fix control-request directions
+        stable@vger.kernel.org, Takashi Iwai <tiwai@suse.de>,
+        Atul Gopinathan <atulgopinathan@gmail.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.10 146/252] ALSA: sb8: Add a comment note regarding an unused pointer
 Date:   Mon, 31 May 2021 15:13:31 +0200
-Message-Id: <20210531130635.243555317@linuxfoundation.org>
+Message-Id: <20210531130702.977822817@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210531130635.070310929@linuxfoundation.org>
-References: <20210531130635.070310929@linuxfoundation.org>
+In-Reply-To: <20210531130657.971257589@linuxfoundation.org>
+References: <20210531130657.971257589@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,45 +40,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Johan Hovold <johan@kernel.org>
+From: Atul Gopinathan <atulgopinathan@gmail.com>
 
-commit 1a6e9a9c68c1f183872e4bcc947382111c2e04eb upstream.
+[ Upstream commit a28591f61b60fac820c6de59826ffa710e5e314e ]
 
-The direction of the pipe argument must match the request-type direction
-bit or control requests may fail depending on the host-controller-driver
-implementation.
+The field "fm_res" of "struct snd_sb8" is never used/dereferenced
+throughout the sb8.c code. Therefore there is no need for any null value
+check after the "request_region()".
 
-Fix the tiocmset and rfkill requests which erroneously used
-usb_rcvctrlpipe().
+Add a comment note to make developers know about this and prevent any
+"NULL check" patches on this part of code.
 
-Fixes: 72dc1c096c70 ("HSO: add option hso driver")
-Cc: stable@vger.kernel.org      # 2.6.27
-Signed-off-by: Johan Hovold <johan@kernel.org>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Cc: Takashi Iwai <tiwai@suse.de>
+Signed-off-by: Atul Gopinathan <atulgopinathan@gmail.com>
+Link: https://lore.kernel.org/r/20210503115736.2104747-36-gregkh@linuxfoundation.org
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/usb/hso.c |    4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ sound/isa/sb/sb8.c | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
 
---- a/drivers/net/usb/hso.c
-+++ b/drivers/net/usb/hso.c
-@@ -1710,7 +1710,7 @@ static int hso_serial_tiocmset(struct tt
- 	spin_unlock_irqrestore(&serial->serial_lock, flags);
+diff --git a/sound/isa/sb/sb8.c b/sound/isa/sb/sb8.c
+index ae93191ffdc9..8b21920be4bb 100644
+--- a/sound/isa/sb/sb8.c
++++ b/sound/isa/sb/sb8.c
+@@ -94,7 +94,11 @@ static int snd_sb8_probe(struct device *pdev, unsigned int dev)
+ 	acard = card->private_data;
+ 	card->private_free = snd_sb8_free;
  
- 	return usb_control_msg(serial->parent->usb,
--			       usb_rcvctrlpipe(serial->parent->usb, 0), 0x22,
-+			       usb_sndctrlpipe(serial->parent->usb, 0), 0x22,
- 			       0x21, val, if_num, NULL, 0,
- 			       USB_CTRL_SET_TIMEOUT);
- }
-@@ -2461,7 +2461,7 @@ static int hso_rfkill_set_block(void *da
- 	if (hso_dev->usb_gone)
- 		rv = 0;
- 	else
--		rv = usb_control_msg(hso_dev->usb, usb_rcvctrlpipe(hso_dev->usb, 0),
-+		rv = usb_control_msg(hso_dev->usb, usb_sndctrlpipe(hso_dev->usb, 0),
- 				       enabled ? 0x82 : 0x81, 0x40, 0, 0, NULL, 0,
- 				       USB_CTRL_SET_TIMEOUT);
- 	mutex_unlock(&hso_dev->mutex);
+-	/* block the 0x388 port to avoid PnP conflicts */
++	/*
++	 * Block the 0x388 port to avoid PnP conflicts.
++	 * No need to check this value after request_region,
++	 * as we never do anything with it.
++	 */
+ 	acard->fm_res = request_region(0x388, 4, "SoundBlaster FM");
+ 
+ 	if (port[dev] != SNDRV_AUTO_PORT) {
+-- 
+2.30.2
+
 
 
