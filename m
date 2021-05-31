@@ -2,38 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 914C63963CB
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 17:34:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A36CC396234
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 16:51:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232384AbhEaPfl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 11:35:41 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47638 "EHLO mail.kernel.org"
+        id S231609AbhEaOwl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 10:52:41 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38128 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233630AbhEaOV1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 10:21:27 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4B744619B8;
-        Mon, 31 May 2021 13:44:31 +0000 (UTC)
+        id S233111AbhEaOC4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 10:02:56 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6D3576194B;
+        Mon, 31 May 2021 13:37:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1622468671;
-        bh=OnKk4J0rJiPuHFiwNihNYM0eQogylE7E2JYfh02LAe4=;
+        s=korg; t=1622468248;
+        bh=BCFSwPzx2HxKv/p9u44M95JwdRo+S1eHf49eYFKdEJA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=BltVo9jdc/WnHqQX8V2ij/jGMzHj89ryCckdvZ2ekb+EOUdsUbyILVQ8wwJSfJPsq
-         DobpPPe5p26Vcn31bLWqaV2pPwjkkyjMLA2RwWWefKu+foZqgnkgLs+m7UF368SVCE
-         zMZwUCZsbp6qtdrH3HP++5qbume/i1XQFBhoaIq4=
+        b=RS+cY7CWYk+K3AXlTc4PNLm7yNjSvhnW0nyOHNsjt2b6LE49Zaw5Btr67NLdxL3rY
+         8aYXScqzSHktbrgI+2yneul57bwO3+Oy8ii4D2A+uH2R1EKI2epwGkKMr3C6O+EmBP
+         WS0gIMC9f4kF71pUrh1lAJiIWq9ZDXpTqX9MiYtM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Vladimir Oltean <olteanv@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 5.4 080/177] net: dsa: fix a crash if ->get_sset_count() fails
+        stable@vger.kernel.org, Khalid Aziz <khalid@gonehiking.org>,
+        Matt Wang <wwentao@vmware.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.10 172/252] scsi: BusLogic: Fix 64-bit system enumeration error for Buslogic
 Date:   Mon, 31 May 2021 15:13:57 +0200
-Message-Id: <20210531130650.674754658@linuxfoundation.org>
+Message-Id: <20210531130703.851619561@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210531130647.887605866@linuxfoundation.org>
-References: <20210531130647.887605866@linuxfoundation.org>
+In-Reply-To: <20210531130657.971257589@linuxfoundation.org>
+References: <20210531130657.971257589@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,49 +41,65 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dan Carpenter <dan.carpenter@oracle.com>
+From: Matt Wang <wwentao@vmware.com>
 
-commit a269333fa5c0c8e53c92b5a28a6076a28cde3e83 upstream.
+[ Upstream commit 56f396146af278135c0ff958c79b5ee1bd22453d ]
 
-If ds->ops->get_sset_count() fails then it "count" is a negative error
-code such as -EOPNOTSUPP.  Because "i" is an unsigned int, the negative
-error code is type promoted to a very high value and the loop will
-corrupt memory until the system crashes.
+Commit 391e2f25601e ("[SCSI] BusLogic: Port driver to 64-bit")
+introduced a serious issue for 64-bit systems.  With this commit,
+64-bit kernel will enumerate 8*15 non-existing disks.  This is caused
+by the broken CCB structure.  The change from u32 data to void *data
+increased CCB length on 64-bit system, which introduced an extra 4
+byte offset of the CDB.  This leads to incorrect response to INQUIRY
+commands during enumeration.
 
-Fix this by checking for error codes and changing the type of "i" to
-just int.
+Fix disk enumeration failure by reverting the portion of the commit
+above which switched the data pointer from u32 to void.
 
-Fixes: badf3ada60ab ("net: dsa: Provide CPU port statistics to master netdev")
-Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
-Reviewed-by: Andrew Lunn <andrew@lunn.ch>
-Reviewed-by: Florian Fainelli <f.fainelli@gmail.com>
-Reviewed-by: Vladimir Oltean <olteanv@gmail.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Link: https://lore.kernel.org/r/C325637F-1166-4340-8F0F-3BCCD59D4D54@vmware.com
+Acked-by: Khalid Aziz <khalid@gonehiking.org>
+Signed-off-by: Matt Wang <wwentao@vmware.com>
+Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/dsa/master.c |    5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+ drivers/scsi/BusLogic.c | 6 +++---
+ drivers/scsi/BusLogic.h | 2 +-
+ 2 files changed, 4 insertions(+), 4 deletions(-)
 
---- a/net/dsa/master.c
-+++ b/net/dsa/master.c
-@@ -147,8 +147,7 @@ static void dsa_master_get_strings(struc
- 	struct dsa_switch *ds = cpu_dp->ds;
- 	int port = cpu_dp->index;
- 	int len = ETH_GSTRING_LEN;
--	int mcount = 0, count;
--	unsigned int i;
-+	int mcount = 0, count, i;
- 	uint8_t pfx[4];
- 	uint8_t *ndata;
+diff --git a/drivers/scsi/BusLogic.c b/drivers/scsi/BusLogic.c
+index ccb061ab0a0a..7231de2767a9 100644
+--- a/drivers/scsi/BusLogic.c
++++ b/drivers/scsi/BusLogic.c
+@@ -3078,11 +3078,11 @@ static int blogic_qcmd_lck(struct scsi_cmnd *command,
+ 		ccb->opcode = BLOGIC_INITIATOR_CCB_SG;
+ 		ccb->datalen = count * sizeof(struct blogic_sg_seg);
+ 		if (blogic_multimaster_type(adapter))
+-			ccb->data = (void *)((unsigned int) ccb->dma_handle +
++			ccb->data = (unsigned int) ccb->dma_handle +
+ 					((unsigned long) &ccb->sglist -
+-					(unsigned long) ccb));
++					(unsigned long) ccb);
+ 		else
+-			ccb->data = ccb->sglist;
++			ccb->data = virt_to_32bit_virt(ccb->sglist);
  
-@@ -178,6 +177,8 @@ static void dsa_master_get_strings(struc
- 		 */
- 		ds->ops->get_strings(ds, port, stringset, ndata);
- 		count = ds->ops->get_sset_count(ds, port, stringset);
-+		if (count < 0)
-+			return;
- 		for (i = 0; i < count; i++) {
- 			memmove(ndata + (i * len + sizeof(pfx)),
- 				ndata + i * len, len - sizeof(pfx));
+ 		scsi_for_each_sg(command, sg, count, i) {
+ 			ccb->sglist[i].segbytes = sg_dma_len(sg);
+diff --git a/drivers/scsi/BusLogic.h b/drivers/scsi/BusLogic.h
+index 6182cc8a0344..e081ad47d1cf 100644
+--- a/drivers/scsi/BusLogic.h
++++ b/drivers/scsi/BusLogic.h
+@@ -814,7 +814,7 @@ struct blogic_ccb {
+ 	unsigned char cdblen;				/* Byte 2 */
+ 	unsigned char sense_datalen;			/* Byte 3 */
+ 	u32 datalen;					/* Bytes 4-7 */
+-	void *data;					/* Bytes 8-11 */
++	u32 data;					/* Bytes 8-11 */
+ 	unsigned char:8;				/* Byte 12 */
+ 	unsigned char:8;				/* Byte 13 */
+ 	enum blogic_adapter_status adapter_status;	/* Byte 14 */
+-- 
+2.30.2
+
 
 
