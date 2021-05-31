@@ -2,184 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AF4CB396626
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 18:59:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 63A58396682
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 19:08:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234424AbhEaQ71 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 12:59:27 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:45428 "EHLO m43-7.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233386AbhEaPMS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 11:12:18 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1622473838; h=Content-Transfer-Encoding: Content-Type:
- In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
- Subject: Sender; bh=RDPiykZKxUArsqfr+HyfBzTx4txXnTuaKCrbS8HsMz0=; b=nCXfCgzpe2bU7jCYzm1c4Y3SOjXDRpOmbBotz6UP47mu/qeELsi+UgKAEjfCHwKNG9HARgLx
- z8twH5wEquNVKbym1GAMFUSB9e0vCPspN2w9T1V62UQAhoTCT66Bkgp3hyVKOhVLz6IkbFC+
- 9aaD6dO4vpyBTqbRJgP+LtbRQYw=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n07.prod.us-east-1.postgun.com with SMTP id
- 60b4fc64265e7370f711485a (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 31 May 2021 15:10:28
- GMT
-Sender: akhilpo=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id C0BDEC43151; Mon, 31 May 2021 15:10:26 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-3.5 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        NICE_REPLY_A,SPF_FAIL,URIBL_BLOCKED autolearn=no autolearn_force=no
-        version=3.4.0
-Received: from [192.168.1.105] (unknown [117.210.184.158])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: akhilpo)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 6DA67C433D3;
-        Mon, 31 May 2021 15:10:19 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 6DA67C433D3
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=akhilpo@codeaurora.org
-Subject: Re: [PATCH v2 8/8] drm/msm/a6xx: add a660 hwcg table
-To:     Jonathan Marek <jonathan@marek.ca>, freedreno@lists.freedesktop.org
-Cc:     Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Jordan Crouse <jordan@cosmicpenguin.net>,
-        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
-        Eric Anholt <eric@anholt.net>,
-        Sharat Masetty <smasetty@codeaurora.org>,
-        Douglas Anderson <dianders@chromium.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@somainline.org>,
-        Iskren Chernev <iskren.chernev@gmail.com>,
-        Shawn Guo <shawn.guo@linaro.org>,
-        Konrad Dybcio <konrad.dybcio@somainline.org>,
-        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
-        <linux-arm-msm@vger.kernel.org>,
-        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
-        <dri-devel@lists.freedesktop.org>,
-        open list <linux-kernel@vger.kernel.org>
-References: <20210513171431.18632-1-jonathan@marek.ca>
- <20210513171431.18632-9-jonathan@marek.ca>
-From:   Akhil P Oommen <akhilpo@codeaurora.org>
-Message-ID: <9c87a69d-3af4-db3d-3481-7dc158d1b380@codeaurora.org>
-Date:   Mon, 31 May 2021 20:40:17 +0530
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.2
+        id S232490AbhEaRJC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 13:09:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46962 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234004AbhEaQxJ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 12:53:09 -0400
+Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B81B2C08C5F5
+        for <linux-kernel@vger.kernel.org>; Mon, 31 May 2021 08:10:54 -0700 (PDT)
+Received: by mail-pf1-x434.google.com with SMTP id x18so9207509pfi.9
+        for <linux-kernel@vger.kernel.org>; Mon, 31 May 2021 08:10:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=ET6uFordsiWwX4MCNMKhRus+C3EuLNdh9eoANIik8+8=;
+        b=uxQrV6jJGwTClKvYEfNPzMNvPtOF0xpt3MjLEvYdAfXOqfEmfb8IImhakUa3zkMp9w
+         GoNx9HoqHI6R2jqa89T+r8zAz1WMhF1cjeYu/SzQvv52NEsCZXsdlEgdsdVhEDKSvfzd
+         lzzdZhsik9wljdNu6FTmVNKsAiqEBi9rxNwaa/j24ifcxmMrqGJoA4eiL2ayWkfqaMl2
+         4vLJffCJ1AvynhPt9UEgyPY07zqAZJ3je3GM62hZsgSY4FHwoMoab9p0un6t6U9WzoiC
+         g8gXwT6xuXjQbdhZK+EPpPHSkxgl4ZexOL6IycLGCPK44Hc5+vdY2ZEBbOskzRjMy7Kt
+         K1ug==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=ET6uFordsiWwX4MCNMKhRus+C3EuLNdh9eoANIik8+8=;
+        b=kdB8ewwV6Fj6u7YrShtEpeKtGR1V6kZ0OtFMfKzJZH+b+QyMsZv8GOsaobujrOlcLL
+         AVPh6wAFPBb0E1LntaYZHR8sxFa4y/3y2q2FNsoelfNVksKcXe//rT6by07JLoptzIU+
+         HeXEBQNSf+1d6x9Gm6L7uu6pZ4F8Je+aXbcptq8MvIrszBJxzjK4+Uf4O9yaie7T9UJL
+         h93S0fQkqB1uP90D3/r7wTosm6R8VQeIwLhy0hbwlDjYXuPzS3BMHhUqxpvc8KGXMxHR
+         npDPYc33AZPk8uNxKfljdVlsfDwwyUSJpyPQWm5dsbA2S2QXk9AN3jGXMft6rkVQKuZY
+         /tIQ==
+X-Gm-Message-State: AOAM533EVmjHhxjl6uwuDuE4xMqpKfVZXU05/Qm9McLXYk309rtYzu2U
+        Bmxf/r1k/KRxZPG/Y/fd5+uSr/rkk1HO3Dvq
+X-Google-Smtp-Source: ABdhPJzMMkejZt3VKTL6ctQVH8j2oDFU1XAa2OsxjE1kMvD4VotB6aVDwnJd8mL3JHN/jChYu0s0fw==
+X-Received: by 2002:aa7:8703:0:b029:2da:b87f:7d38 with SMTP id b3-20020aa787030000b02902dab87f7d38mr17753307pfo.20.1622473854083;
+        Mon, 31 May 2021 08:10:54 -0700 (PDT)
+Received: from leoy-ThinkPad-X240s (ec2-18-167-84-74.ap-east-1.compute.amazonaws.com. [18.167.84.74])
+        by smtp.gmail.com with ESMTPSA id md24sm1519907pjb.43.2021.05.31.08.10.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 31 May 2021 08:10:53 -0700 (PDT)
+Date:   Mon, 31 May 2021 23:10:49 +0800
+From:   Leo Yan <leo.yan@linaro.org>
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Andi Kleen <ak@linux.intel.com>,
+        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v1 2/2] perf auxtrace: Optimize barriers with
+ load-acquire and store-release
+Message-ID: <20210531151049.GE9324@leoy-ThinkPad-X240s>
+References: <20210519140319.1673043-1-leo.yan@linaro.org>
+ <20210519140319.1673043-2-leo.yan@linaro.org>
 MIME-Version: 1.0
-In-Reply-To: <20210513171431.18632-9-jonathan@marek.ca>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210519140319.1673043-2-leo.yan@linaro.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5/13/2021 10:44 PM, Jonathan Marek wrote:
-> Add a660 hwcg table, ported over from downstream.
-> 
-> Signed-off-by: Jonathan Marek <jonathan@marek.ca>
-> ---
->   drivers/gpu/drm/msm/adreno/a6xx_gpu.c      | 53 ++++++++++++++++++++++
->   drivers/gpu/drm/msm/adreno/adreno_device.c |  1 +
->   drivers/gpu/drm/msm/adreno/adreno_gpu.h    |  2 +-
->   3 files changed, 55 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/gpu/drm/msm/adreno/a6xx_gpu.c b/drivers/gpu/drm/msm/adreno/a6xx_gpu.c
-> index ec66a24fc37e..2713f69e916d 100644
-> --- a/drivers/gpu/drm/msm/adreno/a6xx_gpu.c
-> +++ b/drivers/gpu/drm/msm/adreno/a6xx_gpu.c
-> @@ -427,6 +427,59 @@ const struct adreno_reglist a650_hwcg[] = {
->   	{},
->   };
->   
-> +const struct adreno_reglist a660_hwcg[] = {
-> +	{REG_A6XX_RBBM_CLOCK_CNTL_SP0, 0x02222222},
-> +	{REG_A6XX_RBBM_CLOCK_CNTL2_SP0, 0x02222220},
-> +	{REG_A6XX_RBBM_CLOCK_DELAY_SP0, 0x00000080},
-> +	{REG_A6XX_RBBM_CLOCK_HYST_SP0, 0x0000F3CF},
-> +	{REG_A6XX_RBBM_CLOCK_CNTL_TP0, 0x22222222},
-> +	{REG_A6XX_RBBM_CLOCK_CNTL2_TP0, 0x22222222},
-> +	{REG_A6XX_RBBM_CLOCK_CNTL3_TP0, 0x22222222},
-> +	{REG_A6XX_RBBM_CLOCK_CNTL4_TP0, 0x00022222},
-> +	{REG_A6XX_RBBM_CLOCK_DELAY_TP0, 0x11111111},
-> +	{REG_A6XX_RBBM_CLOCK_DELAY2_TP0, 0x11111111},
-> +	{REG_A6XX_RBBM_CLOCK_DELAY3_TP0, 0x11111111},
-> +	{REG_A6XX_RBBM_CLOCK_DELAY4_TP0, 0x00011111},
-> +	{REG_A6XX_RBBM_CLOCK_HYST_TP0, 0x77777777},
-> +	{REG_A6XX_RBBM_CLOCK_HYST2_TP0, 0x77777777},
-> +	{REG_A6XX_RBBM_CLOCK_HYST3_TP0, 0x77777777},
-> +	{REG_A6XX_RBBM_CLOCK_HYST4_TP0, 0x00077777},
-> +	{REG_A6XX_RBBM_CLOCK_CNTL_RB0, 0x22222222},
-> +	{REG_A6XX_RBBM_CLOCK_CNTL2_RB0, 0x01002222},
-> +	{REG_A6XX_RBBM_CLOCK_CNTL_CCU0, 0x00002220},
-> +	{REG_A6XX_RBBM_CLOCK_HYST_RB_CCU0, 0x00040F00},
-> +	{REG_A6XX_RBBM_CLOCK_CNTL_RAC, 0x25222022},
-> +	{REG_A6XX_RBBM_CLOCK_CNTL2_RAC, 0x00005555},
-> +	{REG_A6XX_RBBM_CLOCK_DELAY_RAC, 0x00000011},
-> +	{REG_A6XX_RBBM_CLOCK_HYST_RAC, 0x00445044},
-> +	{REG_A6XX_RBBM_CLOCK_CNTL_TSE_RAS_RBBM, 0x04222222},
-> +	{REG_A6XX_RBBM_CLOCK_MODE_VFD, 0x00002222},
-> +	{REG_A6XX_RBBM_CLOCK_MODE_GPC, 0x00222222},
-> +	{REG_A6XX_RBBM_CLOCK_DELAY_HLSQ_2, 0x00000002},
-> +	{REG_A6XX_RBBM_CLOCK_MODE_HLSQ, 0x00002222},
-> +	{REG_A6XX_RBBM_CLOCK_DELAY_TSE_RAS_RBBM, 0x00004000},
-> +	{REG_A6XX_RBBM_CLOCK_DELAY_VFD, 0x00002222},
-> +	{REG_A6XX_RBBM_CLOCK_DELAY_GPC, 0x00000200},
-> +	{REG_A6XX_RBBM_CLOCK_DELAY_HLSQ, 0x00000000},
-> +	{REG_A6XX_RBBM_CLOCK_HYST_TSE_RAS_RBBM, 0x00000000},
-> +	{REG_A6XX_RBBM_CLOCK_HYST_VFD, 0x00000000},
-> +	{REG_A6XX_RBBM_CLOCK_HYST_GPC, 0x04104004},
-> +	{REG_A6XX_RBBM_CLOCK_HYST_HLSQ, 0x00000000},
-> +	{REG_A6XX_RBBM_CLOCK_CNTL_TEX_FCHE, 0x00000222},
-> +	{REG_A6XX_RBBM_CLOCK_DELAY_TEX_FCHE, 0x00000111},
-> +	{REG_A6XX_RBBM_CLOCK_HYST_TEX_FCHE, 0x00000000},
-> +	{REG_A6XX_RBBM_CLOCK_CNTL_UCHE, 0x22222222},
-> +	{REG_A6XX_RBBM_CLOCK_HYST_UCHE, 0x00000004},
-> +	{REG_A6XX_RBBM_CLOCK_DELAY_UCHE, 0x00000002},
-> +	{REG_A6XX_RBBM_ISDB_CNT, 0x00000182},
-> +	{REG_A6XX_RBBM_RAC_THRESHOLD_CNT, 0x00000000},
-> +	{REG_A6XX_RBBM_SP_HYST_CNT, 0x00000000},
-> +	{REG_A6XX_RBBM_CLOCK_CNTL_GMU_GX, 0x00000222},
-> +	{REG_A6XX_RBBM_CLOCK_DELAY_GMU_GX, 0x00000111},
-> +	{REG_A6XX_RBBM_CLOCK_HYST_GMU_GX, 0x00000555},
-> +	{},
-> +};
-> +
->   static void a6xx_set_hwcg(struct msm_gpu *gpu, bool state)
->   {
->   	struct adreno_gpu *adreno_gpu = to_adreno_gpu(gpu);
-> diff --git a/drivers/gpu/drm/msm/adreno/adreno_device.c b/drivers/gpu/drm/msm/adreno/adreno_device.c
-> index e4db0683d381..6dad8015c9a1 100644
-> --- a/drivers/gpu/drm/msm/adreno/adreno_device.c
-> +++ b/drivers/gpu/drm/msm/adreno/adreno_device.c
-> @@ -299,6 +299,7 @@ static const struct adreno_info gpulist[] = {
->   		.inactive_period = DRM_MSM_INACTIVE_PERIOD,
->   		.init = a6xx_gpu_init,
->   		.zapfw = "a660_zap.mdt",
-> +		.hwcg = a660_hwcg,
->   	},
->   };
->   
-> diff --git a/drivers/gpu/drm/msm/adreno/adreno_gpu.h b/drivers/gpu/drm/msm/adreno/adreno_gpu.h
-> index 63c050919d85..e6b11e6ec82d 100644
-> --- a/drivers/gpu/drm/msm/adreno/adreno_gpu.h
-> +++ b/drivers/gpu/drm/msm/adreno/adreno_gpu.h
-> @@ -55,7 +55,7 @@ struct adreno_reglist {
->   	u32 value;
->   };
->   
-> -extern const struct adreno_reglist a630_hwcg[], a640_hwcg[], a650_hwcg[];
-> +extern const struct adreno_reglist a630_hwcg[], a640_hwcg[], a650_hwcg[], a660_hwcg[];
->   
->   struct adreno_info {
->   	struct adreno_rev rev;
-> 
-squash with previous one?
+Hi Peter, Adrian,
 
--Akhil
+On Wed, May 19, 2021 at 10:03:19PM +0800, Leo Yan wrote:
+> Load-acquire and store-release are one-way permeable barriers, which can
+> be used to guarantee the memory ordering between accessing the buffer
+> data and the buffer's head / tail.
+> 
+> This patch optimizes the memory ordering with the load-acquire and
+> store-release barriers.
+
+Is this patch okay for you?
+
+Besides this patch, I have an extra question.  You could see for
+accessing the AUX buffer's head and tail, it also support to use
+compiler build-in functions for atomicity accessing:
+
+  __sync_val_compare_and_swap()
+  __sync_bool_compare_and_swap()
+
+Since now we have READ_ONCE()/WRITE_ONCE(), do you think we still need
+to support __sync_xxx_compare_and_swap() atomicity?
+
+I checked the code for updating head and tail for the perf ring buffer
+(see ring_buffer_read_head() and ring_buffer_write_tail() in the file
+tools/include/linux/ring_buffer.h), which doesn't support
+__sync_xxx_compare_and_swap() anymore.  This is why I wander if should
+drop __sync_xxx_compare_and_swap() atomicity for AUX ring buffer as
+well.
+
+Thanks,
+Leo
