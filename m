@@ -2,90 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2AC0239568E
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 09:55:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3FC74395690
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 09:56:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230334AbhEaH52 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 03:57:28 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41684 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230070AbhEaH5X (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 03:57:23 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5E41160FE3;
-        Mon, 31 May 2021 07:55:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1622447744;
-        bh=0ZC9aSJd/5NSxSjCmt2ElwwzNfea3SyLmaaN0sdtbaw=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=SwrTWBapC8LTkHRLOHLM6zvqWwT8hwbcssM6KpafgaqeeMvFTGdq8w7QFBsOohxvl
-         PRPPzrv/5+L3hm1sq6Jtz+FCvkhRjUEIDFuP+q5pUaJQEiARWG+up/v781ppvEWXkj
-         IXoD5XiL6b7pTb91xw/YBzRgyUcrul4evF1PXnWOt7nth+gygVFdvpqZ8xQOiBZ/Nm
-         E23+JYxdVIEMzd6mRDmN7QUz7UFcFSiFNXmVG02uRaa7ASekd4wR9Yvnd52AnvyQnu
-         QswJjaPNHj4fWdc0xa0q6CeLoeetimeojfqdUeD+91DtEZgkmMwGNOPSLdQgRXx0Ly
-         yAEg2ISzfSrRA==
-Received: from johan by xi.lan with local (Exim 4.94.2)
-        (envelope-from <johan@kernel.org>)
-        id 1lnclv-0000aq-AX; Mon, 31 May 2021 09:55:39 +0200
-Date:   Mon, 31 May 2021 09:55:39 +0200
-From:   Johan Hovold <johan@kernel.org>
-To:     Mauro Carvalho Chehab <mchehab@kernel.org>
-Cc:     Hans Verkuil <hverkuil@xs4all.nl>, linux-media@vger.kernel.org,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        syzbot+faf11bbadc5a372564da@syzkaller.appspotmail.com,
-        stable@vger.kernel.org, Antti Palosaari <crope@iki.fi>
-Subject: Re: [PATCH 3/3] media: rtl28xxu: fix zero-length control request
-Message-ID: <YLSWeyy1skooTmqD@hovoldconsulting.com>
-References: <20210524110920.24599-1-johan@kernel.org>
- <20210524110920.24599-4-johan@kernel.org>
+        id S230143AbhEaH5o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 03:57:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40120 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230269AbhEaH5k (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 03:57:40 -0400
+Received: from viti.kaiser.cx (viti.kaiser.cx [IPv6:2a01:238:43fe:e600:cd0c:bd4a:7a3:8e9f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B19D6C061574;
+        Mon, 31 May 2021 00:56:00 -0700 (PDT)
+Received: from martin by viti.kaiser.cx with local (Exim 4.89)
+        (envelope-from <martin@viti.kaiser.cx>)
+        id 1lncm7-0003sc-UW; Mon, 31 May 2021 09:55:51 +0200
+Date:   Mon, 31 May 2021 09:55:51 +0200
+From:   Martin Kaiser <martin@kaiser.cx>
+To:     Dan Carpenter <dan.carpenter@oracle.com>
+Cc:     Larry Finger <Larry.Finger@lwfinger.net>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-staging@lists.linux.dev, kernel-janitors@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 2/3] staging: rtl8188eu: remove dummy wext handlers
+Message-ID: <20210531075551.xjlr74wjxhxsrvj3@viti.kaiser.cx>
+References: <20210529121346.8422-1-martin@kaiser.cx>
+ <20210529121346.8422-2-martin@kaiser.cx>
+ <20210531060223.GV1955@kadam>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210524110920.24599-4-johan@kernel.org>
+In-Reply-To: <20210531060223.GV1955@kadam>
+User-Agent: NeoMutt/20170113 (1.7.2)
+Sender: Martin Kaiser <martin@viti.kaiser.cx>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 24, 2021 at 01:09:20PM +0200, Johan Hovold wrote:
-> The direction of the pipe argument must match the request-type direction
-> bit or control requests may fail depending on the host-controller-driver
-> implementation.
-> 
-> Control transfers without a data stage are treated as OUT requests by
-> the USB stack and should be using usb_sndctrlpipe(). Failing to do so
-> will now trigger a warning.
-> 
-> Fix the zero-length i2c-read request used for type detection by
-> attempting to read a single byte instead.
-> 
-> Reported-by: syzbot+faf11bbadc5a372564da@syzkaller.appspotmail.com
-> Fixes: d0f232e823af ("[media] rtl28xxu: add heuristic to detect chip type")
-> Cc: stable@vger.kernel.org      # 4.0
-> Cc: Antti Palosaari <crope@iki.fi>
-> Signed-off-by: Johan Hovold <johan@kernel.org>
-> ---
->  drivers/media/usb/dvb-usb-v2/rtl28xxu.c | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/media/usb/dvb-usb-v2/rtl28xxu.c b/drivers/media/usb/dvb-usb-v2/rtl28xxu.c
-> index 97ed17a141bb..2c04ed8af0e4 100644
-> --- a/drivers/media/usb/dvb-usb-v2/rtl28xxu.c
-> +++ b/drivers/media/usb/dvb-usb-v2/rtl28xxu.c
-> @@ -612,8 +612,9 @@ static int rtl28xxu_read_config(struct dvb_usb_device *d)
->  static int rtl28xxu_identify_state(struct dvb_usb_device *d, const char **name)
->  {
->  	struct rtl28xxu_dev *dev = d_to_priv(d);
-> +	u8 buf[1];
->  	int ret;
-> -	struct rtl28xxu_req req_demod_i2c = {0x0020, CMD_I2C_DA_RD, 0, NULL};
-> +	struct rtl28xxu_req req_demod_i2c = {0x0020, CMD_I2C_DA_RD, 1, buf};
->  
->  	dev_dbg(&d->intf->dev, "\n");
+Hi Dan and all,
 
-As reported here
+Thus wrote Dan Carpenter (dan.carpenter@oracle.com):
 
-	https://lore.kernel.org/r/YLSVsrhMZ2oOL1vM@hovoldconsulting.com
+> The patch is good, but next time, just put all this commentary in the
+> commit message.
 
-this patch is causing the chip type to no longer be detected correctly,
-so please drop this one for now until this has been resolved.
+I was asking myself if this "expression of my doubts" should go into the
+commit message or not.
 
-Johan
+Thanks for the feedback.
+
+   Martin
