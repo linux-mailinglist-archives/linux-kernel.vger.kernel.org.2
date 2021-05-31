@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 07AE4396429
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 17:47:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8CB6F395E41
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 15:54:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232637AbhEaPst (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 11:48:49 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56128 "EHLO mail.kernel.org"
+        id S232274AbhEaN4Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 09:56:24 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44036 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233712AbhEaO11 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 10:27:27 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0C6AA61607;
-        Mon, 31 May 2021 13:47:29 +0000 (UTC)
+        id S232029AbhEaNhU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 09:37:20 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E7C036135C;
+        Mon, 31 May 2021 13:26:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1622468850;
-        bh=eThF42QgHM2ceyuUbfHXSeQsf1W1pocY7rix57lF/sE=;
+        s=korg; t=1622467566;
+        bh=iYxmgIOXDjyDizwCsssZ/U/GKEIo8uIf/AUjNS5jMXs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=oc8WP5GslnIZ4qHriGAg5OYTUjyJomUBTVJVE+D01tR1wcfa+CD5VHxIL8DmD/TT9
-         zZ5tmTHJL27JgWq/hZE6YCjZxqNJPmbQyrIMBzscoIo7A5o90x11mZC/TQbIIMLzVX
-         YE79krSE5DBVqQCdUSXAkfeUP33Ho5aZA5NeJxII=
+        b=LuSZkI2Bb/XebbUooYL3sxrp8irszGar3NkF25X5aIWZCtri43eCxN17fsrj369g6
+         bzrnh+0hSx5zqcBxr2KRbd6Yj0YRjD92edzmjvoaBoJk6wtPfRHL3jpB09yhoKQrQB
+         VLFjGPKhxZ3Qt2u/SGpaH/OerpQRHfYbFC+CRDzg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Peter Zijlstra <peterz@infradead.org>,
-        Stafford Horne <shorne@gmail.com>,
+        stable@vger.kernel.org, Jussi Maki <joamaki@gmail.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 125/177] openrisc: Define memory barrier mb
+Subject: [PATCH 4.19 106/116] bpf: Set mac_len in bpf_skb_change_head
 Date:   Mon, 31 May 2021 15:14:42 +0200
-Message-Id: <20210531130652.245455529@linuxfoundation.org>
+Message-Id: <20210531130643.717717660@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210531130647.887605866@linuxfoundation.org>
-References: <20210531130647.887605866@linuxfoundation.org>
+In-Reply-To: <20210531130640.131924542@linuxfoundation.org>
+References: <20210531130640.131924542@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,46 +40,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Peter Zijlstra <peterz@infradead.org>
+From: Jussi Maki <joamaki@gmail.com>
 
-[ Upstream commit 8b549c18ae81dbc36fb11e4aa08b8378c599ca95 ]
+[ Upstream commit 84316ca4e100d8cbfccd9f774e23817cb2059868 ]
 
-This came up in the discussion of the requirements of qspinlock on an
-architecture.  OpenRISC uses qspinlock, but it was noticed that the
-memmory barrier was not defined.
+The skb_change_head() helper did not set "skb->mac_len", which is
+problematic when it's used in combination with skb_redirect_peer().
+Without it, redirecting a packet from a L3 device such as wireguard to
+the veth peer device will cause skb->data to point to the middle of the
+IP header on entry to tcp_v4_rcv() since the L2 header is not pulled
+correctly due to mac_len=0.
 
-Peter defined it in the mail thread writing:
-
-    As near as I can tell this should do. The arch spec only lists
-    this one instruction and the text makes it sound like a completion
-    barrier.
-
-This is correct so applying this patch.
-
-Signed-off-by: Peter Zijlstra <peterz@infradead.org>
-[shorne@gmail.com:Turned the mail into a patch]
-Signed-off-by: Stafford Horne <shorne@gmail.com>
+Fixes: 3a0af8fd61f9 ("bpf: BPF for lightweight tunnel infrastructure")
+Signed-off-by: Jussi Maki <joamaki@gmail.com>
+Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
+Link: https://lore.kernel.org/bpf/20210519154743.2554771-2-joamaki@gmail.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/openrisc/include/asm/barrier.h | 9 +++++++++
- 1 file changed, 9 insertions(+)
- create mode 100644 arch/openrisc/include/asm/barrier.h
+ net/core/filter.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/arch/openrisc/include/asm/barrier.h b/arch/openrisc/include/asm/barrier.h
-new file mode 100644
-index 000000000000..7538294721be
---- /dev/null
-+++ b/arch/openrisc/include/asm/barrier.h
-@@ -0,0 +1,9 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+#ifndef __ASM_BARRIER_H
-+#define __ASM_BARRIER_H
-+
-+#define mb() asm volatile ("l.msync" ::: "memory")
-+
-+#include <asm-generic/barrier.h>
-+
-+#endif /* __ASM_BARRIER_H */
+diff --git a/net/core/filter.c b/net/core/filter.c
+index 6272570fe139..01561268d216 100644
+--- a/net/core/filter.c
++++ b/net/core/filter.c
+@@ -3020,6 +3020,7 @@ static inline int __bpf_skb_change_head(struct sk_buff *skb, u32 head_room,
+ 		__skb_push(skb, head_room);
+ 		memset(skb->data, 0, head_room);
+ 		skb_reset_mac_header(skb);
++		skb_reset_mac_len(skb);
+ 	}
+ 
+ 	return ret;
 -- 
 2.30.2
 
