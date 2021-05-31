@@ -2,181 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B8FF63954FF
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 07:22:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 08B84395502
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 07:23:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230130AbhEaFYC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 01:24:02 -0400
-Received: from alexa-out.qualcomm.com ([129.46.98.28]:17589 "EHLO
-        alexa-out.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229970AbhEaFX7 (ORCPT
+        id S230147AbhEaFYz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 01:24:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34422 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229803AbhEaFYv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 01:23:59 -0400
-Received: from ironmsg07-lv.qualcomm.com ([10.47.202.151])
-  by alexa-out.qualcomm.com with ESMTP; 30 May 2021 22:22:20 -0700
-X-QCInternal: smtphost
-Received: from ironmsg02-blr.qualcomm.com ([10.86.208.131])
-  by ironmsg07-lv.qualcomm.com with ESMTP/TLS/AES256-SHA; 30 May 2021 22:22:18 -0700
-X-QCInternal: smtphost
-Received: from c-mansur-linux.qualcomm.com ([10.204.90.208])
-  by ironmsg02-blr.qualcomm.com with ESMTP; 31 May 2021 10:52:00 +0530
-Received: by c-mansur-linux.qualcomm.com (Postfix, from userid 461723)
-        id 7043222586; Mon, 31 May 2021 10:51:59 +0530 (IST)
-From:   Mansur Alisha Shaik <mansur@codeaurora.org>
-To:     linux-media@vger.kernel.org, stanimir.varbanov@linaro.org
-Cc:     linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        vgarodia@codeaurora.org, mansur@codeaurora.org,
-        dikshita@codeaurora.org
-Subject: [PATCH] venus: venc: add support for V4L2_CID_MPEG_VIDEO_H264_8X8_TRANSFORM control
-Date:   Mon, 31 May 2021 10:51:54 +0530
-Message-Id: <1622438514-16657-1-git-send-email-mansur@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
+        Mon, 31 May 2021 01:24:51 -0400
+Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4453EC061574;
+        Sun, 30 May 2021 22:23:11 -0700 (PDT)
+Received: by mail-pj1-x102c.google.com with SMTP id g6-20020a17090adac6b029015d1a9a6f1aso9763486pjx.1;
+        Sun, 30 May 2021 22:23:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=0xibS8mz/JdJSyNGf1+HxezErHYeOwtLnDSIUIiAJqw=;
+        b=f5VAN3eTRZgcud7m2Vlk5QUjWe5E+K4THRKtEbSnOpndKBtpzBIjcbjumwQqEox9jP
+         TQ00JUQqQhcXDDEeNR82bjPEHow1UKlQS6KUK/Flp4iWI33N+sRETOfafT/YjijihYpU
+         Zc9CZUhgLob1ug4PNn5COz5Mron4O7c84T6ePygWKtHaQeBF9z3p+OTQYUaXxNiA+NYk
+         rMshCPyoJtmEVM1aGjSkzCfGhjO7RJ3LTHk2FBgc1yb+35Y+B3RSc7VlZhxMY7POCo6Q
+         458jtBvq816tBM7DiTrtSusKXBNlfuqHU95r5iave1DjYQLkHOhfF7KW9B+N0atEqs8w
+         YmdQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=0xibS8mz/JdJSyNGf1+HxezErHYeOwtLnDSIUIiAJqw=;
+        b=CuTwataQxv0VKEP21MSCUI8RhJZyLxKiUxHokQSpg/5r3GqXoNZ0R3MUORQqq7Bt1G
+         +GZtBEAo1Kuq72hBGwKyHbgEgqY+DGUklogHsww9Ekzj1KMyS4kLBtLoqtZERbbKi1HC
+         x1L9Oeg+XVYOxY8TEe5uEIBNpsKsi1Rx2dmFN7BHSc0VJcm7FRscMart7MTriPvi+Gjc
+         Z5FH6Cd8cQfuJGFPvrQ8Rl2iklb6VVrRDMtcA+FBYk0ANx2LjS95eL+O4CCxbTao2CMN
+         EXWPG5QvpOicR9GnM2g380U99StGh0Fb2wazdcTTEmuZHR/EF8xaZte6SieO4Kv6xS22
+         3Z4A==
+X-Gm-Message-State: AOAM531nCCslFWN7CTEu+JKGWzlh2aEdxNvNCmrAIMMUprDxU+yAXZsF
+        OcWF8SPJz87WUcZ79/9LP1K8EgfJ/Z8=
+X-Google-Smtp-Source: ABdhPJwi5WBCdANmuUtFZDs/3wpz/u2huq03n/KH4sVSe87JV4/lww+EPgOU9ns47aYilrvYrx8T3w==
+X-Received: by 2002:a17:902:9a83:b029:105:e1ad:c54e with SMTP id w3-20020a1709029a83b0290105e1adc54emr882794plp.41.1622438590692;
+        Sun, 30 May 2021 22:23:10 -0700 (PDT)
+Received: from dtor-ws.mtv.corp.google.com ([2620:15c:202:201:f797:8c47:4837:ec11])
+        by smtp.gmail.com with ESMTPSA id y1sm9895555pfn.13.2021.05.30.22.23.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 30 May 2021 22:23:09 -0700 (PDT)
+From:   Dmitry Torokhov <dmitry.torokhov@gmail.com>
+To:     Linus Walleij <linus.walleij@linaro.org>
+Cc:     linux-input@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH 1/2] Input: cyttsp - change maintainer
+Date:   Sun, 30 May 2021 22:23:06 -0700
+Message-Id: <20210531052307.1433979-1-dmitry.torokhov@gmail.com>
+X-Mailer: git-send-email 2.32.0.rc0.204.g9fa02ecfa5-goog
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add support for V4L2_CID_MPEG_VIDEO_H264_8X8_TRANSFORM control for
-H264 high profile and constrained high profile.
+Ferruh's email has been bouncing for quite some time ans Linus has agreed
+to look over the driver.
 
-Signed-off-by: Mansur Alisha Shaik <mansur@codeaurora.org>
+Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
 ---
- drivers/media/platform/qcom/venus/core.h       |  1 +
- drivers/media/platform/qcom/venus/hfi_cmds.c   | 10 ++++++++++
- drivers/media/platform/qcom/venus/hfi_helper.h |  5 +++++
- drivers/media/platform/qcom/venus/venc.c       | 11 +++++++++++
- drivers/media/platform/qcom/venus/venc_ctrls.c | 12 +++++++++++-
- 5 files changed, 38 insertions(+), 1 deletion(-)
+ MAINTAINERS | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/media/platform/qcom/venus/core.h b/drivers/media/platform/qcom/venus/core.h
-index 745f226..103fbd8 100644
---- a/drivers/media/platform/qcom/venus/core.h
-+++ b/drivers/media/platform/qcom/venus/core.h
-@@ -235,6 +235,7 @@ struct venc_controls {
- 	u32 h264_loop_filter_mode;
- 	s32 h264_loop_filter_alpha;
- 	s32 h264_loop_filter_beta;
-+	u32 h264_8x8_transform;
+diff --git a/MAINTAINERS b/MAINTAINERS
+index 08005bafb97f..9a43400480e2 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -4914,9 +4914,9 @@ S:	Maintained
+ F:	drivers/input/touchscreen/cy8ctma140.c
  
- 	u32 hevc_i_qp;
- 	u32 hevc_p_qp;
-diff --git a/drivers/media/platform/qcom/venus/hfi_cmds.c b/drivers/media/platform/qcom/venus/hfi_cmds.c
-index 11a8347..61d04a5 100644
---- a/drivers/media/platform/qcom/venus/hfi_cmds.c
-+++ b/drivers/media/platform/qcom/venus/hfi_cmds.c
-@@ -1178,6 +1178,7 @@ pkt_session_set_property_4xx(struct hfi_session_set_property_pkt *pkt,
- {
- 	void *prop_data;
+ CYTTSP TOUCHSCREEN DRIVER
+-M:	Ferruh Yigit <fery@cypress.com>
++M:	Linus Walleij <linus.walleij@linaro.org>
+ L:	linux-input@vger.kernel.org
+-S:	Supported
++S:	Maintained
+ F:	drivers/input/touchscreen/cyttsp*
+ F:	include/linux/input/cyttsp.h
  
-+
- 	if (!pkt || !cookie || !pdata)
- 		return -EINVAL;
- 
-@@ -1227,6 +1228,15 @@ pkt_session_set_property_4xx(struct hfi_session_set_property_pkt *pkt,
- 		break;
- 	}
- 
-+	case HFI_PROPERTY_PARAM_VENC_H264_TRANSFORM_8X8: {
-+		struct hfi_h264_8x8x_transform *in = pdata, *tm = prop_data;
-+
-+		tm->enable_type = in->enable_type;
-+		pkt->shdr.hdr.size += sizeof(u32) + sizeof(*tm);
-+		break;
-+
-+	}
-+
- 	case HFI_PROPERTY_CONFIG_VENC_MAX_BITRATE:
- 	case HFI_PROPERTY_CONFIG_VDEC_POST_LOOP_DEBLOCKER:
- 	case HFI_PROPERTY_PARAM_BUFFER_ALLOC_MODE:
-diff --git a/drivers/media/platform/qcom/venus/hfi_helper.h b/drivers/media/platform/qcom/venus/hfi_helper.h
-index 63cd347..81d0536 100644
---- a/drivers/media/platform/qcom/venus/hfi_helper.h
-+++ b/drivers/media/platform/qcom/venus/hfi_helper.h
-@@ -510,6 +510,7 @@
- #define HFI_PROPERTY_PARAM_VENC_MAX_NUM_B_FRAMES		0x2005020
- #define HFI_PROPERTY_PARAM_VENC_H264_VUI_BITSTREAM_RESTRC	0x2005021
- #define HFI_PROPERTY_PARAM_VENC_PRESERVE_TEXT_QUALITY		0x2005023
-+#define HFI_PROPERTY_PARAM_VENC_H264_TRANSFORM_8X8			0x2005025
- #define HFI_PROPERTY_PARAM_VENC_HIER_P_MAX_NUM_ENH_LAYER	0x2005026
- #define HFI_PROPERTY_PARAM_VENC_DISABLE_RC_TIMESTAMP		0x2005027
- #define HFI_PROPERTY_PARAM_VENC_INITIAL_QP			0x2005028
-@@ -565,6 +566,10 @@ struct hfi_bitrate {
- 	u32 layer_id;
- };
- 
-+struct hfi_h264_8x8x_transform {
-+	u32 enable_type;
-+};
-+
- #define HFI_CAPABILITY_FRAME_WIDTH			0x01
- #define HFI_CAPABILITY_FRAME_HEIGHT			0x02
- #define HFI_CAPABILITY_MBS_PER_FRAME			0x03
-diff --git a/drivers/media/platform/qcom/venus/venc.c b/drivers/media/platform/qcom/venus/venc.c
-index 8dd49d4..4ecf331 100644
---- a/drivers/media/platform/qcom/venus/venc.c
-+++ b/drivers/media/platform/qcom/venus/venc.c
-@@ -567,6 +567,7 @@ static int venc_set_properties(struct venus_inst *inst)
- 		struct hfi_h264_vui_timing_info info;
- 		struct hfi_h264_entropy_control entropy;
- 		struct hfi_h264_db_control deblock;
-+		struct hfi_h264_8x8x_transform h264_transform;
- 
- 		ptype = HFI_PROPERTY_PARAM_VENC_H264_VUI_TIMING_INFO;
- 		info.enable = 1;
-@@ -597,6 +598,16 @@ static int venc_set_properties(struct venus_inst *inst)
- 		ret = hfi_session_set_property(inst, ptype, &deblock);
- 		if (ret)
- 			return ret;
-+
-+		ptype = HFI_PROPERTY_PARAM_VENC_H264_TRANSFORM_8X8;
-+		if (ctr->profile.h264 == HFI_H264_PROFILE_HIGH ||
-+			ctr->profile.h264 == HFI_H264_PROFILE_CONSTRAINED_HIGH)
-+			h264_transform.enable_type = ctr->h264_8x8_transform;
-+
-+		ret = hfi_session_set_property(inst, ptype, &h264_transform);
-+		if (ret)
-+			return ret;
-+
- 	}
- 
- 	if (inst->fmt_cap->pixfmt == V4L2_PIX_FMT_H264 ||
-diff --git a/drivers/media/platform/qcom/venus/venc_ctrls.c b/drivers/media/platform/qcom/venus/venc_ctrls.c
-index 637c92f..e3ef611 100644
---- a/drivers/media/platform/qcom/venus/venc_ctrls.c
-+++ b/drivers/media/platform/qcom/venus/venc_ctrls.c
-@@ -319,6 +319,13 @@ static int venc_op_s_ctrl(struct v4l2_ctrl *ctrl)
- 	case V4L2_CID_COLORIMETRY_HDR10_MASTERING_DISPLAY:
- 		ctr->mastering = *ctrl->p_new.p_hdr10_mastering;
- 		break;
-+	case V4L2_CID_MPEG_VIDEO_H264_8X8_TRANSFORM:
-+		if (ctr->profile.h264 != HFI_H264_PROFILE_HIGH ||
-+			ctr->profile.h264 != HFI_H264_PROFILE_CONSTRAINED_HIGH)
-+			return -EINVAL;
-+
-+		ctr->h264_8x8_transform = ctrl->val;
-+		break;
- 	default:
- 		return -EINVAL;
- 	}
-@@ -334,7 +341,7 @@ int venc_ctrl_init(struct venus_inst *inst)
- {
- 	int ret;
- 
--	ret = v4l2_ctrl_handler_init(&inst->ctrl_handler, 57);
-+	ret = v4l2_ctrl_handler_init(&inst->ctrl_handler, 58);
- 	if (ret)
- 		return ret;
- 
-@@ -438,6 +445,9 @@ int venc_ctrl_init(struct venus_inst *inst)
- 			  V4L2_CID_MPEG_VIDEO_H264_I_FRAME_MIN_QP, 1, 51, 1, 1);
- 
- 	v4l2_ctrl_new_std(&inst->ctrl_handler, &venc_ctrl_ops,
-+		V4L2_CID_MPEG_VIDEO_H264_8X8_TRANSFORM, 0, 1, 1, 0);
-+
-+	v4l2_ctrl_new_std(&inst->ctrl_handler, &venc_ctrl_ops,
- 			  V4L2_CID_MPEG_VIDEO_H264_P_FRAME_MIN_QP, 1, 51, 1, 1);
- 
- 	v4l2_ctrl_new_std(&inst->ctrl_handler, &venc_ctrl_ops,
 -- 
-QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member 
-of Code Aurora Forum, hosted by The Linux Foundation
+2.32.0.rc0.204.g9fa02ecfa5-goog
 
