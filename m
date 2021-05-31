@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B9134395BEB
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 15:24:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F3A0B396583
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 18:37:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231592AbhEaNZy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 09:25:54 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55510 "EHLO mail.kernel.org"
+        id S232670AbhEaQiq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 12:38:46 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40788 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232180AbhEaNUa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 09:20:30 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 935F961396;
-        Mon, 31 May 2021 13:18:44 +0000 (UTC)
+        id S232230AbhEaOto (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 10:49:44 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E376C61C98;
+        Mon, 31 May 2021 13:57:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1622467125;
-        bh=aYimZNDw6WufWUDW7e/OsFBW0NwYNbOrJ/BLHIG3NgI=;
+        s=korg; t=1622469442;
+        bh=28GVIGDUXWSAXBjqsCOkpGQInfaziB5sPJg0exSEj/c=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=tg3fzT5jc29peimmd7xXZrj4HRbdIpVtlY7DWbLo6c3CbNENBGgHIMqArSeI+Q/HQ
-         ibS1q5PtUrVQhFKnzsWijHCclsW2IO6YHfRfJPVH4QbFyTjVtzRJyYdqiovb6zRGso
-         BRJOMAHsn26uv/vVH5jbx5y+H/loMtgA1x+CvTr4=
+        b=zm1mYVmqVtYz/iRqVfkV48jmdz7KnfKIaZex+zf2jc5zRbbus0j28iZbRKInkIzxt
+         3cpRfnbtmU2aIfY2XID8EDPj3vtY1m3sUQuJ8BkUt+Df2cDFqy7KuPR9vIR4I6a69l
+         Y3JFaDcFA3e4T+6n95R+KCI8Hi0dq6g0t+Eh52l4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Mikulas Patocka <mpatocka@redhat.com>,
-        Mike Snitzer <snitzer@redhat.com>
-Subject: [PATCH 4.9 14/66] dm snapshot: properly fix a crash when an origin has no snapshots
+        stable@vger.kernel.org, "David S. Miller" <davem@davemloft.net>,
+        Du Cheng <ducheng2@gmail.com>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.12 172/296] net: caif: remove BUG_ON(dev == NULL) in caif_xmit
 Date:   Mon, 31 May 2021 15:13:47 +0200
-Message-Id: <20210531130636.714020527@linuxfoundation.org>
+Message-Id: <20210531130709.657986435@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210531130636.254683895@linuxfoundation.org>
-References: <20210531130636.254683895@linuxfoundation.org>
+In-Reply-To: <20210531130703.762129381@linuxfoundation.org>
+References: <20210531130703.762129381@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,35 +39,80 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mikulas Patocka <mpatocka@redhat.com>
+From: Du Cheng <ducheng2@gmail.com>
 
-commit 7e768532b2396bcb7fbf6f82384b85c0f1d2f197 upstream.
+[ Upstream commit 65a67792e3416f7c5d7daa47d99334cbb19a7449 ]
 
-If an origin target has no snapshots, o->split_boundary is set to 0.
-This causes BUG_ON(sectors <= 0) in block/bio.c:bio_split().
+The condition of dev == NULL is impossible in caif_xmit(), hence it is
+for the removal.
 
-Fix this by initializing chunk_size, and in turn split_boundary, to
-rounddown_pow_of_two(UINT_MAX) -- the largest power of two that fits
-into "unsigned" type.
+Explanation:
+The static caif_xmit() is only called upon via a function pointer
+`ndo_start_xmit` defined in include/linux/netdevice.h:
+```
+struct net_device_ops {
+    ...
+    netdev_tx_t     (*ndo_start_xmit)(struct sk_buff *skb, struct net_device *dev);
+    ...
+}
+```
 
-Signed-off-by: Mikulas Patocka <mpatocka@redhat.com>
-Cc: stable@vger.kernel.org
-Signed-off-by: Mike Snitzer <snitzer@redhat.com>
+The exhausive list of call points are:
+```
+drivers/net/ethernet/qualcomm/rmnet/rmnet_map_command.c
+    dev->netdev_ops->ndo_start_xmit(skb, dev);
+    ^                                    ^
+
+drivers/infiniband/ulp/opa_vnic/opa_vnic_netdev.c
+    struct opa_vnic_adapter *adapter = opa_vnic_priv(netdev);
+			     ^                       ^
+    return adapter->rn_ops->ndo_start_xmit(skb, netdev); // adapter would crash first
+	   ^                                    ^
+
+drivers/usb/gadget/function/f_ncm.c
+    ncm->netdev->netdev_ops->ndo_start_xmit(NULL, ncm->netdev);
+	      ^                                   ^
+
+include/linux/netdevice.h
+static inline netdev_tx_t __netdev_start_xmit(...
+{
+    return ops->ndo_start_xmit(skb, dev);
+				    ^
+}
+
+    const struct net_device_ops *ops = dev->netdev_ops;
+				       ^
+    rc = __netdev_start_xmit(ops, skb, dev, more);
+				       ^
+```
+
+In each of the enumerated scenarios, it is impossible for the NULL-valued dev to
+reach the caif_xmit() without crashing the kernel earlier, therefore `BUG_ON(dev ==
+NULL)` is rather useless, hence the removal.
+
+Cc: David S. Miller <davem@davemloft.net>
+Signed-off-by: Du Cheng <ducheng2@gmail.com>
+Link: https://lore.kernel.org/r/20210503115736.2104747-20-gregkh@linuxfoundation.org
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/md/dm-snap.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/net/caif/caif_serial.c | 1 -
+ 1 file changed, 1 deletion(-)
 
---- a/drivers/md/dm-snap.c
-+++ b/drivers/md/dm-snap.c
-@@ -788,7 +788,7 @@ static int dm_add_exception(void *contex
- static uint32_t __minimum_chunk_size(struct origin *o)
+diff --git a/drivers/net/caif/caif_serial.c b/drivers/net/caif/caif_serial.c
+index 4720a7bac4fb..9f30748da4ab 100644
+--- a/drivers/net/caif/caif_serial.c
++++ b/drivers/net/caif/caif_serial.c
+@@ -269,7 +269,6 @@ static netdev_tx_t caif_xmit(struct sk_buff *skb, struct net_device *dev)
  {
- 	struct dm_snapshot *snap;
--	unsigned chunk_size = 0;
-+	unsigned chunk_size = rounddown_pow_of_two(UINT_MAX);
+ 	struct ser_device *ser;
  
- 	if (o)
- 		list_for_each_entry(snap, &o->snapshots, list)
+-	BUG_ON(dev == NULL);
+ 	ser = netdev_priv(dev);
+ 
+ 	/* Send flow off once, on high water mark */
+-- 
+2.30.2
+
 
 
