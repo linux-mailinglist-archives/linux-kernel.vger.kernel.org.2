@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0BD723961A3
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 16:43:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 34C7F396370
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 17:15:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233952AbhEaOoK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 10:44:10 -0400
-Received: from mail.kernel.org ([198.145.29.99]:32910 "EHLO mail.kernel.org"
+        id S233147AbhEaPRF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 11:17:05 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43310 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232132AbhEaN6w (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 09:58:52 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5FD2C61937;
-        Mon, 31 May 2021 13:35:45 +0000 (UTC)
+        id S233333AbhEaONj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 10:13:39 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7F2F361992;
+        Mon, 31 May 2021 13:42:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1622468145;
-        bh=7RVk4R0DPRmf/59YmsgIeJc2hvXN05uFw8oqti3BVSk=;
+        s=korg; t=1622468528;
+        bh=uYvsM+dYdx4w17xeKWn1rbQyhao6tj9BgGKMpf/F4xw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=IcbCLnYJOSC0ya1Xjd1qVKnqcRJuQZcYLL8811t+47sd0YTPvm8f4gTZtSOA/zACD
-         HMtB5k0tQ2R1bvUWhxrm1DWT2ykmQ3y+kRvchXeRF9sI/8JwORCGhBd+hD9ZgiPhA0
-         MKxgA9kF3lBbyA3dEGFoWKaoW1x6WQi4S9XqHfwA=
+        b=fKm6EeEfvpmWIitHE4JhBYoqe90x2TUc2vESenQQbIIZY0U6+huRetNQBS2Tzg4iU
+         i2UGnaaOLSvL6pL8Rwvf9zdm6yo7Sp/lYlGDU4igcPskzEQY2DApVc7Bg1gFF6vTVO
+         licizrhe4fv3MhScHtKCKgMquwfMTqliEnEVWwhU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Vladimir Oltean <vladimir.oltean@nxp.com>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 5.10 116/252] net: dsa: sja1105: error out on unsupported PHY mode
+        stable@vger.kernel.org, Wen Gong <wgong@codeaurora.org>,
+        Jouni Malinen <jouni@codeaurora.org>,
+        Johannes Berg <johannes.berg@intel.com>
+Subject: [PATCH 5.4 024/177] ath10k: add CCMP PN replay protection for fragmented frames for PCIe
 Date:   Mon, 31 May 2021 15:13:01 +0200
-Message-Id: <20210531130701.933642091@linuxfoundation.org>
+Message-Id: <20210531130648.753682794@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210531130657.971257589@linuxfoundation.org>
-References: <20210531130657.971257589@linuxfoundation.org>
+In-Reply-To: <20210531130647.887605866@linuxfoundation.org>
+References: <20210531130647.887605866@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,30 +40,189 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Vladimir Oltean <vladimir.oltean@nxp.com>
+From: Wen Gong <wgong@codeaurora.org>
 
-commit 6729188d2646709941903052e4b78e1d82c239b9 upstream.
+commit a1166b2653db2f3de7338b9fb8a0f6e924b904ee upstream.
 
-The driver continues probing when a port is configured for an
-unsupported PHY interface type, instead it should stop.
+PN replay check for not fragmented frames is finished in the firmware,
+but this was not done for fragmented frames when ath10k is used with
+QCA6174/QCA6377 PCIe. mac80211 has the function
+ieee80211_rx_h_defragment() for PN replay check for fragmented frames,
+but this does not get checked with QCA6174 due to the
+ieee80211_has_protected() condition not matching the cleared Protected
+bit case.
 
-Fixes: 8aa9ebccae87 ("net: dsa: Introduce driver for NXP SJA1105 5-port L2 switch")
-Signed-off-by: Vladimir Oltean <vladimir.oltean@nxp.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Validate the PN of received fragmented frames within ath10k when CCMP is
+used and drop the fragment if the PN is not correct (incremented by
+exactly one from the previous fragment). This applies only for
+QCA6174/QCA6377 PCIe.
+
+Tested-on: QCA6174 hw3.2 PCI WLAN.RM.4.4.1-00110-QCARMSWP-1
+
+Cc: stable@vger.kernel.org
+Signed-off-by: Wen Gong <wgong@codeaurora.org>
+Signed-off-by: Jouni Malinen <jouni@codeaurora.org>
+Link: https://lore.kernel.org/r/20210511200110.9ba2664866a4.I756e47b67e210dba69966d989c4711ffc02dc6bc@changeid
+Signed-off-by: Johannes Berg <johannes.berg@intel.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/dsa/sja1105/sja1105_main.c |    1 +
- 1 file changed, 1 insertion(+)
+ drivers/net/wireless/ath/ath10k/htt.h    |    1 
+ drivers/net/wireless/ath/ath10k/htt_rx.c |   99 +++++++++++++++++++++++++++++--
+ 2 files changed, 96 insertions(+), 4 deletions(-)
 
---- a/drivers/net/dsa/sja1105/sja1105_main.c
-+++ b/drivers/net/dsa/sja1105/sja1105_main.c
-@@ -206,6 +206,7 @@ static int sja1105_init_mii_settings(str
- 		default:
- 			dev_err(dev, "Unsupported PHY mode %s!\n",
- 				phy_modes(ports[i].phy_mode));
-+			return -EINVAL;
- 		}
+--- a/drivers/net/wireless/ath/ath10k/htt.h
++++ b/drivers/net/wireless/ath/ath10k/htt.h
+@@ -835,6 +835,7 @@ enum htt_security_types {
  
- 		/* Even though the SerDes port is able to drive SGMII autoneg
+ #define ATH10K_HTT_TXRX_PEER_SECURITY_MAX 2
+ #define ATH10K_TXRX_NUM_EXT_TIDS 19
++#define ATH10K_TXRX_NON_QOS_TID 16
+ 
+ enum htt_security_flags {
+ #define HTT_SECURITY_TYPE_MASK 0x7F
+--- a/drivers/net/wireless/ath/ath10k/htt_rx.c
++++ b/drivers/net/wireless/ath/ath10k/htt_rx.c
+@@ -1739,16 +1739,87 @@ static void ath10k_htt_rx_h_csum_offload
+ 	msdu->ip_summed = ath10k_htt_rx_get_csum_state(msdu);
+ }
+ 
++static u64 ath10k_htt_rx_h_get_pn(struct ath10k *ar, struct sk_buff *skb,
++				  u16 offset,
++				  enum htt_rx_mpdu_encrypt_type enctype)
++{
++	struct ieee80211_hdr *hdr;
++	u64 pn = 0;
++	u8 *ehdr;
++
++	hdr = (struct ieee80211_hdr *)(skb->data + offset);
++	ehdr = skb->data + offset + ieee80211_hdrlen(hdr->frame_control);
++
++	if (enctype == HTT_RX_MPDU_ENCRYPT_AES_CCM_WPA2) {
++		pn = ehdr[0];
++		pn |= (u64)ehdr[1] << 8;
++		pn |= (u64)ehdr[4] << 16;
++		pn |= (u64)ehdr[5] << 24;
++		pn |= (u64)ehdr[6] << 32;
++		pn |= (u64)ehdr[7] << 40;
++	}
++	return pn;
++}
++
++static bool ath10k_htt_rx_h_frag_pn_check(struct ath10k *ar,
++					  struct sk_buff *skb,
++					  u16 peer_id,
++					  u16 offset,
++					  enum htt_rx_mpdu_encrypt_type enctype)
++{
++	struct ath10k_peer *peer;
++	union htt_rx_pn_t *last_pn, new_pn = {0};
++	struct ieee80211_hdr *hdr;
++	bool more_frags;
++	u8 tid, frag_number;
++	u32 seq;
++
++	peer = ath10k_peer_find_by_id(ar, peer_id);
++	if (!peer) {
++		ath10k_dbg(ar, ATH10K_DBG_HTT, "invalid peer for frag pn check\n");
++		return false;
++	}
++
++	hdr = (struct ieee80211_hdr *)(skb->data + offset);
++	if (ieee80211_is_data_qos(hdr->frame_control))
++		tid = ieee80211_get_tid(hdr);
++	else
++		tid = ATH10K_TXRX_NON_QOS_TID;
++
++	last_pn = &peer->frag_tids_last_pn[tid];
++	new_pn.pn48 = ath10k_htt_rx_h_get_pn(ar, skb, offset, enctype);
++	more_frags = ieee80211_has_morefrags(hdr->frame_control);
++	frag_number = le16_to_cpu(hdr->seq_ctrl) & IEEE80211_SCTL_FRAG;
++	seq = (__le16_to_cpu(hdr->seq_ctrl) & IEEE80211_SCTL_SEQ) >> 4;
++
++	if (frag_number == 0) {
++		last_pn->pn48 = new_pn.pn48;
++		peer->frag_tids_seq[tid] = seq;
++	} else {
++		if (seq != peer->frag_tids_seq[tid])
++			return false;
++
++		if (new_pn.pn48 != last_pn->pn48 + 1)
++			return false;
++
++		last_pn->pn48 = new_pn.pn48;
++	}
++
++	return true;
++}
++
+ static void ath10k_htt_rx_h_mpdu(struct ath10k *ar,
+ 				 struct sk_buff_head *amsdu,
+ 				 struct ieee80211_rx_status *status,
+ 				 bool fill_crypt_header,
+ 				 u8 *rx_hdr,
+-				 enum ath10k_pkt_rx_err *err)
++				 enum ath10k_pkt_rx_err *err,
++				 u16 peer_id,
++				 bool frag)
+ {
+ 	struct sk_buff *first;
+ 	struct sk_buff *last;
+-	struct sk_buff *msdu;
++	struct sk_buff *msdu, *temp;
+ 	struct htt_rx_desc *rxd;
+ 	struct ieee80211_hdr *hdr;
+ 	enum htt_rx_mpdu_encrypt_type enctype;
+@@ -1761,6 +1832,7 @@ static void ath10k_htt_rx_h_mpdu(struct
+ 	bool is_decrypted;
+ 	bool is_mgmt;
+ 	u32 attention;
++	bool frag_pn_check = true;
+ 
+ 	if (skb_queue_empty(amsdu))
+ 		return;
+@@ -1859,6 +1931,24 @@ static void ath10k_htt_rx_h_mpdu(struct
+ 	}
+ 
+ 	skb_queue_walk(amsdu, msdu) {
++		if (frag && !fill_crypt_header && is_decrypted &&
++		    enctype == HTT_RX_MPDU_ENCRYPT_AES_CCM_WPA2)
++			frag_pn_check = ath10k_htt_rx_h_frag_pn_check(ar,
++								      msdu,
++								      peer_id,
++								      0,
++								      enctype);
++
++		if (!frag_pn_check) {
++			/* Discard the fragment with invalid PN */
++			temp = msdu->prev;
++			__skb_unlink(msdu, amsdu);
++			dev_kfree_skb_any(msdu);
++			msdu = temp;
++			frag_pn_check = true;
++			continue;
++		}
++
+ 		ath10k_htt_rx_h_csum_offload(msdu);
+ 		ath10k_htt_rx_h_undecap(ar, msdu, status, first_hdr, enctype,
+ 					is_decrypted);
+@@ -2064,7 +2154,8 @@ static int ath10k_htt_rx_handle_amsdu(st
+ 		ath10k_htt_rx_h_unchain(ar, &amsdu, &drop_cnt, &unchain_cnt);
+ 
+ 	ath10k_htt_rx_h_filter(ar, &amsdu, rx_status, &drop_cnt_filter);
+-	ath10k_htt_rx_h_mpdu(ar, &amsdu, rx_status, true, first_hdr, &err);
++	ath10k_htt_rx_h_mpdu(ar, &amsdu, rx_status, true, first_hdr, &err, 0,
++			     false);
+ 	msdus_to_queue = skb_queue_len(&amsdu);
+ 	ath10k_htt_rx_h_enqueue(ar, &amsdu, rx_status);
+ 
+@@ -3014,7 +3105,7 @@ static int ath10k_htt_rx_in_ord_ind(stru
+ 			ath10k_htt_rx_h_ppdu(ar, &amsdu, status, vdev_id);
+ 			ath10k_htt_rx_h_filter(ar, &amsdu, status, NULL);
+ 			ath10k_htt_rx_h_mpdu(ar, &amsdu, status, false, NULL,
+-					     NULL);
++					     NULL, peer_id, frag);
+ 			ath10k_htt_rx_h_enqueue(ar, &amsdu, status);
+ 			break;
+ 		case -EAGAIN:
 
 
