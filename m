@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2AC0B3960E0
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 16:31:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 972A2396527
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 18:23:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233914AbhEaOcx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 10:32:53 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56074 "EHLO mail.kernel.org"
+        id S232365AbhEaQZX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 12:25:23 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39882 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233193AbhEaNyt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 09:54:49 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C1BD36143B;
-        Mon, 31 May 2021 13:33:52 +0000 (UTC)
+        id S233652AbhEaOnh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 10:43:37 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2F9E161C72;
+        Mon, 31 May 2021 13:54:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1622468033;
-        bh=7aU17wpJD5FM3EuHAtTb3q/DPaJl6R++Mh/lZDtvag0=;
+        s=korg; t=1622469276;
+        bh=CKHgblGGySsSRCukiqodNq/GwCeFxKa9pKvXZLtX0z4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=N2wC98wt4AaiNu/N+2gg/L0LoS360nXhwgA+fvHpraplglpq2WStAW0hQ/ZJKGRUb
-         5iFU2tByuE4kYFI8+e6pwxDFn5xtigC6SOm1zan5aP9nNn0blEvQClbZ+cHo68Mzl1
-         RCuXUev6QyLTtaHGJhLqNLhwdWI2fB8iNeXugBCA=
+        b=JXSmcqkiHPdYc3eOoXgZRsVPgR7kP49mF6y/9mvY33WbCrTDkVLfk0lWlyE8gDhXu
+         jbA9glHe0hDCRG5NgBhXCIvEOJRUcvTnQ76DolWztWHK0OTgFjp+PFHI6jAB3B+Uc0
+         /brSkQDhx4vsWPvTvfSdtV7MtGkvHJLSyNOYDj44=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
-        Trond Myklebust <trond.myklebust@hammerspace.com>
-Subject: [PATCH 5.10 092/252] NFS: fix an incorrect limit in filelayout_decode_layout()
+        stable@vger.kernel.org,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>
+Subject: [PATCH 5.12 102/296] thermal/drivers/intel: Initialize RW trip to THERMAL_TEMP_INVALID
 Date:   Mon, 31 May 2021 15:12:37 +0200
-Message-Id: <20210531130701.095374234@linuxfoundation.org>
+Message-Id: <20210531130707.359084386@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210531130657.971257589@linuxfoundation.org>
-References: <20210531130657.971257589@linuxfoundation.org>
+In-Reply-To: <20210531130703.762129381@linuxfoundation.org>
+References: <20210531130703.762129381@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,34 +40,62 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dan Carpenter <dan.carpenter@oracle.com>
+From: Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
 
-commit 769b01ea68b6c49dc3cde6adf7e53927dacbd3a8 upstream.
+commit eb8500b874cf295971a6a2a04e14eb0854197a3c upstream.
 
-The "sizeof(struct nfs_fh)" is two bytes too large and could lead to
-memory corruption.  It should be NFS_MAXFHSIZE because that's the size
-of the ->data[] buffer.
+After commit 81ad4276b505 ("Thermal: Ignore invalid trip points") all
+user_space governor notifications via RW trip point is broken in intel
+thermal drivers. This commits marks trip_points with value of 0 during
+call to thermal_zone_device_register() as invalid. RW trip points can be
+0 as user space will set the correct trip temperature later.
 
-I reversed the size of the arguments to put the variable on the left.
+During driver init, x86_package_temp and all int340x drivers sets RW trip
+temperature as 0. This results in all these trips marked as invalid by
+the thermal core.
 
-Fixes: 16b374ca439f ("NFSv4.1: pnfs: filelayout: add driver's LAYOUTGET and GETDEVICEINFO infrastructure")
-Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
-Signed-off-by: Trond Myklebust <trond.myklebust@hammerspace.com>
+To fix this initialize RW trips to THERMAL_TEMP_INVALID instead of 0.
+
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
+Signed-off-by: Daniel Lezcano <daniel.lezcano@linaro.org>
+Link: https://lore.kernel.org/r/20210430122343.1789899-1-srinivas.pandruvada@linux.intel.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- fs/nfs/filelayout/filelayout.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/thermal/intel/int340x_thermal/int340x_thermal_zone.c |    4 ++++
+ drivers/thermal/intel/x86_pkg_temp_thermal.c                 |    2 +-
+ 2 files changed, 5 insertions(+), 1 deletion(-)
 
---- a/fs/nfs/filelayout/filelayout.c
-+++ b/fs/nfs/filelayout/filelayout.c
-@@ -718,7 +718,7 @@ filelayout_decode_layout(struct pnfs_lay
- 		if (unlikely(!p))
- 			goto out_err;
- 		fl->fh_array[i]->size = be32_to_cpup(p++);
--		if (sizeof(struct nfs_fh) < fl->fh_array[i]->size) {
-+		if (fl->fh_array[i]->size > NFS_MAXFHSIZE) {
- 			printk(KERN_ERR "NFS: Too big fh %d received %d\n",
- 			       i, fl->fh_array[i]->size);
- 			goto out_err;
+--- a/drivers/thermal/intel/int340x_thermal/int340x_thermal_zone.c
++++ b/drivers/thermal/intel/int340x_thermal/int340x_thermal_zone.c
+@@ -237,6 +237,8 @@ struct int34x_thermal_zone *int340x_ther
+ 	if (ACPI_FAILURE(status))
+ 		trip_cnt = 0;
+ 	else {
++		int i;
++
+ 		int34x_thermal_zone->aux_trips =
+ 			kcalloc(trip_cnt,
+ 				sizeof(*int34x_thermal_zone->aux_trips),
+@@ -247,6 +249,8 @@ struct int34x_thermal_zone *int340x_ther
+ 		}
+ 		trip_mask = BIT(trip_cnt) - 1;
+ 		int34x_thermal_zone->aux_trip_nr = trip_cnt;
++		for (i = 0; i < trip_cnt; ++i)
++			int34x_thermal_zone->aux_trips[i] = THERMAL_TEMP_INVALID;
+ 	}
+ 
+ 	trip_cnt = int340x_thermal_read_trips(int34x_thermal_zone);
+--- a/drivers/thermal/intel/x86_pkg_temp_thermal.c
++++ b/drivers/thermal/intel/x86_pkg_temp_thermal.c
+@@ -166,7 +166,7 @@ static int sys_get_trip_temp(struct ther
+ 	if (thres_reg_value)
+ 		*temp = zonedev->tj_max - thres_reg_value * 1000;
+ 	else
+-		*temp = 0;
++		*temp = THERMAL_TEMP_INVALID;
+ 	pr_debug("sys_get_trip_temp %d\n", *temp);
+ 
+ 	return 0;
 
 
