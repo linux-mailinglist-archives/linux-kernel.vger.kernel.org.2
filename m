@@ -2,51 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A70B396310
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 17:03:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DADC2396314
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 17:03:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234503AbhEaPEa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 11:04:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38240 "EHLO
+        id S232594AbhEaPFP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 11:05:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38256 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232592AbhEaOHh (ORCPT
+        with ESMTP id S232918AbhEaOHh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 31 May 2021 10:07:37 -0400
-Received: from mail-qk1-x734.google.com (mail-qk1-x734.google.com [IPv6:2607:f8b0:4864:20::734])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A83EC0612F1;
-        Mon, 31 May 2021 06:38:50 -0700 (PDT)
-Received: by mail-qk1-x734.google.com with SMTP id 124so11172652qkh.10;
-        Mon, 31 May 2021 06:38:50 -0700 (PDT)
+Received: from mail-qk1-x735.google.com (mail-qk1-x735.google.com [IPv6:2607:f8b0:4864:20::735])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 598DDC08C5F0;
+        Mon, 31 May 2021 06:38:52 -0700 (PDT)
+Received: by mail-qk1-x735.google.com with SMTP id i5so11169343qkf.12;
+        Mon, 31 May 2021 06:38:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=nfDK/Bf/e4nvbxsoi7WegXjXDWkjyIFNxz/IfnwgRq4=;
-        b=YVe4kR7YSWJuL+Mtxc7uh7lzec7foD5jyMaxd24Y766wnUPENpK9qVBJjgCgwF+Ogb
-         lgxREx7zqjvgYyPj6bDL4zZGNArHVQWrfUBgY+ZbceACh8RX+Z0QXUek8FEGLUX4BLUz
-         gsoMR1ATCZTUxS/w70ugXR6vurZtCBqzQOmoRBaki101bpmC2CZz8BckmhPyvkbEY0A8
-         iOIwi9wID+1hqN7vAD7YKxFRXN7SN9DFlbOrEr2NMNDHbOtzPcVnAjnAaswsU7mQU4YX
-         m9AJA+FTWkGS3w0n8E2yHhY36yvl3Tusei+EW1zMPNJBobIYDeA96hVogBVdytaVsyon
-         2ajg==
+        bh=AiQc0DD6N2aSgRO8sD4OJ1ER+4IqRjuDkiQMrkgaEeg=;
+        b=OWuBw7Xbn46LGzkcPX0maGceNLxP85ho0kEXArJFfMg/NKobMBiLbBr4M/kq/cMcI8
+         v8WLNC+VNvTqGqTa36QV90I1ShlpaTBOHeL6BwdCP1fN8zdac79QEq0po1q8dh5oGTNE
+         VXJ0mfGlE+vp327I1erikfZR60iBQpS3dvuMzJqElE0jl+01XIQR3Yvlr8ozeQR4Xl42
+         LNpkBnaKlCGT9B+k0sIgJiK2njVfvnqVO2PYBA+XWqhz9PVH+Tg4MDUm45jHeYKlyYCE
+         42A+6ztlWjn6bYu2DJYDDjxXhPqqRFrNE9pU6bt1rhr/QDqAJhkhfEK59m8HcmYzRDuE
+         l9gw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references;
-        bh=nfDK/Bf/e4nvbxsoi7WegXjXDWkjyIFNxz/IfnwgRq4=;
-        b=sT67pkakfgc5HoQgTX/4tT0Lx5dRsPCta8/SW2HF4BTUszDpaEAB2CS/sCHhtqNF4b
-         d+2aaKCFjpmo+NxYWgsgD4M823RvlX6Yd1NFUuVSTe/1w30i2AJ4hqFCtNar8JdZbqRQ
-         r8m7eYiRxlJ4cdD3n/6xfrfv6z5l2KHEPO2Wzk6L7qfIkZtuDE3htB3Nywvemtu7Tjhx
-         pat5+3j7Tm+xM+myfvhgbuqPhqjam5yovCinTeX1vdJbXTS10LK/qRaFG4zKGxD72x/B
-         I07haNTXKZwRiFC2ApjDVGPKF0JeiXmqtU85LC6B8SYTsX5LHTTooG1BIwqbTM/iv6+l
-         SqFQ==
-X-Gm-Message-State: AOAM530N4uZBt2aKj6wokSNjkBw7O6MhCXv6iIAgUTIe70Unn0LXOKoj
-        rw5nG8fLdM9i/QKb30j6qTc=
-X-Google-Smtp-Source: ABdhPJwCugJm5bVyy4s3sIyiN9JCFD8zm3wCpg6E74cgJbmcIKiaDZK3NPzK3gleXJoNAxdVTzzIAQ==
-X-Received: by 2002:a37:a092:: with SMTP id j140mr16803968qke.382.1622468329708;
-        Mon, 31 May 2021 06:38:49 -0700 (PDT)
+        bh=AiQc0DD6N2aSgRO8sD4OJ1ER+4IqRjuDkiQMrkgaEeg=;
+        b=d1wRG2dupK0ZYh+6kbUeimsH5NaU5XIj0qPkV8h4bYQ6aWQ467SUP4fhsJzOvgxFPy
+         ZiKrSSkPFcV+09MEjVPtqksML2SzJ47wfN+p32srRYq2Derl8YrFos2YoAw062Ka+64W
+         0ylaBO/qLS8pBCbzuNTQzE+vDHGseRiYEQrfDQ398GyFlTULb+MJOt5KTBDJ1CpxwS/8
+         XTx2tASRPSEyiFZ0/2dEOztomatdynF4pA0K2FQaaiu9qE4VyEBS2ReBRmy3ck3dM+e8
+         oaucR2vpqkQsvu9waqEkcnzVntWBMYGLirvgkTP2IL9Ozx6ZJjPkitwyGvz/VwXYgaOW
+         rTAQ==
+X-Gm-Message-State: AOAM530+0zTWCzUKxzHjSgLPRRhdb78oeWBkw1QwNc4cEaKurl1kYOg9
+        bkFe1v0SoQjOOys+Nekaz+E=
+X-Google-Smtp-Source: ABdhPJyGSnELb7iXcL4G3uA5bSk9wlgE1Vj5P2s0YYjM4HK4RM2gIfGgWOJIm6EyWL15p67XLltqgw==
+X-Received: by 2002:ae9:e890:: with SMTP id a138mr5710059qkg.2.1622468331569;
+        Mon, 31 May 2021 06:38:51 -0700 (PDT)
 Received: from localhost.localdomain (ec2-35-169-212-159.compute-1.amazonaws.com. [35.169.212.159])
-        by smtp.gmail.com with ESMTPSA id h8sm8293085qtp.46.2021.05.31.06.38.48
+        by smtp.gmail.com with ESMTPSA id h8sm8293085qtp.46.2021.05.31.06.38.50
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 31 May 2021 06:38:49 -0700 (PDT)
+        Mon, 31 May 2021 06:38:51 -0700 (PDT)
 From:   sj38.park@gmail.com
 To:     akpm@linux-foundation.org
 Cc:     SeongJae Park <sjpark@amazon.de>, Jonathan.Cameron@Huawei.com,
@@ -63,9 +63,9 @@ Cc:     SeongJae Park <sjpark@amazon.de>, Jonathan.Cameron@Huawei.com,
         vdavydov.dev@gmail.com, zgf574564920@gmail.com,
         linux-damon@amazon.com, linux-mm@kvack.org,
         linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [RFC PATCH 11/13] mm/damon/dbgfs: Support watermarks
-Date:   Mon, 31 May 2021 13:38:14 +0000
-Message-Id: <20210531133816.12689-12-sj38.park@gmail.com>
+Subject: [RFC PATCH 12/13] selftests/damon: Support watermarks
+Date:   Mon, 31 May 2021 13:38:15 +0000
+Message-Id: <20210531133816.12689-13-sj38.park@gmail.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20210531133816.12689-1-sj38.park@gmail.com>
 References: <20210531133816.12689-1-sj38.park@gmail.com>
@@ -75,61 +75,36 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: SeongJae Park <sjpark@amazon.de>
 
-This commit updates DAMON debugfs interface to support the watermarks
-based schemes activation.  For this, now 'schemes' file receives five
-more values.
+This commit updates DAMON selftests for 'schemes' debugfs file to
+reflect the changes in the format.
 
 Signed-off-by: SeongJae Park <sjpark@amazon.de>
 ---
- mm/damon/dbgfs.c | 14 ++++++++------
- 1 file changed, 8 insertions(+), 6 deletions(-)
+ tools/testing/selftests/damon/debugfs_attrs.sh | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/mm/damon/dbgfs.c b/mm/damon/dbgfs.c
-index 1680fb1be8e1..768ef3eb9550 100644
---- a/mm/damon/dbgfs.c
-+++ b/mm/damon/dbgfs.c
-@@ -227,7 +227,7 @@ static ssize_t sprint_schemes(struct damon_ctx *c, char *buf, ssize_t len)
+diff --git a/tools/testing/selftests/damon/debugfs_attrs.sh b/tools/testing/selftests/damon/debugfs_attrs.sh
+index 262034d8efa5..90440cb3aee8 100755
+--- a/tools/testing/selftests/damon/debugfs_attrs.sh
++++ b/tools/testing/selftests/damon/debugfs_attrs.sh
+@@ -101,7 +101,7 @@ echo $ORIG_CONTENT > $file
+ file="$DBGFS/schemes"
  
- 	damon_for_each_scheme(s, c) {
- 		rc = scnprintf(&buf[written], len - written,
--				"%lu %lu %u %u %u %u %d %lu %lu %u %u %u %lu %lu\n",
-+				"%lu %lu %u %u %u %u %d %lu %lu %u %u %u %d %lu %lu %lu %lu %lu %lu\n",
- 				s->min_sz_region, s->max_sz_region,
- 				s->min_nr_accesses, s->max_nr_accesses,
- 				s->min_age_region, s->max_age_region,
-@@ -235,6 +235,8 @@ static ssize_t sprint_schemes(struct damon_ctx *c, char *buf, ssize_t len)
- 				s->limit.weight_sz,
- 				s->limit.weight_nr_accesses,
- 				s->limit.weight_age,
-+				s->wmarks.metric, s->wmarks.interval,
-+				s->wmarks.high, s->wmarks.mid, s->wmarks.low,
- 				s->stat_count, s->stat_sz);
- 		if (!rc)
- 			return -ENOMEM;
-@@ -315,18 +317,18 @@ static struct damos **str_to_schemes(const char *str, ssize_t len,
- 	*nr_schemes = 0;
- 	while (pos < len && *nr_schemes < max_nr_schemes) {
- 		struct damos_speed_limit limit = {};
--		struct damos_watermarks wmarks = {
--			.metric = DAMOS_WMARK_NONE,
--		};
-+		struct damos_watermarks wmarks;
+ ORIG_CONTENT=$(cat $file)
+-echo "1 2 3 4 5 6 3 0 0 1 2 3" > $file
++echo "1 2 3 4 5 6 3 0 0 1 2 3 1 100 3 2 1" > $file
+ if [ $? -ne 0 ]
+ then
+ 	echo "$file write fail"
+@@ -110,7 +110,7 @@ then
+ fi
  
- 		ret = sscanf(&str[pos],
--				"%lu %lu %u %u %u %u %u %lu %lu %u %u %u%n",
-+				"%lu %lu %u %u %u %u %u %lu %lu %u %u %u %u %lu %lu %lu %lu%n",
- 				&min_sz, &max_sz, &min_nr_a, &max_nr_a,
- 				&min_age, &max_age, &action, &limit.sz,
- 				&limit.ms, &limit.weight_sz,
- 				&limit.weight_nr_accesses, &limit.weight_age,
-+				&wmarks.metric, &wmarks.interval,
-+				&wmarks.high, &wmarks.mid, &wmarks.low,
- 				&parsed);
--		if (ret != 12)
-+		if (ret != 17)
- 			break;
- 		if (!damos_action_valid(action)) {
- 			pr_err("wrong action %d\n", action);
+ echo "1 2
+-3 4 5 6 3 0 0 1 2 3" > $file
++3 4 5 6 3 0 0 1 2 3 1 100 3 2 1" > $file
+ if [ $? -eq 0 ]
+ then
+ 	echo "$file multi line write success (expected fail)"
 -- 
 2.17.1
 
