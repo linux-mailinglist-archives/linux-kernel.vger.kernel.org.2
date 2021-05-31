@@ -2,31 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CBC043964E5
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 18:14:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A8E0A3964E3
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 18:13:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232840AbhEaQPg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 12:15:36 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37968 "EHLO mail.kernel.org"
+        id S234645AbhEaQOy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 12:14:54 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37972 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234145AbhEaOjb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S234141AbhEaOjb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 31 May 2021 10:39:31 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 973B461C5D;
-        Mon, 31 May 2021 13:52:35 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 43ED961C5F;
+        Mon, 31 May 2021 13:52:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1622469156;
-        bh=48Soh6RnlXypW8APZSOeTcy38VcdKuzc9LqZpppiBno=;
+        s=korg; t=1622469158;
+        bh=fDSHuxrhJTbpqsPwkMi+VT3J276BLyapjLD2nMJdh4c=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=i1kX/qiUM9Yxz36cMjPPipUCJqEkkNbeqQs18qgl+9ltBVtDsXWLHN5x33vqfcol1
-         sGyUPLj+eBickjHRFProKt1WjZN+Fs5YAB9kEADMP/IwFNZzUviGx48Lv5C/JOz/OY
-         CGjVzc6ZYKq1Bg1nQckelR+4bSFCTu/AM+p5WS7A=
+        b=SLaN5hV8gdrNnyE48re/UhJteyfKeztZSp+Oi3eAm5PhaJlliYngbDc0kroVxnXe1
+         QYVXgfVc0kMfneCLbrSEJPO5Ab7Ja5Xj9xHKDbHct9LpfA0VFGgJtyALvATvFMNwiv
+         UBbZrGIecLgCsAZp7SepSYua7Pb+OXRVtTDEr86E=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Johan Hovold <johan@kernel.org>
-Subject: [PATCH 5.12 089/296] USB: trancevibrator: fix control-request direction
-Date:   Mon, 31 May 2021 15:12:24 +0200
-Message-Id: <20210531130706.892185856@linuxfoundation.org>
+        stable@vger.kernel.org, Shaokun Zhang <zhangshaokun@hisilicon.com>,
+        Marc Zyngier <maz@kernel.org>,
+        Jason Wang <jasowang@redhat.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Eric Auger <eric.auger@redhat.com>,
+        Zhu Lingshan <lingshan.zhu@intel.com>
+Subject: [PATCH 5.12 090/296] Revert "irqbypass: do not start cons/prod when failed connect"
+Date:   Mon, 31 May 2021 15:12:25 +0200
+Message-Id: <20210531130706.924302301@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210531130703.762129381@linuxfoundation.org>
 References: <20210531130703.762129381@linuxfoundation.org>
@@ -38,39 +43,67 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Johan Hovold <johan@kernel.org>
+From: Zhu Lingshan <lingshan.zhu@intel.com>
 
-commit 746e4acf87bcacf1406e05ef24a0b7139147c63e upstream.
+commit e44b49f623c77bee7451f1a82ccfb969c1028ae2 upstream.
 
-The direction of the pipe argument must match the request-type direction
-bit or control requests may fail depending on the host-controller-driver
-implementation.
+This reverts commit a979a6aa009f3c99689432e0cdb5402a4463fb88.
 
-Fix the set-speed request which erroneously used USB_DIR_IN and update
-the default timeout argument to match (same value).
+The reverted commit may cause VM freeze on arm64 with GICv4,
+where stopping a consumer is implemented by suspending the VM.
+Should the connect fail, the VM will not be resumed, which
+is a bit of a problem.
 
-Fixes: 5638e4d92e77 ("USB: add PlayStation 2 Trance Vibrator driver")
-Cc: stable@vger.kernel.org      # 2.6.19
-Signed-off-by: Johan Hovold <johan@kernel.org>
-Link: https://lore.kernel.org/r/20210521133109.17396-1-johan@kernel.org
+It also erroneously calls the producer destructor unconditionally,
+which is unexpected.
+
+Reported-by: Shaokun Zhang <zhangshaokun@hisilicon.com>
+Suggested-by: Marc Zyngier <maz@kernel.org>
+Acked-by: Jason Wang <jasowang@redhat.com>
+Acked-by: Michael S. Tsirkin <mst@redhat.com>
+Reviewed-by: Eric Auger <eric.auger@redhat.com>
+Tested-by: Shaokun Zhang <zhangshaokun@hisilicon.com>
+Signed-off-by: Zhu Lingshan <lingshan.zhu@intel.com>
+[maz: tags and cc-stable, commit message update]
+Signed-off-by: Marc Zyngier <maz@kernel.org>
+Fixes: a979a6aa009f ("irqbypass: do not start cons/prod when failed connect")
+Link: https://lore.kernel.org/r/3a2c66d6-6ca0-8478-d24b-61e8e3241b20@hisilicon.com
+Link: https://lore.kernel.org/r/20210508071152.722425-1-lingshan.zhu@intel.com
+Cc: stable@vger.kernel.org
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/usb/misc/trancevibrator.c |    4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ virt/lib/irqbypass.c |   16 ++++++----------
+ 1 file changed, 6 insertions(+), 10 deletions(-)
 
---- a/drivers/usb/misc/trancevibrator.c
-+++ b/drivers/usb/misc/trancevibrator.c
-@@ -61,9 +61,9 @@ static ssize_t speed_store(struct device
- 	/* Set speed */
- 	retval = usb_control_msg(tv->udev, usb_sndctrlpipe(tv->udev, 0),
- 				 0x01, /* vendor request: set speed */
--				 USB_DIR_IN | USB_TYPE_VENDOR | USB_RECIP_OTHER,
-+				 USB_DIR_OUT | USB_TYPE_VENDOR | USB_RECIP_OTHER,
- 				 tv->speed, /* speed value */
--				 0, NULL, 0, USB_CTRL_GET_TIMEOUT);
-+				 0, NULL, 0, USB_CTRL_SET_TIMEOUT);
- 	if (retval) {
- 		tv->speed = old;
- 		dev_dbg(&tv->udev->dev, "retval = %d\n", retval);
+--- a/virt/lib/irqbypass.c
++++ b/virt/lib/irqbypass.c
+@@ -40,21 +40,17 @@ static int __connect(struct irq_bypass_p
+ 	if (prod->add_consumer)
+ 		ret = prod->add_consumer(prod, cons);
+ 
+-	if (ret)
+-		goto err_add_consumer;
+-
+-	ret = cons->add_producer(cons, prod);
+-	if (ret)
+-		goto err_add_producer;
++	if (!ret) {
++		ret = cons->add_producer(cons, prod);
++		if (ret && prod->del_consumer)
++			prod->del_consumer(prod, cons);
++	}
+ 
+ 	if (cons->start)
+ 		cons->start(cons);
+ 	if (prod->start)
+ 		prod->start(prod);
+-err_add_producer:
+-	if (prod->del_consumer)
+-		prod->del_consumer(prod, cons);
+-err_add_consumer:
++
+ 	return ret;
+ }
+ 
 
 
