@@ -2,97 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C7A839594D
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 12:56:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 27BD0395955
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 12:58:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231376AbhEaK6L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 06:58:11 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:32387 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231344AbhEaK55 (ORCPT
+        id S231164AbhEaK7j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 06:59:39 -0400
+Received: from mail-wr1-f42.google.com ([209.85.221.42]:45709 "EHLO
+        mail-wr1-f42.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231245AbhEaK7R (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 06:57:57 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1622458577;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=XDhdJyYu9mTXSWKFBQ6lTq2vD2wtLvH820x3t8G/m0E=;
-        b=B1RA0+xCQPQlv4CszrU7ziCTvUbyuJUyt/R/gEio6fu7elxOeqn94EYrKla0xE4KIMDQjE
-        lwfsLI5e6Qz23qfqXyTJseZTq4TC4AagKuk8I1MezxuBdwM17PfM1fO0Gg31mY41UGbY6R
-        G6grOsZmLKXB62ZYFBqSJKo9ctU1BJQ=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-113-OVikhWS9PAayEpJWJj5JTQ-1; Mon, 31 May 2021 06:56:13 -0400
-X-MC-Unique: OVikhWS9PAayEpJWJj5JTQ-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id AAD6A107ACF5;
-        Mon, 31 May 2021 10:56:12 +0000 (UTC)
-Received: from max.com (unknown [10.40.192.80])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 9551860C0F;
-        Mon, 31 May 2021 10:56:08 +0000 (UTC)
-From:   Andreas Gruenbacher <agruenba@redhat.com>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Andreas Gruenbacher <agruenba@redhat.com>,
-        cluster-devel@redhat.com, linux-kernel@vger.kernel.org
-Subject: [GIT PULL] gfs2 fixes for v5.13-rc5
-Date:   Mon, 31 May 2021 12:56:06 +0200
-Message-Id: <20210531105606.228314-1-agruenba@redhat.com>
+        Mon, 31 May 2021 06:59:17 -0400
+Received: by mail-wr1-f42.google.com with SMTP id z8so5351396wrp.12;
+        Mon, 31 May 2021 03:57:35 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=lUL1ckOtYUUu49NTJDbLWfsk5Pbl8htShAqQr1AxFVU=;
+        b=se1jO6U3+XxHwJmhipgf1NsC8CcnF+RzJVQM/Wf/ETOqyWY7WzeuUGMqC3T9SwBwlT
+         pRfFBL2Y5TJCcXM2dCwmO7UUgmn/8JZpVcLMMXqHZVB3ik86WL5LVj89OtpgsPiJtGwD
+         9ivOsIp9rwyL3lB9tqlr09hgcdzuPK30+k049KCNindgwc9/1XPZ2Ngq6nvN5XwAyiOz
+         KgwvTXS9IRG0ngyBD71+jfT0VEpkNFJ5KzYgwvFV5o4jOTKs3gcO5E67RIdKfx+Oyi5A
+         29+DTO7XGdTZOtKB/U29EMfjJXU8/HWZYjCrOHyLYMMgWbi0cOsBinmw2dkbOfVqN2hZ
+         6Dgg==
+X-Gm-Message-State: AOAM5305UAZoXSLS28rY9f5Puqz0svON1aFl3YAmuerzUJbf7YZReYgV
+        NNhhQcfCcI79+2o8ve4n070p+fMEouE=
+X-Google-Smtp-Source: ABdhPJzSIDi+OxRdbvKGBc+oXnUYRs5+jaanTyK4UCoEgKtb1jbNbur7+jUpkDYhAi7419ADAmKgdw==
+X-Received: by 2002:a05:6000:cb:: with SMTP id q11mr21382633wrx.13.1622458655090;
+        Mon, 31 May 2021 03:57:35 -0700 (PDT)
+Received: from liuwe-devbox-debian-v2 ([51.145.34.42])
+        by smtp.gmail.com with ESMTPSA id q20sm16250953wrf.45.2021.05.31.03.57.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 31 May 2021 03:57:34 -0700 (PDT)
+Date:   Mon, 31 May 2021 10:57:32 +0000
+From:   Wei Liu <wei.liu@kernel.org>
+To:     Praveen Kumar <kumarpraveen@linux.microsoft.com>
+Cc:     linux-hyperv@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kys@microsoft.com, haiyangz@microsoft.com, sthemmin@microsoft.com,
+        wei.liu@kernel.org, decui@microsoft.com, tglx@linutronix.de,
+        mingo@redhat.com, bp@alien8.de, nunodasneves@linux.microsoft.com,
+        viremana@linux.microsoft.com, sunilmut@microsoft.com,
+        Michael Kelley <mikelley@microsoft.com>
+Subject: Re: [PATCH] x86/hyperv: LP creation with lp_index on same CPU-id
+Message-ID: <20210531105732.muzbpk4yksttsfwz@liuwe-devbox-debian-v2>
+References: <20210531074046.113452-1-kumarpraveen@linux.microsoft.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210531074046.113452-1-kumarpraveen@linux.microsoft.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+On Mon, May 31, 2021 at 01:10:46PM +0530, Praveen Kumar wrote:
+> The hypervisor expects the lp_index to be same as cpu-id during LP creation
+> This fix correct the same, as cpu_physical_id can give different cpu-id.
 
-please consider pulling the following gfs2 fixes for v5.13-rc5.
+Code looks fine to me, but the commit message can be made clearer.
 
-(I'll follow up with another set of fixes that may require additional
-discussion later today.)
+"""
+The hypervisor expects the logical processor index to be the same as
+CPU's id during logical processor creation. Using cpu_physical_id
+confuses Microsoft Hypervisor's scheduler. That causes the root
+partition not boot when core scheduler is used.
 
-Thanks,
-Andreas
+This patch removes the call to cpu_physical_id and uses the CPU index
+directly for bringing up logical processor. This scheme works for both
+classic scheduler and core scheduler.
 
-The following changes since commit d07f6ca923ea0927a1024dfccafc5b53b61cfecc:
+Fixes: 333abaf5abb3 (x86/hyperv: implement and use hv_smp_prepare_cpus)
+"""
 
-  Linux 5.13-rc2 (2021-05-16 15:27:44 -0700)
+No action is required from you. If you are fine with this commit message
+I can incorporate it and update the subject line when committing this
+patch.
 
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/gfs2/linux-gfs2.git tags/gfs2-v5.13-rc2-fixes
-
-for you to fetch changes up to 1ab19c5de4c537ec0d9b21020395a5b5a6c059b2:
-
-  gfs2: Fix use-after-free in gfs2_glock_shrink_scan (2021-05-31 12:03:28 +0200)
-
-----------------------------------------------------------------
-Various gfs2 fixes
-
-----------------------------------------------------------------
-Andreas Gruenbacher (2):
-      gfs2: Prevent direct-I/O write fallback errors from getting lost
-      gfs2: Fix mmap locking for write faults
-
-Bob Peterson (4):
-      gfs2: Fix I_NEW check in gfs2_dinode_in
-      gfs2: fix scheduling while atomic bug in glocks
-      gfs2: fix a deadlock on withdraw-during-mount
-      gfs2: Clean up revokes on normal withdraws
-
-Hillf Danton (1):
-      gfs2: Fix use-after-free in gfs2_glock_shrink_scan
-
- fs/gfs2/file.c  |  9 +++++++--
- fs/gfs2/glock.c | 28 ++++++++++++++++++++++++----
- fs/gfs2/glops.c |  2 +-
- fs/gfs2/log.c   |  6 +++---
- fs/gfs2/log.h   |  1 +
- fs/gfs2/lops.c  |  7 ++++++-
- fs/gfs2/lops.h  |  1 +
- fs/gfs2/util.c  |  1 +
- 8 files changed, 44 insertions(+), 11 deletions(-)
-
+> 
+> Signed-off-by: Praveen Kumar <kumarpraveen@linux.microsoft.com>
+> ---
+>  arch/x86/kernel/cpu/mshyperv.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/arch/x86/kernel/cpu/mshyperv.c b/arch/x86/kernel/cpu/mshyperv.c
+> index 22f13343b5da..4fa0a4280895 100644
+> --- a/arch/x86/kernel/cpu/mshyperv.c
+> +++ b/arch/x86/kernel/cpu/mshyperv.c
+> @@ -236,7 +236,7 @@ static void __init hv_smp_prepare_cpus(unsigned int max_cpus)
+>  	for_each_present_cpu(i) {
+>  		if (i == 0)
+>  			continue;
+> -		ret = hv_call_add_logical_proc(numa_cpu_node(i), i, cpu_physical_id(i));
+> +		ret = hv_call_add_logical_proc(numa_cpu_node(i), i, i);
+>  		BUG_ON(ret);
+>  	}
+>  
+> -- 
+> 2.25.1
+> 
