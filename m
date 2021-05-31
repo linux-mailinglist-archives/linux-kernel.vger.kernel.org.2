@@ -2,108 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 73BEF395943
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 12:54:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 76685395946
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 12:56:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231240AbhEaK4G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 06:56:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52296 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230518AbhEaK4D (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 06:56:03 -0400
-Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6791EC061574
-        for <linux-kernel@vger.kernel.org>; Mon, 31 May 2021 03:54:24 -0700 (PDT)
-Received: by mail-pl1-x630.google.com with SMTP id 11so1541696plk.12
-        for <linux-kernel@vger.kernel.org>; Mon, 31 May 2021 03:54:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Cfy6DRXq6ljOfq2YCBqTmPMGCh7cF1e+Nv6/xZRuDY8=;
-        b=fSg6clnVpmsaZhiKs1gJHe2zyGeJAcUON85LO3uJz/8hxZi5GWGW4/kYyuZN6UdrOu
-         BDu0Q32uT2uspePyuicSfsx49R6yV9oR9vqrCA4OrMd0zuxEyQLeqKCpOg921AMHmuAV
-         PP7/6hfbkyNYPv7OUYTuJNXYKLsZIvAMABpqCQGQ0tcSBUW8NeDGuurEU/frcQe0yMiv
-         Q/hPJnxGVp6KPsLsiIGcPwWMqi/leMRIBwbKtVk564ar/IaR8RiapZYSeDnd3DC+wRcC
-         U2BoN9TgEh//yoI2YEJZ9WvrCYxbR7RhKwKBywyVRc0gK+7COtFRVXJUqH452Yc31CW/
-         8kSw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Cfy6DRXq6ljOfq2YCBqTmPMGCh7cF1e+Nv6/xZRuDY8=;
-        b=clR1FC2S2YM1ErJ3ba5WLiM1xRUGIedEYS4xygAVsFERyjKpIZyh7TVUqGdleFpxVh
-         u1JxbfhRF55GKJ1ERAZLxpD5hZ54MonUDg28cZ2XtYB99vCXoKgoyB0oue+kMpZPSNYy
-         1EDMcXf7njlOpMSEgwXEAKrheDSHxSuRe7AWXMbD8EnG9exoaIjP0ebtHcvaLuOK9WxX
-         10C85g9sxThEtBfBDqqyZLiduAKS/BU0smCQRIeeiM0WZIACQL2+hlXvQNgee9/q+guL
-         ldzZkaLSFzex/RpjdvlBFQrL8WdmttHa0Yz0gCxL5Eq+Jz2DCNRnUGyBSYMTF/PVUMAi
-         UyEQ==
-X-Gm-Message-State: AOAM5339V+StSKkvUZidYR6vaXuab+5MY/nRtdX7Vd92fQ8CbNwT7TxI
-        WimGt2wgSGx07FFo57FsDMWxMlDSj79GWpq7SZ97e35mS/cB0AO2
-X-Google-Smtp-Source: ABdhPJxDz2gIW1DZ83c0oElXPz5eTXwhSHNC3N8sUAP9Y6Mq9a9NDfbXGhgvPsGiUFlkWWMmrLXCQlGW+6jsuypk+6c=
-X-Received: by 2002:a17:90b:308:: with SMTP id ay8mr19003707pjb.19.1622458463982;
- Mon, 31 May 2021 03:54:23 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210517081601.1563193-1-yukuai3@huawei.com> <20210529095554.3150362-1-yukuai3@huawei.com>
-In-Reply-To: <20210529095554.3150362-1-yukuai3@huawei.com>
-From:   Robert Foss <robert.foss@linaro.org>
-Date:   Mon, 31 May 2021 12:54:13 +0200
-Message-ID: <CAG3jFyt53-MhwgGGcmMVSap3xCE_cQOmN26Rj3TvHtWFeVLZWg@mail.gmail.com>
-Subject: Re: [PATCH V2] drm: bridge: cdns-mhdp8546: Fix PM reference leak in cdns_mhdp_probe()
-To:     Yu Kuai <yukuai3@huawei.com>
-Cc:     Andrzej Hajda <a.hajda@samsung.com>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>, yi.zhang@huawei.com
-Content-Type: text/plain; charset="UTF-8"
+        id S231289AbhEaK5i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 06:57:38 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:42099 "EHLO m43-7.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230518AbhEaK5c (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 06:57:32 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1622458553; h=Message-Id: Date: Subject: Cc: To: From:
+ Sender; bh=EVhK5r49yg7auPLn4b4pL/EKvr0CuhIc1/j4Rfrx698=; b=YCRIqK51FUXJyVs4ONZ7L90++lUhzrmBkFRfYsmWYJ/gNIw08TTmkfyGpLOivdDxYURaUdZo
+ VAvrF3wWyur6eeFOZpNHijGkKXDJbfI3MyvAWSJsR/2K5fP9ravugwZRlAA9E4wC9LJtMWCh
+ DrRPQ4a+PNVVbbcXhPQEhb+yucQ=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n06.prod.us-west-2.postgun.com with SMTP id
+ 60b4c0af8491191eb3b69c4e (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 31 May 2021 10:55:43
+ GMT
+Sender: charante=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id C4166C43147; Mon, 31 May 2021 10:55:42 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
+        autolearn=no autolearn_force=no version=3.4.0
+Received: from hu-charante-hyd.qualcomm.com (unknown [202.46.22.19])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: charante)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id AAD91C433D3;
+        Mon, 31 May 2021 10:55:35 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org AAD91C433D3
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=charante@codeaurora.org
+From:   Charan Teja Reddy <charante@codeaurora.org>
+To:     akpm@linux-foundation.org, vbabka@suse.cz, nigupta@nvidia.com,
+        hannes@cmpxchg.org, corbet@lwn.net, mcgrof@kernel.org,
+        keescook@chromium.org, yzaikin@google.com, aarcange@redhat.com,
+        cl@linux.com, xi.fengfei@h3c.com, mchehab+huawei@kernel.org,
+        andrew.a.klychkov@gmail.com, dave.hansen@linux.intel.com,
+        bhe@redhat.com, iamjoonsoo.kim@lge.com, mateusznosek0@gmail.com,
+        sh_def@163.com, vinmenon@codeaurora.org
+Cc:     linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
+        Charan Teja Reddy <charante@codeaurora.org>
+Subject: [PATCH V3 0/2] mm: compaction: proactive compaction trigger by user
+Date:   Mon, 31 May 2021 16:24:50 +0530
+Message-Id: <cover.1622454385.git.charante@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hey Yu,
+These patches support triggering of proactive compaction by user on write
+to the /proc/sys/vm/compaction_proactiveness. 
 
-I'm not finding your this patch with the correct tags. I'd expect the subject:
-[PATCH v2] drm: bridge: cdns-mhdp8546: Fix PM reference leak in
-cdns_mhdp_probe()
+Changes in V3:
+ - Incorporated review comments.
+Changes in V2:
+ - https://lore.kernel.org/patchwork/patch/1431283/
+Changes in V1:
+ - https://lore.kernel.org/patchwork/patch/1417064/
 
-Can you please resubmit using this title, just to be sure I merge the
-right version of this code.
+Charan Teja Reddy (2):
+  mm: compaction: support triggering of proactive compaction by user
+  mm: compaction: fix wakeup logic of proactive compaction
 
-On Sat, 29 May 2021 at 11:46, Yu Kuai <yukuai3@huawei.com> wrote:
->
-> pm_runtime_get_sync will increment pm usage counter even it failed.
-> Forgetting to putting operation will result in reference leak here.
-> Fix it by replacing it with pm_runtime_resume_and_get to keep usage
-> counter balanced.
->
-> Reported-by: Hulk Robot <hulkci@huawei.com>
-> Signed-off-by: Yu Kuai <yukuai3@huawei.com>
-> ---
-> changes in V2:
->  - change error message.
->
->  drivers/gpu/drm/bridge/cadence/cdns-mhdp8546-core.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
->
-> diff --git a/drivers/gpu/drm/bridge/cadence/cdns-mhdp8546-core.c b/drivers/gpu/drm/bridge/cadence/cdns-mhdp8546-core.c
-> index 0cd8f40fb690..eab959a59214 100644
-> --- a/drivers/gpu/drm/bridge/cadence/cdns-mhdp8546-core.c
-> +++ b/drivers/gpu/drm/bridge/cadence/cdns-mhdp8546-core.c
-> @@ -2478,9 +2478,9 @@ static int cdns_mhdp_probe(struct platform_device *pdev)
->         clk_prepare_enable(clk);
->
->         pm_runtime_enable(dev);
-> -       ret = pm_runtime_get_sync(dev);
-> +       ret = pm_runtime_resume_and_get(dev);
->         if (ret < 0) {
-> -               dev_err(dev, "pm_runtime_get_sync failed\n");
-> +               dev_err(dev, "pm_runtime_resume_and_get failed\n");
->                 pm_runtime_disable(dev);
->                 goto clk_disable;
->         }
-> --
-> 2.25.4
->
+ Documentation/admin-guide/sysctl/vm.rst |  3 +-
+ include/linux/compaction.h              |  2 ++
+ include/linux/mmzone.h                  |  1 +
+ kernel/sysctl.c                         |  2 +-
+ mm/compaction.c                         | 49 ++++++++++++++++++++++++++++++---
+ 5 files changed, 51 insertions(+), 6 deletions(-)
+
+-- 
+QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a
+member of the Code Aurora Forum, hosted by The Linux Foundation
+
