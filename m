@@ -2,37 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 023F3395D53
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 15:43:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E105395C69
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 15:31:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232897AbhEaNoO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 09:44:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34108 "EHLO mail.kernel.org"
+        id S232153AbhEaNcf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 09:32:35 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54898 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231995AbhEaNa2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 09:30:28 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 994E061421;
-        Mon, 31 May 2021 13:23:01 +0000 (UTC)
+        id S232046AbhEaNXh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 09:23:37 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 05178613F0;
+        Mon, 31 May 2021 13:20:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1622467382;
-        bh=7ZJWYZmveuhj1bMDldiWxf32/QRQQ2LAT9Lp6hzTgJo=;
+        s=korg; t=1622467202;
+        bh=VUkXni8VD8M+F+ZXalHvbx5D6hIVk3gCjfblHUEORMo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=FK8DqzwPI3VU0rGBGnd1AN7Dvl29P/pD8K1zfEjW+4RT1ITm5wAm6IIG7yT05ZLiA
-         bpyvCGKUMWdkbsrKiqvtOM0+/i34p553gVfmcA451kDsEwZhLKtFUU1if7nChylxS3
-         dWRueB9q+olwoNmwnsI6rz/glR0xTDMPAQ5bqWXE=
+        b=EvvOhYnhBlMhMQDQ4HAOfa+y9EB95cD9HxVR7lDgxaK5dMA6flYP1wW5iuqcWbrXY
+         IytmCbQJga3ygpl/MVbXdatyISCqV1L2argqR2Oq4z5+o+k81IY1Cb98Vj6TS0ZY8C
+         0+GYszeItfis6hpm5h6faJOWvN5EjQyc2uVYVu3w=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Ovidiu Panait <ovidiu.panait@windriver.com>
-Subject: [PATCH 4.19 045/116] bpf: Test_verifier, bpf_get_stack return value add <0
+        stable@vger.kernel.org, Johan Hovold <johan@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: [PATCH 4.9 08/66] net: hso: fix control-request directions
 Date:   Mon, 31 May 2021 15:13:41 +0200
-Message-Id: <20210531130641.683479991@linuxfoundation.org>
+Message-Id: <20210531130636.531176269@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210531130640.131924542@linuxfoundation.org>
-References: <20210531130640.131924542@linuxfoundation.org>
+In-Reply-To: <20210531130636.254683895@linuxfoundation.org>
+References: <20210531130636.254683895@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,135 +39,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: John Fastabend <john.fastabend@gmail.com>
+From: Johan Hovold <johan@kernel.org>
 
-commit 9ac26e9973bac5716a2a542e32f380c84db2b88c upstream.
+commit 1a6e9a9c68c1f183872e4bcc947382111c2e04eb upstream.
 
-With current ALU32 subreg handling and retval refine fix from last
-patches we see an expected failure in test_verifier. With verbose
-verifier state being printed at each step for clarity we have the
-following relavent lines [I omit register states that are not
-necessarily useful to see failure cause],
+The direction of the pipe argument must match the request-type direction
+bit or control requests may fail depending on the host-controller-driver
+implementation.
 
-#101/p bpf_get_stack return R0 within range FAIL
-Failed to load prog 'Success'!
-[..]
-14: (85) call bpf_get_stack#67
- R0_w=map_value(id=0,off=0,ks=8,vs=48,imm=0)
- R3_w=inv48
-15:
- R0=inv(id=0,smax_value=48,var32_off=(0x0; 0xffffffff))
-15: (b7) r1 = 0
-16:
- R0=inv(id=0,smax_value=48,var32_off=(0x0; 0xffffffff))
- R1_w=inv0
-16: (bf) r8 = r0
-17:
- R0=inv(id=0,smax_value=48,var32_off=(0x0; 0xffffffff))
- R1_w=inv0
- R8_w=inv(id=0,smax_value=48,var32_off=(0x0; 0xffffffff))
-17: (67) r8 <<= 32
-18:
- R0=inv(id=0,smax_value=48,var32_off=(0x0; 0xffffffff))
- R1_w=inv0
- R8_w=inv(id=0,smax_value=9223372032559808512,
-               umax_value=18446744069414584320,
-               var_off=(0x0; 0xffffffff00000000),
-               s32_min_value=0,
-               s32_max_value=0,
-               u32_max_value=0,
-               var32_off=(0x0; 0x0))
-18: (c7) r8 s>>= 32
-19
- R0=inv(id=0,smax_value=48,var32_off=(0x0; 0xffffffff))
- R1_w=inv0
- R8_w=inv(id=0,smin_value=-2147483648,
-               smax_value=2147483647,
-               var32_off=(0x0; 0xffffffff))
-19: (cd) if r1 s< r8 goto pc+16
- R0=inv(id=0,smax_value=48,var32_off=(0x0; 0xffffffff))
- R1_w=inv0
- R8_w=inv(id=0,smin_value=-2147483648,
-               smax_value=0,
-               var32_off=(0x0; 0xffffffff))
-20:
- R0=inv(id=0,smax_value=48,var32_off=(0x0; 0xffffffff))
- R1_w=inv0
- R8_w=inv(id=0,smin_value=-2147483648,
-               smax_value=0,
- R9=inv48
-20: (1f) r9 -= r8
-21: (bf) r2 = r7
-22:
- R2_w=map_value(id=0,off=0,ks=8,vs=48,imm=0)
-22: (0f) r2 += r8
-value -2147483648 makes map_value pointer be out of bounds
+Fix the tiocmset and rfkill requests which erroneously used
+usb_rcvctrlpipe().
 
-After call bpf_get_stack() on line 14 and some moves we have at line 16
-an r8 bound with max_value 48 but an unknown min value. This is to be
-expected bpf_get_stack call can only return a max of the input size but
-is free to return any negative error in the 32-bit register space. The
-C helper is returning an int so will use lower 32-bits.
-
-Lines 17 and 18 clear the top 32 bits with a left/right shift but use
-ARSH so we still have worst case min bound before line 19 of -2147483648.
-At this point the signed check 'r1 s< r8' meant to protect the addition
-on line 22 where dst reg is a map_value pointer may very well return
-true with a large negative number. Then the final line 22 will detect
-this as an invalid operation and fail the program. What we want to do
-is proceed only if r8 is positive non-error. So change 'r1 s< r8' to
-'r1 s> r8' so that we jump if r8 is negative.
-
-Next we will throw an error because we access past the end of the map
-value. The map value size is 48 and sizeof(struct test_val) is 48 so
-we walk off the end of the map value on the second call to
-get bpf_get_stack(). Fix this by changing sizeof(struct test_val) to
-24 by using 'sizeof(struct test_val) / 2'. After this everything passes
-as expected.
-
-Signed-off-by: John Fastabend <john.fastabend@gmail.com>
-Signed-off-by: Alexei Starovoitov <ast@kernel.org>
-Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
-Link: https://lore.kernel.org/bpf/158560426019.10843.3285429543232025187.stgit@john-Precision-5820-Tower
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-[OP: backport to 4.19]
-Signed-off-by: Ovidiu Panait <ovidiu.panait@windriver.com>
+Fixes: 72dc1c096c70 ("HSO: add option hso driver")
+Cc: stable@vger.kernel.org      # 2.6.27
+Signed-off-by: Johan Hovold <johan@kernel.org>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- tools/testing/selftests/bpf/test_verifier.c |    8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ drivers/net/usb/hso.c |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
---- a/tools/testing/selftests/bpf/test_verifier.c
-+++ b/tools/testing/selftests/bpf/test_verifier.c
-@@ -12253,17 +12253,17 @@ static struct bpf_test tests[] = {
- 				     BPF_FUNC_map_lookup_elem),
- 			BPF_JMP_IMM(BPF_JEQ, BPF_REG_0, 0, 28),
- 			BPF_MOV64_REG(BPF_REG_7, BPF_REG_0),
--			BPF_MOV64_IMM(BPF_REG_9, sizeof(struct test_val)),
-+			BPF_MOV64_IMM(BPF_REG_9, sizeof(struct test_val)/2),
- 			BPF_MOV64_REG(BPF_REG_1, BPF_REG_6),
- 			BPF_MOV64_REG(BPF_REG_2, BPF_REG_7),
--			BPF_MOV64_IMM(BPF_REG_3, sizeof(struct test_val)),
-+			BPF_MOV64_IMM(BPF_REG_3, sizeof(struct test_val)/2),
- 			BPF_MOV64_IMM(BPF_REG_4, 256),
- 			BPF_EMIT_CALL(BPF_FUNC_get_stack),
- 			BPF_MOV64_IMM(BPF_REG_1, 0),
- 			BPF_MOV64_REG(BPF_REG_8, BPF_REG_0),
- 			BPF_ALU64_IMM(BPF_LSH, BPF_REG_8, 32),
- 			BPF_ALU64_IMM(BPF_ARSH, BPF_REG_8, 32),
--			BPF_JMP_REG(BPF_JSLT, BPF_REG_1, BPF_REG_8, 16),
-+			BPF_JMP_REG(BPF_JSGT, BPF_REG_1, BPF_REG_8, 16),
- 			BPF_ALU64_REG(BPF_SUB, BPF_REG_9, BPF_REG_8),
- 			BPF_MOV64_REG(BPF_REG_2, BPF_REG_7),
- 			BPF_ALU64_REG(BPF_ADD, BPF_REG_2, BPF_REG_8),
-@@ -12273,7 +12273,7 @@ static struct bpf_test tests[] = {
- 			BPF_MOV64_REG(BPF_REG_3, BPF_REG_2),
- 			BPF_ALU64_REG(BPF_ADD, BPF_REG_3, BPF_REG_1),
- 			BPF_MOV64_REG(BPF_REG_1, BPF_REG_7),
--			BPF_MOV64_IMM(BPF_REG_5, sizeof(struct test_val)),
-+			BPF_MOV64_IMM(BPF_REG_5, sizeof(struct test_val)/2),
- 			BPF_ALU64_REG(BPF_ADD, BPF_REG_1, BPF_REG_5),
- 			BPF_JMP_REG(BPF_JGE, BPF_REG_3, BPF_REG_1, 4),
- 			BPF_MOV64_REG(BPF_REG_1, BPF_REG_6),
+--- a/drivers/net/usb/hso.c
++++ b/drivers/net/usb/hso.c
+@@ -1703,7 +1703,7 @@ static int hso_serial_tiocmset(struct tt
+ 	spin_unlock_irqrestore(&serial->serial_lock, flags);
+ 
+ 	return usb_control_msg(serial->parent->usb,
+-			       usb_rcvctrlpipe(serial->parent->usb, 0), 0x22,
++			       usb_sndctrlpipe(serial->parent->usb, 0), 0x22,
+ 			       0x21, val, if_num, NULL, 0,
+ 			       USB_CTRL_SET_TIMEOUT);
+ }
+@@ -2451,7 +2451,7 @@ static int hso_rfkill_set_block(void *da
+ 	if (hso_dev->usb_gone)
+ 		rv = 0;
+ 	else
+-		rv = usb_control_msg(hso_dev->usb, usb_rcvctrlpipe(hso_dev->usb, 0),
++		rv = usb_control_msg(hso_dev->usb, usb_sndctrlpipe(hso_dev->usb, 0),
+ 				       enabled ? 0x82 : 0x81, 0x40, 0, 0, NULL, 0,
+ 				       USB_CTRL_SET_TIMEOUT);
+ 	mutex_unlock(&hso_dev->mutex);
 
 
