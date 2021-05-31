@@ -2,57 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C13AC39572A
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 10:39:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 65A1F39572C
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 10:39:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230396AbhEaIlA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 04:41:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49846 "EHLO
+        id S231164AbhEaIlX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 04:41:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49800 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230501AbhEaIkY (ORCPT
+        with ESMTP id S231165AbhEaIkl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 04:40:24 -0400
-Received: from mail-pl1-x64a.google.com (mail-pl1-x64a.google.com [IPv6:2607:f8b0:4864:20::64a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32A6CC06138C
-        for <linux-kernel@vger.kernel.org>; Mon, 31 May 2021 01:38:44 -0700 (PDT)
-Received: by mail-pl1-x64a.google.com with SMTP id u14-20020a170903304eb02900ec9757f3dbso2845525pla.17
-        for <linux-kernel@vger.kernel.org>; Mon, 31 May 2021 01:38:44 -0700 (PDT)
+        Mon, 31 May 2021 04:40:41 -0400
+Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 330F0C061345
+        for <linux-kernel@vger.kernel.org>; Mon, 31 May 2021 01:38:51 -0700 (PDT)
+Received: by mail-yb1-xb49.google.com with SMTP id o12-20020a5b050c0000b02904f4a117bd74so12947609ybp.17
+        for <linux-kernel@vger.kernel.org>; Mon, 31 May 2021 01:38:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=date:in-reply-to:message-id:mime-version:references:subject:from:to
          :cc;
-        bh=3+0/7GJy4fkrHP3hKVJR1L2AmsjDQlSpYCZGYRpnWTE=;
-        b=Cy6GZdM5lWEWKgTCbLbvSXh9hXk1kKp3brjUcsmQkfCJUKfLRw9xR7EiOZJQCneBdP
-         ScbabMQN33PM9AZiJyXaQu2gKB9WLTi1a4GnW1jXxJiSzbTUaC78K/WkCqwsz7Z9XLWb
-         X8bsXsut/sB87NIw3/UVqmPoevGf714tyIuGoDgqXpFZVJ84elXXEIvlSroJA5OvgfAN
-         G41Wc/a+v+S7wo+L7kh8kvsCcXEDNkCtMffDOzvHfb+GTjtI9ajXh4zx1PcvX8g14HyO
-         UUr0WxyFmyyAsVFts7Iu1ZpiYIFnNE1FdqNEeucr4WVdhhfd45KmBaW60FLPmaxxxVl0
-         1dtw==
+        bh=AEPyucLyrMot2MOCwhvpaOx5eGUi7rDbkpCG2Tc5gVA=;
+        b=IoUxB/iqmJldjMym61T+WpCa29hrts4nqA12rXDjr+GiO26ya/wb4by9HjWSMm7e2e
+         mFH4eZ+yyhEU43palGpOIFzy2Mjn555LnrzT3cs/RiW7Yyv2v3c9MKSPXs2qkFvm8M8X
+         HlcgQ4jwr8kdZEfsQMQEZEYN9U9lzZT8Ea+SYmiQp5vfgntYOG/X8ZJfoWKRRVPRrs2i
+         jEuxZjP9RBaFncuEOiOCMiBOXjtAncQvI1ImWpbRxMyUIGXEZe0F1Tn/mfN3hESKN8mv
+         fToLWjff2uCIq85vCajpGz/RPBuZNUzUrtUxRQXDUHnUBK9gGgFY5bVCQT8pNBwjcF1V
+         d0Eg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:in-reply-to:message-id:mime-version
          :references:subject:from:to:cc;
-        bh=3+0/7GJy4fkrHP3hKVJR1L2AmsjDQlSpYCZGYRpnWTE=;
-        b=YskuUsT//05ysBZM88fJyx08k+A6m+ZKJNhB0WasFQUrOUqfo/UHTrHztVmalbJR8e
-         Onu7AgWlUrYBYvvN7IqNwOViZ629HRwbDMvOU/b4rSdvTeddNu1SB/EiDPARI8yt1oyQ
-         C4voYdn7S2e5CNeep3QrhuM6UW7/bAJWAzYlnV9Hk4rY6uBvpcE5TyQWYzQbKUgUCzg8
-         84hliSJlC79okvnbnPMyLm3nCQmNm+ZcgPuV06NxCSE1EEmg3CxU+eMs3YRJOBSOGhQd
-         m/tgRdbbGlEXMh6XBX+iV3eb0LiwbUvgipkPf9cQKrFaOJ2vvSYkLtT5RVM7aty4qZKf
-         NYRw==
-X-Gm-Message-State: AOAM531efe8MLowyc4eczdQjrjBIJ5GrUkObg0R48/8qIf2YS/Ipetu2
-        oEvcl0/SGtDFuJJW6W1CFKMU11eq6Pfm
-X-Google-Smtp-Source: ABdhPJxVbyu6n1vVsDPmT3MbD9VSi2Nnv6spvRMc2YBC7aqFtGSLbrVlC0/zS2XNIS8B2aVawT6PRg34mAdC
+        bh=AEPyucLyrMot2MOCwhvpaOx5eGUi7rDbkpCG2Tc5gVA=;
+        b=KrlrBs5/gBDffluFZkJkXyAk1VRNeTXUmUE32oSCdm4VWkV4GZjNcNzCH4o2qrQmyH
+         HROKQOiGI/ss/nyvN4Yau4wf1VCKt5JWWaslM9kMxA8cdfTvO7CYSHsxBe7kmC5WZ4/O
+         Un7RpZN5AOHBaON7fSkCCEXmQx8myz4N2f5Z3Ffbj69Ka5KK4rgJ8JKhJDMgfsvLvIJM
+         D0SET/e5Rq/4B7DCOq+1hmYQSYs8doePNHjYygujIy2jOjeRb5VcWhG7iUflhABu8hsK
+         gESbQNqYxjAKBZe4smP9uzS7qU2i8zbJQvLwgtFdE9Ufl3lmiwqv12u7PrjWODpftidx
+         ykgw==
+X-Gm-Message-State: AOAM530bK5ufqVxXYnDn5YY13CC0xwFqzOop8w0Q56CZpUz/SSoKov+W
+        UVvPqXM5m7UwStQ6rSYeQZ3rSpxTjEXL
+X-Google-Smtp-Source: ABdhPJwoZc3czhEFeRI5q9BpBdL1DqA560GpwEkpvSWHfQ6ZXMycz3rC/PADyU8hbFGtrpKL53NRWpo+O6Q5
 X-Received: from apusaka-p920.tpe.corp.google.com ([2401:fa00:1:b:a6d1:a727:b17d:154e])
- (user=apusaka job=sendgmr) by 2002:aa7:8392:0:b029:2db:4a7:d866 with SMTP id
- u18-20020aa783920000b02902db04a7d866mr15810561pfm.66.1622450323599; Mon, 31
- May 2021 01:38:43 -0700 (PDT)
-Date:   Mon, 31 May 2021 16:37:23 +0800
+ (user=apusaka job=sendgmr) by 2002:a25:6088:: with SMTP id
+ u130mr30969042ybb.257.1622450330401; Mon, 31 May 2021 01:38:50 -0700 (PDT)
+Date:   Mon, 31 May 2021 16:37:24 +0800
 In-Reply-To: <20210531083726.1949001-1-apusaka@google.com>
-Message-Id: <20210531163500.v2.4.I12d95340363056b05f656880e3dad40322eab39f@changeid>
+Message-Id: <20210531163500.v2.5.I4401b43eaf53e45e02ccaadef43cdcd3396173be@changeid>
 Mime-Version: 1.0
 References: <20210531083726.1949001-1-apusaka@google.com>
 X-Mailer: git-send-email 2.32.0.rc0.204.g9fa02ecfa5-goog
-Subject: [PATCH v2 4/8] Bluetooth: use inclusive language in HCI LE features
+Subject: [PATCH v2 5/8] Bluetooth: use inclusive language when tracking connections
 From:   Archie Pusaka <apusaka@google.com>
 To:     linux-bluetooth <linux-bluetooth@vger.kernel.org>,
         Marcel Holtmann <marcel@holtmann.org>
@@ -87,80 +86,99 @@ Reviewed-by: Miao-chen Chou <mcchou@chromium.org>
 Changes in v2:
 * Add details in commit message
 
- include/net/bluetooth/hci.h |  6 +++---
- net/bluetooth/hci_event.c   | 14 +++++++-------
- 2 files changed, 10 insertions(+), 10 deletions(-)
+ include/net/bluetooth/hci_core.h |  6 +++---
+ net/bluetooth/hci_event.c        |  4 ++--
+ net/bluetooth/hci_request.c      | 17 +++++++++--------
+ 3 files changed, 14 insertions(+), 13 deletions(-)
 
-diff --git a/include/net/bluetooth/hci.h b/include/net/bluetooth/hci.h
-index a7cf5a2d87c5..441125f6b616 100644
---- a/include/net/bluetooth/hci.h
-+++ b/include/net/bluetooth/hci.h
-@@ -489,7 +489,7 @@ enum {
- /* LE features */
- #define HCI_LE_ENCRYPTION		0x01
- #define HCI_LE_CONN_PARAM_REQ_PROC	0x02
--#define HCI_LE_SLAVE_FEATURES		0x08
-+#define HCI_LE_PERIPHERAL_FEATURES	0x08
- #define HCI_LE_PING			0x10
- #define HCI_LE_DATA_LEN_EXT		0x20
- #define HCI_LE_LL_PRIVACY		0x40
-@@ -498,8 +498,8 @@ enum {
- #define HCI_LE_PHY_CODED		0x08
- #define HCI_LE_EXT_ADV			0x10
- #define HCI_LE_CHAN_SEL_ALG2		0x40
--#define HCI_LE_CIS_MASTER		0x10
--#define HCI_LE_CIS_SLAVE		0x20
-+#define HCI_LE_CIS_CENTRAL		0x10
-+#define HCI_LE_CIS_PERIPHERAL		0x20
+diff --git a/include/net/bluetooth/hci_core.h b/include/net/bluetooth/hci_core.h
+index 929768f6ed93..cfe2ada49ca2 100644
+--- a/include/net/bluetooth/hci_core.h
++++ b/include/net/bluetooth/hci_core.h
+@@ -122,7 +122,7 @@ struct hci_conn_hash {
+ 	unsigned int     amp_num;
+ 	unsigned int     sco_num;
+ 	unsigned int     le_num;
+-	unsigned int     le_num_slave;
++	unsigned int     le_num_peripheral;
+ };
  
- /* Connection modes */
- #define HCI_CM_ACTIVE	0x0000
+ struct bdaddr_list {
+@@ -894,7 +894,7 @@ static inline void hci_conn_hash_add(struct hci_dev *hdev, struct hci_conn *c)
+ 	case LE_LINK:
+ 		h->le_num++;
+ 		if (c->role == HCI_ROLE_PERIPHERAL)
+-			h->le_num_slave++;
++			h->le_num_peripheral++;
+ 		break;
+ 	case SCO_LINK:
+ 	case ESCO_LINK:
+@@ -920,7 +920,7 @@ static inline void hci_conn_hash_del(struct hci_dev *hdev, struct hci_conn *c)
+ 	case LE_LINK:
+ 		h->le_num--;
+ 		if (c->role == HCI_ROLE_PERIPHERAL)
+-			h->le_num_slave--;
++			h->le_num_peripheral--;
+ 		break;
+ 	case SCO_LINK:
+ 	case ESCO_LINK:
 diff --git a/net/bluetooth/hci_event.c b/net/bluetooth/hci_event.c
-index e5f3840abd1a..a809e90326d7 100644
+index a809e90326d7..c5871c2a16ba 100644
 --- a/net/bluetooth/hci_event.c
 +++ b/net/bluetooth/hci_event.c
-@@ -5243,17 +5243,17 @@ static void le_conn_complete_evt(struct hci_dev *hdev, u8 status,
- 	hci_debugfs_create_conn(conn);
- 	hci_conn_add_sysfs(conn);
+@@ -5384,9 +5384,9 @@ static struct hci_conn *check_pending_le_conn(struct hci_dev *hdev,
+ 		return NULL;
  
--	/* The remote features procedure is defined for master
-+	/* The remote features procedure is defined for central
- 	 * role only. So only in case of an initiated connection
- 	 * request the remote features.
- 	 *
--	 * If the local controller supports slave-initiated features
--	 * exchange, then requesting the remote features in slave
-+	 * If the local controller supports peripheral-initiated features
-+	 * exchange, then requesting the remote features in peripheral
- 	 * role is possible. Otherwise just transition into the
- 	 * connected state without requesting the remote features.
+ 	/* Most controller will fail if we try to create new connections
+-	 * while we have an existing one in slave role.
++	 * while we have an existing one in peripheral role.
  	 */
- 	if (conn->out ||
--	    (hdev->le_features[0] & HCI_LE_SLAVE_FEATURES)) {
-+	    (hdev->le_features[0] & HCI_LE_PERIPHERAL_FEATURES)) {
- 		struct hci_cp_le_read_remote_features cp;
+-	if (hdev->conn_hash.le_num_slave > 0 &&
++	if (hdev->conn_hash.le_num_peripheral > 0 &&
+ 	    (!test_bit(HCI_QUIRK_VALID_LE_STATES, &hdev->quirks) ||
+ 	     !(hdev->le_states[3] & 0x10)))
+ 		return NULL;
+diff --git a/net/bluetooth/hci_request.c b/net/bluetooth/hci_request.c
+index 3465862429fb..a5d55175176e 100644
+--- a/net/bluetooth/hci_request.c
++++ b/net/bluetooth/hci_request.c
+@@ -1519,13 +1519,14 @@ static bool is_advertising_allowed(struct hci_dev *hdev, bool connectable)
+ 	if (hci_conn_num(hdev, LE_LINK) == 0)
+ 		return true;
  
- 		cp.handle = __cpu_to_le16(conn->handle);
-@@ -5774,7 +5774,7 @@ static void hci_le_remote_feat_complete_evt(struct hci_dev *hdev,
- 		if (conn->state == BT_CONFIG) {
- 			__u8 status;
+-	/* Check le_states if there is any connection in slave role. */
+-	if (hdev->conn_hash.le_num_slave > 0) {
+-		/* Slave connection state and non connectable mode bit 20. */
++	/* Check le_states if there is any connection in peripheral role. */
++	if (hdev->conn_hash.le_num_peripheral > 0) {
++		/* Peripheral connection state and non connectable mode bit 20.
++		 */
+ 		if (!connectable && !(hdev->le_states[2] & 0x10))
+ 			return false;
  
--			/* If the local controller supports slave-initiated
-+			/* If the local controller supports peripheral-initiated
- 			 * features exchange, but the remote controller does
- 			 * not, then it is possible that the error code 0x1a
- 			 * for unsupported remote feature gets returned.
-@@ -5783,8 +5783,8 @@ static void hci_le_remote_feat_complete_evt(struct hci_dev *hdev,
- 			 * transition into connected state and mark it as
- 			 * successful.
- 			 */
--			if ((hdev->le_features[0] & HCI_LE_SLAVE_FEATURES) &&
--			    !conn->out && ev->status == 0x1a)
-+			if (!conn->out && ev->status == 0x1a &&
-+			    (hdev->le_features[0] & HCI_LE_PERIPHERAL_FEATURES))
- 				status = 0x00;
- 			else
- 				status = ev->status;
+-		/* Slave connection state and connectable mode bit 38
++		/* Peripheral connection state and connectable mode bit 38
+ 		 * and scannable bit 21.
+ 		 */
+ 		if (connectable && (!(hdev->le_states[4] & 0x40) ||
+@@ -1533,13 +1534,13 @@ static bool is_advertising_allowed(struct hci_dev *hdev, bool connectable)
+ 			return false;
+ 	}
+ 
+-	/* Check le_states if there is any connection in master role. */
+-	if (hci_conn_num(hdev, LE_LINK) != hdev->conn_hash.le_num_slave) {
+-		/* Master connection state and non connectable mode bit 18. */
++	/* Check le_states if there is any connection in central role. */
++	if (hci_conn_num(hdev, LE_LINK) != hdev->conn_hash.le_num_peripheral) {
++		/* Central connection state and non connectable mode bit 18. */
+ 		if (!connectable && !(hdev->le_states[2] & 0x02))
+ 			return false;
+ 
+-		/* Master connection state and connectable mode bit 35 and
++		/* Central connection state and connectable mode bit 35 and
+ 		 * scannable 19.
+ 		 */
+ 		if (connectable && (!(hdev->le_states[4] & 0x08) ||
 -- 
 2.32.0.rc0.204.g9fa02ecfa5-goog
 
