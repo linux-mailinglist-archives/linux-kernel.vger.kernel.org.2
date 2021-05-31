@@ -2,38 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7027139654C
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 18:29:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8043B395D43
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 15:42:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234028AbhEaQa6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 12:30:58 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39884 "EHLO mail.kernel.org"
+        id S232176AbhEaNnh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 09:43:37 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33500 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233684AbhEaOpm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 10:45:42 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DF9776143E;
-        Mon, 31 May 2021 13:55:38 +0000 (UTC)
+        id S232507AbhEaN3Z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 09:29:25 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 59FA7613EF;
+        Mon, 31 May 2021 13:22:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1622469339;
-        bh=Pv3bP2PMj6YOQykP7mK1HxW1+69TEd2XZ+M7eh5YLp0=;
+        s=korg; t=1622467366;
+        bh=pkENjceWvvQTLhaUKmJP3HeNrQDY+i5ko6l6lM1M2HA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=2UlUaldRG+SiYDTgldK0OYUavT27Z8ot4OzLtYf1g63p7pLkla5c4ByaLVN3ihgjV
-         e6voh8fl676WZVTH9hGjmM14Pq7r0n5W9tr6iQHHZGy38v4OJC9guLYEq4EZnTiMtw
-         U8wEOTL55XUn6jjZ+2r6KQOMXdUcWzwvav49ifPI=
+        b=VpNGJb1A03qWvrFZAfsVIum8t5m1vA1YKx3RFoI891K9oytZ+VzXLUJhvnEfK7CZu
+         cAr4G/fqTqw8HeQxFla2dewM7xwdItT69NAnSlshNPDSJMr9ijKfdGRc0clCbEznqd
+         3M0XPoV9DOoVXL7CqGV1qT+WuttJoVOP0UxWJlLQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Kai-Heng Feng <kai.heng.feng@canonical.com>,
-        =?UTF-8?q?=C3=89ric=20Piel?= <eric.piel@trempplin-utc.net>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.12 160/296] platform/x86: hp_accel: Avoid invoking _INI to speed up resume
+        stable@vger.kernel.org, stable@kernel.vger.org,
+        Pavel Skripkin <paskripkin@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        syzbot+b558506ba8165425fee2@syzkaller.appspotmail.com
+Subject: [PATCH 4.19 039/116] net: usb: fix memory leak in smsc75xx_bind
 Date:   Mon, 31 May 2021 15:13:35 +0200
-Message-Id: <20210531130709.242850207@linuxfoundation.org>
+Message-Id: <20210531130641.490394948@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210531130703.762129381@linuxfoundation.org>
-References: <20210531130703.762129381@linuxfoundation.org>
+In-Reply-To: <20210531130640.131924542@linuxfoundation.org>
+References: <20210531130640.131924542@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,92 +41,60 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Kai-Heng Feng <kai.heng.feng@canonical.com>
+From: Pavel Skripkin <paskripkin@gmail.com>
 
-[ Upstream commit 79d341e26ebcdbc622348aaaab6f8f89b6fdb25f ]
+commit 46a8b29c6306d8bbfd92b614ef65a47c900d8e70 upstream.
 
-hp_accel can take almost two seconds to resume on some HP laptops.
+Syzbot reported memory leak in smsc75xx_bind().
+The problem was is non-freed memory in case of
+errors after memory allocation.
 
-The bottleneck is on evaluating _INI, which is only needed to run once.
+backtrace:
+  [<ffffffff84245b62>] kmalloc include/linux/slab.h:556 [inline]
+  [<ffffffff84245b62>] kzalloc include/linux/slab.h:686 [inline]
+  [<ffffffff84245b62>] smsc75xx_bind+0x7a/0x334 drivers/net/usb/smsc75xx.c:1460
+  [<ffffffff82b5b2e6>] usbnet_probe+0x3b6/0xc30 drivers/net/usb/usbnet.c:1728
 
-Resolve the issue by only invoking _INI when it's necessary. Namely, on
-probe and on hibernation restore.
-
-Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
-Acked-by: Éric Piel <eric.piel@trempplin-utc.net>
-Link: https://lore.kernel.org/r/20210430060736.590321-1-kai.heng.feng@canonical.com
-Signed-off-by: Hans de Goede <hdegoede@redhat.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Fixes: d0cad871703b ("smsc75xx: SMSC LAN75xx USB gigabit ethernet adapter driver")
+Cc: stable@kernel.vger.org
+Reported-and-tested-by: syzbot+b558506ba8165425fee2@syzkaller.appspotmail.com
+Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/misc/lis3lv02d/lis3lv02d.h |  1 +
- drivers/platform/x86/hp_accel.c    | 22 +++++++++++++++++++++-
- 2 files changed, 22 insertions(+), 1 deletion(-)
+ drivers/net/usb/smsc75xx.c |    8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/misc/lis3lv02d/lis3lv02d.h b/drivers/misc/lis3lv02d/lis3lv02d.h
-index c394c0b08519..7ac788fae1b8 100644
---- a/drivers/misc/lis3lv02d/lis3lv02d.h
-+++ b/drivers/misc/lis3lv02d/lis3lv02d.h
-@@ -271,6 +271,7 @@ struct lis3lv02d {
- 	int			regs_size;
- 	u8                      *reg_cache;
- 	bool			regs_stored;
-+	bool			init_required;
- 	u8                      odr_mask;  /* ODR bit mask */
- 	u8			whoami;    /* indicates measurement precision */
- 	s16 (*read_data) (struct lis3lv02d *lis3, int reg);
-diff --git a/drivers/platform/x86/hp_accel.c b/drivers/platform/x86/hp_accel.c
-index 799cbe2ffcf3..8c0867bda828 100644
---- a/drivers/platform/x86/hp_accel.c
-+++ b/drivers/platform/x86/hp_accel.c
-@@ -88,6 +88,9 @@ MODULE_DEVICE_TABLE(acpi, lis3lv02d_device_ids);
- static int lis3lv02d_acpi_init(struct lis3lv02d *lis3)
- {
- 	struct acpi_device *dev = lis3->bus_priv;
-+	if (!lis3->init_required)
-+		return 0;
-+
- 	if (acpi_evaluate_object(dev->handle, METHOD_NAME__INI,
- 				 NULL, NULL) != AE_OK)
- 		return -EINVAL;
-@@ -356,6 +359,7 @@ static int lis3lv02d_add(struct acpi_device *device)
+--- a/drivers/net/usb/smsc75xx.c
++++ b/drivers/net/usb/smsc75xx.c
+@@ -1495,7 +1495,7 @@ static int smsc75xx_bind(struct usbnet *
+ 	ret = smsc75xx_wait_ready(dev, 0);
+ 	if (ret < 0) {
+ 		netdev_warn(dev->net, "device not ready in smsc75xx_bind\n");
+-		return ret;
++		goto err;
  	}
  
- 	/* call the core layer do its init */
-+	lis3_dev.init_required = true;
- 	ret = lis3lv02d_init_device(&lis3_dev);
- 	if (ret)
- 		return ret;
-@@ -403,11 +407,27 @@ static int lis3lv02d_suspend(struct device *dev)
+ 	smsc75xx_init_mac_address(dev);
+@@ -1504,7 +1504,7 @@ static int smsc75xx_bind(struct usbnet *
+ 	ret = smsc75xx_reset(dev);
+ 	if (ret < 0) {
+ 		netdev_warn(dev->net, "smsc75xx_reset error %d\n", ret);
+-		return ret;
++		goto err;
+ 	}
  
- static int lis3lv02d_resume(struct device *dev)
- {
-+	lis3_dev.init_required = false;
-+	lis3lv02d_poweron(&lis3_dev);
-+	return 0;
-+}
-+
-+static int lis3lv02d_restore(struct device *dev)
-+{
-+	lis3_dev.init_required = true;
- 	lis3lv02d_poweron(&lis3_dev);
+ 	dev->net->netdev_ops = &smsc75xx_netdev_ops;
+@@ -1514,6 +1514,10 @@ static int smsc75xx_bind(struct usbnet *
+ 	dev->hard_mtu = dev->net->mtu + dev->net->hard_header_len;
+ 	dev->net->max_mtu = MAX_SINGLE_PACKET_SIZE;
  	return 0;
++
++err:
++	kfree(pdata);
++	return ret;
  }
  
--static SIMPLE_DEV_PM_OPS(hp_accel_pm, lis3lv02d_suspend, lis3lv02d_resume);
-+static const struct dev_pm_ops hp_accel_pm = {
-+	.suspend = lis3lv02d_suspend,
-+	.resume = lis3lv02d_resume,
-+	.freeze = lis3lv02d_suspend,
-+	.thaw = lis3lv02d_resume,
-+	.poweroff = lis3lv02d_suspend,
-+	.restore = lis3lv02d_restore,
-+};
-+
- #define HP_ACCEL_PM (&hp_accel_pm)
- #else
- #define HP_ACCEL_PM NULL
--- 
-2.30.2
-
+ static void smsc75xx_unbind(struct usbnet *dev, struct usb_interface *intf)
 
 
