@@ -2,35 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B534D395E7D
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 15:58:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E235395C1E
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 15:27:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231418AbhEaN7q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 09:59:46 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43832 "EHLO mail.kernel.org"
+        id S231637AbhEaN2c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 09:28:32 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56434 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232363AbhEaNjF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 09:39:05 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id AC2ED61408;
-        Mon, 31 May 2021 13:26:50 +0000 (UTC)
+        id S231783AbhEaNWA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 09:22:00 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1BC9D613DF;
+        Mon, 31 May 2021 13:19:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1622467611;
-        bh=gerKS9RKs58vxAFlg4+VQiIAmxVzLNiW/vg2IF1A3Sg=;
+        s=korg; t=1622467159;
+        bh=p0M35ZuhraTzJFRk38f5OpfvjSEJJ1YHLVPO5NrabxE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Xq8wO9NZaqtCpuWMQu/Gz2BoKIz4WvIu76xE1/lYYn5Y5mA3EM+qqqcJqMPK2uN5p
-         C7aKhuR4odoLZftCsY3BEC5fLDdki6wd3Szg8P9CxVKKCrswNYeEjtE9ZFVhjdeDhd
-         yKTlrOFmxnZF6z0T4rKmrGO0MDALZ6o+iW/ZrHZA=
+        b=WnjlHjA/MJjT3JZRn8QxcXv3EMJotcoqPAKxWelewqdAFlFLYQsV6iLfsaur8uSaA
+         0+pDBT2YJ1eJzwNVxVRo4jKTY1Vctt4dmaPuzWa635TALLbq5LOTzOpOeuFqzt4iNf
+         +yjghROfo5bEwxmOrsYAhAr/CcXPO1xLg+GfVxGc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Mathy Vanhoef <Mathy.Vanhoef@kuleuven.be>,
-        Johannes Berg <johannes.berg@intel.com>
-Subject: [PATCH 4.14 14/79] mac80211: prevent mixed key and fragment cache attacks
+        stable@vger.kernel.org, stable@kernel.vger.org,
+        Pavel Skripkin <paskripkin@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        syzbot+b558506ba8165425fee2@syzkaller.appspotmail.com
+Subject: [PATCH 4.9 26/66] net: usb: fix memory leak in smsc75xx_bind
 Date:   Mon, 31 May 2021 15:13:59 +0200
-Message-Id: <20210531130636.463978144@linuxfoundation.org>
+Message-Id: <20210531130637.098537307@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210531130636.002722319@linuxfoundation.org>
-References: <20210531130636.002722319@linuxfoundation.org>
+In-Reply-To: <20210531130636.254683895@linuxfoundation.org>
+References: <20210531130636.254683895@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,99 +41,60 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mathy Vanhoef <Mathy.Vanhoef@kuleuven.be>
+From: Pavel Skripkin <paskripkin@gmail.com>
 
-commit 94034c40ab4a3fcf581fbc7f8fdf4e29943c4a24 upstream.
+commit 46a8b29c6306d8bbfd92b614ef65a47c900d8e70 upstream.
 
-Simultaneously prevent mixed key attacks (CVE-2020-24587) and fragment
-cache attacks (CVE-2020-24586). This is accomplished by assigning a
-unique color to every key (per interface) and using this to track which
-key was used to decrypt a fragment. When reassembling frames, it is
-now checked whether all fragments were decrypted using the same key.
+Syzbot reported memory leak in smsc75xx_bind().
+The problem was is non-freed memory in case of
+errors after memory allocation.
 
-To assure that fragment cache attacks are also prevented, the ID that is
-assigned to keys is unique even over (re)associations and (re)connects.
-This means fragments separated by a (re)association or (re)connect will
-not be reassembled. Because mac80211 now also prevents the reassembly of
-mixed encrypted and plaintext fragments, all cache attacks are prevented.
+backtrace:
+  [<ffffffff84245b62>] kmalloc include/linux/slab.h:556 [inline]
+  [<ffffffff84245b62>] kzalloc include/linux/slab.h:686 [inline]
+  [<ffffffff84245b62>] smsc75xx_bind+0x7a/0x334 drivers/net/usb/smsc75xx.c:1460
+  [<ffffffff82b5b2e6>] usbnet_probe+0x3b6/0xc30 drivers/net/usb/usbnet.c:1728
 
-Cc: stable@vger.kernel.org
-Signed-off-by: Mathy Vanhoef <Mathy.Vanhoef@kuleuven.be>
-Link: https://lore.kernel.org/r/20210511200110.3f8290e59823.I622a67769ed39257327a362cfc09c812320eb979@changeid
-Signed-off-by: Johannes Berg <johannes.berg@intel.com>
+Fixes: d0cad871703b ("smsc75xx: SMSC LAN75xx USB gigabit ethernet adapter driver")
+Cc: stable@kernel.vger.org
+Reported-and-tested-by: syzbot+b558506ba8165425fee2@syzkaller.appspotmail.com
+Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- net/mac80211/ieee80211_i.h |    1 +
- net/mac80211/key.c         |    7 +++++++
- net/mac80211/key.h         |    2 ++
- net/mac80211/rx.c          |    6 ++++++
- 4 files changed, 16 insertions(+)
+ drivers/net/usb/smsc75xx.c |    8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
 
---- a/net/mac80211/ieee80211_i.h
-+++ b/net/mac80211/ieee80211_i.h
-@@ -99,6 +99,7 @@ struct ieee80211_fragment_entry {
- 	u8 rx_queue;
- 	bool check_sequential_pn; /* needed for CCMP/GCMP */
- 	u8 last_pn[6]; /* PN of the last fragment if CCMP was used */
-+	unsigned int key_color;
- };
+--- a/drivers/net/usb/smsc75xx.c
++++ b/drivers/net/usb/smsc75xx.c
+@@ -1497,7 +1497,7 @@ static int smsc75xx_bind(struct usbnet *
+ 	ret = smsc75xx_wait_ready(dev, 0);
+ 	if (ret < 0) {
+ 		netdev_warn(dev->net, "device not ready in smsc75xx_bind\n");
+-		return ret;
++		goto err;
+ 	}
  
+ 	smsc75xx_init_mac_address(dev);
+@@ -1506,7 +1506,7 @@ static int smsc75xx_bind(struct usbnet *
+ 	ret = smsc75xx_reset(dev);
+ 	if (ret < 0) {
+ 		netdev_warn(dev->net, "smsc75xx_reset error %d\n", ret);
+-		return ret;
++		goto err;
+ 	}
  
---- a/net/mac80211/key.c
-+++ b/net/mac80211/key.c
-@@ -647,6 +647,7 @@ int ieee80211_key_link(struct ieee80211_
- 		       struct ieee80211_sub_if_data *sdata,
- 		       struct sta_info *sta)
- {
-+	static atomic_t key_color = ATOMIC_INIT(0);
- 	struct ieee80211_local *local = sdata->local;
- 	struct ieee80211_key *old_key;
- 	int idx = key->conf.keyidx;
-@@ -682,6 +683,12 @@ int ieee80211_key_link(struct ieee80211_
- 	key->sdata = sdata;
- 	key->sta = sta;
- 
-+	/*
-+	 * Assign a unique ID to every key so we can easily prevent mixed
-+	 * key and fragment cache attacks.
-+	 */
-+	key->color = atomic_inc_return(&key_color);
+ 	dev->net->netdev_ops = &smsc75xx_netdev_ops;
+@@ -1515,6 +1515,10 @@ static int smsc75xx_bind(struct usbnet *
+ 	dev->net->hard_header_len += SMSC75XX_TX_OVERHEAD;
+ 	dev->hard_mtu = dev->net->mtu + dev->net->hard_header_len;
+ 	return 0;
 +
- 	increment_tailroom_need_count(sdata);
++err:
++	kfree(pdata);
++	return ret;
+ }
  
- 	ieee80211_key_replace(sdata, sta, pairwise, old_key, key);
---- a/net/mac80211/key.h
-+++ b/net/mac80211/key.h
-@@ -127,6 +127,8 @@ struct ieee80211_key {
- 	} debugfs;
- #endif
- 
-+	unsigned int color;
-+
- 	/*
- 	 * key config, must be last because it contains key
- 	 * material as variable length member
---- a/net/mac80211/rx.c
-+++ b/net/mac80211/rx.c
-@@ -2029,6 +2029,7 @@ ieee80211_rx_h_defragment(struct ieee802
- 			 * next fragment has a sequential PN value.
- 			 */
- 			entry->check_sequential_pn = true;
-+			entry->key_color = rx->key->color;
- 			memcpy(entry->last_pn,
- 			       rx->key->u.ccmp.rx_pn[queue],
- 			       IEEE80211_CCMP_PN_LEN);
-@@ -2066,6 +2067,11 @@ ieee80211_rx_h_defragment(struct ieee802
- 
- 		if (!requires_sequential_pn(rx, fc))
- 			return RX_DROP_UNUSABLE;
-+
-+		/* Prevent mixed key and fragment cache attacks */
-+		if (entry->key_color != rx->key->color)
-+			return RX_DROP_UNUSABLE;
-+
- 		memcpy(pn, entry->last_pn, IEEE80211_CCMP_PN_LEN);
- 		for (i = IEEE80211_CCMP_PN_LEN - 1; i >= 0; i--) {
- 			pn[i]++;
+ static void smsc75xx_unbind(struct usbnet *dev, struct usb_interface *intf)
 
 
