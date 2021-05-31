@@ -2,37 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 820D3395C8F
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 15:33:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BDE85395E1D
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 15:53:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232870AbhEaNe4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 09:34:56 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33238 "EHLO mail.kernel.org"
+        id S233093AbhEaNyX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 09:54:23 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39236 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232263AbhEaNZ3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 09:25:29 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 121BD613FF;
-        Mon, 31 May 2021 13:20:46 +0000 (UTC)
+        id S231990AbhEaNfr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 09:35:47 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B7ED561401;
+        Mon, 31 May 2021 13:25:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1622467247;
-        bh=i+QloeXiWDUkItTqnL2vr8fK0KqCD/zYOdBzyi31b1s=;
+        s=korg; t=1622467526;
+        bh=891bHmpN95ZD6fwRgVJVLBZFvKFAEX193O2rvDRXrio=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=bkRzYhm1wEkZH/lAzVGBLo+hQ4xKsOxrDvUfpIBV0z23SXQ3PXlpDGNcnUfGVYSi1
-         P1aEEtngVsPIlDdevqbU85BD59r0nLQofN1fErYcnI7PYKJ37u1BAJGrjZpcvnq4gu
-         360bWFLhV9ZarI2C9fxNtITUP1mwEvsdbNLIhWo0=
+        b=zuqHMJky8/woai5YVDh+/guL1rLeY29JZuuw8c24wOSflCR4zbMLDzDEKnoYDYqwz
+         bMKUEB+cFO5myRanpskqqQ7ut/YB1Gv584tGI10b3lMKHeSdHTGaXI0IstP0migl4m
+         JAMKVRI1KlKuBDjP1AEeMIXPkUQbyZa/BezfpeDU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
-        Charles Keepax <ckeepax@opensource.cirrus.com>,
-        Mark Brown <broonie@kernel.org>,
+        stable@vger.kernel.org, Vladimir Oltean <vladimir.oltean@nxp.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 60/66] ASoC: cs35l33: fix an error code in probe()
+Subject: [PATCH 4.19 097/116] net: dsa: fix error code getting shifted with 4 in dsa_slave_get_sset_count
 Date:   Mon, 31 May 2021 15:14:33 +0200
-Message-Id: <20210531130638.156666728@linuxfoundation.org>
+Message-Id: <20210531130643.424966581@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210531130636.254683895@linuxfoundation.org>
-References: <20210531130636.254683895@linuxfoundation.org>
+In-Reply-To: <20210531130640.131924542@linuxfoundation.org>
+References: <20210531130640.131924542@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,34 +42,65 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dan Carpenter <dan.carpenter@oracle.com>
+From: Vladimir Oltean <vladimir.oltean@nxp.com>
 
-[ Upstream commit 833bc4cf9754643acc69b3c6b65988ca78df4460 ]
+[ Upstream commit b94cbc909f1d80378a1f541968309e5c1178c98b ]
 
-This error path returns zero (success) but it should return -EINVAL.
+DSA implements a bunch of 'standardized' ethtool statistics counters,
+namely tx_packets, tx_bytes, rx_packets, rx_bytes. So whatever the
+hardware driver returns in .get_sset_count(), we need to add 4 to that.
 
-Fixes: 3333cb7187b9 ("ASoC: cs35l33: Initial commit of the cs35l33 CODEC driver.")
-Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
-Reviewed-by: Charles Keepax <ckeepax@opensource.cirrus.com>
-Link: https://lore.kernel.org/r/YKXuyGEzhPT35R3G@mwanda
-Signed-off-by: Mark Brown <broonie@kernel.org>
+That is ok, except that .get_sset_count() can return a negative error
+code, for example:
+
+b53_get_sset_count
+-> phy_ethtool_get_sset_count
+   -> return -EIO
+
+-EIO is -5, and with 4 added to it, it becomes -1, aka -EPERM. One can
+imagine that certain error codes may even become positive, although
+based on code inspection I did not see instances of that.
+
+Check the error code first, if it is negative return it as-is.
+
+Based on a similar patch for dsa_master_get_strings from Dan Carpenter:
+https://patchwork.kernel.org/project/netdevbpf/patch/YJaSe3RPgn7gKxZv@mwanda/
+
+Fixes: 91da11f870f0 ("net: Distributed Switch Architecture protocol support")
+Signed-off-by: Vladimir Oltean <vladimir.oltean@nxp.com>
+Reviewed-by: Florian Fainelli <f.fainelli@gmail.com>
+Reviewed-by: Andrew Lunn <andrew@lunn.ch>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/codecs/cs35l33.c | 1 +
- 1 file changed, 1 insertion(+)
+ net/dsa/slave.c | 12 +++++++-----
+ 1 file changed, 7 insertions(+), 5 deletions(-)
 
-diff --git a/sound/soc/codecs/cs35l33.c b/sound/soc/codecs/cs35l33.c
-index 6df29fa30fb9..9e449dd8da92 100644
---- a/sound/soc/codecs/cs35l33.c
-+++ b/sound/soc/codecs/cs35l33.c
-@@ -1209,6 +1209,7 @@ static int cs35l33_i2c_probe(struct i2c_client *i2c_client,
- 		dev_err(&i2c_client->dev,
- 			"CS35L33 Device ID (%X). Expected ID %X\n",
- 			devid, CS35L33_CHIP_ID);
-+		ret = -EINVAL;
- 		goto err_enable;
+diff --git a/net/dsa/slave.c b/net/dsa/slave.c
+index 11f1560de639..b887d9edb9c3 100644
+--- a/net/dsa/slave.c
++++ b/net/dsa/slave.c
+@@ -598,13 +598,15 @@ static int dsa_slave_get_sset_count(struct net_device *dev, int sset)
+ 	struct dsa_switch *ds = dp->ds;
+ 
+ 	if (sset == ETH_SS_STATS) {
+-		int count;
++		int count = 0;
+ 
+-		count = 4;
+-		if (ds->ops->get_sset_count)
+-			count += ds->ops->get_sset_count(ds, dp->index, sset);
++		if (ds->ops->get_sset_count) {
++			count = ds->ops->get_sset_count(ds, dp->index, sset);
++			if (count < 0)
++				return count;
++		}
+ 
+-		return count;
++		return count + 4;
  	}
  
+ 	return -EOPNOTSUPP;
 -- 
 2.30.2
 
