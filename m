@@ -2,35 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D29F0396401
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 17:42:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AE2E039625C
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 16:54:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232282AbhEaPnt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 11:43:49 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47640 "EHLO mail.kernel.org"
+        id S234360AbhEaOzh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 10:55:37 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37386 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233435AbhEaOZC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 10:25:02 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2DABA61625;
-        Mon, 31 May 2021 13:46:17 +0000 (UTC)
+        id S232212AbhEaOD5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 10:03:57 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id F20C1613C1;
+        Mon, 31 May 2021 13:37:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1622468777;
-        bh=1IYDyVXakbWlqPPxz3zhjImOYU2dRk9Db7ijwLOxpIU=;
+        s=korg; t=1622468274;
+        bh=p9SOPVhR3hgFauLpHcLifRt5AajZWHwWV4bCa9HFucs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=NP9fnwonYYrycWtgEnenBFoeHqcK3tVIP579c2Q8ieAAdGYDmFMTXLNcqFahAegjV
-         SX6hJCTBw89osK6X6YRBw1jiXxu7S6GWalCTcg8q6MUX1ZdRWgwH48XLjm5Tz+YyUG
-         uijO8h7kPV2QMlokw3TVKAWlIWvjWxQeiCxznjm0=
+        b=HhMYZqp0ejVYr5db15BRPuyaz193KjOWDLyHW8gywVzmP0m7m5vrNcZ3SHRxQyUHv
+         EW847IXMLbLItsgVMPNCIp2uAK5SGxj+tRA+DcEbb70miCPst3GpxYuJQyogZjTCbU
+         Llz1s1J0Lc1V86zo1DBdKU/nFcblrUFV0WnuQAic=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Aditya Pakki <pakki001@umn.edu>,
-        Takashi Iwai <tiwai@suse.de>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 089/177] Revert "ALSA: sb: fix a missing check of snd_ctl_add"
+        stable@vger.kernel.org, Chris Park <Chris.Park@amd.com>,
+        Nicholas Kazlauskas <Nicholas.Kazlauskas@amd.com>,
+        Stylon Wang <stylon.wang@amd.com>,
+        Daniel Wheeler <daniel.wheeler@amd.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.10 181/252] drm/amd/display: Disconnect non-DP with no EDID
 Date:   Mon, 31 May 2021 15:14:06 +0200
-Message-Id: <20210531130650.969801268@linuxfoundation.org>
+Message-Id: <20210531130704.161056012@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210531130647.887605866@linuxfoundation.org>
-References: <20210531130647.887605866@linuxfoundation.org>
+In-Reply-To: <20210531130657.971257589@linuxfoundation.org>
+References: <20210531130657.971257589@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,51 +43,61 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+From: Chris Park <Chris.Park@amd.com>
 
-[ Upstream commit 4b059ce1f4b368208c2310925f49be77f15e527b ]
+[ Upstream commit 080039273b126eeb0185a61c045893a25dbc046e ]
 
-This reverts commit beae77170c60aa786f3e4599c18ead2854d8694d.
+[Why]
+Active DP dongles return no EDID when dongle
+is connected, but VGA display is taken out.
+Current driver behavior does not remove the
+active display when this happens, and this is
+a gap between dongle DTP and dongle behavior.
 
-Because of recent interactions with developers from @umn.edu, all
-commits from them have been recently re-reviewed to ensure if they were
-correct or not.
+[How]
+For active DP dongles and non-DP scenario,
+disconnect sink on detection when no EDID
+is read due to timeout.
 
-Upon review, this commit was found to be incorrect for the reasons
-below, so it must be reverted.  It is safe to ignore this error as the
-mixer element is optional, and the driver is very legacy.
-
-Cc: Aditya Pakki <pakki001@umn.edu>
-Reviewed-by: Takashi Iwai <tiwai@suse.de>
-Link: https://lore.kernel.org/r/20210503115736.2104747-8-gregkh@linuxfoundation.org
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Chris Park <Chris.Park@amd.com>
+Reviewed-by: Nicholas Kazlauskas <Nicholas.Kazlauskas@amd.com>
+Acked-by: Stylon Wang <stylon.wang@amd.com>
+Tested-by: Daniel Wheeler <daniel.wheeler@amd.com>
+Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/isa/sb/sb16_main.c | 10 +++-------
- 1 file changed, 3 insertions(+), 7 deletions(-)
+ drivers/gpu/drm/amd/display/dc/core/dc_link.c | 18 ++++++++++++++++++
+ 1 file changed, 18 insertions(+)
 
-diff --git a/sound/isa/sb/sb16_main.c b/sound/isa/sb/sb16_main.c
-index 0768bbf8fd71..679f9f48370f 100644
---- a/sound/isa/sb/sb16_main.c
-+++ b/sound/isa/sb/sb16_main.c
-@@ -864,14 +864,10 @@ int snd_sb16dsp_pcm(struct snd_sb *chip, int device)
- 	snd_pcm_set_ops(pcm, SNDRV_PCM_STREAM_PLAYBACK, &snd_sb16_playback_ops);
- 	snd_pcm_set_ops(pcm, SNDRV_PCM_STREAM_CAPTURE, &snd_sb16_capture_ops);
+diff --git a/drivers/gpu/drm/amd/display/dc/core/dc_link.c b/drivers/gpu/drm/amd/display/dc/core/dc_link.c
+index f0039599e02f..62778ccea055 100644
+--- a/drivers/gpu/drm/amd/display/dc/core/dc_link.c
++++ b/drivers/gpu/drm/amd/display/dc/core/dc_link.c
+@@ -1049,6 +1049,24 @@ static bool dc_link_detect_helper(struct dc_link *link,
+ 			    dc_is_dvi_signal(link->connector_signal)) {
+ 				if (prev_sink)
+ 					dc_sink_release(prev_sink);
++				link_disconnect_sink(link);
++
++				return false;
++			}
++			/*
++			 * Abort detection for DP connectors if we have
++			 * no EDID and connector is active converter
++			 * as there are no display downstream
++			 *
++			 */
++			if (dc_is_dp_sst_signal(link->connector_signal) &&
++				(link->dpcd_caps.dongle_type ==
++						DISPLAY_DONGLE_DP_VGA_CONVERTER ||
++				link->dpcd_caps.dongle_type ==
++						DISPLAY_DONGLE_DP_DVI_CONVERTER)) {
++				if (prev_sink)
++					dc_sink_release(prev_sink);
++				link_disconnect_sink(link);
  
--	if (chip->dma16 >= 0 && chip->dma8 != chip->dma16) {
--		err = snd_ctl_add(card, snd_ctl_new1(
--					&snd_sb16_dma_control, chip));
--		if (err)
--			return err;
--	} else {
-+	if (chip->dma16 >= 0 && chip->dma8 != chip->dma16)
-+		snd_ctl_add(card, snd_ctl_new1(&snd_sb16_dma_control, chip));
-+	else
- 		pcm->info_flags = SNDRV_PCM_INFO_HALF_DUPLEX;
--	}
- 
- 	snd_pcm_lib_preallocate_pages_for_all(pcm, SNDRV_DMA_TYPE_DEV,
- 					      card->dev,
+ 				return false;
+ 			}
 -- 
 2.30.2
 
