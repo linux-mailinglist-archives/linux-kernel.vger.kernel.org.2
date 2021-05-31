@@ -2,92 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 750793959CB
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 13:36:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E680B3959CC
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 13:37:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231450AbhEaLiN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 07:38:13 -0400
-Received: from Mailgw01.mediatek.com ([1.203.163.78]:64627 "EHLO
-        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S230521AbhEaLiK (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 07:38:10 -0400
-X-UUID: d29003bbc1ab4747b897ad5a872a3c8c-20210531
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=lGvDrucw7R+ESa51Vw2ltK2gA0igTci22CG0bvNo3sI=;
-        b=R42WH1CKbw1qAt5ERiizYdFzIgObOHmlC6ku/pkFz8vpCJbhGrlAMv9zQEa0mdf6LnMqlMP5r2/CKGmmnl/lIXwLatJaL/Q4p5B15uQ37SKzk/gLlnNojLfA8quOUOY66jC84Xz/Y6P9ZreruRTubDGsAyr3NXUNcjX5VgOfTeQ=;
-X-UUID: d29003bbc1ab4747b897ad5a872a3c8c-20210531
-Received: from mtkcas36.mediatek.inc [(172.27.4.253)] by mailgw01.mediatek.com
-        (envelope-from <chun-jie.chen@mediatek.com>)
-        (mailgw01.mediatek.com ESMTP with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 1792962603; Mon, 31 May 2021 19:36:28 +0800
-Received: from mtkcas11.mediatek.inc (172.21.101.40) by
- MTKMBS31N1.mediatek.inc (172.27.4.69) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Mon, 31 May 2021 19:36:12 +0800
-Received: from mtksdccf07 (172.21.84.99) by mtkcas11.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Mon, 31 May 2021 19:36:12 +0800
-Message-ID: <f0eb6a1ac2e3a03c4cc742f45cdd9cb91537ff4d.camel@mediatek.com>
-Subject: Re: [PATCH 2/3] soc: mtk-pm-domains: do not register smi node as
- syscon
-From:   Chun-Jie Chen <chun-jie.chen@mediatek.com>
-To:     Hsin-Yi Wang <hsinyi@chromium.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>
-CC:     <linux-arm-kernel@lists.infradead.org>,
-        <linux-mediatek@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, "Rob Herring" <robh+dt@kernel.org>,
-        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
-        <chun-jie.chen@mediatek.corp-partner.google.com>,
-        Yong Wu <yong.wu@mediatek.com>
-Date:   Mon, 31 May 2021 19:36:12 +0800
-In-Reply-To: <20210531043502.2702645-2-hsinyi@chromium.org>
-References: <20210531043502.2702645-1-hsinyi@chromium.org>
-         <20210531043502.2702645-2-hsinyi@chromium.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
+        id S231436AbhEaLjH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 07:39:07 -0400
+Received: from mx2.suse.de ([195.135.220.15]:38176 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230521AbhEaLjD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 07:39:03 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1622461043; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=tSnbJvwtWkKzbciU0FHdyWYcZOXXy1EHpV2IiYt+IQA=;
+        b=tDS1/UUwOwLYrpv6/Huz+NCJm0mfet9iIylrmRXXXk2wN6o0uKv12nUL677U3VCq5Lxh2/
+        3bvKu7t2+/gYGCRq68uyVkvABSZRRW1BICsfCS77LY8fEnQWZw0UeKcClt9hvRutBD7se7
+        aHLu1jWc5n+EC6jUELa1oTwS3deTw/0=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 0EA76B4C4;
+        Mon, 31 May 2021 11:37:23 +0000 (UTC)
+Date:   Mon, 31 May 2021 13:37:21 +0200
+From:   Michal Hocko <mhocko@suse.com>
+To:     Oscar Salvador <osalvador@suse.de>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        David Hildenbrand <david@redhat.com>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Pavel Tatashin <pasha.tatashin@soleen.com>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] mm,memory_hotplug: Drop unneeded locking
+Message-ID: <YLTKcYZheltJgPKx@dhcp22.suse.cz>
+References: <20210531093958.15021-1-osalvador@suse.de>
 MIME-Version: 1.0
-X-TM-SNTS-SMTP: CB375E2EB8027F684503A9B61A4BB8DDB07113F80DBAC2D41A947B8ADBDB162F2000:8
-X-MTK:  N
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210531093958.15021-1-osalvador@suse.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gTW9uLCAyMDIxLTA1LTMxIGF0IDEyOjM1ICswODAwLCBIc2luLVlpIFdhbmcgd3JvdGU6DQo+
-IE1lZGlhdGVrIHJlcXVpcmVzIG1tc3lzIGNsb2NrcyB0byBiZSB1bnByZXBhcmVkIGR1cmluZyBz
-dXNwZW5kLA0KPiBvdGhlcndpc2Ugc3lzdGVtIGhhcyBjaGFuY2VzIHRvIGhhbmcuDQo+IA0KPiBz
-eXNjb25fcmVnbWFwX2xvb2t1cF9ieV9waGFuZGxlX29wdGlvbmFsKCkgd2lsbCBhdHRhY2ggYW5k
-IHByZXBhcmUNCj4gdGhlDQo+IGZpcnN0IGNsb2NrIGluIHNtaSBub2RlLCBsZWFkaW5nIHRvIGFk
-ZGl0aW9uYWwgcHJlcGFyZSB0byB0aGUgY2xvY2sNCj4gd2hpY2ggaXMgbm90IGJhbGFuY2VkIHdp
-dGggdGhlIHByZXBhcmUvdW5wcmVwYXJlIHBhaXIgaW4NCj4gcmVzdW1lL3N1c3BlbmQNCj4gY2Fs
-bGJhY2tzLg0KPiANCj4gSWYgYSBwb3dlciBkb21haW4gbm9kZSByZXF1ZXN0cyBhbiBzbWkgbm9k
-ZSBhbmQgdGhlIHNtaSBub2RlJ3MgZmlyc3QNCj4gY2xvY2sgaXMgYW4gbW1zeXMgY2xvY2ssIGl0
-IHdpbGwgcmVzdWx0cyBpbiBhbiB1bnN0YWJrZSBzdXNwZW5kDQo+IHJlc3VtZS4NCj4gDQo+IFNp
-Z25lZC1vZmYtYnk6IEhzaW4tWWkgV2FuZyA8aHNpbnlpQGNocm9taXVtLm9yZz4NCg0KUmV2aWV3
-ZWQtYnk6IGNodW4tamllLmNoZW4gPGNodW4tamllLmNoZW5AbWVkaWF0ZWsuY29tPg0KDQo+IC0t
-LQ0KPiAgZHJpdmVycy9zb2MvbWVkaWF0ZWsvbXRrLXBtLWRvbWFpbnMuYyB8IDEyICsrKysrKysr
-LS0tLQ0KPiAgMSBmaWxlIGNoYW5nZWQsIDggaW5zZXJ0aW9ucygrKSwgNCBkZWxldGlvbnMoLSkN
-Cj4gDQo+IGRpZmYgLS1naXQgYS9kcml2ZXJzL3NvYy9tZWRpYXRlay9tdGstcG0tZG9tYWlucy5j
-DQo+IGIvZHJpdmVycy9zb2MvbWVkaWF0ZWsvbXRrLXBtLWRvbWFpbnMuYw0KPiBpbmRleCA1MzZk
-OGM2NGIyYjQuLmE5YmE3MWVlZTRiYiAxMDA2NDQNCj4gLS0tIGEvZHJpdmVycy9zb2MvbWVkaWF0
-ZWsvbXRrLXBtLWRvbWFpbnMuYw0KPiArKysgYi9kcml2ZXJzL3NvYy9tZWRpYXRlay9tdGstcG0t
-ZG9tYWlucy5jDQo+IEBAIC0yOTYsNyArMjk2LDcgQEAgZ2VuZXJpY19wbV9kb21haW4gKnNjcHN5
-c19hZGRfb25lX2RvbWFpbihzdHJ1Y3QNCj4gc2Nwc3lzICpzY3BzeXMsIHN0cnVjdCBkZXZpY2Vf
-bm8NCj4gIHsNCj4gIAljb25zdCBzdHJ1Y3Qgc2Nwc3lzX2RvbWFpbl9kYXRhICpkb21haW5fZGF0
-YTsNCj4gIAlzdHJ1Y3Qgc2Nwc3lzX2RvbWFpbiAqcGQ7DQo+IC0Jc3RydWN0IGRldmljZV9ub2Rl
-ICpyb290X25vZGUgPSBzY3BzeXMtPmRldi0+b2Zfbm9kZTsNCj4gKwlzdHJ1Y3QgZGV2aWNlX25v
-ZGUgKnJvb3Rfbm9kZSA9IHNjcHN5cy0+ZGV2LT5vZl9ub2RlLA0KPiAqc21pX25vZGU7DQo+ICAJ
-c3RydWN0IHByb3BlcnR5ICpwcm9wOw0KPiAgCWNvbnN0IGNoYXIgKmNsa19uYW1lOw0KPiAgCWlu
-dCBpLCByZXQsIG51bV9jbGtzOw0KPiBAQCAtMzUyLDkgKzM1MiwxMyBAQCBnZW5lcmljX3BtX2Rv
-bWFpbiAqc2Nwc3lzX2FkZF9vbmVfZG9tYWluKHN0cnVjdA0KPiBzY3BzeXMgKnNjcHN5cywgc3Ry
-dWN0IGRldmljZV9ubw0KPiAgCWlmIChJU19FUlIocGQtPmluZnJhY2ZnKSkNCj4gIAkJcmV0dXJu
-IEVSUl9DQVNUKHBkLT5pbmZyYWNmZyk7DQo+ICANCj4gLQlwZC0+c21pID0gc3lzY29uX3JlZ21h
-cF9sb29rdXBfYnlfcGhhbmRsZV9vcHRpb25hbChub2RlLA0KPiAibWVkaWF0ZWssc21pIik7DQo+
-IC0JaWYgKElTX0VSUihwZC0+c21pKSkNCj4gLQkJcmV0dXJuIEVSUl9DQVNUKHBkLT5zbWkpOw0K
-PiArCXNtaV9ub2RlID0gb2ZfcGFyc2VfcGhhbmRsZShub2RlLCAibWVkaWF0ZWssc21pIiwgMCk7
-DQo+ICsJaWYgKHNtaV9ub2RlKSB7DQo+ICsJCXBkLT5zbWkgPSBkZXZpY2Vfbm9kZV90b19yZWdt
-YXAoc21pX25vZGUpOw0KPiArCQlvZl9ub2RlX3B1dChzbWlfbm9kZSk7DQo+ICsJCWlmIChJU19F
-UlIocGQtPnNtaSkpDQo+ICsJCQlyZXR1cm4gRVJSX0NBU1QocGQtPnNtaSk7DQo+ICsJfQ0KPiAg
-DQo+ICAJbnVtX2Nsa3MgPSBvZl9jbGtfZ2V0X3BhcmVudF9jb3VudChub2RlKTsNCj4gIAlpZiAo
-bnVtX2Nsa3MgPiAwKSB7DQo=
+On Mon 31-05-21 11:39:58, Oscar Salvador wrote:
+> Currently, memory-hotplug code takes zone's span_writelock
+> and pgdat's resize_lock when resizing the node/zone's spanned
+> pages via {move_pfn_range_to_zone(),remove_pfn_range_from_zone()}
+> and when resizing node and zone's present pages via
+> adjust_present_page_count().
+> 
+> These locks are also taken during the initialization of the system
+> at boot time, where it protects parallel struct page initialization,
+> but they should not really be needed in memory-hotplug where all
+> operations are a) synchronized on device level and b) serialized by
+> the mem_hotplug_lock lock.
+> 
+> Signed-off-by: Oscar Salvador <osalvador@suse.de>
+> Acked-by: David Hildenbrand <david@redhat.com>
 
+Thanks. I wanted to kill these locks quite some time ago (see the TODO
+you are remonig ;)) but never got around to that.
+
+Acked-by: Michal Hocko <mhocko@suse.com>
+
+> ---
+>  mm/memory_hotplug.c | 11 -----------
+>  1 file changed, 11 deletions(-)
+> 
+> diff --git a/mm/memory_hotplug.c b/mm/memory_hotplug.c
+> index 075b34803fec..9edbc57055bf 100644
+> --- a/mm/memory_hotplug.c
+> +++ b/mm/memory_hotplug.c
+> @@ -329,7 +329,6 @@ static void shrink_zone_span(struct zone *zone, unsigned long start_pfn,
+>  	unsigned long pfn;
+>  	int nid = zone_to_nid(zone);
+>  
+> -	zone_span_writelock(zone);
+>  	if (zone->zone_start_pfn == start_pfn) {
+>  		/*
+>  		 * If the section is smallest section in the zone, it need
+> @@ -362,7 +361,6 @@ static void shrink_zone_span(struct zone *zone, unsigned long start_pfn,
+>  			zone->spanned_pages = 0;
+>  		}
+>  	}
+> -	zone_span_writeunlock(zone);
+>  }
+>  
+>  static void update_pgdat_span(struct pglist_data *pgdat)
+> @@ -424,10 +422,8 @@ void __ref remove_pfn_range_from_zone(struct zone *zone,
+>  
+>  	clear_zone_contiguous(zone);
+>  
+> -	pgdat_resize_lock(zone->zone_pgdat, &flags);
+>  	shrink_zone_span(zone, start_pfn, start_pfn + nr_pages);
+>  	update_pgdat_span(pgdat);
+> -	pgdat_resize_unlock(zone->zone_pgdat, &flags);
+>  
+>  	set_zone_contiguous(zone);
+>  }
+> @@ -638,15 +634,10 @@ void __ref move_pfn_range_to_zone(struct zone *zone, unsigned long start_pfn,
+>  
+>  	clear_zone_contiguous(zone);
+>  
+> -	/* TODO Huh pgdat is irqsave while zone is not. It used to be like that before */
+> -	pgdat_resize_lock(pgdat, &flags);
+> -	zone_span_writelock(zone);
+>  	if (zone_is_empty(zone))
+>  		init_currently_empty_zone(zone, start_pfn, nr_pages);
+>  	resize_zone_range(zone, start_pfn, nr_pages);
+> -	zone_span_writeunlock(zone);
+>  	resize_pgdat_range(pgdat, start_pfn, nr_pages);
+> -	pgdat_resize_unlock(pgdat, &flags);
+>  
+>  	/*
+>  	 * Subsection population requires care in pfn_to_online_page().
+> @@ -739,9 +730,7 @@ void adjust_present_page_count(struct zone *zone, long nr_pages)
+>  	unsigned long flags;
+>  
+>  	zone->present_pages += nr_pages;
+> -	pgdat_resize_lock(zone->zone_pgdat, &flags);
+>  	zone->zone_pgdat->node_present_pages += nr_pages;
+> -	pgdat_resize_unlock(zone->zone_pgdat, &flags);
+>  }
+>  
+>  int mhp_init_memmap_on_memory(unsigned long pfn, unsigned long nr_pages,
+> -- 
+> 2.16.3
+
+-- 
+Michal Hocko
+SUSE Labs
