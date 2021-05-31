@@ -2,29 +2,29 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5BB7439636D
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 17:15:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 61721396373
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 17:15:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232994AbhEaPQh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 11:16:37 -0400
-Received: from mga02.intel.com ([134.134.136.20]:28208 "EHLO mga02.intel.com"
+        id S233240AbhEaPRU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 11:17:20 -0400
+Received: from mga02.intel.com ([134.134.136.20]:26477 "EHLO mga02.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232236AbhEaONg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 10:13:36 -0400
-IronPort-SDR: mjPKuBtz6uHBLQOS0PrtsU2+rqLtOBCdL6gaPLiMlOYRbLuzC5Lfjj6nuM/kYboUiAkqOh9M0Q
- pe97vWTrYy0g==
-X-IronPort-AV: E=McAfee;i="6200,9189,10001"; a="190480275"
+        id S232351AbhEaONt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 10:13:49 -0400
+IronPort-SDR: fQmYBwq34QmrxgImBW5Nb8BESq6hNpFcpYNn51fXXqmSik87PN0USTkpg2ZlQ1030NdQD2I09e
+ EIYhE6asUrDg==
+X-IronPort-AV: E=McAfee;i="6200,9189,10001"; a="190480282"
 X-IronPort-AV: E=Sophos;i="5.83,237,1616482800"; 
-   d="scan'208";a="190480275"
+   d="scan'208";a="190480282"
 Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 May 2021 07:06:06 -0700
-IronPort-SDR: DIdeUzRN4bsCrPTWUrG6xYVqmLMKzeGhui5lwVYr7TY4NWYlbe/eMImU/U5j3spCFj+Fw5YBKj
- P3YOTaqCu3iw==
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 May 2021 07:06:10 -0700
+IronPort-SDR: Sh8ZCLzPsx+ZpuHZiT0Uvmmf+Pr0NouS/cE/TDmLY9UxKPt63qzCmIm6XPi+5h42cw55zSrgP0
+ SchwCZiFQh7A==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.83,237,1616482800"; 
-   d="scan'208";a="444991527"
+   d="scan'208";a="444991533"
 Received: from shbuild999.sh.intel.com ([10.239.147.94])
-  by orsmga008.jf.intel.com with ESMTP; 31 May 2021 07:06:02 -0700
+  by orsmga008.jf.intel.com with ESMTP; 31 May 2021 07:06:06 -0700
 From:   Feng Tang <feng.tang@intel.com>
 To:     linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
         Michal Hocko <mhocko@kernel.org>,
@@ -40,9 +40,9 @@ Cc:     linux-kernel@vger.kernel.org,
         Andi Kleen <ak@linux.intel.com>,
         Dan Williams <dan.j.williams@intel.com>, ying.huang@intel.com,
         Feng Tang <feng.tang@intel.com>
-Subject: [v3 PATCH 1/3] mm/mempolicy: cleanup nodemask intersection check for oom
-Date:   Mon, 31 May 2021 22:05:54 +0800
-Message-Id: <1622469956-82897-2-git-send-email-feng.tang@intel.com>
+Subject: [v3 PATCH 2/3] mm/mempolicy: don't handle MPOL_LOCAL like a fake MPOL_PREFERRED policy
+Date:   Mon, 31 May 2021 22:05:55 +0800
+Message-Id: <1622469956-82897-3-git-send-email-feng.tang@intel.com>
 X-Mailer: git-send-email 2.7.4
 In-Reply-To: <1622469956-82897-1-git-send-email-feng.tang@intel.com>
 References: <1622469956-82897-1-git-send-email-feng.tang@intel.com>
@@ -50,110 +50,356 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-mempolicy_nodemask_intersects() is used in oom case to check if a
-task may have memory allocated on some memory nodes.
+MPOL_LOCAL policy has been setup as a real policy, but it is still
+handled like a faked POL_PREFERRED policy with one internal
+MPOL_F_LOCAL flag bit set, and there are many places having to
+judge the real 'prefer' or the 'local' policy, which are quite
+confusing.
 
-As it's only used by OOM check, rename it to mempolicy_in_oom_domain()
-to reduce confusion.
+In current code, there are 4 cases that MPOL_LOCAL are used:
+1. user specifies 'local' policy
+2. user specifies 'prefer' policy, but with empty nodemask
+3. system 'default' policy is used
+4. 'prefer' policy + valid 'preferred' node with MPOL_F_STATIC_NODES
+   flag set, and when it is 'rebind' to a nodemask which doesn't
+   contains the 'preferred' node, it will perform as 'local' policy
 
-As only for 'bind' policy, the nodemask is a force requirement for
-from where to allocate memory, only do the intesection check for it,
-and return true for all other policies.
+So make 'local' a real policy instead of a fake 'prefer' one, and
+kill MPOL_F_LOCAL bit, which can greatly reduce the confusion for
+code reading.
+
+For case 4, the logic of mpol_rebind_preferred() is confusing, as
+Michal Hocko pointed out:
+
+ "
+ I do believe that rebinding preferred policy is just bogus and
+ it should be dropped altogether on the ground that a preference
+ is a mere hint from userspace where to start the allocation.
+ Unless I am missing something cpusets will be always authoritative
+ for the final placement. The preferred node just acts as a starting
+ point and it should be really preserved when cpusets changes.
+ Otherwise we have a very subtle behavior corner cases.
+ "
+So dump all the tricky transformation between 'prefer' and 'local',
+and just record the new nodemask of rebinding.
 
 Suggested-by: Michal Hocko <mhocko@suse.com>
 Signed-off-by: Feng Tang <feng.tang@intel.com>
 ---
- include/linux/mempolicy.h |  2 +-
- mm/mempolicy.c            | 34 +++++++++-------------------------
- mm/oom_kill.c             |  2 +-
- 3 files changed, 11 insertions(+), 27 deletions(-)
+ include/uapi/linux/mempolicy.h |   1 -
+ mm/mempolicy.c                 | 131 +++++++++++++++++------------------------
+ 2 files changed, 55 insertions(+), 77 deletions(-)
 
-diff --git a/include/linux/mempolicy.h b/include/linux/mempolicy.h
-index 5f1c74d..8773c55 100644
---- a/include/linux/mempolicy.h
-+++ b/include/linux/mempolicy.h
-@@ -150,7 +150,7 @@ extern int huge_node(struct vm_area_struct *vma,
- 				unsigned long addr, gfp_t gfp_flags,
- 				struct mempolicy **mpol, nodemask_t **nodemask);
- extern bool init_nodemask_of_mempolicy(nodemask_t *mask);
--extern bool mempolicy_nodemask_intersects(struct task_struct *tsk,
-+extern bool mempolicy_in_oom_domain(struct task_struct *tsk,
- 				const nodemask_t *mask);
- extern nodemask_t *policy_nodemask(gfp_t gfp, struct mempolicy *policy);
+diff --git a/include/uapi/linux/mempolicy.h b/include/uapi/linux/mempolicy.h
+index 4832fd0..19a00bc 100644
+--- a/include/uapi/linux/mempolicy.h
++++ b/include/uapi/linux/mempolicy.h
+@@ -60,7 +60,6 @@ enum {
+  * are never OR'ed into the mode in mempolicy API arguments.
+  */
+ #define MPOL_F_SHARED  (1 << 0)	/* identify shared policies */
+-#define MPOL_F_LOCAL   (1 << 1)	/* preferred local allocation */
+ #define MPOL_F_MOF	(1 << 3) /* this policy wants migrate on fault */
+ #define MPOL_F_MORON	(1 << 4) /* Migrate On protnone Reference On Node */
  
 diff --git a/mm/mempolicy.c b/mm/mempolicy.c
-index d79fa29..6795a6a 100644
+index 6795a6a..c337bd7 100644
 --- a/mm/mempolicy.c
 +++ b/mm/mempolicy.c
-@@ -2094,16 +2094,16 @@ bool init_nodemask_of_mempolicy(nodemask_t *mask)
- #endif
- 
- /*
-- * mempolicy_nodemask_intersects
-+ * mempolicy_in_oom_domain
-  *
-- * If tsk's mempolicy is "default" [NULL], return 'true' to indicate default
-- * policy.  Otherwise, check for intersection between mask and the policy
-- * nodemask for 'bind' or 'interleave' policy.  For 'preferred' or 'local'
-- * policy, always return true since it may allocate elsewhere on fallback.
-+ * If tsk's mempolicy is "bind", check for intersection between mask and
-+ * the policy nodemask. Otherwise, return true for all other policies
-+ * including "interleave", as a tsk with "interleave" policy may have
-+ * memory allocated from all nodes in system.
-  *
-  * Takes task_lock(tsk) to prevent freeing of its mempolicy.
+@@ -121,8 +121,7 @@ enum zone_type policy_zone = 0;
   */
--bool mempolicy_nodemask_intersects(struct task_struct *tsk,
-+bool mempolicy_in_oom_domain(struct task_struct *tsk,
- 					const nodemask_t *mask)
- {
- 	struct mempolicy *mempolicy;
-@@ -2111,29 +2111,13 @@ bool mempolicy_nodemask_intersects(struct task_struct *tsk,
+ static struct mempolicy default_policy = {
+ 	.refcnt = ATOMIC_INIT(1), /* never free it */
+-	.mode = MPOL_PREFERRED,
+-	.flags = MPOL_F_LOCAL,
++	.mode = MPOL_LOCAL,
+ };
  
- 	if (!mask)
- 		return ret;
+ static struct mempolicy preferred_node_policy[MAX_NUMNODES];
+@@ -200,12 +199,9 @@ static int mpol_new_interleave(struct mempolicy *pol, const nodemask_t *nodes)
+ 
+ static int mpol_new_preferred(struct mempolicy *pol, const nodemask_t *nodes)
+ {
+-	if (!nodes)
+-		pol->flags |= MPOL_F_LOCAL;	/* local allocation */
+-	else if (nodes_empty(*nodes))
+-		return -EINVAL;			/*  no allowed nodes */
+-	else
+-		pol->v.preferred_node = first_node(*nodes);
++	if (nodes_empty(*nodes))
++		return -EINVAL;
++	pol->v.preferred_node = first_node(*nodes);
+ 	return 0;
+ }
+ 
+@@ -217,6 +213,11 @@ static int mpol_new_bind(struct mempolicy *pol, const nodemask_t *nodes)
+ 	return 0;
+ }
+ 
++static int mpol_new_local(struct mempolicy *pol, const nodemask_t *nodes)
++{
++	return 0;
++}
 +
- 	task_lock(tsk);
- 	mempolicy = tsk->mempolicy;
--	if (!mempolicy)
--		goto out;
--
--	switch (mempolicy->mode) {
--	case MPOL_PREFERRED:
--		/*
--		 * MPOL_PREFERRED and MPOL_F_LOCAL are only preferred nodes to
--		 * allocate from, they may fallback to other nodes when oom.
--		 * Thus, it's possible for tsk to have allocated memory from
--		 * nodes in mask.
--		 */
--		break;
--	case MPOL_BIND:
--	case MPOL_INTERLEAVE:
-+	if (mempolicy && mempolicy->mode == MPOL_BIND)
- 		ret = nodes_intersects(mempolicy->v.nodes, *mask);
--		break;
--	default:
--		BUG();
+ /*
+  * mpol_set_nodemask is called after mpol_new() to set up the nodemask, if
+  * any, for the new policy.  mpol_new() has already validated the nodes
+@@ -239,25 +240,19 @@ static int mpol_set_nodemask(struct mempolicy *pol,
+ 		  cpuset_current_mems_allowed, node_states[N_MEMORY]);
+ 
+ 	VM_BUG_ON(!nodes);
+-	if (pol->mode == MPOL_PREFERRED && nodes_empty(*nodes))
+-		nodes = NULL;	/* explicit local allocation */
+-	else {
+-		if (pol->flags & MPOL_F_RELATIVE_NODES)
+-			mpol_relative_nodemask(&nsc->mask2, nodes, &nsc->mask1);
+-		else
+-			nodes_and(nsc->mask2, *nodes, nsc->mask1);
+ 
+-		if (mpol_store_user_nodemask(pol))
+-			pol->w.user_nodemask = *nodes;
+-		else
+-			pol->w.cpuset_mems_allowed =
+-						cpuset_current_mems_allowed;
 -	}
--out:
- 	task_unlock(tsk);
++	if (pol->flags & MPOL_F_RELATIVE_NODES)
++		mpol_relative_nodemask(&nsc->mask2, nodes, &nsc->mask1);
++	else
++		nodes_and(nsc->mask2, *nodes, nsc->mask1);
+ 
+-	if (nodes)
+-		ret = mpol_ops[pol->mode].create(pol, &nsc->mask2);
++	if (mpol_store_user_nodemask(pol))
++		pol->w.user_nodemask = *nodes;
+ 	else
+-		ret = mpol_ops[pol->mode].create(pol, NULL);
++		pol->w.cpuset_mems_allowed =
++					cpuset_current_mems_allowed;
 +
++	ret = mpol_ops[pol->mode].create(pol, &nsc->mask2);
  	return ret;
  }
  
-diff --git a/mm/oom_kill.c b/mm/oom_kill.c
-index eefd3f5..fcc29e9 100644
---- a/mm/oom_kill.c
-+++ b/mm/oom_kill.c
-@@ -104,7 +104,7 @@ static bool oom_cpuset_eligible(struct task_struct *start,
- 			 * mempolicy intersects current, otherwise it may be
- 			 * needlessly killed.
- 			 */
--			ret = mempolicy_nodemask_intersects(tsk, mask);
-+			ret = mempolicy_in_oom_domain(tsk, mask);
- 		} else {
- 			/*
- 			 * This is not a mempolicy constrained oom, so only
+@@ -290,13 +285,14 @@ static struct mempolicy *mpol_new(unsigned short mode, unsigned short flags,
+ 			if (((flags & MPOL_F_STATIC_NODES) ||
+ 			     (flags & MPOL_F_RELATIVE_NODES)))
+ 				return ERR_PTR(-EINVAL);
++
++			mode = MPOL_LOCAL;
+ 		}
+ 	} else if (mode == MPOL_LOCAL) {
+ 		if (!nodes_empty(*nodes) ||
+ 		    (flags & MPOL_F_STATIC_NODES) ||
+ 		    (flags & MPOL_F_RELATIVE_NODES))
+ 			return ERR_PTR(-EINVAL);
+-		mode = MPOL_PREFERRED;
+ 	} else if (nodes_empty(*nodes))
+ 		return ERR_PTR(-EINVAL);
+ 	policy = kmem_cache_alloc(policy_cache, GFP_KERNEL);
+@@ -344,25 +340,7 @@ static void mpol_rebind_nodemask(struct mempolicy *pol, const nodemask_t *nodes)
+ static void mpol_rebind_preferred(struct mempolicy *pol,
+ 						const nodemask_t *nodes)
+ {
+-	nodemask_t tmp;
+-
+-	if (pol->flags & MPOL_F_STATIC_NODES) {
+-		int node = first_node(pol->w.user_nodemask);
+-
+-		if (node_isset(node, *nodes)) {
+-			pol->v.preferred_node = node;
+-			pol->flags &= ~MPOL_F_LOCAL;
+-		} else
+-			pol->flags |= MPOL_F_LOCAL;
+-	} else if (pol->flags & MPOL_F_RELATIVE_NODES) {
+-		mpol_relative_nodemask(&tmp, &pol->w.user_nodemask, nodes);
+-		pol->v.preferred_node = first_node(tmp);
+-	} else if (!(pol->flags & MPOL_F_LOCAL)) {
+-		pol->v.preferred_node = node_remap(pol->v.preferred_node,
+-						   pol->w.cpuset_mems_allowed,
+-						   *nodes);
+-		pol->w.cpuset_mems_allowed = *nodes;
+-	}
++	pol->w.cpuset_mems_allowed = *nodes;
+ }
+ 
+ /*
+@@ -376,7 +354,7 @@ static void mpol_rebind_policy(struct mempolicy *pol, const nodemask_t *newmask)
+ {
+ 	if (!pol)
+ 		return;
+-	if (!mpol_store_user_nodemask(pol) && !(pol->flags & MPOL_F_LOCAL) &&
++	if (!mpol_store_user_nodemask(pol) &&
+ 	    nodes_equal(pol->w.cpuset_mems_allowed, *newmask))
+ 		return;
+ 
+@@ -427,6 +405,10 @@ static const struct mempolicy_operations mpol_ops[MPOL_MAX] = {
+ 		.create = mpol_new_bind,
+ 		.rebind = mpol_rebind_nodemask,
+ 	},
++	[MPOL_LOCAL] = {
++		.create = mpol_new_local,
++		.rebind = mpol_rebind_default,
++	},
+ };
+ 
+ static int migrate_page_add(struct page *page, struct list_head *pagelist,
+@@ -919,10 +901,12 @@ static void get_policy_nodemask(struct mempolicy *p, nodemask_t *nodes)
+ 	case MPOL_INTERLEAVE:
+ 		*nodes = p->v.nodes;
+ 		break;
++	case MPOL_LOCAL:
++		/* return empty node mask for local allocation */
++		break;
++
+ 	case MPOL_PREFERRED:
+-		if (!(p->flags & MPOL_F_LOCAL))
+-			node_set(p->v.preferred_node, *nodes);
+-		/* else return empty node mask for local allocation */
++		node_set(p->v.preferred_node, *nodes);
+ 		break;
+ 	default:
+ 		BUG();
+@@ -1894,9 +1878,9 @@ nodemask_t *policy_nodemask(gfp_t gfp, struct mempolicy *policy)
+ /* Return the node id preferred by the given mempolicy, or the given id */
+ static int policy_node(gfp_t gfp, struct mempolicy *policy, int nd)
+ {
+-	if (policy->mode == MPOL_PREFERRED && !(policy->flags & MPOL_F_LOCAL))
++	if (policy->mode == MPOL_PREFERRED) {
+ 		nd = policy->v.preferred_node;
+-	else {
++	} else {
+ 		/*
+ 		 * __GFP_THISNODE shouldn't even be used with the bind policy
+ 		 * because we might easily break the expectation to stay on the
+@@ -1933,14 +1917,11 @@ unsigned int mempolicy_slab_node(void)
+ 		return node;
+ 
+ 	policy = current->mempolicy;
+-	if (!policy || policy->flags & MPOL_F_LOCAL)
++	if (!policy)
+ 		return node;
+ 
+ 	switch (policy->mode) {
+ 	case MPOL_PREFERRED:
+-		/*
+-		 * handled MPOL_F_LOCAL above
+-		 */
+ 		return policy->v.preferred_node;
+ 
+ 	case MPOL_INTERLEAVE:
+@@ -1960,6 +1941,8 @@ unsigned int mempolicy_slab_node(void)
+ 							&policy->v.nodes);
+ 		return z->zone ? zone_to_nid(z->zone) : node;
+ 	}
++	case MPOL_LOCAL:
++		return node;
+ 
+ 	default:
+ 		BUG();
+@@ -2072,16 +2055,18 @@ bool init_nodemask_of_mempolicy(nodemask_t *mask)
+ 	mempolicy = current->mempolicy;
+ 	switch (mempolicy->mode) {
+ 	case MPOL_PREFERRED:
+-		if (mempolicy->flags & MPOL_F_LOCAL)
+-			nid = numa_node_id();
+-		else
+-			nid = mempolicy->v.preferred_node;
++		nid = mempolicy->v.preferred_node;
+ 		init_nodemask_of_node(mask, nid);
+ 		break;
+ 
+ 	case MPOL_BIND:
+ 	case MPOL_INTERLEAVE:
+-		*mask =  mempolicy->v.nodes;
++		*mask = mempolicy->v.nodes;
++		break;
++
++	case MPOL_LOCAL:
++		nid = numa_node_id();
++		init_nodemask_of_node(mask, nid);
+ 		break;
+ 
+ 	default:
+@@ -2188,7 +2173,7 @@ struct page *alloc_pages_vma(gfp_t gfp, int order, struct vm_area_struct *vma,
+ 		 * If the policy is interleave, or does not allow the current
+ 		 * node in its nodemask, we allocate the standard way.
+ 		 */
+-		if (pol->mode == MPOL_PREFERRED && !(pol->flags & MPOL_F_LOCAL))
++		if (pol->mode == MPOL_PREFERRED)
+ 			hpage_node = pol->v.preferred_node;
+ 
+ 		nmask = policy_nodemask(gfp, pol);
+@@ -2324,10 +2309,9 @@ bool __mpol_equal(struct mempolicy *a, struct mempolicy *b)
+ 	case MPOL_INTERLEAVE:
+ 		return !!nodes_equal(a->v.nodes, b->v.nodes);
+ 	case MPOL_PREFERRED:
+-		/* a's ->flags is the same as b's */
+-		if (a->flags & MPOL_F_LOCAL)
+-			return true;
+ 		return a->v.preferred_node == b->v.preferred_node;
++	case MPOL_LOCAL:
++		return true;
+ 	default:
+ 		BUG();
+ 		return false;
+@@ -2465,10 +2449,11 @@ int mpol_misplaced(struct page *page, struct vm_area_struct *vma, unsigned long
+ 		break;
+ 
+ 	case MPOL_PREFERRED:
+-		if (pol->flags & MPOL_F_LOCAL)
+-			polnid = numa_node_id();
+-		else
+-			polnid = pol->v.preferred_node;
++		polnid = pol->v.preferred_node;
++		break;
++
++	case MPOL_LOCAL:
++		polnid = numa_node_id();
+ 		break;
+ 
+ 	case MPOL_BIND:
+@@ -2835,9 +2820,6 @@ void numa_default_policy(void)
+  * Parse and format mempolicy from/to strings
+  */
+ 
+-/*
+- * "local" is implemented internally by MPOL_PREFERRED with MPOL_F_LOCAL flag.
+- */
+ static const char * const policy_modes[] =
+ {
+ 	[MPOL_DEFAULT]    = "default",
+@@ -2915,7 +2897,6 @@ int mpol_parse_str(char *str, struct mempolicy **mpol)
+ 		 */
+ 		if (nodelist)
+ 			goto out;
+-		mode = MPOL_PREFERRED;
+ 		break;
+ 	case MPOL_DEFAULT:
+ 		/*
+@@ -2959,7 +2940,7 @@ int mpol_parse_str(char *str, struct mempolicy **mpol)
+ 	else if (nodelist)
+ 		new->v.preferred_node = first_node(nodes);
+ 	else
+-		new->flags |= MPOL_F_LOCAL;
++		new->mode = MPOL_LOCAL;
+ 
+ 	/*
+ 	 * Save nodes for contextualization: this will be used to "clone"
+@@ -3005,12 +2986,10 @@ void mpol_to_str(char *buffer, int maxlen, struct mempolicy *pol)
+ 
+ 	switch (mode) {
+ 	case MPOL_DEFAULT:
++	case MPOL_LOCAL:
+ 		break;
+ 	case MPOL_PREFERRED:
+-		if (flags & MPOL_F_LOCAL)
+-			mode = MPOL_LOCAL;
+-		else
+-			node_set(pol->v.preferred_node, nodes);
++		node_set(pol->v.preferred_node, nodes);
+ 		break;
+ 	case MPOL_BIND:
+ 	case MPOL_INTERLEAVE:
 -- 
 2.7.4
 
