@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A1E539653A
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 18:26:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 79BA8395D1D
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 15:39:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234271AbhEaQ14 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 12:27:56 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40310 "EHLO mail.kernel.org"
+        id S232691AbhEaNl3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 09:41:29 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34112 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234224AbhEaOpI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 10:45:08 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9B83661C81;
-        Mon, 31 May 2021 13:54:59 +0000 (UTC)
+        id S232084AbhEaN20 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 09:28:26 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B791A613E4;
+        Mon, 31 May 2021 13:22:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1622469300;
-        bh=GC20++aDWXWjAwVWjhff/cyE8r7hxikoUf77SG5cBCQ=;
+        s=korg; t=1622467332;
+        bh=ywB2cFMPpqaEpnvYOs74WDZywKlF4/f8tX+kCnLOTaw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=sgRAaE0npCQxlTvZfVZU6xBtCKqaqM10HRKmgQx+NC0QJYsj6gIimC+Gcq1EtmaVj
-         hRLXVC5O+E9rjmv5JSLlwEu4v816c5DgMcCS6v4FgQrvLsX4XpXJE8glp1RGbyt6d3
-         +EdmbLk4eYobIdPurzcgNt4ihwVnc5CGPy4IxbOY=
+        b=CbimDNbma2AF+zKQMdwnaMzP3wgXg1dl4amRubchgH+Q9q4s0Tl8Wd+HBRJaI9vky
+         8lJz35e8uOmukcD8+o4hdFXatLGMnBE9DYM3pdh4oWIDw5NNj5QUy9IVCOaX54F8Kw
+         NXZ8elv/sk/hwg5cKerErY/4dbLfj91LUNhalJrI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Vladimir Oltean <vladimir.oltean@nxp.com>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 5.12 146/296] net: dsa: sja1105: add error handling in sja1105_setup()
+        stable@vger.kernel.org,
+        Mathias Nyman <mathias.nyman@linux.intel.com>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>
+Subject: [PATCH 4.19 025/116] thunderbolt: dma_port: Fix NVM read buffer bounds and offset issue
 Date:   Mon, 31 May 2021 15:13:21 +0200
-Message-Id: <20210531130708.772941823@linuxfoundation.org>
+Message-Id: <20210531130641.023278261@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210531130703.762129381@linuxfoundation.org>
-References: <20210531130703.762129381@linuxfoundation.org>
+In-Reply-To: <20210531130640.131924542@linuxfoundation.org>
+References: <20210531130640.131924542@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,67 +40,63 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Vladimir Oltean <vladimir.oltean@nxp.com>
+From: Mathias Nyman <mathias.nyman@linux.intel.com>
 
-commit cec279a898a3b004411682f212215ccaea1cd0fb upstream.
+commit b106776080a1cf953a1b2fd50cb2a995db4732be upstream.
 
-If any of sja1105_static_config_load(), sja1105_clocking_setup() or
-sja1105_devlink_setup() fails, we can't just return in the middle of
-sja1105_setup() or memory will leak. Add a cleanup path.
+Up to 64 bytes of data can be read from NVM in one go. Read address
+must be dword aligned. Data is read into a local buffer.
 
-Fixes: 0a7bdbc23d8a ("net: dsa: sja1105: move devlink param code to sja1105_devlink.c")
-Fixes: 8aa9ebccae87 ("net: dsa: Introduce driver for NXP SJA1105 5-port L2 switch")
-Signed-off-by: Vladimir Oltean <vladimir.oltean@nxp.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+If caller asks to read data starting at an unaligned address then full
+dword is anyway read from NVM into a local buffer. Data is then copied
+from the local buffer starting at the unaligned offset to the caller
+buffer.
+
+In cases where asked data length + unaligned offset is over 64 bytes
+we need to make sure we don't read past the 64 bytes in the local
+buffer when copying to caller buffer, and make sure that we don't
+skip copying unaligned offset bytes from local buffer anymore after
+the first round of 64 byte NVM data read.
+
+Fixes: 3e13676862f9 ("thunderbolt: Add support for DMA configuration based mailbox")
+Cc: stable@vger.kernel.org
+Signed-off-by: Mathias Nyman <mathias.nyman@linux.intel.com>
+Signed-off-by: Mika Westerberg <mika.westerberg@linux.intel.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/dsa/sja1105/sja1105_main.c |   17 ++++++++++++++---
- 1 file changed, 14 insertions(+), 3 deletions(-)
+ drivers/thunderbolt/dma_port.c |   11 ++++++-----
+ 1 file changed, 6 insertions(+), 5 deletions(-)
 
---- a/drivers/net/dsa/sja1105/sja1105_main.c
-+++ b/drivers/net/dsa/sja1105/sja1105_main.c
-@@ -2986,13 +2986,13 @@ static int sja1105_setup(struct dsa_swit
- 	rc = sja1105_static_config_load(priv, ports);
- 	if (rc < 0) {
- 		dev_err(ds->dev, "Failed to load static config: %d\n", rc);
--		return rc;
-+		goto out_ptp_clock_unregister;
- 	}
- 	/* Configure the CGU (PHY link modes and speeds) */
- 	rc = sja1105_clocking_setup(priv);
- 	if (rc < 0) {
- 		dev_err(ds->dev, "Failed to configure MII clocking: %d\n", rc);
--		return rc;
-+		goto out_static_config_free;
- 	}
- 	/* On SJA1105, VLAN filtering per se is always enabled in hardware.
- 	 * The only thing we can do to disable it is lie about what the 802.1Q
-@@ -3013,7 +3013,7 @@ static int sja1105_setup(struct dsa_swit
+--- a/drivers/thunderbolt/dma_port.c
++++ b/drivers/thunderbolt/dma_port.c
+@@ -367,15 +367,15 @@ int dma_port_flash_read(struct tb_dma_po
+ 			void *buf, size_t size)
+ {
+ 	unsigned int retries = DMA_PORT_RETRIES;
+-	unsigned int offset;
+-
+-	offset = address & 3;
+-	address = address & ~3;
  
- 	rc = sja1105_devlink_setup(ds);
- 	if (rc < 0)
--		return rc;
-+		goto out_static_config_free;
+ 	do {
+-		u32 nbytes = min_t(u32, size, MAIL_DATA_DWORDS * 4);
++		unsigned int offset;
++		size_t nbytes;
+ 		int ret;
  
- 	/* The DSA/switchdev model brings up switch ports in standalone mode by
- 	 * default, and that means vlan_filtering is 0 since they're not under
-@@ -3022,6 +3022,17 @@ static int sja1105_setup(struct dsa_swit
- 	rtnl_lock();
- 	rc = sja1105_setup_8021q_tagging(ds, true);
- 	rtnl_unlock();
-+	if (rc)
-+		goto out_devlink_teardown;
++		offset = address & 3;
++		nbytes = min_t(size_t, size + offset, MAIL_DATA_DWORDS * 4);
 +
-+	return 0;
-+
-+out_devlink_teardown:
-+	sja1105_devlink_teardown(ds);
-+out_ptp_clock_unregister:
-+	sja1105_ptp_clock_unregister(ds);
-+out_static_config_free:
-+	sja1105_static_config_free(&priv->static_config);
+ 		ret = dma_port_flash_read_block(dma, address, dma->buf,
+ 						ALIGN(nbytes, 4));
+ 		if (ret) {
+@@ -387,6 +387,7 @@ int dma_port_flash_read(struct tb_dma_po
+ 			return ret;
+ 		}
  
- 	return rc;
- }
++		nbytes -= offset;
+ 		memcpy(buf, dma->buf + offset, nbytes);
+ 
+ 		size -= nbytes;
 
 
