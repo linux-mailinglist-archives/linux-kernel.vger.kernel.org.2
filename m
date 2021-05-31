@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A2403963F9
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 17:40:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C57B395DF6
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 15:51:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233061AbhEaPm0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 11:42:26 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48832 "EHLO mail.kernel.org"
+        id S232615AbhEaNw1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 09:52:27 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39090 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233672AbhEaOXc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 10:23:32 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 57BC061A0F;
-        Mon, 31 May 2021 13:45:54 +0000 (UTC)
+        id S232616AbhEaNfX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 09:35:23 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id AFA7F61444;
+        Mon, 31 May 2021 13:25:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1622468754;
-        bh=HbHEhZjevRB4CeDDwC7R5m9J42CXq3lr/RUWKX8V39w=;
+        s=korg; t=1622467518;
+        bh=k5C6B80V97/999w9lzY6hsrf7kvKwJWQtz5GjPSoiEQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=bZ42hRUUkI6FZQbi14rg7WQud4XYWXFHnBNAA7wkj4ily9SdJyYBA1OcsIWbQCsXJ
-         fnrj1iE85BReIONnIlkeKYzAGeJM7nHzRJpL3FaUKjdIh+K3UJNhx7hZ4gxHsSec8y
-         2ksor1K/wcFqu++IR8aUkvHY5gFAeYbr2RBn/KL8=
+        b=ipg98l41S28DP03KsYAJBj379LkppS/QY3xUoGQCALV0gbZFInzzD2Q9zcbbwh2xh
+         cYCF9WTC0IGqETsbWcDYBK63L8GCbc1D2mr6qlGlkQMaVlrAujZre4WT3whbwmMAlF
+         iJW5vq+ysdfxIA0N1GIxbbq1VzH0ATAEwYkWfy+4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Sean Young <sean@mess.org>,
-        Mauro Carvalho Chehab <mchehab+samsung@kernel.org>,
-        Alaa Emad <alaaemadhossney.ae@gmail.com>,
+        stable@vger.kernel.org, xinhui pan <xinhui.pan@amd.com>,
+        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 114/177] media: dvb: Add check on sp8870_readreg return
+Subject: [PATCH 4.19 095/116] drm/amdgpu: Fix a use-after-free
 Date:   Mon, 31 May 2021 15:14:31 +0200
-Message-Id: <20210531130651.854461722@linuxfoundation.org>
+Message-Id: <20210531130643.355967281@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210531130647.887605866@linuxfoundation.org>
-References: <20210531130647.887605866@linuxfoundation.org>
+In-Reply-To: <20210531130640.131924542@linuxfoundation.org>
+References: <20210531130640.131924542@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,38 +41,47 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Alaa Emad <alaaemadhossney.ae@gmail.com>
+From: xinhui pan <xinhui.pan@amd.com>
 
-[ Upstream commit c6d822c56e7fd29e6fa1b1bb91b98f6a1e942b3c ]
+[ Upstream commit 1e5c37385097c35911b0f8a0c67ffd10ee1af9a2 ]
 
-The function sp8870_readreg returns a negative value when i2c_transfer
-fails so properly check for this and return the error if it happens.
+looks like we forget to set ttm->sg to NULL.
+Hit panic below
 
-Cc: Sean Young <sean@mess.org>
-Cc: Mauro Carvalho Chehab <mchehab+samsung@kernel.org>
-Signed-off-by: Alaa Emad <alaaemadhossney.ae@gmail.com>
-Link: https://lore.kernel.org/r/20210503115736.2104747-60-gregkh@linuxfoundation.org
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+[ 1235.844104] general protection fault, probably for non-canonical address 0x6b6b6b6b6b6b7b4b: 0000 [#1] SMP DEBUG_PAGEALLOC NOPTI
+[ 1235.989074] Call Trace:
+[ 1235.991751]  sg_free_table+0x17/0x20
+[ 1235.995667]  amdgpu_ttm_backend_unbind.cold+0x4d/0xf7 [amdgpu]
+[ 1236.002288]  amdgpu_ttm_backend_destroy+0x29/0x130 [amdgpu]
+[ 1236.008464]  ttm_tt_destroy+0x1e/0x30 [ttm]
+[ 1236.013066]  ttm_bo_cleanup_memtype_use+0x51/0xa0 [ttm]
+[ 1236.018783]  ttm_bo_release+0x262/0xa50 [ttm]
+[ 1236.023547]  ttm_bo_put+0x82/0xd0 [ttm]
+[ 1236.027766]  amdgpu_bo_unref+0x26/0x50 [amdgpu]
+[ 1236.032809]  amdgpu_amdkfd_gpuvm_alloc_memory_of_gpu+0x7aa/0xd90 [amdgpu]
+[ 1236.040400]  kfd_ioctl_alloc_memory_of_gpu+0xe2/0x330 [amdgpu]
+[ 1236.046912]  kfd_ioctl+0x463/0x690 [amdgpu]
+
+Signed-off-by: xinhui pan <xinhui.pan@amd.com>
+Reviewed-by: Christian König <christian.koenig@amd.com>
+Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/media/dvb-frontends/sp8870.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ drivers/gpu/drm/amd/amdgpu/amdgpu_ttm.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/media/dvb-frontends/sp8870.c b/drivers/media/dvb-frontends/sp8870.c
-index ee893a2f2261..9767159aeb9b 100644
---- a/drivers/media/dvb-frontends/sp8870.c
-+++ b/drivers/media/dvb-frontends/sp8870.c
-@@ -280,7 +280,9 @@ static int sp8870_set_frontend_parameters(struct dvb_frontend *fe)
- 	sp8870_writereg(state, 0xc05, reg0xc05);
- 
- 	// read status reg in order to clear pending irqs
--	sp8870_readreg(state, 0x200);
-+	err = sp8870_readreg(state, 0x200);
-+	if (err < 0)
-+		return err;
- 
- 	// system controller start
- 	sp8870_microcontroller_start(state);
+diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_ttm.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_ttm.c
+index 757fa486aac4..50807d621eca 100644
+--- a/drivers/gpu/drm/amd/amdgpu/amdgpu_ttm.c
++++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_ttm.c
+@@ -1277,6 +1277,7 @@ static void amdgpu_ttm_tt_unpopulate(struct ttm_tt *ttm)
+ 	if (gtt && gtt->userptr) {
+ 		amdgpu_ttm_tt_set_user_pages(ttm, NULL);
+ 		kfree(ttm->sg);
++		ttm->sg = NULL;
+ 		ttm->page_flags &= ~TTM_PAGE_FLAG_SG;
+ 		return;
+ 	}
 -- 
 2.30.2
 
