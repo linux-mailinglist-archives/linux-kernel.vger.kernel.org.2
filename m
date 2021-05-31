@@ -2,81 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 73E333955DF
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 09:17:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E8903955E5
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 09:18:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230135AbhEaHTW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 03:19:22 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:60260 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230150AbhEaHTK (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 03:19:10 -0400
-Received: from mail-wm1-f70.google.com ([209.85.128.70])
-        by youngberry.canonical.com with esmtps  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.93)
-        (envelope-from <krzysztof.kozlowski@canonical.com>)
-        id 1lncAz-00012W-9T
-        for linux-kernel@vger.kernel.org; Mon, 31 May 2021 07:17:29 +0000
-Received: by mail-wm1-f70.google.com with SMTP id w3-20020a1cf6030000b0290195fd5fd0f2so2849439wmc.4
-        for <linux-kernel@vger.kernel.org>; Mon, 31 May 2021 00:17:29 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=ZTOFo+MaUW6bLeDfHsCuxgOawe6aQHUICLT+z0be/C4=;
-        b=VWY8MdbeuS41eRr2v9cWSO+OyxT0k7MyMWzlK7O27R5wc5KPC0pj+n+7a/fcpq+Kym
-         g5o4jX0Yt+9leV0YfguMDgg+nMEtLU2zHc0QE4o/7jKKvZKvHII9cqJtD4aBGf5eGVI3
-         Q+JwrlRg5qykzggTG8N/ExHSD6kqUJaqivnSjydXak6oUc0udbLdHjzrzdYI+a/UnPOP
-         ASzq26R5sPwIxThO2kEmcsfakBYJxZm3LsLRIqA0D97AxMTx6gKVYCFEn0A2k7f7Bzhw
-         aSpYruwe5jtSH4jQZvwmpkr/TMMpDsIGInEku7tgcqvzxAX73ohEMRUR1MjaxEU4yX9b
-         qe0A==
-X-Gm-Message-State: AOAM531Zn8HMht96T/0LsZ59D3zT0gRkv1akWQNsynTPW+i6Vpd15T5e
-        bd6FBkyPNNC99AIdardgYcvxSpWwi5Y0yajGpi2ErhtF/bnD4DPtFviKv2wWGf2POzPLHj2IKON
-        x4NtUeWNx0A/hNuzGNztfiFqtSN8t9wJjJQydAV19yQ==
-X-Received: by 2002:a05:6000:110b:: with SMTP id z11mr20101320wrw.278.1622445448810;
-        Mon, 31 May 2021 00:17:28 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzyL1dPyIG3xEo8t+XluxVdxVZL6v4mAgtBCgrs0AQgTyghIEB8Z9V9txxck75EZzjFW1LA/g==
-X-Received: by 2002:a05:6000:110b:: with SMTP id z11mr20101314wrw.278.1622445448672;
-        Mon, 31 May 2021 00:17:28 -0700 (PDT)
-Received: from [192.168.1.115] (xdsl-188-155-185-9.adslplus.ch. [188.155.185.9])
-        by smtp.gmail.com with ESMTPSA id c6sm16090699wrt.20.2021.05.31.00.17.28
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 31 May 2021 00:17:28 -0700 (PDT)
-Subject: Re: [PATCH net-next] nfc: hci: Fix spelling mistakes
-To:     Zheng Yongjun <zhengyongjun3@huawei.com>, davem@davemloft.net,
-        kuba@kernel.org, netdev@vger.kernel.org,
+        id S230261AbhEaHUI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 03:20:08 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33328 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230150AbhEaHUE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 03:20:04 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 391FD61186;
+        Mon, 31 May 2021 07:18:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1622445505;
+        bh=NwKJSIDFWeCFMJuw/KCGn/ZQUFJqsq4w0+WD258Sv0Y=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Ckzb9zbO6Tc674QzI3Gv5MJM2m5giiqLZJCGwIumpgv+pEfbUjU5DJBl0njVWwIlG
+         Kz9Gja4elz+cd1Mg0kkwZAg7I81Jbu3bxE38hkBVAsXfKvRNb0/oWZNXMJYaoIQAjD
+         G9yV1ISamcEsm3JNhyBW5v2HvWJ/20JqtzQEAYeuNzbHRkmhKcQXlyQJAKQlcgzQrO
+         oNKmQy5QOY5FdQnj6uOK7yv3C5ajHpSfbAHURwuYPtLZKNQYbqIFygtHQSHwBRg+PB
+         38Cu2dJLK5jS9+ulPXO6X9ZPDVX3peWgGJKosTJx8wAHRVJYujOuSmcV5A+izxQ6Gq
+         xdwPDdcMKQfeg==
+Date:   Mon, 31 May 2021 12:48:21 +0530
+From:   Vinod Koul <vkoul@kernel.org>
+To:     Aswath Govindraju <a-govindraju@ti.com>
+Cc:     linux-can@vger.kernel.org, Marc Kleine-Budde <mkl@pengutronix.de>,
+        Wolfgang Grandegger <wg@grandegger.com>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Lokesh Vutla <lokeshvutla@ti.com>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        linux-phy@lists.infradead.org, devicetree@vger.kernel.org,
         linux-kernel@vger.kernel.org
-References: <20210531020019.2919799-1-zhengyongjun3@huawei.com>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Message-ID: <d9c68f7c-6956-48ee-97d3-5a3df93cced2@canonical.com>
-Date:   Mon, 31 May 2021 09:17:27 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+Subject: Re: [PATCH v6 1/3] phy: core: Reword the comment specifying the
+ units of max_link_rate to be Mbps
+Message-ID: <YLSNvUDJZ/v6NTuN@vkoul-mobl.Dlink>
+References: <20210510051006.11393-1-a-govindraju@ti.com>
+ <20210510051006.11393-2-a-govindraju@ti.com>
 MIME-Version: 1.0
-In-Reply-To: <20210531020019.2919799-1-zhengyongjun3@huawei.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210510051006.11393-2-a-govindraju@ti.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 31/05/2021 04:00, Zheng Yongjun wrote:
-> Fix some spelling mistakes in comments:
-> occured  ==> occurred
-> negociate  ==> negotiate
+On 10-05-21, 10:40, Aswath Govindraju wrote:
+> In some subsystems (eg. CAN, SPI), the max link rate supported can be less
+> than 1 Mbps and if the unit for max_link_rate is Mbps then it can't be
+> used. Therefore, leave the decision of units to be used, to the producer
+> and consumer.
 > 
-> Signed-off-by: Zheng Yongjun <zhengyongjun3@huawei.com>
+> Signed-off-by: Aswath Govindraju <a-govindraju@ti.com>
+> Acked-by: Marc Kleine-Budde <mkl@pengutronix.de>
 > ---
->  net/nfc/hci/command.c   | 2 +-
->  net/nfc/hci/core.c      | 2 +-
->  net/nfc/hci/llc_shdlc.c | 2 +-
->  3 files changed, 3 insertions(+), 3 deletions(-)
+>  include/linux/phy/phy.h | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
+> diff --git a/include/linux/phy/phy.h b/include/linux/phy/phy.h
+> index 0ed434d02196..f3286f4cd306 100644
+> --- a/include/linux/phy/phy.h
+> +++ b/include/linux/phy/phy.h
+> @@ -125,7 +125,7 @@ struct phy_ops {
+>  /**
+>   * struct phy_attrs - represents phy attributes
+>   * @bus_width: Data path width implemented by PHY
+> - * @max_link_rate: Maximum link rate supported by PHY (in Mbps)
+> + * @max_link_rate: Maximum link rate supported by PHY (units to be decided by producer and consumer)
 
-Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+So there are a few users of max_link_rate. It would be better that we
+document all previous users of max_link_rate that unit is in Mbps and
+then modify it here
 
-Best regards,
-Krzysztof
+-- 
+~Vinod
