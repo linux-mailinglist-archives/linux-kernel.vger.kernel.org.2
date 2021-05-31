@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A00D5396316
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 17:03:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A486395DA9
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 15:47:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232984AbhEaPFh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 11:05:37 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40496 "EHLO mail.kernel.org"
+        id S232783AbhEaNsf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 09:48:35 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39238 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232270AbhEaOH5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 10:07:57 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DFA6861962;
-        Mon, 31 May 2021 13:39:34 +0000 (UTC)
+        id S232642AbhEaNd1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 09:33:27 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5B8A76143C;
+        Mon, 31 May 2021 13:24:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1622468375;
-        bh=FbchGuyAEMtbN0+/wE1KtzCZb8uk4wJGjnk+iKF2RW0=;
+        s=korg; t=1622467477;
+        bh=qimJcXLAlvslZZS3a36NHFGUNOy7xM10vdpvTwjf1k8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=1nENtSTngr6BMGMe5V+F2o9x0g6VBABfg+4gmV3RPZ8Bfym6QKM6yxTWl17mpLrRc
-         42QCehYbufi8FWpRMY8vSS+U1HQH3OQqDpCWUNtYxD6GASTHtWaJ7Ntl3hds0VNJY8
-         oHGcfiWRxxyhhkuU517ffdy9w2YD9erjZWR/oDIA=
+        b=zvZ2DSnKwg+tvkDsAHoGq4mx0gOxJk3iT2Sp0CTgGGoJ5WLLI34dHstpl/fhghd16
+         bkK7c3UDCM4Wh4S+WG+pNEHCfJqeX2ZjPO+7EbLoga3rRrxgT1LgrkwssC71kQtcgr
+         FL9ud5Oh2UEcB1sivchHJYUT7NrZkEKbFp29IHsA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
-        Zou Wei <zou_wei@huawei.com>,
-        Georgi Djakov <djakov@kernel.org>,
+        stable@vger.kernel.org, "David S. Miller" <davem@davemloft.net>,
+        Phillip Potter <phil@philpotter.co.uk>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 192/252] interconnect: qcom: Add missing MODULE_DEVICE_TABLE
+Subject: [PATCH 4.19 081/116] isdn: mISDNinfineon: check/cleanup ioremap failure correctly in setup_io
 Date:   Mon, 31 May 2021 15:14:17 +0200
-Message-Id: <20210531130704.528644462@linuxfoundation.org>
+Message-Id: <20210531130642.909457873@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210531130657.971257589@linuxfoundation.org>
-References: <20210531130657.971257589@linuxfoundation.org>
+In-Reply-To: <20210531130640.131924542@linuxfoundation.org>
+References: <20210531130640.131924542@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,36 +40,96 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zou Wei <zou_wei@huawei.com>
+From: Phillip Potter <phil@philpotter.co.uk>
 
-[ Upstream commit 1fd86e280d8b21762901e43d42d66dbfe8b8e0d3 ]
+[ Upstream commit c446f0d4702d316e1c6bf621f70e79678d28830a ]
 
-This patch adds missing MODULE_DEVICE_TABLE definition which generates
-correct modalias for automatic loading of this driver when it is built
-as an external module.
+Move hw->cfg.mode and hw->addr.mode assignments from hw->ci->cfg_mode
+and hw->ci->addr_mode respectively, to be before the subsequent checks
+for memory IO mode (and possible ioremap calls in this case).
 
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Zou Wei <zou_wei@huawei.com>
-Link: https://lore.kernel.org/r/1620704673-104205-1-git-send-email-zou_wei@huawei.com
-Fixes: 976daac4a1c5 ("interconnect: qcom: Consolidate interconnect RPMh support")
-Signed-off-by: Georgi Djakov <djakov@kernel.org>
+Also introduce ioremap error checks at both locations. This allows
+resources to be properly freed on ioremap failure, as when the caller
+of setup_io then subsequently calls release_io via its error path,
+release_io can now correctly determine the mode as it has been set
+before the ioremap call.
+
+Finally, refactor release_io function so that it will call
+release_mem_region in the memory IO case, regardless of whether or not
+hw->cfg.p/hw->addr.p are NULL. This means resources are then properly
+released on failure.
+
+This properly implements the original reverted commit (d721fe99f6ad)
+from the University of Minnesota, whilst also implementing the ioremap
+check for the hw->ci->cfg_mode if block as well.
+
+Cc: David S. Miller <davem@davemloft.net>
+Signed-off-by: Phillip Potter <phil@philpotter.co.uk>
+Link: https://lore.kernel.org/r/20210503115736.2104747-42-gregkh@linuxfoundation.org
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/interconnect/qcom/bcm-voter.c | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/isdn/hardware/mISDN/mISDNinfineon.c | 24 ++++++++++++++-------
+ 1 file changed, 16 insertions(+), 8 deletions(-)
 
-diff --git a/drivers/interconnect/qcom/bcm-voter.c b/drivers/interconnect/qcom/bcm-voter.c
-index 7c3ef817e99c..dd0e3bd50b94 100644
---- a/drivers/interconnect/qcom/bcm-voter.c
-+++ b/drivers/interconnect/qcom/bcm-voter.c
-@@ -370,6 +370,7 @@ static const struct of_device_id bcm_voter_of_match[] = {
- 	{ .compatible = "qcom,bcm-voter" },
- 	{ }
- };
-+MODULE_DEVICE_TABLE(of, bcm_voter_of_match);
- 
- static struct platform_driver qcom_icc_bcm_voter_driver = {
- 	.probe = qcom_icc_bcm_voter_probe,
+diff --git a/drivers/isdn/hardware/mISDN/mISDNinfineon.c b/drivers/isdn/hardware/mISDN/mISDNinfineon.c
+index 3e01012be4ab..95a0d728eecc 100644
+--- a/drivers/isdn/hardware/mISDN/mISDNinfineon.c
++++ b/drivers/isdn/hardware/mISDN/mISDNinfineon.c
+@@ -645,17 +645,19 @@ static void
+ release_io(struct inf_hw *hw)
+ {
+ 	if (hw->cfg.mode) {
+-		if (hw->cfg.p) {
++		if (hw->cfg.mode == AM_MEMIO) {
+ 			release_mem_region(hw->cfg.start, hw->cfg.size);
+-			iounmap(hw->cfg.p);
++			if (hw->cfg.p)
++				iounmap(hw->cfg.p);
+ 		} else
+ 			release_region(hw->cfg.start, hw->cfg.size);
+ 		hw->cfg.mode = AM_NONE;
+ 	}
+ 	if (hw->addr.mode) {
+-		if (hw->addr.p) {
++		if (hw->addr.mode == AM_MEMIO) {
+ 			release_mem_region(hw->addr.start, hw->addr.size);
+-			iounmap(hw->addr.p);
++			if (hw->addr.p)
++				iounmap(hw->addr.p);
+ 		} else
+ 			release_region(hw->addr.start, hw->addr.size);
+ 		hw->addr.mode = AM_NONE;
+@@ -685,9 +687,12 @@ setup_io(struct inf_hw *hw)
+ 				(ulong)hw->cfg.start, (ulong)hw->cfg.size);
+ 			return err;
+ 		}
+-		if (hw->ci->cfg_mode == AM_MEMIO)
+-			hw->cfg.p = ioremap(hw->cfg.start, hw->cfg.size);
+ 		hw->cfg.mode = hw->ci->cfg_mode;
++		if (hw->ci->cfg_mode == AM_MEMIO) {
++			hw->cfg.p = ioremap(hw->cfg.start, hw->cfg.size);
++			if (!hw->cfg.p)
++				return -ENOMEM;
++		}
+ 		if (debug & DEBUG_HW)
+ 			pr_notice("%s: IO cfg %lx (%lu bytes) mode%d\n",
+ 				  hw->name, (ulong)hw->cfg.start,
+@@ -712,9 +717,12 @@ setup_io(struct inf_hw *hw)
+ 				(ulong)hw->addr.start, (ulong)hw->addr.size);
+ 			return err;
+ 		}
+-		if (hw->ci->addr_mode == AM_MEMIO)
+-			hw->addr.p = ioremap(hw->addr.start, hw->addr.size);
+ 		hw->addr.mode = hw->ci->addr_mode;
++		if (hw->ci->addr_mode == AM_MEMIO) {
++			hw->addr.p = ioremap(hw->addr.start, hw->addr.size);
++			if (!hw->addr.p)
++				return -ENOMEM;
++		}
+ 		if (debug & DEBUG_HW)
+ 			pr_notice("%s: IO addr %lx (%lu bytes) mode%d\n",
+ 				  hw->name, (ulong)hw->addr.start,
 -- 
 2.30.2
 
