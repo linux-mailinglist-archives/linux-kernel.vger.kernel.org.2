@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 63B2339605D
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 16:24:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EB2AB3964C5
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 18:09:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233757AbhEaOZW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 10:25:22 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55082 "EHLO mail.kernel.org"
+        id S231691AbhEaQKj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 12:10:39 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60892 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232307AbhEaNvO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 09:51:14 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A37EB613EA;
-        Mon, 31 May 2021 13:32:17 +0000 (UTC)
+        id S233570AbhEaOhT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 10:37:19 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1BF6A61186;
+        Mon, 31 May 2021 13:51:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1622467938;
-        bh=JZciasEvEPmMhPJ2Yltw5AYj7KSxC5rV+XIOgYsS43U=;
+        s=korg; t=1622469094;
+        bh=jpVMtKXl1RTVWB0Fw22VVI7MVcQq0LTzIpG/V2Ew1vk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=yx1aN+ECmWH84CDjMx3R4Ke2eMuzkYSrLThSeM5UyPAidaBVsAXUGHGt196NVtdyp
-         87/ZLETbAIxpEHFnvdPKVN7ER1TRPbHPqON9v6e5aDGPStlk9klpU2jA6aOBVRdhJ1
-         b39Rc2N5FmTg0eeSLds+ckx5jpuSX3ly7t11BAT0=
+        b=QPmF1XPRJk3FeAQlRJgiU8Ufbdj342qNkfW+FHgikbODGKifGsRiVRVlB6JTERvfA
+         /JpxmKkcwctjaLMlGUDfYlr6ndNIlkYmwQEhF+kVkwQu8NRvGAaP4kP0IDxaqn//kD
+         wh/YNH9Z7gZu22p/hZCZHO5C+39WwaQoVat5sW4M=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Sean Christopherson <seanjc@google.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Paolo Bonzini <pbonzini@redhat.com>
-Subject: [PATCH 5.10 057/252] KVM: X86: Fix vCPU preempted state from guests point of view
-Date:   Mon, 31 May 2021 15:12:02 +0200
-Message-Id: <20210531130659.917507144@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Mathias Nyman <mathias.nyman@linux.intel.com>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>
+Subject: [PATCH 5.12 068/296] thunderbolt: usb4: Fix NVM read buffer bounds and offset issue
+Date:   Mon, 31 May 2021 15:12:03 +0200
+Message-Id: <20210531130706.128519532@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210531130657.971257589@linuxfoundation.org>
-References: <20210531130657.971257589@linuxfoundation.org>
+In-Reply-To: <20210531130703.762129381@linuxfoundation.org>
+References: <20210531130703.762129381@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,40 +40,62 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Wanpeng Li <wanpengli@tencent.com>
+From: Mathias Nyman <mathias.nyman@linux.intel.com>
 
-commit 1eff0ada88b48e4ac1e3fe26483b3684fedecd27 upstream.
+commit 22c7a18ed5f007faccb7527bc890463763214081 upstream.
 
-Commit 66570e966dd9 (kvm: x86: only provide PV features if enabled in guest's
-CPUID) avoids to access pv tlb shootdown host side logic when this pv feature
-is not exposed to guest, however, kvm_steal_time.preempted not only leveraged
-by pv tlb shootdown logic but also mitigate the lock holder preemption issue.
->From guest's point of view, vCPU is always preempted since we lose the reset
-of kvm_steal_time.preempted before vmentry if pv tlb shootdown feature is not
-exposed. This patch fixes it by clearing kvm_steal_time.preempted before
-vmentry.
+Up to 64 bytes of data can be read from NVM in one go.
+Read address must be dword aligned. Data is read into a local buffer.
 
-Fixes: 66570e966dd9 (kvm: x86: only provide PV features if enabled in guest's CPUID)
-Reviewed-by: Sean Christopherson <seanjc@google.com>
+If caller asks to read data starting at an unaligned address then full
+dword is anyway read from NVM into a local buffer. Data is then copied
+from the local buffer starting at the unaligned offset to the caller
+buffer.
+
+In cases where asked data length + unaligned offset is over 64 bytes
+we need to make sure we don't read past the 64 bytes in the local
+buffer when copying to caller buffer, and make sure that we don't
+skip copying unaligned offset bytes from local buffer anymore after
+the first round of 64 byte NVM data read.
+
+Fixes: b04079837b20 ("thunderbolt: Add initial support for USB4")
 Cc: stable@vger.kernel.org
-Signed-off-by: Wanpeng Li <wanpengli@tencent.com>
-Message-Id: <1621339235-11131-3-git-send-email-wanpengli@tencent.com>
-Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
+Signed-off-by: Mathias Nyman <mathias.nyman@linux.intel.com>
+Signed-off-by: Mika Westerberg <mika.westerberg@linux.intel.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- arch/x86/kvm/x86.c |    2 ++
- 1 file changed, 2 insertions(+)
+ drivers/thunderbolt/usb4.c |    9 +++++----
+ 1 file changed, 5 insertions(+), 4 deletions(-)
 
---- a/arch/x86/kvm/x86.c
-+++ b/arch/x86/kvm/x86.c
-@@ -3006,6 +3006,8 @@ static void record_steal_time(struct kvm
- 				       st->preempted & KVM_VCPU_FLUSH_TLB);
- 		if (xchg(&st->preempted, 0) & KVM_VCPU_FLUSH_TLB)
- 			kvm_vcpu_flush_tlb_guest(vcpu);
-+	} else {
-+		st->preempted = 0;
- 	}
+--- a/drivers/thunderbolt/usb4.c
++++ b/drivers/thunderbolt/usb4.c
+@@ -68,15 +68,15 @@ static int usb4_do_read_data(u16 address
+ 	unsigned int retries = USB4_DATA_RETRIES;
+ 	unsigned int offset;
  
- 	vcpu->arch.st.preempted = 0;
+-	offset = address & 3;
+-	address = address & ~3;
+-
+ 	do {
+-		size_t nbytes = min_t(size_t, size, USB4_DATA_DWORDS * 4);
+ 		unsigned int dwaddress, dwords;
+ 		u8 data[USB4_DATA_DWORDS * 4];
++		size_t nbytes;
+ 		int ret;
+ 
++		offset = address & 3;
++		nbytes = min_t(size_t, size + offset, USB4_DATA_DWORDS * 4);
++
+ 		dwaddress = address / 4;
+ 		dwords = ALIGN(nbytes, 4) / 4;
+ 
+@@ -87,6 +87,7 @@ static int usb4_do_read_data(u16 address
+ 			return ret;
+ 		}
+ 
++		nbytes -= offset;
+ 		memcpy(buf, data + offset, nbytes);
+ 
+ 		size -= nbytes;
 
 
