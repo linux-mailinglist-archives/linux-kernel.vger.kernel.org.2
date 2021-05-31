@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EF15A395EF1
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 16:04:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A2403963F9
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 17:40:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232536AbhEaOFm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 10:05:42 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44426 "EHLO mail.kernel.org"
+        id S233061AbhEaPm0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 11:42:26 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48832 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231899AbhEaNlt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 09:41:49 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C517D61376;
-        Mon, 31 May 2021 13:28:14 +0000 (UTC)
+        id S233672AbhEaOXc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 10:23:32 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 57BC061A0F;
+        Mon, 31 May 2021 13:45:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1622467695;
-        bh=LSLv/cJ9GS5P3FoW2ST1fAGpkDOzWEU4nAYcEnOYDJw=;
+        s=korg; t=1622468754;
+        bh=HbHEhZjevRB4CeDDwC7R5m9J42CXq3lr/RUWKX8V39w=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=zcihPXPwhZGzFU1uETAZNSl5I+U0nlDDHIEWOa3QboWjw6BSLbpzi6swaC1fGKBo5
-         I8w+odNRqRv7JyVYQm7Nw4KSkO/iilPPXpPBJjkc0gUD6cgq2fkKt3K1p1KtqxQY6n
-         ryvBnUZjBcK0DU3AzHZFPqngs+2mFD6i6uFnPs/Y=
+        b=bZ42hRUUkI6FZQbi14rg7WQud4XYWXFHnBNAA7wkj4ily9SdJyYBA1OcsIWbQCsXJ
+         fnrj1iE85BReIONnIlkeKYzAGeJM7nHzRJpL3FaUKjdIh+K3UJNhx7hZ4gxHsSec8y
+         2ksor1K/wcFqu++IR8aUkvHY5gFAeYbr2RBn/KL8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jiri Slaby <jirislaby@kernel.org>,
-        Atul Gopinathan <atulgopinathan@gmail.com>,
+        stable@vger.kernel.org, Sean Young <sean@mess.org>,
+        Mauro Carvalho Chehab <mchehab+samsung@kernel.org>,
+        Alaa Emad <alaaemadhossney.ae@gmail.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 46/79] serial: max310x: unregister uart driver in case of failure and abort
+Subject: [PATCH 5.4 114/177] media: dvb: Add check on sp8870_readreg return
 Date:   Mon, 31 May 2021 15:14:31 +0200
-Message-Id: <20210531130637.487651699@linuxfoundation.org>
+Message-Id: <20210531130651.854461722@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210531130636.002722319@linuxfoundation.org>
-References: <20210531130636.002722319@linuxfoundation.org>
+In-Reply-To: <20210531130647.887605866@linuxfoundation.org>
+References: <20210531130647.887605866@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,47 +41,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Atul Gopinathan <atulgopinathan@gmail.com>
+From: Alaa Emad <alaaemadhossney.ae@gmail.com>
 
-[ Upstream commit 3890e3dea315f1a257d1b940a2a4e2fa16a7b095 ]
+[ Upstream commit c6d822c56e7fd29e6fa1b1bb91b98f6a1e942b3c ]
 
-The macro "spi_register_driver" invokes the function
-"__spi_register_driver()" which has a return type of int and can fail,
-returning a negative value in such a case. This is currently ignored and
-the init() function yields success even if the spi driver failed to
-register.
+The function sp8870_readreg returns a negative value when i2c_transfer
+fails so properly check for this and return the error if it happens.
 
-Fix this by collecting the return value of "__spi_register_driver()" and
-also unregister the uart driver in case of failure.
-
-Cc: Jiri Slaby <jirislaby@kernel.org>
-Signed-off-by: Atul Gopinathan <atulgopinathan@gmail.com>
-Link: https://lore.kernel.org/r/20210503115736.2104747-12-gregkh@linuxfoundation.org
+Cc: Sean Young <sean@mess.org>
+Cc: Mauro Carvalho Chehab <mchehab+samsung@kernel.org>
+Signed-off-by: Alaa Emad <alaaemadhossney.ae@gmail.com>
+Link: https://lore.kernel.org/r/20210503115736.2104747-60-gregkh@linuxfoundation.org
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/tty/serial/max310x.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+ drivers/media/dvb-frontends/sp8870.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/tty/serial/max310x.c b/drivers/tty/serial/max310x.c
-index cec995ec11ea..454659544d35 100644
---- a/drivers/tty/serial/max310x.c
-+++ b/drivers/tty/serial/max310x.c
-@@ -1385,10 +1385,12 @@ static int __init max310x_uart_init(void)
- 		return ret;
+diff --git a/drivers/media/dvb-frontends/sp8870.c b/drivers/media/dvb-frontends/sp8870.c
+index ee893a2f2261..9767159aeb9b 100644
+--- a/drivers/media/dvb-frontends/sp8870.c
++++ b/drivers/media/dvb-frontends/sp8870.c
+@@ -280,7 +280,9 @@ static int sp8870_set_frontend_parameters(struct dvb_frontend *fe)
+ 	sp8870_writereg(state, 0xc05, reg0xc05);
  
- #ifdef CONFIG_SPI_MASTER
--	spi_register_driver(&max310x_spi_driver);
-+	ret = spi_register_driver(&max310x_spi_driver);
-+	if (ret)
-+		uart_unregister_driver(&max310x_uart);
- #endif
+ 	// read status reg in order to clear pending irqs
+-	sp8870_readreg(state, 0x200);
++	err = sp8870_readreg(state, 0x200);
++	if (err < 0)
++		return err;
  
--	return 0;
-+	return ret;
- }
- module_init(max310x_uart_init);
- 
+ 	// system controller start
+ 	sp8870_microcontroller_start(state);
 -- 
 2.30.2
 
