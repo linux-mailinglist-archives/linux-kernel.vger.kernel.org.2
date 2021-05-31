@@ -2,180 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A8290395718
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 10:37:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B17E39571E
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 10:38:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230434AbhEaIir (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 04:38:47 -0400
-Received: from polaris.svanheule.net ([84.16.241.116]:38734 "EHLO
-        polaris.svanheule.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230104AbhEaIio (ORCPT
+        id S230454AbhEaIkG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 04:40:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49714 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230107AbhEaIj4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 04:38:44 -0400
-Received: from [IPv6:2a02:a03f:eafb:ee01:86ad:a53c:2e83:dd76] (unknown [IPv6:2a02:a03f:eafb:ee01:86ad:a53c:2e83:dd76])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: sander@svanheule.net)
-        by polaris.svanheule.net (Postfix) with ESMTPSA id 69DDE20696F;
-        Mon, 31 May 2021 10:37:03 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=svanheule.net;
-        s=mail1707; t=1622450223;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=H7bXaXzTufSRFfxWUvO7ry3UIASmwiRtwvmBtSgo9K4=;
-        b=iOBexC/fyJn6nng96QGgGYpR+llCD62GMRdMn9nNlZDgjGfhAW0kdyrge0BggBFvuTA/Yd
-        6unBlodbmGInrT39H3VIzxgQK3nmEAa5jj3BGmrZi8GMMTvHF9SNJ6lf6LTAGrouOyXK1k
-        ab4aIqXDI34n6vYHOXJZG7jbVxA+MmPjv8vBYgTZVPY8DnIjz6PcCFZGgL/LOw9CbkodL4
-        UO/fyh+eFRY77Ru7Yt3IjesnNEb6Y0kzEjmYlYnknRv5H1xVCA5Dlxi6yUV6msQTxgfdB/
-        +VFas6aeqmfwyOYTZ9V3HP/ZRZ+T+s19C/dBTYNWr5IQ/Phs43rQKz08U9hmBw==
-Message-ID: <7a9978881e9ec5d4b811fa6e5d355fb6bce6f6d8.camel@svanheule.net>
-Subject: Re: [PATCH v3 0/6] RTL8231 GPIO expander support
-From:   Sander Vanheule <sander@svanheule.net>
-To:     Michael Walle <michael@walle.cc>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     Hans de Goede <hdegoede@redhat.com>, Andrew Lunn <andrew@lunn.ch>,
-        Pavel Machek <pavel@ucw.cz>, Rob Herring <robh+dt@kernel.org>,
-        Lee Jones <lee.jones@linaro.org>,
-        Mark Brown <broonie@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J . Wysocki" <rafael@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Linux LED Subsystem <linux-leds@vger.kernel.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Date:   Mon, 31 May 2021 10:36:59 +0200
-In-Reply-To: <c7239e0cbbc9748925410937a914bd8a@walle.cc>
-References: <cover.1620735871.git.sander@svanheule.net>
-         <cover.1621809029.git.sander@svanheule.net> <YKr9G3EfrM34gCsL@lunn.ch>
-         <CAHp75VewCw8ES_9S48qmeCtSXMkGWt0s4iub0Fu4ZuwWANHpaQ@mail.gmail.com>
-         <02bbf73ea8a14119247f07a677993aad2f45b088.camel@svanheule.net>
-         <f03d5cdc958110fc7d95cfc4258dac4e@walle.cc>
-         <84352c93f27d7c8b7afea54f3932020e9cd97d02.camel@svanheule.net>
-         <a644b8fa-c90a-eab6-9cca-08344abec532@redhat.com>
-         <CAHp75VcFmU4rJ6jL204xGFM=s2LV=KQmsV8E75BpuSAZMXBn0w@mail.gmail.com>
-         <c7239e0cbbc9748925410937a914bd8a@walle.cc>
+        Mon, 31 May 2021 04:39:56 -0400
+Received: from mail-qv1-xf49.google.com (mail-qv1-xf49.google.com [IPv6:2607:f8b0:4864:20::f49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33C35C061574
+        for <linux-kernel@vger.kernel.org>; Mon, 31 May 2021 01:38:17 -0700 (PDT)
+Received: by mail-qv1-xf49.google.com with SMTP id n12-20020a0c8c0c0000b02901edb8963d4dso8474850qvb.18
+        for <linux-kernel@vger.kernel.org>; Mon, 31 May 2021 01:38:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=tjbMdWg4PO8/eooobp10b8z1ZpbzFZFdpuK8M8h0fLo=;
+        b=tDvDLZe5WhMR+9XN/fr/hQFwABYjIvNU2JvatJfqPzN09JN5eP5aMIpPZaEeJZUxZY
+         iLgzoLZyhlaX1/9fSyOy/Y/IGjWO7AKtEUHMU8Ws5NDka2dncaU9hI20X/nOxaDWnXKV
+         sKMKz51/ZuKer9sdM44wJWpTx7JBx6/Cm0GHRTSUY4VDDtQQ4GY5azSu4nZ16QZI4r5a
+         YDifmvyjaBsxo93NaVvDnLcd+wlVfR/Wm/5wyb7bW6YCERNi9x5xVkpecboEJqnJSzzc
+         u8ugRJNiUCcDoMn2h/zDs57lrS8JkgZhTQzGud5zBjzcJ44xPj5OcjR068vsXi8KToE3
+         cPjw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=tjbMdWg4PO8/eooobp10b8z1ZpbzFZFdpuK8M8h0fLo=;
+        b=qKvT0U9Mm8p61AxCL4OSa6HP3KS9rkC8vEm/3RFn+Bn60+fBrMeEPmuK/PrUynVcbG
+         c8YgNgdGFKjP/EusDIbxRfM7JAJcc8EcWcFf/5Ltr3UZEvX34FUe/83L9S0fWDALuLMh
+         wzn2fTiQvw855sjMyMvei4eK1hAkI61vvoAJ87ounaD3DPV2r+3p/7PLH9RwbfEnNbtm
+         2a3lAQUg2Klx5R6WjyS+O3JDlODBvLGfYfQM/gXg4zxRCDXgYXrO6OE1dth2vO5BKMUv
+         SkSLTUJZrlyyMS4v9eVaYYVhf6ZCyYoOV2ZHtquVYw2WNfJL0oPK7qWgzGI0gdN2ZukP
+         dyoA==
+X-Gm-Message-State: AOAM530197PBHHyhd1Davr+n5qZWLyj3LUIN8NOMluI8vrX+RITNHr8g
+        B+XtI90oD8TERBTGsKz2xK7zhgP33LPu
+X-Google-Smtp-Source: ABdhPJyZcRoSDWVH/ygFRbiMzdMkaOGR+gYo0Zl1J7DcUhFoU2h2bta9jDlzmoiu76s2GQUJ+4RIKL/jyly9
+X-Received: from apusaka-p920.tpe.corp.google.com ([2401:fa00:1:b:a6d1:a727:b17d:154e])
+ (user=apusaka job=sendgmr) by 2002:a05:6214:246a:: with SMTP id
+ im10mr15568895qvb.2.1622450296211; Mon, 31 May 2021 01:38:16 -0700 (PDT)
+Date:   Mon, 31 May 2021 16:37:19 +0800
+Message-Id: <20210531083726.1949001-1-apusaka@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.32.0.rc0.204.g9fa02ecfa5-goog
+Subject: [PATCH v2 0/8] Bluetooth: use inclusive language
+From:   Archie Pusaka <apusaka@google.com>
+To:     linux-bluetooth <linux-bluetooth@vger.kernel.org>,
+        Marcel Holtmann <marcel@holtmann.org>
+Cc:     CrosBT Upstreaming <chromeos-bluetooth-upstreaming@chromium.org>,
+        Archie Pusaka <apusaka@chromium.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Johan Hedberg <johan.hedberg@gmail.com>,
+        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
+        Miao-chen Chou <mcchou@chromium.org>,
+        "=?UTF-8?q?Ole=20Bj=C3=B8rn=20Midtb=C3=B8?=" <omidtbo@cisco.com>,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.38.4 (3.38.4-1.fc33) 
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 2021-05-30 at 23:22 +0200, Michael Walle wrote:
-> Am 2021-05-30 20:16, schrieb Andy Shevchenko:
-> > On Sun, May 30, 2021 at 7:51 PM Hans de Goede <hdegoede@redhat.com> 
-> > wrote:
-> > > On 5/30/21 6:19 PM, Sander Vanheule wrote:
-> > > > As Michael suggested, I tried raw register reads and writes, to eliminate
-> > > > any
-> > > > side effects of the intermediate code. I didn't use the ioctls (this isn't
-> > > > a
-> > > > netdev), but I found regmap's debugfs write functionality, which allowed
-> > > > me to
-> > > > do the same.
-> > > > 
-> > > > I was trying to reproduce the behaviour I reported earlier, but couldn't.
-> > > > The
-> > > > output levels were always the intended ones. At some point I realised that
-> > > > the
-> > > > regmap_update_bits function does a read-modify-write, which might shadow
-> > > > the
-> > > > actual current output value.
-> > > > For example:
-> > > >  * Set output low: current out is low
-> > > >  * Change to input with pull-up: current out is still low, but DATAx reads
-> > > > high
-> > > >  * Set output high: RMW reads a high value (the input), so assumes a write
-> > > > is
-> > > >    not necessary, leaving the old output value (low).
-> > > > 
-> > > > Currently, I see two options:
-> > > >  * Use regmap_update_bits_base to avoid the lazy RMW behaviour
-> > > >  * Add a cache for the output data values to the driver, and only use
-> > > > these
-> > > >    values to write to the output registers. This would allow keeping lazy
-> > > > RMW
-> > > >    behaviour, which may be a benefit on slow busses.
-> > > > 
-> > > > With either of these implemented, if I set the output value before the
-> > > > direction, everything works! :-)
-> > > > 
-> > > > Would you like this to be added to regmap-gpio, or should I revert back to
-> > > > a
-> > > > device-specific implementation?
-> > > 
-> > > Regmap allows you to mark certain ranges as volatile, so that they 
-> > > will not
-> > > be cached, these GPIO registers containing the current pin value seems 
-> > > like
-> > > a good candidate for this. This is also necessary to make reading the 
-> > > GPIO
-> > > work without getting back a stale, cached value.
-> > 
-> > After all it seems a simple missed proper register configuration in
-> > the driver for regmap.
-> > Oh, as usual something easy-to-solve requires tons of time to find it. 
-> > :-)
-> > 
-> > Sander, I think you may look at gpio-pca953x.c to understand how it
-> > works (volatility of registers).
-> 
-> But as far as I see is the regmap instantiated without a cache?
+From: Archie Pusaka <apusaka@chromium.org>
 
-That's correct, there currently is no cache, although I could add one.
+Hi linux-bluetooth maintainers,
 
-The data register rather appears to be implemented as a read-only (pin inputs)
-register and a write-only (pin outputs) register, aliased on the same register
-address.
+This series contains inclusive language patches, to promote usage of
+central, peripheral, reject list, and accept list. I tried to divide
+the change to several smaller patches to ease downstreamers to make
+gradual change.
 
-As I understand, marking the DATA registers as volatile wouldn't help. With a
-cache this would force reads to not use the cache, which is indeed required for
-the pin input values (DATA register reads). However, the output values (DATA
-register writes) can in fact be cached.
-Looking at _regmap_update_bits(), marking a register as volatile would only make
-a difference if regmap.reg_update_bits is implemented. On an MDIO bus, this
-would also be emulated with a lazy RMW (see mdiobus_modify()), which is why I
-chose not to implement it for regmap-mdio.
+There are still some occurences in debugfs in which the
+original less inclusive terms is still left as-is since it is a
+file name, and I afraid replacing them will cause instability to
+other systems depending on that file name.
 
-So, I still think the issue lies with the lazy RMW behaviour. The patch below
-would force a register update when reg_set_base (the data output register) and
-reg_dat_base (the data input register) are identical. Otherwise the two
-registers are assumed to have conventional RW behaviour. I'm just not entirely
-sure gpio-regmap.c is the right place for this.
+Changes in v2:
+* Add details in commit message
+* SMP: Use initiator/responder instead of central/peripheral
+* reject/accept list: Was actually two patches, squashed together
+* Drop patches in L2CAP, RFCOMM, and debugfs
 
----8<---
+Archie Pusaka (8):
+  Bluetooth: use inclusive language in HCI role
+  Bluetooth: use inclusive language in hci_core.h
+  Bluetooth: use inclusive language to describe CPB
+  Bluetooth: use inclusive language in HCI LE features
+  Bluetooth: use inclusive language when tracking connections
+  Bluetooth: use inclusive language in SMP
+  Bluetooth: use inclusive language when filtering devices
+  Bluetooth: use inclusive language in comments
 
-diff --git a/drivers/gpio/gpio-regmap.c b/drivers/gpio/gpio-regmap.c
-index 95553734e169..c2fccd19548a 100644
---- a/drivers/gpio/gpio-regmap.c
-+++ b/drivers/gpio/gpio-regmap.c
-@@ -81,13 +81,16 @@ static void gpio_regmap_set(struct gpio_chip *chip, unsigned
-int offset,
- {
-        struct gpio_regmap *gpio = gpiochip_get_data(chip);
-        unsigned int base = gpio_regmap_addr(gpio->reg_set_base);
-+       bool force = gpio->reg_set_base == gpio->reg_dat_base;
-        unsigned int reg, mask;
- 
-        gpio->reg_mask_xlate(gpio, base, offset, &reg, &mask);
-        if (val)
--               regmap_update_bits(gpio->regmap, reg, mask, mask);
-+               regmap_update_bits_base(gpio->regmap, reg, mask, mask, NULL,
-+                                       false, force);
-        else
--               regmap_update_bits(gpio->regmap, reg, mask, 0);
-+               regmap_update_bits_base(gpio->regmap, reg, mask, 0, NULL,
-+                                       false, force);
- }
- 
- static void gpio_regmap_set_with_clear(struct gpio_chip *chip,
+ include/net/bluetooth/hci.h      |  98 +++++++++++++-------------
+ include/net/bluetooth/hci_core.h |  22 +++---
+ include/net/bluetooth/mgmt.h     |   2 +-
+ net/bluetooth/amp.c              |   2 +-
+ net/bluetooth/hci_conn.c         |  32 ++++-----
+ net/bluetooth/hci_core.c         |  46 ++++++-------
+ net/bluetooth/hci_debugfs.c      |   8 +--
+ net/bluetooth/hci_event.c        | 114 +++++++++++++++----------------
+ net/bluetooth/hci_request.c      | 106 ++++++++++++++--------------
+ net/bluetooth/hci_sock.c         |  12 ++--
+ net/bluetooth/hidp/core.c        |   2 +-
+ net/bluetooth/l2cap_core.c       |  16 ++---
+ net/bluetooth/mgmt.c             |  36 +++++-----
+ net/bluetooth/smp.c              |  86 +++++++++++------------
+ net/bluetooth/smp.h              |   6 +-
+ 15 files changed, 297 insertions(+), 291 deletions(-)
 
---
-Best,
-Sander
+-- 
+2.32.0.rc0.204.g9fa02ecfa5-goog
 
