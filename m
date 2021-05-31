@@ -2,37 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B197F3963D9
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 17:35:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 51C64395DC0
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 15:49:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233929AbhEaPgj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 11:36:39 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48834 "EHLO mail.kernel.org"
+        id S231991AbhEaNuw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 09:50:52 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38922 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233857AbhEaOVb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 10:21:31 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4A80C619C0;
-        Mon, 31 May 2021 13:44:50 +0000 (UTC)
+        id S232585AbhEaNdK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 09:33:10 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 644A5613B9;
+        Mon, 31 May 2021 13:24:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1622468690;
-        bh=zrSSD5pNPwNmFPdwAPPZmx+5i/cwBL/iK4acZnwDC+o=;
+        s=korg; t=1622467454;
+        bh=G9Djgm5+D9+1oVWiiL+Z96/5chrPLDcwDNTHkHXHhyk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=LIJLzyIm6RcJU803qeKdGnVqAfrIxmzcNhMUae/BqLnHxNUKekCLhwbjOYtzp79SH
-         415QygyoZxL7FISEaka0M0n93NfayqBY9JVIQr/2sOERvLpEOMqCqEKImPOp9YLCcV
-         tv7hD6ys4HqfiAO/R20kWo8xda9TROH3XPbiUmaY=
+        b=XnKd/+LXxZj8DI+L3FimOlzhz03+vGpmQw6iyWXzmaXQHpLVa/VfM/+KReP5cJyy1
+         9rkAivQewb5PiglTuVQhOMENCWOQQbDkdoD6xGHa92XGyvczXaphKn/CrJ07kWC40Y
+         tr8IwNLqg6shQw/U4Qw5Riu8T6ZvgIVAYbbxbmOc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Linh Phung <linh.phung.jy@renesas.com>,
-        Wolfram Sang <wsa+renesas@sang-engineering.com>,
-        Ulrich Hecht <uli+renesas@fpond.eu>,
-        Geert Uytterhoeven <geert+renesas@glider.be>
-Subject: [PATCH 5.4 054/177] serial: sh-sci: Fix off-by-one error in FIFO threshold register setting
-Date:   Mon, 31 May 2021 15:13:31 +0200
-Message-Id: <20210531130649.787362966@linuxfoundation.org>
+        stable@vger.kernel.org, Zolton Jheng <s6668c2t@gmail.com>,
+        Johan Hovold <johan@kernel.org>
+Subject: [PATCH 4.19 036/116] USB: serial: pl2303: add device id for ADLINK ND-6530 GC
+Date:   Mon, 31 May 2021 15:13:32 +0200
+Message-Id: <20210531130641.385701804@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210531130647.887605866@linuxfoundation.org>
-References: <20210531130647.887605866@linuxfoundation.org>
+In-Reply-To: <20210531130640.131924542@linuxfoundation.org>
+References: <20210531130640.131924542@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,49 +39,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Geert Uytterhoeven <geert+renesas@glider.be>
+From: Zolton Jheng <s6668c2t@gmail.com>
 
-commit 2ea2e019c190ee3973ef7bcaf829d8762e56e635 upstream.
+commit f8e8c1b2f782e7391e8a1c25648ce756e2a7d481 upstream.
 
-The Receive FIFO Data Count Trigger field (RTRG[6:0]) in the Receive
-FIFO Data Count Trigger Register (HSRTRGR) of HSCIF can only hold values
-ranging from 0-127.  As the FIFO size is equal to 128 on HSCIF, the user
-can write an out-of-range value, touching reserved bits.
+This adds the device id for the ADLINK ND-6530 which is a PL2303GC based
+device.
 
-Fix this by limiting the trigger value to the FIFO size minus one.
-Reverse the order of the checks, to avoid rx_trig becoming zero if the
-FIFO size is one.
-
-Note that this change has no impact on other SCIF variants, as their
-maximum supported trigger value is lower than the FIFO size anyway, and
-the code below takes care of enforcing these limits.
-
-Fixes: a380ed461f66d1b8 ("serial: sh-sci: implement FIFO threshold register setting")
-Reported-by: Linh Phung <linh.phung.jy@renesas.com>
-Reviewed-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
-Reviewed-by: Ulrich Hecht <uli+renesas@fpond.eu>
-Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
-Cc: stable <stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/5eff320aef92ffb33d00e57979fd3603bbb4a70f.1620648218.git.geert+renesas@glider.be
+Signed-off-by: Zolton Jheng <s6668c2t@gmail.com>
+Cc: stable@vger.kernel.org
+Signed-off-by: Johan Hovold <johan@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/tty/serial/sh-sci.c |    4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/usb/serial/pl2303.c |    1 +
+ drivers/usb/serial/pl2303.h |    1 +
+ 2 files changed, 2 insertions(+)
 
---- a/drivers/tty/serial/sh-sci.c
-+++ b/drivers/tty/serial/sh-sci.c
-@@ -1026,10 +1026,10 @@ static int scif_set_rtrg(struct uart_por
- {
- 	unsigned int bits;
+--- a/drivers/usb/serial/pl2303.c
++++ b/drivers/usb/serial/pl2303.c
+@@ -107,6 +107,7 @@ static const struct usb_device_id id_tab
+ 	{ USB_DEVICE(SONY_VENDOR_ID, SONY_QN3USB_PRODUCT_ID) },
+ 	{ USB_DEVICE(SANWA_VENDOR_ID, SANWA_PRODUCT_ID) },
+ 	{ USB_DEVICE(ADLINK_VENDOR_ID, ADLINK_ND6530_PRODUCT_ID) },
++	{ USB_DEVICE(ADLINK_VENDOR_ID, ADLINK_ND6530GC_PRODUCT_ID) },
+ 	{ USB_DEVICE(SMART_VENDOR_ID, SMART_PRODUCT_ID) },
+ 	{ USB_DEVICE(AT_VENDOR_ID, AT_VTKIT3_PRODUCT_ID) },
+ 	{ }					/* Terminating entry */
+--- a/drivers/usb/serial/pl2303.h
++++ b/drivers/usb/serial/pl2303.h
+@@ -152,6 +152,7 @@
+ /* ADLINK ND-6530 RS232,RS485 and RS422 adapter */
+ #define ADLINK_VENDOR_ID		0x0b63
+ #define ADLINK_ND6530_PRODUCT_ID	0x6530
++#define ADLINK_ND6530GC_PRODUCT_ID	0x653a
  
-+	if (rx_trig >= port->fifosize)
-+		rx_trig = port->fifosize - 1;
- 	if (rx_trig < 1)
- 		rx_trig = 1;
--	if (rx_trig >= port->fifosize)
--		rx_trig = port->fifosize;
- 
- 	/* HSCIF can be set to an arbitrary level. */
- 	if (sci_getreg(port, HSRTRGR)->size) {
+ /* SMART USB Serial Adapter */
+ #define SMART_VENDOR_ID	0x0b8c
 
 
