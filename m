@@ -2,97 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7100739551A
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 07:37:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A261639551C
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 07:39:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230143AbhEaFi7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 01:38:59 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44696 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229730AbhEaFix (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 01:38:53 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9DD34611CA;
-        Mon, 31 May 2021 05:37:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1622439434;
-        bh=Xk7KB8bqBJGO9yFxA7+ENOERrjqJLV60+NJ0AYWxhSw=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=amqNNZpKIRt4Mpyn/25hKKDwTtjcJ2R0fLj6lRYntk0C71N8h0E/FKNKqlozoVR8Y
-         6OvaLqNKx11GZaR6mG8oHueSkO1zRdS2Omg6s8o3Wg6Bvl6gxK9VRBvLNDTfDsYyh5
-         Q/6w0QlusZxqo1hQx/Ub1PeXs4w8SVyZt91thd4gKahtb1xsugPzPz30ely7vrT+6C
-         5bBILWNigb3kENPKvtap5k67w4glZ+e62zQmtbIJ1tSBFFVWuhY1V5up6jpDnTX0wH
-         MASbO5U1ecVZs5DfTzZo7qUCOLXSwqmF/u7wMVDSTQj+xs+W1QCubwTDqY0LnPjWsd
-         lIJbnGsoOa7Lw==
-Date:   Mon, 31 May 2021 08:37:11 +0300
-From:   Jarkko Sakkinen <jarkko@kernel.org>
-To:     Javier Martinez Canillas <javierm@redhat.com>
-Cc:     linux-kernel@vger.kernel.org,
-        Alexander Wellbrock <a.wellbrock@mailbox.org>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Peter Huewe <peterhuewe@gmx.de>,
-        Peter Robinson <pbrobinson@gmail.com>,
-        linux-integrity@vger.kernel.org
-Subject: Re: [PATCH] tpm_tis_spi: add missing SPI device ID entries
-Message-ID: <20210531053711.hmt4xm2g726d6ime@kernel.org>
-References: <20210527152352.3835076-1-javierm@redhat.com>
+        id S229970AbhEaFkl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 01:40:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37888 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229730AbhEaFkf (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 01:40:35 -0400
+Received: from mail-ua1-x92d.google.com (mail-ua1-x92d.google.com [IPv6:2607:f8b0:4864:20::92d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD8BAC061574;
+        Sun, 30 May 2021 22:38:55 -0700 (PDT)
+Received: by mail-ua1-x92d.google.com with SMTP id n61so5989702uan.2;
+        Sun, 30 May 2021 22:38:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=HnNmmcpEGANCywXAOHjjcUJ4MN6oF/accismZD3OTBY=;
+        b=sDg+mggvypKBneaa3Jrh6Gwlmjq7O+/sgTx9+ShU59xkd38JFVUcZUHTK7IdznJa/O
+         T4wttBebcWUfBojLxSjIwj0o/xqvFZIApQZAIl0km6c8zpD1GXXbMNpmdOFYGDru2n0k
+         d4F4SfkrQjZlJB+VoldJNtCi03dzZRr5YsWcvcFV6mak3lXgOnlIQnsTGcW+0PRiJQNw
+         y5O0EaafidOdazuwmmhkblHGAQlKb1xYifEfQ8eH8Iv31D9YLqTB4Hb7Q9cKifR1Jvr7
+         J/9oi/Fnp2451KV631ZW3GZ7w98hE8V7KhPc8fN4ubxm5lYa6KyjM+WdsSSqrW7JbVdg
+         2kMw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=HnNmmcpEGANCywXAOHjjcUJ4MN6oF/accismZD3OTBY=;
+        b=aKLnQUzgE3nMp2Sfb9zdgj7Fum5omwo8GBF7pMnfdC+mZ0tHkM+C8XMZ3Es4CiM7vc
+         KLdscn12HyBTTFOimtvchjrVHvS5W1+PgK6VCaEUf9B+/aE4FrcB0Y1483FKnlgwBwpt
+         hUp/ke827YMPdZrKLweUogoVHl1w2jbhtqdy7heC8e48D4+asD8r9mBGBAyTE7UVrVW9
+         6pMmfU/ds96SaD531rjlNpBFauzJkHwdzEBkN/C2fDDd5Q1RInXnpwo4FBkmB30Z/4Lm
+         GPVNn3hV/GBGuidBgn/KrNrge/8ivnxrTR617sZtLHBZdQgkkURHBz9i8AHlJ4M9IzZ1
+         VTBQ==
+X-Gm-Message-State: AOAM533rlw9fE0+SIKh1hnz5xWE80DQ27VMyEygvb04KoN34Aplyp77W
+        qhdtFywxisWHuudMvDhWxJP7bf1i+XZblm7YMfM=
+X-Google-Smtp-Source: ABdhPJxVnhl7BbzXoHUxBwYsSTgkaTs5EoHCr/SSq7+a3HYzww0NBP4xIl/errV4WHy7xBi0YnvOFYPm/59cNixeAeg=
+X-Received: by 2002:a1f:b488:: with SMTP id d130mr11690045vkf.17.1622439533937;
+ Sun, 30 May 2021 22:38:53 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210527152352.3835076-1-javierm@redhat.com>
+References: <20210531030550.1708816-1-yangyingliang@huawei.com>
+In-Reply-To: <20210531030550.1708816-1-yangyingliang@huawei.com>
+From:   Hyunchul Lee <hyc.lee@gmail.com>
+Date:   Mon, 31 May 2021 14:38:42 +0900
+Message-ID: <CANFS6bbZysgZ2Wv7_FqmeBC0e34h5uiBLFdeiDvOxHFd2XGTSg@mail.gmail.com>
+Subject: Re: [PATCH -next v2] cifsd: check return value of ksmbd_vfs_getcasexattr()
+ correctly
+To:     Yang Yingliang <yangyingliang@huawei.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        linux-cifsd-devel <linux-cifsd-devel@lists.sourceforge.net>,
+        linux-cifs <linux-cifs@vger.kernel.org>,
+        Namjae Jeon <namjae.jeon@samsung.com>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Steve French <sfrench@samba.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 27, 2021 at 05:23:52PM +0200, Javier Martinez Canillas wrote:
-> The SPI core always reports a "MODALIAS=spi:<foo>", even if the device was
-> registered via OF. This means that this module won't auto-load if a DT has
-> for example has a node with a compatible "infineon,slb9670" string.
-> 
-> In that case kmod will expect a "MODALIAS=of:N*T*Cinfineon,slb9670" uevent
-> but instead will get a "MODALIAS=spi:slb9670", which is not present in the
-> kernel module aliases:
-> 
-> $ modinfo drivers/char/tpm/tpm_tis_spi.ko | grep alias
-> alias:          of:N*T*Cgoogle,cr50C*
-> alias:          of:N*T*Cgoogle,cr50
-> alias:          of:N*T*Ctcg,tpm_tis-spiC*
-> alias:          of:N*T*Ctcg,tpm_tis-spi
-> alias:          of:N*T*Cinfineon,slb9670C*
-> alias:          of:N*T*Cinfineon,slb9670
-> alias:          of:N*T*Cst,st33htpm-spiC*
-> alias:          of:N*T*Cst,st33htpm-spi
-> alias:          spi:cr50
-> alias:          spi:tpm_tis_spi
-> alias:          acpi*:SMO0768:*
-> 
-> To workaround this issue, add in the SPI device ID table all the entries
-> that are present in the OF device ID table.
-> 
-> Reported-by: Alexander Wellbrock <a.wellbrock@mailbox.org>
-> Signed-off-by: Javier Martinez Canillas <javierm@redhat.com>
+2021=EB=85=84 5=EC=9B=94 31=EC=9D=BC (=EC=9B=94) =EC=98=A4=ED=9B=84 12:01, =
+Yang Yingliang <yangyingliang@huawei.com>=EB=8B=98=EC=9D=B4 =EC=9E=91=EC=84=
+=B1:
+>
+> If ksmbd_vfs_getcasexattr() returns -ENOMEM, stream_buf is NULL,
+> it will cause null-ptr-deref when using it to copy memory. So we
+> need check the return value of ksmbd_vfs_getcasexattr() by comparing
+> with 0.
+>
+> Fixes: f44158485826 ("cifsd: add file operations")
+> Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
 > ---
-> 
->  drivers/char/tpm/tpm_tis_spi_main.c | 2 ++
->  1 file changed, 2 insertions(+)
-> 
-> diff --git a/drivers/char/tpm/tpm_tis_spi_main.c b/drivers/char/tpm/tpm_tis_spi_main.c
-> index 3856f6ebcb3..de4209003a4 100644
-> --- a/drivers/char/tpm/tpm_tis_spi_main.c
-> +++ b/drivers/char/tpm/tpm_tis_spi_main.c
-> @@ -260,6 +260,8 @@ static int tpm_tis_spi_remove(struct spi_device *dev)
->  }
->  
->  static const struct spi_device_id tpm_tis_spi_id[] = {
-> +	{ "st33htpm-spi", (unsigned long)tpm_tis_spi_probe },
-> +	{ "slb9670", (unsigned long)tpm_tis_spi_probe },
->  	{ "tpm_tis_spi", (unsigned long)tpm_tis_spi_probe },
->  	{ "cr50", (unsigned long)cr50_spi_probe },
->  	{}
-> -- 
-> 2.31.1
-> 
-> 
+> v2:
+>   Handle the case ksmbd_vfs_getcasexattr() returns 0.
+> ---
+>  fs/cifsd/vfs.c | 10 ++++------
+>  1 file changed, 4 insertions(+), 6 deletions(-)
+>
+> diff --git a/fs/cifsd/vfs.c b/fs/cifsd/vfs.c
+> index 97d5584ec870..2a9cc0bc7726 100644
+> --- a/fs/cifsd/vfs.c
+> +++ b/fs/cifsd/vfs.c
+> @@ -274,7 +274,6 @@ static int ksmbd_vfs_stream_read(struct ksmbd_file *f=
+p, char *buf, loff_t *pos,
+>  {
+>         ssize_t v_len;
+>         char *stream_buf =3D NULL;
+> -       int err;
+>
+>         ksmbd_debug(VFS, "read stream data pos : %llu, count : %zd\n",
+>                     *pos, count);
+> @@ -283,10 +282,9 @@ static int ksmbd_vfs_stream_read(struct ksmbd_file *=
+fp, char *buf, loff_t *pos,
+>                                        fp->stream.name,
+>                                        fp->stream.size,
+>                                        &stream_buf);
+> -       if (v_len =3D=3D -ENOENT) {
+> +       if ((int)v_len <=3D 0) {
+>                 ksmbd_err("not found stream in xattr : %zd\n", v_len);
+> -               err =3D -ENOENT;
+> -               return err;
+> +               return v_len =3D=3D 0 ? -ENOENT : (int)v_len;
 
-Reviewed-by: Jarkko Sakkinen <jarkko@kernel.org>
+How about making ksmbd_vfs_getcasexattr return -ENONENT instead of
+returning 0 to
+remove duplicate error handling code?
 
-/Jarkko
+Thanks,
+Hyunchul
+
+>         }
+>
+>         memcpy(buf, &stream_buf[*pos], count);
+> @@ -415,9 +413,9 @@ static int ksmbd_vfs_stream_write(struct ksmbd_file *=
+fp, char *buf, loff_t *pos,
+>                                        fp->stream.name,
+>                                        fp->stream.size,
+>                                        &stream_buf);
+> -       if (v_len =3D=3D -ENOENT) {
+> +       if ((int)v_len <=3D 0) {
+>                 ksmbd_err("not found stream in xattr : %zd\n", v_len);
+> -               err =3D -ENOENT;
+> +               err =3D v_len =3D=3D 0 ? -ENOENT : (int)v_len;
+>                 goto out;
+>         }
+>
+> --
+> 2.25.1
+>
