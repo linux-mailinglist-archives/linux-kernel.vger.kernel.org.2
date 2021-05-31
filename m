@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E5E639619C
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 16:42:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 68461396531
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 18:24:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233915AbhEaOnv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 10:43:51 -0400
-Received: from mail.kernel.org ([198.145.29.99]:32912 "EHLO mail.kernel.org"
+        id S232458AbhEaQ0Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 12:26:25 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40210 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232116AbhEaN6w (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 09:58:52 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A365761446;
-        Mon, 31 May 2021 13:35:42 +0000 (UTC)
+        id S233962AbhEaOoL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 10:44:11 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 036FE61C7A;
+        Mon, 31 May 2021 13:54:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1622468143;
-        bh=sVg6SB/8K3yyZdgO0ZP29Rf+pPOA/vY5LIPQHKTVJMw=;
+        s=korg; t=1622469292;
+        bh=ecVOHXG2H/p/BcQ8/ULU/fY1B/iSnZOBzF+lCQL9Ejk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=oaV1w7xAK2j2hjdP1tE8FzpvPM27ryHJRT2HAMoEjYBEc0jyZ0mTmprnA0y5jAtnf
-         IkMx5cd9sSvTwv+YrxKgljVQCnSLFAf4LlcPJJxgX5YSopMsnlcRSHadhAfxyjSMMZ
-         CAH+JGzxg8c5av6HJRcp3vU1cpgvze/I/HyHweDo=
+        b=jknpNU86m5uT3fXRE13tk7m9Ga9D0tL0cRodZuVQWGnpGAtMP9rX5yeeVTXbCznV5
+         vzP26Z5QaqTkCpzgkAQRvFRteMuPOf0xbdLo87uKbkq/nHTBsiE+BDESn7YtO1wlzO
+         fFz/M59Nsm2tGvAjtAoBq7v7lKSFQ7iWoZyUdFps=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Kangjie Lu <kjlu@umn.edu>,
-        Mauro Carvalho Chehab <mchehab+samsung@kernel.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 133/252] Revert "media: usb: gspca: add a missed check for goto_low_power"
+        stable@vger.kernel.org, Vladimir Oltean <vladimir.oltean@nxp.com>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: [PATCH 5.12 143/296] net: dsa: sja1105: update existing VLANs from the bridge VLAN list
 Date:   Mon, 31 May 2021 15:13:18 +0200
-Message-Id: <20210531130702.528154745@linuxfoundation.org>
+Message-Id: <20210531130708.679794153@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210531130657.971257589@linuxfoundation.org>
-References: <20210531130657.971257589@linuxfoundation.org>
+In-Reply-To: <20210531130703.762129381@linuxfoundation.org>
+References: <20210531130703.762129381@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,55 +39,75 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+From: Vladimir Oltean <vladimir.oltean@nxp.com>
 
-[ Upstream commit fd013265e5b5576a74a033920d6c571e08d7c423 ]
+commit b38e659de966a122fe2cb178c1e39c9bea06bc62 upstream.
 
-This reverts commit 5b711870bec4dc9a6d705d41e127e73944fa3650.
+When running this sequence of operations:
 
-Because of recent interactions with developers from @umn.edu, all
-commits from them have been recently re-reviewed to ensure if they were
-correct or not.
+ip link add br0 type bridge vlan_filtering 1
+ip link set swp4 master br0
+bridge vlan add dev swp4 vid 1
 
-Upon review, this commit was found to do does nothing useful as a user
-can do nothing with this information and if an error did happen, the
-code would continue on as before.  Because of this, just revert it.
+We observe the traffic sent on swp4 is still untagged, even though the
+bridge has overwritten the existing VLAN entry:
 
-Cc: Kangjie Lu <kjlu@umn.edu>
-Cc: Mauro Carvalho Chehab <mchehab+samsung@kernel.org>
-Link: https://lore.kernel.org/r/20210503115736.2104747-7-gregkh@linuxfoundation.org
+port    vlan ids
+swp4     1 PVID
+
+br0      1 PVID Egress Untagged
+
+This happens because we didn't consider that the 'bridge vlan add'
+command just overwrites VLANs like it's nothing. We treat the 'vid 1
+pvid untagged' and the 'vid 1' as two separate VLANs, and the first
+still has precedence when calling sja1105_build_vlan_table. Obviously
+there is a disagreement regarding semantics, and we end up doing
+something unexpected from the PoV of the bridge.
+
+Let's actually consider an "existing VLAN" to be one which is on the
+same port, and has the same VLAN ID, as one we already have, and update
+it if it has different flags than we do.
+
+The first blamed commit is the one introducing the bug, the second one
+is the latest on top of which the bugfix still applies.
+
+Fixes: ec5ae61076d0 ("net: dsa: sja1105: save/restore VLANs using a delta commit method")
+Fixes: 5899ee367ab3 ("net: dsa: tag_8021q: add a context structure")
+Signed-off-by: Vladimir Oltean <vladimir.oltean@nxp.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/media/usb/gspca/cpia1.c | 6 +-----
- 1 file changed, 1 insertion(+), 5 deletions(-)
+ drivers/net/dsa/sja1105/sja1105_main.c |   19 +++++++++++++++----
+ 1 file changed, 15 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/media/usb/gspca/cpia1.c b/drivers/media/usb/gspca/cpia1.c
-index a4f7431486f3..d93d384286c1 100644
---- a/drivers/media/usb/gspca/cpia1.c
-+++ b/drivers/media/usb/gspca/cpia1.c
-@@ -1424,7 +1424,6 @@ static int sd_config(struct gspca_dev *gspca_dev,
- {
- 	struct sd *sd = (struct sd *) gspca_dev;
- 	struct cam *cam;
--	int ret;
+--- a/drivers/net/dsa/sja1105/sja1105_main.c
++++ b/drivers/net/dsa/sja1105/sja1105_main.c
+@@ -2817,11 +2817,22 @@ static int sja1105_vlan_add_one(struct d
+ 	bool pvid = flags & BRIDGE_VLAN_INFO_PVID;
+ 	struct sja1105_bridge_vlan *v;
  
- 	sd->mainsFreq = FREQ_DEF == V4L2_CID_POWER_LINE_FREQUENCY_60HZ;
- 	reset_camera_params(gspca_dev);
-@@ -1436,10 +1435,7 @@ static int sd_config(struct gspca_dev *gspca_dev,
- 	cam->cam_mode = mode;
- 	cam->nmodes = ARRAY_SIZE(mode);
+-	list_for_each_entry(v, vlan_list, list)
+-		if (v->port == port && v->vid == vid &&
+-		    v->untagged == untagged && v->pvid == pvid)
++	list_for_each_entry(v, vlan_list, list) {
++		if (v->port == port && v->vid == vid) {
+ 			/* Already added */
+-			return 0;
++			if (v->untagged == untagged && v->pvid == pvid)
++				/* Nothing changed */
++				return 0;
++
++			/* It's the same VLAN, but some of the flags changed
++			 * and the user did not bother to delete it first.
++			 * Update it and trigger sja1105_build_vlan_table.
++			 */
++			v->untagged = untagged;
++			v->pvid = pvid;
++			return 1;
++		}
++	}
  
--	ret = goto_low_power(gspca_dev);
--	if (ret)
--		gspca_err(gspca_dev, "Cannot go to low power mode: %d\n",
--			  ret);
-+	goto_low_power(gspca_dev);
- 	/* Check the firmware version. */
- 	sd->params.version.firmwareVersion = 0;
- 	get_version_information(gspca_dev);
--- 
-2.30.2
-
+ 	v = kzalloc(sizeof(*v), GFP_KERNEL);
+ 	if (!v) {
 
 
