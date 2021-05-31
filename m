@@ -2,97 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AAC8E395418
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 04:55:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C2C539541C
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 05:02:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229998AbhEaC4z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 30 May 2021 22:56:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58666 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229952AbhEaC4l (ORCPT
+        id S230061AbhEaDEM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 30 May 2021 23:04:12 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:55674 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229952AbhEaDEL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 30 May 2021 22:56:41 -0400
-Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD80FC061574;
-        Sun, 30 May 2021 19:55:01 -0700 (PDT)
-Received: by mail-ed1-x534.google.com with SMTP id j10so11724956edw.8;
-        Sun, 30 May 2021 19:55:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=qi4JwnuStjKrl13hwRZNjYRqAXVvLVe47KpI8ZOLhcA=;
-        b=uElWrWzvBAHrc44Imdhjdq0EX+o1vZtfPPFcY84AGmkmIZjj/6YT6uIGdn3c457aYq
-         Dj7xt/j+bqZIEqb8XWQTCtMpiIpZhGX+hf5rB1zPzxQT9owtNsctHaUPlajlEe+EoH/d
-         72ByMG7lQXgnvlkXVLd6tyqUdHvL+uVNbcB4MWGeRyjutC+aleeSuLqTLBYQ2r47t/Bd
-         zAfvRJ/4WxNFaQkfOVIb6V19u15onpv6Fi/ZtU/wCuUFSnwD3tYaq1xUg5yemY2C8rf/
-         s9Xr9hYmMs8kGTbN97B0KVaW6kdCPvOX1dM7zR1QLtrfqwT/NHt6wBZ3qmcbajMJAbvz
-         tSkg==
+        Sun, 30 May 2021 23:04:11 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1622430151;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=RlzLP9cDBuypH+co4NfKjwM55SCL4ZjJRzPsMReFNRo=;
+        b=WsLtgt9aRC9XWv5eEj2myKMYMjutDFTt7mNgkwW4sexxA2G1DArT97yskaOj7sRzSOjbQX
+        maJPO8SAe0sStcXK6QlmXZymyzkawqI9ItZdOcLqaxMOJTix5/klWla9Guloi5Qg2a/CJz
+        Yfc/hsjbbZLiGietuaDgNnt9NdZll7M=
+Received: from mail-pf1-f198.google.com (mail-pf1-f198.google.com
+ [209.85.210.198]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-80-cWNUQVaTPDWo6IvBzxALMQ-1; Sun, 30 May 2021 23:02:30 -0400
+X-MC-Unique: cWNUQVaTPDWo6IvBzxALMQ-1
+Received: by mail-pf1-f198.google.com with SMTP id h185-20020a6283c20000b02902d40a248917so5208252pfe.0
+        for <linux-kernel@vger.kernel.org>; Sun, 30 May 2021 20:02:30 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=qi4JwnuStjKrl13hwRZNjYRqAXVvLVe47KpI8ZOLhcA=;
-        b=fHTu7cTraO4D/hFWICjMJlUrypY449EwdfkNUCJwa8tkUhfsLAIjvSJVWC3m/XG5fl
-         xL7YlUyxVr6LOCAH2m18vK6Kpjb6IkqUsWZTnDDV/ZUd+kAuwr8giLsQBSE6nwhAqvhc
-         yI4GONm/KsJzC4dYSQ9EA4l0kNDhUuc5WNI8834H10lDxlwyauwtRapCVSQYLMP9fGJG
-         dii/Baj0AUvR4oOF8lrJWnyj8hFvBioh9zoXz8FQqQ6mL34uhq3EA37J1vB8rVOaOqci
-         DFyOd8tEFmgDR3ibaQD6WbBbQ4WJCAuNjqibxR/RYQWGRIGS6RRDqKsulToSlXNHY5F/
-         6Vyw==
-X-Gm-Message-State: AOAM533kHhbjzhRwYyfAhJze+oYx8IjHGb3tI33gAk3tRKdqU7KvPbXU
-        krcYFwk+18L0TL6Yo6zNkuEzi/15UFCJM2+/2XQmCWxd
-X-Google-Smtp-Source: ABdhPJw7Y0d92GylmlMCy9GMNyn7kQnkHuYBMaViMJry1bY7neGEi5I54S2HU379J78rHAbRggiff+zo5ufy89Pi0Wo=
-X-Received: by 2002:a05:6402:2713:: with SMTP id y19mr22499149edd.59.1622429700519;
- Sun, 30 May 2021 19:55:00 -0700 (PDT)
+        h=x-gm-message-state:subject:to:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=RlzLP9cDBuypH+co4NfKjwM55SCL4ZjJRzPsMReFNRo=;
+        b=FZQulVP+ZCv0TtFBwaZmHGoWVNj2tjnBKcgRqCxIw80N0VxIGH1rtLyPO/IcfvF7Xk
+         3ZM5CizGaJlgZaNsA9VLULnhYGJfb0D46BVk5urijy1H2uokTXcA78wl402MmYLPa/gj
+         86HtMX4czyAh416g/9GBfGp6uGiqmiI+DF5P+OMTlQD+pPfccL2RRQy/GSJjAeG5quPw
+         KhIwBPG54TYpdJaJStnfiHGJ7RvdZbNpgTuOr8yUl617X6sF4wscc0jd6vMvryGBbRDo
+         6umSyqirq2CDIzi+0VVnzKvRsnaOxx02X3s/car+zolzNCe8WsfM1RX/VPNmNVhorltJ
+         XbQw==
+X-Gm-Message-State: AOAM533HYnKqCdmpWIWB6bpz2y4Af5uJntgMXITfmZibzVxaMxRXm7j0
+        +F/aXXm+p08K5FtU13n/dELzXTiD3MKZNtwzirFMuipuIZaFlsefuLis9+KjbPO7ZIOxveNKfpJ
+        ImTQRGSHyFy4U8k+L5Bm1yGN1YCucjfKqoBhwQdHDxsMNaiV3w8jtMMnvXa71K0fWNx5DifO4UX
+        1K
+X-Received: by 2002:a17:90a:b294:: with SMTP id c20mr16794750pjr.236.1622430148855;
+        Sun, 30 May 2021 20:02:28 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzjtTbccwyZv6xn0V6J4JGVL5xRVBUofxiR5wbmsLL5CF8elClM8l9yQI5vGTq+9Jo/DURJQw==
+X-Received: by 2002:a17:90a:b294:: with SMTP id c20mr16794708pjr.236.1622430148409;
+        Sun, 30 May 2021 20:02:28 -0700 (PDT)
+Received: from wangxiaodeMacBook-Air.local ([209.132.188.80])
+        by smtp.gmail.com with ESMTPSA id h24sm9669974pfn.180.2021.05.30.20.02.26
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 30 May 2021 20:02:27 -0700 (PDT)
+Subject: Re: [PATCH 1/2] vdpa/mlx5: Support creating resources with uid == 0
+To:     Eli Cohen <elic@nvidia.com>, mst@redhat.com,
+        virtualization@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org
+References: <20210530075415.4644-1-elic@nvidia.com>
+ <20210530075415.4644-2-elic@nvidia.com>
+From:   Jason Wang <jasowang@redhat.com>
+Message-ID: <7e4f741e-e595-fe19-91ef-e6faeec765d4@redhat.com>
+Date:   Mon, 31 May 2021 11:02:21 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.10.2
 MIME-Version: 1.0
-References: <CAOuPNLjgpkBh9dnfNTdDcfk5HiL=HjjiB9o_=fjrm+0vP7Re2Q@mail.gmail.com>
- <CAOuPNLh_0Q9w96GKT-ogC0BBcEHgo=Hv3+c=JBcas2VgqDiyaw@mail.gmail.com>
- <CAOuPNLjmJ0YufFktJzjkyvdxwFTOpxVj5AW5gANAGSG=_yT=mQ@mail.gmail.com>
- <1762403920.6716767.1621029029246@webmail.123-reg.co.uk> <CAOuPNLhn90z9i6jt0-Vv4e9hjsxwYUT2Su-7SQrxy+N=HDe_xA@mail.gmail.com>
- <486335206.6969995.1621485014357@webmail.123-reg.co.uk> <CAOuPNLjBsm9YLtcb4SnqLYYaHPnscYq4captvCmsR7DthiWGsQ@mail.gmail.com>
- <1339b24a-b5a5-5c73-7de0-9541455b66af@geanix.com> <CAOuPNLiMnHJJNFBbOrMOLmnxU86ROMBaLaeFxviPENCkuKfUVg@mail.gmail.com>
- <4304c082-6fc5-7389-f883-d0adfc95ee86@geanix.com>
-In-Reply-To: <4304c082-6fc5-7389-f883-d0adfc95ee86@geanix.com>
-From:   Pintu Agarwal <pintu.ping@gmail.com>
-Date:   Mon, 31 May 2021 08:24:49 +0530
-Message-ID: <CAOuPNLigHdbu_OTpsFr7gq+nFK2Pv+4MUSrC6A6PfKfF1H1X3Q@mail.gmail.com>
-Subject: Re: [RESEND]: Kernel 4.14: UBIFS+SQUASHFS: Device fails to boot after
- flashing rootfs volume
-To:     Sean Nyekjaer <sean@geanix.com>
-Cc:     Phillip Lougher <phillip@squashfs.org.uk>,
-        open list <linux-kernel@vger.kernel.org>,
-        linux-mtd@lists.infradead.org, linux-fsdevel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210530075415.4644-2-elic@nvidia.com>
+Content-Type: text/plain; charset=gbk; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 25 May 2021 at 11:07, Sean Nyekjaer <sean@geanix.com> wrote:
-> We are writing our rootfs with this command:
-> ubiupdatevol /dev/ubi0_4 rootfs.squashfs
+
+ÔÚ 2021/5/30 ÏÂÎç3:54, Eli Cohen Ð´µÀ:
+> Currently all resources must be created with uid != 0 which is essential
+> userspace processes allocating virtquueue resources. Since this is a
+> kernel implementation, it is perfectly legal to open resources with
+> uid == 0.
 >
-> Please understand the differences between the UBI and UBIFS. UBI(unsorted block image) and UBIFS(UBI File System).
-> I think you want to write the squashfs to the UBI(unsorted block image).
+> In case frimware supports, avoid allocating user context.
+
+
+Typo "frimware".
+
+Otherwise.
+
+Acked-by: Jason Wang <jasowang@redhat.com>
+
+(I don't see any code to check the firmware capability, is this intended?)
+
+Thanks
+
+
 >
-> Can you try to boot with a initramfs, and then use ubiupdatevol to write the rootfs.squshfs.
+> Signed-off-by: Eli Cohen <elic@nvidia.com>
+> ---
+>   drivers/vdpa/mlx5/core/resources.c | 6 ++++++
+>   include/linux/mlx5/mlx5_ifc.h      | 4 +++-
+>   2 files changed, 9 insertions(+), 1 deletion(-)
 >
-Dear Sean, thank you so much for this suggestion.
-Just a final help I need here.
+> diff --git a/drivers/vdpa/mlx5/core/resources.c b/drivers/vdpa/mlx5/core/resources.c
+> index 6521cbd0f5c2..836ab9ef0fa6 100644
+> --- a/drivers/vdpa/mlx5/core/resources.c
+> +++ b/drivers/vdpa/mlx5/core/resources.c
+> @@ -54,6 +54,9 @@ static int create_uctx(struct mlx5_vdpa_dev *mvdev, u16 *uid)
+>   	void *in;
+>   	int err;
+>   
+> +	if (MLX5_CAP_GEN(mvdev->mdev, umem_uid_0))
+> +		return 0;
+> +
+>   	/* 0 means not supported */
+>   	if (!MLX5_CAP_GEN(mvdev->mdev, log_max_uctx))
+>   		return -EOPNOTSUPP;
+> @@ -79,6 +82,9 @@ static void destroy_uctx(struct mlx5_vdpa_dev *mvdev, u32 uid)
+>   	u32 out[MLX5_ST_SZ_DW(destroy_uctx_out)] = {};
+>   	u32 in[MLX5_ST_SZ_DW(destroy_uctx_in)] = {};
+>   
+> +	if (!uid)
+> +		return;
+> +
+>   	MLX5_SET(destroy_uctx_in, in, opcode, MLX5_CMD_OP_DESTROY_UCTX);
+>   	MLX5_SET(destroy_uctx_in, in, uid, uid);
+>   
+> diff --git a/include/linux/mlx5/mlx5_ifc.h b/include/linux/mlx5/mlx5_ifc.h
+> index 9c68b2da14c6..606d2aeacad4 100644
+> --- a/include/linux/mlx5/mlx5_ifc.h
+> +++ b/include/linux/mlx5/mlx5_ifc.h
+> @@ -1487,7 +1487,9 @@ struct mlx5_ifc_cmd_hca_cap_bits {
+>   	u8         uar_4k[0x1];
+>   	u8         reserved_at_241[0x9];
+>   	u8         uar_sz[0x6];
+> -	u8         reserved_at_250[0x8];
+> +	u8         reserved_at_248[0x2];
+> +	u8         umem_uid_0[0x1];
+> +	u8         reserved_at_250[0x5];
+>   	u8         log_pg_sz[0x8];
+>   
+>   	u8         bf[0x1];
 
-For future experiment purposes, I am trying to setup my qemu-arm
-environment using ubifs/squashfs and "nandsim" module.
-I already have a working setup for qemu-arm with busybox/initramfs.
-Now I wanted to prepare ubifs/squashfs based busybox rootfs which I
-can use for booting the mainline kernel.
-Is it possible ?
-Are there already some pre-built ubifs images available which I can
-use for my qemu-arm ?
-Or, please guide me how to do it ?
-
-I think it is more convenient to do all experiments with "nandsim"
-instead of corrupting the actual NAND hardware.
-If you have any other suggestions please let me know.
-
-
-Thanks,
-Pintu
