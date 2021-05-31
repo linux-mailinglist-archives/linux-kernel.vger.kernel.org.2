@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ACE093964A0
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 18:04:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6729E396033
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 16:21:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232947AbhEaQFv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 12:05:51 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59384 "EHLO mail.kernel.org"
+        id S232569AbhEaOX2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 10:23:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55412 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232540AbhEaOf3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 10:35:29 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 12B8A61C4A;
-        Mon, 31 May 2021 13:50:46 +0000 (UTC)
+        id S233057AbhEaNtv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 09:49:51 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3B70A613B6;
+        Mon, 31 May 2021 13:31:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1622469047;
-        bh=3rfqlxhrh9or818ZTbuEK6qjk9t0H0vQtu/oWp/5ZiU=;
+        s=korg; t=1622467911;
+        bh=mjDBZ/MFxDXzFeXVAl411RYQ4QEJ69HfNtNIa9pe61Q=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=xye3T5gXt9BxopFfq5iq08vyHSjTPWknHZiH4rJHXzz7i6lPkD9M/GORSJjelmFk7
-         M9YIuPAxHnDmAK+gVVVu3JD/fVqUMsGAb98QHOY51DDFUbSftMtP3N+b3G5K765Pks
-         jhsSsRIYl7PnJbnxo+F4N8IWkf6c/NOzSW6o+NHk=
+        b=vVtG167CaMEEqXtW1cP4QaPvsOcKKEu73HZmTYq6+Cz5XquAajI6Ht4Kfe36CZje4
+         xYk5L7ZX9s2DGgfE+2ITrYCc6Zzz881YHu9EfsD4v6quwURiBHO70KP5YCz6EpaT+n
+         pEXUUPwnTHSF1SvUWYF/TxThnLUz7FEQ4kvdCvZE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Wen Gong <wgong@codeaurora.org>,
+        stable@vger.kernel.org, Sriram R <srirrama@codeaurora.org>,
         Jouni Malinen <jouni@codeaurora.org>,
         Johannes Berg <johannes.berg@intel.com>
-Subject: [PATCH 5.12 048/296] ath10k: drop MPDU which has discard flag set by firmware for SDIO
-Date:   Mon, 31 May 2021 15:11:43 +0200
-Message-Id: <20210531130705.449513946@linuxfoundation.org>
+Subject: [PATCH 5.10 039/252] ath11k: Clear the fragment cache during key install
+Date:   Mon, 31 May 2021 15:11:44 +0200
+Message-Id: <20210531130659.319473840@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210531130703.762129381@linuxfoundation.org>
-References: <20210531130703.762129381@linuxfoundation.org>
+In-Reply-To: <20210531130657.971257589@linuxfoundation.org>
+References: <20210531130657.971257589@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,63 +40,86 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Wen Gong <wgong@codeaurora.org>
+From: Sriram R <srirrama@codeaurora.org>
 
-commit 079a108feba474b4b32bd3471db03e11f2f83b81 upstream.
+commit c3944a5621026c176001493d48ee66ff94e1a39a upstream.
 
-When the discard flag is set by the firmware for an MPDU, it should be
-dropped. This allows a mitigation for CVE-2020-24588 to be implemented
-in the firmware.
+Currently the fragment cache setup during peer assoc is
+cleared only during peer delete. In case a key reinstallation
+happens with the same peer, the same fragment cache with old
+fragments added before key installation could be clubbed
+with fragments received after. This might be exploited
+to mix fragments of different data resulting in a proper
+unintended reassembled packet to be passed up the stack.
 
-Tested-on: QCA6174 hw3.2 SDIO WLAN.RMH.4.4.1-00049
+Hence flush the fragment cache on every key installation to prevent
+potential attacks (CVE-2020-24587).
+
+Tested-on: IPQ8074 hw2.0 AHB WLAN.HK.2.4.0.1-01734-QCAHKSWPL_SILICONZ-1 v2
 
 Cc: stable@vger.kernel.org
-Signed-off-by: Wen Gong <wgong@codeaurora.org>
+Signed-off-by: Sriram R <srirrama@codeaurora.org>
 Signed-off-by: Jouni Malinen <jouni@codeaurora.org>
-Link: https://lore.kernel.org/r/20210511200110.11968c725b5c.Idd166365ebea2771c0c0a38c78b5060750f90e17@changeid
+Link: https://lore.kernel.org/r/20210511200110.218dc777836f.I9af6fc76215a35936c4152552018afb5079c5d8c@changeid
 Signed-off-by: Johannes Berg <johannes.berg@intel.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/wireless/ath/ath10k/htt_rx.c  |    5 +++++
- drivers/net/wireless/ath/ath10k/rx_desc.h |   14 +++++++++++++-
- 2 files changed, 18 insertions(+), 1 deletion(-)
+ drivers/net/wireless/ath/ath11k/dp_rx.c |   18 ++++++++++++++++++
+ drivers/net/wireless/ath/ath11k/dp_rx.h |    1 +
+ drivers/net/wireless/ath/ath11k/mac.c   |    6 ++++++
+ 3 files changed, 25 insertions(+)
 
---- a/drivers/net/wireless/ath/ath10k/htt_rx.c
-+++ b/drivers/net/wireless/ath/ath10k/htt_rx.c
-@@ -2312,6 +2312,11 @@ static bool ath10k_htt_rx_proc_rx_ind_hl
- 	fw_desc = &rx->fw_desc;
- 	rx_desc_len = fw_desc->len;
+--- a/drivers/net/wireless/ath/ath11k/dp_rx.c
++++ b/drivers/net/wireless/ath/ath11k/dp_rx.c
+@@ -832,6 +832,24 @@ static void ath11k_dp_rx_frags_cleanup(s
+ 	__skb_queue_purge(&rx_tid->rx_frags);
+ }
  
-+	if (fw_desc->u.bits.discard) {
-+		ath10k_dbg(ar, ATH10K_DBG_HTT, "htt discard mpdu\n");
-+		goto err;
++void ath11k_peer_frags_flush(struct ath11k *ar, struct ath11k_peer *peer)
++{
++	struct dp_rx_tid *rx_tid;
++	int i;
++
++	lockdep_assert_held(&ar->ab->base_lock);
++
++	for (i = 0; i <= IEEE80211_NUM_TIDS; i++) {
++		rx_tid = &peer->rx_tid[i];
++
++		spin_unlock_bh(&ar->ab->base_lock);
++		del_timer_sync(&rx_tid->frag_timer);
++		spin_lock_bh(&ar->ab->base_lock);
++
++		ath11k_dp_rx_frags_cleanup(rx_tid, true);
 +	}
++}
 +
- 	/* I have not yet seen any case where num_mpdu_ranges > 1.
- 	 * qcacld does not seem handle that case either, so we introduce the
- 	 * same limitiation here as well.
---- a/drivers/net/wireless/ath/ath10k/rx_desc.h
-+++ b/drivers/net/wireless/ath/ath10k/rx_desc.h
-@@ -1282,7 +1282,19 @@ struct fw_rx_desc_base {
- #define FW_RX_DESC_UDP              (1 << 6)
+ void ath11k_peer_rx_tid_cleanup(struct ath11k *ar, struct ath11k_peer *peer)
+ {
+ 	struct dp_rx_tid *rx_tid;
+--- a/drivers/net/wireless/ath/ath11k/dp_rx.h
++++ b/drivers/net/wireless/ath/ath11k/dp_rx.h
+@@ -49,6 +49,7 @@ int ath11k_dp_peer_rx_pn_replay_config(s
+ 				       const u8 *peer_addr,
+ 				       enum set_key_cmd key_cmd,
+ 				       struct ieee80211_key_conf *key);
++void ath11k_peer_frags_flush(struct ath11k *ar, struct ath11k_peer *peer);
+ void ath11k_peer_rx_tid_cleanup(struct ath11k *ar, struct ath11k_peer *peer);
+ void ath11k_peer_rx_tid_delete(struct ath11k *ar,
+ 			       struct ath11k_peer *peer, u8 tid);
+--- a/drivers/net/wireless/ath/ath11k/mac.c
++++ b/drivers/net/wireless/ath/ath11k/mac.c
+@@ -2525,6 +2525,12 @@ static int ath11k_mac_op_set_key(struct
+ 	 */
+ 	spin_lock_bh(&ab->base_lock);
+ 	peer = ath11k_peer_find(ab, arvif->vdev_id, peer_addr);
++
++	/* flush the fragments cache during key (re)install to
++	 * ensure all frags in the new frag list belong to the same key.
++	 */
++	if (peer && cmd == SET_KEY)
++		ath11k_peer_frags_flush(ar, peer);
+ 	spin_unlock_bh(&ab->base_lock);
  
- struct fw_rx_desc_hl {
--	u8 info0;
-+	union {
-+		struct {
-+		u8 discard:1,
-+		   forward:1,
-+		   any_err:1,
-+		   dup_err:1,
-+		   reserved:1,
-+		   inspect:1,
-+		   extension:2;
-+		} bits;
-+		u8 info0;
-+	} u;
-+
- 	u8 version;
- 	u8 len;
- 	u8 flags;
+ 	if (!peer) {
 
 
