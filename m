@@ -2,77 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D9D533966C2
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 19:19:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 18DC839675B
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 19:46:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233285AbhEaRUl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 13:20:41 -0400
-Received: from mail.skyhub.de ([5.9.137.197]:48756 "EHLO mail.skyhub.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232715AbhEaRUJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 13:20:09 -0400
-Received: from zn.tnic (p200300ec2f080f00c524a4d22cb87212.dip0.t-ipconnect.de [IPv6:2003:ec:2f08:f00:c524:a4d2:2cb8:7212])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id E2CF11EC0589;
-        Mon, 31 May 2021 19:18:22 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1622481503;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=Izzz+MpnHaHiczxXxkzMFrftlLiyI7UtOOQBxR+8pYc=;
-        b=ClHGdnkHlbDM5buNWj/jtuAHzExgHtyWWWw/Si9+MHLeLfd8UWeWiyPk0d0AKRdETU7NbR
-        tfknJ7+dEzxdzkEJm9KkDXJ3abSsdtf4qjlUJqkb24vM01I9tmwVldMIPd5E93e881QzcY
-        gP8e2z5RbsbzPmaUlC8swKUdw/h7dC8=
-Date:   Mon, 31 May 2021 19:18:16 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Andrew Cooper <andrew.cooper3@citrix.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>, Pu Wen <puwen@hygon.cn>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Yazen Ghannam <Yazen.Ghannam@amd.com>,
-        Joerg Roedel <jroedel@suse.de>
-Subject: Re: [PATCH] perf/x86/rapl: Use CPUID bit on AMD and Hygon parts
-Message-ID: <YLUaWKSjwDbUDHFO@zn.tnic>
-References: <20210514135920.16093-1-andrew.cooper3@citrix.com>
+        id S232230AbhEaRrv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 13:47:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58238 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232382AbhEaRrc (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 13:47:32 -0400
+Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5A14C06134B
+        for <linux-kernel@vger.kernel.org>; Mon, 31 May 2021 10:21:56 -0700 (PDT)
+Received: by mail-pj1-x1031.google.com with SMTP id pi6-20020a17090b1e46b029015cec51d7cdso311612pjb.5
+        for <linux-kernel@vger.kernel.org>; Mon, 31 May 2021 10:21:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=0UQpSMC1R+2Xa12LBVW7x40T3z3R/9Jq0QsvLZP5FHQ=;
+        b=PY3S1B9SWEFG0pRMqrSIevRJgIxUSSfpOJJdgMmbTjBoNfuIY1YJqsev+Zba8gWNKm
+         5Po7yoXdfbuFzLxk8kaUv9fmsMs8pMf+NaeANmMiOJyRGb+8Zrfad0a3g5qCdnh3vJrN
+         nkvmY3+mUugnrb7gZgUTicN7K9AjoPcP9ZwPeTAqzT6oJqcKcaHkz2GnIRKOZNQ/9doY
+         yyLiErefayU3NndHJrsb0XrUC8ZRXetV6rbEfqW3bCnuD0dSj6YWsoPg/0UlpMW58pCj
+         csF6LbOIhqmfEwTpTDa/cthrUsEPH+xf+DzMF5qFm3MYqs4Qw/4nb21+eut3gbbRfGcf
+         xofQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=0UQpSMC1R+2Xa12LBVW7x40T3z3R/9Jq0QsvLZP5FHQ=;
+        b=jJGC4faRDKBuHzNt03U4B3Spg1tIci5SJVn8PiVa3AS7QSwNJ+ftRLBdga7HTSNZ2v
+         p0MxvYMskzodA153EQXGPJJfpc9fC1op9cAcpfDaOHCz+qQHWzPuJ1opUHku9qKk9MoW
+         YWkXy0zD9cOlvSbTqv0Rnx6ZMhvCdcsiC75GaJHkXNO0HAQhufY1Xjs0WFl3YHhiMuFq
+         I5JXbGUmIeLkug4tJ8Fb6gLDHkzejWAsy6luZgYhZHnnIKGoaC0A9v4casIH4UumU3oW
+         jpPnwoH3PA6SPVQ5zrX1l93OoCF8Hi/Apmp1iNbbRJ3kr0SJa+6PIvHcLDisUIyPATkF
+         BBJg==
+X-Gm-Message-State: AOAM531Cjvx0nKiSa4pDDpf7/xqEBYITeDKs///UuS0LrZrsMBhqGs1y
+        t9Q8W3DK3w2BpzOVKtP3BOmhVw==
+X-Google-Smtp-Source: ABdhPJyw8c3ul2d++LmMlDYbGKPjam5vYQe6BylRMfbw8bv6kYr1+2w2Q/QebtifI4VcbrsCqsQa0Q==
+X-Received: by 2002:a17:90b:1b4f:: with SMTP id nv15mr183861pjb.56.1622481716289;
+        Mon, 31 May 2021 10:21:56 -0700 (PDT)
+Received: from xps15 (S0106889e681aac74.cg.shawcable.net. [68.147.0.187])
+        by smtp.gmail.com with ESMTPSA id t14sm10642295pfg.168.2021.05.31.10.21.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 31 May 2021 10:21:55 -0700 (PDT)
+Date:   Mon, 31 May 2021 11:21:53 -0600
+From:   Mathieu Poirier <mathieu.poirier@linaro.org>
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>
+Cc:     Alex Elder <elder@linaro.org>, ohad@wizery.com,
+        linux-remoteproc@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/1] remoteproc: use freezable workqueue for crash
+ notifications
+Message-ID: <20210531172153.GA1718330@xps15>
+References: <20210519234418.1196387-1-elder@linaro.org>
+ <20210519234418.1196387-2-elder@linaro.org>
+ <YLBpmdZoGDXNz64y@builder.lan>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210514135920.16093-1-andrew.cooper3@citrix.com>
+In-Reply-To: <YLBpmdZoGDXNz64y@builder.lan>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 14, 2021 at 02:59:20PM +0100, Andrew Cooper wrote:
-> diff --git a/arch/x86/kernel/cpu/powerflags.c b/arch/x86/kernel/cpu/powerflags.c
-> index fd6ec2aa0303..e2055f51342e 100644
-> --- a/arch/x86/kernel/cpu/powerflags.c
-> +++ b/arch/x86/kernel/cpu/powerflags.c
-> @@ -21,4 +21,6 @@ const char *const x86_power_flags[32] = {
->  	"eff_freq_ro", /* Readonly aperf/mperf */
->  	"proc_feedback", /* processor feedback interface */
->  	"acc_power", /* accumulated power mechanism */
-> +	"conn_standby", /* Connected Standby */
-> +	"rapl", /* Runtime Average Power Limit */
+On Thu, May 27, 2021 at 10:55:05PM -0500, Bjorn Andersson wrote:
+> On Wed 19 May 18:44 CDT 2021, Alex Elder wrote:
+> 
+> > When a remoteproc has crashed, rproc_report_crash() is called to
+> > handle whatever recovery is desired.  This can happen at almost any
+> > time, often triggered by an interrupt, though it can also be
+> > initiated by a write to debugfs file remoteproc/remoteproc*/crash.
+> > 
+> > When a crash is reported, the crash handler worker is scheduled to
+> > run (rproc_crash_handler_work()).  One thing that worker does is
+> > call rproc_trigger_recovery(), which calls rproc_stop().  That calls
+> > the ->stop method for any remoteproc subdevices before making the
+> > remote processor go offline.
+> > 
+> > The Q6V5 modem remoteproc driver implements an SSR subdevice that
+> > notifies registered drivers when the modem changes operational state
+> > (prepare, started, stop/crash, unprepared).  The IPA driver
+> > registers to receive these notifications.
+> > 
+> > With that as context, I'll now describe the problem.
+> > 
+> > There was a situation in which buggy modem firmware led to a modem
+> > crash very soon after system (AP) resume had begun.  The crash caused
+> > a remoteproc SSR crash notification to be sent to the IPA driver.
+> > The problem was that, although system resume had begun, it had not
+> > yet completed, and the IPA driver was still in a suspended state.
 
-Yeah, so this repeats the "rapl" bit and that "conn_standby" is probably
-not gonna be used. Unless you have a really good reason to add that
-hunk, I'll whack it before applying and let this "power management"
-thing in /proc/cpuinfo die unchanged.
+This is a very tight race condition - I agree with you that it is next to
+impossible to test.
 
-Thx.
+> > 
+> > This scenario could happen to any driver that registers for these
+> > SSR notifications, because they are delivered without knowledge of
+> > the (suspend) state of registered recipient drivers.
+> > 
+> > This patch offers a simple fix for this, by having the crash
+> > handling worker function run on the system freezable workqueue.
+> > This workqueue does not operate if user space is frozen (for
+> > suspend).  As a result, the SSR subdevice only delivers its
+> > crash notification when the system is fully operational (i.e.,
+> > neither suspended nor in suspend/resume transition).
+> > 
 
--- 
-Regards/Gruss,
-    Boris.
+I think the real fix for this problem should be in the platform driver where
+the remoteproc interrupt would be masked while suspending and re-enabled again
+when resuming.  The runtime PM API would work just fine for that...  But doing
+so wouldn't guarantee that other drivers, i.e IPA, would be operational.  Unless
+of one is a child of the other or using a bus like mechanic, and getting
+to that point will introduce a lot more churn than what this patch does. 
 
-https://people.kernel.org/tglx/notes-about-netiquette
+The proposed solution will work since user space is expected to resume when
+the kernel and drivers are fully operational.  As you pointed out the only
+concern is with other users, which may not be noticeable given the very small
+delay that is introduced.  As such:
+
+Reviewed-by: Mathieu Poirier <mathieu.poirier@linaro>
+
+But be mindful the patch will have to be reverted if someone complains, whether
+that happens in two weeks or 10 months.
+
+Thanks,
+Mathieu
+
+> 
+> This makes sense to me; both that it ensures that we spend our resources
+> on the actual system resume and that it avoids surprises from this
+> happening while the system still is in a funky state...
+> 
+> Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+> 
+> But it would be nice to get some input from other users of the
+> framework.
+> 
+> Regards,
+> Bjorn
+> 
+> > Signed-off-by: Alex Elder <elder@linaro.org>
+> > ---
+> >  drivers/remoteproc/remoteproc_core.c | 4 ++--
+> >  1 file changed, 2 insertions(+), 2 deletions(-)
+> > 
+> > diff --git a/drivers/remoteproc/remoteproc_core.c b/drivers/remoteproc/remoteproc_core.c
+> > index 39cf44cb08035..6bedf2d2af239 100644
+> > --- a/drivers/remoteproc/remoteproc_core.c
+> > +++ b/drivers/remoteproc/remoteproc_core.c
+> > @@ -2724,8 +2724,8 @@ void rproc_report_crash(struct rproc *rproc, enum rproc_crash_type type)
+> >  	dev_err(&rproc->dev, "crash detected in %s: type %s\n",
+> >  		rproc->name, rproc_crash_to_string(type));
+> >  
+> > -	/* create a new task to handle the error */
+> > -	schedule_work(&rproc->crash_handler);
+> > +	/* Have a worker handle the error; ensure system is not suspended */
+> > +	queue_work(system_freezable_wq, &rproc->crash_handler);
+> >  }
+> >  EXPORT_SYMBOL(rproc_report_crash);
+> >  
+> > -- 
+> > 2.27.0
+> > 
