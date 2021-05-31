@@ -2,115 +2,186 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 42BCC3956B6
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 10:12:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 419993956B8
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 10:13:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230315AbhEaIOT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 04:14:19 -0400
-Received: from mail-bn8nam11on2084.outbound.protection.outlook.com ([40.107.236.84]:45231
-        "EHLO NAM11-BN8-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S230296AbhEaIOJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 04:14:09 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=V094U0PoGNTiMfB1Uf2iBIUOnVyWi6bEIdxQOTNZ1D0ZMCE9yQ+ub3kf8ehnPkLdMyfFHQbVSVvxqB3i1g7kjeVPAZc84GWG6+V+9T1x55ILDL9W8SLNodGZ1jpOdal1DM5miYc8gobKUvKGxsD2fitwjrF4ZMtIDhJVmaNcUAxp8GadVQRJhEvEbGLDawC6jTgx02xHF2u7hzxrMb7pzDAXkZTF6igeh9Y26IxJQ7dD38MO/tc3GEaZZ1DN/aEt1vf9pui6gXpFvDNaszfK+JKnPVyj5Kk+JzoMzQ6px60GXEuieOf2ufH8G+UgFqywrE68BXsO0H2a1i0z/IZ7hw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=XId56xhNNfdRa9xX7oshueAieoYEzbtwOjlk++lG9q4=;
- b=NvXWn0JrA+m2b5/GRcIisW73EIY+zYOHARb3nO0lcl7yWA732NT+u1srB18sEMiIBfDC561jFjH8pxBY+/dc/qhWDa8hSIuKYVzxbySaoOGdWgeju0wGb+SsYUEcE6M09MXtLirAQyBuVcm/P1UuM1XOaHIOYh9qs0EmBdEtlGGShZh+tvppCZkqA3oGeyQMo2z+3s8+Zp2NGxWBQhz9O8TqR8nD3Bit76cRhRRMWqEOE0iRsTzhQq/1QDYNGWEbc9M2Zgw8KQUfOPNE2Ta9a+H3itre8TdVDrgMxWgTGTc9nayysvIQ9fZrDIh4BNdcOcrGUGxaiGTz4C1YNDjGwg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 165.204.84.17) smtp.rcpttodomain=gmail.com smtp.mailfrom=amd.com; dmarc=pass
- (p=none sp=none pct=100) action=none header.from=amd.com; dkim=none (message
- not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=XId56xhNNfdRa9xX7oshueAieoYEzbtwOjlk++lG9q4=;
- b=fz8Hxe0HepbbfoDBVeQA9iyeKEBR2Q2Qaht4vtsQMmzKl02fYrAXLLR0Ice9DFkTpW6OkAadkOv3yXso+qDfZlnLD+ip3IOUO8ieuMR3f+/fNOEUZDtMUwhxwn3OsYIGP1vgEgVDmJvTVBLUlqeKW855d+e/iAP2UhZNk/1HuIA=
-Received: from BN0PR03CA0008.namprd03.prod.outlook.com (2603:10b6:408:e6::13)
- by DM6PR12MB3738.namprd12.prod.outlook.com (2603:10b6:5:1c7::17) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4173.24; Mon, 31 May
- 2021 08:12:27 +0000
-Received: from BN8NAM11FT010.eop-nam11.prod.protection.outlook.com
- (2603:10b6:408:e6:cafe::40) by BN0PR03CA0008.outlook.office365.com
- (2603:10b6:408:e6::13) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4173.20 via Frontend
- Transport; Mon, 31 May 2021 08:12:26 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
- smtp.mailfrom=amd.com; gmail.com; dkim=none (message not signed)
- header.d=none;gmail.com; dmarc=pass action=none header.from=amd.com;
-Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
- 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
- client-ip=165.204.84.17; helo=SATLEXMB04.amd.com;
-Received: from SATLEXMB04.amd.com (165.204.84.17) by
- BN8NAM11FT010.mail.protection.outlook.com (10.13.177.53) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.4150.30 via Frontend Transport; Mon, 31 May 2021 08:12:26 +0000
-Received: from SATLEXMB04.amd.com (10.181.40.145) by SATLEXMB04.amd.com
- (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2242.4; Mon, 31 May
- 2021 03:12:25 -0500
-Received: from weisheng-Pro-E800-G4-WS950T.amd.com (10.180.168.240) by
- SATLEXMB04.amd.com (10.181.40.145) with Microsoft SMTP Server id 15.1.2242.4
- via Frontend Transport; Mon, 31 May 2021 03:12:23 -0500
-From:   Wesley Sheng <wesley.sheng@amd.com>
-To:     <linasvepstas@gmail.com>, <ruscur@russell.cc>, <oohall@gmail.com>,
-        <bhelgaas@google.com>, <corbet@lwn.net>,
-        <linux-pci@vger.kernel.org>, <linuxppc-dev@lists.ozlabs.org>,
-        <linux-doc@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-CC:     <wesleyshenggit@sina.com>, <wesley.sheng@amd.com>
-Subject: [PATCH] Documentation PCI: Fix typo in pci-error-recovery.rst
-Date:   Mon, 31 May 2021 16:12:15 +0800
-Message-ID: <20210531081215.43507-1-wesley.sheng@amd.com>
-X-Mailer: git-send-email 2.25.1
+        id S230347AbhEaIPO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 04:15:14 -0400
+Received: from mx0a-00069f02.pphosted.com ([205.220.165.32]:12348 "EHLO
+        mx0a-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230070AbhEaIPM (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 04:15:12 -0400
+Received: from pps.filterd (m0246627.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 14V896qW016699;
+        Mon, 31 May 2021 08:12:49 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ content-transfer-encoding : in-reply-to; s=corp-2020-01-29;
+ bh=lRJRTZ3laV3GoLDi0o2E94yWZ3oakyIGXMdmbNSd5MM=;
+ b=bFK4Mu7gkcGogrWzNA1FetNDuwidRBjoJ5/1GOHu7IRJG6UsE0Hvb6Ew2dKBfSMctcNl
+ 6ErX17UVAGGdQG88ApsMADBgbZ3MqkokQbZTDB62eErDmkMLsMPRtXxa5hDrlqabHF4T
+ +DskapPpokZKhnIeRg5AdyqKIoBFJ+YmIm9Xh8HSlwZ55mXPYEKUJ0XykndhtcG/p2Pi
+ CXzfO8LsyNzzrUNnzkEEMtcfAqVfVIIVs5mvXkSVyTMd9aWcTb/+J+UI7mNUeRlpBq4E
+ DVW/f1GzFeULNJOKyd75sF2sMpoW8VsSzE5vpURi/8+2ci+5yIBlRTGPdm9xUFv4Q0xc MQ== 
+Received: from oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by mx0b-00069f02.pphosted.com with ESMTP id 38vjar04ur-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 31 May 2021 08:12:49 +0000
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [127.0.0.1])
+        by pps.podrdrct (8.16.0.36/8.16.0.36) with SMTP id 14V8C9GY071320;
+        Mon, 31 May 2021 08:12:48 GMT
+Received: from pps.reinject (localhost [127.0.0.1])
+        by aserp3020.oracle.com with ESMTP id 38ude5r1qs-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 31 May 2021 08:12:48 +0000
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 14V8ClmO076772;
+        Mon, 31 May 2021 08:12:47 GMT
+Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
+        by aserp3020.oracle.com with ESMTP id 38ude5r1q0-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 31 May 2021 08:12:47 +0000
+Received: from abhmp0003.oracle.com (abhmp0003.oracle.com [141.146.116.9])
+        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 14V8CfJX008658;
+        Mon, 31 May 2021 08:12:45 GMT
+Received: from kadam (/41.212.42.34)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Mon, 31 May 2021 08:12:40 +0000
+Date:   Mon, 31 May 2021 11:12:33 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     Dongliang Mu <mudongliangabcd@gmail.com>
+Cc:     perex@perex.cz, tiwai@suse.com, alsa-devel@alsa-project.org,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        syzbot+08a7d8b51ea048a74ffb@syzkaller.appspotmail.com
+Subject: Re: [PATCH] ALSA: control led: fix memory leak in
+ snd_ctl_led_register
+Message-ID: <20210531081233.GW24442@kadam>
+References: <20210528131757.2269989-1-mudongliangabcd@gmail.com>
+ <20210528133309.GR24442@kadam>
+ <CAD-N9QVWcEJjoziA6HVoQiUueVaKqAJS5Et60zvCvuUE7e6=gg@mail.gmail.com>
+ <20210528140500.GS24442@kadam>
+ <A622EB84-DC4A-47A4-A828-CE6D25DC92EB@gmail.com>
+ <CAD-N9QVjhDDJxRnNrDzwt05BNijr1o11nE8xjvq8GrakEJ8EuQ@mail.gmail.com>
+ <20210531044022.GU24442@kadam>
+ <CAD-N9QWBBP6_Wwi4z3e4yJM-tS54=1=CcvAA+2__Qj8NsTLq9g@mail.gmail.com>
+ <20210531070337.GV24442@kadam>
+ <CAD-N9QU-uqFr=b1hMi1h1ytq2Uf2XKL44f9OHBRhM70zhkiO7w@mail.gmail.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 49086c30-0922-40c6-aa50-08d9240bd3ae
-X-MS-TrafficTypeDiagnostic: DM6PR12MB3738:
-X-Microsoft-Antispam-PRVS: <DM6PR12MB3738040D79A3083ADED2AB62953F9@DM6PR12MB3738.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:6790;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: N8cS27x14Ch6aGqnA4Qx4ZC12BJezeFEvzidOxQk8E7PywIeix4OzUApGqZ0yUwx4qLPmuAjlErR+b9nfqwkMZOALQpTgtQlHj6h17tmZZ2YZM6Z6KtG5/LJU0yNyqJyEwCF4T0T8kCvdPcDKwxYkOl3rdsiXeiXFuHvBDdY8Rp5/OqXmxmnHNlo1ArXDJgwgdpzY6bagNpthu03bJbXd39urHcZeCywKFSDp1OiDw/9fJxQ8JmAHeYOWqRIk+JR7i9Pw+ZkeegErjd4vG/9uQU3uIpyQckIOdKaqEApvil88dtjEcKpHA7duvXv3OTck6WU+3F1RbvL3zAPeekcQPSWAOhweUm4czO1AdLhpHQXp+Nqd5Y7WGXREkE5FgwijB44cjify+0x0AzJYJ1IRCZXFMOtV6SIxLEn7YeV7fMtC7cbs+gmonxjFii+pp/GYTQShZJ0I2vNjwnOeafubkQYRh5eSku1FLsd+M8kK4NRd45Y/219oiN3Hwx0CpAA2979qwtjSh4lj7oRrYYdn+dKFpUhpdln4cq20mwB8F1mR3wTgZPXXKwQZdoaQPD8guObX6LSZP2fUlrNce6tZnID/I4l1c7J3dQveLl+R9hSJ+ZIUQmhhwum6vVHIWf51a/yMVxe9XVh1+yhu3dSistN0aI6xFTqtIKcuV7OZJnz8LgLBff/+NoEUMHvQfo0FIgy2kVAxWJSzKLi0SJPyg==
-X-Forefront-Antispam-Report: CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(4636009)(346002)(376002)(396003)(39860400002)(136003)(46966006)(36840700001)(316002)(2906002)(426003)(2616005)(8676002)(70206006)(36756003)(44832011)(70586007)(7416002)(6666004)(26005)(36860700001)(7696005)(1076003)(82310400003)(82740400003)(8936002)(5660300002)(4326008)(81166007)(356005)(336012)(54906003)(83380400001)(186003)(47076005)(86362001)(110136005)(478600001)(2101003)(36900700001);DIR:OUT;SFP:1101;
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 31 May 2021 08:12:26.3875
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 49086c30-0922-40c6-aa50-08d9240bd3ae
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
-X-MS-Exchange-CrossTenant-AuthSource: BN8NAM11FT010.eop-nam11.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB3738
+In-Reply-To: <CAD-N9QU-uqFr=b1hMi1h1ytq2Uf2XKL44f9OHBRhM70zhkiO7w@mail.gmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Proofpoint-ORIG-GUID: -ArnX23L9dwA5q8lRZD5b8UZLhX4zWz_
+X-Proofpoint-GUID: -ArnX23L9dwA5q8lRZD5b8UZLhX4zWz_
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Replace "It" with "If", since it is a conditional statement.
+On Mon, May 31, 2021 at 03:34:09PM +0800, Dongliang Mu wrote:
+> On Mon, May 31, 2021 at 3:03 PM Dan Carpenter <dan.carpenter@oracle.com> wrote:
+> >
+> > On Mon, May 31, 2021 at 02:20:37PM +0800, Dongliang Mu wrote:
+> > > On Mon, May 31, 2021 at 12:40 PM Dan Carpenter <dan.carpenter@oracle.com> wrote:
+> > > >
+> > > > On Mon, May 31, 2021 at 11:03:36AM +0800, Dongliang Mu wrote:
+> > > > > On Sat, May 29, 2021 at 5:35 AM 慕冬亮 <mudongliangabcd@gmail.com> wrote:
+> > > > > >
+> > > > > >
+> > > > > >
+> > > > > > > On May 28, 2021, at 10:05 PM, Dan Carpenter <dan.carpenter@oracle.com> wrote:
+> > > > > > >
+> > > > > > > On Fri, May 28, 2021 at 09:50:49PM +0800, Dongliang Mu wrote:
+> > > > > > >>
+> > > > > > >> Can you please give some advise on how to fix this WARN issue?
+> > > > > > >
+> > > > > > > But it feels like it spoils the fun if I write the commit...  Anyway:
+> > > > > >
+> > > > > > It’s fine. I am still in the learning process. It’s also good to learn experience by comparing your patch and my patch.
+> > > > > >
+> > > > > > >
+> > > > > > > regards,
+> > > > > > > dan carpenter
+> > > > > > >
+> > > > > > > diff --git a/sound/core/control_led.c b/sound/core/control_led.c
+> > > > > > > index 25f57c14f294..dd357abc1b58 100644
+> > > > > > > --- a/sound/core/control_led.c
+> > > > > > > +++ b/sound/core/control_led.c
+> > > > > > > @@ -740,6 +740,7 @@ static int __init snd_ctl_led_init(void)
+> > > > > > >                       for (; group > 0; group--) {
+> > > > > > >                               led = &snd_ctl_leds[group - 1];
+> > > > > > >                               device_del(&led->dev);
+> > > > > > > +                             device_put(&led->dev);
+> > > > > > >                       }
+> > > > > > >                       device_del(&snd_ctl_led_dev);
+> > > > > > >                       return -ENOMEM;
+> > > > > > > @@ -768,6 +769,7 @@ static void __exit snd_ctl_led_exit(void)
+> > > > > > >       for (group = 0; group < MAX_LED; group++) {
+> > > > > > >               led = &snd_ctl_leds[group];
+> > > > > > >               device_del(&led->dev);
+> > > > > > > +             device_put(&led->dev);
+> > > > > > >       }
+> > > > > > >       device_del(&snd_ctl_led_dev);
+> > > > > > >       snd_ctl_led_clean(NULL);
+> > > > >
+> > > > > Hi Dan,
+> > > > >
+> > > > > I tried this patch, and it still triggers the memleak.
+> > > >
+> > > > Did your patch fix the leak?  Because my patch should have been
+> > > > equivalent except for it fixes an additional leak in the snd_ctl_led_init()
+> > > > error path.
+> > >
+> > > The syzbot link is [1]. I have tested my patch in the syzbot dashboard
+> > > and my local workspace.
+> > >
+> > > I think the reason why your patch did not work should be
+> > > led_card(struct snd_ctl_led_card) is already freed before returning in
+> > > snd_ctl_led_sysfs_remove, rather than led(struct snd_ctl_led). See the
+> > > implementation of snd_ctl_led_sysfs_remove for some details. Please
+> > > correct me if I make any mistakes.
+> > >
+> > > static void snd_ctl_led_sysfs_remove(struct snd_card *card)
+> > > {
+> > >         unsigned int group;
+> > >         struct snd_ctl_led_card *led_card;
+> > >         struct snd_ctl_led *led;
+> > >         char link_name[32];
+> > >
+> > >         for (group = 0; group < MAX_LED; group++) {
+> > >                 led = &snd_ctl_leds[group];
+> > >                 led_card = led->cards[card->number];
+> > >                 if (!led_card)
+> > >                         continue;
+> > >                 snprintf(link_name, sizeof(link_name), "led-%s", led->name);
+> > >                 sysfs_remove_link(&card->ctl_dev.kobj, link_name);
+> > >                 sysfs_remove_link(&led_card->dev.kobj, "card");
+> > >                 device_del(&led_card->dev);
+> > >                 put_device(&led_card->dev);
+> > >                 kfree(led_card);
+> > >                 led->cards[card->number] = NULL;
+> > >         }
+> > > }
+> >
+> > This is frustrating to look at because it's not a diff so it doesn't
+> > show what you changed.  I think you are saying that you added the
+> > put_device(&led_card->dev);.  That's true.  There are some other leaks
+> > as well.  We should just fix them all.  Use device_unregister() because
+> > it's cleaner.
+> 
+> Oh, I see your point. Yeah, we should fix these memory leaks all. I
+> agree with device_unregister.
+> 
+> >
+> > If both device_initialize() and device_add() succeed then call
+> > device_unregister() to unwind.
+> 
+> BTW, have you tested this new patch on two memory leaks?
 
-Signed-off-by: Wesley Sheng <wesley.sheng@amd.com>
----
- Documentation/PCI/pci-error-recovery.rst | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+No I have not tested it at all, and I don't remember if I even compiled
+it.
 
-diff --git a/Documentation/PCI/pci-error-recovery.rst b/Documentation/PCI/pci-error-recovery.rst
-index 84ceebb08cac..187f43a03200 100644
---- a/Documentation/PCI/pci-error-recovery.rst
-+++ b/Documentation/PCI/pci-error-recovery.rst
-@@ -295,7 +295,7 @@ and let the driver restart normal I/O processing.
- A driver can still return a critical failure for this function if
- it can't get the device operational after reset.  If the platform
- previously tried a soft reset, it might now try a hard reset (power
--cycle) and then call slot_reset() again.  It the device still can't
-+cycle) and then call slot_reset() again.  If the device still can't
- be recovered, there is nothing more that can be done;  the platform
- will typically report a "permanent failure" in such a case.  The
- device will be considered "dead" in this case.
--- 
-2.25.1
+regards,
+dan carpenter
 
