@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D7F42395F4C
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 16:08:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 63C14396413
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 17:44:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232446AbhEaOJ5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 10:09:57 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48556 "EHLO mail.kernel.org"
+        id S232183AbhEaPpr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 11:45:47 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48830 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232650AbhEaNn6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 09:43:58 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9804E6141B;
-        Mon, 31 May 2021 13:29:12 +0000 (UTC)
+        id S233771AbhEaOZ0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 10:25:26 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8B68161A24;
+        Mon, 31 May 2021 13:46:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1622467753;
-        bh=/VB0cNKBXrkiO0qO9uaMW7ltrXMVcezAhAeh1le109A=;
+        s=korg; t=1622468800;
+        bh=SNPG34cW3+hIu5UyOQGDVSaQNlNyVlT+x99/tpuyLac=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=m4RYgh8FAI/9KvGG8QR9dimYfEFE+MzkOFxYcQUXG1zU0zWnvpybs32XuuHSqFW2c
-         E8KQoFv6n/CI/wMv4xOiWS7c5nVIYQrGQVDokTvjAIRtLe1+f/2heWfvn6agp7FrLa
-         AWQhRx2Hu+KAyN/Fiz/wIAWnm7RGyYEtXWD+9Ek4=
+        b=DCgrKcVB04pyRProsvkXp5Kv1c7t4rUcRcLB8ZsIS5tCzyIAN6fHJXojKbZhjE4oG
+         dTWxHB4RDIoLjaxWLWxngGRsVY7DF0Q3kkGux/oByFb/BpOTQgM2fgwJf/YB2jZWHX
+         8H5mEXrBNvq5UpmPZY+XWMUfGQ6mqwe+te5Z0r3E=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
-        Zhen Lei <thunder.leizhen@huawei.com>,
-        Michael Chan <michael.chan@broadcom.com>,
-        "David S. Miller" <davem@davemloft.net>,
+        stable@vger.kernel.org, Lang Yu <Lang.Yu@amd.com>,
+        =?UTF-8?q?Christian=20K=C3=83nig?= <christian.koenig@amd.com>,
+        Andrey Grodzovsky <andrey.grodzovsky@amd.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 66/79] net: bnx2: Fix error return code in bnx2_init_board()
+Subject: [PATCH 5.4 134/177] drm/amd/amdgpu: fix a potential deadlock in gpu reset
 Date:   Mon, 31 May 2021 15:14:51 +0200
-Message-Id: <20210531130638.104305270@linuxfoundation.org>
+Message-Id: <20210531130652.570205443@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210531130636.002722319@linuxfoundation.org>
-References: <20210531130636.002722319@linuxfoundation.org>
+In-Reply-To: <20210531130647.887605866@linuxfoundation.org>
+References: <20210531130647.887605866@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,38 +42,89 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zhen Lei <thunder.leizhen@huawei.com>
+From: Lang Yu <Lang.Yu@amd.com>
 
-[ Upstream commit 28c66b6da4087b8cfe81c2ec0a46eb6116dafda9 ]
+[ Upstream commit 9c2876d56f1ce9b6b2072f1446fb1e8d1532cb3d ]
 
-Fix to return -EPERM from the error handling case instead of 0, as done
-elsewhere in this function.
+When amdgpu_ib_ring_tests failed, the reset logic called
+amdgpu_device_ip_suspend twice, then deadlock occurred.
+Deadlock log:
 
-Fixes: b6016b767397 ("[BNX2]: New Broadcom gigabit network driver.")
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
-Reviewed-by: Michael Chan <michael.chan@broadcom.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+[  805.655192] amdgpu 0000:04:00.0: amdgpu: ib ring test failed (-110).
+[  806.290952] [drm] free PSP TMR buffer
+
+[  806.319406] ============================================
+[  806.320315] WARNING: possible recursive locking detected
+[  806.321225] 5.11.0-custom #1 Tainted: G        W  OEL
+[  806.322135] --------------------------------------------
+[  806.323043] cat/2593 is trying to acquire lock:
+[  806.323825] ffff888136b1cdc8 (&adev->dm.dc_lock){+.+.}-{3:3}, at: dm_suspend+0xb8/0x1d0 [amdgpu]
+[  806.325668]
+               but task is already holding lock:
+[  806.326664] ffff888136b1cdc8 (&adev->dm.dc_lock){+.+.}-{3:3}, at: dm_suspend+0xb8/0x1d0 [amdgpu]
+[  806.328430]
+               other info that might help us debug this:
+[  806.329539]  Possible unsafe locking scenario:
+
+[  806.330549]        CPU0
+[  806.330983]        ----
+[  806.331416]   lock(&adev->dm.dc_lock);
+[  806.332086]   lock(&adev->dm.dc_lock);
+[  806.332738]
+                *** DEADLOCK ***
+
+[  806.333747]  May be due to missing lock nesting notation
+
+[  806.334899] 3 locks held by cat/2593:
+[  806.335537]  #0: ffff888100d3f1b8 (&attr->mutex){+.+.}-{3:3}, at: simple_attr_read+0x4e/0x110
+[  806.337009]  #1: ffff888136b1fd78 (&adev->reset_sem){++++}-{3:3}, at: amdgpu_device_lock_adev+0x42/0x94 [amdgpu]
+[  806.339018]  #2: ffff888136b1cdc8 (&adev->dm.dc_lock){+.+.}-{3:3}, at: dm_suspend+0xb8/0x1d0 [amdgpu]
+[  806.340869]
+               stack backtrace:
+[  806.341621] CPU: 6 PID: 2593 Comm: cat Tainted: G        W  OEL    5.11.0-custom #1
+[  806.342921] Hardware name: AMD Celadon-CZN/Celadon-CZN, BIOS WLD0C23N_Weekly_20_12_2 12/23/2020
+[  806.344413] Call Trace:
+[  806.344849]  dump_stack+0x93/0xbd
+[  806.345435]  __lock_acquire.cold+0x18a/0x2cf
+[  806.346179]  lock_acquire+0xca/0x390
+[  806.346807]  ? dm_suspend+0xb8/0x1d0 [amdgpu]
+[  806.347813]  __mutex_lock+0x9b/0x930
+[  806.348454]  ? dm_suspend+0xb8/0x1d0 [amdgpu]
+[  806.349434]  ? amdgpu_device_indirect_rreg+0x58/0x70 [amdgpu]
+[  806.350581]  ? _raw_spin_unlock_irqrestore+0x47/0x50
+[  806.351437]  ? dm_suspend+0xb8/0x1d0 [amdgpu]
+[  806.352437]  ? rcu_read_lock_sched_held+0x4f/0x80
+[  806.353252]  ? rcu_read_lock_sched_held+0x4f/0x80
+[  806.354064]  mutex_lock_nested+0x1b/0x20
+[  806.354747]  ? mutex_lock_nested+0x1b/0x20
+[  806.355457]  dm_suspend+0xb8/0x1d0 [amdgpu]
+[  806.356427]  ? soc15_common_set_clockgating_state+0x17d/0x19 [amdgpu]
+[  806.357736]  amdgpu_device_ip_suspend_phase1+0x78/0xd0 [amdgpu]
+[  806.360394]  amdgpu_device_ip_suspend+0x21/0x70 [amdgpu]
+[  806.362926]  amdgpu_device_pre_asic_reset+0xb3/0x270 [amdgpu]
+[  806.365560]  amdgpu_device_gpu_recover.cold+0x679/0x8eb [amdgpu]
+
+Signed-off-by: Lang Yu <Lang.Yu@amd.com>
+Acked-by: Christian KÃnig <christian.koenig@amd.com>
+Reviewed-by: Andrey Grodzovsky <andrey.grodzovsky@amd.com>
+Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/broadcom/bnx2.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/gpu/drm/amd/amdgpu/amdgpu_device.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/drivers/net/ethernet/broadcom/bnx2.c b/drivers/net/ethernet/broadcom/bnx2.c
-index e3af1f3cb61f..299cefe6f94b 100644
---- a/drivers/net/ethernet/broadcom/bnx2.c
-+++ b/drivers/net/ethernet/broadcom/bnx2.c
-@@ -8252,9 +8252,9 @@ bnx2_init_board(struct pci_dev *pdev, struct net_device *dev)
- 		BNX2_WR(bp, PCI_COMMAND, reg);
- 	} else if ((BNX2_CHIP_ID(bp) == BNX2_CHIP_ID_5706_A1) &&
- 		!(bp->flags & BNX2_FLAG_PCIX)) {
--
- 		dev_err(&pdev->dev,
- 			"5706 A1 can only be used in a PCIX bus, aborting\n");
-+		rc = -EPERM;
- 		goto err_out_unmap;
- 	}
- 
+diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_device.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_device.c
+index 3b3fc9a426e9..765f9a6c4640 100644
+--- a/drivers/gpu/drm/amd/amdgpu/amdgpu_device.c
++++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_device.c
+@@ -3704,7 +3704,6 @@ out:
+ 			r = amdgpu_ib_ring_tests(tmp_adev);
+ 			if (r) {
+ 				dev_err(tmp_adev->dev, "ib ring test failed (%d).\n", r);
+-				r = amdgpu_device_ip_suspend(tmp_adev);
+ 				need_full_reset = true;
+ 				r = -EAGAIN;
+ 				goto end;
 -- 
 2.30.2
 
