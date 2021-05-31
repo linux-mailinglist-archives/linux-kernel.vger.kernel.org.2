@@ -2,33 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C6B6396584
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 18:37:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D2EF396586
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 18:38:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233722AbhEaQi4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 12:38:56 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45938 "EHLO mail.kernel.org"
+        id S234684AbhEaQjX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 12:39:23 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46632 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232043AbhEaOtn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 10:49:43 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7083961C9B;
-        Mon, 31 May 2021 13:57:27 +0000 (UTC)
+        id S232605AbhEaOuR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 10:50:17 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 04D5961C9A;
+        Mon, 31 May 2021 13:57:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1622469447;
-        bh=gvmv6dZueX+ccYGnRveAXVCBHyGB4Q5Y5MB37H0YJkY=;
+        s=korg; t=1622469450;
+        bh=6J+VSZR2RVrPRUpwU04x1RUQWW0xg8KZLbMcUqkVw6I=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Z+UBex+DuAeEEFGmfjmUg5aYJQR3vA/eB1NP8s9/lS0G3k2BvSUKG437sEYM24V/W
-         dCDlp59QR8PbE36qUjNzsuZ7C0/ELwqzhW06HcsUw+5me+QGCoSDqF96WsPD8bN0jm
-         VkKOGMqgULtSvlVamSwqM431wWX3PmBr+q0pzqwY=
+        b=MI2j11wSB7lYbkpjhTtn6ghWW7k2Aijy/vGJbQJGKLIwFfT6isflK+AHwI7v7Qab1
+         hT295DufmtCqkG7t2FLkkGgL2CxI5xvulirUKDTG3LjkuabxwNJqWaSpcXT177zvSB
+         dy7403ithckgaXXSgtx2xctcbnYijNANZ/KCeDmI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Josef Bacik <josef@toxicpanda.com>,
-        Boris Burkov <boris@bur.io>, David Sterba <dsterba@suse.com>,
+        stable@vger.kernel.org, Stanley Chu <stanley.chu@mediatek.com>,
+        Peter Wang <peter.wang@mediatek.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.12 200/296] btrfs: return whole extents in fiemap
-Date:   Mon, 31 May 2021 15:14:15 +0200
-Message-Id: <20210531130710.608274346@linuxfoundation.org>
+Subject: [PATCH 5.12 201/296] scsi: ufs: ufs-mediatek: Fix power down spec violation
+Date:   Mon, 31 May 2021 15:14:16 +0200
+Message-Id: <20210531130710.641085795@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210531130703.762129381@linuxfoundation.org>
 References: <20210531130703.762129381@linuxfoundation.org>
@@ -40,84 +41,53 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Boris Burkov <boris@bur.io>
+From: Peter Wang <peter.wang@mediatek.com>
 
-[ Upstream commit 15c7745c9a0078edad1f7df5a6bb7b80bc8cca23 ]
+[ Upstream commit c625b80b9d00f3546722cd77527f9697c8c4c911 ]
 
-  `xfs_io -c 'fiemap <off> <len>' <file>`
+As per spec, e.g. JESD220E chapter 7.2, while powering off the UFS device,
+RST_N signal should be between VSS(Ground) and VCCQ/VCCQ2. The power down
+sequence after fixing:
 
-can give surprising results on btrfs that differ from xfs.
+Power down:
 
-btrfs prints out extents trimmed to fit the user input. If the user's
-fiemap request has an offset, then rather than returning each whole
-extent which intersects that range, we also trim the start extent to not
-have start < off.
+ 1. Assert RST_N low
 
-Documentation in filesystems/fiemap.txt and the xfs_io man page suggests
-that returning the whole extent is expected.
+ 2. Turn-off VCC
 
-Some cases which all yield the same fiemap in xfs, but not btrfs:
-  dd if=/dev/zero of=$f bs=4k count=1
-  sudo xfs_io -c 'fiemap 0 1024' $f
-    0: [0..7]: 26624..26631
-  sudo xfs_io -c 'fiemap 2048 1024' $f
-    0: [4..7]: 26628..26631
-  sudo xfs_io -c 'fiemap 2048 4096' $f
-    0: [4..7]: 26628..26631
-  sudo xfs_io -c 'fiemap 3584 512' $f
-    0: [7..7]: 26631..26631
-  sudo xfs_io -c 'fiemap 4091 5' $f
-    0: [7..6]: 26631..26630
+ 3. Turn-off VCCQ/VCCQ2
 
-I believe this is a consequence of the logic for merging contiguous
-extents represented by separate extent items. That logic needs to track
-the last offset as it loops through the extent items, which happens to
-pick up the start offset on the first iteration, and trim off the
-beginning of the full extent. To fix it, start `off` at 0 rather than
-`start` so that we keep the iteration/merging intact without cutting off
-the start of the extent.
-
-after the fix, all the above commands give:
-
-  0: [0..7]: 26624..26631
-
-The merging logic is exercised by fstest generic/483, and I have written
-a new fstest for checking we don't have backwards or zero-length fiemaps
-for cases like those above.
-
-Reviewed-by: Josef Bacik <josef@toxicpanda.com>
-Signed-off-by: Boris Burkov <boris@bur.io>
-Signed-off-by: David Sterba <dsterba@suse.com>
+Link: https://lore.kernel.org/r/1620813706-25331-1-git-send-email-peter.wang@mediatek.com
+Reviewed-by: Stanley Chu <stanley.chu@mediatek.com>
+Signed-off-by: Peter Wang <peter.wang@mediatek.com>
+Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/btrfs/extent_io.c | 7 ++++++-
- 1 file changed, 6 insertions(+), 1 deletion(-)
+ drivers/scsi/ufs/ufs-mediatek.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
-index 910769d5fcdb..1eb5d22d5373 100644
---- a/fs/btrfs/extent_io.c
-+++ b/fs/btrfs/extent_io.c
-@@ -4975,7 +4975,7 @@ int extent_fiemap(struct btrfs_inode *inode, struct fiemap_extent_info *fieinfo,
- 		  u64 start, u64 len)
+diff --git a/drivers/scsi/ufs/ufs-mediatek.c b/drivers/scsi/ufs/ufs-mediatek.c
+index a981f261b304..aee3cfc7142a 100644
+--- a/drivers/scsi/ufs/ufs-mediatek.c
++++ b/drivers/scsi/ufs/ufs-mediatek.c
+@@ -922,6 +922,7 @@ static void ufs_mtk_vreg_set_lpm(struct ufs_hba *hba, bool lpm)
+ static int ufs_mtk_suspend(struct ufs_hba *hba, enum ufs_pm_op pm_op)
  {
- 	int ret = 0;
--	u64 off = start;
-+	u64 off;
- 	u64 max = start + len;
- 	u32 flags = 0;
- 	u32 found_type;
-@@ -5010,6 +5010,11 @@ int extent_fiemap(struct btrfs_inode *inode, struct fiemap_extent_info *fieinfo,
- 		goto out_free_ulist;
+ 	int err;
++	struct arm_smccc_res res;
+ 
+ 	if (ufshcd_is_link_hibern8(hba)) {
+ 		err = ufs_mtk_link_set_lpm(hba);
+@@ -941,6 +942,9 @@ static int ufs_mtk_suspend(struct ufs_hba *hba, enum ufs_pm_op pm_op)
+ 			goto fail;
  	}
  
-+	/*
-+	 * We can't initialize that to 'start' as this could miss extents due
-+	 * to extent item merging
-+	 */
-+	off = 0;
- 	start = round_down(start, btrfs_inode_sectorsize(inode));
- 	len = round_up(max, btrfs_inode_sectorsize(inode)) - start;
- 
++	if (ufshcd_is_link_off(hba))
++		ufs_mtk_device_reset_ctrl(0, res);
++
+ 	return 0;
+ fail:
+ 	/*
 -- 
 2.30.2
 
