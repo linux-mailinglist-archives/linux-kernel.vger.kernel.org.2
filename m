@@ -2,103 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C3A0B39559B
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 08:49:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E36F639559E
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 08:49:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230205AbhEaGum (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 02:50:42 -0400
-Received: from mx2.suse.de ([195.135.220.15]:53712 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230135AbhEaGuj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 02:50:39 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1622443739; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
+        id S230104AbhEaGvC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 02:51:02 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:21176 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230107AbhEaGu5 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 02:50:57 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1622443758;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=+lr7oE5hWOvbLfQreFLJO+2NuHgm+ZeXzWkRJMgDAnI=;
-        b=G7KTuedXlFr6twlSfk3OFs2Qvzo9RsPBZ9+rmSZBK1XMvAzfI6zZsxjQXwYMhOqBu92CsE
-        wrL+wG3jxyWWAxtJyUHyGuduIRth8Ql6amjcfcZSvJhj1+nQxQV1uVZV9JTuyjWZqPByfl
-        QozDHaVHxp6tIc8xAPHGFHnZGvoRBjw=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 7BFD3B24F;
-        Mon, 31 May 2021 06:48:59 +0000 (UTC)
-Date:   Mon, 31 May 2021 08:48:58 +0200
-From:   Michal Hocko <mhocko@suse.com>
-To:     Mike Kravetz <mike.kravetz@oracle.com>
-Cc:     Linux-MM <linux-mm@kvack.org>, lkml <linux-kernel@vger.kernel.org>,
-        Muchun Song <songmuchun@bytedance.com>,
-        Oscar Salvador <osalvador@suse.de>,
-        David Hildenbrand <david@redhat.com>,
-        Naoya Horiguchi <naoya.horiguchi@nec.com>,
-        Andrew Morton <akpm@linux-foundation.org>
-Subject: Re: [PATCH] mm: hugetlb: fix dissolve_free_huge_page use of
- tail/head page
-Message-ID: <YLSG2vUTv+QSAw8a@dhcp22.suse.cz>
-References: <20210527231225.226987-1-mike.kravetz@oracle.com>
+        bh=6Yc0uSlr7grz8BAG5Bx+sZyGCLVXp2CTrZfFPky/9/w=;
+        b=gZVFTso8CQ2qC9cp2DRumIL1/lDDCAD/G+S+iDvtWR5G1En6mx/UoSEhO3a0IhK8bX5xS6
+        xLqV8Pv3rWdpPYHk1iBILTEu4XimGqlDbuoQUf9EZBap93OJmycxWkgWstnKTarzGvOkqz
+        KzGnaq0iTEj1oiyvIh7399ScoIymVOo=
+Received: from mail-pf1-f197.google.com (mail-pf1-f197.google.com
+ [209.85.210.197]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-197-l6_JO9dBN2iHbZtCYobZ8A-1; Mon, 31 May 2021 02:49:16 -0400
+X-MC-Unique: l6_JO9dBN2iHbZtCYobZ8A-1
+Received: by mail-pf1-f197.google.com with SMTP id g21-20020aa787550000b02902db9841d2a1so5399050pfo.15
+        for <linux-kernel@vger.kernel.org>; Sun, 30 May 2021 23:49:16 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=6Yc0uSlr7grz8BAG5Bx+sZyGCLVXp2CTrZfFPky/9/w=;
+        b=kIwhgSwOo5OhVOn7jMRpE413F1+JbkqhXwz28YfyGptRg4TntKZCL7BIQ8S3R3TN2z
+         wBgbCjQbzkZ+coXTScQ0tYWaNEcGVp7b1Helq9aszN7jwcaPzFdOlP7g5nBALcsL6V/c
+         cjgadGJ/Pyx/n5LsnTYqhARA6vEU/anGSDxkzlqwA4b9ZBjM2oZynY5Bon2k7sGdi22z
+         M/iz1L3MwVG4xXuFRiLBpn+nZKoct2FGKrMo94cmR98QUbB48jQXjbHIWfTVNBzp0QmW
+         vglQVQZ12FS0We/fo5d8rB/NhgHqQJffOd76krSKEzNLhDxPl87WNE1XgN17r5U3HpFW
+         9G2A==
+X-Gm-Message-State: AOAM531agD9N5ZNjiLqtSD1//Hnazh2+gUMe1szUTS3fbPJSqbPI47o2
+        4iWA9+ADeIOeh/nQJC3yYpMH94lBDi7J4yYPFTV6HeuJJzCIpglGZZ7nYhKWVae4AH72qcBincu
+        V+4rWOc6hQBo2MjAslNjoCy9f3aVjHMpALtC9E2XDIiy+Bfsqz2/c9rDDf5hVXb+kOjqKm/YpvT
+        JP
+X-Received: by 2002:a17:90b:3796:: with SMTP id mz22mr1584926pjb.177.1622443755448;
+        Sun, 30 May 2021 23:49:15 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJx9RAl2ySCS8IqAypdqHE7XJCr0ttp2qTK+ufr0FDlpClMk1kWxyYqhd7HsscFqocSEmZPnrg==
+X-Received: by 2002:a17:90b:3796:: with SMTP id mz22mr1584900pjb.177.1622443755124;
+        Sun, 30 May 2021 23:49:15 -0700 (PDT)
+Received: from wangxiaodeMacBook-Air.local ([209.132.188.80])
+        by smtp.gmail.com with ESMTPSA id o139sm2519738pfd.96.2021.05.30.23.49.12
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 30 May 2021 23:49:14 -0700 (PDT)
+Subject: Re: [PATCH v3] virtio-net: Add validation for used length
+To:     Xie Yongji <xieyongji@bytedance.com>, mst@redhat.com,
+        kuba@kernel.org
+Cc:     virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20210528121157.105-1-xieyongji@bytedance.com>
+From:   Jason Wang <jasowang@redhat.com>
+Message-ID: <49ab3d41-c5d8-a49d-3ff4-28ebfdba0181@redhat.com>
+Date:   Mon, 31 May 2021 14:49:07 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.10.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210527231225.226987-1-mike.kravetz@oracle.com>
+In-Reply-To: <20210528121157.105-1-xieyongji@bytedance.com>
+Content-Type: text/plain; charset=gbk; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu 27-05-21 16:12:25, Mike Kravetz wrote:
-> The routine dissolve_free_huge_page can be passed the tail page of a
-> hugetlb page.  The tail page is incorrectly passed on to the routines
-> alloc_huge_page_vmemmap and add_hugetlb_page which expect a hugetlb
-> head page.
-> 
-> Operating on a tail page instead of head page could result in addressing
-> exceptions or vmemmap corruption.
-> 
-> Signed-off-by: Mike Kravetz <mike.kravetz@oracle.com>
 
-Acked-by: Michal Hocko <mhocko@suse.com>
-
+ÔÚ 2021/5/28 ÏÂÎç8:11, Xie Yongji Ð´µÀ:
+> This adds validation for used length (might come
+> from an untrusted device) to avoid data corruption
+> or loss.
+>
+> Signed-off-by: Xie Yongji <xieyongji@bytedance.com>
 > ---
-> The code with this issue is only in mmotm (and next).  Specifically
-> mm: hugetlb: alloc the vmemmap pages associated with each HugeTLB page
-> Andrew, I assume you will fix in your tree.
+>   drivers/net/virtio_net.c | 28 +++++++++++++++++++++-------
+>   1 file changed, 21 insertions(+), 7 deletions(-)
+>
+> diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
+> index 073fec4c0df1..01f15b65824c 100644
+> --- a/drivers/net/virtio_net.c
+> +++ b/drivers/net/virtio_net.c
+> @@ -732,6 +732,17 @@ static struct sk_buff *receive_small(struct net_device *dev,
+>   
+>   	rcu_read_lock();
+>   	xdp_prog = rcu_dereference(rq->xdp_prog);
+> +	if (unlikely(len > GOOD_PACKET_LEN)) {
+> +		pr_debug("%s: rx error: len %u exceeds max size %d\n",
+> +			 dev->name, len, GOOD_PACKET_LEN);
+> +		dev->stats.rx_length_errors++;
+> +		if (xdp_prog)
+> +			goto err_xdp;
+> +
+> +		rcu_read_unlock();
+> +		put_page(page);
+> +		return NULL;
+> +	}
+>   	if (xdp_prog) {
+>   		struct virtio_net_hdr_mrg_rxbuf *hdr = buf + header_offset;
+>   		struct xdp_frame *xdpf;
+> @@ -888,6 +899,16 @@ static struct sk_buff *receive_mergeable(struct net_device *dev,
+>   
+>   	rcu_read_lock();
+>   	xdp_prog = rcu_dereference(rq->xdp_prog);
+> +	if (unlikely(len > truesize)) {
+> +		pr_debug("%s: rx error: len %u exceeds truesize %lu\n",
+> +			 dev->name, len, (unsigned long)ctx);
+> +		dev->stats.rx_length_errors++;
+> +		if (xdp_prog)
+> +			goto err_xdp;
+> +
+> +		rcu_read_unlock();
+> +		goto err_skb;
+> +	}
 
-Yes, folding this in sounds like the best way forward.
 
-> 
->  mm/hugetlb.c            | 4 ++--
->  scripts/rust-version.sh | 0
->  2 files changed, 2 insertions(+), 2 deletions(-)
->  mode change 100644 => 100755 scripts/rust-version.sh
-> 
-> diff --git a/mm/hugetlb.c b/mm/hugetlb.c
-> index 69a4b551c157..d2461c1f32dd 100644
-> --- a/mm/hugetlb.c
-> +++ b/mm/hugetlb.c
-> @@ -1954,7 +1954,7 @@ int dissolve_free_huge_page(struct page *page)
->  		 * Attempt to allocate vmemmmap here so that we can take
->  		 * appropriate action on failure.
->  		 */
-> -		rc = alloc_huge_page_vmemmap(h, page);
-> +		rc = alloc_huge_page_vmemmap(h, head);
->  		if (!rc) {
->  			/*
->  			 * Move PageHWPoison flag from head page to the raw
-> @@ -1968,7 +1968,7 @@ int dissolve_free_huge_page(struct page *page)
->  			update_and_free_page(h, head, false);
->  		} else {
->  			spin_lock_irq(&hugetlb_lock);
-> -			add_hugetlb_page(h, page, false);
-> +			add_hugetlb_page(h, head, false);
->  			h->max_huge_pages++;
->  			spin_unlock_irq(&hugetlb_lock);
->  		}
-> diff --git a/scripts/rust-version.sh b/scripts/rust-version.sh
-> old mode 100644
-> new mode 100755
-> -- 
-> 2.31.1
-> 
+Patch looks correct but I'd rather not bother XDP here. It would be 
+better if we just do the check before rcu_read_lock() and use err_skb 
+directly() to avoid RCU/XDP stuffs.
 
--- 
-Michal Hocko
-SUSE Labs
+Thanks
+
+
+>   	if (xdp_prog) {
+>   		struct xdp_frame *xdpf;
+>   		struct page *xdp_page;
+> @@ -1012,13 +1033,6 @@ static struct sk_buff *receive_mergeable(struct net_device *dev,
+>   	}
+>   	rcu_read_unlock();
+>   
+> -	if (unlikely(len > truesize)) {
+> -		pr_debug("%s: rx error: len %u exceeds truesize %lu\n",
+> -			 dev->name, len, (unsigned long)ctx);
+> -		dev->stats.rx_length_errors++;
+> -		goto err_skb;
+> -	}
+> -
+>   	head_skb = page_to_skb(vi, rq, page, offset, len, truesize, !xdp_prog,
+>   			       metasize, !!headroom);
+>   	curr_skb = head_skb;
+
