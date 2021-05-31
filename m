@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 07A9E396231
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 16:50:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 924D0396564
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 18:32:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232438AbhEaOwd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 10:52:33 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37808 "EHLO mail.kernel.org"
+        id S233614AbhEaQdh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 12:33:37 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40794 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232399AbhEaOCe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 10:02:34 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 899336194E;
-        Mon, 31 May 2021 13:37:20 +0000 (UTC)
+        id S233838AbhEaOrk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 10:47:40 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id F1BF161927;
+        Mon, 31 May 2021 13:56:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1622468240;
-        bh=5UMo4Vu4+ny9cwlNcrqTQOyBn8cjCWZaFGIgbUb9J/Y=;
+        s=korg; t=1622469389;
+        bh=o2UOksS0HVOeLjuz84GvooEFiCHXaNV0PYRXLcFFWmA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=nledX1euTnC5fafNgiftAjjsNy5kbIee9AXOoCFeXl1FpAlSIy7+7BHhgO9ZNVxDG
-         LZ7EdEwv8RxqKkQ/IXfjJQA4seENViKzvwZzRnvQUj9JuCuWEEwot4bJREPK4Ckken
-         2ngQcMSEnmegWxHl/3bttb3EbexCmlt/mAJlGrZw=
+        b=Bk1iPLbpcIRGJf7pevJYGnFlNM++REgcRz2tGja+cLXX7hnZVnlvFhVX3qkY04iNX
+         x/mpF1BZmeColD+IqzlDHWWNWnJ+4z3uS5IXJFl2AaY6MeUmoqu5MtUGY/Um8K2sVz
+         HIK7NOnvbSmt054VJqiS8YXIegMNSPn1+GSPvUPo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Josef Bacik <josef@toxicpanda.com>,
-        Boris Burkov <boris@bur.io>, David Sterba <dsterba@suse.com>,
+        stable@vger.kernel.org, Kangjie Lu <kjlu@umn.edu>,
+        Kalle Valo <kvalo@codeaurora.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 170/252] btrfs: return whole extents in fiemap
+Subject: [PATCH 5.12 180/296] Revert "ath6kl: return error code in ath6kl_wmi_set_roam_lrssi_cmd()"
 Date:   Mon, 31 May 2021 15:13:55 +0200
-Message-Id: <20210531130703.787446522@linuxfoundation.org>
+Message-Id: <20210531130709.914038808@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210531130657.971257589@linuxfoundation.org>
-References: <20210531130657.971257589@linuxfoundation.org>
+In-Reply-To: <20210531130703.762129381@linuxfoundation.org>
+References: <20210531130703.762129381@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,84 +40,50 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Boris Burkov <boris@bur.io>
+From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-[ Upstream commit 15c7745c9a0078edad1f7df5a6bb7b80bc8cca23 ]
+[ Upstream commit efba106f89fc6848726716c101f4c84e88720a9c ]
 
-  `xfs_io -c 'fiemap <off> <len>' <file>`
+This reverts commit fc6a6521556c8250e356ddc6a3f2391aa62dc976.
 
-can give surprising results on btrfs that differ from xfs.
+Because of recent interactions with developers from @umn.edu, all
+commits from them have been recently re-reviewed to ensure if they were
+correct or not.
 
-btrfs prints out extents trimmed to fit the user input. If the user's
-fiemap request has an offset, then rather than returning each whole
-extent which intersects that range, we also trim the start extent to not
-have start < off.
+Upon review, this commit was found to be incorrect for the reasons
+below, so it must be reverted.  It will be fixed up "correctly" in a
+later kernel change.
 
-Documentation in filesystems/fiemap.txt and the xfs_io man page suggests
-that returning the whole extent is expected.
+The change being reverted does NOTHING as the caller to this function
+does not even look at the return value of the call.  So the "claim" that
+this fixed an an issue is not true.  It will be fixed up properly in a
+future patch by propagating the error up the stack correctly.
 
-Some cases which all yield the same fiemap in xfs, but not btrfs:
-  dd if=/dev/zero of=$f bs=4k count=1
-  sudo xfs_io -c 'fiemap 0 1024' $f
-    0: [0..7]: 26624..26631
-  sudo xfs_io -c 'fiemap 2048 1024' $f
-    0: [4..7]: 26628..26631
-  sudo xfs_io -c 'fiemap 2048 4096' $f
-    0: [4..7]: 26628..26631
-  sudo xfs_io -c 'fiemap 3584 512' $f
-    0: [7..7]: 26631..26631
-  sudo xfs_io -c 'fiemap 4091 5' $f
-    0: [7..6]: 26631..26630
-
-I believe this is a consequence of the logic for merging contiguous
-extents represented by separate extent items. That logic needs to track
-the last offset as it loops through the extent items, which happens to
-pick up the start offset on the first iteration, and trim off the
-beginning of the full extent. To fix it, start `off` at 0 rather than
-`start` so that we keep the iteration/merging intact without cutting off
-the start of the extent.
-
-after the fix, all the above commands give:
-
-  0: [0..7]: 26624..26631
-
-The merging logic is exercised by fstest generic/483, and I have written
-a new fstest for checking we don't have backwards or zero-length fiemaps
-for cases like those above.
-
-Reviewed-by: Josef Bacik <josef@toxicpanda.com>
-Signed-off-by: Boris Burkov <boris@bur.io>
-Signed-off-by: David Sterba <dsterba@suse.com>
+Cc: Kangjie Lu <kjlu@umn.edu>
+Cc: Kalle Valo <kvalo@codeaurora.org>
+Link: https://lore.kernel.org/r/20210503115736.2104747-43-gregkh@linuxfoundation.org
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/btrfs/extent_io.c | 7 ++++++-
- 1 file changed, 6 insertions(+), 1 deletion(-)
+ drivers/net/wireless/ath/ath6kl/wmi.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
-index 30cf917a58e9..81e98a457130 100644
---- a/fs/btrfs/extent_io.c
-+++ b/fs/btrfs/extent_io.c
-@@ -4662,7 +4662,7 @@ int extent_fiemap(struct btrfs_inode *inode, struct fiemap_extent_info *fieinfo,
- 		  u64 start, u64 len)
- {
- 	int ret = 0;
--	u64 off = start;
-+	u64 off;
- 	u64 max = start + len;
- 	u32 flags = 0;
- 	u32 found_type;
-@@ -4698,6 +4698,11 @@ int extent_fiemap(struct btrfs_inode *inode, struct fiemap_extent_info *fieinfo,
- 		goto out_free_ulist;
- 	}
+diff --git a/drivers/net/wireless/ath/ath6kl/wmi.c b/drivers/net/wireless/ath/ath6kl/wmi.c
+index b137e7f34397..aca9732ec1ee 100644
+--- a/drivers/net/wireless/ath/ath6kl/wmi.c
++++ b/drivers/net/wireless/ath/ath6kl/wmi.c
+@@ -776,8 +776,10 @@ int ath6kl_wmi_set_roam_lrssi_cmd(struct wmi *wmi, u8 lrssi)
+ 	cmd->info.params.roam_rssi_floor = DEF_LRSSI_ROAM_FLOOR;
+ 	cmd->roam_ctrl = WMI_SET_LRSSI_SCAN_PARAMS;
  
-+	/*
-+	 * We can't initialize that to 'start' as this could miss extents due
-+	 * to extent item merging
-+	 */
-+	off = 0;
- 	start = round_down(start, btrfs_inode_sectorsize(inode));
- 	len = round_up(max, btrfs_inode_sectorsize(inode)) - start;
+-	return ath6kl_wmi_cmd_send(wmi, 0, skb, WMI_SET_ROAM_CTRL_CMDID,
++	ath6kl_wmi_cmd_send(wmi, 0, skb, WMI_SET_ROAM_CTRL_CMDID,
+ 			    NO_SYNC_WMIFLAG);
++
++	return 0;
+ }
  
+ int ath6kl_wmi_force_roam_cmd(struct wmi *wmi, const u8 *bssid)
 -- 
 2.30.2
 
