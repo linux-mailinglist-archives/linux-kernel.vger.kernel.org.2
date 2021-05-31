@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B8CF33963D6
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 17:34:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 58825395ECA
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 16:02:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234390AbhEaPgT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 11:36:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48846 "EHLO mail.kernel.org"
+        id S233215AbhEaODg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 10:03:36 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44888 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233852AbhEaOVb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 10:21:31 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B4B9D619D2;
-        Mon, 31 May 2021 13:45:08 +0000 (UTC)
+        id S232402AbhEaNkf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 09:40:35 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E268560FEF;
+        Mon, 31 May 2021 13:27:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1622468709;
-        bh=7DCn1g24tfuBhifxLIxCDG9xA8Au61kv3QYF9m3PP5Q=;
+        s=korg; t=1622467653;
+        bh=CdWbAnrbCNdrxTAIiipq1PnfPySFw9oNTymwri8WJYE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=g36brbs3A2HzeNmSbum0j/vloGXGVyzuz8gLXtyjdWY36oTEHGEpntYYegigQDTxh
-         tDPbvOx+S3IA2ScnSxysrFRX0VLWfpAtt3TItEfGwsnneubozLr7HGlwD0MVjyJxPm
-         pHyGr1eHWaQepfti3A2xFWH4s6ROab8ab9q5wee8=
+        b=kRnKb1WIseMytUUTbxZ0GfyFBb2RhHsjGKnWFLaQ7nhrj8RePatEAaDTYF5B5gThv
+         DProhaDzAxE7+z1ZePo7dPdb4ebQ5cUBX0gwwIFRqGqU3trqGAvEtnCS/s0LcZffb1
+         ezOuhWNQP3oQl1hrI4svdBjBSub5BXJDK+Mk8VoA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Tom Seewald <tseewald@gmail.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 097/177] char: hpet: add checks after calling ioremap
+        stable@vger.kernel.org, Daniele Palmas <dnlplm@gmail.com>,
+        Johan Hovold <johan@kernel.org>
+Subject: [PATCH 4.14 29/79] USB: serial: option: add Telit LE910-S1 compositions 0x7010, 0x7011
 Date:   Mon, 31 May 2021 15:14:14 +0200
-Message-Id: <20210531130651.244857013@linuxfoundation.org>
+Message-Id: <20210531130636.937784967@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210531130647.887605866@linuxfoundation.org>
-References: <20210531130647.887605866@linuxfoundation.org>
+In-Reply-To: <20210531130636.002722319@linuxfoundation.org>
+References: <20210531130636.002722319@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,46 +39,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tom Seewald <tseewald@gmail.com>
+From: Daniele Palmas <dnlplm@gmail.com>
 
-[ Upstream commit b11701c933112d49b808dee01cb7ff854ba6a77a ]
+commit e467714f822b5d167a7fb03d34af91b5b6af1827 upstream.
 
-The function hpet_resources() calls ioremap() two times, but in both
-cases it does not check if ioremap() returned a null pointer. Fix this
-by adding null pointer checks and returning an appropriate error.
+Add support for the following Telit LE910-S1 compositions:
 
-Signed-off-by: Tom Seewald <tseewald@gmail.com>
-Link: https://lore.kernel.org/r/20210503115736.2104747-30-gregkh@linuxfoundation.org
+0x7010: rndis, tty, tty, tty
+0x7011: ecm, tty, tty, tty
+
+Signed-off-by: Daniele Palmas <dnlplm@gmail.com>
+Link: https://lore.kernel.org/r/20210428072634.5091-1-dnlplm@gmail.com
+Cc: stable@vger.kernel.org
+Signed-off-by: Johan Hovold <johan@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/char/hpet.c | 4 ++++
+ drivers/usb/serial/option.c |    4 ++++
  1 file changed, 4 insertions(+)
 
-diff --git a/drivers/char/hpet.c b/drivers/char/hpet.c
-index 3e31740444f1..d390ab5e51d3 100644
---- a/drivers/char/hpet.c
-+++ b/drivers/char/hpet.c
-@@ -969,6 +969,8 @@ static acpi_status hpet_resources(struct acpi_resource *res, void *data)
- 	if (ACPI_SUCCESS(status)) {
- 		hdp->hd_phys_address = addr.address.minimum;
- 		hdp->hd_address = ioremap(addr.address.minimum, addr.address.address_length);
-+		if (!hdp->hd_address)
-+			return AE_ERROR;
- 
- 		if (hpet_is_known(hdp)) {
- 			iounmap(hdp->hd_address);
-@@ -982,6 +984,8 @@ static acpi_status hpet_resources(struct acpi_resource *res, void *data)
- 		hdp->hd_phys_address = fixmem32->address;
- 		hdp->hd_address = ioremap(fixmem32->address,
- 						HPET_RANGE_SIZE);
-+		if (!hdp->hd_address)
-+			return AE_ERROR;
- 
- 		if (hpet_is_known(hdp)) {
- 			iounmap(hdp->hd_address);
--- 
-2.30.2
-
+--- a/drivers/usb/serial/option.c
++++ b/drivers/usb/serial/option.c
+@@ -1243,6 +1243,10 @@ static const struct usb_device_id option
+ 	  .driver_info = NCTRL(0) | RSVD(1) },
+ 	{ USB_DEVICE_INTERFACE_CLASS(TELIT_VENDOR_ID, 0x1901, 0xff),	/* Telit LN940 (MBIM) */
+ 	  .driver_info = NCTRL(0) },
++	{ USB_DEVICE_INTERFACE_CLASS(TELIT_VENDOR_ID, 0x7010, 0xff),	/* Telit LE910-S1 (RNDIS) */
++	  .driver_info = NCTRL(2) },
++	{ USB_DEVICE_INTERFACE_CLASS(TELIT_VENDOR_ID, 0x7011, 0xff),	/* Telit LE910-S1 (ECM) */
++	  .driver_info = NCTRL(2) },
+ 	{ USB_DEVICE(TELIT_VENDOR_ID, 0x9010),				/* Telit SBL FN980 flashing device */
+ 	  .driver_info = NCTRL(0) | ZLP },
+ 	{ USB_DEVICE_AND_INTERFACE_INFO(ZTE_VENDOR_ID, ZTE_PRODUCT_MF622, 0xff, 0xff, 0xff) }, /* ZTE WCDMA products */
 
 
