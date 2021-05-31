@@ -2,97 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D4623957BA
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 11:00:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D2CA3957BD
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 11:01:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231248AbhEaJCA convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 31 May 2021 05:02:00 -0400
-Received: from eu-smtp-delivery-151.mimecast.com ([185.58.86.151]:46578 "EHLO
-        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229640AbhEaJBm (ORCPT
+        id S231164AbhEaJCp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 05:02:45 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:38946 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231183AbhEaJCV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 05:01:42 -0400
-Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) (Using
- TLS) by relay.mimecast.com with ESMTP id
- uk-mta-283-mSf_5bWqPy28qntS7Ax19g-1; Mon, 31 May 2021 09:59:55 +0100
-X-MC-Unique: mSf_5bWqPy28qntS7Ax19g-1
-Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) by
- AcuMS.aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) with Microsoft SMTP
- Server (TLS) id 15.0.1497.2; Mon, 31 May 2021 09:59:53 +0100
-Received: from AcuMS.Aculab.com ([fe80::994c:f5c2:35d6:9b65]) by
- AcuMS.aculab.com ([fe80::994c:f5c2:35d6:9b65%12]) with mapi id
- 15.00.1497.015; Mon, 31 May 2021 09:59:53 +0100
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     'Masahiro Yamada' <masahiroy@kernel.org>,
-        "patches@arm.linux.org.uk" <patches@arm.linux.org.uk>
-CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "Linus Walleij" <linus.walleij@linaro.org>,
-        Russell King <linux@armlinux.org.uk>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>
-Subject: RE: [PATCH] ARM: simplify the build rule of mach-types.h
-Thread-Topic: [PATCH] ARM: simplify the build rule of mach-types.h
-Thread-Index: AQHXU3S/FcHjrcZ4IU6mGXTOsVEkx6r9StNA
-Date:   Mon, 31 May 2021 08:59:52 +0000
-Message-ID: <60fb7c6374e74b6d9e7597b19772209a@AcuMS.aculab.com>
-References: <20210528034913.2157657-1-masahiroy@kernel.org>
-In-Reply-To: <20210528034913.2157657-1-masahiroy@kernel.org>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
-MIME-Version: 1.0
-Authentication-Results: relay.mimecast.com;
-        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+        Mon, 31 May 2021 05:02:21 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1622451640;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc; bh=LE1iF4c4IiL/+CW/yCPElYWM7vlN4P0lRRKPTAcXwNU=;
+        b=EbN7+f6IAyvGQtuRQfyrdQKWP2TpM1/xIeHRwZnqKCUvyDYAO25tV0Zi16xL+NJwO1E6PE
+        HtZLZPSAHu6EAMygAgPCiHLNp2TzR1msugn46FzUCHpF0/2Yrc5qbgO+i2LvDpg30USwT/
+        BfW8a+kdIm1XDn773OuJCZJCboJ/2A0=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-173-907jp1zIOO6MlKYNx_2hhw-1; Mon, 31 May 2021 05:00:37 -0400
+X-MC-Unique: 907jp1zIOO6MlKYNx_2hhw-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 6CD3A8042AE;
+        Mon, 31 May 2021 09:00:35 +0000 (UTC)
+Received: from localhost.localdomain.com (ovpn-12-120.pek2.redhat.com [10.72.12.120])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 48BF65D9D0;
+        Mon, 31 May 2021 09:00:25 +0000 (UTC)
+From:   Lianbo Jiang <lijiang@redhat.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     x86@kernel.org, linux-efi@vger.kernel.org,
+        platform-driver-x86@vger.kernel.org, kexec@lists.infradead.org,
+        ardb@kernel.org, dvhart@infradead.org, andy@infradead.org,
+        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, hpa@zytor.com,
+        luto@amacapital.net, bhe@redhat.com, dyoung@redhat.com
+Subject: [PATCH v2] x86/efi: unconditionally hold the whole low-1MB memory regions
+Date:   Mon, 31 May 2021 17:00:23 +0800
+Message-Id: <20210531090023.16471-1-lijiang@redhat.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Masahiro Yamada
-> Sent: 28 May 2021 04:49
-> 
-> The directory of mach-types.h is created a couple of lines above:
-> 
->   _dummy := $(shell [ -d '$(kapi)' ] || mkdir -p '$(kapi)') \
-> 
-> The 'mkdir -p' command is redundant.
-(In the rule itself)
+Some sub-1MB memory regions may be reserved by EFI boot services, and the
+memory regions will be released later in the efi_free_boot_services().
+
+Currently, always reserve all sub-1MB memory regions when the crashkernel
+option is specified, but unfortunately EFI boot services may have already
+reserved some sub-1MB memory regions before the crash_reserve_low_1M() is
+called, which makes that the crash_reserve_low_1M() only own the
+remaining sub-1MB memory regions, not all sub-1MB memory regions, because,
+subsequently EFI boot services will free its own sub-1MB memory regions.
+Eventually, DMA will be able to allocate memory from the sub-1MB area and
+cause the following error:
+
+crash> kmem -s |grep invalid
+kmem: dma-kmalloc-512: slab: ffffd52c40001900 invalid freepointer: ffff9403c0067300
+kmem: dma-kmalloc-512: slab: ffffd52c40001900 invalid freepointer: ffff9403c0067300
+crash> vtop ffff9403c0067300
+VIRTUAL           PHYSICAL
+ffff9403c0067300  67300   --->The physical address falls into this range [0x0000000000063000-0x000000000008efff]
+
+kernel debugging log:
 ...
->  quiet_cmd_gen_mach = GEN     $@
-> -      cmd_gen_mach = mkdir -p $(dir $@) && \
-> -		     $(AWK) -f $(filter-out $(PHONY),$^) > $@
-> +      cmd_gen_mach = $(AWK) -f $(real-prereqs) > $@
+[    0.008927] memblock_reserve: [0x0000000000010000-0x0000000000013fff] efi_reserve_boot_services+0x85/0xd0
+[    0.008930] memblock_reserve: [0x0000000000063000-0x000000000008efff] efi_reserve_boot_services+0x85/0xd0
+...
+[    0.009425] memblock_reserve: [0x0000000000000000-0x00000000000fffff] crash_reserve_low_1M+0x2c/0x49
+...
+[    0.010586] Zone ranges:
+[    0.010587]   DMA      [mem 0x0000000000001000-0x0000000000ffffff]
+[    0.010589]   DMA32    [mem 0x0000000001000000-0x00000000ffffffff]
+[    0.010591]   Normal   [mem 0x0000000100000000-0x0000000c7fffffff]
+[    0.010593]   Device   empty
+...
+[    8.814894] __memblock_free_late: [0x0000000000063000-0x000000000008efff] efi_free_boot_services+0x14b/0x23b
+[    8.815793] __memblock_free_late: [0x0000000000010000-0x0000000000013fff] efi_free_boot_services+0x14b/0x23b
 
-There is a much easier way to get directories created.
-gmake lets you define dependencies that only need to exist
-(ie there file timestamps are't checked)
-These are ideal for creating directories.
+To fix the above issues, let's hold the whole low-1M memory regions
+unconditionally in the efi_free_boot_services().
 
-So if can define:
+Signed-off-by: Lianbo Jiang <lijiang@redhat.com>
+---
+Background(copy from bhe's comment in the patch v1):
 
-%/.:
-	mkdir -p $@
+Kdump kernel also need go through real mode code path during bootup. It
+is not different than normal kernel except that it skips the firmware
+resetting. So kdump kernel needs low 1M as system RAM just as normal
+kernel does. Here we reserve the whole low 1M with memblock_reserve()
+to avoid any later kernel or driver data reside in this area. Otherwise,
+we need dump the content of this area to vmcore. As we know, when crash
+happened, the old memory of 1st kernel should be untouched until vmcore
+dumping read out its content. Meanwhile, kdump kernel need reuse low 1M.
+In the past, we used a back up region to copy out the low 1M area, and
+map the back up region into the low 1M area in vmcore elf file. In
+6f599d84231fd27 ("x86/kdump: Always reserve the low 1M when the crashkernel
+option is specified"), we changed to lock the whole low 1M to avoid
+writting any kernel data into, like this we can skip this area when
+dumping vmcore.
 
-You can just use
+Above is why we try to memblock reserve the whole low 1M. We don't want
+to use it, just don't want anyone to use it in 1st kernel.
 
-$(OBJ)/$(FILE): | ${OBJ)/.
 
-to get any directories created.
+ arch/x86/platform/efi/quirks.c | 32 +++++++++++++++-----------------
+ 1 file changed, 15 insertions(+), 17 deletions(-)
 
-Annoyingly gmake doesn't seem to support the 'dynamic dependencies'
-of SYSV make (it's only useful feature).
-So you can't use:
-xxxxx: | $$@D/.
-
-	David
-
--
-Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
-Registration No: 1397386 (Wales)
+diff --git a/arch/x86/platform/efi/quirks.c b/arch/x86/platform/efi/quirks.c
+index 7850111008a8..840b7e3b3d48 100644
+--- a/arch/x86/platform/efi/quirks.c
++++ b/arch/x86/platform/efi/quirks.c
+@@ -11,6 +11,7 @@
+ #include <linux/memblock.h>
+ #include <linux/acpi.h>
+ #include <linux/dmi.h>
++#include <linux/sizes.h>
+ 
+ #include <asm/e820/api.h>
+ #include <asm/efi.h>
+@@ -409,7 +410,7 @@ void __init efi_free_boot_services(void)
+ 	for_each_efi_memory_desc(md) {
+ 		unsigned long long start = md->phys_addr;
+ 		unsigned long long size = md->num_pages << EFI_PAGE_SHIFT;
+-		size_t rm_size;
++		unsigned long long end = start + size;
+ 
+ 		if (md->type != EFI_BOOT_SERVICES_CODE &&
+ 		    md->type != EFI_BOOT_SERVICES_DATA) {
+@@ -431,23 +432,20 @@ void __init efi_free_boot_services(void)
+ 		efi_unmap_pages(md);
+ 
+ 		/*
+-		 * Nasty quirk: if all sub-1MB memory is used for boot
+-		 * services, we can get here without having allocated the
+-		 * real mode trampoline.  It's too late to hand boot services
+-		 * memory back to the memblock allocator, so instead
+-		 * try to manually allocate the trampoline if needed.
+-		 *
+-		 * I've seen this on a Dell XPS 13 9350 with firmware
+-		 * 1.4.4 with SGX enabled booting Linux via Fedora 24's
+-		 * grub2-efi on a hard disk.  (And no, I don't know why
+-		 * this happened, but Linux should still try to boot rather
+-		 * panicking early.)
++		 * The sub-1MB memory may be within the range[0, SZ_1M]
++		 * or across the low-1M memory boundary. Let's handle
++		 * these two cases and hold the whole low-1M memory
++		 * unconditionally.
+ 		 */
+-		rm_size = real_mode_size_needed();
+-		if (rm_size && (start + rm_size) < (1<<20) && size >= rm_size) {
+-			set_real_mode_mem(start);
+-			start += rm_size;
+-			size -= rm_size;
++		if (start < SZ_1M) {
++			/* Within the range[0, SZ_1M] */
++			if (end <= SZ_1M)
++				continue;
++			else {
++				/* Across the low-1M memory boundary */
++				size -= (SZ_1M - start);
++				start = SZ_1M;
++			}
+ 		}
+ 
+ 		memblock_free_late(start, size);
+-- 
+2.17.1
 
