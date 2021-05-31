@@ -2,135 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A261639551C
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 07:39:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C1700395538
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 08:08:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229970AbhEaFkl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 01:40:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37888 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229730AbhEaFkf (ORCPT
+        id S230155AbhEaGEb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 02:04:31 -0400
+Received: from aserp2120.oracle.com ([141.146.126.78]:60242 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229752AbhEaGE3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 01:40:35 -0400
-Received: from mail-ua1-x92d.google.com (mail-ua1-x92d.google.com [IPv6:2607:f8b0:4864:20::92d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD8BAC061574;
-        Sun, 30 May 2021 22:38:55 -0700 (PDT)
-Received: by mail-ua1-x92d.google.com with SMTP id n61so5989702uan.2;
-        Sun, 30 May 2021 22:38:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=HnNmmcpEGANCywXAOHjjcUJ4MN6oF/accismZD3OTBY=;
-        b=sDg+mggvypKBneaa3Jrh6Gwlmjq7O+/sgTx9+ShU59xkd38JFVUcZUHTK7IdznJa/O
-         T4wttBebcWUfBojLxSjIwj0o/xqvFZIApQZAIl0km6c8zpD1GXXbMNpmdOFYGDru2n0k
-         d4F4SfkrQjZlJB+VoldJNtCi03dzZRr5YsWcvcFV6mak3lXgOnlIQnsTGcW+0PRiJQNw
-         y5O0EaafidOdazuwmmhkblHGAQlKb1xYifEfQ8eH8Iv31D9YLqTB4Hb7Q9cKifR1Jvr7
-         J/9oi/Fnp2451KV631ZW3GZ7w98hE8V7KhPc8fN4ubxm5lYa6KyjM+WdsSSqrW7JbVdg
-         2kMw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=HnNmmcpEGANCywXAOHjjcUJ4MN6oF/accismZD3OTBY=;
-        b=aKLnQUzgE3nMp2Sfb9zdgj7Fum5omwo8GBF7pMnfdC+mZ0tHkM+C8XMZ3Es4CiM7vc
-         KLdscn12HyBTTFOimtvchjrVHvS5W1+PgK6VCaEUf9B+/aE4FrcB0Y1483FKnlgwBwpt
-         hUp/ke827YMPdZrKLweUogoVHl1w2jbhtqdy7heC8e48D4+asD8r9mBGBAyTE7UVrVW9
-         6pMmfU/ds96SaD531rjlNpBFauzJkHwdzEBkN/C2fDDd5Q1RInXnpwo4FBkmB30Z/4Lm
-         GPVNn3hV/GBGuidBgn/KrNrge/8ivnxrTR617sZtLHBZdQgkkURHBz9i8AHlJ4M9IzZ1
-         VTBQ==
-X-Gm-Message-State: AOAM533rlw9fE0+SIKh1hnz5xWE80DQ27VMyEygvb04KoN34Aplyp77W
-        qhdtFywxisWHuudMvDhWxJP7bf1i+XZblm7YMfM=
-X-Google-Smtp-Source: ABdhPJxVnhl7BbzXoHUxBwYsSTgkaTs5EoHCr/SSq7+a3HYzww0NBP4xIl/errV4WHy7xBi0YnvOFYPm/59cNixeAeg=
-X-Received: by 2002:a1f:b488:: with SMTP id d130mr11690045vkf.17.1622439533937;
- Sun, 30 May 2021 22:38:53 -0700 (PDT)
+        Mon, 31 May 2021 02:04:29 -0400
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 14V5tO26168235;
+        Mon, 31 May 2021 06:02:37 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=corp-2020-01-29;
+ bh=RkCuyZTIfKbViKm2ct9HBLI3OxZ3FAU3iXystEzKEg0=;
+ b=neOutlWnexDUZ9NuqcTeX3al4f2v/hTFBJu5ObjZVsxQcts06N1H+VESTRt5qRTYuzx2
+ BJBcwRgtF0pxVM/psprqW33LTjwgjDhFSsh5n4gcKT9viCMrc34Ub51+ba2A7V1ZOTB8
+ F0hAA3bARJRIFoNmVn/NEx/RT3PJa7DL5p0w6DJzm0iL+oEcGGyPV3P75ugh7lHFiLMk
+ PHCUxkChHKdL+5223xFQwTjzqGVBUkoTMwrb5Fba/oqnunEfpv4wZPrOnY6y9IEYiS7h
+ av2wpZOQLFq7OMzZYSrPE4SzV40yw8ENIstQNWoTVUpsGkla7xTfainIzh7GPszUh//o sg== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by aserp2120.oracle.com with ESMTP id 38udjmj2rb-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 31 May 2021 06:02:37 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 14V61vsm070675;
+        Mon, 31 May 2021 06:02:36 GMT
+Received: from pps.reinject (localhost [127.0.0.1])
+        by userp3030.oracle.com with ESMTP id 38uaqv4reh-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 31 May 2021 06:02:36 +0000
+Received: from userp3030.oracle.com (userp3030.oracle.com [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 14V62Zis071211;
+        Mon, 31 May 2021 06:02:36 GMT
+Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
+        by userp3030.oracle.com with ESMTP id 38uaqv4re2-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 31 May 2021 06:02:35 +0000
+Received: from abhmp0009.oracle.com (abhmp0009.oracle.com [141.146.116.15])
+        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 14V62WW9000518;
+        Mon, 31 May 2021 06:02:32 GMT
+Received: from kadam (/41.212.42.34)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Sun, 30 May 2021 23:02:31 -0700
+Date:   Mon, 31 May 2021 09:02:24 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     Martin Kaiser <martin@kaiser.cx>
+Cc:     Larry Finger <Larry.Finger@lwfinger.net>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-staging@lists.linux.dev, kernel-janitors@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 2/3] staging: rtl8188eu: remove dummy wext handlers
+Message-ID: <20210531060223.GV1955@kadam>
+References: <20210529121346.8422-1-martin@kaiser.cx>
+ <20210529121346.8422-2-martin@kaiser.cx>
 MIME-Version: 1.0
-References: <20210531030550.1708816-1-yangyingliang@huawei.com>
-In-Reply-To: <20210531030550.1708816-1-yangyingliang@huawei.com>
-From:   Hyunchul Lee <hyc.lee@gmail.com>
-Date:   Mon, 31 May 2021 14:38:42 +0900
-Message-ID: <CANFS6bbZysgZ2Wv7_FqmeBC0e34h5uiBLFdeiDvOxHFd2XGTSg@mail.gmail.com>
-Subject: Re: [PATCH -next v2] cifsd: check return value of ksmbd_vfs_getcasexattr()
- correctly
-To:     Yang Yingliang <yangyingliang@huawei.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        linux-cifsd-devel <linux-cifsd-devel@lists.sourceforge.net>,
-        linux-cifs <linux-cifs@vger.kernel.org>,
-        Namjae Jeon <namjae.jeon@samsung.com>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Steve French <sfrench@samba.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210529121346.8422-2-martin@kaiser.cx>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Proofpoint-GUID: vwzM8NlYJXgd2I2ClWWuw44mKaAUpva9
+X-Proofpoint-ORIG-GUID: vwzM8NlYJXgd2I2ClWWuw44mKaAUpva9
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=10000 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 impostorscore=0
+ clxscore=1015 lowpriorityscore=0 mlxscore=0 adultscore=0 spamscore=0
+ suspectscore=0 bulkscore=0 priorityscore=1501 mlxlogscore=999 phishscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104190000
+ definitions=main-2105310044
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-2021=EB=85=84 5=EC=9B=94 31=EC=9D=BC (=EC=9B=94) =EC=98=A4=ED=9B=84 12:01, =
-Yang Yingliang <yangyingliang@huawei.com>=EB=8B=98=EC=9D=B4 =EC=9E=91=EC=84=
-=B1:
->
-> If ksmbd_vfs_getcasexattr() returns -ENOMEM, stream_buf is NULL,
-> it will cause null-ptr-deref when using it to copy memory. So we
-> need check the return value of ksmbd_vfs_getcasexattr() by comparing
-> with 0.
->
-> Fixes: f44158485826 ("cifsd: add file operations")
-> Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
+On Sat, May 29, 2021 at 02:13:45PM +0200, Martin Kaiser wrote:
+> Remove the wext handlers that link to an empty dummy function.
+> 
+> Signed-off-by: Martin Kaiser <martin@kaiser.cx>
 > ---
-> v2:
->   Handle the case ksmbd_vfs_getcasexattr() returns 0.
-> ---
->  fs/cifsd/vfs.c | 10 ++++------
->  1 file changed, 4 insertions(+), 6 deletions(-)
->
-> diff --git a/fs/cifsd/vfs.c b/fs/cifsd/vfs.c
-> index 97d5584ec870..2a9cc0bc7726 100644
-> --- a/fs/cifsd/vfs.c
-> +++ b/fs/cifsd/vfs.c
-> @@ -274,7 +274,6 @@ static int ksmbd_vfs_stream_read(struct ksmbd_file *f=
-p, char *buf, loff_t *pos,
->  {
->         ssize_t v_len;
->         char *stream_buf =3D NULL;
-> -       int err;
->
->         ksmbd_debug(VFS, "read stream data pos : %llu, count : %zd\n",
->                     *pos, count);
-> @@ -283,10 +282,9 @@ static int ksmbd_vfs_stream_read(struct ksmbd_file *=
-fp, char *buf, loff_t *pos,
->                                        fp->stream.name,
->                                        fp->stream.size,
->                                        &stream_buf);
-> -       if (v_len =3D=3D -ENOENT) {
-> +       if ((int)v_len <=3D 0) {
->                 ksmbd_err("not found stream in xattr : %zd\n", v_len);
-> -               err =3D -ENOENT;
-> -               return err;
-> +               return v_len =3D=3D 0 ? -ENOENT : (int)v_len;
+> If no handler is installed for a wext ioctl, the wext core will return
+> -ENOTSUPP to user space. The dummy function returned -1. It could be argued
+> that this change breaks the user space ABI.
+> 
+> However, it's rather unlikely that an application expects a particular wlan
+> driver and chipset when it configures a wireless network. Checking for
+> errno==1 explicitly will already be non-portable as most other drivers set
+> errn==ENOTSUPP for non-existing ioctls.
+> 
 
-How about making ksmbd_vfs_getcasexattr return -ENONENT instead of
-returning 0 to
-remove duplicate error handling code?
+The patch is good, but next time, just put all this commentary in the
+commit message.  It has to do with the impact of the patch on userspace
+and it's helpful for the reviewers.  Some reviewers won't need it, but
+I try to target my commit messages at developers who aren't subsystem
+experts.  I also like that it shows you thought about it.
 
-Thanks,
-Hyunchul
+I recently saw someone claim that "anyone who can review these patches
+will already know what the <SOMETHING> acronym stands for so that's why
+I didn't explain."  And I was like, "Oh wow...  That's a harsh burn on
+me!"
 
->         }
->
->         memcpy(buf, &stream_buf[*pos], count);
-> @@ -415,9 +413,9 @@ static int ksmbd_vfs_stream_write(struct ksmbd_file *=
-fp, char *buf, loff_t *pos,
->                                        fp->stream.name,
->                                        fp->stream.size,
->                                        &stream_buf);
-> -       if (v_len =3D=3D -ENOENT) {
-> +       if ((int)v_len <=3D 0) {
->                 ksmbd_err("not found stream in xattr : %zd\n", v_len);
-> -               err =3D -ENOENT;
-> +               err =3D v_len =3D=3D 0 ? -ENOENT : (int)v_len;
->                 goto out;
->         }
->
-> --
-> 2.25.1
->
+regards,
+dan carpenter
+
