@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 98D52395B60
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 15:18:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C15D39622E
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 16:50:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231827AbhEaNUA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 09:20:00 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54216 "EHLO mail.kernel.org"
+        id S232570AbhEaOvz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 10:51:55 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37786 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231823AbhEaNSk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 09:18:40 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CAEC160FE8;
-        Mon, 31 May 2021 13:17:00 +0000 (UTC)
+        id S232626AbhEaOCc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 10:02:32 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6D48161948;
+        Mon, 31 May 2021 13:37:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1622467021;
-        bh=w3/GKWvF3YoRzibKiLpzRRg5LpdhtsVnBLC8UcgKUeM=;
+        s=korg; t=1622468235;
+        bh=4q0YyHM0SbsFNSLazTrvIfuRC/KdV8PwvZYubE5KCAw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Cs+pWkX3o4k57ufVhhcon/4RuzmS0k7wS959IW9rrcfqWi3BhhXA2ZAyhzTp2XoZ5
-         XjipNtUM6Kbe2DhPAvdxjIk/613/TGTi1ZmPmNUrr+K97i2wOlbG8M2nrq4mWZjvOT
-         d/jErX+7OFPEMDplr2fQwd27NOhT4aV65dxCMIps=
+        b=lOdXG2jU/tbM4E6dORsIdg2jpyPPtGpVuLpkudTvR4SnbWC5dguLscSQIU675Akh6
+         X8QGRaXMkz6gJLs5f/s4pfhb1iNTRsChYoXFT3SFtjEpivlduU3cP5OMXQxDAYuFsM
+         4szAEhT9VRytD9tcoONxzBG9MkKH9tdRxwL4zFx8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jon Maloy <jmaloy@redhat.com>,
-        Tung Nguyen <tung.q.nguyen@dektech.com.au>,
-        Hoang Le <hoang.h.le@dektech.com.au>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 4.4 27/54] Revert "net:tipc: Fix a double free in tipc_sk_mcast_rcv"
+        stable@vger.kernel.org, Kangjie Lu <kjlu@umn.edu>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.10 168/252] Revert "brcmfmac: add a check for the status of usb_register"
 Date:   Mon, 31 May 2021 15:13:53 +0200
-Message-Id: <20210531130635.937727747@linuxfoundation.org>
+Message-Id: <20210531130703.718990488@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210531130635.070310929@linuxfoundation.org>
-References: <20210531130635.070310929@linuxfoundation.org>
+In-Reply-To: <20210531130657.971257589@linuxfoundation.org>
+References: <20210531130657.971257589@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,36 +40,51 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Hoang Le <hoang.h.le@dektech.com.au>
+From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-commit 75016891357a628d2b8acc09e2b9b2576c18d318 upstream.
+[ Upstream commit 30a350947692f794796f563029d29764497f2887 ]
 
-This reverts commit 6bf24dc0cc0cc43b29ba344b66d78590e687e046.
-Above fix is not correct and caused memory leak issue.
+This reverts commit 42daad3343be4a4e1ee03e30a5f5cc731dadfef5.
 
-Fixes: 6bf24dc0cc0c ("net:tipc: Fix a double free in tipc_sk_mcast_rcv")
-Acked-by: Jon Maloy <jmaloy@redhat.com>
-Acked-by: Tung Nguyen <tung.q.nguyen@dektech.com.au>
-Signed-off-by: Hoang Le <hoang.h.le@dektech.com.au>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Because of recent interactions with developers from @umn.edu, all
+commits from them have been recently re-reviewed to ensure if they were
+correct or not.
+
+Upon review, this commit was found to be incorrect for the reasons
+below, so it must be reverted.  It will be fixed up "correctly" in a
+later kernel change.
+
+The original commit here did nothing to actually help if usb_register()
+failed, so it gives a "false sense of security" when there is none.  The
+correct solution is to correctly unwind from this error.
+
+Cc: Kangjie Lu <kjlu@umn.edu>
+Cc: Kalle Valo <kvalo@codeaurora.org>
+Link: https://lore.kernel.org/r/20210503115736.2104747-69-gregkh@linuxfoundation.org
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/tipc/socket.c |    5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+ drivers/net/wireless/broadcom/brcm80211/brcmfmac/usb.c | 6 +-----
+ 1 file changed, 1 insertion(+), 5 deletions(-)
 
---- a/net/tipc/socket.c
-+++ b/net/tipc/socket.c
-@@ -763,7 +763,10 @@ void tipc_sk_mcast_rcv(struct net *net,
- 		spin_lock_bh(&inputq->lock);
- 		if (skb_peek(arrvq) == skb) {
- 			skb_queue_splice_tail_init(&tmpq, inputq);
--			__skb_dequeue(arrvq);
-+			/* Decrease the skb's refcnt as increasing in the
-+			 * function tipc_skb_peek
-+			 */
-+			kfree_skb(__skb_dequeue(arrvq));
- 		}
- 		spin_unlock_bh(&inputq->lock);
- 		__skb_queue_purge(&tmpq);
+diff --git a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/usb.c b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/usb.c
+index 586f4dfc638b..d2a803fc8ac6 100644
+--- a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/usb.c
++++ b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/usb.c
+@@ -1586,10 +1586,6 @@ void brcmf_usb_exit(void)
+ 
+ void brcmf_usb_register(void)
+ {
+-	int ret;
+-
+ 	brcmf_dbg(USB, "Enter\n");
+-	ret = usb_register(&brcmf_usbdrvr);
+-	if (ret)
+-		brcmf_err("usb_register failed %d\n", ret);
++	usb_register(&brcmf_usbdrvr);
+ }
+-- 
+2.30.2
+
 
 
