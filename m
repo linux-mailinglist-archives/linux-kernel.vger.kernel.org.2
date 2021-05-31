@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E7FE3396407
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 17:43:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7CCF1395E7A
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 15:58:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233576AbhEaPo0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 11:44:26 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48836 "EHLO mail.kernel.org"
+        id S233125AbhEaN7a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 09:59:30 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40218 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233084AbhEaOZF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 10:25:05 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6458F61A14;
-        Mon, 31 May 2021 13:46:22 +0000 (UTC)
+        id S232222AbhEaNgY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 09:36:24 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id EE3726138C;
+        Mon, 31 May 2021 13:25:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1622468782;
-        bh=b2hoTEC5uqobuuzMRsBFsNEWCV8ogZnhjo5R2n1ILIw=;
+        s=korg; t=1622467550;
+        bh=b71SBhQkLUOf6GBO37cJl0H9l5cJbYbHDn/ybg4UNOo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=RldBNon3oMsaov9tpB+TppmSkUKQuXe7cjuMzHvuVrSU1XsBZHGqxO6KWAKaRJrVF
-         wD5/LBymxMqt8JTJg98cJYBQmWtKqzvlc94tDXZh9ePSzXoxHAvseYBwZ5Mgtw2CN5
-         WvuZAfNXTMhN2C6mjrVh1v5QDDaVmUZ9cowTMtWQ=
+        b=vN35TSvXaQs1vNzb6qVVXWkzFE+b+e5qquh1YoA7FPecIERKp/MXfoJRnKM0SKnAO
+         HxHMoNBxk1gx2i3VRA0aNr3uQsPDjCB+KYtAJiSWVYNubCjERPjxa1oFmcFsVL8C8o
+         rN2iIx2IciyGXhoQ7S/BtRTSJURf8FoH+6vcKDWM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jiri Slaby <jirislaby@kernel.org>,
-        Atul Gopinathan <atulgopinathan@gmail.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 091/177] serial: max310x: unregister uart driver in case of failure and abort
+        stable@vger.kernel.org,
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Wolfram Sang <wsa@kernel.org>
+Subject: [PATCH 4.19 072/116] i2c: s3c2410: fix possible NULL pointer deref on read message after write
 Date:   Mon, 31 May 2021 15:14:08 +0200
-Message-Id: <20210531130651.038375111@linuxfoundation.org>
+Message-Id: <20210531130642.595831487@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210531130647.887605866@linuxfoundation.org>
-References: <20210531130647.887605866@linuxfoundation.org>
+In-Reply-To: <20210531130640.131924542@linuxfoundation.org>
+References: <20210531130640.131924542@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,49 +40,67 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Atul Gopinathan <atulgopinathan@gmail.com>
+From: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
 
-[ Upstream commit 3890e3dea315f1a257d1b940a2a4e2fa16a7b095 ]
+commit 24990423267ec283b9d86f07f362b753eb9b0ed5 upstream.
 
-The macro "spi_register_driver" invokes the function
-"__spi_register_driver()" which has a return type of int and can fail,
-returning a negative value in such a case. This is currently ignored and
-the init() function yields success even if the spi driver failed to
-register.
+Interrupt handler processes multiple message write requests one after
+another, till the driver message queue is drained.  However if driver
+encounters a read message without preceding START, it stops the I2C
+transfer as it is an invalid condition for the controller.  At least the
+comment describes a requirement "the controller forces us to send a new
+START when we change direction".  This stop results in clearing the
+message queue (i2c->msg = NULL).
 
-Fix this by collecting the return value of "__spi_register_driver()" and
-also unregister the uart driver in case of failure.
+The code however immediately jumped back to label "retry_write" which
+dereferenced the "i2c->msg" making it a possible NULL pointer
+dereference.
 
-Cc: Jiri Slaby <jirislaby@kernel.org>
-Signed-off-by: Atul Gopinathan <atulgopinathan@gmail.com>
-Link: https://lore.kernel.org/r/20210503115736.2104747-12-gregkh@linuxfoundation.org
+The Coverity analysis:
+1. Condition !is_msgend(i2c), taking false branch.
+   if (!is_msgend(i2c)) {
+
+2. Condition !is_lastmsg(i2c), taking true branch.
+   } else if (!is_lastmsg(i2c)) {
+
+3. Condition i2c->msg->flags & 1, taking true branch.
+   if (i2c->msg->flags & I2C_M_RD) {
+
+4. write_zero_model: Passing i2c to s3c24xx_i2c_stop, which sets i2c->msg to NULL.
+   s3c24xx_i2c_stop(i2c, -EINVAL);
+
+5. Jumping to label retry_write.
+   goto retry_write;
+
+6. var_deref_model: Passing i2c to is_msgend, which dereferences null i2c->msg.
+   if (!is_msgend(i2c)) {"
+
+All previous calls to s3c24xx_i2c_stop() in this interrupt service
+routine are followed by jumping to end of function (acknowledging
+the interrupt and returning).  This seems a reasonable choice also here
+since message buffer was entirely emptied.
+
+Addresses-Coverity: Explicit null dereferenced
+Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
+Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Signed-off-by: Wolfram Sang <wsa@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/tty/serial/max310x.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+ drivers/i2c/busses/i2c-s3c2410.c |    3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/drivers/tty/serial/max310x.c b/drivers/tty/serial/max310x.c
-index f60b7b86d099..5bf8dd6198bb 100644
---- a/drivers/tty/serial/max310x.c
-+++ b/drivers/tty/serial/max310x.c
-@@ -1527,10 +1527,12 @@ static int __init max310x_uart_init(void)
- 		return ret;
+--- a/drivers/i2c/busses/i2c-s3c2410.c
++++ b/drivers/i2c/busses/i2c-s3c2410.c
+@@ -493,7 +493,10 @@ static int i2c_s3c_irq_nextbyte(struct s
+ 					 * forces us to send a new START
+ 					 * when we change direction
+ 					 */
++					dev_dbg(i2c->dev,
++						"missing START before write->read\n");
+ 					s3c24xx_i2c_stop(i2c, -EINVAL);
++					break;
+ 				}
  
- #ifdef CONFIG_SPI_MASTER
--	spi_register_driver(&max310x_spi_driver);
-+	ret = spi_register_driver(&max310x_spi_driver);
-+	if (ret)
-+		uart_unregister_driver(&max310x_uart);
- #endif
- 
--	return 0;
-+	return ret;
- }
- module_init(max310x_uart_init);
- 
--- 
-2.30.2
-
+ 				goto retry_write;
 
 
