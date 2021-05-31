@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CC5D439654B
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 18:29:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 350B7395CDF
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 15:38:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233864AbhEaQaq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 12:30:46 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40824 "EHLO mail.kernel.org"
+        id S232801AbhEaNjk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 09:39:40 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33136 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233691AbhEaOpm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 10:45:42 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 71BB261C89;
-        Mon, 31 May 2021 13:55:41 +0000 (UTC)
+        id S231691AbhEaN1W (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 09:27:22 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1560061008;
+        Mon, 31 May 2021 13:21:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1622469342;
-        bh=kdjzop78knCLkR4VrgYLtpxAmxAhLQBeZYKw52Pzjhc=;
+        s=korg; t=1622467297;
+        bh=Sro/wLDx/kPUtQx688EuMS7CDt1WrUlAsqXX1GQY9oE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=f8ZINK5z+w1mL8SzhPn/9XIgxwdrLnUcOYTHNDNaCt9PMX8uH0aU/+u9AaeUFMNRy
-         kR0mf8g3InGoqJ8/s0WG73kqpJTMzTMd6XLDV868gMJ90+uIqIWmrC+U3MJH/yyqkQ
-         L/lPpfYw4mVdQGy7s+MSDzvKZsd0acDRjXk2FsKw=
+        b=o5/2I9IWcggAf/2uuOTj533SL6nLKJ2Dh7UYgE8VunyHMdWFhUag2eVzk5G3DaTsP
+         zK8QyyLJtlG7ed36TFUThkJuTkfvuhkt5UsEYZGiOw58j4M2dLRyNDZsWdXS8m6ef7
+         RcvxlCjY0LL744iwJxp1lrbVaK/OSVlTfjwVEYAQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Shuang Li <shuali@redhat.com>,
-        Xin Long <lucien.xin@gmail.com>, Jon Maloy <jmaloy@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 5.12 134/296] tipc: wait and exit until all work queues are done
+        stable@vger.kernel.org, Mathy Vanhoef <Mathy.Vanhoef@kuleuven.be>,
+        Johannes Berg <johannes.berg@intel.com>
+Subject: [PATCH 4.19 013/116] mac80211: properly handle A-MSDUs that start with an RFC 1042 header
 Date:   Mon, 31 May 2021 15:13:09 +0200
-Message-Id: <20210531130708.397745526@linuxfoundation.org>
+Message-Id: <20210531130640.588215299@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210531130703.762129381@linuxfoundation.org>
-References: <20210531130703.762129381@linuxfoundation.org>
+In-Reply-To: <20210531130640.131924542@linuxfoundation.org>
+References: <20210531130640.131924542@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,88 +39,76 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Xin Long <lucien.xin@gmail.com>
+From: Mathy Vanhoef <Mathy.Vanhoef@kuleuven.be>
 
-commit 04c26faa51d1e2fe71cf13c45791f5174c37f986 upstream.
+commit a1d5ff5651ea592c67054233b14b30bf4452999c upstream.
 
-On some host, a crash could be triggered simply by repeating these
-commands several times:
+Properly parse A-MSDUs whose first 6 bytes happen to equal a rfc1042
+header. This can occur in practice when the destination MAC address
+equals AA:AA:03:00:00:00. More importantly, this simplifies the next
+patch to mitigate A-MSDU injection attacks.
 
-  # modprobe tipc
-  # tipc bearer enable media udp name UDP1 localip 127.0.0.1
-  # rmmod tipc
-
-  [] BUG: unable to handle kernel paging request at ffffffffc096bb00
-  [] Workqueue: events 0xffffffffc096bb00
-  [] Call Trace:
-  []  ? process_one_work+0x1a7/0x360
-  []  ? worker_thread+0x30/0x390
-  []  ? create_worker+0x1a0/0x1a0
-  []  ? kthread+0x116/0x130
-  []  ? kthread_flush_work_fn+0x10/0x10
-  []  ? ret_from_fork+0x35/0x40
-
-When removing the TIPC module, the UDP tunnel sock will be delayed to
-release in a work queue as sock_release() can't be done in rtnl_lock().
-If the work queue is schedule to run after the TIPC module is removed,
-kernel will crash as the work queue function cleanup_beareri() code no
-longer exists when trying to invoke it.
-
-To fix it, this patch introduce a member wq_count in tipc_net to track
-the numbers of work queues in schedule, and  wait and exit until all
-work queues are done in tipc_exit_net().
-
-Fixes: d0f91938bede ("tipc: add ip/udp media type")
-Reported-by: Shuang Li <shuali@redhat.com>
-Signed-off-by: Xin Long <lucien.xin@gmail.com>
-Acked-by: Jon Maloy <jmaloy@redhat.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Cc: stable@vger.kernel.org
+Signed-off-by: Mathy Vanhoef <Mathy.Vanhoef@kuleuven.be>
+Link: https://lore.kernel.org/r/20210511200110.0b2b886492f0.I23dd5d685fe16d3b0ec8106e8f01b59f499dffed@changeid
+Signed-off-by: Johannes Berg <johannes.berg@intel.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- net/tipc/core.c      |    2 ++
- net/tipc/core.h      |    2 ++
- net/tipc/udp_media.c |    2 ++
- 3 files changed, 6 insertions(+)
+ include/net/cfg80211.h |    4 ++--
+ net/mac80211/rx.c      |    2 +-
+ net/wireless/util.c    |    4 ++--
+ 3 files changed, 5 insertions(+), 5 deletions(-)
 
---- a/net/tipc/core.c
-+++ b/net/tipc/core.c
-@@ -119,6 +119,8 @@ static void __net_exit tipc_exit_net(str
- #ifdef CONFIG_TIPC_CRYPTO
- 	tipc_crypto_stop(&tipc_net(net)->crypto_tx);
- #endif
-+	while (atomic_read(&tn->wq_count))
-+		cond_resched();
+--- a/include/net/cfg80211.h
++++ b/include/net/cfg80211.h
+@@ -4605,7 +4605,7 @@ unsigned int ieee80211_get_mesh_hdrlen(s
+  */
+ int ieee80211_data_to_8023_exthdr(struct sk_buff *skb, struct ethhdr *ehdr,
+ 				  const u8 *addr, enum nl80211_iftype iftype,
+-				  u8 data_offset);
++				  u8 data_offset, bool is_amsdu);
+ 
+ /**
+  * ieee80211_data_to_8023 - convert an 802.11 data frame to 802.3
+@@ -4617,7 +4617,7 @@ int ieee80211_data_to_8023_exthdr(struct
+ static inline int ieee80211_data_to_8023(struct sk_buff *skb, const u8 *addr,
+ 					 enum nl80211_iftype iftype)
+ {
+-	return ieee80211_data_to_8023_exthdr(skb, NULL, addr, iftype, 0);
++	return ieee80211_data_to_8023_exthdr(skb, NULL, addr, iftype, 0, false);
  }
  
- static void __net_exit tipc_pernet_pre_exit(struct net *net)
---- a/net/tipc/core.h
-+++ b/net/tipc/core.h
-@@ -149,6 +149,8 @@ struct tipc_net {
- #endif
- 	/* Work item for net finalize */
- 	struct tipc_net_work final_work;
-+	/* The numbers of work queues in schedule */
-+	atomic_t wq_count;
- };
+ /**
+--- a/net/mac80211/rx.c
++++ b/net/mac80211/rx.c
+@@ -2557,7 +2557,7 @@ __ieee80211_rx_h_amsdu(struct ieee80211_
+ 	if (ieee80211_data_to_8023_exthdr(skb, &ethhdr,
+ 					  rx->sdata->vif.addr,
+ 					  rx->sdata->vif.type,
+-					  data_offset))
++					  data_offset, true))
+ 		return RX_DROP_UNUSABLE;
  
- static inline struct tipc_net *tipc_net(struct net *net)
---- a/net/tipc/udp_media.c
-+++ b/net/tipc/udp_media.c
-@@ -812,6 +812,7 @@ static void cleanup_bearer(struct work_s
- 		kfree_rcu(rcast, rcu);
- 	}
+ 	ieee80211_amsdu_to_8023s(skb, &frame_list, dev->dev_addr,
+--- a/net/wireless/util.c
++++ b/net/wireless/util.c
+@@ -422,7 +422,7 @@ EXPORT_SYMBOL(ieee80211_get_mesh_hdrlen)
  
-+	atomic_dec(&tipc_net(sock_net(ub->ubsock->sk))->wq_count);
- 	dst_cache_destroy(&ub->rcast.dst_cache);
- 	udp_tunnel_sock_release(ub->ubsock);
- 	synchronize_net();
-@@ -832,6 +833,7 @@ static void tipc_udp_disable(struct tipc
- 	RCU_INIT_POINTER(ub->bearer, NULL);
+ int ieee80211_data_to_8023_exthdr(struct sk_buff *skb, struct ethhdr *ehdr,
+ 				  const u8 *addr, enum nl80211_iftype iftype,
+-				  u8 data_offset)
++				  u8 data_offset, bool is_amsdu)
+ {
+ 	struct ieee80211_hdr *hdr = (struct ieee80211_hdr *) skb->data;
+ 	struct {
+@@ -510,7 +510,7 @@ int ieee80211_data_to_8023_exthdr(struct
+ 	skb_copy_bits(skb, hdrlen, &payload, sizeof(payload));
+ 	tmp.h_proto = payload.proto;
  
- 	/* sock_release need to be done outside of rtnl lock */
-+	atomic_inc(&tipc_net(sock_net(ub->ubsock->sk))->wq_count);
- 	INIT_WORK(&ub->work, cleanup_bearer);
- 	schedule_work(&ub->work);
- }
+-	if (likely((ether_addr_equal(payload.hdr, rfc1042_header) &&
++	if (likely((!is_amsdu && ether_addr_equal(payload.hdr, rfc1042_header) &&
+ 		    tmp.h_proto != htons(ETH_P_AARP) &&
+ 		    tmp.h_proto != htons(ETH_P_IPX)) ||
+ 		   ether_addr_equal(payload.hdr, bridge_tunnel_header)))
 
 
