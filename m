@@ -2,165 +2,181 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E17E3954FC
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 07:21:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B8FF63954FF
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 07:22:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230104AbhEaFXc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 01:23:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34108 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230006AbhEaFXa (ORCPT
+        id S230130AbhEaFYC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 01:24:02 -0400
+Received: from alexa-out.qualcomm.com ([129.46.98.28]:17589 "EHLO
+        alexa-out.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229970AbhEaFX7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 01:23:30 -0400
-Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com [IPv6:2607:f8b0:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4564C06174A
-        for <linux-kernel@vger.kernel.org>; Sun, 30 May 2021 22:21:48 -0700 (PDT)
-Received: by mail-pf1-x435.google.com with SMTP id z26so4157622pfj.5
-        for <linux-kernel@vger.kernel.org>; Sun, 30 May 2021 22:21:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=nigauri-org.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=E3q0ltUCFlSFseFjGj/1JuyMtl0G1U7pcNWroIzsbf8=;
-        b=p1vx7rRbhioTXeIw85nkmMjInDyqreY9bHa5TuENc4iYfontBGckFW11pHqbBGmFlA
-         VsvyzHohQTLr3Xlgqsf0nmlkRdTH0yvTW7xBKqhsG9rmw9jDfLoKIZGGwd2TtUKim3tJ
-         Sp0FDcS+Rtp9wlK1yAxjjLkXgysgrogQ8VVVCuZf/A/2RjcXTuI7loCo1yjVTQyoTUol
-         klGs+rXLKNTN7TmmGb5lkC71s2/prsiNK1ZB/GO6v1lEQy5yoGdnTdUy5pjnkN5wZXe0
-         +Ktq+blfteTSnoJni50AwSFRuyh5FfjkEoOCX7LBl2AqAQy2Ys6g2o36LS/qi1l+6SCZ
-         fyfw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=E3q0ltUCFlSFseFjGj/1JuyMtl0G1U7pcNWroIzsbf8=;
-        b=aBr7QI1LnDZck8LLms9DINiU+O5wcxXk8ID2yEeLpHUjml7JwmD4i2pvEytqRx0q7w
-         /Jbneao+S4p8gx6bWDdXUfp8DuRTcD0Gb9V1tPM6IsbwSXenkta0t3rPD9X72aIfJBnu
-         aJsEjIq5uemYW9p+NSqO+4xGoMN+3vtV/F1UP4UeWFyunG6WsyMI6v1qWxB1vMeXqbGi
-         R8Tm2YtQjXChsIkOZPegc7qBx8v3alSgLK+sVGZ6Yisl2k3Y0L+XE+IAEJbBrD79WG98
-         D9KhxiwU//KIRiNuMJoGvbQcLpmoZ77dIiLqWL1z0tVc6c8babNQ808nUzOJ8S2LK4w1
-         LemA==
-X-Gm-Message-State: AOAM532jGlrg+0wRwJgtGhMBh0K6+J4nhgPoyZ5VORBXIAdfp0JMKJO2
-        Gy9ovGoNz5L6h+ILTX0FbTFD
-X-Google-Smtp-Source: ABdhPJx13Hy5iHnn4j54rkqO+jQQvuruShVRfadlrgD/A/1CxNcr3mqofJZ1qsW46Uu67C8P80c+wA==
-X-Received: by 2002:a65:5c4a:: with SMTP id v10mr21009984pgr.142.1622438508391;
-        Sun, 30 May 2021 22:21:48 -0700 (PDT)
-Received: from localhost ([2405:6581:5360:1800:7285:c2ff:fec2:8f97])
-        by smtp.gmail.com with ESMTPSA id t12sm2898165pfc.133.2021.05.30.22.21.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 30 May 2021 22:21:47 -0700 (PDT)
-From:   Nobuhiro Iwamatsu <iwamatsu@nigauri.org>
-To:     Michal Simek <michal.simek@xilinx.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Mark Brown <broonie@kernel.org>
-Cc:     linux-spi@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Nobuhiro Iwamatsu <iwamatsu@nigauri.org>
-Subject: [PATCH] dt-bindings: spi: xilinx: convert to yaml
-Date:   Mon, 31 May 2021 14:21:42 +0900
-Message-Id: <20210531052142.695430-1-iwamatsu@nigauri.org>
-X-Mailer: git-send-email 2.30.0
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        Mon, 31 May 2021 01:23:59 -0400
+Received: from ironmsg07-lv.qualcomm.com ([10.47.202.151])
+  by alexa-out.qualcomm.com with ESMTP; 30 May 2021 22:22:20 -0700
+X-QCInternal: smtphost
+Received: from ironmsg02-blr.qualcomm.com ([10.86.208.131])
+  by ironmsg07-lv.qualcomm.com with ESMTP/TLS/AES256-SHA; 30 May 2021 22:22:18 -0700
+X-QCInternal: smtphost
+Received: from c-mansur-linux.qualcomm.com ([10.204.90.208])
+  by ironmsg02-blr.qualcomm.com with ESMTP; 31 May 2021 10:52:00 +0530
+Received: by c-mansur-linux.qualcomm.com (Postfix, from userid 461723)
+        id 7043222586; Mon, 31 May 2021 10:51:59 +0530 (IST)
+From:   Mansur Alisha Shaik <mansur@codeaurora.org>
+To:     linux-media@vger.kernel.org, stanimir.varbanov@linaro.org
+Cc:     linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        vgarodia@codeaurora.org, mansur@codeaurora.org,
+        dikshita@codeaurora.org
+Subject: [PATCH] venus: venc: add support for V4L2_CID_MPEG_VIDEO_H264_8X8_TRANSFORM control
+Date:   Mon, 31 May 2021 10:51:54 +0530
+Message-Id: <1622438514-16657-1-git-send-email-mansur@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Convert SPI for Xilinx bindings documentation to YAML schemas.
+Add support for V4L2_CID_MPEG_VIDEO_H264_8X8_TRANSFORM control for
+H264 high profile and constrained high profile.
 
-Signed-off-by: Nobuhiro Iwamatsu <iwamatsu@nigauri.org>
+Signed-off-by: Mansur Alisha Shaik <mansur@codeaurora.org>
 ---
- .../devicetree/bindings/spi/spi-xilinx.txt    | 23 ---------
- .../devicetree/bindings/spi/spi-xilinx.yaml   | 51 +++++++++++++++++++
- 2 files changed, 51 insertions(+), 23 deletions(-)
- delete mode 100644 Documentation/devicetree/bindings/spi/spi-xilinx.txt
- create mode 100644 Documentation/devicetree/bindings/spi/spi-xilinx.yaml
+ drivers/media/platform/qcom/venus/core.h       |  1 +
+ drivers/media/platform/qcom/venus/hfi_cmds.c   | 10 ++++++++++
+ drivers/media/platform/qcom/venus/hfi_helper.h |  5 +++++
+ drivers/media/platform/qcom/venus/venc.c       | 11 +++++++++++
+ drivers/media/platform/qcom/venus/venc_ctrls.c | 12 +++++++++++-
+ 5 files changed, 38 insertions(+), 1 deletion(-)
 
-diff --git a/Documentation/devicetree/bindings/spi/spi-xilinx.txt b/Documentation/devicetree/bindings/spi/spi-xilinx.txt
-deleted file mode 100644
-index 5f4ed3e5c9942c..00000000000000
---- a/Documentation/devicetree/bindings/spi/spi-xilinx.txt
-+++ /dev/null
-@@ -1,23 +0,0 @@
--Xilinx SPI controller Device Tree Bindings
---------------------------------------------------
--
--Required properties:
--- compatible		: Should be "xlnx,xps-spi-2.00.a", "xlnx,xps-spi-2.00.b" or "xlnx,axi-quad-spi-1.00.a"
--- reg			: Physical base address and size of SPI registers map.
--- interrupts		: Property with a value describing the interrupt
--			  number.
--
--Optional properties:
--- xlnx,num-ss-bits	 : Number of chip selects used.
--- xlnx,num-transfer-bits : Number of bits per transfer. This will be 8 if not specified
--
--Example:
--	axi_quad_spi@41e00000 {
--			compatible = "xlnx,xps-spi-2.00.a";
--			interrupt-parent = <&intc>;
--			interrupts = <0 31 1>;
--			reg = <0x41e00000 0x10000>;
--			xlnx,num-ss-bits = <0x1>;
--			xlnx,num-transfer-bits = <32>;
--	};
--
-diff --git a/Documentation/devicetree/bindings/spi/spi-xilinx.yaml b/Documentation/devicetree/bindings/spi/spi-xilinx.yaml
-new file mode 100644
-index 00000000000000..17463151b36a02
---- /dev/null
-+++ b/Documentation/devicetree/bindings/spi/spi-xilinx.yaml
-@@ -0,0 +1,51 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/spi/spi-xilinx.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
+diff --git a/drivers/media/platform/qcom/venus/core.h b/drivers/media/platform/qcom/venus/core.h
+index 745f226..103fbd8 100644
+--- a/drivers/media/platform/qcom/venus/core.h
++++ b/drivers/media/platform/qcom/venus/core.h
+@@ -235,6 +235,7 @@ struct venc_controls {
+ 	u32 h264_loop_filter_mode;
+ 	s32 h264_loop_filter_alpha;
+ 	s32 h264_loop_filter_beta;
++	u32 h264_8x8_transform;
+ 
+ 	u32 hevc_i_qp;
+ 	u32 hevc_p_qp;
+diff --git a/drivers/media/platform/qcom/venus/hfi_cmds.c b/drivers/media/platform/qcom/venus/hfi_cmds.c
+index 11a8347..61d04a5 100644
+--- a/drivers/media/platform/qcom/venus/hfi_cmds.c
++++ b/drivers/media/platform/qcom/venus/hfi_cmds.c
+@@ -1178,6 +1178,7 @@ pkt_session_set_property_4xx(struct hfi_session_set_property_pkt *pkt,
+ {
+ 	void *prop_data;
+ 
 +
-+title: Xilinx SPI controller Device Tree Bindings
+ 	if (!pkt || !cookie || !pdata)
+ 		return -EINVAL;
+ 
+@@ -1227,6 +1228,15 @@ pkt_session_set_property_4xx(struct hfi_session_set_property_pkt *pkt,
+ 		break;
+ 	}
+ 
++	case HFI_PROPERTY_PARAM_VENC_H264_TRANSFORM_8X8: {
++		struct hfi_h264_8x8x_transform *in = pdata, *tm = prop_data;
 +
-+maintainers:
-+  - Michal Simek <michal.simek@xilinx.com>
++		tm->enable_type = in->enable_type;
++		pkt->shdr.hdr.size += sizeof(u32) + sizeof(*tm);
++		break;
 +
-+allOf:
-+  - $ref: "spi-controller.yaml#"
++	}
 +
-+properties:
-+  compatible:
-+    oneOf:
-+      - const: xlnx,xps-spi-2.00.a
-+      - const: xlnx,xps-spi-2.00.b
-+      - const: xlnx,axi-quad-spi-1.00.a
+ 	case HFI_PROPERTY_CONFIG_VENC_MAX_BITRATE:
+ 	case HFI_PROPERTY_CONFIG_VDEC_POST_LOOP_DEBLOCKER:
+ 	case HFI_PROPERTY_PARAM_BUFFER_ALLOC_MODE:
+diff --git a/drivers/media/platform/qcom/venus/hfi_helper.h b/drivers/media/platform/qcom/venus/hfi_helper.h
+index 63cd347..81d0536 100644
+--- a/drivers/media/platform/qcom/venus/hfi_helper.h
++++ b/drivers/media/platform/qcom/venus/hfi_helper.h
+@@ -510,6 +510,7 @@
+ #define HFI_PROPERTY_PARAM_VENC_MAX_NUM_B_FRAMES		0x2005020
+ #define HFI_PROPERTY_PARAM_VENC_H264_VUI_BITSTREAM_RESTRC	0x2005021
+ #define HFI_PROPERTY_PARAM_VENC_PRESERVE_TEXT_QUALITY		0x2005023
++#define HFI_PROPERTY_PARAM_VENC_H264_TRANSFORM_8X8			0x2005025
+ #define HFI_PROPERTY_PARAM_VENC_HIER_P_MAX_NUM_ENH_LAYER	0x2005026
+ #define HFI_PROPERTY_PARAM_VENC_DISABLE_RC_TIMESTAMP		0x2005027
+ #define HFI_PROPERTY_PARAM_VENC_INITIAL_QP			0x2005028
+@@ -565,6 +566,10 @@ struct hfi_bitrate {
+ 	u32 layer_id;
+ };
+ 
++struct hfi_h264_8x8x_transform {
++	u32 enable_type;
++};
 +
-+  reg:
-+    maxItems: 1
+ #define HFI_CAPABILITY_FRAME_WIDTH			0x01
+ #define HFI_CAPABILITY_FRAME_HEIGHT			0x02
+ #define HFI_CAPABILITY_MBS_PER_FRAME			0x03
+diff --git a/drivers/media/platform/qcom/venus/venc.c b/drivers/media/platform/qcom/venus/venc.c
+index 8dd49d4..4ecf331 100644
+--- a/drivers/media/platform/qcom/venus/venc.c
++++ b/drivers/media/platform/qcom/venus/venc.c
+@@ -567,6 +567,7 @@ static int venc_set_properties(struct venus_inst *inst)
+ 		struct hfi_h264_vui_timing_info info;
+ 		struct hfi_h264_entropy_control entropy;
+ 		struct hfi_h264_db_control deblock;
++		struct hfi_h264_8x8x_transform h264_transform;
+ 
+ 		ptype = HFI_PROPERTY_PARAM_VENC_H264_VUI_TIMING_INFO;
+ 		info.enable = 1;
+@@ -597,6 +598,16 @@ static int venc_set_properties(struct venus_inst *inst)
+ 		ret = hfi_session_set_property(inst, ptype, &deblock);
+ 		if (ret)
+ 			return ret;
 +
-+  interrupts:
-+    maxItems: 1
++		ptype = HFI_PROPERTY_PARAM_VENC_H264_TRANSFORM_8X8;
++		if (ctr->profile.h264 == HFI_H264_PROFILE_HIGH ||
++			ctr->profile.h264 == HFI_H264_PROFILE_CONSTRAINED_HIGH)
++			h264_transform.enable_type = ctr->h264_8x8_transform;
 +
-+  xlnx,num-ss-bits:
-+    description: Number of chip selects used.
++		ret = hfi_session_set_property(inst, ptype, &h264_transform);
++		if (ret)
++			return ret;
 +
-+  xlnx,num-transfer-bits:
-+    description: Number of bits per transfer. This will be 8 if not specified.
+ 	}
+ 
+ 	if (inst->fmt_cap->pixfmt == V4L2_PIX_FMT_H264 ||
+diff --git a/drivers/media/platform/qcom/venus/venc_ctrls.c b/drivers/media/platform/qcom/venus/venc_ctrls.c
+index 637c92f..e3ef611 100644
+--- a/drivers/media/platform/qcom/venus/venc_ctrls.c
++++ b/drivers/media/platform/qcom/venus/venc_ctrls.c
+@@ -319,6 +319,13 @@ static int venc_op_s_ctrl(struct v4l2_ctrl *ctrl)
+ 	case V4L2_CID_COLORIMETRY_HDR10_MASTERING_DISPLAY:
+ 		ctr->mastering = *ctrl->p_new.p_hdr10_mastering;
+ 		break;
++	case V4L2_CID_MPEG_VIDEO_H264_8X8_TRANSFORM:
++		if (ctr->profile.h264 != HFI_H264_PROFILE_HIGH ||
++			ctr->profile.h264 != HFI_H264_PROFILE_CONSTRAINED_HIGH)
++			return -EINVAL;
 +
-+required:
-+  - compatible
-+  - reg
-+  - interrupts
++		ctr->h264_8x8_transform = ctrl->val;
++		break;
+ 	default:
+ 		return -EINVAL;
+ 	}
+@@ -334,7 +341,7 @@ int venc_ctrl_init(struct venus_inst *inst)
+ {
+ 	int ret;
+ 
+-	ret = v4l2_ctrl_handler_init(&inst->ctrl_handler, 57);
++	ret = v4l2_ctrl_handler_init(&inst->ctrl_handler, 58);
+ 	if (ret)
+ 		return ret;
+ 
+@@ -438,6 +445,9 @@ int venc_ctrl_init(struct venus_inst *inst)
+ 			  V4L2_CID_MPEG_VIDEO_H264_I_FRAME_MIN_QP, 1, 51, 1, 1);
+ 
+ 	v4l2_ctrl_new_std(&inst->ctrl_handler, &venc_ctrl_ops,
++		V4L2_CID_MPEG_VIDEO_H264_8X8_TRANSFORM, 0, 1, 1, 0);
 +
-+unevaluatedProperties: false
-+
-+examples:
-+  - |
-+    spi0: spi@41e00000 {
-+      compatible = "xlnx,xps-spi-2.00.a";
-+      interrupt-parent = <&intc>;
-+      interrupts = <0 31 1>;
-+      reg = <0x41e00000 0x10000>;
-+      xlnx,num-ss-bits = <0x1>;
-+      xlnx,num-transfer-bits = <32>;
-+    };
-+...
++	v4l2_ctrl_new_std(&inst->ctrl_handler, &venc_ctrl_ops,
+ 			  V4L2_CID_MPEG_VIDEO_H264_P_FRAME_MIN_QP, 1, 51, 1, 1);
+ 
+ 	v4l2_ctrl_new_std(&inst->ctrl_handler, &venc_ctrl_ops,
 -- 
-2.30.0
+QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member 
+of Code Aurora Forum, hosted by The Linux Foundation
 
