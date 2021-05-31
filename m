@@ -2,136 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 27CD7396762
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 19:47:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D642396773
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 19:50:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232361AbhEaRsr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 13:48:47 -0400
-Received: from mail-il1-f199.google.com ([209.85.166.199]:53004 "EHLO
-        mail-il1-f199.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231859AbhEaRr7 (ORCPT
+        id S231859AbhEaRwY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 13:52:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59634 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230351AbhEaRvt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 13:47:59 -0400
-Received: by mail-il1-f199.google.com with SMTP id d7-20020a056e020c07b02901d77a47ab82so7245962ile.19
-        for <linux-kernel@vger.kernel.org>; Mon, 31 May 2021 10:46:18 -0700 (PDT)
+        Mon, 31 May 2021 13:51:49 -0400
+Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B662CC06134D
+        for <linux-kernel@vger.kernel.org>; Mon, 31 May 2021 10:48:36 -0700 (PDT)
+Received: by mail-wm1-x329.google.com with SMTP id l18-20020a1c79120000b0290181c444b2d0so399911wme.5
+        for <linux-kernel@vger.kernel.org>; Mon, 31 May 2021 10:48:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=9w+YOLhPg3i3Tr1EsuxBv3pkuCJqmFu4aSsxCc9Nllg=;
+        b=NX6RyzqHzZhU/yIIz7B9KT5+g+rgrWNPPRSQdULQOAxLuBVwLJXpVT7bzRRTZKsBFQ
+         twzZ87IbRqaI1WHftl64DjZvuTj4XS/GlpH1f4xbKoYozxD0y49k11DnVy+/lk2dHsYw
+         T55Drhmxdsam7SDId2NOy/FaGXShBw1pk1mqCTsmmXOstxGULD61fdcigrI7hUVbJSFr
+         4V042gFckuIhw6/WXdE7GbgV+bkojxo0MKlkifNPwINeWBzo72aAgfSFQnyyg6tUNCOY
+         Lk6mYOfufAxBYze4FpLzrDWx8MgYDJJq7GV1iq6QehaZ4k5jhe22lG9EybUfCTcT3ljJ
+         KXOA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
-         :from:to;
-        bh=0iVfvL7JwnuWeGdIoIJhdkwXuwKDV+Q8jVMxiC8n2pk=;
-        b=b+w9oQ+UBQ+BNZKDSAvteZMKYzv47BVepLUrzTs/A39LKLoU/ZjPPTUTiiQP9d6N/g
-         4Zq5dG72zGnpI8Y2bfBgPD4VmjdQQ0FiUY3DJGkcVcfZfscewBP/PoOaqAtub9vhFRPJ
-         0aHzhfGWaiwO7do/aGgFRcAq8en/YmEiWRi/veth8IYlgYHwAewYoW+r+vxZtPozVrc6
-         4b/ctyDZfthr7c/UZ2zcnh4VCx4LcDu0FwBYgCmvqp9ZGnxJ0zT5Ywvv9VMwmATzIYxc
-         siH1W9LcoGOO943vQHVi9FRfkcYKllvScy2jwQV1bvOGkNnVEzvs5GXCqZqPLNdTWUpz
-         KSWw==
-X-Gm-Message-State: AOAM533jDvN2FU9w7DnZI6jTAX3l/xsjCx+UfF5q2jjaYcfXYDMKdRWQ
-        x+Ho+TQm6re/V6QoG3ieM/9niS1CmGpdjQkcM0cnL0xkI2iV
-X-Google-Smtp-Source: ABdhPJwfjKzPTwTt7KjjWoG5YFQVziBWj34LsicO8wDWNlq7uJOcDzP74iSkRR8WhqgLiy/GDM5VDyES+OtfcjBvTxSUjbRCiOg6
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=9w+YOLhPg3i3Tr1EsuxBv3pkuCJqmFu4aSsxCc9Nllg=;
+        b=Nzt8fC67j7REmbZtmtKIxCVFhMo2J14xn5htfbiH6ZU/jv0oxqnnWVuqDY3S0r5jMm
+         XLXXKaCTr0DOF8ylsrl3jfLl6oSrMDeEHj8edjGYPp5ZrA3rh2tXnrnmXwGNChTzdGXE
+         HD6jPc1nzaqw510iw7iGjrHIrdc8aVXnL6DiXVunH3qDnudslZ3C5+p46bIAA8CSUyFV
+         6hyVMHEPRx0OSSb1LWQgvCJgtWX6cLTLIAt3A2ohnZj9aYEeoii/jQ0IWiyCHN6kQBT4
+         EDNEjSY6l7H2roYNz7Lau1xzQZXKSwJet+9SRrGrAnhcQvvK4k6ptaeT9SQsCpoM674P
+         ZMFw==
+X-Gm-Message-State: AOAM533HZ2PBIlhYtUNRFfTzAB3DyXyKQXyMvmYWaS1f0+SzN0TxRdy+
+        Pkq3zLwod/kOfk7Scsh/UMUVO+WDXa54RQ==
+X-Google-Smtp-Source: ABdhPJyTOSC1nGUD6dnIYOxZpbs2gIZbcBHca9HSf0byj5/DSMTfCcobUatRnm8e8k1vz2XWrX2Z+w==
+X-Received: by 2002:a7b:c849:: with SMTP id c9mr252246wml.84.1622483315353;
+        Mon, 31 May 2021 10:48:35 -0700 (PDT)
+Received: from kista.localnet (cpe-86-58-17-133.cable.triera.net. [86.58.17.133])
+        by smtp.gmail.com with ESMTPSA id v18sm463950wrb.10.2021.05.31.10.48.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 31 May 2021 10:48:34 -0700 (PDT)
+From:   Jernej =?utf-8?B?xaBrcmFiZWM=?= <jernej.skrabec@gmail.com>
+To:     linux-kernel@vger.kernel.org,
+        Roman Stratiienko <r.stratiienko@gmail.com>
+Cc:     mripard@kernel.org, wens@csie.org, jernej.skrabec@siol.net,
+        megous@megous.com, linux-sunxi@googlegroups.com,
+        dri-devel@lists.freedesktop.org,
+        Roman Stratiienko <r.stratiienko@gmail.com>
+Subject: Re: Re: [PATCH v4 1/2] drm/sun4i: Add mode_set callback to the engine
+Date:   Mon, 31 May 2021 19:48:33 +0200
+Message-ID: <3374256.1yKYrUSprD@kista>
+In-Reply-To: <2404786.ubhusWIBXB@kista>
+References: <20210528203036.17999-1-r.stratiienko@gmail.com> <20210528203036.17999-2-r.stratiienko@gmail.com> <2404786.ubhusWIBXB@kista>
 MIME-Version: 1.0
-X-Received: by 2002:a92:c148:: with SMTP id b8mr10165539ilh.227.1622483178605;
- Mon, 31 May 2021 10:46:18 -0700 (PDT)
-Date:   Mon, 31 May 2021 10:46:18 -0700
-In-Reply-To: <0000000000004c453905c30f8334@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000083d3dd05c3a3cdc6@google.com>
-Subject: Re: [syzbot] WARNING in ex_handler_fprestore
-From:   syzbot <syzbot+2067e764dbcd10721e2e@syzkaller.appspotmail.com>
-To:     bp@alien8.de, bp@suse.de, dave.hansen@intel.com,
-        dave.hansen@linux.intel.com, dvyukov@google.com,
-        fenghua.yu@intel.com, hpa@zytor.com, linux-kernel@vger.kernel.org,
-        luto@kernel.org, mingo@redhat.com, peterz@infradead.org,
-        stable@vger.kernel.org, syzkaller-bugs@googlegroups.com,
-        tglx@linutronix.de, tony.luck@intel.com, x86@kernel.org,
-        yu-cheng.yu@intel.com
+Content-Transfer-Encoding: quoted-printable
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-syzbot has found a reproducer for the following issue on:
+Dne ponedeljek, 31. maj 2021 ob 19:24:40 CEST je Jernej =C5=A0krabec napisa=
+l(a):
+> Hi!
+>=20
+> Dne petek, 28. maj 2021 ob 22:30:35 CEST je Roman Stratiienko napisal(a):
+> > Create callback to allow updating engine's registers on mode change.
+> >=20
+> > Signed-off-by: Roman Stratiienko <r.stratiienko@gmail.com>
+> > Reviewed-by: Jernej Skrabec <jernej.skrabec@siol.net>
 
-HEAD commit:    8124c8a6 Linux 5.13-rc4
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=1047c4a7d00000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=71698168f5f17484
-dashboard link: https://syzkaller.appspot.com/bug?extid=2067e764dbcd10721e2e
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1020b26bd00000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=12afa2a7d00000
+BTW,  update my R-B tag with gmail address and fix issues pointed out by Pl=
+aes=20
+and me in order to use it.
 
-The issue was bisected to:
+> > ---
+> >  drivers/gpu/drm/sun4i/sun4i_crtc.c   |  3 +++
+> >  drivers/gpu/drm/sun4i/sunxi_engine.h | 12 ++++++++++++
+> >  2 files changed, 15 insertions(+)
+> >=20
+> > diff --git a/drivers/gpu/drm/sun4i/sun4i_crtc.c b/drivers/gpu/drm/sun4i/
+> sun4i_crtc.c
+> > index 45d9eb552d86..8f01a6b2bbef 100644
+> > --- a/drivers/gpu/drm/sun4i/sun4i_crtc.c
+> > +++ b/drivers/gpu/drm/sun4i/sun4i_crtc.c
+> > @@ -146,6 +146,9 @@ static void sun4i_crtc_mode_set_nofb(struct drm_crt=
+c=20
+> *crtc)
+> >  	struct sun4i_crtc *scrtc =3D drm_crtc_to_sun4i_crtc(crtc);
+> > =20
+> >  	sun4i_tcon_mode_set(scrtc->tcon, encoder, mode);
+> > +
+> > +	if (scrtc->engine->ops->mode_set)
+> > +		scrtc->engine->ops->mode_set(scrtc->engine, mode);
+> >  }
+> > =20
+> >  static const struct drm_crtc_helper_funcs sun4i_crtc_helper_funcs =3D {
+> > diff --git a/drivers/gpu/drm/sun4i/sunxi_engine.h b/drivers/gpu/drm/sun=
+4i/
+> sunxi_engine.h
+> > index 548710a936d5..7faa844646ff 100644
+> > --- a/drivers/gpu/drm/sun4i/sunxi_engine.h
+> > +++ b/drivers/gpu/drm/sun4i/sunxi_engine.h
+> > @@ -9,6 +9,7 @@
+> >  struct drm_plane;
+> >  struct drm_device;
+> >  struct drm_crtc_state;
+> > +struct drm_display_mode;
+> > =20
+> >  struct sunxi_engine;
+> > =20
+> > @@ -108,6 +109,17 @@ struct sunxi_engine_ops {
+> >  	 * This function is optional.
+> >  	 */
+> >  	void (*vblank_quirk)(struct sunxi_engine *engine);
+> > +
+> > +	/**
+> > +	 * @mode_set:
+> > +	 *
+> > +	 * This callback is used to update engine registers that
+> > +	 * responsible for display frame size and other mode attributes.
+> > +	 *
+> > +	 * This function is optional.
+> > +	 */
+> > +	void (*mode_set)(struct sunxi_engine *engine,
+> > +			 struct drm_display_mode *mode);
+>=20
+> Mark mode as const.
+>=20
+> Best regards,
+> Jernej
+>=20
+> >  };
+> > =20
+> >  /**
+> >=20
+>=20
+>=20
+>=20
 
-commit b860eb8dce5906b14e3a7f3c771e0b3d6ef61b94
-Author: Fenghua Yu <fenghua.yu@intel.com>
-Date:   Tue May 12 14:54:39 2020 +0000
-
-    x86/fpu/xstate: Define new functions for clearing fpregs and xstates
-
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=17c2c723d00000
-final oops:     https://syzkaller.appspot.com/x/report.txt?x=1422c723d00000
-console output: https://syzkaller.appspot.com/x/log.txt?x=1022c723d00000
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+2067e764dbcd10721e2e@syzkaller.appspotmail.com
-Fixes: b860eb8dce59 ("x86/fpu/xstate: Define new functions for clearing fpregs and xstates")
-
-syz-executor638[9087] bad frame in rt_sigreturn frame:00007f1dcdbbdbf8 ip:445bf9 sp:7f1dcdbbe188 orax:ffffffffffffffff in syz-executor638076058[401000+9a000]
-------------[ cut here ]------------
-Bad FPU state detected at copy_kernel_to_xregs arch/x86/include/asm/fpu/internal.h:344 [inline], reinitializing FPU registers.
-Bad FPU state detected at __copy_kernel_to_fpregs arch/x86/include/asm/fpu/internal.h:419 [inline], reinitializing FPU registers.
-Bad FPU state detected at copy_kernel_to_fpregs arch/x86/include/asm/fpu/internal.h:443 [inline], reinitializing FPU registers.
-Bad FPU state detected at __fpregs_load_activate arch/x86/include/asm/fpu/internal.h:514 [inline], reinitializing FPU registers.
-Bad FPU state detected at copy_fpstate_to_sigframe+0x4d2/0xae0 arch/x86/kernel/fpu/signal.c:191, reinitializing FPU registers.
-WARNING: CPU: 1 PID: 9087 at arch/x86/mm/extable.c:65 ex_handler_fprestore+0xf0/0x110 arch/x86/mm/extable.c:65
-Modules linked in:
-CPU: 1 PID: 9087 Comm: syz-executor638 Not tainted 5.13.0-rc4-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-RIP: 0010:ex_handler_fprestore+0xf0/0x110 arch/x86/mm/extable.c:65
-Code: e8 55 40 40 00 b8 01 00 00 00 5b 5d 41 5c c3 e8 46 40 40 00 48 89 de 48 c7 c7 c0 0c 69 89 c6 05 42 12 81 0c 01 e8 db 48 a1 07 <0f> 0b eb 90 48 89 df e8 94 c8 84 00 e9 3d ff ff ff e8 1a c9 84 00
-RSP: 0018:ffffc9000227fa60 EFLAGS: 00010282
-RAX: 0000000000000000 RBX: ffffffff812aeeb2 RCX: 0000000000000000
-RDX: ffff88803031a100 RSI: ffffffff815c1805 RDI: fffff5200044ff3e
-RBP: 0000000000000000 R08: 0000000000000000 R09: 0000000000000000
-R10: ffffffff815bb63e R11: 0000000000000000 R12: ffffffff8b23f7d8
-R13: 000000000000000d R14: 0000000000000000 R15: 0000000000000000
-FS:  00007f1dcdbbe700(0000) GS:ffff8880b9d00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 0000000020000000 CR3: 0000000031055000 CR4: 00000000001506e0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- fixup_exception+0x9a/0xd0 arch/x86/mm/extable.c:183
- __exc_general_protection arch/x86/kernel/traps.c:567 [inline]
- exc_general_protection+0xed/0x2f0 arch/x86/kernel/traps.c:531
- asm_exc_general_protection+0x1e/0x30 arch/x86/include/asm/idtentry.h:571
-RIP: 0010:__fpregs_load_activate arch/x86/include/asm/fpu/internal.h:514 [inline]
-RIP: 0010:copy_fpstate_to_sigframe+0x4d2/0xae0 arch/x86/kernel/fpu/signal.c:191
-Code: 58 e8 d2 22 49 00 48 c7 c0 c0 29 c9 8d 0f 1f 44 00 00 e8 c1 22 49 00 e8 bc 22 49 00 b8 ff ff ff ff 4c 89 e7 89 c2 48 0f ae 2f <e8> a9 22 49 00 65 4c 89 35 d1 00 d7 7e 0f 1f 44 00 00 e8 97 22 49
-RSP: 0018:ffffc9000227fc08 EFLAGS: 00010293
-RAX: 00000000ffffffff RBX: ffff88803031a100 RCX: 0000000000000000
-RDX: 00000000ffffffff RSI: ffffffff812aeea4 RDI: ffff88803031b900
-RBP: ffff88803031a100 R08: 0000000000000000 R09: 0000000000000001
-R10: ffffffff812aee3b R11: 0000000000000000 R12: ffff88803031b900
-R13: ffffed10060636f2 R14: ffff88803031b8c0 R15: 00007f1dcdbbddc0
- get_sigframe.constprop.0.isra.0+0x429/0x730 arch/x86/kernel/signal.c:274
- __setup_rt_frame arch/x86/kernel/signal.c:450 [inline]
- setup_rt_frame arch/x86/kernel/signal.c:702 [inline]
- handle_signal arch/x86/kernel/signal.c:746 [inline]
- arch_do_signal_or_restart+0xd9e/0x1eb0 arch/x86/kernel/signal.c:791
- handle_signal_work kernel/entry/common.c:147 [inline]
- exit_to_user_mode_loop kernel/entry/common.c:171 [inline]
- exit_to_user_mode_prepare+0x171/0x280 kernel/entry/common.c:208
- __syscall_exit_to_user_mode_work kernel/entry/common.c:290 [inline]
- syscall_exit_to_user_mode+0x19/0x60 kernel/entry/common.c:301
- do_syscall_64+0x47/0xb0 arch/x86/entry/common.c:57
- entry_SYSCALL_64_after_hwframe+0x44/0xae
-RIP: 0033:0x445bf9
-Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 11 15 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 bc ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007f1dcdbbe188 EFLAGS: 00000246
-RAX: 0000000000000000 RBX: 00000000004cb408 RCX: 0000000000445bf9
-RDX: 0000000080000002 RSI: 0000000000000000 RDI: 0000000000000000
-RBP: 00000000004cb400 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 00000000004cb40c
-R13: 00007ffcd24a5bdf R14: 00007f1dcdbbe300 R15: 0000000000022000
 
