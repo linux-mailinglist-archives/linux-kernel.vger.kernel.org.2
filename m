@@ -2,38 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E21D23965A1
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 18:41:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DC13E39631A
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 17:04:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234163AbhEaQmu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 12:42:50 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47898 "EHLO mail.kernel.org"
+        id S233662AbhEaPGX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 11:06:23 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40580 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234060AbhEaOxS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 10:53:18 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7C83D613F5;
-        Mon, 31 May 2021 13:58:49 +0000 (UTC)
+        id S232282AbhEaOIC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 10:08:02 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A24D061969;
+        Mon, 31 May 2021 13:39:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1622469529;
-        bh=Q6mA6D0soW/kCeWiI5cvmV+dDk1a114klHTObJLnEXo=;
+        s=korg; t=1622468386;
+        bh=qEwVxB+9KP8Lo3sPFcFtCEPaxzHUlgDG/ZzsD58swkA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=mdontsgZPH6QX/gfeZfEABrWK9I6XMA12YsJf6Qvy1cv97WU1n9eeKZHQ7N0u/R5E
-         fofEYv9Gk2wPhO7lMjBU085ZbrutK3cFvPJu2G6669vL2Vqd1ccD8uTvU+0oxPREM1
-         8Zeap6/lVmS3W4RLhlf9KjZYFXEj2uuyGtJrNPNk=
+        b=uADlVqSy2r4ylT57gSFv8SgQuLbFIDjPMflMRwq0ZgI0P2h9UfyaKv+sSzokJoKYH
+         V79FYYUUWLfTM+ACx6sQ7DDpXhr0gumAi9QUaqEsBDjkeEjEcpMecWKrCfCgfatrd2
+         yq3FJIQU2GrNued7ly0X2K79VSPRi7HalCA69B7I=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Daniel Borkmann <daniel@iogearbox.net>,
-        Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
-        Richard Sanger <rsanger@wand.net.nz>,
+        stable@vger.kernel.org, Jiaran Zhang <zhangjiaran@huawei.com>,
+        Huazhong Tan <tanhuazhong@huawei.com>,
         "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.12 232/296] net: packetmmap: fix only tx timestamp on request
+Subject: [PATCH 5.10 222/252] net: hns3: fix incorrect resp_msg issue
 Date:   Mon, 31 May 2021 15:14:47 +0200
-Message-Id: <20210531130711.608742062@linuxfoundation.org>
+Message-Id: <20210531130705.545137286@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210531130703.762129381@linuxfoundation.org>
-References: <20210531130703.762129381@linuxfoundation.org>
+In-Reply-To: <20210531130657.971257589@linuxfoundation.org>
+References: <20210531130657.971257589@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,54 +41,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Richard Sanger <rsanger@wand.net.nz>
+From: Jiaran Zhang <zhangjiaran@huawei.com>
 
-[ Upstream commit 171c3b151118a2fe0fc1e2a9d1b5a1570cfe82d2 ]
+[ Upstream commit a710b9ffbebaf713f7dbd4dbd9524907e5d66f33 ]
 
-The packetmmap tx ring should only return timestamps if requested via
-setsockopt PACKET_TIMESTAMP, as documented. This allows compatibility
-with non-timestamp aware user-space code which checks
-tp_status == TP_STATUS_AVAILABLE; not expecting additional timestamp
-flags to be set in tp_status.
+In hclge_mbx_handler(), if there are two consecutive mailbox
+messages that requires resp_msg, the resp_msg is not cleared
+after processing the first message, which will cause the resp_msg
+data of second message incorrect.
 
-Fixes: b9c32fb27170 ("packet: if hw/sw ts enabled in rx/tx ring, report which ts we got")
-Cc: Daniel Borkmann <daniel@iogearbox.net>
-Cc: Willem de Bruijn <willemdebruijn.kernel@gmail.com>
-Signed-off-by: Richard Sanger <rsanger@wand.net.nz>
+Fix it by clearing the resp_msg before processing every mailbox
+message.
+
+Fixes: bb5790b71bad ("net: hns3: refactor mailbox response scheme between PF and VF")
+Signed-off-by: Jiaran Zhang <zhangjiaran@huawei.com>
+Signed-off-by: Huazhong Tan <tanhuazhong@huawei.com>
 Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/packet/af_packet.c | 10 ++++++++--
- 1 file changed, 8 insertions(+), 2 deletions(-)
+ drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_mbx.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/net/packet/af_packet.c b/net/packet/af_packet.c
-index 9611e41c7b8b..c52557ec7fb3 100644
---- a/net/packet/af_packet.c
-+++ b/net/packet/af_packet.c
-@@ -422,7 +422,8 @@ static __u32 tpacket_get_timestamp(struct sk_buff *skb, struct timespec64 *ts,
- 	    ktime_to_timespec64_cond(shhwtstamps->hwtstamp, ts))
- 		return TP_STATUS_TS_RAW_HARDWARE;
+diff --git a/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_mbx.c b/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_mbx.c
+index e0254672831f..2c2d53f5c56e 100644
+--- a/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_mbx.c
++++ b/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_mbx.c
+@@ -678,7 +678,6 @@ void hclge_mbx_handler(struct hclge_dev *hdev)
+ 	unsigned int flag;
+ 	int ret = 0;
  
--	if (ktime_to_timespec64_cond(skb->tstamp, ts))
-+	if ((flags & SOF_TIMESTAMPING_SOFTWARE) &&
-+	    ktime_to_timespec64_cond(skb->tstamp, ts))
- 		return TP_STATUS_TS_SOFTWARE;
+-	memset(&resp_msg, 0, sizeof(resp_msg));
+ 	/* handle all the mailbox requests in the queue */
+ 	while (!hclge_cmd_crq_empty(&hdev->hw)) {
+ 		if (test_bit(HCLGE_STATE_CMD_DISABLE, &hdev->state)) {
+@@ -706,6 +705,9 @@ void hclge_mbx_handler(struct hclge_dev *hdev)
  
- 	return 0;
-@@ -2340,7 +2341,12 @@ static int tpacket_rcv(struct sk_buff *skb, struct net_device *dev,
+ 		trace_hclge_pf_mbx_get(hdev, req);
  
- 	skb_copy_bits(skb, 0, h.raw + macoff, snaplen);
- 
--	if (!(ts_status = tpacket_get_timestamp(skb, &ts, po->tp_tstamp)))
-+	/* Always timestamp; prefer an existing software timestamp taken
-+	 * closer to the time of capture.
-+	 */
-+	ts_status = tpacket_get_timestamp(skb, &ts,
-+					  po->tp_tstamp | SOF_TIMESTAMPING_SOFTWARE);
-+	if (!ts_status)
- 		ktime_get_real_ts64(&ts);
- 
- 	status |= ts_status;
++		/* clear the resp_msg before processing every mailbox message */
++		memset(&resp_msg, 0, sizeof(resp_msg));
++
+ 		switch (req->msg.code) {
+ 		case HCLGE_MBX_MAP_RING_TO_VECTOR:
+ 			ret = hclge_map_unmap_ring_to_vf_vector(vport, true,
 -- 
 2.30.2
 
