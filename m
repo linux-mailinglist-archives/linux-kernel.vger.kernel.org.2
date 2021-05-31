@@ -2,60 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BBFA039555B
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 08:21:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F4E5395553
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 08:19:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230191AbhEaGWm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 02:22:42 -0400
-Received: from ni.piap.pl ([195.187.100.5]:46514 "EHLO ni.piap.pl"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229752AbhEaGWk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 02:22:40 -0400
-Received: from t19.piap.pl (OSB1819.piap.pl [10.0.9.19])
-        (using TLSv1.2 with cipher AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ni.piap.pl (Postfix) with ESMTPSA id D04974441F6;
-        Mon, 31 May 2021 08:20:59 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 ni.piap.pl D04974441F6
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=piap.pl; s=mail;
-        t=1622442059; bh=pSKdUQ/SHtMFltluDtQtsnviwfqIGj8DHN4OUQFCP/s=;
-        h=From:To:Cc:Subject:References:Date:In-Reply-To:From;
-        b=aJL8+oiGYQcTlYl0LdNbRZz63YBR+LqWa7xlq3YUcCPzX7/nO3TTmwlYqEzqwf23b
-         JKN2N0viGCn5tVYh4jSZ2gYCi6zPOVMyo3TSWhaW7b++gVpLcqPwg88Z2ZclLtjH8H
-         X3MqDfqQIVcd1NPakSNOpFAA55c0pa7MNnYdYaLg=
-From:   =?utf-8?Q?Krzysztof_Ha=C5=82asa?= <khalasa@piap.pl>
-To:     "Russell King (Oracle)" <linux@armlinux.org.uk>
-Cc:     linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        lkml <linux-kernel@vger.kernel.org>
-Subject: Re: Data corruption on i.MX6 IPU in arm_copy_from_user()
-References: <m3y2c1uchh.fsf@t19.piap.pl>
-        <20210526100843.GD30436@shell.armlinux.org.uk>
-        <m3r1htu19o.fsf@t19.piap.pl>
-        <20210526131853.GE30436@shell.armlinux.org.uk>
-        <m3h7intbub.fsf@t19.piap.pl>
-        <20210528143544.GQ30436@shell.armlinux.org.uk>
-Sender: khalasa@piap.pl
-Date:   Mon, 31 May 2021 08:20:59 +0200
-In-Reply-To: <20210528143544.GQ30436@shell.armlinux.org.uk> (Russell King's
-        message of "Fri, 28 May 2021 15:35:44 +0100")
-Message-ID: <m3y2bvs9tg.fsf@t19.piap.pl>
+        id S230162AbhEaGVF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 02:21:05 -0400
+Received: from szxga08-in.huawei.com ([45.249.212.255]:3299 "EHLO
+        szxga08-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230032AbhEaGVD (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 02:21:03 -0400
+Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.56])
+        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4FtlPZ563Xz1BGRc;
+        Mon, 31 May 2021 14:14:42 +0800 (CST)
+Received: from dggpeml500017.china.huawei.com (7.185.36.243) by
+ dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Mon, 31 May 2021 14:19:22 +0800
+Received: from huawei.com (10.175.103.91) by dggpeml500017.china.huawei.com
+ (7.185.36.243) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Mon, 31 May
+ 2021 14:19:22 +0800
+From:   Yang Yingliang <yangyingliang@huawei.com>
+To:     <linux-kernel@vger.kernel.org>,
+        <linux-cifsd-devel@lists.sourceforge.net>,
+        <linux-cifs@vger.kernel.org>
+CC:     <namjae.jeon@samsung.com>, <sergey.senozhatsky@gmail.com>,
+        <sfrench@samba.org>, <hyc.lee@gmail.com>
+Subject: [PATCH -next v3] cifsd: check return value of ksmbd_vfs_getcasexattr() correctly
+Date:   Mon, 31 May 2021 14:23:50 +0800
+Message-ID: <20210531062350.1910823-1-yangyingliang@huawei.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-KLMS-Rule-ID: 4
-X-KLMS-Message-Action: skipped
-X-KLMS-AntiSpam-Status: not scanned, whitelist
-X-KLMS-AntiPhishing: not scanned, whitelist
-X-KLMS-AntiVirus: Kaspersky Security for Linux Mail Server, version 8.0.3.30, not scanned, whitelist
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.103.91]
+X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
+ dggpeml500017.china.huawei.com (7.185.36.243)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-BTW writes (STMIA) to IPU registers are apparently not corrupted, only
-LDMIAs are affected - in pure userspace as well.
---=20
-Krzysztof Ha=C5=82asa
+If ksmbd_vfs_getcasexattr() returns -ENOMEM, stream_buf is NULL,
+it will cause null-ptr-deref when using it to copy memory. So we
+need check the return value of ksmbd_vfs_getcasexattr() by comparing
+with 0.
 
-Sie=C4=87 Badawcza =C5=81ukasiewicz
-Przemys=C5=82owy Instytut Automatyki i Pomiar=C3=B3w PIAP
-Al. Jerozolimskie 202, 02-486 Warszawa
+Fixes: f44158485826 ("cifsd: add file operations")
+Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
+---
+v3:
+  Handle the 0 return value in ksmbd_vfs_getcasexattr().
+
+v2:
+  Handle the case ksmbd_vfs_getcasexattr() returns 0.
+---
+ fs/cifsd/vfs.c | 12 +++++-------
+ 1 file changed, 5 insertions(+), 7 deletions(-)
+
+diff --git a/fs/cifsd/vfs.c b/fs/cifsd/vfs.c
+index 97d5584ec870..a56ec1f7f941 100644
+--- a/fs/cifsd/vfs.c
++++ b/fs/cifsd/vfs.c
+@@ -266,7 +266,7 @@ static ssize_t ksmbd_vfs_getcasexattr(struct dentry *dentry, char *attr_name,
+ 
+ out:
+ 	kvfree(xattr_list);
+-	return value_len;
++	return value_len == 0 ? -ENOENT : value_len;
+ }
+ 
+ static int ksmbd_vfs_stream_read(struct ksmbd_file *fp, char *buf, loff_t *pos,
+@@ -274,7 +274,6 @@ static int ksmbd_vfs_stream_read(struct ksmbd_file *fp, char *buf, loff_t *pos,
+ {
+ 	ssize_t v_len;
+ 	char *stream_buf = NULL;
+-	int err;
+ 
+ 	ksmbd_debug(VFS, "read stream data pos : %llu, count : %zd\n",
+ 		    *pos, count);
+@@ -283,10 +282,9 @@ static int ksmbd_vfs_stream_read(struct ksmbd_file *fp, char *buf, loff_t *pos,
+ 				       fp->stream.name,
+ 				       fp->stream.size,
+ 				       &stream_buf);
+-	if (v_len == -ENOENT) {
++	if ((int)v_len < 0) {
+ 		ksmbd_err("not found stream in xattr : %zd\n", v_len);
+-		err = -ENOENT;
+-		return err;
++		return (int)v_len;
+ 	}
+ 
+ 	memcpy(buf, &stream_buf[*pos], count);
+@@ -415,9 +413,9 @@ static int ksmbd_vfs_stream_write(struct ksmbd_file *fp, char *buf, loff_t *pos,
+ 				       fp->stream.name,
+ 				       fp->stream.size,
+ 				       &stream_buf);
+-	if (v_len == -ENOENT) {
++	if ((int)v_len < 0) {
+ 		ksmbd_err("not found stream in xattr : %zd\n", v_len);
+-		err = -ENOENT;
++		err = (int)v_len;
+ 		goto out;
+ 	}
+ 
+-- 
+2.25.1
+
