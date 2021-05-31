@@ -2,38 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 28EEA396084
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 16:26:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 16F123964CF
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 18:10:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233841AbhEaO1f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 10:27:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55372 "EHLO mail.kernel.org"
+        id S233504AbhEaQMT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 12:12:19 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36490 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232517AbhEaNvr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 09:51:47 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 33C8A61876;
-        Mon, 31 May 2021 13:32:39 +0000 (UTC)
+        id S233900AbhEaOhg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 10:37:36 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 63AF76186A;
+        Mon, 31 May 2021 13:51:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1622467959;
-        bh=XNc7gbAIvDHuE840Jlwhk0t4yaSnPloCG7GiueXbCrg=;
+        s=korg; t=1622469113;
+        bh=sg8BA99lz8X4n17e5wbLXqVoyRIWCYyTeQ0xl9m3Ti0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=g6338VXt2IV1WI78mJ2umvR4GdVfjl5Z2FwtM4rvipHHuDh1ZLRuGGzQfiUXPWmS5
-         l95ktHRQ6HcmEctII3JkP3pnRcCwh2bQbxYQUd/55fLks1e1/yJ2j2cEpt3YEBitwP
-         4ymsFzE/iL2261F1sWSjBniNZxEKYbcDXqmCDJXk=
+        b=Yckhot4aWvweQmoijUXmFgO9OI5PCDM9GX7PQSf195HgN8z41yqLfA6e/FUZmBJGn
+         WWqgtdgOPb/wO4menqj+OqeJrMaUCeLUE3ooo5b9OHJEsLoEv+IxAVTG3/Ph05Y0ZR
+         ac2DoxQkKoMLhgOWtk2B6Zs13osbe2kvqj6tjHuE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Alexandru Ardelean <ardeleanalex@gmail.com>,
+        stable@vger.kernel.org, Lucas Stankus <lucas.p.stankus@gmail.com>,
         Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        Alexandru Ardelean <aardelean@deviqon.com>,
         Stable@vger.kernel.org
-Subject: [PATCH 5.10 064/252] iio: adc: ad7124: Fix missbalanced regulator enable / disable on error.
-Date:   Mon, 31 May 2021 15:12:09 +0200
-Message-Id: <20210531130700.165962249@linuxfoundation.org>
+Subject: [PATCH 5.12 075/296] staging: iio: cdc: ad7746: avoid overwrite of num_channels
+Date:   Mon, 31 May 2021 15:12:10 +0200
+Message-Id: <20210531130706.375225101@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210531130657.971257589@linuxfoundation.org>
-References: <20210531130657.971257589@linuxfoundation.org>
+In-Reply-To: <20210531130703.762129381@linuxfoundation.org>
+References: <20210531130703.762129381@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,99 +40,33 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+From: Lucas Stankus <lucas.p.stankus@gmail.com>
 
-commit 4573472315f0fa461330545ff2aa2f6da0b1ae76 upstream.
+commit 04f5b9f539ce314f758d919a14dc7a669f3b7838 upstream.
 
-If the devm_regulator_get() call succeeded but not the regulator_enable()
-then regulator_disable() would be called on a regulator that was not
-enabled.
+AD7745 devices don't have the CIN2 pins and therefore can't handle related
+channels. Forcing the number of AD7746 channels may lead to enabling more
+channels than what the hardware actually supports.
+Avoid num_channels being overwritten after first assignment.
 
-Fix this by moving regulator enabling / disabling over to
-devm_ management via devm_add_action_or_reset.
-
-Alexandru's sign-off here because he pulled Jonathan's patch into
-a larger set which Jonathan then applied.
-
-Fixes: b3af341bbd96 ("iio: adc: Add ad7124 support")
-Reviewed-by: Alexandru Ardelean <ardeleanalex@gmail.com>
+Signed-off-by: Lucas Stankus <lucas.p.stankus@gmail.com>
+Fixes: 83e416f458d53 ("staging: iio: adc: Replace, rewrite ad7745 from scratch.")
 Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Signed-off-by: Alexandru Ardelean <aardelean@deviqon.com>
 Cc: <Stable@vger.kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/iio/adc/ad7124.c |   29 +++++++++++++----------------
- 1 file changed, 13 insertions(+), 16 deletions(-)
+ drivers/staging/iio/cdc/ad7746.c |    1 -
+ 1 file changed, 1 deletion(-)
 
---- a/drivers/iio/adc/ad7124.c
-+++ b/drivers/iio/adc/ad7124.c
-@@ -707,6 +707,11 @@ static int ad7124_setup(struct ad7124_st
- 	return ret;
- }
+--- a/drivers/staging/iio/cdc/ad7746.c
++++ b/drivers/staging/iio/cdc/ad7746.c
+@@ -700,7 +700,6 @@ static int ad7746_probe(struct i2c_clien
+ 		indio_dev->num_channels = ARRAY_SIZE(ad7746_channels);
+ 	else
+ 		indio_dev->num_channels =  ARRAY_SIZE(ad7746_channels) - 2;
+-	indio_dev->num_channels = ARRAY_SIZE(ad7746_channels);
+ 	indio_dev->modes = INDIO_DIRECT_MODE;
  
-+static void ad7124_reg_disable(void *r)
-+{
-+	regulator_disable(r);
-+}
-+
- static int ad7124_probe(struct spi_device *spi)
- {
- 	const struct ad7124_chip_info *info;
-@@ -752,17 +757,20 @@ static int ad7124_probe(struct spi_devic
- 		ret = regulator_enable(st->vref[i]);
- 		if (ret)
- 			return ret;
-+
-+		ret = devm_add_action_or_reset(&spi->dev, ad7124_reg_disable,
-+					       st->vref[i]);
-+		if (ret)
-+			return ret;
- 	}
- 
- 	st->mclk = devm_clk_get(&spi->dev, "mclk");
--	if (IS_ERR(st->mclk)) {
--		ret = PTR_ERR(st->mclk);
--		goto error_regulator_disable;
--	}
-+	if (IS_ERR(st->mclk))
-+		return PTR_ERR(st->mclk);
- 
- 	ret = clk_prepare_enable(st->mclk);
- 	if (ret < 0)
--		goto error_regulator_disable;
-+		return ret;
- 
- 	ret = ad7124_soft_reset(st);
- 	if (ret < 0)
-@@ -792,11 +800,6 @@ error_remove_trigger:
- 	ad_sd_cleanup_buffer_and_trigger(indio_dev);
- error_clk_disable_unprepare:
- 	clk_disable_unprepare(st->mclk);
--error_regulator_disable:
--	for (i = ARRAY_SIZE(st->vref) - 1; i >= 0; i--) {
--		if (!IS_ERR_OR_NULL(st->vref[i]))
--			regulator_disable(st->vref[i]);
--	}
- 
- 	return ret;
- }
-@@ -805,17 +808,11 @@ static int ad7124_remove(struct spi_devi
- {
- 	struct iio_dev *indio_dev = spi_get_drvdata(spi);
- 	struct ad7124_state *st = iio_priv(indio_dev);
--	int i;
- 
- 	iio_device_unregister(indio_dev);
- 	ad_sd_cleanup_buffer_and_trigger(indio_dev);
- 	clk_disable_unprepare(st->mclk);
- 
--	for (i = ARRAY_SIZE(st->vref) - 1; i >= 0; i--) {
--		if (!IS_ERR_OR_NULL(st->vref[i]))
--			regulator_disable(st->vref[i]);
--	}
--
- 	return 0;
- }
- 
+ 	if (pdata) {
 
 
