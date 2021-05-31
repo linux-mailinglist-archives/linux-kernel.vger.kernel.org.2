@@ -2,38 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 17E05396244
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 16:52:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1FAA0395C20
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 15:27:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232881AbhEaOxi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 10:53:38 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36868 "EHLO mail.kernel.org"
+        id S232180AbhEaN2f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 09:28:35 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56502 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232356AbhEaODW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 10:03:22 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5F3746144F;
-        Mon, 31 May 2021 13:37:35 +0000 (UTC)
+        id S231902AbhEaNWE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 09:22:04 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BD706613AE;
+        Mon, 31 May 2021 13:19:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1622468255;
-        bh=urmF/71wWotognBpw/EI8/+MPMm/qhbzvuKrKiHWs3Y=;
+        s=korg; t=1622467162;
+        bh=P8DgVleOhs/ZwZSvlyUuvPIW8dUl1Dx1Y0yGSfiEMUY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=lNTaOMeT+qaC3Y0N2Jsqqi+TCiX9aeuNw6wx4T2cQPzMDoMSPi8hiApjncm8FHqm9
-         9vm1DIIkTM3HZ0gC8D5ymh+nYG5anU8GxwWH5Of9V9+ckm88sBhyqwIjk8FzoWUsfO
-         0hY0f1Z5TJc2ASGsoDW0rAgyXhRXfsWh4uBrPiJ0=
+        b=tAb/Nj4mAbdEacjv8+PqvxYEA3H1gQxrvqzhNo5tXrjk7jWxJJjXUd48u4+t99t4V
+         RKJzj5Y9wZ8sZGFAZKzxu3Bd8/U+lUoJNBYf3HQ5izCsNjQlKwBLseigvkUo9bs49h
+         3N+nun16cPEcwPPX78SjlehD2Y5V8gPkp0q9U+5E=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Ritesh Harjani <riteshh@linux.ibm.com>,
-        Anand Jain <anand.jain@oracle.com>,
-        Filipe Manana <fdmanana@suse.com>,
-        David Sterba <dsterba@suse.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 175/252] btrfs: release path before starting transaction when cloning inline extent
+        stable@vger.kernel.org,
+        "William A. Kennington III" <wak@google.com>,
+        Mark Brown <broonie@kernel.org>, Lukas Wunner <lukas@wunner.de>
+Subject: [PATCH 4.9 27/66] spi: Fix use-after-free with devm_spi_alloc_*
 Date:   Mon, 31 May 2021 15:14:00 +0200
-Message-Id: <20210531130703.949065545@linuxfoundation.org>
+Message-Id: <20210531130637.129891478@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210531130657.971257589@linuxfoundation.org>
-References: <20210531130657.971257589@linuxfoundation.org>
+In-Reply-To: <20210531130636.254683895@linuxfoundation.org>
+References: <20210531130636.254683895@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,154 +40,91 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Filipe Manana <fdmanana@suse.com>
+From: William A. Kennington III <wak@google.com>
 
-[ Upstream commit 6416954ca75baed71640bf3828625bf165fb9b5e ]
+commit 794aaf01444d4e765e2b067cba01cc69c1c68ed9 upstream.
 
-When cloning an inline extent there are a few cases, such as when we have
-an implicit hole at file offset 0, where we start a transaction while
-holding a read lock on a leaf. Starting the transaction results in a call
-to sb_start_intwrite(), which results in doing a read lock on a percpu
-semaphore. Lockdep doesn't like this and complains about it:
+We can't rely on the contents of the devres list during
+spi_unregister_controller(), as the list is already torn down at the
+time we perform devres_find() for devm_spi_release_controller. This
+causes devices registered with devm_spi_alloc_{master,slave}() to be
+mistakenly identified as legacy, non-devm managed devices and have their
+reference counters decremented below 0.
 
-  [46.580704] ======================================================
-  [46.580752] WARNING: possible circular locking dependency detected
-  [46.580799] 5.13.0-rc1 #28 Not tainted
-  [46.580832] ------------------------------------------------------
-  [46.580877] cloner/3835 is trying to acquire lock:
-  [46.580918] c00000001301d638 (sb_internal#2){.+.+}-{0:0}, at: clone_copy_inline_extent+0xe4/0x5a0
-  [46.581167]
-  [46.581167] but task is already holding lock:
-  [46.581217] c000000007fa2550 (btrfs-tree-00){++++}-{3:3}, at: __btrfs_tree_read_lock+0x70/0x1d0
-  [46.581293]
-  [46.581293] which lock already depends on the new lock.
-  [46.581293]
-  [46.581351]
-  [46.581351] the existing dependency chain (in reverse order) is:
-  [46.581410]
-  [46.581410] -> #1 (btrfs-tree-00){++++}-{3:3}:
-  [46.581464]        down_read_nested+0x68/0x200
-  [46.581536]        __btrfs_tree_read_lock+0x70/0x1d0
-  [46.581577]        btrfs_read_lock_root_node+0x88/0x200
-  [46.581623]        btrfs_search_slot+0x298/0xb70
-  [46.581665]        btrfs_set_inode_index+0xfc/0x260
-  [46.581708]        btrfs_new_inode+0x26c/0x950
-  [46.581749]        btrfs_create+0xf4/0x2b0
-  [46.581782]        lookup_open.isra.57+0x55c/0x6a0
-  [46.581855]        path_openat+0x418/0xd20
-  [46.581888]        do_filp_open+0x9c/0x130
-  [46.581920]        do_sys_openat2+0x2ec/0x430
-  [46.581961]        do_sys_open+0x90/0xc0
-  [46.581993]        system_call_exception+0x3d4/0x410
-  [46.582037]        system_call_common+0xec/0x278
-  [46.582078]
-  [46.582078] -> #0 (sb_internal#2){.+.+}-{0:0}:
-  [46.582135]        __lock_acquire+0x1e90/0x2c50
-  [46.582176]        lock_acquire+0x2b4/0x5b0
-  [46.582263]        start_transaction+0x3cc/0x950
-  [46.582308]        clone_copy_inline_extent+0xe4/0x5a0
-  [46.582353]        btrfs_clone+0x5fc/0x880
-  [46.582388]        btrfs_clone_files+0xd8/0x1c0
-  [46.582434]        btrfs_remap_file_range+0x3d8/0x590
-  [46.582481]        do_clone_file_range+0x10c/0x270
-  [46.582558]        vfs_clone_file_range+0x1b0/0x310
-  [46.582605]        ioctl_file_clone+0x90/0x130
-  [46.582651]        do_vfs_ioctl+0x874/0x1ac0
-  [46.582697]        sys_ioctl+0x6c/0x120
-  [46.582733]        system_call_exception+0x3d4/0x410
-  [46.582777]        system_call_common+0xec/0x278
-  [46.582822]
-  [46.582822] other info that might help us debug this:
-  [46.582822]
-  [46.582888]  Possible unsafe locking scenario:
-  [46.582888]
-  [46.582942]        CPU0                    CPU1
-  [46.582984]        ----                    ----
-  [46.583028]   lock(btrfs-tree-00);
-  [46.583062]                                lock(sb_internal#2);
-  [46.583119]                                lock(btrfs-tree-00);
-  [46.583174]   lock(sb_internal#2);
-  [46.583212]
-  [46.583212]  *** DEADLOCK ***
-  [46.583212]
-  [46.583266] 6 locks held by cloner/3835:
-  [46.583299]  #0: c00000001301d448 (sb_writers#12){.+.+}-{0:0}, at: ioctl_file_clone+0x90/0x130
-  [46.583382]  #1: c00000000f6d3768 (&sb->s_type->i_mutex_key#15){+.+.}-{3:3}, at: lock_two_nondirectories+0x58/0xc0
-  [46.583477]  #2: c00000000f6d72a8 (&sb->s_type->i_mutex_key#15/4){+.+.}-{3:3}, at: lock_two_nondirectories+0x9c/0xc0
-  [46.583574]  #3: c00000000f6d7138 (&ei->i_mmap_lock){+.+.}-{3:3}, at: btrfs_remap_file_range+0xd0/0x590
-  [46.583657]  #4: c00000000f6d35f8 (&ei->i_mmap_lock/1){+.+.}-{3:3}, at: btrfs_remap_file_range+0xe0/0x590
-  [46.583743]  #5: c000000007fa2550 (btrfs-tree-00){++++}-{3:3}, at: __btrfs_tree_read_lock+0x70/0x1d0
-  [46.583828]
-  [46.583828] stack backtrace:
-  [46.583872] CPU: 1 PID: 3835 Comm: cloner Not tainted 5.13.0-rc1 #28
-  [46.583931] Call Trace:
-  [46.583955] [c0000000167c7200] [c000000000c1ee78] dump_stack+0xec/0x144 (unreliable)
-  [46.584052] [c0000000167c7240] [c000000000274058] print_circular_bug.isra.32+0x3a8/0x400
-  [46.584123] [c0000000167c72e0] [c0000000002741f4] check_noncircular+0x144/0x190
-  [46.584191] [c0000000167c73b0] [c000000000278fc0] __lock_acquire+0x1e90/0x2c50
-  [46.584259] [c0000000167c74f0] [c00000000027aa94] lock_acquire+0x2b4/0x5b0
-  [46.584317] [c0000000167c75e0] [c000000000a0d6cc] start_transaction+0x3cc/0x950
-  [46.584388] [c0000000167c7690] [c000000000af47a4] clone_copy_inline_extent+0xe4/0x5a0
-  [46.584457] [c0000000167c77c0] [c000000000af525c] btrfs_clone+0x5fc/0x880
-  [46.584514] [c0000000167c7990] [c000000000af5698] btrfs_clone_files+0xd8/0x1c0
-  [46.584583] [c0000000167c7a00] [c000000000af5b58] btrfs_remap_file_range+0x3d8/0x590
-  [46.584652] [c0000000167c7ae0] [c0000000005d81dc] do_clone_file_range+0x10c/0x270
-  [46.584722] [c0000000167c7b40] [c0000000005d84f0] vfs_clone_file_range+0x1b0/0x310
-  [46.584793] [c0000000167c7bb0] [c00000000058bf80] ioctl_file_clone+0x90/0x130
-  [46.584861] [c0000000167c7c10] [c00000000058c894] do_vfs_ioctl+0x874/0x1ac0
-  [46.584922] [c0000000167c7d10] [c00000000058db4c] sys_ioctl+0x6c/0x120
-  [46.584978] [c0000000167c7d60] [c0000000000364a4] system_call_exception+0x3d4/0x410
-  [46.585046] [c0000000167c7e10] [c00000000000d45c] system_call_common+0xec/0x278
-  [46.585114] --- interrupt: c00 at 0x7ffff7e22990
-  [46.585160] NIP:  00007ffff7e22990 LR: 00000001000010ec CTR: 0000000000000000
-  [46.585224] REGS: c0000000167c7e80 TRAP: 0c00   Not tainted  (5.13.0-rc1)
-  [46.585280] MSR:  800000000280f033 <SF,VEC,VSX,EE,PR,FP,ME,IR,DR,RI,LE>  CR: 28000244  XER: 00000000
-  [46.585374] IRQMASK: 0
-  [46.585374] GPR00: 0000000000000036 00007fffffffdec0 00007ffff7f17100 0000000000000004
-  [46.585374] GPR04: 000000008020940d 00007fffffffdf40 0000000000000000 0000000000000000
-  [46.585374] GPR08: 0000000000000004 0000000000000000 0000000000000000 0000000000000000
-  [46.585374] GPR12: 0000000000000000 00007ffff7ffa940 0000000000000000 0000000000000000
-  [46.585374] GPR16: 0000000000000000 0000000000000000 0000000000000000 0000000000000000
-  [46.585374] GPR20: 0000000000000000 000000009123683e 00007fffffffdf40 0000000000000000
-  [46.585374] GPR24: 0000000000000000 0000000000000000 0000000000000000 0000000000000004
-  [46.585374] GPR28: 0000000100030260 0000000100030280 0000000000000003 000000000000005f
-  [46.585919] NIP [00007ffff7e22990] 0x7ffff7e22990
-  [46.585964] LR [00000001000010ec] 0x1000010ec
-  [46.586010] --- interrupt: c00
+------------[ cut here ]------------
+WARNING: CPU: 1 PID: 660 at lib/refcount.c:28 refcount_warn_saturate+0x108/0x174
+[<b0396f04>] (refcount_warn_saturate) from [<b03c56a4>] (kobject_put+0x90/0x98)
+[<b03c5614>] (kobject_put) from [<b0447b4c>] (put_device+0x20/0x24)
+ r4:b6700140
+[<b0447b2c>] (put_device) from [<b07515e8>] (devm_spi_release_controller+0x3c/0x40)
+[<b07515ac>] (devm_spi_release_controller) from [<b045343c>] (release_nodes+0x84/0xc4)
+ r5:b6700180 r4:b6700100
+[<b04533b8>] (release_nodes) from [<b0454160>] (devres_release_all+0x5c/0x60)
+ r8:b1638c54 r7:b117ad94 r6:b1638c10 r5:b117ad94 r4:b163dc10
+[<b0454104>] (devres_release_all) from [<b044e41c>] (__device_release_driver+0x144/0x1ec)
+ r5:b117ad94 r4:b163dc10
+[<b044e2d8>] (__device_release_driver) from [<b044f70c>] (device_driver_detach+0x84/0xa0)
+ r9:00000000 r8:00000000 r7:b117ad94 r6:b163dc54 r5:b1638c10 r4:b163dc10
+[<b044f688>] (device_driver_detach) from [<b044d274>] (unbind_store+0xe4/0xf8)
 
-This should be a false positive, as both locks are acquired in read mode.
-Nevertheless, we don't need to hold a leaf locked when we start the
-transaction, so just release the leaf (path) before starting it.
+Instead, determine the devm allocation state as a flag on the
+controller which is guaranteed to be stable during cleanup.
 
-Reported-by: Ritesh Harjani <riteshh@linux.ibm.com>
-Link: https://lore.kernel.org/linux-btrfs/20210513214404.xks77p566fglzgum@riteshh-domain/
-Reviewed-by: Anand Jain <anand.jain@oracle.com>
-Signed-off-by: Filipe Manana <fdmanana@suse.com>
-Reviewed-by: David Sterba <dsterba@suse.com>
-Signed-off-by: David Sterba <dsterba@suse.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Fixes: 5e844cc37a5c ("spi: Introduce device-managed SPI controller allocation")
+Signed-off-by: William A. Kennington III <wak@google.com>
+Link: https://lore.kernel.org/r/20210407095527.2771582-1-wak@google.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
+[lukas: backport to v4.9.270]
+Signed-off-by: Lukas Wunner <lukas@wunner.de>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- fs/btrfs/reflink.c | 5 +++++
- 1 file changed, 5 insertions(+)
+ drivers/spi/spi.c       |    9 ++-------
+ include/linux/spi/spi.h |    3 +++
+ 2 files changed, 5 insertions(+), 7 deletions(-)
 
-diff --git a/fs/btrfs/reflink.c b/fs/btrfs/reflink.c
-index c4f87df53283..eeb66e797e0b 100644
---- a/fs/btrfs/reflink.c
-+++ b/fs/btrfs/reflink.c
-@@ -281,6 +281,11 @@ copy_inline_extent:
- 	ret = btrfs_inode_set_file_extent_range(BTRFS_I(dst), 0, aligned_end);
- out:
- 	if (!ret && !trans) {
-+		/*
-+		 * Release path before starting a new transaction so we don't
-+		 * hold locks that would confuse lockdep.
-+		 */
-+		btrfs_release_path(path);
- 		/*
- 		 * No transaction here means we copied the inline extent into a
- 		 * page of the destination inode.
--- 
-2.30.2
-
+--- a/drivers/spi/spi.c
++++ b/drivers/spi/spi.c
+@@ -1869,6 +1869,7 @@ struct spi_master *devm_spi_alloc_master
+ 
+ 	master = spi_alloc_master(dev, size);
+ 	if (master) {
++		master->devm_allocated = true;
+ 		*ptr = master;
+ 		devres_add(dev, ptr);
+ 	} else {
+@@ -2059,11 +2060,6 @@ int devm_spi_register_master(struct devi
+ }
+ EXPORT_SYMBOL_GPL(devm_spi_register_master);
+ 
+-static int devm_spi_match_master(struct device *dev, void *res, void *master)
+-{
+-	return *(struct spi_master **)res == master;
+-}
+-
+ static int __unregister(struct device *dev, void *null)
+ {
+ 	spi_unregister_device(to_spi_device(dev));
+@@ -2102,8 +2098,7 @@ void spi_unregister_master(struct spi_ma
+ 	/* Release the last reference on the master if its driver
+ 	 * has not yet been converted to devm_spi_alloc_master().
+ 	 */
+-	if (!devres_find(master->dev.parent, devm_spi_release_master,
+-			 devm_spi_match_master, master))
++	if (!master->devm_allocated)
+ 		put_device(&master->dev);
+ 
+ 	if (IS_ENABLED(CONFIG_SPI_DYNAMIC))
+--- a/include/linux/spi/spi.h
++++ b/include/linux/spi/spi.h
+@@ -443,6 +443,9 @@ struct spi_master {
+ #define SPI_MASTER_MUST_RX      BIT(3)		/* requires rx */
+ #define SPI_MASTER_MUST_TX      BIT(4)		/* requires tx */
+ 
++	/* flag indicating this is a non-devres managed controller */
++	bool			devm_allocated;
++
+ 	/*
+ 	 * on some hardware transfer / message size may be constrained
+ 	 * the limit may depend on device transfer settings
 
 
