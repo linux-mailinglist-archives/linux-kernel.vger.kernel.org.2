@@ -2,58 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 840E0395E20
+	by mail.lfdr.de (Postfix) with ESMTP id 0DA10395E1F
 	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 15:53:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233231AbhEaNy4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 09:54:56 -0400
-Received: from mo4-p02-ob.smtp.rzone.de ([81.169.146.170]:28316 "EHLO
+        id S233182AbhEaNys (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 09:54:48 -0400
+Received: from mo4-p02-ob.smtp.rzone.de ([85.215.255.81]:9582 "EHLO
         mo4-p02-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232364AbhEaNg6 (ORCPT
+        with ESMTP id S232377AbhEaNg6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 31 May 2021 09:36:58 -0400
 ARC-Seal: i=1; a=rsa-sha256; t=1622468095; cv=none;
     d=strato.com; s=strato-dkim-0002;
-    b=ZMN1PWn/TFkfI9Dl6YVPmHIm1UhTF1EJg9KXxSbWUsLbnNWMZR00I8COi3u8WDMByn
-    CEfDJOuq9H82aTFxo3+WZIGxKl8bbT9qsZlfAn59lqQEwY7Vrb1IxZa2sMm/SldFGpTW
-    WBrXoqRmmPyzfGpeS+rTA82KOlO2XBIJzOKiDr/ArooPWyMnj9axtYqV53UrUSrnNSOi
-    nz7Zy3AdWOuNYTHZ8MgGirp3YXBaEQpv4U2rueN/xoVjgN4b5whkwgzY5JL2EzAtaiq/
-    kKv/teB4C2a+eEHbNUaI4unXNQbe/cvH3X2E06C22me8IYww3KpnpFeGJA8394i2SJBI
-    CQSg==
+    b=AcChp3Fj2lhwkAli4aO/ks3Gto0C5aqkma5tKwo3iXZ4Hfqysq5C4vjobnNlMqdEUt
+    zGh90Dgydr6951KdnmZd6F1VeCnU92vDyTfFXoW9oTPdXtF9T3nXMJWKZrrQ6IoS8v5L
+    A+/u8+S+QtqLPbAnX37Kiv39NDheASwz3Wa9LD8yP6UfRwanaHa8n9a5HI/lLQ2sW/P4
+    vUOIn7a76AgUjHsJVH67u21dLHPLJjToLnL7cdTpl2LR50Pv4Yt/TieDue+vcPMCRBIz
+    Xv6vPWBZS43VsxmRc8qc4AIQ8gWqh2UaccBReKqlHzsqtc5oDiEl04GOKfuO97WjVgr0
+    jAqQ==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1622468095;
     s=strato-dkim-0002; d=strato.com;
     h=References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Cc:Date:
     From:Subject:Sender;
-    bh=QJ7EL3rdKbTeB2eISpfKJ6qyYsqnmKEy5taAecFN25g=;
-    b=NMxVLxcoFDgEKStNYRv7rXEo98FLcgCfjTw+h8ooJXNjXb3/35Pzo1hCLmRMdnjntN
-    EAHdImqAth9K4F+1LmcAmxVeLFs8ya7Jv7wL69jMERgkltIiGxzm/izZ7AUw68qYCGrR
-    Q0mDw60cZeHsbOaikv1dcdmSeFVuVDnWOQBqlAb4grYlRup2IQ0oOjqZ6XbcEYF9hcNx
-    rrYiOgaYvIfF42jo1RFCxZzHTIyv8C5wIm/F59xC50LzqDLL8WU9N3DS37mYlKh28H+i
-    CXd+P2MDw0/8oMqNhyBywTOYuzClByBr/e5YiZk9vgnhiOoTdccbyZzbusPIJZkt6nPh
-    QceQ==
+    bh=ja+Dyqh1Z6Ju11L3zE36ZgR2UU7d8g6j7i6GUDH+quk=;
+    b=NEQysCAF1gGz4pSz+3eiqy/1/9OoT4nxHx4+GQix6noiEoTP9IX1xrRLYTz7uPcf+L
+    +KcMyBKbWbFZ6WatO3FtsnY40I3x42JTKpGy8oI0OFXr6CxQJvJDkCbheWjn7hqmu7Nq
+    toh7jR71UrZPePLfBsglPpXQs6WtN1cbofZsJv9hzSipfnFfhoiTPUJB4k4wee5zW5Ke
+    CxVmJ+FyIAoXhtJDDkNZGWVzPmlyTJzEG+m3tmqKyW9Jy6YBhZl19AAJGKzyqB7kFkuF
+    rE3LJHH3A4ed2YYFSLWBCSFHTAyRgiXP1s8xIfFJLtO8UKwQpundtMiMsaANj+rtWbfK
+    /TIA==
 ARC-Authentication-Results: i=1; strato.com;
     dkim=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1622468095;
     s=strato-dkim-0002; d=gerhold.net;
     h=References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Cc:Date:
     From:Subject:Sender;
-    bh=QJ7EL3rdKbTeB2eISpfKJ6qyYsqnmKEy5taAecFN25g=;
-    b=W/8CMJpkxLvLFegqBBZxCvR5VWFJ3g1PJgxETg567ubrIcEL2U6n3RNuG2t8/SGW2F
-    eJ+4KcKy2e6xW+J0kxF///r93M8puqRKOG4AbEOo71fR7tXHLiiLkjIHp+yjGPE3q27s
-    TmJN74fpmPxoUMrkCA/x5kA81jfAPQwn1IWbMwsVQWEbA+HboPOlzzxrWWH3qPbK1sKe
-    92r7XwxWcuHEYMCTxgZSvYAKSsBCD9DFlp4YJQrcP+TtmTbczzccJVeWHcOcmfwX98F5
-    LMXt9dt1TapQpZ4lMlNgGJo7K2O50fkhGblAhaL0NlWFJ9wsHhby1es1v6wjzQpwpXbj
-    fSNg==
+    bh=ja+Dyqh1Z6Ju11L3zE36ZgR2UU7d8g6j7i6GUDH+quk=;
+    b=jDGDdorsm7QkOfGExZ4PgbzS9NGySW2jWZ9IhxSKxy5NggIGJjNyPgb+Lp2BKJneUx
+    dITP4emgw5KqXZdwr92T6xaRAGXinonyMSQ3deVK+lG3VaQGcGxu57JZH4Vo0K7YQd90
+    utSn1m5XS5YukyfJ3u5HAa0/Ii2zlrR5WXfAXRctwGIMLpuYW1SAIeED1MiUwxTe5HWf
+    9mf6k90t6XMhug0RyQPEhSMTC37JwWu7fbFqrwWiTwTIGy0nDRtYCIcp0dGG1GTRDeHR
+    ix1auwU8fCPzUD3VVeegkw66cMpZKhtTy6bJPxKDPPSejsxyKD23JOKGLeZ5F9gbFysk
+    qWgg==
 Authentication-Results: strato.com;
     dkim=none
 X-RZG-AUTH: ":P3gBZUipdd93FF5ZZvYFPugejmSTVR2nRPhVORvLd4SsytBXS7IYBkLahKxB526Kcak="
 X-RZG-CLASS-ID: mo00
 Received: from droid..
     by smtp.strato.de (RZmta 47.26.3 DYNA|AUTH)
-    with ESMTPSA id U0b2c9x4VDYsKxA
+    with ESMTPSA id U0b2c9x4VDYtKxB
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
         (Client did not present a certificate);
-    Mon, 31 May 2021 15:34:54 +0200 (CEST)
+    Mon, 31 May 2021 15:34:55 +0200 (CEST)
 From:   Stephan Gerhold <stephan@gerhold.net>
 To:     Chanwoo Choi <cw00.choi@samsung.com>,
         MyungJoo Ham <myungjoo.ham@samsung.com>
@@ -61,9 +61,9 @@ Cc:     Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
         linux-kernel@vger.kernel.org, Nikita Travkin <nikita@trvn.ru>,
         ~postmarketos/upstreaming@lists.sr.ht,
         Stephan Gerhold <stephan@gerhold.net>
-Subject: [PATCH v2 3/6] extcon: sm5502: Drop invalid register write in sm5502_reg_data
-Date:   Mon, 31 May 2021 15:34:35 +0200
-Message-Id: <20210531133438.3511-4-stephan@gerhold.net>
+Subject: [PATCH v2 4/6] dt-bindings: extcon: sm5502: Convert to DT schema
+Date:   Mon, 31 May 2021 15:34:36 +0200
+Message-Id: <20210531133438.3511-5-stephan@gerhold.net>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210531133438.3511-1-stephan@gerhold.net>
 References: <20210531133438.3511-1-stephan@gerhold.net>
@@ -73,32 +73,99 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When sm5502_init_dev_type() iterates over sm5502_reg_data to
-initialize the registers it is limited by ARRAY_SIZE(sm5502_reg_data).
-There is no need to add another empty element to sm5502_reg_data.
+Convert the extcon-sm5502 device tree bindings to DT schema.
 
-Having the additional empty element in sm5502_reg_data will just
-result in writing 0xff to register 0x00, which does not really
-make sense.
-
-Fixes: 914b881f9452 ("extcon: sm5502: Add support new SM5502 extcon device driver")
 Signed-off-by: Stephan Gerhold <stephan@gerhold.net>
 ---
- drivers/extcon/extcon-sm5502.c | 1 -
- 1 file changed, 1 deletion(-)
+ .../bindings/extcon/extcon-sm5502.txt         | 21 --------
+ .../extcon/siliconmitus,sm5502-muic.yaml      | 50 +++++++++++++++++++
+ 2 files changed, 50 insertions(+), 21 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/extcon/extcon-sm5502.txt
+ create mode 100644 Documentation/devicetree/bindings/extcon/siliconmitus,sm5502-muic.yaml
 
-diff --git a/drivers/extcon/extcon-sm5502.c b/drivers/extcon/extcon-sm5502.c
-index 907ecd01ebb7..9f40bb9f1f81 100644
---- a/drivers/extcon/extcon-sm5502.c
-+++ b/drivers/extcon/extcon-sm5502.c
-@@ -88,7 +88,6 @@ static struct reg_data sm5502_reg_data[] = {
- 			| SM5502_REG_INTM2_MHL_MASK,
- 		.invert = true,
- 	},
--	{ }
- };
- 
- /* List of detectable cables */
+diff --git a/Documentation/devicetree/bindings/extcon/extcon-sm5502.txt b/Documentation/devicetree/bindings/extcon/extcon-sm5502.txt
+deleted file mode 100644
+index fc3888e09549..000000000000
+--- a/Documentation/devicetree/bindings/extcon/extcon-sm5502.txt
++++ /dev/null
+@@ -1,21 +0,0 @@
+-
+-* SM5502 MUIC (Micro-USB Interface Controller) device
+-
+-The Silicon Mitus SM5502 is a MUIC (Micro-USB Interface Controller) device
+-which can detect the state of external accessory when external accessory is
+-attached or detached and button is pressed or released. It is interfaced to
+-the host controller using an I2C interface.
+-
+-Required properties:
+-- compatible: Should be "siliconmitus,sm5502-muic"
+-- reg: Specifies the I2C slave address of the MUIC block. It should be 0x25
+-- interrupts: Interrupt specifiers for detection interrupt sources.
+-
+-Example:
+-
+-	sm5502@25 {
+-		compatible = "siliconmitus,sm5502-muic";
+-		interrupt-parent = <&gpx1>;
+-		interrupts = <5 0>;
+-		reg = <0x25>;
+-	};
+diff --git a/Documentation/devicetree/bindings/extcon/siliconmitus,sm5502-muic.yaml b/Documentation/devicetree/bindings/extcon/siliconmitus,sm5502-muic.yaml
+new file mode 100644
+index 000000000000..0432b0502e0b
+--- /dev/null
++++ b/Documentation/devicetree/bindings/extcon/siliconmitus,sm5502-muic.yaml
+@@ -0,0 +1,50 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/extcon/siliconmitus,sm5502-muic.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: SM5502 MUIC (Micro-USB Interface Controller) device
++
++maintainers:
++  - Chanwoo Choi <cw00.choi@samsung.com>
++
++description:
++  The Silicon Mitus SM5502 is a MUIC (Micro-USB Interface Controller) device
++  which can detect the state of external accessory when external accessory is
++  attached or detached and button is pressed or released. It is interfaced to
++  the host controller using an I2C interface.
++
++properties:
++  compatible:
++    enum:
++      - siliconmitus,sm5502-muic
++
++  reg:
++    maxItems: 1
++    description: I2C slave address of the device. Usually 0x25 for SM5502.
++
++  interrupts:
++    maxItems: 1
++
++required:
++  - compatible
++  - reg
++  - interrupts
++
++additionalProperties: false
++
++examples:
++  - |
++    #include <dt-bindings/interrupt-controller/irq.h>
++    i2c {
++        #address-cells = <1>;
++        #size-cells = <0>;
++
++        extcon@25 {
++                compatible = "siliconmitus,sm5502-muic";
++                reg = <0x25>;
++                interrupt-parent = <&msmgpio>;
++                interrupts = <12 IRQ_TYPE_EDGE_FALLING>;
++        };
++    };
 -- 
 2.31.1
 
