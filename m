@@ -2,87 +2,291 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D091E395AD0
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 14:44:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8970E395AEA
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 14:50:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231579AbhEaMqU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 08:46:20 -0400
-Received: from szxga01-in.huawei.com ([45.249.212.187]:6095 "EHLO
-        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231367AbhEaMqS (ORCPT
+        id S231560AbhEaMwa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 08:52:30 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:41426 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231370AbhEaMw2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 08:46:18 -0400
-Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.55])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4Ftw0L0P9SzYnW1;
-        Mon, 31 May 2021 20:41:54 +0800 (CST)
-Received: from dggpeml500017.china.huawei.com (7.185.36.243) by
- dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Mon, 31 May 2021 20:44:36 +0800
-Received: from huawei.com (10.175.103.91) by dggpeml500017.china.huawei.com
- (7.185.36.243) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Mon, 31 May
- 2021 20:44:36 +0800
-From:   Yang Yingliang <yangyingliang@huawei.com>
-To:     <linux-kernel@vger.kernel.org>, <netdev@vger.kernel.org>
-CC:     <jdmason@kudzu.us>, <davem@davemloft.net>, <kuba@kernel.org>
-Subject: [PATCH net-next] net: neterion: fix doc warnings in s2io.c
-Date:   Mon, 31 May 2021 20:48:59 +0800
-Message-ID: <20210531124859.3847016-1-yangyingliang@huawei.com>
-X-Mailer: git-send-email 2.25.1
+        Mon, 31 May 2021 08:52:28 -0400
+Received: from imap.suse.de (imap-alt.suse-dmz.suse.de [192.168.254.47])
+        (using TLSv1.2 with cipher ECDHE-ECDSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id B5DD72191F;
+        Mon, 31 May 2021 12:50:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1622465447; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=2VagSMaNy1ohvScQu3RbbO2Fpux2vEiLcGCIBm7Kz5g=;
+        b=Nt54RXpJ5+W0TtL4hGxuO6UBpzWARB5U96HXgsDcMszfDsaFdZjQ3vNDGf4ijNQZCZREE/
+        Nr9VKH98rrUvPls2Ksg25Mg3fUKt6HUREDgQWtUXmWDLCT/yT9rNZKryQXaU8cC9Ie+h61
+        EuwV7Iug89OF1EXREqsImdqwBK5727A=
+Received: from imap3-int (imap-alt.suse-dmz.suse.de [192.168.254.47])
+        by imap.suse.de (Postfix) with ESMTP id 107AD118DD;
+        Mon, 31 May 2021 12:50:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1622465447; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=2VagSMaNy1ohvScQu3RbbO2Fpux2vEiLcGCIBm7Kz5g=;
+        b=Nt54RXpJ5+W0TtL4hGxuO6UBpzWARB5U96HXgsDcMszfDsaFdZjQ3vNDGf4ijNQZCZREE/
+        Nr9VKH98rrUvPls2Ksg25Mg3fUKt6HUREDgQWtUXmWDLCT/yT9rNZKryQXaU8cC9Ie+h61
+        EuwV7Iug89OF1EXREqsImdqwBK5727A=
+Received: from director2.suse.de ([192.168.254.72])
+        by imap3-int with ESMTPSA
+        id 9/4wAqHbtGDQRwAALh3uQQ
+        (envelope-from <varad.gautam@suse.com>); Mon, 31 May 2021 12:50:41 +0000
+From:   Varad Gautam <varad.gautam@suse.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     Varad Gautam <varad.gautam@suse.com>, kvm@vger.kernel.org,
+        x86@kernel.org, Borislav Petkov <bp@alien8.de>,
+        Joerg Roedel <jroedel@suse.de>,
+        Tom Lendacky <thomas.lendacky@amd.com>
+Subject: [PATCH] x86: Add a test for AMD SEV-ES #VC handling
+Date:   Mon, 31 May 2021 14:50:35 +0200
+Message-Id: <20210531125035.21105-1-varad.gautam@suse.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.103.91]
-X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
- dggpeml500017.china.huawei.com (7.185.36.243)
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 8bit
+Authentication-Results: imap.suse.de;
+        none
+X-Spam-Level: *****
+X-Spam-Score: 5.00
+X-Spamd-Result: default: False [5.00 / 100.00];
+         ARC_NA(0.00)[];
+         RCVD_VIA_SMTP_AUTH(0.00)[];
+         FROM_HAS_DN(0.00)[];
+         TO_DN_SOME(0.00)[];
+         TO_MATCH_ENVRCPT_ALL(0.00)[];
+         R_MISSING_CHARSET(2.50)[];
+         MIME_GOOD(-0.10)[text/plain];
+         BROKEN_CONTENT_TYPE(1.50)[];
+         DKIM_SIGNED(0.00)[suse.com:s=susede1];
+         RCPT_COUNT_SEVEN(0.00)[7];
+         MID_CONTAINS_FROM(1.00)[];
+         RCVD_NO_TLS_LAST(0.10)[];
+         FROM_EQ_ENVFROM(0.00)[];
+         MIME_TRACE(0.00)[0:+];
+         RCVD_COUNT_TWO(0.00)[2]
+X-Spam-Flag: NO
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add description for may_sleep to fix the W=1 warnings:
+Some vmexits on a SEV-ES guest need special handling within the guest
+before exiting to the hypervisor. This must happen within the guest's
+\#VC exception handler, triggered on every non automatic exit.
 
-  drivers/net/ethernet/neterion/s2io.c:1110: warning: Function parameter or member 'may_sleep' not described in 'init_tti'
-  drivers/net/ethernet/neterion/s2io.c:3335: warning: Function parameter or member 'may_sleep' not described in 'wait_for_cmd_complete'
-  drivers/net/ethernet/neterion/s2io.c:4881: warning: Function parameter or member 'may_sleep' not described in 's2io_set_multicast'
+Add a KUnit based test to validate Linux's VC handling. The test:
+1. installs a kretprobe on the #VC handler (sev_es_ghcb_hv_call, to
+   access GHCB before/after the resulting VMGEXIT).
+2. tiggers an NAE.
+3. checks that the kretprobe was hit with the right exit_code available
+   in GHCB.
 
-Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
+Since it relies on kprobes, the test does not cover NMI contexts.
+
+Signed-off-by: Varad Gautam <varad.gautam@suse.com>
 ---
- drivers/net/ethernet/neterion/s2io.c | 6 ++++++
- 1 file changed, 6 insertions(+)
+ arch/x86/Kconfig              |   9 +++
+ arch/x86/kernel/Makefile      |   5 ++
+ arch/x86/kernel/sev-test-vc.c | 142 ++++++++++++++++++++++++++++++++++
+ 3 files changed, 156 insertions(+)
+ create mode 100644 arch/x86/kernel/sev-test-vc.c
 
-diff --git a/drivers/net/ethernet/neterion/s2io.c b/drivers/net/ethernet/neterion/s2io.c
-index 27a65ab3d501..0b017d4f5c08 100644
---- a/drivers/net/ethernet/neterion/s2io.c
-+++ b/drivers/net/ethernet/neterion/s2io.c
-@@ -1101,6 +1101,8 @@ static int s2io_print_pci_mode(struct s2io_nic *nic)
-  *  @nic: device private variable
-  *  @link: link status (UP/DOWN) used to enable/disable continuous
-  *  transmit interrupts
-+ *  @may_sleep: parameter indicates if sleeping when waiting for
-+ *  command complete
-  *  Description: The function configures transmit traffic interrupts
-  *  Return Value:  SUCCESS on success and
-  *  '-1' on failure
-@@ -3323,6 +3325,8 @@ static void s2io_updt_xpak_counter(struct net_device *dev)
-  *  @addr: address
-  *  @busy_bit: bit to check for busy
-  *  @bit_state: state to check
-+ *  @may_sleep: parameter indicates if sleeping when waiting for
-+ *  command complete
-  *  Description: Function that waits for a command to Write into RMAC
-  *  ADDR DATA registers to be completed and returns either success or
-  *  error depending on whether the command was complete or not.
-@@ -4868,6 +4872,8 @@ static struct net_device_stats *s2io_get_stats(struct net_device *dev)
- /**
-  *  s2io_set_multicast - entry point for multicast address enable/disable.
-  *  @dev : pointer to the device structure
-+ *  @may_sleep: parameter indicates if sleeping when waiting for command
-+ *  complete
-  *  Description:
-  *  This function is a driver entry point which gets called by the kernel
-  *  whenever multicast addresses must be enabled/disabled. This also gets
+diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
+index 0045e1b441902..0a3c3f31813f1 100644
+--- a/arch/x86/Kconfig
++++ b/arch/x86/Kconfig
+@@ -1543,6 +1543,15 @@ config AMD_MEM_ENCRYPT_ACTIVE_BY_DEFAULT
+ 	  If set to N, then the encryption of system memory can be
+ 	  activated with the mem_encrypt=on command line option.
+ 
++config AMD_MEM_ENCRYPT_TEST_VC
++	bool "Test for AMD Secure Memory Encryption (SME) support"
++	depends on AMD_MEM_ENCRYPT
++	select KUNIT
++	select FUNCTION_TRACER
++	help
++	  Enable KUnit-based testing for the encryption of system memory
++	  using AMD SEV-ES. Currently only tests #VC handling.
++
+ # Common NUMA Features
+ config NUMA
+ 	bool "NUMA Memory Allocation and Scheduler Support"
+diff --git a/arch/x86/kernel/Makefile b/arch/x86/kernel/Makefile
+index 0f66682ac02a6..360c5d33580ca 100644
+--- a/arch/x86/kernel/Makefile
++++ b/arch/x86/kernel/Makefile
+@@ -23,6 +23,10 @@ CFLAGS_REMOVE_head64.o = -pg
+ CFLAGS_REMOVE_sev.o = -pg
+ endif
+ 
++ifdef CONFIG_AMD_MEM_ENCRYPT_TEST_VC
++CFLAGS_sev.o	+= -fno-ipa-sra
++endif
++
+ KASAN_SANITIZE_head$(BITS).o				:= n
+ KASAN_SANITIZE_dumpstack.o				:= n
+ KASAN_SANITIZE_dumpstack_$(BITS).o			:= n
+@@ -149,6 +153,7 @@ obj-$(CONFIG_UNWINDER_FRAME_POINTER)	+= unwind_frame.o
+ obj-$(CONFIG_UNWINDER_GUESS)		+= unwind_guess.o
+ 
+ obj-$(CONFIG_AMD_MEM_ENCRYPT)		+= sev.o
++obj-$(CONFIG_AMD_MEM_ENCRYPT_TEST_VC)	+= sev-test-vc.o
+ ###
+ # 64 bit specific files
+ ifeq ($(CONFIG_X86_64),y)
+diff --git a/arch/x86/kernel/sev-test-vc.c b/arch/x86/kernel/sev-test-vc.c
+new file mode 100644
+index 0000000000000..abb00a44ff25d
+--- /dev/null
++++ b/arch/x86/kernel/sev-test-vc.c
+@@ -0,0 +1,142 @@
++// SPDX-License-Identifier: GPL-2.0-only
++/*
++ * Copyright (C) 2021 SUSE
++ *
++ * Author: Varad Gautam <varad.gautam@suse.com>
++ */
++
++#include <asm/cpufeature.h>
++#include <asm/debugreg.h>
++#include <asm/io.h>
++#include <asm/sev-common.h>
++#include <asm/svm.h>
++#include <kunit/test.h>
++#include <linux/kprobes.h>
++
++static struct kretprobe hv_call_krp;
++
++static int hv_call_krp_entry(struct kretprobe_instance *krpi,
++				    struct pt_regs *regs)
++{
++	unsigned long ghcb_vaddr = regs_get_kernel_argument(regs, 0);
++	*((unsigned long *) krpi->data) = ghcb_vaddr;
++
++	return 0;
++}
++
++static int hv_call_krp_ret(struct kretprobe_instance *krpi,
++				    struct pt_regs *regs)
++{
++	unsigned long ghcb_vaddr = *((unsigned long *) krpi->data);
++	struct ghcb *ghcb = (struct ghcb *) ghcb_vaddr;
++	struct kunit *test = current->kunit_test;
++
++	if (test && strstr(test->name, "sev_es_") && test->priv)
++		cmpxchg((unsigned long *) test->priv, ghcb->save.sw_exit_code, 1);
++
++	return 0;
++}
++
++int sev_test_vc_init(struct kunit *test)
++{
++	int ret;
++
++	if (!sev_es_active()) {
++		pr_err("Not a SEV-ES guest. Skipping.");
++		ret = -EINVAL;
++		goto out;
++	}
++
++	memset(&hv_call_krp, 0, sizeof(hv_call_krp));
++	hv_call_krp.entry_handler = hv_call_krp_entry;
++	hv_call_krp.handler = hv_call_krp_ret;
++	hv_call_krp.maxactive = 100;
++	hv_call_krp.data_size = sizeof(unsigned long);
++	hv_call_krp.kp.symbol_name = "sev_es_ghcb_hv_call";
++	hv_call_krp.kp.addr = 0;
++
++	ret = register_kretprobe(&hv_call_krp);
++	if (ret < 0) {
++		pr_err("Could not register kretprobe. Skipping.");
++		goto out;
++	}
++
++	test->priv = kunit_kzalloc(test, sizeof(unsigned long), GFP_KERNEL);
++	if (!test->priv) {
++		ret = -ENOMEM;
++		pr_err("Could not allocate. Skipping.");
++		goto out;
++	}
++
++out:
++	return ret;
++}
++
++void sev_test_vc_exit(struct kunit *test)
++{
++	if (test->priv)
++		kunit_kfree(test, test->priv);
++
++	if (hv_call_krp.kp.addr)
++		unregister_kretprobe(&hv_call_krp);
++}
++
++#define guarded_op(kt, ec, op)				\
++do {							\
++	struct kunit *t = (struct kunit *) kt;		\
++	smp_store_release((typeof(ec) *) t->priv, ec);	\
++	op;						\
++	KUNIT_EXPECT_EQ(t, (typeof(ec)) 1, 		\
++		(typeof(ec)) smp_load_acquire((typeof(ec) *) t->priv));	\
++} while(0)
++
++static void sev_es_nae_cpuid(struct kunit *test)
++{
++	unsigned int cpuid_fn = 0x8000001f;
++
++	guarded_op(test, (unsigned long) SVM_EXIT_CPUID, native_cpuid_eax(cpuid_fn));
++}
++
++static void sev_es_nae_wbinvd(struct kunit *test)
++{
++	guarded_op(test, (unsigned long) SVM_EXIT_WBINVD, wbinvd());
++}
++
++static void sev_es_nae_msr(struct kunit *test)
++{
++	guarded_op(test, (unsigned long) SVM_EXIT_MSR, __rdmsr(MSR_IA32_TSC));
++}
++
++static void sev_es_nae_dr7_rw(struct kunit *test)
++{
++	guarded_op(test, (unsigned long) SVM_EXIT_WRITE_DR7,
++		   native_set_debugreg(7, native_get_debugreg(7)));
++}
++
++static void sev_es_nae_ioio(struct kunit *test)
++{
++	unsigned long port = 0x80;
++	char val = 0x1;
++
++	guarded_op(test, (unsigned long) SVM_EXIT_IOIO, inb(port));
++	guarded_op(test, (unsigned long) SVM_EXIT_IOIO, outb(val, port));
++	guarded_op(test, (unsigned long) SVM_EXIT_IOIO, insb(port, &val, sizeof(val)));
++	guarded_op(test, (unsigned long) SVM_EXIT_IOIO, outsb(port, &val, sizeof(val)));
++}
++
++static struct kunit_case sev_test_vc_testcases[] = {
++	KUNIT_CASE(sev_es_nae_cpuid),
++	KUNIT_CASE(sev_es_nae_wbinvd),
++	KUNIT_CASE(sev_es_nae_msr),
++	KUNIT_CASE(sev_es_nae_dr7_rw),
++	KUNIT_CASE(sev_es_nae_ioio),
++	{}
++};
++
++static struct kunit_suite sev_vc_test_suite = {
++	.name = "sev_test_vc",
++	.init = sev_test_vc_init,
++	.exit = sev_test_vc_exit,
++	.test_cases = sev_test_vc_testcases,
++};
++kunit_test_suite(sev_vc_test_suite);
 -- 
-2.25.1
+2.30.2
 
