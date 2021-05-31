@@ -2,37 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B923D396411
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 17:43:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 06CEA395F38
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 16:08:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232484AbhEaPpa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 11:45:30 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54474 "EHLO mail.kernel.org"
+        id S233555AbhEaOJj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 10:09:39 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50196 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233051AbhEaOZV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 10:25:21 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3BD5E61090;
-        Mon, 31 May 2021 13:46:34 +0000 (UTC)
+        id S232488AbhEaNnl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 09:43:41 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 82420614A7;
+        Mon, 31 May 2021 13:29:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1622468794;
-        bh=JBOeN3H+DrfX/4RsOCC4AuOnCE8jCDALZYRSu3narW8=;
+        s=korg; t=1622467745;
+        bh=DbpjfWwOX5w4DXwVz2QROu43Vb5DxDjYUSn+itNusMo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=bJaAdNKVlpv34zUURgZFLhL1457s9nMudrz+WqbhzfU/Bp+zmIyqlEQ1f1HxZIdNU
-         Bk2T4JlxbfxNI8wEh6SZN027TBcZusQhEqU1p+6vTbmrJI0+OdaYUiKcjNencPbMEx
-         i2eBWnmHrTbX+JnlH8aHgQy2UW1vVQozMJqJXGxY=
+        b=kYn7iJyAt/MpCKtsLarLZfkJV4j3sGmPunyhdqeK0kHQ0NVdiS1utYZylWbHTKqyr
+         vXO8rcd1m1OUuv5zu49EnspY1fSxNb8d4n/Ib5zVZPiHTPXBPOT27FV8d0nfVWOJpZ
+         RHiaukif06LOl6euEDPGNvzX/Z5bWHSeYnsgBl0A=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jingwen Chen <Jingwen.Chen2@amd.com>,
-        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
+        stable@vger.kernel.org,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        Russell King <rmk+kernel@armlinux.org.uk>,
+        Andrew Lunn <andrew@lunn.ch>,
+        "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 132/177] drm/amd/amdgpu: fix refcount leak
+Subject: [PATCH 4.14 64/79] net: mdio: thunder: Fix a double free issue in the .remove function
 Date:   Mon, 31 May 2021 15:14:49 +0200
-Message-Id: <20210531130652.502210445@linuxfoundation.org>
+Message-Id: <20210531130638.043504743@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210531130647.887605866@linuxfoundation.org>
-References: <20210531130647.887605866@linuxfoundation.org>
+In-Reply-To: <20210531130636.002722319@linuxfoundation.org>
+References: <20210531130636.002722319@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,44 +43,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jingwen Chen <Jingwen.Chen2@amd.com>
+From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 
-[ Upstream commit fa7e6abc75f3d491bc561734312d065dc9dc2a77 ]
+[ Upstream commit a93a0a15876d2a077a3bc260b387d2457a051f24 ]
 
-[Why]
-the gem object rfb->base.obj[0] is get according to num_planes
-in amdgpufb_create, but is not put according to num_planes
+'bus->mii_bus' have been allocated with 'devm_mdiobus_alloc_size()' in the
+probe function. So it must not be freed explicitly or there will be a
+double free.
 
-[How]
-put rfb->base.obj[0] in amdgpu_fbdev_destroy according to num_planes
+Remove the incorrect 'mdiobus_free' in the remove function.
 
-Signed-off-by: Jingwen Chen <Jingwen.Chen2@amd.com>
-Acked-by: Christian König <christian.koenig@amd.com>
-Reviewed-by: Alex Deucher <alexander.deucher@amd.com>
-Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
+Fixes: 379d7ac7ca31 ("phy: mdio-thunder: Add driver for Cavium Thunder SoC MDIO buses.")
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Reviewed-by: Russell King <rmk+kernel@armlinux.org.uk>
+Reviewed-by: Andrew Lunn <andrew@lunn.ch>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/amd/amdgpu/amdgpu_fb.c | 3 +++
- 1 file changed, 3 insertions(+)
+ drivers/net/phy/mdio-thunder.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_fb.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_fb.c
-index fd94a17fb2c6..46522804c7d8 100644
---- a/drivers/gpu/drm/amd/amdgpu/amdgpu_fb.c
-+++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_fb.c
-@@ -289,10 +289,13 @@ out:
- static int amdgpu_fbdev_destroy(struct drm_device *dev, struct amdgpu_fbdev *rfbdev)
- {
- 	struct amdgpu_framebuffer *rfb = &rfbdev->rfb;
-+	int i;
+diff --git a/drivers/net/phy/mdio-thunder.c b/drivers/net/phy/mdio-thunder.c
+index 564616968cad..c0c922eff760 100644
+--- a/drivers/net/phy/mdio-thunder.c
++++ b/drivers/net/phy/mdio-thunder.c
+@@ -129,7 +129,6 @@ static void thunder_mdiobus_pci_remove(struct pci_dev *pdev)
+ 			continue;
  
- 	drm_fb_helper_unregister_fbi(&rfbdev->helper);
- 
- 	if (rfb->base.obj[0]) {
-+		for (i = 0; i < rfb->base.format->num_planes; i++)
-+			drm_gem_object_put(rfb->base.obj[0]);
- 		amdgpufb_destroy_pinned_object(rfb->base.obj[0]);
- 		rfb->base.obj[0] = NULL;
- 		drm_framebuffer_unregister_private(&rfb->base);
+ 		mdiobus_unregister(bus->mii_bus);
+-		mdiobus_free(bus->mii_bus);
+ 		oct_mdio_writeq(0, bus->register_base + SMI_EN);
+ 	}
+ 	pci_set_drvdata(pdev, NULL);
 -- 
 2.30.2
 
