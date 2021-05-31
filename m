@@ -2,44 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6057D39659B
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 18:40:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E06A5396309
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 17:01:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233103AbhEaQl6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 12:41:58 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45736 "EHLO mail.kernel.org"
+        id S233416AbhEaPDc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 11:03:32 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38074 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233548AbhEaOvm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 10:51:42 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4E8F061CA7;
-        Mon, 31 May 2021 13:58:12 +0000 (UTC)
+        id S233341AbhEaOG7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 10:06:59 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D81D06145A;
+        Mon, 31 May 2021 13:39:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1622469493;
-        bh=HEYbWVopiiv8JhXlkj0mpt1+zBK4clPd/uzpkSwxRNY=;
+        s=korg; t=1622468348;
+        bh=fVtXkXD+/BOb/Io/Itap4nrx98lmkco/71vPEM+NNs4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=USBB0c8RILtwp4VJlKCXJwS3JltcityPwebS/pfKytm08sUFXf3xFJCfRl8u3uETM
-         hdC0zd35iRyg8o9t3bo4KlcqAEfJYxt+x2ERNeao4tnaXwu5ROPFFw4FWzjqD4VEt+
-         911lyMkV70VZaaTOgOOyD21lhe6H5S6zqFyuw31k=
+        b=tExrkwvrp+388QAwHnYwvV6WtS4aU6u8oSKEROgdTVK0DIddOg7AgYmj8sSJYrOQm
+         kzg87bGDc7an3pmxEHFU69Wjipubu32UQi1CJFdvfbja4x/nAxEVt98DYH/pMzUnGx
+         WFgIsOFujyZUsW/D28BJmqDHrSaEcfYRtZoYLx1E=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Rikard Falkeborn <rikard.falkeborn@gmail.com>,
-        Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Yury Norov <yury.norov@gmail.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
+        stable@vger.kernel.org, Michal Kubecek <mkubecek@suse.cz>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Yunsheng Lin <linyunsheng@huawei.com>,
+        "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.12 219/296] linux/bits.h: fix compilation error with GENMASK
+Subject: [PATCH 5.10 209/252] net: sched: fix tx action reschedule issue with stopped queue
 Date:   Mon, 31 May 2021 15:14:34 +0200
-Message-Id: <20210531130711.200545468@linuxfoundation.org>
+Message-Id: <20210531130705.122890788@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210531130703.762129381@linuxfoundation.org>
-References: <20210531130703.762129381@linuxfoundation.org>
+In-Reply-To: <20210531130657.971257589@linuxfoundation.org>
+References: <20210531130657.971257589@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -48,131 +42,118 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Rikard Falkeborn <rikard.falkeborn@gmail.com>
+From: Yunsheng Lin <linyunsheng@huawei.com>
 
-[ Upstream commit f747e6667ebb2ffb8133486c9cd19800d72b0d98 ]
+[ Upstream commit dcad9ee9e0663d74a89b25b987f9c7be86432812 ]
 
-GENMASK() has an input check which uses __builtin_choose_expr() to
-enable a compile time sanity check of its inputs if they are known at
-compile time.
+The netdev qeueue might be stopped when byte queue limit has
+reached or tx hw ring is full, net_tx_action() may still be
+rescheduled if STATE_MISSED is set, which consumes unnecessary
+cpu without dequeuing and transmiting any skb because the
+netdev queue is stopped, see qdisc_run_end().
 
-However, it turns out that __builtin_constant_p() does not always return
-a compile time constant [0].  It was thought this problem was fixed with
-gcc 4.9 [1], but apparently this is not the case [2].
+This patch fixes it by checking the netdev queue state before
+calling qdisc_run() and clearing STATE_MISSED if netdev queue is
+stopped during qdisc_run(), the net_tx_action() is rescheduled
+again when netdev qeueue is restarted, see netif_tx_wake_queue().
 
-Switch to use __is_constexpr() instead which always returns a compile time
-constant, regardless of its inputs.
+As there is time window between netif_xmit_frozen_or_stopped()
+checking and STATE_MISSED clearing, between which STATE_MISSED
+may set by net_tx_action() scheduled by netif_tx_wake_queue(),
+so set the STATE_MISSED again if netdev queue is restarted.
 
-Link: https://lore.kernel.org/lkml/42b4342b-aefc-a16a-0d43-9f9c0d63ba7a@rasmusvillemoes.dk [0]
-Link: https://gcc.gnu.org/bugzilla/show_bug.cgi?id=19449 [1]
-Link: https://lore.kernel.org/lkml/1ac7bbc2-45d9-26ed-0b33-bf382b8d858b@I-love.SAKURA.ne.jp [2]
-Link: https://lkml.kernel.org/r/20210511203716.117010-1-rikard.falkeborn@gmail.com
-Signed-off-by: Rikard Falkeborn <rikard.falkeborn@gmail.com>
-Reported-by: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
-Acked-by: Arnd Bergmann <arnd@arndb.de>
-Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc: Ard Biesheuvel <ardb@kernel.org>
-Cc: Yury Norov <yury.norov@gmail.com>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Fixes: 6b3ba9146fe6 ("net: sched: allow qdiscs to handle locking")
+Reported-by: Michal Kubecek <mkubecek@suse.cz>
+Acked-by: Jakub Kicinski <kuba@kernel.org>
+Signed-off-by: Yunsheng Lin <linyunsheng@huawei.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- include/linux/bits.h        |  2 +-
- include/linux/const.h       |  8 ++++++++
- include/linux/minmax.h      | 10 ++--------
- tools/include/linux/bits.h  |  2 +-
- tools/include/linux/const.h |  8 ++++++++
- 5 files changed, 20 insertions(+), 10 deletions(-)
+ net/core/dev.c          |  3 ++-
+ net/sched/sch_generic.c | 27 ++++++++++++++++++++++++++-
+ 2 files changed, 28 insertions(+), 2 deletions(-)
 
-diff --git a/include/linux/bits.h b/include/linux/bits.h
-index 7f475d59a097..87d112650dfb 100644
---- a/include/linux/bits.h
-+++ b/include/linux/bits.h
-@@ -22,7 +22,7 @@
- #include <linux/build_bug.h>
- #define GENMASK_INPUT_CHECK(h, l) \
- 	(BUILD_BUG_ON_ZERO(__builtin_choose_expr( \
--		__builtin_constant_p((l) > (h)), (l) > (h), 0)))
-+		__is_constexpr((l) > (h)), (l) > (h), 0)))
- #else
- /*
-  * BUILD_BUG_ON_ZERO is not available in h files included from asm files,
-diff --git a/include/linux/const.h b/include/linux/const.h
-index 81b8aae5a855..435ddd72d2c4 100644
---- a/include/linux/const.h
-+++ b/include/linux/const.h
-@@ -3,4 +3,12 @@
+diff --git a/net/core/dev.c b/net/core/dev.c
+index 76a932c52255..0c9ce36afc8c 100644
+--- a/net/core/dev.c
++++ b/net/core/dev.c
+@@ -3764,7 +3764,8 @@ static inline int __dev_xmit_skb(struct sk_buff *skb, struct Qdisc *q,
  
- #include <vdso/const.h>
+ 	if (q->flags & TCQ_F_NOLOCK) {
+ 		rc = q->enqueue(skb, q, &to_free) & NET_XMIT_MASK;
+-		qdisc_run(q);
++		if (likely(!netif_xmit_frozen_or_stopped(txq)))
++			qdisc_run(q);
  
-+/*
-+ * This returns a constant expression while determining if an argument is
-+ * a constant expression, most importantly without evaluating the argument.
-+ * Glory to Martin Uecker <Martin.Uecker@med.uni-goettingen.de>
-+ */
-+#define __is_constexpr(x) \
-+	(sizeof(int) == sizeof(*(8 ? ((void *)((long)(x) * 0l)) : (int *)8)))
+ 		if (unlikely(to_free))
+ 			kfree_skb_list(to_free);
+diff --git a/net/sched/sch_generic.c b/net/sched/sch_generic.c
+index e6844d3567ca..854d2b38db85 100644
+--- a/net/sched/sch_generic.c
++++ b/net/sched/sch_generic.c
+@@ -35,6 +35,25 @@
+ const struct Qdisc_ops *default_qdisc_ops = &pfifo_fast_ops;
+ EXPORT_SYMBOL(default_qdisc_ops);
+ 
++static void qdisc_maybe_clear_missed(struct Qdisc *q,
++				     const struct netdev_queue *txq)
++{
++	clear_bit(__QDISC_STATE_MISSED, &q->state);
 +
- #endif /* _LINUX_CONST_H */
-diff --git a/include/linux/minmax.h b/include/linux/minmax.h
-index c0f57b0c64d9..5433c08fcc68 100644
---- a/include/linux/minmax.h
-+++ b/include/linux/minmax.h
-@@ -2,6 +2,8 @@
- #ifndef _LINUX_MINMAX_H
- #define _LINUX_MINMAX_H
- 
-+#include <linux/const.h>
++	/* Make sure the below netif_xmit_frozen_or_stopped()
++	 * checking happens after clearing STATE_MISSED.
++	 */
++	smp_mb__after_atomic();
 +
- /*
-  * min()/max()/clamp() macros must accomplish three things:
-  *
-@@ -17,14 +19,6 @@
- #define __typecheck(x, y) \
- 	(!!(sizeof((typeof(x) *)1 == (typeof(y) *)1)))
- 
--/*
-- * This returns a constant expression while determining if an argument is
-- * a constant expression, most importantly without evaluating the argument.
-- * Glory to Martin Uecker <Martin.Uecker@med.uni-goettingen.de>
-- */
--#define __is_constexpr(x) \
--	(sizeof(int) == sizeof(*(8 ? ((void *)((long)(x) * 0l)) : (int *)8)))
--
- #define __no_side_effects(x, y) \
- 		(__is_constexpr(x) && __is_constexpr(y))
- 
-diff --git a/tools/include/linux/bits.h b/tools/include/linux/bits.h
-index 7f475d59a097..87d112650dfb 100644
---- a/tools/include/linux/bits.h
-+++ b/tools/include/linux/bits.h
-@@ -22,7 +22,7 @@
- #include <linux/build_bug.h>
- #define GENMASK_INPUT_CHECK(h, l) \
- 	(BUILD_BUG_ON_ZERO(__builtin_choose_expr( \
--		__builtin_constant_p((l) > (h)), (l) > (h), 0)))
-+		__is_constexpr((l) > (h)), (l) > (h), 0)))
- #else
- /*
-  * BUILD_BUG_ON_ZERO is not available in h files included from asm files,
-diff --git a/tools/include/linux/const.h b/tools/include/linux/const.h
-index 81b8aae5a855..435ddd72d2c4 100644
---- a/tools/include/linux/const.h
-+++ b/tools/include/linux/const.h
-@@ -3,4 +3,12 @@
- 
- #include <vdso/const.h>
- 
-+/*
-+ * This returns a constant expression while determining if an argument is
-+ * a constant expression, most importantly without evaluating the argument.
-+ * Glory to Martin Uecker <Martin.Uecker@med.uni-goettingen.de>
-+ */
-+#define __is_constexpr(x) \
-+	(sizeof(int) == sizeof(*(8 ? ((void *)((long)(x) * 0l)) : (int *)8)))
++	/* Checking netif_xmit_frozen_or_stopped() again to
++	 * make sure STATE_MISSED is set if the STATE_MISSED
++	 * set by netif_tx_wake_queue()'s rescheduling of
++	 * net_tx_action() is cleared by the above clear_bit().
++	 */
++	if (!netif_xmit_frozen_or_stopped(txq))
++		set_bit(__QDISC_STATE_MISSED, &q->state);
++}
 +
- #endif /* _LINUX_CONST_H */
+ /* Main transmission queue. */
+ 
+ /* Modifications to data participating in scheduling must be protected with
+@@ -74,6 +93,7 @@ static inline struct sk_buff *__skb_dequeue_bad_txq(struct Qdisc *q)
+ 			}
+ 		} else {
+ 			skb = SKB_XOFF_MAGIC;
++			qdisc_maybe_clear_missed(q, txq);
+ 		}
+ 	}
+ 
+@@ -242,6 +262,7 @@ static struct sk_buff *dequeue_skb(struct Qdisc *q, bool *validate,
+ 			}
+ 		} else {
+ 			skb = NULL;
++			qdisc_maybe_clear_missed(q, txq);
+ 		}
+ 		if (lock)
+ 			spin_unlock(lock);
+@@ -251,8 +272,10 @@ validate:
+ 	*validate = true;
+ 
+ 	if ((q->flags & TCQ_F_ONETXQUEUE) &&
+-	    netif_xmit_frozen_or_stopped(txq))
++	    netif_xmit_frozen_or_stopped(txq)) {
++		qdisc_maybe_clear_missed(q, txq);
+ 		return skb;
++	}
+ 
+ 	skb = qdisc_dequeue_skb_bad_txq(q);
+ 	if (unlikely(skb)) {
+@@ -311,6 +334,8 @@ bool sch_direct_xmit(struct sk_buff *skb, struct Qdisc *q,
+ 		HARD_TX_LOCK(dev, txq, smp_processor_id());
+ 		if (!netif_xmit_frozen_or_stopped(txq))
+ 			skb = dev_hard_start_xmit(skb, dev, txq, &ret);
++		else
++			qdisc_maybe_clear_missed(q, txq);
+ 
+ 		HARD_TX_UNLOCK(dev, txq);
+ 	} else {
 -- 
 2.30.2
 
