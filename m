@@ -2,36 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DB026395C90
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 15:33:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CCF1A39630C
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 17:02:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232895AbhEaNe7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 09:34:59 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33262 "EHLO mail.kernel.org"
+        id S233498AbhEaPED (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 11:04:03 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40090 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232271AbhEaNZa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 09:25:30 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2F3336138C;
-        Mon, 31 May 2021 13:20:52 +0000 (UTC)
+        id S233101AbhEaOHD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 10:07:03 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 48951613AD;
+        Mon, 31 May 2021 13:39:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1622467252;
-        bh=lapdHPcarK/0J50Oli3Spk0SfJaPRvISlWhf3ibW0KY=;
+        s=korg; t=1622468353;
+        bh=DQknK+guMV8EB2YI3n8n9bEN8CPrQG+Hf0znxpFfcVk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=EXbWNHv9PNaBFxMsFdH5dhar1g5S/oN0Wv2hGULRb5rPK+xQ6LeVdlXtyZ3QqmGuG
-         XosFqG2R0gSSySVuL6EGlIqDOcSJy4GWHDKhzEKrvjZ9GpU2HF1DWM8OnQOMdUYe2V
-         p6RBB2ZgFUguAbF2U9fn4Fly6mZ6/Pxs3RLmZ+fg=
+        b=ri61RxphaYGF1yNHZ/VD0Y5WH+SrpgDGvI69qVDVIiDVvF+DWsJJkf9lBZ0GNWTTN
+         qpQYbZnShaSAU/pKD20ThbhrpZXvLPLoYFlCDQ4XfXU5fJJ9B8meL4Tv0GJppNG5t+
+         TJuUj96pmbIGe05S73CS985zcMGCI0skKlQJflXg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Taehee Yoo <ap420073@gmail.com>,
+        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
+        Zhen Lei <thunder.leizhen@huawei.com>,
+        Michael Chan <michael.chan@broadcom.com>,
         "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 62/66] sch_dsmark: fix a NULL deref in qdisc_reset()
-Date:   Mon, 31 May 2021 15:14:35 +0200
-Message-Id: <20210531130638.214980665@linuxfoundation.org>
+Subject: [PATCH 5.10 211/252] net: bnx2: Fix error return code in bnx2_init_board()
+Date:   Mon, 31 May 2021 15:14:36 +0200
+Message-Id: <20210531130705.188298167@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210531130636.254683895@linuxfoundation.org>
-References: <20210531130636.254683895@linuxfoundation.org>
+In-Reply-To: <20210531130657.971257589@linuxfoundation.org>
+References: <20210531130657.971257589@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,74 +42,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Taehee Yoo <ap420073@gmail.com>
+From: Zhen Lei <thunder.leizhen@huawei.com>
 
-[ Upstream commit 9b76eade16423ef06829cccfe3e100cfce31afcd ]
+[ Upstream commit 28c66b6da4087b8cfe81c2ec0a46eb6116dafda9 ]
 
-If Qdisc_ops->init() is failed, Qdisc_ops->reset() would be called.
-When dsmark_init(Qdisc_ops->init()) is failed, it possibly doesn't
-initialize dsmark_qdisc_data->q. But dsmark_reset(Qdisc_ops->reset())
-uses dsmark_qdisc_data->q pointer wihtout any null checking.
-So, panic would occur.
+Fix to return -EPERM from the error handling case instead of 0, as done
+elsewhere in this function.
 
-Test commands:
-    sysctl net.core.default_qdisc=dsmark -w
-    ip link add dummy0 type dummy
-    ip link add vw0 link dummy0 type virt_wifi
-    ip link set vw0 up
-
-Splat looks like:
-KASAN: null-ptr-deref in range [0x0000000000000018-0x000000000000001f]
-CPU: 3 PID: 684 Comm: ip Not tainted 5.12.0+ #910
-RIP: 0010:qdisc_reset+0x2b/0x680
-Code: 1f 44 00 00 48 b8 00 00 00 00 00 fc ff df 41 57 41 56 41 55 41 54
-55 48 89 fd 48 83 c7 18 53 48 89 fa 48 c1 ea 03 48 83 ec 20 <80> 3c 02
-00 0f 85 09 06 00 00 4c 8b 65 18 0f 1f 44 00 00 65 8b 1d
-RSP: 0018:ffff88800fda6bf8 EFLAGS: 00010282
-RAX: dffffc0000000000 RBX: ffff8880050ed800 RCX: 0000000000000000
-RDX: 0000000000000003 RSI: ffffffff99e34100 RDI: 0000000000000018
-RBP: 0000000000000000 R08: fffffbfff346b553 R09: fffffbfff346b553
-R10: 0000000000000001 R11: fffffbfff346b552 R12: ffffffffc0824940
-R13: ffff888109e83800 R14: 00000000ffffffff R15: ffffffffc08249e0
-FS:  00007f5042287680(0000) GS:ffff888119800000(0000)
-knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 000055ae1f4dbd90 CR3: 0000000006760002 CR4: 00000000003706e0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- ? rcu_read_lock_bh_held+0xa0/0xa0
- dsmark_reset+0x3d/0xf0 [sch_dsmark]
- qdisc_reset+0xa9/0x680
- qdisc_destroy+0x84/0x370
- qdisc_create_dflt+0x1fe/0x380
- attach_one_default_qdisc.constprop.41+0xa4/0x180
- dev_activate+0x4d5/0x8c0
- ? __dev_open+0x268/0x390
- __dev_open+0x270/0x390
-
-Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
-Signed-off-by: Taehee Yoo <ap420073@gmail.com>
+Fixes: b6016b767397 ("[BNX2]: New Broadcom gigabit network driver.")
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
+Reviewed-by: Michael Chan <michael.chan@broadcom.com>
 Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/sched/sch_dsmark.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ drivers/net/ethernet/broadcom/bnx2.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/net/sched/sch_dsmark.c b/net/sched/sch_dsmark.c
-index 551cf193649e..02ef78d2b3df 100644
---- a/net/sched/sch_dsmark.c
-+++ b/net/sched/sch_dsmark.c
-@@ -388,7 +388,8 @@ static void dsmark_reset(struct Qdisc *sch)
- 	struct dsmark_qdisc_data *p = qdisc_priv(sch);
+diff --git a/drivers/net/ethernet/broadcom/bnx2.c b/drivers/net/ethernet/broadcom/bnx2.c
+index 3e8a179f39db..633b10389653 100644
+--- a/drivers/net/ethernet/broadcom/bnx2.c
++++ b/drivers/net/ethernet/broadcom/bnx2.c
+@@ -8247,9 +8247,9 @@ bnx2_init_board(struct pci_dev *pdev, struct net_device *dev)
+ 		BNX2_WR(bp, PCI_COMMAND, reg);
+ 	} else if ((BNX2_CHIP_ID(bp) == BNX2_CHIP_ID_5706_A1) &&
+ 		!(bp->flags & BNX2_FLAG_PCIX)) {
+-
+ 		dev_err(&pdev->dev,
+ 			"5706 A1 can only be used in a PCIX bus, aborting\n");
++		rc = -EPERM;
+ 		goto err_out_unmap;
+ 	}
  
- 	pr_debug("%s(sch %p,[qdisc %p])\n", __func__, sch, p);
--	qdisc_reset(p->q);
-+	if (p->q)
-+		qdisc_reset(p->q);
- 	sch->qstats.backlog = 0;
- 	sch->q.qlen = 0;
- }
 -- 
 2.30.2
 
