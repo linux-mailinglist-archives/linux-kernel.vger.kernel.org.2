@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 80F39396406
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 17:43:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2527C395EA0
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 15:59:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233188AbhEaPn4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 11:43:56 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47632 "EHLO mail.kernel.org"
+        id S232200AbhEaOBJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 10:01:09 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44430 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233614AbhEaOZD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 10:25:03 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DE39B61A19;
-        Mon, 31 May 2021 13:46:19 +0000 (UTC)
+        id S232859AbhEaNjo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 09:39:44 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 60D126145D;
+        Mon, 31 May 2021 13:27:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1622468780;
-        bh=1NEL+GcIiRtjPVEvr2hIegNN3AwAHmDg7Vo8080uR6A=;
+        s=korg; t=1622467634;
+        bh=pBN3k1dfVhUrsTdxrEuc87G1WviUMAzn0aTgiovF7hg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=uvkD1gbE9vQgOPn6bG8/gJS86QK67ybzyQBHpFZXE0N0NGa/mOmQ+kQy/t0cfFNUO
-         wNJ4ZZ/180sG+ADCcq+EURHxCtveBiRaTo0UnrtSzdu9Na77+HcDhieBzUGiVudYb2
-         NVfERGucd7C0LyBvt5OyejRFTelORWXfm9CuwBQI=
+        b=lwy97F44RR4X4MLjSBy07POp6xUI7BR6hBBOcdCB1iRlfIrzLz6NFiruPg4s5+gWV
+         adwZrlKMpqCVWiv0f8sugagpq/26Pvv04gvKUOnza26o6Lo5TIodWO6lJprE+FMqEZ
+         Yg+La0yl1yvBEzYkp0TEv5p3pB8Pp5U4p4EQ3JEk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Kangjie Lu <kjlu@umn.edu>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 090/177] Revert "serial: max310x: pass return value of spi_register_driver"
+        stable@vger.kernel.org,
+        Alexander Usyskin <alexander.usyskin@intel.com>,
+        Tomas Winkler <tomas.winkler@intel.com>
+Subject: [PATCH 4.14 22/79] mei: request autosuspend after sending rx flow control
 Date:   Mon, 31 May 2021 15:14:07 +0200
-Message-Id: <20210531130651.007865053@linuxfoundation.org>
+Message-Id: <20210531130636.714647662@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210531130647.887605866@linuxfoundation.org>
-References: <20210531130647.887605866@linuxfoundation.org>
+In-Reply-To: <20210531130636.002722319@linuxfoundation.org>
+References: <20210531130636.002722319@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,51 +40,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+From: Alexander Usyskin <alexander.usyskin@intel.com>
 
-[ Upstream commit b0a85abbe92e1a6f3e8580a4590fa7245de7090b ]
+commit bbf0a94744edfeee298e4a9ab6fd694d639a5cdf upstream.
 
-This reverts commit 51f689cc11333944c7a457f25ec75fcb41e99410.
+A rx flow control waiting in the control queue may block autosuspend.
+Re-request autosuspend after flow control been sent to unblock
+the transition to the low power state.
 
-Because of recent interactions with developers from @umn.edu, all
-commits from them have been recently re-reviewed to ensure if they were
-correct or not.
-
-Upon review, this commit was found to be incorrect for the reasons
-below, so it must be reverted.  It will be fixed up "correctly" in a
-later kernel change.
-
-This change did not properly unwind from the error condition, so it was
-not correct.
-
-Cc: Kangjie Lu <kjlu@umn.edu>
-Acked-by: Jiri Slaby <jirislaby@kernel.org>
-Link: https://lore.kernel.org/r/20210503115736.2104747-11-gregkh@linuxfoundation.org
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Alexander Usyskin <alexander.usyskin@intel.com>
+Signed-off-by: Tomas Winkler <tomas.winkler@intel.com>
+Link: https://lore.kernel.org/r/20210526193334.445759-1-tomas.winkler@intel.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/tty/serial/max310x.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/misc/mei/interrupt.c |    3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/drivers/tty/serial/max310x.c b/drivers/tty/serial/max310x.c
-index 8434bd5a8ec7..f60b7b86d099 100644
---- a/drivers/tty/serial/max310x.c
-+++ b/drivers/tty/serial/max310x.c
-@@ -1527,10 +1527,10 @@ static int __init max310x_uart_init(void)
+--- a/drivers/misc/mei/interrupt.c
++++ b/drivers/misc/mei/interrupt.c
+@@ -220,6 +220,9 @@ static int mei_cl_irq_read(struct mei_cl
  		return ret;
+ 	}
  
- #ifdef CONFIG_SPI_MASTER
--	ret = spi_register_driver(&max310x_spi_driver);
-+	spi_register_driver(&max310x_spi_driver);
- #endif
++	pm_runtime_mark_last_busy(dev->dev);
++	pm_request_autosuspend(dev->dev);
++
+ 	list_move_tail(&cb->list, &cl->rd_pending);
  
--	return ret;
-+	return 0;
- }
- module_init(max310x_uart_init);
- 
--- 
-2.30.2
-
+ 	return 0;
 
 
