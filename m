@@ -2,49 +2,48 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A4750395465
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 06:17:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 28F3239546A
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 06:21:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230091AbhEaETW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 00:19:22 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59898 "EHLO mail.kernel.org"
+        id S229925AbhEaEWu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 00:22:50 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60792 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229471AbhEaETT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 00:19:19 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 649226120E;
-        Mon, 31 May 2021 04:17:39 +0000 (UTC)
+        id S229471AbhEaEWq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 00:22:46 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id F239F611EE;
+        Mon, 31 May 2021 04:21:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1622434660;
-        bh=/66UekHtYsNbjmVcZiKckD/0YRjNQl/NXsv9GwKkpmU=;
+        s=k20201202; t=1622434867;
+        bh=PdA89RDGqgHB6kaGkEhPhITfjlbZI5fvRA+wZtemrHc=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=I1iKGI2X/wzNMu6RuJOToWwN/6BG+UfXXMINpHGEcFblPzB5FYkvCCrpJKXU4m7mu
-         To85AaDPgV5HBlywiFb40p3EzIuwPYwXccgcdK4p8CNIhAxTBQf2I6K2Bgf7rJr5gm
-         S6Jiek5jKy9bAplIhdB4xBHV3jLQJOXt5wxu76AGLVHmL+gBJQGLkJxBB3ZNc6+1Bl
-         yqboh4BsHWhTlqt2+H3lWeB5x+XXb2ZBDtuJW5/gBC9MARK5dREO3K4otQMun8vbhT
-         9zyw8BN1M+8kB6T/o0EYA62tnTX6bSjF51BmVhMtOzhrYWXgP6KUzUOWCzOPu/DIE3
-         XMj0oRD/MBVRQ==
-Date:   Mon, 31 May 2021 09:47:36 +0530
+        b=Kbbezpht87I4Fc5QhMMdRdXE02+EEK83ITQSxxvpR2tKnfMBn6b/nwdmEGK20Pn43
+         BBzPYcbeLzIltFHj6huRMrtq7J2vHtapFTjqEtw47tGVfLya8IhkX8hptz2h7h0HuW
+         yiOVkOEAuNXfRIJLaMMX05itQt0fwooVDII7OY5lC2tjN+wC6yBNvQXF7mb66x5Xj1
+         UVF59bb71WBk0gP9QAmdp+HJI4ATNHlWw4zeuobdJO+L93g4/TEOn6X0+UgD1h+mtg
+         Mx9Ozofj3tAnlgJCXEuhtqG3t8KB4fOQ7SGl0xt97KDQ2+E4yFi1oviESH0ljlUs7s
+         w7oUCrcHUdibQ==
+Date:   Mon, 31 May 2021 09:51:04 +0530
 From:   Vinod Koul <vkoul@kernel.org>
-To:     Yang Yingliang <yangyingliang@huawei.com>
-Cc:     linux-kernel@vger.kernel.org, dmaengine@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linus.walleij@linaro.org
-Subject: Re: [PATCH -next] dmaengine: stedma40: add missing iounmap() on
- error in d40_probe()
-Message-ID: <YLRjYJuAod0JcUiI@vkoul-mobl.Dlink>
-References: <20210518141108.1324127-1-yangyingliang@huawei.com>
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     dmaengine@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v1 1/2] dmaengine: Move kdoc description of struct
+ dma_chan_percpu closer to it
+Message-ID: <YLRkMJgGW3slzjWO@vkoul-mobl.Dlink>
+References: <20210518104323.37632-1-andriy.shevchenko@linux.intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210518141108.1324127-1-yangyingliang@huawei.com>
+In-Reply-To: <20210518104323.37632-1-andriy.shevchenko@linux.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 18-05-21, 22:11, Yang Yingliang wrote:
-> Add the missing iounmap() before return from d40_probe()
-> in the error handling case.
+On 18-05-21, 13:43, Andy Shevchenko wrote:
+> We have split by unknown reason of kdoc and struct dma_chan_percpu definition.
+> Join them back. No functional change.
 
-Applied, thanks
+Applied both, thanks
 
 -- 
 ~Vinod
