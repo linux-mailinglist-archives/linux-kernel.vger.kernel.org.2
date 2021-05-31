@@ -2,150 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C71D1395925
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 12:43:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4904D39592C
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 12:43:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231315AbhEaKpB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 06:45:01 -0400
-Received: from mailgw02.mediatek.com ([1.203.163.81]:22266 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S231238AbhEaKoz (ORCPT
+        id S231370AbhEaKpX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 06:45:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49866 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231349AbhEaKpD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 06:44:55 -0400
-X-UUID: b2dde1b47816432a8df854e6f5d9e2f2-20210531
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=q6CDHgMb9mKPjp4x1SNulaupT/UhuvJHScgAw4+1iTQ=;
-        b=ko6mlvE4fPSKbOHJf3EOa9rD1aJvdjO8XfICi/mlJYtxSwEl4oT0bqdaclb1kpELf/8GJv5NwPXQQav7kkNcuiFoa+RcbN/U4gdUruiI60INGoH9W0E+GsUmnVO5vs8Lt5kU5z/oTneaBANcMzTPxWdPnhkRkNHqoPsuKfmEPdg=;
-X-UUID: b2dde1b47816432a8df854e6f5d9e2f2-20210531
-Received: from mtkcas36.mediatek.inc [(172.27.4.253)] by mailgw02.mediatek.com
-        (envelope-from <chun-jie.chen@mediatek.com>)
-        (mailgw01.mediatek.com ESMTP with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 1416377279; Mon, 31 May 2021 18:43:08 +0800
-Received: from mtkcas07.mediatek.inc (172.21.101.84) by
- MTKMBS31N1.mediatek.inc (172.27.4.69) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Mon, 31 May 2021 18:42:58 +0800
-Received: from mtksdccf07 (172.21.84.99) by mtkcas07.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Mon, 31 May 2021 18:42:57 +0800
-Message-ID: <45480f3e65a58141132b2e8f17815fb21157b32c.camel@mediatek.com>
-Subject: Re: [PATCH 1/3] soc: mtk-pm-domains: Fix the clock prepared issue
-From:   Chun-Jie Chen <chun-jie.chen@mediatek.com>
-To:     Hsin-Yi Wang <hsinyi@chromium.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>
-CC:     <linux-arm-kernel@lists.infradead.org>,
-        <linux-mediatek@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, "Rob Herring" <robh+dt@kernel.org>,
-        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
-        <chun-jie.chen@mediatek.corp-partner.google.com>,
-        Yong Wu <yong.wu@mediatek.com>
-Date:   Mon, 31 May 2021 18:42:57 +0800
-In-Reply-To: <20210531043502.2702645-1-hsinyi@chromium.org>
-References: <20210531043502.2702645-1-hsinyi@chromium.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
+        Mon, 31 May 2021 06:45:03 -0400
+Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38F1EC061574;
+        Mon, 31 May 2021 03:43:22 -0700 (PDT)
+Received: by mail-ej1-x62d.google.com with SMTP id h24so12079241ejy.2;
+        Mon, 31 May 2021 03:43:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=KRDWLXAck1raFp8VVUs1f+mKxKULvRviPycYi4op11g=;
+        b=m7XodNLph4OruuhYIefg83obccGHvKBocm2gLu9zwfuxGpyDF6izlQEsgL7d8Or9W4
+         XirSMhU2x7KqxLD/r8YDhtI8NBqmACPnpQR5VnElxvS3KdG9IZJUWlxgq114rWEs15xk
+         iZTX8SkVmaxM4L97H9+lOnIvlIlbnKrwP98tGluWZSADdli5DFrM5uHdfNiV1xO2idLf
+         lK41Y7Rpcbu8wn+8URGQ/1XVEDkCbSlhs0bsfZ0S9j+oWl42EdPHMe2bDkEnehHsIlH2
+         1qrABwYZyhQdinjbqy7K/IeNwsk9L4+hFQ95/TitqV+27Pfi4FqvszjwZaogHIXUq5iB
+         lJ2Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=KRDWLXAck1raFp8VVUs1f+mKxKULvRviPycYi4op11g=;
+        b=CCkEVOhrUELVPcp8s8XTSHHtbXyNw2GVO+pOUr7/yv301/XS5RtJks3H7Iwa3WlH2S
+         TkXERkWAA2KMDOF6HTCaArb8XLn27QIe3EBsdV+6xPjMjANa7LKIcKCh5UOG/mQtwvjG
+         z+MWucLHsc5l3U4g2u8D02oUcdL1N940STkPVGToEPQPNyjNxwWmULtltwJy/5qfAqL7
+         zX/Q29z4cOCJYZWgp/jSoh/Z2faAoZuT6gYtRyfWCSkhYvgeZ9JGCPqm/M5HQcsUhAbI
+         eYYApZExC3zQQAgLi6KbRrK91PBjQecZiPUHAIUW1SenOb5kCorrth3JZ8PhtB/uga2B
+         509g==
+X-Gm-Message-State: AOAM533CBKhYGo25d9NN9P11EZc03UiGi89mYmhN40eVH8xRE6Z/nj8I
+        DEE9RQUhdQEWjmaUXMdWcJA=
+X-Google-Smtp-Source: ABdhPJzHtsIy12jh8754dJy0wkqagMnp5PySrjvyTlgRvRehHxswmkwVRAgePbfAW6dCALlI9c//Zg==
+X-Received: by 2002:a17:907:7713:: with SMTP id kw19mr3821943ejc.249.1622457800884;
+        Mon, 31 May 2021 03:43:20 -0700 (PDT)
+Received: from localhost.localdomain (ip5f5bec5d.dynamic.kabel-deutschland.de. [95.91.236.93])
+        by smtp.gmail.com with ESMTPSA id dk9sm5741035ejb.91.2021.05.31.03.43.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 31 May 2021 03:43:20 -0700 (PDT)
+From:   Bean Huo <huobean@gmail.com>
+To:     alim.akhtar@samsung.com, avri.altman@wdc.com,
+        asutoshd@codeaurora.org, jejb@linux.ibm.com,
+        martin.petersen@oracle.com, stanley.chu@mediatek.com,
+        beanhuo@micron.com, bvanassche@acm.org, tomas.winkler@intel.com,
+        cang@codeaurora.org
+Cc:     linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v2 0/4] Several minor changes for UFS
+Date:   Mon, 31 May 2021 12:43:04 +0200
+Message-Id: <20210531104308.391842-1-huobean@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-X-TM-SNTS-SMTP: C6DBC4AF376BB256ECC1E5347F85EB167520B767E3D2E466CDFB52E29ED2C8192000:8
-X-MTK:  N
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gTW9uLCAyMDIxLTA1LTMxIGF0IDEyOjM1ICswODAwLCBIc2luLVlpIFdhbmcgd3JvdGU6DQo+
-IEZyb206IFdlaXlpIEx1IDx3ZWl5aS5sdUBtZWRpYXRlay5jb20+DQo+IA0KPiBJbiB0aGlzIG5l
-dyBwb3dlciBkb21haW4gZHJpdmVyLCB3aGVuIGFkZGluZyBvbmUgcG93ZXIgZG9tYWluDQo+IGl0
-IHdpbGwgcHJlcGFyZSB0aGUgZGVwZW5lZGVudCBjbG9ja3MgYXQgdGhlIHNhbWUuDQo+IFNvIHdl
-IG9ubHkgZG8gY2xrX2J1bGtfZW5hYmxlL2Rpc2FibGUgY29udHJvbCBkdXJpbmcgcG93ZXIgT04v
-T0ZGLg0KPiBXaGVuIHN5c3RlbSBzdXNwZW5kLCB0aGUgcG0gcnVudGltZSBmcmFtZXdvcmsgd2ls
-bCBmb3JjZWx5IHBvd2VyIG9mZg0KPiBwb3dlciBkb21haW5zLiBIb3dldmVyLCB0aGUgZGVwZW5k
-ZW50IGNsb2NrcyBhcmUgZGlzYWJsZWQgYnV0IGtlcHQNCj4gcHJlYXByZWQuDQo+IA0KPiBJbiBN
-ZWRpYVRlayBjbG9jayBkcml2ZXJzLCBQTEwgd291bGQgYmUgdHVybmVkIE9OIHdoZW4gd2UgZG8N
-Cj4gY2xrX2J1bGtfcHJlcGFyZSBjb250cm9sLg0KPiANCj4gQ2xvY2sgaGllcmFyY2h5Og0KPiBQ
-TEwgLS0+DQo+ICAgICAgICBESVZfQ0sgLS0+DQo+ICAgICAgICAgICAgICAgICAgQ0xLX01VWA0K
-PiAgICAgICAgICAgICAgICAgIChtYXkgYmUgZGVwZW5kZW50IGNsb2NrcykNCj4gICAgICAgICAg
-ICAgICAgICAgICAgICAgIC0tPg0KPiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIFNVQlNZ
-U19DRw0KPiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIChtYXkgYmUgZGVwZW5kZW50IGNs
-b2NrcykNCj4gDQo+IEl0IHdpbGwgbGVhZCBzb21lIHVuZXhwZWN0ZWQgY2xvY2sgc3RhdGVzIGR1
-cmluZyBzeXN0ZW0gc3VzcGVuZC4NCj4gVGhpcyBwYXRjaCB3aWxsIGZpeCBieSBkb2luZyBwcmVw
-YXJlX2VuYWJsZS9kaXNhYmxlX3VucHJlcGFyZSBvbg0KPiBkZXBlbmRlbnQgY2xvY2tzIGF0IHRo
-ZSBzYW1lIHRpbWUgd2hpbGUgd2UgYXJlIGdvaW5nIHRvIHBvd2VyIG9uL29mZg0KPiBhbnkgcG93
-ZXIgZG9tYWluLg0KPiANCj4gU2lnbmVkLW9mZi1ieTogV2VpeWkgTHUgPHdlaXlpLmx1QG1lZGlh
-dGVrLmNvbT4NCj4gU2lnbmVkLW9mZi1ieTogSHNpbi1ZaSBXYW5nIDxoc2lueWlAY2hyb21pdW0u
-b3JnPg0KDQpSZXZpZXdlZC1ieTogY2h1bi1qaWUuY2hlbiA8Y2h1bi1qaWUuY2hlbkBtZWRpYXRl
-ay5jb20+DQoNCj4gLS0tDQo+ICBkcml2ZXJzL3NvYy9tZWRpYXRlay9tdGstcG0tZG9tYWlucy5j
-IHwgMzEgKysrKysrKy0tLS0tLS0tLS0tLS0tLS0NCj4gLS0tLQ0KPiAgMSBmaWxlIGNoYW5nZWQs
-IDggaW5zZXJ0aW9ucygrKSwgMjMgZGVsZXRpb25zKC0pDQo+IA0KPiBkaWZmIC0tZ2l0IGEvZHJp
-dmVycy9zb2MvbWVkaWF0ZWsvbXRrLXBtLWRvbWFpbnMuYw0KPiBiL2RyaXZlcnMvc29jL21lZGlh
-dGVrL210ay1wbS1kb21haW5zLmMNCj4gaW5kZXggMGFmMDBlZmEwZWY4Li41MzZkOGM2NGIyYjQg
-MTAwNjQ0DQo+IC0tLSBhL2RyaXZlcnMvc29jL21lZGlhdGVrL210ay1wbS1kb21haW5zLmMNCj4g
-KysrIGIvZHJpdmVycy9zb2MvbWVkaWF0ZWsvbXRrLXBtLWRvbWFpbnMuYw0KPiBAQCAtMjExLDcg
-KzIxMSw3IEBAIHN0YXRpYyBpbnQgc2Nwc3lzX3Bvd2VyX29uKHN0cnVjdA0KPiBnZW5lcmljX3Bt
-X2RvbWFpbiAqZ2VucGQpDQo+ICAJaWYgKHJldCkNCj4gIAkJcmV0dXJuIHJldDsNCj4gIA0KPiAt
-CXJldCA9IGNsa19idWxrX2VuYWJsZShwZC0+bnVtX2Nsa3MsIHBkLT5jbGtzKTsNCj4gKwlyZXQg
-PSBjbGtfYnVsa19wcmVwYXJlX2VuYWJsZShwZC0+bnVtX2Nsa3MsIHBkLT5jbGtzKTsNCj4gIAlp
-ZiAocmV0KQ0KPiAgCQlnb3RvIGVycl9yZWc7DQo+ICANCj4gQEAgLTIyOSw3ICsyMjksNyBAQCBz
-dGF0aWMgaW50IHNjcHN5c19wb3dlcl9vbihzdHJ1Y3QNCj4gZ2VuZXJpY19wbV9kb21haW4gKmdl
-bnBkKQ0KPiAgCXJlZ21hcF9jbGVhcl9iaXRzKHNjcHN5cy0+YmFzZSwgcGQtPmRhdGEtPmN0bF9v
-ZmZzLA0KPiBQV1JfSVNPX0JJVCk7DQo+ICAJcmVnbWFwX3NldF9iaXRzKHNjcHN5cy0+YmFzZSwg
-cGQtPmRhdGEtPmN0bF9vZmZzLA0KPiBQV1JfUlNUX0JfQklUKTsNCj4gIA0KPiAtCXJldCA9IGNs
-a19idWxrX2VuYWJsZShwZC0+bnVtX3N1YnN5c19jbGtzLCBwZC0+c3Vic3lzX2Nsa3MpOw0KPiAr
-CXJldCA9IGNsa19idWxrX3ByZXBhcmVfZW5hYmxlKHBkLT5udW1fc3Vic3lzX2Nsa3MsIHBkLQ0K
-PiA+c3Vic3lzX2Nsa3MpOw0KPiAgCWlmIChyZXQpDQo+ICAJCWdvdG8gZXJyX3B3cl9hY2s7DQo+
-ICANCj4gQEAgLTI0Niw5ICsyNDYsOSBAQCBzdGF0aWMgaW50IHNjcHN5c19wb3dlcl9vbihzdHJ1
-Y3QNCj4gZ2VuZXJpY19wbV9kb21haW4gKmdlbnBkKQ0KPiAgZXJyX2Rpc2FibGVfc3JhbToNCj4g
-IAlzY3BzeXNfc3JhbV9kaXNhYmxlKHBkKTsNCj4gIGVycl9kaXNhYmxlX3N1YnN5c19jbGtzOg0K
-PiAtCWNsa19idWxrX2Rpc2FibGUocGQtPm51bV9zdWJzeXNfY2xrcywgcGQtPnN1YnN5c19jbGtz
-KTsNCj4gKwljbGtfYnVsa19kaXNhYmxlX3VucHJlcGFyZShwZC0+bnVtX3N1YnN5c19jbGtzLCBw
-ZC0NCj4gPnN1YnN5c19jbGtzKTsNCj4gIGVycl9wd3JfYWNrOg0KPiAtCWNsa19idWxrX2Rpc2Fi
-bGUocGQtPm51bV9jbGtzLCBwZC0+Y2xrcyk7DQo+ICsJY2xrX2J1bGtfZGlzYWJsZV91bnByZXBh
-cmUocGQtPm51bV9jbGtzLCBwZC0+Y2xrcyk7DQo+ICBlcnJfcmVnOg0KPiAgCXNjcHN5c19yZWd1
-bGF0b3JfZGlzYWJsZShwZC0+c3VwcGx5KTsNCj4gIAlyZXR1cm4gcmV0Ow0KPiBAQCAtMjY5LDcg
-KzI2OSw3IEBAIHN0YXRpYyBpbnQgc2Nwc3lzX3Bvd2VyX29mZihzdHJ1Y3QNCj4gZ2VuZXJpY19w
-bV9kb21haW4gKmdlbnBkKQ0KPiAgCWlmIChyZXQgPCAwKQ0KPiAgCQlyZXR1cm4gcmV0Ow0KPiAg
-DQo+IC0JY2xrX2J1bGtfZGlzYWJsZShwZC0+bnVtX3N1YnN5c19jbGtzLCBwZC0+c3Vic3lzX2Ns
-a3MpOw0KPiArCWNsa19idWxrX2Rpc2FibGVfdW5wcmVwYXJlKHBkLT5udW1fc3Vic3lzX2Nsa3Ms
-IHBkLQ0KPiA+c3Vic3lzX2Nsa3MpOw0KPiAgDQo+ICAJLyogc3Vic3lzIHBvd2VyIG9mZiAqLw0K
-PiAgCXJlZ21hcF9jbGVhcl9iaXRzKHNjcHN5cy0+YmFzZSwgcGQtPmRhdGEtPmN0bF9vZmZzLA0K
-PiBQV1JfUlNUX0JfQklUKTsNCj4gQEAgLTI4NCw3ICsyODQsNyBAQCBzdGF0aWMgaW50IHNjcHN5
-c19wb3dlcl9vZmYoc3RydWN0DQo+IGdlbmVyaWNfcG1fZG9tYWluICpnZW5wZCkNCj4gIAlpZiAo
-cmV0IDwgMCkNCj4gIAkJcmV0dXJuIHJldDsNCj4gIA0KPiAtCWNsa19idWxrX2Rpc2FibGUocGQt
-Pm51bV9jbGtzLCBwZC0+Y2xrcyk7DQo+ICsJY2xrX2J1bGtfZGlzYWJsZV91bnByZXBhcmUocGQt
-Pm51bV9jbGtzLCBwZC0+Y2xrcyk7DQo+ICANCj4gIAlzY3BzeXNfcmVndWxhdG9yX2Rpc2FibGUo
-cGQtPnN1cHBseSk7DQo+ICANCj4gQEAgLTQwNSwxNCArNDA1LDYgQEAgZ2VuZXJpY19wbV9kb21h
-aW4gKnNjcHN5c19hZGRfb25lX2RvbWFpbihzdHJ1Y3QNCj4gc2Nwc3lzICpzY3BzeXMsIHN0cnVj
-dCBkZXZpY2Vfbm8NCj4gIAkJcGQtPnN1YnN5c19jbGtzW2ldLmNsayA9IGNsazsNCj4gIAl9DQo+
-ICANCj4gLQlyZXQgPSBjbGtfYnVsa19wcmVwYXJlKHBkLT5udW1fY2xrcywgcGQtPmNsa3MpOw0K
-PiAtCWlmIChyZXQpDQo+IC0JCWdvdG8gZXJyX3B1dF9zdWJzeXNfY2xvY2tzOw0KPiAtDQo+IC0J
-cmV0ID0gY2xrX2J1bGtfcHJlcGFyZShwZC0+bnVtX3N1YnN5c19jbGtzLCBwZC0+c3Vic3lzX2Ns
-a3MpOw0KPiAtCWlmIChyZXQpDQo+IC0JCWdvdG8gZXJyX3VucHJlcGFyZV9jbG9ja3M7DQo+IC0N
-Cj4gIAkvKg0KPiAgCSAqIEluaXRpYWxseSB0dXJuIG9uIGFsbCBkb21haW5zIHRvIG1ha2UgdGhl
-IGRvbWFpbnMgdXNhYmxlDQo+ICAJICogd2l0aCAhQ09ORklHX1BNIGFuZCB0byBnZXQgdGhlIGhh
-cmR3YXJlIGluIHN5bmMgd2l0aCB0aGUNCj4gQEAgLTQyNyw3ICs0MTksNyBAQCBnZW5lcmljX3Bt
-X2RvbWFpbiAqc2Nwc3lzX2FkZF9vbmVfZG9tYWluKHN0cnVjdA0KPiBzY3BzeXMgKnNjcHN5cywg
-c3RydWN0IGRldmljZV9ubw0KPiAgCQlyZXQgPSBzY3BzeXNfcG93ZXJfb24oJnBkLT5nZW5wZCk7
-DQo+ICAJCWlmIChyZXQgPCAwKSB7DQo+ICAJCQlkZXZfZXJyKHNjcHN5cy0+ZGV2LCAiJXBPRjog
-ZmFpbGVkIHRvIHBvd2VyIG9uDQo+IGRvbWFpbjogJWRcbiIsIG5vZGUsIHJldCk7DQo+IC0JCQln
-b3RvIGVycl91bnByZXBhcmVfY2xvY2tzOw0KPiArCQkJZ290byBlcnJfcHV0X3N1YnN5c19jbG9j
-a3M7DQo+ICAJCX0NCj4gIAl9DQo+ICANCj4gQEAgLTQzNSw3ICs0MjcsNyBAQCBnZW5lcmljX3Bt
-X2RvbWFpbiAqc2Nwc3lzX2FkZF9vbmVfZG9tYWluKHN0cnVjdA0KPiBzY3BzeXMgKnNjcHN5cywg
-c3RydWN0IGRldmljZV9ubw0KPiAgCQlyZXQgPSAtRUlOVkFMOw0KPiAgCQlkZXZfZXJyKHNjcHN5
-cy0+ZGV2LA0KPiAgCQkJInBvd2VyIGRvbWFpbiB3aXRoIGlkICVkIGFscmVhZHkgZXhpc3RzLCBj
-aGVjaw0KPiB5b3VyIGRldmljZS10cmVlXG4iLCBpZCk7DQo+IC0JCWdvdG8gZXJyX3VucHJlcGFy
-ZV9zdWJzeXNfY2xvY2tzOw0KPiArCQlnb3RvIGVycl9wdXRfc3Vic3lzX2Nsb2NrczsNCj4gIAl9
-DQo+ICANCj4gIAlpZiAoIXBkLT5kYXRhLT5uYW1lKQ0KPiBAQCAtNDU1LDEwICs0NDcsNiBAQCBn
-ZW5lcmljX3BtX2RvbWFpbiAqc2Nwc3lzX2FkZF9vbmVfZG9tYWluKHN0cnVjdA0KPiBzY3BzeXMg
-KnNjcHN5cywgc3RydWN0IGRldmljZV9ubw0KPiAgDQo+ICAJcmV0dXJuIHNjcHN5cy0+cGRfZGF0
-YS5kb21haW5zW2lkXTsNCj4gIA0KPiAtZXJyX3VucHJlcGFyZV9zdWJzeXNfY2xvY2tzOg0KPiAt
-CWNsa19idWxrX3VucHJlcGFyZShwZC0+bnVtX3N1YnN5c19jbGtzLCBwZC0+c3Vic3lzX2Nsa3Mp
-Ow0KPiAtZXJyX3VucHJlcGFyZV9jbG9ja3M6DQo+IC0JY2xrX2J1bGtfdW5wcmVwYXJlKHBkLT5u
-dW1fY2xrcywgcGQtPmNsa3MpOw0KPiAgZXJyX3B1dF9zdWJzeXNfY2xvY2tzOg0KPiAgCWNsa19i
-dWxrX3B1dChwZC0+bnVtX3N1YnN5c19jbGtzLCBwZC0+c3Vic3lzX2Nsa3MpOw0KPiAgZXJyX3B1
-dF9jbG9ja3M6DQo+IEBAIC01MzcsMTAgKzUyNSw3IEBAIHN0YXRpYyB2b2lkIHNjcHN5c19yZW1v
-dmVfb25lX2RvbWFpbihzdHJ1Y3QNCj4gc2Nwc3lzX2RvbWFpbiAqcGQpDQo+ICAJCQkiZmFpbGVk
-IHRvIHJlbW92ZSBkb21haW4gJyVzJyA6ICVkIC0gc3RhdGUgbWF5DQo+IGJlIGluY29uc2lzdGVu
-dFxuIiwNCj4gIAkJCXBkLT5nZW5wZC5uYW1lLCByZXQpOw0KPiAgDQo+IC0JY2xrX2J1bGtfdW5w
-cmVwYXJlKHBkLT5udW1fY2xrcywgcGQtPmNsa3MpOw0KPiAgCWNsa19idWxrX3B1dChwZC0+bnVt
-X2Nsa3MsIHBkLT5jbGtzKTsNCj4gLQ0KPiAtCWNsa19idWxrX3VucHJlcGFyZShwZC0+bnVtX3N1
-YnN5c19jbGtzLCBwZC0+c3Vic3lzX2Nsa3MpOw0KPiAgCWNsa19idWxrX3B1dChwZC0+bnVtX3N1
-YnN5c19jbGtzLCBwZC0+c3Vic3lzX2Nsa3MpOw0KPiAgfQ0KPiAgDQo=
+From: Bean Huo <beanhuo@micron.com>
+
+Changelog:
+ v1--v2:
+    1. Add a new cleanup patch 1/4
+    2. Make the patch 3/4 much readable by initializing a variable
+    'header'.
+
+
+Bean Huo (4):
+  scsi: ufs: Cleanup ufshcd_add_command_trace()
+  scsi: ufs: Let UPIU completion trace print RSP UPIU header
+  scsi: ufs: Let command trace only for the cmd != null case
+  scsi: ufs: Use UPIU query trace in devman_upiu_cmd
+
+ drivers/scsi/ufs/ufshcd.c | 59 ++++++++++++++++++++++-----------------
+ 1 file changed, 34 insertions(+), 25 deletions(-)
+
+-- 
+2.25.1
 
