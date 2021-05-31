@@ -2,124 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CA8C1395457
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 06:08:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7EF8739545C
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 06:12:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230091AbhEaEKY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 00:10:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46318 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229471AbhEaEKP (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 00:10:15 -0400
-Received: from mail-pg1-x533.google.com (mail-pg1-x533.google.com [IPv6:2607:f8b0:4864:20::533])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 467B6C061574;
-        Sun, 30 May 2021 21:08:36 -0700 (PDT)
-Received: by mail-pg1-x533.google.com with SMTP id r1so7367975pgk.8;
-        Sun, 30 May 2021 21:08:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=B5E+Z+YC3ztWK1Gz5JJ/ZjFYfV7x7WXsq6pvj4QOEV8=;
-        b=qpIh0hZZdMUbO/xaXOluESyDyKh1wuXDzVMU8DbvilQdbzUAKKvtHMi2tZHdZZl6FD
-         pzHWR1qJ9SA0OUooLhgYA/FHAGzMTwF85gH2zMJXOjHY8akNBlPm2ZAFPL/BsX6AECn0
-         g+snaripSV02Ww2TMRpmrTPml1udHoN6L4hr2lbSznbW+9RR1UtQlYNf3WxE5hsOWUtQ
-         ktECgJ1y4SLarJMnSz0M8Q7rpMoLOq1xtTjLcSnDW6jj68DsuSfsO/MEvpsp4a3+Pm5b
-         T6ij0KxeYE/ElhOhht4tRwlDS7A1Bc2B1m97gM084MLnflqwYjE/MK2P0UCAVk17tm4z
-         0i8w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=B5E+Z+YC3ztWK1Gz5JJ/ZjFYfV7x7WXsq6pvj4QOEV8=;
-        b=mbI6AAUZRHYlCRmGziwGa1xARwPaosVg8IJFq2FPK3vwVGCyYYU0YoVbnozfJE/Ljx
-         5quYyeilqUBLsUwM4NLGlBbZ+gEapIiOGMBd3mYn7dk284hGxWZDX346VvZakZUU/fuL
-         sep16M/UWddyD9DO09h7ksMNYcsCW+fAS80315JOYVG/n4qAJfEA+mYM67Vlcy9jyGhB
-         simojDdDV5fnmra0R7t3IPDZn7j9CDiiXSgZl/ORcleI9dsSAxP6RxPlqF6dZqPR58Pi
-         3+vacqjMyw9nX6g7++QR7e5eApW3eXdxQpeNFIYrXklBR2cO/C4Hu9m/7bGzMgmRpJKj
-         WlWQ==
-X-Gm-Message-State: AOAM531q+ZZLHb6DMBM0WwKjuDh9qvWLooSnxHrYUmRgGsx0A82xuDCK
-        lQ3RCgO038sHhUx8/yfKEPg=
-X-Google-Smtp-Source: ABdhPJx+HANXtJX9yvLkBX/HVsORb2hbS4daFpETnK5c9NyvtRnVmWON27YgYVQ2Kp8imni+2oGhjA==
-X-Received: by 2002:a63:5a43:: with SMTP id k3mr21331103pgm.308.1622434115432;
-        Sun, 30 May 2021 21:08:35 -0700 (PDT)
-Received: from ?IPv6:2404:f801:0:5:8000::4b1? ([2404:f801:9000:1a:efea::4b1])
-        by smtp.gmail.com with ESMTPSA id v4sm4275222pfn.41.2021.05.30.21.08.23
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 30 May 2021 21:08:35 -0700 (PDT)
-Subject: Re: [RFC PATCH V3 03/11] x86/Hyper-V: Add new hvcall guest address
- host visibility support
-To:     Borislav Petkov <bp@alien8.de>
-Cc:     kys@microsoft.com, haiyangz@microsoft.com, sthemmin@microsoft.com,
-        wei.liu@kernel.org, decui@microsoft.com, tglx@linutronix.de,
-        mingo@redhat.com, x86@kernel.org, hpa@zytor.com, arnd@arndb.de,
-        dave.hansen@linux.intel.com, luto@kernel.org, peterz@infradead.org,
-        akpm@linux-foundation.org, kirill.shutemov@linux.intel.com,
-        rppt@kernel.org, hannes@cmpxchg.org, cai@lca.pw,
-        krish.sadhukhan@oracle.com, saravanand@fb.com,
-        Tianyu.Lan@microsoft.com, konrad.wilk@oracle.com, hch@lst.de,
-        m.szyprowski@samsung.com, robin.murphy@arm.com,
-        boris.ostrovsky@oracle.com, jgross@suse.com,
-        sstabellini@kernel.org, joro@8bytes.org, will@kernel.org,
-        xen-devel@lists.xenproject.org, davem@davemloft.net,
-        kuba@kernel.org, jejb@linux.ibm.com, martin.petersen@oracle.com,
-        iommu@lists.linux-foundation.org, linux-arch@vger.kernel.org,
-        linux-hyperv@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-scsi@vger.kernel.org, netdev@vger.kernel.org,
-        vkuznets@redhat.com, thomas.lendacky@amd.com,
-        brijesh.singh@amd.com, sunilmut@microsoft.com
-References: <20210530150628.2063957-1-ltykernel@gmail.com>
- <20210530150628.2063957-4-ltykernel@gmail.com> <YLPYqxF7urDIAd9z@zn.tnic>
-From:   Tianyu Lan <ltykernel@gmail.com>
-Message-ID: <3716c9e0-2508-3553-5a70-e4b3f5f4c82e@gmail.com>
-Date:   Mon, 31 May 2021 12:08:21 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.2
+        id S229970AbhEaEOM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 00:14:12 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57312 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229475AbhEaEOC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 00:14:02 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 348E161019;
+        Mon, 31 May 2021 04:12:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1622434343;
+        bh=DMoh2Lz7Qj/6icpTGNCPwjtwyCIL31WE+aYLElUFljo=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=TWbaov9MbqiIvH4boXnaJsQ+oaSUkCK2FbeVQTrP6F1wA/4Jy/xzz95pdUL2s2qZs
+         SlyQau9FNZSl907E5+OnwjePuAmPGZyDdOd2SnYeRrWSu90ixLDAOfSm3YavTvcKMx
+         OnnjrOSxcP4DoYnylJ8loMowB44K23+Tk00CZkc6EfaSzS4ny6Zwx0QmxEn4hy5A4J
+         9VoJxnBwk+UyuVSyelrrfurAZ/k+s8i6JLRYVQAlvycMclNbNQlw/5kwL0ite2U4QK
+         1y833tWD4AahTuQHMfsqSg0HvRYtziOnII5qg7yhRIy90PpoYcSqxYwTAyoxTl86Xg
+         sghkaBZ7z3pdw==
+Date:   Mon, 31 May 2021 09:42:19 +0530
+From:   Vinod Koul <vkoul@kernel.org>
+To:     Randy Dunlap <rdunlap@infradead.org>
+Cc:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        linux-kernel@vger.kernel.org, Stefan Roese <sr@denx.de>,
+        dmaengine@vger.kernel.org, Sinan Kaya <okaya@codeaurora.org>,
+        Green Wan <green.wan@sifive.com>,
+        Hyun Kwon <hyun.kwon@xilinx.com>,
+        Tejas Upadhyay <tejasu@xilinx.com>,
+        Michal Simek <michal.simek@xilinx.com>,
+        kernel test robot <lkp@intel.com>
+Subject: Re: [PATCH 4/4] DMA: XILINX_ZYNQMP_DPDMA depends on HAS_IOMEM
+Message-ID: <YLRiIyy9un3i+1x+@vkoul-mobl.Dlink>
+References: <20210522021313.16405-1-rdunlap@infradead.org>
+ <20210522021313.16405-5-rdunlap@infradead.org>
+ <YKmfs68Cq4osBaQ0@pendragon.ideasonboard.com>
+ <5cb3b313-cd96-d687-2916-0d4af8e5e675@infradead.org>
+ <YKqkmbZHPdbH2XtS@pendragon.ideasonboard.com>
+ <93da0e86-dbef-432d-20db-c2eda03f0071@infradead.org>
 MIME-Version: 1.0
-In-Reply-To: <YLPYqxF7urDIAd9z@zn.tnic>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <93da0e86-dbef-432d-20db-c2eda03f0071@infradead.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Borislav:
-	Thanks for your review.
-
-On 5/31/2021 2:25 AM, Borislav Petkov wrote:
-> On Sun, May 30, 2021 at 11:06:20AM -0400, Tianyu Lan wrote:
->> diff --git a/arch/x86/mm/pat/set_memory.c b/arch/x86/mm/pat/set_memory.c
->> index 156cd235659f..a82975600107 100644
->> --- a/arch/x86/mm/pat/set_memory.c
->> +++ b/arch/x86/mm/pat/set_memory.c
->> @@ -29,6 +29,8 @@
->>   #include <asm/proto.h>
->>   #include <asm/memtype.h>
->>   #include <asm/set_memory.h>
->> +#include <asm/hyperv-tlfs.h>
->> +#include <asm/mshyperv.h>
->>   
->>   #include "../mm_internal.h"
->>   
->> @@ -1986,8 +1988,14 @@ static int __set_memory_enc_dec(unsigned long addr, int numpages, bool enc)
->>   	int ret;
->>   
->>   	/* Nothing to do if memory encryption is not active */
->> -	if (!mem_encrypt_active())
->> +	if (hv_is_isolation_supported()) {
->> +		return hv_set_mem_host_visibility((void *)addr,
->> +				numpages * HV_HYP_PAGE_SIZE,
->> +				enc ? VMBUS_PAGE_NOT_VISIBLE
->> +				: VMBUS_PAGE_VISIBLE_READ_WRITE);
+On 23-05-21, 12:08, Randy Dunlap wrote:
+> On 5/23/21 11:53 AM, Laurent Pinchart wrote:
+> > Hi Randy,
+> > 
+> > On Sat, May 22, 2021 at 06:07:01PM -0700, Randy Dunlap wrote:
+> >> On 5/22/21 5:20 PM, Laurent Pinchart wrote:
+> >>> On Fri, May 21, 2021 at 07:13:13PM -0700, Randy Dunlap wrote:
+> >>>> When CONFIG_HAS_IOMEM is not set/enabled, most iomap() family
+> >>>> functions [including ioremap(), devm_ioremap(), etc.] are not
+> >>>> available.
+> >>>> Drivers that use these functions should depend on HAS_IOMEM so that
+> >>>> they do not cause build errors.
+> >>>>
+> >>>> Cures this build error:
+> >>>> s390-linux-ld: drivers/dma/xilinx/xilinx_dpdma.o: in function `xilinx_dpdma_probe':
+> >>>> xilinx_dpdma.c:(.text+0x336a): undefined reference to `devm_platform_ioremap_resource'
+> >>>
+> >>> I've previously posted
+> >>> https://lore.kernel.org/dmaengine/20210520152420.23986-2-laurent.pinchart@ideasonboard.com/T/#u
+> >>> which fixes the same issue (plus an additional one).
+> >>
+> >> Hi Laurent,
+> >>
+> >> I didn't add a dependency on OF because OF header files _mostly_
+> >> have stubs so that they work when  OF is enabled or disabled.
+> >>
+> >> I did find a problem in <linux/of_address.h> where it could end up
+> >> without having a stub. I will post a patch for that soon.
+> >> I'm currently doing lots of randconfig builds on it.
+> > 
+> > I'm fine with eithe approach, but the patch you've posted to address the
+> > of_address.h issue has an issue itself.
 > 
-> Put all this gunk in a hv-specific function somewhere in hv-land which
-> you only call from here. This way you probably won't even need to export
-> hv_set_mem_host_visibility() and so on...
-> 
+> I'm also fine with either patch.
+> I'm reworking the of_address.h patch now.
 
-Good idea. Will update. Thanks.
+Back from vacation and clearing inbox... I have already applied Laurents
+patch for this... 
 
+Thanks
 
+-- 
+~Vinod
