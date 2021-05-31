@@ -2,102 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 48C18396609
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 18:53:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C8FBE395CD8
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 15:38:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232106AbhEaQzZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 12:55:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51030 "EHLO mail.kernel.org"
+        id S232169AbhEaNjE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 09:39:04 -0400
+Received: from mga03.intel.com ([134.134.136.65]:1438 "EHLO mga03.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234142AbhEaPAj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 11:00:39 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4BD3460FEF;
-        Mon, 31 May 2021 14:12:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1622470351;
-        bh=wkKztpo64XTQBWAnbxSKsTIGW62NyR1Cw1YrVMh3Z2s=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=JwYXnjd3T+Uk7jc/j3e+LtOttEOMKrNQ3Jhwc/jfMvZwIox3gh61RW790EEGQq97Z
-         H6IYYS7WEHKkIdW3w6KJhwpWjGordesLIuoarJv/zWjz2MDLgvONdxt6lwXwWLQxna
-         3dHiLeYJFdnwbfAqM85Uoy2CTK4WyzpUI+hRBa5g=
-Date:   Mon, 31 May 2021 15:21:54 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Andre Przywara <andre.przywara@arm.com>
-Cc:     Ondrej Jirman <megous@megous.com>, Chen-Yu Tsai <wens@csie.org>,
-        Maxime Ripard <mripard@kernel.org>,
-        Jernej =?utf-8?Q?=C5=A0krabec?= <jernej.skrabec@gmail.com>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        linux-serial@vger.kernel.org,
-        Linux ARM Mailing List <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Marcel Holtmann <marcel@holtmann.org>,
-        Johan Hedberg <johan.hedberg@gmail.com>,
-        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
-        linux-bluetooth@vger.kernel.org, linux-sunxi@lists.linux.dev,
-        Josh Triplett <josh@joshtriplett.org>, tuxd3v@sapo.pt
-Subject: Re: sunxi: Bluetooth broken since 5.6-rc1
-Message-ID: <YLTi8iYdLiKNeaLC@kroah.com>
-References: <20210530173454.5ab1dcf5@slackpad.fritz.box>
+        id S231834AbhEaN1A (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 09:27:00 -0400
+IronPort-SDR: mUwqcWKGLtkTAe579X+1Jsa3qxjfMDyDQ3Y5q20p8pfv0s1tleg74X3omjSLi+3M3TgJeNG+82
+ mbdWuHzgv3qw==
+X-IronPort-AV: E=McAfee;i="6200,9189,10000"; a="203394960"
+X-IronPort-AV: E=Sophos;i="5.83,237,1616482800"; 
+   d="scan'208";a="203394960"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 May 2021 06:22:08 -0700
+IronPort-SDR: liI2DfwDLQ9hNU9BmbLM3P4YuqlgD6tMOBlYwldjLUTnT3EezvNneTJi7vElVnV0XXvqb4DoRj
+ g4a2gSlYfFyw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.83,237,1616482800"; 
+   d="scan'208";a="478911609"
+Received: from black.fi.intel.com ([10.237.72.28])
+  by orsmga001.jf.intel.com with ESMTP; 31 May 2021 06:22:06 -0700
+Received: by black.fi.intel.com (Postfix, from userid 1003)
+        id 3994012A; Mon, 31 May 2021 16:22:29 +0300 (EEST)
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        linux-wpan@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     Alan Ott <alan@signal11.us>,
+        Alexander Aring <alex.aring@gmail.com>,
+        Stefan Schmidt <stefan@datenfreihafen.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>
+Subject: [PATCH v1 1/1] mrf29j40: Drop unneeded of_match_ptr()
+Date:   Mon, 31 May 2021 16:22:26 +0300
+Message-Id: <20210531132226.47081-1-andriy.shevchenko@linux.intel.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210530173454.5ab1dcf5@slackpad.fritz.box>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, May 30, 2021 at 05:34:54PM +0100, Andre Przywara wrote:
-> Hi,
-> 
-> as recently discovered via IRC discussions, Bluetooth (via UART)
-> seems to be broken on many (if not all) Allwinner devices using recent
-> mainline kernels. On *some* occasions it might work, but more often
-> than not the hci_bcm driver just times out:
-> ....
-> [    5.046126] Bluetooth: HIDP socket layer initialized
-> ...
-> [    7.809425] Bluetooth: hci0: command 0x0c03 tx timeout
-> [   15.969286] Bluetooth: hci0: BCM: Reset failed (-110)
-> 
-> After some guessing, trying, and bisecting I pinned the problem down to:
-> commit dc56ecb81a0aa46a7e127e916df5c8fdb8364f0b
-> Author: Josh Triplett <josh@joshtriplett.org>
-> Date:   Fri Jan 10 18:25:13 2020 -0800
-> 
->     serial: 8250: Support disabling mdelay-filled probes of 16550A variants
-> 
-> This seemingly innocent commit shaved off some milliseconds during the
-> 8250 probe, which apparently lets the Bluetooth device trip.
+Driver can be used in different environments and moreover, when compiled
+with !OF, the compiler may issue a warning due to unused mrf24j40_of_match
+variable. Hence drop unneeded of_match_ptr() call.
 
-What do you mean by "trip"?
+While at it, update headers block to reflect above changes.
 
-And how are the different devices related?
+Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+---
+ drivers/net/ieee802154/mrf24j40.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-> An obvious easy hack-fix is to just define
-> CONFIG_SERIAL_8250_16550A_VARIANTS, which brings the delays back and
-> seems to avoid the problem for me.
-> Another hack which seems to mitigate the problem is to avoid switching
-> the baudrate to something faster than 115200.
-> 
-> I observed this on a BananaPi-M64 (Allwinner A64 SoC with AP6212 WiFi/BT
-> chip), but others reported the same issue on a NanoPi Air (Allwinner H3
-> with 6212), but also other SoCs and devices (at least one AP6210).
-> 
-> Obviously those workarounds are not real solutions, and I was
-> wondering if anybody has an idea how to properly fix this?
-> What puzzles me is that the delay is happening during the *UART*
-> probe, so before we even start dealing with the Bluetooth device.
+diff --git a/drivers/net/ieee802154/mrf24j40.c b/drivers/net/ieee802154/mrf24j40.c
+index b9be530b285f..ff83e00b77af 100644
+--- a/drivers/net/ieee802154/mrf24j40.c
++++ b/drivers/net/ieee802154/mrf24j40.c
+@@ -8,8 +8,8 @@
+ 
+ #include <linux/spi/spi.h>
+ #include <linux/interrupt.h>
++#include <linux/mod_devicetable.h>
+ #include <linux/module.h>
+-#include <linux/of.h>
+ #include <linux/regmap.h>
+ #include <linux/ieee802154.h>
+ #include <linux/irq.h>
+@@ -1388,7 +1388,7 @@ MODULE_DEVICE_TABLE(spi, mrf24j40_ids);
+ 
+ static struct spi_driver mrf24j40_driver = {
+ 	.driver = {
+-		.of_match_table = of_match_ptr(mrf24j40_of_match),
++		.of_match_table = mrf24j40_of_match,
+ 		.name = "mrf24j40",
+ 	},
+ 	.id_table = mrf24j40_ids,
+-- 
+2.30.2
 
-What type of bluetooth device is this, and what does it have to do with
-the serial port?  Is the SoC device using the same IP blocks for both?
-
-> I see that hci_bcm.c has some history with adding delays, also with
-> RTS/CTS lines, so does anyone have an idea what's going on here,
-> exactly, and how to properly fix this problem?
-
-No idea, sorry, as you have the hardware, you have the best chance of
-debugging this :(
-
-good luck!
-
-greg k-h
