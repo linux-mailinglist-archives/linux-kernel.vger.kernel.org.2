@@ -2,97 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 67BC13957F0
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 11:16:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 009AE395803
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 11:22:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230429AbhEaJSe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 05:18:34 -0400
-Received: from fllv0016.ext.ti.com ([198.47.19.142]:58134 "EHLO
-        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229522AbhEaJSc (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 05:18:32 -0400
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 14V9GglZ070674;
-        Mon, 31 May 2021 04:16:42 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1622452602;
-        bh=Its6+pOD1tBTaXUgRpY3KMtTS3wCWqo3YueW1RmMxa4=;
-        h=Date:From:To:CC:Subject:References:In-Reply-To;
-        b=bhyHSF86k7TkEqFAYrfbkzaEnncWTx402W1pNM9x25C2B1kNpEgNcgH4kGbvr/E/v
-         mkTSAKmvn2Azip1C/SjOXBGxfZyyDEqj3m6J64QRdoUp/jX6wFsMnuXj0ATGFU9RYB
-         t/TCtI9r09p9pjLXGiqOM4a5o6WIWnMcSKA4ahyA=
-Received: from DLEE108.ent.ti.com (dlee108.ent.ti.com [157.170.170.38])
-        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 14V9GgR2072205
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Mon, 31 May 2021 04:16:42 -0500
-Received: from DLEE109.ent.ti.com (157.170.170.41) by DLEE108.ent.ti.com
- (157.170.170.38) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Mon, 31
- May 2021 04:16:42 -0500
-Received: from lelv0327.itg.ti.com (10.180.67.183) by DLEE109.ent.ti.com
- (157.170.170.41) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
- Frontend Transport; Mon, 31 May 2021 04:16:42 -0500
-Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 14V9GfmG035500;
-        Mon, 31 May 2021 04:16:42 -0500
-Date:   Mon, 31 May 2021 14:46:40 +0530
-From:   Pratyush Yadav <p.yadav@ti.com>
-To:     =?iso-8859-1?Q?P=E9ter?= Ujfalusi <peter.ujfalusi@gmail.com>
-CC:     Maxime Ripard <mripard@kernel.org>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Vinod Koul <vkoul@kernel.org>,
-        Steve Longerbeam <slongerbeam@gmail.com>,
-        Benoit Parrot <bparrot@ti.com>, <linux-media@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-phy@lists.infradead.org>, <dmaengine@vger.kernel.org>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>,
-        Chunfeng Yun <chunfeng.yun@mediatek.com>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Subject: Re: [PATCH v2 11/18] dmaengine: ti: k3-psil-j721e: Add entry for
- CSI2RX
-Message-ID: <20210531091638.6mynfeusuzlgegdr@ti.com>
-References: <20210526152308.16525-1-p.yadav@ti.com>
- <20210526152308.16525-12-p.yadav@ti.com>
- <916ef8c9-e444-afa4-d544-8fa672690fdb@gmail.com>
+        id S230441AbhEaJXz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 05:23:55 -0400
+Received: from gecko.sbs.de ([194.138.37.40]:47132 "EHLO gecko.sbs.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229523AbhEaJXw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 05:23:52 -0400
+Received: from mail2.sbs.de (mail2.sbs.de [192.129.41.66])
+        by gecko.sbs.de (8.15.2/8.15.2) with ESMTPS id 14V9LnZA016506
+        (version=TLSv1.2 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 31 May 2021 11:21:50 +0200
+Received: from [167.87.247.112] ([167.87.247.112])
+        by mail2.sbs.de (8.15.2/8.15.2) with ESMTP id 14V9I7T5008408;
+        Mon, 31 May 2021 11:18:08 +0200
+Subject: Re: [PATCH v2] watchdog: iTCO_wdt: Account for rebooting on second
+ timeout
+From:   Jan Kiszka <jan.kiszka@siemens.com>
+To:     Guenter Roeck <linux@roeck-us.net>
+Cc:     Wim Van Sebroeck <wim@linux-watchdog.org>,
+        linux-watchdog@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Christian Storm <christian.storm@siemens.com>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>
+References: <0b8bb307-d08b-41b5-696c-305cdac6789c@siemens.com>
+ <20210530131947.GB2483596@roeck-us.net>
+ <5bf45bf8-0cd6-a131-fe11-1651ed60e8cc@siemens.com>
+Message-ID: <4e407c28-ab9e-7093-49f4-f9b985269fdc@siemens.com>
+Date:   Mon, 31 May 2021 11:18:07 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <916ef8c9-e444-afa4-d544-8fa672690fdb@gmail.com>
-User-Agent: NeoMutt/20171215
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+In-Reply-To: <5bf45bf8-0cd6-a131-fe11-1651ed60e8cc@siemens.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 31/05/21 09:51AM, Péter Ujfalusi wrote:
+On 31.05.21 10:27, Jan Kiszka wrote:
+> On 30.05.21 15:19, Guenter Roeck wrote:
+>> On Sun, May 30, 2021 at 01:24:23PM +0200, Jan Kiszka wrote:
+>>> From: Jan Kiszka <jan.kiszka@siemens.com>
+>>>
+>>> This was already attempted to fix via 1fccb73011ea: If the BIOS did not
+>>> enable TCO SMIs, the timer definitely needs to trigger twice in order to
+>>> cause a reboot. If TCO SMIs are on, as well as SMIs in general, we can
+>>> continue to assume that the BIOS will perform a reboot on the first
+>>> timeout.
+>>>
+>>> QEMU with its ICH9 and related BIOS falls into the former category,
+>>> currently taking twice the configured timeout in order to reboot the
+>>> machine. For iTCO version that fall under turn_SMI_watchdog_clear_off,
+>>> this is also true and was currently only addressed for v1, irrespective
+>>> of the turn_SMI_watchdog_clear_off value.
+>>>
+>>> Signed-off-by: Jan Kiszka <jan.kiszka@siemens.com>
+>>> ---
+>>>
+>>> Changes in v2:
+>>>  - consider GBL_SMI_EN as well
+>>>
+>>>  drivers/watchdog/iTCO_wdt.c | 12 +++++++++---
+>>>  1 file changed, 9 insertions(+), 3 deletions(-)
+>>>
+>>> diff --git a/drivers/watchdog/iTCO_wdt.c b/drivers/watchdog/iTCO_wdt.c
+>>> index bf31d7b67a69..3f1324871cfd 100644
+>>> --- a/drivers/watchdog/iTCO_wdt.c
+>>> +++ b/drivers/watchdog/iTCO_wdt.c
+>>> @@ -71,6 +71,8 @@
+>>>  #define TCOBASE(p)	((p)->tco_res->start)
+>>>  /* SMI Control and Enable Register */
+>>>  #define SMI_EN(p)	((p)->smi_res->start)
+>>> +#define TCO_EN		(1 << 13)
+>>> +#define GBL_SMI_EN	(1 << 0)
+>>>  
+>>>  #define TCO_RLD(p)	(TCOBASE(p) + 0x00) /* TCO Timer Reload/Curr. Value */
+>>>  #define TCOv1_TMR(p)	(TCOBASE(p) + 0x01) /* TCOv1 Timer Initial Value*/
+>>> @@ -355,8 +357,12 @@ static int iTCO_wdt_set_timeout(struct watchdog_device *wd_dev, unsigned int t)
+>>>  
+>>>  	tmrval = seconds_to_ticks(p, t);
+>>>  
+>>> -	/* For TCO v1 the timer counts down twice before rebooting */
+>>> -	if (p->iTCO_version == 1)
+>>> +	/*
+>>> +	 * If TCO SMIs are off, the timer counts down twice before rebooting.
+>>> +	 * Otherwise, the BIOS generally reboots when the SMI triggers.
+>>> +	 */
+>>> +	if (p->smi_res &&
+>>> +	    (SMI_EN(p) & (TCO_EN | GBL_SMI_EN)) != (TCO_EN | GBL_SMI_EN))
+>>>  		tmrval /= 2;
+>>
+>> This expands the scope of this adjustment to all versions, while at the same
+>> time making it conditional for v1. Is this correct ? What for systems with v1
+>> TCO where the above conditions are not met ?
 > 
+> Yes, this is intended. You find the reference to "reboots on second
+> timeout" even in latest EHL datasheets (v6).
 > 
-> On 26/05/2021 18:23, Pratyush Yadav wrote:
-> > The CSI2RX subsystem uses PSI-L DMA to transfer frames to memory. It can
-> > have up to 32 threads but the current driver only supports using one. So
-> > add an entry for that one thread.
-> > 
-> > Signed-off-by: Pratyush Yadav <p.yadav@ti.com>
-> > 
-> > ---
-> > 
-> > Changes in v2:
-> > - Add all 64 threads, instead of having only the one thread being
-> >   currently used by the driver.
-> 
-> How many threads CSI2RX have? 32 (as per commit message) or 64? If I
-> recall right, it is 32.
 
-Ah, sorry I forgot to update the commit message. Each instance of CSI2RX 
-has 32 threads, and J721E has 2 instances. So 64 threads total.
+To make it clearer: By default, we disabled SMIs on v1, thus had to
+adjust the timeout there unconditionally. In QEMU (v2), the firmware
+does not enable SMI, and we failed to handle that. Conceptually, any
+platform on any (known) version that does not use TCO SMIs is affected.
+
+Jan
 
 -- 
-Regards,
-Pratyush Yadav
-Texas Instruments Inc.
+Siemens AG, T RDA IOT
+Corporate Competence Center Embedded Linux
