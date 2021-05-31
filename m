@@ -2,40 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 227F0395C93
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 15:33:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F3DC39659C
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 18:40:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231680AbhEaNfG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 09:35:06 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33460 "EHLO mail.kernel.org"
+        id S232911AbhEaQmS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 12:42:18 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48436 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232022AbhEaNZm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 09:25:42 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2C335613C1;
-        Mon, 31 May 2021 13:20:57 +0000 (UTC)
+        id S231377AbhEaOvo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 10:51:44 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1617F61931;
+        Mon, 31 May 2021 13:58:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1622467257;
-        bh=7bfA1jP82NQ2FwXenvFJkxagimlL0jZ0JK6itcjHu1c=;
+        s=korg; t=1622469500;
+        bh=5kDhT8Zhm3TbjgG4JxDKroPuOS9jtDhk39zWh2ldOZs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=QC3jNlrT2ectMbwYkBFWvbH4cPXpPzMSlstYN74MPNr037hHoKNqJ1UAxEPbHrMfc
-         8qwyEmIyt/LTjJdnEjncacgktciOFYOg8dDQVwPjtjULcW9ydR8WcqADkjy15hkxAZ
-         ib76WdN3BGebwnsM2F6dBeutwfbSfQgU8cE52gJM=
+        b=T7qiOAxyALyCLo/gd1zByE4Fab15quzraMG8mO6WAta8FACGGtwjfy49Gf3tS4QcY
+         k1/d0OyBOxAkiLZYR7z8AbMrpOs8Q3U8AYj1FXEki/Krx6HUgJSgDfOBHcAa1zimxd
+         Sbog58WUB9y8rSdjdG+D4JytNnAR6M0klpeKbKuU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Randy Dunlap <rdunlap@infradead.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Wim Van Sebroeck <wim@iguana.be>,
-        John Crispin <john@phrozen.org>, linux-mips@vger.kernel.org,
-        linux-watchdog@vger.kernel.org,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        stable@vger.kernel.org, Vladimir Oltean <vladimir.oltean@nxp.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 64/66] MIPS: ralink: export rt_sysc_membase for rt2880_wdt.c
+Subject: [PATCH 5.12 222/296] net: dsa: fix error code getting shifted with 4 in dsa_slave_get_sset_count
 Date:   Mon, 31 May 2021 15:14:37 +0200
-Message-Id: <20210531130638.277030241@linuxfoundation.org>
+Message-Id: <20210531130711.293363340@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210531130636.254683895@linuxfoundation.org>
-References: <20210531130636.254683895@linuxfoundation.org>
+In-Reply-To: <20210531130703.762129381@linuxfoundation.org>
+References: <20210531130703.762129381@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,51 +42,65 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Randy Dunlap <rdunlap@infradead.org>
+From: Vladimir Oltean <vladimir.oltean@nxp.com>
 
-[ Upstream commit fef532ea0cd871afab7d9a7b6e9da99ac2c24371 ]
+[ Upstream commit b94cbc909f1d80378a1f541968309e5c1178c98b ]
 
-rt2880_wdt.c uses (well, attempts to use) rt_sysc_membase. However,
-when this watchdog driver is built as a loadable module, there is a
-build error since the rt_sysc_membase symbol is not exported.
-Export it to quell the build error.
+DSA implements a bunch of 'standardized' ethtool statistics counters,
+namely tx_packets, tx_bytes, rx_packets, rx_bytes. So whatever the
+hardware driver returns in .get_sset_count(), we need to add 4 to that.
 
-ERROR: modpost: "rt_sysc_membase" [drivers/watchdog/rt2880_wdt.ko] undefined!
+That is ok, except that .get_sset_count() can return a negative error
+code, for example:
 
-Fixes: 473cf939ff34 ("watchdog: add ralink watchdog driver")
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Cc: Guenter Roeck <linux@roeck-us.net>
-Cc: Wim Van Sebroeck <wim@iguana.be>
-Cc: John Crispin <john@phrozen.org>
-Cc: linux-mips@vger.kernel.org
-Cc: linux-watchdog@vger.kernel.org
-Acked-by: Guenter Roeck <linux@roeck-us.net>
-Signed-off-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+b53_get_sset_count
+-> phy_ethtool_get_sset_count
+   -> return -EIO
+
+-EIO is -5, and with 4 added to it, it becomes -1, aka -EPERM. One can
+imagine that certain error codes may even become positive, although
+based on code inspection I did not see instances of that.
+
+Check the error code first, if it is negative return it as-is.
+
+Based on a similar patch for dsa_master_get_strings from Dan Carpenter:
+https://patchwork.kernel.org/project/netdevbpf/patch/YJaSe3RPgn7gKxZv@mwanda/
+
+Fixes: 91da11f870f0 ("net: Distributed Switch Architecture protocol support")
+Signed-off-by: Vladimir Oltean <vladimir.oltean@nxp.com>
+Reviewed-by: Florian Fainelli <f.fainelli@gmail.com>
+Reviewed-by: Andrew Lunn <andrew@lunn.ch>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/mips/ralink/of.c | 2 ++
- 1 file changed, 2 insertions(+)
+ net/dsa/slave.c | 12 +++++++-----
+ 1 file changed, 7 insertions(+), 5 deletions(-)
 
-diff --git a/arch/mips/ralink/of.c b/arch/mips/ralink/of.c
-index 0aa67a2d0ae6..6b7226830354 100644
---- a/arch/mips/ralink/of.c
-+++ b/arch/mips/ralink/of.c
-@@ -10,6 +10,7 @@
+diff --git a/net/dsa/slave.c b/net/dsa/slave.c
+index 992fcab4b552..8dd7c8e84a65 100644
+--- a/net/dsa/slave.c
++++ b/net/dsa/slave.c
+@@ -787,13 +787,15 @@ static int dsa_slave_get_sset_count(struct net_device *dev, int sset)
+ 	struct dsa_switch *ds = dp->ds;
  
- #include <linux/io.h>
- #include <linux/clk.h>
-+#include <linux/export.h>
- #include <linux/init.h>
- #include <linux/sizes.h>
- #include <linux/of_fdt.h>
-@@ -27,6 +28,7 @@
+ 	if (sset == ETH_SS_STATS) {
+-		int count;
++		int count = 0;
  
- __iomem void *rt_sysc_membase;
- __iomem void *rt_memc_membase;
-+EXPORT_SYMBOL_GPL(rt_sysc_membase);
+-		count = 4;
+-		if (ds->ops->get_sset_count)
+-			count += ds->ops->get_sset_count(ds, dp->index, sset);
++		if (ds->ops->get_sset_count) {
++			count = ds->ops->get_sset_count(ds, dp->index, sset);
++			if (count < 0)
++				return count;
++		}
  
- __iomem void *plat_of_remap_node(const char *node)
- {
+-		return count;
++		return count + 4;
+ 	}
+ 
+ 	return -EOPNOTSUPP;
 -- 
 2.30.2
 
