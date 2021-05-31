@@ -2,39 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E41F395B68
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 15:18:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 63022395D79
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 15:44:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231542AbhEaNUR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 09:20:17 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54382 "EHLO mail.kernel.org"
+        id S232515AbhEaNq2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 09:46:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39376 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231859AbhEaNSt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 09:18:49 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A3EFE613AD;
-        Mon, 31 May 2021 13:17:08 +0000 (UTC)
+        id S232388AbhEaNbc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 09:31:32 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BFD1B61432;
+        Mon, 31 May 2021 13:23:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1622467029;
-        bh=NTLuPLBkvflV6YcFbm3pKZh9OJOtKOdZ91xr2AALtJk=;
+        s=korg; t=1622467427;
+        bh=nnoVf5A9vs+dxKUhBfxsHFDLJkya+4vCJ8gyjvA8ur8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=e4WgDromq4TkbhXObXGR1UmdkAkawsftF2IE5Q7OMrIHS7zatlHmb90zHisgf269v
-         /ndNs/s5Wbtd/vRKiA/jUGTSZH3TLwOnjEQejmRoNKJdGj8knvZvuZW6DcLJBeVKwy
-         4459BwxWVgIfzuCVVxqR4N+PqzeCd2OyMOmcfJXQ=
+        b=f4cXBhsKuC69O1xHnCsaF2I2F8YqGKssXkfLGt98yNhcXTs1cuB3pRNg4oL4bQUq2
+         zOFd7uNe0UynEJ+kVKCZOY+vIrv/Y2otXRUjWgBX+73wIVMIvq5WRuVGEX0VNNjXI9
+         tHIMYjXDzxdPRD01XV0IpQEHcAKoXKOkVgcJJVs4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        syzbot+b4d3fd1dfd53e90afd79@syzkaller.appspotmail.com,
-        Jean Delvare <jdelvare@suse.de>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Jarkko Nikula <jarkko.nikula@linux.intel.com>,
-        Wolfram Sang <wsa@kernel.org>
-Subject: [PATCH 4.4 30/54] i2c: i801: Dont generate an interrupt on bus reset
+        stable@vger.kernel.org, Lukas Wunner <lukas@wunner.de>,
+        Qinglang Miao <miaoqinglang@huawei.com>,
+        Mark Brown <broonie@kernel.org>
+Subject: [PATCH 4.19 060/116] spi: mt7621: Disable clock in probe error path
 Date:   Mon, 31 May 2021 15:13:56 +0200
-Message-Id: <20210531130636.029277749@linuxfoundation.org>
+Message-Id: <20210531130642.207493188@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210531130635.070310929@linuxfoundation.org>
-References: <20210531130635.070310929@linuxfoundation.org>
+In-Reply-To: <20210531130640.131924542@linuxfoundation.org>
+References: <20210531130640.131924542@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,56 +40,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jean Delvare <jdelvare@suse.de>
+From: Lukas Wunner <lukas@wunner.de>
 
-commit e4d8716c3dcec47f1557024add24e1f3c09eb24b upstream.
+commit 24f7033405abe195224ec793dbc3d7a27dec0b98 upstream.
 
-Now that the i2c-i801 driver supports interrupts, setting the KILL bit
-in a attempt to recover from a timed out transaction triggers an
-interrupt. Unfortunately, the interrupt handler (i801_isr) is not
-prepared for this situation and will try to process the interrupt as
-if it was signaling the end of a successful transaction. In the case
-of a block transaction, this can result in an out-of-range memory
-access.
+Commit 702b15cb9712 ("spi: mt7621: fix missing clk_disable_unprepare()
+on error in mt7621_spi_probe") sought to disable the SYS clock on probe
+errors, but only did so for 2 of 3 potentially failing calls:  The clock
+needs to be disabled on failure of devm_spi_register_controller() as
+well.
 
-This condition was reproduced several times by syzbot:
-https://syzkaller.appspot.com/bug?extid=ed71512d469895b5b34e
-https://syzkaller.appspot.com/bug?extid=8c8dedc0ba9e03f6c79e
-https://syzkaller.appspot.com/bug?extid=c8ff0b6d6c73d81b610e
-https://syzkaller.appspot.com/bug?extid=33f6c360821c399d69eb
-https://syzkaller.appspot.com/bug?extid=be15dc0b1933f04b043a
-https://syzkaller.appspot.com/bug?extid=b4d3fd1dfd53e90afd79
+Moreover, the commit purports to fix a bug in commit cbd66c626e16 ("spi:
+mt7621: Move SPI driver out of staging") but in reality the bug has
+existed since the driver was first introduced.
 
-So disable interrupts while trying to reset the bus. Interrupts will
-be enabled again for the following transaction.
-
-Fixes: 636752bcb517 ("i2c-i801: Enable IRQ for SMBus transactions")
-Reported-by: syzbot+b4d3fd1dfd53e90afd79@syzkaller.appspotmail.com
-Signed-off-by: Jean Delvare <jdelvare@suse.de>
-Acked-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc: Jarkko Nikula <jarkko.nikula@linux.intel.com>
-Tested-by: Jarkko Nikula <jarkko.nikula@linux.intel.com>
-Signed-off-by: Wolfram Sang <wsa@kernel.org>
+Fixes: 1ab7f2a43558 ("staging: mt7621-spi: add mt7621 support")
+Signed-off-by: Lukas Wunner <lukas@wunner.de>
+Cc: <stable@vger.kernel.org> # v4.17+: 702b15cb9712: spi: mt7621: fix missing clk_disable_unprepare() on error in mt7621_spi_probe
+Cc: <stable@vger.kernel.org> # v4.17+
+Cc: Qinglang Miao <miaoqinglang@huawei.com>
+Link: https://lore.kernel.org/r/36ad42760087952fb7c10aae7d2628547c26a7ec.1607286887.git.lukas@wunner.de
+Signed-off-by: Mark Brown <broonie@kernel.org>
+[lukas: backport to v4.19.192]
+Signed-off-by: Lukas Wunner <lukas@wunner.de>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/i2c/busses/i2c-i801.c |    6 ++----
- 1 file changed, 2 insertions(+), 4 deletions(-)
+ drivers/staging/mt7621-spi/spi-mt7621.c |    6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
 
---- a/drivers/i2c/busses/i2c-i801.c
-+++ b/drivers/i2c/busses/i2c-i801.c
-@@ -327,11 +327,9 @@ static int i801_check_post(struct i801_p
- 		dev_err(&priv->pci_dev->dev, "Transaction timeout\n");
- 		/* try to stop the current command */
- 		dev_dbg(&priv->pci_dev->dev, "Terminating the current operation\n");
--		outb_p(inb_p(SMBHSTCNT(priv)) | SMBHSTCNT_KILL,
--		       SMBHSTCNT(priv));
-+		outb_p(SMBHSTCNT_KILL, SMBHSTCNT(priv));
- 		usleep_range(1000, 2000);
--		outb_p(inb_p(SMBHSTCNT(priv)) & (~SMBHSTCNT_KILL),
--		       SMBHSTCNT(priv));
-+		outb_p(0, SMBHSTCNT(priv));
+--- a/drivers/staging/mt7621-spi/spi-mt7621.c
++++ b/drivers/staging/mt7621-spi/spi-mt7621.c
+@@ -487,7 +487,11 @@ static int mt7621_spi_probe(struct platf
  
- 		/* Check if it worked */
- 		status = inb_p(SMBHSTSTS(priv));
+ 	mt7621_spi_reset(rs, 0);
+ 
+-	return spi_register_master(master);
++	ret = spi_register_master(master);
++	if (ret)
++		clk_disable_unprepare(clk);
++
++	return ret;
+ }
+ 
+ static int mt7621_spi_remove(struct platform_device *pdev)
 
 
