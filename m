@@ -2,172 +2,197 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D2CA3957BD
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 11:01:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E1193957BF
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 11:01:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231164AbhEaJCp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 05:02:45 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:38946 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231183AbhEaJCV (ORCPT
+        id S230496AbhEaJDC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 05:03:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55008 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230430AbhEaJCs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 05:02:21 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1622451640;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc; bh=LE1iF4c4IiL/+CW/yCPElYWM7vlN4P0lRRKPTAcXwNU=;
-        b=EbN7+f6IAyvGQtuRQfyrdQKWP2TpM1/xIeHRwZnqKCUvyDYAO25tV0Zi16xL+NJwO1E6PE
-        HtZLZPSAHu6EAMygAgPCiHLNp2TzR1msugn46FzUCHpF0/2Yrc5qbgO+i2LvDpg30USwT/
-        BfW8a+kdIm1XDn773OuJCZJCboJ/2A0=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-173-907jp1zIOO6MlKYNx_2hhw-1; Mon, 31 May 2021 05:00:37 -0400
-X-MC-Unique: 907jp1zIOO6MlKYNx_2hhw-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 6CD3A8042AE;
-        Mon, 31 May 2021 09:00:35 +0000 (UTC)
-Received: from localhost.localdomain.com (ovpn-12-120.pek2.redhat.com [10.72.12.120])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 48BF65D9D0;
-        Mon, 31 May 2021 09:00:25 +0000 (UTC)
-From:   Lianbo Jiang <lijiang@redhat.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     x86@kernel.org, linux-efi@vger.kernel.org,
-        platform-driver-x86@vger.kernel.org, kexec@lists.infradead.org,
-        ardb@kernel.org, dvhart@infradead.org, andy@infradead.org,
-        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, hpa@zytor.com,
-        luto@amacapital.net, bhe@redhat.com, dyoung@redhat.com
-Subject: [PATCH v2] x86/efi: unconditionally hold the whole low-1MB memory regions
-Date:   Mon, 31 May 2021 17:00:23 +0800
-Message-Id: <20210531090023.16471-1-lijiang@redhat.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+        Mon, 31 May 2021 05:02:48 -0400
+Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com [IPv6:2a00:1450:4864:20::42e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA918C061761
+        for <linux-kernel@vger.kernel.org>; Mon, 31 May 2021 02:01:08 -0700 (PDT)
+Received: by mail-wr1-x42e.google.com with SMTP id f11so10142920wrq.1
+        for <linux-kernel@vger.kernel.org>; Mon, 31 May 2021 02:01:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=upaCZv3Tpjgwox/z9nQr2rgDiaU87oH++b6b3h+UG8s=;
+        b=IJkIi4OPezh+sg5mah6li4r4TXDpqcnsHZu1Gp/dACzW7ND6vIHxFnv+oM8+1d+AjQ
+         7MOTlEpAX5JbZcA16mEHDVISwyriBX9GhbcfbxeaEgeltM0aoNLfYjC2iykUou+MmTo3
+         i0ViDeAgE1hUBwdqW+DAwQXkLRMGdFhYKs76lzu0QNarTJhhXBupMHmy8ThvG4A5KfHm
+         9vyrkFYo11EtI4WrtYXl1TNQiQmHErOAZi40BP21uWnA3ypsCxatYuBIH0YB7crAz1wB
+         ACcBv5wj0CfIxvWPlZK1veASzSGKWGYmAECFyDaOP9v8G7QhLC7V6/0NjuRnjKjf2QPH
+         XnQw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=upaCZv3Tpjgwox/z9nQr2rgDiaU87oH++b6b3h+UG8s=;
+        b=Tb28nCj6Y/0MfxcIYDy3awlewEAnRa21BcBT+yzb1yQ1l/MIipmeJSHcvph1Aw+ZHy
+         2c+q3AWVFQJfejWZM/SOIsCXL/Vf+KtKMqGVsbVghn84RGM6ZA//x0Bvk2NElC/l+aMu
+         MVdU1aMiVf8U9RvTgqI9STYKi0JX0bBOdXY8eu/U6xh8Zo1y5j56HBpVSAoDc8z+2SxG
+         ZVep7a0Mte3soHaZqF5efKFJhgAqGNxzHRApwU8Hah5ueZ/xtxJhdvxkWEPmqDh+mqnn
+         mYiCKcjAoadO8hOr4c2mwuanW4WF3h32PgpmzZtgXljBTDCVNv9t+jPWrrc2NZoY9R+K
+         QlyA==
+X-Gm-Message-State: AOAM530MaR4eEGTa2C25PD70WA7zXAQbIYrpGa1Eqau2ur0i2zq802zI
+        YA4f0oID41GeYOU6aiyeIxA6MIRTaZFT6b5F
+X-Google-Smtp-Source: ABdhPJxaabXMbDEpkNMna9vR7iDgC/aOGjrgq5mOwHusvjCadqPJuxhWcqYr0atixHuaN5GJhEiuTA==
+X-Received: by 2002:adf:8b91:: with SMTP id o17mr5188820wra.385.1622451667388;
+        Mon, 31 May 2021 02:01:07 -0700 (PDT)
+Received: from [192.168.1.28] (hst-221-12.medicom.bg. [84.238.221.12])
+        by smtp.googlemail.com with ESMTPSA id l8sm16066268wrw.71.2021.05.31.02.01.06
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 31 May 2021 02:01:06 -0700 (PDT)
+Subject: Re: [PATCH 1/7] venus: firmware: enable no tz fw loading for sc7280
+To:     Dikshita Agarwal <dikshita@codeaurora.org>,
+        linux-media@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, vgarodia@codeaurora.org
+References: <1621417008-6117-1-git-send-email-dikshita@codeaurora.org>
+ <1621417008-6117-2-git-send-email-dikshita@codeaurora.org>
+From:   Stanimir Varbanov <stanimir.varbanov@linaro.org>
+Message-ID: <73299cba-3ea4-5cb9-45ee-228ef698a48d@linaro.org>
+Date:   Mon, 31 May 2021 12:01:05 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
+MIME-Version: 1.0
+In-Reply-To: <1621417008-6117-2-git-send-email-dikshita@codeaurora.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Some sub-1MB memory regions may be reserved by EFI boot services, and the
-memory regions will be released later in the efi_free_boot_services().
-
-Currently, always reserve all sub-1MB memory regions when the crashkernel
-option is specified, but unfortunately EFI boot services may have already
-reserved some sub-1MB memory regions before the crash_reserve_low_1M() is
-called, which makes that the crash_reserve_low_1M() only own the
-remaining sub-1MB memory regions, not all sub-1MB memory regions, because,
-subsequently EFI boot services will free its own sub-1MB memory regions.
-Eventually, DMA will be able to allocate memory from the sub-1MB area and
-cause the following error:
-
-crash> kmem -s |grep invalid
-kmem: dma-kmalloc-512: slab: ffffd52c40001900 invalid freepointer: ffff9403c0067300
-kmem: dma-kmalloc-512: slab: ffffd52c40001900 invalid freepointer: ffff9403c0067300
-crash> vtop ffff9403c0067300
-VIRTUAL           PHYSICAL
-ffff9403c0067300  67300   --->The physical address falls into this range [0x0000000000063000-0x000000000008efff]
-
-kernel debugging log:
-...
-[    0.008927] memblock_reserve: [0x0000000000010000-0x0000000000013fff] efi_reserve_boot_services+0x85/0xd0
-[    0.008930] memblock_reserve: [0x0000000000063000-0x000000000008efff] efi_reserve_boot_services+0x85/0xd0
-...
-[    0.009425] memblock_reserve: [0x0000000000000000-0x00000000000fffff] crash_reserve_low_1M+0x2c/0x49
-...
-[    0.010586] Zone ranges:
-[    0.010587]   DMA      [mem 0x0000000000001000-0x0000000000ffffff]
-[    0.010589]   DMA32    [mem 0x0000000001000000-0x00000000ffffffff]
-[    0.010591]   Normal   [mem 0x0000000100000000-0x0000000c7fffffff]
-[    0.010593]   Device   empty
-...
-[    8.814894] __memblock_free_late: [0x0000000000063000-0x000000000008efff] efi_free_boot_services+0x14b/0x23b
-[    8.815793] __memblock_free_late: [0x0000000000010000-0x0000000000013fff] efi_free_boot_services+0x14b/0x23b
-
-To fix the above issues, let's hold the whole low-1M memory regions
-unconditionally in the efi_free_boot_services().
-
-Signed-off-by: Lianbo Jiang <lijiang@redhat.com>
----
-Background(copy from bhe's comment in the patch v1):
-
-Kdump kernel also need go through real mode code path during bootup. It
-is not different than normal kernel except that it skips the firmware
-resetting. So kdump kernel needs low 1M as system RAM just as normal
-kernel does. Here we reserve the whole low 1M with memblock_reserve()
-to avoid any later kernel or driver data reside in this area. Otherwise,
-we need dump the content of this area to vmcore. As we know, when crash
-happened, the old memory of 1st kernel should be untouched until vmcore
-dumping read out its content. Meanwhile, kdump kernel need reuse low 1M.
-In the past, we used a back up region to copy out the low 1M area, and
-map the back up region into the low 1M area in vmcore elf file. In
-6f599d84231fd27 ("x86/kdump: Always reserve the low 1M when the crashkernel
-option is specified"), we changed to lock the whole low 1M to avoid
-writting any kernel data into, like this we can skip this area when
-dumping vmcore.
-
-Above is why we try to memblock reserve the whole low 1M. We don't want
-to use it, just don't want anyone to use it in 1st kernel.
 
 
- arch/x86/platform/efi/quirks.c | 32 +++++++++++++++-----------------
- 1 file changed, 15 insertions(+), 17 deletions(-)
+On 5/19/21 12:36 PM, Dikshita Agarwal wrote:
+> - Enable no tz FW loading.
+> - add routine to reset XTSS.
+> 
+> Signed-off-by: Dikshita Agarwal <dikshita@codeaurora.org>
+> ---
+>  drivers/media/platform/qcom/venus/firmware.c     | 42 ++++++++++++++++++++----
+>  drivers/media/platform/qcom/venus/hfi_venus_io.h |  2 ++
+>  2 files changed, 38 insertions(+), 6 deletions(-)
+> 
+> diff --git a/drivers/media/platform/qcom/venus/firmware.c b/drivers/media/platform/qcom/venus/firmware.c
+> index 227bd3b..e05e01a 100644
+> --- a/drivers/media/platform/qcom/venus/firmware.c
+> +++ b/drivers/media/platform/qcom/venus/firmware.c
+> @@ -42,6 +42,22 @@ static void venus_reset_cpu(struct venus_core *core)
+>  	writel(0, wrapper_base + WRAPPER_A9SS_SW_RESET);
+>  }
+>  
+> +static void venus_reset_cpu_V6(struct venus_core *core)
+> +{
+> +	u32 fw_size = core->fw.mapped_mem_size;
+> +	void __iomem *wrapper_tz_base = core->wrapper_tz_base;
+> +
+> +	writel(0, wrapper_tz_base + WRAPPER_FW_START_ADDR);
+> +	writel(fw_size, wrapper_tz_base + WRAPPER_FW_END_ADDR);
+> +	writel(0, wrapper_tz_base + WRAPPER_CPA_START_ADDR);
+> +	writel(fw_size, wrapper_tz_base + WRAPPER_CPA_END_ADDR);
+> +	writel(fw_size, wrapper_tz_base + WRAPPER_NONPIX_START_ADDR);
+> +	writel(fw_size, wrapper_tz_base + WRAPPER_NONPIX_END_ADDR);
+> +
+> +	/* Bring XTSS out of reset */
+> +	writel(0, wrapper_tz_base + WRAPPER_TZ_XTSS_SW_RESET);
+> +}
 
-diff --git a/arch/x86/platform/efi/quirks.c b/arch/x86/platform/efi/quirks.c
-index 7850111008a8..840b7e3b3d48 100644
---- a/arch/x86/platform/efi/quirks.c
-+++ b/arch/x86/platform/efi/quirks.c
-@@ -11,6 +11,7 @@
- #include <linux/memblock.h>
- #include <linux/acpi.h>
- #include <linux/dmi.h>
-+#include <linux/sizes.h>
- 
- #include <asm/e820/api.h>
- #include <asm/efi.h>
-@@ -409,7 +410,7 @@ void __init efi_free_boot_services(void)
- 	for_each_efi_memory_desc(md) {
- 		unsigned long long start = md->phys_addr;
- 		unsigned long long size = md->num_pages << EFI_PAGE_SHIFT;
--		size_t rm_size;
-+		unsigned long long end = start + size;
- 
- 		if (md->type != EFI_BOOT_SERVICES_CODE &&
- 		    md->type != EFI_BOOT_SERVICES_DATA) {
-@@ -431,23 +432,20 @@ void __init efi_free_boot_services(void)
- 		efi_unmap_pages(md);
- 
- 		/*
--		 * Nasty quirk: if all sub-1MB memory is used for boot
--		 * services, we can get here without having allocated the
--		 * real mode trampoline.  It's too late to hand boot services
--		 * memory back to the memblock allocator, so instead
--		 * try to manually allocate the trampoline if needed.
--		 *
--		 * I've seen this on a Dell XPS 13 9350 with firmware
--		 * 1.4.4 with SGX enabled booting Linux via Fedora 24's
--		 * grub2-efi on a hard disk.  (And no, I don't know why
--		 * this happened, but Linux should still try to boot rather
--		 * panicking early.)
-+		 * The sub-1MB memory may be within the range[0, SZ_1M]
-+		 * or across the low-1M memory boundary. Let's handle
-+		 * these two cases and hold the whole low-1M memory
-+		 * unconditionally.
- 		 */
--		rm_size = real_mode_size_needed();
--		if (rm_size && (start + rm_size) < (1<<20) && size >= rm_size) {
--			set_real_mode_mem(start);
--			start += rm_size;
--			size -= rm_size;
-+		if (start < SZ_1M) {
-+			/* Within the range[0, SZ_1M] */
-+			if (end <= SZ_1M)
-+				continue;
-+			else {
-+				/* Across the low-1M memory boundary */
-+				size -= (SZ_1M - start);
-+				start = SZ_1M;
-+			}
- 		}
- 
- 		memblock_free_late(start, size);
+Could you squash this v6 cpu reset into venus_reset_cpu() and add
+IS_V6() checks there ...
+
+> +
+>  int venus_set_hw_state(struct venus_core *core, bool resume)
+>  {
+>  	int ret;
+> @@ -54,10 +70,15 @@ int venus_set_hw_state(struct venus_core *core, bool resume)
+>  	}
+>  
+>  	if (resume) {
+> -		venus_reset_cpu(core);
+> +		if (IS_V6(core))
+> +			venus_reset_cpu_V6(core);
+> +		else
+> +			venus_reset_cpu(core);
+
+... then this IS_V6() is not needed.
+
+>  	} else {
+>  		if (!IS_V6(core))
+>  			writel(1, core->wrapper_base + WRAPPER_A9SS_SW_RESET);
+> +		else
+> +			writel(1, core->wrapper_tz_base + WRAPPER_TZ_XTSS_SW_RESET);
+
+Could you invert the logic here:
+
+if (IS_V6(core)
+	writel(1, core->wrapper_tz_base + WRAPPER_TZ_XTSS_SW_RESET);
+else
+	writel(1, core->wrapper_base + WRAPPER_A9SS_SW_RESET);
+
+>  	}
+>  
+>  	return 0;
+> @@ -149,7 +170,10 @@ static int venus_boot_no_tz(struct venus_core *core, phys_addr_t mem_phys,
+>  		return ret;
+>  	}
+>  
+> -	venus_reset_cpu(core);
+> +	if (IS_V6(core))
+> +		venus_reset_cpu_V6(core);
+> +	else
+> +		venus_reset_cpu(core);
+>  
+>  	return 0;
+>  }
+> @@ -162,12 +186,18 @@ static int venus_shutdown_no_tz(struct venus_core *core)
+>  	u32 reg;
+>  	struct device *dev = core->fw.dev;
+>  	void __iomem *wrapper_base = core->wrapper_base;
+> +	void __iomem *wrapper_tz_base = core->wrapper_tz_base;
+>  
+> +	if (IS_V6(core)) {
+> +		reg = readl_relaxed(wrapper_tz_base + WRAPPER_TZ_XTSS_SW_RESET);
+> +		reg |= WRAPPER_XTSS_SW_RESET_BIT;
+> +		writel_relaxed(reg, wrapper_tz_base + WRAPPER_TZ_XTSS_SW_RESET);
+> +	} else {
+>  	/* Assert the reset to ARM9 */
+
+This comment should be moved above.
+
+> -	reg = readl_relaxed(wrapper_base + WRAPPER_A9SS_SW_RESET);
+> -	reg |= WRAPPER_A9SS_SW_RESET_BIT;
+> -	writel_relaxed(reg, wrapper_base + WRAPPER_A9SS_SW_RESET);
+> -
+> +		reg = readl_relaxed(wrapper_base + WRAPPER_A9SS_SW_RESET);
+> +		reg |= WRAPPER_A9SS_SW_RESET_BIT;
+> +		writel_relaxed(reg, wrapper_base + WRAPPER_A9SS_SW_RESET);
+> +	}
+>  	/* Make sure reset is asserted before the mapping is removed */
+>  	mb();
+>  
+> diff --git a/drivers/media/platform/qcom/venus/hfi_venus_io.h b/drivers/media/platform/qcom/venus/hfi_venus_io.h
+> index 300c6e47..9735a24 100644
+> --- a/drivers/media/platform/qcom/venus/hfi_venus_io.h
+> +++ b/drivers/media/platform/qcom/venus/hfi_venus_io.h
+> @@ -149,6 +149,8 @@
+>  /* Wrapper TZ 6xx */
+>  #define WRAPPER_TZ_BASE_V6			0x000c0000
+>  #define WRAPPER_TZ_CPU_STATUS_V6		0x10
+> +#define WRAPPER_TZ_XTSS_SW_RESET		0x1000
+> +#define WRAPPER_XTSS_SW_RESET_BIT		BIT(0)
+>  
+>  /* Venus AON */
+>  #define AON_BASE_V6				0x000e0000
+> 
+
 -- 
-2.17.1
-
+regards,
+Stan
