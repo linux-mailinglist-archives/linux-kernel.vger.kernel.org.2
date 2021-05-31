@@ -2,91 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A66D39674D
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 19:41:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E378396959
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 23:41:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233936AbhEaRm7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 13:42:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56766 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233301AbhEaRla (ORCPT
+        id S232173AbhEaVnY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 17:43:24 -0400
+Received: from mailout4.samsung.com ([203.254.224.34]:38266 "EHLO
+        mailout4.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232090AbhEaVnU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 13:41:30 -0400
-Received: from mail-pg1-x530.google.com (mail-pg1-x530.google.com [IPv6:2607:f8b0:4864:20::530])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20BDDC03546B;
-        Mon, 31 May 2021 09:58:13 -0700 (PDT)
-Received: by mail-pg1-x530.google.com with SMTP id j12so8727251pgh.7;
-        Mon, 31 May 2021 09:58:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=message-id:date:from:in-reply-to:subject:to:cc
-         :content-transfer-encoding;
-        bh=D0sTktuwMzaX1rKRz8yLL+fGIpfvYxfTnd1b9do2Dto=;
-        b=UX1WeWMflD9PqTwnc72NRimHsqpu2tYLlBOSZ6GIMqBAI1/CxOjVT29oBAaRzDtKR9
-         UWmXq6Iov8A1cpmV/9buzrglLkZYv1fdiFaQqmB9QTt3K5+5fLCkXq+rCusBkgVIGqxA
-         4bZb9WaObkmp0KL9UWRB/KqEl+O5R4eg1wr9aAryjvyuieIfwOhAF0qWhBVoIRXXPQCh
-         8yZ/t/+wo69Wih7J2Nq4RQPJsfUAE9s4lvSa9AK+uy9qdfsTY0IzkIomzQv5VcHyoM4t
-         gWdf2/1/2gYUAQHZTZcS6O5FB1p36dwTzeLeAdctNq6N/TABCySR1IGjHX9R/Y08Q0sw
-         aCZg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:date:from:in-reply-to:subject:to:cc
-         :content-transfer-encoding;
-        bh=D0sTktuwMzaX1rKRz8yLL+fGIpfvYxfTnd1b9do2Dto=;
-        b=OKgQBYuUsPZPe1LnFqlUJBVGSYp88FGpsvDjduA8FayY1y/8sCt3Ce2kxxO0Csrvc3
-         qVteqJrnU5QQ+r9h95j+IV8L0XLsQAFwGZ8QvLQXXGLrLs8f/IzeCO/gGjrDPaG4/WRH
-         mQrNG2t52fc1pYQuqXfCIjON4+NfKpVnucRoOTwze1uLoaRfeeFhf8oWSydRnumTduHf
-         aC5iYAYJljQUJpyesKKB5mCKevSeHuxSxvteea1a3opAgeAHshgZFxjJ0YpSYS8N4NrO
-         MogTVzSjEMt+mXMjMeEBzdyPgq3QOq9DiI2v2QCtQlNKIdFCB9mvz9GGsl8qRK5rKq99
-         uTFQ==
-X-Gm-Message-State: AOAM533hiWgmQrdRQafGXiFrRhXP2lPg0t0eZzaqzEuzc+cAEGzJ9OJD
-        OFFceby8QbmdkyZlFREoQZku1psDkpDcWHmE+cs=
-X-Google-Smtp-Source: ABdhPJyAiyGF7HUnxXujW8+Z/eB5Z/Ty3s7NmN048xWNMtV35DEBTPftxeChVoAtrc0b1hJlrFAWXg==
-X-Received: by 2002:a63:ae01:: with SMTP id q1mr23011378pgf.216.1622480292278;
-        Mon, 31 May 2021 09:58:12 -0700 (PDT)
-Received: from cl-arch-kdev (cl-arch-kdev.xen.prgmr.com. [2605:2700:0:2:a800:ff:fed6:fc0d])
-        by smtp.gmail.com with ESMTPSA id d131sm11423398pfd.176.2021.05.31.09.58.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 31 May 2021 09:58:11 -0700 (PDT)
-Message-ID: <60b515a3.1c69fb81.6df57.425d@mx.google.com>
-Date:   Mon, 31 May 2021 09:58:11 -0700 (PDT)
-X-Google-Original-Date: Mon, 31 May 2021 16:58:10 GMT
-From:   Fox Chen <foxhlchen@gmail.com>
-In-Reply-To: <20210531130657.971257589@linuxfoundation.org>
-Subject: RE: [PATCH 5.10 000/252] 5.10.42-rc1 review
-To:     linux-kernel@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        f.fainelli@gmail.com, stable@vger.kernel.org,
-        Fox Chen <foxhlchen@gmail.com>
-Content-Transfer-Encoding: 7bit
+        Mon, 31 May 2021 17:43:20 -0400
+Received: from epcas5p1.samsung.com (unknown [182.195.41.39])
+        by mailout4.samsung.com (KnoxPortal) with ESMTP id 20210531214137epoutp04a4f3d2b28c208b9165802d2e14589fdc~ERLI4Ewht2794327943epoutp04T
+        for <linux-kernel@vger.kernel.org>; Mon, 31 May 2021 21:41:37 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout4.samsung.com 20210531214137epoutp04a4f3d2b28c208b9165802d2e14589fdc~ERLI4Ewht2794327943epoutp04T
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1622497298;
+        bh=xbmc5wIqKEfUFYKOhh0IRxmokDrQ20wOpZo1J0r3Shc=;
+        h=From:To:Cc:Subject:Date:References:From;
+        b=TPDvyfE5OSGDa3Vbj0/pMuOMpqk0Ncyq9B8F4o9eStRLJwPQ9kzTx7q2OKQSk8Ten
+         zE+KwSPKFKSFwN8McZNJzCE7ND4RlBeRkY+JVuJVmbiVxCIjBWsaJGxwNjIPBl3u6E
+         M+eAyG4xBBltkYBR6CtZnQEU5wPl11q8Kq9z/MXg=
+Received: from epsmges5p3new.samsung.com (unknown [182.195.42.75]) by
+        epcas5p3.samsung.com (KnoxPortal) with ESMTP id
+        20210531214137epcas5p34f3f64da946ce9aada5fe993a68a2cb4~ERLIXk6c11491014910epcas5p32;
+        Mon, 31 May 2021 21:41:37 +0000 (GMT)
+Received: from epcas5p1.samsung.com ( [182.195.41.39]) by
+        epsmges5p3new.samsung.com (Symantec Messaging Gateway) with SMTP id
+        58.1B.09835.11855B06; Tue,  1 Jun 2021 06:41:37 +0900 (KST)
+Received: from epsmtrp1.samsung.com (unknown [182.195.40.13]) by
+        epcas5p1.samsung.com (KnoxPortal) with ESMTPA id
+        20210531165414epcas5p1aae4ea3815fcbadad8b48a9210742489~ENQN5bgEs1332813328epcas5p1D;
+        Mon, 31 May 2021 16:54:14 +0000 (GMT)
+Received: from epsmgms1p1new.samsung.com (unknown [182.195.42.41]) by
+        epsmtrp1.samsung.com (KnoxPortal) with ESMTP id
+        20210531165414epsmtrp147a9ce6b9a0b4ce0a8bc106fc64e28d9~ENQN4sY-d0730807308epsmtrp1H;
+        Mon, 31 May 2021 16:54:14 +0000 (GMT)
+X-AuditID: b6c32a4b-7dfff7000000266b-05-60b55811a091
+Received: from epsmtip1.samsung.com ( [182.195.34.30]) by
+        epsmgms1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
+        09.FD.08637.6B415B06; Tue,  1 Jun 2021 01:54:14 +0900 (KST)
+Received: from Jaguar.sa.corp.samsungelectronics.net (unknown
+        [107.108.73.139]) by epsmtip1.samsung.com (KnoxPortal) with ESMTPA id
+        20210531165413epsmtip1b7a5b9f88e942d605f0623e41ad1fa9e~ENQM58FSQ2067920679epsmtip1U;
+        Mon, 31 May 2021 16:54:13 +0000 (GMT)
+From:   Alim Akhtar <alim.akhtar@samsung.com>
+To:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        catalin.marinas@arm.com
+Cc:     krzk@kernel.org, linux-samsung-soc@vger.kernel.org,
+        Alim Akhtar <alim.akhtar@samsung.com>
+Subject: [PATCH] arm64: defconfig: Enable Exynos UFS driver
+Date:   Mon, 31 May 2021 22:30:57 +0530
+Message-Id: <20210531170057.7730-1-alim.akhtar@samsung.com>
+X-Mailer: git-send-email 2.17.1
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFjrPIsWRmVeSWpSXmKPExsWy7bCmuq5gxNYEg32PxSwezNvGZvF+WQ+j
+        xfnzG9gtNj2+xmpxedccNosZ5/cxObB5rJm3htFj06pONo/NS+o9+rasYvT4vEkugDWKyyYl
+        NSezLLVI3y6BK+Pw+XVsBX/ZKw7fmcXawPiLrYuRk0NCwERi25kbrF2MXBxCArsZJeZ9b2KE
+        cD4xSlyaeJoZwvnGKPH8621mmJbFp1qZQGwhgb2MEm+bQyGKWpgkDt59AzaXTUBb4u70LWBF
+        IgKJEn8X3mQFsZkF4iVa+1eBxYUFrCV+3FsBNJSDg0VAVWLZJiuQMC9QeOfkF0wQu+QlVm84
+        ALV3GbvEkVniELaLxNl5H6BeEJZ4dXwLO4QtJfGyv40dZKSEQLZEzy5jiHCNxNJ5x1ggbHuJ
+        A1fmsICUMAtoSqzfpQ8RlpWYemodE8SRfBK9v59AXcArsWMejK0q0fzuKtQYaYmJ3d2sELaH
+        xJTtW1ghIRIrcWlxL/MERtlZCBsWMDKuYpRMLSjOTU8tNi0wzkst1ytOzC0uzUvXS87P3cQI
+        jnMt7x2Mjx580DvEyMTBeIhRgoNZSYT3TMXGBCHelMTKqtSi/Pii0pzU4kOM0hwsSuK8Kx5O
+        ThASSE8sSc1OTS1ILYLJMnFwSjUwJfXH/284dXiORNKnjJv1D1PTUu8ujyiTebrSdd+8uknP
+        ys/I1PLrzIlJqutxLNtbcKIitpLL8GvWhr3dp5Z8MeiPSV1y7xAPw44zfY1TJhtvuukr737u
+        tfa1GUuZ9r4+FerzxZNLwGll0LyWe7Fnjz8/dvWB4b0LNoGCzDdUVtzpKbz1xfHglJxLHb/n
+        rc7WVuO8kR+668/j3KNJQg8X+Pz6uOZUCpdP9xd+s/pQhrLWd9+EXLR+Lt6SfPE7m2/3nAR/
+        p12/5md4fha4umPb8Zlv+v5VLVP6d2raWjv3GyHHrcP+WVe8NHySI3Dr4nSvfXNmvGqb8MyI
+        Mf3Agia9uilcz74tNK+awVWh1fdhEacSS3FGoqEWc1FxIgAl1nN2YgMAAA==
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFvrOJMWRmVeSWpSXmKPExsWy7bCSnO42ka0JBqsWals8mLeNzeL9sh5G
+        i/PnN7BbbHp8jdXi8q45bBYzzu9jcmDzWDNvDaPHplWdbB6bl9R79G1ZxejxeZNcAGsUl01K
+        ak5mWWqRvl0CV8bh8+vYCv6yVxy+M4u1gfEXWxcjJ4eEgInE4lOtTF2MXBxCArsZJY41XmSG
+        SEhLXN84gR3CFpZY+e85mC0k0MQkceShBYjNJqAtcXf6FiYQW0QgWaJr3Ucwm1kgUeLu05ks
+        ILawgLXEj3srgGZycLAIqEos22QFEuYFCu+c/IIJYry8xOoNB5gnMPIsYGRYxSiZWlCcm55b
+        bFhgmJdarlecmFtcmpeul5yfu4kRHDZamjsYt6/6oHeIkYmD8RCjBAezkgjvmYqNCUK8KYmV
+        ValF+fFFpTmpxYcYpTlYlMR5L3SdjBcSSE8sSc1OTS1ILYLJMnFwSjUwHc25c3D7pBObcw+8
+        8L23iSH178+KgAncikuSZXiv3YvRFOewD553dr5ozTU7/ZayC0vCQvMv7p1Vd3zxdYVSj8It
+        elouogwx3den8wbbuKns5Nxxr4jn3sHfps53NNqDwpiOnIh8cHpN5bG/kpK5X/QuH/weZbV7
+        5tXlVw/9D/ui3rsgKkA07HKRD5erf7k+c+Pewi0Grw5JHc37OcG4zsQ9UWvyrtS9astvzvc5
+        mJ/jMSPnVr25xS91RSOztYotdeGOh05tUL56kU87UWbl/suPQgWqhGtCJX8Uv+560flb4qH7
+        jZrmq1Hp9y3eM8U9zJ77u6xs2o1XTDaSNkI/uMWnXCg24L+U7uqndF9YiaU4I9FQi7moOBEA
+        pDeUAIoCAAA=
+X-CMS-MailID: 20210531165414epcas5p1aae4ea3815fcbadad8b48a9210742489
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-Sendblock-Type: REQ_APPROVE
+CMS-TYPE: 105P
+X-CMS-RootMailID: 20210531165414epcas5p1aae4ea3815fcbadad8b48a9210742489
+References: <CGME20210531165414epcas5p1aae4ea3815fcbadad8b48a9210742489@epcas5p1.samsung.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 31 May 2021 15:11:05 +0200, Greg Kroah-Hartman <gregkh@linuxfoundation.org> wrote:
-> This is the start of the stable review cycle for the 5.10.42 release.
-> There are 252 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Wed, 02 Jun 2021 13:06:20 +0000.
-> Anything received after that time might be too late.
-> 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.10.42-rc1.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.10.y
-> and the diffstat can be found below.
-> 
-> thanks,
-> 
-> greg k-h
-> 
+Enable the Exynos UFS controller and PHY configs. They need to be
+buildin to ensure UFS devices gets detected on exynos7 and its
+variant boards.
 
-5.10.42-rc1 Successfully Compiled and booted on my Raspberry PI 4b (8g) (bcm2711)
-                
-Tested-by: Fox Chen <foxhlchen@gmail.com>
+Signed-off-by: Alim Akhtar <alim.akhtar@samsung.com>
+---
+ arch/arm64/configs/defconfig | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/arch/arm64/configs/defconfig b/arch/arm64/configs/defconfig
+index 08c6f769df9a..f9938e0eb720 100644
+--- a/arch/arm64/configs/defconfig
++++ b/arch/arm64/configs/defconfig
+@@ -289,6 +289,7 @@ CONFIG_SCSI_UFSHCD=y
+ CONFIG_SCSI_UFSHCD_PLATFORM=y
+ CONFIG_SCSI_UFS_QCOM=m
+ CONFIG_SCSI_UFS_HISI=y
++CONFIG_SCSI_UFS_EXYNOS=y
+ CONFIG_ATA=y
+ CONFIG_SATA_AHCI=y
+ CONFIG_SATA_AHCI_PLATFORM=y
+@@ -1110,6 +1111,7 @@ CONFIG_PHY_ROCKCHIP_INNO_USB2=y
+ CONFIG_PHY_ROCKCHIP_INNO_DSIDPHY=m
+ CONFIG_PHY_ROCKCHIP_PCIE=m
+ CONFIG_PHY_ROCKCHIP_TYPEC=y
++CONFIG_PHY_SAMSUNG_UFS=y
+ CONFIG_PHY_UNIPHIER_USB2=y
+ CONFIG_PHY_UNIPHIER_USB3=y
+ CONFIG_PHY_TEGRA_XUSB=y
+
+base-commit: c4681547bcce777daf576925a966ffa824edd09d
+-- 
+2.17.1
 
