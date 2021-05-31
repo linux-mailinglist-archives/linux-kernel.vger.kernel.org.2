@@ -2,35 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E816395E85
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 15:58:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C6733963D2
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 17:34:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232408AbhEaN7z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 09:59:55 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43906 "EHLO mail.kernel.org"
+        id S234457AbhEaPfv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 11:35:51 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47640 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232673AbhEaNjN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 09:39:13 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 71C1561407;
-        Mon, 31 May 2021 13:26:53 +0000 (UTC)
+        id S233635AbhEaOV1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 10:21:27 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 56A16619B5;
+        Mon, 31 May 2021 13:44:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1622467614;
-        bh=wxVFKMFiDRJXDXWt/Voc6UmEZANj90GOwxSpSjYcKKg=;
+        s=korg; t=1622468678;
+        bh=KHU6nK91ps5fgJ0M+8gUgacb8bal347koAIiWci8V5k=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=TmubtRvqo+nda+dJrLQau16B7UJDW+5p0LG3Fah2fb0nKqIMdYyho2B/5dK7zrn6E
-         f0iUngdYJjsg2rKl7WpM/lR/4D6M/5Dyhv1hH1Otbho6xgDNXdVNzOFXiPSb9QS67j
-         Od0oL+b0n1j9Jr15y2AYEpUXWug5Wiam29oVgbJY=
+        b=s7TZu4/qAOymrqL9Ltq6xzAk9h+QlcCwF7iEKYcwlZkRbrKCxZzL101IW/EFpPgkS
+         IkIOv/fLvvzGqBnh+B5snC+3vxQQ8LEJUueQ3PK1SCwKaHle50mmEat1kPU8O7cgad
+         RwQtlhEbbuHty7b3VuGpddHJyFMzy2zbHYG1GaKk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Mathy Vanhoef <Mathy.Vanhoef@kuleuven.be>,
-        Johannes Berg <johannes.berg@intel.com>
-Subject: [PATCH 4.14 15/79] cfg80211: mitigate A-MSDU aggregation attacks
+        stable@vger.kernel.org,
+        syzbot+b4d3fd1dfd53e90afd79@syzkaller.appspotmail.com,
+        Jean Delvare <jdelvare@suse.de>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Jarkko Nikula <jarkko.nikula@linux.intel.com>,
+        Wolfram Sang <wsa@kernel.org>
+Subject: [PATCH 5.4 083/177] i2c: i801: Dont generate an interrupt on bus reset
 Date:   Mon, 31 May 2021 15:14:00 +0200
-Message-Id: <20210531130636.493906497@linuxfoundation.org>
+Message-Id: <20210531130650.769485625@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210531130636.002722319@linuxfoundation.org>
-References: <20210531130636.002722319@linuxfoundation.org>
+In-Reply-To: <20210531130647.887605866@linuxfoundation.org>
+References: <20210531130647.887605866@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,49 +43,56 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mathy Vanhoef <Mathy.Vanhoef@kuleuven.be>
+From: Jean Delvare <jdelvare@suse.de>
 
-commit 2b8a1fee3488c602aca8bea004a087e60806a5cf upstream.
+commit e4d8716c3dcec47f1557024add24e1f3c09eb24b upstream.
 
-Mitigate A-MSDU injection attacks (CVE-2020-24588) by detecting if the
-destination address of a subframe equals an RFC1042 (i.e., LLC/SNAP)
-header, and if so dropping the complete A-MSDU frame. This mitigates
-known attacks, although new (unknown) aggregation-based attacks may
-remain possible.
+Now that the i2c-i801 driver supports interrupts, setting the KILL bit
+in a attempt to recover from a timed out transaction triggers an
+interrupt. Unfortunately, the interrupt handler (i801_isr) is not
+prepared for this situation and will try to process the interrupt as
+if it was signaling the end of a successful transaction. In the case
+of a block transaction, this can result in an out-of-range memory
+access.
 
-This defense works because in A-MSDU aggregation injection attacks, a
-normal encrypted Wi-Fi frame is turned into an A-MSDU frame. This means
-the first 6 bytes of the first A-MSDU subframe correspond to an RFC1042
-header. In other words, the destination MAC address of the first A-MSDU
-subframe contains the start of an RFC1042 header during an aggregation
-attack. We can detect this and thereby prevent this specific attack.
-For details, see Section 7.2 of "Fragment and Forge: Breaking Wi-Fi
-Through Frame Aggregation and Fragmentation".
+This condition was reproduced several times by syzbot:
+https://syzkaller.appspot.com/bug?extid=ed71512d469895b5b34e
+https://syzkaller.appspot.com/bug?extid=8c8dedc0ba9e03f6c79e
+https://syzkaller.appspot.com/bug?extid=c8ff0b6d6c73d81b610e
+https://syzkaller.appspot.com/bug?extid=33f6c360821c399d69eb
+https://syzkaller.appspot.com/bug?extid=be15dc0b1933f04b043a
+https://syzkaller.appspot.com/bug?extid=b4d3fd1dfd53e90afd79
 
-Note that for kernel 4.9 and above this patch depends on "mac80211:
-properly handle A-MSDUs that start with a rfc1042 header". Otherwise
-this patch has no impact and attacks will remain possible.
+So disable interrupts while trying to reset the bus. Interrupts will
+be enabled again for the following transaction.
 
-Cc: stable@vger.kernel.org
-Signed-off-by: Mathy Vanhoef <Mathy.Vanhoef@kuleuven.be>
-Link: https://lore.kernel.org/r/20210511200110.25d93176ddaf.I9e265b597f2cd23eb44573f35b625947b386a9de@changeid
-Signed-off-by: Johannes Berg <johannes.berg@intel.com>
+Fixes: 636752bcb517 ("i2c-i801: Enable IRQ for SMBus transactions")
+Reported-by: syzbot+b4d3fd1dfd53e90afd79@syzkaller.appspotmail.com
+Signed-off-by: Jean Delvare <jdelvare@suse.de>
+Acked-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc: Jarkko Nikula <jarkko.nikula@linux.intel.com>
+Tested-by: Jarkko Nikula <jarkko.nikula@linux.intel.com>
+Signed-off-by: Wolfram Sang <wsa@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- net/wireless/util.c |    3 +++
- 1 file changed, 3 insertions(+)
+ drivers/i2c/busses/i2c-i801.c |    6 ++----
+ 1 file changed, 2 insertions(+), 4 deletions(-)
 
---- a/net/wireless/util.c
-+++ b/net/wireless/util.c
-@@ -767,6 +767,9 @@ void ieee80211_amsdu_to_8023s(struct sk_
- 		remaining = skb->len - offset;
- 		if (subframe_len > remaining)
- 			goto purge;
-+		/* mitigate A-MSDU aggregation injection attacks */
-+		if (ether_addr_equal(eth.h_dest, rfc1042_header))
-+			goto purge;
+--- a/drivers/i2c/busses/i2c-i801.c
++++ b/drivers/i2c/busses/i2c-i801.c
+@@ -379,11 +379,9 @@ static int i801_check_post(struct i801_p
+ 		dev_err(&priv->pci_dev->dev, "Transaction timeout\n");
+ 		/* try to stop the current command */
+ 		dev_dbg(&priv->pci_dev->dev, "Terminating the current operation\n");
+-		outb_p(inb_p(SMBHSTCNT(priv)) | SMBHSTCNT_KILL,
+-		       SMBHSTCNT(priv));
++		outb_p(SMBHSTCNT_KILL, SMBHSTCNT(priv));
+ 		usleep_range(1000, 2000);
+-		outb_p(inb_p(SMBHSTCNT(priv)) & (~SMBHSTCNT_KILL),
+-		       SMBHSTCNT(priv));
++		outb_p(0, SMBHSTCNT(priv));
  
- 		offset += sizeof(struct ethhdr);
- 		last = remaining <= subframe_len + padding;
+ 		/* Check if it worked */
+ 		status = inb_p(SMBHSTSTS(priv));
 
 
