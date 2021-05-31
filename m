@@ -2,86 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 03A3F3958CC
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 12:17:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 812143958D8
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 12:17:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231192AbhEaKSi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 06:18:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43776 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230518AbhEaKSg (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 06:18:36 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E718FC061574
-        for <linux-kernel@vger.kernel.org>; Mon, 31 May 2021 03:16:56 -0700 (PDT)
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1622456214;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=XP/7cHDjM7AcyJT0WqOBpKhECSitGh7KPRl8GthYiCA=;
-        b=0/Aob5Vgmmyc+nNO0ibkrtD6SKUV81urd1poAdJQq0E6QgJ7IVTVBzz2oALXMcMyDUVv/3
-        eFRmkmF8eXTZdi6qd+pzWmlqdKp0KEOOOdr4o6sp7VdtidOo1wmQk9QWhTaTs+cRxlY3OJ
-        k4iR54Z0HZT2rXBBXA+d5kGL4JltZBixqCoWufgxLa65muWnoGY/xD3XO5InjUk/e42a/Y
-        ROVPWmHYgTQn9vEDwbZbY5K6/EsHGuwsAwUvEeCtaZDyUSl06Zsiny4Hu1g4uadYFdCHHz
-        pjT2nh3GwdgQX5de/TA33ooJ/Om0a15zzvLheuyWAfs0HCRigYBvtf2xISt7EQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1622456214;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=XP/7cHDjM7AcyJT0WqOBpKhECSitGh7KPRl8GthYiCA=;
-        b=2TcAlmkjnAj+YI85xX7piawpzztpkiaVA21gzmInASwrMGzjuHy8XqP/zXThQejPR+9L22
-        SBeOo3NY5dLL9BBg==
-To:     Borislav Petkov <bp@alien8.de>
-Cc:     Fenghua Yu <fenghua.yu@intel.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        x86 <x86@kernel.org>, iommu@lists.linux-foundation.org,
-        Ingo Molnar <mingo@redhat.com>, H Peter Anvin <hpa@zytor.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        Christoph Hellwig <hch@infradead.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        David Woodhouse <dwmw2@infradead.org>,
-        Lu Baolu <baolu.lu@linux.intel.com>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Ashok Raj <ashok.raj@intel.com>,
-        Jacob Jun Pan <jacob.jun.pan@intel.com>,
-        Dave Jiang <dave.jiang@intel.com>,
-        Sohil Mehta <sohil.mehta@intel.com>,
-        Ravi V Shankar <ravi.v.shankar@intel.com>
-Subject: Re: [PATCH] x86/cpufeatures: Force disable X86_FEATURE_ENQCMD and remove update_pasid()
-In-Reply-To: <YLShmFEzddfm7WQs@zn.tnic>
-References: <1600187413-163670-1-git-send-email-fenghua.yu@intel.com> <1600187413-163670-10-git-send-email-fenghua.yu@intel.com> <87mtsd6gr9.ffs@nanos.tec.linutronix.de> <YLShmFEzddfm7WQs@zn.tnic>
-Date:   Mon, 31 May 2021 12:16:54 +0200
-Message-ID: <87y2bv438p.ffs@nanos.tec.linutronix.de>
+        id S231328AbhEaKTc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 06:19:32 -0400
+Received: from gofer.mess.org ([88.97.38.141]:58109 "EHLO gofer.mess.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231320AbhEaKTG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 06:19:06 -0400
+Received: by gofer.mess.org (Postfix, from userid 1000)
+        id 78152C65C0; Mon, 31 May 2021 11:17:25 +0100 (BST)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=mess.org; s=2020;
+        t=1622456245; bh=bf7SEBXgrhjrigUxjJ91LJdvxUVGe/MCLngjuc5WRjQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=JBqh+wd0FoIg3SiUDHDd0iS2SLG0rZ9NG8unWUXOyBGBef13lK68A+BydCbf3AqDs
+         Gdx0kyVVmniB1L5NflJimiE0DYQ7LD6D5SexZyQnXljuLjmAe/rstd7spN7SRstbGA
+         UJyNSnqAJvUByN9MH6SY5Yp1R5bV2FdVdV5OhlTqAj/QGSoeX7/7KIQR7bus+S4yFt
+         PEfKvo6Vi8gQtnyLEBbZjqdVCbMplyrmtSb9AydSG99XkclUOePJlJV62EY1t5MPvd
+         I7Z0SLHO1E3Oo0p3ON/9uqJBknO1CLX3/Z9Dp5gcSJ0om2pexLxXAf8eLHqe9koCv3
+         n3Y2+J2/FB/TA==
+Date:   Mon, 31 May 2021 11:17:25 +0100
+From:   Sean Young <sean@mess.org>
+To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Cc:     Yasunari.Takiguchi@sony.com, mchehab@kernel.org,
+        narmstrong@baylibre.com, linux-media@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
+Subject: Re: [PATCH 1/2] media: cxd2880-spi: Fix an error handling path
+Message-ID: <20210531101725.GB30390@gofer.mess.org>
+References: <28a115d7207b258715a029f822ab88f7a4ee05e6.1621599392.git.christophe.jaillet@wanadoo.fr>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <28a115d7207b258715a029f822ab88f7a4ee05e6.1621599392.git.christophe.jaillet@wanadoo.fr>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 31 2021 at 10:43, Borislav Petkov wrote:
-> On Sat, May 29, 2021 at 11:17:30AM +0200, Thomas Gleixner wrote:
->> #2 is broken beyond repair. The comment in the code claims that it is safe
->>    to invoke this in an IPI, but that's just wishful thinking.
->> 
->>    FPU state of a running task is protected by fregs_lock() which is
->>    nothing else than a local_bh_disable(). As BH disabled regions run
->>    usually with interrupts enabled the IPI can hit a code section which
->>    modifies FPU state and there is absolutely no guarantee that any of the
->>    assumptions which are made for the IPI case is true.
->
-> ... so on a PASID system, your trivial reproducer would theoretically
-> fire the same way and corrupt FPU state just as well.
+On Fri, May 21, 2021 at 02:18:14PM +0200, Christophe JAILLET wrote:
+> If an error occurs after a successful 'regulator_enable()' call,
+> 'regulator_disable()' must be called.
+> 
+> Fix the error handling path of the probe accordingly.
+> 
+> Fixes: cb496cd472af ("media: cxd2880-spi: Add optional vcc regulator")
+> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+> ---
+>  drivers/media/spi/cxd2880-spi.c | 7 +++++--
+>  1 file changed, 5 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/media/spi/cxd2880-spi.c b/drivers/media/spi/cxd2880-spi.c
+> index 931ec0727cd3..df1335e7061c 100644
+> --- a/drivers/media/spi/cxd2880-spi.c
+> +++ b/drivers/media/spi/cxd2880-spi.c
+> @@ -524,13 +524,13 @@ cxd2880_spi_probe(struct spi_device *spi)
+>  	if (IS_ERR(dvb_spi->vcc_supply)) {
+>  		if (PTR_ERR(dvb_spi->vcc_supply) == -EPROBE_DEFER) {
+>  			ret = -EPROBE_DEFER;
+> -			goto fail_adapter;
+> +			goto fail_regulator;
+>  		}
+>  		dvb_spi->vcc_supply = NULL;
 
-This is worse and you can't selftest it because the IPI can just hit in
-the middle of _any_ FPU state operation and corrupt state.
+vcc_supply is set to null in this path.
 
-Thanks,
+>  	} else {
+>  		ret = regulator_enable(dvb_spi->vcc_supply);
+>  		if (ret)
+> -			goto fail_adapter;
+> +			goto fail_regulator;
+>  	}
+>  
+>  	dvb_spi->spi = spi;
+> @@ -618,6 +618,9 @@ cxd2880_spi_probe(struct spi_device *spi)
+>  fail_attach:
+>  	dvb_unregister_adapter(&dvb_spi->adapter);
+>  fail_adapter:
+> +	if (!IS_ERR(dvb_spi->vcc_supply))
+> +		regulator_disable(dvb_spi->vcc_supply);
 
-        tglx
+IS_ERR(NULL) -> false
+regulator_disable will dereference a null pointer.
+
+
+Sean
+
+> +fail_regulator:
+>  	kfree(dvb_spi);
+>  	return ret;
+>  }
+> -- 
+> 2.30.2
