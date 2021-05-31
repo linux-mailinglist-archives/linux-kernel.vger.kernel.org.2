@@ -2,191 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 12FB0396048
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 16:22:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 829DE396495
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 18:03:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233811AbhEaOXu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 10:23:50 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:54528 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233195AbhEaNuT (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 09:50:19 -0400
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1622468916;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=vUGnwmNIvLYO/jZ5MAEgJ5Gavah59hCALFrOBiJoZqI=;
-        b=Z9KFwG7pRRZTRDn0/yTIkCk9q+AizJzq2LyjzGLBFpSyLxKBZuuhN2M73ceeyXTPlJWzeQ
-        lSfO6N+k0zcBuVgJ1gNI6K8t2HPwka5ESixWVIgQzyuNZ1fbe21Z8tSIyyNqqCYgMdvW+a
-        7MmclI3U4Id1O3kG7+na7hv7ZOMZfOHkr4i+DbSkpSrRa08W3Gbfasvvg+g88jbt5zP0ov
-        Zjuc6HnwJZEj58hcv+cDIU99tqlh4ygJnq38wlsvbayXDazUNEs2OD6sQcZTtvBBzvvqih
-        i5xhMdu/0UR2cJ3NWKtdpR8IAO5B9MiIwhv3KleTOBlJAsrZLtNTnuQuhwjl8w==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1622468916;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=vUGnwmNIvLYO/jZ5MAEgJ5Gavah59hCALFrOBiJoZqI=;
-        b=fgBGrA82NlpiLod1V6elErM0dmOfr/lrDI4kEcD/i/R1ygN4NRQgHy2v0vh2DtzGY5+WTM
-        0It9FDPY2Rf+WTBw==
-To:     Dave Jiang <dave.jiang@intel.com>, alex.williamson@redhat.com,
-        kwankhede@nvidia.com, vkoul@kernel.org, jgg@mellanox.com
-Cc:     Jason Gunthorpe <jgg@nvidia.com>, megha.dey@intel.com,
-        jacob.jun.pan@intel.com, ashok.raj@intel.com, yi.l.liu@intel.com,
-        baolu.lu@intel.com, kevin.tian@intel.com, sanjay.k.kumar@intel.com,
-        tony.luck@intel.com, dan.j.williams@intel.com,
-        eric.auger@redhat.com, pbonzini@redhat.com,
-        dmaengine@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org
-Subject: Re: [PATCH v6 05/20] vfio: mdev: common lib code for setting up Interrupt Message Store
-In-Reply-To: <162164277624.261970.7989190254803052804.stgit@djiang5-desk3.ch.intel.com>
-References: <162164243591.261970.3439987543338120797.stgit@djiang5-desk3.ch.intel.com> <162164277624.261970.7989190254803052804.stgit@djiang5-desk3.ch.intel.com>
-Date:   Mon, 31 May 2021 15:48:35 +0200
-Message-ID: <87pmx73tfw.ffs@nanos.tec.linutronix.de>
+        id S234623AbhEaQEr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 12:04:47 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60974 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233071AbhEaOfK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 10:35:10 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2EC2361C49;
+        Mon, 31 May 2021 13:50:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1622469044;
+        bh=2hB1FM6ZqXS6rP1wgN1/iBHGjsSsIUt5rITLK+PQftg=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=EBJSJzAVAAqwPHVXZpQxMRb+PDJc5H8rfzRyAamo/3Fb+2jxnnrwMJfviLoCWSsPj
+         nAe1YvlbFeZ/MqcLd5mK5UeWno51r3CNGyFzlAkpJ1F1wo8Wt/2nVeKUU18VzEyl4O
+         bgb+obacin2M8crnRRger0lHvz2NcvQvbEfeZNPU5upgmaN4/QNlQ8+PgULWX+dj8b
+         YTIOrYiXArammEpBto6ouJS8g/4kbO1wxAkSiBFX0tNbGfAWo5xrGfibD/ofYrYl6G
+         pXUwATwqzwEqjmKnJa5yrEV6n+mkGkr0IBha2NM6LGwNvjLm4uj7Roi8GwI1BgSBjz
+         tX/mgynY6SvGw==
+Received: by pali.im (Postfix)
+        id B7C04B84; Mon, 31 May 2021 15:50:41 +0200 (CEST)
+Date:   Mon, 31 May 2021 15:50:41 +0200
+From:   Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>
+To:     Sergio Paracuellos <sergio.paracuellos@gmail.com>
+Cc:     "open list:MIPS" <linux-mips@vger.kernel.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        John Crispin <john@phrozen.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        linux-staging@lists.linux.dev,
+        Greg KH <gregkh@linuxfoundation.org>,
+        NeilBrown <neil@brown.name>,
+        Ilya Lipnitskiy <ilya.lipnitskiy@gmail.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        linux-pci@vger.kernel.org
+Subject: Re: [PATCH 2/4] MIPS: pci: Add driver for MT7621 PCIe controller
+Message-ID: <20210531135041.42ovpmbwuc3yfkaw@pali>
+References: <20210515124055.22225-1-sergio.paracuellos@gmail.com>
+ <20210515124055.22225-3-sergio.paracuellos@gmail.com>
+ <20210531131431.bzsvmefqdyawmeo2@pali>
+ <CAMhs-H80=7jctPT70rOmcwcqPw+9iUF84_ZCgGr-TKwJ4eB2Lg@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAMhs-H80=7jctPT70rOmcwcqPw+9iUF84_ZCgGr-TKwJ4eB2Lg@mail.gmail.com>
+User-Agent: NeoMutt/20180716
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 21 2021 at 17:19, Dave Jiang wrote:
-> Add common helper code to setup IMS once the MSI domain has been
-> setup by the device driver. The main helper function is
-> mdev_ims_set_msix_trigger() that is called by the VFIO ioctl
-> VFIO_DEVICE_SET_IRQS. The function deals with the setup and
-> teardown of emulated and IMS backed eventfd that gets exported
-> to the guest kernel via VFIO as MSIX vectors.
+On Monday 31 May 2021 15:39:55 Sergio Paracuellos wrote:
+> Hi Pali,
+> 
+> Thanks for your comments.
+> 
+> On Mon, May 31, 2021 at 3:14 PM Pali Rohár <pali@kernel.org> wrote:
+> >
+> > On Saturday 15 May 2021 14:40:53 Sergio Paracuellos wrote:
+> > > This patch adds a driver for the PCIe controller of MT7621 SoC.
+> > >
+> > > Signed-off-by: Sergio Paracuellos <sergio.paracuellos@gmail.com>
+> > > ---
+> > >  arch/mips/pci/Makefile     |   1 +
+> > >  arch/mips/pci/pci-mt7621.c | 624 +++++++++++++++++++++++++++++++++++++
+> > >  arch/mips/ralink/Kconfig   |   9 +-
+> > >  3 files changed, 633 insertions(+), 1 deletion(-)
+> > >  create mode 100644 arch/mips/pci/pci-mt7621.c
+> > >
+> > > diff --git a/arch/mips/pci/Makefile b/arch/mips/pci/Makefile
+> > > index f3eecc065e5c..178c550739c4 100644
+> > > --- a/arch/mips/pci/Makefile
+> > > +++ b/arch/mips/pci/Makefile
+> > > @@ -24,6 +24,7 @@ obj-$(CONFIG_PCI_AR2315)    += pci-ar2315.o
+> > >  obj-$(CONFIG_SOC_AR71XX)     += pci-ar71xx.o
+> > >  obj-$(CONFIG_PCI_AR724X)     += pci-ar724x.o
+> > >  obj-$(CONFIG_PCI_XTALK_BRIDGE)       += pci-xtalk-bridge.o
+> > > +obj-$(CONFIG_PCI_MT7621)     += pci-mt7621.o
+> > >  #
+> > >  # These are still pretty much in the old state, watch, go blind.
+> > >  #
+> > > diff --git a/arch/mips/pci/pci-mt7621.c b/arch/mips/pci/pci-mt7621.c
+> > > new file mode 100644
+> > > index 000000000000..fe1945819d25
+> > > --- /dev/null
+> > > +++ b/arch/mips/pci/pci-mt7621.c
+> > ...
+> > > +static int mt7621_pcie_enable_ports(struct mt7621_pcie *pcie)
+> > > +{
+> > > +     struct device *dev = pcie->dev;
+> > > +     struct mt7621_pcie_port *port;
+> > > +     u8 num_slots_enabled = 0;
+> > > +     u32 slot;
+> > > +     u32 val;
+> > > +     int err;
+> > > +
+> > > +     /* Setup MEMWIN and IOWIN */
+> > > +     pcie_write(pcie, 0xffffffff, RALINK_PCI_MEMBASE);
+> > > +     pcie_write(pcie, pcie->io.start, RALINK_PCI_IOBASE);
+> > > +
+> > > +     list_for_each_entry(port, &pcie->ports, list) {
+> > > +             if (port->enabled) {
+> > > +                     err = clk_prepare_enable(port->clk);
+> > > +                     if (err) {
+> > > +                             dev_err(dev, "enabling clk pcie%d\n", slot);
+> > > +                             return err;
+> > > +                     }
+> > > +
+> > > +                     mt7621_pcie_enable_port(port);
+> > > +                     dev_info(dev, "PCIE%d enabled\n", port->slot);
+> > > +                     num_slots_enabled++;
+> > > +             }
+> > > +     }
+> > > +
+> > > +     for (slot = 0; slot < num_slots_enabled; slot++) {
+> > > +             val = read_config(pcie, slot, PCI_COMMAND);
+> > > +             val |= PCI_COMMAND_MASTER;
+> > > +             write_config(pcie, slot, PCI_COMMAND, val);
+> >
+> > Hello! Is this part of code correct? Because it looks strange if PCIe
+> > controller driver automatically enables PCI bus mastering, prior device
+> > driver initialize itself.
+> >
+> > Moreover kernel has already function pci_set_master() for this purpose
+> > which is used by device drivers.
+> >
+> > So I think this code can confuse some device drivers...
+> 
+> I agree that we have pci_set_master() to be used in pci device driver
+> code. Original controller driver set this bit for enabled slots. Since
+> there is no documentation at all for the PCI in this SoC
 
-So this talks about IMS, but the functionality is all named mdev_msix*
-and mdev_irqs*. Confused.
+I see... this is really a big problem to do any driver development...
 
-> +/*
-> + * Mediate device IMS library code
+> I have
+> maintained the setting in the driver in a cleaner way. See original
+> driver code and the setting here [0]. There is no other reason than
+> that. I am ok with removing this from here and testing with my two
+> devices that everything is still ok if having this setting in the pci
+> controller driver is a real problem.
 
-Mediated?
+You can run lspci -nnvv with and without PCI_COMMAND_MASTER code and
+then compare outputs.
 
-> +static int mdev_msix_set_vector_signal(struct mdev_irq *mdev_irq, int vector, int fd)
-> +{
-> +	int rc, irq;
-> +	struct mdev_device *mdev = irq_to_mdev(mdev_irq);
-> +	struct mdev_irq_entry *entry;
-> +	struct device *dev = &mdev->dev;
-> +	struct eventfd_ctx *trigger;
-> +	char *name;
-> +	bool pasid_en;
-> +	u32 auxval;
-> +
-> +	if (vector < 0 || vector >= mdev_irq->num)
-> +		return -EINVAL;
-> +
-> +	entry = &mdev_irq->irq_entries[vector];
-> +
-> +	if (entry->ims)
-> +		irq = dev_msi_irq_vector(dev, entry->ims_id);
-> +	else
-> +		irq = 0;
+Device drivers for sure enable PCI_COMMAND_MASTER at the time when it is
+needed, so it is possible that there would be no difference in lspci
+output.
 
-I have no idea what this does. Comments are overrated...
-
-Aside of that dev_msi_irq_vector() seems to be a gross misnomer. AFAICT
-it retrieves the Linux interrupt number and not some vector.
-
-> +	pasid_en = mdev_irq->pasid != INVALID_IOASID ? true : false;
-> +
-> +	/* IMS and invalid pasid is not a valid configuration */
-> +	if (entry->ims && !pasid_en)
-> +		return -EINVAL;
-
-Why is this not validated already?
-
-> +	if (entry->trigger) {
-> +		if (irq) {
-> +			irq_bypass_unregister_producer(&entry->producer);
-> +			free_irq(irq, entry->trigger);
-> +			if (pasid_en) {
-> +				auxval = ims_ctrl_pasid_aux(0, false);
-> +				irq_set_auxdata(irq, IMS_AUXDATA_CONTROL_WORD, auxval);
-
-Why can't this be done in the irq chip when the interrupt is torn down?
-Just because the irq chip driver, which is thankfully not merged yet,
-has been implemented that way?
-
-I did this aux dance because someone explained to me that this has to be
-handled seperately and has to be changed independent of all the
-interrupt setup and whatever. But looking at the actual usage now that's
-clearly not the case.
-
-What's the exact order of all this? I assume so:
-
-    1) mdev_irqs_init()
-    2) mdev_irqs_set_pasid()
-    3) mdev_set_msix_trigger()
-
-Right? See below.
-
-> +}
-> +EXPORT_SYMBOL_GPL(mdev_irqs_set_pasid);
-
-> +	if (fd < 0)
-> +		return 0;
-> +
-> +	name = kasprintf(GFP_KERNEL, "vfio-mdev-irq[%d](%s)", vector, dev_name(dev));
-> +	if (!name)
-> +		return -ENOMEM;
-> +
-> +	trigger = eventfd_ctx_fdget(fd);
-> +	if (IS_ERR(trigger)) {
-> +		kfree(name);
-> +		return PTR_ERR(trigger);
-> +	}
-> +
-> +	entry->name = name;
-> +	entry->trigger = trigger;
-> +
-> +	if (!irq)
-> +		return 0;
-
-These exit conditions are completely confusing.
-
-> +	if (pasid_en) {
-> +		auxval = ims_ctrl_pasid_aux(mdev_irq->pasid, true);
-> +		rc = irq_set_auxdata(irq, IMS_AUXDATA_CONTROL_WORD, auxval);
-> +		if (rc < 0)
-> +			goto err;
-
-Again. This can be handled in the interrupt chip when the interrupt is
-set up through request_irq().
-
-> +static int mdev_msix_enable(struct mdev_irq *mdev_irq, int nvec)
-> +{
-> +	struct mdev_device *mdev = irq_to_mdev(mdev_irq);
-> +	struct device *dev;
-> +	int rc;
-> +
-> +	if (nvec != mdev_irq->num)
-> +		return -EINVAL;
-> +
-> +	if (mdev_irq->ims_num) {
-> +		dev = &mdev->dev;
-> +		rc = msi_domain_alloc_irqs(dev_get_msi_domain(dev), dev, mdev_irq->ims_num);
-
-The allocation of the interrupts happens _after_ PASID has been
-set and PASID is per device, right?
-
-So the obvious place to store PASID is in struct device because the
-device pointer is for one stored in the msi entry descriptor and it is
-also handed down to the irq domain allocation function. So this can be
-checked at allocation time already.
-
-What's unclear to me is under which circumstances does the IMS interrupt
-require a PASID.
-
-   1) Always
-   2) Use case dependent
-
-Thanks,
-
-        tglx
+> [0]: https://git.kernel.org/pub/scm/linux/kernel/git/gregkh/staging.git/tree/drivers/staging/mt7621-pci/pci-mt7621.c?h=v4.18#n676
+> 
+> Best regards,
+>     Sergio Paracuellos
+> >
+> > > +             /* configure RC FTS number to 250 when it leaves L0s */
+> > > +             val = read_config(pcie, slot, PCIE_FTS_NUM);
+> > > +             val &= ~PCIE_FTS_NUM_MASK;
+> > > +             val |= PCIE_FTS_NUM_L0(0x50);
+> > > +             write_config(pcie, slot, PCIE_FTS_NUM, val);
+> > > +     }
+> > > +
+> > > +     return 0;
+> > > +}
