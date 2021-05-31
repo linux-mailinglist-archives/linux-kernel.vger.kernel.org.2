@@ -2,36 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 400FA3963FF
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 17:41:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5418F395E08
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 15:51:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231483AbhEaPn0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 11:43:26 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47634 "EHLO mail.kernel.org"
+        id S231819AbhEaNxX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 09:53:23 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39364 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232167AbhEaOYG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 10:24:06 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D331A61428;
-        Mon, 31 May 2021 13:46:06 +0000 (UTC)
+        id S232069AbhEaNfs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 09:35:48 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CF76461441;
+        Mon, 31 May 2021 13:25:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1622468767;
-        bh=W4hzXqoHG/3EjJjFlzLnc/9WzCpZO4RrGgLy7YdQrX8=;
+        s=korg; t=1622467534;
+        bh=4wBO4HH5W5Gu4Lso9HS7zxZEbBiamO6rRNPgJ3RIF9E=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=fjArtL8cRzgQ7b3JJFt9Wal95lp1SbGjRKsFNEmkBFHGCefJPAH8NQDzn7mwkJMwi
-         fuOMCoROdKy8FFEDz+197WfCWtY7p9Vdm436I2S/rMSGYd2JQpupGXd9qRAGfzK954
-         HidsQxF4MjULukjQnfG1pnm+amoSyYK0NGOFHaU8=
+        b=JiEcqqlOHzaRP1N4e+Wtk1PZHNtFo53LVNb74nCFvuzCzMbt3IYVp/BF7Q5jX/PMS
+         KksA+AR4hsawQezGV6XuKQXjaQkaieTGriiW7zixQBHfKGc9l4EHCnA1Gf/ZJTaxm7
+         kRVhe+M35YqmWxv1Dhcf1q6imZBGI/RhpbgtMTY0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Kangjie Lu <kjlu@umn.edu>,
+        stable@vger.kernel.org, Andrew Lunn <andrew@lunn.ch>,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        Russell King <rmk+kernel@armlinux.org.uk>,
         "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 119/177] Revert "net: liquidio: fix a NULL pointer dereference"
+Subject: [PATCH 4.19 100/116] net: mdio: octeon: Fix some double free issues
 Date:   Mon, 31 May 2021 15:14:36 +0200
-Message-Id: <20210531130652.029137227@linuxfoundation.org>
+Message-Id: <20210531130643.523849263@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210531130647.887605866@linuxfoundation.org>
-References: <20210531130647.887605866@linuxfoundation.org>
+In-Reply-To: <20210531130640.131924542@linuxfoundation.org>
+References: <20210531130640.131924542@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,50 +42,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 
-[ Upstream commit 4fd798a5a89114c1892574c50f2aebd49bc5b4f5 ]
+[ Upstream commit e1d027dd97e1e750669cdc0d3b016a4f54e473eb ]
 
-This reverts commit fe543b2f174f34a7a751aa08b334fe6b105c4569.
+'bus->mii_bus' has been allocated with 'devm_mdiobus_alloc_size()' in the
+probe function. So it must not be freed explicitly or there will be a
+double free.
 
-Because of recent interactions with developers from @umn.edu, all
-commits from them have been recently re-reviewed to ensure if they were
-correct or not.
+Remove the incorrect 'mdiobus_free' in the error handling path of the
+probe function and in remove function.
 
-Upon review, this commit was found to be incorrect for the reasons
-below, so it must be reverted.  It will be fixed up "correctly" in a
-later kernel change.
-
-While the original commit does keep the immediate "NULL dereference"
-from happening, it does not properly propagate the error back to the
-callers, AND it does not fix this same identical issue in the
-drivers/net/ethernet/cavium/liquidio/lio_vf_main.c for some reason.
-
-Cc: Kangjie Lu <kjlu@umn.edu>
-Cc: David S. Miller <davem@davemloft.net>
-Link: https://lore.kernel.org/r/20210503115736.2104747-65-gregkh@linuxfoundation.org
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Suggested-By: Andrew Lunn <andrew@lunn.ch>
+Fixes: 35d2aeac9810 ("phy: mdio-octeon: Use devm_mdiobus_alloc_size()")
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Reviewed-by: Russell King <rmk+kernel@armlinux.org.uk>
+Reviewed-by: Andrew Lunn <andrew@lunn.ch>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/cavium/liquidio/lio_main.c | 5 -----
- 1 file changed, 5 deletions(-)
+ drivers/net/phy/mdio-octeon.c | 2 --
+ 1 file changed, 2 deletions(-)
 
-diff --git a/drivers/net/ethernet/cavium/liquidio/lio_main.c b/drivers/net/ethernet/cavium/liquidio/lio_main.c
-index 7f3b2e3b0868..f2d486583e2f 100644
---- a/drivers/net/ethernet/cavium/liquidio/lio_main.c
-+++ b/drivers/net/ethernet/cavium/liquidio/lio_main.c
-@@ -1192,11 +1192,6 @@ static void send_rx_ctrl_cmd(struct lio *lio, int start_stop)
- 	sc = (struct octeon_soft_command *)
- 		octeon_alloc_soft_command(oct, OCTNET_CMD_SIZE,
- 					  16, 0);
--	if (!sc) {
--		netif_info(lio, rx_err, lio->netdev,
--			   "Failed to allocate octeon_soft_command\n");
--		return;
--	}
+diff --git a/drivers/net/phy/mdio-octeon.c b/drivers/net/phy/mdio-octeon.c
+index ab6914f8bd50..1da104150f44 100644
+--- a/drivers/net/phy/mdio-octeon.c
++++ b/drivers/net/phy/mdio-octeon.c
+@@ -75,7 +75,6 @@ static int octeon_mdiobus_probe(struct platform_device *pdev)
  
- 	ncmd = (union octnet_cmd *)sc->virtdptr;
+ 	return 0;
+ fail_register:
+-	mdiobus_free(bus->mii_bus);
+ 	smi_en.u64 = 0;
+ 	oct_mdio_writeq(smi_en.u64, bus->register_base + SMI_EN);
+ 	return err;
+@@ -89,7 +88,6 @@ static int octeon_mdiobus_remove(struct platform_device *pdev)
+ 	bus = platform_get_drvdata(pdev);
  
+ 	mdiobus_unregister(bus->mii_bus);
+-	mdiobus_free(bus->mii_bus);
+ 	smi_en.u64 = 0;
+ 	oct_mdio_writeq(smi_en.u64, bus->register_base + SMI_EN);
+ 	return 0;
 -- 
 2.30.2
 
