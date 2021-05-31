@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 99D043964E7
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 18:14:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4576E396157
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 16:38:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233933AbhEaQPw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 12:15:52 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38012 "EHLO mail.kernel.org"
+        id S234293AbhEaOju (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 10:39:50 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59812 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234157AbhEaOjf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 10:39:35 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6B34261C64;
-        Mon, 31 May 2021 13:52:43 +0000 (UTC)
+        id S232836AbhEaN5S (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 09:57:18 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 99CDE61445;
+        Mon, 31 May 2021 13:35:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1622469163;
-        bh=IIXP4rILIB9WbdcFuN8WG8aqTxMgdHBoZdvAbZ7rP6A=;
+        s=korg; t=1622468103;
+        bh=uDpj/P5AG1X7x0A+XoSTTT9exReZKWywYoH9o65yxmc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=G9BfRCPIAOQhI+RRsz+ofl86nJNXQIyHJ0r+A8O3ZhXrkjEHczgaQI0G8n5O+WFDi
-         U83jvN+jIpaPbDEkBMjk22WI9e7f+E+ZsQUspwIM26dQKy0jPJJQCGKp9NZ4ZVgnR9
-         kmckptkX+eYlPSZPrBn/S8SDhVb2mq5jCvxH4ZIU=
+        b=haTuL5rHkRJfFHZQ3S4rkUsM78EVTU6ITgtuSh3avamzbqJnUsEOVr13rRKHc3G+Y
+         N4yuApo0K1FqVYMyi9+g+78t77Nh+CLqfcqKqpVfCKRom3qO2CRTzva8XkiOgxR7wX
+         PfEzJp1MWuaLbU23bnkH0MUL/QCmy30ZqFBVQfEc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Peter Ganzhorn <peter.ganzhorn@googlemail.com>,
-        Mathias Nyman <mathias.nyman@linux.intel.com>
-Subject: [PATCH 5.12 092/296] xhci: fix giving back URB with incorrect status regression in 5.12
+        stable@vger.kernel.org, Daniele Palmas <dnlplm@gmail.com>,
+        Johan Hovold <johan@kernel.org>
+Subject: [PATCH 5.10 082/252] USB: serial: option: add Telit LE910-S1 compositions 0x7010, 0x7011
 Date:   Mon, 31 May 2021 15:12:27 +0200
-Message-Id: <20210531130706.991685783@linuxfoundation.org>
+Message-Id: <20210531130700.771317164@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210531130703.762129381@linuxfoundation.org>
-References: <20210531130703.762129381@linuxfoundation.org>
+In-Reply-To: <20210531130657.971257589@linuxfoundation.org>
+References: <20210531130657.971257589@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,46 +39,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mathias Nyman <mathias.nyman@linux.intel.com>
+From: Daniele Palmas <dnlplm@gmail.com>
 
-commit a80c203c3f1c06d2201c19ae071d0ae770a2b1ca upstream.
+commit e467714f822b5d167a7fb03d34af91b5b6af1827 upstream.
 
-5.12 kernel changes how xhci handles cancelled URBs and halted
-endpoints. Among these changes cancelled and stalled URBs are no longer
-given back before they are cleared from xHC hardware cache.
+Add support for the following Telit LE910-S1 compositions:
 
-These changes unfortunately cleared the -EPIPE status of a stalled
-transfer in one case before giving bak the URB, causing a USB card reader
-to fail from working.
+0x7010: rndis, tty, tty, tty
+0x7011: ecm, tty, tty, tty
 
-Fixes: 674f8438c121 ("xhci: split handling halted endpoints into two steps")
-Cc: <stable@vger.kernel.org> # 5.12
-Reported-by: Peter Ganzhorn <peter.ganzhorn@googlemail.com>
-Tested-by: Peter Ganzhorn <peter.ganzhorn@googlemail.com>
-Signed-off-by: Mathias Nyman <mathias.nyman@linux.intel.com>
-Link: https://lore.kernel.org/r/20210525074100.1154090-2-mathias.nyman@linux.intel.com
+Signed-off-by: Daniele Palmas <dnlplm@gmail.com>
+Link: https://lore.kernel.org/r/20210428072634.5091-1-dnlplm@gmail.com
+Cc: stable@vger.kernel.org
+Signed-off-by: Johan Hovold <johan@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/usb/host/xhci-ring.c |    6 +-----
- 1 file changed, 1 insertion(+), 5 deletions(-)
+ drivers/usb/serial/option.c |    4 ++++
+ 1 file changed, 4 insertions(+)
 
---- a/drivers/usb/host/xhci-ring.c
-+++ b/drivers/usb/host/xhci-ring.c
-@@ -829,14 +829,10 @@ static void xhci_giveback_invalidated_td
- 	list_for_each_entry_safe(td, tmp_td, &ep->cancelled_td_list,
- 				 cancelled_td_list) {
- 
--		/*
--		 * Doesn't matter what we pass for status, since the core will
--		 * just overwrite it (because the URB has been unlinked).
--		 */
- 		ring = xhci_urb_to_transfer_ring(ep->xhci, td->urb);
- 
- 		if (td->cancel_status == TD_CLEARED)
--			xhci_td_cleanup(ep->xhci, td, ring, 0);
-+			xhci_td_cleanup(ep->xhci, td, ring, td->status);
- 
- 		if (ep->xhci->xhc_state & XHCI_STATE_DYING)
- 			return;
+--- a/drivers/usb/serial/option.c
++++ b/drivers/usb/serial/option.c
+@@ -1240,6 +1240,10 @@ static const struct usb_device_id option
+ 	  .driver_info = NCTRL(0) | RSVD(1) },
+ 	{ USB_DEVICE_INTERFACE_CLASS(TELIT_VENDOR_ID, 0x1901, 0xff),	/* Telit LN940 (MBIM) */
+ 	  .driver_info = NCTRL(0) },
++	{ USB_DEVICE_INTERFACE_CLASS(TELIT_VENDOR_ID, 0x7010, 0xff),	/* Telit LE910-S1 (RNDIS) */
++	  .driver_info = NCTRL(2) },
++	{ USB_DEVICE_INTERFACE_CLASS(TELIT_VENDOR_ID, 0x7011, 0xff),	/* Telit LE910-S1 (ECM) */
++	  .driver_info = NCTRL(2) },
+ 	{ USB_DEVICE(TELIT_VENDOR_ID, 0x9010),				/* Telit SBL FN980 flashing device */
+ 	  .driver_info = NCTRL(0) | ZLP },
+ 	{ USB_DEVICE_AND_INTERFACE_INFO(ZTE_VENDOR_ID, ZTE_PRODUCT_MF622, 0xff, 0xff, 0xff) }, /* ZTE WCDMA products */
 
 
