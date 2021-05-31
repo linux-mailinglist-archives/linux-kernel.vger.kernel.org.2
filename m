@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2150D395D07
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 15:39:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AB7CF396187
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 16:40:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232144AbhEaNku (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 09:40:50 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33678 "EHLO mail.kernel.org"
+        id S231210AbhEaOlq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 10:41:46 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60906 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231397AbhEaN1x (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 09:27:53 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2C709613CB;
-        Mon, 31 May 2021 13:21:58 +0000 (UTC)
+        id S232992AbhEaN6b (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 09:58:31 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 53FB96193B;
+        Mon, 31 May 2021 13:35:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1622467318;
-        bh=QqGeEXf6GZB/7XfQGcN/jwXIRiJkbfoc+B93n3Y1/vk=;
+        s=korg; t=1622468137;
+        bh=40J/3GWj3gKLWslHKs2Yo2Y6QSbX0dqakuseEQRoHDE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=kYCcd6oVcgiDaXdVno+rCMNK0O+T/a28QLrfYi01rntt76EKP1ja7RTffZJzYIgt2
-         DLBjpLtZLKGocF1mVmACMje/ArSVA+3WqVjU2/v73MfxoGaqQdPcb8oT+rlOW2+H09
-         pbbfhSRIL7fbUUpqXSGXVQAXmnlFsYnRTF5AYSZo=
+        b=wk1aW+FJdvlX+S3Cfkk6lj5vkSiM9Z8l0ARatRytblvROUQ+f+PS5oLI9eIYvBiFl
+         oPg6wvrOVJGe8L8y7ty+Ta77ZX6EUraO4UvZ2jI1OJVgryVMXH9iwmFL7z35JQ0usT
+         HQvT4KIcf5onxAr0WvjAHeU7Z670se1w0HvMtQK8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Wen Gong <wgong@codeaurora.org>,
-        Jouni Malinen <jouni@codeaurora.org>,
-        Johannes Berg <johannes.berg@intel.com>
-Subject: [PATCH 4.19 020/116] mac80211: extend protection against mixed key and fragment cache attacks
+        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
+        Zou Wei <zou_wei@huawei.com>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.10 131/252] gpio: cadence: Add missing MODULE_DEVICE_TABLE
 Date:   Mon, 31 May 2021 15:13:16 +0200
-Message-Id: <20210531130640.838919766@linuxfoundation.org>
+Message-Id: <20210531130702.460158818@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210531130640.131924542@linuxfoundation.org>
-References: <20210531130640.131924542@linuxfoundation.org>
+In-Reply-To: <20210531130657.971257589@linuxfoundation.org>
+References: <20210531130657.971257589@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,76 +41,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Wen Gong <wgong@codeaurora.org>
+From: Zou Wei <zou_wei@huawei.com>
 
-commit 3edc6b0d6c061a70d8ca3c3c72eb1f58ce29bfb1 upstream.
+[ Upstream commit 1e948b1752b58c9c570989ab29ceef5b38fdccda ]
 
-For some chips/drivers, e.g., QCA6174 with ath10k, the decryption is
-done by the hardware, and the Protected bit in the Frame Control field
-is cleared in the lower level driver before the frame is passed to
-mac80211. In such cases, the condition for ieee80211_has_protected() is
-not met in ieee80211_rx_h_defragment() of mac80211 and the new security
-validation steps are not executed.
+This patch adds missing MODULE_DEVICE_TABLE definition which generates
+correct modalias for automatic loading of this driver when it is built
+as an external module.
 
-Extend mac80211 to cover the case where the Protected bit has been
-cleared, but the frame is indicated as having been decrypted by the
-hardware. This extends protection against mixed key and fragment cache
-attack for additional drivers/chips. This fixes CVE-2020-24586 and
-CVE-2020-24587 for such cases.
-
-Tested-on: QCA6174 hw3.2 PCI WLAN.RM.4.4.1-00110-QCARMSWP-1
-
-Cc: stable@vger.kernel.org
-Signed-off-by: Wen Gong <wgong@codeaurora.org>
-Signed-off-by: Jouni Malinen <jouni@codeaurora.org>
-Link: https://lore.kernel.org/r/20210511200110.037aa5ca0390.I7bb888e2965a0db02a67075fcb5deb50eb7408aa@changeid
-Signed-off-by: Johannes Berg <johannes.berg@intel.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Zou Wei <zou_wei@huawei.com>
+Signed-off-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/mac80211/rx.c |   13 +++++++++++--
- 1 file changed, 11 insertions(+), 2 deletions(-)
+ drivers/gpio/gpio-cadence.c | 1 +
+ 1 file changed, 1 insertion(+)
 
---- a/net/mac80211/rx.c
-+++ b/net/mac80211/rx.c
-@@ -2113,6 +2113,7 @@ ieee80211_rx_h_defragment(struct ieee802
- 	unsigned int frag, seq;
- 	struct ieee80211_fragment_entry *entry;
- 	struct sk_buff *skb;
-+	struct ieee80211_rx_status *status = IEEE80211_SKB_RXCB(rx->skb);
+diff --git a/drivers/gpio/gpio-cadence.c b/drivers/gpio/gpio-cadence.c
+index a4d3239d2594..4ab3fcd9b9ba 100644
+--- a/drivers/gpio/gpio-cadence.c
++++ b/drivers/gpio/gpio-cadence.c
+@@ -278,6 +278,7 @@ static const struct of_device_id cdns_of_ids[] = {
+ 	{ .compatible = "cdns,gpio-r1p02" },
+ 	{ /* sentinel */ },
+ };
++MODULE_DEVICE_TABLE(of, cdns_of_ids);
  
- 	hdr = (struct ieee80211_hdr *)rx->skb->data;
- 	fc = hdr->frame_control;
-@@ -2171,7 +2172,9 @@ ieee80211_rx_h_defragment(struct ieee802
- 				     sizeof(rx->key->u.gcmp.rx_pn[queue]));
- 			BUILD_BUG_ON(IEEE80211_CCMP_PN_LEN !=
- 				     IEEE80211_GCMP_PN_LEN);
--		} else if (rx->key && ieee80211_has_protected(fc)) {
-+		} else if (rx->key &&
-+			   (ieee80211_has_protected(fc) ||
-+			    (status->flag & RX_FLAG_DECRYPTED))) {
- 			entry->is_protected = true;
- 			entry->key_color = rx->key->color;
- 		}
-@@ -2216,13 +2219,19 @@ ieee80211_rx_h_defragment(struct ieee802
- 			return RX_DROP_UNUSABLE;
- 		memcpy(entry->last_pn, pn, IEEE80211_CCMP_PN_LEN);
- 	} else if (entry->is_protected &&
--		   (!rx->key || !ieee80211_has_protected(fc) ||
-+		   (!rx->key ||
-+		    (!ieee80211_has_protected(fc) &&
-+		     !(status->flag & RX_FLAG_DECRYPTED)) ||
- 		    rx->key->color != entry->key_color)) {
- 		/* Drop this as a mixed key or fragment cache attack, even
- 		 * if for TKIP Michael MIC should protect us, and WEP is a
- 		 * lost cause anyway.
- 		 */
- 		return RX_DROP_UNUSABLE;
-+	} else if (entry->is_protected && rx->key &&
-+		   entry->key_color != rx->key->color &&
-+		   (status->flag & RX_FLAG_DECRYPTED)) {
-+		return RX_DROP_UNUSABLE;
- 	}
- 
- 	skb_pull(rx->skb, ieee80211_hdrlen(fc));
+ static struct platform_driver cdns_gpio_driver = {
+ 	.driver = {
+-- 
+2.30.2
+
 
 
