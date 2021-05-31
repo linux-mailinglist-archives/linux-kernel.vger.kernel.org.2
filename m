@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC79E3963C9
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 17:33:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B82C43964FD
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 18:18:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231908AbhEaPfM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 11:35:12 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43708 "EHLO mail.kernel.org"
+        id S234534AbhEaQTM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 12:19:12 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38036 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231903AbhEaOQE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 10:16:04 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 065CA619A7;
-        Mon, 31 May 2021 13:43:12 +0000 (UTC)
+        id S233673AbhEaOli (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 10:41:38 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 796E861919;
+        Mon, 31 May 2021 13:53:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1622468593;
-        bh=EHDb9gPlkI6LqYuMtqOTIsmKfRvF+vWiHATpbWMKdLg=;
+        s=korg; t=1622469229;
+        bh=ar+aDV48hz+TlJIly4vTP7FKaU4frXR+kFh9l1z7fSE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=NAFlXU9ASJOKk3wyFurottVOMAERnqff8eoxtmnFp+rd0Rdom3CXTiTKsfnAMR9Dg
-         2VIvA+V5jlvg6gPkX8cHldCAkdxYqJQg8m8rmb056tXBLKqCFgDVLwfulvUticakvz
-         P3f4UPV342YfByYNwaR7l3KByYWiAb/qFHDpNvK4=
+        b=u7fRD+1jcpKX9um6wEPC7NExmyvL9lAFC4/jJrifUFpB5E1/JxClXlNHGQ1kHW2XO
+         9kWqkqZCLZ7gm8KGQ79myPddhnZtE22tdLUNj00wMlkG2DjYI8zxV1pqIv0LM2y1gs
+         3uixIvDmAOeDetJQ+fqNhO0FdPAvteICoWQvCUgQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Mathy Vanhoef <Mathy.Vanhoef@kuleuven.be>,
-        Johannes Berg <johannes.berg@intel.com>
-Subject: [PATCH 5.4 015/177] mac80211: prevent mixed key and fragment cache attacks
-Date:   Mon, 31 May 2021 15:12:52 +0200
-Message-Id: <20210531130648.432825907@linuxfoundation.org>
+        stable@vger.kernel.org, Saeed Mahameed <saeedm@nvidia.com>,
+        Aya Levin <ayal@nvidia.com>, Tariq Toukan <tariqt@nvidia.com>
+Subject: [PATCH 5.12 118/296] net/mlx5e: reset XPS on error flow if netdev isnt registered yet
+Date:   Mon, 31 May 2021 15:12:53 +0200
+Message-Id: <20210531130707.885383533@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210531130647.887605866@linuxfoundation.org>
-References: <20210531130647.887605866@linuxfoundation.org>
+In-Reply-To: <20210531130703.762129381@linuxfoundation.org>
+References: <20210531130703.762129381@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,99 +39,67 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mathy Vanhoef <Mathy.Vanhoef@kuleuven.be>
+From: Saeed Mahameed <saeedm@nvidia.com>
 
-commit 94034c40ab4a3fcf581fbc7f8fdf4e29943c4a24 upstream.
+commit 77ecd10d0a8aaa6e4871d8c63626e4c9fc5e47db upstream.
 
-Simultaneously prevent mixed key attacks (CVE-2020-24587) and fragment
-cache attacks (CVE-2020-24586). This is accomplished by assigning a
-unique color to every key (per interface) and using this to track which
-key was used to decrypt a fragment. When reassembling frames, it is
-now checked whether all fragments were decrypted using the same key.
+mlx5e_attach_netdev can be called prior to registering the netdevice:
+Example stack:
 
-To assure that fragment cache attacks are also prevented, the ID that is
-assigned to keys is unique even over (re)associations and (re)connects.
-This means fragments separated by a (re)association or (re)connect will
-not be reassembled. Because mac80211 now also prevents the reassembly of
-mixed encrypted and plaintext fragments, all cache attacks are prevented.
+ipoib_new_child_link ->
+ipoib_intf_init->
+rdma_init_netdev->
+mlx5_rdma_setup_rn->
 
-Cc: stable@vger.kernel.org
-Signed-off-by: Mathy Vanhoef <Mathy.Vanhoef@kuleuven.be>
-Link: https://lore.kernel.org/r/20210511200110.3f8290e59823.I622a67769ed39257327a362cfc09c812320eb979@changeid
-Signed-off-by: Johannes Berg <johannes.berg@intel.com>
+mlx5e_attach_netdev->
+mlx5e_num_channels_changed ->
+mlx5e_set_default_xps_cpumasks ->
+netif_set_xps_queue ->
+__netif_set_xps_queue -> kmalloc
+
+If any later stage fails at any point after mlx5e_num_channels_changed()
+returns, XPS allocated maps will never be freed as they
+are only freed during netdev unregistration, which will never happen for
+yet to be registered netdevs.
+
+Fixes: 3909a12e7913 ("net/mlx5e: Fix configuration of XPS cpumasks and netdev queues in corner cases")
+Signed-off-by: Saeed Mahameed <saeedm@nvidia.com>
+Signed-off-by: Aya Levin <ayal@nvidia.com>
+Reviewed-by: Tariq Toukan <tariqt@nvidia.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- net/mac80211/ieee80211_i.h |    1 +
- net/mac80211/key.c         |    7 +++++++
- net/mac80211/key.h         |    2 ++
- net/mac80211/rx.c          |    6 ++++++
- 4 files changed, 16 insertions(+)
+ drivers/net/ethernet/mellanox/mlx5/core/en_main.c |    7 +++++++
+ 1 file changed, 7 insertions(+)
 
---- a/net/mac80211/ieee80211_i.h
-+++ b/net/mac80211/ieee80211_i.h
-@@ -97,6 +97,7 @@ struct ieee80211_fragment_entry {
- 	u8 rx_queue;
- 	bool check_sequential_pn; /* needed for CCMP/GCMP */
- 	u8 last_pn[6]; /* PN of the last fragment if CCMP was used */
-+	unsigned int key_color;
- };
+--- a/drivers/net/ethernet/mellanox/mlx5/core/en_main.c
++++ b/drivers/net/ethernet/mellanox/mlx5/core/en_main.c
+@@ -5604,6 +5604,11 @@ static void mlx5e_update_features(struct
+ 	rtnl_unlock();
+ }
  
- 
---- a/net/mac80211/key.c
-+++ b/net/mac80211/key.c
-@@ -764,6 +764,7 @@ int ieee80211_key_link(struct ieee80211_
- 		       struct ieee80211_sub_if_data *sdata,
- 		       struct sta_info *sta)
++static void mlx5e_reset_channels(struct net_device *netdev)
++{
++	netdev_reset_tc(netdev);
++}
++
+ int mlx5e_attach_netdev(struct mlx5e_priv *priv)
  {
-+	static atomic_t key_color = ATOMIC_INIT(0);
- 	struct ieee80211_key *old_key;
- 	int idx = key->conf.keyidx;
- 	bool pairwise = key->conf.flags & IEEE80211_KEY_FLAG_PAIRWISE;
-@@ -815,6 +816,12 @@ int ieee80211_key_link(struct ieee80211_
- 	key->sdata = sdata;
- 	key->sta = sta;
+ 	const bool take_rtnl = priv->netdev->reg_state == NETREG_REGISTERED;
+@@ -5658,6 +5663,7 @@ err_cleanup_tx:
+ 	profile->cleanup_tx(priv);
  
-+	/*
-+	 * Assign a unique ID to every key so we can easily prevent mixed
-+	 * key and fragment cache attacks.
-+	 */
-+	key->color = atomic_inc_return(&key_color);
-+
- 	increment_tailroom_need_count(sdata);
+ out:
++	mlx5e_reset_channels(priv->netdev);
+ 	set_bit(MLX5E_STATE_DESTROYING, &priv->state);
+ 	cancel_work_sync(&priv->update_stats_work);
+ 	return err;
+@@ -5675,6 +5681,7 @@ void mlx5e_detach_netdev(struct mlx5e_pr
  
- 	ret = ieee80211_key_replace(sdata, sta, pairwise, old_key, key);
---- a/net/mac80211/key.h
-+++ b/net/mac80211/key.h
-@@ -127,6 +127,8 @@ struct ieee80211_key {
- 	} debugfs;
- #endif
+ 	profile->cleanup_rx(priv);
+ 	profile->cleanup_tx(priv);
++	mlx5e_reset_channels(priv->netdev);
+ 	cancel_work_sync(&priv->update_stats_work);
+ }
  
-+	unsigned int color;
-+
- 	/*
- 	 * key config, must be last because it contains key
- 	 * material as variable length member
---- a/net/mac80211/rx.c
-+++ b/net/mac80211/rx.c
-@@ -2215,6 +2215,7 @@ ieee80211_rx_h_defragment(struct ieee802
- 			 * next fragment has a sequential PN value.
- 			 */
- 			entry->check_sequential_pn = true;
-+			entry->key_color = rx->key->color;
- 			memcpy(entry->last_pn,
- 			       rx->key->u.ccmp.rx_pn[queue],
- 			       IEEE80211_CCMP_PN_LEN);
-@@ -2252,6 +2253,11 @@ ieee80211_rx_h_defragment(struct ieee802
- 
- 		if (!requires_sequential_pn(rx, fc))
- 			return RX_DROP_UNUSABLE;
-+
-+		/* Prevent mixed key and fragment cache attacks */
-+		if (entry->key_color != rx->key->color)
-+			return RX_DROP_UNUSABLE;
-+
- 		memcpy(pn, entry->last_pn, IEEE80211_CCMP_PN_LEN);
- 		for (i = IEEE80211_CCMP_PN_LEN - 1; i >= 0; i--) {
- 			pn[i]++;
 
 
