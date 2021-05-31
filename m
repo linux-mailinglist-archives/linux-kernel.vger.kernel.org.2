@@ -2,163 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A0AF395814
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 11:27:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D665395815
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 11:28:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231172AbhEaJ2v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 05:28:51 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:40390 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230501AbhEaJ2t (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 05:28:49 -0400
-Received: from imap.suse.de (imap-alt.suse-dmz.suse.de [192.168.254.47])
-        (using TLSv1.2 with cipher ECDHE-ECDSA-AES128-GCM-SHA256 (128/128 bits))
+        id S231177AbhEaJ3w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 05:29:52 -0400
+Received: from mail.skyhub.de ([5.9.137.197]:48188 "EHLO mail.skyhub.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230423AbhEaJ3s (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 05:29:48 -0400
+Received: from zn.tnic (p200300ec2f080f0029ca4f7a5f3cda43.dip0.t-ipconnect.de [IPv6:2003:ec:2f08:f00:29ca:4f7a:5f3c:da43])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id AD8D52191F;
-        Mon, 31 May 2021 09:27:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1622453228; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=W4z0meOW6IUCU2rQCfaqM2HBPpAFPAp/Ax2mmtHbSu8=;
-        b=m7E9GVMntQg0Rqn2gC9P8zIWgPvjxIeM7kQXaqRmATFQQdBxuHLm0vDmmc+n5rghg0pMXZ
-        ZlTwi+1eC07fSIrbHwn54bhptSOKoRgpfCS337nAA0YEa4s/Ce4pHHtijzM48fdvDoKP6Q
-        StqmgtrGwHyPscgvUzNJ3dcUyBV4rVk=
-Received: from imap3-int (imap-alt.suse-dmz.suse.de [192.168.254.47])
-        by imap.suse.de (Postfix) with ESMTP id 35873118DD;
-        Mon, 31 May 2021 09:27:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1622453226; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=W4z0meOW6IUCU2rQCfaqM2HBPpAFPAp/Ax2mmtHbSu8=;
-        b=AG9SIgwXHsb2cQNSyV10/toWzH4RzhVfZ4Dpz4azl2VR7gRzjs8Ygyx8Bvi+4cFZyhwqGN
-        fjXrWEKDpA/LnykCPIQx6JPXnYzoY84XJR3meiPLwyiTf5JJtklyDiFaxEHI/1eg3yzjYi
-        raDIpK6km7Uij/76VoksOynNd+S2FYM=
-Received: from director2.suse.de ([192.168.254.72])
-        by imap3-int with ESMTPSA
-        id RsipCuqrtGDpVwAALh3uQQ
-        (envelope-from <nborisov@suse.com>); Mon, 31 May 2021 09:27:06 +0000
-Subject: Re: [syzbot] kernel BUG in assertfail
-To:     Dmitry Vyukov <dvyukov@google.com>
-Cc:     syzbot <syzbot+a6bf271c02e4fe66b4e4@syzkaller.appspotmail.com>,
-        Chris Mason <clm@fb.com>, dsterba@suse.com,
-        Josef Bacik <josef@toxicpanda.com>,
-        linux-btrfs@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>
-References: <000000000000f9136f05c39b84e4@google.com>
- <21666193-5ad7-2656-c50f-33637fabb082@suse.com>
- <CACT4Y+bqevMT3cD5sXjSv9QYM_7CwjYmN_Ne5LSj=3-REZ+oTw@mail.gmail.com>
- <224f1e6a-76fa-6356-fe11-af480cee5cf2@suse.com>
- <CACT4Y+ZJ7Oi9ChXJNuF_+e4FRnN1rJBde4tsjiTtkOV+MM-hgA@mail.gmail.com>
-From:   Nikolay Borisov <nborisov@suse.com>
-Message-ID: <fcf25b03-e48e-8cda-3c87-25c2c3332719@suse.com>
-Date:   Mon, 31 May 2021 12:27:05 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 70C4F1EC0532;
+        Mon, 31 May 2021 11:28:07 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1622453287;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=7PenAKHDdLWOjeesd4KyjeK3ihp5+SXpQ6FYI+hgFp0=;
+        b=Nfo2HPJZ/jYVQzSD5VeV47PvfovWml86nJFhrAPkd3PWhzq3zeptxDmJuzGJUBhA1keycr
+        6gcc1Kv2z+cYrsZMbbguGlqvvPx0idhvK/E459YvLrkun1CvPOUaMBE77A9bqh7KJv+DTS
+        geiDFemr2F7wczWGNdyM9Mxyy8jSsuU=
+Date:   Mon, 31 May 2021 11:28:05 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     syzbot <syzbot+545dc60af42828d1e70b@syzkaller.appspotmail.com>,
+        dri-devel@lists.freedesktop.org
+Cc:     hpa@zytor.com, linux-kernel@vger.kernel.org, mingo@redhat.com,
+        syzkaller-bugs@googlegroups.com, tglx@linutronix.de, x86@kernel.org
+Subject: Re: [syzbot] BUG: unable to handle kernel paging request in
+ drm_fb_helper_damage_work (2)
+Message-ID: <YLSsJTgCOHjrsiQg@zn.tnic>
+References: <000000000000f7b23005c39af5c1@google.com>
 MIME-Version: 1.0
-In-Reply-To: <CACT4Y+ZJ7Oi9ChXJNuF_+e4FRnN1rJBde4tsjiTtkOV+MM-hgA@mail.gmail.com>
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-Authentication-Results: imap.suse.de;
-        none
-X-Spam-Level: **
-X-Spam-Score: 2.50
-X-Spamd-Result: default: False [2.50 / 100.00];
-         ARC_NA(0.00)[];
-         RCVD_VIA_SMTP_AUTH(0.00)[];
-         FROM_HAS_DN(0.00)[];
-         TO_DN_SOME(0.00)[];
-         TO_MATCH_ENVRCPT_ALL(0.00)[];
-         URI_HIDDEN_PATH(1.00)[https://syzkaller.appspot.com/x/.config?x=9f3da44a01882e99];
-         TAGGED_RCPT(0.00)[a6bf271c02e4fe66b4e4];
-         MIME_GOOD(-0.10)[text/plain];
-         SURBL_MULTI_FAIL(0.00)[googlegroups.com:server fail];
-         DKIM_SIGNED(0.00)[suse.com:s=susede1];
-         RCPT_COUNT_SEVEN(0.00)[8];
-         RCVD_NO_TLS_LAST(0.10)[];
-         FROM_EQ_ENVFROM(0.00)[];
-         MIME_TRACE(0.00)[0:+];
-         RCVD_COUNT_TWO(0.00)[2];
-         MID_RHS_MATCH_FROM(0.00)[];
-         SUSPICIOUS_RECIPS(1.50)[]
-X-Spam-Flag: NO
+Content-Disposition: inline
+In-Reply-To: <000000000000f7b23005c39af5c1@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Looks DRM to me. CCed...
 
+On Mon, May 31, 2021 at 12:13:22AM -0700, syzbot wrote:
+> Hello,
+> 
+> syzbot found the following issue on:
+> 
+> HEAD commit:    7ac3a1c1 Merge tag 'mtd/fixes-for-5.13-rc4' of git://git.k..
+> git tree:       upstream
+> console output: https://syzkaller.appspot.com/x/log.txt?x=1619b4b5d00000
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=266cda122a0b56c
+> dashboard link: https://syzkaller.appspot.com/bug?extid=545dc60af42828d1e70b
+> userspace arch: i386
+> 
+> Unfortunately, I don't have any reproducer for this issue yet.
+> 
+> IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> Reported-by: syzbot+545dc60af42828d1e70b@syzkaller.appspotmail.com
+> 
+> BUG: unable to handle page fault for address: ffffc9000dc68008
+> #PF: supervisor write access in kernel mode
+> #PF: error_code(0x0002) - not-present page
+> PGD 11000067 P4D 11000067 PUD 111b3067 PMD 1ba2c067 PTE 0
+> Oops: 0002 [#1] PREEMPT SMP KASAN
+> CPU: 2 PID: 16890 Comm: kworker/2:36 Not tainted 5.13.0-rc3-syzkaller #0
+> Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.14.0-2 04/01/2014
+> Workqueue: events drm_fb_helper_damage_work
+> RIP: 0010:rep_movs arch/x86/lib/iomem.c:12 [inline]
+> RIP: 0010:memcpy_toio+0x83/0xe0 arch/x86/lib/iomem.c:57
+> Code: 8c fd 49 89 dd 31 ff 41 83 e5 02 4c 89 ee e8 c4 c2 8c fd 4d 85 ed 75 2e e8 9a ba 8c fd 48 89 e9 48 89 df 4c 89 e6 48 c1 e9 02 <f3> a5 40 f6 c5 02 74 02 66 a5 40 f6 c5 01 74 01 a4 5b 5d 41 5c 41
+> RSP: 0018:ffffc9000e73fbc8 EFLAGS: 00010202
+> RAX: 0000000000000000 RBX: ffffc9000dc68008 RCX: 00000000000000fe
+> RDX: ffff888015340000 RSI: ffffc9000bdd9008 RDI: ffffc9000dc68008
+> RBP: 00000000000003f8 R08: 0000000000000000 R09: 0000000000000001
+> R10: ffffffff83e81e1c R11: 0000000000000000 R12: ffffc9000bdd9008
+> R13: 0000000000000000 R14: ffffc9000bdd9008 R15: 0000000000000001
+> FS:  0000000000000000(0000) GS:ffff88802cc00000(0000) knlGS:0000000000000000
+> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> CR2: ffffc9000dc68008 CR3: 000000006c062000 CR4: 0000000000152ee0
+> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+> Call Trace:
+>  dma_buf_map_memcpy_to include/linux/dma-buf-map.h:245 [inline]
+>  drm_fb_helper_damage_blit_real drivers/gpu/drm/drm_fb_helper.c:388 [inline]
+>  drm_fb_helper_damage_blit drivers/gpu/drm/drm_fb_helper.c:419 [inline]
+>  drm_fb_helper_damage_work+0x733/0xac0 drivers/gpu/drm/drm_fb_helper.c:450
+>  process_one_work+0x98d/0x1600 kernel/workqueue.c:2276
+>  worker_thread+0x64c/0x1120 kernel/workqueue.c:2422
+>  kthread+0x3b1/0x4a0 kernel/kthread.c:313
+>  ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:294
+> Modules linked in:
+> CR2: ffffc9000dc68008
+> ---[ end trace 7f8625a9b15be223 ]---
+> RIP: 0010:rep_movs arch/x86/lib/iomem.c:12 [inline]
+> RIP: 0010:memcpy_toio+0x83/0xe0 arch/x86/lib/iomem.c:57
+> Code: 8c fd 49 89 dd 31 ff 41 83 e5 02 4c 89 ee e8 c4 c2 8c fd 4d 85 ed 75 2e e8 9a ba 8c fd 48 89 e9 48 89 df 4c 89 e6 48 c1 e9 02 <f3> a5 40 f6 c5 02 74 02 66 a5 40 f6 c5 01 74 01 a4 5b 5d 41 5c 41
+> RSP: 0018:ffffc9000e73fbc8 EFLAGS: 00010202
+> RAX: 0000000000000000 RBX: ffffc9000dc68008 RCX: 00000000000000fe
+> RDX: ffff888015340000 RSI: ffffc9000bdd9008 RDI: ffffc9000dc68008
+> RBP: 00000000000003f8 R08: 0000000000000000 R09: 0000000000000001
+> R10: ffffffff83e81e1c R11: 0000000000000000 R12: ffffc9000bdd9008
+> R13: 0000000000000000 R14: ffffc9000bdd9008 R15: 0000000000000001
+> FS:  0000000000000000(0000) GS:ffff88802cc00000(0000) knlGS:0000000000000000
+> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> CR2: ffffc9000dc68008 CR3: 000000006c062000 CR4: 0000000000152ee0
+> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+> 
+> 
+> ---
+> This report is generated by a bot. It may contain errors.
+> See https://goo.gl/tpsmEJ for more information about syzbot.
+> syzbot engineers can be reached at syzkaller@googlegroups.com.
+> 
+> syzbot will keep track of this issue. See:
+> https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
 
-On 31.05.21 г. 12:09, Dmitry Vyukov wrote:
-> On Mon, May 31, 2021 at 10:57 AM Nikolay Borisov <nborisov@suse.com> wrote:
->> On 31.05.21 г. 11:55, Dmitry Vyukov wrote:
->>> On Mon, May 31, 2021 at 10:44 AM 'Nikolay Borisov' via syzkaller-bugs
->>> <syzkaller-bugs@googlegroups.com> wrote:
->>>> On 31.05.21 г. 10:53, syzbot wrote:
->>>>> Hello,
->>>>>
->>>>> syzbot found the following issue on:
->>>>>
->>>>> HEAD commit:    1434a312 Merge branch 'for-5.13-fixes' of git://git.kernel..
->>>>> git tree:       upstream
->>>>> console output: https://syzkaller.appspot.com/x/log.txt?x=162843f3d00000
->>>>> kernel config:  https://syzkaller.appspot.com/x/.config?x=9f3da44a01882e99
->>>>> dashboard link: https://syzkaller.appspot.com/bug?extid=a6bf271c02e4fe66b4e4
->>>>>
->>>>> Unfortunately, I don't have any reproducer for this issue yet.
->>>>>
->>>>> IMPORTANT: if you fix the issue, please add the following tag to the commit:
->>>>> Reported-by: syzbot+a6bf271c02e4fe66b4e4@syzkaller.appspotmail.com
->>>>>
->>>>> assertion failed: !memcmp(fs_info->fs_devices->fsid, fs_info->super_copy->fsid, BTRFS_FSID_SIZE), in fs/btrfs/disk-io.c:3282
->>>>
->>>> This means a device contains a btrfs filesystem which has a different
->>>> FSID in its superblock than the fsid which all devices part of the same
->>>> fs_devices should have. This can happen in 2 ways - memory corruption
->>>> where either of the ->fsid member are corrupted or if there was a crash
->>>> while a filesystem's fsid was being changed. We need more context about
->>>> what the test did?
->>>
->>> Hi Nikolay,
->>>
->>> From a semantic point of view we can consider that it just mounts /dev/random.
->>> If syzbot comes up with a reproducer it will post it, but you seem to
->>> already figure out what happened, so I assume you can write a unit
->>> test for this.
->>>
->>
->> Well no, under normal circumstances this shouldn't trigger. So if syzbot
->> is doing something stupid as mounting /dev/random then I don't see a
->> problem here. The assert is there to catch inconsistencies during normal
->> operation which doesn't seem to be the case here.
-> 
-> 
-> Does this mean that CONFIG_BTRFS_ASSERT needs to be disabled in any testing?
-> What is it intended for? Or it can only be enabled when mounting known
-> good images? But then I assume even btrfs unit tests mount some
-> invalid images, so it would mean it can't be used even  during unit
-> testing?
-> 
-> Looking at the output of "grep ASSERT fs/btrfs/*.c" it looks like most
-> of these actually check for something that "must never happen". E.g.
-> some lists/pointers are empty/non-empty in particular states. And
-> "must never happen" checks are for testing scenarios...
-> 
-> Taking this particular FSID mismatch assert, should such corrupted
-> images be mounted for end users? Should users be notified? Currently
-> they are mounted and users are not notified, what is the purpose of
-> this assertion?
-> 
-> Perhaps CONFIG_BTRFS_ASSERT needs to be split into "must never happen"
-> checks that are enabled during testing and normal if's with pr_err for
-> user notifications?
-> 
+-- 
+Regards/Gruss,
+    Boris.
 
-After going through the code you've convinced me. I just sent a patch
-turning the 2 debugging asserts into full-fledged checks in
-validate_super. So now the correct behavior is to prevent mounting of
-such images.  How can I force syzbot to retest with the given patch applied?
+https://people.kernel.org/tglx/notes-about-netiquette
