@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 453F53963C8
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 17:33:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7FAF7395C63
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 15:30:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234697AbhEaPet (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 11:34:49 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43304 "EHLO mail.kernel.org"
+        id S231994AbhEaNb7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 09:31:59 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54726 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233083AbhEaORj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 10:17:39 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 08190619A8;
-        Mon, 31 May 2021 13:43:40 +0000 (UTC)
+        id S232006AbhEaNX1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 09:23:27 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DD796613EB;
+        Mon, 31 May 2021 13:19:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1622468621;
-        bh=jiGlot0zVWrzzRPERQIkJbnbZREjL7ezFimv9H6oI/o=;
+        s=korg; t=1622467197;
+        bh=WdFcZprQndjTYS/SxBiIeNcjRD9TVeMtArvFYsCVERE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=tlA3YTjUeSEF/1Y0S6JAq8uKxGtYrjI5V8T2wZvInNaYP40AxBgRFGHQRVqU2hTyc
-         SLaPC0sMIswglbhpbXcK9kyB/tPXLzNf5v+53GpjLCfuYCXxvMBm9s78fKM+AU7t+r
-         Qk0J0Oe0BRwrh/ApUyC2qEHbuXSHGn7ke0QDIqRY=
+        b=y+Rd0BsLYk9opyHc9ShsLo5HMexw6zhc/q8lw1pCIddq3A31J6zB+DunQxt2QcbTg
+         ZIJwupbSI3Npr8Ev5Yxs4ZyUFWPdF36EwFj0wRjef4UbDx3YEcVbF+L+0A6GwKEL1n
+         3AI8qS98eBSikl9s325lkP8A8IHGEjViFTageTq4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>
-Subject: [PATCH 5.4 062/177] usb: gadget: udc: renesas_usb3: Fix a race in usb3_start_pipen()
+        stable@vger.kernel.org, Anna Schumaker <Anna.Schumaker@Netapp.com>,
+        Trond Myklebust <trond.myklebust@hammerspace.com>
+Subject: [PATCH 4.9 06/66] NFSv4: Fix a NULL pointer dereference in pnfs_mark_matching_lsegs_return()
 Date:   Mon, 31 May 2021 15:13:39 +0200
-Message-Id: <20210531130650.046938260@linuxfoundation.org>
+Message-Id: <20210531130636.470565621@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210531130647.887605866@linuxfoundation.org>
-References: <20210531130647.887605866@linuxfoundation.org>
+In-Reply-To: <20210531130636.254683895@linuxfoundation.org>
+References: <20210531130636.254683895@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,63 +39,60 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>
+From: Anna Schumaker <Anna.Schumaker@Netapp.com>
 
-commit e752dbc59e1241b13b8c4f7b6eb582862e7668fe upstream.
+commit a421d218603ffa822a0b8045055c03eae394a7eb upstream.
 
-The usb3_start_pipen() is called by renesas_usb3_ep_queue() and
-usb3_request_done_pipen() so that usb3_start_pipen() is possible
-to cause a race when getting usb3_first_req like below:
+Commit de144ff4234f changes _pnfs_return_layout() to call
+pnfs_mark_matching_lsegs_return() passing NULL as the struct
+pnfs_layout_range argument. Unfortunately,
+pnfs_mark_matching_lsegs_return() doesn't check if we have a value here
+before dereferencing it, causing an oops.
 
-renesas_usb3_ep_queue()
- spin_lock_irqsave()
- list_add_tail()
- spin_unlock_irqrestore()
- usb3_start_pipen()
-  usb3_first_req = usb3_get_request() --- [1]
- --- interrupt ---
- usb3_irq_dma_int()
- usb3_request_done_pipen()
-  usb3_get_request()
-  usb3_start_pipen()
-  usb3_first_req = usb3_get_request()
-  ...
-  (the req is possible to be finished in the interrupt)
+I'm able to hit this crash consistently when running connectathon basic
+tests on NFS v4.1/v4.2 against Ontap.
 
-The usb3_first_req [1] above may have been finished after the interrupt
-ended so that this driver caused to start a transfer wrongly. To fix this
-issue, getting/checking the usb3_first_req are under spin_lock_irqsave()
-in the same section.
-
-Fixes: 746bfe63bba3 ("usb: gadget: renesas_usb3: add support for Renesas USB3.0 peripheral controller")
-Cc: stable <stable@vger.kernel.org>
-Signed-off-by: Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>
-Link: https://lore.kernel.org/r/20210524060155.1178724-1-yoshihiro.shimoda.uh@renesas.com
+Fixes: de144ff4234f ("NFSv4: Don't discard segments marked for return in _pnfs_return_layout()")
+Cc: stable@vger.kernel.org
+Signed-off-by: Anna Schumaker <Anna.Schumaker@Netapp.com>
+Signed-off-by: Trond Myklebust <trond.myklebust@hammerspace.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/usb/gadget/udc/renesas_usb3.c |    5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+ fs/nfs/pnfs.c |   15 +++++++--------
+ 1 file changed, 7 insertions(+), 8 deletions(-)
 
---- a/drivers/usb/gadget/udc/renesas_usb3.c
-+++ b/drivers/usb/gadget/udc/renesas_usb3.c
-@@ -1473,7 +1473,7 @@ static void usb3_start_pipen(struct rene
- 			     struct renesas_usb3_request *usb3_req)
+--- a/fs/nfs/pnfs.c
++++ b/fs/nfs/pnfs.c
+@@ -1070,6 +1070,11 @@ _pnfs_return_layout(struct inode *ino)
  {
- 	struct renesas_usb3 *usb3 = usb3_ep_to_usb3(usb3_ep);
--	struct renesas_usb3_request *usb3_req_first = usb3_get_request(usb3_ep);
-+	struct renesas_usb3_request *usb3_req_first;
- 	unsigned long flags;
- 	int ret = -EAGAIN;
- 	u32 enable_bits = 0;
-@@ -1481,7 +1481,8 @@ static void usb3_start_pipen(struct rene
- 	spin_lock_irqsave(&usb3->lock, flags);
- 	if (usb3_ep->halt || usb3_ep->started)
- 		goto out;
--	if (usb3_req != usb3_req_first)
-+	usb3_req_first = __usb3_get_request(usb3_ep);
-+	if (!usb3_req_first || usb3_req != usb3_req_first)
- 		goto out;
+ 	struct pnfs_layout_hdr *lo = NULL;
+ 	struct nfs_inode *nfsi = NFS_I(ino);
++	struct pnfs_layout_range range = {
++		.iomode		= IOMODE_ANY,
++		.offset		= 0,
++		.length		= NFS4_MAX_UINT64,
++	};
+ 	LIST_HEAD(tmp_list);
+ 	nfs4_stateid stateid;
+ 	int status = 0, empty;
+@@ -1088,16 +1093,10 @@ _pnfs_return_layout(struct inode *ino)
+ 	pnfs_get_layout_hdr(lo);
+ 	empty = list_empty(&lo->plh_segs);
+ 	pnfs_clear_layoutcommit(ino, &tmp_list);
+-	pnfs_mark_matching_lsegs_return(lo, &tmp_list, NULL, 0);
++	pnfs_mark_matching_lsegs_return(lo, &tmp_list, &range, 0);
  
- 	if (usb3_pn_change(usb3, usb3_ep->num) < 0)
+-	if (NFS_SERVER(ino)->pnfs_curr_ld->return_range) {
+-		struct pnfs_layout_range range = {
+-			.iomode		= IOMODE_ANY,
+-			.offset		= 0,
+-			.length		= NFS4_MAX_UINT64,
+-		};
++	if (NFS_SERVER(ino)->pnfs_curr_ld->return_range)
+ 		NFS_SERVER(ino)->pnfs_curr_ld->return_range(lo, &range);
+-	}
+ 
+ 	/* Don't send a LAYOUTRETURN if list was initially empty */
+ 	if (empty) {
 
 
