@@ -2,35 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 82E7E395ED7
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 16:03:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 57CD6396591
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 18:39:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233283AbhEaOEU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 10:04:20 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44036 "EHLO mail.kernel.org"
+        id S233599AbhEaQkv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 12:40:51 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47900 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232138AbhEaNlE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 09:41:04 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 090CB61412;
-        Mon, 31 May 2021 13:27:51 +0000 (UTC)
+        id S233234AbhEaOvQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 10:51:16 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A448661C9F;
+        Mon, 31 May 2021 13:57:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1622467672;
-        bh=2uHQSuBtQrpPAeM3h7B7iaCFgz3x0WTe7FSIOTqt+Us=;
+        s=korg; t=1622469461;
+        bh=xzw0tw1IR0RYsnpIoPwhz6vqdmCKGmd++IbrNm5iark=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ytiuAipwHdMUgM6pw8nzWZFbnFadH0GsKcmt/dOTjeJ2jVE6+Uwp0W0epKU1IclJn
-         /wct8E/slw7ns+n2xPUfK+bLTUmNQnfz36A+elPUqwo1BaA2MOkJAN/ELQp7mo1aVY
-         pMbw8UehaARVvg6SWe+E7cve8GRE2FNT2mH6iq9g=
+        b=q59hLnEHyKsiyqFwMfcxBj5YAH5IMxFJ+cQnmwyMoG5vhNGBdWpINoCoTx3vCEa5I
+         pTQTc7DioG0zxjTG7HJH81V6LuLdNZ0g1fxFOhY4A905AL9Ux/OGdEY2jCnCadjHw+
+         WYP1vICYLPprEgn2VTGbWvFbgp9IKjNvf+W6s50o=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
-        Trond Myklebust <trond.myklebust@hammerspace.com>
-Subject: [PATCH 4.14 35/79] NFS: fix an incorrect limit in filelayout_decode_layout()
+        stable@vger.kernel.org, Ritesh Harjani <riteshh@linux.ibm.com>,
+        Anand Jain <anand.jain@oracle.com>,
+        Filipe Manana <fdmanana@suse.com>,
+        David Sterba <dsterba@suse.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.12 205/296] btrfs: release path before starting transaction when cloning inline extent
 Date:   Mon, 31 May 2021 15:14:20 +0200
-Message-Id: <20210531130637.136064557@linuxfoundation.org>
+Message-Id: <20210531130710.767925416@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210531130636.002722319@linuxfoundation.org>
-References: <20210531130636.002722319@linuxfoundation.org>
+In-Reply-To: <20210531130703.762129381@linuxfoundation.org>
+References: <20210531130703.762129381@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,34 +42,154 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dan Carpenter <dan.carpenter@oracle.com>
+From: Filipe Manana <fdmanana@suse.com>
 
-commit 769b01ea68b6c49dc3cde6adf7e53927dacbd3a8 upstream.
+[ Upstream commit 6416954ca75baed71640bf3828625bf165fb9b5e ]
 
-The "sizeof(struct nfs_fh)" is two bytes too large and could lead to
-memory corruption.  It should be NFS_MAXFHSIZE because that's the size
-of the ->data[] buffer.
+When cloning an inline extent there are a few cases, such as when we have
+an implicit hole at file offset 0, where we start a transaction while
+holding a read lock on a leaf. Starting the transaction results in a call
+to sb_start_intwrite(), which results in doing a read lock on a percpu
+semaphore. Lockdep doesn't like this and complains about it:
 
-I reversed the size of the arguments to put the variable on the left.
+  [46.580704] ======================================================
+  [46.580752] WARNING: possible circular locking dependency detected
+  [46.580799] 5.13.0-rc1 #28 Not tainted
+  [46.580832] ------------------------------------------------------
+  [46.580877] cloner/3835 is trying to acquire lock:
+  [46.580918] c00000001301d638 (sb_internal#2){.+.+}-{0:0}, at: clone_copy_inline_extent+0xe4/0x5a0
+  [46.581167]
+  [46.581167] but task is already holding lock:
+  [46.581217] c000000007fa2550 (btrfs-tree-00){++++}-{3:3}, at: __btrfs_tree_read_lock+0x70/0x1d0
+  [46.581293]
+  [46.581293] which lock already depends on the new lock.
+  [46.581293]
+  [46.581351]
+  [46.581351] the existing dependency chain (in reverse order) is:
+  [46.581410]
+  [46.581410] -> #1 (btrfs-tree-00){++++}-{3:3}:
+  [46.581464]        down_read_nested+0x68/0x200
+  [46.581536]        __btrfs_tree_read_lock+0x70/0x1d0
+  [46.581577]        btrfs_read_lock_root_node+0x88/0x200
+  [46.581623]        btrfs_search_slot+0x298/0xb70
+  [46.581665]        btrfs_set_inode_index+0xfc/0x260
+  [46.581708]        btrfs_new_inode+0x26c/0x950
+  [46.581749]        btrfs_create+0xf4/0x2b0
+  [46.581782]        lookup_open.isra.57+0x55c/0x6a0
+  [46.581855]        path_openat+0x418/0xd20
+  [46.581888]        do_filp_open+0x9c/0x130
+  [46.581920]        do_sys_openat2+0x2ec/0x430
+  [46.581961]        do_sys_open+0x90/0xc0
+  [46.581993]        system_call_exception+0x3d4/0x410
+  [46.582037]        system_call_common+0xec/0x278
+  [46.582078]
+  [46.582078] -> #0 (sb_internal#2){.+.+}-{0:0}:
+  [46.582135]        __lock_acquire+0x1e90/0x2c50
+  [46.582176]        lock_acquire+0x2b4/0x5b0
+  [46.582263]        start_transaction+0x3cc/0x950
+  [46.582308]        clone_copy_inline_extent+0xe4/0x5a0
+  [46.582353]        btrfs_clone+0x5fc/0x880
+  [46.582388]        btrfs_clone_files+0xd8/0x1c0
+  [46.582434]        btrfs_remap_file_range+0x3d8/0x590
+  [46.582481]        do_clone_file_range+0x10c/0x270
+  [46.582558]        vfs_clone_file_range+0x1b0/0x310
+  [46.582605]        ioctl_file_clone+0x90/0x130
+  [46.582651]        do_vfs_ioctl+0x874/0x1ac0
+  [46.582697]        sys_ioctl+0x6c/0x120
+  [46.582733]        system_call_exception+0x3d4/0x410
+  [46.582777]        system_call_common+0xec/0x278
+  [46.582822]
+  [46.582822] other info that might help us debug this:
+  [46.582822]
+  [46.582888]  Possible unsafe locking scenario:
+  [46.582888]
+  [46.582942]        CPU0                    CPU1
+  [46.582984]        ----                    ----
+  [46.583028]   lock(btrfs-tree-00);
+  [46.583062]                                lock(sb_internal#2);
+  [46.583119]                                lock(btrfs-tree-00);
+  [46.583174]   lock(sb_internal#2);
+  [46.583212]
+  [46.583212]  *** DEADLOCK ***
+  [46.583212]
+  [46.583266] 6 locks held by cloner/3835:
+  [46.583299]  #0: c00000001301d448 (sb_writers#12){.+.+}-{0:0}, at: ioctl_file_clone+0x90/0x130
+  [46.583382]  #1: c00000000f6d3768 (&sb->s_type->i_mutex_key#15){+.+.}-{3:3}, at: lock_two_nondirectories+0x58/0xc0
+  [46.583477]  #2: c00000000f6d72a8 (&sb->s_type->i_mutex_key#15/4){+.+.}-{3:3}, at: lock_two_nondirectories+0x9c/0xc0
+  [46.583574]  #3: c00000000f6d7138 (&ei->i_mmap_lock){+.+.}-{3:3}, at: btrfs_remap_file_range+0xd0/0x590
+  [46.583657]  #4: c00000000f6d35f8 (&ei->i_mmap_lock/1){+.+.}-{3:3}, at: btrfs_remap_file_range+0xe0/0x590
+  [46.583743]  #5: c000000007fa2550 (btrfs-tree-00){++++}-{3:3}, at: __btrfs_tree_read_lock+0x70/0x1d0
+  [46.583828]
+  [46.583828] stack backtrace:
+  [46.583872] CPU: 1 PID: 3835 Comm: cloner Not tainted 5.13.0-rc1 #28
+  [46.583931] Call Trace:
+  [46.583955] [c0000000167c7200] [c000000000c1ee78] dump_stack+0xec/0x144 (unreliable)
+  [46.584052] [c0000000167c7240] [c000000000274058] print_circular_bug.isra.32+0x3a8/0x400
+  [46.584123] [c0000000167c72e0] [c0000000002741f4] check_noncircular+0x144/0x190
+  [46.584191] [c0000000167c73b0] [c000000000278fc0] __lock_acquire+0x1e90/0x2c50
+  [46.584259] [c0000000167c74f0] [c00000000027aa94] lock_acquire+0x2b4/0x5b0
+  [46.584317] [c0000000167c75e0] [c000000000a0d6cc] start_transaction+0x3cc/0x950
+  [46.584388] [c0000000167c7690] [c000000000af47a4] clone_copy_inline_extent+0xe4/0x5a0
+  [46.584457] [c0000000167c77c0] [c000000000af525c] btrfs_clone+0x5fc/0x880
+  [46.584514] [c0000000167c7990] [c000000000af5698] btrfs_clone_files+0xd8/0x1c0
+  [46.584583] [c0000000167c7a00] [c000000000af5b58] btrfs_remap_file_range+0x3d8/0x590
+  [46.584652] [c0000000167c7ae0] [c0000000005d81dc] do_clone_file_range+0x10c/0x270
+  [46.584722] [c0000000167c7b40] [c0000000005d84f0] vfs_clone_file_range+0x1b0/0x310
+  [46.584793] [c0000000167c7bb0] [c00000000058bf80] ioctl_file_clone+0x90/0x130
+  [46.584861] [c0000000167c7c10] [c00000000058c894] do_vfs_ioctl+0x874/0x1ac0
+  [46.584922] [c0000000167c7d10] [c00000000058db4c] sys_ioctl+0x6c/0x120
+  [46.584978] [c0000000167c7d60] [c0000000000364a4] system_call_exception+0x3d4/0x410
+  [46.585046] [c0000000167c7e10] [c00000000000d45c] system_call_common+0xec/0x278
+  [46.585114] --- interrupt: c00 at 0x7ffff7e22990
+  [46.585160] NIP:  00007ffff7e22990 LR: 00000001000010ec CTR: 0000000000000000
+  [46.585224] REGS: c0000000167c7e80 TRAP: 0c00   Not tainted  (5.13.0-rc1)
+  [46.585280] MSR:  800000000280f033 <SF,VEC,VSX,EE,PR,FP,ME,IR,DR,RI,LE>  CR: 28000244  XER: 00000000
+  [46.585374] IRQMASK: 0
+  [46.585374] GPR00: 0000000000000036 00007fffffffdec0 00007ffff7f17100 0000000000000004
+  [46.585374] GPR04: 000000008020940d 00007fffffffdf40 0000000000000000 0000000000000000
+  [46.585374] GPR08: 0000000000000004 0000000000000000 0000000000000000 0000000000000000
+  [46.585374] GPR12: 0000000000000000 00007ffff7ffa940 0000000000000000 0000000000000000
+  [46.585374] GPR16: 0000000000000000 0000000000000000 0000000000000000 0000000000000000
+  [46.585374] GPR20: 0000000000000000 000000009123683e 00007fffffffdf40 0000000000000000
+  [46.585374] GPR24: 0000000000000000 0000000000000000 0000000000000000 0000000000000004
+  [46.585374] GPR28: 0000000100030260 0000000100030280 0000000000000003 000000000000005f
+  [46.585919] NIP [00007ffff7e22990] 0x7ffff7e22990
+  [46.585964] LR [00000001000010ec] 0x1000010ec
+  [46.586010] --- interrupt: c00
 
-Fixes: 16b374ca439f ("NFSv4.1: pnfs: filelayout: add driver's LAYOUTGET and GETDEVICEINFO infrastructure")
-Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
-Signed-off-by: Trond Myklebust <trond.myklebust@hammerspace.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+This should be a false positive, as both locks are acquired in read mode.
+Nevertheless, we don't need to hold a leaf locked when we start the
+transaction, so just release the leaf (path) before starting it.
+
+Reported-by: Ritesh Harjani <riteshh@linux.ibm.com>
+Link: https://lore.kernel.org/linux-btrfs/20210513214404.xks77p566fglzgum@riteshh-domain/
+Reviewed-by: Anand Jain <anand.jain@oracle.com>
+Signed-off-by: Filipe Manana <fdmanana@suse.com>
+Reviewed-by: David Sterba <dsterba@suse.com>
+Signed-off-by: David Sterba <dsterba@suse.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/nfs/filelayout/filelayout.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ fs/btrfs/reflink.c | 5 +++++
+ 1 file changed, 5 insertions(+)
 
---- a/fs/nfs/filelayout/filelayout.c
-+++ b/fs/nfs/filelayout/filelayout.c
-@@ -717,7 +717,7 @@ filelayout_decode_layout(struct pnfs_lay
- 		if (unlikely(!p))
- 			goto out_err;
- 		fl->fh_array[i]->size = be32_to_cpup(p++);
--		if (sizeof(struct nfs_fh) < fl->fh_array[i]->size) {
-+		if (fl->fh_array[i]->size > NFS_MAXFHSIZE) {
- 			printk(KERN_ERR "NFS: Too big fh %d received %d\n",
- 			       i, fl->fh_array[i]->size);
- 			goto out_err;
+diff --git a/fs/btrfs/reflink.c b/fs/btrfs/reflink.c
+index 0abbf050580d..53ee17f5e382 100644
+--- a/fs/btrfs/reflink.c
++++ b/fs/btrfs/reflink.c
+@@ -285,6 +285,11 @@ copy_inline_extent:
+ 	ret = btrfs_inode_set_file_extent_range(BTRFS_I(dst), 0, aligned_end);
+ out:
+ 	if (!ret && !trans) {
++		/*
++		 * Release path before starting a new transaction so we don't
++		 * hold locks that would confuse lockdep.
++		 */
++		btrfs_release_path(path);
+ 		/*
+ 		 * No transaction here means we copied the inline extent into a
+ 		 * page of the destination inode.
+-- 
+2.30.2
+
 
 
