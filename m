@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 983B03963F8
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 17:40:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4ED13395DB5
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 15:49:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233782AbhEaPmM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 11:42:12 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48850 "EHLO mail.kernel.org"
+        id S233225AbhEaNuY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 09:50:24 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39090 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233666AbhEaOXa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 10:23:30 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0DEE561A06;
-        Mon, 31 May 2021 13:45:51 +0000 (UTC)
+        id S232261AbhEaNdW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 09:33:22 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4055961439;
+        Mon, 31 May 2021 13:24:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1622468752;
-        bh=40J/3GWj3gKLWslHKs2Yo2Y6QSbX0dqakuseEQRoHDE=;
+        s=korg; t=1622467464;
+        bh=/LAiBxxPS3dyAKvwHJ6hjFBxCZ4+5UXQ2QLuztF1k/g=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=h08X/rRvkiPNca1fKZJ/1aqAOiVMEzDBxjcwt5KVw8YaTXGNLrbwNS3IDb7nLsYKs
-         xXtmcDklmMqpvNuCHRdBtuR8yLXZ0nZa8mBnSBUegK6pCFodHZT9v/oOBYNr8HkNJx
-         7aeXJq47GNHr8RwoovATjQyrh+2ZOV3QKA0CY/sY=
+        b=zQv6nDA1MOHSLmx5GxwJEPSvvSQJb6VsdQfdlUDTVBgn6F2pjzj0B/7zdNgYcU25K
+         xM4SFULLt3scKPZWSL8MRUnJMI+Wqxr1kml/Z8p4dgkg91eKOrU+HvmaH9KeuP7oZ6
+         CAaySdvQY2qeDndSIr85PiYAztpZsMXlQmJhhOGc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
-        Zou Wei <zou_wei@huawei.com>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 087/177] gpio: cadence: Add missing MODULE_DEVICE_TABLE
+        stable@vger.kernel.org, Jon Maloy <jmaloy@redhat.com>,
+        Tung Nguyen <tung.q.nguyen@dektech.com.au>,
+        Hoang Le <hoang.h.le@dektech.com.au>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: [PATCH 4.19 068/116] Revert "net:tipc: Fix a double free in tipc_sk_mcast_rcv"
 Date:   Mon, 31 May 2021 15:14:04 +0200
-Message-Id: <20210531130650.898758766@linuxfoundation.org>
+Message-Id: <20210531130642.458439263@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210531130647.887605866@linuxfoundation.org>
-References: <20210531130647.887605866@linuxfoundation.org>
+In-Reply-To: <20210531130640.131924542@linuxfoundation.org>
+References: <20210531130640.131924542@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,36 +41,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zou Wei <zou_wei@huawei.com>
+From: Hoang Le <hoang.h.le@dektech.com.au>
 
-[ Upstream commit 1e948b1752b58c9c570989ab29ceef5b38fdccda ]
+commit 75016891357a628d2b8acc09e2b9b2576c18d318 upstream.
 
-This patch adds missing MODULE_DEVICE_TABLE definition which generates
-correct modalias for automatic loading of this driver when it is built
-as an external module.
+This reverts commit 6bf24dc0cc0cc43b29ba344b66d78590e687e046.
+Above fix is not correct and caused memory leak issue.
 
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Zou Wei <zou_wei@huawei.com>
-Signed-off-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Fixes: 6bf24dc0cc0c ("net:tipc: Fix a double free in tipc_sk_mcast_rcv")
+Acked-by: Jon Maloy <jmaloy@redhat.com>
+Acked-by: Tung Nguyen <tung.q.nguyen@dektech.com.au>
+Signed-off-by: Hoang Le <hoang.h.le@dektech.com.au>
+Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/gpio/gpio-cadence.c | 1 +
- 1 file changed, 1 insertion(+)
+ net/tipc/socket.c |    5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/gpio/gpio-cadence.c b/drivers/gpio/gpio-cadence.c
-index a4d3239d2594..4ab3fcd9b9ba 100644
---- a/drivers/gpio/gpio-cadence.c
-+++ b/drivers/gpio/gpio-cadence.c
-@@ -278,6 +278,7 @@ static const struct of_device_id cdns_of_ids[] = {
- 	{ .compatible = "cdns,gpio-r1p02" },
- 	{ /* sentinel */ },
- };
-+MODULE_DEVICE_TABLE(of, cdns_of_ids);
- 
- static struct platform_driver cdns_gpio_driver = {
- 	.driver = {
--- 
-2.30.2
-
+--- a/net/tipc/socket.c
++++ b/net/tipc/socket.c
+@@ -1187,7 +1187,10 @@ void tipc_sk_mcast_rcv(struct net *net,
+ 		spin_lock_bh(&inputq->lock);
+ 		if (skb_peek(arrvq) == skb) {
+ 			skb_queue_splice_tail_init(&tmpq, inputq);
+-			__skb_dequeue(arrvq);
++			/* Decrease the skb's refcnt as increasing in the
++			 * function tipc_skb_peek
++			 */
++			kfree_skb(__skb_dequeue(arrvq));
+ 		}
+ 		spin_unlock_bh(&inputq->lock);
+ 		__skb_queue_purge(&tmpq);
 
 
