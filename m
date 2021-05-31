@@ -2,86 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ACDB4395909
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 12:37:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DCB6639590C
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 12:37:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231356AbhEaKij (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 06:38:39 -0400
-Received: from mx2.suse.de ([195.135.220.15]:37354 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231344AbhEaKie (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 06:38:34 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1622457413; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-        bh=spA1WpO8iPOW7X7Idno4u2SyDNrcS/UVwi7LqykGzYY=;
-        b=HF8BnQwNDq7jA0Z/NRVOmZUW2OeI3vziHM4gCVcXUu8QS08TKOXZOzHRnrQqW/qvkwDXmu
-        RMQLsopql4cqMM59ldVhjvuRdoZP2cwUZ0OvV1bZ+PQKkwMBNpQ6VHzqlELDRFCmY0MHvx
-        /v1f+lZqeajy2pNbKEPrTv04MD9z+5A=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1622457413;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-        bh=spA1WpO8iPOW7X7Idno4u2SyDNrcS/UVwi7LqykGzYY=;
-        b=M91Qa1eZM9y91OgG+J6EbX/7qNYePKUlEeZgOpqEOWKPhneXRvvM0q5rHHA3FDhXS2zcsQ
-        H/iDKro39JCfZ6Dw==
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 802EAAE72;
-        Mon, 31 May 2021 10:36:53 +0000 (UTC)
-From:   Daniel Wagner <dwagner@suse.de>
-To:     linux-nvme@lists.infradead.org
-Cc:     linux-kernel@vger.kernel.org, Keith Busch <kbusch@kernel.org>,
-        Jens Axboe <axboe@fb.com>, Christoph Hellwig <hch@lst.de>,
-        Sagi Grimberg <sagi@grimberg.me>,
-        Daniel Wagner <dwagner@suse.de>
-Subject: [PATCH] nvme: verify MNAN value if ANA is enabled
-Date:   Mon, 31 May 2021 12:36:51 +0200
-Message-Id: <20210531103651.109426-1-dwagner@suse.de>
-X-Mailer: git-send-email 2.29.2
+        id S231343AbhEaKj1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 06:39:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48536 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231164AbhEaKj0 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 06:39:26 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8712FC061574
+        for <linux-kernel@vger.kernel.org>; Mon, 31 May 2021 03:37:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=+cR+LF39sFuaG7EvZoPRB4NGSld1wXBMvjkNx+SXY6c=; b=mALJbTW9Bj0izPUKdEmNhwPUWG
+        FkGCzfx3BZiIb0a4YGCm0Trt6UEbRG9age4JpPgYYldbwrjPdU7O6d674bbJtXc7Z0aEQawGz2Mie
+        7AYK8dDCKxr4edd3p10cANrVXFSSkCeHq/uHTpgwhND2Fs/VxoIJzCF1KWWPPpE8DoVLJ0W63WjJq
+        FS4XyH43/FgpSaAuhM3duw/lIQNFSWnrzF8pXf+2TERI3xJpJaJCdBTl0MHV3X0xzwmuROyinxswo
+        A5U3htT3MFlO9sfVHBFZTzFR/mHU7un2zTKouVDNfobS69a62zasT1Ys5gXnHhVYI4z7a17NkG5O1
+        v2mluoPQ==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1lnfIP-002FvM-1g; Mon, 31 May 2021 10:37:28 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id F3A8E300223;
+        Mon, 31 May 2021 12:37:26 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id D4ABD20709425; Mon, 31 May 2021 12:37:26 +0200 (CEST)
+Date:   Mon, 31 May 2021 12:37:26 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Yuan ZhaoXiong <yuanzhaoxiong@baidu.com>
+Cc:     mingo@redhat.com, juri.lelli@redhat.com,
+        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
+        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
+        bristot@redhat.com, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] sched: Optimize housekeeping_cpumask in for_each_cpu_and
+Message-ID: <YLS8ZsV40lh3vuA5@hirez.programming.kicks-ass.net>
+References: <1618671697-26098-1-git-send-email-yuanzhaoxiong@baidu.com>
+ <YK9pGoOxA7gVi1S2@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YK9pGoOxA7gVi1S2@hirez.programming.kicks-ass.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The controller is required to have a non-zero MNAN value if it supports
-ANA:
+On Thu, May 27, 2021 at 11:40:42AM +0200, Peter Zijlstra wrote:
+> On Sat, Apr 17, 2021 at 11:01:37PM +0800, Yuan ZhaoXiong wrote:
+> > On a 128 cores AMD machine, there are 8 cores in nohz_full mode, and
+> > the others are used for housekeeping. When many housekeeping cpus are
+> > in idle state, we can observe huge time burn in the loop for searching
+> > nearest busy housekeeper cpu by ftrace.
+> > 
+> >    9)               |              get_nohz_timer_target() {
+> >    9)               |                housekeeping_test_cpu() {
+> >    9)   0.390 us    |                  housekeeping_get_mask.part.1();
+> >    9)   0.561 us    |                }
+> >    9)   0.090 us    |                __rcu_read_lock();
+> >    9)   0.090 us    |                housekeeping_cpumask();
+> >    9)   0.521 us    |                housekeeping_cpumask();
+> >    9)   0.140 us    |                housekeeping_cpumask();
+> > 
+> >    ...
+> > 
+> >    9)   0.500 us    |                housekeeping_cpumask();
+> >    9)               |                housekeeping_any_cpu() {
+> >    9)   0.090 us    |                  housekeeping_get_mask.part.1();
+> >    9)   0.100 us    |                  sched_numa_find_closest();
+> >    9)   0.491 us    |                }
+> >    9)   0.100 us    |                __rcu_read_unlock();
+> >    9) + 76.163 us   |              }
+> > 
+> > for_each_cpu_and() is a micro function, so in get_nohz_timer_target()
+> > function the
+> >         for_each_cpu_and(i, sched_domain_span(sd),
+> >                 housekeeping_cpumask(HK_FLAG_TIMER))
+> > equals to below:
+> >         for (i = -1; i = cpumask_next_and(i, sched_domain_span(sd),
+> >                 housekeeping_cpumask(HK_FLAG_TIMER)), i < nr_cpu_ids;)
+> > That will cause that housekeeping_cpumask() will be invoked many times.
+> > The housekeeping_cpumask() function returns a const value, so it is
+> > unnecessary to invoke it every time. This patch can minimize the worst
+> > searching time from ~76us to ~16us in my testing.
+> > 
+> > Similarly, the find_new_ilb() function has the same problem.
+> > 
+> > Signed-off-by: Yuan ZhaoXiong <yuanzhaoxiong@baidu.com>
+> > Signed-off-by: Li RongQing <lirongqing@baidu.com>
+> 
+> Just noticed, this SoB chain isn't valid. What do I do with Li's entry?
 
-   If the controller supports Asymmetric Namespace Access Reporting, then
-   this field shall be set to a non-zero value that is less than or equal
-   to the NN value.
-
-Signed-off-by: Daniel Wagner <dwagner@suse.de>
----
-This is a follow up to the discussion in
-
-  https://lore.kernel.org/linux-nvme/20210521144734.90044-1-dwagner@suse.de/
-
- drivers/nvme/host/core.c | 10 ++++++++++
- 1 file changed, 10 insertions(+)
-
-diff --git a/drivers/nvme/host/core.c b/drivers/nvme/host/core.c
-index cb1a76a3d42a..4c412adc9e14 100644
---- a/drivers/nvme/host/core.c
-+++ b/drivers/nvme/host/core.c
-@@ -2972,6 +2972,16 @@ static int nvme_init_identify(struct nvme_ctrl *ctrl)
- 	if (ret < 0)
- 		goto out_free;
- 
-+#ifdef CONFIG_NVME_MULTIPATH
-+	if (ctrl->ana_log_buf && (!ctrl->max_namespaces ||
-+				  ctrl->max_namespaces > le32_to_cpu(id->nn))) {
-+		dev_err(ctrl->device,
-+			"Invalid MNAN value %u\n", ctrl->max_namespaces);
-+		ret = -EINVAL;
-+		goto out_free;
-+	}
-+#endif
-+
- 	if (ctrl->apst_enabled && !prev_apst_enabled)
- 		dev_pm_qos_expose_latency_tolerance(ctrl->device);
- 	else if (!ctrl->apst_enabled && prev_apst_enabled)
--- 
-2.29.2
-
+I'm dropping this patch, please resend with a valid SoB chain.
