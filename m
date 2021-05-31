@@ -2,38 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 82CAA395D56
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 15:43:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CB419395B4A
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 15:17:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233069AbhEaNoh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 09:44:37 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38858 "EHLO mail.kernel.org"
+        id S231819AbhEaNTG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 09:19:06 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53662 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231751AbhEaNbH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 09:31:07 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 32D556142F;
-        Mon, 31 May 2021 13:23:17 +0000 (UTC)
+        id S231691AbhEaNSY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 09:18:24 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 333506135C;
+        Mon, 31 May 2021 13:16:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1622467397;
-        bh=5G5m7hAUU0uRSL7s8dcRzwlGcdepeWSeB312+PP0gZU=;
+        s=korg; t=1622467003;
+        bh=rwBrV/Kt9NkPQJ18K7sO6VBaCn6N3+qHMVU/GcKZ438=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=vi+zafuBpKiWyJ0Emkz1iz8g7wdukt1PvQov6+T9LnbGFwONL193QVo4EiY9ufQwZ
-         mUb3yAR4GnSCnOPxSzPRksSbu0pZZkhey6T4IO60QEW3bMOTvgLM3/8JzFxCgp2je0
-         uD7AqhKvoy+yNZkl9TjYQXzV1iTtIkgx9m2gfl90=
+        b=Ftj2HzChMc75k2H1gKM94p95NfN58wmiMsWTn59e+GJNkqhDu/vx8AZhDw7ch/Bez
+         nAQs7RZoS0tl9x8tRllkuPnKhfGDlImgD821KWcvuFjJ6NPDdGVGJI/5bNWS3Qy0Hn
+         eFi0DlT3Zs4kjxt+mfm/6/UN9dj8hvVkYQ+TNF5M=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Frank van der Linden <fllinden@amazon.com>,
-        Ovidiu Panait <ovidiu.panait@windriver.com>
-Subject: [PATCH 4.19 050/116] bpf: Improve verifier error messages for users
+        stable@vger.kernel.org,
+        "William A. Kennington III" <wak@google.com>,
+        Mark Brown <broonie@kernel.org>, Lukas Wunner <lukas@wunner.de>
+Subject: [PATCH 4.4 20/54] spi: Fix use-after-free with devm_spi_alloc_*
 Date:   Mon, 31 May 2021 15:13:46 +0200
-Message-Id: <20210531130641.872636598@linuxfoundation.org>
+Message-Id: <20210531130635.728966293@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210531130640.131924542@linuxfoundation.org>
-References: <20210531130640.131924542@linuxfoundation.org>
+In-Reply-To: <20210531130635.070310929@linuxfoundation.org>
+References: <20210531130635.070310929@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,183 +40,91 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Daniel Borkmann <daniel@iogearbox.net>
+From: William A. Kennington III <wak@google.com>
 
-commit a6aaece00a57fa6f22575364b3903dfbccf5345d upstream
+commit 794aaf01444d4e765e2b067cba01cc69c1c68ed9 upstream.
 
-Consolidate all error handling and provide more user-friendly error messages
-from sanitize_ptr_alu() and sanitize_val_alu().
+We can't rely on the contents of the devres list during
+spi_unregister_controller(), as the list is already torn down at the
+time we perform devres_find() for devm_spi_release_controller. This
+causes devices registered with devm_spi_alloc_{master,slave}() to be
+mistakenly identified as legacy, non-devm managed devices and have their
+reference counters decremented below 0.
 
-Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
-Reviewed-by: John Fastabend <john.fastabend@gmail.com>
-Acked-by: Alexei Starovoitov <ast@kernel.org>
-[fllinden@amazon.com: backport to 5.4]
-Signed-off-by: Frank van der Linden <fllinden@amazon.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Signed-off-by: Ovidiu Panait <ovidiu.panait@windriver.com>
+------------[ cut here ]------------
+WARNING: CPU: 1 PID: 660 at lib/refcount.c:28 refcount_warn_saturate+0x108/0x174
+[<b0396f04>] (refcount_warn_saturate) from [<b03c56a4>] (kobject_put+0x90/0x98)
+[<b03c5614>] (kobject_put) from [<b0447b4c>] (put_device+0x20/0x24)
+ r4:b6700140
+[<b0447b2c>] (put_device) from [<b07515e8>] (devm_spi_release_controller+0x3c/0x40)
+[<b07515ac>] (devm_spi_release_controller) from [<b045343c>] (release_nodes+0x84/0xc4)
+ r5:b6700180 r4:b6700100
+[<b04533b8>] (release_nodes) from [<b0454160>] (devres_release_all+0x5c/0x60)
+ r8:b1638c54 r7:b117ad94 r6:b1638c10 r5:b117ad94 r4:b163dc10
+[<b0454104>] (devres_release_all) from [<b044e41c>] (__device_release_driver+0x144/0x1ec)
+ r5:b117ad94 r4:b163dc10
+[<b044e2d8>] (__device_release_driver) from [<b044f70c>] (device_driver_detach+0x84/0xa0)
+ r9:00000000 r8:00000000 r7:b117ad94 r6:b163dc54 r5:b1638c10 r4:b163dc10
+[<b044f688>] (device_driver_detach) from [<b044d274>] (unbind_store+0xe4/0xf8)
+
+Instead, determine the devm allocation state as a flag on the
+controller which is guaranteed to be stable during cleanup.
+
+Fixes: 5e844cc37a5c ("spi: Introduce device-managed SPI controller allocation")
+Signed-off-by: William A. Kennington III <wak@google.com>
+Link: https://lore.kernel.org/r/20210407095527.2771582-1-wak@google.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
+[lukas: backport to v4.4.270]
+Signed-off-by: Lukas Wunner <lukas@wunner.de>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- kernel/bpf/verifier.c |   84 ++++++++++++++++++++++++++++++++++++--------------
- 1 file changed, 62 insertions(+), 22 deletions(-)
+ drivers/spi/spi.c       |    9 ++-------
+ include/linux/spi/spi.h |    3 +++
+ 2 files changed, 5 insertions(+), 7 deletions(-)
 
---- a/kernel/bpf/verifier.c
-+++ b/kernel/bpf/verifier.c
-@@ -2729,6 +2729,14 @@ static struct bpf_insn_aux_data *cur_aux
- 	return &env->insn_aux_data[env->insn_idx];
+--- a/drivers/spi/spi.c
++++ b/drivers/spi/spi.c
+@@ -1762,6 +1762,7 @@ struct spi_master *devm_spi_alloc_master
+ 
+ 	master = spi_alloc_master(dev, size);
+ 	if (master) {
++		master->devm_allocated = true;
+ 		*ptr = master;
+ 		devres_add(dev, ptr);
+ 	} else {
+@@ -1951,11 +1952,6 @@ int devm_spi_register_master(struct devi
  }
+ EXPORT_SYMBOL_GPL(devm_spi_register_master);
  
-+enum {
-+	REASON_BOUNDS	= -1,
-+	REASON_TYPE	= -2,
-+	REASON_PATHS	= -3,
-+	REASON_LIMIT	= -4,
-+	REASON_STACK	= -5,
-+};
+-static int devm_spi_match_master(struct device *dev, void *res, void *master)
+-{
+-	return *(struct spi_master **)res == master;
+-}
+-
+ static int __unregister(struct device *dev, void *null)
+ {
+ 	spi_unregister_device(to_spi_device(dev));
+@@ -1994,8 +1990,7 @@ void spi_unregister_master(struct spi_ma
+ 	/* Release the last reference on the master if its driver
+ 	 * has not yet been converted to devm_spi_alloc_master().
+ 	 */
+-	if (!devres_find(master->dev.parent, devm_spi_release_master,
+-			 devm_spi_match_master, master))
++	if (!master->devm_allocated)
+ 		put_device(&master->dev);
+ 
+ 	if (IS_ENABLED(CONFIG_SPI_DYNAMIC))
+--- a/include/linux/spi/spi.h
++++ b/include/linux/spi/spi.h
+@@ -425,6 +425,9 @@ struct spi_master {
+ #define SPI_MASTER_MUST_RX      BIT(3)		/* requires rx */
+ #define SPI_MASTER_MUST_TX      BIT(4)		/* requires tx */
+ 
++	/* flag indicating this is a non-devres managed controller */
++	bool			devm_allocated;
 +
- static int retrieve_ptr_limit(const struct bpf_reg_state *ptr_reg,
- 			      const struct bpf_reg_state *off_reg,
- 			      u32 *alu_limit, u8 opcode)
-@@ -2740,7 +2748,7 @@ static int retrieve_ptr_limit(const stru
- 
- 	if (!tnum_is_const(off_reg->var_off) &&
- 	    (off_reg->smin_value < 0) != (off_reg->smax_value < 0))
--		return -EACCES;
-+		return REASON_BOUNDS;
- 
- 	switch (ptr_reg->type) {
- 	case PTR_TO_STACK:
-@@ -2764,11 +2772,11 @@ static int retrieve_ptr_limit(const stru
- 		}
- 		break;
- 	default:
--		return -EINVAL;
-+		return REASON_TYPE;
- 	}
- 
- 	if (ptr_limit >= max)
--		return -ERANGE;
-+		return REASON_LIMIT;
- 	*alu_limit = ptr_limit;
- 	return 0;
- }
-@@ -2788,7 +2796,7 @@ static int update_alu_sanitation_state(s
- 	if (aux->alu_state &&
- 	    (aux->alu_state != alu_state ||
- 	     aux->alu_limit != alu_limit))
--		return -EACCES;
-+		return REASON_PATHS;
- 
- 	/* Corresponding fixup done in fixup_bpf_calls(). */
- 	aux->alu_state = alu_state;
-@@ -2861,7 +2869,46 @@ do_sim:
- 	ret = push_stack(env, env->insn_idx + 1, env->insn_idx, true);
- 	if (!ptr_is_dst_reg && ret)
- 		*dst_reg = tmp;
--	return !ret ? -EFAULT : 0;
-+	return !ret ? REASON_STACK : 0;
-+}
-+
-+static int sanitize_err(struct bpf_verifier_env *env,
-+			const struct bpf_insn *insn, int reason,
-+			const struct bpf_reg_state *off_reg,
-+			const struct bpf_reg_state *dst_reg)
-+{
-+	static const char *err = "pointer arithmetic with it prohibited for !root";
-+	const char *op = BPF_OP(insn->code) == BPF_ADD ? "add" : "sub";
-+	u32 dst = insn->dst_reg, src = insn->src_reg;
-+
-+	switch (reason) {
-+	case REASON_BOUNDS:
-+		verbose(env, "R%d has unknown scalar with mixed signed bounds, %s\n",
-+			off_reg == dst_reg ? dst : src, err);
-+		break;
-+	case REASON_TYPE:
-+		verbose(env, "R%d has pointer with unsupported alu operation, %s\n",
-+			off_reg == dst_reg ? src : dst, err);
-+		break;
-+	case REASON_PATHS:
-+		verbose(env, "R%d tried to %s from different maps, paths or scalars, %s\n",
-+			dst, op, err);
-+		break;
-+	case REASON_LIMIT:
-+		verbose(env, "R%d tried to %s beyond pointer bounds, %s\n",
-+			dst, op, err);
-+		break;
-+	case REASON_STACK:
-+		verbose(env, "R%d could not be pushed for speculative verification, %s\n",
-+			dst, err);
-+		break;
-+	default:
-+		verbose(env, "verifier internal error: unknown reason (%d)\n",
-+			reason);
-+		break;
-+	}
-+
-+	return -EACCES;
- }
- 
- /* Handles arithmetic on a pointer and a scalar: computes new min/max and var_off.
-@@ -2934,10 +2981,9 @@ static int adjust_ptr_min_max_vals(struc
- 	switch (opcode) {
- 	case BPF_ADD:
- 		ret = sanitize_ptr_alu(env, insn, ptr_reg, off_reg, dst_reg);
--		if (ret < 0) {
--			verbose(env, "R%d tried to add from different maps, paths, or prohibited types\n", dst);
--			return ret;
--		}
-+		if (ret < 0)
-+			return sanitize_err(env, insn, ret, off_reg, dst_reg);
-+
- 		/* We can take a fixed offset as long as it doesn't overflow
- 		 * the s32 'off' field
- 		 */
-@@ -2989,10 +3035,9 @@ static int adjust_ptr_min_max_vals(struc
- 		break;
- 	case BPF_SUB:
- 		ret = sanitize_ptr_alu(env, insn, ptr_reg, off_reg, dst_reg);
--		if (ret < 0) {
--			verbose(env, "R%d tried to sub from different maps, paths, or prohibited types\n", dst);
--			return ret;
--		}
-+		if (ret < 0)
-+			return sanitize_err(env, insn, ret, off_reg, dst_reg);
-+
- 		if (dst_reg == off_reg) {
- 			/* scalar -= pointer.  Creates an unknown scalar */
- 			verbose(env, "R%d tried to subtract pointer from scalar\n",
-@@ -3109,7 +3154,6 @@ static int adjust_scalar_min_max_vals(st
- 	s64 smin_val, smax_val;
- 	u64 umin_val, umax_val;
- 	u64 insn_bitness = (BPF_CLASS(insn->code) == BPF_ALU64) ? 64 : 32;
--	u32 dst = insn->dst_reg;
- 	int ret;
- 
- 	if (insn_bitness == 32) {
-@@ -3146,10 +3190,8 @@ static int adjust_scalar_min_max_vals(st
- 	switch (opcode) {
- 	case BPF_ADD:
- 		ret = sanitize_val_alu(env, insn);
--		if (ret < 0) {
--			verbose(env, "R%d tried to add from different pointers or scalars\n", dst);
--			return ret;
--		}
-+		if (ret < 0)
-+			return sanitize_err(env, insn, ret, NULL, NULL);
- 		if (signed_add_overflows(dst_reg->smin_value, smin_val) ||
- 		    signed_add_overflows(dst_reg->smax_value, smax_val)) {
- 			dst_reg->smin_value = S64_MIN;
-@@ -3170,10 +3212,8 @@ static int adjust_scalar_min_max_vals(st
- 		break;
- 	case BPF_SUB:
- 		ret = sanitize_val_alu(env, insn);
--		if (ret < 0) {
--			verbose(env, "R%d tried to sub from different pointers or scalars\n", dst);
--			return ret;
--		}
-+		if (ret < 0)
-+			return sanitize_err(env, insn, ret, NULL, NULL);
- 		if (signed_sub_overflows(dst_reg->smin_value, smax_val) ||
- 		    signed_sub_overflows(dst_reg->smax_value, smin_val)) {
- 			/* Overflow possible, we know nothing */
+ 	/* lock and mutex for SPI bus locking */
+ 	spinlock_t		bus_lock_spinlock;
+ 	struct mutex		bus_lock_mutex;
 
 
