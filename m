@@ -2,215 +2,243 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 76DB7395637
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 09:34:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B7F839563C
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 09:35:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230359AbhEaHga (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 03:36:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35114 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230355AbhEaHgR (ORCPT
+        id S230143AbhEaHhP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 03:37:15 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:60528 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230111AbhEaHhJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 03:36:17 -0400
-Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A6E0C061760
-        for <linux-kernel@vger.kernel.org>; Mon, 31 May 2021 00:34:37 -0700 (PDT)
-Received: by mail-ed1-x535.google.com with SMTP id b11so5564196edy.4
-        for <linux-kernel@vger.kernel.org>; Mon, 31 May 2021 00:34:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=XwcT6Kv2brjtsl4Ipm3p1AZlwCeGBUcE4mYeB/eMvEY=;
-        b=A/zCrpsqLVqOTQvaFFc4XTHwRBKoCwyL/4ViX16fBUYeoncy+yx4A0G1ygDflEfuPc
-         jrwc5bGjj3Ty3k+hO7QwcDPkRyR5GmbBAP5xihOyiK3fDEpWDYd09ZBhwNNxuSjEsMHu
-         ej1G3yzpoRXoHWrJZWjNd2BjgAsR79RNAIT1exajye04BOsTeAMa7AsdJ/4RpobYMEkT
-         UJ5CYA+kfo6V0cnPbHPp+67DeD8Pll+ZoeRrbe0z+Ov0XNItkyiy8GFqzstwQL2RsjTM
-         Ce8+FnD10FJhfhNlZkmg7JSfcswxafZ12Z98nLBs3JBg2vp8nxAfzSyvYpsh5qoX2RBn
-         7ZTg==
+        Mon, 31 May 2021 03:37:09 -0400
+Received: from mail-wm1-f71.google.com ([209.85.128.71])
+        by youngberry.canonical.com with esmtps  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.93)
+        (envelope-from <krzysztof.kozlowski@canonical.com>)
+        id 1lncSP-0002h7-TD
+        for linux-kernel@vger.kernel.org; Mon, 31 May 2021 07:35:29 +0000
+Received: by mail-wm1-f71.google.com with SMTP id n127-20020a1c27850000b02901717a27c785so4429149wmn.9
+        for <linux-kernel@vger.kernel.org>; Mon, 31 May 2021 00:35:29 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=XwcT6Kv2brjtsl4Ipm3p1AZlwCeGBUcE4mYeB/eMvEY=;
-        b=gtm+5tqiRzfUk3bKE9EvL4PYmMqFR2aeFXkjs9PklYNGcGNpOnUr67HZkqR1dHpzmZ
-         34nUeHXaV4PYH3s27llz8PnUQImOSpn8jTmMtBqn1flaSc59osAIPuTcUwfj2zQEfaiz
-         9LSM6CXZ98fjNnlf7nOQ5sKyTxuymBcgqEpX1Wxgamh103L/bPTmnvueOMGABiioDb7I
-         +5yEm2BBccVRmzVgHmIKW7nB6U+TjtfesLUEaIzvTiGjWhGnUybwzntKJxxlhnCnOBjD
-         rM03RpN1xwIccEtrMqjnDKhINRpcbv73H6BLLFZjvCnE1IJuBax3A7uV4VM3sNS2ySpR
-         gcFw==
-X-Gm-Message-State: AOAM531msHhzcGBtOYd5CYXlxWN1i7LVS8rHB8BRQ3lI4j8NfMKQdTMq
-        UgaYMiowCb2ZbaGIHC6kdACVPfInOn7nipNqXDI=
-X-Google-Smtp-Source: ABdhPJwHjvQOiFcj/g/sfB5LtcLpZbk0oEXeGC1eP+k8avTItRcWcZ5Gq5U1Xq5wo+DTg4vjU3IGma/QL9tBSfVx2hE=
-X-Received: by 2002:a05:6402:15:: with SMTP id d21mr24298531edu.66.1622446476085;
- Mon, 31 May 2021 00:34:36 -0700 (PDT)
+        h=x-gm-message-state:from:to:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=XhZpqiw5yroQ5T5SjmtgyekQkcqwTSamV1tsKU5zvv4=;
+        b=hAQUIhT6Tb0YjO/ZLuz+ewxHWOLhc3wPpCEZdsUpjwLZdGTUyVnr4my+1I82e7H360
+         aeps6UNkZuonXVY8/nDjOote1/Gb5gMd99hL+0YRVv/l8PfoBM7gqDZoq72Cspy5tw91
+         3E3FSZezQ+w0wHMEPd6iv8GyM6JBJ2ZjI6Rko7unh31VKkbtozzFzG48+bFBOq0OiWdb
+         9b5JtdJFSedfSx8cNTPuUGeqMwcbl1PPFt5WtAN4WoYVh7eRzBSFBzxkBtVTM5usQZSv
+         XrdO8NLNdb+hWw3MwkNuK2HJgf7+TEDiVIdO5eA05pG6lBQGpikwjI+Bzx3vU24+lTGS
+         x80Q==
+X-Gm-Message-State: AOAM533fUpmTYOM0y59SfJigpJv9FQYBTxFlp43KloORoZDXWlvCBLkl
+        kD5xFrqbKx6Pc1Pmw+2zlDFApuslIwG63Jc3NZF5/29qgF3tiAcS3ltvanyo7RSRoLr8FURolOY
+        ry0Gg0NFBlz0RNdtY40zMdxBjxzZy9B6z9Q9wFbmPRA==
+X-Received: by 2002:a5d:6701:: with SMTP id o1mr21259654wru.390.1622446529559;
+        Mon, 31 May 2021 00:35:29 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxk5BA7dTNQ/7+z47YXbPG4XygKbY+0a1oPfGA6FykbFNsBqdHggXywOWUiRmA9mrf397cOBg==
+X-Received: by 2002:a5d:6701:: with SMTP id o1mr21259636wru.390.1622446529384;
+        Mon, 31 May 2021 00:35:29 -0700 (PDT)
+Received: from localhost.localdomain (xdsl-188-155-185-9.adslplus.ch. [188.155.185.9])
+        by smtp.gmail.com with ESMTPSA id g10sm17217780wrq.12.2021.05.31.00.35.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 31 May 2021 00:35:29 -0700 (PDT)
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, linux-nfc@lists.01.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [RESEND PATCH 01/11] nfc: fdp: drop ftrace-like debugging messages
+Date:   Mon, 31 May 2021 09:35:12 +0200
+Message-Id: <20210531073522.6720-1-krzysztof.kozlowski@canonical.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-References: <20210528131757.2269989-1-mudongliangabcd@gmail.com>
- <20210528133309.GR24442@kadam> <CAD-N9QVWcEJjoziA6HVoQiUueVaKqAJS5Et60zvCvuUE7e6=gg@mail.gmail.com>
- <20210528140500.GS24442@kadam> <A622EB84-DC4A-47A4-A828-CE6D25DC92EB@gmail.com>
- <CAD-N9QVjhDDJxRnNrDzwt05BNijr1o11nE8xjvq8GrakEJ8EuQ@mail.gmail.com>
- <20210531044022.GU24442@kadam> <CAD-N9QWBBP6_Wwi4z3e4yJM-tS54=1=CcvAA+2__Qj8NsTLq9g@mail.gmail.com>
- <20210531070337.GV24442@kadam>
-In-Reply-To: <20210531070337.GV24442@kadam>
-From:   Dongliang Mu <mudongliangabcd@gmail.com>
-Date:   Mon, 31 May 2021 15:34:09 +0800
-Message-ID: <CAD-N9QU-uqFr=b1hMi1h1ytq2Uf2XKL44f9OHBRhM70zhkiO7w@mail.gmail.com>
-Subject: Re: [PATCH] ALSA: control led: fix memory leak in snd_ctl_led_register
-To:     Dan Carpenter <dan.carpenter@oracle.com>
-Cc:     perex@perex.cz, tiwai@suse.com, alsa-devel@alsa-project.org,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        syzbot+08a7d8b51ea048a74ffb@syzkaller.appspotmail.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 31, 2021 at 3:03 PM Dan Carpenter <dan.carpenter@oracle.com> wr=
-ote:
->
-> On Mon, May 31, 2021 at 02:20:37PM +0800, Dongliang Mu wrote:
-> > On Mon, May 31, 2021 at 12:40 PM Dan Carpenter <dan.carpenter@oracle.co=
-m> wrote:
-> > >
-> > > On Mon, May 31, 2021 at 11:03:36AM +0800, Dongliang Mu wrote:
-> > > > On Sat, May 29, 2021 at 5:35 AM =E6=85=95=E5=86=AC=E4=BA=AE <mudong=
-liangabcd@gmail.com> wrote:
-> > > > >
-> > > > >
-> > > > >
-> > > > > > On May 28, 2021, at 10:05 PM, Dan Carpenter <dan.carpenter@orac=
-le.com> wrote:
-> > > > > >
-> > > > > > On Fri, May 28, 2021 at 09:50:49PM +0800, Dongliang Mu wrote:
-> > > > > >>
-> > > > > >> Can you please give some advise on how to fix this WARN issue?
-> > > > > >
-> > > > > > But it feels like it spoils the fun if I write the commit...  A=
-nyway:
-> > > > >
-> > > > > It=E2=80=99s fine. I am still in the learning process. It=E2=80=
-=99s also good to learn experience by comparing your patch and my patch.
-> > > > >
-> > > > > >
-> > > > > > regards,
-> > > > > > dan carpenter
-> > > > > >
-> > > > > > diff --git a/sound/core/control_led.c b/sound/core/control_led.=
-c
-> > > > > > index 25f57c14f294..dd357abc1b58 100644
-> > > > > > --- a/sound/core/control_led.c
-> > > > > > +++ b/sound/core/control_led.c
-> > > > > > @@ -740,6 +740,7 @@ static int __init snd_ctl_led_init(void)
-> > > > > >                       for (; group > 0; group--) {
-> > > > > >                               led =3D &snd_ctl_leds[group - 1];
-> > > > > >                               device_del(&led->dev);
-> > > > > > +                             device_put(&led->dev);
-> > > > > >                       }
-> > > > > >                       device_del(&snd_ctl_led_dev);
-> > > > > >                       return -ENOMEM;
-> > > > > > @@ -768,6 +769,7 @@ static void __exit snd_ctl_led_exit(void)
-> > > > > >       for (group =3D 0; group < MAX_LED; group++) {
-> > > > > >               led =3D &snd_ctl_leds[group];
-> > > > > >               device_del(&led->dev);
-> > > > > > +             device_put(&led->dev);
-> > > > > >       }
-> > > > > >       device_del(&snd_ctl_led_dev);
-> > > > > >       snd_ctl_led_clean(NULL);
-> > > >
-> > > > Hi Dan,
-> > > >
-> > > > I tried this patch, and it still triggers the memleak.
-> > >
-> > > Did your patch fix the leak?  Because my patch should have been
-> > > equivalent except for it fixes an additional leak in the snd_ctl_led_=
-init()
-> > > error path.
-> >
-> > The syzbot link is [1]. I have tested my patch in the syzbot dashboard
-> > and my local workspace.
-> >
-> > I think the reason why your patch did not work should be
-> > led_card(struct snd_ctl_led_card) is already freed before returning in
-> > snd_ctl_led_sysfs_remove, rather than led(struct snd_ctl_led). See the
-> > implementation of snd_ctl_led_sysfs_remove for some details. Please
-> > correct me if I make any mistakes.
-> >
-> > static void snd_ctl_led_sysfs_remove(struct snd_card *card)
-> > {
-> >         unsigned int group;
-> >         struct snd_ctl_led_card *led_card;
-> >         struct snd_ctl_led *led;
-> >         char link_name[32];
-> >
-> >         for (group =3D 0; group < MAX_LED; group++) {
-> >                 led =3D &snd_ctl_leds[group];
-> >                 led_card =3D led->cards[card->number];
-> >                 if (!led_card)
-> >                         continue;
-> >                 snprintf(link_name, sizeof(link_name), "led-%s", led->n=
-ame);
-> >                 sysfs_remove_link(&card->ctl_dev.kobj, link_name);
-> >                 sysfs_remove_link(&led_card->dev.kobj, "card");
-> >                 device_del(&led_card->dev);
-> >                 put_device(&led_card->dev);
-> >                 kfree(led_card);
-> >                 led->cards[card->number] =3D NULL;
-> >         }
-> > }
->
-> This is frustrating to look at because it's not a diff so it doesn't
-> show what you changed.  I think you are saying that you added the
-> put_device(&led_card->dev);.  That's true.  There are some other leaks
-> as well.  We should just fix them all.  Use device_unregister() because
-> it's cleaner.
+Now that the kernel has ftrace, any debugging calls that just do "made
+it to this function!" and "leaving this function!" can be removed.
+Better to use standard debugging tools.
 
-Oh, I see your point. Yeah, we should fix these memory leaks all. I
-agree with device_unregister.
+This allows also to remove several local variables and entire
+fdp_nci_recv_frame() function (whose purpose was only to log).
 
->
-> If both device_initialize() and device_add() succeed then call
-> device_unregister() to unwind.
+Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+---
+ drivers/nfc/fdp/fdp.c | 31 -------------------------------
+ drivers/nfc/fdp/fdp.h |  1 -
+ drivers/nfc/fdp/i2c.c | 12 +-----------
+ 3 files changed, 1 insertion(+), 43 deletions(-)
 
-BTW, have you tested this new patch on two memory leaks?
+diff --git a/drivers/nfc/fdp/fdp.c b/drivers/nfc/fdp/fdp.c
+index 125d71c27b8b..7863b2536999 100644
+--- a/drivers/nfc/fdp/fdp.c
++++ b/drivers/nfc/fdp/fdp.c
+@@ -237,28 +237,18 @@ static int fdp_nci_send_patch(struct nci_dev *ndev, u8 conn_id, u8 type)
+ static int fdp_nci_open(struct nci_dev *ndev)
+ {
+ 	struct fdp_nci_info *info = nci_get_drvdata(ndev);
+-	struct device *dev = &info->phy->i2c_dev->dev;
+-
+-	dev_dbg(dev, "%s\n", __func__);
+ 
+ 	return info->phy_ops->enable(info->phy);
+ }
+ 
+ static int fdp_nci_close(struct nci_dev *ndev)
+ {
+-	struct fdp_nci_info *info = nci_get_drvdata(ndev);
+-	struct device *dev = &info->phy->i2c_dev->dev;
+-
+-	dev_dbg(dev, "%s\n", __func__);
+ 	return 0;
+ }
+ 
+ static int fdp_nci_send(struct nci_dev *ndev, struct sk_buff *skb)
+ {
+ 	struct fdp_nci_info *info = nci_get_drvdata(ndev);
+-	struct device *dev = &info->phy->i2c_dev->dev;
+-
+-	dev_dbg(dev, "%s\n", __func__);
+ 
+ 	if (atomic_dec_and_test(&info->data_pkt_counter))
+ 		info->data_pkt_counter_cb(ndev);
+@@ -266,16 +256,6 @@ static int fdp_nci_send(struct nci_dev *ndev, struct sk_buff *skb)
+ 	return info->phy_ops->write(info->phy, skb);
+ }
+ 
+-int fdp_nci_recv_frame(struct nci_dev *ndev, struct sk_buff *skb)
+-{
+-	struct fdp_nci_info *info = nci_get_drvdata(ndev);
+-	struct device *dev = &info->phy->i2c_dev->dev;
+-
+-	dev_dbg(dev, "%s\n", __func__);
+-	return nci_recv_frame(ndev, skb);
+-}
+-EXPORT_SYMBOL(fdp_nci_recv_frame);
+-
+ static int fdp_nci_request_firmware(struct nci_dev *ndev)
+ {
+ 	struct fdp_nci_info *info = nci_get_drvdata(ndev);
+@@ -476,8 +456,6 @@ static int fdp_nci_setup(struct nci_dev *ndev)
+ 	int r;
+ 	u8 patched = 0;
+ 
+-	dev_dbg(dev, "%s\n", __func__);
+-
+ 	r = nci_core_init(ndev);
+ 	if (r)
+ 		goto error;
+@@ -585,9 +563,7 @@ static int fdp_nci_core_reset_ntf_packet(struct nci_dev *ndev,
+ 					  struct sk_buff *skb)
+ {
+ 	struct fdp_nci_info *info = nci_get_drvdata(ndev);
+-	struct device *dev = &info->phy->i2c_dev->dev;
+ 
+-	dev_dbg(dev, "%s\n", __func__);
+ 	info->setup_reset_ntf = 1;
+ 	wake_up(&info->setup_wq);
+ 
+@@ -598,9 +574,7 @@ static int fdp_nci_prop_patch_ntf_packet(struct nci_dev *ndev,
+ 					  struct sk_buff *skb)
+ {
+ 	struct fdp_nci_info *info = nci_get_drvdata(ndev);
+-	struct device *dev = &info->phy->i2c_dev->dev;
+ 
+-	dev_dbg(dev, "%s\n", __func__);
+ 	info->setup_patch_ntf = 1;
+ 	info->setup_patch_status = skb->data[0];
+ 	wake_up(&info->setup_wq);
+@@ -773,11 +747,6 @@ EXPORT_SYMBOL(fdp_nci_probe);
+ 
+ void fdp_nci_remove(struct nci_dev *ndev)
+ {
+-	struct fdp_nci_info *info = nci_get_drvdata(ndev);
+-	struct device *dev = &info->phy->i2c_dev->dev;
+-
+-	dev_dbg(dev, "%s\n", __func__);
+-
+ 	nci_unregister_device(ndev);
+ 	nci_free_device(ndev);
+ }
+diff --git a/drivers/nfc/fdp/fdp.h b/drivers/nfc/fdp/fdp.h
+index 9bd1f3f23e2d..ead3b21ccae6 100644
+--- a/drivers/nfc/fdp/fdp.h
++++ b/drivers/nfc/fdp/fdp.h
+@@ -25,6 +25,5 @@ int fdp_nci_probe(struct fdp_i2c_phy *phy, struct nfc_phy_ops *phy_ops,
+ 		  struct nci_dev **ndev, int tx_headroom, int tx_tailroom,
+ 		  u8 clock_type, u32 clock_freq, u8 *fw_vsc_cfg);
+ void fdp_nci_remove(struct nci_dev *ndev);
+-int fdp_nci_recv_frame(struct nci_dev *ndev, struct sk_buff *skb);
+ 
+ #endif /* __LOCAL_FDP_H_ */
+diff --git a/drivers/nfc/fdp/i2c.c b/drivers/nfc/fdp/i2c.c
+index 997e0806821a..c5596e514648 100644
+--- a/drivers/nfc/fdp/i2c.c
++++ b/drivers/nfc/fdp/i2c.c
+@@ -49,7 +49,6 @@ static int fdp_nci_i2c_enable(void *phy_id)
+ {
+ 	struct fdp_i2c_phy *phy = phy_id;
+ 
+-	dev_dbg(&phy->i2c_dev->dev, "%s\n", __func__);
+ 	fdp_nci_i2c_reset(phy);
+ 
+ 	return 0;
+@@ -59,7 +58,6 @@ static void fdp_nci_i2c_disable(void *phy_id)
+ {
+ 	struct fdp_i2c_phy *phy = phy_id;
+ 
+-	dev_dbg(&phy->i2c_dev->dev, "%s\n", __func__);
+ 	fdp_nci_i2c_reset(phy);
+ }
+ 
+@@ -197,7 +195,6 @@ static int fdp_nci_i2c_read(struct fdp_i2c_phy *phy, struct sk_buff **skb)
+ static irqreturn_t fdp_nci_i2c_irq_thread_fn(int irq, void *phy_id)
+ {
+ 	struct fdp_i2c_phy *phy = phy_id;
+-	struct i2c_client *client;
+ 	struct sk_buff *skb;
+ 	int r;
+ 
+@@ -206,9 +203,6 @@ static irqreturn_t fdp_nci_i2c_irq_thread_fn(int irq, void *phy_id)
+ 		return IRQ_NONE;
+ 	}
+ 
+-	client = phy->i2c_dev;
+-	dev_dbg(&client->dev, "%s\n", __func__);
+-
+ 	r = fdp_nci_i2c_read(phy, &skb);
+ 
+ 	if (r == -EREMOTEIO)
+@@ -217,7 +211,7 @@ static irqreturn_t fdp_nci_i2c_irq_thread_fn(int irq, void *phy_id)
+ 		return IRQ_HANDLED;
+ 
+ 	if (skb != NULL)
+-		fdp_nci_recv_frame(phy->ndev, skb);
++		nci_recv_frame(phy->ndev, skb);
+ 
+ 	return IRQ_HANDLED;
+ }
+@@ -288,8 +282,6 @@ static int fdp_nci_i2c_probe(struct i2c_client *client)
+ 	u32 clock_freq;
+ 	int r = 0;
+ 
+-	dev_dbg(dev, "%s\n", __func__);
+-
+ 	if (!i2c_check_functionality(client->adapter, I2C_FUNC_I2C)) {
+ 		nfc_err(dev, "No I2C_FUNC_I2C support\n");
+ 		return -ENODEV;
+@@ -351,8 +343,6 @@ static int fdp_nci_i2c_remove(struct i2c_client *client)
+ {
+ 	struct fdp_i2c_phy *phy = i2c_get_clientdata(client);
+ 
+-	dev_dbg(&client->dev, "%s\n", __func__);
+-
+ 	fdp_nci_remove(phy->ndev);
+ 	fdp_nci_i2c_disable(phy);
+ 
+-- 
+2.27.0
 
->
-> diff --git a/sound/core/control_led.c b/sound/core/control_led.c
-> index 25f57c14f294..561fe45e4449 100644
-> --- a/sound/core/control_led.c
-> +++ b/sound/core/control_led.c
-> @@ -700,7 +700,7 @@ static void snd_ctl_led_sysfs_remove(struct snd_card =
-*card)
->                 snprintf(link_name, sizeof(link_name), "led-%s", led->nam=
-e);
->                 sysfs_remove_link(&card->ctl_dev.kobj, link_name);
->                 sysfs_remove_link(&led_card->dev.kobj, "card");
-> -               device_del(&led_card->dev);
-> +               device_unregister(&led_card->dev);
->                 kfree(led_card);
->                 led->cards[card->number] =3D NULL;
->         }
-> @@ -739,9 +739,9 @@ static int __init snd_ctl_led_init(void)
->                         put_device(&led->dev);
->                         for (; group > 0; group--) {
->                                 led =3D &snd_ctl_leds[group - 1];
-> -                               device_del(&led->dev);
-> +                               device_unregister(&led->dev);
->                         }
-> -                       device_del(&snd_ctl_led_dev);
-> +                       device_unregister(&snd_ctl_led_dev);
->                         return -ENOMEM;
->                 }
->         }
-> @@ -767,9 +767,9 @@ static void __exit snd_ctl_led_exit(void)
->         }
->         for (group =3D 0; group < MAX_LED; group++) {
->                 led =3D &snd_ctl_leds[group];
-> -               device_del(&led->dev);
-> +               device_unregister(&led->dev);
->         }
-> -       device_del(&snd_ctl_led_dev);
-> +       device_unregister(&snd_ctl_led_dev);
->         snd_ctl_led_clean(NULL);
->  }
->
