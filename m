@@ -2,484 +2,320 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3454339631B
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 17:04:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0022E395F03
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 16:05:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233680AbhEaPG2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 11:06:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38348 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233186AbhEaOID (ORCPT
+        id S233260AbhEaOGe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 10:06:34 -0400
+Received: from mx0a-00069f02.pphosted.com ([205.220.165.32]:38456 "EHLO
+        mx0a-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232468AbhEaNmD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 10:08:03 -0400
-Received: from mail-qk1-x736.google.com (mail-qk1-x736.google.com [IPv6:2607:f8b0:4864:20::736])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96518C08C5F3;
-        Mon, 31 May 2021 06:38:54 -0700 (PDT)
-Received: by mail-qk1-x736.google.com with SMTP id c20so11216263qkm.3;
-        Mon, 31 May 2021 06:38:54 -0700 (PDT)
+        Mon, 31 May 2021 09:42:03 -0400
+Received: from pps.filterd (m0246629.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 14VDdfZ2016586;
+        Mon, 31 May 2021 13:39:41 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : date : message-id : references : in-reply-to : content-type :
+ content-id : content-transfer-encoding : mime-version; s=corp-2020-01-29;
+ bh=+bEtGCo1uhHPhqESan+wsUXEcoXhXeuf/1fKcgnFV1Q=;
+ b=GfKMkQLtyAz54dNNXey9XKD9Orng7kDTteOAM/YvosFwEINTQ64XoPADNSYe9QC0iYxx
+ rdMESvjHc0RoNTu5VYEQiP2fsntxH0FGD+tptvrNT4ZmEbBc65cIxRB0CjhdaqZFuw8w
+ bn9jcYuvxvGwz8Mk+4DKUbJxMKCDrxbyegr19PFma03Smjc594CH5vjfCb4OOtXlfzOR
+ UD0SdXdao49eYHkb0tdHqDIk8fqqb5wM5AOVzvYck2aS0aU7cH/foTBy9Ziv1kunW00N
+ 5sL4Ceo4oH+SRc7uC0c/4gZzg34+ULsrnqd/3pku2rl1MJOiJd6cywhVgtu7k/3n2m+k pw== 
+Received: from oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by mx0b-00069f02.pphosted.com with ESMTP id 38vng40714-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 31 May 2021 13:39:41 +0000
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [127.0.0.1])
+        by pps.podrdrct (8.16.0.36/8.16.0.36) with SMTP id 14VDdebX155376;
+        Mon, 31 May 2021 13:39:40 GMT
+Received: from nam10-bn7-obe.outbound.protection.outlook.com (mail-bn7nam10lp2108.outbound.protection.outlook.com [104.47.70.108])
+        by aserp3020.oracle.com with ESMTP id 38ude6dh4n-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 31 May 2021 13:39:40 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=P2+m76EJPaOlIqleXNKPvJGn3vfuq9jSjvwvhdDKSMBjlgrM+1a2IUe9i8KQQyWH1B0cGioY1vV6svg4PBF3SgyED2HyPZCKkW/zMsYZOQDdTvvcAD1HwPnAgAiTezRvW3Z7IQtwh0j6ARgQoRtCO9kSyMAmcV3W6S8mOkH5PcbcMgDJAeE0FaRFmK5HiZQ+pa2bwHTaFkBDNEVORi+zx4WiR2wmHkNZibYLozuHbIaQ3IM0u2+g9XaKSexUpmRiHihB6LMiYGhi6YpSepc3X34JL8OvWA9CgJlRfq3C9yaahJjNAXVLzcXhuSfn3BZSJ1Ii9qb07JsFpKMVTFzVzQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=+bEtGCo1uhHPhqESan+wsUXEcoXhXeuf/1fKcgnFV1Q=;
+ b=RzefsgAO6R46q3Rf73JcNHy+pMmVqf+FTg86wmz3xV5sJsmBPuOeMF9Rf7F8oziYf/BiK0HJHsyb1yvl84fgN796dL+DQQCMt9m0R8EtmrJrcMPomzrqPtG5u2YNrf1MF/ppNSntyK330wuI7No++02e66h8M/iF8wUo140+U9P944E+3jfgwHqPBg+to6Elykvo5FqQEVQWtrQWtXYfdgPd8jppY8SEWj0keewIsWUAqGAJC2rLXXFDpB79ZUM8mX8g01Yr6970sNexlYapXTrmbE+eeGj/uaSoy5VDfZ+CJMDmEByIRYrSk6cD3WL3bdZTgNZwDjIzRRn5tey9rg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=6ygvuLtK2l+Yx1mw1REo1hwI+lDORYTPMl8fO1mx/S4=;
-        b=DytsOIlOvLnGFzx7yvqkXzBB3urgZxz60nQLwnA17PZgHB61TPw5Clg2MY4zu/9qyV
-         aOm0Z26AHyEmjbVEYT7Uzy4XFGkybQ1vZlQeGJTEkGMo6DsLNQsrQk23qfTuzbOk6goR
-         kP5BLhIj+Q8XmRY1/qzq2GviUi1rnCPBKMYvlpHhcQC7OVtGN0U1zO7hVLbpJc01ZWbp
-         MfBGldcQt1ufYEGc74IJHO9Pyr3PbZNHZ/+VDDYZbOurATGg0X+bGupSdHFLyJshrENt
-         88eCniI5Le6RYCfzNShaN2GIeCYtrQCjilMTtwDlIXA7xFAjJZztZZ7KJgH5FBoxpuTm
-         UoVg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=6ygvuLtK2l+Yx1mw1REo1hwI+lDORYTPMl8fO1mx/S4=;
-        b=L125TkYYH/KcEOGZf4Ix64gKMkdKT5AAoExkyvuI74EqGQiWoiM3lD85jPdCEC5Xan
-         EcnAZdyfGwofNfo8LIdT54Vhlx/48hfnhPEqJTfO7m2gIGzMMR2hwC4f7UjkmhFtHfS2
-         2oRiINaFkKRMnn8KQXFAi/V6e69T7mw9bHRoC/e6KRoOi8YOlhwhmCWR6zPo6cLw9zsi
-         /DKzPRg7Hj1yOq7y4TGz7d5UFiGMLhKD74M4Ow4CMmwkUv8eSIBAmuQpg36A2jo6mYoh
-         nJHWIPyRWz7U55pnPSR/y058yCLZHYtYBNH92ntqJmx1rZMVH/Fx14obqbnZE/KUsge0
-         VHGQ==
-X-Gm-Message-State: AOAM530jr8iqZ//z3Y5impxgMZwj1SXwfBA8Lf1DvoII6Ce0z0ndSpMS
-        jOnBV21yJ1GB54ERcq8ogFQ=
-X-Google-Smtp-Source: ABdhPJwE64vx6b6yyM8KuVqgNyO487evVs5DNOz2T/eR1pkzUpbEBX81ZBEdOf3II1uMygzZDcv8Nw==
-X-Received: by 2002:a05:620a:3c8:: with SMTP id r8mr16510443qkm.204.1622468333635;
-        Mon, 31 May 2021 06:38:53 -0700 (PDT)
-Received: from localhost.localdomain (ec2-35-169-212-159.compute-1.amazonaws.com. [35.169.212.159])
-        by smtp.gmail.com with ESMTPSA id h8sm8293085qtp.46.2021.05.31.06.38.52
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 31 May 2021 06:38:53 -0700 (PDT)
-From:   sj38.park@gmail.com
-To:     akpm@linux-foundation.org
-Cc:     SeongJae Park <sjpark@amazon.de>, Jonathan.Cameron@Huawei.com,
-        acme@kernel.org, alexander.shishkin@linux.intel.com,
-        amit@kernel.org, benh@kernel.crashing.org,
-        brendanhiggins@google.com, corbet@lwn.net, david@redhat.com,
-        dwmw@amazon.com, elver@google.com, fan.du@intel.com,
-        foersleo@amazon.de, greg@kroah.com, gthelen@google.com,
-        guoju.fgj@alibaba-inc.com, mgorman@suse.de, minchan@kernel.org,
-        mingo@redhat.com, namhyung@kernel.org, peterz@infradead.org,
-        riel@surriel.com, rientjes@google.com, rostedt@goodmis.org,
-        rppt@kernel.org, shakeelb@google.com, shuah@kernel.org,
-        sj38.park@gmail.com, snu@zelle79.org, vbabka@suse.cz,
-        vdavydov.dev@gmail.com, zgf574564920@gmail.com,
-        linux-damon@amazon.com, linux-mm@kvack.org,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [RFC PATCH 13/13] mm/damon: Introduce DAMON-based reclamation
-Date:   Mon, 31 May 2021 13:38:16 +0000
-Message-Id: <20210531133816.12689-14-sj38.park@gmail.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210531133816.12689-1-sj38.park@gmail.com>
-References: <20210531133816.12689-1-sj38.park@gmail.com>
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=+bEtGCo1uhHPhqESan+wsUXEcoXhXeuf/1fKcgnFV1Q=;
+ b=dwsELILSd7R/gtAH/ghYCWknRtwHAFf/3E22iAz89MLpNaDELHzU1Hh4uZUi4Zk+Kjl3R40CawAbADRFyBgbsJmaKYzPbOkLu/GF2OmlG3KjO4hmK7w/Kmo2Eg4bOoAHxOTgMt2hrDGlGN1A4QJRS07/a3P2DFzvGw3aAbyF/RE=
+Received: from MWHPR10MB1582.namprd10.prod.outlook.com (2603:10b6:300:22::8)
+ by MWHPR1001MB2334.namprd10.prod.outlook.com (2603:10b6:301:2d::32) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4173.29; Mon, 31 May
+ 2021 13:39:37 +0000
+Received: from MWHPR10MB1582.namprd10.prod.outlook.com
+ ([fe80::353a:1802:6e91:1811]) by MWHPR10MB1582.namprd10.prod.outlook.com
+ ([fe80::353a:1802:6e91:1811%8]) with mapi id 15.20.4173.030; Mon, 31 May 2021
+ 13:39:37 +0000
+From:   Liam Howlett <liam.howlett@oracle.com>
+To:     Suren Baghdasaryan <surenb@google.com>
+CC:     "maple-tree@lists.infradead.org" <maple-tree@lists.infradead.org>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Song Liu <songliubraving@fb.com>,
+        Davidlohr Bueso <dave@stgolabs.net>,
+        "Paul E . McKenney" <paulmck@kernel.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Laurent Dufour <ldufour@linux.ibm.com>,
+        David Rientjes <rientjes@google.com>,
+        Axel Rasmussen <axelrasmussen@google.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Rik van Riel <riel@surriel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Michel Lespinasse <walken.cr@gmail.com>
+Subject: Re: [PATCH 32/94] kernel/fork: Convert dup_mmap to use maple tree
+Thread-Topic: [PATCH 32/94] kernel/fork: Convert dup_mmap to use maple tree
+Thread-Index: AQHXPEQzJedE/FbyXUah1XIctJgRAqr5zncAgAP9ugA=
+Date:   Mon, 31 May 2021 13:39:36 +0000
+Message-ID: <20210531131341.c7weinlwxnhnnaqt@revolver>
+References: <20210428153542.2814175-1-Liam.Howlett@Oracle.com>
+ <20210428153542.2814175-33-Liam.Howlett@Oracle.com>
+ <CAJuCfpEBnrTShvYN9G9PTHjBWnEBeibuMwNOER66r1TdqBWNzg@mail.gmail.com>
+In-Reply-To: <CAJuCfpEBnrTShvYN9G9PTHjBWnEBeibuMwNOER66r1TdqBWNzg@mail.gmail.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: google.com; dkim=none (message not signed)
+ header.d=none;google.com; dmarc=none action=none header.from=oracle.com;
+x-originating-ip: [23.233.25.87]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 559b9276-f7fc-43b1-8a01-08d924398882
+x-ms-traffictypediagnostic: MWHPR1001MB2334:
+x-microsoft-antispam-prvs: <MWHPR1001MB233415450ED9240CC0202731FD3F9@MWHPR1001MB2334.namprd10.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:8882;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: ia/oIdyt4arCp7BVupHv9f8wlZ0yx8JO3a/8xTua5iq2q6EjBhX/2SgnTW20O3R+tmT4w8EN97E4YGhNaPnZfVH/Fdb3b9uQB6fNE4nm8SF1Qt1vtpHWDNgUj/QTMlEoZCmUgbl8nrocrxkvD+OV7KlrcewO/kDGVrMNt1OP/fNxt8CPBzOphCPx1Kj4Wm+PwJNFHOybzyhdX8wrIoTBSEcAPVkznTiBZ/uRm9qRnp3XjIJ6gIpH/mfEHr23ZxVHRW2szLiRWchcUta4jWumdgQt3llLSAtA6Nzx5o6Mzn4z0XByeeirlbRrHnZU+vFl5PpaJAjZtrpc+mkOSUiYI00d2UQgasCGEWomjOd8OCYhc6NHcMYkCeoQwdNr5g7p/LtjrpSYbdB59sKuGXhd4zcpqDuwm17BCJUEdw3qZwI6dM4hOfvCv0bJ3LroBUn18WtH9aJOxjw3jGPnAefCTpbq1+teQxiWgAcj6dtLTXb7DXfcqVJuT876ORzuFXJtLNQ1zxxuzp9qVN0YB6Ilc++WjgWFlpGOdL5B5UNmn2B1BY4ISQ1JGGcicabtwW0ufmhP0uQCP0EAd0oR7gLWar6XneuKVEClmxieEDKrqOw=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MWHPR10MB1582.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(7916004)(39850400004)(366004)(376002)(346002)(136003)(396003)(6916009)(91956017)(76116006)(64756008)(66446008)(66476007)(66946007)(2906002)(33716001)(83380400001)(1076003)(8676002)(5660300002)(54906003)(316002)(4326008)(7416002)(6486002)(6512007)(9686003)(8936002)(6506007)(53546011)(186003)(44832011)(26005)(71200400001)(86362001)(38100700002)(66556008)(122000001)(478600001);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata: =?us-ascii?Q?jKfFhKRNtPkBkGQL7iz/+8watQdj68bK6QHDG+Wv330eA0WFxAFuOKTjwERD?=
+ =?us-ascii?Q?NO5/Jak4sW4aF1D31iXAmeEKAFniEYN2fg/Jl4vO8gdvwX9qdEW7efA3DFM2?=
+ =?us-ascii?Q?J2K0/Os8FBvF+5INJ4zBWcii1k8ZquUPgX0Z+0CwabQS0R53F7Snb7HbALlW?=
+ =?us-ascii?Q?NXyZtgu2Fztwehhf60WZbmnsfDKNR6c7nYH08ynUBQ92VlK0I0fMlr3+sVov?=
+ =?us-ascii?Q?XWJqopQCQ6muNJFVsib6QGWurxGOqZL9V2iffTf2Fw3fCT17HHev9sZtQCHn?=
+ =?us-ascii?Q?LJr/PHfzwkKPiB7Nz9ihy9CxlMBj1wy1c9sPwdjT4RHK72aNow3pPpYnLV0d?=
+ =?us-ascii?Q?5RCd7bHjKKi5/AkatwQAEcybJ0tjTC52EegIaTRrkNTXNY64l47Hahavxyx5?=
+ =?us-ascii?Q?77EmHonSnMF1kwvzASmbt2CagzLmuZSm6Hj1hZsqt7NEiR/BNKH4mqEOspe4?=
+ =?us-ascii?Q?gU4RVOx8s0rcHI1tQ1j/vgKtgxKw9VyMhZAFydi8rQBNnNe3DfYpXJdC5grq?=
+ =?us-ascii?Q?b4j0vM5jvZLinMwuBTUHzgju8YvpGUegmuyVlSv0f8yqHuZQwPAj0FWTjGSi?=
+ =?us-ascii?Q?7d/wFIDWnpD6x9MoFRKpIDiAa/O5SaXcCOb9UvheCz+jLmqRqSaPkZPhO8C4?=
+ =?us-ascii?Q?u0xRq2wNdD31lxCI+oX9pLaREDzeX9TWaHHvpAPCqe5FTTbu/EbdjdbL9dlM?=
+ =?us-ascii?Q?xPraFmHR8nJWTLlUIQ99avkwbmFV+wHkomHA1H7O6YtxqFW06a/xZ30N+1kB?=
+ =?us-ascii?Q?jNZN190XIhfE8C8HYqHKFCZJo/OQkxakVT0fW9dNY5XpJ7f9WKsTSjuSAkfl?=
+ =?us-ascii?Q?+0X+e6kUwfRBiHMtIGUd8Wz2x+kjIXORn508jxB7HL4UxkT29ds7s9+Ii9KH?=
+ =?us-ascii?Q?uznaMwMUbPxxLcgZcchfUXlAtYKWlLxr/0HIxjnkHO/02OFXhEGnmfuLnTPh?=
+ =?us-ascii?Q?c1xgyVJmYvx8EBmEeuzZS/1FBCfzLZxSAPQHy085kpFhEnO+IzzRkuQg2br/?=
+ =?us-ascii?Q?eLo+wVc7oIV3s9Y81D1Seo7MmLbdciDsy9zaWlDUAtzUiH1jQLLRP5ITqO7w?=
+ =?us-ascii?Q?JrvfVOayqpuoR0y6NBWi8GENkcXYIR2iWUN3dIhIux+XUXiqc93hRXgy4kBF?=
+ =?us-ascii?Q?qsszy1NLMhrqmgFmoPtzZMcN8fW70XYvNnkIjAnD5xdCZ2If66aa+K/IQQJG?=
+ =?us-ascii?Q?3aslHlT+gMoD55wL1LnAP22tZnjfwXS6eYyTJiHcKxHZwORjL+gCUQLsKsXS?=
+ =?us-ascii?Q?K9vqr/5JNa/uXjgfZHMqexJ2SFUeaYjW0qgg8ZU2yqHWYGIxAVJjC1f79xeE?=
+ =?us-ascii?Q?Ra8Sg0n8ws+GJZL6ary7uVQx?=
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <AEB8093B8DC66D4F8DE7A44BB54AB1BB@namprd10.prod.outlook.com>
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: MWHPR10MB1582.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 559b9276-f7fc-43b1-8a01-08d924398882
+X-MS-Exchange-CrossTenant-originalarrivaltime: 31 May 2021 13:39:36.9958
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: GOYr8lef9NQkqhJHQ4FZCIemLSf5oKoCFqdNq8wzns0wuFmRtj2CokP6/Siy8SKxBVQRNo6tDbzrVuDmy8OLow==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR1001MB2334
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=10001 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 mlxscore=0 phishscore=0
+ suspectscore=0 spamscore=0 mlxlogscore=999 adultscore=0 bulkscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104190000
+ definitions=main-2105310096
+X-Proofpoint-ORIG-GUID: VHvLuzFAq_TogKY68QzVZdNV5oGYbog9
+X-Proofpoint-GUID: VHvLuzFAq_TogKY68QzVZdNV5oGYbog9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: SeongJae Park <sjpark@amazon.de>
+* Suren Baghdasaryan <surenb@google.com> [210528 20:42]:
+> On Wed, Apr 28, 2021 at 8:36 AM Liam Howlett <liam.howlett@oracle.com> wr=
+ote:
+> >
+> > Use the maple tree iterator to duplicate the mm_struct trees.
+> >
+> > Signed-off-by: Liam R. Howlett <Liam.Howlett@Oracle.com>
+> > ---
+> >  include/linux/mm.h       |  2 --
+> >  include/linux/sched/mm.h |  3 +++
+> >  kernel/fork.c            | 24 +++++++++++++++++++-----
+> >  mm/mmap.c                |  4 ----
+> >  4 files changed, 22 insertions(+), 11 deletions(-)
+> >
+> > diff --git a/include/linux/mm.h b/include/linux/mm.h
+> > index e89bacfa9145..7f7dff6ad884 100644
+> > --- a/include/linux/mm.h
+> > +++ b/include/linux/mm.h
+> > @@ -2498,8 +2498,6 @@ extern bool arch_has_descending_max_zone_pfns(voi=
+d);
+> >  /* nommu.c */
+> >  extern atomic_long_t mmap_pages_allocated;
+> >  extern int nommu_shrink_inode_mappings(struct inode *, size_t, size_t)=
+;
+> > -/* maple_tree */
+> > -void vma_store(struct mm_struct *mm, struct vm_area_struct *vma);
+> >
+> >  /* interval_tree.c */
+> >  void vma_interval_tree_insert(struct vm_area_struct *node,
+> > diff --git a/include/linux/sched/mm.h b/include/linux/sched/mm.h
+> > index e24b1fe348e3..76cab3aea6ab 100644
+> > --- a/include/linux/sched/mm.h
+> > +++ b/include/linux/sched/mm.h
+> > @@ -8,6 +8,7 @@
+> >  #include <linux/mm_types.h>
+> >  #include <linux/gfp.h>
+> >  #include <linux/sync_core.h>
+> > +#include <linux/maple_tree.h>
+> >
+> >  /*
+> >   * Routines for handling mm_structs
+> > @@ -67,11 +68,13 @@ static inline void mmdrop(struct mm_struct *mm)
+> >   */
+> >  static inline void mmget(struct mm_struct *mm)
+> >  {
+> > +       mt_set_in_rcu(&mm->mm_mt);
+> >         atomic_inc(&mm->mm_users);
+> >  }
+> >
+> >  static inline bool mmget_not_zero(struct mm_struct *mm)
+> >  {
+> > +       mt_set_in_rcu(&mm->mm_mt);
+>=20
+> Should you be calling mt_set_in_rcu() if atomic_inc_not_zero() failed?
+> I don't think mmput() is called after mmget_not_zero() fails and
+> mt_clear_in_rcu() will not be called.
 
-This commit implements a new kernel subsystem that finds cold memory
-regions using DAMON and reclaims those immediately.  It is intended to
-be used as proactive lightweigh reclamation logic for light memory
-pressure.  For heavy memory pressure, it could be inactivated and fall
-back to the traditional page-scanning based reclamation.
+Good catch, but having it the way it is will be faster with the
+possibility of re-entering RCU mode if there is a race during tear down.
+Entering RCU mode during tear-down mean that the nodes that are not
+already freed would remain for an RCU cycle before being freed.  I don't
+think it is worth checking every time this is called for such a low
+payoff.  I should probably add a comment about this though.
 
-It's implemented on top of DAMON framework to use the DAMON-based
-Operation Schemes (DAMOS) feature.  It utilizes all the DAMOS features
-including speed limit, prioritization, and watermarks.
-
-It could be enabled and tuned in build time via the kernel
-configuration, in boot time via the kernel boot parameter, and in run
-time via its module parameter ('/sys/module/damon_reclaim/parameters/')
-interface.
-
-Signed-off-by: SeongJae Park <sjpark@amazon.de>
----
- mm/damon/Kconfig   | 128 +++++++++++++++++++++++++
- mm/damon/Makefile  |   1 +
- mm/damon/reclaim.c | 230 +++++++++++++++++++++++++++++++++++++++++++++
- 3 files changed, 359 insertions(+)
- create mode 100644 mm/damon/reclaim.c
-
-diff --git a/mm/damon/Kconfig b/mm/damon/Kconfig
-index eeefb5b633b6..f629818e4793 100644
---- a/mm/damon/Kconfig
-+++ b/mm/damon/Kconfig
-@@ -84,4 +84,132 @@ config DAMON_DBGFS_KUNIT_TEST
- 
- 	  If unsure, say N.
- 
-+config DAMON_RECLAIM
-+	bool "Build DAMON-based reclaim (DAMON_RECLAIM)"
-+	depends on DAMON_PADDR
-+	help
-+	  This builds the DAMON-based reclamation subsystem.  It finds pages
-+	  that not accessed for a long time (cold) using DAMON and reclaim
-+	  those if enabled.
-+
-+	  This is suggested to be used as a proactive and lightweight
-+	  reclamation under light memory pressure, while the traditional page
-+	  scanning-based reclamation is used for heavy pressure.
-+
-+config DAMON_RECLAIM_ENABLE
-+	bool "Enable DAMON-based reclaim"
-+	depends on DAMON_RECLAIM
-+	help
-+	  Make DAMON_RECLAIM starts work after booting.  If this is not set,
-+	  user could enable it using its runtime interface.
-+
-+config DAMON_RECLAIM_MIN_AGE
-+	int "Minimal microseconds of region to not accessed to be cold"
-+	depends on DAMON_RECLAIM
-+	default 5000000
-+	help
-+	  If a memory region has not accessed for this or longer time,
-+	  DAMON_RECLAIM identifies the region as cold and reclaim.
-+	  5 seconds by default.
-+
-+config DAMON_RECLAIM_LIMIT_SZ
-+	int "Maximum bytes of memory to be reclaimed in each charging window"
-+	depends on DAMON_RECLAIM
-+	default 1073741824
-+	help
-+	  DAMON_RECLAIM charges amount of memory reclaimed within each charging
-+	  time window and limits no more than this limit is charged.  This
-+	  could be useful for limiting CPU usage of DAMON_RECLAIM.
-+	  1 GiB by default.
-+
-+config DAMON_RECLAIM_LIMIT_MS
-+	int "The reclaimed memory charging window in milliseconds"
-+	depends on DAMON_RECLAIM
-+	default 1000
-+	help
-+	  The charge window for DAMON_RECLAIM_LIMIT_SZ.
-+	  1 second by default.
-+
-+config DAMON_RECLAIM_WATERMARK_CHECK_INTERVAL
-+	int "DAMON_RECLAIM watermarks check time interval in microseconds"
-+	depends on DAMON_RECLAIM
-+	default 5000000
-+	help
-+	  Minimal time to wait before checking the watermarks, when
-+	  DAMON_RECLAIM is enabled but inactive due to its watermarks rule.
-+	  5 seconds by default.
-+
-+config DAMON_RECLAIM_WATERMARK_HIGH
-+	int "Free memory rate (per thousand) for the high watermark"
-+	range 0 1000
-+	depends on DAMON_RECLAIM
-+	default 500
-+	help
-+	  If free memory of the system in bytes per thousand bytes is higher
-+	  than this, DAMON_RECLAIM becomes inactive, so it does nothing but
-+	  periodically checks the watermarks.  500 by default.
-+
-+config DAMON_RECLAIM_WATERMARK_MID
-+	int "Free memory rate (per thousand) for the middle watermark"
-+	range 0 1000
-+	depends on DAMON_RECLAIM
-+	default 400
-+	help
-+	  If free memory of the system in bytes per thousand bytes is between
-+	  this and the low watermark, DAMON_RECLAIM becomes active, so starts
-+	  the work.
-+	  400 by default.
-+
-+config DAMON_RECLAIM_WATERMARK_LOW
-+	int "Free memory rate (per thousand) for the low watermark"
-+	range 0 1000
-+	depends on DAMON_RECLAIM
-+	default 200
-+	help
-+	  If free memory of the system in bytes per thousand bytes is lower
-+	  than this, DAMON_RECLAIM becomes inactive, so does nothing but
-+	  periodically checks the watermarks.  So, in this case, we fall back
-+	  to the traditional page scanning-based reclamation logic.
-+	  200 by default.
-+
-+config DAMON_RECLAIM_SAMPLING_INTERVAL
-+	int "Sampling interval for the monitoring in microseconds"
-+	depends on DAMON_RECLAIM
-+	default 5000
-+	help
-+	  The sampling interval of DAMON for the DAMON_RECLAIM.  Please refer
-+	  to the DAMON documentation for more detail.
-+	  5 ms by default.
-+
-+config DAMON_RECLAIM_AGGREGATION_INTERVAL
-+	int "Aggregation interval for the monitoring in microseconds"
-+	depends on DAMON_RECLAIM
-+	default 100000
-+	help
-+	  The aggregation interval of DAMON for the DAMON_RECLAIM.  Please
-+	  refer to the DAMON documentation for more detail.
-+	  reclaim.  100 ms by default.
-+
-+config DAMON_RECLAIM_MIN_NR_REGIONS
-+	int "Minimum number of monitoring regions"
-+	depends on DAMON_RECLAIM
-+	default 10
-+	help
-+	  The minimal number of monitoring regions for DAMON_RECLAIM.  Can be
-+	  used to set lower-bound of the monitoring's quality.  But setting
-+	  this too high could result in increased monitoring overhead.  Please
-+	  refer to the DAMON documentation for more detail.
-+	  10 by default.
-+
-+config DAMON_RECLAIM_MAX_NR_REGIONS
-+	int "Maximum number of monitoring regions"
-+	depends on DAMON_RECLAIM
-+	default 1000
-+	help
-+	  The maximum number of monitoring regions for DAMON-based reclaim.
-+	  Can be used to set upper-bound of the monitoring overhead.  However,
-+	  setting this too low could result in bad monitoring quality.  Please
-+	  refer to the DAMON documentation for more detail.
-+	  1000 by default.
-+
- endmenu
-diff --git a/mm/damon/Makefile b/mm/damon/Makefile
-index 017799e5670a..39433e7d570c 100644
---- a/mm/damon/Makefile
-+++ b/mm/damon/Makefile
-@@ -5,3 +5,4 @@ obj-$(CONFIG_DAMON_VADDR)	+= prmtv-common.o vaddr.o
- obj-$(CONFIG_DAMON_PADDR)	+= prmtv-common.o paddr.o
- obj-$(CONFIG_DAMON_PGIDLE)	+= prmtv-common.o pgidle.o
- obj-$(CONFIG_DAMON_DBGFS)	+= dbgfs.o
-+obj-$(CONFIG_DAMON_RECLAIM)	+= reclaim.o
-diff --git a/mm/damon/reclaim.c b/mm/damon/reclaim.c
-new file mode 100644
-index 000000000000..a95131038377
---- /dev/null
-+++ b/mm/damon/reclaim.c
-@@ -0,0 +1,230 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * DAMON-based page reclamation
-+ *
-+ * Author: SeongJae Park <sjpark@amazon.de>
-+ */
-+
-+#define pr_fmt(fmt) "damon-reclaim: " fmt
-+
-+#include <linux/damon.h>
-+#include <linux/ioport.h>
-+#include <linux/module.h>
-+#include <linux/workqueue.h>
-+
-+#ifdef MODULE_PARAM_PREFIX
-+#undef MODULE_PARAM_PREFIX
-+#endif
-+#define MODULE_PARAM_PREFIX "damon_reclaim."
-+
-+#ifndef CONFIG_DAMON_RECLAIM_ENABLE
-+static bool enabled __read_mostly;
-+#else
-+static bool enabled __read_mostly = CONFIG_DAMON_RECLAIM_ENABLE;
-+#endif
-+module_param(enabled, bool, 0600);
-+
-+static unsigned long min_age __read_mostly = CONFIG_DAMON_RECLAIM_MIN_AGE;
-+module_param(min_age, ulong, 0600);
-+
-+static unsigned long limit_sz __read_mostly = CONFIG_DAMON_RECLAIM_LIMIT_SZ;
-+module_param(limit_sz, ulong, 0600);
-+
-+static unsigned long limit_ms __read_mostly = CONFIG_DAMON_RECLAIM_LIMIT_MS;
-+module_param(limit_ms, ulong, 0600);
-+
-+static unsigned long wmarks_interval __read_mostly =
-+		CONFIG_DAMON_RECLAIM_WATERMARK_CHECK_INTERVAL;
-+module_param(wmarks_interval, ulong, 0600);
-+
-+static unsigned long wmarks_high __read_mostly =
-+		CONFIG_DAMON_RECLAIM_WATERMARK_HIGH;
-+module_param(wmarks_high, ulong, 0600);
-+
-+static unsigned long wmarks_mid __read_mostly =
-+		CONFIG_DAMON_RECLAIM_WATERMARK_MID;
-+module_param(wmarks_mid, ulong, 0600);
-+
-+static unsigned long wmarks_low __read_mostly =
-+		CONFIG_DAMON_RECLAIM_WATERMARK_LOW;
-+module_param(wmarks_low, ulong, 0600);
-+
-+static unsigned long sample_interval __read_mostly =
-+		CONFIG_DAMON_RECLAIM_SAMPLING_INTERVAL;
-+module_param(sample_interval, ulong, 0600);
-+
-+static unsigned long aggr_interval __read_mostly =
-+		CONFIG_DAMON_RECLAIM_AGGREGATION_INTERVAL;
-+module_param(aggr_interval, ulong, 0600);
-+
-+static unsigned long min_nr_regions __read_mostly =
-+		CONFIG_DAMON_RECLAIM_MIN_NR_REGIONS;
-+module_param(min_nr_regions, ulong, 0600);
-+
-+static unsigned long max_nr_regions __read_mostly =
-+		CONFIG_DAMON_RECLAIM_MAX_NR_REGIONS;
-+module_param(max_nr_regions, ulong, 0600);
-+
-+static unsigned long monitor_region_start;
-+module_param(monitor_region_start, ulong, 0400);
-+
-+static unsigned long monitor_region_end;
-+module_param(monitor_region_end, ulong, 0400);
-+
-+static struct damon_ctx *ctx;
-+static struct damon_target *target;
-+
-+struct damon_reclaim_ram_walk_arg {
-+	unsigned long start;
-+	unsigned long end;
-+};
-+
-+int walk_system_ram(struct resource *res, void *arg)
-+{
-+	struct damon_reclaim_ram_walk_arg *a = arg;
-+
-+	if (a->end - a->start < res->end - res->start) {
-+		a->start = res->start;
-+		a->end = res->end;
-+	}
-+	return 0;
-+}
-+
-+/*
-+ * Find biggest 'System RAM' resource and store its start and end address in
-+ * @start and @end, respectively.  If no System RAM is found, returns false.
-+ */
-+static bool get_monitoring_region(unsigned long *start, unsigned long *end)
-+{
-+	struct damon_reclaim_ram_walk_arg arg = {};
-+
-+	walk_system_ram_res(0, ULONG_MAX, &arg, walk_system_ram);
-+
-+	if (arg.end > arg.start) {
-+		*start = arg.start;
-+		*end = arg.end;
-+		return true;
-+	}
-+
-+
-+	return false;
-+}
-+
-+static struct damos *damon_reclaim_new_scheme(void)
-+{
-+	struct damos_watermarks wmarks = {
-+		.metric = DAMOS_WMARK_FREE_MEM_RATE,
-+		.interval = wmarks_interval,
-+		.high = wmarks_high,
-+		.mid = wmarks_mid,
-+		.low = wmarks_low,
-+	};
-+	struct damos_speed_limit limit = {
-+		.sz = limit_sz,
-+		.ms = limit_ms,
-+		/* Within the limit, page out older regions first. */
-+		.weight_sz = 0,
-+		.weight_nr_accesses = 0,
-+		.weight_age = 1
-+	};
-+	struct damos *scheme = damon_new_scheme(
-+			/* Find regions having PAGE_SIZE or larger size */
-+			PAGE_SIZE, ULONG_MAX,
-+			/* and not accessed at all */
-+			0, 0,
-+			/* for min_age or more micro-seconds, and */
-+			min_age / aggr_interval, UINT_MAX,
-+			/* page out those, as soon as found */
-+			DAMOS_PAGEOUT,
-+			&limit,
-+			/* Activate this based on the watermarks. */
-+			&wmarks);
-+
-+	return scheme;
-+}
-+
-+static int damon_reclaim_turn(bool on)
-+{
-+	struct damon_region *region;
-+	struct damos *scheme;
-+	int err;
-+
-+	if (!on)
-+		return damon_stop(&ctx, 1);
-+
-+	err = damon_set_attrs(ctx, READ_ONCE(sample_interval),
-+			READ_ONCE(aggr_interval),
-+			READ_ONCE(aggr_interval) * 100,
-+			min_nr_regions, max_nr_regions);
-+	if (err)
-+		return err;
-+
-+	if (!get_monitoring_region(&monitor_region_start, &monitor_region_end))
-+		return -EINVAL;
-+	/* DAMON will free this on its own when finish monitoring */
-+	region = damon_new_region(monitor_region_start, monitor_region_end);
-+	if (!region)
-+		return -ENOMEM;
-+	damon_add_region(region, target);
-+
-+	/* Will be freed by later 'damon_set_schemes()' */
-+	scheme = damon_reclaim_new_scheme();
-+	if (!scheme)
-+		goto free_region_out;
-+	err = damon_set_schemes(ctx, &scheme, 1);
-+	if (err)
-+		goto free_scheme_out;
-+
-+	err = damon_start(&ctx, 1);
-+	if (err)
-+		goto free_scheme_out;
-+	goto out;
-+
-+free_scheme_out:
-+	damon_destroy_scheme(scheme);
-+free_region_out:
-+	damon_destroy_region(region);
-+out:
-+	return err;
-+}
-+
-+#define ENABLE_CHECK_INTERVAL_MS	1000
-+static struct delayed_work damon_reclaim_timer;
-+static void damon_reclaim_timer_fn(struct work_struct *work)
-+{
-+	static bool last_enabled;
-+	bool now_enabled;
-+
-+	now_enabled = enabled;
-+	if (last_enabled != now_enabled) {
-+		if (!damon_reclaim_turn(now_enabled))
-+			last_enabled = now_enabled;
-+		else
-+			enabled = last_enabled;
-+	}
-+
-+	schedule_delayed_work(&damon_reclaim_timer,
-+			msecs_to_jiffies(ENABLE_CHECK_INTERVAL_MS));
-+}
-+static DECLARE_DELAYED_WORK(damon_reclaim_timer, damon_reclaim_timer_fn);
-+
-+static int __init damon_reclaim_init(void)
-+{
-+	ctx = damon_new_ctx(DAMON_ADAPTIVE_TARGET);
-+	if (!ctx)
-+		return -ENOMEM;
-+
-+	damon_pa_set_primitives(ctx);
-+
-+	target = damon_new_target(4242);
-+	if (!target) {
-+		damon_destroy_ctx(ctx);
-+		return -ENOMEM;
-+	}
-+	damon_add_target(ctx, target);
-+
-+	schedule_delayed_work(&damon_reclaim_timer, 0);
-+	return 0;
-+}
-+
-+module_init(damon_reclaim_init);
--- 
-2.17.1
-
+>=20
+> >         return atomic_inc_not_zero(&mm->mm_users);
+> >  }
+> >
+> > diff --git a/kernel/fork.c b/kernel/fork.c
+> > index c37abaf28eb9..832416ff613e 100644
+> > --- a/kernel/fork.c
+> > +++ b/kernel/fork.c
+> > @@ -477,7 +477,9 @@ static __latent_entropy int dup_mmap(struct mm_stru=
+ct *mm,
+> >         struct vm_area_struct *mpnt, *tmp, *prev, **pprev;
+> >         struct rb_node **rb_link, *rb_parent;
+> >         int retval;
+> > -       unsigned long charge;
+> > +       unsigned long charge =3D 0;
+> > +       MA_STATE(old_mas, &oldmm->mm_mt, 0, 0);
+> > +       MA_STATE(mas, &mm->mm_mt, 0, 0);
+> >         LIST_HEAD(uf);
+> >
+> >         uprobe_start_dup_mmap();
+> > @@ -511,7 +513,13 @@ static __latent_entropy int dup_mmap(struct mm_str=
+uct *mm,
+> >                 goto out;
+> >
+> >         prev =3D NULL;
+> > -       for (mpnt =3D oldmm->mmap; mpnt; mpnt =3D mpnt->vm_next) {
+> > +
+> > +       retval =3D mas_entry_count(&mas, oldmm->map_count);
+> > +       if (retval)
+> > +               goto fail_nomem;
+> > +
+> > +       rcu_read_lock();
+> > +       mas_for_each(&old_mas, mpnt, ULONG_MAX) {
+> >                 struct file *file;
+> >
+> >                 if (mpnt->vm_flags & VM_DONTCOPY) {
+> > @@ -525,7 +533,7 @@ static __latent_entropy int dup_mmap(struct mm_stru=
+ct *mm,
+> >                  */
+> >                 if (fatal_signal_pending(current)) {
+> >                         retval =3D -EINTR;
+> > -                       goto out;
+> > +                       goto loop_out;
+> >                 }
+> >                 if (mpnt->vm_flags & VM_ACCOUNT) {
+> >                         unsigned long len =3D vma_pages(mpnt);
+> > @@ -594,7 +602,9 @@ static __latent_entropy int dup_mmap(struct mm_stru=
+ct *mm,
+> >                 rb_parent =3D &tmp->vm_rb;
+> >
+> >                 /* Link the vma into the MT */
+> > -               vma_store(mm, tmp);
+> > +               mas.index =3D tmp->vm_start;
+> > +               mas.last =3D tmp->vm_end - 1;
+> > +               mas_store(&mas, tmp);
+> >
+> >                 mm->map_count++;
+> >                 if (!(tmp->vm_flags & VM_WIPEONFORK))
+> > @@ -604,14 +614,17 @@ static __latent_entropy int dup_mmap(struct mm_st=
+ruct *mm,
+> >                         tmp->vm_ops->open(tmp);
+> >
+> >                 if (retval)
+> > -                       goto out;
+> > +                       goto loop_out;
+> >         }
+> >         /* a new mm has just been created */
+> >         retval =3D arch_dup_mmap(oldmm, mm);
+> > +loop_out:
+> >  out:
+> > +       rcu_read_unlock();
+> >         mmap_write_unlock(mm);
+> >         flush_tlb_mm(oldmm);
+> >         mmap_write_unlock(oldmm);
+> > +       mas_destroy(&mas);
+> >         dup_userfaultfd_complete(&uf);
+> >  fail_uprobe_end:
+> >         uprobe_end_dup_mmap();
+> > @@ -1092,6 +1105,7 @@ static inline void __mmput(struct mm_struct *mm)
+> >  {
+> >         VM_BUG_ON(atomic_read(&mm->mm_users));
+> >
+> > +       mt_clear_in_rcu(&mm->mm_mt);
+> >         uprobe_clear_state(mm);
+> >         exit_aio(mm);
+> >         ksm_exit(mm);
+> > diff --git a/mm/mmap.c b/mm/mmap.c
+> > index 929c2f9eb3f5..1bd43f4db28e 100644
+> > --- a/mm/mmap.c
+> > +++ b/mm/mmap.c
+> > @@ -780,10 +780,6 @@ static inline void vma_mt_store(struct mm_struct *=
+mm, struct vm_area_struct *vma
+> >                 GFP_KERNEL);
+> >  }
+> >
+> > -void vma_store(struct mm_struct *mm, struct vm_area_struct *vma) {
+> > -       vma_mt_store(mm, vma);
+> > -}
+> > -
+> >  static void
+> >  __vma_link(struct mm_struct *mm, struct vm_area_struct *vma,
+> >         struct vm_area_struct *prev, struct rb_node **rb_link,
+> > --
+> > 2.30.2=
