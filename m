@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E4EC395DCF
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 15:49:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2AED9396548
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 18:28:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232233AbhEaNvE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 09:51:04 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38860 "EHLO mail.kernel.org"
+        id S233364AbhEaQa1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 12:30:27 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40792 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232588AbhEaNdK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 09:33:10 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id EC6B0613F4;
-        Mon, 31 May 2021 13:24:15 +0000 (UTC)
+        id S232115AbhEaOpj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 10:45:39 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 776AA61C7F;
+        Mon, 31 May 2021 13:55:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1622467456;
-        bh=kDdYKZEM5c2yqPsyjEYkReI62oz9TW0MrGZVYjyv3RY=;
+        s=korg; t=1622469334;
+        bh=qyfZOekgMxPGapE2Q5eCN20eauVYemqaHxjewy5Bmw8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=039OMWEdjn61ORqT38nDHaT6LKB0OejX4uzn3RBgxFHis9Pl5iR5uN/ksvcY5OSUG
-         iVFJkbj+85yJgKq/aOVwJVrXtKnuedtzGRnPUShAv2WbRwTw8pEZ9DWuQWrS73p1vZ
-         aO1fIN15t3HozV6FmnyV6sBBJR8BFQuqdjhEbxtQ=
+        b=PGBu9I1x+O5sR3BkgA93KI39jH5MJER09ijWu6IyyMtcfE1QEmYIfgzmMTWbnfbuP
+         THkCNSnUNef8apbnIH596rwu0T6llo/sfUEo9RFK3gH+M5BK3bhuaT9mz9podNvwTe
+         URxYUMOFvzm32WDMSG7xgY9XLW7pro1mg4cLHB2w=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Michael Grzeschik <m.grzeschik@pengutronix.de>,
-        Felipe Balbi <balbi@kernel.org>,
-        Thinh Nguyen <Thinh.Nguyen@synopsys.com>
-Subject: [PATCH 4.19 037/116] usb: dwc3: gadget: Properly track pending and queued SG
+        stable@vger.kernel.org, Paolo Abeni <pabeni@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Maxim Galaganov <max@internet.ru>
+Subject: [PATCH 5.12 158/296] mptcp: fix data stream corruption
 Date:   Mon, 31 May 2021 15:13:33 +0200
-Message-Id: <20210531130641.424328314@linuxfoundation.org>
+Message-Id: <20210531130709.172747728@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210531130640.131924542@linuxfoundation.org>
-References: <20210531130640.131924542@linuxfoundation.org>
+In-Reply-To: <20210531130703.762129381@linuxfoundation.org>
+References: <20210531130703.762129381@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,87 +40,56 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Thinh Nguyen <Thinh.Nguyen@synopsys.com>
+From: Paolo Abeni <pabeni@redhat.com>
 
-commit 25dda9fc56bd90d45f9a4516bcfa5211e61b4290 upstream.
+commit 29249eac5225429b898f278230a6ca2baa1ae154 upstream.
 
-The driver incorrectly uses req->num_pending_sgs to track both the
-number of pending and queued SG entries. It only prepares the next
-request if the previous is done, and it doesn't update num_pending_sgs
-until there is TRB completion interrupt. This may starve the controller
-of more TRBs until the num_pending_sgs is decremented.
+Maxim reported several issues when forcing a TCP transparent proxy
+to use the MPTCP protocol for the inbound connections. He also
+provided a clean reproducer.
 
-Fix this by decrementing the num_pending_sgs after they are queued and
-properly track both num_mapped_sgs and num_queued_sgs.
+The problem boils down to 'mptcp_frag_can_collapse_to()' assuming
+that only MPTCP will use the given page_frag.
 
-Fixes: c96e6725db9d ("usb: dwc3: gadget: Correct the logic for queuing sgs")
-Cc: <stable@vger.kernel.org>
-Reported-by: Michael Grzeschik <m.grzeschik@pengutronix.de>
-Tested-by: Michael Grzeschik <m.grzeschik@pengutronix.de>
-Acked-by: Felipe Balbi <balbi@kernel.org>
-Signed-off-by: Thinh Nguyen <Thinh.Nguyen@synopsys.com>
-Link: https://lore.kernel.org/r/ba24591dbcaad8f244a3e88bd449bb7205a5aec3.1620874069.git.Thinh.Nguyen@synopsys.com
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+If others - e.g. the plain TCP protocol - allocate page fragments,
+we can end-up re-using already allocated memory for mptcp_data_frag.
+
+Fix the issue ensuring that the to-be-expanded data fragment is
+located at the current page frag end.
+
+v1 -> v2:
+ - added missing fixes tag (Mat)
+
+Closes: https://github.com/multipath-tcp/mptcp_net-next/issues/178
+Reported-and-tested-by: Maxim Galaganov <max@internet.ru>
+Fixes: 18b683bff89d ("mptcp: queue data for mptcp level retransmission")
+Signed-off-by: Paolo Abeni <pabeni@redhat.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/usb/dwc3/gadget.c |   13 +++++++------
- 1 file changed, 7 insertions(+), 6 deletions(-)
+ net/mptcp/protocol.c |    6 ++++++
+ 1 file changed, 6 insertions(+)
 
---- a/drivers/usb/dwc3/gadget.c
-+++ b/drivers/usb/dwc3/gadget.c
-@@ -1162,6 +1162,7 @@ static void dwc3_prepare_one_trb_sg(stru
- 			req->start_sg = sg_next(s);
- 
- 		req->num_queued_sgs++;
-+		req->num_pending_sgs--;
- 
- 		/*
- 		 * The number of pending SG entries may not correspond to the
-@@ -1169,7 +1170,7 @@ static void dwc3_prepare_one_trb_sg(stru
- 		 * don't include unused SG entries.
- 		 */
- 		if (length == 0) {
--			req->num_pending_sgs -= req->request.num_mapped_sgs - req->num_queued_sgs;
-+			req->num_pending_sgs = 0;
- 			break;
- 		}
- 
-@@ -2361,15 +2362,15 @@ static int dwc3_gadget_ep_reclaim_trb_sg
- 	struct dwc3_trb *trb = &dep->trb_pool[dep->trb_dequeue];
- 	struct scatterlist *sg = req->sg;
- 	struct scatterlist *s;
--	unsigned int pending = req->num_pending_sgs;
-+	unsigned int num_queued = req->num_queued_sgs;
- 	unsigned int i;
- 	int ret = 0;
- 
--	for_each_sg(sg, s, pending, i) {
-+	for_each_sg(sg, s, num_queued, i) {
- 		trb = &dep->trb_pool[dep->trb_dequeue];
- 
- 		req->sg = sg_next(s);
--		req->num_pending_sgs--;
-+		req->num_queued_sgs--;
- 
- 		ret = dwc3_gadget_ep_reclaim_completed_trb(dep, req,
- 				trb, event, status, true);
-@@ -2392,7 +2393,7 @@ static int dwc3_gadget_ep_reclaim_trb_li
- 
- static bool dwc3_gadget_ep_request_completed(struct dwc3_request *req)
- {
--	return req->num_pending_sgs == 0;
-+	return req->num_pending_sgs == 0 && req->num_queued_sgs == 0;
+--- a/net/mptcp/protocol.c
++++ b/net/mptcp/protocol.c
+@@ -869,12 +869,18 @@ static bool mptcp_skb_can_collapse_to(u6
+ 	       !mpext->frozen;
  }
  
- static int dwc3_gadget_ep_cleanup_completed_request(struct dwc3_ep *dep,
-@@ -2401,7 +2402,7 @@ static int dwc3_gadget_ep_cleanup_comple
++/* we can append data to the given data frag if:
++ * - there is space available in the backing page_frag
++ * - the data frag tail matches the current page_frag free offset
++ * - the data frag end sequence number matches the current write seq
++ */
+ static bool mptcp_frag_can_collapse_to(const struct mptcp_sock *msk,
+ 				       const struct page_frag *pfrag,
+ 				       const struct mptcp_data_frag *df)
  {
- 	int ret;
+ 	return df && pfrag->page == df->page &&
+ 		pfrag->size - pfrag->offset > 0 &&
++		pfrag->offset == (df->offset + df->data_len) &&
+ 		df->data_seq + df->data_len == msk->write_seq;
+ }
  
--	if (req->num_pending_sgs)
-+	if (req->request.num_mapped_sgs)
- 		ret = dwc3_gadget_ep_reclaim_trb_sg(dep, req, event,
- 				status);
- 	else
 
 
