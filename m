@@ -2,97 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DB5FE3958D5
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 12:17:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 03A3F3958CC
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 12:17:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231337AbhEaKTB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 06:19:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43842 "EHLO
+        id S231192AbhEaKSi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 06:18:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43776 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231281AbhEaKSu (ORCPT
+        with ESMTP id S230518AbhEaKSg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 06:18:50 -0400
-Received: from mail-vs1-xe36.google.com (mail-vs1-xe36.google.com [IPv6:2607:f8b0:4864:20::e36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C28DC06174A
-        for <linux-kernel@vger.kernel.org>; Mon, 31 May 2021 03:17:09 -0700 (PDT)
-Received: by mail-vs1-xe36.google.com with SMTP id f11so5781018vst.0
-        for <linux-kernel@vger.kernel.org>; Mon, 31 May 2021 03:17:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Ru/1dgQ0vPtNshZal6qIV36byCdQdei5pfU0MIkHoyY=;
-        b=UtYirWiSNztm7JRFtfUkA2Bi9y6QA/JrlPTD33m6LKXzF+ghRad8sQhprC1EQ74ooV
-         NKzBTNjh2QBxUXqK7pxIrOospXfy/Z5Ly38gkQwYGb5GpiLyvsPWUIySTmKTK9eIWtNu
-         mzc/KOj7FG7+DkeuimbFAWCKLusMARfo86xDAhMuytJWRrtk7ZGPUw8L5GgSwm5NeBa0
-         qp1vQ3WraHWgKGIqOHf2yc6ihzr1BtwSxGd9zMWtUeXuiSPOpOPuDr5oNYX2XU1+PQwc
-         TZElGXuXajebh7ZYBAckPwb6NvVgoDZEIxiOE27DcfMqF5nQ5XbdqLFqOC3GfTqkc98B
-         Bq3Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Ru/1dgQ0vPtNshZal6qIV36byCdQdei5pfU0MIkHoyY=;
-        b=fvvzaHGWoHvuHmZXI07XNr3ZWlyaXsMPX9am3SeNJsknDlFzTrYpwzltodUAspal6e
-         FvH09ni53zLscYtgauo/1lqLrAIhnIlWcs3RRqZx2GoKbbNWJuOe0+pUYnkrM7gUL/Kk
-         fvlzz0wI8ikDrkZAB3BYP+Vyse81+IEpXtolHTz+mXii+xLpm9cl9e5E5icJCpGSMqkm
-         IAz5wM2v7jedqVQUJeImi/csX3i5Nw4Rcu8J3Yeer1uCB3ZrbbbVZqHKcrvNEy40pozj
-         VBq0Kaoc8P3wJET+UXlcFxdIrf6YIqIiRjoOKFy2g6Qj1WtjeNkLPMSGlyIduBUouKxI
-         7gvQ==
-X-Gm-Message-State: AOAM5320jfaW2glIuj5cwD0/17Z7fw9bap/tzPtomye5e5ftSf4kfilV
-        Qj0GC7l+Hx5QUdrLekEMKEBdXdRwxkl6BjF0FO7u4g==
-X-Google-Smtp-Source: ABdhPJx6R16G9BRCLBxjauHicDEvt2bFLGA6WeXhN9Fb5riDpV3jSLdblA8xv3Lf5XpN9Lzs0rQKeBqXfxT/JTH0kyA=
-X-Received: by 2002:a05:6102:7c1:: with SMTP id y1mr12940416vsg.34.1622456228772;
- Mon, 31 May 2021 03:17:08 -0700 (PDT)
+        Mon, 31 May 2021 06:18:36 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E718FC061574
+        for <linux-kernel@vger.kernel.org>; Mon, 31 May 2021 03:16:56 -0700 (PDT)
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1622456214;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=XP/7cHDjM7AcyJT0WqOBpKhECSitGh7KPRl8GthYiCA=;
+        b=0/Aob5Vgmmyc+nNO0ibkrtD6SKUV81urd1poAdJQq0E6QgJ7IVTVBzz2oALXMcMyDUVv/3
+        eFRmkmF8eXTZdi6qd+pzWmlqdKp0KEOOOdr4o6sp7VdtidOo1wmQk9QWhTaTs+cRxlY3OJ
+        k4iR54Z0HZT2rXBBXA+d5kGL4JltZBixqCoWufgxLa65muWnoGY/xD3XO5InjUk/e42a/Y
+        ROVPWmHYgTQn9vEDwbZbY5K6/EsHGuwsAwUvEeCtaZDyUSl06Zsiny4Hu1g4uadYFdCHHz
+        pjT2nh3GwdgQX5de/TA33ooJ/Om0a15zzvLheuyWAfs0HCRigYBvtf2xISt7EQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1622456214;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=XP/7cHDjM7AcyJT0WqOBpKhECSitGh7KPRl8GthYiCA=;
+        b=2TcAlmkjnAj+YI85xX7piawpzztpkiaVA21gzmInASwrMGzjuHy8XqP/zXThQejPR+9L22
+        SBeOo3NY5dLL9BBg==
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     Fenghua Yu <fenghua.yu@intel.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        x86 <x86@kernel.org>, iommu@lists.linux-foundation.org,
+        Ingo Molnar <mingo@redhat.com>, H Peter Anvin <hpa@zytor.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        Christoph Hellwig <hch@infradead.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        David Woodhouse <dwmw2@infradead.org>,
+        Lu Baolu <baolu.lu@linux.intel.com>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Ashok Raj <ashok.raj@intel.com>,
+        Jacob Jun Pan <jacob.jun.pan@intel.com>,
+        Dave Jiang <dave.jiang@intel.com>,
+        Sohil Mehta <sohil.mehta@intel.com>,
+        Ravi V Shankar <ravi.v.shankar@intel.com>
+Subject: Re: [PATCH] x86/cpufeatures: Force disable X86_FEATURE_ENQCMD and remove update_pasid()
+In-Reply-To: <YLShmFEzddfm7WQs@zn.tnic>
+References: <1600187413-163670-1-git-send-email-fenghua.yu@intel.com> <1600187413-163670-10-git-send-email-fenghua.yu@intel.com> <87mtsd6gr9.ffs@nanos.tec.linutronix.de> <YLShmFEzddfm7WQs@zn.tnic>
+Date:   Mon, 31 May 2021 12:16:54 +0200
+Message-ID: <87y2bv438p.ffs@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-References: <20210528112127.71738-1-andriy.shevchenko@linux.intel.com> <20210528112127.71738-2-andriy.shevchenko@linux.intel.com>
-In-Reply-To: <20210528112127.71738-2-andriy.shevchenko@linux.intel.com>
-From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Mon, 31 May 2021 12:16:32 +0200
-Message-ID: <CAPDyKFr_0w9mK4fWE3YynP0cYZOWuzeHKeVAmrHm068VRnR3bg@mail.gmail.com>
-Subject: Re: [PATCH v1 2/2] mmc: mmc_spi: Imply container_of() to be no-op
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     linux-mmc <linux-mmc@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 28 May 2021 at 13:21, Andy Shevchenko
-<andriy.shevchenko@linux.intel.com> wrote:
+On Mon, May 31 2021 at 10:43, Borislav Petkov wrote:
+> On Sat, May 29, 2021 at 11:17:30AM +0200, Thomas Gleixner wrote:
+>> #2 is broken beyond repair. The comment in the code claims that it is safe
+>>    to invoke this in an IPI, but that's just wishful thinking.
+>> 
+>>    FPU state of a running task is protected by fregs_lock() which is
+>>    nothing else than a local_bh_disable(). As BH disabled regions run
+>>    usually with interrupts enabled the IPI can hit a code section which
+>>    modifies FPU state and there is absolutely no guarantee that any of the
+>>    assumptions which are made for the IPI case is true.
 >
-> Since we don't use structure field layout randomization
-> the manual shuffling can affect some macros, in particular
-> container_of() against struct of_mmc_spi, which becomes
-> a no-op when pdata member is the first one in the structure.
->
-> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> ... so on a PASID system, your trivial reproducer would theoretically
+> fire the same way and corrupt FPU state just as well.
 
-Applied for next, thanks!
+This is worse and you can't selftest it because the IPI can just hit in
+the middle of _any_ FPU state operation and corrupt state.
 
-Kind regards
-Uffe
+Thanks,
 
-
-> ---
->  drivers/mmc/host/of_mmc_spi.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/drivers/mmc/host/of_mmc_spi.c b/drivers/mmc/host/of_mmc_spi.c
-> index 9d480a05f655..3629550528b6 100644
-> --- a/drivers/mmc/host/of_mmc_spi.c
-> +++ b/drivers/mmc/host/of_mmc_spi.c
-> @@ -22,8 +22,8 @@
->  MODULE_LICENSE("GPL");
->
->  struct of_mmc_spi {
-> -       int detect_irq;
->         struct mmc_spi_platform_data pdata;
-> +       int detect_irq;
->  };
->
->  static struct of_mmc_spi *to_of_mmc_spi(struct device *dev)
-> --
-> 2.30.2
->
+        tglx
