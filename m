@@ -2,61 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A305D39623D
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 16:51:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E4AE2396253
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 16:53:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233017AbhEaOxa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 10:53:30 -0400
-Received: from vmicros1.altlinux.org ([194.107.17.57]:60520 "EHLO
-        vmicros1.altlinux.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231825AbhEaODU (ORCPT
+        id S234307AbhEaOyy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 10:54:54 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:54596 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233222AbhEaODo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 10:03:20 -0400
-Received: from imap.altlinux.org (imap.altlinux.org [194.107.17.38])
-        by vmicros1.altlinux.org (Postfix) with ESMTP id 4525E72C8B5;
-        Mon, 31 May 2021 17:01:34 +0300 (MSK)
-Received: from localhost (localhost.localdomain [127.0.0.1])
-        by imap.altlinux.org (Postfix) with ESMTP id 0F2AC4A46EC;
-        Mon, 31 May 2021 17:01:34 +0300 (MSK)
-From:   Gleb Fotengauer-Malinovskiy <glebfm@altlinux.org>
-To:     Andrew Morton <akpm@linux-foundation.org>,
-        Peter Xu <peterx@redhat.com>,
-        Axel Rasmussen <axelrasmussen@google.com>,
-        Daniel Colascione <dancol@google.com>,
-        Lokesh Gidra <lokeshgidra@google.com>,
-        "linux-kernel@vger.kernel.org"@altlinux.org
-Subject: [PATCH] userfaultfd: fix UFFDIO_CONTINUE ioctl request definition
-Date:   Mon, 31 May 2021 17:01:46 +0300
-Message-Id: <20210531140146.481553-1-glebfm@altlinux.org>
-X-Mailer: git-send-email 2.29.3
+        Mon, 31 May 2021 10:03:44 -0400
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1622469722;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=cpFaLYty/y3nJdZHyW0WlhfFo+8SFDdRk+PJoQsL8DI=;
+        b=eh7MMipFT19nuwJTmIdDQAqeiYXG5PMmFPkBtC4ZUlSdN5jOJDPxXhp94yqdDOoBqgHluo
+        /LPpA80HwlzzRlR/fszqxk8+DGeQsrI+yb5YPNGMM39qqDC2HeWxWqpq9O/xFMOGW5kfvN
+        PjqOabKDF346Ap6yqOBubOxiR6OmKOqPz8LxV1ZHzGAV3Eca4m7aDaAM9/dUg7UqE6i3ya
+        YFGYSSdAiEF6RbhsZ9CuK/JSBc1ZaYOJJ4GZtPxLyDKUrDAGWDDE2nAoYOJshaVnzgOHBR
+        +zF9FaYtM8AbxYT0/wB/eItZR+n8kH+KjT3L3u1T3Hnp31FX6vP8s9ahRmFf+g==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1622469722;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=cpFaLYty/y3nJdZHyW0WlhfFo+8SFDdRk+PJoQsL8DI=;
+        b=RABPXd8q8P4Q0xjfHnTiSpvDg7dvHBarCEFQGb8Xy54U76o6WIkHjk9f3DyG7vAPof6FnD
+        xOZ/EV7Ljt+I0wAg==
+To:     Jason Gunthorpe <jgg@nvidia.com>, Dave Jiang <dave.jiang@intel.com>
+Cc:     alex.williamson@redhat.com, kwankhede@nvidia.com, vkoul@kernel.org,
+        megha.dey@intel.com, jacob.jun.pan@intel.com, ashok.raj@intel.com,
+        yi.l.liu@intel.com, baolu.lu@intel.com, kevin.tian@intel.com,
+        sanjay.k.kumar@intel.com, tony.luck@intel.com,
+        dan.j.williams@intel.com, eric.auger@redhat.com,
+        pbonzini@redhat.com, dmaengine@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org
+Subject: Re: [PATCH v6 15/20] vfio/mdev: idxd: ims domain setup for the vdcm
+In-Reply-To: <20210523235023.GL1002214@nvidia.com>
+References: <162164243591.261970.3439987543338120797.stgit@djiang5-desk3.ch.intel.com> <162164283796.261970.11020270418798826121.stgit@djiang5-desk3.ch.intel.com> <20210523235023.GL1002214@nvidia.com>
+Date:   Mon, 31 May 2021 16:02:02 +0200
+Message-ID: <87mtsb3sth.ffs@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This ioctl request writes to uffdio_continue structure which justifies
-_IOC_WRITE flag.
-See NOTEs in include/uapi/asm-generic/ioctl.h for more information.
+On Sun, May 23 2021 at 20:50, Jason Gunthorpe wrote:
+> On Fri, May 21, 2021 at 05:20:37PM -0700, Dave Jiang wrote:
+>> @@ -77,8 +80,18 @@ int idxd_mdev_host_init(struct idxd_device *idxd, struct mdev_driver *drv)
+>>  		return rc;
+>>  	}
+>>  
+>> +	ims_info.max_slots = idxd->ims_size;
+>> +	ims_info.slots = idxd->reg_base + idxd->ims_offset;
+>> +	idxd->ims_domain = pci_ims_array_create_msi_irq_domain(idxd->pdev, &ims_info);
+>> +	if (!idxd->ims_domain) {
+>> +		dev_warn(dev, "Fail to acquire IMS domain\n");
+>> +		iommu_dev_disable_feature(dev, IOMMU_DEV_FEAT_AUX);
+>> +		return -ENODEV;
+>> +	}
+>
+> I'm quite surprised that every mdev doesn't create its own ims_domain
+> in its probe function.
 
-Fixes: f619147104c8 ("userfaultfd: add UFFDIO_CONTINUE ioctl")
-Signed-off-by: Gleb Fotengauer-Malinovskiy <glebfm@altlinux.org>
----
- include/uapi/linux/userfaultfd.h | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+What for?
 
-diff --git a/include/uapi/linux/userfaultfd.h b/include/uapi/linux/userfaultfd.h
-index bafbeb1a2624..650480f41f1d 100644
---- a/include/uapi/linux/userfaultfd.h
-+++ b/include/uapi/linux/userfaultfd.h
-@@ -80,8 +80,8 @@
- 				      struct uffdio_zeropage)
- #define UFFDIO_WRITEPROTECT	_IOWR(UFFDIO, _UFFDIO_WRITEPROTECT, \
- 				      struct uffdio_writeprotect)
--#define UFFDIO_CONTINUE		_IOR(UFFDIO, _UFFDIO_CONTINUE,	\
--				     struct uffdio_continue)
-+#define UFFDIO_CONTINUE		_IOWR(UFFDIO, _UFFDIO_CONTINUE,	\
-+				      struct uffdio_continue)
- 
- /* read() structure */
- struct uffd_msg {
+> This places a global total limit on the # of vectors which makes me
+> ask what was the point of using IMS in the first place ?
+
+That depends on how IMS is implemented. The IDXD variant has a fixed
+sized message store which is shared between all subdevices, so yet
+another domain would not provide any value.
+
+For the case where the IMS store is seperate, you still have one central
+irqdomain per physical device. The domain allocation function can then
+create storage on demand or reuse existing storage and just fill in the
+pointers.
+
+Thanks,
+
+        tglx
+
+
