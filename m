@@ -2,77 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D6F23395FFC
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 16:20:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B16A83965AD
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 18:43:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233422AbhEaOR6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 10:17:58 -0400
-Received: from szxga08-in.huawei.com ([45.249.212.255]:3307 "EHLO
-        szxga08-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231652AbhEaNsp (ORCPT
+        id S234807AbhEaQot (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 12:44:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48718 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234018AbhEaOxJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 09:48:45 -0400
-Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.55])
-        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4FtxL75n9bz1BGvb;
-        Mon, 31 May 2021 21:42:23 +0800 (CST)
-Received: from dggema762-chm.china.huawei.com (10.1.198.204) by
- dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
- 15.1.2176.2; Mon, 31 May 2021 21:47:04 +0800
-Received: from huawei.com (10.175.127.227) by dggema762-chm.china.huawei.com
- (10.1.198.204) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Mon, 31
- May 2021 21:47:03 +0800
-From:   Yu Kuai <yukuai3@huawei.com>
-To:     <a.hajda@samsung.com>, <narmstrong@baylibre.com>,
-        <robert.foss@linaro.org>, <airlied@linux.ie>, <daniel@ffwll.ch>
-CC:     <dri-devel@lists.freedesktop.org>, <linux-kernel@vger.kernel.org>,
-        <yukuai3@huawei.com>, <yi.zhang@huawei.com>
-Subject: [PATCH v2] drm: bridge: cdns-mhdp8546: Fix PM reference leak in
-Date:   Mon, 31 May 2021 21:56:22 +0800
-Message-ID: <20210531135622.3348252-1-yukuai3@huawei.com>
-X-Mailer: git-send-email 2.31.1
+        Mon, 31 May 2021 10:53:09 -0400
+Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97A80C01F001
+        for <linux-kernel@vger.kernel.org>; Mon, 31 May 2021 06:59:14 -0700 (PDT)
+Received: by mail-pj1-x102d.google.com with SMTP id f3-20020a17090a4a83b02901619627235bso4524800pjh.1
+        for <linux-kernel@vger.kernel.org>; Mon, 31 May 2021 06:59:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=ElXRDuCmw0SEZf7krYsHM0+lPZEqdIG1NofDQ2gJtK8=;
+        b=eLtfYCTPZ+gy7IXFcEKe+h4uBfDBgNRv/Tl4pByit8rXqDIi/XXukZHCJZYLGnLYvG
+         1bFZ1qCpyIZ8sfyykN1Zyvxq1gVojP5wMkBXxFhylevHbmIL1lXTLjG1H2YbQGoh2+gX
+         0KN2t3AhyErvU4dlzzqkWSdzih5nY54K24CpWzG8awKrUnwzvJsLeqrmFh0/KwszTR0s
+         DL4BfWpqB/1BH7fwsHut0NTiL0m54R09yqJxlRRCaKd4nLlBT+WOScg6qGK/yMFwnRbE
+         aplkaVOPtIpAzyPmqTGofDzMlTdq/T5m9DNNymkVhuQygsFnmIsYW1xPU+SLi4eVkkXZ
+         I3EQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=ElXRDuCmw0SEZf7krYsHM0+lPZEqdIG1NofDQ2gJtK8=;
+        b=HqMrZZC+WDsvme8ONDkt6auDWsOyMK5zq16yMd480ljr30CypHvkMBIEoRy4qY4HqD
+         nLPHul1/FCzCW74Vgycz8czi5QpzYJwLXRlmkDSQFu/bCa3JsmRAkY1ff2dGD2DgqEUO
+         r1RQHDFAX0PapKW9ZBI9dXh/O+wUQgg0gqQrlO45hrJxh+Jp17D01J0r2LQslCXfe0Wn
+         ciVkz+EyV3PhozSEiAYz6LtGYlrV07IIk95CA0Tn9Ahx0yeyS2k3vdh9Vfce0v3WOHAR
+         nJ1gnv2ptEk+J0gULoc+RoiHTT9IdndDHwEG75VtPeMbphGLOHboGpRZWg6brsqtvzNI
+         +10A==
+X-Gm-Message-State: AOAM5308omVGZjCKoh7nL4hoQcftbNoSlezBHDddeNT8cEV4Bj2BZ4Nq
+        wxypQh4HkZ5i4mO14ZB8y0bJybx3YvNV
+X-Google-Smtp-Source: ABdhPJzbq32IEkUykPGhPRHegPvNO+SK7zrkq9BiknlxPVrEYOMiqQyv/a2g1V45EXL7j3YrYkE4Lg==
+X-Received: by 2002:a17:90a:950c:: with SMTP id t12mr18877822pjo.135.1622469554187;
+        Mon, 31 May 2021 06:59:14 -0700 (PDT)
+Received: from localhost ([139.177.225.235])
+        by smtp.gmail.com with ESMTPSA id t12sm4352602pfc.133.2021.05.31.06.59.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 31 May 2021 06:59:11 -0700 (PDT)
+From:   Xie Yongji <xieyongji@bytedance.com>
+To:     mst@redhat.com, jasowang@redhat.com, kuba@kernel.org
+Cc:     virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v4] virtio-net: Add validation for used length
+Date:   Mon, 31 May 2021 21:58:52 +0800
+Message-Id: <20210531135852.113-1-xieyongji@bytedance.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.127.227]
-X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
- dggema762-chm.china.huawei.com (10.1.198.204)
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-pm_runtime_get_sync will increment pm usage counter even it failed.
-Forgetting to putting operation will result in reference leak here.
-Fix it by replacing it with pm_runtime_resume_and_get to keep usage
-counter balanced.
+This adds validation for used length (might come
+from an untrusted device) to avoid data corruption
+or loss.
 
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Yu Kuai <yukuai3@huawei.com>
+Signed-off-by: Xie Yongji <xieyongji@bytedance.com>
 ---
-changes in V2:
- - change error message.
+ drivers/net/virtio_net.c | 20 +++++++++++++-------
+ 1 file changed, 13 insertions(+), 7 deletions(-)
 
- drivers/gpu/drm/bridge/cadence/cdns-mhdp8546-core.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/gpu/drm/bridge/cadence/cdns-mhdp8546-core.c b/drivers/gpu/drm/bridge/cadence/cdns-mhdp8546-core.c
-index 0cd8f40fb690..eab959a59214 100644
---- a/drivers/gpu/drm/bridge/cadence/cdns-mhdp8546-core.c
-+++ b/drivers/gpu/drm/bridge/cadence/cdns-mhdp8546-core.c
-@@ -2478,9 +2478,9 @@ static int cdns_mhdp_probe(struct platform_device *pdev)
- 	clk_prepare_enable(clk);
+diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
+index 073fec4c0df1..ed969b65126e 100644
+--- a/drivers/net/virtio_net.c
++++ b/drivers/net/virtio_net.c
+@@ -730,6 +730,12 @@ static struct sk_buff *receive_small(struct net_device *dev,
+ 	len -= vi->hdr_len;
+ 	stats->bytes += len;
  
- 	pm_runtime_enable(dev);
--	ret = pm_runtime_get_sync(dev);
-+	ret = pm_runtime_resume_and_get(dev);
- 	if (ret < 0) {
--		dev_err(dev, "pm_runtime_get_sync failed\n");
-+		dev_err(dev, "pm_runtime_resume_and_get failed\n");
- 		pm_runtime_disable(dev);
- 		goto clk_disable;
++	if (unlikely(len > GOOD_PACKET_LEN)) {
++		pr_debug("%s: rx error: len %u exceeds max size %d\n",
++			 dev->name, len, GOOD_PACKET_LEN);
++		dev->stats.rx_length_errors++;
++		goto err_len;
++	}
+ 	rcu_read_lock();
+ 	xdp_prog = rcu_dereference(rq->xdp_prog);
+ 	if (xdp_prog) {
+@@ -833,6 +839,7 @@ static struct sk_buff *receive_small(struct net_device *dev,
+ err_xdp:
+ 	rcu_read_unlock();
+ 	stats->xdp_drops++;
++err_len:
+ 	stats->drops++;
+ 	put_page(page);
+ xdp_xmit:
+@@ -886,6 +893,12 @@ static struct sk_buff *receive_mergeable(struct net_device *dev,
+ 	head_skb = NULL;
+ 	stats->bytes += len - vi->hdr_len;
+ 
++	if (unlikely(len > truesize)) {
++		pr_debug("%s: rx error: len %u exceeds truesize %lu\n",
++			 dev->name, len, (unsigned long)ctx);
++		dev->stats.rx_length_errors++;
++		goto err_skb;
++	}
+ 	rcu_read_lock();
+ 	xdp_prog = rcu_dereference(rq->xdp_prog);
+ 	if (xdp_prog) {
+@@ -1012,13 +1025,6 @@ static struct sk_buff *receive_mergeable(struct net_device *dev,
  	}
+ 	rcu_read_unlock();
+ 
+-	if (unlikely(len > truesize)) {
+-		pr_debug("%s: rx error: len %u exceeds truesize %lu\n",
+-			 dev->name, len, (unsigned long)ctx);
+-		dev->stats.rx_length_errors++;
+-		goto err_skb;
+-	}
+-
+ 	head_skb = page_to_skb(vi, rq, page, offset, len, truesize, !xdp_prog,
+ 			       metasize, !!headroom);
+ 	curr_skb = head_skb;
 -- 
-2.31.1
+2.11.0
 
