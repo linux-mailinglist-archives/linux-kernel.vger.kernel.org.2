@@ -2,37 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1BE27395E5A
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 15:56:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DA371395E5E
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 15:56:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231177AbhEaN5h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 09:57:37 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44432 "EHLO mail.kernel.org"
+        id S232906AbhEaN56 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 09:57:58 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44436 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232251AbhEaNhv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 09:37:51 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B515A61406;
-        Mon, 31 May 2021 13:26:26 +0000 (UTC)
+        id S232625AbhEaNhy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 09:37:54 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 48C7661451;
+        Mon, 31 May 2021 13:26:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1622467587;
-        bh=lLdB2C7FvsBE8EVewfRYKHQ7yxsd5rLBd+AkuN39X6Q=;
+        s=korg; t=1622467589;
+        bh=RsEXmEfEr14BGaFRrRHL1C4y387lVxZ/Vzhb7fv5Ozk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=UWsp/e6YXL4U9KcaAFAGXzZkC/1CoSLhZfXijiu9uAgufSWm/gNfTzOYJvyZNDpUf
-         fgDE8il/o6O/xIaxv4qpAgcMO1iGYh7eciW0usapaZkIVjb6LblsuhUiPEwHWszbre
-         AHZ0PEK8kzmW0oAVsB0Aj+H5NtPMUk4ubla+LXkI=
+        b=Q5TNz13wDCpOQm1duoPRe/CJIp9fhvhTeiHS4XLqYz45miaXgbBN61fjfUN6+DPKR
+         Vm7D7dOvH0YedLiQCe23DULeKt+8ljqDlz/kEbM+tLqekhTNrI3OW4kNH7qR2mqraP
+         hRIKh1Ax5Ad6PHxgjP7n2Io17qsICAg9tUpKgT0E=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Randy Dunlap <rdunlap@infradead.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Wim Van Sebroeck <wim@iguana.be>,
-        John Crispin <john@phrozen.org>, linux-mips@vger.kernel.org,
-        linux-watchdog@vger.kernel.org,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 112/116] MIPS: ralink: export rt_sysc_membase for rt2880_wdt.c
-Date:   Mon, 31 May 2021 15:14:48 +0200
-Message-Id: <20210531130643.911662126@linuxfoundation.org>
+        stable@vger.kernel.org, Mike Kravetz <mike.kravetz@oracle.com>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Davidlohr Bueso <dbueso@suse.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Ilie Halip <ilie.halip@gmail.com>,
+        David Bolvansky <david.bolvansky@gmail.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: [PATCH 4.19 113/116] hugetlbfs: hugetlb_fault_mutex_hash() cleanup
+Date:   Mon, 31 May 2021 15:14:49 +0200
+Message-Id: <20210531130643.945474436@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210531130640.131924542@linuxfoundation.org>
 References: <20210531130640.131924542@linuxfoundation.org>
@@ -44,53 +45,127 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Randy Dunlap <rdunlap@infradead.org>
+From: Mike Kravetz <mike.kravetz@oracle.com>
 
-[ Upstream commit fef532ea0cd871afab7d9a7b6e9da99ac2c24371 ]
+commit 552546366a30d88bd1d6f5efe848b2ab50fd57e5 upstream.
 
-rt2880_wdt.c uses (well, attempts to use) rt_sysc_membase. However,
-when this watchdog driver is built as a loadable module, there is a
-build error since the rt_sysc_membase symbol is not exported.
-Export it to quell the build error.
+A new clang diagnostic (-Wsizeof-array-div) warns about the calculation
+to determine the number of u32's in an array of unsigned longs.
+Suppress warning by adding parentheses.
 
-ERROR: modpost: "rt_sysc_membase" [drivers/watchdog/rt2880_wdt.ko] undefined!
+While looking at the above issue, noticed that the 'address' parameter
+to hugetlb_fault_mutex_hash is no longer used.  So, remove it from the
+definition and all callers.
 
-Fixes: 473cf939ff34 ("watchdog: add ralink watchdog driver")
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Cc: Guenter Roeck <linux@roeck-us.net>
-Cc: Wim Van Sebroeck <wim@iguana.be>
-Cc: John Crispin <john@phrozen.org>
-Cc: linux-mips@vger.kernel.org
-Cc: linux-watchdog@vger.kernel.org
-Acked-by: Guenter Roeck <linux@roeck-us.net>
-Signed-off-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+No functional change.
+
+Link: http://lkml.kernel.org/r/20190919011847.18400-1-mike.kravetz@oracle.com
+Signed-off-by: Mike Kravetz <mike.kravetz@oracle.com>
+Reported-by: Nathan Chancellor <natechancellor@gmail.com>
+Reviewed-by: Nathan Chancellor <natechancellor@gmail.com>
+Reviewed-by: Davidlohr Bueso <dbueso@suse.de>
+Reviewed-by: Andrew Morton <akpm@linux-foundation.org>
+Cc: Nick Desaulniers <ndesaulniers@google.com>
+Cc: Ilie Halip <ilie.halip@gmail.com>
+Cc: David Bolvansky <david.bolvansky@gmail.com>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- arch/mips/ralink/of.c | 2 ++
- 1 file changed, 2 insertions(+)
+ fs/hugetlbfs/inode.c    |    4 ++--
+ include/linux/hugetlb.h |    2 +-
+ mm/hugetlb.c            |   10 +++++-----
+ mm/userfaultfd.c        |    2 +-
+ 4 files changed, 9 insertions(+), 9 deletions(-)
 
-diff --git a/arch/mips/ralink/of.c b/arch/mips/ralink/of.c
-index 1ada8492733b..92b3d4849996 100644
---- a/arch/mips/ralink/of.c
-+++ b/arch/mips/ralink/of.c
-@@ -10,6 +10,7 @@
+--- a/fs/hugetlbfs/inode.c
++++ b/fs/hugetlbfs/inode.c
+@@ -426,7 +426,7 @@ static void remove_inode_hugepages(struc
+ 			u32 hash;
  
- #include <linux/io.h>
- #include <linux/clk.h>
-+#include <linux/export.h>
- #include <linux/init.h>
- #include <linux/sizes.h>
- #include <linux/of_fdt.h>
-@@ -27,6 +28,7 @@
+ 			index = page->index;
+-			hash = hugetlb_fault_mutex_hash(h, mapping, index, 0);
++			hash = hugetlb_fault_mutex_hash(h, mapping, index);
+ 			mutex_lock(&hugetlb_fault_mutex_table[hash]);
  
- __iomem void *rt_sysc_membase;
- __iomem void *rt_memc_membase;
-+EXPORT_SYMBOL_GPL(rt_sysc_membase);
+ 			/*
+@@ -623,7 +623,7 @@ static long hugetlbfs_fallocate(struct f
+ 		addr = index * hpage_size;
  
- __iomem void *plat_of_remap_node(const char *node)
+ 		/* mutex taken here, fault path and hole punch */
+-		hash = hugetlb_fault_mutex_hash(h, mapping, index, addr);
++		hash = hugetlb_fault_mutex_hash(h, mapping, index);
+ 		mutex_lock(&hugetlb_fault_mutex_table[hash]);
+ 
+ 		/* See if already present in mapping to avoid alloc/free */
+--- a/include/linux/hugetlb.h
++++ b/include/linux/hugetlb.h
+@@ -124,7 +124,7 @@ void free_huge_page(struct page *page);
+ void hugetlb_fix_reserve_counts(struct inode *inode);
+ extern struct mutex *hugetlb_fault_mutex_table;
+ u32 hugetlb_fault_mutex_hash(struct hstate *h, struct address_space *mapping,
+-				pgoff_t idx, unsigned long address);
++				pgoff_t idx);
+ 
+ pte_t *huge_pmd_share(struct mm_struct *mm, unsigned long addr, pud_t *pud);
+ 
+--- a/mm/hugetlb.c
++++ b/mm/hugetlb.c
+@@ -3862,7 +3862,7 @@ retry:
+ 			 * handling userfault.  Reacquire after handling
+ 			 * fault to make calling code simpler.
+ 			 */
+-			hash = hugetlb_fault_mutex_hash(h, mapping, idx, haddr);
++			hash = hugetlb_fault_mutex_hash(h, mapping, idx);
+ 			mutex_unlock(&hugetlb_fault_mutex_table[hash]);
+ 			ret = handle_userfault(&vmf, VM_UFFD_MISSING);
+ 			mutex_lock(&hugetlb_fault_mutex_table[hash]);
+@@ -3971,7 +3971,7 @@ backout_unlocked:
+ 
+ #ifdef CONFIG_SMP
+ u32 hugetlb_fault_mutex_hash(struct hstate *h, struct address_space *mapping,
+-			    pgoff_t idx, unsigned long address)
++			    pgoff_t idx)
  {
--- 
-2.30.2
-
+ 	unsigned long key[2];
+ 	u32 hash;
+@@ -3979,7 +3979,7 @@ u32 hugetlb_fault_mutex_hash(struct hsta
+ 	key[0] = (unsigned long) mapping;
+ 	key[1] = idx;
+ 
+-	hash = jhash2((u32 *)&key, sizeof(key)/sizeof(u32), 0);
++	hash = jhash2((u32 *)&key, sizeof(key)/(sizeof(u32)), 0);
+ 
+ 	return hash & (num_fault_mutexes - 1);
+ }
+@@ -3989,7 +3989,7 @@ u32 hugetlb_fault_mutex_hash(struct hsta
+  * return 0 and avoid the hashing overhead.
+  */
+ u32 hugetlb_fault_mutex_hash(struct hstate *h, struct address_space *mapping,
+-			    pgoff_t idx, unsigned long address)
++			    pgoff_t idx)
+ {
+ 	return 0;
+ }
+@@ -4033,7 +4033,7 @@ vm_fault_t hugetlb_fault(struct mm_struc
+ 	 * get spurious allocation failures if two CPUs race to instantiate
+ 	 * the same page in the page cache.
+ 	 */
+-	hash = hugetlb_fault_mutex_hash(h, mapping, idx, haddr);
++	hash = hugetlb_fault_mutex_hash(h, mapping, idx);
+ 	mutex_lock(&hugetlb_fault_mutex_table[hash]);
+ 
+ 	entry = huge_ptep_get(ptep);
+--- a/mm/userfaultfd.c
++++ b/mm/userfaultfd.c
+@@ -271,7 +271,7 @@ retry:
+ 		 */
+ 		idx = linear_page_index(dst_vma, dst_addr);
+ 		mapping = dst_vma->vm_file->f_mapping;
+-		hash = hugetlb_fault_mutex_hash(h, mapping, idx, dst_addr);
++		hash = hugetlb_fault_mutex_hash(h, mapping, idx);
+ 		mutex_lock(&hugetlb_fault_mutex_table[hash]);
+ 
+ 		err = -ENOMEM;
 
 
