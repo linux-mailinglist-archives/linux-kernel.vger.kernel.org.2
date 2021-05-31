@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 80317395E67
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 15:56:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1BE15395D81
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 15:45:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232950AbhEaN6L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 09:58:11 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44928 "EHLO mail.kernel.org"
+        id S231842AbhEaNqv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 09:46:51 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40214 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232427AbhEaNib (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 09:38:31 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5B07A6145A;
-        Mon, 31 May 2021 13:26:45 +0000 (UTC)
+        id S232130AbhEaNc2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 09:32:28 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4D3536108D;
+        Mon, 31 May 2021 13:23:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1622467605;
-        bh=0wnNBbANBsd6lkhX/vBcStC+7yViCufrQT0mTSnML20=;
+        s=korg; t=1622467432;
+        bh=MSDdwLgqXfSX0xnV9EaZQyWnNiZCGjU8vudd2Vy++EI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=NPDAkwGMM0tS+a/CviSeehZbYoz8nYSr1Ovi39yfzSXVQhAWnQlUUG1mGnJOIG0ez
-         2SEphN/VRfcNly1bLM9PXB/b/JLmUa/exYrFyhOmRVnTTfPbMKEjFl74UbKYbgCahZ
-         3iSN52dJiOtdcNA6a5gf09yR+HT2Dsh0f2blUsXk=
+        b=IJbu/YdHWJl7ehl0qTCg8YpfxCwzSvdW6ZqMy5Yz1zPkszThUwBEGVqZ4M+X1DOAZ
+         ow8KSZVpLYkkDtswFSGmmbtrhb6M6YC1UNVTfTfmejZ20HMuxH1G3Ye8HwRecbAVpa
+         I9EEC8eM0db5pN6zsZWBVE0J8wX3HhxBU3nh2hns=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Johan Hovold <johan@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 4.14 12/79] net: hso: fix control-request directions
-Date:   Mon, 31 May 2021 15:13:57 +0200
-Message-Id: <20210531130636.400148323@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Thadeu Lima de Souza Cascardo <cascardo@canonical.com>,
+        Marcel Holtmann <marcel@holtmann.org>
+Subject: [PATCH 4.19 062/116] Bluetooth: cmtp: fix file refcount when cmtp_attach_device fails
+Date:   Mon, 31 May 2021 15:13:58 +0200
+Message-Id: <20210531130642.271036712@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210531130636.002722319@linuxfoundation.org>
-References: <20210531130636.002722319@linuxfoundation.org>
+In-Reply-To: <20210531130640.131924542@linuxfoundation.org>
+References: <20210531130640.131924542@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,45 +40,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Johan Hovold <johan@kernel.org>
+From: Thadeu Lima de Souza Cascardo <cascardo@canonical.com>
 
-commit 1a6e9a9c68c1f183872e4bcc947382111c2e04eb upstream.
+commit 8da3a0b87f4f1c3a3bbc4bfb78cf68476e97d183 upstream.
 
-The direction of the pipe argument must match the request-type direction
-bit or control requests may fail depending on the host-controller-driver
-implementation.
+When cmtp_attach_device fails, cmtp_add_connection returns the error value
+which leads to the caller to doing fput through sockfd_put. But
+cmtp_session kthread, which is stopped in this path will also call fput,
+leading to a potential refcount underflow or a use-after-free.
 
-Fix the tiocmset and rfkill requests which erroneously used
-usb_rcvctrlpipe().
+Add a refcount before we signal the kthread to stop. The kthread will try
+to grab the cmtp_session_sem mutex before doing the fput, which is held
+when get_file is called, so there should be no races there.
 
-Fixes: 72dc1c096c70 ("HSO: add option hso driver")
-Cc: stable@vger.kernel.org      # 2.6.27
-Signed-off-by: Johan Hovold <johan@kernel.org>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Reported-by: Ryota Shiga
+Signed-off-by: Thadeu Lima de Souza Cascardo <cascardo@canonical.com>
+Signed-off-by: Marcel Holtmann <marcel@holtmann.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/usb/hso.c |    4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ net/bluetooth/cmtp/core.c |    5 +++++
+ 1 file changed, 5 insertions(+)
 
---- a/drivers/net/usb/hso.c
-+++ b/drivers/net/usb/hso.c
-@@ -1701,7 +1701,7 @@ static int hso_serial_tiocmset(struct tt
- 	spin_unlock_irqrestore(&serial->serial_lock, flags);
- 
- 	return usb_control_msg(serial->parent->usb,
--			       usb_rcvctrlpipe(serial->parent->usb, 0), 0x22,
-+			       usb_sndctrlpipe(serial->parent->usb, 0), 0x22,
- 			       0x21, val, if_num, NULL, 0,
- 			       USB_CTRL_SET_TIMEOUT);
- }
-@@ -2449,7 +2449,7 @@ static int hso_rfkill_set_block(void *da
- 	if (hso_dev->usb_gone)
- 		rv = 0;
- 	else
--		rv = usb_control_msg(hso_dev->usb, usb_rcvctrlpipe(hso_dev->usb, 0),
-+		rv = usb_control_msg(hso_dev->usb, usb_sndctrlpipe(hso_dev->usb, 0),
- 				       enabled ? 0x82 : 0x81, 0x40, 0, 0, NULL, 0,
- 				       USB_CTRL_SET_TIMEOUT);
- 	mutex_unlock(&hso_dev->mutex);
+--- a/net/bluetooth/cmtp/core.c
++++ b/net/bluetooth/cmtp/core.c
+@@ -391,6 +391,11 @@ int cmtp_add_connection(struct cmtp_conn
+ 	if (!(session->flags & BIT(CMTP_LOOPBACK))) {
+ 		err = cmtp_attach_device(session);
+ 		if (err < 0) {
++			/* Caller will call fput in case of failure, and so
++			 * will cmtp_session kthread.
++			 */
++			get_file(session->sock->file);
++
+ 			atomic_inc(&session->terminate);
+ 			wake_up_interruptible(sk_sleep(session->sock->sk));
+ 			up_write(&cmtp_session_sem);
 
 
