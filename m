@@ -2,56 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E04D3395725
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 10:39:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7FF49395727
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 10:39:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230520AbhEaIk2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 04:40:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49798 "EHLO
+        id S231158AbhEaIkj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 04:40:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49778 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230439AbhEaIkN (ORCPT
+        with ESMTP id S230458AbhEaIkS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 04:40:13 -0400
-Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 532F3C061761
-        for <linux-kernel@vger.kernel.org>; Mon, 31 May 2021 01:38:33 -0700 (PDT)
-Received: by mail-yb1-xb4a.google.com with SMTP id n129-20020a2527870000b02904ed02e1aab5so12938026ybn.21
-        for <linux-kernel@vger.kernel.org>; Mon, 31 May 2021 01:38:33 -0700 (PDT)
+        Mon, 31 May 2021 04:40:18 -0400
+Received: from mail-qv1-xf49.google.com (mail-qv1-xf49.google.com [IPv6:2607:f8b0:4864:20::f49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16C15C061574
+        for <linux-kernel@vger.kernel.org>; Mon, 31 May 2021 01:38:38 -0700 (PDT)
+Received: by mail-qv1-xf49.google.com with SMTP id b5-20020a0cc9850000b02901eece87073bso8436323qvk.21
+        for <linux-kernel@vger.kernel.org>; Mon, 31 May 2021 01:38:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=date:in-reply-to:message-id:mime-version:references:subject:from:to
          :cc;
-        bh=oha3Req4PO5smWr+P0a1rzrVDS+Kl6LxFKPaoAFG81g=;
-        b=Q+3E5glDrcwJ4gwXL2WKwdVztQqd2VwmSyAq4lUAEDUwQsYKH0cVUY7PLSVTw3jdXO
-         uQ7cpb75AX27stPJLi34hjuB9+PJ1NN46vwYcnxiM/uZuBfw1alW+Ojr0UQ0Tyz9rkpi
-         7ahkPgdMInf4iAvBt9NlzcCbdgNG1hMiGY/aynXyBxOl18vWV77J9xkwB23zLMyKmUsf
-         +DiMt4kE+DIDU6njzOmETqZqzmNb+7jh9FhRpUeaKrYpdAX4S0LTOUmkp8lTMu5x1NRb
-         DOi2N16VbZd2doOhhxhpreFJow8W1K25i1r6uXOSqxViqNI6NFB414hdlXtN1K3uTRzl
-         spnw==
+        bh=9r21AyqsmQHvyUtyxiaJxCTMlJZ7EnY4HZMY3OoMpaQ=;
+        b=lpFGNDUwdGfJOWYtCwF2MSQWgmwjA0H5Kh6EezPDF9zzT6dKfskh/M2QrAoWC+UUrB
+         PHatFOaZBKW3kRWRtiJtk3AcQFA7GhmAButXV4ChGAex2z4EsH8tC1MsjSGbq34XKNTc
+         j4vLvaC0eQcUJLLfHfpBLzEJYqITzwKWmu2wta/nZPyAaXOj3BKbOrBvttks6v7/rJwp
+         3eG9yPNQaY5oE5aGuT6/kWuvFUKCaRL5P0e5lHAy+lf3KhNuvqiOX7ySRhMb1LayyzV6
+         lq8O4AV5KNzNm2XZk/qSSHriWiD0nXuOLr7ulTITp1/0ayRICVWhqs82dy0j7GYiYbUi
+         uxUw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:in-reply-to:message-id:mime-version
          :references:subject:from:to:cc;
-        bh=oha3Req4PO5smWr+P0a1rzrVDS+Kl6LxFKPaoAFG81g=;
-        b=AUOWEZxfEpFNR6lz1CVugbY/AUCw7/T/DTQBTuO6iF6Lcl/wfgnLbriPcyzlW7irNd
-         2DCHRCNvqBF8WhK70iK12UQ5zIuTVlJQby+T/5Cf093UyLebchfuGG+3z7nrCbNr9l+6
-         NcIW9loB0f44r6WKylGPp4Vb1RVO+M0C5QgilVpp0HDX4YISsYXs737GlHgnzP48BeYx
-         BYcZ3i123BiICo0/liUN3SnSWjrV/1OBnt7/Wtj7RntfIH6M0tm1b8/e8x//vBS3hBKc
-         BMDSJ/Cuxc3KJZdfgDwVFCijwEywyv8EzBF9j/dqafjl9uZxYhToLicp0ylkuFl1punI
-         1i/A==
-X-Gm-Message-State: AOAM533G4pvJLyIyE0ZNE0AxObkKI12aizlbwGdNCiUZumQCuy9vhn47
-        L5+u4uQNk4v01hmfnF56WBxzKtM2Fic+
-X-Google-Smtp-Source: ABdhPJxZSLMhNj2/1XeLU1eRo0bYIz3Xc/neRmJaXqRXQM4HhbA2x46IKSIKI94yWQ8BFyI1ZxHyNWH6Q3u4
+        bh=9r21AyqsmQHvyUtyxiaJxCTMlJZ7EnY4HZMY3OoMpaQ=;
+        b=meYZ2lw1z6Bgw5zROeFVyqOeJbRAPMn5R49m5gIDvgC+OC9tP9iz90JIlVIxQ0Hbfm
+         fr0KoQfQVApmgSGj9JeI03skFwqQa6mUp9aN77NpqtdhgqDLbOwbc20ymXR3CANz7n01
+         yopaAW8wjCocBsnrl5WazuAkV86jfly346vgFaGBSpFOUOwXbRc/tve75RG1MmzJ8NT2
+         o5zVy0MiousPwtYq+5Ljmsx8+js8sKtv0SGVoP1bgnFxKGQ9jCoHLoEA/VUzy56L2jSc
+         8Kf4hr5kymMmWQzsosOqfulrrKdbpYHoMxCjPxIXEnNcdw2V0IGGGEXKYHw/ZEWiCVbE
+         o4ig==
+X-Gm-Message-State: AOAM531iucveNDYz7JOH2uvaOq6ZB9FAKeRZb8IBTjQCHp/ns2XXBIcF
+        i6Zz61F4PEK4SZ0dNzYN+PFFfx5ha8i6
+X-Google-Smtp-Source: ABdhPJz4dzWcW79/HylOZxkLtC618BQpt9/mn7BND/etToBSCd+vBUb5i7UlBAtGxtGF9BzDoiyK+5bQd0Ww
 X-Received: from apusaka-p920.tpe.corp.google.com ([2401:fa00:1:b:a6d1:a727:b17d:154e])
- (user=apusaka job=sendgmr) by 2002:a25:af04:: with SMTP id
- a4mr30452339ybh.131.1622450312500; Mon, 31 May 2021 01:38:32 -0700 (PDT)
-Date:   Mon, 31 May 2021 16:37:21 +0800
+ (user=apusaka job=sendgmr) by 2002:ad4:5be5:: with SMTP id
+ k5mr15792611qvc.55.1622450317259; Mon, 31 May 2021 01:38:37 -0700 (PDT)
+Date:   Mon, 31 May 2021 16:37:22 +0800
 In-Reply-To: <20210531083726.1949001-1-apusaka@google.com>
-Message-Id: <20210531163500.v2.2.I0564cdade0879f3f2b192ae73d01a0135baf8050@changeid>
+Message-Id: <20210531163500.v2.3.Icd1fee7b40dcfec866286803065a3d19dd9ca7ed@changeid>
 Mime-Version: 1.0
 References: <20210531083726.1949001-1-apusaka@google.com>
 X-Mailer: git-send-email 2.32.0.rc0.204.g9fa02ecfa5-goog
-Subject: [PATCH v2 2/8] Bluetooth: use inclusive language in hci_core.h
+Subject: [PATCH v2 3/8] Bluetooth: use inclusive language to describe CPB
 From:   Archie Pusaka <apusaka@google.com>
 To:     linux-bluetooth <linux-bluetooth@vger.kernel.org>,
         Marcel Holtmann <marcel@holtmann.org>
@@ -74,11 +74,10 @@ This patch replaces some non-inclusive terms based on the appropriate
 language mapping table compiled by the Bluetooth SIG:
 https://specificationrefs.bluetooth.com/language-mapping/Appropriate_Language_Mapping_Table.pdf
 
-Specifically, these terms are replaced:
+Specifically, these terms are replaced when describing the
+connectionless peripheral broadcast feature:
 master -> central
 slave  -> peripheral
-
-These attributes are not used elsewhere in the code.
 
 Signed-off-by: Archie Pusaka <apusaka@chromium.org>
 Reviewed-by: Miao-chen Chou <mcchou@chromium.org>
@@ -88,85 +87,146 @@ Reviewed-by: Miao-chen Chou <mcchou@chromium.org>
 Changes in v2:
 * Add details in commit message
 
- include/net/bluetooth/hci.h | 44 ++++++++++++++++++-------------------
- 1 file changed, 22 insertions(+), 22 deletions(-)
+ include/net/bluetooth/hci.h      | 26 +++++++++++++-------------
+ include/net/bluetooth/hci_core.h |  4 ++--
+ net/bluetooth/hci_conn.c         |  2 +-
+ net/bluetooth/hci_core.c         | 16 ++++++++--------
+ 4 files changed, 24 insertions(+), 24 deletions(-)
 
 diff --git a/include/net/bluetooth/hci.h b/include/net/bluetooth/hci.h
-index 18742f4471ff..c3efef266d6d 100644
+index c3efef266d6d..a7cf5a2d87c5 100644
 --- a/include/net/bluetooth/hci.h
 +++ b/include/net/bluetooth/hci.h
-@@ -1839,23 +1839,23 @@ struct hci_rp_le_read_iso_tx_sync {
- #define HCI_OP_LE_SET_CIG_PARAMS		0x2062
- struct hci_cis_params {
- 	__u8    cis_id;
--	__le16  m_sdu;
--	__le16  s_sdu;
--	__u8    m_phy;
--	__u8    s_phy;
--	__u8    m_rtn;
--	__u8    s_rtn;
-+	__le16  c_sdu;
-+	__le16  p_pdu;
-+	__u8    c_phy;
-+	__u8    p_phy;
-+	__u8    c_rtn;
-+	__u8    p_rtn;
+@@ -36,7 +36,7 @@
+ 
+ #define HCI_MAX_AMP_ASSOC_SIZE	672
+ 
+-#define HCI_MAX_CSB_DATA_SIZE	252
++#define HCI_MAX_CPB_DATA_SIZE	252
+ 
+ /* HCI dev events */
+ #define HCI_DEV_REG			1
+@@ -472,10 +472,10 @@ enum {
+ #define LMP_EXTFEATURES	0x80
+ 
+ /* Extended LMP features */
+-#define LMP_CSB_MASTER	0x01
+-#define LMP_CSB_SLAVE	0x02
+-#define LMP_SYNC_TRAIN	0x04
+-#define LMP_SYNC_SCAN	0x08
++#define LMP_CPB_CENTRAL		0x01
++#define LMP_CPB_PERIPHERAL	0x02
++#define LMP_SYNC_TRAIN		0x04
++#define LMP_SYNC_SCAN		0x08
+ 
+ #define LMP_SC		0x01
+ #define LMP_PING	0x02
+@@ -877,17 +877,17 @@ struct hci_rp_logical_link_cancel {
+ 	__u8     flow_spec_id;
  } __packed;
  
- struct hci_cp_le_set_cig_params {
- 	__u8    cig_id;
--	__u8    m_interval[3];
--	__u8    s_interval[3];
--	__u8    sca;
-+	__u8    c_interval[3];
-+	__u8    p_interval[3];
-+	__u8    wc_sca;
- 	__u8    packing;
- 	__u8    framing;
--	__le16  m_latency;
--	__le16  s_latency;
-+	__le16  c_latency;
-+	__le16  p_latency;
- 	__u8    num_cis;
- 	struct hci_cis_params cis[];
+-#define HCI_OP_SET_CSB			0x0441
+-struct hci_cp_set_csb {
++#define HCI_OP_SET_CPB			0x0441
++struct hci_cp_set_cpb {
+ 	__u8	enable;
+ 	__u8	lt_addr;
+ 	__u8	lpo_allowed;
+ 	__le16	packet_type;
+ 	__le16	interval_min;
+ 	__le16	interval_max;
+-	__le16	csb_sv_tout;
++	__le16	cpb_sv_tout;
  } __packed;
-@@ -2260,7 +2260,7 @@ struct hci_ev_sync_train_complete {
+-struct hci_rp_set_csb {
++struct hci_rp_set_cpb {
  	__u8	status;
+ 	__u8	lt_addr;
+ 	__le16	interval;
+@@ -1184,14 +1184,14 @@ struct hci_rp_delete_reserved_lt_addr {
+ 	__u8	lt_addr;
  } __packed;
  
--#define HCI_EV_SLAVE_PAGE_RESP_TIMEOUT	0x54
-+#define HCI_EV_PERIPHERAL_PAGE_RESP_TIMEOUT	0x54
- 
- #define HCI_EV_LE_CONN_COMPLETE		0x01
- struct hci_ev_le_conn_complete {
-@@ -2418,17 +2418,17 @@ struct hci_evt_le_cis_established {
- 	__le16 handle;
- 	__u8  cig_sync_delay[3];
- 	__u8  cis_sync_delay[3];
--	__u8  m_latency[3];
--	__u8  s_latency[3];
--	__u8  m_phy;
--	__u8  s_phy;
-+	__u8  c_latency[3];
-+	__u8  p_latency[3];
-+	__u8  c_phy;
-+	__u8  p_phy;
- 	__u8  nse;
--	__u8  m_bn;
--	__u8  s_bn;
--	__u8  m_ft;
--	__u8  s_ft;
--	__le16 m_mtu;
--	__le16 s_mtu;
-+	__u8  c_bn;
-+	__u8  p_bn;
-+	__u8  c_ft;
-+	__u8  p_ft;
-+	__le16 c_mtu;
-+	__le16 p_mtu;
- 	__le16 interval;
+-#define HCI_OP_SET_CSB_DATA		0x0c76
+-struct hci_cp_set_csb_data {
++#define HCI_OP_SET_CPB_DATA		0x0c76
++struct hci_cp_set_cpb_data {
+ 	__u8	lt_addr;
+ 	__u8	fragment;
+ 	__u8	data_length;
+-	__u8	data[HCI_MAX_CSB_DATA_SIZE];
++	__u8	data[HCI_MAX_CPB_DATA_SIZE];
  } __packed;
+-struct hci_rp_set_csb_data {
++struct hci_rp_set_cpb_data {
+ 	__u8	status;
+ 	__u8	lt_addr;
+ } __packed;
+diff --git a/include/net/bluetooth/hci_core.h b/include/net/bluetooth/hci_core.h
+index 368e16fdf441..929768f6ed93 100644
+--- a/include/net/bluetooth/hci_core.h
++++ b/include/net/bluetooth/hci_core.h
+@@ -1394,8 +1394,8 @@ void hci_conn_del_sysfs(struct hci_conn *conn);
+ #define lmp_edr_5slot_capable(dev) ((dev)->features[0][5] & LMP_EDR_5SLOT)
  
+ /* ----- Extended LMP capabilities ----- */
+-#define lmp_csb_master_capable(dev) ((dev)->features[2][0] & LMP_CSB_MASTER)
+-#define lmp_csb_slave_capable(dev)  ((dev)->features[2][0] & LMP_CSB_SLAVE)
++#define lmp_cpb_central_capable(dev) ((dev)->features[2][0] & LMP_CPB_CENTRAL)
++#define lmp_cpb_peripheral_capable(dev) ((dev)->features[2][0] & LMP_CPB_PERIPHERAL)
+ #define lmp_sync_train_capable(dev) ((dev)->features[2][0] & LMP_SYNC_TRAIN)
+ #define lmp_sync_scan_capable(dev)  ((dev)->features[2][0] & LMP_SYNC_SCAN)
+ #define lmp_sc_capable(dev)         ((dev)->features[2][1] & LMP_SC)
+diff --git a/net/bluetooth/hci_conn.c b/net/bluetooth/hci_conn.c
+index 703470b6b924..7b8784d4da96 100644
+--- a/net/bluetooth/hci_conn.c
++++ b/net/bluetooth/hci_conn.c
+@@ -1842,7 +1842,7 @@ u32 hci_conn_get_phy(struct hci_conn *conn)
+ 
+ 	/* BLUETOOTH CORE SPECIFICATION Version 5.2 | Vol 2, Part B page 471:
+ 	 * Table 6.2: Packets defined for synchronous, asynchronous, and
+-	 * CSB logical transport types.
++	 * CPB logical transport types.
+ 	 */
+ 	switch (conn->type) {
+ 	case SCO_LINK:
+diff --git a/net/bluetooth/hci_core.c b/net/bluetooth/hci_core.c
+index 4ac6022f7085..b9ebad0f8fb9 100644
+--- a/net/bluetooth/hci_core.c
++++ b/net/bluetooth/hci_core.c
+@@ -545,24 +545,24 @@ static void hci_set_event_mask_page_2(struct hci_request *req)
+ 	u8 events[8] = { 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 };
+ 	bool changed = false;
+ 
+-	/* If Connectionless Slave Broadcast master role is supported
++	/* If Connectionless Peripheral Broadcast central role is supported
+ 	 * enable all necessary events for it.
+ 	 */
+-	if (lmp_csb_master_capable(hdev)) {
++	if (lmp_cpb_central_capable(hdev)) {
+ 		events[1] |= 0x40;	/* Triggered Clock Capture */
+ 		events[1] |= 0x80;	/* Synchronization Train Complete */
+-		events[2] |= 0x10;	/* Slave Page Response Timeout */
+-		events[2] |= 0x20;	/* CSB Channel Map Change */
++		events[2] |= 0x10;	/* Peripheral Page Response Timeout */
++		events[2] |= 0x20;	/* CPB Channel Map Change */
+ 		changed = true;
+ 	}
+ 
+-	/* If Connectionless Slave Broadcast slave role is supported
++	/* If Connectionless Peripheral Broadcast peripheral role is supported
+ 	 * enable all necessary events for it.
+ 	 */
+-	if (lmp_csb_slave_capable(hdev)) {
++	if (lmp_cpb_peripheral_capable(hdev)) {
+ 		events[2] |= 0x01;	/* Synchronization Train Received */
+-		events[2] |= 0x02;	/* CSB Receive */
+-		events[2] |= 0x04;	/* CSB Timeout */
++		events[2] |= 0x02;	/* CPB Receive */
++		events[2] |= 0x04;	/* CPB Timeout */
+ 		events[2] |= 0x08;	/* Truncated Page Complete */
+ 		changed = true;
+ 	}
 -- 
 2.32.0.rc0.204.g9fa02ecfa5-goog
 
