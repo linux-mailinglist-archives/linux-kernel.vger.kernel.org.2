@@ -2,68 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9ACE1396939
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 23:14:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 68A36396951
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 23:31:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232185AbhEaVQ1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 17:16:27 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45744 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230032AbhEaVQ0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 17:16:26 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DC70660231;
-        Mon, 31 May 2021 21:14:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1622495686;
-        bh=/ocKFwsXqJNsoxcMXQC2YnnCqnhQgf5FvluVu9O+ofQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=IbAUBygFsyn7qZ711gsNXhex0PfwcLPQtg8lpbK/hFOmaZvk1aLPERINVscnUqjRw
-         CEaRB1mNSXJPKHSnask91fqYKFLTZGLzZ4AsNVKBIpnOqitJwRkFfSrt3uUmckiaET
-         +cam9F3u8e22P8euQci5VUYangv/jfmcO4ypI/WlTO2LiVSAcVH/Luc/e+6d02BaMu
-         kAa/Ey0t1lqgbvdAEYRgT6lnwWUofh/lLftCjiA5TlGXC2irYj/1ya0jKZFwtXLAh+
-         IIZ1UJ4Ry6HK8YyQlI3d0So8Ze8Tll00gUXUeL/de30AHFy/BrIkTcp9MjTYe6MA9L
-         Mpst8li+uDZLg==
-Date:   Mon, 31 May 2021 17:14:44 -0400
-From:   Sasha Levin <sashal@kernel.org>
-To:     Pavel Machek <pavel@denx.de>
-Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        Anirudh Rayabharam <mail@anirudhrb.com>,
-        Kangjie Lu <kjlu@umn.edu>, Kalle Valo <kvalo@codeaurora.org>,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org
-Subject: Re: [PATCH AUTOSEL 4.4 07/16] ath6kl: return error code in
- ath6kl_wmi_set_roam_lrssi_cmd()
-Message-ID: <YLVRxE04XbJXsxPW@sashalap>
-References: <20210524145130.2499829-1-sashal@kernel.org>
- <20210524145130.2499829-7-sashal@kernel.org>
- <20210531204700.GA19694@amd>
+        id S231708AbhEaVdb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 17:33:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52122 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230433AbhEaVda (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 17:33:30 -0400
+Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D17F7C061574;
+        Mon, 31 May 2021 14:31:48 -0700 (PDT)
+Received: by mail-ed1-x536.google.com with SMTP id b11so8057300edy.4;
+        Mon, 31 May 2021 14:31:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=BUzR9q9xMCrnYk7GXKRktXhKYKGCLSyWr6ZPj2PNhxU=;
+        b=e1T7AgkCjMbptDQBztdPgw4yrRR2awCT20SxhaqPT+g3tgygJtGok/JpGEdM0BbG2m
+         /SghMH9LWm3dafuF/OrD9L7bczCiFJYK0zGbTYeDr7bcdy6aXADkmcjkj8xMPiJFwoKT
+         V6rtLhdXEazSEEJI9KFzkuS4LBeSrT9lhvEKitbYeEa8chDKNWjPlGzxO9XCflMHF3hy
+         myKttnjOqyEB2jBghwGnUGMXGCKHK2l+cXFrRw9U4CeVvzu4XOP7HwuLGBGlca0JZQtP
+         CnIfl69h6PkkxXKoX9il2R3j/yfjDNwJpycPxnXY496xlc1lTPOGD09P51Fgm9V8C/R6
+         nVmQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=BUzR9q9xMCrnYk7GXKRktXhKYKGCLSyWr6ZPj2PNhxU=;
+        b=BDoz84GwR7ZrGrigTGmPgntrsntOXykdI0wbWOcYZ3FvCULxsfnUUmo3xinoGKgzy3
+         0e5g71/TXtvyqf3jZUyytgfnaPzmlxdjnQf4Mb07nG2amXADtK6n34xGZRXcq/oG7lDY
+         h5R3WR8EGUNgZmTsSiWg8NqpwXuT5qswHTnK8voO99vF64mwdel4sYWDl9Jm1xWIYdq7
+         lRXN5C1/0ygulBNcGJbNW9km/iksuievbuNP63xt+GsohPThhdDHaynN9KgSZN84YiMO
+         EvbDgyt2t8IHq3D2l/OMNc6RkUcYyXTfiSYsVZqrBWMGOhOb0kheAcSacbbVn355Si0Z
+         ZwOw==
+X-Gm-Message-State: AOAM530Iye7BLYyceCHdgEH68HCdyBxvcVMk3sDE2C+BPZ3Jedmoe9XP
+        MV++iLA2mm+pIA98aKpn2VY=
+X-Google-Smtp-Source: ABdhPJyxJ3Gzz6F2xd/7wPC1m151hLhoC+K6x/fTtVUWFOw05S+oLq2WkJ0IO/pHAMHsghrvhrFOwA==
+X-Received: by 2002:a05:6402:1648:: with SMTP id s8mr20501261edx.256.1622496707315;
+        Mon, 31 May 2021 14:31:47 -0700 (PDT)
+Received: from honeypot.. ([151.29.82.133])
+        by smtp.googlemail.com with ESMTPSA id m16sm7364358edq.56.2021.05.31.14.31.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 31 May 2021 14:31:46 -0700 (PDT)
+From:   Riccardo Mancini <rickyman7@gmail.com>
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Ian Rogers <irogers@google.com>
+Cc:     Riccardo Mancini <rickyman7@gmail.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>, linux-perf-users@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] perf: fix segfault when wrong option for --debug is provided
+Date:   Mon, 31 May 2021 23:28:28 +0200
+Message-Id: <20210531212828.240077-1-rickyman7@gmail.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <20210531204700.GA19694@amd>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 31, 2021 at 10:47:00PM +0200, Pavel Machek wrote:
->Hi!
->
->> From: Anirudh Rayabharam <mail@anirudhrb.com>
->>
->> [ Upstream commit fc6a6521556c8250e356ddc6a3f2391aa62dc976 ]
->>
->> ath6kl_wmi_cmd_send could fail, so let's return its error code
->> upstream.
->
->Something went very wrong here.
->
->Content is okay, but "upstream commit" label is wrong, pointing to
->incomplete fix that was reverted (with different content and different
->author).
+The command `perf --debug record` causes a segfault instead of notifying
+the user of the unrecognized option for --debug (the correct syntax would
+be `perf --debug verbose=2 record`).
 
-Yup, what ended up happening here is that my scripts got confused by the
-reverted commit and the real fix having the same subject line. I've
-fixed up my scripts and this patch was dropped. Thanks!
+The bug is caused by a call to pr_err before debug_file (debug.c:34) is
+set via perf_debug_setup(). It has been introduced in
+commit 8abceacff87d ("perf debug: Add debug_set_file function").
 
+This patch resolves the bug by calling perf_debug_setup earlier in the
+main, so that debug_file is set to stderr before any call to a debug
+printing function is made.
+
+Signed-off-by: Riccardo Mancini <rickyman7@gmail.com>
+---
+ tools/perf/perf.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
+
+diff --git a/tools/perf/perf.c b/tools/perf/perf.c
+index 20cb91ef06ffc..cffbab2d085a7 100644
+--- a/tools/perf/perf.c
++++ b/tools/perf/perf.c
+@@ -448,6 +448,7 @@ int main(int argc, const char **argv)
+ 	pager_init(PERF_PAGER_ENVIRONMENT);
+ 
+ 	libperf_init(libperf_print);
++	perf_debug_setup();
+ 
+ 	cmd = extract_argv0_path(argv[0]);
+ 	if (!cmd)
+@@ -531,8 +532,6 @@ int main(int argc, const char **argv)
+ 	 */
+ 	pthread__block_sigwinch();
+ 
+-	perf_debug_setup();
+-
+ 	while (1) {
+ 		static int done_help;
+ 
 -- 
-Thanks,
-Sasha
+2.23.0
+
