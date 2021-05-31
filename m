@@ -2,104 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 64FD9395793
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 10:55:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B330E395796
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 10:56:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230491AbhEaI5a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 04:57:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53734 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230143AbhEaI51 (ORCPT
+        id S229541AbhEaI5f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 04:57:35 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:53036 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230479AbhEaI5a (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 04:57:27 -0400
-Received: from mail-qv1-xf32.google.com (mail-qv1-xf32.google.com [IPv6:2607:f8b0:4864:20::f32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C21F7C061574
-        for <linux-kernel@vger.kernel.org>; Mon, 31 May 2021 01:55:46 -0700 (PDT)
-Received: by mail-qv1-xf32.google.com with SMTP id u33so5172156qvf.9
-        for <linux-kernel@vger.kernel.org>; Mon, 31 May 2021 01:55:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=3gNFG9ThfJffLDJZEurhBCfvsdn1oohta4PrcOHBIO8=;
-        b=MGJsovRl/lgaZogYpniaQh2IKwAMrLzrTfFVlLgdeUfRQFiv+rod/Wkb4sHScHKUm3
-         4Ir/nJD6jPTFZUD6XCn7Ee6KqbkNnRuyZLxLCPcC15ktW9Cmoqd/fAr1vX9/TyrgqWnb
-         cw9WtdOFEze74JjhP6JYrn3Sf7WT+rJPA9SW+QrBLevZEf/EXCzZ3U7T7sbjeIo8nIZ+
-         3pG+lLA/RED/QXZqMSzR42Z+4wuowoSH9VhtH6G1jS49UayZ4eeP85NYF1eF0VEzn+1m
-         tqUs66JmG16zly+t0NkMjE0Qi0o2mRokQefwbpsWVHr57EeIElzo/9NIqmhwgFNpYeUN
-         NdvA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=3gNFG9ThfJffLDJZEurhBCfvsdn1oohta4PrcOHBIO8=;
-        b=tng5CAzxHxBXCknVGt6xol7Yje5m7q/hQfPvRBunhSofobtU4zIYq/q6vUGQA2Sdb/
-         bmMiYJ1IfCjMSVFYc7R19e9si5oiig2spL38hWaARwXIlkQb/24LBRWsHKBpbEE239d/
-         ZrIaaauB5a0VkgAwZw4o0cOI4wdi9w0uAm9Zk1sw/t0+dHTSqYVwEMgU+cQhbFIPtxBx
-         IdgXrzny+nGJycr/LBIqEF6c5lPtAgNP4YboBOe88bkw6wj9gguzNGvJxC6G7j5lr2m8
-         fLgktQj9Y+8/l4/SbNUdBwNoM8AxcVLVtUNM88jBRHxBAei4bKlnbYtFu0k/r6yaYtig
-         9pjg==
-X-Gm-Message-State: AOAM5319QhpbJfYQy0y/WVs+eU/y9v7QMgkSGDqnB9RAaoujE8JipwmD
-        Vrs6Jo+kpHAgtWRFG7+BGJCIy9X1BdQW6DvZdRpSMg==
-X-Google-Smtp-Source: ABdhPJx4P0pcgnL0rpLAZYSL+qbuUbusa0mIqFZq6/uoPfwHjkiT2W05PwwKO3aVYpWC3ouSnj8tvH2fNbOykZW9nJ4=
-X-Received: by 2002:a05:6214:6f1:: with SMTP id bk17mr15932892qvb.37.1622451345749;
- Mon, 31 May 2021 01:55:45 -0700 (PDT)
+        Mon, 31 May 2021 04:57:30 -0400
+Date:   Mon, 31 May 2021 08:55:48 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1622451349;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=OaXq7w/Q+KUtGPB7j8sfswDcr08nsePPn2APY7DbJQQ=;
+        b=2jiW/AV6I3VQtFwhTEOS+0GHY6tj3EEiU0h4dIt6Lhl+Lz+00FN5rxzXZRh6+t6R7LaTWL
+        SeKxTMvkwesva5BOsDaYGsLkoMw1bcg/sD9kiIZIn5eBOjzEamYIa/C6hex6uka8CtH1y9
+        H26qVpU8stksTzwvLe1N/Obg9uefENONSN6PfCudXsnHPz7HxEN9Rp+h6MFF3sW1ZGlf6Y
+        GYCnkgtahxWJ/NRN8geGdkRcvEu3K76d1K71MUeNhLsnvAMtrImkEWSmnxxsZs7rky5F2S
+        idqYTvR8TMnXEDo/oi0atTbr49hINLCNc545ZIe39Xk1ROvJd3hf6HOc8igj/g==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1622451349;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=OaXq7w/Q+KUtGPB7j8sfswDcr08nsePPn2APY7DbJQQ=;
+        b=oZNPuADqkZK3IMgBtYL2tEiz92qgeJOVER9MjeQ7wj90THfW9/ssyKICW5GR7exXJVX6gd
+        GexiStCp6SciLyDA==
+From:   "tip-bot2 for Pu Wen" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: x86/cpu] x86/cstate: Allow ACPI C1 FFH MWAIT use on Hygon systems
+Cc:     Pu Wen <puwen@hygon.cn>, Borislav Petkov <bp@suse.de>,
+        x86@kernel.org, linux-kernel@vger.kernel.org
+In-Reply-To: <20210528081417.31474-1-puwen@hygon.cn>
+References: <20210528081417.31474-1-puwen@hygon.cn>
 MIME-Version: 1.0
-References: <000000000000f9136f05c39b84e4@google.com> <21666193-5ad7-2656-c50f-33637fabb082@suse.com>
-In-Reply-To: <21666193-5ad7-2656-c50f-33637fabb082@suse.com>
-From:   Dmitry Vyukov <dvyukov@google.com>
-Date:   Mon, 31 May 2021 10:55:34 +0200
-Message-ID: <CACT4Y+bqevMT3cD5sXjSv9QYM_7CwjYmN_Ne5LSj=3-REZ+oTw@mail.gmail.com>
-Subject: Re: [syzbot] kernel BUG in assertfail
-To:     Nikolay Borisov <nborisov@suse.com>
-Cc:     syzbot <syzbot+a6bf271c02e4fe66b4e4@syzkaller.appspotmail.com>,
-        Chris Mason <clm@fb.com>, dsterba@suse.com,
-        Josef Bacik <josef@toxicpanda.com>,
-        linux-btrfs@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Message-ID: <162245134873.29796.1219713411989119535.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 31, 2021 at 10:44 AM 'Nikolay Borisov' via syzkaller-bugs
-<syzkaller-bugs@googlegroups.com> wrote:
-> On 31.05.21 =D0=B3. 10:53, syzbot wrote:
-> > Hello,
-> >
-> > syzbot found the following issue on:
-> >
-> > HEAD commit:    1434a312 Merge branch 'for-5.13-fixes' of git://git.ker=
-nel..
-> > git tree:       upstream
-> > console output: https://syzkaller.appspot.com/x/log.txt?x=3D162843f3d00=
-000
-> > kernel config:  https://syzkaller.appspot.com/x/.config?x=3D9f3da44a018=
-82e99
-> > dashboard link: https://syzkaller.appspot.com/bug?extid=3Da6bf271c02e4f=
-e66b4e4
-> >
-> > Unfortunately, I don't have any reproducer for this issue yet.
-> >
-> > IMPORTANT: if you fix the issue, please add the following tag to the co=
-mmit:
-> > Reported-by: syzbot+a6bf271c02e4fe66b4e4@syzkaller.appspotmail.com
-> >
-> > assertion failed: !memcmp(fs_info->fs_devices->fsid, fs_info->super_cop=
-y->fsid, BTRFS_FSID_SIZE), in fs/btrfs/disk-io.c:3282
->
-> This means a device contains a btrfs filesystem which has a different
-> FSID in its superblock than the fsid which all devices part of the same
-> fs_devices should have. This can happen in 2 ways - memory corruption
-> where either of the ->fsid member are corrupted or if there was a crash
-> while a filesystem's fsid was being changed. We need more context about
-> what the test did?
+The following commit has been merged into the x86/cpu branch of tip:
 
-Hi Nikolay,
+Commit-ID:     280b68a3b3b96b027fcdeb5a3916a8e2aaf84d03
+Gitweb:        https://git.kernel.org/tip/280b68a3b3b96b027fcdeb5a3916a8e2aaf84d03
+Author:        Pu Wen <puwen@hygon.cn>
+AuthorDate:    Fri, 28 May 2021 16:14:17 +08:00
+Committer:     Borislav Petkov <bp@suse.de>
+CommitterDate: Mon, 31 May 2021 10:47:04 +02:00
 
-From a semantic point of view we can consider that it just mounts /dev/rand=
-om.
-If syzbot comes up with a reproducer it will post it, but you seem to
-already figure out what happened, so I assume you can write a unit
-test for this.
+x86/cstate: Allow ACPI C1 FFH MWAIT use on Hygon systems
+
+Hygon systems support the MONITOR/MWAIT instructions and these can be
+used for ACPI C1 in the same way as on AMD and Intel systems.
+
+The BIOS declares a C1 state in _CST to use FFH and CPUID_Fn00000005_EDX
+is non-zero on Hygon systems.
+
+Allow ffh_cstate_init() to succeed on Hygon systems to default using FFH
+MWAIT instead of HALT for ACPI C1.
+
+Signed-off-by: Pu Wen <puwen@hygon.cn>
+Signed-off-by: Borislav Petkov <bp@suse.de>
+Link: https://lkml.kernel.org/r/20210528081417.31474-1-puwen@hygon.cn
+---
+ arch/x86/kernel/acpi/cstate.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/arch/x86/kernel/acpi/cstate.c b/arch/x86/kernel/acpi/cstate.c
+index 49ae4e1..7de599e 100644
+--- a/arch/x86/kernel/acpi/cstate.c
++++ b/arch/x86/kernel/acpi/cstate.c
+@@ -197,7 +197,8 @@ static int __init ffh_cstate_init(void)
+ 	struct cpuinfo_x86 *c = &boot_cpu_data;
+ 
+ 	if (c->x86_vendor != X86_VENDOR_INTEL &&
+-	    c->x86_vendor != X86_VENDOR_AMD)
++	    c->x86_vendor != X86_VENDOR_AMD &&
++	    c->x86_vendor != X86_VENDOR_HYGON)
+ 		return -1;
+ 
+ 	cpu_cstate_entry = alloc_percpu(struct cstate_entry);
