@@ -2,112 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4BD8F395615
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 09:29:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D1729395619
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 09:30:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230248AbhEaHbY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 03:31:24 -0400
-Received: from mail-ua1-f43.google.com ([209.85.222.43]:41821 "EHLO
-        mail-ua1-f43.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230091AbhEaHbV (ORCPT
+        id S230299AbhEaHcL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 03:32:11 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:60476 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230091AbhEaHcB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 03:31:21 -0400
-Received: by mail-ua1-f43.google.com with SMTP id g34so6105132uah.8
-        for <linux-kernel@vger.kernel.org>; Mon, 31 May 2021 00:29:39 -0700 (PDT)
+        Mon, 31 May 2021 03:32:01 -0400
+Received: from mail-wm1-f70.google.com ([209.85.128.70])
+        by youngberry.canonical.com with esmtps  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.93)
+        (envelope-from <krzysztof.kozlowski@canonical.com>)
+        id 1lncNR-0002F0-9Y
+        for linux-kernel@vger.kernel.org; Mon, 31 May 2021 07:30:21 +0000
+Received: by mail-wm1-f70.google.com with SMTP id x20-20020a1c7c140000b029018f49a7efb7so4427550wmc.1
+        for <linux-kernel@vger.kernel.org>; Mon, 31 May 2021 00:30:21 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=FQgr0jrwgMpVFAUZB3RLApwYyR9lZ6m4vn7BuOs8BZE=;
-        b=foZ3P+eSYeAbVkJGSKhvokeBbgSffqJQ1pImRAQ56atei4V8CibA8PEZvKUhJh1ZCY
-         4efUU7VizPhCRLSC7wHRYJvUQX24NWGnnZBCIUK/rU2IgIoIGHDjjTLyEF32QNdlcwH9
-         N5a9sawMePW1yO/9I3GUx62W+Qk8Aze8XXVuGvWSAFzHUT93WQQBfrRC98M8v9qWKytu
-         ADhf9tFDnkpS6e4mCvKLTGCelHHMRQwymccNSJZa9ieb3UErF4zZ2Nn5HQ63o5Nf4bOk
-         DCbNnvY8CwOpYd1yx0HStG1qGq8xxK65y5UFwLKD2Oyajhi0G8L8ag2mhhhVbEAlN9ci
-         2vdw==
-X-Gm-Message-State: AOAM531i+lZj1L8cF39kpNQFdq/nNyxun7WM0kJowbfJSmLGt+/yhdKL
-        s3Qu66N1GQwBvExcqvDpkXg2Js5/nDtEi3mPlvU=
-X-Google-Smtp-Source: ABdhPJzLJYWhG27oKneqs3Qk+mw0Nr3I9SV46h/6fgKlrCNP+dDs3Nps9fDqEdHA/isrTAdrT8qge5HFZqyujLafn2Y=
-X-Received: by 2002:ab0:26d8:: with SMTP id b24mr3257446uap.58.1622446179288;
- Mon, 31 May 2021 00:29:39 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=cAlI26tnTTG5mkLy5nypjSlUByQ/kCeC+Y7Gnr7Dwj8=;
+        b=ToGP+OwEVeVRbFs2prekf1N7ZFddaBgJ6lnbvD4rRW0hGO+KilaHoU29zHXveMOyPe
+         2gOM09tFu12rsuot3a2ZzZfSvcw4k2zk1tXjugw6uWQYqpwE7h/xvI4pcwrddkNXvK49
+         F906lYIbldBn9JzENr5sn1fMydrj9IXDzIrIRzGQk61OZpEYofXTi0kevPLnMMtA9ics
+         FRuif54prNHv01H/uPUg/1LrHQYJ/athdIdlMvOj1xILkXlquoildBoMUo0y0VpJqEqg
+         yCL1tir3h0tI6nPeJ+xP2TJjnvdwGySNgYqj08t7CwaucdWkCt/pvCD+h5OSUqwnE4Lb
+         JoEw==
+X-Gm-Message-State: AOAM531cxvu+qRXZd9KGi1BNI8Lb9d5FaS5TIZLzoDRB1ZATDWXbLsMg
+        2b5lt/9voMOFHL0X8CuNOmDt8VcXuu8wOnXfjSVvRNWzSC2/VbZxmugj4u9jUQl/4tun6JirjXH
+        A492hZb3NGMLc9GHAz68t5X33dOFnCrSGcgwxNOC9OA==
+X-Received: by 2002:a7b:c084:: with SMTP id r4mr19400395wmh.102.1622446221039;
+        Mon, 31 May 2021 00:30:21 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyGn2RwHbI3WaJdd8bqimsKztQEfvYoe5ivVyqd/sUnbSsNPwopPg2sBXTTyFD3lrJGA4eoOw==
+X-Received: by 2002:a7b:c084:: with SMTP id r4mr19400386wmh.102.1622446220937;
+        Mon, 31 May 2021 00:30:20 -0700 (PDT)
+Received: from [192.168.1.115] (xdsl-188-155-185-9.adslplus.ch. [188.155.185.9])
+        by smtp.gmail.com with ESMTPSA id v15sm22303365wmj.39.2021.05.31.00.30.20
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 31 May 2021 00:30:20 -0700 (PDT)
+Subject: Re: [PATCH 01/11] nfc: fdp: drop ftrace-like debugging messages
+To:     Jakub Kicinski <kuba@kernel.org>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Randy Dunlap <rdunlap@infradead.org>, linux-nfc@lists.01.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+References: <20210528145330.125055-1-krzysztof.kozlowski@canonical.com>
+ <20210528151340.7ea69c15@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Message-ID: <4f44c25c-c296-ba3e-7c6d-bc1016574231@canonical.com>
+Date:   Mon, 31 May 2021 09:30:20 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-References: <202105300736.7wVLvXHr-lkp@intel.com> <a0edf640-ec05-524e-9125-44decba27bbb@infradead.org>
-In-Reply-To: <a0edf640-ec05-524e-9125-44decba27bbb@infradead.org>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Mon, 31 May 2021 09:29:27 +0200
-Message-ID: <CAMuHMdUrG5AWRQ-ypU0NdjFTEttyguMWSCLyvGE0pikdLij2Dw@mail.gmail.com>
-Subject: Re: ERROR: modpost: "__delay" [drivers/net/mdio/mdio-cavium.ko] undefined!
-To:     Randy Dunlap <rdunlap@infradead.org>
-Cc:     kernel test robot <lkp@intel.com>, Andrew Lunn <andrew@lunn.ch>,
-        kbuild-all@lists.01.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Rich Felker <dalias@libc.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210528151340.7ea69c15@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 31, 2021 at 2:05 AM Randy Dunlap <rdunlap@infradead.org> wrote:
-> On 5/29/21 4:25 PM, kernel test robot wrote:
-> > First bad commit (maybe != root cause):
-> >
-> > tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-> > head:   df8c66c4cfb91f2372d138b9b714f6df6f506966
-> > commit: a9770eac511ad82390b9f4a3c1728e078c387ac7 net: mdio: Move MDIO drivers into a new subdirectory
-> > date:   9 months ago
-> > config: sh-allmodconfig (attached as .config)
-> > compiler: sh4-linux-gcc (GCC) 9.3.0
-> > reproduce (this is a W=1 build):
-> >         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
-> >         chmod +x ~/bin/make.cross
-> >         # https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=a9770eac511ad82390b9f4a3c1728e078c387ac7
-> >         git remote add linus https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
-> >         git fetch --no-tags linus master
-> >         git checkout a9770eac511ad82390b9f4a3c1728e078c387ac7
-> >         # save the attached .config to linux build tree
-> >         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-9.3.0 make.cross ARCH=sh
-> >
-> > If you fix the issue, kindly add following tag as appropriate
-> > Reported-by: kernel test robot <lkp@intel.com>
-> >
-> > All errors (new ones prefixed by >>, old ones prefixed by <<):
-> >
-> >>> ERROR: modpost: "__delay" [drivers/net/mdio/mdio-cavium.ko] undefined!
->
-> Just a comment here.  kernel test robot has reported this issue
-> 5 times in 2021 that I know of -- and I could have missed some.
->
-> I see that Geert recently (June 2020) reverted the
-> EXPORT_SYMBOL(__delay) in arch/sh/lib/delay.c, with this comment:
->
->     __delay() is an internal implementation detail on several architectures.
->     Drivers should not call __delay() directly, as it has non-standardized
->     semantics, or may not even exist.
->     Hence there is no need to export __delay() to modules.
->
->     See also include/asm-generic/delay.h:
->
->         /* Undefined functions to get compile-time errors */
->         ...
->         extern void __delay(unsigned long loops);
->
-> However, s/several architectures/all but one architecture: SH/.
-> All architectures except for SH provide either an exported function,
-> an inline function, or a macro for __delay(). Yeah, they probably
-> don't all do the same delay.
+On 29/05/2021 00:13, Jakub Kicinski wrote:
+> On Fri, 28 May 2021 10:53:20 -0400 Krzysztof Kozlowski wrote:
+>> Now that the kernel has ftrace, any debugging calls that just do "made
+>> it to this function!" and "leaving this function!" can be removed.
+>> Better to use standard debugging tools.
+>>
+>> This allows also to remove several local variables and entire
+>> fdp_nci_recv_frame() function (whose purpose was only to log).
+>>
+>> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+> 
+> Hi! Would you mind reposting these 11 fixes? build bots don't
+> understand series dependencies and the last patch here depends 
+> on the previous clean up set.
 
-Hence it must not be used by drivers, as it might give the false assumption
-of working everywhere.  While drivers/net/mdio/mdio-cavium is
-platform-specific, code might be copied in a new driver, less restricted
-to a specific platform.
+Sure, no problem.
 
-Gr{oetje,eeting}s,
 
-                        Geert
-
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+Best regards,
+Krzysztof
