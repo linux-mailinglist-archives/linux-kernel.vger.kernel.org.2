@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 86AF7395B55
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 15:18:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E66039658B
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 18:38:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232010AbhEaNTb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 09:19:31 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53662 "EHLO mail.kernel.org"
+        id S233773AbhEaQjt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 12:39:49 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47908 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231772AbhEaNSc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 09:18:32 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 125EC61377;
-        Mon, 31 May 2021 13:16:51 +0000 (UTC)
+        id S233202AbhEaOvQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 10:51:16 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DDD5361445;
+        Mon, 31 May 2021 13:57:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1622467012;
-        bh=YuuDDbunUMPyy+mqVzckjE5gDPn/e+4GqX6B5PBFjTA=;
+        s=korg; t=1622469471;
+        bh=T73aE6qjderFT5AXqvF+eWkmvZ0i4FnAsV5zIEkKxBo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=bdVhXS9RQcKTn2DnmMAmXkX4wr1H46oiOQfiJcTVnx13ejNUDDLQg77qjp8UoV/wG
-         ce7RJr9/Ivd8N1PQRKf5mzYpykTEfBuxZwI/aLLxGwI8zDiUuA1xToqYzNVNhd5IT5
-         po328+hiF7dpwy2MwftOPxmoirpermUxamWZZL/8=
+        b=IkFiCQw5dP7F2vSmG2Rc9u9WLG4537yedQ/SVR4UNy9HCFCDa7LtSYGs8WA9yhbWy
+         NxrRs72d+iSnTLZbLeEVe+xYmqOuiSrpRV1cMrXO7dCysjflDe1sTRCbwvmno+aR+R
+         0Ns2w1mem9II8tYRCQQPxuTUDnx8o03TC95GzUiY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Trond Myklebust <trond.myklebust@hammerspace.com>
-Subject: [PATCH 4.4 24/54] NFS: Dont corrupt the value of pg_bytes_written in nfs_do_recoalesce()
+        stable@vger.kernel.org, Kangjie Lu <kjlu@umn.edu>,
+        Takashi Iwai <tiwai@suse.de>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.12 175/296] Revert "ALSA: gus: add a check of the status of snd_ctl_add"
 Date:   Mon, 31 May 2021 15:13:50 +0200
-Message-Id: <20210531130635.850766475@linuxfoundation.org>
+Message-Id: <20210531130709.761042182@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210531130635.070310929@linuxfoundation.org>
-References: <20210531130635.070310929@linuxfoundation.org>
+In-Reply-To: <20210531130703.762129381@linuxfoundation.org>
+References: <20210531130703.762129381@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,52 +39,59 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Trond Myklebust <trond.myklebust@hammerspace.com>
+From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-commit 0d0ea309357dea0d85a82815f02157eb7fcda39f upstream.
+[ Upstream commit 1dacca7fa1ebea47d38d20cd2df37094805d2649 ]
 
-The value of mirror->pg_bytes_written should only be updated after a
-successful attempt to flush out the requests on the list.
+This reverts commit 0f25e000cb4398081748e54f62a902098aa79ec1.
 
-Fixes: a7d42ddb3099 ("nfs: add mirroring support to pgio layer")
-Signed-off-by: Trond Myklebust <trond.myklebust@hammerspace.com>
+Because of recent interactions with developers from @umn.edu, all
+commits from them have been recently re-reviewed to ensure if they were
+correct or not.
+
+Upon review, this commit was found to be incorrect for the reasons
+below, so it must be reverted.  It will be fixed up "correctly" in a
+later kernel change.
+
+The original commit did nothing if there was an error, except to print
+out a message, which is pointless.  So remove the commit as it gives a
+"false sense of doing something".
+
+Cc: Kangjie Lu <kjlu@umn.edu>
+Reviewed-by: Takashi Iwai <tiwai@suse.de>
+Link: https://lore.kernel.org/r/20210503115736.2104747-33-gregkh@linuxfoundation.org
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/nfs/pagelist.c |   12 +++++-------
- 1 file changed, 5 insertions(+), 7 deletions(-)
+ sound/isa/gus/gus_main.c | 13 ++-----------
+ 1 file changed, 2 insertions(+), 11 deletions(-)
 
---- a/fs/nfs/pagelist.c
-+++ b/fs/nfs/pagelist.c
-@@ -993,17 +993,16 @@ static void nfs_pageio_doio(struct nfs_p
- {
- 	struct nfs_pgio_mirror *mirror = nfs_pgio_current_mirror(desc);
+diff --git a/sound/isa/gus/gus_main.c b/sound/isa/gus/gus_main.c
+index afc088f0377c..b7518122a10d 100644
+--- a/sound/isa/gus/gus_main.c
++++ b/sound/isa/gus/gus_main.c
+@@ -77,17 +77,8 @@ static const struct snd_kcontrol_new snd_gus_joystick_control = {
  
+ static void snd_gus_init_control(struct snd_gus_card *gus)
+ {
+-	int ret;
 -
- 	if (!list_empty(&mirror->pg_list)) {
- 		int error = desc->pg_ops->pg_doio(desc);
- 		if (error < 0)
- 			desc->pg_error = error;
--		else
-+		if (list_empty(&mirror->pg_list)) {
- 			mirror->pg_bytes_written += mirror->pg_count;
+-	if (!gus->ace_flag) {
+-		ret =
+-			snd_ctl_add(gus->card,
+-					snd_ctl_new1(&snd_gus_joystick_control,
+-						gus));
+-		if (ret)
+-			snd_printk(KERN_ERR "gus: snd_ctl_add failed: %d\n",
+-					ret);
 -	}
--	if (list_empty(&mirror->pg_list)) {
--		mirror->pg_count = 0;
--		mirror->pg_base = 0;
-+			mirror->pg_count = 0;
-+			mirror->pg_base = 0;
-+			mirror->pg_recoalesce = 0;
-+		}
- 	}
++	if (!gus->ace_flag)
++		snd_ctl_add(gus->card, snd_ctl_new1(&snd_gus_joystick_control, gus));
  }
  
-@@ -1089,7 +1088,6 @@ static int nfs_do_recoalesce(struct nfs_
- 
- 	do {
- 		list_splice_init(&mirror->pg_list, &head);
--		mirror->pg_bytes_written -= mirror->pg_count;
- 		mirror->pg_count = 0;
- 		mirror->pg_base = 0;
- 		mirror->pg_recoalesce = 0;
+ /*
+-- 
+2.30.2
+
 
 
