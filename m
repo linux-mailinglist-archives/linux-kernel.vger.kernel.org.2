@@ -2,36 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 16F123964CF
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 18:10:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3493B396078
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 16:25:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233504AbhEaQMT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 12:12:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36490 "EHLO mail.kernel.org"
+        id S232323AbhEaO1K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 10:27:10 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55412 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233900AbhEaOhg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 10:37:36 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 63AF76186A;
-        Mon, 31 May 2021 13:51:52 +0000 (UTC)
+        id S232540AbhEaNvv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 09:51:51 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E3A5C616E9;
+        Mon, 31 May 2021 13:32:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1622469113;
-        bh=sg8BA99lz8X4n17e5wbLXqVoyRIWCYyTeQ0xl9m3Ti0=;
+        s=korg; t=1622467962;
+        bh=Xdmu0No1qD89vu5RbDro4R5XL0d4XQoB0rtetHFaD4I=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Yckhot4aWvweQmoijUXmFgO9OI5PCDM9GX7PQSf195HgN8z41yqLfA6e/FUZmBJGn
-         WWqgtdgOPb/wO4menqj+OqeJrMaUCeLUE3ooo5b9OHJEsLoEv+IxAVTG3/Ph05Y0ZR
-         ac2DoxQkKoMLhgOWtk2B6Zs13osbe2kvqj6tjHuE=
+        b=JClpubnkwpZu9a8XdEDS/Dk+cQBcP1l3HiVHtFKrRnnh+qARk7mt75GqHbrgXSIvB
+         HwNfWrlZfYblMuU0mEexuTJt7W1P/68wIZ/j/B+HodSiPZsAo9eyn1ryCWp90pKMWG
+         WTgfbi4QrYHjoVSunX6pil09VRCpWvbY6///nF7s=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Lucas Stankus <lucas.p.stankus@gmail.com>,
+        stable@vger.kernel.org,
+        Alexandru Ardelean <ardeleanalex@gmail.com>,
         Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Alexandru Ardelean <aardelean@deviqon.com>,
         Stable@vger.kernel.org
-Subject: [PATCH 5.12 075/296] staging: iio: cdc: ad7746: avoid overwrite of num_channels
+Subject: [PATCH 5.10 065/252] iio: adc: ad7124: Fix potential overflow due to non sequential channel numbers
 Date:   Mon, 31 May 2021 15:12:10 +0200
-Message-Id: <20210531130706.375225101@linuxfoundation.org>
+Message-Id: <20210531130700.196502617@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210531130703.762129381@linuxfoundation.org>
-References: <20210531130703.762129381@linuxfoundation.org>
+In-Reply-To: <20210531130657.971257589@linuxfoundation.org>
+References: <20210531130657.971257589@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,33 +42,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Lucas Stankus <lucas.p.stankus@gmail.com>
+From: Jonathan Cameron <Jonathan.Cameron@huawei.com>
 
-commit 04f5b9f539ce314f758d919a14dc7a669f3b7838 upstream.
+commit f2a772c51206b0c3f262e4f6a3812c89a650191b upstream.
 
-AD7745 devices don't have the CIN2 pins and therefore can't handle related
-channels. Forcing the number of AD7746 channels may lead to enabling more
-channels than what the hardware actually supports.
-Avoid num_channels being overwritten after first assignment.
+Channel numbering must start at 0 and then not have any holes, or
+it is possible to overflow the available storage.  Note this bug was
+introduced as part of a fix to ensure we didn't rely on the ordering
+of child nodes.  So we need to support arbitrary ordering but they all
+need to be there somewhere.
 
-Signed-off-by: Lucas Stankus <lucas.p.stankus@gmail.com>
-Fixes: 83e416f458d53 ("staging: iio: adc: Replace, rewrite ad7745 from scratch.")
+Note I hit this when using qemu to test the rest of this series.
+Arguably this isn't the best fix, but it is probably the most minimal
+option for backporting etc.
+
+Alexandru's sign-off is here because he carried this patch in a larger
+set that Jonathan then applied.
+
+Fixes: d7857e4ee1ba6 ("iio: adc: ad7124: Fix DT channel configuration")
+Reviewed-by: Alexandru Ardelean <ardeleanalex@gmail.com>
 Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Signed-off-by: Alexandru Ardelean <aardelean@deviqon.com>
 Cc: <Stable@vger.kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/staging/iio/cdc/ad7746.c |    1 -
- 1 file changed, 1 deletion(-)
+ drivers/iio/adc/ad7124.c |    7 +++++++
+ 1 file changed, 7 insertions(+)
 
---- a/drivers/staging/iio/cdc/ad7746.c
-+++ b/drivers/staging/iio/cdc/ad7746.c
-@@ -700,7 +700,6 @@ static int ad7746_probe(struct i2c_clien
- 		indio_dev->num_channels = ARRAY_SIZE(ad7746_channels);
- 	else
- 		indio_dev->num_channels =  ARRAY_SIZE(ad7746_channels) - 2;
--	indio_dev->num_channels = ARRAY_SIZE(ad7746_channels);
- 	indio_dev->modes = INDIO_DIRECT_MODE;
+--- a/drivers/iio/adc/ad7124.c
++++ b/drivers/iio/adc/ad7124.c
+@@ -616,6 +616,13 @@ static int ad7124_of_parse_channel_confi
+ 		if (ret)
+ 			goto err;
  
- 	if (pdata) {
++		if (channel >= indio_dev->num_channels) {
++			dev_err(indio_dev->dev.parent,
++				"Channel index >= number of channels\n");
++			ret = -EINVAL;
++			goto err;
++		}
++
+ 		ret = of_property_read_u32_array(child, "diff-channels",
+ 						 ain, 2);
+ 		if (ret)
 
 
