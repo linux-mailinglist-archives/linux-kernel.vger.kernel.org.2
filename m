@@ -2,34 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DCA08395EF7
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 16:04:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E56CC395EFC
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 16:04:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232827AbhEaOF4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 10:05:56 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44436 "EHLO mail.kernel.org"
+        id S232186AbhEaOGH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 10:06:07 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48556 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232735AbhEaNlu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 09:41:50 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 824126146D;
-        Mon, 31 May 2021 13:28:17 +0000 (UTC)
+        id S232198AbhEaNl6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 09:41:58 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id F195561465;
+        Mon, 31 May 2021 13:28:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1622467698;
-        bh=bPE/bkTwbqPn4/j/eEHApYSL+2En6euIwbjsMON+rxk=;
+        s=korg; t=1622467700;
+        bh=795aNF6ihCvG7AS0TziMRop4M+FxS/9zvT6Gxn3S0Aw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=xW8kLRSomZCxMLMDxK6xEQ97g4i02Q02DW21mle8j96li0IGl6ehMFtDb/zx8It7E
-         /pahmxVMmLQcSHhkqig8nOp/uLu9MRlq2lVcT6byut5esaXlNriUC9GcTih5imnO36
-         fr9TziXsQkMD9K7Q+23vNIf0uFHp6tJZvhzZ+en8=
+        b=wgtYLrJpeH+7/1bcgb0LxXu3mzgrx0iGB2sxUNE0T+NnSaamEHMSDAnEwqDyN9hfx
+         mizrBbJvbfKnJRUo/SxVaLDgJ91vkeB96APG/nlfIHpgMba+Wh+TrZKSDI6U1JBoAR
+         uXicd7S4FbaYYy48ex+e5Q8KRdsxVsPBggWXfV3E=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org, "David S. Miller" <davem@davemloft.net>,
-        Dominik Brodowski <linux@dominikbrodowski.net>,
-        Anirudh Rayabharam <mail@anirudhrb.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 47/79] net: fujitsu: fix potential null-ptr-deref
-Date:   Mon, 31 May 2021 15:14:32 +0200
-Message-Id: <20210531130637.519141089@linuxfoundation.org>
+        Du Cheng <ducheng2@gmail.com>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.14 48/79] net: caif: remove BUG_ON(dev == NULL) in caif_xmit
+Date:   Mon, 31 May 2021 15:14:33 +0200
+Message-Id: <20210531130637.549343199@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210531130636.002722319@linuxfoundation.org>
 References: <20210531130636.002722319@linuxfoundation.org>
@@ -41,40 +39,78 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Anirudh Rayabharam <mail@anirudhrb.com>
+From: Du Cheng <ducheng2@gmail.com>
 
-[ Upstream commit 52202be1cd996cde6e8969a128dc27ee45a7cb5e ]
+[ Upstream commit 65a67792e3416f7c5d7daa47d99334cbb19a7449 ]
 
-In fmvj18x_get_hwinfo(), if ioremap fails there will be NULL pointer
-deref. To fix this, check the return value of ioremap and return -1
-to the caller in case of failure.
+The condition of dev == NULL is impossible in caif_xmit(), hence it is
+for the removal.
 
-Cc: "David S. Miller" <davem@davemloft.net>
-Acked-by: Dominik Brodowski <linux@dominikbrodowski.net>
-Signed-off-by: Anirudh Rayabharam <mail@anirudhrb.com>
-Link: https://lore.kernel.org/r/20210503115736.2104747-16-gregkh@linuxfoundation.org
+Explanation:
+The static caif_xmit() is only called upon via a function pointer
+`ndo_start_xmit` defined in include/linux/netdevice.h:
+```
+struct net_device_ops {
+    ...
+    netdev_tx_t     (*ndo_start_xmit)(struct sk_buff *skb, struct net_device *dev);
+    ...
+}
+```
+
+The exhausive list of call points are:
+```
+drivers/net/ethernet/qualcomm/rmnet/rmnet_map_command.c
+    dev->netdev_ops->ndo_start_xmit(skb, dev);
+    ^                                    ^
+
+drivers/infiniband/ulp/opa_vnic/opa_vnic_netdev.c
+    struct opa_vnic_adapter *adapter = opa_vnic_priv(netdev);
+			     ^                       ^
+    return adapter->rn_ops->ndo_start_xmit(skb, netdev); // adapter would crash first
+	   ^                                    ^
+
+drivers/usb/gadget/function/f_ncm.c
+    ncm->netdev->netdev_ops->ndo_start_xmit(NULL, ncm->netdev);
+	      ^                                   ^
+
+include/linux/netdevice.h
+static inline netdev_tx_t __netdev_start_xmit(...
+{
+    return ops->ndo_start_xmit(skb, dev);
+				    ^
+}
+
+    const struct net_device_ops *ops = dev->netdev_ops;
+				       ^
+    rc = __netdev_start_xmit(ops, skb, dev, more);
+				       ^
+```
+
+In each of the enumerated scenarios, it is impossible for the NULL-valued dev to
+reach the caif_xmit() without crashing the kernel earlier, therefore `BUG_ON(dev ==
+NULL)` is rather useless, hence the removal.
+
+Cc: David S. Miller <davem@davemloft.net>
+Signed-off-by: Du Cheng <ducheng2@gmail.com>
+Link: https://lore.kernel.org/r/20210503115736.2104747-20-gregkh@linuxfoundation.org
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/fujitsu/fmvj18x_cs.c | 5 +++++
- 1 file changed, 5 insertions(+)
+ drivers/net/caif/caif_serial.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/drivers/net/ethernet/fujitsu/fmvj18x_cs.c b/drivers/net/ethernet/fujitsu/fmvj18x_cs.c
-index a69cd19a55ae..b8fc9bbeca2c 100644
---- a/drivers/net/ethernet/fujitsu/fmvj18x_cs.c
-+++ b/drivers/net/ethernet/fujitsu/fmvj18x_cs.c
-@@ -547,6 +547,11 @@ static int fmvj18x_get_hwinfo(struct pcmcia_device *link, u_char *node_id)
- 	return -1;
+diff --git a/drivers/net/caif/caif_serial.c b/drivers/net/caif/caif_serial.c
+index 709838e4c062..ce76ed50a1a2 100644
+--- a/drivers/net/caif/caif_serial.c
++++ b/drivers/net/caif/caif_serial.c
+@@ -279,7 +279,6 @@ static int caif_xmit(struct sk_buff *skb, struct net_device *dev)
+ {
+ 	struct ser_device *ser;
  
-     base = ioremap(link->resource[2]->start, resource_size(link->resource[2]));
-+    if (!base) {
-+	pcmcia_release_window(link, link->resource[2]);
-+	return -1;
-+    }
-+
-     pcmcia_map_mem_page(link, link->resource[2], 0);
+-	BUG_ON(dev == NULL);
+ 	ser = netdev_priv(dev);
  
-     /*
+ 	/* Send flow off once, on high water mark */
 -- 
 2.30.2
 
