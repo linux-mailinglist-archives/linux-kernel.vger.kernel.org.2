@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 81059396237
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 16:51:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E8A7D39656B
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 18:34:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234022AbhEaOxP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 10:53:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36738 "EHLO mail.kernel.org"
+        id S234818AbhEaQff (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 12:35:35 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40254 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233179AbhEaODM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 10:03:12 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 152136194F;
-        Mon, 31 May 2021 13:37:32 +0000 (UTC)
+        id S233263AbhEaOsk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 10:48:40 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 44DCC6145C;
+        Mon, 31 May 2021 13:56:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1622468253;
-        bh=1/KlnCRWtF0vKGhkPgGjzun0pYQzldw/2erBmmt1otM=;
+        s=korg; t=1622469399;
+        bh=jI99WAe9RVtRbs+Gt1kQRnnslk5QCXfmsL4bZR6wSPQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=EqJpYngtkqQQ8iGsk9eKLYsT6YX/vITP85QG7mDhH07SfS/ZcUe+2plF+hTeFuGeB
-         DhhNFRxF69ZbQJvwaKQ7T9dVRHOf5u+Cdi0wIvKHvLLFmEZd4yVivkiPZhtSZ/Mspy
-         avwuUwk+ee8dLq+ZHEl9mD+lByPww9/M1Ud8HlO4=
+        b=mTC0sCOG4vDJ4EP+ni5c3chEDWioq9Vai/do/l9qAfILv1PDXAahZtf0Y0q+Mvvr+
+         I6RGzwroSE/9SHNuW/MkipLfHXelsPchABKY0kxWlevkRzfEam7F1xmbpBtqwOaCiw
+         QnigGx5tibwtOlOqNaGWwZ+vhGTJFgRoKULeIyEg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Ajish Koshy <ajish.koshy@microchip.com>,
-        Viswas G <viswas.g@microchip.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        stable@vger.kernel.org, Aditya Pakki <pakki001@umn.edu>,
+        Vinod Koul <vkoul@kernel.org>, Sinan Kaya <okaya@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 174/252] scsi: pm80xx: Fix drives missing during rmmod/insmod loop
+Subject: [PATCH 5.12 184/296] Revert "dmaengine: qcom_hidma: Check for driver register failure"
 Date:   Mon, 31 May 2021 15:13:59 +0200
-Message-Id: <20210531130703.916733392@linuxfoundation.org>
+Message-Id: <20210531130710.055787064@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210531130657.971257589@linuxfoundation.org>
-References: <20210531130657.971257589@linuxfoundation.org>
+In-Reply-To: <20210531130703.762129381@linuxfoundation.org>
+References: <20210531130703.762129381@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,119 +40,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ajish Koshy <ajish.koshy@microchip.com>
+From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-[ Upstream commit d1acd81bd6eb685aa9fef25624fb36d297f6404e ]
+[ Upstream commit 43ed0fcf613a87dd0221ec72d1ade4d6544f2ffc ]
 
-When driver is loaded after rmmod some drives are not showing up during
-discovery.
+This reverts commit a474b3f0428d6b02a538aa10b3c3b722751cb382.
 
-SATA drives are directly attached to the controller connected phys.  During
-device discovery, the IDENTIFY command (qc timeout (cmd 0xec)) is timing out
-during revalidation. This will trigger abort from host side and controller
-successfully aborts the command and returns success. Post this successful
-abort response ATA library decides to mark the disk as NODEV.
+Because of recent interactions with developers from @umn.edu, all
+commits from them have been recently re-reviewed to ensure if they were
+correct or not.
 
-To overcome this, inside pm8001_scan_start() after phy_start() call, add get
-start response and wait for few milliseconds to trigger next phy start.
-This millisecond delay will give sufficient time for the controller state
-machine to accept next phy start.
+Upon review, this commit was found to be incorrect for the reasons
+below, so it must be reverted.  It will be fixed up "correctly" in a
+later kernel change.
 
-Link: https://lore.kernel.org/r/20210505120103.24497-1-ajish.koshy@microchip.com
-Signed-off-by: Ajish Koshy <ajish.koshy@microchip.com>
-Signed-off-by: Viswas G <viswas.g@microchip.com>
-Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
+The original change is NOT correct, as it does not correctly unwind from
+the resources that was allocated before the call to
+platform_driver_register().
+
+Cc: Aditya Pakki <pakki001@umn.edu>
+Acked-By: Vinod Koul <vkoul@kernel.org>
+Acked-By: Sinan Kaya <okaya@kernel.org>
+Link: https://lore.kernel.org/r/20210503115736.2104747-51-gregkh@linuxfoundation.org
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/scsi/pm8001/pm8001_hwi.c  | 10 ++++++----
- drivers/scsi/pm8001/pm8001_init.c |  2 +-
- drivers/scsi/pm8001/pm8001_sas.c  |  7 ++++++-
- drivers/scsi/pm8001/pm80xx_hwi.c  | 12 ++++++------
- 4 files changed, 19 insertions(+), 12 deletions(-)
+ drivers/dma/qcom/hidma_mgmt.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/scsi/pm8001/pm8001_hwi.c b/drivers/scsi/pm8001/pm8001_hwi.c
-index 355d1c5f2194..2114d2dd3501 100644
---- a/drivers/scsi/pm8001/pm8001_hwi.c
-+++ b/drivers/scsi/pm8001/pm8001_hwi.c
-@@ -3703,11 +3703,13 @@ static int mpi_hw_event(struct pm8001_hba_info *pm8001_ha, void* piomb)
- 	case HW_EVENT_PHY_START_STATUS:
- 		pm8001_dbg(pm8001_ha, MSG, "HW_EVENT_PHY_START_STATUS status = %x\n",
- 			   status);
--		if (status == 0) {
-+		if (status == 0)
- 			phy->phy_state = 1;
--			if (pm8001_ha->flags == PM8001F_RUN_TIME &&
--					phy->enable_completion != NULL)
--				complete(phy->enable_completion);
-+
-+		if (pm8001_ha->flags == PM8001F_RUN_TIME &&
-+				phy->enable_completion != NULL) {
-+			complete(phy->enable_completion);
-+			phy->enable_completion = NULL;
- 		}
- 		break;
- 	case HW_EVENT_SAS_PHY_UP:
-diff --git a/drivers/scsi/pm8001/pm8001_init.c b/drivers/scsi/pm8001/pm8001_init.c
-index 7657d68e12d5..0c0c886c7371 100644
---- a/drivers/scsi/pm8001/pm8001_init.c
-+++ b/drivers/scsi/pm8001/pm8001_init.c
-@@ -1139,8 +1139,8 @@ static int pm8001_pci_probe(struct pci_dev *pdev,
- 		goto err_out_shost;
+diff --git a/drivers/dma/qcom/hidma_mgmt.c b/drivers/dma/qcom/hidma_mgmt.c
+index 806ca02c52d7..fe87b01f7a4e 100644
+--- a/drivers/dma/qcom/hidma_mgmt.c
++++ b/drivers/dma/qcom/hidma_mgmt.c
+@@ -418,8 +418,9 @@ static int __init hidma_mgmt_init(void)
+ 		hidma_mgmt_of_populate_channels(child);
  	}
- 	list_add_tail(&pm8001_ha->list, &hba_list);
--	scsi_scan_host(pm8001_ha->shost);
- 	pm8001_ha->flags = PM8001F_RUN_TIME;
-+	scsi_scan_host(pm8001_ha->shost);
- 	return 0;
+ #endif
+-	return platform_driver_register(&hidma_mgmt_driver);
++	platform_driver_register(&hidma_mgmt_driver);
  
- err_out_shost:
-diff --git a/drivers/scsi/pm8001/pm8001_sas.c b/drivers/scsi/pm8001/pm8001_sas.c
-index 474468df2a78..39de9a9360d3 100644
---- a/drivers/scsi/pm8001/pm8001_sas.c
-+++ b/drivers/scsi/pm8001/pm8001_sas.c
-@@ -264,12 +264,17 @@ void pm8001_scan_start(struct Scsi_Host *shost)
- 	int i;
- 	struct pm8001_hba_info *pm8001_ha;
- 	struct sas_ha_struct *sha = SHOST_TO_SAS_HA(shost);
-+	DECLARE_COMPLETION_ONSTACK(completion);
- 	pm8001_ha = sha->lldd_ha;
- 	/* SAS_RE_INITIALIZATION not available in SPCv/ve */
- 	if (pm8001_ha->chip_id == chip_8001)
- 		PM8001_CHIP_DISP->sas_re_init_req(pm8001_ha);
--	for (i = 0; i < pm8001_ha->chip->n_phy; ++i)
-+	for (i = 0; i < pm8001_ha->chip->n_phy; ++i) {
-+		pm8001_ha->phy[i].enable_completion = &completion;
- 		PM8001_CHIP_DISP->phy_start_req(pm8001_ha, i);
-+		wait_for_completion(&completion);
-+		msleep(300);
-+	}
++	return 0;
  }
- 
- int pm8001_scan_finished(struct Scsi_Host *shost, unsigned long time)
-diff --git a/drivers/scsi/pm8001/pm80xx_hwi.c b/drivers/scsi/pm8001/pm80xx_hwi.c
-index 27b354860a16..a203a4fc2674 100644
---- a/drivers/scsi/pm8001/pm80xx_hwi.c
-+++ b/drivers/scsi/pm8001/pm80xx_hwi.c
-@@ -3432,13 +3432,13 @@ static int mpi_phy_start_resp(struct pm8001_hba_info *pm8001_ha, void *piomb)
- 	pm8001_dbg(pm8001_ha, INIT,
- 		   "phy start resp status:0x%x, phyid:0x%x\n",
- 		   status, phy_id);
--	if (status == 0) {
-+	if (status == 0)
- 		phy->phy_state = PHY_LINK_DOWN;
--		if (pm8001_ha->flags == PM8001F_RUN_TIME &&
--				phy->enable_completion != NULL) {
--			complete(phy->enable_completion);
--			phy->enable_completion = NULL;
--		}
-+
-+	if (pm8001_ha->flags == PM8001F_RUN_TIME &&
-+			phy->enable_completion != NULL) {
-+		complete(phy->enable_completion);
-+		phy->enable_completion = NULL;
- 	}
- 	return 0;
- 
+ module_init(hidma_mgmt_init);
+ MODULE_LICENSE("GPL v2");
 -- 
 2.30.2
 
