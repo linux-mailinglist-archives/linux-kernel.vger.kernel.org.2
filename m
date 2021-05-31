@@ -2,358 +2,330 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 00F1B39568A
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 09:55:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AEAD03956BE
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 10:17:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230312AbhEaH4w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 03:56:52 -0400
-Received: from mailout1.samsung.com ([203.254.224.24]:31183 "EHLO
-        mailout1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230107AbhEaH4t (ORCPT
+        id S230269AbhEaISq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 04:18:46 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:45278 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229640AbhEaISl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 03:56:49 -0400
-Received: from epcas1p2.samsung.com (unknown [182.195.41.46])
-        by mailout1.samsung.com (KnoxPortal) with ESMTP id 20210531075508epoutp01322beab45a219cd3f1e43e8b4c65e22d~EF5gt-wws0888508885epoutp012
-        for <linux-kernel@vger.kernel.org>; Mon, 31 May 2021 07:55:08 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.samsung.com 20210531075508epoutp01322beab45a219cd3f1e43e8b4c65e22d~EF5gt-wws0888508885epoutp012
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1622447708;
-        bh=Vj8hRqbR1C1cKwt8NAB/INFdikKtaqmGX/SzMeC8K/0=;
-        h=Subject:To:Cc:From:Date:In-Reply-To:References:From;
-        b=OoSYxIZKd8s48BwOFKVK971rtGuZA0Huo/zrKqDePiTvyFFGEqJCVRs3YiBmhQbNJ
-         tqa5RY1QaaG27uGCiTjm9RD+WWDLqnWz5koO0hTuA0XDeHfIBpCCqJCmvfo/O1wqIB
-         LDW/22Y2//P35BSoCLnq6ANMzakrzfj4ovkFRRfY=
-Received: from epsnrtp4.localdomain (unknown [182.195.42.165]) by
-        epcas1p4.samsung.com (KnoxPortal) with ESMTP id
-        20210531075506epcas1p433b2a501642967f044d73170f644e646~EF5fh_Vuz3217532175epcas1p4q;
-        Mon, 31 May 2021 07:55:06 +0000 (GMT)
-Received: from epsmges1p2.samsung.com (unknown [182.195.40.155]) by
-        epsnrtp4.localdomain (Postfix) with ESMTP id 4FtndN5XyYz4x9Q7; Mon, 31 May
-        2021 07:55:04 +0000 (GMT)
-Received: from epcas1p2.samsung.com ( [182.195.41.46]) by
-        epsmges1p2.samsung.com (Symantec Messaging Gateway) with SMTP id
-        A4.F1.09701.55694B06; Mon, 31 May 2021 16:55:01 +0900 (KST)
-Received: from epsmtrp1.samsung.com (unknown [182.195.40.13]) by
-        epcas1p2.samsung.com (KnoxPortal) with ESMTPA id
-        20210531075500epcas1p250d5252aa5ecd54c0c5ca4e6874ef1e4~EF5Z_Eylk0159601596epcas1p2t;
-        Mon, 31 May 2021 07:55:00 +0000 (GMT)
-Received: from epsmgms1p2.samsung.com (unknown [182.195.42.42]) by
-        epsmtrp1.samsung.com (KnoxPortal) with ESMTP id
-        20210531075500epsmtrp12d2729c5a0dec68d9fb942244482e2ce~EF5Z8_w9-1539815398epsmtrp1F;
-        Mon, 31 May 2021 07:55:00 +0000 (GMT)
-X-AuditID: b6c32a36-631ff700000025e5-46-60b496557c0d
-Received: from epsmtip1.samsung.com ( [182.195.34.30]) by
-        epsmgms1p2.samsung.com (Symantec Messaging Gateway) with SMTP id
-        F5.74.08163.45694B06; Mon, 31 May 2021 16:55:00 +0900 (KST)
-Received: from [10.113.221.102] (unknown [10.113.221.102]) by
-        epsmtip1.samsung.com (KnoxPortal) with ESMTPA id
-        20210531075500epsmtip1b6bbf16c135572726a2aa444e9f6450f~EF5ZiCMYe3070730707epsmtip1K;
-        Mon, 31 May 2021 07:55:00 +0000 (GMT)
-Subject: Re: [PATCH V8 1/8] PM / devfreq: Add cpu based scaling support to
- passive_governor
-To:     Hsin-Yi Wang <hsinyi@google.com>
-Cc:     "andrew-sh.cheng" <andrew-sh.cheng@mediatek.com>,
-        MyungJoo Ham <myungjoo.ham@samsung.com>,
-        Kyungmin Park <kyungmin.park@samsung.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Nishanth Menon <nm@ti.com>, Stephen Boyd <sboyd@kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>, linux-pm@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
-        srv_heupstream@mediatek.com, Sibi Sankar <sibis@codeaurora.org>
-From:   Chanwoo Choi <cw00.choi@samsung.com>
-Organization: Samsung Electronics
-Message-ID: <16412023-9c28-f47b-7719-7d836319b6da@samsung.com>
-Date:   Mon, 31 May 2021 17:13:47 +0900
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:59.0) Gecko/20100101
-        Thunderbird/59.0
+        Mon, 31 May 2021 04:18:41 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1622449021;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=/b/Emsa0FSUIKJI9wt8rcErU7Yt1S2VQUQdM8XMLLr8=;
+        b=FtIBSR0WnOwgTQK2ECH7g/o8oYWQhoRVU6mMZ2yXk3Dppq79kz3T/blaZOT9p9XNfWPiPV
+        hLAYBo/DKbMNiL22NA3YdlzgUMlXFIU5gwQabnJz34WOcQaD7f1+nkt2goVEg3Tl/W2GSH
+        Pcu/zXdspuAcnUcGnw/Q2ETkmphOq1s=
+Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
+ [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-404-gic4SyCWNAuuHu62X0XWCg-1; Mon, 31 May 2021 04:17:00 -0400
+X-MC-Unique: gic4SyCWNAuuHu62X0XWCg-1
+Received: by mail-wr1-f72.google.com with SMTP id z4-20020adfe5440000b0290114f89c9931so1457480wrm.17
+        for <linux-kernel@vger.kernel.org>; Mon, 31 May 2021 01:17:00 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:to:references:from:organization:subject
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=/b/Emsa0FSUIKJI9wt8rcErU7Yt1S2VQUQdM8XMLLr8=;
+        b=glFose/8E2G1h3VKiMb7nKG1EMWoDbSxjIe2KyRHiR8raGhgZXz+NRANm7vXAzDrE3
+         KNFVO/FiB+HZOmo0PjExqWUsH+cwl8f852NVkmEsRaFRDU4fFFW7aFQI6+ULJfKLsMYg
+         DLnbf+gUafJo1/722sEJoe8J6h9i1DWVRHPkIdeoqucEE5z2UoZHbztgL4NYoS7Yu2ER
+         eGY2B1eVwluLsAlBGiWOqkl/I3HcHWKz3+fmh79yrGtF+uTtT4W1aGc97dFrxhGWfHpA
+         sk85U2znRDtJCtDiOOiF6o1qNyeVuec8I4mC8rm0c19NqkYjFW+kWu15ZxwW2aP7K04C
+         UVIg==
+X-Gm-Message-State: AOAM530MOgK7/oZIAbkx3oP6KjUsXo9y6vLeNs18nC2GRegST5boCa2b
+        t5hkTK6YtULXuDb66/UGOgEUrU6IVx2F8SuVuKh5Lljaxk5oUiInMaoZaXWUZOznOVCLS/rFTT1
+        YcnLcYmls4QdUBjqMTKTCly+Z
+X-Received: by 2002:a5d:44cb:: with SMTP id z11mr21500253wrr.159.1622449019186;
+        Mon, 31 May 2021 01:16:59 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJz7pluG996V9OgV48SQDr0K4XGMV3gSLo1HKUqb8uwGV2U4T467X/HHsy1/cUVIv8bfWoGVFQ==
+X-Received: by 2002:a5d:44cb:: with SMTP id z11mr21500232wrr.159.1622449018922;
+        Mon, 31 May 2021 01:16:58 -0700 (PDT)
+Received: from [192.168.3.132] (p5b0c6a6f.dip0.t-ipconnect.de. [91.12.106.111])
+        by smtp.gmail.com with ESMTPSA id j10sm16077664wrt.32.2021.05.31.01.16.58
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 31 May 2021 01:16:58 -0700 (PDT)
+To:     yong w <yongw.pur@gmail.com>, minchan@kernel.org,
+        ngupta@vflare.org, senozhatsky@chromium.org, axboe@kernel.dk,
+        akpm@linux-foundation.org, songmuchun@bytedance.com,
+        linux-kernel@vger.kernel.org, linux-block@vger.kernel.org,
+        linux-mm@kvack.org
+References: <CAOH5QeCiBF8AYsF853YRFw=kKq+7ps_a30qOFwYOwbinYLbUEw@mail.gmail.com>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat
+Subject: Re: [RFC PATCH V1] zram:calculate available memory when zram is used
+Message-ID: <13c28e69-cfd9-bcf6-ab77-445c6fa4cc6e@redhat.com>
+Date:   Mon, 31 May 2021 10:16:57 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
 MIME-Version: 1.0
-In-Reply-To: <CACb=7PUkpMkDOJ6dDHXhJ5ep4e9u8ZVYM8M2iC-iwHXn13t3DQ@mail.gmail.com>
+In-Reply-To: <CAOH5QeCiBF8AYsF853YRFw=kKq+7ps_a30qOFwYOwbinYLbUEw@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-X-Brightmail-Tracker: H4sIAAAAAAAAA02Te0xTVxzHc27b2xaH3FWQM8wcXJ2JbDxKKRwQzBaZXMfCMG5kL1IauCuP
-        0tZeuiE4h4KCDTJQ1NAKqDxE6GboCmg3RLGK1SJDhOEcywyPIfNBQEwDzq2lNeO/7+93Pr98
-        z/ec/HgsgR3342Uqcmm1QioncQ92x5WNwUEfHzOlhv7U/jbqPDfFQUfvj+OoznKLg7rMIyzU
-        t+8hFz27U4oh49gwBw2aT+BosGgAoLlDFoAafx3A0L5iEbq3txlHD+19GLLdvM1B+7ssXPRi
-        uI2Nhk894aDjowLUNk+9400Zag2AGiw/hFEXdKNc6qRRQxlbDuLU78M/49SPDd9SxdZuNmUa
-        KmFT5aYWQPWOdGLUnHFt0iufZcdk0NJ0Wu1PK9KU6ZkKWSyZsEOyRSKOCBUGCaNQJOmvkObQ
-        sWTcB0lBWzPljpSk/1dSucbRSpIyDBmyOUat1OTS/hlKJjeWpFXpclWUKpiR5jAahSw4TZkT
-        LQwNDRM7wNTsjLY7ZRzV9cS8vZf72YVgJFoL+DxIhMPTlyY4WuDBExDnAXxa/QK4ilkA79a0
-        slzFHICTU/dYL0ee1VS5KTOAD/4ucRdPADSfesR1UquIFLjQ/wfbqb2J9bCpq5PrhFhENwcW
-        Lt5dgnAiEHZPjeBO7UUEwCH7GHBqT2IznO60Yk7NJt6ER6cWlhgfIhlaO4rdzKvQWj3uMODx
-        +MR2aG/Oc7ZZhC/8bbwOc+k3YFG7fikCJFr5sPTMRcwVIQ4eH7jmjrMKTveauC7tBx98d8Ct
-        C+BZqwV3DZcCaOr+heM6EMHuxiOY05hFbITnzCGudgC8sFgDXMYr4eP5Mo4TgYQnLD0gcCHr
-        4OCfo+4rvAbrSw7iFYDULUujWxZBtyyC7n+zk4DdAlbTKiZHRjNCVdjy7zaCpRUIjDgPDj+a
-        Ce4BGA/0AMhjkd6etry2VIFnunRXPq1WStQaOc30ALHjfStZfj5pSscOKXIlQnGYSCRC4cII
-        sVBI+nrKthSkCgiZNJfOpmkVrX45h/H4foXY94mLR3z16jOBvlrTikbbzJo9ya+3xOWlpuzI
-        s637K8qrprLj5ie9RfVNfTEBOnlTo0wkLKjdsKeg9xLWpf33va/D36L+ObZTYl+5s3/T0xse
-        q7FOQUj8/c/zt22/zPsmvqOnVfTc53FCxYmUrMQvJc3brFM5G37IzicZfNrQMJFoC5udfN/n
-        +uQunca4Ij2L4cv3G+wVhWsYqDl8O2JMuztEW4vy115trT7Ni68kAy8WhZrFGT3JxtmP6n0s
-        A1kzs2Ucfljkwu40lkH/RVVklX7iGgOC8m3tz4e8JryvGBLW+0d76D9tjtgUUHtWV4fhA/ra
-        2Fs3rjaUvyvdKp5P+JBkMxlSYSBLzUj/AzBwD1SLBAAA
-X-Brightmail-Tracker: H4sIAAAAAAAAA02Sa0iTURiAOd/Nz9Hoa648KikOwxCyXDNOknZR4euPFF1+BKkjPy/ldGxp
-        2sXU2cWhKzSTVjozKzNpuVzT0i5eUsvysjS7CbkVIlpaWV5q1TYC/z287/Nwzo+XxgUjhCed
-        lHKQU6RIk0UUj7jbKvJetfN8fewalWYVMulHSVTywUohXdsLEjXfG8LR89xxF/Tj5WkMGSyD
-        JDLfu0Qhs6oPoG+FbQBdfdWHody8tehtTjWFxmeeY6j7WT+JTjS3uSDbYB2BBi9/IVHpewGq
-        m2Y3Cdna8lrAmjWFGNuofe/CVhjSWENNPsW+G2yi2DtVx9m8rocEWz9wimA19TWA7RgyYew3
-        g/e2RXt4G+K45KR0TrE6LJaXWPeygJR3RmXkPO4hssFQiBq40pCRwB9l54Aa8GgB0wBgnspG
-        ORce8HxfO64G9D92g62tSqczAeBYezlhd9yYvXCuZ9jBQsYPXms2udglnGkloa72FOks7lPw
-        0qwe2C2KCYAPR4ccLyxmfOHAjMUx5zNhcMzUhdmZYFbAktE5h7OU2Q0bqyyY01kCuy5YCfuP
-        XJntcKY6wz7GGX/4q7wfd7I7fGPVYU72gSrjRfwscNMuqLULEu2CRLsgqQBEDfDg5EpZgkwZ
-        JBencIcClVKZMi0lIXBfqswAHGcQENAAmmomA1sARoMWAGlcJOR3Z9TFCvhx0szDnCI1RpGW
-        zClbgBdNiNz5vequGAGTID3IHeA4Oaf4v8VoV89srCBuXZZ/cVlZ0Xe/iY3mrFn68tHtc73L
-        mm75PhXl+A/w18vnr0gmK59KtlpXtKhOuo/4xcuqIyaiu73ISostsZMTR2ae2ZdkrChnP4q1
-        obk+keH9tzcE2uJ7L7bPl4ampgdPBxU1bvEyPObCu2OGh91ro/ebxU82Ga9Pzo9ZEpPn9dGK
-        9D/WBz4XpvRxD0KNFSPFo9T1T8sLo7G8KJn3/mOmSN6Tn7teU8PbZjMfmWxkQuViv5X3cXnY
-        i5IdVOlnS/zp/OnM2R36Q0ckms7G8bCbnpUdxWrVFGYN7xCGmLNXy4uEX29s/h0iJpuqJMYb
-        Ok18UESUruOTR85k8HSDiFAmSoMCcIVS+hfzDc3QdQMAAA==
-X-CMS-MailID: 20210531075500epcas1p250d5252aa5ecd54c0c5ca4e6874ef1e4
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: SVC_REQ_APPROVE
-CMS-TYPE: 101P
-DLP-Filter: Pass
-X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20210323113411epcas1p3b4367563007ca91c30201d7fc225bb67
-References: <1616499241-4906-1-git-send-email-andrew-sh.cheng@mediatek.com>
-        <CGME20210323113411epcas1p3b4367563007ca91c30201d7fc225bb67@epcas1p3.samsung.com>
-        <1616499241-4906-2-git-send-email-andrew-sh.cheng@mediatek.com>
-        <233a3bd6-7ab1-5da2-9184-a745eb253d86@samsung.com>
-        <1617177820.15067.1.camel@mtksdaap41>
-        <2ae8604d-0da6-4243-1b92-81b3917d7d48@samsung.com>
-        <cad52436-b291-05bf-236f-7b7cb1fdbbff@samsung.com>
-        <1617195800.18432.3.camel@mtksdaap41>
-        <fbb6c44b-eb77-14ce-9175-3f06030e6e0c@samsung.com>
-        <cfdd3973-e4a7-8c09-8a7e-57118a7a3b9b@samsung.com>
-        <1621995727.29827.1.camel@mtksdaap41>
-        <dd58c29a-35b1-b853-bc4a-3225b21b082a@samsung.com>
-        <1622431376.14423.5.camel@mtksdaap41>
-        <316af76d-fc63-eeff-7419-cb4b44ee62fe@samsung.com>
-        <CACb=7PUkpMkDOJ6dDHXhJ5ep4e9u8ZVYM8M2iC-iwHXn13t3DQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5/31/21 4:42 PM, Hsin-Yi Wang wrote:
+On 30.05.21 19:18, yong w wrote:
+> When zram is used, available+Swap free memory is obviously bigger than
+> I actually can use, because zram can compress memory by compression
+> algorithm and zram compressed data will occupy memory too.
 > 
+> So, I count the compression rate of zram in the kernel. The available
+> memory  is calculated as follows:
+> available + swapfree - swapfree * compress ratio
+> MemAvailable in /proc/meminfo returns available + zram will save space
 > 
-> On Mon, May 31, 2021 at 3:37 PM Chanwoo Choi <cw00.choi@samsung.com <mailto:cw00.choi@samsung.com>> wrote:
-> 
->     Hi,
-> 
->     On 5/31/21 12:22 PM, andrew-sh.cheng wrote:
->     > On Wed, 2021-05-26 at 12:08 +0900, Chanwoo Choi wrote:
->     >> Hi,
->     >> On 5/26/21 11:22 AM, andrew-sh.cheng wrote:
->     >>> On Thu, 2021-04-08 at 11:47 +0900, Chanwoo Choi wrote:
->     >>>> On 4/1/21 9:16 AM, Chanwoo Choi wrote:
->     >>>>> On 3/31/21 10:03 PM, andrew-sh.cheng wrote:
->     >>>>>> On Wed, 2021-03-31 at 17:35 +0900, Chanwoo Choi wrote:
->     >>>>>>> On 3/31/21 5:27 PM, Chanwoo Choi wrote:
->     >>>>>>>> Hi,
->     >>>>>>>>
->     >>>>>>>> On 3/31/21 5:03 PM, andrew-sh.cheng wrote:
->     >>>>>>>>> On Thu, 2021-03-25 at 17:14 +0900, Chanwoo Choi wrote:
->     >>>>>>>>>> Hi,
->     >>>>>>>>>>
->     >>>>>>>>>> You are missing to add these patches to linux-pm mailing list.
->     >>>>>>>>>> Need to send them to linu-pm ML.
->     >>>>>>>>>>
->     >>>>>>>>>> Also, before received this series, I tried to clean-up these patches
->     >>>>>>>>>> on testing branch[1]. So that I add my comment with my clean-up case.
->     >>>>>>>>>> [1] https://urldefense.com/v3/__https://git.kernel.org/pub/scm/linux/kernel/git/chanwoo/linux.git/log/?h=devfreq-testing-passive-gov__;!!CTRNKA9wMg0ARbw!zIrzeDp9vPnm1_SDzVPuzqdHn3zWie9DnfBXaA-j9-CSrVc6aR9_rJQQiw81_CgAPh9XRRs$
->     >>>>>>>>>>
->     >>>>>>>>>> And 'Saravana Kannan <skannan@codeaurora.org <mailto:skannan@codeaurora.org>>' is wrong email address.
->     >>>>>>>>>> Please update the email or drop this email.
->     >>>>>>>>>
->     >>>>>>>>> Hi Chanwoo,
->     >>>>>>>>>
->     >>>>>>>>> Thank you for the advices.
->     >>>>>>>>> I will resend patch v9 (add to linux-pm ML), remove this patch, and note
->     >>>>>>>>> that my patch set base on
->     >>>>>>>>> https://urldefense.com/v3/__https://git.kernel.org/pub/scm/linux/kernel/git/chanwoo/linux.git/log/?h=devfreq-testing-passive-gov__;!!CTRNKA9wMg0ARbw!yUlsuxrL5PcbF7o6A9DlCfvoA6w8V8VXKjYIybYyiJg3D0HM-lI2xRuxLUV6b3UJ8WFhg_g$
->     >>>>>>>>
->     >>>>>>>> I has not yet test this patch[1] on devfreq-testing-passive-gov branch.
->     >>>>>>>> So that if possible, I'd like you to test your patches with this patch[1]
->     >>>>>>>> and then if there is no problem, could you send the next patches with patch[1]?
->     >>>>>>>>
->     >>>>>>>> [1]https://urldefense.com/v3/__https://git.kernel.org/pub/scm/linux/kernel/git/chanwoo/linux.git/commit/?h=devfreq-testing-passive-gov&id=39c80d11a8f42dd63ecea1e0df595a0ceb83b454__;!!CTRNKA9wMg0ARbw!yUlsuxrL5PcbF7o6A9DlCfvoA6w8V8VXKjYIybYyiJg3D0HM-lI2xRuxLUV6b3UJR2cQqZs$
->     >>>>>>>
->     >>>>>>>
->     >>>>>>> Sorry for the confusion. I make the devfreq-testing-passive-gov[1]
->     >>>>>>> branch based on latest devfreq-next branch.
->     >>>>>>> [1] https://urldefense.com/v3/__https://git.kernel.org/pub/scm/linux/kernel/git/chanwoo/linux.git/log/?h=devfreq-testing-passive-gov__;!!CTRNKA9wMg0ARbw!yUlsuxrL5PcbF7o6A9DlCfvoA6w8V8VXKjYIybYyiJg3D0HM-lI2xRuxLUV6b3UJ8WFhg_g$
->     >>>>>>>
->     >>>>>>> First of all, if possible, I want to test them[1] with your patches in this series.
->     >>>>>>> And then if there are no any problem, please let me know. After confirmed from you,
->     >>>>>>> I'll send the patches of devfreq-testing-passive-gov[1] branch.
->     >>>>>>> How about that?
->     >>>>>>>
->     >>>>>> Hi Chanwoo~
->     >>>>>>
->     >>>>>> We will use this on Google Chrome project.
->     >>>>>> Google Hsin-Yi has test your patch + my patch set v8 [2~8]
->     >>>>>>
->     >>>>>>     make sure cci devfreqs runs with cpufreq.
->     >>>>>>     suspend resume
->     >>>>>>     speedometer2 benchmark
->     >>>>>> It is okay.
->     >>>>>>
->     >>>>>> Please send the patches of devfreq-testing-passive-gov[1] branch.
->     >>>>>>
->     >>>>>> I will send patch v9 base on yours latter.
->     >>>>>
->     >>>>> Thanks for your test. I'll send the patches today.
->     >>>>
->     >>>> I'm sorry for delay because when I tested the patches
->     >>>> for devfreq parent type on Odroid-xu3, there are some problem
->     >>>> related to lazy linking of OPP. So I'm trying to analyze them.
->     >>>> Unfortunately, we need to postpone these patches to next linux
->     >>>> version.
->     >>>>
->     >>> Hi Chanwoo Choi~
->     >>>
->     >>> It is said that you are busy on another task recently.
->     >>> May I know your plan on this patch?
->     >>> Thank you.
->     >>
->     >> Sorry for late work. I have a question.
->     >> When I tested exynos-bus.c with adding the 'required-opp' property
->     >> on odroid-xu3 board. I got some fail about
->     >>
->     >> When calling _set_required_opps(), always _set_required_opp() returns
->     >> -EBUSY error because of following lazy linking case[1].
->     >>
->     >> [1] https://urldefense.com/v3/__https://elixir.bootlin.com/linux/v5.13-rc3/source/drivers/opp/core.c*L896__;Iw!!CTRNKA9wMg0ARbw!3eNxwDZRy-Ev5BHGxT-BxCz4qrNy0NZohQuBGW36krkwOkl_WX8yBmxlqSk9hxp_kxspMJI$
->     >>
->     >> /* required-opps not fully initialized yet */
->     >> if (lazy_linking_pending(opp_table))
->     >>      return -EBUSY; 
->     >>
->     >>
->     >> For calling dev_pm_opp_of_add_table(), lazy_link_required_opp_table() function
->     >> will be called. But, there is constraint[2]. If is_genpd of opp_table is false,
->     >> driver/opp/of.c cannot resolve the lazy linking issue.
->     >>
->     >> [2]  https://urldefense.com/v3/__https://elixir.bootlin.com/linux/v5.13-rc3/source/drivers/opp/of.c*L386__;Iw!!CTRNKA9wMg0ARbw!3eNxwDZRy-Ev5BHGxT-BxCz4qrNy0NZohQuBGW36krkwOkl_WX8yBmxlqSk9hxp_QFUVY9E$
->     >>
->     >> /* Link required OPPs for all OPPs of the newly added OPP table */
->     >> static void lazy_link_required_opp_table(struct opp_table *new_table)
->     >> {
->     >>      struct opp_table *opp_table, *temp, **required_opp_tables;
->     >>      struct device_node *required_np, *opp_np, *required_table_np;
->     >>      struct dev_pm_opp *opp;
->     >>      int i, ret;
->     >>
->     >>      /*
->     >>       * We only support genpd's OPPs in the "required-opps" for now,
->     >>       * as we don't know much about other cases.
->     >>       */
->     >>      if (!new_table->is_genpd)
->     >>              return;
->     >>
->     >> Even if this case, there are no problem on your test case?
->     >>
->     >
->     > Hi Chanwoo~
->     > Sorry for late reply.
->     > Yes, we meet similar issue.
->     > Google member Hsin-Yi had helped deal with this issue on Chrome project.
->     >
->     > Patch segment:
->     > @ /drivers/opp/of.c
->     >
->     > /* Link required OPPs for all OPPs of the newly added OPP table */
->     > static void lazy_link_required_opp_table(struct opp_table *new_table)
->     > {
->     >       struct opp_table *opp_table, *temp, **required_opp_tables;
->     >       struct device_node *required_np, *opp_np, *required_table_np;
->     >       struct dev_pm_opp *opp;
->     >       int i, ret;
->     >
->     > +     /*
->     > +      * We only support genpd's OPPs in the "required-opps" for now,
->     > +      * as we don't know much about other cases.
->     > +      */
->     > +     if (!new_table->is_genpd)
->     > +             return;
->     >
->     >
->     > Hsin-Yi replied this issue in the discussion list in the original lazy
->     > link thread:
->     > https://patchwork.kernel.org/project/linux-pm/patch/20190717222340.137578-4-saravanak@google.com/#23932203
->     >
->     > Loop Hsin-YI here.
->     > You can discuss with her if needing more detail.
->     >
->     > Thank you both.
->     >
-> 
->     Thanks. First of all, we need to resolve and discuss this issue.
-> 
-> 
-> Hi Chanwoo, 
-> 
-> We think removing the genpd check is sufficient for our use case since we only use the lazy link for opp table translation.
 
-Hi Hsin-Yi,
+This will mean that we can easily have MemAvailable > MemTotal, right? 
+I'm not sure if there are some user space scripts that will be a little 
+disrupted by that. Like calculating "MemUnavailable = MemTotal - 
+MemAvailable".
 
-IMHO, I think 'is_genpd' checking should be removed for devices except for genpd
-like as following:
+MemAvailable: "An estimate of how much memory is available for starting 
+new applications, without swapping"
 
-diff --git a/drivers/opp/of.c b/drivers/opp/of.c
-index c582a9ca397b..b54d3a985515 100644
---- a/drivers/opp/of.c
-+++ b/drivers/opp/of.c
-@@ -201,17 +201,6 @@ static void _opp_table_alloc_required_tables(struct opp_table *opp_table,
-                        lazy = true;
-                        continue;
-                }
--
--               /*
--                * We only support genpd's OPPs in the "required-opps" for now,
--                * as we don't know how much about other cases. Error out if the
--                * required OPP doesn't belong to a genpd.
--                */
--               if (!required_opp_tables[i]->is_genpd) {
--                       dev_err(dev, "required-opp doesn't belong to genpd: %pOF\n",
--                               required_np);
--                       goto free_required_tables;
--               }
-        }
- 
-        /* Let's do the linking later on */
-@@ -379,13 +368,6 @@ static void lazy_link_required_opp_table(struct opp_table *new_table)
-        struct dev_pm_opp *opp;
-        int i, ret;
- 
--       /*
--        * We only support genpd's OPPs in the "required-opps" for now,
--        * as we don't know much about other cases.
--        */
--       if (!new_table->is_genpd)
--               return;
--
-        mutex_lock(&opp_table_lock);
- 
-        list_for_each_entry_safe(opp_table, temp, &lazy_opp_tables, lazy) {
-@@ -874,7 +856,7 @@ static struct dev_pm_opp *_opp_add_static_v2(struct opp_table *opp_table,
-                return ERR_PTR(-ENOMEM);
- 
-        ret = _read_opp_key(new_opp, opp_table, np, &rate_not_available);
--       if (ret < 0 && !opp_table->is_genpd) {
-+       if (ret < 0) {
-                dev_err(dev, "%s: opp key field not found\n", __func__);
-                goto free_opp;
-        }
+Although zram isn't "traditional swapping", there is still a performance 
+impact when having to go to zram because it adds an indirection and 
+requires (de)compression. Similar to having very fast swap space (like 
+PMEM). Let's not call something "memory" that doesn't have the same 
+semantics as real memory as in "MemTotal".
+
+This doesn't feel right.
+
+> Signed-off-by: wangyong <yongw.pur@gmail.com <mailto:yongw.pur@gmail.com>>
+> ---
+>   drivers/block/zram/zcomp.h    |  1 +
+>   drivers/block/zram/zram_drv.c |  4 ++
+>   drivers/block/zram/zram_drv.h |  1 +
+>   fs/proc/meminfo.c             |  2 +-
+>   include/linux/swap.h          | 10 +++++
+>   mm/swapfile.c                 | 95 
+> +++++++++++++++++++++++++++++++++++++++++++
+>   mm/vmscan.c                   |  1 +
+>   7 files changed, 113 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/block/zram/zcomp.h b/drivers/block/zram/zcomp.h
+> index 40f6420..deb2dbf 100644
+> --- a/drivers/block/zram/zcomp.h
+> +++ b/drivers/block/zram/zcomp.h
+> @@ -40,4 +40,5 @@ int zcomp_decompress(struct zcomp_strm *zstrm,
+>    const void *src, unsigned int src_len, void *dst);
+> 
+>   bool zcomp_set_max_streams(struct zcomp *comp, int num_strm);
+> +int get_zram_major(void);
+>   #endif /* _ZCOMP_H_ */
+> diff --git a/drivers/block/zram/zram_drv.c b/drivers/block/zram/zram_drv.c
+> index cf8deec..1c6cbd4 100644
+> --- a/drivers/block/zram/zram_drv.c
+> +++ b/drivers/block/zram/zram_drv.c
+> @@ -59,6 +59,10 @@ static void zram_free_page(struct zram *zram, size_t 
+> index);
+>   static int zram_bvec_read(struct zram *zram, struct bio_vec *bvec,
+>    u32 index, int offset, struct bio *bio);
+> 
+> +int get_zram_major(void)
+> +{
+> + return zram_major;
+> +}
+> 
+>   static int zram_slot_trylock(struct zram *zram, u32 index)
+>   {
+> diff --git a/drivers/block/zram/zram_drv.h b/drivers/block/zram/zram_drv.h
+> index 6e73dc3..5d8701a 100644
+> --- a/drivers/block/zram/zram_drv.h
+> +++ b/drivers/block/zram/zram_drv.h
+> @@ -88,6 +88,7 @@ struct zram_stats {
+>    atomic64_t bd_reads; /* no. of reads from backing device */
+>    atomic64_t bd_writes; /* no. of writes from backing device */
+>   #endif
+> + atomic_t min_compr_ratio;
+>   };
+> 
+>   struct zram {
+> diff --git a/fs/proc/meminfo.c b/fs/proc/meminfo.c
+> index 6fa761c..f7bf350 100644
+> --- a/fs/proc/meminfo.c
+> +++ b/fs/proc/meminfo.c
+> @@ -57,7 +57,7 @@ static int meminfo_proc_show(struct seq_file *m, void *v)
+> 
+>    show_val_kb(m, "MemTotal:       ", i.totalram);
+>    show_val_kb(m, "MemFree:        ", i.freeram);
+> - show_val_kb(m, "MemAvailable:   ", available);
+> + show_val_kb(m, "MemAvailable:   ", available + count_avail_swaps());
+>    show_val_kb(m, "Buffers:        ", i.bufferram);
+>    show_val_kb(m, "Cached:         ", cached);
+>    show_val_kb(m, "SwapCached:     ", total_swapcache_pages());
+> diff --git a/include/linux/swap.h b/include/linux/swap.h
+> index 032485e..3225a2f 100644
+> --- a/include/linux/swap.h
+> +++ b/include/linux/swap.h
+> @@ -514,6 +514,8 @@ extern int init_swap_address_space(unsigned int 
+> type, unsigned long nr_pages);
+>   extern void exit_swap_address_space(unsigned int type);
+>   extern struct swap_info_struct *get_swap_device(swp_entry_t entry);
+>   sector_t swap_page_sector(struct page *page);
+> +extern void update_zram_zstats(void);
+> +extern u64 count_avail_swaps(void);
+> 
+>   static inline void put_swap_device(struct swap_info_struct *si)
+>   {
+> @@ -684,6 +686,14 @@ static inline swp_entry_t get_swap_page(struct page 
+> *page)
+>    return entry;
+>   }
+> 
+> +void update_zram_zstats(void)
+> +{
+> +}
+> +
+> +u64 count_avail_swaps(void)
+> +{
+> +}
+> +
+>   #endif /* CONFIG_SWAP */
+> 
+>   #ifdef CONFIG_THP_SWAP
+> diff --git a/mm/swapfile.c b/mm/swapfile.c
+> index cbb4c07..93a9dcb 100644
+> --- a/mm/swapfile.c
+> +++ b/mm/swapfile.c
+> @@ -44,6 +44,7 @@
+>   #include <asm/tlbflush.h>
+>   #include <linux/swapops.h>
+>   #include <linux/swap_cgroup.h>
+> +#include "../drivers/block/zram/zram_drv.h"
+> 
+>   static bool swap_count_continued(struct swap_info_struct *, pgoff_t,
+>    unsigned char);
+> @@ -3408,6 +3409,100 @@ SYSCALL_DEFINE2(swapon, const char __user *, 
+> specialfile, int, swap_flags)
+>    return error;
+>   }
+> 
+> +u64 count_avail_swap(struct swap_info_struct *si)
+> +{
+> + u64 result;
+> + struct zram *z;
+> + unsigned int free;
+> + unsigned int ratio;
+> +
+> + result = 0;
+> + if (!si)
+> + return 0;
+> +
+> + //zram calculate available mem
+> + if (si->flags & SWP_USED && si->swap_map) {
+> + if (si->bdev->bd_disk->major == get_zram_major()) {
+> + z = (struct zram *)si->bdev->bd_disk->private_data;
+> + down_read(&z->init_lock);
+> + ratio = atomic_read(&z->stats.min_compr_ratio);
+> + free = (si->pages << (PAGE_SHIFT - 10))
+> + - (si->inuse_pages << (PAGE_SHIFT - 10));
+> + if (!ratio)
+> + result += free / 2;
+> + else
+> + result = free * (100 - 10000 / ratio) / 100;
+> + up_read(&z->init_lock);
+> + }
+> + } else
+> + result += (si->pages << (PAGE_SHIFT - 10))
+> + - (si->inuse_pages << (PAGE_SHIFT - 10));
+> +
+> + return result;
+> +}
+> +
+> +u64 count_avail_swaps(void)
+> +{
+> + int type;
+> + u64 result;
+> + struct swap_info_struct *si;
+> +
+> + result = 0;
+> + spin_lock(&swap_lock);
+> + for (type = 0; type < nr_swapfiles; type++) {
+> + si = swap_info[type];
+> + spin_lock(&si->lock);
+> + result += count_avail_swap(si);
+> + spin_unlock(&si->lock);
+> + }
+> + spin_unlock(&swap_lock);
+> +
+> + return result;
+> +}
+> +
+> +void update_zram_zstat(struct swap_info_struct *si)
+> +{
+> + struct zram *z;
+> + struct zram_stats *stat;
+> + int ratio;
+> + u64 orig_size, compr_data_size;
+> +
+> + if (!si)
+> + return;
+> +
+> + //update zram min compress ratio
+> + if (si->flags & SWP_USED && si->swap_map) {
+> + if (si->bdev->bd_disk->major == get_zram_major()) {
+> + z = (struct zram *)si->bdev->bd_disk->private_data;
+> + down_read(&z->init_lock);
+> + stat = &z->stats;
+> + ratio = atomic_read(&stat->min_compr_ratio);
+> + orig_size = atomic64_read(&stat->pages_stored) << PAGE_SHIFT;
+> + compr_data_size = atomic64_read(&stat->compr_data_size);
+> + if (compr_data_size && (!ratio
+> +     || ((orig_size * 100) / compr_data_size < ratio)))
+> + atomic_set(&stat->min_compr_ratio,
+> +    (orig_size * 100) / compr_data_size);
+> + up_read(&z->init_lock);
+> + }
+> + }
+> +}
+> +
+> +void update_zram_zstats(void)
+> +{
+> + int type;
+> + struct swap_info_struct *si;
+> +
+> + spin_lock(&swap_lock);
+> + for (type = 0; type < nr_swapfiles; type++) {
+> + si = swap_info[type];
+> + spin_lock(&si->lock);
+> + update_zram_zstat(si);
+> + spin_unlock(&si->lock);
+> + }
+> + spin_unlock(&swap_lock);
+> +}
+> +
+>   void si_swapinfo(struct sysinfo *val)
+>   {
+>    unsigned int type;
+> diff --git a/mm/vmscan.c b/mm/vmscan.c
+> index eb31452..ffaf59b 100644
+> --- a/mm/vmscan.c
+> +++ b/mm/vmscan.c
+> @@ -4159,6 +4159,7 @@ static int kswapd(void *p)
+>    alloc_order);
+>    reclaim_order = balance_pgdat(pgdat, alloc_order,
+>    highest_zoneidx);
+> + update_zram_zstats();
+>    if (reclaim_order < alloc_order)
+>    goto kswapd_try_sleep;
+>    }
+> -- 
+> 2.7.4
 
 
 -- 
-Best Regards,
-Chanwoo Choi
-Samsung Electronics
+Thanks,
+
+David / dhildenb
+
