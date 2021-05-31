@@ -2,111 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B5BBB3966FB
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 19:24:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 318BF39665A
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 19:03:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231916AbhEaR00 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 13:26:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54190 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230505AbhEaR0E (ORCPT
+        id S234915AbhEaREc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 13:04:32 -0400
+Received: from fllv0016.ext.ti.com ([198.47.19.142]:34020 "EHLO
+        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232200AbhEaQCk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 13:26:04 -0400
-Received: from mail-ot1-x336.google.com (mail-ot1-x336.google.com [IPv6:2607:f8b0:4864:20::336])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A7CEC0494D0
-        for <linux-kernel@vger.kernel.org>; Mon, 31 May 2021 09:00:26 -0700 (PDT)
-Received: by mail-ot1-x336.google.com with SMTP id t10-20020a05683022eab0290304ed8bc759so11445539otc.12
-        for <linux-kernel@vger.kernel.org>; Mon, 31 May 2021 09:00:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=fN1lwP5lK2ZHeH7sczhOwIckpr3tPGWDquAjHKUZXog=;
-        b=hNYKEID4JhJQ2mBGmIIN/br18BpZwaCLF+jE9UTlU9G4HQaAIT8PKYg7Xi2ShY9p0Z
-         HJ8jwKvkcDwZpduFmnUREoPTfGTi45BgDoW21Pe2B5/y9w49N6OQ53Hf61LTOqE2mdLL
-         p41UdZh4U0m7xMBwP65sa4LSlne0ieiElX5+Z8uunSaN1FGtToqZ5ZcukecMif5DbvSV
-         Aklse3P23K5Q8Nnz2Os4uKcIOWjl/3M0wQ3LfF6/6lf4Ql6oyCkETyTm9aqwAlRiE6tr
-         8DKj0ZQxQtouvz89gHFm/TYaRI6Yeg11WhW0oD4Fy5fkkMN0Lgda4Zy1Ab3/DToUcXOb
-         7UcQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=fN1lwP5lK2ZHeH7sczhOwIckpr3tPGWDquAjHKUZXog=;
-        b=cNW9TMQJrft53WgA805EbyMWVhzc+nIxHJLyeuWa++nZVC1ZUH8yKKM9xqRuv9pj6f
-         a2bvx6YJ+SogSQwxtXaB8ykQRufSS3jSnlBoLPp4aXj9pUest3avnUwdBrfAYTIdlzxJ
-         hFlktl1Tiy5Tt6sKD6BxdiPMGIZ7xNd71kVJsejb472QXehXNDDWX1t6oTAE9FO8VIvi
-         6U/b0Ftf1ZyAlwPKFQ5ijzNjk+7S42/5H5dJJibsHpmSoBjbsylaXyAGaJppHF8bxn/N
-         vZI0NnomAn3Tzt2eJVtlJGT7kEGNvSQN/LmHf0NK5/wozPSAb7i4zyGxiP64Gl6v9Txu
-         S/jQ==
-X-Gm-Message-State: AOAM533imIfWwM8Gr9hlCKSvj7bk25G/BYV+8RvVP2lnVomvKiABtx2G
-        YLLGhrGFraAtO9U4pu4KBkpzVw==
-X-Google-Smtp-Source: ABdhPJwDCCFNnIT0y3dFNpGmgGCryNc2EXOVlWu47wca+TIuoheauQKmB2zZiFIG/mzl0af1KpUMHg==
-X-Received: by 2002:a9d:4105:: with SMTP id o5mr3928515ote.20.1622476825730;
-        Mon, 31 May 2021 09:00:25 -0700 (PDT)
-Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id x14sm2924059oic.3.2021.05.31.09.00.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 31 May 2021 09:00:25 -0700 (PDT)
-Date:   Mon, 31 May 2021 11:00:23 -0500
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Cc:     linus.walleij@linaro.org, vkoul@kernel.org,
-        linux-arm-msm@vger.kernel.org, linux-gpio@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] pinctrl: qcom: Fix duplication in gpio_groups
-Message-ID: <YLUIF84u6VjHyNnp@builder.lan>
-References: <20210526082857.174682-1-manivannan.sadhasivam@linaro.org>
+        Mon, 31 May 2021 12:02:40 -0400
+Received: from fllv0034.itg.ti.com ([10.64.40.246])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 14VG0f4L088390;
+        Mon, 31 May 2021 11:00:41 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1622476841;
+        bh=vnWFPHz+nHDKi1o49MLpJkwWMgq1Vhx/5uo3qsnHzYk=;
+        h=Subject:To:CC:References:From:Date:In-Reply-To;
+        b=Z0ga/5N1RWzO0Tdn5z/gw7bGBlPnQagEKgBnzwVQMIkBo1+Y0kn/xV6RAtWhPezZw
+         Ajt5A6fqV0SuR5/3HFcUxd1h5Ke/HUZyDkoThCLAVEFZIIu2izqfMolxn8Z/+abYX7
+         q5LdizoHTP3DKLJLcKEvL0Uvr/y04lOYOATdI624=
+Received: from DLEE105.ent.ti.com (dlee105.ent.ti.com [157.170.170.35])
+        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 14VG0fcJ092636
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Mon, 31 May 2021 11:00:41 -0500
+Received: from DLEE100.ent.ti.com (157.170.170.30) by DLEE105.ent.ti.com
+ (157.170.170.35) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Mon, 31
+ May 2021 11:00:41 -0500
+Received: from fllv0040.itg.ti.com (10.64.41.20) by DLEE100.ent.ti.com
+ (157.170.170.30) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
+ Frontend Transport; Mon, 31 May 2021 11:00:41 -0500
+Received: from [10.250.233.152] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 14VG0YgG008762;
+        Mon, 31 May 2021 11:00:35 -0500
+Subject: Re: [PATCH v2] PCI: dra7xx: Fix reset behaviour
+To:     Luca Ceresoli <luca@lucaceresoli.net>,
+        =?UTF-8?Q?Pali_Roh=c3=a1r?= <pali@kernel.org>
+CC:     <linux-pci@vger.kernel.org>, <linux-omap@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Rob Herring <robh@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>
+References: <20210531090540.2663171-1-luca@lucaceresoli.net>
+ <20210531133211.llyiq3jcfy25tmz4@pali>
+ <8ff1c54f-bb29-1e40-8342-905e34361e1c@lucaceresoli.net>
+From:   Kishon Vijay Abraham I <kishon@ti.com>
+Message-ID: <9fdbada4-4902-cec1-f283-0d12e1d4ac64@ti.com>
+Date:   Mon, 31 May 2021 21:30:30 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210526082857.174682-1-manivannan.sadhasivam@linaro.org>
+In-Reply-To: <8ff1c54f-bb29-1e40-8342-905e34361e1c@lucaceresoli.net>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed 26 May 03:28 CDT 2021, Manivannan Sadhasivam wrote:
+Hi,
 
-> "gpio52" and "gpio53" are duplicated in gpio_groups, fix them!
+On 31/05/21 7:24 pm, Luca Ceresoli wrote:
+> Hi Pali,
 > 
+> On 31/05/21 15:32, Pali Rohár wrote:
+>> On Monday 31 May 2021 11:05:40 Luca Ceresoli wrote:
+>>> The PCIe PERSTn reset pin is active low and should be asserted, then
+>>> deasserted.
+>>>
+>>> The current implementation only drives the pin once in "HIGH" position,
+>>> thus presumably it was intended to deassert the pin. This has two problems:
+>>>
+>>>   1) it assumes the pin was asserted by other means before loading the
+>>>      driver
+>>>   2) it has the wrong polarity, since "HIGH" means "active", and the pin is
+>>>      presumably configured as active low coherently with the PCIe
+>>>      convention, thus it is driven physically to 0, keeping the device
+>>>      under reset unless the pin is configured as active high.
+>>>
+>>> Fix both problems by:
+>>>
+>>>   1) keeping devm_gpiod_get_optional(dev, NULL, GPIOD_OUT_HIGH) as is, but
+>>>      assuming the pin is correctly configured as "active low" this now
+>>>      becomes a reset assertion
+>>>   2) adding gpiod_set_value(reset, 0) after a delay to deassert reset
+>>>
+>>> Fixes: 78bdcad05ea1 ("PCI: dra7xx: Add support to make GPIO drive PERST# line")
+>>> Signed-off-by: Luca Ceresoli <luca@lucaceresoli.net>
+>>>
+>>> ---
+>>>
+>>> Changes v1 -> v2:
+>>>  - No changes to the patch
+>>>  - Reword commit message according to suggestions from Bjorn Helgaas (from
+>>>    another patchset)
+>>>  - Add Fixes: tag
+>>> ---
+>>>  drivers/pci/controller/dwc/pci-dra7xx.c | 2 ++
+>>>  1 file changed, 2 insertions(+)
+>>>
+>>> diff --git a/drivers/pci/controller/dwc/pci-dra7xx.c b/drivers/pci/controller/dwc/pci-dra7xx.c
+>>> index cb5d4c245ff6..11f392b7a9a2 100644
+>>> --- a/drivers/pci/controller/dwc/pci-dra7xx.c
+>>> +++ b/drivers/pci/controller/dwc/pci-dra7xx.c
+>>> @@ -801,6 +801,8 @@ static int dra7xx_pcie_probe(struct platform_device *pdev)
+>>>  		dev_err(&pdev->dev, "gpio request failed, ret %d\n", ret);
+>>>  		goto err_gpio;
+>>>  	}
+>>> +	usleep_range(1000, 2000);
+>>
+>> Hello! Just a note that this is again a new code pattern in another
+>> driver for different wait value of PCIe Warm Reset timeout. I sent email
+>> about these issues:
+>> https://lore.kernel.org/linux-pci/20210310110535.zh4pnn4vpmvzwl5q@pali/
+>>
+>> Luca, how did you choose value 1000-2000 us? Do you have some reference
+>> or specification which says that this value needs to be used?
+> 
+> Sadly I haven't access to the PCIe specification.
+> 
+> I'd be very happy to know what a correct value should be and update my
+> patch.
 
-Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+I had given the timing mentioned in the specification here
+https://lore.kernel.org/r/023c9b59-70bb-ed8d-a4c0-76eae726b574@ti.com
 
-> Fixes: ac43c44a7a37 ("pinctrl: qcom: Add SDX55 pincontrol driver")
-> Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-> ---
->  drivers/pinctrl/qcom/pinctrl-sdx55.c | 18 +++++++++---------
->  1 file changed, 9 insertions(+), 9 deletions(-)
-> 
-> diff --git a/drivers/pinctrl/qcom/pinctrl-sdx55.c b/drivers/pinctrl/qcom/pinctrl-sdx55.c
-> index 5aaf57b40407..0bb4931cec59 100644
-> --- a/drivers/pinctrl/qcom/pinctrl-sdx55.c
-> +++ b/drivers/pinctrl/qcom/pinctrl-sdx55.c
-> @@ -410,15 +410,15 @@ static const char * const gpio_groups[] = {
->  	"gpio29", "gpio30", "gpio31", "gpio32", "gpio33", "gpio34", "gpio35",
->  	"gpio36", "gpio37", "gpio38", "gpio39", "gpio40", "gpio41", "gpio42",
->  	"gpio43", "gpio44", "gpio45", "gpio46", "gpio47", "gpio48", "gpio49",
-> -	"gpio50", "gpio51", "gpio52", "gpio52", "gpio53", "gpio53", "gpio54",
-> -	"gpio55", "gpio56", "gpio57", "gpio58", "gpio59", "gpio60", "gpio61",
-> -	"gpio62", "gpio63", "gpio64", "gpio65", "gpio66", "gpio67", "gpio68",
-> -	"gpio69", "gpio70", "gpio71", "gpio72", "gpio73", "gpio74", "gpio75",
-> -	"gpio76", "gpio77", "gpio78", "gpio79", "gpio80", "gpio81", "gpio82",
-> -	"gpio83", "gpio84", "gpio85", "gpio86", "gpio87", "gpio88", "gpio89",
-> -	"gpio90", "gpio91", "gpio92", "gpio93", "gpio94", "gpio95", "gpio96",
-> -	"gpio97", "gpio98", "gpio99", "gpio100", "gpio101", "gpio102",
-> -	"gpio103", "gpio104", "gpio105", "gpio106", "gpio107",
-> +	"gpio50", "gpio51", "gpio52", "gpio53", "gpio54", "gpio55", "gpio56",
-> +	"gpio57", "gpio58", "gpio59", "gpio60", "gpio61", "gpio62", "gpio63",
-> +	"gpio64", "gpio65", "gpio66", "gpio67", "gpio68", "gpio69", "gpio70",
-> +	"gpio71", "gpio72", "gpio73", "gpio74", "gpio75", "gpio76", "gpio77",
-> +	"gpio78", "gpio79", "gpio80", "gpio81", "gpio82", "gpio83", "gpio84",
-> +	"gpio85", "gpio86", "gpio87", "gpio88", "gpio89", "gpio90", "gpio91",
-> +	"gpio92", "gpio93", "gpio94", "gpio95", "gpio96", "gpio97", "gpio98",
-> +	"gpio99", "gpio100", "gpio101", "gpio102", "gpio103", "gpio104",
-> +	"gpio105", "gpio106", "gpio107",
->  };
->  
->  static const char * const qdss_stm_groups[] = {
-> -- 
-> 2.25.1
-> 
+The PCI EXPRESS CARD ELECTROMECHANICAL SPECIFICATION defines the Power
+Sequencing and Reset Signal Timings in Table 2-4. Please also refer Figure
+2-10: Power Up of the CEM.
+
+╔═════════════╤══════════════════════════════════════╤═════╤═════╤═══════╗
+║ Symbol      │ Parameter                            │ Min │ Max │ Units ║
+╠═════════════╪══════════════════════════════════════╪═════╪═════╪═══════╣
+║ T PVPERL    │ Power stable to PERST# inactive      │ 100 │     │ ms    ║
+╟─────────────┼──────────────────────────────────────┼─────┼─────┼───────╢
+║ T PERST-CLK │ REFCLK stable before PERST# inactive │ 100 │     │ μs    ║
+╟─────────────┼──────────────────────────────────────┼─────┼─────┼───────╢
+║ T PERST     │ PERST# active time                   │ 100 │     │ μs    ║
+╟─────────────┼──────────────────────────────────────┼─────┼─────┼───────╢
+║ T FAIL      │ Power level invalid to PERST# active │     │ 500 │ ns    ║
+╟─────────────┼──────────────────────────────────────┼─────┼─────┼───────╢
+║ T WKRF      │ WAKE# rise – fall time               │     │ 100 │ ns    ║
+╚═════════════╧══════════════════════════════════════╧═════╧═════╧═══════╝
+
+The de-assertion of #PERST is w.r.t both power stable and refclk stable.
+
+I'm yet to validate this patch, but IIRC devm_gpiod_get_optional(dev,
+NULL, GPIOD_OUT_HIGH) will already de-assert the PERST line. Please note
+the board here can have various combinations of NOT gate before the gpio
+line is actually connected to the connector.
+
+Thanks
+Kishon
