@@ -2,38 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F3DC39659C
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 18:40:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EB7C5395F18
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 16:06:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232911AbhEaQmS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 12:42:18 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48436 "EHLO mail.kernel.org"
+        id S233382AbhEaOHr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 10:07:47 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44892 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231377AbhEaOvo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 10:51:44 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1617F61931;
-        Mon, 31 May 2021 13:58:19 +0000 (UTC)
+        id S232227AbhEaNmg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 09:42:36 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id EC1CD61481;
+        Mon, 31 May 2021 13:28:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1622469500;
-        bh=5kDhT8Zhm3TbjgG4JxDKroPuOS9jtDhk39zWh2ldOZs=;
+        s=korg; t=1622467710;
+        bh=efU9PGSbDtdu1/hSrc3mX1eRJyc9rgg2Flsb++jTol4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=T7qiOAxyALyCLo/gd1zByE4Fab15quzraMG8mO6WAta8FACGGtwjfy49Gf3tS4QcY
-         k1/d0OyBOxAkiLZYR7z8AbMrpOs8Q3U8AYj1FXEki/Krx6HUgJSgDfOBHcAa1zimxd
-         Sbog58WUB9y8rSdjdG+D4JytNnAR6M0klpeKbKuU=
+        b=A3HntQf8sz4g/uzFOPbrkhjyFC96W6b+HCw4lGq9AAHtQ+u/VTySP/ggR0e2B+a/F
+         df0YTKSmGqtDWd5m3hOo3Xt3dtvslmWUGpefT3C9AwVT7r638QNrycJCNX4yybq7A9
+         Y7i1xhLlDbd76hv3sngSdBREYb2njJa/nVYkjQ+I=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Vladimir Oltean <vladimir.oltean@nxp.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        "David S. Miller" <davem@davemloft.net>,
+        stable@vger.kernel.org, Vinod Koul <vkoul@kernel.org>,
+        Sinan Kaya <okaya@kernel.org>,
+        Phillip Potter <phil@philpotter.co.uk>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.12 222/296] net: dsa: fix error code getting shifted with 4 in dsa_slave_get_sset_count
+Subject: [PATCH 4.14 52/79] dmaengine: qcom_hidma: comment platform_driver_register call
 Date:   Mon, 31 May 2021 15:14:37 +0200
-Message-Id: <20210531130711.293363340@linuxfoundation.org>
+Message-Id: <20210531130637.672660409@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210531130703.762129381@linuxfoundation.org>
-References: <20210531130703.762129381@linuxfoundation.org>
+In-Reply-To: <20210531130636.002722319@linuxfoundation.org>
+References: <20210531130636.002722319@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,65 +41,50 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Vladimir Oltean <vladimir.oltean@nxp.com>
+From: Phillip Potter <phil@philpotter.co.uk>
 
-[ Upstream commit b94cbc909f1d80378a1f541968309e5c1178c98b ]
+[ Upstream commit 4df2a8b0ad634d98a67e540a4e18a60f943e7d9f ]
 
-DSA implements a bunch of 'standardized' ethtool statistics counters,
-namely tx_packets, tx_bytes, rx_packets, rx_bytes. So whatever the
-hardware driver returns in .get_sset_count(), we need to add 4 to that.
+Place a comment in hidma_mgmt_init explaining why success must
+currently be assumed, due to the cleanup issue that would need to
+be considered were this module ever to be unloadable or were this
+platform_driver_register call ever to fail.
 
-That is ok, except that .get_sset_count() can return a negative error
-code, for example:
-
-b53_get_sset_count
--> phy_ethtool_get_sset_count
-   -> return -EIO
-
--EIO is -5, and with 4 added to it, it becomes -1, aka -EPERM. One can
-imagine that certain error codes may even become positive, although
-based on code inspection I did not see instances of that.
-
-Check the error code first, if it is negative return it as-is.
-
-Based on a similar patch for dsa_master_get_strings from Dan Carpenter:
-https://patchwork.kernel.org/project/netdevbpf/patch/YJaSe3RPgn7gKxZv@mwanda/
-
-Fixes: 91da11f870f0 ("net: Distributed Switch Architecture protocol support")
-Signed-off-by: Vladimir Oltean <vladimir.oltean@nxp.com>
-Reviewed-by: Florian Fainelli <f.fainelli@gmail.com>
-Reviewed-by: Andrew Lunn <andrew@lunn.ch>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Acked-By: Vinod Koul <vkoul@kernel.org>
+Acked-By: Sinan Kaya <okaya@kernel.org>
+Signed-off-by: Phillip Potter <phil@philpotter.co.uk>
+Link: https://lore.kernel.org/r/20210503115736.2104747-52-gregkh@linuxfoundation.org
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/dsa/slave.c | 12 +++++++-----
- 1 file changed, 7 insertions(+), 5 deletions(-)
+ drivers/dma/qcom/hidma_mgmt.c | 14 ++++++++++++++
+ 1 file changed, 14 insertions(+)
 
-diff --git a/net/dsa/slave.c b/net/dsa/slave.c
-index 992fcab4b552..8dd7c8e84a65 100644
---- a/net/dsa/slave.c
-+++ b/net/dsa/slave.c
-@@ -787,13 +787,15 @@ static int dsa_slave_get_sset_count(struct net_device *dev, int sset)
- 	struct dsa_switch *ds = dp->ds;
- 
- 	if (sset == ETH_SS_STATS) {
--		int count;
-+		int count = 0;
- 
--		count = 4;
--		if (ds->ops->get_sset_count)
--			count += ds->ops->get_sset_count(ds, dp->index, sset);
-+		if (ds->ops->get_sset_count) {
-+			count = ds->ops->get_sset_count(ds, dp->index, sset);
-+			if (count < 0)
-+				return count;
-+		}
- 
--		return count;
-+		return count + 4;
+diff --git a/drivers/dma/qcom/hidma_mgmt.c b/drivers/dma/qcom/hidma_mgmt.c
+index 7335e2eb9b72..fd1b3a09de91 100644
+--- a/drivers/dma/qcom/hidma_mgmt.c
++++ b/drivers/dma/qcom/hidma_mgmt.c
+@@ -454,6 +454,20 @@ static int __init hidma_mgmt_init(void)
+ 		hidma_mgmt_of_populate_channels(child);
  	}
+ #endif
++	/*
++	 * We do not check for return value here, as it is assumed that
++	 * platform_driver_register must not fail. The reason for this is that
++	 * the (potential) hidma_mgmt_of_populate_channels calls above are not
++	 * cleaned up if it does fail, and to do this work is quite
++	 * complicated. In particular, various calls of of_address_to_resource,
++	 * of_irq_to_resource, platform_device_register_full, of_dma_configure,
++	 * and of_msi_configure which then call other functions and so on, must
++	 * be cleaned up - this is not a trivial exercise.
++	 *
++	 * Currently, this module is not intended to be unloaded, and there is
++	 * no module_exit function defined which does the needed cleanup. For
++	 * this reason, we have to assume success here.
++	 */
+ 	platform_driver_register(&hidma_mgmt_driver);
  
- 	return -EOPNOTSUPP;
+ 	return 0;
 -- 
 2.30.2
 
