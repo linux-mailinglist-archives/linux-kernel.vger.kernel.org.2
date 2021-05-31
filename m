@@ -2,196 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C7D5A395FFF
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 16:20:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F20D839603A
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 16:22:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233469AbhEaOTC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 10:19:02 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:55249 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231926AbhEaNsk (ORCPT
+        id S233682AbhEaOXg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 10:23:36 -0400
+Received: from szxga03-in.huawei.com ([45.249.212.189]:3353 "EHLO
+        szxga03-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233067AbhEaNtw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 09:48:40 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1622468820;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=6Mppih9q2pe0krRA02rkEmn1QaYGR0wK6GLj3051FLM=;
-        b=EslIREJp93YEI2OrduOY/7icRP910lydizwc16hWiGhPOZt8TLZVKRt5JHsyPpa+Rdz3zm
-        CROshmlkzEux3O5L7u3CP3f+RF6NpY8ZHvjK8Mutc+/zeHusd9R9srvtElRaQ0ofYFnac7
-        JxFzlfpm2X/7/6UVJhjVMBnazk7Q/1M=
-Received: from mail-ej1-f69.google.com (mail-ej1-f69.google.com
- [209.85.218.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-536-IwaAxwu8Nm-W17F9ST_Ppg-1; Mon, 31 May 2021 09:46:59 -0400
-X-MC-Unique: IwaAxwu8Nm-W17F9ST_Ppg-1
-Received: by mail-ej1-f69.google.com with SMTP id h18-20020a1709063992b02903d59b32b039so2475052eje.12
-        for <linux-kernel@vger.kernel.org>; Mon, 31 May 2021 06:46:59 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:from:to:cc:references:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=6Mppih9q2pe0krRA02rkEmn1QaYGR0wK6GLj3051FLM=;
-        b=lG7292QygYTVxAi6etUusdBoU5VkigNKN7S3gkFq6+pJvtjARoP/XCl3oGf6NPQ5Ja
-         mcm4jVYLPpexyFO2+hMo4SpiYvDwhOZPkqW6evil3PJDsnVxgIpUaBGr8Ub+XRH7HKlb
-         xOuOieawMtDMVVIqo249A0d3dQob9h1MzYWdEaV+KU+YFQK7AYuGrZbXMYMFvGz6iUPo
-         a3uMoe5wQwJ5V+JL/l7Ap1fTWRTsELtg8dxin4zrJplG+JVaGuOiUY4MZw4UlAf89Y7b
-         Efkgs72yGsp957LMDIoYBU4+yBc/UwYEIzhmc+ZhlUu38/ggX6Vsyp3iHmYpfWHNAzzs
-         Hqpg==
-X-Gm-Message-State: AOAM5325ho5F4lnht8Wk5wBC38kV42jW37iBXOMT5veOyrSKQIvBUlZy
-        Te1fqHf6nGyerkjuUzHJpwKIJaKS9n5z8T1kBW/fECAYPFFgCMgVDOeVf4EYab6FZ6RhEU2/lWd
-        tkiWmYRyUFVJlb26+mamUcqtK1i30I9k1kWv51568zw7X1/uZKDwAHw0Ac8B7cRoOBit/9UeMem
-        Mh
-X-Received: by 2002:a17:906:dfea:: with SMTP id lc10mr5179553ejc.148.1622468818477;
-        Mon, 31 May 2021 06:46:58 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzPpE+IMwk1MrbOORE80mWvg7eYwcoNrc63HkzejWjQs6koMXLDB6caROQwZksUbE4iUoEpjA==
-X-Received: by 2002:a17:906:dfea:: with SMTP id lc10mr5179518ejc.148.1622468818255;
-        Mon, 31 May 2021 06:46:58 -0700 (PDT)
-Received: from x1.localdomain (2001-1c00-0c1e-bf00-1054-9d19-e0f0-8214.cable.dynamic.v6.ziggo.nl. [2001:1c00:c1e:bf00:1054:9d19:e0f0:8214])
-        by smtp.gmail.com with ESMTPSA id n4sm5913342eja.121.2021.05.31.06.46.57
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 31 May 2021 06:46:57 -0700 (PDT)
-Subject: Re: [PATCH -next] x86/platform/uv: functions should not be declared
- extern
-From:   Hans de Goede <hdegoede@redhat.com>
-To:     Qiheng Lin <linqiheng@huawei.com>, mike.travis@hpe.com,
-        dimitri.sivanich@hpe.com, russ.anderson@hpe.com,
-        dvhart@infradead.org, andy@infradead.org, tglx@linutronix.de,
-        mingo@redhat.com, bp@alien8.de, x86@kernel.org, hpa@zytor.com
-Cc:     steve.wahl@hpe.com, platform-driver-x86@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20210531060747.21934-1-linqiheng@huawei.com>
- <56198fed-ce73-f7e8-3d90-50089e243799@redhat.com>
-Message-ID: <6d605a59-6069-5a20-f33a-b5ace5437244@redhat.com>
-Date:   Mon, 31 May 2021 15:46:57 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+        Mon, 31 May 2021 09:49:52 -0400
+Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.53])
+        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4FtxNV6pjnz67Rs;
+        Mon, 31 May 2021 21:44:26 +0800 (CST)
+Received: from dggema762-chm.china.huawei.com (10.1.198.204) by
+ dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
+ 15.1.2176.2; Mon, 31 May 2021 21:48:06 +0800
+Received: from [10.174.179.129] (10.174.179.129) by
+ dggema762-chm.china.huawei.com (10.1.198.204) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2176.2; Mon, 31 May 2021 21:48:05 +0800
+Subject: Re: [PATCH V2] drm: bridge: cdns-mhdp8546: Fix PM reference leak in
+ cdns_mhdp_probe()
+To:     Robert Foss <robert.foss@linaro.org>
+CC:     Andrzej Hajda <a.hajda@samsung.com>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        <yi.zhang@huawei.com>
+References: <20210517081601.1563193-1-yukuai3@huawei.com>
+ <20210529095554.3150362-1-yukuai3@huawei.com>
+ <CAG3jFyt53-MhwgGGcmMVSap3xCE_cQOmN26Rj3TvHtWFeVLZWg@mail.gmail.com>
+From:   "yukuai (C)" <yukuai3@huawei.com>
+Message-ID: <36cef11c-6b33-57ff-f1b1-32c074efa8ac@huawei.com>
+Date:   Mon, 31 May 2021 21:48:05 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
-In-Reply-To: <56198fed-ce73-f7e8-3d90-50089e243799@redhat.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+In-Reply-To: <CAG3jFyt53-MhwgGGcmMVSap3xCE_cQOmN26Rj3TvHtWFeVLZWg@mail.gmail.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
 Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.179.129]
+X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
+ dggema762-chm.china.huawei.com (10.1.198.204)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 2021/05/31 18:54, Robert Foss wrote:
+> Hey Yu,
+> 
+> I'm not finding your this patch with the correct tags. I'd expect the subject:
+> [PATCH v2] drm: bridge: cdns-mhdp8546: Fix PM reference leak in
+> cdns_mhdp_probe()
+> 
+> Can you please resubmit using this title, just to be sure I merge the
+> right version of this code.
+> 
 Hi,
 
-On 5/31/21 3:45 PM, Hans de Goede wrote:
-> Hi,
-> 
-> On 5/31/21 8:07 AM, Qiheng Lin wrote:
->> These function declarations in 'bios.h' are already marked extern, thus
->> their definition should not have the keyword.
+I just resubmit v2 patch.
+
+Thanks
+Yu Kuai
+> On Sat, 29 May 2021 at 11:46, Yu Kuai <yukuai3@huawei.com> wrote:
 >>
->> This quiets the following sparse warnings:
->>  function 'uv_bios_get_master_nasid' with external linkage has definition
->>  function 'uv_bios_get_heapsize' with external linkage has definition
->>  function 'uv_bios_install_heap' with external linkage has definition
->>  function 'uv_bios_obj_count' with external linkage has definition
->>  function 'uv_bios_enum_objs' with external linkage has definition
->>  function 'uv_bios_enum_ports' with external linkage has definition
->>  function 'uv_bios_get_geoinfo' with external linkage has definition
->>  function 'uv_bios_get_pci_topology' with external linkage has definition
+>> pm_runtime_get_sync will increment pm usage counter even it failed.
+>> Forgetting to putting operation will result in reference leak here.
+>> Fix it by replacing it with pm_runtime_resume_and_get to keep usage
+>> counter balanced.
 >>
->> Signed-off-by: Qiheng Lin <linqiheng@huawei.com>
-> 
-> Thank you for your patch, I've applied this patch to my review-hans 
-> branch:
-> https://git.kernel.org/pub/scm/linux/kernel/git/pdx86/platform-drivers-x86.git/log/?h=review-hans
-> 
-> Note it will show up in my review-hans branch once I've pushed my
-> local branch there, which might take a while.
-> 
-> Once I've run some tests on this branch the patches there will be
-> added to the platform-drivers-x86/for-next branch and eventually
-> will be included in the pdx86 pull-request to Linus for the next
-> merge-window.
-
-Correction I just noticed that this makes changes under arch/x86 so
-this should go upstream through the tip tree.
-
-So I'm dropping this patch from review-hans now, sorry for the noise.
-
-Regards,
-
-Hans
-
-
-
+>> Reported-by: Hulk Robot <hulkci@huawei.com>
+>> Signed-off-by: Yu Kuai <yukuai3@huawei.com>
 >> ---
->>  arch/x86/platform/uv/bios_uv.c | 16 ++++++++--------
->>  1 file changed, 8 insertions(+), 8 deletions(-)
+>> changes in V2:
+>>   - change error message.
 >>
->> diff --git a/arch/x86/platform/uv/bios_uv.c b/arch/x86/platform/uv/bios_uv.c
->> index bf31af3d32d6..7e7634c8be62 100644
->> --- a/arch/x86/platform/uv/bios_uv.c
->> +++ b/arch/x86/platform/uv/bios_uv.c
->> @@ -172,55 +172,55 @@ int uv_bios_set_legacy_vga_target(bool decode, int domain, int bus)
->>  				(u64)decode, (u64)domain, (u64)bus, 0, 0);
->>  }
->>  
->> -extern s64 uv_bios_get_master_nasid(u64 size, u64 *master_nasid)
->> +s64 uv_bios_get_master_nasid(u64 size, u64 *master_nasid)
->>  {
->>  	return uv_bios_call(UV_BIOS_EXTRA, 0, UV_BIOS_EXTRA_MASTER_NASID, 0,
->>  				size, (u64)master_nasid);
->>  }
->>  EXPORT_SYMBOL_GPL(uv_bios_get_master_nasid);
->>  
->> -extern s64 uv_bios_get_heapsize(u64 nasid, u64 size, u64 *heap_size)
->> +s64 uv_bios_get_heapsize(u64 nasid, u64 size, u64 *heap_size)
->>  {
->>  	return uv_bios_call(UV_BIOS_EXTRA, nasid, UV_BIOS_EXTRA_GET_HEAPSIZE,
->>  				0, size, (u64)heap_size);
->>  }
->>  EXPORT_SYMBOL_GPL(uv_bios_get_heapsize);
->>  
->> -extern s64 uv_bios_install_heap(u64 nasid, u64 heap_size, u64 *bios_heap)
->> +s64 uv_bios_install_heap(u64 nasid, u64 heap_size, u64 *bios_heap)
->>  {
->>  	return uv_bios_call(UV_BIOS_EXTRA, nasid, UV_BIOS_EXTRA_INSTALL_HEAP,
->>  				0, heap_size, (u64)bios_heap);
->>  }
->>  EXPORT_SYMBOL_GPL(uv_bios_install_heap);
->>  
->> -extern s64 uv_bios_obj_count(u64 nasid, u64 size, u64 *objcnt)
->> +s64 uv_bios_obj_count(u64 nasid, u64 size, u64 *objcnt)
->>  {
->>  	return uv_bios_call(UV_BIOS_EXTRA, nasid, UV_BIOS_EXTRA_OBJECT_COUNT,
->>  				0, size, (u64)objcnt);
->>  }
->>  EXPORT_SYMBOL_GPL(uv_bios_obj_count);
->>  
->> -extern s64 uv_bios_enum_objs(u64 nasid, u64 size, u64 *objbuf)
->> +s64 uv_bios_enum_objs(u64 nasid, u64 size, u64 *objbuf)
->>  {
->>  	return uv_bios_call(UV_BIOS_EXTRA, nasid, UV_BIOS_EXTRA_ENUM_OBJECTS,
->>  				0, size, (u64)objbuf);
->>  }
->>  EXPORT_SYMBOL_GPL(uv_bios_enum_objs);
->>  
->> -extern s64 uv_bios_enum_ports(u64 nasid, u64 obj_id, u64 size, u64 *portbuf)
->> +s64 uv_bios_enum_ports(u64 nasid, u64 obj_id, u64 size, u64 *portbuf)
->>  {
->>  	return uv_bios_call(UV_BIOS_EXTRA, nasid, UV_BIOS_EXTRA_ENUM_PORTS,
->>  				obj_id, size, (u64)portbuf);
->>  }
->>  EXPORT_SYMBOL_GPL(uv_bios_enum_ports);
->>  
->> -extern s64 uv_bios_get_geoinfo(u64 nasid, u64 size, u64 *buf)
->> +s64 uv_bios_get_geoinfo(u64 nasid, u64 size, u64 *buf)
->>  {
->>  	return uv_bios_call(UV_BIOS_GET_GEOINFO, nasid, (u64)buf, size, 0, 0);
->>  }
->>  EXPORT_SYMBOL_GPL(uv_bios_get_geoinfo);
->>  
->> -extern s64 uv_bios_get_pci_topology(u64 size, u64 *buf)
->> +s64 uv_bios_get_pci_topology(u64 size, u64 *buf)
->>  {
->>  	return uv_bios_call(UV_BIOS_GET_PCI_TOPOLOGY, (u64)buf, size, 0, 0, 0);
->>  }
+>>   drivers/gpu/drm/bridge/cadence/cdns-mhdp8546-core.c | 4 ++--
+>>   1 file changed, 2 insertions(+), 2 deletions(-)
 >>
-
+>> diff --git a/drivers/gpu/drm/bridge/cadence/cdns-mhdp8546-core.c b/drivers/gpu/drm/bridge/cadence/cdns-mhdp8546-core.c
+>> index 0cd8f40fb690..eab959a59214 100644
+>> --- a/drivers/gpu/drm/bridge/cadence/cdns-mhdp8546-core.c
+>> +++ b/drivers/gpu/drm/bridge/cadence/cdns-mhdp8546-core.c
+>> @@ -2478,9 +2478,9 @@ static int cdns_mhdp_probe(struct platform_device *pdev)
+>>          clk_prepare_enable(clk);
+>>
+>>          pm_runtime_enable(dev);
+>> -       ret = pm_runtime_get_sync(dev);
+>> +       ret = pm_runtime_resume_and_get(dev);
+>>          if (ret < 0) {
+>> -               dev_err(dev, "pm_runtime_get_sync failed\n");
+>> +               dev_err(dev, "pm_runtime_resume_and_get failed\n");
+>>                  pm_runtime_disable(dev);
+>>                  goto clk_disable;
+>>          }
+>> --
+>> 2.25.4
+>>
+> .
+> 
