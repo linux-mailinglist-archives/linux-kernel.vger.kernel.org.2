@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A547395B8E
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 15:20:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DC371395C58
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 15:30:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232228AbhEaNVr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 09:21:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55182 "EHLO mail.kernel.org"
+        id S232346AbhEaNbZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 09:31:25 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55676 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231847AbhEaNTT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 09:19:19 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2DF4B6138C;
-        Mon, 31 May 2021 13:17:38 +0000 (UTC)
+        id S232333AbhEaNXD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 09:23:03 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 186B2613B4;
+        Mon, 31 May 2021 13:19:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1622467058;
-        bh=eThF42QgHM2ceyuUbfHXSeQsf1W1pocY7rix57lF/sE=;
+        s=korg; t=1622467184;
+        bh=SOIkqthu+jcwGxaEf1kbni/BuJeajPxGrKkNdiRXLYI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=mwIqGzGhVATUw/wiPz+FBElZ24DQiCzN16RyQpFB8t21G3RXT+8OO3cXKpz0MHBb3
-         bUBg5S3ACOanmkv6rt5UDUloEfTcLqi009renLw1LFiX2pd0LMsEqfpM6jQt4VT55B
-         /vS8jHjmPnuObFgNtKHWquUK8Ao+9ZuQdHqQaSY8=
+        b=HBQ53WqemU+qBZqvFrsUfL7kPn9GJC+wIQ7+pUnkIf0b4mnJwHTqIMcOmmEzxkWlz
+         lGAJAYOEQoNUBp3lCSgqNxspVQt51nF617KHF+dDHSeDwWpes8+ic2KVcbSOWDGnfg
+         GcLeRdltzHR/nV7wblqwJunGObdTz6pDi6i/7qXQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Peter Zijlstra <peterz@infradead.org>,
-        Stafford Horne <shorne@gmail.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.4 41/54] openrisc: Define memory barrier mb
-Date:   Mon, 31 May 2021 15:14:07 +0200
-Message-Id: <20210531130636.363318707@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Wolfram Sang <wsa@kernel.org>
+Subject: [PATCH 4.9 35/66] i2c: s3c2410: fix possible NULL pointer deref on read message after write
+Date:   Mon, 31 May 2021 15:14:08 +0200
+Message-Id: <20210531130637.372592171@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210531130635.070310929@linuxfoundation.org>
-References: <20210531130635.070310929@linuxfoundation.org>
+In-Reply-To: <20210531130636.254683895@linuxfoundation.org>
+References: <20210531130636.254683895@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,48 +40,67 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Peter Zijlstra <peterz@infradead.org>
+From: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
 
-[ Upstream commit 8b549c18ae81dbc36fb11e4aa08b8378c599ca95 ]
+commit 24990423267ec283b9d86f07f362b753eb9b0ed5 upstream.
 
-This came up in the discussion of the requirements of qspinlock on an
-architecture.  OpenRISC uses qspinlock, but it was noticed that the
-memmory barrier was not defined.
+Interrupt handler processes multiple message write requests one after
+another, till the driver message queue is drained.  However if driver
+encounters a read message without preceding START, it stops the I2C
+transfer as it is an invalid condition for the controller.  At least the
+comment describes a requirement "the controller forces us to send a new
+START when we change direction".  This stop results in clearing the
+message queue (i2c->msg = NULL).
 
-Peter defined it in the mail thread writing:
+The code however immediately jumped back to label "retry_write" which
+dereferenced the "i2c->msg" making it a possible NULL pointer
+dereference.
 
-    As near as I can tell this should do. The arch spec only lists
-    this one instruction and the text makes it sound like a completion
-    barrier.
+The Coverity analysis:
+1. Condition !is_msgend(i2c), taking false branch.
+   if (!is_msgend(i2c)) {
 
-This is correct so applying this patch.
+2. Condition !is_lastmsg(i2c), taking true branch.
+   } else if (!is_lastmsg(i2c)) {
 
-Signed-off-by: Peter Zijlstra <peterz@infradead.org>
-[shorne@gmail.com:Turned the mail into a patch]
-Signed-off-by: Stafford Horne <shorne@gmail.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+3. Condition i2c->msg->flags & 1, taking true branch.
+   if (i2c->msg->flags & I2C_M_RD) {
+
+4. write_zero_model: Passing i2c to s3c24xx_i2c_stop, which sets i2c->msg to NULL.
+   s3c24xx_i2c_stop(i2c, -EINVAL);
+
+5. Jumping to label retry_write.
+   goto retry_write;
+
+6. var_deref_model: Passing i2c to is_msgend, which dereferences null i2c->msg.
+   if (!is_msgend(i2c)) {"
+
+All previous calls to s3c24xx_i2c_stop() in this interrupt service
+routine are followed by jumping to end of function (acknowledging
+the interrupt and returning).  This seems a reasonable choice also here
+since message buffer was entirely emptied.
+
+Addresses-Coverity: Explicit null dereferenced
+Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
+Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Signed-off-by: Wolfram Sang <wsa@kernel.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- arch/openrisc/include/asm/barrier.h | 9 +++++++++
- 1 file changed, 9 insertions(+)
- create mode 100644 arch/openrisc/include/asm/barrier.h
+ drivers/i2c/busses/i2c-s3c2410.c |    3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/arch/openrisc/include/asm/barrier.h b/arch/openrisc/include/asm/barrier.h
-new file mode 100644
-index 000000000000..7538294721be
---- /dev/null
-+++ b/arch/openrisc/include/asm/barrier.h
-@@ -0,0 +1,9 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+#ifndef __ASM_BARRIER_H
-+#define __ASM_BARRIER_H
-+
-+#define mb() asm volatile ("l.msync" ::: "memory")
-+
-+#include <asm-generic/barrier.h>
-+
-+#endif /* __ASM_BARRIER_H */
--- 
-2.30.2
-
+--- a/drivers/i2c/busses/i2c-s3c2410.c
++++ b/drivers/i2c/busses/i2c-s3c2410.c
+@@ -495,7 +495,10 @@ static int i2c_s3c_irq_nextbyte(struct s
+ 					 * forces us to send a new START
+ 					 * when we change direction
+ 					 */
++					dev_dbg(i2c->dev,
++						"missing START before write->read\n");
+ 					s3c24xx_i2c_stop(i2c, -EINVAL);
++					break;
+ 				}
+ 
+ 				goto retry_write;
 
 
