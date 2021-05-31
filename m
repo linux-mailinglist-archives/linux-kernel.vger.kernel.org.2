@@ -2,38 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EA074396419
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 17:44:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 47E18396344
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 17:10:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232968AbhEaPqJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 11:46:09 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48832 "EHLO mail.kernel.org"
+        id S232992AbhEaPLl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 11:11:41 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40810 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232509AbhEaOZb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 10:25:31 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D9E8C61108;
-        Mon, 31 May 2021 13:46:44 +0000 (UTC)
+        id S233072AbhEaOKk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 10:10:40 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6AEB761983;
+        Mon, 31 May 2021 13:40:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1622468805;
-        bh=TEOEsm9FkAMDY1iDoO46SUPaqgDaz+h+P0e3/lQ2fJM=;
+        s=korg; t=1622468449;
+        bh=o+7OYa81zDbczAlkQhFxTddeTkO76m7DGereB6yYl1g=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ob/BEOgisFt/BJo3aUIjuGy+2IvXDqI3PLGsvNjxE9a/B9grSmv/bEdNFsip71+vJ
-         B5PPCwPITMB5VboDnjCBSIwXH+AqY1KJklHWo3KbpcdgOwVleGH4buslXwR4y7GrIk
-         HRPBQ9kHwtNOm2PKiTvkIpVJdPBJZ9m5LOxhj/Ds=
+        b=XhY0l4wSfrkyGARrEHmLKEolr2M3h2CimQvPcm1ML+BL31400Tztt3+gk7EkYCds2
+         h9Fxh0GkcqkyveAUsDruGpWuD8+FntXCSxmbhYH3O70JMfgs1MYu5wuKOeiEdRHkgN
+         78rP4ShVZmpklBXC8sHrHJ+ycENotXr3B/0/0mzI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Vladimir Oltean <vladimir.oltean@nxp.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        "David S. Miller" <davem@davemloft.net>,
+        stable@vger.kernel.org, Jussi Maki <joamaki@gmail.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 136/177] net: dsa: fix error code getting shifted with 4 in dsa_slave_get_sset_count
-Date:   Mon, 31 May 2021 15:14:53 +0200
-Message-Id: <20210531130652.636646813@linuxfoundation.org>
+Subject: [PATCH 5.10 229/252] bpf: Set mac_len in bpf_skb_change_head
+Date:   Mon, 31 May 2021 15:14:54 +0200
+Message-Id: <20210531130705.777951900@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210531130647.887605866@linuxfoundation.org>
-References: <20210531130647.887605866@linuxfoundation.org>
+In-Reply-To: <20210531130657.971257589@linuxfoundation.org>
+References: <20210531130657.971257589@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,65 +40,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Vladimir Oltean <vladimir.oltean@nxp.com>
+From: Jussi Maki <joamaki@gmail.com>
 
-[ Upstream commit b94cbc909f1d80378a1f541968309e5c1178c98b ]
+[ Upstream commit 84316ca4e100d8cbfccd9f774e23817cb2059868 ]
 
-DSA implements a bunch of 'standardized' ethtool statistics counters,
-namely tx_packets, tx_bytes, rx_packets, rx_bytes. So whatever the
-hardware driver returns in .get_sset_count(), we need to add 4 to that.
+The skb_change_head() helper did not set "skb->mac_len", which is
+problematic when it's used in combination with skb_redirect_peer().
+Without it, redirecting a packet from a L3 device such as wireguard to
+the veth peer device will cause skb->data to point to the middle of the
+IP header on entry to tcp_v4_rcv() since the L2 header is not pulled
+correctly due to mac_len=0.
 
-That is ok, except that .get_sset_count() can return a negative error
-code, for example:
-
-b53_get_sset_count
--> phy_ethtool_get_sset_count
-   -> return -EIO
-
--EIO is -5, and with 4 added to it, it becomes -1, aka -EPERM. One can
-imagine that certain error codes may even become positive, although
-based on code inspection I did not see instances of that.
-
-Check the error code first, if it is negative return it as-is.
-
-Based on a similar patch for dsa_master_get_strings from Dan Carpenter:
-https://patchwork.kernel.org/project/netdevbpf/patch/YJaSe3RPgn7gKxZv@mwanda/
-
-Fixes: 91da11f870f0 ("net: Distributed Switch Architecture protocol support")
-Signed-off-by: Vladimir Oltean <vladimir.oltean@nxp.com>
-Reviewed-by: Florian Fainelli <f.fainelli@gmail.com>
-Reviewed-by: Andrew Lunn <andrew@lunn.ch>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Fixes: 3a0af8fd61f9 ("bpf: BPF for lightweight tunnel infrastructure")
+Signed-off-by: Jussi Maki <joamaki@gmail.com>
+Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
+Link: https://lore.kernel.org/bpf/20210519154743.2554771-2-joamaki@gmail.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/dsa/slave.c | 12 +++++++-----
- 1 file changed, 7 insertions(+), 5 deletions(-)
+ net/core/filter.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/net/dsa/slave.c b/net/dsa/slave.c
-index 06f8874d53ee..75b4cd4bcafb 100644
---- a/net/dsa/slave.c
-+++ b/net/dsa/slave.c
-@@ -692,13 +692,15 @@ static int dsa_slave_get_sset_count(struct net_device *dev, int sset)
- 	struct dsa_switch *ds = dp->ds;
- 
- 	if (sset == ETH_SS_STATS) {
--		int count;
-+		int count = 0;
- 
--		count = 4;
--		if (ds->ops->get_sset_count)
--			count += ds->ops->get_sset_count(ds, dp->index, sset);
-+		if (ds->ops->get_sset_count) {
-+			count = ds->ops->get_sset_count(ds, dp->index, sset);
-+			if (count < 0)
-+				return count;
-+		}
- 
--		return count;
-+		return count + 4;
+diff --git a/net/core/filter.c b/net/core/filter.c
+index 9358bc4a3711..ef6bdbb63ecb 100644
+--- a/net/core/filter.c
++++ b/net/core/filter.c
+@@ -3782,6 +3782,7 @@ static inline int __bpf_skb_change_head(struct sk_buff *skb, u32 head_room,
+ 		__skb_push(skb, head_room);
+ 		memset(skb->data, 0, head_room);
+ 		skb_reset_mac_header(skb);
++		skb_reset_mac_len(skb);
  	}
  
- 	return -EOPNOTSUPP;
+ 	return ret;
 -- 
 2.30.2
 
