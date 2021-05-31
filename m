@@ -2,33 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A8A0939604B
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 16:23:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C44039604C
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 16:23:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233430AbhEaOYH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 10:24:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55704 "EHLO mail.kernel.org"
+        id S234009AbhEaOYY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 10:24:24 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55706 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233247AbhEaNu1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 09:50:27 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D591C6142A;
-        Mon, 31 May 2021 13:31:56 +0000 (UTC)
+        id S233256AbhEaNu2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 09:50:28 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6AD3361431;
+        Mon, 31 May 2021 13:31:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1622467917;
-        bh=ghFzGTVOE/F8V/pJ6ebnAk16SWRHvbVtge8asoKoCoA=;
+        s=korg; t=1622467919;
+        bh=wfHtREpFmlGBcwyHVdlPE0JPPJA1LE83SdAOS4fMfQk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=GO0JJyi4n+zoEX58EpfhdVPVw6uEZ8VkLC/5wILKyz+XAA1w/JECfr5f+8J26iNcZ
-         n8tJM4tDmP4b8D2qQPQgtLLrgLrQgaATX1KIUu8uD+cH2CQFZcp6mjkjEk7Ag7toxO
-         XijQRUSLQ3+4+qpepPEZYSN/Jfpz4bk33FZYs1rk=
+        b=bsP8Qn4azXNpg1LzGOWl1RKzQ7B18zOLUlgxX5S0f+5E96i+UqjJ6vcmftrf6I/YZ
+         h8KO++96HhUy7NeufVaf3S4So60Xuu3NdeCAuDhXTrSlYE2mGpKFy5gof/VNb7xAzl
+         mO2hQevy4TMHA2EiJRf9H5/Dlx7ovdYV1O8yIW4g=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Michael Ellerman <mpe@ellerman.id.au>,
-        Shuah Khan <skhan@linuxfoundation.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 049/252] selftests/gpio: Fix build when source tree is read only
-Date:   Mon, 31 May 2021 15:11:54 +0200
-Message-Id: <20210531130659.647165760@linuxfoundation.org>
+        stable@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
+        Daniel Thompson <daniel.thompson@linaro.org>,
+        Jason Wessel <jason.wessel@windriver.com>
+Subject: [PATCH 5.10 050/252] kgdb: fix gcc-11 warnings harder
+Date:   Mon, 31 May 2021 15:11:55 +0200
+Message-Id: <20210531130659.678217373@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210531130657.971257589@linuxfoundation.org>
 References: <20210531130657.971257589@linuxfoundation.org>
@@ -40,64 +40,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Michael Ellerman <mpe@ellerman.id.au>
+From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-[ Upstream commit b68c1c65dec5fb5186ebd33ce52059b4c6db8500 ]
+commit bda7d3ab06f19c02dcef61fefcb9dd954dfd5e4f upstream.
 
-Currently the gpio selftests fail to build if the source tree is read
-only:
+40cc3a80bb42 ("kgdb: fix gcc-11 warning on indentation") tried to fix up
+the gcc-11 complaints in this file by just reformatting the #defines.
+That worked for gcc 11.1.0, but in gcc 11.1.1 as shipped by Fedora 34,
+the warning came back for one of the #defines.
 
-  make -j 160 -C tools/testing/selftests TARGETS=gpio
-  make[1]: Entering directory '/linux/tools/testing/selftests/gpio'
-  make OUTPUT=/linux/tools/gpio/ -C /linux/tools/gpio
-  make[2]: Entering directory '/linux/tools/gpio'
-  mkdir -p /linux/tools/gpio/include/linux 2>&1 || true
-  ln -sf /linux/tools/gpio/../../include/uapi/linux/gpio.h /linux/tools/gpio/include/linux/gpio.h
-  ln: failed to create symbolic link '/linux/tools/gpio/include/linux/gpio.h': Read-only file system
+Fix this up again by putting { } around the if statement, now it is
+quiet again.
 
-This happens because we ask make to build ../../../gpio (tools/gpio)
-without pointing OUTPUT away from the source directory.
-
-To fix it we create a subdirectory of the existing OUTPUT directory,
-called tools-gpio, and tell tools/gpio to build in there.
-
-Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
-Signed-off-by: Shuah Khan <skhan@linuxfoundation.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Fixes: 40cc3a80bb42 ("kgdb: fix gcc-11 warning on indentation")
+Cc: Arnd Bergmann <arnd@arndb.de>
+Cc: Daniel Thompson <daniel.thompson@linaro.org>
+Cc: Jason Wessel <jason.wessel@windriver.com>
+Link: https://lore.kernel.org/r/20210520130839.51987-1-gregkh@linuxfoundation.org
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- tools/testing/selftests/gpio/Makefile | 14 +++++++++-----
- 1 file changed, 9 insertions(+), 5 deletions(-)
+ drivers/misc/kgdbts.c |    3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/tools/testing/selftests/gpio/Makefile b/tools/testing/selftests/gpio/Makefile
-index 615c8a953ade..acf4088a9891 100644
---- a/tools/testing/selftests/gpio/Makefile
-+++ b/tools/testing/selftests/gpio/Makefile
-@@ -17,14 +17,18 @@ KSFT_KHDR_INSTALL := 1
- include ../lib.mk
- 
- GPIODIR := $(realpath ../../../gpio)
--GPIOOBJ := gpio-utils.o
-+GPIOOUT := $(OUTPUT)/tools-gpio/
-+GPIOOBJ := $(GPIOOUT)/gpio-utils.o
- 
- override define CLEAN
- 	$(RM) $(TEST_GEN_PROGS_EXTENDED)
--	$(MAKE) -C $(GPIODIR) OUTPUT=$(GPIODIR)/ clean
-+	$(RM) -rf $(GPIOOUT)
- endef
- 
--$(TEST_GEN_PROGS_EXTENDED): $(GPIODIR)/$(GPIOOBJ)
-+$(TEST_GEN_PROGS_EXTENDED): $(GPIOOBJ)
- 
--$(GPIODIR)/$(GPIOOBJ):
--	$(MAKE) OUTPUT=$(GPIODIR)/ -C $(GPIODIR)
-+$(GPIOOUT):
-+	mkdir -p $@
-+
-+$(GPIOOBJ): $(GPIOOUT)
-+	$(MAKE) OUTPUT=$(GPIOOUT) -C $(GPIODIR)
--- 
-2.30.2
-
+--- a/drivers/misc/kgdbts.c
++++ b/drivers/misc/kgdbts.c
+@@ -100,8 +100,9 @@
+ 		printk(KERN_INFO a);	\
+ } while (0)
+ #define v2printk(a...) do {		\
+-	if (verbose > 1)		\
++	if (verbose > 1) {		\
+ 		printk(KERN_INFO a);	\
++	}				\
+ 	touch_nmi_watchdog();		\
+ } while (0)
+ #define eprintk(a...) do {		\
 
 
