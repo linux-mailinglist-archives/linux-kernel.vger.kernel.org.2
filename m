@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F86F39613E
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 16:36:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DA37D3963A2
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 17:28:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233737AbhEaOhm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 10:37:42 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60840 "EHLO mail.kernel.org"
+        id S234637AbhEaP0O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 11:26:14 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43914 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232656AbhEaN42 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 09:56:28 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 191E861929;
-        Mon, 31 May 2021 13:34:40 +0000 (UTC)
+        id S232171AbhEaOQp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 10:16:45 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D2D37619AB;
+        Mon, 31 May 2021 13:43:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1622468081;
-        bh=RqXk2yi0BUOZJ/yOhOEQKEeAozBKF0mcnoPjQEu93TE=;
+        s=korg; t=1622468598;
+        bh=hqjHEKA1VFp8vfRcd3TJbg14kJYkSHRd9WCLyH65Z3E=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=p44UR1mLIKpWPxYDSjAwWU/qhi35Qkoj1+0VRHud6zE4yygKSOX4wEIb2cpxs4WEb
-         kpZtemQWsOzw1uilmjj/F5Z34NIAA7bIJIw27Z9KOHbqVHEvcTZdBVbyIfVHem/rvl
-         E81AOIpxd5jNZ3y6KOGiii4Ea+BbjjFqi/qt4EbY=
+        b=sQ/Zr6Ke1hyIGqnDs0iqPMm5TjqbaOnZrH7SW3GU+Er0dtbg1NG31G5b738dIxV8l
+         Py+RaqwYkZZqEX3Rid2v7uKeZd4og8A1Frmn4bmNXLHZkc8M89qwuPTzfC+axmVILo
+         DSIIS3T1xGpk4GgM/LjWydoLqEL8aMfIQUmJDX9s=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Shuang Li <shuali@redhat.com>,
-        Xin Long <lucien.xin@gmail.com>, Jon Maloy <jmaloy@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 5.10 108/252] tipc: wait and exit until all work queues are done
-Date:   Mon, 31 May 2021 15:12:53 +0200
-Message-Id: <20210531130701.656863490@linuxfoundation.org>
+        stable@vger.kernel.org, Mathy Vanhoef <Mathy.Vanhoef@kuleuven.be>,
+        Johannes Berg <johannes.berg@intel.com>
+Subject: [PATCH 5.4 017/177] cfg80211: mitigate A-MSDU aggregation attacks
+Date:   Mon, 31 May 2021 15:12:54 +0200
+Message-Id: <20210531130648.512596218@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210531130657.971257589@linuxfoundation.org>
-References: <20210531130657.971257589@linuxfoundation.org>
+In-Reply-To: <20210531130647.887605866@linuxfoundation.org>
+References: <20210531130647.887605866@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,88 +39,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Xin Long <lucien.xin@gmail.com>
+From: Mathy Vanhoef <Mathy.Vanhoef@kuleuven.be>
 
-commit 04c26faa51d1e2fe71cf13c45791f5174c37f986 upstream.
+commit 2b8a1fee3488c602aca8bea004a087e60806a5cf upstream.
 
-On some host, a crash could be triggered simply by repeating these
-commands several times:
+Mitigate A-MSDU injection attacks (CVE-2020-24588) by detecting if the
+destination address of a subframe equals an RFC1042 (i.e., LLC/SNAP)
+header, and if so dropping the complete A-MSDU frame. This mitigates
+known attacks, although new (unknown) aggregation-based attacks may
+remain possible.
 
-  # modprobe tipc
-  # tipc bearer enable media udp name UDP1 localip 127.0.0.1
-  # rmmod tipc
+This defense works because in A-MSDU aggregation injection attacks, a
+normal encrypted Wi-Fi frame is turned into an A-MSDU frame. This means
+the first 6 bytes of the first A-MSDU subframe correspond to an RFC1042
+header. In other words, the destination MAC address of the first A-MSDU
+subframe contains the start of an RFC1042 header during an aggregation
+attack. We can detect this and thereby prevent this specific attack.
+For details, see Section 7.2 of "Fragment and Forge: Breaking Wi-Fi
+Through Frame Aggregation and Fragmentation".
 
-  [] BUG: unable to handle kernel paging request at ffffffffc096bb00
-  [] Workqueue: events 0xffffffffc096bb00
-  [] Call Trace:
-  []  ? process_one_work+0x1a7/0x360
-  []  ? worker_thread+0x30/0x390
-  []  ? create_worker+0x1a0/0x1a0
-  []  ? kthread+0x116/0x130
-  []  ? kthread_flush_work_fn+0x10/0x10
-  []  ? ret_from_fork+0x35/0x40
+Note that for kernel 4.9 and above this patch depends on "mac80211:
+properly handle A-MSDUs that start with a rfc1042 header". Otherwise
+this patch has no impact and attacks will remain possible.
 
-When removing the TIPC module, the UDP tunnel sock will be delayed to
-release in a work queue as sock_release() can't be done in rtnl_lock().
-If the work queue is schedule to run after the TIPC module is removed,
-kernel will crash as the work queue function cleanup_beareri() code no
-longer exists when trying to invoke it.
-
-To fix it, this patch introduce a member wq_count in tipc_net to track
-the numbers of work queues in schedule, and  wait and exit until all
-work queues are done in tipc_exit_net().
-
-Fixes: d0f91938bede ("tipc: add ip/udp media type")
-Reported-by: Shuang Li <shuali@redhat.com>
-Signed-off-by: Xin Long <lucien.xin@gmail.com>
-Acked-by: Jon Maloy <jmaloy@redhat.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Cc: stable@vger.kernel.org
+Signed-off-by: Mathy Vanhoef <Mathy.Vanhoef@kuleuven.be>
+Link: https://lore.kernel.org/r/20210511200110.25d93176ddaf.I9e265b597f2cd23eb44573f35b625947b386a9de@changeid
+Signed-off-by: Johannes Berg <johannes.berg@intel.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- net/tipc/core.c      |    2 ++
- net/tipc/core.h      |    2 ++
- net/tipc/udp_media.c |    2 ++
- 3 files changed, 6 insertions(+)
+ net/wireless/util.c |    3 +++
+ 1 file changed, 3 insertions(+)
 
---- a/net/tipc/core.c
-+++ b/net/tipc/core.c
-@@ -121,6 +121,8 @@ static void __net_exit tipc_exit_net(str
- #ifdef CONFIG_TIPC_CRYPTO
- 	tipc_crypto_stop(&tipc_net(net)->crypto_tx);
- #endif
-+	while (atomic_read(&tn->wq_count))
-+		cond_resched();
- }
+--- a/net/wireless/util.c
++++ b/net/wireless/util.c
+@@ -681,6 +681,9 @@ void ieee80211_amsdu_to_8023s(struct sk_
+ 		remaining = skb->len - offset;
+ 		if (subframe_len > remaining)
+ 			goto purge;
++		/* mitigate A-MSDU aggregation injection attacks */
++		if (ether_addr_equal(eth.h_dest, rfc1042_header))
++			goto purge;
  
- static void __net_exit tipc_pernet_pre_exit(struct net *net)
---- a/net/tipc/core.h
-+++ b/net/tipc/core.h
-@@ -151,6 +151,8 @@ struct tipc_net {
- #endif
- 	/* Work item for net finalize */
- 	struct tipc_net_work final_work;
-+	/* The numbers of work queues in schedule */
-+	atomic_t wq_count;
- };
- 
- static inline struct tipc_net *tipc_net(struct net *net)
---- a/net/tipc/udp_media.c
-+++ b/net/tipc/udp_media.c
-@@ -806,6 +806,7 @@ static void cleanup_bearer(struct work_s
- 		kfree_rcu(rcast, rcu);
- 	}
- 
-+	atomic_dec(&tipc_net(sock_net(ub->ubsock->sk))->wq_count);
- 	dst_cache_destroy(&ub->rcast.dst_cache);
- 	udp_tunnel_sock_release(ub->ubsock);
- 	synchronize_net();
-@@ -826,6 +827,7 @@ static void tipc_udp_disable(struct tipc
- 	RCU_INIT_POINTER(ub->bearer, NULL);
- 
- 	/* sock_release need to be done outside of rtnl lock */
-+	atomic_inc(&tipc_net(sock_net(ub->ubsock->sk))->wq_count);
- 	INIT_WORK(&ub->work, cleanup_bearer);
- 	schedule_work(&ub->work);
- }
+ 		offset += sizeof(struct ethhdr);
+ 		last = remaining <= subframe_len + padding;
 
 
