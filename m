@@ -2,191 +2,225 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D0E1395898
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 11:59:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D6CA3958A9
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 12:02:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231395AbhEaKBR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 06:01:17 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58290 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231514AbhEaKAb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 06:00:31 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 32D1F610A0;
-        Mon, 31 May 2021 09:58:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1622455129;
-        bh=6kbI97vGAbBkOyOvwkIed49Ymrsa0Ja/+U28stuH/58=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=q5hje2ScELjyPNJ9u60mQwPa2LHxOC3LyIK9JffWZkotM/9/SREj3ZWBKtvou+TJi
-         jtR412+hth7vV/h8rY0gvBdRu22jLKPx2YVzCD/AtOUPBgs99ORhHq9ARMnF1RMpin
-         zoHAsBY+Sqez8qRxuCXI6r16XKvK4yMomUa7ijizLn2cjp1ryfaAMN0VqBOFBOAMfa
-         78Pw5b3r1pSOLd/ID1mgYtntD4Wm+i3W2k4+k0sNVuVE17Hh+oS0cpwDeyz3gEfs8/
-         rW5i69hqE/ldzZkRlFqsKw0C8zNm+AOioSnezo6ps7a6mOmI+IG5zCwKGbofAlPADE
-         yZGRcbHssdxYw==
-Date:   Mon, 31 May 2021 12:58:40 +0300
-From:   Mike Rapoport <rppt@kernel.org>
-To:     Borislav Petkov <bp@alien8.de>
-Cc:     Lianbo Jiang <lijiang@redhat.com>, linux-kernel@vger.kernel.org,
-        x86@kernel.org, linux-efi@vger.kernel.org,
-        platform-driver-x86@vger.kernel.org, kexec@lists.infradead.org,
-        ardb@kernel.org, dvhart@infradead.org, andy@infradead.org,
-        tglx@linutronix.de, mingo@redhat.com, hpa@zytor.com,
-        luto@amacapital.net, bhe@redhat.com, dyoung@redhat.com
-Subject: Re: [PATCH v2] x86/efi: unconditionally hold the whole low-1MB
- memory regions
-Message-ID: <YLSzUBQ/7CyINu87@kernel.org>
-References: <20210531090023.16471-1-lijiang@redhat.com>
- <YLSnkKeoQnokXVsK@zn.tnic>
+        id S231253AbhEaKES (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 06:04:18 -0400
+Received: from ssl.serverraum.org ([176.9.125.105]:55769 "EHLO
+        ssl.serverraum.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230518AbhEaKEO (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 06:04:14 -0400
+Received: from ssl.serverraum.org (web.serverraum.org [172.16.0.2])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ssl.serverraum.org (Postfix) with ESMTPSA id 8D704221E6;
+        Mon, 31 May 2021 12:02:31 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2016061301;
+        t=1622455352;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=yHnj8ZChpZfQ7rJMK2Ssfqvgsi+pIPIjW/sU2HAAnww=;
+        b=OrhsVzs4VbvB2eQXxVYhdwyrXwP8a0gKdZgKeX4Gq9mG/cevW5xLI2dLOZ1n64MjnNIQFy
+        Z2cuJ+N8iyo02+Dc9HDqYwDkuNJGlpz1XB5VFOvHMT2BatnRlBEQ9LqTcw+ibki4a8ZN68
+        H+1jixWHCNPj2O+kGfHepOOzJa3/Ki8=
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YLSnkKeoQnokXVsK@zn.tnic>
+Content-Type: text/plain; charset=UTF-8;
+ format=flowed
+Content-Transfer-Encoding: 8bit
+Date:   Mon, 31 May 2021 12:02:31 +0200
+From:   Michael Walle <michael@walle.cc>
+To:     Sander Vanheule <sander@svanheule.net>
+Cc:     Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Andrew Lunn <andrew@lunn.ch>, Pavel Machek <pavel@ucw.cz>,
+        Rob Herring <robh+dt@kernel.org>,
+        Lee Jones <lee.jones@linaro.org>,
+        Mark Brown <broonie@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J . Wysocki" <rafael@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Linux LED Subsystem <linux-leds@vger.kernel.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v3 0/6] RTL8231 GPIO expander support
+In-Reply-To: <7a9978881e9ec5d4b811fa6e5d355fb6bce6f6d8.camel@svanheule.net>
+References: <cover.1620735871.git.sander@svanheule.net>
+ <cover.1621809029.git.sander@svanheule.net> <YKr9G3EfrM34gCsL@lunn.ch>
+ <CAHp75VewCw8ES_9S48qmeCtSXMkGWt0s4iub0Fu4ZuwWANHpaQ@mail.gmail.com>
+ <02bbf73ea8a14119247f07a677993aad2f45b088.camel@svanheule.net>
+ <f03d5cdc958110fc7d95cfc4258dac4e@walle.cc>
+ <84352c93f27d7c8b7afea54f3932020e9cd97d02.camel@svanheule.net>
+ <a644b8fa-c90a-eab6-9cca-08344abec532@redhat.com>
+ <CAHp75VcFmU4rJ6jL204xGFM=s2LV=KQmsV8E75BpuSAZMXBn0w@mail.gmail.com>
+ <c7239e0cbbc9748925410937a914bd8a@walle.cc>
+ <7a9978881e9ec5d4b811fa6e5d355fb6bce6f6d8.camel@svanheule.net>
+User-Agent: Roundcube Webmail/1.4.11
+Message-ID: <0047200eecbd7ee480258cc904d6b7ee@walle.cc>
+X-Sender: michael@walle.cc
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 31, 2021 at 11:08:32AM +0200, Borislav Petkov wrote:
-> + Mike.
+Am 2021-05-31 10:36, schrieb Sander Vanheule:
+> On Sun, 2021-05-30 at 23:22 +0200, Michael Walle wrote:
+>> Am 2021-05-30 20:16, schrieb Andy Shevchenko:
+>> > On Sun, May 30, 2021 at 7:51 PM Hans de Goede <hdegoede@redhat.com>
+>> > wrote:
+>> > > On 5/30/21 6:19 PM, Sander Vanheule wrote:
+>> > > > As Michael suggested, I tried raw register reads and writes, to eliminate
+>> > > > any
+>> > > > side effects of the intermediate code. I didn't use the ioctls (this isn't
+>> > > > a
+>> > > > netdev), but I found regmap's debugfs write functionality, which allowed
+>> > > > me to
+>> > > > do the same.
+>> > > >
+>> > > > I was trying to reproduce the behaviour I reported earlier, but couldn't.
+>> > > > The
+>> > > > output levels were always the intended ones. At some point I realised that
+>> > > > the
+>> > > > regmap_update_bits function does a read-modify-write, which might shadow
+>> > > > the
+>> > > > actual current output value.
+>> > > > For example:
+>> > > >  * Set output low: current out is low
+>> > > >  * Change to input with pull-up: current out is still low, but DATAx reads
+>> > > > high
+>> > > >  * Set output high: RMW reads a high value (the input), so assumes a write
+>> > > > is
+>> > > >    not necessary, leaving the old output value (low).
+>> > > >
+>> > > > Currently, I see two options:
+>> > > >  * Use regmap_update_bits_base to avoid the lazy RMW behaviour
+>> > > >  * Add a cache for the output data values to the driver, and only use
+>> > > > these
+>> > > >    values to write to the output registers. This would allow keeping lazy
+>> > > > RMW
+>> > > >    behaviour, which may be a benefit on slow busses.
+>> > > >
+>> > > > With either of these implemented, if I set the output value before the
+>> > > > direction, everything works! :-)
+>> > > >
+>> > > > Would you like this to be added to regmap-gpio, or should I revert back to
+>> > > > a
+>> > > > device-specific implementation?
+>> > >
+>> > > Regmap allows you to mark certain ranges as volatile, so that they
+>> > > will not
+>> > > be cached, these GPIO registers containing the current pin value seems
+>> > > like
+>> > > a good candidate for this. This is also necessary to make reading the
+>> > > GPIO
+>> > > work without getting back a stale, cached value.
+>> >
+>> > After all it seems a simple missed proper register configuration in
+>> > the driver for regmap.
+>> > Oh, as usual something easy-to-solve requires tons of time to find it.
+>> > :-)
+>> >
+>> > Sander, I think you may look at gpio-pca953x.c to understand how it
+>> > works (volatility of registers).
+>> 
+>> But as far as I see is the regmap instantiated without a cache?
 > 
-> On Mon, May 31, 2021 at 05:00:23PM +0800, Lianbo Jiang wrote:
-> > Some sub-1MB memory regions may be reserved by EFI boot services, and the
-> > memory regions will be released later in the efi_free_boot_services().
-> > 
-> > Currently, always reserve all sub-1MB memory regions when the crashkernel
-> > option is specified, but unfortunately EFI boot services may have already
-> > reserved some sub-1MB memory regions before the crash_reserve_low_1M() is
-> > called, which makes that the crash_reserve_low_1M() only own the
-> > remaining sub-1MB memory regions, not all sub-1MB memory regions, because,
-> > subsequently EFI boot services will free its own sub-1MB memory regions.
-> > Eventually, DMA will be able to allocate memory from the sub-1MB area and
-> > cause the following error:
-> > 
-> > crash> kmem -s |grep invalid
-> > kmem: dma-kmalloc-512: slab: ffffd52c40001900 invalid freepointer: ffff9403c0067300
-> > kmem: dma-kmalloc-512: slab: ffffd52c40001900 invalid freepointer: ffff9403c0067300
-> > crash> vtop ffff9403c0067300
-> > VIRTUAL           PHYSICAL
-> > ffff9403c0067300  67300   --->The physical address falls into this range [0x0000000000063000-0x000000000008efff]
-> > 
-> > kernel debugging log:
-> > ...
-> > [    0.008927] memblock_reserve: [0x0000000000010000-0x0000000000013fff] efi_reserve_boot_services+0x85/0xd0
-> > [    0.008930] memblock_reserve: [0x0000000000063000-0x000000000008efff] efi_reserve_boot_services+0x85/0xd0
-> > ...
-> > [    0.009425] memblock_reserve: [0x0000000000000000-0x00000000000fffff] crash_reserve_low_1M+0x2c/0x49
-> > ...
-> > [    0.010586] Zone ranges:
-> > [    0.010587]   DMA      [mem 0x0000000000001000-0x0000000000ffffff]
-> > [    0.010589]   DMA32    [mem 0x0000000001000000-0x00000000ffffffff]
-> > [    0.010591]   Normal   [mem 0x0000000100000000-0x0000000c7fffffff]
-> > [    0.010593]   Device   empty
-> > ...
-> > [    8.814894] __memblock_free_late: [0x0000000000063000-0x000000000008efff] efi_free_boot_services+0x14b/0x23b
-> > [    8.815793] __memblock_free_late: [0x0000000000010000-0x0000000000013fff] efi_free_boot_services+0x14b/0x23b
-> > 
-> > To fix the above issues, let's hold the whole low-1M memory regions
-> > unconditionally in the efi_free_boot_services().
-> > 
-> > Signed-off-by: Lianbo Jiang <lijiang@redhat.com>
-> > ---
-> > Background(copy from bhe's comment in the patch v1):
-> > 
-> > Kdump kernel also need go through real mode code path during bootup. It
-> > is not different than normal kernel except that it skips the firmware
-> > resetting. So kdump kernel needs low 1M as system RAM just as normal
-> > kernel does. Here we reserve the whole low 1M with memblock_reserve()
-> > to avoid any later kernel or driver data reside in this area. Otherwise,
-> > we need dump the content of this area to vmcore. As we know, when crash
-> > happened, the old memory of 1st kernel should be untouched until vmcore
-> > dumping read out its content. Meanwhile, kdump kernel need reuse low 1M.
-> > In the past, we used a back up region to copy out the low 1M area, and
-> > map the back up region into the low 1M area in vmcore elf file. In
-> > 6f599d84231fd27 ("x86/kdump: Always reserve the low 1M when the crashkernel
-> > option is specified"), we changed to lock the whole low 1M to avoid
-> > writting any kernel data into, like this we can skip this area when
-> > dumping vmcore.
-> > 
-> > Above is why we try to memblock reserve the whole low 1M. We don't want
-> > to use it, just don't want anyone to use it in 1st kernel.
-> > 
-> > 
-> >  arch/x86/platform/efi/quirks.c | 32 +++++++++++++++-----------------
-> >  1 file changed, 15 insertions(+), 17 deletions(-)
-> > 
-> > diff --git a/arch/x86/platform/efi/quirks.c b/arch/x86/platform/efi/quirks.c
-> > index 7850111008a8..840b7e3b3d48 100644
-> > --- a/arch/x86/platform/efi/quirks.c
-> > +++ b/arch/x86/platform/efi/quirks.c
-> > @@ -11,6 +11,7 @@
-> >  #include <linux/memblock.h>
-> >  #include <linux/acpi.h>
-> >  #include <linux/dmi.h>
-> > +#include <linux/sizes.h>
-> >  
-> >  #include <asm/e820/api.h>
-> >  #include <asm/efi.h>
-> > @@ -409,7 +410,7 @@ void __init efi_free_boot_services(void)
-> >  	for_each_efi_memory_desc(md) {
-> >  		unsigned long long start = md->phys_addr;
-> >  		unsigned long long size = md->num_pages << EFI_PAGE_SHIFT;
-> > -		size_t rm_size;
-> > +		unsigned long long end = start + size;
-> >  
-> >  		if (md->type != EFI_BOOT_SERVICES_CODE &&
-> >  		    md->type != EFI_BOOT_SERVICES_DATA) {
-> > @@ -431,23 +432,20 @@ void __init efi_free_boot_services(void)
-> >  		efi_unmap_pages(md);
-> >  
-> >  		/*
-> > -		 * Nasty quirk: if all sub-1MB memory is used for boot
-> > -		 * services, we can get here without having allocated the
-> > -		 * real mode trampoline.  It's too late to hand boot services
-> > -		 * memory back to the memblock allocator, so instead
-> > -		 * try to manually allocate the trampoline if needed.
-> > -		 *
-> > -		 * I've seen this on a Dell XPS 13 9350 with firmware
-> > -		 * 1.4.4 with SGX enabled booting Linux via Fedora 24's
-> > -		 * grub2-efi on a hard disk.  (And no, I don't know why
-> > -		 * this happened, but Linux should still try to boot rather
-> > -		 * panicking early.)
-> > +		 * The sub-1MB memory may be within the range[0, SZ_1M]
-> > +		 * or across the low-1M memory boundary. Let's handle
-> > +		 * these two cases and hold the whole low-1M memory
-> > +		 * unconditionally.
-> >  		 */
-> > -		rm_size = real_mode_size_needed();
-> > -		if (rm_size && (start + rm_size) < (1<<20) && size >= rm_size) {
-> > -			set_real_mode_mem(start);
-
-This will restore the issue with Dell XPS described above (presuming it's
-still relevant with recent kernels).
-
-> > -			start += rm_size;
-> > -			size -= rm_size;
-> > +		if (start < SZ_1M) {
-> > +			/* Within the range[0, SZ_1M] */
-> > +			if (end <= SZ_1M)
-> > +				continue;
-> > +			else {
-> > +				/* Across the low-1M memory boundary */
-> > +				size -= (SZ_1M - start);
-> > +				start = SZ_1M;
-> > +			}
-> >  		}
-> >  
-> >  		memblock_free_late(start, size);
-> > -- 
+> That's correct, there currently is no cache, although I could add one.
 > 
-> I don't think this will be needed when this here happens:
+> The data register rather appears to be implemented as a read-only (pin 
+> inputs)
+> register and a write-only (pin outputs) register, aliased on the same 
+> register
+> address.
+
+Ahh so this makes more sense. If the data register is really write only
+regardless of the direction mode, then RMW doesn't make any sense at 
+all.
+Please note, that even if regmap caches values, it might be marked as 
+dirty
+and it will re-read the values from hardware. So I don't know if that 
+will
+help you.
+
+So a possible quirk could be
+  GPIO_REGMAP_WRITE_ONLY_DATA_REG (or something like that)
+
+I'm not sure if regmap can cache the value for us or if we have to do it
+ourselves.
+
+> As I understand, marking the DATA registers as volatile wouldn't help. 
+> With a
+> cache this would force reads to not use the cache, which is indeed 
+> required for
+> the pin input values (DATA register reads). However, the output values 
+> (DATA
+> register writes) can in fact be cached.
+> Looking at _regmap_update_bits(), marking a register as volatile would 
+> only make
+> a difference if regmap.reg_update_bits is implemented. On an MDIO bus, 
+> this
+> would also be emulated with a lazy RMW (see mdiobus_modify()), which is 
+> why I
+> chose not to implement it for regmap-mdio.
 > 
-> https://lkml.kernel.org/r/YK%2Bgv0vDfLVD7Sqp@kernel.org
+> So, I still think the issue lies with the lazy RMW behaviour. The patch 
+> below
+> would force a register update when reg_set_base (the data output 
+> register) and
+> reg_dat_base (the data input register) are identical. Otherwise the two
+> registers are assumed to have conventional RW behaviour. I'm just not 
+> entirely
+> sure gpio-regmap.c is the right place for this.
+> 
+> ---8<---
+> 
+> diff --git a/drivers/gpio/gpio-regmap.c b/drivers/gpio/gpio-regmap.c
+> index 95553734e169..c2fccd19548a 100644
+> --- a/drivers/gpio/gpio-regmap.c
+> +++ b/drivers/gpio/gpio-regmap.c
+> @@ -81,13 +81,16 @@ static void gpio_regmap_set(struct gpio_chip *chip, 
+> unsigned
+> int offset,
+>  {
+>         struct gpio_regmap *gpio = gpiochip_get_data(chip);
+>         unsigned int base = gpio_regmap_addr(gpio->reg_set_base);
+> +       bool force = gpio->reg_set_base == gpio->reg_dat_base;
 
-Right, but TBH, I didn't update efi_free_boot_services() in my initial
-version. I've added similar change there now and I'm waiting now to see if
-kbuild is happy with this:
+Ha I've thought of the same thing, but there might be hardware which
+actually mux the data in and data out register. Thus I think we have
+to distiguish between:
 
-https://git.kernel.org/pub/scm/linux/kernel/git/rppt/linux.git/log/?h=x86/reservelow
+  (1) write only data registers
+  (2) muxed data in/data out according to the direction
 
--- 
-Sincerely yours,
-Mike.
+for (1) we'd have to cache the value (ourselves (?))
+for (2) we'd only need to drop a cached value if we switch directions
+
+>         unsigned int reg, mask;
+> 
+>         gpio->reg_mask_xlate(gpio, base, offset, &reg, &mask);
+>         if (val)
+> -               regmap_update_bits(gpio->regmap, reg, mask, mask);
+> +               regmap_update_bits_base(gpio->regmap, reg, mask, mask, 
+> NULL,
+> +                                       false, force);
+
+mh, I don't see how this will work with a write only register. I seems
+that you might accidentially change the values of the other GPIOs in
+this registers (that is depending on the input of them, because you
+are still doing a RMW).
+
+>         else
+> -               regmap_update_bits(gpio->regmap, reg, mask, 0);
+> +               regmap_update_bits_base(gpio->regmap, reg, mask, 0, 
+> NULL,
+> +                                       false, force);
+>  }
+> 
+>  static void gpio_regmap_set_with_clear(struct gpio_chip *chip,
+
+-michael
