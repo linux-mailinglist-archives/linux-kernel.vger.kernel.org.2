@@ -2,140 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B23B83954C0
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 06:41:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F37B3954DC
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 06:56:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230112AbhEaEnA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 00:43:00 -0400
-Received: from mx0b-00069f02.pphosted.com ([205.220.177.32]:42746 "EHLO
-        mx0b-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229475AbhEaEmw (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 00:42:52 -0400
-Received: from pps.filterd (m0246631.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 14V4bW8G010223;
-        Mon, 31 May 2021 04:40:33 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- content-transfer-encoding : in-reply-to; s=corp-2020-01-29;
- bh=bi9DxGZAxkKZrMq89FwAaWRgj9tNTfG5Pz62LsoLm9E=;
- b=VfJIjkM8i8gR5iMzqMMWZsoYgoyChLXeXVB8IvVyrsMMuDA43ME2T59rsHtxZJz05SpA
- XkJXsyQjJH9I1VZ0jKoyCmz6aWuPaS4nAFJv8JVbPZ1leGm+t0bttRB1y7jmxIemJ/Mf
- WFQDQzsAnmkJHVeXSnscP23aXLP/P9zBnDWPHFEX2fAhB+MIxd28pwLxh82X+SNBJMMN
- Jhv9D7UKEhClOC+lL55BwjGSB1A6Ze+c/2vFjgOOJMgFbtzThc44JlOpqXdBfiMnmpjI
- 14W0wisxLHPCvNcaLLFY0gc+/oLFzxu2K+R7z0yCKBvM4BfBWCoMORwOl3DQlg6K5Y7E UQ== 
-Received: from oracle.com (userp3020.oracle.com [156.151.31.79])
-        by mx0b-00069f02.pphosted.com with ESMTP id 38ucd10kb2-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 31 May 2021 04:40:33 +0000
-Received: from userp3020.oracle.com (userp3020.oracle.com [127.0.0.1])
-        by pps.podrdrct (8.16.0.36/8.16.0.36) with SMTP id 14V4eW5E194782;
-        Mon, 31 May 2021 04:40:32 GMT
-Received: from pps.reinject (localhost [127.0.0.1])
-        by userp3020.oracle.com with ESMTP id 38uycq2aa0-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 31 May 2021 04:40:32 +0000
-Received: from userp3020.oracle.com (userp3020.oracle.com [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 14V4eWSH194760;
-        Mon, 31 May 2021 04:40:32 GMT
-Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
-        by userp3020.oracle.com with ESMTP id 38uycq2a99-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 31 May 2021 04:40:32 +0000
-Received: from abhmp0016.oracle.com (abhmp0016.oracle.com [141.146.116.22])
-        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 14V4eTVm023366;
-        Mon, 31 May 2021 04:40:29 GMT
-Received: from kadam (/41.212.42.34)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Sun, 30 May 2021 21:40:29 -0700
-Date:   Mon, 31 May 2021 07:40:22 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     Dongliang Mu <mudongliangabcd@gmail.com>
-Cc:     perex@perex.cz, tiwai@suse.com, alsa-devel@alsa-project.org,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        syzbot+08a7d8b51ea048a74ffb@syzkaller.appspotmail.com
-Subject: Re: [PATCH] ALSA: control led: fix memory leak in
- snd_ctl_led_register
-Message-ID: <20210531044022.GU24442@kadam>
-References: <20210528131757.2269989-1-mudongliangabcd@gmail.com>
- <20210528133309.GR24442@kadam>
- <CAD-N9QVWcEJjoziA6HVoQiUueVaKqAJS5Et60zvCvuUE7e6=gg@mail.gmail.com>
- <20210528140500.GS24442@kadam>
- <A622EB84-DC4A-47A4-A828-CE6D25DC92EB@gmail.com>
- <CAD-N9QVjhDDJxRnNrDzwt05BNijr1o11nE8xjvq8GrakEJ8EuQ@mail.gmail.com>
+        id S230103AbhEaE6J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 00:58:09 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38844 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229717AbhEaE6H (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 00:58:07 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D886961057;
+        Mon, 31 May 2021 04:56:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1622436988;
+        bh=ZmSvGxgElt/PTBdcjud8xAVC3SnaA7rmloK6j6Sv88s=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=iECVcrjdtpBEoiSTdgPnfA9VaCZX3lXZXVFRxcs36qIJm/fGdtrOg6ursZ+ZUev6p
+         SG3ywHs9kGpchB+/l0NRmeD5iCcyzHVz+3Q08ImQ4cRhhwQaCcDa7NSr6UaWFTEGuz
+         2HuPqdeBd30igoYiQHo8xDIOag1dwVriDuvzZSlQ=
+Date:   Mon, 31 May 2021 06:56:26 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Xie Yongji <xieyongji@bytedance.com>
+Cc:     mst@redhat.com, jasowang@redhat.com, stefanha@redhat.com,
+        sgarzare@redhat.com, parav@nvidia.com, hch@infradead.org,
+        christian.brauner@canonical.com, rdunlap@infradead.org,
+        willy@infradead.org, viro@zeniv.linux.org.uk, axboe@kernel.dk,
+        bcrl@kvack.org, corbet@lwn.net, mika.penttila@nextfour.com,
+        dan.carpenter@oracle.com, joro@8bytes.org,
+        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
+        kvm@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v7 11/12] vduse: Introduce VDUSE - vDPA Device in
+ Userspace
+Message-ID: <YLRsehBRAiCJEDl0@kroah.com>
+References: <20210517095513.850-1-xieyongji@bytedance.com>
+ <20210517095513.850-12-xieyongji@bytedance.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAD-N9QVjhDDJxRnNrDzwt05BNijr1o11nE8xjvq8GrakEJ8EuQ@mail.gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Proofpoint-GUID: RKERy0vMBCakP9vaI4pKWWaxjuNJMYTS
-X-Proofpoint-ORIG-GUID: RKERy0vMBCakP9vaI4pKWWaxjuNJMYTS
+In-Reply-To: <20210517095513.850-12-xieyongji@bytedance.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 31, 2021 at 11:03:36AM +0800, Dongliang Mu wrote:
-> On Sat, May 29, 2021 at 5:35 AM 慕冬亮 <mudongliangabcd@gmail.com> wrote:
-> >
-> >
-> >
-> > > On May 28, 2021, at 10:05 PM, Dan Carpenter <dan.carpenter@oracle.com> wrote:
-> > >
-> > > On Fri, May 28, 2021 at 09:50:49PM +0800, Dongliang Mu wrote:
-> > >>
-> > >> Can you please give some advise on how to fix this WARN issue?
-> > >
-> > > But it feels like it spoils the fun if I write the commit...  Anyway:
-> >
-> > It’s fine. I am still in the learning process. It’s also good to learn experience by comparing your patch and my patch.
-> >
-> > >
-> > > regards,
-> > > dan carpenter
-> > >
-> > > diff --git a/sound/core/control_led.c b/sound/core/control_led.c
-> > > index 25f57c14f294..dd357abc1b58 100644
-> > > --- a/sound/core/control_led.c
-> > > +++ b/sound/core/control_led.c
-> > > @@ -740,6 +740,7 @@ static int __init snd_ctl_led_init(void)
-> > >                       for (; group > 0; group--) {
-> > >                               led = &snd_ctl_leds[group - 1];
-> > >                               device_del(&led->dev);
-> > > +                             device_put(&led->dev);
-> > >                       }
-> > >                       device_del(&snd_ctl_led_dev);
-> > >                       return -ENOMEM;
-> > > @@ -768,6 +769,7 @@ static void __exit snd_ctl_led_exit(void)
-> > >       for (group = 0; group < MAX_LED; group++) {
-> > >               led = &snd_ctl_leds[group];
-> > >               device_del(&led->dev);
-> > > +             device_put(&led->dev);
-> > >       }
-> > >       device_del(&snd_ctl_led_dev);
-> > >       snd_ctl_led_clean(NULL);
-> 
-> Hi Dan,
-> 
-> I tried this patch, and it still triggers the memleak.
+On Mon, May 17, 2021 at 05:55:12PM +0800, Xie Yongji wrote:
+> +struct vduse_dev {
+> +	struct vduse_vdpa *vdev;
+> +	struct device dev;
+> +	struct cdev cdev;
 
-Did your patch fix the leak?  Because my patch should have been
-equivalent except for it fixes an additional leak in the snd_ctl_led_init()
-error path.
+You now have 2 reference counted devices controling the lifespace of a
+single structure.  A mess that is guaranteed to go wrong.  Please never
+do this.
 
-> My
-> understanding is that the device object is already freed in the
-> snd_ctl_led_sysfs_remove.
-> 
+> +	struct vduse_virtqueue *vqs;
+> +	struct vduse_iova_domain *domain;
+> +	char *name;
+> +	struct mutex lock;
+> +	spinlock_t msg_lock;
+> +	atomic64_t msg_unique;
 
-"Already freed"?  Is it a memleak or is it a double free???  I probably
-should have read the syzbot email on this...  But you didn't include
-a link to it or a reported-by tag so I don't have a way to look at the
-actual bug.
+Why do you need an atomic and a lock?
 
-I did fix a bug, though...  Just not the one from the report I guess.
-Please send a link to the bug report so I can look at that.  ;)
+> +	wait_queue_head_t waitq;
+> +	struct list_head send_list;
+> +	struct list_head recv_list;
+> +	struct list_head list;
+> +	struct vdpa_callback config_cb;
+> +	struct work_struct inject;
+> +	spinlock_t irq_lock;
+> +	unsigned long api_version;
+> +	bool connected;
+> +	int minor;
+> +	u16 vq_size_max;
+> +	u32 vq_num;
+> +	u32 vq_align;
+> +	u32 config_size;
+> +	u32 device_id;
+> +	u32 vendor_id;
+> +};
+> +
+> +struct vduse_dev_msg {
+> +	struct vduse_dev_request req;
+> +	struct vduse_dev_response resp;
+> +	struct list_head list;
+> +	wait_queue_head_t waitq;
+> +	bool completed;
+> +};
+> +
+> +struct vduse_control {
+> +	unsigned long api_version;
 
-regards,
-dan carpenter
+u64?
 
+> +};
+> +
+> +static unsigned long max_bounce_size = (64 * 1024 * 1024);
+> +module_param(max_bounce_size, ulong, 0444);
+> +MODULE_PARM_DESC(max_bounce_size, "Maximum bounce buffer size. (default: 64M)");
+> +
+> +static unsigned long max_iova_size = (128 * 1024 * 1024);
+> +module_param(max_iova_size, ulong, 0444);
+> +MODULE_PARM_DESC(max_iova_size, "Maximum iova space size (default: 128M)");
+> +
+> +static bool allow_unsafe_device_emulation;
+> +module_param(allow_unsafe_device_emulation, bool, 0444);
+> +MODULE_PARM_DESC(allow_unsafe_device_emulation, "Allow emulating unsafe device."
+> +	" We must make sure the userspace device emulation process is trusted."
+> +	" Otherwise, don't enable this option. (default: false)");
+> +
+
+This is not the 1990's anymore, please never use module parameters, make
+these per-device attributes if you really need them.
+
+> +static int vduse_init(void)
+> +{
+> +	int ret;
+> +
+> +	if (max_bounce_size >= max_iova_size)
+> +		return -EINVAL;
+> +
+> +	ret = misc_register(&vduse_misc);
+> +	if (ret)
+> +		return ret;
+> +
+> +	vduse_class = class_create(THIS_MODULE, "vduse");
+
+If you have a misc device, you do not need to create a class at the same
+time.  Why are you doing both here?  Just stick with the misc device, no
+need for anything else.
+
+> +	if (IS_ERR(vduse_class)) {
+> +		ret = PTR_ERR(vduse_class);
+> +		goto err_class;
+> +	}
+> +	vduse_class->devnode = vduse_devnode;
+> +
+> +	ret = alloc_chrdev_region(&vduse_major, 0, VDUSE_DEV_MAX, "vduse");
+
+Wait, you want a whole major?  What is the misc device for?
+
+> +MODULE_VERSION(DRV_VERSION);
+
+MODULE_VERSION() makes no sense when the code is merged into the kernel
+tree, so you can just drop that.
+
+thanks,
+
+greg k-h
