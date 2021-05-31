@@ -2,106 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 753DB395982
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 13:13:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B597395986
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 13:14:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231397AbhEaLPE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 07:15:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56588 "EHLO
+        id S231416AbhEaLPt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 07:15:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56744 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230521AbhEaLPD (ORCPT
+        with ESMTP id S230521AbhEaLPo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 07:15:03 -0400
-Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09415C061574
-        for <linux-kernel@vger.kernel.org>; Mon, 31 May 2021 04:13:24 -0700 (PDT)
-Received: by mail-pl1-x631.google.com with SMTP id c13so132923plz.0
-        for <linux-kernel@vger.kernel.org>; Mon, 31 May 2021 04:13:24 -0700 (PDT)
+        Mon, 31 May 2021 07:15:44 -0400
+Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC4DDC06174A
+        for <linux-kernel@vger.kernel.org>; Mon, 31 May 2021 04:14:04 -0700 (PDT)
+Received: by mail-ej1-x62d.google.com with SMTP id k7so6579261ejv.12
+        for <linux-kernel@vger.kernel.org>; Mon, 31 May 2021 04:14:04 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=M7rtmjYl1G3JP0LENPx/2+MKo1rvZR64UzRNYVYPL7k=;
-        b=w+UhEQrG+R7Z/4whk2QWB0GpaE2LdfTk8YPS8MmFSqs7j4IGlKZx/sufJPT0FZqI73
-         PDDtWTlqsXctWMrnCGMSjw28USLt+rhW9HVMmKsmihVusO0gr/TiC4+Ei9OoqJrMm369
-         6rtEByCdptgX+sMNeB1dXJ77B+lGLI79Svd85ZS/JoR2p5joREW4usOsjticuuf7mXVo
-         Khxxnp/mXO+EACO2cefAn0RQ97+oPl9WGSbtaT4t/zxdj2xJvTCcLmD9F0yyUF26pVXz
-         mFH/67zohktL0ZKp9nnsQMcKeMEjo81pGpbFccVVnGZ5ZYb7q0a8BVrvg0DywCaFo8aS
-         qhjQ==
+        h=mime-version:from:date:message-id:subject:to:cc;
+        bh=mHC6kg9c+4sLUzLIkVSoHdH42qTJPJ/8ZqONWvVOQN0=;
+        b=z5yUUnRi/TBcBsaMjZNTifZJV+AgaBYq/soAnh2Q+oWuOqvte2/H1j8bHIPvOwehUe
+         N89aOoo8EKBS9/WZJA+TQX0PKiFDQ1M7ybnP9ldNHmI0/ULlMWcCYNK9iEJoM9VshWbm
+         GqpzSW7IcyFDTz2I84DP2du0oEeVXS1/4NUFsJHIQUvf4hp/lvO4NxXL87feLUQUNPiN
+         KWev3s7XH9NfUXJp9YdTqV5VJXUz7ioI1sYZhiCi251lfqz6OO9rQqb31aWvwBWe/3M3
+         ANgwsSWIsbJQdyr1q5LyJsgd7Am1fkhoGaW3C5+JCWZoGkGOhQApT+awZh1YXHFDgNGx
+         YQlA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=M7rtmjYl1G3JP0LENPx/2+MKo1rvZR64UzRNYVYPL7k=;
-        b=dGpS6FxW3j2TDHXVIdKRjdg9VDw2JXnskp1ISiiy4NPBCoqaC4KLHijfj//2W2p7He
-         jUVnvFJZKW3jw2Bj4zhK+M1mMaroLeelP+ClQQlfo9EwagfVi+wwW1/raVCXE7fkeu+x
-         X+M766Zoo9HX61DmlfN1s32J3C7thhGI3nQBp4R6xa278ipmdYc/L4Y+RXnETgvch78N
-         Ff5b/qXIbqMd2CPogceYEuRzqB4ZlDoW6wCuFLey/bMJa3Wwfv/wXEhjT7oR4/59EFCM
-         j0/TG408u0kfCpvRcrvW/Ww1i4OXFh1P4775Dbire8NrpdBKxj+mEEkqrEl61kODh5Gl
-         8VSg==
-X-Gm-Message-State: AOAM530mV3pd4NQm3iZ26/ugPkW0mN3uPLXsArZvGiqFn+pC7fGHuiCo
-        PLeP6SdYC51KjqhIeNE+FCp6PM8HJbZlb6lq8sf/dA==
-X-Google-Smtp-Source: ABdhPJzHo45kjOG5SmoDhd2D6ubaSlNGrUiJnR6xQnJqE+ZlExbxX8BmsLLaheQLQdhoyH8nLuCC0xiGMxT335qc7uk=
-X-Received: by 2002:a17:902:b713:b029:fd:8738:63cb with SMTP id
- d19-20020a170902b713b02900fd873863cbmr19905123pls.28.1622459603605; Mon, 31
- May 2021 04:13:23 -0700 (PDT)
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
+        bh=mHC6kg9c+4sLUzLIkVSoHdH42qTJPJ/8ZqONWvVOQN0=;
+        b=lOhfBMfS/MHjk5skf3FpZqla6zgfrrYta22pe1rsJZP8kifgN8mBoq0U8/DzaZ8AyO
+         blgXqHKQKqyAYJonzS3ZabyuERJ7+AuIYZq8kwnK70ctPe9N4XwcudwUZ/njPLhMT8+y
+         zHo+W48Kce8mSzt/EpMO+X6i4B5aLdhpJEtLlWqC0QMuDN6Id/xe5o4ZWXSjKATsK00C
+         MSTyqBzSREWlVFcpfDXYng/AoIefJNzZiVJG56WEWotsA+vVvrIREbCfXjL24oMuVd98
+         8c7UDAaPhJOYcLjQmrM83d9bGgaBwWtVxrNI+aHrVxb4oe2vA0FNXEozbKDqL4oqBmOE
+         ihxg==
+X-Gm-Message-State: AOAM531jsvlsPyizyRyNnhGB3ru/PMTo5JrF6u+dxdQZEKx3vNMbMrej
+        xnCyQVVbOGMd1LU2tXKOT1dsGwqtGi7v0mz90YrVGw==
+X-Google-Smtp-Source: ABdhPJzXk8Lt3DpQOUGgad2UrC1f81NDzrAdSNkKHcfoTv1hmTY1uZJWL0xTaw63yS+39qpClAeAWEe88VN/O4pp3F8=
+X-Received: by 2002:a17:906:8318:: with SMTP id j24mr3744182ejx.375.1622459643368;
+ Mon, 31 May 2021 04:14:03 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210511180728.23781-1-jonathan@marek.ca> <20210511180728.23781-14-jonathan@marek.ca>
-In-Reply-To: <20210511180728.23781-14-jonathan@marek.ca>
-From:   Robert Foss <robert.foss@linaro.org>
-Date:   Mon, 31 May 2021 13:13:12 +0200
-Message-ID: <CAG3jFysYpgOpBS+GUh8ZHh16KMWtkPFGmn5O1+svHoe59XuhNQ@mail.gmail.com>
-Subject: Re: [PATCH 13/17] media: camss: vfe-170: fix "VFE halt timeout" error
-To:     Jonathan Marek <jonathan@marek.ca>
-Cc:     MSM <linux-arm-msm@vger.kernel.org>,
-        Andrey Konovalov <andrey.konovalov@linaro.org>,
-        Todor Tomov <todor.too@gmail.com>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        "open list:QUALCOMM CAMERA SUBSYSTEM DRIVER" 
-        <linux-media@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Mon, 31 May 2021 16:43:52 +0530
+Message-ID: <CA+G9fYtwjDoDr=hrSGLg4x5pv3Kq-MbCTzohy3=yLLN7P-Czqw@mail.gmail.com>
+Subject: [stable-rc] 5.12 arch/arm64/kvm/arm.c:722:8: error: use of undeclared
+ label 'out'
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Sasha Levin <sashal@kernel.org>,
+        linux-stable <stable@vger.kernel.org>
+Cc:     Marc Zyngier <maz@kernel.org>, James Morse <james.morse@arm.com>,
+        Alexandru Elisei <alexandru.elisei@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        kvmarm@lists.cs.columbia.edu,
+        open list <linux-kernel@vger.kernel.org>,
+        lkft-triage@lists.linaro.org
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 11 May 2021 at 20:08, Jonathan Marek <jonathan@marek.ca> wrote:
->
-> This function waits for halt_complete but doesn't do anything to cause
-> it to complete, and always hits the "VFE halt timeout" error. Just delete
-> this code for now.
->
-> Fixes: 7319cdf189bb ("media: camss: Add support for VFE hardware version Titan 170")
-> Signed-off-by: Jonathan Marek <jonathan@marek.ca>
-> ---
->  drivers/media/platform/qcom/camss/camss-vfe-170.c | 12 +-----------
->  1 file changed, 1 insertion(+), 11 deletions(-)
->
-> diff --git a/drivers/media/platform/qcom/camss/camss-vfe-170.c b/drivers/media/platform/qcom/camss/camss-vfe-170.c
-> index 076ca082e107..080eef767d3b 100644
-> --- a/drivers/media/platform/qcom/camss/camss-vfe-170.c
-> +++ b/drivers/media/platform/qcom/camss/camss-vfe-170.c
-> @@ -363,17 +363,7 @@ static irqreturn_t vfe_isr(int irq, void *dev)
->   */
->  static int vfe_halt(struct vfe_device *vfe)
->  {
-> -       unsigned long time;
-> -
-> -       reinit_completion(&vfe->halt_complete);
-> -
-> -       time = wait_for_completion_timeout(&vfe->halt_complete,
-> -                                          msecs_to_jiffies(VFE_HALT_TIMEOUT_MS));
-> -       if (!time) {
-> -               dev_err(vfe->camss->dev, "VFE halt timeout\n");
-> -               return -EIO;
-> -       }
-> -
-> +       /* rely on vfe_disable_output() to stop the VFE */
->         return 0;
->  }
+The Linux stable-rc 5.12 arm64 builds failed due to these warnings / errors.
+
+make --silent --keep-going --jobs=8
+O=/home/tuxbuild/.cache/tuxmake/builds/current ARCH=arm64
+CROSS_COMPILE=aarch64-linux-gnu- 'HOSTCC=sccache clang' 'CC=sccache
+clang'
+arch/arm64/kvm/arm.c:722:8: error: use of undeclared label 'out'
+                goto out;
+                     ^
+arch/arm64/kvm/arm.c:918:1: warning: unused label 'out' [-Wunused-label]
+out:
+^~~~
+1 warning and 1 error generated.
+
+Reported-by: Naresh Kamboju <naresh.kamboju@linaro.org>
+
+step to reproduce:
+------------------------
+
+# TuxMake is a command line tool and Python library that provides
+# portable and repeatable Linux kernel builds across a variety of
+# architectures, toolchains, kernel configurations, and make targets.
+#
+# TuxMake supports the concept of runtimes.
+# See https://docs.tuxmake.org/runtimes/, for that to work it requires
+# that you install podman or docker on your system.
+#
+# To install tuxmake on your system globally:
+# sudo pip3 install -U tuxmake
+#
+# See https://docs.tuxmake.org/ for complete documentation.
 
 
-Reviewed-by: Robert Foss <robert.foss@linaro.org>
+tuxmake --runtime podman --target-arch arm64 --toolchain gcc-9
+--kconfig defconfig --kconfig-add
+https://builds.tuxbuild.com/1tILLnkg7Rqf4tsdhjS3VoZDrdk/config
+
+--
+Linaro LKFT
+https://lkft.linaro.org
