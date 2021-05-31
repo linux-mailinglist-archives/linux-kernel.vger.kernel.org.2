@@ -2,95 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 812143958D8
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 12:17:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 22EBE3958DA
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 12:19:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231328AbhEaKTc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 06:19:32 -0400
-Received: from gofer.mess.org ([88.97.38.141]:58109 "EHLO gofer.mess.org"
+        id S231211AbhEaKVX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 06:21:23 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33004 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231320AbhEaKTG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 06:19:06 -0400
-Received: by gofer.mess.org (Postfix, from userid 1000)
-        id 78152C65C0; Mon, 31 May 2021 11:17:25 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=mess.org; s=2020;
-        t=1622456245; bh=bf7SEBXgrhjrigUxjJ91LJdvxUVGe/MCLngjuc5WRjQ=;
+        id S230518AbhEaKVU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 06:21:20 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 315AB610E7;
+        Mon, 31 May 2021 10:19:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1622456379;
+        bh=2E17MlRyF9jgcHRKGxx+DAw+cGznl+dPMZItWR6H9cU=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=JBqh+wd0FoIg3SiUDHDd0iS2SLG0rZ9NG8unWUXOyBGBef13lK68A+BydCbf3AqDs
-         Gdx0kyVVmniB1L5NflJimiE0DYQ7LD6D5SexZyQnXljuLjmAe/rstd7spN7SRstbGA
-         UJyNSnqAJvUByN9MH6SY5Yp1R5bV2FdVdV5OhlTqAj/QGSoeX7/7KIQR7bus+S4yFt
-         PEfKvo6Vi8gQtnyLEBbZjqdVCbMplyrmtSb9AydSG99XkclUOePJlJV62EY1t5MPvd
-         I7Z0SLHO1E3Oo0p3ON/9uqJBknO1CLX3/Z9Dp5gcSJ0om2pexLxXAf8eLHqe9koCv3
-         n3Y2+J2/FB/TA==
-Date:   Mon, 31 May 2021 11:17:25 +0100
-From:   Sean Young <sean@mess.org>
-To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Cc:     Yasunari.Takiguchi@sony.com, mchehab@kernel.org,
-        narmstrong@baylibre.com, linux-media@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
-Subject: Re: [PATCH 1/2] media: cxd2880-spi: Fix an error handling path
-Message-ID: <20210531101725.GB30390@gofer.mess.org>
-References: <28a115d7207b258715a029f822ab88f7a4ee05e6.1621599392.git.christophe.jaillet@wanadoo.fr>
+        b=Hi18iMaiTtmfV15fMTFLamQcUewXekVls0ezWCip0YAjTJLadV9l4dkfuresXmB3m
+         kXdPZRi4PXEl5DYSIb2JhuPUic5GnjMhxqyrWQoB/sYartinPy0JzkWsiv2P89LBl6
+         jdxZNQBdunxmhxtZxVQZW/dNumGt7FHLQCEWgsEtzoFhHUTg8xzPBlmajJhxKaIvMu
+         EIcUcBhxSj0LtU8PpXxKN3gyvctXo8bw5RbdMnG5c1Q1PWByBqYo/b2PzIVEm/0E0v
+         mzrTfMFs6bZWA4gqxoaTycQ58ahtZDX4cZS6BzG2fbCjtFGwYXBrPaDap0yak6Jjmf
+         t9wIvXfF8+dHA==
+Date:   Mon, 31 May 2021 15:49:35 +0530
+From:   Vinod Koul <vkoul@kernel.org>
+To:     Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc:     Bard Liao <yung-chuan.liao@linux.intel.com>,
+        alsa-devel@alsa-project.org, gregkh@linuxfoundation.org,
+        linux-kernel@vger.kernel.org, hui.wang@canonical.com,
+        sanyog.r.kale@intel.com, rander.wang@linux.intel.com,
+        bard.liao@intel.com, Leon Romanovsky <leon@kernel.org>,
+        Jason Gunthorpe <jgg@nvidia.com>,
+        Dave Ertman <david.m.ertman@intel.com>,
+        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+Subject: Re: [PATCH v4] soundwire: intel: move to auxiliary bus
+Message-ID: <YLS4N2KgzfsMBD1c@vkoul-mobl.Dlink>
+References: <20210511052132.28150-1-yung-chuan.liao@linux.intel.com>
+ <21002781-0b78-3b36-952f-683482a925d7@linux.intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <28a115d7207b258715a029f822ab88f7a4ee05e6.1621599392.git.christophe.jaillet@wanadoo.fr>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <21002781-0b78-3b36-952f-683482a925d7@linux.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 21, 2021 at 02:18:14PM +0200, Christophe JAILLET wrote:
-> If an error occurs after a successful 'regulator_enable()' call,
-> 'regulator_disable()' must be called.
+On 25-05-21, 13:30, Pierre-Louis Bossart wrote:
+> On 5/11/21 12:21 AM, Bard Liao wrote:
+> > From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+> > 
+> > Now that the auxiliary_bus exists, there's no reason to use platform
+> > devices as children of a PCI device any longer.
+> > 
+> > This patch refactors the code by extending a basic auxiliary device
+> > with Intel link-specific structures that need to be passed between
+> > controller and link levels. This refactoring is much cleaner with no
+> > need for cross-pointers between device and link structures.
+> > 
+> > Note that the auxiliary bus API has separate init and add steps, which
+> > requires more attention in the error unwinding paths. The main loop
+> > needs to deal with kfree() and auxiliary_device_uninit() for the
+> > current iteration before jumping to the common label which releases
+> > everything allocated in prior iterations.
+> > 
+> > Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+> > Reviewed-by: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
+> > Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+> > Signed-off-by: Bard Liao <yung-chuan.liao@linux.intel.com>
+> > ---
+> > v2:
+> >   - add link_dev_register for all kzalloc, device_init, and device_add.
+> > v3:
+> >   - Modify the function description of sdw_intel_probe() which was
+> >     missing in previous version.
+> > v4:
+> >   - Move intel_link_dev_unregister(ldev) before pm_runtime_put_noidle(
+> >     ldev->link_res.dev) to fix use-after-free reported by KASAN.
 > 
-> Fix the error handling path of the probe accordingly.
+> Two years ago, GregKH stated in
+> https://lore.kernel.org/lkml/20190509181812.GA10776@kroah.com/
 > 
-> Fixes: cb496cd472af ("media: cxd2880-spi: Add optional vcc regulator")
-> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-> ---
->  drivers/media/spi/cxd2880-spi.c | 7 +++++--
->  1 file changed, 5 insertions(+), 2 deletions(-)
+> "So soundwire is creating platform devices?  Ick, no!  Don't do that"
 > 
-> diff --git a/drivers/media/spi/cxd2880-spi.c b/drivers/media/spi/cxd2880-spi.c
-> index 931ec0727cd3..df1335e7061c 100644
-> --- a/drivers/media/spi/cxd2880-spi.c
-> +++ b/drivers/media/spi/cxd2880-spi.c
-> @@ -524,13 +524,13 @@ cxd2880_spi_probe(struct spi_device *spi)
->  	if (IS_ERR(dvb_spi->vcc_supply)) {
->  		if (PTR_ERR(dvb_spi->vcc_supply) == -EPROBE_DEFER) {
->  			ret = -EPROBE_DEFER;
-> -			goto fail_adapter;
-> +			goto fail_regulator;
->  		}
->  		dvb_spi->vcc_supply = NULL;
+> Fast forward two years, this patch provides a solution to remove the use of
+> the platform devices with the auxiliary bus. This move does not add any new
+> functionality, it's just a replacement of one type of device by another.
+> 
+> The reviews have been rather limited since the first version shared on March
+> 22.
+> 
+> a) I updated the code to follow the model of the Mellanox driver in
+> 
+> https://elixir.bootlin.com/linux/latest/source/include/linux/mlx5/driver.h#L545
+> 
+> I hope this addresses GregKH's feedback on the need for a 'register'
+> function to combined the two init and add steps. I didn't see a path to add
+> a generic register function in the auxiliary bus code since between init and
+> add there is a need to setup domain-specific structures. Other contributors
+> to the auxiliary bus (CC:ed) also didn't have a burning desire to add this
+> capability.
+> 
+> b) Vinod commented:
+> 
+> "What I would like to see the end result is that sdw driver for Intel
+> controller here is a simple auxdev device and no additional custom setup
+> layer required... which implies that this handling should be moved into
+> auxdev or Intel code setting up auxdev..."
+> 
+> I was unable to figure out what this comment hinted at: the auxbus is
+> already handled in the intel_init.c and intel.c files and the auxbus is used
+> to model a set of links/managers below the PCI device, not the controller
+> itself. There is also no such thing as a simple auxdev device used in the
+> kernel today, the base layer is meant to be extended with domain-specific
+> structures. There is really no point in creating a simple auxbus device
+> without extensions.
 
-vcc_supply is set to null in this path.
+<back from vacations>
 
->  	} else {
->  		ret = regulator_enable(dvb_spi->vcc_supply);
->  		if (ret)
-> -			goto fail_adapter;
-> +			goto fail_regulator;
->  	}
->  
->  	dvb_spi->spi = spi;
-> @@ -618,6 +618,9 @@ cxd2880_spi_probe(struct spi_device *spi)
->  fail_attach:
->  	dvb_unregister_adapter(&dvb_spi->adapter);
->  fail_adapter:
-> +	if (!IS_ERR(dvb_spi->vcc_supply))
-> +		regulator_disable(dvb_spi->vcc_supply);
+I would like to see that the init_init.c removed completely, that is my
+ask here
 
-IS_ERR(NULL) -> false
-regulator_disable will dereference a null pointer.
+This layer was created by me to aid in creating the platform devices.
+Also the mistake was not to use platform resources and instead pass a
+custom structure for resources (device iomem address, irq etc)
 
+I would like to see is the PCI/SOF parent driver create the sdw aux
+device and that should be all needed to be done. The aux device would be
+probed by sdw driver. No custom resource structs for resources please.
 
-Sean
+If that is not possible, I would like to understand technical details of
+why that would be that case. If required necessary changes should be
+made to aux bus to handle and not have sequencing issue which you had
+trouble with platform approach.
 
-> +fail_regulator:
->  	kfree(dvb_spi);
->  	return ret;
->  }
-> -- 
-> 2.30.2
+Thanks
+-- 
+~Vinod
