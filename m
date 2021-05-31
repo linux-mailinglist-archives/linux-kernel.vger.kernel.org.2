@@ -2,80 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4CD3C3968B9
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 22:26:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 451003968BE
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 22:28:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232064AbhEaU2V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 16:28:21 -0400
-Received: from jabberwock.ucw.cz ([46.255.230.98]:51322 "EHLO
-        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230282AbhEaU2S (ORCPT
+        id S231240AbhEaUaB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 16:30:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38278 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230282AbhEaU3x (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 16:28:18 -0400
-Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
-        id 22BD71C0B7C; Mon, 31 May 2021 22:26:37 +0200 (CEST)
-Date:   Mon, 31 May 2021 22:26:36 +0200
-From:   Pavel Machek <pavel@denx.de>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        Kees Cook <keescook@chromium.org>,
-        Ondrej Mosnacek <omosnace@redhat.com>
-Subject: Re: [PATCH 5.10 053/252] serial: core: fix suspicious
- security_locked_down() call
-Message-ID: <20210531202636.GB18772@amd>
-References: <20210531130657.971257589@linuxfoundation.org>
- <20210531130659.786984803@linuxfoundation.org>
+        Mon, 31 May 2021 16:29:53 -0400
+Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 418D8C061574;
+        Mon, 31 May 2021 13:28:12 -0700 (PDT)
+Received: by mail-lf1-x133.google.com with SMTP id q7so18368997lfr.6;
+        Mon, 31 May 2021 13:28:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=aFEQ7LJ4IndjWtKAkoh3+98OH1W1aYhIxJ7hGveYV50=;
+        b=YRCowztTycQIsNDzf9BKRw1kQbZtkYO3FMXGKpGYrKPFxRmrPvSvWmswrx3Tx1XU+3
+         J18hyoNZB3d1b9UmihrfUGlZ0U8mB25w2bSD6y6ZW5APnuEdseBV0HnqWb+Eq1mnpfUB
+         XjC3LcR3CqE4p2si40a05Hp2y77n0PtErZsVvaGckkKv/NzynQ88wuXbaVMXCkiE/uZx
+         JuZJh8ogVJ0LQVw/ZEx+RDsDBNcPcoIf9kydKWXDzngeeGlt4WA/LqmhEHqhLnb10yew
+         x/dhKcryUjheetkEbD3UAX+jleEFpHWRs9oLMcAhWXwhJ1mr9aiSiyVUfTi1zJ5PLb5x
+         uvEg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=aFEQ7LJ4IndjWtKAkoh3+98OH1W1aYhIxJ7hGveYV50=;
+        b=ODZ41mUYjwGdyNT1H3UxrVrSfKKPaf3s2rMZ53qKH6lYqDms9ky5r6uGbQuGBAVzgG
+         rSkPpNc0EzuRMpYjjm863eavKjJP+orKxxscmbymz+xuDgYyGVroTR5dy12Uepv/e6WH
+         wqAxQP6V9zbJeEzEpiiQ8flGKfeSC0zASfeyv+iH4OsC/NFdlYfrnDqcJs4LnYEte9Te
+         71bDDfWHgR1HcmhEovwzL7MEqCmD/ct5kDEeOGmI4cyy12XcBtBIxBPwK1O7nt+23oLc
+         RDx+s1w9+bZXQCO59HRsDngwKUmd/WV9IjkAk9Xb/eQimCcApe+aqK+4QdrITQQXvTiU
+         r+yA==
+X-Gm-Message-State: AOAM530ULNYVNvKAKAGbqZQuQjQ8M475Wp0cnyrv5cIjiyF6GfyxLd5S
+        0nFl5ft3RbzzMu2J862lNHclwpRr0Ec=
+X-Google-Smtp-Source: ABdhPJxrVJzozM2H0OXTG5vBM2BXsr+h97CO90rL70Ezk2OO0Q+BjGzwg21fv3PGu6nJ3ILNthGPNA==
+X-Received: by 2002:ac2:5f05:: with SMTP id 5mr7273920lfq.2.1622492890505;
+        Mon, 31 May 2021 13:28:10 -0700 (PDT)
+Received: from [192.168.2.145] (79-139-170-222.dynamic.spd-mgts.ru. [79.139.170.222])
+        by smtp.googlemail.com with ESMTPSA id g20sm1446777lfr.81.2021.05.31.13.28.09
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 31 May 2021 13:28:10 -0700 (PDT)
+Subject: Re: [PATCH v5 2/3] soc/tegra: pmc: Add core power domain
+To:     Thierry Reding <thierry.reding@gmail.com>
+Cc:     Jonathan Hunter <jonathanh@nvidia.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Peter Geis <pgwipeout@gmail.com>,
+        Nicolas Chauvet <kwizart@gmail.com>,
+        Viresh Kumar <vireshk@kernel.org>,
+        Stephen Boyd <sboyd@kernel.org>,
+        =?UTF-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>,
+        Rob Herring <robh+dt@kernel.org>,
+        Matt Merhar <mattmerhar@protonmail.com>,
+        Paul Fertser <fercerpav@gmail.com>,
+        linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-pm@vger.kernel.org
+References: <20210516231755.24193-1-digetx@gmail.com>
+ <20210516231755.24193-3-digetx@gmail.com> <YLTYayQD7ufuUsXJ@orome.fritz.box>
+From:   Dmitry Osipenko <digetx@gmail.com>
+Message-ID: <4df63546-8266-3579-a3f7-e133014a4ca6@gmail.com>
+Date:   Mon, 31 May 2021 23:28:09 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="ADZbWkCsHQ7r3kzd"
-Content-Disposition: inline
-In-Reply-To: <20210531130659.786984803@linuxfoundation.org>
-User-Agent: Mutt/1.5.23 (2014-03-12)
+In-Reply-To: <YLTYayQD7ufuUsXJ@orome.fritz.box>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+31.05.2021 15:36, Thierry Reding пишет:
+> On Mon, May 17, 2021 at 02:17:54AM +0300, Dmitry Osipenko wrote:
+>> NVIDIA Tegra SoCs have multiple power domains, each domain corresponds
+>> to an external SoC power rail. Core power domain covers vast majority of
+>> hardware blocks within a Tegra SoC. The voltage of a power domain should
+>> be set to a level which satisfies all devices within the power domain.
+>> Add support for the core power domain which controls voltage state of the
+>> domain. This allows us to support system-wide DVFS on Tegra20-210 SoCs.
+>> The PMC powergate domains now are sub-domains of the core domain, this
+>> requires device-tree updating, older DTBs are unaffected.
+>>
+>> Tested-by: Peter Geis <pgwipeout@gmail.com> # Ouya T30
+>> Tested-by: Paul Fertser <fercerpav@gmail.com> # PAZ00 T20
+>> Tested-by: Nicolas Chauvet <kwizart@gmail.com> # PAZ00 T20 and TK1 T124
+>> Tested-by: Matt Merhar <mattmerhar@protonmail.com> # Ouya T30
+>> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+>> ---
+>>  drivers/soc/tegra/Kconfig  |  14 ++++
+>>  drivers/soc/tegra/pmc.c    | 143 +++++++++++++++++++++++++++++++++++++
+>>  include/soc/tegra/common.h |   6 ++
+>>  3 files changed, 163 insertions(+)
+> 
+> Since this power domain code is all dealt with within the PMC driver,
+> and the PMC driver is enabled on all platforms, how about if we avoid
+> creating the additional SOC_TEGRA_COMMON kconfig option and instead
+> make SOC_TEGRA_PMC list the dependencies?
+> 
+> No need to resend, I can make that change when I apply, if you agree.
 
---ADZbWkCsHQ7r3kzd
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+This can be done. I'll send v6 with the fixed compile-testing anyways,
+so will apply this change there too.
 
-Hi!
+The most recent version of this patch is found in [1]. Sorry for sending
+so many versions and creating confusion, I settled on a unified series
+that takes all build dependencies into account.
 
-> From: Ondrej Mosnacek <omosnace@redhat.com>
+[1] https://patchwork.ozlabs.org/project/linux-tegra/list/?series=246158
 
-=2E..
-
-> Fixes: 794edf30ee6c ("lockdown: Lock down TIOCSSERIAL")
-> Acked-by: Kees Cook <keescook@chromium.org>
-> Signed-off-by: Ondrej Mosnacek <omosnace@redhat.com>
-> Cc: stable <stable@vger.kernel.org>
-> Link: https://lore.kernel.org/r/20210507115719.140799-1-omosnace@redhat.c=
-om
-> Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
-I'm not sure if it is going to cause any problems, but two signoffs
-like this look quite unusual.
-
-Best regards,
-							Pavel
-						=09
---=20
-DENX Software Engineering GmbH,      Managing Director: Wolfgang Denk
-HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
-
---ADZbWkCsHQ7r3kzd
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1
-
-iEYEARECAAYFAmC1RnwACgkQMOfwapXb+vKKTgCgi8kd6RMnPVZAoZHERWV1D7At
-jGkAoIFkCEhKPzAlI8w6Z9DYTT9Yzp0A
-=KJhG
------END PGP SIGNATURE-----
-
---ADZbWkCsHQ7r3kzd--
+Thank you for the review.
