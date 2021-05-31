@@ -2,36 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E7FD395C3D
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 15:28:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9FBD5395E91
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 15:59:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232049AbhEaNaS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 09:30:18 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53846 "EHLO mail.kernel.org"
+        id S233094AbhEaN72 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 09:59:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40216 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232287AbhEaNWp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 09:22:45 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6BFAB6140F;
-        Mon, 31 May 2021 13:19:41 +0000 (UTC)
+        id S232236AbhEaNgY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 09:36:24 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5561861403;
+        Mon, 31 May 2021 13:25:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1622467182;
-        bh=7QXqn94zqFD8tTPdbHgKtZQt7uJTtmRjqr/4mq2F30k=;
+        s=korg; t=1622467547;
+        bh=5DpGA1KMFU7ZPxexWARaQNUL3rVmBIhU43e6YNWNlMc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=j2jL2mZR1DatPLT4qWz0zI/wJl/iJVQaN+fIlneeiYVz/ANDVzUjWCl4K56fckthp
-         R53iYpE1V6UgyJChY5lE7seIZzMQWHWG4hjfPG2BgW6aCDe6EE3dJGBBhE/BN5ncqG
-         RMbfBXA9X+aDQ81Ysqsn0fkXDM0+t7OUAMPQ44hY=
+        b=j/fSyOy2RAPnAk98Eq/qWNXVi98jr0ZYw5WI2Ns3Q/ZqWDWonvAmlXjQlHjk/ZtH3
+         7PwGPREWj2laIs8LRr75agdZLSicXeCidOHak7w4Un9ko0X6mmkZBLk2eM9EMrRFOX
+         l1+iUVYnLgDq3KSkbq39HUkhFRcEGIgik//FxipY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Li Shuang <shuali@redhat.com>,
-        Xin Long <lucien.xin@gmail.com>, Jon Maloy <jmaloy@redhat.com>,
+        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Vladimir Oltean <olteanv@gmail.com>,
         "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 4.9 34/66] tipc: skb_linearize the head skb when reassembling msgs
+Subject: [PATCH 4.19 071/116] net: dsa: fix a crash if ->get_sset_count() fails
 Date:   Mon, 31 May 2021 15:14:07 +0200
-Message-Id: <20210531130637.342399501@linuxfoundation.org>
+Message-Id: <20210531130642.551687572@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210531130636.254683895@linuxfoundation.org>
-References: <20210531130636.254683895@linuxfoundation.org>
+In-Reply-To: <20210531130640.131924542@linuxfoundation.org>
+References: <20210531130640.131924542@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,95 +42,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Xin Long <lucien.xin@gmail.com>
+From: Dan Carpenter <dan.carpenter@oracle.com>
 
-commit b7df21cf1b79ab7026f545e7bf837bd5750ac026 upstream.
+commit a269333fa5c0c8e53c92b5a28a6076a28cde3e83 upstream.
 
-It's not a good idea to append the frag skb to a skb's frag_list if
-the frag_list already has skbs from elsewhere, such as this skb was
-created by pskb_copy() where the frag_list was cloned (all the skbs
-in it were skb_get'ed) and shared by multiple skbs.
+If ds->ops->get_sset_count() fails then it "count" is a negative error
+code such as -EOPNOTSUPP.  Because "i" is an unsigned int, the negative
+error code is type promoted to a very high value and the loop will
+corrupt memory until the system crashes.
 
-However, the new appended frag skb should have been only seen by the
-current skb. Otherwise, it will cause use after free crashes as this
-appended frag skb are seen by multiple skbs but it only got skb_get
-called once.
+Fix this by checking for error codes and changing the type of "i" to
+just int.
 
-The same thing happens with a skb updated by pskb_may_pull() with a
-skb_cloned skb. Li Shuang has reported quite a few crashes caused
-by this when doing testing over macvlan devices:
-
-  [] kernel BUG at net/core/skbuff.c:1970!
-  [] Call Trace:
-  []  skb_clone+0x4d/0xb0
-  []  macvlan_broadcast+0xd8/0x160 [macvlan]
-  []  macvlan_process_broadcast+0x148/0x150 [macvlan]
-  []  process_one_work+0x1a7/0x360
-  []  worker_thread+0x30/0x390
-
-  [] kernel BUG at mm/usercopy.c:102!
-  [] Call Trace:
-  []  __check_heap_object+0xd3/0x100
-  []  __check_object_size+0xff/0x16b
-  []  simple_copy_to_iter+0x1c/0x30
-  []  __skb_datagram_iter+0x7d/0x310
-  []  __skb_datagram_iter+0x2a5/0x310
-  []  skb_copy_datagram_iter+0x3b/0x90
-  []  tipc_recvmsg+0x14a/0x3a0 [tipc]
-  []  ____sys_recvmsg+0x91/0x150
-  []  ___sys_recvmsg+0x7b/0xc0
-
-  [] kernel BUG at mm/slub.c:305!
-  [] Call Trace:
-  []  <IRQ>
-  []  kmem_cache_free+0x3ff/0x400
-  []  __netif_receive_skb_core+0x12c/0xc40
-  []  ? kmem_cache_alloc+0x12e/0x270
-  []  netif_receive_skb_internal+0x3d/0xb0
-  []  ? get_rx_page_info+0x8e/0xa0 [be2net]
-  []  be_poll+0x6ef/0xd00 [be2net]
-  []  ? irq_exit+0x4f/0x100
-  []  net_rx_action+0x149/0x3b0
-
-  ...
-
-This patch is to fix it by linearizing the head skb if it has frag_list
-set in tipc_buf_append(). Note that we choose to do this before calling
-skb_unshare(), as __skb_linearize() will avoid skb_copy(). Also, we can
-not just drop the frag_list either as the early time.
-
-Fixes: 45c8b7b175ce ("tipc: allow non-linear first fragment buffer")
-Reported-by: Li Shuang <shuali@redhat.com>
-Signed-off-by: Xin Long <lucien.xin@gmail.com>
-Acked-by: Jon Maloy <jmaloy@redhat.com>
+Fixes: badf3ada60ab ("net: dsa: Provide CPU port statistics to master netdev")
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+Reviewed-by: Andrew Lunn <andrew@lunn.ch>
+Reviewed-by: Florian Fainelli <f.fainelli@gmail.com>
+Reviewed-by: Vladimir Oltean <olteanv@gmail.com>
 Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- net/tipc/msg.c |    9 ++-------
- 1 file changed, 2 insertions(+), 7 deletions(-)
+ net/dsa/master.c |    5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
---- a/net/tipc/msg.c
-+++ b/net/tipc/msg.c
-@@ -141,18 +141,13 @@ int tipc_buf_append(struct sk_buff **hea
- 		if (unlikely(head))
- 			goto err;
- 		*buf = NULL;
-+		if (skb_has_frag_list(frag) && __skb_linearize(frag))
-+			goto err;
- 		frag = skb_unshare(frag, GFP_ATOMIC);
- 		if (unlikely(!frag))
- 			goto err;
- 		head = *headbuf = frag;
- 		TIPC_SKB_CB(head)->tail = NULL;
--		if (skb_is_nonlinear(head)) {
--			skb_walk_frags(head, tail) {
--				TIPC_SKB_CB(head)->tail = tail;
--			}
--		} else {
--			skb_frag_list_init(head);
--		}
- 		return 0;
- 	}
+--- a/net/dsa/master.c
++++ b/net/dsa/master.c
+@@ -87,8 +87,7 @@ static void dsa_master_get_strings(struc
+ 	struct dsa_switch *ds = cpu_dp->ds;
+ 	int port = cpu_dp->index;
+ 	int len = ETH_GSTRING_LEN;
+-	int mcount = 0, count;
+-	unsigned int i;
++	int mcount = 0, count, i;
+ 	uint8_t pfx[4];
+ 	uint8_t *ndata;
  
+@@ -118,6 +117,8 @@ static void dsa_master_get_strings(struc
+ 		 */
+ 		ds->ops->get_strings(ds, port, stringset, ndata);
+ 		count = ds->ops->get_sset_count(ds, port, stringset);
++		if (count < 0)
++			return;
+ 		for (i = 0; i < count; i++) {
+ 			memmove(ndata + (i * len + sizeof(pfx)),
+ 				ndata + i * len, len - sizeof(pfx));
 
 
