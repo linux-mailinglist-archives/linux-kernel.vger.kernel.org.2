@@ -2,71 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CF88B39661B
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 18:56:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D5C11396674
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 19:06:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234259AbhEaQ5z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 12:57:55 -0400
-Received: from [110.188.70.11] ([110.188.70.11]:23539 "EHLO spam1.hygon.cn"
-        rhost-flags-FAIL-FAIL-OK-FAIL) by vger.kernel.org with ESMTP
-        id S234525AbhEaPEi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 11:04:38 -0400
-Received: from MK-DB.hygon.cn ([172.23.18.60])
-        by spam1.hygon.cn with ESMTP id 14VEvH1I062046;
-        Mon, 31 May 2021 22:57:17 +0800 (GMT-8)
-        (envelope-from puwen@hygon.cn)
-Received: from cncheex01.Hygon.cn ([172.23.18.10])
-        by MK-DB.hygon.cn with ESMTP id 14VEv6Dv050307;
-        Mon, 31 May 2021 22:57:06 +0800 (GMT-8)
-        (envelope-from puwen@hygon.cn)
-Received: from [192.168.1.193] (172.23.18.44) by cncheex01.Hygon.cn
- (172.23.18.10) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2242.10; Mon, 31 May
- 2021 22:56:51 +0800
-Subject: Re: [PATCH] x86/sev: Check whether SEV or SME is supported first
-To:     Joerg Roedel <jroedel@suse.de>
-CC:     Sean Christopherson <seanjc@google.com>, <x86@kernel.org>,
-        <joro@8bytes.org>, <thomas.lendacky@amd.com>,
-        <dave.hansen@linux.intel.com>, <peterz@infradead.org>,
-        <tglx@linutronix.de>, <mingo@redhat.com>, <bp@suse.de>,
-        <hpa@zytor.com>, <sashal@kernel.org>, <gregkh@linuxfoundation.org>,
-        <linux-kernel@vger.kernel.org>, <kvm@vger.kernel.org>,
-        <stable@vger.kernel.org>
-References: <20210526072424.22453-1-puwen@hygon.cn>
- <YK6E5NnmRpYYDMTA@google.com> <905ecd90-54d2-35f1-c8ab-c123d8a3d9a0@hygon.cn>
- <YLSuRBzM6piigP8t@suse.de>
-From:   Pu Wen <puwen@hygon.cn>
-Message-ID: <e1ad087e-a951-4128-923e-867a8b38ecec@hygon.cn>
-Date:   Mon, 31 May 2021 22:56:50 +0800
-User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.9.1
+        id S234114AbhEaRHq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 13:07:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41322 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234574AbhEaQ3w (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 12:29:52 -0400
+Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46F44C061231;
+        Mon, 31 May 2021 07:57:50 -0700 (PDT)
+Received: from zn.tnic (p200300ec2f080f002c54d32600da041e.dip0.t-ipconnect.de [IPv6:2003:ec:2f08:f00:2c54:d326:da:41e])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id CE2831EC03D5;
+        Mon, 31 May 2021 16:57:48 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1622473068;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=q7UmMu6yCEwDn6Mhju/5FZSpRM+RHoqO1YzwnVQdAIc=;
+        b=CnuqzZp9CdIqZCLzQ/uVm/VkRZPAVWiKX6Ujd8k8/5gz7ZyPKx2HrfSRB8bHOcPB0Ndx2x
+        5If4ygHSaRaj2YwFd+7G3YcIUzLndyEgJVBDtJXeT4C5hEUIpFT+99CAf5zBRUpjPIsbBI
+        B4beGHQQWlCAKGw5o9PAQfLZgl7YT4c=
+Date:   Mon, 31 May 2021 16:57:39 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Zhen Lei <thunder.leizhen@huawei.com>
+Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Tony Luck <tony.luck@intel.com>,
+        James Morse <james.morse@arm.com>,
+        Robert Richter <rric@kernel.org>,
+        Johannes Thumshirn <morbidrsa@gmail.com>,
+        Ralf Baechle <ralf@linux-mips.org>,
+        Dinh Nguyen <dinguyen@kernel.org>,
+        Jan Luebbe <jlu@pengutronix.de>,
+        Andre Przywara <andre.przywara@arm.com>,
+        Channagoud Kadabi <ckadabi@codeaurora.org>,
+        Venkata Narendra Kumar Gutta <vnkgutta@codeaurora.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Khuong Dinh <khuong@os.amperecomputing.com>,
+        York Sun <york.sun@nxp.com>,
+        linux-edac <linux-edac@vger.kernel.org>,
+        linux-mips <linux-mips@vger.kernel.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2 3/3] edac: Use 'ret' instead of 'res' to store the
+ return value
+Message-ID: <YLT5Y+FRhUWWszOq@zn.tnic>
+References: <20210531145302.9655-1-thunder.leizhen@huawei.com>
+ <20210531145302.9655-4-thunder.leizhen@huawei.com>
 MIME-Version: 1.0
-In-Reply-To: <YLSuRBzM6piigP8t@suse.de>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [172.23.18.44]
-X-ClientProxiedBy: cncheex01.Hygon.cn (172.23.18.10) To cncheex01.Hygon.cn
- (172.23.18.10)
-X-MAIL: spam1.hygon.cn 14VEvH1I062046
-X-DNSRBL: 
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20210531145302.9655-4-thunder.leizhen@huawei.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/5/31 17:37, Joerg Roedel wrote:
-> On Thu, May 27, 2021 at 11:08:32PM +0800, Pu Wen wrote:
->> Reading MSR_AMD64_SEV which is not implemented on Hygon Dhyana CPU will cause
->> the kernel reboot, and native_read_msr_safe() has no help.
-> 
-> The reason for the reboot is that there is no #GP or #DF handler set up
-> when this MSR is read, so its propagated to a shutdown event. But there
-> is an IDT already, so you can set up early and #GP handler to fix the
-> reboot.
+On Mon, May 31, 2021 at 10:53:02PM +0800, Zhen Lei wrote:
+> Usually 'ret' or 'rc' is used as the abbreviation for 'return code', and
+> 'res' is used as the abbreviation for 'resource'.
 
-Thanks for your suggestion, I'll try to set up early #GP handler to fix
-the problem.
+Or "result."
+
+Please refrain from doing pointless patches like that - it is a totally
+unnecessary churn.
 
 -- 
-Regards,
-Pu Wen
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
