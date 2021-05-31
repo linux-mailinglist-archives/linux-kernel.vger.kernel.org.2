@@ -2,37 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6BD26395DE4
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 15:49:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C26EF3963F6
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 17:40:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231936AbhEaNvg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 09:51:36 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38860 "EHLO mail.kernel.org"
+        id S233561AbhEaPl4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 11:41:56 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48840 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231712AbhEaNfM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 09:35:12 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 39A2F61440;
-        Mon, 31 May 2021 13:25:10 +0000 (UTC)
+        id S232246AbhEaOX1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 10:23:27 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3B2C9619FE;
+        Mon, 31 May 2021 13:45:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1622467510;
-        bh=+bdAPR770A/6qlrJOq4AoDxXZQSCfeehkvgjE5IZtFU=;
+        s=korg; t=1622468747;
+        bh=ZqLak8BtxpSBoSac6F+jFOun1e3iSVOTf+B9UAhpitk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=dzBQF24uQA6Px27Buc7va37jS29znohKcqPObfCowO6V0+IvDl9+Y2GfOECXJxhLE
-         JaSDh2ltkqeg8v6Mlo+zWu5FY1mi5oI+skJh9M6VTsTcjSE+maoW1O+BQ6H4Du6+fW
-         AB88HBOqLaKatrJOCLzV0FgNWLNvoXX2eVHwrpk0=
+        b=isQrZXwUIYkejHuA+6tRcSKf5UtCGUc2YjXDZGTjO6WgyOJLH0r6/SHYkhweUeeEa
+         gOgnJokoRGTk/ezwbjqDCKiPhmviK7h4zs33QE7Hi1TfJMrZWf4SKarUcJGD17b/8C
+         Kmj8eMjDiHs/GnM7BbEYvN+pkhCbTMfeC0RF2Izg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Steve French <stfrench@microsoft.com>,
-        Stefan Metzmacher <metze@samba.org>,
-        Shyam Prasad N <sprasad@microsoft.com>,
+        stable@vger.kernel.org, Mark Brown <broonie@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 092/116] SMB3: incorrect file id in requests compounded with open
-Date:   Mon, 31 May 2021 15:14:28 +0200
-Message-Id: <20210531130643.260729898@linuxfoundation.org>
+Subject: [PATCH 5.4 112/177] ASoC: cs43130: handle errors in cs43130_probe() properly
+Date:   Mon, 31 May 2021 15:14:29 +0200
+Message-Id: <20210531130651.783463399@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210531130640.131924542@linuxfoundation.org>
-References: <20210531130640.131924542@linuxfoundation.org>
+In-Reply-To: <20210531130647.887605866@linuxfoundation.org>
+References: <20210531130647.887605866@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,40 +39,76 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Steve French <stfrench@microsoft.com>
+From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-[ Upstream commit c0d46717b95735b0eacfddbcca9df37a49de9c7a ]
+[ Upstream commit 2da441a6491d93eff8ffff523837fd621dc80389 ]
 
-See MS-SMB2 3.2.4.1.4, file ids in compounded requests should be set to
-0xFFFFFFFFFFFFFFFF (we were treating it as u32 not u64 and setting
-it incorrectly).
+cs43130_probe() does not do any valid error checking of things it
+initializes, OR what it does, it does not unwind properly if there are
+errors.
 
-Signed-off-by: Steve French <stfrench@microsoft.com>
-Reported-by: Stefan Metzmacher <metze@samba.org>
-Reviewed-by: Shyam Prasad N <sprasad@microsoft.com>
+Fix this up by moving the sysfs files to an attribute group so the
+driver core will correctly add/remove them all at once and handle errors
+with them, and correctly check for creating a new workqueue and
+unwinding if that fails.
+
+Cc: Mark Brown <broonie@kernel.org>
+Link: https://lore.kernel.org/r/20210503115736.2104747-58-gregkh@linuxfoundation.org
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/cifs/smb2pdu.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ sound/soc/codecs/cs43130.c | 28 ++++++++++++++--------------
+ 1 file changed, 14 insertions(+), 14 deletions(-)
 
-diff --git a/fs/cifs/smb2pdu.c b/fs/cifs/smb2pdu.c
-index 07d1c79a79ea..43478ec6fd67 100644
---- a/fs/cifs/smb2pdu.c
-+++ b/fs/cifs/smb2pdu.c
-@@ -3124,10 +3124,10 @@ smb2_new_read_req(void **buf, unsigned int *total_len,
- 			 * Related requests use info from previous read request
- 			 * in chain.
- 			 */
--			shdr->SessionId = 0xFFFFFFFF;
-+			shdr->SessionId = 0xFFFFFFFFFFFFFFFF;
- 			shdr->TreeId = 0xFFFFFFFF;
--			req->PersistentFileId = 0xFFFFFFFF;
--			req->VolatileFileId = 0xFFFFFFFF;
-+			req->PersistentFileId = 0xFFFFFFFFFFFFFFFF;
-+			req->VolatileFileId = 0xFFFFFFFFFFFFFFFF;
- 		}
+diff --git a/sound/soc/codecs/cs43130.c b/sound/soc/codecs/cs43130.c
+index bb46e993c353..8f70dee95878 100644
+--- a/sound/soc/codecs/cs43130.c
++++ b/sound/soc/codecs/cs43130.c
+@@ -1735,6 +1735,14 @@ static DEVICE_ATTR(hpload_dc_r, 0444, cs43130_show_dc_r, NULL);
+ static DEVICE_ATTR(hpload_ac_l, 0444, cs43130_show_ac_l, NULL);
+ static DEVICE_ATTR(hpload_ac_r, 0444, cs43130_show_ac_r, NULL);
+ 
++static struct attribute *hpload_attrs[] = {
++	&dev_attr_hpload_dc_l.attr,
++	&dev_attr_hpload_dc_r.attr,
++	&dev_attr_hpload_ac_l.attr,
++	&dev_attr_hpload_ac_r.attr,
++};
++ATTRIBUTE_GROUPS(hpload);
++
+ static struct reg_sequence hp_en_cal_seq[] = {
+ 	{CS43130_INT_MASK_4, CS43130_INT_MASK_ALL},
+ 	{CS43130_HP_MEAS_LOAD_1, 0},
+@@ -2302,23 +2310,15 @@ static int cs43130_probe(struct snd_soc_component *component)
+ 
+ 	cs43130->hpload_done = false;
+ 	if (cs43130->dc_meas) {
+-		ret = device_create_file(component->dev, &dev_attr_hpload_dc_l);
+-		if (ret < 0)
+-			return ret;
+-
+-		ret = device_create_file(component->dev, &dev_attr_hpload_dc_r);
+-		if (ret < 0)
+-			return ret;
+-
+-		ret = device_create_file(component->dev, &dev_attr_hpload_ac_l);
+-		if (ret < 0)
+-			return ret;
+-
+-		ret = device_create_file(component->dev, &dev_attr_hpload_ac_r);
+-		if (ret < 0)
++		ret = sysfs_create_groups(&component->dev->kobj, hpload_groups);
++		if (ret)
+ 			return ret;
+ 
+ 		cs43130->wq = create_singlethread_workqueue("cs43130_hp");
++		if (!cs43130->wq) {
++			sysfs_remove_groups(&component->dev->kobj, hpload_groups);
++			return -ENOMEM;
++		}
+ 		INIT_WORK(&cs43130->work, cs43130_imp_meas);
  	}
- 	if (remaining_bytes > io_parms->length)
+ 
 -- 
 2.30.2
 
