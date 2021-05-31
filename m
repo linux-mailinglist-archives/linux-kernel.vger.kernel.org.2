@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 454F73963EA
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 17:39:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C7323395C83
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 15:33:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234877AbhEaPkY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 11:40:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48836 "EHLO mail.kernel.org"
+        id S232543AbhEaNdv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 09:33:51 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55430 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232768AbhEaOXE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 10:23:04 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 840E96141E;
-        Mon, 31 May 2021 13:45:32 +0000 (UTC)
+        id S231777AbhEaNYZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 09:24:25 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8651D613F6;
+        Mon, 31 May 2021 13:20:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1622468733;
-        bh=cmvl3lmxDmIROeHOoE0A5c/xC3Cp4aQM9DxioMsIpKk=;
+        s=korg; t=1622467221;
+        bh=BeSBxUMoeujGn0kO7erzpPXEwEl53/NqmbSzEjAyfr4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Vf/AM1fO8GvhIOvrRsZ4sbdfzmgHSaE+33lhuEIPQVXdGjDU47RcqwKV8QgMG0v94
-         /KylkK4zzzhS7EX3dei4AWU4Dc22CfV4nM6T8qO7+Bre6gxieRHwSQSV3YF7gmvQU0
-         0ANJrCCb4gbebRPFp/YbAzRR+B9MWbqUjNj+w3mY=
+        b=CGtoh2XLnAHu3XnIwo1TYp0s2NVNmw/4pLUyvU8ey+cKbOXJq+VUWOaCYLWXK4kD1
+         9kwWKhG/mauVh2ybr06J7ccxBB9j7fWC+qMbQOa85gLTjvE+VPss19kLlI3DLVBV+y
+         fGwqrF+usqkiBncQ8aD6dLpVQ4lWlT3ad5KOw99w=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, "David S. Miller" <davem@davemloft.net>,
-        Phillip Potter <phil@philpotter.co.uk>,
+        stable@vger.kernel.org, Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 106/177] isdn: mISDN: correctly handle ph_info allocation failure in hfcsusb_ph_info
-Date:   Mon, 31 May 2021 15:14:23 +0200
-Message-Id: <20210531130651.569751086@linuxfoundation.org>
+Subject: [PATCH 4.9 51/66] btrfs: do not BUG_ON in link_to_fixup_dir
+Date:   Mon, 31 May 2021 15:14:24 +0200
+Message-Id: <20210531130637.877300267@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210531130647.887605866@linuxfoundation.org>
-References: <20210531130647.887605866@linuxfoundation.org>
+In-Reply-To: <20210531130636.254683895@linuxfoundation.org>
+References: <20210531130636.254683895@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,101 +40,74 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Phillip Potter <phil@philpotter.co.uk>
+From: Josef Bacik <josef@toxicpanda.com>
 
-[ Upstream commit 5265db2ccc735e2783b790d6c19fb5cee8c025ed ]
+[ Upstream commit 91df99a6eb50d5a1bc70fff4a09a0b7ae6aab96d ]
 
-Modify return type of hfcusb_ph_info to int, so that we can pass error
-value up the call stack when allocation of ph_info fails. Also change
-three of four call sites to actually account for the memory failure.
-The fourth, in ph_state_nt, is infeasible to change as it is in turn
-called by ph_state which is used as a function pointer argument to
-mISDN_initdchannel, which would necessitate changing its signature
-and updating all the places where it is used (too many).
+While doing error injection testing I got the following panic
 
-Fixes original flawed commit (38d22659803a) from the University of
-Minnesota.
+  kernel BUG at fs/btrfs/tree-log.c:1862!
+  invalid opcode: 0000 [#1] SMP NOPTI
+  CPU: 1 PID: 7836 Comm: mount Not tainted 5.13.0-rc1+ #305
+  Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.13.0-2.fc32 04/01/2014
+  RIP: 0010:link_to_fixup_dir+0xd5/0xe0
+  RSP: 0018:ffffb5800180fa30 EFLAGS: 00010216
+  RAX: fffffffffffffffb RBX: 00000000fffffffb RCX: ffff8f595287faf0
+  RDX: ffffb5800180fa37 RSI: ffff8f5954978800 RDI: 0000000000000000
+  RBP: ffff8f5953af9450 R08: 0000000000000019 R09: 0000000000000001
+  R10: 000151f408682970 R11: 0000000120021001 R12: ffff8f5954978800
+  R13: ffff8f595287faf0 R14: ffff8f5953c77dd0 R15: 0000000000000065
+  FS:  00007fc5284c8c40(0000) GS:ffff8f59bbd00000(0000) knlGS:0000000000000000
+  CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+  CR2: 00007fc5287f47c0 CR3: 000000011275e002 CR4: 0000000000370ee0
+  Call Trace:
+   replay_one_buffer+0x409/0x470
+   ? btree_read_extent_buffer_pages+0xd0/0x110
+   walk_up_log_tree+0x157/0x1e0
+   walk_log_tree+0xa6/0x1d0
+   btrfs_recover_log_trees+0x1da/0x360
+   ? replay_one_extent+0x7b0/0x7b0
+   open_ctree+0x1486/0x1720
+   btrfs_mount_root.cold+0x12/0xea
+   ? __kmalloc_track_caller+0x12f/0x240
+   legacy_get_tree+0x24/0x40
+   vfs_get_tree+0x22/0xb0
+   vfs_kern_mount.part.0+0x71/0xb0
+   btrfs_mount+0x10d/0x380
+   ? vfs_parse_fs_string+0x4d/0x90
+   legacy_get_tree+0x24/0x40
+   vfs_get_tree+0x22/0xb0
+   path_mount+0x433/0xa10
+   __x64_sys_mount+0xe3/0x120
+   do_syscall_64+0x3d/0x80
+   entry_SYSCALL_64_after_hwframe+0x44/0xae
 
-Cc: David S. Miller <davem@davemloft.net>
-Signed-off-by: Phillip Potter <phil@philpotter.co.uk>
-Link: https://lore.kernel.org/r/20210503115736.2104747-48-gregkh@linuxfoundation.org
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+We can get -EIO or any number of legitimate errors from
+btrfs_search_slot(), panicing here is not the appropriate response.  The
+error path for this code handles errors properly, simply return the
+error.
+
+Signed-off-by: Josef Bacik <josef@toxicpanda.com>
+Reviewed-by: David Sterba <dsterba@suse.com>
+Signed-off-by: David Sterba <dsterba@suse.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/isdn/hardware/mISDN/hfcsusb.c | 18 ++++++++++--------
- 1 file changed, 10 insertions(+), 8 deletions(-)
+ fs/btrfs/tree-log.c | 2 --
+ 1 file changed, 2 deletions(-)
 
-diff --git a/drivers/isdn/hardware/mISDN/hfcsusb.c b/drivers/isdn/hardware/mISDN/hfcsusb.c
-index 7a051435c406..1f89378b5623 100644
---- a/drivers/isdn/hardware/mISDN/hfcsusb.c
-+++ b/drivers/isdn/hardware/mISDN/hfcsusb.c
-@@ -46,7 +46,7 @@ static void hfcsusb_start_endpoint(struct hfcsusb *hw, int channel);
- static void hfcsusb_stop_endpoint(struct hfcsusb *hw, int channel);
- static int  hfcsusb_setup_bch(struct bchannel *bch, int protocol);
- static void deactivate_bchannel(struct bchannel *bch);
--static void hfcsusb_ph_info(struct hfcsusb *hw);
-+static int  hfcsusb_ph_info(struct hfcsusb *hw);
- 
- /* start next background transfer for control channel */
- static void
-@@ -241,7 +241,7 @@ hfcusb_l2l1B(struct mISDNchannel *ch, struct sk_buff *skb)
-  * send full D/B channel status information
-  * as MPH_INFORMATION_IND
-  */
--static void
-+static int
- hfcsusb_ph_info(struct hfcsusb *hw)
- {
- 	struct ph_info *phi;
-@@ -249,6 +249,9 @@ hfcsusb_ph_info(struct hfcsusb *hw)
- 	int i;
- 
- 	phi = kzalloc(struct_size(phi, bch, dch->dev.nrbchan), GFP_ATOMIC);
-+	if (!phi)
-+		return -ENOMEM;
-+
- 	phi->dch.ch.protocol = hw->protocol;
- 	phi->dch.ch.Flags = dch->Flags;
- 	phi->dch.state = dch->state;
-@@ -261,6 +264,8 @@ hfcsusb_ph_info(struct hfcsusb *hw)
- 		    sizeof(struct ph_info_dch) + dch->dev.nrbchan *
- 		    sizeof(struct ph_info_ch), phi, GFP_ATOMIC);
- 	kfree(phi);
-+
-+	return 0;
- }
- 
- /*
-@@ -345,8 +350,7 @@ hfcusb_l2l1D(struct mISDNchannel *ch, struct sk_buff *skb)
- 			ret = l1_event(dch->l1, hh->prim);
- 		break;
- 	case MPH_INFORMATION_REQ:
--		hfcsusb_ph_info(hw);
--		ret = 0;
-+		ret = hfcsusb_ph_info(hw);
- 		break;
+diff --git a/fs/btrfs/tree-log.c b/fs/btrfs/tree-log.c
+index 9909b63d2acd..5c86fecaf167 100644
+--- a/fs/btrfs/tree-log.c
++++ b/fs/btrfs/tree-log.c
+@@ -1600,8 +1600,6 @@ static noinline int link_to_fixup_dir(struct btrfs_trans_handle *trans,
+ 		ret = btrfs_update_inode(trans, root, inode);
+ 	} else if (ret == -EEXIST) {
+ 		ret = 0;
+-	} else {
+-		BUG(); /* Logic Error */
  	}
+ 	iput(inode);
  
-@@ -401,8 +405,7 @@ hfc_l1callback(struct dchannel *dch, u_int cmd)
- 			       hw->name, __func__, cmd);
- 		return -1;
- 	}
--	hfcsusb_ph_info(hw);
--	return 0;
-+	return hfcsusb_ph_info(hw);
- }
- 
- static int
-@@ -744,8 +747,7 @@ hfcsusb_setup_bch(struct bchannel *bch, int protocol)
- 			handle_led(hw, (bch->nr == 1) ? LED_B1_OFF :
- 				   LED_B2_OFF);
- 	}
--	hfcsusb_ph_info(hw);
--	return 0;
-+	return hfcsusb_ph_info(hw);
- }
- 
- static void
 -- 
 2.30.2
 
