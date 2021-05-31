@@ -2,191 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B46E395A1E
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 14:08:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C4D5395A2C
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 14:12:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231582AbhEaMKI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 08:10:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40586 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231449AbhEaMJs (ORCPT
+        id S231441AbhEaMNw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 08:13:52 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:14773 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231327AbhEaMNu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 08:09:48 -0400
-Received: from mail-pg1-x535.google.com (mail-pg1-x535.google.com [IPv6:2607:f8b0:4864:20::535])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CBA47C061760
-        for <linux-kernel@vger.kernel.org>; Mon, 31 May 2021 05:08:08 -0700 (PDT)
-Received: by mail-pg1-x535.google.com with SMTP id r1so8196774pgk.8
-        for <linux-kernel@vger.kernel.org>; Mon, 31 May 2021 05:08:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=nigauri-org.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=9giE7g3aTHBAeWI8diKUX6Zo2VQVs3w7fN4PhUxZkco=;
-        b=IO+ET87nDkaC14cKJz5sx9p5HsHbkRWcBEfREc6D93cSLqKaXfqOd85AZ8a2LcPJmk
-         qjDv0xHGlSQ7H+ZVpcgBaz/iCgb1iNioQ30yjMuorhfin2ULwOPUHoRiZv3q8hvMRccF
-         gJCSaStw+8qOytvlnomWAprNjtq0VmduvYQawVPewy1uSpgybLcdpqhRebkPJEyLBt9o
-         L6qE0Txe1/dR28CgAwG0iOQuZdgP5lh5AkCDkaXbi25N8IWug/KECI04PuZkqewZCpn1
-         VPVGFM1OlKqUkFyhIIaVXBqyUte6hFN38H56nzfX4LYLkSFKEiBUDDVscHtOMWMwychr
-         R4pA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=9giE7g3aTHBAeWI8diKUX6Zo2VQVs3w7fN4PhUxZkco=;
-        b=H3cvDwATJke8b9SFWMwylTLGFQ45F3kBP5u6OQxUG1KzOnXb8sXssXD1PAtXjrTPZ0
-         XL3Prs4ov2mH1GIjvh8kj223H7x/2VlWOH4jstBmkosVJ1aCAtO8QUfO+nWwwEgswn80
-         z/KZaKe8QK1Ee+l/tzLaGJciM5efi6nNwfOFE2W1opuKVqeRq0xMEVaAevYZ+7qhSysr
-         ayhYKnfrax+UKNxLvr7NUQhx+au2RKTN7w7v1NQSmhOUhqYWHxpkghFF2XmbJ9x+SGQ4
-         A92gyoHK4bfm5OThjoYVE49KL8iGbCP9u1URylqXclpO1CEdTzdGvj+gZxTqTV5ELqFg
-         fu4w==
-X-Gm-Message-State: AOAM533N12RnGYslJtL8cdvcMbqgyIhFlYRS3wGiwqu9ZNV1bm6h5bcr
-        ZrSCMJib3P5thwaUgLP3vCEt
-X-Google-Smtp-Source: ABdhPJxmSLxiaSi1QQtJcRjqqIJZYOT3XWF7iDtUp4AAUC30VrYstwj3UKXVVw8/joonsuLFuLGslg==
-X-Received: by 2002:a65:6a05:: with SMTP id m5mr22252815pgu.319.1622462888382;
-        Mon, 31 May 2021 05:08:08 -0700 (PDT)
-Received: from localhost ([2405:6581:5360:1800:7285:c2ff:fec2:8f97])
-        by smtp.gmail.com with ESMTPSA id gn4sm10925474pjb.16.2021.05.31.05.08.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 31 May 2021 05:08:07 -0700 (PDT)
-From:   Nobuhiro Iwamatsu <iwamatsu@nigauri.org>
-To:     Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Michal Simek <michal.simek@xilinx.com>
-Cc:     linux-gpio@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Soren Brinkmann <soren.brinkmann@xilinx.com>,
-        Harini Katakam <harinik@xilinx.com>,
-        Anurag Kumar Vulisha <anuragku@xilinx.com>,
-        Shubhrajyoti Datta <shubhrajyoti.datta@xilinx.com>,
-        Nobuhiro Iwamatsu <iwamatsu@nigauri.org>
-Subject: [PATCH] dt-bindings: gpio: zynq: convert bindings to YAML
-Date:   Mon, 31 May 2021 21:07:53 +0900
-Message-Id: <20210531120753.719381-1-iwamatsu@nigauri.org>
-X-Mailer: git-send-email 2.30.0
+        Mon, 31 May 2021 08:13:50 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1622463130; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=kj0/j5b+35di4Lm+Repozi+vu/XaMEIvwlRxt8/z5/w=;
+ b=XRrarPuT9ajoqmaonKlwdpASf9NzDzD9Vvu1Fn098NvyRk/vYUwFH7Kgq0VjzDR0zfmqaqPa
+ 0PHmo+KdgMy4/MGY36SicVnL836EQ/+h/ZrFveK8xRn+jLe+5wOm2FN9ZZSzgcoA9rQT4TJZ
+ Yg4pxsp2ZAc08X2wOZupcUxYMF0=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n07.prod.us-east-1.postgun.com with SMTP id
+ 60b4d299265e7370f727ebc4 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 31 May 2021 12:12:09
+ GMT
+Sender: kathirav=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id E8836C4338A; Mon, 31 May 2021 12:12:08 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: kathirav)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 92A9EC433F1;
+        Mon, 31 May 2021 12:12:08 +0000 (UTC)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Mon, 31 May 2021 17:42:08 +0530
+From:   Kathiravan T <kathirav@codeaurora.org>
+To:     Robert Marko <robimarko@gmail.com>
+Cc:     agross@kernel.org, bjorn.andersson@linaro.org, robh+dt@kernel.org,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] arm64: dts: ipq8074: disable USB phy by default
+In-Reply-To: <20210526150125.1816335-1-robimarko@gmail.com>
+References: <20210526150125.1816335-1-robimarko@gmail.com>
+Message-ID: <92bd27423bbec56881c47eea6c382f42@codeaurora.org>
+X-Sender: kathirav@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Convert gpio for Xilinx Zynq SoC bindings documentation to YAML.
+On 2021-05-26 20:31, Robert Marko wrote:
+> One of the QUSB USB PHY-s has been left enabled by
+> default, this is probably just a mistake as other
+> USB PHY-s are disabled by default.
+> 
+> It makes no sense to have it enabled by default as
+> not all board implement USB ports, so disable it.
+> 
+> Signed-off-by: Robert Marko <robimarko@gmail.com>
 
-Signed-off-by: Nobuhiro Iwamatsu <iwamatsu@nigauri.org>
----
- .../devicetree/bindings/gpio/gpio-zynq.txt    | 36 -----------
- .../devicetree/bindings/gpio/gpio-zynq.yaml   | 59 +++++++++++++++++++
- 2 files changed, 59 insertions(+), 36 deletions(-)
- delete mode 100644 Documentation/devicetree/bindings/gpio/gpio-zynq.txt
- create mode 100644 Documentation/devicetree/bindings/gpio/gpio-zynq.yaml
+Always, it is better to disable in SOC DTS and enable only in the board 
+DTS files.
 
-diff --git a/Documentation/devicetree/bindings/gpio/gpio-zynq.txt b/Documentation/devicetree/bindings/gpio/gpio-zynq.txt
-deleted file mode 100644
-index f693e82b4c0f1b..00000000000000
---- a/Documentation/devicetree/bindings/gpio/gpio-zynq.txt
-+++ /dev/null
-@@ -1,36 +0,0 @@
--Xilinx Zynq GPIO controller Device Tree Bindings
---------------------------------------------
--
--Required properties:
--- #gpio-cells 		: Should be two
--			  - First cell is the GPIO line number
--			  - Second cell is used to specify optional
--			    parameters (unused)
--- compatible		: Should be "xlnx,zynq-gpio-1.0" or
--			  "xlnx,zynqmp-gpio-1.0" or "xlnx,versal-gpio-1.0
--			  or "xlnx,pmc-gpio-1.0
--- clocks		: Clock specifier (see clock bindings for details)
--- gpio-controller	: Marks the device node as a GPIO controller.
--- interrupts		: Interrupt specifier (see interrupt bindings for
--			  details)
--- interrupt-controller	: Marks the device node as an interrupt controller.
--- #interrupt-cells 	: Should be 2.  The first cell is the GPIO number.
--			  The second cell bits[3:0] is used to specify trigger type and level flags:
--			      1 = low-to-high edge triggered.
--			      2 = high-to-low edge triggered.
--			      4 = active high level-sensitive.
--			      8 = active low level-sensitive.
--- reg			: Address and length of the register set for the device
--
--Example:
--	gpio@e000a000 {
--		#gpio-cells = <2>;
--		compatible = "xlnx,zynq-gpio-1.0";
--		clocks = <&clkc 42>;
--		gpio-controller;
--		interrupt-parent = <&intc>;
--		interrupts = <0 20 4>;
--		interrupt-controller;
--		#interrupt-cells = <2>;
--		reg = <0xe000a000 0x1000>;
--	};
-diff --git a/Documentation/devicetree/bindings/gpio/gpio-zynq.yaml b/Documentation/devicetree/bindings/gpio/gpio-zynq.yaml
-new file mode 100644
-index 00000000000000..378da2649e668e
---- /dev/null
-+++ b/Documentation/devicetree/bindings/gpio/gpio-zynq.yaml
-@@ -0,0 +1,59 @@
-+# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/gpio/gpio-zynq.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: Xilinx Zynq GPIO controller Device Tree Bindings
-+
-+maintainers:
-+  - Michal Simek <michal.simek@xilinx.com>
-+
-+properties:
-+  compatible:
-+    const: xlnx,zynq-gpio-1.0
-+
-+  reg:
-+    maxItems: 1
-+
-+  "#gpio-cells":
-+    const: 2
-+
-+  interrupts:
-+    maxItems: 1
-+
-+  gpio-controller: true
-+
-+  interrupt-controller: true
-+
-+  "#interrupt-cells":
-+    const: 2
-+
-+  clocks:
-+    maxItems: 1
-+
-+required:
-+  - compatible
-+  - reg
-+  - "#gpio-cells"
-+  - interrupts
-+  - gpio-controller
-+  - interrupt-controller
-+  - "#interrupt-cells"
-+  - clocks
-+
-+additionalProperties: false
-+
-+examples:
-+  - |
-+    gpio@e000a000 {
-+      #gpio-cells = <2>;
-+      compatible = "xlnx,zynq-gpio-1.0";
-+      clocks = <&clkc 42>;
-+      gpio-controller;
-+      interrupt-parent = <&intc>;
-+      interrupts = <0 20 4>;
-+      interrupt-controller;
-+      #interrupt-cells = <2>;
-+      reg = <0xe000a000 0x1000>;
-+    };
+Reviewed-by: Kathiravan T <kathirav@codeaurora.org>
+
+> ---
+>  arch/arm64/boot/dts/qcom/ipq8074.dtsi | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/arch/arm64/boot/dts/qcom/ipq8074.dtsi
+> b/arch/arm64/boot/dts/qcom/ipq8074.dtsi
+> index 555a107959831..20059d0f7d714 100644
+> --- a/arch/arm64/boot/dts/qcom/ipq8074.dtsi
+> +++ b/arch/arm64/boot/dts/qcom/ipq8074.dtsi
+> @@ -286,6 +286,7 @@ qusb_phy_0: phy@79000 {
+>  			clock-names = "cfg_ahb", "ref";
+> 
+>  			resets = <&gcc GCC_QUSB2_0_PHY_BCR>;
+> +			status = "disabled";
+>  		};
+> 
+>  		qmp_pcie_phy0: phy@84000 {
+
 -- 
-2.30.0
-
+QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a 
+member of Code Aurora Forum, hosted by The Linux Foundation
