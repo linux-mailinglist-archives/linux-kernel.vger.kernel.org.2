@@ -2,41 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BEEA7396457
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 17:53:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E1AC73965D6
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 18:48:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234610AbhEaPz1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 11:55:27 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54710 "EHLO mail.kernel.org"
+        id S231916AbhEaQtt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 12:49:49 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50816 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233993AbhEaO3g (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 10:29:36 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7C54261C2B;
-        Mon, 31 May 2021 13:48:36 +0000 (UTC)
+        id S234209AbhEaO4p (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 10:56:45 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A2C4F61CBF;
+        Mon, 31 May 2021 14:00:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1622468916;
-        bh=udF61iovPAdU6ur1TYq0jtlIjT3KUEKu/qIh0tV5UYI=;
+        s=korg; t=1622469610;
+        bh=HwDx/tnX6hrkMgeAvjZu9FGgdS+sIWoW5N0fDqQF49A=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=pIpwXDKs4Sb5sDxWm4Idi7SNhhs69WowucjBTmGqwf8J0j+aMUVbkjplDqsg0/sS2
-         ZpNdX1d4xspVSGIGYGTf3LTSGcl/bKGvAyP+PnSyRtwhaQXQmwt2xbaQZW378ACcqP
-         QPhyMHIeqVbdnXGwSuq4ktRlGV3xDJqReJ5AEqU0=
+        b=g1bRrC8fX65i/iwLUWfcHFNWPW5hlDXynHTHg/RdsMO0OdLOf7fTGDwch0UFPJ+PR
+         NQYfyCDj3MYMuDOt0gwaEiA+Jd+GGuyrtu3SsztmHxWILWVSPeEXyKYNqig+tCzWIH
+         4kN9H0u3xL2Do4aXXSIXd2bQxocHQebWk4R7VQLI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Piotr Skajewski <piotrx.skajewski@intel.com>,
-        Jesse Brandeburg <jesse.brandeburg@intel.com>,
-        Mateusz Palczewski <mateusz.palczewski@intel.com>,
-        Konrad Jankowski <konrad0.jankowski@intel.com>,
-        Tony Nguyen <anthony.l.nguyen@intel.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 161/177] ixgbe: fix large MTU request from VF
-Date:   Mon, 31 May 2021 15:15:18 +0200
-Message-Id: <20210531130653.486039410@linuxfoundation.org>
+        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
+        Lu Baolu <baolu.lu@linux.intel.com>,
+        Joerg Roedel <jroedel@suse.de>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.12 264/296] iommu/vt-d: Check for allocation failure in aux_detach_device()
+Date:   Mon, 31 May 2021 15:15:19 +0200
+Message-Id: <20210531130712.622927316@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210531130647.887605866@linuxfoundation.org>
-References: <20210531130647.887605866@linuxfoundation.org>
+In-Reply-To: <20210531130703.762129381@linuxfoundation.org>
+References: <20210531130703.762129381@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,74 +40,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jesse Brandeburg <jesse.brandeburg@intel.com>
+From: Dan Carpenter <dan.carpenter@oracle.com>
 
-[ Upstream commit 63e39d29b3da02e901349f6cd71159818a4737a6 ]
+[ Upstream commit 1a590a1c8bf46bf80ea12b657ca44c345531ac80 ]
 
-Check that the MTU value requested by the VF is in the supported
-range of MTUs before attempting to set the VF large packet enable,
-otherwise reject the request. This also avoids unnecessary
-register updates in the case of the 82599 controller.
+In current kernels small allocations never fail, but checking for
+allocation failure is the correct thing to do.
 
-Fixes: 872844ddb9e4 ("ixgbe: Enable jumbo frames support w/ SR-IOV")
-Co-developed-by: Piotr Skajewski <piotrx.skajewski@intel.com>
-Signed-off-by: Piotr Skajewski <piotrx.skajewski@intel.com>
-Signed-off-by: Jesse Brandeburg <jesse.brandeburg@intel.com>
-Co-developed-by: Mateusz Palczewski <mateusz.palczewski@intel.com>
-Signed-off-by: Mateusz Palczewski <mateusz.palczewski@intel.com>
-Tested-by: Konrad Jankowski <konrad0.jankowski@intel.com>
-Signed-off-by: Tony Nguyen <anthony.l.nguyen@intel.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Fixes: 18abda7a2d55 ("iommu/vt-d: Fix general protection fault in aux_detach_device()")
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+Acked-by: Lu Baolu <baolu.lu@linux.intel.com>
+Link: https://lore.kernel.org/r/YJuobKuSn81dOPLd@mwanda
+Link: https://lore.kernel.org/r/20210519015027.108468-2-baolu.lu@linux.intel.com
+Signed-off-by: Joerg Roedel <jroedel@suse.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/intel/ixgbe/ixgbe_sriov.c | 16 +++++++---------
- 1 file changed, 7 insertions(+), 9 deletions(-)
+ drivers/iommu/intel/iommu.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/drivers/net/ethernet/intel/ixgbe/ixgbe_sriov.c b/drivers/net/ethernet/intel/ixgbe/ixgbe_sriov.c
-index 537dfff585e0..47a920128760 100644
---- a/drivers/net/ethernet/intel/ixgbe/ixgbe_sriov.c
-+++ b/drivers/net/ethernet/intel/ixgbe/ixgbe_sriov.c
-@@ -467,12 +467,16 @@ static int ixgbe_set_vf_vlan(struct ixgbe_adapter *adapter, int add, int vid,
- 	return err;
- }
+diff --git a/drivers/iommu/intel/iommu.c b/drivers/iommu/intel/iommu.c
+index 7e551da6c1fb..2569585ffcd4 100644
+--- a/drivers/iommu/intel/iommu.c
++++ b/drivers/iommu/intel/iommu.c
+@@ -4626,6 +4626,8 @@ static int auxiliary_link_device(struct dmar_domain *domain,
  
--static s32 ixgbe_set_vf_lpe(struct ixgbe_adapter *adapter, u32 *msgbuf, u32 vf)
-+static int ixgbe_set_vf_lpe(struct ixgbe_adapter *adapter, u32 max_frame, u32 vf)
- {
- 	struct ixgbe_hw *hw = &adapter->hw;
--	int max_frame = msgbuf[1];
- 	u32 max_frs;
- 
-+	if (max_frame < ETH_MIN_MTU || max_frame > IXGBE_MAX_JUMBO_FRAME_SIZE) {
-+		e_err(drv, "VF max_frame %d out of range\n", max_frame);
-+		return -EINVAL;
-+	}
-+
- 	/*
- 	 * For 82599EB we have to keep all PFs and VFs operating with
- 	 * the same max_frame value in order to avoid sending an oversize
-@@ -533,12 +537,6 @@ static s32 ixgbe_set_vf_lpe(struct ixgbe_adapter *adapter, u32 *msgbuf, u32 vf)
- 		}
- 	}
- 
--	/* MTU < 68 is an error and causes problems on some kernels */
--	if (max_frame > IXGBE_MAX_JUMBO_FRAME_SIZE) {
--		e_err(drv, "VF max_frame %d out of range\n", max_frame);
--		return -EINVAL;
--	}
--
- 	/* pull current max frame size from hardware */
- 	max_frs = IXGBE_READ_REG(hw, IXGBE_MAXFRS);
- 	max_frs &= IXGBE_MHADD_MFS_MASK;
-@@ -1249,7 +1247,7 @@ static int ixgbe_rcv_msg_from_vf(struct ixgbe_adapter *adapter, u32 vf)
- 		retval = ixgbe_set_vf_vlan_msg(adapter, msgbuf, vf);
- 		break;
- 	case IXGBE_VF_SET_LPE:
--		retval = ixgbe_set_vf_lpe(adapter, msgbuf, vf);
-+		retval = ixgbe_set_vf_lpe(adapter, msgbuf[1], vf);
- 		break;
- 	case IXGBE_VF_SET_MACVLAN:
- 		retval = ixgbe_set_vf_macvlan_msg(adapter, msgbuf, vf);
+ 	if (!sinfo) {
+ 		sinfo = kzalloc(sizeof(*sinfo), GFP_ATOMIC);
++		if (!sinfo)
++			return -ENOMEM;
+ 		sinfo->domain = domain;
+ 		sinfo->pdev = dev;
+ 		list_add(&sinfo->link_phys, &info->subdevices);
 -- 
 2.30.2
 
