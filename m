@@ -2,37 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1BC713963E4
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 17:36:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D9741396271
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 16:55:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231624AbhEaPhu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 11:37:50 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48842 "EHLO mail.kernel.org"
+        id S233349AbhEaO5D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 10:57:03 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37788 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233863AbhEaOVb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 10:21:31 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9BBBF61581;
-        Mon, 31 May 2021 13:45:00 +0000 (UTC)
+        id S233308AbhEaOEZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 10:04:25 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4036F613FE;
+        Mon, 31 May 2021 13:38:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1622468701;
-        bh=VargY4XG5cDtl7Den5zPVuw+rnYOMNgRzAdJUIQW1mw=;
+        s=korg; t=1622468288;
+        bh=26WxNwO+8uDhnOWKEyMtx1cDFa5fjm15bHmqxO787rI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=R4AIbZIsUABAbkNQ4fkH7z945vodgrSGrBU0H9HqDzHgjyZGxJCVssxSYj97NGYmD
-         bE+I7RZNg9OHO7Vo5fP6tb0Ssp+QWq02Dkptu4r298Mf3XPzqWKi2imfwPUsC7kAQy
-         GZNTGzP+/p7tYWRdfx/FqIcrhPIylJaYGw2Jg2Jc=
+        b=Jph21xLh5Jg9m2WzP5NLRUqaKM0C8UStYiLsDdSevD4rzBkVdbkxZtd9mPHH3lNNV
+         B4V6IYCP0A4nArK2wsA7qzdMlKaMGtAj1UykZCuFkibJTI/U7s2D7FA9q8t6QAAxIW
+         lHr3I0OxTGrGeFmVYDYH+7m77UNWHn2tN6/OtTV0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Kangjie Lu <kjlu@umn.edu>,
-        Ursula Braun <ubraun@linux.ibm.com>,
-        "David S. Miller" <davem@davemloft.net>,
+        stable@vger.kernel.org, Hans de Goede <hdegoede@redhat.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 094/177] Revert "net/smc: fix a NULL pointer dereference"
+Subject: [PATCH 5.10 186/252] platform/x86: touchscreen_dmi: Add info for the Chuwi Hi10 Pro (CWI529) tablet
 Date:   Mon, 31 May 2021 15:14:11 +0200
-Message-Id: <20210531130651.142173183@linuxfoundation.org>
+Message-Id: <20210531130704.328268519@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210531130647.887605866@linuxfoundation.org>
-References: <20210531130647.887605866@linuxfoundation.org>
+In-Reply-To: <20210531130657.971257589@linuxfoundation.org>
+References: <20210531130657.971257589@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,50 +39,77 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+From: Hans de Goede <hdegoede@redhat.com>
 
-[ Upstream commit 5369ead83f5aff223b6418c99cb1fe9a8f007363 ]
+[ Upstream commit e68671e9e1275dfdda333c3e83b6d28963af16b6 ]
 
-This reverts commit e183d4e414b64711baf7a04e214b61969ca08dfa.
+Add touchscreen info for the Chuwi Hi10 Pro (CWI529) tablet. This includes
+info for getting the firmware directly from the UEFI, so that the user does
+not need to manually install the firmware in /lib/firmware/silead.
 
-Because of recent interactions with developers from @umn.edu, all
-commits from them have been recently re-reviewed to ensure if they were
-correct or not.
+This change will make the touchscreen on these devices work OOTB,
+without requiring any manual setup.
 
-Upon review, this commit was found to be incorrect for the reasons
-below, so it must be reverted.  It will be fixed up "correctly" in a
-later kernel change.
-
-The original commit causes a memory leak and does not properly fix the
-issue it claims to fix.  I will send a follow-on patch to resolve this
-properly.
-
-Cc: Kangjie Lu <kjlu@umn.edu>
-Cc: Ursula Braun <ubraun@linux.ibm.com>
-Cc: David S. Miller <davem@davemloft.net>
-Link: https://lore.kernel.org/r/20210503115736.2104747-17-gregkh@linuxfoundation.org
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Hans de Goede <hdegoede@redhat.com>
+Link: https://lore.kernel.org/r/20210520093228.7439-1-hdegoede@redhat.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/smc/smc_ism.c | 5 -----
- 1 file changed, 5 deletions(-)
+ drivers/platform/x86/touchscreen_dmi.c | 35 ++++++++++++++++++++++++++
+ 1 file changed, 35 insertions(+)
 
-diff --git a/net/smc/smc_ism.c b/net/smc/smc_ism.c
-index e89e918b88e0..2fff79db1a59 100644
---- a/net/smc/smc_ism.c
-+++ b/net/smc/smc_ism.c
-@@ -289,11 +289,6 @@ struct smcd_dev *smcd_alloc_dev(struct device *parent, const char *name,
- 	INIT_LIST_HEAD(&smcd->vlan);
- 	smcd->event_wq = alloc_ordered_workqueue("ism_evt_wq-%s)",
- 						 WQ_MEM_RECLAIM, name);
--	if (!smcd->event_wq) {
--		kfree(smcd->conn);
--		kfree(smcd);
--		return NULL;
--	}
- 	return smcd;
- }
- EXPORT_SYMBOL_GPL(smcd_alloc_dev);
+diff --git a/drivers/platform/x86/touchscreen_dmi.c b/drivers/platform/x86/touchscreen_dmi.c
+index e1455f1d2472..3743d895399e 100644
+--- a/drivers/platform/x86/touchscreen_dmi.c
++++ b/drivers/platform/x86/touchscreen_dmi.c
+@@ -115,6 +115,32 @@ static const struct ts_dmi_data chuwi_hi10_plus_data = {
+ 	.properties     = chuwi_hi10_plus_props,
+ };
+ 
++static const struct property_entry chuwi_hi10_pro_props[] = {
++	PROPERTY_ENTRY_U32("touchscreen-min-x", 8),
++	PROPERTY_ENTRY_U32("touchscreen-min-y", 8),
++	PROPERTY_ENTRY_U32("touchscreen-size-x", 1912),
++	PROPERTY_ENTRY_U32("touchscreen-size-y", 1272),
++	PROPERTY_ENTRY_BOOL("touchscreen-swapped-x-y"),
++	PROPERTY_ENTRY_STRING("firmware-name", "gsl1680-chuwi-hi10-pro.fw"),
++	PROPERTY_ENTRY_U32("silead,max-fingers", 10),
++	PROPERTY_ENTRY_BOOL("silead,home-button"),
++	{ }
++};
++
++static const struct ts_dmi_data chuwi_hi10_pro_data = {
++	.embedded_fw = {
++		.name	= "silead/gsl1680-chuwi-hi10-pro.fw",
++		.prefix = { 0xf0, 0x00, 0x00, 0x00, 0x02, 0x00, 0x00, 0x00 },
++		.length	= 42504,
++		.sha256	= { 0xdb, 0x92, 0x68, 0xa8, 0xdb, 0x81, 0x31, 0x00,
++			    0x1f, 0x58, 0x89, 0xdb, 0x19, 0x1b, 0x15, 0x8c,
++			    0x05, 0x14, 0xf4, 0x95, 0xba, 0x15, 0x45, 0x98,
++			    0x42, 0xa3, 0xbb, 0x65, 0xe3, 0x30, 0xa5, 0x93 },
++	},
++	.acpi_name      = "MSSL1680:00",
++	.properties     = chuwi_hi10_pro_props,
++};
++
+ static const struct property_entry chuwi_vi8_props[] = {
+ 	PROPERTY_ENTRY_U32("touchscreen-min-x", 4),
+ 	PROPERTY_ENTRY_U32("touchscreen-min-y", 6),
+@@ -872,6 +898,15 @@ const struct dmi_system_id touchscreen_dmi_table[] = {
+ 			DMI_MATCH(DMI_BOARD_NAME, "Cherry Trail CR"),
+ 		},
+ 	},
++	{
++		/* Chuwi Hi10 Prus (CWI597) */
++		.driver_data = (void *)&chuwi_hi10_pro_data,
++		.matches = {
++			DMI_MATCH(DMI_BOARD_VENDOR, "Hampoo"),
++			DMI_MATCH(DMI_PRODUCT_NAME, "Hi10 pro tablet"),
++			DMI_MATCH(DMI_BOARD_NAME, "Cherry Trail CR"),
++		},
++	},
+ 	{
+ 		/* Chuwi Vi8 (CWI506) */
+ 		.driver_data = (void *)&chuwi_vi8_data,
 -- 
 2.30.2
 
