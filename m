@@ -2,55 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EF4A5395E21
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 15:53:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 66744395E22
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 15:53:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233263AbhEaNzD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 09:55:03 -0400
-Received: from mo4-p01-ob.smtp.rzone.de ([85.215.255.50]:32608 "EHLO
-        mo4-p01-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232112AbhEaNg6 (ORCPT
+        id S233282AbhEaNzG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 09:55:06 -0400
+Received: from mo4-p02-ob.smtp.rzone.de ([85.215.255.83]:16610 "EHLO
+        mo4-p02-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232370AbhEaNg5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 09:36:58 -0400
+        Mon, 31 May 2021 09:36:57 -0400
 ARC-Seal: i=1; a=rsa-sha256; t=1622468094; cv=none;
     d=strato.com; s=strato-dkim-0002;
-    b=Sf6AYmToRi+Z6IoqYiJgpLnNA2QKb47pQHrZp+/mZh3I9pE09yVclN4HK7CVslVPno
-    2eDBe5WPKMVe92/7eoOtIzrkHw3bc69XPwXM8glX7Tynn/E4ypL4Kc1YYtXj/EuQpEe9
-    wbNJRO108yCM7HIjMGzmqPiA2PaW+1E9iHNoHA15ZqOxM7uXhDmqxyPE3eVXzylYa5rH
-    Wvzah0Hs/5gWZAJsTGsLM5RJmLT8jEBXJdGykFGBAurm6n8Fc+cq/3bw2dzK5jYJSX8S
-    OJnUEVDY5d9l7xx4lioP3FNag3SLZDdkyO+oqY+yWFOF+U8CLY8RV27jBfRm2xP6omsY
-    XPMQ==
+    b=Mm4ccRTf4qPETdpv0td27lQMGxExBSb44+JIcH4RFl1sH84W6LMql2MYHrn1tb3WrF
+    j5fNB1Po+P/sW5Zfet8lKfCDq6zhWAmlJM8pmnGepG7BuSqLFCv7f4Z0xNSCv4mCA6Lh
+    nrH9kmJjhsinSeU+9rtW1DYbYVJhKZYovAEldV1bl43Ys0iqyQgB/QibEPbGjrrbNkZ0
+    BKdKXHY3owGLsUCMdYXzPd4KaGKNFuE3EaNgepWU56F5rJQJgksLoHhIj2enBaCyys1C
+    VNHNOSYoof/TUZQ+C8kAdUoZ6GjbRGT7kjNPZ+3LyLlZ2GJWRqyjjnFeB5iDEv1PRII1
+    BA+g==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1622468094;
     s=strato-dkim-0002; d=strato.com;
     h=References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Cc:Date:
     From:Subject:Sender;
-    bh=QMFQUItGXEg8WHkHGki0AdlafSjTgNyjXY25dbfzkdI=;
-    b=Zx3VrWps+A0QZjNbs69IA84Ww45u/4jLx7kzF+ds2Pd4JYNSMJQJs0UmhhB/bcJmdx
-    H0bU8+tkzYdSx5Dde0VWoQrNPqVdDYEueU2qq2myfxioItSp8Y3Mi5tBZty+8gr1O+ZP
-    6xJ8gj+mQdVOTZwMUmdXHLs1OAF+/BOEh/r8/z0cs0PQR6vJc4Udi4cqQFhn7uumQveC
-    Rdssp9EJreY8V5hPz7eiKtAxMZRKE3e3pndXpTJZa7Q4PajNZnxLGXKHrLsgYPfQIAD1
-    ydNo2xKlm73sbKgR2h13be2ZcMAOO6N7l4/qUy7nipv+0EPkyZHJkEb2xPViHBraN7y6
-    6Z5A==
+    bh=K2eJgpXpY/tpzZTBI+UgcYaqxpRI58FPkFkDl3yfQRM=;
+    b=L2QTHmym/F7Lxg3E6KcUa+IxaA7OcknTYd/SwpXFlBBofwwWbmnzYxvI8JIyL+Srog
+    uWIvY19dyb/jacemNW2Uxtth9dY62zME+wO4aVSDobi9zt/lqM8ECizQSA7c7DChh0v0
+    VAAQoQ7u1IjLVbZHrajedxf0qI3avAC/mBfMctlP3DU4DMw2e4e0oK/xL8c9Hhw3Lq94
+    1mR9ECuV3nP8nKASWp7uRi4Tzlqib/uePUbxv4rl2sO0VSmk0JUGtVQqX1psRmesh9Tk
+    D0XxX5Vaqs4CmzIh7Tf2RYjFvs1i9P0t3gMrrNINebsmn8XrfLGJFZ4epSnaSr0EHVlH
+    Cf3g==
 ARC-Authentication-Results: i=1; strato.com;
     dkim=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1622468094;
     s=strato-dkim-0002; d=gerhold.net;
     h=References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Cc:Date:
     From:Subject:Sender;
-    bh=QMFQUItGXEg8WHkHGki0AdlafSjTgNyjXY25dbfzkdI=;
-    b=Cyx+UEs03+8qWuTbRUJcLPNtspAsRz+2ybGZJ66T4Dji631GpOHUBuYMwW5MGuaUXE
-    PLDIWU5ZFRROBZir6IviRphnPupugZt40HrWxVNHMJlDpZrO5mahtzNyv2o1Qf7SPaJq
-    nGR6vNOITr+C8zdgPUJ69B7CSTPwbY/gh9d9Q77vNzqbRJV86zFDxT24kETzYApavFcs
-    2d/eL7lHOaV/wl/s9ZUhAGZwrKxpkWGDeZ1Ke48Mk6BE/sW/rJp1K7Kuw6iYMiFzV0VV
-    tNKxlFI7FSBUT7STwa2Q1puGmKUFbjUTZTEnhf+BlzJIMpZCYk2M4HicB6DNYegiUXUH
-    iTYA==
+    bh=K2eJgpXpY/tpzZTBI+UgcYaqxpRI58FPkFkDl3yfQRM=;
+    b=jtWyRGL4G9GLbyaZPahM0gkJxKnnJzuAdtv4T0LB7epZi2vNFMBdWXKG45lALq1UjQ
+    ItrgLnrmHIFkG5PZoYMiOVTnhZc97c69h5YwZMqZMXTIm5WcmfD6U3SkfzYfN27+UASM
+    2rRi5JAZ2UBxJwDVeHhx9eZc4crvEGTJgHPpYm/9rIj+mIb1u4Zs4twc9Kaf8qHc2JLp
+    q9AqoBk3if9DGIZ6T0cWH0VP/TSSLHdP4S3fG9ePz47UaFVMKu/mmrj8yFOuTcO2aCfV
+    NYDuxoVididt8fp+ie4mpiA2g72cfJMBWHcVzybZ1L3ADeaq62GAeHVsu6ZI/psE/7qd
+    YpxQ==
 Authentication-Results: strato.com;
     dkim=none
 X-RZG-AUTH: ":P3gBZUipdd93FF5ZZvYFPugejmSTVR2nRPhVORvLd4SsytBXS7IYBkLahKxB526Kcak="
 X-RZG-CLASS-ID: mo00
 Received: from droid..
     by smtp.strato.de (RZmta 47.26.3 DYNA|AUTH)
-    with ESMTPSA id U0b2c9x4VDYsKx8
+    with ESMTPSA id U0b2c9x4VDYsKx9
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
         (Client did not present a certificate);
     Mon, 31 May 2021 15:34:54 +0200 (CEST)
@@ -61,9 +61,9 @@ Cc:     Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
         linux-kernel@vger.kernel.org, Nikita Travkin <nikita@trvn.ru>,
         ~postmarketos/upstreaming@lists.sr.ht,
         Stephan Gerhold <stephan@gerhold.net>
-Subject: [PATCH v2 1/6] extcon: sm5502: Use devm_regmap_add_irq_chip()
-Date:   Mon, 31 May 2021 15:34:33 +0200
-Message-Id: <20210531133438.3511-2-stephan@gerhold.net>
+Subject: [PATCH v2 2/6] extcon: sm5502: Implement i2c_driver->probe_new()
+Date:   Mon, 31 May 2021 15:34:34 +0200
+Message-Id: <20210531133438.3511-3-stephan@gerhold.net>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210531133438.3511-1-stephan@gerhold.net>
 References: <20210531133438.3511-1-stephan@gerhold.net>
@@ -73,50 +73,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use devm_regmap_add_irq_chip() to avoid having to remove the
-irqchip explicitly in sm5502_muic_i2c_remove().
+sm5022_muic_i2c_probe() does not use the i2c_device_id,
+so implement i2c_driver->probe_new() instead of probe().
 
 Signed-off-by: Stephan Gerhold <stephan@gerhold.net>
 ---
- drivers/extcon/extcon-sm5502.c | 14 ++------------
- 1 file changed, 2 insertions(+), 12 deletions(-)
+ drivers/extcon/extcon-sm5502.c | 5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
 
 diff --git a/drivers/extcon/extcon-sm5502.c b/drivers/extcon/extcon-sm5502.c
-index db41d1c58efd..f0d155cf7518 100644
+index f0d155cf7518..907ecd01ebb7 100644
 --- a/drivers/extcon/extcon-sm5502.c
 +++ b/drivers/extcon/extcon-sm5502.c
-@@ -600,8 +600,8 @@ static int sm5022_muic_i2c_probe(struct i2c_client *i2c,
- 
- 	/* Support irq domain for SM5502 MUIC device */
- 	irq_flags = IRQF_TRIGGER_FALLING | IRQF_ONESHOT | IRQF_SHARED;
--	ret = regmap_add_irq_chip(info->regmap, info->irq, irq_flags, 0,
--				  &sm5502_muic_irq_chip, &info->irq_data);
-+	ret = devm_regmap_add_irq_chip(info->dev, info->regmap, info->irq, irq_flags,
-+				       0, &sm5502_muic_irq_chip, &info->irq_data);
- 	if (ret != 0) {
- 		dev_err(info->dev, "failed to request IRQ %d: %d\n",
- 				    info->irq, ret);
-@@ -661,15 +661,6 @@ static int sm5022_muic_i2c_probe(struct i2c_client *i2c,
- 	return 0;
+@@ -563,8 +563,7 @@ static void sm5502_init_dev_type(struct sm5502_muic_info *info)
+ 	}
  }
  
--static int sm5502_muic_i2c_remove(struct i2c_client *i2c)
--{
--	struct sm5502_muic_info *info = i2c_get_clientdata(i2c);
--
--	regmap_del_irq_chip(info->irq, info->irq_data);
--
--	return 0;
--}
--
- static const struct of_device_id sm5502_dt_match[] = {
- 	{ .compatible = "siliconmitus,sm5502-muic" },
- 	{ },
-@@ -714,7 +705,6 @@ static struct i2c_driver sm5502_muic_i2c_driver = {
+-static int sm5022_muic_i2c_probe(struct i2c_client *i2c,
+-				 const struct i2c_device_id *id)
++static int sm5022_muic_i2c_probe(struct i2c_client *i2c)
+ {
+ 	struct device_node *np = i2c->dev.of_node;
+ 	struct sm5502_muic_info *info;
+@@ -704,7 +703,7 @@ static struct i2c_driver sm5502_muic_i2c_driver = {
+ 		.pm	= &sm5502_muic_pm_ops,
  		.of_match_table = sm5502_dt_match,
  	},
- 	.probe	= sm5022_muic_i2c_probe,
--	.remove	= sm5502_muic_i2c_remove,
+-	.probe	= sm5022_muic_i2c_probe,
++	.probe_new = sm5022_muic_i2c_probe,
  	.id_table = sm5502_i2c_id,
  };
  
