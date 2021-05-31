@@ -2,165 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 299C63959A7
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 13:24:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C92713959A9
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 13:24:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231367AbhEaL0A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 07:26:00 -0400
-Received: from comms.puri.sm ([159.203.221.185]:59500 "EHLO comms.puri.sm"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230518AbhEaLZy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 07:25:54 -0400
-Received: from localhost (localhost [127.0.0.1])
-        by comms.puri.sm (Postfix) with ESMTP id DC11DE1B00;
-        Mon, 31 May 2021 04:24:11 -0700 (PDT)
-Received: from comms.puri.sm ([127.0.0.1])
-        by localhost (comms.puri.sm [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id aVXX4gpULj9V; Mon, 31 May 2021 04:24:11 -0700 (PDT)
-From:   Martin Kepplinger <martin.kepplinger@puri.sm>
-To:     martin.kepplinger@puri.sm, festevam@gmail.com, krzk@kernel.org,
-        laurent.pinchart@ideasonboard.com, mchehab@kernel.org,
-        robh@kernel.org
-Cc:     devicetree@vger.kernel.org, kernel@pengutronix.de, kernel@puri.sm,
-        linux-arm-kernel@lists.infradead.org, linux-imx@nxp.com,
-        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
-        linux-staging@lists.linux.dev, shawnguo@kernel.org,
-        slongerbeam@gmail.com, phone-devel@vger.kernel.org
-Subject: [PATCH v2 3/3] arm64: dts: imx8mq: add mipi csi phy and csi bridge descriptions
-Date:   Mon, 31 May 2021 13:23:26 +0200
-Message-Id: <20210531112326.90094-4-martin.kepplinger@puri.sm>
-In-Reply-To: <20210531112326.90094-1-martin.kepplinger@puri.sm>
-References: <20210531112326.90094-1-martin.kepplinger@puri.sm>
+        id S231421AbhEaL0D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 07:26:03 -0400
+Received: from szxga08-in.huawei.com ([45.249.212.255]:3304 "EHLO
+        szxga08-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231292AbhEaLZ7 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 07:25:59 -0400
+Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.54])
+        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4Ftt9M4T2rz1BGBj;
+        Mon, 31 May 2021 19:19:35 +0800 (CST)
+Received: from dggpemm500009.china.huawei.com (7.185.36.225) by
+ dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Mon, 31 May 2021 19:24:15 +0800
+Received: from [10.174.185.226] (10.174.185.226) by
+ dggpemm500009.china.huawei.com (7.185.36.225) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Mon, 31 May 2021 19:24:15 +0800
+To:     Rob Herring <robh@kernel.org>
+CC:     Will Deacon <will@kernel.org>, Joerg Roedel <joro@8bytes.org>,
+        "Bjorn Helgaas" <helgaas@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Linux IOMMU <iommu@lists.linux-foundation.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        PCI <linux-pci@vger.kernel.org>, <xieyingtai@huawei.com>
+References: <1621566204-37456-1-git-send-email-wangxingang5@huawei.com>
+ <CAL_JsqJep2rpPN8r8PzT5fv32mmjMvg+k-=jzLp4S1QzC+LcLg@mail.gmail.com>
+From:   Xingang Wang <wangxingang5@huawei.com>
+Subject: Re: [PATCH v4] iommu/of: Fix pci_request_acs() before enumerating PCI
+ devices
+Message-ID: <12828bb9-7172-4efe-a6f2-5fb066d21ddb@huawei.com>
+Date:   Mon, 31 May 2021 19:24:13 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.1
+MIME-Version: 1.0
+In-Reply-To: <CAL_JsqJep2rpPN8r8PzT5fv32mmjMvg+k-=jzLp4S1QzC+LcLg@mail.gmail.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.174.185.226]
+X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
+ dggpemm500009.china.huawei.com (7.185.36.225)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Describe the 2 available CSI interfaces on the i.MX8MQ with the MIPI-CSI2
-receiver and the CSI Bridge that provides the user buffers, where the
-existing driver can directly be used.
+Hi everyone,
 
-An image sensor is to be connected to the MIPIs' second port, described in
-board files.
+On 2021/5/22 3:03, Rob Herring wrote:
+> On Thu, May 20, 2021 at 10:03 PM Wang Xingang <wangxingang5@huawei.com> wrote:
+>>
+>> From: Xingang Wang <wangxingang5@huawei.com>
+>>
+>> When booting with devicetree, the pci_request_acs() is called after the
+>> enumeration and initialization of PCI devices, thus the ACS is not
+>> enabled. And ACS should be enabled when IOMMU is detected for the
+>> PCI host bridge, so add check for IOMMU before probe of PCI host and call
+>> pci_request_acs() to make sure ACS will be enabled when enumerating PCI
+>> devices.
+>>
+>> Fixes: 6bf6c24720d33 ("iommu/of: Request ACS from the PCI core when
+>> configuring IOMMU linkage")
+>> Signed-off-by: Xingang Wang <wangxingang5@huawei.com>
+>> ---
+>>   drivers/iommu/of_iommu.c | 1 -
+>>   drivers/pci/of.c         | 8 +++++++-
+>>   2 files changed, 7 insertions(+), 2 deletions(-)
+> 
+> Reviewed-by: Rob Herring <robh@kernel.org>
+> 
 
-Signed-off-by: Martin Kepplinger <martin.kepplinger@puri.sm>
----
- arch/arm64/boot/dts/freescale/imx8mq.dtsi | 102 ++++++++++++++++++++++
- 1 file changed, 102 insertions(+)
+Ping, is this patch appropriate for mainline?
 
-diff --git a/arch/arm64/boot/dts/freescale/imx8mq.dtsi b/arch/arm64/boot/dts/freescale/imx8mq.dtsi
-index 91df9c5350ae..5bf02f4f904d 100644
---- a/arch/arm64/boot/dts/freescale/imx8mq.dtsi
-+++ b/arch/arm64/boot/dts/freescale/imx8mq.dtsi
-@@ -1099,6 +1099,108 @@ uart4: serial@30a60000 {
- 				status = "disabled";
- 			};
- 
-+			mipi_csi1: mipi_csi1@30a70000 {
-+				compatible = "fsl,imx8mq-mipi-csi2";
-+				reg = <0x30a70000 0x1000>;
-+				clocks = <&clk IMX8MQ_CLK_CSI1_CORE>,
-+				   <&clk IMX8MQ_CLK_CSI1_ESC>,
-+				   <&clk IMX8MQ_CLK_CSI1_PHY_REF>,
-+				   <&clk IMX8MQ_CLK_CLKO2>;
-+				clock-names = "core", "esc", "pxl", "clko2";
-+				assigned-clocks = <&clk IMX8MQ_CLK_CSI1_CORE>,
-+				    <&clk IMX8MQ_CLK_CSI1_PHY_REF>,
-+				    <&clk IMX8MQ_CLK_CSI1_ESC>;
-+				assigned-clock-rates = <266000000>, <200000000>, <66000000>;
-+				assigned-clock-parents = <&clk IMX8MQ_SYS1_PLL_266M>,
-+					<&clk IMX8MQ_SYS2_PLL_1000M>,
-+					<&clk IMX8MQ_SYS1_PLL_800M>;
-+				power-domains = <&pgc_mipi_csi1>;
-+				phy-reset = <&src>;
-+				phy-gpr = <&iomuxc_gpr>;
-+				interconnects = <&noc IMX8MQ_ICM_CSI1 &noc IMX8MQ_ICS_DRAM>;
-+				interconnect-names = "dram";
-+				status = "disabled";
-+
-+				ports {
-+					#address-cells = <1>;
-+					#size-cells = <0>;
-+
-+					port@0 {
-+						reg = <0>;
-+
-+						csi1_mipi_ep: endpoint {
-+							remote-endpoint = <&csi1_ep>;
-+						};
-+					};
-+				};
-+			};
-+
-+			csi1_bridge: csi1_bridge@30a90000 {
-+				compatible = "fsl,imx7-csi";
-+				reg = <0x30a90000 0x10000>;
-+				interrupts = <GIC_SPI 42 IRQ_TYPE_LEVEL_HIGH>;
-+				clocks = <&clk IMX8MQ_CLK_CSI1_ROOT>;
-+				clock-names = "mclk";
-+				status = "disabled";
-+
-+				port {
-+					csi1_ep: endpoint {
-+						remote-endpoint = <&csi1_mipi_ep>;
-+					};
-+				};
-+			};
-+
-+			mipi_csi2: mipi_csi2@30b60000 {
-+				compatible = "fsl,imx8mq-mipi-csi2";
-+				reg = <0x30b60000 0x1000>;
-+				clocks = <&clk IMX8MQ_CLK_CSI2_CORE>,
-+				   <&clk IMX8MQ_CLK_CSI2_ESC>,
-+				   <&clk IMX8MQ_CLK_CSI2_PHY_REF>,
-+				   <&clk IMX8MQ_CLK_CLKO2>;
-+				clock-names = "core", "esc", "pxl", "clko2";
-+				assigned-clocks = <&clk IMX8MQ_CLK_CSI2_CORE>,
-+				    <&clk IMX8MQ_CLK_CSI2_PHY_REF>,
-+				    <&clk IMX8MQ_CLK_CSI2_ESC>;
-+				assigned-clock-rates = <266000000>, <333000000>, <66000000>;
-+				assigned-clock-parents = <&clk IMX8MQ_SYS1_PLL_266M>,
-+					<&clk IMX8MQ_SYS2_PLL_1000M>,
-+					<&clk IMX8MQ_SYS1_PLL_800M>;
-+				power-domains = <&pgc_mipi_csi2>;
-+				phy-reset = <&src>;
-+				phy-gpr = <&iomuxc_gpr>;
-+				interconnects = <&noc IMX8MQ_ICM_CSI2 &noc IMX8MQ_ICS_DRAM>;
-+				interconnect-names = "dram";
-+				status = "disabled";
-+
-+				ports {
-+					#address-cells = <1>;
-+					#size-cells = <0>;
-+
-+					port@0 {
-+						reg = <0>;
-+
-+						csi2_mipi_ep: endpoint {
-+							remote-endpoint = <&csi2_ep>;
-+						};
-+					};
-+				};
-+			};
-+
-+			csi2_bridge: csi2_bridge@30b80000 {
-+				compatible = "fsl,imx7-csi";
-+				reg = <0x30b80000 0x10000>;
-+				interrupts = <GIC_SPI 43 IRQ_TYPE_LEVEL_HIGH>;
-+				clocks = <&clk IMX8MQ_CLK_CSI2_ROOT>;
-+				clock-names = "mclk";
-+				status = "disabled";
-+
-+				port {
-+					csi2_ep: endpoint {
-+						remote-endpoint = <&csi2_mipi_ep>;
-+					};
-+				};
-+			};
-+
- 			mu: mailbox@30aa0000 {
- 				compatible = "fsl,imx8mq-mu", "fsl,imx6sx-mu";
- 				reg = <0x30aa0000 0x10000>;
--- 
-2.30.2
-
+>> diff --git a/drivers/iommu/of_iommu.c b/drivers/iommu/of_iommu.c
+>> index a9d2df001149..54a14da242cc 100644
+>> --- a/drivers/iommu/of_iommu.c
+>> +++ b/drivers/iommu/of_iommu.c
+>> @@ -205,7 +205,6 @@ const struct iommu_ops *of_iommu_configure(struct device *dev,
+>>                          .np = master_np,
+>>                  };
+>>
+>> -               pci_request_acs();
+>>                  err = pci_for_each_dma_alias(to_pci_dev(dev),
+>>                                               of_pci_iommu_init, &info);
+>>          } else {
+>> diff --git a/drivers/pci/of.c b/drivers/pci/of.c
+>> index da5b414d585a..2313c3f848b0 100644
+>> --- a/drivers/pci/of.c
+>> +++ b/drivers/pci/of.c
+>> @@ -581,9 +581,15 @@ static int pci_parse_request_of_pci_ranges(struct device *dev,
+>>
+>>   int devm_of_pci_bridge_init(struct device *dev, struct pci_host_bridge *bridge)
+>>   {
+>> -       if (!dev->of_node)
+>> +       struct device_node *node = dev->of_node;
+>> +
+>> +       if (!node)
+>>                  return 0;
+>>
+>> +       /* Detect IOMMU and make sure ACS will be enabled */
+>> +       if (of_property_read_bool(node, "iommu-map"))
+>> +               pci_request_acs();
+>> +
+>>          bridge->swizzle_irq = pci_common_swizzle;
+>>          bridge->map_irq = of_irq_parse_and_map_pci;
+>>
+>> --
+>> 2.19.1
+>>
+> .
+> 
