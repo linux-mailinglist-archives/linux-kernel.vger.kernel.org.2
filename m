@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E56CC395EFC
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 16:04:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5858239659A
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 18:40:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232186AbhEaOGH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 10:06:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48556 "EHLO mail.kernel.org"
+        id S233995AbhEaQlu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 12:41:50 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48418 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232198AbhEaNl6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 09:41:58 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id F195561465;
-        Mon, 31 May 2021 13:28:19 +0000 (UTC)
+        id S233541AbhEaOvm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 10:51:42 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B891161CA5;
+        Mon, 31 May 2021 13:58:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1622467700;
-        bh=795aNF6ihCvG7AS0TziMRop4M+FxS/9zvT6Gxn3S0Aw=;
+        s=korg; t=1622469490;
+        bh=FfLlHbhceFQpqIb6A/9hOSiqrfjkSpTDA/qbL078WLI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=wgtYLrJpeH+7/1bcgb0LxXu3mzgrx0iGB2sxUNE0T+NnSaamEHMSDAnEwqDyN9hfx
-         mizrBbJvbfKnJRUo/SxVaLDgJ91vkeB96APG/nlfIHpgMba+Wh+TrZKSDI6U1JBoAR
-         uXicd7S4FbaYYy48ex+e5Q8KRdsxVsPBggWXfV3E=
+        b=pQaaF2gfsyq/kOt7pxz0ayw3nL3ckI9chrVJpY54gkKtGasLvTQC8du4HW+87IW3p
+         uaa8GC79Aepngp+fN9uJsHQk2OVIfPosnTxRo7Wg0sfORwRLjihOjfbDwybfN6+rUv
+         9Tpe+mpMpYZzI9F52KlYlcDMbFHqNWdwqA+pndzU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, "David S. Miller" <davem@davemloft.net>,
-        Du Cheng <ducheng2@gmail.com>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 48/79] net: caif: remove BUG_ON(dev == NULL) in caif_xmit
+        stable@vger.kernel.org, Gulam Mohamed <gulam.mohamed@oracle.com>,
+        Christoph Hellwig <hch@lst.de>, Ming Lei <ming.lei@redhat.com>,
+        Jens Axboe <axboe@kernel.dk>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.12 218/296] block: fix a race between del_gendisk and BLKRRPART
 Date:   Mon, 31 May 2021 15:14:33 +0200
-Message-Id: <20210531130637.549343199@linuxfoundation.org>
+Message-Id: <20210531130711.168211296@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210531130636.002722319@linuxfoundation.org>
-References: <20210531130636.002722319@linuxfoundation.org>
+In-Reply-To: <20210531130703.762129381@linuxfoundation.org>
+References: <20210531130703.762129381@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,78 +40,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Du Cheng <ducheng2@gmail.com>
+From: Gulam Mohamed <gulam.mohamed@oracle.com>
 
-[ Upstream commit 65a67792e3416f7c5d7daa47d99334cbb19a7449 ]
+[ Upstream commit bc6a385132601c29a6da1dbf8148c0d3c9ad36dc ]
 
-The condition of dev == NULL is impossible in caif_xmit(), hence it is
-for the removal.
+When BLKRRPART is called concurrently with del_gendisk, the partitions
+rescan can create a stale partition that will never be be cleaned up.
 
-Explanation:
-The static caif_xmit() is only called upon via a function pointer
-`ndo_start_xmit` defined in include/linux/netdevice.h:
-```
-struct net_device_ops {
-    ...
-    netdev_tx_t     (*ndo_start_xmit)(struct sk_buff *skb, struct net_device *dev);
-    ...
-}
-```
+Fix this by checking the the disk is up before rescanning partitions
+while under bd_mutex.
 
-The exhausive list of call points are:
-```
-drivers/net/ethernet/qualcomm/rmnet/rmnet_map_command.c
-    dev->netdev_ops->ndo_start_xmit(skb, dev);
-    ^                                    ^
-
-drivers/infiniband/ulp/opa_vnic/opa_vnic_netdev.c
-    struct opa_vnic_adapter *adapter = opa_vnic_priv(netdev);
-			     ^                       ^
-    return adapter->rn_ops->ndo_start_xmit(skb, netdev); // adapter would crash first
-	   ^                                    ^
-
-drivers/usb/gadget/function/f_ncm.c
-    ncm->netdev->netdev_ops->ndo_start_xmit(NULL, ncm->netdev);
-	      ^                                   ^
-
-include/linux/netdevice.h
-static inline netdev_tx_t __netdev_start_xmit(...
-{
-    return ops->ndo_start_xmit(skb, dev);
-				    ^
-}
-
-    const struct net_device_ops *ops = dev->netdev_ops;
-				       ^
-    rc = __netdev_start_xmit(ops, skb, dev, more);
-				       ^
-```
-
-In each of the enumerated scenarios, it is impossible for the NULL-valued dev to
-reach the caif_xmit() without crashing the kernel earlier, therefore `BUG_ON(dev ==
-NULL)` is rather useless, hence the removal.
-
-Cc: David S. Miller <davem@davemloft.net>
-Signed-off-by: Du Cheng <ducheng2@gmail.com>
-Link: https://lore.kernel.org/r/20210503115736.2104747-20-gregkh@linuxfoundation.org
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Gulam Mohamed <gulam.mohamed@oracle.com>
+[hch: split from a larger patch]
+Signed-off-by: Christoph Hellwig <hch@lst.de>
+Reviewed-by: Ming Lei <ming.lei@redhat.com>
+Link: https://lore.kernel.org/r/20210514131842.1600568-3-hch@lst.de
+Signed-off-by: Jens Axboe <axboe@kernel.dk>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/caif/caif_serial.c | 1 -
- 1 file changed, 1 deletion(-)
+ fs/block_dev.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/drivers/net/caif/caif_serial.c b/drivers/net/caif/caif_serial.c
-index 709838e4c062..ce76ed50a1a2 100644
---- a/drivers/net/caif/caif_serial.c
-+++ b/drivers/net/caif/caif_serial.c
-@@ -279,7 +279,6 @@ static int caif_xmit(struct sk_buff *skb, struct net_device *dev)
- {
- 	struct ser_device *ser;
+diff --git a/fs/block_dev.c b/fs/block_dev.c
+index a5a6a7930e5e..389609bc5aa3 100644
+--- a/fs/block_dev.c
++++ b/fs/block_dev.c
+@@ -1244,6 +1244,9 @@ int bdev_disk_changed(struct block_device *bdev, bool invalidate)
  
--	BUG_ON(dev == NULL);
- 	ser = netdev_priv(dev);
+ 	lockdep_assert_held(&bdev->bd_mutex);
  
- 	/* Send flow off once, on high water mark */
++	if (!(disk->flags & GENHD_FL_UP))
++		return -ENXIO;
++
+ rescan:
+ 	ret = blk_drop_partitions(bdev);
+ 	if (ret)
 -- 
 2.30.2
 
