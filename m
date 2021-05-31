@@ -2,33 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D239D396004
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 16:20:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6ADC83960C5
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 16:29:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233905AbhEaOVo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 10:21:44 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55092 "EHLO mail.kernel.org"
+        id S233391AbhEaObb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 10:31:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55372 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232374AbhEaNtN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 09:49:13 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 510B86162E;
-        Mon, 31 May 2021 13:31:29 +0000 (UTC)
+        id S232102AbhEaNxw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 09:53:52 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7F6E66191C;
+        Mon, 31 May 2021 13:33:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1622467889;
-        bh=jjaXlbtyJiRj1P+l5mUfsCFqIybcq8PmYGxgHVVNIvM=;
+        s=korg; t=1622468011;
+        bh=1o2+Is/pQJipStDRXaYgWWfEyZRlUpcSGH2OSIKcdBA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=JQPwmr9m5V+ku/MhlFiMk4ZbICpowqEsQi1WYTRb1bKTpUjhioEac0ebVA3ZI92CE
-         ZYi1N26FSe3jE72arv2VY5tvArzr3eJSfGP24zmtO82WjXYwBJeWFBe9+5qzYoWV9Q
-         +XWdy7yQD/sHQBFvKbRQU2XBF2K1CkrBtCYetdUI=
+        b=HjOGV+C6niZKQarOvl5KSWSACnm2p/FO1MGER8vi+3sw6aFpzdtnM9ROZYrZLKk/U
+         z9OcaSnXdsy/U1B49k1RVGPUY0ZzctdnA3fzX69T0bMpnGA4jKGZyugQ860bj94iE+
+         o/67JrNaBQiZS7e5N3OWRPg7bYwauAWatyYeDt2w=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Wen Gong <wgong@codeaurora.org>,
+        stable@vger.kernel.org, Sriram R <srirrama@codeaurora.org>,
         Jouni Malinen <jouni@codeaurora.org>,
         Johannes Berg <johannes.berg@intel.com>
-Subject: [PATCH 5.10 037/252] ath10k: Fix TKIP Michael MIC verification for PCIe
-Date:   Mon, 31 May 2021 15:11:42 +0200
-Message-Id: <20210531130659.254248089@linuxfoundation.org>
+Subject: [PATCH 5.10 038/252] ath10k: Validate first subframe of A-MSDU before processing the list
+Date:   Mon, 31 May 2021 15:11:43 +0200
+Message-Id: <20210531130659.287223417@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210531130657.971257589@linuxfoundation.org>
 References: <20210531130657.971257589@linuxfoundation.org>
@@ -40,56 +40,116 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Wen Gong <wgong@codeaurora.org>
+From: Sriram R <srirrama@codeaurora.org>
 
-commit 0dc267b13f3a7e8424a898815dd357211b737330 upstream.
+commit 62a8ff67eba52dae9b107e1fb8827054ed00a265 upstream.
 
-TKIP Michael MIC was not verified properly for PCIe cases since the
-validation steps in ieee80211_rx_h_michael_mic_verify() in mac80211 did
-not get fully executed due to unexpected flag values in
-ieee80211_rx_status.
+In certain scenarios a normal MSDU can be received as an A-MSDU when
+the A-MSDU present bit of a QoS header gets flipped during reception.
+Since this bit is unauthenticated, the hardware crypto engine can pass
+the frame to the driver without any error indication.
 
-Fix this by setting the flags property to meet mac80211 expectations for
-performing Michael MIC validation there. This fixes CVE-2020-26141. It
-does the same as ath10k_htt_rx_proc_rx_ind_hl() for SDIO which passed
-MIC verification case. This applies only to QCA6174/QCA9377 PCIe.
+This could result in processing unintended subframes collected in the
+A-MSDU list. Hence, validate A-MSDU list by checking if the first frame
+has a valid subframe header.
 
-Tested-on: QCA6174 hw3.2 PCI WLAN.RM.4.4.1-00110-QCARMSWP-1
+Comparing the non-aggregated MSDU and an A-MSDU, the fields of the first
+subframe DA matches the LLC/SNAP header fields of a normal MSDU.
+In order to avoid processing such frames, add a validation to
+filter such A-MSDU frames where the first subframe header DA matches
+with the LLC/SNAP header pattern.
+
+Tested-on: QCA9984 hw1.0 PCI 10.4-3.10-00047
 
 Cc: stable@vger.kernel.org
-Signed-off-by: Wen Gong <wgong@codeaurora.org>
+Signed-off-by: Sriram R <srirrama@codeaurora.org>
 Signed-off-by: Jouni Malinen <jouni@codeaurora.org>
-Link: https://lore.kernel.org/r/20210511200110.c3f1d42c6746.I795593fcaae941c471425b8c7d5f7bb185d29142@changeid
+Link: https://lore.kernel.org/r/20210511200110.e6f5eb7b9847.I38a77ae26096862527a5eab73caebd7346af8b66@changeid
 Signed-off-by: Johannes Berg <johannes.berg@intel.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/wireless/ath/ath10k/htt_rx.c |   10 ++++++++++
- 1 file changed, 10 insertions(+)
+ drivers/net/wireless/ath/ath10k/htt_rx.c |   61 ++++++++++++++++++++++++++++---
+ 1 file changed, 57 insertions(+), 4 deletions(-)
 
 --- a/drivers/net/wireless/ath/ath10k/htt_rx.c
 +++ b/drivers/net/wireless/ath/ath10k/htt_rx.c
-@@ -1974,6 +1974,11 @@ static void ath10k_htt_rx_h_mpdu(struct
- 		}
+@@ -2108,14 +2108,62 @@ static void ath10k_htt_rx_h_unchain(stru
+ 	ath10k_unchain_msdu(amsdu, unchain_cnt);
+ }
  
- 		ath10k_htt_rx_h_csum_offload(msdu);
++static bool ath10k_htt_rx_validate_amsdu(struct ath10k *ar,
++					 struct sk_buff_head *amsdu)
++{
++	u8 *subframe_hdr;
++	struct sk_buff *first;
++	bool is_first, is_last;
++	struct htt_rx_desc *rxd;
++	struct ieee80211_hdr *hdr;
++	size_t hdr_len, crypto_len;
++	enum htt_rx_mpdu_encrypt_type enctype;
++	int bytes_aligned = ar->hw_params.decap_align_bytes;
 +
-+		if (frag && !fill_crypt_header &&
-+		    enctype == HTT_RX_MPDU_ENCRYPT_TKIP_WPA)
-+			status->flag &= ~RX_FLAG_MMIC_STRIPPED;
++	first = skb_peek(amsdu);
 +
- 		ath10k_htt_rx_h_undecap(ar, msdu, status, first_hdr, enctype,
- 					is_decrypted);
- 
-@@ -1991,6 +1996,11 @@ static void ath10k_htt_rx_h_mpdu(struct
- 
- 		hdr = (void *)msdu->data;
- 		hdr->frame_control &= ~__cpu_to_le16(IEEE80211_FCTL_PROTECTED);
++	rxd = (void *)first->data - sizeof(*rxd);
++	hdr = (void *)rxd->rx_hdr_status;
 +
-+		if (frag && !fill_crypt_header &&
-+		    enctype == HTT_RX_MPDU_ENCRYPT_TKIP_WPA)
-+			status->flag &= ~RX_FLAG_IV_STRIPPED &
-+					~RX_FLAG_MMIC_STRIPPED;
++	is_first = !!(rxd->msdu_end.common.info0 &
++		      __cpu_to_le32(RX_MSDU_END_INFO0_FIRST_MSDU));
++	is_last = !!(rxd->msdu_end.common.info0 &
++		     __cpu_to_le32(RX_MSDU_END_INFO0_LAST_MSDU));
++
++	/* Return in case of non-aggregated msdu */
++	if (is_first && is_last)
++		return true;
++
++	/* First msdu flag is not set for the first msdu of the list */
++	if (!is_first)
++		return false;
++
++	enctype = MS(__le32_to_cpu(rxd->mpdu_start.info0),
++		     RX_MPDU_START_INFO0_ENCRYPT_TYPE);
++
++	hdr_len = ieee80211_hdrlen(hdr->frame_control);
++	crypto_len = ath10k_htt_rx_crypto_param_len(ar, enctype);
++
++	subframe_hdr = (u8 *)hdr + round_up(hdr_len, bytes_aligned) +
++		       crypto_len;
++
++	/* Validate if the amsdu has a proper first subframe.
++	 * There are chances a single msdu can be received as amsdu when
++	 * the unauthenticated amsdu flag of a QoS header
++	 * gets flipped in non-SPP AMSDU's, in such cases the first
++	 * subframe has llc/snap header in place of a valid da.
++	 * return false if the da matches rfc1042 pattern
++	 */
++	if (ether_addr_equal(subframe_hdr, rfc1042_header))
++		return false;
++
++	return true;
++}
++
+ static bool ath10k_htt_rx_amsdu_allowed(struct ath10k *ar,
+ 					struct sk_buff_head *amsdu,
+ 					struct ieee80211_rx_status *rx_status)
+ {
+-	/* FIXME: It might be a good idea to do some fuzzy-testing to drop
+-	 * invalid/dangerous frames.
+-	 */
+-
+ 	if (!rx_status->freq) {
+ 		ath10k_dbg(ar, ATH10K_DBG_HTT, "no channel configured; ignoring frame(s)!\n");
+ 		return false;
+@@ -2126,6 +2174,11 @@ static bool ath10k_htt_rx_amsdu_allowed(
+ 		return false;
  	}
+ 
++	if (!ath10k_htt_rx_validate_amsdu(ar, amsdu)) {
++		ath10k_dbg(ar, ATH10K_DBG_HTT, "invalid amsdu received\n");
++		return false;
++	}
++
+ 	return true;
  }
  
 
