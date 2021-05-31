@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C4AB6395C28
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 15:28:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DACDE396250
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 16:53:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232504AbhEaN3Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 09:29:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55510 "EHLO mail.kernel.org"
+        id S234207AbhEaOyh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 10:54:37 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36982 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231680AbhEaNWd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 09:22:33 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4C3F5613F2;
-        Mon, 31 May 2021 13:19:36 +0000 (UTC)
+        id S233034AbhEaODa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 10:03:30 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B4CE56135C;
+        Mon, 31 May 2021 13:37:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1622467176;
-        bh=94CMwEH1N290Etl5S3vo2Hn1bu9iXFhOZ8/iP7Cmung=;
+        s=korg; t=1622468269;
+        bh=JlD7Z3xjQTGq2Qdw73R5uducC+q2EnuaqfUeOO7B8+E=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=REp1KQf1rejaKtjju/3dUou9d5aeSXcuKt2TC/VrOyAJDSRatUg3ViyHWOvUg7rv9
-         aqlhGVA2bzq41IKTAJN7Mz3XpktZ077ge6SOag59sL1sGmJonvh8W64WNZi7XXwGEW
-         xm3SU9yLMy4RYefndpZzK+7CMRwD4fXxNCvVKPzs=
+        b=Z4RseZtyAouFwEaV58mU8H3bSGCFOBSNL5l59AoyswGEAUMdAW4zmI34OAH0V3t9F
+         9uiPo9bY3RVf/mCehAJXSyveKVhzR1rDxeLTrR2PKViBkTH2gXOxSCh/v6UwFnAiyh
+         pbhvY9lILuq1Ov6xkS2+qwpU+EmVGX0Yus0c3+k8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Vladyslav Tarasiuk <vladyslavt@nvidia.com>,
-        Tariq Toukan <tariqt@nvidia.com>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 4.9 32/66] net/mlx4: Fix EEPROM dump support
+        stable@vger.kernel.org, Steve French <stfrench@microsoft.com>,
+        Stefan Metzmacher <metze@samba.org>,
+        Shyam Prasad N <sprasad@microsoft.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.10 180/252] SMB3: incorrect file id in requests compounded with open
 Date:   Mon, 31 May 2021 15:14:05 +0200
-Message-Id: <20210531130637.283286780@linuxfoundation.org>
+Message-Id: <20210531130704.129975469@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210531130636.254683895@linuxfoundation.org>
-References: <20210531130636.254683895@linuxfoundation.org>
+In-Reply-To: <20210531130657.971257589@linuxfoundation.org>
+References: <20210531130657.971257589@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,198 +41,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Vladyslav Tarasiuk <vladyslavt@nvidia.com>
+From: Steve French <stfrench@microsoft.com>
 
-commit db825feefc6868896fed5e361787ba3bee2fd906 upstream.
+[ Upstream commit c0d46717b95735b0eacfddbcca9df37a49de9c7a ]
 
-Fix SFP and QSFP* EEPROM queries by setting i2c_address, offset and page
-number correctly. For SFP set the following params:
-- I2C address for offsets 0-255 is 0x50. For 256-511 - 0x51.
-- Page number is zero.
-- Offset is 0-255.
+See MS-SMB2 3.2.4.1.4, file ids in compounded requests should be set to
+0xFFFFFFFFFFFFFFFF (we were treating it as u32 not u64 and setting
+it incorrectly).
 
-At the same time, QSFP* parameters are different:
-- I2C address is always 0x50.
-- Page number is not limited to zero.
-- Offset is 0-255 for page zero and 128-255 for others.
-
-To set parameters accordingly to cable used, implement function to query
-module ID and implement respective helper functions to set parameters
-correctly.
-
-Fixes: 135dd9594f12 ("net/mlx4_en: ethtool, Remove unsupported SFP EEPROM high pages query")
-Signed-off-by: Vladyslav Tarasiuk <vladyslavt@nvidia.com>
-Signed-off-by: Tariq Toukan <tariqt@nvidia.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Steve French <stfrench@microsoft.com>
+Reported-by: Stefan Metzmacher <metze@samba.org>
+Reviewed-by: Shyam Prasad N <sprasad@microsoft.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/mellanox/mlx4/en_ethtool.c |    4 
- drivers/net/ethernet/mellanox/mlx4/port.c       |  107 +++++++++++++++++++++++-
- 2 files changed, 104 insertions(+), 7 deletions(-)
+ fs/cifs/smb2pdu.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
---- a/drivers/net/ethernet/mellanox/mlx4/en_ethtool.c
-+++ b/drivers/net/ethernet/mellanox/mlx4/en_ethtool.c
-@@ -1931,8 +1931,6 @@ static int mlx4_en_set_tunable(struct ne
- 	return ret;
- }
- 
--#define MLX4_EEPROM_PAGE_LEN 256
--
- static int mlx4_en_get_module_info(struct net_device *dev,
- 				   struct ethtool_modinfo *modinfo)
- {
-@@ -1967,7 +1965,7 @@ static int mlx4_en_get_module_info(struc
- 		break;
- 	case MLX4_MODULE_ID_SFP:
- 		modinfo->type = ETH_MODULE_SFF_8472;
--		modinfo->eeprom_len = MLX4_EEPROM_PAGE_LEN;
-+		modinfo->eeprom_len = ETH_MODULE_SFF_8472_LEN;
- 		break;
- 	default:
- 		return -ENOSYS;
---- a/drivers/net/ethernet/mellanox/mlx4/port.c
-+++ b/drivers/net/ethernet/mellanox/mlx4/port.c
-@@ -1856,6 +1856,7 @@ EXPORT_SYMBOL(mlx4_get_roce_gid_from_sla
- #define I2C_ADDR_LOW  0x50
- #define I2C_ADDR_HIGH 0x51
- #define I2C_PAGE_SIZE 256
-+#define I2C_HIGH_PAGE_SIZE 128
- 
- /* Module Info Data */
- struct mlx4_cable_info {
-@@ -1909,6 +1910,88 @@ static inline const char *cable_info_mad
- 	return "Unknown Error";
- }
- 
-+static int mlx4_get_module_id(struct mlx4_dev *dev, u8 port, u8 *module_id)
-+{
-+	struct mlx4_cmd_mailbox *inbox, *outbox;
-+	struct mlx4_mad_ifc *inmad, *outmad;
-+	struct mlx4_cable_info *cable_info;
-+	int ret;
-+
-+	inbox = mlx4_alloc_cmd_mailbox(dev);
-+	if (IS_ERR(inbox))
-+		return PTR_ERR(inbox);
-+
-+	outbox = mlx4_alloc_cmd_mailbox(dev);
-+	if (IS_ERR(outbox)) {
-+		mlx4_free_cmd_mailbox(dev, inbox);
-+		return PTR_ERR(outbox);
-+	}
-+
-+	inmad = (struct mlx4_mad_ifc *)(inbox->buf);
-+	outmad = (struct mlx4_mad_ifc *)(outbox->buf);
-+
-+	inmad->method = 0x1; /* Get */
-+	inmad->class_version = 0x1;
-+	inmad->mgmt_class = 0x1;
-+	inmad->base_version = 0x1;
-+	inmad->attr_id = cpu_to_be16(0xFF60); /* Module Info */
-+
-+	cable_info = (struct mlx4_cable_info *)inmad->data;
-+	cable_info->dev_mem_address = 0;
-+	cable_info->page_num = 0;
-+	cable_info->i2c_addr = I2C_ADDR_LOW;
-+	cable_info->size = cpu_to_be16(1);
-+
-+	ret = mlx4_cmd_box(dev, inbox->dma, outbox->dma, port, 3,
-+			   MLX4_CMD_MAD_IFC, MLX4_CMD_TIME_CLASS_C,
-+			   MLX4_CMD_NATIVE);
-+	if (ret)
-+		goto out;
-+
-+	if (be16_to_cpu(outmad->status)) {
-+		/* Mad returned with bad status */
-+		ret = be16_to_cpu(outmad->status);
-+		mlx4_warn(dev,
-+			  "MLX4_CMD_MAD_IFC Get Module ID attr(%x) port(%d) i2c_addr(%x) offset(%d) size(%d): Response Mad Status(%x) - %s\n",
-+			  0xFF60, port, I2C_ADDR_LOW, 0, 1, ret,
-+			  cable_info_mad_err_str(ret));
-+		ret = -ret;
-+		goto out;
-+	}
-+	cable_info = (struct mlx4_cable_info *)outmad->data;
-+	*module_id = cable_info->data[0];
-+out:
-+	mlx4_free_cmd_mailbox(dev, inbox);
-+	mlx4_free_cmd_mailbox(dev, outbox);
-+	return ret;
-+}
-+
-+static void mlx4_sfp_eeprom_params_set(u8 *i2c_addr, u8 *page_num, u16 *offset)
-+{
-+	*i2c_addr = I2C_ADDR_LOW;
-+	*page_num = 0;
-+
-+	if (*offset < I2C_PAGE_SIZE)
-+		return;
-+
-+	*i2c_addr = I2C_ADDR_HIGH;
-+	*offset -= I2C_PAGE_SIZE;
-+}
-+
-+static void mlx4_qsfp_eeprom_params_set(u8 *i2c_addr, u8 *page_num, u16 *offset)
-+{
-+	/* Offsets 0-255 belong to page 0.
-+	 * Offsets 256-639 belong to pages 01, 02, 03.
-+	 * For example, offset 400 is page 02: 1 + (400 - 256) / 128 = 2
-+	 */
-+	if (*offset < I2C_PAGE_SIZE)
-+		*page_num = 0;
-+	else
-+		*page_num = 1 + (*offset - I2C_PAGE_SIZE) / I2C_HIGH_PAGE_SIZE;
-+	*i2c_addr = I2C_ADDR_LOW;
-+	*offset -= *page_num * I2C_HIGH_PAGE_SIZE;
-+}
-+
- /**
-  * mlx4_get_module_info - Read cable module eeprom data
-  * @dev: mlx4_dev.
-@@ -1928,12 +2011,30 @@ int mlx4_get_module_info(struct mlx4_dev
- 	struct mlx4_cmd_mailbox *inbox, *outbox;
- 	struct mlx4_mad_ifc *inmad, *outmad;
- 	struct mlx4_cable_info *cable_info;
--	u16 i2c_addr;
-+	u8 module_id, i2c_addr, page_num;
- 	int ret;
- 
- 	if (size > MODULE_INFO_MAX_READ)
- 		size = MODULE_INFO_MAX_READ;
- 
-+	ret = mlx4_get_module_id(dev, port, &module_id);
-+	if (ret)
-+		return ret;
-+
-+	switch (module_id) {
-+	case MLX4_MODULE_ID_SFP:
-+		mlx4_sfp_eeprom_params_set(&i2c_addr, &page_num, &offset);
-+		break;
-+	case MLX4_MODULE_ID_QSFP:
-+	case MLX4_MODULE_ID_QSFP_PLUS:
-+	case MLX4_MODULE_ID_QSFP28:
-+		mlx4_qsfp_eeprom_params_set(&i2c_addr, &page_num, &offset);
-+		break;
-+	default:
-+		mlx4_err(dev, "Module ID not recognized: %#x\n", module_id);
-+		return -EINVAL;
-+	}
-+
- 	inbox = mlx4_alloc_cmd_mailbox(dev);
- 	if (IS_ERR(inbox))
- 		return PTR_ERR(inbox);
-@@ -1959,11 +2060,9 @@ int mlx4_get_module_info(struct mlx4_dev
- 		 */
- 		size -= offset + size - I2C_PAGE_SIZE;
- 
--	i2c_addr = I2C_ADDR_LOW;
--
- 	cable_info = (struct mlx4_cable_info *)inmad->data;
- 	cable_info->dev_mem_address = cpu_to_be16(offset);
--	cable_info->page_num = 0;
-+	cable_info->page_num = page_num;
- 	cable_info->i2c_addr = i2c_addr;
- 	cable_info->size = cpu_to_be16(size);
- 
+diff --git a/fs/cifs/smb2pdu.c b/fs/cifs/smb2pdu.c
+index 0ce92d958fd6..ab509965656e 100644
+--- a/fs/cifs/smb2pdu.c
++++ b/fs/cifs/smb2pdu.c
+@@ -3898,10 +3898,10 @@ smb2_new_read_req(void **buf, unsigned int *total_len,
+ 			 * Related requests use info from previous read request
+ 			 * in chain.
+ 			 */
+-			shdr->SessionId = 0xFFFFFFFF;
++			shdr->SessionId = 0xFFFFFFFFFFFFFFFF;
+ 			shdr->TreeId = 0xFFFFFFFF;
+-			req->PersistentFileId = 0xFFFFFFFF;
+-			req->VolatileFileId = 0xFFFFFFFF;
++			req->PersistentFileId = 0xFFFFFFFFFFFFFFFF;
++			req->VolatileFileId = 0xFFFFFFFFFFFFFFFF;
+ 		}
+ 	}
+ 	if (remaining_bytes > io_parms->length)
+-- 
+2.30.2
+
 
 
