@@ -2,37 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 59825396382
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 17:18:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 753DF396173
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 16:39:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234330AbhEaPT0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 11:19:26 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43916 "EHLO mail.kernel.org"
+        id S230454AbhEaOku (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 10:40:50 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60396 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233664AbhEaOO4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 10:14:56 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7100961999;
-        Mon, 31 May 2021 13:42:31 +0000 (UTC)
+        id S232876AbhEaN5x (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 09:57:53 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B90C161931;
+        Mon, 31 May 2021 13:35:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1622468551;
-        bh=3N0ezVeZkrEOInXsqK+PFhmFlFUqU5U/DaZLgbTEMLg=;
+        s=korg; t=1622468121;
+        bh=I+ov7eC9ynns4Nlwi+HAhlLqeUzVweIKirRbx7tHue0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=u30/iWSrSiCfHggXhNmboHutJUWzhL1VPR87hHnaqtD8pISjj+D35brzMJue1nKTU
-         wxzjZkzdmXmlpd633C3G/32ilENTpyDhiAgAN4ujLVqSkUOo49Cum3zHt68MJOsOi6
-         jxrqRl6uU3OQoJDUV0gc0ikDEHcfsjkc5cx8z7sQ=
+        b=vqa5vVYE6aE/vrT0xbzchXj3eIKUcnwoFoeEQoGUYbwAEWPw3zks5b3aConXF7qIo
+         YScJdDN+3PPojuuR2gMJqLlnpslgsZQP4HPspgoMsNijf+I0MY/2kEkOXhExU2LXE/
+         pjHRGBTNB5JDitrNSSLeeeUmYkaxEpW7UX/yhYEE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, James Zhu <James.Zhu@amd.com>,
-        Leo Liu <leo.liu@amd.com>,
-        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
-        Alex Deucher <alexander.deucher@amd.com>
-Subject: [PATCH 5.4 033/177] drm/amdgpu/vcn2.5: add cancel_delayed_work_sync before power gate
+        stable@vger.kernel.org, Felix Fietkau <nbd@nbd.name>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Andi Kleen <ak@linux.intel.com>, Jiri Olsa <jolsa@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Sukadev Bhattiprolu <sukadev@linux.vnet.ibm.com>,
+        Arnaldo Carvalho de Melo <acme@redhat.com>
+Subject: [PATCH 5.10 125/252] perf jevents: Fix getting maximum number of fds
 Date:   Mon, 31 May 2021 15:13:10 +0200
-Message-Id: <20210531130649.068609990@linuxfoundation.org>
+Message-Id: <20210531130702.254918785@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210531130647.887605866@linuxfoundation.org>
-References: <20210531130647.887605866@linuxfoundation.org>
+In-Reply-To: <20210531130657.971257589@linuxfoundation.org>
+References: <20210531130657.971257589@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,33 +45,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: James Zhu <James.Zhu@amd.com>
+From: Felix Fietkau <nbd@nbd.name>
 
-commit 2fb536ea42d557f39f70c755f68e1aa1ad466c55 upstream.
+commit 75ea44e356b5de8c817f821c9dd68ae329e82add upstream.
 
-Add cancel_delayed_work_sync before set power gating state
-to avoid race condition issue when power gating.
+On some hosts, rlim.rlim_max can be returned as RLIM_INFINITY.
+By casting it to int, it is interpreted as -1, which will cause get_maxfds
+to return 0, causing "Invalid argument" errors in nftw() calls.
+Fix this by casting the second argument of min() to rlim_t instead.
 
-Signed-off-by: James Zhu <James.Zhu@amd.com>
-Reviewed-by: Leo Liu <leo.liu@amd.com>
-Acked-by: Christian König <christian.koenig@amd.com>
-Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
-Cc: stable@vger.kernel.org
+Fixes: 80eeb67fe577 ("perf jevents: Program to convert JSON file")
+Signed-off-by: Felix Fietkau <nbd@nbd.name>
+Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com>
+Cc: Andi Kleen <ak@linux.intel.com>
+Cc: Jiri Olsa <jolsa@redhat.com>
+Cc: Mark Rutland <mark.rutland@arm.com>
+Cc: Namhyung Kim <namhyung@kernel.org>
+Cc: Peter Zijlstra <peterz@infradead.org>
+Cc: Sukadev Bhattiprolu <sukadev@linux.vnet.ibm.com>
+Link: http://lore.kernel.org/lkml/20210525160758.97829-1-nbd@nbd.name
+Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/gpu/drm/amd/amdgpu/vcn_v2_5.c |    2 ++
- 1 file changed, 2 insertions(+)
+ tools/perf/pmu-events/jevents.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/gpu/drm/amd/amdgpu/vcn_v2_5.c
-+++ b/drivers/gpu/drm/amd/amdgpu/vcn_v2_5.c
-@@ -302,6 +302,8 @@ static int vcn_v2_5_hw_fini(void *handle
- 	struct amdgpu_ring *ring;
- 	int i;
+--- a/tools/perf/pmu-events/jevents.c
++++ b/tools/perf/pmu-events/jevents.c
+@@ -894,7 +894,7 @@ static int get_maxfds(void)
+ 	struct rlimit rlim;
  
-+	cancel_delayed_work_sync(&adev->vcn.idle_work);
-+
- 	for (i = 0; i < adev->vcn.num_vcn_inst; ++i) {
- 		if (adev->vcn.harvest_config & (1 << i))
- 			continue;
+ 	if (getrlimit(RLIMIT_NOFILE, &rlim) == 0)
+-		return min((int)rlim.rlim_max / 2, 512);
++		return min(rlim.rlim_max / 2, (rlim_t)512);
+ 
+ 	return 512;
+ }
 
 
