@@ -2,73 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CC243396646
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 19:01:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3EE13396658
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 19:03:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231670AbhEaRDF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 13:03:05 -0400
-Received: from smtprelay0024.hostedemail.com ([216.40.44.24]:51470 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S231845AbhEaPvJ (ORCPT
+        id S234813AbhEaREX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 13:04:23 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:42792 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233336AbhEaP4B (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 11:51:09 -0400
-Received: from omf07.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay06.hostedemail.com (Postfix) with ESMTP id 6242E1822186F;
-        Mon, 31 May 2021 15:49:24 +0000 (UTC)
-Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by omf07.hostedemail.com (Postfix) with ESMTPA id 49EC5315D79;
-        Mon, 31 May 2021 15:49:23 +0000 (UTC)
-Message-ID: <4f439c33c8f09da9f0fe44e8eebd98286c3e1e3e.camel@perches.com>
-Subject: Re: [PATCH 03/10] i2c: xiic: Fix coding style issues
-From:   Joe Perches <joe@perches.com>
-To:     Raviteja Narayanam <raviteja.narayanam@xilinx.com>,
-        linux-i2c@vger.kernel.org, michal.simek@xilinx.com
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        git@xilinx.com, marex@denx.de
-Date:   Mon, 31 May 2021 08:49:22 -0700
-In-Reply-To: <20210531131948.19477-4-raviteja.narayanam@xilinx.com>
-References: <20210531131948.19477-1-raviteja.narayanam@xilinx.com>
-         <20210531131948.19477-4-raviteja.narayanam@xilinx.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.38.1-1 
+        Mon, 31 May 2021 11:56:01 -0400
+Received: from mail-wr1-f72.google.com ([209.85.221.72])
+        by youngberry.canonical.com with esmtps  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.93)
+        (envelope-from <krzysztof.kozlowski@canonical.com>)
+        id 1lnkF8-0001Fz-H6
+        for linux-kernel@vger.kernel.org; Mon, 31 May 2021 15:54:18 +0000
+Received: by mail-wr1-f72.google.com with SMTP id f22-20020a5d58f60000b029011634e39889so952374wrd.7
+        for <linux-kernel@vger.kernel.org>; Mon, 31 May 2021 08:54:18 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=sBsy4F7jKH3SpIbmGFnwxwge6ODZS5L/G/FMfomXAiA=;
+        b=WPPV/cR5V6wVW2vmIj1kZQPptkX5rx8y5UJaGe9fo6LRO4dx1xYIApojKb4IYspD25
+         d5WJtPln0H7q0LYkraHOdjSXP4wsI3MI3u0G9+OODUwneaCiKYdFwmMd6tBa+GOweMcl
+         RaD0GDa/WLXpG5XS3KxGkCnismaSB19oSLdeJ/AJuCt4EnWYQZs/1DzqYv8LW2NtIOdE
+         5VDll/Lxe9gA5UWfUZ7klo7K0qItSK7+KDt2GKMXqGbT1nPwjFCQl0gh91a0oTg43mnT
+         C09p7ha8gT2FF4E8JQas/iPjALa8O8rBk6KWThgy2rcta0bvlr1rCtbIJ8kPaPPxhnsr
+         D2eA==
+X-Gm-Message-State: AOAM533/yjgpBeaJliRyeEnhqQNn0LrxgAzShWidq/TflIz4meQkWbRm
+        UO2UL6zZahyURZ6ni23cADePurDs8pmrHHVb3t/IA8F50xfWGipec2MplKVNU/sXwzMsqrIVBjK
+        PKyzcBN/AuWg1hk/iG4lnT1l1MlaHe1b+s3vPhMkQeQ==
+X-Received: by 2002:a5d:6e04:: with SMTP id h4mr22526591wrz.256.1622476458294;
+        Mon, 31 May 2021 08:54:18 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxc5/XqtsAvzunerv9scOT0vi0T+fqQgLaptB/fTaUryshQ2AateJkvN0M3O1eK/oaFSwSLqg==
+X-Received: by 2002:a5d:6e04:: with SMTP id h4mr22526580wrz.256.1622476458147;
+        Mon, 31 May 2021 08:54:18 -0700 (PDT)
+Received: from localhost.localdomain (xdsl-188-155-185-9.adslplus.ch. [188.155.185.9])
+        by smtp.gmail.com with ESMTPSA id u18sm15309089wmj.15.2021.05.31.08.54.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 31 May 2021 08:54:17 -0700 (PDT)
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+To:     Krzysztof Kozlowski <krzk@kernel.org>,
+        Timon Baetz <timon.baetz@protonmail.com>
+Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        linux-kernel@vger.kernel.org,
+        ~postmarketos/upstreaming@lists.sr.ht,
+        Rob Herring <robh+dt@kernel.org>,
+        linux-samsung-soc@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH] ARM: dts: exynos: Disable unused camera input for I9100
+Date:   Mon, 31 May 2021 17:54:13 +0200
+Message-Id: <162247639430.59481.5717460828748837476.b4-ty@canonical.com>
+X-Mailer: git-send-email 2.27.0
+In-Reply-To: <20210530105535.4165-1-timon.baetz@protonmail.com>
+References: <20210530105535.4165-1-timon.baetz@protonmail.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=0.10
-X-Rspamd-Server: rspamout05
-X-Rspamd-Queue-Id: 49EC5315D79
-X-Stat-Signature: w94xhhawad55pwuiot6k8qyufdna9ikt
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Session-ID: U2FsdGVkX195e7L0MdWo55+YrZXpA8kMRysCT477u90=
-X-HE-Tag: 1622476163-449368
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2021-05-31 at 07:19 -0600, Raviteja Narayanam wrote:
-> From: Michal Simek <michal.simek@xilinx.com>
-> 
-> Most of these stuff are reported by checkpatch.
+On Sun, 30 May 2021 10:55:44 +0000, Timon Baetz wrote:
+> As the back camera is not implemented disable the second pair of fimc
+> child nodes as they are not functional. This prevents creating the
+> associated /dev/videoX devices.
 
-trivia:
+Applied, thanks!
 
-> diff --git a/drivers/i2c/busses/i2c-xiic.c b/drivers/i2c/busses/i2c-xiic.c
-[]
-> @@ -519,8 +522,8 @@ static irqreturn_t xiic_process(int irq, void *dev_id)
->  
-> 
->  	/* Service requesting interrupt */
->  	if ((pend & XIIC_INTR_ARB_LOST_MASK) ||
-> -		((pend & XIIC_INTR_TX_ERROR_MASK) &&
-> -		!(pend & XIIC_INTR_RX_FULL_MASK))) {
-> +	    ((pend & XIIC_INTR_TX_ERROR_MASK) &&
-> +	    !(pend & XIIC_INTR_RX_FULL_MASK))) {
+[1/1] ARM: dts: exynos: Disable unused camera input for I9100
+      commit: 135adbbee4c66f89b57519633cbf8c3c35b6c4da
 
-This last line would more commonly be indented one more space to
-align to the appropriate open parenthesis depth.
-
-tab then 4 spaces for
-	    ((pend & XIIC_INTR_TX_ERROR_MASK) &&
-tab then 5 spaces for
-	     !(pend & XIIC_INTR_RX_FULL_MASK))) {
-
-
-
+Best regards,
+-- 
+Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
