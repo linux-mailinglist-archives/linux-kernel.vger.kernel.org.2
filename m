@@ -2,34 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 60C01395D4D
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 15:42:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 141A5395BA8
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 15:21:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232555AbhEaNns (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 09:43:48 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37634 "EHLO mail.kernel.org"
+        id S232093AbhEaNX3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 09:23:29 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55510 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231991AbhEaN3x (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 09:29:53 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id AEC2F613AF;
-        Mon, 31 May 2021 13:22:56 +0000 (UTC)
+        id S232013AbhEaNTe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 09:19:34 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7E1E06139A;
+        Mon, 31 May 2021 13:17:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1622467377;
-        bh=SUrRf8iBGYWl19SOM1QeZ9WV2xjeVDEb6+bjiEz+SHo=;
+        s=korg; t=1622467073;
+        bh=fXVmRXjEYXzSiN1Fw+5ymuglW2HubZD3PlHAZd4Xgv4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=CzjoO88WVG6G83dQOD5R3oPVKmM6R7O51hV4F8Uzkn31vN18ZybiiQZyfpot5jiCM
-         w4vfvNNQARVLs0ChDKEaL4K/fMhDe3gVFE9LMCbQQupsa3jV0Qm827wGW/IrMKHjvT
-         Er9PG0Z5Uir6sEEtOC0cm+pe7buviwQpBOqayoQw=
+        b=WqkuwDJwWiUtVW37FxUK/srSqilTDCLyLED5kJb8UyT3sDBFGGOou4d3mNImZObf0
+         R6ToQrOtXM6LC3RLy13ujkpCDEsrMEFkGCOvVd4GREioccuer3tMfQVPaykfDCjBwx
+         hYiRWJOCSWcc4g94qmoQcbL6zAir3gf1fL5fj/yk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Ovidiu Panait <ovidiu.panait@windriver.com>
-Subject: [PATCH 4.19 043/116] selftests/bpf: add selftest part of "bpf: improve verifier branch analysis"
+        stable@vger.kernel.org, YueHaibing <yuehaibing@huawei.com>,
+        Stable@vger.kernel.org,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Subject: [PATCH 4.4 13/54] iio: adc: ad7793: Add missing error code in ad7793_setup()
 Date:   Mon, 31 May 2021 15:13:39 +0200
-Message-Id: <20210531130641.621755183@linuxfoundation.org>
+Message-Id: <20210531130635.507121797@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210531130640.131924542@linuxfoundation.org>
-References: <20210531130640.131924542@linuxfoundation.org>
+In-Reply-To: <20210531130635.070310929@linuxfoundation.org>
+References: <20210531130635.070310929@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -38,53 +40,30 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ovidiu Panait <ovidiu.panait@windriver.com>
+From: YueHaibing <yuehaibing@huawei.com>
 
-Backport the missing selftest part of commit 7da6cd690c43 ("bpf: improve
-verifier branch analysis") in order to fix the following test_verifier
-failures:
+commit 4ed243b1da169bcbc1ec5507867e56250c5f1ff9 upstream.
 
-...
-Unexpected success to load!
-0: (b7) r0 = 0
-1: (75) if r0 s>= 0x0 goto pc+1
-3: (95) exit
-processed 3 insns (limit 131072), stack depth 0
-Unexpected success to load!
-0: (b7) r0 = 0
-1: (75) if r0 s>= 0x0 goto pc+1
-3: (95) exit
-processed 3 insns (limit 131072), stack depth 0
-...
+Set error code while device ID query failed.
 
-The changesets apply with a minor context difference.
-
-Fixes: 7da6cd690c43 ("bpf: improve verifier branch analysis")
-Signed-off-by: Ovidiu Panait <ovidiu.panait@windriver.com>
+Fixes: 88bc30548aae ("IIO: ADC: New driver for AD7792/AD7793 3 Channel SPI ADC")
+Signed-off-by: YueHaibing <yuehaibing@huawei.com>
+Cc: <Stable@vger.kernel.org>
+Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- tools/testing/selftests/bpf/test_verifier.c |    4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/iio/adc/ad7793.c |    1 +
+ 1 file changed, 1 insertion(+)
 
---- a/tools/testing/selftests/bpf/test_verifier.c
-+++ b/tools/testing/selftests/bpf/test_verifier.c
-@@ -7867,7 +7867,7 @@ static struct bpf_test tests[] = {
- 			BPF_JMP_IMM(BPF_JA, 0, 0, -7),
- 		},
- 		.fixup_map1 = { 4 },
--		.errstr = "R0 invalid mem access 'inv'",
-+		.errstr = "unbounded min value",
- 		.errstr_unpriv = "R1 has unknown scalar with mixed signed bounds",
- 		.result = REJECT,
- 	},
-@@ -9850,7 +9850,7 @@ static struct bpf_test tests[] = {
- 		"check deducing bounds from const, 5",
- 		.insns = {
- 			BPF_MOV64_IMM(BPF_REG_0, 0),
--			BPF_JMP_IMM(BPF_JSGE, BPF_REG_0, 0, 1),
-+			BPF_JMP_IMM(BPF_JSGE, BPF_REG_0, 1, 1),
- 			BPF_ALU64_REG(BPF_SUB, BPF_REG_0, BPF_REG_1),
- 			BPF_EXIT_INSN(),
- 		},
+--- a/drivers/iio/adc/ad7793.c
++++ b/drivers/iio/adc/ad7793.c
+@@ -279,6 +279,7 @@ static int ad7793_setup(struct iio_dev *
+ 	id &= AD7793_ID_MASK;
+ 
+ 	if (id != st->chip_info->id) {
++		ret = -ENODEV;
+ 		dev_err(&st->sd.spi->dev, "device ID query failed\n");
+ 		goto out;
+ 	}
 
 
