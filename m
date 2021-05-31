@@ -2,166 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 075B13958E6
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 12:21:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 378803958F2
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 12:32:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231343AbhEaKXA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 06:23:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44818 "EHLO
+        id S231228AbhEaKd6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 06:33:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47216 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230518AbhEaKW6 (ORCPT
+        with ESMTP id S231182AbhEaKdv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 06:22:58 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80193C061574;
-        Mon, 31 May 2021 03:21:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=B0MUtlUcmiTPTXwp18zRtpJbNe6aC+d1mnXiYiZ9kFM=; b=D5sNFoHf97YL1Cb9gJK6EQrgmS
-        uZ+ZQLMphVDgpqQMxKm0DwaR/FKmQ/HPCWksQg+KTA6u4sffd5YqAicM/pM3v+RxGdIgbeQ3yJ3xQ
-        mZpOMaCDtWJpRmlrGrk6r7ohd3ZaKCSnjg2zBsSLhMYoNy/MqsY8Gpxq1ImB+Twr939+DogePp3RN
-        NLoRCjaa2/tamQa4Fd6Hj2dCP6e/jagiFvCaxaAgHQhiQUNfvgqoFQHnDUPiPgIgjZBIfU08kr4GO
-        AmpopqcivhtFv7fSm5PKcVMnLETy6nlBFGqw8U4W3+eJ9FJ0FvewmB3lXXpcW3/sQ9ozHCzf6qKjW
-        4GCzvejA==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1lnf2h-002Flq-MY; Mon, 31 May 2021 10:21:14 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 4C4CA30019C;
-        Mon, 31 May 2021 12:21:13 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 114D32029A1A5; Mon, 31 May 2021 12:21:13 +0200 (CEST)
-Date:   Mon, 31 May 2021 12:21:13 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     linux-tip-commits@vger.kernel.org,
-        Yejune Deng <yejune.deng@gmail.com>,
-        Valentin Schneider <valentin.schneider@arm.com>, x86@kernel.org
-Subject: [PATCH] sched,init: Fix DEBUG_PREEMPT vs early boot
-Message-ID: <YLS4mbKUrA3Gnb4t@hirez.programming.kicks-ass.net>
-References: <20210510151024.2448573-3-valentin.schneider@arm.com>
- <162141495460.29796.4438792168641232595.tip-bot2@tip-bot2>
+        Mon, 31 May 2021 06:33:51 -0400
+Received: from mail-qk1-x729.google.com (mail-qk1-x729.google.com [IPv6:2607:f8b0:4864:20::729])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44A6DC061574
+        for <linux-kernel@vger.kernel.org>; Mon, 31 May 2021 03:32:11 -0700 (PDT)
+Received: by mail-qk1-x729.google.com with SMTP id j184so10758988qkd.6
+        for <linux-kernel@vger.kernel.org>; Mon, 31 May 2021 03:32:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=zh9IO265bie667jVCIBNqCamDa33CHtZDFaDzM5abhY=;
+        b=Jc8xXzVxJE3s+/WbL+pQubUsDQ5TAkfs+6Ftd/5j6q/9ysHzjxe/hLn0IEf7gtd0pk
+         kgOwgu5eyLgwTeE8tHa0ysLs4JhOh9IHOzTf2aZZDiyDp0UC5QikpSuxQ8I1wyh/fiz9
+         osY3QyRQAwsLR9PbhcJ4BbnS1knej4yEjW3Kkox1BQkOcYRAjZ25BPUn2h/YZDdWUf/w
+         7WRe5iB9vSVr/nTa4K/7mldSxgtswrb8EQU2opZ/N3Q4TEsixCc5FXJNLDWkGf8VbVx8
+         lqUf9/liy4BPjn7XeRUWv+FbdgtAiyTsY0NAOhDH9TOth29Q5eCuTQb+0Lf1FrJLfdAk
+         nVcA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=zh9IO265bie667jVCIBNqCamDa33CHtZDFaDzM5abhY=;
+        b=G1Ky6rb7LG01lEW/tB3zgcoMpmeOYKD18+CxF8XCKP3itYGXloVdMdWjCxC/bEZX5v
+         FBDlIJc55NSv6pcR0VdlIhGp9eiN27V2jvfsKHmtS0iHl+t7eWpYdNvH86jOb7jzg1zf
+         vO2nSkgwLwFN+GPXOD9G4pRR5h9WNxkgG5CFapTYqIpqsqtJln1IQR6CU+g85J6TGmlT
+         +WOe/fi24E5F+czVu7mrxYccwx/cC+xqCjstlrU/zt0ANTiErq1OCJWzbP00TgDnHOKy
+         ZvET4NNGXPNkbl52pPItK2wFrlBDAwS9m2W2TkMqRPmZSW22J+8XA9LiL53sY0gYiKef
+         MCaw==
+X-Gm-Message-State: AOAM531/OVMVZQyGRYvKxJ93RLVZZMMC5iZu4cC34Jp45FhvRm/9iU2S
+        i2KHka7r4tAJ17JSXhb3zdVN70fBTtX3GptgC4c0gg==
+X-Google-Smtp-Source: ABdhPJxvsHbIH3aFgNxYXuc3RHhW/RPNDBluWMG4Zp1PqA2dmIECsKqKJuiMGeycw3Y7V92ETgti/lScWmBTFIBXYXY=
+X-Received: by 2002:a37:4694:: with SMTP id t142mr15978446qka.265.1622457130194;
+ Mon, 31 May 2021 03:32:10 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <162141495460.29796.4438792168641232595.tip-bot2@tip-bot2>
+References: <000000000000f9136f05c39b84e4@google.com> <21666193-5ad7-2656-c50f-33637fabb082@suse.com>
+ <CACT4Y+bqevMT3cD5sXjSv9QYM_7CwjYmN_Ne5LSj=3-REZ+oTw@mail.gmail.com>
+ <224f1e6a-76fa-6356-fe11-af480cee5cf2@suse.com> <CACT4Y+ZJ7Oi9ChXJNuF_+e4FRnN1rJBde4tsjiTtkOV+MM-hgA@mail.gmail.com>
+ <fcf25b03-e48e-8cda-3c87-25c2c3332719@suse.com>
+In-Reply-To: <fcf25b03-e48e-8cda-3c87-25c2c3332719@suse.com>
+From:   Dmitry Vyukov <dvyukov@google.com>
+Date:   Mon, 31 May 2021 12:31:59 +0200
+Message-ID: <CACT4Y+YrLLiaKnM3uVHZvRtj-UrDW-cwx4k6Lsh8no12nwvpNw@mail.gmail.com>
+Subject: Re: [syzbot] kernel BUG in assertfail
+To:     Nikolay Borisov <nborisov@suse.com>
+Cc:     syzbot <syzbot+a6bf271c02e4fe66b4e4@syzkaller.appspotmail.com>,
+        Chris Mason <clm@fb.com>, dsterba@suse.com,
+        Josef Bacik <josef@toxicpanda.com>,
+        linux-btrfs@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 19, 2021 at 09:02:34AM -0000, tip-bot2 for Yejune Deng wrote:
-> The following commit has been merged into the sched/core branch of tip:
-> 
-> Commit-ID:     570a752b7a9bd03b50ad6420cd7f10092cc11bd3
-> Gitweb:        https://git.kernel.org/tip/570a752b7a9bd03b50ad6420cd7f10092cc11bd3
-> Author:        Yejune Deng <yejune.deng@gmail.com>
-> AuthorDate:    Mon, 10 May 2021 16:10:24 +01:00
-> Committer:     Peter Zijlstra <peterz@infradead.org>
-> CommitterDate: Wed, 19 May 2021 10:51:40 +02:00
-> 
-> lib/smp_processor_id: Use is_percpu_thread() instead of nr_cpus_allowed
-> 
-> is_percpu_thread() more elegantly handles SMP vs UP, and further checks the
-> presence of PF_NO_SETAFFINITY. This lets us catch cases where
-> check_preemption_disabled() can race with a concurrent sched_setaffinity().
-> 
-> Signed-off-by: Yejune Deng <yejune.deng@gmail.com>
-> [Amended changelog]
-> Signed-off-by: Valentin Schneider <valentin.schneider@arm.com>
-> Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-> Link: https://lkml.kernel.org/r/20210510151024.2448573-3-valentin.schneider@arm.com
-> ---
->  lib/smp_processor_id.c | 6 +-----
->  1 file changed, 1 insertion(+), 5 deletions(-)
-> 
-> diff --git a/lib/smp_processor_id.c b/lib/smp_processor_id.c
-> index 1c1dbd3..046ac62 100644
-> --- a/lib/smp_processor_id.c
-> +++ b/lib/smp_processor_id.c
-> @@ -19,11 +19,7 @@ unsigned int check_preemption_disabled(const char *what1, const char *what2)
->  	if (irqs_disabled())
->  		goto out;
->  
-> -	/*
-> -	 * Kernel threads bound to a single CPU can safely use
-> -	 * smp_processor_id():
-> -	 */
-> -	if (current->nr_cpus_allowed == 1)
-> +	if (is_percpu_thread())
->  		goto out;
+On Mon, May 31, 2021 at 11:27 AM Nikolay Borisov <nborisov@suse.com> wrote:
+> >>>>>
+> >>>>> syzbot found the following issue on:
+> >>>>>
+> >>>>> HEAD commit:    1434a312 Merge branch 'for-5.13-fixes' of git://git.kernel..
+> >>>>> git tree:       upstream
+> >>>>> console output: https://syzkaller.appspot.com/x/log.txt?x=162843f3d00000
+> >>>>> kernel config:  https://syzkaller.appspot.com/x/.config?x=9f3da44a01882e99
+> >>>>> dashboard link: https://syzkaller.appspot.com/bug?extid=a6bf271c02e4fe66b4e4
+> >>>>>
+> >>>>> Unfortunately, I don't have any reproducer for this issue yet.
+> >>>>>
+> >>>>> IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> >>>>> Reported-by: syzbot+a6bf271c02e4fe66b4e4@syzkaller.appspotmail.com
+> >>>>>
+> >>>>> assertion failed: !memcmp(fs_info->fs_devices->fsid, fs_info->super_copy->fsid, BTRFS_FSID_SIZE), in fs/btrfs/disk-io.c:3282
+> >>>>
+> >>>> This means a device contains a btrfs filesystem which has a different
+> >>>> FSID in its superblock than the fsid which all devices part of the same
+> >>>> fs_devices should have. This can happen in 2 ways - memory corruption
+> >>>> where either of the ->fsid member are corrupted or if there was a crash
+> >>>> while a filesystem's fsid was being changed. We need more context about
+> >>>> what the test did?
+> >>>
+> >>> Hi Nikolay,
+> >>>
+> >>> From a semantic point of view we can consider that it just mounts /dev/random.
+> >>> If syzbot comes up with a reproducer it will post it, but you seem to
+> >>> already figure out what happened, so I assume you can write a unit
+> >>> test for this.
+> >>>
+> >>
+> >> Well no, under normal circumstances this shouldn't trigger. So if syzbot
+> >> is doing something stupid as mounting /dev/random then I don't see a
+> >> problem here. The assert is there to catch inconsistencies during normal
+> >> operation which doesn't seem to be the case here.
+> >
+> >
+> > Does this mean that CONFIG_BTRFS_ASSERT needs to be disabled in any testing?
+> > What is it intended for? Or it can only be enabled when mounting known
+> > good images? But then I assume even btrfs unit tests mount some
+> > invalid images, so it would mean it can't be used even  during unit
+> > testing?
+> >
+> > Looking at the output of "grep ASSERT fs/btrfs/*.c" it looks like most
+> > of these actually check for something that "must never happen". E.g.
+> > some lists/pointers are empty/non-empty in particular states. And
+> > "must never happen" checks are for testing scenarios...
+> >
+> > Taking this particular FSID mismatch assert, should such corrupted
+> > images be mounted for end users? Should users be notified? Currently
+> > they are mounted and users are not notified, what is the purpose of
+> > this assertion?
+> >
+> > Perhaps CONFIG_BTRFS_ASSERT needs to be split into "must never happen"
+> > checks that are enabled during testing and normal if's with pr_err for
+> > user notifications?
+>
+> After going through the code you've convinced me. I just sent a patch
+> turning the 2 debugging asserts into full-fledged checks in
+> validate_super. So now the correct behavior is to prevent mounting of
+> such images.  How can I force syzbot to retest with the given patch applied?
 
-So my test box was unhappy with all this and started spewing lots of
-DEBUG_PREEMPT warns on boot.
-
-This extends 8fb12156b8db6 to cover the new requirement.
-
----
-Subject: sched,init: Fix DEBUG_PREEMPT vs early boot
-
-Extend 8fb12156b8db ("init: Pin init task to the boot CPU, initially")
-to cover the new PF_NO_SETAFFINITY requirement.
-
-While there, move wait_for_completion(&kthreadd_done) into kernel_init()
-to make it absolutely clear it is the very first thing done by the init
-thread.
-
-Fixes: 570a752b7a9b ("lib/smp_processor_id: Use is_percpu_thread() instead of nr_cpus_allowed")
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
----
- init/main.c         | 11 ++++++-----
- kernel/sched/core.c |  1 +
- 2 files changed, 7 insertions(+), 5 deletions(-)
-
-diff --git a/init/main.c b/init/main.c
-index 7b027d9c5c89..e945ec82b8a5 100644
---- a/init/main.c
-+++ b/init/main.c
-@@ -692,6 +692,7 @@ noinline void __ref rest_init(void)
- 	 */
- 	rcu_read_lock();
- 	tsk = find_task_by_pid_ns(pid, &init_pid_ns);
-+	tsk->flags |= PF_NO_SETAFFINITY;
- 	set_cpus_allowed_ptr(tsk, cpumask_of(smp_processor_id()));
- 	rcu_read_unlock();
- 
-@@ -1440,6 +1441,11 @@ static int __ref kernel_init(void *unused)
- {
- 	int ret;
- 
-+	/*
-+	 * Wait until kthreadd is all set-up.
-+	 */
-+	wait_for_completion(&kthreadd_done);
-+
- 	kernel_init_freeable();
- 	/* need to finish all async __init code before freeing the memory */
- 	async_synchronize_full();
-@@ -1520,11 +1526,6 @@ void __init console_on_rootfs(void)
- 
- static noinline void __init kernel_init_freeable(void)
- {
--	/*
--	 * Wait until kthreadd is all set-up.
--	 */
--	wait_for_completion(&kthreadd_done);
--
- 	/* Now the scheduler is fully set up and can do blocking allocations */
- 	gfp_allowed_mask = __GFP_BITS_MASK;
- 
-diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-index adea0b1e8036..ae7737e6c2b2 100644
---- a/kernel/sched/core.c
-+++ b/kernel/sched/core.c
-@@ -8867,6 +8867,7 @@ void __init sched_init_smp(void)
- 	/* Move init over to a non-isolated CPU */
- 	if (set_cpus_allowed_ptr(current, housekeeping_cpumask(HK_FLAG_DOMAIN)) < 0)
- 		BUG();
-+	current->flags &= ~PF_NO_SETAFFINITY;
- 	sched_init_granularity();
- 
- 	init_sched_rt_class();
+syzbot can test patches for issues with reproducers:
+http://bit.do/syzbot#testing-patches
+but this issue doesn't have a reproducer unfortunately. But I hope
+this change is going to be reasonably straightforward. And if/when
+this issue happens again after this report is closed with a fix,
+syzbot will notify us again. So an absence of any new reports from
+syzbot will implicitly mean that everything is fine.
