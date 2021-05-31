@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8251B395D90
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 15:46:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6BBB53961D0
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 16:46:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232994AbhEaNrm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 09:47:42 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40248 "EHLO mail.kernel.org"
+        id S232575AbhEaOrF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 10:47:05 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60416 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232141AbhEaNcd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 09:32:33 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6726061374;
-        Mon, 31 May 2021 13:24:05 +0000 (UTC)
+        id S232438AbhEaOAA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 10:00:00 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0EE59613AB;
+        Mon, 31 May 2021 13:36:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1622467446;
-        bh=Mk4o9uFlCsJBUKxFvG8cLh23CumCW1e+sTx+Z8/w7iQ=;
+        s=korg; t=1622468181;
+        bh=T73aE6qjderFT5AXqvF+eWkmvZ0i4FnAsV5zIEkKxBo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Zflqik+zESAOJrVeT05UBfXxCpT+wunEXw3iVgxYePBshzgQjpNmwB8CYAwSw8NgX
-         a56xK/Z6D17DnG/Qkv0lJRtzlkNBIZBLVOYwzPLfwBUsdMVayOFn5zJJ+iV1Po1feX
-         DHxuzEBOKqOr9jBzWZXFhZuILCbRvaVxuXNd/hwE=
+        b=PPck3eCvtP877mIPkbU+5zBhGo6iuH6kgBAfsNEvl2MS+p29mvkVSNmlExDkrBBZO
+         W2pPyCKBcUNbczGtyiHVlqZMJvFu/AObubqRhg9jw5HhBaSsMGCHPn6I95Ma8QzTsm
+         Pnp73gA5bGYUIc162o9tVqDRkDq9+oABpiEospdw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Sean MacLennan <seanm@seanm.ca>,
-        Johan Hovold <johan@kernel.org>
-Subject: [PATCH 4.19 033/116] USB: serial: ti_usb_3410_5052: add startech.com device id
-Date:   Mon, 31 May 2021 15:13:29 +0200
-Message-Id: <20210531130641.288062762@linuxfoundation.org>
+        stable@vger.kernel.org, Kangjie Lu <kjlu@umn.edu>,
+        Takashi Iwai <tiwai@suse.de>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.10 145/252] Revert "ALSA: gus: add a check of the status of snd_ctl_add"
+Date:   Mon, 31 May 2021 15:13:30 +0200
+Message-Id: <20210531130702.946071480@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210531130640.131924542@linuxfoundation.org>
-References: <20210531130640.131924542@linuxfoundation.org>
+In-Reply-To: <20210531130657.971257589@linuxfoundation.org>
+References: <20210531130657.971257589@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,47 +39,59 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sean MacLennan <seanm@seanm.ca>
+From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-commit 89b1a3d811e6f8065d6ae8a25e7682329b4a31e2 upstream.
+[ Upstream commit 1dacca7fa1ebea47d38d20cd2df37094805d2649 ]
 
-This adds support for the Startech.com generic serial to USB converter.
-It seems to be a bone stock TI_3410. I have been using this patch for
-years.
+This reverts commit 0f25e000cb4398081748e54f62a902098aa79ec1.
 
-Signed-off-by: Sean MacLennan <seanm@seanm.ca>
-Cc: stable@vger.kernel.org
-Signed-off-by: Johan Hovold <johan@kernel.org>
+Because of recent interactions with developers from @umn.edu, all
+commits from them have been recently re-reviewed to ensure if they were
+correct or not.
+
+Upon review, this commit was found to be incorrect for the reasons
+below, so it must be reverted.  It will be fixed up "correctly" in a
+later kernel change.
+
+The original commit did nothing if there was an error, except to print
+out a message, which is pointless.  So remove the commit as it gives a
+"false sense of doing something".
+
+Cc: Kangjie Lu <kjlu@umn.edu>
+Reviewed-by: Takashi Iwai <tiwai@suse.de>
+Link: https://lore.kernel.org/r/20210503115736.2104747-33-gregkh@linuxfoundation.org
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/usb/serial/ti_usb_3410_5052.c |    3 +++
- 1 file changed, 3 insertions(+)
+ sound/isa/gus/gus_main.c | 13 ++-----------
+ 1 file changed, 2 insertions(+), 11 deletions(-)
 
---- a/drivers/usb/serial/ti_usb_3410_5052.c
-+++ b/drivers/usb/serial/ti_usb_3410_5052.c
-@@ -37,6 +37,7 @@
- /* Vendor and product ids */
- #define TI_VENDOR_ID			0x0451
- #define IBM_VENDOR_ID			0x04b3
-+#define STARTECH_VENDOR_ID		0x14b0
- #define TI_3410_PRODUCT_ID		0x3410
- #define IBM_4543_PRODUCT_ID		0x4543
- #define IBM_454B_PRODUCT_ID		0x454b
-@@ -374,6 +375,7 @@ static const struct usb_device_id ti_id_
- 	{ USB_DEVICE(MXU1_VENDOR_ID, MXU1_1131_PRODUCT_ID) },
- 	{ USB_DEVICE(MXU1_VENDOR_ID, MXU1_1150_PRODUCT_ID) },
- 	{ USB_DEVICE(MXU1_VENDOR_ID, MXU1_1151_PRODUCT_ID) },
-+	{ USB_DEVICE(STARTECH_VENDOR_ID, TI_3410_PRODUCT_ID) },
- 	{ }	/* terminator */
- };
+diff --git a/sound/isa/gus/gus_main.c b/sound/isa/gus/gus_main.c
+index afc088f0377c..b7518122a10d 100644
+--- a/sound/isa/gus/gus_main.c
++++ b/sound/isa/gus/gus_main.c
+@@ -77,17 +77,8 @@ static const struct snd_kcontrol_new snd_gus_joystick_control = {
  
-@@ -412,6 +414,7 @@ static const struct usb_device_id ti_id_
- 	{ USB_DEVICE(MXU1_VENDOR_ID, MXU1_1131_PRODUCT_ID) },
- 	{ USB_DEVICE(MXU1_VENDOR_ID, MXU1_1150_PRODUCT_ID) },
- 	{ USB_DEVICE(MXU1_VENDOR_ID, MXU1_1151_PRODUCT_ID) },
-+	{ USB_DEVICE(STARTECH_VENDOR_ID, TI_3410_PRODUCT_ID) },
- 	{ }	/* terminator */
- };
+ static void snd_gus_init_control(struct snd_gus_card *gus)
+ {
+-	int ret;
+-
+-	if (!gus->ace_flag) {
+-		ret =
+-			snd_ctl_add(gus->card,
+-					snd_ctl_new1(&snd_gus_joystick_control,
+-						gus));
+-		if (ret)
+-			snd_printk(KERN_ERR "gus: snd_ctl_add failed: %d\n",
+-					ret);
+-	}
++	if (!gus->ace_flag)
++		snd_ctl_add(gus->card, snd_ctl_new1(&snd_gus_joystick_control, gus));
+ }
  
+ /*
+-- 
+2.30.2
+
 
 
