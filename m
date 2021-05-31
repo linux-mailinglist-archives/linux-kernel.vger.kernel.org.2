@@ -2,38 +2,31 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 007B2396441
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 17:50:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D8D3396443
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 17:51:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232082AbhEaPw3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 11:52:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56028 "EHLO mail.kernel.org"
+        id S231843AbhEaPwd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 11:52:33 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56026 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233794AbhEaO3Y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 10:29:24 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DE2BE61627;
-        Mon, 31 May 2021 13:48:14 +0000 (UTC)
+        id S233774AbhEaO3W (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 10:29:22 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 94CC261C24;
+        Mon, 31 May 2021 13:48:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1622468895;
-        bh=CF7ty86uhUa2TvG9rsZg6Cfvo28yiPUmz6spwCyZwl8=;
+        s=korg; t=1622468898;
+        bh=FkMhq74uK3etKdSivx+MQ8g7r+DNORyT/QYAvYZA+Ig=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=f0qGWZo08BvroQw1N20hznQn5fYF65YOJ//FEPAlpAWlRUfFqyg1eo+YopTz7WjPa
-         x8ssdnl+oB0yg3e+4R4qJxLuQyo7Vr091h3U1HDtvNKcNCvAYrt9+aOGlgrQcFZlwI
-         /Rp22gYX6e3TsxEuGtNlKYt9c647Mau4pfGGMEJQ=
+        b=wn0XdwkfF15ZYZNBSDBOkbgb+R1yE+ZASE24/cWIOpPih32b19PIf+6kb05FaexOj
+         rze3unbzJDlE8pHfbAlSOjkJten5K1smn60Q7CE4vBfso7aTL3Df4pApgJ9uCDHMsf
+         y5Ij4v+dW6WJnmg1t3JMa/4tjRcfyGXhZnJ5rkR8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jani Nikula <jani.nikula@intel.com>,
-        =?UTF-8?q?Ville=20Syrj=C3=A4l=C3=A4?= 
-        <ville.syrjala@linux.intel.com>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
-        Dave Airlie <airlied@redhat.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Subject: [PATCH 5.4 170/177] drm/i915/display: fix compiler warning about array overrun
-Date:   Mon, 31 May 2021 15:15:27 +0200
-Message-Id: <20210531130653.801083985@linuxfoundation.org>
+        stable@vger.kernel.org
+Subject: [PATCH 5.4 171/177] i915: fix build warning in intel_dp_get_link_status()
+Date:   Mon, 31 May 2021 15:15:28 +0200
+Message-Id: <20210531130653.837840180@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210531130647.887605866@linuxfoundation.org>
 References: <20210531130647.887605866@linuxfoundation.org>
@@ -45,69 +38,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Linus Torvalds <torvalds@linux-foundation.org>
+From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-commit fec4d42724a1bf3dcba52307e55375fdb967b852 upstream.
+There is a build warning using gcc-11 showing a mis-match in the .h and .c
+definitions of intel_dp_get_link_status():
+  CC [M]  drivers/gpu/drm/i915/display/intel_dp.o
+drivers/gpu/drm/i915/display/intel_dp.c:4139:56: warning: argument 2 of type ‘u8[6]’ {aka ‘unsigned char[6]’} with mismatched bound [-Warray-parameter=]
+ 4139 | intel_dp_get_link_status(struct intel_dp *intel_dp, u8 link_status[DP_LINK_STATUS_SIZE])
+      |                                                     ~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+In file included from drivers/gpu/drm/i915/display/intel_dp.c:51:
+drivers/gpu/drm/i915/display/intel_dp.h:105:57: note: previously declared as ‘u8 *’ {aka ‘unsigned char *’}
+  105 | intel_dp_get_link_status(struct intel_dp *intel_dp, u8 *link_status);
+      |                                                     ~~~~^~~~~~~~~~~
 
-intel_dp_check_mst_status() uses a 14-byte array to read the DPRX Event
-Status Indicator data, but then passes that buffer at offset 10 off as
-an argument to drm_dp_channel_eq_ok().
+This was fixed accidentally commit b30edfd8d0b4 ("drm/i915: Switch to LTTPR
+non-transparent mode link training") by getting rid of the function entirely,
+but that is not a viable backport for a stable kernel, so just fix up the
+function definition to remove the build warning entirely.  There is no
+functional change for this, and it fixes up one of the last 'make allmodconfig'
+build warnings when using gcc-11 on this kernel tree.
 
-End result: there are only 4 bytes remaining of the buffer, yet
-drm_dp_channel_eq_ok() wants a 6-byte buffer.  gcc-11 correctly warns
-about this case:
-
-  drivers/gpu/drm/i915/display/intel_dp.c: In function ‘intel_dp_check_mst_status’:
-  drivers/gpu/drm/i915/display/intel_dp.c:3491:22: warning: ‘drm_dp_channel_eq_ok’ reading 6 bytes from a region of size 4 [-Wstringop-overread]
-   3491 |                     !drm_dp_channel_eq_ok(&esi[10], intel_dp->lane_count)) {
-        |                      ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  drivers/gpu/drm/i915/display/intel_dp.c:3491:22: note: referencing argument 1 of type ‘const u8 *’ {aka ‘const unsigned char *’}
-  In file included from drivers/gpu/drm/i915/display/intel_dp.c:38:
-  include/drm/drm_dp_helper.h:1466:6: note: in a call to function ‘drm_dp_channel_eq_ok’
-   1466 | bool drm_dp_channel_eq_ok(const u8 link_status[DP_LINK_STATUS_SIZE],
-        |      ^~~~~~~~~~~~~~~~~~~~
-       6:14 elapsed
-
-This commit just extends the original array by 2 zero-initialized bytes,
-avoiding the warning.
-
-There may be some underlying bug in here that caused this confusion, but
-this is at least no worse than the existing situation that could use
-random data off the stack.
-
-Cc: Jani Nikula <jani.nikula@intel.com>
-Cc: Ville Syrjälä <ville.syrjala@linux.intel.com>
-Cc: Joonas Lahtinen <joonas.lahtinen@linux.intel.com>
-Cc: Rodrigo Vivi <rodrigo.vivi@intel.com>
-Cc: Daniel Vetter <daniel.vetter@ffwll.ch>
-Cc: Dave Airlie <airlied@redhat.com>
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/gpu/drm/i915/display/intel_dp.c |   13 ++++++++++++-
- 1 file changed, 12 insertions(+), 1 deletion(-)
+ drivers/gpu/drm/i915/display/intel_dp.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
 --- a/drivers/gpu/drm/i915/display/intel_dp.c
 +++ b/drivers/gpu/drm/i915/display/intel_dp.c
-@@ -4706,7 +4706,18 @@ intel_dp_check_mst_status(struct intel_d
- 	bool bret;
- 
- 	if (intel_dp->is_mst) {
--		u8 esi[DP_DPRX_ESI_LEN] = { 0 };
-+		/*
-+		 * The +2 is because DP_DPRX_ESI_LEN is 14, but we then
-+		 * pass in "esi+10" to drm_dp_channel_eq_ok(), which
-+		 * takes a 6-byte array. So we actually need 16 bytes
-+		 * here.
-+		 *
-+		 * Somebody who knows what the limits actually are
-+		 * should check this, but for now this is at least
-+		 * harmless and avoids a valid compiler warning about
-+		 * using more of the array than we have allocated.
-+		 */
-+		u8 esi[DP_DPRX_ESI_LEN+2] = {};
- 		int ret = 0;
- 		int retry;
- 		bool handled;
+@@ -3634,7 +3634,7 @@ static void chv_dp_post_pll_disable(stru
+  * link status information
+  */
+ bool
+-intel_dp_get_link_status(struct intel_dp *intel_dp, u8 link_status[DP_LINK_STATUS_SIZE])
++intel_dp_get_link_status(struct intel_dp *intel_dp, u8 *link_status)
+ {
+ 	return drm_dp_dpcd_read(&intel_dp->aux, DP_LANE0_1_STATUS, link_status,
+ 				DP_LINK_STATUS_SIZE) == DP_LINK_STATUS_SIZE;
 
 
