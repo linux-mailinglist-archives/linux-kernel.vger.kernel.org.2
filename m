@@ -2,100 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A56D239596B
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 13:04:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F796395972
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 13:08:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231289AbhEaLGZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 07:06:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54372 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231211AbhEaLFU (ORCPT
+        id S231367AbhEaLKU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 07:10:20 -0400
+Received: from mx0a-00069f02.pphosted.com ([205.220.165.32]:55364 "EHLO
+        mx0a-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230518AbhEaLKR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 07:05:20 -0400
-Received: from mail-pg1-x52d.google.com (mail-pg1-x52d.google.com [IPv6:2607:f8b0:4864:20::52d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 055DBC061760
-        for <linux-kernel@vger.kernel.org>; Mon, 31 May 2021 04:03:36 -0700 (PDT)
-Received: by mail-pg1-x52d.google.com with SMTP id 29so8084205pgu.11
-        for <linux-kernel@vger.kernel.org>; Mon, 31 May 2021 04:03:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=kVVp3/5PD9TNVkBqRwTdaqgUZbR4rxrCFLemTAIAOxw=;
-        b=gYNCW5RFChv1jp/X4WYBy/BnbKsrorP0RgRJHXm6B+mrow1fj8pUN5VVp2mb48fxHL
-         Qt7IUepT4VCHouBoQH7IfHx0V/my+MeWY/oFbjGkwG1hdKzTR4E02Wc2YFzfITDyJa0/
-         F6NeTq6EkRCJmg1xgT1XKa4P5N5FkgsNbergVIHBoPKjBVyrz/8sYRjg1U2VWl1mLUZB
-         dZg8rYhgYm6BZLHzDL9Msj/rjFpBdJ+/X9asyWUP7AgSHzENgz4ZSza+HusduLm3DJ8x
-         733brJLFP8LykaYxMUaJKOw9/pfTwnBp6fgtLQINHTT1SiPWVrVpv6wrTm2EMptYUIIn
-         HwCA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=kVVp3/5PD9TNVkBqRwTdaqgUZbR4rxrCFLemTAIAOxw=;
-        b=rrctLc3PqcCqCctclT730jj+A21Ydx8ZTWQ3XmJsmI0yapWhoHAaVXcSCF5lDAL4z1
-         lYUd8wATIL2qeosesBog2+Lir/zBmgLe90TXlfq99Lmw8YdCCflvVpDqQxhf/QmJ9Zzl
-         fbPrQ9Rhw8AR40HGoWAygfdEaTmB2H0yhHY5T6Ci5BJCcoWDuSVNkNOWTJD96wPZxF2z
-         9wiJH+m4iSxAnhzaDGV0rYrPV4EMwcLPfVeVzXmZfcdYYYe2j7c0sdC63+to6W5ZoNPs
-         95Fi3zzb+ljs2fv4LpoSK7n5TNw1NAKENIlh/iv+uMcGGEoZWNyJU8j5hM8qWrXuDLUt
-         HWnQ==
-X-Gm-Message-State: AOAM531Jktvi/BrCTfU3i/6LuSPQn/dbclQ9lc8csPNREaXl1ASHgArT
-        Z5DySAe8DYqp+mdNdkjCCxnJhlIHgmp0QXJUr5yvbw==
-X-Google-Smtp-Source: ABdhPJxOHs4Ou9JqMtN7MXkca0RXDf4GaYsi1vyRn3RcJvJO5Bi15tr4iJgp0tWU12D4cxp04fkLVu/ET6yJcjhcZVo=
-X-Received: by 2002:a05:6a00:88a:b029:261:6d37:dac6 with SMTP id
- q10-20020a056a00088ab02902616d37dac6mr16412254pfj.18.1622459016498; Mon, 31
- May 2021 04:03:36 -0700 (PDT)
+        Mon, 31 May 2021 07:10:17 -0400
+Received: from pps.filterd (m0246629.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 14VB7sTS032461;
+        Mon, 31 May 2021 11:07:54 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=corp-2020-01-29;
+ bh=lUuGq/C7sXzvXw1vUvzsTI9HcozZmqWeXik1xKmQ/Vw=;
+ b=oVdQZePnwKr8RWTFBZNq2Tl1U3mtiJYKxISkSPrrwk22gEhpg5VJ5kxzrLZFUd3v5Ov0
+ pi3mLRcBm/AX23q16Lu/jnM/tXi8IaQoRkpmckzcepB4HyM/XDHKgfgCGJ4OQbNyxfgD
+ bXot10nFB7VGAPlSs9PmyML3tWwZeggkEley8G/fzIpEgMuk05ANCVzSQX6fhYGVF1YM
+ oW8KgjNxf9J7pjAvlatX8KtGId7s3FkbZtMGjPfaLT4Rea11IlbJMY3XKsECQWxjfEph
+ zQdCOtW206HLs85D8Y0mnNgpAz1nvz45ROtEiyNRrifv0JVOBU4Nf31kASqkOq0rbRS3 HQ== 
+Received: from oracle.com (userp3030.oracle.com [156.151.31.80])
+        by mx0b-00069f02.pphosted.com with ESMTP id 38vng405mp-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 31 May 2021 11:07:53 +0000
+Received: from userp3030.oracle.com (userp3030.oracle.com [127.0.0.1])
+        by pps.podrdrct (8.16.0.36/8.16.0.36) with SMTP id 14VB7qPg066668;
+        Mon, 31 May 2021 11:07:52 GMT
+Received: from pps.reinject (localhost [127.0.0.1])
+        by userp3030.oracle.com with ESMTP id 38uaqvaw53-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 31 May 2021 11:07:52 +0000
+Received: from userp3030.oracle.com (userp3030.oracle.com [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 14VB7pK4066659;
+        Mon, 31 May 2021 11:07:52 GMT
+Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
+        by userp3030.oracle.com with ESMTP id 38uaqvaw4w-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 31 May 2021 11:07:51 +0000
+Received: from abhmp0007.oracle.com (abhmp0007.oracle.com [141.146.116.13])
+        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 14VB7ovt026451;
+        Mon, 31 May 2021 11:07:50 GMT
+Received: from kadam (/41.212.42.34)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Mon, 31 May 2021 04:07:49 -0700
+Date:   Mon, 31 May 2021 14:07:42 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     Dongliang Mu <mudongliangabcd@gmail.com>
+Cc:     perex@perex.cz, tiwai@suse.com, alsa-devel@alsa-project.org,
+        linux-kernel@vger.kernel.org,
+        syzbot+08a7d8b51ea048a74ffb@syzkaller.appspotmail.com
+Subject: Re: [PATCH] ALSA: control led: fix memory leak in
+ snd_ctl_led_register
+Message-ID: <20210531110742.GB24442@kadam>
+References: <20210528131757.2269989-1-mudongliangabcd@gmail.com>
+ <20210531110144.GA24442@kadam>
 MIME-Version: 1.0
-References: <20210511180728.23781-1-jonathan@marek.ca> <20210511180728.23781-12-jonathan@marek.ca>
-In-Reply-To: <20210511180728.23781-12-jonathan@marek.ca>
-From:   Robert Foss <robert.foss@linaro.org>
-Date:   Mon, 31 May 2021 13:03:25 +0200
-Message-ID: <CAG3jFytzr05i8=_9ELVus6Rvpm5ub+s7UL4a6NMH5t363JmZcA@mail.gmail.com>
-Subject: Re: [PATCH 11/17] media: camss: fix VFE irq name
-To:     Jonathan Marek <jonathan@marek.ca>
-Cc:     MSM <linux-arm-msm@vger.kernel.org>,
-        Andrey Konovalov <andrey.konovalov@linaro.org>,
-        Todor Tomov <todor.too@gmail.com>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        "open list:QUALCOMM CAMERA SUBSYSTEM DRIVER" 
-        <linux-media@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210531110144.GA24442@kadam>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Proofpoint-ORIG-GUID: a2BHVzqa7nGO7H_95w5TKUDFIxE2UFM2
+X-Proofpoint-GUID: a2BHVzqa7nGO7H_95w5TKUDFIxE2UFM2
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 11 May 2021 at 20:08, Jonathan Marek <jonathan@marek.ca> wrote:
->
-> vfe->id isn't set yet, so use "id" instead here.
->
-> Signed-off-by: Jonathan Marek <jonathan@marek.ca>
-> ---
->  drivers/media/platform/qcom/camss/camss-vfe.c | 3 +--
->  1 file changed, 1 insertion(+), 2 deletions(-)
->
-> diff --git a/drivers/media/platform/qcom/camss/camss-vfe.c b/drivers/media/platform/qcom/camss/camss-vfe.c
-> index 15695fd466c4..dec89079c6ae 100644
-> --- a/drivers/media/platform/qcom/camss/camss-vfe.c
-> +++ b/drivers/media/platform/qcom/camss/camss-vfe.c
-> @@ -1290,7 +1290,6 @@ int msm_vfe_subdev_init(struct camss *camss, struct vfe_device *vfe,
->         case CAMSS_660:
->                 vfe->ops = &vfe_ops_4_8;
->                 break;
-> -
->         case CAMSS_845:
->                 vfe->ops = &vfe_ops_170;
->                 break;
-> @@ -1319,7 +1318,7 @@ int msm_vfe_subdev_init(struct camss *camss, struct vfe_device *vfe,
->
->         vfe->irq = r->start;
->         snprintf(vfe->irq_name, sizeof(vfe->irq_name), "%s_%s%d",
-> -                dev_name(dev), MSM_VFE_NAME, vfe->id);
-> +                dev_name(dev), MSM_VFE_NAME, id);
->         ret = devm_request_irq(dev, vfe->irq, vfe->ops->isr,
->                                IRQF_TRIGGER_RISING, vfe->irq_name, vfe);
->         if (ret < 0) {
+I've also created a Smatch check for missing ->release() functions.  It
+find one bug in that file.  There are other bugs, but the static checker
+is not clever enough to find them.  I expect Smatch will get smarter
+about this in the coming year.
 
-Reviewed-by: Robert Foss <robert.foss@linaro.org>
+sound/core/control_led.c:685 snd_ctl_led_sysfs_add() warn: calling put_device() with no ->release() function
+
+So, yeay, I feel like this thread has been useful and I now understand
+put_device() a little better.  Please review the email thread again and
+send a v2 patch.  :)
+
+regards,
+dan carpenter
+
+/*
+ * Copyright (C) 2021 Oracle.
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, see http://www.gnu.org/copyleft/gpl.txt
+ */
+
+#include "smatch.h"
+#include "smatch_extra.h"
+
+static int my_id;
+
+static void match_put_device(struct expression *expr, const char *name, struct symbol *sym, void *data)
+{
+	struct smatch_state *state;
+
+	state = get_state(SMATCH_EXTRA, name, sym);
+	if (!state ||
+	    estate_min(state).value != 0 ||
+	    estate_max(state).value != 0)
+		return;
+
+	sm_warning("calling put_device() with no ->release() function");
+}
+
+void check_no_release(int id)
+{
+	my_id = id;
+
+	if (option_project != PROJ_KERNEL)
+		return;
+
+	add_function_param_key_hook("put_device", &match_put_device, 0, "$->release", NULL);
+	add_function_param_key_hook("device_unregister", &match_put_device, 0, "$->release", NULL);
+}
+
