@@ -2,136 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 378803958F2
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 12:32:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2FC2D3958F6
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 12:32:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231228AbhEaKd6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 06:33:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47216 "EHLO
+        id S231277AbhEaKe1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 06:34:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47346 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231182AbhEaKdv (ORCPT
+        with ESMTP id S231182AbhEaKeX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 06:33:51 -0400
-Received: from mail-qk1-x729.google.com (mail-qk1-x729.google.com [IPv6:2607:f8b0:4864:20::729])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44A6DC061574
-        for <linux-kernel@vger.kernel.org>; Mon, 31 May 2021 03:32:11 -0700 (PDT)
-Received: by mail-qk1-x729.google.com with SMTP id j184so10758988qkd.6
-        for <linux-kernel@vger.kernel.org>; Mon, 31 May 2021 03:32:11 -0700 (PDT)
+        Mon, 31 May 2021 06:34:23 -0400
+Received: from mail-wm1-x32b.google.com (mail-wm1-x32b.google.com [IPv6:2a00:1450:4864:20::32b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D08BEC06174A
+        for <linux-kernel@vger.kernel.org>; Mon, 31 May 2021 03:32:42 -0700 (PDT)
+Received: by mail-wm1-x32b.google.com with SMTP id g204so2733585wmf.5
+        for <linux-kernel@vger.kernel.org>; Mon, 31 May 2021 03:32:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=zh9IO265bie667jVCIBNqCamDa33CHtZDFaDzM5abhY=;
-        b=Jc8xXzVxJE3s+/WbL+pQubUsDQ5TAkfs+6Ftd/5j6q/9ysHzjxe/hLn0IEf7gtd0pk
-         kgOwgu5eyLgwTeE8tHa0ysLs4JhOh9IHOzTf2aZZDiyDp0UC5QikpSuxQ8I1wyh/fiz9
-         osY3QyRQAwsLR9PbhcJ4BbnS1knej4yEjW3Kkox1BQkOcYRAjZ25BPUn2h/YZDdWUf/w
-         7WRe5iB9vSVr/nTa4K/7mldSxgtswrb8EQU2opZ/N3Q4TEsixCc5FXJNLDWkGf8VbVx8
-         lqUf9/liy4BPjn7XeRUWv+FbdgtAiyTsY0NAOhDH9TOth29Q5eCuTQb+0Lf1FrJLfdAk
-         nVcA==
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=cWWmu24DcI6+LxTaWh70NPaWRoUZ7MO3IMlEue/FVZA=;
+        b=E3ThoyhlIPMxXwWUDLm6t+clN2naDQPjv4zJHwNgZaDEewyyuEPiSY7QzdCEztPYQF
+         XMXb6phaOMpvw1EoXt3C9vb/fAjEbkgS041Vt3BOvaNykF95ep0zekBHbG2iOJJA6HNs
+         LRhOLz8nqaXHYKeDvVOVH89UKKer3v6nD5oThOJuuMH88agpVuuZRmvdLo6wLiYzmHhU
+         hZEZn7MHs4tZtLCD0QErlzDY1XXZyoQnGpqA4EPd3tysy4BpdQH/fhtG1oXtfzSpFvCz
+         As63y9bZyIGRvVP2EhLpi0xwXcz46xCTAUgW/Hpc2tPwmrhejalr8QhTdYFzTmRaMedE
+         EPIA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=zh9IO265bie667jVCIBNqCamDa33CHtZDFaDzM5abhY=;
-        b=G1Ky6rb7LG01lEW/tB3zgcoMpmeOYKD18+CxF8XCKP3itYGXloVdMdWjCxC/bEZX5v
-         FBDlIJc55NSv6pcR0VdlIhGp9eiN27V2jvfsKHmtS0iHl+t7eWpYdNvH86jOb7jzg1zf
-         vO2nSkgwLwFN+GPXOD9G4pRR5h9WNxkgG5CFapTYqIpqsqtJln1IQR6CU+g85J6TGmlT
-         +WOe/fi24E5F+czVu7mrxYccwx/cC+xqCjstlrU/zt0ANTiErq1OCJWzbP00TgDnHOKy
-         ZvET4NNGXPNkbl52pPItK2wFrlBDAwS9m2W2TkMqRPmZSW22J+8XA9LiL53sY0gYiKef
-         MCaw==
-X-Gm-Message-State: AOAM531/OVMVZQyGRYvKxJ93RLVZZMMC5iZu4cC34Jp45FhvRm/9iU2S
-        i2KHka7r4tAJ17JSXhb3zdVN70fBTtX3GptgC4c0gg==
-X-Google-Smtp-Source: ABdhPJxvsHbIH3aFgNxYXuc3RHhW/RPNDBluWMG4Zp1PqA2dmIECsKqKJuiMGeycw3Y7V92ETgti/lScWmBTFIBXYXY=
-X-Received: by 2002:a37:4694:: with SMTP id t142mr15978446qka.265.1622457130194;
- Mon, 31 May 2021 03:32:10 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=cWWmu24DcI6+LxTaWh70NPaWRoUZ7MO3IMlEue/FVZA=;
+        b=sqoMK8JiZDQSbx6j06qDQ8vbSK0tEIN0eIA2eTjZAtg/ezD7+vJ21gjymi3dCA7F/2
+         8QplJXke/SoewaszWppvLVNAgakhZ0j6sgVdBUOzJGoRFj1EeJRQhuJ7aqGosRcGx/TL
+         kVgaSetu+9SQ7aKe/7zCj0WU9nxqkiySdcnH70taDyis47WbRTxr61/msG1EDPv+6I0f
+         jQJjY49cUai7Z0XcWvT6by04nCLFV7xFS8jRsKJS/yXyT8HKdy9sqwhkh0bEeJVcBNXe
+         t/yq7WKQ1OJPs8aA6R57fFSNERo5wXuHOkUHuZ2uD3y70TBcE1VRDD1w2V3Wy3KvhWku
+         sGPg==
+X-Gm-Message-State: AOAM533K/BWdwGAj6nCVaD8hCE+z7V1QGbSiqKizt8+ZxhFUa0XTZBwb
+        22h7yRCEBjZ4Elgzb3Nw/VCCoZE0FySoC3FK
+X-Google-Smtp-Source: ABdhPJz4UvlPrI9eDd5ZIGlvRHY+p+kPB+/Nje+MbHgp30dF+y32DbsnFSqzHCU5tEckYqc5Jf8TFw==
+X-Received: by 2002:a7b:c761:: with SMTP id x1mr9892260wmk.118.1622457161431;
+        Mon, 31 May 2021 03:32:41 -0700 (PDT)
+Received: from [192.168.1.28] (hst-221-34.medicom.bg. [84.238.221.34])
+        by smtp.googlemail.com with ESMTPSA id y20sm25122822wmi.0.2021.05.31.03.32.40
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 31 May 2021 03:32:41 -0700 (PDT)
+Subject: Re: [PATCH 5/7] venus: vdec: set work route to fw
+To:     Dikshita Agarwal <dikshita@codeaurora.org>,
+        linux-media@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, vgarodia@codeaurora.org
+References: <1621417008-6117-1-git-send-email-dikshita@codeaurora.org>
+ <1621417008-6117-6-git-send-email-dikshita@codeaurora.org>
+From:   Stanimir Varbanov <stanimir.varbanov@linaro.org>
+Message-ID: <6a17e585-2714-6ed2-2526-56b4e0bf61b8@linaro.org>
+Date:   Mon, 31 May 2021 13:32:40 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-References: <000000000000f9136f05c39b84e4@google.com> <21666193-5ad7-2656-c50f-33637fabb082@suse.com>
- <CACT4Y+bqevMT3cD5sXjSv9QYM_7CwjYmN_Ne5LSj=3-REZ+oTw@mail.gmail.com>
- <224f1e6a-76fa-6356-fe11-af480cee5cf2@suse.com> <CACT4Y+ZJ7Oi9ChXJNuF_+e4FRnN1rJBde4tsjiTtkOV+MM-hgA@mail.gmail.com>
- <fcf25b03-e48e-8cda-3c87-25c2c3332719@suse.com>
-In-Reply-To: <fcf25b03-e48e-8cda-3c87-25c2c3332719@suse.com>
-From:   Dmitry Vyukov <dvyukov@google.com>
-Date:   Mon, 31 May 2021 12:31:59 +0200
-Message-ID: <CACT4Y+YrLLiaKnM3uVHZvRtj-UrDW-cwx4k6Lsh8no12nwvpNw@mail.gmail.com>
-Subject: Re: [syzbot] kernel BUG in assertfail
-To:     Nikolay Borisov <nborisov@suse.com>
-Cc:     syzbot <syzbot+a6bf271c02e4fe66b4e4@syzkaller.appspotmail.com>,
-        Chris Mason <clm@fb.com>, dsterba@suse.com,
-        Josef Bacik <josef@toxicpanda.com>,
-        linux-btrfs@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <1621417008-6117-6-git-send-email-dikshita@codeaurora.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 31, 2021 at 11:27 AM Nikolay Borisov <nborisov@suse.com> wrote:
-> >>>>>
-> >>>>> syzbot found the following issue on:
-> >>>>>
-> >>>>> HEAD commit:    1434a312 Merge branch 'for-5.13-fixes' of git://git.kernel..
-> >>>>> git tree:       upstream
-> >>>>> console output: https://syzkaller.appspot.com/x/log.txt?x=162843f3d00000
-> >>>>> kernel config:  https://syzkaller.appspot.com/x/.config?x=9f3da44a01882e99
-> >>>>> dashboard link: https://syzkaller.appspot.com/bug?extid=a6bf271c02e4fe66b4e4
-> >>>>>
-> >>>>> Unfortunately, I don't have any reproducer for this issue yet.
-> >>>>>
-> >>>>> IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> >>>>> Reported-by: syzbot+a6bf271c02e4fe66b4e4@syzkaller.appspotmail.com
-> >>>>>
-> >>>>> assertion failed: !memcmp(fs_info->fs_devices->fsid, fs_info->super_copy->fsid, BTRFS_FSID_SIZE), in fs/btrfs/disk-io.c:3282
-> >>>>
-> >>>> This means a device contains a btrfs filesystem which has a different
-> >>>> FSID in its superblock than the fsid which all devices part of the same
-> >>>> fs_devices should have. This can happen in 2 ways - memory corruption
-> >>>> where either of the ->fsid member are corrupted or if there was a crash
-> >>>> while a filesystem's fsid was being changed. We need more context about
-> >>>> what the test did?
-> >>>
-> >>> Hi Nikolay,
-> >>>
-> >>> From a semantic point of view we can consider that it just mounts /dev/random.
-> >>> If syzbot comes up with a reproducer it will post it, but you seem to
-> >>> already figure out what happened, so I assume you can write a unit
-> >>> test for this.
-> >>>
-> >>
-> >> Well no, under normal circumstances this shouldn't trigger. So if syzbot
-> >> is doing something stupid as mounting /dev/random then I don't see a
-> >> problem here. The assert is there to catch inconsistencies during normal
-> >> operation which doesn't seem to be the case here.
-> >
-> >
-> > Does this mean that CONFIG_BTRFS_ASSERT needs to be disabled in any testing?
-> > What is it intended for? Or it can only be enabled when mounting known
-> > good images? But then I assume even btrfs unit tests mount some
-> > invalid images, so it would mean it can't be used even  during unit
-> > testing?
-> >
-> > Looking at the output of "grep ASSERT fs/btrfs/*.c" it looks like most
-> > of these actually check for something that "must never happen". E.g.
-> > some lists/pointers are empty/non-empty in particular states. And
-> > "must never happen" checks are for testing scenarios...
-> >
-> > Taking this particular FSID mismatch assert, should such corrupted
-> > images be mounted for end users? Should users be notified? Currently
-> > they are mounted and users are not notified, what is the purpose of
-> > this assertion?
-> >
-> > Perhaps CONFIG_BTRFS_ASSERT needs to be split into "must never happen"
-> > checks that are enabled during testing and normal if's with pr_err for
-> > user notifications?
->
-> After going through the code you've convinced me. I just sent a patch
-> turning the 2 debugging asserts into full-fledged checks in
-> validate_super. So now the correct behavior is to prevent mounting of
-> such images.  How can I force syzbot to retest with the given patch applied?
 
-syzbot can test patches for issues with reproducers:
-http://bit.do/syzbot#testing-patches
-but this issue doesn't have a reproducer unfortunately. But I hope
-this change is going to be reasonably straightforward. And if/when
-this issue happens again after this report is closed with a fix,
-syzbot will notify us again. So an absence of any new reports from
-syzbot will implicitly mean that everything is fine.
+
+On 5/19/21 12:36 PM, Dikshita Agarwal wrote:
+> Set work route to FW based on num of vpp pipes.
+> 
+> Signed-off-by: Dikshita Agarwal <dikshita@codeaurora.org>
+> ---
+>  drivers/media/platform/qcom/venus/hfi_cmds.c   |  7 +++++++
+>  drivers/media/platform/qcom/venus/hfi_helper.h |  5 +++++
+>  drivers/media/platform/qcom/venus/vdec.c       | 21 +++++++++++++++++++++
+>  3 files changed, 33 insertions(+)
+> 
+> diff --git a/drivers/media/platform/qcom/venus/hfi_cmds.c b/drivers/media/platform/qcom/venus/hfi_cmds.c
+> index 11a8347..837fb80 100644
+> --- a/drivers/media/platform/qcom/venus/hfi_cmds.c
+> +++ b/drivers/media/platform/qcom/venus/hfi_cmds.c
+> @@ -1290,6 +1290,13 @@ pkt_session_set_property_6xx(struct hfi_session_set_property_pkt *pkt,
+>  		pkt->shdr.hdr.size += sizeof(u32) + sizeof(*color);
+>  		break;
+>  	}
+> +	case HFI_PROPERTY_PARAM_WORK_ROUTE: {
+> +		struct hfi_video_work_route *in = pdata, *wr = prop_data;
+> +
+> +		wr->video_work_route = in->video_work_route;
+> +		pkt->shdr.hdr.size += sizeof(u32) + sizeof(*wr);
+> +		break;
+> +	}
+>  	default:
+>  		return pkt_session_set_property_4xx(pkt, cookie, ptype, pdata);
+>  	}
+> diff --git a/drivers/media/platform/qcom/venus/hfi_helper.h b/drivers/media/platform/qcom/venus/hfi_helper.h
+> index 63cd347..185c302 100644
+> --- a/drivers/media/platform/qcom/venus/hfi_helper.h
+> +++ b/drivers/media/platform/qcom/venus/hfi_helper.h
+> @@ -451,6 +451,7 @@
+>  #define HFI_PROPERTY_PARAM_MVC_BUFFER_LAYOUT			0x100f
+>  #define HFI_PROPERTY_PARAM_MAX_SESSIONS_SUPPORTED		0x1010
+>  #define HFI_PROPERTY_PARAM_WORK_MODE				0x1015
+> +#define HFI_PROPERTY_PARAM_WORK_ROUTE				0x1017
+>  
+>  /*
+>   * HFI_PROPERTY_CONFIG_COMMON_START
+> @@ -864,6 +865,10 @@ struct hfi_video_work_mode {
+>  	u32 video_work_mode;
+>  };
+>  
+> +struct hfi_video_work_route {
+> +	u32 video_work_route;
+> +};
+> +
+>  struct hfi_h264_vui_timing_info {
+>  	u32 enable;
+>  	u32 fixed_framerate;
+> diff --git a/drivers/media/platform/qcom/venus/vdec.c b/drivers/media/platform/qcom/venus/vdec.c
+> index ddb7cd3..a674281 100644
+> --- a/drivers/media/platform/qcom/venus/vdec.c
+> +++ b/drivers/media/platform/qcom/venus/vdec.c
+> @@ -653,6 +653,21 @@ static int vdec_set_properties(struct venus_inst *inst)
+>  	return 0;
+>  }
+>  
+> +static int vdec_set_work_route(struct venus_inst *inst)
+> +{
+> +	struct hfi_video_work_route wr;
+> +	u32 ptype;
+> +	int ret;
+> +
+> +	wr.video_work_route = inst->core->res->num_vpp_pipes;
+> +
+> +	ptype = HFI_PROPERTY_PARAM_WORK_ROUTE;
+> +	ret = hfi_session_set_property(inst, ptype, &wr);
+> +	if (ret)
+> +		return ret;
+> +	return 0;
+> +}
+> +
+>  #define is_ubwc_fmt(fmt) (!!((fmt) & HFI_COLOR_FORMAT_UBWC_BASE))
+>  
+>  static int vdec_output_conf(struct venus_inst *inst)
+> @@ -1039,6 +1054,12 @@ static int vdec_start_output(struct venus_inst *inst)
+>  	if (ret)
+>  		return ret;
+>  
+> +	if (IS_V6(inst->core)) {
+
+Please move this IS_V6 check in vdec_set_work_route().
+
+> +		ret = vdec_set_work_route(inst);
+> +		if (ret)
+> +			return ret;
+> +	}
+> +
+>  	ret = vdec_output_conf(inst);
+>  	if (ret)
+>  		return ret;
+> 
+
+-- 
+regards,
+Stan
