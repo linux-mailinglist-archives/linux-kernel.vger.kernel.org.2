@@ -2,109 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 64206395859
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 11:45:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 329A4395875
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 11:51:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230423AbhEaJrD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 05:47:03 -0400
-Received: from out1-smtp.messagingengine.com ([66.111.4.25]:60681 "EHLO
-        out1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231180AbhEaJq7 (ORCPT
+        id S231177AbhEaJwv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 05:52:51 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:52658 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230520AbhEaJwq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 05:46:59 -0400
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-        by mailout.nyi.internal (Postfix) with ESMTP id C324B5C01D7;
-        Mon, 31 May 2021 05:45:19 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute5.internal (MEProxy); Mon, 31 May 2021 05:45:19 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm3; bh=k0VB3FWrxsfXM1/w80pYSH09jaS
-        p4S78U78dUKQMXm4=; b=OiQcRRpLcElS6KLN8SBFP4EMbj7iKqDed6kbPCiJvJP
-        3tK+18dTT0ULQvcyVrrLSZpL/kXLTYm5kf2jwD3XlPuUCChyk98t9F58/Iz0DLsK
-        OZBPrhc3trVYK9FFF8I944wQO3oO1tV4g8gbEN0INaTvG8bao15EK8YzxO8hPKpj
-        CWzqJw5MwTLjSUiZp6A84mYw/IWFWAliy3LD68aowOvCAazDCyUu45ZMb6tpLTXx
-        E75FheqKc0Wp7PSHyxntx/SqPg1YqIT8itv14suYmbSEWJNI2C1DTDLCkQaUX4cA
-        64EmNF+/WJoFoVQWQfO7F2o6X625HXM7OhrwnKPi1tw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=k0VB3F
-        WrxsfXM1/w80pYSH09jaSp4S78U78dUKQMXm4=; b=IZtqvgWVjUeSxIptsEkVH+
-        FMsoIPRMyOVPeXfJFeqo44nr+27D93KEYa4zA7OvQ2efO6w6vdpiCp77tW3qcmLS
-        dWyLiSXRQu62nXvjZZ29DCwdR/0d4f7b7gVqvPLKvPJItsqYEgVro4CRC9rK21CO
-        g0F1+DMDYee2luhe5zFbMChV7IE1Af7Y6egRdSW+9ahTGHaVSerO22VHFNrXIU/e
-        lu538n4YmTCAAz5tZbczzs/u2MnZH/GneigxQ+x6WfVcu5nU5lDYhZT/1T9MSWKn
-        EzNqA01cbaWchBbrmGotBopbszYK8XiVKtmFhJCNe+NRhT9qE8lp/l772/Ix4/bA
-        ==
-X-ME-Sender: <xms:L7C0YNvR9W6ne3nXtpKGh9XtRlV-TyArg2Tn3eA_pKj8XI_zs-iTaw>
-    <xme:L7C0YGc4D8EH5dTiS83Y_x63LxlQqyJEocupKQBN4pi9QJOM9CA8kS_V_JruZMkRD
-    lJlCL4hhkGCqu5VJ-s>
-X-ME-Received: <xmr:L7C0YAzmeyjq0RuE8isqjK87G3caSUysj4Yignt_hPyN7SajthEfy3ovkg-7v8MEtSioWICJy87P9-VWGZro-KdlmgkvbWtombEc>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrvdelfedgvddtucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvffukfhfgggtuggjsehgtderredttddvnecuhfhrohhmpeforgigihhm
-    vgcutfhiphgrrhguuceomhgrgihimhgvsegtvghrnhhordhtvggthheqnecuggftrfgrth
-    htvghrnhepleekgeehhfdutdeljefgleejffehfffgieejhffgueefhfdtveetgeehieeh
-    gedunecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepmh
-    grgihimhgvsegtvghrnhhordhtvggthh
-X-ME-Proxy: <xmx:L7C0YEMnY01bLL6zb1r_O1qb1Tg-4nr9N2NeYFw8Htzp3MyaIG8lPA>
-    <xmx:L7C0YN-thZDaq_-Qa2hEMkpWJGsT8k_01KPykFbuyInau5XAAFwbgA>
-    <xmx:L7C0YEX-m89WT58Xn-K-m488nfc0w1yq0Rqd8SA_aKiAXMr3IVoTtA>
-    <xmx:L7C0YAllIJj0Vnzfu4uS1lnen1JYuh4sZKnF2OBONIfY03P9mxOkpQ>
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
- 31 May 2021 05:45:18 -0400 (EDT)
-Date:   Mon, 31 May 2021 11:45:17 +0200
-From:   Maxime Ripard <maxime@cerno.tech>
-To:     Andre Przywara <andre.przywara@arm.com>
-Cc:     Andreas Rehn <rehn.andreas86@gmail.com>, wens@csie.org,
-        jernej.skrabec@gmail.com, rfried.dev@gmail.com,
-        linux-sunxi@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3] ARM: dts: sun8i: v3s: enable emac for zero Dock
-Message-ID: <20210531094517.5azb57jxa4mpyz5e@gilmour>
-References: <20210522205039.179486-1-rehn.andreas86@gmail.com>
- <20210525173159.183415-1-rehn.andreas86@gmail.com>
- <20210527001614.2edfc630@slackpad.fritz.box>
+        Mon, 31 May 2021 05:52:46 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1622454667; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
+ Subject: Sender; bh=q7Wz7E8q1Z+/6dUG1hU3N6iWpBVBOzCSwDl6PQVYNuY=; b=ixRkyP3OaAPFFZFjH1ZgfkFPzK5YMgb+cAEiYZx/Hl6LVLMDgFoDiL9iE+5x1asoDJRhaHkA
+ Jb0/LXlCfJismts7WrIFEeFkEVMU2j9OBfYR8+BdcdxDZkGuXVXs1j27sK/ROlKOVxate5l4
+ 31igUWLZBh9RtHd03IOv9hr609A=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n04.prod.us-west-2.postgun.com with SMTP id
+ 60b4b177ea2aacd729c13f1b (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 31 May 2021 09:50:47
+ GMT
+Sender: faiyazm=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id B7F38C433F1; Mon, 31 May 2021 09:50:47 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-3.5 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        NICE_REPLY_A,SPF_FAIL autolearn=no autolearn_force=no version=3.4.0
+Received: from [192.168.0.105] (unknown [49.204.182.232])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: faiyazm)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 82705C433F1;
+        Mon, 31 May 2021 09:50:43 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 82705C433F1
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=faiyazm@codeaurora.org
+Subject: Re: [PATCH v7] mm: slub: move sysfs slab alloc/free interfaces to
+ debugfs
+To:     Vlastimil Babka <vbabka@suse.cz>, Greg KH <greg@kroah.com>
+Cc:     cl@linux.com, penberg@kernel.org, rientjes@google.com,
+        iamjoonsoo.kim@lge.com, akpm@linux-foundation.org,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        glittao@gmail.com, vinmenon@codeaurora.org
+References: <1621928285-751-1-git-send-email-faiyazm@codeaurora.org>
+ <86d843f0-bbef-7c3b-6b6a-5d6b32434bee@suse.cz> <YK41eFeL5j4qqSnV@kroah.com>
+ <0b0e5e43-2ccf-a8a4-1e3b-ab2326c55321@suse.cz>
+ <be061209-7480-d1eb-4b70-883259aadffb@codeaurora.org>
+ <043cfec6-7881-46e8-ec9c-3b4d6611ac2c@suse.cz>
+From:   Faiyaz Mohammed <faiyazm@codeaurora.org>
+Message-ID: <2fc580b5-13a5-1a54-fe0b-9843ec685e64@codeaurora.org>
+Date:   Mon, 31 May 2021 15:20:40 +0530
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.2
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="c2cnun77ajscuzfq"
-Content-Disposition: inline
-In-Reply-To: <20210527001614.2edfc630@slackpad.fritz.box>
+In-Reply-To: <043cfec6-7881-46e8-ec9c-3b4d6611ac2c@suse.cz>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
---c2cnun77ajscuzfq
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Thu, May 27, 2021 at 12:16:14AM +0100, Andre Przywara wrote:
-> On Tue, 25 May 2021 19:31:59 +0200
-> Andreas Rehn <rehn.andreas86@gmail.com> wrote:
->=20
-> > dwmac-sun8i supports v3s and
-> > Licheepi-zero Dock provides an ethernet port
-> > furthermore, align nodes in alphabetical order
-> >=20
-> > Signed-off-by: Andreas Rehn <rehn.andreas86@gmail.com>
->=20
-> Reviewed-by: Andre Przywara <andre.przywara@arm.com>
-
-Applied, thanks
-Maxime
-
---c2cnun77ajscuzfq
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCYLSwLQAKCRDj7w1vZxhR
-xe/XAQDcv0jTeCL1REtSYyenCVF4RyCnXhWwRtiHWTKfIZOYggEAs+kcaYy6znKi
-VOgNaNqd5btDqYh2M8zAtfEewFW2gw8=
-=g+ze
------END PGP SIGNATURE-----
-
---c2cnun77ajscuzfq--
+On 5/31/2021 1:49 PM, Vlastimil Babka wrote:
+> On 5/31/21 9:11 AM, Faiyaz Mohammed wrote:
+>>
+>>
+>> On 5/26/2021 5:43 PM, Vlastimil Babka wrote:
+>>> On 5/26/21 1:48 PM, Greg KH wrote:
+>>>> On Wed, May 26, 2021 at 01:38:55PM +0200, Vlastimil Babka wrote:
+>>>>>
+>>>>> alias_list a single list and both slab_sysfs_init() and slab_debugfs_init()
+>>>>> flush it. So only the init call that happens to be called first, does actually
+>>>>> find an unflushed list. I think you
+>>>>> need to use a separate list for debugfs (simpler) or a shared list with both
+>>>>> sysfs and debugfs processing (probably more complicated).
+>>>>>
+>>>>> And finally a question, perhaps also for Greg. With sysfs, we hand out the
+>>>>> lifecycle of struct kmem_cache to sysfs, to ensure we are not reading sysfs
+>>>>> files of a cache that has been removed.
+>>>>>
+>>>>> But with debugfs, what are the guarantees that things won't blow up when a
+>>>>> debugfs file is being read while somebody calls kmem_cache_destroy() on the cache?
+>>>>
+>>>> It's much harder, but usually the default debugfs_file_create() will
+>>>> handle this for you.  See the debugfs_file_create_unsafe() for the
+>>>> "other" variant where you know you can tear things down "safely".
+>>>
+>>> Right, so IIUC debugfs will guarantee that while somebody reads the files, the
+>>> debugfs cleanup will block, as debugfs_file_get() comment explains.
+>>>
+>>> In that case I think we have the cleanup order wrong in this patch:
+>>>
+>>> shutdown_cache() should first do debugfs_slab_release() (which would block) and
+>>> only then proceed with slab_kmem_cache_release() which destroys the fundamental
+>>> structures such as kmem_cache_node, which are also accessed by the debugfs file
+>>> handlers.
+>>>
+>> If user is trying to read the data during shutdown_cache(), then I think
+>> it's possible user will get empty data, to avoid that we can call
+> 
+> Empty data is fine, when the cache is going away anyway.
+> 
+>> debugfs_slab_release() first and then do other stuff in shutdown_cache().
+> 
+> Everything above list_del(&s->list) should be OK, it's equivalent to normal
+> cache operations which the debugfs files must cope with anyway.
+> list_del(&s->list) is OK as the debugfs handlers don't go through the list. It's
+> slab_kmem_cache_release() that matters.
+> 
+okay, I will move debugfs_slab_release() before the
+slab_kmem_cache_release() in next patch version.
+>>>> That being said, yes there are still issues in this area, be careful
+>>>> about what tools you expect to be constantly hitting debugfs files.
+>>>
+>>> FWIW, the files are accessible only to root.
+>>>
+>>>> thanks,
+>>>>
+>>>> greg k-h
+>>>>
+>>>
+>>
+> 
