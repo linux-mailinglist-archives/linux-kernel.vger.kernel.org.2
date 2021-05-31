@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6009E3963AB
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 17:29:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2846539629C
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 16:57:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233490AbhEaPad (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 11:30:33 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43520 "EHLO mail.kernel.org"
+        id S232770AbhEaO6q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 10:58:46 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36738 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233096AbhEaORv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 10:17:51 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 741BB619AD;
-        Mon, 31 May 2021 13:43:53 +0000 (UTC)
+        id S232523AbhEaOFM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 10:05:12 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0E30461953;
+        Mon, 31 May 2021 13:38:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1622468634;
-        bh=z9tkXdkGHZYW3L/hJSHJ85y13emu4R6Xi41u2+p9kAE=;
+        s=korg; t=1622468304;
+        bh=RQhlUaPK0txnvTpB8EbPl0THdMYPjTwx7mfDkn3q924=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=pqtkN9yGl4S797GczttlG1O+Ik8X0kwcIUs3UiGTHTGpt0WNx+cy13pK8Dyf1cUEg
-         vCzIwYrqlHI8Cl57jroY9x5gLL0hUOqbI+rP1V2Ix6cvouGXt/MBmdMtgutj4a+O0E
-         STPjupna0S/UU3kS51tFRn3ZrAqHzJ34N1vtFPmU=
+        b=ElIQu1Orn7h9/bzo1FaST7xGAqk6l4xb6fUmya1ZOclOJKiKjM2smTRXFbUAoGr82
+         ZgemA2eKwp2Grfvv5EmSQD0k4RmuiAgwN3LOqVxcHRUNYLQZxj4VPinyrzr42pNSgC
+         2M0r9WK1K8t0rYhsk3aUH2oFwqftRp8fcOS2MlWY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, zhouchuangao <zhouchuangao@vivo.com>,
-        Trond Myklebust <trond.myklebust@hammerspace.com>
-Subject: [PATCH 5.4 066/177] fs/nfs: Use fatal_signal_pending instead of signal_pending
+        stable@vger.kernel.org, Kangjie Lu <kjlu@umn.edu>,
+        Mark Brown <broonie@kernel.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.10 158/252] Revert "ASoC: cs43130: fix a NULL pointer dereference"
 Date:   Mon, 31 May 2021 15:13:43 +0200
-Message-Id: <20210531130650.179734331@linuxfoundation.org>
+Message-Id: <20210531130703.380162829@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210531130647.887605866@linuxfoundation.org>
-References: <20210531130647.887605866@linuxfoundation.org>
+In-Reply-To: <20210531130657.971257589@linuxfoundation.org>
+References: <20210531130657.971257589@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,41 +40,47 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: zhouchuangao <zhouchuangao@vivo.com>
+From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-commit bb002388901151fe35b6697ab116f6ed0721a9ed upstream.
+[ Upstream commit fdda0dd2686ecd1f2e616c9e0366ea71b40c485d ]
 
-We set the state of the current process to TASK_KILLABLE via
-prepare_to_wait(). Should we use fatal_signal_pending() to detect
-the signal here?
+This reverts commit a2be42f18d409213bb7e7a736e3ef6ba005115bb.
 
-Fixes: b4868b44c562 ("NFSv4: Wait for stateid updates after CLOSE/OPEN_DOWNGRADE")
-Signed-off-by: zhouchuangao <zhouchuangao@vivo.com>
-Signed-off-by: Trond Myklebust <trond.myklebust@hammerspace.com>
+Because of recent interactions with developers from @umn.edu, all
+commits from them have been recently re-reviewed to ensure if they were
+correct or not.
+
+Upon review, this commit was found to be incorrect for the reasons
+below, so it must be reverted.  It will be fixed up "correctly" in a
+later kernel change.
+
+The original patch here is not correct, sysfs files that were created
+are not unwound.
+
+Cc: Kangjie Lu <kjlu@umn.edu>
+Cc: Mark Brown <broonie@kernel.org>
+Link: https://lore.kernel.org/r/20210503115736.2104747-57-gregkh@linuxfoundation.org
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/nfs/nfs4proc.c |    4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ sound/soc/codecs/cs43130.c | 2 --
+ 1 file changed, 2 deletions(-)
 
---- a/fs/nfs/nfs4proc.c
-+++ b/fs/nfs/nfs4proc.c
-@@ -1647,7 +1647,7 @@ static void nfs_set_open_stateid_locked(
- 		rcu_read_unlock();
- 		trace_nfs4_open_stateid_update_wait(state->inode, stateid, 0);
+diff --git a/sound/soc/codecs/cs43130.c b/sound/soc/codecs/cs43130.c
+index 7fb34422a2a4..bb46e993c353 100644
+--- a/sound/soc/codecs/cs43130.c
++++ b/sound/soc/codecs/cs43130.c
+@@ -2319,8 +2319,6 @@ static int cs43130_probe(struct snd_soc_component *component)
+ 			return ret;
  
--		if (!signal_pending(current)) {
-+		if (!fatal_signal_pending(current)) {
- 			if (schedule_timeout(5*HZ) == 0)
- 				status = -EAGAIN;
- 			else
-@@ -3416,7 +3416,7 @@ static bool nfs4_refresh_open_old_statei
- 		write_sequnlock(&state->seqlock);
- 		trace_nfs4_close_stateid_update_wait(state->inode, dst, 0);
+ 		cs43130->wq = create_singlethread_workqueue("cs43130_hp");
+-		if (!cs43130->wq)
+-			return -ENOMEM;
+ 		INIT_WORK(&cs43130->work, cs43130_imp_meas);
+ 	}
  
--		if (signal_pending(current))
-+		if (fatal_signal_pending(current))
- 			status = -EINTR;
- 		else
- 			if (schedule_timeout(5*HZ) != 0)
+-- 
+2.30.2
+
 
 
