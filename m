@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BEDCB396436
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 17:49:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ECB5F3965A5
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 18:42:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233135AbhEaPux (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 11:50:53 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55142 "EHLO mail.kernel.org"
+        id S230405AbhEaQnm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 12:43:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47912 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233973AbhEaO2G (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 10:28:06 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id F141C61C1A;
-        Mon, 31 May 2021 13:47:50 +0000 (UTC)
+        id S234041AbhEaOxQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 10:53:16 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D51AB61CAB;
+        Mon, 31 May 2021 13:58:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1622468871;
-        bh=N0FAeNuDKMSXFENfB91Epg1afoE4j4T6/AIEHFc73fs=;
+        s=korg; t=1622469519;
+        bh=8VXHNWCK7AGK9cnWLvPrdHbOKwzor6W1humTzPDrbf8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=N8S46KZYK3QCe4EpRHFq0XcVPFjfoieE3uflB9w7/iUGR1UEP83vBfEJe48tbLIwj
-         ZsD9lHMdOf3MTsSAHZ+SXbLguB2tbehGGyfH6t50ffV1GqBClFyk7PZfArsv2t0TPm
-         vbvTAf6VBHP9zQ8ntcXX80Gi/V2MRnvLMe4lzgJk=
+        b=O7gc7ZzPaS+OoSu5ANF7O/z9Wjb+hmCdCRv5tf+0DKsPSRKLIRcaKrVt4zQbKPiL+
+         5tGyo3Uz62JL1JzajpyxNUzPrtTzmEY7YMPFy1mTq8e3UWSeVtFy552gUasqruP0B2
+         iaSV7o3lh8k/9tLp7hz/gcfbtydydOBobSnU2Zas=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>,
+        stable@vger.kernel.org, Alex Elder <elder@linaro.org>,
+        "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 126/177] btrfs: do not BUG_ON in link_to_fixup_dir
+Subject: [PATCH 5.12 228/296] net: ipa: memory region array is variable size
 Date:   Mon, 31 May 2021 15:14:43 +0200
-Message-Id: <20210531130652.278805513@linuxfoundation.org>
+Message-Id: <20210531130711.487772273@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210531130647.887605866@linuxfoundation.org>
-References: <20210531130647.887605866@linuxfoundation.org>
+In-Reply-To: <20210531130703.762129381@linuxfoundation.org>
+References: <20210531130703.762129381@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,74 +40,80 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Josef Bacik <josef@toxicpanda.com>
+From: Alex Elder <elder@linaro.org>
 
-[ Upstream commit 91df99a6eb50d5a1bc70fff4a09a0b7ae6aab96d ]
+[ Upstream commit 440c3247cba3d9433ac435d371dd7927d68772a7 ]
 
-While doing error injection testing I got the following panic
+IPA configuration data includes an array of memory region
+descriptors.  That was a fixed-size array at one time, but
+at some point we started defining it such that it was only
+as big as required for a given platform.  The actual number
+of entries in the array is recorded in the configuration data
+along with the array.
 
-  kernel BUG at fs/btrfs/tree-log.c:1862!
-  invalid opcode: 0000 [#1] SMP NOPTI
-  CPU: 1 PID: 7836 Comm: mount Not tainted 5.13.0-rc1+ #305
-  Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.13.0-2.fc32 04/01/2014
-  RIP: 0010:link_to_fixup_dir+0xd5/0xe0
-  RSP: 0018:ffffb5800180fa30 EFLAGS: 00010216
-  RAX: fffffffffffffffb RBX: 00000000fffffffb RCX: ffff8f595287faf0
-  RDX: ffffb5800180fa37 RSI: ffff8f5954978800 RDI: 0000000000000000
-  RBP: ffff8f5953af9450 R08: 0000000000000019 R09: 0000000000000001
-  R10: 000151f408682970 R11: 0000000120021001 R12: ffff8f5954978800
-  R13: ffff8f595287faf0 R14: ffff8f5953c77dd0 R15: 0000000000000065
-  FS:  00007fc5284c8c40(0000) GS:ffff8f59bbd00000(0000) knlGS:0000000000000000
-  CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-  CR2: 00007fc5287f47c0 CR3: 000000011275e002 CR4: 0000000000370ee0
-  Call Trace:
-   replay_one_buffer+0x409/0x470
-   ? btree_read_extent_buffer_pages+0xd0/0x110
-   walk_up_log_tree+0x157/0x1e0
-   walk_log_tree+0xa6/0x1d0
-   btrfs_recover_log_trees+0x1da/0x360
-   ? replay_one_extent+0x7b0/0x7b0
-   open_ctree+0x1486/0x1720
-   btrfs_mount_root.cold+0x12/0xea
-   ? __kmalloc_track_caller+0x12f/0x240
-   legacy_get_tree+0x24/0x40
-   vfs_get_tree+0x22/0xb0
-   vfs_kern_mount.part.0+0x71/0xb0
-   btrfs_mount+0x10d/0x380
-   ? vfs_parse_fs_string+0x4d/0x90
-   legacy_get_tree+0x24/0x40
-   vfs_get_tree+0x22/0xb0
-   path_mount+0x433/0xa10
-   __x64_sys_mount+0xe3/0x120
-   do_syscall_64+0x3d/0x80
-   entry_SYSCALL_64_after_hwframe+0x44/0xae
+A loop in ipa_mem_config() still assumes the array has entries
+for all defined memory region IDs.  As a result, this loop can
+go past the end of the actual array and attempt to write
+"canary" values based on nonsensical data.
 
-We can get -EIO or any number of legitimate errors from
-btrfs_search_slot(), panicing here is not the appropriate response.  The
-error path for this code handles errors properly, simply return the
-error.
+Fix this, by stashing the number of entries in the array, and
+using that rather than IPA_MEM_COUNT in the initialization loop
+found in ipa_mem_config().
 
-Signed-off-by: Josef Bacik <josef@toxicpanda.com>
-Reviewed-by: David Sterba <dsterba@suse.com>
-Signed-off-by: David Sterba <dsterba@suse.com>
+The only remaining use of IPA_MEM_COUNT is in a validation check
+to ensure configuration data doesn't have too many entries.
+That's fine for now.
+
+Fixes: 3128aae8c439a ("net: ipa: redefine struct ipa_mem_data")
+Signed-off-by: Alex Elder <elder@linaro.org>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/btrfs/tree-log.c | 2 --
- 1 file changed, 2 deletions(-)
+ drivers/net/ipa/ipa.h     | 2 ++
+ drivers/net/ipa/ipa_mem.c | 3 ++-
+ 2 files changed, 4 insertions(+), 1 deletion(-)
 
-diff --git a/fs/btrfs/tree-log.c b/fs/btrfs/tree-log.c
-index de53e5166997..54647eb9c6ed 100644
---- a/fs/btrfs/tree-log.c
-+++ b/fs/btrfs/tree-log.c
-@@ -1846,8 +1846,6 @@ static noinline int link_to_fixup_dir(struct btrfs_trans_handle *trans,
- 		ret = btrfs_update_inode(trans, root, inode);
- 	} else if (ret == -EEXIST) {
- 		ret = 0;
--	} else {
--		BUG(); /* Logic Error */
- 	}
- 	iput(inode);
+diff --git a/drivers/net/ipa/ipa.h b/drivers/net/ipa/ipa.h
+index 802077631371..2734a5164b92 100644
+--- a/drivers/net/ipa/ipa.h
++++ b/drivers/net/ipa/ipa.h
+@@ -56,6 +56,7 @@ enum ipa_flag {
+  * @mem_virt:		Virtual address of IPA-local memory space
+  * @mem_offset:		Offset from @mem_virt used for access to IPA memory
+  * @mem_size:		Total size (bytes) of memory at @mem_virt
++ * @mem_count:		Number of entries in the mem array
+  * @mem:		Array of IPA-local memory region descriptors
+  * @imem_iova:		I/O virtual address of IPA region in IMEM
+  * @imem_size;		Size of IMEM region
+@@ -102,6 +103,7 @@ struct ipa {
+ 	void *mem_virt;
+ 	u32 mem_offset;
+ 	u32 mem_size;
++	u32 mem_count;
+ 	const struct ipa_mem *mem;
  
+ 	unsigned long imem_iova;
+diff --git a/drivers/net/ipa/ipa_mem.c b/drivers/net/ipa/ipa_mem.c
+index f25029b9ec85..c1294d7ebdad 100644
+--- a/drivers/net/ipa/ipa_mem.c
++++ b/drivers/net/ipa/ipa_mem.c
+@@ -181,7 +181,7 @@ int ipa_mem_config(struct ipa *ipa)
+ 	 * for the region, write "canary" values in the space prior to
+ 	 * the region's base address.
+ 	 */
+-	for (mem_id = 0; mem_id < IPA_MEM_COUNT; mem_id++) {
++	for (mem_id = 0; mem_id < ipa->mem_count; mem_id++) {
+ 		const struct ipa_mem *mem = &ipa->mem[mem_id];
+ 		u16 canary_count;
+ 		__le32 *canary;
+@@ -488,6 +488,7 @@ int ipa_mem_init(struct ipa *ipa, const struct ipa_mem_data *mem_data)
+ 	ipa->mem_size = resource_size(res);
+ 
+ 	/* The ipa->mem[] array is indexed by enum ipa_mem_id values */
++	ipa->mem_count = mem_data->local_count;
+ 	ipa->mem = mem_data->local;
+ 
+ 	ret = ipa_imem_init(ipa, mem_data->imem_addr, mem_data->imem_size);
 -- 
 2.30.2
 
