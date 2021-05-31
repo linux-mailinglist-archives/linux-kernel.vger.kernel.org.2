@@ -2,231 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 759CD396685
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 19:08:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D4B8396688
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 19:09:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234649AbhEaRJU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 13:09:20 -0400
-Received: from bhuna.collabora.co.uk ([46.235.227.227]:40274 "EHLO
-        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234084AbhEaQx1 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 12:53:27 -0400
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: tonyk)
-        with ESMTPSA id 5FBCE1F41FD2
-From:   =?UTF-8?q?Andr=C3=A9=20Almeida?= <andrealmeid@collabora.com>
-To:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Darren Hart <dvhart@infradead.org>,
-        linux-kernel@vger.kernel.org
-Cc:     kernel@collabora.com, linux-kselftest@vger.kernel.org,
-        shuah@kernel.org, dave@stgolabs.net,
-        =?UTF-8?q?Andr=C3=A9=20Almeida?= <andrealmeid@collabora.com>
-Subject: [PATCH 2/2] selftests: futex: Add futex compare requeue test
-Date:   Mon, 31 May 2021 13:50:36 -0300
-Message-Id: <20210531165036.41468-3-andrealmeid@collabora.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210531165036.41468-1-andrealmeid@collabora.com>
-References: <20210531165036.41468-1-andrealmeid@collabora.com>
+        id S234951AbhEaRJm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 13:09:42 -0400
+Received: from mx2.suse.de ([195.135.220.15]:40900 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234418AbhEaQ72 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 12:59:28 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1622480266; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=pt9jdDEFKfyrZWxbTsdPI87OthodO/U3mzphK8JrYmo=;
+        b=uXA4TZe/Vz4O0tW/+795/cdcEaqQ1GKnX1hqkipeGPSom+lwqIeOcwaWSd4VaGq6XEznka
+        mvg49oxJZASY9GDBtxrkDlclwaUgTsXGEgKjDe5xt3HWMAVJErOTLfN0+00gu2faNdn3aj
+        lbYJRfIK+h/x+Lj5nl+h4HUnPKTfTi8=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1622480266;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=pt9jdDEFKfyrZWxbTsdPI87OthodO/U3mzphK8JrYmo=;
+        b=HvcmQnM5TIKGVQSJYFJAnbTpOu1PZoYouMJ02uG9MmZJly7nOA5eZC2Uo3bDuJA/4kb9w6
+        1UGsYZpBrAM5IVDw==
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 7AF6BB74F;
+        Mon, 31 May 2021 16:57:46 +0000 (UTC)
+Received: by quack2.suse.cz (Postfix, from userid 1000)
+        id 2584D1F2CAC; Mon, 31 May 2021 18:57:46 +0200 (CEST)
+Date:   Mon, 31 May 2021 18:57:46 +0200
+From:   Jan Kara <jack@suse.cz>
+To:     "Theodore Y. Ts'o" <tytso@mit.edu>
+Cc:     Jan Kara <jack@suse.cz>,
+        Xing Zhengjun <zhengjun.xing@linux.intel.com>,
+        kernel test robot <oliver.sang@intel.com>,
+        LKML <linux-kernel@vger.kernel.org>, lkp@lists.01.org,
+        lkp@intel.com
+Subject: Re: [LKP] [ext4] 05c2c00f37: aim7.jobs-per-min -11.8% regression
+Message-ID: <20210531165746.GA2610@quack2.suse.cz>
+References: <20210227120804.GB22871@xsang-OptiPlex-9020>
+ <a8947cee-11f5-8d59-a3ff-1c516276592e@linux.intel.com>
+ <20210520095119.GA18952@quack2.suse.cz>
+ <e9f776c4-1ade-42a6-54c4-7fe3442e2392@linux.intel.com>
+ <20210521092730.GE18952@quack2.suse.cz>
+ <YKfi6Pv+qwduKxuT@mit.edu>
+ <20210525092205.GA4112@quack2.suse.cz>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210525092205.GA4112@quack2.suse.cz>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add testing for futex_cmp_requeue(). The first test just requeue from one
-waiter to another one, and wake it. The second performs both wake and
-requeue, and we check return values to see if the operation
-woke/requeued the expected number of waiters.
+On Tue 25-05-21 11:22:05, Jan Kara wrote:
+> On Fri 21-05-21 12:42:16, Theodore Y. Ts'o wrote:
+> > On Fri, May 21, 2021 at 11:27:30AM +0200, Jan Kara wrote:
+> > > 
+> > > OK, thanks for testing. So the orphan code is indeed the likely cause of
+> > > this regression but I probably did not guess correctly what is the
+> > > contention point there. Then I guess I need to reproduce and do more
+> > > digging why the contention happens...
+> > 
+> > Hmm... what if we only recalculate the superblock checksum when we do
+> > a commit, via the callback function from the jbd2 layer to file
+> > system?
+> 
+> I actually have to check whether the regression is there because of the
+> additional locking of the buffer_head (because that's the only thing that
+> was added to that code in fact, adding some atomic instructions, bouncing
+> another cacheline) or because of the checksum computation that moved from
+> ext4_handle_dirty_super() closer to actual superblock update under those
+> locks.
 
-Signed-off-by: André Almeida <andrealmeid@collabora.com>
----
- .../selftests/futex/functional/.gitignore     |   1 +
- .../selftests/futex/functional/Makefile       |   3 +-
- .../futex/functional/futex_requeue.c          | 136 ++++++++++++++++++
- .../testing/selftests/futex/functional/run.sh |   3 +
- 4 files changed, 142 insertions(+), 1 deletion(-)
- create mode 100644 tools/testing/selftests/futex/functional/futex_requeue.c
+So I did a few experiments on my test machine. I saw the biggest regression
+for creat_clo workload for 7 threads. The results look like:
 
-diff --git a/tools/testing/selftests/futex/functional/.gitignore b/tools/testing/selftests/futex/functional/.gitignore
-index bd24699bacc9..0e78b49d0f2f 100644
---- a/tools/testing/selftests/futex/functional/.gitignore
-+++ b/tools/testing/selftests/futex/functional/.gitignore
-@@ -7,3 +7,4 @@ futex_wait_timeout
- futex_wait_uninitialized_heap
- futex_wait_wouldblock
- futex_wait
-+futex_requeue
-diff --git a/tools/testing/selftests/futex/functional/Makefile b/tools/testing/selftests/futex/functional/Makefile
-index 20a5b4a1bc87..bd1fec59e010 100644
---- a/tools/testing/selftests/futex/functional/Makefile
-+++ b/tools/testing/selftests/futex/functional/Makefile
-@@ -16,7 +16,8 @@ TEST_GEN_FILES := \
- 	futex_requeue_pi_mismatched_ops \
- 	futex_wait_uninitialized_heap \
- 	futex_wait_private_mapped_file \
--	futex_wait
-+	futex_wait \
-+	futex_requeue
- 
- TEST_PROGS := run.sh
- 
-diff --git a/tools/testing/selftests/futex/functional/futex_requeue.c b/tools/testing/selftests/futex/functional/futex_requeue.c
-new file mode 100644
-index 000000000000..51485be6eb2f
---- /dev/null
-+++ b/tools/testing/selftests/futex/functional/futex_requeue.c
-@@ -0,0 +1,136 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+/*
-+ * Copyright Collabora Ltd., 2021
-+ *
-+ * futex cmp requeue test by André Almeida <andrealmeid@collabora.com>
-+ */
-+
-+#include <pthread.h>
-+#include <limits.h>
-+#include "logging.h"
-+#include "futextest.h"
-+
-+#define TEST_NAME "futex-requeue"
-+#define timeout_ns  30000000
-+#define WAKE_WAIT_US 10000
-+
-+volatile futex_t *f1;
-+
-+void usage(char *prog)
-+{
-+	printf("Usage: %s\n", prog);
-+	printf("  -c	Use color\n");
-+	printf("  -h	Display this help message\n");
-+	printf("  -v L	Verbosity level: %d=QUIET %d=CRITICAL %d=INFO\n",
-+	       VQUIET, VCRITICAL, VINFO);
-+}
-+
-+void *waiterfn(void *arg)
-+{
-+	struct timespec to;
-+
-+	to.tv_sec = 0;
-+	to.tv_nsec = timeout_ns;
-+
-+	if (futex_wait(f1, *f1, &to, 0))
-+		printf("waiter failed errno %d\n", errno);
-+
-+	return NULL;
-+}
-+
-+int main(int argc, char *argv[])
-+{
-+	pthread_t waiter[10];
-+	int res, ret = RET_PASS;
-+	int c, i;
-+	volatile futex_t _f1 = 0;
-+	volatile futex_t f2 = 0;
-+
-+	f1 = &_f1;
-+
-+	while ((c = getopt(argc, argv, "cht:v:")) != -1) {
-+		switch (c) {
-+		case 'c':
-+			log_color(1);
-+			break;
-+		case 'h':
-+			usage(basename(argv[0]));
-+			exit(0);
-+		case 'v':
-+			log_verbosity(atoi(optarg));
-+			break;
-+		default:
-+			usage(basename(argv[0]));
-+			exit(1);
-+		}
-+	}
-+
-+	ksft_print_header();
-+	ksft_set_plan(2);
-+	ksft_print_msg("%s: Test futex_requeue\n",
-+		       basename(argv[0]));
-+
-+	/*
-+	 * Requeue a waiter from f1 to f2, and wake f2.
-+	 */
-+	if (pthread_create(&waiter[0], NULL, waiterfn, NULL))
-+		error("pthread_create failed\n", errno);
-+
-+	usleep(WAKE_WAIT_US);
-+
-+	info("Requeuing 1 futex from f1 to f2\n");
-+	res = futex_cmp_requeue(f1, 0, &f2, 0, 1, 0);
-+	if (res != 1) {
-+		ksft_test_result_fail("futex_requeue simple returned: %d %s\n",
-+				      res ? errno : res,
-+				      res ? strerror(errno) : "");
-+		ret = RET_FAIL;
-+	}
-+
-+
-+	info("Waking 1 futex at f2\n");
-+	res = futex_wake(&f2, 1, 0);
-+	if (res != 1) {
-+		ksft_test_result_fail("futex_requeue simple returned: %d %s\n",
-+				      res ? errno : res,
-+				      res ? strerror(errno) : "");
-+		ret = RET_FAIL;
-+	} else {
-+		ksft_test_result_pass("futex_requeue simple succeeds\n");
-+	}
-+
-+
-+	/*
-+	 * Create 10 waiters at f1. At futex_requeue, wake 3 and requeue 7.
-+	 * At futex_wake, wake INT_MAX (should be exactly 7).
-+	 */
-+	for (i = 0; i < 10; i++) {
-+		if (pthread_create(&waiter[i], NULL, waiterfn, NULL))
-+			error("pthread_create failed\n", errno);
-+	}
-+
-+	usleep(WAKE_WAIT_US);
-+
-+	info("Waking 3 futexes at f1 and requeuing 7 futexes from f1 to f2\n");
-+	res = futex_cmp_requeue(f1, 0, &f2, 3, 7, 0);
-+	if (res != 10) {
-+		ksft_test_result_fail("futex_requeue many returned: %d %s\n",
-+				      res ? errno : res,
-+				      res ? strerror(errno) : "");
-+		ret = RET_FAIL;
-+	}
-+
-+	info("Waking INT_MAX futexes at f2\n");
-+	res = futex_wake(&f2, INT_MAX, 0);
-+	if (res != 7) {
-+		ksft_test_result_fail("futex_requeue many returned: %d %s\n",
-+				      res ? errno : res,
-+				      res ? strerror(errno) : "");
-+		ret = RET_FAIL;
-+	} else {
-+		ksft_test_result_pass("futex_requeue many succeeds\n");
-+	}
-+
-+	ksft_print_cnts();
-+	return ret;
-+}
-diff --git a/tools/testing/selftests/futex/functional/run.sh b/tools/testing/selftests/futex/functional/run.sh
-index d5e1430bcdca..11a9d62290f5 100755
---- a/tools/testing/selftests/futex/functional/run.sh
-+++ b/tools/testing/selftests/futex/functional/run.sh
-@@ -76,3 +76,6 @@ echo
- 
- echo
- ./futex_wait $COLOR
-+
-+echo
-+./futex_requeue $COLOR
+                         orig                   patched                hack1                  hack2
+Hmean     creat_clo-7    36458.33 (   0.00%)    23836.55 * -34.62%*    32608.70 * -10.56%*    37300.18 (   2.31%)
+
+where hack1 means I've removed the lock_buffer() calls from orphan handling
+code and hack2 means I've additionally moved checksum recalculation from
+under orphan lock. Take the numbers with a grain of salt as they are rather
+variable and this is just an average of 5 runs but the tendency is pretty
+clear. Both these changes contribute to the regression significantly,
+additional locking of the buffer head contributes somewhat more.
+
+I will see how various variants of reducing the contention look like (e.g.
+if just using bh lock for everything helps at all). But honestly I don't
+want to jump through too big hoops just for this workload - the orphan list
+contention is pretty pathological here and if we seriously care about
+workload like this we should rather revive the patchset with hashed orphan
+list I wrote couple years back... That was able to give like 3x speedup to
+workloads like this.
+
+								Honza
 -- 
-2.31.1
-
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
