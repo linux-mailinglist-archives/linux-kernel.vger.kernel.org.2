@@ -2,102 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A0CFF3958DE
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 12:20:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 075B13958E6
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 12:21:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231273AbhEaKV5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 06:21:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44558 "EHLO
+        id S231343AbhEaKXA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 06:23:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44818 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230518AbhEaKVz (ORCPT
+        with ESMTP id S230518AbhEaKW6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 06:21:55 -0400
-Received: from mailserv1.kapsi.fi (mailserv1.kapsi.fi [IPv6:2001:67c:1be8::25:1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77BC7C061574;
-        Mon, 31 May 2021 03:20:15 -0700 (PDT)
+        Mon, 31 May 2021 06:22:58 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80193C061574;
+        Mon, 31 May 2021 03:21:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=ext.kapsi.fi; s=20161220; h=Subject:Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Sender:
-        Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender
-        :Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
-        List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=jTxFZ32tnC3Ys9+FwIaxl+M08wou4VWg96vlIkqQ/wA=; b=Zgw1ruXqLsR3QQlE0elhCRhz6M
-        DCk1NqucnKGaOJ4l5VFPh7YhuDZBQMM4wquACWDUUBHo/vQ/sVVsxExh1W9xFs7h0xbKEEVWYz/9C
-        rDgLVslQeXaSEdpM4iP7Z39EqY7Kayy3i9yxibxWqCsol43iFwRjaOnPkLt2OCsK03rv+WLhawFeU
-        TLXUOxqc4AWuTGkbRqRa9TekSyd9Sorx39KKrGkxqNOX461Dlszft8gjn6NUh8BQ4qbFCrYhknyeU
-        UxBtos19lLrGSKTaOMMzaTs7RI/K7pb/uKGTAax8JcEl9KkNYWHKjDvvX5apCS+Lp1GkdptNg3zhZ
-        ehAxhI5A==;
-Received: from 164-105-191-90.dyn.estpak.ee ([90.191.105.164]:55252 helo=[192.168.3.116])
-        by mailserv1.kapsi.fi with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.89)
-        (envelope-from <maukka@ext.kapsi.fi>)
-        id 1lnf1V-0001sN-3p; Mon, 31 May 2021 13:19:53 +0300
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     sandberg@mailfence.com, bgolaszewski@baylibre.com,
-        geert+renesas@glider.be, linus.walleij@linaro.org,
-        linux-gpio@vger.kernel.org, robh+dt@kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        drew@beagleboard.org, kernel test robot <lkp@intel.com>
-References: <20210325122832.119147-1-sandberg@mailfence.com>
- <20210530161333.3996-1-maukka@ext.kapsi.fi>
- <20210530161333.3996-3-maukka@ext.kapsi.fi>
- <CAHp75Vffj=8WKBO23iRxxFmva+SU5u58eBkZfMRyY6GG-6maXg@mail.gmail.com>
- <0307426d-83a3-8c45-e1a6-ffc422780cbb@ext.kapsi.fi>
- <CAHp75VfkyV+2p50c=iK5n4uiv6ptypsqc-GkWi7ZJHTs7Qmr3g@mail.gmail.com>
-From:   Mauri Sandberg <maukka@ext.kapsi.fi>
-Message-ID: <a8301a34-5ce6-6bce-63c9-3a4484a8b20d@ext.kapsi.fi>
-Date:   Mon, 31 May 2021 13:19:51 +0300
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.2
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=B0MUtlUcmiTPTXwp18zRtpJbNe6aC+d1mnXiYiZ9kFM=; b=D5sNFoHf97YL1Cb9gJK6EQrgmS
+        uZ+ZQLMphVDgpqQMxKm0DwaR/FKmQ/HPCWksQg+KTA6u4sffd5YqAicM/pM3v+RxGdIgbeQ3yJ3xQ
+        mZpOMaCDtWJpRmlrGrk6r7ohd3ZaKCSnjg2zBsSLhMYoNy/MqsY8Gpxq1ImB+Twr939+DogePp3RN
+        NLoRCjaa2/tamQa4Fd6Hj2dCP6e/jagiFvCaxaAgHQhiQUNfvgqoFQHnDUPiPgIgjZBIfU08kr4GO
+        AmpopqcivhtFv7fSm5PKcVMnLETy6nlBFGqw8U4W3+eJ9FJ0FvewmB3lXXpcW3/sQ9ozHCzf6qKjW
+        4GCzvejA==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1lnf2h-002Flq-MY; Mon, 31 May 2021 10:21:14 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 4C4CA30019C;
+        Mon, 31 May 2021 12:21:13 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 114D32029A1A5; Mon, 31 May 2021 12:21:13 +0200 (CEST)
+Date:   Mon, 31 May 2021 12:21:13 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     linux-tip-commits@vger.kernel.org,
+        Yejune Deng <yejune.deng@gmail.com>,
+        Valentin Schneider <valentin.schneider@arm.com>, x86@kernel.org
+Subject: [PATCH] sched,init: Fix DEBUG_PREEMPT vs early boot
+Message-ID: <YLS4mbKUrA3Gnb4t@hirez.programming.kicks-ass.net>
+References: <20210510151024.2448573-3-valentin.schneider@arm.com>
+ <162141495460.29796.4438792168641232595.tip-bot2@tip-bot2>
 MIME-Version: 1.0
-In-Reply-To: <CAHp75VfkyV+2p50c=iK5n4uiv6ptypsqc-GkWi7ZJHTs7Qmr3g@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-GB
-X-SA-Exim-Connect-IP: 90.191.105.164
-X-SA-Exim-Mail-From: maukka@ext.kapsi.fi
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on mailserv1.kapsi.fi
-X-Spam-Level: 
-X-Spam-Status: No, score=-3.5 required=5.0 tests=ALL_TRUSTED,BAYES_00,
-        NICE_REPLY_A,TVD_RCVD_IP,URIBL_BLOCKED autolearn=ham
-        autolearn_force=no version=3.4.2
-Subject: Re: [PATCH v4 2/2] gpio: gpio-mux-input: add generic gpio input
- multiplexer
-X-SA-Exim-Version: 4.2.1 (built Tue, 02 Aug 2016 21:08:31 +0000)
-X-SA-Exim-Scanned: Yes (on mailserv1.kapsi.fi)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <162141495460.29796.4438792168641232595.tip-bot2@tip-bot2>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, May 19, 2021 at 09:02:34AM -0000, tip-bot2 for Yejune Deng wrote:
+> The following commit has been merged into the sched/core branch of tip:
+> 
+> Commit-ID:     570a752b7a9bd03b50ad6420cd7f10092cc11bd3
+> Gitweb:        https://git.kernel.org/tip/570a752b7a9bd03b50ad6420cd7f10092cc11bd3
+> Author:        Yejune Deng <yejune.deng@gmail.com>
+> AuthorDate:    Mon, 10 May 2021 16:10:24 +01:00
+> Committer:     Peter Zijlstra <peterz@infradead.org>
+> CommitterDate: Wed, 19 May 2021 10:51:40 +02:00
+> 
+> lib/smp_processor_id: Use is_percpu_thread() instead of nr_cpus_allowed
+> 
+> is_percpu_thread() more elegantly handles SMP vs UP, and further checks the
+> presence of PF_NO_SETAFFINITY. This lets us catch cases where
+> check_preemption_disabled() can race with a concurrent sched_setaffinity().
+> 
+> Signed-off-by: Yejune Deng <yejune.deng@gmail.com>
+> [Amended changelog]
+> Signed-off-by: Valentin Schneider <valentin.schneider@arm.com>
+> Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+> Link: https://lkml.kernel.org/r/20210510151024.2448573-3-valentin.schneider@arm.com
+> ---
+>  lib/smp_processor_id.c | 6 +-----
+>  1 file changed, 1 insertion(+), 5 deletions(-)
+> 
+> diff --git a/lib/smp_processor_id.c b/lib/smp_processor_id.c
+> index 1c1dbd3..046ac62 100644
+> --- a/lib/smp_processor_id.c
+> +++ b/lib/smp_processor_id.c
+> @@ -19,11 +19,7 @@ unsigned int check_preemption_disabled(const char *what1, const char *what2)
+>  	if (irqs_disabled())
+>  		goto out;
+>  
+> -	/*
+> -	 * Kernel threads bound to a single CPU can safely use
+> -	 * smp_processor_id():
+> -	 */
+> -	if (current->nr_cpus_allowed == 1)
+> +	if (is_percpu_thread())
+>  		goto out;
 
-On 30.5.2021 22.38, Andy Shevchenko wrote:
-> On Sun, May 30, 2021 at 10:02 PM Mauri Sandberg <maukka@ext.kapsi.fi> wrote:
->> On 30.5.2021 21.09, Andy Shevchenko wrote:
->>> On Sun, May 30, 2021 at 7:16 PM Mauri Sandberg <maukka@ext.kapsi.fi> wrote:
->>>> Reported-by: kernel test robot <lkp@intel.com>
->>> Is it a fix? Shall we add the Fixes tag?
->> In the v1 a build bot complained about .owner along these lines:
->>
->> --- snip ----
->> If you fix the issue, kindly add following tag as appropriate
->> Reported-by: kernel test robot <lkp@intel.com>
->>
->>
->> cocci warnings: (new ones prefixed by >>)
->>   >> drivers/gpio/gpio-mux-input.c:138:3-8: No need to set .owner here.
->> The core will do it.
->>
->> Please review and possibly fold the followup patch.
->> --- snip ---
->>
->> I removed the .owner attribute in v2 as requested but wasn't really sure
->> whether it was "appropriate"
->> to add the tag so I put it there anyhow. Technically, this does not fix
->> any previous commit.
-> For this kind of thing you may attribute the reporter(s) by mentioning
-> them in the comment lines / cover letter.
-It's there in the patch version notes so the 'Reported-by' was 
-unnecessary. Should it be removed?
-That is, is there a tool sitting somwhere that tries to match reports 
-and their fixes?
+So my test box was unhappy with all this and started spewing lots of
+DEBUG_PREEMPT warns on boot.
 
+This extends 8fb12156b8db6 to cover the new requirement.
+
+---
+Subject: sched,init: Fix DEBUG_PREEMPT vs early boot
+
+Extend 8fb12156b8db ("init: Pin init task to the boot CPU, initially")
+to cover the new PF_NO_SETAFFINITY requirement.
+
+While there, move wait_for_completion(&kthreadd_done) into kernel_init()
+to make it absolutely clear it is the very first thing done by the init
+thread.
+
+Fixes: 570a752b7a9b ("lib/smp_processor_id: Use is_percpu_thread() instead of nr_cpus_allowed")
+Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+---
+ init/main.c         | 11 ++++++-----
+ kernel/sched/core.c |  1 +
+ 2 files changed, 7 insertions(+), 5 deletions(-)
+
+diff --git a/init/main.c b/init/main.c
+index 7b027d9c5c89..e945ec82b8a5 100644
+--- a/init/main.c
++++ b/init/main.c
+@@ -692,6 +692,7 @@ noinline void __ref rest_init(void)
+ 	 */
+ 	rcu_read_lock();
+ 	tsk = find_task_by_pid_ns(pid, &init_pid_ns);
++	tsk->flags |= PF_NO_SETAFFINITY;
+ 	set_cpus_allowed_ptr(tsk, cpumask_of(smp_processor_id()));
+ 	rcu_read_unlock();
+ 
+@@ -1440,6 +1441,11 @@ static int __ref kernel_init(void *unused)
+ {
+ 	int ret;
+ 
++	/*
++	 * Wait until kthreadd is all set-up.
++	 */
++	wait_for_completion(&kthreadd_done);
++
+ 	kernel_init_freeable();
+ 	/* need to finish all async __init code before freeing the memory */
+ 	async_synchronize_full();
+@@ -1520,11 +1526,6 @@ void __init console_on_rootfs(void)
+ 
+ static noinline void __init kernel_init_freeable(void)
+ {
+-	/*
+-	 * Wait until kthreadd is all set-up.
+-	 */
+-	wait_for_completion(&kthreadd_done);
+-
+ 	/* Now the scheduler is fully set up and can do blocking allocations */
+ 	gfp_allowed_mask = __GFP_BITS_MASK;
+ 
+diff --git a/kernel/sched/core.c b/kernel/sched/core.c
+index adea0b1e8036..ae7737e6c2b2 100644
+--- a/kernel/sched/core.c
++++ b/kernel/sched/core.c
+@@ -8867,6 +8867,7 @@ void __init sched_init_smp(void)
+ 	/* Move init over to a non-isolated CPU */
+ 	if (set_cpus_allowed_ptr(current, housekeeping_cpumask(HK_FLAG_DOMAIN)) < 0)
+ 		BUG();
++	current->flags &= ~PF_NO_SETAFFINITY;
+ 	sched_init_granularity();
+ 
+ 	init_sched_rt_class();
