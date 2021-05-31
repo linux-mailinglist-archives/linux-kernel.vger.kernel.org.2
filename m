@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F84E395D29
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 15:40:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0BD723961A3
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 16:43:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231801AbhEaNmF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 09:42:05 -0400
-Received: from mail.kernel.org ([198.145.29.99]:32884 "EHLO mail.kernel.org"
+        id S233952AbhEaOoK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 10:44:10 -0400
+Received: from mail.kernel.org ([198.145.29.99]:32910 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232225AbhEaN3F (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 09:29:05 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6F63C6141C;
-        Mon, 31 May 2021 13:22:24 +0000 (UTC)
+        id S232132AbhEaN6w (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 09:58:52 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5FD2C61937;
+        Mon, 31 May 2021 13:35:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1622467345;
-        bh=AntsJn5K1JGcw8CHzaMqfPpszhE8EdYJ8zX/JaKVMzA=;
+        s=korg; t=1622468145;
+        bh=7RVk4R0DPRmf/59YmsgIeJc2hvXN05uFw8oqti3BVSk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=tGb8ZNw9eo5TUPspZGPBr5fnI6SF5l7ORqwu8JCNUusW492/MxRFqV4zR08T4xH8G
-         e1KEgUjLU7a/kXXU5rGWtMKUKYtDf52p6hRcjvwCpY8MSQq/5/5lJNvfwopvxxU8u4
-         T88sEn1OZs/ohaMuLS0w8jPJgWt6JeFc0v11XW3o=
+        b=IcbCLnYJOSC0ya1Xjd1qVKnqcRJuQZcYLL8811t+47sd0YTPvm8f4gTZtSOA/zACD
+         HMtB5k0tQ2R1bvUWhxrm1DWT2ykmQ3y+kRvchXeRF9sI/8JwORCGhBd+hD9ZgiPhA0
+         MKxgA9kF3lBbyA3dEGFoWKaoW1x6WQi4S9XqHfwA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Aurelien Aptel <aaptel@suse.com>,
-        Steve French <stfrench@microsoft.com>
-Subject: [PATCH 4.19 004/116] cifs: set server->cipher_type to AES-128-CCM for SMB3.0
-Date:   Mon, 31 May 2021 15:13:00 +0200
-Message-Id: <20210531130640.285446333@linuxfoundation.org>
+        stable@vger.kernel.org, Vladimir Oltean <vladimir.oltean@nxp.com>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: [PATCH 5.10 116/252] net: dsa: sja1105: error out on unsupported PHY mode
+Date:   Mon, 31 May 2021 15:13:01 +0200
+Message-Id: <20210531130701.933642091@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210531130640.131924542@linuxfoundation.org>
-References: <20210531130640.131924542@linuxfoundation.org>
+In-Reply-To: <20210531130657.971257589@linuxfoundation.org>
+References: <20210531130657.971257589@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,48 +39,30 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Aurelien Aptel <aaptel@suse.com>
+From: Vladimir Oltean <vladimir.oltean@nxp.com>
 
-commit 6d2fcfe6b517fe7cbf2687adfb0a16cdcd5d9243 upstream.
+commit 6729188d2646709941903052e4b78e1d82c239b9 upstream.
 
-SMB3.0 doesn't have encryption negotiate context but simply uses
-the SMB2_GLOBAL_CAP_ENCRYPTION flag.
+The driver continues probing when a port is configured for an
+unsupported PHY interface type, instead it should stop.
 
-When that flag is present in the neg response cifs.ko uses AES-128-CCM
-which is the only cipher available in this context.
-
-cipher_type was set to the server cipher only when parsing encryption
-negotiate context (SMB3.1.1).
-
-For SMB3.0 it was set to 0. This means cipher_type value can be 0 or 1
-for AES-128-CCM.
-
-Fix this by checking for SMB3.0 and encryption capability and setting
-cipher_type appropriately.
-
-Signed-off-by: Aurelien Aptel <aaptel@suse.com>
-Cc: <stable@vger.kernel.org>
-Signed-off-by: Steve French <stfrench@microsoft.com>
+Fixes: 8aa9ebccae87 ("net: dsa: Introduce driver for NXP SJA1105 5-port L2 switch")
+Signed-off-by: Vladimir Oltean <vladimir.oltean@nxp.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- fs/cifs/smb2pdu.c |    7 +++++++
- 1 file changed, 7 insertions(+)
+ drivers/net/dsa/sja1105/sja1105_main.c |    1 +
+ 1 file changed, 1 insertion(+)
 
---- a/fs/cifs/smb2pdu.c
-+++ b/fs/cifs/smb2pdu.c
-@@ -791,6 +791,13 @@ SMB2_negotiate(const unsigned int xid, s
- 	/* Internal types */
- 	server->capabilities |= SMB2_NT_FIND | SMB2_LARGE_FILES;
+--- a/drivers/net/dsa/sja1105/sja1105_main.c
++++ b/drivers/net/dsa/sja1105/sja1105_main.c
+@@ -206,6 +206,7 @@ static int sja1105_init_mii_settings(str
+ 		default:
+ 			dev_err(dev, "Unsupported PHY mode %s!\n",
+ 				phy_modes(ports[i].phy_mode));
++			return -EINVAL;
+ 		}
  
-+	/*
-+	 * SMB3.0 supports only 1 cipher and doesn't have a encryption neg context
-+	 * Set the cipher type manually.
-+	 */
-+	if (server->dialect == SMB30_PROT_ID && (server->capabilities & SMB2_GLOBAL_CAP_ENCRYPTION))
-+		server->cipher_type = SMB2_ENCRYPTION_AES128_CCM;
-+
- 	security_blob = smb2_get_data_area_len(&blob_offset, &blob_length,
- 					       (struct smb2_sync_hdr *)rsp);
- 	/*
+ 		/* Even though the SerDes port is able to drive SGMII autoneg
 
 
