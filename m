@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4FCD0396507
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 18:19:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 29C7A396395
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 17:20:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234760AbhEaQTv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 12:19:51 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38012 "EHLO mail.kernel.org"
+        id S233325AbhEaPVk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 11:21:40 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43710 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233594AbhEaOlg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 10:41:36 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 47A3B61879;
-        Mon, 31 May 2021 13:53:34 +0000 (UTC)
+        id S230433AbhEaOP7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 10:15:59 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D027A619A2;
+        Mon, 31 May 2021 13:43:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1622469214;
-        bh=7aU17wpJD5FM3EuHAtTb3q/DPaJl6R++Mh/lZDtvag0=;
+        s=korg; t=1622468586;
+        bh=6pqFTVPpVj8bvULiYDiQAXEUHKhXAtPYrir6vu59wrI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ks9MdWUBUuFjNu+AvjVB9n5K1f0Og6hkNZFq91v2TcemzoVJ5nXxgLVT6mLQ/Ax/z
-         jPRKrYM7u0yeJjZK7tH2R4uUN+wrqtZXn2i94IWa/b2LODxQqRIBctPeJ3NNDquw0B
-         ltXaLJHOt0Zf4EmHEBtS9lJWArL86cWicnG+fvGA=
+        b=c9bURBRM9jOOG5Q3xJNfZ3giLFNBsggVUCGb/Xnh50gnDGNnbNR/LbEQZfKdiN43l
+         Ub7m1MUGQVIRlyoeYQZwT7Rxukx9vma22cJQdID4irVa7AOmT65cpGEAihW47Kt1gG
+         kgFiooXSJnx+Z4eJKHMZV5qDmvaNpkpiQFFLX3CY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
-        Trond Myklebust <trond.myklebust@hammerspace.com>
-Subject: [PATCH 5.12 113/296] NFS: fix an incorrect limit in filelayout_decode_layout()
-Date:   Mon, 31 May 2021 15:12:48 +0200
-Message-Id: <20210531130707.728178623@linuxfoundation.org>
+        stable@vger.kernel.org, Kees Cook <keescook@chromium.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: [PATCH 5.4 012/177] proc: Check /proc/$pid/attr/ writes against file opener
+Date:   Mon, 31 May 2021 15:12:49 +0200
+Message-Id: <20210531130648.330655012@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210531130703.762129381@linuxfoundation.org>
-References: <20210531130703.762129381@linuxfoundation.org>
+In-Reply-To: <20210531130647.887605866@linuxfoundation.org>
+References: <20210531130647.887605866@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,34 +39,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dan Carpenter <dan.carpenter@oracle.com>
+From: Kees Cook <keescook@chromium.org>
 
-commit 769b01ea68b6c49dc3cde6adf7e53927dacbd3a8 upstream.
+commit bfb819ea20ce8bbeeba17e1a6418bf8bda91fc28 upstream.
 
-The "sizeof(struct nfs_fh)" is two bytes too large and could lead to
-memory corruption.  It should be NFS_MAXFHSIZE because that's the size
-of the ->data[] buffer.
+Fix another "confused deputy" weakness[1]. Writes to /proc/$pid/attr/
+files need to check the opener credentials, since these fds do not
+transition state across execve(). Without this, it is possible to
+trick another process (which may have different credentials) to write
+to its own /proc/$pid/attr/ files, leading to unexpected and possibly
+exploitable behaviors.
 
-I reversed the size of the arguments to put the variable on the left.
+[1] https://www.kernel.org/doc/html/latest/security/credentials.html?highlight=confused#open-file-credentials
 
-Fixes: 16b374ca439f ("NFSv4.1: pnfs: filelayout: add driver's LAYOUTGET and GETDEVICEINFO infrastructure")
-Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
-Signed-off-by: Trond Myklebust <trond.myklebust@hammerspace.com>
+Fixes: 1da177e4c3f41 ("Linux-2.6.12-rc2")
+Cc: stable@vger.kernel.org
+Signed-off-by: Kees Cook <keescook@chromium.org>
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- fs/nfs/filelayout/filelayout.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ fs/proc/base.c |    4 ++++
+ 1 file changed, 4 insertions(+)
 
---- a/fs/nfs/filelayout/filelayout.c
-+++ b/fs/nfs/filelayout/filelayout.c
-@@ -718,7 +718,7 @@ filelayout_decode_layout(struct pnfs_lay
- 		if (unlikely(!p))
- 			goto out_err;
- 		fl->fh_array[i]->size = be32_to_cpup(p++);
--		if (sizeof(struct nfs_fh) < fl->fh_array[i]->size) {
-+		if (fl->fh_array[i]->size > NFS_MAXFHSIZE) {
- 			printk(KERN_ERR "NFS: Too big fh %d received %d\n",
- 			       i, fl->fh_array[i]->size);
- 			goto out_err;
+--- a/fs/proc/base.c
++++ b/fs/proc/base.c
+@@ -2556,6 +2556,10 @@ static ssize_t proc_pid_attr_write(struc
+ 	void *page;
+ 	int rv;
+ 
++	/* A task may only write when it was the opener. */
++	if (file->f_cred != current_real_cred())
++		return -EPERM;
++
+ 	rcu_read_lock();
+ 	task = pid_task(proc_pid(inode), PIDTYPE_PID);
+ 	if (!task) {
 
 
