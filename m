@@ -2,138 +2,280 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EA7823957E0
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 11:09:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 941D93957E1
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 11:11:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230429AbhEaJLJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 05:11:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56876 "EHLO
+        id S229945AbhEaJM7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 05:12:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57308 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229522AbhEaJLA (ORCPT
+        with ESMTP id S229522AbhEaJM5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 05:11:00 -0400
-Received: from mail-qv1-xf2c.google.com (mail-qv1-xf2c.google.com [IPv6:2607:f8b0:4864:20::f2c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E7B7C06174A
-        for <linux-kernel@vger.kernel.org>; Mon, 31 May 2021 02:09:19 -0700 (PDT)
-Received: by mail-qv1-xf2c.google.com with SMTP id a7so5177529qvf.11
-        for <linux-kernel@vger.kernel.org>; Mon, 31 May 2021 02:09:19 -0700 (PDT)
+        Mon, 31 May 2021 05:12:57 -0400
+Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64AA9C061574
+        for <linux-kernel@vger.kernel.org>; Mon, 31 May 2021 02:11:17 -0700 (PDT)
+Received: by mail-ej1-x62b.google.com with SMTP id gb17so15616106ejc.8
+        for <linux-kernel@vger.kernel.org>; Mon, 31 May 2021 02:11:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
+        d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc:content-transfer-encoding;
-        bh=IJm6BORftzEWEGVW607YFI9b5KUIuit1QBx1ZBqXYg0=;
-        b=CIbw2SDztBV7RW6fGgAXk8TZGbncpGR/9ybFGe2AaQdewLy7mrtwJZo07ZONLlh9rS
-         nDEkHkeqnBcKf1J78klzsi5zZydG8B5lI+unt6CN+2/sfiONd/svy6IUZ6TnZ5Q7U2Nk
-         OJiBuZup5tD7YE1uMtU848Ou9tLmo7jLdMjNwz7jSaCQWBBpqbvHR8EBQeNpQCvoWwZw
-         CFcKHx+EvEAxvGJWK7dpjGMRcAd5PHpgvcbsbxrQAHWpkYg/vvlsTo7q+scyfn+kYs/7
-         UDPopY/BS/287eMsjy30OoXYbr8nc6Gl5u7yNIHJ8eVnPAd6Cn1PjBJ1xtBBx9XdHN5N
-         Ai5w==
+        bh=u2dhyBrRgPJpaThHfekNjY1YApaj7rhpOg94pOVXFYo=;
+        b=l5fjIPYn38smOxIuXHQkyewgGm5qBMWad56100e+IhcCPWxriuu65koJ6FxAYBSPc0
+         Qv6ElSOifoR4yTKAlqo98TwBX9/r7e9z++/ozMdvanTz4vJn/xxSZU6XDUZL6zBGmHvo
+         4Lb6A32g7kxmIi4WfaCgxDnRSUwCIi57cEP4k6evMLXlXRwu/ae5GU7gMoiBGZ5NK1+C
+         R6eyEvFwm5CxZYADIVjc3yHzWuABY9LawKLafNYJoFs68RgBwCloB7aO316uIl8eH682
+         d3gHpo1h5eBgMhqhL5Eo5Mk9CZowAC8giIWpI+eSzrXWEDySrvA0qm2D0EVPowjLHAzx
+         W33A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc:content-transfer-encoding;
-        bh=IJm6BORftzEWEGVW607YFI9b5KUIuit1QBx1ZBqXYg0=;
-        b=r/pOIlvi8GBQ7yyaV4nHuC3gbqo+XMt5cX72TkTSY5X9UnVCrh+BlRY4t+F1I49nCC
-         f1fysJKS+X/3Cc4T7w1PfOgpYGzA17EbyPbcpoMTjIK3NzHJCaq+cOX6HGloGyPcc71q
-         pFaU89DRaZlx23gjC2PuEIkZaCayEpBrOeyOj5U6R/jX+qWyfyxayANYrHGmz14lbk55
-         NeKV0LyO102ydytcliwh50IgVTmxKdyQlewx6frZXGOULFpjh9XMYU+aD31WNOlmcVHR
-         jG3KqOBuowJsYmFCFacg21tD0hcHbpqOfnoxHkE8h76nY2d43xffkIWc+2OHaspNKBXv
-         peRA==
-X-Gm-Message-State: AOAM530F+fmzxp9u4kWvcaGspDfZ/aQppiIP+XO9a+1zupM1lEckOFfu
-        q9gWmX9Hen+9Sn2Wo7EklvzB7wiJOiu5WwLiFpe+hQ==
-X-Google-Smtp-Source: ABdhPJx9zcytQeNq3XLgxYCv3FDCseu5tN5+X6rYF44tHjs0FJ7cGnxRAXBrrm9Aecirp85qu4vgIiA5Kqj6n2az/I4=
-X-Received: by 2002:a05:6214:12c7:: with SMTP id s7mr10284287qvv.44.1622452157450;
- Mon, 31 May 2021 02:09:17 -0700 (PDT)
+        bh=u2dhyBrRgPJpaThHfekNjY1YApaj7rhpOg94pOVXFYo=;
+        b=rqhTQeqbo8lTUKtdh943UxSws/JdFsqjvUaHAHVn2q4ALJWUE2zVwcALG1cxgUZhTO
+         P28WxpUeYyy6gOJo/RcZ+LEsQsxdHR7R0DRcJHediRGXnebLmc9/XpUttakQ9+6c4fls
+         GyEekcYIxAdUiXJ90qnkq+sZfJrZGUU7TAF9mJePzHWN39vIs4h6ruDJ7eRhF3MUI1rL
+         /OCKh84JUe+9xWYe/02mKQbg56u0gJIgAZ9F9YGNdoVjid10+ZsVfD7Szk0IAcMptZpy
+         tww75mLniCjYMOlah3bV1v11/2bNrrJiGeCz2Rla5EXf3F3EKjtOwB3EtXAW/nxX1roJ
+         TBRw==
+X-Gm-Message-State: AOAM530fr07TBzs7DT9t7BBkYGAEa5QbZsmFm2dPmj8dnVVOx2TyVsKc
+        lgSAov+HKwixWLY0fpS/MS/WqFvl7iVI6GFljb8=
+X-Google-Smtp-Source: ABdhPJzv2Q8xcijadeJ3KhGFvOtaZLvG/YMSiIQdGWA6OCTTsWlSnSwNL7llQfmfXZxzPTOR593GCAv1xMGeHyjIUC4=
+X-Received: by 2002:a17:906:4f10:: with SMTP id t16mr6914755eju.337.1622452275938;
+ Mon, 31 May 2021 02:11:15 -0700 (PDT)
 MIME-Version: 1.0
-References: <000000000000f9136f05c39b84e4@google.com> <21666193-5ad7-2656-c50f-33637fabb082@suse.com>
- <CACT4Y+bqevMT3cD5sXjSv9QYM_7CwjYmN_Ne5LSj=3-REZ+oTw@mail.gmail.com> <224f1e6a-76fa-6356-fe11-af480cee5cf2@suse.com>
-In-Reply-To: <224f1e6a-76fa-6356-fe11-af480cee5cf2@suse.com>
-From:   Dmitry Vyukov <dvyukov@google.com>
-Date:   Mon, 31 May 2021 11:09:06 +0200
-Message-ID: <CACT4Y+ZJ7Oi9ChXJNuF_+e4FRnN1rJBde4tsjiTtkOV+MM-hgA@mail.gmail.com>
-Subject: Re: [syzbot] kernel BUG in assertfail
-To:     Nikolay Borisov <nborisov@suse.com>
-Cc:     syzbot <syzbot+a6bf271c02e4fe66b4e4@syzkaller.appspotmail.com>,
-        Chris Mason <clm@fb.com>, dsterba@suse.com,
-        Josef Bacik <josef@toxicpanda.com>,
-        linux-btrfs@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>
+References: <20210528133309.GR24442@kadam> <CAD-N9QVWcEJjoziA6HVoQiUueVaKqAJS5Et60zvCvuUE7e6=gg@mail.gmail.com>
+ <20210528140500.GS24442@kadam> <A622EB84-DC4A-47A4-A828-CE6D25DC92EB@gmail.com>
+ <CAD-N9QVjhDDJxRnNrDzwt05BNijr1o11nE8xjvq8GrakEJ8EuQ@mail.gmail.com>
+ <20210531044022.GU24442@kadam> <CAD-N9QWBBP6_Wwi4z3e4yJM-tS54=1=CcvAA+2__Qj8NsTLq9g@mail.gmail.com>
+ <20210531070337.GV24442@kadam> <CAD-N9QU-uqFr=b1hMi1h1ytq2Uf2XKL44f9OHBRhM70zhkiO7w@mail.gmail.com>
+ <CAD-N9QW5C2ssA7H_U+eiM=SbsPj29Ooo6Sk=r4d1qELbZQjuPA@mail.gmail.com> <20210531084613.GX24442@kadam>
+In-Reply-To: <20210531084613.GX24442@kadam>
+From:   Dongliang Mu <mudongliangabcd@gmail.com>
+Date:   Mon, 31 May 2021 17:10:49 +0800
+Message-ID: <CAD-N9QVAdaitDcM6BGfwvNR=gMf7G6DK00n0Ev6ucXc6xNFFpw@mail.gmail.com>
+Subject: Re: [PATCH] ALSA: control led: fix memory leak in snd_ctl_led_register
+To:     Dan Carpenter <dan.carpenter@oracle.com>
+Cc:     perex@perex.cz, tiwai@suse.com, alsa-devel@alsa-project.org,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        syzbot+08a7d8b51ea048a74ffb@syzkaller.appspotmail.com
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 31, 2021 at 10:57 AM Nikolay Borisov <nborisov@suse.com> wrote:
-> On 31.05.21 =D0=B3. 11:55, Dmitry Vyukov wrote:
-> > On Mon, May 31, 2021 at 10:44 AM 'Nikolay Borisov' via syzkaller-bugs
-> > <syzkaller-bugs@googlegroups.com> wrote:
-> >> On 31.05.21 =D0=B3. 10:53, syzbot wrote:
-> >>> Hello,
-> >>>
-> >>> syzbot found the following issue on:
-> >>>
-> >>> HEAD commit:    1434a312 Merge branch 'for-5.13-fixes' of git://git.k=
-ernel..
-> >>> git tree:       upstream
-> >>> console output: https://syzkaller.appspot.com/x/log.txt?x=3D162843f3d=
-00000
-> >>> kernel config:  https://syzkaller.appspot.com/x/.config?x=3D9f3da44a0=
-1882e99
-> >>> dashboard link: https://syzkaller.appspot.com/bug?extid=3Da6bf271c02e=
-4fe66b4e4
-> >>>
-> >>> Unfortunately, I don't have any reproducer for this issue yet.
-> >>>
-> >>> IMPORTANT: if you fix the issue, please add the following tag to the =
-commit:
-> >>> Reported-by: syzbot+a6bf271c02e4fe66b4e4@syzkaller.appspotmail.com
-> >>>
-> >>> assertion failed: !memcmp(fs_info->fs_devices->fsid, fs_info->super_c=
-opy->fsid, BTRFS_FSID_SIZE), in fs/btrfs/disk-io.c:3282
-> >>
-> >> This means a device contains a btrfs filesystem which has a different
-> >> FSID in its superblock than the fsid which all devices part of the sam=
-e
-> >> fs_devices should have. This can happen in 2 ways - memory corruption
-> >> where either of the ->fsid member are corrupted or if there was a cras=
-h
-> >> while a filesystem's fsid was being changed. We need more context abou=
+On Mon, May 31, 2021 at 4:46 PM Dan Carpenter <dan.carpenter@oracle.com> wr=
+ote:
+>
+> On Mon, May 31, 2021 at 04:08:04PM +0800, Dongliang Mu wrote:
+> > On Mon, May 31, 2021 at 3:34 PM Dongliang Mu <mudongliangabcd@gmail.com=
+> wrote:
+> > >
+> > > On Mon, May 31, 2021 at 3:03 PM Dan Carpenter <dan.carpenter@oracle.c=
+om> wrote:
+> > > >
+> > > > On Mon, May 31, 2021 at 02:20:37PM +0800, Dongliang Mu wrote:
+> > > > > On Mon, May 31, 2021 at 12:40 PM Dan Carpenter <dan.carpenter@ora=
+cle.com> wrote:
+> > > > > >
+> > > > > > On Mon, May 31, 2021 at 11:03:36AM +0800, Dongliang Mu wrote:
+> > > > > > > On Sat, May 29, 2021 at 5:35 AM =E6=85=95=E5=86=AC=E4=BA=AE <=
+mudongliangabcd@gmail.com> wrote:
+> > > > > > > >
+> > > > > > > >
+> > > > > > > >
+> > > > > > > > > On May 28, 2021, at 10:05 PM, Dan Carpenter <dan.carpente=
+r@oracle.com> wrote:
+> > > > > > > > >
+> > > > > > > > > On Fri, May 28, 2021 at 09:50:49PM +0800, Dongliang Mu wr=
+ote:
+> > > > > > > > >>
+> > > > > > > > >> Can you please give some advise on how to fix this WARN =
+issue?
+> > > > > > > > >
+> > > > > > > > > But it feels like it spoils the fun if I write the commit=
+...  Anyway:
+> > > > > > > >
+> > > > > > > > It=E2=80=99s fine. I am still in the learning process. It=
+=E2=80=99s also good to learn experience by comparing your patch and my pat=
+ch.
+> > > > > > > >
+> > > > > > > > >
+> > > > > > > > > regards,
+> > > > > > > > > dan carpenter
+> > > > > > > > >
+> > > > > > > > > diff --git a/sound/core/control_led.c b/sound/core/contro=
+l_led.c
+> > > > > > > > > index 25f57c14f294..dd357abc1b58 100644
+> > > > > > > > > --- a/sound/core/control_led.c
+> > > > > > > > > +++ b/sound/core/control_led.c
+> > > > > > > > > @@ -740,6 +740,7 @@ static int __init snd_ctl_led_init(vo=
+id)
+> > > > > > > > >                       for (; group > 0; group--) {
+> > > > > > > > >                               led =3D &snd_ctl_leds[group=
+ - 1];
+> > > > > > > > >                               device_del(&led->dev);
+> > > > > > > > > +                             device_put(&led->dev);
+> > > > > > > > >                       }
+> > > > > > > > >                       device_del(&snd_ctl_led_dev);
+> > > > > > > > >                       return -ENOMEM;
+> > > > > > > > > @@ -768,6 +769,7 @@ static void __exit snd_ctl_led_exit(v=
+oid)
+> > > > > > > > >       for (group =3D 0; group < MAX_LED; group++) {
+> > > > > > > > >               led =3D &snd_ctl_leds[group];
+> > > > > > > > >               device_del(&led->dev);
+> > > > > > > > > +             device_put(&led->dev);
+> > > > > > > > >       }
+> > > > > > > > >       device_del(&snd_ctl_led_dev);
+> > > > > > > > >       snd_ctl_led_clean(NULL);
+> > > > > > >
+> > > > > > > Hi Dan,
+> > > > > > >
+> > > > > > > I tried this patch, and it still triggers the memleak.
+> > > > > >
+> > > > > > Did your patch fix the leak?  Because my patch should have been
+> > > > > > equivalent except for it fixes an additional leak in the snd_ct=
+l_led_init()
+> > > > > > error path.
+> > > > >
+> > > > > The syzbot link is [1]. I have tested my patch in the syzbot dash=
+board
+> > > > > and my local workspace.
+> > > > >
+> > > > > I think the reason why your patch did not work should be
+> > > > > led_card(struct snd_ctl_led_card) is already freed before returni=
+ng in
+> > > > > snd_ctl_led_sysfs_remove, rather than led(struct snd_ctl_led). Se=
+e the
+> > > > > implementation of snd_ctl_led_sysfs_remove for some details. Plea=
+se
+> > > > > correct me if I make any mistakes.
+> > > > >
+> > > > > static void snd_ctl_led_sysfs_remove(struct snd_card *card)
+> > > > > {
+> > > > >         unsigned int group;
+> > > > >         struct snd_ctl_led_card *led_card;
+> > > > >         struct snd_ctl_led *led;
+> > > > >         char link_name[32];
+> > > > >
+> > > > >         for (group =3D 0; group < MAX_LED; group++) {
+> > > > >                 led =3D &snd_ctl_leds[group];
+> > > > >                 led_card =3D led->cards[card->number];
+> > > > >                 if (!led_card)
+> > > > >                         continue;
+> > > > >                 snprintf(link_name, sizeof(link_name), "led-%s", =
+led->name);
+> > > > >                 sysfs_remove_link(&card->ctl_dev.kobj, link_name)=
+;
+> > > > >                 sysfs_remove_link(&led_card->dev.kobj, "card");
+> > > > >                 device_del(&led_card->dev);
+> > > > >                 put_device(&led_card->dev);
+> > > > >                 kfree(led_card);
+> > > > >                 led->cards[card->number] =3D NULL;
+> > > > >         }
+> > > > > }
+> > > >
+> > > > This is frustrating to look at because it's not a diff so it doesn'=
 t
-> >> what the test did?
+> > > > show what you changed.  I think you are saying that you added the
+> > > > put_device(&led_card->dev);.  That's true.  There are some other le=
+aks
+> > > > as well.  We should just fix them all.  Use device_unregister() bec=
+ause
+> > > > it's cleaner.
+> > >
+> > > Oh, I see your point. Yeah, we should fix these memory leaks all. I
+> > > agree with device_unregister.
+> > >
+> > > >
+> > > > If both device_initialize() and device_add() succeed then call
+> > > > device_unregister() to unwind.
+> > >
+> > > BTW, have you tested this new patch on two memory leaks?
+> > >
 > >
-> > Hi Nikolay,
+> > Please keep in mind that if we don't have any release method for
+> > struct snd_ctl_led_card, it will trigger a WARN[1] in the
+> > device_release function. That's why I have to add one dummy release
+> > function.
 > >
-> > From a semantic point of view we can consider that it just mounts /dev/=
-random.
-> > If syzbot comes up with a reproducer it will post it, but you seem to
-> > already figure out what happened, so I assume you can write a unit
-> > test for this.
+> > if (dev->release)
+> >         dev->release(dev);
+> > else if (dev->type && dev->type->release)
+> >         dev->type->release(dev);
+> > else if (dev->class && dev->class->dev_release)
+> >         dev->class->dev_release(dev);
+> > else
+> >         WARN(1, KERN_ERR "Device '%s' does not have a release()
+> > function, it is broken and must be fixed. See
+> > Documentation/core-api/kobject.rst.\n",
+> > dev_name(dev));
 > >
 >
-> Well no, under normal circumstances this shouldn't trigger. So if syzbot
-> is doing something stupid as mounting /dev/random then I don't see a
-> problem here. The assert is there to catch inconsistencies during normal
-> operation which doesn't seem to be the case here.
+> Oh yeah.  You're right.  The "kfree(led_card);" needs to be moved to a
+> release function or it can lead to a use after free.  For the others,
+> I think a dummy release function is ok (because it is static data).
+>
 
+Hi Dan,
 
-Does this mean that CONFIG_BTRFS_ASSERT needs to be disabled in any testing=
-?
-What is it intended for? Or it can only be enabled when mounting known
-good images? But then I assume even btrfs unit tests mount some
-invalid images, so it would mean it can't be used even  during unit
-testing?
+I wonder if we shall split the current patch into two patches, one
+patch for each memory leak. It is better to satisfy the rule - "one
+patch only fixes one issue".
 
-Looking at the output of "grep ASSERT fs/btrfs/*.c" it looks like most
-of these actually check for something that "must never happen". E.g.
-some lists/pointers are empty/non-empty in particular states. And
-"must never happen" checks are for testing scenarios...
+We should absolutely fix all these memory leaks. But one patch for two
+different bugs with different objects and different paths is not very
+suitable.
 
-Taking this particular FSID mismatch assert, should such corrupted
-images be mounted for end users? Should users be notified? Currently
-they are mounted and users are not notified, what is the purpose of
-this assertion?
-
-Perhaps CONFIG_BTRFS_ASSERT needs to be split into "must never happen"
-checks that are enabled during testing and normal if's with pr_err for
-user notifications?
+> It feels like there should be a standard way to say that there is no
+> need to release any data.  That way it could be verified by static
+> analysis tools.
+>
+> regards,
+> dan carpenter
+>
+> > [1] https://elixir.bootlin.com/linux/latest/source/drivers/base/core.c#=
+L2110
+> >
+> > > >
+> > > > diff --git a/sound/core/control_led.c b/sound/core/control_led.c
+> > > > index 25f57c14f294..561fe45e4449 100644
+> > > > --- a/sound/core/control_led.c
+> > > > +++ b/sound/core/control_led.c
+> > > > @@ -700,7 +700,7 @@ static void snd_ctl_led_sysfs_remove(struct snd=
+_card *card)
+> > > >                 snprintf(link_name, sizeof(link_name), "led-%s", le=
+d->name);
+> > > >                 sysfs_remove_link(&card->ctl_dev.kobj, link_name);
+> > > >                 sysfs_remove_link(&led_card->dev.kobj, "card");
+> > > > -               device_del(&led_card->dev);
+> > > > +               device_unregister(&led_card->dev);
+> > > >                 kfree(led_card);
+> > > >                 led->cards[card->number] =3D NULL;
+> > > >         }
+> > > > @@ -739,9 +739,9 @@ static int __init snd_ctl_led_init(void)
+> > > >                         put_device(&led->dev);
+> > > >                         for (; group > 0; group--) {
+> > > >                                 led =3D &snd_ctl_leds[group - 1];
+> > > > -                               device_del(&led->dev);
+> > > > +                               device_unregister(&led->dev);
+> > > >                         }
+> > > > -                       device_del(&snd_ctl_led_dev);
+> > > > +                       device_unregister(&snd_ctl_led_dev);
+> > > >                         return -ENOMEM;
+> > > >                 }
+> > > >         }
+> > > > @@ -767,9 +767,9 @@ static void __exit snd_ctl_led_exit(void)
+> > > >         }
+> > > >         for (group =3D 0; group < MAX_LED; group++) {
+> > > >                 led =3D &snd_ctl_leds[group];
+> > > > -               device_del(&led->dev);
+> > > > +               device_unregister(&led->dev);
+> > > >         }
+> > > > -       device_del(&snd_ctl_led_dev);
+> > > > +       device_unregister(&snd_ctl_led_dev);
+> > > >         snd_ctl_led_clean(NULL);
+> > > >  }
+> > > >
