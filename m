@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E48963965BC
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 18:45:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6BD26395DE4
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 15:49:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231781AbhEaQqh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 12:46:37 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47910 "EHLO mail.kernel.org"
+        id S231936AbhEaNvg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 09:51:36 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38860 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231695AbhEaOzU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 10:55:20 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A347561CB8;
-        Mon, 31 May 2021 13:59:29 +0000 (UTC)
+        id S231712AbhEaNfM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 09:35:12 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 39A2F61440;
+        Mon, 31 May 2021 13:25:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1622469570;
-        bh=Bc5HtLcKCb6j8gDhgo0GQg4yPRCdbPNgRipY3n++qiU=;
+        s=korg; t=1622467510;
+        bh=+bdAPR770A/6qlrJOq4AoDxXZQSCfeehkvgjE5IZtFU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=pvXpzQ/AY/42souVtiUeIE0TBp6RK4OH1BZ4Kgfspt9qa1rjBGMnRNGXUBTo9M7xN
-         c0qwXR3C5FMO6ig1+i8Ig2sRQNe7Zl9jrQGbAxdHJYOCAX0yDwkYxawaOI4LrXdOqp
-         SNFPN7i6NKjGzvAM5AlaNrR12G0aD9VpUUP5mZZk=
+        b=dzBQF24uQA6Px27Buc7va37jS29znohKcqPObfCowO6V0+IvDl9+Y2GfOECXJxhLE
+         JaSDh2ltkqeg8v6Mlo+zWu5FY1mi5oI+skJh9M6VTsTcjSE+maoW1O+BQ6H4Du6+fW
+         AB88HBOqLaKatrJOCLzV0FgNWLNvoXX2eVHwrpk0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jingwen Chen <Jingwen.Chen2@amd.com>,
-        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
+        stable@vger.kernel.org, Steve French <stfrench@microsoft.com>,
+        Stefan Metzmacher <metze@samba.org>,
+        Shyam Prasad N <sprasad@microsoft.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.12 213/296] drm/amd/amdgpu: fix refcount leak
+Subject: [PATCH 4.19 092/116] SMB3: incorrect file id in requests compounded with open
 Date:   Mon, 31 May 2021 15:14:28 +0200
-Message-Id: <20210531130711.014834124@linuxfoundation.org>
+Message-Id: <20210531130643.260729898@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210531130703.762129381@linuxfoundation.org>
-References: <20210531130703.762129381@linuxfoundation.org>
+In-Reply-To: <20210531130640.131924542@linuxfoundation.org>
+References: <20210531130640.131924542@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,44 +41,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jingwen Chen <Jingwen.Chen2@amd.com>
+From: Steve French <stfrench@microsoft.com>
 
-[ Upstream commit fa7e6abc75f3d491bc561734312d065dc9dc2a77 ]
+[ Upstream commit c0d46717b95735b0eacfddbcca9df37a49de9c7a ]
 
-[Why]
-the gem object rfb->base.obj[0] is get according to num_planes
-in amdgpufb_create, but is not put according to num_planes
+See MS-SMB2 3.2.4.1.4, file ids in compounded requests should be set to
+0xFFFFFFFFFFFFFFFF (we were treating it as u32 not u64 and setting
+it incorrectly).
 
-[How]
-put rfb->base.obj[0] in amdgpu_fbdev_destroy according to num_planes
-
-Signed-off-by: Jingwen Chen <Jingwen.Chen2@amd.com>
-Acked-by: Christian König <christian.koenig@amd.com>
-Reviewed-by: Alex Deucher <alexander.deucher@amd.com>
-Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
+Signed-off-by: Steve French <stfrench@microsoft.com>
+Reported-by: Stefan Metzmacher <metze@samba.org>
+Reviewed-by: Shyam Prasad N <sprasad@microsoft.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/amd/amdgpu/amdgpu_fb.c | 3 +++
- 1 file changed, 3 insertions(+)
+ fs/cifs/smb2pdu.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_fb.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_fb.c
-index 24010cacf7d0..813b96e233ba 100644
---- a/drivers/gpu/drm/amd/amdgpu/amdgpu_fb.c
-+++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_fb.c
-@@ -290,10 +290,13 @@ out:
- static int amdgpu_fbdev_destroy(struct drm_device *dev, struct amdgpu_fbdev *rfbdev)
- {
- 	struct amdgpu_framebuffer *rfb = &rfbdev->rfb;
-+	int i;
- 
- 	drm_fb_helper_unregister_fbi(&rfbdev->helper);
- 
- 	if (rfb->base.obj[0]) {
-+		for (i = 0; i < rfb->base.format->num_planes; i++)
-+			drm_gem_object_put(rfb->base.obj[0]);
- 		amdgpufb_destroy_pinned_object(rfb->base.obj[0]);
- 		rfb->base.obj[0] = NULL;
- 		drm_framebuffer_unregister_private(&rfb->base);
+diff --git a/fs/cifs/smb2pdu.c b/fs/cifs/smb2pdu.c
+index 07d1c79a79ea..43478ec6fd67 100644
+--- a/fs/cifs/smb2pdu.c
++++ b/fs/cifs/smb2pdu.c
+@@ -3124,10 +3124,10 @@ smb2_new_read_req(void **buf, unsigned int *total_len,
+ 			 * Related requests use info from previous read request
+ 			 * in chain.
+ 			 */
+-			shdr->SessionId = 0xFFFFFFFF;
++			shdr->SessionId = 0xFFFFFFFFFFFFFFFF;
+ 			shdr->TreeId = 0xFFFFFFFF;
+-			req->PersistentFileId = 0xFFFFFFFF;
+-			req->VolatileFileId = 0xFFFFFFFF;
++			req->PersistentFileId = 0xFFFFFFFFFFFFFFFF;
++			req->VolatileFileId = 0xFFFFFFFFFFFFFFFF;
+ 		}
+ 	}
+ 	if (remaining_bytes > io_parms->length)
 -- 
 2.30.2
 
