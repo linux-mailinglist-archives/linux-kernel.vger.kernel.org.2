@@ -2,63 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C4E7395675
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 09:48:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C70D1395677
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 09:48:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230235AbhEaHuT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 03:50:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38408 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230070AbhEaHuF (ORCPT
+        id S230312AbhEaHu2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 03:50:28 -0400
+Received: from mail-ua1-f46.google.com ([209.85.222.46]:43609 "EHLO
+        mail-ua1-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230250AbhEaHuU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 03:50:05 -0400
-Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF6F8C061574
-        for <linux-kernel@vger.kernel.org>; Mon, 31 May 2021 00:48:24 -0700 (PDT)
-Received: by mail-ed1-x533.google.com with SMTP id j10so12377921edw.8
-        for <linux-kernel@vger.kernel.org>; Mon, 31 May 2021 00:48:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=F3zVMZrvTrkcXKSdU2KSXwXGVtgnNWzbWQ6EV7ARjc8=;
-        b=DIKvZX4GvSd5P3MBIo6W4/w44cInpZ5usNUJdNJEg0/XhOijjOIs9Cs/lrWx76RmHJ
-         nM/PtJ6vyl3EI/Rm0H1WBN8urwVQmjkuRncczGymTGw9k/AfuSboorXZlqqqjd/XHNQs
-         IqUg4K5zpT6tvjdrhqk/FiLDmvj7k/fkzuI1mkv7IQbs//w7ClhBu3vQ9oiCgXqTPXBs
-         lp2AMXXgHolrmP3FxIb0lH5/IH0o5zMLEAqTCH1QfqPQ5fItrt8mLm0jH36yD0yFTubJ
-         lIs/65GnR7784kzXFdcESi7m38uoqgMSt0UZAQ2/phR8byp5wndS/6gVzy/eouXhEqQE
-         SabQ==
+        Mon, 31 May 2021 03:50:20 -0400
+Received: by mail-ua1-f46.google.com with SMTP id f1so6116087uaj.10
+        for <linux-kernel@vger.kernel.org>; Mon, 31 May 2021 00:48:37 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=F3zVMZrvTrkcXKSdU2KSXwXGVtgnNWzbWQ6EV7ARjc8=;
-        b=i6Sj4R5BvDAG64C8NDjKdxvNQODQcwSMcIlQkKnBEVeoFoA1AX7A73jfk7J1dvSp4z
-         asCK7n1j2aV4YVYMnzqeyV2vgXaFMNV4cRd7Tdmms9khYbl5ivSP2uLVTDXkS+LCkIRR
-         dXuimoCosYG6ABVgiCF15gmGplmOyHPHPUlqgg+E7n8qsxmVUA3WgPwv+Y7CoT0prRUc
-         LCiNJLHPmi9iHEYdTVHicsZ2231PwjTStLLVcQjUf8hOdqo98TaBmeDnoMxqN217ST6Y
-         v/LPv7ax+vLYZZlghkj8V+US1Yn/DxWaumQ0ticQGelb6OoKWVEJPX4Pj3O30ctTTB2W
-         wHQg==
-X-Gm-Message-State: AOAM530NsWrS6jBdxajdTGkbmxd66+JUWZ1A6lQxesLYoh1Up80KDJPp
-        YRQF83EAlgYUiF9ErdGH6sSfgv3IOGFpfbPSpw==
-X-Google-Smtp-Source: ABdhPJxAZ1jO8JHpF2/8OSTfY1E0/ubQ3+v9PvMafH0ui6l1hkI2NUClgguGO8wHyseIJCulrcaWOmXBj4b4ODFNnw0=
-X-Received: by 2002:aa7:cd92:: with SMTP id x18mr23967570edv.17.1622447303241;
- Mon, 31 May 2021 00:48:23 -0700 (PDT)
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=44YBbg2fYX/hfgSeWE3KOy+zaexOX+0Aw7Axnd+cQ8E=;
+        b=DkLTkfz/NmJBj2f1+EucteYhVl7U1Kc1ny1TKSrYllac+I7/ML1geWDX9EbEb/ouEF
+         uYX646VzvezQo6CTJh2HwuSr6bnsHcRiZwHWaEy9jNhucdAOl9UdB345fYMCZQ+9EtYv
+         t15xuaJkxA5KybevyCrPPHTUzcwRSx/SwfekXl6asRSb9/ej6HhDceFCrN6cfnYQ3Y2G
+         FV7ZCkZDiXeWBVnmMSim3uqEnskreBO7QWXbzJar6qKq44/zjb2hh8j0cWpg0Jjs33g3
+         sDw5RcJa9p8V4r2rS+rmpuReaiSX+Etf14ciJC/eZrnbuXsZkIGB/Z8sJy+JxF59MZI0
+         FqPA==
+X-Gm-Message-State: AOAM533SJ3OczE+wY63ijRmnMD8efmvs6lQyHRFHbSXdPx9J+aHDLhGl
+        QobLQya4Ty66HbZtPEXnj4QMYml94c/0krFoXlDggFdBR8Y=
+X-Google-Smtp-Source: ABdhPJwxFVdG3TE/UeNQ9DPk4zX/a/VsvjhPOzB4LD00GlG0TMk25UF0idEqyTUFA1IU43hjsVTgF8co7MLPhRGrTMU=
+X-Received: by 2002:ab0:7515:: with SMTP id m21mr1655831uap.2.1622447315059;
+ Mon, 31 May 2021 00:48:35 -0700 (PDT)
 MIME-Version: 1.0
-Received: by 2002:a54:2acb:0:0:0:0:0 with HTTP; Mon, 31 May 2021 00:48:22
- -0700 (PDT)
-Reply-To: chrrismark11@yahoo.com
-From:   "MR.CHRIS MARK" <inforco44@gmail.com>
-Date:   Mon, 31 May 2021 08:48:22 +0100
-Message-ID: <CAMH_QCDcsKrs6WTApiqTVTw6EKJ8iD4zgaTjBsz9R0ig4KxBvQ@mail.gmail.com>
-Subject: Re:Greetings.
-To:     undisclosed-recipients:;
+References: <20210529105504.180544-1-wangkefeng.wang@huawei.com> <20210529105504.180544-8-wangkefeng.wang@huawei.com>
+In-Reply-To: <20210529105504.180544-8-wangkefeng.wang@huawei.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Mon, 31 May 2021 09:48:23 +0200
+Message-ID: <CAMuHMdVvbA-bJCubhmKaJ_4VbKo+U538x7s34OkZ94kL7z4nrw@mail.gmail.com>
+Subject: Re: [PATCH 07/15] m68k: convert to setup_initial_init_mm()
+To:     Kefeng Wang <wangkefeng.wang@huawei.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-m68k <linux-m68k@lists.linux-m68k.org>,
+        Greg Ungerer <gerg@linux-m68k.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
-            I have a project that will profit you and I, please reply
-ASAP with your Names and Mobile Phone for full details.
+Hi Kefeng
 
-MR.CHRIS MARK
+(CC Greg for m68knommu)
+
+On Sat, May 29, 2021 at 12:46 PM Kefeng Wang <wangkefeng.wang@huawei.com> wrote:
+> Use setup_initial_init_mm() helper to simplify code.
+>
+> Cc: Geert Uytterhoeven <geert@linux-m68k.org>
+> Cc: linux-m68k@lists.linux-m68k.org
+> Signed-off-by: Kefeng Wang <wangkefeng.wang@huawei.com>
+
+Thanks for your patch!
+
+> --- a/arch/m68k/kernel/setup_mm.c
+> +++ b/arch/m68k/kernel/setup_mm.c
+> @@ -258,10 +258,7 @@ void __init setup_arch(char **cmdline_p)
+>                 }
+>         }
+>
+> -       init_mm.start_code = PAGE_OFFSET;
+> -       init_mm.end_code = (unsigned long)_etext;
+> -       init_mm.end_data = (unsigned long)_edata;
+> -       init_mm.brk = (unsigned long)_end;
+> +       setup_initial_init_mm((void *)PAGE_OFFSET, _etext, _edata, _end);
+
+Acked-by: Geert Uytterhoeven <geert@linux-m68k.org>
+
+> --- a/arch/m68k/kernel/setup_no.c
+> +++ b/arch/m68k/kernel/setup_no.c
+> @@ -87,10 +87,7 @@ void __init setup_arch(char **cmdline_p)
+>         memory_start = PAGE_ALIGN(_ramstart);
+>         memory_end = _ramend;
+>
+> -       init_mm.start_code = (unsigned long) &_stext;
+> -       init_mm.end_code = (unsigned long) &_etext;
+> -       init_mm.end_data = (unsigned long) &_edata;
+> -       init_mm.brk = (unsigned long) 0;
+> +       setup_initial_init_mm(_stext, _etext, _edata, (void *)0);
+
+Please use NULL instead of (void *)0.
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
