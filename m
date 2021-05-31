@@ -2,118 +2,302 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C92713959A9
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 13:24:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E2C513959B9
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 13:28:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231421AbhEaL0D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 07:26:03 -0400
-Received: from szxga08-in.huawei.com ([45.249.212.255]:3304 "EHLO
-        szxga08-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231292AbhEaLZ7 (ORCPT
+        id S231397AbhEaL3w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 07:29:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59970 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231164AbhEaL3r (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 07:25:59 -0400
-Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.54])
-        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4Ftt9M4T2rz1BGBj;
-        Mon, 31 May 2021 19:19:35 +0800 (CST)
-Received: from dggpemm500009.china.huawei.com (7.185.36.225) by
- dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Mon, 31 May 2021 19:24:15 +0800
-Received: from [10.174.185.226] (10.174.185.226) by
- dggpemm500009.china.huawei.com (7.185.36.225) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Mon, 31 May 2021 19:24:15 +0800
-To:     Rob Herring <robh@kernel.org>
-CC:     Will Deacon <will@kernel.org>, Joerg Roedel <joro@8bytes.org>,
-        "Bjorn Helgaas" <helgaas@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Linux IOMMU <iommu@lists.linux-foundation.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        PCI <linux-pci@vger.kernel.org>, <xieyingtai@huawei.com>
-References: <1621566204-37456-1-git-send-email-wangxingang5@huawei.com>
- <CAL_JsqJep2rpPN8r8PzT5fv32mmjMvg+k-=jzLp4S1QzC+LcLg@mail.gmail.com>
-From:   Xingang Wang <wangxingang5@huawei.com>
-Subject: Re: [PATCH v4] iommu/of: Fix pci_request_acs() before enumerating PCI
- devices
-Message-ID: <12828bb9-7172-4efe-a6f2-5fb066d21ddb@huawei.com>
-Date:   Mon, 31 May 2021 19:24:13 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.1
+        Mon, 31 May 2021 07:29:47 -0400
+Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0CC35C06174A
+        for <linux-kernel@vger.kernel.org>; Mon, 31 May 2021 04:28:06 -0700 (PDT)
+Received: by mail-ed1-x535.google.com with SMTP id y7so13093704eda.2
+        for <linux-kernel@vger.kernel.org>; Mon, 31 May 2021 04:28:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=08fXbeDStzHaGH5Vv8VS9Oq7rvVQTuttwAyor2Lln0g=;
+        b=gbuoAiRJbkCKFW2KsN3P2Fmsne4dRY3Ck4pKSqoUsRVRTiC3caDviB9DOXz28zGEnn
+         kgx4a20dVhKP6PyZZ6uTteu2tWevegydHAwe9edp7O8ZuV2Lujls5ipCQ4zBr21eZ6k6
+         S/2s0v4uU18m49FSb0xdloOId6BWpI9BseIhaWggzZdFqj8dUiEjsBD6e82YgJa5m7kr
+         cvC6tmrXw7xJbqN/fUUBMBCRIyYPa3jtXjL8eftxxM6QxbdeXtQv2x0LNn6jseA6vLdl
+         J6NesMpED3YNKGb7s9SsbQYkY0odjyqDk0RsZHu2bdBAMeuo9FZph6neWfoY+djEwAf0
+         /7ww==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=08fXbeDStzHaGH5Vv8VS9Oq7rvVQTuttwAyor2Lln0g=;
+        b=RENsso0lzc0y9RTE5n7xw+0cshxfb5MYFNrne3zdHks7wnyNG3OuVqTbtgasjnJyiy
+         WZbpEljaqqg6cId1Tn3cBFAycA5VEx7wcDgPC5jMjLPwBLQJ4iRsOcU3EsBarg5r4t7v
+         1KBp9pqECcqVGl8bS/dc/+PlvqTfePlxuRzdNf5VVo6FS1PUO/wg1cYYgmlzZh5Q2lVH
+         8rW4YCibg2SoP2QFKpso7/cmqf+pRyAKm+26q9Fo03LRBOwBsHiVgMtLXF2tCvkU2JhD
+         004SbOlvmo5FrF1rqd3mSJrgLTZSgnMlkPQa6CKjl+WuqJ1Yy27Joht/aLIuPqwEvdtr
+         Ip5w==
+X-Gm-Message-State: AOAM532OR9SYhlF7oIOzFfViOiItRJH+iBp4noSkU2123hOCssmciX+C
+        6FNfQiz9OWEDOq8QeVxW4JP9bA==
+X-Google-Smtp-Source: ABdhPJzQYmmocAX1SbMXFJgbWcA5WhuM5DYhopG80nroRCFOU8+Kqhb85lejb49OMj/oCL5Evs8GMA==
+X-Received: by 2002:a50:fd11:: with SMTP id i17mr24503080eds.23.1622460484644;
+        Mon, 31 May 2021 04:28:04 -0700 (PDT)
+Received: from [192.168.1.28] (hst-208-210.medicom.bg. [84.238.208.210])
+        by smtp.googlemail.com with ESMTPSA id x4sm3070907edq.23.2021.05.31.04.28.04
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 31 May 2021 04:28:04 -0700 (PDT)
+Subject: Re: [PATCH 7/7] media: venus: Set buffer to FW based on FW min count
+ requirement.
+To:     Dikshita Agarwal <dikshita@codeaurora.org>,
+        linux-media@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, vgarodia@codeaurora.org
+References: <1621417008-6117-1-git-send-email-dikshita@codeaurora.org>
+ <1621417008-6117-8-git-send-email-dikshita@codeaurora.org>
+From:   Stanimir Varbanov <stanimir.varbanov@linaro.org>
+Message-ID: <f73ae5c1-6c4d-672c-6fb7-9ba65ac945ae@linaro.org>
+Date:   Mon, 31 May 2021 14:28:03 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-In-Reply-To: <CAL_JsqJep2rpPN8r8PzT5fv32mmjMvg+k-=jzLp4S1QzC+LcLg@mail.gmail.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
+In-Reply-To: <1621417008-6117-8-git-send-email-dikshita@codeaurora.org>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.174.185.226]
-X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
- dggpemm500009.china.huawei.com (7.185.36.225)
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi everyone,
 
-On 2021/5/22 3:03, Rob Herring wrote:
-> On Thu, May 20, 2021 at 10:03 PM Wang Xingang <wangxingang5@huawei.com> wrote:
->>
->> From: Xingang Wang <wangxingang5@huawei.com>
->>
->> When booting with devicetree, the pci_request_acs() is called after the
->> enumeration and initialization of PCI devices, thus the ACS is not
->> enabled. And ACS should be enabled when IOMMU is detected for the
->> PCI host bridge, so add check for IOMMU before probe of PCI host and call
->> pci_request_acs() to make sure ACS will be enabled when enumerating PCI
->> devices.
->>
->> Fixes: 6bf6c24720d33 ("iommu/of: Request ACS from the PCI core when
->> configuring IOMMU linkage")
->> Signed-off-by: Xingang Wang <wangxingang5@huawei.com>
->> ---
->>   drivers/iommu/of_iommu.c | 1 -
->>   drivers/pci/of.c         | 8 +++++++-
->>   2 files changed, 7 insertions(+), 2 deletions(-)
+
+On 5/19/21 12:36 PM, Dikshita Agarwal wrote:
+> - Get the min buffer count required by FW from source event change
+>   and use the same value to decide actual buffer count and for
+>   buffer size calculation.
+> - Setup DPB and OPB buffers after session continue incase of
+>   reconfig.
 > 
-> Reviewed-by: Rob Herring <robh@kernel.org>
+> Co-developed-by: Mansur Alisha Shaik <mansur@codeaurora.org>
+> Co-developed-by: Vikash Garodia <vgarodia@codeaurora.org>
+> Signed-off-by: Dikshita Agarwal <dikshita@codeaurora.org>
+> ---
+>  drivers/media/platform/qcom/venus/core.h           |  1 +
+>  drivers/media/platform/qcom/venus/helpers.c        | 11 ++++++++++-
+>  drivers/media/platform/qcom/venus/hfi.h            |  1 +
+>  drivers/media/platform/qcom/venus/hfi_helper.h     |  9 +++++++++
+>  drivers/media/platform/qcom/venus/hfi_msgs.c       |  7 +++++++
+>  .../media/platform/qcom/venus/hfi_plat_bufs_v6.c   |  3 ++-
+>  drivers/media/platform/qcom/venus/vdec.c           | 22 ++++++++++++----------
+>  7 files changed, 42 insertions(+), 12 deletions(-)
+> 
+> diff --git a/drivers/media/platform/qcom/venus/core.h b/drivers/media/platform/qcom/venus/core.h
+> index 1ff20d9..b2b023e 100644
+> --- a/drivers/media/platform/qcom/venus/core.h
+> +++ b/drivers/media/platform/qcom/venus/core.h
+> @@ -403,6 +403,7 @@ struct venus_inst {
+>  	u32 width;
+>  	u32 height;
+>  	struct v4l2_rect crop;
+> +	u32 fw_min_cnt;
+>  	u32 out_width;
+>  	u32 out_height;
+>  	u32 colorspace;
+> diff --git a/drivers/media/platform/qcom/venus/helpers.c b/drivers/media/platform/qcom/venus/helpers.c
+> index cbe653f..83c3009 100644
+> --- a/drivers/media/platform/qcom/venus/helpers.c
+> +++ b/drivers/media/platform/qcom/venus/helpers.c
+> @@ -576,6 +576,7 @@ static int platform_get_bufreq(struct venus_inst *inst, u32 buftype,
+>  	struct hfi_plat_buffers_params params;
+>  	bool is_dec = inst->session_type == VIDC_SESSION_TYPE_DEC;
+>  	struct venc_controls *enc_ctr = &inst->controls.enc;
+> +	int ret = 0;
+>  
+>  	hfi_plat = hfi_platform_get(version);
+>  
+> @@ -610,7 +611,15 @@ static int platform_get_bufreq(struct venus_inst *inst, u32 buftype,
+>  		params.enc.is_tenbit = inst->bit_depth == VIDC_BITDEPTH_10;
+>  	}
+>  
+> -	return hfi_plat->bufreq(&params, inst->session_type, buftype, req);
+> +	if (buftype == HFI_BUFFER_OUTPUT || buftype == HFI_BUFFER_OUTPUT2 ||
+> +	    buftype == HFI_BUFFER_INTERNAL_SCRATCH_1(version))
+> +		req->count_min = inst->fw_min_cnt;
+> +
+> +	ret = hfi_plat->bufreq(&params, inst->session_type, buftype, req);
+> +	if (buftype == HFI_BUFFER_OUTPUT || buftype == HFI_BUFFER_OUTPUT2)
+> +		if (inst->fw_min_cnt != req->count_min)
+> +			inst->fw_min_cnt = req->count_min;
+> +	return ret;
+>  }
+>  
+>  int venus_helper_get_bufreq(struct venus_inst *inst, u32 type,
+> diff --git a/drivers/media/platform/qcom/venus/hfi.h b/drivers/media/platform/qcom/venus/hfi.h
+> index f25d412..287d544 100644
+> --- a/drivers/media/platform/qcom/venus/hfi.h
+> +++ b/drivers/media/platform/qcom/venus/hfi.h
+> @@ -75,6 +75,7 @@ struct hfi_event_data {
+>  		u32 left, top;
+>  		u32 width, height;
+>  	} input_crop;
+> +	u32 fw_min_cnt;
+>  };
+>  
+>  /* define core states */
+> diff --git a/drivers/media/platform/qcom/venus/hfi_helper.h b/drivers/media/platform/qcom/venus/hfi_helper.h
+> index 185c302..5162f09 100644
+> --- a/drivers/media/platform/qcom/venus/hfi_helper.h
+> +++ b/drivers/media/platform/qcom/venus/hfi_helper.h
+> @@ -167,6 +167,7 @@
+>  #define HFI_PROPERTY_PARAM_VDEC_RECOVERY_POINT_SEI_EXTRADATA	0x120300c
+>  #define HFI_PROPERTY_PARAM_VDEC_THUMBNAIL_MODE			0x120300d
+>  #define HFI_PROPERTY_PARAM_VDEC_FRAME_ASSEMBLY			0x120300e
+> +#define HFI_PROPERTY_PARAM_VDEC_DPB_COUNTS			0x120300e
+>  #define HFI_PROPERTY_PARAM_VDEC_VC1_FRAMEDISP_EXTRADATA		0x1203011
+>  #define HFI_PROPERTY_PARAM_VDEC_VC1_SEQDISP_EXTRADATA		0x1203012
+>  #define HFI_PROPERTY_PARAM_VDEC_TIMESTAMP_EXTRADATA		0x1203013
+> @@ -906,6 +907,14 @@ struct hfi_extradata_input_crop {
+>  	u32 height;
+>  };
+>  
+> +struct hfi_dpb_counts {
+> +	u32 max_dpb_count;
+> +	u32 max_ref_frames;
+> +	u32 max_dec_buffering;
+> +	u32 max_reorder_frames;
+> +	u32 fw_min_cnt;
+> +};
+> +
+>  #define HFI_COLOR_FORMAT_MONOCHROME		0x01
+>  #define HFI_COLOR_FORMAT_NV12			0x02
+>  #define HFI_COLOR_FORMAT_NV21			0x03
+> diff --git a/drivers/media/platform/qcom/venus/hfi_msgs.c b/drivers/media/platform/qcom/venus/hfi_msgs.c
+> index a2d436d..2d207254 100644
+> --- a/drivers/media/platform/qcom/venus/hfi_msgs.c
+> +++ b/drivers/media/platform/qcom/venus/hfi_msgs.c
+> @@ -32,6 +32,7 @@ static void event_seq_changed(struct venus_core *core, struct venus_inst *inst,
+>  	struct hfi_colour_space *colour_info;
+>  	struct hfi_buffer_requirements *bufreq;
+>  	struct hfi_extradata_input_crop *crop;
+> +	struct hfi_dpb_counts *dpb_count;
+>  	u8 *data_ptr;
+>  	u32 ptype;
+>  
+> @@ -110,6 +111,12 @@ static void event_seq_changed(struct venus_core *core, struct venus_inst *inst,
+>  			event.input_crop.height = crop->height;
+>  			data_ptr += sizeof(*crop);
+>  			break;
+> +		case HFI_PROPERTY_PARAM_VDEC_DPB_COUNTS:
+> +			data_ptr += sizeof(u32);
+> +			dpb_count = (struct hfi_dpb_counts *)data_ptr;
+> +			event.fw_min_cnt = dpb_count->fw_min_cnt;
+> +			data_ptr += sizeof(*dpb_count);
+> +			break;
+>  		default:
+>  			break;
+>  		}
+> diff --git a/drivers/media/platform/qcom/venus/hfi_plat_bufs_v6.c b/drivers/media/platform/qcom/venus/hfi_plat_bufs_v6.c
+> index 479178b..c7aea06 100644
+> --- a/drivers/media/platform/qcom/venus/hfi_plat_bufs_v6.c
+> +++ b/drivers/media/platform/qcom/venus/hfi_plat_bufs_v6.c
+> @@ -1164,7 +1164,7 @@ static int output_buffer_count(u32 session_type, u32 codec)
+>  			output_min_count = 6;
+>  			break;
+>  		case V4L2_PIX_FMT_VP9:
+> -			output_min_count = 9;
+> +			output_min_count = 11;
+>  			break;
+>  		case V4L2_PIX_FMT_H264:
+>  		case V4L2_PIX_FMT_HEVC:
+> @@ -1213,6 +1213,7 @@ static int bufreq_dec(struct hfi_plat_buffers_params *params, u32 buftype,
+>  	}
+>  
+>  	out_min_count = output_buffer_count(VIDC_SESSION_TYPE_DEC, codec);
+> +	out_min_count = max(out_min_count, bufreq->count_min);
+>  
+>  	bufreq->type = buftype;
+>  	bufreq->region_size = 0;
+> diff --git a/drivers/media/platform/qcom/venus/vdec.c b/drivers/media/platform/qcom/venus/vdec.c
+> index a674281..d8f0529 100644
+> --- a/drivers/media/platform/qcom/venus/vdec.c
+> +++ b/drivers/media/platform/qcom/venus/vdec.c
+> @@ -977,7 +977,7 @@ static int vdec_start_capture(struct venus_inst *inst)
+>  		return ret;
+>  
+>  	ret = venus_helper_set_num_bufs(inst, inst->num_input_bufs,
+> -					VB2_MAX_FRAME, VB2_MAX_FRAME);
+> +					inst->num_output_bufs, inst->num_output_bufs);
+
+Please keep VB2_MAX_FRAME for output and output2 num buffers. We need
+this to implement vidioc_create_bufs ...
+
+>  	if (ret)
+>  		return ret;
+>  
+> @@ -985,6 +985,14 @@ static int vdec_start_capture(struct venus_inst *inst)
+>  	if (ret)
+>  		goto err;
+>  
+> +	venus_pm_load_scale(inst);
+> +
+> +	inst->next_buf_last = false;
+> +
+> +	ret = hfi_session_continue(inst);
+> +	if (ret)
+> +		goto err;
+> +
+>  	ret = venus_helper_alloc_dpb_bufs(inst);
+>  	if (ret)
+>  		goto err;
+> @@ -997,14 +1005,6 @@ static int vdec_start_capture(struct venus_inst *inst)
+>  	if (ret)
+>  		goto free_dpb_bufs;
+>  
+> -	venus_pm_load_scale(inst);
+> -
+> -	inst->next_buf_last = false;
+> -
+> -	ret = hfi_session_continue(inst);
+> -	if (ret)
+> -		goto free_dpb_bufs;
+> -
+>  	inst->codec_state = VENUS_DEC_STATE_DECODING;
+>  
+>  	if (inst->drain_active)
+> @@ -1069,7 +1069,7 @@ static int vdec_start_output(struct venus_inst *inst)
+>  		return ret;
+>  
+>  	ret = venus_helper_set_num_bufs(inst, inst->num_input_bufs,
+> -					VB2_MAX_FRAME, VB2_MAX_FRAME);
+> +					inst->num_output_bufs, inst->num_output_bufs);
+
+... ditto
+
+>  	if (ret)
+>  		return ret;
+>  
+> @@ -1410,6 +1410,7 @@ static void vdec_event_change(struct venus_inst *inst,
+>  		inst->crop.height = ev_data->height;
+>  	}
+>  
+> +	inst->fw_min_cnt = ev_data->fw_min_cnt;
+>  	inst->out_width = ev_data->width;
+>  	inst->out_height = ev_data->height;
+>  
+> @@ -1513,6 +1514,7 @@ static void vdec_inst_init(struct venus_inst *inst)
+>  	inst->crop.top = 0;
+>  	inst->crop.width = inst->width;
+>  	inst->crop.height = inst->height;
+> +	inst->fw_min_cnt = 8;
+
+Why 8? Is this the default value for h264 and resolution 96x96?
+
+>  	inst->out_width = frame_width_min(inst);
+>  	inst->out_height = frame_height_min(inst);
+>  	inst->fps = 30;
 > 
 
-Ping, is this patch appropriate for mainline?
-
->> diff --git a/drivers/iommu/of_iommu.c b/drivers/iommu/of_iommu.c
->> index a9d2df001149..54a14da242cc 100644
->> --- a/drivers/iommu/of_iommu.c
->> +++ b/drivers/iommu/of_iommu.c
->> @@ -205,7 +205,6 @@ const struct iommu_ops *of_iommu_configure(struct device *dev,
->>                          .np = master_np,
->>                  };
->>
->> -               pci_request_acs();
->>                  err = pci_for_each_dma_alias(to_pci_dev(dev),
->>                                               of_pci_iommu_init, &info);
->>          } else {
->> diff --git a/drivers/pci/of.c b/drivers/pci/of.c
->> index da5b414d585a..2313c3f848b0 100644
->> --- a/drivers/pci/of.c
->> +++ b/drivers/pci/of.c
->> @@ -581,9 +581,15 @@ static int pci_parse_request_of_pci_ranges(struct device *dev,
->>
->>   int devm_of_pci_bridge_init(struct device *dev, struct pci_host_bridge *bridge)
->>   {
->> -       if (!dev->of_node)
->> +       struct device_node *node = dev->of_node;
->> +
->> +       if (!node)
->>                  return 0;
->>
->> +       /* Detect IOMMU and make sure ACS will be enabled */
->> +       if (of_property_read_bool(node, "iommu-map"))
->> +               pci_request_acs();
->> +
->>          bridge->swizzle_irq = pci_common_swizzle;
->>          bridge->map_irq = of_irq_parse_and_map_pci;
->>
->> --
->> 2.19.1
->>
-> .
-> 
+-- 
+regards,
+Stan
