@@ -2,81 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 983B9395565
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 08:23:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 849D739558D
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 08:44:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230214AbhEaGZ2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 02:25:28 -0400
-Received: from szxga01-in.huawei.com ([45.249.212.187]:6090 "EHLO
-        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230070AbhEaGZ0 (ORCPT
+        id S230150AbhEaGpu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 02:45:50 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:48791 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230070AbhEaGpp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 02:25:26 -0400
-Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.53])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4FtlXt5G7HzYndR;
-        Mon, 31 May 2021 14:21:02 +0800 (CST)
-Received: from dggemi762-chm.china.huawei.com (10.1.198.148) by
- dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
- 15.1.2176.2; Mon, 31 May 2021 14:23:39 +0800
-Received: from linux-lmwb.huawei.com (10.175.103.112) by
- dggemi762-chm.china.huawei.com (10.1.198.148) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2176.2; Mon, 31 May 2021 14:23:39 +0800
-From:   Zou Wei <zou_wei@huawei.com>
-To:     <vkoul@kernel.org>, <mcoquelin.stm32@gmail.com>,
-        <alexandre.torgue@foss.st.com>
-CC:     <dmaengine@vger.kernel.org>,
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, "Zou Wei" <zou_wei@huawei.com>
-Subject: [PATCH -next] dmaengine: stm32-dmamux: fix PM reference leak in stm32_dmamux_route_allocate()
-Date:   Mon, 31 May 2021 14:42:20 +0800
-Message-ID: <1622443340-54803-1-git-send-email-zou_wei@huawei.com>
-X-Mailer: git-send-email 2.6.2
+        Mon, 31 May 2021 02:45:45 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1622443445;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=TIWAUfwgcui+A5fvQ+stNJmoyeMH3B/9N1MfI1yf4jc=;
+        b=BgelLFB26cSrzj8ZeDqTx9M4VJan5sl1uWHdeo4iqoqkBCXgbmyF58L0KbkwkJgQ9jG0dC
+        UCdOmngzzJi4bIyTz9YiHl2EuNYwhwetpQQqJ7rsCgSV1RlPoA46TLUDwTMk/CyocWtLxl
+        WpCdBN3Cm9zEDauOAwP8skHzxwueo10=
+Received: from mail-pf1-f197.google.com (mail-pf1-f197.google.com
+ [209.85.210.197]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-374-EBn0KyRiPHuhOZeXeVK7DQ-1; Mon, 31 May 2021 02:44:04 -0400
+X-MC-Unique: EBn0KyRiPHuhOZeXeVK7DQ-1
+Received: by mail-pf1-f197.google.com with SMTP id a21-20020a62e2150000b02902e4e5d37f10so5429614pfi.11
+        for <linux-kernel@vger.kernel.org>; Sun, 30 May 2021 23:44:04 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=TIWAUfwgcui+A5fvQ+stNJmoyeMH3B/9N1MfI1yf4jc=;
+        b=rEo3HXktIE5TYRXXasnhriFq7KOFpN/e4Yj+nZn9c8mXpEuVt3Cao/xMYF41LE09sX
+         SNBMP2xZLJCUHY7w+0LQU+0Ex+36O1LO+HnEgHnK3LXiaA6TQFYPUEZs0nnLv6CRVUhF
+         5mSI9Qm+/TN3roGM070ZU9q4VByR4j6+X0BP6qFcCCWHX53SPCQJqEGsWOBHGGNISTNN
+         jwoZbabOBhubsFhDnFyVBszrt/swtu7MJVfRgdcjvFVCsC5KXe9fe9kCFfAmmS6yF0v8
+         niu5l8Uwysk9MVr3qeGxCaMNh+msI93VtADtbBorPK3mQYX3D9rYSsgPRuZsj0T/rOve
+         WKjg==
+X-Gm-Message-State: AOAM530q31gsJ/rTwJ5QxEGJsST+IZXm/VlI57TLDIjBXCm07jkxOgR7
+        L//cY0RCtkLM2THTPyrvA4e86vOJK6eqYKaqLdI2BHxdeHOgQ9uTgRu4mPBQJCipqYs4ofqnsun
+        NiJn4pIFLypcRjfcL3BF9mxQRkd59MPgDAldOFGq6h303W2BWDNzTlMsr1gV6OCbJg2HrSWsCoQ
+        sk
+X-Received: by 2002:a17:90b:1e05:: with SMTP id pg5mr17681425pjb.65.1622443443189;
+        Sun, 30 May 2021 23:44:03 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwAtVgDwKFNXkgIrbDystmbQJqx+LiZ7tTXQgOt9gmZoo6uxj5ICpwEvDlwzpx/A4gnUxVHWg==
+X-Received: by 2002:a17:90b:1e05:: with SMTP id pg5mr17681403pjb.65.1622443442859;
+        Sun, 30 May 2021 23:44:02 -0700 (PDT)
+Received: from wangxiaodeMacBook-Air.local ([209.132.188.80])
+        by smtp.gmail.com with ESMTPSA id u1sm10771915pgh.80.2021.05.30.23.44.00
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 30 May 2021 23:44:02 -0700 (PDT)
+Subject: Re: [PATCH 1/2] vdpa/mlx5: Support creating resources with uid == 0
+To:     Eli Cohen <elic@nvidia.com>
+Cc:     mst@redhat.com, virtualization@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org
+References: <20210530075415.4644-1-elic@nvidia.com>
+ <20210530075415.4644-2-elic@nvidia.com>
+ <7e4f741e-e595-fe19-91ef-e6faeec765d4@redhat.com>
+ <c9c2a453-7ceb-a0ad-7731-d150b3bc1e53@redhat.com>
+ <20210531045914.GB158940@mtl-vdi-166.wap.labs.mlnx>
+From:   Jason Wang <jasowang@redhat.com>
+Message-ID: <3717ebc5-66ce-2d50-1853-49442a8e71e1@redhat.com>
+Date:   Mon, 31 May 2021 14:43:59 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.10.2
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.175.103.112]
-X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
- dggemi762-chm.china.huawei.com (10.1.198.148)
-X-CFilter-Loop: Reflected
+In-Reply-To: <20210531045914.GB158940@mtl-vdi-166.wap.labs.mlnx>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-pm_runtime_get_sync will increment pm usage counter even it failed.
-Forgetting to putting operation will result in reference leak here.
-Fix it by replacing it with pm_runtime_resume_and_get to keep usage
-counter balanced.
 
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Zou Wei <zou_wei@huawei.com>
----
- drivers/dma/stm32-dmamux.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+在 2021/5/31 下午12:59, Eli Cohen 写道:
+> On Mon, May 31, 2021 at 11:06:59AM +0800, Jason Wang wrote:
+>> 在 2021/5/31 上午11:02, Jason Wang 写道:
+>>> 在 2021/5/30 下午3:54, Eli Cohen 写道:
+>>>> Currently all resources must be created with uid != 0 which is essential
+>>>> userspace processes allocating virtquueue resources. Since this is a
+>>>> kernel implementation, it is perfectly legal to open resources with
+>>>> uid == 0.
+>>>>
+>>>> In case frimware supports, avoid allocating user context.
+>>>
+>>> Typo "frimware".
+>>>
+>>> Otherwise.
+>>>
+>>> Acked-by: Jason Wang <jasowang@redhat.com>
+>>>
+>>> (I don't see any code to check the firmware capability, is this
+>>> intended?)
+>>
+>> Speak too fast. I see the MLX5_CAP_GEN(), so it's fine.
+> And I responded too fast :-)
 
-diff --git a/drivers/dma/stm32-dmamux.c b/drivers/dma/stm32-dmamux.c
-index ef0d055..8fd60a6 100644
---- a/drivers/dma/stm32-dmamux.c
-+++ b/drivers/dma/stm32-dmamux.c
-@@ -137,7 +137,7 @@ static void *stm32_dmamux_route_allocate(struct of_phandle_args *dma_spec,
- 
- 	/* Set dma request */
- 	spin_lock_irqsave(&dmamux->lock, flags);
--	ret = pm_runtime_get_sync(&pdev->dev);
-+	ret = pm_runtime_resume_and_get(&pdev->dev);
- 	if (ret < 0) {
- 		spin_unlock_irqrestore(&dmamux->lock, flags);
- 		goto error;
-@@ -361,7 +361,7 @@ static int stm32_dmamux_resume(struct device *dev)
- 	if (ret < 0)
- 		return ret;
- 
--	ret = pm_runtime_get_sync(dev);
-+	ret = pm_runtime_resume_and_get(dev);
- 	if (ret < 0)
- 		return ret;
- 
--- 
-2.6.2
+
+Right and thanks for the quick response :)
+
+
+>> Thanks
+>>
+>>
+>>> Thanks
+>>>
+>>>
+>>>> Signed-off-by: Eli Cohen <elic@nvidia.com>
+>>>> ---
+>>>>    drivers/vdpa/mlx5/core/resources.c | 6 ++++++
+>>>>    include/linux/mlx5/mlx5_ifc.h      | 4 +++-
+>>>>    2 files changed, 9 insertions(+), 1 deletion(-)
+>>>>
+>>>> diff --git a/drivers/vdpa/mlx5/core/resources.c
+>>>> b/drivers/vdpa/mlx5/core/resources.c
+>>>> index 6521cbd0f5c2..836ab9ef0fa6 100644
+>>>> --- a/drivers/vdpa/mlx5/core/resources.c
+>>>> +++ b/drivers/vdpa/mlx5/core/resources.c
+>>>> @@ -54,6 +54,9 @@ static int create_uctx(struct mlx5_vdpa_dev
+>>>> *mvdev, u16 *uid)
+>>>>        void *in;
+>>>>        int err;
+>>>>    +    if (MLX5_CAP_GEN(mvdev->mdev, umem_uid_0))
+>>>> +        return 0;
+>>>> +
+>>>>        /* 0 means not supported */
+>>>>        if (!MLX5_CAP_GEN(mvdev->mdev, log_max_uctx))
+>>>>            return -EOPNOTSUPP;
+>>>> @@ -79,6 +82,9 @@ static void destroy_uctx(struct mlx5_vdpa_dev
+>>>> *mvdev, u32 uid)
+>>>>        u32 out[MLX5_ST_SZ_DW(destroy_uctx_out)] = {};
+>>>>        u32 in[MLX5_ST_SZ_DW(destroy_uctx_in)] = {};
+>>>>    +    if (!uid)
+>>>> +        return;
+>>>> +
+>>>>        MLX5_SET(destroy_uctx_in, in, opcode, MLX5_CMD_OP_DESTROY_UCTX);
+>>>>        MLX5_SET(destroy_uctx_in, in, uid, uid);
+>>>>    diff --git a/include/linux/mlx5/mlx5_ifc.h
+>>>> b/include/linux/mlx5/mlx5_ifc.h
+>>>> index 9c68b2da14c6..606d2aeacad4 100644
+>>>> --- a/include/linux/mlx5/mlx5_ifc.h
+>>>> +++ b/include/linux/mlx5/mlx5_ifc.h
+>>>> @@ -1487,7 +1487,9 @@ struct mlx5_ifc_cmd_hca_cap_bits {
+>>>>        u8         uar_4k[0x1];
+>>>>        u8         reserved_at_241[0x9];
+>>>>        u8         uar_sz[0x6];
+>>>> -    u8         reserved_at_250[0x8];
+>>>> +    u8         reserved_at_248[0x2];
+>>>> +    u8         umem_uid_0[0x1];
+>>>> +    u8         reserved_at_250[0x5];
+>>>>        u8         log_pg_sz[0x8];
+>>>>          u8         bf[0x1];
 
