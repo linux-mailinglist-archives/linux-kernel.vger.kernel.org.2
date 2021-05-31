@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 567FD396428
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 17:47:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 55DDB396343
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 17:09:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232211AbhEaPsm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 11:48:42 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56132 "EHLO mail.kernel.org"
+        id S233121AbhEaPLa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 11:11:30 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39886 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233793AbhEaO11 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 10:27:27 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 76A1D6161C;
-        Mon, 31 May 2021 13:47:35 +0000 (UTC)
+        id S232920AbhEaOKb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 10:10:31 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B5F6161982;
+        Mon, 31 May 2021 13:40:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1622468856;
-        bh=sEfcnesrPRlbDo2cFYNq0uRXw0mNlM8JcxE+5scxdrQ=;
+        s=korg; t=1622468443;
+        bh=WNWi9ETWNpjH0SogOcI22UVQ+IWwA1oLOtN8+tlbYRY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=icHXj552Wh87XOByYDsCe1GSWJ6xw9UfPEhSDc2SJIecahBLBRTe39ajqlTp/nlBv
-         5fOiQ6rSb0ltQb0Cc8xE3kd84qvNQ/zRxqlxx/WJB/I+EFSH2A3qEvD1oX99Ot3YGQ
-         zPkt1EYMFh4umw3U847O//QNdoHhH7Q6hN/2iUNs=
+        b=IJjuQvsa/JVmNHC7YlUMgWNrB7HLFjFhqbcKQQKklgelFbXHUQsu40lfkeWYHoji3
+         jra+2FIo42+HFMR9WI3HpeJqc8W6zsWEtbUu9S+5so2OXgF4hGOvHJlFIYW2O7O3qY
+         2mS0l23OZNk4WDPRaxc6T+YxIIOvWiCiTTFtJexs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, David Awogbemila <awogbemila@google.com>,
-        Willem de Bruijn <willemb@google.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 153/177] gve: Update mgmt_msix_idx if num_ntfy changes
+        stable@vger.kernel.org, Yunsheng Lin <linyunsheng@huawei.com>,
+        Huazhong Tan <tanhuazhong@huawei.com>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: [PATCH 5.10 245/252] net: hns3: check the return of skb_checksum_help()
 Date:   Mon, 31 May 2021 15:15:10 +0200
-Message-Id: <20210531130653.212537921@linuxfoundation.org>
+Message-Id: <20210531130706.333682445@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210531130647.887605866@linuxfoundation.org>
-References: <20210531130647.887605866@linuxfoundation.org>
+In-Reply-To: <20210531130657.971257589@linuxfoundation.org>
+References: <20210531130657.971257589@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,38 +40,64 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: David Awogbemila <awogbemila@google.com>
+From: Yunsheng Lin <linyunsheng@huawei.com>
 
-[ Upstream commit e96b491a0ffa35a8a9607c193fa4d894ca9fb32f ]
+commit 9bb5a495424fd4bfa672eb1f31481248562fa156 upstream.
 
-If we do not get the expected number of vectors from
-pci_enable_msix_range, we update priv->num_ntfy_blks but not
-priv->mgmt_msix_idx. This patch fixes this so that priv->mgmt_msix_idx
-is updated accordingly.
+Currently skb_checksum_help()'s return is ignored, but it may
+return error when it fails to allocate memory when linearizing.
 
-Fixes: f5cedc84a30d ("gve: Add transmit and receive support")
-Signed-off-by: David Awogbemila <awogbemila@google.com>
-Acked-by: Willem de Bruijn <willemb@google.com>
+So adds checking for the return of skb_checksum_help().
+
+Fixes: 76ad4f0ee747("net: hns3: Add support of HNS3 Ethernet Driver for hip08 SoC")
+Fixes: 3db084d28dc0("net: hns3: Fix for vxlan tx checksum bug")
+Signed-off-by: Yunsheng Lin <linyunsheng@huawei.com>
+Signed-off-by: Huazhong Tan <tanhuazhong@huawei.com>
 Signed-off-by: David S. Miller <davem@davemloft.net>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/ethernet/google/gve/gve_main.c | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/net/ethernet/hisilicon/hns3/hns3_enet.c |   10 +++-------
+ 1 file changed, 3 insertions(+), 7 deletions(-)
 
-diff --git a/drivers/net/ethernet/google/gve/gve_main.c b/drivers/net/ethernet/google/gve/gve_main.c
-index 9b7a8db9860f..9c74251f9b6a 100644
---- a/drivers/net/ethernet/google/gve/gve_main.c
-+++ b/drivers/net/ethernet/google/gve/gve_main.c
-@@ -161,6 +161,7 @@ static int gve_alloc_notify_blocks(struct gve_priv *priv)
- 		int vecs_left = new_num_ntfy_blks % 2;
+--- a/drivers/net/ethernet/hisilicon/hns3/hns3_enet.c
++++ b/drivers/net/ethernet/hisilicon/hns3/hns3_enet.c
+@@ -792,8 +792,6 @@ static bool hns3_tunnel_csum_bug(struct
+ 	      l4.udp->dest == htons(4790))))
+ 		return false;
  
- 		priv->num_ntfy_blks = new_num_ntfy_blks;
-+		priv->mgmt_msix_idx = priv->num_ntfy_blks;
- 		priv->tx_cfg.max_queues = min_t(int, priv->tx_cfg.max_queues,
- 						vecs_per_type);
- 		priv->rx_cfg.max_queues = min_t(int, priv->rx_cfg.max_queues,
--- 
-2.30.2
-
+-	skb_checksum_help(skb);
+-
+ 	return true;
+ }
+ 
+@@ -871,8 +869,7 @@ static int hns3_set_l2l3l4(struct sk_buf
+ 			/* the stack computes the IP header already,
+ 			 * driver calculate l4 checksum when not TSO.
+ 			 */
+-			skb_checksum_help(skb);
+-			return 0;
++			return skb_checksum_help(skb);
+ 		}
+ 
+ 		hns3_set_outer_l2l3l4(skb, ol4_proto, ol_type_vlan_len_msec);
+@@ -917,7 +914,7 @@ static int hns3_set_l2l3l4(struct sk_buf
+ 		break;
+ 	case IPPROTO_UDP:
+ 		if (hns3_tunnel_csum_bug(skb))
+-			break;
++			return skb_checksum_help(skb);
+ 
+ 		hns3_set_field(*type_cs_vlan_tso, HNS3_TXD_L4CS_B, 1);
+ 		hns3_set_field(*type_cs_vlan_tso, HNS3_TXD_L4T_S,
+@@ -942,8 +939,7 @@ static int hns3_set_l2l3l4(struct sk_buf
+ 		/* the stack computes the IP header already,
+ 		 * driver calculate l4 checksum when not TSO.
+ 		 */
+-		skb_checksum_help(skb);
+-		return 0;
++		return skb_checksum_help(skb);
+ 	}
+ 
+ 	return 0;
 
 
