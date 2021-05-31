@@ -2,76 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C4EC396857
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 21:27:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7028C396859
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 21:27:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231836AbhEaT2p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 15:28:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53006 "EHLO
+        id S232042AbhEaT3K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 15:29:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53120 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231201AbhEaT2k (ORCPT
+        with ESMTP id S231905AbhEaT3G (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 15:28:40 -0400
-Received: from mail-il1-x136.google.com (mail-il1-x136.google.com [IPv6:2607:f8b0:4864:20::136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7D76C061574
-        for <linux-kernel@vger.kernel.org>; Mon, 31 May 2021 12:26:58 -0700 (PDT)
-Received: by mail-il1-x136.google.com with SMTP id x9so5742268ilp.4
-        for <linux-kernel@vger.kernel.org>; Mon, 31 May 2021 12:26:58 -0700 (PDT)
+        Mon, 31 May 2021 15:29:06 -0400
+Received: from mail-yb1-xb32.google.com (mail-yb1-xb32.google.com [IPv6:2607:f8b0:4864:20::b32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04596C061574
+        for <linux-kernel@vger.kernel.org>; Mon, 31 May 2021 12:27:26 -0700 (PDT)
+Received: by mail-yb1-xb32.google.com with SMTP id s107so14081191ybi.3
+        for <linux-kernel@vger.kernel.org>; Mon, 31 May 2021 12:27:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=pDFxG7VQh8w/j0MQ9kb5g324X46YhyItfelyMryxj/Y=;
-        b=pGyaLyvaXk20NNq4g686IIFMGa+R3qNKQUkY/vUC4elXULw3yJDPk6ew0U+xo6InVa
-         quM44UbvHTEqsTmeftSIbCGmXGn/RuY7VXtHgb5RUdEYQwQ+IKO8RSUwlkMDpYoW7ZOF
-         NmTDkF+xGKQ9PuDvp+cqX9yVthTlYpUwEIUXWLn6wdTrlee4DZ5Cni6rLSAmaw0882He
-         qbqsPXPxRLBL9QjDsbHnqVMToChCysrN6xg5YzX+PIg1Z7yxbZE0AB1fuX0eKYwK4g8w
-         MZlqkOLAyd/SPK/0hkggztjgYXlYdAv0jISNVkTIDhaNYv1TwbSTnCnPhgzz+xccc/hh
-         VK/g==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=YaMl4hY+yuZOtEDwcdF7xmfj7nQN6TzRsyNwIeXiUWs=;
+        b=XAlgrQ1fY9ojsBt/YYDQGsJM8rjHda5/JeVAYUJCJqNIb5Nc4ucPyOvBppbLTyL5QF
+         7zBO+p11vzb+lY+s39qNrdPUpHLVcu9ZhLEny2c1cyg48jJeyxuwzbBmArgU+4F/1OaR
+         piRxZrk0trWRmwf3pXQsjJI4vUqOXXHI7m5CfTs+d5a0FFhdaaOEEFdfLzbQVcuAdbVk
+         oLLWyT9hXaOus2QX4OP8lHHehPLzmidbijb6yHDLuUOSh02xbPKNIiIpXxOPNYvQs1+U
+         GvKjw51ByNv5Jcf4FZ28Iy03QkuKkgK1uwWH68TxfsdbeL62fjjyj24T0oFeP9RLp0lm
+         X1Ug==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=pDFxG7VQh8w/j0MQ9kb5g324X46YhyItfelyMryxj/Y=;
-        b=TQmiSY/1iB2clNRSojuH6zEzaRTcS5tQGb+WDL7Ltm14x1e6KCB/WvBJgfw4i6xDJQ
-         CNI0+MnqHzUC9CMe9HzzviKFJtoht/cVQqBFj+Mrt8ZeLP5oddx7Mk5y+5CZI+dZJrdw
-         0EINCWuG0wbtrqrB0mpG3SaBQul3UfYrm3+MQGtMCODYDl9m+SxgycbknV9gdExzkkz5
-         rN1FW/r/W0z4pAHYMsd6MQEXi/rCPASpYOxDJY6gFBXebbR+jrnBFuUSCjKGKZE0XJGD
-         iCl9DHI9+YMT20cQJGukhE0V+q8lNsgxf38GH2U2t8hp7nq3SZP13Pc85xpkqbf7u6fU
-         SMBQ==
-X-Gm-Message-State: AOAM532eND1LaO4SJIaIBV85oCh0NIlOni4+k6jHtMODMubB7av8Svgk
-        kWeGn2t694iIsqt1fbUG1PU/cBFAYMSjQ7Px9EE=
-X-Google-Smtp-Source: ABdhPJwTCQK98uNYGmwj3eqwWG17gCuOmogiRjpCX28Y+UA6jfRVBQeJZHxt6PVGVxroKp4r2q7dNH1G5FAvv+u4edk=
-X-Received: by 2002:a05:6e02:92a:: with SMTP id o10mr18403698ilt.270.1622489218014;
- Mon, 31 May 2021 12:26:58 -0700 (PDT)
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=YaMl4hY+yuZOtEDwcdF7xmfj7nQN6TzRsyNwIeXiUWs=;
+        b=UPIbtoSMSXVDkyHiDVoXtoHx5/JPaetKaFWBvhp94q5gtjZhr0gw2Sk3w4xcx3mz0W
+         Xx6vMPmWeB92fAVpGnY5GjdDdRCD35gLJqF36ASIgH38bJER2rHG2XhE/UdoVdcovogS
+         FRESaDU4WqCgHST5MA07tVlahzJ6GWZ1v453pHk9+HfHEAd4GpdhtDTkY9HLoTVG7tIq
+         gQ+cW51NKN1NVj5MwOx0vFSEBCSgXrT/nvKxB0QD7ioIcLH9GZApaG4/XWCUXqaIjSjp
+         ly0FAMaN2wczdqNVjGtgDir/ua6Bl6xTpFa6fb/kshqVlwnzyXd6q298cMOnsLPi8Pef
+         +74g==
+X-Gm-Message-State: AOAM532xE1kD87Le+75jSvANQ5MxYppWT7VNVHAg9lWWiKl6aCqROI4V
+        VGh7oeRTX9w4vC5gzJm3uZKT4qOAiBFMyI65TXXDeA==
+X-Google-Smtp-Source: ABdhPJw9rly7xEwfbSw6PIINop5zUqFo4lC6dTaqh0RHhmepKUvoa14ZpLWm0Y9DafntW2OtjYoApw03soM447bCDkc=
+X-Received: by 2002:a25:850b:: with SMTP id w11mr32708649ybk.518.1622489244893;
+ Mon, 31 May 2021 12:27:24 -0700 (PDT)
 MIME-Version: 1.0
-Received: by 2002:a6b:7802:0:0:0:0:0 with HTTP; Mon, 31 May 2021 12:26:56
- -0700 (PDT)
-Reply-To: kath.rafael2020@yahoo.com
-From:   Katherine Rafael <nuruelyag@gmail.com>
-Date:   Mon, 31 May 2021 19:26:56 +0000
-Message-ID: <CABFMN1FJb5K4Vh+r2JKznSJOMENT39fkhWK2NJd5NK7ZVpA-5A@mail.gmail.com>
-Subject: Yang paling kusayangi,
-To:     undisclosed-recipients:;
+References: <20210529110746.6796-1-w@1wt.eu>
+In-Reply-To: <20210529110746.6796-1-w@1wt.eu>
+From:   Eric Dumazet <edumazet@google.com>
+Date:   Mon, 31 May 2021 21:27:13 +0200
+Message-ID: <CANn89iJsTNoWNZ1rvkQB8a6ROTvh_85P+TuffS0_w5CpJW+4bg@mail.gmail.com>
+Subject: Re: [PATCH net-next] ipv6: use prandom_u32() for ID generation
+To:     Willy Tarreau <w@1wt.eu>
+Cc:     netdev <netdev@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        David Miller <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        Amit Klein <aksecurity@gmail.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
--- 
-My dearest in Mind,
+On Sat, May 29, 2021 at 1:08 PM Willy Tarreau <w@1wt.eu> wrote:
+>
+> This is a complement to commit aa6dd211e4b1 ("inet: use bigger hash
+> table for IP ID generation"), but focusing on some specific aspects
+> of IPv6.
+>
+> Contary to IPv4, IPv6 only uses packet IDs with fragments, and with a
+> minimum MTU of 1280, it's much less easy to force a remote peer to
+> produce many fragments to explore its ID sequence. In addition packet
+> IDs are 32-bit in IPv6, which further complicates their analysis. On
+> the other hand, it is often easier to choose among plenty of possible
+> source addresses and partially work around the bigger hash table the
+> commit above permits, which leaves IPv6 partially exposed to some
+> possibilities of remote analysis at the risk of weakening some
+> protocols like DNS if some IDs can be predicted with a good enough
+> probability.
+>
+> Given the wide range of permitted IDs, the risk of collision is extremely
+> low so there's no need to rely on the positive increment algorithm that
+> is shared with the IPv4 code via ip_idents_reserve(). We have a fast
+> PRNG, so let's simply call prandom_u32() and be done with it.
+>
+> Performance measurements at 10 Gbps couldn't show any difference with
+> the previous code, even when using a single core, because due to the
+> large fragments, we're limited to only ~930 kpps at 10 Gbps and the cost
+> of the random generation is completely offset by other operations and by
+> the network transfer time. In addition, this change removes the need to
+> update a shared entry in the idents table so it may even end up being
+> slightly faster on large scale systems where this matters.
+>
+> The risk of at least one collision here is about 1/80 million among
+> 10 IDs, 1/850k among 100 IDs, and still only 1/8.5k among 1000 IDs,
+> which remains very low compared to IPv4 where all IDs are reused
+> every 4 to 80ms on a 10 Gbps flow depending on packet sizes.
+>
+> Reported-by: Amit Klein <aksecurity@gmail.com>
+> Cc: Eric Dumazet <edumazet@google.com>
+> Signed-off-by: Willy Tarreau <w@1wt.eu>
 
-My name is Mrs. Katherine Rafael, a business woman an Ivorian Citizen
-and born in 1961. I have a mission for you worth $ 2 500, 000, 00 (Two
-Million Five Hundred Thousand United State Dollars) which I intend
-using for CHARITY.
+Reviewed-by: Eric Dumazet <edumazet@google.com>
 
-I am a breast cancer woman and have told by doctor that I will die in
-no distance future, now and want to donate this money for charity
-through you by transferring this money to your account, to enable
-people in your area benefit from it.
-
-Could you be the one I will use in this noble transaction before I
-will go for my surgery?
-
-
-Mrs. Katherine.
+> ---
+>  net/ipv6/output_core.c | 28 +++++-----------------------
+>  1 file changed, 5 insertions(+), 23 deletions(-)
+>
+> diff --git a/net/ipv6/output_core.c b/net/ipv6/output_core.c
+> index af36acc1a644..2880dc7d9a49 100644
+> --- a/net/ipv6/output_core.c
+> +++ b/net/ipv6/output_core.c
+> @@ -15,29 +15,11 @@ static u32 __ipv6_select_ident(struct net *net,
+>                                const struct in6_addr *dst,
+>                                const struct in6_addr *src)
+>  {
+> -       const struct {
+> -               struct in6_addr dst;
+> -               struct in6_addr src;
+> -       } __aligned(SIPHASH_ALIGNMENT) combined = {
+> -               .dst = *dst,
+> -               .src = *src,
+> -       };
+> -       u32 hash, id;
+> -
+> -       /* Note the following code is not safe, but this is okay. */
+> -       if (unlikely(siphash_key_is_zero(&net->ipv4.ip_id_key)))
+> -               get_random_bytes(&net->ipv4.ip_id_key,
+> -                                sizeof(net->ipv4.ip_id_key));
+> -
+> -       hash = siphash(&combined, sizeof(combined), &net->ipv4.ip_id_key);
+> -
+> -       /* Treat id of 0 as unset and if we get 0 back from ip_idents_reserve,
+> -        * set the hight order instead thus minimizing possible future
+> -        * collisions.
+> -        */
+> -       id = ip_idents_reserve(hash, 1);
+> -       if (unlikely(!id))
+> -               id = 1 << 31;
+> +       u32 id;
+> +
+> +       do {
+> +               id = prandom_u32();
+> +       } while (!id);
+>
+>         return id;
+>  }
+> --
+> 2.17.5
+>
