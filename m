@@ -2,37 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D7DC8396502
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 18:18:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B8C4395CD3
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 15:37:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234792AbhEaQTy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 12:19:54 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37024 "EHLO mail.kernel.org"
+        id S231777AbhEaNjA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 09:39:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60794 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232106AbhEaOmK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 10:42:10 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1751E61C71;
-        Mon, 31 May 2021 13:53:59 +0000 (UTC)
+        id S232198AbhEaN0q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 09:26:46 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 233E36140C;
+        Mon, 31 May 2021 13:21:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1622469240;
-        bh=oP517+rIBNt+5HX5RsjOP/NTxSLiEzw8RyYNpIdx35M=;
+        s=korg; t=1622467286;
+        bh=b3pmMKSMIis0eLRJjqWpyPQkSXcECBa6GkjTSEfZtjM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=uTwkp2Ko84sa7m8bXZaQEpAAd7K5R+/lrhMOFm0R3udf9JuWt55LFEdy8me0v9djM
-         5v+c83rRoU72T13JiQBpn4O/1vY7jGUx0hluEBs7bfe7df6nCBP7ZVOvulcv5Y2jFS
-         rvBr/2QE9AQ4BxoE8AWLZelG55LHlgag5OGrLvTE=
+        b=qYQP7iuaCuA+4wipdvp4DZJUfd9L95bosMCe7XTJddE3P2tIcHGjQXxlVQIcfQU8j
+         lJWz+sRxtu1moFYIVtgQdvPtUgexCBhbK9XcD83w09m/SA11xa4hPTOHYVFkCUszbU
+         MV5G9XXazb0rc35VpHaMeNkWzkGM/v62C6kGdjM8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dima Chumak <dchumak@nvidia.com>,
-        Vlad Buslov <vladbu@nvidia.com>,
-        Saeed Mahameed <saeedm@nvidia.com>
-Subject: [PATCH 5.12 122/296] net/mlx5e: Fix nullptr in mlx5e_tc_add_fdb_flow()
+        Stephen Brennan <stephen.s.brennan@oracle.com>,
+        Aruna Ramakrishna <aruna.ramakrishna@oracle.com>,
+        Khalid Aziz <khalid.aziz@oracle.com>
+Subject: [PATCH 4.19 001/116] mm, vmstat: drop zone->lock in /proc/pagetypeinfo
 Date:   Mon, 31 May 2021 15:12:57 +0200
-Message-Id: <20210531130708.010566858@linuxfoundation.org>
+Message-Id: <20210531130640.181738450@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210531130703.762129381@linuxfoundation.org>
-References: <20210531130703.762129381@linuxfoundation.org>
+In-Reply-To: <20210531130640.131924542@linuxfoundation.org>
+References: <20210531130640.131924542@linuxfoundation.org>
 User-Agent: quilt/0.66
+X-stable: review
+X-Patchwork-Hint: ignore
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
@@ -40,73 +42,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dima Chumak <dchumak@nvidia.com>
+From: Stephen Brennan <stephen.s.brennan@oracle.com>
 
-commit fe7738eb3ca3631a75844e790f6cb576c0fe7b00 upstream.
+Commit 93b3a674485f6a4b8ffff85d1682d5e8b7c51560 upstream
 
-The result of __dev_get_by_index() is not checked for NULL, which then
-passed to mlx5e_attach_encap() and gets dereferenced.
+Commit 93b3a674485f ("mm,vmstat: reduce zone->lock holding time by
+/proc/pagetypeinfo") upstream caps the number of iterations over each
+free_list at 100,000, and also drops the zone->lock in between each
+migrate type. Capping the iteration count alters the file contents in
+some cases, which means this approach may not be suitable for stable
+backports.
 
-Also, in case of a successful lookup, the net_device reference count is
-not incremented, which may result in net_device pointer becoming invalid
-at any time during mlx5e_attach_encap() execution.
+However, dropping zone->lock in between migrate types (and, as a result,
+page orders) will not change the /proc/pagetypeinfo file contents. It
+can significantly reduce the length of time spent with IRQs disabled,
+which can prevent missed interrupts or soft lockups which we have
+observed on systems with particularly large memory.
 
-Fix by using dev_get_by_index(), which does proper reference counting on
-the net_device pointer. Also, handle nullptr return value when mirred
-device is not found.
+Thus, this commit is a modified version of the upstream one which only
+drops the lock in between migrate types.
 
-It's safe to call dev_put() on the mirred net_device pointer, right
-after mlx5e_attach_encap() call, because it's not being saved/copied
-down the call chain.
-
-Fixes: 3c37745ec614 ("net/mlx5e: Properly deal with encap flows add/del under neigh update")
-Addresses-Coverity: ("Dereference null return value")
-Signed-off-by: Dima Chumak <dchumak@nvidia.com>
-Reviewed-by: Vlad Buslov <vladbu@nvidia.com>
-Signed-off-by: Saeed Mahameed <saeedm@nvidia.com>
+Fixes: 467c996c1e19 ("Print out statistics in relation to fragmentation avoidance to /proc/pagetypeinfo")
+Signed-off-by: Stephen Brennan <stephen.s.brennan@oracle.com>
+Reviewed-by: Aruna Ramakrishna <aruna.ramakrishna@oracle.com>
+Reviewed-by: Khalid Aziz <khalid.aziz@oracle.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/ethernet/mellanox/mlx5/core/en_tc.c |   12 +++++++++---
- 1 file changed, 9 insertions(+), 3 deletions(-)
+ mm/vmstat.c |    3 +++
+ 1 file changed, 3 insertions(+)
 
---- a/drivers/net/ethernet/mellanox/mlx5/core/en_tc.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/en_tc.c
-@@ -1276,10 +1276,10 @@ mlx5e_tc_add_fdb_flow(struct mlx5e_priv
- 		      struct netlink_ext_ack *extack)
- {
- 	struct mlx5_eswitch *esw = priv->mdev->priv.eswitch;
--	struct net_device *out_dev, *encap_dev = NULL;
- 	struct mlx5e_tc_flow_parse_attr *parse_attr;
- 	struct mlx5_flow_attr *attr = flow->attr;
- 	bool vf_tun = false, encap_valid = true;
-+	struct net_device *encap_dev = NULL;
- 	struct mlx5_esw_flow_attr *esw_attr;
- 	struct mlx5_fc *counter = NULL;
- 	struct mlx5e_rep_priv *rpriv;
-@@ -1325,16 +1325,22 @@ mlx5e_tc_add_fdb_flow(struct mlx5e_priv
- 	esw_attr = attr->esw_attr;
- 
- 	for (out_index = 0; out_index < MLX5_MAX_FLOW_FWD_VPORTS; out_index++) {
-+		struct net_device *out_dev;
- 		int mirred_ifindex;
- 
- 		if (!(esw_attr->dests[out_index].flags & MLX5_ESW_DEST_ENCAP))
- 			continue;
- 
- 		mirred_ifindex = parse_attr->mirred_ifindex[out_index];
--		out_dev = __dev_get_by_index(dev_net(priv->netdev),
--					     mirred_ifindex);
-+		out_dev = dev_get_by_index(dev_net(priv->netdev), mirred_ifindex);
-+		if (!out_dev) {
-+			NL_SET_ERR_MSG_MOD(extack, "Requested mirred device not found");
-+			err = -ENODEV;
-+			goto err_out;
-+		}
- 		err = mlx5e_attach_encap(priv, flow, out_dev, out_index,
- 					 extack, &encap_dev, &encap_valid);
-+		dev_put(out_dev);
- 		if (err)
- 			goto err_out;
- 
+--- a/mm/vmstat.c
++++ b/mm/vmstat.c
+@@ -1384,6 +1384,9 @@ static void pagetypeinfo_showfree_print(
+ 			list_for_each(curr, &area->free_list[mtype])
+ 				freecount++;
+ 			seq_printf(m, "%6lu ", freecount);
++			spin_unlock_irq(&zone->lock);
++			cond_resched();
++			spin_lock_irq(&zone->lock);
+ 		}
+ 		seq_putc(m, '\n');
+ 	}
 
 
