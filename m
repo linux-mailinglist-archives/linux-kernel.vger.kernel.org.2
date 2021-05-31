@@ -2,55 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A9A33396952
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 23:36:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 98C53396955
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 23:38:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231836AbhEaViD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 17:38:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53108 "EHLO
+        id S231913AbhEaVkT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 17:40:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53602 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230433AbhEaViA (ORCPT
+        with ESMTP id S231377AbhEaVkQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 17:38:00 -0400
-Received: from mail-oi1-x22b.google.com (mail-oi1-x22b.google.com [IPv6:2607:f8b0:4864:20::22b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC0F3C061574
-        for <linux-kernel@vger.kernel.org>; Mon, 31 May 2021 14:36:19 -0700 (PDT)
-Received: by mail-oi1-x22b.google.com with SMTP id a13so8072696oid.9
-        for <linux-kernel@vger.kernel.org>; Mon, 31 May 2021 14:36:19 -0700 (PDT)
+        Mon, 31 May 2021 17:40:16 -0400
+Received: from mail-ot1-x32f.google.com (mail-ot1-x32f.google.com [IPv6:2607:f8b0:4864:20::32f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46FC6C061574
+        for <linux-kernel@vger.kernel.org>; Mon, 31 May 2021 14:38:36 -0700 (PDT)
+Received: by mail-ot1-x32f.google.com with SMTP id i12-20020a05683033ecb02903346fa0f74dso12254097otu.10
+        for <linux-kernel@vger.kernel.org>; Mon, 31 May 2021 14:38:36 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=aMtcDguE8YDTale07cSMPpefpj+DlHJ0KoYhVMD5L80=;
-        b=M0OsHNKzHvX9kahydNMpioIAmig3QZQ41zfG2b3MLBL2wE4hv7Pdd/3WQ96Flu//Tp
-         S3VrjLJRnqbSIyrJO11g8c9Xaa4f2rd1nwqjygUGDD1+mb3awXrm6or5RhlITFsxRg6V
-         PH2mqGNt40KoKrMgBzfdAAathNHw+G9CtjgAKSPSCx8E/ipevWOhbk2CSv7zOcIN1bAw
-         g7LihQUfhAX3tTb3beU/UCltrrMsOm6aXLXxSWcKqah2KvzFF8Bk7kNzhN/rXGHyAqAE
-         6g5J5oAyN3XC/tUCO0Ki+wDVC0qLWGjIYMM3+WLyQYG1i6j/tPU84RKUzu4FUUjbX7Hq
-         aE6Q==
+        bh=ojuZOBLmhzSo//gYE9XYKfbNnXjNOZfB6L6acFXXDtI=;
+        b=ehmT2U5qCUbzR760Ghnnoa2rUBLdZW5RPTKyMGIRh51+D89EqMHTXUiG7iCT38WqdJ
+         8Pwi3lhHehtIDM7b+LnnEgZiMMdvKmu+6ARCx7zmBJ3nnIBrcZ5edU/um2Isg41otBfu
+         4O4BaJR6oP3WlamHS2pJs3vWUqpNTjkEVH4911dYn/4IaFUJm1v8+zMQ9Fqq/lGzBm2J
+         XWcE1TxwnF+u68j+UYGvDIvFaNNb1uEYQVvkqtF8k3w4ld+0T5KsZyusGe6gKi66EJDH
+         SsL68mTpAaHO5CxVw+hdTdr3Ak3Y4yiGoGjoyPqWfy3HjyWSsj7wfRvxv7HYC98MSfTf
+         dNMA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=aMtcDguE8YDTale07cSMPpefpj+DlHJ0KoYhVMD5L80=;
-        b=TfMUTG+PypsaWXW6hxg1+u/H2u3AVQDPdkREzzd0lDYHcJo2dWk2eZsTbGfmpBKSGQ
-         abcSOtb5BnaFokJNXf8uy3ba6O7GxBkD1euwQUTA3nSLqwLRNy3Va2E/3KqW9B6YYtup
-         1z+l5M7Kz6GgyuBxjCV58SSfoDxtvU9mMb6Zg1muGipJ0471+dxnLiv2ijAJF0E1t1+d
-         59bejFeYwamR3cqBrpXw8kxtpMqL5VX7jpgtijeewFbQZkrYRJeGUrRP0WfVwl4nue+X
-         GQAv0nuLy7wPweiVXy721QR269r61orC9DgCuoJ7A6GxCJVOFijV2nIB/jl00X8h2+0U
-         twvQ==
-X-Gm-Message-State: AOAM533xvS9AxC4yq22GUNp3JuyAMu8rzRJBVn/nPKo6bWE54CwY4EaE
-        s4L3bS78JxFXzxoj46QRPoymn9ei0y3sJkIz+xc=
-X-Google-Smtp-Source: ABdhPJyoTQpB2iTv+37/sgEJHnO47tYP0raUCEPiRUXGrrgiJZx7g6Di6Q1zvS3z9SJ69+luGSrsExAS0m0Avm4IpqI=
-X-Received: by 2002:aca:4b09:: with SMTP id y9mr673633oia.39.1622496979005;
- Mon, 31 May 2021 14:36:19 -0700 (PDT)
+        bh=ojuZOBLmhzSo//gYE9XYKfbNnXjNOZfB6L6acFXXDtI=;
+        b=OxYAGnOzVsR8flp1OehDWqdR2r51+Mcusmc58KD58Co/mgbITnMKPzPHhmyKmw9h22
+         gx997zklrOTF6npMiKQtFbgjrddy/77mX0f3XKXpcl3HN/6bikmHnEi1vW+8Tjdt2xyn
+         ihTI1Z1iZoDYQWeHa0gPYAQaAhat7KKYdmW2yC7gbp9LoKEp7JETEjx4Sxm5TdfG/Xm9
+         vDTUonY9IXegBQBAz8IqUgDY4RBNTvNEWIgyFIfncJIpBZEjaEJi+l+6+BsjKr8+Tu4K
+         KIIJb8SPjtwvAcHFlQ6BMD10Sw8DdRx5hA3fkZLSqWEd3ElFuFofwruHk0s3LOmiyDJc
+         s9kg==
+X-Gm-Message-State: AOAM531i1WQLqspnHQ1gBHcyw2sXIfqKcBXFbfArLnWJEF46QD0WHIaC
+        4BmcGeK++siY+NzT/EplwqdLOFcxnzfYHBrmRAU=
+X-Google-Smtp-Source: ABdhPJwPe57FNHz5K6ZC+pA2mUTdebCSdzaroJTS7Fkr2Z+OudnnGaGDOy65ptw9Up+ut7Mi+xpiftKensAcefH7jIM=
+X-Received: by 2002:a9d:27a4:: with SMTP id c33mr17606539otb.281.1622497115732;
+ Mon, 31 May 2021 14:38:35 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210531043502.2702645-1-hsinyi@chromium.org> <20210531043502.2702645-2-hsinyi@chromium.org>
-In-Reply-To: <20210531043502.2702645-2-hsinyi@chromium.org>
+References: <20210531043502.2702645-1-hsinyi@chromium.org>
+In-Reply-To: <20210531043502.2702645-1-hsinyi@chromium.org>
 From:   Enric Balletbo Serra <eballetbo@gmail.com>
-Date:   Mon, 31 May 2021 23:36:07 +0200
-Message-ID: <CAFqH_53nNca8VG=09djYseJBWWg5j=YFTfPjxJL5w-aTyBmCng@mail.gmail.com>
-Subject: Re: [PATCH 2/3] soc: mtk-pm-domains: do not register smi node as syscon
+Date:   Mon, 31 May 2021 23:38:23 +0200
+Message-ID: <CAFqH_50qTKnKGeKUGYs_TzqWzmMGqpeKgGVmhYWjC90Nn_nKUw@mail.gmail.com>
+Subject: Re: [PATCH 1/3] soc: mtk-pm-domains: Fix the clock prepared issue
 To:     Hsin-Yi Wang <hsinyi@chromium.org>
 Cc:     Matthias Brugger <matthias.bgg@gmail.com>,
         Linux ARM <linux-arm-kernel@lists.infradead.org>,
@@ -68,75 +68,163 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 Hi Hsin-Yi,
 
-(again without html, sorry for the noise)
-
 Thank you for the patch.
 
 Missatge de Hsin-Yi Wang <hsinyi@chromium.org> del dia dl., 31 de maig
 2021 a les 6:35:
 >
-> Mediatek requires mmsys clocks to be unprepared during suspend,
-> otherwise system has chances to hang.
+> From: Weiyi Lu <weiyi.lu@mediatek.com>
 >
-> syscon_regmap_lookup_by_phandle_optional() will attach and prepare the
-> first clock in smi node, leading to additional prepare to the clock
-> which is not balanced with the prepare/unprepare pair in resume/suspend
-> callbacks.
->
-> If a power domain node requests an smi node and the smi node's first
-> clock is an mmsys clock, it will results in an unstabke suspend resume.
+> In this new power domain driver, when adding one power domain
+> it will prepare the depenedent clocks at the same.
 
-Typo s/unstabke/unstable/
+Typo: s/depenedent/dependent/
 
-I think it would be nice to have a Fixes tag for that patch. So can be
-picked for the stable kernel more easily.
+> So we only do clk_bulk_enable/disable control during power ON/OFF.
+> When system suspend, the pm runtime framework will forcely power off
+> power domains. However, the dependent clocks are disabled but kept
+> preapred.
+
+Typo: s/preapred/prepared
 
 >
+> In MediaTek clock drivers, PLL would be turned ON when we do
+> clk_bulk_prepare control.
+>
+> Clock hierarchy:
+> PLL -->
+>        DIV_CK -->
+>                  CLK_MUX
+>                  (may be dependent clocks)
+>                          -->
+>                              SUBSYS_CG
+>                              (may be dependent clocks)
+>
+> It will lead some unexpected clock states during system suspend.
+> This patch will fix by doing prepare_enable/disable_unprepare on
+> dependent clocks at the same time while we are going to power on/off
+> any power domain.
+>
+
+I think it would be nice to have a Fixes tag here, so this can be
+backported more easily.
+
+> Signed-off-by: Weiyi Lu <weiyi.lu@mediatek.com>
 > Signed-off-by: Hsin-Yi Wang <hsinyi@chromium.org>
-
-I have a nit below but the patch looks good to me. So
 
 Reviewed-by: Enric Balletbo i Serra <enric.balletbo@collabora.com>
 
 > ---
->  drivers/soc/mediatek/mtk-pm-domains.c | 12 ++++++++----
->  1 file changed, 8 insertions(+), 4 deletions(-)
+>  drivers/soc/mediatek/mtk-pm-domains.c | 31 +++++++--------------------
+>  1 file changed, 8 insertions(+), 23 deletions(-)
 >
 > diff --git a/drivers/soc/mediatek/mtk-pm-domains.c b/drivers/soc/mediatek/mtk-pm-domains.c
-> index 536d8c64b2b4..a9ba71eee4bb 100644
+> index 0af00efa0ef8..536d8c64b2b4 100644
 > --- a/drivers/soc/mediatek/mtk-pm-domains.c
 > +++ b/drivers/soc/mediatek/mtk-pm-domains.c
-> @@ -296,7 +296,7 @@ generic_pm_domain *scpsys_add_one_domain(struct scpsys *scpsys, struct device_no
->  {
->         const struct scpsys_domain_data *domain_data;
->         struct scpsys_domain *pd;
-> -       struct device_node *root_node = scpsys->dev->of_node;
-> +       struct device_node *root_node = scpsys->dev->of_node, *smi_node;
-
-nit: Personal preference, but I'd prefer to add the smi_node in a new
-line, so it's really clear that the only thing you are doing here is
-adding a new variable.
-
->         struct property *prop;
->         const char *clk_name;
->         int i, ret, num_clks;
-> @@ -352,9 +352,13 @@ generic_pm_domain *scpsys_add_one_domain(struct scpsys *scpsys, struct device_no
->         if (IS_ERR(pd->infracfg))
->                 return ERR_CAST(pd->infracfg);
+> @@ -211,7 +211,7 @@ static int scpsys_power_on(struct generic_pm_domain *genpd)
+>         if (ret)
+>                 return ret;
 >
-> -       pd->smi = syscon_regmap_lookup_by_phandle_optional(node, "mediatek,smi");
-> -       if (IS_ERR(pd->smi))
-> -               return ERR_CAST(pd->smi);
-> +       smi_node = of_parse_phandle(node, "mediatek,smi", 0);
-> +       if (smi_node) {
-> +               pd->smi = device_node_to_regmap(smi_node);
-> +               of_node_put(smi_node);
-> +               if (IS_ERR(pd->smi))
-> +                       return ERR_CAST(pd->smi);
-> +       }
+> -       ret = clk_bulk_enable(pd->num_clks, pd->clks);
+> +       ret = clk_bulk_prepare_enable(pd->num_clks, pd->clks);
+>         if (ret)
+>                 goto err_reg;
 >
->         num_clks = of_clk_get_parent_count(node);
->         if (num_clks > 0) {
+> @@ -229,7 +229,7 @@ static int scpsys_power_on(struct generic_pm_domain *genpd)
+>         regmap_clear_bits(scpsys->base, pd->data->ctl_offs, PWR_ISO_BIT);
+>         regmap_set_bits(scpsys->base, pd->data->ctl_offs, PWR_RST_B_BIT);
+>
+> -       ret = clk_bulk_enable(pd->num_subsys_clks, pd->subsys_clks);
+> +       ret = clk_bulk_prepare_enable(pd->num_subsys_clks, pd->subsys_clks);
+>         if (ret)
+>                 goto err_pwr_ack;
+>
+> @@ -246,9 +246,9 @@ static int scpsys_power_on(struct generic_pm_domain *genpd)
+>  err_disable_sram:
+>         scpsys_sram_disable(pd);
+>  err_disable_subsys_clks:
+> -       clk_bulk_disable(pd->num_subsys_clks, pd->subsys_clks);
+> +       clk_bulk_disable_unprepare(pd->num_subsys_clks, pd->subsys_clks);
+>  err_pwr_ack:
+> -       clk_bulk_disable(pd->num_clks, pd->clks);
+> +       clk_bulk_disable_unprepare(pd->num_clks, pd->clks);
+>  err_reg:
+>         scpsys_regulator_disable(pd->supply);
+>         return ret;
+> @@ -269,7 +269,7 @@ static int scpsys_power_off(struct generic_pm_domain *genpd)
+>         if (ret < 0)
+>                 return ret;
+>
+> -       clk_bulk_disable(pd->num_subsys_clks, pd->subsys_clks);
+> +       clk_bulk_disable_unprepare(pd->num_subsys_clks, pd->subsys_clks);
+>
+>         /* subsys power off */
+>         regmap_clear_bits(scpsys->base, pd->data->ctl_offs, PWR_RST_B_BIT);
+> @@ -284,7 +284,7 @@ static int scpsys_power_off(struct generic_pm_domain *genpd)
+>         if (ret < 0)
+>                 return ret;
+>
+> -       clk_bulk_disable(pd->num_clks, pd->clks);
+> +       clk_bulk_disable_unprepare(pd->num_clks, pd->clks);
+>
+>         scpsys_regulator_disable(pd->supply);
+>
+> @@ -405,14 +405,6 @@ generic_pm_domain *scpsys_add_one_domain(struct scpsys *scpsys, struct device_no
+>                 pd->subsys_clks[i].clk = clk;
+>         }
+>
+> -       ret = clk_bulk_prepare(pd->num_clks, pd->clks);
+> -       if (ret)
+> -               goto err_put_subsys_clocks;
+> -
+> -       ret = clk_bulk_prepare(pd->num_subsys_clks, pd->subsys_clks);
+> -       if (ret)
+> -               goto err_unprepare_clocks;
+> -
+>         /*
+>          * Initially turn on all domains to make the domains usable
+>          * with !CONFIG_PM and to get the hardware in sync with the
+> @@ -427,7 +419,7 @@ generic_pm_domain *scpsys_add_one_domain(struct scpsys *scpsys, struct device_no
+>                 ret = scpsys_power_on(&pd->genpd);
+>                 if (ret < 0) {
+>                         dev_err(scpsys->dev, "%pOF: failed to power on domain: %d\n", node, ret);
+> -                       goto err_unprepare_clocks;
+> +                       goto err_put_subsys_clocks;
+>                 }
+>         }
+>
+> @@ -435,7 +427,7 @@ generic_pm_domain *scpsys_add_one_domain(struct scpsys *scpsys, struct device_no
+>                 ret = -EINVAL;
+>                 dev_err(scpsys->dev,
+>                         "power domain with id %d already exists, check your device-tree\n", id);
+> -               goto err_unprepare_subsys_clocks;
+> +               goto err_put_subsys_clocks;
+>         }
+>
+>         if (!pd->data->name)
+> @@ -455,10 +447,6 @@ generic_pm_domain *scpsys_add_one_domain(struct scpsys *scpsys, struct device_no
+>
+>         return scpsys->pd_data.domains[id];
+>
+> -err_unprepare_subsys_clocks:
+> -       clk_bulk_unprepare(pd->num_subsys_clks, pd->subsys_clks);
+> -err_unprepare_clocks:
+> -       clk_bulk_unprepare(pd->num_clks, pd->clks);
+>  err_put_subsys_clocks:
+>         clk_bulk_put(pd->num_subsys_clks, pd->subsys_clks);
+>  err_put_clocks:
+> @@ -537,10 +525,7 @@ static void scpsys_remove_one_domain(struct scpsys_domain *pd)
+>                         "failed to remove domain '%s' : %d - state may be inconsistent\n",
+>                         pd->genpd.name, ret);
+>
+> -       clk_bulk_unprepare(pd->num_clks, pd->clks);
+>         clk_bulk_put(pd->num_clks, pd->clks);
+> -
+> -       clk_bulk_unprepare(pd->num_subsys_clks, pd->subsys_clks);
+>         clk_bulk_put(pd->num_subsys_clks, pd->subsys_clks);
+>  }
+>
 > --
 > 2.32.0.rc0.204.g9fa02ecfa5-goog
 >
