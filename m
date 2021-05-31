@@ -2,406 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B581396718
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 19:30:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 239CF39666E
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 19:05:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232779AbhEaRbv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 13:31:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55116 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232704AbhEaRbS (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 13:31:18 -0400
-Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49099C08EB1F
-        for <linux-kernel@vger.kernel.org>; Mon, 31 May 2021 09:20:59 -0700 (PDT)
-Received: by mail-wr1-x429.google.com with SMTP id m18so11463443wrv.2
-        for <linux-kernel@vger.kernel.org>; Mon, 31 May 2021 09:20:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=AHseEMFffVE8zI6YNrt1FXVhPDwfDWv0cqTFGDZUx7I=;
-        b=OymnJbZHUXairINhFHQ7R+3WrtxmZfplQhzYGaQKXnv9IIkvTBOuS5CRKtpO7EKHqa
-         h+XXc2K4Wj2l6Z1D3gMJj0cjHWy6CD7Va6HC4EjPSc0Wd2bDSlqyJLMEsqQFNh8uMtre
-         nVdC8r2wwejFvT0GW/USDoIXEdkcDmA9bPV+siHQkfrAgGwS/17lI8XbDGk5OLNfomxy
-         l9Hdx4n+VCWhDcKmMuuK4XNgpnVFfJSNyg/Mxx8ZQMzEt37YoqKtgeWHeEMlyOHXcdip
-         ffaqL1L4QNKGfnjx27i+v0jIu1VzCvRF+6iGZd1qc4uo1f8ozhf5+qLh7/WfoLxoVvSo
-         SJ2g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=AHseEMFffVE8zI6YNrt1FXVhPDwfDWv0cqTFGDZUx7I=;
-        b=NgvWrzOpEYkA0gmwG3rXB/KA9FlTlbCvryNQd9PQ3BXCIWMlcURK3x4OElnwHFWM8o
-         +HdsH/rLMuw0ByYPhSBSpaniRKd/Ec2BhtQGcLOJMzm7BEspHg7a9O2ceFDIFLgXDYMI
-         wXixFt+6psnikGx64haChpBbvdV3LvnvpX6ppMeT33iFJ5JWxphOfWs2Jasp5F3FBYxo
-         5gkWziaDR+FB9My9Vm/PsNW7e5rhHP7kD2n1wI/32BimdEeefMo1EahdrVSYWXVG3S4B
-         V2qCnMCBOV3+haXVg6VKKIY72kWMhmzewOicMop0Wujeh8Aw0bxBL7rdpuaYcPLnqTD0
-         zR9w==
-X-Gm-Message-State: AOAM531iFDwZ/8miaz8ytkgbKT5qD7uMRXRo5UMfvgcE6cvDHEAZPhxi
-        d0tg4GkDcQMW/OpwxUOWsRg=
-X-Google-Smtp-Source: ABdhPJx+XUXTKbilaRFIp3GDEhST3ENhbPV1MCIY/iV9bOhg10sigTA6BbHksvaJvCetVhKF5K2rBg==
-X-Received: by 2002:adf:8bd0:: with SMTP id w16mr5225697wra.123.1622478057867;
-        Mon, 31 May 2021 09:20:57 -0700 (PDT)
-Received: from othello.cust.communityfibre.co.uk ([2a02:6b64:80a9:0:1be:22d4:3c1d:bcad])
-        by smtp.gmail.com with ESMTPSA id 30sm178909wrl.37.2021.05.31.09.20.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 31 May 2021 09:20:57 -0700 (PDT)
-From:   Cassio Neri <cassio.neri@gmail.com>
-To:     john.stultz@linaro.org, tglx@linutronix.de
-Cc:     sboyd@kernel.org, linux-kernel@vger.kernel.org,
-        Cassio Neri <cassio.neri@gmail.com>
-Subject: [PATCH] kernel/time: Improve performance of time64_to_tm. Add tests.
-Date:   Mon, 31 May 2021 17:20:54 +0100
-Message-Id: <20210531162054.45694-1-cassio.neri@gmail.com>
-X-Mailer: git-send-email 2.31.0
+        id S233734AbhEaRHX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 13:07:23 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51030 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233728AbhEaQWo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 12:22:44 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 99A6160232;
+        Mon, 31 May 2021 16:21:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1622478063;
+        bh=dxosx0uiZE6vTh8Ya6hRhelnWIICwcihOzUewBbWULA=;
+        h=Date:From:To:Cc:Subject:From;
+        b=vAjF7s/qxzQs1X4a56XkumN/elIMkS1TeigSa6Ud0WctaFk7VEVDhdqbspEYVP5Dp
+         akuO1r1bXcTdGO8Ued/Czb1gYkcIK8DkpbEAmLGPV9hgw+MIIwNpPDDgnXdYz+tRNE
+         f0uMOWsCWQmG+ziORxqls/ekrEJSuDRJxp6EZa4ifJxxKfgbTLkKvo2Qa67m8EQCKI
+         3AJ5emzlSZFYnvLkx9PBP8PXh8TIwXNMBOXxdcgT+KV2JxfrJ3azU91xvpu5XTPFsW
+         BBq6dkjI+jJ2gY8Ipwn6Jjp/zgmWOydW9e2APGQxv9Go5mLad8He8thVYQdQQZEBZc
+         cEDtHxoxO+Zag==
+Date:   Tue, 1 Jun 2021 00:20:56 +0800
+From:   Gao Xiang <xiang@kernel.org>
+To:     linux-erofs@lists.ozlabs.org
+Cc:     linux-fsdevel@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
+        Chao Yu <yuchao0@huawei.com>,
+        Li Guifu <bluce.liguifu@huawei.com>,
+        Miao Xie <miaoxie@huawei.com>, Fang Wei <fangwei1@huawei.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        kernel-team@android.com
+Subject: [ANNOUNCE] erofs-utils: release 1.3
+Message-ID: <20210531162055.GA18956@hsiangkao-HP-ZHAN-66-Pro-G1>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The current implementation of time64_to_tm contains unnecessary loops,
-branches and look-up tables. The new one uses an arithmetic-based algorithm
-appeared in [1] and is ~3.3 times faster.
+Hi folks,
 
-The drawback is that the new code isn't intuitive and contains many 'magic
-numbers' (not unusual for this type of algorithm). However, [1] justifies
-all those numbers and, given this function's history, I reckon the code is
-unlikely to need much maintenance, if any at all.
+A new version erofs-utils 1.3 is available at:
+git://git.kernel.org/pub/scm/linux/kernel/git/xiang/erofs-utils.git tags/v1.3
 
-Added file kernel/time/time_test.c containing a KUnit test case that checks
-every day in a 160,000 years interval centered at 1970-01-01 against the
-expected result. A new config TIME_KUNIT_TEST symbol was introduced to
-give the option to run this test suite.
+It mainly includes the following changes:
+   - support new big pcluster feature together with Linux 5.13+;
+   - optimize buffer allocation logic (Hu Weiwen);
+   - optimize build performance for large directories (Hu Weiwen);
+   - add support to override uid / gid (Hu Weiwen);
+   - add support to adjust lz4 history window size (Huang Jianan);
+   - add a manual for erofsfuse;
+   - add support to limit max decompressed extent size;
+   - various bugfixes and cleanups;
 
-[1] Neri, Schneider, "Euclidean Affine Functions and Applications to
-Calendar Algorithms". https://arxiv.org/abs/2102.06959
+One notable update is that it now supports EROFS big pcluster [1][2],
+which allows compressing variable-sized data into more than 1 fs block
+by using fixed-sized output compression [3]. It can be used for some
+(sub)-files with specific data access patterns (such as oneshot data
+segments which need better compression ratio and thus better sequential
+performance.)
 
-Signed-off-by: Cassio Neri <cassio.neri@gmail.com>
+Note that users can write their own per-(sub)files big pcluster
+strategies to adjust pclustersize in time according to file type static
+analysis or historical tracing data in z_erofs_get_max_pclusterblks().
+And default strategies will be developed and built-in laterly in the
+future.
 
----
+btw, I've heard more in-market products shipped with EROFS, for example
+OPPO [4] and Coolpad [5] with some public news plus more in-person
+contacts from time to time. It's always worth trying and feedback or
+contribution is welcomed.
 
-* Disclaimer: I'm an author of [1] and, surely, I have an interest in
-seeing my algorithm made into the kernel. If not by this patch, I'm
-willing to work closely with maintainers, if they wish, in order to write
-an appropriate implementation.
+[1] https://www.kernel.org/doc/html/latest/filesystems/erofs.html
+[2] https://lore.kernel.org/r/20210407043927.10623-1-xiang@kernel.org 
+[3] https://www.usenix.org/system/files/atc19-gao.pdf
+[4] https://new.qq.com/omn/20210312/20210312A0D9HT00.html
+[5] https://hunchmag.com/helio-g80-erofs-48-mp-arcsoft-and-cool-os-coolpad-cool-2-smartphone-announced/
 
-* Benchmarks: It measures the time taken by each implementation to process
-65,536 numbers. These numbers are pseudo-random under the uniform
-distribution on the interval corresponding to dates spanning 800 years
-centered at 1970-01-01:
-
-    https://quick-bench.com/q/i4IssrPmwid7CHOT4OLao82sBzY
-
-(Apologies that the benchmark is in C++ but results in C should be close.)
-
-Disasembly: Shows, in particular, reduction in code size:
-
-    https://godbolt.org/z/nra84xr8e
-
-* FWIW: drivers/rtc/lib.c implements rtc_time64_to_tm very similarly to
-time64_to_tm. I've submitted a patch to RTC maintainers to make similar
-changes:
-
-    https://tinyurl.com/dxsz2nv7
-
----
- kernel/time/Kconfig     |   9 ++++
- kernel/time/Makefile    |   1 +
- kernel/time/time_test.c |  98 ++++++++++++++++++++++++++++++++++++
- kernel/time/timeconv.c  | 108 ++++++++++++++++++++--------------------
- 4 files changed, 163 insertions(+), 53 deletions(-)
- create mode 100644 kernel/time/time_test.c
-
-diff --git a/kernel/time/Kconfig b/kernel/time/Kconfig
-index 83e158d016ba..3610b1bef142 100644
---- a/kernel/time/Kconfig
-+++ b/kernel/time/Kconfig
-@@ -64,6 +64,15 @@ config LEGACY_TIMER_TICK
- 	  lack support for the generic clockevent framework.
- 	  New platforms should use generic clockevents instead.
- 
-+config TIME_KUNIT_TEST
-+	tristate "KUnit test for kernel/time functions" if !KUNIT_ALL_TESTS
-+	depends on KUNIT
-+	default KUNIT_ALL_TESTS
-+	help
-+	  Enable this option to test RTC library functions.
-+
-+	  If unsure, say N.
-+
- if GENERIC_CLOCKEVENTS
- menu "Timers subsystem"
- 
-diff --git a/kernel/time/Makefile b/kernel/time/Makefile
-index 1fb1c1ef6a19..b733d09a6e4d 100644
---- a/kernel/time/Makefile
-+++ b/kernel/time/Makefile
-@@ -21,3 +21,4 @@ obj-$(CONFIG_HAVE_GENERIC_VDSO)			+= vsyscall.o
- obj-$(CONFIG_DEBUG_FS)				+= timekeeping_debug.o
- obj-$(CONFIG_TEST_UDELAY)			+= test_udelay.o
- obj-$(CONFIG_TIME_NS)				+= namespace.o
-+obj-$(CONFIG_TIME_KUNIT_TEST)			+= time_test.o
-diff --git a/kernel/time/time_test.c b/kernel/time/time_test.c
-new file mode 100644
-index 000000000000..7893539cb458
---- /dev/null
-+++ b/kernel/time/time_test.c
-@@ -0,0 +1,98 @@
-+// SPDX-License-Identifier: LGPL-2.1+
-+
-+#include <kunit/test.h>
-+#include <linux/time.h>
-+
-+/*
-+ * Tradicional implementation of is_leap.
-+ */
-+static bool is_leap(long year)
-+{
-+	return year % 4 == 0 && (year % 100 != 0 || year % 400 == 0);
-+}
-+
-+/*
-+ * Gets the last day of a month.
-+ */
-+static int last_day_of_month(long year, int month)
-+{
-+	if (month == 2)
-+		return 28 + is_leap(year);
-+	if (month == 4 || month == 6 || month == 9 || month == 11)
-+		return 30;
-+	return 31;
-+}
-+
-+/*
-+ * Advances a date by one day.
-+ */
-+static void advance_date(long *year, int *month, int *mday, int *yday)
-+{
-+	if (*mday != last_day_of_month(*year, *month)) {
-+		++*mday;
-+		++*yday;
-+		return;
-+	}
-+
-+	*mday = 1;
-+	if (*month != 12) {
-+		++*month;
-+		++*yday;
-+		return;
-+	}
-+
-+	*month = 1;
-+	*yday  = 0;
-+	++*year;
-+}
-+
-+/*
-+ * Checks every day in a 160000 years interval centered at 1970-01-01
-+ * against the expected result.
-+ */
-+static void time64_to_tm_test_date_range(struct kunit *test)
-+{
-+	/*
-+	 *  80000 years = (80000 / 400) * 400 years
-+	 *              = (80000 / 400) * 146097 days
-+	 *              = (80000 / 400) * 146097 * 86400 seconds
-+	 */
-+	time64_t total_secs = ((time64_t) 80000) / 400 * 146097 * 86400;
-+	long     year       = 1970 - 80000;
-+	int      month      = 1;
-+	int      mdday      = 1;
-+	int      yday       = 0;
-+
-+	struct tm result;
-+	time64_t  secs;
-+	s64       days;
-+
-+	for (secs = -total_secs; secs <= total_secs; secs += 86400) {
-+
-+		time64_to_tm(secs, 0, &result);
-+
-+		days = div_s64(secs, 86400);
-+
-+		#define FAIL_MSG "%05ld/%02d/%02d (%2d) : %ld", \
-+			year, month, mdday, yday, days
-+
-+		KUNIT_ASSERT_EQ_MSG(test, year - 1900, result.tm_year, FAIL_MSG);
-+		KUNIT_ASSERT_EQ_MSG(test, month - 1, result.tm_mon, FAIL_MSG);
-+		KUNIT_ASSERT_EQ_MSG(test, mdday, result.tm_mday, FAIL_MSG);
-+		KUNIT_ASSERT_EQ_MSG(test, yday, result.tm_yday, FAIL_MSG);
-+
-+		advance_date(&year, &month, &mdday, &yday);
-+	}
-+}
-+
-+static struct kunit_case time_test_cases[] = {
-+	KUNIT_CASE(time64_to_tm_test_date_range),
-+	{}
-+};
-+
-+static struct kunit_suite time_test_suite = {
-+	.name = "time_test_cases",
-+	.test_cases = time_test_cases,
-+};
-+
-+kunit_test_suite(time_test_suite);
-diff --git a/kernel/time/timeconv.c b/kernel/time/timeconv.c
-index 62e3b46717a6..21ede23cd719 100644
---- a/kernel/time/timeconv.c
-+++ b/kernel/time/timeconv.c
-@@ -22,64 +22,53 @@
- 
- /*
-  * Converts the calendar time to broken-down time representation
-- * Based on code from glibc-2.6
-  *
-  * 2009-7-14:
-  *   Moved from glibc-2.6 to kernel by Zhaolei<zhaolei@cn.fujitsu.com>
-+ * 2021-5-22:
-+ *   Partially reimplemented by Cassio Neri <cassio.neri@gmail.com>
-  */
- 
- #include <linux/time.h>
- #include <linux/module.h>
- 
- /*
-- * Nonzero if YEAR is a leap year (every 4 years,
-- * except every 100th isn't, and every 400th is).
-+ * True if y is a leap year (every 4 years, except every 100th isn't, and
-+ * every 400th is).
-  */
--static int __isleap(long year)
-+static bool is_leap(long year)
- {
--	return (year) % 4 == 0 && ((year) % 100 != 0 || (year) % 400 == 0);
-+	/* This implementation is more branch-predictor friendly than the
-+	 * traditional:
-+	 *   return year % 4 == 0 && (year % 100 != 0 || year % 400 == 0);
-+	 */
-+	return year % 100 != 0 ? year % 4 == 0 : year % 400 == 0;
- }
- 
--/* do a mathdiv for long type */
--static long math_div(long a, long b)
--{
--	return a / b - (a % b < 0);
--}
--
--/* How many leap years between y1 and y2, y1 must less or equal to y2 */
--static long leaps_between(long y1, long y2)
--{
--	long leaps1 = math_div(y1 - 1, 4) - math_div(y1 - 1, 100)
--		+ math_div(y1 - 1, 400);
--	long leaps2 = math_div(y2 - 1, 4) - math_div(y2 - 1, 100)
--		+ math_div(y2 - 1, 400);
--	return leaps2 - leaps1;
--}
--
--/* How many days come before each month (0-12). */
--static const unsigned short __mon_yday[2][13] = {
--	/* Normal years. */
--	{0, 31, 59, 90, 120, 151, 181, 212, 243, 273, 304, 334, 365},
--	/* Leap years. */
--	{0, 31, 60, 91, 121, 152, 182, 213, 244, 274, 305, 335, 366}
--};
--
- #define SECS_PER_HOUR	(60 * 60)
- #define SECS_PER_DAY	(SECS_PER_HOUR * 24)
- 
--/**
-- * time64_to_tm - converts the calendar time to local broken-down time
-+/*
-+ * This function converts time64_t to rtc_time.
-  *
-- * @totalsecs:	the number of seconds elapsed since 00:00:00 on January 1, 1970,
-- *		Coordinated Universal Time (UTC).
-- * @offset:	offset seconds adding to totalsecs.
-- * @result:	pointer to struct tm variable to receive broken-down time
-+ * @param[in]  totalsecs   The number of seconds since 01-01-1970 00:00:00.
-+ * @param[in]  offset      Seconds added to totalsecs.
-+ * @param[out] result      Pointer to struct tm variable to receive
-+ *                         broken-down time.
-  */
- void time64_to_tm(time64_t totalsecs, int offset, struct tm *result)
- {
--	long days, rem, y;
-+	long days, rem;
- 	int remainder;
--	const unsigned short *ip;
-+
-+	u64 r0, n1, q1, u64rem;
-+	u32 r1, n2, q2, r2;
-+	u64 u2;
-+	u32 n3, q3, r3;
-+
-+	u32 j;
-+	u64 y;
-+	u32 m, d;
- 
- 	days = div_s64_rem(totalsecs, SECS_PER_DAY, &remainder);
- 	rem = remainder;
-@@ -103,27 +92,40 @@ void time64_to_tm(time64_t totalsecs, int offset, struct tm *result)
- 	if (result->tm_wday < 0)
- 		result->tm_wday += 7;
- 
--	y = 1970;
-+	/*
-+	 * The following algorithm is Proposition 6.3 of Neri and Schneider,
-+	 * "Euclidean Affine Functions and Applications to Calendar Algorithms".
-+	 * https://arxiv.org/abs/2102.06959
-+	 */
- 
--	while (days < 0 || days >= (__isleap(y) ? 366 : 365)) {
--		/* Guess a corrected year, assuming 365 days per year. */
--		long yg = y + math_div(days, 365);
-+	r0 = days + 2305843009213814918;
- 
--		/* Adjust DAYS and Y to match the guessed year. */
--		days -= (yg - y) * 365 + leaps_between(y, yg);
--		y = yg;
--	}
-+	n1 = 4 * r0 + 3;
-+	q1 = div64_u64_rem(n1, 146097, &u64rem);
-+	r1 = u64rem / 4;
- 
--	result->tm_year = y - 1900;
-+	n2 = 4 * r1 + 3;
-+	u2 = ((u64) 2939745) * n2;
-+	q2 = u2 >> 32;
-+	r2 = ((u32) u2) / 2939745 / 4;
- 
--	result->tm_yday = days;
-+	n3 = 2141 * r2 + 197913;
-+	q3 = n3 >> 16;
-+	r3 = ((u16) n3) / 2141;
- 
--	ip = __mon_yday[__isleap(y)];
--	for (y = 11; days < ip[y]; y--)
--		continue;
--	days -= ip[y];
-+	j = r2 >= 306;
-+	y = 100 * q1 + q2 + j - 6313183731940000;
-+	m = j ? q3 - 12 : q3;
-+	d = r3 + 1;
- 
--	result->tm_mon = y;
--	result->tm_mday = days + 1;
-+	result->tm_year = y - 1900;
-+	result->tm_mon  = m - 1;
-+	result->tm_mday = d;
-+
-+	/* r2 contains the number of days since previous Mar 1st and j == true
-+	 * if and only if month is Jan or Feb. The bellow is then a correction
-+	 * to get the numbers of days since previous Jan 1st.
-+	 */
-+	result->tm_yday = j ? r2 - 306 : r2 + 59 + is_leap(y);
- }
- EXPORT_SYMBOL(time64_to_tm);
-
-base-commit: 245a057fee18be08d6ac12357463579d06bea077
--- 
-2.31.0
-
+Thanks,
+Gao Xiang
