@@ -2,39 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B50B395E1A
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 15:53:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 391533963FB
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 17:41:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232115AbhEaNyI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 09:54:08 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39238 "EHLO mail.kernel.org"
+        id S234078AbhEaPmk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 11:42:40 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48842 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232482AbhEaNfs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 09:35:48 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1FF2561448;
-        Mon, 31 May 2021 13:25:30 +0000 (UTC)
+        id S233471AbhEaOXd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 10:23:33 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 761096142B;
+        Mon, 31 May 2021 13:46:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1622467531;
-        bh=DbpjfWwOX5w4DXwVz2QROu43Vb5DxDjYUSn+itNusMo=;
+        s=korg; t=1622468765;
+        bh=/5mkWMxrniQRM0OIO+l/RFMqZzon2mnA8svi+4FOsBY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=iGvvlqNcn6s/DZlxirqiOZL+6FRTBsKW8e3ChhkFdWRW4xFCv7/MZGuTthMK88tff
-         xbA8QveuVsTnCsDm+NcE9tReiDyasORsiiCPH+uTnhJPgj10Ud3FDMNk0iBFLfms31
-         0UkLia+GGYCK6//s1I2QDRywJL0NAQKqp3BfI1zQ=
+        b=SOL+Ddib1iTIxUYoGGvg/YJA5W2UBcoGK2abXek/z9SUePtvdQUJHwhNCmdUPBDck
+         gy9wDy66yCugwHmLt4TT5BdLz0r1J15WCvtfjevUBnADHKioETu+QPD7EQhOfX/lOC
+         +kCRaK1j1a1cDtrNmj0/Vn3hprKevnu9ZS4hC2XA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        Russell King <rmk+kernel@armlinux.org.uk>,
-        Andrew Lunn <andrew@lunn.ch>,
-        "David S. Miller" <davem@davemloft.net>,
+        Mauro Carvalho Chehab <mchehab+samsung@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 099/116] net: mdio: thunder: Fix a double free issue in the .remove function
+Subject: [PATCH 5.4 118/177] media: gspca: properly check for errors in po1030_probe()
 Date:   Mon, 31 May 2021 15:14:35 +0200
-Message-Id: <20210531130643.493455174@linuxfoundation.org>
+Message-Id: <20210531130651.999465163@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210531130640.131924542@linuxfoundation.org>
-References: <20210531130640.131924542@linuxfoundation.org>
+In-Reply-To: <20210531130647.887605866@linuxfoundation.org>
+References: <20210531130647.887605866@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,38 +40,50 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-[ Upstream commit a93a0a15876d2a077a3bc260b387d2457a051f24 ]
+[ Upstream commit dacb408ca6f0e34df22b40d8dd5fae7f8e777d84 ]
 
-'bus->mii_bus' have been allocated with 'devm_mdiobus_alloc_size()' in the
-probe function. So it must not be freed explicitly or there will be a
-double free.
+If m5602_write_sensor() or m5602_write_bridge() fail, do not continue to
+initialize the device but return the error to the calling funtion.
 
-Remove the incorrect 'mdiobus_free' in the remove function.
-
-Fixes: 379d7ac7ca31 ("phy: mdio-thunder: Add driver for Cavium Thunder SoC MDIO buses.")
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Reviewed-by: Russell King <rmk+kernel@armlinux.org.uk>
-Reviewed-by: Andrew Lunn <andrew@lunn.ch>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Cc: Mauro Carvalho Chehab <mchehab+samsung@kernel.org>
+Link: https://lore.kernel.org/r/20210503115736.2104747-64-gregkh@linuxfoundation.org
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/phy/mdio-thunder.c | 1 -
- 1 file changed, 1 deletion(-)
+ drivers/media/usb/gspca/m5602/m5602_po1030.c | 10 +++++++---
+ 1 file changed, 7 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/net/phy/mdio-thunder.c b/drivers/net/phy/mdio-thunder.c
-index 564616968cad..c0c922eff760 100644
---- a/drivers/net/phy/mdio-thunder.c
-+++ b/drivers/net/phy/mdio-thunder.c
-@@ -129,7 +129,6 @@ static void thunder_mdiobus_pci_remove(struct pci_dev *pdev)
- 			continue;
+diff --git a/drivers/media/usb/gspca/m5602/m5602_po1030.c b/drivers/media/usb/gspca/m5602/m5602_po1030.c
+index 7bdbb8065146..8fd99ceee4b6 100644
+--- a/drivers/media/usb/gspca/m5602/m5602_po1030.c
++++ b/drivers/media/usb/gspca/m5602/m5602_po1030.c
+@@ -155,6 +155,7 @@ static const struct v4l2_ctrl_config po1030_greenbal_cfg = {
+ int po1030_probe(struct sd *sd)
+ {
+ 	u8 dev_id_h = 0, i;
++	int err;
+ 	struct gspca_dev *gspca_dev = (struct gspca_dev *)sd;
  
- 		mdiobus_unregister(bus->mii_bus);
--		mdiobus_free(bus->mii_bus);
- 		oct_mdio_writeq(0, bus->register_base + SMI_EN);
+ 	if (force_sensor) {
+@@ -173,10 +174,13 @@ int po1030_probe(struct sd *sd)
+ 	for (i = 0; i < ARRAY_SIZE(preinit_po1030); i++) {
+ 		u8 data = preinit_po1030[i][2];
+ 		if (preinit_po1030[i][0] == SENSOR)
+-			m5602_write_sensor(sd,
+-				preinit_po1030[i][1], &data, 1);
++			err = m5602_write_sensor(sd, preinit_po1030[i][1],
++						 &data, 1);
+ 		else
+-			m5602_write_bridge(sd, preinit_po1030[i][1], data);
++			err = m5602_write_bridge(sd, preinit_po1030[i][1],
++						 data);
++		if (err < 0)
++			return err;
  	}
- 	pci_set_drvdata(pdev, NULL);
+ 
+ 	if (m5602_read_sensor(sd, PO1030_DEVID_H, &dev_id_h, 1))
 -- 
 2.30.2
 
