@@ -2,52 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A683A395882
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 11:57:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3796E395889
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 11:58:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231124AbhEaJ73 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 05:59:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39450 "EHLO
+        id S231231AbhEaJ7f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 05:59:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39464 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230520AbhEaJ71 (ORCPT
+        with ESMTP id S231208AbhEaJ7a (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 05:59:27 -0400
-Received: from mail-qv1-xf4a.google.com (mail-qv1-xf4a.google.com [IPv6:2607:f8b0:4864:20::f4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A2FBC06174A
-        for <linux-kernel@vger.kernel.org>; Mon, 31 May 2021 02:57:47 -0700 (PDT)
-Received: by mail-qv1-xf4a.google.com with SMTP id r11-20020a0cb28b0000b02901c87a178503so8575098qve.22
-        for <linux-kernel@vger.kernel.org>; Mon, 31 May 2021 02:57:47 -0700 (PDT)
+        Mon, 31 May 2021 05:59:30 -0400
+Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C418DC061574
+        for <linux-kernel@vger.kernel.org>; Mon, 31 May 2021 02:57:50 -0700 (PDT)
+Received: by mail-yb1-xb4a.google.com with SMTP id n129-20020a2527870000b02904ed02e1aab5so13105264ybn.21
+        for <linux-kernel@vger.kernel.org>; Mon, 31 May 2021 02:57:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
-        h=date:message-id:mime-version:subject:from:to:cc;
-        bh=8fReuMdCoAcvO7ejaCNc/y44/KE8D3vmhMB7psbwQpI=;
-        b=R0DfqvjhtO+v5AiLIe1ZYXGAIOnQNWFEOS0027cd07uE/o9Z+f4HcdZXOzG24uq5Zw
-         rCPp4KFPiZb5hzVHO0I2Q07l+TAUQDUJ4dC/28sEhxu/6wGr82cx4HSpGshlqFuagyox
-         EgpSiTGyThSGCAEbst7B+uTY4TwWdnW8qhVfRDJ3pPw2c9ok/7lw6863ykpvwrY4btOq
-         Kv8QW3W9bxiYiqypfR4YeJ/QMGSs405Pnp6fT/tG7EcRu72jbY7cEh8Mu3hxJ721Q3Fc
-         bUQJDFFH2GfNZxharCC8fVrpUpaJlDbZ3b7f4AxPgztIez8FnsuPmH/ok4OEH+SgVfjk
-         PAqw==
+        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
+         :cc;
+        bh=GFmnrSxFaguj2aSVxkHYJEDQvGpUJsqUQ/z8ZPXi5vA=;
+        b=lvm00MCg5Am0VfQOlojBaj1hJttqNTPvvJbgBvZ4HTzFoOPnXpTGv6dI2vFrwOF/28
+         l7xsx0lJ763RKlh682CFqN9lDxpBQ4gdPXDN77XJydMwjZjMd8ISQsNW2+0waEsjMQSe
+         6Rns6AY7aDCF4hRevcVcyfCl6jc5pOzhPINDw8+dNCT4DYUUhdUOlXfLZTMyYdg05xrT
+         rNTXgh1qlZyHN7Yn7dp5Edq5veto5wBvPQMsNgyd1WYqP1ehBJ655gSN8YiwA2YCMlQe
+         ySPLmhxwTDoON42WTS850ABjOidk8lMstFWcJTeUYT6XX5FML8Gp1t1nsUdyRPGTmtnh
+         ybNQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
-        bh=8fReuMdCoAcvO7ejaCNc/y44/KE8D3vmhMB7psbwQpI=;
-        b=k7DzvDjk7Yi7AAPDChlCUqOUqbnVtGvi17hgWiz8Mkw0WpMqZLt2z7rYdjHBBoms1X
-         gQMrpYQyZJZl7sdu9Y4TwxdoZ5JrHnNzqkHhys/T3MFKLYqhh8PIsVTkMY1rrJnwcbAb
-         nOVugcnoPlmhJ2N+UB8+g/uxZE7TCs1qBWff2OLTLYtyjl29J65MFeIxFr+kiNK59voH
-         MaGBvdutEXK6xYWOwfsy75uHU3UAtlSNqsUco4FyX50j8WVlHEgF2IIWymqedP1laLn/
-         iJ8YVvgO+N4jCY9tHwNoYT6LGCqFFG2RuJkX98Cjq0Ddbz8mSDegP3bbk6DqcaxRZTgN
-         gTUA==
-X-Gm-Message-State: AOAM530CYE9wPFslJXgsFKnqr08ErJklWA4yd7WBHhjM7Ei8f3jTm84j
-        vY4wSPOm5+I0n7fQY1Aqee6RsX8bZshd
-X-Google-Smtp-Source: ABdhPJzY2fxdQ4i9TFUl47UHxvvNtiHzqOYZ57PKxOkd9YgYfbonMukdmsh4VIMxNqFv0Fah4fqmhG6fdjmA
+        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
+         :references:subject:from:to:cc;
+        bh=GFmnrSxFaguj2aSVxkHYJEDQvGpUJsqUQ/z8ZPXi5vA=;
+        b=U28ngsHxrlFRlCoq7alZqfH/TSs/P5wavXCCNWc9hG3GyQQWg68HD/ttaVa4SWWChA
+         Wp9cBJWwAUuXCtKGYBUE+UsE9sG2a3FXSxO0EP64JpW4oHK0VKMmhpmFQGRcQ8JbLKJS
+         fEfP7PiqvGuNm8+owcr83f6Nnxz9XMv/d9/5wbjTBUZmaOoUKD7fpdkhDtw4tmIDcXu7
+         +FTLJ6Mdi1tSrjakt3qf1mFHC7D278loXRsp3tSSHrupOjAjEj7g2NoTpqA0Usu+Jby7
+         ob5q0ImSz1s3usribOhSkmKju7DxWCbzm3UOrElbOeC02nFIa/30njKpKpiyR8gcr8PW
+         MMFw==
+X-Gm-Message-State: AOAM532wBEjr/AZiEJSq3aboAabfOa4zoJpw8JuInWgB9g/CQWje5O8m
+        hr1afcd9UhwGLWD7p6K3ZBeXo6Nc8kXG
+X-Google-Smtp-Source: ABdhPJxymxjG2D0FU3c7MsS76yEr9nMnvijKp3L0JgmUS5VgZJPutzIzDeerBRhwcXZUT/zdN8JSs1kjkYzI
 X-Received: from kyletso.ntc.corp.google.com ([2401:fa00:fc:202:1330:7a47:8be2:d9b7])
- (user=kyletso job=sendgmr) by 2002:ad4:4b71:: with SMTP id
- m17mr13311850qvx.45.1622455065173; Mon, 31 May 2021 02:57:45 -0700 (PDT)
-Date:   Mon, 31 May 2021 17:57:34 +0800
-Message-Id: <20210531095737.2258642-1-kyletso@google.com>
+ (user=kyletso job=sendgmr) by 2002:a25:16c2:: with SMTP id
+ 185mr30186118ybw.24.1622455069972; Mon, 31 May 2021 02:57:49 -0700 (PDT)
+Date:   Mon, 31 May 2021 17:57:35 +0800
+In-Reply-To: <20210531095737.2258642-1-kyletso@google.com>
+Message-Id: <20210531095737.2258642-2-kyletso@google.com>
 Mime-Version: 1.0
+References: <20210531095737.2258642-1-kyletso@google.com>
 X-Mailer: git-send-email 2.32.0.rc0.204.g9fa02ecfa5-goog
-Subject: [PATCH v2 0/3] Add the support of SVDM Version 2.0 VDOs
+Subject: [PATCH v2 1/3] usb: typec: tcpm: Correct the responses in SVDM
+ Version 2.0 DFP
 From:   Kyle Tso <kyletso@google.com>
 To:     linux@roeck-us.net, heikki.krogerus@linux.intel.com,
         gregkh@linuxfoundation.org, robh+dt@kernel.org
@@ -59,60 +64,61 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Got the Ack by Heikki so I re-examined the patches and found a *stupid*
-bug in the patch "usb: typec: tcpm: Introduce snk_vdo_v1 for SVDM
-version 1.0" that I separate the "for loop" into two parts, which is not
-only necessary but also redundant.
+In USB PD Spec Rev 3.1 Ver 1.0, section "6.12.5 Applicability of
+Structured VDM Commands", DFP is allowed and recommended to respond to
+Discovery Identity with ACK. And in section "6.4.4.2.5.1 Commands other
+than Attention", NAK should be returned only when receiving Messages
+with invalid fields, Messages in wrong situation, or unrecognize
+Messages.
 
-Changes since v1:
-usb: typec: tcpm: Correct the responses in SVDM Version 2.0 DFP
+Still keep the original design for SVDM Version 1.0 for backward
+compatibilities.
+
+Fixes: 193a68011fdc ("staging: typec: tcpm: Respond to Discover Identity commands")
+Signed-off-by: Kyle Tso <kyletso@google.com>
+Acked-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
+---
+changes since v1:
 - no code change
 - add Acked-by tag
 
-dt-bindings: connector: Add PD rev 2.0 VDO definition
-- no code change
+ drivers/usb/typec/tcpm/tcpm.c | 14 ++++++++++----
+ 1 file changed, 10 insertions(+), 4 deletions(-)
 
-usb: typec: tcpm: Introduce snk_vdo_v1 for SVDM version 1.0
-- merge the assignment to array element 1 into the for loop. No semantic
-  code logic change.
-- add Acked-by tag
-
-
-=== v1 cover letter
-
-The patches are primarily for the responses to the Discover Identity
-command. This part was changed a lot from PD rev2.0 to PD rev3.0 (now
-it's rev3.1 :D). e.g. DFP can respond to Discover Identity command with
-ACK in PD rev3.x and the Product Type VDOs are quite different. Given
-that tcpm.c moved on to PD rev3.x and PD rev2.0 is still supported, some
-changes need to be made to support both PD rev3.x and rev2.0.
-
-usb: typec: tcpm: Correct the responses in SVDM Version 2.0 DFP
-- This patch is to unblock the responder ACK to Discover Identity if the
-  port is DFP and the SVDM version is 2.0
-
-dt-bindings: connector: Add PD rev 2.0 VDO definition
-- similar changes to Commit 2a1673f0f1de ("usb: pd: Reland VDO
-  definitions of PD2.0")
-  https://lore.kernel.org/linux-usb/20210204005036.1555294-1-kyletso@google.com/
-- add a new property sink-vdos-v1 to store the PD rev2.0 VDOs
-
-usb: typec: tcpm: Introduce snk_vdo_v1 for SVDM version 1.0
-- populate the legacy VDOs from fwnode
-- send these data if the port partner is SVDM Version 1.0
-
-===
-
-Kyle Tso (3):
-  usb: typec: tcpm: Correct the responses in SVDM Version 2.0 DFP
-  dt-bindings: connector: Add PD rev 2.0 VDO definition
-  usb: typec: tcpm: Introduce snk_vdo_v1 for SVDM version 1.0
-
- .../bindings/connector/usb-connector.yaml     | 15 ++++
- drivers/usb/typec/tcpm/tcpm.c                 | 52 ++++++++++----
- include/dt-bindings/usb/pd.h                  | 69 ++++++++++++++++++-
- 3 files changed, 118 insertions(+), 18 deletions(-)
-
+diff --git a/drivers/usb/typec/tcpm/tcpm.c b/drivers/usb/typec/tcpm/tcpm.c
+index 0db685d5d9c0..617f48cdd90c 100644
+--- a/drivers/usb/typec/tcpm/tcpm.c
++++ b/drivers/usb/typec/tcpm/tcpm.c
+@@ -1575,19 +1575,25 @@ static int tcpm_pd_svdm(struct tcpm_port *port, struct typec_altmode *adev,
+ 			if (PD_VDO_VID(p[0]) != USB_SID_PD)
+ 				break;
+ 
+-			if (PD_VDO_SVDM_VER(p[0]) < svdm_version)
++			if (PD_VDO_SVDM_VER(p[0]) < svdm_version) {
+ 				typec_partner_set_svdm_version(port->partner,
+ 							       PD_VDO_SVDM_VER(p[0]));
++				svdm_version = PD_VDO_SVDM_VER(p[0]);
++			}
+ 
+ 			tcpm_ams_start(port, DISCOVER_IDENTITY);
+-			/* 6.4.4.3.1: Only respond as UFP (device) */
+-			if (port->data_role == TYPEC_DEVICE &&
++			/*
++			 * PD2.0 Spec 6.10.3: respond with NAK as DFP (data host)
++			 * PD3.1 Spec 6.4.4.2.5.1: respond with NAK if "invalid field" or
++			 * "wrong configuation" or "Unrecognized"
++			 */
++			if ((port->data_role == TYPEC_DEVICE || svdm_version >= SVDM_VER_2_0) &&
+ 			    port->nr_snk_vdo) {
+ 				/*
+ 				 * Product Type DFP and Connector Type are not defined in SVDM
+ 				 * version 1.0 and shall be set to zero.
+ 				 */
+-				if (typec_get_negotiated_svdm_version(typec) < SVDM_VER_2_0)
++				if (svdm_version < SVDM_VER_2_0)
+ 					response[1] = port->snk_vdo[0] & ~IDH_DFP_MASK
+ 						      & ~IDH_CONN_MASK;
+ 				else
 -- 
 2.32.0.rc0.204.g9fa02ecfa5-goog
 
