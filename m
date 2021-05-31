@@ -2,99 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C70D1395677
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 09:48:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E907039567A
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 09:49:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230312AbhEaHu2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 03:50:28 -0400
-Received: from mail-ua1-f46.google.com ([209.85.222.46]:43609 "EHLO
-        mail-ua1-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230250AbhEaHuU (ORCPT
+        id S230250AbhEaHui (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 03:50:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38522 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230320AbhEaHuc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 03:50:20 -0400
-Received: by mail-ua1-f46.google.com with SMTP id f1so6116087uaj.10
-        for <linux-kernel@vger.kernel.org>; Mon, 31 May 2021 00:48:37 -0700 (PDT)
+        Mon, 31 May 2021 03:50:32 -0400
+Received: from mail-vs1-xe32.google.com (mail-vs1-xe32.google.com [IPv6:2607:f8b0:4864:20::e32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E97C5C061760;
+        Mon, 31 May 2021 00:48:51 -0700 (PDT)
+Received: by mail-vs1-xe32.google.com with SMTP id x22so5593435vsn.2;
+        Mon, 31 May 2021 00:48:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=WQerxY7xWQJU0sQJYd3W0J67IMvkIibV5Sb4RiTPWfI=;
+        b=FZR3K2LyfCzZl6djCqOXma8hHlVAJamJbRH19HLhiBkewMDnSrWsRJXnALVAjccmJt
+         aq5yeQT2qOgUzzHUQKkxMmDBrf3xvVPU9KdcPyM486dAh5hPVq2xnP9PjR3r1Lsd5sw4
+         61t3nbOK7fLs5eCl6X8v7AFr6AJnVFK8CcHh57pLyzOy29vdzIs1qci/js3GKUeiZczG
+         02GK+nbswEngFGhQD4pGxAKOphw6wJhgt+EkVRnU/gGAD7UBXMTXHY6CQWJNk2sdYht5
+         58gAh4BGBeraVBE1alwmGvgn75+MYGazNmtg1xztKs+Bfpr9F2zwmdzXWu8nLE9/Wvml
+         2VYg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=44YBbg2fYX/hfgSeWE3KOy+zaexOX+0Aw7Axnd+cQ8E=;
-        b=DkLTkfz/NmJBj2f1+EucteYhVl7U1Kc1ny1TKSrYllac+I7/ML1geWDX9EbEb/ouEF
-         uYX646VzvezQo6CTJh2HwuSr6bnsHcRiZwHWaEy9jNhucdAOl9UdB345fYMCZQ+9EtYv
-         t15xuaJkxA5KybevyCrPPHTUzcwRSx/SwfekXl6asRSb9/ej6HhDceFCrN6cfnYQ3Y2G
-         FV7ZCkZDiXeWBVnmMSim3uqEnskreBO7QWXbzJar6qKq44/zjb2hh8j0cWpg0Jjs33g3
-         sDw5RcJa9p8V4r2rS+rmpuReaiSX+Etf14ciJC/eZrnbuXsZkIGB/Z8sJy+JxF59MZI0
-         FqPA==
-X-Gm-Message-State: AOAM533SJ3OczE+wY63ijRmnMD8efmvs6lQyHRFHbSXdPx9J+aHDLhGl
-        QobLQya4Ty66HbZtPEXnj4QMYml94c/0krFoXlDggFdBR8Y=
-X-Google-Smtp-Source: ABdhPJwxFVdG3TE/UeNQ9DPk4zX/a/VsvjhPOzB4LD00GlG0TMk25UF0idEqyTUFA1IU43hjsVTgF8co7MLPhRGrTMU=
-X-Received: by 2002:ab0:7515:: with SMTP id m21mr1655831uap.2.1622447315059;
- Mon, 31 May 2021 00:48:35 -0700 (PDT)
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=WQerxY7xWQJU0sQJYd3W0J67IMvkIibV5Sb4RiTPWfI=;
+        b=JqpRfndnpRlh9mOptnESJgEIpthE31ZqdxTUs8LFSQLezXArMTyfHv9KgaBOalbkVP
+         5ONw0gRqqBFyDnz6j2leSBro9Ddwd9zSGu+PLt9NLQDIsBCzFWTryfSBtPpCu+Ni1ljs
+         ZYivldtQrdNwJnAuZLOgl6JGnVqtAzMYYugNXCOJp/ej2hPu89qTVRcDdRjgyXxwgTDJ
+         /ir0JOq9Oqc2vsCdIQctZjRq1DhJxfwfpH+KUqeS8NgTbur0/51JVIw+ejTra1CeFBJU
+         5zuooK7ZGb5IvKG41D7b2yWKMqB1CrYdqhl7qOLQerdZhMH/eb3LVmTEwdrZcBN2YiXG
+         x4tg==
+X-Gm-Message-State: AOAM532UeSik+i9ZIaxfUaId7CRCt2IcwjCDSC/FmmE4WSFgkTMphSFY
+        X9QqJjQb7WBET0ZRY15ZfwTpLKruF22+0k0RddU=
+X-Google-Smtp-Source: ABdhPJx4JM83e3BeoZX3si9ZmCeRAnVTq79/RfBj9Dd0Gq32VWx5feCij5NRRaO0qG9Oe/ifh6ymXNnQVCKyH2rpiJc=
+X-Received: by 2002:a05:6102:3225:: with SMTP id x5mr1994208vsf.18.1622447330957;
+ Mon, 31 May 2021 00:48:50 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210529105504.180544-1-wangkefeng.wang@huawei.com> <20210529105504.180544-8-wangkefeng.wang@huawei.com>
-In-Reply-To: <20210529105504.180544-8-wangkefeng.wang@huawei.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Mon, 31 May 2021 09:48:23 +0200
-Message-ID: <CAMuHMdVvbA-bJCubhmKaJ_4VbKo+U538x7s34OkZ94kL7z4nrw@mail.gmail.com>
-Subject: Re: [PATCH 07/15] m68k: convert to setup_initial_init_mm()
-To:     Kefeng Wang <wangkefeng.wang@huawei.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-m68k <linux-m68k@lists.linux-m68k.org>,
-        Greg Ungerer <gerg@linux-m68k.org>
+References: <20210531062350.1910823-1-yangyingliang@huawei.com>
+In-Reply-To: <20210531062350.1910823-1-yangyingliang@huawei.com>
+From:   Hyunchul Lee <hyc.lee@gmail.com>
+Date:   Mon, 31 May 2021 16:48:39 +0900
+Message-ID: <CANFS6bam+RdmkWMJ1X5ECt6sF-_7mTi0OG8xpzHZYkveu2P9dQ@mail.gmail.com>
+Subject: Re: [PATCH -next v3] cifsd: check return value of ksmbd_vfs_getcasexattr()
+ correctly
+To:     Yang Yingliang <yangyingliang@huawei.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        linux-cifsd-devel <linux-cifsd-devel@lists.sourceforge.net>,
+        linux-cifs <linux-cifs@vger.kernel.org>,
+        Namjae Jeon <namjae.jeon@samsung.com>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Steve French <sfrench@samba.org>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Kefeng
+This looks good to me.
 
-(CC Greg for m68knommu)
-
-On Sat, May 29, 2021 at 12:46 PM Kefeng Wang <wangkefeng.wang@huawei.com> wrote:
-> Use setup_initial_init_mm() helper to simplify code.
+2021=EB=85=84 5=EC=9B=94 31=EC=9D=BC (=EC=9B=94) =EC=98=A4=ED=9B=84 3:19, Y=
+ang Yingliang <yangyingliang@huawei.com>=EB=8B=98=EC=9D=B4 =EC=9E=91=EC=84=
+=B1:
 >
-> Cc: Geert Uytterhoeven <geert@linux-m68k.org>
-> Cc: linux-m68k@lists.linux-m68k.org
-> Signed-off-by: Kefeng Wang <wangkefeng.wang@huawei.com>
-
-Thanks for your patch!
-
-> --- a/arch/m68k/kernel/setup_mm.c
-> +++ b/arch/m68k/kernel/setup_mm.c
-> @@ -258,10 +258,7 @@ void __init setup_arch(char **cmdline_p)
->                 }
+> If ksmbd_vfs_getcasexattr() returns -ENOMEM, stream_buf is NULL,
+> it will cause null-ptr-deref when using it to copy memory. So we
+> need check the return value of ksmbd_vfs_getcasexattr() by comparing
+> with 0.
+>
+> Fixes: f44158485826 ("cifsd: add file operations")
+> Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
+> ---
+> v3:
+>   Handle the 0 return value in ksmbd_vfs_getcasexattr().
+>
+> v2:
+>   Handle the case ksmbd_vfs_getcasexattr() returns 0.
+> ---
+>  fs/cifsd/vfs.c | 12 +++++-------
+>  1 file changed, 5 insertions(+), 7 deletions(-)
+>
+> diff --git a/fs/cifsd/vfs.c b/fs/cifsd/vfs.c
+> index 97d5584ec870..a56ec1f7f941 100644
+> --- a/fs/cifsd/vfs.c
+> +++ b/fs/cifsd/vfs.c
+> @@ -266,7 +266,7 @@ static ssize_t ksmbd_vfs_getcasexattr(struct dentry *=
+dentry, char *attr_name,
+>
+>  out:
+>         kvfree(xattr_list);
+> -       return value_len;
+> +       return value_len =3D=3D 0 ? -ENOENT : value_len;
+>  }
+>
+>  static int ksmbd_vfs_stream_read(struct ksmbd_file *fp, char *buf, loff_=
+t *pos,
+> @@ -274,7 +274,6 @@ static int ksmbd_vfs_stream_read(struct ksmbd_file *f=
+p, char *buf, loff_t *pos,
+>  {
+>         ssize_t v_len;
+>         char *stream_buf =3D NULL;
+> -       int err;
+>
+>         ksmbd_debug(VFS, "read stream data pos : %llu, count : %zd\n",
+>                     *pos, count);
+> @@ -283,10 +282,9 @@ static int ksmbd_vfs_stream_read(struct ksmbd_file *=
+fp, char *buf, loff_t *pos,
+>                                        fp->stream.name,
+>                                        fp->stream.size,
+>                                        &stream_buf);
+> -       if (v_len =3D=3D -ENOENT) {
+> +       if ((int)v_len < 0) {
+>                 ksmbd_err("not found stream in xattr : %zd\n", v_len);
+> -               err =3D -ENOENT;
+> -               return err;
+> +               return (int)v_len;
 >         }
 >
-> -       init_mm.start_code = PAGE_OFFSET;
-> -       init_mm.end_code = (unsigned long)_etext;
-> -       init_mm.end_data = (unsigned long)_edata;
-> -       init_mm.brk = (unsigned long)_end;
-> +       setup_initial_init_mm((void *)PAGE_OFFSET, _etext, _edata, _end);
-
-Acked-by: Geert Uytterhoeven <geert@linux-m68k.org>
-
-> --- a/arch/m68k/kernel/setup_no.c
-> +++ b/arch/m68k/kernel/setup_no.c
-> @@ -87,10 +87,7 @@ void __init setup_arch(char **cmdline_p)
->         memory_start = PAGE_ALIGN(_ramstart);
->         memory_end = _ramend;
+>         memcpy(buf, &stream_buf[*pos], count);
+> @@ -415,9 +413,9 @@ static int ksmbd_vfs_stream_write(struct ksmbd_file *=
+fp, char *buf, loff_t *pos,
+>                                        fp->stream.name,
+>                                        fp->stream.size,
+>                                        &stream_buf);
+> -       if (v_len =3D=3D -ENOENT) {
+> +       if ((int)v_len < 0) {
+>                 ksmbd_err("not found stream in xattr : %zd\n", v_len);
+> -               err =3D -ENOENT;
+> +               err =3D (int)v_len;
+>                 goto out;
+>         }
 >
-> -       init_mm.start_code = (unsigned long) &_stext;
-> -       init_mm.end_code = (unsigned long) &_etext;
-> -       init_mm.end_data = (unsigned long) &_edata;
-> -       init_mm.brk = (unsigned long) 0;
-> +       setup_initial_init_mm(_stext, _etext, _edata, (void *)0);
+> --
+> 2.25.1
+>
 
-Please use NULL instead of (void *)0.
 
-Gr{oetje,eeting}s,
+--=20
 
-                        Geert
-
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+Thanks,
+Hyunchul
