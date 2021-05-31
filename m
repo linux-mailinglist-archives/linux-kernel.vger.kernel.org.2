@@ -2,70 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A73D1395C55
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 15:30:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 48C18396609
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 18:53:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232305AbhEaNbX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 09:31:23 -0400
-Received: from mx2.suse.de ([195.135.220.15]:53336 "EHLO mx2.suse.de"
+        id S232106AbhEaQzZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 12:55:25 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51030 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232322AbhEaNXE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 09:23:04 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1622467282; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Cn+663xg9Fnis1kPt/caWzCnnri9r67XIbRUjlSvtGg=;
-        b=cORQ88Jay6syGjcqRdfEdiKuMErohocMbegu0uQxg/gOnWoEEFeClHuWZyhAOXqHNYNuMq
-        zkjxd+kSWelM5SgM+QYkH009HIWEyDzEiVknEJpniLx2YmKyfc7pDP2n0hUUzNfvwQMDnx
-        8E7hhMWNfu9JNJIZQar+kDfdVb0X3Ns=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id E200EB4C1;
-        Mon, 31 May 2021 13:21:21 +0000 (UTC)
-Date:   Mon, 31 May 2021 15:21:21 +0200
-From:   Michal Hocko <mhocko@suse.com>
-To:     Vlastimil Babka <vbabka@suse.cz>
-Cc:     Aaron Tomlin <atomlin@redhat.com>, linux-mm@kvack.org,
-        akpm@linux-foundation.org, willy@infradead.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4] mm/page_alloc: bail out on fatal signal during
- reclaim/compaction retry attempt
-Message-ID: <YLTi0XXHbntlCNuS@dhcp22.suse.cz>
-References: <YKZObDpduqwWi/Zm@casper.infradead.org>
- <20210520142901.3371299-1-atomlin@redhat.com>
- <YLTJjJqemt5Uv9vP@dhcp22.suse.cz>
- <c7b69523-c141-d06c-bc02-953c7a939d91@suse.cz>
+        id S234142AbhEaPAj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 11:00:39 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4BD3460FEF;
+        Mon, 31 May 2021 14:12:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1622470351;
+        bh=wkKztpo64XTQBWAnbxSKsTIGW62NyR1Cw1YrVMh3Z2s=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=JwYXnjd3T+Uk7jc/j3e+LtOttEOMKrNQ3Jhwc/jfMvZwIox3gh61RW790EEGQq97Z
+         H6IYYS7WEHKkIdW3w6KJhwpWjGordesLIuoarJv/zWjz2MDLgvONdxt6lwXwWLQxna
+         3dHiLeYJFdnwbfAqM85Uoy2CTK4WyzpUI+hRBa5g=
+Date:   Mon, 31 May 2021 15:21:54 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Andre Przywara <andre.przywara@arm.com>
+Cc:     Ondrej Jirman <megous@megous.com>, Chen-Yu Tsai <wens@csie.org>,
+        Maxime Ripard <mripard@kernel.org>,
+        Jernej =?utf-8?Q?=C5=A0krabec?= <jernej.skrabec@gmail.com>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        linux-serial@vger.kernel.org,
+        Linux ARM Mailing List <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Marcel Holtmann <marcel@holtmann.org>,
+        Johan Hedberg <johan.hedberg@gmail.com>,
+        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
+        linux-bluetooth@vger.kernel.org, linux-sunxi@lists.linux.dev,
+        Josh Triplett <josh@joshtriplett.org>, tuxd3v@sapo.pt
+Subject: Re: sunxi: Bluetooth broken since 5.6-rc1
+Message-ID: <YLTi8iYdLiKNeaLC@kroah.com>
+References: <20210530173454.5ab1dcf5@slackpad.fritz.box>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <c7b69523-c141-d06c-bc02-953c7a939d91@suse.cz>
+In-Reply-To: <20210530173454.5ab1dcf5@slackpad.fritz.box>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon 31-05-21 13:35:31, Vlastimil Babka wrote:
-> On 5/31/21 1:33 PM, Michal Hocko wrote:
-> > On Thu 20-05-21 15:29:01, Aaron Tomlin wrote:
-> >> A customer experienced a low-memory situation and decided to issue a
-> >> SIGKILL (i.e. a fatal signal). Instead of promptly terminating as one
-> >> would expect, the aforementioned task remained unresponsive.
-> >> 
-> >> Further investigation indicated that the task was "stuck" in the
-> >> reclaim/compaction retry loop. Now, it does not make sense to retry
-> >> compaction when a fatal signal is pending.
-> > 
-> > Is this really true in general? The memory reclaim is retried even when
-> > fatal signals are pending. Why should be compaction different? I do
-> > agree that retrying way too much is bad but is there any reason why this
-> > special case doesn't follow the max retry logic?
+On Sun, May 30, 2021 at 05:34:54PM +0100, Andre Przywara wrote:
+> Hi,
 > 
-> Compaction doesn't do anything if fatal signal is pending, it bails out
-> immediately and the checks are rather frequent. So why retry?
+> as recently discovered via IRC discussions, Bluetooth (via UART)
+> seems to be broken on many (if not all) Allwinner devices using recent
+> mainline kernels. On *some* occasions it might work, but more often
+> than not the hci_bcm driver just times out:
+> ....
+> [    5.046126] Bluetooth: HIDP socket layer initialized
+> ...
+> [    7.809425] Bluetooth: hci0: command 0x0c03 tx timeout
+> [   15.969286] Bluetooth: hci0: BCM: Reset failed (-110)
+> 
+> After some guessing, trying, and bisecting I pinned the problem down to:
+> commit dc56ecb81a0aa46a7e127e916df5c8fdb8364f0b
+> Author: Josh Triplett <josh@joshtriplett.org>
+> Date:   Fri Jan 10 18:25:13 2020 -0800
+> 
+>     serial: 8250: Support disabling mdelay-filled probes of 16550A variants
+> 
+> This seemingly innocent commit shaved off some milliseconds during the
+> 8250 probe, which apparently lets the Bluetooth device trip.
 
-OK, I was not aware of that and it would be helpful to have that
-mentioned in the changelog.
+What do you mean by "trip"?
 
--- 
-Michal Hocko
-SUSE Labs
+And how are the different devices related?
+
+> An obvious easy hack-fix is to just define
+> CONFIG_SERIAL_8250_16550A_VARIANTS, which brings the delays back and
+> seems to avoid the problem for me.
+> Another hack which seems to mitigate the problem is to avoid switching
+> the baudrate to something faster than 115200.
+> 
+> I observed this on a BananaPi-M64 (Allwinner A64 SoC with AP6212 WiFi/BT
+> chip), but others reported the same issue on a NanoPi Air (Allwinner H3
+> with 6212), but also other SoCs and devices (at least one AP6210).
+> 
+> Obviously those workarounds are not real solutions, and I was
+> wondering if anybody has an idea how to properly fix this?
+> What puzzles me is that the delay is happening during the *UART*
+> probe, so before we even start dealing with the Bluetooth device.
+
+What type of bluetooth device is this, and what does it have to do with
+the serial port?  Is the SoC device using the same IP blocks for both?
+
+> I see that hci_bcm.c has some history with adding delays, also with
+> RTS/CTS lines, so does anyone have an idea what's going on here,
+> exactly, and how to properly fix this problem?
+
+No idea, sorry, as you have the hardware, you have the best chance of
+debugging this :(
+
+good luck!
+
+greg k-h
