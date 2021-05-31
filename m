@@ -2,38 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F2C33963F4
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 17:39:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 88C90395B78
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 15:19:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233232AbhEaPlf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 11:41:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47638 "EHLO mail.kernel.org"
+        id S232035AbhEaNU5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 09:20:57 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54898 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233525AbhEaOXC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 10:23:02 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B4A276141C;
-        Mon, 31 May 2021 13:45:25 +0000 (UTC)
+        id S231834AbhEaNTH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 09:19:07 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 978046135D;
+        Mon, 31 May 2021 13:17:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1622468726;
-        bh=kkVSjk1U8Ku8B+7k7+q5r/pmkxm5p2g+022ezqC0WD4=;
+        s=korg; t=1622467048;
+        bh=Q4jNrlVbkxKBFuZfG5hlrOND6dyo+WOQlu/GAgl3Uec=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=eECdqDHTd3s85qpuFkuMbI3gk6fdOr5D9EV8p5Y3lMr6GWvECE4vpMd/rA4FGRmti
-         ed6ax0qu/k+gE0gZ2/6cuJm0kYzAiPoecfjsatWxsFuqvXX1ZA6QMlN0VtMXp79wzV
-         unJ2ImP9s/q7nwiazUbUizqyzgfXzF6QEMJ8Uvk4=
+        b=xOt5iWzSVDCoEyfqd4UIiVv7MXRsTiUtEfKo71BGSPaaLMnp7+QO7o9EjCcQkgwSo
+         mn1lDZDTWtRa80s5TrJOk280L1QOsWEnr5JaafGIye6wXQX/HcxwnUgpryWn/38N3q
+         lWjNhO6r9PCr+IpulWSwXLURtwdIKO7xtzTJ/lZw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Kai-Heng Feng <kai.heng.feng@canonical.com>,
-        =?UTF-8?q?=C3=89ric=20Piel?= <eric.piel@trempplin-utc.net>,
-        Hans de Goede <hdegoede@redhat.com>,
+        stable@vger.kernel.org, Kalle Valo <kvalo@codeaurora.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 086/177] platform/x86: hp_accel: Avoid invoking _INI to speed up resume
+Subject: [PATCH 4.4 37/54] libertas: register sysfs groups properly
 Date:   Mon, 31 May 2021 15:14:03 +0200
-Message-Id: <20210531130650.868811903@linuxfoundation.org>
+Message-Id: <20210531130636.239220653@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210531130647.887605866@linuxfoundation.org>
-References: <20210531130647.887605866@linuxfoundation.org>
+In-Reply-To: <20210531130635.070310929@linuxfoundation.org>
+References: <20210531130635.070310929@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,90 +39,92 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Kai-Heng Feng <kai.heng.feng@canonical.com>
+From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-[ Upstream commit 79d341e26ebcdbc622348aaaab6f8f89b6fdb25f ]
+[ Upstream commit 7e79b38fe9a403b065ac5915465f620a8fb3de84 ]
 
-hp_accel can take almost two seconds to resume on some HP laptops.
+The libertas driver was trying to register sysfs groups "by hand" which
+causes them to be created _after_ the device is initialized and
+announced to userspace, which causes races and can prevent userspace
+tools from seeing the sysfs files correctly.
 
-The bottleneck is on evaluating _INI, which is only needed to run once.
+Fix this up by using the built-in sysfs_groups pointers in struct
+net_device which were created for this very reason, fixing the race
+condition, and properly allowing for any error that might have occured
+to be handled properly.
 
-Resolve the issue by only invoking _INI when it's necessary. Namely, on
-probe and on hibernation restore.
-
-Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
-Acked-by: Éric Piel <eric.piel@trempplin-utc.net>
-Link: https://lore.kernel.org/r/20210430060736.590321-1-kai.heng.feng@canonical.com
-Signed-off-by: Hans de Goede <hdegoede@redhat.com>
+Cc: Kalle Valo <kvalo@codeaurora.org>
+Link: https://lore.kernel.org/r/20210503115736.2104747-54-gregkh@linuxfoundation.org
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/misc/lis3lv02d/lis3lv02d.h |  1 +
- drivers/platform/x86/hp_accel.c    | 22 +++++++++++++++++++++-
- 2 files changed, 22 insertions(+), 1 deletion(-)
+ drivers/net/wireless/libertas/mesh.c | 28 ++++------------------------
+ 1 file changed, 4 insertions(+), 24 deletions(-)
 
-diff --git a/drivers/misc/lis3lv02d/lis3lv02d.h b/drivers/misc/lis3lv02d/lis3lv02d.h
-index 1b0c99883c57..c008eecfdfe8 100644
---- a/drivers/misc/lis3lv02d/lis3lv02d.h
-+++ b/drivers/misc/lis3lv02d/lis3lv02d.h
-@@ -271,6 +271,7 @@ struct lis3lv02d {
- 	int			regs_size;
- 	u8                      *reg_cache;
- 	bool			regs_stored;
-+	bool			init_required;
- 	u8                      odr_mask;  /* ODR bit mask */
- 	u8			whoami;    /* indicates measurement precision */
- 	s16 (*read_data) (struct lis3lv02d *lis3, int reg);
-diff --git a/drivers/platform/x86/hp_accel.c b/drivers/platform/x86/hp_accel.c
-index 799cbe2ffcf3..8c0867bda828 100644
---- a/drivers/platform/x86/hp_accel.c
-+++ b/drivers/platform/x86/hp_accel.c
-@@ -88,6 +88,9 @@ MODULE_DEVICE_TABLE(acpi, lis3lv02d_device_ids);
- static int lis3lv02d_acpi_init(struct lis3lv02d *lis3)
- {
- 	struct acpi_device *dev = lis3->bus_priv;
-+	if (!lis3->init_required)
-+		return 0;
+diff --git a/drivers/net/wireless/libertas/mesh.c b/drivers/net/wireless/libertas/mesh.c
+index d0c881dd5846..f1e9cbcfdc16 100644
+--- a/drivers/net/wireless/libertas/mesh.c
++++ b/drivers/net/wireless/libertas/mesh.c
+@@ -797,19 +797,6 @@ static const struct attribute_group mesh_ie_group = {
+ 	.attrs = mesh_ie_attrs,
+ };
+ 
+-static void lbs_persist_config_init(struct net_device *dev)
+-{
+-	int ret;
+-	ret = sysfs_create_group(&(dev->dev.kobj), &boot_opts_group);
+-	ret = sysfs_create_group(&(dev->dev.kobj), &mesh_ie_group);
+-}
+-
+-static void lbs_persist_config_remove(struct net_device *dev)
+-{
+-	sysfs_remove_group(&(dev->dev.kobj), &boot_opts_group);
+-	sysfs_remove_group(&(dev->dev.kobj), &mesh_ie_group);
+-}
+-
+ 
+ /***************************************************************************
+  * Initializing and starting, stopping mesh
+@@ -1021,6 +1008,10 @@ static int lbs_add_mesh(struct lbs_private *priv)
+ 	SET_NETDEV_DEV(priv->mesh_dev, priv->dev->dev.parent);
+ 
+ 	mesh_dev->flags |= IFF_BROADCAST | IFF_MULTICAST;
++	mesh_dev->sysfs_groups[0] = &lbs_mesh_attr_group;
++	mesh_dev->sysfs_groups[1] = &boot_opts_group;
++	mesh_dev->sysfs_groups[2] = &mesh_ie_group;
 +
- 	if (acpi_evaluate_object(dev->handle, METHOD_NAME__INI,
- 				 NULL, NULL) != AE_OK)
- 		return -EINVAL;
-@@ -356,6 +359,7 @@ static int lis3lv02d_add(struct acpi_device *device)
+ 	/* Register virtual mesh interface */
+ 	ret = register_netdev(mesh_dev);
+ 	if (ret) {
+@@ -1028,19 +1019,10 @@ static int lbs_add_mesh(struct lbs_private *priv)
+ 		goto err_free_netdev;
  	}
  
- 	/* call the core layer do its init */
-+	lis3_dev.init_required = true;
- 	ret = lis3lv02d_init_device(&lis3_dev);
- 	if (ret)
- 		return ret;
-@@ -403,11 +407,27 @@ static int lis3lv02d_suspend(struct device *dev)
+-	ret = sysfs_create_group(&(mesh_dev->dev.kobj), &lbs_mesh_attr_group);
+-	if (ret)
+-		goto err_unregister;
+-
+-	lbs_persist_config_init(mesh_dev);
+-
+ 	/* Everything successful */
+ 	ret = 0;
+ 	goto done;
  
- static int lis3lv02d_resume(struct device *dev)
- {
-+	lis3_dev.init_required = false;
-+	lis3lv02d_poweron(&lis3_dev);
-+	return 0;
-+}
-+
-+static int lis3lv02d_restore(struct device *dev)
-+{
-+	lis3_dev.init_required = true;
- 	lis3lv02d_poweron(&lis3_dev);
- 	return 0;
- }
+-err_unregister:
+-	unregister_netdev(mesh_dev);
+-
+ err_free_netdev:
+ 	free_netdev(mesh_dev);
  
--static SIMPLE_DEV_PM_OPS(hp_accel_pm, lis3lv02d_suspend, lis3lv02d_resume);
-+static const struct dev_pm_ops hp_accel_pm = {
-+	.suspend = lis3lv02d_suspend,
-+	.resume = lis3lv02d_resume,
-+	.freeze = lis3lv02d_suspend,
-+	.thaw = lis3lv02d_resume,
-+	.poweroff = lis3lv02d_suspend,
-+	.restore = lis3lv02d_restore,
-+};
-+
- #define HP_ACCEL_PM (&hp_accel_pm)
- #else
- #define HP_ACCEL_PM NULL
+@@ -1063,8 +1045,6 @@ void lbs_remove_mesh(struct lbs_private *priv)
+ 	lbs_deb_enter(LBS_DEB_MESH);
+ 	netif_stop_queue(mesh_dev);
+ 	netif_carrier_off(mesh_dev);
+-	sysfs_remove_group(&(mesh_dev->dev.kobj), &lbs_mesh_attr_group);
+-	lbs_persist_config_remove(mesh_dev);
+ 	unregister_netdev(mesh_dev);
+ 	priv->mesh_dev = NULL;
+ 	kfree(mesh_dev->ieee80211_ptr);
 -- 
 2.30.2
 
