@@ -2,37 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 985EE395EDA
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 16:03:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8CEB9395D6B
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 15:43:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233364AbhEaOEc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 10:04:32 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44098 "EHLO mail.kernel.org"
+        id S232487AbhEaNph (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 09:45:37 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39104 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232086AbhEaNlO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 09:41:14 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9409A61464;
-        Mon, 31 May 2021 13:27:59 +0000 (UTC)
+        id S232301AbhEaNbX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 09:31:23 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id ADBDC61430;
+        Mon, 31 May 2021 13:23:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1622467680;
-        bh=1PgQGrBxZKLTbNoxeWWMZoJhX1q0eSCDcQ56kDC7YE4=;
+        s=korg; t=1622467411;
+        bh=aCkS3kVEBfSTHqZJ9K6/scoX19fi29Jt/I52jQVF82I=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=10DDRrL4/db/t0HsBsAhAmiPyjIfbT4BlC3jLh2CxG+S5G4Z9M3/0Dfs3fRp404hH
-         ol2K5BOViKtJAkzORDMlPgV6OB0KJkN2c3lVgsa7Ew15tpwAOc7YhgDWl0WYilA0qF
-         bD7mzS2N3s7RvaUTcAJVp+6zPzXH/yAxqVk2qT2E=
+        b=Z7wua/MHryDgguSq7ZYoPTaKXT4BimlYNH2pXG7srtxS1RVFBpVAqozw11dQAIwGe
+         XZkuYKTJeD5BQ0PEDxDycUY+nvCtCHOL7bIKfKlC+/98CSji/ERg4vzSddaloEwSiK
+         P709I7B68ky5MXeu8DuAbdG10wb6338JX8ekUJRU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        syzbot+19bcfc64a8df1318d1c3@syzkaller.appspotmail.com,
-        Dongliang Mu <mudongliangabcd@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 4.14 06/79] NFC: nci: fix memory leak in nci_allocate_device
+        Piotr Krysiuk <piotras@gmail.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Ovidiu Panait <ovidiu.panait@windriver.com>
+Subject: [PATCH 4.19 055/116] bpf: Fix leakage of uninitialized bpf stack under speculation
 Date:   Mon, 31 May 2021 15:13:51 +0200
-Message-Id: <20210531130636.204157923@linuxfoundation.org>
+Message-Id: <20210531130642.040393050@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210531130636.002722319@linuxfoundation.org>
-References: <20210531130636.002722319@linuxfoundation.org>
+In-Reply-To: <20210531130640.131924542@linuxfoundation.org>
+References: <20210531130640.131924542@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,81 +42,135 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dongliang Mu <mudongliangabcd@gmail.com>
+From: Daniel Borkmann <daniel@iogearbox.net>
 
-commit e0652f8bb44d6294eeeac06d703185357f25d50b upstream.
+commit 801c6058d14a82179a7ee17a4b532cac6fad067f upstream.
 
-nfcmrvl_disconnect fails to free the hci_dev field in struct nci_dev.
-Fix this by freeing hci_dev in nci_free_device.
+The current implemented mechanisms to mitigate data disclosure under
+speculation mainly address stack and map value oob access from the
+speculative domain. However, Piotr discovered that uninitialized BPF
+stack is not protected yet, and thus old data from the kernel stack,
+potentially including addresses of kernel structures, could still be
+extracted from that 512 bytes large window. The BPF stack is special
+compared to map values since it's not zero initialized for every
+program invocation, whereas map values /are/ zero initialized upon
+their initial allocation and thus cannot leak any prior data in either
+domain. In the non-speculative domain, the verifier ensures that every
+stack slot read must have a prior stack slot write by the BPF program
+to avoid such data leaking issue.
 
-BUG: memory leak
-unreferenced object 0xffff888111ea6800 (size 1024):
-  comm "kworker/1:0", pid 19, jiffies 4294942308 (age 13.580s)
-  hex dump (first 32 bytes):
-    00 00 00 00 00 00 00 00 00 60 fd 0c 81 88 ff ff  .........`......
-    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
-  backtrace:
-    [<000000004bc25d43>] kmalloc include/linux/slab.h:552 [inline]
-    [<000000004bc25d43>] kzalloc include/linux/slab.h:682 [inline]
-    [<000000004bc25d43>] nci_hci_allocate+0x21/0xd0 net/nfc/nci/hci.c:784
-    [<00000000c59cff92>] nci_allocate_device net/nfc/nci/core.c:1170 [inline]
-    [<00000000c59cff92>] nci_allocate_device+0x10b/0x160 net/nfc/nci/core.c:1132
-    [<00000000006e0a8e>] nfcmrvl_nci_register_dev+0x10a/0x1c0 drivers/nfc/nfcmrvl/main.c:153
-    [<000000004da1b57e>] nfcmrvl_probe+0x223/0x290 drivers/nfc/nfcmrvl/usb.c:345
-    [<00000000d506aed9>] usb_probe_interface+0x177/0x370 drivers/usb/core/driver.c:396
-    [<00000000bc632c92>] really_probe+0x159/0x4a0 drivers/base/dd.c:554
-    [<00000000f5009125>] driver_probe_device+0x84/0x100 drivers/base/dd.c:740
-    [<000000000ce658ca>] __device_attach_driver+0xee/0x110 drivers/base/dd.c:846
-    [<000000007067d05f>] bus_for_each_drv+0xb7/0x100 drivers/base/bus.c:431
-    [<00000000f8e13372>] __device_attach+0x122/0x250 drivers/base/dd.c:914
-    [<000000009cf68860>] bus_probe_device+0xc6/0xe0 drivers/base/bus.c:491
-    [<00000000359c965a>] device_add+0x5be/0xc30 drivers/base/core.c:3109
-    [<00000000086e4bd3>] usb_set_configuration+0x9d9/0xb90 drivers/usb/core/message.c:2164
-    [<00000000ca036872>] usb_generic_driver_probe+0x8c/0xc0 drivers/usb/core/generic.c:238
-    [<00000000d40d36f6>] usb_probe_device+0x5c/0x140 drivers/usb/core/driver.c:293
-    [<00000000bc632c92>] really_probe+0x159/0x4a0 drivers/base/dd.c:554
+However, this is not enough: for example, when the pointer arithmetic
+operation moves the stack pointer from the last valid stack offset to
+the first valid offset, the sanitation logic allows for any intermediate
+offsets during speculative execution, which could then be used to
+extract any restricted stack content via side-channel.
 
-Reported-by: syzbot+19bcfc64a8df1318d1c3@syzkaller.appspotmail.com
-Fixes: 11f54f228643 ("NFC: nci: Add HCI over NCI protocol support")
-Signed-off-by: Dongliang Mu <mudongliangabcd@gmail.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Given for unprivileged stack pointer arithmetic the use of unknown
+but bounded scalars is generally forbidden, we can simply turn the
+register-based arithmetic operation into an immediate-based arithmetic
+operation without the need for masking. This also gives the benefit
+of reducing the needed instructions for the operation. Given after
+the work in 7fedb63a8307 ("bpf: Tighten speculative pointer arithmetic
+mask"), the aux->alu_limit already holds the final immediate value for
+the offset register with the known scalar. Thus, a simple mov of the
+immediate to AX register with using AX as the source for the original
+instruction is sufficient and possible now in this case.
+
+Reported-by: Piotr Krysiuk <piotras@gmail.com>
+Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
+Tested-by: Piotr Krysiuk <piotras@gmail.com>
+Reviewed-by: Piotr Krysiuk <piotras@gmail.com>
+Reviewed-by: John Fastabend <john.fastabend@gmail.com>
+Acked-by: Alexei Starovoitov <ast@kernel.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Ovidiu Panait <ovidiu.panait@windriver.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- include/net/nfc/nci_core.h |    1 +
- net/nfc/nci/core.c         |    1 +
- net/nfc/nci/hci.c          |    5 +++++
- 3 files changed, 7 insertions(+)
+ include/linux/bpf_verifier.h |    5 +++--
+ kernel/bpf/verifier.c        |   27 +++++++++++++++++----------
+ 2 files changed, 20 insertions(+), 12 deletions(-)
 
---- a/include/net/nfc/nci_core.h
-+++ b/include/net/nfc/nci_core.h
-@@ -310,6 +310,7 @@ int nci_nfcc_loopback(struct nci_dev *nd
- 		      struct sk_buff **resp);
+--- a/include/linux/bpf_verifier.h
++++ b/include/linux/bpf_verifier.h
+@@ -144,10 +144,11 @@ struct bpf_verifier_state_list {
+ };
  
- struct nci_hci_dev *nci_hci_allocate(struct nci_dev *ndev);
-+void nci_hci_deallocate(struct nci_dev *ndev);
- int nci_hci_send_event(struct nci_dev *ndev, u8 gate, u8 event,
- 		       const u8 *param, size_t param_len);
- int nci_hci_send_cmd(struct nci_dev *ndev, u8 gate,
---- a/net/nfc/nci/core.c
-+++ b/net/nfc/nci/core.c
-@@ -1187,6 +1187,7 @@ EXPORT_SYMBOL(nci_allocate_device);
- void nci_free_device(struct nci_dev *ndev)
+ /* Possible states for alu_state member. */
+-#define BPF_ALU_SANITIZE_SRC		1U
+-#define BPF_ALU_SANITIZE_DST		2U
++#define BPF_ALU_SANITIZE_SRC		(1U << 0)
++#define BPF_ALU_SANITIZE_DST		(1U << 1)
+ #define BPF_ALU_NEG_VALUE		(1U << 2)
+ #define BPF_ALU_NON_POINTER		(1U << 3)
++#define BPF_ALU_IMMEDIATE		(1U << 4)
+ #define BPF_ALU_SANITIZE		(BPF_ALU_SANITIZE_SRC | \
+ 					 BPF_ALU_SANITIZE_DST)
+ 
+--- a/kernel/bpf/verifier.c
++++ b/kernel/bpf/verifier.c
+@@ -2825,6 +2825,7 @@ static int sanitize_ptr_alu(struct bpf_v
  {
- 	nfc_free_device(ndev->nfc_dev);
-+	nci_hci_deallocate(ndev);
- 	kfree(ndev);
- }
- EXPORT_SYMBOL(nci_free_device);
---- a/net/nfc/nci/hci.c
-+++ b/net/nfc/nci/hci.c
-@@ -807,3 +807,8 @@ struct nci_hci_dev *nci_hci_allocate(str
+ 	struct bpf_insn_aux_data *aux = commit_window ? cur_aux(env) : tmp_aux;
+ 	struct bpf_verifier_state *vstate = env->cur_state;
++	bool off_is_imm = tnum_is_const(off_reg->var_off);
+ 	bool off_is_neg = off_reg->smin_value < 0;
+ 	bool ptr_is_dst_reg = ptr_reg == dst_reg;
+ 	u8 opcode = BPF_OP(insn->code);
+@@ -2855,6 +2856,7 @@ static int sanitize_ptr_alu(struct bpf_v
+ 		alu_limit = abs(tmp_aux->alu_limit - alu_limit);
+ 	} else {
+ 		alu_state  = off_is_neg ? BPF_ALU_NEG_VALUE : 0;
++		alu_state |= off_is_imm ? BPF_ALU_IMMEDIATE : 0;
+ 		alu_state |= ptr_is_dst_reg ?
+ 			     BPF_ALU_SANITIZE_SRC : BPF_ALU_SANITIZE_DST;
+ 	}
+@@ -6172,7 +6174,7 @@ static int fixup_bpf_calls(struct bpf_ve
+ 			const u8 code_sub = BPF_ALU64 | BPF_SUB | BPF_X;
+ 			struct bpf_insn insn_buf[16];
+ 			struct bpf_insn *patch = &insn_buf[0];
+-			bool issrc, isneg;
++			bool issrc, isneg, isimm;
+ 			u32 off_reg;
  
- 	return hdev;
- }
-+
-+void nci_hci_deallocate(struct nci_dev *ndev)
-+{
-+	kfree(ndev->hci_dev);
-+}
+ 			aux = &env->insn_aux_data[i + delta];
+@@ -6183,16 +6185,21 @@ static int fixup_bpf_calls(struct bpf_ve
+ 			isneg = aux->alu_state & BPF_ALU_NEG_VALUE;
+ 			issrc = (aux->alu_state & BPF_ALU_SANITIZE) ==
+ 				BPF_ALU_SANITIZE_SRC;
++			isimm = aux->alu_state & BPF_ALU_IMMEDIATE;
+ 
+ 			off_reg = issrc ? insn->src_reg : insn->dst_reg;
+-			if (isneg)
+-				*patch++ = BPF_ALU64_IMM(BPF_MUL, off_reg, -1);
+-			*patch++ = BPF_MOV32_IMM(BPF_REG_AX, aux->alu_limit);
+-			*patch++ = BPF_ALU64_REG(BPF_SUB, BPF_REG_AX, off_reg);
+-			*patch++ = BPF_ALU64_REG(BPF_OR, BPF_REG_AX, off_reg);
+-			*patch++ = BPF_ALU64_IMM(BPF_NEG, BPF_REG_AX, 0);
+-			*patch++ = BPF_ALU64_IMM(BPF_ARSH, BPF_REG_AX, 63);
+-			*patch++ = BPF_ALU64_REG(BPF_AND, BPF_REG_AX, off_reg);
++			if (isimm) {
++				*patch++ = BPF_MOV32_IMM(BPF_REG_AX, aux->alu_limit);
++			} else {
++				if (isneg)
++					*patch++ = BPF_ALU64_IMM(BPF_MUL, off_reg, -1);
++				*patch++ = BPF_MOV32_IMM(BPF_REG_AX, aux->alu_limit);
++				*patch++ = BPF_ALU64_REG(BPF_SUB, BPF_REG_AX, off_reg);
++				*patch++ = BPF_ALU64_REG(BPF_OR, BPF_REG_AX, off_reg);
++				*patch++ = BPF_ALU64_IMM(BPF_NEG, BPF_REG_AX, 0);
++				*patch++ = BPF_ALU64_IMM(BPF_ARSH, BPF_REG_AX, 63);
++				*patch++ = BPF_ALU64_REG(BPF_AND, BPF_REG_AX, off_reg);
++			}
+ 			if (!issrc)
+ 				*patch++ = BPF_MOV64_REG(insn->dst_reg, insn->src_reg);
+ 			insn->src_reg = BPF_REG_AX;
+@@ -6200,7 +6207,7 @@ static int fixup_bpf_calls(struct bpf_ve
+ 				insn->code = insn->code == code_add ?
+ 					     code_sub : code_add;
+ 			*patch++ = *insn;
+-			if (issrc && isneg)
++			if (issrc && isneg && !isimm)
+ 				*patch++ = BPF_ALU64_IMM(BPF_MUL, off_reg, -1);
+ 			cnt = patch - insn_buf;
+ 
 
 
