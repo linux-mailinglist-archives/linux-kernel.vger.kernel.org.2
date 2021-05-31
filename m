@@ -2,123 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EEEB03955F1
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 09:21:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A73D395601
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 09:23:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230247AbhEaHXY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 03:23:24 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:60331 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230143AbhEaHXV (ORCPT
+        id S230205AbhEaHZ1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 03:25:27 -0400
+Received: from mail-vs1-f54.google.com ([209.85.217.54]:37887 "EHLO
+        mail-vs1-f54.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230070AbhEaHZX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 03:23:21 -0400
-Received: from mail-wm1-f70.google.com ([209.85.128.70])
-        by youngberry.canonical.com with esmtps  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.93)
-        (envelope-from <krzysztof.kozlowski@canonical.com>)
-        id 1lncF3-0001PV-PC
-        for linux-kernel@vger.kernel.org; Mon, 31 May 2021 07:21:41 +0000
-Received: by mail-wm1-f70.google.com with SMTP id v2-20020a7bcb420000b0290146b609814dso2866733wmj.0
-        for <linux-kernel@vger.kernel.org>; Mon, 31 May 2021 00:21:41 -0700 (PDT)
+        Mon, 31 May 2021 03:25:23 -0400
+Received: by mail-vs1-f54.google.com with SMTP id s15so5564882vsi.4;
+        Mon, 31 May 2021 00:23:43 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=A3GSON0j3KJh2/Oj56KH/Htj1p3OWvu821JK06uHKfk=;
-        b=Q2PZfQJvi0BGqhpVKBMmFMSLfP6u4RcsKyo7s7Rh0MFy8sTNaqQaU3Yg2rqxeq6E9H
-         Zm2YwlcWNv17X2nzPemBdJSttDzDDKHeKw1W/Pxl2I7MQjktGNGiIW9Ah4vMfsj7tF58
-         8RZsrZRmfPN6mPJgSw2ERiAL/WhnwtI8wP3ytSat6oMcC8gA7MlQgsFMZjQ1yD4bODoD
-         qat1fYbT8pbTqNWAb3JqiWHgU5C+pXHmrHUH3b2DwtD/eNVQ+1fI87cOYrlxfbWp3BI7
-         jpvjSv2+KmwLJNg98NDWXSqFWGOjKGaypbOlEy9qurxWYgUaDaNx9S9V462iALxzrm9O
-         VzzA==
-X-Gm-Message-State: AOAM531QIdekhbDUmZUqB9xmYkUHpjW/PAUolCe7etrPkiVtfXLwzlYP
-        yglfuBjv9spceGvCiuRLShDI7kxJEeZE4/sAmFwq1AOU4RMYFMj7BxA8GHbrLAaaCFdozZ1j07F
-        eze8BoV+GK/2e1PyI0xQikaFOPzMw6FrgDMBLRWmHYQ==
-X-Received: by 2002:a5d:6d04:: with SMTP id e4mr20690495wrq.344.1622445701115;
-        Mon, 31 May 2021 00:21:41 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyNPl5seNhNk64GNvxyThbVLS2aeektyv2tIuWTKudSYCJFfU7ib3HhFvUqJqAh5HDGJq0JCA==
-X-Received: by 2002:a5d:6d04:: with SMTP id e4mr20690477wrq.344.1622445700918;
-        Mon, 31 May 2021 00:21:40 -0700 (PDT)
-Received: from localhost.localdomain (xdsl-188-155-185-9.adslplus.ch. [188.155.185.9])
-        by smtp.gmail.com with ESMTPSA id r4sm17199111wre.84.2021.05.31.00.21.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 31 May 2021 00:21:40 -0700 (PDT)
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        "John W. Linville" <linville@tuxdriver.com>,
-        Samuel Ortiz <sameo@linux.intel.com>, linux-nfc@lists.01.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     thadeu.cascardo@canonical.com, stable@vger.kernel.org,
-        syzbot+80fb126e7f7d8b1a5914@syzkaller.appspotmail.com,
-        butt3rflyh4ck <butterflyhuangxx@gmail.com>
-Subject: [RESEND PATCH] nfc: fix NULL ptr dereference in llcp_sock_getname() after failed connect
-Date:   Mon, 31 May 2021 09:21:38 +0200
-Message-Id: <20210531072138.5219-1-krzysztof.kozlowski@canonical.com>
-X-Mailer: git-send-email 2.27.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=yCQkAamaqjzLvYlJjCOp6ATLrw+uII+84I0DAql6qao=;
+        b=I0mp7wLdffOtLyPYNA1Yzr5makkrsAl6KlvblaJ/tyHpz1szQaFRdpGtpT+1RagC07
+         tgJSHuuzl1C0MVRqeiEVk5vdJA1Lq2MWepVYI7bd4x0KzKhHsAv8urDr33/5usUxF1ZT
+         SqwSf0Qqs33f92AHl6pHH3dBv7EWED5j2iKzoHZ1Ooztki2oorRkuij5bVBYyBUImDA3
+         F+duYMqdfG0tbid6c1ORi2+f5p281kgbSFcNNvZ6wf8GuIooYlEySq4U0FT/dshsGG9W
+         oymdM9iO60NHg5O09nUyYQ/JWlrTrtfb6tcrvgRh7XSXObILzJgY+oza4Myl89etHUp1
+         RBog==
+X-Gm-Message-State: AOAM532swbXjbyknLvGK43WTLcqWyM4ievGbWrnqRzRp3CYL597sSSQi
+        0GwdNIhbxf31LtuJQ/7ryqWwfPLFiqukki0Q2MzeGaHT
+X-Google-Smtp-Source: ABdhPJwisAqGQ1fkkuGH584QMhvbukZjzC0A91o+9LsKTto8IcyOAx6K18991priyM55NMhUMZ9aQGIKkExwtmvjbbk=
+X-Received: by 2002:a67:fb8c:: with SMTP id n12mr1679834vsr.18.1622445823003;
+ Mon, 31 May 2021 00:23:43 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <1622442963-54095-1-git-send-email-zou_wei@huawei.com>
+In-Reply-To: <1622442963-54095-1-git-send-email-zou_wei@huawei.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Mon, 31 May 2021 09:23:31 +0200
+Message-ID: <CAMuHMdV4fHpdm9tBMetde0ngRr8AuzcZ1sRFyFVKWCVg9TfspQ@mail.gmail.com>
+Subject: Re: [PATCH -next] dmaengine: rcar-dmac: Fix PM reference leak in rcar_dmac_probe()
+To:     Zou Wei <zou_wei@huawei.com>
+Cc:     Vinod <vkoul@kernel.org>,
+        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
+        Wolfram Sang <wsa+renesas@sang-engineering.com>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        dmaengine <dmaengine@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-It's possible to trigger NULL pointer dereference by local unprivileged
-user, when calling getsockname() after failed bind() (e.g. the bind
-fails because LLCP_SAP_MAX used as SAP):
+On Mon, May 31, 2021 at 8:17 AM Zou Wei <zou_wei@huawei.com> wrote:
+> pm_runtime_get_sync will increment pm usage counter even it failed.
+> Forgetting to putting operation will result in reference leak here.
+> Fix it by replacing it with pm_runtime_resume_and_get to keep usage
+> counter balanced.
+>
+> Reported-by: Hulk Robot <hulkci@huawei.com>
+> Signed-off-by: Zou Wei <zou_wei@huawei.com>
 
-  BUG: kernel NULL pointer dereference, address: 0000000000000000
-  CPU: 1 PID: 426 Comm: llcp_sock_getna Not tainted 5.13.0-rc2-next-20210521+ #9
-  Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.14.0-1 04/01/2014
-  Call Trace:
-   llcp_sock_getname+0xb1/0xe0
-   __sys_getpeername+0x95/0xc0
-   ? lockdep_hardirqs_on_prepare+0xd5/0x180
-   ? syscall_enter_from_user_mode+0x1c/0x40
-   __x64_sys_getpeername+0x11/0x20
-   do_syscall_64+0x36/0x70
-   entry_SYSCALL_64_after_hwframe+0x44/0xae
+Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
 
-This can be reproduced with Syzkaller C repro (bind followed by
-getpeername):
-https://syzkaller.appspot.com/x/repro.c?x=14def446e00000
+Gr{oetje,eeting}s,
 
-Cc: <stable@vger.kernel.org>
-Fixes: d646960f7986 ("NFC: Initial LLCP support")
-Reported-by: syzbot+80fb126e7f7d8b1a5914@syzkaller.appspotmail.com
-Reported-by: butt3rflyh4ck <butterflyhuangxx@gmail.com>
-Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+                        Geert
 
----
-
-Not extensively tested yet but fixes this particular issue.
-
-Reason for resend:
-1. Keep it public.
----
- net/nfc/llcp_sock.c | 2 ++
- 1 file changed, 2 insertions(+)
-
-diff --git a/net/nfc/llcp_sock.c b/net/nfc/llcp_sock.c
-index 53dbe733f998..6cfd30fc0798 100644
---- a/net/nfc/llcp_sock.c
-+++ b/net/nfc/llcp_sock.c
-@@ -110,6 +110,7 @@ static int llcp_sock_bind(struct socket *sock, struct sockaddr *addr, int alen)
- 	if (!llcp_sock->service_name) {
- 		nfc_llcp_local_put(llcp_sock->local);
- 		llcp_sock->local = NULL;
-+		llcp_sock->dev = NULL;
- 		ret = -ENOMEM;
- 		goto put_dev;
- 	}
-@@ -119,6 +120,7 @@ static int llcp_sock_bind(struct socket *sock, struct sockaddr *addr, int alen)
- 		llcp_sock->local = NULL;
- 		kfree(llcp_sock->service_name);
- 		llcp_sock->service_name = NULL;
-+		llcp_sock->dev = NULL;
- 		ret = -EADDRINUSE;
- 		goto put_dev;
- 	}
 -- 
-2.27.0
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
