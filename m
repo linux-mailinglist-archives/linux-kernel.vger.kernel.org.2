@@ -2,35 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7BFA2395F93
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 16:11:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C8B6A3965FE
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 18:53:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233454AbhEaONB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 10:13:01 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50374 "EHLO mail.kernel.org"
+        id S234324AbhEaQyh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 12:54:37 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51032 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232707AbhEaNpt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 09:45:49 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B53BE613F1;
-        Mon, 31 May 2021 13:30:02 +0000 (UTC)
+        id S234372AbhEaO7V (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 10:59:21 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DFC5F61CCA;
+        Mon, 31 May 2021 14:01:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1622467803;
-        bh=rf7cPGlsr9r9IO8aorgESSi4+8J3E7tJY5mVpyKmSEU=;
+        s=korg; t=1622469668;
+        bh=YN6Fa8RGRjU2S+rc9v9z1tqAVO9HBMiiCFEcAkIYEvk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=sUUjB/AEn8jve2LVXmmLtkGaS/ShZApcx6DZuR8Dc5Z2NSgEABRlah8vsCwSb+DIU
-         eL/Cy+Jxcto+duADvv3de2l9CNKQOVC7XROvCUmPyoUUpbZL+etR9sZ5Zeur1723+I
-         GdsBM7F7q9RIQeviCxKg0+IvWvOEkjlc+zVrmDVA=
+        b=iVXZAHQGhFbb0Q8NYyJb4hwtb8VPyyYETfZIOcZxpyG9XPL6VPeQLyVA/e+RyB09R
+         GlOUDm6eIjCIDf7jGjw8Kt2BvKHFvslQ6hJoFjetgCTjDRFBezwam/s5YOkhJxTu5B
+         mwqcXf3aaq9dsryF/DCPtp0EtngEjMXPYJ+JtnLc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Alan Stern <stern@rowland.harvard.edu>,
-        Chunfeng Yun <chunfeng.yun@mediatek.com>
-Subject: [PATCH 4.14 79/79] usb: core: reduce power-on-good delay time of root hub
-Date:   Mon, 31 May 2021 15:15:04 +0200
-Message-Id: <20210531130638.527025575@linuxfoundation.org>
+        stable@vger.kernel.org, Julian Wiedmann <jwi@linux.ibm.com>,
+        Karsten Graul <kgraul@linux.ibm.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.12 250/296] net/smc: remove device from smcd_dev_list after failed device_add()
+Date:   Mon, 31 May 2021 15:15:05 +0200
+Message-Id: <20210531130712.173086965@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210531130636.002722319@linuxfoundation.org>
-References: <20210531130636.002722319@linuxfoundation.org>
+In-Reply-To: <20210531130703.762129381@linuxfoundation.org>
+References: <20210531130703.762129381@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,39 +41,56 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Chunfeng Yun <chunfeng.yun@mediatek.com>
+From: Julian Wiedmann <jwi@linux.ibm.com>
 
-commit 90d28fb53d4a51299ff324dede015d5cb11b88a2 upstream.
+[ Upstream commit 444d7be9532dcfda8e0385226c862fd7e986f607 ]
 
-Return the exactly delay time given by root hub descriptor,
-this helps to reduce resume time etc.
+If the device_add() for a smcd_dev fails, there's no cleanup step that
+rolls back the earlier list_add(). The device subsequently gets freed,
+and we end up with a corrupted list.
 
-Due to the root hub descriptor is usually provided by the host
-controller driver, if there is compatibility for a root hub,
-we can fix it easily without affect other root hub
+Add some error handling that removes the device from the list.
 
-Acked-by: Alan Stern <stern@rowland.harvard.edu>
-Signed-off-by: Chunfeng Yun <chunfeng.yun@mediatek.com>
-Link: https://lore.kernel.org/r/1618017645-12259-1-git-send-email-chunfeng.yun@mediatek.com
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Fixes: c6ba7c9ba43d ("net/smc: add base infrastructure for SMC-D and ISM")
+Signed-off-by: Julian Wiedmann <jwi@linux.ibm.com>
+Signed-off-by: Karsten Graul <kgraul@linux.ibm.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/usb/core/hub.h |    6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+ net/smc/smc_ism.c | 11 ++++++++++-
+ 1 file changed, 10 insertions(+), 1 deletion(-)
 
---- a/drivers/usb/core/hub.h
-+++ b/drivers/usb/core/hub.h
-@@ -152,8 +152,10 @@ static inline unsigned hub_power_on_good
+diff --git a/net/smc/smc_ism.c b/net/smc/smc_ism.c
+index 94b31f2551bc..967712ba52a0 100644
+--- a/net/smc/smc_ism.c
++++ b/net/smc/smc_ism.c
+@@ -429,6 +429,8 @@ EXPORT_SYMBOL_GPL(smcd_alloc_dev);
+ 
+ int smcd_register_dev(struct smcd_dev *smcd)
  {
- 	unsigned delay = hub->descriptor->bPwrOn2PwrGood * 2;
++	int rc;
++
+ 	mutex_lock(&smcd_dev_list.mutex);
+ 	if (list_empty(&smcd_dev_list.list)) {
+ 		u8 *system_eid = NULL;
+@@ -448,7 +450,14 @@ int smcd_register_dev(struct smcd_dev *smcd)
+ 			    dev_name(&smcd->dev), smcd->pnetid,
+ 			    smcd->pnetid_by_user ? " (user defined)" : "");
  
--	/* Wait at least 100 msec for power to become stable */
--	return max(delay, 100U);
-+	if (!hub->hdev->parent)	/* root hub */
-+		return delay;
-+	else /* Wait at least 100 msec for power to become stable */
-+		return max(delay, 100U);
+-	return device_add(&smcd->dev);
++	rc = device_add(&smcd->dev);
++	if (rc) {
++		mutex_lock(&smcd_dev_list.mutex);
++		list_del(&smcd->list);
++		mutex_unlock(&smcd_dev_list.mutex);
++	}
++
++	return rc;
  }
+ EXPORT_SYMBOL_GPL(smcd_register_dev);
  
- static inline int hub_port_debounce_be_connected(struct usb_hub *hub,
+-- 
+2.30.2
+
 
 
