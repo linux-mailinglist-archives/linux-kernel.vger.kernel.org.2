@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E4E0F395B6F
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 15:19:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E816395E85
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 15:58:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232173AbhEaNUa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 09:20:30 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54630 "EHLO mail.kernel.org"
+        id S232408AbhEaN7z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 09:59:55 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43906 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231901AbhEaNS6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 09:18:58 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A807D613B9;
-        Mon, 31 May 2021 13:17:17 +0000 (UTC)
+        id S232673AbhEaNjN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 09:39:13 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 71C1561407;
+        Mon, 31 May 2021 13:26:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1622467038;
-        bh=TZ1fnRSoKJRIWFEITTG6TBwaas4R2PbL9JaB0/IamRE=;
+        s=korg; t=1622467614;
+        bh=wxVFKMFiDRJXDXWt/Voc6UmEZANj90GOwxSpSjYcKKg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=l/TswDVEGWkbTL3p/BXe4qvJzmagw+wbBqTlM+Mph9rzlfLToF5uErJTUX3Od5v4u
-         z6iZ/ku//m+PM7G3eyv+NWeMZQFcL98kDSES30RgFxwqbciigRfikmahCa+uim74ho
-         xcLlKQM0GutCr136fOJ7ty3R55ThauOt5tQaAjv4=
+        b=TmubtRvqo+nda+dJrLQau16B7UJDW+5p0LG3Fah2fb0nKqIMdYyho2B/5dK7zrn6E
+         f0iUngdYJjsg2rKl7WpM/lR/4D6M/5Dyhv1hH1Otbho6xgDNXdVNzOFXiPSb9QS67j
+         Od0oL+b0n1j9Jr15y2AYEpUXWug5Wiam29oVgbJY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Tom Seewald <tseewald@gmail.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.4 34/54] char: hpet: add checks after calling ioremap
+        stable@vger.kernel.org, Mathy Vanhoef <Mathy.Vanhoef@kuleuven.be>,
+        Johannes Berg <johannes.berg@intel.com>
+Subject: [PATCH 4.14 15/79] cfg80211: mitigate A-MSDU aggregation attacks
 Date:   Mon, 31 May 2021 15:14:00 +0200
-Message-Id: <20210531130636.150275669@linuxfoundation.org>
+Message-Id: <20210531130636.493906497@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210531130635.070310929@linuxfoundation.org>
-References: <20210531130635.070310929@linuxfoundation.org>
+In-Reply-To: <20210531130636.002722319@linuxfoundation.org>
+References: <20210531130636.002722319@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,46 +39,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tom Seewald <tseewald@gmail.com>
+From: Mathy Vanhoef <Mathy.Vanhoef@kuleuven.be>
 
-[ Upstream commit b11701c933112d49b808dee01cb7ff854ba6a77a ]
+commit 2b8a1fee3488c602aca8bea004a087e60806a5cf upstream.
 
-The function hpet_resources() calls ioremap() two times, but in both
-cases it does not check if ioremap() returned a null pointer. Fix this
-by adding null pointer checks and returning an appropriate error.
+Mitigate A-MSDU injection attacks (CVE-2020-24588) by detecting if the
+destination address of a subframe equals an RFC1042 (i.e., LLC/SNAP)
+header, and if so dropping the complete A-MSDU frame. This mitigates
+known attacks, although new (unknown) aggregation-based attacks may
+remain possible.
 
-Signed-off-by: Tom Seewald <tseewald@gmail.com>
-Link: https://lore.kernel.org/r/20210503115736.2104747-30-gregkh@linuxfoundation.org
+This defense works because in A-MSDU aggregation injection attacks, a
+normal encrypted Wi-Fi frame is turned into an A-MSDU frame. This means
+the first 6 bytes of the first A-MSDU subframe correspond to an RFC1042
+header. In other words, the destination MAC address of the first A-MSDU
+subframe contains the start of an RFC1042 header during an aggregation
+attack. We can detect this and thereby prevent this specific attack.
+For details, see Section 7.2 of "Fragment and Forge: Breaking Wi-Fi
+Through Frame Aggregation and Fragmentation".
+
+Note that for kernel 4.9 and above this patch depends on "mac80211:
+properly handle A-MSDUs that start with a rfc1042 header". Otherwise
+this patch has no impact and attacks will remain possible.
+
+Cc: stable@vger.kernel.org
+Signed-off-by: Mathy Vanhoef <Mathy.Vanhoef@kuleuven.be>
+Link: https://lore.kernel.org/r/20210511200110.25d93176ddaf.I9e265b597f2cd23eb44573f35b625947b386a9de@changeid
+Signed-off-by: Johannes Berg <johannes.berg@intel.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/char/hpet.c | 4 ++++
- 1 file changed, 4 insertions(+)
+ net/wireless/util.c |    3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/drivers/char/hpet.c b/drivers/char/hpet.c
-index 5b38d7a8202a..eb205f9173f4 100644
---- a/drivers/char/hpet.c
-+++ b/drivers/char/hpet.c
-@@ -976,6 +976,8 @@ static acpi_status hpet_resources(struct acpi_resource *res, void *data)
- 	if (ACPI_SUCCESS(status)) {
- 		hdp->hd_phys_address = addr.address.minimum;
- 		hdp->hd_address = ioremap(addr.address.minimum, addr.address.address_length);
-+		if (!hdp->hd_address)
-+			return AE_ERROR;
+--- a/net/wireless/util.c
++++ b/net/wireless/util.c
+@@ -767,6 +767,9 @@ void ieee80211_amsdu_to_8023s(struct sk_
+ 		remaining = skb->len - offset;
+ 		if (subframe_len > remaining)
+ 			goto purge;
++		/* mitigate A-MSDU aggregation injection attacks */
++		if (ether_addr_equal(eth.h_dest, rfc1042_header))
++			goto purge;
  
- 		if (hpet_is_known(hdp)) {
- 			iounmap(hdp->hd_address);
-@@ -989,6 +991,8 @@ static acpi_status hpet_resources(struct acpi_resource *res, void *data)
- 		hdp->hd_phys_address = fixmem32->address;
- 		hdp->hd_address = ioremap(fixmem32->address,
- 						HPET_RANGE_SIZE);
-+		if (!hdp->hd_address)
-+			return AE_ERROR;
- 
- 		if (hpet_is_known(hdp)) {
- 			iounmap(hdp->hd_address);
--- 
-2.30.2
-
+ 		offset += sizeof(struct ethhdr);
+ 		last = remaining <= subframe_len + padding;
 
 
