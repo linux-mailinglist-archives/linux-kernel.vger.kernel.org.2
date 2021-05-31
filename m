@@ -2,37 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7DB71395C82
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 15:33:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CF92B3962BA
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 16:59:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232408AbhEaNdr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 09:33:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55470 "EHLO mail.kernel.org"
+        id S233098AbhEaPAn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 11:00:43 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37384 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231837AbhEaNYZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 09:24:25 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C874F613FA;
-        Mon, 31 May 2021 13:20:27 +0000 (UTC)
+        id S232845AbhEaOF6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 10:05:58 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D2CD561961;
+        Mon, 31 May 2021 13:38:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1622467228;
-        bh=aTgG2riFV4u4JLKEo+ZITnnT3/960WFFm2TRp9q+8JY=;
+        s=korg; t=1622468326;
+        bh=pBUucN1CUmgv4k81TvkPDg3hIErTW1iRDuFbp3Yj5vw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=jtmvuRkgRAVpTHzB0bGrHkJUIsAcuOBOf8EQiQgZ/x0r+G4c/HJ62sgGFBdZSgzjX
-         N69oVbznf8rIHs08o1GfoD+P0iN1GQWyuruQCpK7RirFnQ8uH0sou1QPqrO/ZGnbLY
-         Rj4W6pCc+BwU8lbo2sEANI1AMRwVZCiTf77T1K2Q=
+        b=qz13NmLLC77/w6xktIwBMff+dwxltSA+2kXunjWjfWMcjFa8qm7iQvmI305rkLZEQ
+         zCniIaK9skdBr9mG6TFnLcYjeznzAaxxS9naiA4d0s7flG4iS3L74CRAHvd/UBkIsH
+         Db5YBB32godem4CgVF1T/DoptwsMy7HL+QEPEV/c=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
         Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        Russell King <rmk+kernel@armlinux.org.uk>,
+        Andrew Lunn <andrew@lunn.ch>,
         "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 54/66] net: netcp: Fix an error message
+Subject: [PATCH 5.10 202/252] net: mdio: thunder: Fix a double free issue in the .remove function
 Date:   Mon, 31 May 2021 15:14:27 +0200
-Message-Id: <20210531130637.965032742@linuxfoundation.org>
+Message-Id: <20210531130704.877870004@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210531130636.254683895@linuxfoundation.org>
-References: <20210531130636.254683895@linuxfoundation.org>
+In-Reply-To: <20210531130657.971257589@linuxfoundation.org>
+References: <20210531130657.971257589@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,37 +45,36 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 
-[ Upstream commit ddb6e00f8413e885ff826e32521cff7924661de0 ]
+[ Upstream commit a93a0a15876d2a077a3bc260b387d2457a051f24 ]
 
-'ret' is known to be 0 here.
-The expected error code is stored in 'tx_pipe->dma_queue', so use it
-instead.
+'bus->mii_bus' have been allocated with 'devm_mdiobus_alloc_size()' in the
+probe function. So it must not be freed explicitly or there will be a
+double free.
 
-While at it, switch from %d to %pe which is more user friendly.
+Remove the incorrect 'mdiobus_free' in the remove function.
 
-Fixes: 84640e27f230 ("net: netcp: Add Keystone NetCP core ethernet driver")
+Fixes: 379d7ac7ca31 ("phy: mdio-thunder: Add driver for Cavium Thunder SoC MDIO buses.")
 Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Reviewed-by: Russell King <rmk+kernel@armlinux.org.uk>
+Reviewed-by: Andrew Lunn <andrew@lunn.ch>
 Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/ti/netcp_core.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/net/mdio/mdio-thunder.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/drivers/net/ethernet/ti/netcp_core.c b/drivers/net/ethernet/ti/netcp_core.c
-index 32516661f180..a55e83a0946a 100644
---- a/drivers/net/ethernet/ti/netcp_core.c
-+++ b/drivers/net/ethernet/ti/netcp_core.c
-@@ -1325,8 +1325,8 @@ int netcp_txpipe_open(struct netcp_tx_pipe *tx_pipe)
- 	tx_pipe->dma_queue = knav_queue_open(name, tx_pipe->dma_queue_id,
- 					     KNAV_QUEUE_SHARED);
- 	if (IS_ERR(tx_pipe->dma_queue)) {
--		dev_err(dev, "Could not open DMA queue for channel \"%s\": %d\n",
--			name, ret);
-+		dev_err(dev, "Could not open DMA queue for channel \"%s\": %pe\n",
-+			name, tx_pipe->dma_queue);
- 		ret = PTR_ERR(tx_pipe->dma_queue);
- 		goto err;
+diff --git a/drivers/net/mdio/mdio-thunder.c b/drivers/net/mdio/mdio-thunder.c
+index 3d7eda99d34e..dd7430c998a2 100644
+--- a/drivers/net/mdio/mdio-thunder.c
++++ b/drivers/net/mdio/mdio-thunder.c
+@@ -126,7 +126,6 @@ static void thunder_mdiobus_pci_remove(struct pci_dev *pdev)
+ 			continue;
+ 
+ 		mdiobus_unregister(bus->mii_bus);
+-		mdiobus_free(bus->mii_bus);
+ 		oct_mdio_writeq(0, bus->register_base + SMI_EN);
  	}
+ 	pci_release_regions(pdev);
 -- 
 2.30.2
 
