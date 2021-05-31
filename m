@@ -2,184 +2,329 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D74B396A30
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 01:55:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E2591396A37
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 01:59:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232364AbhEaX5M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 19:57:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55382 "EHLO
+        id S232460AbhFAABU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 20:01:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56304 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231144AbhEaX5G (ORCPT
+        with ESMTP id S232081AbhFAABS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 19:57:06 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E960FC061574;
-        Mon, 31 May 2021 16:55:25 -0700 (PDT)
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1622505322;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=u5vmi0BzxnECvD2BBqu/D7TOOgm9sE7/xlUP8a9uvWs=;
-        b=H5FKsko1bTRHWPqeQ2kRNRMqLN4bOcJ9nfCBeWkLBObvDeLp54FgetIr6v1e6QopS3QkSR
-        mfx/tB377SutMQutlDIQByh9Wmyf+Ir3B/VbcQv3seYIJk101FW3G8m8k9HbaxbNGzzZ34
-        D7LEaXY/QfL+XRnTx94MPwT+xivbHJVRCSUGgtlZXghkZ7v6+NVgZEkGQpOx/ZR/qmp9n5
-        wLDBIeAat1f9eHTE3LXcsyyUNquKP8fb6EhKBa6oya4N7kINX/7K5g5lVBUdWjjOKcmotR
-        d7+mMvuC91vmjVwuZtp8l3IKw88ieD4JadxykMSV5lPGLziC00ALD5SfqnehZQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1622505322;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=u5vmi0BzxnECvD2BBqu/D7TOOgm9sE7/xlUP8a9uvWs=;
-        b=EnKEeq4eCDQWpPXobGzy1vV5xqo1QlJ7DDzMdhqa/6bwfBXMdBYNq6bqLtaDAehgUQmAPu
-        c/oCuCqK2sxtUICQ==
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     Dave Jiang <dave.jiang@intel.com>, alex.williamson@redhat.com,
-        kwankhede@nvidia.com, vkoul@kernel.org, megha.dey@intel.com,
-        jacob.jun.pan@intel.com, ashok.raj@intel.com, yi.l.liu@intel.com,
-        baolu.lu@intel.com, kevin.tian@intel.com, sanjay.k.kumar@intel.com,
-        tony.luck@intel.com, dan.j.williams@intel.com,
-        eric.auger@redhat.com, pbonzini@redhat.com,
-        dmaengine@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org
-Subject: Re: [PATCH v6 15/20] vfio/mdev: idxd: ims domain setup for the vdcm
-In-Reply-To: <20210531165754.GV1002214@nvidia.com>
-References: <162164243591.261970.3439987543338120797.stgit@djiang5-desk3.ch.intel.com> <162164283796.261970.11020270418798826121.stgit@djiang5-desk3.ch.intel.com> <20210523235023.GL1002214@nvidia.com> <87mtsb3sth.ffs@nanos.tec.linutronix.de> <20210531165754.GV1002214@nvidia.com>
-Date:   Tue, 01 Jun 2021 01:55:22 +0200
-Message-ID: <875yyy31cl.ffs@nanos.tec.linutronix.de>
+        Mon, 31 May 2021 20:01:18 -0400
+Received: from mail-ot1-x32f.google.com (mail-ot1-x32f.google.com [IPv6:2607:f8b0:4864:20::32f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C19DFC061756
+        for <linux-kernel@vger.kernel.org>; Mon, 31 May 2021 16:59:37 -0700 (PDT)
+Received: by mail-ot1-x32f.google.com with SMTP id h24-20020a9d64180000b029036edcf8f9a6so12534404otl.3
+        for <linux-kernel@vger.kernel.org>; Mon, 31 May 2021 16:59:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=glM+C18tv5YQVj5/3djZjAFcNCXaUEK5klQIVDIAczU=;
+        b=FMuyAcYFLSWB3uOIDEXlTXhvyUTXUn1bWKFbWiA9bMxsneSTUIiZhdH4xiLRE66ZGF
+         bQdN9UnqSysCily13bWLbN1brLzfam78aahwvSkG5vu0XEI8QLH1jk74UwuLfkaA4HE/
+         Bk2/wykbjD+1mWEUGUQjBpkq68m6Qns5yKA6uPfAIeS01OIcySV8ThmHWeg21pzGkzI/
+         3qSNLYjd+NDFzstSMQGSoUuwbRkLyPyamKTKutFvNS4kAZoDhBcDokkC7Y5Kuu8+963t
+         i7bGgTj2PokolR3bR01Eq9CQCydrq22gJHAYgdXp/LX0zxYU8gI6Glxygj+SztbjO1NS
+         RVcw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=glM+C18tv5YQVj5/3djZjAFcNCXaUEK5klQIVDIAczU=;
+        b=e+MtVjv4RTtsmbiLApUJ9Eo0oMoYXm6FZ/1ioq1xJhQrqJLSgNDKEEY3AXozDv9cm2
+         zZnRd9q32vW/KxGPN89juBoENBUEJeQPa45gsOSpl22iGupeOOM5phiKoO9u0j3ZUcfI
+         rj7VInGEIuR5kUdwzEN271GjGeuSPF7raid+5V9oh0JRpgdlmP3vmmhHVk7ZdB1xSFO8
+         pHguupUGbf2Rz6VScHc4MHH4uJPJKhu1/TuNL18zZRsuoG441oymyvpxgNBYx7cvKVkb
+         EDmKpWgfKQU43fwjzR77+AP5sw++TZ3ENfbqegj90OjFbD70ZPbnGAlPn6x7pAeCnCSP
+         xxAw==
+X-Gm-Message-State: AOAM532K2Yc2DjF8xcVhRhhZ3rHcETXvN6IVci8MKXEZRcYU1cvoRpBz
+        LidVeyFGQLZT8XbWh3qtpTrLRQ==
+X-Google-Smtp-Source: ABdhPJztsKdq6JSZNHeszl+Q7oCjj5gIbagpseiWKtvrPIEIGLWjKmMd9DYYeJyc6j0J7bUepY+lZA==
+X-Received: by 2002:a9d:63cc:: with SMTP id e12mr3725492otl.89.1622505576869;
+        Mon, 31 May 2021 16:59:36 -0700 (PDT)
+Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
+        by smtp.gmail.com with ESMTPSA id y14sm3333029otq.4.2021.05.31.16.59.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 31 May 2021 16:59:36 -0700 (PDT)
+Date:   Mon, 31 May 2021 18:59:34 -0500
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@somainline.org>
+Cc:     agross@kernel.org, robh+dt@kernel.org, lgirdwood@gmail.com,
+        broonie@kernel.org, linux-arm-msm@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        phone-devel@vger.kernel.org, konrad.dybcio@somainline.org,
+        marijn.suijten@somainline.org, jeffrey.l.hugo@gmail.com
+Subject: Re: [PATCH v5 1/3] soc: qcom: Add support for Core Power Reduction
+ v3, v4 and Hardened
+Message-ID: <YLV4ZnJ8SUbwpatl@builder.lan>
+References: <20210121194051.484209-1-angelogioacchino.delregno@somainline.org>
+ <20210121194051.484209-2-angelogioacchino.delregno@somainline.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210121194051.484209-2-angelogioacchino.delregno@somainline.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 31 2021 at 13:57, Jason Gunthorpe wrote:
-> On Mon, May 31, 2021 at 04:02:02PM +0200, Thomas Gleixner wrote:
->> > I'm quite surprised that every mdev doesn't create its own ims_domain
->> > in its probe function.
->> 
->> What for?
->
-> IDXD wouldn't need it, but proper IMS HW with no bound of number of
-> vectors can't provide a ims_info.max_slots value here.
+On Thu 21 Jan 13:40 CST 2021, AngeloGioacchino Del Regno wrote:
 
-There is no need to do so:
+> This commit introduces a new driver, based on the one for cpr v1,
+> to enable support for the newer Qualcomm Core Power Reduction
+> hardware, known downstream as CPR3, CPR4 and CPRh, and support
+> for MSM8998 and SDM630 CPU power reduction.
+> 
+> In these new versions of the hardware, support for various new
+> features was introduced, including voltage reduction for the GPU,
+> security hardening and a new way of controlling CPU DVFS,
+> consisting in internal communication between microcontrollers,
+> specifically the CPR-Hardened and the Operating State Manager.
+> 
+> The CPR v3, v4 and CPRh are present in a broad range of SoCs,
+> from the mid-range to the high end ones including, but not limited
+> to, MSM8953/8996/8998, SDM630/636/660/845.
 
-     https://lore.kernel.org/r/20200826112335.202234502@linutronix.de
-
-which has the IMS_MSI_QUEUE variant at which you looked at and said:
-
- "I haven't looked through everything in detail, but this does look like
-  it is good for the mlx5 devices."
-
-ims_info.max_slots is a property of the IMS_MSI_ARRAY and does not make
-any restrictions on other storage.
-  
-> Instead each use use site, like VFIO, would want to specify the number
-> of vectors to allocate for its own usage, then parcel them out one by
-> one in the normal way. Basically VFIO is emulating a normal MSI-X
-> table.
-
-Just with a size which exceeds a normal MSI-X table, but that's an
-implementation detail of the underlying physical device. It does not put
-any restrictions on mdev at all.
-
->> > This places a global total limit on the # of vectors which makes me
->> > ask what was the point of using IMS in the first place ?
->>
->> That depends on how IMS is implemented. The IDXD variant has a fixed
->> sized message store which is shared between all subdevices, so yet
->> another domain would not provide any value.
->
-> Right, IDXD would have been perfectly happy to use the normal MSI-X
-> table from what I can see.
-
-Again. No, it's a storage size problem and regular MSI-X does not
-support auxiliary data.
-
->> For the case where the IMS store is seperate, you still have one central
->> irqdomain per physical device. The domain allocation function can then
->> create storage on demand or reuse existing storage and just fill in the
->> pointers.
->
-> I think it is philosophically backwards, and it is in part what is
-> motivating pretending this weird auxdomain and PASID stuff is generic.
-
-That's a different story and as I explained to Dave already hacking all
-this into mdev is backwards, but that does not make your idea of a
-irqdomain per mdev any more reasonable.
-
-The mdev does not do anything irq chip/domain related. It uses what the
-underlying physical device provides. If you think otherwise then please
-provide me the hierarchical model which I explained here:
-
- https://lore.kernel.org/r/87h7tcgbs2.fsf@nanos.tec.linutronix.de
- https://lore.kernel.org/r/87bljg7u4f.fsf@nanos.tec.linutronix.de
-
-> The VFIO model is the IRQ table is associated with a VM. When the
-> vfio_device is created it decides how big the MSI-X table will be and
-> it needs to allocate a block of interrupts to emulate it. For security
-> those interrupts need to be linked in the HW to the vfio_device and
-> the VM. ie VM A cannot trigger an interrupt that would deliver to VM
-> B.
-
-Fine.
-
-> IDXD choose to use the PASID, but other HW might use a generic VM_ID.
-
-So what?
-
-> Further, IDXD choose to use a VM_ID per IMS entry, but other HW is
-> likely to use a VM_ID per block of IMS entries. Ie the HW tree starts
-> a VM object, then locates the IMS table for that object, then triggers
-> the interrupt.
-
-If you read my other reply to Dave carefuly then you might have noticed
-that this is crap and irrelevant because the ID (whatever it is) is per
-device and that ID has to be stored in the device. Whether the actual
-irq chip/domain driver implementation uses it per associated irq or not
-does not matter at all.
-
-> If we think about the later sort of HW I don't think the whole aux
-> data and domain per pci function makes alot of sense.
-
-First of all that is already debunked and will go nowhere and second
-there is no requirement to implement this for some other incarnation of
-IMS when done correctly. That whole irq_set_auxdata() stuff is not going
-anywhere simply because it's not needed at all.
-
-All what's needed is a function to store some sort of ID per device
-(mdev) and the underlying IMS driver takes care of what to do with it.
-
-That has to happen before the interrupts are allocated and if that info
-is invalid then the allocation function can reject it.
-
-> You'd want a domain per VM_ID and all the IMS entires in that domain
-> share the same VM_ID. In this regard the irq domain will correspond to
-> the security boundary.
-
-The real problems are:
-
-  - Intel misled me with the requirement to set PASID after the fact
-    which is simply wrong and what caused me to come up with that
-    irq_set_auxdata() workaround.
-
-  - Their absolute ignorance for proper layering led to adding all that
-    irq_set_auxdata() muck to this mdev library.
-
-Ergo, the proper thing to do is to fix this ID storage problem (PASID,
-VM_ID or whatever) at the proper place, i.e. store it in struct device
-(which is associated to that mdev) and let the individual drivers handle
-it as they require.
-
-It's that simple and this needs to be fixed and not some made up
-philosophical question about irqdomains per mdev. Those would be even
-worse than what Intel did here.
-
-Thanks,
-
-        tglx
+Why is 845 in this list? I was under the impression that CPR was dealt
+with entirely by firmware starting in 845.
 
 
+Also, you don't happen to have the 8996 data laying around somewhere?
+
+> diff --git a/drivers/soc/qcom/cpr3.c b/drivers/soc/qcom/cpr3.c
+[..]
+> +/*
+> + * cpr_get_ring_osc_factor - Get fuse corner ring oscillator factor
+> + *
+> + * Not all threads have different scaling factors for each
+> + * Fuse Corner: if the RO factors are the same for all corners,
+> + * then only one is specified, instead of uselessly repeating
+> + * the same array for FC-times.
+> + * This function checks for the same and gives back the right
+> + * factor for the requested ring oscillator.
+> + *
+> + * Returns: Ring oscillator factor
+
+This is almost kerneldoc, how about adding another '*', some parenthesis
+on the function name, short description of the parameters and dropping
+the 's' on Return?
+
+> + */
+> +static int cpr_get_ro_factor(const struct cpr_thread_desc *tdesc,
+> +			     int fnum, int ro_idx)
+> +{
+> +	int ro_fnum;
+> +
+> +	if (tdesc->ro_avail_corners == tdesc->num_fuse_corners)
+> +		ro_fnum = fnum;
+> +	else
+> +		ro_fnum = 0;
+> +
+> +	return tdesc->ro_scaling_factor[ro_fnum][ro_idx];
+> +}
+> +
+> +static void cpr_write(struct cpr_thread *thread, u32 offset, u32 value)
+> +{
+> +	writel_relaxed(value, thread->base + offset);
+
+I dislike the fact that we default to the _relaxed() version of
+readl/writel. Can we please switch them for non-relaxed versions, or
+document why they all need to be _relaxed?
+
+> +}
+> +
+> +static u32 cpr_read(struct cpr_thread *thread, u32 offset)
+> +{
+> +	return readl_relaxed(thread->base + offset);
+> +}
+> +
+> +static void
+> +cpr_masked_write(struct cpr_thread *thread, u32 offset, u32 mask, u32 value)
+> +{
+> +	u32 val;
+> +
+> +	val = readl_relaxed(thread->base + offset);
+> +	val &= ~mask;
+> +	val |= value & mask;
+> +	writel_relaxed(val, thread->base + offset);
+> +}
+> +
+> +static void cpr_irq_clr(struct cpr_thread *thread)
+> +{
+> +	cpr_write(thread, CPR3_REG_IRQ_CLEAR, CPR3_IRQ_ALL);
+> +}
+> +
+> +static void cpr_irq_clr_nack(struct cpr_thread *thread)
+> +{
+> +	cpr_irq_clr(thread);
+> +	cpr_write(thread, CPR3_REG_CONT_CMD, CPR3_CONT_CMD_NACK);
+> +}
+> +
+> +static void cpr_irq_clr_ack(struct cpr_thread *thread)
+> +{
+> +	cpr_irq_clr(thread);
+> +	cpr_write(thread, CPR3_REG_CONT_CMD, CPR3_CONT_CMD_ACK);
+> +}
+> +
+> +static void cpr_irq_set(struct cpr_thread *thread, u32 int_bits)
+> +{
+> +	/* On CPR-hardened, interrupts are managed by and on firmware */
+> +	if (thread->drv->desc->cpr_type == CTRL_TYPE_CPRH)
+> +		return;
+> +
+> +	cpr_write(thread, CPR3_REG_IRQ_EN, int_bits);
+> +}
+> +
+> +/**
+> + * cpr_ctl_enable - Enable CPR thread
+
+() after the function name, here an in all kerneldoc comments below.
+
+> + * @thread:     Structure holding CPR thread-specific parameters
+> + */
+> +static void cpr_ctl_enable(struct cpr_thread *thread)
+> +{
+> +	if (thread->drv->enabled && !thread->restarting)
+> +		cpr_masked_write(thread, CPR3_REG_CPR_CTL,
+> +				CPR3_CPR_CTL_LOOP_EN_MASK,
+> +				CPR3_CPR_CTL_LOOP_EN_MASK);
+
+Please wrap this "block" in {}
+
+> +}
+> +
+> +/**
+> + * cpr_ctl_disable - Disable CPR thread
+> + * @thread:     Structure holding CPR thread-specific parameters
+> + */
+> +static void cpr_ctl_disable(struct cpr_thread *thread)
+> +{
+> +	const struct cpr_desc *desc = thread->drv->desc;
+> +
+> +	if (desc->cpr_type != CTRL_TYPE_CPRH) {
+> +		cpr_irq_set(thread, 0);
+> +		cpr_irq_clr(thread);
+> +	}
+> +
+> +	cpr_masked_write(thread, CPR3_REG_CPR_CTL,
+> +			 CPR3_CPR_CTL_LOOP_EN_MASK, 0);
+> +}
+> +
+> +/**
+> + * cpr_ctl_is_enabled - Check if thread is enabled
+> + * @thread:     Structure holding CPR thread-specific parameters
+> + *
+> + * Returns: true if the CPR is enabled, false if it is disabled.
+
+It's supposed to be "Return:"
+
+> + */
+> +static bool cpr_ctl_is_enabled(struct cpr_thread *thread)
+> +{
+> +	u32 reg_val;
+> +
+> +	reg_val = cpr_read(thread, CPR3_REG_CPR_CTL);
+> +	return reg_val & CPR3_CPR_CTL_LOOP_EN_MASK;
+> +}
+> +
+[..]
+> +/**
+> + * cpr_configure - Configure main HW parameters
+> + * @thread: Structure holding CPR thread-specific parameters
+> + *
+> + * This function configures the main CPR hardware parameters, such as
+> + * internal timers (and delays), sensor ownerships, activates and/or
+> + * deactivates cpr-threads and others, as one sequence for all of the
+> + * versions supported in this driver. By design, the function may
+> + * return a success earlier if the sequence for "a previous version"
+> + * has ended.
+> + *
+> + * NOTE: The CPR must be clocked before calling this function!
+
+I think "Context: " is suitable for this type of comments.
+
+> + *
+> + * Returns: Zero for success or negative number on errors.
+> + */
+> +static int cpr_configure(struct cpr_thread *thread)
+> +{
+> +	struct cpr_drv *drv = thread->drv;
+> +	const struct cpr_desc *desc = drv->desc;
+> +	const struct cpr_thread_desc *tdesc = thread->desc;
+> +	u32 val;
+> +	int i;
+> +
+> +	/* Disable interrupt and CPR */
+> +	cpr_irq_set(thread, 0);
+> +	cpr_write(thread, CPR3_REG_CPR_CTL, 0);
+> +
+> +	/* Init and save gcnt */
+> +	drv->gcnt = drv->ref_clk_khz * desc->gcnt_us;
+> +	do_div(drv->gcnt, 1000);
+> +
+> +	/* Program the delay count for the timer */
+> +	val = drv->ref_clk_khz * desc->timer_delay_us;
+> +	do_div(val, 1000);
+> +	if (desc->cpr_type == CTRL_TYPE_CPR3) {
+> +		cpr_write(thread, CPR3_REG_CPR_TIMER_MID_CONT, val);
+> +
+> +		val = drv->ref_clk_khz * desc->timer_updn_delay_us;
+> +		do_div(val, 1000);
+> +		cpr_write(thread, CPR3_REG_CPR_TIMER_UP_DN_CONT, val);
+> +	} else {
+> +		cpr_write(thread, CPR3_REG_CPR_TIMER_AUTO_CONT, val);
+> +	}
+> +	dev_dbg(drv->dev, "Timer count: %#0x (for %d us)\n", val,
+> +		desc->timer_delay_us);
+> +
+> +	/* Program the control register */
+> +	val = desc->idle_clocks << CPR3_CPR_CTL_IDLE_CLOCKS_SHIFT
+> +	    | desc->count_mode << CPR3_CPR_CTL_COUNT_MODE_SHIFT
+> +	    | desc->count_repeat << CPR3_CPR_CTL_COUNT_REPEAT_SHIFT;
+
+I think it's idiomatic to have the | at the end of the previous line,
+rather than start with it. And below you repeat val |=, pick one style
+and stick with that.
+
+> +	cpr_write(thread, CPR3_REG_CPR_CTL, val);
+> +
+> +	/* Configure CPR default step quotients */
+> +	val = tdesc->step_quot_init_min << CPR3_CPR_STEP_QUOT_MIN_SHIFT
+> +	    | tdesc->step_quot_init_max << CPR3_CPR_STEP_QUOT_MAX_SHIFT;
+> +
+> +	cpr_write(thread, CPR3_REG_CPR_STEP_QUOT, val);
+> +
+> +	/*
+> +	 * Configure the CPR sensor ownership always on thread 0
+> +	 * TODO: SDM845 has different ownership for sensors!!
+> +	 */
+> +	for (i = tdesc->sensor_range_start; i < tdesc->sensor_range_end; i++)
+> +		cpr_write(thread, CPR3_REG_SENSOR_OWNER(i), 0);
+> +
+> +	/* Program Consecutive Up & Down */
+> +	val = desc->timer_cons_up << CPR3_THRESH_CONS_UP_SHIFT;
+> +	val |= desc->timer_cons_down << CPR3_THRESH_CONS_DOWN_SHIFT;
+> +	val |= desc->up_threshold << CPR3_THRESH_UP_THRESH_SHIFT;
+> +	val |= desc->down_threshold << CPR3_THRESH_DOWN_THRESH_SHIFT;
+> +	cpr_write(thread, CPR3_REG_THRESH(tdesc->hw_tid), val);
+> +
+> +	/* Mask all ring oscillators for all threads initially */
+> +	cpr_write(thread, CPR3_REG_RO_MASK(tdesc->hw_tid), CPR3_RO_MASK);
+> +
+> +	/* HW Closed-loop control */
+> +	if (desc->cpr_type == CTRL_TYPE_CPR3)
+
+Some {} here and in various places below, please
+
+> +		cpr_write(thread, CPR3_REG_HW_CLOSED_LOOP_DISABLED,
+> +			  !desc->hw_closed_loop_en);
+> +	else
+> +		cpr_masked_write(thread, CPR4_REG_MARGIN_ADJ_CTL,
+> +				CPR4_MARGIN_ADJ_HW_CLOSED_LOOP_EN,
+> +				desc->hw_closed_loop_en ?
+> +				CPR4_MARGIN_ADJ_HW_CLOSED_LOOP_EN : 0);
+
+Regards,
+Bjorn
