@@ -2,35 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0CC9A395F57
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 16:08:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EA074396419
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 17:44:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230323AbhEaOKL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 10:10:11 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50842 "EHLO mail.kernel.org"
+        id S232968AbhEaPqJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 11:46:09 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48832 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233023AbhEaNoZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 09:44:25 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6B154614A5;
-        Mon, 31 May 2021 13:29:17 +0000 (UTC)
+        id S232509AbhEaOZb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 10:25:31 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D9E8C61108;
+        Mon, 31 May 2021 13:46:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1622467758;
-        bh=AScOhCo/IlhNEpPTGk3+u45hZi1yJkEdbDoP+P01ySE=;
+        s=korg; t=1622468805;
+        bh=TEOEsm9FkAMDY1iDoO46SUPaqgDaz+h+P0e3/lQ2fJM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=JGpFnYgeRB0z3Np5p1WyB4fAgdwlKfIs7Va2Yw+3uj82giS9MNI3I69ON+5NuJ5EW
-         1AM+dQso9sCqgeTjf+Ks1unbD6NxfmeQaghKgtHTVovM29KASLaS6CHosvL25Z3v97
-         xnHhy7EkYrRuwN8+z7djmg8C23XaS2x0pP15N4lE=
+        b=ob/BEOgisFt/BJo3aUIjuGy+2IvXDqI3PLGsvNjxE9a/B9grSmv/bEdNFsip71+vJ
+         B5PPCwPITMB5VboDnjCBSIwXH+AqY1KJklHWo3KbpcdgOwVleGH4buslXwR4y7GrIk
+         HRPBQ9kHwtNOm2PKiTvkIpVJdPBJZ9m5LOxhj/Ds=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
+        stable@vger.kernel.org, Vladimir Oltean <vladimir.oltean@nxp.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 68/79] staging: emxx_udc: fix loop in _nbu2ss_nuke()
+Subject: [PATCH 5.4 136/177] net: dsa: fix error code getting shifted with 4 in dsa_slave_get_sset_count
 Date:   Mon, 31 May 2021 15:14:53 +0200
-Message-Id: <20210531130638.164598681@linuxfoundation.org>
+Message-Id: <20210531130652.636646813@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210531130636.002722319@linuxfoundation.org>
-References: <20210531130636.002722319@linuxfoundation.org>
+In-Reply-To: <20210531130647.887605866@linuxfoundation.org>
+References: <20210531130647.887605866@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,47 +42,65 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dan Carpenter <dan.carpenter@oracle.com>
+From: Vladimir Oltean <vladimir.oltean@nxp.com>
 
-[ Upstream commit e0112a7c9e847ada15a631b88e279d547e8f26a7 ]
+[ Upstream commit b94cbc909f1d80378a1f541968309e5c1178c98b ]
 
-The _nbu2ss_ep_done() function calls:
+DSA implements a bunch of 'standardized' ethtool statistics counters,
+namely tx_packets, tx_bytes, rx_packets, rx_bytes. So whatever the
+hardware driver returns in .get_sset_count(), we need to add 4 to that.
 
-	list_del_init(&req->queue);
+That is ok, except that .get_sset_count() can return a negative error
+code, for example:
 
-which means that the loop will never exit.
+b53_get_sset_count
+-> phy_ethtool_get_sset_count
+   -> return -EIO
 
-Fixes: ca3d253eb967 ("Staging: emxx_udc: Iterate list using list_for_each_entry")
-Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
-Link: https://lore.kernel.org/r/YKUd0sDyjm/lkJfJ@mwanda
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+-EIO is -5, and with 4 added to it, it becomes -1, aka -EPERM. One can
+imagine that certain error codes may even become positive, although
+based on code inspection I did not see instances of that.
+
+Check the error code first, if it is negative return it as-is.
+
+Based on a similar patch for dsa_master_get_strings from Dan Carpenter:
+https://patchwork.kernel.org/project/netdevbpf/patch/YJaSe3RPgn7gKxZv@mwanda/
+
+Fixes: 91da11f870f0 ("net: Distributed Switch Architecture protocol support")
+Signed-off-by: Vladimir Oltean <vladimir.oltean@nxp.com>
+Reviewed-by: Florian Fainelli <f.fainelli@gmail.com>
+Reviewed-by: Andrew Lunn <andrew@lunn.ch>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/staging/emxx_udc/emxx_udc.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ net/dsa/slave.c | 12 +++++++-----
+ 1 file changed, 7 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/staging/emxx_udc/emxx_udc.c b/drivers/staging/emxx_udc/emxx_udc.c
-index bb010cb98a1c..723bfec37cc9 100644
---- a/drivers/staging/emxx_udc/emxx_udc.c
-+++ b/drivers/staging/emxx_udc/emxx_udc.c
-@@ -2159,7 +2159,7 @@ static int _nbu2ss_nuke(struct nbu2ss_udc *udc,
- 			struct nbu2ss_ep *ep,
- 			int status)
- {
--	struct nbu2ss_req *req;
-+	struct nbu2ss_req *req, *n;
+diff --git a/net/dsa/slave.c b/net/dsa/slave.c
+index 06f8874d53ee..75b4cd4bcafb 100644
+--- a/net/dsa/slave.c
++++ b/net/dsa/slave.c
+@@ -692,13 +692,15 @@ static int dsa_slave_get_sset_count(struct net_device *dev, int sset)
+ 	struct dsa_switch *ds = dp->ds;
  
- 	/* Endpoint Disable */
- 	_nbu2ss_epn_exit(udc, ep);
-@@ -2171,7 +2171,7 @@ static int _nbu2ss_nuke(struct nbu2ss_udc *udc,
- 		return 0;
+ 	if (sset == ETH_SS_STATS) {
+-		int count;
++		int count = 0;
  
- 	/* called with irqs blocked */
--	list_for_each_entry(req, &ep->queue, queue) {
-+	list_for_each_entry_safe(req, n, &ep->queue, queue) {
- 		_nbu2ss_ep_done(ep, req, status);
+-		count = 4;
+-		if (ds->ops->get_sset_count)
+-			count += ds->ops->get_sset_count(ds, dp->index, sset);
++		if (ds->ops->get_sset_count) {
++			count = ds->ops->get_sset_count(ds, dp->index, sset);
++			if (count < 0)
++				return count;
++		}
+ 
+-		return count;
++		return count + 4;
  	}
  
+ 	return -EOPNOTSUPP;
 -- 
 2.30.2
 
