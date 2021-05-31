@@ -2,34 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0804E395CF4
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 15:38:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DA978396386
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 17:18:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232259AbhEaNkS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 09:40:18 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33460 "EHLO mail.kernel.org"
+        id S234529AbhEaPT7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 11:19:59 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43970 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232117AbhEaN1o (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 09:27:44 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 572696136D;
-        Mon, 31 May 2021 13:21:50 +0000 (UTC)
+        id S233717AbhEaOPQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 10:15:16 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1EC3D6199D;
+        Mon, 31 May 2021 13:42:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1622467310;
-        bh=hTHCB/7lrd/K/irSitZqwKir4FVZAQ/EegWIgIcO7as=;
+        s=korg; t=1622468561;
+        bh=wfHtREpFmlGBcwyHVdlPE0JPPJA1LE83SdAOS4fMfQk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=vuMwTP3QNHASjek0CMum+ei++y90aTjI64C5uEjd2UR2RELbwhoF9UuooiFn+jP9p
-         LFJ26Kc818wDWzvMCfzB87GRn4hrbpFB17K5FSZ+6Ew64uAKDRsikqKN58juyH85yZ
-         nGGvL85aqwTSrrMQB0gWNQUsg/vj+7817gpnr15Q=
+        b=kF1wIseIRrzR5H32eF+OQOqkEwUcYjz+TTo0pqKUbkZ5guDkv7khMI8wfhmvVhiZp
+         XVT3S8jFFP+QQJbw5FkmSca8HvD9wsmyuiRB/wiBjEcTESguCcShwMKOpw1GtG1gkP
+         rIvF0ZztOwF6JlqArjiaRn0Rc4caYmUHF0wYmOj4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Johannes Berg <johannes.berg@intel.com>
-Subject: [PATCH 4.19 018/116] mac80211: prevent attacks on TKIP/WEP as well
+        stable@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
+        Daniel Thompson <daniel.thompson@linaro.org>,
+        Jason Wessel <jason.wessel@windriver.com>
+Subject: [PATCH 5.4 037/177] kgdb: fix gcc-11 warnings harder
 Date:   Mon, 31 May 2021 15:13:14 +0200
-Message-Id: <20210531130640.777596703@linuxfoundation.org>
+Message-Id: <20210531130649.211361830@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210531130640.131924542@linuxfoundation.org>
-References: <20210531130640.131924542@linuxfoundation.org>
+In-Reply-To: <20210531130647.887605866@linuxfoundation.org>
+References: <20210531130647.887605866@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -38,72 +40,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Johannes Berg <johannes.berg@intel.com>
+From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-commit 7e44a0b597f04e67eee8cdcbe7ee706c6f5de38b upstream.
+commit bda7d3ab06f19c02dcef61fefcb9dd954dfd5e4f upstream.
 
-Similar to the issues fixed in previous patches, TKIP and WEP
-should be protected even if for TKIP we have the Michael MIC
-protecting it, and WEP is broken anyway.
+40cc3a80bb42 ("kgdb: fix gcc-11 warning on indentation") tried to fix up
+the gcc-11 complaints in this file by just reformatting the #defines.
+That worked for gcc 11.1.0, but in gcc 11.1.1 as shipped by Fedora 34,
+the warning came back for one of the #defines.
 
-However, this also somewhat protects potential other algorithms
-that drivers might implement.
+Fix this up again by putting { } around the if statement, now it is
+quiet again.
 
-Cc: stable@vger.kernel.org
-Link: https://lore.kernel.org/r/20210511200110.430e8c202313.Ia37e4e5b6b3eaab1a5ae050e015f6c92859dbe27@changeid
-Signed-off-by: Johannes Berg <johannes.berg@intel.com>
+Fixes: 40cc3a80bb42 ("kgdb: fix gcc-11 warning on indentation")
+Cc: Arnd Bergmann <arnd@arndb.de>
+Cc: Daniel Thompson <daniel.thompson@linaro.org>
+Cc: Jason Wessel <jason.wessel@windriver.com>
+Link: https://lore.kernel.org/r/20210520130839.51987-1-gregkh@linuxfoundation.org
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- net/mac80211/rx.c       |   12 ++++++++++++
- net/mac80211/sta_info.h |    3 ++-
- 2 files changed, 14 insertions(+), 1 deletion(-)
+ drivers/misc/kgdbts.c |    3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
---- a/net/mac80211/rx.c
-+++ b/net/mac80211/rx.c
-@@ -2158,6 +2158,7 @@ ieee80211_rx_h_defragment(struct ieee802
- 			 * next fragment has a sequential PN value.
- 			 */
- 			entry->check_sequential_pn = true;
-+			entry->is_protected = true;
- 			entry->key_color = rx->key->color;
- 			memcpy(entry->last_pn,
- 			       rx->key->u.ccmp.rx_pn[queue],
-@@ -2170,6 +2171,9 @@ ieee80211_rx_h_defragment(struct ieee802
- 				     sizeof(rx->key->u.gcmp.rx_pn[queue]));
- 			BUILD_BUG_ON(IEEE80211_CCMP_PN_LEN !=
- 				     IEEE80211_GCMP_PN_LEN);
-+		} else if (rx->key && ieee80211_has_protected(fc)) {
-+			entry->is_protected = true;
-+			entry->key_color = rx->key->color;
- 		}
- 		return RX_QUEUED;
- 	}
-@@ -2211,6 +2215,14 @@ ieee80211_rx_h_defragment(struct ieee802
- 		if (memcmp(pn, rpn, IEEE80211_CCMP_PN_LEN))
- 			return RX_DROP_UNUSABLE;
- 		memcpy(entry->last_pn, pn, IEEE80211_CCMP_PN_LEN);
-+	} else if (entry->is_protected &&
-+		   (!rx->key || !ieee80211_has_protected(fc) ||
-+		    rx->key->color != entry->key_color)) {
-+		/* Drop this as a mixed key or fragment cache attack, even
-+		 * if for TKIP Michael MIC should protect us, and WEP is a
-+		 * lost cause anyway.
-+		 */
-+		return RX_DROP_UNUSABLE;
- 	}
- 
- 	skb_pull(rx->skb, ieee80211_hdrlen(fc));
---- a/net/mac80211/sta_info.h
-+++ b/net/mac80211/sta_info.h
-@@ -429,7 +429,8 @@ struct ieee80211_fragment_entry {
- 	u16 extra_len;
- 	u16 last_frag;
- 	u8 rx_queue;
--	bool check_sequential_pn; /* needed for CCMP/GCMP */
-+	u8 check_sequential_pn:1, /* needed for CCMP/GCMP */
-+	   is_protected:1;
- 	u8 last_pn[6]; /* PN of the last fragment if CCMP was used */
- 	unsigned int key_color;
- };
+--- a/drivers/misc/kgdbts.c
++++ b/drivers/misc/kgdbts.c
+@@ -100,8 +100,9 @@
+ 		printk(KERN_INFO a);	\
+ } while (0)
+ #define v2printk(a...) do {		\
+-	if (verbose > 1)		\
++	if (verbose > 1) {		\
+ 		printk(KERN_INFO a);	\
++	}				\
+ 	touch_nmi_watchdog();		\
+ } while (0)
+ #define eprintk(a...) do {		\
 
 
