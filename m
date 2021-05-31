@@ -2,138 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 50C3D39587E
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 11:55:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 03A26395885
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 11:58:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231202AbhEaJ5a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 05:57:30 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:48676 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230518AbhEaJ5Y (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 05:57:24 -0400
-Received: from imap.suse.de (imap-alt.suse-dmz.suse.de [192.168.254.47])
-        (using TLSv1.2 with cipher ECDHE-ECDSA-AES128-GCM-SHA256 (128/128 bits))
+        id S231228AbhEaJ7c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 05:59:32 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57556 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231211AbhEaJ7a (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 05:59:30 -0400
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id DEFED1FD2F;
-        Mon, 31 May 2021 09:55:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1622454943; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=PsaOqiqoXWrjn0nPj1JATIKpBDJ2qCcY94qyg0GadOw=;
-        b=NezQa7NJybwjplXcWX9vrOS2UW9g00TyrtNiCZImeZaK8lAZohe3QRiobS62x0Tny3gwiP
-        sSqyKJAWHqE8z+WAeam+AX1O+cFltVNEB7lhrdBICZ9cILT09eq77ouyy39rI+azmE1UDS
-        ouLcV67Sn43Xn/aDCj6FTwJFR2/SsUw=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1622454943;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=PsaOqiqoXWrjn0nPj1JATIKpBDJ2qCcY94qyg0GadOw=;
-        b=okgtpgith/oJaA98g3skKG1aSJDOVEW9UhEwlSjcEmm1vX7hr+rbFGgiDk+ZAzw05ALHwl
-        bx/JgRNCORmf0oBw==
-Received: from imap3-int (imap-alt.suse-dmz.suse.de [192.168.254.47])
-        by imap.suse.de (Postfix) with ESMTP id BBD13118DD;
-        Mon, 31 May 2021 09:55:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1622454943; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=PsaOqiqoXWrjn0nPj1JATIKpBDJ2qCcY94qyg0GadOw=;
-        b=NezQa7NJybwjplXcWX9vrOS2UW9g00TyrtNiCZImeZaK8lAZohe3QRiobS62x0Tny3gwiP
-        sSqyKJAWHqE8z+WAeam+AX1O+cFltVNEB7lhrdBICZ9cILT09eq77ouyy39rI+azmE1UDS
-        ouLcV67Sn43Xn/aDCj6FTwJFR2/SsUw=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1622454943;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=PsaOqiqoXWrjn0nPj1JATIKpBDJ2qCcY94qyg0GadOw=;
-        b=okgtpgith/oJaA98g3skKG1aSJDOVEW9UhEwlSjcEmm1vX7hr+rbFGgiDk+ZAzw05ALHwl
-        bx/JgRNCORmf0oBw==
-Received: from director2.suse.de ([192.168.254.72])
-        by imap3-int with ESMTPSA
-        id qm3iLJ+ytGAIaAAALh3uQQ
-        (envelope-from <dwagner@suse.de>); Mon, 31 May 2021 09:55:43 +0000
-Date:   Mon, 31 May 2021 11:55:43 +0200
-From:   Daniel Wagner <dwagner@suse.de>
-To:     Arun Easi <aeasi@marvell.com>
-Cc:     linux-scsi@vger.kernel.org, GR-QLogic-Storage-Upstream@marvell.com,
-        linux-kernel@vger.kernel.org, Nilesh Javali <njavali@marvell.com>
-Subject: Re: [EXT] [RFC 0/2] Serialize timeout handling and done callback.
-Message-ID: <20210531095543.gszkwzrmx4nhpfqn@beryllium.lan>
-References: <20210507123103.10265-1-dwagner@suse.de>
- <alpine.LRH.2.21.9999.2105310148300.17918@irv1user01.caveonetworks.com>
+        by mail.kernel.org (Postfix) with ESMTPSA id 41410610E7;
+        Mon, 31 May 2021 09:57:50 +0000 (UTC)
+Received: from 78.163-31-62.static.virginmediabusiness.co.uk ([62.31.163.78] helo=why.lan)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <maz@kernel.org>)
+        id 1lneg8-004Z7v-5g; Mon, 31 May 2021 10:57:48 +0100
+From:   Marc Zyngier <maz@kernel.org>
+To:     kexec@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        James Morse <james.morse@arm.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Hanjun Guo <guohanjun@huawei.com>,
+        Sudeep Holla <sudeep.holla@arm.com>,
+        Eric Biederman <ebiederm@xmission.com>,
+        Bhupesh SHARMA <bhupesh.sharma@linaro.org>,
+        AKASHI Takahiro <takahiro.akashi@linaro.org>,
+        Dave Young <dyoung@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Moritz Fischer <mdf@kernel.org>, kernel-team@android.com
+Subject: [PATCH v2 0/5] arm64: Make kexec_file_load honor iomem reservations
+Date:   Mon, 31 May 2021 10:57:15 +0100
+Message-Id: <20210531095720.77469-1-maz@kernel.org>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <alpine.LRH.2.21.9999.2105310148300.17918@irv1user01.caveonetworks.com>
-Authentication-Results: imap.suse.de;
-        none
-X-Spam-Level: 
-X-Spam-Score: 0.00
-X-Spamd-Result: default: False [0.00 / 100.00];
-         ARC_NA(0.00)[];
-         DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-         RCVD_VIA_SMTP_AUTH(0.00)[];
-         FROM_HAS_DN(0.00)[];
-         TO_DN_SOME(0.00)[];
-         TO_MATCH_ENVRCPT_ALL(0.00)[];
-         MIME_GOOD(-0.10)[text/plain];
-         FROM_EQ_ENVFROM(0.00)[];
-         MIME_TRACE(0.00)[0:+];
-         RCVD_NO_TLS_LAST(0.10)[];
-         RCVD_COUNT_TWO(0.00)[2];
-         RCPT_COUNT_FIVE(0.00)[5]
-X-Spam-Flag: NO
+Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 62.31.163.78
+X-SA-Exim-Rcpt-To: kexec@lists.infradead.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, catalin.marinas@arm.com, will@kernel.org, ardb@kernel.org, mark.rutland@arm.com, james.morse@arm.com, lorenzo.pieralisi@arm.com, guohanjun@huawei.com, sudeep.holla@arm.com, ebiederm@xmission.com, bhupesh.sharma@linaro.org, takahiro.akashi@linaro.org, dyoung@redhat.com, akpm@linux-foundation.org, mdf@kernel.org, kernel-team@android.com
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Arun,
+This series is a complete departure from the approach I initially sent
+almost a month ago[0]. Instead of trying to teach EFI, ACPI and other
+subsystem to use memblock, I've decided to stick with the iomem
+resource tree and use that exclusively for arm64.
 
-On Mon, May 31, 2021 at 02:06:24AM -0700, Arun Easi wrote:
-> Thanks Daniel for the report and your effort here. Agree, this needs to be 
-> fixed.
+This means that my current approach is (despite what I initially
+replied to both Dave and Catalin) to provide an arm64-specific
+implementation of arch_kexec_locate_mem_hole() which walks the
+resource tree and excludes ranges of RAM that have been registered for
+any odd purpose. This is exactly what the userspace implementation
+does, and I don't really see a good reason to diverge from it.
 
-Good to hear!
+Again, this allows my Synquacer board to reliably use kexec_file_load
+with as little as 256M, something that would always fail before as it
+would overwrite most of the reserved tables.
 
-> If you do not mind, can I take this from here? This touches quite a 
-> number of paths, and I would like to have this go through a full 
-> regression cycle before this is merged.
+Although this series still targets 5.14, the initial patch is a
+-stable candidate, and disables non-kdump uses of kexec_file_load. I
+have limited it to 5.10, as earlier kernels will require a different,
+probably more invasive approach.
 
-Sure, that is what I hoped for. It is an invasive change and this needs
-to be properly tested with a few different setups. Something I can't really
-do. So I would be glad if you could pick up the patches and fix them up.
-
-> That said, I had some general comments:
-> 
-> 1. I see sp->lock was introduced, but could not locate where it was
-> used.
-
-I thought I needed it for serializing the kref operations. The lock
-itself is not used in the driver. After re-reading the documentation,
-the lock is not necessary as kref_put() is able to serialize the ref
-counter inc/dec operation correctly. The lock would only be useful to
-serialize the kref_put() with something which runs in the driver
-concurrently.
-
-> 2. I did not see a release of lock after a successful kref_put_lock, maybe 
->    that piece was missed out.
-
-I think you got it right. The lock is not necessary.
-
-> 3. The sp->done should be invoked only once, and I do not see if this is
->    taken care of.
-
-qla2x00_sp_release() will only be called when the ref counter gets 0.
-This makes sure we only call sp->done() once.
-
-> 4. sp->cmd_sp could be a SCSI IO too, where sp is not allocated 
->    separately, so qla2x00_sp_release shall not be called for it.
-
-Okay, didn't realize this.
+Catalin, Ard: although this series has changed a bit compared to v1,
+I've kept your AB/RB tags. Should anything seem odd, please let me
+know and I'll drop them.
 
 Thanks,
-Daniel
+
+	M.
+
+* From v1 [1]:
+  - Move the overlap exclusion into find_next_iomem_res()
+  - Handle child resource not overlapping with parent
+  - Provide walk_system_ram_excluding_child_res() as a top level
+    walker
+  - Simplify arch-specific code
+  - Add initial patch disabling non-crash kernels
+
+[0] https://lore.kernel.org/r/20210429133533.1750721-1-maz@kernel.org
+[1] https://lore.kernel.org/r/20210526190531.62751-1-maz@kernel.org
+
+Marc Zyngier (5):
+  arm64: kexec_file: Forbid non-crash kernels
+  kexec_file: Make locate_mem_hole_callback global
+  kernel/resource: Allow find_next_iomem_res() to exclude overlapping
+    child resources
+  kernel/resource: Introduce walk_system_ram_excluding_child_res()
+  arm64: kexec_image: Restore full kexec functionnality
+
+ arch/arm64/kernel/kexec_image.c | 39 ++++++++++++++++
+ include/linux/ioport.h          |  3 ++
+ include/linux/kexec.h           |  1 +
+ kernel/kexec_file.c             |  6 +--
+ kernel/resource.c               | 82 +++++++++++++++++++++++++++++----
+ 5 files changed, 119 insertions(+), 12 deletions(-)
+
+-- 
+2.30.2
+
