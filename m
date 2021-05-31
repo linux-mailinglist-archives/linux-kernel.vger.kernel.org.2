@@ -2,118 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F30E7395A7F
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 14:25:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B331395A8D
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 14:31:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231539AbhEaM0v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 08:26:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44388 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231535AbhEaM0m (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 08:26:42 -0400
-Received: from mail-ej1-x632.google.com (mail-ej1-x632.google.com [IPv6:2a00:1450:4864:20::632])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C258C061763
-        for <linux-kernel@vger.kernel.org>; Mon, 31 May 2021 05:25:00 -0700 (PDT)
-Received: by mail-ej1-x632.google.com with SMTP id h24so12489083ejy.2
-        for <linux-kernel@vger.kernel.org>; Mon, 31 May 2021 05:25:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=monstr-eu.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=FW9/91oXBy6Mao6g/WQyoqZ2VlX3RS8bSdK17yEcolU=;
-        b=zeFMi410XXFAIk92KbRPsYvamk9jNcjSYzFyz8hyv0j66nyXqVGZ4aXT/Arsdk+n6b
-         p+XBFg5deVkez/9/judkzj3agLMeWTzkV6E16U2qRIiwSAb5Qz55SwyoJ/duSxaPbJgL
-         PAg6n4Bp9XFLgye5mUrLlElxVEVgDYhwqbrhTL8a55aS24pNLB81o4THCiSjgaEu3wZq
-         /PDzRXmk95xZNY3BzOjI1fWPV6LhHoK0jwPSK//an3mA7QJK3RX3iVThcWyn42kRmnoV
-         wcnYPsgQ8EmJIJHQaoCqAOoByUOvyldnoc76L4FNZ7VwBC0iF+Wu5ti9fDYIkB0Te8ON
-         Cb2Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=FW9/91oXBy6Mao6g/WQyoqZ2VlX3RS8bSdK17yEcolU=;
-        b=DktXLXsMQQsKvaH0/YOKRbiGwfTgVLZ1CDESuwcGP/r/o7rt4CxMkUVkvkJAqD0dfe
-         7vQ9zV/zeE5m4TKklncJQa4uypIFgMJuW7X3Y7ZFscTlcbLGX/wXAjPQnVcuGoYS5s8q
-         X7/D7THALwiXB8kgRBBDlqAOuaARdDlhigYvagpFyIfP4IKnMjc9grGjWfS2V3/TPsFE
-         VAj/yabm34rDg/AFk8jI55/oBpj1PX+2bjUtbQukaJs6CAk9ubUAUO5Ofv0xkZX5htUN
-         0lr2r52CR69lNkHCk0rQ2noaI6xcF9zOLHz8H9EsZ2c72q7yEwBtKau12G/9Vn9ODo6O
-         Cm/A==
-X-Gm-Message-State: AOAM533iYhLeyXg8pYgivci5EdEBX4o/q17RW4uXv/IKnd4klvbTrAtD
-        tB9djRTYLr4tKs/TuLcBpYPY3Q==
-X-Google-Smtp-Source: ABdhPJyDYlmkSLP3gas8rRrq3uvFjJoPBY9aCf31K4xNc/54kq9YOxBqvPi2P0P04x4KlgfPdlQgsg==
-X-Received: by 2002:a17:906:5d0c:: with SMTP id g12mr22408401ejt.447.1622463899056;
-        Mon, 31 May 2021 05:24:59 -0700 (PDT)
-Received: from ?IPv6:2a02:768:2307:40d6::45a? ([2a02:768:2307:40d6::45a])
-        by smtp.gmail.com with ESMTPSA id b22sm1235904eds.71.2021.05.31.05.24.58
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 31 May 2021 05:24:58 -0700 (PDT)
-Subject: Re: [PATCH V2 2/2] microblaze: Cleanup unused functions
-To:     guoren@kernel.org, anup.patel@wdc.com, palmerdabbelt@google.com,
-        arnd@arndb.de
-Cc:     linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-arch@vger.kernel.org, linux-sunxi@lists.linux.dev,
-        Guo Ren <guoren@linux.alibaba.com>
-References: <1622350408-44875-1-git-send-email-guoren@kernel.org>
- <1622350408-44875-3-git-send-email-guoren@kernel.org>
-From:   Michal Simek <monstr@monstr.eu>
-Message-ID: <73bf48c1-6692-795c-ba16-b7baeb11d3b9@monstr.eu>
-Date:   Mon, 31 May 2021 14:24:57 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.2
+        id S231520AbhEaMcw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 08:32:52 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38372 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231450AbhEaMct (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 08:32:49 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8BC6B6124B;
+        Mon, 31 May 2021 12:31:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1622464269;
+        bh=E3NY0Wohhst6B5rpjC28lQS7joUqhV9RJrr3gZggAGg=;
+        h=From:To:Cc:Subject:Date:From;
+        b=F9bNs/FYGLl1aRdwAhR61z29+Kzxoye4ebjI0n9W6ClGUlcg06NzsIRMpIjJ8d32G
+         MwiCCmrEWR/H+mZnEtNQ13kKEcaQDN+fODqUwWZ1UEczzZBGXKst3/6TMqIHKVKNxB
+         LOM1ku9cXUGxQOBTy+aabtQVJQITGUH5LJog20AFwD8nAetKqtTHflac1cPuxe6lgc
+         0EO8w9ty7Q9jQ8VHcIM4ZL0aybLJn2JvW0A3IKb7pR7pu7Xo3cBrvmjwfDcFZsmwWd
+         xz46CQW3zSe0lNFUGyMbe7/xhMtIt3bvvqYIepHdiEemQ0E2Jpi9dsiRxLFWWdxbyb
+         k35L5I2Nw9V9w==
+From:   Mike Rapoport <rppt@kernel.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        David Hildenbrand <david@redhat.com>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Mike Rapoport <rppt@kernel.org>,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Will Deacon <will@kernel.org>,
+        linux-arm-kernel@lists.infradead.org, linux-mips@vger.kernel.org,
+        linux-mm@kvack.org, linux-s390@vger.kernel.org
+Subject: [RFC/RFT PATCH 0/5] consolidate "System RAM" resources setup
+Date:   Mon, 31 May 2021 15:29:54 +0300
+Message-Id: <20210531122959.23499-1-rppt@kernel.org>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-In-Reply-To: <1622350408-44875-3-git-send-email-guoren@kernel.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Mike Rapoport <rppt@linux.ibm.com>
+
+Hi,
+
+There are several architectures that use very similar code for setup if
+"System RAM" resources under iomem_resource tree and requesting memory
+resources corresponding to the kernel code, data etc.
+
+The flow for resources setup iterates over memory regions registered in
+memblock, adds a resource for each region as "System RAM" and than
+registers the areas used by the kernel image and, optionally, the crash
+kernel area, as children of the "System RAM" resources.
+
+The notable differences are:
+* arm/arm64 use [__text, __init_begin] range for kernel code resource and
+  [_sdata, _end] range for kernel data, while most other architectures use
+  more fine grained ranges.
+* arm has "System RAM (boot alias)" that do not seem useful for any other
+  architecture
+* arm64 has special treatment for NOMAP areas and all the areas reserved in
+  memblock
+* s390 has crashk_res in parallel with the "System RAM" resource, but it
+  seems it was required some time ago but no longer actually needed.
+
+These patches use s390 implementation of the resource setup as the basis
+and then switch MIPS, arm and arm64 to use it with modifications required
+to support each architecture. 
+
+The generic code loops over all memblock.memory regions, adds the NOMAP
+regions as "reserved" iomem resources and "normal" regions as "System RAM"
+iomem resrouces, reserves the areas occupied by the kernel code, rodata,
+data and bss, if there is crash kernel resource it is also reserved.
+
+In addition, if an architectures selects
+CONFIG_ARCH_WANT_RESERVE_MEMBLOCK_RESERVED_REGIONS (bad name, but I could
+not find a better one) the memblock.reserved regions are registered as
+"reserved" resources in iomem_resource.
+
+It would be also possible to convert other architectures (e.g, RISC-V and
+sh) to use the common infrastructure.
+
+Mike Rapoport (5):
+  s390: make crashk_res resource a child of "System RAM"
+  memblock: introduce generic memblock_setup_resources()
+  arm: switch to generic memblock_setup_resources()
+  MIPS: switch to generic memblock_setup_resources
+  arm64: switch to generic memblock_setup_resources()
+
+ arch/Kconfig              |   7 ++
+ arch/arm/kernel/setup.c   |  37 +----------
+ arch/arm64/Kconfig        |   1 +
+ arch/arm64/kernel/setup.c | 101 +----------------------------
+ arch/mips/kernel/setup.c  |  78 ++--------------------
+ arch/s390/kernel/setup.c  |  86 +------------------------
+ include/linux/memblock.h  |   2 +
+ mm/memblock.c             | 132 ++++++++++++++++++++++++++++++++++++++
+ 8 files changed, 151 insertions(+), 293 deletions(-)
 
 
-On 5/30/21 6:53 AM, guoren@kernel.org wrote:
-> From: Guo Ren <guoren@linux.alibaba.com>
-> 
-> These functions haven't been used, so just remove them. The patch
-> just uses grep to verify.
-> 
-> Signed-off-by: Guo Ren <guoren@linux.alibaba.com>
-> Reviewed-by: Anup Patel <anup@brainfault.org>
-> Reviewed-by: Christoph Hellwig <hch@lst.de>
-> Reviewed-by: Palmer Dabbelt <palmerdabbelt@google.com>
-> Cc: Arnd Bergmann <arnd@arndb.de>
-> Cc: Michal Simek <monstr@monstr.eu>
-> ---
->  arch/microblaze/include/asm/page.h | 3 ---
->  1 file changed, 3 deletions(-)
-> 
-> diff --git a/arch/microblaze/include/asm/page.h b/arch/microblaze/include/asm/page.h
-> index bf681f2..ce55097 100644
-> --- a/arch/microblaze/include/asm/page.h
-> +++ b/arch/microblaze/include/asm/page.h
-> @@ -35,9 +35,6 @@
->  
->  #define ARCH_SLAB_MINALIGN	L1_CACHE_BYTES
->  
-> -#define PAGE_UP(addr)	(((addr)+((PAGE_SIZE)-1))&(~((PAGE_SIZE)-1)))
-> -#define PAGE_DOWN(addr)	((addr)&(~((PAGE_SIZE)-1)))
-> -
->  /*
->   * PAGE_OFFSET -- the first address of the first page of memory. With MMU
->   * it is set to the kernel start address (aligned on a page boundary).
-> 
-
-Ah ok. you have sent v2. Will take this version instead of previous one.
-
-Thanks,
-Michal
-
+base-commit: c4681547bcce777daf576925a966ffa824edd09d
 -- 
-Michal Simek, Ing. (M.Eng), OpenPGP -> KeyID: FE3D1F91
-w: www.monstr.eu p: +42-0-721842854
-Maintainer of Linux kernel - Xilinx Microblaze
-Maintainer of Linux kernel - Xilinx Zynq ARM and ZynqMP ARM64 SoCs
-U-Boot custodian - Xilinx Microblaze/Zynq/ZynqMP/Versal SoCs
+2.28.0
 
