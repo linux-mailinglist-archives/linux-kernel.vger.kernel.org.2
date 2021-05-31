@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 54D013961E5
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 16:46:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EA5E8395B75
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 15:19:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233902AbhEaOrn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 10:47:43 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36394 "EHLO mail.kernel.org"
+        id S231844AbhEaNUs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 09:20:48 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54768 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232220AbhEaOAv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 10:00:51 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 88E7A610A1;
-        Mon, 31 May 2021 13:36:33 +0000 (UTC)
+        id S231921AbhEaNTD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 09:19:03 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A20386108D;
+        Mon, 31 May 2021 13:17:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1622468193;
-        bh=CYQKF+DdtAEsj/IX896Zmy3CtQSrgoPkEKKP8PgHfr0=;
+        s=korg; t=1622467043;
+        bh=6c2wBWm6mFVR34noXPYSwrIvbHxFR7gao8vKh9/E6kE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=DSYJHdyAfR2ES1lFQC17Gq6y0VAt3M6I7hDQvDYdQJDnuLMz2aRVl+bOmp5UxwENx
-         M/vBCLjtOkAbFPG7yhpLtkEeE3ww0PGx8ooJLwJc2zFdfenwdcSTWqyYw3srC7ienr
-         vLk+NpjF8v9jSCFx/hO9qMKulp6RTZVpcYB3q+Ls=
+        b=j4HILQzij6efGmQhbZJ8E4gIqHhNFW1EphcsmuqN+ww8wXK0Z0edP0SHHw/dIgw0C
+         1TSKVU0iaGMi+11gdyxX+hwWIYBH6/GpW+j7LuqY5C1OkkFHLdiA2gahF7iZQ925HS
+         ZQLpk2PAK4b4FU8KCUI0doaQjK6Uwvi+ucbBQQw8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Kangjie Lu <kjlu@umn.edu>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 150/252] Revert "ath6kl: return error code in ath6kl_wmi_set_roam_lrssi_cmd()"
+        stable@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
+        Daniel Thompson <daniel.thompson@linaro.org>,
+        Jason Wessel <jason.wessel@windriver.com>
+Subject: [PATCH 4.4 09/54] kgdb: fix gcc-11 warnings harder
 Date:   Mon, 31 May 2021 15:13:35 +0200
-Message-Id: <20210531130703.105239043@linuxfoundation.org>
+Message-Id: <20210531130635.372750179@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210531130657.971257589@linuxfoundation.org>
-References: <20210531130657.971257589@linuxfoundation.org>
+In-Reply-To: <20210531130635.070310929@linuxfoundation.org>
+References: <20210531130635.070310929@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,50 +42,38 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-[ Upstream commit efba106f89fc6848726716c101f4c84e88720a9c ]
+commit bda7d3ab06f19c02dcef61fefcb9dd954dfd5e4f upstream.
 
-This reverts commit fc6a6521556c8250e356ddc6a3f2391aa62dc976.
+40cc3a80bb42 ("kgdb: fix gcc-11 warning on indentation") tried to fix up
+the gcc-11 complaints in this file by just reformatting the #defines.
+That worked for gcc 11.1.0, but in gcc 11.1.1 as shipped by Fedora 34,
+the warning came back for one of the #defines.
 
-Because of recent interactions with developers from @umn.edu, all
-commits from them have been recently re-reviewed to ensure if they were
-correct or not.
+Fix this up again by putting { } around the if statement, now it is
+quiet again.
 
-Upon review, this commit was found to be incorrect for the reasons
-below, so it must be reverted.  It will be fixed up "correctly" in a
-later kernel change.
-
-The change being reverted does NOTHING as the caller to this function
-does not even look at the return value of the call.  So the "claim" that
-this fixed an an issue is not true.  It will be fixed up properly in a
-future patch by propagating the error up the stack correctly.
-
-Cc: Kangjie Lu <kjlu@umn.edu>
-Cc: Kalle Valo <kvalo@codeaurora.org>
-Link: https://lore.kernel.org/r/20210503115736.2104747-43-gregkh@linuxfoundation.org
+Fixes: 40cc3a80bb42 ("kgdb: fix gcc-11 warning on indentation")
+Cc: Arnd Bergmann <arnd@arndb.de>
+Cc: Daniel Thompson <daniel.thompson@linaro.org>
+Cc: Jason Wessel <jason.wessel@windriver.com>
+Link: https://lore.kernel.org/r/20210520130839.51987-1-gregkh@linuxfoundation.org
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/wireless/ath/ath6kl/wmi.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ drivers/misc/kgdbts.c |    3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/net/wireless/ath/ath6kl/wmi.c b/drivers/net/wireless/ath/ath6kl/wmi.c
-index dbc47702a268..99be0d20f9a5 100644
---- a/drivers/net/wireless/ath/ath6kl/wmi.c
-+++ b/drivers/net/wireless/ath/ath6kl/wmi.c
-@@ -776,8 +776,10 @@ int ath6kl_wmi_set_roam_lrssi_cmd(struct wmi *wmi, u8 lrssi)
- 	cmd->info.params.roam_rssi_floor = DEF_LRSSI_ROAM_FLOOR;
- 	cmd->roam_ctrl = WMI_SET_LRSSI_SCAN_PARAMS;
- 
--	return ath6kl_wmi_cmd_send(wmi, 0, skb, WMI_SET_ROAM_CTRL_CMDID,
-+	ath6kl_wmi_cmd_send(wmi, 0, skb, WMI_SET_ROAM_CTRL_CMDID,
- 			    NO_SYNC_WMIFLAG);
-+
-+	return 0;
- }
- 
- int ath6kl_wmi_force_roam_cmd(struct wmi *wmi, const u8 *bssid)
--- 
-2.30.2
-
+--- a/drivers/misc/kgdbts.c
++++ b/drivers/misc/kgdbts.c
+@@ -110,8 +110,9 @@
+ 		printk(KERN_INFO a);	\
+ } while (0)
+ #define v2printk(a...) do {		\
+-	if (verbose > 1)		\
++	if (verbose > 1) {		\
+ 		printk(KERN_INFO a);	\
++	}				\
+ 	touch_nmi_watchdog();		\
+ } while (0)
+ #define eprintk(a...) do {		\
 
 
