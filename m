@@ -2,47 +2,47 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E82C396694
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 19:10:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B05AC396693
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 19:10:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233668AbhEaRL6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 13:11:58 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:31609 "EHLO
+        id S232539AbhEaRLx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 13:11:53 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:53831 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234382AbhEaRDg (ORCPT
+        by vger.kernel.org with ESMTP id S234600AbhEaRDg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 31 May 2021 13:03:36 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1622480514;
+        s=mimecast20190719; t=1622480515;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=ZuCk8XxraBJqNOYV7fJvU8W8Idg517HlOMNk0BW//Tc=;
-        b=CoLtNhu0GZDenBPQidtQmglb8fEjouQpAkPPhfjIFzuIstVSq3rMrm1+Ztf2qXiSIBWl0f
-        stI7014ClY3UUQzlDiNcJdB90dmVH8pC75A4xeaysYsLhU5T2rBA42+JFu2O7iIsUvhLnK
-        qeXcuI0khn2VEQN20hBvr1312E2tj1U=
+        bh=0KKzZ4Pnlj7CSEmGXCGwC261e/Tx/i3YqW/wwa1VS6k=;
+        b=Q//Lb8TI8H5DzHyVDNaMli/kc+s3f49mPvuosSfWEmH2gQ294ePyLIiuMM2K726iZ3nfDN
+        gJpMyg/9UJnjvVf+nycSj8GJj/9c6IW//15yWR7DVlLW7eyOq2ziXP2wp/1o5WjB5ZgKF+
+        ojwUYBS57YhK/Bh58hTT82SgyvsQTv8=
 Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
  [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-584-hROMZLekOui6deBmgSxq-Q-1; Mon, 31 May 2021 13:01:51 -0400
-X-MC-Unique: hROMZLekOui6deBmgSxq-Q-1
+ us-mta-109-rXcu5bMkONK4pormYisKFw-1; Mon, 31 May 2021 13:01:53 -0400
+X-MC-Unique: rXcu5bMkONK4pormYisKFw-1
 Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 2547018C35BA;
-        Mon, 31 May 2021 17:01:50 +0000 (UTC)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 2BCDD107ACCD;
+        Mon, 31 May 2021 17:01:52 +0000 (UTC)
 Received: from max.com (unknown [10.40.192.80])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 277B56062C;
-        Mon, 31 May 2021 17:01:42 +0000 (UTC)
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 7BE626062C;
+        Mon, 31 May 2021 17:01:50 +0000 (UTC)
 From:   Andreas Gruenbacher <agruenba@redhat.com>
 To:     Linus Torvalds <torvalds@linux-foundation.org>
 Cc:     Andreas Gruenbacher <agruenba@redhat.com>,
         cluster-devel@redhat.com, linux-kernel@vger.kernel.org,
         Alexander Viro <viro@zeniv.linux.org.uk>,
         Jan Kara <jack@suse.cz>, Matthew Wilcox <willy@infradead.org>
-Subject: [RFC 6/9] gfs2: Add wrappers for accessing journal_info
-Date:   Mon, 31 May 2021 19:01:20 +0200
-Message-Id: <20210531170123.243771-7-agruenba@redhat.com>
+Subject: [RFC 7/9] gfs2: Encode glock holding and retry flags in journal_info
+Date:   Mon, 31 May 2021 19:01:21 +0200
+Message-Id: <20210531170123.243771-8-agruenba@redhat.com>
 In-Reply-To: <20210531170123.243771-1-agruenba@redhat.com>
 References: <20210531170123.243771-1-agruenba@redhat.com>
 MIME-Version: 1.0
@@ -52,359 +52,67 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-No longer access current->journal_info directly.  The next patch will
-change the wrappers to encode additional information in the lower bits
-of current->journal_info.
+Use the lowest two bits in current->journal_info to encode when
+we're holding a glock, and when an operation holding a glock
+needs to be retried.
 
 Signed-off-by: Andreas Gruenbacher <agruenba@redhat.com>
 ---
- fs/gfs2/aops.c    |  6 +++---
- fs/gfs2/bmap.c    | 28 ++++++++++++++--------------
- fs/gfs2/incore.h  | 10 ++++++++++
- fs/gfs2/inode.c   |  2 +-
- fs/gfs2/log.c     |  4 ++--
- fs/gfs2/lops.c    |  2 +-
- fs/gfs2/meta_io.c |  6 +++---
- fs/gfs2/super.c   |  2 +-
- fs/gfs2/trans.c   | 16 ++++++++--------
- 9 files changed, 43 insertions(+), 33 deletions(-)
+ fs/gfs2/incore.h | 35 +++++++++++++++++++++++++++++++++--
+ 1 file changed, 33 insertions(+), 2 deletions(-)
 
-diff --git a/fs/gfs2/aops.c b/fs/gfs2/aops.c
-index 23b5be3db044..50dd1771d00c 100644
---- a/fs/gfs2/aops.c
-+++ b/fs/gfs2/aops.c
-@@ -95,7 +95,7 @@ static int gfs2_writepage(struct page *page, struct writeback_control *wbc)
- 
- 	if (gfs2_assert_withdraw(sdp, gfs2_glock_is_held_excl(ip->i_gl)))
- 		goto out;
--	if (current->journal_info)
-+	if (current_trans())
- 		goto redirty;
- 	return iomap_writepage(page, wbc, &wpc, &gfs2_writeback_ops);
- 
-@@ -182,7 +182,7 @@ static int gfs2_jdata_writepage(struct page *page, struct writeback_control *wbc
- 
- 	if (gfs2_assert_withdraw(sdp, gfs2_glock_is_held_excl(ip->i_gl)))
- 		goto out;
--	if (PageChecked(page) || current->journal_info)
-+	if (PageChecked(page) || current_trans())
- 		goto out_ignore;
- 	return __gfs2_jdata_writepage(page, wbc);
- 
-@@ -620,7 +620,7 @@ void adjust_fs_space(struct inode *inode)
-  
- static int jdata_set_page_dirty(struct page *page)
- {
--	if (current->journal_info)
-+	if (current_trans())
- 		SetPageChecked(page);
- 	return __set_page_dirty_buffers(page);
- }
-diff --git a/fs/gfs2/bmap.c b/fs/gfs2/bmap.c
-index 0bcf11a9987b..2ff501c413f4 100644
---- a/fs/gfs2/bmap.c
-+++ b/fs/gfs2/bmap.c
-@@ -1016,7 +1016,7 @@ static void gfs2_iomap_page_done(struct inode *inode, loff_t pos,
- 				 unsigned copied, struct page *page,
- 				 struct iomap *iomap)
- {
--	struct gfs2_trans *tr = current->journal_info;
-+	struct gfs2_trans *tr = current_trans();
- 	struct gfs2_inode *ip = GFS2_I(inode);
- 	struct gfs2_sbd *sdp = GFS2_SB(inode);
- 
-@@ -1099,7 +1099,7 @@ static int gfs2_iomap_begin_write(struct inode *inode, loff_t pos,
- 			}
- 		}
- 
--		tr = current->journal_info;
-+		tr = current_trans();
- 		if (tr->tr_num_buf_new)
- 			__mark_inode_dirty(inode, I_DIRTY_DATASYNC);
- 
-@@ -1347,7 +1347,7 @@ int gfs2_alloc_extent(struct inode *inode, u64 lblock, u64 *dblock,
- static int gfs2_block_zero_range(struct inode *inode, loff_t from,
- 				 unsigned int length)
- {
--	BUG_ON(current->journal_info);
-+	BUG_ON(current_trans());
- 	return iomap_zero_range(inode, from, length, NULL, &gfs2_iomap_ops);
- }
- 
-@@ -1386,7 +1386,7 @@ static int gfs2_journaled_truncate(struct inode *inode, u64 oldsize, u64 newsize
- 		truncate_pagecache(inode, oldsize - chunk);
- 		oldsize -= chunk;
- 
--		tr = current->journal_info;
-+		tr = current_trans();
- 		if (!test_bit(TR_TOUCHED, &tr->tr_flags))
- 			continue;
- 
-@@ -1447,7 +1447,7 @@ static int trunc_start(struct inode *inode, u64 newsize)
- 
- out:
- 	brelse(dibh);
--	if (current->journal_info)
-+	if (current_trans())
- 		gfs2_trans_end(sdp);
- 	return error;
- }
-@@ -1555,7 +1555,7 @@ static int sweep_bh_for_rgrps(struct gfs2_inode *ip, struct gfs2_holder *rd_gh,
- 		   the rgrp. So we estimate. We know it can't be more than
- 		   the dinode's i_blocks and we don't want to exceed the
- 		   journal flush threshold, sd_log_thresh2. */
--		if (current->journal_info == NULL) {
-+		if (!current_trans()) {
- 			unsigned int jblocks_rqsted, revokes;
- 
- 			jblocks_rqsted = rgd->rd_length + RES_DINODE +
-@@ -1577,7 +1577,7 @@ static int sweep_bh_for_rgrps(struct gfs2_inode *ip, struct gfs2_holder *rd_gh,
- 			down_write(&ip->i_rw_mutex);
- 		}
- 		/* check if we will exceed the transaction blocks requested */
--		tr = current->journal_info;
-+		tr = current_trans();
- 		if (tr->tr_num_buf_new + RES_STATFS +
- 		    RES_QUOTA >= atomic_read(&sdp->sd_log_thresh2)) {
- 			/* We set blks_outside_rgrp to ensure the loop will
-@@ -1625,7 +1625,7 @@ static int sweep_bh_for_rgrps(struct gfs2_inode *ip, struct gfs2_holder *rd_gh,
- 	if (!ret && blks_outside_rgrp) { /* If buffer still has non-zero blocks
- 					    outside the rgrp we just processed,
- 					    do it all over again. */
--		if (current->journal_info) {
-+		if (current_trans()) {
- 			struct buffer_head *dibh;
- 
- 			ret = gfs2_meta_inode_buffer(ip, &dibh);
-@@ -1991,7 +1991,7 @@ static int punch_hole(struct gfs2_inode *ip, u64 offset, u64 length)
- 	}
- 
- 	if (btotal) {
--		if (current->journal_info == NULL) {
-+		if (!current_trans()) {
- 			ret = gfs2_trans_begin(sdp, RES_DINODE + RES_STATFS +
- 					       RES_QUOTA, 0);
- 			if (ret)
-@@ -2011,7 +2011,7 @@ static int punch_hole(struct gfs2_inode *ip, u64 offset, u64 length)
- out:
- 	if (gfs2_holder_initialized(&rd_gh))
- 		gfs2_glock_dq_uninit(&rd_gh);
--	if (current->journal_info) {
-+	if (current_trans()) {
- 		up_write(&ip->i_rw_mutex);
- 		gfs2_trans_end(sdp);
- 		cond_resched();
-@@ -2436,7 +2436,7 @@ static int gfs2_journaled_truncate_range(struct inode *inode, loff_t offset,
- 		offset += chunk;
- 		length -= chunk;
- 
--		tr = current->journal_info;
-+		tr = current_trans();
- 		if (!test_bit(TR_TOUCHED, &tr->tr_flags))
- 			continue;
- 
-@@ -2501,7 +2501,7 @@ int __gfs2_punch_hole(struct file *file, loff_t offset, loff_t length)
- 	}
- 
- 	if (gfs2_is_jdata(ip)) {
--		BUG_ON(!current->journal_info);
-+		BUG_ON(!current_trans());
- 		gfs2_journaled_truncate_range(inode, offset, length);
- 	} else
- 		truncate_pagecache_range(inode, offset, offset + length - 1);
-@@ -2509,14 +2509,14 @@ int __gfs2_punch_hole(struct file *file, loff_t offset, loff_t length)
- 	file_update_time(file);
- 	mark_inode_dirty(inode);
- 
--	if (current->journal_info)
-+	if (current_trans())
- 		gfs2_trans_end(sdp);
- 
- 	if (!gfs2_is_stuffed(ip))
- 		error = punch_hole(ip, offset, length);
- 
- out:
--	if (current->journal_info)
-+	if (current_trans())
- 		gfs2_trans_end(sdp);
- 	return error;
- }
 diff --git a/fs/gfs2/incore.h b/fs/gfs2/incore.h
-index e6f820f146cb..aa8d1a23132d 100644
+index aa8d1a23132d..e32433df119c 100644
 --- a/fs/gfs2/incore.h
 +++ b/fs/gfs2/incore.h
-@@ -871,5 +871,15 @@ static inline unsigned gfs2_max_stuffed_size(const struct gfs2_inode *ip)
+@@ -871,14 +871,45 @@ static inline unsigned gfs2_max_stuffed_size(const struct gfs2_inode *ip)
  	return GFS2_SB(&ip->i_inode)->sd_sb.sb_bsize - sizeof(struct gfs2_dinode);
  }
  
-+static inline struct gfs2_trans *current_trans(void)
-+{
-+	return current->journal_info;
-+}
++/*
++ * Transactions are always memory aligned, so we use bit 0 of
++ * current->journal_info to indicate when we're holding a glock and so taking
++ * random additional glocks might deadlock, and bit 1 to indicate when such an
++ * operation needs to be retried after dropping and re-acquiring that "outer"
++ * glock.
++ */
 +
-+static inline void set_current_trans(struct gfs2_trans *tr)
-+{
-+	current->journal_info = tr;
-+}
-+
- #endif /* __INCORE_DOT_H__ */
- 
-diff --git a/fs/gfs2/inode.c b/fs/gfs2/inode.c
-index 6e15434b23ac..1b94cbdc00cc 100644
---- a/fs/gfs2/inode.c
-+++ b/fs/gfs2/inode.c
-@@ -1883,7 +1883,7 @@ static int gfs2_setattr_simple(struct inode *inode, struct iattr *attr)
+ static inline struct gfs2_trans *current_trans(void)
  {
- 	int error;
- 
--	if (current->journal_info)
-+	if (current_trans())
- 		return __gfs2_setattr_simple(inode, attr);
- 
- 	error = gfs2_trans_begin(GFS2_SB(inode), RES_DINODE, 0);
-diff --git a/fs/gfs2/log.c b/fs/gfs2/log.c
-index 42c15cfc0821..3ee29045ab90 100644
---- a/fs/gfs2/log.c
-+++ b/fs/gfs2/log.c
-@@ -204,7 +204,7 @@ void gfs2_ail1_flush(struct gfs2_sbd *sdp, struct writeback_control *wbc)
- 	ret = 0;
- 	if (time_after(jiffies, flush_start + (HZ * 600))) {
- 		fs_err(sdp, "Error: In %s for ten minutes! t=%d\n",
--		       __func__, current->journal_info ? 1 : 0);
-+		       __func__, current_trans() ? 1 : 0);
- 		dump_ail_list(sdp);
- 		goto out;
- 	}
-@@ -971,7 +971,7 @@ static void empty_ail1_list(struct gfs2_sbd *sdp)
- 	for (;;) {
- 		if (time_after(jiffies, start + (HZ * 600))) {
- 			fs_err(sdp, "Error: In %s for 10 minutes! t=%d\n",
--			       __func__, current->journal_info ? 1 : 0);
-+			       __func__, current_trans() ? 1 : 0);
- 			dump_ail_list(sdp);
- 			return;
- 		}
-diff --git a/fs/gfs2/lops.c b/fs/gfs2/lops.c
-index 8ee05d25dfa6..9bd080e5db43 100644
---- a/fs/gfs2/lops.c
-+++ b/fs/gfs2/lops.c
-@@ -43,7 +43,7 @@ void gfs2_pin(struct gfs2_sbd *sdp, struct buffer_head *bh)
- {
- 	struct gfs2_bufdata *bd;
- 
--	BUG_ON(!current->journal_info);
-+	BUG_ON(!current_trans());
- 
- 	clear_buffer_dirty(bh);
- 	if (test_set_buffer_pinned(bh))
-diff --git a/fs/gfs2/meta_io.c b/fs/gfs2/meta_io.c
-index d68184ebbfdd..f5622393de63 100644
---- a/fs/gfs2/meta_io.c
-+++ b/fs/gfs2/meta_io.c
-@@ -294,7 +294,7 @@ int gfs2_meta_read(struct gfs2_glock *gl, u64 blkno, int flags,
- 	bh = *bhp;
- 	wait_on_buffer(bh);
- 	if (unlikely(!buffer_uptodate(bh))) {
--		struct gfs2_trans *tr = current->journal_info;
-+		struct gfs2_trans *tr = current_trans();
- 		if (tr && test_bit(TR_TOUCHED, &tr->tr_flags))
- 			gfs2_io_error_bh_wd(sdp, bh);
- 		brelse(bh);
-@@ -321,7 +321,7 @@ int gfs2_meta_wait(struct gfs2_sbd *sdp, struct buffer_head *bh)
- 	wait_on_buffer(bh);
- 
- 	if (!buffer_uptodate(bh)) {
--		struct gfs2_trans *tr = current->journal_info;
-+		struct gfs2_trans *tr = current_trans();
- 		if (tr && test_bit(TR_TOUCHED, &tr->tr_flags))
- 			gfs2_io_error_bh_wd(sdp, bh);
- 		return -EIO;
-@@ -337,7 +337,7 @@ void gfs2_remove_from_journal(struct buffer_head *bh, int meta)
- 	struct address_space *mapping = bh->b_page->mapping;
- 	struct gfs2_sbd *sdp = gfs2_mapping2sbd(mapping);
- 	struct gfs2_bufdata *bd = bh->b_private;
--	struct gfs2_trans *tr = current->journal_info;
-+	struct gfs2_trans *tr = current_trans();
- 	int was_pinned = 0;
- 
- 	if (test_clear_buffer_pinned(bh)) {
-diff --git a/fs/gfs2/super.c b/fs/gfs2/super.c
-index 4d4ceb0b6903..5cb823e58d01 100644
---- a/fs/gfs2/super.c
-+++ b/fs/gfs2/super.c
-@@ -557,7 +557,7 @@ static void gfs2_dirty_inode(struct inode *inode, int flags)
- 	} else if (WARN_ON_ONCE(ip->i_gl->gl_state != LM_ST_EXCLUSIVE))
- 		return;
- 
--	if (current->journal_info == NULL) {
-+	if (!current_trans()) {
- 		ret = gfs2_trans_begin(sdp, RES_DINODE, 0);
- 		if (ret) {
- 			fs_err(sdp, "dirty_inode: gfs2_trans_begin %d\n", ret);
-diff --git a/fs/gfs2/trans.c b/fs/gfs2/trans.c
-index 63fec11ef2ce..7681fbb12050 100644
---- a/fs/gfs2/trans.c
-+++ b/fs/gfs2/trans.c
-@@ -43,8 +43,8 @@ int __gfs2_trans_begin(struct gfs2_trans *tr, struct gfs2_sbd *sdp,
- {
- 	unsigned int extra_revokes;
- 
--	if (current->journal_info) {
--		gfs2_print_trans(sdp, current->journal_info);
-+	if (current_trans()) {
-+		gfs2_print_trans(sdp, current_trans());
- 		BUG();
- 	}
- 	BUG_ON(blocks == 0 && revokes == 0);
-@@ -101,7 +101,7 @@ int __gfs2_trans_begin(struct gfs2_trans *tr, struct gfs2_sbd *sdp,
- 		return -EROFS;
- 	}
- 
--	current->journal_info = tr;
-+	set_current_trans(tr);
- 
- 	return 0;
+-	return current->journal_info;
++	return (void *)((long)current->journal_info & ~3);
  }
-@@ -123,10 +123,10 @@ int gfs2_trans_begin(struct gfs2_sbd *sdp, unsigned int blocks,
  
- void gfs2_trans_end(struct gfs2_sbd *sdp)
+ static inline void set_current_trans(struct gfs2_trans *tr)
  {
--	struct gfs2_trans *tr = current->journal_info;
-+	struct gfs2_trans *tr = current_trans();
- 	s64 nbuf;
+-	current->journal_info = tr;
++	long flags = (long)current->journal_info & 3;
++	current->journal_info = (void *)((long)tr | flags);
++}
++
++static inline bool current_holds_glock(void)
++{
++	return (long)current->journal_info & 1;
++}
++
++static inline bool current_needs_retry(void)
++{
++	return (long)current->journal_info & 2;
++}
++
++static inline void set_current_holds_glock(bool b)
++{
++	current->journal_info =
++		(void *)(((long)current->journal_info & ~1) | b);
++}
++
++static inline void set_current_needs_retry(bool b)
++{
++	current->journal_info =
++		(void *)(((long)current->journal_info & ~2) | (b << 1));
+ }
  
--	current->journal_info = NULL;
-+	set_current_trans(NULL);
- 
- 	if (!test_bit(TR_TOUCHED, &tr->tr_flags)) {
- 		gfs2_log_release_revokes(sdp, tr->tr_revokes);
-@@ -191,7 +191,7 @@ static struct gfs2_bufdata *gfs2_alloc_bufdata(struct gfs2_glock *gl,
-  */
- void gfs2_trans_add_data(struct gfs2_glock *gl, struct buffer_head *bh)
- {
--	struct gfs2_trans *tr = current->journal_info;
-+	struct gfs2_trans *tr = current_trans();
- 	struct gfs2_sbd *sdp = gl->gl_name.ln_sbd;
- 	struct gfs2_bufdata *bd;
- 
-@@ -232,7 +232,7 @@ void gfs2_trans_add_meta(struct gfs2_glock *gl, struct buffer_head *bh)
- 	struct gfs2_sbd *sdp = gl->gl_name.ln_sbd;
- 	struct gfs2_bufdata *bd;
- 	struct gfs2_meta_header *mh;
--	struct gfs2_trans *tr = current->journal_info;
-+	struct gfs2_trans *tr = current_trans();
- 	enum gfs2_freeze_state state = atomic_read(&sdp->sd_freeze_state);
- 
- 	lock_buffer(bh);
-@@ -288,7 +288,7 @@ void gfs2_trans_add_meta(struct gfs2_glock *gl, struct buffer_head *bh)
- 
- void gfs2_trans_add_revoke(struct gfs2_sbd *sdp, struct gfs2_bufdata *bd)
- {
--	struct gfs2_trans *tr = current->journal_info;
-+	struct gfs2_trans *tr = current_trans();
- 
- 	BUG_ON(!list_empty(&bd->bd_list));
- 	gfs2_add_revoke(sdp, bd);
+ #endif /* __INCORE_DOT_H__ */
 -- 
 2.26.3
 
