@@ -2,41 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2693E395C9B
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 15:34:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C74BB395F12
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 16:05:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231670AbhEaNfq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 09:35:46 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33500 "EHLO mail.kernel.org"
+        id S232880AbhEaOHg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 10:07:36 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44928 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232047AbhEaNZo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 09:25:44 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 997C06135C;
-        Mon, 31 May 2021 13:20:59 +0000 (UTC)
+        id S232851AbhEaNmf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 09:42:35 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8CBA261482;
+        Mon, 31 May 2021 13:28:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1622467260;
-        bh=0ctFWL4093UdTLuZGJN21vegAHSAgkacxllsZn20GM0=;
+        s=korg; t=1622467713;
+        bh=GQydZjDT4wPdUn9WToJFxN5ZGS2Al09Z1XjGbD6BL0k=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Jl/OcM1sYvDHHYmJuBi+Keil+fk4kf83WADkFXkmICI25XsVO5NcHNrfjMMCQC/rH
-         cGqxkXiDhCeG5STTouECCuO33KqeZESP1VnFNlNWp4usNaWN0l0dR/rhqzwY6VobOm
-         70SntMkHTqCyFjPDDcK1WAYQ017nrUz0WXX29/X4=
+        b=NjQh/oNJ6ysAMGRB354ZLz7UE0Y2DErnkXZhrh7mlxNAoZrcLvPrcbb/wq65GSyq8
+         3xYJ35tSW5DidVekLsIYLT5/KWOHFx5I4Kipi5TSLVBmyUFtQeE0ZPu8V/99BYQvvZ
+         u5Oqh0lsI9xFC4CBy5a3XVSt4Di7EHghs9t8/x7c=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Mike Kravetz <mike.kravetz@oracle.com>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Davidlohr Bueso <dbueso@suse.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Ilie Halip <ilie.halip@gmail.com>,
-        David Bolvansky <david.bolvansky@gmail.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Subject: [PATCH 4.9 65/66] hugetlbfs: hugetlb_fault_mutex_hash() cleanup
+        stable@vger.kernel.org, Kalle Valo <kvalo@codeaurora.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.14 53/79] libertas: register sysfs groups properly
 Date:   Mon, 31 May 2021 15:14:38 +0200
-Message-Id: <20210531130638.307899456@linuxfoundation.org>
+Message-Id: <20210531130637.702320665@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210531130636.254683895@linuxfoundation.org>
-References: <20210531130636.254683895@linuxfoundation.org>
+In-Reply-To: <20210531130636.002722319@linuxfoundation.org>
+References: <20210531130636.002722319@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,106 +39,94 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mike Kravetz <mike.kravetz@oracle.com>
+From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-commit 552546366a30d88bd1d6f5efe848b2ab50fd57e5 upstream.
+[ Upstream commit 7e79b38fe9a403b065ac5915465f620a8fb3de84 ]
 
-A new clang diagnostic (-Wsizeof-array-div) warns about the calculation
-to determine the number of u32's in an array of unsigned longs.
-Suppress warning by adding parentheses.
+The libertas driver was trying to register sysfs groups "by hand" which
+causes them to be created _after_ the device is initialized and
+announced to userspace, which causes races and can prevent userspace
+tools from seeing the sysfs files correctly.
 
-While looking at the above issue, noticed that the 'address' parameter
-to hugetlb_fault_mutex_hash is no longer used.  So, remove it from the
-definition and all callers.
+Fix this up by using the built-in sysfs_groups pointers in struct
+net_device which were created for this very reason, fixing the race
+condition, and properly allowing for any error that might have occured
+to be handled properly.
 
-No functional change.
-
-Link: http://lkml.kernel.org/r/20190919011847.18400-1-mike.kravetz@oracle.com
-Signed-off-by: Mike Kravetz <mike.kravetz@oracle.com>
-Reported-by: Nathan Chancellor <natechancellor@gmail.com>
-Reviewed-by: Nathan Chancellor <natechancellor@gmail.com>
-Reviewed-by: Davidlohr Bueso <dbueso@suse.de>
-Reviewed-by: Andrew Morton <akpm@linux-foundation.org>
-Cc: Nick Desaulniers <ndesaulniers@google.com>
-Cc: Ilie Halip <ilie.halip@gmail.com>
-Cc: David Bolvansky <david.bolvansky@gmail.com>
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: Kalle Valo <kvalo@codeaurora.org>
+Link: https://lore.kernel.org/r/20210503115736.2104747-54-gregkh@linuxfoundation.org
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/hugetlbfs/inode.c    |    4 ++--
- include/linux/hugetlb.h |    2 +-
- mm/hugetlb.c            |    8 ++++----
- 3 files changed, 7 insertions(+), 7 deletions(-)
+ drivers/net/wireless/marvell/libertas/mesh.c | 28 +++-----------------
+ 1 file changed, 4 insertions(+), 24 deletions(-)
 
---- a/fs/hugetlbfs/inode.c
-+++ b/fs/hugetlbfs/inode.c
-@@ -451,7 +451,7 @@ static void remove_inode_hugepages(struc
- 			if (next >= end)
- 				break;
+diff --git a/drivers/net/wireless/marvell/libertas/mesh.c b/drivers/net/wireless/marvell/libertas/mesh.c
+index b0cb16ef8d1d..b313c78e2154 100644
+--- a/drivers/net/wireless/marvell/libertas/mesh.c
++++ b/drivers/net/wireless/marvell/libertas/mesh.c
+@@ -793,19 +793,6 @@ static const struct attribute_group mesh_ie_group = {
+ 	.attrs = mesh_ie_attrs,
+ };
  
--			hash = hugetlb_fault_mutex_hash(h, mapping, next, 0);
-+			hash = hugetlb_fault_mutex_hash(h, mapping, next);
- 			mutex_lock(&hugetlb_fault_mutex_table[hash]);
+-static void lbs_persist_config_init(struct net_device *dev)
+-{
+-	int ret;
+-	ret = sysfs_create_group(&(dev->dev.kobj), &boot_opts_group);
+-	ret = sysfs_create_group(&(dev->dev.kobj), &mesh_ie_group);
+-}
+-
+-static void lbs_persist_config_remove(struct net_device *dev)
+-{
+-	sysfs_remove_group(&(dev->dev.kobj), &boot_opts_group);
+-	sysfs_remove_group(&(dev->dev.kobj), &mesh_ie_group);
+-}
+-
  
- 			/*
-@@ -634,7 +634,7 @@ static long hugetlbfs_fallocate(struct f
- 		addr = index * hpage_size;
+ /***************************************************************************
+  * Initializing and starting, stopping mesh
+@@ -1005,6 +992,10 @@ static int lbs_add_mesh(struct lbs_private *priv)
+ 	SET_NETDEV_DEV(priv->mesh_dev, priv->dev->dev.parent);
  
- 		/* mutex taken here, fault path and hole punch */
--		hash = hugetlb_fault_mutex_hash(h, mapping, index, addr);
-+		hash = hugetlb_fault_mutex_hash(h, mapping, index);
- 		mutex_lock(&hugetlb_fault_mutex_table[hash]);
+ 	mesh_dev->flags |= IFF_BROADCAST | IFF_MULTICAST;
++	mesh_dev->sysfs_groups[0] = &lbs_mesh_attr_group;
++	mesh_dev->sysfs_groups[1] = &boot_opts_group;
++	mesh_dev->sysfs_groups[2] = &mesh_ie_group;
++
+ 	/* Register virtual mesh interface */
+ 	ret = register_netdev(mesh_dev);
+ 	if (ret) {
+@@ -1012,19 +1003,10 @@ static int lbs_add_mesh(struct lbs_private *priv)
+ 		goto err_free_netdev;
+ 	}
  
- 		/* See if already present in mapping to avoid alloc/free */
---- a/include/linux/hugetlb.h
-+++ b/include/linux/hugetlb.h
-@@ -93,7 +93,7 @@ void free_huge_page(struct page *page);
- void hugetlb_fix_reserve_counts(struct inode *inode);
- extern struct mutex *hugetlb_fault_mutex_table;
- u32 hugetlb_fault_mutex_hash(struct hstate *h, struct address_space *mapping,
--				pgoff_t idx, unsigned long address);
-+				pgoff_t idx);
+-	ret = sysfs_create_group(&(mesh_dev->dev.kobj), &lbs_mesh_attr_group);
+-	if (ret)
+-		goto err_unregister;
+-
+-	lbs_persist_config_init(mesh_dev);
+-
+ 	/* Everything successful */
+ 	ret = 0;
+ 	goto done;
  
- pte_t *huge_pmd_share(struct mm_struct *mm, unsigned long addr, pud_t *pud);
+-err_unregister:
+-	unregister_netdev(mesh_dev);
+-
+ err_free_netdev:
+ 	free_netdev(mesh_dev);
  
---- a/mm/hugetlb.c
-+++ b/mm/hugetlb.c
-@@ -3887,7 +3887,7 @@ backout_unlocked:
+@@ -1045,8 +1027,6 @@ void lbs_remove_mesh(struct lbs_private *priv)
  
- #ifdef CONFIG_SMP
- u32 hugetlb_fault_mutex_hash(struct hstate *h, struct address_space *mapping,
--			    pgoff_t idx, unsigned long address)
-+			    pgoff_t idx)
- {
- 	unsigned long key[2];
- 	u32 hash;
-@@ -3895,7 +3895,7 @@ u32 hugetlb_fault_mutex_hash(struct hsta
- 	key[0] = (unsigned long) mapping;
- 	key[1] = idx;
- 
--	hash = jhash2((u32 *)&key, sizeof(key)/sizeof(u32), 0);
-+	hash = jhash2((u32 *)&key, sizeof(key)/(sizeof(u32)), 0);
- 
- 	return hash & (num_fault_mutexes - 1);
- }
-@@ -3905,7 +3905,7 @@ u32 hugetlb_fault_mutex_hash(struct hsta
-  * return 0 and avoid the hashing overhead.
-  */
- u32 hugetlb_fault_mutex_hash(struct hstate *h, struct address_space *mapping,
--			    pgoff_t idx, unsigned long address)
-+			    pgoff_t idx)
- {
- 	return 0;
- }
-@@ -3950,7 +3950,7 @@ int hugetlb_fault(struct mm_struct *mm,
- 	 * get spurious allocation failures if two CPUs race to instantiate
- 	 * the same page in the page cache.
- 	 */
--	hash = hugetlb_fault_mutex_hash(h, mapping, idx, address);
-+	hash = hugetlb_fault_mutex_hash(h, mapping, idx);
- 	mutex_lock(&hugetlb_fault_mutex_table[hash]);
- 
- 	entry = huge_ptep_get(ptep);
+ 	netif_stop_queue(mesh_dev);
+ 	netif_carrier_off(mesh_dev);
+-	sysfs_remove_group(&(mesh_dev->dev.kobj), &lbs_mesh_attr_group);
+-	lbs_persist_config_remove(mesh_dev);
+ 	unregister_netdev(mesh_dev);
+ 	priv->mesh_dev = NULL;
+ 	kfree(mesh_dev->ieee80211_ptr);
+-- 
+2.30.2
+
 
 
