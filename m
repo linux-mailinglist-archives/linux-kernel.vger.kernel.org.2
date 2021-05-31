@@ -2,114 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3082D395895
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 11:59:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A683A395882
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 11:57:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231418AbhEaKAf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 06:00:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58066 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231407AbhEaJ7o (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 05:59:44 -0400
-Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0376861249;
-        Mon, 31 May 2021 09:58:05 +0000 (UTC)
-Received: from 78.163-31-62.static.virginmediabusiness.co.uk ([62.31.163.78] helo=why.lan)
-        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.94.2)
-        (envelope-from <maz@kernel.org>)
-        id 1lnegM-004Z7v-UL; Mon, 31 May 2021 10:58:03 +0100
-From:   Marc Zyngier <maz@kernel.org>
-To:     kexec@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        James Morse <james.morse@arm.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Hanjun Guo <guohanjun@huawei.com>,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        Eric Biederman <ebiederm@xmission.com>,
-        Bhupesh SHARMA <bhupesh.sharma@linaro.org>,
-        AKASHI Takahiro <takahiro.akashi@linaro.org>,
-        Dave Young <dyoung@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Moritz Fischer <mdf@kernel.org>, kernel-team@android.com
-Subject: [PATCH v2 5/5] arm64: kexec_image: Restore full kexec functionnality
-Date:   Mon, 31 May 2021 10:57:20 +0100
-Message-Id: <20210531095720.77469-6-maz@kernel.org>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210531095720.77469-1-maz@kernel.org>
-References: <20210531095720.77469-1-maz@kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 62.31.163.78
-X-SA-Exim-Rcpt-To: kexec@lists.infradead.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, catalin.marinas@arm.com, will@kernel.org, ardb@kernel.org, mark.rutland@arm.com, james.morse@arm.com, lorenzo.pieralisi@arm.com, guohanjun@huawei.com, sudeep.holla@arm.com, ebiederm@xmission.com, bhupesh.sharma@linaro.org, takahiro.akashi@linaro.org, dyoung@redhat.com, akpm@linux-foundation.org, mdf@kernel.org, kernel-team@android.com
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+        id S231124AbhEaJ73 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 05:59:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39450 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230520AbhEaJ71 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 05:59:27 -0400
+Received: from mail-qv1-xf4a.google.com (mail-qv1-xf4a.google.com [IPv6:2607:f8b0:4864:20::f4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A2FBC06174A
+        for <linux-kernel@vger.kernel.org>; Mon, 31 May 2021 02:57:47 -0700 (PDT)
+Received: by mail-qv1-xf4a.google.com with SMTP id r11-20020a0cb28b0000b02901c87a178503so8575098qve.22
+        for <linux-kernel@vger.kernel.org>; Mon, 31 May 2021 02:57:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=8fReuMdCoAcvO7ejaCNc/y44/KE8D3vmhMB7psbwQpI=;
+        b=R0DfqvjhtO+v5AiLIe1ZYXGAIOnQNWFEOS0027cd07uE/o9Z+f4HcdZXOzG24uq5Zw
+         rCPp4KFPiZb5hzVHO0I2Q07l+TAUQDUJ4dC/28sEhxu/6wGr82cx4HSpGshlqFuagyox
+         EgpSiTGyThSGCAEbst7B+uTY4TwWdnW8qhVfRDJ3pPw2c9ok/7lw6863ykpvwrY4btOq
+         Kv8QW3W9bxiYiqypfR4YeJ/QMGSs405Pnp6fT/tG7EcRu72jbY7cEh8Mu3hxJ721Q3Fc
+         bUQJDFFH2GfNZxharCC8fVrpUpaJlDbZ3b7f4AxPgztIez8FnsuPmH/ok4OEH+SgVfjk
+         PAqw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=8fReuMdCoAcvO7ejaCNc/y44/KE8D3vmhMB7psbwQpI=;
+        b=k7DzvDjk7Yi7AAPDChlCUqOUqbnVtGvi17hgWiz8Mkw0WpMqZLt2z7rYdjHBBoms1X
+         gQMrpYQyZJZl7sdu9Y4TwxdoZ5JrHnNzqkHhys/T3MFKLYqhh8PIsVTkMY1rrJnwcbAb
+         nOVugcnoPlmhJ2N+UB8+g/uxZE7TCs1qBWff2OLTLYtyjl29J65MFeIxFr+kiNK59voH
+         MaGBvdutEXK6xYWOwfsy75uHU3UAtlSNqsUco4FyX50j8WVlHEgF2IIWymqedP1laLn/
+         iJ8YVvgO+N4jCY9tHwNoYT6LGCqFFG2RuJkX98Cjq0Ddbz8mSDegP3bbk6DqcaxRZTgN
+         gTUA==
+X-Gm-Message-State: AOAM530CYE9wPFslJXgsFKnqr08ErJklWA4yd7WBHhjM7Ei8f3jTm84j
+        vY4wSPOm5+I0n7fQY1Aqee6RsX8bZshd
+X-Google-Smtp-Source: ABdhPJzY2fxdQ4i9TFUl47UHxvvNtiHzqOYZ57PKxOkd9YgYfbonMukdmsh4VIMxNqFv0Fah4fqmhG6fdjmA
+X-Received: from kyletso.ntc.corp.google.com ([2401:fa00:fc:202:1330:7a47:8be2:d9b7])
+ (user=kyletso job=sendgmr) by 2002:ad4:4b71:: with SMTP id
+ m17mr13311850qvx.45.1622455065173; Mon, 31 May 2021 02:57:45 -0700 (PDT)
+Date:   Mon, 31 May 2021 17:57:34 +0800
+Message-Id: <20210531095737.2258642-1-kyletso@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.32.0.rc0.204.g9fa02ecfa5-goog
+Subject: [PATCH v2 0/3] Add the support of SVDM Version 2.0 VDOs
+From:   Kyle Tso <kyletso@google.com>
+To:     linux@roeck-us.net, heikki.krogerus@linux.intel.com,
+        gregkh@linuxfoundation.org, robh+dt@kernel.org
+Cc:     badhri@google.com, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        Kyle Tso <kyletso@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Provide an arm64-specific implementation for arch_kexec_locate_mem_hole(),
-using the resource tree instead of memblock, and respecting
-the reservations added by EFI.
+Got the Ack by Heikki so I re-examined the patches and found a *stupid*
+bug in the patch "usb: typec: tcpm: Introduce snk_vdo_v1 for SVDM
+version 1.0" that I separate the "for loop" into two parts, which is not
+only necessary but also redundant.
 
-This ensures that kexec_file is finally reliable.
+Changes since v1:
+usb: typec: tcpm: Correct the responses in SVDM Version 2.0 DFP
+- no code change
+- add Acked-by tag
 
-Reported-by: Moritz Fischer <mdf@kernel.org>
-Acked-by: Catalin Marinas <catalin.marinas@arm.com>
-Reviewed-by: Ard Biesheuvel <ardb@kernel.org>
-Signed-off-by: Marc Zyngier <maz@kernel.org>
----
- arch/arm64/kernel/kexec_image.c | 31 +++++++++++++++++++++++++------
- 1 file changed, 25 insertions(+), 6 deletions(-)
+dt-bindings: connector: Add PD rev 2.0 VDO definition
+- no code change
 
-diff --git a/arch/arm64/kernel/kexec_image.c b/arch/arm64/kernel/kexec_image.c
-index acf9cd251307..2a51a2ebd2b7 100644
---- a/arch/arm64/kernel/kexec_image.c
-+++ b/arch/arm64/kernel/kexec_image.c
-@@ -156,12 +156,31 @@ const struct kexec_file_ops kexec_image_ops = {
-  */
- int arch_kexec_locate_mem_hole(struct kexec_buf *kbuf)
- {
-+	int ret;
-+
-+	/* Arch knows where to place */
-+	if (kbuf->mem != KEXEC_BUF_MEM_UNKNOWN)
-+		return 0;
-+
- 	/*
--	 * For the time being, kexec_file_load isn't reliable except
--	 * for crash kernel. Say sorry to the user.
-+	 * Crash kernels land in a well known place that has been
-+	 * reserved upfront.
-+	 *
-+	 * Normal kexec kernels can however land anywhere in memory.
-+	 * We have to be extra careful not to step over critical
-+	 * memory ranges that have been marked as reserved in the
-+	 * iomem resource tree (LPI and ACPI tables, among others),
-+	 * hence the use of the child-excluding iterator.  This
-+	 * matches what the userspace version of kexec does.
- 	 */
--	if (kbuf->image->type != KEXEC_TYPE_CRASH)
--		return -EADDRNOTAVAIL;
--
--	return kexec_locate_mem_hole(kbuf);
-+	if (kbuf->image->type == KEXEC_TYPE_CRASH)
-+		ret = walk_iomem_res_desc(crashk_res.desc,
-+					  IORESOURCE_SYSTEM_RAM | IORESOURCE_BUSY,
-+					  crashk_res.start, crashk_res.end,
-+					  kbuf, kexec_locate_mem_hole_callback);
-+	else
-+		ret = walk_system_ram_excluding_child_res(0, ULONG_MAX, kbuf,
-+							  kexec_locate_mem_hole_callback);
-+
-+	return ret == 1 ? 0 : -EADDRNOTAVAIL;
- }
+usb: typec: tcpm: Introduce snk_vdo_v1 for SVDM version 1.0
+- merge the assignment to array element 1 into the for loop. No semantic
+  code logic change.
+- add Acked-by tag
+
+
+=== v1 cover letter
+
+The patches are primarily for the responses to the Discover Identity
+command. This part was changed a lot from PD rev2.0 to PD rev3.0 (now
+it's rev3.1 :D). e.g. DFP can respond to Discover Identity command with
+ACK in PD rev3.x and the Product Type VDOs are quite different. Given
+that tcpm.c moved on to PD rev3.x and PD rev2.0 is still supported, some
+changes need to be made to support both PD rev3.x and rev2.0.
+
+usb: typec: tcpm: Correct the responses in SVDM Version 2.0 DFP
+- This patch is to unblock the responder ACK to Discover Identity if the
+  port is DFP and the SVDM version is 2.0
+
+dt-bindings: connector: Add PD rev 2.0 VDO definition
+- similar changes to Commit 2a1673f0f1de ("usb: pd: Reland VDO
+  definitions of PD2.0")
+  https://lore.kernel.org/linux-usb/20210204005036.1555294-1-kyletso@google.com/
+- add a new property sink-vdos-v1 to store the PD rev2.0 VDOs
+
+usb: typec: tcpm: Introduce snk_vdo_v1 for SVDM version 1.0
+- populate the legacy VDOs from fwnode
+- send these data if the port partner is SVDM Version 1.0
+
+===
+
+Kyle Tso (3):
+  usb: typec: tcpm: Correct the responses in SVDM Version 2.0 DFP
+  dt-bindings: connector: Add PD rev 2.0 VDO definition
+  usb: typec: tcpm: Introduce snk_vdo_v1 for SVDM version 1.0
+
+ .../bindings/connector/usb-connector.yaml     | 15 ++++
+ drivers/usb/typec/tcpm/tcpm.c                 | 52 ++++++++++----
+ include/dt-bindings/usb/pd.h                  | 69 ++++++++++++++++++-
+ 3 files changed, 118 insertions(+), 18 deletions(-)
+
 -- 
-2.30.2
+2.32.0.rc0.204.g9fa02ecfa5-goog
 
