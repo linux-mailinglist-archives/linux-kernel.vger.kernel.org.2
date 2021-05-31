@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 29C7A396395
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 17:20:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6EF0E3964FB
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 18:17:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233325AbhEaPVk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 11:21:40 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43710 "EHLO mail.kernel.org"
+        id S233381AbhEaQSl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 12:18:41 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36490 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230433AbhEaOP7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 10:15:59 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D027A619A2;
-        Mon, 31 May 2021 13:43:05 +0000 (UTC)
+        id S233805AbhEaOlh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 10:41:37 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2332561883;
+        Mon, 31 May 2021 13:53:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1622468586;
-        bh=6pqFTVPpVj8bvULiYDiQAXEUHKhXAtPYrir6vu59wrI=;
+        s=korg; t=1622469219;
+        bh=HvEV8rv5k3A5x5JzTug7RpZ58CxkXYwa9Jnzi+dxA0A=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=c9bURBRM9jOOG5Q3xJNfZ3giLFNBsggVUCGb/Xnh50gnDGNnbNR/LbEQZfKdiN43l
-         Ub7m1MUGQVIRlyoeYQZwT7Rxukx9vma22cJQdID4irVa7AOmT65cpGEAihW47Kt1gG
-         kgFiooXSJnx+Z4eJKHMZV5qDmvaNpkpiQFFLX3CY=
+        b=xL/+YUBTrhiSZkhiNHDOMsnwHpFNAe8Pc/T7m4mXIzTFS+QnRjLasz76fMfsXZr7V
+         eYfs6ngoXyzhX1XhY+yUc0SDSh6QrBE084ELzaH2ZeBtWufoKaFA/TeLWkGSzQ1xP7
+         rISNHww6spopx7ANsCx4irRMe0qqI/99u9aiQTfE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Kees Cook <keescook@chromium.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Subject: [PATCH 5.4 012/177] proc: Check /proc/$pid/attr/ writes against file opener
+        stable@vger.kernel.org,
+        Trond Myklebust <trond.myklebust@hammerspace.com>
+Subject: [PATCH 5.12 114/296] NFS: Fix an Oopsable condition in __nfs_pageio_add_request()
 Date:   Mon, 31 May 2021 15:12:49 +0200
-Message-Id: <20210531130648.330655012@linuxfoundation.org>
+Message-Id: <20210531130707.760057979@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210531130647.887605866@linuxfoundation.org>
-References: <20210531130647.887605866@linuxfoundation.org>
+In-Reply-To: <20210531130703.762129381@linuxfoundation.org>
+References: <20210531130703.762129381@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,40 +39,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Kees Cook <keescook@chromium.org>
+From: Trond Myklebust <trond.myklebust@hammerspace.com>
 
-commit bfb819ea20ce8bbeeba17e1a6418bf8bda91fc28 upstream.
+commit 56517ab958b7c11030e626250c00b9b1a24b41eb upstream.
 
-Fix another "confused deputy" weakness[1]. Writes to /proc/$pid/attr/
-files need to check the opener credentials, since these fds do not
-transition state across execve(). Without this, it is possible to
-trick another process (which may have different credentials) to write
-to its own /proc/$pid/attr/ files, leading to unexpected and possibly
-exploitable behaviors.
+Ensure that nfs_pageio_error_cleanup() resets the mirror array contents,
+so that the structure reflects the fact that it is now empty.
+Also change the test in nfs_pageio_do_add_request() to be more robust by
+checking whether or not the list is empty rather than relying on the
+value of pg_count.
 
-[1] https://www.kernel.org/doc/html/latest/security/credentials.html?highlight=confused#open-file-credentials
-
-Fixes: 1da177e4c3f41 ("Linux-2.6.12-rc2")
-Cc: stable@vger.kernel.org
-Signed-off-by: Kees Cook <keescook@chromium.org>
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Fixes: a7d42ddb3099 ("nfs: add mirroring support to pgio layer")
+Signed-off-by: Trond Myklebust <trond.myklebust@hammerspace.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- fs/proc/base.c |    4 ++++
- 1 file changed, 4 insertions(+)
+ fs/nfs/pagelist.c |    9 +++++----
+ 1 file changed, 5 insertions(+), 4 deletions(-)
 
---- a/fs/proc/base.c
-+++ b/fs/proc/base.c
-@@ -2556,6 +2556,10 @@ static ssize_t proc_pid_attr_write(struc
- 	void *page;
- 	int rv;
+--- a/fs/nfs/pagelist.c
++++ b/fs/nfs/pagelist.c
+@@ -1094,15 +1094,16 @@ nfs_pageio_do_add_request(struct nfs_pag
+ 	struct nfs_page *prev = NULL;
+ 	unsigned int size;
  
-+	/* A task may only write when it was the opener. */
-+	if (file->f_cred != current_real_cred())
-+		return -EPERM;
-+
- 	rcu_read_lock();
- 	task = pid_task(proc_pid(inode), PIDTYPE_PID);
- 	if (!task) {
+-	if (mirror->pg_count != 0) {
+-		prev = nfs_list_entry(mirror->pg_list.prev);
+-	} else {
++	if (list_empty(&mirror->pg_list)) {
+ 		if (desc->pg_ops->pg_init)
+ 			desc->pg_ops->pg_init(desc, req);
+ 		if (desc->pg_error < 0)
+ 			return 0;
+ 		mirror->pg_base = req->wb_pgbase;
+-	}
++		mirror->pg_count = 0;
++		mirror->pg_recoalesce = 0;
++	} else
++		prev = nfs_list_entry(mirror->pg_list.prev);
+ 
+ 	if (desc->pg_maxretrans && req->wb_nio > desc->pg_maxretrans) {
+ 		if (NFS_SERVER(desc->pg_inode)->flags & NFS_MOUNT_SOFTERR)
 
 
