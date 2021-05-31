@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2BF5B395F64
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 16:09:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 78D9F39641C
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 17:45:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233137AbhEaOK4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 10:10:56 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50918 "EHLO mail.kernel.org"
+        id S232032AbhEaPqf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 11:46:35 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54710 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233046AbhEaNoc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 09:44:32 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D328E61581;
-        Mon, 31 May 2021 13:29:22 +0000 (UTC)
+        id S233877AbhEaOZe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 10:25:34 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BB6D861582;
+        Mon, 31 May 2021 13:46:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1622467763;
-        bh=LziqiJxWimC3gHL1WLXsLiuG+LG8itRP/PI0D2fhZbM=;
+        s=korg; t=1622468813;
+        bh=uuSa62LUBG+sg8P1mQOXGE60OHymgz7NnUAAnjDaNZw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=qS7KYdqL+yX88ZxFTgfGwDqg1s/OTMpu+BxTDYoStpXImwZiV/ExKl2UCzwTxnRIn
-         EG8n7ein1sSSg8zQkkaY83YSPiXUrbawiWylOQM8N3DBeWO3Z0rILyUrYvwaWb6Oen
-         LW5r+utbRa+9lL+y25xxCL4xW7NotW0NEukzoLIs=
+        b=Wy8+OgpeNHOEOFRpIrpSBtGAdrRkxOvvF/LQS7F5hsjS0SjSTKrIhuZQqKC9bhZxh
+         PQjidz3xSd37muNBLsJEL3XtjepxXtW+uGindW9gnHsi8FpVPMRMfik+KDM9rtChW4
+         s9cTa1xpWqP6Egc80EzCEcbdw6QKzds4SlW39tgQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jussi Maki <joamaki@gmail.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
+        stable@vger.kernel.org, Paolo Abeni <pabeni@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 70/79] bpf: Set mac_len in bpf_skb_change_head
-Date:   Mon, 31 May 2021 15:14:55 +0200
-Message-Id: <20210531130638.237257360@linuxfoundation.org>
+Subject: [PATCH 5.4 139/177] net: really orphan skbs tied to closing sk
+Date:   Mon, 31 May 2021 15:14:56 +0200
+Message-Id: <20210531130652.738472172@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210531130636.002722319@linuxfoundation.org>
-References: <20210531130636.002722319@linuxfoundation.org>
+In-Reply-To: <20210531130647.887605866@linuxfoundation.org>
+References: <20210531130647.887605866@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,38 +40,69 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jussi Maki <joamaki@gmail.com>
+From: Paolo Abeni <pabeni@redhat.com>
 
-[ Upstream commit 84316ca4e100d8cbfccd9f774e23817cb2059868 ]
+[ Upstream commit 098116e7e640ba677d9e345cbee83d253c13d556 ]
 
-The skb_change_head() helper did not set "skb->mac_len", which is
-problematic when it's used in combination with skb_redirect_peer().
-Without it, redirecting a packet from a L3 device such as wireguard to
-the veth peer device will cause skb->data to point to the middle of the
-IP header on entry to tcp_v4_rcv() since the L2 header is not pulled
-correctly due to mac_len=0.
+If the owing socket is shutting down - e.g. the sock reference
+count already dropped to 0 and only sk_wmem_alloc is keeping
+the sock alive, skb_orphan_partial() becomes a no-op.
 
-Fixes: 3a0af8fd61f9 ("bpf: BPF for lightweight tunnel infrastructure")
-Signed-off-by: Jussi Maki <joamaki@gmail.com>
-Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
-Link: https://lore.kernel.org/bpf/20210519154743.2554771-2-joamaki@gmail.com
+When forwarding packets over veth with GRO enabled, the above
+causes refcount errors.
+
+This change addresses the issue with a plain skb_orphan() call
+in the critical scenario.
+
+Fixes: 9adc89af724f ("net: let skb_orphan_partial wake-up waiters.")
+Signed-off-by: Paolo Abeni <pabeni@redhat.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/core/filter.c | 1 +
- 1 file changed, 1 insertion(+)
+ include/net/sock.h | 4 +++-
+ net/core/sock.c    | 8 ++++----
+ 2 files changed, 7 insertions(+), 5 deletions(-)
 
-diff --git a/net/core/filter.c b/net/core/filter.c
-index a33cf7b28e4d..40b378bed603 100644
---- a/net/core/filter.c
-+++ b/net/core/filter.c
-@@ -2438,6 +2438,7 @@ BPF_CALL_3(bpf_skb_change_head, struct sk_buff *, skb, u32, head_room,
- 		__skb_push(skb, head_room);
- 		memset(skb->data, 0, head_room);
- 		skb_reset_mac_header(skb);
-+		skb_reset_mac_len(skb);
- 	}
+diff --git a/include/net/sock.h b/include/net/sock.h
+index 4137fa178790..a0728f24ecc5 100644
+--- a/include/net/sock.h
++++ b/include/net/sock.h
+@@ -2150,13 +2150,15 @@ static inline void skb_set_owner_r(struct sk_buff *skb, struct sock *sk)
+ 	sk_mem_charge(sk, skb->truesize);
+ }
  
- 	bpf_compute_data_end(skb);
+-static inline void skb_set_owner_sk_safe(struct sk_buff *skb, struct sock *sk)
++static inline __must_check bool skb_set_owner_sk_safe(struct sk_buff *skb, struct sock *sk)
+ {
+ 	if (sk && refcount_inc_not_zero(&sk->sk_refcnt)) {
+ 		skb_orphan(skb);
+ 		skb->destructor = sock_efree;
+ 		skb->sk = sk;
++		return true;
+ 	}
++	return false;
+ }
+ 
+ void sk_reset_timer(struct sock *sk, struct timer_list *timer,
+diff --git a/net/core/sock.c b/net/core/sock.c
+index 19c178aac0ae..68f84fac63e0 100644
+--- a/net/core/sock.c
++++ b/net/core/sock.c
+@@ -2026,10 +2026,10 @@ void skb_orphan_partial(struct sk_buff *skb)
+ 	if (skb_is_tcp_pure_ack(skb))
+ 		return;
+ 
+-	if (can_skb_orphan_partial(skb))
+-		skb_set_owner_sk_safe(skb, skb->sk);
+-	else
+-		skb_orphan(skb);
++	if (can_skb_orphan_partial(skb) && skb_set_owner_sk_safe(skb, skb->sk))
++		return;
++
++	skb_orphan(skb);
+ }
+ EXPORT_SYMBOL(skb_orphan_partial);
+ 
 -- 
 2.30.2
 
