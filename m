@@ -2,47 +2,47 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A2E1D39668E
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 19:09:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E4C69396690
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 19:09:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231680AbhEaRKv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 13:10:51 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:50939 "EHLO
+        id S233584AbhEaRL1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 13:11:27 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:48118 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232784AbhEaRDY (ORCPT
+        by vger.kernel.org with ESMTP id S234561AbhEaRD1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 13:03:24 -0400
+        Mon, 31 May 2021 13:03:27 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1622480503;
+        s=mimecast20190719; t=1622480505;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=JcuatMd87L9fCdp8lwImF5akoS3qK1D+UhqbImbeNZA=;
-        b=SW7qTAVmA/Q78gkmzgc8VfNl97lJvbHADQ+6K4gf7LrzCeMNdUDgxl1ZUx/TMQjSZrPff+
-        61946s708DyrVDn528U5Sv0inx+rt2/DrJYisaNT0iOhptjrsTH+vvJIGwc1XW30qQ7+jJ
-        QjRML3ZSxdRtLC+T/NMtzmMaXmbvbHo=
+        bh=87JowEd1S3/KydoKdPj22y1RTGzOJZZsVj9TKC1DTWI=;
+        b=bc6EM351pTgmBELtsg4romq1EUoi+6qnFwhhMbcFvuMd5ZThWOuAjXbDrAjz7vxewzaTrx
+        0wCZ35bdznuIJqR/Nt/B+D9nSpjM8Lv2zKoUusawkY23UDmslpRcjU4lRYvd9h5fOAwPMm
+        lHFP6+9t6dz6wxnkrjUJLlNoOsS9kKA=
 Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
  [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-58-TuML07xeMH-2SmhghoKr7g-1; Mon, 31 May 2021 13:01:42 -0400
-X-MC-Unique: TuML07xeMH-2SmhghoKr7g-1
+ us-mta-243-uvZbeSWgNoqHCmT-1hxfBA-1; Mon, 31 May 2021 13:01:44 -0400
+X-MC-Unique: uvZbeSWgNoqHCmT-1hxfBA-1
 Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id BD5F1801B19;
-        Mon, 31 May 2021 17:01:40 +0000 (UTC)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id C28B38030CF;
+        Mon, 31 May 2021 17:01:42 +0000 (UTC)
 Received: from max.com (unknown [10.40.192.80])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 1A33E5B4A0;
-        Mon, 31 May 2021 17:01:38 +0000 (UTC)
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 1E3BB2DAD0;
+        Mon, 31 May 2021 17:01:40 +0000 (UTC)
 From:   Andreas Gruenbacher <agruenba@redhat.com>
 To:     Linus Torvalds <torvalds@linux-foundation.org>
 Cc:     Andreas Gruenbacher <agruenba@redhat.com>,
         cluster-devel@redhat.com, linux-kernel@vger.kernel.org,
         Alexander Viro <viro@zeniv.linux.org.uk>,
         Jan Kara <jack@suse.cz>, Matthew Wilcox <willy@infradead.org>
-Subject: [RFC 4/9] gfs2: Fix mmap + page fault deadlocks (part 1)
-Date:   Mon, 31 May 2021 19:01:18 +0200
-Message-Id: <20210531170123.243771-5-agruenba@redhat.com>
+Subject: [RFC 5/9] iov_iter: Add iov_iter_fault_in_writeable()
+Date:   Mon, 31 May 2021 19:01:19 +0200
+Message-Id: <20210531170123.243771-6-agruenba@redhat.com>
 In-Reply-To: <20210531170123.243771-1-agruenba@redhat.com>
 References: <20210531170123.243771-1-agruenba@redhat.com>
 MIME-Version: 1.0
@@ -52,110 +52,66 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When the buffer passed to a read or write system call is memory mapped
-to the same file, a page fault can occur in filemap_fault.  In that
-case, the task will already be holding the inode glock, and trying to
-take the same lock again will result in a BUG in add_to_queue().
+Add the equivalent of iov_iter_fault_in_readable(), but for pages that
+will be written to.
 
-Fix that by recognizing the self-recursion case.  Either skip the lock
-taking (when the glock is held in a compatible way), or fail the
-operation.
+While at it, fix an indentation error in iov_iter_fault_in_readable().
 
-Likewise, a request to un-share a copy-on-write page can *probably*
-happen in similar situations, so treat the locking in gfs2_page_mkwrite
-in the same way.
-
-A future patch will handle these case more gracefully by retrying
-operations instead of failing them, along with addressing more complex
-deadlock scenarios.
-
-Reported-by: Jan Kara <jack@suse.cz>
 Signed-off-by: Andreas Gruenbacher <agruenba@redhat.com>
 ---
- fs/gfs2/file.c | 40 ++++++++++++++++++++++++++++++----------
- 1 file changed, 30 insertions(+), 10 deletions(-)
+ include/linux/uio.h |  1 +
+ lib/iov_iter.c      | 20 +++++++++++++++++++-
+ 2 files changed, 20 insertions(+), 1 deletion(-)
 
-diff --git a/fs/gfs2/file.c b/fs/gfs2/file.c
-index 6d77743f11a4..7d88abb4629b 100644
---- a/fs/gfs2/file.c
-+++ b/fs/gfs2/file.c
-@@ -423,6 +423,7 @@ static vm_fault_t gfs2_page_mkwrite(struct vm_fault *vmf)
- 	struct page *page = vmf->page;
- 	struct inode *inode = file_inode(vmf->vma->vm_file);
- 	struct gfs2_inode *ip = GFS2_I(inode);
-+	struct gfs2_holder *outer_gh = gfs2_glock_is_locked_by_me(ip->i_gl);
- 	struct gfs2_sbd *sdp = GFS2_SB(inode);
- 	struct gfs2_alloc_parms ap = { .aflags = 0, };
- 	u64 offset = page_offset(page);
-@@ -436,10 +437,18 @@ static vm_fault_t gfs2_page_mkwrite(struct vm_fault *vmf)
- 	sb_start_pagefault(inode->i_sb);
- 
- 	gfs2_holder_init(ip->i_gl, LM_ST_EXCLUSIVE, 0, &gh);
--	err = gfs2_glock_nq(&gh);
--	if (err) {
--		ret = block_page_mkwrite_return(err);
--		goto out_uninit;
-+	if (likely(!outer_gh)) {
-+		err = gfs2_glock_nq(&gh);
-+		if (err) {
-+			ret = block_page_mkwrite_return(err);
-+			goto out_uninit;
-+		}
-+	} else {
-+		if (!gfs2_holder_is_compatible(outer_gh, LM_ST_EXCLUSIVE)) {
-+			/* We could try to upgrade outer_gh here. */
-+			ret = VM_FAULT_SIGBUS;
-+			goto out_uninit;
-+		}
+diff --git a/include/linux/uio.h b/include/linux/uio.h
+index d3ec87706d75..6811eb6ac6e3 100644
+--- a/include/linux/uio.h
++++ b/include/linux/uio.h
+@@ -124,6 +124,7 @@ size_t iov_iter_copy_from_user_atomic(struct page *page,
+ void iov_iter_advance(struct iov_iter *i, size_t bytes);
+ void iov_iter_revert(struct iov_iter *i, size_t bytes);
+ int iov_iter_fault_in_readable(struct iov_iter *i, size_t bytes);
++int iov_iter_fault_in_writeable(struct iov_iter *i, size_t bytes);
+ size_t iov_iter_single_seg_count(const struct iov_iter *i);
+ size_t copy_page_to_iter(struct page *page, size_t offset, size_t bytes,
+ 			 struct iov_iter *i);
+diff --git a/lib/iov_iter.c b/lib/iov_iter.c
+index c701b7a187f2..317c94eac907 100644
+--- a/lib/iov_iter.c
++++ b/lib/iov_iter.c
+@@ -480,13 +480,31 @@ int iov_iter_fault_in_readable(struct iov_iter *i, size_t bytes)
+ 		iterate_iovec(i, bytes, v, iov, skip, ({
+ 			err = fault_in_pages_readable(v.iov_base, v.iov_len);
+ 			if (unlikely(err))
+-			return err;
++				return err;
+ 		0;}))
  	}
+ 	return 0;
+ }
+ EXPORT_SYMBOL(iov_iter_fault_in_readable);
  
- 	/* Check page index against inode size */
-@@ -540,7 +549,8 @@ static vm_fault_t gfs2_page_mkwrite(struct vm_fault *vmf)
- out_quota_unlock:
- 	gfs2_quota_unlock(ip);
- out_unlock:
--	gfs2_glock_dq(&gh);
-+	if (likely(!outer_gh))
-+		gfs2_glock_dq(&gh);
- out_uninit:
- 	gfs2_holder_uninit(&gh);
- 	if (ret == VM_FAULT_LOCKED) {
-@@ -555,6 +565,7 @@ static vm_fault_t gfs2_fault(struct vm_fault *vmf)
- {
- 	struct inode *inode = file_inode(vmf->vma->vm_file);
- 	struct gfs2_inode *ip = GFS2_I(inode);
-+	struct gfs2_holder *outer_gh = gfs2_glock_is_locked_by_me(ip->i_gl);
- 	struct gfs2_holder gh;
- 	vm_fault_t ret;
- 	u16 state;
-@@ -562,13 +573,22 @@ static vm_fault_t gfs2_fault(struct vm_fault *vmf)
- 
- 	state = (vmf->flags & FAULT_FLAG_WRITE) ? LM_ST_EXCLUSIVE : LM_ST_SHARED;
- 	gfs2_holder_init(ip->i_gl, state, 0, &gh);
--	err = gfs2_glock_nq(&gh);
--	if (err) {
--		ret = block_page_mkwrite_return(err);
--		goto out_uninit;
-+	if (likely(!outer_gh)) {
-+		err = gfs2_glock_nq(&gh);
-+		if (err) {
-+			ret = block_page_mkwrite_return(err);
-+			goto out_uninit;
-+		}
-+	} else {
-+		if (!gfs2_holder_is_compatible(outer_gh, state)) {
-+			/* We could try to upgrade outer_gh here. */
-+			ret = VM_FAULT_SIGBUS;
-+			goto out_uninit;
-+		}
- 	}
- 	ret = filemap_fault(vmf);
--	gfs2_glock_dq(&gh);
-+	if (likely(!outer_gh))
-+		gfs2_glock_dq(&gh);
- out_uninit:
- 	gfs2_holder_uninit(&gh);
- 	return ret;
++int iov_iter_fault_in_writeable(struct iov_iter *i, size_t bytes)
++{
++	size_t skip = i->iov_offset;
++	const struct iovec *iov;
++	int err;
++	struct iovec v;
++
++	if (!(i->type & (ITER_BVEC|ITER_KVEC))) {
++		iterate_iovec(i, bytes, v, iov, skip, ({
++			err = fault_in_pages_writeable(v.iov_base, v.iov_len);
++			if (unlikely(err))
++				return err;
++		0;}))
++	}
++	return 0;
++}
++EXPORT_SYMBOL(iov_iter_fault_in_writeable);
++
+ void iov_iter_init(struct iov_iter *i, unsigned int direction,
+ 			const struct iovec *iov, unsigned long nr_segs,
+ 			size_t count)
 -- 
 2.26.3
 
