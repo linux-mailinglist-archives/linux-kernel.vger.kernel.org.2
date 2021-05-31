@@ -2,252 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A7CFA395751
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 10:47:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D4E1395757
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 10:47:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230397AbhEaIsw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 04:48:52 -0400
-Received: from mx0b-00069f02.pphosted.com ([205.220.177.32]:16544 "EHLO
-        mx0b-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230107AbhEaIsu (ORCPT
+        id S230450AbhEaItc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 04:49:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51868 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230461AbhEaItO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 04:48:50 -0400
-Received: from pps.filterd (m0246630.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 14V8kF3V021721;
-        Mon, 31 May 2021 08:46:29 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- content-transfer-encoding : in-reply-to; s=corp-2020-01-29;
- bh=/CgPOMIARDftfB0Qw7cHpwmQbywZ4gj/NtDgnpDTwrI=;
- b=HIQT+Tqic31oRnVeJyUFnSqQIMMPkXWc+STrnWBp7NrbQakOfRYYzYZRpU0GwE5OG7qZ
- iXZx3BB1gNkCsmR2gG6LIimt4IQuKG/Cpaoo7WhX5ODxBFW6QBNyLF8qOp280NfWo6DO
- AR1mKEeWWLTJFqyQt9uDkOpU1XH4lDtAB3lkhuhr9yY7OTrK4yNrgi8A0az4yzgi/iTc
- W86qccMoSenQQ/RcD8Ovf3+Fc4xLpITZN71Lw1SQOtiAYtkyfeL0Eq7yiPFo15AJkx4J
- 9oqLI+AkBO5xn8grGyiTZH+V4hK3bZwxHseciiYKb7Mkci818IXj9ZfqzK16k6rn9cXD OQ== 
-Received: from oracle.com (aserp3030.oracle.com [141.146.126.71])
-        by mx0b-00069f02.pphosted.com with ESMTP id 38vj1kr5dh-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 31 May 2021 08:46:29 +0000
-Received: from aserp3030.oracle.com (aserp3030.oracle.com [127.0.0.1])
-        by pps.podrdrct (8.16.0.36/8.16.0.36) with SMTP id 14V8kSHg066622;
-        Mon, 31 May 2021 08:46:28 GMT
-Received: from pps.reinject (localhost [127.0.0.1])
-        by aserp3030.oracle.com with ESMTP id 38ubnc9k53-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 31 May 2021 08:46:28 +0000
-Received: from aserp3030.oracle.com (aserp3030.oracle.com [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 14V8kRXa066608;
-        Mon, 31 May 2021 08:46:27 GMT
-Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
-        by aserp3030.oracle.com with ESMTP id 38ubnc9k50-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 31 May 2021 08:46:27 +0000
-Received: from abhmp0005.oracle.com (abhmp0005.oracle.com [141.146.116.11])
-        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 14V8kL9I007691;
-        Mon, 31 May 2021 08:46:25 GMT
-Received: from kadam (/41.212.42.34)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Mon, 31 May 2021 01:46:20 -0700
-Date:   Mon, 31 May 2021 11:46:13 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     Dongliang Mu <mudongliangabcd@gmail.com>
-Cc:     perex@perex.cz, tiwai@suse.com, alsa-devel@alsa-project.org,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        syzbot+08a7d8b51ea048a74ffb@syzkaller.appspotmail.com
-Subject: Re: [PATCH] ALSA: control led: fix memory leak in
- snd_ctl_led_register
-Message-ID: <20210531084613.GX24442@kadam>
-References: <20210528133309.GR24442@kadam>
- <CAD-N9QVWcEJjoziA6HVoQiUueVaKqAJS5Et60zvCvuUE7e6=gg@mail.gmail.com>
- <20210528140500.GS24442@kadam>
- <A622EB84-DC4A-47A4-A828-CE6D25DC92EB@gmail.com>
- <CAD-N9QVjhDDJxRnNrDzwt05BNijr1o11nE8xjvq8GrakEJ8EuQ@mail.gmail.com>
- <20210531044022.GU24442@kadam>
- <CAD-N9QWBBP6_Wwi4z3e4yJM-tS54=1=CcvAA+2__Qj8NsTLq9g@mail.gmail.com>
- <20210531070337.GV24442@kadam>
- <CAD-N9QU-uqFr=b1hMi1h1ytq2Uf2XKL44f9OHBRhM70zhkiO7w@mail.gmail.com>
- <CAD-N9QW5C2ssA7H_U+eiM=SbsPj29Ooo6Sk=r4d1qELbZQjuPA@mail.gmail.com>
+        Mon, 31 May 2021 04:49:14 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7EBF8C061574
+        for <linux-kernel@vger.kernel.org>; Mon, 31 May 2021 01:47:35 -0700 (PDT)
+Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <mkl@pengutronix.de>)
+        id 1lndZy-0003CN-NZ; Mon, 31 May 2021 10:47:22 +0200
+Received: from pengutronix.de (unknown [IPv6:2a03:f580:87bc:d400:eb0a:85ec:ae31:4631])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        (Authenticated sender: mkl-all@blackshift.org)
+        by smtp.blackshift.org (Postfix) with ESMTPSA id CD72F62FB35;
+        Mon, 31 May 2021 08:47:20 +0000 (UTC)
+Date:   Mon, 31 May 2021 10:47:20 +0200
+From:   Marc Kleine-Budde <mkl@pengutronix.de>
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     linux-can@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Manivannan Sadhasivam <mani@kernel.org>,
+        Thomas Kopp <thomas.kopp@microchip.com>,
+        Wolfgang Grandegger <wg@grandegger.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>
+Subject: Re: [PATCH v2 1/2] can: mcp251xfd: Try to get crystal clock rate
+ from property
+Message-ID: <20210531084720.6xql2r4uhp6ruzl6@pengutronix.de>
+References: <20210526193327.70468-1-andriy.shevchenko@linux.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="2berr7nn6ppdwg42"
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAD-N9QW5C2ssA7H_U+eiM=SbsPj29Ooo6Sk=r4d1qELbZQjuPA@mail.gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Proofpoint-ORIG-GUID: dInrzyx32Gg2jDn5X5AZ_IbBnTK1aOml
-X-Proofpoint-GUID: dInrzyx32Gg2jDn5X5AZ_IbBnTK1aOml
+In-Reply-To: <20210526193327.70468-1-andriy.shevchenko@linux.intel.com>
+X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
+X-SA-Exim-Mail-From: mkl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 31, 2021 at 04:08:04PM +0800, Dongliang Mu wrote:
-> On Mon, May 31, 2021 at 3:34 PM Dongliang Mu <mudongliangabcd@gmail.com> wrote:
-> >
-> > On Mon, May 31, 2021 at 3:03 PM Dan Carpenter <dan.carpenter@oracle.com> wrote:
-> > >
-> > > On Mon, May 31, 2021 at 02:20:37PM +0800, Dongliang Mu wrote:
-> > > > On Mon, May 31, 2021 at 12:40 PM Dan Carpenter <dan.carpenter@oracle.com> wrote:
-> > > > >
-> > > > > On Mon, May 31, 2021 at 11:03:36AM +0800, Dongliang Mu wrote:
-> > > > > > On Sat, May 29, 2021 at 5:35 AM 慕冬亮 <mudongliangabcd@gmail.com> wrote:
-> > > > > > >
-> > > > > > >
-> > > > > > >
-> > > > > > > > On May 28, 2021, at 10:05 PM, Dan Carpenter <dan.carpenter@oracle.com> wrote:
-> > > > > > > >
-> > > > > > > > On Fri, May 28, 2021 at 09:50:49PM +0800, Dongliang Mu wrote:
-> > > > > > > >>
-> > > > > > > >> Can you please give some advise on how to fix this WARN issue?
-> > > > > > > >
-> > > > > > > > But it feels like it spoils the fun if I write the commit...  Anyway:
-> > > > > > >
-> > > > > > > It’s fine. I am still in the learning process. It’s also good to learn experience by comparing your patch and my patch.
-> > > > > > >
-> > > > > > > >
-> > > > > > > > regards,
-> > > > > > > > dan carpenter
-> > > > > > > >
-> > > > > > > > diff --git a/sound/core/control_led.c b/sound/core/control_led.c
-> > > > > > > > index 25f57c14f294..dd357abc1b58 100644
-> > > > > > > > --- a/sound/core/control_led.c
-> > > > > > > > +++ b/sound/core/control_led.c
-> > > > > > > > @@ -740,6 +740,7 @@ static int __init snd_ctl_led_init(void)
-> > > > > > > >                       for (; group > 0; group--) {
-> > > > > > > >                               led = &snd_ctl_leds[group - 1];
-> > > > > > > >                               device_del(&led->dev);
-> > > > > > > > +                             device_put(&led->dev);
-> > > > > > > >                       }
-> > > > > > > >                       device_del(&snd_ctl_led_dev);
-> > > > > > > >                       return -ENOMEM;
-> > > > > > > > @@ -768,6 +769,7 @@ static void __exit snd_ctl_led_exit(void)
-> > > > > > > >       for (group = 0; group < MAX_LED; group++) {
-> > > > > > > >               led = &snd_ctl_leds[group];
-> > > > > > > >               device_del(&led->dev);
-> > > > > > > > +             device_put(&led->dev);
-> > > > > > > >       }
-> > > > > > > >       device_del(&snd_ctl_led_dev);
-> > > > > > > >       snd_ctl_led_clean(NULL);
-> > > > > >
-> > > > > > Hi Dan,
-> > > > > >
-> > > > > > I tried this patch, and it still triggers the memleak.
-> > > > >
-> > > > > Did your patch fix the leak?  Because my patch should have been
-> > > > > equivalent except for it fixes an additional leak in the snd_ctl_led_init()
-> > > > > error path.
-> > > >
-> > > > The syzbot link is [1]. I have tested my patch in the syzbot dashboard
-> > > > and my local workspace.
-> > > >
-> > > > I think the reason why your patch did not work should be
-> > > > led_card(struct snd_ctl_led_card) is already freed before returning in
-> > > > snd_ctl_led_sysfs_remove, rather than led(struct snd_ctl_led). See the
-> > > > implementation of snd_ctl_led_sysfs_remove for some details. Please
-> > > > correct me if I make any mistakes.
-> > > >
-> > > > static void snd_ctl_led_sysfs_remove(struct snd_card *card)
-> > > > {
-> > > >         unsigned int group;
-> > > >         struct snd_ctl_led_card *led_card;
-> > > >         struct snd_ctl_led *led;
-> > > >         char link_name[32];
-> > > >
-> > > >         for (group = 0; group < MAX_LED; group++) {
-> > > >                 led = &snd_ctl_leds[group];
-> > > >                 led_card = led->cards[card->number];
-> > > >                 if (!led_card)
-> > > >                         continue;
-> > > >                 snprintf(link_name, sizeof(link_name), "led-%s", led->name);
-> > > >                 sysfs_remove_link(&card->ctl_dev.kobj, link_name);
-> > > >                 sysfs_remove_link(&led_card->dev.kobj, "card");
-> > > >                 device_del(&led_card->dev);
-> > > >                 put_device(&led_card->dev);
-> > > >                 kfree(led_card);
-> > > >                 led->cards[card->number] = NULL;
-> > > >         }
-> > > > }
-> > >
-> > > This is frustrating to look at because it's not a diff so it doesn't
-> > > show what you changed.  I think you are saying that you added the
-> > > put_device(&led_card->dev);.  That's true.  There are some other leaks
-> > > as well.  We should just fix them all.  Use device_unregister() because
-> > > it's cleaner.
-> >
-> > Oh, I see your point. Yeah, we should fix these memory leaks all. I
-> > agree with device_unregister.
-> >
-> > >
-> > > If both device_initialize() and device_add() succeed then call
-> > > device_unregister() to unwind.
-> >
-> > BTW, have you tested this new patch on two memory leaks?
-> >
-> 
-> Please keep in mind that if we don't have any release method for
-> struct snd_ctl_led_card, it will trigger a WARN[1] in the
-> device_release function. That's why I have to add one dummy release
-> function.
-> 
-> if (dev->release)
->         dev->release(dev);
-> else if (dev->type && dev->type->release)
->         dev->type->release(dev);
-> else if (dev->class && dev->class->dev_release)
->         dev->class->dev_release(dev);
-> else
->         WARN(1, KERN_ERR "Device '%s' does not have a release()
-> function, it is broken and must be fixed. See
-> Documentation/core-api/kobject.rst.\n",
-> dev_name(dev));
-> 
 
-Oh yeah.  You're right.  The "kfree(led_card);" needs to be moved to a
-release function or it can lead to a use after free.  For the others,
-I think a dummy release function is ok (because it is static data).
+--2berr7nn6ppdwg42
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-It feels like there should be a standard way to say that there is no
-need to release any data.  That way it could be verified by static
-analysis tools.
+On 26.05.2021 22:33:26, Andy Shevchenko wrote:
+> In some configurations, mainly ACPI-based, the clock frequency of the dev=
+ice
+> is supplied by very well established 'clock-frequency' property. Hence, t=
+ry
+> to get it from the property at last if no other providers are available.
+>=20
+> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> ---
+> v2: new patch
+>  drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c | 9 +++++++--
+>  1 file changed, 7 insertions(+), 2 deletions(-)
+>=20
+> diff --git a/drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c b/drivers/net=
+/can/spi/mcp251xfd/mcp251xfd-core.c
+> index e0ae00e34c7b..e42f87c3f2ec 100644
+> --- a/drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c
+> +++ b/drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c
+> @@ -2856,7 +2856,7 @@ static int mcp251xfd_probe(struct spi_device *spi)
+>  	struct gpio_desc *rx_int;
+>  	struct regulator *reg_vdd, *reg_xceiver;
+>  	struct clk *clk;
+> -	u32 freq;
+> +	u32 freq, rate;
+>  	int err;
+> =20
+>  	if (!spi->irq)
+> @@ -2883,11 +2883,16 @@ static int mcp251xfd_probe(struct spi_device *spi)
+>  		return dev_err_probe(&spi->dev, PTR_ERR(reg_xceiver),
+>  				     "Failed to get Transceiver regulator!\n");
+> =20
+> -	clk =3D devm_clk_get(&spi->dev, NULL);
+> +	/* Always ask for fixed clock rate from a property. */
+> +	device_property_read_u32(&spi->dev, "clock-frequency", &rate);
 
-regards,
-dan carpenter
+what about error handling....?
 
-> [1] https://elixir.bootlin.com/linux/latest/source/drivers/base/core.c#L2110 
-> 
-> > >
-> > > diff --git a/sound/core/control_led.c b/sound/core/control_led.c
-> > > index 25f57c14f294..561fe45e4449 100644
-> > > --- a/sound/core/control_led.c
-> > > +++ b/sound/core/control_led.c
-> > > @@ -700,7 +700,7 @@ static void snd_ctl_led_sysfs_remove(struct snd_card *card)
-> > >                 snprintf(link_name, sizeof(link_name), "led-%s", led->name);
-> > >                 sysfs_remove_link(&card->ctl_dev.kobj, link_name);
-> > >                 sysfs_remove_link(&led_card->dev.kobj, "card");
-> > > -               device_del(&led_card->dev);
-> > > +               device_unregister(&led_card->dev);
-> > >                 kfree(led_card);
-> > >                 led->cards[card->number] = NULL;
-> > >         }
-> > > @@ -739,9 +739,9 @@ static int __init snd_ctl_led_init(void)
-> > >                         put_device(&led->dev);
-> > >                         for (; group > 0; group--) {
-> > >                                 led = &snd_ctl_leds[group - 1];
-> > > -                               device_del(&led->dev);
-> > > +                               device_unregister(&led->dev);
-> > >                         }
-> > > -                       device_del(&snd_ctl_led_dev);
-> > > +                       device_unregister(&snd_ctl_led_dev);
-> > >                         return -ENOMEM;
-> > >                 }
-> > >         }
-> > > @@ -767,9 +767,9 @@ static void __exit snd_ctl_led_exit(void)
-> > >         }
-> > >         for (group = 0; group < MAX_LED; group++) {
-> > >                 led = &snd_ctl_leds[group];
-> > > -               device_del(&led->dev);
-> > > +               device_unregister(&led->dev);
-> > >         }
-> > > -       device_del(&snd_ctl_led_dev);
-> > > +       device_unregister(&snd_ctl_led_dev);
-> > >         snd_ctl_led_clean(NULL);
-> > >  }
-> > >
+> +
+> +	clk =3D devm_clk_get_optional(&spi->dev, NULL);
+>  	if (IS_ERR(clk))
+>  		return dev_err_probe(&spi->dev, PTR_ERR(clk),
+>  				     "Failed to get Oscillator (clock)!\n");
+>  	freq =3D clk_get_rate(clk);
+> +	if (freq =3D=3D 0)
+> +		freq =3D rate;
+
+=2E.. this means we don't fail if there is neither a clk nor a
+clock-frequency property. I've send a v3 to fix this.
+
+> =20
+>  	/* Sanity check */
+>  	if (freq < MCP251XFD_SYSCLOCK_HZ_MIN ||
+> --=20
+> 2.30.2
+>=20
+>
+
+Marc
+
+--=20
+Pengutronix e.K.                 | Marc Kleine-Budde           |
+Embedded Linux                   | https://www.pengutronix.de  |
+Vertretung West/Dortmund         | Phone: +49-231-2826-924     |
+Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-5555 |
+
+--2berr7nn6ppdwg42
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEK3kIWJt9yTYMP3ehqclaivrt76kFAmC0opUACgkQqclaivrt
+76kAVAgAqxbBCmlQAhoPyB073hbARvhTkRMi7Q//Py9WHyiwEPwLFfAvTGN/7sFr
+R7B09kzNaahBQ+bX/BclI5UcsGva5QgGouXJDz8MF/ilXskAeqzVhw4GUJbVj2EJ
+CYVk1Hu4QebsFgUH0+g8PPd4R6FxK3t+xPmG9KlyHy6DC+zTCl8AK8PbvJcKMdHH
+s1mM09kknfCCUVlT8xyUifEYY9OyPj+OHfsxMiRzxqRKx+ep5/wmgy2BJ/C0I4YC
+2cU044bLKbcNd21nduqrt8uD9+QBL4J10MNhGZW3J3nonzmXiEJ48vLOLXLZqKAR
+AQC/CFipnfIvuy7Ctupd0xLvmMcH7Q==
+=58nX
+-----END PGP SIGNATURE-----
+
+--2berr7nn6ppdwg42--
