@@ -2,31 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B73F3960FD
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 16:32:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A79E39612B
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 16:35:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232989AbhEaOdz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 10:33:55 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59500 "EHLO mail.kernel.org"
+        id S232822AbhEaOg4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 10:36:56 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60414 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233285AbhEaNzG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 09:55:06 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A2E1B61437;
-        Mon, 31 May 2021 13:34:02 +0000 (UTC)
+        id S230357AbhEaNzz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 09:55:55 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CC02860FE8;
+        Mon, 31 May 2021 13:34:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1622468043;
-        bh=/RuQUyMIaJ9E9bQymBEYM3aoAaFljy1lzbmmttyFdb8=;
+        s=korg; t=1622468073;
+        bh=PwlgtTkGS+1C9BvwQKkTVlLQQhHTBS25/lKjRtxMhC4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Ajk9vUco5eNXbEOvnQ3IKEj4XJ4TTnkNB7Ex1o6DOhzDe7G/UnG2WAzOxSz3lm5Jt
-         grPeDNsC4PpOx5BsXuvEp9+AaBWqE21TYClO265GhS+2IiQ19fmDCUjHSUxA8C5TMC
-         e92j5emcSub4JoWCAbxqBd58BajcQx1y03zFbxWw=
+        b=xZZ+H1hFOhPPusbi5rtHgRBuQa7kGGUW7CBQReCr/3KDC/JFuQbSiYVD1L0ZTWqsA
+         hD16914Bdj389Jce/uQ6b0wIb6F0sl++9KRnpm/YmD/FVgmFP1BQ8cZIXolGNVcwRl
+         NTFO1E0rVUJXNlFV2rBkiRHW1OVPr+3ps+lTcn4A=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Colin Ian King <colin.king@canonical.com>
-Subject: [PATCH 5.10 078/252] serial: tegra: Fix a mask operation that is always true
-Date:   Mon, 31 May 2021 15:12:23 +0200
-Message-Id: <20210531130700.642018293@linuxfoundation.org>
+        stable@vger.kernel.org, Linh Phung <linh.phung.jy@renesas.com>,
+        Wolfram Sang <wsa+renesas@sang-engineering.com>,
+        Ulrich Hecht <uli+renesas@fpond.eu>,
+        Geert Uytterhoeven <geert+renesas@glider.be>
+Subject: [PATCH 5.10 079/252] serial: sh-sci: Fix off-by-one error in FIFO threshold register setting
+Date:   Mon, 31 May 2021 15:12:24 +0200
+Message-Id: <20210531130700.674221127@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210531130657.971257589@linuxfoundation.org>
 References: <20210531130657.971257589@linuxfoundation.org>
@@ -38,34 +41,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Colin Ian King <colin.king@canonical.com>
+From: Geert Uytterhoeven <geert+renesas@glider.be>
 
-commit 3ddb4ce1e6e3bd112778ab93bbd9092f23a878ec upstream.
+commit 2ea2e019c190ee3973ef7bcaf829d8762e56e635 upstream.
 
-Currently the expression lsr | UART_LSR_TEMT is always true and
-this seems suspect. I believe the intent was to mask lsr with UART_LSR_TEMT
-to check that bit, so the expression should be using the & operator
-instead. Fix this.
+The Receive FIFO Data Count Trigger field (RTRG[6:0]) in the Receive
+FIFO Data Count Trigger Register (HSRTRGR) of HSCIF can only hold values
+ranging from 0-127.  As the FIFO size is equal to 128 on HSCIF, the user
+can write an out-of-range value, touching reserved bits.
 
-Fixes: b9c2470fb150 ("serial: tegra: flush the RX fifo on frame error")
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
+Fix this by limiting the trigger value to the FIFO size minus one.
+Reverse the order of the checks, to avoid rx_trig becoming zero if the
+FIFO size is one.
+
+Note that this change has no impact on other SCIF variants, as their
+maximum supported trigger value is lower than the FIFO size anyway, and
+the code below takes care of enforcing these limits.
+
+Fixes: a380ed461f66d1b8 ("serial: sh-sci: implement FIFO threshold register setting")
+Reported-by: Linh Phung <linh.phung.jy@renesas.com>
+Reviewed-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
+Reviewed-by: Ulrich Hecht <uli+renesas@fpond.eu>
+Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
 Cc: stable <stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/20210426105514.23268-1-colin.king@canonical.com
+Link: https://lore.kernel.org/r/5eff320aef92ffb33d00e57979fd3603bbb4a70f.1620648218.git.geert+renesas@glider.be
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/tty/serial/serial-tegra.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/tty/serial/sh-sci.c |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
---- a/drivers/tty/serial/serial-tegra.c
-+++ b/drivers/tty/serial/serial-tegra.c
-@@ -333,7 +333,7 @@ static void tegra_uart_fifo_reset(struct
+--- a/drivers/tty/serial/sh-sci.c
++++ b/drivers/tty/serial/sh-sci.c
+@@ -1023,10 +1023,10 @@ static int scif_set_rtrg(struct uart_por
+ {
+ 	unsigned int bits;
  
- 	do {
- 		lsr = tegra_uart_read(tup, UART_LSR);
--		if ((lsr | UART_LSR_TEMT) && !(lsr & UART_LSR_DR))
-+		if ((lsr & UART_LSR_TEMT) && !(lsr & UART_LSR_DR))
- 			break;
- 		udelay(1);
- 	} while (--tmout);
++	if (rx_trig >= port->fifosize)
++		rx_trig = port->fifosize - 1;
+ 	if (rx_trig < 1)
+ 		rx_trig = 1;
+-	if (rx_trig >= port->fifosize)
+-		rx_trig = port->fifosize;
+ 
+ 	/* HSCIF can be set to an arbitrary level. */
+ 	if (sci_getreg(port, HSRTRGR)->size) {
 
 
