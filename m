@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9001F3964E6
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 18:14:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 75BD7396055
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 16:24:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233736AbhEaQPl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 12:15:41 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38020 "EHLO mail.kernel.org"
+        id S234082AbhEaOY1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 10:24:27 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55720 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234163AbhEaOjf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 10:39:35 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8D07561C61;
-        Mon, 31 May 2021 13:52:48 +0000 (UTC)
+        id S230291AbhEaNua (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 09:50:30 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1751D61429;
+        Mon, 31 May 2021 13:32:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1622469169;
-        bh=5LlACC9eb6jvWorU9pDA7NG43+2mm3M4Wkkm+rUdpr0=;
+        s=korg; t=1622467922;
+        bh=axbAyOi48Hmr3K74CrPJHT6/KFmTBpUvIncWdwiQ5Hk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=u948Eu2R5SmR/pQhoIh2DsXwARsudSjQsbJAfr8300gDwW09032gzZ9aWeJI0a6t5
-         V3odYLt66Q65NHL4VPt5+N/ZWlxO20GLPBpSShp8kEiF2a9H7nkpDqkfQ1/BpHsW6Y
-         N2FAYigdDvApmem52eu9hYRCo7XCoWc4BeJVu3Yk=
+        b=qaT5xQ9SaWXOskmfDRRrGC/PpcLtaL3ziRd+LK7GKixrSnMxXAlRTYxy7J/GUI7Oo
+         gWUWCG9qrtHz6OqSKAHSUbMIKBTEFolMshCWu4GUEwKoSkVqLjIbpv19px+xWlAJep
+         PgSx1q60BofdyXltEpHz+gS9Pu1jZf31UBQFvBnw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, James Zhu <James.Zhu@amd.com>,
-        Leo Liu <leo.liu@amd.com>,
-        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
-        Alex Deucher <alexander.deucher@amd.com>
-Subject: [PATCH 5.12 060/296] drm/amdgpu/jpeg2.0: add cancel_delayed_work_sync before power gate
-Date:   Mon, 31 May 2021 15:11:55 +0200
-Message-Id: <20210531130705.852828791@linuxfoundation.org>
+        stable@vger.kernel.org, Sargun Dhillon <sargun@sargun.me>,
+        Tycho Andersen <tycho@tycho.pizza>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Kees Cook <keescook@chromium.org>
+Subject: [PATCH 5.10 051/252] Documentation: seccomp: Fix user notification documentation
+Date:   Mon, 31 May 2021 15:11:56 +0200
+Message-Id: <20210531130659.708382653@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210531130703.762129381@linuxfoundation.org>
-References: <20210531130703.762129381@linuxfoundation.org>
+In-Reply-To: <20210531130657.971257589@linuxfoundation.org>
+References: <20210531130657.971257589@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,33 +41,50 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: James Zhu <James.Zhu@amd.com>
+From: Sargun Dhillon <sargun@sargun.me>
 
-commit ff48f6dbf0ff896c98d167a67a5b975fb034356b upstream.
+commit aac902925ea646e461c95edc98a8a57eb0def917 upstream.
 
-Add cancel_delayed_work_sync before set power gating state
-to avoid race condition issue when power gating.
+The documentation had some previously incorrect information about how
+userspace notifications (and responses) were handled due to a change
+from a previously proposed patchset.
 
-Signed-off-by: James Zhu <James.Zhu@amd.com>
-Reviewed-by: Leo Liu <leo.liu@amd.com>
-Acked-by: Christian König <christian.koenig@amd.com>
-Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
+Signed-off-by: Sargun Dhillon <sargun@sargun.me>
+Acked-by: Tycho Andersen <tycho@tycho.pizza>
+Acked-by: Christian Brauner <christian.brauner@ubuntu.com>
+Signed-off-by: Kees Cook <keescook@chromium.org>
+Fixes: 6a21cc50f0c7 ("seccomp: add a return code to trap to userspace")
 Cc: stable@vger.kernel.org
+Link: https://lore.kernel.org/r/20210517193908.3113-2-sargun@sargun.me
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/gpu/drm/amd/amdgpu/jpeg_v2_0.c |    2 ++
- 1 file changed, 2 insertions(+)
+ Documentation/userspace-api/seccomp_filter.rst |   16 ++++++++--------
+ 1 file changed, 8 insertions(+), 8 deletions(-)
 
---- a/drivers/gpu/drm/amd/amdgpu/jpeg_v2_0.c
-+++ b/drivers/gpu/drm/amd/amdgpu/jpeg_v2_0.c
-@@ -172,6 +172,8 @@ static int jpeg_v2_0_hw_fini(void *handl
- {
- 	struct amdgpu_device *adev = (struct amdgpu_device *)handle;
- 
-+	cancel_delayed_work_sync(&adev->vcn.idle_work);
+--- a/Documentation/userspace-api/seccomp_filter.rst
++++ b/Documentation/userspace-api/seccomp_filter.rst
+@@ -250,14 +250,14 @@ Users can read via ``ioctl(SECCOMP_IOCTL
+ seccomp notification fd to receive a ``struct seccomp_notif``, which contains
+ five members: the input length of the structure, a unique-per-filter ``id``,
+ the ``pid`` of the task which triggered this request (which may be 0 if the
+-task is in a pid ns not visible from the listener's pid namespace), a ``flags``
+-member which for now only has ``SECCOMP_NOTIF_FLAG_SIGNALED``, representing
+-whether or not the notification is a result of a non-fatal signal, and the
+-``data`` passed to seccomp. Userspace can then make a decision based on this
+-information about what to do, and ``ioctl(SECCOMP_IOCTL_NOTIF_SEND)`` a
+-response, indicating what should be returned to userspace. The ``id`` member of
+-``struct seccomp_notif_resp`` should be the same ``id`` as in ``struct
+-seccomp_notif``.
++task is in a pid ns not visible from the listener's pid namespace). The
++notification also contains the ``data`` passed to seccomp, and a filters flag.
++The structure should be zeroed out prior to calling the ioctl.
 +
- 	if (adev->jpeg.cur_state != AMD_PG_STATE_GATE &&
- 	      RREG32_SOC15(JPEG, 0, mmUVD_JRBC_STATUS))
- 		jpeg_v2_0_set_powergating_state(adev, AMD_PG_STATE_GATE);
++Userspace can then make a decision based on this information about what to do,
++and ``ioctl(SECCOMP_IOCTL_NOTIF_SEND)`` a response, indicating what should be
++returned to userspace. The ``id`` member of ``struct seccomp_notif_resp`` should
++be the same ``id`` as in ``struct seccomp_notif``.
+ 
+ It is worth noting that ``struct seccomp_data`` contains the values of register
+ arguments to the syscall, but does not contain pointers to memory. The task's
 
 
