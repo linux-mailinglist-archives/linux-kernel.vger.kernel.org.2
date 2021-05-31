@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 68E973965C3
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 18:46:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2BF5B395F64
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 16:09:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231610AbhEaQsE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 12:48:04 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45938 "EHLO mail.kernel.org"
+        id S233137AbhEaOK4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 10:10:56 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50918 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234095AbhEaOxq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 10:53:46 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C978B61936;
-        Mon, 31 May 2021 13:59:12 +0000 (UTC)
+        id S233046AbhEaNoc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 09:44:32 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D328E61581;
+        Mon, 31 May 2021 13:29:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1622469553;
-        bh=1mNxDuzzYQ5c3jQGFmTrE83ZE0+KtLLBOnm8/X6TgSY=;
+        s=korg; t=1622467763;
+        bh=LziqiJxWimC3gHL1WLXsLiuG+LG8itRP/PI0D2fhZbM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=sSWfg1Uqiyxp7GhQkciwPueHnvbKD7HrX+gNUXurJ01cIH0KEWCwRzaVJP4/1buzE
-         /hnt9XTzR+r4dkZ9iPIaM5poJPj4NNKmjz+mZzXhyKbE1Nx9UQ4CTZkjeIFsVPIX6h
-         hd91EmIpQM1yZjyKM2dpJmtmRbyiSOIeBDuAvVOM=
+        b=qS7KYdqL+yX88ZxFTgfGwDqg1s/OTMpu+BxTDYoStpXImwZiV/ExKl2UCzwTxnRIn
+         EG8n7ein1sSSg8zQkkaY83YSPiXUrbawiWylOQM8N3DBeWO3Z0rILyUrYvwaWb6Oen
+         LW5r+utbRa+9lL+y25xxCL4xW7NotW0NEukzoLIs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Tao Liu <thomas.liu@ucloud.cn>,
-        Ilya Maximets <i.maximets@ovn.org>,
-        "David S. Miller" <davem@davemloft.net>,
+        stable@vger.kernel.org, Jussi Maki <joamaki@gmail.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.12 240/296] openvswitch: meter: fix race when getting now_ms.
+Subject: [PATCH 4.14 70/79] bpf: Set mac_len in bpf_skb_change_head
 Date:   Mon, 31 May 2021 15:14:55 +0200
-Message-Id: <20210531130711.866368692@linuxfoundation.org>
+Message-Id: <20210531130638.237257360@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210531130703.762129381@linuxfoundation.org>
-References: <20210531130703.762129381@linuxfoundation.org>
+In-Reply-To: <20210531130636.002722319@linuxfoundation.org>
+References: <20210531130636.002722319@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,55 +40,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tao Liu <thomas.liu@ucloud.cn>
+From: Jussi Maki <joamaki@gmail.com>
 
-[ Upstream commit e4df1b0c24350a0f00229ff895a91f1072bd850d ]
+[ Upstream commit 84316ca4e100d8cbfccd9f774e23817cb2059868 ]
 
-We have observed meters working unexpected if traffic is 3+Gbit/s
-with multiple connections.
+The skb_change_head() helper did not set "skb->mac_len", which is
+problematic when it's used in combination with skb_redirect_peer().
+Without it, redirecting a packet from a L3 device such as wireguard to
+the veth peer device will cause skb->data to point to the middle of the
+IP header on entry to tcp_v4_rcv() since the L2 header is not pulled
+correctly due to mac_len=0.
 
-now_ms is not pretected by meter->lock, we may get a negative
-long_delta_ms when another cpu updated meter->used, then:
-    delta_ms = (u32)long_delta_ms;
-which will be a large value.
-
-    band->bucket += delta_ms * band->rate;
-then we get a wrong band->bucket.
-
-OpenVswitch userspace datapath has fixed the same issue[1] some
-time ago, and we port the implementation to kernel datapath.
-
-[1] https://patchwork.ozlabs.org/project/openvswitch/patch/20191025114436.9746-1-i.maximets@ovn.org/
-
-Fixes: 96fbc13d7e77 ("openvswitch: Add meter infrastructure")
-Signed-off-by: Tao Liu <thomas.liu@ucloud.cn>
-Suggested-by: Ilya Maximets <i.maximets@ovn.org>
-Reviewed-by: Ilya Maximets <i.maximets@ovn.org>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Fixes: 3a0af8fd61f9 ("bpf: BPF for lightweight tunnel infrastructure")
+Signed-off-by: Jussi Maki <joamaki@gmail.com>
+Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
+Link: https://lore.kernel.org/bpf/20210519154743.2554771-2-joamaki@gmail.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/openvswitch/meter.c | 8 ++++++++
- 1 file changed, 8 insertions(+)
+ net/core/filter.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/net/openvswitch/meter.c b/net/openvswitch/meter.c
-index 15424d26e85d..ca3c37f2f1e6 100644
---- a/net/openvswitch/meter.c
-+++ b/net/openvswitch/meter.c
-@@ -611,6 +611,14 @@ bool ovs_meter_execute(struct datapath *dp, struct sk_buff *skb,
- 	spin_lock(&meter->lock);
+diff --git a/net/core/filter.c b/net/core/filter.c
+index a33cf7b28e4d..40b378bed603 100644
+--- a/net/core/filter.c
++++ b/net/core/filter.c
+@@ -2438,6 +2438,7 @@ BPF_CALL_3(bpf_skb_change_head, struct sk_buff *, skb, u32, head_room,
+ 		__skb_push(skb, head_room);
+ 		memset(skb->data, 0, head_room);
+ 		skb_reset_mac_header(skb);
++		skb_reset_mac_len(skb);
+ 	}
  
- 	long_delta_ms = (now_ms - meter->used); /* ms */
-+	if (long_delta_ms < 0) {
-+		/* This condition means that we have several threads fighting
-+		 * for a meter lock, and the one who received the packets a
-+		 * bit later wins. Assuming that all racing threads received
-+		 * packets at the same time to avoid overflow.
-+		 */
-+		long_delta_ms = 0;
-+	}
- 
- 	/* Make sure delta_ms will not be too large, so that bucket will not
- 	 * wrap around below.
+ 	bpf_compute_data_end(skb);
 -- 
 2.30.2
 
