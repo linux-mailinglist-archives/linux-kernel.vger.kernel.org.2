@@ -2,84 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C91B939573B
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 10:41:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E9E5539573E
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 10:41:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231189AbhEaImm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 04:42:42 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42756 "EHLO mail.kernel.org"
+        id S230399AbhEaInO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 04:43:14 -0400
+Received: from mail.skyhub.de ([5.9.137.197]:40282 "EHLO mail.skyhub.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231228AbhEaIlm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 04:41:42 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 30C1B6023E;
-        Mon, 31 May 2021 08:40:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1622450403;
-        bh=hIo9igXETrqt8JGupXund+T2mtkuw9aDgnbLO9HhyN0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=IMX+1p1XnD68tYgotvN1s1ACQ+Y/xvPR0Mo27Kdc6p0Ra+3bsuyiEihZzV0Qy/21O
-         PBrNdp+BvYan4Tfq4071JGbwLuvxb42hGih5x62SVvzc28BkYC7QHpOqUZEvkNkdS+
-         BY9Fa9OvmW5MGQqnwAwSeP1HUjj7XWddbQ4lMeLbYAEedgE4yPBwqludlILxELu4dN
-         ZFu4FJ3uJ/Nwi/3BEYOau+jNT3GjlUfOr1Uk8Mc+pEC1FVE+y/RPmiBsk1K0IOxCi3
-         0K28aJxa0bNRvZXNqaT5SPcAk44uECTcR29sbfPy5M1EM7tlFzBwuI9iKnkifjcqka
-         i5O/v3PLi0g6A==
-Date:   Mon, 31 May 2021 14:09:59 +0530
-From:   Vinod Koul <vkoul@kernel.org>
-To:     Yang Li <yang.lee@linux.alibaba.com>
-Cc:     kishon@ti.com, linux-phy@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] phy: ti: Fix an error code in wiz_probe()
-Message-ID: <YLSg3z3hYsT/QQ1n@vkoul-mobl.Dlink>
-References: <1621939832-65535-1-git-send-email-yang.lee@linux.alibaba.com>
+        id S231263AbhEaImU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 04:42:20 -0400
+Received: from zn.tnic (p200300ec2f080f006c0d0ceb240e6208.dip0.t-ipconnect.de [IPv6:2003:ec:2f08:f00:6c0d:ceb:240e:6208])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id AC8BE1EC0489;
+        Mon, 31 May 2021 10:40:39 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1622450439;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=KoQphbyuo1/nKVZ7OXCY8vZ8trKuzaVJ0+007WK774E=;
+        b=N9fVxbFksZfdYLZfuKCOZ50uvndPclGsmM/ftiqS3Pv0QBQ2s/gsqNinQmlM+CvGSJhkSJ
+        BKS/CN02XnSAgK8X0qsUXx4mH14Tdx6sCoEJ3cJT/3pi3Z/Yv8Dr1o1iCkPiXgbN0KM2qc
+        wkzM9PAz0CgMFJ6kwewLKtceWIOHloA=
+Date:   Mon, 31 May 2021 10:40:31 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Zhen Lei <thunder.leizhen@huawei.com>
+Cc:     Johannes Thumshirn <morbidrsa@gmail.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Tony Luck <tony.luck@intel.com>,
+        James Morse <james.morse@arm.com>,
+        Robert Richter <rric@kernel.org>,
+        Doug Thompson <dougthompson@xmission.com>,
+        Dave Jiang <djiang@mvista.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-edac <linux-edac@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 1/1] EDAC, mpc85xx: Fix error return code in two functions
+Message-ID: <YLSg/8REPQoX8HL7@zn.tnic>
+References: <20210528032637.9231-1-thunder.leizhen@huawei.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <1621939832-65535-1-git-send-email-yang.lee@linux.alibaba.com>
+In-Reply-To: <20210528032637.9231-1-thunder.leizhen@huawei.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 25-05-21, 18:50, Yang Li wrote:
-> When the code execute this if statement, the value of ret is 0. 
-> However, we can see from the dev_err() log that the value of 
-> ret should be -EINVAL.
+On Fri, May 28, 2021 at 11:26:37AM +0800, Zhen Lei wrote:
+> Fix to return -EFAULT from the error handling case instead of 0, as done
+> elsewhere in its function.
 > 
-> Clean up smatch warning:
-> 
-> drivers/phy/ti/phy-j721e-wiz.c:1216 wiz_probe() warn: missing error code
-> 'ret'
-
-Single line is fine for this
-
-> 
-> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-> Fixes: 'commit c9f9eba06629 ("phy: ti: j721e-wiz: Manage
-> typec-gpio-dir")'
-
-Please dont split to two lines for fixes tag
-
-> Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
-
-I have fixed while applying so Applied, thanks
-
+> Fixes: a9a753d53204 ("drivers-edac: add freescale mpc85xx driver")
+> Reported-by: Hulk Robot <hulkci@huawei.com>
+> Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
 > ---
->  drivers/phy/ti/phy-j721e-wiz.c | 1 +
->  1 file changed, 1 insertion(+)
+>  drivers/edac/mpc85xx_edac.c | 2 ++
+>  1 file changed, 2 insertions(+)
 > 
-> diff --git a/drivers/phy/ti/phy-j721e-wiz.c b/drivers/phy/ti/phy-j721e-wiz.c
-> index 9eb6d37..126f5b8 100644
-> --- a/drivers/phy/ti/phy-j721e-wiz.c
-> +++ b/drivers/phy/ti/phy-j721e-wiz.c
-> @@ -1212,6 +1212,7 @@ static int wiz_probe(struct platform_device *pdev)
+> diff --git a/drivers/edac/mpc85xx_edac.c b/drivers/edac/mpc85xx_edac.c
+> index 67f7bc3fe5b3..b2eaa62c9412 100644
+> --- a/drivers/edac/mpc85xx_edac.c
+> +++ b/drivers/edac/mpc85xx_edac.c
+> @@ -248,6 +248,7 @@ static int mpc85xx_pci_err_probe(struct platform_device *op)
 >  
->  		if (wiz->typec_dir_delay < WIZ_TYPEC_DIR_DEBOUNCE_MIN ||
->  		    wiz->typec_dir_delay > WIZ_TYPEC_DIR_DEBOUNCE_MAX) {
-> +			ret = -EINVAL;
->  			dev_err(dev, "Invalid typec-dir-debounce property\n");
->  			goto err_addr_to_resource;
->  		}
+>  	if (edac_pci_add_device(pci, pdata->edac_idx) > 0) {
+>  		edac_dbg(3, "failed edac_pci_add_device()\n");
+> +		res = -EFAULT;
+
+>  		goto err;
+>  	}
+>  
+> @@ -552,6 +553,7 @@ static int mpc85xx_l2_err_probe(struct platform_device *op)
+>  
+>  	if (edac_device_add_device(edac_dev) > 0) {
+>  		edac_dbg(3, "failed edac_device_add_device()\n");
+> +		res = -EFAULT;
+>  		goto err;
+>  	}
+>  
 > -- 
-> 1.8.3.1
+
+EFAULT means
+
+#define EFAULT          14      /* Bad address */
+
+Does it make sense to you when the probe function returns a "bad
+address" upon failure to add a device?
+
+hint 1: you might wanna audit how the other drivers are calling this for
+better ideas.
+
+hint 2: while doing hint 1, you might find some more broken cases which
+you could fix too.
+
+Thx.
 
 -- 
-~Vinod
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
