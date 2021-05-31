@@ -2,105 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B12643958BB
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 12:06:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 19EC03958C5
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 12:10:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231211AbhEaKIU convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 31 May 2021 06:08:20 -0400
-Received: from mga06.intel.com ([134.134.136.31]:3713 "EHLO mga06.intel.com"
+        id S231162AbhEaKLv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 06:11:51 -0400
+Received: from gofer.mess.org ([88.97.38.141]:52311 "EHLO gofer.mess.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230521AbhEaKHQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 06:07:16 -0400
-IronPort-SDR: ETwz2zJfRC58yyaNv8vEmhKLK5GorxVMZgXJij27B0C7ympMDbrFevSyvuiVsLZwIfUtTzTAkW
- 5o6jxcOkEh/Q==
-X-IronPort-AV: E=McAfee;i="6200,9189,10000"; a="264523884"
-X-IronPort-AV: E=Sophos;i="5.83,236,1616482800"; 
-   d="scan'208";a="264523884"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 May 2021 03:05:36 -0700
-IronPort-SDR: aiEekzZjHSD7NbXYCaWUaCjaPWTrU5fbNnwzeXalSbsjlVmoyla3MzplSTYaxNjeXYNX37Rg25
- ebkyyQn5meYA==
-X-IronPort-AV: E=Sophos;i="5.83,236,1616482800"; 
-   d="scan'208";a="478858881"
-Received: from masayag-mobl1.ger.corp.intel.com (HELO localhost) ([10.252.52.77])
-  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 May 2021 03:05:32 -0700
-From:   Jani Nikula <jani.nikula@linux.intel.com>
-To:     Alyssa Rosenzweig <alyssa@rosenzweig.io>,
-        dri-devel@lists.freedesktop.org
-Cc:     David Airlie <airlied@linux.ie>, Hector Martin <marcan@marcan.st>,
-        Jonathan =?utf-8?Q?Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>,
-        linux-kernel@vger.kernel.org,
-        Alyssa Rosenzweig <alyssa@rosenzweig.io>
-Subject: Re: [PATCH v2 2/2] maintainers: Update freedesktop.org IRC channels
-In-Reply-To: <20210531031029.4642-2-alyssa@rosenzweig.io>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-References: <20210531031029.4642-1-alyssa@rosenzweig.io> <20210531031029.4642-2-alyssa@rosenzweig.io>
-Date:   Mon, 31 May 2021 13:05:29 +0300
-Message-ID: <87zgwbqkuu.fsf@intel.com>
+        id S231164AbhEaKLU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 06:11:20 -0400
+Received: by gofer.mess.org (Postfix, from userid 1000)
+        id CB3F7C6480; Mon, 31 May 2021 11:09:37 +0100 (BST)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=mess.org; s=2020;
+        t=1622455777; bh=mezJQ2zSZ5F3S3oVCVDOVoKisZsAT+1OBctCiLkeiLE=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=lj3TKLHMHU37ZDnjeuw/+ZKPeEpBZLrBfFV/gNF1PzE7XJ+dwF7IQdXn2HqCM9H5V
+         TpIdNLoA8FlEMjYDhBPmh9p52YWa8+irbphnAI+Fn5MJQnn2yqOgkfNavwAB3j03ZU
+         XTsFuttmaB02VvUmhVN0wTjVV/jcY5C1g7FIeM2efxpg8eRHpXbnDawaHYu1bhg6fQ
+         rmZQZVslB+gVaJDHSKzlGswO9mPjV1tBHTR/FIeMQ/LHXMQo0hWjlAkbbpbZhahDR3
+         D/ySyD2Za3Z65aZFFXdMfA6fZbfTknAsPYYzHQJX2/HN9FSGKrC3XQ3OtOKKSfQ8iG
+         olAfQj9R9gDvQ==
+Date:   Mon, 31 May 2021 11:09:37 +0100
+From:   Sean Young <sean@mess.org>
+To:     Evgeny Novikov <novikov@ispras.ru>
+Cc:     Patrice Chotard <patrice.chotard@foss.st.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-arm-kernel@lists.infradead.org, linux-media@vger.kernel.org,
+        linux-kernel@vger.kernel.org, ldv-project@linuxtesting.org
+Subject: Re: [PATCH] media: st_rc: Handle errors of clk_prepare_enable()
+Message-ID: <20210531100937.GA30390@gofer.mess.org>
+References: <20210515123909.5638-1-novikov@ispras.ru>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210515123909.5638-1-novikov@ispras.ru>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 30 May 2021, Alyssa Rosenzweig <alyssa@rosenzweig.io> wrote:
-> Like many free software projects, freedesktop.org issued a non-binding
-> recommendation for projects to migrate from Freenode to OFTC [1]. As
-> such, freedesktop.org entries in the MAINTAINERS file are out-of-date as
-> the respective channels have moved. Update the file to point to the
-> right network.
->
-> v2: Correct typo in commit message pointed out by Lukas and Jonathan.
-> Add Hector's ack.
->
-> [1] https://lists.freedesktop.org/archives/dri-devel/2021-May/307605.html
->
-> Signed-off-by: Alyssa Rosenzweig <alyssa@rosenzweig.io>
-> Acked-By: Hector Martin <marcan@marcan.st>
-> Cc: David Airlie <airlied@linux.ie>
-> Cc: Daniel Vetter <daniel@ffwll.ch>
-> Cc: Lukas Wunner <lukas@wunner.de>
-> Cc: Jonathan Neuschäfer <j.neuschaefer@gmx.net>
-> Cc: linux-kernel@vger.kernel.org
-
-Acked-by: Jani Nikula <jani.nikula@intel.com>
-
+On Sat, May 15, 2021 at 03:39:09PM +0300, Evgeny Novikov wrote:
+> Hadle errors of clk_prepare_enable() in st_rc_hardware_init() and its
+> callers.
+> 
+> Found by Linux Driver Verification project (linuxtesting.org).
+> 
+> Signed-off-by: Evgeny Novikov <novikov@ispras.ru>
 > ---
->  MAINTAINERS | 6 +++---
->  1 file changed, 3 insertions(+), 3 deletions(-)
->
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index 49091fbfa..7f992125a 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -1651,7 +1651,7 @@ L:	linux-arm-kernel@lists.infradead.org (moderated for non-subscribers)
->  S:	Maintained
->  W:	https://asahilinux.org
->  B:	https://github.com/AsahiLinux/linux/issues
-> -C:	irc://chat.freenode.net/asahi-dev
-> +C:	irc://irc.oftc.net/asahi-dev
->  T:	git https://github.com/AsahiLinux/linux.git
->  F:	Documentation/devicetree/bindings/arm/apple.yaml
->  F:	Documentation/devicetree/bindings/interrupt-controller/apple,aic.yaml
-> @@ -5969,7 +5969,7 @@ M:	Daniel Vetter <daniel@ffwll.ch>
->  L:	dri-devel@lists.freedesktop.org
->  S:	Maintained
->  B:	https://gitlab.freedesktop.org/drm
-> -C:	irc://chat.freenode.net/dri-devel
-> +C:	irc://irc.oftc.net/dri-devel
->  T:	git git://anongit.freedesktop.org/drm/drm
->  F:	Documentation/devicetree/bindings/display/
->  F:	Documentation/devicetree/bindings/gpu/
-> @@ -9116,7 +9116,7 @@ S:	Supported
->  W:	https://01.org/linuxgraphics/
->  Q:	http://patchwork.freedesktop.org/project/intel-gfx/
->  B:	https://gitlab.freedesktop.org/drm/intel/-/wikis/How-to-file-i915-bugs
-> -C:	irc://chat.freenode.net/intel-gfx
-> +C:	irc://irc.oftc.net/intel-gfx
->  T:	git git://anongit.freedesktop.org/drm-intel
->  F:	Documentation/gpu/i915.rst
->  F:	drivers/gpu/drm/i915/
+>  drivers/media/rc/st_rc.c | 20 ++++++++++++++++----
+>  1 file changed, 16 insertions(+), 4 deletions(-)
+> 
+> diff --git a/drivers/media/rc/st_rc.c b/drivers/media/rc/st_rc.c
+> index 3237fef5d502..f524fcf55acf 100644
+> --- a/drivers/media/rc/st_rc.c
+> +++ b/drivers/media/rc/st_rc.c
+> @@ -157,8 +157,9 @@ static irqreturn_t st_rc_rx_interrupt(int irq, void *data)
+>  	return IRQ_HANDLED;
+>  }
+>  
+> -static void st_rc_hardware_init(struct st_rc_device *dev)
+> +static int st_rc_hardware_init(struct st_rc_device *dev)
+>  {
+> +	int ret;
+>  	int baseclock, freqdiff;
+>  	unsigned int rx_max_symbol_per = MAX_SYMB_TIME;
+>  	unsigned int rx_sampling_freq_div;
+> @@ -166,7 +167,10 @@ static void st_rc_hardware_init(struct st_rc_device *dev)
+>  	/* Enable the IP */
+>  	reset_control_deassert(dev->rstc);
+>  
+> -	clk_prepare_enable(dev->sys_clock);
+> +	ret = clk_prepare_enable(dev->sys_clock);
+> +	if (ret)
+> +		return ret;
 
--- 
-Jani Nikula, Intel Open Source Graphics Center
+Now if probe or resume fails because of clk_prepare_enable() failing, no
+error is logged. Please add a dev_err().
+
+Thanks
+
+Sean
+
+> +
+>  	baseclock = clk_get_rate(dev->sys_clock);
+>  
+>  	/* IRB input pins are inverted internally from high to low. */
+> @@ -184,6 +188,8 @@ static void st_rc_hardware_init(struct st_rc_device *dev)
+>  	}
+>  
+>  	writel(rx_max_symbol_per, dev->rx_base + IRB_MAX_SYM_PERIOD);
+> +
+> +	return 0;
+>  }
+>  
+>  static int st_rc_remove(struct platform_device *pdev)
+> @@ -287,7 +293,9 @@ static int st_rc_probe(struct platform_device *pdev)
+>  
+>  	rc_dev->dev = dev;
+>  	platform_set_drvdata(pdev, rc_dev);
+> -	st_rc_hardware_init(rc_dev);
+> +	ret = st_rc_hardware_init(rc_dev);
+> +	if (ret)
+> +		goto err;
+>  
+>  	rdev->allowed_protocols = RC_PROTO_BIT_ALL_IR_DECODER;
+>  	/* rx sampling rate is 10Mhz */
+> @@ -359,6 +367,7 @@ static int st_rc_suspend(struct device *dev)
+>  
+>  static int st_rc_resume(struct device *dev)
+>  {
+> +	int ret;
+>  	struct st_rc_device *rc_dev = dev_get_drvdata(dev);
+>  	struct rc_dev	*rdev = rc_dev->rdev;
+>  
+> @@ -367,7 +376,10 @@ static int st_rc_resume(struct device *dev)
+>  		rc_dev->irq_wake = 0;
+>  	} else {
+>  		pinctrl_pm_select_default_state(dev);
+> -		st_rc_hardware_init(rc_dev);
+> +		ret = st_rc_hardware_init(rc_dev);
+> +		if (ret)
+> +			return ret;
+> +
+>  		if (rdev->users) {
+>  			writel(IRB_RX_INTS, rc_dev->rx_base + IRB_RX_INT_EN);
+>  			writel(0x01, rc_dev->rx_base + IRB_RX_EN);
+> -- 
+> 2.26.2
