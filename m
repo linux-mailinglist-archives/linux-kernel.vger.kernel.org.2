@@ -2,188 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC3F7395503
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 07:23:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 93273395504
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 07:23:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230159AbhEaFZB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 01:25:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34426 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229730AbhEaFYx (ORCPT
+        id S230165AbhEaFZR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 01:25:17 -0400
+Received: from twspam01.aspeedtech.com ([211.20.114.71]:23003 "EHLO
+        twspam01.aspeedtech.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230162AbhEaFZP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 01:24:53 -0400
-Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF6C6C06174A;
-        Sun, 30 May 2021 22:23:12 -0700 (PDT)
-Received: by mail-pj1-x1032.google.com with SMTP id k5so5938273pjj.1;
-        Sun, 30 May 2021 22:23:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=L2oO4yyapOcPcSgk5euKZ0kOypADACJjFfpex/V3+Lk=;
-        b=oGTXhTdM8wNru8KORHE0rJGRmMXqLdj9RZ5Cnd4/qX5mfWqF/vXs7JgkgJfdmxk5WC
-         U3qMHNTPMJgV4yAJWMqUvBARbWbU3DY3R7YipA1u9ea5Ha9+hjwLD9W9M0/izTBD+4RY
-         RSmN0IUCGXYoDpsQ0iz8riHgUBvMfJVi3Ysh5ug7PyOnwSBFfIguDm5IYhLiuXi0yOR4
-         bGPJB8KRojNwxpf5nlO8AStlYXfrR3SFnqDI/hBsRuBk75XEo6wQ9Ip7QzI5CYGR2kdJ
-         oWjOtlyasekzMf/QRDCdjVcCJFQ1i73SGxiBt9Ks9tTXwKYU86aj9ZFYUZhvqF6+XCzj
-         5OXA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=L2oO4yyapOcPcSgk5euKZ0kOypADACJjFfpex/V3+Lk=;
-        b=RQ5oH8zb8RBBvT7HxeaxO9PJA9OoUUPyNcOuXh7jPpIBkNMQ3vf0TcWNgbWsHOc5bL
-         VoQVwr+R8c3tPanaFLONQeq+z/jbaYcCk58aAk3CQOueOW83arMD0CIYx7JL6iqvu9Zb
-         SXYNJ7EAc5KCxYjC4GyXeyBbUiqcdz+amUwmG/GRNis18w6ep/jzj7MyvBEcAg8u7zlV
-         q6xJV+Zf33cefgfEFsACyIKbxoY3YVhmDyN1ls7xFXe6va9el9f8S8RMpfjKihfUJGOV
-         Vn10GB+GyHN7KRhI+vuUB5j3ku+XYzRBOFQ6LHJmBXC0EeXmCOWQrZmcaRNQmwi3JBn6
-         DQgw==
-X-Gm-Message-State: AOAM5339X7e3ycE+2Hj8sjb0d9YOthwOdtMKPolXSpQs8rqlsFtzf4Cy
-        F7sTF2P5Ypahdi9CafjZbEM=
-X-Google-Smtp-Source: ABdhPJwhMpX/Dpwm4x83+K8MVoTaYChsHSX94IxXhljd51rI4zEVbsrPLjrid1qzjY2N4Q+YGG1oCg==
-X-Received: by 2002:a17:903:2482:b029:fd:696c:1d2b with SMTP id p2-20020a1709032482b02900fd696c1d2bmr19107198plw.24.1622438592395;
-        Sun, 30 May 2021 22:23:12 -0700 (PDT)
-Received: from dtor-ws.mtv.corp.google.com ([2620:15c:202:201:f797:8c47:4837:ec11])
-        by smtp.gmail.com with ESMTPSA id y1sm9895555pfn.13.2021.05.30.22.23.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 30 May 2021 22:23:11 -0700 (PDT)
-From:   Dmitry Torokhov <dmitry.torokhov@gmail.com>
+        Mon, 31 May 2021 01:25:15 -0400
+Received: from mail.aspeedtech.com ([192.168.0.24])
+        by twspam01.aspeedtech.com with ESMTP id 14V5A8us020907;
+        Mon, 31 May 2021 13:10:08 +0800 (GMT-8)
+        (envelope-from steven_lee@aspeedtech.com)
+Received: from aspeedtech.com (192.168.100.253) by TWMBX02.aspeed.com
+ (192.168.0.24) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Mon, 31 May
+ 2021 13:23:27 +0800
+Date:   Mon, 31 May 2021 13:23:19 +0800
+From:   Steven Lee <steven_lee@aspeedtech.com>
 To:     Linus Walleij <linus.walleij@linaro.org>
-Cc:     linux-input@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 2/2] Input: cyttsp - remove public header
-Date:   Sun, 30 May 2021 22:23:07 -0700
-Message-Id: <20210531052307.1433979-2-dmitry.torokhov@gmail.com>
-X-Mailer: git-send-email 2.32.0.rc0.204.g9fa02ecfa5-goog
-In-Reply-To: <20210531052307.1433979-1-dmitry.torokhov@gmail.com>
-References: <20210531052307.1433979-1-dmitry.torokhov@gmail.com>
+CC:     Rob Herring <robh+dt@kernel.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Joel Stanley <joel@jms.id.au>,
+        Andrew Jeffery <andrew@aj.id.au>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        "moderated list:ARM/ASPEED MACHINE SUPPORT" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "moderated list:ARM/ASPEED MACHINE SUPPORT" 
+        <linux-aspeed@lists.ozlabs.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Hongwei Zhang <Hongweiz@ami.com>,
+        Ryan Chen <ryan_chen@aspeedtech.com>,
+        Billy Tsai <billy_tsai@aspeedtech.com>
+Subject: Re: [PATCH v2 1/4] dt-bindings: aspeed-sgpio: Convert txt bindings
+ to yaml.
+Message-ID: <20210531052318.GA3973@aspeedtech.com>
+References: <20210527005455.25758-1-steven_lee@aspeedtech.com>
+ <20210527005455.25758-2-steven_lee@aspeedtech.com>
+ <CACRpkdZFcFuT9rdrc8BfEBmhy0--9uLMSJWfr=A+nU117_BT8A@mail.gmail.com>
+ <20210528040934.GA28403@aspeedtech.com>
+ <CACRpkdYnvzOW_86QgLAsNpNXWZXpaMiE7g9_jHZ0ZsFyhOjjAg@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="utf-8"
+Content-Disposition: inline
+In-Reply-To: <CACRpkdYnvzOW_86QgLAsNpNXWZXpaMiE7g9_jHZ0ZsFyhOjjAg@mail.gmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Originating-IP: [192.168.100.253]
+X-ClientProxiedBy: TWMBX02.aspeed.com (192.168.0.24) To TWMBX02.aspeed.com
+ (192.168.0.24)
+X-DNSRBL: 
+X-MAIL: twspam01.aspeedtech.com 14V5A8us020907
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There is nothing in include/linux/input/cyttsp.h that might be of interes
-to the kernel at large, so let's move this information into the driver
-code and remove the header.
+The 05/28/2021 16:35, Linus Walleij wrote:
+> On Fri, May 28, 2021 at 6:10 AM Steven Lee <steven_lee@aspeedtech.com> wrote:
+> > The 05/28/2021 07:51, Linus Walleij wrote:
+> > > On Thu, May 27, 2021 at 2:55 AM Steven Lee <steven_lee@aspeedtech.com> wrote:
+> > >
+> > > > +  max-ngpios:
+> > > > +    description:
+> > > > +      represents the number of actual hardware-supported GPIOs (ie,
+> > > > +      slots within the clocked serial GPIO data). Since each HW GPIO is both an
+> > > > +      input and an output, we provide max_ngpios * 2 lines on our gpiochip
+> > > > +      device. We also use it to define the split between the inputs and
+> > > > +      outputs; the inputs start at line 0, the outputs start at max_ngpios.
+> > > > +    minimum: 0
+> > > > +    maximum: 128
+> > >
+> > > Why can this not be derived from the compatible value?
+> > >
+> > > Normally there should be one compatible per hardware variant
+> > > of the block. And this should be aligned with that, should it not?
+> > >
+> > > If this is not the case, maybe more detailed compatible strings
+> > > are needed, maybe double compatibles with compatible per
+> > > family and SoC?
+> > >
+> >
+> > Thanks for your suggestion.
+> > I add max-ngpios in dt-bindings as there is ngpios defined in
+> > dt-bindings, users can get the both max-ngpios and ngpios information
+> > from dtsi without digging sgpio driver.
+> >
+> > https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/arch/arm/boot/dts/aspeed-g5.dtsi#n354
+> >
+> > If adding more detailed compatibles is better, I will add them to sgpio driver
+> > in V3 patch and remove max-ngpios from dt-bindings.
+> >
+> > Since AST2600 has 2 sgpio controller one with 128 pins and another one with 80 pins.
+> > For supporting max-ngpios in compatibles, 2 platform data for each
+> > ast2600 sgpio controller as follows are necessary.
+> >
+> > ```
+> > static const struct aspeed_sgpio_pdata ast2600_sgpiom1_pdata = {
+> >         .max_ngpios = 128;
+> > };
+> > static const struct aspeed_sgpio_pdata ast2600_sgpiom2_pdata = {
+> >         .max_ngpios = 80;
+> > };
+> >
+> > { .compatible = "aspeed,ast2500-sgpio" , .data = &ast2400_sgpio_pdata, },
+> > { .compatible = "aspeed,ast2600-sgpiom1", .data = &ast2600_sgpiom1_pdata, },
+> > { .compatible = "aspeed,ast2600-sgpiom2", .data = &ast2600_sgpiom2_pdata, },
+> 
+> There is a soft border between two IP blocks being "compatible"
+> and parameterized and two IP blocks being different and having
+> unique compatibles.
+> 
+> For example we know for sure we don't use different compatibles
+> because of how interrupt lines or DMA channels are connected.
+> 
 
-Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
----
- MAINTAINERS                             |  1 -
- drivers/input/touchscreen/cyttsp_core.c |  9 +++++++-
- drivers/input/touchscreen/cyttsp_core.h |  1 -
- drivers/input/touchscreen/cyttsp_i2c.c  |  2 ++
- drivers/input/touchscreen/cyttsp_spi.c  |  2 ++
- include/linux/input/cyttsp.h            | 29 -------------------------
- 6 files changed, 12 insertions(+), 32 deletions(-)
- delete mode 100644 include/linux/input/cyttsp.h
+Thanks for sharing the knowledge and examples.
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 9a43400480e2..920f33866799 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -4918,7 +4918,6 @@ M:	Linus Walleij <linus.walleij@linaro.org>
- L:	linux-input@vger.kernel.org
- S:	Maintained
- F:	drivers/input/touchscreen/cyttsp*
--F:	include/linux/input/cyttsp.h
- 
- D-LINK DIR-685 TOUCHKEYS DRIVER
- M:	Linus Walleij <linus.walleij@linaro.org>
-diff --git a/drivers/input/touchscreen/cyttsp_core.c b/drivers/input/touchscreen/cyttsp_core.c
-index a6352d79e23d..1dbd849c9613 100644
---- a/drivers/input/touchscreen/cyttsp_core.c
-+++ b/drivers/input/touchscreen/cyttsp_core.c
-@@ -46,8 +46,15 @@
- #define CY_MAXZ				255
- #define CY_DELAY_DFLT			20 /* ms */
- #define CY_DELAY_MAX			500
--#define CY_ACT_DIST_DFLT		0xF8
-+/* Active distance in pixels for a gesture to be reported */
-+#define CY_ACT_DIST_DFLT		0xF8 /* pixels */
- #define CY_ACT_DIST_MASK		0x0F
-+/* Active Power state scanning/processing refresh interval */
-+#define CY_ACT_INTRVL_DFLT		0x00 /* ms */
-+/* Low Power state scanning/processing refresh interval */
-+#define CY_LP_INTRVL_DFLT		0x0A /* ms */
-+/* touch timeout for the Active power */
-+#define CY_TCH_TMOUT_DFLT		0xFF /* ms */
- #define CY_HNDSHK_BIT			0x80
- /* device mode bits */
- #define CY_OPERATE_MODE			0x00
-diff --git a/drivers/input/touchscreen/cyttsp_core.h b/drivers/input/touchscreen/cyttsp_core.h
-index 8eba9d8ba74a..075509e695a2 100644
---- a/drivers/input/touchscreen/cyttsp_core.h
-+++ b/drivers/input/touchscreen/cyttsp_core.h
-@@ -22,7 +22,6 @@
- #include <linux/module.h>
- #include <linux/types.h>
- #include <linux/device.h>
--#include <linux/input/cyttsp.h>
- #include <linux/regulator/consumer.h>
- 
- #define CY_NUM_RETRY		16 /* max number of retries for read ops */
-diff --git a/drivers/input/touchscreen/cyttsp_i2c.c b/drivers/input/touchscreen/cyttsp_i2c.c
-index 0a09f07bc23a..4c8473d327ab 100644
---- a/drivers/input/touchscreen/cyttsp_i2c.c
-+++ b/drivers/input/touchscreen/cyttsp_i2c.c
-@@ -18,6 +18,8 @@
- #include <linux/i2c.h>
- #include <linux/input.h>
- 
-+#define CY_I2C_NAME		"cyttsp-i2c"
-+
- #define CY_I2C_DATA_SIZE	128
- 
- static const struct cyttsp_bus_ops cyttsp_i2c_bus_ops = {
-diff --git a/drivers/input/touchscreen/cyttsp_spi.c b/drivers/input/touchscreen/cyttsp_spi.c
-index 8715e5354d79..30c6fbf86a86 100644
---- a/drivers/input/touchscreen/cyttsp_spi.c
-+++ b/drivers/input/touchscreen/cyttsp_spi.c
-@@ -20,6 +20,8 @@
- #include <linux/input.h>
- #include <linux/spi/spi.h>
- 
-+#define CY_SPI_NAME		"cyttsp-spi"
-+
- #define CY_SPI_WR_OP		0x00 /* r/~w */
- #define CY_SPI_RD_OP		0x01
- #define CY_SPI_CMD_BYTES	4
-diff --git a/include/linux/input/cyttsp.h b/include/linux/input/cyttsp.h
-deleted file mode 100644
-index 118b9af6e01a..000000000000
---- a/include/linux/input/cyttsp.h
-+++ /dev/null
-@@ -1,29 +0,0 @@
--/* SPDX-License-Identifier: GPL-2.0-only */
--/*
-- * Header file for:
-- * Cypress TrueTouch(TM) Standard Product (TTSP) touchscreen drivers.
-- * For use with Cypress Txx3xx parts.
-- * Supported parts include:
-- * CY8CTST341
-- * CY8CTMA340
-- *
-- * Copyright (C) 2009, 2010, 2011 Cypress Semiconductor, Inc.
-- * Copyright (C) 2012 Javier Martinez Canillas <javier@dowhile0.org>
-- *
-- * Contact Cypress Semiconductor at www.cypress.com (kev@cypress.com)
-- */
--#ifndef _CYTTSP_H_
--#define _CYTTSP_H_
--
--#define CY_SPI_NAME "cyttsp-spi"
--#define CY_I2C_NAME "cyttsp-i2c"
--/* Active Power state scanning/processing refresh interval */
--#define CY_ACT_INTRVL_DFLT 0x00 /* ms */
--/* touch timeout for the Active power */
--#define CY_TCH_TMOUT_DFLT 0xFF /* ms */
--/* Low Power state scanning/processing refresh interval */
--#define CY_LP_INTRVL_DFLT 0x0A /* ms */
--/* Active distance in pixels for a gesture to be reported */
--#define CY_ACT_DIST_DFLT 0xF8 /* pixels */
--
--#endif /* _CYTTSP_H_ */
--- 
-2.32.0.rc0.204.g9fa02ecfa5-goog
+> So if this is an external thing, outside of the IP itself, I might back
+> off on this and say it shall be a parameter.
+> 
+> But max-ngpios? It is confusingly similar to ngpios.
+> 
+> So we need to think about this name.
+> 
+> Something like gpio-hardware-slots or something else that
+> really describe what this is.
+> 
+> Does this always strictly follow ngpios so that the number
+> of gpio slots == ngpios * 2? In that case only put ngpios into
+> the device tree and multiply by 2 in the driver, because ngpios
+> is exactly for this: parameterizing hardware limitations.
+> 
 
+The parameter max-ngpios is the maxmum number of gpio pins that SoC supported,
+ngpios is the maximum number of gpio pins that sgpio devices(e.g. sgpio cards) supported.
+
+For instance, a sgpio card that supports 64 gpio pins which is connected to
+ast2600evb sgpio master interface 2. The dts file should be configured as follows.
+
+```
+max-ngpios = <80>
+ngpios = <64>
+
+```
+
+About the parameter naming, I was wondering if 'ngpios-of-sgpiom' is more clear
+than max-ngpios as it is the maximum number of gpio pins that sgpio master
+interfaces supported.
+
+> Yours,
+> Linus Walleij
