@@ -2,98 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A8F93969CC
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 00:49:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 758C83969DA
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 00:54:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232458AbhEaWvY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 18:51:24 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:58640 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231859AbhEaWvX (ORCPT
+        id S232505AbhEaW41 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 18:56:27 -0400
+Received: from hera.aquilenet.fr ([185.233.100.1]:55986 "EHLO
+        hera.aquilenet.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232463AbhEaW4W (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 18:51:23 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1622501382;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=y5NlMndcCjHiv1lwuJA8RIjKcYo7HAjS4RgWx28WLPw=;
-        b=ToI4Newq0PS21KS0hL3by7hBv8J8Y3NvvKamjVjBBtbjSNH4UGYtLIjgWLnsKZlc527yGH
-        N4xuNHMTk72Nq/oiYfvnJXmDKsUDXvz1dUWNTsU64RaEXq0McTTOzFVL6gczYk/9IQw7ob
-        v6fQowJLejqAQkvWeHJkncEccfhIRz4=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-119--zE6XeqJOiqz_c_o8rGrmg-1; Mon, 31 May 2021 18:49:39 -0400
-X-MC-Unique: -zE6XeqJOiqz_c_o8rGrmg-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 5D694501E0;
-        Mon, 31 May 2021 22:49:37 +0000 (UTC)
-Received: from krava (unknown [10.40.195.234])
-        by smtp.corp.redhat.com (Postfix) with SMTP id 5A4995C1B4;
-        Mon, 31 May 2021 22:49:35 +0000 (UTC)
-Date:   Tue, 1 Jun 2021 00:49:34 +0200
-From:   Jiri Olsa <jolsa@redhat.com>
-To:     Jin Yao <yao.jin@linux.intel.com>
-Cc:     acme@kernel.org, jolsa@kernel.org, peterz@infradead.org,
-        mingo@redhat.com, alexander.shishkin@linux.intel.com,
-        Linux-kernel@vger.kernel.org, ak@linux.intel.com,
-        kan.liang@intel.com, yao.jin@intel.com
-Subject: Re: [PATCH v2 0/8] perf: Support perf-mem/perf-c2c for AlderLake
-Message-ID: <YLVn/jh/8H5fZ/QJ@krava>
-References: <20210527001610.10553-1-yao.jin@linux.intel.com>
+        Mon, 31 May 2021 18:56:22 -0400
+Received: from localhost (localhost [127.0.0.1])
+        by hera.aquilenet.fr (Postfix) with ESMTP id 06D38CB8;
+        Tue,  1 Jun 2021 00:54:40 +0200 (CEST)
+X-Virus-Scanned: Debian amavisd-new at aquilenet.fr
+Received: from hera.aquilenet.fr ([127.0.0.1])
+        by localhost (hera.aquilenet.fr [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id 22ef2t8sQ_v0; Tue,  1 Jun 2021 00:54:39 +0200 (CEST)
+Received: from begin (unknown [IPv6:2a01:cb19:956:1b00:de41:a9ff:fe47:ec49])
+        by hera.aquilenet.fr (Postfix) with ESMTPSA id 52289281;
+        Tue,  1 Jun 2021 00:54:39 +0200 (CEST)
+Received: from samy by begin with local (Exim 4.94.2)
+        (envelope-from <samuel.thibault@ens-lyon.org>)
+        id 1lnqnu-004DB9-80; Tue, 01 Jun 2021 00:54:38 +0200
+Date:   Tue, 1 Jun 2021 00:54:38 +0200
+From:   Samuel Thibault <samuel.thibault@ens-lyon.org>
+To:     Didier Spaier <didier@slint.fr>,
+        Igor Matheus Andrade Torrente <igormtorrente@gmail.com>,
+        speakup@linux-speakup.org, corbet@lwn.net,
+        gregkh@linuxfoundation.org, grandmaster@al2klimov.de,
+        rdunlap@infradead.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: docs: Convert the Speakup guide to rst
+Message-ID: <20210531225438.rrxr4ceo7pv34mvo@begin>
+Mail-Followup-To: Samuel Thibault <samuel.thibault@ens-lyon.org>,
+        Didier Spaier <didier@slint.fr>,
+        Igor Matheus Andrade Torrente <igormtorrente@gmail.com>,
+        speakup@linux-speakup.org, corbet@lwn.net,
+        gregkh@linuxfoundation.org, grandmaster@al2klimov.de,
+        rdunlap@infradead.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20210531215737.8431-1-igormtorrente@gmail.com>
+ <20210531220754.h4ep2dj65wl6hejf@begin>
+ <393c2df8-9cb1-f428-5629-6e98c078c24f@slint.fr>
+ <20210531224431.q4hya673p4ckbxft@begin>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210527001610.10553-1-yao.jin@linux.intel.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+In-Reply-To: <20210531224431.q4hya673p4ckbxft@begin>
+Organization: I am not organized
+User-Agent: NeoMutt/20170609 (1.8.3)
+X-Spamd-Bar: --
+Authentication-Results: hera.aquilenet.fr
+X-Rspamd-Server: hera
+X-Rspamd-Queue-Id: 06D38CB8
+X-Spamd-Result: default: False [-2.50 / 15.00];
+         ARC_NA(0.00)[];
+         RCVD_VIA_SMTP_AUTH(0.00)[];
+         FROM_HAS_DN(0.00)[];
+         TO_DN_SOME(0.00)[];
+         TO_MATCH_ENVRCPT_ALL(0.00)[];
+         FREEMAIL_ENVRCPT(0.00)[gmail.com];
+         MIME_GOOD(-0.10)[text/plain];
+         HAS_ORG_HEADER(0.00)[];
+         RCVD_COUNT_THREE(0.00)[3];
+         RCPT_COUNT_SEVEN(0.00)[9];
+         RCVD_NO_TLS_LAST(0.10)[];
+         FROM_EQ_ENVFROM(0.00)[];
+         MID_RHS_NOT_FQDN(0.50)[];
+         BAYES_HAM(-3.00)[100.00%]
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 27, 2021 at 08:16:02AM +0800, Jin Yao wrote:
-> AlderLake uses a hybrid architecture utilizing Golden Cove cores
-> (core CPU) and Gracemont cores (atom CPU). This patchset supports
-> perf-mem and perf-c2c for AlderLake.
+Samuel Thibault, le mar. 01 juin 2021 00:44:31 +0200, a ecrit:
+> Didier Spaier, le mar. 01 juin 2021 00:42:22 +0200, a ecrit:
+> > And anyway can we just provide a link to the web page that will be built
+> > from the rst file?
 > 
-> v2:
-> ---
-> - Use mem_loads_name__init to keep original behavior for non-hybrid platform.
-> - Move x86 specific perf_mem_events[] to arch/x86/util/mem-events.c.
-> - Move mem-store event to a new patch.
-> - Add a new patch to fix wrong verbose output for recording events
-> - Add a new patch to disable 'mem-loads-aux' group before reporting
+> We probably can yes.
 
-Acked-by: Jiri Olsa <jolsa@redhat.com>
+AIUI it would end up on
+https://www.kernel.org/doc/html/latest/
 
-thanks,
-jirka
-
-> 
-> Jin Yao (8):
->   perf tools: Check mem-loads auxiliary event
->   perf tools: Support pmu prefix for mem-load event
->   perf tools: Support pmu prefix for mem-store event
->   perf tools: Check if mem_events is supported for hybrid platform
->   perf mem: Support record for hybrid platform
->   perf mem: Fix wrong verbose output for recording events
->   perf mem: Disable 'mem-loads-aux' group before reporting
->   perf c2c: Support record for hybrid platform
-> 
->  tools/perf/arch/arm64/util/mem-events.c   |   2 +-
->  tools/perf/arch/powerpc/util/mem-events.c |   2 +-
->  tools/perf/arch/x86/util/mem-events.c     |  54 ++++++++++--
->  tools/perf/builtin-c2c.c                  |  40 +++++----
->  tools/perf/builtin-mem.c                  |  51 ++++++-----
->  tools/perf/builtin-report.c               |   2 +
->  tools/perf/util/evlist.c                  |  25 ++++++
->  tools/perf/util/evlist.h                  |   1 +
->  tools/perf/util/mem-events.c              | 101 ++++++++++++++++++++--
->  tools/perf/util/mem-events.h              |   4 +-
->  10 files changed, 225 insertions(+), 57 deletions(-)
-> 
-> -- 
-> 2.17.1
-> 
-
+Samuel
