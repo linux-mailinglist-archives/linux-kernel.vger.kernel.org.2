@@ -2,66 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EA901395809
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 11:23:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 967A639580F
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 11:25:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230500AbhEaJZF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 05:25:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60018 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229550AbhEaJY7 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 05:24:59 -0400
-Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 296A0C061574;
-        Mon, 31 May 2021 02:23:20 -0700 (PDT)
-Received: from zn.tnic (p200300ec2f080f0029ca4f7a5f3cda43.dip0.t-ipconnect.de [IPv6:2003:ec:2f08:f00:29ca:4f7a:5f3c:da43])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S230527AbhEaJ1X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 05:27:23 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:18970 "EHLO m43-7.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230479AbhEaJ1V (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 05:27:21 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1622453142; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
+ Subject: Sender; bh=rfrUNiJtJb8dbghF/3gQm7fw8uC4HOEDbtXTJPnqFZ4=; b=I/9JClEDIH6AAXzInSfkBwpGIo5m7YeGqGm3jbAyFPoyWWbaq5D2TO6P0gi5+fqAbnnULbmy
+ gULvgaU5kvmwzoggFBxEOFGS/PvFFrlEnDN6C8NayJZi6NUgCrCVJozGjNByyZ+1KuzXYxXp
+ opGzgO1QxPPjtIuyxn/3vd0qOIY=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n07.prod.us-east-1.postgun.com with SMTP id
+ 60b4ab945e7926f57b6a9b58 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 31 May 2021 09:25:40
+ GMT
+Sender: akhilpo=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id A3086C43217; Mon, 31 May 2021 09:25:39 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-3.5 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        NICE_REPLY_A,SPF_FAIL,URIBL_BLOCKED autolearn=no autolearn_force=no
+        version=3.4.0
+Received: from [192.168.1.105] (unknown [117.210.184.158])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id ACB711EC04E4;
-        Mon, 31 May 2021 11:23:18 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1622452998;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=kq3vQ72vcCrVSFjmJnb+obsvykqJLYPd+KsL6bN5T9Q=;
-        b=GeLLiL/+vgZYidrke6+K46iC4EZyweZltDLCIMSmJFS66LlcTO0zLmmG3xlsWwjKz233lC
-        UHhQWw2veNEGSaVpYolQZ188KglCHXNfW4028mkF4MxFxyLOxgXfw3bcShmMBoFKUnMv6z
-        FTUA8MSyNey5xVk/3ikH6ESsHcZUKsA=
-Date:   Mon, 31 May 2021 11:23:11 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     "Leizhen (ThunderTown)" <thunder.leizhen@huawei.com>
-Cc:     Johannes Thumshirn <morbidrsa@gmail.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Tony Luck <tony.luck@intel.com>,
-        James Morse <james.morse@arm.com>,
-        Robert Richter <rric@kernel.org>,
-        Doug Thompson <dougthompson@xmission.com>,
-        Dave Jiang <djiang@mvista.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-edac <linux-edac@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 1/1] EDAC, mpc85xx: Fix error return code in two functions
-Message-ID: <YLSq/6iN8Aw3j8R4@zn.tnic>
-References: <20210528032637.9231-1-thunder.leizhen@huawei.com>
- <YLSg/8REPQoX8HL7@zn.tnic>
- <daec460d-754c-d904-f81c-91bdfaccefad@huawei.com>
+        (Authenticated sender: akhilpo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 55813C433D3;
+        Mon, 31 May 2021 09:25:34 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 55813C433D3
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=akhilpo@codeaurora.org
+Subject: Re: [PATCH v2 5/8] drm/msm/a6xx: avoid shadow NULL reference in
+ failure path
+To:     Jonathan Marek <jonathan@marek.ca>, freedreno@lists.freedesktop.org
+Cc:     Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Jordan Crouse <jordan@cosmicpenguin.net>,
+        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
+        Eric Anholt <eric@anholt.net>,
+        Sharat Masetty <smasetty@codeaurora.org>,
+        Douglas Anderson <dianders@chromium.org>,
+        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
+        <linux-arm-msm@vger.kernel.org>,
+        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
+        <dri-devel@lists.freedesktop.org>,
+        open list <linux-kernel@vger.kernel.org>
+References: <20210513171431.18632-1-jonathan@marek.ca>
+ <20210513171431.18632-6-jonathan@marek.ca>
+From:   Akhil P Oommen <akhilpo@codeaurora.org>
+Message-ID: <3695f4d0-aa6f-4c85-bf4e-c3b59506ec34@codeaurora.org>
+Date:   Mon, 31 May 2021 14:55:31 +0530
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <daec460d-754c-d904-f81c-91bdfaccefad@huawei.com>
+In-Reply-To: <20210513171431.18632-6-jonathan@marek.ca>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 31, 2021 at 05:15:54PM +0800, Leizhen (ThunderTown) wrote:
-> So how about change to -ENODEV?
+On 5/13/2021 10:44 PM, Jonathan Marek wrote:
+> If a6xx_hw_init() fails before creating the shadow_bo, the a6xx_pm_suspend
+> code referencing it will crash. Change the condition to one that avoids
+> this problem (note: creation of shadow_bo is behind this same condition)
+> 
+> Fixes: e8b0b994c3a5 ("drm/msm/a6xx: Clear shadow on suspend")
+> Signed-off-by: Jonathan Marek <jonathan@marek.ca>
+> ---
+>   drivers/gpu/drm/msm/adreno/a6xx_gpu.c | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/gpu/drm/msm/adreno/a6xx_gpu.c b/drivers/gpu/drm/msm/adreno/a6xx_gpu.c
+> index 909e3ff08f89..ff3c328604f8 100644
+> --- a/drivers/gpu/drm/msm/adreno/a6xx_gpu.c
+> +++ b/drivers/gpu/drm/msm/adreno/a6xx_gpu.c
+> @@ -1284,7 +1284,7 @@ static int a6xx_pm_suspend(struct msm_gpu *gpu)
+>   	if (ret)
+>   		return ret;
+>   
+> -	if (adreno_gpu->base.hw_apriv || a6xx_gpu->has_whereami)
+> +	if (a6xx_gpu->shadow_bo)
+>   		for (i = 0; i < gpu->nr_rings; i++)
+>   			a6xx_gpu->shadow[i] = 0;
+>   
+> 
+Reviewed-by: Akhil P Oommen <akhilpo@codeaurora.org>
 
-Yah, better.
-
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+-Akhil
