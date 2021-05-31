@@ -2,38 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E677A3965AB
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 18:43:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 68F06395F36
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 16:08:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234708AbhEaQod (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 12:44:33 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47904 "EHLO mail.kernel.org"
+        id S233470AbhEaOJa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 10:09:30 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49706 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234038AbhEaOxQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 10:53:16 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3285061CA9;
-        Mon, 31 May 2021 13:58:36 +0000 (UTC)
+        id S232331AbhEaNnK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 09:43:10 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1C829613D7;
+        Mon, 31 May 2021 13:28:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1622469516;
-        bh=UsRoQph7bPCB4D4xwZJzWM88k0G/GJ6TuUufsaaESV4=;
+        s=korg; t=1622467729;
+        bh=Dv1gPJz98h71tKkFr3ikWvxAKFWRsMK+BBbWvj2Tgjc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=oaNl67pS1xTMXlfhaf/WIbGUiDuRmLIKF1Ka4YodmkyG73DjyAOrf1c2GD6pUXsLy
-         POp4ytvC2IOG4taJVF9gek2ShiYE8lUOL7phD494lyFb3w1Bgt1tYBkjw9c6FKRNrd
-         rJikt/cSeWT7s/1KivTeBZjJyTJ0ND7LEP95paWA=
+        b=OYYLmgR5IT/cJeDv3BfhWKKhMKKBE06JKyIY65dIf+Dvx5cDr/Odc81YsH60EdBvI
+         ukNhtF45lbEGiQOdSfnNdQRyttKbkvy7fHAdSkRujS7sIsIs4+plPiPo0cEe7+BUWy
+         K6svABQ3J4rzFlzsU32DUAWtVhwQL/CzABLAHDIk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Jisheng Zhang <Jisheng.Zhang@synaptics.com>,
-        Joakim Zhang <qiangqing.zhang@nxp.com>,
-        "David S. Miller" <davem@davemloft.net>,
+        stable@vger.kernel.org, Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.12 227/296] net: stmmac: Fix MAC WoL not working if PHY does not support WoL
-Date:   Mon, 31 May 2021 15:14:42 +0200
-Message-Id: <20210531130711.456128315@linuxfoundation.org>
+Subject: [PATCH 4.14 58/79] btrfs: do not BUG_ON in link_to_fixup_dir
+Date:   Mon, 31 May 2021 15:14:43 +0200
+Message-Id: <20210531130637.856622078@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210531130703.762129381@linuxfoundation.org>
-References: <20210531130703.762129381@linuxfoundation.org>
+In-Reply-To: <20210531130636.002722319@linuxfoundation.org>
+References: <20210531130636.002722319@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,56 +40,74 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Joakim Zhang <qiangqing.zhang@nxp.com>
+From: Josef Bacik <josef@toxicpanda.com>
 
-[ Upstream commit 576f9eacc680d2b1f37e8010cff62f7b227ea769 ]
+[ Upstream commit 91df99a6eb50d5a1bc70fff4a09a0b7ae6aab96d ]
 
-Both get and set WoL will check device_can_wakeup(), if MAC supports PMT, it
-will set device wakeup capability. After commit 1d8e5b0f3f2c ("net: stmmac:
-Support WOL with phy"), device wakeup capability will be overwrite in
-stmmac_init_phy() according to phy's Wol feature. If phy doesn't support WoL,
-then MAC will lose wakeup capability. To fix this issue, only overwrite device
-wakeup capability when MAC doesn't support PMT.
+While doing error injection testing I got the following panic
 
-For STMMAC now driver checks MAC's WoL capability if MAC supports PMT, if
-not support, driver will check PHY's WoL capability.
+  kernel BUG at fs/btrfs/tree-log.c:1862!
+  invalid opcode: 0000 [#1] SMP NOPTI
+  CPU: 1 PID: 7836 Comm: mount Not tainted 5.13.0-rc1+ #305
+  Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.13.0-2.fc32 04/01/2014
+  RIP: 0010:link_to_fixup_dir+0xd5/0xe0
+  RSP: 0018:ffffb5800180fa30 EFLAGS: 00010216
+  RAX: fffffffffffffffb RBX: 00000000fffffffb RCX: ffff8f595287faf0
+  RDX: ffffb5800180fa37 RSI: ffff8f5954978800 RDI: 0000000000000000
+  RBP: ffff8f5953af9450 R08: 0000000000000019 R09: 0000000000000001
+  R10: 000151f408682970 R11: 0000000120021001 R12: ffff8f5954978800
+  R13: ffff8f595287faf0 R14: ffff8f5953c77dd0 R15: 0000000000000065
+  FS:  00007fc5284c8c40(0000) GS:ffff8f59bbd00000(0000) knlGS:0000000000000000
+  CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+  CR2: 00007fc5287f47c0 CR3: 000000011275e002 CR4: 0000000000370ee0
+  Call Trace:
+   replay_one_buffer+0x409/0x470
+   ? btree_read_extent_buffer_pages+0xd0/0x110
+   walk_up_log_tree+0x157/0x1e0
+   walk_log_tree+0xa6/0x1d0
+   btrfs_recover_log_trees+0x1da/0x360
+   ? replay_one_extent+0x7b0/0x7b0
+   open_ctree+0x1486/0x1720
+   btrfs_mount_root.cold+0x12/0xea
+   ? __kmalloc_track_caller+0x12f/0x240
+   legacy_get_tree+0x24/0x40
+   vfs_get_tree+0x22/0xb0
+   vfs_kern_mount.part.0+0x71/0xb0
+   btrfs_mount+0x10d/0x380
+   ? vfs_parse_fs_string+0x4d/0x90
+   legacy_get_tree+0x24/0x40
+   vfs_get_tree+0x22/0xb0
+   path_mount+0x433/0xa10
+   __x64_sys_mount+0xe3/0x120
+   do_syscall_64+0x3d/0x80
+   entry_SYSCALL_64_after_hwframe+0x44/0xae
 
-Fixes: 1d8e5b0f3f2c ("net: stmmac: Support WOL with phy")
-Reviewed-by: Jisheng Zhang <Jisheng.Zhang@synaptics.com>
-Signed-off-by: Joakim Zhang <qiangqing.zhang@nxp.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+We can get -EIO or any number of legitimate errors from
+btrfs_search_slot(), panicing here is not the appropriate response.  The
+error path for this code handles errors properly, simply return the
+error.
+
+Signed-off-by: Josef Bacik <josef@toxicpanda.com>
+Reviewed-by: David Sterba <dsterba@suse.com>
+Signed-off-by: David Sterba <dsterba@suse.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/stmicro/stmmac/stmmac_main.c | 9 ++++++---
- 1 file changed, 6 insertions(+), 3 deletions(-)
+ fs/btrfs/tree-log.c | 2 --
+ 1 file changed, 2 deletions(-)
 
-diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
-index 369d7cde3993..492415790b13 100644
---- a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
-+++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
-@@ -1076,7 +1076,6 @@ static void stmmac_check_pcs_mode(struct stmmac_priv *priv)
-  */
- static int stmmac_init_phy(struct net_device *dev)
- {
--	struct ethtool_wolinfo wol = { .cmd = ETHTOOL_GWOL };
- 	struct stmmac_priv *priv = netdev_priv(dev);
- 	struct device_node *node;
- 	int ret;
-@@ -1102,8 +1101,12 @@ static int stmmac_init_phy(struct net_device *dev)
- 		ret = phylink_connect_phy(priv->phylink, phydev);
+diff --git a/fs/btrfs/tree-log.c b/fs/btrfs/tree-log.c
+index e40c27aec949..035a2e2be156 100644
+--- a/fs/btrfs/tree-log.c
++++ b/fs/btrfs/tree-log.c
+@@ -1629,8 +1629,6 @@ static noinline int link_to_fixup_dir(struct btrfs_trans_handle *trans,
+ 		ret = btrfs_update_inode(trans, root, inode);
+ 	} else if (ret == -EEXIST) {
+ 		ret = 0;
+-	} else {
+-		BUG(); /* Logic Error */
  	}
+ 	iput(inode);
  
--	phylink_ethtool_get_wol(priv->phylink, &wol);
--	device_set_wakeup_capable(priv->device, !!wol.supported);
-+	if (!priv->plat->pmt) {
-+		struct ethtool_wolinfo wol = { .cmd = ETHTOOL_GWOL };
-+
-+		phylink_ethtool_get_wol(priv->phylink, &wol);
-+		device_set_wakeup_capable(priv->device, !!wol.supported);
-+	}
- 
- 	return ret;
- }
 -- 
 2.30.2
 
