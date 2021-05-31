@@ -2,38 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 17200395FA2
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 16:11:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B06F0396467
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 17:56:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232470AbhEaONa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 10:13:30 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50842 "EHLO mail.kernel.org"
+        id S233713AbhEaP5t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 11:57:49 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56026 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232355AbhEaNq1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 09:46:27 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5121C61582;
-        Mon, 31 May 2021 13:30:08 +0000 (UTC)
+        id S233011AbhEaOb0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 10:31:26 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1749A61626;
+        Mon, 31 May 2021 13:49:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1622467808;
-        bh=LIeUETAqjCaD7D1hU95MpgwlUM7UXyBG0fj42aJQ5Gw=;
+        s=korg; t=1622468948;
+        bh=yUCGe4iXYlK9Vyk/w8C5ICjMOQB6/2PWWVyRaNAw7mQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=rBGV7eA5lBDEwv9fkoaMyCLjA6AeVUlHrGbwDf0GwzbtDeG9cpdqB0NHNX1buaLh2
-         TxLGEY9gJlZ+cm714IzUwgBG370YPjtT+SDVtAWzmoiAhRIeHwRrAqPn1jgR9XOs46
-         gty8z/bLNkiTkvi4yUz7iC8G3Eb/RlBC3qL8suoE=
+        b=NvNPnn1vS75qk2hLeUJLjPGYWOVXnW/zehi2AmwNLid8s6LRi5Dfq6LA1mF6dx2dY
+         JfqyHjnJP2Itu3SQVG+fok/wqDOBc8+vue3uqRaaGytlwrxx6YNlaLQhfexL5WsKgk
+         FmgIoV46IJP1NeknX+IH0rVlyLXPvFi7HR1P13/s=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hui Wang <hui.wang@canonical.com>,
-        Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 5.10 001/252] ALSA: hda/realtek: the bass speaker cant output sound on Yoga 9i
-Date:   Mon, 31 May 2021 15:11:06 +0200
-Message-Id: <20210531130658.021807971@linuxfoundation.org>
+        stable@vger.kernel.org, Aurelien Aptel <aaptel@suse.com>,
+        Steve French <stfrench@microsoft.com>
+Subject: [PATCH 5.12 012/296] cifs: set server->cipher_type to AES-128-CCM for SMB3.0
+Date:   Mon, 31 May 2021 15:11:07 +0200
+Message-Id: <20210531130704.182437905@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210531130657.971257589@linuxfoundation.org>
-References: <20210531130657.971257589@linuxfoundation.org>
+In-Reply-To: <20210531130703.762129381@linuxfoundation.org>
+References: <20210531130703.762129381@linuxfoundation.org>
 User-Agent: quilt/0.66
-X-stable: review
-X-Patchwork-Hint: ignore
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
@@ -41,65 +39,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Hui Wang <hui.wang@canonical.com>
+From: Aurelien Aptel <aaptel@suse.com>
 
-commit 9ebaef0540a981093bce5df15af32354d32391d9 upstream.
+commit 6d2fcfe6b517fe7cbf2687adfb0a16cdcd5d9243 upstream.
 
-The Lenovo Yoga 9i has bass speaker, but the bass speaker can't work,
-that is because there is an i2s amplifier on that speaker, need to
-run ideapad_s740_coef() to initialize the amplifier.
+SMB3.0 doesn't have encryption negotiate context but simply uses
+the SMB2_GLOBAL_CAP_ENCRYPTION flag.
 
-And also needs to apply ALC285_FIXUP_THINKPAD_HEADSET_JACK to rename
-the speaker's mixer control name, otherwise the PA can't handle them.
+When that flag is present in the neg response cifs.ko uses AES-128-CCM
+which is the only cipher available in this context.
 
-BugLink: http://bugs.launchpad.net/bugs/1926165
-Signed-off-by: Hui Wang <hui.wang@canonical.com>
+cipher_type was set to the server cipher only when parsing encryption
+negotiate context (SMB3.1.1).
+
+For SMB3.0 it was set to 0. This means cipher_type value can be 0 or 1
+for AES-128-CCM.
+
+Fix this by checking for SMB3.0 and encryption capability and setting
+cipher_type appropriately.
+
+Signed-off-by: Aurelien Aptel <aaptel@suse.com>
 Cc: <stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/20210522042645.14221-1-hui.wang@canonical.com
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Signed-off-by: Steve French <stfrench@microsoft.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- sound/pci/hda/patch_realtek.c |    9 +++++++++
- 1 file changed, 9 insertions(+)
+ fs/cifs/smb2pdu.c |    7 +++++++
+ 1 file changed, 7 insertions(+)
 
---- a/sound/pci/hda/patch_realtek.c
-+++ b/sound/pci/hda/patch_realtek.c
-@@ -6535,6 +6535,7 @@ enum {
- 	ALC295_FIXUP_ASUS_DACS,
- 	ALC295_FIXUP_HP_OMEN,
- 	ALC285_FIXUP_HP_SPECTRE_X360,
-+	ALC287_FIXUP_IDEAPAD_BASS_SPK_AMP,
- };
+--- a/fs/cifs/smb2pdu.c
++++ b/fs/cifs/smb2pdu.c
+@@ -958,6 +958,13 @@ SMB2_negotiate(const unsigned int xid, s
+ 	/* Internal types */
+ 	server->capabilities |= SMB2_NT_FIND | SMB2_LARGE_FILES;
  
- static const struct hda_fixup alc269_fixups[] = {
-@@ -8095,6 +8096,12 @@ static const struct hda_fixup alc269_fix
- 		.chained = true,
- 		.chain_id = ALC285_FIXUP_SPEAKER2_TO_DAC1,
- 	},
-+	[ALC287_FIXUP_IDEAPAD_BASS_SPK_AMP] = {
-+		.type = HDA_FIXUP_FUNC,
-+		.v.func = alc285_fixup_ideapad_s740_coef,
-+		.chained = true,
-+		.chain_id = ALC285_FIXUP_THINKPAD_HEADSET_JACK,
-+	},
- };
- 
- static const struct snd_pci_quirk alc269_fixup_tbl[] = {
-@@ -8462,6 +8469,7 @@ static const struct snd_pci_quirk alc269
- 	SND_PCI_QUIRK(0x17aa, 0x3178, "ThinkCentre Station", ALC283_FIXUP_HEADSET_MIC),
- 	SND_PCI_QUIRK(0x17aa, 0x3818, "Lenovo C940", ALC298_FIXUP_LENOVO_SPK_VOLUME),
- 	SND_PCI_QUIRK(0x17aa, 0x3827, "Ideapad S740", ALC285_FIXUP_IDEAPAD_S740_COEF),
-+	SND_PCI_QUIRK(0x17aa, 0x3843, "Yoga 9i", ALC287_FIXUP_IDEAPAD_BASS_SPK_AMP),
- 	SND_PCI_QUIRK(0x17aa, 0x3902, "Lenovo E50-80", ALC269_FIXUP_DMIC_THINKPAD_ACPI),
- 	SND_PCI_QUIRK(0x17aa, 0x3977, "IdeaPad S210", ALC283_FIXUP_INT_MIC),
- 	SND_PCI_QUIRK(0x17aa, 0x3978, "Lenovo B50-70", ALC269_FIXUP_DMIC_THINKPAD_ACPI),
-@@ -8677,6 +8685,7 @@ static const struct hda_model_fixup alc2
- 	{.id = ALC245_FIXUP_HP_X360_AMP, .name = "alc245-hp-x360-amp"},
- 	{.id = ALC295_FIXUP_HP_OMEN, .name = "alc295-hp-omen"},
- 	{.id = ALC285_FIXUP_HP_SPECTRE_X360, .name = "alc285-hp-spectre-x360"},
-+	{.id = ALC287_FIXUP_IDEAPAD_BASS_SPK_AMP, .name = "alc287-ideapad-bass-spk-amp"},
- 	{}
- };
- #define ALC225_STANDARD_PINS \
++	/*
++	 * SMB3.0 supports only 1 cipher and doesn't have a encryption neg context
++	 * Set the cipher type manually.
++	 */
++	if (server->dialect == SMB30_PROT_ID && (server->capabilities & SMB2_GLOBAL_CAP_ENCRYPTION))
++		server->cipher_type = SMB2_ENCRYPTION_AES128_CCM;
++
+ 	security_blob = smb2_get_data_area_len(&blob_offset, &blob_length,
+ 					       (struct smb2_sync_hdr *)rsp);
+ 	/*
 
 
