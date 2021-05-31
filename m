@@ -2,37 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DACDE396250
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 16:53:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D29F0396401
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 17:42:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234207AbhEaOyh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 10:54:37 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36982 "EHLO mail.kernel.org"
+        id S232282AbhEaPnt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 11:43:49 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47640 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233034AbhEaODa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 10:03:30 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B4CE56135C;
-        Mon, 31 May 2021 13:37:48 +0000 (UTC)
+        id S233435AbhEaOZC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 10:25:02 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2DABA61625;
+        Mon, 31 May 2021 13:46:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1622468269;
-        bh=JlD7Z3xjQTGq2Qdw73R5uducC+q2EnuaqfUeOO7B8+E=;
+        s=korg; t=1622468777;
+        bh=1IYDyVXakbWlqPPxz3zhjImOYU2dRk9Db7ijwLOxpIU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Z4RseZtyAouFwEaV58mU8H3bSGCFOBSNL5l59AoyswGEAUMdAW4zmI34OAH0V3t9F
-         9uiPo9bY3RVf/mCehAJXSyveKVhzR1rDxeLTrR2PKViBkTH2gXOxSCh/v6UwFnAiyh
-         pbhvY9lILuq1Ov6xkS2+qwpU+EmVGX0Yus0c3+k8=
+        b=NP9fnwonYYrycWtgEnenBFoeHqcK3tVIP579c2Q8ieAAdGYDmFMTXLNcqFahAegjV
+         SX6hJCTBw89osK6X6YRBw1jiXxu7S6GWalCTcg8q6MUX1ZdRWgwH48XLjm5Tz+YyUG
+         uijO8h7kPV2QMlokw3TVKAWlIWvjWxQeiCxznjm0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Steve French <stfrench@microsoft.com>,
-        Stefan Metzmacher <metze@samba.org>,
-        Shyam Prasad N <sprasad@microsoft.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 180/252] SMB3: incorrect file id in requests compounded with open
-Date:   Mon, 31 May 2021 15:14:05 +0200
-Message-Id: <20210531130704.129975469@linuxfoundation.org>
+        stable@vger.kernel.org, Aditya Pakki <pakki001@umn.edu>,
+        Takashi Iwai <tiwai@suse.de>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 089/177] Revert "ALSA: sb: fix a missing check of snd_ctl_add"
+Date:   Mon, 31 May 2021 15:14:06 +0200
+Message-Id: <20210531130650.969801268@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210531130657.971257589@linuxfoundation.org>
-References: <20210531130657.971257589@linuxfoundation.org>
+In-Reply-To: <20210531130647.887605866@linuxfoundation.org>
+References: <20210531130647.887605866@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,40 +39,51 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Steve French <stfrench@microsoft.com>
+From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-[ Upstream commit c0d46717b95735b0eacfddbcca9df37a49de9c7a ]
+[ Upstream commit 4b059ce1f4b368208c2310925f49be77f15e527b ]
 
-See MS-SMB2 3.2.4.1.4, file ids in compounded requests should be set to
-0xFFFFFFFFFFFFFFFF (we were treating it as u32 not u64 and setting
-it incorrectly).
+This reverts commit beae77170c60aa786f3e4599c18ead2854d8694d.
 
-Signed-off-by: Steve French <stfrench@microsoft.com>
-Reported-by: Stefan Metzmacher <metze@samba.org>
-Reviewed-by: Shyam Prasad N <sprasad@microsoft.com>
+Because of recent interactions with developers from @umn.edu, all
+commits from them have been recently re-reviewed to ensure if they were
+correct or not.
+
+Upon review, this commit was found to be incorrect for the reasons
+below, so it must be reverted.  It is safe to ignore this error as the
+mixer element is optional, and the driver is very legacy.
+
+Cc: Aditya Pakki <pakki001@umn.edu>
+Reviewed-by: Takashi Iwai <tiwai@suse.de>
+Link: https://lore.kernel.org/r/20210503115736.2104747-8-gregkh@linuxfoundation.org
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/cifs/smb2pdu.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ sound/isa/sb/sb16_main.c | 10 +++-------
+ 1 file changed, 3 insertions(+), 7 deletions(-)
 
-diff --git a/fs/cifs/smb2pdu.c b/fs/cifs/smb2pdu.c
-index 0ce92d958fd6..ab509965656e 100644
---- a/fs/cifs/smb2pdu.c
-+++ b/fs/cifs/smb2pdu.c
-@@ -3898,10 +3898,10 @@ smb2_new_read_req(void **buf, unsigned int *total_len,
- 			 * Related requests use info from previous read request
- 			 * in chain.
- 			 */
--			shdr->SessionId = 0xFFFFFFFF;
-+			shdr->SessionId = 0xFFFFFFFFFFFFFFFF;
- 			shdr->TreeId = 0xFFFFFFFF;
--			req->PersistentFileId = 0xFFFFFFFF;
--			req->VolatileFileId = 0xFFFFFFFF;
-+			req->PersistentFileId = 0xFFFFFFFFFFFFFFFF;
-+			req->VolatileFileId = 0xFFFFFFFFFFFFFFFF;
- 		}
- 	}
- 	if (remaining_bytes > io_parms->length)
+diff --git a/sound/isa/sb/sb16_main.c b/sound/isa/sb/sb16_main.c
+index 0768bbf8fd71..679f9f48370f 100644
+--- a/sound/isa/sb/sb16_main.c
++++ b/sound/isa/sb/sb16_main.c
+@@ -864,14 +864,10 @@ int snd_sb16dsp_pcm(struct snd_sb *chip, int device)
+ 	snd_pcm_set_ops(pcm, SNDRV_PCM_STREAM_PLAYBACK, &snd_sb16_playback_ops);
+ 	snd_pcm_set_ops(pcm, SNDRV_PCM_STREAM_CAPTURE, &snd_sb16_capture_ops);
+ 
+-	if (chip->dma16 >= 0 && chip->dma8 != chip->dma16) {
+-		err = snd_ctl_add(card, snd_ctl_new1(
+-					&snd_sb16_dma_control, chip));
+-		if (err)
+-			return err;
+-	} else {
++	if (chip->dma16 >= 0 && chip->dma8 != chip->dma16)
++		snd_ctl_add(card, snd_ctl_new1(&snd_sb16_dma_control, chip));
++	else
+ 		pcm->info_flags = SNDRV_PCM_INFO_HALF_DUPLEX;
+-	}
+ 
+ 	snd_pcm_lib_preallocate_pages_for_all(pcm, SNDRV_DMA_TYPE_DEV,
+ 					      card->dev,
 -- 
 2.30.2
 
