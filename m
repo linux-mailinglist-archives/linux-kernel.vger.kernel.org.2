@@ -2,94 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7167639683A
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 21:03:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A37539683E
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 21:07:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231436AbhEaTE6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 15:04:58 -0400
-Received: from mga01.intel.com ([192.55.52.88]:55930 "EHLO mga01.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230174AbhEaTEz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 15:04:55 -0400
-IronPort-SDR: 22NywMRwqklgNuss5x55CUUJgTGH8a3Cr15zyqo0rH32OgFDQ1yNK5cjS2qJJSNJ9V/REvK03+
- nfzlpnUN1cEw==
-X-IronPort-AV: E=McAfee;i="6200,9189,10001"; a="224675447"
-X-IronPort-AV: E=Sophos;i="5.83,238,1616482800"; 
-   d="scan'208";a="224675447"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 May 2021 12:03:14 -0700
-IronPort-SDR: T9VUXeMKnve3B5d3pzUtgVROMI93SP8hU0DR9ON6SyBl67y+iVKYkH8r9hozmo1aGPhHmcnvHI
- dQJdLxNQDx4g==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.83,238,1616482800"; 
-   d="scan'208";a="482195243"
-Received: from ahunter-desktop.fi.intel.com (HELO [10.237.72.174]) ([10.237.72.174])
-  by fmsmga002.fm.intel.com with ESMTP; 31 May 2021 12:03:12 -0700
-Subject: Re: [PATCH v1 2/2] perf auxtrace: Optimize barriers with load-acquire
- and store-release
-To:     Leo Yan <leo.yan@linaro.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Andi Kleen <ak@linux.intel.com>,
-        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210519140319.1673043-1-leo.yan@linaro.org>
- <20210519140319.1673043-2-leo.yan@linaro.org>
- <20210531151049.GE9324@leoy-ThinkPad-X240s>
-From:   Adrian Hunter <adrian.hunter@intel.com>
-Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
- Business Identity Code: 0357606 - 4, Domiciled in Helsinki
-Message-ID: <cc3810cd-5edc-26d3-9c77-8bb6479152c1@intel.com>
-Date:   Mon, 31 May 2021 22:03:33 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+        id S230523AbhEaTJK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 15:09:10 -0400
+Received: from jabberwock.ucw.cz ([46.255.230.98]:43702 "EHLO
+        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230174AbhEaTJD (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 15:09:03 -0400
+Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
+        id 618CC1C0B76; Mon, 31 May 2021 21:07:22 +0200 (CEST)
+Date:   Mon, 31 May 2021 21:07:21 +0200
+From:   Pavel Machek <pavel@denx.de>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
+        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
+        jonathanh@nvidia.com, f.fainelli@gmail.com, stable@vger.kernel.org
+Subject: Re: [PATCH 4.4 00/54] 4.4.271-rc1 review
+Message-ID: <20210531190721.GA22626@duo.ucw.cz>
+References: <20210531130635.070310929@linuxfoundation.org>
 MIME-Version: 1.0
-In-Reply-To: <20210531151049.GE9324@leoy-ThinkPad-X240s>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="qMm9M+Fa2AknHoGS"
+Content-Disposition: inline
+In-Reply-To: <20210531130635.070310929@linuxfoundation.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 31/05/21 6:10 pm, Leo Yan wrote:
-> Hi Peter, Adrian,
-> 
-> On Wed, May 19, 2021 at 10:03:19PM +0800, Leo Yan wrote:
->> Load-acquire and store-release are one-way permeable barriers, which can
->> be used to guarantee the memory ordering between accessing the buffer
->> data and the buffer's head / tail.
->>
->> This patch optimizes the memory ordering with the load-acquire and
->> store-release barriers.
-> 
-> Is this patch okay for you?
-> 
-> Besides this patch, I have an extra question.  You could see for
-> accessing the AUX buffer's head and tail, it also support to use
-> compiler build-in functions for atomicity accessing:
-> 
->   __sync_val_compare_and_swap()
->   __sync_bool_compare_and_swap()
-> 
-> Since now we have READ_ONCE()/WRITE_ONCE(), do you think we still need
-> to support __sync_xxx_compare_and_swap() atomicity?
 
-I don't remember, but it seems to me atomicity is needed only
-for a 32-bit perf running with a 64-bit kernel.
+--qMm9M+Fa2AknHoGS
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> 
-> I checked the code for updating head and tail for the perf ring buffer
-> (see ring_buffer_read_head() and ring_buffer_write_tail() in the file
-> tools/include/linux/ring_buffer.h), which doesn't support
-> __sync_xxx_compare_and_swap() anymore.  This is why I wander if should
-> drop __sync_xxx_compare_and_swap() atomicity for AUX ring buffer as
-> well.
-> 
-> Thanks,
-> Leo
-> 
+Hi!
 
+> This is the start of the stable review cycle for the 4.4.271 release.
+> There are 54 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+
+CIP testing did not find any problems here:
+
+https://gitlab.com/cip-project/cip-testing/linux-stable-rc-ci/-/tree/linux-=
+4.4.y
+
+Tested-by: Pavel Machek (CIP) <pavel@denx.de>
+
+Best regards,
+                                                        Pavel
+
+--=20
+DENX Software Engineering GmbH,      Managing Director: Wolfgang Denk
+HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
+
+--qMm9M+Fa2AknHoGS
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCYLUz6QAKCRAw5/Bqldv6
+8uNGAJ9/BNwGn6YAPm0puO4OwdCIeMrQyQCgp2po1xuQWEVkMqtGDIfWQmfeUdo=
+=jd96
+-----END PGP SIGNATURE-----
+
+--qMm9M+Fa2AknHoGS--
