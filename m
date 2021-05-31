@@ -2,291 +2,339 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BBB4B396216
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 16:49:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C00F395EB2
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 16:00:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233026AbhEaOvD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 10:51:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37020 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232884AbhEaOB7 (ORCPT
+        id S232391AbhEaOCU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 10:02:20 -0400
+Received: from esa.microchip.iphmx.com ([68.232.154.123]:2032 "EHLO
+        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232904AbhEaNjt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 10:01:59 -0400
-Received: from mail-qt1-x830.google.com (mail-qt1-x830.google.com [IPv6:2607:f8b0:4864:20::830])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7B1EC0612EE;
-        Mon, 31 May 2021 06:38:26 -0700 (PDT)
-Received: by mail-qt1-x830.google.com with SMTP id k19so7934574qta.2;
-        Mon, 31 May 2021 06:38:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=Rde6momaXq0my+9glMeoFBNU/apA8VsaoRh6XVe4ER8=;
-        b=OMsVaMFEDn4FucLl6wiwaAZavTx5YMTu9CpRQGrp6z/u1zcgE7/78NTGhbFvVWPorx
-         bIQztbWt6UKqOHBYrR6Ht0kF5Sjytq4t5b/Lc1VU/hqi5QDuwWPvaB3FXRt3Q2q+mszx
-         QrYbZac3PNWEmuOQn/L4oMI0Hob2v7QiFIhfsQaR9a9Bb3SyInZL1+3q81huOkiZazn4
-         0LY7hz5lelnYNCdMgl5NHGjpjacblTmZH0o+xriQ/dlChhxCxU4J+K+LfNI2yMgum49S
-         cKlogmiHGYdDmp/PFjNmBFc1JJ4O9iRBt0YTnaWLzxSzl/wjjVfyAlPBmOwmcUqxQ6Co
-         a9fg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=Rde6momaXq0my+9glMeoFBNU/apA8VsaoRh6XVe4ER8=;
-        b=a+XfWGFxrgP+RnKxV/se21fXTUqQsUCX5+Jk4p+GyMZngSP5KCt1e5kG4MPcVWNvuN
-         eXLSUlkJtVsJ9sXcpvp+kXtbuD+bKxj5Rzfk3ISayGGtglEn5K2hyrNBXsdL8CPCfo+Y
-         RUjrfXbHAm3xgkE3eHASNR26T3HhIxT21wQoGOVTrFYUfN3YRnC2CW3wfG8tUcltDGny
-         ALsrjiMMT7cMg2Zr2IGGTg9S3Zy23gwf9CvN8tqOaXKrScS28xTUPGEwZPSdrBDx/Sc+
-         plg+m39n3plpV8YK/HKea4rHGpYvXSQXxEQvw436Fc8r3xFpYrPgxhRoQRRL5ihAHmY3
-         KfbQ==
-X-Gm-Message-State: AOAM532P9/S+Dwwua1yTkTw1cSMeRGwqLK5XB4nWdm1AtcNBMJmWbUqa
-        8tIupVUNltTGyyfWNy001Ew=
-X-Google-Smtp-Source: ABdhPJxsgHDzRxXxzkTKAByrYZs8Nu0cUUs4Q92ssXnCqs/prcpa4YEDPevo2WpZL456ZLBcTVGubw==
-X-Received: by 2002:ac8:13ca:: with SMTP id i10mr14962108qtj.255.1622468305923;
-        Mon, 31 May 2021 06:38:25 -0700 (PDT)
-Received: from localhost.localdomain (ec2-35-169-212-159.compute-1.amazonaws.com. [35.169.212.159])
-        by smtp.gmail.com with ESMTPSA id h8sm8293085qtp.46.2021.05.31.06.38.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 31 May 2021 06:38:25 -0700 (PDT)
-From:   sj38.park@gmail.com
-To:     akpm@linux-foundation.org
-Cc:     SeongJae Park <sjpark@amazon.de>, Jonathan.Cameron@Huawei.com,
-        acme@kernel.org, alexander.shishkin@linux.intel.com,
-        amit@kernel.org, benh@kernel.crashing.org,
-        brendanhiggins@google.com, corbet@lwn.net, david@redhat.com,
-        dwmw@amazon.com, elver@google.com, fan.du@intel.com,
-        foersleo@amazon.de, greg@kroah.com, gthelen@google.com,
-        guoju.fgj@alibaba-inc.com, mgorman@suse.de, minchan@kernel.org,
-        mingo@redhat.com, namhyung@kernel.org, peterz@infradead.org,
-        riel@surriel.com, rientjes@google.com, rostedt@goodmis.org,
-        rppt@kernel.org, shakeelb@google.com, shuah@kernel.org,
-        sj38.park@gmail.com, snu@zelle79.org, vbabka@suse.cz,
-        vdavydov.dev@gmail.com, zgf574564920@gmail.com,
-        linux-damon@amazon.com, linux-mm@kvack.org,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [RFC PATCH 00/13] Introduce DAMON-based Proactive Reclamation
-Date:   Mon, 31 May 2021 13:38:03 +0000
-Message-Id: <20210531133816.12689-1-sj38.park@gmail.com>
-X-Mailer: git-send-email 2.17.1
+        Mon, 31 May 2021 09:39:49 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1622468289; x=1654004289;
+  h=message-id:subject:from:to:cc:date:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=4NvKEFLcTaZsrZt676mG2JeyIZzYHRMP6td1iN925rU=;
+  b=2sjRjn3+NCcsT91iXAlGVv9S2qDeFbbBboZXLAPb7ZGC3VF7jmwtqFb3
+   avpH8oQN3u9cbIb49Va7tLisCga2/lJWmgvuigNkh2qFkkifx+lnWUesq
+   TzIfyyQvzLSc3MIE+acsyiKf5bbBt13Sb2icDWgdBDDakPgYWcseM1k2y
+   KSmbhmGUUQOdLsrjciJsF43xuxLgD4ZkbveT3ixUa9Mb23BX7DlEqqo3t
+   JkbEEvdzF6MvnQ/r/qeoUS2HO993sK+N6Z6TkNPvEPBmIv28WxEGJS0O2
+   IKngPcwv0HWOi6IefYwzFloUzQcBo8mW4+09smNpSY9sRmPGIJnrHr8YF
+   g==;
+IronPort-SDR: cFUxJFz0Vu3et/lEzifPl84BnJAtp/n7Ga/CKr9m2OkfAsa1b48kNahRwzw8yuGRatPZEXvKQq
+ Bz33HXEeJ985Y0WniUvRCZ0lsNhvoORhbr1y3rQpz5lJLRXoHvkg2sFs9A93wO0i2uYXM0H2NH
+ zV1tWg1cJkhBcx7xFTRd1s9fn/W+R7ZNbZczhJBmCMf7m9+QTc6aLHIdbF9fDgfKgeAU63qNFg
+ DodZXJwoW8cUWJ21LWc6Sy2+iTM10ouT4zNQDwibBt/AQ2fjt1O5jknFnSJo7nsnnOvfD0AUHr
+ MGw=
+X-IronPort-AV: E=Sophos;i="5.83,237,1616482800"; 
+   d="scan'208";a="57375529"
+Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
+  by esa6.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 31 May 2021 06:38:08 -0700
+Received: from chn-vm-ex04.mchp-main.com (10.10.85.152) by
+ chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Mon, 31 May 2021 06:38:08 -0700
+Received: from [10.205.21.35] (10.10.115.15) by chn-vm-ex04.mchp-main.com
+ (10.10.85.152) with Microsoft SMTP Server id 15.1.2176.2 via Frontend
+ Transport; Mon, 31 May 2021 06:38:04 -0700
+Message-ID: <975ebaaf4f7457b7c34d0d31ed5185a44ba05d17.camel@microchip.com>
+Subject: Re: [PATCH net-next v2 02/10] net: sparx5: add the basic sparx5
+ driver
+From:   Steen Hegelund <steen.hegelund@microchip.com>
+To:     Jakub Kicinski <kuba@kernel.org>
+CC:     "David S. Miller" <davem@davemloft.net>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Russell King <linux@armlinux.org.uk>,
+        Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Madalin Bucur <madalin.bucur@oss.nxp.com>,
+        Mark Einon <mark.einon@gmail.com>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        "Simon Horman" <simon.horman@netronome.com>,
+        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        Bjarni Jonasson <bjarni.jonasson@microchip.com>,
+        Lars Povlsen <lars.povlsen@microchip.com>
+Date:   Mon, 31 May 2021 15:38:04 +0200
+In-Reply-To: <20210530135919.3f64cf33@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
+References: <20210528123419.1142290-1-steen.hegelund@microchip.com>
+         <20210528123419.1142290-3-steen.hegelund@microchip.com>
+         <20210530135919.3f64cf33@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.40.1 
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: SeongJae Park <sjpark@amazon.de>
+Hi Jacub,
 
-NOTE: This is only an RFC for future features of DAMON patchset[1], which is
-not merged in the mainline yet.  The aim of this RFC is to show how DAMON would
-be evolved once it is merged in.  So, if you have some interest here, please
-consider reviewing the DAMON patchset, either.
+Thanks for your comments.
 
-[1] https://lore.kernel.org/linux-mm/20210520075629.4332-1-sj38.park@gmail.com/
+On Sun, 2021-05-30 at 13:59 -0700, Jakub Kicinski wrote:
+> EXTERNAL EMAIL: Do not click links or open attachments unless you know the content is safe
+> 
+> On Fri, 28 May 2021 14:34:11 +0200 Steen Hegelund wrote:
+> > This adds the Sparx5 basic SwitchDev driver framework with IO range
+> > mapping, switch device detection and core clock configuration.
+> > 
+> > Support for ports, phylink, netdev, mactable etc. are in the following
+> > patches.
+> 
+> > +     for (idx = 0; idx < 3; idx++) {
+> > +             spx5_rmw(GCB_SIO_CLOCK_SYS_CLK_PERIOD_SET(clk_period / 100),
+> > +                      GCB_SIO_CLOCK_SYS_CLK_PERIOD,
+> > +                      sparx5,
+> > +                      GCB_SIO_CLOCK(idx));
+> > +     }
+> 
+> braces unnecessary, please fix everywhere.
 
-Introduction
-============
+Will do that.
 
-In short, this patchset improves the engine for general data access
-pattern-oriented memory management for production quality and implements the
-monitoring issue solved version of proactive reclamation on top of it.
+> 
+> > +
+> > +     spx5_rmw(HSCH_TAS_STATEMACHINE_CFG_REVISIT_DLY_SET
+> > +              ((256 * 1000) / clk_period),
+> > +              HSCH_TAS_STATEMACHINE_CFG_REVISIT_DLY,
+> > +              sparx5,
+> > +              HSCH_TAS_STATEMACHINE_CFG);
+> > +
+> > +     spx5_rmw(ANA_AC_POL_POL_UPD_INT_CFG_POL_UPD_INT_SET(pol_upd_int),
+> > +              ANA_AC_POL_POL_UPD_INT_CFG_POL_UPD_INT,
+> > +              sparx5,
+> > +              ANA_AC_POL_POL_UPD_INT_CFG);
+> > +
+> > +     return 0;
+> > +}
+> 
+> > +     /* Default values, some from DT */
+> > +     sparx5->coreclock = SPX5_CORE_CLOCK_DEFAULT;
+> > +
+> > +     ports = of_get_child_by_name(np, "ethernet-ports");
+> 
+> Don't you need to release the reference you got on @ports?
 
-Proactive Reclamation
----------------------
+Yes that is missing.  I will update.
 
-Proactively reclaiming cold pages helps saving memory and reducing latency
-spikes that incurred by the direct reclaim of the process or CPU consumption of
-kswapd, while incurring only minimal performance degradation for memory
-over-committed systems[2].
+> 
+> > +     if (!ports) {
+> > +             dev_err(sparx5->dev, "no ethernet-ports child node found\n");
+> > +             return -ENODEV;
+> > +     }
+> > +     sparx5->port_count = of_get_child_count(ports);
+> > +
+> > +     configs = kcalloc(sparx5->port_count,
+> > +                       sizeof(struct initial_port_config), GFP_KERNEL);
+> > +     if (!configs)
+> > +             return -ENOMEM;
+> > +
+> > +     for_each_available_child_of_node(ports, portnp) {
+> > +             struct sparx5_port_config *conf;
+> > +             struct phy *serdes;
+> > +             u32 portno;
+> > +
+> > +             err = of_property_read_u32(portnp, "reg", &portno);
+> > +             if (err) {
+> > +                     dev_err(sparx5->dev, "port reg property error\n");
+> > +                     continue;
+> > +             }
+> > +             config = &configs[idx];
+> > +             conf = &config->conf;
+> > +             err = of_get_phy_mode(portnp, &conf->phy_mode);
+> > +             if (err) {
+> > +                     dev_err(sparx5->dev, "port %u: missing phy-mode\n",
+> > +                             portno);
+> > +                     continue;
+> > +             }
+> > +             err = of_property_read_u32(portnp, "microchip,bandwidth",
+> > +                                        &conf->bandwidth);
+> > +             if (err) {
+> > +                     dev_err(sparx5->dev, "port %u: missing bandwidth\n",
+> > +                             portno);
+> > +                     continue;
+> > +             }
+> > +             err = of_property_read_u32(portnp, "microchip,sd-sgpio", &conf->sd_sgpio);
+> > +             if (err)
+> > +                     conf->sd_sgpio = ~0;
+> > +             else
+> > +                     sparx5->sd_sgpio_remapping = true;
+> > +             serdes = devm_of_phy_get(sparx5->dev, portnp, NULL);
+> > +             if (IS_ERR(serdes)) {
+> > +                     err = PTR_ERR(serdes);
+> > +                     if (err != -EPROBE_DEFER)
+> > +                             dev_err(sparx5->dev,
+> > +                                     "port %u: missing serdes\n",
+> > +                                     portno);
+> 
+> dev_err_probe()
 
-Free Pages Reporting[9] based memory over-commit virtualization systems is
-another use case of it.  In the configuration, the guest VMs are supposed to
-report free memory to host, so that host can reallocate the memory to other
-guests.  However, because Linux is designed to cache things in memory
-aggressively, no guest would voluntarily free much memory without host's
-intervention.  Proactive reclamation could make the situation much better.
+OK - did not know that one.
 
-Google has implemented the idea and using it in their data center.  They
-further proposed upstreaming it in LSFMM'19, and "the general consensus was
-that, while this sort of proactive reclaim would be useful for a number of
-users, the cost of this particular solution was too high to consider merging it
-upstream"[3].  The cost mostly comes from the coldness tracking.  Roughly
-speaking, the implementation periodically scans the 'Accessed' bit of each
-page.  For the reason, the overhead linearly increases as the size of the
-memory and the scanning frequency grows.  As a result, Google is known to
-dedicating a CPU for the work.  That's reasonable for Google, but it wouldn't
-for someone.
+> 
+> > +                     goto cleanup_config;
+> > +             }
+> > +             config->portno = portno;
+> > +             config->node = portnp;
+> > +             config->serdes = serdes;
+> > +
+> > +             conf->media = PHY_MEDIA_DAC;
+> > +             conf->serdes_reset = true;
+> > +             conf->portmode = conf->phy_mode;
+> > +             if (of_find_property(portnp, "sfp", NULL)) {
+> > +                     conf->has_sfp = true;
+> > +                     conf->power_down = true;
+> > +             }
+> > +             idx++;
+> > +     }
+> > +
+> > +     err = sparx5_create_targets(sparx5);
+> > +     if (err)
+> > +             goto cleanup_config;
+> > +
+> > +     if (of_get_mac_address(np, mac_addr)) {
+> > +             dev_info(sparx5->dev, "MAC addr was not set, use random MAC\n");
+> > +             eth_random_addr(sparx5->base_mac);
+> > +             sparx5->base_mac[5] = 0;
+> > +     } else {
+> > +             ether_addr_copy(sparx5->base_mac, mac_addr);
+> > +     }
+> > +
+> > +     /* Inj/Xtr IRQ support to be added in later patches */
+> > +     /* Read chip ID to check CPU interface */
+> > +     sparx5->chip_id = spx5_rd(sparx5, GCB_CHIP_ID);
+> > +
+> > +     sparx5->target_ct = (enum spx5_target_chiptype)
+> > +             GCB_CHIP_ID_PART_ID_GET(sparx5->chip_id);
+> > +
+> > +     /* Initialize Switchcore and internal RAMs */
+> > +     if (sparx5_init_switchcore(sparx5)) {
+> > +             dev_err(sparx5->dev, "Switchcore initialization error\n");
+> > +             goto cleanup_config;
+> 
+> Should @err be set?
 
-DAMON and DAMOS: An engine for data access pattern-oriented memory management
------------------------------------------------------------------------------
+Yes it should.  I will update here and below.
 
-DAMON[4] is a framework for general data access monitoring.  When it's adaptive
-monitoring overhead control feature is used, it incurs minimized monitoring
-overhead.  It's not only small, but also upper-bounded, regardless of the
-monitoring target memory size.  Clients can set the upper-limit as they want.
-While monitoring 70 GB memory of a production system every 5 milliseconds, it
-consumes less than 1% single CPU time.  For this, it sacrifies some of the
-quality of the monitoring results.  Nevertheless, the lower-bound of the
-quality is configurable, and it has a best-effort algorithm for the quality.
-Our test results[5] show the quality is practical enough.  From the production
-system monitoring, we were able to find a 4 KB memory region that shows highest
-access frequency in the 70 GB memory.  For someone still couldn't be convinced,
-DAMON also supports the page-granularity monitoring[6], though it makes the
-overhead much higher and proportional to the memory size again.
+> 
+> > +     }
+> > +
+> > +     /* Initialize the LC-PLL (core clock) and set affected registers */
+> > +     if (sparx5_init_coreclock(sparx5)) {
+> > +             dev_err(sparx5->dev, "LC-PLL initialization error\n");
+> > +             goto cleanup_config;
+> 
+> ditto
 
-We normally don't monitor the data access pattern just for fun but to use if
-for something like memory management.  Proactive reclamation is one such usage.
-For such general cases, DAMON provides a feature called DAMon-based Operation
-Schemes (DAMOS)[7], which makes DAMON as an engine for general data access
-pattern oriented memory management.  Using this, clients can ask DAMON to find
-memory regions of specific data access pattern and apply some memory management
-action (e.g., paging out, move to head of the LRU list, use huge page, ...).
-The request is called 'scheme' below.
+Yes.
 
-DAMON-based Reclaim
--------------------
+> 
+> > +     }
+> > +
+> > +     for (idx = 0; idx < sparx5->port_count; ++idx) {
+> > +             config = &configs[idx];
+> > +             if (!config->node)
+> > +                     continue;
+> > +
+> > +             err = sparx5_create_port(sparx5, config);
+> > +             if (err) {
+> > +                     dev_err(sparx5->dev, "port create error\n");
+> > +                     goto cleanup_ports;
+> > +             }
+> > +     }
+> > +
+> > +     if (sparx5_start(sparx5)) {
+> > +             dev_err(sparx5->dev, "Start failed\n");
+> > +             goto cleanup_ports;
+> 
+> and here
 
-Therefore, by using DAMON in the cold pages detection, the proactive
-reclamation's monitoring overhead issue could be solved.  If someone like
-Google is ok to dedicate CPUs for the monitoring and wants page-granularity
-quality, they could configure DAMON so.
+Yes.
 
-Actually, we already implemented a version of proactive reclamation on it and
-shared its evaluation results before[5], which show noticeable achievements.
-Nevertheless, it is only in a proof-of-concept level.  Recently we further
-introduced a user space tool[8] that automatically tunes schemes for specific
-workloads and systems.  Google's proactive reclamation also uses another
-ML-based similar approach[2].  But, making it just works in the kernel would be
-more convenient for more general users.
+> 
+> > +     }
+> > +
+> > +     kfree(configs);
+> > +     return err;
+> > +
+> > +cleanup_ports:
+> > +     /* Port cleanup to be added in later patches */
+> > +cleanup_config:
+> > +     kfree(configs);
+> > +     return err;
+> > +}
+> 
+> > +struct sparx5_port_config      {
+> 
+> Spurious tab before {?
 
-To this end, this patchset improves DAMOS to be proper for such production use,
-and implements another version of the proactive reclamation, namely
-DAMON_RECLAIM, on top of it.
+Spurious spaces - but they will be removed.
 
-DAMOS Improvements: Speed Limit, Prioritization, and Watermarks
----------------------------------------------------------------
+> 
+> > +     phy_interface_t portmode;
+> > +     bool has_sfp;
+> > +     u32 bandwidth;
+> > +     int speed;
+> > +     int duplex;
+> > +     enum phy_media media;
+> > +     bool power_down;
+> > +     bool autoneg;
+> > +     u32 pause;
+> > +     bool serdes_reset;
+> 
+> Group all 4 bools together for better packing?
 
-One major problem of current version of DAMOS is the absence of the
-aggressiveness control.  For example, if huge memory regions of the specified
-data access pattern is found, applying the action to the huge memory regions
-could incur overhead.  It could controlled by modifying the target data access
-pattern and some auto-tuning approaches are available.  But, for someone who
-unable to use such tools or people who want it just works with only intuitive
-tuning or default values, at least some safeguards are required.
+Yes that saves some bytes.  Would bitfields be preferable or are bools sufficient?
 
-For this, we provide speed limit.  Using this, the client can specify up to how
-much amount of memory the action is allowed to be applied within specific time
-duration.  Followup question is, to which memory regions should the action
-applied within the limit?  We implement a simple regions prioritization
-mechanism for each action and make DAMOS to apply the action to high priority
-regions first.  It also allows users tune the prioritization by giving
-different weights to region's size, access frequency, and age.
+> 
+> > +     phy_interface_t phy_mode;
+> > +     u32 sd_sgpio;
+> > +};
+> 
+> > +static inline void spx5_rmw(u32 val, u32 mask, struct sparx5 *sparx5,
+> > +                         int id, int tinst, int tcnt,
+> > +                         int gbase, int ginst, int gcnt, int gwidth,
+> > +                         int raddr, int rinst, int rcnt, int rwidth)
+> > +{
+> > +     u32 nval;
+> > +     void __iomem *addr =
+> > +             spx5_addr(sparx5->regs, id, tinst, tcnt,
+> 
+> Why try to initialize inline when it results in weird looking code and
+> no saved lines?
 
-Another problem of current version of DAMOS is that it should manually turned
-on and off, by clients.  Though DAMON is very lightweight, someone would not
-convinced.  For such cases, we implement watermarks-based automatic schemes
-activation.  It allows the clients configuring the metric of their interest and
-three watermarks.  If the metric is higher than the high watermark or lower
-than the low watermark, the scheme is deactivated.  If the metric is lower than
-the mid watermark but higher than the low watermark, the scheme is activated.
+Hmm, I had not really noticed that... I will just use the spx5_addr call in both places.
 
-For example, in case of the proactive reclamation, the metric could be amount
-of free memory.  Using the watermarks, the sysadmin would be able to set it do
-nothing at all when free memory is enough, but starts proactive reclamation
-under light memory pressure.  Then, if it doesn't works well enough and the
-free memory becomes lower than the low watermark, we fall back to the LRU-based
-page-granularity reclamation.
+> 
+> > +                       gbase, ginst, gcnt, gwidth,
+> > +                       raddr, rinst, rcnt, rwidth);
+> 
+> Not to mention that you end up with no new line after variable
+> declaration.
 
-Evaluation
-==========
+Yes.  I will add an empty line.
 
-We measured system memory usage and runtime of 24 realistic workloads in
-PARSEC3 and SPLASH-2X benchmark suites on my QEMU/KVM based virtual machine.
-The virtual machine runs on an i3.metal AWS instance and has 130GiB memory.  It
-utilizes 4 GiB zram as its swap device.  We do the measurement 5 times and use
-averages.  We also measured the CPU consumption of DAMON_RECLAIM.
-
-Compared to v5.12, DAMON_RECLAIM achieves 33% memory saving with only 2%
-performance degradation.  For this, DAMON_RECLAIM consumed only 5.72% of single
-CPU time.  Among the CPU consumption, only about 1.448% of single CPU time is
-expected to be used for the monitoring.
-
-Baseline and Complete Git Tree
-==============================
-
-The patches are based on the v5.12 plus DAMON patchset[1] plus DAMOS
-patchset[7] plus physical address space support patchset[6].  You can also
-clone the complete git tree from:
-
-    $ git clone git://github.com/sjp38/linux -b damon_reclaim/rfc/v1
-
-The web is also available:
-https://github.com/sjp38/linux/releases/tag/damon_reclaim/rfc/v1
-
-Development Trees
------------------
-
-There are a couple of trees for entire DAMON patchset series and
-features for future release.
-
-- For latest release: https://github.com/sjp38/linux/tree/damon/master
-- For next release: https://github.com/sjp38/linux/tree/damon/next
-
-Long-term Support Trees
------------------------
-
-For people who want to test DAMON patchset series but using LTS kernels, there
-are another couple of trees based on two latest LTS kernels respectively and
-containing the 'damon/master' backports.
-
-- For v5.4.y: https://github.com/sjp38/linux/tree/damon/for-v5.4.y
-- For v5.10.y: https://github.com/sjp38/linux/tree/damon/for-v5.10.y
-
-Sequence Of Patches
-===================
-
-The first patch makes DAMOS users able to described pages to be paged out cold
-via physical address.  Following four patches (patches 2-5) implement the speed
-limit.  Next four patches (patches 6-9) implement the memory regions
-prioritization within the limit.  Then, three patches (patches 10-12)
-implementing the watermarks-based schemes activation follow.  Finally, the 13th
-patch implements the DAMON-based reclamation on top of DAMOS.
+> 
+> > +     nval = readl(addr);
+> > +     nval = (nval & ~mask) | (val & mask);
+> > +     writel(nval, addr);
+> > +}
 
 
-[1] https://lore.kernel.org/linux-mm/20210520075629.4332-1-sj38.park@gmail.com/
-[2] https://research.google/pubs/pub48551/
-[3] https://lwn.net/Articles/787611/
-[4] https://damonitor.github.io
-[5] https://damonitor.github.io/doc/html/latest/vm/damon/eval.html
-[6] https://lore.kernel.org/linux-mm/20201216094221.11898-1-sjpark@amazon.com/
-[7] https://lore.kernel.org/linux-mm/20201216084404.23183-1-sjpark@amazon.com/
-[8] https://github.com/awslabs/damoos
-[9] https://www.kernel.org/doc/html/latest/vm/free_page_reporting.html
-
-SeongJae Park (13):
-  mm/damon/paddr: Support the pageout scheme
-  mm/damon/damos: Make schemes aggressiveness controllable
-  damon/core/schemes: Skip already charged targets and regions
-  mm/damon/dbgfs: Support schemes speed limit
-  mm/damon/selftests: Support schemes speed limit
-  mm/damon/schemes: Prioritize regions within speed limit
-  mm/damon/vaddr,paddr: Support pageout prioritization
-  mm/damon/dbgfs: Support prioritization weights
-  tools/selftests/damon: Update for regions prioritization of schemes
-  mm/damon/schemes: Activate schemes based on a watermarks mechanism
-  mm/damon/dbgfs: Support watermarks
-  selftests/damon: Support watermarks
-  mm/damon: Introduce DAMON-based reclamation
-
- include/linux/damon.h                         | 118 ++++++++-
- mm/damon/Kconfig                              | 128 ++++++++++
- mm/damon/Makefile                             |   1 +
- mm/damon/core.c                               | 215 +++++++++++++++-
- mm/damon/dbgfs.c                              |  45 +++-
- mm/damon/paddr.c                              |  52 +++-
- mm/damon/prmtv-common.c                       |  48 +++-
- mm/damon/prmtv-common.h                       |   5 +
- mm/damon/reclaim.c                            | 230 ++++++++++++++++++
- mm/damon/vaddr.c                              |  15 ++
- .../testing/selftests/damon/debugfs_attrs.sh  |   4 +-
- 11 files changed, 834 insertions(+), 27 deletions(-)
- create mode 100644 mm/damon/reclaim.c
+Thanks!
 
 -- 
-2.17.1
+BR
+Steen
+
+-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+steen.hegelund@microchip.com
+
 
