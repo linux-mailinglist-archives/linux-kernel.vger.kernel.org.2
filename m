@@ -2,35 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C5BD39622F
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 16:50:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C091395D76
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 15:44:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231751AbhEaOwM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 10:52:12 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37788 "EHLO mail.kernel.org"
+        id S230493AbhEaNqU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 09:46:20 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39238 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232904AbhEaOCd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 10:02:33 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 00EBA6194A;
-        Mon, 31 May 2021 13:37:17 +0000 (UTC)
+        id S232357AbhEaNb1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 09:31:27 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D02FD61431;
+        Mon, 31 May 2021 13:23:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1622468238;
-        bh=Zt6Pp5HxrU1gutSyThckYFVpnZlW4WQGnUxtU1WBmHc=;
+        s=korg; t=1622467419;
+        bh=7xllVGKvYSZm+yVmXUB3RsUuwf6MEtLyT8D5zyXXl2g=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=kmOmvJoME91SpPEItPwwba5fQAYpMO3qfLduyb0ogEc48YAFzG89Mh8RRRvNOOn+L
-         fykcBNQM0rNWZVByzrVH2hoU4gjEpNaY5fc0l8YB+4hlLs9Fm2ztj3Ta3L4VWOBV9S
-         t/Rz3Pg+1nV8U0pYIZ11pLs6/JyC2xbk9DQrPCdw=
+        b=aVmKYDSHOYpRVy4rldzsoPN86ltr+4Gy/cCAK/phyrUbZu8v6DhJOsjTEXL8vHQLc
+         xK+JOHAkaYMrt/qF/vkB1KfSG1wMwgkATuWTxwKFWZy/nXZY+UeP/fQJq64n35hQF8
+         oMxIdROkb/HoNKeNL6bWXBeqWnT/VkT4pb8Ile7M=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Kalle Valo <kvalo@codeaurora.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 169/252] brcmfmac: properly check for bus register errors
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Piotr Krysiuk <piotras@gmail.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Ovidiu Panait <ovidiu.panait@windriver.com>
+Subject: [PATCH 4.19 058/116] bpf: No need to simulate speculative domain for immediates
 Date:   Mon, 31 May 2021 15:13:54 +0200
-Message-Id: <20210531130703.748375774@linuxfoundation.org>
+Message-Id: <20210531130642.138479899@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210531130657.971257589@linuxfoundation.org>
-References: <20210531130657.971257589@linuxfoundation.org>
+In-Reply-To: <20210531130640.131924542@linuxfoundation.org>
+References: <20210531130640.131924542@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,197 +41,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+From: Daniel Borkmann <daniel@iogearbox.net>
 
-[ Upstream commit 419b4a142a7ece36cebcd434f8ce2af59ef94b85 ]
+commit a7036191277f9fa68d92f2071ddc38c09b1e5ee5 upstream
 
-The brcmfmac driver ignores any errors on initialization with the
-different busses by deferring the initialization to a workqueue and
-ignoring all possible errors that might happen.  Fix up all of this by
-only allowing the module to load if all bus registering worked properly.
+In 801c6058d14a ("bpf: Fix leakage of uninitialized bpf stack under
+speculation") we replaced masking logic with direct loads of immediates
+if the register is a known constant. Given in this case we do not apply
+any masking, there is also no reason for the operation to be truncated
+under the speculative domain.
 
-Cc: Kalle Valo <kvalo@codeaurora.org>
-Link: https://lore.kernel.org/r/20210503115736.2104747-70-gregkh@linuxfoundation.org
+Therefore, there is also zero reason for the verifier to branch-off and
+simulate this case, it only needs to do it for unknown but bounded scalars.
+As a side-effect, this also enables few test cases that were previously
+rejected due to simulation under zero truncation.
+
+Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
+Reviewed-by: Piotr Krysiuk <piotras@gmail.com>
+Acked-by: Alexei Starovoitov <ast@kernel.org>
+Signed-off-by: Ovidiu Panait <ovidiu.panait@windriver.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- .../broadcom/brcm80211/brcmfmac/bcmsdh.c      |  8 +---
- .../broadcom/brcm80211/brcmfmac/bus.h         | 19 ++++++++-
- .../broadcom/brcm80211/brcmfmac/core.c        | 42 ++++++++-----------
- .../broadcom/brcm80211/brcmfmac/pcie.c        |  9 +---
- .../broadcom/brcm80211/brcmfmac/pcie.h        |  5 ---
- .../broadcom/brcm80211/brcmfmac/usb.c         |  4 +-
- 6 files changed, 41 insertions(+), 46 deletions(-)
+ kernel/bpf/verifier.c |    6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/bcmsdh.c b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/bcmsdh.c
-index f9ebb98b0e3c..b6d0bc73923f 100644
---- a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/bcmsdh.c
-+++ b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/bcmsdh.c
-@@ -1217,13 +1217,9 @@ static struct sdio_driver brcmf_sdmmc_driver = {
- 	},
- };
+--- a/kernel/bpf/verifier.c
++++ b/kernel/bpf/verifier.c
+@@ -2874,8 +2874,12 @@ do_sim:
+ 	/* If we're in commit phase, we're done here given we already
+ 	 * pushed the truncated dst_reg into the speculative verification
+ 	 * stack.
++	 *
++	 * Also, when register is a known constant, we rewrite register-based
++	 * operation to immediate-based, and thus do not need masking (and as
++	 * a consequence, do not need to simulate the zero-truncation either).
+ 	 */
+-	if (commit_window)
++	if (commit_window || off_is_imm)
+ 		return 0;
  
--void brcmf_sdio_register(void)
-+int brcmf_sdio_register(void)
- {
--	int ret;
--
--	ret = sdio_register_driver(&brcmf_sdmmc_driver);
--	if (ret)
--		brcmf_err("sdio_register_driver failed: %d\n", ret);
-+	return sdio_register_driver(&brcmf_sdmmc_driver);
- }
- 
- void brcmf_sdio_exit(void)
-diff --git a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/bus.h b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/bus.h
-index 08f9d47f2e5c..3f5da3bb6aa5 100644
---- a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/bus.h
-+++ b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/bus.h
-@@ -275,11 +275,26 @@ void brcmf_bus_add_txhdrlen(struct device *dev, uint len);
- 
- #ifdef CONFIG_BRCMFMAC_SDIO
- void brcmf_sdio_exit(void);
--void brcmf_sdio_register(void);
-+int brcmf_sdio_register(void);
-+#else
-+static inline void brcmf_sdio_exit(void) { }
-+static inline int brcmf_sdio_register(void) { return 0; }
- #endif
-+
- #ifdef CONFIG_BRCMFMAC_USB
- void brcmf_usb_exit(void);
--void brcmf_usb_register(void);
-+int brcmf_usb_register(void);
-+#else
-+static inline void brcmf_usb_exit(void) { }
-+static inline int brcmf_usb_register(void) { return 0; }
-+#endif
-+
-+#ifdef CONFIG_BRCMFMAC_PCIE
-+void brcmf_pcie_exit(void);
-+int brcmf_pcie_register(void);
-+#else
-+static inline void brcmf_pcie_exit(void) { }
-+static inline int brcmf_pcie_register(void) { return 0; }
- #endif
- 
- #endif /* BRCMFMAC_BUS_H */
-diff --git a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/core.c b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/core.c
-index 3dd28f5fef19..61039538a15b 100644
---- a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/core.c
-+++ b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/core.c
-@@ -1518,40 +1518,34 @@ void brcmf_bus_change_state(struct brcmf_bus *bus, enum brcmf_bus_state state)
- 	}
- }
- 
--static void brcmf_driver_register(struct work_struct *work)
--{
--#ifdef CONFIG_BRCMFMAC_SDIO
--	brcmf_sdio_register();
--#endif
--#ifdef CONFIG_BRCMFMAC_USB
--	brcmf_usb_register();
--#endif
--#ifdef CONFIG_BRCMFMAC_PCIE
--	brcmf_pcie_register();
--#endif
--}
--static DECLARE_WORK(brcmf_driver_work, brcmf_driver_register);
--
- int __init brcmf_core_init(void)
- {
--	if (!schedule_work(&brcmf_driver_work))
--		return -EBUSY;
-+	int err;
- 
-+	err = brcmf_sdio_register();
-+	if (err)
-+		return err;
-+
-+	err = brcmf_usb_register();
-+	if (err)
-+		goto error_usb_register;
-+
-+	err = brcmf_pcie_register();
-+	if (err)
-+		goto error_pcie_register;
- 	return 0;
-+
-+error_pcie_register:
-+	brcmf_usb_exit();
-+error_usb_register:
-+	brcmf_sdio_exit();
-+	return err;
- }
- 
- void __exit brcmf_core_exit(void)
- {
--	cancel_work_sync(&brcmf_driver_work);
--
--#ifdef CONFIG_BRCMFMAC_SDIO
- 	brcmf_sdio_exit();
--#endif
--#ifdef CONFIG_BRCMFMAC_USB
- 	brcmf_usb_exit();
--#endif
--#ifdef CONFIG_BRCMFMAC_PCIE
- 	brcmf_pcie_exit();
--#endif
- }
- 
-diff --git a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/pcie.c b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/pcie.c
-index d8db0dbcfe09..603aff421e38 100644
---- a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/pcie.c
-+++ b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/pcie.c
-@@ -2138,15 +2138,10 @@ static struct pci_driver brcmf_pciedrvr = {
- };
- 
- 
--void brcmf_pcie_register(void)
-+int brcmf_pcie_register(void)
- {
--	int err;
--
- 	brcmf_dbg(PCIE, "Enter\n");
--	err = pci_register_driver(&brcmf_pciedrvr);
--	if (err)
--		brcmf_err(NULL, "PCIE driver registration failed, err=%d\n",
--			  err);
-+	return pci_register_driver(&brcmf_pciedrvr);
- }
- 
- 
-diff --git a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/pcie.h b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/pcie.h
-index d026401d2001..8e6c227e8315 100644
---- a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/pcie.h
-+++ b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/pcie.h
-@@ -11,9 +11,4 @@ struct brcmf_pciedev {
- 	struct brcmf_pciedev_info *devinfo;
- };
- 
--
--void brcmf_pcie_exit(void);
--void brcmf_pcie_register(void);
--
--
- #endif /* BRCMFMAC_PCIE_H */
-diff --git a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/usb.c b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/usb.c
-index d2a803fc8ac6..9fb68c2dc7e3 100644
---- a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/usb.c
-+++ b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/usb.c
-@@ -1584,8 +1584,8 @@ void brcmf_usb_exit(void)
- 	usb_deregister(&brcmf_usbdrvr);
- }
- 
--void brcmf_usb_register(void)
-+int brcmf_usb_register(void)
- {
- 	brcmf_dbg(USB, "Enter\n");
--	usb_register(&brcmf_usbdrvr);
-+	return usb_register(&brcmf_usbdrvr);
- }
--- 
-2.30.2
-
+ 	/* Simulate and find potential out-of-bounds access under
 
 
