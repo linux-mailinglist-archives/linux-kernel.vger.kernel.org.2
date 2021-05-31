@@ -2,105 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 28969395763
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 10:49:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A7E7395765
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 10:50:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230471AbhEaIv0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 04:51:26 -0400
-Received: from mga18.intel.com ([134.134.136.126]:50519 "EHLO mga18.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230107AbhEaIvY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 04:51:24 -0400
-IronPort-SDR: cDv+ARt0tgNV/Bb0P8JMemg8Qv7NnmM8SLYM2qmMl1yaYkc7FavzEavadPYBc3i1zqSTEBXt5T
- TvwRHQXwz7Vg==
-X-IronPort-AV: E=McAfee;i="6200,9189,10000"; a="190686041"
-X-IronPort-AV: E=Sophos;i="5.83,236,1616482800"; 
-   d="scan'208";a="190686041"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 May 2021 01:49:44 -0700
-IronPort-SDR: Ge5fQOsDibYVgBPzEQW8PDC7z10sMVYxxTJSgayoFfvc3JePxRdwnjKxKLY2P0IEhTC7TGwkmW
- 2GXxzpK7y5IQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.83,236,1616482800"; 
-   d="scan'208";a="549351536"
-Received: from kuha.fi.intel.com ([10.237.72.162])
-  by fmsmga001.fm.intel.com with SMTP; 31 May 2021 01:49:41 -0700
-Received: by kuha.fi.intel.com (sSMTP sendmail emulation); Mon, 31 May 2021 11:49:40 +0300
-Date:   Mon, 31 May 2021 11:49:40 +0300
-From:   Heikki Krogerus <heikki.krogerus@linux.intel.com>
-To:     Kyle Tso <kyletso@google.com>
-Cc:     linux@roeck-us.net, gregkh@linuxfoundation.org, robh+dt@kernel.org,
-        badhri@google.com, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
-Subject: Re: [PATCH 1/3] usb: typec: tcpm: Correct the responses in SVDM
- Version 2.0 DFP
-Message-ID: <YLSjJFAkm92VKoJh@kuha.fi.intel.com>
-References: <20210527084419.4164369-1-kyletso@google.com>
- <20210527084419.4164369-2-kyletso@google.com>
+        id S230397AbhEaIwX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 04:52:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52558 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230143AbhEaIwL (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 04:52:11 -0400
+Received: from mail-qk1-x72a.google.com (mail-qk1-x72a.google.com [IPv6:2607:f8b0:4864:20::72a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66017C061574
+        for <linux-kernel@vger.kernel.org>; Mon, 31 May 2021 01:50:31 -0700 (PDT)
+Received: by mail-qk1-x72a.google.com with SMTP id h20so10554133qko.11
+        for <linux-kernel@vger.kernel.org>; Mon, 31 May 2021 01:50:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=x32hKsSaoJx8LJdG4ppTOfzr/Vq7FJJQzpMa1jFi8JE=;
+        b=BbcftNrl3xfTMBpG3BVoT8S6UO7/P6wgQnca69NnKDi+0J5VDbQAGToas1XH0+6oKo
+         9LBlNOsoLO8vWCYu8094HsvbN+h4trXaJs7x6YMQc4LzDgedp+EDjmwZprVho4Xnotu3
+         vpNJXaRAv6XGv4Qqupiz19UUOYVxKpIgzoGha1JaGAWT4/ZBURRWOFBAs3KUgbEC1LX9
+         0RsPMatFOwAQ3b2vfS3qED2LlRwObfy5c3IWwnhOv/n9EFAlLLoiwvnGOHbkfjHr53GN
+         mjSk7IS0I8efW3iV+6zZWP4UuOnukPIdxrTixTea7m2ehntNsqCX/8h9NSN8jnZUqUam
+         Tzrw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=x32hKsSaoJx8LJdG4ppTOfzr/Vq7FJJQzpMa1jFi8JE=;
+        b=jx74DDeBU61HQONJ3RDXjdgyjzbwr+Py6+c7+YHOW6nN5bX3X+9fbsuzDWHSpAD5TU
+         UDNcHRZd7nbOn77V40i6JtEnOLGlaZW+Fql87yPIgdzNNH+7RnsIz9sivjqWQwY3HlhE
+         dO5/CxWBc4eSaqbiViPwf7EwVP1bFSkC4phjTjW+Lmr7OYSDiz6588jDlHRu8/VuzXdi
+         3eJHuwQu9uFHJjSPW96vuT5SzZdqAYepMvoTFgsac6twLddrHF1WvhOngzfpW3Omi+T5
+         S2W+E/Q5WDnXPYZT1qX/+Ll4APq6Mxw1Ei3ZsiWNBCvUMzcF9KQdw0prCBKMqBn4VdHE
+         A2Nw==
+X-Gm-Message-State: AOAM533PVjz1KVxqEo0wT8/V20RFZcN32kRVGpZA+73feSpd4KX1/Sni
+        zwrS22VKHuMZ3BuxKMCtJvtQU+/yAQI543prNlGMlA==
+X-Google-Smtp-Source: ABdhPJx2ZlewDsJ7aT2KkCRf5QVLASI81jS72AgkJDKnBiZXBNWfy0nYpAaHVhowMP1T2cfZ/to5HWCuBZs60hcq5Kk=
+X-Received: by 2002:a37:4694:: with SMTP id t142mr15650398qka.265.1622451030253;
+ Mon, 31 May 2021 01:50:30 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210527084419.4164369-2-kyletso@google.com>
+References: <000000000000b808c705c345b35d@google.com> <0000000000009dfd7c05c3463b32@google.com>
+ <CACT4Y+ZkGw8GDs9vYzs5t7iBba+5ZRKmTnp3zXAnkOsmyWp6Rw@mail.gmail.com>
+ <9B8B972A-EC9F-4806-9897-41581578646A@gmail.com> <ea23ca6b-0893-1303-524c-a7e07d909931@i-love.sakura.ne.jp>
+In-Reply-To: <ea23ca6b-0893-1303-524c-a7e07d909931@i-love.sakura.ne.jp>
+From:   Dmitry Vyukov <dvyukov@google.com>
+Date:   Mon, 31 May 2021 10:50:18 +0200
+Message-ID: <CACT4Y+bnaR9WfAWEE=fmAgLD088sxPbJqsjnX8RDF3jzGRpPYA@mail.gmail.com>
+Subject: Re: [syzbot] unexpected kernel reboot (5)
+To:     Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
+Cc:     "joey.jiaojg" <joey.jiaojg@gmail.com>,
+        syzbot <syzbot+6fb8ff5211d3e821398f@syzkaller.appspotmail.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 27, 2021 at 04:44:17PM +0800, Kyle Tso wrote:
-> In USB PD Spec Rev 3.1 Ver 1.0, section "6.12.5 Applicability of
-> Structured VDM Commands", DFP is allowed and recommended to respond to
-> Discovery Identity with ACK. And in section "6.4.4.2.5.1 Commands other
-> than Attention", NAK should be returned only when receiving Messages
-> with invalid fields, Messages in wrong situation, or unrecognize
-> Messages.
-> 
-> Still keep the original design for SVDM Version 1.0 for backward
-> compatibilities.
-> 
-> Fixes: 193a68011fdc ("staging: typec: tcpm: Respond to Discover Identity commands")
-> Signed-off-by: Kyle Tso <kyletso@google.com>
+On Thu, May 27, 2021 at 3:17 PM Tetsuo Handa
+<penguin-kernel@i-love.sakura.ne.jp> wrote:
+>
+> On 2021/05/27 21:15, joey.jiaojg wrote:
+> > I tested on qemu and Android device, not found the reboot.
+> > Any kernel version different?
+>
+> Kernel version needs to be v5.11-rc5+ because this reproducer
+> depends on commit f2d6c2708bd8 ("kernfs: wire up ->splice_read
+> and ->splice_write"). Also, this reproducer depends on contents
+> of /sys/power/state file.
+>
+> ----------
+> #include <sys/types.h>
+> #include <sys/stat.h>
+> #include <fcntl.h>
+> #include <sys/sendfile.h>
+>
+> int main(int argc, char *argv[])
+> {
+>         const int fd = open("/sys/power/state", O_RDWR);
+>         off_t offset = 7;
+>
+>         /* Assumes that 3 bytes from offset 7 in /sys/power/state are "mem". */
+>         sendfile(fd, fd, &offset, 3);
+>         return 0;
+> }
+> ----------
+>
+> On 2021/05/27 21:19, joey.jiaojg wrote:
+> > Or we can add glob code like
+> > /sys/**/*:-/sys/power/state to exclude.
+>
+> Well, since /sys/ includes mount points for other filesystems such as
+> securityfs ( /sys/kernel/security/ ), debugfs ( /sys/kernel/debug/ )
+> and cgroup ( /sys/fs/cgroup/ ), just excluding this specific file is not
+> sufficient. I think we have to start from removing glob["/sys/**/*"] .
 
-Acked-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
+FTR, Joey is working on support for excluding specific patterns from globs:
+https://github.com/google/syzkaller/pull/2602
 
-> ---
->  drivers/usb/typec/tcpm/tcpm.c | 14 ++++++++++----
->  1 file changed, 10 insertions(+), 4 deletions(-)
-> 
-> diff --git a/drivers/usb/typec/tcpm/tcpm.c b/drivers/usb/typec/tcpm/tcpm.c
-> index 9ce8c9af4da5..a1bf0dc5babf 100644
-> --- a/drivers/usb/typec/tcpm/tcpm.c
-> +++ b/drivers/usb/typec/tcpm/tcpm.c
-> @@ -1547,19 +1547,25 @@ static int tcpm_pd_svdm(struct tcpm_port *port, struct typec_altmode *adev,
->  			if (PD_VDO_VID(p[0]) != USB_SID_PD)
->  				break;
->  
-> -			if (PD_VDO_SVDM_VER(p[0]) < svdm_version)
-> +			if (PD_VDO_SVDM_VER(p[0]) < svdm_version) {
->  				typec_partner_set_svdm_version(port->partner,
->  							       PD_VDO_SVDM_VER(p[0]));
-> +				svdm_version = PD_VDO_SVDM_VER(p[0]);
-> +			}
->  
->  			tcpm_ams_start(port, DISCOVER_IDENTITY);
-> -			/* 6.4.4.3.1: Only respond as UFP (device) */
-> -			if (port->data_role == TYPEC_DEVICE &&
-> +			/*
-> +			 * PD2.0 Spec 6.10.3: respond with NAK as DFP (data host)
-> +			 * PD3.1 Spec 6.4.4.2.5.1: respond with NAK if "invalid field" or
-> +			 * "wrong configuation" or "Unrecognized"
-> +			 */
-> +			if ((port->data_role == TYPEC_DEVICE || svdm_version >= SVDM_VER_2_0) &&
->  			    port->nr_snk_vdo) {
->  				/*
->  				 * Product Type DFP and Connector Type are not defined in SVDM
->  				 * version 1.0 and shall be set to zero.
->  				 */
-> -				if (typec_get_negotiated_svdm_version(typec) < SVDM_VER_2_0)
-> +				if (svdm_version < SVDM_VER_2_0)
->  					response[1] = port->snk_vdo[0] & ~IDH_DFP_MASK
->  						      & ~IDH_CONN_MASK;
->  				else
-> -- 
-> 2.31.1.818.g46aad6cb9e-goog
-
--- 
-heikki
+I agree /sys/**/* may be too broad. On my machine /sys contains 82501
+files. But it's also hard for me to tell what exactly should be
+included/excluded. Do we know any definitely bad files/dirs?
+Or alternatively, we can just wait for more reports from syzbot when
+it opens something we don't want it to open. The benefit of working on
+testing :)
