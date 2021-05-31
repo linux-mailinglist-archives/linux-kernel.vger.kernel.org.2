@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B582395DEF
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 15:50:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C017395C33
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 15:28:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231902AbhEaNwD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 09:52:03 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39134 "EHLO mail.kernel.org"
+        id S231579AbhEaN35 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 09:29:57 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55564 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232102AbhEaNfZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 09:35:25 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0224E6144A;
-        Mon, 31 May 2021 13:25:22 +0000 (UTC)
+        id S231994AbhEaNWk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 09:22:40 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DF4AB613AF;
+        Mon, 31 May 2021 13:19:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1622467523;
-        bh=t38r1m1yqrG19lywPpcm2PM0Dbu7AjPD3TxcAUQw+5M=;
+        s=korg; t=1622467179;
+        bh=Eqktl7Cb1Ni60dTz+yxy23YCwdyOoNqQLBe0o/zbO7A=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=GfO/gHabSabHKrGRgJd4ge/n228VaREZTPLpggEIvwicy+6VAmv0TGw4hpicjlBMy
-         SnkPJG9hEJBfHAUgEJ20D+MnTVWzKq09rfCPEknlTzmgEZM/cV8X4CmZ5i529UKqD+
-         RiMAIb+FxY3EtFiMrZFwM3KATJ3UR2GpfQlI4nUg=
+        b=NfC4aEXnOWcj6BNb0YsYJglw9qXSZx6hxuvacxLLJHdjCUegF2tTYuvtorFtEYEQq
+         eM8SZGOwdKyC8AwPjGg34CkSY8Iy5/1DgBnwEmVz814HHITfKB00ZF2JXjycSSKJ9M
+         zB57m4clQm3fBiML4aOIslUHvGIw6vkmgq4kdtcg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, DENG Qingfang <dqfext@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
+        stable@vger.kernel.org, Jon Maloy <jmaloy@redhat.com>,
+        Tung Nguyen <tung.q.nguyen@dektech.com.au>,
+        Hoang Le <hoang.h.le@dektech.com.au>,
         "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 4.19 070/116] net: dsa: mt7530: fix VLAN traffic leaks
+Subject: [PATCH 4.9 33/66] Revert "net:tipc: Fix a double free in tipc_sk_mcast_rcv"
 Date:   Mon, 31 May 2021 15:14:06 +0200
-Message-Id: <20210531130642.520516690@linuxfoundation.org>
+Message-Id: <20210531130637.312994674@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210531130640.131924542@linuxfoundation.org>
-References: <20210531130640.131924542@linuxfoundation.org>
+In-Reply-To: <20210531130636.254683895@linuxfoundation.org>
+References: <20210531130636.254683895@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,49 +41,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: DENG Qingfang <dqfext@gmail.com>
+From: Hoang Le <hoang.h.le@dektech.com.au>
 
-commit 474a2ddaa192777522a7499784f1d60691cd831a upstream.
+commit 75016891357a628d2b8acc09e2b9b2576c18d318 upstream.
 
-PCR_MATRIX field was set to all 1's when VLAN filtering is enabled, but
-was not reset when it is disabled, which may cause traffic leaks:
+This reverts commit 6bf24dc0cc0cc43b29ba344b66d78590e687e046.
+Above fix is not correct and caused memory leak issue.
 
-	ip link add br0 type bridge vlan_filtering 1
-	ip link add br1 type bridge vlan_filtering 1
-	ip link set swp0 master br0
-	ip link set swp1 master br1
-	ip link set br0 type bridge vlan_filtering 0
-	ip link set br1 type bridge vlan_filtering 0
-	# traffic in br0 and br1 will start leaking to each other
-
-As port_bridge_{add,del} have set up PCR_MATRIX properly, remove the
-PCR_MATRIX write from mt7530_port_set_vlan_aware.
-
-Fixes: 83163f7dca56 ("net: dsa: mediatek: add VLAN support for MT7530")
-Signed-off-by: DENG Qingfang <dqfext@gmail.com>
-Reviewed-by: Florian Fainelli <f.fainelli@gmail.com>
+Fixes: 6bf24dc0cc0c ("net:tipc: Fix a double free in tipc_sk_mcast_rcv")
+Acked-by: Jon Maloy <jmaloy@redhat.com>
+Acked-by: Tung Nguyen <tung.q.nguyen@dektech.com.au>
+Signed-off-by: Hoang Le <hoang.h.le@dektech.com.au>
 Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/dsa/mt7530.c |    8 --------
- 1 file changed, 8 deletions(-)
+ net/tipc/socket.c |    5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
---- a/drivers/net/dsa/mt7530.c
-+++ b/drivers/net/dsa/mt7530.c
-@@ -851,14 +851,6 @@ mt7530_port_set_vlan_aware(struct dsa_sw
- {
- 	struct mt7530_priv *priv = ds->priv;
- 
--	/* The real fabric path would be decided on the membership in the
--	 * entry of VLAN table. PCR_MATRIX set up here with ALL_MEMBERS
--	 * means potential VLAN can be consisting of certain subset of all
--	 * ports.
--	 */
--	mt7530_rmw(priv, MT7530_PCR_P(port),
--		   PCR_MATRIX_MASK, PCR_MATRIX(MT7530_ALL_MEMBERS));
--
- 	/* Trapped into security mode allows packet forwarding through VLAN
- 	 * table lookup. CPU port is set to fallback mode to let untagged
- 	 * frames pass through.
+--- a/net/tipc/socket.c
++++ b/net/tipc/socket.c
+@@ -741,7 +741,10 @@ void tipc_sk_mcast_rcv(struct net *net,
+ 		spin_lock_bh(&inputq->lock);
+ 		if (skb_peek(arrvq) == skb) {
+ 			skb_queue_splice_tail_init(&tmpq, inputq);
+-			__skb_dequeue(arrvq);
++			/* Decrease the skb's refcnt as increasing in the
++			 * function tipc_skb_peek
++			 */
++			kfree_skb(__skb_dequeue(arrvq));
+ 		}
+ 		spin_unlock_bh(&inputq->lock);
+ 		__skb_queue_purge(&tmpq);
 
 
