@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F5BD395C19
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 15:27:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 89A8F3963BC
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 17:31:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231935AbhEaN2X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 09:28:23 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55140 "EHLO mail.kernel.org"
+        id S234009AbhEaPcl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 11:32:41 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47634 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231949AbhEaNVs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 09:21:48 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 886D7613D7;
-        Mon, 31 May 2021 13:19:16 +0000 (UTC)
+        id S233617AbhEaOVR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 10:21:17 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 89534619B9;
+        Mon, 31 May 2021 13:44:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1622467157;
-        bh=MvJFFWkWQkinB1xG6V0udxxPs18hrtjOttKpB5EZfhE=;
+        s=korg; t=1622468674;
+        bh=gG6HC9ah17z0IQSAObJ8OUJHcUi6DQ8G3ViJkwYZNzc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=qIwOxwsuiC+ln6bHp182wpIsZLAks1G4b8r+pgLJrt9Mhist891kTxbJeN5KseD9Y
-         EwXgZm7CE6DO0yh6Gie/BXG5fntKQ1YvyTW1vZ/Oxj8U/J1WizommWmgjbvfhS7Sfl
-         PkutjRtqMk0Pr83nmrpiU5ebcVAR/AUih9jMBO0c=
+        b=Ew75sL0wO3DbyMY+9ySNo9yAkho3hQd4BQMKeHLf3/bAi/l/TIRvUi24kZGqM2999
+         /uqQ4qxrnkhPfj7FabC2kj9Yn6GOcbW0toc8xkNV9fLPW6N5Sx8u2dZhvHyjUE0PXT
+         M407P7ROvqHpZBsgiL8b+9BnujYOtA1kQ7ksk4RA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Zolton Jheng <s6668c2t@gmail.com>,
-        Johan Hovold <johan@kernel.org>
-Subject: [PATCH 4.9 25/66] USB: serial: pl2303: add device id for ADLINK ND-6530 GC
+        stable@vger.kernel.org, Vladimir Oltean <vladimir.oltean@nxp.com>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: [PATCH 5.4 081/177] net: dsa: sja1105: error out on unsupported PHY mode
 Date:   Mon, 31 May 2021 15:13:58 +0200
-Message-Id: <20210531130637.066095345@linuxfoundation.org>
+Message-Id: <20210531130650.706192588@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210531130636.254683895@linuxfoundation.org>
-References: <20210531130636.254683895@linuxfoundation.org>
+In-Reply-To: <20210531130647.887605866@linuxfoundation.org>
+References: <20210531130647.887605866@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,41 +39,30 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zolton Jheng <s6668c2t@gmail.com>
+From: Vladimir Oltean <vladimir.oltean@nxp.com>
 
-commit f8e8c1b2f782e7391e8a1c25648ce756e2a7d481 upstream.
+commit 6729188d2646709941903052e4b78e1d82c239b9 upstream.
 
-This adds the device id for the ADLINK ND-6530 which is a PL2303GC based
-device.
+The driver continues probing when a port is configured for an
+unsupported PHY interface type, instead it should stop.
 
-Signed-off-by: Zolton Jheng <s6668c2t@gmail.com>
-Cc: stable@vger.kernel.org
-Signed-off-by: Johan Hovold <johan@kernel.org>
+Fixes: 8aa9ebccae87 ("net: dsa: Introduce driver for NXP SJA1105 5-port L2 switch")
+Signed-off-by: Vladimir Oltean <vladimir.oltean@nxp.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/usb/serial/pl2303.c |    1 +
- drivers/usb/serial/pl2303.h |    1 +
- 2 files changed, 2 insertions(+)
+ drivers/net/dsa/sja1105/sja1105_main.c |    1 +
+ 1 file changed, 1 insertion(+)
 
---- a/drivers/usb/serial/pl2303.c
-+++ b/drivers/usb/serial/pl2303.c
-@@ -102,6 +102,7 @@ static const struct usb_device_id id_tab
- 	{ USB_DEVICE(SONY_VENDOR_ID, SONY_QN3USB_PRODUCT_ID) },
- 	{ USB_DEVICE(SANWA_VENDOR_ID, SANWA_PRODUCT_ID) },
- 	{ USB_DEVICE(ADLINK_VENDOR_ID, ADLINK_ND6530_PRODUCT_ID) },
-+	{ USB_DEVICE(ADLINK_VENDOR_ID, ADLINK_ND6530GC_PRODUCT_ID) },
- 	{ USB_DEVICE(SMART_VENDOR_ID, SMART_PRODUCT_ID) },
- 	{ USB_DEVICE(AT_VENDOR_ID, AT_VTKIT3_PRODUCT_ID) },
- 	{ }					/* Terminating entry */
---- a/drivers/usb/serial/pl2303.h
-+++ b/drivers/usb/serial/pl2303.h
-@@ -156,6 +156,7 @@
- /* ADLINK ND-6530 RS232,RS485 and RS422 adapter */
- #define ADLINK_VENDOR_ID		0x0b63
- #define ADLINK_ND6530_PRODUCT_ID	0x6530
-+#define ADLINK_ND6530GC_PRODUCT_ID	0x653a
+--- a/drivers/net/dsa/sja1105/sja1105_main.c
++++ b/drivers/net/dsa/sja1105/sja1105_main.c
+@@ -178,6 +178,7 @@ static int sja1105_init_mii_settings(str
+ 		default:
+ 			dev_err(dev, "Unsupported PHY mode %s!\n",
+ 				phy_modes(ports[i].phy_mode));
++			return -EINVAL;
+ 		}
  
- /* SMART USB Serial Adapter */
- #define SMART_VENDOR_ID	0x0b8c
+ 		mii->phy_mac[i] = ports[i].role;
 
 
