@@ -2,132 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 38E023957A3
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 10:57:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7DA983957A5
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 10:58:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230478AbhEaI7V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 04:59:21 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:40124 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230504AbhEaI7O (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 04:59:14 -0400
-Received: from imap.suse.de (imap-alt.suse-dmz.suse.de [192.168.254.47])
-        (using TLSv1.2 with cipher ECDHE-ECDSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 5319E2191B;
-        Mon, 31 May 2021 08:57:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1622451454; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=zTUMNIX/EBaj+zqxRf98w8Ed/Wkv+kTFj4TwFaAJyCc=;
-        b=tI+aQk73rNx+k0Tv73VcHsA9PP3smyI+jBPtDdvMnc85sKf1Xzy52XTFKgrCeBRHcLY4td
-        m4M0sMHYKVKLotbObWqsugTTeqA4KXvnBN39aiwYUUwNB4xRrHPLhKEnLywDoxOq+aIe5R
-        7+UrgINCjGkJbsKSbVyn0heC/AYx2JA=
-Received: from imap3-int (imap-alt.suse-dmz.suse.de [192.168.254.47])
-        by imap.suse.de (Postfix) with ESMTP id B967A118DD;
-        Mon, 31 May 2021 08:57:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1622451453; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=zTUMNIX/EBaj+zqxRf98w8Ed/Wkv+kTFj4TwFaAJyCc=;
-        b=Ivr5m7+3RgqtLNLoGzSap+1kFLpXBDlwPVyUrlPsn2/v31C1l4CPyUd5QcLGEu/ehkjksy
-        NognUi9B5xoeUj/ExuC1J+NXxOz5SNMBGV/ajmhzO8kGuEtF035GNGNb9cnC/Z3yEL/LIZ
-        p/7TJZJQuSJVvhFvYVZ2ZwFnMt1S70Q=
-Received: from director2.suse.de ([192.168.254.72])
-        by imap3-int with ESMTPSA
-        id h53MKvyktGBORgAALh3uQQ
-        (envelope-from <nborisov@suse.com>); Mon, 31 May 2021 08:57:32 +0000
-Subject: Re: [syzbot] kernel BUG in assertfail
-To:     Dmitry Vyukov <dvyukov@google.com>
-Cc:     syzbot <syzbot+a6bf271c02e4fe66b4e4@syzkaller.appspotmail.com>,
-        Chris Mason <clm@fb.com>, dsterba@suse.com,
-        Josef Bacik <josef@toxicpanda.com>,
-        linux-btrfs@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>
-References: <000000000000f9136f05c39b84e4@google.com>
- <21666193-5ad7-2656-c50f-33637fabb082@suse.com>
- <CACT4Y+bqevMT3cD5sXjSv9QYM_7CwjYmN_Ne5LSj=3-REZ+oTw@mail.gmail.com>
-From:   Nikolay Borisov <nborisov@suse.com>
-Message-ID: <224f1e6a-76fa-6356-fe11-af480cee5cf2@suse.com>
-Date:   Mon, 31 May 2021 11:57:32 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        id S230288AbhEaI71 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 04:59:27 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47288 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231148AbhEaI7R (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 04:59:17 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BEA5160FDA;
+        Mon, 31 May 2021 08:57:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1622451458;
+        bh=S4X7tjaYcmG+zC4vTgFFWerXX/yrMd1EXDBKdDLGVGs=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=NMRcfzNTf5DJGgFY0NSMAIiYMFXcMYDaaT697DypVI0j9Hxccv4uEY8ac/xGzz+Qe
+         4Mis69v7uQT9bbwNRONLbe4L+EHFObCfMPKoskePUeOJUNfAOCZLXqUYrrHq7BCSCV
+         k+vgOLaaO9Uex42Y8t5GHG56ckGcRq4n8XYX4AFiL8qP7CFvpbycXG8kKMcbcDVlG/
+         7Vym5LmsBxTby8imdj4THUJLALlrzWXXV4igJmYA8sFQu9WEVf+rrZvxg1mbyJSVqN
+         ptlH5enhQUmghFUzum8tokhSMbp7ZQmI/hitv4cjZ/EwF+Lk2aY4dge8a3KbtxPS7C
+         LElmlJPcoyTpg==
+Date:   Mon, 31 May 2021 14:27:34 +0530
+From:   Vinod Koul <vkoul@kernel.org>
+To:     "yukuai (C)" <yukuai3@huawei.com>
+Cc:     mcoquelin.stm32@gmail.com, alexandre.torgue@foss.st.com,
+        michal.simek@xilinx.com, dmaengine@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org, yi.zhang@huawei.com
+Subject: Re: [PATCH 2/3] dmaengine: usb-dmac: Fix PM reference leak in
+ usb_dmac_probe()
+Message-ID: <YLSk/i6GmYWGEa9E@vkoul-mobl.Dlink>
+References: <20210517081826.1564698-1-yukuai3@huawei.com>
+ <20210517081826.1564698-3-yukuai3@huawei.com>
+ <YLRfZfnuxc0+n/LN@vkoul-mobl.Dlink>
+ <b6c340de-b0b5-6aad-94c0-03f062575b63@huawei.com>
 MIME-Version: 1.0
-In-Reply-To: <CACT4Y+bqevMT3cD5sXjSv9QYM_7CwjYmN_Ne5LSj=3-REZ+oTw@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-Authentication-Results: imap.suse.de;
-        none
-X-Spam-Level: **
-X-Spam-Score: 2.50
-X-Spamd-Result: default: False [2.50 / 100.00];
-         ARC_NA(0.00)[];
-         RCVD_VIA_SMTP_AUTH(0.00)[];
-         FROM_HAS_DN(0.00)[];
-         TO_DN_SOME(0.00)[];
-         TO_MATCH_ENVRCPT_ALL(0.00)[];
-         URI_HIDDEN_PATH(1.00)[https://syzkaller.appspot.com/x/.config?x=9f3da44a01882e99];
-         TAGGED_RCPT(0.00)[a6bf271c02e4fe66b4e4];
-         MIME_GOOD(-0.10)[text/plain];
-         DKIM_SIGNED(0.00)[suse.com:s=susede1];
-         RCPT_COUNT_SEVEN(0.00)[8];
-         RCVD_NO_TLS_LAST(0.10)[];
-         FROM_EQ_ENVFROM(0.00)[];
-         MIME_TRACE(0.00)[0:+];
-         RCVD_COUNT_TWO(0.00)[2];
-         MID_RHS_MATCH_FROM(0.00)[];
-         SUSPICIOUS_RECIPS(1.50)[]
-X-Spam-Flag: NO
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <b6c340de-b0b5-6aad-94c0-03f062575b63@huawei.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 31.05.21 г. 11:55, Dmitry Vyukov wrote:
-> On Mon, May 31, 2021 at 10:44 AM 'Nikolay Borisov' via syzkaller-bugs
-> <syzkaller-bugs@googlegroups.com> wrote:
->> On 31.05.21 г. 10:53, syzbot wrote:
->>> Hello,
->>>
->>> syzbot found the following issue on:
->>>
->>> HEAD commit:    1434a312 Merge branch 'for-5.13-fixes' of git://git.kernel..
->>> git tree:       upstream
->>> console output: https://syzkaller.appspot.com/x/log.txt?x=162843f3d00000
->>> kernel config:  https://syzkaller.appspot.com/x/.config?x=9f3da44a01882e99
->>> dashboard link: https://syzkaller.appspot.com/bug?extid=a6bf271c02e4fe66b4e4
->>>
->>> Unfortunately, I don't have any reproducer for this issue yet.
->>>
->>> IMPORTANT: if you fix the issue, please add the following tag to the commit:
->>> Reported-by: syzbot+a6bf271c02e4fe66b4e4@syzkaller.appspotmail.com
->>>
->>> assertion failed: !memcmp(fs_info->fs_devices->fsid, fs_info->super_copy->fsid, BTRFS_FSID_SIZE), in fs/btrfs/disk-io.c:3282
->>
->> This means a device contains a btrfs filesystem which has a different
->> FSID in its superblock than the fsid which all devices part of the same
->> fs_devices should have. This can happen in 2 ways - memory corruption
->> where either of the ->fsid member are corrupted or if there was a crash
->> while a filesystem's fsid was being changed. We need more context about
->> what the test did?
+On 31-05-21, 14:11, yukuai (C) wrote:
+> On 2021/05/31 12:00, Vinod Koul wrote:
+> > On 17-05-21, 16:18, Yu Kuai wrote:
+> > > pm_runtime_get_sync will increment pm usage counter even it failed.
+> > > Forgetting to putting operation will result in reference leak here.
+> > > Fix it by replacing it with pm_runtime_resume_and_get to keep usage
+> > > counter balanced.
+> > > 
+> > > Reported-by: Hulk Robot <hulkci@huawei.com>
+> > > Signed-off-by: Yu Kuai <yukuai3@huawei.com>
+> > > ---
+> > >   drivers/dma/sh/usb-dmac.c | 2 +-
+> > >   1 file changed, 1 insertion(+), 1 deletion(-)
+> > > 
+> > > diff --git a/drivers/dma/sh/usb-dmac.c b/drivers/dma/sh/usb-dmac.c
+> > > index 8f7ceb698226..2a6c8fd8854e 100644
+> > > --- a/drivers/dma/sh/usb-dmac.c
+> > > +++ b/drivers/dma/sh/usb-dmac.c
+> > > @@ -796,7 +796,7 @@ static int usb_dmac_probe(struct platform_device *pdev)
+> > >   	/* Enable runtime PM and initialize the device. */
+> > >   	pm_runtime_enable(&pdev->dev);
+> > > -	ret = pm_runtime_get_sync(&pdev->dev);
+> > > +	ret = pm_runtime_resume_and_get(&pdev->dev);
+> > 
+> > This does not seem to fix anything.. the below goto goes and disables
+> > the runtime_pm for this device and thus there wont be any leak
+> Hi,
 > 
-> Hi Nikolay,
-> 
-> From a semantic point of view we can consider that it just mounts /dev/random.
-> If syzbot comes up with a reproducer it will post it, but you seem to
-> already figure out what happened, so I assume you can write a unit
-> test for this.
-> 
+> If pm_runtime_get_sync() fails and increments the pm.usage_count
+> variable, pm_runtime_disable() does not reset the counter, and
+> we still need to decrement the usage count when pm_runtime_get_sync()
+> fails. Do I miss anthing?
 
-Well no, under normal circumstances this shouldn't trigger. So if syzbot
-is doing something stupid as mounting /dev/random then I don't see a
-problem here. The assert is there to catch inconsistencies during normal
-operation which doesn't seem to be the case here.
+Yes the rumtime_pm is disabled on failure here and the count would have
+no consequence...
 
+-- 
+~Vinod
