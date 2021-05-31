@@ -2,36 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AF344395CB5
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 15:35:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 95E87395BCE
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 15:23:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231919AbhEaNgt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 09:36:49 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33730 "EHLO mail.kernel.org"
+        id S231548AbhEaNYr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 09:24:47 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54898 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231805AbhEaNZy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 09:25:54 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 580B6613A9;
-        Mon, 31 May 2021 13:21:07 +0000 (UTC)
+        id S232097AbhEaNT6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 09:19:58 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 67AC66108D;
+        Mon, 31 May 2021 13:18:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1622467267;
-        bh=mjI5jnIhJf4B9tVcRxD5jIfP6JUfonP6mxS7E1kp0ik=;
+        s=korg; t=1622467099;
+        bh=VNoJb72BASLscbJ76MB5QsneL7jW1r5so6opZSHcc3Y=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=KeOccULvnvW/jZvSyaa3H77V81pgAWrdQ2yEBSEqmDBvPht1weWabo+Du2M2YIpTL
-         orxuEEfNnUP9oAZbJtS9dBhuOL6+vGayyHtH13moo03BmxU7EpoJ/sRSHN4W1SMjy5
-         2zai0gWXYKeXkYELJZcKmnDvu6U9L/bJlFrF20Bg=
+        b=rdSB961yUMRLy42j2NJ0ngTg0j2IUFG3dXgxeLfJ6N3gYaHV1/ZgPrg7SXfA2HVtU
+         C22gun9F40BX9ZXOwr9AaiGIwQi6JkEwROeq2oovAp4laknWjbnhLczDN3YCPUalwn
+         K544dQkS9ino0EZrXCq6kBkSfM8eI9AgNYlBiVfs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Takashi Iwai <tiwai@suse.de>,
-        Atul Gopinathan <atulgopinathan@gmail.com>,
+        stable@vger.kernel.org, Randy Dunlap <rdunlap@infradead.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        linux-mips@vger.kernel.org,
+        Manuel Lauss <manuel.lauss@googlemail.com>,
+        Ralf Baechle <ralf@linux-mips.org>,
+        Manuel Lauss <manuel.lauss@gmail.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 43/66] ALSA: sb8: Add a comment note regarding an unused pointer
+Subject: [PATCH 4.4 50/54] MIPS: alchemy: xxs1500: add gpio-au1000.h header file
 Date:   Mon, 31 May 2021 15:14:16 +0200
-Message-Id: <20210531130637.619014864@linuxfoundation.org>
+Message-Id: <20210531130636.635680915@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210531130636.254683895@linuxfoundation.org>
-References: <20210531130636.254683895@linuxfoundation.org>
+In-Reply-To: <20210531130635.070310929@linuxfoundation.org>
+References: <20210531130635.070310929@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,43 +44,44 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Atul Gopinathan <atulgopinathan@gmail.com>
+From: Randy Dunlap <rdunlap@infradead.org>
 
-[ Upstream commit a28591f61b60fac820c6de59826ffa710e5e314e ]
+[ Upstream commit ff4cff962a7eedc73e54b5096693da7f86c61346 ]
 
-The field "fm_res" of "struct snd_sb8" is never used/dereferenced
-throughout the sb8.c code. Therefore there is no need for any null value
-check after the "request_region()".
+board-xxs1500.c references 2 functions without declaring them, so add
+the header file to placate the build.
 
-Add a comment note to make developers know about this and prevent any
-"NULL check" patches on this part of code.
+../arch/mips/alchemy/board-xxs1500.c: In function 'board_setup':
+../arch/mips/alchemy/board-xxs1500.c:56:2: error: implicit declaration of function 'alchemy_gpio1_input_enable' [-Werror=implicit-function-declaration]
+   56 |  alchemy_gpio1_input_enable();
+../arch/mips/alchemy/board-xxs1500.c:57:2: error: implicit declaration of function 'alchemy_gpio2_enable'; did you mean 'alchemy_uart_enable'? [-Werror=implicit-function-declaration]
+   57 |  alchemy_gpio2_enable();
 
-Cc: Takashi Iwai <tiwai@suse.de>
-Signed-off-by: Atul Gopinathan <atulgopinathan@gmail.com>
-Link: https://lore.kernel.org/r/20210503115736.2104747-36-gregkh@linuxfoundation.org
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Fixes: 8e026910fcd4 ("MIPS: Alchemy: merge GPR/MTX-1/XXS1500 board code into single files")
+Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Cc: linux-mips@vger.kernel.org
+Cc: Manuel Lauss <manuel.lauss@googlemail.com>
+Cc: Ralf Baechle <ralf@linux-mips.org>
+Acked-by: Manuel Lauss <manuel.lauss@gmail.com>
+Signed-off-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/isa/sb/sb8.c | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
+ arch/mips/alchemy/board-xxs1500.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/sound/isa/sb/sb8.c b/sound/isa/sb/sb8.c
-index ad42d2364199..ca4350bd24d1 100644
---- a/sound/isa/sb/sb8.c
-+++ b/sound/isa/sb/sb8.c
-@@ -109,7 +109,11 @@ static int snd_sb8_probe(struct device *pdev, unsigned int dev)
- 	acard = card->private_data;
- 	card->private_free = snd_sb8_free;
+diff --git a/arch/mips/alchemy/board-xxs1500.c b/arch/mips/alchemy/board-xxs1500.c
+index 0fc53e08a894..c05f7376148a 100644
+--- a/arch/mips/alchemy/board-xxs1500.c
++++ b/arch/mips/alchemy/board-xxs1500.c
+@@ -30,6 +30,7 @@
+ #include <asm/bootinfo.h>
+ #include <asm/reboot.h>
+ #include <asm/mach-au1x00/au1000.h>
++#include <asm/mach-au1x00/gpio-au1000.h>
+ #include <prom.h>
  
--	/* block the 0x388 port to avoid PnP conflicts */
-+	/*
-+	 * Block the 0x388 port to avoid PnP conflicts.
-+	 * No need to check this value after request_region,
-+	 * as we never do anything with it.
-+	 */
- 	acard->fm_res = request_region(0x388, 4, "SoundBlaster FM");
- 
- 	if (port[dev] != SNDRV_AUTO_PORT) {
+ const char *get_system_type(void)
 -- 
 2.30.2
 
