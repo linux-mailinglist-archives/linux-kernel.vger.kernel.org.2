@@ -2,105 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E0AD395746
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 10:43:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 94695395749
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 10:44:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230288AbhEaIo7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 04:44:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50848 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230388AbhEaIos (ORCPT
+        id S230400AbhEaIp7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 04:45:59 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:40044 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230104AbhEaIp4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 04:44:48 -0400
-Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27A02C061574
-        for <linux-kernel@vger.kernel.org>; Mon, 31 May 2021 01:43:08 -0700 (PDT)
-Received: from zn.tnic (p200300ec2f080f006c0d0ceb240e6208.dip0.t-ipconnect.de [IPv6:2003:ec:2f08:f00:6c0d:ceb:240e:6208])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        Mon, 31 May 2021 04:45:56 -0400
+Received: from imap.suse.de (imap-alt.suse-dmz.suse.de [192.168.254.47])
+        (using TLSv1.2 with cipher ECDHE-ECDSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 68B531EC04E4;
-        Mon, 31 May 2021 10:43:06 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1622450586;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=Msp6/mOzC+reDvbox8TBHENLxJVuN3KTGhQXfGNqILQ=;
-        b=FZF0oT4e1GlPmzBdC0e7FNh+013Gmgv1blbMPHdTuIvHp0TwDqPr5GpE+1K8SLm2yfTzri
-        wu0Um0wg5IP8ceCy86/NY2IQfCTYL2OYBAq5GF+wLSHiQC62Ue4SaUJ5yk4M87W9L/31hZ
-        oOMLqeQbUvHLw18N/Nc0VniOlhFBRFM=
-Date:   Mon, 31 May 2021 10:43:04 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     Fenghua Yu <fenghua.yu@intel.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        x86 <x86@kernel.org>, iommu@lists.linux-foundation.org,
-        Ingo Molnar <mingo@redhat.com>, H Peter Anvin <hpa@zytor.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        Christoph Hellwig <hch@infradead.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        David Woodhouse <dwmw2@infradead.org>,
-        Lu Baolu <baolu.lu@linux.intel.com>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Ashok Raj <ashok.raj@intel.com>,
-        Jacob Jun Pan <jacob.jun.pan@intel.com>,
-        Dave Jiang <dave.jiang@intel.com>,
-        Sohil Mehta <sohil.mehta@intel.com>,
-        Ravi V Shankar <ravi.v.shankar@intel.com>
-Subject: Re: [PATCH] x86/cpufeatures: Force disable X86_FEATURE_ENQCMD and
- remove update_pasid()
-Message-ID: <YLShmFEzddfm7WQs@zn.tnic>
-References: <1600187413-163670-1-git-send-email-fenghua.yu@intel.com>
- <1600187413-163670-10-git-send-email-fenghua.yu@intel.com>
- <87mtsd6gr9.ffs@nanos.tec.linutronix.de>
+        by smtp-out1.suse.de (Postfix) with ESMTPS id AA8CD2191F;
+        Mon, 31 May 2021 08:44:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1622450655; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=lpqD11VwesnaooS9bUD7mS99zEZv3FlhamNQHMGYvQI=;
+        b=mLYlwA1rehtmtebSlslOtmInELrnvOGW3O5Mq6WCJRk/3t0kGCHV1ErUN2W6b7tpLtfBST
+        A+JgbTrWACnrCFWuKCB3+C52Ldbo49vz/DBKbd/gBUr7xvu8HPIXTXqGAUQwGzsq29QJG/
+        0p+vrV2dopwNAMVEBgRlVOgRmLUpCoU=
+Received: from imap3-int (imap-alt.suse-dmz.suse.de [192.168.254.47])
+        by imap.suse.de (Postfix) with ESMTP id A078D118DD;
+        Mon, 31 May 2021 08:44:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1622450653; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=lpqD11VwesnaooS9bUD7mS99zEZv3FlhamNQHMGYvQI=;
+        b=a0ECcmvE9ydE/OV9EcLul4CdIAVzDdOSyEAbwHRlXO/SRirG6s9uCnu8nWVikjprNl+ZjZ
+        /dX41I44BCBBFT5/NTsnQt9zPx+hTWDTJ8PjBWHP+6uUqYglpc63LUBUxkaKFqdRlXw1x2
+        FDaquQEtJCAlx9Msq/aWp0e3ZjJL0Eo=
+Received: from director2.suse.de ([192.168.254.72])
+        by imap3-int with ESMTPSA
+        id NFXXJNyhtGCKPgAALh3uQQ
+        (envelope-from <nborisov@suse.com>); Mon, 31 May 2021 08:44:12 +0000
+Subject: Re: [syzbot] kernel BUG in assertfail
+To:     syzbot <syzbot+a6bf271c02e4fe66b4e4@syzkaller.appspotmail.com>,
+        clm@fb.com, dsterba@suse.com, josef@toxicpanda.com,
+        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com
+References: <000000000000f9136f05c39b84e4@google.com>
+From:   Nikolay Borisov <nborisov@suse.com>
+Message-ID: <21666193-5ad7-2656-c50f-33637fabb082@suse.com>
+Date:   Mon, 31 May 2021 11:44:12 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
+In-Reply-To: <000000000000f9136f05c39b84e4@google.com>
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <87mtsd6gr9.ffs@nanos.tec.linutronix.de>
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+Authentication-Results: imap.suse.de;
+        none
+X-Spam-Level: **
+X-Spam-Score: 2.50
+X-Spamd-Result: default: False [2.50 / 100.00];
+         ARC_NA(0.00)[];
+         RCVD_VIA_SMTP_AUTH(0.00)[];
+         FROM_HAS_DN(0.00)[];
+         TO_DN_SOME(0.00)[];
+         TO_MATCH_ENVRCPT_ALL(0.00)[];
+         URI_HIDDEN_PATH(1.00)[https://syzkaller.appspot.com/x/.config?x=9f3da44a01882e99];
+         TAGGED_RCPT(0.00)[a6bf271c02e4fe66b4e4];
+         MIME_GOOD(-0.10)[text/plain];
+         SURBL_MULTI_FAIL(0.00)[syzkaller.appspot.com:server fail];
+         DKIM_SIGNED(0.00)[suse.com:s=susede1];
+         RCPT_COUNT_SEVEN(0.00)[7];
+         RCVD_NO_TLS_LAST(0.10)[];
+         FROM_EQ_ENVFROM(0.00)[];
+         MIME_TRACE(0.00)[0:+];
+         RCVD_COUNT_TWO(0.00)[2];
+         MID_RHS_MATCH_FROM(0.00)[];
+         SUSPICIOUS_RECIPS(1.50)[]
+X-Spam-Flag: NO
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, May 29, 2021 at 11:17:30AM +0200, Thomas Gleixner wrote:
-> While digesting the XSAVE related horrors, which got introduced with the
-> supervisor/user split, the recent addition of ENQCMD related functionality
-> got on the radar and turned out to be similarly broken.
-> 
-> update_pasid(), which is only required when X86_FEATURE_ENQCMD is
-> available, is invoked from two places:
-> 
->  1) From switch_to() for the incoming task
-> 
->  2) Via a SMP function call from the IOMMU/SMV code
-> 
-> #1 is half-ways correct as it hacks around the brokenness of get_xsave_addr()
->    by enforcing the state to be 'present', but all the conditionals in that
->    code are completely pointless for that.
-> 
->    Also the invocation is just useless overhead because at that point
->    it's guaranteed that TIF_NEED_FPU_LOAD is set on the incoming task
->    and all of this can be handled at return to user space.
-> 
-> #2 is broken beyond repair. The comment in the code claims that it is safe
->    to invoke this in an IPI, but that's just wishful thinking.
-> 
->    FPU state of a running task is protected by fregs_lock() which is
->    nothing else than a local_bh_disable(). As BH disabled regions run
->    usually with interrupts enabled the IPI can hit a code section which
->    modifies FPU state and there is absolutely no guarantee that any of the
->    assumptions which are made for the IPI case is true.
 
-... so on a PASID system, your trivial reproducer would theoretically
-fire the same way and corrupt FPU state just as well.
 
-Hohumm, I'd say we need all those reproducers turned into proper self
-tests and run on everything new that touches xstate. *At* *least*.
+On 31.05.21 г. 10:53, syzbot wrote:
+> Hello,
+> 
+> syzbot found the following issue on:
+> 
+> HEAD commit:    1434a312 Merge branch 'for-5.13-fixes' of git://git.kernel..
+> git tree:       upstream
+> console output: https://syzkaller.appspot.com/x/log.txt?x=162843f3d00000
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=9f3da44a01882e99
+> dashboard link: https://syzkaller.appspot.com/bug?extid=a6bf271c02e4fe66b4e4
+> 
+> Unfortunately, I don't have any reproducer for this issue yet.
+> 
+> IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> Reported-by: syzbot+a6bf271c02e4fe66b4e4@syzkaller.appspotmail.com
+> 
+> assertion failed: !memcmp(fs_info->fs_devices->fsid, fs_info->super_copy->fsid, BTRFS_FSID_SIZE), in fs/btrfs/disk-io.c:3282
 
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+This means a device contains a btrfs filesystem which has a different
+FSID in its superblock than the fsid which all devices part of the same
+fs_devices should have. This can happen in 2 ways - memory corruption
+where either of the ->fsid member are corrupted or if there was a crash
+while a filesystem's fsid was being changed. We need more context about
+what the test did?
