@@ -2,117 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 79AA1396866
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 21:38:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3868B39686A
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 21:42:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232112AbhEaTjm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 15:39:42 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46308 "EHLO mail.kernel.org"
+        id S232102AbhEaTni (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 15:43:38 -0400
+Received: from mga12.intel.com ([192.55.52.136]:27843 "EHLO mga12.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231144AbhEaTjk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 15:39:40 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8D9716135C;
-        Mon, 31 May 2021 19:38:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1622489880;
-        bh=DxmToG3L31wIR+9AdgK9OhgVLZyRMZ/xTbCfSGTuyhQ=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=QBl6dcmn1Rx7zOlV2n2Nl+2g6JAtjkgqPcHvclhsLlHustjWEFdadRTHjjlkqK4qs
-         +M3oZt+zsuDljk+HeIXVQJEnHucadsgqqhkWNgG2qgZjxfautiQTmjDPUv80T0lG5v
-         Sw1owFkPyCbIyUm99iqkdEEA6vaz4J8WT49k3k5IC5sMAN1GUJEgXyFXSdrHRJ0h1Z
-         Q7AsdsrxL5OXBH2I6b/kFwevlUu1upQVPfZ3jmof8zEdjFv/x6zGEh7t4NuEp3SNsM
-         EuBD7uOZyXO0LDJcnF/LNhm/mU4kutwi0vpzUKB/ZI/Do3GIuteNLPXUg1rcVFxH7R
-         AgIgYEy/jzx3w==
-Received: by mail-ot1-f54.google.com with SMTP id i23-20020a9d68d70000b02902dc19ed4c15so12049102oto.0;
-        Mon, 31 May 2021 12:38:00 -0700 (PDT)
-X-Gm-Message-State: AOAM531BSksz8cNSHRD2+QDz3ong4/7uykjHW+M4RKHh0PmCOLEeAyn9
-        BwhUZDejimT4zrt0FN7Q3dgM8XnYIUrMMwiveu0=
-X-Google-Smtp-Source: ABdhPJxPwjDBqtCO2vVdoCZIFP8PKpzd7N2ZxjbZBqdZTvAj4/TEDt5tvoyFrMZSG6HJFmhLRxOFwg7krnBvo9m5Hkg=
-X-Received: by 2002:a9d:69c5:: with SMTP id v5mr17902553oto.108.1622489879945;
- Mon, 31 May 2021 12:37:59 -0700 (PDT)
+        id S231144AbhEaTng (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 15:43:36 -0400
+IronPort-SDR: J1nEw5mOLJJaz2SwiEv0pgqC8NRosJWjOWtup+tCbiS4kujyMt2ptyMixcRevWC20RqWJN/q/g
+ afnGuo7VckMA==
+X-IronPort-AV: E=McAfee;i="6200,9189,10001"; a="183092446"
+X-IronPort-AV: E=Sophos;i="5.83,238,1616482800"; 
+   d="scan'208";a="183092446"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 May 2021 12:41:55 -0700
+IronPort-SDR: vfdwGRdSiUa3HfdJ7mSjoeHlEKf2Y7Saw7CxnURwBAmZrzonraTgmMchYbTgCwyLcD1Yx05HzV
+ AoOGR6CvjwbA==
+X-IronPort-AV: E=Sophos;i="5.83,238,1616482800"; 
+   d="scan'208";a="473996858"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 May 2021 12:41:53 -0700
+Received: from andy by smile with local (Exim 4.94)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1lnnnK-00GBpr-DN; Mon, 31 May 2021 22:41:50 +0300
+Date:   Mon, 31 May 2021 22:41:50 +0300
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Flavio Suligoi <f.suligoi@asem.it>,
+        Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
+        <u.kleine-koenig@pengutronix.de>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-pwm@vger.kernel.org
+Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Len Brown <lenb@kernel.org>, Lee Jones <lee.jones@linaro.org>
+Subject: Re: [PATCH v1 1/5] docs: firmware-guide: ACPI: Add a PWM example
+Message-ID: <YLU7/mJ4dFTTWN5m@smile.fi.intel.com>
+References: <20210531154351.53614-1-andriy.shevchenko@linux.intel.com>
+ <YLUKKeltfJe+4X2k@smile.fi.intel.com>
 MIME-Version: 1.0
-References: <20210531095720.77469-1-maz@kernel.org> <20210531095720.77469-2-maz@kernel.org>
-In-Reply-To: <20210531095720.77469-2-maz@kernel.org>
-From:   Ard Biesheuvel <ardb@kernel.org>
-Date:   Mon, 31 May 2021 21:37:49 +0200
-X-Gmail-Original-Message-ID: <CAMj1kXFNUAtXPzO+EbMzZQPxgst4BMEUuYbrWwYer3P9trYdLQ@mail.gmail.com>
-Message-ID: <CAMj1kXFNUAtXPzO+EbMzZQPxgst4BMEUuYbrWwYer3P9trYdLQ@mail.gmail.com>
-Subject: Re: [PATCH v2 1/5] arm64: kexec_file: Forbid non-crash kernels
-To:     Marc Zyngier <maz@kernel.org>
-Cc:     kexec@lists.infradead.org,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        James Morse <james.morse@arm.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Hanjun Guo <guohanjun@huawei.com>,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        Eric Biederman <ebiederm@xmission.com>,
-        Bhupesh SHARMA <bhupesh.sharma@linaro.org>,
-        AKASHI Takahiro <takahiro.akashi@linaro.org>,
-        Dave Young <dyoung@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Moritz Fischer <mdf@kernel.org>,
-        Android Kernel Team <kernel-team@android.com>,
-        "# 3.4.x" <stable@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YLUKKeltfJe+4X2k@smile.fi.intel.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 31 May 2021 at 11:57, Marc Zyngier <maz@kernel.org> wrote:
->
-> It has been reported that kexec_file doesn't really work on arm64.
-> It completely ignores any of the existing reservations, which results
-> in the secondary kernel being loaded where the GICv3 LPI tables live,
-> or even corrupting the ACPI tables.
->
-> Since only crash kernels are imune to this as they use a reserved
-> memory region, disable the non-crash kernel use case. Further
-> patches will try and restore the functionality.
->
-> Reported-by: Moritz Fischer <mdf@kernel.org>
-> Signed-off-by: Marc Zyngier <maz@kernel.org>
-> Cc: stable@vger.kernel.org # 5.10
+On Mon, May 31, 2021 at 07:09:13PM +0300, Andy Shevchenko wrote:
+> On Mon, May 31, 2021 at 06:43:47PM +0300, Andy Shevchenko wrote:
+> > When PWM support for ACPI has been added into the kernel, it missed
+> > the documentation update. Hence update documentation here.
+> 
+> I am actually in doubt that original commit message provides that short period
+> intentionally. Possibly it was misinterpretation of nanoseconds (which is
+> expected by PWM framework) with microseconds than might sound logical for LED.
+> 
+> Perhaps we may add 000 to the value (1) and replace us by ms in the text (2).
 
-Acked-by: Ard Biesheuvel <ardb@kernel.org>
+Okay, I will send an extended v2 and I think I will use 600 ms in the
+documentation example.
 
-... but do we really only need this in 5.10 and not earlier?
+-- 
+With Best Regards,
+Andy Shevchenko
 
-> ---
->  arch/arm64/kernel/kexec_image.c | 20 ++++++++++++++++++++
->  1 file changed, 20 insertions(+)
->
-> diff --git a/arch/arm64/kernel/kexec_image.c b/arch/arm64/kernel/kexec_image.c
-> index 9ec34690e255..acf9cd251307 100644
-> --- a/arch/arm64/kernel/kexec_image.c
-> +++ b/arch/arm64/kernel/kexec_image.c
-> @@ -145,3 +145,23 @@ const struct kexec_file_ops kexec_image_ops = {
->         .verify_sig = image_verify_sig,
->  #endif
->  };
-> +
-> +/**
-> + * arch_kexec_locate_mem_hole - Find free memory to place the segments.
-> + * @kbuf:                       Parameters for the memory search.
-> + *
-> + * On success, kbuf->mem will have the start address of the memory region found.
-> + *
-> + * Return: 0 on success, negative errno on error.
-> + */
-> +int arch_kexec_locate_mem_hole(struct kexec_buf *kbuf)
-> +{
-> +       /*
-> +        * For the time being, kexec_file_load isn't reliable except
-> +        * for crash kernel. Say sorry to the user.
-> +        */
-> +       if (kbuf->image->type != KEXEC_TYPE_CRASH)
-> +               return -EADDRNOTAVAIL;
-> +
-> +       return kexec_locate_mem_hole(kbuf);
-> +}
-> --
-> 2.30.2
->
+
