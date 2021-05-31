@@ -2,36 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B3CEA395D2E
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 15:41:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 484C3396521
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 18:23:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232807AbhEaNmg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 09:42:36 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33248 "EHLO mail.kernel.org"
+        id S234744AbhEaQYe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 12:24:34 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37968 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232453AbhEaN3T (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 09:29:19 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C201B61415;
-        Mon, 31 May 2021 13:22:32 +0000 (UTC)
+        id S233184AbhEaOnd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 10:43:33 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5243C613B9;
+        Mon, 31 May 2021 13:54:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1622467353;
-        bh=/s/rwubZx/ifd+zZhHoxLC9s4wnjjK1FQfwAWDavSB0=;
+        s=korg; t=1622469257;
+        bh=b6pxLm9b+aHmQ8leoDa2uMcseGzhDvHezK5XJWEJodM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=rrDgFFkLysDJ69xkNQuZuTVZ1LF5SltZ0q53JtZTYWZZ61625LfF45BWOPr6H3NPq
-         5qXV740ulNosmG0HFGUipNUvqYfrFiccJxqQfUBwg0miK6hCBOKDZxBzUT4lFno3Wv
-         I4w7YzU4yg56+s6Rd9uoO40I8youPXt8JxwHmYwc=
+        b=DzSMAf/Na7J+8L/E5gF6sXT8GNtAJl4+Lue/dF1qIGtzWEO7wghG7EsLxAjebJPn2
+         uJ7pEM8O+46sPrH0LxQ51o3Bj47cZaDBgVjYSRy14V9KyOFkpPTGuPGseBgofanLLi
+         DGn74r9BqEPVcwyj3oQOf0p2/o6GkSwouKZMHt8k=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Adrian Hunter <adrian.hunter@intel.com>,
-        Andi Kleen <ak@linux.intel.com>, Jiri Olsa <jolsa@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@redhat.com>
-Subject: [PATCH 4.19 007/116] perf intel-pt: Fix sample instruction bytes
+        stable@vger.kernel.org, Ariel Levkovich <lariel@nvidia.com>
+Subject: [PATCH 5.12 128/296] net/mlx5: Set term table as an unmanaged flow table
 Date:   Mon, 31 May 2021 15:13:03 +0200
-Message-Id: <20210531130640.390800881@linuxfoundation.org>
+Message-Id: <20210531130708.200759345@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210531130640.131924542@linuxfoundation.org>
-References: <20210531130640.131924542@linuxfoundation.org>
+In-Reply-To: <20210531130703.762129381@linuxfoundation.org>
+References: <20210531130703.762129381@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,100 +38,61 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Adrian Hunter <adrian.hunter@intel.com>
+From: Ariel Levkovich <lariel@nvidia.com>
 
-commit c954eb72b31a9dc56c99b450253ec5b121add320 upstream.
+commit 6ff51ab8aa8fcbcddeeefce8ca705b575805d12b upstream.
 
-The decoder reports the current instruction if it was decoded. In some
-cases the current instruction is not decoded, in which case the instruction
-bytes length must be set to zero. Ensure that is always done.
+Termination tables are restricted to have the default miss action and
+cannot be set to forward to another table in case of a miss.
+If the fs prio of the termination table is not the last one in the
+list, fs_core will attempt to attach it to another table.
 
-Note perf script can anyway get the instruction bytes for any samples where
-they are not present.
+Set the unmanaged ft flag when creating the termination table ft
+and select the tc offload prio for it to prevent fs_core from selecting
+the forwarding to next ft miss action and use the default one.
 
-Also note, that there is a redundant "ptq->insn_len = 0" statement which is
-not removed until a subsequent patch in order to make this patch apply
-cleanly to stable branches.
+In addition, set the flow that forwards to the termination table to
+ignore ft level restrictions since the ft level is not set by fs_core
+for unamanged fts.
 
-Example:
-
-A machne that supports TSX is required. It will have flag "rtm". Kernel
-parameter tsx=on may be required.
-
- # for w in `cat /proc/cpuinfo | grep -m1 flags `;do echo $w | grep rtm ; done
- rtm
-
-Test program:
-
- #include <stdio.h>
- #include <immintrin.h>
-
- int main()
- {
-        int x = 0;
-
-        if (_xbegin() == _XBEGIN_STARTED) {
-                x = 1;
-                _xabort(1);
-        } else {
-                printf("x = %d\n", x);
-        }
-        return 0;
- }
-
-Compile with -mrtm i.e.
-
- gcc -Wall -Wextra -mrtm xabort.c -o xabort
-
-Record:
-
- perf record -e intel_pt/cyc/u --filter 'filter main @ ./xabort' ./xabort
-
-Before:
-
- # perf script --itrace=xe -F+flags,+insn,-period --xed --ns
-          xabort  1478 [007] 92161.431348581:   transactions:   x                              400b81 main+0x14 (/root/xabort)          mov $0xffffffff, %eax
-          xabort  1478 [007] 92161.431348624:   transactions:   tx abrt                        400b93 main+0x26 (/root/xabort)          mov $0xffffffff, %eax
-
-After:
-
- # perf script --itrace=xe -F+flags,+insn,-period --xed --ns
-          xabort  1478 [007] 92161.431348581:   transactions:   x                              400b81 main+0x14 (/root/xabort)          xbegin 0x6
-          xabort  1478 [007] 92161.431348624:   transactions:   tx abrt                        400b93 main+0x26 (/root/xabort)          xabort $0x1
-
-Fixes: faaa87680b25d ("perf intel-pt/bts: Report instruction bytes and length in sample")
-Signed-off-by: Adrian Hunter <adrian.hunter@intel.com>
-Cc: Andi Kleen <ak@linux.intel.com>
-Cc: Jiri Olsa <jolsa@redhat.com>
-Cc: stable@vger.kernel.org
-Link: http://lore.kernel.org/lkml/20210519074515.9262-3-adrian.hunter@intel.com
-Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
+Fixes: 249ccc3c95bd ("net/mlx5e: Add support for offloading traffic from uplink to uplink")
+Signed-off-by: Ariel Levkovich <lariel@nvidia.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- tools/perf/util/intel-pt.c |    5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+ drivers/net/ethernet/mellanox/mlx5/core/eswitch_offloads_termtbl.c |    7 +++++--
+ 1 file changed, 5 insertions(+), 2 deletions(-)
 
---- a/tools/perf/util/intel-pt.c
-+++ b/tools/perf/util/intel-pt.c
-@@ -505,8 +505,10 @@ static int intel_pt_walk_next_insn(struc
+--- a/drivers/net/ethernet/mellanox/mlx5/core/eswitch_offloads_termtbl.c
++++ b/drivers/net/ethernet/mellanox/mlx5/core/eswitch_offloads_termtbl.c
+@@ -76,10 +76,11 @@ mlx5_eswitch_termtbl_create(struct mlx5_
+ 	/* As this is the terminating action then the termination table is the
+ 	 * same prio as the slow path
+ 	 */
+-	ft_attr.flags = MLX5_FLOW_TABLE_TERMINATION |
++	ft_attr.flags = MLX5_FLOW_TABLE_TERMINATION | MLX5_FLOW_TABLE_UNMANAGED |
+ 			MLX5_FLOW_TABLE_TUNNEL_EN_REFORMAT;
+-	ft_attr.prio = FDB_SLOW_PATH;
++	ft_attr.prio = FDB_TC_OFFLOAD;
+ 	ft_attr.max_fte = 1;
++	ft_attr.level = 1;
+ 	ft_attr.autogroup.max_num_groups = 1;
+ 	tt->termtbl = mlx5_create_auto_grouped_flow_table(root_ns, &ft_attr);
+ 	if (IS_ERR(tt->termtbl)) {
+@@ -216,6 +217,7 @@ mlx5_eswitch_termtbl_required(struct mlx
+ 	int i;
  
- 			*ip += intel_pt_insn->length;
- 
--			if (to_ip && *ip == to_ip)
-+			if (to_ip && *ip == to_ip) {
-+				intel_pt_insn->length = 0;
- 				goto out_no_cache;
-+			}
- 
- 			if (*ip >= al.map->end)
- 				break;
-@@ -893,6 +895,7 @@ static void intel_pt_set_pid_tid_cpu(str
- 
- static void intel_pt_sample_flags(struct intel_pt_queue *ptq)
- {
-+	ptq->insn_len = 0;
- 	if (ptq->state->flags & INTEL_PT_ABORT_TX) {
- 		ptq->flags = PERF_IP_FLAG_BRANCH | PERF_IP_FLAG_TX_ABORT;
- 	} else if (ptq->state->flags & INTEL_PT_ASYNC) {
+ 	if (!MLX5_CAP_ESW_FLOWTABLE_FDB(esw->dev, termination_table) ||
++	    !MLX5_CAP_ESW_FLOWTABLE_FDB(esw->dev, ignore_flow_level) ||
+ 	    attr->flags & MLX5_ESW_ATTR_FLAG_SLOW_PATH ||
+ 	    !mlx5_eswitch_offload_is_uplink_port(esw, spec))
+ 		return false;
+@@ -288,6 +290,7 @@ mlx5_eswitch_add_termtbl_rule(struct mlx
+ 	/* create the FTE */
+ 	flow_act->action &= ~MLX5_FLOW_CONTEXT_ACTION_PACKET_REFORMAT;
+ 	flow_act->pkt_reformat = NULL;
++	flow_act->flags |= FLOW_ACT_IGNORE_FLOW_LEVEL;
+ 	rule = mlx5_add_flow_rules(fdb, spec, flow_act, dest, num_dest);
+ 	if (IS_ERR(rule))
+ 		goto revert_changes;
 
 
