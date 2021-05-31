@@ -2,187 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 59CB23957DE
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 11:08:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EA7823957E0
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 11:09:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230397AbhEaJKV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 05:10:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56720 "EHLO
+        id S230429AbhEaJLJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 05:11:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56876 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229522AbhEaJKT (ORCPT
+        with ESMTP id S229522AbhEaJLA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 05:10:19 -0400
-Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69200C061574;
-        Mon, 31 May 2021 02:08:40 -0700 (PDT)
-Received: from zn.tnic (p200300ec2f080f006c0d0ceb240e6208.dip0.t-ipconnect.de [IPv6:2003:ec:2f08:f00:6c0d:ceb:240e:6208])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id E89791EC04E4;
-        Mon, 31 May 2021 11:08:38 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1622452119;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=BGvgPEvuLV1N3UbclwfDuqJ5VufvW/gsj6GH/J7E4J8=;
-        b=G2UWFEriEk653YiYCdPRH7aHXqKeT8DbPqqQWkDsgg4B+I0lrXmGPle9yvDJYMeeFxsXLT
-        3egwkOLWCXKzbsyypSQW9RSjpfPJqrJ0Ai3T0DicIdj8aeeqySYmtN8VuWiqecuqoVtpgD
-        u3XhSOkfUe3MDuDWMO8n6f8y/cDwhrc=
-Date:   Mon, 31 May 2021 11:08:32 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Lianbo Jiang <lijiang@redhat.com>, Mike Rapoport <rppt@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, x86@kernel.org,
-        linux-efi@vger.kernel.org, platform-driver-x86@vger.kernel.org,
-        kexec@lists.infradead.org, ardb@kernel.org, dvhart@infradead.org,
-        andy@infradead.org, tglx@linutronix.de, mingo@redhat.com,
-        hpa@zytor.com, luto@amacapital.net, bhe@redhat.com,
-        dyoung@redhat.com
-Subject: Re: [PATCH v2] x86/efi: unconditionally hold the whole low-1MB
- memory regions
-Message-ID: <YLSnkKeoQnokXVsK@zn.tnic>
-References: <20210531090023.16471-1-lijiang@redhat.com>
+        Mon, 31 May 2021 05:11:00 -0400
+Received: from mail-qv1-xf2c.google.com (mail-qv1-xf2c.google.com [IPv6:2607:f8b0:4864:20::f2c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E7B7C06174A
+        for <linux-kernel@vger.kernel.org>; Mon, 31 May 2021 02:09:19 -0700 (PDT)
+Received: by mail-qv1-xf2c.google.com with SMTP id a7so5177529qvf.11
+        for <linux-kernel@vger.kernel.org>; Mon, 31 May 2021 02:09:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=IJm6BORftzEWEGVW607YFI9b5KUIuit1QBx1ZBqXYg0=;
+        b=CIbw2SDztBV7RW6fGgAXk8TZGbncpGR/9ybFGe2AaQdewLy7mrtwJZo07ZONLlh9rS
+         nDEkHkeqnBcKf1J78klzsi5zZydG8B5lI+unt6CN+2/sfiONd/svy6IUZ6TnZ5Q7U2Nk
+         OJiBuZup5tD7YE1uMtU848Ou9tLmo7jLdMjNwz7jSaCQWBBpqbvHR8EBQeNpQCvoWwZw
+         CFcKHx+EvEAxvGJWK7dpjGMRcAd5PHpgvcbsbxrQAHWpkYg/vvlsTo7q+scyfn+kYs/7
+         UDPopY/BS/287eMsjy30OoXYbr8nc6Gl5u7yNIHJ8eVnPAd6Cn1PjBJ1xtBBx9XdHN5N
+         Ai5w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=IJm6BORftzEWEGVW607YFI9b5KUIuit1QBx1ZBqXYg0=;
+        b=r/pOIlvi8GBQ7yyaV4nHuC3gbqo+XMt5cX72TkTSY5X9UnVCrh+BlRY4t+F1I49nCC
+         f1fysJKS+X/3Cc4T7w1PfOgpYGzA17EbyPbcpoMTjIK3NzHJCaq+cOX6HGloGyPcc71q
+         pFaU89DRaZlx23gjC2PuEIkZaCayEpBrOeyOj5U6R/jX+qWyfyxayANYrHGmz14lbk55
+         NeKV0LyO102ydytcliwh50IgVTmxKdyQlewx6frZXGOULFpjh9XMYU+aD31WNOlmcVHR
+         jG3KqOBuowJsYmFCFacg21tD0hcHbpqOfnoxHkE8h76nY2d43xffkIWc+2OHaspNKBXv
+         peRA==
+X-Gm-Message-State: AOAM530F+fmzxp9u4kWvcaGspDfZ/aQppiIP+XO9a+1zupM1lEckOFfu
+        q9gWmX9Hen+9Sn2Wo7EklvzB7wiJOiu5WwLiFpe+hQ==
+X-Google-Smtp-Source: ABdhPJx9zcytQeNq3XLgxYCv3FDCseu5tN5+X6rYF44tHjs0FJ7cGnxRAXBrrm9Aecirp85qu4vgIiA5Kqj6n2az/I4=
+X-Received: by 2002:a05:6214:12c7:: with SMTP id s7mr10284287qvv.44.1622452157450;
+ Mon, 31 May 2021 02:09:17 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210531090023.16471-1-lijiang@redhat.com>
+References: <000000000000f9136f05c39b84e4@google.com> <21666193-5ad7-2656-c50f-33637fabb082@suse.com>
+ <CACT4Y+bqevMT3cD5sXjSv9QYM_7CwjYmN_Ne5LSj=3-REZ+oTw@mail.gmail.com> <224f1e6a-76fa-6356-fe11-af480cee5cf2@suse.com>
+In-Reply-To: <224f1e6a-76fa-6356-fe11-af480cee5cf2@suse.com>
+From:   Dmitry Vyukov <dvyukov@google.com>
+Date:   Mon, 31 May 2021 11:09:06 +0200
+Message-ID: <CACT4Y+ZJ7Oi9ChXJNuF_+e4FRnN1rJBde4tsjiTtkOV+MM-hgA@mail.gmail.com>
+Subject: Re: [syzbot] kernel BUG in assertfail
+To:     Nikolay Borisov <nborisov@suse.com>
+Cc:     syzbot <syzbot+a6bf271c02e4fe66b4e4@syzkaller.appspotmail.com>,
+        Chris Mason <clm@fb.com>, dsterba@suse.com,
+        Josef Bacik <josef@toxicpanda.com>,
+        linux-btrfs@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-+ Mike.
+On Mon, May 31, 2021 at 10:57 AM Nikolay Borisov <nborisov@suse.com> wrote:
+> On 31.05.21 =D0=B3. 11:55, Dmitry Vyukov wrote:
+> > On Mon, May 31, 2021 at 10:44 AM 'Nikolay Borisov' via syzkaller-bugs
+> > <syzkaller-bugs@googlegroups.com> wrote:
+> >> On 31.05.21 =D0=B3. 10:53, syzbot wrote:
+> >>> Hello,
+> >>>
+> >>> syzbot found the following issue on:
+> >>>
+> >>> HEAD commit:    1434a312 Merge branch 'for-5.13-fixes' of git://git.k=
+ernel..
+> >>> git tree:       upstream
+> >>> console output: https://syzkaller.appspot.com/x/log.txt?x=3D162843f3d=
+00000
+> >>> kernel config:  https://syzkaller.appspot.com/x/.config?x=3D9f3da44a0=
+1882e99
+> >>> dashboard link: https://syzkaller.appspot.com/bug?extid=3Da6bf271c02e=
+4fe66b4e4
+> >>>
+> >>> Unfortunately, I don't have any reproducer for this issue yet.
+> >>>
+> >>> IMPORTANT: if you fix the issue, please add the following tag to the =
+commit:
+> >>> Reported-by: syzbot+a6bf271c02e4fe66b4e4@syzkaller.appspotmail.com
+> >>>
+> >>> assertion failed: !memcmp(fs_info->fs_devices->fsid, fs_info->super_c=
+opy->fsid, BTRFS_FSID_SIZE), in fs/btrfs/disk-io.c:3282
+> >>
+> >> This means a device contains a btrfs filesystem which has a different
+> >> FSID in its superblock than the fsid which all devices part of the sam=
+e
+> >> fs_devices should have. This can happen in 2 ways - memory corruption
+> >> where either of the ->fsid member are corrupted or if there was a cras=
+h
+> >> while a filesystem's fsid was being changed. We need more context abou=
+t
+> >> what the test did?
+> >
+> > Hi Nikolay,
+> >
+> > From a semantic point of view we can consider that it just mounts /dev/=
+random.
+> > If syzbot comes up with a reproducer it will post it, but you seem to
+> > already figure out what happened, so I assume you can write a unit
+> > test for this.
+> >
+>
+> Well no, under normal circumstances this shouldn't trigger. So if syzbot
+> is doing something stupid as mounting /dev/random then I don't see a
+> problem here. The assert is there to catch inconsistencies during normal
+> operation which doesn't seem to be the case here.
 
-On Mon, May 31, 2021 at 05:00:23PM +0800, Lianbo Jiang wrote:
-> Some sub-1MB memory regions may be reserved by EFI boot services, and the
-> memory regions will be released later in the efi_free_boot_services().
-> 
-> Currently, always reserve all sub-1MB memory regions when the crashkernel
-> option is specified, but unfortunately EFI boot services may have already
-> reserved some sub-1MB memory regions before the crash_reserve_low_1M() is
-> called, which makes that the crash_reserve_low_1M() only own the
-> remaining sub-1MB memory regions, not all sub-1MB memory regions, because,
-> subsequently EFI boot services will free its own sub-1MB memory regions.
-> Eventually, DMA will be able to allocate memory from the sub-1MB area and
-> cause the following error:
-> 
-> crash> kmem -s |grep invalid
-> kmem: dma-kmalloc-512: slab: ffffd52c40001900 invalid freepointer: ffff9403c0067300
-> kmem: dma-kmalloc-512: slab: ffffd52c40001900 invalid freepointer: ffff9403c0067300
-> crash> vtop ffff9403c0067300
-> VIRTUAL           PHYSICAL
-> ffff9403c0067300  67300   --->The physical address falls into this range [0x0000000000063000-0x000000000008efff]
-> 
-> kernel debugging log:
-> ...
-> [    0.008927] memblock_reserve: [0x0000000000010000-0x0000000000013fff] efi_reserve_boot_services+0x85/0xd0
-> [    0.008930] memblock_reserve: [0x0000000000063000-0x000000000008efff] efi_reserve_boot_services+0x85/0xd0
-> ...
-> [    0.009425] memblock_reserve: [0x0000000000000000-0x00000000000fffff] crash_reserve_low_1M+0x2c/0x49
-> ...
-> [    0.010586] Zone ranges:
-> [    0.010587]   DMA      [mem 0x0000000000001000-0x0000000000ffffff]
-> [    0.010589]   DMA32    [mem 0x0000000001000000-0x00000000ffffffff]
-> [    0.010591]   Normal   [mem 0x0000000100000000-0x0000000c7fffffff]
-> [    0.010593]   Device   empty
-> ...
-> [    8.814894] __memblock_free_late: [0x0000000000063000-0x000000000008efff] efi_free_boot_services+0x14b/0x23b
-> [    8.815793] __memblock_free_late: [0x0000000000010000-0x0000000000013fff] efi_free_boot_services+0x14b/0x23b
-> 
-> To fix the above issues, let's hold the whole low-1M memory regions
-> unconditionally in the efi_free_boot_services().
-> 
-> Signed-off-by: Lianbo Jiang <lijiang@redhat.com>
-> ---
-> Background(copy from bhe's comment in the patch v1):
-> 
-> Kdump kernel also need go through real mode code path during bootup. It
-> is not different than normal kernel except that it skips the firmware
-> resetting. So kdump kernel needs low 1M as system RAM just as normal
-> kernel does. Here we reserve the whole low 1M with memblock_reserve()
-> to avoid any later kernel or driver data reside in this area. Otherwise,
-> we need dump the content of this area to vmcore. As we know, when crash
-> happened, the old memory of 1st kernel should be untouched until vmcore
-> dumping read out its content. Meanwhile, kdump kernel need reuse low 1M.
-> In the past, we used a back up region to copy out the low 1M area, and
-> map the back up region into the low 1M area in vmcore elf file. In
-> 6f599d84231fd27 ("x86/kdump: Always reserve the low 1M when the crashkernel
-> option is specified"), we changed to lock the whole low 1M to avoid
-> writting any kernel data into, like this we can skip this area when
-> dumping vmcore.
-> 
-> Above is why we try to memblock reserve the whole low 1M. We don't want
-> to use it, just don't want anyone to use it in 1st kernel.
-> 
-> 
->  arch/x86/platform/efi/quirks.c | 32 +++++++++++++++-----------------
->  1 file changed, 15 insertions(+), 17 deletions(-)
-> 
-> diff --git a/arch/x86/platform/efi/quirks.c b/arch/x86/platform/efi/quirks.c
-> index 7850111008a8..840b7e3b3d48 100644
-> --- a/arch/x86/platform/efi/quirks.c
-> +++ b/arch/x86/platform/efi/quirks.c
-> @@ -11,6 +11,7 @@
->  #include <linux/memblock.h>
->  #include <linux/acpi.h>
->  #include <linux/dmi.h>
-> +#include <linux/sizes.h>
->  
->  #include <asm/e820/api.h>
->  #include <asm/efi.h>
-> @@ -409,7 +410,7 @@ void __init efi_free_boot_services(void)
->  	for_each_efi_memory_desc(md) {
->  		unsigned long long start = md->phys_addr;
->  		unsigned long long size = md->num_pages << EFI_PAGE_SHIFT;
-> -		size_t rm_size;
-> +		unsigned long long end = start + size;
->  
->  		if (md->type != EFI_BOOT_SERVICES_CODE &&
->  		    md->type != EFI_BOOT_SERVICES_DATA) {
-> @@ -431,23 +432,20 @@ void __init efi_free_boot_services(void)
->  		efi_unmap_pages(md);
->  
->  		/*
-> -		 * Nasty quirk: if all sub-1MB memory is used for boot
-> -		 * services, we can get here without having allocated the
-> -		 * real mode trampoline.  It's too late to hand boot services
-> -		 * memory back to the memblock allocator, so instead
-> -		 * try to manually allocate the trampoline if needed.
-> -		 *
-> -		 * I've seen this on a Dell XPS 13 9350 with firmware
-> -		 * 1.4.4 with SGX enabled booting Linux via Fedora 24's
-> -		 * grub2-efi on a hard disk.  (And no, I don't know why
-> -		 * this happened, but Linux should still try to boot rather
-> -		 * panicking early.)
-> +		 * The sub-1MB memory may be within the range[0, SZ_1M]
-> +		 * or across the low-1M memory boundary. Let's handle
-> +		 * these two cases and hold the whole low-1M memory
-> +		 * unconditionally.
->  		 */
-> -		rm_size = real_mode_size_needed();
-> -		if (rm_size && (start + rm_size) < (1<<20) && size >= rm_size) {
-> -			set_real_mode_mem(start);
-> -			start += rm_size;
-> -			size -= rm_size;
-> +		if (start < SZ_1M) {
-> +			/* Within the range[0, SZ_1M] */
-> +			if (end <= SZ_1M)
-> +				continue;
-> +			else {
-> +				/* Across the low-1M memory boundary */
-> +				size -= (SZ_1M - start);
-> +				start = SZ_1M;
-> +			}
->  		}
->  
->  		memblock_free_late(start, size);
-> -- 
 
-I don't think this will be needed when this here happens:
+Does this mean that CONFIG_BTRFS_ASSERT needs to be disabled in any testing=
+?
+What is it intended for? Or it can only be enabled when mounting known
+good images? But then I assume even btrfs unit tests mount some
+invalid images, so it would mean it can't be used even  during unit
+testing?
 
-https://lkml.kernel.org/r/YK%2Bgv0vDfLVD7Sqp@kernel.org
+Looking at the output of "grep ASSERT fs/btrfs/*.c" it looks like most
+of these actually check for something that "must never happen". E.g.
+some lists/pointers are empty/non-empty in particular states. And
+"must never happen" checks are for testing scenarios...
 
--- 
-Regards/Gruss,
-    Boris.
+Taking this particular FSID mismatch assert, should such corrupted
+images be mounted for end users? Should users be notified? Currently
+they are mounted and users are not notified, what is the purpose of
+this assertion?
 
-https://people.kernel.org/tglx/notes-about-netiquette
+Perhaps CONFIG_BTRFS_ASSERT needs to be split into "must never happen"
+checks that are enabled during testing and normal if's with pr_err for
+user notifications?
