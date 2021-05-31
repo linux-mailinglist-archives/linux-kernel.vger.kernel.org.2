@@ -2,129 +2,177 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B2BDE39677E
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 19:57:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A0A5396783
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 19:57:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231913AbhEaR6u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 13:58:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33308 "EHLO
+        id S232282AbhEaR65 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 13:58:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33328 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231483AbhEaR6s (ORCPT
+        with ESMTP id S231981AbhEaR6v (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 13:58:48 -0400
-Received: from mail-oi1-x232.google.com (mail-oi1-x232.google.com [IPv6:2607:f8b0:4864:20::232])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EFC57C06174A
-        for <linux-kernel@vger.kernel.org>; Mon, 31 May 2021 10:57:06 -0700 (PDT)
-Received: by mail-oi1-x232.google.com with SMTP id u11so13001295oiv.1
-        for <linux-kernel@vger.kernel.org>; Mon, 31 May 2021 10:57:06 -0700 (PDT)
+        Mon, 31 May 2021 13:58:51 -0400
+Received: from mail-lj1-x234.google.com (mail-lj1-x234.google.com [IPv6:2a00:1450:4864:20::234])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9EF32C06174A
+        for <linux-kernel@vger.kernel.org>; Mon, 31 May 2021 10:57:10 -0700 (PDT)
+Received: by mail-lj1-x234.google.com with SMTP id p20so15951263ljj.8
+        for <linux-kernel@vger.kernel.org>; Mon, 31 May 2021 10:57:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=DSZZAxEHbdLZZFw3vP+gxBVlQqCyrawB+uRSZuIZgfE=;
-        b=RP19OH9CpI0aNDLkOYv5uoSwZpnzBzCwG0E1jDZxgOQ9DkRGGQYX9AtUXLRsZUgVPo
-         RhURb0Raz1N7KIW7dJk7am/V/UUhd1h7rhObulSEsAMaZIsfDG58KTC/2JJCrx0H5Blf
-         diMBqTGi5N3gPAiSkrw7aGA6R5O3N10wvHQwj67IHblAzBpQlFMbYyWK6NKnx5HYhYpG
-         7UpGewtypbHUCieQA7m+QYitIdJ5XPYD2btoDY5+khlbBWoe4QPpC965AwC3FlZk0SfY
-         PLYAllF1azN0SygOufTNLacrELbXVw8k30ShmM228igEYhszT1xLdFQhVAXDFon1SyL9
-         S/OA==
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=sjGZmsfFp/UOuSzQORD2nudXv9W+sFfiJPaPSogdWlM=;
+        b=cBqc5YKm9oxk8wkGFtsy6bmh6Kzc1awzqSTVVxKgBAaJXzcshVY80xBr9QDXTbasz6
+         bsR+mpQlkzNf05BAvtdR6YrS2l7cxdC1L/Y1u1ZEJsy+sEmUKQnrox1cH7mvhAEsyNHg
+         r8CUY/VpsmZm9SumqUvO4tSTS4lsUnTbEVWWMXIJOiNaymRIus1ldGF35UnpBS9ADzL9
+         x1w+ER/ZFHdGbwTfJNlVUeuDPNIFqCl91qmO4fHPzkIi+E+Ij1SqPjOVOlxLv/2Rsw9Q
+         aLclZQcpP/dGYufPL7zUagcFnDJdx/dDHEKPzx395wI6P2b5OmvICf28kimOEk7/SD0q
+         W09g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=DSZZAxEHbdLZZFw3vP+gxBVlQqCyrawB+uRSZuIZgfE=;
-        b=Me9C5khnUj0lC2qmFUNhr4im/RoNRxDQd8ntweDE/70KgAjEffvuqWUZqHG8TIrNIT
-         NZIDn0KMrUGvBJYqMYnSAQcQJKg34r38Xgj4lRSwNgrK1wGgXn7tK+4QmEHMYiN5ucYn
-         E52gIdIhYb2RbvQ2elqIg0IhXHNxCtpP6o098Pg6Y+ptKgQw6LFZwhCnWwJGFMROMX7S
-         448K0AUgMyeV/LScjTl+/vYoRo/Mw9N4dBN4iomqN9thlDao3bfC+tuHwCyYHBH2fK2v
-         Ya0+0O0Aamm0E6ZfsrSadvOajGh81lDNWEKnLJvnjxxe7/IjCkujcqZXJxRwduN1IKTR
-         OpBA==
-X-Gm-Message-State: AOAM531DlX4GzFlSHcsbJ+u9RvQQLWtHy75YNh/iAIeRk7FdsH41OO4t
-        kqZIuv9ZWlqSOBBpAGf5Glbk7Q==
-X-Google-Smtp-Source: ABdhPJyMSM6FwtPAzJOnXLO+pv4nc6c2SOvHU9KLqi26VKWEHZ1Ea9pf222zATy1Qo3Pp5k6oOaR9w==
-X-Received: by 2002:a54:4113:: with SMTP id l19mr203643oic.38.1622483826247;
-        Mon, 31 May 2021 10:57:06 -0700 (PDT)
-Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id 7sm3169597oti.30.2021.05.31.10.57.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 31 May 2021 10:57:05 -0700 (PDT)
-Date:   Mon, 31 May 2021 12:57:03 -0500
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Stephen Boyd <swboyd@chromium.org>
-Cc:     Maulik Shah <mkshah@codeaurora.org>, evgreen@chromium.org,
-        mka@chromium.org, linux-arm-msm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, agross@kernel.org,
-        dianders@chromium.org, linux@roeck-us.net, rnayak@codeaurora.org,
-        lsrao@codeaurora.org, devicetree@vger.kernel.org
-Subject: Re: [PATCH v8 3/5] arm64: dts: qcom: sc7180: Enable SoC sleep stats
-Message-ID: <YLUjbwFSJOSWS0IV@builder.lan>
-References: <1621596371-26482-1-git-send-email-mkshah@codeaurora.org>
- <1621596371-26482-4-git-send-email-mkshah@codeaurora.org>
- <CAE-0n53ySKwDwzRYFYjnQnqVAujVrkik2U-PeCuS61xQU-hbWA@mail.gmail.com>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=sjGZmsfFp/UOuSzQORD2nudXv9W+sFfiJPaPSogdWlM=;
+        b=OjpJIFcTvbarYdes/EDNJ+pVDrBRk3TqfuUPa2Z63Iow5TjHrll2kLx9RiCJcRQrq0
+         2dgfacXXIPbcXi1xw5/qLMbPKAySbFVHv7DfRwVNL5LZxBNveT2H3qXwSXMeUEewN+9P
+         oH9cgjweTtfaPpaUfBeWxKS2JCyQDjb7CK6zGPCMLHIWYoyB6oo2QJHpZJnl3Ls//Amv
+         fGinMk+wwqnwrdW4NqekMDaFR01MGZl7BFbNFtgmkk8yK+YkS/DKv+KZrGzAg2FdbcXN
+         SpwogIgYRsXcTx83rsJqkhrjvmkDIPi6Rq85TrmG6Qv4jMdbjOZS6usK5YERHpFmhKkk
+         U6tw==
+X-Gm-Message-State: AOAM531RG33tAiE4IICo/1WILvh1yEAL6Fh4HZUZUrOQ8IG9AHMgQUgh
+        vZijy6bTBDddBhOG2mh3GSlzOg==
+X-Google-Smtp-Source: ABdhPJz0MIiGVgSvBAZS9tl8Pnpzl/E1hQI2wkn1dtJaP5RqncKnNMnUbbDm4atWwvJ7AscsHMdI5g==
+X-Received: by 2002:a2e:681a:: with SMTP id c26mr9266477lja.306.1622483828860;
+        Mon, 31 May 2021 10:57:08 -0700 (PDT)
+Received: from [192.168.1.211] ([37.153.55.125])
+        by smtp.gmail.com with ESMTPSA id w24sm1408417lfa.143.2021.05.31.10.57.08
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 31 May 2021 10:57:08 -0700 (PDT)
+Subject: Re: [v1 2/3] drm/msm/dsi: Add PHY configuration for SC7280
+To:     Rajeev Nandan <rajeevny@codeaurora.org>,
+        dri-devel@lists.freedesktop.org, linux-arm-msm@vger.kernel.org,
+        freedreno@lists.freedesktop.org, devicetree@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, sean@poorly.run, robdclark@gmail.com,
+        robh+dt@kernel.org, abhinavk@codeaurora.org,
+        kalyan_t@codeaurora.org, mkrishn@codeaurora.org, jonathan@marek.ca
+References: <1622468035-8453-1-git-send-email-rajeevny@codeaurora.org>
+ <1622468035-8453-3-git-send-email-rajeevny@codeaurora.org>
+From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Message-ID: <7a3facb5-d118-f81b-65f8-381b0d56a23b@linaro.org>
+Date:   Mon, 31 May 2021 20:57:07 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAE-0n53ySKwDwzRYFYjnQnqVAujVrkik2U-PeCuS61xQU-hbWA@mail.gmail.com>
+In-Reply-To: <1622468035-8453-3-git-send-email-rajeevny@codeaurora.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed 26 May 18:30 CDT 2021, Stephen Boyd wrote:
-
-> Quoting Maulik Shah (2021-05-21 04:26:09)
-> > Add device node for SoC sleep stats driver which provides various
-> > low power mode stats.
-> >
-> > Also update the reg size of aoss_qmp device to 0x400.
-> >
-> > Cc: devicetree@vger.kernel.org
-> > Signed-off-by: Maulik Shah <mkshah@codeaurora.org>
-> > Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
-> > ---
-> >  arch/arm64/boot/dts/qcom/sc7180.dtsi | 7 ++++++-
-> >  1 file changed, 6 insertions(+), 1 deletion(-)
-> >
-> > diff --git a/arch/arm64/boot/dts/qcom/sc7180.dtsi b/arch/arm64/boot/dts/qcom/sc7180.dtsi
-> > index 6228ba2..889d04d 100644
-> > --- a/arch/arm64/boot/dts/qcom/sc7180.dtsi
-> > +++ b/arch/arm64/boot/dts/qcom/sc7180.dtsi
-> > @@ -3215,7 +3215,7 @@
-> >
-> >                 aoss_qmp: power-controller@c300000 {
-> >                         compatible = "qcom,sc7180-aoss-qmp";
-> > -                       reg = <0 0x0c300000 0 0x100000>;
-> > +                       reg = <0 0x0c300000 0 0x400>;
-> >                         interrupts = <GIC_SPI 389 IRQ_TYPE_EDGE_RISING>;
-> >                         mboxes = <&apss_shared 0>;
-> >
-> > @@ -3223,6 +3223,11 @@
-> >                         #power-domain-cells = <1>;
-> >                 };
-> >
-> > +               rpmh-sleep-stats@c3f0000 {
-> > +                       compatible = "qcom,rpmh-sleep-stats";
-> > +                       reg = <0 0x0c3f0000 0 0x400>;
-> > +               };
-> > +
+On 31/05/2021 16:33, Rajeev Nandan wrote:
+> The SC7280 SoC uses the 7nm (V4.1) DSI PHY driver with
+> different enable|disable regulator loads.
 > 
-> Does this need to be in DT? Can the sc7180-aoss-qmp driver use the
-> aux-bus and stick the sleep stats device on there?
+> Signed-off-by: Rajeev Nandan <rajeevny@codeaurora.org>
+> ---
+>   drivers/gpu/drm/msm/Kconfig               |  6 +++---
+>   drivers/gpu/drm/msm/dsi/phy/dsi_phy.c     |  2 ++
+>   drivers/gpu/drm/msm/dsi/phy/dsi_phy.h     |  1 +
+>   drivers/gpu/drm/msm/dsi/phy/dsi_phy_7nm.c | 22 ++++++++++++++++++++++
+>   4 files changed, 28 insertions(+), 3 deletions(-)
 > 
+> diff --git a/drivers/gpu/drm/msm/Kconfig b/drivers/gpu/drm/msm/Kconfig
+> index 10f693e..7c9d9f1 100644
+> --- a/drivers/gpu/drm/msm/Kconfig
+> +++ b/drivers/gpu/drm/msm/Kconfig
+> @@ -114,9 +114,9 @@ config DRM_MSM_DSI_10NM_PHY
+>   	  Choose this option if DSI PHY on SDM845 is used on the platform.
+>   
+>   config DRM_MSM_DSI_7NM_PHY
+> -	bool "Enable DSI 7nm PHY driver in MSM DRM (used by SM8150/SM8250)"
+> +	bool "Enable DSI 7nm PHY driver in MSM DRM"
+>   	depends on DRM_MSM_DSI
+>   	default y
+>   	help
+> -	  Choose this option if DSI PHY on SM8150/SM8250 is used on the
+> -	  platform.
+> +	  Choose this option if DSI PHY on SM8150/SM8250/SC7280 is used on
+> +	  the platform.
+> diff --git a/drivers/gpu/drm/msm/dsi/phy/dsi_phy.c b/drivers/gpu/drm/msm/dsi/phy/dsi_phy.c
+> index ff7f2ec..2770783 100644
+> --- a/drivers/gpu/drm/msm/dsi/phy/dsi_phy.c
+> +++ b/drivers/gpu/drm/msm/dsi/phy/dsi_phy.c
+> @@ -593,6 +593,8 @@ static const struct of_device_id dsi_phy_dt_match[] = {
+>   	  .data = &dsi_phy_7nm_cfgs },
+>   	{ .compatible = "qcom,dsi-phy-7nm-8150",
+>   	  .data = &dsi_phy_7nm_8150_cfgs },
+> +	{ .compatible = "qcom,dsi-phy-7nm-7280",
+> +	  .data = &dsi_phy_7nm_7280_cfgs },
+>   #endif
+>   	{}
+>   };
+> diff --git a/drivers/gpu/drm/msm/dsi/phy/dsi_phy.h b/drivers/gpu/drm/msm/dsi/phy/dsi_phy.h
+> index 94a77ac..bc91dc8 100644
+> --- a/drivers/gpu/drm/msm/dsi/phy/dsi_phy.h
+> +++ b/drivers/gpu/drm/msm/dsi/phy/dsi_phy.h
+> @@ -51,6 +51,7 @@ extern const struct msm_dsi_phy_cfg dsi_phy_10nm_cfgs;
+>   extern const struct msm_dsi_phy_cfg dsi_phy_10nm_8998_cfgs;
+>   extern const struct msm_dsi_phy_cfg dsi_phy_7nm_cfgs;
+>   extern const struct msm_dsi_phy_cfg dsi_phy_7nm_8150_cfgs;
+> +extern const struct msm_dsi_phy_cfg dsi_phy_7nm_7280_cfgs;
+>   
+>   struct msm_dsi_dphy_timing {
+>   	u32 clk_zero;
+> diff --git a/drivers/gpu/drm/msm/dsi/phy/dsi_phy_7nm.c b/drivers/gpu/drm/msm/dsi/phy/dsi_phy_7nm.c
+> index e76ce40..6e30d21 100644
+> --- a/drivers/gpu/drm/msm/dsi/phy/dsi_phy_7nm.c
+> +++ b/drivers/gpu/drm/msm/dsi/phy/dsi_phy_7nm.c
+> @@ -998,3 +998,25 @@ const struct msm_dsi_phy_cfg dsi_phy_7nm_8150_cfgs = {
+>   	.io_start = { 0xae94400, 0xae96400 },
+>   	.num_dsi_phy = 2,
+>   };
+> +
+> +const struct msm_dsi_phy_cfg dsi_phy_7nm_7280_cfgs = {
+> +	.has_phy_lane = true,
+> +	.reg_cfg = {
+> +		.num = 1,
+> +		.regs = {
+> +			{"vdds", 37550, 0},
+> +		},
+> +	},
+> +	.ops = {
+> +		.enable = dsi_7nm_phy_enable,
+> +		.disable = dsi_7nm_phy_disable,
+> +		.pll_init = dsi_pll_7nm_init,
+> +		.save_pll_state = dsi_7nm_pll_save_state,
+> +		.restore_pll_state = dsi_7nm_pll_restore_state,
+> +	},
+> +	.min_pll_rate = 600000000UL,
+> +	.max_pll_rate = (5000000000ULL < ULONG_MAX) ? 5000000000ULL : ULONG_MAX,
 
-The AOSS memory space has N chunks of "message ram", one is used for the
-QMP protocol (presumably the APSS specific one), a different one is used
-for the sleep stats.
+Could you please follow the patch by Arnd here? 
+https://lore.kernel.org/linux-arm-msm/20210514213032.575161-1-arnd@kernel.org/
 
-I presume we could have come up with a binding for the entire AOSS/AOP
-and then describe (either implicit or explicitly) the QMP and
-debug-stats under that.
 
-But we'd also have to come up with the same container-device for the RPM
-case.
 
-Regards,
-Bjorn
+> +	.io_start = { 0xae94400, 0xae96400 },
+> +	.num_dsi_phy = 2,
 
-> >                 spmi_bus: spmi@c440000 {
-> >                         compatible = "qcom,spmi-pmic-arb";
-> >                         reg = <0 0x0c440000 0 0x1100>,
+Judging from the next patch, you have one DSI host and one DSI PHY. 
+Could you please correct io_start / num_dsi_phy here?
+
+> +	.quirks = DSI_PHY_7NM_QUIRK_V4_1,
+> +};
+
+
+With these two issues fixed:
+
+Reviewed-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+
+
+-- 
+With best wishes
+Dmitry
