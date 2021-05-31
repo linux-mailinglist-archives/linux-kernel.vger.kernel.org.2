@@ -2,68 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 14DCE396757
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 19:45:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D9D533966C2
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 19:19:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232398AbhEaRqt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 13:46:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58088 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233401AbhEaRq3 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 13:46:29 -0400
-Received: from zeniv-ca.linux.org.uk (zeniv-ca.linux.org.uk [IPv6:2607:5300:60:148a::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88E4CC0612A3
-        for <linux-kernel@vger.kernel.org>; Mon, 31 May 2021 10:12:36 -0700 (PDT)
-Received: from viro by zeniv-ca.linux.org.uk with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1lnlSp-0032Lo-CH; Mon, 31 May 2021 17:12:31 +0000
-Date:   Mon, 31 May 2021 17:12:31 +0000
-From:   Al Viro <viro@zeniv.linux.org.uk>
-To:     Andreas Gruenbacher <agruenba@redhat.com>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        cluster-devel@redhat.com, linux-kernel@vger.kernel.org,
-        Jan Kara <jack@suse.cz>, Matthew Wilcox <willy@infradead.org>
-Subject: Re: [RFC 5/9] iov_iter: Add iov_iter_fault_in_writeable()
-Message-ID: <YLUY/7pcFMibDnRn@zeniv-ca.linux.org.uk>
-References: <20210531170123.243771-1-agruenba@redhat.com>
- <20210531170123.243771-6-agruenba@redhat.com>
+        id S233285AbhEaRUl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 13:20:41 -0400
+Received: from mail.skyhub.de ([5.9.137.197]:48756 "EHLO mail.skyhub.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232715AbhEaRUJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 13:20:09 -0400
+Received: from zn.tnic (p200300ec2f080f00c524a4d22cb87212.dip0.t-ipconnect.de [IPv6:2003:ec:2f08:f00:c524:a4d2:2cb8:7212])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id E2CF11EC0589;
+        Mon, 31 May 2021 19:18:22 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1622481503;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=Izzz+MpnHaHiczxXxkzMFrftlLiyI7UtOOQBxR+8pYc=;
+        b=ClHGdnkHlbDM5buNWj/jtuAHzExgHtyWWWw/Si9+MHLeLfd8UWeWiyPk0d0AKRdETU7NbR
+        tfknJ7+dEzxdzkEJm9KkDXJ3abSsdtf4qjlUJqkb24vM01I9tmwVldMIPd5E93e881QzcY
+        gP8e2z5RbsbzPmaUlC8swKUdw/h7dC8=
+Date:   Mon, 31 May 2021 19:18:16 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Andrew Cooper <andrew.cooper3@citrix.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>, Pu Wen <puwen@hygon.cn>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Yazen Ghannam <Yazen.Ghannam@amd.com>,
+        Joerg Roedel <jroedel@suse.de>
+Subject: Re: [PATCH] perf/x86/rapl: Use CPUID bit on AMD and Hygon parts
+Message-ID: <YLUaWKSjwDbUDHFO@zn.tnic>
+References: <20210514135920.16093-1-andrew.cooper3@citrix.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20210531170123.243771-6-agruenba@redhat.com>
-Sender: Al Viro <viro@ftp.linux.org.uk>
+In-Reply-To: <20210514135920.16093-1-andrew.cooper3@citrix.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 31, 2021 at 07:01:19PM +0200, Andreas Gruenbacher wrote:
-> Add the equivalent of iov_iter_fault_in_readable(), but for pages that
-> will be written to.
-> 
-> While at it, fix an indentation error in iov_iter_fault_in_readable().
+On Fri, May 14, 2021 at 02:59:20PM +0100, Andrew Cooper wrote:
+> diff --git a/arch/x86/kernel/cpu/powerflags.c b/arch/x86/kernel/cpu/powerflags.c
+> index fd6ec2aa0303..e2055f51342e 100644
+> --- a/arch/x86/kernel/cpu/powerflags.c
+> +++ b/arch/x86/kernel/cpu/powerflags.c
+> @@ -21,4 +21,6 @@ const char *const x86_power_flags[32] = {
+>  	"eff_freq_ro", /* Readonly aperf/mperf */
+>  	"proc_feedback", /* processor feedback interface */
+>  	"acc_power", /* accumulated power mechanism */
+> +	"conn_standby", /* Connected Standby */
+> +	"rapl", /* Runtime Average Power Limit */
 
-> +int iov_iter_fault_in_writeable(struct iov_iter *i, size_t bytes)
-> +{
-> +	size_t skip = i->iov_offset;
-> +	const struct iovec *iov;
-> +	int err;
-> +	struct iovec v;
-> +
-> +	if (!(i->type & (ITER_BVEC|ITER_KVEC))) {
-> +		iterate_iovec(i, bytes, v, iov, skip, ({
-> +			err = fault_in_pages_writeable(v.iov_base, v.iov_len);
-> +			if (unlikely(err))
-> +				return err;
-> +		0;}))
-> +	}
-> +	return 0;
-> +}
-> +EXPORT_SYMBOL(iov_iter_fault_in_writeable);
+Yeah, so this repeats the "rapl" bit and that "conn_standby" is probably
+not gonna be used. Unless you have a really good reason to add that
+hunk, I'll whack it before applying and let this "power management"
+thing in /proc/cpuinfo die unchanged.
 
-I really don't like that.  Conflicts with iov_iter patches are not hard to
-deal with, but (like fault_in_pages_writeable() itself) it's dangerous as
-hell - fault-in for read is non-destructive, but that is *not*.  Existing
-users have to be careful with it and there are very few of those.  Adding
-that as a new primitive is inviting trouble; at the very least it needs
-a big fat "Don't use unless you really know what you are doing" kind of
-warning.
+Thx.
+
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
