@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5852C396090
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 16:26:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1254A3964DB
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 18:12:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233585AbhEaO2Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 10:28:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55704 "EHLO mail.kernel.org"
+        id S233023AbhEaQNs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 12:13:48 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33230 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232618AbhEaNw2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 09:52:28 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 62B186108D;
-        Mon, 31 May 2021 13:32:47 +0000 (UTC)
+        id S233959AbhEaOhh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 10:37:37 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3F82961C56;
+        Mon, 31 May 2021 13:52:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1622467967;
-        bh=fXVmRXjEYXzSiN1Fw+5ymuglW2HubZD3PlHAZd4Xgv4=;
+        s=korg; t=1622469123;
+        bh=CTOq7VVM7Ni3yi7qRiNv4fNQie3EkSonQ2SRJ0iS4jo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=X+2d52rclrXttzCg3YQ2e6KLNc05ALTgESbLhIo0ewvueaRihg6gVPQ0kBIqrbrZX
-         qGQ0qEAa2+BVTUlqCtwcAERRUQgt5aLp5qDrHJYK6T9zKolY2j4mCO1We3gS+04DsB
-         hcYpGLsi0bjrsRAywgWpW/dhh6+aGMdyyDyIzi6Q=
+        b=wFhjsLiuNgUix9kEKjKH+UOtqvf6Orh1UNRzFrxQmnBKh5VZiP3+eTFl5Qma8b0sn
+         B2HQaadOuasPyNpLZZ5zjUYG2myIS8Flngo0125OK3AK4gdwBypbhHZfhchDegR6Gj
+         E8q6j4TeyIrtlpdflRvpzSexrEpVKLIB1jnbHse8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, YueHaibing <yuehaibing@huawei.com>,
-        Stable@vger.kernel.org,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Subject: [PATCH 5.10 067/252] iio: adc: ad7793: Add missing error code in ad7793_setup()
-Date:   Mon, 31 May 2021 15:12:12 +0200
-Message-Id: <20210531130700.262926527@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Stable@vger.kernel.org
+Subject: [PATCH 5.12 078/296] iio: adc: ad7768-1: Fix too small buffer passed to iio_push_to_buffers_with_timestamp()
+Date:   Mon, 31 May 2021 15:12:13 +0200
+Message-Id: <20210531130706.476550184@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210531130657.971257589@linuxfoundation.org>
-References: <20210531130657.971257589@linuxfoundation.org>
+In-Reply-To: <20210531130703.762129381@linuxfoundation.org>
+References: <20210531130703.762129381@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,30 +41,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: YueHaibing <yuehaibing@huawei.com>
+From: Jonathan Cameron <Jonathan.Cameron@huawei.com>
 
-commit 4ed243b1da169bcbc1ec5507867e56250c5f1ff9 upstream.
+commit a1caeebab07e9d72eec534489f47964782b93ba9 upstream.
 
-Set error code while device ID query failed.
+Add space for the timestamp to be inserted.  Also ensure correct
+alignment for passing to iio_push_to_buffers_with_timestamp()
 
-Fixes: 88bc30548aae ("IIO: ADC: New driver for AD7792/AD7793 3 Channel SPI ADC")
-Signed-off-by: YueHaibing <yuehaibing@huawei.com>
-Cc: <Stable@vger.kernel.org>
+Fixes: a5f8c7da3dbe ("iio: adc: Add AD7768-1 ADC basic support")
 Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+Link: https://lore.kernel.org/r/20210501165314.511954-2-jic23@kernel.org
+Cc: <Stable@vger.kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/iio/adc/ad7793.c |    1 +
- 1 file changed, 1 insertion(+)
+ drivers/iio/adc/ad7768-1.c |    8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
 
---- a/drivers/iio/adc/ad7793.c
-+++ b/drivers/iio/adc/ad7793.c
-@@ -279,6 +279,7 @@ static int ad7793_setup(struct iio_dev *
- 	id &= AD7793_ID_MASK;
+--- a/drivers/iio/adc/ad7768-1.c
++++ b/drivers/iio/adc/ad7768-1.c
+@@ -167,6 +167,10 @@ struct ad7768_state {
+ 	 * transfer buffers to live in their own cache lines.
+ 	 */
+ 	union {
++		struct {
++			__be32 chan;
++			s64 timestamp;
++		} scan;
+ 		__be32 d32;
+ 		u8 d8[2];
+ 	} data ____cacheline_aligned;
+@@ -469,11 +473,11 @@ static irqreturn_t ad7768_trigger_handle
  
- 	if (id != st->chip_info->id) {
-+		ret = -ENODEV;
- 		dev_err(&st->sd.spi->dev, "device ID query failed\n");
- 		goto out;
- 	}
+ 	mutex_lock(&st->lock);
+ 
+-	ret = spi_read(st->spi, &st->data.d32, 3);
++	ret = spi_read(st->spi, &st->data.scan.chan, 3);
+ 	if (ret < 0)
+ 		goto err_unlock;
+ 
+-	iio_push_to_buffers_with_timestamp(indio_dev, &st->data.d32,
++	iio_push_to_buffers_with_timestamp(indio_dev, &st->data.scan,
+ 					   iio_get_time_ns(indio_dev));
+ 
+ 	iio_trigger_notify_done(indio_dev->trig);
 
 
