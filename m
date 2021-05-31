@@ -2,85 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5EAB33967F6
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 20:27:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BCFDF3967FB
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 20:32:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232043AbhEaS2t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 14:28:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39970 "EHLO
+        id S231899AbhEaSeP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 14:34:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41146 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232874AbhEaS2o (ORCPT
+        with ESMTP id S231610AbhEaSeG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 14:28:44 -0400
-Received: from resqmta-ch2-10v.sys.comcast.net (resqmta-ch2-10v.sys.comcast.net [IPv6:2001:558:fe21:29:69:252:207:42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8A80C061574
-        for <linux-kernel@vger.kernel.org>; Mon, 31 May 2021 11:27:01 -0700 (PDT)
-Received: from resomta-ch2-11v.sys.comcast.net ([69.252.207.107])
-        by resqmta-ch2-10v.sys.comcast.net with ESMTP
-        id nkMKlqG16hBVinmcslYdOZ; Mon, 31 May 2021 18:26:58 +0000
+        Mon, 31 May 2021 14:34:06 -0400
+Received: from mail-ot1-x329.google.com (mail-ot1-x329.google.com [IPv6:2607:f8b0:4864:20::329])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 209E4C061760
+        for <linux-kernel@vger.kernel.org>; Mon, 31 May 2021 11:32:26 -0700 (PDT)
+Received: by mail-ot1-x329.google.com with SMTP id h24-20020a9d64180000b029036edcf8f9a6so11882104otl.3
+        for <linux-kernel@vger.kernel.org>; Mon, 31 May 2021 11:32:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=comcastmailservice.net; s=20180828_2048; t=1622485618;
-        bh=KhTj3R0Z0R5UQOJkZFsUr6TSa4HAIsNgMHzaVwt+gaY=;
-        h=Received:Received:Reply-To:Subject:To:From:Message-ID:Date:
-         MIME-Version:Content-Type;
-        b=RxlP43h2ITR6Gm5pKvgki8HY6P9y4nk4oeAdBZ/8zYeU1ZwfAI7z9RthH6jO8gmSy
-         tvFsJqx738umgvW930G38tEKocYgumqyTYzTzOb43DnfSd4k3VsfpcPNETE7P+nR0k
-         D2MooHADBzqSZ/HtFkX/19yHpkCiDTF4CvFDpgZlSWqJlGYKfrBMXYUfVgCpeubXpr
-         hMxGJk34Mnli2MR9aQ6vHWjC1sTNV03fABtFksI4AG890ww7I2gULOmh7Ritp4ZEPW
-         VnvS4aMyVYLdM0EqXBDsIq/AIvzf7O+Vxs6m7G6HhGBaFDTu5zxYx+bS/DnzShZdvW
-         2uL9YfPcEd5bw==
-Received: from [IPv6:2001:558:6040:22:2171:426f:b27e:296d]
- ([IPv6:2001:558:6040:22:2171:426f:b27e:296d])
-        by resomta-ch2-11v.sys.comcast.net with ESMTPSA
-        id nmcol6PN54dconmcpluhnc; Mon, 31 May 2021 18:26:56 +0000
-X-Xfinity-VMeta: sc=-100.00;st=legit
-Reply-To: james@nurealm.net
-Subject: Re: [PATCH] x86/thermal: Fix LVT thermal setup for SMI delivery mode
-To:     Borislav Petkov <bp@alien8.de>,
-        Thomas Gleixner <tglx@linutronix.de>
-Cc:     Borislav Petkov <bp@suse.de>, linux-smp@vger.kernel.org,
-        Jens Axboe <axboe@kernel.dk>,
-        lkml <linux-kernel@vger.kernel.org>,
-        Zhang Rui <rui.zhang@intel.com>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        x86-ml <x86@kernel.org>
-References: <YKjJfu4kRDflQS5e@zn.tnic>
- <373464e3-b8a0-0fe0-b890-41df0eecf090@nurealm.net> <YKqLSqIM7Gi5x+IA@zn.tnic>
- <b550a241-2097-cf4b-cc41-e4d0a45cda72@nurealm.net> <YKtbBXZGpVZS1M4R@zn.tnic>
- <1f6c70f4-6680-d6ea-465a-548dc7698317@nurealm.net> <YK905sC/2cVOYo6I@zn.tnic>
- <87h7io8kh5.ffs@nanos.tec.linutronix.de> <YK/q4RyKhoqFM2nJ@zn.tnic>
- <87mtsf6zch.ffs@nanos.tec.linutronix.de> <YLDRuLC1vCu30lF0@zn.tnic>
-From:   James Feeney <james@nurealm.net>
-Message-ID: <0357878b-a167-cc95-894e-5f553bacfd8b@nurealm.net>
-Date:   Mon, 31 May 2021 12:26:53 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.2
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=BLVV9QZIDXqsvRH7Xti8i3IEgU5Yp6iFY14v7IM7JtI=;
+        b=MZPdaaqoKg5pgZ4tp20ZwnC/hrb4QzW8pbCBBwy9OcoE+kkw5Ec4IkjFjCxFA2Fba5
+         PnnhAKfZz2ginjK+mnQY1QvG29aCxN6JniWAC35aNnas1yzBQumAL26pOWr9qx7cXx1c
+         tDDl5JJ+SJDcfwBRrZZv08ouUk0Y9cWa1zt4Zl/KgsY5shL7m4Ojil9u2k5Aq226JGNc
+         B/7zP3Vmyl94ltaPNgN6bOPYY0fpctqUELcZtj+WSCKbUoQ+pBtPVeGsIAmpOHbanXMG
+         cVd8yXCzA9Bcxgf4H+w1KiU8WyX+r+2hQQMpo2wEKjzVB7gNmRHVprn3Kh97PJtgx2IE
+         BkFw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=BLVV9QZIDXqsvRH7Xti8i3IEgU5Yp6iFY14v7IM7JtI=;
+        b=ksv2sDyhVv3oRvI7Ivufv546Zc8hGFWJrlbxn7s0WBFmFcERzNq9LIc0gWBCkT/OUr
+         3jhz9jvNmB3MKY9VVO8NNmCT6bojqZlGvAaz2V+IH45mqxlZbChZnkqxN6q51NCjlN6j
+         h+xuZmYwyHiMx+bJIPzWuNpngTBi71NTLoolaWPfyQrylTH5Z6QWvS39A8VScyhX+k4u
+         wdcC0p+y6s5BtlmWT9W/TyfwowMp5gxdqMGxoB+GoMWzm0VX+UFu/IX6K8nt5NTbG48L
+         e2yGgsSCg5i6gTLJtdM+JBBeX8w5ZU/xQtgOk1+SWRNcD9JQnLl7hpmGyhCiQQj1d9sf
+         6Sdg==
+X-Gm-Message-State: AOAM531F2QIzmvPhjk3xvcmxR9zy3ZWGseMzi6rEElVokccS9QbY/wR/
+        J4ub/FApcg7CIgPnCxWWRC3KtA==
+X-Google-Smtp-Source: ABdhPJy3RxUiZyO4Jq6TccXwQv3j1QISvvAoai3BTT05OZNvSnYVKmbFz13tjj6gBZLJ0uE7KqpD9w==
+X-Received: by 2002:a05:6830:4009:: with SMTP id h9mr18320460ots.313.1622485945260;
+        Mon, 31 May 2021 11:32:25 -0700 (PDT)
+Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
+        by smtp.gmail.com with ESMTPSA id d1sm3274856otu.9.2021.05.31.11.32.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 31 May 2021 11:32:24 -0700 (PDT)
+Date:   Mon, 31 May 2021 13:32:23 -0500
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Sujit Kautkar <sujitka@chromium.org>
+Cc:     Andy Gross <agross@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+        Doug Anderson <dianders@chromium.org>,
+        Rajendra Nayak <rnayak@codeaurora.org>,
+        Sibi Sankar <sibis@codeaurora.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        devicetree@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 2/2] arm64: dts: qcom: sc7180: trogdor: SD-card GPIO
+ pin set bias-pull up
+Message-ID: <YLUrtzDWn8HnSZ9L@builder.lan>
+References: <20210521215841.2017349-1-sujitka@chromium.org>
+ <20210521145824.v2.2.I52f30ddfe62041b7e6c3c362f0ad8f695ac28224@changeid>
 MIME-Version: 1.0
-In-Reply-To: <YLDRuLC1vCu30lF0@zn.tnic>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210521145824.v2.2.I52f30ddfe62041b7e6c3c362f0ad8f695ac28224@changeid>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5/28/21 5:19 AM, Borislav Petkov wrote:
-> On Fri, May 28, 2021 at 10:23:42AM +0200, Thomas Gleixner wrote:
->> So you could disable CPU_SUP_INTEL ... Should still boot with reduced
->> functionality.
+On Fri 21 May 16:58 CDT 2021, Sujit Kautkar wrote:
+
+> Trogdor board does not have external pull-up for cd-gpio. Set this pin
+
+This says "Trogdor" specifically, but the diffstats says "all 7180
+devices".
+
+> to internal pull-up for sleep config to avoid frequent regulator toggle
+> events.
 > 
-> *If* you disable it and *if* that intel_init_thermal() is really there
-> to unstick those cores, then you might not even boot successfully.
-> 
->> What a mess...
-> 
-> When is it not when SMM is involved?
-> 
-> That stinking goo underneath the OS needs to be open sourced so that we
-> can replace it with something small and sane. BIOS morons will never
-> learn not to fiddle with architectural components.
+> This change is aligned with Qualcomm's DT change posted at:
+> https://patchwork.kernel.org/patch/11675347/
 > 
 
-Has the patch that resolves - or at least pacifies - this issue been forwarded downstream to GKH for mainline yet?  I'd like to be able to upgrade with stock kernels again.
+I'm sorry, but afacit this says that your v2 is Qualcomm's v2 but with
+the change I asked for. If this is the case, then your patch is either
+v3 or you could just mention this below the '---', as I don't see any
+benefit of carrying this in the git history.
 
-James
+Regards,
+Bjorn
+
+> Signed-off-by: Sujit Kautkar <sujitka@chromium.org>
+> Reviewed-by: Douglas Anderson <dianders@chromium.org>
+> ---
+> Changes in v2:
+> - added pull-up for IDP
+> 
+> (no changes since v1)
+> 
+>  arch/arm64/boot/dts/qcom/sc7180-idp.dts      | 2 +-
+>  arch/arm64/boot/dts/qcom/sc7180-trogdor.dtsi | 2 +-
+>  2 files changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/arch/arm64/boot/dts/qcom/sc7180-idp.dts b/arch/arm64/boot/dts/qcom/sc7180-idp.dts
+> index 07133e0af581a..0c255edb7f3c3 100644
+> --- a/arch/arm64/boot/dts/qcom/sc7180-idp.dts
+> +++ b/arch/arm64/boot/dts/qcom/sc7180-idp.dts
+> @@ -696,7 +696,7 @@ pinconf-data {
+>  
+>  		pinconf-sd-cd {
+>  			pins = "gpio69";
+> -			bias-disable;
+> +			bias-pull-up;
+>  			drive-strength = <2>;
+>  		};
+>  	};
+> diff --git a/arch/arm64/boot/dts/qcom/sc7180-trogdor.dtsi b/arch/arm64/boot/dts/qcom/sc7180-trogdor.dtsi
+> index d128a0ed6ad3a..330deb4967ca2 100644
+> --- a/arch/arm64/boot/dts/qcom/sc7180-trogdor.dtsi
+> +++ b/arch/arm64/boot/dts/qcom/sc7180-trogdor.dtsi
+> @@ -1638,7 +1638,7 @@ pinconf-data {
+>  
+>  		pinconf-sd-cd {
+>  			pins = "gpio69";
+> -			bias-disable;
+> +			bias-pull-up;
+>  			drive-strength = <2>;
+>  		};
+>  	};
+> -- 
+> 2.31.1.818.g46aad6cb9e-goog
+> 
