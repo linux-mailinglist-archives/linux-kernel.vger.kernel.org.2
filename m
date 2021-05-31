@@ -2,32 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BA0B4396374
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 17:16:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ABFF939636E
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 17:15:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233555AbhEaPRh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 11:17:37 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43304 "EHLO mail.kernel.org"
+        id S232421AbhEaPQu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 11:16:50 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43306 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232860AbhEaONi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S232571AbhEaONi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 31 May 2021 10:13:38 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5A98061469;
-        Mon, 31 May 2021 13:42:02 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2BDD061991;
+        Mon, 31 May 2021 13:42:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1622468523;
-        bh=gsXOuKmnPq6FsTcw5IbiriUv48/9mznqgUojDMFrieI=;
+        s=korg; t=1622468525;
+        bh=ltcpFpzwagyBwKWZ8PwHzZWhWjauqAAww2zfiy7o9cQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=WFTy4gsmaE7ccvI4JXjFsPCuV3urQSkUTTLnJv2A7LULCKCA9vLG1HQZJeADkCt+0
-         LEyx/Ofj9wQHb72qPdG+9IHDlTqI2/FHwlDjKBem0SUu8DIQabiFFSmfFkLV+No/cT
-         WH6V88HIq1JbghtNHqCMx0AqYDueeEC5qHG4Xbpw=
+        b=LlCqKTdGOMVjzmleWCUPY6OkfR8kNcob+IYLOlSNAabJtouUwJ/tfVO3PrLvzPck/
+         y/t1BqvLcngbQQgIinBn3guv1VxZCOGoGaYA3CloU9gmPPhNyI1qu5KMah5IYHOXB2
+         O03QuCiVLXM1KYS2QFrzt7F9eRMD/xUXGuxIaqnQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jouni Malinen <jouni@codeaurora.org>,
+        stable@vger.kernel.org, Wen Gong <wgong@codeaurora.org>,
+        Jouni Malinen <jouni@codeaurora.org>,
         Johannes Berg <johannes.berg@intel.com>
-Subject: [PATCH 5.4 022/177] mac80211: do not accept/forward invalid EAPOL frames
-Date:   Mon, 31 May 2021 15:12:59 +0200
-Message-Id: <20210531130648.690917403@linuxfoundation.org>
+Subject: [PATCH 5.4 023/177] mac80211: extend protection against mixed key and fragment cache attacks
+Date:   Mon, 31 May 2021 15:13:00 +0200
+Message-Id: <20210531130648.721141814@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210531130647.887605866@linuxfoundation.org>
 References: <20210531130647.887605866@linuxfoundation.org>
@@ -39,103 +40,76 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Johannes Berg <johannes.berg@intel.com>
+From: Wen Gong <wgong@codeaurora.org>
 
-commit a8c4d76a8dd4fb9666fc8919a703d85fb8f44ed8 upstream.
+commit 3edc6b0d6c061a70d8ca3c3c72eb1f58ce29bfb1 upstream.
 
-EAPOL frames are used for authentication and key management between the
-AP and each individual STA associated in the BSS. Those frames are not
-supposed to be sent by one associated STA to another associated STA
-(either unicast for broadcast/multicast).
+For some chips/drivers, e.g., QCA6174 with ath10k, the decryption is
+done by the hardware, and the Protected bit in the Frame Control field
+is cleared in the lower level driver before the frame is passed to
+mac80211. In such cases, the condition for ieee80211_has_protected() is
+not met in ieee80211_rx_h_defragment() of mac80211 and the new security
+validation steps are not executed.
 
-Similarly, in 802.11 they're supposed to be sent to the authenticator
-(AP) address.
+Extend mac80211 to cover the case where the Protected bit has been
+cleared, but the frame is indicated as having been decrypted by the
+hardware. This extends protection against mixed key and fragment cache
+attack for additional drivers/chips. This fixes CVE-2020-24586 and
+CVE-2020-24587 for such cases.
 
-Since it is possible for unexpected EAPOL frames to result in misbehavior
-in supplicant implementations, it is better for the AP to not allow such
-cases to be forwarded to other clients either directly, or indirectly if
-the AP interface is part of a bridge.
-
-Accept EAPOL (control port) frames only if they're transmitted to the
-own address, or, due to interoperability concerns, to the PAE group
-address.
-
-Disable forwarding of EAPOL (or well, the configured control port
-protocol) frames back to wireless medium in all cases. Previously, these
-frames were accepted from fully authenticated and authorized stations
-and also from unauthenticated stations for one of the cases.
-
-Additionally, to avoid forwarding by the bridge, rewrite the PAE group
-address case to the local MAC address.
+Tested-on: QCA6174 hw3.2 PCI WLAN.RM.4.4.1-00110-QCARMSWP-1
 
 Cc: stable@vger.kernel.org
-Co-developed-by: Jouni Malinen <jouni@codeaurora.org>
+Signed-off-by: Wen Gong <wgong@codeaurora.org>
 Signed-off-by: Jouni Malinen <jouni@codeaurora.org>
-Link: https://lore.kernel.org/r/20210511200110.cb327ed0cabe.Ib7dcffa2a31f0913d660de65ba3c8aca75b1d10f@changeid
+Link: https://lore.kernel.org/r/20210511200110.037aa5ca0390.I7bb888e2965a0db02a67075fcb5deb50eb7408aa@changeid
 Signed-off-by: Johannes Berg <johannes.berg@intel.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- net/mac80211/rx.c |   33 +++++++++++++++++++++++++++------
- 1 file changed, 27 insertions(+), 6 deletions(-)
+ net/mac80211/rx.c |   13 +++++++++++--
+ 1 file changed, 11 insertions(+), 2 deletions(-)
 
 --- a/net/mac80211/rx.c
 +++ b/net/mac80211/rx.c
-@@ -2484,13 +2484,13 @@ static bool ieee80211_frame_allowed(stru
- 	struct ethhdr *ehdr = (struct ethhdr *) rx->skb->data;
+@@ -2189,6 +2189,7 @@ ieee80211_rx_h_defragment(struct ieee802
+ 	unsigned int frag, seq;
+ 	struct ieee80211_fragment_entry *entry;
+ 	struct sk_buff *skb;
++	struct ieee80211_rx_status *status = IEEE80211_SKB_RXCB(rx->skb);
  
- 	/*
--	 * Allow EAPOL frames to us/the PAE group address regardless
--	 * of whether the frame was encrypted or not.
-+	 * Allow EAPOL frames to us/the PAE group address regardless of
-+	 * whether the frame was encrypted or not, and always disallow
-+	 * all other destination addresses for them.
- 	 */
--	if (ehdr->h_proto == rx->sdata->control_port_protocol &&
--	    (ether_addr_equal(ehdr->h_dest, rx->sdata->vif.addr) ||
--	     ether_addr_equal(ehdr->h_dest, pae_group_addr)))
--		return true;
-+	if (unlikely(ehdr->h_proto == rx->sdata->control_port_protocol))
-+		return ether_addr_equal(ehdr->h_dest, rx->sdata->vif.addr) ||
-+		       ether_addr_equal(ehdr->h_dest, pae_group_addr);
+ 	hdr = (struct ieee80211_hdr *)rx->skb->data;
+ 	fc = hdr->frame_control;
+@@ -2247,7 +2248,9 @@ ieee80211_rx_h_defragment(struct ieee802
+ 				     sizeof(rx->key->u.gcmp.rx_pn[queue]));
+ 			BUILD_BUG_ON(IEEE80211_CCMP_PN_LEN !=
+ 				     IEEE80211_GCMP_PN_LEN);
+-		} else if (rx->key && ieee80211_has_protected(fc)) {
++		} else if (rx->key &&
++			   (ieee80211_has_protected(fc) ||
++			    (status->flag & RX_FLAG_DECRYPTED))) {
+ 			entry->is_protected = true;
+ 			entry->key_color = rx->key->color;
+ 		}
+@@ -2292,13 +2295,19 @@ ieee80211_rx_h_defragment(struct ieee802
+ 			return RX_DROP_UNUSABLE;
+ 		memcpy(entry->last_pn, pn, IEEE80211_CCMP_PN_LEN);
+ 	} else if (entry->is_protected &&
+-		   (!rx->key || !ieee80211_has_protected(fc) ||
++		   (!rx->key ||
++		    (!ieee80211_has_protected(fc) &&
++		     !(status->flag & RX_FLAG_DECRYPTED)) ||
+ 		    rx->key->color != entry->key_color)) {
+ 		/* Drop this as a mixed key or fragment cache attack, even
+ 		 * if for TKIP Michael MIC should protect us, and WEP is a
+ 		 * lost cause anyway.
+ 		 */
+ 		return RX_DROP_UNUSABLE;
++	} else if (entry->is_protected && rx->key &&
++		   entry->key_color != rx->key->color &&
++		   (status->flag & RX_FLAG_DECRYPTED)) {
++		return RX_DROP_UNUSABLE;
+ 	}
  
- 	if (ieee80211_802_1x_port_control(rx) ||
- 	    ieee80211_drop_unencrypted(rx, fc))
-@@ -2514,8 +2514,28 @@ static void ieee80211_deliver_skb_to_loc
- 		cfg80211_rx_control_port(dev, skb, noencrypt);
- 		dev_kfree_skb(skb);
- 	} else {
-+		struct ethhdr *ehdr = (void *)skb_mac_header(skb);
-+
- 		memset(skb->cb, 0, sizeof(skb->cb));
- 
-+		/*
-+		 * 802.1X over 802.11 requires that the authenticator address
-+		 * be used for EAPOL frames. However, 802.1X allows the use of
-+		 * the PAE group address instead. If the interface is part of
-+		 * a bridge and we pass the frame with the PAE group address,
-+		 * then the bridge will forward it to the network (even if the
-+		 * client was not associated yet), which isn't supposed to
-+		 * happen.
-+		 * To avoid that, rewrite the destination address to our own
-+		 * address, so that the authenticator (e.g. hostapd) will see
-+		 * the frame, but bridge won't forward it anywhere else. Note
-+		 * that due to earlier filtering, the only other address can
-+		 * be the PAE group address.
-+		 */
-+		if (unlikely(skb->protocol == sdata->control_port_protocol &&
-+			     !ether_addr_equal(ehdr->h_dest, sdata->vif.addr)))
-+			ether_addr_copy(ehdr->h_dest, sdata->vif.addr);
-+
- 		/* deliver to local stack */
- 		if (rx->napi)
- 			napi_gro_receive(rx->napi, skb);
-@@ -2555,6 +2575,7 @@ ieee80211_deliver_skb(struct ieee80211_r
- 	if ((sdata->vif.type == NL80211_IFTYPE_AP ||
- 	     sdata->vif.type == NL80211_IFTYPE_AP_VLAN) &&
- 	    !(sdata->flags & IEEE80211_SDATA_DONT_BRIDGE_PACKETS) &&
-+	    ehdr->h_proto != rx->sdata->control_port_protocol &&
- 	    (sdata->vif.type != NL80211_IFTYPE_AP_VLAN || !sdata->u.vlan.sta)) {
- 		if (is_multicast_ether_addr(ehdr->h_dest) &&
- 		    ieee80211_vif_get_num_mcast_if(sdata) != 0) {
+ 	skb_pull(rx->skb, ieee80211_hdrlen(fc));
 
 
