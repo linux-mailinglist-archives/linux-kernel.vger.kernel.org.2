@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DC8F039621C
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 16:49:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A75B93963C2
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 17:32:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233399AbhEaOvV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 10:51:21 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37418 "EHLO mail.kernel.org"
+        id S234581AbhEaPdt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 11:33:49 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43914 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232887AbhEaOCA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 10:02:00 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9A59561942;
-        Mon, 31 May 2021 13:37:10 +0000 (UTC)
+        id S233397AbhEaOTH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 10:19:07 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 276C4619AE;
+        Mon, 31 May 2021 13:44:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1622468230;
-        bh=IoHREpO8T5t2jYw8sNsJ9hikV2tRTqlyPUYv5iO8hbQ=;
+        s=korg; t=1622468656;
+        bh=3fMNWify2rHUeoy7aSgo5RXHfU5wAtwvdRWvMXvd0hY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Psap7DKq9hVYIUbXmJg35nU3lVOvgajoprmDNxadXXbD7OLxFUH7CKpU/896I6TH9
-         +0qlvE6UDptSsBn4LPbp/+hnmB/8EpCH8GqG8fenmPkkrOgqZGcFct7qXicmEtwauK
-         CZeXT09XwtVJG5a5GJqz463JIauoEGL33PaKW2Mg=
+        b=xSv8HMLfFfu9voDyKfZ5BOwXmYf9KK7q670QGIP+3HjewrK9bAMNBdrdXh0OnoZIc
+         EcggR5kYlLdLwsPN8kek6WTZlDOm3rEADrF4oBc5VR7syGE0N5UGLXUN59j3yGY+YO
+         z7CMFnnqR74WUBkqQdsttwD2M5m2jtdY00I9pv1o=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Kangjie Lu <kjlu@umn.edu>,
-        "David S. Miller" <davem@davemloft.net>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 166/252] Revert "net: liquidio: fix a NULL pointer dereference"
-Date:   Mon, 31 May 2021 15:13:51 +0200
-Message-Id: <20210531130703.647903665@linuxfoundation.org>
+        stable@vger.kernel.org, Jon Maloy <jmaloy@redhat.com>,
+        Tung Nguyen <tung.q.nguyen@dektech.com.au>,
+        Hoang Le <hoang.h.le@dektech.com.au>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: [PATCH 5.4 075/177] Revert "net:tipc: Fix a double free in tipc_sk_mcast_rcv"
+Date:   Mon, 31 May 2021 15:13:52 +0200
+Message-Id: <20210531130650.488352959@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210531130657.971257589@linuxfoundation.org>
-References: <20210531130657.971257589@linuxfoundation.org>
+In-Reply-To: <20210531130647.887605866@linuxfoundation.org>
+References: <20210531130647.887605866@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,52 +41,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+From: Hoang Le <hoang.h.le@dektech.com.au>
 
-[ Upstream commit 4fd798a5a89114c1892574c50f2aebd49bc5b4f5 ]
+commit 75016891357a628d2b8acc09e2b9b2576c18d318 upstream.
 
-This reverts commit fe543b2f174f34a7a751aa08b334fe6b105c4569.
+This reverts commit 6bf24dc0cc0cc43b29ba344b66d78590e687e046.
+Above fix is not correct and caused memory leak issue.
 
-Because of recent interactions with developers from @umn.edu, all
-commits from them have been recently re-reviewed to ensure if they were
-correct or not.
-
-Upon review, this commit was found to be incorrect for the reasons
-below, so it must be reverted.  It will be fixed up "correctly" in a
-later kernel change.
-
-While the original commit does keep the immediate "NULL dereference"
-from happening, it does not properly propagate the error back to the
-callers, AND it does not fix this same identical issue in the
-drivers/net/ethernet/cavium/liquidio/lio_vf_main.c for some reason.
-
-Cc: Kangjie Lu <kjlu@umn.edu>
-Cc: David S. Miller <davem@davemloft.net>
-Link: https://lore.kernel.org/r/20210503115736.2104747-65-gregkh@linuxfoundation.org
+Fixes: 6bf24dc0cc0c ("net:tipc: Fix a double free in tipc_sk_mcast_rcv")
+Acked-by: Jon Maloy <jmaloy@redhat.com>
+Acked-by: Tung Nguyen <tung.q.nguyen@dektech.com.au>
+Signed-off-by: Hoang Le <hoang.h.le@dektech.com.au>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/cavium/liquidio/lio_main.c | 5 -----
- 1 file changed, 5 deletions(-)
+ net/tipc/socket.c |    5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/net/ethernet/cavium/liquidio/lio_main.c b/drivers/net/ethernet/cavium/liquidio/lio_main.c
-index 7d00d3a8ded4..e4c220f30040 100644
---- a/drivers/net/ethernet/cavium/liquidio/lio_main.c
-+++ b/drivers/net/ethernet/cavium/liquidio/lio_main.c
-@@ -1166,11 +1166,6 @@ static void send_rx_ctrl_cmd(struct lio *lio, int start_stop)
- 	sc = (struct octeon_soft_command *)
- 		octeon_alloc_soft_command(oct, OCTNET_CMD_SIZE,
- 					  16, 0);
--	if (!sc) {
--		netif_info(lio, rx_err, lio->netdev,
--			   "Failed to allocate octeon_soft_command\n");
--		return;
--	}
- 
- 	ncmd = (union octnet_cmd *)sc->virtdptr;
- 
--- 
-2.30.2
-
+--- a/net/tipc/socket.c
++++ b/net/tipc/socket.c
+@@ -1210,7 +1210,10 @@ void tipc_sk_mcast_rcv(struct net *net,
+ 		spin_lock_bh(&inputq->lock);
+ 		if (skb_peek(arrvq) == skb) {
+ 			skb_queue_splice_tail_init(&tmpq, inputq);
+-			__skb_dequeue(arrvq);
++			/* Decrease the skb's refcnt as increasing in the
++			 * function tipc_skb_peek
++			 */
++			kfree_skb(__skb_dequeue(arrvq));
+ 		}
+ 		spin_unlock_bh(&inputq->lock);
+ 		__skb_queue_purge(&tmpq);
 
 
