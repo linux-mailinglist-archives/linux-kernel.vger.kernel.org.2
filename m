@@ -2,104 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 27FEC395A4C
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 14:18:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 401E3395A6E
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 14:20:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231463AbhEaMUW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 08:20:22 -0400
-Received: from mail-ot1-f43.google.com ([209.85.210.43]:38727 "EHLO
-        mail-ot1-f43.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231327AbhEaMUE (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 08:20:04 -0400
-Received: by mail-ot1-f43.google.com with SMTP id i14-20020a9d624e0000b029033683c71999so10933024otk.5;
-        Mon, 31 May 2021 05:18:24 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=nbXQSOMl1SX/w64rXrUFd1GyxWJUeEozQbRJvljg6NY=;
-        b=Xzu0Zf8b8aRfydwxaz52TVYOq9M2AkFplqcnDDNd47TlwIiX4XvTf85P/sfGtiOPMI
-         dsJgZBllkEXQpjYmfWMuAdqbI5e3ZzgKdQ+IKXb3PCrvCkJ/dIHCeix8051nY/JcQYvF
-         rxT5bXI9bxAB4VHdSaA6j0fJMxA8xVF4KBhFSPAlBNXqwZN8rgOA6oaW3X00DEdMZVV4
-         q7rZHTugEFyd0+cV79zfKfhGKy2ounJgfgEXf8rHsaBU0K+2akIq4RITKG8EEX8dgR1n
-         9nMOpiGMMm+cHW3LV6+s6zmo5kwiiBwFkbsVvtV5I06kDEg9RHmIVUMu7zdJJqBwnGjQ
-         24sg==
-X-Gm-Message-State: AOAM531zYd1djxtUJBmSMSMTMgOeviUFCbRsIgF7IeXEkWE0wFLlOrWr
-        Y4yTUGt9QWBP6PYHnxva7FwNG0f2J+tpCxg1vx4=
-X-Google-Smtp-Source: ABdhPJwHEAYRLw7/HcfazhPnPw+s3TPWZzaoJvVfB98jY2K8oA1l2Fk7a28bzTDcdV3Uuz3Fx09io0+sQorpJYQGp/Y=
-X-Received: by 2002:a9d:63cd:: with SMTP id e13mr2194863otl.206.1622463504175;
- Mon, 31 May 2021 05:18:24 -0700 (PDT)
+        id S231449AbhEaMW0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 08:22:26 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36882 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231327AbhEaMWZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 08:22:25 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7285361263;
+        Mon, 31 May 2021 12:20:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1622463645;
+        bh=Gv8FIYmeqMDJOTDXgyQdyOGAwgOhxU1Bft/3S63ev/U=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=LIrvAoqfkN1K2eyb6iQNPpp0M0V0008b+jty/0d4NbU9p/eXzuUMTPvpmOOxW2VOV
+         eHt2gdjGUXu6qrX8vZlATRzIg5wvCJpbHMHKbWOFqvTQCEscAAFKR+gB+lr7D0zQFJ
+         eEQZuI1EKTHpQXBRMfmQFLyPvh28yFM7LPrRV6+NAQdoplNXqoJ8uJhKtFH4xrwIZJ
+         iJwwbcdv9XUjQKxivXKbeqUlPLw9YMbdOts1Qc+xjyTLGOioZvmVtPBHRSSEZjp25A
+         mQYDjxpWIYdpN/oaFW9XPf9RM3Oxtdc+rGQG8He4tlPHPx2Vg4wECp0+f2fayR0VIm
+         vtudJO3fG8hNw==
+Received: by mail-lf1-f54.google.com with SMTP id v8so16564403lft.8;
+        Mon, 31 May 2021 05:20:45 -0700 (PDT)
+X-Gm-Message-State: AOAM533bxy+lo6ikBqLjtWvpPMvaPvChdKRgkbfcnuFjLbiwVpRmjBQh
+        00E2bxtRz3Gntm2PzD7MJKnyN1rRMHu1Mto8Fqk=
+X-Google-Smtp-Source: ABdhPJyFueMXhrZ6j6LIAaHblvrdO4uem3DqJOQMzoQ2ZdLNHJ3ha7iWTvss38IAeL7E3PsB/WXGsAmUI6WPXCMR6lY=
+X-Received: by 2002:a05:6512:218d:: with SMTP id b13mr9389933lft.346.1622463643822;
+ Mon, 31 May 2021 05:20:43 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210526162251.125600-1-krzysztof.kozlowski@canonical.com>
-In-Reply-To: <20210526162251.125600-1-krzysztof.kozlowski@canonical.com>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Mon, 31 May 2021 14:18:13 +0200
-Message-ID: <CAJZ5v0jM2mfO3W5SW+QhToLy+uCorGnmSdr=t3aTtqO-E8e5BA@mail.gmail.com>
-Subject: Re: [PATCH v2] PM: runtime: document common mistake with pm_runtime_get_sync()
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Len Brown <len.brown@intel.com>, Pavel Machek <pavel@ucw.cz>,
-        Linux PM <linux-pm@vger.kernel.org>,
+References: <1622393366-46079-1-git-send-email-guoren@kernel.org>
+ <1622393366-46079-3-git-send-email-guoren@kernel.org> <20210531061742.GB824@lst.de>
+In-Reply-To: <20210531061742.GB824@lst.de>
+From:   Guo Ren <guoren@kernel.org>
+Date:   Mon, 31 May 2021 20:20:32 +0800
+X-Gmail-Original-Message-ID: <CAJF2gTQ3pG-EoDnqonEcMyKzdXPkf5s7qcyLSm9x79RiETCWkg@mail.gmail.com>
+Message-ID: <CAJF2gTQ3pG-EoDnqonEcMyKzdXPkf5s7qcyLSm9x79RiETCWkg@mail.gmail.com>
+Subject: Re: [PATCH V5 2/3] riscv: Add ASID-based tlbflushing methods
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     Anup Patel <anup.patel@wdc.com>,
+        Palmer Dabbelt <palmerdabbelt@google.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Marek Szyprowski <m.szyprowski@samsung.com>
+        linux-arch <linux-arch@vger.kernel.org>,
+        Guo Ren <guoren@linux.alibaba.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 26, 2021 at 6:23 PM Krzysztof Kozlowski
-<krzysztof.kozlowski@canonical.com> wrote:
+On Mon, May 31, 2021 at 2:17 PM Christoph Hellwig <hch@lst.de> wrote:
 >
-> pm_runtime_get_sync(), contradictory to intuition, does not drop the
-> runtime PM usage counter on errors which lead to several wrong usages in
-> drivers (missing the put).  pm_runtime_resume_and_get() was added as a
-> better implementation so document the preference of using it, hoping it
-> will stop bad patterns.
+> On Sun, May 30, 2021 at 04:49:25PM +0000, guoren@kernel.org wrote:
+> > From: Guo Ren <guoren@linux.alibaba.com>
+> >
+> > Implement optimized version of the tlb flushing routines for systems
+> > using ASIDs. These are behind the use_asid_allocator static branch to
+> > not affect existing systems not using ASIDs.
 >
-> Suggested-by: Marek Szyprowski <m.szyprowski@samsung.com>
-> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
->
-> ---
->
-> Changes since v1:
-> 1. Reword after comments from Rafael.
-> ---
->  Documentation/power/runtime_pm.rst | 6 +++++-
->  include/linux/pm_runtime.h         | 3 +++
->  2 files changed, 8 insertions(+), 1 deletion(-)
->
-> diff --git a/Documentation/power/runtime_pm.rst b/Documentation/power/runtime_pm.rst
-> index 18ae21bf7f92..33619bf83f69 100644
-> --- a/Documentation/power/runtime_pm.rst
-> +++ b/Documentation/power/runtime_pm.rst
-> @@ -378,7 +378,11 @@ drivers/base/power/runtime.c and include/linux/pm_runtime.h:
->
->    `int pm_runtime_get_sync(struct device *dev);`
->      - increment the device's usage counter, run pm_runtime_resume(dev) and
-> -      return its result
-> +      return its result;
-> +      be aware that it does not drop the device's usage counter on errors so
-> +      so consider using pm_runtime_resume_and_get() instead of it, especially
-> +      if its return value is checked by the caller, as this is likely to result
-> +      in cleaner code.
->
->    `int pm_runtime_get_if_in_use(struct device *dev);`
->      - return -EINVAL if 'power.disable_depth' is nonzero; otherwise, if the
-> diff --git a/include/linux/pm_runtime.h b/include/linux/pm_runtime.h
-> index 6c08a085367b..aab8b35e9f8a 100644
-> --- a/include/linux/pm_runtime.h
-> +++ b/include/linux/pm_runtime.h
-> @@ -380,6 +380,9 @@ static inline int pm_runtime_get(struct device *dev)
->   * The possible return values of this function are the same as for
->   * pm_runtime_resume() and the runtime PM usage counter of @dev remains
->   * incremented in all cases, even if it returns an error code.
-> + * Consider using pm_runtime_resume_and_get() instead of it, especially
-> + * if its return value is checked by the caller, as this is likely to result
-> + * in cleaner code.
->   */
->  static inline int pm_runtime_get_sync(struct device *dev)
->  {
-> --
+> I still think the code duplication and exposing of new code in a global
+> header here is a bad idea and would suggest the version I sent instead.
+Your idea is in the third patch, and I also add you with
+Co-developed-by. Please have a look:
 
-Applied as 5.14 material (with some cosmetic edits), thanks!
+https://lore.kernel.org/linux-riscv/1622393366-46079-4-git-send-email-guoren@kernel.org/T/#u
+
+[PATCH V5 3/3] riscv: tlbflush: Optimize coding convention
+
+
+--
+Best Regards
+ Guo Ren
+
+ML: https://lore.kernel.org/linux-csky/
