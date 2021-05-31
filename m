@@ -2,35 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DA459395FAA
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 16:12:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 987433964AB
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 18:05:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232636AbhEaONt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 10:13:49 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50910 "EHLO mail.kernel.org"
+        id S233619AbhEaQGg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 12:06:36 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33236 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232262AbhEaNqb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 09:46:31 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B7B9761584;
-        Mon, 31 May 2021 13:30:13 +0000 (UTC)
+        id S233528AbhEaOfh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 10:35:37 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7A42761C4E;
+        Mon, 31 May 2021 13:51:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1622467814;
-        bh=ZZn6gAXd2LtIgYDetsil5HNXegsJcOEU4gvJpdG9hJA=;
+        s=korg; t=1622469068;
+        bh=fijj2q9zJT3coIJmqx9ABwAlF6TJVVDsiE4Wj5Lnklc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=igbBhbq65VKDbNy5ZeMr/r1+r+CLlJPHppFbNr2yKDI6oEuySgOhG4IO1e35LynyA
-         TOnU90ZtpMVbLyfAEoIUsBaIXFDloWMdoEusO7NPzpHn9wEVa9ZLeeccdh8tS3A+Uv
-         lLYgXiKPP2bHoY8gZnAnOsGs+rh5jXgx7bO/bFQY=
+        b=nIQ9/IIuI1oxwsoStuUVn0qXTpkX+5et+czu5ZsvyUlNykit+sozUeTDs4p+rh9o0
+         bG3DOKl9tmhplOKWrylj4egGv1d5mvkwUTBKyxnOIMx5lnfZGQ8nSjzxsMQYUt2G/n
+         mGlddR9HLG75CkNVeEz8L9V6aLuxrXEkqYq3zsPI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Anna Schumaker <Anna.Schumaker@Netapp.com>,
-        Trond Myklebust <trond.myklebust@hammerspace.com>
-Subject: [PATCH 5.10 011/252] NFSv4: Fix a NULL pointer dereference in pnfs_mark_matching_lsegs_return()
-Date:   Mon, 31 May 2021 15:11:16 +0200
-Message-Id: <20210531130658.363381796@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Mike Christie <michael.christie@oracle.com>,
+        Shinichiro Kawasaki <shinichiro.kawasaki@wdc.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>
+Subject: [PATCH 5.12 022/296] scsi: target: core: Avoid smp_processor_id() in preemptible code
+Date:   Mon, 31 May 2021 15:11:17 +0200
+Message-Id: <20210531130704.514227451@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210531130657.971257589@linuxfoundation.org>
-References: <20210531130657.971257589@linuxfoundation.org>
+In-Reply-To: <20210531130703.762129381@linuxfoundation.org>
+References: <20210531130703.762129381@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,60 +41,124 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Anna Schumaker <Anna.Schumaker@Netapp.com>
+From: Shin'ichiro Kawasaki <shinichiro.kawasaki@wdc.com>
 
-commit a421d218603ffa822a0b8045055c03eae394a7eb upstream.
+commit 70ca3c57ff914113f681e657634f7fbfa68e1ad1 upstream.
 
-Commit de144ff4234f changes _pnfs_return_layout() to call
-pnfs_mark_matching_lsegs_return() passing NULL as the struct
-pnfs_layout_range argument. Unfortunately,
-pnfs_mark_matching_lsegs_return() doesn't check if we have a value here
-before dereferencing it, causing an oops.
+The BUG message "BUG: using smp_processor_id() in preemptible [00000000]
+code" was observed for TCMU devices with kernel config DEBUG_PREEMPT.
 
-I'm able to hit this crash consistently when running connectathon basic
-tests on NFS v4.1/v4.2 against Ontap.
+The message was observed when blktests block/005 was run on TCMU devices
+with fileio backend or user:zbc backend [1]. The commit 1130b499b4a7
+("scsi: target: tcm_loop: Use LIO wq cmd submission helper") triggered the
+symptom. The commit modified work queue to handle commands and changed
+'current->nr_cpu_allowed' at smp_processor_id() call.
 
-Fixes: de144ff4234f ("NFSv4: Don't discard segments marked for return in _pnfs_return_layout()")
-Cc: stable@vger.kernel.org
-Signed-off-by: Anna Schumaker <Anna.Schumaker@Netapp.com>
-Signed-off-by: Trond Myklebust <trond.myklebust@hammerspace.com>
+The message was also observed at system shutdown when TCMU devices were not
+cleaned up [2]. The function smp_processor_id() was called in SCSI host
+work queue for abort handling, and triggered the BUG message. This symptom
+was observed regardless of the commit 1130b499b4a7 ("scsi: target:
+tcm_loop: Use LIO wq cmd submission helper").
+
+To avoid the preemptible code check at smp_processor_id(), get CPU ID with
+raw_smp_processor_id() instead. The CPU ID is used for performance
+improvement then thread move to other CPU will not affect the code.
+
+[1]
+
+[   56.468103] run blktests block/005 at 2021-05-12 14:16:38
+[   57.369473] check_preemption_disabled: 85 callbacks suppressed
+[   57.369480] BUG: using smp_processor_id() in preemptible [00000000] code: fio/1511
+[   57.369506] BUG: using smp_processor_id() in preemptible [00000000] code: fio/1510
+[   57.369512] BUG: using smp_processor_id() in preemptible [00000000] code: fio/1506
+[   57.369552] caller is __target_init_cmd+0x157/0x170 [target_core_mod]
+[   57.369606] CPU: 4 PID: 1506 Comm: fio Not tainted 5.13.0-rc1+ #34
+[   57.369613] Hardware name: System manufacturer System Product Name/PRIME Z270-A, BIOS 1302 03/15/2018
+[   57.369617] Call Trace:
+[   57.369621] BUG: using smp_processor_id() in preemptible [00000000] code: fio/1507
+[   57.369628]  dump_stack+0x6d/0x89
+[   57.369642]  check_preemption_disabled+0xc8/0xd0
+[   57.369628] caller is __target_init_cmd+0x157/0x170 [target_core_mod]
+[   57.369655]  __target_init_cmd+0x157/0x170 [target_core_mod]
+[   57.369695]  target_init_cmd+0x76/0x90 [target_core_mod]
+[   57.369732]  tcm_loop_queuecommand+0x109/0x210 [tcm_loop]
+[   57.369744]  scsi_queue_rq+0x38e/0xc40
+[   57.369761]  __blk_mq_try_issue_directly+0x109/0x1c0
+[   57.369779]  blk_mq_try_issue_directly+0x43/0x90
+[   57.369790]  blk_mq_submit_bio+0x4e5/0x5d0
+[   57.369812]  submit_bio_noacct+0x46e/0x4e0
+[   57.369830]  __blkdev_direct_IO_simple+0x1a3/0x2d0
+[   57.369859]  ? set_init_blocksize.isra.0+0x60/0x60
+[   57.369880]  generic_file_read_iter+0x89/0x160
+[   57.369898]  blkdev_read_iter+0x44/0x60
+[   57.369906]  new_sync_read+0x102/0x170
+[   57.369929]  vfs_read+0xd4/0x160
+[   57.369941]  __x64_sys_pread64+0x6e/0xa0
+[   57.369946]  ? lockdep_hardirqs_on+0x79/0x100
+[   57.369958]  do_syscall_64+0x3a/0x70
+[   57.369965]  entry_SYSCALL_64_after_hwframe+0x44/0xae
+[   57.369973] RIP: 0033:0x7f7ed4c1399f
+[   57.369979] Code: 08 89 3c 24 48 89 4c 24 18 e8 7d f3 ff ff 4c 8b 54 24 18 48 8b 54 24 10 41 89 c0 48 8b 74 24 08 8b 3c 24 b8 11 00 00 00 0f 05 <48> 3d 00 f0 ff ff 77 31 44 89 c7 48 89 04 24 e8 cd f3 ff ff 48 8b
+[   57.369983] RSP: 002b:00007ffd7918c580 EFLAGS: 00000293 ORIG_RAX: 0000000000000011
+[   57.369990] RAX: ffffffffffffffda RBX: 00000000015b4540 RCX: 00007f7ed4c1399f
+[   57.369993] RDX: 0000000000001000 RSI: 00000000015de000 RDI: 0000000000000009
+[   57.369996] RBP: 00000000015b4540 R08: 0000000000000000 R09: 0000000000000001
+[   57.369999] R10: 0000000000e5c000 R11: 0000000000000293 R12: 00007f7eb5269a70
+[   57.370002] R13: 0000000000000000 R14: 0000000000001000 R15: 00000000015b4568
+[   57.370031] CPU: 7 PID: 1507 Comm: fio Not tainted 5.13.0-rc1+ #34
+[   57.370036] Hardware name: System manufacturer System Product Name/PRIME Z270-A, BIOS 1302 03/15/2018
+[   57.370039] Call Trace:
+[   57.370045]  dump_stack+0x6d/0x89
+[   57.370056]  check_preemption_disabled+0xc8/0xd0
+[   57.370068]  __target_init_cmd+0x157/0x170 [target_core_mod]
+[   57.370121]  target_init_cmd+0x76/0x90 [target_core_mod]
+[   57.370178]  tcm_loop_queuecommand+0x109/0x210 [tcm_loop]
+[   57.370197]  scsi_queue_rq+0x38e/0xc40
+[   57.370224]  __blk_mq_try_issue_directly+0x109/0x1c0
+...
+
+[2]
+
+[  117.458597] BUG: using smp_processor_id() in preemptible [00000000] code: kworker/u16:8
+[  117.467279] caller is __target_init_cmd+0x157/0x170 [target_core_mod]
+[  117.473893] CPU: 1 PID: 418 Comm: kworker/u16:6 Not tainted 5.13.0-rc1+ #34
+[  117.481150] Hardware name: System manufacturer System Product Name/PRIME Z270-A, BIOS 8
+[  117.481153] Workqueue: scsi_tmf_7 scmd_eh_abort_handler
+[  117.481156] Call Trace:
+[  117.481158]  dump_stack+0x6d/0x89
+[  117.481162]  check_preemption_disabled+0xc8/0xd0
+[  117.512575]  target_submit_tmr+0x41/0x150 [target_core_mod]
+[  117.519705]  tcm_loop_issue_tmr+0xa7/0x100 [tcm_loop]
+[  117.524913]  tcm_loop_abort_task+0x43/0x60 [tcm_loop]
+[  117.530137]  scmd_eh_abort_handler+0x7b/0x230
+[  117.534681]  process_one_work+0x268/0x580
+[  117.538862]  worker_thread+0x55/0x3b0
+[  117.542652]  ? process_one_work+0x580/0x580
+[  117.548351]  kthread+0x143/0x160
+[  117.551675]  ? kthread_create_worker_on_cpu+0x40/0x40
+[  117.556873]  ret_from_fork+0x1f/0x30
+
+Link: https://lore.kernel.org/r/20210515070315.215801-1-shinichiro.kawasaki@wdc.com
+Fixes: 1526d9f10c61 ("scsi: target: Make state_list per CPU")
+Cc: stable@vger.kernel.org # v5.11+
+Reviewed-by: Mike Christie <michael.christie@oracle.com>
+Signed-off-by: Shin'ichiro Kawasaki <shinichiro.kawasaki@wdc.com>
+Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- fs/nfs/pnfs.c |   15 +++++++--------
- 1 file changed, 7 insertions(+), 8 deletions(-)
+ drivers/target/target_core_transport.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/fs/nfs/pnfs.c
-+++ b/fs/nfs/pnfs.c
-@@ -1317,6 +1317,11 @@ _pnfs_return_layout(struct inode *ino)
- {
- 	struct pnfs_layout_hdr *lo = NULL;
- 	struct nfs_inode *nfsi = NFS_I(ino);
-+	struct pnfs_layout_range range = {
-+		.iomode		= IOMODE_ANY,
-+		.offset		= 0,
-+		.length		= NFS4_MAX_UINT64,
-+	};
- 	LIST_HEAD(tmp_list);
- 	const struct cred *cred;
- 	nfs4_stateid stateid;
-@@ -1344,16 +1349,10 @@ _pnfs_return_layout(struct inode *ino)
- 	}
- 	valid_layout = pnfs_layout_is_valid(lo);
- 	pnfs_clear_layoutcommit(ino, &tmp_list);
--	pnfs_mark_matching_lsegs_return(lo, &tmp_list, NULL, 0);
-+	pnfs_mark_matching_lsegs_return(lo, &tmp_list, &range, 0);
+--- a/drivers/target/target_core_transport.c
++++ b/drivers/target/target_core_transport.c
+@@ -1400,7 +1400,7 @@ void transport_init_se_cmd(
+ 	cmd->orig_fe_lun = unpacked_lun;
  
--	if (NFS_SERVER(ino)->pnfs_curr_ld->return_range) {
--		struct pnfs_layout_range range = {
--			.iomode		= IOMODE_ANY,
--			.offset		= 0,
--			.length		= NFS4_MAX_UINT64,
--		};
-+	if (NFS_SERVER(ino)->pnfs_curr_ld->return_range)
- 		NFS_SERVER(ino)->pnfs_curr_ld->return_range(lo, &range);
--	}
+ 	if (!(cmd->se_cmd_flags & SCF_USE_CPUID))
+-		cmd->cpuid = smp_processor_id();
++		cmd->cpuid = raw_smp_processor_id();
  
- 	/* Don't send a LAYOUTRETURN if list was initially empty */
- 	if (!test_bit(NFS_LAYOUT_RETURN_REQUESTED, &lo->plh_flags) ||
+ 	cmd->state_active = false;
+ }
 
 
