@@ -2,37 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 985673962D4
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 16:59:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 14C0B395F88
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 16:10:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233213AbhEaPBM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 11:01:12 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39886 "EHLO mail.kernel.org"
+        id S233358AbhEaOMa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 10:12:30 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49834 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232956AbhEaOG3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 10:06:29 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E874A61968;
-        Mon, 31 May 2021 13:38:53 +0000 (UTC)
+        id S232767AbhEaNpV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 09:45:21 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 464B2613F2;
+        Mon, 31 May 2021 13:29:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1622468334;
-        bh=Pk+wRoH3aM90NjcEyh2oeAkB7xg2RvR9VU9bhfGX9BE=;
+        s=korg; t=1622467789;
+        bh=TD042Atec4F9ZBJai4TbAhVmwzi2hnS8ajipd8FJQ0E=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=k8MX6NuhNbnUWKFQ1HPQg7etYXILfo11dN38ZOm2bAixfXtpR0KlfMraHbX0yAjT+
-         Ce06tBW/gyE1Uwt30EMYQ1iZFfasE+JCHv/cFe5ccLyPbl8Sox79XCxs02/po8ke69
-         voQvXKfiHTA1b5jIrVKSK8AA2MtGgFRt7ehDpy80=
+        b=eh//u7OyQxtd6X7nUzYU7m/K4JiD6stTsOzjTo80eDyAfc39H/FSHEWvPcjT46SbB
+         8yH1vw38wmcQ6EmSg3KIgABH1b2vinBqFljub9zst2Mpbig31o2Q/hK3f7ov6DGAgk
+         9E6tiG9uwBKZpXiSFkHz7mb2xLkymfswKvDrAevM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Tao Liu <thomas.liu@ucloud.cn>,
-        Ilya Maximets <i.maximets@ovn.org>,
-        "David S. Miller" <davem@davemloft.net>,
+        stable@vger.kernel.org,
+        Kai-Heng Feng <kai.heng.feng@canonical.com>,
+        =?UTF-8?q?=C3=89ric=20Piel?= <eric.piel@trempplin-utc.net>,
+        Hans de Goede <hdegoede@redhat.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 205/252] openvswitch: meter: fix race when getting now_ms.
+Subject: [PATCH 4.14 45/79] platform/x86: hp_accel: Avoid invoking _INI to speed up resume
 Date:   Mon, 31 May 2021 15:14:30 +0200
-Message-Id: <20210531130704.982387840@linuxfoundation.org>
+Message-Id: <20210531130637.455710083@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210531130657.971257589@linuxfoundation.org>
-References: <20210531130657.971257589@linuxfoundation.org>
+In-Reply-To: <20210531130636.002722319@linuxfoundation.org>
+References: <20210531130636.002722319@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,55 +42,90 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tao Liu <thomas.liu@ucloud.cn>
+From: Kai-Heng Feng <kai.heng.feng@canonical.com>
 
-[ Upstream commit e4df1b0c24350a0f00229ff895a91f1072bd850d ]
+[ Upstream commit 79d341e26ebcdbc622348aaaab6f8f89b6fdb25f ]
 
-We have observed meters working unexpected if traffic is 3+Gbit/s
-with multiple connections.
+hp_accel can take almost two seconds to resume on some HP laptops.
 
-now_ms is not pretected by meter->lock, we may get a negative
-long_delta_ms when another cpu updated meter->used, then:
-    delta_ms = (u32)long_delta_ms;
-which will be a large value.
+The bottleneck is on evaluating _INI, which is only needed to run once.
 
-    band->bucket += delta_ms * band->rate;
-then we get a wrong band->bucket.
+Resolve the issue by only invoking _INI when it's necessary. Namely, on
+probe and on hibernation restore.
 
-OpenVswitch userspace datapath has fixed the same issue[1] some
-time ago, and we port the implementation to kernel datapath.
-
-[1] https://patchwork.ozlabs.org/project/openvswitch/patch/20191025114436.9746-1-i.maximets@ovn.org/
-
-Fixes: 96fbc13d7e77 ("openvswitch: Add meter infrastructure")
-Signed-off-by: Tao Liu <thomas.liu@ucloud.cn>
-Suggested-by: Ilya Maximets <i.maximets@ovn.org>
-Reviewed-by: Ilya Maximets <i.maximets@ovn.org>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
+Acked-by: Éric Piel <eric.piel@trempplin-utc.net>
+Link: https://lore.kernel.org/r/20210430060736.590321-1-kai.heng.feng@canonical.com
+Signed-off-by: Hans de Goede <hdegoede@redhat.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/openvswitch/meter.c | 8 ++++++++
- 1 file changed, 8 insertions(+)
+ drivers/misc/lis3lv02d/lis3lv02d.h |  1 +
+ drivers/platform/x86/hp_accel.c    | 22 +++++++++++++++++++++-
+ 2 files changed, 22 insertions(+), 1 deletion(-)
 
-diff --git a/net/openvswitch/meter.c b/net/openvswitch/meter.c
-index 8fbefd52af7f..e594b4d6b58a 100644
---- a/net/openvswitch/meter.c
-+++ b/net/openvswitch/meter.c
-@@ -611,6 +611,14 @@ bool ovs_meter_execute(struct datapath *dp, struct sk_buff *skb,
- 	spin_lock(&meter->lock);
+diff --git a/drivers/misc/lis3lv02d/lis3lv02d.h b/drivers/misc/lis3lv02d/lis3lv02d.h
+index c439c827eea8..0ef759671b54 100644
+--- a/drivers/misc/lis3lv02d/lis3lv02d.h
++++ b/drivers/misc/lis3lv02d/lis3lv02d.h
+@@ -284,6 +284,7 @@ struct lis3lv02d {
+ 	int			regs_size;
+ 	u8                      *reg_cache;
+ 	bool			regs_stored;
++	bool			init_required;
+ 	u8                      odr_mask;  /* ODR bit mask */
+ 	u8			whoami;    /* indicates measurement precision */
+ 	s16 (*read_data) (struct lis3lv02d *lis3, int reg);
+diff --git a/drivers/platform/x86/hp_accel.c b/drivers/platform/x86/hp_accel.c
+index 7b12abe86b94..9c3c83ef445b 100644
+--- a/drivers/platform/x86/hp_accel.c
++++ b/drivers/platform/x86/hp_accel.c
+@@ -101,6 +101,9 @@ MODULE_DEVICE_TABLE(acpi, lis3lv02d_device_ids);
+ static int lis3lv02d_acpi_init(struct lis3lv02d *lis3)
+ {
+ 	struct acpi_device *dev = lis3->bus_priv;
++	if (!lis3->init_required)
++		return 0;
++
+ 	if (acpi_evaluate_object(dev->handle, METHOD_NAME__INI,
+ 				 NULL, NULL) != AE_OK)
+ 		return -EINVAL;
+@@ -367,6 +370,7 @@ static int lis3lv02d_add(struct acpi_device *device)
+ 	}
  
- 	long_delta_ms = (now_ms - meter->used); /* ms */
-+	if (long_delta_ms < 0) {
-+		/* This condition means that we have several threads fighting
-+		 * for a meter lock, and the one who received the packets a
-+		 * bit later wins. Assuming that all racing threads received
-+		 * packets at the same time to avoid overflow.
-+		 */
-+		long_delta_ms = 0;
-+	}
+ 	/* call the core layer do its init */
++	lis3_dev.init_required = true;
+ 	ret = lis3lv02d_init_device(&lis3_dev);
+ 	if (ret)
+ 		return ret;
+@@ -414,11 +418,27 @@ static int lis3lv02d_suspend(struct device *dev)
  
- 	/* Make sure delta_ms will not be too large, so that bucket will not
- 	 * wrap around below.
+ static int lis3lv02d_resume(struct device *dev)
+ {
++	lis3_dev.init_required = false;
++	lis3lv02d_poweron(&lis3_dev);
++	return 0;
++}
++
++static int lis3lv02d_restore(struct device *dev)
++{
++	lis3_dev.init_required = true;
+ 	lis3lv02d_poweron(&lis3_dev);
+ 	return 0;
+ }
+ 
+-static SIMPLE_DEV_PM_OPS(hp_accel_pm, lis3lv02d_suspend, lis3lv02d_resume);
++static const struct dev_pm_ops hp_accel_pm = {
++	.suspend = lis3lv02d_suspend,
++	.resume = lis3lv02d_resume,
++	.freeze = lis3lv02d_suspend,
++	.thaw = lis3lv02d_resume,
++	.poweroff = lis3lv02d_suspend,
++	.restore = lis3lv02d_restore,
++};
++
+ #define HP_ACCEL_PM (&hp_accel_pm)
+ #else
+ #define HP_ACCEL_PM NULL
 -- 
 2.30.2
 
