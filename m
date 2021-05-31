@@ -2,79 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA48A39562A
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 09:33:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 19E1B395629
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 09:33:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230315AbhEaHf0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 03:35:26 -0400
-Received: from perceval.ideasonboard.com ([213.167.242.64]:41314 "EHLO
-        perceval.ideasonboard.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230070AbhEaHfS (ORCPT
+        id S230296AbhEaHfV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 03:35:21 -0400
+Received: from bhuna.collabora.co.uk ([46.235.227.227]:35534 "EHLO
+        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230215AbhEaHfR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 03:35:18 -0400
-Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id A2CC38A1;
-        Mon, 31 May 2021 09:33:37 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1622446417;
-        bh=QV2di8bMFCT6TQbdHb9uCxp+ZShAB+swwpLoWysFISw=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=kPi8jEOTPd8cY7Wx2+KPAk9D4Cx1Fsdvo2cSyc/dY4PGYk8sfUQARLD0SjYye3Zxr
-         FJmDA2122y0wh3/Ate4b3E0NaijzFQ2++0oattA4wvHqUhZduwfvmvgrH7KELeszEp
-         OWyLXo7lA56b3ScyewLsAdrtLj8xVnVpPndwaluA=
-Date:   Mon, 31 May 2021 10:33:27 +0300
-From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To:     Zou Wei <zou_wei@huawei.com>
-Cc:     vkoul@kernel.org, yoshihiro.shimoda.uh@renesas.com,
-        geert+renesas@glider.be, wsa+renesas@sang-engineering.com,
-        robin.murphy@arm.com, dmaengine@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH -next] dmaengine: rcar-dmac: Fix PM reference leak in
- rcar_dmac_probe()
-Message-ID: <YLSRR7kHZF+fj7k4@pendragon.ideasonboard.com>
-References: <1622442963-54095-1-git-send-email-zou_wei@huawei.com>
+        Mon, 31 May 2021 03:35:17 -0400
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: gtucker)
+        with ESMTPSA id DCDBB1F422B1
+To:     "kernelci@groups.io" <kernelci@groups.io>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        automated-testing@lists.yoctoproject.org
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        kernelci-members@groups.io, Shuah Khan <shuahkh@osg.samsung.com>,
+        Jesse Barnes <jsbarnes@google.com>,
+        Gustavo Padovan <gustavo.padovan@collabora.com>,
+        Collabora Kernel ML <kernel@collabora.com>
+From:   Guillaume Tucker <guillaume.tucker@collabora.com>
+Subject: First KernelCI sprint this week
+Message-ID: <f94a4f66-d16a-95b4-95df-9e9cff65620d@collabora.com>
+Date:   Mon, 31 May 2021 08:33:34 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.0
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <1622442963-54095-1-git-send-email-zou_wei@huawei.com>
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Zou,
+A KernelCI sprint or "hackfest" is taking place this week,
+initiated as a joint effort by the Google Chrome OS team and
+Collabora.  It is a public event and anyone is encouraged to take
+part.  This is the first edition, we're hoping to repeat this
+exercise in the future with a growing involvement from the kernel
+community.  The goal is to provide an opportunity for developers
+to focus on improving kernel test coverage and automation.
 
-Thank you for the patch.
+To find out about KernelCI, please see https://kernelci.org.
 
-On Mon, May 31, 2021 at 02:36:03PM +0800, Zou Wei wrote:
-> pm_runtime_get_sync will increment pm usage counter even it failed.
-> Forgetting to putting operation will result in reference leak here.
-> Fix it by replacing it with pm_runtime_resume_and_get to keep usage
-> counter balanced.
-> 
-> Reported-by: Hulk Robot <hulkci@huawei.com>
-> Signed-off-by: Zou Wei <zou_wei@huawei.com>
 
-Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+There is a workboard on GitHub to track progress and see which
+topics are being worked on:
 
-> ---
->  drivers/dma/sh/rcar-dmac.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/dma/sh/rcar-dmac.c b/drivers/dma/sh/rcar-dmac.c
-> index d530c1b..6885b3d 100644
-> --- a/drivers/dma/sh/rcar-dmac.c
-> +++ b/drivers/dma/sh/rcar-dmac.c
-> @@ -1913,7 +1913,7 @@ static int rcar_dmac_probe(struct platform_device *pdev)
->  
->  	/* Enable runtime PM and initialize the device. */
->  	pm_runtime_enable(&pdev->dev);
-> -	ret = pm_runtime_get_sync(&pdev->dev);
-> +	ret = pm_runtime_resume_and_get(&pdev->dev);
->  	if (ret < 0) {
->  		dev_err(&pdev->dev, "runtime PM get sync failed (%d)\n", ret);
->  		return ret;
+  https://github.com/orgs/kernelci/projects/3
 
--- 
-Regards,
 
-Laurent Pinchart
+We are hosting open hours this week on a Big Blue Button
+instance (same as Linux Plumbers Conference 2020):
+
+  Monday 31st: May 13:00-15:00 UTC
+  Tuesday 1st - Friday 4th June: 08:00-10:00 UTC, 18:00-20:00 UTC
+
+The actual meeting link is not shared publicly here to avoid
+abuse but please reply to this email or ask padovan or gtucker on
+IRC (Libera) and we'll send it to you privately unless we've
+reached maximum capacity.
+
+
+Of course, please feel free to use this email thread to share any
+ideas or comments you may have as well as the #kernelci channel
+on IRC (Libera, transitioning from Freenode).  We're otherwise
+expecting some kselftest improvements and kernel bug fixes to be
+sent out this week and as follow-ups.  Stay tuned!
+
+Best wishes,
+Guillaume
