@@ -2,35 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D0D0B39653D
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 18:26:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F736395DA0
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 15:46:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233110AbhEaQ2e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 12:28:34 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40318 "EHLO mail.kernel.org"
+        id S230518AbhEaNsM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 09:48:12 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39080 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234242AbhEaOpL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 10:45:11 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CAC2461C87;
-        Mon, 31 May 2021 13:55:09 +0000 (UTC)
+        id S232114AbhEaNdU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 09:33:20 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 677B6613F0;
+        Mon, 31 May 2021 13:24:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1622469310;
-        bh=+BsTtVc6PdfMc7tMiicVr3+MQ3VK3Pq81j3/C0zPQWI=;
+        s=korg; t=1622467462;
+        bh=wLTcEg0Z9vVBFyBZ+RfAbUKqhMeJpZDMSjpBxZ40i/Y=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=e2zVucd2rezemB6EMbecYjbT2RSFXFjeCj0tsMfy6dLdW/hXM4V93CVcWU2g2THKJ
-         1OOnfguBDw8XoYY+Lsd2pOLkmmnQwsfjGd4DMvfxrn7atyQ0RT+gilpwgFDgJwnWQE
-         Zupzi7PuF+XfvkTMG5VKH3MUJGEtBekFB4bJES7c=
+        b=iM6wzOQ6QfWJCXz0PEQha9491SJNo7nLDT9smu1/dCban0g9EOqlBYoN3mQ9mE1LX
+         J97VVE4R5aigIwdUVqHtvNFweVUkfse9n6eTvGqZiPzRtm9Z2jqdadwzxrxx7NDUHS
+         dZTwU0kwHayrU3JTAJCPIm3ORwQPmKY1+jpcKAVY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Qii Wang <qii.wang@mediatek.com>,
-        Wolfram Sang <wsa@kernel.org>
-Subject: [PATCH 5.12 150/296] i2c: mediatek: Disable i2c start_en and clear intr_stat brfore reset
+        stable@vger.kernel.org, Johan Hovold <johan@kernel.org>
+Subject: [PATCH 4.19 029/116] USB: trancevibrator: fix control-request direction
 Date:   Mon, 31 May 2021 15:13:25 +0200
-Message-Id: <20210531130708.915162917@linuxfoundation.org>
+Message-Id: <20210531130641.153387826@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210531130703.762129381@linuxfoundation.org>
-References: <20210531130703.762129381@linuxfoundation.org>
+In-Reply-To: <20210531130640.131924542@linuxfoundation.org>
+References: <20210531130640.131924542@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,38 +38,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Qii Wang <qii.wang@mediatek.com>
+From: Johan Hovold <johan@kernel.org>
 
-commit fed1bd51a504eb96caa38b4f13ab138fc169ea75 upstream.
+commit 746e4acf87bcacf1406e05ef24a0b7139147c63e upstream.
 
-The i2c controller driver do dma reset after transfer timeout,
-but sometimes dma reset will trigger an unexpected DMA_ERR irq.
-It will cause the i2c controller to continuously send interrupts
-to the system and cause soft lock-up. So we need to disable i2c
-start_en and clear intr_stat to stop i2c controller before dma
-reset when transfer timeout.
+The direction of the pipe argument must match the request-type direction
+bit or control requests may fail depending on the host-controller-driver
+implementation.
 
-Fixes: aafced673c06("i2c: mediatek: move dma reset before i2c reset")
-Signed-off-by: Qii Wang <qii.wang@mediatek.com>
-Signed-off-by: Wolfram Sang <wsa@kernel.org>
+Fix the set-speed request which erroneously used USB_DIR_IN and update
+the default timeout argument to match (same value).
+
+Fixes: 5638e4d92e77 ("USB: add PlayStation 2 Trance Vibrator driver")
+Cc: stable@vger.kernel.org      # 2.6.19
+Signed-off-by: Johan Hovold <johan@kernel.org>
+Link: https://lore.kernel.org/r/20210521133109.17396-1-johan@kernel.org
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/i2c/busses/i2c-mt65xx.c |    5 +++++
- 1 file changed, 5 insertions(+)
+ drivers/usb/misc/trancevibrator.c |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
---- a/drivers/i2c/busses/i2c-mt65xx.c
-+++ b/drivers/i2c/busses/i2c-mt65xx.c
-@@ -478,6 +478,11 @@ static void mtk_i2c_clock_disable(struct
- static void mtk_i2c_init_hw(struct mtk_i2c *i2c)
- {
- 	u16 control_reg;
-+	u16 intr_stat_reg;
-+
-+	mtk_i2c_writew(i2c, I2C_CHN_CLR_FLAG, OFFSET_START);
-+	intr_stat_reg = mtk_i2c_readw(i2c, OFFSET_INTR_STAT);
-+	mtk_i2c_writew(i2c, intr_stat_reg, OFFSET_INTR_STAT);
- 
- 	if (i2c->dev_comp->apdma_sync) {
- 		writel(I2C_DMA_WARM_RST, i2c->pdmabase + OFFSET_RST);
+--- a/drivers/usb/misc/trancevibrator.c
++++ b/drivers/usb/misc/trancevibrator.c
+@@ -59,9 +59,9 @@ static ssize_t speed_store(struct device
+ 	/* Set speed */
+ 	retval = usb_control_msg(tv->udev, usb_sndctrlpipe(tv->udev, 0),
+ 				 0x01, /* vendor request: set speed */
+-				 USB_DIR_IN | USB_TYPE_VENDOR | USB_RECIP_OTHER,
++				 USB_DIR_OUT | USB_TYPE_VENDOR | USB_RECIP_OTHER,
+ 				 tv->speed, /* speed value */
+-				 0, NULL, 0, USB_CTRL_GET_TIMEOUT);
++				 0, NULL, 0, USB_CTRL_SET_TIMEOUT);
+ 	if (retval) {
+ 		tv->speed = old;
+ 		dev_dbg(&tv->udev->dev, "retval = %d\n", retval);
 
 
