@@ -2,105 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 951A8396917
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 22:45:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E9CF39691A
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 22:47:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232183AbhEaUrG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 16:47:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42082 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230032AbhEaUrE (ORCPT
+        id S232116AbhEaUsp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 16:48:45 -0400
+Received: from jabberwock.ucw.cz ([46.255.230.98]:53560 "EHLO
+        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231144AbhEaUsm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 16:47:04 -0400
-Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81DCCC061574;
-        Mon, 31 May 2021 13:45:22 -0700 (PDT)
-Received: by mail-lf1-x129.google.com with SMTP id x38so18385737lfa.10;
-        Mon, 31 May 2021 13:45:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=YpLgNIlN9zUDIYH0mV8WgJZT7MsWTFoWZDLaovOIqJI=;
-        b=S3Ha6nVeIUHrpIvzMzZE+KBEp/ZIjHOJdYjZf0oOdOadt6nYTYFicrxq5so/PkOiqu
-         flFInMfV4xzQ5ju9Z8ELg9aF/U/VtLBllv6HU49dUyZ4HvJzMbpFHqaKEgMcerTTupUK
-         mBDGECeqG/cT/D5Nwm6+v8R8+3dK1SRC1Evgj7sy3p1y24Y2aCscaAkwsqiaXGrDwdyz
-         98w8gdsHQL0p3B2acrwOfQE4jFw5ioCbtkl9EaRHLUHqZzejnAING/dVsLPKgUBREdF7
-         qRSk7MRpqpE0ipna5xUuloWjI8W81FGymYe3zlt8vmxn+b/Y63tKd4Qpu+ZqmIOQE/eU
-         YF0g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=YpLgNIlN9zUDIYH0mV8WgJZT7MsWTFoWZDLaovOIqJI=;
-        b=E2bChE4KEBIIEuap7pTVZ/sew0cbUgwAypbxyZ7Y7OLB1/eLXXGkuENMnuPaIA5I20
-         b/ZWVFk5O3ojDu5SZ5haDT/Kjj6f55shQKFfhbxS8EVgRfW39vltnykwOwUM/Oc7uao7
-         Td1RoIN6V7n9BsCfifKElGcqNb9osUdS2D1Uk0vgE0uaiefL3sQE5sCc0TTQSln/3Pxv
-         XfYtux8hgIAJMfkAhX0UuX9lzHyO/TyU/5UD53BIIQ8FIBrgzB1qZbRwrOPP/MzkWC9N
-         GrbARIdbNVzPOFSNw09mUaf9lyNtVvZkAvrJ/sjqvs+HhEPPCTVf5TJYpyv52iH+CumM
-         KPXg==
-X-Gm-Message-State: AOAM533ZS1VFlyNfngT1p2s0vn2QcEF2VDHJVLWqs6owZIXKlwa2JJeD
-        CD2QDjhSV516jvJB3SAGYUypYzS+NJ0=
-X-Google-Smtp-Source: ABdhPJxmIIxwpw1aitfI+vqs9IcP0Vp3iCoqAkkJhD3SyeEGhAaOOYRb0bN07pTTz+TonUK9HthIZw==
-X-Received: by 2002:ac2:4ec6:: with SMTP id p6mr15637151lfr.645.1622493920577;
-        Mon, 31 May 2021 13:45:20 -0700 (PDT)
-Received: from [192.168.2.145] (79-139-170-222.dynamic.spd-mgts.ru. [79.139.170.222])
-        by smtp.googlemail.com with ESMTPSA id c9sm1448651lfb.207.2021.05.31.13.45.20
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 31 May 2021 13:45:20 -0700 (PDT)
-Subject: Re: [PATCH v1 04/10] ARM: tegra: Add reg property to Tegra20 EMC
- table device-tree nodes
-To:     Thierry Reding <thierry.reding@gmail.com>
-Cc:     Jonathan Hunter <jonathanh@nvidia.com>,
-        Agneli <poczt@protonmail.ch>, Paul Fertser <fercerpav@gmail.com>,
-        Svyatoslav Ryhel <clamor95@gmail.com>,
-        linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210510202600.12156-1-digetx@gmail.com>
- <20210510202600.12156-5-digetx@gmail.com> <YLSpCXNtut3z8U9a@orome.fritz.box>
-From:   Dmitry Osipenko <digetx@gmail.com>
-Message-ID: <1ab11cc8-b45a-0c2d-c0c4-fa5779756c05@gmail.com>
-Date:   Mon, 31 May 2021 23:45:19 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        Mon, 31 May 2021 16:48:42 -0400
+Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
+        id F3A611C0B76; Mon, 31 May 2021 22:47:00 +0200 (CEST)
+Date:   Mon, 31 May 2021 22:47:00 +0200
+From:   Pavel Machek <pavel@denx.de>
+To:     Sasha Levin <sashal@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        Anirudh Rayabharam <mail@anirudhrb.com>,
+        Kangjie Lu <kjlu@umn.edu>, Kalle Valo <kvalo@codeaurora.org>,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org
+Subject: Re: [PATCH AUTOSEL 4.4 07/16] ath6kl: return error code in
+ ath6kl_wmi_set_roam_lrssi_cmd()
+Message-ID: <20210531204700.GA19694@amd>
+References: <20210524145130.2499829-1-sashal@kernel.org>
+ <20210524145130.2499829-7-sashal@kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <YLSpCXNtut3z8U9a@orome.fritz.box>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="5vNYLRcllDrimb99"
+Content-Disposition: inline
+In-Reply-To: <20210524145130.2499829-7-sashal@kernel.org>
+User-Agent: Mutt/1.5.23 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-31.05.2021 12:14, Thierry Reding пишет:
-> On Mon, May 10, 2021 at 11:25:54PM +0300, Dmitry Osipenko wrote:
->> The reg property is now specified for the emc-tables nodes in the Tegra20
->> device-tree binding. Add reg property to the EMC table device-tree nodes
->> of Tegra20 board device-trees in order to silence dt_binding_check warning
->> about the missing property.
->>
->> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
->> ---
->>  arch/arm/boot/dts/tegra20-acer-a500-picasso.dts | 4 ++++
->>  arch/arm/boot/dts/tegra20-paz00.dts             | 1 +
->>  2 files changed, 5 insertions(+)
-> 
-> In retrospect we should've just used "reg" in the first place rather
-> than adding the custom "nvidia,ram-code". It's a bit redundant to have
-> both of them with the same value. I wonder if we should deprecate the
-> use of "nvidia,ram-code" and at least make the code look at the "reg"
-> property first and only fall back to "nvidia,ram-code" if "reg" does
-> not exist. We probably won't ever be able to get rid of the fallback
-> for backwards-compatibility reasons, but at least that would make the
-> intent a bit clearer.
 
-This may be not doable. We have Asus TF101 which doesn't use RAM code
-for the memory identification, instead it uses LPDDR chip info [1]. I
-will send the LPDDR patches later on.
+--5vNYLRcllDrimb99
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-[1]
-https://github.com/grate-driver/linux/blob/master/arch/arm/boot/dts/tegra20-asus-tf101.dts#L1115
+Hi!
 
-The TF101 support mostly in a completed state now, we still need to try
-to figure out why upstream kernel doesn't work using a stock Android
-bootloader, so far bootloader replacement to u-boot is required.
+> From: Anirudh Rayabharam <mail@anirudhrb.com>
+>=20
+> [ Upstream commit fc6a6521556c8250e356ddc6a3f2391aa62dc976 ]
+>=20
+> ath6kl_wmi_cmd_send could fail, so let's return its error code
+> upstream.
+
+Something went very wrong here.
+
+Content is okay, but "upstream commit" label is wrong, pointing to
+incomplete fix that was reverted (with different content and different
+author).
+
+commit fc6a6521556c8250e356ddc6a3f2391aa62dc976
+Author: Kangjie Lu <kjlu@umn.edu>
+Date:   Wed Dec 26 00:43:28 2018 -0600
+
+    ath6kl: return error code in ath6kl_wmi_set_roam_lrssi_cmd()
+
+    ath6kl_wmi_cmd_send could fail, so let's return its error code
+        upstream.
+
+    Signed-off-by: Kangjie Lu <kjlu@umn.edu>
+        Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
+
+Best regards,
+							Pavel
+						=09
+--=20
+DENX Software Engineering GmbH,      Managing Director: Wolfgang Denk
+HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
+
+--5vNYLRcllDrimb99
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1
+
+iEYEARECAAYFAmC1S0QACgkQMOfwapXb+vIeoACfSepaPc6dfkU2aKXHkCAHXiqg
+bAAAoK/3j/SpCoKfqGlIDdZZmjO8GoW7
+=AhPf
+-----END PGP SIGNATURE-----
+
+--5vNYLRcllDrimb99--
