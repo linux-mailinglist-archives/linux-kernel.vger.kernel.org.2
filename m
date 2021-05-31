@@ -2,31 +2,31 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 62675396491
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 18:03:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7BC60396492
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 18:03:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234363AbhEaQEX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 12:04:23 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59608 "EHLO mail.kernel.org"
+        id S234454AbhEaQE3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 12:04:29 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60154 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233942AbhEaOdi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 10:33:38 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5DFC561C41;
-        Mon, 31 May 2021 13:50:26 +0000 (UTC)
+        id S234051AbhEaOeI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 10:34:08 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C59C361C3A;
+        Mon, 31 May 2021 13:50:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1622469027;
-        bh=MIXC6rOlqdugtGAWWRRHU1z/hgiuToDpfbiTjsUREMM=;
+        s=korg; t=1622469029;
+        bh=pbH02lGp2CrbIbCVpqYTR9zllLpzSocuXbjy1WT1O98=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=F3PqUXSR7X7JV95LMBlqDBTH45WBDr1ROsEtl89USYcNT6rCCFJ6VmtZsX9KZlf4u
-         VX/1jFvlxPsqoFP9so8nEulxppS142dReaxdQ73GRV9rAWXRXgkBBY/sdHrueynDwb
-         ai5YTBELa0DlXyNNp0RJ+dWpX1tEEKzuHFPf/nWQ=
+        b=uW2ZpI0RTJGsFjcrpQZCu7VaBpZVuMK/o2m+os7HRlQSUO+Mz/PXoGUjvtBB0mcEQ
+         mhkog2qhj5tT9Cwq+sGMqKFipVMllw84AMj6Zlpqs4Cz30JRoY24eojbQzz7siG15L
+         dm2nOUOJANcNqwokKKdHOCyyFp1itV0OS5W9+7hE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org, Johannes Berg <johannes.berg@intel.com>
-Subject: [PATCH 5.12 041/296] mac80211: check defrag PN against current frame
-Date:   Mon, 31 May 2021 15:11:36 +0200
-Message-Id: <20210531130705.209006456@linuxfoundation.org>
+Subject: [PATCH 5.12 042/296] mac80211: prevent attacks on TKIP/WEP as well
+Date:   Mon, 31 May 2021 15:11:37 +0200
+Message-Id: <20210531130705.251510174@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210531130703.762129381@linuxfoundation.org>
 References: <20210531130703.762129381@linuxfoundation.org>
@@ -40,118 +40,70 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Johannes Berg <johannes.berg@intel.com>
 
-commit bf30ca922a0c0176007e074b0acc77ed345e9990 upstream.
+commit 7e44a0b597f04e67eee8cdcbe7ee706c6f5de38b upstream.
 
-As pointed out by Mathy Vanhoef, we implement the RX PN check
-on fragmented frames incorrectly - we check against the last
-received PN prior to the new frame, rather than to the one in
-this frame itself.
+Similar to the issues fixed in previous patches, TKIP and WEP
+should be protected even if for TKIP we have the Michael MIC
+protecting it, and WEP is broken anyway.
 
-Prior patches addressed the security issue here, but in order
-to be able to reason better about the code, fix it to really
-compare against the current frame's PN, not the last stored
-one.
+However, this also somewhat protects potential other algorithms
+that drivers might implement.
 
 Cc: stable@vger.kernel.org
-Link: https://lore.kernel.org/r/20210511200110.bfbc340ff071.Id0b690e581da7d03d76df90bb0e3fd55930bc8a0@changeid
+Link: https://lore.kernel.org/r/20210511200110.430e8c202313.Ia37e4e5b6b3eaab1a5ae050e015f6c92859dbe27@changeid
 Signed-off-by: Johannes Berg <johannes.berg@intel.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- net/mac80211/ieee80211_i.h |   11 +++++++++--
- net/mac80211/rx.c          |    5 ++---
- net/mac80211/wpa.c         |   13 +++++++++----
- 3 files changed, 20 insertions(+), 9 deletions(-)
+ net/mac80211/rx.c       |   12 ++++++++++++
+ net/mac80211/sta_info.h |    3 ++-
+ 2 files changed, 14 insertions(+), 1 deletion(-)
 
---- a/net/mac80211/ieee80211_i.h
-+++ b/net/mac80211/ieee80211_i.h
-@@ -223,8 +223,15 @@ struct ieee80211_rx_data {
- 	 */
- 	int security_idx;
- 
--	u32 tkip_iv32;
--	u16 tkip_iv16;
-+	union {
-+		struct {
-+			u32 iv32;
-+			u16 iv16;
-+		} tkip;
-+		struct {
-+			u8 pn[IEEE80211_CCMP_PN_LEN];
-+		} ccm_gcm;
-+	};
- };
- 
- struct ieee80211_csa_settings {
 --- a/net/mac80211/rx.c
 +++ b/net/mac80211/rx.c
-@@ -2307,7 +2307,6 @@ ieee80211_rx_h_defragment(struct ieee802
- 	if (entry->check_sequential_pn) {
- 		int i;
- 		u8 pn[IEEE80211_CCMP_PN_LEN], *rpn;
--		int queue;
- 
- 		if (!requires_sequential_pn(rx, fc))
- 			return RX_DROP_UNUSABLE;
-@@ -2322,8 +2321,8 @@ ieee80211_rx_h_defragment(struct ieee802
- 			if (pn[i])
- 				break;
+@@ -2273,6 +2273,7 @@ ieee80211_rx_h_defragment(struct ieee802
+ 			 * next fragment has a sequential PN value.
+ 			 */
+ 			entry->check_sequential_pn = true;
++			entry->is_protected = true;
+ 			entry->key_color = rx->key->color;
+ 			memcpy(entry->last_pn,
+ 			       rx->key->u.ccmp.rx_pn[queue],
+@@ -2285,6 +2286,9 @@ ieee80211_rx_h_defragment(struct ieee802
+ 				     sizeof(rx->key->u.gcmp.rx_pn[queue]));
+ 			BUILD_BUG_ON(IEEE80211_CCMP_PN_LEN !=
+ 				     IEEE80211_GCMP_PN_LEN);
++		} else if (rx->key && ieee80211_has_protected(fc)) {
++			entry->is_protected = true;
++			entry->key_color = rx->key->color;
  		}
--		queue = rx->security_idx;
--		rpn = rx->key->u.ccmp.rx_pn[queue];
-+
-+		rpn = rx->ccm_gcm.pn;
+ 		return RX_QUEUED;
+ 	}
+@@ -2326,6 +2330,14 @@ ieee80211_rx_h_defragment(struct ieee802
  		if (memcmp(pn, rpn, IEEE80211_CCMP_PN_LEN))
  			return RX_DROP_UNUSABLE;
  		memcpy(entry->last_pn, pn, IEEE80211_CCMP_PN_LEN);
---- a/net/mac80211/wpa.c
-+++ b/net/mac80211/wpa.c
-@@ -3,6 +3,7 @@
-  * Copyright 2002-2004, Instant802 Networks, Inc.
-  * Copyright 2008, Jouni Malinen <j@w1.fi>
-  * Copyright (C) 2016-2017 Intel Deutschland GmbH
-+ * Copyright (C) 2020-2021 Intel Corporation
-  */
- 
- #include <linux/netdevice.h>
-@@ -167,8 +168,8 @@ ieee80211_rx_h_michael_mic_verify(struct
- 
- update_iv:
- 	/* update IV in key information to be able to detect replays */
--	rx->key->u.tkip.rx[rx->security_idx].iv32 = rx->tkip_iv32;
--	rx->key->u.tkip.rx[rx->security_idx].iv16 = rx->tkip_iv16;
-+	rx->key->u.tkip.rx[rx->security_idx].iv32 = rx->tkip.iv32;
-+	rx->key->u.tkip.rx[rx->security_idx].iv16 = rx->tkip.iv16;
- 
- 	return RX_CONTINUE;
- 
-@@ -294,8 +295,8 @@ ieee80211_crypto_tkip_decrypt(struct iee
- 					  key, skb->data + hdrlen,
- 					  skb->len - hdrlen, rx->sta->sta.addr,
- 					  hdr->addr1, hwaccel, rx->security_idx,
--					  &rx->tkip_iv32,
--					  &rx->tkip_iv16);
-+					  &rx->tkip.iv32,
-+					  &rx->tkip.iv16);
- 	if (res != TKIP_DECRYPT_OK)
- 		return RX_DROP_UNUSABLE;
- 
-@@ -553,6 +554,8 @@ ieee80211_crypto_ccmp_decrypt(struct iee
- 		}
- 
- 		memcpy(key->u.ccmp.rx_pn[queue], pn, IEEE80211_CCMP_PN_LEN);
-+		if (unlikely(ieee80211_is_frag(hdr)))
-+			memcpy(rx->ccm_gcm.pn, pn, IEEE80211_CCMP_PN_LEN);
++	} else if (entry->is_protected &&
++		   (!rx->key || !ieee80211_has_protected(fc) ||
++		    rx->key->color != entry->key_color)) {
++		/* Drop this as a mixed key or fragment cache attack, even
++		 * if for TKIP Michael MIC should protect us, and WEP is a
++		 * lost cause anyway.
++		 */
++		return RX_DROP_UNUSABLE;
  	}
  
- 	/* Remove CCMP header and MIC */
-@@ -781,6 +784,8 @@ ieee80211_crypto_gcmp_decrypt(struct iee
- 		}
- 
- 		memcpy(key->u.gcmp.rx_pn[queue], pn, IEEE80211_GCMP_PN_LEN);
-+		if (unlikely(ieee80211_is_frag(hdr)))
-+			memcpy(rx->ccm_gcm.pn, pn, IEEE80211_CCMP_PN_LEN);
- 	}
- 
- 	/* Remove GCMP header and MIC */
+ 	skb_pull(rx->skb, ieee80211_hdrlen(fc));
+--- a/net/mac80211/sta_info.h
++++ b/net/mac80211/sta_info.h
+@@ -455,7 +455,8 @@ struct ieee80211_fragment_entry {
+ 	u16 extra_len;
+ 	u16 last_frag;
+ 	u8 rx_queue;
+-	bool check_sequential_pn; /* needed for CCMP/GCMP */
++	u8 check_sequential_pn:1, /* needed for CCMP/GCMP */
++	   is_protected:1;
+ 	u8 last_pn[6]; /* PN of the last fragment if CCMP was used */
+ 	unsigned int key_color;
+ };
 
 
