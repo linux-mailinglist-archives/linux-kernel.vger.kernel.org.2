@@ -2,37 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E0D0D39653F
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 18:27:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EA02C3963E5
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 17:36:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233225AbhEaQ2x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 12:28:53 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40322 "EHLO mail.kernel.org"
+        id S233127AbhEaPiZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 11:38:25 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48832 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234245AbhEaOpL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 10:45:11 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9612A61C7E;
-        Mon, 31 May 2021 13:55:17 +0000 (UTC)
+        id S233808AbhEaOVb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 10:21:31 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DBC54619C3;
+        Mon, 31 May 2021 13:44:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1622469318;
-        bh=LaB3UTQvPX++WABDJkqPhH0V1OsEQ6q1tF4fYa/kK94=;
+        s=korg; t=1622468683;
+        bh=48Soh6RnlXypW8APZSOeTcy38VcdKuzc9LqZpppiBno=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=NrFJyFiboCmm6tF9GQrwAPf9muhUdnOhkIYpT3ssW/ynB9qWEF0+YaiOCY5yXV0fk
-         DAnDlLI4hpnUbE2Y6gmZxcvM6Bfj1dU8uFJ37hsm48sdaz/gGKIfIvPv+8qxJqs1aj
-         Yie1O6UmnrvQhwMJd+H8myYcu7c20QdovOJt0AYY=
+        b=C8/vG3HyehClutTVjrnXk+pZ0GYvJApUqoIfW+1Pwro7bcOfBCXaSdq24w63yS9mZ
+         FrDPYv+f4v5GHlc2ah6XY8pfAC1WX0Gi7id1dDNQRNYWlFnkS4i7YQprEr/ptMOqdB
+         FEUcYDffKLK3Yb2bQ4U9nVJdlIvjOUgzNjOwL/yM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Fabrizio Castro <fabrizio.castro.jz@renesas.com>,
-        Wolfram Sang <wsa@kernel.org>
-Subject: [PATCH 5.12 152/296] i2c: sh_mobile: Use new clock calculation formulas for RZ/G2E
-Date:   Mon, 31 May 2021 15:13:27 +0200
-Message-Id: <20210531130708.977765480@linuxfoundation.org>
+        stable@vger.kernel.org, Johan Hovold <johan@kernel.org>
+Subject: [PATCH 5.4 051/177] USB: trancevibrator: fix control-request direction
+Date:   Mon, 31 May 2021 15:13:28 +0200
+Message-Id: <20210531130649.693833870@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210531130703.762129381@linuxfoundation.org>
-References: <20210531130703.762129381@linuxfoundation.org>
+In-Reply-To: <20210531130647.887605866@linuxfoundation.org>
+References: <20210531130647.887605866@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,33 +38,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Geert Uytterhoeven <geert+renesas@glider.be>
+From: Johan Hovold <johan@kernel.org>
 
-commit c4740e293c93c747e65d53d9aacc2ba8521d1489 upstream.
+commit 746e4acf87bcacf1406e05ef24a0b7139147c63e upstream.
 
-When switching the Gen3 SoCs to the new clock calculation formulas, the
-match entry for RZ/G2E added in commit 51243b73455f2d12 ("i2c:
-sh_mobile: Add support for r8a774c0 (RZ/G2E)") was forgotten.
+The direction of the pipe argument must match the request-type direction
+bit or control requests may fail depending on the host-controller-driver
+implementation.
 
-Fixes: e8a27567509b2439 ("i2c: sh_mobile: use new clock calculation formulas for Gen3")
-Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
-Reviewed-by: Fabrizio Castro <fabrizio.castro.jz@renesas.com>
-Signed-off-by: Wolfram Sang <wsa@kernel.org>
+Fix the set-speed request which erroneously used USB_DIR_IN and update
+the default timeout argument to match (same value).
+
+Fixes: 5638e4d92e77 ("USB: add PlayStation 2 Trance Vibrator driver")
+Cc: stable@vger.kernel.org      # 2.6.19
+Signed-off-by: Johan Hovold <johan@kernel.org>
+Link: https://lore.kernel.org/r/20210521133109.17396-1-johan@kernel.org
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/i2c/busses/i2c-sh_mobile.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/usb/misc/trancevibrator.c |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
---- a/drivers/i2c/busses/i2c-sh_mobile.c
-+++ b/drivers/i2c/busses/i2c-sh_mobile.c
-@@ -807,7 +807,7 @@ static const struct sh_mobile_dt_config
- static const struct of_device_id sh_mobile_i2c_dt_ids[] = {
- 	{ .compatible = "renesas,iic-r8a73a4", .data = &fast_clock_dt_config },
- 	{ .compatible = "renesas,iic-r8a7740", .data = &r8a7740_dt_config },
--	{ .compatible = "renesas,iic-r8a774c0", .data = &fast_clock_dt_config },
-+	{ .compatible = "renesas,iic-r8a774c0", .data = &v2_freq_calc_dt_config },
- 	{ .compatible = "renesas,iic-r8a7790", .data = &v2_freq_calc_dt_config },
- 	{ .compatible = "renesas,iic-r8a7791", .data = &v2_freq_calc_dt_config },
- 	{ .compatible = "renesas,iic-r8a7792", .data = &v2_freq_calc_dt_config },
+--- a/drivers/usb/misc/trancevibrator.c
++++ b/drivers/usb/misc/trancevibrator.c
+@@ -61,9 +61,9 @@ static ssize_t speed_store(struct device
+ 	/* Set speed */
+ 	retval = usb_control_msg(tv->udev, usb_sndctrlpipe(tv->udev, 0),
+ 				 0x01, /* vendor request: set speed */
+-				 USB_DIR_IN | USB_TYPE_VENDOR | USB_RECIP_OTHER,
++				 USB_DIR_OUT | USB_TYPE_VENDOR | USB_RECIP_OTHER,
+ 				 tv->speed, /* speed value */
+-				 0, NULL, 0, USB_CTRL_GET_TIMEOUT);
++				 0, NULL, 0, USB_CTRL_SET_TIMEOUT);
+ 	if (retval) {
+ 		tv->speed = old;
+ 		dev_dbg(&tv->udev->dev, "retval = %d\n", retval);
 
 
