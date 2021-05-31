@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ED5513960F9
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 16:32:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 44367396360
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 17:13:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233542AbhEaOds (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 10:33:48 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59498 "EHLO mail.kernel.org"
+        id S232443AbhEaPOy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 11:14:54 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40564 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233284AbhEaNzG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 09:55:06 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 039696143D;
-        Mon, 31 May 2021 13:33:57 +0000 (UTC)
+        id S233289AbhEaOMF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 10:12:05 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 11F8F61460;
+        Mon, 31 May 2021 13:41:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1622468038;
-        bh=o8d0MYRmFJEVRBRcBij+FPj3htteyd3KcVJ/xoqEwg8=;
+        s=korg; t=1622468492;
+        bh=vWzu84KDPR4m9KQqki4TpwcoGMXj2QMHBkh1UmR+CQE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=CQsFrGkNpxsa3FaGe6GNpBHWPomtIulpX++LIErQbXpgeV+Gmro8nTiubuWTECw/h
-         qvIoRhcw5zVGSQAiPIuCh/Eivb5C8GygJJublf4KlQh8exmdm7CYSC0oFyG1MyyKSQ
-         dwvB4jg76T+6DYT0Tv25NDCCY7wb+5uzeLodu5u8=
+        b=Lo02YeEVf5SLwTtwwJUiKyF8QplkTYrv+SAoO3eZo0HOsPVgGVbWyaPj/HBtTkm6h
+         OtFzM4cq9o5rrlTdrXSHCFMVSZTfgCrj42jNbp0+7tzLkSwmfZC7uIjRDMnqVmLB4B
+         QYHGfYmUOFr/76l1w0YeqsIeb5U1P7JgKNXHor+A=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Trond Myklebust <trond.myklebust@hammerspace.com>
-Subject: [PATCH 5.10 094/252] NFS: Dont corrupt the value of pg_bytes_written in nfs_do_recoalesce()
+        stable@vger.kernel.org, "Geoffrey D. Bennett" <g@b4.vu>,
+        Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH 5.4 002/177] ALSA: usb-audio: scarlett2: Fix device hang with ehci-pci
 Date:   Mon, 31 May 2021 15:12:39 +0200
-Message-Id: <20210531130701.163993326@linuxfoundation.org>
+Message-Id: <20210531130647.977054036@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210531130657.971257589@linuxfoundation.org>
-References: <20210531130657.971257589@linuxfoundation.org>
+In-Reply-To: <20210531130647.887605866@linuxfoundation.org>
+References: <20210531130647.887605866@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,52 +39,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Trond Myklebust <trond.myklebust@hammerspace.com>
+From: Geoffrey D. Bennett <g@b4.vu>
 
-commit 0d0ea309357dea0d85a82815f02157eb7fcda39f upstream.
+commit 764fa6e686e0107c0357a988d193de04cf047583 upstream.
 
-The value of mirror->pg_bytes_written should only be updated after a
-successful attempt to flush out the requests on the list.
+Use usb_rcvctrlpipe() not usb_sndctrlpipe() for USB control input in
+the Scarlett Gen 2 mixer driver. This fixes the device hang during
+initialisation when used with the ehci-pci host driver.
 
-Fixes: a7d42ddb3099 ("nfs: add mirroring support to pgio layer")
-Signed-off-by: Trond Myklebust <trond.myklebust@hammerspace.com>
+Fixes: 9e4d5c1be21f ("ALSA: usb-audio: Scarlett Gen 2 mixer interface")
+Signed-off-by: Geoffrey D. Bennett <g@b4.vu>
+Cc: <stable@vger.kernel.org>
+Link: https://lore.kernel.org/r/66a3d05dac325d5b53e4930578e143cef1f50dbe.1621584566.git.g@b4.vu
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- fs/nfs/pagelist.c |   12 +++++-------
- 1 file changed, 5 insertions(+), 7 deletions(-)
+ sound/usb/mixer_scarlett_gen2.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/fs/nfs/pagelist.c
-+++ b/fs/nfs/pagelist.c
-@@ -1128,17 +1128,16 @@ static void nfs_pageio_doio(struct nfs_p
- {
- 	struct nfs_pgio_mirror *mirror = nfs_pgio_current_mirror(desc);
+--- a/sound/usb/mixer_scarlett_gen2.c
++++ b/sound/usb/mixer_scarlett_gen2.c
+@@ -635,7 +635,7 @@ static int scarlett2_usb(
+ 	/* send a second message to get the response */
  
--
- 	if (!list_empty(&mirror->pg_list)) {
- 		int error = desc->pg_ops->pg_doio(desc);
- 		if (error < 0)
- 			desc->pg_error = error;
--		else
-+		if (list_empty(&mirror->pg_list)) {
- 			mirror->pg_bytes_written += mirror->pg_count;
--	}
--	if (list_empty(&mirror->pg_list)) {
--		mirror->pg_count = 0;
--		mirror->pg_base = 0;
-+			mirror->pg_count = 0;
-+			mirror->pg_base = 0;
-+			mirror->pg_recoalesce = 0;
-+		}
- 	}
- }
- 
-@@ -1228,7 +1227,6 @@ static int nfs_do_recoalesce(struct nfs_
- 
- 	do {
- 		list_splice_init(&mirror->pg_list, &head);
--		mirror->pg_bytes_written -= mirror->pg_count;
- 		mirror->pg_count = 0;
- 		mirror->pg_base = 0;
- 		mirror->pg_recoalesce = 0;
+ 	err = snd_usb_ctl_msg(mixer->chip->dev,
+-			usb_sndctrlpipe(mixer->chip->dev, 0),
++			usb_rcvctrlpipe(mixer->chip->dev, 0),
+ 			SCARLETT2_USB_VENDOR_SPECIFIC_CMD_RESP,
+ 			USB_RECIP_INTERFACE | USB_TYPE_CLASS | USB_DIR_IN,
+ 			0,
 
 
