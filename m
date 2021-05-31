@@ -2,95 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A51F3953AC
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 03:29:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5771F3953C5
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 03:48:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230006AbhEaBal (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 30 May 2021 21:30:41 -0400
-Received: from szxga02-in.huawei.com ([45.249.212.188]:2474 "EHLO
-        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229891AbhEaBaj (ORCPT
+        id S230110AbhEaBuZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 30 May 2021 21:50:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44172 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229945AbhEaBuX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 30 May 2021 21:30:39 -0400
-Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.57])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4Ftd0W3jv0z68PR;
-        Mon, 31 May 2021 09:26:03 +0800 (CST)
-Received: from dggpemm500001.china.huawei.com (7.185.36.107) by
- dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Mon, 31 May 2021 09:28:58 +0800
-Received: from localhost.localdomain.localdomain (10.175.113.25) by
- dggpemm500001.china.huawei.com (7.185.36.107) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Mon, 31 May 2021 09:28:57 +0800
-From:   Kefeng Wang <wangkefeng.wang@huawei.com>
-To:     <linux-kernel@vger.kernel.org>
-CC:     Kefeng Wang <wangkefeng.wang@huawei.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        "Arnaldo Carvalho de Melo" <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>
-Subject: [PATCH v2] uprobes: Use better bitmap_zalloc/free
-Date:   Mon, 31 May 2021 09:38:14 +0800
-Message-ID: <20210531013814.10409-1-wangkefeng.wang@huawei.com>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20210529111553.186630-1-wangkefeng.wang@huawei.com>
-References: <20210529111553.186630-1-wangkefeng.wang@huawei.com>
+        Sun, 30 May 2021 21:50:23 -0400
+Received: from mail-ot1-x331.google.com (mail-ot1-x331.google.com [IPv6:2607:f8b0:4864:20::331])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F0BFC061574;
+        Sun, 30 May 2021 18:48:43 -0700 (PDT)
+Received: by mail-ot1-x331.google.com with SMTP id c31-20020a056830349fb02903a5bfa6138bso2748307otu.7;
+        Sun, 30 May 2021 18:48:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=o9uHZUYuo+yV5/DqSfe9QUFOUckyCZOcmcmbsp3ZHvs=;
+        b=iQyrLyU6d+GL0TV5DxOk5BD5wFRKanmvccuXNUBmeU8Id/MWAtIYzWmhoI7eDB7yw5
+         NUGnox704j/V5aswtLjS+6ZLp/qAcK9lfFea2bnNRAQKTnZXUpxmdx0FUVM1yjPu/EeS
+         4RMXse3J10yl+z13FEoVVC+kvyJn30at/kNSW4B/Gk+DlnVpHD02Uwp7vgmzbLHrmOEZ
+         KRmkqMExcOH1UOmFzLwwquSxQ6CLJlAjGiGIrS/FlSddUTt6DkCV6rsaGWJ3pZCL+MF3
+         IHtZIJoWwz+mSiYYNhg835nO6pY00sRtn3InJviWGHH8m5MlmaZQcfpk9Nkyoxqm4s3g
+         HyBg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=o9uHZUYuo+yV5/DqSfe9QUFOUckyCZOcmcmbsp3ZHvs=;
+        b=qZJWogn7iKYGR8O5Zw+pM4o7KS3o9tKYgENaYK8qmdDQeOVbeGbAZqNp2/Se8MGUh0
+         ThDuAGI5NLhX7OeVH6TZlpFd3NS0O9NPkiU8I8KgudSBIh0OiyoJzEztGe2TvAC3zuOL
+         ZFrl86p6pY195GYmLNnzbcBMo/VUKdJwe5116mS60AiilBqKo4qTN2NZf5qoSMbmtwm3
+         sJKSN6cgac+F/NXh5IsffkDzBENwCPcTMhwJEHvtlOk+2SGAUXOo608X09usTynZoM6g
+         R8vC3obrwefjJWPyNiJCPod2j76nF5exp1YZoqccKn3i1CMyJcdHj91/wn+yXGmBX1xG
+         gUww==
+X-Gm-Message-State: AOAM531xyNx/RSY5GneiyWjNj+mLMC+u7r/kCsTWXLrS8diNu3tU5BAt
+        58GMa9fQoAFqgal0jy2Hkv6I9F3JGr1nxqC99rM=
+X-Google-Smtp-Source: ABdhPJyl8cG9i1nvWMuvpFnAKKYEmtdZZPT6V+TyQqwXeIvGUcYHhT2ZPwQnB2p2U7NNtPQ3JFSi4f5q1z446ZQqiBs=
+X-Received: by 2002:a9d:7a9:: with SMTP id 38mr6428408oto.362.1622425722686;
+ Sun, 30 May 2021 18:48:42 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.113.25]
-X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
- dggpemm500001.china.huawei.com (7.185.36.107)
-X-CFilter-Loop: Reflected
+References: <cover.1621786036.git.lucas.p.stankus@gmail.com> <20210526180717.23d13296@jic23-huawei>
+In-Reply-To: <20210526180717.23d13296@jic23-huawei>
+From:   Lucas Stankus <lucas.p.stankus@gmail.com>
+Date:   Sun, 30 May 2021 22:48:06 -0300
+Message-ID: <CACKVXZA5jLLUugreowQJYndgN8+zG8T99ubkpu6utVC4GwADzw@mail.gmail.com>
+Subject: Re: [PATCH v2 0/3] staging: iio: cdc: ad7746: initial effort to move
+ out of staging
+To:     Jonathan Cameron <jic23@kernel.org>
+Cc:     Lars-Peter Clausen <lars@metafoo.de>,
+        "Hennerich, Michael" <Michael.Hennerich@analog.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-iio <linux-iio@vger.kernel.org>,
+        linux-staging@lists.linux.dev,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use better bitmap_zalloc/free() to allocate and free bitmap.
+On Wed, May 26, 2021 at 2:05 PM Jonathan Cameron <jic23@kernel.org> wrote:
+>
+> On Sun, 23 May 2021 14:11:35 -0300
+> Lucas Stankus <lucas.p.stankus@gmail.com> wrote:
+>
+> > Tidy up driver code by removing vague comments, simplifying probe
+> > return, and extracting capdac register write to a separate function.
+> >
+> > These small patches are a starting point for improving the ad7746 driver,
+> > hopefully to a point where it's possible to get it out of staging. I'm
+> > looking up to feedback on what could be improved to accomplish that.
+> Usually the easiest way to get such feedback is to propose moving it out of
+> staging, (with move detection turned off in git format-patch).
+> Then we'll review it in a similar fashion to a new driver.
 
-Cc: Peter Zijlstra <peterz@infradead.org>
-Cc: Ingo Molnar <mingo@redhat.com>
-Cc: Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc: Mark Rutland <mark.rutland@arm.com>
-Signed-off-by: Kefeng Wang <wangkefeng.wang@huawei.com>
----
-v2: fix the copy err, should found it when enable UPROBES
- kernel/events/uprobes.c | 7 +++----
- 1 file changed, 3 insertions(+), 4 deletions(-)
+Oh okay, sorry for the unconventional patch set then and thanks for
+giving me the heads up about the format-patch flag, I'd probably get
+that wrong if you didn't =/
 
-diff --git a/kernel/events/uprobes.c b/kernel/events/uprobes.c
-index 907d4ee00cb2..3f1b8e9d9af6 100644
---- a/kernel/events/uprobes.c
-+++ b/kernel/events/uprobes.c
-@@ -1487,8 +1487,7 @@ static struct xol_area *__create_xol_area(unsigned long vaddr)
- 	if (unlikely(!area))
- 		goto out;
- 
--	area->bitmap = kcalloc(BITS_TO_LONGS(UINSNS_PER_PAGE), sizeof(long),
--			       GFP_KERNEL);
-+	area->bitmap = bitmap_zalloc(UINSNS_PER_PAGE, GFP_KERNEL);
- 	if (!area->bitmap)
- 		goto free_area;
- 
-@@ -1512,7 +1511,7 @@ static struct xol_area *__create_xol_area(unsigned long vaddr)
- 
- 	__free_page(area->pages[0]);
-  free_bitmap:
--	kfree(area->bitmap);
-+	bitmap_free(area->bitmap);
-  free_area:
- 	kfree(area);
-  out:
-@@ -1553,7 +1552,7 @@ void uprobe_clear_state(struct mm_struct *mm)
- 		return;
- 
- 	put_page(area->pages[0]);
--	kfree(area->bitmap);
-+	bitmap_free(area->bitmap);
- 	kfree(area);
- }
- 
--- 
-2.26.2
+>
+> Starting point though for any review is ABI.  Looks like there is some
+> custom stuff in here which either needs to go away or be properly
+> proposed and documented.
 
+Nice, I'll look into that.
+
+
+>
+> This series applied to the togreg branch of iio.git - initially
+> pushed out as testing to let 0-day poke at it.
+>
+> Thanks,
+>
+> Jonathan
+>
+> >
+> > changelog v1 -> v2:
+> > - Dropped num_channels fixup patch (applied from previous series).
+> > - Split general code style patch into several atomic ones.
+> > - New patch to catch capdac write boilerplate into a single function.
+> >
+> > Lucas Stankus (3):
+> >   staging: iio: cdc: ad7746: remove ordinary comments
+> >   staging: iio: cdc: ad7746: clean up probe return
+> >   staging: iio: cdc: ad7746: extract capac setup to own function
+> >
+> >  drivers/staging/iio/cdc/ad7746.c | 58 +++++++++++++-------------------
+> >  1 file changed, 23 insertions(+), 35 deletions(-)
+> >
+>
