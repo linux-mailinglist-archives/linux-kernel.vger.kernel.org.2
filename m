@@ -2,79 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3CC75395818
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 11:28:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 01CC639581C
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 11:32:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231235AbhEaJ37 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 05:29:59 -0400
-Received: from mx2.suse.de ([195.135.220.15]:47118 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230500AbhEaJ3u (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 05:29:50 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1622453288; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=IdqpIq+SDyP8HVjXR5DhTfzIhC3G2cPGrbMBOJ//1+k=;
-        b=H0023+TBXSBeXBhRivrp0gyePNqiJMPyLdoEKwdAbOfuhBfWWLhctnxePeJrZuVobW1xiq
-        dL3bbW8N1qkbIH81eOhUBCNE1Fu5QJ6Id9KrVTe1OEETEwhWVj6HkYSi8dpf3NhDF0kRn8
-        kcO3M8ImSHQw1OgjosdO+VYzKendne8=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 8FD68AE72;
-        Mon, 31 May 2021 09:28:08 +0000 (UTC)
-Date:   Mon, 31 May 2021 11:28:07 +0200
-From:   Petr Mladek <pmladek@suse.com>
-To:     Stephen Boyd <swboyd@chromium.org>
-Cc:     Vlastimil Babka <vbabka@suse.cz>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, Christoph Lameter <cl@linux.com>,
-        Pekka Enberg <penberg@kernel.org>,
-        David Rientjes <rientjes@google.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>, linux-mm@kvack.org,
-        Joe Perches <joe@perches.com>
-Subject: Re: [PATCH v2 4/4] slub: Force on no_hash_pointers when slub_debug
- is enabled
-Message-ID: <YLSsJ/QRuHXLEMQ4@alley>
-References: <20210526025625.601023-1-swboyd@chromium.org>
- <20210526025625.601023-5-swboyd@chromium.org>
- <555eaf8b-deb2-fa49-ddef-a74645848159@suse.cz>
- <YK5Rayu+nOoI2QZ4@alley>
- <CAE-0n50PogTpc8G9DR23DnX2K2pkvz-1vrO+iNAFOkhrzAOong@mail.gmail.com>
+        id S231124AbhEaJeQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 05:34:16 -0400
+Received: from eu-smtp-delivery-151.mimecast.com ([185.58.85.151]:50139 "EHLO
+        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230423AbhEaJeK (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 05:34:10 -0400
+Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) (Using
+ TLS) by relay.mimecast.com with ESMTP id
+ uk-mta-120-eMdBWz8ZMTKSSNe4gcd_wQ-1; Mon, 31 May 2021 10:32:26 +0100
+X-MC-Unique: eMdBWz8ZMTKSSNe4gcd_wQ-1
+Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) by
+ AcuMS.aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) with Microsoft SMTP
+ Server (TLS) id 15.0.1497.2; Mon, 31 May 2021 10:32:22 +0100
+Received: from AcuMS.Aculab.com ([fe80::994c:f5c2:35d6:9b65]) by
+ AcuMS.aculab.com ([fe80::994c:f5c2:35d6:9b65%12]) with mapi id
+ 15.00.1497.015; Mon, 31 May 2021 10:32:22 +0100
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     "'H. Peter Anvin'" <hpa@zytor.com>, Borislav Petkov <bp@alien8.de>,
+        "Mike Rapoport" <rppt@kernel.org>
+CC:     Ingo Molnar <mingo@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        "untaintableangel@hotmail.co.uk" <untaintableangel@hotmail.co.uk>,
+        "x86@kernel.org" <x86@kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH] x86/Kconfig: decrease maximum of X86_RESERVE_LOW to 512K
+Thread-Topic: [PATCH] x86/Kconfig: decrease maximum of X86_RESERVE_LOW to 512K
+Thread-Index: AQHXU2cJZ9nEZAqrwkWConM5pQYlL6r9VvTg
+Date:   Mon, 31 May 2021 09:32:22 +0000
+Message-ID: <8f74d4bd0d97445c8a976eab44fc9372@AcuMS.aculab.com>
+References: <20210526081100.12239-1-rppt@kernel.org>
+ <YK4LGUDWXJWOp7IR@zn.tnic> <YK53kWHb4cPeeHsd@kernel.org>
+ <YK6QFLUoPZ7btQfH@zn.tnic> <f7525409-3987-f79d-9f52-71f6c0231491@zytor.com>
+In-Reply-To: <f7525409-3987-f79d-9f52-71f6c0231491@zytor.com>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAE-0n50PogTpc8G9DR23DnX2K2pkvz-1vrO+iNAFOkhrzAOong@mail.gmail.com>
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed 2021-05-26 15:27:37, Stephen Boyd wrote:
-> Quoting Petr Mladek (2021-05-26 06:47:23)
-> > On Wed 2021-05-26 12:48:47, Vlastimil Babka wrote:
-> > > On 5/26/21 4:56 AM, Stephen Boyd wrote:
-> > > > Obscuring the pointers that slub shows when debugging makes for some
-> > > > confusing slub debug messages:
-> > > >
-> > > >  Padding overwritten. 0x0000000079f0674a-0x000000000d4dce17
-> > > >
-> > > > I opted for extern because I guess we don't want to advertise
-> > > > no_hash_pointers_enable() in some sort of header file? It can be put in
-> > > > a header file
-> > >
-> > > Hm looks like the bots disagree. I suppose a declaration right above definition
-> > > in lib/vsprintf.c would silence them, but I'll leave it to printk maintainers if
-> > > they would prefer that way or traditionally
-> > > include/linux/kernel.h
-> >
-> > I slightly prefer to put it into kernel.h. I expect that some more
-> > debugging facilities would want to enable this in the future.
-> > But I would accept even the "ugly" declaration in vsprintf.c.
-> 
-> Ok no problem. Would printk.h be more appropriate?
+RnJvbTogSC4gUGV0ZXIgQW52aW4NCj4gU2VudDogMjggTWF5IDIwMjEgMDM6MTMNCi4uLi4NCj4g
+QklPU2VzIGhhdmUgYmVlbiBrbm93biB0byBjbG9iYmVyIG1vcmUgdGhhbiA2NEsuIFRoZXkgYXJl
+bid0IHN1cHBvc2VkIHRvDQo+IGNsb2JiZXIgYW55Lg0KDQpUaGV5IHByb2JhYmx5IHNob3VsZG4n
+dCBuZWVkIGFueXRoaW5nIGFib3ZlIHRoZSBiYXNlIG9mIHRoZSBET1MNCnRyYW5zaWVudCBwcm9n
+cmFtIGFyZWEgcHJlc2VydmVkLg0KQ2FuJ3QgcmVtZW1iZXIgd2hlcmUgdGhhdCBpcyB0aG91Z2gg
+Oi0oDQoNCkl0IGlzIGhhcmQgZW5vdWdoIGZpbmRpbmcgYSBzYWZlIG1lbW9yeSBhcmVhIGZvciB0
+aGUgTUJSDQpjb2RlIHRvIHJlbG9jYXRlIGl0c2VsZiB0byBiZWZvcmUgbG9hZGluZyB0aGUgUEJS
+Lg0KQm90aCB0aGUgTUJSIGFuZCBQQlIgbG9hZCBhdCB0aGUgc2FtZSBhZGRyZXNzIC0gMHhjMDAu
+DQoNCj4gNjQwSyBpcyB0aGUgbGltaXQgYmVjYXVzZSB0aGF0IGlzIHRoZSBhZGRyZXNzIG9mIHRo
+ZSBFR0EvVkdBIGZyYW1lDQo+IGJ1ZmZlci4gSW4gdGhlIHdvcmRzIG9mIEJpbGwgR2F0ZXMgIjY0
+MEsgb3VnaHQgdG8gYmUgZW5vdWdoIGZvciBhbnlvbmUuIg0KDQpJIHRob3VnaHQgdGhlIG9yaWdp
+bmFsIG1lbW9yeSBtYXAgYWxsb2NhdGVkIDUxMksgZm9yIG1lbW9yeQ0KYW5kIDUxMmsgZm9yIG1l
+bW9yeSBtYXBwZWQgSS9PLg0KTm8gb25lIGNvdWxkIGFmZm9yZCBtb3JlIHRoZW4gNTEySyBEUkFN
+IDotKQ0KDQpUaGUgNjQwSyBsaW1pdCBhcHBlYXJzIGJlY2F1c2Ugbm90aGluZyB3YXMgYWN0dWFs
+bHkgbWFwcGVkDQphcyB0aGUgYm90dG9tIG9mIHRoZSAnSS9PIGFyZWEnIHNvIG1lbW9yeSBjb3Vs
+ZCBleHBhbmQgdXANCnRoYXQgZmFyLg0KDQoJRGF2aWQNCg0KLQ0KUmVnaXN0ZXJlZCBBZGRyZXNz
+IExha2VzaWRlLCBCcmFtbGV5IFJvYWQsIE1vdW50IEZhcm0sIE1pbHRvbiBLZXluZXMsIE1LMSAx
+UFQsIFVLDQpSZWdpc3RyYXRpb24gTm86IDEzOTczODYgKFdhbGVzKQ0K
 
-kernel.h looks more appropriate to me. vsprintf-related are there and
-no_hash_pointers is implemented and handled in vsprintf.c.
-
-Best Regards,
-Petr
