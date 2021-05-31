@@ -2,35 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A32E3963F0
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 17:39:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9FE8A395C88
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 15:33:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232860AbhEaPku (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 11:40:50 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48834 "EHLO mail.kernel.org"
+        id S232670AbhEaNeG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 09:34:06 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55564 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233591AbhEaOX0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 10:23:26 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 190DF61419;
-        Mon, 31 May 2021 13:45:41 +0000 (UTC)
+        id S232026AbhEaNYd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 09:24:33 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 45E3761400;
+        Mon, 31 May 2021 13:20:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1622468742;
-        bh=u5KZkVYOV5WgmRfdQgoGQXq8qkFTOZu/4eT03SuCZOc=;
+        s=korg; t=1622467230;
+        bh=DbpjfWwOX5w4DXwVz2QROu43Vb5DxDjYUSn+itNusMo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ZMDJubbv9X8H8H0t+0eIBvaKKBZCyJxQhB5bQXXa71DuNnAF+GKeVdjp0zt+P6xIi
-         7IFvCSc7dXxKxTdKw7DpTMAQt+VtwAswce4hZA3MSzTe2mCnobmOeU+6eYJ9VnfEpx
-         sc6qs3OI2ZK7RSTqD43H6jYbq+luD7nvUq/Pswtk=
+        b=OY0hFupVA1oASWdgzEQLnOa0W+RP8a7nt5HMvg7ejS/ilFr+onnIJi5ilAOnohfcs
+         GURvjA5vVE0DPtXgp6+l2s2OmWY0J0vwMfySQYmkfqiWtX8uy3GypzPNz9EKp6EX6q
+         JT/CDlKDSmSxmKUpUY7O+c3Jjm2CwWt/9ZbXFBnw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Kalle Valo <kvalo@codeaurora.org>,
+        stable@vger.kernel.org,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        Russell King <rmk+kernel@armlinux.org.uk>,
+        Andrew Lunn <andrew@lunn.ch>,
+        "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 110/177] libertas: register sysfs groups properly
-Date:   Mon, 31 May 2021 15:14:27 +0200
-Message-Id: <20210531130651.717350366@linuxfoundation.org>
+Subject: [PATCH 4.9 55/66] net: mdio: thunder: Fix a double free issue in the .remove function
+Date:   Mon, 31 May 2021 15:14:28 +0200
+Message-Id: <20210531130637.993814794@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210531130647.887605866@linuxfoundation.org>
-References: <20210531130647.887605866@linuxfoundation.org>
+In-Reply-To: <20210531130636.254683895@linuxfoundation.org>
+References: <20210531130636.254683895@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,92 +43,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 
-[ Upstream commit 7e79b38fe9a403b065ac5915465f620a8fb3de84 ]
+[ Upstream commit a93a0a15876d2a077a3bc260b387d2457a051f24 ]
 
-The libertas driver was trying to register sysfs groups "by hand" which
-causes them to be created _after_ the device is initialized and
-announced to userspace, which causes races and can prevent userspace
-tools from seeing the sysfs files correctly.
+'bus->mii_bus' have been allocated with 'devm_mdiobus_alloc_size()' in the
+probe function. So it must not be freed explicitly or there will be a
+double free.
 
-Fix this up by using the built-in sysfs_groups pointers in struct
-net_device which were created for this very reason, fixing the race
-condition, and properly allowing for any error that might have occured
-to be handled properly.
+Remove the incorrect 'mdiobus_free' in the remove function.
 
-Cc: Kalle Valo <kvalo@codeaurora.org>
-Link: https://lore.kernel.org/r/20210503115736.2104747-54-gregkh@linuxfoundation.org
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Fixes: 379d7ac7ca31 ("phy: mdio-thunder: Add driver for Cavium Thunder SoC MDIO buses.")
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Reviewed-by: Russell King <rmk+kernel@armlinux.org.uk>
+Reviewed-by: Andrew Lunn <andrew@lunn.ch>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/wireless/marvell/libertas/mesh.c | 28 +++-----------------
- 1 file changed, 4 insertions(+), 24 deletions(-)
+ drivers/net/phy/mdio-thunder.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/drivers/net/wireless/marvell/libertas/mesh.c b/drivers/net/wireless/marvell/libertas/mesh.c
-index a21c86d446fa..050fd403110e 100644
---- a/drivers/net/wireless/marvell/libertas/mesh.c
-+++ b/drivers/net/wireless/marvell/libertas/mesh.c
-@@ -801,19 +801,6 @@ static const struct attribute_group mesh_ie_group = {
- 	.attrs = mesh_ie_attrs,
- };
+diff --git a/drivers/net/phy/mdio-thunder.c b/drivers/net/phy/mdio-thunder.c
+index 564616968cad..c0c922eff760 100644
+--- a/drivers/net/phy/mdio-thunder.c
++++ b/drivers/net/phy/mdio-thunder.c
+@@ -129,7 +129,6 @@ static void thunder_mdiobus_pci_remove(struct pci_dev *pdev)
+ 			continue;
  
--static void lbs_persist_config_init(struct net_device *dev)
--{
--	int ret;
--	ret = sysfs_create_group(&(dev->dev.kobj), &boot_opts_group);
--	ret = sysfs_create_group(&(dev->dev.kobj), &mesh_ie_group);
--}
--
--static void lbs_persist_config_remove(struct net_device *dev)
--{
--	sysfs_remove_group(&(dev->dev.kobj), &boot_opts_group);
--	sysfs_remove_group(&(dev->dev.kobj), &mesh_ie_group);
--}
--
- 
- /***************************************************************************
-  * Initializing and starting, stopping mesh
-@@ -1014,6 +1001,10 @@ static int lbs_add_mesh(struct lbs_private *priv)
- 	SET_NETDEV_DEV(priv->mesh_dev, priv->dev->dev.parent);
- 
- 	mesh_dev->flags |= IFF_BROADCAST | IFF_MULTICAST;
-+	mesh_dev->sysfs_groups[0] = &lbs_mesh_attr_group;
-+	mesh_dev->sysfs_groups[1] = &boot_opts_group;
-+	mesh_dev->sysfs_groups[2] = &mesh_ie_group;
-+
- 	/* Register virtual mesh interface */
- 	ret = register_netdev(mesh_dev);
- 	if (ret) {
-@@ -1021,19 +1012,10 @@ static int lbs_add_mesh(struct lbs_private *priv)
- 		goto err_free_netdev;
+ 		mdiobus_unregister(bus->mii_bus);
+-		mdiobus_free(bus->mii_bus);
+ 		oct_mdio_writeq(0, bus->register_base + SMI_EN);
  	}
- 
--	ret = sysfs_create_group(&(mesh_dev->dev.kobj), &lbs_mesh_attr_group);
--	if (ret)
--		goto err_unregister;
--
--	lbs_persist_config_init(mesh_dev);
--
- 	/* Everything successful */
- 	ret = 0;
- 	goto done;
- 
--err_unregister:
--	unregister_netdev(mesh_dev);
--
- err_free_netdev:
- 	free_netdev(mesh_dev);
- 
-@@ -1054,8 +1036,6 @@ void lbs_remove_mesh(struct lbs_private *priv)
- 
- 	netif_stop_queue(mesh_dev);
- 	netif_carrier_off(mesh_dev);
--	sysfs_remove_group(&(mesh_dev->dev.kobj), &lbs_mesh_attr_group);
--	lbs_persist_config_remove(mesh_dev);
- 	unregister_netdev(mesh_dev);
- 	priv->mesh_dev = NULL;
- 	kfree(mesh_dev->ieee80211_ptr);
+ 	pci_set_drvdata(pdev, NULL);
 -- 
 2.30.2
 
