@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7135E396397
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 17:20:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CFDE739660B
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 18:54:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232501AbhEaPVp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 11:21:45 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43696 "EHLO mail.kernel.org"
+        id S233269AbhEaQzn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 12:55:43 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51034 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231239AbhEaOP7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 10:15:59 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1CC5161476;
-        Mon, 31 May 2021 13:43:07 +0000 (UTC)
+        id S234130AbhEaPAj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 11:00:39 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DD7FD613AD;
+        Mon, 31 May 2021 14:14:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1622468588;
-        bh=yJaSPk+SA3ZD/Iq4qFmrm8UN3AxhOPuQ3d7rZwmtAN4=;
+        s=korg; t=1622470482;
+        bh=zC4OPIc9eEpXm+Ok5oEw0HDZKkn58dj2vDLqSK7D6A0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=D4zGMpcz94aDM38j0o1c3KwrOwlAUH0MzXwFUxnPzs7Oal3fqq5ND3xdTTuE0Z/Fb
-         HX7gBF0z9WCzx9QzKoETgISaiOLDnFsBs1WnWYu7s30xBkLp7wKSnvK9Fd40DHVBAJ
-         5kIYQP/EXpYobqqZNmxdqVRmuXZ9wqSn7UnTUfrg=
+        b=PIsuw224qQMxNKjzFD523RCv4MTEXrHnqOWLERqNRoclNUPgeX79IpOIqgxnv3pRk
+         6feGQj7ZfGfDOqwcmProGxWXiZS+7csq2JfWA/2ISt77tcI2bxPSiyhTuGcjoOCho1
+         LISVQK6lHTkRyGrQnf3u6v0Oo7Hl8ffoWr6mnclM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Johan Hovold <johan@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 5.4 013/177] net: hso: fix control-request directions
-Date:   Mon, 31 May 2021 15:12:50 +0200
-Message-Id: <20210531130648.370093307@linuxfoundation.org>
+        stable@vger.kernel.org, Zhang Xiaoxu <zhangxiaoxu5@huawei.com>,
+        Trond Myklebust <trond.myklebust@hammerspace.com>
+Subject: [PATCH 5.12 116/296] NFSv4: Fix v4.0/v4.1 SEEK_DATA return -ENOTSUPP when set NFS_V4_2 config
+Date:   Mon, 31 May 2021 15:12:51 +0200
+Message-Id: <20210531130707.823014710@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210531130647.887605866@linuxfoundation.org>
-References: <20210531130647.887605866@linuxfoundation.org>
+In-Reply-To: <20210531130703.762129381@linuxfoundation.org>
+References: <20210531130703.762129381@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,45 +39,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Johan Hovold <johan@kernel.org>
+From: Zhang Xiaoxu <zhangxiaoxu5@huawei.com>
 
-commit 1a6e9a9c68c1f183872e4bcc947382111c2e04eb upstream.
+commit e67afa7ee4a59584d7253e45d7f63b9528819a13 upstream.
 
-The direction of the pipe argument must match the request-type direction
-bit or control requests may fail depending on the host-controller-driver
-implementation.
+Since commit bdcc2cd14e4e ("NFSv4.2: handle NFS-specific llseek errors"),
+nfs42_proc_llseek would return -EOPNOTSUPP rather than -ENOTSUPP when
+SEEK_DATA on NFSv4.0/v4.1.
 
-Fix the tiocmset and rfkill requests which erroneously used
-usb_rcvctrlpipe().
+This will lead xfstests generic/285 not run on NFSv4.0/v4.1 when set the
+CONFIG_NFS_V4_2, rather than run failed.
 
-Fixes: 72dc1c096c70 ("HSO: add option hso driver")
-Cc: stable@vger.kernel.org      # 2.6.27
-Signed-off-by: Johan Hovold <johan@kernel.org>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Fixes: bdcc2cd14e4e ("NFSv4.2: handle NFS-specific llseek errors")
+Cc: <stable.vger.kernel.org> # 4.2
+Signed-off-by: Zhang Xiaoxu <zhangxiaoxu5@huawei.com>
+Signed-off-by: Trond Myklebust <trond.myklebust@hammerspace.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/usb/hso.c |    4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ fs/nfs/nfs4file.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/net/usb/hso.c
-+++ b/drivers/net/usb/hso.c
-@@ -1689,7 +1689,7 @@ static int hso_serial_tiocmset(struct tt
- 	spin_unlock_irqrestore(&serial->serial_lock, flags);
- 
- 	return usb_control_msg(serial->parent->usb,
--			       usb_rcvctrlpipe(serial->parent->usb, 0), 0x22,
-+			       usb_sndctrlpipe(serial->parent->usb, 0), 0x22,
- 			       0x21, val, if_num, NULL, 0,
- 			       USB_CTRL_SET_TIMEOUT);
- }
-@@ -2436,7 +2436,7 @@ static int hso_rfkill_set_block(void *da
- 	if (hso_dev->usb_gone)
- 		rv = 0;
- 	else
--		rv = usb_control_msg(hso_dev->usb, usb_rcvctrlpipe(hso_dev->usb, 0),
-+		rv = usb_control_msg(hso_dev->usb, usb_sndctrlpipe(hso_dev->usb, 0),
- 				       enabled ? 0x82 : 0x81, 0x40, 0, 0, NULL, 0,
- 				       USB_CTRL_SET_TIMEOUT);
- 	mutex_unlock(&hso_dev->mutex);
+--- a/fs/nfs/nfs4file.c
++++ b/fs/nfs/nfs4file.c
+@@ -211,7 +211,7 @@ static loff_t nfs4_file_llseek(struct fi
+ 	case SEEK_HOLE:
+ 	case SEEK_DATA:
+ 		ret = nfs42_proc_llseek(filep, offset, whence);
+-		if (ret != -ENOTSUPP)
++		if (ret != -EOPNOTSUPP)
+ 			return ret;
+ 		fallthrough;
+ 	default:
 
 
