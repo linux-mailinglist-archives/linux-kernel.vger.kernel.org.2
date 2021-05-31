@@ -2,398 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F33A39676A
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 19:48:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D61AA396729
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 19:33:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232528AbhEaRuM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 13:50:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58596 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232163AbhEaRtg (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 13:49:36 -0400
-Received: from mail-ot1-x331.google.com (mail-ot1-x331.google.com [IPv6:2607:f8b0:4864:20::331])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6566C061264
-        for <linux-kernel@vger.kernel.org>; Mon, 31 May 2021 10:30:16 -0700 (PDT)
-Received: by mail-ot1-x331.google.com with SMTP id i23-20020a9d68d70000b02902dc19ed4c15so11750900oto.0
-        for <linux-kernel@vger.kernel.org>; Mon, 31 May 2021 10:30:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=8KsEmSoTxPR5lAcpNylV7WiHyog3+QbUtiWAOzs2J6o=;
-        b=XANaeynU2bWgS6Bu3afvpp8n5XWi6zIObbzxo9zOyFTEMTmt9dPljDe2u36fWqOL0V
-         PZqXtyWY4o6xHQ04EbfADNAeBKm2mC2brgwcbm1Drox5fkTM2HAPyVNsEklIunHmBACR
-         lR10DWYLGrlxTPW1mPonp9EOs1KAXJrXaUqGV5SI4au7Y21U7QHcf++RBh6CaIUhkhew
-         BYX8aiV7HvOrrEJPnt7mTddU/XZJ9Oy49MMJCiAC3x+fQhF0b7E/vlh0ihN0w/jtSFjS
-         Ei/U6sVk0KPVQK/XXjiMAwB8kAPhhQH8uLVyo+jlmeUNen/M7GtOSZFeA+33WYImkkIA
-         2ABw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=8KsEmSoTxPR5lAcpNylV7WiHyog3+QbUtiWAOzs2J6o=;
-        b=eOL3WlOC0CTSEusSG+N/cqOvXpkQDp64IsPcDUbUaz93ErysoU8hiiMFD/bZlMLGcR
-         zlJuVNmruGAYq6HhDlArDFkO+yO/9RDVKMsltVTcChtkHr7Im9TkizpInmQlnYCwxsfQ
-         ABzN/KzbrX/pP0TeC6QNd+9qQcYXW9Sy90Bogh9xbGtItZ7MGBSs5wo11RJG+ddVXYNZ
-         pNqfVRilYQr7Ag/7edc4DxERDk2nHtSHZ1EvPoA0IPhcDzriob6xsjQBoUjRSNsInlRw
-         B72Wox82MxyedPzYklkTyB0tSnEgpgQqLq4Brbyk7wM1DrBOvt7vA0tG6lRwhDD0p8Up
-         s7JA==
-X-Gm-Message-State: AOAM530+RJjaRrhGEWtd2o90ly5D6MwTwO3Kjbof+PA0Q5AsRIBdfdmc
-        ARljhVc91SOLC/Bm3zG4locMPw==
-X-Google-Smtp-Source: ABdhPJwI2TDsBCYqb8h2Vc4Hvufn0919dXCSkdzOMmaxnHFaz3UTwc0rqrDHsDGdQiceFxRvuvoijg==
-X-Received: by 2002:a9d:6c81:: with SMTP id c1mr2757412otr.316.1622482216074;
-        Mon, 31 May 2021 10:30:16 -0700 (PDT)
-Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id t26sm3242405otc.23.2021.05.31.10.30.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 31 May 2021 10:30:15 -0700 (PDT)
-Date:   Mon, 31 May 2021 12:30:13 -0500
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Maulik Shah <mkshah@codeaurora.org>
-Cc:     swboyd@chromium.org, mka@chromium.org, evgreen@chromium.org,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        agross@kernel.org, dianders@chromium.org, linux@roeck-us.net,
-        rnayak@codeaurora.org, lsrao@codeaurora.org,
-        Mahesh Sivasubramanian <msivasub@codeaurora.org>,
-        Lina Iyer <ilina@codeaurora.org>
-Subject: Re: [PATCH v8 2/5] soc: qcom: Add SoC sleep stats driver
-Message-ID: <YLUdJa4jawdBjPRy@builder.lan>
-References: <1621596371-26482-1-git-send-email-mkshah@codeaurora.org>
- <1621596371-26482-3-git-send-email-mkshah@codeaurora.org>
+        id S231563AbhEaRey (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 13:34:54 -0400
+Received: from mga02.intel.com ([134.134.136.20]:54132 "EHLO mga02.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233384AbhEaRe2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 13:34:28 -0400
+IronPort-SDR: p1i2PqwCpfT4ZLeiyT7MvjltxJtFc91b0IFpvdy7Fvjcaygxj6DlBHra7VZvRwsDECUpEKJSnH
+ NQaVpeQWYIpg==
+X-IronPort-AV: E=McAfee;i="6200,9189,10001"; a="190508158"
+X-IronPort-AV: E=Sophos;i="5.83,238,1616482800"; 
+   d="scan'208";a="190508158"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 May 2021 10:32:48 -0700
+IronPort-SDR: 1vlLnX9MYXFLxiXoYRE+zmueK4JDBB/5KtsS1mO++zvAUwWZ8UUhq7bvOTR5ORy8O7qTQzXVjE
+ u74VxzV4hPCg==
+X-IronPort-AV: E=Sophos;i="5.83,238,1616482800"; 
+   d="scan'208";a="616588635"
+Received: from unknown (HELO skuppusw-mobl5.amr.corp.intel.com) ([10.251.152.221])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 May 2021 10:32:47 -0700
+Subject: Re: [RFC v2 28/32] x86/tdx: Make pages shared in ioremap()
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     Tom Lendacky <thomas.lendacky@amd.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
+        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
+        Raj Ashok <ashok.raj@intel.com>, linux-kernel@vger.kernel.org,
+        Brijesh Singh <brijesh.singh@amd.com>
+References: <797c95bf-9516-8aee-59d0-f5259d77bb75@linux.intel.com>
+ <5b4b4fc0-aaa8-3407-6602-537d59572bc1@intel.com>
+ <YJm5QY8omAvdpBO9@google.com> <YJpP/S8MajKNhBl4@zn.tnic>
+ <0e233779-9c10-11df-b527-ef61e003ea35@linux.intel.com>
+ <YKfPLlulaqwypNkO@zn.tnic> <f5e64c61-7f3c-3936-1b8e-7874ec81d83e@amd.com>
+ <YKgA1od/SqycWWds@zn.tnic> <86b4d995-9619-81fa-5ef4-86f48ab01e96@amd.com>
+ <a94e1fb8-50bf-ef69-6553-237937029c5d@linux.intel.com>
+ <YLT9AGodkvct8YTO@zn.tnic>
+From:   "Kuppuswamy, Sathyanarayanan" 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>
+Message-ID: <96a63ddf-98f9-7095-f7bb-100bf56a4d10@linux.intel.com>
+Date:   Mon, 31 May 2021 10:32:44 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1621596371-26482-3-git-send-email-mkshah@codeaurora.org>
+In-Reply-To: <YLT9AGodkvct8YTO@zn.tnic>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri 21 May 06:26 CDT 2021, Maulik Shah wrote:
 
-> From: Mahesh Sivasubramanian <msivasub@codeaurora.org>
-> 
-> Let's add a driver to read the stats from remote processor and
-> export to debugfs.
-> 
-> The driver creates "qcom_sleep_stats" directory in debugfs and
-> adds files for various low power mode available. Below is sample
-> output with command
-> 
-> cat /sys/kernel/debug/qcom_sleep_stats/ddr
-> count = 0
-> Last Entered At = 0
-> Last Exited At = 0
-> Accumulated Duration = 0
-> 
-> Signed-off-by: Mahesh Sivasubramanian <msivasub@codeaurora.org>
-> Signed-off-by: Lina Iyer <ilina@codeaurora.org>
-> [mkshah: add subsystem sleep stats, create one file for each stat]
-> Signed-off-by: Maulik Shah <mkshah@codeaurora.org>
-> ---
->  drivers/soc/qcom/Kconfig           |  10 ++
->  drivers/soc/qcom/Makefile          |   1 +
->  drivers/soc/qcom/soc_sleep_stats.c | 255 +++++++++++++++++++++++++++++++++++++
->  3 files changed, 266 insertions(+)
->  create mode 100644 drivers/soc/qcom/soc_sleep_stats.c
-> 
-> diff --git a/drivers/soc/qcom/Kconfig b/drivers/soc/qcom/Kconfig
-> index 79b568f..e80b63a 100644
-> --- a/drivers/soc/qcom/Kconfig
-> +++ b/drivers/soc/qcom/Kconfig
-> @@ -190,6 +190,16 @@ config QCOM_SOCINFO
->  	 Say yes here to support the Qualcomm socinfo driver, providing
->  	 information about the SoC to user space.
->  
-> +config QCOM_SOC_SLEEP_STATS
-> +	tristate "Qualcomm Technologies, Inc. (QTI) SoC sleep stats driver"
-> +	depends on ARCH_QCOM && DEBUG_FS || COMPILE_TEST
-> +	depends on QCOM_SMEM
-> +	help
-> +	  Qualcomm Technologies, Inc. (QTI) SoC sleep stats driver to read
-> +	  the shared memory exported by the remote processor related to
-> +	  various SoC level low power modes statistics and export to debugfs
-> +	  interface.
-> +
->  config QCOM_WCNSS_CTRL
->  	tristate "Qualcomm WCNSS control driver"
->  	depends on ARCH_QCOM || COMPILE_TEST
-> diff --git a/drivers/soc/qcom/Makefile b/drivers/soc/qcom/Makefile
-> index ad675a6..5f30d74 100644
-> --- a/drivers/soc/qcom/Makefile
-> +++ b/drivers/soc/qcom/Makefile
-> @@ -20,6 +20,7 @@ obj-$(CONFIG_QCOM_SMEM_STATE) += smem_state.o
->  obj-$(CONFIG_QCOM_SMP2P)	+= smp2p.o
->  obj-$(CONFIG_QCOM_SMSM)	+= smsm.o
->  obj-$(CONFIG_QCOM_SOCINFO)	+= socinfo.o
-> +obj-$(CONFIG_QCOM_SOC_SLEEP_STATS)	+= soc_sleep_stats.o
->  obj-$(CONFIG_QCOM_WCNSS_CTRL) += wcnss_ctrl.o
->  obj-$(CONFIG_QCOM_APR) += apr.o
->  obj-$(CONFIG_QCOM_LLCC) += llcc-qcom.o
-> diff --git a/drivers/soc/qcom/soc_sleep_stats.c b/drivers/soc/qcom/soc_sleep_stats.c
-> new file mode 100644
-> index 0000000..a8396f9
-> --- /dev/null
-> +++ b/drivers/soc/qcom/soc_sleep_stats.c
-> @@ -0,0 +1,255 @@
-> +// SPDX-License-Identifier: GPL-2.0-only
-> +/*
-> + * Copyright (c) 2011-2021, The Linux Foundation. All rights reserved.
-> + */
-> +
-> +#include <linux/debugfs.h>
-> +#include <linux/device.h>
-> +#include <linux/io.h>
-> +#include <linux/module.h>
-> +#include <linux/of.h>
-> +#include <linux/platform_device.h>
-> +#include <linux/seq_file.h>
-> +
-> +#include <linux/soc/qcom/smem.h>
-> +#include <clocksource/arm_arch_timer.h>
-> +
-> +#define STAT_TYPE_OFFSET	0x0
-> +#define COUNT_OFFSET		0x4
-> +#define LAST_ENTERED_AT_OFFSET	0x8
-> +#define LAST_EXITED_AT_OFFSET	0x10
-> +#define ACCUMULATED_OFFSET	0x18
-> +#define CLIENT_VOTES_OFFSET	0x1c
-> +
-> +struct subsystem_data {
-> +	const char *name;
-> +	u32 smem_item;
-> +	u32 pid;
-> +};
-> +
-> +static const struct subsystem_data subsystems[] = {
-> +	{ "modem", 605, 1 },
-> +	{ "wpss", 605, 13 },
-> +	{ "adsp", 606, 2 },
-> +	{ "cdsp", 607, 5 },
-> +	{ "slpi", 608, 3 },
-> +	{ "gpu", 609, 0 },
-> +	{ "display", 610, 0 },
-> +	{ "adsp_island", 613, 2 },
-> +	{ "slpi_island", 613, 3 },
-> +};
-> +
-> +struct stats_config {
-> +	size_t offset_addr;
-> +	size_t num_records;
-> +	bool appended_stats_avail;
-> +};
-> +
-> +struct stats_data {
-> +	bool appended_stats_avail;
-> +	void __iomem *base;
-> +};
-> +
-> +struct sleep_stats {
-> +	u32 stat_type;
-> +	u32 count;
-> +	u64 last_entered_at;
-> +	u64 last_exited_at;
-> +	u64 accumulated;
-> +};
-> +
-> +struct appended_stats {
-> +	u32 client_votes;
-> +	u32 reserved[3];
-> +};
-> +
-> +static void qcom_print_stats(struct seq_file *s, const struct sleep_stats *stat)
-> +{
-> +	u64 accumulated = stat->accumulated;
-> +	/*
-> +	 * If a subsystem is in sleep when reading the sleep stats adjust
-> +	 * the accumulated sleep duration to show actual sleep time.
-> +	 */
-> +	if (stat->last_entered_at > stat->last_exited_at)
-> +		accumulated += arch_timer_read_counter() - stat->last_entered_at;
-> +
-> +	seq_printf(s, "Count: %u\n", stat->count);
-> +	seq_printf(s, "Last Entered At: %llu\n", stat->last_entered_at);
-> +	seq_printf(s, "Last Exited At: %llu\n", stat->last_exited_at);
-> +	seq_printf(s, "Accumulated Duration: %llu\n", accumulated);
-> +}
-> +
-> +static int qcom_subsystem_sleep_stats_show(struct seq_file *s, void *unused)
-> +{
-> +	struct subsystem_data *subsystem = s->private;
-> +	struct sleep_stats *stat;
-> +
-> +	/* Items are allocated lazily, so lookup pointer each time */
-> +	stat = qcom_smem_get(subsystem->pid, subsystem->smem_item, NULL);
-> +	if (IS_ERR(stat))
-> +		return PTR_ERR(stat);
-> +
-> +	qcom_print_stats(s, stat);
-> +
-> +	return 0;
-> +}
-> +
-> +static int qcom_soc_sleep_stats_show(struct seq_file *s, void *unused)
-> +{
-> +	struct stats_data *d = s->private;
-> +	void __iomem *reg = d->base;
-> +	struct sleep_stats stat;
-> +
-> +	memcpy_fromio(&stat, reg, sizeof(stat));
-> +	qcom_print_stats(s, &stat);
-> +
-> +	if (d->appended_stats_avail) {
-> +		struct appended_stats votes;
-> +
-> +		memcpy_fromio(&votes, reg + CLIENT_VOTES_OFFSET, sizeof(votes));
-> +		seq_printf(s, "Client Votes: %#x\n", votes.client_votes);
-> +	}
-> +
-> +	return 0;
-> +}
-> +
-> +DEFINE_SHOW_ATTRIBUTE(qcom_soc_sleep_stats);
-> +DEFINE_SHOW_ATTRIBUTE(qcom_subsystem_sleep_stats);
-> +
-> +static void qcom_create_soc_sleep_stat_files(struct dentry *root, void __iomem *reg,
-> +					     struct stats_data *d, u32 num_records)
-> +{
-> +	char stat_type[sizeof(u32) + 1] = {0};
-> +	u32 offset = 0, type;
-> +	int i, j;
-> +
-> +	for (i = 0; i < num_records; i++) {
-> +		d[i].base = reg + offset;
-> +
-> +		/*
-> +		 * Read the low power mode name and create debugfs file for it.
-> +		 * The names read could be of below,
-> +		 * (may change depending on low power mode supported).
-> +		 * For rpmh-sleep-stats: "aosd", "cxsd" and "ddr".
-> +		 * For rpm-sleep-stats: "vmin" and "vlow".
-> +		 */
-> +		type = readl(d[i].base);
-> +		for (j = 0; j < sizeof(u32); j++) {
-> +			stat_type[j] = type & 0xff;
-> +			type = type >> 8;
-> +		}
-> +		strim(stat_type);
-> +		debugfs_create_file(stat_type, 0400, root, &d[i],
-> +				    &qcom_soc_sleep_stats_fops);
-> +
-> +		offset += sizeof(struct sleep_stats);
-> +		if (d[i].appended_stats_avail)
-> +			offset += sizeof(struct appended_stats);
-> +	}
-> +}
-> +
-> +static void qcom_create_subsystem_stat_files(struct dentry *root)
-> +{
-> +	struct sleep_stats *stat;
-> +	int i;
-> +
-> +	for (i = 0; i < ARRAY_SIZE(subsystems); i++) {
-> +		stat = qcom_smem_get(subsystems[i].pid, subsystems[i].smem_item, NULL);
-> +		if (IS_ERR(stat))
-> +			continue;
-> +
-> +		debugfs_create_file(subsystems[i].name, 0400, root, (void *)&subsystems[i],
-> +				    &qcom_subsystem_sleep_stats_fops);
-> +	}
-> +}
-> +
-> +static int qcom_soc_sleep_stats_probe(struct platform_device *pdev)
-> +{
-> +	struct resource *res;
-> +	void __iomem *reg;
-> +	void __iomem *offset_addr;
-> +	phys_addr_t stats_base;
-> +	resource_size_t stats_size;
-> +	struct dentry *root;
-> +	const struct stats_config *config;
-> +	struct stats_data *d;
-> +	int i;
-> +
-> +	config = device_get_match_data(&pdev->dev);
-> +	if (!config)
-> +		return -ENODEV;
-> +
-> +	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
-> +	if (!res)
-> +		return PTR_ERR(res);
-> +
-> +	offset_addr = ioremap(res->start + config->offset_addr, sizeof(u32));
-> +	if (IS_ERR(offset_addr))
-> +		return PTR_ERR(offset_addr);
-> +
-> +	stats_base = res->start | readl_relaxed(offset_addr);
-> +	stats_size = resource_size(res);
-> +	iounmap(offset_addr);
-> +
-> +	reg = devm_ioremap(&pdev->dev, stats_base, stats_size);
-> +	if (!reg)
-> +		return -ENOMEM;
-> +
-> +	d = devm_kcalloc(&pdev->dev, config->num_records,
-> +			 sizeof(*d), GFP_KERNEL);
-> +	if (!d)
-> +		return -ENOMEM;
-> +
-> +	for (i = 0; i < config->num_records; i++)
-> +		d[i].appended_stats_avail = config->appended_stats_avail;
-> +
-> +	root = debugfs_create_dir("qcom_sleep_stats", NULL);
-> +
-> +	qcom_create_subsystem_stat_files(root);
-> +	qcom_create_soc_sleep_stat_files(root, reg, d, config->num_records);
-> +
-> +	platform_set_drvdata(pdev, root);
-> +
-> +	return 0;
-> +}
-> +
-> +static int qcom_soc_sleep_stats_remove(struct platform_device *pdev)
-> +{
-> +	struct dentry *root = platform_get_drvdata(pdev);
-> +
-> +	debugfs_remove_recursive(root);
-> +
-> +	return 0;
-> +}
-> +
-> +static const struct stats_config rpm_data = {
-> +	.offset_addr = 0x14,
-> +	.num_records = 2,
-> +	.appended_stats_avail = true,
-> +};
-> +
-> +static const struct stats_config rpmh_data = {
-> +	.offset_addr = 0x4,
-> +	.num_records = 3,
-> +	.appended_stats_avail = false,
-> +};
-> +
-> +static const struct of_device_id qcom_soc_sleep_stats_table[] = {
-> +	{ .compatible = "qcom,rpm-sleep-stats", .data = &rpm_data },
-> +	{ .compatible = "qcom,rpmh-sleep-stats", .data = &rpmh_data },
-> +	{ }
-> +};
-> +
-> +static struct platform_driver soc_sleep_stats_driver = {
-> +	.probe = qcom_soc_sleep_stats_probe,
-> +	.remove = qcom_soc_sleep_stats_remove,
-> +	.driver = {
-> +		.name = "soc_sleep_stats",
-> +		.of_match_table = qcom_soc_sleep_stats_table,
-> +	},
-> +};
-> +module_platform_driver(soc_sleep_stats_driver);
-> +
-> +MODULE_DESCRIPTION("Qualcomm Technologies, Inc. (QTI) SoC Sleep Stats driver");
-> +MODULE_LICENSE("GPL v2");
-> +MODULE_SOFTDEP("pre: smem");
 
-I still think the qcom_smem_* function calls results in a harder
-dependency than this softdep.
+On 5/31/21 8:13 AM, Borislav Petkov wrote:
+> On Tue, May 25, 2021 at 11:21:21AM -0700, Kuppuswamy, Sathyanarayanan wrote:
+>> Following is the sample implementation. Please let me know your
+>> comments.
+> 
+> Doesn't look like what I suggested here:
+> 
+> https://lkml.kernel.org/r/YKfPLlulaqwypNkO@zn.tnic
 
-Regards,
-Bjorn
+IIUC, following are your design suggestions:
+
+1. Define generic flags.
+
+I think following flags are defined as you have suggested.
+
++++ b/include/linux/protected_guest.h
+@@ -0,0 +1,23 @@
++/* SPDX-License-Identifier: GPL-2.0-only */
++#ifndef _LINUX_PROTECTED_GUEST_H
++#define _LINUX_PROTECTED_GUEST_H 1
++
++/* Protected Guest Feature Flags (leave 0-0xff for arch specific flags) */
++
++/* Support for guest encryption */
++#define VM_MEM_ENCRYPT                 0x100
++/* Encryption support is active */
++#define VM_MEM_ENCRYPT_ACTIVE          0x101
++/* Support for unrolled string IO */
++#define VM_UNROLL_STRING_IO            0x102
++/* Support for host memory encryption */
++#define VM_HOST_MEM_ENCRYPT            0x103
+
+2. Define generic functions and allow calls to arch specific implementations.
+
+For above requirement, instead of calling arch specific functions from 
+include/linux/protected_guest.h, I have directly included the arch specific file in 
+linux/protected_guest.h
+
++#ifdef CONFIG_ARCH_HAS_PROTECTED_GUEST
++#include <asm/protected_guest.h>
++#else
++static inline bool is_protected_guest(void) { return false; }
++static inline bool protected_guest_has(unsigned long flag) { return false; }
++#endif
+
+3. Implement arch specific implementations respond to protected_guest_has() calls right?
+
+I think above requirement is satisfied in following implementation.
+
++++ b/arch/x86/include/asm/protected_guest.h
+@@ -0,0 +1,24 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++/* Copyright (C) 2020 Intel Corporation */
++#ifndef _ASM_PROTECTED_GUEST
++#define _ASM_PROTECTED_GUEST 1
++
++#include <asm/cpufeature.h>
++#include <asm/tdx.h>
++
++/* Only include through linux/protected_guest.h */
++
++static inline bool is_protected_guest(void)
++{
++       return boot_cpu_has(X86_FEATURE_TDX_GUEST);
++}
++
++static inline bool protected_guest_has(unsigned long flag)
++{
++       if (boot_cpu_has(X86_FEATURE_TDX_GUEST))
++               return tdx_protected_guest_has(flag);
++
++       return false;
++}
++
+
+Did I misunderstand anything ? Please let me know your comments.
+
+
+
+> 
+
+-- 
+Sathyanarayanan Kuppuswamy
+Linux Kernel Developer
