@@ -2,33 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D382939662D
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 18:59:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D3C939662F
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 18:59:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234865AbhEaRAD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 13:00:03 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57262 "EHLO mail.kernel.org"
+        id S234932AbhEaRAT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 13:00:19 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57866 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233976AbhEaPPy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 11:15:54 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1DCED6124C;
-        Mon, 31 May 2021 15:14:12 +0000 (UTC)
+        id S232163AbhEaPRs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 11:17:48 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7659A6128A
+        for <linux-kernel@vger.kernel.org>; Mon, 31 May 2021 15:14:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1622474053;
-        bh=mFibgwOX03nCHZtcHAU7qUHXvDGUVSs9yP+JBzI1ZYc=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=UC82i9VAO3Mjw346AlyXIGaDcNb2SclaoaBHL+RUCF90yuYYPzq4fkLXf09aCWeEM
-         71MEy7EwGewCnSWqJa7ZSX55ARbHBRFSUkoLn5p425x2Xoxu2Cue64jv/r+Tp+imht
-         dO0qWTUgKJxt61eMHPxVHWWAdOz80WVUF4IoaURr9CmTiUVy+pCoLrUe4pOhsaBoKM
-         AYFcIU3ST0BizPErMj8xB21NEzJBn3Vr1UA4JSnHo/aoVBu4l49i7w5z5uZfNM8PHJ
-         o01HGc96xyQDpULCwTpUXOYmyFehFEmmYSdCkYeMaSrkHFE8+/5R8eCKLhxcVVumCs
-         z7VHNA7z4dKhA==
+        s=k20201202; t=1622474055;
+        bh=bwHF6IjEwRv6psfejvU1PBJoUhfi+Swof04BKI4LSaE=;
+        h=From:To:Subject:Date:In-Reply-To:References:From;
+        b=j9HsVmlz7iV8U0DInAkAc1m6T3nkkj1FE/p9XmrXyOJWpC1jD/o5dOMZLAwA0714R
+         u+svHa/CNvNsv/cuGEzS+idNzN+xPsDsuYfMJz56lqS4bdembPjRHN1srPechye0l8
+         ZhcjmIXDyFOhh1SoEQc3BEctLg8B6/DBxvpTrR+zZTNVeko6AkkXQ4/bcSnIaZfcdW
+         tUNLjsx46k2cOZu/PAVNMH5TTPQZMVZ9+udMkHNcTRafOrHvQvUU/M6TRMSVhhHH+s
+         iyYco6W05+Xq5SsNNp+In7KSBTmoMLyQc98zuRtgWJeZz7jqTMF01DF6ic+8EZed3R
+         Yfs9qKm56rA6g==
 From:   Oded Gabbay <ogabbay@kernel.org>
 To:     linux-kernel@vger.kernel.org
-Cc:     Ofir Bitton <obitton@habana.ai>
-Subject: [PATCH 5/6] habanalabs/gaudi: split host irq interfaces towards FW
-Date:   Mon, 31 May 2021 18:14:02 +0300
-Message-Id: <20210531151403.12494-5-ogabbay@kernel.org>
+Subject: [PATCH 6/6] habanalabs/gaudi: update to latest f/w specs
+Date:   Mon, 31 May 2021 18:14:03 +0300
+Message-Id: <20210531151403.12494-6-ogabbay@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210531151403.12494-1-ogabbay@kernel.org>
 References: <20210531151403.12494-1-ogabbay@kernel.org>
@@ -38,185 +37,145 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ofir Bitton <obitton@habana.ai>
+Update the firmware interface files to their latest version.
 
-Current implementation uses a single interrupt interface towards
-FW, this interface is causing races between interrupt types.
-We split this interface to interface per interrupt type.
-
-Signed-off-by: Ofir Bitton <obitton@habana.ai>
-Reviewed-by: Oded Gabbay <ogabbay@kernel.org>
 Signed-off-by: Oded Gabbay <ogabbay@kernel.org>
 ---
- drivers/misc/habanalabs/common/firmware_if.c  | 26 +++++++++++++++++--
- drivers/misc/habanalabs/gaudi/gaudi.c         |  8 +++---
- .../habanalabs/include/common/hl_boot_if.h    | 14 ++++++++--
- .../habanalabs/include/gaudi/gaudi_reg_map.h  |  4 +++
- 4 files changed, 44 insertions(+), 8 deletions(-)
+ .../habanalabs/include/common/hl_boot_if.h    | 36 +++++++++++++------
+ .../habanalabs/include/gaudi/gaudi_fw_if.h    |  7 ++++
+ 2 files changed, 33 insertions(+), 10 deletions(-)
 
-diff --git a/drivers/misc/habanalabs/common/firmware_if.c b/drivers/misc/habanalabs/common/firmware_if.c
-index 4cc6690a3e26..40e91985cb48 100644
---- a/drivers/misc/habanalabs/common/firmware_if.c
-+++ b/drivers/misc/habanalabs/common/firmware_if.c
-@@ -1782,7 +1782,8 @@ static void hl_fw_boot_fit_update_state(struct hl_device *hdev,
- 
- 	/* Read boot_cpu status bits */
- 	if (prop->fw_cpu_boot_dev_sts0_valid) {
--		prop->fw_bootfit_cpu_boot_dev_sts0 = RREG32(cpu_boot_dev_sts0_reg);
-+		prop->fw_bootfit_cpu_boot_dev_sts0 =
-+				RREG32(cpu_boot_dev_sts0_reg);
- 
- 		if (prop->fw_bootfit_cpu_boot_dev_sts0 &
- 				CPU_BOOT_DEV_STS0_FW_HARD_RST_EN)
-@@ -1793,7 +1794,8 @@ static void hl_fw_boot_fit_update_state(struct hl_device *hdev,
- 	}
- 
- 	if (prop->fw_cpu_boot_dev_sts1_valid) {
--		prop->fw_bootfit_cpu_boot_dev_sts1 = RREG32(cpu_boot_dev_sts1_reg);
-+		prop->fw_bootfit_cpu_boot_dev_sts1 =
-+				RREG32(cpu_boot_dev_sts1_reg);
- 
- 		dev_dbg(hdev->dev, "Firmware boot CPU status1 %#x\n",
- 					prop->fw_bootfit_cpu_boot_dev_sts1);
-@@ -1803,6 +1805,24 @@ static void hl_fw_boot_fit_update_state(struct hl_device *hdev,
- 			prop->hard_reset_done_by_fw ? "enabled" : "disabled");
- }
- 
-+static void hl_fw_dynamic_update_linux_interrupt_if(struct hl_device *hdev)
-+{
-+	struct cpu_dyn_regs *dyn_regs =
-+			&hdev->fw_loader.dynamic_loader.comm_desc.cpu_dyn_regs;
-+
-+	/* Check whether all 3 interrupt interfaces are set, if not use a
-+	 * single interface
-+	 */
-+	if (!hdev->asic_prop.gic_interrupts_enable &&
-+			!(hdev->asic_prop.fw_app_cpu_boot_dev_sts0 &
-+				CPU_BOOT_DEV_STS0_MULTI_IRQ_POLL_EN)) {
-+		dyn_regs->gic_host_halt_irq = dyn_regs->gic_host_irq_ctrl;
-+		dyn_regs->gic_host_ints_irq = dyn_regs->gic_host_irq_ctrl;
-+
-+		dev_warn(hdev->dev,
-+			"Using a single interrupt interface towards cpucp");
-+	}
-+}
- /**
-  * hl_fw_dynamic_load_image - load FW image using dynamic protocol
-  *
-@@ -2150,6 +2170,8 @@ static int hl_fw_dynamic_init_cpu(struct hl_device *hdev,
- 	hl_fw_linux_update_state(hdev, le32_to_cpu(dyn_regs->cpu_boot_dev_sts0),
- 				le32_to_cpu(dyn_regs->cpu_boot_dev_sts1));
- 
-+	hl_fw_dynamic_update_linux_interrupt_if(hdev);
-+
- 	return 0;
- 
- protocol_err:
-diff --git a/drivers/misc/habanalabs/gaudi/gaudi.c b/drivers/misc/habanalabs/gaudi/gaudi.c
-index 3f760b932eee..007248946b63 100644
---- a/drivers/misc/habanalabs/gaudi/gaudi.c
-+++ b/drivers/misc/habanalabs/gaudi/gaudi.c
-@@ -3962,7 +3962,7 @@ static int gaudi_init_cpu_queues(struct hl_device *hdev, u32 cpu_timeout)
- 
- 	irq_handler_offset = prop->gic_interrupts_enable ?
- 			mmGIC_DISTRIBUTOR__5_GICD_SETSPI_NSR :
--			le32_to_cpu(dyn_regs->gic_host_irq_ctrl);
-+			le32_to_cpu(dyn_regs->gic_host_pi_upd_irq);
- 
- 	WREG32(irq_handler_offset, GAUDI_EVENT_PI_UPDATE);
- 
-@@ -4148,7 +4148,7 @@ static void gaudi_hw_fini(struct hl_device *hdev, bool hard_reset)
- 	if (hdev->fw_loader.linux_loaded) {
- 		irq_handler_offset = hdev->asic_prop.gic_interrupts_enable ?
- 				mmGIC_DISTRIBUTOR__5_GICD_SETSPI_NSR :
--				le32_to_cpu(dyn_regs->gic_host_irq_ctrl);
-+				le32_to_cpu(dyn_regs->gic_host_halt_irq);
- 
- 		WREG32(irq_handler_offset, GAUDI_EVENT_HALT_MACHINE);
- 	} else {
-@@ -4681,7 +4681,7 @@ static void gaudi_ring_doorbell(struct hl_device *hdev, u32 hw_queue_id, u32 pi)
- 
- 		irq_handler_offset = hdev->asic_prop.gic_interrupts_enable ?
- 				mmGIC_DISTRIBUTOR__5_GICD_SETSPI_NSR :
--				le32_to_cpu(dyn_regs->gic_host_irq_ctrl);
-+				le32_to_cpu(dyn_regs->gic_host_pi_upd_irq);
- 
- 		WREG32(irq_handler_offset, GAUDI_EVENT_PI_UPDATE);
- 	}
-@@ -8912,7 +8912,7 @@ static void gaudi_enable_events_from_fw(struct hl_device *hdev)
- 			&hdev->fw_loader.dynamic_loader.comm_desc.cpu_dyn_regs;
- 	u32 irq_handler_offset = hdev->asic_prop.gic_interrupts_enable ?
- 			mmGIC_DISTRIBUTOR__5_GICD_SETSPI_NSR :
--			le32_to_cpu(dyn_regs->gic_host_irq_ctrl);
-+			le32_to_cpu(dyn_regs->gic_host_ints_irq);
- 
- 	WREG32(irq_handler_offset, GAUDI_EVENT_INTS_REGISTER);
- }
 diff --git a/drivers/misc/habanalabs/include/common/hl_boot_if.h b/drivers/misc/habanalabs/include/common/hl_boot_if.h
-index 6d0c1ddb4304..89ac8020f821 100644
+index 89ac8020f821..fa8a5ad2d438 100644
 --- a/drivers/misc/habanalabs/include/common/hl_boot_if.h
 +++ b/drivers/misc/habanalabs/include/common/hl_boot_if.h
-@@ -205,6 +205,10 @@
-  *					was not served before.
-  *					Initialized in: linux
-  *
-+ * CPU_BOOT_DEV_STS0_MULTI_IRQ_POLL_EN  Use multiple scratchpad interfaces to
-+ *					prevent IRQs overriding each other.
-+ *					Initialized in: linux
-+ *
-  * CPU_BOOT_DEV_STS0_ENABLED		Device status register enabled.
-  *					This is a main indication that the
-  *					running FW populates the device status
-@@ -235,6 +239,7 @@
- #define CPU_BOOT_DEV_STS0_DYN_PLL_EN			(1 << 19)
- #define CPU_BOOT_DEV_STS0_GIC_PRIVILEGED_EN		(1 << 20)
- #define CPU_BOOT_DEV_STS0_EQ_INDEX_EN			(1 << 21)
-+#define CPU_BOOT_DEV_STS0_MULTI_IRQ_POLL_EN		(1 << 22)
- #define CPU_BOOT_DEV_STS0_ENABLED			(1 << 31)
- #define CPU_BOOT_DEV_STS1_ENABLED			(1 << 31)
+@@ -333,24 +333,41 @@ struct cpu_dyn_regs {
+ #define HL_COMMS_DESC_VER	1
  
-@@ -308,13 +313,18 @@ struct cpu_dyn_regs {
- 	__le32 hw_state;
- 	__le32 kmd_msg_to_cpu;
- 	__le32 cpu_cmd_status_to_host;
--	__le32 gic_host_irq_ctrl;
-+	union {
-+		__le32 gic_host_irq_ctrl;
-+		__le32 gic_host_pi_upd_irq;
-+	};
- 	__le32 gic_tpc_qm_irq_ctrl;
- 	__le32 gic_mme_qm_irq_ctrl;
- 	__le32 gic_dma_qm_irq_ctrl;
- 	__le32 gic_nic_qm_irq_ctrl;
- 	__le32 gic_dma_core_irq_ctrl;
--	__le32 reserved1[26];		/* reserve for future use */
-+	__le32 gic_host_halt_irq;
-+	__le32 gic_host_ints_irq;
-+	__le32 reserved1[24];		/* reserve for future use */
+ /* HCMv - Habana Communications Message + header version */
+-#define HL_COMMS_MSG_MAGIC_VER(ver)	(0x48434D00 | ((ver) & 0xff))
++#define HL_COMMS_MSG_MAGIC_VALUE	0x48434D00
++#define HL_COMMS_MSG_MAGIC_MASK		0xFFFFFF00
++#define HL_COMMS_MSG_MAGIC_VER_MASK	0xFF
++
++#define HL_COMMS_MSG_MAGIC_VER(ver)	(HL_COMMS_MSG_MAGIC_VALUE |	\
++					((ver) & HL_COMMS_MSG_MAGIC_VER_MASK))
+ #define HL_COMMS_MSG_MAGIC_V0		HL_COMMS_DESC_MAGIC
+ #define HL_COMMS_MSG_MAGIC_V1		HL_COMMS_MSG_MAGIC_VER(1)
+ 
+ #define HL_COMMS_MSG_MAGIC		HL_COMMS_MSG_MAGIC_V1
+ 
++#define HL_COMMS_MSG_MAGIC_VALIDATE_MAGIC(magic)			\
++		(((magic) & HL_COMMS_MSG_MAGIC_MASK) ==			\
++		HL_COMMS_MSG_MAGIC_VALUE)
++
++#define HL_COMMS_MSG_MAGIC_VALIDATE_VERSION(magic, ver)			\
++		(((magic) & HL_COMMS_MSG_MAGIC_VER_MASK) >=		\
++		((ver) & HL_COMMS_MSG_MAGIC_VER_MASK))
++
++#define HL_COMMS_MSG_MAGIC_VALIDATE(magic, ver)				\
++		(HL_COMMS_MSG_MAGIC_VALIDATE_MAGIC((magic)) &&		\
++		HL_COMMS_MSG_MAGIC_VALIDATE_VERSION((magic), (ver)))
++
+ enum comms_msg_type {
+ 	HL_COMMS_DESC_TYPE = 0,
+ 	HL_COMMS_RESET_CAUSE_TYPE = 1,
  };
  
- /* TODO: remove the desc magic after the code is updated to use message */
-diff --git a/drivers/misc/habanalabs/include/gaudi/gaudi_reg_map.h b/drivers/misc/habanalabs/include/gaudi/gaudi_reg_map.h
-index cd69d3407631..d95d4162ae2c 100644
---- a/drivers/misc/habanalabs/include/gaudi/gaudi_reg_map.h
-+++ b/drivers/misc/habanalabs/include/gaudi/gaudi_reg_map.h
-@@ -12,12 +12,16 @@
-  * PSOC scratch-pad registers
+-/* TODO: remove this struct after the code is updated to use comms_msg_header */
++/* TODO: remove this struct after the code is updated to use message */
+ /* this is the comms descriptor header - meta data */
+ struct comms_desc_header {
+ 	__le32 magic;		/* magic for validation */
+ 	__le32 crc32;		/* CRC32 of the descriptor w/o header */
+ 	__le16 size;		/* size of the descriptor w/o header */
+-	__u8 version;		/* descriptor version */
++	__u8 version;	/* descriptor version */
+ 	__u8 reserved[5];	/* pad to 64 bit */
+ };
+ 
+@@ -359,7 +376,7 @@ struct comms_msg_header {
+ 	__le32 magic;		/* magic for validation */
+ 	__le32 crc32;		/* CRC32 of the message w/o header */
+ 	__le16 size;		/* size of the message w/o header */
+-	__u8 version;		/* message payload version */
++	__u8 version;	/* message payload version */
+ 	__u8 type;		/* message type */
+ 	__u8 reserved[4];	/* pad to 64 bit */
+ };
+@@ -372,8 +389,7 @@ struct lkd_fw_comms_desc {
+ 	char cur_fw_ver[VERSION_MAX_LEN];
+ 	/* can be used for 1 more version w/o ABI change */
+ 	char reserved0[VERSION_MAX_LEN];
+-	/* address for next FW component load */
+-	__le64 img_addr;
++	__le64 img_addr;	/* address for next FW component load */
+ };
+ 
+ enum comms_reset_cause {
+@@ -382,10 +398,11 @@ enum comms_reset_cause {
+ 	HL_RESET_CAUSE_TDR = 2,
+ };
+ 
+-#define RESET_CAUSE_PADDING	7
++/* TODO: remove define after struct name is aligned on all projects */
++#define lkd_msg_comms lkd_fw_comms_msg
+ 
+ /* this is the comms message descriptor */
+-struct lkd_msg_comms {
++struct lkd_fw_comms_msg {
+ 	struct comms_msg_header header;
+ 	/* union for future expantions of new messages */
+ 	union {
+@@ -400,7 +417,6 @@ struct lkd_msg_comms {
+ 		};
+ 		struct {
+ 			__u8 reset_cause;
+-			__u8 reserved[RESET_CAUSE_PADDING]; /* 64 bit pad */
+ 		};
+ 	};
+ };
+@@ -474,7 +490,7 @@ enum comms_cmd {
+ struct comms_command {
+ 	union {		/* bit fields are only for FW use */
+ 		struct {
+-			u32 size :25;			/* 32MB max. */
++			u32 size :25;		/* 32MB max. */
+ 			u32 reserved :2;
+ 			enum comms_cmd cmd :5;		/* 32 commands */
+ 		};
+diff --git a/drivers/misc/habanalabs/include/gaudi/gaudi_fw_if.h b/drivers/misc/habanalabs/include/gaudi/gaudi_fw_if.h
+index a4afb984d0ae..34ca4fe50d91 100644
+--- a/drivers/misc/habanalabs/include/gaudi/gaudi_fw_if.h
++++ b/drivers/misc/habanalabs/include/gaudi/gaudi_fw_if.h
+@@ -20,6 +20,9 @@
+ #define UBOOT_FW_OFFSET			0x100000	/* 1MB in SRAM */
+ #define LINUX_FW_OFFSET			0x800000	/* 8MB in HBM */
+ 
++/* HBM thermal delta in [Deg] added to composite (CTemp) */
++#define HBM_TEMP_ADJUST_COEFF		6
++
+ enum gaudi_nic_axi_error {
+ 	RXB,
+ 	RXE,
+@@ -56,6 +59,8 @@ struct eq_nic_sei_event {
+  * @pcs_link: has PCS link.
+  * @phy_ready: is PHY ready.
+  * @auto_neg: is Autoneg enabled.
++ * @timeout_retransmission_cnt: timeout retransmission events
++ * @high_ber_cnt: high ber events
   */
- #define mmHW_STATE			mmPSOC_GLOBAL_CONF_SCRATCHPAD_0
-+/* TODO: remove mmGIC_HOST_IRQ_CTRL_POLL_REG */
- #define mmGIC_HOST_IRQ_CTRL_POLL_REG	mmPSOC_GLOBAL_CONF_SCRATCHPAD_1
-+#define mmGIC_HOST_PI_UPD_IRQ_POLL_REG	mmPSOC_GLOBAL_CONF_SCRATCHPAD_1
- #define mmGIC_TPC_QM_IRQ_CTRL_POLL_REG	mmPSOC_GLOBAL_CONF_SCRATCHPAD_2
- #define mmGIC_MME_QM_IRQ_CTRL_POLL_REG	mmPSOC_GLOBAL_CONF_SCRATCHPAD_3
- #define mmGIC_DMA_QM_IRQ_CTRL_POLL_REG	mmPSOC_GLOBAL_CONF_SCRATCHPAD_4
- #define mmGIC_NIC_QM_IRQ_CTRL_POLL_REG	mmPSOC_GLOBAL_CONF_SCRATCHPAD_5
- #define mmGIC_DMA_CR_IRQ_CTRL_POLL_REG	mmPSOC_GLOBAL_CONF_SCRATCHPAD_6
-+#define mmGIC_HOST_HALT_IRQ_POLL_REG	mmPSOC_GLOBAL_CONF_SCRATCHPAD_7
-+#define mmGIC_HOST_INTS_IRQ_POLL_REG	mmPSOC_GLOBAL_CONF_SCRATCHPAD_8
- #define mmCPU_BOOT_DEV_STS0		mmPSOC_GLOBAL_CONF_SCRATCHPAD_20
- #define mmCPU_BOOT_DEV_STS1		mmPSOC_GLOBAL_CONF_SCRATCHPAD_21
- #define mmFUSE_VER_OFFSET		mmPSOC_GLOBAL_CONF_SCRATCHPAD_22
+ struct gaudi_nic_status {
+ 	__u32 port;
+@@ -69,6 +74,8 @@ struct gaudi_nic_status {
+ 	__u8 pcs_link;
+ 	__u8 phy_ready;
+ 	__u8 auto_neg;
++	__u32 timeout_retransmission_cnt;
++	__u32 high_ber_cnt;
+ };
+ 
+ struct gaudi_flops_2_data {
 -- 
 2.25.1
 
