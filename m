@@ -2,35 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ACA31396363
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 17:13:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CFB17396520
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 18:23:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233689AbhEaPP3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 11:15:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40810 "EHLO mail.kernel.org"
+        id S234714AbhEaQY0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 12:24:26 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37862 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233249AbhEaOMm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 10:12:42 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0C928613CB;
-        Mon, 31 May 2021 13:41:39 +0000 (UTC)
+        id S233335AbhEaOlX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 10:41:23 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id AD4C261C68;
+        Mon, 31 May 2021 13:53:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1622468500;
-        bh=/SOqs7tI79XyTZ4L9Qld6vWOfhdLjxec5g19gpzLVY0=;
+        s=korg; t=1622469198;
+        bh=xagvrzRcVIBO+CNLCyaW5UeI3FqC/1oW+yIpTa01+fk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Lmv2PylxPp93yHO4pMXcyq7Tx9rPUrWe33ZrlxtzsoJEQDb1I0HSj+fXHua+loYTD
-         zIs8CCoyFHjWEN/YGJzAa1k2n6JUFhSlSMyNWSazUF4GMhNQzmsLn/olyeWdqWqJm3
-         MKawHkRQ4wRUg+0A/hrd0mt5aerw1ro4VJ8DRgjE=
+        b=wrDRBfmbs2vyRHqbWV//WwXLn8r79vKkjcSCAY+yB0tJZMYibG68m+DxkpPd51SA7
+         n/BtneM3eKIpFe3YCp8nhWZ320GToB3nH4PX7ckPoEUJsoCRBtO0+puy7lbf4FN3IG
+         u1Z1zGXgz0DArdsHx3NVCBahoX3B02RePHwt8pFI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Anna Schumaker <Anna.Schumaker@Netapp.com>,
-        Trond Myklebust <trond.myklebust@hammerspace.com>
-Subject: [PATCH 5.4 005/177] NFSv4: Fix a NULL pointer dereference in pnfs_mark_matching_lsegs_return()
+        stable@vger.kernel.org,
+        Adam Thomson <Adam.Thomson.Opensource@diasemi.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Subject: [PATCH 5.12 107/296] usb: typec: tcpm: Use LE to CPU conversion when accessing msg->header
 Date:   Mon, 31 May 2021 15:12:42 +0200
-Message-Id: <20210531130648.085132103@linuxfoundation.org>
+Message-Id: <20210531130707.537266142@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210531130647.887605866@linuxfoundation.org>
-References: <20210531130647.887605866@linuxfoundation.org>
+In-Reply-To: <20210531130703.762129381@linuxfoundation.org>
+References: <20210531130703.762129381@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,60 +42,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Anna Schumaker <Anna.Schumaker@Netapp.com>
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 
-commit a421d218603ffa822a0b8045055c03eae394a7eb upstream.
+commit c58bbe3477f75deb7883983e6cf428404a107555 upstream.
 
-Commit de144ff4234f changes _pnfs_return_layout() to call
-pnfs_mark_matching_lsegs_return() passing NULL as the struct
-pnfs_layout_range argument. Unfortunately,
-pnfs_mark_matching_lsegs_return() doesn't check if we have a value here
-before dereferencing it, causing an oops.
+Sparse is not happy about strict type handling:
+  .../typec/tcpm/tcpm.c:2720:27: warning: restricted __le16 degrades to integer
+  .../typec/tcpm/tcpm.c:2814:32: warning: restricted __le16 degrades to integer
 
-I'm able to hit this crash consistently when running connectathon basic
-tests on NFS v4.1/v4.2 against Ontap.
+Fix this by converting LE to CPU before use.
 
-Fixes: de144ff4234f ("NFSv4: Don't discard segments marked for return in _pnfs_return_layout()")
-Cc: stable@vger.kernel.org
-Signed-off-by: Anna Schumaker <Anna.Schumaker@Netapp.com>
-Signed-off-by: Trond Myklebust <trond.myklebust@hammerspace.com>
+Fixes: ae8a2ca8a221 ("usb: typec: Group all TCPCI/TCPM code together")
+Fixes: 64f7c494a3c0 ("typec: tcpm: Add support for sink PPS related messages")
+Cc: stable <stable@vger.kernel.org>
+Cc: Adam Thomson <Adam.Thomson.Opensource@diasemi.com>
+Reviewed-by: Guenter Roeck <linux@roeck-us.net>
+Reviewed-by: Adam Thomson <Adam.Thomson.Opensource@diasemi.com>
+Reviewed-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
+Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Link: https://lore.kernel.org/r/20210519100358.64018-1-andriy.shevchenko@linux.intel.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- fs/nfs/pnfs.c |   15 +++++++--------
- 1 file changed, 7 insertions(+), 8 deletions(-)
+ drivers/usb/typec/tcpm/tcpm.c |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
---- a/fs/nfs/pnfs.c
-+++ b/fs/nfs/pnfs.c
-@@ -1285,6 +1285,11 @@ _pnfs_return_layout(struct inode *ino)
- {
- 	struct pnfs_layout_hdr *lo = NULL;
- 	struct nfs_inode *nfsi = NFS_I(ino);
-+	struct pnfs_layout_range range = {
-+		.iomode		= IOMODE_ANY,
-+		.offset		= 0,
-+		.length		= NFS4_MAX_UINT64,
-+	};
- 	LIST_HEAD(tmp_list);
- 	nfs4_stateid stateid;
- 	int status = 0;
-@@ -1311,16 +1316,10 @@ _pnfs_return_layout(struct inode *ino)
- 	}
- 	valid_layout = pnfs_layout_is_valid(lo);
- 	pnfs_clear_layoutcommit(ino, &tmp_list);
--	pnfs_mark_matching_lsegs_return(lo, &tmp_list, NULL, 0);
-+	pnfs_mark_matching_lsegs_return(lo, &tmp_list, &range, 0);
+--- a/drivers/usb/typec/tcpm/tcpm.c
++++ b/drivers/usb/typec/tcpm/tcpm.c
+@@ -2697,7 +2697,7 @@ static void tcpm_pd_ext_msg_request(stru
+ 	enum pd_ext_msg_type type = pd_header_type_le(msg->header);
+ 	unsigned int data_size = pd_ext_header_data_size_le(msg->ext_msg.header);
  
--	if (NFS_SERVER(ino)->pnfs_curr_ld->return_range) {
--		struct pnfs_layout_range range = {
--			.iomode		= IOMODE_ANY,
--			.offset		= 0,
--			.length		= NFS4_MAX_UINT64,
--		};
-+	if (NFS_SERVER(ino)->pnfs_curr_ld->return_range)
- 		NFS_SERVER(ino)->pnfs_curr_ld->return_range(lo, &range);
--	}
- 
- 	/* Don't send a LAYOUTRETURN if list was initially empty */
- 	if (!test_bit(NFS_LAYOUT_RETURN_REQUESTED, &lo->plh_flags) ||
+-	if (!(msg->ext_msg.header & PD_EXT_HDR_CHUNKED)) {
++	if (!(le16_to_cpu(msg->ext_msg.header) & PD_EXT_HDR_CHUNKED)) {
+ 		tcpm_pd_handle_msg(port, PD_MSG_CTRL_NOT_SUPP, NONE_AMS);
+ 		tcpm_log(port, "Unchunked extended messages unsupported");
+ 		return;
+@@ -2791,7 +2791,7 @@ static void tcpm_pd_rx_handler(struct kt
+ 				 "Data role mismatch, initiating error recovery");
+ 			tcpm_set_state(port, ERROR_RECOVERY, 0);
+ 		} else {
+-			if (msg->header & PD_HEADER_EXT_HDR)
++			if (le16_to_cpu(msg->header) & PD_HEADER_EXT_HDR)
+ 				tcpm_pd_ext_msg_request(port, msg);
+ 			else if (cnt)
+ 				tcpm_pd_data_request(port, msg);
 
 
