@@ -2,339 +2,178 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C00F395EB2
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 16:00:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B79A7396223
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 16:49:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232391AbhEaOCU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 10:02:20 -0400
-Received: from esa.microchip.iphmx.com ([68.232.154.123]:2032 "EHLO
-        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232904AbhEaNjt (ORCPT
+        id S233512AbhEaOvd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 10:51:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37512 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232911AbhEaOCL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 09:39:49 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1622468289; x=1654004289;
-  h=message-id:subject:from:to:cc:date:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=4NvKEFLcTaZsrZt676mG2JeyIZzYHRMP6td1iN925rU=;
-  b=2sjRjn3+NCcsT91iXAlGVv9S2qDeFbbBboZXLAPb7ZGC3VF7jmwtqFb3
-   avpH8oQN3u9cbIb49Va7tLisCga2/lJWmgvuigNkh2qFkkifx+lnWUesq
-   TzIfyyQvzLSc3MIE+acsyiKf5bbBt13Sb2icDWgdBDDakPgYWcseM1k2y
-   KSmbhmGUUQOdLsrjciJsF43xuxLgD4ZkbveT3ixUa9Mb23BX7DlEqqo3t
-   JkbEEvdzF6MvnQ/r/qeoUS2HO993sK+N6Z6TkNPvEPBmIv28WxEGJS0O2
-   IKngPcwv0HWOi6IefYwzFloUzQcBo8mW4+09smNpSY9sRmPGIJnrHr8YF
-   g==;
-IronPort-SDR: cFUxJFz0Vu3et/lEzifPl84BnJAtp/n7Ga/CKr9m2OkfAsa1b48kNahRwzw8yuGRatPZEXvKQq
- Bz33HXEeJ985Y0WniUvRCZ0lsNhvoORhbr1y3rQpz5lJLRXoHvkg2sFs9A93wO0i2uYXM0H2NH
- zV1tWg1cJkhBcx7xFTRd1s9fn/W+R7ZNbZczhJBmCMf7m9+QTc6aLHIdbF9fDgfKgeAU63qNFg
- DodZXJwoW8cUWJ21LWc6Sy2+iTM10ouT4zNQDwibBt/AQ2fjt1O5jknFnSJo7nsnnOvfD0AUHr
- MGw=
-X-IronPort-AV: E=Sophos;i="5.83,237,1616482800"; 
-   d="scan'208";a="57375529"
-Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa6.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 31 May 2021 06:38:08 -0700
-Received: from chn-vm-ex04.mchp-main.com (10.10.85.152) by
- chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Mon, 31 May 2021 06:38:08 -0700
-Received: from [10.205.21.35] (10.10.115.15) by chn-vm-ex04.mchp-main.com
- (10.10.85.152) with Microsoft SMTP Server id 15.1.2176.2 via Frontend
- Transport; Mon, 31 May 2021 06:38:04 -0700
-Message-ID: <975ebaaf4f7457b7c34d0d31ed5185a44ba05d17.camel@microchip.com>
-Subject: Re: [PATCH net-next v2 02/10] net: sparx5: add the basic sparx5
- driver
-From:   Steen Hegelund <steen.hegelund@microchip.com>
-To:     Jakub Kicinski <kuba@kernel.org>
-CC:     "David S. Miller" <davem@davemloft.net>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Russell King <linux@armlinux.org.uk>,
-        Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Madalin Bucur <madalin.bucur@oss.nxp.com>,
-        Mark Einon <mark.einon@gmail.com>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        "Simon Horman" <simon.horman@netronome.com>,
-        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        Bjarni Jonasson <bjarni.jonasson@microchip.com>,
-        Lars Povlsen <lars.povlsen@microchip.com>
-Date:   Mon, 31 May 2021 15:38:04 +0200
-In-Reply-To: <20210530135919.3f64cf33@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
-References: <20210528123419.1142290-1-steen.hegelund@microchip.com>
-         <20210528123419.1142290-3-steen.hegelund@microchip.com>
-         <20210530135919.3f64cf33@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.40.1 
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        Mon, 31 May 2021 10:02:11 -0400
+Received: from mail-qk1-x731.google.com (mail-qk1-x731.google.com [IPv6:2607:f8b0:4864:20::731])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4EA55C07E5FC;
+        Mon, 31 May 2021 06:38:30 -0700 (PDT)
+Received: by mail-qk1-x731.google.com with SMTP id 76so11177263qkn.13;
+        Mon, 31 May 2021 06:38:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references;
+        bh=vycya5wChR8O11SPvwfrbgcahHWj2DvmeexI6w+aeRE=;
+        b=EYvCQQKgPCYb1T1zyBOC+Sfwkask8E/SULWEbSYSdm+BE5nST2/xfLVAfpqDuvUmaY
+         QV2BCuEtvdflaZmcKNByibhZkFOStYY9nMd3P1rudbWQ9P0ffFWMtNzPwfLokj17xSG3
+         GHwzkmAzdTEMyXkE7NgvaU5X/QFKIRcWaP/uejePivKp5cf0KmxAJ1HlEnzCbH/tvH92
+         ZXdazTitutzOFde+lcBXEHI8Iwq8rWGmUgbGf69eHIbYT+7sfX3ljZI64jU0wMYmFmfX
+         38uI5oT/SqD+LMAAQ2WfMmhdT/Afz70n7XF9BCdtbrUnWpvT9MFWgUrl35uk1Uz2UgDR
+         /lXA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references;
+        bh=vycya5wChR8O11SPvwfrbgcahHWj2DvmeexI6w+aeRE=;
+        b=o3WJ3h+BBPL3b/Lx5Pob71Mlc02UE7leJslalQjjXTKRAMVx5M4aAWpDadKrR285Ev
+         sZDjGetFjS9qLuBUA9GuzddjZJCG/Xl4a6M9vif2MYy8L1f9kFYl4hgrD2Y3LuxFFAEk
+         Vf79hIltswLdIVsll6XY3S+IgfFIPeutsm8G27tG3PJ/vo7r2EHpHCc2FiMJm2tKzs1i
+         6loM6V4WMElEJJVs9CY5gm9FVk90L/M6VERaAKPoN54K1FYl/ZLSrtfswAjARy2Ywupx
+         EXjwEIckf3z9IFfsP32iHf4ETLMhLhzYSmTq56cZoFOGFnCGCgiLG2mOezaMGv285Ie4
+         R8GA==
+X-Gm-Message-State: AOAM531ICAGefLzo8AaynBEnFPOryzS+Eu7Fg5SrYOfxue9RPWl9hOa5
+        Y60FMLwvUnCcdrHpP4VOedhzXVByT+KWcswt
+X-Google-Smtp-Source: ABdhPJz8Py5qmvt9kNyJEpjuXtDnKtYR+UgBG/W3ChFm/OMm8eaV8QxMIwb1VCjqy5p8uyIj9S6AzQ==
+X-Received: by 2002:a37:a44d:: with SMTP id n74mr16863684qke.367.1622468309513;
+        Mon, 31 May 2021 06:38:29 -0700 (PDT)
+Received: from localhost.localdomain (ec2-35-169-212-159.compute-1.amazonaws.com. [35.169.212.159])
+        by smtp.gmail.com with ESMTPSA id h8sm8293085qtp.46.2021.05.31.06.38.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 31 May 2021 06:38:29 -0700 (PDT)
+From:   sj38.park@gmail.com
+To:     akpm@linux-foundation.org
+Cc:     SeongJae Park <sjpark@amazon.de>, Jonathan.Cameron@Huawei.com,
+        acme@kernel.org, alexander.shishkin@linux.intel.com,
+        amit@kernel.org, benh@kernel.crashing.org,
+        brendanhiggins@google.com, corbet@lwn.net, david@redhat.com,
+        dwmw@amazon.com, elver@google.com, fan.du@intel.com,
+        foersleo@amazon.de, greg@kroah.com, gthelen@google.com,
+        guoju.fgj@alibaba-inc.com, mgorman@suse.de, minchan@kernel.org,
+        mingo@redhat.com, namhyung@kernel.org, peterz@infradead.org,
+        riel@surriel.com, rientjes@google.com, rostedt@goodmis.org,
+        rppt@kernel.org, shakeelb@google.com, shuah@kernel.org,
+        sj38.park@gmail.com, snu@zelle79.org, vbabka@suse.cz,
+        vdavydov.dev@gmail.com, zgf574564920@gmail.com,
+        linux-damon@amazon.com, linux-mm@kvack.org,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [RFC PATCH 01/13] mm/damon/paddr: Support the pageout scheme
+Date:   Mon, 31 May 2021 13:38:04 +0000
+Message-Id: <20210531133816.12689-2-sj38.park@gmail.com>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20210531133816.12689-1-sj38.park@gmail.com>
+References: <20210531133816.12689-1-sj38.park@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jacub,
+From: SeongJae Park <sjpark@amazon.de>
 
-Thanks for your comments.
+This commit makes the DAMON primitives for physical address space to
+support the pageout action for DAMON-based Operation Schemes.  IOW, now
+the users can implement their own data access-aware reclamations for
+whole system using DAMOS.
 
-On Sun, 2021-05-30 at 13:59 -0700, Jakub Kicinski wrote:
-> EXTERNAL EMAIL: Do not click links or open attachments unless you know the content is safe
-> 
-> On Fri, 28 May 2021 14:34:11 +0200 Steen Hegelund wrote:
-> > This adds the Sparx5 basic SwitchDev driver framework with IO range
-> > mapping, switch device detection and core clock configuration.
-> > 
-> > Support for ports, phylink, netdev, mactable etc. are in the following
-> > patches.
-> 
-> > +     for (idx = 0; idx < 3; idx++) {
-> > +             spx5_rmw(GCB_SIO_CLOCK_SYS_CLK_PERIOD_SET(clk_period / 100),
-> > +                      GCB_SIO_CLOCK_SYS_CLK_PERIOD,
-> > +                      sparx5,
-> > +                      GCB_SIO_CLOCK(idx));
-> > +     }
-> 
-> braces unnecessary, please fix everywhere.
+Signed-off-by: SeongJae Park <sjpark@amazon.de>
+---
+ mm/damon/paddr.c        | 38 +++++++++++++++++++++++++++++++++++++-
+ mm/damon/prmtv-common.c |  2 +-
+ mm/damon/prmtv-common.h |  2 ++
+ 3 files changed, 40 insertions(+), 2 deletions(-)
 
-Will do that.
-
-> 
-> > +
-> > +     spx5_rmw(HSCH_TAS_STATEMACHINE_CFG_REVISIT_DLY_SET
-> > +              ((256 * 1000) / clk_period),
-> > +              HSCH_TAS_STATEMACHINE_CFG_REVISIT_DLY,
-> > +              sparx5,
-> > +              HSCH_TAS_STATEMACHINE_CFG);
-> > +
-> > +     spx5_rmw(ANA_AC_POL_POL_UPD_INT_CFG_POL_UPD_INT_SET(pol_upd_int),
-> > +              ANA_AC_POL_POL_UPD_INT_CFG_POL_UPD_INT,
-> > +              sparx5,
-> > +              ANA_AC_POL_POL_UPD_INT_CFG);
-> > +
-> > +     return 0;
-> > +}
-> 
-> > +     /* Default values, some from DT */
-> > +     sparx5->coreclock = SPX5_CORE_CLOCK_DEFAULT;
-> > +
-> > +     ports = of_get_child_by_name(np, "ethernet-ports");
-> 
-> Don't you need to release the reference you got on @ports?
-
-Yes that is missing.  I will update.
-
-> 
-> > +     if (!ports) {
-> > +             dev_err(sparx5->dev, "no ethernet-ports child node found\n");
-> > +             return -ENODEV;
-> > +     }
-> > +     sparx5->port_count = of_get_child_count(ports);
-> > +
-> > +     configs = kcalloc(sparx5->port_count,
-> > +                       sizeof(struct initial_port_config), GFP_KERNEL);
-> > +     if (!configs)
-> > +             return -ENOMEM;
-> > +
-> > +     for_each_available_child_of_node(ports, portnp) {
-> > +             struct sparx5_port_config *conf;
-> > +             struct phy *serdes;
-> > +             u32 portno;
-> > +
-> > +             err = of_property_read_u32(portnp, "reg", &portno);
-> > +             if (err) {
-> > +                     dev_err(sparx5->dev, "port reg property error\n");
-> > +                     continue;
-> > +             }
-> > +             config = &configs[idx];
-> > +             conf = &config->conf;
-> > +             err = of_get_phy_mode(portnp, &conf->phy_mode);
-> > +             if (err) {
-> > +                     dev_err(sparx5->dev, "port %u: missing phy-mode\n",
-> > +                             portno);
-> > +                     continue;
-> > +             }
-> > +             err = of_property_read_u32(portnp, "microchip,bandwidth",
-> > +                                        &conf->bandwidth);
-> > +             if (err) {
-> > +                     dev_err(sparx5->dev, "port %u: missing bandwidth\n",
-> > +                             portno);
-> > +                     continue;
-> > +             }
-> > +             err = of_property_read_u32(portnp, "microchip,sd-sgpio", &conf->sd_sgpio);
-> > +             if (err)
-> > +                     conf->sd_sgpio = ~0;
-> > +             else
-> > +                     sparx5->sd_sgpio_remapping = true;
-> > +             serdes = devm_of_phy_get(sparx5->dev, portnp, NULL);
-> > +             if (IS_ERR(serdes)) {
-> > +                     err = PTR_ERR(serdes);
-> > +                     if (err != -EPROBE_DEFER)
-> > +                             dev_err(sparx5->dev,
-> > +                                     "port %u: missing serdes\n",
-> > +                                     portno);
-> 
-> dev_err_probe()
-
-OK - did not know that one.
-
-> 
-> > +                     goto cleanup_config;
-> > +             }
-> > +             config->portno = portno;
-> > +             config->node = portnp;
-> > +             config->serdes = serdes;
-> > +
-> > +             conf->media = PHY_MEDIA_DAC;
-> > +             conf->serdes_reset = true;
-> > +             conf->portmode = conf->phy_mode;
-> > +             if (of_find_property(portnp, "sfp", NULL)) {
-> > +                     conf->has_sfp = true;
-> > +                     conf->power_down = true;
-> > +             }
-> > +             idx++;
-> > +     }
-> > +
-> > +     err = sparx5_create_targets(sparx5);
-> > +     if (err)
-> > +             goto cleanup_config;
-> > +
-> > +     if (of_get_mac_address(np, mac_addr)) {
-> > +             dev_info(sparx5->dev, "MAC addr was not set, use random MAC\n");
-> > +             eth_random_addr(sparx5->base_mac);
-> > +             sparx5->base_mac[5] = 0;
-> > +     } else {
-> > +             ether_addr_copy(sparx5->base_mac, mac_addr);
-> > +     }
-> > +
-> > +     /* Inj/Xtr IRQ support to be added in later patches */
-> > +     /* Read chip ID to check CPU interface */
-> > +     sparx5->chip_id = spx5_rd(sparx5, GCB_CHIP_ID);
-> > +
-> > +     sparx5->target_ct = (enum spx5_target_chiptype)
-> > +             GCB_CHIP_ID_PART_ID_GET(sparx5->chip_id);
-> > +
-> > +     /* Initialize Switchcore and internal RAMs */
-> > +     if (sparx5_init_switchcore(sparx5)) {
-> > +             dev_err(sparx5->dev, "Switchcore initialization error\n");
-> > +             goto cleanup_config;
-> 
-> Should @err be set?
-
-Yes it should.  I will update here and below.
-
-> 
-> > +     }
-> > +
-> > +     /* Initialize the LC-PLL (core clock) and set affected registers */
-> > +     if (sparx5_init_coreclock(sparx5)) {
-> > +             dev_err(sparx5->dev, "LC-PLL initialization error\n");
-> > +             goto cleanup_config;
-> 
-> ditto
-
-Yes.
-
-> 
-> > +     }
-> > +
-> > +     for (idx = 0; idx < sparx5->port_count; ++idx) {
-> > +             config = &configs[idx];
-> > +             if (!config->node)
-> > +                     continue;
-> > +
-> > +             err = sparx5_create_port(sparx5, config);
-> > +             if (err) {
-> > +                     dev_err(sparx5->dev, "port create error\n");
-> > +                     goto cleanup_ports;
-> > +             }
-> > +     }
-> > +
-> > +     if (sparx5_start(sparx5)) {
-> > +             dev_err(sparx5->dev, "Start failed\n");
-> > +             goto cleanup_ports;
-> 
-> and here
-
-Yes.
-
-> 
-> > +     }
-> > +
-> > +     kfree(configs);
-> > +     return err;
-> > +
-> > +cleanup_ports:
-> > +     /* Port cleanup to be added in later patches */
-> > +cleanup_config:
-> > +     kfree(configs);
-> > +     return err;
-> > +}
-> 
-> > +struct sparx5_port_config      {
-> 
-> Spurious tab before {?
-
-Spurious spaces - but they will be removed.
-
-> 
-> > +     phy_interface_t portmode;
-> > +     bool has_sfp;
-> > +     u32 bandwidth;
-> > +     int speed;
-> > +     int duplex;
-> > +     enum phy_media media;
-> > +     bool power_down;
-> > +     bool autoneg;
-> > +     u32 pause;
-> > +     bool serdes_reset;
-> 
-> Group all 4 bools together for better packing?
-
-Yes that saves some bytes.  Would bitfields be preferable or are bools sufficient?
-
-> 
-> > +     phy_interface_t phy_mode;
-> > +     u32 sd_sgpio;
-> > +};
-> 
-> > +static inline void spx5_rmw(u32 val, u32 mask, struct sparx5 *sparx5,
-> > +                         int id, int tinst, int tcnt,
-> > +                         int gbase, int ginst, int gcnt, int gwidth,
-> > +                         int raddr, int rinst, int rcnt, int rwidth)
-> > +{
-> > +     u32 nval;
-> > +     void __iomem *addr =
-> > +             spx5_addr(sparx5->regs, id, tinst, tcnt,
-> 
-> Why try to initialize inline when it results in weird looking code and
-> no saved lines?
-
-Hmm, I had not really noticed that... I will just use the spx5_addr call in both places.
-
-> 
-> > +                       gbase, ginst, gcnt, gwidth,
-> > +                       raddr, rinst, rcnt, rwidth);
-> 
-> Not to mention that you end up with no new line after variable
-> declaration.
-
-Yes.  I will add an empty line.
-
-> 
-> > +     nval = readl(addr);
-> > +     nval = (nval & ~mask) | (val & mask);
-> > +     writel(nval, addr);
-> > +}
-
-
-Thanks!
-
+diff --git a/mm/damon/paddr.c b/mm/damon/paddr.c
+index b92b07a3ce53..303db372e53b 100644
+--- a/mm/damon/paddr.c
++++ b/mm/damon/paddr.c
+@@ -7,6 +7,9 @@
+ 
+ #define pr_fmt(fmt) "damon-pa: " fmt
+ 
++#include <linux/swap.h>
++
++#include "../internal.h"
+ #include "prmtv-common.h"
+ 
+ /*
+@@ -85,6 +88,39 @@ bool damon_pa_target_valid(void *t)
+ 	return true;
+ }
+ 
++int damon_pa_apply_scheme(struct damon_ctx *ctx, struct damon_target *t,
++		struct damon_region *r, struct damos *scheme)
++{
++	unsigned long addr;
++	LIST_HEAD(page_list);
++
++	if (scheme->action != DAMOS_PAGEOUT)
++		return -EINVAL;
++
++	for (addr = r->ar.start; addr < r->ar.end; addr += PAGE_SIZE) {
++		struct page *page = damon_get_page(PHYS_PFN(addr));
++
++		if (!page)
++			continue;
++
++		ClearPageReferenced(page);
++		test_and_clear_page_young(page);
++		if (isolate_lru_page(page)) {
++			put_page(page);
++			continue;
++		}
++		if (PageUnevictable(page)) {
++			putback_lru_page(page);
++		} else {
++			list_add(&page->lru, &page_list);
++			put_page(page);
++		}
++	}
++	reclaim_pages(&page_list);
++	cond_resched();
++	return 0;
++}
++
+ void damon_pa_set_primitives(struct damon_ctx *ctx)
+ {
+ 	ctx->primitive.init = NULL;
+@@ -94,5 +130,5 @@ void damon_pa_set_primitives(struct damon_ctx *ctx)
+ 	ctx->primitive.reset_aggregated = NULL;
+ 	ctx->primitive.target_valid = damon_pa_target_valid;
+ 	ctx->primitive.cleanup = NULL;
+-	ctx->primitive.apply_scheme = NULL;
++	ctx->primitive.apply_scheme = damon_pa_apply_scheme;
+ }
+diff --git a/mm/damon/prmtv-common.c b/mm/damon/prmtv-common.c
+index 08e9318d67ed..01c1c1b37859 100644
+--- a/mm/damon/prmtv-common.c
++++ b/mm/damon/prmtv-common.c
+@@ -14,7 +14,7 @@
+  * The body of this function is stolen from the 'page_idle_get_page()'.  We
+  * steal rather than reuse it because the code is quite simple.
+  */
+-static struct page *damon_get_page(unsigned long pfn)
++struct page *damon_get_page(unsigned long pfn)
+ {
+ 	struct page *page = pfn_to_online_page(pfn);
+ 
+diff --git a/mm/damon/prmtv-common.h b/mm/damon/prmtv-common.h
+index 939c41af6b59..ba0c4eecbb79 100644
+--- a/mm/damon/prmtv-common.h
++++ b/mm/damon/prmtv-common.h
+@@ -18,6 +18,8 @@
+ /* Get a random number in [l, r) */
+ #define damon_rand(l, r) (l + prandom_u32_max(r - l))
+ 
++struct page *damon_get_page(unsigned long pfn);
++
+ void damon_va_mkold(struct mm_struct *mm, unsigned long addr);
+ bool damon_va_young(struct mm_struct *mm, unsigned long addr,
+ 			unsigned long *page_sz);
 -- 
-BR
-Steen
-
--=-=-=-=-=-=-=-=-=-=-=-=-=-=
-steen.hegelund@microchip.com
-
+2.17.1
 
