@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 07314396615
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 18:55:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6EE3B39658E
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 18:38:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232262AbhEaQ5C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 12:57:02 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51184 "EHLO mail.kernel.org"
+        id S234002AbhEaQkE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 12:40:04 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47902 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233880AbhEaPAg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 11:00:36 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 38A9C6124C;
-        Mon, 31 May 2021 14:14:34 +0000 (UTC)
+        id S233301AbhEaOvR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 10:51:17 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A53036192D;
+        Mon, 31 May 2021 13:57:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1622470474;
-        bh=NVax9bSoI2rTxw5JlgzogZU7L09xE+j3DWWyfPipJjw=;
+        s=korg; t=1622469474;
+        bh=SijxyMG+XZ7M/EhfZUJa0VwxHuno8lNGCHrZ6Mr63lY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=VioWoJvh9TyKccdPxt2UP8qEV52yDT9SWqr2hdYfD7+5L4PdMvq69K1ll7J3T1vsl
-         RHV6p+bqsw4c4aYSpX7zVyeG04X1aDFdIgO2N4NVC0s/Q6cv3FMK/BjobMuJpX47Sy
-         K0FElr+ttyLmzDKz5GOsMVmRrgijkvPU9Cw7xf90=
+        b=Ajn0KddMenmQEbLrrxfbZJf083nAJyLBFmdkpCqivRE06X+UyVWveqVl57WHiSqKv
+         LHY53ZgkPK6VjvkGgpqYGkqCH+jpgpLF/8elNnCG18d5ATFWBy008qOIDx/1Hb0FNE
+         3bp7OkgNXHYEaofwDBVivazLUKhfg0BnyADyyTEY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Zhang Xiaoxu <zhangxiaoxu5@huawei.com>,
-        Trond Myklebust <trond.myklebust@hammerspace.com>
-Subject: [PATCH 4.4 25/54] NFSv4: Fix v4.0/v4.1 SEEK_DATA return -ENOTSUPP when set NFS_V4_2 config
+        stable@vger.kernel.org, Takashi Iwai <tiwai@suse.de>,
+        Atul Gopinathan <atulgopinathan@gmail.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.12 176/296] ALSA: sb8: Add a comment note regarding an unused pointer
 Date:   Mon, 31 May 2021 15:13:51 +0200
-Message-Id: <20210531130635.878749264@linuxfoundation.org>
+Message-Id: <20210531130709.791517650@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210531130635.070310929@linuxfoundation.org>
-References: <20210531130635.070310929@linuxfoundation.org>
+In-Reply-To: <20210531130703.762129381@linuxfoundation.org>
+References: <20210531130703.762129381@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,36 +40,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zhang Xiaoxu <zhangxiaoxu5@huawei.com>
+From: Atul Gopinathan <atulgopinathan@gmail.com>
 
-commit e67afa7ee4a59584d7253e45d7f63b9528819a13 upstream.
+[ Upstream commit a28591f61b60fac820c6de59826ffa710e5e314e ]
 
-Since commit bdcc2cd14e4e ("NFSv4.2: handle NFS-specific llseek errors"),
-nfs42_proc_llseek would return -EOPNOTSUPP rather than -ENOTSUPP when
-SEEK_DATA on NFSv4.0/v4.1.
+The field "fm_res" of "struct snd_sb8" is never used/dereferenced
+throughout the sb8.c code. Therefore there is no need for any null value
+check after the "request_region()".
 
-This will lead xfstests generic/285 not run on NFSv4.0/v4.1 when set the
-CONFIG_NFS_V4_2, rather than run failed.
+Add a comment note to make developers know about this and prevent any
+"NULL check" patches on this part of code.
 
-Fixes: bdcc2cd14e4e ("NFSv4.2: handle NFS-specific llseek errors")
-Cc: <stable.vger.kernel.org> # 4.2
-Signed-off-by: Zhang Xiaoxu <zhangxiaoxu5@huawei.com>
-Signed-off-by: Trond Myklebust <trond.myklebust@hammerspace.com>
+Cc: Takashi Iwai <tiwai@suse.de>
+Signed-off-by: Atul Gopinathan <atulgopinathan@gmail.com>
+Link: https://lore.kernel.org/r/20210503115736.2104747-36-gregkh@linuxfoundation.org
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/nfs/nfs4file.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/isa/sb/sb8.c | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
 
---- a/fs/nfs/nfs4file.c
-+++ b/fs/nfs/nfs4file.c
-@@ -168,7 +168,7 @@ static loff_t nfs4_file_llseek(struct fi
- 	case SEEK_HOLE:
- 	case SEEK_DATA:
- 		ret = nfs42_proc_llseek(filep, offset, whence);
--		if (ret != -ENOTSUPP)
-+		if (ret != -EOPNOTSUPP)
- 			return ret;
- 	default:
- 		return nfs_file_llseek(filep, offset, whence);
+diff --git a/sound/isa/sb/sb8.c b/sound/isa/sb/sb8.c
+index 95290ffe5c6e..ed3a87ebe3f4 100644
+--- a/sound/isa/sb/sb8.c
++++ b/sound/isa/sb/sb8.c
+@@ -93,7 +93,11 @@ static int snd_sb8_probe(struct device *pdev, unsigned int dev)
+ 	acard = card->private_data;
+ 	card->private_free = snd_sb8_free;
+ 
+-	/* block the 0x388 port to avoid PnP conflicts */
++	/*
++	 * Block the 0x388 port to avoid PnP conflicts.
++	 * No need to check this value after request_region,
++	 * as we never do anything with it.
++	 */
+ 	acard->fm_res = request_region(0x388, 4, "SoundBlaster FM");
+ 
+ 	if (port[dev] != SNDRV_AUTO_PORT) {
+-- 
+2.30.2
+
 
 
