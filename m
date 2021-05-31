@@ -2,89 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E4AE2396253
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 16:53:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E9E5F3960F0
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 16:31:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234307AbhEaOyy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 10:54:54 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:54596 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233222AbhEaODo (ORCPT
+        id S233768AbhEaOde (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 10:33:34 -0400
+Received: from szxga01-in.huawei.com ([45.249.212.187]:2802 "EHLO
+        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233223AbhEaNy4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 10:03:44 -0400
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1622469722;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=cpFaLYty/y3nJdZHyW0WlhfFo+8SFDdRk+PJoQsL8DI=;
-        b=eh7MMipFT19nuwJTmIdDQAqeiYXG5PMmFPkBtC4ZUlSdN5jOJDPxXhp94yqdDOoBqgHluo
-        /LPpA80HwlzzRlR/fszqxk8+DGeQsrI+yb5YPNGMM39qqDC2HeWxWqpq9O/xFMOGW5kfvN
-        PjqOabKDF346Ap6yqOBubOxiR6OmKOqPz8LxV1ZHzGAV3Eca4m7aDaAM9/dUg7UqE6i3ya
-        YFGYSSdAiEF6RbhsZ9CuK/JSBc1ZaYOJJ4GZtPxLyDKUrDAGWDDE2nAoYOJshaVnzgOHBR
-        +zF9FaYtM8AbxYT0/wB/eItZR+n8kH+KjT3L3u1T3Hnp31FX6vP8s9ahRmFf+g==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1622469722;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=cpFaLYty/y3nJdZHyW0WlhfFo+8SFDdRk+PJoQsL8DI=;
-        b=RABPXd8q8P4Q0xjfHnTiSpvDg7dvHBarCEFQGb8Xy54U76o6WIkHjk9f3DyG7vAPof6FnD
-        xOZ/EV7Ljt+I0wAg==
-To:     Jason Gunthorpe <jgg@nvidia.com>, Dave Jiang <dave.jiang@intel.com>
-Cc:     alex.williamson@redhat.com, kwankhede@nvidia.com, vkoul@kernel.org,
-        megha.dey@intel.com, jacob.jun.pan@intel.com, ashok.raj@intel.com,
-        yi.l.liu@intel.com, baolu.lu@intel.com, kevin.tian@intel.com,
-        sanjay.k.kumar@intel.com, tony.luck@intel.com,
-        dan.j.williams@intel.com, eric.auger@redhat.com,
-        pbonzini@redhat.com, dmaengine@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org
-Subject: Re: [PATCH v6 15/20] vfio/mdev: idxd: ims domain setup for the vdcm
-In-Reply-To: <20210523235023.GL1002214@nvidia.com>
-References: <162164243591.261970.3439987543338120797.stgit@djiang5-desk3.ch.intel.com> <162164283796.261970.11020270418798826121.stgit@djiang5-desk3.ch.intel.com> <20210523235023.GL1002214@nvidia.com>
-Date:   Mon, 31 May 2021 16:02:02 +0200
-Message-ID: <87mtsb3sth.ffs@nanos.tec.linutronix.de>
+        Mon, 31 May 2021 09:54:56 -0400
+Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.53])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4FtxTF6Q6ZzWpVJ;
+        Mon, 31 May 2021 21:48:33 +0800 (CST)
+Received: from dggema762-chm.china.huawei.com (10.1.198.204) by
+ dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
+ 15.1.2176.2; Mon, 31 May 2021 21:53:14 +0800
+Received: from huawei.com (10.175.127.227) by dggema762-chm.china.huawei.com
+ (10.1.198.204) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Mon, 31
+ May 2021 21:53:13 +0800
+From:   Yu Kuai <yukuai3@huawei.com>
+To:     <gregkh@linuxfoundation.org>, <fabioaiuto83@gmail.com>
+CC:     <linux-staging@lists.linux.dev>, <linux-kernel@vger.kernel.org>,
+        <yukuai3@huawei.com>, <yi.zhang@huawei.com>
+Subject: [PATCH V3] staging: rtl8723bs: core: rtw_mlme_ext.c: remove deadcode
+Date:   Mon, 31 May 2021 22:02:34 +0800
+Message-ID: <20210531140234.3352465-1-yukuai3@huawei.com>
+X-Mailer: git-send-email 2.31.1
+In-Reply-To: <YLIk2aE3vE3Vr1E8@kroah.com>
+References: <YLIk2aE3vE3Vr1E8@kroah.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.127.227]
+X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
+ dggema762-chm.china.huawei.com (10.1.198.204)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, May 23 2021 at 20:50, Jason Gunthorpe wrote:
-> On Fri, May 21, 2021 at 05:20:37PM -0700, Dave Jiang wrote:
->> @@ -77,8 +80,18 @@ int idxd_mdev_host_init(struct idxd_device *idxd, struct mdev_driver *drv)
->>  		return rc;
->>  	}
->>  
->> +	ims_info.max_slots = idxd->ims_size;
->> +	ims_info.slots = idxd->reg_base + idxd->ims_offset;
->> +	idxd->ims_domain = pci_ims_array_create_msi_irq_domain(idxd->pdev, &ims_info);
->> +	if (!idxd->ims_domain) {
->> +		dev_warn(dev, "Fail to acquire IMS domain\n");
->> +		iommu_dev_disable_feature(dev, IOMMU_DEV_FEAT_AUX);
->> +		return -ENODEV;
->> +	}
->
-> I'm quite surprised that every mdev doesn't create its own ims_domain
-> in its probe function.
+'CHECK_EVENT_SEQ' is not defined anywhere, remove the deadcode.
 
-What for?
+Signed-off-by: Yu Kuai <yukuai3@huawei.com>
+---
+Changes in V2:
+ - remove dead code to fix unused variable.
+ - use a new tittle.
 
-> This places a global total limit on the # of vectors which makes me
-> ask what was the point of using IMS in the first place ?
+ drivers/staging/rtl8723bs/core/rtw_mlme_ext.c | 13 +------------
+ 1 file changed, 1 insertion(+), 12 deletions(-)
 
-That depends on how IMS is implemented. The IDXD variant has a fixed
-sized message store which is shared between all subdevices, so yet
-another domain would not provide any value.
-
-For the case where the IMS store is seperate, you still have one central
-irqdomain per physical device. The domain allocation function can then
-create storage on demand or reuse existing storage and just fill in the
-pointers.
-
-Thanks,
-
-        tglx
-
+diff --git a/drivers/staging/rtl8723bs/core/rtw_mlme_ext.c b/drivers/staging/rtl8723bs/core/rtw_mlme_ext.c
+index 97b3c2965770..2b95a49ab469 100644
+--- a/drivers/staging/rtl8723bs/core/rtw_mlme_ext.c
++++ b/drivers/staging/rtl8723bs/core/rtw_mlme_ext.c
+@@ -6006,7 +6006,7 @@ static struct fwevent wlanevents[] = {
+ 
+ u8 mlme_evt_hdl(struct adapter *padapter, unsigned char *pbuf)
+ {
+-	u8 evt_code, evt_seq;
++	u8 evt_code;
+ 	u16 evt_sz;
+ 	uint	*peventbuf;
+ 	void (*event_callback)(struct adapter *dev, u8 *pbuf);
+@@ -6017,19 +6017,8 @@ u8 mlme_evt_hdl(struct adapter *padapter, unsigned char *pbuf)
+ 
+ 	peventbuf = (uint *)pbuf;
+ 	evt_sz = (u16)(*peventbuf&0xffff);
+-	evt_seq = (u8)((*peventbuf>>24)&0x7f);
+ 	evt_code = (u8)((*peventbuf>>16)&0xff);
+ 
+-
+-	#ifdef CHECK_EVENT_SEQ
+-	/*  checking event sequence... */
+-	if (evt_seq != (atomic_read(&pevt_priv->event_seq) & 0x7f)) {
+-		pevt_priv->event_seq = (evt_seq+1)&0x7f;
+-
+-		goto _abort_event_;
+-	}
+-	#endif
+-
+ 	/*  checking if event code is valid */
+ 	if (evt_code >= MAX_C2HEVT)
+ 		goto _abort_event_;
+-- 
+2.31.1
 
