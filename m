@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 134DF3963D5
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 17:34:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 78D56395E3B
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 15:54:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234462AbhEaPgQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 11:36:16 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48836 "EHLO mail.kernel.org"
+        id S231922AbhEaNzw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 09:55:52 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43906 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233862AbhEaOVb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 10:21:31 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1A212619C6;
-        Mon, 31 May 2021 13:45:02 +0000 (UTC)
+        id S232532AbhEaNhJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 09:37:09 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 580A86144F;
+        Mon, 31 May 2021 13:26:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1622468703;
-        bh=xT4oh+Kl9yrAfIuii1ZRMFpk90BZcWnx60uANb60MVg=;
+        s=korg; t=1622467560;
+        bh=mJeqKre+1wmJpQ/4NRYPtBLkivBvz8xppH54EUsGy8s=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=lbS6uvADc9P7IfGO6+1NyvExTicnPDC1AA7hM52HZzheqPYEvM5Vv1pxstdHXGdD9
-         bsmGZLtAv7klsUWvgDXDAzn1W02fR4JRCfA4fGmzZFa2kSr4N6Z05TzWXCmBnZC6Sg
-         aPaI154qyNNKuuhbC+U7y15Ja0AoekWR5Zw/RX1w=
+        b=VDn4iLvH5ru132p5zBc0DLKWICgtbAglrE7dVrpVHowtgVbXTdkN9xd29riv/e0XJ
+         GoB3THIFErtHmCfMPxSrP4DhplFkntRZPPm7oGHmPCsnP7/eWK8cTe3nGM85LXHydx
+         CpIiFmat2A8SSipS7vphCUtaFTgGSja9fmp1O+5I=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, "David S. Miller" <davem@davemloft.net>,
-        Du Cheng <ducheng2@gmail.com>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 095/177] net: caif: remove BUG_ON(dev == NULL) in caif_xmit
+        stable@vger.kernel.org, Jiri Slaby <jirislaby@kernel.org>,
+        Atul Gopinathan <atulgopinathan@gmail.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.19 076/116] serial: max310x: unregister uart driver in case of failure and abort
 Date:   Mon, 31 May 2021 15:14:12 +0200
-Message-Id: <20210531130651.173995740@linuxfoundation.org>
+Message-Id: <20210531130642.735432583@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210531130647.887605866@linuxfoundation.org>
-References: <20210531130647.887605866@linuxfoundation.org>
+In-Reply-To: <20210531130640.131924542@linuxfoundation.org>
+References: <20210531130640.131924542@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,78 +40,47 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Du Cheng <ducheng2@gmail.com>
+From: Atul Gopinathan <atulgopinathan@gmail.com>
 
-[ Upstream commit 65a67792e3416f7c5d7daa47d99334cbb19a7449 ]
+[ Upstream commit 3890e3dea315f1a257d1b940a2a4e2fa16a7b095 ]
 
-The condition of dev == NULL is impossible in caif_xmit(), hence it is
-for the removal.
+The macro "spi_register_driver" invokes the function
+"__spi_register_driver()" which has a return type of int and can fail,
+returning a negative value in such a case. This is currently ignored and
+the init() function yields success even if the spi driver failed to
+register.
 
-Explanation:
-The static caif_xmit() is only called upon via a function pointer
-`ndo_start_xmit` defined in include/linux/netdevice.h:
-```
-struct net_device_ops {
-    ...
-    netdev_tx_t     (*ndo_start_xmit)(struct sk_buff *skb, struct net_device *dev);
-    ...
-}
-```
+Fix this by collecting the return value of "__spi_register_driver()" and
+also unregister the uart driver in case of failure.
 
-The exhausive list of call points are:
-```
-drivers/net/ethernet/qualcomm/rmnet/rmnet_map_command.c
-    dev->netdev_ops->ndo_start_xmit(skb, dev);
-    ^                                    ^
-
-drivers/infiniband/ulp/opa_vnic/opa_vnic_netdev.c
-    struct opa_vnic_adapter *adapter = opa_vnic_priv(netdev);
-			     ^                       ^
-    return adapter->rn_ops->ndo_start_xmit(skb, netdev); // adapter would crash first
-	   ^                                    ^
-
-drivers/usb/gadget/function/f_ncm.c
-    ncm->netdev->netdev_ops->ndo_start_xmit(NULL, ncm->netdev);
-	      ^                                   ^
-
-include/linux/netdevice.h
-static inline netdev_tx_t __netdev_start_xmit(...
-{
-    return ops->ndo_start_xmit(skb, dev);
-				    ^
-}
-
-    const struct net_device_ops *ops = dev->netdev_ops;
-				       ^
-    rc = __netdev_start_xmit(ops, skb, dev, more);
-				       ^
-```
-
-In each of the enumerated scenarios, it is impossible for the NULL-valued dev to
-reach the caif_xmit() without crashing the kernel earlier, therefore `BUG_ON(dev ==
-NULL)` is rather useless, hence the removal.
-
-Cc: David S. Miller <davem@davemloft.net>
-Signed-off-by: Du Cheng <ducheng2@gmail.com>
-Link: https://lore.kernel.org/r/20210503115736.2104747-20-gregkh@linuxfoundation.org
+Cc: Jiri Slaby <jirislaby@kernel.org>
+Signed-off-by: Atul Gopinathan <atulgopinathan@gmail.com>
+Link: https://lore.kernel.org/r/20210503115736.2104747-12-gregkh@linuxfoundation.org
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/caif/caif_serial.c | 1 -
- 1 file changed, 1 deletion(-)
+ drivers/tty/serial/max310x.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/net/caif/caif_serial.c b/drivers/net/caif/caif_serial.c
-index 40b079162804..0f2bee59a82b 100644
---- a/drivers/net/caif/caif_serial.c
-+++ b/drivers/net/caif/caif_serial.c
-@@ -270,7 +270,6 @@ static int caif_xmit(struct sk_buff *skb, struct net_device *dev)
- {
- 	struct ser_device *ser;
+diff --git a/drivers/tty/serial/max310x.c b/drivers/tty/serial/max310x.c
+index 0c35c3c5e373..c1ab0dbda8a9 100644
+--- a/drivers/tty/serial/max310x.c
++++ b/drivers/tty/serial/max310x.c
+@@ -1480,10 +1480,12 @@ static int __init max310x_uart_init(void)
+ 		return ret;
  
--	BUG_ON(dev == NULL);
- 	ser = netdev_priv(dev);
+ #ifdef CONFIG_SPI_MASTER
+-	spi_register_driver(&max310x_spi_driver);
++	ret = spi_register_driver(&max310x_spi_driver);
++	if (ret)
++		uart_unregister_driver(&max310x_uart);
+ #endif
  
- 	/* Send flow off once, on high water mark */
+-	return 0;
++	return ret;
+ }
+ module_init(max310x_uart_init);
+ 
 -- 
 2.30.2
 
