@@ -2,36 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 05FAF3965AE
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 18:43:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D7F42395F4C
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 16:08:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234851AbhEaQov (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 12:44:51 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48410 "EHLO mail.kernel.org"
+        id S232446AbhEaOJ5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 10:09:57 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48556 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233130AbhEaOxk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 10:53:40 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 533FC61CAD;
-        Mon, 31 May 2021 13:59:00 +0000 (UTC)
+        id S232650AbhEaNn6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 09:43:58 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9804E6141B;
+        Mon, 31 May 2021 13:29:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1622469540;
-        bh=3Shp8sSKKLxkGkhTI0C21kKKh1LOq5TbLqI58tEXAGI=;
+        s=korg; t=1622467753;
+        bh=/VB0cNKBXrkiO0qO9uaMW7ltrXMVcezAhAeh1le109A=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=fvUvIM33yR2tTpmubg3VwmowqVwES3171TSdv1twrdpEQnyE3HXbFd5/qJwgyECjp
-         cqT99K/ppdY7dxhi453mjOXm6UdLnL0XTi8LbAsXQCzL0ixZmmYk29egU7dC36brZW
-         rvpo2azO7VubTW1n1tM2fva9wWc9lpuAqfQI7c0Y=
+        b=m4RYgh8FAI/9KvGG8QR9dimYfEFE+MzkOFxYcQUXG1zU0zWnvpybs32XuuHSqFW2c
+         E8KQoFv6n/CI/wMv4xOiWS7c5nVIYQrGQVDokTvjAIRtLe1+f/2heWfvn6agp7FrLa
+         AWQhRx2Hu+KAyN/Fiz/wIAWnm7RGyYEtXWD+9Ek4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
+        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
+        Zhen Lei <thunder.leizhen@huawei.com>,
+        Michael Chan <michael.chan@broadcom.com>,
         "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.12 236/296] chelsio/chtls: unlock on error in chtls_pt_recvmsg()
+Subject: [PATCH 4.14 66/79] net: bnx2: Fix error return code in bnx2_init_board()
 Date:   Mon, 31 May 2021 15:14:51 +0200
-Message-Id: <20210531130711.737664546@linuxfoundation.org>
+Message-Id: <20210531130638.104305270@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210531130703.762129381@linuxfoundation.org>
-References: <20210531130703.762129381@linuxfoundation.org>
+In-Reply-To: <20210531130636.002722319@linuxfoundation.org>
+References: <20210531130636.002722319@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,38 +42,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dan Carpenter <dan.carpenter@oracle.com>
+From: Zhen Lei <thunder.leizhen@huawei.com>
 
-[ Upstream commit 832ce924b1a14e139e184a6da9f5a69a5e47b256 ]
+[ Upstream commit 28c66b6da4087b8cfe81c2ec0a46eb6116dafda9 ]
 
-This error path needs to release some memory and call release_sock(sk);
-before returning.
+Fix to return -EPERM from the error handling case instead of 0, as done
+elsewhere in this function.
 
-Fixes: 6919a8264a32 ("Crypto/chtls: add/delete TLS header in driver")
-Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+Fixes: b6016b767397 ("[BNX2]: New Broadcom gigabit network driver.")
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
+Reviewed-by: Michael Chan <michael.chan@broadcom.com>
 Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/chelsio/inline_crypto/chtls/chtls_io.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+ drivers/net/ethernet/broadcom/bnx2.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/net/ethernet/chelsio/inline_crypto/chtls/chtls_io.c b/drivers/net/ethernet/chelsio/inline_crypto/chtls/chtls_io.c
-index 188d871f6b8c..c320cc8ca68d 100644
---- a/drivers/net/ethernet/chelsio/inline_crypto/chtls/chtls_io.c
-+++ b/drivers/net/ethernet/chelsio/inline_crypto/chtls/chtls_io.c
-@@ -1564,8 +1564,10 @@ found_ok_skb:
- 			cerr = put_cmsg(msg, SOL_TLS, TLS_GET_RECORD_TYPE,
- 					sizeof(thdr->type), &thdr->type);
+diff --git a/drivers/net/ethernet/broadcom/bnx2.c b/drivers/net/ethernet/broadcom/bnx2.c
+index e3af1f3cb61f..299cefe6f94b 100644
+--- a/drivers/net/ethernet/broadcom/bnx2.c
++++ b/drivers/net/ethernet/broadcom/bnx2.c
+@@ -8252,9 +8252,9 @@ bnx2_init_board(struct pci_dev *pdev, struct net_device *dev)
+ 		BNX2_WR(bp, PCI_COMMAND, reg);
+ 	} else if ((BNX2_CHIP_ID(bp) == BNX2_CHIP_ID_5706_A1) &&
+ 		!(bp->flags & BNX2_FLAG_PCIX)) {
+-
+ 		dev_err(&pdev->dev,
+ 			"5706 A1 can only be used in a PCIX bus, aborting\n");
++		rc = -EPERM;
+ 		goto err_out_unmap;
+ 	}
  
--			if (cerr && thdr->type != TLS_RECORD_TYPE_DATA)
--				return -EIO;
-+			if (cerr && thdr->type != TLS_RECORD_TYPE_DATA) {
-+				copied = -EIO;
-+				break;
-+			}
- 			/*  don't send tls header, skip copy */
- 			goto skip_copy;
- 		}
 -- 
 2.30.2
 
