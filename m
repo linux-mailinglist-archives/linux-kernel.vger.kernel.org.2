@@ -2,99 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C77FE395D80
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 15:45:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 04AA2395EF5
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 16:04:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232951AbhEaNqp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 09:46:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58598 "EHLO
+        id S232784AbhEaOFy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 10:05:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33022 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232012AbhEaNb7 (ORCPT
+        with ESMTP id S232730AbhEaNlu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 09:31:59 -0400
-Received: from mail-qt1-x82f.google.com (mail-qt1-x82f.google.com [IPv6:2607:f8b0:4864:20::82f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 489F3C061243;
-        Mon, 31 May 2021 06:23:19 -0700 (PDT)
-Received: by mail-qt1-x82f.google.com with SMTP id a15so7927302qta.0;
-        Mon, 31 May 2021 06:23:19 -0700 (PDT)
+        Mon, 31 May 2021 09:41:50 -0400
+Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 975D1C061343;
+        Mon, 31 May 2021 06:27:41 -0700 (PDT)
+Received: by mail-pj1-x1031.google.com with SMTP id b15-20020a17090a550fb029015dad75163dso1365pji.0;
+        Mon, 31 May 2021 06:27:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:content-transfer-encoding:date:message-id:cc:subject
-         :from:to:references:in-reply-to;
-        bh=I4OkV6HBXk8qI782g9fzNcEVp/vLpm7v/6N2vazlnC4=;
-        b=N+FH0AXqd0+nJSWQA+Wc+pVJpjOc+9DSbVviIWaCBvC0R00Lu/cxhVqZSUxG/Iqfwh
-         KYPn9HrvIkn5p2v4/SPzRbef+lGiSl/sVe6U6qzhOiuUMJdVk97fEhRBfps4zmQ0HXOu
-         AS7DjcE++ZJUdbAvn1G1dcPP80IWqyVpoEiWQ2AAkccKjpa8B6mXBLFqoTaIGvzTYKjn
-         kWwfBksI9n+oP7fwQrhhsCbPdp+QrJnU3xgisJ7KOxlVlRzqCDqwoSv8YO0zwOqClu8l
-         zPwLDrbHR651G5s+tN2KbPFvV5T/DD2wJQeVibrf15dXdvPO6+07a2i+CE0qwROwgsP7
-         CkmA==
+        h=from:to:cc:subject:date:message-id;
+        bh=6mf9vxePMwOECmPy8sralSQirr3sPMiFyk3gZWElr34=;
+        b=O5h0B6VMZFSPjV0vMk0DbNJvcKsqAmnAGvnRN9UJC61qBB9qAi8ktmFIJ1gNe8zVfO
+         rzSrFVJd8HIrAeIUytZNJMbZfUF2FtaOHbnE9nyDebhfwPcL9Qc3Um9pd3J+TIxCB8BW
+         yqW0aDTRI2wdgB+6zxgnOqMnThDwVdwSMZttyvF4EDO+sPbmEt98+VqlHBF8ERGSPCbM
+         DG4FY+8DcK/6sljrV6RhfnYcjhOgQxfbNJTAcHAEVipYttgDt7Wp4A6j/W1ByQw6dMyL
+         IQQWRoyBcFqJJLNHpHP5eFi9RT2nlxGbN7jMxEY9TtvTxaIr+5DFKPvkXUT4SLmjoO08
+         UAMA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:content-transfer-encoding:date
-         :message-id:cc:subject:from:to:references:in-reply-to;
-        bh=I4OkV6HBXk8qI782g9fzNcEVp/vLpm7v/6N2vazlnC4=;
-        b=ODMxhdMYhsMFqC8/nHzFCYixPFJIwXDq9F3JFCaafOKlTTCuG9ipunZW5xxroJLGQx
-         4PuCOS63v3oFvK9/jIzuN8kEdbqs63AI5ZUyMOUyjlNC5esw2vx+rDVN+VqcPna6eFoX
-         wwUJ7KKATXmY7FX5jUNcLDVidrsVxP5axN5uDbeN2xoFUFx87kAZEk+jA+ioDVN+y5x4
-         fvU/z5W10IQb7+pMYWoKa6zlvb1DMaFbUoTsJUU6xYhMSlVf+TOpJTygD4W1tT4gEETs
-         3TRT4+f+Jr6DIAXJZwgSMLAuK7p0fv87wBm1INR1SOSeNkAg4o58zKbzeZ4hgaIZmwmd
-         ieBg==
-X-Gm-Message-State: AOAM531JRpIHn1DpZECOQDxffn1zNo1SWOUQql6H5hfUiPwbutiC6o2q
-        U8P3p8tRn/O9XJ61iBnV5Bo=
-X-Google-Smtp-Source: ABdhPJxph8pYzSCAdR+SADQDOjDl0zZzaQ1fhe6hAH2tASmc1PIqA4O+iS7QnrSP+itH5xiuwp6Pyg==
-X-Received: by 2002:ac8:594a:: with SMTP id 10mr14525884qtz.293.1622467398465;
-        Mon, 31 May 2021 06:23:18 -0700 (PDT)
-Received: from localhost (198-48-202-89.cpe.pppoe.ca. [198.48.202.89])
-        by smtp.gmail.com with ESMTPSA id e18sm8356366qtm.73.2021.05.31.06.23.16
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 31 May 2021 06:23:17 -0700 (PDT)
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset=UTF-8
-Date:   Mon, 31 May 2021 09:23:16 -0400
-Message-Id: <CBRGOW9627WA.72JM4KHL5Y84@shaak>
-Cc:     <linux-kernel@vger.kernel.org>, <linux-iio@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <robh+dt@kernel.org>
-Subject: Re: [PATCH v1 3/9] iio: afe: rescale: use core to get processed
- value
-From:   "Liam Beguin" <liambeguin@gmail.com>
-To:     "Peter Rosin" <peda@axentia.se>, <jic23@kernel.org>,
-        <lars@metafoo.de>, <pmeerw@pmeerw.net>
-References: <20210530005917.20953-1-liambeguin@gmail.com>
- <20210530005917.20953-4-liambeguin@gmail.com>
- <fb9bde38-6980-4241-6efe-fbad36dd8a2e@axentia.se>
-In-Reply-To: <fb9bde38-6980-4241-6efe-fbad36dd8a2e@axentia.se>
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=6mf9vxePMwOECmPy8sralSQirr3sPMiFyk3gZWElr34=;
+        b=LWleLclT0CahTaRNpDYL2TED0aBmyFkXv64g4n8XbL5P+DuPyyd//SH8L0LYYRs+8g
+         csp0/Afhpd9DWZOfhztiRB6y+CbSsg5Voj8WnGk2UVO8vuQGFE4bK4n+ifGKnWaPBph2
+         pCDY0wFybR00OrGnAnZndAH4Qr/Bi/gi1+7o9t8YOxL9mnA9/4zlebsYEzAEixg0mAuP
+         MjEu+puee+rWjdZ8rxJIluTDvzA10Qy8fHQJxcsi1tnS2T7sNkDZStpOe3s31LvdDDGx
+         zQ6p6c4FkvD+jEBY9D4SStrtbhajxt+Y2GTrA/vCJ55z/O4M1TEwHbjjQTpyDjYvgqGr
+         nmuQ==
+X-Gm-Message-State: AOAM530BYVBEy3nDhdXIZYhMOEQECsotu82cNKZlCApEBNNHVliSHfVj
+        jCL8kydts1iY5cfb0L8Q65CIwPfs5Vg=
+X-Google-Smtp-Source: ABdhPJw1W6y+qvRwnCEGZ7SJOr+gmHDZqS3gazPCOP9+eL15gPdoMAQYipZvSQvuITgeol8jSwX42g==
+X-Received: by 2002:a17:902:7b8e:b029:ec:f35a:918e with SMTP id w14-20020a1709027b8eb02900ecf35a918emr20776958pll.77.1622467660913;
+        Mon, 31 May 2021 06:27:40 -0700 (PDT)
+Received: from localhost.localdomain ([203.205.141.39])
+        by smtp.gmail.com with ESMTPSA id o10sm11015225pfh.67.2021.05.31.06.27.38
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 31 May 2021 06:27:40 -0700 (PDT)
+From:   Hongbo Li <herbert.tencent@gmail.com>
+To:     keyrings@vger.kernel.org, linux-crypto@vger.kernel.org,
+        herbert@gondor.apana.org.au, ebiggers@kernel.org,
+        dhowells@redhat.com, jarkko@kernel.org,
+        tianjia.zhang@linux.alibaba.com, herberthbli@tencent.com
+Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Subject: [PATCH] crypto: fix a memory leak in sm2
+Date:   Mon, 31 May 2021 21:26:51 +0800
+Message-Id: <1622467611-30383-1-git-send-email-herbert.tencent@gmail.com>
+X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Peter,
+From: Hongbo Li <herberthbli@tencent.com>
 
-On Mon May 31, 2021 at 3:09 AM EDT, Peter Rosin wrote:
-> Hi!
->
-> Thanks for the patches. However, things have recently changed under your
-> feet.
-> Can you please adjust to
->
-> https://patchwork.kernel.org/project/linux-iio/list/?series=3D484153
-> https://lore.kernel.org/linux-iio/20210518190201.26657c49@jic23-huawei/T/=
-#m0de421cc9f6bc10bfa2622d65be750aaced3810c
->
-> and resend?
+SM2 module alloc ec->Q in sm2_set_pub_key(), when doing alg test in
+test_akcipher_one(), it will set public key for every test vector,
+and don't free ec->Q. This will cause a memory leak.
 
-Thanks for pointing those out. I'll rebase on the latest -rc and resend.
+This patch alloc ec->Q in sm2_ec_ctx_init().
 
-Liam
+Fixes: ea7ecb66440b ("crypto: sm2 - introduce OSCCA SM2 asymmetric cipher algorithm")
+Signed-off-by: Hongbo Li <herberthbli@tencent.com>
+Reviewed-by: Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
+---
+ crypto/sm2.c | 24 ++++++++++--------------
+ 1 file changed, 10 insertions(+), 14 deletions(-)
 
->
-> On 2021-05-30 02:59, Liam Beguin wrote:
-> > From: Liam Beguin <lvb@xiphos.com>
-> >=20
-> > Make use of the IIO core to compute the source channel's processed
-> > value. This reduces duplication and will facilitate the addition of
-> > offsets in the iio-rescale driver.
->
-> Cheers,
-> Peter
+diff --git a/crypto/sm2.c b/crypto/sm2.c
+index b21addc..db8a4a2 100644
+--- a/crypto/sm2.c
++++ b/crypto/sm2.c
+@@ -79,10 +79,17 @@ static int sm2_ec_ctx_init(struct mpi_ec_ctx *ec)
+ 		goto free;
+ 
+ 	rc = -ENOMEM;
++
++	ec->Q = mpi_point_new(0);
++	if (!ec->Q)
++		goto free;
++
+ 	/* mpi_ec_setup_elliptic_curve */
+ 	ec->G = mpi_point_new(0);
+-	if (!ec->G)
++	if (!ec->G) {
++		mpi_point_release(ec->Q);
+ 		goto free;
++	}
+ 
+ 	mpi_set(ec->G->x, x);
+ 	mpi_set(ec->G->y, y);
+@@ -91,6 +98,7 @@ static int sm2_ec_ctx_init(struct mpi_ec_ctx *ec)
+ 	rc = -EINVAL;
+ 	ec->n = mpi_scanval(ecp->n);
+ 	if (!ec->n) {
++		mpi_point_release(ec->Q);
+ 		mpi_point_release(ec->G);
+ 		goto free;
+ 	}
+@@ -386,27 +394,15 @@ static int sm2_set_pub_key(struct crypto_akcipher *tfm,
+ 	MPI a;
+ 	int rc;
+ 
+-	ec->Q = mpi_point_new(0);
+-	if (!ec->Q)
+-		return -ENOMEM;
+-
+ 	/* include the uncompressed flag '0x04' */
+-	rc = -ENOMEM;
+ 	a = mpi_read_raw_data(key, keylen);
+ 	if (!a)
+-		goto error;
++		return -ENOMEM;
+ 
+ 	mpi_normalize(a);
+ 	rc = sm2_ecc_os2ec(ec->Q, a);
+ 	mpi_free(a);
+-	if (rc)
+-		goto error;
+-
+-	return 0;
+ 
+-error:
+-	mpi_point_release(ec->Q);
+-	ec->Q = NULL;
+ 	return rc;
+ }
+ 
+-- 
+1.8.3.1
 
