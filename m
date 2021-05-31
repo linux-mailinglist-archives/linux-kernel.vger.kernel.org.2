@@ -2,110 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E66F83957B9
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 11:00:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D4623957BA
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 11:00:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231194AbhEaJB6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 05:01:58 -0400
-Received: from hostingweb31-40.netsons.net ([89.40.174.40]:60810 "EHLO
-        hostingweb31-40.netsons.net" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230257AbhEaJBd (ORCPT
+        id S231248AbhEaJCA convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 31 May 2021 05:02:00 -0400
+Received: from eu-smtp-delivery-151.mimecast.com ([185.58.86.151]:46578 "EHLO
+        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229640AbhEaJBm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 05:01:33 -0400
-Received: from [77.244.183.192] (port=63376 helo=melee.fritz.box)
-        by hostingweb31.netsons.net with esmtpa (Exim 4.94.2)
-        (envelope-from <luca@lucaceresoli.net>)
-        id 1lndm4-0005h2-Np; Mon, 31 May 2021 10:59:52 +0200
-From:   Luca Ceresoli <luca@lucaceresoli.net>
-To:     linux-pci@vger.kernel.org
-Cc:     Luca Ceresoli <luca@lucaceresoli.net>, linux-omap@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Rob Herring <robh@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Jingoo Han <jingoohan1@gmail.com>,
-        Gustavo Pimentel <gustavo.pimentel@synopsys.com>
-Subject: [PATCH v2 4/4] PCI: dra7xx: Get an optional clock
-Date:   Mon, 31 May 2021 10:59:34 +0200
-Message-Id: <20210531085934.2662457-5-luca@lucaceresoli.net>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210531085934.2662457-1-luca@lucaceresoli.net>
-References: <20210531085934.2662457-1-luca@lucaceresoli.net>
+        Mon, 31 May 2021 05:01:42 -0400
+Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) (Using
+ TLS) by relay.mimecast.com with ESMTP id
+ uk-mta-283-mSf_5bWqPy28qntS7Ax19g-1; Mon, 31 May 2021 09:59:55 +0100
+X-MC-Unique: mSf_5bWqPy28qntS7Ax19g-1
+Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) by
+ AcuMS.aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) with Microsoft SMTP
+ Server (TLS) id 15.0.1497.2; Mon, 31 May 2021 09:59:53 +0100
+Received: from AcuMS.Aculab.com ([fe80::994c:f5c2:35d6:9b65]) by
+ AcuMS.aculab.com ([fe80::994c:f5c2:35d6:9b65%12]) with mapi id
+ 15.00.1497.015; Mon, 31 May 2021 09:59:53 +0100
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'Masahiro Yamada' <masahiroy@kernel.org>,
+        "patches@arm.linux.org.uk" <patches@arm.linux.org.uk>
+CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "Linus Walleij" <linus.walleij@linaro.org>,
+        Russell King <linux@armlinux.org.uk>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>
+Subject: RE: [PATCH] ARM: simplify the build rule of mach-types.h
+Thread-Topic: [PATCH] ARM: simplify the build rule of mach-types.h
+Thread-Index: AQHXU3S/FcHjrcZ4IU6mGXTOsVEkx6r9StNA
+Date:   Mon, 31 May 2021 08:59:52 +0000
+Message-ID: <60fb7c6374e74b6d9e7597b19772209a@AcuMS.aculab.com>
+References: <20210528034913.2157657-1-masahiroy@kernel.org>
+In-Reply-To: <20210528034913.2157657-1-masahiroy@kernel.org>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - hostingweb31.netsons.net
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - lucaceresoli.net
-X-Get-Message-Sender-Via: hostingweb31.netsons.net: authenticated_id: luca+lucaceresoli.net/only user confirmed/virtual account not confirmed
-X-Authenticated-Sender: hostingweb31.netsons.net: luca@lucaceresoli.net
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If the clock is provided externally we need to make sure it is enabled
-before starting PCI scan.
+From: Masahiro Yamada
+> Sent: 28 May 2021 04:49
+> 
+> The directory of mach-types.h is created a couple of lines above:
+> 
+>   _dummy := $(shell [ -d '$(kapi)' ] || mkdir -p '$(kapi)') \
+> 
+> The 'mkdir -p' command is redundant.
+(In the rule itself)
+...
+>  quiet_cmd_gen_mach = GEN     $@
+> -      cmd_gen_mach = mkdir -p $(dir $@) && \
+> -		     $(AWK) -f $(filter-out $(PHONY),$^) > $@
+> +      cmd_gen_mach = $(AWK) -f $(real-prereqs) > $@
 
-Signed-off-by: Luca Ceresoli <luca@lucaceresoli.net>
+There is a much easier way to get directories created.
+gmake lets you define dependencies that only need to exist
+(ie there file timestamps are't checked)
+These are ideal for creating directories.
 
----
+So if can define:
 
-Changes v1 -> v2:
- - Update commit subject as suggested by Bjorn
----
- drivers/pci/controller/dwc/pci-dra7xx.c | 13 +++++++++++++
- 1 file changed, 13 insertions(+)
+%/.:
+	mkdir -p $@
 
-diff --git a/drivers/pci/controller/dwc/pci-dra7xx.c b/drivers/pci/controller/dwc/pci-dra7xx.c
-index a8daa356f7e6..11f392b7a9a2 100644
---- a/drivers/pci/controller/dwc/pci-dra7xx.c
-+++ b/drivers/pci/controller/dwc/pci-dra7xx.c
-@@ -7,6 +7,7 @@
-  * Authors: Kishon Vijay Abraham I <kishon@ti.com>
-  */
- 
-+#include <linux/clk.h>
- #include <linux/delay.h>
- #include <linux/device.h>
- #include <linux/err.h>
-@@ -90,6 +91,7 @@ struct dra7xx_pcie {
- 	int			phy_count;	/* DT phy-names count */
- 	struct phy		**phy;
- 	struct irq_domain	*irq_domain;
-+	struct clk              *clk;
- 	enum dw_pcie_device_mode mode;
- };
- 
-@@ -745,6 +747,15 @@ static int dra7xx_pcie_probe(struct platform_device *pdev)
- 	if (!link)
- 		return -ENOMEM;
- 
-+	dra7xx->clk = devm_clk_get_optional(dev, NULL);
-+	if (IS_ERR(dra7xx->clk))
-+		return dev_err_probe(dev, PTR_ERR(dra7xx->clk),
-+				     "clock request failed");
-+
-+	ret = clk_prepare_enable(dra7xx->clk);
-+	if (ret)
-+		return ret;
-+
- 	for (i = 0; i < phy_count; i++) {
- 		snprintf(name, sizeof(name), "pcie-phy%d", i);
- 		phy[i] = devm_phy_get(dev, name);
-@@ -932,6 +943,8 @@ static void dra7xx_pcie_shutdown(struct platform_device *pdev)
- 
- 	pm_runtime_disable(dev);
- 	dra7xx_pcie_disable_phy(dra7xx);
-+
-+	clk_disable_unprepare(dra7xx->clk);
- }
- 
- static const struct dev_pm_ops dra7xx_pcie_pm_ops = {
--- 
-2.25.1
+You can just use
+
+$(OBJ)/$(FILE): | ${OBJ)/.
+
+to get any directories created.
+
+Annoyingly gmake doesn't seem to support the 'dynamic dependencies'
+of SYSV make (it's only useful feature).
+So you can't use:
+xxxxx: | $$@D/.
+
+	David
+
+-
+Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
+Registration No: 1397386 (Wales)
 
