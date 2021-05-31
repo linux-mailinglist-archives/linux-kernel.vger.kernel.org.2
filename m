@@ -2,86 +2,187 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 26FF33957DA
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 11:07:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 59CB23957DE
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 11:08:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230527AbhEaJIp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 05:08:45 -0400
-Received: from mailgw02.mediatek.com ([210.61.82.184]:51018 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S230206AbhEaJI0 (ORCPT
+        id S230397AbhEaJKV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 05:10:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56720 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229522AbhEaJKT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 05:08:26 -0400
-X-UUID: f55c5c59fb404821854a59d59c51b813-20210531
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=bS+/yrXs2fjTD4HJUy9q0nG4d3SEQmTaKJc1kPQr/lY=;
-        b=P2Y6uW/39UPevtRmui2W//ilgxzx3tSjua7XqutfffxKluzJ8b5putOPTmJMowkFsFsD6HLu6vhE/vAKQUYNr9uV+nF4idwvO1oxMA19KiJO9aFR2ZFvZ1VHOYkhHyZLjqS5WPsy3IYFZKhTSNGVVh/ntOMgU3loB3m0P1nrfbY=;
-X-UUID: f55c5c59fb404821854a59d59c51b813-20210531
-Received: from mtkmbs10n1.mediatek.inc [(172.21.101.34)] by mailgw02.mediatek.com
-        (envelope-from <landen.chao@mediatek.com>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
-        with ESMTP id 1479349101; Mon, 31 May 2021 17:06:42 +0800
-Received: from mtkcas07.mediatek.inc (172.21.101.84) by
- mtkmbs07n2.mediatek.inc (172.21.101.141) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Mon, 31 May 2021 17:06:40 +0800
-Received: from mtksdccf07 (172.21.84.99) by mtkcas07.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Mon, 31 May 2021 17:06:40 +0800
-Message-ID: <1903cbd39afb96a9f6ab72ac45d830918e3b5982.camel@mediatek.com>
-Subject: Re: [PATCH net] net: Update MAINTAINERS for MediaTek switch driver
-From:   Landen Chao <landen.chao@mediatek.com>
-To:     Jisheng Zhang <Jisheng.Zhang@synaptics.com>
-CC:     Andrew Lunn <andrew@lunn.ch>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        "dqfext@gmail.com" <dqfext@gmail.com>,
-        Sean Wang <Sean.Wang@mediatek.com>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-mediatek@lists.infradead.org" 
-        <linux-mediatek@lists.infradead.org>,
-        "frank-w@public-files.de" <frank-w@public-files.de>,
-        Steven Liu =?UTF-8?Q?=28=E5=8A=89=E4=BA=BA=E8=B1=AA=29?= 
-        <steven.liu@mediatek.com>
-Date:   Mon, 31 May 2021 17:06:40 +0800
-In-Reply-To: <20210531162342.339635bb@xhacker.debian>
-References: <49e67daeadace13a9fa3f4553f1ec14c6a93bdc8.1622445132.git.landen.chao@mediatek.com>
-         <20210531162342.339635bb@xhacker.debian>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
+        Mon, 31 May 2021 05:10:19 -0400
+Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69200C061574;
+        Mon, 31 May 2021 02:08:40 -0700 (PDT)
+Received: from zn.tnic (p200300ec2f080f006c0d0ceb240e6208.dip0.t-ipconnect.de [IPv6:2003:ec:2f08:f00:6c0d:ceb:240e:6208])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id E89791EC04E4;
+        Mon, 31 May 2021 11:08:38 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1622452119;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=BGvgPEvuLV1N3UbclwfDuqJ5VufvW/gsj6GH/J7E4J8=;
+        b=G2UWFEriEk653YiYCdPRH7aHXqKeT8DbPqqQWkDsgg4B+I0lrXmGPle9yvDJYMeeFxsXLT
+        3egwkOLWCXKzbsyypSQW9RSjpfPJqrJ0Ai3T0DicIdj8aeeqySYmtN8VuWiqecuqoVtpgD
+        u3XhSOkfUe3MDuDWMO8n6f8y/cDwhrc=
+Date:   Mon, 31 May 2021 11:08:32 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Lianbo Jiang <lijiang@redhat.com>, Mike Rapoport <rppt@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, x86@kernel.org,
+        linux-efi@vger.kernel.org, platform-driver-x86@vger.kernel.org,
+        kexec@lists.infradead.org, ardb@kernel.org, dvhart@infradead.org,
+        andy@infradead.org, tglx@linutronix.de, mingo@redhat.com,
+        hpa@zytor.com, luto@amacapital.net, bhe@redhat.com,
+        dyoung@redhat.com
+Subject: Re: [PATCH v2] x86/efi: unconditionally hold the whole low-1MB
+ memory regions
+Message-ID: <YLSnkKeoQnokXVsK@zn.tnic>
+References: <20210531090023.16471-1-lijiang@redhat.com>
 MIME-Version: 1.0
-X-MTK:  N
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20210531090023.16471-1-lijiang@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gTW9uLCAyMDIxLTA1LTMxIGF0IDE2OjIzICswODAwLCBKaXNoZW5nIFpoYW5nIHdyb3RlOg0K
-PiBPbiBNb24sIDMxIE1heSAyMDIxIDE1OjU5OjM5ICswODAwDQo+IExhbmRlbiBDaGFvIDxsYW5k
-ZW4uY2hhb0BtZWRpYXRlay5jb20+IHdyb3RlOg0KPiANCj4gDQo+ID4gDQo+ID4gDQo+ID4gVXBk
-YXRlIG1haW50YWluZXJzIGZvciBNZWRpYVRlayBzd2l0Y2ggZHJpdmVyIHdpdGggRGVuZyBRaW5n
-ZmFuZw0KPiA+IHdobw0KPiA+IGNvbnRyaWJ1dGVzIG1hbnkgdXNlZnVsIHBhdGNoZXMgKGludGVy
-cnVwdCwgVkxBTiwgR1BJTywgYW5kIGV0Yy4pDQo+ID4gdG8NCj4gPiBlbmhhbmNlIE1lZGlhVGVr
-IHN3aXRjaCBkcml2ZXIgYW5kIHdpbGwgaGVscCBtYWludGVuYW5jZS4NCj4gPiANCj4gPiBDaGFu
-Z2UtSWQ6IElmMzcyYzFhMGRmNmUzYmE5ZjkzYjE2OTlkYmRhODFmMWZkNTAxYTdjDQo+IA0KPiBk
-byB3ZSBuZWVkIHRvIHJlbW92ZSB0aGlzIENoYW5nZS1JZCB0YWc/DQpTb3JyeSwgSSB3aWxsIHJl
-bW92ZSBDaGFuZ2UtSWQgaW4gdjIuDQoNCj4gDQo+ID4gU2lnbmVkLW9mZi1ieTogTGFuZGVuIENo
-YW8gPGxhbmRlbi5jaGFvQG1lZGlhdGVrLmNvbT4NCj4gPiBTaWduZWQtb2ZmLWJ5OiBERU5HIFFp
-bmdmYW5nIDxkcWZleHRAZ21haWwuY29tPg0KPiA+IC0tLQ0KPiA+ICBNQUlOVEFJTkVSUyB8IDEg
-Kw0KPiA+ICAxIGZpbGUgY2hhbmdlZCwgMSBpbnNlcnRpb24oKykNCj4gPiANCj4gPiBkaWZmIC0t
-Z2l0IGEvTUFJTlRBSU5FUlMgYi9NQUlOVEFJTkVSUw0KPiA+IGluZGV4IGJkN2FmZjBjMTIwZi4u
-MzMxNTYyN2ViYjZiIDEwMDY0NA0KPiA+IC0tLSBhL01BSU5UQUlORVJTDQo+ID4gKysrIGIvTUFJ
-TlRBSU5FUlMNCj4gPiBAQCAtMTE1ODgsNiArMTE1ODgsNyBAQCBGOiAgICAgIGRyaXZlcnMvY2hh
-ci9od19yYW5kb20vbXRrLXJuZy5jDQo+ID4gIE1FRElBVEVLIFNXSVRDSCBEUklWRVINCj4gPiAg
-TTogICAgIFNlYW4gV2FuZyA8c2Vhbi53YW5nQG1lZGlhdGVrLmNvbT4NCj4gPiAgTTogICAgIExh
-bmRlbiBDaGFvIDxsYW5kZW4uY2hhb0BtZWRpYXRlay5jb20+DQo+ID4gK006ICAgICBERU5HIFFp
-bmdmYW5nIDxkcWZleHRAZ21haWwuY29tPg0KPiA+ICBMOiAgICAgbmV0ZGV2QHZnZXIua2VybmVs
-Lm9yZw0KPiA+ICBTOiAgICAgTWFpbnRhaW5lZA0KPiA+ICBGOiAgICAgZHJpdmVycy9uZXQvZHNh
-L210NzUzMC4qDQo+ID4gLS0NCj4gPiAyLjI5LjINCg==
++ Mike.
 
+On Mon, May 31, 2021 at 05:00:23PM +0800, Lianbo Jiang wrote:
+> Some sub-1MB memory regions may be reserved by EFI boot services, and the
+> memory regions will be released later in the efi_free_boot_services().
+> 
+> Currently, always reserve all sub-1MB memory regions when the crashkernel
+> option is specified, but unfortunately EFI boot services may have already
+> reserved some sub-1MB memory regions before the crash_reserve_low_1M() is
+> called, which makes that the crash_reserve_low_1M() only own the
+> remaining sub-1MB memory regions, not all sub-1MB memory regions, because,
+> subsequently EFI boot services will free its own sub-1MB memory regions.
+> Eventually, DMA will be able to allocate memory from the sub-1MB area and
+> cause the following error:
+> 
+> crash> kmem -s |grep invalid
+> kmem: dma-kmalloc-512: slab: ffffd52c40001900 invalid freepointer: ffff9403c0067300
+> kmem: dma-kmalloc-512: slab: ffffd52c40001900 invalid freepointer: ffff9403c0067300
+> crash> vtop ffff9403c0067300
+> VIRTUAL           PHYSICAL
+> ffff9403c0067300  67300   --->The physical address falls into this range [0x0000000000063000-0x000000000008efff]
+> 
+> kernel debugging log:
+> ...
+> [    0.008927] memblock_reserve: [0x0000000000010000-0x0000000000013fff] efi_reserve_boot_services+0x85/0xd0
+> [    0.008930] memblock_reserve: [0x0000000000063000-0x000000000008efff] efi_reserve_boot_services+0x85/0xd0
+> ...
+> [    0.009425] memblock_reserve: [0x0000000000000000-0x00000000000fffff] crash_reserve_low_1M+0x2c/0x49
+> ...
+> [    0.010586] Zone ranges:
+> [    0.010587]   DMA      [mem 0x0000000000001000-0x0000000000ffffff]
+> [    0.010589]   DMA32    [mem 0x0000000001000000-0x00000000ffffffff]
+> [    0.010591]   Normal   [mem 0x0000000100000000-0x0000000c7fffffff]
+> [    0.010593]   Device   empty
+> ...
+> [    8.814894] __memblock_free_late: [0x0000000000063000-0x000000000008efff] efi_free_boot_services+0x14b/0x23b
+> [    8.815793] __memblock_free_late: [0x0000000000010000-0x0000000000013fff] efi_free_boot_services+0x14b/0x23b
+> 
+> To fix the above issues, let's hold the whole low-1M memory regions
+> unconditionally in the efi_free_boot_services().
+> 
+> Signed-off-by: Lianbo Jiang <lijiang@redhat.com>
+> ---
+> Background(copy from bhe's comment in the patch v1):
+> 
+> Kdump kernel also need go through real mode code path during bootup. It
+> is not different than normal kernel except that it skips the firmware
+> resetting. So kdump kernel needs low 1M as system RAM just as normal
+> kernel does. Here we reserve the whole low 1M with memblock_reserve()
+> to avoid any later kernel or driver data reside in this area. Otherwise,
+> we need dump the content of this area to vmcore. As we know, when crash
+> happened, the old memory of 1st kernel should be untouched until vmcore
+> dumping read out its content. Meanwhile, kdump kernel need reuse low 1M.
+> In the past, we used a back up region to copy out the low 1M area, and
+> map the back up region into the low 1M area in vmcore elf file. In
+> 6f599d84231fd27 ("x86/kdump: Always reserve the low 1M when the crashkernel
+> option is specified"), we changed to lock the whole low 1M to avoid
+> writting any kernel data into, like this we can skip this area when
+> dumping vmcore.
+> 
+> Above is why we try to memblock reserve the whole low 1M. We don't want
+> to use it, just don't want anyone to use it in 1st kernel.
+> 
+> 
+>  arch/x86/platform/efi/quirks.c | 32 +++++++++++++++-----------------
+>  1 file changed, 15 insertions(+), 17 deletions(-)
+> 
+> diff --git a/arch/x86/platform/efi/quirks.c b/arch/x86/platform/efi/quirks.c
+> index 7850111008a8..840b7e3b3d48 100644
+> --- a/arch/x86/platform/efi/quirks.c
+> +++ b/arch/x86/platform/efi/quirks.c
+> @@ -11,6 +11,7 @@
+>  #include <linux/memblock.h>
+>  #include <linux/acpi.h>
+>  #include <linux/dmi.h>
+> +#include <linux/sizes.h>
+>  
+>  #include <asm/e820/api.h>
+>  #include <asm/efi.h>
+> @@ -409,7 +410,7 @@ void __init efi_free_boot_services(void)
+>  	for_each_efi_memory_desc(md) {
+>  		unsigned long long start = md->phys_addr;
+>  		unsigned long long size = md->num_pages << EFI_PAGE_SHIFT;
+> -		size_t rm_size;
+> +		unsigned long long end = start + size;
+>  
+>  		if (md->type != EFI_BOOT_SERVICES_CODE &&
+>  		    md->type != EFI_BOOT_SERVICES_DATA) {
+> @@ -431,23 +432,20 @@ void __init efi_free_boot_services(void)
+>  		efi_unmap_pages(md);
+>  
+>  		/*
+> -		 * Nasty quirk: if all sub-1MB memory is used for boot
+> -		 * services, we can get here without having allocated the
+> -		 * real mode trampoline.  It's too late to hand boot services
+> -		 * memory back to the memblock allocator, so instead
+> -		 * try to manually allocate the trampoline if needed.
+> -		 *
+> -		 * I've seen this on a Dell XPS 13 9350 with firmware
+> -		 * 1.4.4 with SGX enabled booting Linux via Fedora 24's
+> -		 * grub2-efi on a hard disk.  (And no, I don't know why
+> -		 * this happened, but Linux should still try to boot rather
+> -		 * panicking early.)
+> +		 * The sub-1MB memory may be within the range[0, SZ_1M]
+> +		 * or across the low-1M memory boundary. Let's handle
+> +		 * these two cases and hold the whole low-1M memory
+> +		 * unconditionally.
+>  		 */
+> -		rm_size = real_mode_size_needed();
+> -		if (rm_size && (start + rm_size) < (1<<20) && size >= rm_size) {
+> -			set_real_mode_mem(start);
+> -			start += rm_size;
+> -			size -= rm_size;
+> +		if (start < SZ_1M) {
+> +			/* Within the range[0, SZ_1M] */
+> +			if (end <= SZ_1M)
+> +				continue;
+> +			else {
+> +				/* Across the low-1M memory boundary */
+> +				size -= (SZ_1M - start);
+> +				start = SZ_1M;
+> +			}
+>  		}
+>  
+>  		memblock_free_late(start, size);
+> -- 
+
+I don't think this will be needed when this here happens:
+
+https://lkml.kernel.org/r/YK%2Bgv0vDfLVD7Sqp@kernel.org
+
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
