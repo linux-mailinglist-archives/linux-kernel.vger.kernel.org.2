@@ -2,533 +2,784 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 16254395A0B
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 14:04:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C4F7395A0A
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 14:04:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231535AbhEaMG1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 08:06:27 -0400
-Received: from outbound-smtp38.blacknight.com ([46.22.139.221]:41321 "EHLO
-        outbound-smtp38.blacknight.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231478AbhEaMGY (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 08:06:24 -0400
-Received: from mail.blacknight.com (pemlinmail06.blacknight.ie [81.17.255.152])
-        by outbound-smtp38.blacknight.com (Postfix) with ESMTPS id 7F88A1C05
-        for <linux-kernel@vger.kernel.org>; Mon, 31 May 2021 13:04:43 +0100 (IST)
-Received: (qmail 2209 invoked from network); 31 May 2021 12:04:43 -0000
-Received: from unknown (HELO stampy.112glenside.lan) (mgorman@techsingularity.net@[84.203.17.255])
-  by 81.17.254.9 with ESMTPA; 31 May 2021 12:04:43 -0000
-From:   Mel Gorman <mgorman@techsingularity.net>
-To:     Linux-MM <linux-mm@kvack.org>
-Cc:     Dave Hansen <dave.hansen@linux.intel.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Michal Hocko <mhocko@kernel.org>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Mel Gorman <mgorman@techsingularity.net>
-Subject: [PATCH 2/2] mm/page_alloc: Allow high-order pages to be stored on the per-cpu lists
-Date:   Mon, 31 May 2021 13:04:12 +0100
-Message-Id: <20210531120412.17411-3-mgorman@techsingularity.net>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20210531120412.17411-1-mgorman@techsingularity.net>
-References: <20210531120412.17411-1-mgorman@techsingularity.net>
+        id S231469AbhEaMGZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 08:06:25 -0400
+Received: from mga02.intel.com ([134.134.136.20]:39201 "EHLO mga02.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231490AbhEaMGW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 08:06:22 -0400
+IronPort-SDR: 4sqyLBMNkL5pN2iB6J4uOoHZiyj7aHnPJdrNep4cuTe73sZf4ljtbOkEVhUzTxBbLn0vkXyMKJ
+ cyMvslb1C11A==
+X-IronPort-AV: E=McAfee;i="6200,9189,10000"; a="190461054"
+X-IronPort-AV: E=Sophos;i="5.83,237,1616482800"; 
+   d="scan'208";a="190461054"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 May 2021 05:04:40 -0700
+IronPort-SDR: 2I3d+paUZy3BmZasCrLPFWyUx06OFpN6avFmNxnFlc5WDRVsHNLThupfMm+LxvemW1XI2eeEkE
+ R1ISGqMZxo0g==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.83,237,1616482800"; 
+   d="scan'208";a="616516865"
+Received: from sumeshkkn (HELO localhost.localdomain) ([10.223.97.2])
+  by orsmga005.jf.intel.com with ESMTP; 31 May 2021 05:04:37 -0700
+From:   sumesh.k.naduvalath@intel.com
+To:     hdegoede@redhat.com, mgross@linux.intel.com,
+        srinivas.pandruvada@linux.intel.com
+Cc:     srinivas.pandruvada@intel.com, platform-driver-x86@vger.kernel.org,
+        linux-kernel@vger.kernel.org, ganapathi.chinnu@intel.com,
+        nachiketa.kumar@intel.com, sumesh.k.naduvalath@intel.com
+Subject: [PATCH 1/1] ishtp: Add support for Intel ishtp eclite driver
+Date:   Mon, 31 May 2021 17:34:15 +0530
+Message-Id: <20210531120415.14480-1-sumesh.k.naduvalath@intel.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The per-cpu page allocator (PCP) only stores order-0 pages. This means
-that all THP and "cheap" high-order allocations including SLUB contends
-on the zone->lock. This patch extends the PCP allocator to store THP and
-"cheap" high-order pages. Note that struct per_cpu_pages increases in
-size to 256 bytes (4 cache lines) on x86-64.
+From: "K Naduvalath, Sumesh" <sumesh.k.naduvalath@intel.com>
 
-Note that this is not necessarily a universal performance win because of
-how it is implemented. High-order pages can cause pcp->high to be exceeded
-prematurely for lower-orders so for example, a large number of THP pages
-being freed could release order-0 pages from the PCP lists. Hence, much
-depends on the allocation/free pattern as observed by a single CPU to
-determine if caching helps or hurts a particular workload.
+This driver is for accessing the PSE(Programmable Service Engine), an
+Embedded Controller like IP, using ISHTP(Integratd Sensor Hub Transport
+Protocol) to get battery, thermal and UCSI(USB Type-C Connector System
+Software Interface) related data from the platform.
 
-That said, basic performance testing passed. The following is a netperf
-UDP_STREAM test which hits the relevant patches as some of the network
-allocations are high-order.
-
-netperf-udp
-                                 5.13.0-rc2             5.13.0-rc2
-                           mm-pcpburst-v3r4   mm-pcphighorder-v1r7
-Hmean     send-64         261.46 (   0.00%)      266.30 *   1.85%*
-Hmean     send-128        516.35 (   0.00%)      536.78 *   3.96%*
-Hmean     send-256       1014.13 (   0.00%)     1034.63 *   2.02%*
-Hmean     send-1024      3907.65 (   0.00%)     4046.11 *   3.54%*
-Hmean     send-2048      7492.93 (   0.00%)     7754.85 *   3.50%*
-Hmean     send-3312     11410.04 (   0.00%)    11772.32 *   3.18%*
-Hmean     send-4096     13521.95 (   0.00%)    13912.34 *   2.89%*
-Hmean     send-8192     21660.50 (   0.00%)    22730.72 *   4.94%*
-Hmean     send-16384    31902.32 (   0.00%)    32637.50 *   2.30%*
-
-From a functional point of view, a patch like this is necessary to
-make bulk allocation of high-order pages work with similar performance
-to order-0 bulk allocations. The bulk allocator is not updated in this
-series as it would have to be determined by bulk allocation users how
-they want to track the order of pages allocated with the bulk allocator.
-
-Signed-off-by: Mel Gorman <mgorman@techsingularity.net>
+Signed-off-by: K Naduvalath, Sumesh <sumesh.k.naduvalath@intel.com>
+Reviewed-by: Mark Gross <mgross@linux.inel.com>
 ---
- include/linux/mmzone.h |  20 +++++-
- mm/internal.h          |   2 +-
- mm/page_alloc.c        | 159 +++++++++++++++++++++++++++++------------
- mm/swap.c              |   2 +-
- 4 files changed, 135 insertions(+), 48 deletions(-)
+ MAINTAINERS                               |   6 +
+ drivers/platform/x86/Kconfig              |  13 +
+ drivers/platform/x86/Makefile             |   1 +
+ drivers/platform/x86/intel_ishtp_eclite.c | 664 ++++++++++++++++++++++
+ 4 files changed, 684 insertions(+)
 
-diff --git a/include/linux/mmzone.h b/include/linux/mmzone.h
-index e20d98c62beb..bbe05289b121 100644
---- a/include/linux/mmzone.h
-+++ b/include/linux/mmzone.h
-@@ -333,6 +333,24 @@ enum zone_watermarks {
- 	NR_WMARK
- };
+diff --git a/MAINTAINERS b/MAINTAINERS
+index 503fd21901f1..cf32033cb754 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -9242,6 +9242,12 @@ F:	Documentation/admin-guide/media/ipu3_rcb.svg
+ F:	Documentation/userspace-api/media/v4l/pixfmt-meta-intel-ipu3.rst
+ F:	drivers/staging/media/ipu3/
  
++INTEL ISHTP ECLITE DRIVER
++M:	Sumesh K Naduvalath <sumesh.k.naduvalath@intel.com>
++L:	platform-driver-x86@vger.kernel.org
++S:	Supported
++F:	drivers/platform/x86/intel_ishtp_eclite.c
++
+ INTEL IXP4XX QMGR, NPE, ETHERNET and HSS SUPPORT
+ M:	Krzysztof Halasa <khalasa@piap.pl>
+ S:	Maintained
+diff --git a/drivers/platform/x86/Kconfig b/drivers/platform/x86/Kconfig
+index 60592fb88e7a..cfa2cb150909 100644
+--- a/drivers/platform/x86/Kconfig
++++ b/drivers/platform/x86/Kconfig
+@@ -1180,6 +1180,19 @@ config INTEL_CHTDC_TI_PWRBTN
+ 	  To compile this driver as a module, choose M here: the module
+ 	  will be called intel_chtdc_ti_pwrbtn.
+ 
++config INTEL_ISHTP_ECLITE
++	tristate "Intel ISHTP eclite controller"
++	depends on INTEL_ISH_HID
++	depends on ACPI
++	help
++	  This driver is for accessing the PSE(Programmable Service Engine),
++	  an Embedded Controller like IP, using ISHTP(Integratd Sensor Hub
++	  Transport Protocol) to get battery, thermal and UCSI (USB Type-C
++          Connector System Software Interface) related data from the platform.
++
++	  To compile this driver as a module, choose M here: the module
++	  will be called intel_ishtp_eclite
++
+ config INTEL_MRFLD_PWRBTN
+ 	tristate "Intel Merrifield Basin Cove power button driver"
+ 	depends on INTEL_SOC_PMIC_MRFLD
+diff --git a/drivers/platform/x86/Makefile b/drivers/platform/x86/Makefile
+index dcc8cdb95b4d..72ef4761b762 100644
+--- a/drivers/platform/x86/Makefile
++++ b/drivers/platform/x86/Makefile
+@@ -77,6 +77,7 @@ obj-$(CONFIG_INTEL_INT0002_VGPIO)	+= intel_int0002_vgpio.o
+ obj-$(CONFIG_INTEL_MENLOW)		+= intel_menlow.o
+ obj-$(CONFIG_INTEL_OAKTRAIL)		+= intel_oaktrail.o
+ obj-$(CONFIG_INTEL_VBTN)		+= intel-vbtn.o
++obj-$(CONFIG_INTEL_ISHTP_ECLITE)	+= intel_ishtp_eclite.o
+ 
+ # MSI
+ obj-$(CONFIG_MSI_LAPTOP)	+= msi-laptop.o
+diff --git a/drivers/platform/x86/intel_ishtp_eclite.c b/drivers/platform/x86/intel_ishtp_eclite.c
+new file mode 100644
+index 000000000000..2956d678a420
+--- /dev/null
++++ b/drivers/platform/x86/intel_ishtp_eclite.c
+@@ -0,0 +1,664 @@
++// SPDX-License-Identifier: GPL-2.0-only
 +/*
-+ * One per migratetype for each PAGE_ALLOC_COSTLY_ORDER plus one additional
-+ * for pageblock size for THP if configured.
++ * Intel ECLite opregion driver for talking to ECLite firmware running on
++ * Intel Integrated Sensor Hub (ISH) using ISH Transport Protocol (ISHTP)
++ *
++ * Copyright (c) 2021, Intel Corporation.
 + */
-+#ifdef CONFIG_TRANSPARENT_HUGEPAGE
-+#define NR_PCP_THP 1
-+#else
-+#define NR_PCP_THP 0
-+#endif
-+#define NR_PCP_LISTS (MIGRATE_PCPTYPES * (PAGE_ALLOC_COSTLY_ORDER + 1 + NR_PCP_THP))
 +
-+/*
-+ * Shift to encode migratetype in order in the least significant bits and
-+ * migratetype in the higher bits.
++#include <linux/acpi.h>
++#include <linux/bitops.h>
++#include <linux/device.h>
++#include <linux/errno.h>
++#include <linux/intel-ish-client-if.h>
++#include <linux/kernel.h>
++#include <linux/module.h>
++#include <linux/slab.h>
++#include <linux/suspend.h>
++#include <linux/types.h>
++#include <linux/uuid.h>
++#include <linux/uaccess.h>
++
++#define ECLITE_DATA_OPREGION_ID	0x9E
++#define ECLITE_CMD_OPREGION_ID	0x9F
++
++#define ECL_MSG_DATA	0x1
++#define ECL_MSG_EVENT	0x2
++
++#define ECL_ISH_READ	0x1
++#define ECL_ISH_WRITE	0x2
++#define ECL_ISH_HEADER_VERSION	0
++
++#define ECL_CL_RX_RING_SIZE	16
++#define ECL_CL_TX_RING_SIZE	8
++
++#define ECL_DATA_OPR_BUFLEN	384
++#define ECL_EVENTS_NOTIFY	333
++
++#define cmd_opr_offsetof(element)	offsetof(struct opregion_cmd, element)
++#define cl_data_to_dev(opr_dev)	ishtp_device((opr_dev)->cl_device)
++
++#ifndef BITS_TO_BYTES
++#define BITS_TO_BYTES(x) ((x) / 8)
++#endif
++
++struct opregion_cmd {
++	unsigned int command;
++	unsigned int offset;
++	unsigned int length;
++	unsigned int event_id;
++};
++
++struct opregion_data {
++	char data[ECL_DATA_OPR_BUFLEN];
++};
++
++struct opregion_context {
++	struct opregion_cmd cmd_area;
++	struct opregion_data data_area;
++};
++
++struct ecl_message_header {
++	unsigned int version:2;
++	unsigned int data_type:2;
++	unsigned int request_type:2;
++	unsigned int offset:9;
++	unsigned int data_len:9;
++	unsigned int event:8;
++};
++
++struct ecl_message {
++	struct ecl_message_header header;
++	char payload[ECL_DATA_OPR_BUFLEN];
++};
++
++struct ishtp_opregion_dev {
++	struct opregion_context opr_context;
++	struct ishtp_cl *ecl_ishtp_cl;
++	struct ishtp_cl_device *cl_device;
++	struct ishtp_fw_client *fw_client;
++	struct ishtp_cl_rb *rb;
++	struct acpi_handle *acpi_handle;
++	unsigned int dsm_event_id;
++	unsigned int ish_link_ready;
++	unsigned int ish_read_done;
++	unsigned int acpi_init_done;
++	wait_queue_head_t read_wait;
++	struct work_struct event_work;
++	struct work_struct reset_work;
++};
++
++/* eclite ishtp client UUID: 6a19cc4b-d760-4de3-b14d-f25ebd0fbcd9 */
++static const guid_t ecl_ishtp_guid =
++	GUID_INIT(0x6a19cc4b, 0xd760, 0x4de3,
++		  0xb1, 0x4d, 0xf2, 0x5e, 0xbd, 0xf, 0xbc, 0xd9);
++
++/* ACPI DSM UUID: 91d936a7-1f01-49c6-a6b4-72f00ad8d8a5 */
++static const guid_t ecl_acpi_guid =
++	GUID_INIT(0x91d936a7, 0x1f01, 0x49c6, 0xa6,
++		  0xb4, 0x72, 0xf0, 0x0a, 0xd8, 0xd8, 0xa5);
++
++/**
++ * ecl_ish_cl_read() - Read data from eclite FW
++ *
++ * @opr_dev:  pointer to opregion device
++ *
++ * This function issues a read request to eclite FW and waits until it
++ * receives a response. When response is received the read data is copied to
++ * opregion buffer.
 + */
-+#define NR_PCP_ORDER_SHIFT 8
-+#define NR_PCP_ORDER_MASK ((1<<NR_PCP_ORDER_SHIFT) - 1)
-+
- #define min_wmark_pages(z) (z->_watermark[WMARK_MIN] + z->watermark_boost)
- #define low_wmark_pages(z) (z->_watermark[WMARK_LOW] + z->watermark_boost)
- #define high_wmark_pages(z) (z->_watermark[WMARK_HIGH] + z->watermark_boost)
-@@ -349,7 +367,7 @@ struct per_cpu_pages {
- #endif
- 
- 	/* Lists of pages, one per migrate type stored on the pcp-lists */
--	struct list_head lists[MIGRATE_PCPTYPES];
-+	struct list_head lists[NR_PCP_LISTS];
- };
- 
- struct per_cpu_zonestat {
-diff --git a/mm/internal.h b/mm/internal.h
-index 651250e59ef5..fdb0530fa341 100644
---- a/mm/internal.h
-+++ b/mm/internal.h
-@@ -218,7 +218,7 @@ extern void post_alloc_hook(struct page *page, unsigned int order,
- 					gfp_t gfp_flags);
- extern int user_min_free_kbytes;
- 
--extern void free_unref_page(struct page *page);
-+extern void free_unref_page(struct page *page, unsigned int order);
- extern void free_unref_page_list(struct list_head *list);
- 
- extern void zone_pcp_update(struct zone *zone, int cpu_online);
-diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-index d45d00e069f9..49f3c7dcdfca 100644
---- a/mm/page_alloc.c
-+++ b/mm/page_alloc.c
-@@ -676,10 +676,53 @@ static void bad_page(struct page *page, const char *reason)
- 	add_taint(TAINT_BAD_PAGE, LOCKDEP_NOW_UNRELIABLE);
- }
- 
-+static inline unsigned int order_to_pindex(int migratetype, int order)
++static int ecl_ish_cl_read(struct ishtp_opregion_dev *opr_dev)
 +{
-+	int base = order;
++	struct ecl_message_header header;
++	int len, rv;
 +
-+#ifdef CONFIG_TRANSPARENT_HUGEPAGE
-+	if (order > PAGE_ALLOC_COSTLY_ORDER) {
-+		VM_BUG_ON(order != pageblock_order);
-+		base = PAGE_ALLOC_COSTLY_ORDER + 1;
++	if (!opr_dev->ish_link_ready)
++		return -EIO;
++
++	header.version = ECL_ISH_HEADER_VERSION;
++	header.data_type = ECL_MSG_DATA;
++	header.request_type = ECL_ISH_READ;
++	header.offset = opr_dev->opr_context.cmd_area.offset;
++	header.data_len = opr_dev->opr_context.cmd_area.length;
++	header.event = opr_dev->opr_context.cmd_area.event_id;
++	len = sizeof(header);
++
++	opr_dev->ish_read_done = false;
++	rv = ishtp_cl_send(opr_dev->ecl_ishtp_cl, (uint8_t *)&header, len);
++	if (rv) {
++		dev_err(cl_data_to_dev(opr_dev), "ish-read : send failed\n");
++		return -EIO;
 +	}
-+#else
-+	VM_BUG_ON(order > PAGE_ALLOC_COSTLY_ORDER);
-+#endif
 +
-+	return (MIGRATE_PCPTYPES * base) + migratetype;
-+}
++	dev_dbg(cl_data_to_dev(opr_dev),
++		"[ish_rd] Req: off : %x, len : %x\n",
++		header.offset,
++		header.data_len);
 +
-+static inline int pindex_to_order(unsigned int pindex)
-+{
-+	int order = pindex / PAGE_ALLOC_COSTLY_ORDER;
-+
-+#ifdef CONFIG_TRANSPARENT_HUGEPAGE
-+	if (order > PAGE_ALLOC_COSTLY_ORDER) {
-+		order = pageblock_order;
-+		VM_BUG_ON(order != pageblock_order);
++	rv = wait_event_interruptible_timeout(opr_dev->read_wait,
++					      opr_dev->ish_read_done,
++					      2 * HZ);
++	if (!rv) {
++		dev_err(cl_data_to_dev(opr_dev),
++			"[ish_rd] No response from firmware\n");
++		return -EIO;
 +	}
-+#else
-+	VM_BUG_ON(order > PAGE_ALLOC_COSTLY_ORDER);
-+#endif
 +
-+	return order;
++	return 0;
 +}
 +
-+static inline bool pcp_allowed_order(unsigned int order)
++/**
++ * ecl_ish_cl_write() - This function writes data to eclite FW.
++ *
++ * @opr_dev:  pointer to opregion device
++ *
++ * This function writes data to eclite FW.
++ */
++static int ecl_ish_cl_write(struct ishtp_opregion_dev *opr_dev)
 +{
-+	if (order <= PAGE_ALLOC_COSTLY_ORDER)
-+		return true;
-+#ifdef CONFIG_TRANSPARENT_HUGEPAGE
-+	if (order == pageblock_order)
-+		return true;
-+#endif
-+	return false;
++	struct ecl_message message;
++	int len;
++
++	if (!opr_dev->ish_link_ready)
++		return -EIO;
++
++	message.header.version = ECL_ISH_HEADER_VERSION;
++	message.header.data_type = ECL_MSG_DATA;
++	message.header.request_type = ECL_ISH_WRITE;
++	message.header.offset = opr_dev->opr_context.cmd_area.offset;
++	message.header.data_len = opr_dev->opr_context.cmd_area.length;
++	message.header.event = opr_dev->opr_context.cmd_area.event_id;
++	len = sizeof(struct ecl_message_header) + message.header.data_len;
++
++	memcpy(message.payload,
++	       opr_dev->opr_context.data_area.data + message.header.offset,
++	       message.header.data_len);
++
++	dev_dbg(cl_data_to_dev(opr_dev),
++		"[ish_wr] off : %x, len : %x\n",
++		message.header.offset,
++		message.header.data_len);
++
++	return ishtp_cl_send(opr_dev->ecl_ishtp_cl, (uint8_t *)&message, len);
 +}
 +
- static inline void free_the_page(struct page *page, unsigned int order)
- {
--	if (order == 0)		/* Via pcp? */
--		free_unref_page(page);
-+	if (pcp_allowed_order(order))		/* Via pcp? */
-+		free_unref_page(page, order);
- 	else
- 		__free_pages_ok(page, order, FPI_NONE);
- }
-@@ -702,7 +745,7 @@ static inline void free_the_page(struct page *page, unsigned int order)
- void free_compound_page(struct page *page)
- {
- 	mem_cgroup_uncharge(page);
--	__free_pages_ok(page, compound_order(page), FPI_NONE);
-+	free_the_page(page, compound_order(page));
- }
- 
- void prep_compound_page(struct page *page, unsigned int order)
-@@ -1352,9 +1395,9 @@ static __always_inline bool free_pages_prepare(struct page *page,
-  * to pcp lists. With debug_pagealloc also enabled, they are also rechecked when
-  * moved from pcp lists to free lists.
-  */
--static bool free_pcp_prepare(struct page *page)
-+static bool free_pcp_prepare(struct page *page, unsigned int order)
- {
--	return free_pages_prepare(page, 0, true, FPI_NONE);
-+	return free_pages_prepare(page, order, true, FPI_NONE);
- }
- 
- static bool bulkfree_pcp_prepare(struct page *page)
-@@ -1371,12 +1414,12 @@ static bool bulkfree_pcp_prepare(struct page *page)
-  * debug_pagealloc enabled, they are checked also immediately when being freed
-  * to the pcp lists.
-  */
--static bool free_pcp_prepare(struct page *page)
-+static bool free_pcp_prepare(struct page *page, unsigned int order)
- {
- 	if (debug_pagealloc_enabled_static())
--		return free_pages_prepare(page, 0, true, FPI_NONE);
-+		return free_pages_prepare(page, order, true, FPI_NONE);
- 	else
--		return free_pages_prepare(page, 0, false, FPI_NONE);
-+		return free_pages_prepare(page, order, false, FPI_NONE);
- }
- 
- static bool bulkfree_pcp_prepare(struct page *page)
-@@ -1408,8 +1451,10 @@ static inline void prefetch_buddy(struct page *page)
- static void free_pcppages_bulk(struct zone *zone, int count,
- 					struct per_cpu_pages *pcp)
- {
--	int migratetype = 0;
-+	int pindex = 0;
- 	int batch_free = 0;
-+	int nr_freed = 0;
-+	unsigned int order;
- 	int prefetch_nr = READ_ONCE(pcp->batch);
- 	bool isolated_pageblocks;
- 	struct page *page, *tmp;
-@@ -1420,7 +1465,7 @@ static void free_pcppages_bulk(struct zone *zone, int count,
- 	 * below while (list_empty(list)) loop.
- 	 */
- 	count = min(pcp->count, count);
--	while (count) {
-+	while (count > 0) {
- 		struct list_head *list;
- 
- 		/*
-@@ -1432,24 +1477,31 @@ static void free_pcppages_bulk(struct zone *zone, int count,
- 		 */
- 		do {
- 			batch_free++;
--			if (++migratetype == MIGRATE_PCPTYPES)
--				migratetype = 0;
--			list = &pcp->lists[migratetype];
-+			if (++pindex == NR_PCP_LISTS)
-+				pindex = 0;
-+			list = &pcp->lists[pindex];
- 		} while (list_empty(list));
- 
- 		/* This is the only non-empty list. Free them all. */
--		if (batch_free == MIGRATE_PCPTYPES)
-+		if (batch_free == NR_PCP_LISTS)
- 			batch_free = count;
- 
-+		order = pindex_to_order(pindex);
-+		BUILD_BUG_ON(MAX_ORDER >= (1<<NR_PCP_ORDER_SHIFT));
- 		do {
- 			page = list_last_entry(list, struct page, lru);
- 			/* must delete to avoid corrupting pcp list */
- 			list_del(&page->lru);
--			pcp->count--;
-+			nr_freed += 1 << order;
-+			count -= 1 << order;
- 
- 			if (bulkfree_pcp_prepare(page))
- 				continue;
- 
-+			/* Encode order with the migratetype */
-+			page->index <<= NR_PCP_ORDER_SHIFT;
-+			page->index |= order;
++static acpi_status
++ecl_opregion_cmd_handler(u32 function, acpi_physical_address address,
++			 u32 bits, u64 *value64,
++			 void *handler_context, void *region_context)
++{
++	struct ishtp_opregion_dev *opr_dev;
++	struct opregion_cmd *cmd;
 +
- 			list_add_tail(&page->lru, &head);
- 
- 			/*
-@@ -1465,8 +1517,9 @@ static void free_pcppages_bulk(struct zone *zone, int count,
- 				prefetch_buddy(page);
- 				prefetch_nr--;
- 			}
--		} while (--count && --batch_free && !list_empty(list));
-+		} while (count > 0 && --batch_free && !list_empty(list));
- 	}
-+	pcp->count -= nr_freed;
- 
- 	/*
- 	 * local_lock_irq held so equivalent to spin_lock_irqsave for
-@@ -1481,14 +1534,19 @@ static void free_pcppages_bulk(struct zone *zone, int count,
- 	 */
- 	list_for_each_entry_safe(page, tmp, &head, lru) {
- 		int mt = get_pcppage_migratetype(page);
++	if (!region_context || !value64)
++		return AE_BAD_PARAMETER;
 +
-+		/* mt has been encoded with the order (see above) */
-+		order = mt & NR_PCP_ORDER_MASK;
-+		mt >>= NR_PCP_ORDER_SHIFT;
++	if (function == ACPI_READ)
++		return AE_ERROR;
 +
- 		/* MIGRATE_ISOLATE page should not go to pcplists */
- 		VM_BUG_ON_PAGE(is_migrate_isolate(mt), page);
- 		/* Pageblock could have been isolated meanwhile */
- 		if (unlikely(isolated_pageblocks))
- 			mt = get_pageblock_migratetype(page);
- 
--		__free_one_page(page, page_to_pfn(page), zone, 0, mt, FPI_NONE);
--		trace_mm_page_pcpu_drain(page, 0, mt);
-+		__free_one_page(page, page_to_pfn(page), zone, order, mt, FPI_NONE);
-+		trace_mm_page_pcpu_drain(page, order, mt);
- 	}
- 	spin_unlock(&zone->lock);
- }
-@@ -3265,11 +3323,12 @@ void mark_free_pages(struct zone *zone)
- }
- #endif /* CONFIG_PM */
- 
--static bool free_unref_page_prepare(struct page *page, unsigned long pfn)
-+static bool free_unref_page_prepare(struct page *page, unsigned long pfn,
-+							unsigned int order)
- {
- 	int migratetype;
- 
--	if (!free_pcp_prepare(page))
-+	if (!free_pcp_prepare(page, order))
- 		return false;
- 
- 	migratetype = get_pfnblock_migratetype(page, pfn);
-@@ -3319,16 +3378,18 @@ static int nr_pcp_high(struct per_cpu_pages *pcp, struct zone *zone)
- }
- 
- static void free_unref_page_commit(struct page *page, unsigned long pfn,
--				   int migratetype)
-+				   int migratetype, unsigned int order)
- {
- 	struct zone *zone = page_zone(page);
- 	struct per_cpu_pages *pcp;
- 	int high;
-+	int pindex;
- 
- 	__count_vm_event(PGFREE);
- 	pcp = this_cpu_ptr(zone->per_cpu_pageset);
--	list_add(&page->lru, &pcp->lists[migratetype]);
--	pcp->count++;
-+	pindex = order_to_pindex(migratetype, order);
-+	list_add(&page->lru, &pcp->lists[pindex]);
-+	pcp->count += 1 << order;
- 	high = nr_pcp_high(pcp, zone);
- 	if (pcp->count >= high) {
- 		int batch = READ_ONCE(pcp->batch);
-@@ -3338,15 +3399,15 @@ static void free_unref_page_commit(struct page *page, unsigned long pfn,
- }
- 
- /*
-- * Free a 0-order page
-+ * Free a pcp page
-  */
--void free_unref_page(struct page *page)
-+void free_unref_page(struct page *page, unsigned int order)
- {
- 	unsigned long flags;
- 	unsigned long pfn = page_to_pfn(page);
- 	int migratetype;
- 
--	if (!free_unref_page_prepare(page, pfn))
-+	if (!free_unref_page_prepare(page, pfn, order))
- 		return;
- 
- 	/*
-@@ -3359,14 +3420,14 @@ void free_unref_page(struct page *page)
- 	migratetype = get_pcppage_migratetype(page);
- 	if (unlikely(migratetype >= MIGRATE_PCPTYPES)) {
- 		if (unlikely(is_migrate_isolate(migratetype))) {
--			free_one_page(page_zone(page), page, pfn, 0, migratetype, FPI_NONE);
-+			free_one_page(page_zone(page), page, pfn, order, migratetype, FPI_NONE);
- 			return;
- 		}
- 		migratetype = MIGRATE_MOVABLE;
- 	}
- 
- 	local_lock_irqsave(&pagesets.lock, flags);
--	free_unref_page_commit(page, pfn, migratetype);
-+	free_unref_page_commit(page, pfn, migratetype, order);
- 	local_unlock_irqrestore(&pagesets.lock, flags);
- }
- 
-@@ -3383,7 +3444,7 @@ void free_unref_page_list(struct list_head *list)
- 	/* Prepare pages for freeing */
- 	list_for_each_entry_safe(page, next, list, lru) {
- 		pfn = page_to_pfn(page);
--		if (!free_unref_page_prepare(page, pfn))
-+		if (!free_unref_page_prepare(page, pfn, 0))
- 			list_del(&page->lru);
- 
- 		/*
-@@ -3415,7 +3476,7 @@ void free_unref_page_list(struct list_head *list)
- 		set_page_private(page, 0);
- 		migratetype = get_pcppage_migratetype(page);
- 		trace_mm_page_free_batched(page);
--		free_unref_page_commit(page, pfn, migratetype);
-+		free_unref_page_commit(page, pfn, migratetype, 0);
- 
- 		/*
- 		 * Guard against excessive IRQ disabled times when we get
-@@ -3551,7 +3612,8 @@ static inline void zone_statistics(struct zone *preferred_zone, struct zone *z,
- 
- /* Remove page from the per-cpu list, caller must protect the list */
- static inline
--struct page *__rmqueue_pcplist(struct zone *zone, int migratetype,
-+struct page *__rmqueue_pcplist(struct zone *zone, unsigned int order,
-+			int migratetype,
- 			unsigned int alloc_flags,
- 			struct per_cpu_pages *pcp,
- 			struct list_head *list)
-@@ -3560,16 +3622,22 @@ struct page *__rmqueue_pcplist(struct zone *zone, int migratetype,
- 
- 	do {
- 		if (list_empty(list)) {
--			pcp->count += rmqueue_bulk(zone, 0,
--					READ_ONCE(pcp->batch), list,
-+			int batch = READ_ONCE(pcp->batch);
-+			int alloced;
++	opr_dev = (struct ishtp_opregion_dev *)region_context;
++	cmd = &opr_dev->opr_context.cmd_area;
 +
-+			batch = max(batch >> order, 2);
-+			alloced = rmqueue_bulk(zone, order,
-+					batch, list,
- 					migratetype, alloc_flags);
++	switch (address) {
++	case cmd_opr_offsetof(command):
++		cmd->command = (u32)*value64;
 +
-+			pcp->count += alloced << order;
- 			if (unlikely(list_empty(list)))
- 				return NULL;
- 		}
- 
- 		page = list_first_entry(list, struct page, lru);
- 		list_del(&page->lru);
--		pcp->count--;
-+		pcp->count -= 1 << order;
- 	} while (check_new_pcp(page));
- 
- 	return page;
-@@ -3577,8 +3645,9 @@ struct page *__rmqueue_pcplist(struct zone *zone, int migratetype,
- 
- /* Lock and remove page from the per-cpu list */
- static struct page *rmqueue_pcplist(struct zone *preferred_zone,
--			struct zone *zone, gfp_t gfp_flags,
--			int migratetype, unsigned int alloc_flags)
-+			struct zone *zone, unsigned int order,
-+			gfp_t gfp_flags, int migratetype,
-+			unsigned int alloc_flags)
- {
- 	struct per_cpu_pages *pcp;
- 	struct list_head *list;
-@@ -3594,8 +3663,8 @@ static struct page *rmqueue_pcplist(struct zone *preferred_zone,
- 	 */
- 	pcp = this_cpu_ptr(zone->per_cpu_pageset);
- 	pcp->free_factor >>= 1;
--	list = &pcp->lists[migratetype];
--	page = __rmqueue_pcplist(zone,  migratetype, alloc_flags, pcp, list);
-+	list = &pcp->lists[order_to_pindex(migratetype, order)];
-+	page = __rmqueue_pcplist(zone, order, migratetype, alloc_flags, pcp, list);
- 	local_unlock_irqrestore(&pagesets.lock, flags);
- 	if (page) {
- 		__count_zid_vm_events(PGALLOC, page_zonenum(page), 1);
-@@ -3616,15 +3685,15 @@ struct page *rmqueue(struct zone *preferred_zone,
- 	unsigned long flags;
- 	struct page *page;
- 
--	if (likely(order == 0)) {
-+	if (likely(pcp_allowed_order(order))) {
- 		/*
- 		 * MIGRATE_MOVABLE pcplist could have the pages on CMA area and
- 		 * we need to skip it when CMA area isn't allowed.
- 		 */
- 		if (!IS_ENABLED(CONFIG_CMA) || alloc_flags & ALLOC_CMA ||
- 				migratetype != MIGRATE_MOVABLE) {
--			page = rmqueue_pcplist(preferred_zone, zone, gfp_flags,
--					migratetype, alloc_flags);
-+			page = rmqueue_pcplist(preferred_zone, zone, order,
-+					gfp_flags, migratetype, alloc_flags);
- 			goto out;
- 		}
- 	}
-@@ -5206,7 +5275,7 @@ unsigned long __alloc_pages_bulk(gfp_t gfp, int preferred_nid,
- 			continue;
- 		}
- 
--		page = __rmqueue_pcplist(zone, ac.migratetype, alloc_flags,
-+		page = __rmqueue_pcplist(zone, 0, ac.migratetype, alloc_flags,
- 								pcp, pcp_list);
- 		if (unlikely(!page)) {
- 			/* Try and get at least one page */
-@@ -6756,13 +6825,13 @@ static void pageset_update(struct per_cpu_pages *pcp, unsigned long high,
- 
- static void per_cpu_pages_init(struct per_cpu_pages *pcp, struct per_cpu_zonestat *pzstats)
- {
--	int migratetype;
-+	int pindex;
- 
- 	memset(pcp, 0, sizeof(*pcp));
- 	memset(pzstats, 0, sizeof(*pzstats));
- 
--	for (migratetype = 0; migratetype < MIGRATE_PCPTYPES; migratetype++)
--		INIT_LIST_HEAD(&pcp->lists[migratetype]);
-+	for (pindex = 0; pindex < NR_PCP_LISTS; pindex++)
-+		INIT_LIST_HEAD(&pcp->lists[pindex]);
- 
- 	/*
- 	 * Set batch and high values safe for a boot pageset. A true percpu
-diff --git a/mm/swap.c b/mm/swap.c
-index dfb48cf9c2c9..b953039e087b 100644
---- a/mm/swap.c
-+++ b/mm/swap.c
-@@ -95,7 +95,7 @@ static void __put_single_page(struct page *page)
- {
- 	__page_cache_release(page);
- 	mem_cgroup_uncharge(page);
--	free_unref_page(page);
-+	free_unref_page(page, 0);
- }
- 
- static void __put_compound_page(struct page *page)
++		if (cmd->command == ECL_ISH_READ)
++			return ecl_ish_cl_read(opr_dev);
++		else if (cmd->command == ECL_ISH_WRITE)
++			return ecl_ish_cl_write(opr_dev);
++
++		return AE_ERROR;
++
++	case cmd_opr_offsetof(offset):
++		cmd->offset = (u32)*value64;
++		break;
++	case cmd_opr_offsetof(length):
++		cmd->length = (u32)*value64;
++		break;
++	case cmd_opr_offsetof(event_id):
++		cmd->event_id = (u32)*value64;
++		break;
++	default:
++		return AE_ERROR;
++	}
++
++	return AE_OK;
++}
++
++static acpi_status
++ecl_opregion_data_handler(u32 function, acpi_physical_address address,
++			  u32 bits, u64 *value64,
++			  void *handler_context, void *region_context)
++{
++	struct ishtp_opregion_dev *opr_dev;
++	unsigned int bytes = BITS_TO_BYTES(bits);
++	void *data_addr;
++
++	if (!region_context || !value64)
++		return AE_BAD_PARAMETER;
++
++	if (address + bytes > ECL_DATA_OPR_BUFLEN)
++		return AE_BAD_PARAMETER;
++
++	opr_dev = (struct ishtp_opregion_dev *)region_context;
++	data_addr = &opr_dev->opr_context.data_area.data[address];
++
++	if (function == ACPI_READ)
++		memcpy(value64, data_addr, bytes);
++	else if (function == ACPI_WRITE)
++		memcpy(data_addr, value64, bytes);
++	else
++		return AE_BAD_PARAMETER;
++
++	return AE_OK;
++}
++
++static int acpi_opregion_init(struct ishtp_opregion_dev *opr_dev)
++{
++	acpi_status status;
++	struct acpi_device *adev;
++
++	/* Find ECLite device and install opregion handlers */
++	adev = acpi_dev_get_first_match_dev("INTC1035", NULL, -1);
++	if (!adev) {
++		dev_err(cl_data_to_dev(opr_dev), "eclite ACPI device not found\n");
++		return -ENODEV;
++	}
++
++	opr_dev->acpi_handle = adev->handle;
++	acpi_dev_put(adev);
++
++	status = acpi_install_address_space_handler(opr_dev->acpi_handle,
++						    ECLITE_CMD_OPREGION_ID,
++						    ecl_opregion_cmd_handler,
++						    NULL, opr_dev);
++	if (ACPI_FAILURE(status)) {
++		dev_err(cl_data_to_dev(opr_dev),
++			"cmd space handler install failed\n");
++		return -ENODEV;
++	}
++
++	status = acpi_install_address_space_handler(opr_dev->acpi_handle,
++						    ECLITE_DATA_OPREGION_ID,
++						    ecl_opregion_data_handler,
++						    NULL, opr_dev);
++	if (ACPI_FAILURE(status)) {
++		dev_err(cl_data_to_dev(opr_dev),
++			"data space handler install failed\n");
++
++		acpi_remove_address_space_handler(opr_dev->acpi_handle,
++						  ECLITE_CMD_OPREGION_ID,
++						  ecl_opregion_cmd_handler);
++		return -ENODEV;
++	}
++	opr_dev->acpi_init_done = true;
++
++	dev_dbg(cl_data_to_dev(opr_dev), "Opregion handlers are installed\n");
++
++	return 0;
++}
++
++static void acpi_opregion_deinit(struct ishtp_opregion_dev *opr_dev)
++{
++	acpi_remove_address_space_handler(opr_dev->acpi_handle,
++					  ECLITE_CMD_OPREGION_ID,
++					  ecl_opregion_cmd_handler);
++
++	acpi_remove_address_space_handler(opr_dev->acpi_handle,
++					  ECLITE_DATA_OPREGION_ID,
++					  ecl_opregion_data_handler);
++	opr_dev->acpi_init_done = false;
++}
++
++static void ecl_acpi_invoke_dsm(struct work_struct *work)
++{
++	struct ishtp_opregion_dev *opr_dev;
++	union acpi_object *obj;
++
++	opr_dev = container_of(work, struct ishtp_opregion_dev, event_work);
++	if (!opr_dev->acpi_init_done)
++		return;
++
++	obj = acpi_evaluate_dsm(opr_dev->acpi_handle, &ecl_acpi_guid, 0,
++				opr_dev->dsm_event_id, NULL);
++	if (!obj) {
++		dev_warn(cl_data_to_dev(opr_dev), "_DSM fn call failed\n");
++		return;
++	}
++
++	dev_dbg(cl_data_to_dev(opr_dev), "Exec DSM function code: %d success\n",
++		opr_dev->dsm_event_id);
++
++	ACPI_FREE(obj);
++}
++
++static void ecl_ish_process_rx_data(struct ishtp_opregion_dev *opr_dev)
++{
++	struct ecl_message *message =
++		(struct ecl_message *)opr_dev->rb->buffer.data;
++
++	dev_dbg(cl_data_to_dev(opr_dev),
++		"[ish_rd] Resp: off : %x, len : %x\n",
++		message->header.offset,
++		message->header.data_len);
++
++	memcpy(opr_dev->opr_context.data_area.data + message->header.offset,
++	       message->payload, message->header.data_len);
++
++	opr_dev->ish_read_done = true;
++	wake_up_interruptible(&opr_dev->read_wait);
++}
++
++static void ecl_ish_process_rx_event(struct ishtp_opregion_dev *opr_dev)
++{
++	struct ecl_message_header *header =
++		(struct ecl_message_header *)opr_dev->rb->buffer.data;
++
++	dev_dbg(cl_data_to_dev(opr_dev),
++		"[ish_ev] Evt received: %8x\n", header->event);
++
++	opr_dev->dsm_event_id = header->event;
++	schedule_work(&opr_dev->event_work);
++}
++
++static int ecl_ish_cl_enable_events(struct ishtp_opregion_dev *opr_dev,
++				    bool config_enable)
++{
++	struct ecl_message message;
++	int len;
++
++	message.header.version = ECL_ISH_HEADER_VERSION;
++	message.header.data_type = ECL_MSG_DATA;
++	message.header.request_type = ECL_ISH_WRITE;
++	message.header.offset = ECL_EVENTS_NOTIFY;
++	message.header.data_len = 1;
++	message.payload[0] = config_enable;
++
++	len = sizeof(struct ecl_message_header) + message.header.data_len;
++
++	return ishtp_cl_send(opr_dev->ecl_ishtp_cl, (uint8_t *)&message, len);
++}
++
++static void ecl_ishtp_cl_event_cb(struct ishtp_cl_device *cl_device)
++{
++	struct ishtp_cl *ecl_ishtp_cl = ishtp_get_drvdata(cl_device);
++	struct ishtp_opregion_dev *opr_dev;
++	struct ecl_message_header *header;
++	struct ishtp_cl_rb *rb;
++
++	opr_dev = ishtp_get_client_data(ecl_ishtp_cl);
++	while ((rb = ishtp_cl_rx_get_rb(opr_dev->ecl_ishtp_cl)) != NULL) {
++		opr_dev->rb = rb;
++		header = (struct ecl_message_header *)rb->buffer.data;
++
++		if (header->data_type == ECL_MSG_DATA)
++			ecl_ish_process_rx_data(opr_dev);
++		else if (header->data_type == ECL_MSG_EVENT)
++			ecl_ish_process_rx_event(opr_dev);
++		else
++			/* got an event with wrong data_type, ignore it */
++			dev_err(cl_data_to_dev(opr_dev),
++				"[ish_cb] Received wrong data_type\n");
++
++		ishtp_cl_io_rb_recycle(rb);
++	}
++}
++
++static int ecl_ishtp_cl_init(struct ishtp_cl *ecl_ishtp_cl)
++{
++	struct ishtp_opregion_dev *opr_dev =
++		ishtp_get_client_data(ecl_ishtp_cl);
++	struct ishtp_fw_client *fw_client;
++	struct ishtp_device *dev;
++	int rv;
++
++	rv = ishtp_cl_link(ecl_ishtp_cl);
++	if (rv) {
++		dev_err(cl_data_to_dev(opr_dev), "ishtp_cl_link failed\n");
++		return	rv;
++	}
++
++	dev = ishtp_get_ishtp_device(ecl_ishtp_cl);
++
++	/* Connect to FW client */
++	ishtp_set_tx_ring_size(ecl_ishtp_cl, ECL_CL_TX_RING_SIZE);
++	ishtp_set_rx_ring_size(ecl_ishtp_cl, ECL_CL_RX_RING_SIZE);
++
++	fw_client = ishtp_fw_cl_get_client(dev, &ecl_ishtp_guid);
++	if (!fw_client) {
++		dev_err(cl_data_to_dev(opr_dev), "fw client not found\n");
++		return -ENOENT;
++	}
++
++	ishtp_cl_set_fw_client_id(ecl_ishtp_cl,
++				  ishtp_get_fw_client_id(fw_client));
++
++	ishtp_set_connection_state(ecl_ishtp_cl, ISHTP_CL_CONNECTING);
++
++	rv = ishtp_cl_connect(ecl_ishtp_cl);
++	if (rv) {
++		dev_err(cl_data_to_dev(opr_dev), "client connect failed\n");
++
++		ishtp_cl_unlink(ecl_ishtp_cl);
++		return rv;
++	}
++
++	dev_dbg(cl_data_to_dev(opr_dev), "Host connected to fw client\n");
++
++	return 0;
++}
++
++static void ecl_ishtp_cl_deinit(struct ishtp_cl *ecl_ishtp_cl)
++{
++	ishtp_cl_unlink(ecl_ishtp_cl);
++	ishtp_cl_flush_queues(ecl_ishtp_cl);
++	ishtp_cl_free(ecl_ishtp_cl);
++}
++
++static void ecl_ishtp_cl_reset_handler(struct work_struct *work)
++{
++	struct ishtp_opregion_dev *opr_dev;
++	struct ishtp_cl_device *cl_device;
++	struct ishtp_cl *ecl_ishtp_cl;
++	int rv;
++	int retry;
++
++	opr_dev = container_of(work, struct ishtp_opregion_dev, reset_work);
++
++	opr_dev->ish_link_ready = false;
++
++	cl_device = opr_dev->cl_device;
++	ecl_ishtp_cl = opr_dev->ecl_ishtp_cl;
++
++	ecl_ishtp_cl_deinit(ecl_ishtp_cl);
++
++	ecl_ishtp_cl = ishtp_cl_allocate(cl_device);
++	if (!ecl_ishtp_cl)
++		return;
++
++	ishtp_set_drvdata(cl_device, ecl_ishtp_cl);
++	ishtp_set_client_data(ecl_ishtp_cl, opr_dev);
++
++	opr_dev->ecl_ishtp_cl = ecl_ishtp_cl;
++
++	for (retry = 0; retry < 3; ++retry) {
++		rv = ecl_ishtp_cl_init(ecl_ishtp_cl);
++		if (!rv)
++			break;
++	}
++	if (rv) {
++		ishtp_cl_free(ecl_ishtp_cl);
++		opr_dev->ecl_ishtp_cl = NULL;
++		dev_err(cl_data_to_dev(opr_dev),
++			"[ish_rst] Reset failed. Link not ready.\n");
++		return;
++	}
++
++	ishtp_register_event_cb(cl_device, ecl_ishtp_cl_event_cb);
++	dev_info(cl_data_to_dev(opr_dev),
++		 "[ish_rst] Reset Success. Link ready.\n");
++
++	opr_dev->ish_link_ready = true;
++
++	if (opr_dev->acpi_init_done)
++		return;
++
++	rv = acpi_opregion_init(opr_dev);
++	if (rv) {
++		dev_err(cl_data_to_dev(opr_dev),
++			"ACPI opregion init failed\n");
++	}
++}
++
++static int ecl_ishtp_cl_probe(struct ishtp_cl_device *cl_device)
++{
++	struct ishtp_cl *ecl_ishtp_cl;
++	struct ishtp_opregion_dev *opr_dev;
++	int rv;
++
++	opr_dev = devm_kzalloc(ishtp_device(cl_device), sizeof(*opr_dev),
++			       GFP_KERNEL);
++	if (!opr_dev)
++		return -ENOMEM;
++
++	ecl_ishtp_cl = ishtp_cl_allocate(cl_device);
++	if (!ecl_ishtp_cl)
++		return -ENOMEM;
++
++	ishtp_set_drvdata(cl_device, ecl_ishtp_cl);
++	ishtp_set_client_data(ecl_ishtp_cl, opr_dev);
++	opr_dev->ecl_ishtp_cl = ecl_ishtp_cl;
++	opr_dev->cl_device = cl_device;
++
++	init_waitqueue_head(&opr_dev->read_wait);
++	INIT_WORK(&opr_dev->event_work, ecl_acpi_invoke_dsm);
++	INIT_WORK(&opr_dev->reset_work, ecl_ishtp_cl_reset_handler);
++
++	/* Initialize ish client device */
++	rv = ecl_ishtp_cl_init(ecl_ishtp_cl);
++	if (rv) {
++		dev_err(cl_data_to_dev(opr_dev), "Client init failed\n");
++		goto err_exit;
++	}
++
++	dev_dbg(cl_data_to_dev(opr_dev), "eclite-ishtp client initialised\n");
++
++	/* Register a handler for eclite fw events */
++	ishtp_register_event_cb(cl_device, ecl_ishtp_cl_event_cb);
++
++	ishtp_get_device(cl_device);
++
++	opr_dev->ish_link_ready = true;
++
++	/* Now find ACPI device and init opregion handlers */
++	rv = acpi_opregion_init(opr_dev);
++	if (rv) {
++		dev_err(cl_data_to_dev(opr_dev), "ACPI opregion init failed\n");
++
++		goto err_exit;
++	}
++
++	/* Reprobe devices depending on ECLite - battery, fan, etc. */
++	acpi_walk_dep_device_list(opr_dev->acpi_handle);
++
++	return 0;
++err_exit:
++	ishtp_set_connection_state(ecl_ishtp_cl, ISHTP_CL_DISCONNECTING);
++	ishtp_cl_disconnect(ecl_ishtp_cl);
++	ecl_ishtp_cl_deinit(ecl_ishtp_cl);
++
++	ishtp_put_device(cl_device);
++
++	return rv;
++}
++
++static int ecl_ishtp_cl_remove(struct ishtp_cl_device *cl_device)
++{
++	struct ishtp_cl *ecl_ishtp_cl = ishtp_get_drvdata(cl_device);
++	struct ishtp_opregion_dev *opr_dev =
++		ishtp_get_client_data(ecl_ishtp_cl);
++
++	if (opr_dev->acpi_init_done)
++		acpi_opregion_deinit(opr_dev);
++
++	cancel_work_sync(&opr_dev->reset_work);
++	cancel_work_sync(&opr_dev->event_work);
++
++	ishtp_set_connection_state(ecl_ishtp_cl, ISHTP_CL_DISCONNECTING);
++	ishtp_cl_disconnect(ecl_ishtp_cl);
++	ecl_ishtp_cl_deinit(ecl_ishtp_cl);
++
++	ishtp_put_device(cl_device);
++
++	return 0;
++}
++
++static int ecl_ishtp_cl_reset(struct ishtp_cl_device *cl_device)
++{
++	struct ishtp_cl *ecl_ishtp_cl = ishtp_get_drvdata(cl_device);
++	struct ishtp_opregion_dev *opr_dev =
++		ishtp_get_client_data(ecl_ishtp_cl);
++
++	schedule_work(&opr_dev->reset_work);
++
++	return 0;
++}
++
++static int ecl_ishtp_cl_suspend(struct device *device)
++{
++	struct ishtp_cl_device *cl_device = ishtp_dev_to_cl_device(device);
++	struct ishtp_cl *ecl_ishtp_cl = ishtp_get_drvdata(cl_device);
++	struct ishtp_opregion_dev *opr_dev =
++		ishtp_get_client_data(ecl_ishtp_cl);
++
++	if (acpi_target_system_state() == ACPI_STATE_S0)
++		return 0;
++
++	acpi_opregion_deinit(opr_dev);
++	ecl_ish_cl_enable_events(opr_dev, false);
++
++	return 0;
++}
++
++static int ecl_ishtp_cl_resume(struct device *device)
++{
++	/* A reset is expected to call after an Sx. At this point
++	 * we are not sure if the link is up or not to restore anything,
++	 * so do nothing in resume path
++	 */
++	return 0;
++}
++
++static const struct dev_pm_ops ecl_ishtp_pm_ops = {
++	.suspend = ecl_ishtp_cl_suspend,
++	.resume = ecl_ishtp_cl_resume,
++};
++
++static struct ishtp_cl_driver ecl_ishtp_cl_driver = {
++	.name = "ishtp-eclite",
++	.guid = &ecl_ishtp_guid,
++	.probe = ecl_ishtp_cl_probe,
++	.remove = ecl_ishtp_cl_remove,
++	.reset = ecl_ishtp_cl_reset,
++	.driver.pm = &ecl_ishtp_pm_ops,
++};
++
++static int __init ecl_ishtp_init(void)
++{
++	return ishtp_cl_driver_register(&ecl_ishtp_cl_driver, THIS_MODULE);
++}
++
++static void __exit ecl_ishtp_exit(void)
++{
++	return ishtp_cl_driver_unregister(&ecl_ishtp_cl_driver);
++}
++
++late_initcall(ecl_ishtp_init);
++module_exit(ecl_ishtp_exit);
++
++MODULE_DESCRIPTION("ISH ISHTP eclite client opregion driver");
++MODULE_AUTHOR("K Naduvalath, Sumesh <sumesh.k.naduvalath@intel.com>");
++
++MODULE_LICENSE("GPL v2");
++MODULE_ALIAS("ishtp:*");
 -- 
-2.26.2
+2.31.1
 
