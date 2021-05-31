@@ -2,37 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 70CB7395E11
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 15:52:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 227F0395C93
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 15:33:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233055AbhEaNyA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 09:54:00 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39376 "EHLO mail.kernel.org"
+        id S231680AbhEaNfG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 09:35:06 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33460 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232105AbhEaNfs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 09:35:48 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 89D736144C;
-        Mon, 31 May 2021 13:25:36 +0000 (UTC)
+        id S232022AbhEaNZm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 09:25:42 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2C335613C1;
+        Mon, 31 May 2021 13:20:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1622467537;
-        bh=VliTm5Omfb1FQ1MFvq7AlbAecyXYQOrR6hstGepmpu0=;
+        s=korg; t=1622467257;
+        bh=7bfA1jP82NQ2FwXenvFJkxagimlL0jZ0JK6itcjHu1c=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=oDUy0pmcBnBRyfgHKXVEd0MQs4K9hsICPc7gNPbvW7I0U5reavRtlPgkM9KvP4m95
-         YEaDGf0rVsmpzhJ0oos/tNCEteLfHNonwV675OBlynidR4ms0hzVuGl0XAT7ufzWLG
-         BnYaM4DSFQOjaXJUy/w3uqJUFZ7s5t7Ld+o+7nGU=
+        b=QC3jNlrT2ectMbwYkBFWvbH4cPXpPzMSlstYN74MPNr037hHoKNqJ1UAxEPbHrMfc
+         8qwyEmIyt/LTjJdnEjncacgktciOFYOg8dDQVwPjtjULcW9ydR8WcqADkjy15hkxAZ
+         ib76WdN3BGebwnsM2F6dBeutwfbSfQgU8cE52gJM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Tao Liu <thomas.liu@ucloud.cn>,
-        Ilya Maximets <i.maximets@ovn.org>,
-        "David S. Miller" <davem@davemloft.net>,
+        stable@vger.kernel.org, Randy Dunlap <rdunlap@infradead.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Wim Van Sebroeck <wim@iguana.be>,
+        John Crispin <john@phrozen.org>, linux-mips@vger.kernel.org,
+        linux-watchdog@vger.kernel.org,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 101/116] openvswitch: meter: fix race when getting now_ms.
+Subject: [PATCH 4.9 64/66] MIPS: ralink: export rt_sysc_membase for rt2880_wdt.c
 Date:   Mon, 31 May 2021 15:14:37 +0200
-Message-Id: <20210531130643.553968554@linuxfoundation.org>
+Message-Id: <20210531130638.277030241@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210531130640.131924542@linuxfoundation.org>
-References: <20210531130640.131924542@linuxfoundation.org>
+In-Reply-To: <20210531130636.254683895@linuxfoundation.org>
+References: <20210531130636.254683895@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,55 +44,51 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tao Liu <thomas.liu@ucloud.cn>
+From: Randy Dunlap <rdunlap@infradead.org>
 
-[ Upstream commit e4df1b0c24350a0f00229ff895a91f1072bd850d ]
+[ Upstream commit fef532ea0cd871afab7d9a7b6e9da99ac2c24371 ]
 
-We have observed meters working unexpected if traffic is 3+Gbit/s
-with multiple connections.
+rt2880_wdt.c uses (well, attempts to use) rt_sysc_membase. However,
+when this watchdog driver is built as a loadable module, there is a
+build error since the rt_sysc_membase symbol is not exported.
+Export it to quell the build error.
 
-now_ms is not pretected by meter->lock, we may get a negative
-long_delta_ms when another cpu updated meter->used, then:
-    delta_ms = (u32)long_delta_ms;
-which will be a large value.
+ERROR: modpost: "rt_sysc_membase" [drivers/watchdog/rt2880_wdt.ko] undefined!
 
-    band->bucket += delta_ms * band->rate;
-then we get a wrong band->bucket.
-
-OpenVswitch userspace datapath has fixed the same issue[1] some
-time ago, and we port the implementation to kernel datapath.
-
-[1] https://patchwork.ozlabs.org/project/openvswitch/patch/20191025114436.9746-1-i.maximets@ovn.org/
-
-Fixes: 96fbc13d7e77 ("openvswitch: Add meter infrastructure")
-Signed-off-by: Tao Liu <thomas.liu@ucloud.cn>
-Suggested-by: Ilya Maximets <i.maximets@ovn.org>
-Reviewed-by: Ilya Maximets <i.maximets@ovn.org>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Fixes: 473cf939ff34 ("watchdog: add ralink watchdog driver")
+Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+Cc: Guenter Roeck <linux@roeck-us.net>
+Cc: Wim Van Sebroeck <wim@iguana.be>
+Cc: John Crispin <john@phrozen.org>
+Cc: linux-mips@vger.kernel.org
+Cc: linux-watchdog@vger.kernel.org
+Acked-by: Guenter Roeck <linux@roeck-us.net>
+Signed-off-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/openvswitch/meter.c | 8 ++++++++
- 1 file changed, 8 insertions(+)
+ arch/mips/ralink/of.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/net/openvswitch/meter.c b/net/openvswitch/meter.c
-index 5ea2471ffc03..9b0c54f0702c 100644
---- a/net/openvswitch/meter.c
-+++ b/net/openvswitch/meter.c
-@@ -464,6 +464,14 @@ bool ovs_meter_execute(struct datapath *dp, struct sk_buff *skb,
- 	spin_lock(&meter->lock);
+diff --git a/arch/mips/ralink/of.c b/arch/mips/ralink/of.c
+index 0aa67a2d0ae6..6b7226830354 100644
+--- a/arch/mips/ralink/of.c
++++ b/arch/mips/ralink/of.c
+@@ -10,6 +10,7 @@
  
- 	long_delta_ms = (now_ms - meter->used); /* ms */
-+	if (long_delta_ms < 0) {
-+		/* This condition means that we have several threads fighting
-+		 * for a meter lock, and the one who received the packets a
-+		 * bit later wins. Assuming that all racing threads received
-+		 * packets at the same time to avoid overflow.
-+		 */
-+		long_delta_ms = 0;
-+	}
+ #include <linux/io.h>
+ #include <linux/clk.h>
++#include <linux/export.h>
+ #include <linux/init.h>
+ #include <linux/sizes.h>
+ #include <linux/of_fdt.h>
+@@ -27,6 +28,7 @@
  
- 	/* Make sure delta_ms will not be too large, so that bucket will not
- 	 * wrap around below.
+ __iomem void *rt_sysc_membase;
+ __iomem void *rt_memc_membase;
++EXPORT_SYMBOL_GPL(rt_sysc_membase);
+ 
+ __iomem void *plat_of_remap_node(const char *node)
+ {
 -- 
 2.30.2
 
