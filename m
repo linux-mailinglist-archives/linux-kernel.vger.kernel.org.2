@@ -2,119 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 451003968BE
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 22:28:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E14A23968D8
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 22:29:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231240AbhEaUaB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 16:30:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38278 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230282AbhEaU3x (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 16:29:53 -0400
-Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 418D8C061574;
-        Mon, 31 May 2021 13:28:12 -0700 (PDT)
-Received: by mail-lf1-x133.google.com with SMTP id q7so18368997lfr.6;
-        Mon, 31 May 2021 13:28:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=aFEQ7LJ4IndjWtKAkoh3+98OH1W1aYhIxJ7hGveYV50=;
-        b=YRCowztTycQIsNDzf9BKRw1kQbZtkYO3FMXGKpGYrKPFxRmrPvSvWmswrx3Tx1XU+3
-         J18hyoNZB3d1b9UmihrfUGlZ0U8mB25w2bSD6y6ZW5APnuEdseBV0HnqWb+Eq1mnpfUB
-         XjC3LcR3CqE4p2si40a05Hp2y77n0PtErZsVvaGckkKv/NzynQ88wuXbaVMXCkiE/uZx
-         JuZJh8ogVJ0LQVw/ZEx+RDsDBNcPcoIf9kydKWXDzngeeGlt4WA/LqmhEHqhLnb10yew
-         x/dhKcryUjheetkEbD3UAX+jleEFpHWRs9oLMcAhWXwhJ1mr9aiSiyVUfTi1zJ5PLb5x
-         uvEg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=aFEQ7LJ4IndjWtKAkoh3+98OH1W1aYhIxJ7hGveYV50=;
-        b=ODZ41mUYjwGdyNT1H3UxrVrSfKKPaf3s2rMZ53qKH6lYqDms9ky5r6uGbQuGBAVzgG
-         rSkPpNc0EzuRMpYjjm863eavKjJP+orKxxscmbymz+xuDgYyGVroTR5dy12Uepv/e6WH
-         wqAxQP6V9zbJeEzEpiiQ8flGKfeSC0zASfeyv+iH4OsC/NFdlYfrnDqcJs4LnYEte9Te
-         71bDDfWHgR1HcmhEovwzL7MEqCmD/ct5kDEeOGmI4cyy12XcBtBIxBPwK1O7nt+23oLc
-         RDx+s1w9+bZXQCO59HRsDngwKUmd/WV9IjkAk9Xb/eQimCcApe+aqK+4QdrITQQXvTiU
-         r+yA==
-X-Gm-Message-State: AOAM530ULNYVNvKAKAGbqZQuQjQ8M475Wp0cnyrv5cIjiyF6GfyxLd5S
-        0nFl5ft3RbzzMu2J862lNHclwpRr0Ec=
-X-Google-Smtp-Source: ABdhPJxrVJzozM2H0OXTG5vBM2BXsr+h97CO90rL70Ezk2OO0Q+BjGzwg21fv3PGu6nJ3ILNthGPNA==
-X-Received: by 2002:ac2:5f05:: with SMTP id 5mr7273920lfq.2.1622492890505;
-        Mon, 31 May 2021 13:28:10 -0700 (PDT)
-Received: from [192.168.2.145] (79-139-170-222.dynamic.spd-mgts.ru. [79.139.170.222])
-        by smtp.googlemail.com with ESMTPSA id g20sm1446777lfr.81.2021.05.31.13.28.09
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 31 May 2021 13:28:10 -0700 (PDT)
-Subject: Re: [PATCH v5 2/3] soc/tegra: pmc: Add core power domain
-To:     Thierry Reding <thierry.reding@gmail.com>
-Cc:     Jonathan Hunter <jonathanh@nvidia.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Peter Geis <pgwipeout@gmail.com>,
-        Nicolas Chauvet <kwizart@gmail.com>,
-        Viresh Kumar <vireshk@kernel.org>,
-        Stephen Boyd <sboyd@kernel.org>,
-        =?UTF-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>,
-        Rob Herring <robh+dt@kernel.org>,
-        Matt Merhar <mattmerhar@protonmail.com>,
-        Paul Fertser <fercerpav@gmail.com>,
-        linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-pm@vger.kernel.org
-References: <20210516231755.24193-1-digetx@gmail.com>
- <20210516231755.24193-3-digetx@gmail.com> <YLTYayQD7ufuUsXJ@orome.fritz.box>
-From:   Dmitry Osipenko <digetx@gmail.com>
-Message-ID: <4df63546-8266-3579-a3f7-e133014a4ca6@gmail.com>
-Date:   Mon, 31 May 2021 23:28:09 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        id S232341AbhEaUbU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 16:31:20 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48564 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230505AbhEaUbT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 16:31:19 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 61F8561159;
+        Mon, 31 May 2021 20:29:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1622492979;
+        bh=b+9t8ZSAkUu0i4emi5jWFTEZ6nDcEa0evRcKGC+0BRk=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=ZbDNE7AgIo+YzT8EGL5IA9CLYrQArn5OGKAEJQ8HNCwNQWTMREGOxXU95M/fAicNF
+         RPhJc9kynQxmyfQ8MJVb9qPhgMbwbO7V/kx7eeIRB30wScyEcM1oVQ7D3aZrnxqFKt
+         zBIw1tuRPvLExAxXGvNm149Nvxu77hleqLPg5EJffG/jx5G0HlypK9r/dk2bhYlaE6
+         g0EJInuboHlHCaCDaIYnImhJYb4KM8Efg30KwuXkbxbxkUsv2bDZcWwiCgilxJHOiH
+         tA2FPbj854VJ0GokoQOoFXXO6Rk4l92DMA68g8+8Sqgu1sLKFXHwcx6q2rgkTVQZB0
+         54utWvcJOsO3w==
+Subject: Re: [PATCH] pgo: rename the raw profile file to vmlinux.profraw
+To:     Bill Wendling <morbo@google.com>, Kees Cook <keescook@google.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-kbuild@vger.kernel.org, clang-built-linux@googlegroups.com,
+        Andrew Morton <akpm@linux-foundation.org>
+Cc:     Nick Desaulniers <ndesaulniers@google.com>
+References: <20210531202044.426578-1-morbo@google.com>
+From:   Nathan Chancellor <nathan@kernel.org>
+Message-ID: <e22afde4-e312-4589-cf2e-3c35219d7249@kernel.org>
+Date:   Mon, 31 May 2021 13:29:36 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.2
 MIME-Version: 1.0
-In-Reply-To: <YLTYayQD7ufuUsXJ@orome.fritz.box>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <20210531202044.426578-1-morbo@google.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-31.05.2021 15:36, Thierry Reding пишет:
-> On Mon, May 17, 2021 at 02:17:54AM +0300, Dmitry Osipenko wrote:
->> NVIDIA Tegra SoCs have multiple power domains, each domain corresponds
->> to an external SoC power rail. Core power domain covers vast majority of
->> hardware blocks within a Tegra SoC. The voltage of a power domain should
->> be set to a level which satisfies all devices within the power domain.
->> Add support for the core power domain which controls voltage state of the
->> domain. This allows us to support system-wide DVFS on Tegra20-210 SoCs.
->> The PMC powergate domains now are sub-domains of the core domain, this
->> requires device-tree updating, older DTBs are unaffected.
->>
->> Tested-by: Peter Geis <pgwipeout@gmail.com> # Ouya T30
->> Tested-by: Paul Fertser <fercerpav@gmail.com> # PAZ00 T20
->> Tested-by: Nicolas Chauvet <kwizart@gmail.com> # PAZ00 T20 and TK1 T124
->> Tested-by: Matt Merhar <mattmerhar@protonmail.com> # Ouya T30
->> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
->> ---
->>  drivers/soc/tegra/Kconfig  |  14 ++++
->>  drivers/soc/tegra/pmc.c    | 143 +++++++++++++++++++++++++++++++++++++
->>  include/soc/tegra/common.h |   6 ++
->>  3 files changed, 163 insertions(+)
+On 5/31/2021 1:20 PM, Bill Wendling wrote:
+> Future PGO features may create other files in /sys/kernel/debug/pgo. So
+> rename the kernel's raw profile data file to "vmlinux.profraw" to make
+> which part of the kernel the file is for more explicit.
 > 
-> Since this power domain code is all dealt with within the PMC driver,
-> and the PMC driver is enabled on all platforms, how about if we avoid
-> creating the additional SOC_TEGRA_COMMON kconfig option and instead
-> make SOC_TEGRA_PMC list the dependencies?
+> Note that future files in /sys/kernel/debug/pgo should follow a similar
+> naming convention.
 > 
-> No need to resend, I can make that change when I apply, if you agree.
+> Signed-off-by: Bill Wendling <morbo@google.com>
 
-This can be done. I'll send v6 with the fixed compile-testing anyways,
-so will apply this change there too.
+Guess this clears up my confusion around the module patches :)
 
-The most recent version of this patch is found in [1]. Sorry for sending
-so many versions and creating confusion, I settled on a unified series
-that takes all build dependencies into account.
+Reviewed-by: Nathan Chancellor <nathan@kernel.org>
 
-[1] https://patchwork.ozlabs.org/project/linux-tegra/list/?series=246158
-
-Thank you for the review.
+> ---
+>   Documentation/dev-tools/pgo.rst | 6 +++---
+>   kernel/pgo/Kconfig              | 7 ++++---
+>   kernel/pgo/fs.c                 | 2 +-
+>   3 files changed, 8 insertions(+), 7 deletions(-)
+> 
+> diff --git a/Documentation/dev-tools/pgo.rst b/Documentation/dev-tools/pgo.rst
+> index b7f11d8405b7..0200449c4843 100644
+> --- a/Documentation/dev-tools/pgo.rst
+> +++ b/Documentation/dev-tools/pgo.rst
+> @@ -76,7 +76,7 @@ The PGO kernel support creates the following files in debugfs:
+>   ``/sys/kernel/debug/pgo/reset``
+>   	Global reset file: resets all coverage data to zero when written to.
+>   
+> -``/sys/kernel/debug/profraw``
+> +``/sys/kernel/debug/pgo/vmlinux.profraw``
+>   	The raw PGO data that must be processed with ``llvm_profdata``.
+>   
+>   
+> @@ -108,7 +108,7 @@ using the result to optimize the kernel:
+>   
+>      .. code-block:: sh
+>   
+> -      $ cp -a /sys/kernel/debug/pgo/profraw /tmp/vmlinux.profraw
+> +      $ cp -a /sys/kernel/debug/pgo/vmlinux.profraw /tmp/vmlinux.profraw
+>   
+>   5) (Optional) Download the raw profile data to the HOST machine.
+>   
+> @@ -120,7 +120,7 @@ using the result to optimize the kernel:
+>   
+>      Note that multiple raw profile data files can be merged during this step.
+>   
+> -7) Rebuild the kernel using the profile data (PGO disabled)
+> +7) Rebuild the kernel using the processed profile data (PGO disabled)
+>   
+>      .. code-block:: sh
+>   
+> diff --git a/kernel/pgo/Kconfig b/kernel/pgo/Kconfig
+> index 76a640b6cf6e..d2053df1111c 100644
+> --- a/kernel/pgo/Kconfig
+> +++ b/kernel/pgo/Kconfig
+> @@ -17,10 +17,11 @@ config PGO_CLANG
+>   
+>   	  Run a representative workload for your application on a kernel
+>   	  compiled with this option and download the raw profile file from
+> -	  /sys/kernel/debug/pgo/profraw. This file needs to be processed with
+> -	  llvm-profdata. It may be merged with other collected raw profiles.
+> +	  /sys/kernel/debug/pgo/vmlinux.profraw. This file needs to be
+> +	  processed with llvm-profdata. It may be merged with other collected
+> +	  raw profiles.
+>   
+> -	  Copy the resulting profile file into vmlinux.profdata, and enable
+> +	  Copy the processed profile file into vmlinux.profdata, and enable
+>   	  KCFLAGS=-fprofile-use=vmlinux.profdata to produce an optimized
+>   	  kernel.
+>   
+> diff --git a/kernel/pgo/fs.c b/kernel/pgo/fs.c
+> index 449f16beb2cf..ef985159dad3 100644
+> --- a/kernel/pgo/fs.c
+> +++ b/kernel/pgo/fs.c
+> @@ -365,7 +365,7 @@ static int __init pgo_init(void)
+>   	if (!directory)
+>   		goto err_remove;
+>   
+> -	if (!debugfs_create_file("profraw", 0600, directory, NULL,
+> +	if (!debugfs_create_file("vmlinux.profraw", 0600, directory, NULL,
+>   				 &prf_fops))
+>   		goto err_remove;
+>   
+> 
