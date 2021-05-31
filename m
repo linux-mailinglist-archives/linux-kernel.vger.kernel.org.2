@@ -2,38 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4983739659F
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 18:40:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D6C9D39630E
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 17:03:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233622AbhEaQmh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 12:42:37 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46632 "EHLO mail.kernel.org"
+        id S234220AbhEaPEO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 11:04:14 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40220 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232301AbhEaOwT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 10:52:19 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A778961932;
-        Mon, 31 May 2021 13:58:22 +0000 (UTC)
+        id S233149AbhEaOHe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 10:07:34 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4CF5461408;
+        Mon, 31 May 2021 13:39:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1622469503;
-        bh=mc9qPXOYM9BuhwrCiFltIAGr2dsvj56kwEtrxC/IiC0=;
+        s=korg; t=1622468358;
+        bh=KLSH0nHP6iWM/iZlyTw+XyKElfMnEL1/zIgwuEG1xsk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=xwW9rDh+pQTgdWDihO6zdo6lGu4IoybtVHbcmvi0aqOM2cMywRmZOvvZy4OvLsl2E
-         uTh34s04Wd5WltfeVi52kp9D8JuQQkgpYt36Pa0eA4enW95yxhpQm4SyfIUpkUFcZ4
-         kQY3UbegM8U7RJ1jetZiKXWHQBENMlXjePWfXE2M=
+        b=psCFEJnK8JH0Z5xrcuHP4Zy/1VuiEdqhzBDNTx/VE80sjX7CXCLSITSDMjSJPwoMJ
+         cNxpbwmYzbR632tbhQ0PQIcQe2+Rdwm/zmsqML/HWhfCn52YmArRvLwP3UT+YoXsJ0
+         HOFUkyrH+j1jj35UeVvMUEtJ7El/LyLSO/rQdyws=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Subbaraman Narayanamurthy <subbaram@codeaurora.org>,
-        Matthias Kaehlcke <mka@chromium.org>,
-        Georgi Djakov <djakov@kernel.org>,
+        stable@vger.kernel.org, Edwin Peer <edwin.peer@broadcom.com>,
+        Michael Chan <michael.chan@broadcom.com>,
+        "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.12 223/296] interconnect: qcom: bcm-voter: add a missing of_node_put()
+Subject: [PATCH 5.10 213/252] bnxt_en: Fix context memory setup for 64K page size.
 Date:   Mon, 31 May 2021 15:14:38 +0200
-Message-Id: <20210531130711.325292247@linuxfoundation.org>
+Message-Id: <20210531130705.251104887@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210531130703.762129381@linuxfoundation.org>
-References: <20210531130703.762129381@linuxfoundation.org>
+In-Reply-To: <20210531130657.971257589@linuxfoundation.org>
+References: <20210531130657.971257589@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,43 +41,65 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Subbaraman Narayanamurthy <subbaram@codeaurora.org>
+From: Michael Chan <michael.chan@broadcom.com>
 
-[ Upstream commit a00593737f8bac2c9e97b696e7ff84a4446653e8 ]
+[ Upstream commit 702279d2ce4650000bb6302013630304e359dc13 ]
 
-Add a missing of_node_put() in of_bcm_voter_get() to avoid the
-reference leak.
+There was a typo in the code that checks for 64K BNXT_PAGE_SHIFT in
+bnxt_hwrm_set_pg_attr().  Fix it and make the code more understandable
+with a new macro BNXT_SET_CTX_PAGE_ATTR().
 
-Signed-off-by: Subbaraman Narayanamurthy <subbaram@codeaurora.org>
-Reviewed-by: Matthias Kaehlcke <mka@chromium.org>
-Link: https://lore.kernel.org/r/1619116570-13308-1-git-send-email-subbaram@codeaurora.org
-Fixes: 976daac4a1c5 ("interconnect: qcom: Consolidate interconnect RPMh support")
-Signed-off-by: Georgi Djakov <djakov@kernel.org>
+Fixes: 1b9394e5a2ad ("bnxt_en: Configure context memory on new devices.")
+Reviewed-by: Edwin Peer <edwin.peer@broadcom.com>
+Signed-off-by: Michael Chan <michael.chan@broadcom.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/interconnect/qcom/bcm-voter.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ drivers/net/ethernet/broadcom/bnxt/bnxt.c |  9 +--------
+ drivers/net/ethernet/broadcom/bnxt/bnxt.h | 10 ++++++++++
+ 2 files changed, 11 insertions(+), 8 deletions(-)
 
-diff --git a/drivers/interconnect/qcom/bcm-voter.c b/drivers/interconnect/qcom/bcm-voter.c
-index 1cc565bce2f4..dd18cd8474f8 100644
---- a/drivers/interconnect/qcom/bcm-voter.c
-+++ b/drivers/interconnect/qcom/bcm-voter.c
-@@ -1,6 +1,6 @@
- // SPDX-License-Identifier: GPL-2.0
- /*
-- * Copyright (c) 2020, The Linux Foundation. All rights reserved.
-+ * Copyright (c) 2020-2021, The Linux Foundation. All rights reserved.
-  */
+diff --git a/drivers/net/ethernet/broadcom/bnxt/bnxt.c b/drivers/net/ethernet/broadcom/bnxt/bnxt.c
+index ff86324c7fb8..adfaa9a850dd 100644
+--- a/drivers/net/ethernet/broadcom/bnxt/bnxt.c
++++ b/drivers/net/ethernet/broadcom/bnxt/bnxt.c
+@@ -6834,14 +6834,7 @@ ctx_err:
+ static void bnxt_hwrm_set_pg_attr(struct bnxt_ring_mem_info *rmem, u8 *pg_attr,
+ 				  __le64 *pg_dir)
+ {
+-	u8 pg_size = 0;
+-
+-	if (BNXT_PAGE_SHIFT == 13)
+-		pg_size = 1 << 4;
+-	else if (BNXT_PAGE_SIZE == 16)
+-		pg_size = 2 << 4;
+-
+-	*pg_attr = pg_size;
++	BNXT_SET_CTX_PAGE_ATTR(*pg_attr);
+ 	if (rmem->depth >= 1) {
+ 		if (rmem->depth == 2)
+ 			*pg_attr |= 2;
+diff --git a/drivers/net/ethernet/broadcom/bnxt/bnxt.h b/drivers/net/ethernet/broadcom/bnxt/bnxt.h
+index e4e926c65118..a95c5afa2f01 100644
+--- a/drivers/net/ethernet/broadcom/bnxt/bnxt.h
++++ b/drivers/net/ethernet/broadcom/bnxt/bnxt.h
+@@ -1440,6 +1440,16 @@ struct bnxt_ctx_pg_info {
+ #define BNXT_MAX_TQM_RINGS		\
+ 	(BNXT_MAX_TQM_SP_RINGS + BNXT_MAX_TQM_FP_RINGS)
  
- #include <asm/div64.h>
-@@ -205,6 +205,7 @@ struct bcm_voter *of_bcm_voter_get(struct device *dev, const char *name)
- 	}
- 	mutex_unlock(&bcm_voter_lock);
- 
-+	of_node_put(node);
- 	return voter;
- }
- EXPORT_SYMBOL_GPL(of_bcm_voter_get);
++#define BNXT_SET_CTX_PAGE_ATTR(attr)					\
++do {									\
++	if (BNXT_PAGE_SIZE == 0x2000)					\
++		attr = FUNC_BACKING_STORE_CFG_REQ_SRQ_PG_SIZE_PG_8K;	\
++	else if (BNXT_PAGE_SIZE == 0x10000)				\
++		attr = FUNC_BACKING_STORE_CFG_REQ_QPC_PG_SIZE_PG_64K;	\
++	else								\
++		attr = FUNC_BACKING_STORE_CFG_REQ_QPC_PG_SIZE_PG_4K;	\
++} while (0)
++
+ struct bnxt_ctx_mem_info {
+ 	u32	qp_max_entries;
+ 	u16	qp_min_qp1_entries;
 -- 
 2.30.2
 
