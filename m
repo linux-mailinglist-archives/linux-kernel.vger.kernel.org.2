@@ -2,198 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1BB85396A0C
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 01:25:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5045E396A0D
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 01:25:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232084AbhEaX0v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 19:26:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48824 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231144AbhEaX0t (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 19:26:49 -0400
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38CEDC061574;
-        Mon, 31 May 2021 16:25:08 -0700 (PDT)
-Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 1F5D288C;
-        Tue,  1 Jun 2021 01:25:06 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1622503506;
-        bh=UiDZnTgy4dSBkNIVjA2i/pzpL0XI4879xmanMraIx+Q=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=rir9TGv4Q3X5P6p9+l56unvegHDA2sK07JE8mSTAADAU1ZDt+pxUz+dvmVFvXVV+D
-         Ubqzqr6Avl/MI+/rwIbbwj53fEClR6ZLXWQOBtd2AgiREx5xRDSFXMN3t+4W0yBXNq
-         GDzGOcH61tyNX001tACMHh4SDPbqoIZ8LSqcsSmE=
-Date:   Tue, 1 Jun 2021 02:24:55 +0300
-From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To:     Martin Kepplinger <martin.kepplinger@puri.sm>
-Cc:     pavel@ucw.cz, krzysztof.kozlowski@canonical.com,
-        mchehab@kernel.org, paul.kocialkowski@bootlin.com, robh@kernel.org,
-        shawnx.tu@intel.com, devicetree@vger.kernel.org, kernel@puri.sm,
-        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
-        phone-devel@vger.kernel.org
-Subject: Re: [PATCH v3 2/5] dt-bindings: media: document SK Hynix Hi-846 MIPI
- CSI-2 8M pixel sensor
-Message-ID: <YLVwR7X5xcgoxEAw@pendragon.ideasonboard.com>
-References: <20210531120737.168496-1-martin.kepplinger@puri.sm>
- <20210531120737.168496-3-martin.kepplinger@puri.sm>
- <YLVtp/CWouSuEdty@pendragon.ideasonboard.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <YLVtp/CWouSuEdty@pendragon.ideasonboard.com>
+        id S232207AbhEaX1K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 19:27:10 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46854 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231144AbhEaX1I (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 19:27:08 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8DE676127C;
+        Mon, 31 May 2021 23:25:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
+        s=korg; t=1622503527;
+        bh=c7naDVv/eC6perkruWntIRarp9ADf3gqHd+mZMh5/1g=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=f86MkgRpXm8WajcJUugg9vDhDy2s4dJ8YWA2yzT+eXYvlf8iJzz/mb7VLpuXhVLMM
+         r1mPJtC6+ZRiXaMzUzM1cAeBZ+ijw/qdvmiD6bG9iphl/kqf8+Ve/6RZRuEHm1X8Hj
+         3iGOJHRyHcWH/hbkvpVI1CnDrrKLpHbls90I/bII=
+Date:   Mon, 31 May 2021 16:25:27 -0700
+From:   Andrew Morton <akpm@linux-foundation.org>
+To:     Mina Almasry <almasrymina@google.com>
+Cc:     Axel Rasmussen <axelrasmussen@google.com>,
+        Peter Xu <peterx@redhat.com>, linux-mm@kvack.org,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v4] mm, hugetlb: fix racy resv_huge_pages underflow on
+ UFFDIO_COPY
+Message-Id: <20210531162527.caeae9545ea2843c5f62bc9c@linux-foundation.org>
+In-Reply-To: <20210528005029.88088-1-almasrymina@google.com>
+References: <20210528005029.88088-1-almasrymina@google.com>
+X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.31; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Martin,
+On Thu, 27 May 2021 17:50:29 -0700 Mina Almasry <almasrymina@google.com> wrote:
 
-I have now found the datasheet, thanks to the link provided in a later
-patch in this series :-) Please see below for a few additional comments.
-
-On Tue, Jun 01, 2021 at 02:13:43AM +0300, Laurent Pinchart wrote:
-> On Mon, May 31, 2021 at 02:07:34PM +0200, Martin Kepplinger wrote:
-> > Document the bindings used for the SK Hynix Hi-846 CMOS camera driver.
-> > 
-> > Signed-off-by: Martin Kepplinger <martin.kepplinger@puri.sm>
-> > ---
-> >  .../bindings/media/i2c/hynix,hi846.yaml       | 99 +++++++++++++++++++
-> >  1 file changed, 99 insertions(+)
-> >  create mode 100644 Documentation/devicetree/bindings/media/i2c/hynix,hi846.yaml
-> > 
-> > diff --git a/Documentation/devicetree/bindings/media/i2c/hynix,hi846.yaml b/Documentation/devicetree/bindings/media/i2c/hynix,hi846.yaml
-> > new file mode 100644
-> > index 000000000000..26462f6b5e69
-> > --- /dev/null
-> > +++ b/Documentation/devicetree/bindings/media/i2c/hynix,hi846.yaml
-> > @@ -0,0 +1,99 @@
-> > +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> > +%YAML 1.2
-> > +---
-> > +$id: http://devicetree.org/schemas/media/i2c/hynix,hi846.yaml#
-> > +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> > +
-> > +title: SK Hynix Hi-846 1/4" 8M Pixel MIPI CSI-2 sensor
-> > +
-> > +maintainers:
-> > +  - Martin Kepplinger <martin.kepplinger@puri.sm>
-> > +
-> > +description: |-
-> > +  The Hi-846 is a raw image sensor with an MIPI CSI-2 image data
-> > +  interface and CCI (I2C compatible) control bus. The output format
-> > +  is 10bit Bayer.
-> > +
-> > +properties:
-> > +  compatible:
-> > +    const: hynix,hi846
-> > +
-> > +  reg:
-> > +    maxItems: 1
-> > +
-> > +  clocks:
-> > +    items:
-> > +      - description: Reference to the mclk clock.
-> > +
-> > +  clock-names:
-> > +    items:
-> > +      - const: mclk
-> > +
-> > +  reset-gpios:
-> > +    description: Reference to the GPIO connected to the reset pin. Active low.
-
-I'd write "RESETB pin" to match the datasheet.
-
-Could you add a property for the XSHUTDOWN GPIO too ? You can name it
-shutdown-gpios.
-
-> > +    maxItems: 1
-> > +
-> > +  vdd-supply:
-> > +    description: Definition of the regulator used as 1.8V digital power supply.
-
-There's no VDD signal, and the only 1.8V supply is VDDIO, which can also
-use 2.8V. This is thus ambiguous.
-
-How are the different sensor power rails supplied on your board ?
-
-> > +
-> > +  port:
-> > +    $ref: /schemas/graph.yaml#/properties/port
-> > +    additionalProperties: false
+> On UFFDIO_COPY, if we fail to copy the page contents while holding the
+> hugetlb_fault_mutex, we will drop the mutex and return to the caller
+> after allocating a page that consumed a reservation. In this case there
+> may be a fault that double consumes the reservation. To handle this, we
+> free the allocated page, fix the reservations, and allocate a temporary
+> hugetlb page and return that to the caller. When the caller does the
+> copy outside of the lock, we again check the cache, and allocate a page
+> consuming the reservation, and copy over the contents.
 > 
-> You can drop the additionalProperties, the graph schema has
-> unevaluatedProperties set to false already.
+> Test:
+> Hacked the code locally such that resv_huge_pages underflows produce
+> a warning and the copy_huge_page_from_user() always fails, then:
 > 
-> > +
-> > +    properties:
-> > +      endpoint:
-> > +        $ref: /schemas/media/video-interfaces.yaml#
-> > +        unevaluatedProperties: false
-> > +
-> > +        properties:
-> > +          data-lanes:
-> > +            oneOf:
-> > +              - items:
-> > +                  - const: 1
-> > +                  - const: 2
-> > +                  - const: 3
-> > +                  - const: 4
-> > +              - items:
-> > +                  - const: 1
-> > +                  - const: 2
-> > +
-> > +        required:
-> > +          - data-lanes
-> > +
-> > +required:
-> > +  - compatible
-> > +  - reg
-> > +  - clocks
-> > +  - clock-names
-> > +  - reset-gpios
+> ./tools/testing/selftests/vm/userfaultfd hugetlb_shared 10
+>         2 /tmp/kokonut_test/huge/userfaultfd_test && echo test success
+> ./tools/testing/selftests/vm/userfaultfd hugetlb 10
+> 	2 /tmp/kokonut_test/huge/userfaultfd_test && echo test success
 > 
-> I'd keep the reset-gpios property optional, in case the signal is
-> hardwired.
-> 
-> I don't have access to the sensor datasheet, so I can't provide comments
-> on what may be missing. With the above two issues addressed,
->
-> Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-> 
-> > +  - vdd-supply
-> > +  - port
-> > +
-> > +additionalProperties: false
-> > +
-> > +examples:
-> > +  - |
-> > +    #include <dt-bindings/gpio/gpio.h>
-> > +
-> > +    i2c {
-> > +        #address-cells = <1>;
-> > +        #size-cells = <0>;
-> > +
-> > +        hi846: camera@20 {
-> > +            compatible = "hynix,hi846";
-> > +            reg = <0x20>;
-> > +            clocks = <&clk>;
-> > +            clock-names = "mclk";
-> > +            vdd-supply = <&reg_camera_pwr_en>; /* 1.8v */
-> > +            reset-gpios = <&gpio1 25 GPIO_ACTIVE_LOW>;
-> > +
-> > +            port {
-> > +                camera_out: endpoint {
-> > +                    remote-endpoint = <&csi1_ep1>;
-> > +                    data-lanes = <1 2>;
-> > +                };
-> > +            };
-> > +        };
-> > +    };
-> > +
-> > +...
+> Both tests succeed and produce no warnings. After the
+> test runs number of free/resv hugepages is correct.
 
--- 
-Regards,
+Many conflicts here with material that is queued for 5.14-rc1.
 
-Laurent Pinchart
+How serious is this problem?  Is a -stable backport warranted?
+
+If we decide to get this into 5.13 (and perhaps -stable) then I can
+take a look at reworking all the 5.14 material on top.  If not very
+serious then we could rework this on top of the already queued
+material.
+
