@@ -2,177 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5597F396908
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 22:35:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AA5F7396909
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 22:35:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232182AbhEaUgs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 16:36:48 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:58163 "EHLO
+        id S232221AbhEaUhI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 16:37:08 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:53898 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231825AbhEaUgm (ORCPT
+        by vger.kernel.org with ESMTP id S230505AbhEaUhF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 16:36:42 -0400
+        Mon, 31 May 2021 16:37:05 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1622493301;
+        s=mimecast20190719; t=1622493325;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=eIPtoH3V1uRSKTYJIeUQjqM9k7RxE6f0M/KOCbORxjo=;
-        b=R+BfCx6wWZBBcsQ++WCP9qx1LX1glOlH2mRtb6k5egbEKUFDOzhvyhXjQTT6peJSpAZqty
-        3vAnDt2m0n7j5uiob3upi57a1q/RkpFdNZJc2TE+9hG7I+TgdUUx2idXtnPJeAO6lTil7P
-        N1U3kcQP1j29vCnMLCuHQojSUAYQK9Y=
+        bh=AZZGvag4gS3LveutNw9GWNhlWMDrqfgm2Lt6HFJ2ifE=;
+        b=dH/WzE973ogIZuNHessZ+BF5xqhgiQ5qV3iM4OwUPqbOGsu7rAjKjskq1AmRKxsET6C0cG
+        j4m8EYVEYqtSC5juCRV1XnHBMlSfojpkRfUK2ErwLXoVcd0WR+S6yut467PfOW6jKgri/v
+        GMo3DVpMVSuPnfh+tvwnTmf3X+CrsLI=
 Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
  [209.85.128.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-407-epLFk5vxPtWjtXUcUKvIgQ-1; Mon, 31 May 2021 16:32:41 -0400
-X-MC-Unique: epLFk5vxPtWjtXUcUKvIgQ-1
-Received: by mail-wm1-f70.google.com with SMTP id r1-20020a05600c35c1b029018ec2043223so356433wmq.7
-        for <linux-kernel@vger.kernel.org>; Mon, 31 May 2021 13:32:40 -0700 (PDT)
+ us-mta-603-7HttA5KePC2TFHwzapuB0g-1; Mon, 31 May 2021 16:35:23 -0400
+X-MC-Unique: 7HttA5KePC2TFHwzapuB0g-1
+Received: by mail-wm1-f70.google.com with SMTP id o82-20020a1ca5550000b029019ae053d508so360631wme.6
+        for <linux-kernel@vger.kernel.org>; Mon, 31 May 2021 13:35:23 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=eIPtoH3V1uRSKTYJIeUQjqM9k7RxE6f0M/KOCbORxjo=;
-        b=nGA2RGmtgMndNAX8PeSOzSuGJPN+EItWbWggsghAlPidhIsvjkGi1qgDe56r5bwGM/
-         Jgj5fkZqJn4jEz8H7YL+3o7/zm+lXje3A5T4ADb9Ig9tqBvpZi58liROK4VX5mTNfq8I
-         rwpFDh65lKA6qf+VJRpsddK4S6P1cjZ3ZKCkmnhPpZwyBr2BS3v7bidL0cOhqrEwipBV
-         B8g2Vb5jyTHhroBLHQYzGdOnEe+L0fWgQdh2JreH8EkFd4RtVV7IIDIT6u92RUCl68hM
-         kLhgVYkKiri18I2r6S701lImtzvdU+LvSF+LLm3vTK/X1iOe8ch5r9MrTWCQ/lJlWEvM
-         N1Ig==
-X-Gm-Message-State: AOAM530a+8YTjaGXh/yIJKTmQJtIR+a6JBkLmDjUPgh3i1oqy9P4NI2w
-        hhihIy42g7SDCiZeONVVimw9piIym367wat0P/epVAulqFYfhKx+tNiK42HylVfZknLkBLpAJdI
-        NKD47//123StbulSfpiA7LxXd/nRPtPinE3SAFoK2
-X-Received: by 2002:a7b:c19a:: with SMTP id y26mr742489wmi.132.1622493159720;
-        Mon, 31 May 2021 13:32:39 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwuUP4NISItoptr6oKYfry3Adwhj9c5n6SHwj4ZPOi4fGsXEBkf39U4RUlwoOP+qpxNp07En9r9I5ue0x82AUU=
-X-Received: by 2002:a7b:c19a:: with SMTP id y26mr742477wmi.132.1622493159526;
- Mon, 31 May 2021 13:32:39 -0700 (PDT)
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=AZZGvag4gS3LveutNw9GWNhlWMDrqfgm2Lt6HFJ2ifE=;
+        b=NciC1K/in7jhJ/oIkDALBdVWdx6ZKdIz2oV9MPjScwFnRQiUliLA1fPTre+tbuzd24
+         zOjBCILSu3jFT/hHJX+0YyJlARUJmjeg2tfzwnM8HCmAJAs11hvgF6pbE0YWsivFVWYY
+         Yi9PAxaEJ6HKuShpx+5ekffhXMva0K1NKs6JgevGdkDSTeWAmZ7XfZN+P3lcyYNjHCDL
+         e/a/aI/vUMlNOICsuCX2YPGQrhDYNZuCvGLBHv17O/KHBk3tXEC1yIKloab1+CB274M7
+         w4Zcbi4+oE9MJgFW2vg7VMIHQpjTyM7/Nol396RNOg2ALKcxQs5BX/pqHCFZfQacOWVf
+         bL/g==
+X-Gm-Message-State: AOAM530/+8nr0a6xquWIzXnZCT4HM541/mkQJZ5YC9EDsZ9tmE+cUHpp
+        BHEgWdZeJTmlNQpigg0fPFIQrAKzAWq+zFm0l+YHoP9mRZS2KmyaSQc0aHO4NkME3bObYHTOve/
+        0CVISGNaUaivILBVlGjalmcy6X4siI6p9+cIq8IF5
+X-Received: by 2002:adf:fe4f:: with SMTP id m15mr5958372wrs.361.1622493322231;
+        Mon, 31 May 2021 13:35:22 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzCghc6o0pHYKdMW3nD81TNnCov9ASkx9dFfoB7DriNbRzdAlHameaORzL/Q2J5uPQXvJ6Z+rUz1LzzJR3X8/U=
+X-Received: by 2002:adf:fe4f:: with SMTP id m15mr5958359wrs.361.1622493322041;
+ Mon, 31 May 2021 13:35:22 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210531105606.228314-1-agruenba@redhat.com> <CAHk-=wj8EWr_D65i4oRSj2FTbrc6RdNydNNCGxeabRnwtoU=3Q@mail.gmail.com>
-In-Reply-To: <CAHk-=wj8EWr_D65i4oRSj2FTbrc6RdNydNNCGxeabRnwtoU=3Q@mail.gmail.com>
+References: <20210531170123.243771-1-agruenba@redhat.com> <CAHk-=wgX=fZ+y=SxBsod8CvZmZ0-X7vZ6dV6EgLPkpBXbt=nQQ@mail.gmail.com>
+In-Reply-To: <CAHk-=wgX=fZ+y=SxBsod8CvZmZ0-X7vZ6dV6EgLPkpBXbt=nQQ@mail.gmail.com>
 From:   Andreas Gruenbacher <agruenba@redhat.com>
-Date:   Mon, 31 May 2021 22:32:28 +0200
-Message-ID: <CAHc6FU51=5cNZX9hdDHj3AJ6fy4bK7nH1qwAi2m2wB45WPoq8Q@mail.gmail.com>
-Subject: Re: [GIT PULL] gfs2 fixes for v5.13-rc5
+Date:   Mon, 31 May 2021 22:35:11 +0200
+Message-ID: <CAHc6FU6uQsJaqxTzKMzR8j4a=T0R05LZCEv8-w-AP0gWyantNw@mail.gmail.com>
+Subject: Re: [RFC 0/9] gfs2: handle page faults during read and write
 To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+Cc:     Al Viro <viro@zeniv.linux.org.uk>,
         cluster-devel <cluster-devel@redhat.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Jan Kara <jack@suse.cz>, Matthew Wilcox <willy@infradead.org>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 31, 2021 at 6:30 PM Linus Torvalds
+On Mon, May 31, 2021 at 7:57 PM Linus Torvalds
 <torvalds@linux-foundation.org> wrote:
-> [ Adding fsdevel, because this is not limited to gfs2 ]
+> Sorry, I'm on a boat right now, with only a cellphone. Which is why this =
+html mess email, and quick reply.
 >
-> On Mon, May 31, 2021 at 12:56 AM Andreas Gruenbacher
-> <agruenba@redhat.com> wrote:
-> >
-> > Andreas Gruenbacher (2):
-> >       gfs2: Fix mmap locking for write faults
+> Due to the html, this may get a bounce from the mailing list, and only ma=
+ke it to the personal email recipients. Feel free to quote more just in cas=
+e others didn't get my original email through the lists.
 >
-> This is bogus.
+> I'll be out most of the day, but I'll try to take a deeper look this even=
+ing.
 >
-> I've pulled it, but this is just wrong.
+> I'm the meantime, a couple of questions and comments..
 >
-> A write fault on a mmap IS NOT A WRITE to the filesystem.
+> On Mon, May 31, 2021, 07:01 Andreas Gruenbacher <agruenba@redhat.com> wro=
+te:
+>>
+>> here's a set of fixes for how gfs2 handles page faults during read and
+>> write syscalls.
 >
-> It's a read.
+> So how much of this is due to the confusion you just introduced where you=
+ pointlessly and incorrectly take an exclusive luck for write faults?
 >
-> Yes, it will later then allow writes to the page, but that's entirely
-> immaterial - because the write is going to happen not at fault time,
-> but long *after* the fault, and long *after* the filesystem has
-> installed the page.
->
-> The actual write will happen when the kernel returns from the user space.
->
-> And no, the explanation in that commit makes no sense either:
->
->    "When a write fault occurs, we need to take the inode glock of the underlying
->     inode in exclusive mode.  Otherwise, there's no guarantee that the
-> dirty page
->     will be written back to disk"
->
-> the thing is, FAULT_FLAG_WRITE only says that the *currently* pending
-> access that triggered the fault was a write. That's entirely
-> irrelevant to a filesystem, because
->
->  (a) it might be a private mapping, and a write to a page will cause a
-> COW by the VM layer, and it's not actually a filesystem write at all
->
-> AND
->
->  (b) if it's a shared mapping, the first access that paged things in
-> is likely a READ, and the page will be marked writable (because it's a
-> shared mapping!) and subsequent writes will not cause any faults at
-> all.
->
-> In other words, a filesystem that checks for FAULT_FLAG_WRITE is
-> _doubly_ wrong. It's absolutely never the right thing to do. It
-> *cannot* be the right thing to do.
->
-> And yes, some other filesystems do this crazy thing too. If your
-> friends jumped off a bridge, would you jump too?
->
-> The xfs and ext3/ext4 cases are wrong too - but at least they spent
-> five seconds (but no more) thinking about it, and they added the check
-> for VM_SHARED. So they are only wrong for reason (b)
->
-> But wrong is wrong. The new code is not right in gfs2, and the old
-> code in xfs/ext4 is not right either.
->
-> Yeah, yeah, you can - and people do - do things like "always mark the
-> page readable on initial page fault, use mkwrite to catch when it
-> becomes writable, and do timestamps carefully, at at least have full
-> knowledge of "something might become dirty"
->
-> But even then it is ENTIRELY BOGUS to do things like write locking.
->
-> Really.
->
-> Because the actual write HASN'T HAPPENED YET, AND YOU WILL RELEASE THE
-> LOCK BEFORE IT EVER DOES! So the lock? It does nothing. If you think
-> it protects anything at all, you're wrong.
->
-> So don't do write locking. At an absolute most, you can do things like
->
->  - update file times (and honestly, that's quite questionable -
-> because again - THE WRITE HASN'T HAPPENED YET - so any tests that
-> depend on exact file access times to figure out when the last write
-> was done is not being helped by your extra code, because you're
-> setting the WRONG time.
->
->  - set some "this inode will have dirty pages" flag just for some
-> possible future use. But honestly, if this is about consistency etc,
-> you need to do it not for a fault, but across the whole mmap/munmap.
->
-> So some things may be less bogus - but still very very questionable.
->
-> But locking? Bogus. Reads and writes aren't really any different from
-> a timestamp standpoint (if you think you need to mtime for write
-> accesses, you should do atime for reads, so from a filesystem
-> timestamp standpoint read and write faults are exactly the same - and
-> both are bogus, because by definition for a mmap both the reads and
-> the writes can then happen long long long afterwards, and repeatedly).
->
-> And if that "set some flag" thing needs a write lock, but a read
-> doesn't, you're doing something wrong and odd.
->
-> Look at the VM code. The VM code does this right. The mmap_sem is
-> taken for writing for mmap and for munmap. But a page fault is always
-> a read lock, even if the access that caused the page fault is a write.
->
-> The actual real honest-to-goodness *write* happens much later, and the
-> only time the filesystem really knows when it is done is at writeback
-> time. Not at fault time. So if you take locks, logically you should
-> take them when the fault happens, and release them when the writeback
-> is done.
->
-> Are you doing that? No. So don't do the write lock over the read
-> portion of the page fault. It is not a sensible operation.
+> See my reply to that pull request for why it's wrong and pointless.
 
-Thanks for the detailed explanation. I'll work on a fix.
+Those are separate problems. If we treat a write fault as a filesystem
+read and only take a read lock as you've explained in your other
+reply, we'll still have some remaining locking mode incompatibilities
+(gfs2_holder_is_compatible); we probably won't need
+iov_iter_fault_in_writeable() though.
 
+>>   The patch queue is ready for merging except for two
+>> open issues.
+>
+>
+> There is no way this series is acceptable for 5.13. This kind of change i=
+s very much a merge window thing. Much much too late to make fundamental lo=
+cking changes. Maybe it can then be backported to stable (including at that=
+ point 5.13 of course) if it's been shown to be ok.
+>
+> This deadlock is not new, we've very much had the same kind of thing when=
+ writing to a file in the generic filemap_write() function, where we take t=
+he page lock and then copy from user space. If that copy faults, and needs =
+the same page for the source due to an odd mmap issue (usually malicious), =
+you get a deadlock on the page lock it you aren't careful.
+
+Right, the deadlock isn't new, we just didn't know about it until Jan
+Kara pointed it out.
+
+It would be important to us to have the self-recursion case addressed
+in 5.13 at least; that's the four patches up to and including "gfs2:
+Fix mmap + page fault deadlocks (part 1)".
+
+> I'm surprised that gfs2 hasn't seen this, I thought we had fstests for it=
+. And I'd have expected that case to also trigger any internal gfs2 issues,=
+ although it's possible that the generic code just does such a good job at =
+avoiding the issue that we'd need another test for your case.
+
+fstests didn't catch it, so I wrote a new test (not merged yet):
+
+https://lore.kernel.org/fstests/20210531152604.240462-1-agruenba@redhat.com=
+/
+
+Thanks a lot,
 Andreas
 
