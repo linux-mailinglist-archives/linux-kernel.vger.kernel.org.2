@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 57E02395DF4
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 15:51:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 63A0B3963FC
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 17:41:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232246AbhEaNwM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 09:52:12 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39104 "EHLO mail.kernel.org"
+        id S233717AbhEaPmp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 11:42:45 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48838 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232663AbhEaNfX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 09:35:23 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7619061443;
-        Mon, 31 May 2021 13:25:20 +0000 (UTC)
+        id S233675AbhEaOXd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 10:23:33 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C5D1461A13;
+        Mon, 31 May 2021 13:45:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1622467521;
-        bh=VaHsGVAAr6vLgkWttE6HgBzplm2+lNdQFFAlW27DjDk=;
+        s=korg; t=1622468757;
+        bh=yGMZrSeD5ldYQ8amepKy7fmPBbO/88Lgz8D1NmVxsVU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Qu2aAOct9Ezq8Ys/JQFkJZ3W2+DnUoRPW20ZWKxKiFioQTiOUWEgFNEpPsSzYmy9y
-         xf4O/CqCVabfo1tOAefCjqdwFZrtOnXHsdESf57LLWYPXePwU1BUmrUHdIZryCajHZ
-         iNWdPBqQ/FMAclYDt6LIQ7hqB5C64nW9xVOQyqTU=
+        b=m4T+Q83UKg2YWfUNebsY5lWGmmgC2R4n5qbInb8fJ1MDcE/gzLHPcE3kqYnnJbFF9
+         gVYovuH22ITlTcfP0r6gSKdlLZAYaj31agUWxAkgT3QYYpc3qXjWA9Dmc7VLWAxCjI
+         RPHMSdxfO68X+ub39M5Fn83iS4J5mLi3eA/tqjRs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        "David S. Miller" <davem@davemloft.net>,
+        stable@vger.kernel.org, Aditya Pakki <pakki001@umn.edu>,
+        Mauro Carvalho Chehab <mchehab+samsung@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 096/116] net: netcp: Fix an error message
+Subject: [PATCH 5.4 115/177] Revert "media: gspca: mt9m111: Check write_bridge for timeout"
 Date:   Mon, 31 May 2021 15:14:32 +0200
-Message-Id: <20210531130643.385993582@linuxfoundation.org>
+Message-Id: <20210531130651.886507528@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210531130640.131924542@linuxfoundation.org>
-References: <20210531130640.131924542@linuxfoundation.org>
+In-Reply-To: <20210531130647.887605866@linuxfoundation.org>
+References: <20210531130647.887605866@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,39 +40,66 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-[ Upstream commit ddb6e00f8413e885ff826e32521cff7924661de0 ]
+[ Upstream commit d8c3be2fb2079d0cb4cd29d6aba58dbe54771e42 ]
 
-'ret' is known to be 0 here.
-The expected error code is stored in 'tx_pipe->dma_queue', so use it
-instead.
+This reverts commit 656025850074f5c1ba2e05be37bda57ba2b8d491.
 
-While at it, switch from %d to %pe which is more user friendly.
+Because of recent interactions with developers from @umn.edu, all
+commits from them have been recently re-reviewed to ensure if they were
+correct or not.
 
-Fixes: 84640e27f230 ("net: netcp: Add Keystone NetCP core ethernet driver")
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Upon review, this commit was found to be incorrect for the reasons
+below, so it must be reverted.  It will be fixed up "correctly" in a
+later kernel change.
+
+Different error values should never be "OR" together and expect anything
+sane to come out of the result.
+
+Cc: Aditya Pakki <pakki001@umn.edu>
+Cc: Mauro Carvalho Chehab <mchehab+samsung@kernel.org>
+Link: https://lore.kernel.org/r/20210503115736.2104747-61-gregkh@linuxfoundation.org
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/ti/netcp_core.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/media/usb/gspca/m5602/m5602_mt9m111.c | 8 +++-----
+ 1 file changed, 3 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/net/ethernet/ti/netcp_core.c b/drivers/net/ethernet/ti/netcp_core.c
-index a1d335a3c5e4..60d411bbbdc6 100644
---- a/drivers/net/ethernet/ti/netcp_core.c
-+++ b/drivers/net/ethernet/ti/netcp_core.c
-@@ -1364,8 +1364,8 @@ int netcp_txpipe_open(struct netcp_tx_pipe *tx_pipe)
- 	tx_pipe->dma_queue = knav_queue_open(name, tx_pipe->dma_queue_id,
- 					     KNAV_QUEUE_SHARED);
- 	if (IS_ERR(tx_pipe->dma_queue)) {
--		dev_err(dev, "Could not open DMA queue for channel \"%s\": %d\n",
--			name, ret);
-+		dev_err(dev, "Could not open DMA queue for channel \"%s\": %pe\n",
-+			name, tx_pipe->dma_queue);
- 		ret = PTR_ERR(tx_pipe->dma_queue);
- 		goto err;
+diff --git a/drivers/media/usb/gspca/m5602/m5602_mt9m111.c b/drivers/media/usb/gspca/m5602/m5602_mt9m111.c
+index bfa3b381d8a2..50481dc928d0 100644
+--- a/drivers/media/usb/gspca/m5602/m5602_mt9m111.c
++++ b/drivers/media/usb/gspca/m5602/m5602_mt9m111.c
+@@ -195,7 +195,7 @@ static const struct v4l2_ctrl_config mt9m111_greenbal_cfg = {
+ int mt9m111_probe(struct sd *sd)
+ {
+ 	u8 data[2] = {0x00, 0x00};
+-	int i, rc = 0;
++	int i;
+ 	struct gspca_dev *gspca_dev = (struct gspca_dev *)sd;
+ 
+ 	if (force_sensor) {
+@@ -213,18 +213,16 @@ int mt9m111_probe(struct sd *sd)
+ 	/* Do the preinit */
+ 	for (i = 0; i < ARRAY_SIZE(preinit_mt9m111); i++) {
+ 		if (preinit_mt9m111[i][0] == BRIDGE) {
+-			rc |= m5602_write_bridge(sd,
++			m5602_write_bridge(sd,
+ 				preinit_mt9m111[i][1],
+ 				preinit_mt9m111[i][2]);
+ 		} else {
+ 			data[0] = preinit_mt9m111[i][2];
+ 			data[1] = preinit_mt9m111[i][3];
+-			rc |= m5602_write_sensor(sd,
++			m5602_write_sensor(sd,
+ 				preinit_mt9m111[i][1], data, 2);
+ 		}
  	}
+-	if (rc < 0)
+-		return rc;
+ 
+ 	if (m5602_read_sensor(sd, MT9M111_SC_CHIPVER, data, 2))
+ 		return -ENODEV;
 -- 
 2.30.2
 
