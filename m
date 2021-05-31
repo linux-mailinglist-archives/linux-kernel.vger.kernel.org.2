@@ -2,104 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D800395A3B
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 14:14:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 13A3E395A40
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 14:15:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231331AbhEaMQC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 08:16:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42006 "EHLO
+        id S231545AbhEaMRF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 08:17:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42212 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231545AbhEaMP4 (ORCPT
+        with ESMTP id S231441AbhEaMQv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 08:15:56 -0400
-Received: from mail-lj1-x22a.google.com (mail-lj1-x22a.google.com [IPv6:2a00:1450:4864:20::22a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4CDFBC061761
-        for <linux-kernel@vger.kernel.org>; Mon, 31 May 2021 05:14:15 -0700 (PDT)
-Received: by mail-lj1-x22a.google.com with SMTP id f12so14749941ljp.2
-        for <linux-kernel@vger.kernel.org>; Mon, 31 May 2021 05:14:15 -0700 (PDT)
+        Mon, 31 May 2021 08:16:51 -0400
+Received: from mail-pf1-x429.google.com (mail-pf1-x429.google.com [IPv6:2607:f8b0:4864:20::429])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC869C061574
+        for <linux-kernel@vger.kernel.org>; Mon, 31 May 2021 05:15:10 -0700 (PDT)
+Received: by mail-pf1-x429.google.com with SMTP id g18so8891443pfr.2
+        for <linux-kernel@vger.kernel.org>; Mon, 31 May 2021 05:15:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=/KWdRrmmQUUdShTYgF7N8YHkQMQeJcSbu2C2nHtMqGU=;
-        b=rPbHFz8KHO8hT6NGvD8FDUegbYXzFW7CwBdAcvbOsVMGsFbruuLsU0t+/dIxYqnDg3
-         AwU6BmbMSgVEjo10g4ffph+/MI0BxsmOoDQA0pnk5h+h9/NLd+KzdZnWBOdH3Q63JzN3
-         qOjA/8KXwvqW03o+DutluDDTXhdFJrXEIY/KaLqieleaWDzq2lvmXjiriY6ta+yWbfkC
-         IcfLKu4CUceHw5eiDkF4TEmXrpvgR1VPTkvVyVBOqbrPWuDOzUe32ws9zx+pBma5/mCn
-         ygaMt6kRU1AOssL0eA1GxFLLmKh5mEzkxnpj6ZnaWMvBQm+NAWaBMH3lm3urLi+PRuvu
-         6pJw==
+        bh=ZrO5EoGp0aqI4U9edzA9+DdGnIJnfZ7S2pNXXSDEWA0=;
+        b=gByaRhuj+Slb+b7TGJsldTArZ7e+3mhcvn2wdxsjqw+VkLABw9qrj+23Bu5Gts0R+G
+         Ds/5gGZG3A04sxfGh6H5QgqXNK5lfTbNAPbeJcjcs/M7yXXb3bmKzEOIjSlKOxs00d7f
+         rBCf4xiIlK6KoatAADWC/Q7uZavmRY/a1TmPBb1ACLxd43nbBkA89ywo+r56+b2MoaJb
+         24Rzeawazy9krqSUVBeNFISE76rrhST8syqtSyywRAc6VB54CMyzVc8+uz82A4SK1g+l
+         ysyaJDxytTgbopr/OFNt5KptPHTDeN9xTu1lvoIJKS1vCPkMNbJNaYDIX6qn4bLZlfPw
+         Wlgg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=/KWdRrmmQUUdShTYgF7N8YHkQMQeJcSbu2C2nHtMqGU=;
-        b=P/npxdfZEwesahpXLwgXzOxzgZj/AyrQhy0lZG4pVnmWHnJL7qzx6M3pibn0iDsGCg
-         zruiYDLHHNKkF3itRCvJQpA963NPWvKuYv+rKq8xwqBeTFXUbERNbEstkHW8h0+/dvBA
-         sqY+AOOr518d6NFoEBAXiRqxwfK38pv81Jcf/s61Sgi530zsV/DJHoLID8VIKvVIP9lc
-         RQfzfUspzdeaImsyGGMmGw+BALuN5axjnz7d3i54tSWRgM1Fa8GAkr2l8+BlzAfvOum1
-         2yduGrEoREkP6kcsd9p0hbhaMGEVU292P7T+d4AT9QQTaNWr/jyr63EfxqvJs8P4TuIP
-         lqZA==
-X-Gm-Message-State: AOAM533zsbnIRN5S1i+dk2IPPQhhSEe+JkyxuqCngSnYMe1N1earsvqf
-        CWwe7/ZdE9S0jo4ekvT+0hz0ZD+Y9ZKhdAINmTA3IQ==
-X-Google-Smtp-Source: ABdhPJyvLD06YGTA0HPbe+GRQR+7zENZnT2n3jtljEwYxE5gwf+uqYntGcOHUJDRFtbAzyvOdfv0nKianVTzIm4WDdc=
-X-Received: by 2002:a2e:a7c8:: with SMTP id x8mr16237409ljp.209.1622463253572;
- Mon, 31 May 2021 05:14:13 -0700 (PDT)
+        bh=ZrO5EoGp0aqI4U9edzA9+DdGnIJnfZ7S2pNXXSDEWA0=;
+        b=moICeHuyyDISwWU3Gs7MSSHFIH74X4Zez0JhcX7Fkpac1HciKXgVMX0FfXoLSVgQaa
+         E8/sGESxxml2sXtqkPgz2DPmGCjAldRxRb7nrR8mDvogDdTC8r3BriD2LxCr3aLNmT9B
+         JOuwPz8uOXXPFxGjgBgAJzBU/KzbEalyIR7iyrE/8uHETqb4aYQU+Q+k8RdRvXb0ShKu
+         /h90jiQ3O7h1afAz4DfD1OJeZU/aE9EbfGYVrlb0s8nUKBVm9zRNwf7ydpPVH+48D3qL
+         b5C0yEy30CuP8C8M1vEf/hFM8oe2PMtYDgVL9mCTR1iikUBgT4G45v3T4jEUK5FwTsqa
+         XVig==
+X-Gm-Message-State: AOAM530crOrgNfh01qlq7ZpnjAUwIef9zc66Ih46ZsL+EV2i3/UI0flG
+        5bYQZTFdinlfnFm+Th3izu5B48GzC3gyI/+f2VGDrQ==
+X-Google-Smtp-Source: ABdhPJyLKIYECrVKVAGsrwT0VjrtzJzkkKBVsPZ9SKhee3M1rS+GLkUfJoHa1mex6LZID9vPr8JMha2BXW8PPLAeO1s=
+X-Received: by 2002:a05:6a00:88a:b029:261:6d37:dac6 with SMTP id
+ q10-20020a056a00088ab02902616d37dac6mr16678883pfj.18.1622463310297; Mon, 31
+ May 2021 05:15:10 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210518125202.78658-1-odin@uged.al> <20210518125202.78658-3-odin@uged.al>
- <CAKfTPtCiV5LMoXBQVdSsvNq-vurFVVd4aVWW-C=8Tza8uJTCjg@mail.gmail.com>
- <CAFpoUr0x=tgayPWYPORR+-h8gNhiE1t12Ko2o15Y8JwOCLp=yw@mail.gmail.com>
- <CAKfTPtA6AyL2f-KqHXecZrYKmZ9r9mT=Ks6BeNLjV9dfbSZJxQ@mail.gmail.com> <CAFpoUr04ziEzvNBJx0xKSuuEnapGzyABwaM-FU3TUaCZkQ4WPw@mail.gmail.com>
-In-Reply-To: <CAFpoUr04ziEzvNBJx0xKSuuEnapGzyABwaM-FU3TUaCZkQ4WPw@mail.gmail.com>
-From:   Vincent Guittot <vincent.guittot@linaro.org>
-Date:   Mon, 31 May 2021 14:14:02 +0200
-Message-ID: <CAKfTPtAwErfdVwdHFULGwbZj5D1axiB-A_AeY49R=aD9p6cezw@mail.gmail.com>
-Subject: Re: [PATCH 2/3] sched/fair: Correctly insert cfs_rq's to list on unthrottle
-To:     Odin Ugedal <odin@uged.al>
-Cc:     Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        "open list:CONTROL GROUP (CGROUP)" <cgroups@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
+References: <20210511180728.23781-1-jonathan@marek.ca> <20210511180728.23781-16-jonathan@marek.ca>
+In-Reply-To: <20210511180728.23781-16-jonathan@marek.ca>
+From:   Robert Foss <robert.foss@linaro.org>
+Date:   Mon, 31 May 2021 14:14:59 +0200
+Message-ID: <CAG3jFyvOb9diNqmLyc2mT+WoQaAkeCYPk3GaOJQy5ges5w54Eg@mail.gmail.com>
+Subject: Re: [PATCH 15/17] media: camss: add support for V4L2_PIX_FMT_GREY for
+ sdm845 HW
+To:     Jonathan Marek <jonathan@marek.ca>
+Cc:     MSM <linux-arm-msm@vger.kernel.org>,
+        Andrey Konovalov <andrey.konovalov@linaro.org>,
+        Todor Tomov <todor.too@gmail.com>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        "open list:QUALCOMM CAMERA SUBSYSTEM DRIVER" 
+        <linux-media@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 29 May 2021 at 11:34, Odin Ugedal <odin@uged.al> wrote:
+On Tue, 11 May 2021 at 20:08, Jonathan Marek <jonathan@marek.ca> wrote:
 >
-> Hi,
+> Add this common format to the various format lists relevant to sdm845.
 >
-> > normally tg_load_avg_contrib should be null when cfs_rq_is_decayed()
+> Signed-off-by: Jonathan Marek <jonathan@marek.ca>
+> ---
+>  drivers/media/platform/qcom/camss/camss-csid-170.c | 7 +++++++
+>  drivers/media/platform/qcom/camss/camss-csiphy.c   | 1 +
+>  drivers/media/platform/qcom/camss/camss-vfe.c      | 1 +
+>  drivers/media/platform/qcom/camss/camss-video.c    | 2 ++
+>  4 files changed, 11 insertions(+)
 >
-> Yeah, I think that is an ok assumption of how it _should_ work (given
-> the other patches in flight are merged).
+> diff --git a/drivers/media/platform/qcom/camss/camss-csid-170.c b/drivers/media/platform/qcom/camss/camss-csid-170.c
+> index 9f6334fd68fc..5258e2099a43 100644
+> --- a/drivers/media/platform/qcom/camss/camss-csid-170.c
+> +++ b/drivers/media/platform/qcom/camss/camss-csid-170.c
+> @@ -262,6 +262,13 @@ static const struct csid_format csid_formats[] = {
+>                 10,
+>                 1,
+>         },
+> +       {
+> +               MEDIA_BUS_FMT_Y8_1X8,
+> +               DATA_TYPE_RAW_8BIT,
+> +               DECODE_FORMAT_UNCOMPRESSED_8_BIT,
+> +               10,
+> +               1,
+> +       },
+>         {
+>                 MEDIA_BUS_FMT_Y10_1X10,
+>                 DATA_TYPE_RAW_10BIT,
+> diff --git a/drivers/media/platform/qcom/camss/camss-csiphy.c b/drivers/media/platform/qcom/camss/camss-csiphy.c
+> index b3c3bf19e522..f82f1e2aa688 100644
+> --- a/drivers/media/platform/qcom/camss/camss-csiphy.c
+> +++ b/drivers/media/platform/qcom/camss/camss-csiphy.c
+> @@ -94,6 +94,7 @@ static const struct csiphy_format csiphy_formats_sdm845[] = {
+>         { MEDIA_BUS_FMT_SGBRG14_1X14, 14 },
+>         { MEDIA_BUS_FMT_SGRBG14_1X14, 14 },
+>         { MEDIA_BUS_FMT_SRGGB14_1X14, 14 },
+> +       { MEDIA_BUS_FMT_Y8_1X8, 8 },
+>         { MEDIA_BUS_FMT_Y10_1X10, 10 },
+>  };
 >
-> > The reason of this list is to ensure that the load of all cfs_rq are
-> > periodically updated  as it is then used to share the runtime between
-> > groups so we should keep to use the rule whenever possible.
->
-> Yeah, right.
->
-> > we probably need to keep (cfs_rq->nr_running >= 1) as we can have case
-> > where tg_load_avg_contrib is null but a task is enqueued
->
-> Yeah, there is probably a chance of enqueuing a task without any load,
-> and then a parent gets throttled.
-> So (cfs_rq->tg_load_avg_contrib || cfs_rq->nr_running) is probably the
-> way to go if we want to avoid
-> a new field. Will resend a patch with that instead.
+> diff --git a/drivers/media/platform/qcom/camss/camss-vfe.c b/drivers/media/platform/qcom/camss/camss-vfe.c
+> index dec89079c6ae..e7ab2c175ac9 100644
+> --- a/drivers/media/platform/qcom/camss/camss-vfe.c
+> +++ b/drivers/media/platform/qcom/camss/camss-vfe.c
+> @@ -118,6 +118,7 @@ static const struct vfe_format formats_rdi_845[] = {
+>         { MEDIA_BUS_FMT_SGBRG14_1X14, 14 },
+>         { MEDIA_BUS_FMT_SGRBG14_1X14, 14 },
+>         { MEDIA_BUS_FMT_SRGGB14_1X14, 14 },
+> +       { MEDIA_BUS_FMT_Y8_1X8, 8 },
+>         { MEDIA_BUS_FMT_Y10_1X10, 10 },
+>         { MEDIA_BUS_FMT_Y10_2X8_PADHI_LE, 16 },
+>  };
+> diff --git a/drivers/media/platform/qcom/camss/camss-video.c b/drivers/media/platform/qcom/camss/camss-video.c
+> index f282275af626..54e77d30d452 100644
+> --- a/drivers/media/platform/qcom/camss/camss-video.c
+> +++ b/drivers/media/platform/qcom/camss/camss-video.c
+> @@ -176,6 +176,8 @@ static const struct camss_format_info formats_rdi_845[] = {
+>           { { 1, 1 } }, { { 1, 1 } }, { 14 } },
+>         { MEDIA_BUS_FMT_SRGGB14_1X14, V4L2_PIX_FMT_SRGGB14P, 1,
+>           { { 1, 1 } }, { { 1, 1 } }, { 14 } },
+> +       { MEDIA_BUS_FMT_Y8_1X8, V4L2_PIX_FMT_GREY, 1,
+> +         { { 1, 1 } }, { { 1, 1 } }, { 8 } },
+>         { MEDIA_BUS_FMT_Y10_1X10, V4L2_PIX_FMT_Y10P, 1,
+>           { { 1, 1 } }, { { 1, 1 } }, { 10 } },
+>         { MEDIA_BUS_FMT_Y10_2X8_PADHI_LE, V4L2_PIX_FMT_Y10, 1,
 
-Thanks
-
->
-> In case the new field is the main issue with the original solution, we
-> could also change the on_list int to have three modes like; NO, YES,
-> THROTTLED/PAUSED, but that would require a bigger rewrite of the other
-> logic, so probably outside the scope of this patch.
->
-> Thanks
-> Odin
+Reviewed-by: Robert Foss <robert.foss@linaro.org>
