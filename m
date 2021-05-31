@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A1D2E396371
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 17:15:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 041A53961EB
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 16:46:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233372AbhEaPRH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 11:17:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43312 "EHLO mail.kernel.org"
+        id S230523AbhEaOrx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 10:47:53 -0400
+Received: from mail.kernel.org ([198.145.29.99]:32910 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231994AbhEaONl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 10:13:41 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3100961477;
-        Mon, 31 May 2021 13:42:12 +0000 (UTC)
+        id S232698AbhEaOAx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 10:00:53 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1741961462;
+        Mon, 31 May 2021 13:36:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1622468532;
-        bh=wKNDh19zyfmt6IPmGQrFjb3enLJKJzgwuCm49y5h+Mc=;
+        s=korg; t=1622468196;
+        bh=i/yh22XRqMBDWXKWA7tVRwpyvyI939/Wesu5tWdN0YY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=A/ebyH/AS/r4wz6n0aoACXUVwbrlNXsOmVDBLhCl4u9p0fJPH+9jdICMKakS4DWQE
-         +kxBTmMkSm/Y96EIo+IaIBKlxkAcPcC7Zwgd4c+nj/1q+nnl4mOrxfFN7HFaG+Ad8R
-         ufxsqHO96e/HHseqilKd1t3XhH9Xk80CUjPIOQoQ=
+        b=keFXejyVnhnuGN8eV858yQc5/uWpLEY8mv5kmCSazNAIm1FElJLBfE8Yp57l+ozeI
+         5qfqtT4on608rSINSP2nFgueHEzo4QorEq6b/CQPFCzEfrq2QwmoOTy5Oi5yI+OKZL
+         BA2T7h+geQDIK2/kRvt7xR27SQfvm8VJ/uXPaj8M=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Wen Gong <wgong@codeaurora.org>,
-        Jouni Malinen <jouni@codeaurora.org>,
-        Johannes Berg <johannes.berg@intel.com>
-Subject: [PATCH 5.4 026/177] ath10k: drop fragments with multicast DA for SDIO
+        stable@vger.kernel.org, Vladimir Oltean <vladimir.oltean@nxp.com>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: [PATCH 5.10 118/252] net: dsa: sja1105: call dsa_unregister_switch when allocating memory fails
 Date:   Mon, 31 May 2021 15:13:03 +0200
-Message-Id: <20210531130648.816214067@linuxfoundation.org>
+Message-Id: <20210531130701.994650447@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210531130647.887605866@linuxfoundation.org>
-References: <20210531130647.887605866@linuxfoundation.org>
+In-Reply-To: <20210531130657.971257589@linuxfoundation.org>
+References: <20210531130657.971257589@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,49 +39,68 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Wen Gong <wgong@codeaurora.org>
+From: Vladimir Oltean <vladimir.oltean@nxp.com>
 
-commit 40e7462dad6f3d06efdb17d26539e61ab6e34db1 upstream.
+commit dc596e3fe63f88e3d1e509f64e7f761cd4135538 upstream.
 
-Fragmentation is not used with multicast frames. Discard unexpected
-fragments with multicast DA. This fixes CVE-2020-26145.
+Unlike other drivers which pretty much end their .probe() execution with
+dsa_register_switch(), the sja1105 does some extra stuff. When that
+fails with -ENOMEM, the driver is quick to return that, forgetting to
+call dsa_unregister_switch(). Not critical, but a bug nonetheless.
 
-Tested-on: QCA6174 hw3.2 SDIO WLAN.RMH.4.4.1-00049
-
-Cc: stable@vger.kernel.org
-Signed-off-by: Wen Gong <wgong@codeaurora.org>
-Signed-off-by: Jouni Malinen <jouni@codeaurora.org>
-Link: https://lore.kernel.org/r/20210511200110.9ca6ca7945a9.I1e18b514590af17c155bda86699bc3a971a8dcf4@changeid
-Signed-off-by: Johannes Berg <johannes.berg@intel.com>
+Fixes: 4d7525085a9b ("net: dsa: sja1105: offload the Credit-Based Shaper qdisc")
+Fixes: a68578c20a96 ("net: dsa: Make deferred_xmit private to sja1105")
+Signed-off-by: Vladimir Oltean <vladimir.oltean@nxp.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/wireless/ath/ath10k/htt_rx.c |    9 +++++++--
- 1 file changed, 7 insertions(+), 2 deletions(-)
+ drivers/net/dsa/sja1105/sja1105_main.c |   15 +++++++++++----
+ 1 file changed, 11 insertions(+), 4 deletions(-)
 
---- a/drivers/net/wireless/ath/ath10k/htt_rx.c
-+++ b/drivers/net/wireless/ath/ath10k/htt_rx.c
-@@ -2605,6 +2605,13 @@ static bool ath10k_htt_rx_proc_rx_frag_i
- 	rx_desc = (struct htt_hl_rx_desc *)(skb->data + tot_hdr_len);
- 	rx_desc_info = __le32_to_cpu(rx_desc->info);
- 
-+	hdr = (struct ieee80211_hdr *)((u8 *)rx_desc + rx_hl->fw_desc.len);
-+
-+	if (is_multicast_ether_addr(hdr->addr1)) {
-+		/* Discard the fragment with multicast DA */
-+		goto err;
-+	}
-+
- 	if (!MS(rx_desc_info, HTT_RX_DESC_HL_INFO_ENCRYPTED)) {
- 		spin_unlock_bh(&ar->data_lock);
- 		return ath10k_htt_rx_proc_rx_ind_hl(htt, &resp->rx_ind_hl, skb,
-@@ -2612,8 +2619,6 @@ static bool ath10k_htt_rx_proc_rx_frag_i
- 						    HTT_RX_NON_TKIP_MIC);
+--- a/drivers/net/dsa/sja1105/sja1105_main.c
++++ b/drivers/net/dsa/sja1105/sja1105_main.c
+@@ -3483,8 +3483,10 @@ static int sja1105_probe(struct spi_devi
+ 		priv->cbs = devm_kcalloc(dev, priv->info->num_cbs_shapers,
+ 					 sizeof(struct sja1105_cbs_entry),
+ 					 GFP_KERNEL);
+-		if (!priv->cbs)
+-			return -ENOMEM;
++		if (!priv->cbs) {
++			rc = -ENOMEM;
++			goto out_unregister_switch;
++		}
  	}
  
--	hdr = (struct ieee80211_hdr *)((u8 *)rx_desc + rx_hl->fw_desc.len);
--
- 	if (ieee80211_has_retry(hdr->frame_control))
- 		goto err;
+ 	/* Connections between dsa_port and sja1105_port */
+@@ -3509,7 +3511,7 @@ static int sja1105_probe(struct spi_devi
+ 			dev_err(ds->dev,
+ 				"failed to create deferred xmit thread: %d\n",
+ 				rc);
+-			goto out;
++			goto out_destroy_workers;
+ 		}
+ 		skb_queue_head_init(&sp->xmit_queue);
+ 		sp->xmit_tpid = ETH_P_SJA1105;
+@@ -3519,7 +3521,8 @@ static int sja1105_probe(struct spi_devi
+ 	}
+ 
+ 	return 0;
+-out:
++
++out_destroy_workers:
+ 	while (port-- > 0) {
+ 		struct sja1105_port *sp = &priv->ports[port];
+ 
+@@ -3528,6 +3531,10 @@ out:
+ 
+ 		kthread_destroy_worker(sp->xmit_worker);
+ 	}
++
++out_unregister_switch:
++	dsa_unregister_switch(ds);
++
+ 	return rc;
+ }
  
 
 
