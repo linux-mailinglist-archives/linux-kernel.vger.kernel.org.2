@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E9C69396572
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 18:35:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C39E396256
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 16:53:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231485AbhEaQgn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 12:36:43 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40316 "EHLO mail.kernel.org"
+        id S233048AbhEaOzT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 10:55:19 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37384 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234016AbhEaOtP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 10:49:15 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 97D7C61C94;
-        Mon, 31 May 2021 13:57:00 +0000 (UTC)
+        id S231219AbhEaOD5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 10:03:57 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 49E7A6194C;
+        Mon, 31 May 2021 13:37:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1622469421;
-        bh=HbHEhZjevRB4CeDDwC7R5m9J42CXq3lr/RUWKX8V39w=;
+        s=korg; t=1622468276;
+        bh=xGou3xu3WMhEItva0gKR7+VwTCk+xQj8PAChKyy1Mxo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=f/IhyixjhCgwl4utvglupWnUqz9hqcEBVl4eyvxS85lSxAZIHKO/Zn/ftGP6W5iJt
-         1qAqCw1ujxJ1qFiZXYsCPzypTUqbUekYxGuwpnzJbH60GfVIGCdfsgE1S4/SGDbTdn
-         JfrXwqSP658CQpnjG5c4jobRdEFW0bN4Mvxzfx0I=
+        b=T0pMrtWW2Wzk067mPlRt9k1t/Qw4GRwPahB8YntQ3Jb6T7sJ6z/JxgxWZYeGj0EbE
+         kAusZ/RyQXI9f5bJfPCUFo6fYsmjVOt6gPTQn3oqxfTV/3CFbyBmdln6MDU/izxdFn
+         r+/P+mPHWgrvp3p0VMi+JpqI/RKzcf/A+VFzS+14=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Sean Young <sean@mess.org>,
-        Mauro Carvalho Chehab <mchehab+samsung@kernel.org>,
-        Alaa Emad <alaaemadhossney.ae@gmail.com>,
+        stable@vger.kernel.org, Jingwen Chen <Jingwen.Chen2@amd.com>,
+        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.12 191/296] media: dvb: Add check on sp8870_readreg return
-Date:   Mon, 31 May 2021 15:14:06 +0200
-Message-Id: <20210531130710.295465213@linuxfoundation.org>
+Subject: [PATCH 5.10 182/252] drm/amd/amdgpu: fix refcount leak
+Date:   Mon, 31 May 2021 15:14:07 +0200
+Message-Id: <20210531130704.193621612@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210531130703.762129381@linuxfoundation.org>
-References: <20210531130703.762129381@linuxfoundation.org>
+In-Reply-To: <20210531130657.971257589@linuxfoundation.org>
+References: <20210531130657.971257589@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,38 +41,44 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Alaa Emad <alaaemadhossney.ae@gmail.com>
+From: Jingwen Chen <Jingwen.Chen2@amd.com>
 
-[ Upstream commit c6d822c56e7fd29e6fa1b1bb91b98f6a1e942b3c ]
+[ Upstream commit fa7e6abc75f3d491bc561734312d065dc9dc2a77 ]
 
-The function sp8870_readreg returns a negative value when i2c_transfer
-fails so properly check for this and return the error if it happens.
+[Why]
+the gem object rfb->base.obj[0] is get according to num_planes
+in amdgpufb_create, but is not put according to num_planes
 
-Cc: Sean Young <sean@mess.org>
-Cc: Mauro Carvalho Chehab <mchehab+samsung@kernel.org>
-Signed-off-by: Alaa Emad <alaaemadhossney.ae@gmail.com>
-Link: https://lore.kernel.org/r/20210503115736.2104747-60-gregkh@linuxfoundation.org
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+[How]
+put rfb->base.obj[0] in amdgpu_fbdev_destroy according to num_planes
+
+Signed-off-by: Jingwen Chen <Jingwen.Chen2@amd.com>
+Acked-by: Christian König <christian.koenig@amd.com>
+Reviewed-by: Alex Deucher <alexander.deucher@amd.com>
+Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/media/dvb-frontends/sp8870.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ drivers/gpu/drm/amd/amdgpu/amdgpu_fb.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/drivers/media/dvb-frontends/sp8870.c b/drivers/media/dvb-frontends/sp8870.c
-index ee893a2f2261..9767159aeb9b 100644
---- a/drivers/media/dvb-frontends/sp8870.c
-+++ b/drivers/media/dvb-frontends/sp8870.c
-@@ -280,7 +280,9 @@ static int sp8870_set_frontend_parameters(struct dvb_frontend *fe)
- 	sp8870_writereg(state, 0xc05, reg0xc05);
+diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_fb.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_fb.c
+index 1ea8af48ae2f..43f29ee0e3b0 100644
+--- a/drivers/gpu/drm/amd/amdgpu/amdgpu_fb.c
++++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_fb.c
+@@ -289,10 +289,13 @@ out:
+ static int amdgpu_fbdev_destroy(struct drm_device *dev, struct amdgpu_fbdev *rfbdev)
+ {
+ 	struct amdgpu_framebuffer *rfb = &rfbdev->rfb;
++	int i;
  
- 	// read status reg in order to clear pending irqs
--	sp8870_readreg(state, 0x200);
-+	err = sp8870_readreg(state, 0x200);
-+	if (err < 0)
-+		return err;
+ 	drm_fb_helper_unregister_fbi(&rfbdev->helper);
  
- 	// system controller start
- 	sp8870_microcontroller_start(state);
+ 	if (rfb->base.obj[0]) {
++		for (i = 0; i < rfb->base.format->num_planes; i++)
++			drm_gem_object_put(rfb->base.obj[0]);
+ 		amdgpufb_destroy_pinned_object(rfb->base.obj[0]);
+ 		rfb->base.obj[0] = NULL;
+ 		drm_framebuffer_unregister_private(&rfb->base);
 -- 
 2.30.2
 
