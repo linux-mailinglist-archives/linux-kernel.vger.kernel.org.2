@@ -2,37 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E841E3960DA
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 16:30:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 307EC3964E2
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 18:13:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232138AbhEaOcR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 10:32:17 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55328 "EHLO mail.kernel.org"
+        id S234595AbhEaQOr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 12:14:47 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37958 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233036AbhEaNxw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 09:53:52 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6BD37613B9;
-        Mon, 31 May 2021 13:33:33 +0000 (UTC)
+        id S234144AbhEaOjb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 10:39:31 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0D7E761C5B;
+        Mon, 31 May 2021 13:52:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1622468014;
-        bh=xrEWKhxaCPVId2lpwzHuxHSTMK0+Ftdkiztod5AgKfY=;
+        s=korg; t=1622469153;
+        bh=pE2tmrkllVgxwJJQI1Mpen+neXL9uPZdNdKJWlIOvC8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=FVghsB2tZ+Nl69xIdRrAqQ4dYTIWyYIJoZdVE2I+wYHZpRHZxG4Xjmg0ptBUrRsjO
-         cyJzvW2nV0eRgMXyTrgLr5baTuq8ZKU+8X3flrxrCY89SKyV+YXCfKy9ccNk0oFlv6
-         V+5ZZ7a3qz3QBMmFtdkGtRKSWiJVGYZVCnivmr68=
+        b=Dfw/lw613KK4Mu5EAniHCIH7gLjr/jFvTJIZoDlFl27GeLbnz/TbHAnhamHAImDZD
+         yVOGyvF0HYWcmyJ4G1GVFz8OpEYOu8na2KvMcwo85YSvB0S0TEIN0dgFw44PESXotQ
+         IiSU/wSPp0JqB7hOWntucmm7GOIOLdApNBwpOvxU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        "chenxiang (M)" <chenxiang66@hisilicon.com>,
-        Saravana Kannan <saravanak@google.com>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>
-Subject: [PATCH 5.10 077/252] drivers: base: Fix device link removal
-Date:   Mon, 31 May 2021 15:12:22 +0200
-Message-Id: <20210531130700.609299143@linuxfoundation.org>
+        Christian Gmeiner <christian.gmeiner@gmail.com>
+Subject: [PATCH 5.12 088/296] serial: 8250_pci: handle FL_NOIRQ board flag
+Date:   Mon, 31 May 2021 15:12:23 +0200
+Message-Id: <20210531130706.853875433@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210531130657.971257589@linuxfoundation.org>
-References: <20210531130657.971257589@linuxfoundation.org>
+In-Reply-To: <20210531130703.762129381@linuxfoundation.org>
+References: <20210531130703.762129381@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,133 +39,63 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+From: Christian Gmeiner <christian.gmeiner@gmail.com>
 
-commit 80dd33cf72d1ab4f0af303f1fa242c6d6c8d328f upstream.
+commit 9808f9be31c68af43f6e531f2c851ebb066513fe upstream.
 
-When device_link_free() drops references to the supplier and
-consumer devices of the device link going away and the reference
-being dropped turns out to be the last one for any of those
-device objects, its ->release callback will be invoked and it
-may sleep which goes against the SRCU callback execution
-requirements.
+In commit 8428413b1d14 ("serial: 8250_pci: Implement MSI(-X) support")
+the way the irq gets allocated was changed. With that change the
+handling FL_NOIRQ got lost. Restore the old behaviour.
 
-To address this issue, make the device link removal code carry out
-the device_link_free() actions preceded by SRCU synchronization from
-a separate work item (the "long" workqueue is used for that, because
-it does not matter when the device link memory is released and it may
-take time to get to that point) instead of using SRCU callbacks.
-
-While at it, make the code work analogously when SRCU is not enabled
-to reduce the differences between the SRCU and non-SRCU cases.
-
-Fixes: 843e600b8a2b ("driver core: Fix sleeping in invalid context during device link deletion")
-Cc: stable <stable@vger.kernel.org>
-Reported-by: chenxiang (M) <chenxiang66@hisilicon.com>
-Tested-by: chenxiang (M) <chenxiang66@hisilicon.com>
-Reviewed-by: Saravana Kannan <saravanak@google.com>
-Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-Link: https://lore.kernel.org/r/5722787.lOV4Wx5bFT@kreacher
+Fixes: 8428413b1d14 ("serial: 8250_pci: Implement MSI(-X) support")
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Christian Gmeiner <christian.gmeiner@gmail.com>
+Link: https://lore.kernel.org/r/20210527095529.26281-1-christian.gmeiner@gmail.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/base/core.c    |   37 +++++++++++++++++++++++--------------
- include/linux/device.h |    6 ++----
- 2 files changed, 25 insertions(+), 18 deletions(-)
+ drivers/tty/serial/8250/8250_pci.c |   29 +++++++++++++++++------------
+ 1 file changed, 17 insertions(+), 12 deletions(-)
 
---- a/drivers/base/core.c
-+++ b/drivers/base/core.c
-@@ -83,6 +83,11 @@ int device_links_read_lock_held(void)
- {
- 	return srcu_read_lock_held(&device_links_srcu);
- }
+--- a/drivers/tty/serial/8250/8250_pci.c
++++ b/drivers/tty/serial/8250/8250_pci.c
+@@ -3958,21 +3958,26 @@ pciserial_init_ports(struct pci_dev *dev
+ 	uart.port.flags = UPF_SKIP_TEST | UPF_BOOT_AUTOCONF | UPF_SHARE_IRQ;
+ 	uart.port.uartclk = board->base_baud * 16;
+ 
+-	if (pci_match_id(pci_use_msi, dev)) {
+-		dev_dbg(&dev->dev, "Using MSI(-X) interrupts\n");
+-		pci_set_master(dev);
+-		rc = pci_alloc_irq_vectors(dev, 1, 1, PCI_IRQ_ALL_TYPES);
++	if (board->flags & FL_NOIRQ) {
++		uart.port.irq = 0;
+ 	} else {
+-		dev_dbg(&dev->dev, "Using legacy interrupts\n");
+-		rc = pci_alloc_irq_vectors(dev, 1, 1, PCI_IRQ_LEGACY);
+-	}
+-	if (rc < 0) {
+-		kfree(priv);
+-		priv = ERR_PTR(rc);
+-		goto err_deinit;
++		if (pci_match_id(pci_use_msi, dev)) {
++			dev_dbg(&dev->dev, "Using MSI(-X) interrupts\n");
++			pci_set_master(dev);
++			rc = pci_alloc_irq_vectors(dev, 1, 1, PCI_IRQ_ALL_TYPES);
++		} else {
++			dev_dbg(&dev->dev, "Using legacy interrupts\n");
++			rc = pci_alloc_irq_vectors(dev, 1, 1, PCI_IRQ_LEGACY);
++		}
++		if (rc < 0) {
++			kfree(priv);
++			priv = ERR_PTR(rc);
++			goto err_deinit;
++		}
 +
-+static void device_link_synchronize_removal(void)
-+{
-+	synchronize_srcu(&device_links_srcu);
-+}
- #else /* !CONFIG_SRCU */
- static DECLARE_RWSEM(device_links_lock);
++		uart.port.irq = pci_irq_vector(dev, 0);
+ 	}
  
-@@ -113,6 +118,10 @@ int device_links_read_lock_held(void)
- 	return lockdep_is_held(&device_links_lock);
- }
- #endif
-+
-+static inline void device_link_synchronize_removal(void)
-+{
-+}
- #endif /* !CONFIG_SRCU */
+-	uart.port.irq = pci_irq_vector(dev, 0);
+ 	uart.port.dev = &dev->dev;
  
- static bool device_is_ancestor(struct device *dev, struct device *target)
-@@ -332,8 +341,13 @@ static struct attribute *devlink_attrs[]
- };
- ATTRIBUTE_GROUPS(devlink);
- 
--static void device_link_free(struct device_link *link)
-+static void device_link_release_fn(struct work_struct *work)
- {
-+	struct device_link *link = container_of(work, struct device_link, rm_work);
-+
-+	/* Ensure that all references to the link object have been dropped. */
-+	device_link_synchronize_removal();
-+
- 	while (refcount_dec_not_one(&link->rpm_active))
- 		pm_runtime_put(link->supplier);
- 
-@@ -342,24 +356,19 @@ static void device_link_free(struct devi
- 	kfree(link);
- }
- 
--#ifdef CONFIG_SRCU
--static void __device_link_free_srcu(struct rcu_head *rhead)
--{
--	device_link_free(container_of(rhead, struct device_link, rcu_head));
--}
--
- static void devlink_dev_release(struct device *dev)
- {
- 	struct device_link *link = to_devlink(dev);
- 
--	call_srcu(&device_links_srcu, &link->rcu_head, __device_link_free_srcu);
--}
--#else
--static void devlink_dev_release(struct device *dev)
--{
--	device_link_free(to_devlink(dev));
-+	INIT_WORK(&link->rm_work, device_link_release_fn);
-+	/*
-+	 * It may take a while to complete this work because of the SRCU
-+	 * synchronization in device_link_release_fn() and if the consumer or
-+	 * supplier devices get deleted when it runs, so put it into the "long"
-+	 * workqueue.
-+	 */
-+	queue_work(system_long_wq, &link->rm_work);
- }
--#endif
- 
- static struct class devlink_class = {
- 	.name = "devlink",
---- a/include/linux/device.h
-+++ b/include/linux/device.h
-@@ -570,7 +570,7 @@ struct device {
-  * @flags: Link flags.
-  * @rpm_active: Whether or not the consumer device is runtime-PM-active.
-  * @kref: Count repeated addition of the same link.
-- * @rcu_head: An RCU head to use for deferred execution of SRCU callbacks.
-+ * @rm_work: Work structure used for removing the link.
-  * @supplier_preactivated: Supplier has been made active before consumer probe.
-  */
- struct device_link {
-@@ -583,9 +583,7 @@ struct device_link {
- 	u32 flags;
- 	refcount_t rpm_active;
- 	struct kref kref;
--#ifdef CONFIG_SRCU
--	struct rcu_head rcu_head;
--#endif
-+	struct work_struct rm_work;
- 	bool supplier_preactivated; /* Owned by consumer probe. */
- };
- 
+ 	for (i = 0; i < nr_ports; i++) {
 
 
