@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C19F7396064
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 16:24:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A406D3964C8
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 18:09:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233802AbhEaOZc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 10:25:32 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55126 "EHLO mail.kernel.org"
+        id S232845AbhEaQLP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 12:11:15 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33126 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232329AbhEaNvS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 09:51:18 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E36A261628;
-        Mon, 31 May 2021 13:32:22 +0000 (UTC)
+        id S232875AbhEaOha (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 10:37:30 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6B77160FE5;
+        Mon, 31 May 2021 13:51:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1622467943;
-        bh=RDIf4hY/d+ADhv0e77VKXgujZ2SI1Ojk0bcgz4mnung=;
+        s=korg; t=1622469097;
+        bh=krfTaxbOyWqugdtfCJBtYWS9/Y9DDZMOs09uCkuPDQk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=x4djyrZ8ti+UljVbBNVAHfZTws2V6B6BJMpaBnQO9bkf4229hP66lA4loNOkAllOB
-         E8n70JdMW3TkJdXp7nap2q14wDZdcyDfJk8e4GnuXUlnurMK/4tPA06DajBfjbV3TP
-         f64Jr+j2Ct5AL7EtvtvnICU2UnXoHBIzo7Qwhk8g=
+        b=R/emltDwHG8D3a3Ig1AhQtE1/dvPz+faLHt3dqCt64JsdYPIY1NbhEjRNwamW6BPC
+         NFMzua0idGZICEwSkxgjnrd8seACyYLN3Zo+FisDmsw5SuwXcNkP2v17MPUW56ZFNB
+         H8i/OghnvEDmXEMYLd6RIYawLi56hfE1l1LL0k+0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Steven Price <steven.price@arm.com>,
-        Marc Zyngier <maz@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>
-Subject: [PATCH 5.10 058/252] KVM: arm64: Prevent mixed-width VM creation
-Date:   Mon, 31 May 2021 15:12:03 +0200
-Message-Id: <20210531130659.947462896@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Mathias Nyman <mathias.nyman@linux.intel.com>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>
+Subject: [PATCH 5.12 069/296] thunderbolt: dma_port: Fix NVM read buffer bounds and offset issue
+Date:   Mon, 31 May 2021 15:12:04 +0200
+Message-Id: <20210531130706.168432752@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210531130657.971257589@linuxfoundation.org>
-References: <20210531130657.971257589@linuxfoundation.org>
+In-Reply-To: <20210531130703.762129381@linuxfoundation.org>
+References: <20210531130703.762129381@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,86 +40,63 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Marc Zyngier <maz@kernel.org>
+From: Mathias Nyman <mathias.nyman@linux.intel.com>
 
-commit 66e94d5cafd4decd4f92d16a022ea587d7f4094f upstream.
+commit b106776080a1cf953a1b2fd50cb2a995db4732be upstream.
 
-It looks like we have tolerated creating mixed-width VMs since...
-forever. However, that was never the intention, and we'd rather
-not have to support that pointless complexity.
+Up to 64 bytes of data can be read from NVM in one go. Read address
+must be dword aligned. Data is read into a local buffer.
 
-Forbid such a setup by making sure all the vcpus have the same
-register width.
+If caller asks to read data starting at an unaligned address then full
+dword is anyway read from NVM into a local buffer. Data is then copied
+from the local buffer starting at the unaligned offset to the caller
+buffer.
 
-Reported-by: Steven Price <steven.price@arm.com>
-Signed-off-by: Marc Zyngier <maz@kernel.org>
+In cases where asked data length + unaligned offset is over 64 bytes
+we need to make sure we don't read past the 64 bytes in the local
+buffer when copying to caller buffer, and make sure that we don't
+skip copying unaligned offset bytes from local buffer anymore after
+the first round of 64 byte NVM data read.
+
+Fixes: 3e13676862f9 ("thunderbolt: Add support for DMA configuration based mailbox")
 Cc: stable@vger.kernel.org
-Acked-by: Mark Rutland <mark.rutland@arm.com>
-Link: https://lore.kernel.org/r/20210524170752.1549797-1-maz@kernel.org
+Signed-off-by: Mathias Nyman <mathias.nyman@linux.intel.com>
+Signed-off-by: Mika Westerberg <mika.westerberg@linux.intel.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- arch/arm64/include/asm/kvm_emulate.h |    5 +++++
- arch/arm64/kvm/reset.c               |   28 ++++++++++++++++++++++++----
- 2 files changed, 29 insertions(+), 4 deletions(-)
+ drivers/thunderbolt/dma_port.c |   11 ++++++-----
+ 1 file changed, 6 insertions(+), 5 deletions(-)
 
---- a/arch/arm64/include/asm/kvm_emulate.h
-+++ b/arch/arm64/include/asm/kvm_emulate.h
-@@ -505,4 +505,9 @@ static __always_inline void __kvm_skip_i
- 	write_sysreg_el2(*vcpu_pc(vcpu), SYS_ELR);
- }
+--- a/drivers/thunderbolt/dma_port.c
++++ b/drivers/thunderbolt/dma_port.c
+@@ -366,15 +366,15 @@ int dma_port_flash_read(struct tb_dma_po
+ 			void *buf, size_t size)
+ {
+ 	unsigned int retries = DMA_PORT_RETRIES;
+-	unsigned int offset;
+-
+-	offset = address & 3;
+-	address = address & ~3;
  
-+static inline bool vcpu_has_feature(struct kvm_vcpu *vcpu, int feature)
-+{
-+	return test_bit(feature, vcpu->arch.features);
-+}
-+
- #endif /* __ARM64_KVM_EMULATE_H__ */
---- a/arch/arm64/kvm/reset.c
-+++ b/arch/arm64/kvm/reset.c
-@@ -223,6 +223,25 @@ static int kvm_vcpu_enable_ptrauth(struc
- 	return 0;
- }
+ 	do {
+-		u32 nbytes = min_t(u32, size, MAIL_DATA_DWORDS * 4);
++		unsigned int offset;
++		size_t nbytes;
+ 		int ret;
  
-+static bool vcpu_allowed_register_width(struct kvm_vcpu *vcpu)
-+{
-+	struct kvm_vcpu *tmp;
-+	bool is32bit;
-+	int i;
++		offset = address & 3;
++		nbytes = min_t(size_t, size + offset, MAIL_DATA_DWORDS * 4);
 +
-+	is32bit = vcpu_has_feature(vcpu, KVM_ARM_VCPU_EL1_32BIT);
-+	if (!cpus_have_const_cap(ARM64_HAS_32BIT_EL1) && is32bit)
-+		return false;
-+
-+	/* Check that the vcpus are either all 32bit or all 64bit */
-+	kvm_for_each_vcpu(i, tmp, vcpu->kvm) {
-+		if (vcpu_has_feature(tmp, KVM_ARM_VCPU_EL1_32BIT) != is32bit)
-+			return false;
-+	}
-+
-+	return true;
-+}
-+
- /**
-  * kvm_reset_vcpu - sets core registers and sys_regs to reset value
-  * @vcpu: The VCPU pointer
-@@ -274,13 +293,14 @@ int kvm_reset_vcpu(struct kvm_vcpu *vcpu
+ 		ret = dma_port_flash_read_block(dma, address, dma->buf,
+ 						ALIGN(nbytes, 4));
+ 		if (ret) {
+@@ -386,6 +386,7 @@ int dma_port_flash_read(struct tb_dma_po
+ 			return ret;
  		}
- 	}
  
-+	if (!vcpu_allowed_register_width(vcpu)) {
-+		ret = -EINVAL;
-+		goto out;
-+	}
-+
- 	switch (vcpu->arch.target) {
- 	default:
- 		if (test_bit(KVM_ARM_VCPU_EL1_32BIT, vcpu->arch.features)) {
--			if (!cpus_have_const_cap(ARM64_HAS_32BIT_EL1)) {
--				ret = -EINVAL;
--				goto out;
--			}
- 			pstate = VCPU_RESET_PSTATE_SVC;
- 		} else {
- 			pstate = VCPU_RESET_PSTATE_EL1;
++		nbytes -= offset;
+ 		memcpy(buf, dma->buf + offset, nbytes);
+ 
+ 		size -= nbytes;
 
 
