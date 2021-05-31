@@ -2,39 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CB10639609B
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 16:29:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E5843964DC
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 18:12:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234053AbhEaO34 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 10:29:56 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55082 "EHLO mail.kernel.org"
+        id S232180AbhEaQNy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 12:13:54 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37860 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232211AbhEaNxP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 09:53:15 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 071696188B;
-        Mon, 31 May 2021 13:33:11 +0000 (UTC)
+        id S234077AbhEaOjT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 10:39:19 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 808EA61876;
+        Mon, 31 May 2021 13:52:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1622467992;
-        bh=fDSHuxrhJTbpqsPwkMi+VT3J276BLyapjLD2nMJdh4c=;
+        s=korg; t=1622469148;
+        bh=p4SeauKvWNvBbIefRbr7Lnfw2yPF1ndxnI34Ps1hVpg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=h/1y+nJAcD2yIjkXsrtk+diy1fqEw/DDzHKFXnbaBJwtEhxhnuyLaDkep9sItCkc0
-         dCTzZeqWD/fL+6DwzqT3Gorx0dyXi/u9z3PZyGsSLq5lYRtV2SlxlusV1BKvFeQpFi
-         MbSU+Hq6WzelaD20ejHyejbtDNIJNKR+V5+dUYY4=
+        b=ZOqJ/m+AAEA/CfaWEc7PLNoYm5yIvXTWfkDEeFAQ+pFBXuK/UXGos/JDN4bC27ZmI
+         CFu6UHYjzTdj1clmiyvVT5JZ3EcwrjxVDZ8HvlGJQDzEztqLcSM2Y8uBEuGxFuzFWh
+         4BKol+JkOT+r/iY4v0Cnq35fTRlOx7gvHImn/b1k=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Shaokun Zhang <zhangshaokun@hisilicon.com>,
-        Marc Zyngier <maz@kernel.org>,
-        Jason Wang <jasowang@redhat.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Eric Auger <eric.auger@redhat.com>,
-        Zhu Lingshan <lingshan.zhu@intel.com>
-Subject: [PATCH 5.10 075/252] Revert "irqbypass: do not start cons/prod when failed connect"
-Date:   Mon, 31 May 2021 15:12:20 +0200
-Message-Id: <20210531130700.548488476@linuxfoundation.org>
+        stable@vger.kernel.org, Sachi King <nakato@nakato.io>,
+        Maximilian Luz <luzmaximilian@gmail.com>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>
+Subject: [PATCH 5.12 086/296] serial: 8250_dw: Add device HID for new AMD UART controller
+Date:   Mon, 31 May 2021 15:12:21 +0200
+Message-Id: <20210531130706.773522388@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210531130657.971257589@linuxfoundation.org>
-References: <20210531130657.971257589@linuxfoundation.org>
+In-Reply-To: <20210531130703.762129381@linuxfoundation.org>
+References: <20210531130703.762129381@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,67 +40,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zhu Lingshan <lingshan.zhu@intel.com>
+From: Maximilian Luz <luzmaximilian@gmail.com>
 
-commit e44b49f623c77bee7451f1a82ccfb969c1028ae2 upstream.
+commit 3c35d2a960c0077a4cb09bf4989f45d289332ea0 upstream.
 
-This reverts commit a979a6aa009f3c99689432e0cdb5402a4463fb88.
+Add device HID AMDI0022 to the AMD UART controller driver match table
+and create a platform device for it. This controller can be found on
+Microsoft Surface Laptop 4 devices and seems similar enough that we can
+just copy the existing AMDI0020 entries.
 
-The reverted commit may cause VM freeze on arm64 with GICv4,
-where stopping a consumer is implemented by suspending the VM.
-Should the connect fail, the VM will not be resumed, which
-is a bit of a problem.
-
-It also erroneously calls the producer destructor unconditionally,
-which is unexpected.
-
-Reported-by: Shaokun Zhang <zhangshaokun@hisilicon.com>
-Suggested-by: Marc Zyngier <maz@kernel.org>
-Acked-by: Jason Wang <jasowang@redhat.com>
-Acked-by: Michael S. Tsirkin <mst@redhat.com>
-Reviewed-by: Eric Auger <eric.auger@redhat.com>
-Tested-by: Shaokun Zhang <zhangshaokun@hisilicon.com>
-Signed-off-by: Zhu Lingshan <lingshan.zhu@intel.com>
-[maz: tags and cc-stable, commit message update]
-Signed-off-by: Marc Zyngier <maz@kernel.org>
-Fixes: a979a6aa009f ("irqbypass: do not start cons/prod when failed connect")
-Link: https://lore.kernel.org/r/3a2c66d6-6ca0-8478-d24b-61e8e3241b20@hisilicon.com
-Link: https://lore.kernel.org/r/20210508071152.722425-1-lingshan.zhu@intel.com
-Cc: stable@vger.kernel.org
+Cc: <stable@vger.kernel.org> # 5.10+
+Tested-by: Sachi King <nakato@nakato.io>
+Acked-by: Andy Shevchenko <andy.shevchenko@gmail.com> # for 8250_dw part
+Signed-off-by: Maximilian Luz <luzmaximilian@gmail.com>
+Link: https://lore.kernel.org/r/20210512210413.1982933-1-luzmaximilian@gmail.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- virt/lib/irqbypass.c |   16 ++++++----------
- 1 file changed, 6 insertions(+), 10 deletions(-)
+ drivers/acpi/acpi_apd.c           |    1 +
+ drivers/tty/serial/8250/8250_dw.c |    1 +
+ 2 files changed, 2 insertions(+)
 
---- a/virt/lib/irqbypass.c
-+++ b/virt/lib/irqbypass.c
-@@ -40,21 +40,17 @@ static int __connect(struct irq_bypass_p
- 	if (prod->add_consumer)
- 		ret = prod->add_consumer(prod, cons);
- 
--	if (ret)
--		goto err_add_consumer;
--
--	ret = cons->add_producer(cons, prod);
--	if (ret)
--		goto err_add_producer;
-+	if (!ret) {
-+		ret = cons->add_producer(cons, prod);
-+		if (ret && prod->del_consumer)
-+			prod->del_consumer(prod, cons);
-+	}
- 
- 	if (cons->start)
- 		cons->start(cons);
- 	if (prod->start)
- 		prod->start(prod);
--err_add_producer:
--	if (prod->del_consumer)
--		prod->del_consumer(prod, cons);
--err_add_consumer:
-+
- 	return ret;
- }
- 
+--- a/drivers/acpi/acpi_apd.c
++++ b/drivers/acpi/acpi_apd.c
+@@ -226,6 +226,7 @@ static const struct acpi_device_id acpi_
+ 	{ "AMDI0010", APD_ADDR(wt_i2c_desc) },
+ 	{ "AMD0020", APD_ADDR(cz_uart_desc) },
+ 	{ "AMDI0020", APD_ADDR(cz_uart_desc) },
++	{ "AMDI0022", APD_ADDR(cz_uart_desc) },
+ 	{ "AMD0030", },
+ 	{ "AMD0040", APD_ADDR(fch_misc_desc)},
+ 	{ "HYGO0010", APD_ADDR(wt_i2c_desc) },
+--- a/drivers/tty/serial/8250/8250_dw.c
++++ b/drivers/tty/serial/8250/8250_dw.c
+@@ -714,6 +714,7 @@ static const struct acpi_device_id dw825
+ 	{ "APMC0D08", 0},
+ 	{ "AMD0020", 0 },
+ 	{ "AMDI0020", 0 },
++	{ "AMDI0022", 0 },
+ 	{ "BRCM2032", 0 },
+ 	{ "HISI0031", 0 },
+ 	{ },
 
 
