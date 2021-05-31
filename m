@@ -2,186 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 77A973966F6
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 19:24:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B77D0396659
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 19:03:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233002AbhEaRZx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 13:25:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53950 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232779AbhEaRZl (ORCPT
+        id S234871AbhEaRE1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 13:04:27 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:54104 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S230308AbhEaQAw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 13:25:41 -0400
-Received: from mail-ot1-x336.google.com (mail-ot1-x336.google.com [IPv6:2607:f8b0:4864:20::336])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F49BC059CAF
-        for <linux-kernel@vger.kernel.org>; Mon, 31 May 2021 08:58:10 -0700 (PDT)
-Received: by mail-ot1-x336.google.com with SMTP id v19-20020a0568301413b0290304f00e3d88so11499317otp.4
-        for <linux-kernel@vger.kernel.org>; Mon, 31 May 2021 08:58:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=aSAgxaA5aZxuO/Fv7i81kY3F2ndtVlw1486mt0v683Y=;
-        b=d9hK/wpQccMeIceBxBM5/JlQazT0SQhKi5Xt4XhBKQZuPPlgirwCaSYi/h8rZ4c8B3
-         EuBOVZW+ZK+7ut3mcperjpbjlC1AUIQqw0rolcrGIndRMeWZPisJvjUGCPEL/+42Owss
-         cIB+Edv243X/uheCXretEdFyrkEGWbe9xZGJbSNIBmwy6rXL+nLKq+85Rr2TS2G2Nc7v
-         2kChvFi3qf7oNpnxU5CsnniadmZvnBTLBPdvDLx6pLZoalr51RoVI/OpWZsTwXi7/Jsv
-         9IdsFgcjC3pW3ItHWQ0GaHli4/EzUc/e3nQfgC2xUiTAU96OK57HADQZyI+wZiNiWpyV
-         LDzA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=aSAgxaA5aZxuO/Fv7i81kY3F2ndtVlw1486mt0v683Y=;
-        b=sIA3TuqXKnVa4sqmAEsmotyBxlvQzjWeE7DIPOD381Nvd6A6YBP9neTkYqxygpEPp2
-         qw4bW8FScUNudyVXsEgOjxJo8wagv4rVOnjSmn9GvTEGaZGnw7/CZupjTPVkOyFo7di0
-         263nLVRBkwJfJOGYzd3XtlV3lKVOQV22Ihi4kLGfSUOb9Gks2MSvVJIlVd+U3denf9pz
-         0FfYFrgNxpqNdLE+8CNMdXhxSqesqc7QW2lmJfrija2EexUFrSBeA7F9jqI/bH/sj5B7
-         +fIpM2Ti69MIqRr9D34P8mI6E0xKXOg5K5Cv8IYpOUAQ9pLMJjOYkPgZizNKvte8mFV7
-         iWLw==
-X-Gm-Message-State: AOAM530yyG56/t2X32ck8WpDZmO5ANEwyb3ZuCWyLxgVqHJXU/K+FQ+d
-        SiVxAW4P42g3qR+xXNaf8pVhxg==
-X-Google-Smtp-Source: ABdhPJyAO/Z7p8bb8qM6OrWOMXYxzOoGfOOK/nOeYXlQOadAPGkjUBA26M+WzbwDRO/EaXBXr6roMw==
-X-Received: by 2002:a05:6830:109a:: with SMTP id y26mr17500206oto.164.1622476689114;
-        Mon, 31 May 2021 08:58:09 -0700 (PDT)
-Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id p9sm514199otl.64.2021.05.31.08.58.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 31 May 2021 08:58:08 -0700 (PDT)
-Date:   Mon, 31 May 2021 10:58:06 -0500
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Jonathan McDowell <noodles@earth.li>
-Cc:     Andy Gross <agross@kernel.org>, Rob Herring <robh+dt@kernel.org>,
-        Ansuel Smith <ansuelsmth@gmail.com>,
-        Vinod Koul <vkoul@kernel.org>, linux-arm-msm@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 3/5] ARM: dts: qcom: Add USB port definitions to
- ipq806x
-Message-ID: <YLUHjtLkkp14HEqH@builder.lan>
-References: <cover.1621097174.git.noodles@earth.li>
- <cover.1621531633.git.noodles@earth.li>
- <ad2121defc539abdb339b23eef80a8930b5f086e.1621531633.git.noodles@earth.li>
+        Mon, 31 May 2021 12:00:52 -0400
+Received: from pps.filterd (m0098414.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 14VFcFIL088905;
+        Mon, 31 May 2021 11:58:28 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
+ from : to : cc : date : in-reply-to : references : content-type :
+ content-transfer-encoding : mime-version; s=pp1;
+ bh=MbQJoW+uSYC3MhQzAUeotJa8WDXDGWMqBHniGRV0EI4=;
+ b=Pefz5wmSHm7OQ3z76C2DQTjK8HN1ppm/pfk+cm/WG3fDD2mXcJm9ZEEEgWcGYYgI47tD
+ /ECWtfXZhaH5vfES2foyby84ZPLQvcsCRpQiTGrmvH4UfN+DBRnaTJqcg70Gmx59Magb
+ t38qrICJgsADOUYqMaTrlsn+YfPPWNxIf51qGzSaSoUlmtMDk4gnR4rAY+aLA5yCfuow
+ 2wiHfTgnaetzjELFfvV1VRWKf3oR5UgjupQ9I8p9HDoBm1OKYFHvvndpkUDTYWgaK1ob
+ FDiSjIaGlARRxkPtsXgR3IuKu3Jo7QV5hKsYAolV3zrvYoH9NOqynHFnPmibaDLGgRX3 Tw== 
+Received: from ppma06fra.de.ibm.com (48.49.7a9f.ip4.static.sl-reverse.com [159.122.73.72])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 38w11uk0sp-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 31 May 2021 11:58:28 -0400
+Received: from pps.filterd (ppma06fra.de.ibm.com [127.0.0.1])
+        by ppma06fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 14VFwNUn002969;
+        Mon, 31 May 2021 15:58:27 GMT
+Received: from b06avi18878370.portsmouth.uk.ibm.com (b06avi18878370.portsmouth.uk.ibm.com [9.149.26.194])
+        by ppma06fra.de.ibm.com with ESMTP id 38ucvh8me8-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 31 May 2021 15:58:26 +0000
+Received: from d06av24.portsmouth.uk.ibm.com (d06av24.portsmouth.uk.ibm.com [9.149.105.60])
+        by b06avi18878370.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 14VFvrOX35979670
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 31 May 2021 15:57:53 GMT
+Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 652A542042;
+        Mon, 31 May 2021 15:58:24 +0000 (GMT)
+Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 310424203F;
+        Mon, 31 May 2021 15:58:23 +0000 (GMT)
+Received: from li-f45666cc-3089-11b2-a85c-c57d1a57929f.ibm.com (unknown [9.160.84.117])
+        by d06av24.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Mon, 31 May 2021 15:58:23 +0000 (GMT)
+Message-ID: <73739875882e9f7416f0958f8589a09089e53d9e.camel@linux.ibm.com>
+Subject: Re: [PATCH v2 0/7] ima: Add template fields to verify EVM portable
+ signatures
+From:   Mimi Zohar <zohar@linux.ibm.com>
+To:     Roberto Sassu <roberto.sassu@huawei.com>, mjg59@srcf.ucam.org
+Cc:     linux-integrity@vger.kernel.org,
+        linux-security-module@vger.kernel.org, linux-kernel@vger.kernel.org
+Date:   Mon, 31 May 2021 11:58:20 -0400
+In-Reply-To: <20210528073812.407936-1-roberto.sassu@huawei.com>
+References: <20210528073812.407936-1-roberto.sassu@huawei.com>
+Content-Type: text/plain; charset="ISO-8859-15"
+X-Mailer: Evolution 3.28.5 (3.28.5-14.el8) 
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: lRxu8V3qGNS4nn_Tn_5W4pqZHjQYYytD
+X-Proofpoint-ORIG-GUID: lRxu8V3qGNS4nn_Tn_5W4pqZHjQYYytD
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ad2121defc539abdb339b23eef80a8930b5f086e.1621531633.git.noodles@earth.li>
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
+ definitions=2021-05-31_08:2021-05-31,2021-05-31 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0
+ priorityscore=1501 suspectscore=0 malwarescore=0 phishscore=0
+ lowpriorityscore=0 bulkscore=0 mlxlogscore=999 spamscore=0 mlxscore=0
+ adultscore=0 clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104190000 definitions=main-2105310114
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu 20 May 12:30 CDT 2021, Jonathan McDowell wrote:
-
-> Signed-off-by: Jonathan McDowell <noodles@earth.li>
-> ---
->  arch/arm/boot/dts/qcom-ipq8064.dtsi | 88 +++++++++++++++++++++++++++++
->  1 file changed, 88 insertions(+)
+On Fri, 2021-05-28 at 09:38 +0200, Roberto Sassu wrote:
+> The recent patch set 'evm: Improve usability of portable signatures' added
+> the possibility to include EVM portable signatures in the IMA measurement
+> list.
 > 
-> diff --git a/arch/arm/boot/dts/qcom-ipq8064.dtsi b/arch/arm/boot/dts/qcom-ipq8064.dtsi
-> index 9628092217cb..c66859abdfd5 100644
-> --- a/arch/arm/boot/dts/qcom-ipq8064.dtsi
-> +++ b/arch/arm/boot/dts/qcom-ipq8064.dtsi
-> @@ -1026,6 +1026,94 @@
->  			status = "disabled";
->  		};
->  
-> +		hs_phy_0: hs_phy_0 {
-
-The node name should be some generic-thing@unit-address, so I fixed up
-all your phys as "phy@100f8800" while applying your patches.
-
-Thank you,
-Bjorn
-
-> +			compatible = "qcom,ipq806x-usb-phy-hs";
-> +			reg = <0x100f8800 0x30>;
-> +			clocks = <&gcc USB30_0_UTMI_CLK>;
-> +			clock-names = "ref";
-> +			#phy-cells = <0>;
-> +
-> +			status = "disabled";
-> +		};
-> +
-> +		ss_phy_0: ss_phy_0 {
-> +			compatible = "qcom,ipq806x-usb-phy-ss";
-> +			reg = <0x100f8830 0x30>;
-> +			clocks = <&gcc USB30_0_MASTER_CLK>;
-> +			clock-names = "ref";
-> +			#phy-cells = <0>;
-> +
-> +			status = "disabled";
-> +		};
-> +
-> +		usb3_0: usb3@100f8800 {
-> +			compatible = "qcom,dwc3", "syscon";
-> +			#address-cells = <1>;
-> +			#size-cells = <1>;
-> +			reg = <0x100f8800 0x8000>;
-> +			clocks = <&gcc USB30_0_MASTER_CLK>;
-> +			clock-names = "core";
-> +
-> +			ranges;
-> +
-> +			resets = <&gcc USB30_0_MASTER_RESET>;
-> +			reset-names = "master";
-> +
-> +			status = "disabled";
-> +
-> +			dwc3_0: dwc3@10000000 {
-> +				compatible = "snps,dwc3";
-> +				reg = <0x10000000 0xcd00>;
-> +				interrupts = <GIC_SPI 205 IRQ_TYPE_LEVEL_HIGH>;
-> +				phys = <&hs_phy_0>, <&ss_phy_0>;
-> +				phy-names = "usb2-phy", "usb3-phy";
-> +				dr_mode = "host";
-> +				snps,dis_u3_susphy_quirk;
-> +			};
-> +		};
-> +
-> +		hs_phy_1: hs_phy_1 {
-> +			compatible = "qcom,ipq806x-usb-phy-hs";
-> +			reg = <0x110f8800 0x30>;
-> +			clocks = <&gcc USB30_1_UTMI_CLK>;
-> +			clock-names = "ref";
-> +			#phy-cells = <0>;
-> +		};
-> +
-> +		ss_phy_1: ss_phy_1 {
-> +			compatible = "qcom,ipq806x-usb-phy-ss";
-> +			reg = <0x110f8830 0x30>;
-> +			clocks = <&gcc USB30_1_MASTER_CLK>;
-> +			clock-names = "ref";
-> +			#phy-cells = <0>;
-> +		};
-> +
-> +		usb3_1: usb3@110f8800 {
-> +			compatible = "qcom,dwc3", "syscon";
-> +			#address-cells = <1>;
-> +			#size-cells = <1>;
-> +			reg = <0x110f8800 0x8000>;
-> +			clocks = <&gcc USB30_1_MASTER_CLK>;
-> +			clock-names = "core";
-> +
-> +			ranges;
-> +
-> +			resets = <&gcc USB30_1_MASTER_RESET>;
-> +			reset-names = "master";
-> +
-> +			status = "disabled";
-> +
-> +			dwc3_1: dwc3@11000000 {
-> +				compatible = "snps,dwc3";
-> +				reg = <0x11000000 0xcd00>;
-> +				interrupts = <GIC_SPI 110 IRQ_TYPE_LEVEL_HIGH>;
-> +				phys = <&hs_phy_1>, <&ss_phy_1>;
-> +				phy-names = "usb2-phy", "usb3-phy";
-> +				dr_mode = "host";
-> +				snps,dis_u3_susphy_quirk;
-> +			};
-> +		};
-> +
->  		vsdcc_fixed: vsdcc-regulator {
->  			compatible = "regulator-fixed";
->  			regulator-name = "SDCC Power";
-> -- 
-> 2.20.1
+> However, the information necessary to verify the signature were not
+> included in the IMA measurement list. This patch set introduces new
+> template fields to accomplish this goal:
 > 
+> - 'iuid': the inode UID;
+> - 'igid': the inode GID;
+> - 'imode': the inode mode;
+> - 'xattrnames': a list of xattr names (separated by |), only if the xattr is
+>   present;
+> - 'xattrlengths': a list of xattr lengths (u32), only if the xattr is present;
+> - 'xattrvalues': a list of xattr values;
+> 
+> Patch 1 adds an helper function to show integers in the measurement list.
+> Patches 2, 3 and 5 introduce new template fields. Patch 4 make it possible
+> to verify EVM portable signatures which protect xattrs belonging to LSMs
+> not enabled in the target platform. Patch 6 introduces the new IMA template
+> evm-sig. Patch 7 fixes a small issue in evm_write_xattrs() when audit is
+> not enabled.
+
+Thanks, Roberto. 
+
+Applied to: git://git.kernel.org/pub/scm/linux/kernel/git/zohar/linux-integrity.git
+next-integrity-testing branch.
+
+Mimi
+
