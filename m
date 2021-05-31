@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 95408395D12
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 15:39:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4AFBD396393
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 17:19:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232285AbhEaNlC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 09:41:02 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60152 "EHLO mail.kernel.org"
+        id S233227AbhEaPVT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 11:21:19 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43304 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232294AbhEaN2E (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 09:28:04 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2615561376;
-        Mon, 31 May 2021 13:22:02 +0000 (UTC)
+        id S233780AbhEaOPj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 10:15:39 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 55A5F6147D;
+        Mon, 31 May 2021 13:42:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1622467324;
-        bh=oRToud7KoChH4nC6fVZXtwAHXTLxa9slLHXrdvWlHGY=;
+        s=korg; t=1622468573;
+        bh=zaqc71jmfjSYAhxJFkH0vlK71+sUttf04PqO/8IWQqE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=alpzgHdRKSzX96djwcXPGKg5PvK7DeEphiTG/qAq5+wxq/G1/5/u3NmGSkAAwf32J
-         tkf9F0jiM8IZkVZ02rW6I5rtl+weo5xdU/9Rwcfkr00ZjbAG0We0q6+phgQt1RAj/h
-         K0ybCjn+U5/X+I0+DKVjBKW5H77tCDI5ca0bkYz0=
+        b=wyK2zyYRmm2jfnNaQHXlfaibCAGYb/ugR4lcPcqXAWWxylRLddsyLcC+ZZsSK+xvO
+         m0d95e3agqE+PrIb4TSaAfDzNyiDNcHftXw2i6tAI81ovwms7pMEgUlADOAt0AYU+N
+         q5d8Km25IJIZq/UbQJhKtIIrRCf9MT9BP6DzEaKA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Mikulas Patocka <mpatocka@redhat.com>,
-        Mike Snitzer <snitzer@redhat.com>
-Subject: [PATCH 4.19 022/116] dm snapshot: properly fix a crash when an origin has no snapshots
+        stable@vger.kernel.org,
+        Mathias Nyman <mathias.nyman@linux.intel.com>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>
+Subject: [PATCH 5.4 041/177] thunderbolt: dma_port: Fix NVM read buffer bounds and offset issue
 Date:   Mon, 31 May 2021 15:13:18 +0200
-Message-Id: <20210531130640.904356684@linuxfoundation.org>
+Message-Id: <20210531130649.344025343@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210531130640.131924542@linuxfoundation.org>
-References: <20210531130640.131924542@linuxfoundation.org>
+In-Reply-To: <20210531130647.887605866@linuxfoundation.org>
+References: <20210531130647.887605866@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,35 +40,63 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mikulas Patocka <mpatocka@redhat.com>
+From: Mathias Nyman <mathias.nyman@linux.intel.com>
 
-commit 7e768532b2396bcb7fbf6f82384b85c0f1d2f197 upstream.
+commit b106776080a1cf953a1b2fd50cb2a995db4732be upstream.
 
-If an origin target has no snapshots, o->split_boundary is set to 0.
-This causes BUG_ON(sectors <= 0) in block/bio.c:bio_split().
+Up to 64 bytes of data can be read from NVM in one go. Read address
+must be dword aligned. Data is read into a local buffer.
 
-Fix this by initializing chunk_size, and in turn split_boundary, to
-rounddown_pow_of_two(UINT_MAX) -- the largest power of two that fits
-into "unsigned" type.
+If caller asks to read data starting at an unaligned address then full
+dword is anyway read from NVM into a local buffer. Data is then copied
+from the local buffer starting at the unaligned offset to the caller
+buffer.
 
-Signed-off-by: Mikulas Patocka <mpatocka@redhat.com>
+In cases where asked data length + unaligned offset is over 64 bytes
+we need to make sure we don't read past the 64 bytes in the local
+buffer when copying to caller buffer, and make sure that we don't
+skip copying unaligned offset bytes from local buffer anymore after
+the first round of 64 byte NVM data read.
+
+Fixes: 3e13676862f9 ("thunderbolt: Add support for DMA configuration based mailbox")
 Cc: stable@vger.kernel.org
-Signed-off-by: Mike Snitzer <snitzer@redhat.com>
+Signed-off-by: Mathias Nyman <mathias.nyman@linux.intel.com>
+Signed-off-by: Mika Westerberg <mika.westerberg@linux.intel.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/md/dm-snap.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/thunderbolt/dma_port.c |   11 ++++++-----
+ 1 file changed, 6 insertions(+), 5 deletions(-)
 
---- a/drivers/md/dm-snap.c
-+++ b/drivers/md/dm-snap.c
-@@ -794,7 +794,7 @@ static int dm_add_exception(void *contex
- static uint32_t __minimum_chunk_size(struct origin *o)
+--- a/drivers/thunderbolt/dma_port.c
++++ b/drivers/thunderbolt/dma_port.c
+@@ -364,15 +364,15 @@ int dma_port_flash_read(struct tb_dma_po
+ 			void *buf, size_t size)
  {
- 	struct dm_snapshot *snap;
--	unsigned chunk_size = 0;
-+	unsigned chunk_size = rounddown_pow_of_two(UINT_MAX);
+ 	unsigned int retries = DMA_PORT_RETRIES;
+-	unsigned int offset;
+-
+-	offset = address & 3;
+-	address = address & ~3;
  
- 	if (o)
- 		list_for_each_entry(snap, &o->snapshots, list)
+ 	do {
+-		u32 nbytes = min_t(u32, size, MAIL_DATA_DWORDS * 4);
++		unsigned int offset;
++		size_t nbytes;
+ 		int ret;
+ 
++		offset = address & 3;
++		nbytes = min_t(size_t, size + offset, MAIL_DATA_DWORDS * 4);
++
+ 		ret = dma_port_flash_read_block(dma, address, dma->buf,
+ 						ALIGN(nbytes, 4));
+ 		if (ret) {
+@@ -384,6 +384,7 @@ int dma_port_flash_read(struct tb_dma_po
+ 			return ret;
+ 		}
+ 
++		nbytes -= offset;
+ 		memcpy(buf, dma->buf + offset, nbytes);
+ 
+ 		size -= nbytes;
 
 
