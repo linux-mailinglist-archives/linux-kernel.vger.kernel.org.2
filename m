@@ -2,41 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 05C0F39628F
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 16:56:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F455396332
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 17:07:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233509AbhEaO5x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 10:57:53 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36394 "EHLO mail.kernel.org"
+        id S232086AbhEaPI7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 11:08:59 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40228 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233424AbhEaOEw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 10:04:52 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0C76061406;
-        Mon, 31 May 2021 13:38:13 +0000 (UTC)
+        id S233488AbhEaOJe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 10:09:34 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7C45C61457;
+        Mon, 31 May 2021 13:40:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1622468293;
-        bh=HEYbWVopiiv8JhXlkj0mpt1+zBK4clPd/uzpkSwxRNY=;
+        s=korg; t=1622468416;
+        bh=SKYaOhmre3/ukocqr42X05M8Nh4aw3JOi0HHOFC09oQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=xXdOGvy06AyIVHRGn+IYA61PuJbdtneRM9PzhLgoHgrD6Y9QM5GcV+5emMkuMH6zD
-         htF6DB05VUnjviRnOp52QMUSg38n6HQasuATAFWFXxuEtZ+shnWZKdOyvjCC1YZ4Eb
-         mrc8Zk6FwYTaEMTTUNKIXDeHqOz9YhiB7JbRkxbI=
+        b=XI2j3eHrWrwfeWy9MhLJKmsyw49rzPzhPHFclXRIxJfOdYtFrwJ8EqsYTJ0M0SSk6
+         U3OMkOiV2h/AQR1FzFbJL6Lq9qwRXT+TXW8GxEEXj8GGpe91lbMeJiJw2GLqbUE/YW
+         f9oSTuZnopDWERcGWlqtLhqq2WFZjJipKKOg5wMk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Rikard Falkeborn <rikard.falkeborn@gmail.com>,
-        Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Yury Norov <yury.norov@gmail.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 188/252] linux/bits.h: fix compilation error with GENMASK
-Date:   Mon, 31 May 2021 15:14:13 +0200
-Message-Id: <20210531130704.398247040@linuxfoundation.org>
+Subject: [PATCH 5.10 189/252] net: netcp: Fix an error message
+Date:   Mon, 31 May 2021 15:14:14 +0200
+Message-Id: <20210531130704.434514681@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210531130657.971257589@linuxfoundation.org>
 References: <20210531130657.971257589@linuxfoundation.org>
@@ -48,131 +41,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Rikard Falkeborn <rikard.falkeborn@gmail.com>
+From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 
-[ Upstream commit f747e6667ebb2ffb8133486c9cd19800d72b0d98 ]
+[ Upstream commit ddb6e00f8413e885ff826e32521cff7924661de0 ]
 
-GENMASK() has an input check which uses __builtin_choose_expr() to
-enable a compile time sanity check of its inputs if they are known at
-compile time.
+'ret' is known to be 0 here.
+The expected error code is stored in 'tx_pipe->dma_queue', so use it
+instead.
 
-However, it turns out that __builtin_constant_p() does not always return
-a compile time constant [0].  It was thought this problem was fixed with
-gcc 4.9 [1], but apparently this is not the case [2].
+While at it, switch from %d to %pe which is more user friendly.
 
-Switch to use __is_constexpr() instead which always returns a compile time
-constant, regardless of its inputs.
-
-Link: https://lore.kernel.org/lkml/42b4342b-aefc-a16a-0d43-9f9c0d63ba7a@rasmusvillemoes.dk [0]
-Link: https://gcc.gnu.org/bugzilla/show_bug.cgi?id=19449 [1]
-Link: https://lore.kernel.org/lkml/1ac7bbc2-45d9-26ed-0b33-bf382b8d858b@I-love.SAKURA.ne.jp [2]
-Link: https://lkml.kernel.org/r/20210511203716.117010-1-rikard.falkeborn@gmail.com
-Signed-off-by: Rikard Falkeborn <rikard.falkeborn@gmail.com>
-Reported-by: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
-Acked-by: Arnd Bergmann <arnd@arndb.de>
-Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc: Ard Biesheuvel <ardb@kernel.org>
-Cc: Yury Norov <yury.norov@gmail.com>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Fixes: 84640e27f230 ("net: netcp: Add Keystone NetCP core ethernet driver")
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- include/linux/bits.h        |  2 +-
- include/linux/const.h       |  8 ++++++++
- include/linux/minmax.h      | 10 ++--------
- tools/include/linux/bits.h  |  2 +-
- tools/include/linux/const.h |  8 ++++++++
- 5 files changed, 20 insertions(+), 10 deletions(-)
+ drivers/net/ethernet/ti/netcp_core.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/include/linux/bits.h b/include/linux/bits.h
-index 7f475d59a097..87d112650dfb 100644
---- a/include/linux/bits.h
-+++ b/include/linux/bits.h
-@@ -22,7 +22,7 @@
- #include <linux/build_bug.h>
- #define GENMASK_INPUT_CHECK(h, l) \
- 	(BUILD_BUG_ON_ZERO(__builtin_choose_expr( \
--		__builtin_constant_p((l) > (h)), (l) > (h), 0)))
-+		__is_constexpr((l) > (h)), (l) > (h), 0)))
- #else
- /*
-  * BUILD_BUG_ON_ZERO is not available in h files included from asm files,
-diff --git a/include/linux/const.h b/include/linux/const.h
-index 81b8aae5a855..435ddd72d2c4 100644
---- a/include/linux/const.h
-+++ b/include/linux/const.h
-@@ -3,4 +3,12 @@
- 
- #include <vdso/const.h>
- 
-+/*
-+ * This returns a constant expression while determining if an argument is
-+ * a constant expression, most importantly without evaluating the argument.
-+ * Glory to Martin Uecker <Martin.Uecker@med.uni-goettingen.de>
-+ */
-+#define __is_constexpr(x) \
-+	(sizeof(int) == sizeof(*(8 ? ((void *)((long)(x) * 0l)) : (int *)8)))
-+
- #endif /* _LINUX_CONST_H */
-diff --git a/include/linux/minmax.h b/include/linux/minmax.h
-index c0f57b0c64d9..5433c08fcc68 100644
---- a/include/linux/minmax.h
-+++ b/include/linux/minmax.h
-@@ -2,6 +2,8 @@
- #ifndef _LINUX_MINMAX_H
- #define _LINUX_MINMAX_H
- 
-+#include <linux/const.h>
-+
- /*
-  * min()/max()/clamp() macros must accomplish three things:
-  *
-@@ -17,14 +19,6 @@
- #define __typecheck(x, y) \
- 	(!!(sizeof((typeof(x) *)1 == (typeof(y) *)1)))
- 
--/*
-- * This returns a constant expression while determining if an argument is
-- * a constant expression, most importantly without evaluating the argument.
-- * Glory to Martin Uecker <Martin.Uecker@med.uni-goettingen.de>
-- */
--#define __is_constexpr(x) \
--	(sizeof(int) == sizeof(*(8 ? ((void *)((long)(x) * 0l)) : (int *)8)))
--
- #define __no_side_effects(x, y) \
- 		(__is_constexpr(x) && __is_constexpr(y))
- 
-diff --git a/tools/include/linux/bits.h b/tools/include/linux/bits.h
-index 7f475d59a097..87d112650dfb 100644
---- a/tools/include/linux/bits.h
-+++ b/tools/include/linux/bits.h
-@@ -22,7 +22,7 @@
- #include <linux/build_bug.h>
- #define GENMASK_INPUT_CHECK(h, l) \
- 	(BUILD_BUG_ON_ZERO(__builtin_choose_expr( \
--		__builtin_constant_p((l) > (h)), (l) > (h), 0)))
-+		__is_constexpr((l) > (h)), (l) > (h), 0)))
- #else
- /*
-  * BUILD_BUG_ON_ZERO is not available in h files included from asm files,
-diff --git a/tools/include/linux/const.h b/tools/include/linux/const.h
-index 81b8aae5a855..435ddd72d2c4 100644
---- a/tools/include/linux/const.h
-+++ b/tools/include/linux/const.h
-@@ -3,4 +3,12 @@
- 
- #include <vdso/const.h>
- 
-+/*
-+ * This returns a constant expression while determining if an argument is
-+ * a constant expression, most importantly without evaluating the argument.
-+ * Glory to Martin Uecker <Martin.Uecker@med.uni-goettingen.de>
-+ */
-+#define __is_constexpr(x) \
-+	(sizeof(int) == sizeof(*(8 ? ((void *)((long)(x) * 0l)) : (int *)8)))
-+
- #endif /* _LINUX_CONST_H */
+diff --git a/drivers/net/ethernet/ti/netcp_core.c b/drivers/net/ethernet/ti/netcp_core.c
+index d7a144b4a09f..dc50e948195d 100644
+--- a/drivers/net/ethernet/ti/netcp_core.c
++++ b/drivers/net/ethernet/ti/netcp_core.c
+@@ -1350,8 +1350,8 @@ int netcp_txpipe_open(struct netcp_tx_pipe *tx_pipe)
+ 	tx_pipe->dma_queue = knav_queue_open(name, tx_pipe->dma_queue_id,
+ 					     KNAV_QUEUE_SHARED);
+ 	if (IS_ERR(tx_pipe->dma_queue)) {
+-		dev_err(dev, "Could not open DMA queue for channel \"%s\": %d\n",
+-			name, ret);
++		dev_err(dev, "Could not open DMA queue for channel \"%s\": %pe\n",
++			name, tx_pipe->dma_queue);
+ 		ret = PTR_ERR(tx_pipe->dma_queue);
+ 		goto err;
+ 	}
 -- 
 2.30.2
 
