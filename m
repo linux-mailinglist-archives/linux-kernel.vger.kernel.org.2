@@ -2,41 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 702A8395F91
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 16:11:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C6D7396422
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 17:46:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233421AbhEaOMv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 10:12:51 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50196 "EHLO mail.kernel.org"
+        id S233083AbhEaPrp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 11:47:45 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55752 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232856AbhEaNpn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 09:45:43 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id EBFC56142B;
-        Mon, 31 May 2021 13:29:56 +0000 (UTC)
+        id S233627AbhEaO1E (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 10:27:04 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 984F961603;
+        Mon, 31 May 2021 13:47:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1622467797;
-        bh=0rp0hbiB+Kp09uOC7vDu7Mo1v4hoq6zkxNkJXxDq77U=;
+        s=korg; t=1622468832;
+        bh=oDXOI3keOXquPD0I5GwHQPyZVkHkLMoK4hqike9WHE4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=nLcujQKuAMn9KTUUXCadW0Mlia+Zs9/L4K4H2VVHcRPZDu/alc94CIXOLlu4ia3mT
-         3BVgesU+PcAKPMM5m1Ku+0TN/8GNBroN+cccSlHD9k1jwjdV3zXKVAxJAS3fugEd+/
-         uYWW1YrvAQ5hSPl8N6ihE5WWTWidh9BrXltOQzUw=
+        b=jsu3owTI13HN9F9jbngxlomuJFQ/p925peakAu6bQd23N+iFBh99zCl+kpLTMOwZd
+         b+MjG5Be43KULxq7NVv30uqAiDiILj3vCgRSmawCCMuHTU+iYZM3FL2igqQ8O73FBe
+         ZMt9oSDn8fknj3SksUnU3FmQ6rJg+umUOgxt3sRw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Mike Kravetz <mike.kravetz@oracle.com>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Davidlohr Bueso <dbueso@suse.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Ilie Halip <ilie.halip@gmail.com>,
-        David Bolvansky <david.bolvansky@gmail.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Subject: [PATCH 4.14 77/79] hugetlbfs: hugetlb_fault_mutex_hash() cleanup
+        stable@vger.kernel.org, Jakub Kicinski <kuba@kernel.org>,
+        Juergen Gross <jgross@suse.com>,
+        Yunsheng Lin <linyunsheng@huawei.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 145/177] net: sched: fix packet stuck problem for lockless qdisc
 Date:   Mon, 31 May 2021 15:15:02 +0200
-Message-Id: <20210531130638.466476865@linuxfoundation.org>
+Message-Id: <20210531130652.944216581@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210531130636.002722319@linuxfoundation.org>
-References: <20210531130636.002722319@linuxfoundation.org>
+In-Reply-To: <20210531130647.887605866@linuxfoundation.org>
+References: <20210531130647.887605866@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,128 +42,199 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mike Kravetz <mike.kravetz@oracle.com>
+From: Yunsheng Lin <linyunsheng@huawei.com>
 
-commit 552546366a30d88bd1d6f5efe848b2ab50fd57e5 upstream.
+[ Upstream commit a90c57f2cedd52a511f739fb55e6244e22e1a2fb ]
 
-A new clang diagnostic (-Wsizeof-array-div) warns about the calculation
-to determine the number of u32's in an array of unsigned longs.
-Suppress warning by adding parentheses.
+Lockless qdisc has below concurrent problem:
+    cpu0                 cpu1
+     .                     .
+q->enqueue                 .
+     .                     .
+qdisc_run_begin()          .
+     .                     .
+dequeue_skb()              .
+     .                     .
+sch_direct_xmit()          .
+     .                     .
+     .                q->enqueue
+     .             qdisc_run_begin()
+     .            return and do nothing
+     .                     .
+qdisc_run_end()            .
 
-While looking at the above issue, noticed that the 'address' parameter
-to hugetlb_fault_mutex_hash is no longer used.  So, remove it from the
-definition and all callers.
+cpu1 enqueue a skb without calling __qdisc_run() because cpu0
+has not released the lock yet and spin_trylock() return false
+for cpu1 in qdisc_run_begin(), and cpu0 do not see the skb
+enqueued by cpu1 when calling dequeue_skb() because cpu1 may
+enqueue the skb after cpu0 calling dequeue_skb() and before
+cpu0 calling qdisc_run_end().
 
-No functional change.
+Lockless qdisc has below another concurrent problem when
+tx_action is involved:
 
-Link: http://lkml.kernel.org/r/20190919011847.18400-1-mike.kravetz@oracle.com
-Signed-off-by: Mike Kravetz <mike.kravetz@oracle.com>
-Reported-by: Nathan Chancellor <natechancellor@gmail.com>
-Reviewed-by: Nathan Chancellor <natechancellor@gmail.com>
-Reviewed-by: Davidlohr Bueso <dbueso@suse.de>
-Reviewed-by: Andrew Morton <akpm@linux-foundation.org>
-Cc: Nick Desaulniers <ndesaulniers@google.com>
-Cc: Ilie Halip <ilie.halip@gmail.com>
-Cc: David Bolvansky <david.bolvansky@gmail.com>
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+cpu0(serving tx_action)     cpu1             cpu2
+          .                   .                .
+          .              q->enqueue            .
+          .            qdisc_run_begin()       .
+          .              dequeue_skb()         .
+          .                   .            q->enqueue
+          .                   .                .
+          .             sch_direct_xmit()      .
+          .                   .         qdisc_run_begin()
+          .                   .       return and do nothing
+          .                   .                .
+ clear __QDISC_STATE_SCHED    .                .
+ qdisc_run_begin()            .                .
+ return and do nothing        .                .
+          .                   .                .
+          .            qdisc_run_end()         .
+
+This patch fixes the above data race by:
+1. If the first spin_trylock() return false and STATE_MISSED is
+   not set, set STATE_MISSED and retry another spin_trylock() in
+   case other CPU may not see STATE_MISSED after it releases the
+   lock.
+2. reschedule if STATE_MISSED is set after the lock is released
+   at the end of qdisc_run_end().
+
+For tx_action case, STATE_MISSED is also set when cpu1 is at the
+end if qdisc_run_end(), so tx_action will be rescheduled again
+to dequeue the skb enqueued by cpu2.
+
+Clear STATE_MISSED before retrying a dequeuing when dequeuing
+returns NULL in order to reduce the overhead of the second
+spin_trylock() and __netif_schedule() calling.
+
+Also clear the STATE_MISSED before calling __netif_schedule()
+at the end of qdisc_run_end() to avoid doing another round of
+dequeuing in the pfifo_fast_dequeue().
+
+The performance impact of this patch, tested using pktgen and
+dummy netdev with pfifo_fast qdisc attached:
+
+ threads  without+this_patch   with+this_patch      delta
+    1        2.61Mpps            2.60Mpps           -0.3%
+    2        3.97Mpps            3.82Mpps           -3.7%
+    4        5.62Mpps            5.59Mpps           -0.5%
+    8        2.78Mpps            2.77Mpps           -0.3%
+   16        2.22Mpps            2.22Mpps           -0.0%
+
+Fixes: 6b3ba9146fe6 ("net: sched: allow qdiscs to handle locking")
+Acked-by: Jakub Kicinski <kuba@kernel.org>
+Tested-by: Juergen Gross <jgross@suse.com>
+Signed-off-by: Yunsheng Lin <linyunsheng@huawei.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/hugetlbfs/inode.c    |    4 ++--
- include/linux/hugetlb.h |    2 +-
- mm/hugetlb.c            |   11 +++++------
- mm/userfaultfd.c        |    2 +-
- 4 files changed, 9 insertions(+), 10 deletions(-)
+ include/net/sch_generic.h | 35 ++++++++++++++++++++++++++++++++++-
+ net/sched/sch_generic.c   | 19 +++++++++++++++++++
+ 2 files changed, 53 insertions(+), 1 deletion(-)
 
---- a/fs/hugetlbfs/inode.c
-+++ b/fs/hugetlbfs/inode.c
-@@ -436,7 +436,7 @@ static void remove_inode_hugepages(struc
- 			u32 hash;
+diff --git a/include/net/sch_generic.h b/include/net/sch_generic.h
+index b2ceec7b280d..0852f3e51360 100644
+--- a/include/net/sch_generic.h
++++ b/include/net/sch_generic.h
+@@ -36,6 +36,7 @@ struct qdisc_rate_table {
+ enum qdisc_state_t {
+ 	__QDISC_STATE_SCHED,
+ 	__QDISC_STATE_DEACTIVATED,
++	__QDISC_STATE_MISSED,
+ };
  
- 			index = page->index;
--			hash = hugetlb_fault_mutex_hash(h, mapping, index, 0);
-+			hash = hugetlb_fault_mutex_hash(h, mapping, index);
- 			mutex_lock(&hugetlb_fault_mutex_table[hash]);
- 
- 			/*
-@@ -618,7 +618,7 @@ static long hugetlbfs_fallocate(struct f
- 		addr = index * hpage_size;
- 
- 		/* mutex taken here, fault path and hole punch */
--		hash = hugetlb_fault_mutex_hash(h, mapping, index, addr);
-+		hash = hugetlb_fault_mutex_hash(h, mapping, index);
- 		mutex_lock(&hugetlb_fault_mutex_table[hash]);
- 
- 		/* See if already present in mapping to avoid alloc/free */
---- a/include/linux/hugetlb.h
-+++ b/include/linux/hugetlb.h
-@@ -123,7 +123,7 @@ void free_huge_page(struct page *page);
- void hugetlb_fix_reserve_counts(struct inode *inode);
- extern struct mutex *hugetlb_fault_mutex_table;
- u32 hugetlb_fault_mutex_hash(struct hstate *h, struct address_space *mapping,
--				pgoff_t idx, unsigned long address);
-+				pgoff_t idx);
- 
- pte_t *huge_pmd_share(struct mm_struct *mm, unsigned long addr, pud_t *pud);
- 
---- a/mm/hugetlb.c
-+++ b/mm/hugetlb.c
-@@ -3802,8 +3802,7 @@ retry:
- 			 * handling userfault.  Reacquire after handling
- 			 * fault to make calling code simpler.
- 			 */
--			hash = hugetlb_fault_mutex_hash(h, mapping, idx,
--							address);
-+			hash = hugetlb_fault_mutex_hash(h, mapping, idx);
- 			mutex_unlock(&hugetlb_fault_mutex_table[hash]);
- 			ret = handle_userfault(&vmf, VM_UFFD_MISSING);
- 			mutex_lock(&hugetlb_fault_mutex_table[hash]);
-@@ -3916,7 +3915,7 @@ backout_unlocked:
- 
- #ifdef CONFIG_SMP
- u32 hugetlb_fault_mutex_hash(struct hstate *h, struct address_space *mapping,
--			    pgoff_t idx, unsigned long address)
-+			    pgoff_t idx)
+ struct qdisc_size_table {
+@@ -156,8 +157,33 @@ static inline bool qdisc_is_empty(const struct Qdisc *qdisc)
+ static inline bool qdisc_run_begin(struct Qdisc *qdisc)
  {
- 	unsigned long key[2];
- 	u32 hash;
-@@ -3924,7 +3923,7 @@ u32 hugetlb_fault_mutex_hash(struct hsta
- 	key[0] = (unsigned long) mapping;
- 	key[1] = idx;
- 
--	hash = jhash2((u32 *)&key, sizeof(key)/sizeof(u32), 0);
-+	hash = jhash2((u32 *)&key, sizeof(key)/(sizeof(u32)), 0);
- 
- 	return hash & (num_fault_mutexes - 1);
- }
-@@ -3934,7 +3933,7 @@ u32 hugetlb_fault_mutex_hash(struct hsta
-  * return 0 and avoid the hashing overhead.
-  */
- u32 hugetlb_fault_mutex_hash(struct hstate *h, struct address_space *mapping,
--			    pgoff_t idx, unsigned long address)
-+			    pgoff_t idx)
+ 	if (qdisc->flags & TCQ_F_NOLOCK) {
++		if (spin_trylock(&qdisc->seqlock))
++			goto nolock_empty;
++
++		/* If the MISSED flag is set, it means other thread has
++		 * set the MISSED flag before second spin_trylock(), so
++		 * we can return false here to avoid multi cpus doing
++		 * the set_bit() and second spin_trylock() concurrently.
++		 */
++		if (test_bit(__QDISC_STATE_MISSED, &qdisc->state))
++			return false;
++
++		/* Set the MISSED flag before the second spin_trylock(),
++		 * if the second spin_trylock() return false, it means
++		 * other cpu holding the lock will do dequeuing for us
++		 * or it will see the MISSED flag set after releasing
++		 * lock and reschedule the net_tx_action() to do the
++		 * dequeuing.
++		 */
++		set_bit(__QDISC_STATE_MISSED, &qdisc->state);
++
++		/* Retry again in case other CPU may not see the new flag
++		 * after it releases the lock at the end of qdisc_run_end().
++		 */
+ 		if (!spin_trylock(&qdisc->seqlock))
+ 			return false;
++
++nolock_empty:
+ 		WRITE_ONCE(qdisc->empty, false);
+ 	} else if (qdisc_is_running(qdisc)) {
+ 		return false;
+@@ -173,8 +199,15 @@ static inline bool qdisc_run_begin(struct Qdisc *qdisc)
+ static inline void qdisc_run_end(struct Qdisc *qdisc)
  {
- 	return 0;
+ 	write_seqcount_end(&qdisc->running);
+-	if (qdisc->flags & TCQ_F_NOLOCK)
++	if (qdisc->flags & TCQ_F_NOLOCK) {
+ 		spin_unlock(&qdisc->seqlock);
++
++		if (unlikely(test_bit(__QDISC_STATE_MISSED,
++				      &qdisc->state))) {
++			clear_bit(__QDISC_STATE_MISSED, &qdisc->state);
++			__netif_schedule(qdisc);
++		}
++	}
  }
-@@ -3979,7 +3978,7 @@ int hugetlb_fault(struct mm_struct *mm,
- 	 * get spurious allocation failures if two CPUs race to instantiate
- 	 * the same page in the page cache.
- 	 */
--	hash = hugetlb_fault_mutex_hash(h, mapping, idx, address);
-+	hash = hugetlb_fault_mutex_hash(h, mapping, idx);
- 	mutex_lock(&hugetlb_fault_mutex_table[hash]);
  
- 	entry = huge_ptep_get(ptep);
---- a/mm/userfaultfd.c
-+++ b/mm/userfaultfd.c
-@@ -272,7 +272,7 @@ retry:
- 		 */
- 		idx = linear_page_index(dst_vma, dst_addr);
- 		mapping = dst_vma->vm_file->f_mapping;
--		hash = hugetlb_fault_mutex_hash(h, mapping, idx, dst_addr);
-+		hash = hugetlb_fault_mutex_hash(h, mapping, idx);
- 		mutex_lock(&hugetlb_fault_mutex_table[hash]);
+ static inline bool qdisc_may_bulk(const struct Qdisc *qdisc)
+diff --git a/net/sched/sch_generic.c b/net/sched/sch_generic.c
+index 6e6147a81bc3..0723e7858658 100644
+--- a/net/sched/sch_generic.c
++++ b/net/sched/sch_generic.c
+@@ -645,8 +645,10 @@ static struct sk_buff *pfifo_fast_dequeue(struct Qdisc *qdisc)
+ {
+ 	struct pfifo_fast_priv *priv = qdisc_priv(qdisc);
+ 	struct sk_buff *skb = NULL;
++	bool need_retry = true;
+ 	int band;
  
- 		err = -ENOMEM;
++retry:
+ 	for (band = 0; band < PFIFO_FAST_BANDS && !skb; band++) {
+ 		struct skb_array *q = band2list(priv, band);
+ 
+@@ -657,6 +659,23 @@ static struct sk_buff *pfifo_fast_dequeue(struct Qdisc *qdisc)
+ 	}
+ 	if (likely(skb)) {
+ 		qdisc_update_stats_at_dequeue(qdisc, skb);
++	} else if (need_retry &&
++		   test_bit(__QDISC_STATE_MISSED, &qdisc->state)) {
++		/* Delay clearing the STATE_MISSED here to reduce
++		 * the overhead of the second spin_trylock() in
++		 * qdisc_run_begin() and __netif_schedule() calling
++		 * in qdisc_run_end().
++		 */
++		clear_bit(__QDISC_STATE_MISSED, &qdisc->state);
++
++		/* Make sure dequeuing happens after clearing
++		 * STATE_MISSED.
++		 */
++		smp_mb__after_atomic();
++
++		need_retry = false;
++
++		goto retry;
+ 	} else {
+ 		WRITE_ONCE(qdisc->empty, true);
+ 	}
+-- 
+2.30.2
+
 
 
