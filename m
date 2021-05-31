@@ -2,37 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EB7C5395F18
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 16:06:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4983739659F
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 18:40:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233382AbhEaOHr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 10:07:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44892 "EHLO mail.kernel.org"
+        id S233622AbhEaQmh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 12:42:37 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46632 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232227AbhEaNmg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 09:42:36 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id EC1CD61481;
-        Mon, 31 May 2021 13:28:29 +0000 (UTC)
+        id S232301AbhEaOwT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 10:52:19 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A778961932;
+        Mon, 31 May 2021 13:58:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1622467710;
-        bh=efU9PGSbDtdu1/hSrc3mX1eRJyc9rgg2Flsb++jTol4=;
+        s=korg; t=1622469503;
+        bh=mc9qPXOYM9BuhwrCiFltIAGr2dsvj56kwEtrxC/IiC0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=A3HntQf8sz4g/uzFOPbrkhjyFC96W6b+HCw4lGq9AAHtQ+u/VTySP/ggR0e2B+a/F
-         df0YTKSmGqtDWd5m3hOo3Xt3dtvslmWUGpefT3C9AwVT7r638QNrycJCNX4yybq7A9
-         Y7i1xhLlDbd76hv3sngSdBREYb2njJa/nVYkjQ+I=
+        b=xwW9rDh+pQTgdWDihO6zdo6lGu4IoybtVHbcmvi0aqOM2cMywRmZOvvZy4OvLsl2E
+         uTh34s04Wd5WltfeVi52kp9D8JuQQkgpYt36Pa0eA4enW95yxhpQm4SyfIUpkUFcZ4
+         kQY3UbegM8U7RJ1jetZiKXWHQBENMlXjePWfXE2M=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Vinod Koul <vkoul@kernel.org>,
-        Sinan Kaya <okaya@kernel.org>,
-        Phillip Potter <phil@philpotter.co.uk>,
+        stable@vger.kernel.org,
+        Subbaraman Narayanamurthy <subbaram@codeaurora.org>,
+        Matthias Kaehlcke <mka@chromium.org>,
+        Georgi Djakov <djakov@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 52/79] dmaengine: qcom_hidma: comment platform_driver_register call
-Date:   Mon, 31 May 2021 15:14:37 +0200
-Message-Id: <20210531130637.672660409@linuxfoundation.org>
+Subject: [PATCH 5.12 223/296] interconnect: qcom: bcm-voter: add a missing of_node_put()
+Date:   Mon, 31 May 2021 15:14:38 +0200
+Message-Id: <20210531130711.325292247@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210531130636.002722319@linuxfoundation.org>
-References: <20210531130636.002722319@linuxfoundation.org>
+In-Reply-To: <20210531130703.762129381@linuxfoundation.org>
+References: <20210531130703.762129381@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,50 +42,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Phillip Potter <phil@philpotter.co.uk>
+From: Subbaraman Narayanamurthy <subbaram@codeaurora.org>
 
-[ Upstream commit 4df2a8b0ad634d98a67e540a4e18a60f943e7d9f ]
+[ Upstream commit a00593737f8bac2c9e97b696e7ff84a4446653e8 ]
 
-Place a comment in hidma_mgmt_init explaining why success must
-currently be assumed, due to the cleanup issue that would need to
-be considered were this module ever to be unloadable or were this
-platform_driver_register call ever to fail.
+Add a missing of_node_put() in of_bcm_voter_get() to avoid the
+reference leak.
 
-Acked-By: Vinod Koul <vkoul@kernel.org>
-Acked-By: Sinan Kaya <okaya@kernel.org>
-Signed-off-by: Phillip Potter <phil@philpotter.co.uk>
-Link: https://lore.kernel.org/r/20210503115736.2104747-52-gregkh@linuxfoundation.org
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Subbaraman Narayanamurthy <subbaram@codeaurora.org>
+Reviewed-by: Matthias Kaehlcke <mka@chromium.org>
+Link: https://lore.kernel.org/r/1619116570-13308-1-git-send-email-subbaram@codeaurora.org
+Fixes: 976daac4a1c5 ("interconnect: qcom: Consolidate interconnect RPMh support")
+Signed-off-by: Georgi Djakov <djakov@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/dma/qcom/hidma_mgmt.c | 14 ++++++++++++++
- 1 file changed, 14 insertions(+)
+ drivers/interconnect/qcom/bcm-voter.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/dma/qcom/hidma_mgmt.c b/drivers/dma/qcom/hidma_mgmt.c
-index 7335e2eb9b72..fd1b3a09de91 100644
---- a/drivers/dma/qcom/hidma_mgmt.c
-+++ b/drivers/dma/qcom/hidma_mgmt.c
-@@ -454,6 +454,20 @@ static int __init hidma_mgmt_init(void)
- 		hidma_mgmt_of_populate_channels(child);
- 	}
- #endif
-+	/*
-+	 * We do not check for return value here, as it is assumed that
-+	 * platform_driver_register must not fail. The reason for this is that
-+	 * the (potential) hidma_mgmt_of_populate_channels calls above are not
-+	 * cleaned up if it does fail, and to do this work is quite
-+	 * complicated. In particular, various calls of of_address_to_resource,
-+	 * of_irq_to_resource, platform_device_register_full, of_dma_configure,
-+	 * and of_msi_configure which then call other functions and so on, must
-+	 * be cleaned up - this is not a trivial exercise.
-+	 *
-+	 * Currently, this module is not intended to be unloaded, and there is
-+	 * no module_exit function defined which does the needed cleanup. For
-+	 * this reason, we have to assume success here.
-+	 */
- 	platform_driver_register(&hidma_mgmt_driver);
+diff --git a/drivers/interconnect/qcom/bcm-voter.c b/drivers/interconnect/qcom/bcm-voter.c
+index 1cc565bce2f4..dd18cd8474f8 100644
+--- a/drivers/interconnect/qcom/bcm-voter.c
++++ b/drivers/interconnect/qcom/bcm-voter.c
+@@ -1,6 +1,6 @@
+ // SPDX-License-Identifier: GPL-2.0
+ /*
+- * Copyright (c) 2020, The Linux Foundation. All rights reserved.
++ * Copyright (c) 2020-2021, The Linux Foundation. All rights reserved.
+  */
  
- 	return 0;
+ #include <asm/div64.h>
+@@ -205,6 +205,7 @@ struct bcm_voter *of_bcm_voter_get(struct device *dev, const char *name)
+ 	}
+ 	mutex_unlock(&bcm_voter_lock);
+ 
++	of_node_put(node);
+ 	return voter;
+ }
+ EXPORT_SYMBOL_GPL(of_bcm_voter_get);
 -- 
 2.30.2
 
