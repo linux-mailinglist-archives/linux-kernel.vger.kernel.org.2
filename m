@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E5E04396391
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 17:19:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9CEDF395D1A
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 15:39:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232463AbhEaPUx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 11:20:53 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43308 "EHLO mail.kernel.org"
+        id S232426AbhEaNlR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 09:41:17 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34114 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233786AbhEaOPk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 10:15:40 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 97C7461481;
-        Mon, 31 May 2021 13:42:55 +0000 (UTC)
+        id S231864AbhEaN20 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 09:28:26 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6A94661414;
+        Mon, 31 May 2021 13:22:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1622468576;
-        bh=wo3zNAVYL00QHR8T64jEHnbvdwrsEjeG7yg6FtWbvlU=;
+        s=korg; t=1622467326;
+        bh=rxiVWhRFjxc11PiobM7mz1F4cSS4dIpzOp1jHyGjH3E=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=qjcK4yVEQXLHKziL5GyqPIoHvDj7yx21kex6irkuHfIrZu45IhGYWppFAC58f9i1u
-         ZvlypGVjLSZkRrJZjvGHBBgAajJcAibjyn68DLxPzxHzWjFgJ7LXewnsZkYTFj+QdF
-         PVt2O+8j6ypVzLuRRuWct94OoW//ij12+uhq7yaw=
+        b=lusIRIni1Dlu+h/zKIZCBb1ZH1m0zopujMRquQPhPQsgN9p0fuwWPWAOimNCytYOJ
+         lupAFWzUHwm5MSBZ93iycOMrqAGY6WXCWswtnLpdARFaUMGXh3DEorFk+e5TRijdlS
+         TRAcsoktmsoOrdioatKyodnuDhWSY2RFTZRvhG7M=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Alexander Usyskin <alexander.usyskin@intel.com>,
-        Tomas Winkler <tomas.winkler@intel.com>
-Subject: [PATCH 5.4 042/177] mei: request autosuspend after sending rx flow control
+        stable@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
+        Daniel Thompson <daniel.thompson@linaro.org>,
+        Jason Wessel <jason.wessel@windriver.com>
+Subject: [PATCH 4.19 023/116] kgdb: fix gcc-11 warnings harder
 Date:   Mon, 31 May 2021 15:13:19 +0200
-Message-Id: <20210531130649.374242652@linuxfoundation.org>
+Message-Id: <20210531130640.942959126@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210531130647.887605866@linuxfoundation.org>
-References: <20210531130647.887605866@linuxfoundation.org>
+In-Reply-To: <20210531130640.131924542@linuxfoundation.org>
+References: <20210531130640.131924542@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,34 +40,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Alexander Usyskin <alexander.usyskin@intel.com>
+From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-commit bbf0a94744edfeee298e4a9ab6fd694d639a5cdf upstream.
+commit bda7d3ab06f19c02dcef61fefcb9dd954dfd5e4f upstream.
 
-A rx flow control waiting in the control queue may block autosuspend.
-Re-request autosuspend after flow control been sent to unblock
-the transition to the low power state.
+40cc3a80bb42 ("kgdb: fix gcc-11 warning on indentation") tried to fix up
+the gcc-11 complaints in this file by just reformatting the #defines.
+That worked for gcc 11.1.0, but in gcc 11.1.1 as shipped by Fedora 34,
+the warning came back for one of the #defines.
 
-Cc: <stable@vger.kernel.org>
-Signed-off-by: Alexander Usyskin <alexander.usyskin@intel.com>
-Signed-off-by: Tomas Winkler <tomas.winkler@intel.com>
-Link: https://lore.kernel.org/r/20210526193334.445759-1-tomas.winkler@intel.com
+Fix this up again by putting { } around the if statement, now it is
+quiet again.
+
+Fixes: 40cc3a80bb42 ("kgdb: fix gcc-11 warning on indentation")
+Cc: Arnd Bergmann <arnd@arndb.de>
+Cc: Daniel Thompson <daniel.thompson@linaro.org>
+Cc: Jason Wessel <jason.wessel@windriver.com>
+Link: https://lore.kernel.org/r/20210520130839.51987-1-gregkh@linuxfoundation.org
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/misc/mei/interrupt.c |    3 +++
- 1 file changed, 3 insertions(+)
+ drivers/misc/kgdbts.c |    3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
---- a/drivers/misc/mei/interrupt.c
-+++ b/drivers/misc/mei/interrupt.c
-@@ -222,6 +222,9 @@ static int mei_cl_irq_read(struct mei_cl
- 		return ret;
- 	}
- 
-+	pm_runtime_mark_last_busy(dev->dev);
-+	pm_request_autosuspend(dev->dev);
-+
- 	list_move_tail(&cb->list, &cl->rd_pending);
- 
- 	return 0;
+--- a/drivers/misc/kgdbts.c
++++ b/drivers/misc/kgdbts.c
+@@ -112,8 +112,9 @@
+ 		printk(KERN_INFO a);	\
+ } while (0)
+ #define v2printk(a...) do {		\
+-	if (verbose > 1)		\
++	if (verbose > 1) {		\
+ 		printk(KERN_INFO a);	\
++	}				\
+ 	touch_nmi_watchdog();		\
+ } while (0)
+ #define eprintk(a...) do {		\
 
 
