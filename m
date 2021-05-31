@@ -2,37 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 70F60396550
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 18:30:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E31C395CE0
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 15:38:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232130AbhEaQbj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 12:31:39 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40322 "EHLO mail.kernel.org"
+        id S232881AbhEaNjr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 09:39:47 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33238 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233362AbhEaOrN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 10:47:13 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9E28961C90;
-        Mon, 31 May 2021 13:56:07 +0000 (UTC)
+        id S231801AbhEaN13 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 09:27:29 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 733BE611CA;
+        Mon, 31 May 2021 13:21:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1622469368;
-        bh=d5hGgpFXl/WfnpQuNaib7PPQjw6cDvtuUJzj/dDkc3Q=;
+        s=korg; t=1622467303;
+        bh=pWgjaoNU4Rnafi2V1SErLtXXvsQJ3sHRTqZjrDOQ5f0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=p5M/5jffvW4Jvi5C+g7if6OMIYZkG44XZ1xEpPmB0lPQmnAr2K2dP0VBwEBjRhUDN
-         Mts7rTo29FCnGtPpPvrhnMF348lS5DHbiSAG3hqYIiQq3GBdIE8SUVF2xUj6RWmmjJ
-         bAfvg445e/ml6jGEFfN0hP5g23u6EsieFovgZ6y0=
+        b=OkXkcS85PSFZcva5K94cTthdB7GO3D3BK6kgY+gzpwJ5Po+QHJAJWDPX7S9oG7mwt
+         9yAyum/d4NXRpPEsP0EM/wdRPewzXGWO7+poZmZYAVI68ohMJBv9JTAT03t5I5+vwi
+         J26POOsh+eWbbWuIznqkEEkhUk++bzkj0el8AUec=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        Vladimir Oltean <olteanv@gmail.com>,
-        Mark Brown <broonie@kernel.org>
-Subject: [PATCH 5.12 136/296] spi: spi-fsl-dspi: Fix a resource leak in an error handling path
+        stable@vger.kernel.org, Johannes Berg <johannes.berg@intel.com>
+Subject: [PATCH 4.19 015/116] mac80211: drop A-MSDUs on old ciphers
 Date:   Mon, 31 May 2021 15:13:11 +0200
-Message-Id: <20210531130708.460737566@linuxfoundation.org>
+Message-Id: <20210531130640.668393496@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210531130703.762129381@linuxfoundation.org>
-References: <20210531130703.762129381@linuxfoundation.org>
+In-Reply-To: <20210531130640.131924542@linuxfoundation.org>
+References: <20210531130640.131924542@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,40 +38,63 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+From: Johannes Berg <johannes.berg@intel.com>
 
-commit 680ec0549a055eb464dce6ffb4bfb736ef87236e upstream.
+commit 270032a2a9c4535799736142e1e7c413ca7b836e upstream.
 
-'dspi_request_dma()' should be undone by a 'dspi_release_dma()' call in the
-error handling path of the probe function, as already done in the remove
-function
+With old ciphers (WEP and TKIP) we shouldn't be using A-MSDUs
+since A-MSDUs are only supported if we know that they are, and
+the only practical way for that is HT support which doesn't
+support old ciphers.
 
-Fixes: 90ba37033cb9 ("spi: spi-fsl-dspi: Add DMA support for Vybrid")
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Reviewed-by: Vladimir Oltean <olteanv@gmail.com>
-Link: https://lore.kernel.org/r/d51caaac747277a1099ba8dea07acd85435b857e.1620587472.git.christophe.jaillet@wanadoo.fr
-Signed-off-by: Mark Brown <broonie@kernel.org>
+However, we would normally accept them anyway. Since we check
+the MMIC before deaggregating A-MSDUs, and the A-MSDU bit in
+the QoS header is not protected in TKIP (or WEP), this enables
+attacks similar to CVE-2020-24588. To prevent that, drop A-MSDUs
+completely with old ciphers.
+
+Cc: stable@vger.kernel.org
+Link: https://lore.kernel.org/r/20210511200110.076543300172.I548e6e71f1ee9cad4b9a37bf212ae7db723587aa@changeid
+Signed-off-by: Johannes Berg <johannes.berg@intel.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/spi/spi-fsl-dspi.c |    4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ net/mac80211/rx.c |   19 ++++++++++++++++++-
+ 1 file changed, 18 insertions(+), 1 deletion(-)
 
---- a/drivers/spi/spi-fsl-dspi.c
-+++ b/drivers/spi/spi-fsl-dspi.c
-@@ -1375,11 +1375,13 @@ poll_mode:
- 	ret = spi_register_controller(ctlr);
- 	if (ret != 0) {
- 		dev_err(&pdev->dev, "Problem registering DSPI ctlr\n");
--		goto out_free_irq;
-+		goto out_release_dma;
- 	}
+--- a/net/mac80211/rx.c
++++ b/net/mac80211/rx.c
+@@ -5,7 +5,7 @@
+  * Copyright 2007-2010	Johannes Berg <johannes@sipsolutions.net>
+  * Copyright 2013-2014  Intel Mobile Communications GmbH
+  * Copyright(c) 2015 - 2017 Intel Deutschland GmbH
+- * Copyright (C) 2018 Intel Corporation
++ * Copyright (C) 2018-2021 Intel Corporation
+  *
+  * This program is free software; you can redistribute it and/or modify
+  * it under the terms of the GNU General Public License version 2 as
+@@ -2614,6 +2614,23 @@ ieee80211_rx_h_amsdu(struct ieee80211_rx
+ 	if (is_multicast_ether_addr(hdr->addr1))
+ 		return RX_DROP_UNUSABLE;
  
- 	return ret;
++	if (rx->key) {
++		/*
++		 * We should not receive A-MSDUs on pre-HT connections,
++		 * and HT connections cannot use old ciphers. Thus drop
++		 * them, as in those cases we couldn't even have SPP
++		 * A-MSDUs or such.
++		 */
++		switch (rx->key->conf.cipher) {
++		case WLAN_CIPHER_SUITE_WEP40:
++		case WLAN_CIPHER_SUITE_WEP104:
++		case WLAN_CIPHER_SUITE_TKIP:
++			return RX_DROP_UNUSABLE;
++		default:
++			break;
++		}
++	}
++
+ 	return __ieee80211_rx_h_amsdu(rx, 0);
+ }
  
-+out_release_dma:
-+	dspi_release_dma(dspi);
- out_free_irq:
- 	if (dspi->irq)
- 		free_irq(dspi->irq, dspi);
 
 
