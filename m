@@ -2,189 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D32A539579A
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 10:56:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 15EC239579E
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 10:57:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230335AbhEaI6X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 04:58:23 -0400
-Received: from esa.microchip.iphmx.com ([68.232.153.233]:46641 "EHLO
-        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229591AbhEaI6U (ORCPT
+        id S229591AbhEaI7H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 04:59:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54120 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230429AbhEaI7D (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 04:58:20 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1622451402; x=1653987402;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-id:content-transfer-encoding:
-   mime-version;
-  bh=piK1XbY7jcBDQj8Xy0QLZptWNmt4Tdfoj6wfPDC7wdo=;
-  b=QwGeL1EJWtq1esWCHcRNDq0zFy6ygba5hb0dLJnrSyHHXwJg3GBPwLww
-   zxz3hpW/4yZAznm/2Ia5cfvuuc3g8MxnzouHad+c3a4TsEI9GA0J1uMV9
-   LayJsU9m4GtlapjCF7OvhZ+W3CCE7j1KqIAlKlaGv1XlTrez89B7YaWlC
-   ii0upqaPVyp7Sky3bklVb6jlU9fyBFYYr4p8GVMI0XIQdVtK9p8mE5MH5
-   519OF+Ubh5bM097t9Dtssv/LQtmjhpj0SZwkYR4ZW5X8A0MGW5YcNYRJH
-   WMMXU0L9qIBQYglWU6ITYBcHYENab2RmWY3txiLQr9iMKTIj3qAaMiLtc
-   g==;
-IronPort-SDR: ktdcm5B57fSt3FlykvyEHbm7zE2AljYGs57ySwoqGpcg9r6T496AvARLcC1jd370Rpu4kTpFDa
- v4n57F0P9+mVGYKVLaEGxZPeTiMN6ye+Qqkqd/dyloZO5Mbz4qBPYAr+5ddROVmOGl081C804R
- WaZS5bjThQ/Kdq666s8jbGn087h6ggTPO6c7hvSdHLENEA9uZjfqUtZT/9NxkV6yAC6e5VkN+8
- oV4l3G/j/V2iREnDaUgsk1Q3uZLJv8eQug5v6IztReTi4ur/T3LHv9Q7t+g19GiwCqFbk8YEvb
- N68=
-X-IronPort-AV: E=Sophos;i="5.83,236,1616482800"; 
-   d="scan'208";a="122957300"
-Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa5.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 31 May 2021 01:56:42 -0700
-Received: from chn-vm-ex01.mchp-main.com (10.10.85.143) by
- chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Mon, 31 May 2021 01:56:40 -0700
-Received: from NAM11-DM6-obe.outbound.protection.outlook.com (10.10.215.89) by
- email.microchip.com (10.10.87.71) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2 via Frontend
- Transport; Mon, 31 May 2021 01:56:40 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=gkvQxzaxh1ecxSNqQSn0u9BvXSS98s3BzleQCpSpMSaERJgCf8fUZXCZHfQv5k5uQriEIfnvKacToRyQbRnz0Ms04lLhyM2cfEs7scUTfTZBlhV4hKCFw6wpU7QbXdes0X//fmmKXOLDc0Gkqri8mC9NeC6+0ggDH9Solnx83FDpQ448Kle08qjITO+dJjNi051b7Fp9H1Jf7z0pCa1H3DSRNfgAziKf6V2YVTk3gb6PCOUVMHCpVEnuhI+2ryZ5EjwSOF5OBcsZM84dllDzRVAFRrpt9hiDpitVpNFFVi/seuWvFmOMudHzT7YDAZBZw69EhSu8DeHRFQadLWXeBg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=piK1XbY7jcBDQj8Xy0QLZptWNmt4Tdfoj6wfPDC7wdo=;
- b=KdQPW9J0Q8xnpg5AoVj/2vkPOk7s/oNJX5dsw9MK7t+vKNJeIz6rlRKx7dj2ihLwild+EAH0AlTXB0cJSUzDPQbVE/xMBx+xaD1ZLWTVTKvVmExmcJn43T+4qrfI3L7VjuqeTZifpcXOWZ7cWQIn8DxCIw1umKowjOtka6rf16CuqwDirVwtvuYLty4zRlAGLM1+Mj3y8LaIkuqCWk7xOFzw6gjfKVWWPiEDXuBW1CeDiaowfhptzKeZd3Y+kPgyxlkBkjDUkCk15m+CaQlq9O5pkge2FRx4fLMKET+6skiOaMs304sM5Poc5EnGsgeehkG9GgpdlRUduvoGLdPN7Q==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=microchip.com; dmarc=pass action=none
- header.from=microchip.com; dkim=pass header.d=microchip.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=microchiptechnology.onmicrosoft.com;
- s=selector2-microchiptechnology-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=piK1XbY7jcBDQj8Xy0QLZptWNmt4Tdfoj6wfPDC7wdo=;
- b=KHO+GVscG1DnShECYhGdKxg8u961+JT3kyyBszuEUUrjS+RUwVN0zdllgQ7jX9niKegr5Tvwjc8ZAmK3L+KUAkZCDpNPvCa5HzEKkHHGgVIUSrrnXTpwIuZSvEEZr/gn8TcjyBFxSacf+3FAv5BJdtKocri9feoExsREEJOuecc=
-Received: from CO1PR11MB4865.namprd11.prod.outlook.com (2603:10b6:303:9c::9)
- by MWHPR11MB1840.namprd11.prod.outlook.com (2603:10b6:300:112::12) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4173.21; Mon, 31 May
- 2021 08:56:39 +0000
-Received: from CO1PR11MB4865.namprd11.prod.outlook.com
- ([fe80::1c4:1014:a541:e370]) by CO1PR11MB4865.namprd11.prod.outlook.com
- ([fe80::1c4:1014:a541:e370%4]) with mapi id 15.20.4173.029; Mon, 31 May 2021
- 08:56:39 +0000
-From:   <Tudor.Ambarus@microchip.com>
-To:     <michael@walle.cc>, <linux-mtd@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>
-CC:     <p.yadav@ti.com>, <miquel.raynal@bootlin.com>, <richard@nod.at>,
-        <vigneshr@ti.com>
-Subject: Re: [PATCH v4 4/4] mtd: spi-nor: otp: implement erase for Winbond and
- similar flashes
-Thread-Topic: [PATCH v4 4/4] mtd: spi-nor: otp: implement erase for Winbond
- and similar flashes
-Thread-Index: AQHXVfre5CE4GzTJPUCkLlU8wI3quw==
-Date:   Mon, 31 May 2021 08:56:39 +0000
-Message-ID: <2d04a7f5-c99e-3177-5a1f-debe49f51ef5@microchip.com>
-References: <20210521194034.15249-1-michael@walle.cc>
- <20210521194034.15249-5-michael@walle.cc>
-In-Reply-To: <20210521194034.15249-5-michael@walle.cc>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-user-agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
-authentication-results: walle.cc; dkim=none (message not signed)
- header.d=none;walle.cc; dmarc=none action=none header.from=microchip.com;
-x-originating-ip: [79.115.63.82]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 59fba66c-600a-4885-044d-08d9241200e4
-x-ms-traffictypediagnostic: MWHPR11MB1840:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <MWHPR11MB1840629A9AA81F71909E7258F03F9@MWHPR11MB1840.namprd11.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:4303;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: F2giyjrtueOCNJI3EuBWR2lyYOOfoO6lN8DwmFN82FsUzUuICNvrviJfC5uRoLRzO4YnDjW2PYqB4L7dzskkcS+hEARF2H+YpEWecM0JyTLbAQHu1/yILfCFaBd/oE0F26MALv67N1LzaMF/AqGnFAhRsrvr5RWZMLs1ow4Lb07nmyLWN/EOIBodzoGMHqEkHzOaIgY9KFY+IZJnoLY+jaomPoUK0UiSZG8CbDvJDE/08CO0a/5krN9sNWCYuRlAH6rbJ6Oj/T5ng4SMxFQnDlF/9eoqsnBtSIkS7sGeGjwZlnBmaWJileyOAUxtCvCym0SZBFzoE0qIHM7kOmx6BPj5MPp3MyB3Xyqnv7iQidHy8bix1NCbnu+U2oEQOVPYCcGbiMMTeMqt60SVjCq8aKhIIsk//EZ9Y8POtMv4E50Y7PBslFOiiliyTcn7D4dX37NGiWlC+hhxERaO/+f6nKbZNoqjL526/V74dADn1yBbq41ERUCr12r65BmbsnTgFfdUGKEnh7YpQvLZX+2WB/4uS/bH2T3oTB5mxtuYFiJlwv88C9FSjWXDdoeUZhqcgZi+xRsPsQfe+vKIk42eHDf4l3bsdiluVe/96yrn26J7v1Qk1nJ63VqZpjf8EHJcTWL+AvJjcrclZIEdMW6MOgwjseKZf/WZOjINYWQhSfn+cqf3L3nQfpmsvtU2ROQj
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CO1PR11MB4865.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(136003)(39860400002)(376002)(366004)(346002)(396003)(76116006)(66946007)(91956017)(2616005)(66476007)(54906003)(4326008)(66556008)(6486002)(66446008)(31686004)(83380400001)(36756003)(6512007)(38100700002)(478600001)(26005)(31696002)(53546011)(6506007)(5660300002)(2906002)(71200400001)(8676002)(86362001)(110136005)(64756008)(122000001)(8936002)(316002)(186003)(43740500002)(45980500001);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata: =?utf-8?B?VzF3QVlhWEpLN1JEWWphdG5pb2s0aTd6YWY1TGFKVFo3Z2VLSjdEN1E0Q0R4?=
- =?utf-8?B?TWlOa04rdW9oWjRaS2Raa1ZyT1lvL1Q1N0FXcFNLNzJyaUFXekRZT1YxWlJZ?=
- =?utf-8?B?RFFTbWNUME1QQTFjSUw5U0I2L21zMGRHYnZVSVFBM1VvTFBlZjJ5OEpZaDBl?=
- =?utf-8?B?VWp3MWE2T2l0QkhsYU1VaFZydlAxYnZ0bng2MVdPV2E0ZE4zVjlSZGZEOWNp?=
- =?utf-8?B?Y2xuQVFhMWdjbmkxaXU3Nk1XZDV2eDNEeDVQb1l0cTZJeUE5anhoUktzK1l0?=
- =?utf-8?B?VUJYYko1VU04NmNweGsrWjFFQmlnUUZHL3drT3M2TGhmdkpQRXNYbk0wWEdU?=
- =?utf-8?B?M2dZeUx5QksybUVWK0xkMnB2TzdDeDVXbUdFajNoY0tTVHZ2RTNuQk9vNU8w?=
- =?utf-8?B?SVg4UzVyRmlCdjhFM1AwWGdwSnRJV1p6bU9RMFBXTHFCS0lwRFU4b21ZSXdC?=
- =?utf-8?B?eEo4SkdoSHhjYTRERFFEQkNaT1dLQXA2dWk5Kzd6L1k1NUU1RHZoRTBacG9J?=
- =?utf-8?B?NklqYXZidWdWeStoS2crcWErSEpoZmQzazZhUUE2SzlxL1J6M2RlUUxaQTN6?=
- =?utf-8?B?T3hvalM3aUhxN2FaUnhOVVdhMTJEQ2d3RjdpczcyT2FYcDdtMkFrSVFXQnM3?=
- =?utf-8?B?RE14NlhFOXI0UUpZa2xSOXdSbldxSUtGVno5eER0cFlTTjNlNEdVRE4vcm05?=
- =?utf-8?B?Z2tzVzdIUUYyYU9yeVUvOHBWLzVxdHRxQ3ZheUdUSzRRVU9tcCt0VFBmS0NU?=
- =?utf-8?B?M3NLVGdnZVBpVngzVkR1bURna3EwazF4VkwzWW0vRnhXNmVFaUFMeVJVcDNl?=
- =?utf-8?B?amJaNEZ1VjluZ29PZ2E4dTdGZURUUTJCdmRGZFE2c0lKaGZqKzdkQzgzZTNh?=
- =?utf-8?B?V1RUVnBka1UxbjdwaTNMckg4U3drdXlaaXZpTHJFYkorS3dRTFNyZDhjR2pa?=
- =?utf-8?B?Z1FOT1VIQVo0ZjN3SXoyTEtGb2p6VFRKTlBTZ2I5T1RQTzFPNCt4b0dQVTl3?=
- =?utf-8?B?RnZqenRrSHFSajZpNWtDMWt1LzExeTc5N2NDV1ZMUzZmcFdMcWw3V0JsbXgx?=
- =?utf-8?B?UEpBRjE1T2dlUDhTVGlGcm9NTmdxZ3psQnAvYmFBOHlHN2pqVGhOeVlxRjlF?=
- =?utf-8?B?eGY5U0xFeXBmVnEyT0I3TFZVd0ZuVCtjQW4yVm1NUDc5dkNuRmo4SUc1dmty?=
- =?utf-8?B?MnY5akNHYzBwbm15UXJBSTMzUWVkVDdBc0FtbzlwaUJlUXNKV0E0RlRKMlZY?=
- =?utf-8?B?ZS9VNG5UcXVpd1IxbWozc2dwVUlPbEFmRmVtM2lYYjNGdW44YXBUZEpPWGRL?=
- =?utf-8?B?a0tPMHR2WkZyYjR4NlpDK3lqMzlvUm1QTmkzb3ZURjE1aHFMdmYvQVNpSlJH?=
- =?utf-8?B?UzBKSjFOMzJrSkgrOFd6WGJPdXo3b1JyVWRFVHIvTGNMcTdiSTZqY2lzVGw1?=
- =?utf-8?B?d2FpTVgyVkEzK3Iwd0FIcjRaUXVQb1JvYm00aEwzcERwaldsaHVaZXlpVEx4?=
- =?utf-8?B?MlVNUENqcnpTa1V4SVJUdUFRYTVDVFdjSkYzb0hKdWlmTlNJU3RxdC9COEg5?=
- =?utf-8?B?eVlVVE04N1BsQ2tFRlBIK0hvVGpMWk4rSjA2WFh3cjZ2bTI1a0NHSFVlb216?=
- =?utf-8?B?VmN3cEt1RDVLVFN5c3pFRStVTCs4bGVSM2d2TkR1Tnk3UWhvNWFvek5VclY2?=
- =?utf-8?B?clNrVHNYRS9WbWNkdjNxMDhiNTJENjBrenJJM3E3MEcrdW00SVpsVXM2Z3B5?=
- =?utf-8?Q?UKPvoZ9YvLIuonGF74=3D?=
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <5D89BF85BECD2E4CBAE0780F067FFEDB@namprd11.prod.outlook.com>
-Content-Transfer-Encoding: base64
+        Mon, 31 May 2021 04:59:03 -0400
+Received: from andre.telenet-ops.be (andre.telenet-ops.be [IPv6:2a02:1800:120:4::f00:15])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4D49C061574
+        for <linux-kernel@vger.kernel.org>; Mon, 31 May 2021 01:57:20 -0700 (PDT)
+Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed20:b9f6:a814:dab1:1579])
+        by andre.telenet-ops.be with bizsmtp
+        id BLxG2500V47zJAe01LxGa9; Mon, 31 May 2021 10:57:17 +0200
+Received: from rox.of.borg ([192.168.97.57])
+        by ramsan.of.borg with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1lndjY-00BVF9-Ix
+        for linux-kernel@vger.kernel.org; Mon, 31 May 2021 10:57:16 +0200
+Received: from geert by rox.of.borg with local (Exim 4.93)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1lndjX-00DlIk-UM
+        for linux-kernel@vger.kernel.org; Mon, 31 May 2021 10:57:15 +0200
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+To:     linux-kernel@vger.kernel.org
+Subject: Build regressions/improvements in v5.13-rc4
+Date:   Mon, 31 May 2021 10:57:15 +0200
+Message-Id: <20210531085715.3279882-1-geert@linux-m68k.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: CO1PR11MB4865.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 59fba66c-600a-4885-044d-08d9241200e4
-X-MS-Exchange-CrossTenant-originalarrivaltime: 31 May 2021 08:56:39.2162
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 3f4057f3-b418-4d4e-ba84-d55b4e897d88
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: JcH4RD+4M7NUXXr/zA2/Ck7Xprxbr7vsNoD3JaLJKtBOFHkqQBjHVsZYA0tfNzrUFRjIZqD130MUsWI+0nx1fC2BghgbjMQAxJ5Uxd2nTss=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR11MB1840
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gNS8yMS8yMSAxMDo0MCBQTSwgTWljaGFlbCBXYWxsZSB3cm90ZToNCj4gRVhURVJOQUwgRU1B
-SUw6IERvIG5vdCBjbGljayBsaW5rcyBvciBvcGVuIGF0dGFjaG1lbnRzIHVubGVzcyB5b3Uga25v
-dyB0aGUgY29udGVudCBpcyBzYWZlDQo+IA0KPiBXaW5ib25kIGZsYXNoZXMgd2l0aCBPVFAgc3Vw
-cG9ydCBwcm92aWRlIGEgY29tbWFuZCB0byBlcmFzZSB0aGUgT1RQDQo+IGRhdGEuIFRoaXMgbWln
-aHQgY29tZSBpbiBoYW5keSBkdXJpbmcgZGV2ZWxvcG1lbnQuDQo+IA0KPiBUaGlzIHdhcyB0ZXN0
-ZWQgd2l0aCBhIFdpbmJvbmQgVzI1UTMySlcgb24gYSBMUzEwMjhBIFNvQyB3aXRoIHRoZQ0KPiBO
-WFAgRlNQSSBjb250cm9sbGVyLg0KPiANCj4gU2lnbmVkLW9mZi1ieTogTWljaGFlbCBXYWxsZSA8
-bWljaGFlbEB3YWxsZS5jYz4NCj4gLS0tDQo+ICBkcml2ZXJzL210ZC9zcGktbm9yL2NvcmUuYyAg
-ICB8ICAyICstDQo+ICBkcml2ZXJzL210ZC9zcGktbm9yL2NvcmUuaCAgICB8ICA0ICsrDQo+ICBk
-cml2ZXJzL210ZC9zcGktbm9yL290cC5jICAgICB8IDgzICsrKysrKysrKysrKysrKysrKysrKysr
-KysrKysrKysrKysrDQo+ICBkcml2ZXJzL210ZC9zcGktbm9yL3dpbmJvbmQuYyB8ICAxICsNCj4g
-IDQgZmlsZXMgY2hhbmdlZCwgODkgaW5zZXJ0aW9ucygrKSwgMSBkZWxldGlvbigtKQ0KPiANCj4g
-ZGlmZiAtLWdpdCBhL2RyaXZlcnMvbXRkL3NwaS1ub3IvY29yZS5jIGIvZHJpdmVycy9tdGQvc3Bp
-LW5vci9jb3JlLmMNCj4gaW5kZXggYmQyYzc3MTdlYjEwLi45NTUxZWZmYjZhNDQgMTAwNjQ0DQo+
-IC0tLSBhL2RyaXZlcnMvbXRkL3NwaS1ub3IvY29yZS5jDQo+ICsrKyBiL2RyaXZlcnMvbXRkL3Nw
-aS1ub3IvY29yZS5jDQo+IEBAIC0xMzE4LDcgKzEzMTgsNyBAQCBzdGF0aWMgdTMyIHNwaV9ub3Jf
-Y29udmVydF9hZGRyKHN0cnVjdCBzcGlfbm9yICpub3IsIGxvZmZfdCBhZGRyKQ0KPiAgLyoNCj4g
-ICAqIEluaXRpYXRlIHRoZSBlcmFzdXJlIG9mIGEgc2luZ2xlIHNlY3Rvcg0KPiAgICovDQo+IC1z
-dGF0aWMgaW50IHNwaV9ub3JfZXJhc2Vfc2VjdG9yKHN0cnVjdCBzcGlfbm9yICpub3IsIHUzMiBh
-ZGRyKQ0KPiAraW50IHNwaV9ub3JfZXJhc2Vfc2VjdG9yKHN0cnVjdCBzcGlfbm9yICpub3IsIHUz
-MiBhZGRyKQ0KPiAgew0KPiAgICAgICAgIGludCBpOw0KPiANCj4gZGlmZiAtLWdpdCBhL2RyaXZl
-cnMvbXRkL3NwaS1ub3IvY29yZS5oIGIvZHJpdmVycy9tdGQvc3BpLW5vci9jb3JlLmgNCj4gaW5k
-ZXggMjhhMmUwYmU5N2EzLi45Mzk4YTg3Mzg4NTcgMTAwNjQ0DQo+IC0tLSBhL2RyaXZlcnMvbXRk
-L3NwaS1ub3IvY29yZS5oDQo+ICsrKyBiL2RyaXZlcnMvbXRkL3NwaS1ub3IvY29yZS5oDQo+IEBA
-IC0yMDcsNiArMjA3LDcgQEAgc3RydWN0IHNwaV9ub3Jfb3RwX29yZ2FuaXphdGlvbiB7DQo+ICAg
-KiBAcmVhZDogICAgICByZWFkIGZyb20gdGhlIFNQSSBOT1IgT1RQIGFyZWEuDQo+ICAgKiBAd3Jp
-dGU6ICAgICB3cml0ZSB0byB0aGUgU1BJIE5PUiBPVFAgYXJlYS4NCj4gICAqIEBsb2NrOiAgICAg
-IGxvY2sgYW4gT1RQIHJlZ2lvbi4NCj4gKyAqIEBlcmFzZTogICAgIGVyYXNlIGFuIE9UUCByZWdp
-b24uDQo+ICAgKiBAaXNfbG9ja2VkOiBjaGVjayBpZiBhbiBPVFAgcmVnaW9uIG9mIHRoZSBTUEkg
-Tk9SIGlzIGxvY2tlZC4NCj4gICAqLw0KPiAgc3RydWN0IHNwaV9ub3Jfb3RwX29wcyB7DQo+IEBA
-IC0yMTQsNiArMjE1LDcgQEAgc3RydWN0IHNwaV9ub3Jfb3RwX29wcyB7DQo+ICAgICAgICAgaW50
-ICgqd3JpdGUpKHN0cnVjdCBzcGlfbm9yICpub3IsIGxvZmZfdCBhZGRyLCBzaXplX3QgbGVuLA0K
-PiAgICAgICAgICAgICAgICAgICAgICBjb25zdCB1OCAqYnVmKTsNCj4gICAgICAgICBpbnQgKCps
-b2NrKShzdHJ1Y3Qgc3BpX25vciAqbm9yLCB1bnNpZ25lZCBpbnQgcmVnaW9uKTsNCj4gKyAgICAg
-ICBpbnQgKCplcmFzZSkoc3RydWN0IHNwaV9ub3IgKm5vciwgbG9mZl90IGFkZHIpOw0KDQptYXli
-ZSBiZXR0ZXI6DQppbnQgKCplcmFzZSkoc3RydWN0IHNwaV9ub3IgKm5vciwgbG9mZl90IGFkZHIs
-IHNpemVfdCBsZW4pOw0KDQo+ICAgICAgICAgaW50ICgqaXNfbG9ja2VkKShzdHJ1Y3Qgc3BpX25v
-ciAqbm9yLCB1bnNpZ25lZCBpbnQgcmVnaW9uKTsNCj4gIH07DQoNCg==
+Below is the list of build error/warning regressions/improvements in
+v5.13-rc4[1] compared to v5.12[2].
+
+Summarized:
+  - build errors: +0/-5
+  - build warnings: +46/-27
+
+JFYI, when comparing v5.13-rc4[1] to v5.13-rc3[3], the summaries are:
+  - build errors: +0/-0
+  - build warnings: +0/-1
+
+Note that there may be false regressions, as some logs are incomplete.
+Still, they're build errors/warnings.
+
+Happy fixing! ;-)
+
+Thanks to the linux-next team for providing the build service.
+
+[1] http://kisskb.ellerman.id.au/kisskb/branch/linus/head/8124c8a6b35386f73523d27eacb71b5364a68c4c/ (191 out of 192 configs)
+[2] http://kisskb.ellerman.id.au/kisskb/branch/linus/head/9f4ad9e425a1d3b6a34617b8ea226d56a119a717/ (all 192 configs)
+[3] http://kisskb.ellerman.id.au/kisskb/branch/linus/head/c4681547bcce777daf576925a966ffa824edd09d/ (191 out of 192 configs)
+
+
+*** ERRORS ***
+
+5 error improvements:
+  - error: modpost: "devm_ioremap_resource" [drivers/net/ethernet/xilinx/xilinx_emac.ko] undefined!: N/A => 
+  - error: modpost: "devm_ioremap_resource" [drivers/net/ethernet/xilinx/xilinx_emaclite.ko] undefined!: N/A => 
+  - error: modpost: "devm_of_iomap" [drivers/net/ethernet/xilinx/ll_temac.ko] undefined!: N/A => 
+  - error: modpost: "devm_platform_ioremap_resource" [drivers/net/ethernet/xilinx/ll_temac.ko] undefined!: N/A => 
+  - error: modpost: "devm_platform_ioremap_resource_byname" [drivers/net/ethernet/xilinx/ll_temac.ko] undefined!: N/A => 
+
+
+*** WARNINGS ***
+
+46 warning regressions:
+  + /kisskb/src/arch/s390/kernel/syscall.c: warning: '__do_syscall' uses dynamic stack allocation:  => 169:1
+  + /kisskb/src/arch/s390/kernel/traps.c: warning: '__do_pgm_check' uses dynamic stack allocation:  => 359:1
+  + /kisskb/src/block/genhd.c: warning: the frame size of 1112 bytes is larger than 1024 bytes [-Wframe-larger-than=]:  => 1227:1
+  + /kisskb/src/block/genhd.c: warning: the frame size of 1120 bytes is larger than 1024 bytes [-Wframe-larger-than=]:  => 1227:1
+  + /kisskb/src/block/genhd.c: warning: the frame size of 1680 bytes is larger than 1280 bytes [-Wframe-larger-than=]:  => 1227:1
+  + /kisskb/src/block/genhd.c: warning: the frame size of 1712 bytes is larger than 1280 bytes [-Wframe-larger-than=]:  => 1227:1
+  + /kisskb/src/drivers/gpu/drm/amd/amdgpu/../display/dc/core/dc.c: warning: (near initialization for 'cmd.lock_hw') [-Wmissing-braces]:  => 3392:8
+  + /kisskb/src/drivers/gpu/drm/amd/amdgpu/../display/dc/core/dc.c: warning: missing braces around initializer [-Wmissing-braces]: 2483:11, 2664:11 => 2625:11, 3392:8, 2810:11
+  + /kisskb/src/drivers/gpu/drm/amd/amdgpu/../display/dc/dcn10/dcn10_hw_sequencer.c: warning: (near initialization for 'hw_crtc_timing[0]') [-Wmissing-braces]:  => 1953:9
+  + /kisskb/src/drivers/gpu/drm/amd/amdgpu/../display/dc/dcn10/dcn10_hw_sequencer.c: warning: missing braces around initializer [-Wmissing-braces]: 1802:9 => 1814:9, 1953:9
+  + /kisskb/src/drivers/gpu/drm/amd/amdgpu/../display/dmub/src/dmub_srv_stat.c: warning: (near initialization for 'cmd.cmd_common') [-Wmissing-braces]:  => 61:8
+  + /kisskb/src/drivers/gpu/drm/amd/amdgpu/../display/dmub/src/dmub_srv_stat.c: warning: missing braces around initializer [-Wmissing-braces]:  => 61:8
+  + /kisskb/src/drivers/gpu/drm/amd/amdgpu/amdgpu_gfx.c: warning: (near initialization for 'info.head') [-Wmissing-braces]:  => 610:9
+  + /kisskb/src/drivers/gpu/drm/amd/amdgpu/amdgpu_gfx.c: warning: missing braces around initializer [-Wmissing-braces]:  => 610:9
+  + /kisskb/src/drivers/iio/test/iio-test-format.c: warning: the frame size of 2288 bytes is larger than 2048 bytes [-Wframe-larger-than=]:  => 98:1
+  + /kisskb/src/drivers/iio/test/iio-test-format.c: warning: the frame size of 2320 bytes is larger than 2048 bytes [-Wframe-larger-than=]:  => 98:1
+  + /kisskb/src/drivers/net/can/usb/etas_es58x/es58x_fd.c: warning: (near initialization for 'tx_conf_msg.nominal_bittiming') [-Wmissing-braces]:  => 400:9
+  + /kisskb/src/drivers/net/can/usb/etas_es58x/es58x_fd.c: warning: missing braces around initializer [-Wmissing-braces]:  => 400:9
+  + /kisskb/src/drivers/net/ethernet/freescale/dpaa2/dpaa2-switch.c: warning: (near initialization for 'acl_entry.list') [-Wmissing-braces]:  => 2945:9
+  + /kisskb/src/drivers/net/ethernet/freescale/dpaa2/dpaa2-switch.c: warning: missing braces around initializer [-Wmissing-braces]:  => 2945:9
+  + /kisskb/src/drivers/net/ethernet/freescale/enetc/enetc.c: warning: (near initialization for 'xdp_redirect_arr[0]') [-Wmissing-braces]:  => 1078:9
+  + /kisskb/src/drivers/net/ethernet/freescale/enetc/enetc.c: warning: (near initialization for 'xdp_tx_arr[0]') [-Wmissing-braces]:  => 1245:9
+  + /kisskb/src/drivers/net/ethernet/freescale/enetc/enetc.c: warning: missing braces around initializer [-Wmissing-braces]:  => 1078:9, 1245:9
+  + /kisskb/src/drivers/net/ethernet/marvell/octeontx2/af/rvu_npc.c: warning: (near initialization for 'req.hdr') [-Wmissing-braces]: 604:9 => 754:9, 604:9, 654:9
+  + /kisskb/src/drivers/net/ethernet/marvell/octeontx2/af/rvu_npc.c: warning: (near initialization for 'rsp.hdr') [-Wmissing-braces]: 605:9 => 755:9, 605:9, 655:9
+  + /kisskb/src/drivers/net/ethernet/marvell/octeontx2/af/rvu_npc.c: warning: missing braces around initializer [-Wmissing-braces]: 604:9, 605:9 => 655:9, 654:9, 605:9, 754:9, 755:9, 604:9
+  + /kisskb/src/kernel/bpf/cpumap.c: warning: 'cpu_map_bpf_prog_run_xdp.isra.13' uses dynamic stack allocation:  => 238:1
+  + /kisskb/src/kernel/bpf/syscall.c: warning: 'bpf_prog_get_info_by_fd.isra.28' uses dynamic stack allocation:  => 3693:1
+  + /kisskb/src/mm/slub.c: warning: 'deactivate_slab.isra.64' uses dynamic stack allocation:  => 2311:1
+  + /kisskb/src/mm/slub.c: warning: 'get_partial_node.isra.63' uses dynamic stack allocation:  => 2021:1
+  + /kisskb/src/mm/slub.c: warning: 'unfreeze_partials.isra.62' uses dynamic stack allocation:  => 2379:1
+  + /kisskb/src/net/openvswitch/actions.c: warning: (near initialization for 'ovs_rt.dst') [-Wmissing-braces]:  => 830:10
+  + /kisskb/src/net/openvswitch/actions.c: warning: missing braces around initializer [-Wmissing-braces]:  => 830:10
+  + /kisskb/src/net/sched/sch_frag.c: warning: (near initialization for 'sch_frag_rt.dst') [-Wmissing-braces]:  => 93:10
+  + /kisskb/src/net/sched/sch_frag.c: warning: missing braces around initializer [-Wmissing-braces]:  => 93:10
+  + /kisskb/src/security/landlock/ruleset.c: warning: passing argument 2 of 'create_rule' from incompatible pointer type:  => 196:34
+  + /kisskb/src/security/landlock/ruleset.c: warning: passing argument 3 of 'insert_rule' from incompatible pointer type:  => 330:5, 300:47, 240:38
+  + arch/arm64/configs/defconfig: warning: override: reassigning to symbol MTK_PMIC_WRAP:  => 1018
+  + modpost: WARNING: modpost: drivers/net/ethernet/qlogic/qede/qede.o(.data+0x13c): Section mismatch in reference from the variable qede_forced_speed_maps to the variable .init.rodata:qede_forced_speed_100000:  => N/A
+  + modpost: WARNING: modpost: drivers/net/ethernet/qlogic/qede/qede.o(.data+0x154): Section mismatch in reference from the variable qede_forced_speed_maps to the variable .init.rodata:qede_forced_speed_100000:  => N/A
+  + modpost: WARNING: modpost: drivers/net/ethernet/qlogic/qede/qede.o(.data+0x16c): Section mismatch in reference from the variable qede_forced_speed_maps to the variable .init.rodata:qede_forced_speed_100000:  => N/A
+  + modpost: WARNING: modpost: drivers/net/ethernet/qlogic/qede/qede.o(.data+0x184): Section mismatch in reference from the variable qede_forced_speed_maps to the variable .init.rodata:qede_forced_speed_100000:  => N/A
+  + modpost: WARNING: modpost: drivers/net/ethernet/qlogic/qede/qede.o(.data+0x19c): Section mismatch in reference from the variable qede_forced_speed_maps to the variable .init.rodata:qede_forced_speed_100000:  => N/A
+  + modpost: WARNING: modpost: drivers/net/ethernet/qlogic/qede/qede.o(.data+0x1b4): Section mismatch in reference from the variable qede_forced_speed_maps to the variable .init.rodata:qede_forced_speed_100000:  => N/A
+  + modpost: WARNING: modpost: drivers/net/ethernet/qlogic/qede/qede.o(.data+0x1cc): Section mismatch in reference from the variable qede_forced_speed_maps to the variable .init.rodata:qede_forced_speed_100000:  => N/A
+  + modpost: WARNING: modpost: lib/find_bit_benchmark.o(.text.unlikely+0x0): Section mismatch in reference from the (unknown reference) (unknown) to the variable .init.data:bitmap2:  => N/A
+
+27 warning improvements:
+  - /kisskb/src/arch/m68k/include/asm/raw_io.h: warning: cast to pointer from integer of different size [-Wint-to-pointer-cast]: 26:31, 20:19, 30:32, 33:35 => 20:19, 30:32
+  - /kisskb/src/arch/sh/kernel/traps.c: warning: unused variable 'cpu' [-Wunused-variable]: 183:15 => 
+  - /kisskb/src/block/genhd.c: warning: the frame size of 1160 bytes is larger than 1024 bytes [-Wframe-larger-than=]: 1311:1 => 
+  - /kisskb/src/block/genhd.c: warning: the frame size of 1168 bytes is larger than 1024 bytes [-Wframe-larger-than=]: 1311:1 => 
+  - /kisskb/src/block/genhd.c: warning: the frame size of 1720 bytes is larger than 1280 bytes [-Wframe-larger-than=]: 1311:1 => 
+  - /kisskb/src/drivers/gpu/drm/amd/amdgpu/../pm/swsmu/smu11/navi10_ppt.c: warning: (near initialization for 'nv12_metrics.CurrClock') [-Wmissing-braces]: 2297:2 => 
+  - /kisskb/src/drivers/gpu/drm/amd/amdgpu/../pm/swsmu/smu11/navi10_ppt.c: warning: missing braces around initializer [-Wmissing-braces]: 2297:2 => 
+  - /kisskb/src/kernel/bpf/cpumap.c: warning: 'cpu_map_bpf_prog_run_xdp.isra.10' uses dynamic stack allocation: 238:1 => 
+  - /kisskb/src/kernel/bpf/syscall.c: warning: 'bpf_prog_get_info_by_fd.isra.26' uses dynamic stack allocation: 3675:1 => 
+  - /kisskb/src/kernel/static_call.c: warning: unused variable 'mod' [-Wunused-variable]: 153:18 => 
+  - /kisskb/src/lib/bitfield_kunit.c: warning: the frame size of 4200 bytes is larger than 2048 bytes [-Wframe-larger-than=]: 93:1 => 
+  - /kisskb/src/lib/bitfield_kunit.c: warning: the frame size of 4224 bytes is larger than 2048 bytes [-Wframe-larger-than=]: 93:1 => 
+  - /kisskb/src/lib/bitfield_kunit.c: warning: the frame size of 7424 bytes is larger than 2048 bytes [-Wframe-larger-than=]: 93:1 => 
+  - /kisskb/src/lib/bitfield_kunit.c: warning: the frame size of 7432 bytes is larger than 2048 bytes [-Wframe-larger-than=]: 93:1 => 
+  - /kisskb/src/lib/bitfield_kunit.c: warning: the frame size of 7440 bytes is larger than 2048 bytes [-Wframe-larger-than=]: 93:1 => 
+  - /kisskb/src/lib/bitfield_kunit.c: warning: the frame size of 7456 bytes is larger than 2048 bytes [-Wframe-larger-than=]: 93:1 => 
+  - /kisskb/src/mm/slub.c: warning: 'deactivate_slab.isra.65' uses dynamic stack allocation: 2304:1 => 
+  - /kisskb/src/mm/slub.c: warning: 'get_partial_node.isra.64' uses dynamic stack allocation: 2014:1 => 
+  - /kisskb/src/mm/slub.c: warning: 'unfreeze_partials.isra.63' uses dynamic stack allocation: 2372:1 => 
+  - modpost: WARNING: modpost: Symbol info of vmlinux is missing. Unresolved symbol check will be entirely skipped.: N/A => 
+  - modpost: WARNING: modpost: drivers/net/ethernet/qlogic/qede/qede.o(.data+0x134): Section mismatch in reference from the variable qede_forced_speed_maps to the variable .init.rodata:qede_forced_speed_100000: N/A => 
+  - modpost: WARNING: modpost: drivers/net/ethernet/qlogic/qede/qede.o(.data+0x14c): Section mismatch in reference from the variable qede_forced_speed_maps to the variable .init.rodata:qede_forced_speed_100000: N/A => 
+  - modpost: WARNING: modpost: drivers/net/ethernet/qlogic/qede/qede.o(.data+0x164): Section mismatch in reference from the variable qede_forced_speed_maps to the variable .init.rodata:qede_forced_speed_100000: N/A => 
+  - modpost: WARNING: modpost: drivers/net/ethernet/qlogic/qede/qede.o(.data+0x17c): Section mismatch in reference from the variable qede_forced_speed_maps to the variable .init.rodata:qede_forced_speed_100000: N/A => 
+  - modpost: WARNING: modpost: drivers/net/ethernet/qlogic/qede/qede.o(.data+0x194): Section mismatch in reference from the variable qede_forced_speed_maps to the variable .init.rodata:qede_forced_speed_100000: N/A => 
+  - modpost: WARNING: modpost: drivers/net/ethernet/qlogic/qede/qede.o(.data+0x1ac): Section mismatch in reference from the variable qede_forced_speed_maps to the variable .init.rodata:qede_forced_speed_100000: N/A => 
+  - modpost: WARNING: modpost: drivers/net/ethernet/qlogic/qede/qede.o(.data+0x1c4): Section mismatch in reference from the variable qede_forced_speed_maps to the variable .init.rodata:qede_forced_speed_100000: N/A => 
+
+Gr{oetje,eeting}s,
+
+						Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+							    -- Linus Torvalds
