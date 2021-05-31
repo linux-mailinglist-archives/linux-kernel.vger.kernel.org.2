@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 91C92395EA1
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 15:59:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F597395B83
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 15:19:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232176AbhEaOB0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 10:01:26 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44428 "EHLO mail.kernel.org"
+        id S232066AbhEaNVX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 09:21:23 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55140 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232855AbhEaNjo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 09:39:44 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DA28461457;
-        Mon, 31 May 2021 13:27:11 +0000 (UTC)
+        id S231960AbhEaNTQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 09:19:16 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D9CA861374;
+        Mon, 31 May 2021 13:17:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1622467632;
-        bh=tnvJWa0/obn0k7RrwOLx7h++w9S7+ohA+s2Tnw8Eczw=;
+        s=korg; t=1622467056;
+        bh=9liq446dUtNHzkDe9cd9s7fywZ722+6e6Sek6Sb8DE4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=pRKdJY62Pq9IjB5Zwyb+AKXgqLUVc7kqo0MBnsuXkWJNcASs/OXzz03Ql+mKTWX5r
-         dp2lVken4UVgep+693SvJ7CbK83gXSGsHLyTYk7TgNcJNMU3pwvcDQaZd1OCmJK2k4
-         n3oSJ2EZTKgWKsOwiCSPk7EtHTHQfuOb8z55Ff+g=
+        b=hwP86vyuXs7Io0JYLq9b6X6ZhKKH6B4kpoo2TalMiA3bT4wA+wcq5b+mEFSTQuLzg
+         fajVekbRktYp7ohLIdxMTg08wkCaP8BTroyDEt6KoZ/f7WgWnYegPiMBvZM7SwmOt8
+         VoauiJvXmd1o2oNPUm/P/HF8j1YO92xZckyEsHZ4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Mathias Nyman <mathias.nyman@linux.intel.com>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>
-Subject: [PATCH 4.14 21/79] thunderbolt: dma_port: Fix NVM read buffer bounds and offset issue
+        stable@vger.kernel.org, Khalid Aziz <khalid@gonehiking.org>,
+        Matt Wang <wwentao@vmware.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.4 40/54] scsi: BusLogic: Fix 64-bit system enumeration error for Buslogic
 Date:   Mon, 31 May 2021 15:14:06 +0200
-Message-Id: <20210531130636.681439907@linuxfoundation.org>
+Message-Id: <20210531130636.334086889@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210531130636.002722319@linuxfoundation.org>
-References: <20210531130636.002722319@linuxfoundation.org>
+In-Reply-To: <20210531130635.070310929@linuxfoundation.org>
+References: <20210531130635.070310929@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,63 +41,65 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mathias Nyman <mathias.nyman@linux.intel.com>
+From: Matt Wang <wwentao@vmware.com>
 
-commit b106776080a1cf953a1b2fd50cb2a995db4732be upstream.
+[ Upstream commit 56f396146af278135c0ff958c79b5ee1bd22453d ]
 
-Up to 64 bytes of data can be read from NVM in one go. Read address
-must be dword aligned. Data is read into a local buffer.
+Commit 391e2f25601e ("[SCSI] BusLogic: Port driver to 64-bit")
+introduced a serious issue for 64-bit systems.  With this commit,
+64-bit kernel will enumerate 8*15 non-existing disks.  This is caused
+by the broken CCB structure.  The change from u32 data to void *data
+increased CCB length on 64-bit system, which introduced an extra 4
+byte offset of the CDB.  This leads to incorrect response to INQUIRY
+commands during enumeration.
 
-If caller asks to read data starting at an unaligned address then full
-dword is anyway read from NVM into a local buffer. Data is then copied
-from the local buffer starting at the unaligned offset to the caller
-buffer.
+Fix disk enumeration failure by reverting the portion of the commit
+above which switched the data pointer from u32 to void.
 
-In cases where asked data length + unaligned offset is over 64 bytes
-we need to make sure we don't read past the 64 bytes in the local
-buffer when copying to caller buffer, and make sure that we don't
-skip copying unaligned offset bytes from local buffer anymore after
-the first round of 64 byte NVM data read.
-
-Fixes: 3e13676862f9 ("thunderbolt: Add support for DMA configuration based mailbox")
-Cc: stable@vger.kernel.org
-Signed-off-by: Mathias Nyman <mathias.nyman@linux.intel.com>
-Signed-off-by: Mika Westerberg <mika.westerberg@linux.intel.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Link: https://lore.kernel.org/r/C325637F-1166-4340-8F0F-3BCCD59D4D54@vmware.com
+Acked-by: Khalid Aziz <khalid@gonehiking.org>
+Signed-off-by: Matt Wang <wwentao@vmware.com>
+Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/thunderbolt/dma_port.c |   11 ++++++-----
- 1 file changed, 6 insertions(+), 5 deletions(-)
+ drivers/scsi/BusLogic.c | 6 +++---
+ drivers/scsi/BusLogic.h | 2 +-
+ 2 files changed, 4 insertions(+), 4 deletions(-)
 
---- a/drivers/thunderbolt/dma_port.c
-+++ b/drivers/thunderbolt/dma_port.c
-@@ -369,15 +369,15 @@ int dma_port_flash_read(struct tb_dma_po
- 			void *buf, size_t size)
- {
- 	unsigned int retries = DMA_PORT_RETRIES;
--	unsigned int offset;
--
--	offset = address & 3;
--	address = address & ~3;
+diff --git a/drivers/scsi/BusLogic.c b/drivers/scsi/BusLogic.c
+index c7be7bb37209..b9b4491d732a 100644
+--- a/drivers/scsi/BusLogic.c
++++ b/drivers/scsi/BusLogic.c
+@@ -3081,11 +3081,11 @@ static int blogic_qcmd_lck(struct scsi_cmnd *command,
+ 		ccb->opcode = BLOGIC_INITIATOR_CCB_SG;
+ 		ccb->datalen = count * sizeof(struct blogic_sg_seg);
+ 		if (blogic_multimaster_type(adapter))
+-			ccb->data = (void *)((unsigned int) ccb->dma_handle +
++			ccb->data = (unsigned int) ccb->dma_handle +
+ 					((unsigned long) &ccb->sglist -
+-					(unsigned long) ccb));
++					(unsigned long) ccb);
+ 		else
+-			ccb->data = ccb->sglist;
++			ccb->data = virt_to_32bit_virt(ccb->sglist);
  
- 	do {
--		u32 nbytes = min_t(u32, size, MAIL_DATA_DWORDS * 4);
-+		unsigned int offset;
-+		size_t nbytes;
- 		int ret;
- 
-+		offset = address & 3;
-+		nbytes = min_t(size_t, size + offset, MAIL_DATA_DWORDS * 4);
-+
- 		ret = dma_port_flash_read_block(dma, address, dma->buf,
- 						ALIGN(nbytes, 4));
- 		if (ret) {
-@@ -389,6 +389,7 @@ int dma_port_flash_read(struct tb_dma_po
- 			return ret;
- 		}
- 
-+		nbytes -= offset;
- 		memcpy(buf, dma->buf + offset, nbytes);
- 
- 		size -= nbytes;
+ 		scsi_for_each_sg(command, sg, count, i) {
+ 			ccb->sglist[i].segbytes = sg_dma_len(sg);
+diff --git a/drivers/scsi/BusLogic.h b/drivers/scsi/BusLogic.h
+index b53ec2f1e8cd..5c950a7a1b1c 100644
+--- a/drivers/scsi/BusLogic.h
++++ b/drivers/scsi/BusLogic.h
+@@ -821,7 +821,7 @@ struct blogic_ccb {
+ 	unsigned char cdblen;				/* Byte 2 */
+ 	unsigned char sense_datalen;			/* Byte 3 */
+ 	u32 datalen;					/* Bytes 4-7 */
+-	void *data;					/* Bytes 8-11 */
++	u32 data;					/* Bytes 8-11 */
+ 	unsigned char:8;				/* Byte 12 */
+ 	unsigned char:8;				/* Byte 13 */
+ 	enum blogic_adapter_status adapter_status;	/* Byte 14 */
+-- 
+2.30.2
+
 
 
