@@ -2,81 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C4C43969CB
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 00:48:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6097F3969BE
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Jun 2021 00:42:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232455AbhEaWu1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 18:50:27 -0400
-Received: from darkstar.slint.fr ([172.105.89.79]:51924 "EHLO
-        darkstar.slint.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232042AbhEaWuZ (ORCPT
+        id S232382AbhEaWoR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 18:44:17 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:46476 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232042AbhEaWoQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 18:50:25 -0400
-X-Greylist: delayed 375 seconds by postgrey-1.27 at vger.kernel.org; Mon, 31 May 2021 18:50:25 EDT
-Received: from ici.slint.fr (men75-h08-176-172-247-100.dsl.sta.abo.bbox.fr [176.172.247.100])
-        by darkstar.slint.fr (Postfix) with ESMTPSA id BF9A9A3744;
-        Mon, 31 May 2021 23:42:08 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=slint.fr; s=default;
-        t=1622497329; bh=TcYnZ6DHOSMey6JxZZJmyzwQJVc0F0o0a72UGBPvwZ0=;
-        h=Subject:To:References:From:Date:In-Reply-To:From;
-        b=QlDEPWTz8nwXojKnX/mDgcRG/bHmbeDHrruLlVpmHqQvL3rRfDm8t7k8A+O4k+DtE
-         kkkTYjOc5XmoDVR4LMOm19DBJj85OG+pNTIM6WUCxFZ3aQfWhHpcNcgMRRvkGioPUq
-         rR6BXp8vEqabv/VUe6qaK1qUaigYDuBztf7YHODCUZH43SF+tSbBd+5LV4N44f0apc
-         p/4XnL/tUFh3QMG3/a04XA6PmTPw/0jHhkPC/D2pFrQpGUTtXjiOS31ZPQ+jifVPA6
-         EM9PxyTgFIPiq+pkAtCgIwClDe1C62lBkBnRQcnyurzhLvV8LK8H+F/8DNrlvJVrlu
-         Q4RjvLAgyAbfg==
-Subject: Re: docs: Convert the Speakup guide to rst
-To:     Samuel Thibault <samuel.thibault@ens-lyon.org>,
-        Igor Matheus Andrade Torrente <igormtorrente@gmail.com>,
-        speakup@linux-speakup.org, corbet@lwn.net,
-        gregkh@linuxfoundation.org, grandmaster@al2klimov.de,
-        rdunlap@infradead.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20210531215737.8431-1-igormtorrente@gmail.com>
- <20210531220754.h4ep2dj65wl6hejf@begin>
-From:   Didier Spaier <didier@slint.fr>
-Message-ID: <393c2df8-9cb1-f428-5629-6e98c078c24f@slint.fr>
-Date:   Tue, 1 Jun 2021 00:42:22 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        Mon, 31 May 2021 18:44:16 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1622500955;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=G+kDTgSvRHq3E2PGkOkEIjQiAMuybgsbAjg536oUW1k=;
+        b=Is0WIbTee/lvV0FyChYfpN+OiFCDe9I/b1F5eQ/rT5REYBHsK/XysKNXnU+/xNtUeCCNAv
+        hemvA1t5Rf4vG7UFjsd6YheEwBm+TTgntF+mHIIj56fRyO03FWab0ze1V+kaMwGa25U6S9
+        eWREFGbvPgUqjMwd5j3bGf3BdJbh+vI=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-395-23bn5w_qMPeyIzYVdcXwWg-1; Mon, 31 May 2021 18:42:34 -0400
+X-MC-Unique: 23bn5w_qMPeyIzYVdcXwWg-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 91458180FD64;
+        Mon, 31 May 2021 22:42:32 +0000 (UTC)
+Received: from krava (unknown [10.40.195.234])
+        by smtp.corp.redhat.com (Postfix) with SMTP id 350D15D6D5;
+        Mon, 31 May 2021 22:42:29 +0000 (UTC)
+Date:   Tue, 1 Jun 2021 00:42:28 +0200
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     Jin Yao <yao.jin@linux.intel.com>
+Cc:     acme@kernel.org, jolsa@kernel.org, peterz@infradead.org,
+        mingo@redhat.com, alexander.shishkin@linux.intel.com,
+        Linux-kernel@vger.kernel.org, ak@linux.intel.com,
+        kan.liang@intel.com, yao.jin@intel.com
+Subject: Re: [PATCH v2 6/8] perf mem: Fix wrong verbose output for recording
+ events
+Message-ID: <YLVmVBDKGkSWgHwR@krava>
+References: <20210527001610.10553-1-yao.jin@linux.intel.com>
+ <20210527001610.10553-7-yao.jin@linux.intel.com>
 MIME-Version: 1.0
-In-Reply-To: <20210531220754.h4ep2dj65wl6hejf@begin>
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210527001610.10553-7-yao.jin@linux.intel.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
-
-On 01/06/2021 00:07, Samuel Thibault wrote:
-> Mmm, I'm unsure how the result is readable with the speakup screen
-> reader itself. I have attached the result, could people on the speakup
-> mailing list check how well it goes? If it significantly degrades
-> readability, we'll have to reject the move to rst formatting, since in
-> the end it's people who use the speakup screen reader who need to be
-> able to read this document.
+On Thu, May 27, 2021 at 08:16:08AM +0800, Jin Yao wrote:
+> Current code:
 > 
-> Samuel
+> for (j = 0; j < argc; j++, i++)
+>         rec_argv[i] = argv[j];
+> 
+> if (verbose > 0) {
+>         pr_debug("calling: record ");
+> 
+>         while (rec_argv[j]) {
+>                 pr_debug("%s ", rec_argv[j]);
+>                 j++;
+>         }
+>         pr_debug("\n");
+> }
+> 
+> The entries of argv[] are copied to the end of rec_argv[], not
+> copied to the beginning of rec_argv[]. So the index j at
+> rec_argv[] doesn't point to the first event.
+> 
+> Now we record the start index and end index for events in rec_argv[],
+> and print them if verbose is enabled.
+> 
+> Signed-off-by: Jin Yao <yao.jin@linux.intel.com>
+> ---
+> v2:
+>  - New in v2.
+> 
+>  tools/perf/builtin-mem.c | 8 +++++---
 
-Can we not have two versions? I don't have Sphinx installed (used to format
-https://www.kernel.org/doc/html/latest/index.html) but converted 
-speakup.rst to
-html5 using rst2html5.py and indeed the output is way better looking and 
-easier
-to navigate than the txt version.
+hi,
+do we need the same in c2c as well?
 
-And anyway can we just provide a link to the web page that will be built
-from the rst file? I think it should be accessible in graphical web 
-browsers as
-in console ones (I tried using links, lynx and w3m).
+jirka
 
-As an aside the document still states:
-Speakup does NOT support usb connections!
+>  1 file changed, 5 insertions(+), 3 deletions(-)
+> 
+> diff --git a/tools/perf/builtin-mem.c b/tools/perf/builtin-mem.c
+> index 6b633df458c2..0fd2a74dbaca 100644
+> --- a/tools/perf/builtin-mem.c
+> +++ b/tools/perf/builtin-mem.c
+> @@ -65,6 +65,7 @@ static const char * const *record_mem_usage = __usage;
+>  static int __cmd_record(int argc, const char **argv, struct perf_mem *mem)
+>  {
+>  	int rec_argc, i = 0, j, tmp_nr = 0;
+> +	int start, end;
+>  	const char **rec_argv;
+>  	char **rec_tmp;
+>  	int ret;
+> @@ -144,9 +145,11 @@ static int __cmd_record(int argc, const char **argv, struct perf_mem *mem)
+>  	if (mem->data_page_size)
+>  		rec_argv[i++] = "--data-page-size";
+>  
+> +	start = i;
+>  	ret = perf_mem_events__record_args(rec_argv, &i, rec_tmp, &tmp_nr);
+>  	if (ret)
+>  		goto out;
+> +	end = i;
+>  
+>  	if (all_user)
+>  		rec_argv[i++] = "--all-user";
+> @@ -160,10 +163,9 @@ static int __cmd_record(int argc, const char **argv, struct perf_mem *mem)
+>  	if (verbose > 0) {
+>  		pr_debug("calling: record ");
+>  
+> -		while (rec_argv[j]) {
+> +		for (j = start; j < end; j++)
+>  			pr_debug("%s ", rec_argv[j]);
+> -			j++;
+> -		}
+> +
+>  		pr_debug("\n");
+>  	}
+>  
+> -- 
+> 2.17.1
+> 
 
-Is it still true? PS I widely prefer the asciidoc/asciidoctor format 
-than rst,
-but the choice has been done for the Linux Kernel documentation, I know...
-
-Didier
