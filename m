@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E8A7D39656B
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 18:34:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D9CF9395B6D
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 15:19:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234818AbhEaQff (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 12:35:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40254 "EHLO mail.kernel.org"
+        id S232166AbhEaNUZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 09:20:25 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53662 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233263AbhEaOsk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 10:48:40 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 44DCC6145C;
-        Mon, 31 May 2021 13:56:39 +0000 (UTC)
+        id S231881AbhEaNSz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 09:18:55 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 50DA561377;
+        Mon, 31 May 2021 13:17:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1622469399;
-        bh=jI99WAe9RVtRbs+Gt1kQRnnslk5QCXfmsL4bZR6wSPQ=;
+        s=korg; t=1622467035;
+        bh=AkeUFwF6WPQBnzhsbWzH49A8ilmrlY6UJS1l6fLaMEc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=mTC0sCOG4vDJ4EP+ni5c3chEDWioq9Vai/do/l9qAfILv1PDXAahZtf0Y0q+Mvvr+
-         I6RGzwroSE/9SHNuW/MkipLfHXelsPchABKY0kxWlevkRzfEam7F1xmbpBtqwOaCiw
-         QnigGx5tibwtOlOqNaGWwZ+vhGTJFgRoKULeIyEg=
+        b=NqmY4YvAFsiVG8bkd6kNkRLkoz8ZnkXQkmbiYLZY5QO8p8DuGeZvUrW1r/Noijjaq
+         JqzrITknOuMQ/YrlGAVHKkHShhOyKptqyMav9R1oGPoc22nWkZf7GkI/g2HGtHr0YO
+         v91XnvppqWYwXKKsv10tHInaSG4jNFBfLHnER8Ck=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Aditya Pakki <pakki001@umn.edu>,
-        Vinod Koul <vkoul@kernel.org>, Sinan Kaya <okaya@kernel.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.12 184/296] Revert "dmaengine: qcom_hidma: Check for driver register failure"
+        stable@vger.kernel.org, "David S. Miller" <davem@davemloft.net>,
+        Du Cheng <ducheng2@gmail.com>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.4 33/54] net: caif: remove BUG_ON(dev == NULL) in caif_xmit
 Date:   Mon, 31 May 2021 15:13:59 +0200
-Message-Id: <20210531130710.055787064@linuxfoundation.org>
+Message-Id: <20210531130636.119893130@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210531130703.762129381@linuxfoundation.org>
-References: <20210531130703.762129381@linuxfoundation.org>
+In-Reply-To: <20210531130635.070310929@linuxfoundation.org>
+References: <20210531130635.070310929@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,49 +39,78 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+From: Du Cheng <ducheng2@gmail.com>
 
-[ Upstream commit 43ed0fcf613a87dd0221ec72d1ade4d6544f2ffc ]
+[ Upstream commit 65a67792e3416f7c5d7daa47d99334cbb19a7449 ]
 
-This reverts commit a474b3f0428d6b02a538aa10b3c3b722751cb382.
+The condition of dev == NULL is impossible in caif_xmit(), hence it is
+for the removal.
 
-Because of recent interactions with developers from @umn.edu, all
-commits from them have been recently re-reviewed to ensure if they were
-correct or not.
+Explanation:
+The static caif_xmit() is only called upon via a function pointer
+`ndo_start_xmit` defined in include/linux/netdevice.h:
+```
+struct net_device_ops {
+    ...
+    netdev_tx_t     (*ndo_start_xmit)(struct sk_buff *skb, struct net_device *dev);
+    ...
+}
+```
 
-Upon review, this commit was found to be incorrect for the reasons
-below, so it must be reverted.  It will be fixed up "correctly" in a
-later kernel change.
+The exhausive list of call points are:
+```
+drivers/net/ethernet/qualcomm/rmnet/rmnet_map_command.c
+    dev->netdev_ops->ndo_start_xmit(skb, dev);
+    ^                                    ^
 
-The original change is NOT correct, as it does not correctly unwind from
-the resources that was allocated before the call to
-platform_driver_register().
+drivers/infiniband/ulp/opa_vnic/opa_vnic_netdev.c
+    struct opa_vnic_adapter *adapter = opa_vnic_priv(netdev);
+			     ^                       ^
+    return adapter->rn_ops->ndo_start_xmit(skb, netdev); // adapter would crash first
+	   ^                                    ^
 
-Cc: Aditya Pakki <pakki001@umn.edu>
-Acked-By: Vinod Koul <vkoul@kernel.org>
-Acked-By: Sinan Kaya <okaya@kernel.org>
-Link: https://lore.kernel.org/r/20210503115736.2104747-51-gregkh@linuxfoundation.org
+drivers/usb/gadget/function/f_ncm.c
+    ncm->netdev->netdev_ops->ndo_start_xmit(NULL, ncm->netdev);
+	      ^                                   ^
+
+include/linux/netdevice.h
+static inline netdev_tx_t __netdev_start_xmit(...
+{
+    return ops->ndo_start_xmit(skb, dev);
+				    ^
+}
+
+    const struct net_device_ops *ops = dev->netdev_ops;
+				       ^
+    rc = __netdev_start_xmit(ops, skb, dev, more);
+				       ^
+```
+
+In each of the enumerated scenarios, it is impossible for the NULL-valued dev to
+reach the caif_xmit() without crashing the kernel earlier, therefore `BUG_ON(dev ==
+NULL)` is rather useless, hence the removal.
+
+Cc: David S. Miller <davem@davemloft.net>
+Signed-off-by: Du Cheng <ducheng2@gmail.com>
+Link: https://lore.kernel.org/r/20210503115736.2104747-20-gregkh@linuxfoundation.org
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/dma/qcom/hidma_mgmt.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ drivers/net/caif/caif_serial.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/drivers/dma/qcom/hidma_mgmt.c b/drivers/dma/qcom/hidma_mgmt.c
-index 806ca02c52d7..fe87b01f7a4e 100644
---- a/drivers/dma/qcom/hidma_mgmt.c
-+++ b/drivers/dma/qcom/hidma_mgmt.c
-@@ -418,8 +418,9 @@ static int __init hidma_mgmt_init(void)
- 		hidma_mgmt_of_populate_channels(child);
- 	}
- #endif
--	return platform_driver_register(&hidma_mgmt_driver);
-+	platform_driver_register(&hidma_mgmt_driver);
+diff --git a/drivers/net/caif/caif_serial.c b/drivers/net/caif/caif_serial.c
+index c2dea4916e5d..32834dad0b83 100644
+--- a/drivers/net/caif/caif_serial.c
++++ b/drivers/net/caif/caif_serial.c
+@@ -281,7 +281,6 @@ static int caif_xmit(struct sk_buff *skb, struct net_device *dev)
+ {
+ 	struct ser_device *ser;
  
-+	return 0;
- }
- module_init(hidma_mgmt_init);
- MODULE_LICENSE("GPL v2");
+-	BUG_ON(dev == NULL);
+ 	ser = netdev_priv(dev);
+ 
+ 	/* Send flow off once, on high water mark */
 -- 
 2.30.2
 
