@@ -2,40 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3044B395C91
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 15:33:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 400FA3963FF
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 17:41:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232919AbhEaNfD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 09:35:03 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33428 "EHLO mail.kernel.org"
+        id S231483AbhEaPn0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 11:43:26 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47634 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231866AbhEaNZj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 09:25:39 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C9D6C61396;
-        Mon, 31 May 2021 13:20:54 +0000 (UTC)
+        id S232167AbhEaOYG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 10:24:06 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D331A61428;
+        Mon, 31 May 2021 13:46:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1622467255;
-        bh=VNoJb72BASLscbJ76MB5QsneL7jW1r5so6opZSHcc3Y=;
+        s=korg; t=1622468767;
+        bh=W4hzXqoHG/3EjJjFlzLnc/9WzCpZO4RrGgLy7YdQrX8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Sest4B5M2l6adbgCIyZvA2B3kdW8htVgP1F3Xbb/zehFmvfsLs43TepFVRzFnhcov
-         6EuUvF46v0mRRnXqPrg/nwYFROP/TfUUi3yM+Axz/Sbi5GAHqbd2cB8ALNXuzGNy3o
-         M8TIa64YcjFMxtJDu6joJMiW48235ubnrEiNIGGE=
+        b=fjArtL8cRzgQ7b3JJFt9Wal95lp1SbGjRKsFNEmkBFHGCefJPAH8NQDzn7mwkJMwi
+         fuOMCoROdKy8FFEDz+197WfCWtY7p9Vdm436I2S/rMSGYd2JQpupGXd9qRAGfzK954
+         HidsQxF4MjULukjQnfG1pnm+amoSyYK0NGOFHaU8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Randy Dunlap <rdunlap@infradead.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        linux-mips@vger.kernel.org,
-        Manuel Lauss <manuel.lauss@googlemail.com>,
-        Ralf Baechle <ralf@linux-mips.org>,
-        Manuel Lauss <manuel.lauss@gmail.com>,
+        stable@vger.kernel.org, Kangjie Lu <kjlu@umn.edu>,
+        "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 63/66] MIPS: alchemy: xxs1500: add gpio-au1000.h header file
+Subject: [PATCH 5.4 119/177] Revert "net: liquidio: fix a NULL pointer dereference"
 Date:   Mon, 31 May 2021 15:14:36 +0200
-Message-Id: <20210531130638.246710532@linuxfoundation.org>
+Message-Id: <20210531130652.029137227@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210531130636.254683895@linuxfoundation.org>
-References: <20210531130636.254683895@linuxfoundation.org>
+In-Reply-To: <20210531130647.887605866@linuxfoundation.org>
+References: <20210531130647.887605866@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,44 +40,50 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Randy Dunlap <rdunlap@infradead.org>
+From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-[ Upstream commit ff4cff962a7eedc73e54b5096693da7f86c61346 ]
+[ Upstream commit 4fd798a5a89114c1892574c50f2aebd49bc5b4f5 ]
 
-board-xxs1500.c references 2 functions without declaring them, so add
-the header file to placate the build.
+This reverts commit fe543b2f174f34a7a751aa08b334fe6b105c4569.
 
-../arch/mips/alchemy/board-xxs1500.c: In function 'board_setup':
-../arch/mips/alchemy/board-xxs1500.c:56:2: error: implicit declaration of function 'alchemy_gpio1_input_enable' [-Werror=implicit-function-declaration]
-   56 |  alchemy_gpio1_input_enable();
-../arch/mips/alchemy/board-xxs1500.c:57:2: error: implicit declaration of function 'alchemy_gpio2_enable'; did you mean 'alchemy_uart_enable'? [-Werror=implicit-function-declaration]
-   57 |  alchemy_gpio2_enable();
+Because of recent interactions with developers from @umn.edu, all
+commits from them have been recently re-reviewed to ensure if they were
+correct or not.
 
-Fixes: 8e026910fcd4 ("MIPS: Alchemy: merge GPR/MTX-1/XXS1500 board code into single files")
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Cc: linux-mips@vger.kernel.org
-Cc: Manuel Lauss <manuel.lauss@googlemail.com>
-Cc: Ralf Baechle <ralf@linux-mips.org>
-Acked-by: Manuel Lauss <manuel.lauss@gmail.com>
-Signed-off-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Upon review, this commit was found to be incorrect for the reasons
+below, so it must be reverted.  It will be fixed up "correctly" in a
+later kernel change.
+
+While the original commit does keep the immediate "NULL dereference"
+from happening, it does not properly propagate the error back to the
+callers, AND it does not fix this same identical issue in the
+drivers/net/ethernet/cavium/liquidio/lio_vf_main.c for some reason.
+
+Cc: Kangjie Lu <kjlu@umn.edu>
+Cc: David S. Miller <davem@davemloft.net>
+Link: https://lore.kernel.org/r/20210503115736.2104747-65-gregkh@linuxfoundation.org
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/mips/alchemy/board-xxs1500.c | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/net/ethernet/cavium/liquidio/lio_main.c | 5 -----
+ 1 file changed, 5 deletions(-)
 
-diff --git a/arch/mips/alchemy/board-xxs1500.c b/arch/mips/alchemy/board-xxs1500.c
-index 0fc53e08a894..c05f7376148a 100644
---- a/arch/mips/alchemy/board-xxs1500.c
-+++ b/arch/mips/alchemy/board-xxs1500.c
-@@ -30,6 +30,7 @@
- #include <asm/bootinfo.h>
- #include <asm/reboot.h>
- #include <asm/mach-au1x00/au1000.h>
-+#include <asm/mach-au1x00/gpio-au1000.h>
- #include <prom.h>
+diff --git a/drivers/net/ethernet/cavium/liquidio/lio_main.c b/drivers/net/ethernet/cavium/liquidio/lio_main.c
+index 7f3b2e3b0868..f2d486583e2f 100644
+--- a/drivers/net/ethernet/cavium/liquidio/lio_main.c
++++ b/drivers/net/ethernet/cavium/liquidio/lio_main.c
+@@ -1192,11 +1192,6 @@ static void send_rx_ctrl_cmd(struct lio *lio, int start_stop)
+ 	sc = (struct octeon_soft_command *)
+ 		octeon_alloc_soft_command(oct, OCTNET_CMD_SIZE,
+ 					  16, 0);
+-	if (!sc) {
+-		netif_info(lio, rx_err, lio->netdev,
+-			   "Failed to allocate octeon_soft_command\n");
+-		return;
+-	}
  
- const char *get_system_type(void)
+ 	ncmd = (union octnet_cmd *)sc->virtdptr;
+ 
 -- 
 2.30.2
 
