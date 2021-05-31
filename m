@@ -2,119 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D89EC395394
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 03:09:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B3BD6395395
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 03:10:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230013AbhEaBLc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 30 May 2021 21:11:32 -0400
-Received: from mailout3.samsung.com ([203.254.224.33]:30029 "EHLO
-        mailout3.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229887AbhEaBL0 (ORCPT
+        id S230026AbhEaBLu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 30 May 2021 21:11:50 -0400
+Received: from szxga01-in.huawei.com ([45.249.212.187]:6078 "EHLO
+        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229887AbhEaBLr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 30 May 2021 21:11:26 -0400
-Received: from epcas1p2.samsung.com (unknown [182.195.41.46])
-        by mailout3.samsung.com (KnoxPortal) with ESMTP id 20210531010943epoutp031f6fea46b53859fbe5b5af8ab6d90544~EAXiobh5u1996119961epoutp03r
-        for <linux-kernel@vger.kernel.org>; Mon, 31 May 2021 01:09:43 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout3.samsung.com 20210531010943epoutp031f6fea46b53859fbe5b5af8ab6d90544~EAXiobh5u1996119961epoutp03r
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1622423383;
-        bh=ZHlIzYSnP+FGMZecnRoWpX3V+9LlqLF+cwgx+tF+jC0=;
-        h=From:To:Cc:In-Reply-To:Subject:Date:References:From;
-        b=c5HqxGYcXeybyoWxuhKpphQ906XcdruKOon9RZUH/fnrUIPJzBYslmuhet1Tu+ka7
-         w8S3MVn4tmgjVreFVKBO9JejAmkpzUMxTsUDigHYF9U5kXWf5izcfnnEFHkrDIbRdy
-         xQPU6i/I87hJY1qsEw6+xCQIliixknrB1XfA6aLk=
-Received: from epsnrtp2.localdomain (unknown [182.195.42.163]) by
-        epcas1p1.samsung.com (KnoxPortal) with ESMTP id
-        20210531010942epcas1p1d7e6e319a03f13b4ba5fe567542f9633~EAXiKa2on2810828108epcas1p1d;
-        Mon, 31 May 2021 01:09:42 +0000 (GMT)
-Received: from epsmges1p5.samsung.com (unknown [182.195.40.163]) by
-        epsnrtp2.localdomain (Postfix) with ESMTP id 4Ftcdc1krWz4x9QM; Mon, 31 May
-        2021 01:09:40 +0000 (GMT)
-Received: from epcas1p2.samsung.com ( [182.195.41.46]) by
-        epsmges1p5.samsung.com (Symantec Messaging Gateway) with SMTP id
-        58.E7.09736.45734B06; Mon, 31 May 2021 10:09:40 +0900 (KST)
-Received: from epsmtrp2.samsung.com (unknown [182.195.40.14]) by
-        epcas1p2.samsung.com (KnoxPortal) with ESMTPA id
-        20210531010939epcas1p2db0593e0ded597125c4522131b5a9a2d~EAXfK7pKo2570525705epcas1p2_;
-        Mon, 31 May 2021 01:09:39 +0000 (GMT)
-Received: from epsmgms1p2.samsung.com (unknown [182.195.42.42]) by
-        epsmtrp2.samsung.com (KnoxPortal) with ESMTP id
-        20210531010939epsmtrp205f6dce7d85fa05513cbf6c69a721863~EAXfJ_Bsf2033320333epsmtrp2W;
-        Mon, 31 May 2021 01:09:39 +0000 (GMT)
-X-AuditID: b6c32a39-8d9ff70000002608-ba-60b437547270
-Received: from epsmtip1.samsung.com ( [182.195.34.30]) by
-        epsmgms1p2.samsung.com (Symantec Messaging Gateway) with SMTP id
-        D4.0B.08163.35734B06; Mon, 31 May 2021 10:09:39 +0900 (KST)
-Received: from namjaejeon01 (unknown [10.89.31.77]) by epsmtip1.samsung.com
-        (KnoxPortal) with ESMTPA id
-        20210531010939epsmtip1aa80143f27a25be6a26eae33d87c0306~EAXe9CZhz2988229882epsmtip1o;
-        Mon, 31 May 2021 01:09:39 +0000 (GMT)
-From:   "Namjae Jeon" <namjae.jeon@samsung.com>
-To:     "'Yang Yingliang'" <yangyingliang@huawei.com>
-Cc:     <sergey.senozhatsky@gmail.com>, <sfrench@samba.org>,
-        <hyc.lee@gmail.com>, <linux-kernel@vger.kernel.org>,
-        <linux-cifsd-devel@lists.sourceforge.net>,
-        <linux-cifs@vger.kernel.org>
-In-Reply-To: <20210529082058.3012233-2-yangyingliang@huawei.com>
-Subject: RE: [PATCH -next 2/3] cifsd: fix memleak in ksmbd_vfs_stream_read()
-Date:   Mon, 31 May 2021 10:09:39 +0900
-Message-ID: <001101d755b9$a167e3d0$e437ab70$@samsung.com>
+        Sun, 30 May 2021 21:11:47 -0400
+Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.53])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4Ftcb040pZzYp6N;
+        Mon, 31 May 2021 09:07:24 +0800 (CST)
+Received: from dggpemm500001.china.huawei.com (7.185.36.107) by
+ dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Mon, 31 May 2021 09:10:07 +0800
+Received: from [10.174.177.243] (10.174.177.243) by
+ dggpemm500001.china.huawei.com (7.185.36.107) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Mon, 31 May 2021 09:10:06 +0800
+Subject: Re: [PATCH 03/15] arm: convert to setup_initial_init_mm()
+To:     "Russell King (Oracle)" <linux@armlinux.org.uk>
+CC:     Andrew Morton <akpm@linux-foundation.org>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>
+References: <20210529105504.180544-1-wangkefeng.wang@huawei.com>
+ <20210529105504.180544-4-wangkefeng.wang@huawei.com>
+ <20210529121847.GR30436@shell.armlinux.org.uk>
+From:   Kefeng Wang <wangkefeng.wang@huawei.com>
+Message-ID: <803ae1ed-215c-40ef-996f-d99573ea692e@huawei.com>
+Date:   Mon, 31 May 2021 09:10:06 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-Mailer: Microsoft Outlook 16.0
-Thread-Index: AQJmwAWLq8cPiJNp7RTaabO3wPgwFgJVm9ACAXqwfdypv3C4cA==
-Content-Language: ko
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprBJsWRmVeSWpSXmKPExsWy7bCmnm6I+ZYEg66jnBbX7r9nt3jxfxez
-        xc//3xktLu+aw2ax9vNjdouOl0eZLbZ8usbkwO6xc9Zddo+WI29ZPXYv+MzkMXdXH6PH501y
-        AaxROTYZqYkpqUUKqXnJ+SmZeem2St7B8c7xpmYGhrqGlhbmSgp5ibmptkouPgG6bpk5QGco
-        KZQl5pQChQISi4uV9O1sivJLS1IVMvKLS2yVUgtScgoMDQr0ihNzi0vz0vWS83OtDA0MjEyB
-        KhNyMq49XsNe0MZUsez0H9YGxruMXYycHBICJhKdl6+wdTFycQgJ7GCU6N/3mx0kISTwiVFi
-        5c9oiMRnRom/x/cywXS0nLrHDJHYxSix7McqJgjnBaPEtl+rWUCq2AR0Jf792c8GYosIGEqs
-        nHCLEaSIWWAno8TOrZ1gRZwCDhKXn1wBs4UFfCSm/9jKCmKzCKhKHJnexQxi8wpYSjxZ85YV
-        whaUODnzCVg9s4C8xPa3c5ghTlKQ+Pl0GSvEMieJqQd3sULUiEjM7mwDO1VCYC6HxMn1nVA/
-        uEhsb5/JCmELS7w6voUdwpaS+PxuLxuEXS5x4uQvqPoaiQ3z9gHVcADZxhI9L0pATGYBTYn1
-        u/QhKhQldv6eywixlk/i3dceVohqXomONiGIElWJvkuHoQZKS3S1f2CfwKg0C8ljs5A8NgvJ
-        A7MQli1gZFnFKJZaUJybnlpsWGCKHNmbGMFJVMtyB+P0tx/0DjEycTAeYpTgYFYS4T1TsTFB
-        iDclsbIqtSg/vqg0J7X4EKMpMKgnMkuJJucD03heSbyhqZGxsbGFiZm5mamxkjhvunN1gpBA
-        emJJanZqakFqEUwfEwenVAMTe3ql9OyIqL7A/w91fn+982Juysasvbx/dvgI7A6++f+DXHux
-        6/rWRMGk9dlqs+XuMqX271s0QWByTMIj1+2b58ZIs1dHukT03fE5MqPpnvOBdwXdDenh6RG7
-        OM9tfzvL9wtnclRLRVyU5NZfTDYHAt9dKk/+8aklMDHm/Tompf1nuea/VFFZF91ozdC99nS1
-        2flVU+Xe3t+aP0130u+l//nPrpyZcuAff2vFfePTZhP+pIhG9F5Zc74/jWv25bdXE38Y1b5Z
-        2dl0w3VmVGXsrQfqIn25rw/NTD16wGVqzE3TnY+ClYLE7Jl274kQYn4goCUxTdPfgO+P6fpl
-        BudP17CW/62yOV7trflU+beNEktxRqKhFnNRcSIAQitSFisEAAA=
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFmpikeLIzCtJLcpLzFFi42LZdlhJTjfYfEuCweYzWhbX7r9nt3jxfxez
-        xc//3xktLu+aw2ax9vNjdouOl0eZLbZ8usbkwO6xc9Zddo+WI29ZPXYv+MzkMXdXH6PH501y
-        AaxRXDYpqTmZZalF+nYJXBnXHq9hL2hjqlh2+g9rA+Ndxi5GTg4JAROJllP3mLsYuTiEBHYw
-        Sqw50sECkZCWOHbiDFCCA8gWljh8uBii5hmjRO+5FUwgNWwCuhL//uxnA7FFBAwlVk64xQhS
-        xCywn1FiwpnJLBAdRxklbu14A1bFKeAgcfnJFbANwgI+EtN/bGUFsVkEVCWOTO9iBrF5BSwl
-        nqx5ywphC0qcnPmEBeQKZgE9ibaNYFczC8hLbH87hxniUAWJn0+XsUIc4SQx9eAuVogaEYnZ
-        nW3MExiFZyGZNAth0iwkk2Yh6VjAyLKKUTK1oDg3PbfYsMAoL7Vcrzgxt7g0L10vOT93EyM4
-        mrS0djDuWfVB7xAjEwfjIUYJDmYlEd4zFRsThHhTEiurUovy44tKc1KLDzFKc7AoifNe6DoZ
-        LySQnliSmp2aWpBaBJNl4uCUamCae2XPb/aA6OmJMn4zNdedFOhr2ZgQd1wtL7WaYfo0jmuq
-        ZTc+B0mcNK2+15J4Qs5s896T0q+EZyi9f/vFxHraJ6uJodomFxVT5cwntdWmGBhZl6Wen6Zz
-        huOoWXjAA4Hn87RYL3D/fFcyXcFVOz65ZsuvnuVOWSeutxsbbRRbf7F9oeeN2o9hC5Jm3WV8
-        q8sZYfuwunHRsy7O7+pWsav1hKcKZq+OsXdlPM8RHb58KWf/HlsjQZ/5bv1zbi6PuzB3k973
-        mAOz0u/lZ054LZqmMdXSsPf1t0+p6nXPWjO3f1vldYrr08aJZyvcGwRzfNulfxRZ997/r7wz
-        6uWhJX7TuWc9+8MbOvu+ZPxSnlIlluKMREMt5qLiRACCZkg1FQMAAA==
-X-CMS-MailID: 20210531010939epcas1p2db0593e0ded597125c4522131b5a9a2d
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: SVC_REQ_APPROVE
-CMS-TYPE: 101P
-DLP-Filter: Pass
+In-Reply-To: <20210529121847.GR30436@shell.armlinux.org.uk>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-Originating-IP: [10.174.177.243]
+X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
+ dggpemm500001.china.huawei.com (7.185.36.107)
 X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20210529081635epcas1p2396c9d5e2c1604e0c705c280b1d71497
-References: <20210529082058.3012233-1-yangyingliang@huawei.com>
-        <CGME20210529081635epcas1p2396c9d5e2c1604e0c705c280b1d71497@epcas1p2.samsung.com>
-        <20210529082058.3012233-2-yangyingliang@huawei.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> Before ksmbd_vfs_stream_read() return, memory allocate in
-> ksmbd_vfs_getcasexattr() need be freed.
-> 
-> Fixes: f44158485826 ("cifsd: add file operations")
-> Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
-I will apply, Thanks for your patch!
+
+On 2021/5/29 20:18, Russell King (Oracle) wrote:
+> On Sat, May 29, 2021 at 06:54:52PM +0800, Kefeng Wang wrote:
+>> Use setup_initial_init_mm() helper to simplify code.
+>>
+>> Cc: Russell King <linux@armlinux.org.uk>
+>> Cc: linux-arm-kernel@lists.infradead.org
+>> Signed-off-by: Kefeng Wang <wangkefeng.wang@huawei.com>
+> Obviously, without having visibility of the contents of
+> setup_initial_init_mm(), it's impossible to say whether this change is
+> correct or not, so I won't be providing any acks/reviewed-bys for it.
+
+I realized that patch with introducing the setup_initial_init_mm helper  
+should
+
+be send to  each architectures,  will pay attention next times.
+
+Here is the helper https://lkml.org/lkml/2021/5/29/84
 
