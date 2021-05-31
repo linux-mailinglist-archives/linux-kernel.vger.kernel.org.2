@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 030B8396352
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 17:12:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D5CE396444
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 17:51:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234443AbhEaPNb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 11:13:31 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40182 "EHLO mail.kernel.org"
+        id S233626AbhEaPwx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 11:52:53 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54474 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232190AbhEaOL0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 10:11:26 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C81F96124C;
-        Mon, 31 May 2021 13:41:04 +0000 (UTC)
+        id S233807AbhEaO3Y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 10:29:24 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id F12DC61C21;
+        Mon, 31 May 2021 13:48:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1622468465;
-        bh=WEChJ6jb79usMwhfXxnCXY+Floj+im3Lq2Q0hut9XTw=;
+        s=korg; t=1622468890;
+        bh=1u35W/3FJW3aqzFqG70FQkWEI0vEjNAboO4K4dfb+Zg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=15pqmpNHYLB/a+Y0WfnJrim4Jat6Sbpn+g2Sb6937/ybX8M/4miYKM/6qf+C9TPQT
-         yhnMYS2srO8vPEV7R2j/gFuMLxs2291uXGdqyGT3GVGh3S3f97ia6e2ahDPXeA+p2l
-         LCopgxmgrXZJq98qUYRdr3/rqr+cbbGKGeQBlQdg=
+        b=fFLA3v5wDB/dQ/oSDT9lzB1J0I+F/gr+GknTS5JNKfeFAzyD7JDVahMy/ATSVnqEo
+         cGAd4SVReFZKWU23z7NbXefYbjUDZoMiQMNP3UWWr5iCNIagELSRK+X5bQCzo/CHLN
+         qXn1UALAp/49oNS4uvYuWvp0gFansVyYK+8vovNM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Alan Stern <stern@rowland.harvard.edu>,
-        Chunfeng Yun <chunfeng.yun@mediatek.com>
-Subject: [PATCH 5.10 252/252] usb: core: reduce power-on-good delay time of root hub
+        stable@vger.kernel.org, Jussi Maki <joamaki@gmail.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 160/177] bpf: Set mac_len in bpf_skb_change_head
 Date:   Mon, 31 May 2021 15:15:17 +0200
-Message-Id: <20210531130706.545241726@linuxfoundation.org>
+Message-Id: <20210531130653.448880687@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210531130657.971257589@linuxfoundation.org>
-References: <20210531130657.971257589@linuxfoundation.org>
+In-Reply-To: <20210531130647.887605866@linuxfoundation.org>
+References: <20210531130647.887605866@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,39 +40,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Chunfeng Yun <chunfeng.yun@mediatek.com>
+From: Jussi Maki <joamaki@gmail.com>
 
-commit 90d28fb53d4a51299ff324dede015d5cb11b88a2 upstream.
+[ Upstream commit 84316ca4e100d8cbfccd9f774e23817cb2059868 ]
 
-Return the exactly delay time given by root hub descriptor,
-this helps to reduce resume time etc.
+The skb_change_head() helper did not set "skb->mac_len", which is
+problematic when it's used in combination with skb_redirect_peer().
+Without it, redirecting a packet from a L3 device such as wireguard to
+the veth peer device will cause skb->data to point to the middle of the
+IP header on entry to tcp_v4_rcv() since the L2 header is not pulled
+correctly due to mac_len=0.
 
-Due to the root hub descriptor is usually provided by the host
-controller driver, if there is compatibility for a root hub,
-we can fix it easily without affect other root hub
-
-Acked-by: Alan Stern <stern@rowland.harvard.edu>
-Signed-off-by: Chunfeng Yun <chunfeng.yun@mediatek.com>
-Link: https://lore.kernel.org/r/1618017645-12259-1-git-send-email-chunfeng.yun@mediatek.com
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Fixes: 3a0af8fd61f9 ("bpf: BPF for lightweight tunnel infrastructure")
+Signed-off-by: Jussi Maki <joamaki@gmail.com>
+Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
+Link: https://lore.kernel.org/bpf/20210519154743.2554771-2-joamaki@gmail.com
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/usb/core/hub.h |    6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+ net/core/filter.c | 1 +
+ 1 file changed, 1 insertion(+)
 
---- a/drivers/usb/core/hub.h
-+++ b/drivers/usb/core/hub.h
-@@ -148,8 +148,10 @@ static inline unsigned hub_power_on_good
- {
- 	unsigned delay = hub->descriptor->bPwrOn2PwrGood * 2;
+diff --git a/net/core/filter.c b/net/core/filter.c
+index 7fbb274b7fe3..108bcf600052 100644
+--- a/net/core/filter.c
++++ b/net/core/filter.c
+@@ -3331,6 +3331,7 @@ static inline int __bpf_skb_change_head(struct sk_buff *skb, u32 head_room,
+ 		__skb_push(skb, head_room);
+ 		memset(skb->data, 0, head_room);
+ 		skb_reset_mac_header(skb);
++		skb_reset_mac_len(skb);
+ 	}
  
--	/* Wait at least 100 msec for power to become stable */
--	return max(delay, 100U);
-+	if (!hub->hdev->parent)	/* root hub */
-+		return delay;
-+	else /* Wait at least 100 msec for power to become stable */
-+		return max(delay, 100U);
- }
- 
- static inline int hub_port_debounce_be_connected(struct usb_hub *hub,
+ 	return ret;
+-- 
+2.30.2
+
 
 
