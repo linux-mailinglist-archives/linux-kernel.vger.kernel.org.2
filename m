@@ -2,32 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 464D93961A4
+	by mail.lfdr.de (Postfix) with ESMTP id A3A733961A5
 	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 16:43:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234037AbhEaOoY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 10:44:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59498 "EHLO mail.kernel.org"
+        id S234085AbhEaOoc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 10:44:32 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59500 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232289AbhEaN66 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 09:58:58 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id F32CF61442;
-        Mon, 31 May 2021 13:35:47 +0000 (UTC)
+        id S232377AbhEaN7J (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 09:59:09 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D861D61444;
+        Mon, 31 May 2021 13:35:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1622468148;
-        bh=m8pxgX3jyd09QtonB3c6BbI83zDGq8E496xVR/zB8OQ=;
+        s=korg; t=1622468151;
+        bh=1NEL+GcIiRtjPVEvr2hIegNN3AwAHmDg7Vo8080uR6A=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=rvkLPNJgQZvgXsTJYmS+ry4YJHMAUYswi7BrTyXdmXTRQnY0Xwz11v7vwqb076FFH
-         tZHdPNMx7TbPOaCnvIKeMraz6BMO4Drw8uGRXmF3OBJJMFu93KpevBP1NxiTzczmsi
-         xewuRzy2mGfPbh0vnIE2zNcH/tGhDmGf1nKYNNwc=
+        b=lXifVzb8+5X7Ncxyw4Kdpqha7xzjkPlD3NhuwK+FK5mKOYdUVUbROAfFSjnf8Y0ix
+         zlzJOgGyNkAobC1uV3bUTNBNC7TlC7857IW5a95dGX9WnDT0x/bJPar9MWLVibWZHL
+         eCEtzo0AFQ/upJ2fLAZ1RvwIYueGoVM4k9tOs2CI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Aditya Pakki <pakki001@umn.edu>,
-        Takashi Iwai <tiwai@suse.de>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 134/252] Revert "ALSA: sb: fix a missing check of snd_ctl_add"
-Date:   Mon, 31 May 2021 15:13:19 +0200
-Message-Id: <20210531130702.562849528@linuxfoundation.org>
+        stable@vger.kernel.org, Kangjie Lu <kjlu@umn.edu>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.10 135/252] Revert "serial: max310x: pass return value of spi_register_driver"
+Date:   Mon, 31 May 2021 15:13:20 +0200
+Message-Id: <20210531130702.604850571@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210531130657.971257589@linuxfoundation.org>
 References: <20210531130657.971257589@linuxfoundation.org>
@@ -41,49 +42,47 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-[ Upstream commit 4b059ce1f4b368208c2310925f49be77f15e527b ]
+[ Upstream commit b0a85abbe92e1a6f3e8580a4590fa7245de7090b ]
 
-This reverts commit beae77170c60aa786f3e4599c18ead2854d8694d.
+This reverts commit 51f689cc11333944c7a457f25ec75fcb41e99410.
 
 Because of recent interactions with developers from @umn.edu, all
 commits from them have been recently re-reviewed to ensure if they were
 correct or not.
 
 Upon review, this commit was found to be incorrect for the reasons
-below, so it must be reverted.  It is safe to ignore this error as the
-mixer element is optional, and the driver is very legacy.
+below, so it must be reverted.  It will be fixed up "correctly" in a
+later kernel change.
 
-Cc: Aditya Pakki <pakki001@umn.edu>
-Reviewed-by: Takashi Iwai <tiwai@suse.de>
-Link: https://lore.kernel.org/r/20210503115736.2104747-8-gregkh@linuxfoundation.org
+This change did not properly unwind from the error condition, so it was
+not correct.
+
+Cc: Kangjie Lu <kjlu@umn.edu>
+Acked-by: Jiri Slaby <jirislaby@kernel.org>
+Link: https://lore.kernel.org/r/20210503115736.2104747-11-gregkh@linuxfoundation.org
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/isa/sb/sb16_main.c | 10 +++-------
- 1 file changed, 3 insertions(+), 7 deletions(-)
+ drivers/tty/serial/max310x.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/sound/isa/sb/sb16_main.c b/sound/isa/sb/sb16_main.c
-index 38dc1fde25f3..aa4870531023 100644
---- a/sound/isa/sb/sb16_main.c
-+++ b/sound/isa/sb/sb16_main.c
-@@ -846,14 +846,10 @@ int snd_sb16dsp_pcm(struct snd_sb *chip, int device)
- 	snd_pcm_set_ops(pcm, SNDRV_PCM_STREAM_PLAYBACK, &snd_sb16_playback_ops);
- 	snd_pcm_set_ops(pcm, SNDRV_PCM_STREAM_CAPTURE, &snd_sb16_capture_ops);
+diff --git a/drivers/tty/serial/max310x.c b/drivers/tty/serial/max310x.c
+index 8434bd5a8ec7..f60b7b86d099 100644
+--- a/drivers/tty/serial/max310x.c
++++ b/drivers/tty/serial/max310x.c
+@@ -1527,10 +1527,10 @@ static int __init max310x_uart_init(void)
+ 		return ret;
  
--	if (chip->dma16 >= 0 && chip->dma8 != chip->dma16) {
--		err = snd_ctl_add(card, snd_ctl_new1(
--					&snd_sb16_dma_control, chip));
--		if (err)
--			return err;
--	} else {
-+	if (chip->dma16 >= 0 && chip->dma8 != chip->dma16)
-+		snd_ctl_add(card, snd_ctl_new1(&snd_sb16_dma_control, chip));
-+	else
- 		pcm->info_flags = SNDRV_PCM_INFO_HALF_DUPLEX;
--	}
+ #ifdef CONFIG_SPI_MASTER
+-	ret = spi_register_driver(&max310x_spi_driver);
++	spi_register_driver(&max310x_spi_driver);
+ #endif
  
- 	snd_pcm_set_managed_buffer_all(pcm, SNDRV_DMA_TYPE_DEV,
- 				       card->dev, 64*1024, 128*1024);
+-	return ret;
++	return 0;
+ }
+ module_init(max310x_uart_init);
+ 
 -- 
 2.30.2
 
