@@ -2,131 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 802113957D4
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 11:06:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 03D763957D6
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 May 2021 11:06:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230315AbhEaJHo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 May 2021 05:07:44 -0400
-Received: from mga02.intel.com ([134.134.136.20]:25563 "EHLO mga02.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229591AbhEaJH2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 May 2021 05:07:28 -0400
-IronPort-SDR: ruPedB5Zjir22i65fsklZX1NaMKqSM6PoyP30AxqLz2UIRvLUCfTJNgV4sSxL7RBdXBYYw9dSq
- p2uUcUbzZ0gg==
-X-IronPort-AV: E=McAfee;i="6200,9189,10000"; a="190441262"
-X-IronPort-AV: E=Sophos;i="5.83,236,1616482800"; 
-   d="scan'208";a="190441262"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 May 2021 02:05:35 -0700
-IronPort-SDR: dim1OX9Fu4gShFDQxL7ys/75YTEcxTULyp4BWp+YAWjNavbLrOenvlKid5T1J9Sx8/XeAZc/VU
- Kh+RAR83vBLA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.83,236,1616482800"; 
-   d="scan'208";a="549357956"
-Received: from kuha.fi.intel.com ([10.237.72.162])
-  by fmsmga001.fm.intel.com with SMTP; 31 May 2021 02:05:32 -0700
-Received: by kuha.fi.intel.com (sSMTP sendmail emulation); Mon, 31 May 2021 12:05:27 +0300
-Date:   Mon, 31 May 2021 12:05:27 +0300
-From:   Heikki Krogerus <heikki.krogerus@linux.intel.com>
-To:     Kyle Tso <kyletso@google.com>
-Cc:     linux@roeck-us.net, gregkh@linuxfoundation.org, robh+dt@kernel.org,
-        badhri@google.com, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
-Subject: Re: [PATCH 3/3] usb: typec: tcpm: Introduce snk_vdo_v1 for SVDM
- version 1.0
-Message-ID: <YLSm13rYy0GPfapW@kuha.fi.intel.com>
-References: <20210527084419.4164369-1-kyletso@google.com>
- <20210527084419.4164369-4-kyletso@google.com>
+        id S230449AbhEaJIF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 May 2021 05:08:05 -0400
+Received: from hostingweb31-40.netsons.net ([89.40.174.40]:41694 "EHLO
+        hostingweb31-40.netsons.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229945AbhEaJHk (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 May 2021 05:07:40 -0400
+Received: from [77.244.183.192] (port=63384 helo=melee.fritz.box)
+        by hostingweb31.netsons.net with esmtpa (Exim 4.94.2)
+        (envelope-from <luca@lucaceresoli.net>)
+        id 1lndrr-0009Gk-0d; Mon, 31 May 2021 11:05:51 +0200
+From:   Luca Ceresoli <luca@lucaceresoli.net>
+To:     linux-pci@vger.kernel.org
+Cc:     Luca Ceresoli <luca@lucaceresoli.net>, linux-omap@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Rob Herring <robh@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>
+Subject: [PATCH v2] PCI: dra7xx: Fix reset behaviour
+Date:   Mon, 31 May 2021 11:05:40 +0200
+Message-Id: <20210531090540.2663171-1-luca@lucaceresoli.net>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210527084419.4164369-4-kyletso@google.com>
+Content-Transfer-Encoding: 8bit
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - hostingweb31.netsons.net
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - lucaceresoli.net
+X-Get-Message-Sender-Via: hostingweb31.netsons.net: authenticated_id: luca+lucaceresoli.net/only user confirmed/virtual account not confirmed
+X-Authenticated-Sender: hostingweb31.netsons.net: luca@lucaceresoli.net
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 27, 2021 at 04:44:19PM +0800, Kyle Tso wrote:
-> The ID Header VDO and Product VDOs defined in USB PD Spec rev 2.0 and
-> rev 3.1 are quite different. Add an additional array snk_vdo_v1 and
-> send it as the response to the port partner if it only supports SVDM
-> version 1.0.
-> 
-> Signed-off-by: Kyle Tso <kyletso@google.com>
+The PCIe PERSTn reset pin is active low and should be asserted, then
+deasserted.
 
-Acked-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
+The current implementation only drives the pin once in "HIGH" position,
+thus presumably it was intended to deassert the pin. This has two problems:
 
-> ---
->  drivers/usb/typec/tcpm/tcpm.c | 40 +++++++++++++++++++++++++----------
->  1 file changed, 29 insertions(+), 11 deletions(-)
-> 
-> diff --git a/drivers/usb/typec/tcpm/tcpm.c b/drivers/usb/typec/tcpm/tcpm.c
-> index a1bf0dc5babf..07d2bed0a63b 100644
-> --- a/drivers/usb/typec/tcpm/tcpm.c
-> +++ b/drivers/usb/typec/tcpm/tcpm.c
-> @@ -401,6 +401,8 @@ struct tcpm_port {
->  	unsigned int nr_src_pdo;
->  	u32 snk_pdo[PDO_MAX_OBJECTS];
->  	unsigned int nr_snk_pdo;
-> +	u32 snk_vdo_v1[VDO_MAX_OBJECTS];
-> +	unsigned int nr_snk_vdo_v1;
->  	u32 snk_vdo[VDO_MAX_OBJECTS];
->  	unsigned int nr_snk_vdo;
->  
-> @@ -1561,18 +1563,18 @@ static int tcpm_pd_svdm(struct tcpm_port *port, struct typec_altmode *adev,
->  			 */
->  			if ((port->data_role == TYPEC_DEVICE || svdm_version >= SVDM_VER_2_0) &&
->  			    port->nr_snk_vdo) {
-> -				/*
-> -				 * Product Type DFP and Connector Type are not defined in SVDM
-> -				 * version 1.0 and shall be set to zero.
-> -				 */
-> -				if (svdm_version < SVDM_VER_2_0)
-> -					response[1] = port->snk_vdo[0] & ~IDH_DFP_MASK
-> -						      & ~IDH_CONN_MASK;
-> -				else
-> +				if (svdm_version < SVDM_VER_2_0) {
-> +					response[1] = port->snk_vdo_v1[0];
-> +					for (i = 1; i < port->nr_snk_vdo_v1; i++)
-> +						response[i + 1] = port->snk_vdo_v1[i];
-> +					rlen = port->nr_snk_vdo_v1 + 1;
-> +
-> +				} else {
->  					response[1] = port->snk_vdo[0];
-> -				for (i = 1; i <  port->nr_snk_vdo; i++)
-> -					response[i + 1] = port->snk_vdo[i];
-> -				rlen = port->nr_snk_vdo + 1;
-> +					for (i = 1; i < port->nr_snk_vdo; i++)
-> +						response[i + 1] = port->snk_vdo[i];
-> +					rlen = port->nr_snk_vdo + 1;
-> +				}
->  			}
->  			break;
->  		case CMD_DISCOVER_SVID:
-> @@ -5953,6 +5955,22 @@ static int tcpm_fw_get_caps(struct tcpm_port *port,
->  			return ret;
->  	}
->  
-> +	/* If sink-vdos is found, sink-vdos-v1 is expected for backward compatibility. */
-> +	if (port->nr_snk_vdo) {
-> +		ret = fwnode_property_count_u32(fwnode, "sink-vdos-v1");
-> +		if (ret < 0)
-> +			return ret;
-> +		else if (ret == 0)
-> +			return -ENODATA;
-> +
-> +		port->nr_snk_vdo_v1 = min(ret, VDO_MAX_OBJECTS);
-> +		ret = fwnode_property_read_u32_array(fwnode, "sink-vdos-v1",
-> +						     port->snk_vdo_v1,
-> +						     port->nr_snk_vdo_v1);
-> +		if (ret < 0)
-> +			return ret;
-> +	}
-> +
->  	return 0;
->  }
->  
-> -- 
-> 2.31.1.818.g46aad6cb9e-goog
+  1) it assumes the pin was asserted by other means before loading the
+     driver
+  2) it has the wrong polarity, since "HIGH" means "active", and the pin is
+     presumably configured as active low coherently with the PCIe
+     convention, thus it is driven physically to 0, keeping the device
+     under reset unless the pin is configured as active high.
 
+Fix both problems by:
+
+  1) keeping devm_gpiod_get_optional(dev, NULL, GPIOD_OUT_HIGH) as is, but
+     assuming the pin is correctly configured as "active low" this now
+     becomes a reset assertion
+  2) adding gpiod_set_value(reset, 0) after a delay to deassert reset
+
+Fixes: 78bdcad05ea1 ("PCI: dra7xx: Add support to make GPIO drive PERST# line")
+Signed-off-by: Luca Ceresoli <luca@lucaceresoli.net>
+
+---
+
+Changes v1 -> v2:
+ - No changes to the patch
+ - Reword commit message according to suggestions from Bjorn Helgaas (from
+   another patchset)
+ - Add Fixes: tag
+---
+ drivers/pci/controller/dwc/pci-dra7xx.c | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/drivers/pci/controller/dwc/pci-dra7xx.c b/drivers/pci/controller/dwc/pci-dra7xx.c
+index cb5d4c245ff6..11f392b7a9a2 100644
+--- a/drivers/pci/controller/dwc/pci-dra7xx.c
++++ b/drivers/pci/controller/dwc/pci-dra7xx.c
+@@ -801,6 +801,8 @@ static int dra7xx_pcie_probe(struct platform_device *pdev)
+ 		dev_err(&pdev->dev, "gpio request failed, ret %d\n", ret);
+ 		goto err_gpio;
+ 	}
++	usleep_range(1000, 2000);
++	gpiod_set_value(reset, 0);
+ 
+ 	reg = dra7xx_pcie_readl(dra7xx, PCIECTRL_DRA7XX_CONF_DEVICE_CMD);
+ 	reg &= ~LTSSM_EN;
 -- 
-heikki
+2.25.1
+
